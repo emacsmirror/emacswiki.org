@@ -1,0 +1,58 @@
+Pode existir algumas vantagens em utilizar programas externos com o Gnus para executar algumas tarefas. Uma situação em que isto se pode verificar poderá ser na obtenção/separação do mail de uma conta pop3. Aqui fica como fazer isto.
+
+== Configurar o Fetchmail ==
+
+Bom, isto é relativamente simples. Cria um ficheiro ~/.fetchmailrc com o seguinte:
+
+  poll <servidor.de.mail> with proto POP3
+       user <conta.de.mail> there with password <password> \
+       is <conta.local> here \
+       options fetchall mda "<caminho.para.procmail>/procmail -d %T"
+
+Para mais detalhes, consulta a documentação do fetchmail.
+
+== Configurar o Procmail ==
+
+A configuração do procmail é também bastante simples:
+
+  MAILDIR=$HOME/.mail
+  DEFAULT=$MAILDIR/inbox/
+  LOGFILE=$MAILDIR/procmail
+
+  # Spamassassin! 
+  # Eu apenas copiei para aqui a configuração que é sugerida no
+  # spamassassin...
+  :0fw: spamassassin.lock
+  * < 256000
+  | spamassassin
+  :0:
+  * ^X-Spam-Status: Yes
+  spam.spool
+
+  :0:
+  * (^To|^Cc):.*ding@gnus.org
+  ding.spool
+
+  :0:
+  inbox.spool
+
+Criar simplesmente um ficheiro ~/.procmailrc que tenha algo deste género.
+Alguns avisos:
+
+* certifica-te que a tua directoria MAILDIR existe;
+* certifica-te que tens uma entrada por omissão no final do teu ficheiro (no exemplo, é a entrada com o inbox.spool)
+
+== Configurar o Gnus ==
+
+Bem, agora tudo o que tens a fazer é dizer ao Gnus que ele deve obter o mail a partir da directoria ~/.mail/. Esta directoria irá conter ficheiros *.spool onde o mail é armazenado. A linha seguinte trata de fazer isso mesmo:
+
+  (setq mail-sources '((directory :path "~/.mail" :suffix ".spool")))
+
+Depois, adiciona a seguinte linha para que o Gnus apague os ficheiros que foram criados pelo procmail (eles já não são necessários):
+
+  (setq mail-source-delete-incoming t)
+
+E é tudo! Já não precisas de utilizar as funcionalidades de separação de mail que são fornecidas pelo Gnus.
+
+----
+CategoryGnus

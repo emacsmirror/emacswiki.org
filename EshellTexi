@@ -1,0 +1,2437 @@
+<pre>
+\input texinfo @c -*-texinfo-*-
+
+@setchapternewpage odd
+@settitle The Emacs Shell
+@setfilename eshell.info
+
+@ifinfo
+This is the first edition of the @cite{Eshell Manual}.
+
+@dircategory Packages
+@direntry
+* Eshell: (eshell.info).	An Emacs command shell.
+@end direntry
+
+This document describes how to use and program the Emacs Command Shell,
+or ``Eshell''.  No guarantee is made as the usability of this software.
+Use it at your own risk.  Neither is this documentation guaranteed to be
+accurate or sufficient.
+
+Copyright (C) 1999, 2000 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries a copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+sections entitled ``The GNU Manifesto'', ``Distribution'' and ``GNU
+General Public License'' are included exactly as in the original, and
+provided that the entire resulting derived work is distributed under the
+terms of a permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the sections entitled ``The GNU Manifesto'',
+``Distribution'' and ``GNU General Public License'' may be included in a
+translation approved by the Free Software Foundation instead of in the
+original English.
+@end ifinfo
+
+@smallbook
+
+@iftex
+@kbdinputstyle code
+
+@shorttitlepage Eshell Manual
+@end iftex
+@titlepage
+@sp 6
+@center @titlefont{Eshell Manual}
+@sp 4
+@center First Edition
+@sp 5
+@center John Wiegley
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1999, 2000 Free Software Foundation, Inc.
+@sp 2
+First Edition @*
+February 2000
+@sp 1
+Published by John Wiegley @*
+http://www.emacs.org/~johnw/eshell.html
+@sp 1
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+sections entitled ``The GNU Manifesto'', ``Distribution'' and ``GNU
+General Public License'' are included exactly as in the original, and
+provided that the entire resulting derived work is distributed under the
+terms of a permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the sections entitled ``The GNU Manifesto'',
+``Distribution'' and ``GNU General Public License'' may be included in a
+translation approved by the Free Software Foundation instead of in the
+original English.
+@end titlepage
+
+@ifinfo
+@node Top, The Emacs shell, (dir), (dir)
+@top The Emacs Shell: Eshell
+
+@end ifinfo
+
+@c auto-extracted text follows, scanned by texidoc.el
+
+Eshell is a command shell implemented entirely in Emacs Lisp.  It
+invokes no external processes beyond those requested by the user.  It
+is intended to be a functional replacement for command shells such as
+bash, zsh, rc, 4dos; since Emacs itself is capable of handling most of
+the tasks accomplished by such tools.
+
+@menu
+* The Emacs shell::                 eshell.
+
+Core Functionality
+* Argument parsing::                eshell-arg.
+* Command invocation::              eshell-cmd.
+* External commands::               eshell-ext.
+* I/O management::                  eshell-io.
+* User interface::                  eshell-mode.
+* Extension modules::               eshell-module.
+* Command options processing::      eshell-opt.
+* Process management::              eshell-proc.
+* Eshell test suite::               eshell-test.
+* General utilities::               eshell-util.
+* Variable handling::               eshell-var.
+
+Optional Functionality
+* Command aliases::                 eshell-alias.
+* Login banner::                    eshell-banner.
+* Basic shell commands::            eshell-basic.
+* Argument completion::             eshell-cmpl.
+* Directory navigation::            eshell-dirs.
+* Extended filename globbing::      eshell-glob.
+* History list management::         eshell-hist.
+* Implementation of @code{ls} in Lisp::  eshell-ls.
+* Value modifiers and predicates::  eshell-pred.
+* Command prompts::                 eshell-prompt.
+* Rebind keys at input::            eshell-rebind.
+* Running script files.::           eshell-script.
+* Smart display of output::         eshell-smart.
+* Running visual commands::         eshell-term.
+* UNIX commands in Lisp::           eshell-unix.
+* Extra alias functions::           eshell-xtra.
+@end menu
+
+
+@node The Emacs shell, Argument parsing, Top, Top
+@chapter The Emacs shell
+
+
+
+@menu
+* What does Eshell offer you?::  
+* Supported versions of Emacs::  
+* Known problems::              
+* Downloading the latest version::  
+* Eshell is free software::     
+* How to begin::                
+* Philosophy::                  
+* Influences::                  
+* User Options::                
+* Running Eshell::              
+* Reporting bugs::              
+@end menu
+
+@node What does Eshell offer you?, Supported versions of Emacs, The Emacs shell, The Emacs shell
+@section What does Eshell offer you?
+
+Despite the sheer fact that running an Emacs shell can be fun, here
+are a few of the unique features offered by Eshell:
+
+@itemize @bullet
+@item
+Integration with the Emacs Lisp programming environment
+
+@item
+A high degree of configurability
+
+@item
+The ability to have the same shell on every system Emacs has been
+ported to. Since Eshell imposes no external requirements, and
+relies upon only the Lisp functions exposed by Emacs, it is quite
+operating system independent. Several of the common UNIX
+commands, such as ls, mv, rm, ln, etc., have been implemented in
+Lisp in order to provide a more consistent work environment.
+@end itemize
+
+
+For those who might be using an older version of Eshell, version
+2.1 represents an entirely new, module-based architecture. It
+supports most of the features offered by modern shells. Here is a
+brief list of some of its more visible features:
+
+@itemize @bullet
+@item
+Command argument completion (tcsh, zsh)
+@item
+Input history management (bash)
+@item
+Intelligent output scrolling
+@item
+Psuedo-devices (such as ``/dev/clip'' for copying to the clipboard)
+@item
+Extended globbing (zsh)
+@item
+Argument and globbing predication (zsh)
+@item
+I/O redirection to buffers, files, symbols, processes, etc.
+@item
+Many niceties otherwise seen only in 4DOS
+@item
+Alias functions, both Lisp and Eshell-syntax
+@item
+Piping, sequenced commands, background jobs, etc@enddots{}
+
+@end itemize
+
+
+@node Supported versions of Emacs, Known problems, What does Eshell offer you?, The Emacs shell
+@section Supported versions of Emacs
+
+Eshell was designed to run on Emacs 20.4 or higher, and XEmacs 21.1
+or higher.  It was tested on GNU/Linux, Windows NT 4.0, and Windows
+2000.
+
+
+@node Known problems, Downloading the latest version, Supported versions of Emacs, The Emacs shell
+@section Known problems
+
+If you try to run Eshell on other versions of Emacs, here are some
+common problems you may run into, and how to overcome them:
+
+@itemize @bullet
+@item
+Emacs 20.3: Pcomplete fails to byte compile.  Instead of typing
+``make install'' in the Pcomplete directory, type: ``make
+pcmpl-auto.el install_el''.  Then, copy the file ``pcmpl-auto.el''
+into the directory that pcomplete was just installed into.  Why
+this is failing is a mystery to me.  It appears that
+byte-compiling pcomplete from a running Emacs session works just
+fine.
+
+@end itemize
+
+
+@node Downloading the latest version, Eshell is free software, Known problems, The Emacs shell
+@section Downloading the latest version
+
+Eshell can be downloaded via HTTP as a
+@uref{http://www.emacs.org/~johnw/Emacs/packages/eshell.tar.gz, tar file},
+or as a Windows
+@uref{http://www.emacs.org/~johnw/Emacs/packages/eshell.zip, .ZIP file}.
+
+
+@node Eshell is free software, How to begin, Downloading the latest version, The Emacs shell
+@section Eshell is free software
+
+Eshell is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2, or (at your option)
+any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Eshell; see the file COPYING.  If not, write to the Free
+Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+02111-1307, USA.
+
+
+@node How to begin, Philosophy, Eshell is free software, The Emacs shell
+@section How to begin
+
+To start using Eshell, add the following to your .emacs file:
+
+@example
+(load "eshell-auto")
+@end example
+
+This will define all of the necessary autoloads.
+
+Now type @code{M-x eshell}.  See the INSTALL file for full installation
+instructions.
+
+
+@node Philosophy, Influences, How to begin, The Emacs shell
+@section Philosophy
+
+A shell is a layer which metaphorically surrounds the kernel, or
+heart of an operating system.  This kernel can be seen as an engine
+of pure functionality, waiting to serve, while the user programs
+take advantage of that functionality to accomplish their purpose.
+
+The shell's role is to make that functionality accessible to the
+user in an unformed state.  Very roughly, it associates kernel
+functionality with textual commands, allowing the user to interact
+with the operating system via linguistic constructs.  Process
+invocation is perhaps the most significant form this takes, using
+the kernel's @code{fork} and @code{exec} functions.
+
+Other programs also interact with the functionality of the kernel,
+but these user applications typically offer a specific range of
+functionality, and thus are not classed as "shells" proper.
+(What they lose in quiddity, they gain in rigidity).
+
+Emacs is also a user application, but it does make the
+functionality of the kernel accessible through an interpreted
+language---namely, Lisp.  For that reason, there is little
+preventing Emacs from serving the same role as a modern shell.  It
+too can manipulate the kernel in an unpredetermined way to cause
+system changes.  All it's missing is the shell-ish linguistic
+model.
+
+Enter Eshell.  Eshell translates "shell-like" syntax into Lisp
+in order to exercise the kernel in the same manner as typical
+system shells.  There is a fundamental difference here, however,
+although it may seem subtle at first@enddots{}
+
+Shells like csh and Bourne shell were written several decades ago,
+in different times, under more restrictive circumstances.  This
+confined perspective shows itself in the paradigm used by nearly
+all command-line shells since.  They are linear in conception, byte
+stream-based, sequential, and confined to movement within a single
+host machine.
+
+Emacs, on the other hand, is more than just a limited translator
+that can invoke subprocesses and redirect file handles.  It also
+manages character buffers, windowing frames, network connections,
+registers, bookmarks, processes, etc.  In other words, it's a very
+multi-dimensional environment, within which eshell emulates a highly
+linear methodology.
+
+Taking a moment, let's look at how this could affect the future of
+a shell allowed to develop in such a wider field of play:
+
+@itemize @bullet
+@item
+There is no reason why directory movement should be linear, and
+confined to a single file-system.  Emacs, through w3 and ange-ftp,
+has access to the entire Web.  Why not allow a user to cd to
+multiple directories simultaneously, for example?  It might make
+some tasks easier, such as diff'ing files separated by very long
+pathnames.
+
+@item
+Data sources are available from anywhere Emacs can derive
+information from: not just from files or the output of other
+processes.
+
+@item
+Multiple shell invocations all share the same environment---even
+the same process list!  It would be possible to have "process
+views", so that one buffer is watching standard output, another
+standard error, and another the result of standard output grep'd
+through a regular expression@enddots{}
+
+@item
+It is not necessary to "leave" the shell, losing all input and
+output history, environment variables, directory stack, etc.
+Emacs could save the contents of your eshell environment, and
+restore all of it (or at least as much as possible) each time you
+restart.  This could occur automatically, without requiring
+complex initialization scripts.
+
+@item
+Typos occur all of the time; many of them are repeats of common
+errors, such as @samp{dri} for @code{dir}.  Since executing non-existent
+programs is rarely the intention of the user, eshell could prompt
+for the replacement string, and then record that in a database of
+known misspellings. (Note: The typo at the beginning of this
+paragraph wasn't discovered until two months after I wrote the
+text; it was not intentional).
+
+@item
+Emacs' register and bookmarking facilities can be used for
+remembering where you've been, and what you've seen---to varying
+levels of persistence.  They could perhaps even be tied to
+specific "moments" during eshell execution, which would include
+the environment at that time, as well as other variables.
+Although this would require functionality orthogonal to Emacs'
+own bookmarking facilities, the interface used could be made to
+operate very similarly.
+@end itemize
+
+
+This presents a brief idea of what the fuller dimensionality of an
+Emacs shell could offer.  It's not just the language of a shell
+that determines how it's used, but also the Weltanschauung
+underlying its design---and which is felt behind even the smallest
+feature.  I would hope the freedom provided by using Emacs as a
+parent environment will invite rich ideas from others.  It
+certainly feels as though all I've done so far is to tie down the
+horse, so to speak, so that he will run at a man's pace.
+
+
+@node Influences, User Options, Philosophy, The Emacs shell
+@section Influences
+
+The author of Eshell has been a long-time user of the following
+shells, all of which contributed to Eshell's design:
+
+@itemize @bullet
+@item
+rc
+@item
+bash
+@item
+zsh
+@item
+sh
+@item
+4nt
+@item
+csh
+@end itemize
+
+
+@node User Options, Running Eshell, Influences, The Emacs shell
+@section User Options
+
+The following user options modify the behavior of Eshell overall.
+
+@defvr {User Option} eshell-unload-hook
+A hook run when Eshell is unloaded from memory.
+@end defvr
+
+
+@defvr {User Option} eshell-buffer-name
+The basename used for Eshell buffers.
+@end defvr
+
+
+@defvr {User Option} eshell-directory-name
+The directory where Eshell control files should be kept.
+@end defvr
+
+
+@defvr {User Option} eshell-prefer-to-shell
+If non-nil, \[shell-command] will use Eshell instead of shell-mode.
+@end defvr
+
+
+@node Running Eshell, Reporting bugs, User Options, The Emacs shell
+@section Running Eshell
+
+There are only three commands used to invoke Eshell.  The first two
+are intended for interactive use, while the third is meant for
+programmers.  They are:
+
+@deffn {Command} eshell &optional @var{arg}
+Create an interactive Eshell buffer.
+The buffer used for Eshell sessions is determined by the value of
+@code{eshell-buffer-name}.  If there is already an Eshell session active in
+that buffer, Emacs will simply switch to it.  Otherwise, a new session
+will begin.  A new session is always created if the the prefix
+argument ARG is specified.  Returns the buffer selected (or created).
+@end deffn
+
+
+@deffn {Command} eshell-command @var{command} &optional @var{arg}
+Execute the Eshell command string COMMAND.
+With prefix ARG, insert output into the current buffer at point.
+@end deffn
+
+
+@deffn {Command} eshell-command-result @var{command} &optional @var{status-var}
+Execute the given Eshell COMMAND, and return the result.
+The result might be any Lisp object.
+If STATUS-VAR is a symbol, it will be set to the exit status of the
+command.  This is the only way to determine whether the value returned
+corresponding to a successful execution.
+@end deffn
+
+
+@node Reporting bugs,  , Running Eshell, The Emacs shell
+@section Reporting bugs
+
+Since Eshell has not yet been in use by a wide audience, and since
+the number of possible configurations is quite large, it is certain
+that many bugs slipped past the rigors of testing it was put
+through.  If you do encounter a bug, on any system, please report
+it---in addition to any particular oddities in your configuration
+---so that the problem may be corrected for the benefit of others.
+
+@deffn {Command} eshell-report-bug @var{topic}
+Report a bug in Eshell.
+Prompts for the TOPIC.  Leaves you in a mail buffer.
+Please include any configuration details that might be involved.
+@end deffn
+
+@node Argument parsing, Command invocation, The Emacs shell, Top
+@chapter Argument parsing
+
+Argument parsing involves transforming the arguments passed on the
+command line into equivalent Lisp forms that, when evaluated, will
+yield the values intended.
+
+Parsing of arguments can be extended by adding functions to the
+hook @code{eshell-parse-argument-hook}.  For a good example of this, see
+@code{eshell-parse-drive-letter}, defined in eshell-dirs.el.
+
+@defvr {User Option} eshell-parse-argument-hook
+Define how to process Eshell command line arguments.
+When each function on this hook is called, point will be at the
+current position within the argument list.  The function should either
+return nil, meaning that it did no argument parsing, or it should
+return the result of the parse as a sexp.  It is also responsible for
+moving the point forward to reflect the amount of input text that was
+parsed.
+
+If no function handles the current character at point, it will be
+treated as a literal character.
+@end defvr
+
+@node Command invocation, External commands, Argument parsing, Top
+@chapter Command invocation
+
+Executing an Eshell command is as simple as typing it in and
+pressing @kbd{RET}.  There are several different kinds of commands,
+however.
+
+
+@menu
+* Invoking external commands::  
+* Invoking Lisp functions::     
+* Alias functions::             
+* Lisp arguments::              
+* Command hooks::               
+@end menu
+
+@node Invoking external commands, Invoking Lisp functions, Command invocation, Command invocation
+@section Invoking external commands
+
+External commands cause processes to be created, by loading
+external executables into memory.  This is what most normal shells
+do, most of the time.  For more information, see @ref{External commands}.
+
+
+@node Invoking Lisp functions, Alias functions, Invoking external commands, Command invocation
+@section Invoking Lisp functions
+
+A Lisp function can be invoked using Lisp syntax, or command shell
+syntax.  For example, to run @code{dired} to edit the current directory:
+
+@example
+/tmp $ (dired ".")
+@end example
+
+Or:
+
+@example
+/tmp $ dired .
+@end example
+
+The latter form is preferable, but the former is more precise,
+since it involves no translations.  See @ref{Argument parsing}, to
+learn more about how arguments are transformed before passing them
+to commands.
+
+Ordinarily, if @samp{dired} were also available as an external command,
+the external version would be called in preference to any Lisp
+function of the same name.  To change this behavior so that Lisp
+functions always take precedence, set
+@code{eshell-prefer-lisp-functions} to t.
+
+@defvr {User Option} eshell-prefer-lisp-functions
+If non-nil, prefer Lisp functions to external commands.
+@end defvr
+
+
+@node Alias functions, Lisp arguments, Invoking Lisp functions, Command invocation
+@section Alias functions
+
+Whenever a command is specified using a simple name, such as @samp{ls},
+Eshell will first look for a Lisp function of the name @code{eshell/ls}.
+If it exists, it will be called in preference to any other command
+which might have matched the name @samp{ls} (such as command aliases,
+external commands, Lisp functions of that name, etc).
+
+This is the most flexible mechanism for creating new commands,
+since it does not pollute the global namespace, yet allows you to
+use all of Lisp's facilities to define that piece of functionality.
+Most of Eshell's ``builtin'' commands are defined as alias functions.
+
+
+@node Lisp arguments, Command hooks, Alias functions, Command invocation
+@section Lisp arguments
+
+It is possible to invoke a Lisp form as an argument.  This can be
+done either by specifying the form as you might in Lisp, or by
+using the @samp{$} character to introduce a value-interpolation:
+
+@example
+echo (+ 1 2)
+@end example
+
+Or
+
+@example
+echo $(+ 1 2)
+@end example
+
+The two forms are equivalent.  The second is required only if the
+form being interpolated is within a string, or is a subexpression
+of a larger argument:
+
+@example
+echo x$(+ 1 2) "String $(+ 1 2)"
+@end example
+
+To pass a Lisp symbol as a argument, use the alternate quoting
+syntax, since the single quote character is far too overused in
+shell syntax:
+
+@example
+echo #'lisp-symbol
+@end example
+
+Backquote can also be used:
+
+@example
+echo `(list ,lisp-symbol)
+@end example
+
+Lisp arguments are identified using the following regexp:
+
+@defvr {User Option} eshell-lisp-regexp
+A regexp which, if matched at beginning of an argument, means Lisp.
+Such arguments will be passed to @code{read}, and then evaluated.
+@end defvr
+
+
+@node Command hooks,  , Lisp arguments, Command invocation
+@section Command hooks
+
+There are several hooks involved with command execution, which can
+be used either to change or augment Eshell's behavior.
+
+@defvr {User Option} eshell-pre-command-hook
+A hook run before each interactive command is invoked.
+@end defvr
+
+
+@defvr {User Option} eshell-post-command-hook
+A hook run after each interactive command is invoked.
+@end defvr
+
+
+@defvr {User Option} eshell-prepare-command-hook
+A set of functions called to prepare a named command.
+The command name and its argument are in @code{eshell-last-command-name}
+and @code{eshell-last-arguments}.  The functions on this hook can change
+the value of these symbols if necessary.
+
+To prevent a command from executing at all, set
+@code{eshell-last-command-name} to nil.
+@end defvr
+
+
+@defvr {User Option} eshell-named-command-hook
+A set of functions called before a named command is invoked.
+Each function will be passed the command name and arguments that were
+passed to @code{eshell-named-command}.
+
+If any of the functions returns a non-nil value, the named command
+will not be invoked, and that value will be returned from
+@code{eshell-named-command}.
+
+In order to substitute an alternate command form for execution, the
+hook function should throw it using the tag @code{eshell-replace-command}.
+For example:
+
+@example
+(add-hook 'eshell-named-command-hook 'subst-with-cd)
+(defun subst-with-cd (command args)
+  (throw 'eshell-replace-command
+  (eshell-parse-command "cd" args)))
+@end example
+
+Although useless, the above code will cause any non-glob, non-Lisp
+command (i.e., @samp{ls} as opposed to @samp{*ls} or @samp{(ls)}) to be replaced by a
+call to @code{cd} using the arguments that were passed to the function.
+@end defvr
+
+
+@defvr {User Option} eshell-pre-rewrite-command-hook
+A hook run before command rewriting begins.
+The terms of the command to be rewritten is passed as arguments, and
+may be modified in place.  Any return value is ignored.
+@end defvr
+
+
+@defvr {User Option} eshell-rewrite-command-hook
+A set of functions used to rewrite the command argument.
+Once parsing of a command line is completed, the next step is to
+rewrite the initial argument into something runnable.
+
+A module may wish to associate special behavior with certain argument
+syntaxes at the beginning of a command line.  They are welcome to do
+so by adding a function to this hook.  The first function to return a
+substitute command form is the one used.  Each function is passed the
+command's full argument list, which is a list of sexps (typically
+forms or strings).
+@end defvr
+
+
+@defvr {User Option} eshell-post-rewrite-command-hook
+A hook run after command rewriting is finished.
+Each function is passed the symbol containing the rewritten command,
+which may be modified directly.  Any return value is ignored.
+@end defvr
+
+@node External commands, I/O management, Command invocation, Top
+@chapter External commands
+
+External commands are invoked when operating system executables are
+loaded into memory, thus beginning a new process.
+
+To force a command to invoked external, either provide an explicit
+pathname for the command argument, or prefix the command name with
+an asterix character.  Example:
+
+@example
+grep        ; make invoke `grep' Lisp function, or `eshell/grep'
+/bin/grep   ; will definitely invoke /bin/grep
+* grep        ; will also invoke /bin/grep
+@end example
+
+@defvr {User Option} eshell-binary-suffixes
+A list of suffixes used when searching for executable files.
+@end defvr
+
+
+@defvr {User Option} eshell-force-execution
+If non-nil, try to execute binary files regardless of permissions.
+This can be useful on systems like Windows, where the operating system
+doesn't happen to honor the permission bits in certain cases; or in
+cases where you want to associate an interpreter with a particular
+kind of script file, but the language won't let you but a @samp{#!}
+interpreter line in the file, and you don't want to make it executable
+since nothing else but Eshell will be able to understand
+@code{eshell-interpreter-alist}.
+@end defvr
+
+
+@defvr {User Option} eshell-windows-shell-file
+The name of the shell command to use for DOS/Windows batch files.
+This defaults to nil on non-Windows systems, where this variable is
+wholly ignored.
+@end defvr
+
+
+@defvr {User Option} eshell-interpreter-alist
+An alist defining interpreter substitutions.
+Each member is a cons cell of the form:
+
+@example
+(MATCH . INTERPRETER)
+@end example
+
+MATCH should be a regexp, which is matched against the command name,
+or a function.  If either returns a non-nil value, then INTERPRETER
+will be used for that command.
+
+If INTERPRETER is a string, it will be called as the command name,
+with the original command name passed as the first argument, with all
+subsequent arguments following.  If INTERPRETER is a function, it will
+be called with all of those arguments.  Note that interpreter
+functions should throw @code{eshell-replace-command} with the alternate
+command form, or they should return a value compatible with the
+possible return values of @code{eshell-external-command}, which see.
+@end defvr
+
+
+@defvr {User Option} eshell-alternate-command-hook
+A hook run whenever external command lookup fails.
+If a functions wishes to provide an alternate command, they must throw
+it using the tag @code{eshell-replace-command}.  This is done because the
+substituted command need not be external at all, and therefore must be
+passed up to a higher level for re-evaluation.
+
+Or, if the function returns a filename, that filename will be invoked
+with the current command arguments rather than the command specified
+by the user on the command line.
+@end defvr
+
+
+@defvr {User Option} eshell-command-interpreter-max-length
+The maximum length of any command interpreter string, plus args.
+@end defvr
+
+@node I/O management, User interface, External commands, Top
+@chapter I/O management
+
+Eshell's I/O management code provides a scheme for treating many
+different kinds of objects---symbols, files, buffers, etc.---as
+though they were files.
+
+At the moment, only output redirection is supported in Eshell.  To
+use input redirection, the following syntax will work, assuming
+that the command after the pipe is always an external command:
+
+@example
+cat <file> | <command>
+@end example
+
+Otherwise, output redirection and piping are provided in a manner
+consistent with most shells.  Therefore, only unique features are
+mentioned here.
+
+
+@menu
+* Insertion::                   
+* Pseudo-devices::              
+* Multiple output targets::     
+@end menu
+
+@node Insertion, Pseudo-devices, I/O management, I/O management
+@section Insertion
+
+To insert at the location of point in a buffer, use @samp{>>>}:
+
+@example
+echo alpha >>> #<buffer *scratch*>;
+@end example
+
+
+@node Pseudo-devices, Multiple output targets, Insertion, I/O management
+@section Pseudo-devices
+
+A few pseudo-devices are provided, since Emacs cannot write
+directly to a UNIX device file:
+
+@example
+echo alpha > /dev/null   ; the bit bucket
+echo alpha > /dev/kill   ; set the kill ring
+echo alpha >> /dev/clip  ; append to the clipboard
+@end example
+
+
+@node Multiple output targets,  , Pseudo-devices, I/O management
+@section Multiple output targets
+
+Eshell can write to multiple output targets, including pipes.
+Example:
+
+@example
+(+ 1 2) > a > b > c   ; prints number to all three files
+(+ 1 2) > a | wc      ; prints to 'a', and pipes to 'wc'
+@end example
+
+@defvr {User Option} eshell-number-of-handles
+The number of file handles that eshell supports.
+Currently this is standard input, output and error.  But even all of
+these Emacs does not currently support with asynchronous processes
+(which is what eshell uses so that you can continue doing work in
+other buffers) .
+@end defvr
+
+
+@defvr {User Option} eshell-output-handle
+The index of the standard output handle.
+@end defvr
+
+
+@defvr {User Option} eshell-error-handle
+The index of the standard error handle.
+@end defvr
+
+
+@defvr {User Option} eshell-buffer-shorthand
+If non-nil, a symbol name can be used for a buffer in redirection.
+If nil, redirecting to a buffer requires buffer name syntax.  If this
+variable is set, redirection directly to Lisp symbols will be
+impossible.
+
+Example:
+
+@example
+echo hello > '*scratch*  ; works if `eshell-buffer-shorthand' is t
+echo hello > #<buffer *scratch*>  ; always works
+@end example
+@end defvr
+
+
+@defvr {User Option} eshell-print-queue-size
+The size of the print queue, for doing buffered printing.
+This is basically a speed enhancement, to avoid blocking the Lisp code
+from executing while Emacs is redisplaying.
+@end defvr
+
+@node User interface, Extension modules, I/O management, Top
+@chapter User interface
+
+This module contains code for handling input from the user.
+
+Basically, Eshell is used just like shell mode (<M-x shell>).  The
+keystrokes for navigating the buffer, and accessing the command
+history, are identical.  Unlike shell mode, however, Eshell mode's
+governing process is Emacs itself.  With shell mode, an inferior
+shell process is executed that communicates with Emacs via comint
+---a mode for handling sub-process interaction.  Eshell mode, on
+the other hand, is a truly native Emacs shell.  No subprocess are
+invoked except the ones requested by the user at the prompt.
+
+After entering a command, use @kbd{RET} to invoke it ([Command
+invocation]) .  If there is a command on disk, it will be executed
+as in a normal shell.  If there is no command by that name on disk,
+but a Lisp function with that name is defined, the Lisp function
+will be called, using the arguments passed on the command line.
+
+Some of the other features of the command interaction mode are:
+
+@itemize @bullet
+@item
+@kbd{M-RET} can be used to accumulate further commands while a
+command is currently running.  Since all input is passed to the
+subprocess being executed, there is no automatic input queueing
+as there is with other shells.
+
+@item
+@kbd{C-c C-t} can be used to truncate the buffer if it grows too
+large.
+
+@item
+@kbd{C-c C-r} will move point to the beginning of the output of the
+last command.  With a prefix argument, it will narrow to view
+only that output.
+
+@item
+@kbd{C-c C-o} will delete the output from the last command.
+
+@item
+@kbd{C-c C-f} will move forward a complete shell argument.
+
+@item
+@kbd{C-c C-b} will move backward a complete shell argument.
+@end itemize
+
+
+@defvr {User Option} eshell-mode-unload-hook
+A hook that gets run when @code{eshell-mode} is unloaded.
+@end defvr
+
+
+@defvr {User Option} eshell-mode-hook
+A hook that gets run when @code{eshell-mode} is entered.
+@end defvr
+
+
+@defvr {User Option} eshell-first-time-mode-hook
+A hook that gets run the first time @code{eshell-mode} is entered.
+That is to say, the first time during an Emacs session.
+@end defvr
+
+
+@defvr {User Option} eshell-exit-hook
+A hook that is run whenever @code{eshell} is exited.
+This hook is only run if exiting actually kills the buffer.
+@end defvr
+
+
+@defvr {User Option} eshell-kill-on-exit
+If non-nil, kill the Eshell buffer on the @code{exit} command.
+Otherwise, the buffer will simply be buried.
+@end defvr
+
+
+@defvr {User Option} eshell-input-filter-functions
+Functions to call before input is processed.
+The input is contained in the region from @code{eshell-last-input-start} to
+@code{eshell-last-input-end}.
+@end defvr
+
+
+@defvr {User Option} eshell-expand-input-functions
+Functions to call before input is parsed.
+Each function is passed two arguments, which bounds the region of the
+current input text.
+@end defvr
+
+
+@defvr {User Option} eshell-scroll-to-bottom-on-input
+Controls whether input to interpreter causes window to scroll.
+If nil, then do not scroll.  If t or @code{all}, scroll all windows showing
+buffer.  If @code{this}, scroll only the selected window.
+
+See @code{eshell-preinput-scroll-to-bottom}.
+@end defvr
+
+
+@defvr {User Option} eshell-scroll-to-bottom-on-output
+Controls whether interpreter output causes window to scroll.
+If nil, then do not scroll.  If t or @code{all}, scroll all windows showing
+buffer.  If @code{this}, scroll only the selected window.  If @code{others},
+scroll only those that are not the selected window.
+
+See variable @code{eshell-scroll-show-maximum-output} and function
+@code{eshell-postoutput-scroll-to-bottom}.
+@end defvr
+
+
+@defvr {User Option} eshell-scroll-show-maximum-output
+Controls how interpreter output causes window to scroll.
+If non-nil, then show the maximum output when the window is scrolled.
+
+See variable @code{eshell-scroll-to-bottom-on-output} and function
+@code{eshell-postoutput-scroll-to-bottom}.
+@end defvr
+
+
+@defvr {User Option} eshell-buffer-maximum-lines
+The maximum size in lines for eshell buffers.
+Eshell buffers are truncated from the top to be no greater than this
+number, if the function @code{eshell-truncate-buffer} is on
+@code{eshell-output-filter-functions}.
+@end defvr
+
+
+@defvr {User Option} eshell-output-filter-functions
+Functions to call before output is displayed.
+These functions are only called for output that is displayed
+interactively, and not for output which is redirected.
+@end defvr
+
+
+@defvr {User Option} eshell-preoutput-filter-functions
+Functions to call before output is inserted into the buffer.
+These functions get one argument, a string containing the text to be
+inserted.  They return the string as it should be inserted.
+@end defvr
+
+
+@defvr {User Option} eshell-password-prompt-regexp
+Regexp matching prompts for passwords in the inferior process.
+This is used by @code{eshell-watch-for-password-prompt}.
+@end defvr
+
+
+@defvr {User Option} eshell-skip-prompt-function
+A function called from beginning of line to skip the prompt.
+@end defvr
+
+
+@defvr {User Option} eshell-status-in-modeline
+If non-nil, let the user know a command is running in the modeline.
+@end defvr
+
+
+@deffn {Command} eshell-mode 
+Emacs shell interactive mode.
+
+jww (1999-10-04): Useful information should go here!
+
+
+@end deffn
+
+@node Extension modules, Command options processing, User interface, Top
+@chapter Extension modules
+
+The @code{eshell-module} group is for Eshell extension modules, which
+provide optional behavior which the user can enable or disable by
+customizing the variable @code{eshell-modules-list}.
+
+@defvr {User Option} eshell-module-unload-hook
+A hook run when @code{eshell-module} is unloaded.
+@end defvr
+
+
+@defvr {User Option} eshell-modules-list
+A list of optional add-on modules to be loaded by Eshell.
+Changes will only take effect in future Eshell buffers.
+@end defvr
+
+@node Command options processing, Process management, Extension modules, Top
+@chapter Command options processing
+
+The options processing code handles command argument parsing for
+Eshell commands implemented in Lisp.
+
+User Functions:
+@node Process management, Eshell test suite, Command options processing, Top
+@chapter Process management
+
+When Eshell invokes external commands, it always does so
+asynchronous, so that Emacs isn't tied up waiting for the process to
+finish.
+
+User Variables:
+
+@defvr {User Option} eshell-process-wait-seconds
+The number of seconds to delay waiting for a synchronous process.
+@end defvr
+
+
+@defvr {User Option} eshell-process-wait-milliseconds
+The number of milliseconds to delay waiting for a synchronous process.
+@end defvr
+
+
+@defvr {User Option} eshell-done-messages-in-minibuffer
+If non-nil, subjob ``Done'' messages will display in minibuffer.
+@end defvr
+
+
+@defvr {User Option} eshell-delete-exited-processes
+If nil, process entries will stick around until @code{jobs} is run.
+This variable sets the buffer-local value of @code{delete-exited-processes}
+in Eshell buffers.
+
+This variable causes Eshell to mimic the behavior of bash when set to
+nil.  It allows the user to view the exit status of a completed subjob
+(process) at their leisure, because the process entry remains in
+memory until the user examines it using \[list-processes].
+
+Otherwise, if @code{eshell-done-messages-in-minibuffer} is nil, and this
+variable is set to t, the only indication the user will have that a
+subjob is done is that it will no longer appears in the process list
+display.
+
+Note that Eshell will have to be restarted for a change in this
+variable's value to take effect.
+@end defvr
+
+
+@defvr {User Option} eshell-reset-signals
+If a termination signal matches this regexp, the terminal will be reset.
+@end defvr
+
+
+@defvr {User Option} eshell-exec-hook
+Called each time a process is exec'd by @code{eshell-gather-process-output}.
+It is passed one argument, which is the process that was just started.
+It is useful for things that must be done each time a process is
+executed in a eshell mode buffer (e.g., @code{process-kill-without-query}).
+In contrast, @code{eshell-mode-hook} is only executed once when the buffer
+is created.
+@end defvr
+
+
+@defvr {User Option} eshell-kill-hook
+Called when a process run by @code{eshell-gather-process-output} has ended.
+It is passed two arguments: the process that was just ended, and the
+termination status (as a string).  Note that the first argument may be
+nil, in which case the user attempted to send a signal, but there was
+no relevant process.  This can be used for displaying help
+information, for example.
+@end defvr
+
+
+@defvr {User Option} eshell-kill-process-wait-time
+Seconds to wait between sending termination signals to a subprocess.
+@end defvr
+
+
+@defvr {User Option} eshell-kill-process-signals
+Signals used to kill processes when an Eshell buffer exits.
+Eshell calls each of these signals in order when an Eshell buffer is
+killed; if the process is still alive afterwards, Eshell waits a
+number of seconds defined by @code{eshell-kill-process-wait-time}, and
+tries the next signal in the list.
+@end defvr
+
+
+@defvr {User Option} eshell-kill-processes-on-exit
+If non-nil, kill active processes when exiting an Eshell buffer.
+Emacs will only kill processes owned by that Eshell buffer.
+
+If nil, ownership of background and foreground processes reverts to
+Emacs itself, and will die only if the user exits Emacs, calls
+@code{kill-process}, or terminates the processes externally.
+
+If @code{ask}, Emacs prompts the user before killing any processes.
+
+If @code{every}, it prompts once for every process.
+
+If t, it kills all buffer-owned processes without asking.
+
+Processes are first sent SIGHUP, then SIGINT, then SIGQUIT, then
+SIGKILL.  The variable @code{eshell-kill-process-wait-time} specifies how
+long to delay between signals.
+@end defvr
+
+@node Eshell test suite, General utilities, Process management, Top
+@chapter Eshell test suite
+
+This module is meant to ensure that Eshell is working correctly.
+
+The purpose of this module is to verify that Eshell works as
+expected.  To run it on your system, use the command
+@kbd{M-x eshell-test}.
+@node General utilities, Variable handling, Eshell test suite, Top
+@chapter General utilities
+
+This is general utility code, meant for use by Eshell itself.
+
+@defvr {User Option} eshell-group-file
+If non-nil, the name of the group file on your system.
+@end defvr
+
+
+@defvr {User Option} eshell-passwd-file
+If non-nil, the name of the passwd file on your system.
+@end defvr
+
+
+@defvr {User Option} eshell-handle-errors
+If non-nil, Eshell will handle errors itself.
+Setting this to nil is offered as an aid to debugging only.
+@end defvr
+
+
+@defvr {User Option} eshell-private-file-modes
+The file-modes value to use for creating ``private'' files.
+@end defvr
+
+
+@defvr {User Option} eshell-private-directory-modes
+The file-modes value to use for creating ``private'' directories.
+@end defvr
+
+@node Variable handling, Command aliases, General utilities, Top
+@chapter Variable handling
+
+Variable interpolation is introduced whenever the @samp{$} character
+appears unquoted in any argument (except when that argument is
+surrounded by single quotes) .  It may be used to interpolate a
+variable value, a subcommand, or even the result of a Lisp form.
+
+These are the possible variable interpolation syntaxes.  Also keep
+in mind that if an argument looks like a number, it will be
+converted to a number.  This is not significant when invoking
+external commands, but it's important when calling Lisp functions.
+
+@example
+$VARIABLE
+@end example
+
+Interval the value of an environment variable, or a Lisp variable
+
+@example
+$ALSO-VAR
+@end example
+
+``-'' is a legal part of a variable name.
+
+@example
+$<MYVAR>-TOO
+@end example
+
+Only ``MYVAR'' is part of the variable name in this case.
+
+@example
+$#VARIABLE
+@end example
+
+Returns the length of the value of VARIABLE.  This could also be
+done using the @code{length} Lisp function.
+
+@example
+$(lisp)
+@end example
+
+Returns result of lisp evaluation.  Note: Used alone like this, it
+is identical to just saying (lisp); but with the variable expansion
+form, the result may be interpolated a larger string, such as
+@samp{$(lisp)/other}.
+
+@example
+$@{command@}
+@end example
+
+Returns the value of an eshell subcommand.  See the note above
+regarding Lisp evaluations.
+
+@example
+$ANYVAR[10]
+@end example
+
+Return the 10th element of ANYVAR.  If ANYVAR's value is a string,
+it will be split in order to make it a list.  The splitting will
+occur at whitespace.
+
+@example
+$ANYVAR[: 10]
+@end example
+
+As above, except that splitting occurs at the colon now.
+
+@example
+$ANYVAR[: 10 20]
+@end example
+
+As above, but instead of returning just a string, it now returns a
+list of two strings.  If the result is being interpolated into a
+larger string, this list will be flattened into one big string,
+with each element separated by a space.
+
+@example
+$ANYVAR["\\\\" 10]
+@end example
+
+Separate on backslash characters.  Actually, the first argument---
+if it doesn't have the form of a number, or a plain variable name
+---can be any regular expression.  So to split on numbers, use
+@samp{$ANYVAR["[0-9]+" 10 20]}.
+
+@example
+$ANYVAR[hello]
+@end example
+
+Calls @code{assoc} on ANYVAR with @samp{hello}, expecting it to be an alist.
+
+@example
+$#ANYVAR[hello]
+@end example
+
+Returns the length of the cdr of the element of ANYVAR who car is
+equal to "hello".
+
+There are also a few special variables defined by Eshell.  @samp{$$} is
+the value of the last command (t or nil, in the case of an external
+command).  This makes it possible to chain results:
+
+@example
+/tmp $ echo /var/spool/mail/johnw
+/var/spool/mail/johnw
+/tmp $ dirname $$
+/var/spool/mail/
+/tmp $ cd $$
+/var/spool/mail $
+@end example
+
+@samp{$_} refers to the last argument of the last command.  And $?
+contains the exit code of the last command (0 or 1 for Lisp
+functions, based on successful completion).
+
+@defvr {User Option} eshell-prefer-lisp-variables
+If non-nil, prefer Lisp variables to environment variables.
+@end defvr
+
+
+@defvr {User Option} eshell-complete-export-definition
+If non-nil, completing names for @code{export} shows current definition.
+@end defvr
+
+
+@defvr {User Option} eshell-variable-name-regexp
+A regexp identifying what constitutes a variable name reference.
+Note that this only applies for @samp{$NAME}.  If the syntax @samp{$<NAME>} is
+used, then NAME can contain any character, including angle brackets,
+if they are quoted with a backslash.
+@end defvr
+
+
+@defvr {User Option} eshell-variable-aliases-list
+This list provides aliasing for variable references.
+It is very similar in concept to what @code{eshell-user-aliases-list} does
+for commands.  Each member of this defines defines the name of a
+command, and the Lisp value to return for that variable if it is
+accessed via the syntax @samp{$NAME}.
+
+If the value is a function, that function will be called with two
+arguments: the list of the indices that was used in the reference, and
+whether the user is requesting the length of the ultimate element.
+For example, a reference of @samp{$NAME[10][20]} would result in the
+function for alias @code{NAME} being called (assuming it were aliased to a
+function), and the arguments passed to this function would be the list
+@samp{(10 20)}, and nil.
+@end defvr
+
+@node Command aliases, Login banner, Variable handling, Top
+@chapter Command aliases
+
+Command aliases allow for easy definition of alternate commands.
+
+Command aliases greatly simplify the definition of new commands.
+They exist as an alternative to alias functions, which are
+otherwise quite superior, being more flexible and natural to the
+Emacs Lisp environment (if somewhat trickier to define; @ref{Alias
+functions}).
+
+
+@menu
+* Creating aliases::            
+* Auto-correction of bad commands::  
+@end menu
+
+@node Creating aliases, Auto-correction of bad commands, Command aliases, Command aliases
+@section Creating aliases
+
+The user interface is simple: type @samp{alias} followed by the command
+name followed by the definition.  Argument references are made
+using @samp{$1}, @samp{$2}, etc., or @samp{$*}.  For example:
+
+@example
+alias ll 'ls -l $*'
+@end example
+
+This will cause the command @samp{ll NEWS} to be replaced by @samp{ls -l
+NEWS}.  This is then passed back to the command parser for
+reparsing.@footnote{Only the command text specified in the alias definition
+will be reparsed.  Argument references (such as @samp{$*}) are handled
+using variable values, which means that the expansion will not be
+reparsed, but used directly.}
+
+To delete an alias, specify its name without a definition:
+
+@example
+alias ll
+@end example
+
+Aliases are written to disk immediately after being defined or
+deleted.  The filename in which they are kept is defined by the
+following variable:
+
+@defvr {User Option} eshell-aliases-file
+The file in which aliases are kept.
+Whenever an alias is defined by the user, using the @code{alias} command,
+it will be written to this file.  Thus, alias definitions (and
+deletions) are always permanent.  This approach was chosen for the
+sake of simplicity, since that's pretty much the only benefit to be
+gained by using this module.
+@end defvr
+
+
+The format of this file is quite basic.  It specifies the alias
+definitions in almost exactly the same way that the user entered
+them, minus any argument quoting (since interpolation is not done
+when the file is read).  Hence, it is possible to add new aliases
+to the alias file directly, using a text editor rather than the
+@code{alias} command.  Or, this method can be used for editing aliases
+that have already defined.
+
+Here is an example of a few different aliases, and they would
+appear in the aliases file:
+
+@example
+alias clean rm -fr **/.#*~
+alias commit cvs commit -m changes $*
+alias ll ls -l $*
+alias info (info)
+alias reindex glimpseindex -o ~/Mail
+alias compact for i in ~/Mail/**/*~*.bz2(Lk+50) @{ bzip2 -9v $i @}
+@end example
+
+
+@node Auto-correction of bad commands,  , Creating aliases, Command aliases
+@section Auto-correction of bad commands
+
+When a user enters the same unknown command many times during a
+session, it is likely that they are experiencing a spelling
+difficulty associated with a certain command.  To combat this,
+Eshell will offer to automatically define an alias for that
+mispelled command, once a given tolerance threshold has been
+reached.
+
+@defvr {User Option} eshell-bad-command-tolerance
+The number of failed commands to ignore before creating an alias.
+@end defvr
+
+
+Whenever the same bad command name is encountered this many times,
+the user will be prompted in the minibuffer to provide an alias
+name.  An alias definition will then be created which will result
+in an equal call to the correct name.  In this way, Eshell
+gradually learns about the commands that the user mistypes
+frequently, and will automatically correct them!
+
+Note that a @samp{$*} is automatically appended at the end of the alias
+definition, so that entering it is unnecessary when specifying the
+corrected command name.
+@node Login banner, Basic shell commands, Command aliases, Top
+@chapter Login banner
+
+This sample module displays a welcome banner at login.
+It exists so that others wishing to create their own Eshell extension
+modules may have a simple template to begin with.
+
+There is nothing to be done or configured in order to use this
+module, other than to select it by customizing the variable
+@code{eshell-modules-list}.  It will then display a version information
+message whenever Eshell is loaded.
+
+This code is only an example of a how to write a well-formed
+extension module for Eshell.  The better way to display login text
+is to use the @code{eshell-script} module, and to echo the desired
+strings from the user's @code{eshell-login-script} file.
+
+There is one configuration variable, which demonstrates how to
+properly define a customization variable in an extension module.
+In this case, it allows the user to change the string which
+displays at login time.
+
+@defvr {User Option} eshell-banner-message
+The banner message to be displayed when Eshell is loaded.
+This can be any sexp, and should end with at least two newlines.
+@end defvr
+
+@node Basic shell commands, Argument completion, Login banner, Top
+@chapter Basic shell commands
+
+The ``basic'' code provides a set of convenience functions which
+are traditionally considered shell builtins.  Since all of the
+functionality provided by them is accessible through Lisp, they are
+not really builtins at all, but offer a command-oriented way to do the
+same thing.
+
+There are very few basic Eshell commands---so-called builtins.
+They are: echo, umask, and version.
+
+
+@menu
+* @code{echo}::                 
+* @code{umask}::                
+* @code{version}::              
+@end menu
+
+@node @code{echo}, @code{umask}, Basic shell commands, Basic shell commands
+@section @code{echo}
+
+The @code{echo} command repeats its arguments to the screen.  It is
+optional whether this is done in a Lisp-friendly fashion (so that
+the value of echo is useful to a Lisp command using the result of
+echo as an argument), or whether it should try to act like a normal
+shell echo, and always result in a flat string being returned.
+
+@defvr {User Option} eshell-plain-echo-behavior
+If non-nil, @code{echo} tries to behave like an ordinary shell echo.
+This comes at some detriment to Lisp functionality.  However, the Lisp
+equivalent of @code{echo} can always be achieved by using @code{identity}.
+@end defvr
+
+
+An example of the difference is the following:
+
+@example
+echo Hello world
+@end example
+
+If @code{eshell-plain-echo-behavior} is non-nil, this will yield the
+string ``Hello world''.  If Lisp behavior is enabled, however, it
+will yield a list whose two elements are the strings ``Hello'' and
+``world''.  The way to write an equivalent expression for both would
+be:
+
+@example
+echo "Hello world"
+@end example
+
+This always returns a single string.
+
+
+@node @code{umask}, @code{version}, @code{echo}, Basic shell commands
+@section @code{umask}
+
+The umask command changes the default file permissions for newly
+created files.  It uses the same syntax as bash.
+
+
+@node @code{version},  , @code{umask}, Basic shell commands
+@section @code{version}
+
+This command reports the version number for Eshell and all its
+dependent module, including the date when those modules were last
+modified.
+@node Argument completion, Directory navigation, Basic shell commands, Top
+@chapter Argument completion
+
+This module provides a programmable completion function bound to
+the TAB key, which allows for completing command names, file names,
+variable names, arguments, etc.
+
+Eshell, by using the pcomplete package, provides a full
+programmable completion facility that is comparable to shells like
+tcsh or zsh.
+
+Completions are context-sensitive, which means that pressing @kbd{TAB}
+after the command @samp{rmdir} will result in a list of directories,
+while doing so after @samp{rm} will result in a list of all file
+entries.
+
+Many builtin completion rules are provided, for commands such as
+@code{cvs}, or RedHat's @code{rpm} utility.  Adding new completion rules is
+no more difficult than writing a plain Lisp functions, and they can
+be debugged, profiled, and compiled using exactly the same
+facilities (since in fact, they @strong{are} just Lisp functions).  See
+the definition of the function @code{pcomplete/make} for an example of
+how to write a completion function.
+
+The completion facility is very easy to use.  Just press TAB.  If
+there are a large number of possible completions, a buffer will
+appearing showing a list of them.  Completions may be selected from
+that buffer using the mouse.  If no completion is selected, and the
+user starts doing something else, the display buffer will
+automatically disappear.
+
+If the list of possible completions is very small, Eshell will
+``cycle'' through them, selecting a different entry each time @kbd{TAB}
+is pressed.  @kbd{S-TAB} may be used to cycle in the opposite
+direction.
+
+Glob patterns can also be cycled.  For example, entering @samp{echo
+x*<tab>} will cycle through all the filenames beginning with @samp{x}.
+This is done because the glob list is treated as though it were a
+list of possible completions.  Pressing @kbd{C-c SPC} will insert all
+of the matching glob patterns at point.
+
+If a Lisp form is being entered, @kbd{TAB} will complete the Lisp
+symbol name, in exactly the same way that @kbd{M-TAB} does in Emacs
+Lisp mode.
+
+The list of possible completions can be viewed at any point by
+pressing @kbd{M-?}.
+
+Finally, context-related help can be accessed by pressing @kbd{C-c i}.
+This only works well if the completion function has provided Eshell
+with sufficient pointers to locate the relevant help text.
+
+@defvr {User Option} eshell-show-lisp-completions
+If non-nil, include Lisp functions in the command completion list.
+If this variable is nil, Lisp completion can still be done in command
+position by using M-TAB instead of TAB.
+@end defvr
+
+
+@defvr {User Option} eshell-no-completion-during-jobs
+If non-nil, don't allow completion while a process is running.
+@end defvr
+
+
+@defvr {User Option} eshell-command-completions-alist
+An alist that defines simple argument type correlations.
+This is provided for common commands, as a simplistic alternative
+to writing a completion function.
+@end defvr
+
+
+@defvr {User Option} eshell-cmpl-file-ignore
+A regexp of filenames to be disregarded during file completion.
+@end defvr
+
+
+@defvr {User Option} eshell-cmpl-dir-ignore
+A regexp of names to be disregarded during directory completion.
+@end defvr
+
+
+@defvr {User Option} eshell-cmpl-ignore-case
+If non-nil, ignore case when doing filename completion.
+@end defvr
+
+
+@defvr {User Option} eshell-cmpl-autolist
+If non-nil, automatically list possibilities on partial completion.
+This mirrors the optional behavior of tcsh.
+@end defvr
+
+
+@defvr {User Option} eshell-cmpl-suffix-list
+A list of characters which constitute a proper suffix.
+@end defvr
+
+
+@defvr {User Option} eshell-cmpl-recexact
+If non-nil, use shortest completion if characters cannot be added.
+This mirrors the optional behavior of tcsh.
+
+A non-nil value is useful if @code{pcomplete-autolist} is non-nil too.
+@end defvr
+
+
+@defvr {User Option} eshell-cmpl-man-function
+A function to that will be called to display a manual page.
+It will be passed the name of the command to document.
+@end defvr
+
+
+@defvr {User Option} eshell-cmpl-compare-entry-function
+This function is used to order file entries for completion.
+The behavior of most all shells is to sort alphabetically.
+@end defvr
+
+
+@defvr {User Option} eshell-cmpl-expand-before-complete
+If non-nil, expand the current argument before completing it.
+This means that typing something such as @samp{$HOME/bi} followed by
+M-x pcomplete-argument will cause the variable reference to be
+resolved first, and the resultant value that will be completed against
+to be inserted in the buffer.  Note that exactly what gets expanded
+and how is entirely up to the behavior of the
+@code{pcomplete-parse-arguments-function}.
+@end defvr
+
+
+@defvr {User Option} eshell-cmpl-cycle-completions
+If non-nil, hitting the TAB key cycles through the completion list.
+Typical Emacs behavior is to complete as much as possible, then pause
+waiting for further input.  Then if TAB is hit again, show a list of
+possible completions.  When @code{pcomplete-cycle-completions} is non-nil,
+it acts more like zsh or 4nt, showing the first maximal match first,
+followed by any further matches on each subsequent pressing of the TAB
+key.  M-x pcomplete-list is the key to press if the user wants to see
+the list of possible completions.
+@end defvr
+
+
+@defvr {User Option} eshell-cmpl-cycle-cutoff-length
+If the number of completions is greater than this, don't cycle.
+This variable is a compromise between the traditional Emacs style of
+completion, and the ``cycling'' style.  Basically, if there are more
+than this number of completions possible, don't automatically pick the
+first one and then expect the user to press TAB to cycle through them.
+Typically, when there are a large number of completion possibilities,
+the user wants to see them in a list buffer so that they can know what
+options are available.  But if the list is small, it means the user
+has already entered enough input to disambiguate most of the
+possibilities, and therefore they are probably most interested in
+cycling through the candidates.  Set this value to nil if you want
+cycling to always be enabled.
+@end defvr
+
+
+@defvr {User Option} eshell-cmpl-restore-window-delay
+The number of seconds to wait before restoring completion windows.
+Once the completion window has been displayed, if the user then goes
+on to type something else, that completion window will be removed from
+the display (actually, the original window configuration before it was
+displayed will be restored), after this many seconds of idle time.  If
+set to nil, completion windows will be left on second until the user
+removes them manually.  If set to 0, they will disappear immediately
+after the user enters a key other than TAB.
+@end defvr
+
+
+@defvr {User Option} eshell-command-completion-function
+Function called for completing the initial command argument.
+@end defvr
+
+
+@defvr {User Option} eshell-cmpl-command-name-function
+Function called for determining the current command name.
+@end defvr
+
+
+@defvr {User Option} eshell-default-completion-function
+Function called when no completion rule can be found.
+This function is used to generate completions for every argument.
+@end defvr
+
+@node Directory navigation, Extended filename globbing, Argument completion, Top
+@chapter Directory navigation
+
+Directory navigation involves changing directories, examining the
+current directory, maintaining a directory stack, and also keeping
+track of a history of the last directory locations the user was in.
+Emacs does provide standard Lisp definitions of @code{pwd} and @code{cd}, but
+they lack somewhat in feel from the typical shell equivalents.
+
+The only special feature that Eshell offers in the last-dir-ring.
+To view the ring, enter:
+
+@example
+cd =
+@end example
+
+Changing to an index within the ring is done using:
+
+@example
+cd -      ; same as cd -0
+cd -4
+@end example
+
+Or, it is possible to change the first member in the ring which
+matches a regexp:
+
+@example
+cd =bcc   ; change to the last directory visited containing "bcc"
+@end example
+
+This ring is maintained automatically, and is persisted across
+Eshell sessions.  It is a separate mechanism from @code{pushd} and
+@code{popd}, and the two may be used at the same time.
+
+@defvr {User Option} eshell-pwd-convert-function
+The function used to normalize the value of Eshell's @code{pwd}.
+The value returned by @code{pwd} is also used when recording the
+last-visited directory in the last-dir-ring, so it will affect the
+form of the list used by @samp{cd =}.
+@end defvr
+
+
+@defvr {User Option} eshell-ask-to-save-last-dir
+Determine if the last-dir-ring should be automatically saved.
+The last-dir-ring is always preserved when exiting an Eshell buffer.
+However, when Emacs is being shut down, this variable determines
+whether to prompt the user, or just save the ring.
+If set to nil, it means never ask whether to save the last-dir-ring.
+If set to t, always ask if any Eshell buffers are open at exit time.
+If set to @code{always}, the list-dir-ring will always be saved, silently.
+@end defvr
+
+
+@defvr {User Option} eshell-cd-shows-directory
+If non-nil, using @code{cd} will report the directory it changes to.
+@end defvr
+
+
+@defvr {User Option} eshell-cd-on-directory
+If non-nil, do a cd if a directory is in command position.
+@end defvr
+
+
+@defvr {User Option} eshell-directory-change-hook
+A hook to run when the current directory changes.
+@end defvr
+
+
+@defvr {User Option} eshell-list-files-after-cd
+If non-nil, call ``ls'' with any remaining args after doing a cd.
+This is provided for convenience, since the same effect is easily
+achieved by adding a function to @code{eshell-directory-change-hook} that
+calls ``ls'' and references @code{eshell-last-arguments}.
+@end defvr
+
+
+@defvr {User Option} eshell-pushd-tohome
+If non-nil, make pushd with no arg behave as @samp{pushd ~} (like @code{cd}).
+This mirrors the optional behavior of tcsh.
+@end defvr
+
+
+@defvr {User Option} eshell-pushd-dextract
+If non-nil, make ``pushd +n'' pop the nth dir to the stack top.
+This mirrors the optional behavior of tcsh.
+@end defvr
+
+
+@defvr {User Option} eshell-pushd-dunique
+If non-nil, make pushd only add unique directories to the stack.
+This mirrors the optional behavior of tcsh.
+@end defvr
+
+
+@defvr {User Option} eshell-dirtrack-verbose
+If non-nil, show the directory stack following directory change.
+This is effective only if directory tracking is enabled.
+@end defvr
+
+
+@defvr {User Option} eshell-last-dir-ring-file-name
+If non-nil, name of the file to read/write the last-dir-ring.
+See also @code{eshell-read-last-dir-ring} and @code{eshell-write-last-dir-ring}.
+If it is nil, the last-dir-ring will not be written to disk.
+@end defvr
+
+
+@defvr {User Option} eshell-last-dir-ring-size
+If non-nil, the size of the directory history ring.
+This ring is added to every time @code{cd} or @code{pushd} is used.  It simply
+stores the most recent directory locations Eshell has been in.  To
+return to the most recent entry, use @samp{cd -} (equivalent to @samp{cd -0}).
+To return to an older entry, use @samp{cd -N}, where N is an integer less
+than @code{eshell-last-dir-ring-size}.  To return to the last directory
+matching a particular regexp, use @samp{cd =REGEXP}.  To display the
+directory history list, use @samp{cd =}.
+
+This mechanism is very similar to that provided by @code{pushd}, except
+it's far more automatic.  @code{pushd} allows the user to decide which
+directories gets pushed, and its size is unlimited.
+
+@code{eshell-last-dir-ring} is meant for users who don't use @code{pushd}
+explicity very much, but every once in a while would like to return to
+a previously visited directory without having to type in the whole
+thing again.
+@end defvr
+
+
+@defvr {User Option} eshell-last-dir-unique
+If non-nil, @code{eshell-last-dir-ring} contains only unique entries.
+@end defvr
+
+@node Extended filename globbing, History list management, Directory navigation, Top
+@chapter Extended filename globbing
+
+This module provides extended globbing syntax, similar what is used
+by zsh for filename generation.
+
+The globbing code used by Eshell closely follows the syntax used by
+zsh.  Basically, here is a summary of examples:
+
+@example
+echo a*       ; anything starting with 'a'
+echo a#b      ; zero or more 'a's, then 'b'
+echo a##b     ; one or more 'a's, then 'b'
+echo a?       ; a followed by any character
+echo a*~ab    ; 'a', then anything, but not 'ab'
+echo c*~*~    ; all files beginning with 'c', except backups (*~)
+@end example
+
+Recursive globbing is also supported:
+
+@example
+echo **/*.c   ; all '.c' files at or under current directory
+echo ***/*.c  ; same as above, but traverse symbolic links
+@end example
+
+Using argument predication, the recursive globbing syntax is
+sufficient to replace the use of @samp{find @kbd{expr} | xargs @kbd{cmd}} in
+most cases.  For example, to change the readership of all files
+belonging to @samp{johnw} in the @samp{/tmp} directory or lower, use:
+
+@example
+chmod go-r /tmp/**/*(u'johnw')
+@end example
+
+The glob above matches all of the files beneath @samp{/tmp} that are
+owned by the user @samp{johnw}.  See @ref{Value modifiers and predicates},
+for more information about argument predication.
+
+@defvr {User Option} eshell-glob-include-dot-files
+If non-nil, glob patterns will match files beginning with a dot.
+@end defvr
+
+
+@defvr {User Option} eshell-glob-include-dot-dot
+If non-nil, glob patterns that match dots will match . and ..
+@end defvr
+
+
+@defvr {User Option} eshell-glob-case-insensitive
+If non-nil, glob pattern matching will ignore case.
+@end defvr
+
+
+@defvr {User Option} eshell-glob-show-progress
+If non-nil, display progress messages during a recursive glob.
+@end defvr
+
+
+@defvr {User Option} eshell-error-if-no-glob
+If non-nil, it is an error for a glob pattern not to match.
+ This mimcs the behavior of zsh if non-nil, but bash if nil.
+@end defvr
+
+
+@defvr {User Option} eshell-glob-chars-list
+List of additional characters used in extended globbing.
+@end defvr
+
+
+@defvr {User Option} eshell-glob-translate-alist
+An alist for translation of extended globbing characters.
+@end defvr
+
+@node History list management, Implementation of @code{ls} in Lisp, Extended filename globbing, Top
+@chapter History list management
+
+This module provides command history management.
+
+Eshell's history facility imitates the syntax used by bash
+([(bash)History Interaction]).  Thus:
+
+@example
+!ls           ; repeat the last command beginning with 'ls'
+!?ls          ; repeat the last command containing ls
+echo !ls:2    ; echo the second arg of the last 'ls' command
+!ls<tab>      ; complete against all possible words in this
+              ; position, by looking at the history list
+!ls<C-c SPC>  ; expand any matching history input at point
+@end example
+
+Also, most of @code{comint-mode}s keybindings are accepted:
+
+@example
+M-r     ; search backward for a previous command by regexp
+M-s     ; search forward for a previous command by regexp
+M-p     ; access the last command entered, repeatable
+M-n     ; access the first command entered, repeatable
+@end example
+
+@example
+C-c M-r ; using current input, find a matching command thus, with
+        ; 'ls' as the current input, it will go back to the same
+        ; command that '!ls' would have selected
+C-c M-s ; same, but in reverse order
+@end example
+
+Note that some of these keybindings are only available if the
+@code{eshell-rebind} is not in use, in which case M-p does what C-c M-r
+normally would do, and C-p is used instead of M-p.  It may seem
+confusing, but the intention is to make the most useful
+functionality the most easily accessible.  If @code{eshell-rebind} is
+not being used, history navigation will use comint's keybindings;
+if it is, history navigation tries to use similar keybindings to
+bash.  This is all configurable, of course.
+@node Implementation of @code{ls} in Lisp, Value modifiers and predicates, History list management, Top
+@chapter Implementation of @code{ls} in Lisp
+
+This module implements the ``ls'' utility fully in Lisp.  If it is
+passed any unrecognized command switches, it will revert to the
+operating system's version.  This version of ``ls'' uses text
+properties to colorize its output based on the setting of
+@code{eshell-ls-use-colors}.
+
+Most of the command switches recognized by GNU's ls utility are
+supported ([(fileutils)ls invocation]).
+
+@defvr {User Option} eshell-ls-unload-hook
+When unloading @code{eshell-ls}, restore the definition of @code{insert-directory}.
+@end defvr
+
+
+@defvr {User Option} eshell-ls-use-in-dired
+If non-nil, use @code{eshell-ls} to read directories in dired.
+@end defvr
+
+
+@defvr {User Option} eshell-ls-default-blocksize
+The default blocksize to use when display file sizes with -s.
+@end defvr
+
+
+@defvr {User Option} eshell-ls-initial-args
+If non-nil, any interactive usage of ls implies these args first.
+This can be used to make the @samp{-h} flag (display in human readable
+format) the default, for example.
+This variable is ignored if output is being redirected.
+@end defvr
+
+
+@defvr {User Option} eshell-ls-exclude-regexp
+Unless -a is specified, files matching this regexp will not be shown.
+@end defvr
+
+
+@defvr {User Option} eshell-ls-use-colors
+If non-nil, use colors in file listings.
+@end defvr
+
+
+@defvr {User Option} eshell-ls-archive-regexp
+A regular expression that matches names of file archives.
+This typically includes both traditional archives and compressed
+files.
+@end defvr
+
+
+@defvr {User Option} eshell-ls-backup-regexp
+A regular expression that matches names of backup files.
+@end defvr
+
+
+@defvr {User Option} eshell-ls-product-regexp
+A regular expression that matches names of product files.
+Products are files that get generated from a source file, and hence
+ought to be recreatable if they are deleted.
+@end defvr
+
+
+@defvr {User Option} eshell-ls-clutter-regexp
+A regular expression that matches names of junk files.
+These are mainly files that get created for various reasons, but don't
+really need to stick around for very long.
+@end defvr
+
+
+@defvr {User Option} eshell-ls-highlight-alist
+This alist correlates test functions to color.
+The format of the members of this alist is
+
+@example
+(TEST-SEXP . FACE)
+@end example
+
+If TEST-SEXP evals to non-nil, that face will be used to highlight the
+name of the file.  The first match wins.  @code{file} and @code{attrs} are in
+scope during the evaluation of TEST-SEXP.
+@end defvr
+
+@node Value modifiers and predicates, Command prompts, Implementation of @code{ls} in Lisp, Top
+@chapter Value modifiers and predicates
+
+This module allows for predicates to be applied to globbing
+patterns (similar to zsh), in addition to string modifiers which can
+be applied either to globbing results, variable references, or just
+ordinary strings.
+
+Argument predication is used to affect which members of a list are
+selected for use as argument.  This is most useful with globbing,
+but can be used on any list argument, to select certain members.
+
+Argument modifiers are used to manipulate argument values.  For
+example, sorting lists, upcasing words, substituting characters,
+etc.
+
+Here are some examples of how to use argument predication.  Most of
+the predicates and modifiers are modeled after those provided by
+zsh.
+
+@example
+ls -ld *(/)           ; list all directories
+ls -l *(@@u'johnw')    ; list all symlinks owned by 'johnw'
+bzip2 -9v **/*(a+30)  ; compress everything which hasn't been
+                        accessed in 30 days
+echo *.c(:o:R)     ; a reversed, sorted list of C files
+* (^@@:U^u0)         ; all non-symlinks not owned by 'root', upcased
+chmod u-x *(U*)    : remove exec bit on all executables owned by user
+@end example
+
+See the zsh docs for more on the syntax ([(zsh.info)Filename
+Generation]).
+
+@defvr {User Option} eshell-predicate-alist
+A list of predicates than can be applied to a globbing pattern.
+The format of each entry is
+
+@example
+(CHAR . PREDICATE-FUNC-SEXP)
+@end example
+@end defvr
+
+
+@defvr {User Option} eshell-modifier-alist
+A list of modifiers than can be applied to an argument expansion.
+The format of each entry is
+
+@example
+(CHAR ENTRYWISE-P MODIFIER-FUNC-SEXP)
+@end example
+@end defvr
+
+@node Command prompts, Rebind keys at input, Value modifiers and predicates, Top
+@chapter Command prompts
+
+This module provides command prompts, and navigation between them,
+as is common with most shells.
+
+Most of the prompt navigation commands of @code{comint-mode} are
+supported, such as C-c C-n, C-c C-p, etc.
+
+@defvr {User Option} eshell-prompt-function
+A function that returns the Eshell prompt string.
+Make sure to update @code{eshell-prompt-regexp} so that it will match your
+prompt.
+@end defvr
+
+
+@defvr {User Option} eshell-prompt-regexp
+A regexp which fully matches your eshell prompt.
+This setting is important, since it affects how eshell will interpret
+the lines that are passed to it.
+If this variable is changed, all Eshell buffers must be exited and
+re-entered for it to take effect.
+@end defvr
+
+
+@defvr {User Option} eshell-highlight-prompt
+If non-nil, Eshell should highlight the prompt.
+@end defvr
+
+
+@defvr {User Option} eshell-before-prompt-hook
+A list of functions to call before outputting the prompt.
+@end defvr
+
+
+@defvr {User Option} eshell-after-prompt-hook
+A list of functions to call after outputting the prompt.
+Note that if @code{eshell-scroll-show-maximum-output} is non-nil, then
+setting @code{eshell-show-maximum-output} here won't do much.  It depends
+on whether the user wants the resizing to happen while output is
+arriving, or after.
+@end defvr
+
+@node Rebind keys at input, Running script files., Command prompts, Top
+@chapter Rebind keys at input
+
+This module allows for special keybindings that only take effect
+while the point is in a region of input text.  By default, it binds
+C-a to move to the beginning of the input text (rather than just the
+beginning of the line), and C-p and C-n to move through the input
+history, C-u kills the current input text, etc.  It also, if
+@code{eshell-confine-point-to-input} is non-nil, does not allow certain
+commands to cause the point to leave the input area, such as
+@code{backward-word}, @code{previous-line}, etc.  This module intends to mimic
+the behavior of normal shells while the user editing new input text.
+
+User Variables:
+
+@defvr {User Option} eshell-rebind-keys-alist
+Bind some keys differently if point is in input text.
+@end defvr
+
+
+@defvr {User Option} eshell-confine-point-to-input
+If non-nil, do not allow the point to leave the current input.
+This is more difficult to do nicely in Emacs than one might think.
+Basically, the @code{point-left} attribute is added to the input text, and
+a function is placed on that hook to take the point back to
+@code{eshell-last-output-end} every time the user tries to move away.  But
+since there are many cases in which the point @emph{ought} to move away
+(for programmatic reasons), the variable
+@code{eshell-cannot-leave-input-list} defines commands which are affected
+from this rule.  However, this list is by no means as complete as it
+probably should be, so basically all one can hope for is that other
+people will left the point alone in the Eshell buffer.  Sigh.
+@end defvr
+
+
+@defvr {User Option} eshell-error-if-move-away
+If non-nil, consider it an error to try to move outside current input.
+This is default behavior of shells like bash.
+@end defvr
+
+
+@defvr {User Option} eshell-remap-previous-input
+If non-nil, remap input keybindings on previous prompts as well.
+@end defvr
+
+
+@defvr {User Option} eshell-cannot-leave-input-list
+A list of commands that cannot leave the input area.
+@end defvr
+
+@node Running script files., Smart display of output, Rebind keys at input, Top
+@chapter Running script files.
+
+This module allows for the execution of files containing Eshell
+commands, as a script file.
+
+User Variables:
+
+@defvr {User Option} eshell-login-script
+If non-nil, a file to invoke when starting up Eshell interactively.
+This file should be a file containing Eshell commands, where comment
+lines begin with @samp{#}.
+@end defvr
+
+
+@defvr {User Option} eshell-rc-script
+If non-nil, a file to invoke whenever Eshell is started.
+This includes when running @code{eshell-command}.
+@end defvr
+
+@node Smart display of output, Running visual commands, Running script files., Top
+@chapter Smart display of output
+
+This module combines the facility of normal, modern shells with
+some of the edit/review concepts inherent in the design of Plan 9's
+9term.  See the docs for more details.
+
+Most likely you will have to turn this option on and play around with
+it to get a real sense of how it works.
+
+The best way to get a sense of what this code is trying to do is by
+using it.  Basically, the philosophy represents a blend between the
+ease of use of modern day shells, and the review-before-you-proceed
+mentality of Plan 9's 9term.
+
+@itemize @bullet
+@item
+When you invoke a command, it is assumed that you want to read
+the output of that command.
+
+@item
+If the output is not what you wanted, it is assumed that you will
+want to edit, and then resubmit a refined version of that
+command.
+
+@item
+If the output is valid, pressing any self-inserting character key
+will jump to end of the buffer and insert that character, in
+order to begin entry of a new command.
+
+@item
+If you show an intention to edit the previous command---by
+moving around within it---then the next self-inserting
+characters will insert @strong{there}, instead of at the bottom of the
+buffer.
+
+@item
+If you show an intention to review old commands, such as M-p or
+M-r, point will jump to the bottom of the buffer before invoking
+that command.
+
+@item
+If none of the above has happened yet (i.e., your point is just
+sitting on the previous command), you can use SPACE and BACKSPACE
+(or DELETE) to page forward and backward @strong{through the output of
+the last command only}.  It will constrain the movement of the
+point and window so that the maximum amount of output is always
+displayed at all times.
+
+@item
+While output is being generated from a command, the window will
+be constantly reconfigured (until it would otherwise make no
+difference) in order to always show you the most output from the
+command possible.  This happens if you change window sizes,
+scroll, etc.
+
+@item
+Like I said, it's not really comprehensible until you try it! ;)
+@end itemize
+
+
+@defvr {User Option} eshell-smart-unload-hook
+A hook that gets run when @code{eshell-smart} is unloaded.
+@end defvr
+
+
+@defvr {User Option} eshell-review-quick-commands
+If nil, point does not stay on quick commands.
+A quick command is one that produces no output, and exits
+successfully.
+@end defvr
+
+
+@defvr {User Option} eshell-smart-display-navigate-list
+A list of commands which cause Eshell to jump to the end of buffer.
+@end defvr
+
+
+@defvr {User Option} eshell-smart-space-goes-to-end
+If non-nil, space will go to end of buffer when point-max is visible.
+That is, if a command is running and the user presses SPACE at a time
+when the end of the buffer is visible, point will go to the end of the
+buffer and smart-display will be turned off (that is, subsequently
+pressing backspace will not cause the buffer to scroll down).
+
+This feature is provided to make it very easy to watch the output of a
+long-running command, such as make, where it's more desirable to see
+the output go by than to review it afterward.
+
+Setting this variable to nil means that space and backspace will
+always have a consistent behavior, which is to move back and forth
+through displayed output.  But it also means that enabling output
+tracking requires the user to manually move point to the end of the
+buffer using \[end-of-buffer].
+@end defvr
+
+
+@defvr {User Option} eshell-where-to-jump
+This variable indicates where point should jump to after a command.
+The options are @code{begin}, @code{after} or @code{end}.
+@end defvr
+
+@node Running visual commands, UNIX commands in Lisp, Smart display of output, Top
+@chapter Running visual commands
+
+This module causes visual commands (e.g., @samp{vi}) to be executed by
+the @code{term} package, which comes with Emacs.  This package handles most
+of the ANSI control codes, allowing curses-based applications to run
+within an Emacs window.  The variable @code{eshell-visual-commands} defines
+which commands are considered visual in nature.
+
+At the moment, eshell is stream-based in its interactive input and
+output.  This means that full-screen commands, such as ``vi'' or
+``lynx'', will not display correctly.  These are therefore thought of
+as ``visual'' programs.  In order to run these progrem under Emacs,
+Eshell uses the term.el package, and invokes them in a separate
+buffer, giving the illusion that Eshell itself is allowing these
+visual processes to execute.
+
+@defvr {User Option} eshell-visual-commands
+A list of commands that present their output in a visual fashion.
+@end defvr
+
+
+@defvr {User Option} eshell-term-name
+Name to use for the TERM variable when running visual commands.
+See @code{term-term-name} in term.el for more information on how this is
+used.
+@end defvr
+
+
+@defvr {User Option} eshell-escape-control-x
+If non-nil, allow @kbd{C-x} to be handled by Emacs key in visual buffers.
+See the variable @code{eshell-visual-commands}.  If this variable is set to
+nil, @kbd{C-x} will send that control character to the invoked process.
+@end defvr
+
+@node UNIX commands in Lisp, Extra alias functions, Running visual commands, Top
+@chapter UNIX commands in Lisp
+
+This module defines many of the more common UNIX utilities as
+aliases implemented in Lisp.  These include mv, ln, cp, rm, etc.  If
+the user passes arguments which are too complex, or are unrecognized
+by the Lisp variant, the external version will be called (if
+available).  The only reason not to use them would be because they are
+usually much slower.  But in several cases their tight integration
+with Eshell makes them more versatile than their traditional cousins
+(such as being able to use @code{kill} to kill Eshell background processes
+by name).
+
+This file contains implementations of several UNIX command in Emacs
+Lisp, for several reasons:
+
+@example
+1) it makes them available on all platforms where the Lisp
+   functions used are available
+@end example
+
+@example
+2) it makes their functionality accessible and modified by the
+   Lisp programmer.
+@end example
+
+@example
+3) it allows Eshell to refrain from having to invoke external
+   processes for common operations.
+@end example
+
+@defvr {User Option} eshell-rm-removes-directories
+If non-nil, @code{rm} will remove directory entries.
+Otherwise, @code{rmdir} is required.
+@end defvr
+
+@node Extra alias functions,  , UNIX commands in Lisp, Top
+@chapter Extra alias functions
+
+This module defines some extra alias functions which are entirely
+optional.  They can be viewed as samples for how to write Eshell alias
+functions, or as aliases which make some of Emacs' behavior more
+naturally accessible within Emacs.
+
+@defvr {User Option} eshell-xtra-hostnames
+Cache the names of frequently accessed hosts.
+@end defvr
+
+
+@defvr {User Option} eshell-xtra-hosts-file
+The name of the /etc/hosts file.
+@end defvr
+
+
+
+@bye
+</pre>

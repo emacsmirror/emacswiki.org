@@ -1,0 +1,347 @@
+`browse-url' (originally written by DenisHowe) allows you to click on a URL in the buffer and have Emacs start a browser (usually Netscape) to browse that URL (see also  BrowseAproposURL).  `browse-url' normally tries to use an existing browser process instead of creating a new one.  Whether this will work or not depends on the browser used.
+
+In order to select the browser used by `browse-url', customize the option (`M-x customize-option') `browse-url-browser-function' and follow the prompts.  Emacs 20.7 value menu lists 10 supported browsers.
+
+If your browser is not among the browsers supported, choose the entry "Specified by `Browse Url Generic Program'" and customize the option `browse-url-generic-program'.  Using a generic browser offers no remote control -- for every URL you click a new process will be started.
+
+== "Bug" in browse-url-default-windows-browser ==
+
+[new]
+The function <code>browse-url-default-windows-browser</code> strips anchors from URLs to local files. For instance, if typing
+
+    M-x browse-url-default-windows-browser file:///C:/index.html#test
+
+where <code>C:/index.html</code> is an existing file, <code>#test</code> will be removed from the final URL.
+
+*Update:* Further investigation reveals that the problem is related to <code>w32-shell-execute</code>. Executing
+
+    (w32-shell-execute "open" "file:///C:/index.html#test")
+
+opens <code>file:///C:/index.html</code>, without the anchor. <code>w32-shell-execute</code> is defined in C source code ... does this mean the problem is intractable?
+
+[new]
+Your should report your problem to the Emacs user list [[help-gnu-emacs]].
+
+My guess is that the URL needs to quoted before opened, but I haven't checked it anywhere.
+
+{{{
+--- browse-url.el	02 Mar 2009 17:54:39 -0500	1.77
++++ browse-url.el	02 Mar 2009 17:54:46 -0500	
+@@ -831,7 +831,7 @@
+       (if dos-windows-version
+ 	  (shell-command (concat "start " (shell-quote-argument url)))
+ 	(error "Browsing URLs is not supported on this system"))
+-    (w32-shell-execute "open" url)))
++    (w32-shell-execute "open"(shell-quote-argument url))))
+ 
+ (defun browse-url-default-macosx-browser (url &optional new-window)
+   (interactive (browse-url-interactive-arg "URL: "))
+}}}
+
+Note that you should use the command `M-x browse-url', but customize `browse-url-browser-function' as `browse-url-default-windows-browser'. See the [[Manual:Browse-URL]] section of the Emacs manual. -- AaronHawley
+
+[new]
+The problem is not one of quoting, since <code>(shell-quote-argument "file:///C:/index.html#test")</code> returns <code>"\"file:///C:/index.html#test\""</code>. Rather, it seems to be the case that <code>file:///C:/index.html#test</code> is a /nonstandard/ URI; [http://tools.ietf.org/html/rfc1630 RFC 1630] and [http://tools.ietf.org/html/rfc1738 RFC 1738] don't specify a <code>#target</code> (i.e., an anchor) for file URIs. (External URIs work!) Most browsers will happily parse such URIs anyway, but with Window's <code>ShellExecute</code> the nonstandard URI is converted to a standard one before reaching the browser, and so the <code>#target</code> is stripped off.
+
+In other words, however useful <code>#targets</code> in file URIs are, Windows is "right" in removing them. :(
+
+**The solution:** call the browser /directly/ instead, e.g., use <code>browse-url-firefox</code> instead of <code>browse-url-default-windows-browser</code>. Add
+
+    (setq browse-url-browser-function 'browse-url-firefox
+          browse-url-new-window-flag t
+          browse-url-firefox-new-window-is-tab t)
+
+to <code>.emacs</code> and use the function <code>browse-url</code> (thanks, AaronHawley).
+
+== without customize ==
+
+Here is a suggestion without customize. (On my system `gnus-button-url' is undefined, so I guess it is not necessary. -- AlexSchroeder)
+
+ From: GrahamGough
+ Subject: Re: browse-url and replacing netscape nav with opera?
+ Newsgroups: comp.emacs
+ Date: 23 May 2001 14:02:57 +0100
+
+I have the following; not sure if they're all necessary, but they work
+
+    (setq gnus-button-url 'browse-url-generic
+          browse-url-generic-program "opera"
+          browse-url-browser-function gnus-button-url)
+
+For help on getting a persistent browser (that doesn't die when emacs is exited), see PersistentProcesses.
+
+== Browsing the URL of the current buffer ==
+
+The command `browse-url-of-buffer' gets a browser to render the URL associated with the file in the current buffer.  This is great when editing web-related pages.  For example, when you are editing an HTML file, you can have it rendered in your favourite browser by typing `C-c C-v'.  This is especially nice if you are using a browser within Emacs like [[w3]] or [[w3m]]; then you can have your source in the top window of an Emacs frame, and the output in the bottom frame, and simply regenerate whenever you like without ever having to leave the source!
+
+However, if you're doing any non-trivial web stuff (such as CGI
+scripts for example), you'll need to tell Emacs how to map the file name to a URL.  Otherwise, Emacs will map
+/var/www/cgi/files/filename.pl to file://var/www/cgi/files/filename.pl,
+while you might want http://my.website.com/cgi?filename.pl.  You can achieve this mapping by adding an entry to the variable
+`browse-url-filename-alist'.  So you could add an entry like this
+this:
+
+    (add-to-list 'browse-url-filename-alist
+                 '("/var/www/cgi/files/" . "http://my.website.com/cgi?"))
+
+Now `C-c C-v' will do the right thing.
+
+This example assumes that 'browse-url-filename-alist' has already been defined as a list. For the more typical case in which you're defining the variable for the first time in your .emacs, you can do something like this instead (from the variable description):
+
+    (setq browse-url-filename-alist
+          '(("/webmaster@webserver:/home/www/html/" .
+             "http://www.acme.co.uk/")
+            ("^/\(ftp@\|anonymous@\)?\([^:]+\):/*" . "ftp://\2/")
+            ("^/\([^:@]+@\)?\([^:]+\):/*" . "ftp://\1\2/")
+            ("^/+" . "file:/")))
+
+
+== Different Browsers Depending On Environment ==
+
+Here is another solution.  I normally use a shell script to start the
+web browser of my choice.  Without X, it just starts [[w3m]];
+with X, it starts xterm and runs [[w3m]].
+
+* Works using X and starting the shell script
+* Works using X and calling `browse-url' in Emacs
+* Works on the console and starting the shell script
+* Fails on the console when calling `browse-url' in Emacs
+
+In order to fix it, you must run [[w3m]] as a shell command in order to
+capture the output.  Here is how:
+
+In your ~/.emacs:
+
+    (if window-system
+        (setq browse-url-browser-function 'browse-url-generic
+              browse-url-generic-program "web-browser")
+      (setq browse-url-browser-function 'my-browse))
+
+    (defun my-browse (url &rest ignore)
+      "Browse URL using w3m."
+      (interactive "sURL: ")
+      (shell-command (concat "w3m " url))
+      (pop-to-buffer "*Shell Command Output*")
+      (setq truncate-lines t))
+
+In your ~/bin/web-browser (a shell script):
+
+    #! /bin/bash
+
+    if [ -z "$1" ]; then
+        URL="-B"
+    else
+        URL=$1
+    fi
+
+    if [ -z "$DISPLAY" ]; then
+        w3m $URL
+    else
+        xterm -name web-browser -bg "#304020" -fg "navajo white" -e w3m $URL
+    fi
+
+Note that now you can define `web-browser %s &' as an external browser
+in [[w3m]], such that -- in X -- you can spawn more windows.
+
+Note also that if you want to run [[w3m]] interactively when it runs
+within Emacs (in the example given that happens only when calling
+`browse-url' within Emacs on the console), then you need [[emacs-w3m]].
+
+== Mozilla, new tab ==
+
+You can put the call to `mozilla-remote' into the shell script above, of
+course, but you could also define a new function in Emacs.  Here is
+from a posting, slightly edited:
+
+From: JesperHarder
+Subject: Re: browse-url-mozilla in new tab
+Newsgroups: gnu.emacs.gnus
+Date: Sat, 28 Sep 2002 22:12:43 +0200
+
+So here's a function which does it.  Set `browse-url-browser-function'
+to `my-browse-url-mozilla-new-tab'.
+
+    (defun my-browse-url-mozilla-new-tab (url &optional new-window)
+      ;; new-window ignored
+      "Open URL in a new tab in Mozilla."
+      (interactive (browse-url-interactive-arg "URL: "))
+      (unless
+          (string= "" 
+                   (shell-command-to-string 
+                    (concat "mozilla -remote 'openURL(" url ",new-tab)'")))
+        (message "Starting Mozilla...")
+        (start-process (concat "mozilla " url) nil "mozilla" url)
+        (message "Starting Mozilla...done")))
+
+This code works fine with Phoenix too.
+
+== Firefox ==
+
+That's how I use Firefox 2.0 with GNU Emacs 22. It uses only one window and opens new links in new tabs.
+
+    (setq browse-url-browser-function 'browse-url-firefox
+          browse-url-new-window-flag  t
+          browse-url-firefox-new-window-is-tab t)
+
+I think it is a bug in Firefox 0.9: The above code won't work.
+Here's a workaround:
+
+    (defun my-browse-url-firefox-new-tab (url &optional new-window)
+      "Open URL in a new tab in Firefox."
+      (interactive (browse-url-interactive-arg "URL: "))
+      (let ((cmd (shell-command-to-string
+		  (concat "~/src/firefox/mozilla-xremote-client -a any 'openURL("
+			  url ",new-tab)'"))))
+	(unless (string= "" cmd)
+	  (message "Starting Firefox...")
+	  (start-process (concat "firefox " url) nil "~/src/firefox/firefox" url)
+	  (message "Starting Firefox...done"))))
+
+The old command with the-remote flag resulted in ''Error: No running window found'' when I ran it on command line.
+Using `mozilla-xremote-client' instead did the trick.
+
+They have changed the command-line options in firefox 0.9. instead of the old
+
+    firefox -remote 'openURL(http://emacswiki.org/, new-tab)'
+
+you need to do
+
+    firefox -a firefox -remote 'openURL(http://emacswiki.org/, new-tab)'
+
+Presumably you need the `-a firefox' bit for all -remote stuff.
+
+JuhapekkaTolvanen : This works for me:
+
+    (defun my-browse-url-firefox-new-tab (url &optional new-window)
+      "Open URL in a new tab in Mozilla."
+      (interactive (browse-url-interactive-arg "URL: "))
+      (unless
+          (string= ""
+                   (shell-command-to-string
+                    (concat "mozilla-firefox -a firefox -remote 'openURL(" url ",new-tab)'")))
+        (message "Starting Mozilla Firefox...")))
+    (setq browse-url-browser-function 'my-browse-url-firefox-new-tab)
+
+I think, it does not start Firefox, if it is not already on.
+
+In Firefox 1.5, the easiest way is probably to open "Preferences -> Tabs" in Firefox and select the "A tab in the most recent window" option for the "Open links from other applications" preference, and then do the following in .emacs
+
+    (setq browse-url-generic-program (executable-find "firefox")
+          browse-url-browser-function 'browse-url-generic)
+
+== Galeon ==
+
+There's `browse-url-galeon'.
+Note that the "new galeon window" functionality is broken in emacs 21.2.  Is fixed in the current emacs CVS 21.3.50 though. 
+
+JuhapekkaTolvanen : This worked fine, when I still used Galeon:
+
+    (setq browse-url-browser-function 'browse-url-generic
+          browse-url-generic-program "galeon"
+          browse-url-generic-args '("-n"))
+
+== Epiphany ==
+
+    (setq browse-url-browser-function 'browse-url-epiphany)
+    (setq browse-url-epiphany-new-window-is-tab t)          ; for tab instead of new window.
+
+This doesn't seem to be available yet on Debian etch.  However, the instructions above for galeon work with epiphany if you just change the name of the program
+ 
+     (setq browse-url-browser-function 'browse-url-generic
+           browse-url-generic-program "epiphany"
+           browse-url-generic-args '("--new-tab"))
+
+== Konqueror ==
+
+This works fine with KDE 3.4 and emacs 21.4:
+
+    (defun my-browse-url-in-konqueror-new-tab (url &rest ARGS)
+      "Open URL in a new Konqueror tab"
+       (interactive (browse-url-interactive-arg "URL: "))
+      (call-process "sh" nil t nil "-c" (concat "konqnewtab.sh " url)))
+
+    (setq browse-url-browser-function 'my-browse-url-in-konqueror-new-tab)
+
+"konqnewtab.sh" being the following shell script:
+
+    #!/bin/sh
+    # Usage: konqnewtab http://someurl.org
+
+    pid=`dcop | grep konqueror | sed 's/konqueror-//' | tail -n 1`
+    # find the most recently used konqueror window
+    # use head -n 1 to find the konqueror window opened first
+
+    if [ "$pid" != "" ]
+        then  dcop konqueror-"$pid" konqueror-mainwindow#1 newTab "$1"
+    else konqueror "$1" >/dev/null 2>&1 &
+    fi
+
+== Seamonkey ==
+
+The code above for Mozilla works with Seamonkey too...
+
+    (defun my-browse-url-seamonkey-new-tab (url &optional new-window)
+      ;; new-window ignored                                                         
+      "Open URL in a new tab in Seamonkey."
+      (interactive (browse-url-interactive-arg "URL: "))
+      (unless
+          (string= ""
+                   (shell-command-to-string
+                    (concat "seamonkey -remote 'openURL(" url ",new-tab)'")))
+        (message "Starting Seamonkey...")
+        (start-process (concat "seamonkey " url) nil "seamonkey" url)
+        (message "Starting Seamonkey...done")))
+
+    (setq browse-url-browser-function 'my-browse-url-seamonkey-new-tab)
+
+== Opera ==
+From opera -h:
+
+    Usage: opera [options] url
+    -newwindow                     open url in new window
+    -newpage                       open url in new page (tab)
+    -backgroundpage                open url in background page (tab)
+
+The netscapesque -remote openURL options are also supported.
+
+== Links gui mode ==
+Also Known As  links -g
+set links in browse-url-generic-program
+set -g in browse-url-generic-args
+
+== Defining a new URL type? ==
+
+I'd like to define a handler for a new URL type, but the info pages for URL mode is, um, completely missing.  Does anybody have any pointers?
+
+Thanks, JamesFelixBlack
+
+== More control over opening in emacs vs. opening in external ==
+
+I want C-u to always open in emacs (e.g. emacs-w3m) and C-u C-u to always open in external (e.g. Safari).
+
+Is there a way?
+
+[new]
+-> Have a look here: http://www.emacswiki.org/cgi-bin/wiki/JorgenSchaefersEmacsConfig
+I have this in my .emacs:
+{{{
+(require 'w3m-load)
+(require 'w3m)
+ (setq browse-url-browser-function 'browse-url-generic
+       browse-url-generic-program "/usr/bin/conkeror")
+
+(defun choose-browser (url &rest args)
+  (interactive "sURL: ")
+  (if (y-or-n-p "Use external browser? ")
+      (browse-url-generic url)
+    (w3m-browse-url url)))
+
+(setq browse-url-browser-function 'choose-browser)
+(global-set-key "\C-xm" 'browse-url-at-point)
+}}}
+hth Memnon
+[new]
+
+----
+CategoryDotEmacs CategoryHypermedia
+

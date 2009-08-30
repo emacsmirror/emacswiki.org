@@ -1,0 +1,51 @@
+= Icomplete Mode =
+
+Icomplete mode provides an incremental MiniBuffer [[Completion]] ''preview'': As you type in the minibuffer, a list of matching commands is echoed there so you can see how to complete a command. If no known commands match the input so far, "<code>(No match)</code>" is echoed.
+
+Use command `icomplete-mode' to toggle icomplete mode on/off. To turn on the mode in your Emacs init file, do this:
+
+    (icomplete-mode 99)
+
+Note that Icomplete mode does not actually perform any completion of your input; it merely gives you a ''preview'' of the possible completions.
+
+
+[:IcompleteModePlus]
+= Icomplete Mode+: Enhancements to Icomplete Mode =
+
+DrewAdams has written library Lisp:icomplete+.el (Icomplete+), which provides the following enhancements to icomplete mode:
+
+* When several completions are possible, the common completion ''stem'' (prefix) is distinguished better from the different completion ''remainders'' (suffixes) by using different [[Face]]s, which are user-definable (variables).
+* When a matching command is bound to keys, these bindings are highlighted in a different face.
+* The completion alternatives are sorted (using <code>string<</code>). (This is standard in Emacs 21, but not in Emacs 20.)
+* When more than one completion is available, the total number precedes
+the suffixes display, giving you an idea of the size of the completion set: 
+
+        M-x forw    14 (ard-) { char line list...}
+
+* If you also use '''[[Icicles]]''', then, whenever you change direction when cycling completion candidates, Icomplete displays the number of other candidates in the current cycle. For example:
+
+        M-x forward-line   [Matched]  (13 more)
+
+Here are some screen shots showing the overall effect (these are a bit old --
+they do not show, for instance, the number of available completions or number of candidates remaining in an '''Icicles''' cycle):
+
+[[image:DrewsEmacsIcompleteImage]]
+[[image:DrewsEmacsIcompleteImageMatch]]
+
+
+= Apropos (Regexp) Icompletion =
+
+'''[[Icicles]]''' provides a kind of ''apropos'' icompletion. As with standard icompletion, the candidate completions that match your input are displayed incrementally, as you type. The difference is that the matches are ''regular expression'' (regexp) matches. See [[Icicles - Icompletion]].
+
+Icompletion gives you an idea what completions are available. In '''[[Icicles]]''' there are two kinds of completion operation: standard ''prefix'' completion and ''apropos'' (regexp) completion. Standard icompletion (library icomplete.el or Lisp:icomplete+.el (Icomplete+)) shows you the prefix completions for your current input. Apropos icompletion shows you the apropos completions.
+
+'''Example:''' You type `M-x char', and standard prefix icompletion shows you all of the commands that start with `char'. Apropos icompletion shows you all of the commands that contain `char' ''anywhere'' in their name, not just as a prefix, so you also see commands such as `forward-char'.
+
+The apropos icompletion of '''[[Icicles]]''' is displayed, not in the minibuffer, but in buffer `*Completions*'. This means that you can use both kinds of icompletion at the same time: library icomplete.el or Lisp:icomplete+.el shows the prefix completions in the minibuffer, while '''[[Icicles]]''' shows the apropos completions in buffer `*Completions*'.
+
+= Mcomplete Mode == Icomplete Mode + Iswitchb
+
+See also: McompleteMode
+
+-----
+CategoryCompletion CategoryHelp

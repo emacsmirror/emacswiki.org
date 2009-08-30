@@ -1,0 +1,200 @@
+Here are some examples of how to use the XmlParser.
+
+Note: The functions `xml-parse-file', `xml-parse-region' and
+`xml-parse-tag' return a list with the following format:
+
+    xml-list   ::= (node node ...)
+    node       ::= (qname attribute-list . child_node_list)
+    child_node_list ::= child_node child_node ...
+    child_node ::= node | string
+    qname      ::= (:namespace-uri . "name") | "name"
+    attribute_list ::= ((qname . "value") (qname . "value") ...)
+                       | nil
+    string     ::= "..."
+
+
+[new]
+How to parse a string containing the following fragment?
+
+<pre>
+<post time="20050716234509" id="010101">
+  <login>Test</login>
+  <msg>Here is the message</msg>
+  <info>My UA</info>
+</post>
+</pre>
+
+The parser will return a list of nodes.  The post node is the only element in that list.
+The datastructure of the post node itself is very simple: symbol, alist of attributes, followed by child nodes.
+There are dedicated accessors for this information, however.
+We only need to remember when we're getting at attribute values, for example.
+
+Text nodes are simple strings.  xml-get-children returns a list of children.  Tag names are symbols.
+That should be enough to understand the following code:
+
+<pre>
+(let* ((xml "<post time=\"20050716234509\" id=\"010101\">
+               <login>Test</login>
+               <msg>Here is the message</msg>
+               <info>My UA</info>
+             </post>")
+       (root (with-temp-buffer
+	       (insert xml)
+	       (xml-parse-region (point-min) (point-max))))
+       (post (car root))
+       (attrs (xml-node-attributes post))
+       (time (cdr (assq 'time attrs)))
+       (msg (car (xml-get-children post 'msg)))
+       (text (car (xml-node-children msg))))
+  (message "time: %s, message '%s'" time text))
+</pre>
+
+You can also walk the tree converting nodes to sexp's.  The following function transforms an xml document into
+a tree-widget using tree-widget.el.  This could form the basis of a really cool xml editing interface for emacs.
+
+<pre>
+(defun xml->tree-widget (root)
+  (cond ((null root) nil)
+	((listp root) (let ((elem (xml-node-name root))
+			    (children (remove-if (function stringp) (xml-node-children root))))
+			`(tree-widget :node (push-button
+					     :tag ,(format "%s" elem)
+					     :format "%[%t%]\n"
+					     :xml-node ,root
+					     :notify ,(lambda (widget &rest rest)
+                                                        (message (format "%s" (widget-get widget :xml-node)))))
+				      ,@(mapcar (lambda (x) (xml->tree-widget x)) children))))))
+
+</pre>
+
+[new]
+I wanted to prepare a list of national days and used the following web page as the source:
+
+* http://www.dfat.gov.au/protocol/NationalDayList/
+
+The data looked as follows:
+
+<pre>
+        <table id="calendar" border="2" width="100%" cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th align="left"/>
+              <th align="left"/>
+              <th align="left"/>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td valign="top">
+                <table border="0">
+                  <tr class="month">
+                    <td>
+                      <br/>
+                      <p class="monthName">January</p>
+                      <p class="dayOfMonth">1</p>
+                      <dl>
+                        <dt class="country">Cuba</dt>
+                        <dd class="dayTitle">Liberation Day</dd>
+                      </dl>
+                      <dl>
+                        <dt class="country">Haiti</dt>
+                        <dd class="dayTitle">Independence Day</dd>
+                      </dl>
+                      <dl>
+                        <dt class="country">Sudan</dt>
+                        <dd class="dayTitle">National Day</dd>
+                      </dl>
+</pre>
+
+And here is the code.  When the node is a string, then it is not processed.
+When the node has the appropriate attribute, the first of its children (the string) is stored.
+When the node does not have the appropriate attribute, the function is called recursively for all children.
+The results are accumulated whenever the last piece of information is found.
+
+    (defun walk (node)
+      (when (listp node)
+	(cond ((string= "monthName" (xml-get-attribute node 'class))
+	       (setq m (first (xml-node-children node) )))
+	      ((string= "dayOfMonth" (xml-get-attribute node 'class))
+	       (setq d (first (xml-node-children node) )))
+	      ((string= "country" (xml-get-attribute node 'class))
+	       (setq c (first (xml-node-children node) )))
+	      ((string= "dayTitle" (xml-get-attribute node 'class))
+	       (setq f (first (xml-node-children node) ))
+	       (setq result (cons (list m d c f) result)))
+	      (t
+	       (mapc 'walk (xml-node-children node))))))
+
+    (let (d m c f result
+          (days (xml-parse-file "data.xml"))
+      (walk (car days))
+      (nreverse result))
+
+And the result is something like this:
+
+    (("January" "1" "Cuba" "Liberation Day")
+     ("January" "1" "Haiti" "Independence Day")
+     ("January" "1" "Sudan" "National Day")
+     ...
+
+
+== Converting XML to XPath ==
+
+This code helped me replace XHTML code with XPath statements
+in some unit tests.
+
+The problem was that using a string match for HTML such as the following
+was brittle:
+
+: <code><a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+</code>
+
+The attributes can come in any order.  The code translates the above piece of XML into the following XPath statement:
+
+: <code>//a[@class="inter number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
+</code>
+
+And here's the code:
+
+<pre>
+(require 'xml)
+
+(defun wiki-attribute (beg end)
+  (interactive "r")
+  (let ((root (xml-parse-region beg end)))
+    (delete-region beg end)
+    (insert "//" (xpath-element (car root)))))
+
+(defun xpath-element (elem)
+  (if (stringp elem)
+      (concat "text()[string()=\"" elem "\"]")
+    (concat (xpath-element-name elem)
+	    (xpath-element-attributes elem)
+	    (xpath-element-children elem))))
+
+(defun xpath-element-children (elem)
+  (let ((children (xml-node-children elem)))
+    (cond ((null children)
+	   "")
+	  ((and (= (length children) 1)
+		(stringp (car children)))
+	   (concat "[text()=\"" (car children) "\"]"))
+	  (t
+	   (concat "/" (mapconcat 'xpath-element
+				  children
+				  "/following-sibling::"))))))
+
+(defun xpath-element-name (elem)
+  (symbol-name (xml-node-name elem)))
+
+(defun xpath-element-attributes (elem)
+  (mapconcat (lambda (attr)
+	       (concat "[@" (symbol-name (car attr))
+		       "=\"" (cdr attr) "\"]"))
+	     (xml-node-attributes elem)
+	     ""))
+</pre>
+
+----
+CategoryXML
+CategoryCode

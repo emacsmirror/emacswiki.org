@@ -1,0 +1,76 @@
+<pre>
+
+From:  Oliver Scholz <alkibiades at gmx dot de>
+Subject: Don't read its name
+Newsgroups: alt.religion.emacs
+Date: Tue, 09 Sep 2003 20:07:52 +0200
+
+
+;; GNU Emacs 21.3.50
+;; Requires a fixed-width font
+
+(defvar you-know-who-keywords
+  '(("\\<g?vim?\\>"
+     (0 (progn (compose-region
+		(match-beginning 0)
+		(match-end 0)
+		[?E (Br . tr) ?s (Br . Bl) ?m (Br . tr) ?u
+		    (Br . Bl) ?a (Br . tr) ?p
+		    (Br . Bl) ?c (Br . tr) ?e
+		    (Br . Bl) ?s (Br . tr) ?r
+		    (Br . Bl) ?\  (Br . tr) ?i
+		    (Br . Bl) ?i (Br . tr) ?o
+		    (Br . Bl) ?s (Br . tr) ?r])
+	       nil)))))
+
+(font-lock-add-keywords nil you-know-who-keywords)
+
+
+    Oliver
+-- 
+23 Fructidor an 211 de la Révolution
+Liberté, Egalité, Fraternité!
+
+</pre>
+
+
+== Hide Obscene Content in Gnus ==
+
+Very similar and working in gnus articles:
+
+  (defface you-know-who-face
+    '((((type x w32 mac))
+       (:height 0.8 :foreground "Grey50"
+	        :box (:line-width -1 :color "Grey50" :style nil))))
+    "Face used for You-know-who.")
+               
+  (defun you-know-who-hide-obscene-content ()
+    (when (display-graphic-p)
+      (while (re-search-forward "\\<g?vim?\\>" nil t)
+        (compose-region
+         (match-beginning 0)
+         (match-end 0)
+         [?n (tl . Bl) ?H (Br . Bl) ?o (tr . tr) ?e
+             (Br . Bl) ?t (tr . tr) ?\  (Br . Bl) ?\  (tr . tr) ?w
+             (Br . Bl) ?b (tr . tr) ?h (Br . Bl) ?e (tr . tr) ?o
+             (Br . Bl) ?\  (tr . tr) ?\  (Br . Bl) ?n (tr . tr) ?m
+             (Br . Bl) ?a (tr . tr) ?u (Br . Bl) ?m (tr . tr) ?s
+             (Br . Bl) ?e (tr . tr) ?t (Br . Bl) ?d
+             ])
+        (put-text-property (match-beginning 0) (match-end 0)
+                           'face 'you-know-who-face))))
+        
+  (add-hook 'gnus-article-prepare-hook
+            'you-know-who-hide-obscene-content)
+
+Put it in the <tt>~/.gnus</tt> of your children to protect
+them from all the evil and nasty stuff on the net.
+
+http://www.physik.fu-berlin.de/~dhansen/screens/obscene.png
+
+== Discussion ==
+
+Why do we treat <tt>vim</tt> this way?  We don't try to hide ordinary words like <tt>dog</tt> or <tt>trash</tt>.  Historically we have tried to hide <tt>Yahweh</tt>.  Words that are not to be spoken or seen are words of power.  We should stop giving <tt>vim</tt> this power, and treat it like <tt>trash</tt>.
+
+----
+CategoryHumor

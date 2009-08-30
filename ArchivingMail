@@ -1,0 +1,161 @@
+= Archiving Sent Messages in Gnus =
+
+For mail archives, AndreasFuchs uses:
+<pre>
+ ; Tell gnus which method to use for archives (nnfolder)
+ (setq gnus-message-archive-method 
+       '(nnfolder "archive"
+	 	  (nnfolder-directory   "~/Mail/archive")
+		  (nnfolder-active-file "~/Mail/archive/active")
+		  (nnfolder-get-new-mail nil)
+		  (nnfolder-inhibit-expiry t)))
+ ; Tell gnus into which group to store messages
+ (setq gnus-message-archive-group
+       '((if (message-news-p)
+ 	     "misc-news"
+ 	   (concat "mail." (format-time-string "%Y-%m" (current-time))))))
+</pre>
+
+= Archiving Mails from Mail Groups =
+
+To store old mail, you can use a feature of gnus called expire-targets. Turn on Auto-Expire in the mail group (Maybe by using "G c" from the group buffer), and set the Expire Timeout to the interval you want to keep mail in the group. Now comes the magic: set the Expire Target to the group in which you want to store the old mails. 
+
+Note that the archive group can also have an expiry mechanism of its own. Be creative! (-:
+
+= Archiving Mails into Dated Groups =
+With a little coaxing I was able to setup Gnus to expire my mail groups each month to a group named "archive.group.MMMYY".  I set the group properties of my mail groups to total-expire with expiry-wait set to 30 days.  I then (setq nnmail-expiry-target 'dka-get-expiry-target).  That will cause my function to be called every time nnmail try to expire a group.  Here's my function:
+
+ (defun dka-get-expiry-target (group)
+  (if (not (string-match "^mail\\." group))
+      'delete
+    (re-search-forward "Date:.*?\\(\\w+\\) 20\\(0.\\)")
+    (concat "archive." group "." (match-string 1) (match-string 2))))
+
+Notice that I'm matching against my "mail" groups.  All of my nnml groups start with either "mail.", "list.", or "junk.".  All I wanted to archive was my "mail." groups.  The function simply looks for the date of the mail message and grabs the month and last two digits of the year (You can see the millenium bug in it :).  If the mail isn't in my "mail." groups, then it just reverts to the default of deleting the messages.
+
+I have (setq gnus-subscribe-newsgroup-method 'gnus-subscribe-topics).  That allows me to put regular expressions on my topics to automatically file new groups in specific topics.  So, my "Archive" topic has a group parameter of (subscribe . "archive\\.").  Seems to work pretty well.
+
+Note that this is for archiving by month mail sent to me.  The code snippet posted by AndreasFuchs is the same as what I use for archiving mail I send out. -- LathI
+
+Here's a better version of what's above:
+
+ (defun my-gnus-expiry-target (group)
+   "inbox and sent are archived, the rest is deleted"
+   (if (not (string-match "\\(.*inbox$\\|.*sent$\\)" group))
+       'delete
+     (concat my-archived-group-backend ":"
+             group
+             "-archive."
+             (format-time-string "%m-%Y" (my-gnus-get-article-date)))))
+
+ (defun my-gnus-get-article-date ()
+   "Extracts the date from the current article and converts it to Emacs time"
+   (save-excursion
+     ;; (beginning-of-buffer)   ; bad!
+     (goto-char (point-min))
+     (gnus-date-get-time (message-fetch-field "date"))))
+
+ (setq
+  ;; archiving backend
+  my-archived-group-backend "nnml"
+  ;; set expiry target to a function call
+  nnmail-expiry-target 'my-gnus-expiry-target)
+
+I used to use a somewhat bigger code snippet found somewhere (don't remember where), but that works just as good and I understand it :) --PeterSolodov
+
+= Archiving Sent Mail by Month in VM =
+I do the same thing for VM, using this code.  --ScottEvans
+
+ ;; Set sent folder to the current year/month every time a new message
+ ;; is composed.
+ (defun gse-set-mail-archive-file-name()
+   "Set the sent folder to be based on the current year/month."
+   (setq mail-archive-file-name
+         (concat
+          "~/Mail/sent/"
+          (format-time-string "%Y-%m"))))
+
+ (add-hook 'mail-mode-hook 'gse-set-mail-archive-file-name)
+
+
+= Archiving Individual Messages in Gnus =
+
+Sometimes on Usenet you will come across a nugget of wisdom that you
+wish to save.  However, archiving all messages in a newsgroup is
+unpractical due to the high-volume nature, and if you don't save them
+they will eventually expire.
+
+This function takes the currently selected article in the summary buffer
+and copies it to a suitable archive group.  For example, an aricle in
+comp.emacs will go to nnml:archive.comp.emacs and an article in
+alt.english.usage will end up in nnml:archive.alt.english.usage.
+
+ (defun gnus-summary-archive-article ()
+   "Copy current article to a suitable nnml archive group.
+ The copied article will be marked as \"ancient\", the original
+ will retain its current marks."
+   (interactive)
+   (let* ((group-name (if (string-match "^nnml:" gnus-newsgroup-name)
+			  (substring gnus-newsgroup-name 5 nil)
+		        gnus-newsgroup-name))
+	  (archive-name (concat "nnml:archive." group-name))
+	  (orig-mark (gnus-summary-article-mark)))
+     (gnus-summary-mark-article nil gnus-ancient-mark t)
+     (gnus-summary-copy-article 1 archive-name)
+     (gnus-summary-mark-article nil orig-mark t)))
+
+= Archiving Individual Messages in Gnus, part 2 =
+
+I've reworked the above so that it's slightly more general (I think):
+
+<pre>
+(defun my-ensure-group ( group )
+  "Given a fully qualified group (i.e. backend+name:group), 
+ make sure it exists, and create it if it doesn't. Contains code 
+ pilfered from gnus-sum.el"
+  (let* ((to-method (gnus-server-to-method (gnus-group-method group)))
+		 (encoded (mm-encode-coding-string
+                     group (gnus-group-name-charset to-method group))))
+	(or (gnus-active encoded)
+		(gnus-activate-group encoded nil nil to-method)
+		(and (gnus-request-create-group encoded to-method)
+			 (gnus-activate-group encoded nil nil to-method)
+			 (gnus-subscribe-group encoded))
+		(error "Couldn't create/active/subscribe group %s" encoded))))
+
+(setq saved-messages-method "nnmaildir:Saved")
+
+(defun gnus-summary-archive-article ()
+  "Copy current article to a suitable nnmaildir save group.
+ The copied article will be marked as \"ancient\", the original
+ will retain its current marks."
+  (interactive)
+  (let* ((archive-name (if saved-messages-method
+			  (gnus-group-prefixed-name
+				(replace-regexp-in-string 
+				"[ :\+']" "_" gnus-newsgroup-name) 
+				saved-messages-method)
+			nil))
+          (orig-mark (gnus-summary-article-mark)))
+	(if archive-name
+		(progn
+		  (my-ensure-group archive-name)
+		  (gnus-summary-mark-article nil gnus-ancient-mark t)
+		  (gnus-summary-copy-article 1 archive-name)
+		  (gnus-summary-mark-article nil orig-mark t)
+		  (message "copied article to %s" archive-name))
+	  (message "could not find appropriate archive (save method defined?)"))))
+</pre>
+
+A couple of things:
+
+* This works by taking the group of the article you're trying to save, cleaning it up a little (replacing spaces and apostrophes with underscores) and tacking it onto a select method, defined in saved-messages-method.
+
+* I've set aside a specific select method for my saved messages.  If you want to re-use an existing select method, or whatever, you can change around the part which computes the value of archive-name in the let clause.
+
+* If the target group doesn't exist, it's created.  I've pilfered code from gnus-sum.el to accomplish this.
+
+* Seems to work for Usenet articles, RSS feeds, emails.
+
+----
+CategoryGnus

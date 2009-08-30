@@ -1,0 +1,131 @@
+This page describes package Lisp:rational.el, by ViniciusJoseLatorre.
+
+: .:: ''v1.1.1'' ::.
+
+
+== About rational ==
+
+This package was adapted from article:
+
+[new]
+: Error-Free Fractions
+: Peter Wayner
+: BYTE, june 1988, pages 289-298
+[new]
+
+This package provides a way to represent a rational number exactly with the
+use of factorial-base format.
+
+To use Lisp:rational.el, insert in your ##~/.emacs##:
+
+   (require 'rational)
+
+For good performance, be sure to byte-compile Lisp:rational.el, e.g.
+
+   M-x byte-compile-file <give the path to rational.el when prompted>
+
+This will generate rational.elc, which will be loaded instead of
+Lisp:rational.el.
+
+Lisp:rational.el was tested with GNU Emacs 20.4.1.
+
+Please, read the article for mathematical proof and references.
+
+
+== Some Experimental Results ==
+
+As the article cited above explains (page 292):
+
+[new]
+: ......
+: [ Consider the Pascal-like code: ]
+
+: ##x := 1 / n;##
+: ##for i := 1 to 30 do##
+:: ##x := (n + 1) * x - 1;##
+
+: Mathematically, the function ##f(x) = (n + 1)x - 1## is invariant at the point
+##x = 1/n##; that is, ##f(x) = x## for ##x = 1/n##.
+On paper, then, you would expect
+the variable ##x## to remain unchanged after 30 interations of the
+loop. This is the case when I used factorial-base numbers.  But the standard
+floating-point system failed badly and returned 286,331,161.6 instead of
+0.33333 when ##n## was set to 3.
+: From previous discussions, you might expect the floating-point software to
+find the correct answer at least for ##n = 10## because ##1/10 = 0.1## exactly in
+base 10.  This is quite far from the truth: ##x## should be equaled 0.1 but
+turned into 2.36378547759e21 after 30 loops.  All the calculations are, of
+course, done in binary.  The floating-point software finds the correct
+answer only when ##n## is 2.
+: The only negative aspect of the factorial-base system is the slowness of
+the calculations.
+: ......
+
+[new]
+Try to execute the test:
+
+   M-x rational-test RET
+
+It's displayed:
+
+   *** Rational Test ***
+
+   function:  f(x) = (n + 1)x - 1  with  x = 1/n  and  n = 3
+		 (after 30 interactions of the loop)
+
+   Using rational package (factorial-base): 0 . 0 2 0 0 0 0 0 0 0 0 0
+   Using rational package (decimal-base)  : 0.3333333333333333
+   Using floating-point                   : -21.0
+
+   *********************
+
+The floating-point result may differ depending on which machine/environment
+you run, but the result will not be 0.333333.
+
+
+== Using rational ==
+
+Use `rational-customize' to customize rational options by typing:
+
+   M-x rational-customize RET
+
+You can also bind `rational-customize' to some key, like:
+
+   (global-set-key "\C-c\C-c" 'rational-customize)
+
+There are the following predefined rational constants: `rational-zero' and
+`rational-one'.
+
+To create a rational number you can use `make-rational',
+`integer-to-rational' or `rational-convert'.
+
+To check if an object is a rational factorial-base number, use `rationalp'.
+
+To set a rational number to zero or one, use `rational-zero' or
+`rational-one' functions, respectively.
+
+To set a rational number to any integer, use `rational-set'.
+
+To copy a rational, use `rational-copy'.
+
+To compare two rationals, use `rational-lessequal', `rational-less' or
+`rational-equal'.
+
+There are the following rational operations: `rational-add',
+`rational-subtract', `rational-absolute', `rational-negative',
+`rational-multbyint', `rational-divbyint', `rational-multiply' and
+`rational-divide'.
+
+To translate a rational to another representation, use `rational-to-string'
+or `rational-to-float'.
+
+
+== Options ==
+
+The variable `rational-max-size' specifies the maximum array storage for
+factorial-base number.
+
+
+----
+
+CategoryCode

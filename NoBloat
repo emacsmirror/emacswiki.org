@@ -1,0 +1,14 @@
+Emacs lets you dynamically load code written in Emacs-Lisp, so you don't need code in virtual memory if you don't use it.
+
+All the standard Emacs-Lisp code is hacked to live in the text section of the executable, so it pages in from the filesystem (taking no space in your data segment).  That's another memory optimization.
+
+But a default [[Emacs]] installation is very heavy because the list of available functions is not a sensible bare minimum.
+We'll whittle this down to a 1.5 Mb MinEmacs with auto-install-from-net for EmacsLisp and FFI interfacing.
+[[XEmacs]] already has this.
+
+Then again, if you think of Emacs as /one/ application, maybe that's a category error.  Emacs is like Perl with a gazillion libraries, some of 
+them at odds and incompatible, Emacs is like the GNU system, a huge collection of programs that often work together nicely.
+
+They don't call it the "kitchen sink" for any other reason.
+
+''You've got Emacs. You don't need anything else...''

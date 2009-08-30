@@ -1,0 +1,17 @@
+Your [[.emacs]] file is full of `require's, your private elisp directory is packed with interesting libraries; now starting up emacs takes ages. One way to speed it up is to write autoloads for every probable entry point of every library so that the library gets loaded just when the function is called. You could do this by hand, but emacs has a mechanism to deal with this problem, magic autoload comments. Read more about them in [[Manual:autoload cookie]].
+
+Emacs' mechanism for creating autoload forms from autoload magic comments is unfortunately mostly targeted at building emacs. But we can trick it so it also works in our personal lisp directory. First, create a `lisp' subdirectory in there. Then set the variable `my-lisp-dir' to the path to your personal lisp directory (with a trailing slash). Evaluate and execute this function:
+
+    (defun my-update-autoloads ()
+      "Call `update-autoloads-from-directories' on my local lisp directory."
+      (interactive)
+      (require 'autoload)
+      (let ((source-directory my-lisp-dir))
+        (update-autoloads-from-directories my-lisp-dir))
+      (byte-compile-file (concat my-lisp-dir "lisp/loaddefs.el")))
+
+And if all goes well, add 
+
+    (load (concat my-lisp-dir "lisp/loaddefs") t)
+
+to your .emacs. Voila! Of course you have to `M-x my-update-autoloads' every time you add a new library. Oh, and be prepared to find buggy magic autoload comments. 

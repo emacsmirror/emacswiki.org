@@ -1,0 +1,23 @@
+"Chart" stock and commodity charting program (written in [[Perl]] and Gtk includes an Emacs interface.  Get it from
+
+: http://user42.tuxfamily.org/chart/index.html
+
+In Emacs (GnuEmacs 21, or [[XEmacs]] 21, or higher) you can get quotes or view and edit the Favourites list and other lists.  Prices can be obtained in EmacsLisp code too.
+
+<code>M-x chart-watchlist</code> brings up the favourites list in a buffer, it looks something like this (there's colours for up and down, not shown here),
+
+    Symbol       bid/offer     last  change    low    high    volume   when
+    ^GSPC           /       1,227.92   1.42 1,223.50 1,229.53  1.70b   16:59
+    GM         32.00/41.63     36.74  -0.26   36.43   37.04    5.26m   20:32
+    TSCO.L    319.75/320.25   320.00  -0.75  318.50  321.25      59m   01:33
+    NAB.AX     31.33/31.35     31.32   0.26   31.10   31.42    4.60m     Fri
+
+<code>M-x chart-quote</code> shows a quote for just one symbol in the echo area in a similar form,
+
+    CAH.NZ      2.37/2.38       2.38   0.01    2.37    2.39    1.27m     Fri
+    Carter Holt Harve  [New Zealand]
+
+In EmacsLisp code, a call like <code>(chart-latest "GM")</code> gets a current price, or volume etc, of a stock symbol.  This can be used to make a portfolio in the SimpleEmacsSpreadsheet.  An <code>example.ses</code> showing that is included in the sources.  The special command <code>M-x chart-ses-refresh</code> forces a fresh download of quotes in a spreadsheet.
+
+----
+CategoryFinancial

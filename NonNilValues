@@ -1,0 +1,46 @@
+'''Question:''' ''For setting a variable to be non-<code>nil</code>, is there any appreciable difference in setting it to <code>t</code> versus <code>1</code>? Or is it simply a matter of style? Many postings on this wiki seem to favor using <code>1</code>.''
+
+'''Answer:''' ''To find out what any value for a given variable means, consult the doc for that variable.''
+
+`nil' represents the empty list. It can also represent a Boolean (truth) value of FALSE. Non-`nil' can be anything else. This means that non-`nil' can be a non-empty list, a Boolean value of TRUE, or many other values: a symbol other than `nil', a string, a number, and so on. What those various non-`nil' values mean (how they behave), and therefore which you should use in any given context, depends on that context. There is no substitute for checking the doc for the variable.
+
+As a convention, when a purely Boolean value of TRUE is meant, unless there are other considerations, use `t'. Here is what the EmacsLisp manual says about this case:
+
+: In contexts where a truth value is expected, any non-`nil' value is
+considered to be TRUE.  However, `t' is the preferred way to represent
+the truth value TRUE.  When you need to choose a value which represents
+TRUE, and there is no other basis for choosing, use `t'.  The symbol
+`t' always has the value `t'.[http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_6.html]
+
+IOW, if you want a value that represents TRUE and only TRUE, then use `t'; it is what you use when you have "no other basis for choosing".
+
+In many cases, however, a meaning of TRUE is meant along with some other meaning. That is, since any non-`nil' value acts as a value of TRUE in logical tests such as `if', Lisp code often uses a value other than `t' in order to convey additional meaning, besides the truth value.
+
+This is the case for variables, arguments to functions, and return values from functions. The function `member', for example, returns a non-empty list instead of the value `t' for the membership truth value. The different possible list values convey additional information besides membership: position in the list.
+
+As an example of a variable, consider `bookmark-save-flag':
+
+* `nil' means never save bookmarks...
+* `t' means save bookmarks when Emacs is killed.
+* A number represents the frequency with which the bookmark list is saved...
+
+Here, there are two kinds of non-`nil' values (`t' and a number), both of which convey the meaning of "it is ''true'' that bookmarks should be saved". You can think of the possible values as divided into 3 groups or into 2 groups (TRUE and FALSE), with one of those groups (TRUE) divided into 2 subgroups.
+
+We've seen variables and return values of functions. The case of non-`nil' arguments to functions is also worth looking at. Everything said above applies here too. In addition, there are some other considerations.
+
+1. Even when an argument to a function is purely Boolean, it is sometimes clearer, when passing an argument that represents TRUE, to use not `t' but a symbol whose name reminds readers of just what it is that is true. This can help especially when there are multiple arguments, some of which are optional and not often used. If a reader is already somewhat familiar with the function, then the symbol `no-msg' might better indicate than `t' that a value of TRUE inhibits the display of a message. This is a judgement call, of course. If a reader is not familiar with the function, then using a symbol other than `t' to represent TRUE might give the mistaken impression that the argument has more than two effective values.
+
+2. It is common to see a numeric value used as an argument to a function that toggles a mode (or something else). Often, the function accepts an optional argument. Without the argument, which really means that the argument has value `nil', the function toggles
+the mode: turns it alternately on and off. To turn the mode on, you pass a positive numeric argument (e.g. `1'); to turn the mode off, you pass a negative argument (e.g. `-1'). You can think of the argument as having a truth value: FALSE (`nil') means toggle; TRUE (non-`nil') means do not toggle but turn it on or off, regardless of its current state. But the particular non-`nil' value determines whether the new state should be on or off. IOW, the argument is really ternary (`nil', positive, and negative), not binary (TRUE and FALSE).
+
+This last case brings up a related point. When an optional argument is absent, its value is `nil'. This is handy, especially for functions that are interactive (i.e. commands): The default behavior is the `nil' case, but if you supply a prefix argument (via `C-u'), then a non-`nil' value is passed. This is so regardless of the meaning that the function gives to `nil' and to the various possible non-`nil' values. You can always contrive to interpret `nil' and non-`nil' as FALSE and TRUE of something, of course, but it is really the fact that an optional argument has value `nil' that is behind the behavior. The person who defines the command picks the most common case for a `nil' value, and picks one or more less common cases for non-`nil' values.
+
+'''Summary:'''
+
+* To know what a non-`nil' value means, read the appropriate doc.
+* A non-`nil' value often means TRUE -- and it often conveys additional information as well.
+* If a non-`nil' value means ''only'' TRUE, so there is no reason to communicate additional information, then the convention is to use the value `t'. 
+
+----
+CategoryCode
+CategoryHelp

@@ -1,0 +1,49 @@
+EmacsWikiBlog is a little package that works with EmacsWikiMode to help you keep a weblog with entries per day.
+
+This package was created and is mantained by [http://www.sfu.ca/~gswamina/ Ganesh Swami].
+
+== Downloading ==
+
+The package is in [http://www.sfu.ca/~gswamina/ Ganesh Swami], you can download it here [http://www.sfu.ca/~gswamina/code/emacs-wiki-blog.el emacs-wiki-blog.el].
+
+== Installing ==
+
+To install and use EmacsWikiBlog you have to install and configure the EmacsWikiMode first.
+
+Then add these lines to your InitFile:
+
+  (add-to-list 'load-path "~/elisp/emacs-wiki-blog.el)
+
+After this you are ready to blog.
+
+== Configuring ==
+
+To make your blog visible, you have to add these lines in one of your file to publish ie.: WelcomePage
+
+  <lisp>
+    (emacs-wiki-blog-last-n-entries 5) 
+    (emacs-wiki-blog-generate-archives)
+  </lisp>
+
+This will publish your last 5 entries and and will create your files to publish with suffix .html or whatever extension you have configured/defaulted to in EmacsWikiMode
+
+== Creating Entries ==
+
+Well, this is the funny part so pay more attention here:
+
+To create an entry you have to create a file in this format "YYYY.MM.DD". This is the format that EmacsWikiBlog reads; you have to put this file in your emacs-wiki-page-file. This can be done by typing: `M-x emacs-wiki-find-file YYYY.MM.DD`
+
+After finishing your entry you have to save the buffer (`C-x C-s`); then go to the WelcomePage buffer (or wherever you will put your blog) and type: `M-x emacs-wiki-refresh-buffers`; this will write your new entry to the buffer.
+
+*Note* : Maybe the people from the EmacsWikiMode can create a shortcut for emacs-wiki-refresh-buffers, we will not have to write `M-x emacs-wiki-refresh-buffers`
+
+Done!! you have a blog with Emacs using EmacsWikiMode and EmacsWikiBlog.
+
+== Some Features ==
+
+You can generate a calendar with the function: emacs-wiki-blog-generate-calendar, this will create a calendar and create a link in every day when a new entry was created:
+
+  (emacs-wiki-blog-generate-calendar nil 1)
+
+Will create a calendar with the current month and with Monday as the first day of the week
+

@@ -1,0 +1,51 @@
+This is rather cool, it is from an email (2006-04-25) on help-gnu-emacs mailing list.
+The author is Anselm Helbig:
+
+maybe this works for you: put the following lines in all your .emacs
+files, and put the rest on a web server:
+
+  (defun my-eval-url-callback ()
+    (goto-char (point-min))
+    (re-search-forward "^\r?$" nil 1)
+    (delete-region (point-min) (point))
+    (eval-buffer))
+
+  (url-retrieve "http://example.org/emacs.el" 'my-eval-url-callback)
+
+i tested this only superficially. i, too, use version control (darcs)
+for my .emacs. 
+
+regards, 
+
+anselm
+
+[new]
+Here are more ways to do it:
+
+>>>>> >>>>> "SB" == Steinar Bang writes:
+
+>>>>> >>>>> "Leonid Grinberg":
+
+  >> Does anyone out there know (of a way to do it, or of another
+  >> way)?
+
+  SB> What I've done is to version control my home directory with CVS
+  SB> and run a CVS server on my home cable modem machine.  One of the
+  SB> first things I do on a new linux/unix machine, or cygwin
+  SB> installation, is to check out my home directory and I'm up and
+  SB> running.
+
+  SB> I even get version control of the files...:-)
+
+  SB> (Note that even though the entire home directory has to be
+  SB> version controlled, not all files in it has to be.  And they
+  SB> aren't in my case.  I only actually version control all of the
+  SB> stuff that used to take me the better part of a day to set up on
+  SB> a new machine)
+
+
+I do a similar thing, but use unison which is a file synchroniser
+rather than a version control. Works like a charm and has the
+advantage over a remote .emacs that it works when the network is down!
+
+Phil

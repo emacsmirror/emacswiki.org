@@ -1,0 +1,21 @@
+Emacs é um editor [[extensível]] e auto-documentado.  Aqui vão algumas sugestões:
+
+* <code>C-h a</code> -- procura por comandos (funções interativas) cujo nome contém uma certa ExpressãoRegular
+* <code>C-h i d m Emacs</code> -- abre o ManualdeInformações do Emacs; procure no índice usando <code>i</code> ou procure no texto completo usando <code>s</code> (se você precisa fazer isso, isso provavelmente indica uma omissão no índice -- porque não submeter um relatório de erro?)
+* <code>C-h k</code> -- seguido de uma tecla descreve a sua ação no contexto atual
+* <code>M-x apropos-documentation</code> -- procura uma ExpressãoRegular na documentação de funções e variáveis.
+* <code>C-h F</code> -- Abre o FAQ do Emacs, para busca use <code>i</code> e <code>s</code> (veja também a online:  RecursosOnline)
+* <code>M-x apropos</code> -- procura por funções e variavéis cujo nome contém uma certa ExpressãoRegular
+* <code>C-h p</code> -- mostra bibliotecas de comandos organizadas por categorias
+* <code>C-h m</code> -- mostra a ajuda do modo de edição específico
+
+Além disso, se você lembrar o prefixo de algum comando, tecle <code>C-h</code> depois do prefixo para mostrar todos os comandos com esse prefixo. Por exemplo, se você puder lembrar que <code>C-x r</code>
+é o prefixo de vários comandos, então tente: <code>C-x r C-h</code> para ver uma lista completa de todos os comandos que começam com <code>C-x r</code>
+
+Para obter mais ajuda no Emacs, veja NovatoNoEmacs.
+
+=== Entendendo a auto-documentação ===
+
+Alguns truques para entender a auto-documentação:
+
+* Usamos o termo <code>'citado'</code> na documentação para identificar funções relacionadas.  (de EstilodeCódigo)

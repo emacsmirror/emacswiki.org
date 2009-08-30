@@ -1,0 +1,11 @@
+erc-speedbar.el currently provides a hierarchical view of all the servers you are connected to,
+and all the channels you joined. You can expand servers or channels, and expand nicknames to get user information.
+
+== Feedback! ==
+
+I don't use speedbar myself very often, so I'd like to receive feedback
+and/or bug reports from erc-speedbar.el users on how to improve it.
+
+
+----
+[[ERC]], SpeedBar

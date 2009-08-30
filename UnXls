@@ -1,0 +1,52 @@
+This small piece of ugly code allows you to open .xls files and run xlhtml and w3m -dump on them before viewing them.  This will convert the Microsoft Excel crud to HTML, and convert the HTML to plain text.
+
+    (add-to-list 'auto-mode-alist '("\\.xls\\'" . no-xls))
+
+    (defun no-xls (&optional filename)
+      "Run xlhtml and w3m -dump on the entire buffer.
+    Optional FILENAME says what filename to use.
+    This is only necessary for buffers without
+    proper `buffer-file-name'.  FILENAME should
+    be a real filename, not a path."
+      (interactive "fExcel File: ")
+      (when (and filename
+		 (not (buffer-file-name)))
+	(write-file (make-temp-file filename)))
+      (erase-buffer)
+      (shell-command
+       (format "xlhtml -nc -te %s | w3m -dump -T text/html" (buffer-file-name))
+       (current-buffer))
+      (setq buffer-file-name nil)
+      (set-buffer-modified-p nil))
+
+
+For Gnus, you can follow the advice given in MimeTypesWithGnus -- if pdftotext is your only PDF viewer, and it is installed correctly. If you have other PDF viewers, but you don't want to use them while using Gnus, then use the following setup.
+
+First, tell Gnus that you want to inline Excel files, that you will display it using the function `inline-no-excel', and that an attachment that identifies itself as "application/vnd.ms-excel" will always be considered
+an Excel file.  This is all modelled on UnPdf.
+
+    (add-to-list 'mm-inlined-types "application/vnd.ms-excel")
+    (add-to-list 'mm-inline-media-tests
+		 '("application/vnd.ms-excel"
+		   inline-no-excel
+		   identity))
+
+    (defun inline-no-excel (handle)
+      "Insert MS Excel attachment described in HANDLE into article bufffer."
+      (let ((file (mm-make-temp-file "xls.")))
+	(mm-with-unibyte-buffer
+	  (mm-insert-part handle)
+	  (write-file file))
+	(insert (shell-command-to-string
+		 (format "xlhtml -nc -te %s | w3m -dump -T text/html" file))))
+      (goto-char (point-max))
+      (mm-handle-set-undisplayer
+       handle
+       `(lambda ()
+	  (let (buffer-read-only)
+	    (delete-region ,(point-min-marker)
+			   ,(point-max-marker))))))
+
+----
+CategoryExternalUtilities
+CategoryGnus

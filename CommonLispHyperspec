@@ -1,0 +1,35 @@
+The Common Lisp Hyperspec is a HTML rendition of the ANSI CommonLisp specification, with the formatting markup made by KentPitman and Lispworks (http://www.lispworks.com).  It's available at
+
+: http://www.lispworks.com/reference/HyperSpec/
+
+and at many other sites.  On a [[Debian]] system DebianPackage:hyperspec will download a copy for you.
+
+There's also a [[Texinfo]] rendition of the spec made by Bill Schelter in the GNU Common Lisp package; and <code>dpans2texi.el</code>[http://whome.phys.au.dk/~harder/dpans.html] by JesperHarder can make a similar conversion.  Both allow InfoLook symbol searching (and of course full-text searches as usual in InfoMode).
+
+The following Emacs packages help you browse the HTML hyperspec.
+
+== hyperspec.el ==
+
+<code>hyperspec.el</code> is a package by ErikNaggum, dating from about 1997, for finding the hyperspec node for a particular CL symbol (function, variable, etc).  It's available from the author at
+
+: http://www.naggum.no/emacs/hyperspec.el
+
+It's also included in the SlimeMode and ILispMode distributions.  It uses an online hyperspec (Slime uses http://www.lispworks.com/reference/HyperSpec/ and ILispMode uses http://www.harlequin.com/education/books/HyperSpec/), but you can configure `common-lisp-hyperspec-root' to use a local copy.  A table mapping CL symbol to HTML node is builtin, but it can also generate that from the hyperspec index.
+
+See SchemeLookup for a version of this modified to lookup the Scheme R5RS.
+
+== clhs.el ==
+
+<code>clhs.el</code> is a package by SamSteingold, from about 2002, doing much the same sort of lookup as <code>hyperspec.el</code>, but boasting that it works with both the "long filename" and "8.3 filename" versions of the hyperspec (the latter from the Association of Lisp Users).  Get the package at the author's web site
+
+: http://www.podval.org/~sds/software.html
+
+It's also included in the GNU Clisp implementation of CL, and indeed the latest version of the package is kept in the clisp cvs,
+
+: http://cvs.sourceforge.net/viewcvs.py/*checkout*/clisp/clisp/emacs/clhs.el
+
+----
+See also: CommonLispTheLanguage
+----
+CategoryProgrammerUtils
+

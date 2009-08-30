@@ -1,0 +1,29 @@
+My mode-line's always short of space, so rather than have the lengthy 'darcs/edited', 'darcs/up-to-date', and other such strings, I thought it'd be nice to display a little icon saying whether the file is up to date or modified with respect to the repository. Grab some icons to do this, I stole some from the (GPL'd) Tortoise Svn: 
+
+http://tortoisesvn.tigris.org/svn/tortoisesvn/trunk/src/Resources/Icons/Straight/
+[new:DavidBoon:2007-06-16 00:00 UTC]
+Found that login guest, password guest work for that page
+[new]
+
+Make sure you convert them to PNG files first. Any decent image editor can do this (The GIMP, for example). Just open them, delete all but one layer, crop it down, and save as a PNG. On to the code:
+
+<pre>
+;; Display a coloured square indicating the vc status of the current file
+(defun vc-icon ()
+  (let ((icon (if (vc-workfile-unchanged-p (buffer-file-name))
+                  "in-vc.png"
+                "modified-vc.png"))
+        (bg-colour (face-attribute 'mode-line :background)))
+    (propertize
+     "  "
+     'display (find-image `((:type png
+                             :file ,icon
+                             :ascent center
+                             :background ,bg-colour))))))
+</pre>
+
+You'll need to add <code>(:eval (vc-icon))</code> to your mode-line-format somewhere, instead of the existing <code>(vc-mode vc-mode)</code> might be an option.
+
+Bug: this puts the colour of your mode-line background behind the icon (so that it will shine through if the icon has transparency). Unfortunately, it also does this if it's currently computing the icon for the modeline of an 'inactive' window (i.e. one other than the current one). I couldn't figure out a way to get round this, but on my Emacs at least, the difference in colour for that few pixels is unnoticeably small anyway.
+
+Enjoy! -DavidHouse

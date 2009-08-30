@@ -1,0 +1,48 @@
+= Introduction =
+The [http://modeemi.cs.tut.fi/~tuomov/ion/ Ion] Window Manager doesn't have overlapping windows.  All windows
+are maximised inside their frame and stacked behind each other.  Like in Emacs, you
+can split the screen horizontally and vertically, creating smaller
+stacks.
+
+= Keybindings =
+There are nice Emacs like keybinding available for Ion, they are in the ion3 scripts repository. Direct link to the bindings configuration file: 
+  
+  http://modeemi.cs.tut.fi/~tuomov/repos/ion-scripts-3/keybindings/emacs_bindings.lua
+
+= Emacs crashes with Ion =
+Some people have experienced Emacs crashes when using Ion!  The
+current hypothesis is that this is related to the X toolkit used.
+The proposed solution when building from source:
+
+ ./configure --with-x-toolkit=no
+
+Using [http://www.gnu.org/software/stow/stow.html stow] (I really love it):
+
+ mkdir -p /usr/local/stow/emacs
+ make
+ make install prefix=/usr/local/stow/emacs
+ cd /usr/local/stow
+ /usr/local/bin/stow emacs
+
+Done.
+
+
+: Is this still true? (Not the stow-HOWTO, to be sure, but that Emacs crashes when not compiled with --with-x-toolkit=no.) I've been using Emacs with Ion for more than a year now. Well, I have encountered two or three crashes, but none that I could justifiedly blame to the WM. Rather to some rather obscure things I was doing in Elisp at that time.
+
+:: I have experienced many a crash using both the CVS version of emacs as well as the stable version, together with Ion (even wrote one or two bug reports^W^Wrants about it); seems to work now, especially with the xdefaults tweak below. I am happy. -- AndreasFuchs
+
+: Ion users might want to put the following line in their .Xdefaults or .Xresources:
+
+ Emacs.waitForWM: false
+
+: Or else Emacs will wait for a response from the Window Manager on some occassions (for example when changing the default font) which it never gets from Ion.
+--OliverScholz
+
+
+
+----
+
+
+CategoryBuilding
+
+

@@ -1,0 +1,138 @@
+Wanderlust is a mail/news reader for Emacs(en) apparently written from the ground up for IMAP. It seems to have very good support for Japanese, but it works quite-well for this English-speaker.
+
+Homepage: http://www.gohome.org/wl/
+
+Download: ftp://ftp.gohome.org/wl/ (other mirrors: see website)
+
+Snapshots: ftp://ftp.jpl.org/wl/snapshots/
+
+== Features ==
+
+* Implementation in elisp only.
+* Support of IMAP4rev1, NNTP, POP(POP3/APOP) and MH/Maildir format.
+* Integrated access to messages based on Folder Specifications like Mew.
+* Key bindings and mark processing like Mew.
+* Management of threads and unread messages.
+* Folder mode that displays all folder you read.
+* Message cache, Disconnected Operation.
+* MH-like FCC (FCC: %Backup is possible).
+* Support of MIME (by SEMI or tm).
+* Draft editing of mail and news as a same interface.
+* Icon based interface for the list of Folder.
+* Message Drag & Drop (XEmacs 21.0 or above).
+* Non-fetched operations for a big message part of MIME (IMAP4).
+* Server side search (IMAP4), also Japanese support.
+* Virtual Folder.
+* Compression Folder.
+* Automatic expiration of old messages.
+* Auto refile.
+* Message Template.
+* Scoring: automatically mark or hide messages by measuring importance.
+* Shimbun support (see WThreeMShimbun)
+* Spamfilter: can train spamassassin, bogofilter, bsfilter or [http://www.geocities.co.jp/SiliconValley-PaloAlto/7043/spamfilter/spamfilter.el.txt spamfilter.el].
+* Can use address manager (included in WL) and/or [[BBDB]] as addressbook
+
+It is the only emacs mail reader that I have used that seems to handle IMAP properly (i.e., leaves messages on server, cacheing, etc.). Gnus (CategoryGnus) users may disagree. It integrates with BBDB (CategoryBbdb), supports MIME, can handle integrating with mailcrypt (cvs version) (WanderLustEncryption). MIME and PGP/MIME is handled via SEMI (SemiIsEmacsMimeInterface). Key-bindings are, at least to me, a little foreign at first. Documentation in English is sufficient though not overwhelming. 
+
+== Requirements ==
+
+Supported Emacsen:
+
+* Mule-2.3@19.34
+* Mule for Win32
+* Meadow-1.01 or later
+* NTEmacs 20.4 or later
+* Emacs 20.3 or later
+* XEmacs-20.4 or later
+
+Other Requirements:
+
+[[SEMI]] 1.14.3 or later (for SEMI you need [[APEL]] and [[FLIM]]).  Recommended combination of APEL, FLIM and SEMI are following.
+
+* APEL 10.6, FLIM 1.14.5 and SEMI 1.14.5 
+
+== Configuration (Quickstart) ==
+For the new user, the configuration can be quite troublesome. I had to look up most info myself in the wl mailing archives, which was a very tiresome process. I hope the following section helps you getting started with wanderlust.
+
+(This section is only a stub and will be updated gradually.)
+
+The first thing you will want to do is setup your folder. In folder view, go to the next line after Desktop, hit `m a' and add the folder information. You'll need to read the manual (accessible via info or on the website) about the format and options. If a connection has been established, you can enter the password. `M-x elmo-passwd-alist-save' lets you save your passwords to ~/.elmo/passwd, so that you don't have to enter them every time. `m p' on a folder gives the folder a nice pet name (which you can choose, of course). `s' on a folder syncs it (checks for updates on the server). `q' exits the current view and asks if changes should be performed.
+
+Wanderlust doesn't automatically display all your IMAP folders. Add:
+
+    %/
+
+to your .folders to get all your folders. This doesn't obey your
+subscribed list, but at least it shows your folders. Annoyingly it all
+sorts them in reverse order.
+
+(It is not difficult to sort them in alphabetical order: simply type
+"m s" on the parent folder.)
+
+You can use the same notation to browse any of wanderlust's folder types. For instance, the following in your .folders file:  
+
+    @/
+
+will produce a hierarchical tree of all shimbun feeds, which you can then browse.
+
+Similarly,
+
+    -/
+
+will show you the complete hierarchy of newsgroups available on your default nntp server.
+
+If your messages contain attachments, you can type `v' to launch an external program with it. You will be asked which method to use. Hit the tab key to see the available methods. To configure your own programs, you'll have to add/edit the mime types in the ~/.mailcap file. Here is an example (you might have to use "%s" instead of %s if you get into trouble with spaces in filenames):
+
+~/.mailcap:
+{{{
+application/excel;		/usr/bin/oocalc2 %s
+application/x-excel;		/usr/bin/oocalc2 %s
+application/x-msexcel;		/usr/bin/oocalc2 %s
+application/vnd.ms-excel;	/usr/bin/oocalc2 %s
+application/ms-word;		/usr/bin/oowriter2 %s
+application/powerpoint;		/usr/bin/ooimpress2 %s
+application/mspowerpoint;	/usr/bin/ooimpress2 %s
+application/vnd.ms-powerpoint;	/usr/bin/ooimpress2 %s
+application/pdf;		/usr/bin/xpdf %s
+application/x-bz; 		/usr/bin/xarchiver %s
+application/x-bzip2;		/usr/bin/xarchiver %s
+application/x-compress;		/usr/bin/xarchiver %s
+application/x-compressed;	/usr/bin/xarchiver %s
+application/x-gtar;		/usr/bin/xarchiver %s
+application/x-gzip;		/usr/bin/xarchiver %s
+application/x-zip-compressed;	/usr/bin/xarchiver %s
+application/x-tar; 		/usr/bin/xarchiver %s
+application/zip; 		/usr/bin/xarchiver %s
+multipart/x-zip; 		/usr/bin/xarchiver %s
+audio/*;			/usr/bin/play %s
+image/*;			/usr/bin/gimp %s
+image/*;			/usr/bin/gqview %s
+multipart/x-gzip;		/usr/bin/xarchiver %s
+text/html;		 	/usr/bin/firefox %s
+text/plain;			/usr/bin/emacs %s
+video/*;			/usr/bin/gmplayer %s
+}}}
+
+You might also add the following to your ~/.wl file to allow you starting your browser when hitting the specified key (in this case, `f') while `point' is at url:
+
+~/.wl:
+{{{
+;; browse url key
+(add-hook 'mime-view-mode-hook
+	  (lambda ()
+	    (local-set-key "f" 'browse-url)))
+}}}
+
+The file will be read when you start wl.
+
+== Wanderlust related pages ==
+
+* WlScreenshots -- some screenshots (~263k)
+* WlFormatFlowed -- compose and read flow-formated messages
+* WlCanlock -- sign and vertify canlock
+* WlWithBeagle -- searching your email with Beagle and Wanderlust
+* WlHooks -- A list of Wanderlust hooks
+* WlPgg -- using the PGG package with WanderLust
+
+----
+CategoryMail

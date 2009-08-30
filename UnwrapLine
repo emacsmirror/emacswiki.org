@@ -1,0 +1,57 @@
+On InternetRelayChat, you sometimes quote stuff from other sources
+that include linebreaks.  This function removes all linebreaks in the
+current "paragraph" -- that is, until the next empty line or until the
+end of the buffer.  ''(But read on for alternative solutions.)''
+
+    (defun unwrap-line ()
+      "Remove all newlines until we get to two consecutive ones.
+    Or until we reach the end of the buffer.
+    Great for unwrapping quotes before sending them on IRC."
+      (interactive)
+      (let ((start (point))
+            (end (copy-marker (or (search-forward "\n\n" nil t)
+                                  (point-max))))
+            (fill-column (point-max)))
+        (fill-region start end)
+        (goto-char end)
+        (newline)
+        (goto-char start)))
+
+And here is how to replace the useless binding for fill-paragraph in [[ERC]]:
+
+    (define-key erc-mode-map (kbd "M-q") 'unwrap-line)
+
+See also UnfillParagraph.
+
+----
+
+[new]
+There also exist some unwrapping utilities, the functions pstxt-x-unfill-* in pstxt.el, at
+http://www.gnufans.net/~deego/pub/emacspub/lisp-mine/pstxt/.
+Those functions simply setq fill-column to a large number and then fill. 
+This also means that they get to use emacs' fill-region functions among others, which means that will take care of removing double spaces etc. :) -- DeepakGoel
+
+[new]
+Hmm, I couldn't get that working. But now I see you're using it for other sources. Here's something I wrote which will unfill all newlines waiting to be sent. Good for copying other people's lines in other erc buffers, too.
+
+  ;; helper defun to unfill lines that have been cut from elsewhere
+  (defun erc-unfill ()
+    "Unfill the region after the prompt. Intended to be called just before you
+    send a line"
+    (interactive)
+    (save-excursion
+      (end-of-buffer)
+      (goto-char (previous-single-property-change (point) 'erc-prompt))
+      (while (search-forward "\n" nil t)
+        (delete-backward-char 1)
+        (just-one-space))))
+
+Good idea to bind it to M-q. -- DamienElmes
+
+[new:ChongYidong:2005-02-21 17:07 UTC]
+For interactive use, it is convenient to call M-^ (`delete-indentation'), which
+merges the current line with the one preceding it. -- ChongYidong
+
+----
+CategoryChatClient
+CategoryFilling

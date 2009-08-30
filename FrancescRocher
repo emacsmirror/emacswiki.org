@@ -1,0 +1,23 @@
+Hi,
+
+I'm Francesc Rocher. I used Emacs in the late 80's at the university, under VMS. During some time I used Jed and other editors and IDE's. I lacked the power of Emacs, so I switched to XEmacs and finally again to Emacs.
+
+Things I use it for:
+
+* Write C/C++ programs, using [[ECB]]
+
+* Compile/debug programs and scritps
+
+* Perform control version tasks using CVS, subversion or mercurial: checkout, commit, tag, annotate, diff, merge, log, etc
+
+* Maintain some <tt>Makefile</tt> files
+
+* Read <tt>info</tt> and <tt>man</tt> pages
+
+* Surf the net using WThreeM
+
+[new]
+Welcome to the wiki! :) -- AlexSchroeder
+
+----
+CategoryHomepage

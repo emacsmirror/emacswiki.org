@@ -1,0 +1,48 @@
+==GNU GLOBAL==
+The GNU GLOBAL package is highly recommended for using a single tags file, covering all files in all subdirectories, that lives at the base of a source-code tree.
+
+* http://www.gnu.org/software/global/
+
+The package comes with gtags.el that integrates it seamlessly into Emacs.
+
+===Cycling through GNU Global result===
+The gtags.el package doesn't cycle through gtags result.  Here's some code for doing it.
+CyclingGTagsResult
+
+
+===Alternative interface to GNU GLOBAL===
+
+If, for whatever reasons, you do not feel comfortable with the
+interface gtags.el provides, you might try xgtags.el instead. Since
+its look and feel is more like that of xcscope.el, it differs from
+gtags.el in several ways:
+
+* searching tags is completely stack based which manifests in the
+  fact, that there is only one tag selection buffer; if you pop the
+  stack, the previous search results are restored
+* support for incremental database update and queries on more than one
+  database
+* query-replace based on the current search result
+* the selection buffer is colored :-)
+* the package can be downloaded from http://home.tiscali.de/mgidde/source/xgtags.el (link is dead; does anyone know another source than <http://www.mail-archive.com/help-global@gnu.org/msg00022/xgtags.el> or the newer one from <http://web.archive.org/web/20080117124425/http://home.tiscali.de/mgidde/source/xgtags.el>?)
+
+[new]
+while using xgtags.el, if you have spaces in the path for sources, you may want to consider to change xgtags--tag-regexp like
+
+<code>
+(defconst xgtags--file-regexp "\\([^ \t]+\\)[ \t]+\\([0-9]+\\)[ \t]+\\(.*\\.\\(cpp\\|hpp\\|h\\|c\\|idl\\)\\)[ \t]+\\(.+\\)$" "...")
+</code>
+
+[new:rubikitch:2009-02-28 08:19 UTC]
+Lisp:anything-gtags.el is [[Anything]] interface. See also AnythingApplications. -- [[rubikitch]]
+
+
+CEDET (CollectionOfEmacsDevelopmentEnvironmentTools) supports the use of GNU Global as a back-end to some tasks.  They include:
+* EDE Locate - Helps EDE find files in your project, like header files.
+* SemanticBovinator Symref backend, for finding symbol usages.
+* Semantic Database backend, for finding tags by name.
+
+--
+CategoryProgrammerUtils
+CategoryExternalUtilities
+CategoryCompletion

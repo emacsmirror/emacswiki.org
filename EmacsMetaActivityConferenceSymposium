@@ -1,0 +1,42 @@
+I want us to create a self-organizing recurring event called the Emacs
+Meta Activity Conference Symposium. Goals could be things like:
+
+* to share our knowledge of Emacs and its various uses in an informal, semi-structured setting
+* to help people learn Emacs and get involved in the community
+* to encourage discussion of EmacsLisp programming 
+* to talk about the future of Emacs
+* to build a high-quality library of articles, screencasts, and other educational materials (i.e. archived conference proceedings)
+* to have fun!
+
+There would be two different strands:
+
+==online version==
+* presentations, articles, and screencasts
+* dedicated IRC channel #emacs-conference for discussion
+* dedicated torrent for multimedia distribution
+* would happen over a couple of days (probably a weekend)
+* people in various time zones could catch up at their leisure
+
+==live-action version==
+* presentations and demos
+* coffee (or just have the event near a coffee shop)
+* performance art
+* live streaming audio with audience feedback via IRC? (i have some
+  hardware to support this)
+* rms keynote?    
+
+==informal irc poll==
+
+There were five votes in favor of the conference, and none opposed.
+
+==discussion==
+
+[new]
+Sounds like (replace-regexp-in-string "Bar" "Emacs" "BarCamp") to me. Great idea! If it's held in Boston or on the US's West Coast, I'm in. -- EdwardOConnor
+
+[new]
+[http://jyte.com/cl/we-should-hold-an-emacs-unconference-2 Vote for this on Jyte!]
+[new]
+I hate to be a sourpuss, but I don't really want to sign up for that website. 
+I think it would be better for people to post their comments on this wiki page. --DavidOtoole
+[new]

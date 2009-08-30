@@ -1,0 +1,15 @@
+[new]
+Due to the translation efforts of JoonhwanLee
+[http://www.oddmuse.org/cgi-bin/oddmuse/Korean]
+the Korean interface to this site should be much improved. :)
+
+To automatically identify Korean pages, I need a list of
+10 or 20 very common Korean characters. The rule of thumb
+used on this site that I can specify a regular expression
+per language. If it matches at least three times, the page
+is marked as containing text in that language. (A page can
+have multiple languages on it.)
+-- AlexSchroeder
+
+[new]
+That's great.  Now we can have greater confidence in inviting Korean emacs users.[[[2005-06-30]]]

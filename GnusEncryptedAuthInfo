@@ -1,0 +1,38 @@
+This page addresses following wishes:
+* [[Gnus]] is asking you your main IMAP/SMTP... password all the time and you are getting tired of it
+* You would like Gnus to ask you a shorter one instead
+* You dislike writing passwords in plain text in the <code>.authinfo</code> file (see [[GnusAuthinfo]]). For instance because you don't want them to pop up in apparently safe commands like „grep -r machine .“ or „git diff“ that you are showing to other people.
+
+A simple solution is to *encrypt your authinfo file*. To do this, try:
+# Configure and play a little with [[EasyPG]] (Emacs 23 comes with it):
+## Basically, do: <code>(require 'epa-file)  (epa-file-enable)</code>
+## then open a file name <code>what_you_want.gpg</code>
+## write something and save it. It should ask you the recipients of the mail (you may select none) and then the passphrase you will want to use
+## Check with other programs that the file is unreadable
+# Do the same with the authinfo file: write for instance an <code>~/.authinfo.gpg</code> with the usual contents. This time you can write your password in plain because it will be encrypted on saving. An example of your file's contents (for [[GnusGmail]]) would be:
+## <code>machine imap.gmail.com login this_is_me@gmail.com password my_password port 993</code>
+## <code>machine smtp.gmail.com login this_is_me@gmail.com password my_password port 587</code>
+## The password you select on save will be the one that Gnus will ask you each time
+# Configure Gnus to use this new file. You should review these variables:
+## <code>gnus-secondary-select-methods</code>: at each select method you can specify a (nnimap-authinfo-file "file_path"). This will affect for instance IMAP
+## <code>smtpmail-auth-credentials</code>: this is just for SMTP
+# Use Gnus (ex: send an e-mail). Since it will try to access your file, Emacs will ask you for the password you wrote before, but not anymore for the server's password.
+
+Now you passwords are safer and you can reduce your paranoia level again... until someone discovers your GPG password! :-)
+
+-- 9-Nov-2008 [[DanielClemente]]
+
+== How to make EasyPG (epa) ask the encryption password just once ==
+For a single file with N accounts, Gnus will show you N password prompts instead of just one.
+You can change that if you turn on the passphrase caché:
+<code>(setq epa-file-cache-passphrase-for-symmetric-encryption t)</code>
+----
+[new]
+It seems that in addition, you need to stop passing <code>--use-agent</code> to your <code>gpg</code> program. This is the same as what you need to get a text prompt instead of a graphical prompt in [[EasyPG]]; read at that page to know how to disable the agent. --[[DanielClemente]]
+
+== What to do if you want the text prompt for your password instead of the window prompt ==
+This is described in [[EasyPG]].
+
+
+----
+CategoryGnus

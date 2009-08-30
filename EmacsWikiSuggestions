@@ -1,0 +1,346 @@
+This page is for recording (or discussion) of [::Suggestions] about the the EmacsWiki Web site. 
+
+If you want to record or discuss problems with the Web site (not with Emacs), please do so at EmacsWikiProblems.
+
+Make sure your suggestion doesn't exist already or that your question has already been answered by checking the HowTo and WikiQuestions pages, respectively.
+
+Discussion about the front page of the Wiki is at [[SiteMap_Discussion]].
+
+Discussion about the table of contents at the top of each page is at TableOfContentsDiscussion.
+
+Discussion about the "Goto Bar", the links at the top and bottom of each page, is at GotoBarDiscussion.
+
+Discussion about the TextFormattingRules used in contributing to pages  is at TextFormattingDiscussion.
+
+'''Add your suggestions below this line.'''
+
+
+
+== Elisp files status ==
+
+I just saw that Elena had tested some libraries for capitalising and found that
+
+  > auto-cap.el doesn't work;
+  > - auto-capitalize.el raises an error after the first word, then it
+  > doesn't work any more.
+
+This could be a lot of work for different users. Could we please try to find a way to mark libraries as working/nonworking? Maybe for different Emacs versions?
+
+This is not the first time I make a suggestion similar to this.
+However it is a very difficult problem so it is no surprise that we have not made any giant step forwards here,
+but maybe we should try...?
+
+Since elisp files are treated a bit special maybe there is some way to hook in new functionality like the one above?
+(And maybe there could be added another functionality: storing the files in a repository like Launchpad - but that is another story.)
+
+[new:DrewAdams:2009-08-07 02:34 UTC]
+Yes, we've been around this block before... Bad idea (depending on what you mean). Individual libraries typically have some page associated with them where a user can provide feedback about problems. Notifying the library author is the best way to handle such feedback -- the author is likely to be the only one to do anything about fixing problems, in any case.
+
+It's certainly a bad idea to have some simple yes/no or score as an indication of whether or how well a library works. And one person's "works" is another persons "doesn't work". Better to post specific problem descriptions. And it's best to deliver them to the person who will fix them (either via the wiki or in some other way).
+
+Treating software problems via bug reports is, as always, the way to go. Just one opinion. -- DrewAdams
+
+[new]
+Yes, just working/non-working is of course not what I mean.
+But the current situation is in my opinion unacceptable.
+If someone has found a problem there should be an easy uniform way to report it (so it gets reported) --
+and an easy uniform way to know about it (so that next person does not need to try and the author can get aware of what has happened).
+
+Some kind of a bug tracker tailored to the needs here. -- LennartBorgman
+
+[new:DrewAdams:2009-08-07 05:35 UTC]
+Reported to whom? 
+
+1. Reported to the library maintainer? That's best done on an individual basis. Some code is posted here but its maintainers seldom look here -- in that case, it's best to contact them by whatever means are described in the library. Even for other libraries here, I don't see the point of a central bug repository or scoreboard.
+
+I look on the wiki often, and users can post bug reports for my libraries here, no problem. But I prefer to get bug reports by email, since there is often an back-and-forth of information that is simpler by email. I prefer that [[Icicles]] users use `M-x icicle-send-bug-report', which prepares an email. I imagine that different library maintainers have different preferences. Jane might like Twitter; John might like smoke signals.
+
+2. Reported to other users? That too is best done on the particular page dedicated to that library -- that's where its users look for tips, problems, Q&A, and other info about that particular library. Again, a central tips or problem-description repository would be much less useful, IMO.
+
+Bug ''tracking''? That's something else again. That too tends to be specific to the particular library and maintainer. Don't expect someone whose file was posted here long ago or by someone else to follow bugs through an EmacsWiki bug tracker.
+
+I really think handling any kind of information relative to code posted here -- whether questions, bugs, tips, discussion, or anything else, is best handled in the pages here that concern that particular code, not in some consolidating bug tracker. That's in the nature of wiki contribution and sharing. I don't see the value of the "uniformity" you propose. Again, just one opinion. -- DrewAdams
+
+[new]
+Ok, you are against my proposal.
+You seem to think the current situation is the best.
+
+So why do you think of that it currently does not work?
+Is not that a problem?
+
+What do you think that a user that download a library that does not work think?
+
+Where should the problem currently be reported on the wiki?
+Should a user that founds a problem change the code in the library to say "this does not work", or?
+(That might be a way, actually.) -- LennartBorgman
+
+[new:DrewAdams:2009-08-07 14:30 UTC]
+I don't see a particular problem, but I recognize that it could happen that a user not know how to contact the maintainer of some code s?he finds here. If that happens (no contact info in the file, no wiki homepage for the maintainer, no other info about the maintainer anywhere, no help from Google), then I suppose the user's only recourse is to write something up here, asking if others know how to contact the maintainer.
+
+I'm not saying you don't see a problem. I'm saying I don't see your proposal as being a good solution. But it would be good to hear from others. Just one opinion. -- DrewAdams
+
+[new]
+I see a problem for example in the case I started this thread with and I have seen a lot of similar problems before.
+
+I also see a problem in that there is no place to put the information in so that it can be shared.
+Should a user that discovers a problem simply change the elisp file so that it barks or just put a comment in it, or?
+
+And there is no "problem history" which also could help users trying something or finding a problem.
+
+Beeing able to search for a special error message is something more that can be useful.
+(Yes, it can be put in a comment in the elisp file, but that will disappear from searching after the problem is fixed so no one will see it if they are not fast enough
+to discover the problem.)
+
+I could go on...
+
+
+== Treat User Names Normally on RecentChanges Page ==
+
+It would be good if user names were treated normally at RecentChanges, that is, to show a non-existant page not as if it were a link but with a [[SiteMap | ?]] link. Why? To encourage users to create a home page. I see changes by users with names such as thomas001, which appears as [[SiteMap | thomas100]] instead of as thomas001[[SiteMap | ?]], even though there is no such page yet.
+
+This makes me think such users might be following a habit from other sites that require some kind of sign-in (where `thomas' is already taken, so `thomas001', `thomas002'...). If RecentChanges used the normal link convention, then people would see the [[SiteMap | ?]] and might be encouraged to follow it and create a home page. Just a thought. 
+
+(Actually, it wouldn't be exactly the normal convention, which expects CamelCase. Instead, it would implicitly treat each user name entered as if enclosed in ##[[##...##]]##.) -- DrewAdams
+
+
+
+== Keep at least N (> 1) revisions of each page ==
+
+The history for a page should show at least N (> 1) revisions. Currently, IIUC, past revisions are removed if older than some date. This leads to an inability to see what the last changes were, if they were made a while ago. I wanted to compare the current SiteMap with older versions, for instance, and there are none (zero, nada). That's not helpful. Better to keep at least, say, 3 revisions, no matter how old. -- DrewAdams
+
+[new]
+I never had a need for that, so I'm not very eager to add such a feature. The kept revision time window works very well for me. As for the SiteMap diff: I think that in this case the last edit was a trivial whitespace change. Consider the ElispArea instead.
+
+Self:action=history;id=ElispArea shows that there is also just one revision available.
+
+At the bottom of the page you'll find a note listing author, timestamp, and diff link to the last change:
+
+Self:action=browse;diff=2;id=ElispArea is the last change. The diff is cached and thus does not need the old revision to be available. -- Alex
+
+[new:DrewAdams:2008-06-25 00:27 UTC]
+OK. I guess you're saying that even if we don't always have two revisions available, we always have their diff available. So we in effect already have this feature, for N=2. That's better than N=1, at least, and good to know.
+
+However, wouldn't it be good to save the last non-empty diff, rather than just the last diff? The SiteMap case is a good example: the cached diff is not very helpful, because it is empty (whitespace only).
+
+If it's important for some reason to also save the last (empty) diff, then perhaps you could cache two diffs when the last one is empty. Or combine them. Just a thought. -- DrewAdams
+
+
+== Cross-Reference Alphabetical and Chronological Library Lists ==
+
+Please put a link to the chronological listing of libraries on page [http://www.emacswiki.org/elisp/ Alphabetical List], and put a link to the alphabetical listing on page [EmacsWiki:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=1117497600;showedit=1 Chronological List] -- preferably near the top of the page. -- DrewAdams
+
+
+== Marking code does not work in Emacs 22 ==
+(moved from SitemapDiscussion)
+
+[new]
+I wonder if everything pointed to from EmacsWiki works in Emacs 22.
+Maybe there should be some marks on the pages telling what runs on Emacs 22 and what runs on older Emacsen?
+
+[new:DrewAdams:2007-10-19 17:28 UTC]
+: Do you mean everything on the wiki or everything on the SiteMap? (This page is about SiteMap.) Pages that mention things that apply only to particular Emacs versions, platforms etc. should mention that, but I don't see any point in trying to have some general, conventional indicator to that effect. Typically, a page might discuss things that apply to a variety of Emacs versions, platforms etc. Your log message mentioned "##scripts etc##" -- what's that about? I'm probably missing what you're trying to say; please elaborate. -- DrewAdams
+
+[new]
+I meant elisp code, scripts etc. I found no better place than this page to ask the question. -- LennartBorgman
+
+[new:DrewAdams:2007-10-19 19:11 UTC]
+: So what do you propose, concretely? "Some marks on the pages" is pretty vague. I think that if a page mentions EmacsLisp code or a script that works only with some platforms or Emacs versions, then the text should say so. Are you proposing something more than that? -- DrewAdams
+
+[new]
+Nothing more than that. I think it is most important to tell if something does not work with Emacs 22. The reason I am mentioning this is that I suspect that some of the packages mentioned for HTML writing does not work for Emacs 22, but I am not sure. -- LennartBorgman
+
+[new:DrewAdams:2007-10-19 23:30 UTC]
+It's not practical to expect people who write something on a page to come back 3 years later and update it to mention whether or not it works with the latest version of Emacs. It would be good if they did, but it cannot be expected. 
+
+It is more important that people put a ##Compatibility## field in their file header. That way, an old library or script will still say something like ##Compatibility: GNU Emacs 20.x##, which doesn't imply but at least suggests that it might not work with Emacs 21 or later. Note the crucial difference, whether this info is in the library or on an explanation page: it should say that it works with X, Y, Z. That's better than expecting it to indicate all of the versions that it does ''not'' work with. Why is it better? Because it is still accurate even if it doesn't get updated. 
+
+BTW, I think this is the wrong place for this discussion. How about moving it to [[Suggestions]]? -- DrewAdams
+
+[new]
+Ok, I moved it.
+
+I think it would be nice if people put something like "Could not get this to work with Emacs 22" on a page describing a script/package if they discover that. It does not have to be the package owner that does that.
+
+[new:DrewAdams:2007-10-20 01:00 UTC]
+Yes, agreed. (And thanks for moving it to this page.) -- DrewAdams
+
+
+== Preventing accidental rollbacks ==
+
+Rollback links should pop up a question if Javascript is enabled (it usually is), so that pages are not rolled back instantly if someone accidentally clicks a rollback link. -- TamasPatrovics
+
+[new:DrewAdams:2007-08-26 19:31 UTC]
+I agree. -- DrewAdams
+[new]
+Hm. I have three arguments against it: 1. I think it's nice to ask for confirmation for irreversible changes. But it's even better if changes are not irreversible. And in this case, they are reversible. We have the better solution.  2. The people who use the rollback links most often are the same ones we'll be annoying the most. And people will get used to confirmation questions and start clicking through. 3. What I see on RecentChanges tells me that this mistake is _very_ rare. -- AlexSchroeder
+
+[new:DrewAdams:2007-08-27 05:34 UTC]
+I think the problem is accidentally hitting "rollback" when you mean to hit "Revision ##". The two links are adjacent, and one can easily hit the wrong one if one isn't paying attention. The revision link doesn't do anything important, but the rollback does.
+
+If the rollback link is the only one to ask for confirmation, then the confirmation would serve the purpose of letting you know if you hit the wrong link.
+
+While changes are reversible, that is only by adding additional revisions, and that can make understanding the history and history comparisons more difficult.
+
+If you don't like the idea of requiring confirmation for rollbacks, how about moving the rollback link, so that it is less likely to be hit accidentally? -- DrewAdams
+[new]
+
+What do you think of the buttons instead of links? Is this on the right track? I'll switch the delete link to a button as well. -- AlexSchroeder
+[new:DrewAdams:2007-10-24 23:10 UTC]
+
+Yes, I think it's better -- they are visually distinguished at least. It would still be better to separate them a bit. Thx -- DrewAdams
+
+== Downloading Elisp Files ==
+
+There was recently a discussion on the developers list about saving elisp files from a web browser.
+AFAICS if you save what you see in the browser you can get problem with certain characters.
+This problem will be bigger the more non-ascii characters the elisp file contains.
+The simplest way to avoid this seems to me to be to right click the file and choose /Save Link As/ or something similar.
+
+What about telling this beside the /Download/ link on the elisp pages? -- LennartBorgman
+
+[new]
+I actually have a suggestion in the ElispArea telling people to try and avoid anything but ASCII or UTF-8 encoded files when uploading. I'm not sure your suggestion works. If it does, it certainly seems like a hack to me. The problem is that the server sends a HTTP header indicating that the content is UTF-8 encoded. If it is not, then the bytes are simply invalid. Whether the browser handles the bytes correctly, ignores the HTTP header, or drops the characters is undefined, as far as I am concerned. If you really need those ISO-2022 or KOI-8 encoded files, then use the _Replace text with a file_ link below the Save button to really upload a file. This file will then be handled correctly by the browser since in almost all cases, the browser will offer to save it instead of displaying it. -- AlexSchroeder
+
+[new]
+I am not sure. However please read the message from Jason here:
+http://lists.gnu.org/archive/html/emacs-pretest-bug/2007-02/msg00241.html.
+To me it looks like this leads to the same conclusion that I came to.
+If the webserver is not properly configured the way I suggested above may still be a way to download a file as binary.
+
+[new]
+The way I read it, Jason doesn't provide any new information. He says the webserver doesn't change anything. That is correct. I say that the browser is getting incorrectly encoded bytes, and what happens when you do a "save" or "save as" is undefined. It might work in most cases. In the same thread Drew also mentions that the wiki strips control characters, since those are illegal in XHTML pages, irrespective of encoding used. Thus, using "save as" instead of "save" will probably solve many problems, but certainly not all. The only way to be sure that all problems are solved correctly is by replacing the page text with an uploaded file, as explained elsewhere.
+
+The only thing we could do is either refuse page edits that attempt to add control characters or invalid encoding, thereby warning users, or automatically convert it into an uploaded page, hopefully with an appropriate explanation somewhere.
+
+-- Alex
+
+[new]
+I do not believe the browser recieves incorrectly encoded bytes. I thought that it recieved the raw bytes and then interpreted them with the help of the mime headers. Is that not the case?
+
+Using right-click + save-as solves the downloading problem, but not the problem with editing.
+-- LennartBorgman
+
+[new]
+And the control character problem remains unsolved (mostly ^L, of course). -- Alex
+
+== Layout ==
+
+=== Edit Page ==
+
+What about moving the "Please make sure..." text, plus the Username field above the text-input editing box? That would reduce the need to scroll the page by placing the Save and Preview buttons closer to the editing box (using Preview more than once while editing is common). In fact, it would be great if those two buttons could be on the same line as the "This change is a minor edit" check box, making them even closer to the edit box. -- DrewAdams
+
+[new]
+At the time I did this on purpose to make sure people read the blurb... :/
+
+As for hitting Preview a lot: The access key should be P, so try M-p or C-p in your browser.
+
+Other than that, if you have a CSS-based suggestion, we can try it out.
+-- AlexSchroeder
+
+
+=== Font size of copying terms ===
+
+[new]
+I would like to suggest reducing the point-size (10pt perhaps) of the [[GPL]] License that appears in the footer of every page; i.e. the fine print. It should fit entirely within the height of the GNU GPL image, viewed in a ~900px-wide browser window. --e1f
+
+[new]
+When I tried ##div.footer p.legal { font-size:80%; }## I didn't like it from a typographical perspective. I think more changes are required to make it look good. If you have any suggestions, let me know. Now that I added a class to that paragraph, it should be even easier to come up a good alternative. -- Alex
+
+=== Keys ===
+
+[new]
+Adding some style changes to break out &lt;code&gt; from the surrounding text would be very helpful for key strokes.  Especially if they are something like '<code>C-x (</code>' which is used for starting a keyboard macro. -- DocWhat
+
+[new]
+Do you mean in addition to using a monospaced font, something like a light gray background?
+Alternatively, the weird accents-used-as-apostrophes such as `C-x C-c' usually work.
+Unfortunately, the regular expression used prevents `C-x (' from working. :(
+
+The particular regular expressions used, straight from the Perl code:
+
+  if (/\G(\`|‘)([CM][- ][- A-Za-z0-9<>;:#]+)(\'|’)/cg
+      or /\G(\`|‘)([-A-Za-z0-9\/\*]+[=]?)(\'|’)/cg) {
+    return $q->code('&#x2018;' . $2 . '&#x2019;');
+  }
+
+Any suggestions for improvement? It would obviously be easy to style these occurrences.
+But how?
+-- AlexSchroeder
+
+=== Download Links ===
+
+I maintain vimpulse.el which is stored on this wiki.  Whenever I promote it on a website, I link to the editable file at /elisp, not the downloadable file at /elisp/download.  Since new Emacs users (old Vim) users will be getting it, I want it to be easy to find the download link.  The download links as-is (just plain text "Download" is a little too easy to ignore and accidentally scroll past.  Can we instead use something like the following for download links for elisp files?
+
+<table cellspacing="0" cellpadding="20" bgcolor="#b6fa42"><tr><td
+style="border-style: outset; border-color: green; -moz-border-radius:
+12px;"><a href="NONEXISTENT.EXAMPLE.COM"><font color="#174504"
+face="sans-serif">Click to Download</font></a></td></tr></table>
+
+-- JasonSpiro
+
+== Indexing Schemes ==
+
+[new:DrewAdams:2004-12-24 23:00 UTC]
+
+See HowAboutIndexingSchemes for suggestions to use one or more IndexingSchemes for EmacsWiki. -- DrewAdams
+
+[new]
+AlexSchroeder: Which one would you start with?
+
+[new:DrewAdams:2005-11-01 22:06 UTC]
+The first one mentioned there: "''usage statistics'', organized by hit (access) rank."  One general ranking of HitCounts and one per category.  In spite of their inadequacies for measurement of page quality, they do give some idea of reader interest. That can help (but also mislead!) both maintainers and readers.  -- DrewAdams
+
+[new]
+We could start by looking at the webserver logs of the last seven days.  I wonder whether that's just going
+to copy RecentChanges, however.  Maybe we should look at all the entry pages -- ie. where the referrer page
+is not on emacswiki.org. -- Alex
+
+== Info Manuals Mirrored on the Wiki =
+
+Linking to the manual is discussed on EmacsManual.
+
+[new]
+Any reason not to write a script to just wikify the whole manual?  It might foster some participation from people like me, that might contribute some documentation, but don't want the overhead of setting things up just to do manual...labor.  Or does the Free Documentation License become too challenging?  -- ChristopherSmith
+
+[new]
+Hmm. wget -r and elinks -dump or lynx -dump should make it easy to copy the manual. Also, EMacro http://www.emacswiki.org/cgi-bin/wiki?id=EmacsMacro as well as JDE, etc already launch local static html pages from Emacs help. Does anyone know an easy way to determine the current major and minor modes, and pass them as parameters to look up, in EmacsWiki? The major mode alone should not be hard, but I'm thinking an index of minor modes, built on-the-fly. -- BruceIngalls
+
+== Please write a summary ==
+
+2007-08-12
+
+* Without any comment at the summary the feed is absolute useless. Please consider writing a short but informative summary for your changes.
+
+* I think it is quite helpful to know when an information was written. Every comment should have a date in front of.
+
+* Most informations are useless for emacs beginners because the article is starting with a high assumption. Therefore there should be a standard layout for emacs modes like 1. what is it good for? 2. what i need to run it? 3. how could it get started? 4. which should be the minimum configuration? 5. everything else a geek have to know.
+
+[new:AlexSchroeder:2007-08-12 08:19 UTC]
+The situation is just the same on RecentChanges. I find that in terms of peer review, the author is usually more important than the summary; unknown authors have a higher chance of being checked by me. Unfortunately most feed readers do not support the RSS 2.0 WikiModule. Perhaps many people subscribe to the full feed including diff. That would be a good way to check out what has changed regardless of summary. If you're really desperate, you could try the [http://www.emacswiki.org/cgi-bin/emacs?action=rss;full=1;page=0;diff=1 RSS feed with diff but without page content]...
+
+As for time stamps: Aren't we aiming for "timeless" information? At least as far as Emacs releases go. We will have people running Emacs 22 for a decade now, for all I know. Old information is not necessarily useless, so putting dates on ordinary pages can be misleading as well. The only time a time stamp makes sense is when you're putting personal thoughts on a page -- like this conversation, for example. But a wiki can be something between a FAQ and a manual, and neither has time stamps.
+
+When it comes to page content, I guess you're right. We're somewhere between the FAQ (but there aren't many frequently asked questions), and an extension of the ElispManual. We're certainly not the manual itself.
+
+== #REDIRECT to external pages ==
+
+[new]
+[http://www.w3.org/Provider/Style/URI Cool URLs don't change] but it's also uncool to have libraries laying around on the Emacswiki that only serve as a pointer to it's new URL (for example [[emms-lyric.el]] and [[struct+.el]]) and do so in a crude fashion.
+
+I therefore propose that #REDIRECT should support external sources. -- JonasBernoulli
+
+[new]
+Really, those pages shouldn't exist.  Instead, the pages !EmmsLyric and !StructPlus should exist instead.  I've redirect emms-lyric.el to [[EMMS]] although nothing points to it.  The link for struct+.el doesn't even work, so I'm not sure where defstruct+.el is.  Clearly the maintainer of [[ELL]] will need to track it down.
+
+Were there any other examples where you thought redirects to URIs would be useful?
+
+Good URLs are critically important, thus the reason InterLinks are very useful on this site. -- AaronHawley
+
+[new]
+Not currently no. If I find more I will report it here. -- Jonas
+
+== Drew Adams' Libraries == 
+Drew I respect your work and all that you've done with Emac and on EmacsWiki. However, PLEASE can a emacswiki pages be required by sanction to be limited to only 1 (One!) reference to instances of Drew's libraries, and then *ONLY* after other relevant examples, code, etc. pertinent to the a pages context. This site is *SERIOUSLY* limited by Drew's spam and suffers because of it to the extent that it is becoming unusable because of the superfluous `Icicles.*' references strewn about.  There is a point at which the entire Emacs community suffers because of Drew's insistence on xrefs to anything remotely related to his libraries.  
+----
+CategoryEmacsWikiSite
+

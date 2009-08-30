@@ -1,0 +1,903 @@
+[[Yasnippet]] is a great template system for Emacs.
+
+Below are my template codes for [[Yasnippet]].
+
+: You can download those template code at [http://www.emacswiki.org/emacs/AndyStewart_YasnippetTemplateCode.tar.gz here]
+
+==C Mode==
+* do
+{{{
+    #name : do { ... } while (...)
+    # --
+    do
+    {
+        $0
+    } while (${1:condition});
+}}}
+
+* elseif
+{{{
+    #name : else if (...) { ... }
+    # --
+    } else if (${1:condition}) {
+         $0
+    
+}}}
+
+* for
+{{{
+    #name : for (...; ...; ...) { ... }
+    # --
+    for (${1:int i = 0}; ${2:i < N}; ${3:++i})
+    {
+        $0
+    }
+}}}
+
+* if
+{{{
+    #name : if (...) { ... }
+    # --
+    if (${1:condition})
+    {
+        $0
+    }
+}}}
+
+* ife
+{{{
+    #name : if (...) { ... } else { ... }
+    # --
+    if (${1:condition}) {
+         $2
+    } else {
+         $0
+    }         
+    
+}}}
+
+* ifei
+{{{
+    #name : if (...) { ... } else if (...) { ... }
+    # --
+    if (${1:condition}) {
+         $2
+    } else if (${3:condition}) {
+         $0
+    }         
+    
+}}}
+
+* ifeie
+{{{
+    #name : if (...) { ... } else if (...) { ... } else { ... }
+    # --
+    if (${1:condition}) {
+         $2
+    } else if (${3:condition}) {
+         $4
+    } else {
+         $0
+    }         
+    
+}}}
+
+* inc,
+{{{
+    #name : #include <...>
+    # --
+    #include <$1>
+    
+}}}
+
+* inc.
+{{{
+    #name : #include "..."
+    # --
+    #include "$1"
+    
+}}}
+
+* main
+{{{
+    #name: int main(argc, argv) { ... }
+    # --
+    int main(int argc, char *argv[]) {
+         $0
+         return 0;
+    }
+    
+}}}
+
+* once
+{{{
+    #name : #ifndef XXX; #define XXX; #endif
+    # --
+    #ifndef ${1:_`(upcase (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))`_H_}
+    #define $1
+    
+    $0
+    
+    #endif /* $1 */
+}}}
+
+* pri
+{{{
+    #name : println (...)
+    # --
+    println("${1:var}" + $1);
+    
+}}}
+
+* struct
+{{{
+    #name : struct ... { ... }
+    # --
+    struct ${1:name}
+    {
+        $0
+    };
+}}}
+
+* swi
+{{{
+    #name : switch (...) { ...}
+    # --
+    switch(${1:condition}) {
+    case ${2:condition}:
+         $3
+         break;
+    default:
+         $0
+         break;
+    }
+    
+}}}
+
+==Emacs Lisp Mode==
+* ada
+{{{
+    #name : (ad-activate ...)
+    # --
+    (ad-activate '${1:Function})
+
+}}}
+
+* adda
+{{{
+    #name : (ad-deactivate ...)
+    # --
+    (ad-deactivate '${1:Function})
+
+}}}
+
+* addal
+{{{
+    #name : (autoload '... "..." "..." ...)
+    # --
+    (autoload '${1:function-name} "${2:file-name}" "${3:document}" ${0:interactive})
+}}}
+
+* addc
+{{{
+    #name : ;;; ### ... ### ...
+    # --
+    ;;; ### $1 ###
+    ;;; --- $2
+    $0
+}}}
+
+* addcl
+{{{
+    #name : Add change logs
+    # --
+    ;; `(format-time-string "%Y/%m/%d")`
+    ;;  * `user-full-name`:
+    ;;      * $0
+    ;;
+
+}}}
+
+* addcll
+{{{
+    #name : Add change logs with details
+    # --
+    ;; ${1:Date}
+    ;;  * ${2:Name}:
+    ;;      * $0
+    ;;
+
+}}}
+
+* addgk
+{{{
+    #name : (global-set-key (kbd "...") ...)
+    # --
+    (global-set-key (kbd "${1:some-key}") ${0:some-command})
+}}}
+
+* addguk
+{{{
+    #name : (global-unset-key ...)
+    # --
+    (global-unset-key (kbd ${0:key-value}))
+}}}
+
+* addhk
+{{{
+    #name : (add-hook ... ...)
+    # --
+    (add-hook '${1:hook} ${0:function})
+
+}}}
+
+* addic
+{{{
+    #name : ((= c ...) (...))
+    # --
+    ((= c ?${1:char}) (${0:command}))
+}}}
+
+* addif
+{{{
+    #name : (if ... ... ...)
+    # --
+    (if ${1:conditional}
+        ${2:then})
+}}}
+
+* addlk
+{{{
+    #name : (define-key ... (kbd "...") ...)
+    # --
+    (define-key ${1:some-mode-map} (kbd "${2:some-key}") ${0:some-command})
+}}}
+
+* addlt
+{{{
+    #name : ;;;;;;;;;;;;;;;;;;;; ... ;;;;;;;;;;;;;;;;;;;;
+    # --
+    ;;;;;;;;;;;;;;;;;;;; $1 ;;;;;;;;;;;;;;;;;;;;
+    $0
+
+}}}
+
+* addpr
+{{{
+    #name : (provide '...)
+    # --
+    (provide '${0:library-name})
+}}}
+
+* addrq
+{{{
+    #name : (require '...)
+    # --
+    (require '${0:library-name})
+}}}
+
+* addse
+{{{
+    #name : (setq ... ...)
+    # --
+    (setq ${1:variable-name} ${0:variable-value})
+}}}
+
+* addsk
+{{{
+    #name : (lazy-set-key ...)
+    # --
+    (lazy-set-key ${0:rest})
+
+}}}
+
+* addt
+{{{
+    #name : ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ... ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    # --
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; $1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    $0
+
+}}}
+
+* addtl
+{{{
+    #name : (add-to-list ... ...)
+    # --
+    (add-to-list ${1:list-var} ${0:element})
+}}}
+
+* addul
+{{{
+    #name : (unless ... ...)
+    # --
+    (unless ${1:conditional}
+      ${0:body})
+}}}
+
+* addusk
+{{{
+    #name : (lazy-unset-key ... ...)
+    # --
+    (lazy-unset-key '("${1:key-list}")$0)
+
+}}}
+
+* defas
+{{{
+    #name : (defalias ... ...)
+    # --
+    (defalias ${1:symbol} ${0:define})
+}}}
+
+* defav
+{{{
+    #name : (defadvice ... ... ...)
+    # --
+    (defadvice ${1:function-name} (${2:args})
+      "${3:advice-document}"
+      (${0:advice-body})
+    )
+}}}
+
+* defcm
+{{{
+    #name : (defcustom ... ... ... ...)
+    # --
+    (defcustom ${1:symbol} ${2:value}
+      "${3:doc}"
+      ${0:body})
+}}}
+
+* defcn
+{{{
+    #name : (defconst ... ... "...")
+    # --
+    (defconst ${1:symbol} ${2:initvalue}
+      "${0:document}")
+}}}
+
+* deffc
+{{{
+    #name : (defface ... ... ... ...)
+    # --
+    (defface ${1:face}
+      ${2:spec}
+      "${3:doc}"
+      ${0:args})
+
+}}}
+
+* deffu
+{{{
+    #name : (defun ... (...) "..." ...)
+    # --
+    (defun ${1:Function Name} ($2)
+      "${3:Function document}"
+      $0)
+}}}
+
+* deffua
+{{{
+    #name : (defun anything-* () ... (interactive) (anything 'anything-*))
+    # --
+    (defun anything-${1:name} ()
+     "${2:document}"
+     (interactive)
+     (anything 'anything-$0))
+
+}}}
+
+* deffui
+{{{
+    #name : (defun function-name () ... (interactive) ...) 
+    # --
+    (defun ${1:function-name} ($2)
+     "${3:Function documantion}."
+     (interactive)
+     $0)
+
+}}}
+
+* defgp
+{{{
+    #name : (defgroup ... ... ... ...)
+    # --
+    (defgroup ${1:Group-Name} ${2:Group-value}
+      "${3:Group-doc}"
+      $0)
+}}}
+
+* defmm
+{{{
+    #name : (define-minor-mode ... ... ... ... ... ...)
+    # --
+    (define-minor-mode ${1:mode-name}
+      "${2:Document}"
+      :init-value ${3:init-value}
+      :lighter "${4:highlight-name}"
+      :keymap ${5:keymap}
+      :group '${6:group})
+}}}
+
+* deft
+{{{
+    #name : (defun test () "Just for test" (interactive) ...)
+    # --
+    (defun test ()
+      "Just for test"        
+      (interactive)
+      $0
+    )
+
+}}}
+
+* defvr
+{{{
+    #name : (defvar ... ... "...")
+    # --
+    (defvar ${1:variable-name} ${2:variable-varlue}
+      "${0:document}")
+}}}
+
+* defvras
+{{{
+    #name : (defvar anything-c-source-* '((name . "...") ...))
+    # --
+    (defvar anything-c-source-${1:name}
+     '((name . "${2:describe}")
+       $0))
+}}}
+
+* dlaa
+{{{
+    #name : (dolist (... (...)) (add-to-alist '... ...))
+    # --
+    (dolist (${1:elt-cons} '(${2:elt-cons-list}))
+      (add-to-alist '${0:alist} $1))
+     
+
+}}}
+
+* dlhk
+{{{
+    #name : (dolist (hook (list ... )) (add-hook hook '...))
+    # --
+    (dolist (hook (list
+                   ${1:mode-list}
+                   ))
+      (add-hook hook '${0:mode-hook}))
+}}}
+
+* dlhkd
+{{{
+    #name : (dolist (hooked (list ...)) (add-hook '... hooked))
+    # --
+    (dolist (hooked (list
+                   ${1:mode-list}
+                   ))
+      (add-hook '${0:mode-hook} hooked))
+
+}}}
+
+* evalal
+{{{
+    #name : (eval-after-load ... ...)
+    # --
+    (eval-after-load ${1:file-name}
+      ${0:form})
+}}}
+
+* header
+{{{
+    #name : A elisp file header
+    # --
+    ;;; ${1:filename}.el --- ${2:Simple description}
+    
+    ;; Filename: $1.el
+    ;; Description: $2
+    ;; Author: `user-full-name` <`user-mail-address`>
+    ;; Maintainer: `user-full-name` <`user-mail-address`>
+    ;; Copyright (C) `(format-time-string "%Y")`, `user-full-name`, all rights reserved.
+    ;; Created: `(format-time-string "%Y-%m-%d %T")`
+    ;; Version: 0.1
+    ;; Last-Updated: `(format-time-string "%Y-%m-%d %T")`
+    ;;           By: `user-full-name`
+    ;; URL: http://www.emacswiki.org/emacs/download/$1.el
+    ;; Keywords: $3
+    ;; Compatibility: `(substring (emacs-version) 0 (string-match " (" (emacs-version))))`
+    ;;
+    ;; Features that might be required by this library:
+    ;;
+    ;; $4
+    ;;
+    
+    ;;; This file is NOT part of GNU Emacs
+    
+    ;;; License
+    ;;
+    ;; This program is free software; you can redistribute it and/or modify
+    ;; it under the terms of the GNU General Public License as published by
+    ;; the Free Software Foundation; either version 3, or (at your option)
+    ;; any later version.
+    
+    ;; This program is distributed in the hope that it will be useful,
+    ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+    ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    ;; GNU General Public License for more details.
+    
+    ;; You should have received a copy of the GNU General Public License
+    ;; along with this program; see the file COPYING.  If not, write to
+    ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+    ;; Floor, Boston, MA 02110-1301, USA.
+    
+    ;;; Commentary: 
+    ;; 
+    ;; $2
+    ;; $5
+    
+    ;;; Installation:
+    ;;
+    ;; Put $1.el to your load-path.
+    ;; The load-path is usually ~/elisp/.
+    ;; It's set in your ~/.emacs like this:
+    ;; (add-to-list 'load-path (expand-file-name "~/elisp"))
+    ;;
+    ;; And the following to your ~/.emacs startup file.
+    ;;
+    ;; (require '$1)
+    ;;
+    ;; ${6:No need more.}
+    
+    ;;; Customize:
+    ;;
+    ;; $7
+    ;;
+    ;; All of the above can customize by:
+    ;;      M-x customize-group RET $1 RET
+    ;;
+    
+    ;;; Change log:
+    ;;	
+    ;; `(format-time-string "%Y/%m/%d")`
+    ;;      * First released.
+    ;; 
+    
+    ;;; Acknowledgements:
+    ;;
+    ;; $8
+    ;;
+    
+    ;;; TODO
+    ;;
+    ;; $9
+    ;;
+    
+    ;;; Require
+    $10
+    
+    ;;; Code:
+    
+    $0
+    
+    (provide '$1)
+    
+    ;;; $1.el ends here
+
+}}}
+
+* lai
+{{{
+    #name : (lambda () (interactive) (...))
+    # --
+    (lambda () (interactive) ($0))
+}}}
+
+* lt
+{{{
+    #name : (let ... ...)
+    # --
+    (let (${1:varlist})
+      ${0:body})
+}}}
+
+* rmhk
+{{{
+    #name : (remove-hook ... ...)
+    # --
+    (remove-hook '${1:Hook} '${2:Function})
+
+}}}
+
+==Haskell Mode==
+* addc
+{{{
+    #name : {- | ... -}
+    # --
+    {- | ${0:comment} -}
+}}}
+
+* addd
+{{{
+    #name : ... :: ... -> ... 
+    # --
+    ${1:name} :: $2
+    $1 $0
+}}}
+
+* adde
+{{{
+    #name : = ...
+    # --
+    = ${0:content}
+}}}
+
+* addg
+{{{
+    #name : | ...
+    # --
+    | ${0:content}
+}}}
+
+* addi
+{{{
+    #name : import ...
+    # --
+    import ${0:content}
+}}}
+
+* addo
+{{{
+    #name : | otherwise = ...
+    # --
+    | otherwise = ${0:content}
+    
+}}}
+
+* addq
+{{{
+    #name : `...`
+    # --
+    \`${1:content}\` ${0:get here}
+    
+}}}
+
+* addw
+{{{
+    #name : where ...
+    # --
+    where ${0:content}
+}}}
+
+* header
+{{{
+    -----------------------------------------------------------------------------
+    -- |
+    -- Module      :  ${1:Module Name}
+    -- Copyright   :  (c) ${2:Andy Stewart} 2008
+    -- License     :  GPL
+    -- 
+    -- Maintainer  :  ${3:lazycat.manatee@gmail.com}
+    -- Stability   :  experimental
+    -- Portability :  non-portable (not tested)
+    --
+    -- ${4:Simple Describe}
+    --
+    -- * Changlelog:
+    --
+    --      ${5:Today}
+    --              First released.
+    -- 
+    -- * TODO
+    --      
+    --      $6
+    -- 
+    -----------------------------------------------------------------------------
+    
+}}}
+
+* modwh
+{{{
+    #name : module ... where
+    # --
+    module ${1:module-name} (${0:module-interface}) where
+}}}
+
+==Yaoddmuse Mode==
+* [
+{{{
+    #name : [url name]
+    # --
+    [${1:url} ${2:name}]$0
+
+}}}
+
+* [[
+{{{
+    #name : [[name]]
+    # --
+    [[${1:name}]]$0
+
+}}}
+
+* add_
+{{{
+    #name : _underline-
+    # --
+    _${1:name}_$0
+
+}}}
+
+* addb
+{{{
+    #name : *Bold*
+    # --
+    *${1:*}${2:name}*$1$0
+
+}}}
+
+* addbb
+{{{
+    #name : ''Bold''
+    # --
+    ''${1:name}''$0
+
+}}}
+
+* addc
+{{{
+    #name : /italic/
+    # --
+    /${1:name}/$0
+
+}}}
+
+* addd
+{{{
+    #name : [new] dialog [new]
+    # --
+    [new]
+    $0        
+    [new]
+
+}}}
+
+* adde
+<pre>
+    #name : Add entire yaoddmuse template code.
+    # --
+    ==What is `yaoddmuse-pagename` ?==
+    `yaoddmuse-pagename` is a mode that ${1:Describe}.
+    
+    ==Install==
+    Put Lisp:${2:package-name}.el in your load-path, add
+    {{{
+        (require '$2)
+    }}}    
+    in ~/.emacs
+    
+    ==Usage==
+    ${3:Usage}
+    
+    ==Customize==
+    All below option can customize by: M-x customize-group RET $2 RET
+    
+    ${4:Customize}
+</pre>
+
+* addee
+<pre>
+    #name : Add entire yaoddmuse template code.
+    # --
+    ==What is `yaoddmuse-pagename` ?==
+    `yaoddmuse-pagename` is a mode that ${1:Describe}.
+    
+    ==Why the need for `yaoddmuse-pagename` ?==
+    ${2:Why}.
+    
+    ==Install==
+    Put Lisp:${3:package-name}.el in your load-path, add
+    {{{
+        (require '$3)
+    }}}    
+    in ~/.emacs
+    
+    ==Usage==
+    ${4:Usage}
+    
+    ==Customize==
+    All below option can customize by: M-x customize-group RET $3 RET
+    
+    ${5:Customize}
+</pre>
+
+* addh
+{{{
+    #name : ==Heading Name==
+    # --
+    =${1:=}${2:name}=$1$0
+
+}}}
+
+* addi
+{{{
+    #name : [[image:ImagePage]]
+    # --
+    [[image:${1:PageName}]]$0
+
+}}}
+
+* addii
+{{{
+    #name : Here is a screenshot: ImageName
+    # --
+    Here is a screenshot: $0
+}}}
+
+* addl
+{{{
+    #name : Lisp:file.el
+    # --
+    Lisp:${1:FileName}.el$0
+
+}}}
+
+* addm
+{{{
+    #name : -- yaoddmuse-username
+    # --
+    -- `yaoddmuse-username`
+
+}}}
+
+* addn
+{{{
+    #name : [new:UTC time:2009-02-26 17:07 UTC] -- UserName
+    # --
+    [new:`yaoddmuse-username`:`(format-time-string "%Y-%m-%d %H:%M")` UTC]
+    $0 -- `yaoddmuse-username`
+
+}}}
+
+* addp
+{{{
+    #name : Insert yaoddmuse page name
+    # --
+    `yaoddmuse-pagename`
+
+}}}
+
+* addpr
+{{{
+    #name : <pre> ... </pre>
+    # --
+    <pre>
+    $0
+    </pre>
+}}}
+
+* adds
+<pre>
+    #name : {{{source code}}}
+    # --
+    {{{
+            $0
+    }}}
+
+</pre>
+
+* addt
+{{{
+    #name : <tag>content</tag>
+    # --
+    <${1:tag}>${1:name}</$1>$0
+
+}}}
+
+* addw
+{{{
+    #name : Insert yaoddmuse wiki name
+    # --
+    `yaoddmuse-wikiname`
+
+}}}

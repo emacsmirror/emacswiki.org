@@ -1,0 +1,52 @@
+Here is sample code that makes sure there is allways a space before and after an equal sign.  Just to illustrate a possible use for the `after-change-functions' and `before-change-functions'.
+
+Note that this example will have difficulties when people want to type >= <= != == or string=.  checking for these exceptions is left as an exercise for the reader.  Actually, if anybody knows a better solution to the problem, add it.
+
+ From: PeterMilliken
+ Subject: Re: Advanced auto indentation
+ Newsgroups: comp.emacs
+ Date: Wed, 13 Jun 2001 09:20:32 +1000
+
+ (defun test-setup-change-hooks ()
+   (interactive)
+   (let ()
+     ;; make the change hooks local to this buffer as we don't want
+     ;; this code working in all buffers
+     (make-local-hook 'after-change-functions)
+     (make-local-hook 'before-change-functions)
+     (add-hook 'before-change-functions
+	       'test-before-change
+	       t
+	       t)
+     (add-hook 'after-change-functions
+	       'test-after-change
+	       nil
+	       t)))
+
+ (defun test-before-change (begin end)
+   (let (command-key-vector)
+     ;; Get the vector of keys that comprise this command.
+     (setq command-key-vector (this-command-keys-vector))
+     ;; Test if the current command is a self-insert-command and the
+     ;; character being inserted is the '=' character
+     (if (and (string= "self-insert-command" (symbol-name this-command))
+	      (char-equal (elt command-key-vector 0) ?=))
+	 ;; check if there is already a space before point, if not,
+	 ;; then insert one
+	 (if (not (char-equal (char-before) ? ))
+	     (insert " ")))))
+
+ (defun test-after-change (begin end length)
+   (let (command-key-vector)
+     ;; Do the same kind of testing as in the before change function,
+     ;; only here we look at the character after point, if it is
+     ;; already a space, then don't do anything.
+     (setq command-key-vector (this-command-keys-vector))
+     (if (and (string= "self-insert-command" (symbol-name this-command))
+	      (char-equal (elt command-key-vector 0) ?=))
+	 (if (and (char-equal (char-before) ?=)
+		  (not (char-equal (char-after) ? )))
+	     (insert " ")))))
+
+----
+CategoryCode

@@ -1,0 +1,333 @@
+A fully-featured, highly-stable, minimally-intrusive, well-loved open-source Secure Shell (SSH) client for Windows (95 to Vista) and Un*x computers, created by Simon Tatham. It fills the void left from the lack of a proper (non-Cygwin) !OpenSSH port to Windows. [http://www.chiark.greenend.org.uk/~sgtatham/putty/ Download the program from the official site]
+
+== Why would I want to use it with Emacs? ==
+
+This program allows you to use your Un*x based systems remotely using a telnet-like text-only interface. Therefore if you're using a natively ported Emacs, there's no reason to use PuTTY. However if you frequently remotely-login to Unix-based computers (think Colinux-based virtual machine hosted text-only Debian sessions), Putty is right for you.
+
+On the Emacs front, it has two notable features:
+* proper Meta key handling (via the Alt key (?)) 
+* 256 color support via xterm-256color emulation (in stable version 0.58).
+
+For Japanese, Chinese, and Korean users, there is a [http://hp.vector.co.jp/authors/VA024651/#PuTTYkj_top patched open-source version] (direct download for [http://hp.vector.co.jp/authors/VA024651/download/file/puttykjbin-20050503.zip program] and [http://hp.vector.co.jp/authors/VA024651/download/file/puttykjpatch-20050503.zip source code]) which allows EUC-JP (typically used on Unix), ISO-2022-JP, MS_Kanji, Shift_JIS, EUC-KR, Big5, EUC-CN encodings as well as the default encodings. It also has a special UTF-8(CJK) encoding. I ([[piyo]]) verified that it works great with Windows XP, MS IME 2002-Japanese, Debian 3.1, PuTTY conversion "EUC-JP", and session environment variable "LANG=ja_JP.EUC-JP".
+
+== 256 Colors text-based Emacs using Putty ==
+
+Out of the box, PuTTY (verison 0.58) is ANSI-color (8 colors, w00t) compliant, but you will need to some customization to get 256 colors. Luckily in this day and age (2006 July) you don't need to break out the compiler.
+
+# EricHanchrow found that, on his Ubuntu 6.06 box, he had to install the "ncurses-term" package, in order to get the termcap entry for xterm-256color.
+
+# One user had only the first eight ANSI colors display.  On his CentOS 5.2 box, he had to download and recompile his emacs distribution, making sure that libermcap-devel and ncurses-devel were installed.  More info at http://www.nabble.com/Bug-in-256-color-terminal,-colors-%3E-first-8-appear-as-white-td18271079.html
+
+
+# Start up PuTTY.
+# In "Settings" Category "Window > Colours", enable "Allow terminal to use xterm 256-colour mode".
+# In "Settings" Category "Connection > Data", enable "Terminal-type string" by entering the string "xterm-256color" ('''Note:''' This choice is not avaibale in Windows version of Putty)
+# Enter your hostname and start a client session.
+# Verify that first your (client) terminal settings are supported by your hosted (server) session. Use the [http://frexx.de/xterm-256-notes/ "256 color mode of xterm" site]'s utility scripts to show if you have all the colors. If it doesn't work make sure TERM is set to "xterm-256color"
+# Go ahead start up your Emacs, then run M-x list-colors-display. Bask in the color goodness!
+
+Warning: The colors from PuTTY are not rendered the same as for a Emacs for X11, Emacs for Windows, or [[Meadow]]. They are somewhat close (you won't get pink from "blue", for example), but you can tell the difference. Somewhere in the standard Elisp there is a mention about this. As always, YSMV (Your Satisfaction May Vary).
+
+=== Emacs 22 doesn't define proper color names ===
+
+When you run M-x list-colors-display, you get 256 colors, but the "color name" shown on the left-hand-side only shows names like color-23, color-24, etc. However internally, Emacs does a translation of standard X RGB color names to proper "xterm-256color" colors. In other words, when you Customize a Face to the foreground "Cornsilk" color, through the magic of some standard elisp library it will translate that to "color-xx". So you can customize your fonts using the X RGB color names without resorting to absurd "color-xx" names and you can see interactively if the color name really is the color you want.
+
+=== Emacs 21 doesn't define proper color names ===
+
+When you run M-x list-colors-display, there are no color names other that the ANSI-colors. All you have to do is just define your own. Here's a sample which I ([[piyo]]) auto-generated from the etc/RGB.txt file which always ships with GNU Emacs:
+
+ (defmacro tty-color-define-1 (n c r g b)
+  `(tty-color-define ,n ,c (list (* 257 ,r) (* 257 ,g) (* 257 ,b))))
+ (defun tty-color-closest-to-rgb-txt ()
+  "define the colors"
+  (tty-color-define-1 "grey22" 16 55 55 55)
+  (tty-color-define-1 "DarkSlateGrey" 17 55 55 95)
+  (tty-color-define-1 "SlateBlue4" 18 55 55 135)
+  (tty-color-define-1 "SlateBlue4" 19 55 55 175)
+  (tty-color-define-1 "RoyalBlue3" 20 55 55 215)
+  (tty-color-define-1 "RoyalBlue2" 21 55 55 255)
+  (tty-color-define-1 "DarkSlateGrey" 22 55 95 55)
+  (tty-color-define-1 "DarkSlateGrey" 23 55 95 95)
+  (tty-color-define-1 "SteelBlue4" 24 55 95 135)
+  (tty-color-define-1 "RoyalBlue3" 25 55 95 175)
+  (tty-color-define-1 "RoyalBlue3" 26 55 95 215)
+  (tty-color-define-1 "RoyalBlue2" 27 55 95 255)
+  (tty-color-define-1 "ForestGreen" 28 55 135 55)
+  (tty-color-define-1 "SeaGreen4" 29 55 135 95)
+  (tty-color-define-1 "aquamarine4" 30 55 135 135)
+  (tty-color-define-1 "SteelBlue" 31 55 135 175)
+  (tty-color-define-1 "SteelBlue3" 32 55 135 215)
+  (tty-color-define-1 "RoyalBlue1" 33 55 135 255)
+  (tty-color-define-1 "LimeGreen" 34 55 175 55)
+  (tty-color-define-1 "MediumSeaGreen" 35 55 175 95)
+  (tty-color-define-1 "MediumSeaGreen" 36 55 175 135)
+  (tty-color-define-1 "LightSeaGreen" 37 55 175 175)
+  (tty-color-define-1 "SteelBlue3" 38 55 175 215)
+  (tty-color-define-1 "DodgerBlue1" 39 55 175 255)
+  (tty-color-define-1 "LimeGreen" 40 55 215 55)
+  (tty-color-define-1 "SeaGreen3" 41 55 215 95)
+  (tty-color-define-1 "SeaGreen3" 42 55 215 135)
+  (tty-color-define-1 "MediumTurquoise" 43 55 215 175)
+  (tty-color-define-1 "turquoise" 44 55 215 215)
+  (tty-color-define-1 "turquoise" 45 55 215 255)
+  (tty-color-define-1 "LimeGreen" 46 55 255 55)
+  (tty-color-define-1 "SeaGreen2" 47 55 255 95)
+  (tty-color-define-1 "SeaGreen2" 48 55 255 135)
+  (tty-color-define-1 "SeaGreen1" 49 55 255 175)
+  (tty-color-define-1 "turquoise" 50 55 255 215)
+  (tty-color-define-1 "cyan1" 51 55 255 255)
+  (tty-color-define-1 "grey27" 52 95 55 55)
+  (tty-color-define-1 "grey32" 53 95 55 95)
+  (tty-color-define-1 "MediumPurple4" 54 95 55 135)
+  (tty-color-define-1 "MediumPurple4" 55 95 55 175)
+  (tty-color-define-1 "purple3" 56 95 55 215)
+  (tty-color-define-1 "BlueViolet" 57 95 55 255)
+  (tty-color-define-1 "DarkOliveGreen" 58 95 95 55)
+  (tty-color-define-1 "grey37" 59 95 95 95)
+  (tty-color-define-1 "MediumPurple4" 60 95 95 135)
+  (tty-color-define-1 "SlateBlue3" 61 95 95 175)
+  (tty-color-define-1 "SlateBlue3" 62 95 95 215)
+  (tty-color-define-1 "RoyalBlue1" 63 95 95 255)
+  (tty-color-define-1 "DarkOliveGreen4" 64 95 135 55)
+  (tty-color-define-1 "DarkSeaGreen4" 65 95 135 95)
+  (tty-color-define-1 "PaleTurquoise4" 66 95 135 135)
+  (tty-color-define-1 "SteelBlue" 67 95 135 175)
+  (tty-color-define-1 "SteelBlue3" 68 95 135 215)
+  (tty-color-define-1 "CornflowerBlue" 69 95 135 255)
+  (tty-color-define-1 "DarkOliveGreen4" 70 95 175 55)
+  (tty-color-define-1 "DarkSeaGreen4" 71 95 175 95)
+  (tty-color-define-1 "CadetBlue" 72 95 175 135)
+  (tty-color-define-1 "CadetBlue" 73 95 175 175)
+  (tty-color-define-1 "SkyBlue3" 74 95 175 215)
+  (tty-color-define-1 "SteelBlue1" 75 95 175 255)
+  (tty-color-define-1 "LimeGreen" 76 95 215 55)
+  (tty-color-define-1 "PaleGreen3" 77 95 215 95)
+  (tty-color-define-1 "SeaGreen3" 78 95 215 135)
+  (tty-color-define-1 "aquamarine3" 79 95 215 175)
+  (tty-color-define-1 "MediumTurquoise" 80 95 215 215)
+  (tty-color-define-1 "SteelBlue1" 81 95 215 255)
+  (tty-color-define-1 "chartreuse2" 82 95 255 55)
+  (tty-color-define-1 "SeaGreen2" 83 95 255 95)
+  (tty-color-define-1 "SeaGreen1" 84 95 255 135)
+  (tty-color-define-1 "SeaGreen1" 85 95 255 175)
+  (tty-color-define-1 "aquamarine1" 86 95 255 215)
+  (tty-color-define-1 "DarkSlateGray2" 87 95 255 255)
+  (tty-color-define-1 "IndianRed4" 88 135 55 55)
+  (tty-color-define-1 "HotPink4" 89 135 55 95)
+  (tty-color-define-1 "MediumOrchid4" 90 135 55 135)
+  (tty-color-define-1 "DarkOrchid" 91 135 55 175)
+  (tty-color-define-1 "BlueViolet" 92 135 55 215)
+  (tty-color-define-1 "purple1" 93 135 55 255)
+  (tty-color-define-1 "tan4" 94 135 95 55)
+  (tty-color-define-1 "LightPink4" 95 135 95 95)
+  (tty-color-define-1 "plum4" 96 135 95 135)
+  (tty-color-define-1 "MediumPurple3" 97 135 95 175)
+  (tty-color-define-1 "MediumPurple3" 98 135 95 215)
+  (tty-color-define-1 "SlateBlue1" 99 135 95 255)
+  (tty-color-define-1 "LightGoldenrod4" 100 135 135 55)
+  (tty-color-define-1 "wheat4" 101 135 135 95)
+  (tty-color-define-1 "grey53" 102 135 135 135)
+  (tty-color-define-1 "LightSlateGrey" 103 135 135 175)
+  (tty-color-define-1 "MediumPurple" 104 135 135 215)
+  (tty-color-define-1 "LightSlateBlue" 105 135 135 255)
+  (tty-color-define-1 "OliveDrab3" 106 135 175 55)
+  (tty-color-define-1 "DarkOliveGreen3" 107 135 175 95)
+  (tty-color-define-1 "DarkSeaGreen" 108 135 175 135)
+  (tty-color-define-1 "LightSkyBlue3" 109 135 175 175)
+  (tty-color-define-1 "LightSkyBlue3" 110 135 175 215)
+  (tty-color-define-1 "SkyBlue2" 111 135 175 255)
+  (tty-color-define-1 "OliveDrab3" 112 135 215 55)
+  (tty-color-define-1 "DarkOliveGreen3" 113 135 215 95)
+  (tty-color-define-1 "PaleGreen3" 114 135 215 135)
+  (tty-color-define-1 "DarkSeaGreen3" 115 135 215 175)
+  (tty-color-define-1 "DarkSlateGray3" 116 135 215 215)
+  (tty-color-define-1 "SkyBlue1" 117 135 215 255)
+  (tty-color-define-1 "GreenYellow" 118 135 255 55)
+  (tty-color-define-1 "LightGreen" 119 135 255 95)
+  (tty-color-define-1 "LightGreen" 120 135 255 135)
+  (tty-color-define-1 "PaleGreen1" 121 135 255 175)
+  (tty-color-define-1 "aquamarine1" 122 135 255 215)
+  (tty-color-define-1 "DarkSlateGray1" 123 135 255 255)
+  (tty-color-define-1 "brown" 124 175 55 55)
+  (tty-color-define-1 "maroon" 125 175 55 95)
+  (tty-color-define-1 "VioletRed3" 126 175 55 135)
+  (tty-color-define-1 "DarkOrchid" 127 175 55 175)
+  (tty-color-define-1 "DarkOrchid2" 128 175 55 215)
+  (tty-color-define-1 "DarkOrchid1" 129 175 55 255)
+  (tty-color-define-1 "sienna" 130 175 95 55)
+  (tty-color-define-1 "IndianRed" 131 175 95 95)
+  (tty-color-define-1 "HotPink3" 132 175 95 135)
+  (tty-color-define-1 "MediumOrchid3" 133 175 95 175)
+  (tty-color-define-1 "MediumOrchid" 134 175 95 215)
+  (tty-color-define-1 "MediumPurple2" 135 175 95 255)
+  (tty-color-define-1 "tan3" 136 175 135 55)
+  (tty-color-define-1 "LightSalmon3" 137 175 135 95)
+  (tty-color-define-1 "RosyBrown" 138 175 135 135)
+  (tty-color-define-1 "grey63" 139 175 135 175)
+  (tty-color-define-1 "MediumPurple2" 140 175 135 215)
+  (tty-color-define-1 "MediumPurple1" 141 175 135 255)
+  (tty-color-define-1 "OliveDrab3" 142 175 175 55)
+  (tty-color-define-1 "DarkKhaki" 143 175 175 95)
+  (tty-color-define-1 "NavajoWhite3" 144 175 175 135)
+  (tty-color-define-1 "grey69" 145 175 175 175)
+  (tty-color-define-1 "LightSteelBlue3" 146 175 175 215)
+  (tty-color-define-1 "LightSteelBlue" 147 175 175 255)
+  (tty-color-define-1 "OliveDrab2" 148 175 215 55)
+  (tty-color-define-1 "DarkOliveGreen3" 149 175 215 95)
+  (tty-color-define-1 "DarkSeaGreen3" 150 175 215 135)
+  (tty-color-define-1 "DarkSeaGreen2" 151 175 215 175)
+  (tty-color-define-1 "LightCyan3" 152 175 215 215)
+  (tty-color-define-1 "LightSkyBlue1" 153 175 215 255)
+  (tty-color-define-1 "GreenYellow" 154 175 255 55)
+  (tty-color-define-1 "DarkOliveGreen2" 155 175 255 95)
+  (tty-color-define-1 "PaleGreen1" 156 175 255 135)
+  (tty-color-define-1 "DarkSeaGreen2" 157 175 255 175)
+  (tty-color-define-1 "DarkSeaGreen1" 158 175 255 215)
+  (tty-color-define-1 "PaleTurquoise1" 159 175 255 255)
+  (tty-color-define-1 "brown3" 160 215 55 55)
+  (tty-color-define-1 "VioletRed3" 161 215 55 95)
+  (tty-color-define-1 "VioletRed3" 162 215 55 135)
+  (tty-color-define-1 "maroon2" 163 215 55 175)
+  (tty-color-define-1 "MediumOrchid" 164 215 55 215)
+  (tty-color-define-1 "DarkOrchid1" 165 215 55 255)
+  (tty-color-define-1 "sienna3" 166 215 95 55)
+  (tty-color-define-1 "IndianRed" 167 215 95 95)
+  (tty-color-define-1 "HotPink3" 168 215 95 135)
+  (tty-color-define-1 "HotPink2" 169 215 95 175)
+  (tty-color-define-1 "orchid" 170 215 95 215)
+  (tty-color-define-1 "MediumOrchid1" 171 215 95 255)
+  (tty-color-define-1 "tan3" 172 215 135 55)
+  (tty-color-define-1 "LightSalmon3" 173 215 135 95)
+  (tty-color-define-1 "LightPink3" 174 215 135 135)
+  (tty-color-define-1 "pink3" 175 215 135 175)
+  (tty-color-define-1 "plum3" 176 215 135 215)
+  (tty-color-define-1 "violet" 177 215 135 255)
+  (tty-color-define-1 "goldenrod" 178 215 175 55)
+  (tty-color-define-1 "LightGoldenrod3" 179 215 175 95)
+  (tty-color-define-1 "tan" 180 215 175 135)
+  (tty-color-define-1 "MistyRose3" 181 215 175 175)
+  (tty-color-define-1 "thistle3" 182 215 175 215)
+  (tty-color-define-1 "plum2" 183 215 175 255)
+  (tty-color-define-1 "OliveDrab2" 184 215 215 55)
+  (tty-color-define-1 "khaki3" 185 215 215 95)
+  (tty-color-define-1 "LightGoldenrod2" 186 215 215 135)
+  (tty-color-define-1 "LightYellow3" 187 215 215 175)
+  (tty-color-define-1 "grey84" 188 215 215 215)
+  (tty-color-define-1 "LightSteelBlue1" 189 215 215 255)
+  (tty-color-define-1 "OliveDrab1" 190 215 255 55)
+  (tty-color-define-1 "DarkOliveGreen1" 191 215 255 95)
+  (tty-color-define-1 "DarkOliveGreen1" 192 215 255 135)
+  (tty-color-define-1 "DarkSeaGreen1" 193 215 255 175)
+  (tty-color-define-1 "honeydew2" 194 215 255 215)
+  (tty-color-define-1 "LightCyan1" 195 215 255 255)
+  (tty-color-define-1 "firebrick1" 196 255 55 55)
+  (tty-color-define-1 "brown1" 197 255 55 95)
+  (tty-color-define-1 "VioletRed1" 198 255 55 135)
+  (tty-color-define-1 "maroon1" 199 255 55 175)
+  (tty-color-define-1 "maroon1" 200 255 55 215)
+  (tty-color-define-1 "magenta1" 201 255 55 255)
+  (tty-color-define-1 "tomato1" 202 255 95 55)
+  (tty-color-define-1 "IndianRed1" 203 255 95 95)
+  (tty-color-define-1 "IndianRed1" 204 255 95 135)
+  (tty-color-define-1 "HotPink" 205 255 95 175)
+  (tty-color-define-1 "HotPink" 206 255 95 215)
+  (tty-color-define-1 "MediumOrchid1" 207 255 95 255)
+  (tty-color-define-1 "sienna1" 208 255 135 55)
+  (tty-color-define-1 "salmon1" 209 255 135 95)
+  (tty-color-define-1 "LightCoral" 210 255 135 135)
+  (tty-color-define-1 "PaleVioletRed1" 211 255 135 175)
+  (tty-color-define-1 "orchid2" 212 255 135 215)
+  (tty-color-define-1 "orchid1" 213 255 135 255)
+  (tty-color-define-1 "goldenrod1" 214 255 175 55)
+  (tty-color-define-1 "SandyBrown" 215 255 175 95)
+  (tty-color-define-1 "LightSalmon1" 216 255 175 135)
+  (tty-color-define-1 "LightPink1" 217 255 175 175)
+  (tty-color-define-1 "pink1" 218 255 175 215)
+  (tty-color-define-1 "plum1" 219 255 175 255)
+  (tty-color-define-1 "goldenrod1" 220 255 215 55)
+  (tty-color-define-1 "LightGoldenrod2" 221 255 215 95)
+  (tty-color-define-1 "LightGoldenrod2" 222 255 215 135)
+  (tty-color-define-1 "NavajoWhite1" 223 255 215 175)
+  (tty-color-define-1 "MistyRose1" 224 255 215 215)
+  (tty-color-define-1 "thistle1" 225 255 215 255)
+  (tty-color-define-1 "yellow1" 226 255 255 55)
+  (tty-color-define-1 "LightGoldenrod1" 227 255 255 95)
+  (tty-color-define-1 "khaki1" 228 255 255 135)
+  (tty-color-define-1 "wheat1" 229 255 255 175)
+  (tty-color-define-1 "cornsilk1" 230 255 255 215)
+  (tty-color-define-1 "grey100" 231 255 255 255)
+  (tty-color-define-1 "grey3" 232 8 8 8)
+  (tty-color-define-1 "grey7" 233 18 18 18)
+  (tty-color-define-1 "grey11" 234 28 28 28)
+  (tty-color-define-1 "grey15" 235 38 38 38)
+  (tty-color-define-1 "grey19" 236 48 48 48)
+  (tty-color-define-1 "grey23" 237 58 58 58)
+  (tty-color-define-1 "grey27" 238 68 68 68)
+  (tty-color-define-1 "grey31" 239 78 78 78)
+  (tty-color-define-1 "grey35" 240 88 88 88)
+  (tty-color-define-1 "grey39" 241 98 98 98)
+  (tty-color-define-1 "grey42" 242 108 108 108)
+  (tty-color-define-1 "grey46" 243 118 118 118)
+  (tty-color-define-1 "grey50" 244 128 128 128)
+  (tty-color-define-1 "grey54" 245 138 138 138)
+  (tty-color-define-1 "grey58" 246 148 148 148)
+  (tty-color-define-1 "grey62" 247 158 158 158)
+  (tty-color-define-1 "grey66" 248 168 168 168)
+  (tty-color-define-1 "grey70" 249 178 178 178)
+  (tty-color-define-1 "grey74" 250 188 188 188)
+  (tty-color-define-1 "grey78" 251 198 198 198)
+  (tty-color-define-1 "grey82" 252 208 208 208)
+  (tty-color-define-1 "grey86" 253 218 218 218)
+  (tty-color-define-1 "grey90" 254 228 228 228)
+  (tty-color-define-1 "grey93" 255 238 238 238))
+ (tty-color-closest-to-rgb-txt) ; finally activate it.
+
+Save this in a different file such as emacs21-256color-hack.el and (load "emacs21-256color-hack.el") from your .emacs.
+
+(Loosely based on [http://nijino.homelinux.net/diary/200211.shtml#200211191S1 ari's diary entry] and [http://nijino.homelinux.net/emacs/tty-color-256.el elisp code], and also [http://piyo-comptips.blogspot.com/2006_04_01_piyo-comptips_archive.html my (piyo) own blog post].)
+
+== Using with Cygwin-based Emacs ==
+
+You can use it to connect to your own machine via SSH, then do <tt>stty erase ^?</tt>, then run Emacs. So far all the key combinations work as I want them to -- C-M-q, for example, works.
+A simpler alternative that doesn't require you to set up an SSH server is [http://gecko.gc.maricopa.edu/~medgar/puttycyg/ puttycyg].
+
+When running emacs in a PuTTY terminal, one can print buffers using the usual commands: see '''''ansi-lpr''''' in PrintingFromEmacs. -Matthias
+
+Unfortunatelly it seems that one can not run the Windows Version of GNU Emacs inside a PuTTYcyg.  "emacs -nw" is confused about the cygwin terminal and says "emacs: standard input is not a tty".
+
+== Obsolete: Patched version for 256 colors ==
+
+The following obsolete contribution is a non-open-source patched version for "a 256 color terminal emulation", however it has been supercede by the official version 0.58 which contains the proper support.
+
+: I have compiled a somewhat hacked version available here: http://www.verona.se/joakim/myview.do?page=SoftwareProjects with some benefits, follow the link to see --JoakimVerona
+
+The hacked version also had support for the shift-arrow sequence to work, which I find useful. I have however had no sucess getting this patch into the official Putty --JoakimVerona
+
+== Home and End Keys broken? ==
+
+Try this:
+
+ if [ "$COLORTERM" ]; then # rxvt
+     bind '"\e[7~": beginning-of-line'
+     bind '"\e[8~": end-of-line'
+ else # xterm
+     bind '"\e[1~": beginning-of-line'
+     bind '"\e[4~": end-of-line'
+ fi
+
+Where to put this?! I don't understand. It looks like a bash script, and it would indeed help in a bash session... But how does this help a Emacs/PuTTY user? Wait! Ahh... this is how I did it:
+
+ ;; PuTTY fix. Ugly. Bad. But it works. (Good)
+ (define-key global-map "\M-[1~" 'beginning-of-line)
+ (define-key global-map [select] 'end-of-line)
+
+Putty session keyboard configuration:
+
+ The Backspace key: Control-? (127)
+ The Home and End keys: Standard
+ The Function keys and keypad: ESC[n~
+ 
+
+
+----
+CategoryExternalUtilities CategoryWThirtyTwo

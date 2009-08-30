@@ -1,0 +1,31 @@
+Ok I needed on a channel to requests chanop to op me and I have discovered that /op zeDek (my nick) was useless since I needed to be
+admin to do that. So I have decided to make 2 quicks functions functions that compute chanop op command for a channel.
+
+Typing /opme in a channel will change your mode to operator on the running channel providing you can get this privilege.  :)
+
+Here it is:
+
+<pre>
+    (defun erc-cmd-OPME ()
+        "request a chanop op to me"
+        (erc-message "PRIVMSG" 
+            (format "chanserv op %s %s"
+                    (erc-default-target)
+                    (erc-current-nick)) nil))
+</pre>
+
+And the opposite, here is the /deopme command:
+
+<pre>
+    (defun erc-cmd-DEOPME ()    
+        "Deop myself from current channel"
+        (erc-cmd-DEOP (format "%s" (erc-current-nick))))
+</pre>
+
+The functions may be improved by testings stuff like the current mode etc..
+
+Hope that it will be useful for somebody
+
+Yes, I found the functions useful (but being a lazy typist, I called them /op and /nop).
+----
+[[ERC]]

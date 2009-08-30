@@ -1,0 +1,19 @@
+If you want to define a [[Face]] that looks different depending on display capabilities, you cannot use `customize-face'.  You must write EmacsLisp code.
+
+The doc string for `defface' explains your options.  You can have different definitions depending on display type (x or tty), class (color, grayscale, or mono), and background (light or dark).
+
+Here is a code example from font-lock.el:
+
+ (defface font-lock-comment-face
+   '((((class grayscale) (background light))
+      (:foreground "DimGray" :bold t :italic t))
+     (((class grayscale) (background dark))
+      (:foreground "LightGray" :bold t :italic t))
+     (((class color) (background light)) (:foreground "Firebrick"))
+     (((class color) (background dark)) (:foreground "OrangeRed"))
+     (t (:bold t :italic t)))
+   "Font Lock mode face used to highlight comments."
+   :group 'font-lock-highlighting-faces)
+
+----
+CategoryFaces

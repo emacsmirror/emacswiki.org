@@ -1,0 +1,7 @@
+RunSchemeHere is a CmuScheme extension that allows you to easily run multiple inferior scheme processes. 
+
+(run-scheme-here) starts a new inferior process in the current buffer's directory. If there is one running already, then it switches to its buffer.
+
+The scheme-mode-map is also extended with bindings to send expressions to the buffer-local inferior process.
+
+Lisp:scheme-here.el

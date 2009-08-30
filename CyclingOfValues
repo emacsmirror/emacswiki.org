@@ -1,0 +1,54 @@
+Here is an example from kdic.el (KanjiDictionary).  The variable
+`kdic-ask-for' is one of meaning kanji, or reading.  Calling
+kdic-after will return the next symbol in that list, or the first one
+the we have reached the end of the list.
+
+ (defun kdic-after (option options)
+   "Return the next value after OPTION in the list OPTIONS."
+   (let ((result  (cadr (memq option options))))
+     (or result (car options))))
+
+ (setq kdic-ask-for (kdic-after kdic-ask-for '(meaning kanji reading)))
+
+`memq' finds a symbol in the list and returns the tail of the list
+starting with the symbol found.  The cdr of that tail will return
+another tail, starting with the "next" symbol in the list.  cadr will
+return the head of that list, therefore card will only return the next
+symbol in the list.
+
+Here's a drawing and some code to illustrate it:
+
+<pre>
+ +---------+---+    +-------+---+    +---------+-----+
+ | meaning | *-+--->| kanji | *-+--->| reading | nil |
+ +---------+---+    +-------+---+    +---------+-----+
+</pre>
+
+Looking for kanji we get a list:
+
+ (memq 'kanji '(meaning kanji reading))
+ => (kanji reading)
+
+Let us extract the tail starting with the next symbol is a list.  In
+this case it has only one element, but it is a list nevertheless --
+notice the parens!
+
+ (cdr (memq 'kanji '(meaning kanji reading)))
+ => (reading)
+
+Let us keep the head of that list.  Remember, (cadr x) is a shorthand for (car (cdr x)).
+
+ (cadr (memq 'kanji '(meaning kanji reading)))
+ => reading
+
+What happens when we look at the last symbol in the list, however?
+
+ (cadr (memq 'reading '(meaning kanji reading)))
+ => nil
+
+That's why there is the line (or result (car options)) in the little
+lisp function above.  If result is nil, then we want to return the
+beginning of the list.
+
+----
+CategoryCode

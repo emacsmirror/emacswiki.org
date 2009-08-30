@@ -1,0 +1,24 @@
+Sur ce wiki, dans la documentation et partout où l'on parle d'Emacs,
+les mêmes conventions sont utilisées pour les abbréviations des touches.
+Celles ci peuvent être différentes de celles auquelles vous êtes
+habitués.
+
+X-y z  signifie "maintenez enfoncée la touche X en appuyant sur y puis appuyez sur z"
+
+* C == ''CONTROL''.  
+Donc C-h est équivalent à ctrl-h ou ^h
+
+* M == ''META''.  
+Sur les claviers où il n'y a pas de touche META, utilisez ALT. S'il n'y
+a pas de touche ALT non plus (ou quelle ne fonctionne pas) utilisez la
+touche ESC puis appuyez sur l'autre touche de la combinaison. (Donc
+"maintenez enfoncé la touche ALT en appuyant sur h" et "Appuyez sur
+ESC puis sur h" sont équivalents.) Note : la touche Windows, si vous
+en avez une, fait aussi souvent office de Meta, sous Linux.
+
+* S == ''SHIFT''.
+
+----
+CatégorieAide
+
+

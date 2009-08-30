@@ -1,0 +1,199 @@
+= Apropos Searching =
+
+== General Browsers ==
+Most of modern browsers (mozilla, opera, etc -- MSIE is not `modern' ;-) allow you to write keywords in the location bar for doing easy and fast searching. For example in opera "g emacswiki" googles for "emacswiki". 
+
+* Incorrect about MSIE - this has been supported since v.5 however it's never been exposed anyplace obvious.  TweakUI for XP helps you set this (the long and short of it is to modify HKCU\Software\Microsoft\Internet Explorer\SearchUrl).  I use it all the time to get bus routes :)
+
+== Emacs Solution ==
+Well, browse-apropos-url provide this functionality -- and more to elisp coders -- independently of which browser does browse-url start.
+
+You define an alist with regexps and the matching url to be used, for example doing: 
+
+M-x browse-apropos-url RET /. RET
+
+means: "I'm at work, take me to slashdot.org"
+
+Searching the emacswiki for "python" is done like this:
+
+M-x browse-apropos-url RET ewiki python RET
+
+Translating "hello world" to spanish is easy:
+
+M-x browse-apropos-url RET gt en es hello world RET
+
+`gt' is just the keyword that identifies Google translate, `en' and `es' are google language keywords so you can use `fr' or any other that google understands.
+
+=== Example apropos-url-alist regexp entires ===
+
+Here is an example of some regexps and their respective url.
+
+<pre>
+(setq apropos-url-alist
+      '(("^gw?:? +\\(.*\\)" . ;; Google Web 
+         "http://www.google.com/search?q=\\1")
+
+        ("^g!:? +\\(.*\\)" . ;; Google Lucky
+         "http://www.google.com/search?btnI=I%27m+Feeling+Lucky&q=\\1")
+        
+        ("^gl:? +\\(.*\\)" .  ;; Google Linux 
+         "http://www.google.com/linux?q=\\1")
+        
+        ("^gi:? +\\(.*\\)" . ;; Google Images
+         "http://images.google.com/images?sa=N&tab=wi&q=\\1")
+
+        ("^gg:? +\\(.*\\)" . ;; Google Groups
+         "http://groups.google.com/groups?q=\\1")
+
+        ("^gd:? +\\(.*\\)" . ;; Google Directory
+         "http://www.google.com/search?&sa=N&cat=gwd/Top&tab=gd&q=\\1")
+
+        ("^gn:? +\\(.*\\)" . ;; Google News
+         "http://news.google.com/news?sa=N&tab=dn&q=\\1")
+
+        ("^gt:? +\\(\\w+\\)|? *\\(\\w+\\) +\\(\\w+://.*\\)" . ;; Google Translate URL
+         "http://translate.google.com/translate?langpair=\\1|\\2&u=\\3")
+        
+        ("^gt:? +\\(\\w+\\)|? *\\(\\w+\\) +\\(.*\\)" . ;; Google Translate Text
+         "http://translate.google.com/translate_t?langpair=\\1|\\2&text=\\3")
+
+        ("^/\\.$" . ;; Slashdot 
+         "http://www.slashdot.org")
+
+        ("^/\\.:? +\\(.*\\)" . ;; Slashdot search
+         "http://www.osdn.com/osdnsearch.pl?site=Slashdot&query=\\1")        
+        
+        ("^fm$" . ;; Freshmeat
+         "http://www.freshmeat.net")
+
+        ("^ewiki:? +\\(.*\\)" . ;; Emacs Wiki Search
+         "http://www.emacswiki.org/cgi-bin/wiki?search=\\1")
+ 
+        ("^ewiki$" . ;; Emacs Wiki 
+         "http://www.emacswiki.org")
+
+        ("^arda$" . ;; The Encyclopedia of Arda 
+         "http://www.glyphweb.com/arda/")
+         
+         ))
+</pre>
+Of course, if no regexp is matched the input is used as the url.
+
+<pre>
+;; Don't know if it's the best way , but it seemed to work. (Requires emacs >= 20)
+(defun browse-apropos-url (text &optional new-window)
+  (interactive (browse-url-interactive-arg "Location: "))
+  (let ((text (replace-regexp-in-string 
+               "^ *\\| *$" "" 
+               (replace-regexp-in-string "[ \t\n]+" " " text))))
+    (let ((url (assoc-default 
+                text apropos-url-alist 
+                '(lambda (a b) (let () (setq __braplast a) (string-match a b)))
+                text)))
+      (browse-url (replace-regexp-in-string __braplast url text) new-window))))
+
+</pre>
+
+Now, if you are reading a spanish text and wondering what a sentence means. Just mark the sentence and do the following:
+
+M-x browse-apropos-url-on-region RET gt es en RET
+
+This will append the region content to "gt es en " and use your browser to let google do the hard work.
+
+<pre>
+(defun browse-apropos-url-on-region (min max text &optional new-window)
+  (interactive "r \nsAppend region to location: \nP")
+  (browse-apropos-url (concat text " " (buffer-substring min max)) new-window))
+</pre>
+
+=== Google specific additions - searching and translations from emacs ===
+
+<u><b>Added : 29 September 2008 RichardRiley</b></u>
+
+Updated: 1 Oct 2008 rgr : added some stuff to treat url/word under point intelligently for gnus/w3m use. If in a w3m buffer it will launch the url of the underlying w3m link if cursor is on a rendered html link. In non w3m buffers it will attempt to use the text at point as a url. See F4 binding below.
+
+Updated: 16 Oct 2008 rgr : added cleverer handling for single word translations to use google dictionary. other little clean ups for prompting and default under-point defaults.
+
+Updated: 23 Oct 2008 rgr : function for region/word at point now in thingatpt+ and called region-or-word-at-point
+
+Updated: 25 Oct 2008 rgr : added prefix key for the browse function in order to launch external browser
+
+Updated: 23 December 2008 rgr : added hayoo for haskell search
+
+Here is some wrapper code to facilitate access to the apropos browse using a region/word at point or a prompt for google search and translation services which is what I use this great function above for 99% of the time..
+
+<pre>
+
+(require 'browse-apropos-url)
+(provide 'browse-url)
+
+(require 'thingatpt+)
+
+
+(defun rgr/browse-url (arg &optional url)
+  "Browse the URL passed. Use a prefix arg for external default browser else use default browser which is probably W3m"
+  (interactive "P")
+  (setq url (or url (w3m-url-valid (w3m-anchor)) (browse-url-url-at-point) (region-or-word-at-point)))
+  (if arg
+      (when url (browse-url-default-browser url))
+    (if  url (browse-url url) (call-interactively 'browse-url))
+    ))
+
+
+(defun rgr/google(term)
+  "Call google search for the specified term. Do not call if string is zero length."
+  (let ((url (if (zerop (length term)) "http://www.google.com " (concat "gw: " term))))
+    (browse-apropos-url url)))
+
+(defun rgr/google-search-prompt()
+  (interactive)
+  (rgr/google (read-string "Google the web for the following phrase : "
+                                    (region-or-word-at-point))))
+
+(add-to-list 'apropos-url-alist '("^googledict:? +\\(\\w+\\)|? *\\(\\w+\\) +\\(.*\\)" . "http://www.google.com/dictionary?aq=f&langpair=\\1|\\2&q=\\3&hl=\\1"))
+(add-to-list 'apropos-url-alist '("^ewiki2:? +\\(.*\\)" .  "http://www.google.com/cse?cx=004774160799092323420%3A6-ff2s0o6yi&q=\\1&sa=Search"))
+
+
+(defun rgr/call-google-translate (langpair prompt)
+  (interactive)
+  (let* ((thing (region-or-word-at-point))
+	)
+    (setq thing (read-string (format prompt thing) nil nil thing))
+    (browse-apropos-url  (concat (if (string-match " " thing) (quote "gt")(quote "googledict")) " " langpair " " thing))))
+  
+(defun rgr/browse-apropos-url (prefix prompt)
+  (interactive)
+  (let* ((thing (region-or-word-at-point))
+	)
+    (setq thing (read-string (format prompt thing) nil nil thing))
+    (browse-apropos-url  (concat prefix " " thing))))
+  
+; google keys and url keys
+(define-key mode-specific-map [?B] 'browse-apropos-url)
+
+; use f4 for direct URLs. C-u f4 for external default browser.
+(global-set-key (kbd "<f4>") 'rgr/browse-url)
+
+
+(global-set-key (kbd "<f5>") (lambda()(interactive)(rgr/call-google-translate "de en "  "German to English (%s): ")))
+(global-set-key (kbd "<f6>") (lambda()(interactive)(rgr/call-google-translate "en de "  "English to German (%s): ")))
+
+(global-set-key (kbd "<f3>") 'rgr/google-search-prompt)
+(global-set-key (kbd "C-<f5>")  (lambda()(interactive)(rgr/browse-apropos-url "ewiki2"  "Emacs Wiki Search (%s): ")))
+
+</pre>
+
+I hope someone finds it useful.
+
+=== Hayoo/Haskell integration
+
+Add to your  apropos-url-alist a new url and define a key for haskell mode
+
+<pre>
+(add-to-list 'apropos-url-alist '("^hayoo:? +\\(.*\\)" . ;; Hayoo
+	 "http://holumbus.fh-wedel.de/hayoo/hayoo.html?query=\\1"))
+
+(eval-after-load 'haskell-mode '(define-key haskell-mode-map (kbd "C-h f")  (lambda()(interactive)(rgr/browse-apropos-url "hayoo"  "Hayoo Search (%s): "))))
+start")
+</pre>
+

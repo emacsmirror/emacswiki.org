@@ -1,0 +1,253 @@
+A '''[::regular expression]''' (abbreviated "'''[::regexp]'''" or sometimes just "re") is a search-string with ''wildcards'' -- and more.  It is a ''pattern'' that is ''matched'' against the text to be searched.
+See the EmacsManual, node "Regexps". Examples:
+
+    "alex"
+
+A plain string is a regular expression that matches the string exactly.  The above regular expression matches "alex".
+
+    "alexa?"
+
+Some characters have special meanings in a regular expression.  The question mark, for example, says that the preceding expression (the character "a" in this case)  may or may not be present.  The above regular expression matches "alex" or "alexa".
+
+Regexps are important to Emacs users in many ways, including these:
+* We search with them interactively.  Try `C-M-s' (command <code>isearch-forward-regexp</code>).
+* Emacs code uses them to parse text.  We use regexps all the time, without knowing it, when we use Emacs.
+
+== Regular Expression Syntax ==
+
+Here is the syntax used by Emacs for regular expressions.
+Any character matches itself, except for the list below.
+
+The following characters are special : <code> . * + ? ^ $ \ [ </code> 
+
+Between brackets ##[]##, the following are special : <code> ] - ^ </code>
+
+Many characters are special when they follow a backslash -- see below.
+
+  .        any character (but newline)
+  *        previous character or group, repeated 0 or more time
+  +        previous character or group, repeated 1 or more time
+  ?        previous character or group, repeated 0 or 1 time  
+  ^        start of line
+  $        end of line
+  [...]    any character between brackets
+  [^..]    any character not in the brackets
+  [a-z]    any character between a and z
+  \        prevents interpretation of following special char
+  \|       or
+  \w       word constituent
+  \b       word boundary
+  \sc      character with c syntax (e.g. \s- for whitespace char)
+  \( \)    start\end of group
+  \< \>    start\end of word
+  \` \'    start\end of buffer
+  \1       string matched by the first group
+  \n       string matched by the nth group
+  \{3\}    previous character or group, repeated 3 times
+  \{3,\}   previous character or group, repeated 3 or more times
+  \{3,6\}  previous character or group, repeated 3 to 6 times
+
+##.?##,  ##+?##, and ##??## are non-greedy versions of ##.##,  ##+##, and ##?## -- see NonGreedyRegexp.
+Also, ##\W##, ##\B##, and ##\Sc## match any character that does not match 
+##\w##,  ##\b##, and ##\sc##.
+
+Here are some [[syntax classes]] that can be used between brackets, ##[]##.
+
+  [:digit:]  a digit, same as [0-9]
+  [:upper:]  a letter in uppercase
+  [:space:]  a whitespace character, as defined by the syntax table
+  [:xdigit:] an hexadecimal digit
+  [:cntrl:]  a control character
+
+Syntax classes:
+
+  \s-   whitespace character        \s/   character quote character
+  \sw   word constituent            \s$   paired delimiter         
+  \s_   symbol constituent          \s'   expression prefix        
+  \s.   punctuation character       \s<   comment starter          
+  \s(   open delimiter character    \s>   comment ender            
+  \s)   close delimiter character   \s!   generic comment delimiter
+  \s"   string quote character      \s|   generic string delimiter 
+  \s\   escape character            
+
+You can see the current [[syntax table]] by typing <code>C-h s</code>.
+The syntax table depends on the current mode. As expected,
+letters a..z are listed as word constituents in text-mode.
+Other word constituents in this mode include A..Z, 0..9,
+$, %, currency units, accented letters, kanjis. See EmacsSyntaxTable
+for details.
+
+
+== Idiosyncrasies of Emacs Regular Expressions ==
+
+* In a interactive search involving a regexp, a space character stands for
+one or more whitespace characters (tabs are whitespace characters).
+Enter <code>C-q SPC</code> to get a single space character.
+Or put the following in your InitFile to override this behaviour.
+
+                 (setq search-whitespace-regexp " ")
+
+* ##[^## ... ##]## matches all characters not in the list, even newlines.
+Put a newline in the list if you want it not to be matched.
+You can enter a newline character using `C-o',
+`C-q C-j', or `C-q 012 RET'. Note also that 
+##\s-## matches space, tab, newline and carriage return.
+This can be handy in a ##[^## ... ##]## construct.
+
+* Default case handling for replacing commands executes case conversion.
+This means that both upper and lower case match in the 
+regexp, whereas the case in the replacement string is chosen
+according to the match syntax. Try for example replacing 
+<code>john</code> by <code>harry</code> below. Case conversion
+can be toggled on/off by typing `M-c' in the minibuffer during search.
+You can also set the variable <code>case-fold-search</code> to <code>nil</code> to disable case conversion; see CaseFoldSearch for more details. In the following example, only the last line would then be replaced.
+
+                           John  =>  Harry
+                           JOHN  =>  HARRY
+                           john  =>  harry
+ 
+* Backslashes must be double-quoted when 
+used in Lisp code. Regular expressions are often specified using
+strings in EmacsLisp. Some
+abbreviations are available: <code>\n</code> for newline,
+<code>\t</code> for tab, <code>\b</code> for backspace,
+<code>\u3501</code> for character with unicode value 3501, 
+and so on.
+Backslashes must be entered as <code>\\</code>.
+Here are two ways to replace the decimal point by a comma
+(e.g. <code>1.5 -> 1,5</code>), first by an interactive command,
+second by executing Lisp code (type <code>C-x C-e</code> after
+the expression to get it executed).
+
+           M-x replace-regexp RET \([0-9]+\)\. RET \1, RET
+          (while (re-search-forward "\\([0-9]+\\)\\." nil t)
+                        (replace-match "\1,"))
+
+== Some Regexp Examples ==
+
+ [+-[:digit:]]                     digit or + or - sign
+ \(\+\|-\)?[0-9]+\(\.[0-9]+\)?     decimal number (-2 or 1.5 but not .2 or 1.)
+ \(\w+\) +\1\>                     two consecutive, identical words
+ \<[[:upper:]]\w*                  word starting with an uppercase letter
+  +$                               trailing whitespaces (note the starting SPC)
+ \w\{20,\}                         word with 20 letters or more
+ \w+phony\>                        word ending by phony
+ \(19\|20\)[0-9]\{2\}              year 1900-2099
+ ^.\{6,\}                          at least 6 symbols
+ ^[a-zA-Z0-9_]\{3,16\}$            decent string for a user name
+ <tag[^> C-q C-j ]*>\(.*?\)</tag>  html tag
+
+
+== Some Emacs Commands that Use Regular Expressions ==
+
+ C-M-s                   incremental forward search matching regexp
+ C-M-r                   incremental backward search matching regexp 
+ replace-regexp          replace string matching regexp
+ query-replace-regexp    same, but query before each replacement
+ align-regexp            align, using strings matching regexp as delimiters
+ highlight-regexp        highlight strings matching regexp
+ occur                   show lines containing a match
+ multi-occur             show lines in all buffers containing a match
+ how-many                count the number of strings matching regexp
+ keep-lines              delete all lines except those containing matches
+ flush-lines             delete lines containing matches
+ grep                    call unix grep command and put result in a buffer
+ lgrep                   user-friendly interface to the grep command
+ rgrep                   recursive grep
+ dired-do-copy-regexp    copy files with names matching regexp
+ dired-do-rename-regexp  rename files matching regexp 
+ find-grep-dired         display files containing matches for regexp with Dired
+
+Note that <code>list-matching-lines</code> is an alias for 
+<code>occur</code>
+and <code>delete-matching-lines</code> is an alias for 
+<code>flush-lines</code>.
+The command <code>highlight-regexp</code> is bound to
+<code>C-x w h</code>.
+Also <code>query-replace-regexp</code>
+is bound by default to <code>C-M-%</code>,
+although some people prefer using an alias, like 
+<code>M-x qrr</code>.
+Put the following in your InitFile to create such alias.
+
+   (defalias 'qrr 'query-replace-regexp)
+
+See also:
+IncrementalSearch, ReplaceRegexp, AlignCommands, 
+OccurBuffer, DiredPower
+
+
+== Study and Practice ==
+
+* Read about regexps in the Elisp manual (see also RegexpReferences), and study EmacsLisp code that uses regexps.
+
+* Regexp searching (`C-M-s') is a great way to learn about regexps -- see [[IncrementalSearch#RegexpSearches|Regexp Searches]]. Change your regexp on the fly and see immediately what difference the change makes.
+
+* Some examples of use (see also ReplaceRegexp and EmacsCrashRegexp):
+** Search for trailing whitespace: ##C-M-s SPC+$##
+
+** Highlight all trailing whitespace: ##M-x highlight-regexp RET SPC+$ RET RET##
+
+** Delete trailing whitespace: ##M-x replace-regexp RET SPC+$ RET RET## (same as `M-x delete-trailing-whitespace')
+
+** Search for open delimiters: ##C-M-s \s( ##
+
+** Search for duplicated words (works across lines): ##C-M-s \(\<\w+\>\)\s-+\1##
+
+** Count number of words in [[buffer]]: ##M-x how-many RET \< RET##
+
+** Align words beginning with an uppercase letter followed by a lowercase letter: ##M-: (setq case-fold-search nil) RET## then ##M-x align-regexp RET \<[[:upper:]][[:lower:]] RET##
+
+** Replace word ##foo## by ##bar## (won't replace ##fool## by ##barl##): ##M-x replace-regexp RET \<foo\> RET bar##
+
+** Keep only the first two words on each line: ##M-x replace-regexp RET ^\(\W*\w+\W+\w+\).* RET \1 RET##
+
+** Suppress [[line]]s beginning with ##;;##: ##M-x flush-lines RET ^;; RET##
+
+** Remove the text after the first ##;## on each line: ##M-x replace-regexp RET \([^;]*\);.* RET \1 RET##
+
+** Keep only lines that contain an email address: ##M-x keep-lines RET \w+\(\.\w+\)?@\(\w\|\.\)+ RET##
+
+** Keep only one instance of consecutive empty lines: ##M-x replace-regexp RET ^C-q C-j\{2,\} RET C-q C-j RET##
+
+** Keep words or letters in uppercase, one per line: ##M-x replace-regexp RET [^[:upper:]]+ RET C-o RET##
+
+** List lines beginning with ##Chapter## or ##Section##: ##M-x occur RET ^\(Chapter\|Section\) RET##
+
+** List lines with more than 80 characters: ##M-x occur RET ^.\{81,\} RET##
+
+
+== Tools for Constructing Regexps ==
+
+* Command `re-builder' constructs a
+regular expression. You enter the regexp in a 
+small window at the bottom of the frame. The first 200 matches in the [[buffer]] are highlighted, so you can see if the regexp does what you want. Use Lisp syntax, which means doubling backslashes and using ##\\\\## to match a literal backslash.
+
+* Macro `rx' provides user-friendly syntax for 
+regular expressions. For example, ##(rx (one-or-more blank) line-end)##
+returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
+
+* SymbolicRegexp is similar in aim to `rx'.
+
+
+[:RegexpsInIcicles]
+== Use Icicles to Learn about Regexps ==
+
+[[Icicles]] provides these interactive ways to learn about regexps: 
+
+* '''`##C-`##'''' (`icicle-search') shows you regexp matches, as does `C-M-s', but it can also show you (that is, highlight) regexp ''subgroup'' matches.  Showing matched subgroups is very helpful for learning, and [[Icicles]] is unique in this.  There are two ways that you can use this feature:
+
+** You can seach for a regexp, but limit the search context, used for further searching, to a particular subgroup match. For example, you can search for and highlight Lisp argument lists, by using a regexp subgroup that matches lists, placing that subgroup after `defun':  '''##(defun [^(]*\(([^(]*)\)##''', that is, ##defun##, followed by non-`##(##' character(s), followed by '''`##(##'''', possibly followed by non-`##)##' character(s), followed by '''`##)##''''.
+
+** You can search for a regexp without limiting the search context to a subgroup match. In this case, '''Icicles''' highlights each subgroup match in a different color. Here's an example, showing how each subgroup of the complex regexp ##(##'''##\(##'''##[-a-z]*]+##'''##\)##'''## *##'''##\(##'''##(##'''##\(##'''##([-a-z]+ *##'''##\(##'''##[^)]*##'''##\)##'''##)##'''##\)##'''##)##'''##\)##'''##.*## is matched:
+
+::: [[image:IciclesSearchContextLevelsScreenshot]]
+
+* `##C-`##' also helps you learn by letting you use two simple regexps (search within a search) as an alternative to coming up with a single, complex regexp to do the same job.  And, as with incremental search, you can change the second regexp on the fly to see immediately what difference the change makes. See [[Icicles - Search Commands, Overview]]
+
+* `S-TAB' during [[minibuffer]] input shows you all matches for your input string, which can be a regexp. So, just type a regexp whenever the minibuffer is active for [[completion]] and hit `S-TAB' to see what the regexp matches. Try this with [[command]] input (`M-x'), [[buffer]] switching (`C-x b'), file visiting (`C-x f'), help (`C-h f', `C-h v'), and so on. Almost any time you type input in the minibuffer, you can type a regexp and use `S-TAB' to see what it matches (and then choose one of the matching candidates to input, if you want).
+
+----
+CategoryRegexp
+CategoryGlossary
+

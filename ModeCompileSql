@@ -1,0 +1,176 @@
+My rather clunky patch for ModeCompile that allows for executing SQL scripts.  
+I've found it keeps me in a better rhythm.  It's just for MS SQL Server at the moment, because that's what I was using at the time - trivial to change it for other backends though.  --TimAnderson
+
+<pre>
+
+*** mode-compile.el	Wed Sep 15 10:31:35 2004
+--- mode-compile-tka.el	Wed Sep 15 15:01:50 2004
+***************
+*** 340,345 ****
+--- 340,346 ----
+      (cperl-mode            . (perl-compile      kill-compilation))
+      (tcl-mode              . (tcl-compile       kill-compilation)) ; JWH
+      (python-mode           . (python-compile    kill-compilation)) ; BM
++     (sql-mode              . (sql-compile       kill-compilation)) ; TKA
+      ;(message-mode          . (message-compile   kill-compilation))
+      (fundamental-mode      . (guess-compile     nil)) ; bound dynamically
+      (text-mode             . (guess-compile     nil)) ; itou
+***************
+*** 1322,1327 ****
+--- 1323,1404 ----
+    :group 'compilation-elisp)
+  
+  
++ ;; @@ sql-mode compile variables ;;;
++ (defgroup compile-sql nil
++   "Sql compilation options"
++   :group 'compilation-lang)
++ 
++ (defcustom sql-compilers-list '( "isql" )
++   "List of user's favourite Sql compilers in order of preferencies."
++   :type '(repeat (string :tag "SQL Compiler name"))
++   :group 'compile-sql)
++ 
++ (defcustom sql-companion-file-regexp "\\(_[Pp]\\)?\\.[pP]?inc"
++   "Regexp to find associated .f file from a .inc."
++   :type 'regexp
++   :group 'compile-sql)
++ 
++ (defcustom sql-default-compiler "isql"
++   "*Default sql compiler to use when everything else fails..
++ 
++ This could be any form evaluating to a string, so you could map it to
++ a function asking you interactively to choose the compiler.
++ 
++ example:
++  (defun my-choose-compiler()
++    (read-string \"Sql compiler: \"))
++  (setq sql-default-compiler 'my-choose-compiler)"
++   :type '(choice string function)
++   :group 'compile-sql)
++ 
++ (defcustom sql-compiler-varenv "isql"
++   "Varenv indicating the sql compiler to use."
++   :type 'string
++   :group 'compile-sql)
++ 
++ (defcustom sql-cflags-varenv ""
++   "Varenv indicating the sql compiler flags to use."
++   :type 'string
++   :group 'compile-sql)
++ 
++ (defcustom sql-source-ext-list '( "sql" )
++   "Extensions for sql compileable source files."
++   :type '(repeat string)
++   :group 'compile-sql)
++ 
++ (defcustom sql-headers-ext-list '( "sql")
++   "Extensions for sql include files."
++   :type '(repeat string)
++   :group 'compile-sql)
++ 
++ (defcustom sql-default-compiler-options "-E -n -i"
++   "*Default options to give to the sql compiler.
++ 
++ This could be any form evaluating to a string.  See
++ `mode-compile-choosen-compiler' variable."
++   :type '(choice
++           string
++           (sexp :tag "Form evaluating to a string"))
++   :group 'compile-sql)
++ 
++ (defcustom sql-source-file-ext-regexp "\\.\\(SQL\\|sql\\)"
++   "Regexp to find, from it's name, if a sql file is compilable."
++   :type 'regexp
++   :group 'compile-sql)
++ 
++ (defcustom sql-build-output-args nil
++   "Build output-args for sql-mode."
++   :type 'boolean
++   :group 'compile-sql)
++ 
++ (defcustom sql-object-file-ext "out"
++   "Extension of objects file (result of compilation)
++ in Sql mode."
++   :type 'string
++   :group 'compile-sql)
++ 
++ 
++ 
+  ;; @@ Misc declarations ;;;
+  
+  ;;;###autoload
+***************
+*** 2251,2256 ****
+--- 2328,2365 ----
+     )
+    (mc--compile (mc--set-command)))
+  
++ (defun sql-compile ()
++   "Run `compile' with a dynamically built command for `sql-mode'.
++ 
++ The command is built depending of the existence of a makefile (which could
++ be specified by changing value of variable mode-compile-makefile-regexp) in
++ the current directory or not.
++ If no makefile is found try to run a sql compiler on the file or it's companion..
++ 
++ See also variables:
++  -- sql-compilers-list
++  -- sql-default-compiler
++  -- sql-companion-file-regexp
++  -- sql-compiler-varenv
++  -- sql-cflags-varenv
++  -- sql-source-ext-list
++  -- sql-headers-ext-list
++  -- sql-source-file-ext-regexp)"
++   (setq
++    mc--comp-lst          sql-compilers-list
++    mc--def-comp          sql-default-compiler
++    mc--compfile-regexp   sql-companion-file-regexp
++    mc--comp-varenv       sql-compiler-varenv
++    mc--cflags-varenv     sql-cflags-varenv
++    mc--comp-options      sql-default-compiler-options
++    mc--source-ext-lst    sql-source-ext-list
++    mc--head-ext-lst      sql-headers-ext-list
++    mc--source-ext-regexp sql-source-file-ext-regexp
++    mc--build-op-args     sql-build-output-args
++    mc--outfile-ext       sql-object-file-ext
++    )
++   (mc--compile (mc--set-command)))
++ 
+  
+  (defun elisp-compile ()
+    "Run `byte-compile' on the current Emacs lisp buffer.
+***************
+*** 2501,2506 ****
+--- 2610,2616 ----
+   `cperl-mode'            -- function perl-compile.
+   `tcl-mode'              -- function tcl-compile.
+   `python-mode'           -- function python-compile.
++  `sql-mode',         -- function sql-compile.
+   `fundamental-mode'      -- function guess-compile.
+   `text-mode'             -- function guess-compile.
+   `indented-text-mode'    -- function guess-compile.
+***************
+*** 2605,2610 ****
+--- 2715,2721 ----
+   `cperl-mode'            -- function kill-compilation.
+   `tcl-mode'              -- function kill-compilation.
+   `python-mode'           -- function kill-compilation.
++  `sql-mode'              -- function kill-compilation.
+   `fundamental-mode'      -- Bound dynamically.
+   `text-mode'             -- Bound dynamically.
+   `indented-text-mode'    -- Bound dynamically.
+***************
+*** 2640,2644 ****
+--- 2751,2759 ----
+  
+  
+  
++ ;;; Local variables:
++ ;;; outline-regexp: ";; @+"
++ ;;; eval: (outline-minor-mode 1)
++ ;;; End:
+  
+  ;;; mode-compile.el ends here
+</pre>

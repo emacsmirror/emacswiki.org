@@ -1,0 +1,88 @@
+[[en:SiteMap]]
+[[ko:대문]]
+[[ja:サイトマップ]]
+[[se:InnehållsFörteckning]]
+[[zh:網站地圖]]
+[[ru:КартаСайта]]
+[[pt:MapaDoSite]]
+[[fr:PlanDuSite]]
+'''WikiEmacs''' está dedicado a ofrecer material sobre EmacsYXEmacs. Siéntase libre de agregar contenido y modificar el material existente. Para obtener mas información visite la DeclaraciónDePrincipios o WikiCómo.
+
+* HowToNavigate -- ayuda en la navegacion por la pagina (EmacsWiki) 
+
+* ElispArea -- añadir y descargar codigo fuente de EmacsLisp 
+
+* HowToEdit -- como puedes colaborar con la pagina
+
+* EmacsWikiAdministrators -- para controlar el vandalismo y el spam de esta pagina
+
+* WikiDownload -- como conseguir copias de la pagina
+
+
+==Acerca de Emacs==
+
+* CategoríaHistoria -- Evolución histórica.
+* RazonesPracticas -- Razones de uso.
+
+[:AprendiendoEmacs]
+== Aprendiendo a usar Emacs ==
+
+* PrincipianteEmacs -- conceptos basicos, vocabulario, anotacion usada en la documentación
+* [http://www.gnu.org/software/emacs/tour/ TourGuiado] -- Introducción rápida en Inglés.
+* [English:CategoryDocumentation Documentation] -- Emacs incluye documentacion de gran ayuda
+* [English:CategoryHelp Help] -- ayuda online de Emacs y sus usuarios
+* [English:CategoryGlossary Glossary] -- Terminologia usada en Emacs
+* EmacsNiftyTricks -- trucos diversos
+* RandomPage -- prueba tu suerte
+
+
+==Programando Emacs==
+* CategoriaProgramacion -- Trucos y consejos para programar en Emacs
+
+* CollectionOfEmacsDevelopmentEnvironmentTools -- CEDET
+* EmacsCodeBrowser -- ECB
+* JavaDevelopmentEnvironment -- JDEE
+
+==Modos==
+
+* InstallingPackages -- Instalar nuevos modos y extensiones.
+* ModoAbbrev -- Modo abreviado.
+* ModoShell -- Modo consola.
+* http://github.com/technomancy/emacs-starter-kit/tree/master
+
+
+==Comunidad==
+
+===En el irc===
+El usuario fsbot es un bot en elisp corriendo en emacs!
+* EmacsChannel -- Comunidad internacional.
+* CanalEmacsEs -- Comunidad hispana.
+
+===Usuarios===
+* AythamiSantana
+* DavidVázquez
+* [[Exal]]
+* BorjaTarraso
+
+
+==Varios==
+===Videoteca===
+* [ftp://es.gnu.org/multimedia/video/Emacs-Editor_Wars-marchesi-1.ogm Vídeo: Editor Wars. p1] -- Excelente para empezar.
+* [ftp://es.gnu.org/multimedia/video/Emacs-Editor_Wars-marchesi-2.ogm Vídeo: Editor Wars. p2] -- Continuacion del anterior.
+* [ftp://es.gnu.org/multimedia/video/Taller_LISP_hacklab_cielitolindo.mpg Vídeo: Taller de Lisp]
+* ScreenCast
+
+===Artículos===
+* EscritorioEmacs -- Tu Emacs tuneado desde cualquier parte del mundo.
+* NoClasificado -- Cosas antiguas del wiki.
+
+===Recursos externos===
+* [http://del.icio.us/search/?p=emacs Delicious] -- Red social de marcadores.
+* [http://programming.reddit.com/search?q=emacs Reddit] -- Red social de marcadores comentados.
+* [http://www.google.es/search?q=emacs Google] -- El conocido buscador.
+
+
+==Idiomas==
+
+<include "WikiLanguageMenu">
+

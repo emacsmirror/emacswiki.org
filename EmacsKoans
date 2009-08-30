@@ -1,0 +1,62 @@
+Time to start developing some Koans that will lead the newbies to
+enlightenment!  In addition to ''zalisp'', that's sitting and
+meditating (whether opposing a wall or not (depending on the school
+(GnuEmacs, XEmacs))), the newbies are encouraged to engage in the
+flowing meditation of ''martial args''.
+
+The Emacs Koans should be similar to the well known AI Koans [http://catb.org/~esr/jargon/html/koans.html].
+
+Other sources:
+
+* http://www.csd.uwo.ca/staff/magi/personal/humour/Computer_Folklore.html
+
+----
+A newbie asked on the newsgroup: What is the true nature of the lambda expression?
+
+A parenthesis holds its value, answered the old masters.
+
+----
+A newbie asked on the newsgroup: Why is Emacs not using a popular extension language such as Perl?
+
+The master answered: The river sparkles and dances on the rocks.  At night, it flows deep and strong.
+
+----
+An old master asked on the newsgroup: What is the best question a newbie can ask about Emacs?
+
+The newbie answered: What is Emacs?
+
+----
+A newbie asked on the newsgroup: "What is the meaning of Emacs"?
+
+"What is the value of one parenthesis evaluating?", answered the old masters.
+----
+A novice of the temple once approached the Master Programmer with a question: "Master, does Emacs have the Buddha nature?" the novice asked.
+
+The Master Programmer had been in the temple for many years and could be relied
+upon to know these things. He thought for several minutes before replying: "I don't see why not. It's bloody well got everything else."
+
+[:DocString]
+----
+Gnubie told the Gnuru:
+: "I cannot grok this doc string; it is all cdr-carred" (bass-ackward).
+
+The Gnuru replied (paraphrased and extrapolated from emacs-devel@gnu.org, 2006-01-26, ThienThiNguyen):
+
+: "Grasshopper, you must climb the trunk feet skyward; dance on the leaves but hold onto the root. Snort the challenging doc string like the gateway drug it is, then explore the innards of the Info and the Lisp. The doc string is but the door to the Other Side on This Side. The Lisp is the Other Side that is also This Side. It is the root that leaves nil, for its trunk is self-consedness itself."
+
+----
+
+"Don't get set into one form, adapt it and build your own, and let it grow, be
+like Emacs. Empty your mind, be formless, shapeless — like Emacs. If you put
+Emacs in a cup it becomes the cup, if you put into a bottle it becomes the
+bottle. You put Emacs into a teapot it becomes the teapot. Now, Emacs can flow
+or it can crash. Be Emacs, my friend."
+
+----
+
+In vain does the chicken cross the road; Emacs is on both sides. -- Ludovic Brenta.
+
+----
+
+CategoryHumor
+

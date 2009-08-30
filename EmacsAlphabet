@@ -1,0 +1,32 @@
+An alphabetical discovery of useful Emacs commands and functions. To find out more about each of these commands and functions, type ##M-x describe-function RET name-of-command##.
+Words in italics are not a part of GNU Emacs.
+
+* align-regexp, /auctex/, animate-birthday-present
+* buffer, blink-cursor-mode
+* calendar
+* dired, doctor, defun
+* ediff
+* fontlock, flyspell-mode, ffap
+* glasses-mode, gnus, gnus-summary-show-article-from-menu-as-charset-compound-text-with-extensions
+* hanoi,hexl-find-file, hide-ifdef-mode, html-mode
+* iswitchb
+* jit-lock,java-mode
+* kill-region
+* life, lambda
+* man
+* narrow-to-region
+* occur, outline
+* planner
+* quail
+* re-builder, report-emacs-bug
+* /slime/, search-forward-regexp
+* tramp
+* untabify
+* viper-mode
+* which-function-mode
+* xterm-mouse-mode
+* yow,yank
+* zippy, zone
+
+----
+CategoryHumor

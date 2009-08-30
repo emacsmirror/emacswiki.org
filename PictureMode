@@ -1,0 +1,24 @@
+M-x picture-mode is great if you want to do some ASCII-art, or while drawing some kind of diagram och technical sketch. When this mode is enabled it let you move around freely using the cursor keys, for example, moving up or down will move up or down to the same column as on the previous line, regardless if there were some information there before or not (i.e. it will insert the necessary spaces).  See Manual:pictures for more.
+
+What I don't like is when people respond with "Use picture-mode." when someone asks the question: ''"How do I make emacs position the cursor in the same column if I move up or down when the line I move to is shorter than the current one?"''. Why don't I like this? Because I have seen those questions and the answers many times and it is often obvious that the person asking the question does not want picture-mode at all. He wants that feature added as (for example) a minor-mode, to be used when editing source-code.
+
+Ok, sorry for the rant, remove it if you think I am overreacting... :)
+
+Rant aside (I don't need this function much myself), is it even technically possible for emacs to do what these people want without inserting "dummy" spaces to make the move to the column possible? Is this maybe an inherit limitation in emacs' display engine?
+
+-- MathiasDahl
+
+== Picture-Mode Removes Trailing Whitespace ==
+
+[new:DrewAdams:2004-12-25 18:18 UTC]
+A little-known side effect of picture-mode is that it removes trailing whitespace. This means that if you want to remove trailing whitespace you can just enter, then exit picture-mode. This works even in very old versions of Emacs. -- DrewAdams
+
+----
+
+See also ArtistMode.
+
+----
+CategoryModes
+MultimediaModes
+
+

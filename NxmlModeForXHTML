@@ -1,0 +1,154 @@
+I looked at a number of different modes for authoring HTML, including HtmlMode,  
+PsgmlMode, HtmlHelperMode, HtmlModeDeluxe, but I decided to use the wonderful NxmlMode instead.  This has the advantage of providing validation as you type and excellent auto-completion facilities.  There is a catch, though, and that is that you have to write XHTML (HTML expressed as a dialect of XML) rather than SGML or HTML).  This is not really a big deal, but I thought I'd record my experience here.
+
+To make it even more simple I wrote a new mode nxhtml-mode (which is now part of [NxhtmlMode nXhtml]). nxhtml-mode is derived from nxhtml-mode (NxmlMode).
+It adds a lot of things useful for XHTML.
+Among other things it adds some way of handling multiple modes, folding, an improved interface to Tidy etc.
+However, it requires Emacs22, while NxmlMode works in Emacs21 as well.
+
+
+== Using XHTML Instead of HTML ==
+
+There are a few things you have to do differently if you are authoring web pages as XHTML instead of HTML:
+
+* Close all of your tags, so that for each <p> there is a matching </p>.  This is a good idea anyway for reasons of readability.  Use C-c C-f to insert the closing tag automatically.
+
+* Lowercase all of your tags, and put all attribute values in quotes
+
+* Tags (possibly with attributes) without content <nowiki>(like <meta foo="bar">)</nowiki> have to be written with a slash before the close: <meta foo="bar" />.  The space before the slash is suggested for compatibility with current HTML browsers.
+
+* If you want to use named entities like &amp;nbsp;, which are defined in the XHTML specification, then you have to refer to that DTD explicitly at the start of your document, or declare the entities there.  If you don't nxml-mode will complain that &amp;nbsp; is undefined.  Or you can use numeric references instead, such as &amp;#160; or just insert the correct character in your document in whatever encoding you are using (e.g iso-8859-1).  If you are using utf-8, then xmlunicode.el and unichars.el (http://nwalsh.com/emacs/xmlchars/) are a big help when inserting such characters.
+
+** *Question: Could you tell exactly what should be entered to refer to that DTD?*
+
+** Answer: For example, you could begin your document like this:
+<pre>
+    <?xml version="1.0" encoding="utf-8"?>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+            "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+</pre>
+** This refers to the XHTML 1.0 transitional DTD, which allows various liberties that are still commonly taken with HTML, but which are forbidden by the strict XHTML 1.0 DTD. 
+
+** Many thanks! 
+
+All of this amounts to a very small change in my writing habits in exchange for a very large benefit of having an editor that prompts me as I type incorrect markup.  In contrast to modes that require you to install DTDs, nxml-mode works for editing XHTML "out of the box".  To try it out, just install it and type M-x nxml-mode <RET> while editing an HTML file.
+
+If you have html code and want to use xhtml instead, use tidy to fix it  - see http://www.hollenback.net/index.php?EmacsTidy
+
+=== Inline JavaScript or CSS in XHTML ===
+
+The strict rules of XML may seem to infere with using inlined JavaScript or CSS. There was a thread about this in the emacs-nxml-mode mailing list:
+http://groups.yahoo.com/group/emacs-nxml-mode/message/1191
+
+The conclusion in this thread seems to be that the best to use in XHTML files is CDATA around JavaScript, like this
+
+    <script type="text/javascript">
+      /* <![CDATA[ */
+        if (1 < 2) alert("hej < CDATA no nocomment");
+      /* ]]> */
+    </script>
+
+This is also the way [http://www.w3.org/People/Raggett/tidy/ Tidy] handles this.
+
+You can use either comment style to hide the CDATA tags, but the style above works also for inlined CSS in IE 6.
+
+
+
+
+== Multiple Modes with nXml Mode ==
+
+MuMaMo works well out of the box with nXml mode and multiple major modes. It was released just yesterday (2007-04-04).
+
+[new]
+I have written a little package called html-script (http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Download/html-script.el), which allows you to narrow the buffer down to a PHP/CSS/JavaScript/VB block and use the appropriate major-mode, and then switch back again.  It used to be called nxml-script but was renamed as it now works with both nxml-mode and html-mode.  The idea and most of the code were taken from HtmlHelperMode.  I tried without success to get multiple major mode working with nxml-mode.
+
+[new]
+I've got MMM working along with nxml mode and Turadg's PHP mode.  As I see it, the problem is that nxml re-fontifies regions that have another submode (eg CSS, PHP).  So when you want to fontify a PHP region, for example, you have to have MMM reparse the buffer (eg with a C-c % C-5) to get font locking for the submode.  This is no more obtrusive than using an HtmlHelperMode paradigm; but it allows you to edit the submode region inline.  See MmmAndNxmlScreenshot for an example where nxml is clobbering the fontification of everything but the submode region in which the point is under MMM. -- DeanScarff
+
+[new]
+I made the following changes to get mmm-mode working with nxml (because nxml creates local copies of these parameters):
+
+
+  diff -c /Users/ptw/.emacs.d/site-lisp/mmm-vars.el.\~1\~ /Users/ptw/.emacs.d/site-lisp/mmm-vars.el
+  *** /Users/ptw/.emacs.d/site-lisp/mmm-vars.el.~1~	Wed Jun 16 10:14:18 2004
+  --- /Users/ptw/.emacs.d/site-lisp/mmm-vars.el	Thu Nov 23 09:46:31 2006
+  ***************
+  *** 293,298 ****
+  --- 293,309 ----
+        ;; Abbrev mode
+        abbrev-mode
+        local-abbrev-table
+  +     ;; nxml-mode makes these local
+  +     adaptive-fill-mode
+  +     forward-sexp-function
+  +     indent-line-function
+  +     fill-paragraph-function
+  +     comment-indent-function
+  +     comment-start
+  +     comment-start-skip
+  +     comment-end
+  +     comment-end-skip
+  +     comment-line-break-function
+        ;; And finally the syntax table and local map.
+        ((syntax-table . set-syntax-table))
+        ((current-local-map . use-local-map) buffer)
+  
+  Diff finished.  Thu Nov 23 09:51:15 2006
+
+
+-- [[PTWithy]]
+
+
+== Folding with Nxml Mode ==
+
+The built-in folding capability of nxml-mode will not work with xhtml, since it requires sections with a beginning and end tag, whereas xhtml is ususally structured by means of <h1> tags, and so forth.  You can easily add support for this using OutlineMode, or you might want to use HideShow to fold elements.  I use both together; in my nxml-mode-hook, I have: 
+
+    (when (string-match "\\.\\(x?html\\|php[34]?\\)$"
+                        (file-name-sans-versions (buffer-file-name)))
+      (my-xhtml-extras))
+
+And here is the code: 
+
+  (defun my-xhtml-extras ()
+    (make-local-variable 'outline-regexp)
+    (setq outline-regexp "\\s *<\\([h][1-6]\\|html\\|body\\|head\\)\\b")
+    (make-local-variable 'outline-level)
+    (setq outline-level 'my-xhtml-outline-level)
+    (outline-minor-mode 1)
+    (hs-minor-mode 1))
+
+  (defun my-xhtml-outline-level ()
+    (save-excursion (re-search-forward html-outline-level))
+    (let ((tag (buffer-substring (match-beginning 1) (match-end 1))))
+      (if (eq (length tag) 2)
+          (- (aref tag 1) ?0)
+        0)))
+
+  (add-to-list 'hs-special-modes-alist
+        '(nxml-mode
+          "<!--\\|<[^/>]>\\|<[^/][^>]*[^/]>"
+          ""
+          "<!--" ;; won't work on its own; uses syntax table
+          (lambda (arg) (my-nxml-forward-element))
+          nil))
+
+  (defun my-nxml-forward-element ()
+    (let ((nxml-sexp-element-flag))
+      (setq nxml-sexp-element-flag (not (looking-at "<!--")))
+      (unless (looking-at outline-regexp)
+        (condition-case nil
+            (nxml-forward-balanced-item 1)
+          (error nil)))))
+
+See also FoldDwim for a convenient interface to all this, and to nxml-mode's folding, too.
+
+-- PeterHeslin
+
+[new]
+I have stolen this idea and added it to [NxhtmlMode nXhtml]. 
+BTW I believe the code above is a little bit broken.
+-- LennartBorgman
+----
+CategoryHypermedia HtmlMode

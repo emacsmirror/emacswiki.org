@@ -1,0 +1,58 @@
+Download Lisp:vbs-repl.el
+
+(See also WshRepl, which seems to be geared more directly to JScript and is quite a bit more elegant than my code.)
+
+At this point, there are a few different forks of visual basic modes to
+choose from, if you want to develop VBScript.  The hard thing about
+scripting in VBScript (especially if you're more accustomed to Lispy
+sorts of languages) is the lack of a REPL (Read-Eval-Print-Loop), a way
+to try things and see if they work.  The aim of this Emacs package is to
+provide functionality similar to a REPL, although it won't really be
+one.
+
+The biggest thing holding me back from making this a full-blown REPL is
+the painful truth that VBScript's "=" operator is ambiguous by itself;
+it needs context.  For example, do you want to assign the value 5 to the
+variable x?  Then you can say "x=5" and there, you have assigned that
+value.  But how do you test for equality between x and 5?  The same way.
+In the context of things like If...Then statements, If x=5 Then... will
+not assign 5 to x, it will test for equality between x and 5.  Hence,
+just like the difference between Subs and Functions, there are two ways
+of evaluating a string into VBScript code: Execute (corresponds to Sub),
+and Eval (corresponds to Function).
+
+For the purposes of this code, by default everything is an Execute.  If
+you want something to be Evaled rather than Executed, run it with the
+prefix argument.  For example, if I'm sitting with the cursor at the end
+of a variable assignment, like "x = 5", with my keybindings I'll hit C-c
+C-e to execute that line.  But if I want to know if x = 5, then I'll use
+the prefix arg.  In that case, I hit C-u C-c C-e, and I get either
+"True" or "False" in response.
+
+Previous versions of this REPL tried to guess whether you wanted code
+Evaled or Executed.  That was too problematic; maybe in the future we
+will do that again, but for now you can guide it to do what you want.
+
+To use this, put it in your load-path and do something like the
+following in your .emacs file:
+
+<pre>
+; VBScript editing
+(setq auto-mode-alist
+      (append '(("\\.\\(vbs\\|wsf\\)$" . vbscript-mode))
+              auto-mode-alist))
+</pre>
+
+To start the repl, load a VBScript file, make sure you're in
+visual-basic mode, and hit C-c C-z (or whatever you mapped to
+vbs-setup-repl).  To execute from the beginning of the line (or the
+beginning of the statement; it does recognize multiline VBScript), use
+C-c C-e.  Select a region and execute it with C-c C-r.  If you want it
+to Eval rather than Execute (like, for example, you want to know what "x
+& y" would be), Use C-u before the above keystrokes.
+
+v2.1 has a much, much better REPL; it works well enough even without the
+Emacs support.  It does require VisualBasicMode now, and defines a
+derived mode, vbscript-mode.  Keybindings are now automatic.
+
+-- CharlesSebold

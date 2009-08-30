@@ -1,0 +1,13 @@
+I've been using Emacs since 2003, mostly on Windows using EmacsW32.
+
+I developed oracle-mode which is a blending of code from the old sqlplus-mode from Jim Lange's original sql-mode with the casing and indenting functionality from Josie Stauffer's sqled-mode. I was actually surprised the name wasn't already spoken for. It also includes some invaluable code contributed to the original sql-mode by Thomas Miller of KnowledgeStorm Inc. It provides the ability to interact with multiple SQL*Plus buffers.
+
+I also own my own data warehouse consultancy, specializing in Oracle data warehousing, called Transcendent Data, Inc.
+
+I can be reached at stewart@transcendentdata.com
+
+[new]
+Welcome to the wiki! Jim Lange's original sql-mode -- hehehe, that triggers some very old memories. I wrote the first version of sql.el that comes with Emacs these days, based on ideas from the various SQL modes out there. And I used it for many years for my day job, dealing almost exclusively with Oracle databases (starting with Oracle 7.3). Mainternership has passed on, and I don't claim to understand the new code that well, but I still use it when I work with Oracle. Not even the latest and greatest Toad can replace Emacs with a decent SQL mode... :) I think at the time I wrote the SqlMode pages for my stuff. -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -1,0 +1,18 @@
+There exists a free user manual for LaTeX, started six years ago, in 1999.
+It is far from completion, but has some interesting commentary and a great
+command reference appendix.  It is written in GNU [[Texinfo]] and is availble as
+a helpful Emacs InfoMode.  PDF versions are also available:
+
+http://agave.garden.org/~aaronh/texinfo/
+
+The documentation's project page, that has been stale since 2002, is here:
+
+https://savannah.nongnu.org/projects/latex-manual/
+
+There's a more complete free manual on LaTeX available from the India TeX
+Users Group (TUG).  Unfortunately, it was written in LaTeX of all things:
+
+http://www.tug.org.in/tutorials.html
+
+----
+CategoryTex

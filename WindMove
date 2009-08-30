@@ -1,0 +1,23 @@
+Windmove is a package that allows you to move point from window to window using Shift and the arrow keys.  This is easier to type than <code>C-x o</code> and, for some users, may be more intuitive.  To activate all these keybindings, add the following to your ~/.emacs file:
+
+    (when (fboundp 'windmove-default-keybindings)
+      (windmove-default-keybindings))
+
+The `fbound' test is for those XEmacs installations that don't have
+the windmove package available.
+
+If you are a PcSelectionMode or CuaMode user, however, you will need to use your own keybindings, since shift plus arrow keys are used to extend the selection.
+For CuaMode it may be natural to use
+
+    (windmove-default-keybindings 'meta)
+
+This will override M-left and M-right but these are duplicated by C-left and C-right which are probably more natural for a CuaMode user.
+
+See WindowNavigation for a similar piece of code, but written from scratch.
+
+
+If you want to use windmove on Xemacs, look at:
+
+http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&th=52b56e235ffba787
+----
+CategoryWindows

@@ -1,0 +1,17 @@
+Search and replace numerous files in VersionControl.
+
+ From: KaiGrossjohann
+ Subject: Re: String-replace in multiple files
+ Newsgroups: comp.emacs
+ Date: 30 May 2001 13:53:50 +0200
+
+
+You can use `C-x v d' (or `C-u C-x v d'?) for a recursive directory listing of all the files in RCS or CVS.  (You might have to use `v t' in the listing to display even the non-locked files.)
+
+You could then check out all the files, use `Q' to do the replace in all files, then check them all in again.  Optimizing this so that only those files are checked out that contain the string is a little more difficult, but not at all impossible.
+
+To check out all the files, mark them and do `v v'.  To check them in again, do the same.
+
+----
+CategorySearchAndReplace
+CategoryVersionControl

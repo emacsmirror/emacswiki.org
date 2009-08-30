@@ -1,0 +1,81 @@
+== Change Frame Size Interactively or Automatically ==
+
+DrewAdams has written libraries Lisp:fit-frame.el and Lisp:autofit-frame.el, which let you "shrink-wrap" [[Frame]]s to fit their selected [[Window]] (buffer) or all of their windows (buffers). 
+
+Command `fit-frame' (usually bound to `<code>C-x C-_</code>') does this. The resulting size (just big enough to display everything, with no wrap-around or truncation) is determined
+automatically, but you have control over this calculation with user variables. Alternatively, with a prefix argument, `fit-frame' prompts you for an absolute width and height. A
+negative prefix argument uses the `fill-column' value for the width.
+
+These packages also let you configure Emacs to ''automatically'' fit ''all'' frames. Library Lisp:fit-frame.el also has commands, in Windows, for maximizing and restoring a frame
+
+
+'''See Also:'''
+* Libraries Lisp:frame-cmds.el and Lisp:doremi-frm.el have commands for ''incrementally'' resizing a frame (by using the arrow keys or mouse wheel).
+
+* FisheyeWithThumbs for commands to temporarily shrink frames to thumbnail size.
+
+
+== Change Frame Size Programmatically ==
+Here's how to set Emacs frame size at startup. Recall that in Emacs terminology, a
+"frame" is what a lot of people would call a "window" - see [[Frame]].
+
+The EmacsManual (`C-i', then pick Emacs) has a good presentation of this information - and lots more - about frame parameters (<code>geometry</code> etc.)
+
+=== geometry ===
+
+Use the -geometry command line option, e.g., "-geometry 80x24" will
+start emacs at 80 characters wide by 24 characters high.
+
+On w32 systems, create a shortcut to start emacs, open its property
+sheet, and add the command line option to the "Target" field.
+
+On w32 systems, if you want to startup with emacs maximised, you can
+do so by adding the following to your InitFile
+
+    (w32-send-sys-command #xf030)
+
+[new]
+Note, I (LawrenceMitchell) find that this doesn't always work perfectly,
+it's best if you have this right at the end of your InitFile, after everything
+else has been loaded.
+
+[new]
+: Why not use <tt>`after-init-hook'</tt>? -- EdwardOConnor
+
+=== default-frame-alist ===
+
+Also see the documentation of the <code>default-frame-alist</code>
+variable. This allows you to specify width and height (in characters)
+from your ##~/.emacs.el## initialization file. -- EricMarsden
+
+Here's an example for your InitFile:
+
+    (add-to-list 'default-frame-alist '(height . 24))
+    (add-to-list 'default-frame-alist '(width . 80))
+
+How do you make the changes take effect in a running session?
+Use M-x make-frame to make a new frame!
+
+=== making the changes persistent across sessions ===
+
+Lisp:frame-restore.el is a mess.  Just use this instead:
+<pre>
+(add-hook 'after-init-hook '(lambda () (w32-send-sys-command ?\xf030)))
+</pre>
+-- PatrickAnderson
+
+=== X resources ===
+
+Under X, simply use X resources to define defaults for Emacs (or any
+other program). The exact mechanisms for this differ, but generally,
+you have your X session run xrdb on some file in your home directory,
+which is where you'd store your defaults. Common names for this file
+are .Xresources (this is basically standard on newer computers) and
+.Xdefaults (think 1991-ish). -- EraEriksson
+
+Here's an example for your ~/.Xresources (or .Xdefaults):
+
+    Emacs*geometry:     80x24
+
+----
+CategoryFrames CategoryDisplay FrameModes CategoryGlossary

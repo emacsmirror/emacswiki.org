@@ -1,0 +1,28 @@
+This category is about Emacs menus of any kind, including menubar menus and popup menus. Click the header above to find all pages in category Menus.
+
+* MenuBar -- How to customize menu-bar menus.
+* [[MenuBar#MenuBarPlus|Menu Bar+]] -- Enhancements to the standard menu-bar menus.
+** HelpMenuBarPlus -- Enhancements to the menu-bar '''Help''' menu.
+** DiredPlus -- Enhancements to the menu-bar menus in [[DiredMode]].
+* MenusAsKeymaps -- explanation of the structure of Emacs menus
+* EasyMenu -- Define menus more easily.
+* CreatingPopupMenus -- how to
+* CreatingMenuBarMenus -- how to
+* ImenuMode -- Add buffer-specific menus to the menu-bar automatically.
+* MenuAccessFromKeyboard -- libraries that let you access menus from the keyboard (without the mouse), including:
+** TextModeMenu (`tmm-menubar') -- Menu navigation that comes with Emacs.
+** LaCarte -- Use [[completion]] and [[Icicles - Cycling Completions|cycling]] to access [[menu bar]] menu items.
+** [[Icicles - Key Completion]] -- Navigate the menu hierarchy using key completion. `##[menu-bar]##' is a prefix key, just like `C-x'. Submenus are also prefix keys, and leaf menu items are command bindings. 
+** CategorizingInformationManager (`ee-menubar') -- Browse the menubar as a textual tree.
+** TextMenu
+** IswitchMenu -- [[IswitchBuffers|Iswitchb]]-like access to menu items.
+* [[Icicles - Multiple-Choice Menus]] -- Easily define commands that let users make ''multiple'' choices from menus.
+* ModeLineMinorModeMenu –- Pop up MinorMode menus from the ModeLine.
+* StickyMenus -- Menus in the X Windows version of GNU Emacs requires holding down the mouse button.
+* EevMode -- writing many EmacsLisp hyperlinks constructs SEARCHABLE menu.
+* OneKey -- A new keystroke help menu system.
+* OneTwoThreeMenu -- Emulatin of Lotus 123 for DOS user interface
+* '''Open File''' dialog box for specific systems:
+** <tt>[[w32browser-dlgopen.el]]</tt> -- for Microsoft Windows (see MsShellExecute)
+** MacOSTweaks -- for MacOS
+* SaveAsHtml -- Additions to the '''Info''' menu for saving Info text to HTML.

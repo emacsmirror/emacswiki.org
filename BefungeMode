@@ -1,0 +1,14 @@
+A Befunge interpreter/debugger, Chris Pressey's wonderful 
+2D programming language.
+
+See http://catseye.tc/projects/befunge93/ for details and Befunge sources.
+
+Befunge is perfect for running in an Emacs buffer.
+
+It's in the elisp area:
+
+* Lisp:befunge-mode.el
+
+----
+ProgrammingModes
+CategoryGames (Humor?)

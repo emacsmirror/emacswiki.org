@@ -1,0 +1,146 @@
+This is the technique i've used to allow multiple shells making changes to ShellMode. With this i
+can have a shell for each directory i work in and have a history for
+all the commands related to work done in that directory.
+
+The changes required are as such:
+
+In comint.el:
+
+<pre>
+  	      (list "TERM=emacs"
+  		    (format "TERMCAP=emacs:co#%d:tc=unknown:" (frame-width))))
+  	    (if (getenv "EMACS") nil (list "EMACS=t"))
+  + 	  (if (string-equal (buffer-name) "*tex-shell*") (list "TEXSHELL=t"))
+  	    process-environment))
+  	  (default-directory
+  	    (if (file-accessible-directory-p default-directory)
+</pre>
+
+(i really don't want save any commands related to tex processing)
+
+in shell.el:
+
+<pre>
+  ***************
+  *** 411,420 ****
+      (let ((shell (file-name-nondirectory (car
+  		   (process-command (get-buffer-process (current-buffer)))))))
+  	(setq comint-input-ring-file-name
+  ! 	  (or (getenv "HISTFILE")
+  ! 	      (cond ((string-equal shell "bash") "~/.bash_history")
+  ! 		    ((string-equal shell "ksh") "~/.sh_history")
+  ! 		    (t "~/.history"))))
+  	(if (or (equal comint-input-ring-file-name "")
+  	      (equal (file-truename comint-input-ring-file-name)
+  		     (file-truename "/dev/null")))
+  --- 400,422 ----
+      (let ((shell (file-name-nondirectory (car
+  		   (process-command (get-buffer-process (current-buffer)))))))
+  	(setq comint-input-ring-file-name
+  ! 	  ;; allow for specialized history based on the directory in
+  ! 	  ;; which the shell process was started
+  ! 	  (cond ((file-exists-p
+  ! 		  (expand-file-name
+  ! 		   (concat default-directory ".bash_history_here")))
+  ! 		 (expand-file-name
+  ! 		  (concat default-directory ".bash_history_here")))
+  ! 		((and (= (user-uid) 0)
+  ! 		      (file-exists-p
+  ! 		       (expand-file-name
+  ! 			(concat default-directory ".bash_history_here-root")))
+  ! 		      (expand-file-name
+  ! 		       (concat default-directory ".bash_history_here-root"))))
+  ! 		(t (or (getenv "HISTFILE")
+  ! 		       (cond ((string-equal shell "bash") "~/.bash_history")
+  ! 			     ((string-equal shell "ksh") "~/.sh_history")
+  ! 			     (t "~/.history"))))))
+  	(if (or (equal comint-input-ring-file-name "")
+  	      (equal (file-truename comint-input-ring-file-name)
+  		     (file-truename "/dev/null")))
+</pre>
+
+in my .emacs: (taken directly from shell.el)
+
+<pre>
+  (defun my-shell ()
+    "Run an inferior shell in the current directory.
+  set name to that of this directory.
+  If buffer exists but shell process is not running, make new shell.
+  \(Type \\[describe-mode] in the shell buffer for a list of commands.)"
+    (interactive)
+    (require 'shell)
+    (let (shell-buffer
+  	  comint-name
+  	  (pop-up-windows t))		; so that it is in another window
+  
+      ;; standardize the shell name (fix problems from locate)
+  
+      (if (and (>= (length default-directory) 2)
+  	       (string= (substring default-directory 0 2) "//"))
+  	  (setq default-directory (substring default-directory 1)))
+  
+      (if (> (length default-directory) (length (getenv "HOME")))
+  	  (if (string= (substring default-directory 0 (length (getenv "HOME")))
+  		       (getenv "HOME"))
+  	      (setq default-directory
+  		    (concat "~"
+  			    (substring default-directory
+  				       (length (getenv "HOME")))))))
+  
+      ;; put the name shell first for easier lookup
+  
+      (setq shell-buffer (format "*shell-%s*" default-directory)
+  	    comint-name (format "shell-%s" default-directory))
+  
+      (if (not (comint-check-proc shell-buffer))
+  	  (let* ((prog (or explicit-shell-file-name
+  			   (getenv "ESHELL")
+  			   (getenv "SHELL")
+  			   "/bin/sh"))
+  		 (name (file-name-nondirectory prog))
+  		 (startfile (concat "~/.emacs_" name))
+  		 (xargs-name (intern-soft (concat "explicit-" name "-args"))))
+  	    (save-excursion
+  	      (set-buffer (apply 'make-comint comint-name prog
+  				 (if (file-exists-p startfile) startfile)
+  				 (if (and xargs-name (boundp xargs-name))
+  				     (symbol-value xargs-name)
+  				   '("-i"))))
+  	      (setq shell-buffer (current-buffer))
+  	      (shell-mode))))
+  
+      (pop-to-buffer shell-buffer)))
+</pre>
+ 
+and finally to .bashrc:
+
+<pre>
+  # {{{ environment variables (for emacs shell-mode)
+  
+  #
+  HISTCONTROL=ignoredups
+  #export MANPATH=/fmc/doc:/usr/man:/usr/local/man
+  export HOST=$(hostname)
+  # export DIRSTACK=~/.directory_stack-$HOSTNAME
+  if [ "$TEXSHELL" = t ] ; then
+      echo no history file
+      export HISTFILE=/dev/null
+  else
+      if [ "$EMACS" = t ] ; then
+  	  # this is for interaction with emacs
+  	  echo using local history file
+  	  export HISTFILE=$(pwd)/.bash_history_here
+  
+  	  # don't such an extensive prompt as we know what directory we
+  	  # are in and what machine we are on
+  
+  	  export PS1='[\t] \$ '
+      else
+  	  export HISTFILE=~/.bash_history-$HOSTNAME
+      fi
+  fi
+  
+  # }}}
+</pre>
+
+Comments welcome -- PeterMielke

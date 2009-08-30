@@ -1,0 +1,13 @@
+Emacs provides a [::zap-to-char] command that kills from the current point to a character.  It is bound to `M-z'.  Examples of its usage, include:
+
+; `M-z e': deletes all characters to the next occurence of "e".
+; Typing `C-u 2 M-z e': deletes all character to the *second* occurence of "e".
+; Typing `C-- M-z e': deletes all characters to the /previous/ occurence of "e".
+; Typing `C-u -4 M-z e': deletes all character to the *fourth* /previous/ occurence of "e".
+
+See ZapToCharUsage for a discussion on using ZapToChar.
+
+See ZapUpToChar for an alternative command that doesn't "zap" the char specified.
+
+----
+CategoryEditing

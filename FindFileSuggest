@@ -1,0 +1,5 @@
+This is a very simple Emacs Lisp extension, intended to work as a 'find-file' alternative, that lets you index the files under a certain directory, using include and exclude regular expressions. Once the files are indexed, invoking the 'find-file-suggest' function will open a buffer with filename suggestions interactively matching what you are typing in the minibuffer. You can easily navigate this buffer with either the arrow keys or the mouse. The instructions for install and use can be found in the Elisp source file.
+
+I also added 'ffs-grep', a function that performs a basic grep on the indexed files, using the same interface. It must be stated that this is a very crude and not terribly efficient function that is in no way meant to replace the real grep, as it simply tries to 'match-string' your query against the set of indexed files, no more. If the index does not contain too many files however this can be an acceptable and quick way to check for the occurrence of a certain string, and visit the retrieved files, using the same mechanism.
+
+You can get it from http://find-file-suggest.googlecode.com

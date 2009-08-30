@@ -1,0 +1,119 @@
+That funky naming scheme where the first letter of every word is capitalized and all the words are joined together without spaces.
+
+This scheme is also called StudlyCaps or "intercapping" by some people.
+GlassesMode is the StudlyCaps specific minor-mode that comes with Emacs.
+
+For those runnning an up-to-date version of Emacs (22.1 or newer) an alternative to both CamelCase and GlassesMode is already built in c-mode. Just activate the c-subword-mode and it works out of the box. As usual you can activate this minor mode manually, typing (M-x c-subword-mode) or programmatically (using hooks). It also works in non-CC Mode buffers. Enjoy!
+
+There's a minor mode for CamelCase (M-x camelCase-mode), written by C. R. Manning, that allows for forward-word and backward-word to stop at each word within a CamelCase word.  It's now available from http://www.eecs.ucf.edu/~leavens/emacs/camelCase/camelCase-mode.el with instructions and commentary at http://www.eecs.ucf.edu/~leavens/emacs/camelCase/camelCase-mode.html
+
+http://www.sixfingeredman.net/proj/xemacs/camelCase-mode.el is a hacked version which actually replaces forward-word and backward-word so that all word-related functions work with camelCase (when the mode is on).
+
+: Not sure where else to go for help on this, but I used the above and it's suggested autoload initialization, and I have a problem.  Once I open a .cpp file and camelCase-mode turns on automatically, forward-word and backward-word are broken in any buffer not using camelCase-mode.  It tells me, "if: Wrong number of arguments: #<subr forward-word>, 2" --BryanMurdock
+
+:: Had the same problem but fixed it by downloading camelCase.tgz instead from http://www.hotdispatch.com/download/ip/14312566/739119894/camelCase.tgz --tankboy
+
+::: I must say that I greatly prefer this having a global effect instead of a buffer local effect.   To change the behavior to be global is very simple.  Here's a diff output for such a change:
+<pre>
+< ;;;  camelCase.el --- quasi-minor mode for editing with camelCase words
+---
+> ;;;  camelCase-mode.el --- minor mode for editing with camelCase words
+86c86,90
+< (defvar camelCase-mode nil)
+---
+> (defvar camelCase-modeline-indicator " camelCase"
+>   "call (camelCase-install-mode) again if this is changed")
+> (defvar camelCase-mode nil) 
+> (make-variable-buffer-local 'camelCase-mode)
+> (put 'camelCase-mode 'permanent-local t)
+89c93
+<   "Quasi-minor mode which overrides word command keys for editing camelCase words.
+---
+>   "Minor mode which overrides word command keys for editing camelCase words.
+108c112
+<  (* means only in Gnu Emacs, not in XEmacs; the original binding is not
+---
+>  (* means only in Gnu Emacs, not in XEMacs; the original binding is not
+115c119,120
+<         (> (prefix-numeric-value arg) 0))))
+---
+>         (> (prefix-numeric-value arg) 0)))
+>   (force-mode-line-update))
+189c194
+<            nil
+---
+>            camelCase-modeline-indicator
+</pre>
+::: Here's a patch that solved "Wrong number of arguments" for me (Emacs 22):
+<pre>
+--- camelCase-mode.el.orig      2007-03-16 23:08:39.078125000 +0300
++++ camelCase-mode.el   2007-03-16 23:07:01.640625000 +0300
+@@ -142,7 +142,7 @@
+   "move point foward COUNT camelCase words"
+   (interactive "p")
+   (if (not camelCase-mode)
+-      (camelCase-old-forward-word count buffer)
++      (camelCase-old-forward-word count)
+     ;; search forward increments point until some match occurs;
+     ;; extent of match is as large as possible at that point.
+     ;; point is left at END of match.
+@@ -172,7 +172,7 @@
+   "move point backward COUNT camelCase words"
+   (interactive "p")
+   (if (not camelCase-mode)
+-      (camelCase-old-backward-word count buffer)
++      (camelCase-old-backward-word count)
+     ;; search backward decrements point until some match occurs;
+     ;; extent of match is as large as possible at that point.
+     ;; So once point is found, have to keep decrementing point until we cross
+</pre>
+
+ --ivan4th
+
+
+----
+
+Sample EmacsLisp code to un-CamelCase a string (from
+http://www.friendsnippets.com/snippet/101/):
+
+    (defun un-camelcase-string (s &optional sep start)
+      "Convert CamelCase string S to lower case with word separator SEP.
+    Default for SEP is a hyphen \"-\".
+
+    If third argument START is non-nil, convert words after that
+    index in STRING."
+      (let ((case-fold-search nil))
+        (while (string-match "[A-Z]" s (or start 1))
+          (setq s (replace-match (concat (or sep "-") 
+                                                 (downcase (match-string 0 s))) 
+                                         t nil s)))
+        (downcase s)))
+
+----
+
+Sample EmacsLisp code to convert a string from underscore -> CamelCase:
+
+    (defun mapcar-head (fn-head fn-rest list)
+      "Like MAPCAR, but applies a different function to the first element."
+      (if list
+          (cons (funcall fn-head (car list)) (mapcar fn-rest (cdr list)))))
+
+    (defun camelize (s)
+      "Convert under_score string S to CamelCase string."
+      (mapconcat 'identity (mapcar
+                            '(lambda (word) (capitalize (downcase word)))
+                            (split-string s "_")) ""))
+
+    (defun camelize-method (s)
+      "Convert under_score string S to camelCase string."
+          (mapconcat 'identity (mapcar-head
+                                '(lambda (word) (downcase word))
+                                '(lambda (word) (capitalize (downcase word)))
+                                (split-string s "_")) ""))
+
+----
+
+Has anyone else seen a problem with http://www.sixfingeredman.net/proj/xemacs/camelCase-mode.el where M-f and M-b work as expected, but C-left uses the original forward-word logic?  C-right is fine for some reason.  Overall this mode is very neat and helpful, thanks to all who have worked on it.
+
+----
+CategoryModes

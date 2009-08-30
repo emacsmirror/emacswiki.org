@@ -1,0 +1,10 @@
+Various packages: 
+
+* Mailcrypt (BbdbAndMailCrypt)
+* bbdb-pgp.el (part of BbdbMode, see also http://my.gnus.org/Members/robin/Doc/howto_pgp) '''This link is broken'''
+* mc-bbdb.el
+* PGG (GnusPGG)
+* S/MIME (GnusSMIME)
+
+----
+CategoryGnus

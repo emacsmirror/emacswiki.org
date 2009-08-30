@@ -1,0 +1,19 @@
+[http://icfpc.plt-scheme.org/ The Eighth Annual ICFP Programming Contest] -- writing robber and cop programs!
+
+Volunteers -- meet on the EmacsChannel to coordinate and add your name plus cheesy message here:
+
+* AlexSchroeder: To think that I wrote EmacsRobots many moons ago...  But nothing ever evolved out of it!  :'(
+
+Anyway, if anybody is interested in joining me for a proof-of-concept Emacs entry, we should start splitting up the task.  Pick a task or refine the list and /then/ pick a task:
+
+# handle initialization, registration, renaming, etc.
+# developping a strategy (no coding required)
+# write a robber
+# write a cop that never cooperates
+# do the planning thing for the cops including the evaluation of plans, the voting, etc.
+
+Our submission will be called "#emacs".
+
+Edit the sources on the wiki, or start branches as required and link to them:
+
+* Main Entry: [[icfpc05.el]]

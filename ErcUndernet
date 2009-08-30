@@ -1,0 +1,37 @@
+ERC allows for easy definition of new commands, which facilitates
+custom commands for various IRC networks.  Please contribute your own
+commands and improvements here.  Here are some convenience
+functions for ERC and Undernet:
+
+;; By Jeffrey Bedard:
+<pre>
+(defun erc-cmd-XCS (channel)
+  "X channel status"
+  (interactive)
+      (erc-cmd-MSG (format "X status %s" channel)))
+(defun erc-cmd-XS ()
+  "Short Status"
+  (interactive)
+  (erc-cmd-MSG (format "X status %s" (erc-default-target))))
+(defun erc-cmd-XK (nick)
+  "X channel status"
+  (interactive)
+  (erc-cmd-MSG (format "X kick %s %s Die mofo." (erc-default-target) nick)))
+(defun erc-cmd-XB (nick)
+  "X channel status"
+  (interactive)
+  (erc-cmd-MSG (format "X ban %s %s 336 100 Die mofo." (erc-default-target) nick)))
+(defun erc-cmd-CYCLE (channel)
+  "Part/Join a channel"
+  (interactive)
+  (cons	
+   (erc-cmd-PART channel)
+   (erc-cmd-JOIN channel)))
+(defun erc-cmd-K (nick)
+  "Short kick"
+  (interactive)
+  (erc-cmd-KICK (format "%s %s Piss off." (erc-default-target) nick)))
+
+;; end
+</pre>
+

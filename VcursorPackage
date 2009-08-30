@@ -1,0 +1,20 @@
+== Introduction ==
+
+vcursor.el has been part of Gnu Emacs since version 21.2.
+
+It is inspired by an editing mode provided by the BBC Micro (c. 1981), providing a virtual cursor which can be moved independently of point and used as a source of text to copy and paste.
+
+== Getting started ==
+
+In fact, it is very easy to pick up the basic idea if you try it:
+
+ (setq vcursor-key-bindings 't)      ;; enable default bindings to try it out
+ (load "vcursor")
+
+Then try C-S-up, C-S-left, C-S-insert to see the effect.
+
+After that you'll probably want to read the instructions in the file.
+
+== But is it really useful? ==
+
+Back in the days of the BBC Micro, this was the best editing mode available.  But in the Emacs world does anyone find it useful for everyday editing?

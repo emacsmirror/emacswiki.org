@@ -1,0 +1,37 @@
+Here is a little function that will quote the special HTML characters `<', `>', and `&'.  Useful
+when you want to paste source code into your HTML (or XML) pages.
+
+    (defun html-quote (start end &optional arg)
+      "Quote html code in region for inclusion into other HTML.
+    With optional argument ARG reverse operation.
+    This applies to the region between START and END."
+      (interactive "r\nP")
+      (let ((commands (if arg
+                          '(("&amp;" . "&")
+                            ("&lt;" . "<")
+                            ("&gt;" . ">"))
+                        '(("&" . "&amp;")
+                          ("<" . "&lt;")
+                          (">" . "&gt;"))))
+            (text (buffer-substring start end)))
+        (with-temp-buffer
+          (insert text)
+          (while commands
+            (let ((from-str (caar commands))
+                  (to-str (cdar commands)))
+              (goto-char (point-min))
+              (while (search-forward from-str nil t)
+                (replace-match to-str nil t)))
+            (setq commands (cdr commands)))
+          (setq text (buffer-substring (point-min) (point-max))))
+        (kill-region start end)
+        (goto-char start)
+        (insert text)))
+
+This is the same thing as `M-x sgml-quote' in the standard HtmlMode (part of SgmlMode), so consider adding the following to your InitFile.
+
+    (defalias 'html-quote 'sgml-quote)
+
+----
+CategoryHypermedia
+

@@ -1,0 +1,66 @@
+I'v been an emacs lover since i discovered unix back in the 20th century (emacs 20 something). Over the years I've used emacs with joy on a large variety of operating systems (old unices, linux, windows, mac os x) and it is still my editor of choice.
+
+This page is for bits and pieces that I do not know where to put elsewhere.
+
+
+= Raise Frame Bug =
+
+After a long quest, I finally found the magic formula to strike down the infamous "raise frame no go" problem. It seems that this incantation has not been posted on EmacsWiki yet, so here it is :
+
+  (defadvice raise-frame (after make-it-work (&optional frame) activate)
+    "Work around some bug? in raise-frame/Emacs/GTK/Metacity/something.
+     Katsumi Yamaoka <yamaoka@jpl.org> posted this in 
+     http://article.gmane.org/gmane.emacs.devel:39702"
+     (call-process
+     "wmctrl" nil nil nil "-i" "-R"
+     (frame-parameter (or frame (selected-frame)) 'outer-window-id)))
+
+via http://arnested.dk/filer/.emacs
+
+= Fullscreen Emacs Roxor =
+
+This time, we're talking about CarbonEmacsPackage
+
+So, I already had something like that in my .emacs
+
+  (tool-bar-mode nil)
+  (require 'color-theme)
+  (color-theme-initialize)
+  (color-theme-jsc-dark)
+  (add-to-list 'initial-frame-alist '(alpha . (85 85)))
+  (add-to-list 'default-frame-alist '(alpha . (85 85)))
+
+  
+Which was nice. And I used to maximize "by hand" the window itself. But yesterday I discovered:
+
+
+  (defun maximize-frame () (interactive)
+    (scroll-bar-mode)
+    (mac-toggle-max-window))
+
+
+(Note that this function works both for maximizing and un-maximizing).
+
+Having scrollbar-less Terminal.app windows is yet another reason not to switch to 10.5
+
+
+= Links to my pages =
+
+so that I can keep en eye on 'em (I whish there was a "backlinks" feature on this wiki...)
+
+
+* [[CapitalizeWordOrKillRingSave]] Better copy-paste integration between Emacs and Mac OS X
+* [[InteractivelyDoThings#toc8]] Tweak of ido-find-file to make it look more like find-file
+* [[TransparentEmacs#toc3]] Is there a hope to have only the //background// transparent (as opposed to the whole window ?)
+* [[AUCTeX#toc12]] automagic detection of master file il multifile latex documents
+
+And a few bug reports:
+
+* [http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=1155]  Since emacs 22, using ##M-x gdb## requires the not-enough-documented ##--annotate=3## command line option. Otherwise, it will hang (this is not really a bug).
+* [http://sourceforge.net/mailarchive/forum.php?thread_name=48F465D1.9020008%40gmail.com&forum_name=cc-mode-help]  Newcomment is broken in some mainstream versions of emacs, and will sometimes eat your lines when uncommenting code. Beware.
+* [http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=2381] The nice python-mode functions ##python-shift-left## and ##python-shift-right## do not work when the mark is not active (and they should)
+
+[http://lists.gnu.org/archive/html/bug-gnu-emacs/ Searchable archive of bug-gnu-emacs]
+
+----
+CategoryHomepage

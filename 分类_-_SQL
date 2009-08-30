@@ -1,0 +1,25 @@
+English: CategorySql
+
+点击标题会列出所有SQL相关的页面
+
+
+* SqlMode -- 下面是一些相关页面的链接
+
+** SqlComplete
+** SqlEscapeCharacter
+** SqlIndent
+** SqlPlusNukeLineNo
+** SqlSendHistory
+** SqlSwitchBuffer
+** SqlTransform
+** SqlPreviousWhereClause
+** TsqlIndent
+** SqlCustomSession
+
+* OracleProC -- 混合C和SQL
+* OracleOnWindows -- things to keep in mind
+* PostGreSQL -- a socket level interface for Emacs
+* MySql -- a patch to Emacs on the C level
+* http://lispsql.sourceforge.net Mysql front-end for Emacs, access mysql without tying up your shell prompt, and many other useful mysql things.  
+* PlsqlMode -- support for editing PL/SQL code
+* SqlEdMode -- alternative support for editing PL/SQL code

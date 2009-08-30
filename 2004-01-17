@@ -1,0 +1,18 @@
+When you visit the wiki using http://www.emacswiki.org/, you will
+be redirected to http://www.emacswiki.org/cgi-bin/wiki. The new code
+in place will then use the interface appropriate for your language
+preferences (if available).
+
+Thus, if you run w3m and use "de, en;q=0.9, fr;q=0.8, pt;q=0.7, es;
+q=0.6, it;q=0.5" for your "Accept-Language header", then you will get
+the German interface. Basically the wiki script runs emacs-en,
+emacs-fr, emacs-de, or any of the other interfaces for you, based on
+the preferences.
+
+If this doesn't work for you, visit the following debug link:
+
+* http://www.emacswiki.org/cgi-bin/lang
+
+Post the info on your homepage, send mailto:alex@emacswiki.org and let
+me know.  You can always switch the interface explicitly by using the
+language menu on the SiteMap.

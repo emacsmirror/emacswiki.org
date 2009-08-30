@@ -1,0 +1,70 @@
+Il existe déjà beaucoup de pages très intéressantes en Anglais sur ce wiki. 
+Un (bon) moyen de contribuer à ce site est de traduire ces pages.
+
+Ne vous inquiétez pas trop de la qualité de la traduction, 
+la nature même du wiki fait que n'importe qui peut corriger votre contribution.
+
+Comment modifier les pages ? voir CommentFaire.
+
+== Conseils ==
+
+Essayez de traduire le nom des pages.
+
+Signalez la version française dans la page en anglais (et vice versa),
+les personnes accédant directement à la page (via google ou autre)
+pourront ainsi facilement avoir le choix de la langue. exemple :
+
+* This page is also available in english: English:RecentChanges
+* Cette page est aussi disponible en français: Français:NouvelUtilisateurEmacs
+
+Notez que le préfixe de la langue change aussi l'interface.
+
+Si des liens vers des pages n'existant pas en français sont présents
+dans la page, signalez que le lien pointe vers un texte dans une autre
+langue avec une parenthèse. Par exemple <nowiki>EmacsWiki</nowiki>
+(en).  Dans ce cas, ne mettez pas le préfixe de la langue, car la
+personne suivant le lien ne cherche pas à changer la langue de
+l'interface.
+
+Si ce n'est pas possible (par example <nowiki>EmacsWiki</nowiki>),
+ajoutez le nom de la langue comme suffixe, soit
+<nowiki>EmacsWikiFrançais</nowiki>.
+
+=== Propositions ===
+
+== Glossaire des termes Emacs ==
+
+Certains termes reviennent constamment. Un petit glossaire pourrait
+aider à avoir une certaine constance dans les traductions.
+
+Glossaire:
+
+|| Terme anglais || Traduction || Autres propositions || commentaires ||
+|| package       || module     || package             || ... ||
+|| [[Frame]]     || [[Frame]]  || cadre               || ... ||
+|| [[Window]]    || [[Window]] || fenêtre             || ... ||
+|| [[Buffer]]    || [[Buffer]] || tampon              || ... ||
+
+Commentaires:
+* Devrait-on traduire les termes windows frame etc...?
+
+== Page en cours de traduction ==
+
+Une bonne idée est d'ajouter ci dessous une ligne indiquant la page
+que vous êtes en train de traduire. Cela évitera que 2 personnes
+fassent le même travail.  ex:
+
+* EmacsNewbie en cours de syncrhonisation sur NouvelUtilisateurEmacs
+
+== Souhaits ==
+
+Vous aimeriez voir une page en français ? Vous pensez qu'il est
+indispensable qu'une page existe en français ? Ajoutez une ligne
+ci-dessous, peut-être que quelqu'un en tiendra compte.  ex :
+
+* EmacsNewbie en cours de syncrhonisation sur NouvelUtilisateurEmacs
+
+== Pages Traduites mais non classées ==
+
+:: BhlMode
+:: RépertoireDeSauvegarde

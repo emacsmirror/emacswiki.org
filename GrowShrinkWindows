@@ -1,0 +1,46 @@
+I often use two windows side-by-side (I.e. the result of a C-x 3), but I find that when I'm in one there's no simple way to resize the window. Sure, I could use C-x { and C-x }, that is shrink-window-horizontally and enlarge-window-horizontally, but these are a little hard to use. Typically, my thought process will be something like 'I need this window to grow to the left', that is, I need the vertical divider between this window and the one on its left to move to the left. So, to pick the right command out of C-x { and C-x } I first have to think about whether I'm in a left-hand or a right-hand buffer. And then there's the bother that they only grow/shrink by a single column, and no-one likes typing prefix commands :)
+
+So here's my effort. M-[ grows the window to the left, and M-] grows it to the right.
+
+     (defun xor (b1 b2)
+       "Exclusive or of its two arguments."
+       (or (and b1 b2)
+           (and (not b1) (not b2))))
+     
+     (defun move-border-left-or-right (arg dir)
+       "General function covering move-border-left and move-border-right. If DIR is
+     t, then move left, otherwise move right."
+       (interactive)
+       (if (null arg) (setq arg 5))
+       (let ((left-edge (nth 0 (window-edges))))
+         (if (xor (= left-edge 0) dir)
+          (shrink-window arg t)
+          (enlarge-window arg t))))
+     
+     (defun move-border-left (arg)
+       "If this is a window with its right edge being the edge of the screen, enlarge
+     the window horizontally. If this is a window with its left edge being the edge
+     of the screen, shrink the window horizontally. Otherwise, default to enlarging
+     horizontally.
+     
+     Enlarge/Shrink by ARG columns, or 5 if arg is nil."
+       (interactive "P")
+       (move-border-left-or-right arg t))
+     
+     (defun move-border-right (arg)
+       "If this is a window with its right edge being the edge of the screen, shrink
+     the window horizontally. If this is a window with its left edge being the edge
+     of the screen, enlarge the window horizontally. Otherwise, default to shrinking
+     horizontally.
+     
+     Enlarge/Shrink by ARG columns, or 5 if arg is nil."
+       (interactive "P")
+       (move-border-left-or-right arg nil))
+     
+     (global-set-key (kbd "M-[") 'move-border-left)
+     (global-set-key (kbd "M-]") 'move-border-right)
+
+[new]
+If you are using Emacs 22 (not yet released) then you may also be interested in
+http://ourcomments.org/Emacs/DL/elisp/bw-interactive.el which I have forgotten to mention somewhere.
+(But your effort above reminded me about it ...)

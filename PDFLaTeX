@@ -1,0 +1,14 @@
+Emacs's TeX mode doesn't play nice with PDFLaTeX.  Compiling the file with PDFLaTeX or PdfTeX from Emacs is relatively easy, but changing the view command to view the resulting PDF file instead of a DVI file can prove diffult.
+
+JimMenard created a little shell script for Emacs to run. In .emacs he puts
+<pre>
+(setq tex-dvi-view-command "/Users/jimm/bin/latex-view '*'")
+</pre>
+and that script contains
+<pre>
+#! /bin/sh
+pdflatex ${1%dvi}tex && open ${1%dvi}pdf
+</pre>
+
+----
+CategoryTex

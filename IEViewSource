@@ -1,0 +1,40 @@
+This page describes how to make emacs be Internet Explorer's "View Source" application (when *Source* is selected from IE's *View* menu).
+
+==For Windows XP==
+
+===Install GnuServ===
+* Download and extract - GnuClient
+* Add this to your InitFile (necessary because gnuclient.exe requires this initialization)
+<pre>
+          ; Run gnuserv, for view source, unless it's already running
+          (require 'gnuserv)
+          (unless gnuserv-frame
+              (gnuserv-start)
+              (setq gnuserv-frame (selected-frame)))
+</pre>
+
+===Create a batch file to run Emacs===
+
+The View Source option in IE works by searching for the named program and appending the HTML source file's name to it.  If it can't find the file, it gives a "not found" error message and reverts to using Notepad.  Since gnuclientw.exe requires extra command line options just to open a file (which is insane, but what can you do?), you need a batch file to act as intermediary.
+
+*Note:* This presumes you've installed your emacs using the [[EmacsW32]] installer, which makes Emacs 22 available for Windows well ahead of the game.  If not, adjust your paths to suit in the following batch file.
+
+Create the following file as ##C:\Program Files\Emacs\emacs.bat##:
+
+<pre>
+  @echo off
+  "c:\Program Files\Emacs\EmacsW32\bin\gnuclientw.exe" -sqF %*
+</pre>
+
+===Update your registry===
+
+# Open regedit.exe
+
+# Navigate to the key ("folder") ##HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Internet Explorer##
+
+# If you do not have it already, create a key under it (right click -> New -> Key) called "View Source Editor".
+
+# Open the new key you got and create another new key called "Editor Name" under it.
+
+# In the (Default) string value on the right hand side in regedit, enter the following: ##C:\Program Files\Emacs\emacs.bat##
+

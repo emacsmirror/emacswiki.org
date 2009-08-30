@@ -1,0 +1,15 @@
+=== RSS contents ===
+
+[new]
+When reading recent changes via [[RSS]], both the diff and the page itself are included in the item. This doesn't work well for big pages, because they show up as "This page is too big send over RSS." in the RSS output. I think a different RSS feed would also be useful which included only the difference and the link to the page. This way diffs in big pages could also be followed via RSS.
+
+[new]
+The ordinary feed providing full page content and diffs should now server the diff, even if the page is too big to be included in the feed. Assuming the diff itself is not too big either, of course. ;) -- AlexSchroeder
+
+== Broken Feed ==
+
+[new]
+Its been a problem for a while, the RSS feed just ups and breaks every now and again. This might fix it. - TimOCallaghan
+
+[new]
+Well, a page being too big for the RSS feed doesn't "break" the RSS feed. Are you seeing anything else that's problematic? -- AlexSchroeder

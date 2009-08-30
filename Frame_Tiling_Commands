@@ -1,0 +1,23 @@
+'''This page is part of the description of OneOnOneEmacs, by DrewAdams'''
+
+Cette page est aussi disponible en franglais ;-) : Français:[[Carrelage de Frames]]
+
+* 
+* 
+* 
+
+I created two commands to tile the visible [[Frame]]s either horizontally
+or vertically: `tile-frames-horizontally' and
+`tile-frames-vertically'. I use these especially just
+before using ediff commands to compare or merge buffers.
+
+Here's a screenshot of my Windows desktop showing comparison, using `ediff', of two buffers previously tiled horizontally: 
+
+[[image:DrewsEmacsTileSS]]
+
+'''See Library:''' Lisp:frame-cmds.el
+
+'''See Also:''' FisheyeWithThumbs for tiling frame thumbnails.
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay

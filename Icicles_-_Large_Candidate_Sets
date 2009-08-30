@@ -1,0 +1,75 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Persistent Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles -  History Enhancements]] ||
+
+----
+
+== Dealing With Large Candidate Sets ==
+
+One of the advantages '''Icicles''' provides is the ability to deal with
+large sets of [[completion]] candidates with ease.  There are other
+libraries that also let you [[Icicles - Cycling Completions|cycle]] among various choices of
+different kinds ([[buffer]]s, files, and so on), but cycling quickly
+loses its effectiveness as the number of candidates increases.  '''Icicles''' [[apropos completion|apropos]] matching lets you work with a large initial set of
+candidates by filtering them, quickly reducing the number
+candidates to cycle through.  Filtering by a [[prefix completion|prefix]] only (vanilla
+Emacs) is not very potent.  Until you get used to '''Icicles''', you will be surprised at your
+ability to manipulate even humongous sets of choices.
+
+Nevertheless, there can be times when a candidate set is so large
+that you need to use a few tricks to deal with it efficiently.
+There are ''two main things that take time'' when dealing with a large
+set: ''computing'' the set and ''displaying'' it (with highlighting) in buffer `*Completions*'.
+In particular, ''[[Icicles - Icompletion|incremental completion]]'' display is costly because it
+does both of these, recompute the set and redisplay it, each time you type or delete a character in the [[minibuffer]].
+
+Here are some tips to improve performance with a large set of candidates:
+
+* ''Turn off incremental completion'' display
+   in buffer `*Completions*'.  You can do this on the fly at any
+   time by using `<tt>C-#</tt>' in the minibuffer -- use `<tt>C-#</tt>' again to turn
+   it back on.  See [[Icicles - Icompletion]].
+
+* Compute a large candidate set only once,
+   ''cache'' the result, and reuse it later by reading the cache
+   instead of recomputing.  This is useful, for instance, for the
+   candidate set of all files on your file system.  You can cache
+   a set of candidates in either a [[variable]] (quickest, but not
+   persistent) or a disk file (slower, persistent).  See
+   [[Icicles - Persistent Completions]].
+
+* Compute a large candidate set (and perhaps cache it or filter it)
+   ''without displaying'' it in `*Completions*', by using '''`C-M-TAB'''' or
+   '''`C-M-S-TAB'''' instead of `TAB' or `S-TAB', respectively.  These
+   are bound to commands '''`icicle-prefix-complete-no-display'''' and
+   '''`icicle-apropos-complete-no-display''''.  For example, when
+   initially computing the set of all files on your file system
+   for `C-u M-x icicle-locate-file', use `C-M-S-TAB' to compute
+   the set, then use `##C-}##' to save it to a cache file -- you need
+   never display it.
+
+
+(The documentation refers to the keys that do this as
+`C-M-S-TAB' and `C-M-TAB'.  Actually, this is only by default.
+You can customize this, using [[option]]s
+'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-no-display-keys|icicle-apropos-complete-no-display-keys]]</tt>'''' and
+'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-no-display-keys|icicle-prefix-complete-no-display-keys]]</tt>''''.)
+
+----
+
+
+|| *Previous:*  [[Icicles - Persistent Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles -  History Enhancements]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+

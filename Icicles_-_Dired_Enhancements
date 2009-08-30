@@ -1,0 +1,210 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Shell-Command Enhancements]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Info Enhancements]] ||
+
+----
+
+== Icicles Dired Enhancements ==
+
+'''Icicles''' can help with DiredMode in these ways:
+
+* You can use [[completion]] when you use '''`##!##'''' or '''`##&##'''' to execute a [[#CompleteShellCommands|shell command]].
+
+* You can use '''Icicles''' [[#SearchAndReplace|search-and-replace]] on the marked files.
+
+* You can [[#SaveFilesAsCandidates|save marked file names]] as completion candidates for reuse later.
+
+* You can [[#OpenDiredOnSavedFiles|open Dired on saved file names]], that is, names that you previously saved as a completion candidates set or as an Emacs [[fileset]]. It does not matter how the file names were saved or which directories the files are in.
+
+
+
+
+
+
+[:CompleteShellCommands]
+=== Shell Commands On Marked Files ===
+
+In ''Icicle mode'', '''`##!##'''' and '''`##&##'''' in Dired let you complete a shell command.  All '''Icicles''' [[completion]] features are available.  This is the same program-file completion that is available anywhere when a shell command is read (see
+[[Icicles - Shell-Command Enhancements]]), but in Dired the extra
+candidates include commands that '''Icicles''' thinks might be
+particularly appropriate for the marked files.
+
+These extra candidates are not necessarily only command names.
+They can include switches (options) that specialize a command.
+For example, if a PDF file (##*.pdf##) is marked in Dired, the
+completion candidates might include `##gv -safer##', `##pdftotext ?  -##',
+and `##xpdf##'.  The first two of these are not just command names
+(`##-safer##' is a command switch).
+
+Starting with Emacs 23, '''Icicles''' uses both of the following
+methods to guess extra candidates that are file type-specific:
+
+* MIME-type associations
+
+* The rules defined by [[user option]] '''`dired-guess-shell-alist-user''''
+and variable `dired-guess-shell-alist-default' (provided you use
+Dired X, that is, standard library `##dired-x.el##')
+
+Prior to Emacs 23, MIME types are not used.  In the example of a PDF
+file, candidates `##gv -safer##' and `##pdftotext ? -##' are provided by
+MIME-type associations, and candidate `##xpdf##' is provided by the
+Dired X rules.  Note that you can customize the rules.
+
+Any candidates that are specific to the marked files are '''Icicles''' ''extra'' candidates -- see
+[[Icicles - Global Filters]].  These
+are available regardless of the current default-directory.  They
+are not treated as file-name candidates, even though they are
+available during file-name completion.  '''Icicles''' extra candidates
+have face `icicle-extra-candidates' in buffer `*Completions*'.
+
+[:icicle-dired-guess-all-shell-cmds-flag]
+Again, everything that is true for shell-command completion
+elsewhere is also true for shell-command completion in Dired.  See
+[[Icicles - Shell-Command Enhancements]].  This includes adding
+all commands from your search path as extra candidates if option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|icicle-guess-commands-in-path]]</tt>'''' is non-`nil', and providing help on
+individual candidates (shell commands or files) during completion.
+
+
+
+
+[:SearchAndReplace]
+=== Search-and-Replace Marked Files ===
+
+In Dired, `A' searches the marked files using a [[regexp]], and `Q' launches `query-replace-regexp' on them. But suppose that you want to change only a few occurrences in each file, perhaps among the first occurrences. Using `Q', you are forced to review each search hit in turn -- all of them; you cannot simply skip the rest in one file and continue with the next file. 
+
+[new:DrewAdams:2008-07-25 23:55 UTC]
+[I suggested (on 2008/1/1) that this feature be added to Emacs, and it has been added in Emacs 23: you can now skip to the next file. -- DrewAdams]
+[new] 
+
+One workaround is to use `##M->##' to go to the end of a file, and then `##M-,##' to resume query-replace.  Or you can quit the command altogether, unmark the file you're finished searching, and then hit `Q' again, but that's not very convenient. A similar problem applies to searching using `A'.
+
+In Dired with '''Icicles''', you can use '''`M-s i'''' (`icicle-search-dired-marked') to search the files and possibly replace search hits. This runs `icicle-search', so you have available all of its features, including accessing search hits directly, in any order. To skip a whole file, just match its name with your minibuffer input and then use `##C-~##' to remove all of its occurrences from the set of hits.
+
+'''Note:''' You can similarly use `M-s i' in [[IbufferMode|Ibuffer]] or [[BufferMenu|Buffer Menu]] to
+search all marked buffers using '''Icicles''' search.
+
+
+
+
+
+[:SaveFilesAsCandidates]
+=== Save Marked Files as Completion Candidates ===
+
+In Dired with '''Icicles''', you can use `##C-M->##' (`icicle-dired-save-marked') to ''save the marked file names'' as a set of completion candidates, for reuse later. You can use `##C->##' to add the marked files to an existing saved set of  candidates.
+These bindings act similarly to `##C-M->##' and `##C->##' in the
+minibuffer: a prefix argument controls whether you save candidates
+to a variable or a cache file.
+
+You can use such a saved set of file names as candidates during
+file-name completion.  They are saved as absolute names,
+which means you can use them with, say, `C-u C-x C-f'.
+See [[Icicles - File-Name Input#AbsoluteFileNames|Absolute File Names and Different Directories]].
+
+
+
+[:OpenDiredOnSavedFiles]
+=== Open Dired for a Set of File Names ===
+
+In Dired with '''Icicles''' you can use `##C-M-<##' (`icicle-dired-chosen-files-other-window') to open Dired for a set of file or directory names that you choose interactively or that you have previously saved (persistently or not) as completion candidates.  The Dired buffer that is created is named '''`Icy File Set'''' (suffixed with '''`<1>'''', '''`<2>'''', etc. as needed), and it contains only the chosen file names.
+
+The file names are checked to be sure they reference existing files. If any of the names are relative names, those files are checked for existence in the Dired directory.  If you use a [[prefix argument]], then you are prompted for the directory to use.
+
+
+
+
+[:MarkedFilesAsProject]
+=== Marked Files as a Project ===
+
+Just as `##C-}##' in the minibuffer is a shortcut for `##C-u C-M->##',
+which saves the current set of completion candidates persistently, so '''`##C-}##'''' in Dired saves the marked file names in
+a cache file or, with a prefix arg, an Emacs [[fileset]].  Similarly, just as `##C-{##' in the minibuffer is a
+shortcut for `##C-u C-M-<##', which retrieves candidates from a persistent set, so '''`##C-{##'''' in Dired retrieves a persistent set of file names and opens
+them in a separate Dired buffer.
+
+[:icicle-dired-save-marked-as-project]
+[:icicle-dired-save-marked-persistently]
+[:icicle-dired-project-other-window]
+You can think of such persistent file-name sets as '''projects'''.
+'''`##C-}##'''' is bound to command '''`icicle-dired-save-marked-as-project''''
+(aka `icicle-dired-save-marked-persistently').  '''`##C-{##'''' is bound to
+command '''`icicle-dired-project-other-window''''.
+
+Again, you can use such a project as a candidate set for file-name
+completion at any time.  In addition, `##C-}##' and `##C-{##' can be handy
+in Dired for working with projects even without using completion.  The files in a project can be distributed among any
+directories anywhere.  This gives you an easy way to open Dired on just
+the files you want and operate on them there.
+
+And while in a project in Dired you can use `##C-M-<##' to mark a
+project subset to work on, and then use `##C-M->##' to operate on that
+subset using '''Icicles''' completion.  And you can have any number of
+projects -- you access each by its name (with completion) and need
+not remember its cache file name.
+
+
+
+
+
+
+----
+
+'''See Also:'''
+
+* [[Icicles - Shell-Command Enhancements]] for more information
+about shell-command completion
+
+* [[Icicles - Candidate Sets]] for information about creating, saving, and retrieving sets of file names
+* [[Icicles - Nutshell View#ChippingAway|Chipping Away the Non-Elephant]] for the use of `##C-~##' to remove matching candidates
+* [[Icicles - Search Commands, Overview]] for information about `icicle-search'
+* [[Icicles - Search-And-Replace]] for how to replace selected search hits
+
+* [[Icicles - Persistent Completions]] for more information about using persistent sets
+
+* [[Icicles - Support for Projects]] for more information about working
+with projects
+
+* DiredPlus (library <tt>[[dired+.el]]</tt>), which has related features, such as '''`##C-M-*##'''' to open Dired on just the marked files and '''`M-g'''' to `grep' just the marked files
+
+
+
+
+
+
+
+
+----
+
+=== Discussion ===
+[new]
+In DiredMode, Q eventually runs `tags-query-replace' and A runs `tags-search'. In both cases you can use `M-> M-,' ( (goto-char (point-max))(tags-loop-continue) ) to skip rest of the file and continue to the next file. -- GregChernov
+
+[new:DrewAdams:2008-01-03 16:41 UTC]
+: Yes, LucTeirlinck just pointed that out in the current thread on the topic on emacs-devel (I've modified the text above to mention it, and RMS has agreed to mention it in the manual). It would still be good if `Q' and `A' had a key to skip to the next file without leaving the current command. It's good to make this available as an explicit possibility (in the prompt and the doc).
+
+: Wrt '''Icicles''' -- `Q' and `A' still don't give you direct access to any search hit, of course. Within a file, you must still traverse all search hits, in order, or else quit the command, move point, and resume. And they both start with point, rather than operating on the whole file or the active region. -- DrewAdams
+
+[new:DrewAdams:2008-07-25 23:59 UTC]
+: See the note in the text, above: starting with Emacs 23, you will be able to skip to the next file. -- DrewAdams
+
+----
+
+|| *Previous:*  [[Icicles - Shell-Command Enhancements]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Info Enhancements]] ||
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands
+CategoryHelp
+CategoryCompletion
+CategoryRegexp
+CategoryModes
+CategoryProgrammerUtils
+CategoryCode
+CategorySearchAndReplace
+CategoryShell
+
+
+
+

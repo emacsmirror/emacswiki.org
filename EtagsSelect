@@ -1,0 +1,76 @@
+Someone on [[gnu.emacs.help]] asked if there was a way to browse through multiple matching tags for an identifier and choose a specific one (as opposed to tags-loop-continue).  This is helpful when you have overloaded function names and want to go to the right one.  I am using an aspect-oriented language (Specman) that extends methods all over the place, so this was something I've been thinking about doing for a while.  So I finally took a couple hours and did it.
+
+It works for EmacsTags in [[Emacs]] and [[XEmacs]].
+
+* Lisp:etags-select.el
+
+[new:DrewAdams:2008-02-18 21:33 UTC]
+'''See Also:''' '''[[Icicles]]''' command `icicle-search-tag'.  You can browse matching tags (including duplicates) in any order, and not necessarily consecutively. Very easy to filter tags to those you want to visit, using regexps; you can filter the source files to search also. Tag completion is also available.
+
+
+== Discussion ==
+
+I have integrated this patch after having used it for a month and it works fine imo. It adds TAB completion just like find-tag has. - MartinNordholts
+
+Tag completion been updated to work on Emacs/XEmacs. - ScottFrazer
+
+On Emacs 22.2.1, I get "Buffer is read-only error" when I press return. - bvk-chaitanya
+[new]
+Do you have some hook or minor-mode that overrides 'return' for all modes? - ScottFrazer
+
+To find tags in a included tags file, such as TAGS-LISP for Emacs Lisp, re-define `etags-select-get-tag-files' as
+
+  (defun etags-select-get-tag-files ()
+    "Get tag files."
+    (if etags-select-use-xemacs-etags-p
+        (buffer-tag-table-list)
+      (mapcar 'tags-expand-table-name tags-table-list)
+      (tags-table-check-computed-list)
+      tags-table-computed-list))
+
+== Finding TAGS Files ==
+[new]
+See EmacsTags EtagsTable
+[new]
+Vim has a nice feature where you can indicate that you would like the editor to search up the directory tree from the current working directory for a file named “tags”. These two functions provide that for etags-select.el, searching up the filesystem from the buffer-file-name of the current buffer. (Modified version from EmacsTags)
+[new]
+<pre>
+;;load the etags-select.el source code
+(load-file "path/to/etags-select.el")
+;;binding the key
+(global-set-key "\M-?" 'etags-select-find-tag-at-point)
+(global-set-key "\M-." 'etags-select-find-tag)
+
+
+(defun jds-find-tags-file ()
+  "recursively searches each parent directory for a file named 'TAGS' and returns the
+path to that file or nil if a tags file is not found. Returns nil if the buffer is
+not visiting a file"
+  (progn
+      (defun find-tags-file-r (path)
+         "find the tags file from the parent directories"
+         (let* ((parent (file-name-directory path))
+                (possible-tags-file (concat parent "TAGS")))
+           (cond
+             ((file-exists-p possible-tags-file) (throw 'found-it possible-tags-file))
+             ((string= "/TAGS" possible-tags-file) (error "no tags file found"))
+             (t (find-tags-file-r (directory-file-name parent))))))
+
+    (if (buffer-file-name)
+        (catch 'found-it 
+          (find-tags-file-r (buffer-file-name)))
+        (error "buffer is not visiting a file"))))
+
+(defun jds-set-tags-file-path ()
+  "calls `jds-find-tags-file' to recursively search up the directory tree to find
+a file named 'TAGS'. If found, set 'tags-table-list' with that path as an argument
+otherwise raises an error."
+  (interactive)
+  (setq tags-table-list (list (jds-find-tags-file))))
+
+;; delay search the TAGS file after open the source file
+(add-hook 'emacs-startup-hook 
+	'(lambda () (jds-set-tags-file-path)))
+</pre>
+----
+CategoryProgrammerUtils

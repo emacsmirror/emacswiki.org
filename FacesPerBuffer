@@ -1,0 +1,37 @@
+== GNU Emacs ==
+
+Starting with Emacs 23, you can set the [[face]] for the current [[buffer]], using `M-x buffer-face-set'. You can toggle this on/off using `M-x buffer-face-mode'.
+
+Prior to Emacs 23, you can use the fact that font-lock uses a variable with the same name as the font-lock face. For example, font-lock does not necessarily use `font-lock-comment-face' for comments.  It uses the face
+that is the value of [[variable]] `font-lock-comment-face', which by default
+is face `font-lock-comment-face'.
+
+ (make-face 'php-comment-face)
+ (set-face-foreground 'php-comment-face "LightGrey")
+ (add-hook 'php-mode-hook 
+           (lambda ()
+            ;; ...
+            (set (make-local-variable 'font-lock-comment-face)
+                 'php-comment-face)
+            ;; ...
+
+
+== XEmacs ==
+
+XEmacs supports per-frame, per-window, and per-buffer face settings, using the confusing "specifier" functions:
+
+ From: QuoteMstr - Danny Colascione
+ Subject: Re: Switch buffers and faces
+ Newsgroups: comp.emacs
+ Date: Mon, 04 Jun 2001 17:38:10 GMT
+
+ In XEmacs, on the other hand, the following will work:
+
+ (set-specifier (face-background (get-face 'default)) "blue"
+                (get-buffer "*scratch*"))
+
+ Obviously, replace *scratch* and "blue" with whatever you want. (In a
+ hook, you could just use (current-buffer)
+
+----
+CategoryFaces

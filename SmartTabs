@@ -1,0 +1,194 @@
+''This is about indenting with tabs and aligning with spaces. For Sebastien Rocca Serra's ##smart-tab## command, see [[TabCompletion#SmartTab|TabCompletion]].''
+
+: [[image:TabsSpacesBoth]] (after [http://www.duelinganalogs.com/comic/2007/04/02/hello-im-linux/ Steve Napierski])
+
+There is a "safe" way of using tabs in source code: '''tabs for indentation, spaces for alignment'''. This ensures the code is displayed correctly everywhere, regardless of the viewer's tab size.
+
+    // Tab size: 4                // Tab size: 2
+    if(foo) {                     if(foo) {
+    --->char quux[4] = {0, 1,     ->char quux[4] = {0, 1,
+    --->................2, 3};    ->................2, 3};
+    }                             }
+
+The approach can be summed up in two points:
+
+# Tabs are only used at the '''beginning of lines'''. Everything else, like ASCII art or tables, should be formatted with spaces.
+# Tabs are only used for '''expressing the indentation level'''. Any ''alignment'', whether at the beginning of lines or in the middle of them, should consist of spaces.
+
+But isn't this difficult and tedious to carry out in practice? Well, not if the editor handles it for you.
+
+[:Implementations]
+== Code ==
+
+Add the following code (explained [[#SimpleAlgorithm|below]]) to <tt>[InitFile .emacs]</tt> to make Emacs insert the "right" amount of tabs and spaces automatically. Then, to indent ''and'' align, just press '##<tab>##' for the current line, '<tt>[AutoIndentation C-j]</tt>' for a new line, etc.
+
+[:CImplementations]
+=== C-like languages ===
+
+For [CcMode CC Mode] (C, C++, Java et al.), add
+
+    (setq-default tab-width 4) ; or any other preferred value
+    (setq cua-auto-tabify-rectangles nil)
+
+    (defadvice align (around smart-tabs activate)
+      (let ((indent-tabs-mode nil)) ad-do-it))
+
+    (defadvice align-regexp (around smart-tabs activate)
+      (let ((indent-tabs-mode nil)) ad-do-it))
+
+    (defadvice indent-relative (around smart-tabs activate)
+      (let ((indent-tabs-mode nil)) ad-do-it))
+
+    (defadvice indent-according-to-mode (around smart-tabs activate)
+      (let ((indent-tabs-mode indent-tabs-mode))
+        (if (memq indent-line-function
+                  '(indent-relative
+                    indent-relative-maybe))
+            (setq indent-tabs-mode nil))
+        ad-do-it))
+
+    (defmacro smart-tabs-advice (function offset)
+      (defvaralias offset 'tab-width)
+      `(defadvice ,function (around smart-tabs activate)
+         (cond
+          (indent-tabs-mode
+           (save-excursion
+             (beginning-of-line)
+             (while (looking-at "\t*\\( +\\)\t+")
+               (replace-match "" nil nil nil 1)))
+           (setq tab-width tab-width)
+           (let ((tab-width fill-column)
+                 (,offset fill-column))
+             ad-do-it))
+          (t
+           ad-do-it))))
+
+    (smart-tabs-advice c-indent-line c-basic-offset)
+    (smart-tabs-advice c-indent-region c-basic-offset)
+
+The rest of the page assumes the above is already in place.
+
+=== JavaScript ===
+
+[:Js2Mode]
+For [[Js2Mode]], add
+
+    (smart-tabs-advice js2-indent-line js2-basic-offset)
+
+=== Perl ===
+
+For CPerlMode, add
+
+    (smart-tabs-advice cperl-indent-line cperl-indent-level)
+
+=== Python ===
+
+For <tt>[PythonMode python.el]</tt>, add
+
+    (smart-tabs-advice python-indent-line-1 python-indent)
+    (add-hook 'python-mode-hook
+              (lambda ()
+                (setq indent-tabs-mode t)
+                (setq tab-width (default-value 'tab-width))))
+
+=== Ruby ===
+
+For RubyMode, add
+
+    (smart-tabs-advice ruby-indent-line ruby-indent-level)
+    (setq ruby-indent-tabs-mode t)
+
+[:VHDL]
+=== VHDL ===
+
+For VhdlMode, add
+
+    (smart-tabs-advice vhdl-indent-line vhdl-basic-offset)
+    (setq vhdl-indent-tabs-mode t)
+
+[:Toggling]
+=== Toggling ===
+
+Smart tabs are only used when ##indent-tabs-mode## is non-##nil## (default). Type '##C-h v indent-tabs-mode RET##' to see the current value.
+
+To globally disable tabs and use spaces only, do
+
+    (setq-default indent-tabs-mode nil)
+
+To change ##indent-tabs-mode## for the current buffer only, type '##M-x set-variable indent-tabs-mode RET##' or customize the [ModeHooks mode hook].
+
+[:SimpleAlgorithm]
+== Code explanation ==
+
+This section explains how the [[#CImplementations|code above]] works. Note that the method used is not specific to Emacs -- any scriptable editor with syntactic auto-indentation can be made to indent with tabs and align with spaces.
+
+The editor's auto-indentation depends on two variables: the ''tab size'' and the ''indentation offset''. The tab size is how many columns a tab occupies (more precisely, the distance between tab stops). The indentation offset is the default amount of columns an indented line is shifted to the right.
+
+If we have access to these two variables, we can separate "indentation" from "alignment" without knowing very much about the language itself. The idea is simple: temporarily set the tab size and indentation offset to a very large value before indenting. This is similar to calling [http://www.gnu.org/software/indent/ GNU Indent] with ##-i99 -ts99 -l999## (along with necessary style parameters).
+
+For instance, say we want to indent the C function
+
+    int f(int x,
+    int y) {
+    return g(x,
+    y);
+    }
+
+We drastically "expand" the tab size and indentation offset (they must have the ''same'' value, so that one tab equals one indentation offset), and perform the indenting:
+
+    int f(int x,
+    ......int y) {
+    ----------------------->return g(x,
+    ----------------------->.........y);
+    }
+
+When we change the values back -- say to ##4## -- we have
+
+    int f(int x,
+    ......int y) {
+    --->return g(x,
+    --->.........y);
+    }
+
+which is indeed tab size-invariant.
+
+This works because (1) setting the tab size and indentation offset to the same value ensures that all "instances" of the offset are encoded as tabs, (2) using a value that is larger than any amount of alignment forces spaces to be used for the rest. (A good value is probably a multiple of the maximum line length.)
+
+[:SpacesBeforeTabs]
+''Spaces before tabs''
+
+This situation could arise if the user accidently hits '##SPC##' at the beginning of a line. Emacs' indentation functions may not be able to detect and remove such spaces, because the ''perceived'' amount of indentation is unchanged.
+
+    if(cond) {
+    .-->return 0;
+
+To be on the safe side, we see to that such spaces are weeded out before performing "expansion" and indentation:
+
+    if(cond) {
+    --->return 0;
+
+[:AdvisingEmacs]
+''Advising Emacs''
+
+In Emacs, the tab size is controlled by the buffer-local variable ##tab-width##, while the indentation offset differs from mode to mode. The macro <tt>[[#CImplementations|smart-tabs-advice]]</tt> constructs a wrap-around [AdvisingFunctions advice] of the indentation function, which ''shadows'' these variables. That is, the original values of ##tab-width## and the indentation offset are temporarily overwritten by a large value (##fill-column##).
+
+The advice also checks the beginning of the line for spaces preceding tabs. If any are found, they are deleted before indenting.
+
+[:TheNet]
+''The Net''
+
+The wheel appears to have been reinvented a number of times:
+
+* A [http://article.gmane.org/gmane.emacs.cc-mode.general/5139 quick hack] by Alan Mackenzie on the CC Mode mailing list, from 2008. The idea here is to use CC Mode's notion of "syntactic contexts" to distinguish continuation lines from the rest, and then add a hook function which re-encodes the leading whitespace of such lines.
+* [http://stianse.wordpress.com/2008/11/17/indent-with-tabs-align-with-spaces/ A more complete approach], by StianSelnes.
+* [http://bytes.inso.cc/wp/2009/01/07/dot-emacs-smarter-indentation-with-tabs-and-spaces/ Another], used by the [http://wiki.xmms2.xmms.se/wiki/Emacs_C_style XMMS2] project.
+* A [http://web.archive.org/web/20051124145441/http://my.erinet.com/~tschaef/cc-mode/description.html custom CC mode], from the web archive.
+
+As for ''non-Emacs'' implementations, Michael Geddes has written a [http://www.vim.org/scripts/script.php?script_id=231 Smart Tabs plugin for Vim]. Also, [http://www.jetbrains.com/idea/ IntelliJ IDEA] has a "Smart Tabs" option.
+
+== Screenshot ==
+
+[[image:SmartTabsScreenshot]]
+
+----
+CategoryIndentation

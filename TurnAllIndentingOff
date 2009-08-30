@@ -1,0 +1,35 @@
+We recommend not to turn off indentation.
+
+Really, don't do it.
+
+If you want to see what it'd be, you will have to turn off a lot of "electric-foo" commands (such as automatic newlines and indentation after {, ;, etc.
+
+Here's how to turn it off after TAB.  First, we define a function to turn it all off, then add this function to all the modes where you want it turned off.
+
+<pre>
+(defun my-turn-indentation-off ()
+  (interactive)
+  (local-set-key (kbd "<tab>") 'tab-to-tab-stop))
+
+(dolist (hook '(perl-mode-hook
+                cperl-mode-hook
+                c-mode-hook
+                c++-mode-hook
+                java-mode-hook))
+  (add-hook hook 'my-turn-indentation-off))
+</pre>
+
+Now all you have to do is customize either one of these two variables: `tab-stop-list' or `tab-width'.
+
+If you just want to indent to the previous line, always, replace the definition of `my-turn-indentation-off' with the following:
+
+<pre>
+(defun my-turn-indentation-off ()
+  (interactive)
+  (local-set-key (kbd "<tab>") 'indent-relative))
+</pre>
+
+As said before, your time is better spent customizing the indentation engines.
+
+----
+CategoryIndentation

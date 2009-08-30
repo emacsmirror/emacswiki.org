@@ -1,0 +1,152 @@
+: <i>Indenting Perl is hard. Let's go shopping!</i> -- EdwardOConnor
+
+Most [PerlLanguage Perl] indenting solutions revolve around customizing the settings of a particular mode.  However, in some cases you need to normalize indententation of code in a team of heterogenous editor users.  In other words I use perltidy at my work to indent perl code, and here is the elisp code I wrote to do it. PerlTidyElisp 
+
+--[[wjt]]
+
+Using a "better" mode will also make indentation easier--
+CPerlMode instead of plain PerlMode.
+
+You can force all attempts to invoke perl-mode to invoke cperl-mode instead via the following:
+
+   (fset 'perl-mode 'cperl-mode)
+
+Basic indentation can be changed using the variable
+<code>cperl-indent-level</code>:
+
+    (setq cperl-indent-level 4)
+
+Note that the variable <code>cperl-indent-alist</code> has a doc string
+that says it is not being used.
+
+Version 5.0 of CPerlMode offers many improvements over older versions.
+For one, parenthetical blocks such as
+
+    (
+        'one',
+        'two',
+        'three'
+    )
+
+can be configured to be indented correctly. Get it at:
+
+* http://math.berkeley.edu/~ilya/software/emacs/cperl-mode.el.5.0.bz2
+
+(Can we expand on how to do this? I'd also like to see how to prevent cperl-mode from indenting like this
+
+   function_call(
+                  $arg1,
+                  $arg2,
+                  another_function_call(
+                                         $arg3
+
+and instead indent like this
+
+    function_call(
+        $arg1,
+        $arg2,
+        another_function_call(
+            $arg3
+
+--MichaelSoulier
+
+Michael, I believe that with a recent CPerl you just need to
+
+    (custom-set-variables
+     '(cperl-indent-parens-as-block t))
+
+-- AaronHarsh
+
+I tried Aaron's solution under 5.0, and it does exactly what you want, Michael.  However you might also want
+
+    '(cperl-close-paren-offset -2)
+
+(or whatever your indent level is) so that the close parens are unindented far enough.
+
+-- JeremyMuhlich
+
+I'm happy with the following:
+
+    (setq cperl-indent-level 4
+          cperl-close-paren-offset -4
+          cperl-continued-statement-offset 4
+          cperl-indent-parens-as-block t
+          cperl-tab-always-indent t)
+
+which give me:
+
+    function_call(
+        $arg1,
+        $arg2,
+        another_function_call(
+            $arg3
+        )
+    );
+
+-- RossLonstein
+
+
+How do you solve this indenting problem? Notice the staircasing inside the "if()" after the first "print" and how the join and being outside the curly bracket doesnt have this problem. This occurs with cperl-mode, not perl-mode on every system I have access to.
+
+    if(one() &&                                                                                                                  
+           two())                                                                                                                
+    {                                                                                                                            
+        print                                                                                                                    
+            one(),                                                                                                               
+                two();                                                                                                                                                                                                                                        
+        print                                                                                                                    
+            join("",                                                                                                             
+                 one(),                                                                                                          
+                 two());                                                                                                         
+    }                                                                                                                                                                                                                                                         
+    print                                                                                                                        
+        one(),                                                                                                                   
+        two();                                                                                                                   
+
+
+Thanks
+
+-- GabrielMillerd
+
+[new]
+I didn't realize that it worked as long as you're on the top-level!
+Until now my solution has been to enclose the buffer in parenthesis
+(like your join call). -- Alex
+
+[new]
+I have a problem with continuated indentation, I have
+
+    (setq
+        cperl-close-paren-offset -4
+        cperl-continued-statement-offset 4
+        cperl-indent-level 4
+        cperl-indent-parens-as-block t
+        cperl-tabs-always-indent t)
+
+At top level, all the continuations are identically indented
+
+    my $test = "a string"
+        . "just"
+        . " for"
+        . "test";
+
+But under a {}
+
+    {
+        my $test = "a string"
+            . "just"
+                . " for"
+                    . "test";
+    }
+
+Is this a bug ?
+
+-- DanielDehennin
+
+[new]
+I found default string indentation for concatenated strings very irritating 
+but solved it by setting cperl-continued-statement-offset to 0. 
+I'm not sure this is the best solution but at least now the result is readable. -- Peter
+
+----
+CategoryIndentation

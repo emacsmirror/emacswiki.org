@@ -1,0 +1,20 @@
+In a variety of situations, in particular when in the middle of going full UTF-8 for a project, one has to switch back and forth between coding systems a lot. Here is how to do it easily.
+
+= Choosing a coding system manually =
+
+This method is described in InternationalSetup, it's the easiest but most cumbersome: type `C-x <RETURN> c', choose a coding system, type next command (typically `C-x C-f').
+
+= Auto-detecting the coding system from the text of the file =
+
+Of course this is not always possible in a non-ambiguous fashion (e.g. all ASCII files are both valid latin-1 and valid UTF-8); but some kinds of file (e.g. XML) have extra markup in them that indicate precisely the coding system they are in. In order to take advantage of that in Emacs, one needs to customize the <code>auto-coding-regexp-alist</code> variable.
+
+= Auto-detecting the coding system from the file name =
+
+The variable to customize is <code>auto-coding-alist</code>. Note that since you can actually match the whole path name in <code>auto-coding-alist</code>, you could use that to assign coding systems to whole directories, but the next recipe achieves this same goal in a much more elegant and scalable fashion:
+
+= Specifying the coding system through a project settings method (NOT) =
+
+The ProjectSettings page offers ways to customize the behavior of Emacs in a given directory. This is of course useful not just for coding style issues (e.g. tab width), but alas it does not work for setting the coding system of a bunch of text files. Sorry about that...
+----
+
+CategoryInternationalization

@@ -1,0 +1,24 @@
+AlexSchroeder has found it convenient to have this command
+for DiffMode (`diff-mode' provides only `diff-goto-source'):
+
+{{{
+(defun diff-2-ediff ()
+  "invoke ediff on the context of 2 files in diff-mode"
+  (interactive)
+  ;; A
+  (destructuring-bind (buf-A line-offset pos old new &optional switched)
+      (diff-find-source-location 't nil)
+    ;; B
+    (destructuring-bind (buf-B line-offset pos old new &optional switched)
+      (diff-find-source-location nil nil)
+      (ediff-buffers buf-A buf-B))))
+}}}
+
+[new]
+How is this supposed to be used, and what does it do?  My understanding is it
+takes the region of a diff and runs Ediff on it. 
+
+I just noticed a similar function in [CVS:diff-mode.el?rev=HEAD diff-mode.el] called `diff-ediff-patch'. -- AaronHawley
+
+----
+CategoryExternalUtilities

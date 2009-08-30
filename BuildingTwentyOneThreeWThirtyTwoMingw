@@ -1,0 +1,141 @@
+I don't remember if I ever tried this, but the steps would probably be the same as in BuildingCvsWThirtyTwoMingw, except of course you'd get the 21.3 source instead of the CVS trunk.
+
+---------------------------------------------------------
+
+I am one of those sick types with a dual boot system, running WinXP and Fedora Core2.
+
+There is a FAT32 partition that is logical e: under XP, and /mnt/dmz under FC2.
+
+I couldn't finess a CVS checkout of emacs under XP; WinCVS, even with PuTTY and plink--the SSH seemed a sore spot.
+
+Everything was easier under GNU\Linux...
+
+Acquired the source and compiled, then copied the source from the ext3 parition over to the /mnt/dmz and rebooted under XP.
+
+With MinGW and MSys installed, I quickly figured out that the configure.bat wasn't going to run under MSys, so I ran it under cmd.exe.
+
+My command line was:
+
+   configure.bat --no-cygwin --with-gcc
+
+I don't quite understand why there are two different make utilities under MinGW, but the one that is over 1MB is the one that works.
+
+Ran into a problem when I ran make bootstrap:
+
+...copious steps...then... 
+
+---------------------------------------------------------
+
+   e:/mingw/bin/make.exe  -C ../lisp bootstrap
+
+   [Please ignore a syntax error on the next line - it is intentional]
+
+   /usr/bin/sh: -c: line 1: unexpected EOF while looking for matching `"'
+
+   /usr/bin/sh: -c: line 2: syntax error: unexpected end of file
+
+   make.exe[1]: Entering directory `E:/cvsroot/emacs/lisp'
+
+   E:/cvsroot/emacs/lisp/../update-subdirs E:/cvsroot/emacs/lisp; \
+
+   for file in calc calendar emacs-lisp emulation eshell gnus international \
+   language mail mh-e net obsolete play progmodes term textmodes toolbar url; 
+
+   do \
+
+      E:/cvsroot/emacs/lisp/../update-subdirs $file; \
+
+   done;
+
+   Directories: calc calendar emacs-lisp emulation eshell gnus international \
+   language mail mh-e net obsolete play progmodes term textmodes toolbar url
+
+   "./../bin/emacs.exe" -batch --no-init-file --no-site-file --multibyte -l autoload \
+
+        --eval '(setq find-file-hooks nil \
+
+                find-file-suppress-same-file-warnings t \
+
+                generated-autoload-file \
+
+                  "E:/cvsroot/emacs/lisp/loaddefs.el")' \
+
+        -f batch-update-autoloads E:/cvsroot/emacs/lisp calc calendar \
+   emacs-lisp emulation eshell gnus international language mail mh-e net \
+   obsolete play progmodes term textmodes toolbar url
+
+   Opening output file: invalid argument, e:/cvsroot/emacs/lisp/E;E:mingwcvsroot?macslisploaddefs.el
+
+   make.exe[1]: *** [autoloads] Error -1
+
+   make.exe[1]: Leaving directory `E:/cvsroot/emacs/lisp'
+
+   e:\mingw\bin\make.exe: *** [bootstrap-gmake] Error 2
+
+------------------------------------------------------------------
+
+So, I took the offending line and made a batch file of it.  However, cmd.exe no worky-worky, so I ran the following under MSys, after saving it as e.bat:
+
+   emacs.exe -batch --no-init-file --no-site-file --multibyte -l autoload \
+   --eval '(setq find-file-hooks nil find-file-suppress-same-file-warnings t \
+   generated-autoload-file "E:\\cvsroot\\emacs\\lisp\\loaddefs.el")' -f \
+   batch-update-autoloads E:\cvsroot\emacs\lisp calc calendar emacs-lisp \
+   emulation eshell gnus international language mail mh-e net obsolete play \
+   progmodes term textmodes toolbar url
+
+------------------------------------------------------------------
+
+This appeared to get emacs sufficiently together to draft this posting.
+
+Thoughts:
+
+a) why not consider build-system improvements so that emacs builds under both GNU\Linux and MinGW with a typical ./configure && make && make install?
+
+b) how about nightly CVS tarballs
+
+I submit that both of these will further the relentless, conquering onslaught of The One True Editor.
+
+Sorry my build-system-fu isn't sufficient to submit a patch for this issue...
+
+--ChristopherSmith
+
+------------------------------------------------------------------
+
+I've been building CVS emacs under win32 with mingw for some time now and find that it works ok if I jump through a few hoops
+
+* don't use msys, it seems to generate invalid autoloads
+* use mingw and unxutils
+
+Steps:
+
+# set PATH=<path-to-mingw-bin>;<path-to-unxutils-bin>
+# cd emacs\nt
+# configure.bat
+# add 'sh' entries to lisp/makefile's update-subdirs-SH target
+
+<pre>
+update-subdirs-SH: doit
+	sh $(srcdir)/update-subdirs $(lisp); \
+	for file in $(WINS); do \
+	   sh $(srcdir)/update-subdirs $$file; \
+	done;
+</pre>
+
+# make bootstrap
+# make
+
+
+------------------------------------------------------------------
+
+If you receive an error saying that windres cannot popen 'gcc ...blah blah...' go into the makefile and change the RC variable from:
+
+windres -O coff
+
+to:
+
+windres -O coff --use-temp-file$(SPACE)
+
+This corrected the issue for me.
+
+EwanHiggs 30 October 2004
+

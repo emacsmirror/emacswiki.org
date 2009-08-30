@@ -1,0 +1,34 @@
+Emacs can communicate with subprocesses via stdin and stdout.  
+A typical example for this is M-x shell.
+The modes used to do this are often called "inferior" modes.
+Some of these modes also allow you to start processes on other machines.  Usually what you type into the buffer will be sent over the network to the remote machine, and the result will be sent back to your buffer.  This is what we mean by "remote" program development.
+
+Often the trick is to use an inferior mode written for local development and feed it a command that connects to a remote system and starts a program there.  rsh and ssh are such candidates.
+
+== Remote Common Lisp Development Using Emacs and ILISP ==
+
+ILISP is a CommonLisp and Scheme development environment.  
+[http://www.cliki.net/ILISP]
+[http://sourceforge.net/projects/ilisp]
+The following piece of code shows how to start ILISP such that it uses a remote lisp process.
+You can add it to your ~/.emacs file, for example.
+Don't forget to change the
+login name, the name of the remote host, and the pathname of the Lisp to be invoked.
+
+    ;;; This load hook defines a Lisp "dialect" that can be invoked by ILISP
+    ;;; as directed by the user's response to ILISP's "Dialect: " prompt.
+    (add-hook 'ilisp-load-hook
+          '(lambda ()
+             (message "Running ilisp-load-hook")
+             (setq ilisp-load-hook
+                   '(lambda ()
+                     ;; Define a new dialect to run on another machine.
+                     (defdialect
+                      cmulisp-remote
+                      "CMU Common Lisp Remotely Executed."
+                      cmulisp
+                      (setq ilisp-program
+                      "ssh thomas@computer1001 /usr/local/bin/lisp")))))
+----
+CategoryProgrammerUtils
+CategoryRemoteEmacs

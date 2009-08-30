@@ -1,0 +1,81 @@
+This page is about the bs library, which provides a comfortable way to switch buffers. It is part of Emacs.  Also known as [::bs] and [::BSBufferSelection]. 
+
+Homepage:
+
+* http://www.geekware.de/software/emacs/#bs
+
+Here's how to install it:
+
+    (global-set-key (kbd "C-x C-b") 'bs-show)
+
+It has font-locking, and various configurations.
+
+Here are two configurations to limit the list of buffers to just channels or to just buffers that have a default target (ie. channels and queries for nicks in [[ERC]]:
+
+    (require 'bs)
+    (add-to-list 'bs-configurations
+                 '("channels" nil nil "^[^#]" nil nil))
+    (add-to-list 'bs-configurations
+                 '("targets" nil nil nil
+                   (lambda (buf)
+                      (with-current-buffer buf
+                        (not (erc-default-target)))) nil))
+
+And here is a configuration to limit the list of buffers to SQL-related stuff (cf. SqlMode):
+
+    (add-to-list 'bs-configurations
+                 '("SQL" nil nil nil
+                   (lambda (buf)
+                      (with-current-buffer buf
+                         (not (memq major-mode
+                            '(sql-interactive-mode sql-mode))))) nil))
+
+And here is one for all your dired buffers (before calling kill-all-dired-buffers from KillingBuffers, for example):
+
+    (add-to-list 'bs-configurations
+                 '("dired" nil nil nil
+                   (lambda (buf)
+                     (with-current-buffer buf
+                       (not (eq major-mode 'dired-mode)))) nil))
+
+If you are using GnuClient, then you will notice that you cannot kill
+buffers from the selection using `d'.  The reason is that
+server-kill-buffer has a subtle bug that will return nil even if the
+killing of the buffer was successful.  Here is some code to
+fix it:
+
+    (fset 'kill-buffer 'my-server-kill-buffer)
+    
+    (defun my-server-kill-buffer (buffer)
+      "Call `server-kill-buffer' but make sure to return the correct value."
+      (interactive "bKill buffer ")
+      (server-kill-buffer (get-buffer buffer))
+      (not (buffer-name (get-buffer buffer))))
+
+= Problems, questions and hopefully some answers too =
+
+== bs-dont-show-regexp ==
+Setting the above variable to a regexp doesn't seem to do what I (mistakenly?)
+believe it should: viz. not showing the buffers matched by the regexp. Even
+though it is set from my .emacs, its value is nil when I `C-h v bs-dont-show-regexp RET'.
+What am I missing/misunderstanding?
+
+[new]
+You should set `bs-configurations`, not `bs-dont-show-regexp`. This confused me too. --AmitPatel'''
+
+[new]
+Thank you. :)
+
+
+[new]
+'''See also:'''
+
+* CategoryBufferSwitching for information on other ways to select buffers.
+
+* [[Icicles]], which also has buffer configurations -- see command `icicle-buffer-config' and user option `icicle-buffer-configs'.
+
+* KillingBuffers, for an example of using '''Icicles''' to write a command to kill all Dired buffers. The same command also shows you all Dired buffers (via `S-TAB') -- no need for a separate Dired-buffers configuration.
+[new]
+
+----
+CategoryBufferSwitching

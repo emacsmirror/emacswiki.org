@@ -1,0 +1,21 @@
+ManiacMode is obsolete.  Use RefillMode instead.
+
+Maniac mode hits <code>M-q</code> automatically after every insertion into the buffer.  This prevents you from ever writing anything other than perfectly filled paragraphs in your buffers.  If you need to write a table or anything else non-filled, you need to disable Maniac mode temporarily.
+
+Maniac was considered an ugly hack and very expensive on old hardware, but these days it seems like the ideal solution for people that like the new "what you see is what you get" style of text always flowing left and right while you type.  Other people consider this obnoxious and confusing.
+
+Maniac is often used in conjunction with LongLines: It saves each paragraph as one long line, therefore making the text file better suited for software that deals in flowing paragraphs.
+
+Maniac is available from the old ElispArchive.  See the EmacsLispList for more pointers if you cannot find it there anymore.  (If you find it somewhere else, come back and correct the URL.)
+
+ftp://ftp.cis.ohio-state.edu/pub/emacs-lisp/old-archive/misc/maniac.el.Z
+
+'''When I want a newline I want a newline'''
+
+If you want RET to be real newline, then you need to use hard newlines.  Here is a sample setup:
+
+ (add-hook 'LaTeX-mode-hook
+           (lambda () (use-hard-newlines 1 t)))
+
+----
+CategoryFilling

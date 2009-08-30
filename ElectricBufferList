@@ -1,0 +1,75 @@
+This is an alternative to BufferMenu.  The only new thing is that hitting RET will bury the list and SPC will select the buffer.
+
+----
+I found it quite confusing when I tried it, though. -- AlexSchroeder
+
+DanEspen, however, says the following:
+
+I'm looking forward to the day when I can remove this from my .emacs:
+
+ (global-set-key "\C-x\C-b" 'electric-buffer-list)
+
+I can't see how making buffer-list the default binding
+is in any way better.
+
+Combined with font-locking, its pretty neat.
+To set up font-locking, there are slight differences between
+GNU Emacs and XEmacs.
+
+First here is the XEmacs version:
+
+ (defconst Electric-buffer-menu-mode-font-lock-keywords
+   (purecopy
+    (list
+     '("^ MR Buffer.*"                 . font-lock-preprocessor-face) ;hdr 1
+	'("^ -- ------.*"              . font-lock-preprocessor-face) ;hdr 2
+	'("^\\(....Man: .*\\)" 1 font-lock-variable-name-face t) ;Manpg (new)
+	'("^[. ][*][^%].[^*].*"        . font-lock-comment-face)	;Mod x temp
+	'("^....[*]Buffer List[*].*"   . font-lock-doc-string-face) ;Buffer list
+	'("^\\(....[*]shell.*\\)"      1 font-lock-reference-face t) ;shell buff
+	'("^....[*].*"                 . font-lock-string-face) ;Temp buffer
+	'("^....[+].*"                 . font-lock-keyword-face) ;Mail buffer
+	'("^....[A-Za-z0-9/]*[-][+].*" . font-lock-keyword-face) ;Mail buffer
+	'(".*Dired.*"                  . font-lock-function-name-face)
+	)))
+
+ ; This hook run after buffer formatted, so it is necessary to re-fontify it...
+ (add-hook 'electric-buffer-menu-mode-hook
+	   '(lambda ()
+	      (font-lock-mode 1)
+	      (font-lock-fontify-buffer)))
+
+And here is similar code for GNU Emacs:
+
+ (defconst buffer-menu-buffer-font-lock-keywords
+  (purecopy
+   (list
+    '("^....[*]Man .*Man.*"   . font-lock-variable-name-face) ;Man page
+    '(".*Dired.*"             . font-lock-comment-face); Dired
+    '("^....[*]shell.*"       . font-lock-preprocessor-face) ;shell buff
+    '(".*[*]scratch[*].*"     . font-lock-function-name-face)      ;scratch buffer
+    '("^....[*].*"            . font-lock-string-face) ; "*" named buffers
+    '("^..[*].*"              . font-lock-reference-face)	;Modified
+    '("^.[%].*"               . font-lock-keyword-face)	;Read only
+    )))
+
+ (add-hook 'electric-buffer-menu-mode-hook 
+   '(lambda ()
+      (toggle-read-only)		;first need to clear font-lock-face
+      (remove-text-properties 1 (point-max) '(font-lock-face nil))
+      (toggle-read-only)
+      (make-local-variable 'font-lock-defaults)
+      (setq font-lock-defaults
+ 	   '(buffer-menu-buffer-font-lock-keywords t))
+      (turn-on-font-lock)
+      (font-lock-fontify-buffer))) 
+ 
+[new]
+What's so confusing about this when compared to BufferMenu ?? They
+look the same to me, except for the fact that BufferMenu uses the
+whole height of the screen while ElectricBufferList uses only the
+minimum needed (which is a good thing IMHO). Also, this one highlights
+the line where the cursor is, making it easier to use. -- AlbertoGarcia
+
+----
+CategoryBufferSwitching

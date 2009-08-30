@@ -1,0 +1,4 @@
+Simple RD syntax highlighting mode.
+RD is originally used for documentation of [http://www.ruby-lang.org/ Ruby] scripts.
+Its very simple and readable markup syntax extends RD's usage for not only Ruby scripts and documents but also usual memo and diary.
+It is bundled with [http://raa.ruby-lang.org/project/rdtool/ RDtool].

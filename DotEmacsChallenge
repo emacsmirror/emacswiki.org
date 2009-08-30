@@ -1,0 +1,300 @@
+= Cool And Useful Things for your Init File =
+
+(You can test many of these commands by entering them into the *scratch* buffer and pressing C-j at the end of the line.)
+
+Add ~/.elisp to load-path, for storing Emacs packages when you can't install them system-wide.  Great for one-file packages like CuaMode and TabBarMode.
+
+  (add-to-list 'load-path (expand-file-name "~/.elisp"))
+
+Disable loading of "default.el" at startup
+
+  (setq inhibit-default-init t)
+
+Enter the debugger each time an error is found
+
+  (setq debug-on-error t)
+
+Enable visual feedback on selections
+
+  (setq transient-mark-mode t)
+
+Enable useful disabled commands
+
+  (put 'narrow-to-region 'disabled nil)
+  (put 'erase-buffer 'disabled nil)
+
+Disable nuisance enabled commands
+
+  (put 'overwrite-mode 'disabled t)
+
+Make C-a "select all" (this is not a good idea if you will ever use Emacs or Unix without your customizations)
+
+  (global-set-key "\C-a" 'mark-whole-buffer)
+
+Make C-c C-a "select all" (this is a much better idea than rebinding the standard C-a)
+
+  (global-set-key "\C-c\C-a" 'mark-whole-buffer)
+
+Preserve hard links to the file you're editing (this is especially important if you edit system files).
+
+  (setq backup-by-copying-when-linked t)
+
+Preserve the owner and group of the file you're editing (this is especially important if you edit files as root).
+
+  (setq backup-by-copying-when-mismatch t)
+
+Just never create backup files at all
+
+  (setq make-backup-files nil)
+
+Activate font-lock-mode (syntax coloring)
+
+  (global-font-lock-mode t)
+
+Activate column-number-mode
+
+  (column-number-mode t)
+
+Make cut/copy/paste set/use the X CLIPBOARD in preference to the X PRIMARY.  Unbreaks cut and paste between Emacs and well-behaved applications like Mozilla, KDE, and GNOME, but breaks cut and paste between Emacs and old applications like terminals.
+
+  (setq x-select-enable-clipboard t)
+
+Always indent using spaces, never tabs (See NoTabs)
+
+  (setq-default indent-tabs-mode nil)
+
+Put scroll bars on the right
+
+  (set-scroll-bar-mode 'right)
+
+Include current buffer name in the title bar
+
+  (setq frame-title-format "%b - emacs")
+
+Or set the title bar to show file name if available, buffer name otherwise
+
+  (setq frame-title-format '(buffer-file-name "%f" ("%b")))
+
+Pop up the Speedbar when Emacs is running under a window system
+
+  (when window-system ; not just X
+    (speedbar 1))
+
+Turn on Mouse Wheel Scrolling, this snippet works on many systems
+
+  (if (load "mwheel" t)
+    (mwheel-install))
+
+If not, try the following lines
+
+  ;; turn on mouse wheel scrolling
+  (defun sd-mousewheel-scroll-up (event)
+    "Scroll window under mouse up by five lines."
+    (interactive "e")
+    (let ((current-window (selected-window)))
+      (unwind-protect
+          (progn 
+            (select-window (posn-window (event-start event)))
+            (scroll-up 2))
+        (select-window current-window))))
+
+  (defun sd-mousewheel-scroll-down (event)
+    "Scroll window under mouse down by five lines."
+    (interactive "e")
+    (let ((current-window (selected-window)))
+      (unwind-protect
+          (progn 
+            (select-window (posn-window (event-start event)))
+            (scroll-down 2))
+        (select-window current-window))))
+ 
+  (global-set-key (kbd "<mouse-5>") 'sd-mousewheel-scroll-up)
+  (global-set-key (kbd "<mouse-4>") 'sd-mousewheel-scroll-down)
+
+Emacs is a text editor, make sure your text files end in a newline
+
+  (setq require-final-newline 't)
+
+Or let Emacs ask about any time it is needed
+
+  (setq require-final-newline 'query)
+
+Display various non-editing buffers in their own frames
+
+  (setq special-display-buffer-names
+        (nconc '("*Backtrace*" "*VC-log*" "*compilation*" "*grep*")
+  	     special-display-buffer-names))
+
+Display those special buffer frames without a tool bar
+
+  (add-to-list 'special-display-frame-alist '(tool-bar-lines . 0))
+
+Don't echo passwords when communicating with interactive programs
+
+  (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
+
+Additional `C-x LETTER' key bindings for useful commands (notice uppercase LETTER)
+
+  (global-set-key "\C-xB" 'bury-buffer)
+  (global-set-key "\C-xE" 'apply-macro-to-region-lines)
+  (global-set-key "\C-xI" 'insert-buffer)
+
+Additional `C-c LETTER' key bindings for useful commands
+
+  (global-set-key "\C-cg" 'goto-line)
+  (global-set-key "\C-cG" 'goto-char)
+  (global-set-key "\C-cw" 'delete-region) ; ala C-w and M-C-w
+  (global-set-key "\C-cc" 'comment-region)
+  (global-set-key "\C-cu" 'uncomment-region)
+
+Stuff to use only when running EmacsOnWindowsNT
+
+  (cond ((eq system-type 'windows-nt)
+       (require 'gnuserv)
+       (gnuserv-start)
+       
+       (setq ange-ftp-ftp-program-name "C:\\bin\\ftp.exe")))
+
+Stuff to use only when running EmacsOnGnuLinux
+
+  (cond ((eq system-type 'gnu/linux)
+       (setq ange-ftp-ftp-program-name "pftp")))
+
+Line to top of window with F6 (replace C-u 0 C-l sequence)
+
+  (defun line-to-top-of-window ()
+    "Move the line point is on to top of window."
+    (interactive) 
+    (recenter 0))
+  (global-set-key [f6] 'line-to-top-of-window)
+
+Define mnemonic key bindings for moving to `M-x compile' and `M-x grep' matches
+
+  (global-set-key "\C-cn" 'next-error)	
+  (global-set-key "\C-cp" 'previous-error) 
+
+When running in a terminal, it makes sense for `C-z' to emulate the SIGSTSP signal by suspending Emacs; but it doesn't make sense for that key to iconify Emacs when it's running under a window system.  (In the first case, you can bring it back into the foreground with a shell command at the terminal (usually called 'fg'); but in the second, you have to use to the mouse to tell the window manager to deiconify it, so you may as well use the mouse to iconify it in the first place.)
+
+  (when window-system
+    (global-unset-key "\C-z")) ; iconify-or-deiconify-frame (C-x C-z)
+
+Don't bother entering search and replace args if the buffer is read-only
+
+  (defadvice query-replace-read-args (before barf-if-buffer-read-only activate)
+    "Signal a `buffer-read-only' error if the current buffer is read-only."
+    (barf-if-buffer-read-only))
+
+Play nice with other version control users
+
+  (setq vc-initial-comment t
+        vc-diff-switches diff-switches)
+
+Display SMTP protocol errors (Message-ID: "3B0BFA2C.85762EBE@ihs.com")
+
+  (defadvice smtpmail-send-it (around display-trace-buffer activate)
+    "If an error is signalled, display the process buffer."
+    (condition-case signals-data
+        ad-do-it
+      (error (shrink-window-if-larger-than-buffer
+  	    (display-buffer (get-buffer (format "*trace of SMTP session to %s*"
+  						smtpmail-smtp-server))))
+  	   (signal (car signals-data) (cdr signals-data)))))
+
+Read Info files with `I' in Dired
+
+  (defun dired-do-info ()
+    (interactive)
+    "In dired, read the Info file named on this line."
+    (info (dired-get-filename)))
+  
+  (add-hook 'dired-mode-hook
+            (lambda ()
+              (local-set-key "I" 'dired-do-info)))
+
+The above can be accomplished with `dired-x.el' in GNU Emacs
+
+    (add-hook 'dired-load-hook
+              (lambda ()
+                (load "dired-x"))) ; This also sets `N' to read man pages.
+   
+Click on URLs in manual pages
+
+  (add-hook 'Man-mode-hook 'goto-address)
+
+Make `M-x view-diary-entries' respect `number-of-diary-entries'
+
+  (defadvice view-diary-entries (before number-of-diary-entries activate)
+    "If ARG is not specified, display `number-of-diary-entries' instead of 1."
+    (if (and (interactive-p)
+  	   (null current-prefix-arg))
+        (cond ((numberp number-of-diary-entries)
+  	     (ad-set-arg 0 number-of-diary-entries))
+  	    ((vectorp number-of-diary-entries)
+  	     (ad-set-arg 0 (aref number-of-diary-entries
+				 (calendar-day-of-week date)))))))
+
+Disable `C-x C-c'
+
+    (defun dont-kill-emacs ()
+      (interactive)
+      (error (substitute-command-keys "To exit emacs: \\[kill-emacs]")))
+  
+    (global-set-key "\C-x\C-c" 'dont-kill-emacs)
+
+Display or insert the current date and time
+
+  (defun date (&optional insert)
+    "Display the current date and time.
+  With a prefix arg, INSERT it into the buffer."
+    (interactive "P")
+    (funcall (if insert 'insert 'message)
+             (format-time-string "%a, %d %b %Y %T %Z" (current-time))))
+
+Launch a shell command in the background, with its output in its own buffer (if you have to run several instances of the same program, e.g. xterm, add some spaces to the end of the command, so the buffer name will be different and you can run the program without killing the other instances.)
+
+  (defun m-shell-command ()
+    "Launch a shell command."
+    (interactive)
+    (let ((command (read-string "Command: ")))
+      (shell-command (concat command " &") (concat "*" command "*"))))
+
+Specialized interface for playing media files
+
+  (defun mplayer ()
+    "An interface to mplayer."
+    (interactive)
+    (shell-command (concat "xterm -e mplayer "
+  			 (shell-quote-argument
+  			  (expand-file-name
+  			   (read-file-name "Filename: ")))
+  			 " & ")))
+
+Never byte-compile your InitFile by hand again
+
+   (defun autocompile nil
+     "compile itself if ~/.emacs"
+     (interactive)
+     (require 'bytecomp)
+     (if (string= (buffer-file-name) (expand-file-name (concat default-directory ".emacs")))
+         (byte-compile-file (buffer-file-name))))
+
+   (add-hook 'after-save-hook 'autocompile)
+
+
+
+A fun startup message, somewhat reminiscent of "The Matrix: Reloaded"
+
+  (defconst animate-n-steps 3) 
+  (defun emacs-reloaded ()
+    (animate-string (concat ";; Initialization successful, welcome to "
+  			  (substring (emacs-version) 0 16)
+			  ".")
+		  0 0)
+    (newline-and-indent)  (newline-and-indent))
+
+  (add-hook 'after-init-hook 'emacs-reloaded)  
+
+See InitSplit.
+
+----
+CategoryDotEmacs

@@ -1,0 +1,7 @@
+Minimalist GNU For Windows
+* http://www.mingw.org/
+
+Note that MinGW is a separate project from CygWin, but it's easy to confuse the two because their aims are somwhat similar, and because CygWin itself includes some of MinGW (headers and libraries, I think).  Also note that building Emacs with MinGW works fine, but building Emacs with Cygwin is troublesome.  See BuildingOnWindowsTableofContents for the gory details.
+
+----
+CategoryExternalUtilities CategoryWThirtyTwo 

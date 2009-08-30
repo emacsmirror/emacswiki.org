@@ -1,0 +1,40 @@
+This description is based on [http://weblog.hypotheticalabs.com/?p=265 entry at Hypothetical Labs blog]
+
+To configure flymake to work with Erlang you need to add some elisp-code to your initialization file, and also create custom script, that will called from elisp code.
+
+== Emacs configuration ==
+
+Following code should be added to your emacs initialization file. The <code>"path_to_eflymake_script"</code> should be replaced with real path to the script, that will perform checking of code
+
+<pre>
+(require 'flymake)
+(defun flymake-erlang-init ()
+  (let* ((temp-file (flymake-init-create-temp-buffer-copy
+		     'flymake-create-temp-inplace))
+	 (local-file (file-relative-name temp-file
+		(file-name-directory buffer-file-name))))
+    (list "path_to_eflymake_script" (list local-file))))
+
+(add-to-list 'flymake-allowed-file-name-masks '("\\.erl\\'" flymake-erlang-init))
+
+</pre>
+
+== Script for syntax checking ==
+
+Following code is used to check validity of Erlang code.  Please put it into some file, and make it executable.  Path to this find should be specified in the elisp code above
+
+<pre>
+#!/usr/bin/env escript
+-export([main/1]).
+
+main([File_Name]) ->
+    compile:file(File_Name, [warn_obsolete_guard, warn_unused_import, 
+                             warn_shadow_vars, warn_export_vars,
+  			     strong_validation, report,
+  			     {i, "../include"}]).
+</pre>
+
+
+[new:Habitue01:] Would it be possible to alter this script to get output from dialyzer as well?
+----
+FlyMake

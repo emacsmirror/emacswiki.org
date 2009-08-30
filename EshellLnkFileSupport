@@ -1,0 +1,70 @@
+I found a great elisp function that dereferences Windows shortcuts using a vbscript in the background. I have uploaded Lisp:lnk.el (the comments in the source suggested that it was OK, feel free to bash me if I was a bad boy) but not run-command.el (no mentioning of GNU Emacs or anything like that in this source) but you can find it on google groups: 
+
+http://groups.google.com/groups?q=run-command.el+1.13+group:gnu.emacs.sources
+
+The following snippet is from my patched eshell/cd function, I have left two rows of code from the original function so that you know where to paste it (no, I'm not that familiar with how to make patches the "correct" way). Consider this version 0.1b:
+
+<pre>
+	    (setq handled t)))))
+     ;; .lnk support begins here
+     ;; Very basic handling of Windows shortcuts (.lnk files) to
+     ;; directories. Requires lnk.el and run-command.el
+     ((and (eq system-type 'windows-nt)
+           path           
+           (featurep 'lnk)
+           (featurep 'run-command)
+           (or (file-regular-p path)
+               (file-regular-p (concat path ".lnk")))
+           (setq path (lnk-dereference-shortcut 
+                       (if (file-regular-p path)
+                           path
+                         (if (file-regular-p (concat path ".lnk"))
+                             (concat path ".lnk")))))))
+     ;; .lnk support ends here
+     (path
+</pre>
+
+This change now allows eshell to grok commands like this:
+
+ d:/home $ cd mp3
+ c:/sound_and_gfx/mp3 $
+
+or
+
+ d:/home $ cd mp3.lnk
+ c:/sound_and_gfx/mp3 $
+
+where mp3.lnk is a Windows shortcut to c:\sound_and_gfx\mp3.
+
+=== The vbscript ===
+
+<pre>
+REM shortcut.vbs --- Print the target of a Microsoft Explorer shortcut
+REM
+REM   Author:   Peter Breton
+REM   Created:  Fri Sep 06 2002
+REM   Version:  $Id: shortcut.vbs,v 1.2 2002/09/06 15:15:47 pbreton Exp $
+
+REM This file is NOT part of GNU Emacs, but is distributed in
+REM the same spirit.
+REM
+REM GNU Emacs is free software; you can redistribute it and/or modify
+REM it under the terms of the GNU General Public License as published
+REM by the Free Software Foundation; either version 2, or (at your
+REM option) any later version.
+
+REM Ensure that this script has at least one argument
+If WScript.Arguments.length < 1 Then
+  WScript.Quit
+End If
+
+linkFile = WScript.Arguments (0)
+   
+REM Open the shortcut (despite the name, this does not create it)
+Set link = WScript.CreateObject("WScript.Shell").CreateShortcut(linkFile)
+
+WScript.Echo link.TargetPath
+</pre>
+
+----
+CategoryEshell, EshellWThirtyTwo

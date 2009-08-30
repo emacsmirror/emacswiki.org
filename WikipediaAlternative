@@ -1,0 +1,11 @@
+Emacs Wikipedia mode -- a major mode for editing Wikipedia articles.  Alternative to WikipediaMode.
+
+Homepage: https://gna.org/projects/wikipedia-el/
+
+Features:
+
+* Supports English and Russian Wikipedia domains. Support for other domains can be easily added on request.
+* Links and emphasis markup is completely hidden, so that you see and edit plain readable text in the buffer. You can use special keys to set up links and emphasize text regions.
+* Highlighting of links and bold/italic emphasis.
+* Mainly for UTF-8 domains (e.g. Russian): support for proper quotes, dashes, non-breaking space and other special characters. The mode tries to be smart and inserts all these things just as you type. You can insert special symbols manually too.
+* It is possible to open Wikipedia articles right from Emacs, without a browser. Later it will also be possible to save articles from Emacs.

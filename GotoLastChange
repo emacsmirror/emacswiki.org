@@ -1,0 +1,10 @@
+http://www.emacswiki.org/elisp/goto-last-change.el allows you to move point through buffer-undo-list positions.
+
+* Groups:goto-last-change.el
+
+[new]
+If anyone feels ambitious I'd like to suggest that this function be modified (or a new one written .. perhaps called goto-next-undo) to be a bit more undo-friendly.  I think it would be quite useful if one could use this function while undoing.  That is, after hitting the undo key, being able to hit the goto-last-change key to see where the next undo will occur and not have the operation cause undo to reverse directions and undo my last undo.
+
+
+----
+CategoryUndo

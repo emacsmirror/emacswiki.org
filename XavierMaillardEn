@@ -1,0 +1,159 @@
+Hi and welcome on my modest EmacsWiki page. I am XavierMaillard, a
+french DBA spending his spare time hacking FreeSoftware (and editing
+this place).
+
+I am a FreeSoftware hacktivist.
+
+I am member of a few associations related to FreeSoftware promotion and alterglobalisation:
+
+* [http://april.org APRIL]
+* [http://lolica.org LOLICA]
+* [http://attac.fr ATTAC France] <= discontinued (conflicted with positions)
+
+I use GNU Emacs since ages (at least I feel I didn't use anything else :p) and love *Lisp language.
+
+==Contact me==
+
+* irc: [::xma] on the EmacsChannel (rare)
+* mail: mailto:xma@gnu.org (rather long to answer)
+* mail2: mailto:xavier@maillard.mobi (near real-time answer)
+* jabber ID: xavier@maillard.mobi
+* OpenId: http://xma.myopenid.com
+
+== Modes I am using ==
+
+=== Mail tasks ===
+
+I have tested all mail modes for emacs from Gnus to MH-E but I am not
+very interested in tweaking/sorting/archiving. I have to admit that
+Gnus is marvelous but it is so huge that I spent my time
+tweaking/hacking it thus I lost precious time.
+
+MH-E was a good way to use NMH in Emacs but after some time of
+thinking I have decided that, given the fact I was living 100% of my
+time in Emacs, NMH layer was too much. NMH, though, is quite a cool
+mail handling system I would recommend for any serious shell user.
+
+In the end, RmailMode is really what I need(ed). It is simple, basic
+but pretty efficient.
+
+=== IM ===
+
+I used to only use IRC but as time goes, I am more and more using
+Jabber. Thus my client of choice is JabberEl. For the rare occasions I
+am under IRC, I am using [[rcirc]].
+
+=== NNTP ===
+
+Gnus, all is said.
+
+=== Notes and organization ===
+
+Once again, I have tried so many modes always trying to have the
+perfect tools that I spent too much time playing with the setup.
+
+Why did I switch to howm ? I like free-form notes taking tool. Plus,
+howm is really powerfull to search *anything* *at any given time*
+*anywhere* into my notes. To my knowing, this is the only one tool
+doing this. The big cons is its lack of documentation.
+
+What I like about it:
+
+# free form notes
+# awesome searching capabilities (nothing can beat it at this)
+# looks like a wiki (perfect for me)
+# extensible easily
+# is a MinorMode
+
+What I dislike:
+
+# small community
+# documentation is in japanese :/
+
+[new:XavierMaillard:2009-02-17 18:57 UTC]
+After months of howm, howm sounds less interesting for these reasons:
+
+# I am duplicating many note content everywhere (codes, ...)
+# Saving one note can take really long (due to huge amount of notes)
+# Searching is not really useful since some system daemon could do
+  that (and even more and better -i.e rlocate for example and this
+  could be made available via [[Anything]])
+
+I am more and more using topic-oriented notes -i.e. notes about sql,
+about free software, ... I am huge fan of EevMode which is of great
+help for that but going that way also means to renounce to HowmMode
+and to choose something different, something working with the One Big
+File approach.
+
+=== Other modes ===
+
+In unsorted order:
+
+* InteractivelyDoThings
+* OddmuseMode (current Maintainer)
+* InPlaceAnnotations (current Maintainer)
+* ColorTheme (current maintainer)
+* DarcsSum
+* ShellMode
+* SqlMode
+* NeroEl (maintaining a fork)
+* VC
+* PredictiveMode
+* EevMode (can't live without it)
+* [[Anything]] (new and really fun)
+* RecordsMode (current maintainer)
+
+== Me and EmacsWiki: my work done ==
+
+* [http://www.emacswiki.org/cgi-bin/wiki?action=rc&all=1&showedit=1&from=1&rcuseronly=XavierMaillard Contributions to the Wiki]
+* [http://www.emacswiki.org/cgi-bin/wiki?action=rc&all=1&showedit=1&from=1&rcuseronly=zeDek Contributions to the Wiki II]
+
+=== Page initiated ===
+
+* GnusCvsForDebian - Or how to have Oort Gnus under Debian GNU/Linux
+* GnusPGG - A native crypto module for Gnus
+* GnusSpam - The anti-spam module for Gnus
+* SigningMail -
+* DealingWithGroups -
+* MessageMode -
+* ErcChanop
+* IndexMail - learn howto easily search for mails between tons of them
+* AbandonnedMode
+* Many other pages of CategoryGnus -
+<
+As You have surelly seen, I principaly deal with Gnus stuff. This may
+be why I am the current maintener/webmaster of gnusfr.org
+(http://www.gnusfr.org). This site is dedicated to the french gnus
+users community.
+I am also the new official maintainer of the French User Emacs website (http://www.emacsfr.org)
+I am also in charge of the french translation of the gnus documentation
+[new] Je peux t'aider si tu veux :) -- LucasBonnet
+[new] Welcome! ;) -- AlexSchroeder
+[new] re [[rcircEncoding]]: That's what I get for not updating the page with the latest debugged version. Your fix is what I have in my init file, too. :) I also note that you are a lousy blogger, based on what I see in the section below. -- AlexSchroeder
+
+=== Questions ===
+
+[new:XavierMaillard:2009-01-12 21:16 UTC]
+How can I redirect to a page anchor in EmacsWiki ? Thank you.
+
+[new:rubikitch:2009-01-16 18:23 UTC]
+I saw your posting that you are a heavy user of InPlaceAnnotations. Please let me see your setting/code of InPlaceAnnotations if you prefer? I use org-remember to note when I read code. I'm interested in the integration of InPlaceAnnotations and OrgMode/RememberMode. -- [[rubikitch]]
+
+[new:XavierMaillard:2009-02-17 18:57 UTC]
+I do not have configuration for InPlaceAnnotation. I am just using it
+everywhere to store "post-it" (todo, reminders, ...). I asked for
+maintainership to be able to have ... maintainance (or add feature,
+etc.). If you have code for integration with OrgMode, just post it
+here. I have setup a darcs repository. I plan to make it public (I
+will probably add read/write to any contributor).
+
+=== Blog & my website ===
+
+I am going to make it available again soon (really soon).
+
+<rss http://maillard.mobi/~xma/blog/index/index.rss>
+
+----
+Cette page est disponible en [XavierMaillardFr français]
+
+CategoryHomepage

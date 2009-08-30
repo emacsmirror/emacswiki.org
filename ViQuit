@@ -1,0 +1,19 @@
+If you have vi users switching to Emacs, consider adding something like
+this to your site-wide configuration file:
+
+    (defconst wq "This is not vi!  Use C-x C-c instead.")
+    (defconst w "This is not vi!  Use C-x C-s instead.")
+    (defconst q! "This is EMACS not vi!  Use C-x C-c instead.")
+    (defconst wq! "This is EMACS not vi!  Use C-x C-c instead.")
+
+Now when people type ESC :wq or ESC :q!, and hit RET impatiently when
+the command they think they've just executed hasn't, they get these
+helpful messages instead.
+
+This works because `ESC :' allows you to evaluate lisp expressions.
+Thus, `ESC : wq RET' will evaluate the wq variable -- which has been
+set to a helpful string.
+
+----
+CategoryHumor
+CategoryKeys

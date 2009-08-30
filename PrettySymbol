@@ -1,0 +1,10 @@
+This page is about displaying sequences of characters as fancy characters or symbols -- for example, showing ##->## as -->.
+
+* PrettyLambda -- Show ##lambda## as the Greek letter.
+* PrettyGreek -- Generalization of PrettyLambda for other Greek letters.
+* TrentBuck's pretty symbols -- He says they horribly mess up wrapping (lines become too long) and alignment -- obvious if you do `##C-x v =##'.
+** http://paste.lisp.org/display/42335/raw
+** http://paste.lisp.org/display/42335,2/raw
+* Lisp:pretty-mode.el
+* PrettySymbolsForLanguages -- Language-specific display of char sequences as fancy characters or symbols.
+* UnParenMode -- Hide display of parens.

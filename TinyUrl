@@ -1,0 +1,168 @@
+tinyurl.el is part of the TinyTools. 
+
+== Overview ==
+
+Follow URLs in buffer at point. Works for programing modes too.
+Position the cursor somewhere on the line, wait 2 seconds
+and the URLs in the current line are buttonized.
+
+* General URL handler: not just the regular http, ftp, but
+  also for programming languages like Perl/Lisp/C++ and
+  man page cut(1) references and jumping to Debian bug
+  reports (+ WNPP) and more.
+* When the global minor mode is on, wait few seconds and the
+  current line will be scanned for urls. Because not all
+  terminals show color, there is additional "!" character added to
+  the front of URL for calling you to push it.
+* Defines binding `mouse-2' and `M-RET' to call the url at
+  point. These bindings are electric: If there is no button to push,
+  the original binding is called according to underlying mode.
+* You can change the url handler sets on the fly: e.g.
+  call lynx for a while, then switch to default browser or use your custom
+  browser. See `M-x' `tinyurl-set-handler'.
+* Centralised url handling. If you call `tinyurl-install-to-packages'
+  then GNUS, TM, VM etc. now call TinyUrl and you only need to
+  configure things in one place.
+
+== Install ==
+
+{{{
+  
+(autoload 'tinyurl-mode               "tinyurl" "" t)
+(autoload 'tinyurl-mode-1             "tinyurl" "" t)
+(autoload 'turn-on-tinyurl-mode-1     "tinyurl" "" t)
+(autoload 'turn-off-tinyurl-mode-1    "tinyurl" "" t)
+
+;;  Keybinding suggestions
+(global-set-key "\C-cmuu"  'tinyurl-mode)   ; Global minor mode
+(global-set-key "\C-cmu1"  'tinyurl-mode-1) ; Toggle for current buffer
+
+;; OPTIONAL: Attach to VM, RMAIL, Gnus etc.
+;; (add-hook 'tinyurl-:load-hook  'tinyurl-install-to-packages)
+
+;; OPTIONAL: Select backend for EMAIL urls. See variable's documentation.
+(setq mail-user-agent 'message-user-agent)
+  
+}}}
+: <i>See TinyTools for its <code>tinyurl.el</code> buttonizing URLs etc in buffers.</i>
+
+== Customization ==
+
+The following two functions grab the URL at point, feed it to tinyurl.com or metamark.net and retrieve a smaller URL redirection, which is placed in the kill-ring to conveniently yank it where you need it.
+
+Since the two versions at the bottom of this page didn't work for me and my GNU Emacs 22, I refactored a bit and these two functions work quite good. If the two older versions below are broken on older emacsen, too, feel free to remove them. (TassiloHorn)
+
+I've wrapped some of this functionality up in a module called [http://www.shellarchive.co.uk/2009-03-08-lessen-a-url-with-smallurl-el.html smallurl.el].
+
+<pre>
+;;;;;;;;;;;;;
+;; Tinyurl ;;
+;;;;;;;;;;;;;
+(require 'mm-url)
+(defun get-tinyurl ()
+"Grabs the url at point and echos the equivalent tinyurl in the
+minibuffer to ease cutting and pasting."
+  (interactive)
+  (let* ((long-url (thing-at-point 'url))
+         (tinyurl
+          (save-excursion
+            (with-temp-buffer
+              (mm-url-insert
+               (concat "http://tinyurl.com/api-create.php?url=" long-url))
+              (kill-ring-save (point-min) (point-max))
+              (buffer-string)))))
+    (message tinyurl)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Metamark - Free Short URL redirection ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'mm-url)
+(defun get-metamark ()
+  "Grabs the url at point and echos the equivalent metamark url
+in the minibuffer to ease cutting and pasting."
+  (interactive)
+  (let* ((long-url (or (thing-at-point 'url)
+                       (read-string "URL to shorten: ")))
+         (url (concat "http://metamark.net/api/rest/simple?"
+                      (mm-url-encode-www-form-urlencoded
+                       (list (cons "long_url" long-url)))))
+         (short-url
+          (save-excursion
+            (with-temp-buffer
+              (mm-url-insert url)
+              (goto-char (point-max))
+              (goto-char (re-search-backward "[^[:cntrl:][:space:]]"))
+              (delete-region (+ 1 (point)) (point-max))
+              (kill-ring-save (point-min) (point-max))
+              (buffer-string)))))
+    (message "shortened: %s" short-url)))
+</pre>
+
+----
+
+Tinyurl.el grabs the url at point, feeds it through tinyurl.com and spits the result out in the minibuffer.
+
+If you use this with emacs running in a GUI you may want to extend the code to make the tinyurl yank-able.
+
+(seems broken on GNU Emacs 22, so use the two functions on top.)
+
+<pre>
+(require 'url)                                                                  
+                                                                                
+(defun get-tinyurl ()                                                           
+"Grabs the url at point and echos the equivalent tinyurl in the                 
+minibuffer to ease cutting and pasting."                                        
+  (interactive)                                                                 
+  (let* ((beg-end (bounds-of-thing-at-point 'url))                              
+         (aurl (buffer-substring (car beg-end)                                  
+                                 (cdr beg-end)))                                
+         (tinyurl                                                               
+          (save-excursion                                                       
+            (set-buffer                                                         
+             (url-retrieve-synchronously                                        
+              (concat "http://tinyurl.com/api-create.php?url=" aurl)))          
+            (let* ((beg1 (- (search-forward-regexp "http:") 5))                 
+                   (end1 (- (search-forward-regexp "^M") 1)))                   
+              (buffer-substring beg1 end1)))))                                  
+    (message tinyurl)))
+</pre>
+
+----
+
+Here is a modified version using Ask Bjrn Hansen's metamark service for even shorter urls.
+
+(Tested working with unicode emacs (CVS), emacs21, and emacs22.  Broken in xemacs21.)
+
+I especially like the following binding: (global-set-key [(super u)] 'mah/replace-url-with-metamark)
+
+<pre>
+(require 'mm-url)
+(defun mah/get-metamark (long-url)
+  "Return a shortened metamark URL for the passed in URL."
+  (let* ((url (concat "http://metamark.net/api/rest/simple?"
+                      (mm-url-encode-www-form-urlencoded
+                       (list (cons "long_url" long-url)))))
+         (short-url
+          (save-excursion
+            (with-temp-buffer
+              (mm-url-insert url)
+              (goto-char (point-max))
+              (goto-char (re-search-backward "[^[:cntrl:][:space:]]"))
+              (delete-region (+ 1 (point)) (point-max))
+              (kill-ring-save (point-min) (point-max))
+              (buffer-string)))))
+    short-url))
+
+(defun mah/replace-url-with-metamark ()
+  "Replace url at point with a shortened url."
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'url)))
+    (when bounds
+      (let* ((long-url (buffer-substring
+                        (car bounds) (cdr bounds)))
+             (short-url (mah/get-metamark long-url)))
+        (save-excursion
+          (goto-char (car bounds))
+          (replace-string long-url short-url))))))
+</pre>

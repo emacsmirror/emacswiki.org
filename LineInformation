@@ -1,0 +1,59 @@
+Emacs 21.4 and XEmacs 21.4 both have <code>point-at-bol</code> and <code>point-at-eol</code>, so you can use those for line position information nowadays.
+
+In Emacs they're aliases for <code>line-beginning-position</code> and <code>line-end-position</code> which are documented in the EmacsLispReference. If you're writing just for Emacs then you can use those names.
+
+At the time of the EmacsSchism people used the following to get the end of the line position:
+
+  (save-excursion (end-of-line) (point))
+
+To support old emacsen you can make a helper function or alias with either this or <code>point-at-eol</code> or <code>line-end-position</code>, and ditto beginning of line.
+
+----
+
+Here's a workaround used in ibuffer.el (see IbufferMode for more):
+
+<pre>
+(if (fboundp 'line-beginning-position)
+    (defalias 'ibuffer-line-beginning-position 'line-beginning-position)
+  (defun ibuffer-line-beginning-position ()
+    (save-excursion
+      (beginning-of-line)
+      (point))))
+
+(if (fboundp 'line-end-position)
+    (defalias 'ibuffer-line-end-position 'line-end-position)
+  (defun ibuffer-line-end-position ()
+    (save-excursion
+      (end-of-line)
+      (point))))
+</pre>
+
+Here is some example code from sql.el for comint specific stuff:
+
+<pre>
+(if (not (fboundp 'comint-line-beginning-position))
+    ;; comint-line-beginning-position is defined in Emacs 21
+    (defun comint-line-beginning-position ()
+      "Returns the buffer position of the beginning of the line, after any prompt.
+The prompt is assumed to be any text at the beginning of the line matching
+the regular expression `comint-prompt-regexp', a buffer local variable."
+      (save-excursion (comint-bol nil) (point))))
+</pre>
+
+In matlab.el you can find some code that looks like the following which takes into account the point-at-eol/bol functions that exist in XEmacs:
+
+ (cond ((fboundp 'point-at-bol)
+        (defalias 'this-mode-point-at-bol 'point-at-bol)
+        (defalias 'this-mode-point-at-eol 'point-at-eol))
+      ((fboundp 'line-beginning-position)
+       (defalias 'this-mode-point-at-bol 'line-beginning-position)
+       (defalias 'this-mode-point-at-eol 'line-end-position))
+      (t
+       (defmacro this-mode-point-at-bol ()
+          (save-excursion (beginning-of-line) (point)))
+       (defmacro this-mode-point-at-eol ()
+     (save-excursion (end-of-line) (point)))))
+
+
+----
+CategoryCode ComparativeEmacsology

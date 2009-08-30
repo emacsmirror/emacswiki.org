@@ -1,0 +1,56 @@
+Basically hexl is a standard package for editing and viewing hexadecimal code.
+
+In this page I'll attempt to merely touch on some of the basic functions so that you can experiment and find the best usage for yourself.
+
+There are 2 functions you will mostly be using.  The first is hexl-mode.
+
+hexl-mode translates your current buffer into hex much like any other hex editor would, but doesn't do a very good job of providing editing functions for you.
+
+The second function is hexl-find-file.  This allows you to open up a file and edit the translations.  There are a few other functions, but defining them would be beyond the scope of what I want to do this evening.
+
+These functions come standard with Emacs, I'm not sure if they come with XEmacs or not.
+
+Try it out, and soon you won't have to close emacs to cheat at your favorite games!  :-)
+
+Note that hexl also works only within the EmacsFileSizeLimit.  It is not usable for viewing very large binary files such as movies.
+
+[new:DrewAdams:2005-01-04 16:17 UTC]
+Hexl mode also provides some useful functions for manipulating hex and decimal numbers. Library Lisp:hexrgb.el expands on that, offering functions to convert between hex and decimal RGB color values. -- DrewAdams
+
+[new:fledermaus:2006-08-13 12:57 UTC]
+I've patched hexl-mode (from emacs22) so that it can group characters in 8, 32 and 64 bit chunks as well
+as 16 (the default) `hexl-bits` controls this. You probably want to erase your old hexl customisations
+before using this. I've also backported the patched hexl.el to emacs 21.
+
+[http://users.pepperfish.net/vivek/hexl22.el hexl mode for emacs22]
+
+[http://users.pepperfish.net/vivek/hexl21.el hexl mode for emacs21]
+
+[new:LiHao:2007-10-21 09:30 UTC]
+I have some searching problem in Hexl mode. For example, I want to search a hex number like 04 00 03, but in default hexl mode, I do not know wether to search 0400 03, or 04 0003. so I browse wiki and come here. Does anyone knows how to search it in default hexl mode?
+I find the patch above(Thanks fledermaus :) ) is what I want, to change hexl mode's format. I merge it to may Emacs 23(ntemacs 20070819), it works good. 
+But, this patch still has some problems: when use hexl-bits 16, all the ADDRESS region and ASCII region have special background face, just like default hexl mode, but when hexl-bits set to 8, 32 or 64, the background property losted. I do not know how to fix it. 
+Does anyone can help me? Thanks a lot. :)
+I do not know how to upload files, so I can not give you my file. But I think the hexl22.el has the same problem. 
+
+==Alternatives==
+HexlMode is too simple: you can't for instance type in hex codes directly, or change the display options. Are there better alternatives?
+
+[new:AlexHarsanyi:2007-08-23 07:15 UTC]  
+Of course you can enter hex codes directly in HexlMode: just type C-M-x than the hex code.  
+C-h a hexl <RET> will give you all the hexl commands.
+
+Cheers,
+Alex.
+[new:]
+: Oh no, that's not really ''directly''. I mean type   c a f e   and see 0xCA and 0xFE appear at the left side... Without having to call other functions. Switching between left and right side with a key.
+
+[new:]
+An extension built upon hexl to provide a convenient way to view binary data:
+
+[http://litchie.net/programs/binview.html BINVIEW]
+
+- litchie
+
+----
+CategoryModes

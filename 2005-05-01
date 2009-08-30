@@ -1,0 +1,143 @@
+I'm trying a new feature for the summary box.  If the last edit happened within the last two weeks, you're given the last summary entry as a default.  The idea is to refine the summary during a discussion.  Once the discussion dies down and resumes much later, the topic is probably a different one, so providing the old one to refine makes no sense.  
+
+I'm also using a textarea (multiline) instead of a field (one line).  I'm not yet sure I really like it, but discussion on DigestedSummary suggested that it might be beneficial for /occasional/ visitors that don't know what's hot.  There is probably no benefit for RecentChangesJunkies -- people like me don't mind very short summaries that only comment on the last edit instead of the current discussion as a whole.  Anyway, I'm interested in feedback: good, distracting, too complicated, waste of screen estate...
+-- AlexSchroeder
+
+[new:DrewAdams:2005-05-04 15:29 UTC]
+''My two cents'' (on having default text) -- I prefer the previous behavior: ''no default'' value for Summary text. There is little value in editing the previous summary comment, IMO. 99% of the time, people will want to make a substantially different comment. This is true even for a subsequent comment on the same day, or even the same hour. -- DrewAdams
+
+[new]
+I agree completely with the previous comment. The summary should describe the /change/, not the "discussion as a whole". -- bojohan
+
+[new:AlexSchroeder:2005-05-04 17:24 UTC]
+Thanks for the feedback.  I'm still trying to get into the habit of thinking of the summary not as the summary for the particular /edit/ but as the summary of the current /discussion/ (spanning multiple edits).
+I'll give it a try for a few more days.
+-- Alex
+
+[new:DrewAdams:2005-05-13 21:32 UTC]
+I've noticed several log entries appearing in RecentChanges that have nothing to do with the latest edit. This appears to be a negative side-effect of having default text in the box: people sometimes don't notice the nonempty box and just save without updating or deleting the text. -- DrewAdams
+
+[new:MathiasDahl:2005-05-14 14:16 UTC]
+I like the new behaviour. Often after I updated or added a new page, including a nice summary of course, I remember something I missed. Not having to add the same summary again when I go back and update the page it nice.
+
+[new:DrewAdams:2005-05-15 22:54 UTC]
+Take a look at the log comments for the last several revisions of EmacsNiftyTricks: http://www.emacswiki.org/cgi-bin/wiki?action=history;id=EmacsNiftyTricks. You'll see that the last '''''four''''' revisions have kept the comment I logged long ago with the fifth-newest revision. That's what I mean: people don't always notice the '''Summary:''' box if its not empty, and the result is then inappropriate comments. In the old system, if they don't notice the '''Summary:''' box, there is no introduction of misleading info -- the default is no comment. -- DrewAdams
+[new:DrewAdams:2005-05-16 15:52 UTC]
+: Since I wrote that yesterday, a couple more revisions have been added to EmacsNiftyTricks -- still without changing the (inappropriate) log comment. We're now up to '''''seven''''' revisions that all use the same, vestigial comment, a comment that made sense for only the first of those seven revisions. This should be a sufficient demonstration that leaving the last-used comment as a default for the next is problematic. -- DrewAdams
+
+[new:AlexSchroeder:2005-05-16 22:32 UTC]
+Right now the summary "expires" after 14 days -- so if you edit a page that was not edited for 14 days, the default summary is empty.  Maybe we can have the benefit without the drawback.  Perhaps for this wiki, we could restrict the time withing which the summary gets copied to only one day?
+
+[new:DrewAdams:2005-05-16 23:02 UTC]
+Yes, a single day sounds better than 14, to me. -- DrewAdams
+
+[new:ChrisPurcell:2005-05-18 21:11 UTC]
+Is having a summary that at least references ''one'' recent change not better than no summary, though, when you look at RecentChanges for the first time in a week? Also, you can always edit the page to update the digest - perverse, but probably helpful. (I'd shrink the summary box, by the way. Yowzah.)
+
+[new]
+For the same reason Mathias mentioned, I like the new feature.  OTOH I almost didn't update the summary on this page just because it was already filled.  Hmmm.  Is 8-12 hours possible?  If I haven't noticed I want to change my update in that amount of time, it's a new subject. -- [[Rick_Bielawski]]
+
+[new]
+I'm a fan of this new feature but I'm not sure others understand it.  The same unrelated comment is being repeated for edits when it doesn't apply.  This makes it hard to determine what an edit was when listed on RecentChanges.   I'm not sure people will figure it out with time, either, unfortunately.  I'm concerned that the box could also be a deterrant of submissions.  In a less than optimal situation, spammers are using the old summary to better cloak their submissions, in some cases using summaries like "revert spam".  Just my observations.  -- AaronHawley
+
+[new]
+AlexSchroeder:
+I think this feature will have to go.  It looked so good on paper.  :)
+I've seen it on both MeatballWiki and CommunityWiki, and the result is not too cool, either.
+As a last experiment, I'm looking into a 4h "summary life-span".
+I don't think it will help much, however.
+
+[new:DrewAdams:2005-12-02 18:45 UTC]
+I must revive this question -- the current behavior is very annoying and leads to misleading summary comments. When you make an edit, and hit Preview, any change you might have made to the Summary box is erased, and the previous comment is reinserted. Especially if you check "This change is a minor edit",  you are very likely to end up with the previous person's summary comment for your change. This happens all the time, including to me (who should know better). If you make several edits, clicking Preview each time, you must remind yourself to erase the (reinserted!) previous log and add your own, before saving. This makes no sense, is error prone, and makes following the thread of edits difficult. Virtually no one is using the Summary log in the accumulative fashion the current behavior attempts to accomodate. Let's put things back the way they were: ''no reinsertion'' of the previous log. -- DrewAdams
+
+[new]
+: "When you make an edit, and hit Preview, any change you might have made to the Summary box is erased, and the previous comment is reinserted.""
+
+I'm not seeing that behavior. -- AaronHawley
+
+[new:DrewAdams:2005-12-02 20:44 UTC]
+Try this: Erase the Summary content, then click Preview. In my browser (IE 6, one of the most common), the previous summary text is reinserted. 
+
+If you type some text, that new text remains after Preview, so the workaround I try to remember to use is to insert a space. Nevertheless, this is error prone. 
+
+And, again, hardly anyone takes advantage of the cumulative-thread "feature". People generally log individual change comments. -- DrewAdams
+
+[new]
+I once happened to experience that behavior, but now avoid it.  If someone were to edit the summary, I suspect they usually replace it and not just delete.  Its probably an accidental feature; a way to pester users to make the summary non-blank.
+
+I suppose the label for the summary box could be changed to: "Summary (Modify or replace any existing previous summary):".
+The summary label for MeatBall wiki says, "please add your change". -- AaronHawley
+
+[new:DrewAdams:2005-12-02 22:45 UTC]
+This "feature" does not have the effect of pestering users to make the summary non-blank. It has the effect of reproducing inappropriate summaries.
+
+Especially for minor edits, it is often appropriate to leave a summary blank. The UI shouldn't require users to enter a space in such cases, just to leave the comment field blank. The problem is not with the instructions, it is with the behavior. 
+
+The worst part about it is that there is no immediate feedback, to let users know that their erasure has been in vain. The previous text reappears only after you click Preview (which might be long after you erased the Summary). It's a bad UI, IMO. -- DrewAdams
+
+[new]
+Yes, if you think that the summary should describe the one edit you made, you are right.
+
+If you think that the summary should describe the current set of changes and not just the last one, then the current behaviour is correct.  If your change was minor, there's no need to change the summary at all.
+
+Since the two of us obviously disagree on this feature, I'm looking at what other people say above, and they seem to like the feature in general.
+-- AlexSchroeder
+
+[new:DrewAdams:2005-12-03 00:56 UTC]
+I see very few people taking advantage of the feature -- my impression is that most people make independent summary comments.
+
+You say (in your log): "But then again, the old summary is still correct for the current discussion, if your last change was minor." Don't assume that a minor change has anything to do with the previous change, whether major or minor.
+
+The appropriate behavior, it seems to me, is to insert the previous log in the beginning, but if someone deletes it, respect that. IOW, do exactly what you do if the person replaces it with a space. -- DrewAdams
+
+[new]
+I feel that no summary is worse than a summary that describes what has happened before without actually reflecting the last minor change made.
+
+Maybe the reason we don't see much use of this feature is that we've reduced summary live-span to unusable values, so that it is only ever an option for people that are very active, ie. you, me, and Aaron.  Of the three, I think I'm using it a lot, and you don't like it.  Therefore I don't accept it as evidence.
+
+On the other hand, people on CommunityWiki seem to use it, see Community:RecentChanges.
+-- AlexSchroeder
+
+[new:DrewAdams:2005-12-03 03:13 UTC]
+1. The discussion you point to at Community:RecentChanges is precisely that: a discussion. Cumulative logs make some sense in that context. They make less sense wrt page edits that are not part of a discussion.
+
+2. More importantly, the automatic treatment of logging should respect a user's apparent preference: if (s)he wants to continue a "thread", fine; if (s)he deletes the previous thread, fine -- leave it alone; don't keep reinserting it. 
+
+What is wrong with what I suggested, from your point of view (your use case): "Insert the previous log in the beginning, but if someone deletes it, respect that. IOW, do exactly what [we] do [now] if the person replaces it with a space." -- DrewAdams
+
+[new]
+I think that nobody should delete the summary if a default is offered, therefore I don't feel like coding around it.
+The only simple solution would be to disable these carry-over summaries.
+But that ignores all the more or less positive votes on this page.
+-- Alex
+
+[new:DrewAdams:2005-12-03 14:55 UTC]
+"Nobody should delete the summary" if one is offered? Why? What if your edit has nothing to do with the previous edit? What am I missing here? I guess that if I haven't convinced you by now, it's unlikely you'll be convinced -- I'll live with it. -- DrewAdams
+
+[new]
+When I look at your recent edit, I see this:
+
+: 14:56 UTC (Unterschiede) (alte Versionen) 2005-05-01 . . . . DrewAdams [en] (Klein)
+
+I therefore ask myself whether you made a major edit before that one.  Perhaps that major change would have had a decent summary.  I cannot tell.  If you had left the last summary in there, I would have been able to assume that nothing important had changed.  But I can't see it, because you decided to remove it.  Grrr.
+-- Alex
+
+[new:DrewAdams:2005-12-03 15:42 UTC]
+I simply made a minor edit and didn't add a log comment -- so what? I had nothing further to say. If you look at RecentChanges (major, by default), you see your log message as the latest, which is sufficient -- and it shows as ''your'' log message (which it is), not mine. If you look at minor changes, you see that I made a minor change, with no comment. Makes sense to me. -- DrewAdams
+
+[new]
+This is where we disagree.  By default, I display minor changes (my Emacs Wiki bookmark points there instead of to the default location).  At the same time, I cannot read all the changed pages.  Therefore I want to be reminded of what was going on when the page recently changed.  Your empty summary is worse than just copying the old summary. -- Alex
+
+[new:DrewAdams:2005-12-04 22:15 UTC]
+I think this will be my final word on this. You said the following above, and I ''agree'':
+
+: "Yes, if you think that the summary should describe the one edit you made, you are right."
+
+That shows clearly what we ''really'' disagree about: What is the ''most common'' use pattern (use case)? I maintain that most edits on this wiki are ''not'' continuations of a discussion -- they are one-off edits. I guess you estimate that most edits continue a discussion, so log comments should accumulate. 
+
+I think it comes down to that. As you say, if I am right about the average use case, then I am right about the proper behavior of logging comments. If you are right about the average use case, then you are right about comment logging. This is ''progress'': it gets us beyond the realm of preference or opinion -- average use is observable, measurable. 
+
+My impression is that the average use case is a one-off edit -- I even have the impression that an overwhelming majority of edits are one-off. But it would be good to pick a ''random'' day or two and check the actual edits (major and minor) that were made then. 
+
+Here's one way to do that (there may be a better way): Hit the link at RandomPage, and go to the RecentChanges for the last edit made on that page. I don't know the incantation for the latter operation, so I'll leave the sampling to you (or let me know how to get the RecentChanges for a particular date, and I'll do it). -- DrewAdams
+

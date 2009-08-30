@@ -1,0 +1,29 @@
+== PL/1 mode ==
+[new]
+I am looking for a pl/1 mode for emacs; I know there was one on MACemacs under MULTICS.
+
+Is this mode still anywhere available? And, who knows PL/1 well enough to write such a mode if it's lost?
+
+Kind regards,
+
+Ralf Hagen (needing PL/M for a Z80-CP/M-project)
+
+[new]
+Have you seen the pointers at MulticsEmacs? -- AaronHawley
+
+== Laptop hibernation on IRC ==
+I am just beginning to use screen and I launch GNU Emacs through it. When I am on IRC and I hibernate my laptop, resuming the laptop leads to this:
+
+Debugger entered--Lisp error: (error "irc.freenode.net/6667 \303\211chec temporaire dans la r\303\251solution du nom")                                                    
+  make-network-process(:name "irc.freenode.net" :buffer nil :host "irc.freenode.net" :service 6667)                                                                       
+  open-network-stream("irc.freenode.net" nil "irc.freenode.net" 6667)                                                                                                     
+  rcirc-connect("irc.freenode.net" 6667 "zedek" "zedek" "Xavier Maillard" ("#emacs"))                                                                                     
+  rcirc(nil)                                                                                                                                                              
+  call-interactively(rcirc)                                                                                                                                               
+  execute-extended-command(nil)                                                                                                                                           
+  call-interactively(execute-extended-command)                                                                                                                            
+                                                                                                                                                                          
+                                                                                                                                                                     
+Even if I doM-x rcirc and choose the same IRC server, it claims it can't find it :(
+
+If I start a fresh GNU Emacs session, that perfectly works. Do you know why it won't work in a resumed session ?

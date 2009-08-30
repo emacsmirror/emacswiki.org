@@ -1,0 +1,342 @@
+;;; Chris McMahan's .emacs file. Use this in conjunction with the
+;;; other files loaded to set the working environment.
+;;; all email addresses have been 'sterilized' to prevent harvesting
+;;; .emacs (this file)
+;;; .emacs-config (main configuration)
+;;; .emacs-macros (custom functions and macros)
+;;; .emacs-webjump (webjump package sites)
+;;; .emacs-calendar (calendar/diary configuration)
+;;; .emacs-planner (planner/muse configuration)
+;;; .emacs-colors (color-theme configuration)
+
+;;; -*-mode: emacs-lisp -*-
+;;; set to t for debugging
+;(setq debug-on-error t)
+
+;;; .emacs --- Emacs configuration file
+
+;; Copyright (C) 1995 -- 2002  Chris McMahan <cmcmahan-at-one.net>
+
+;; Author: Chris McMahan <cmcmahan-at-one.net>
+;; Time-stamp: 06 Dec 2006  13:06 
+;; Emacsen Compatibility: Emacs21
+;; OS Compatibility:      Win32 (with Cygwin utils)
+
+;; This file is free software; you can redistribute it and/or modify
+;; it under the terms of version 2 of the GNU General Public License
+;; as published by the Free Software Foundation.
+
+;; This file is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+;; General Public License for more details.
+
+;; I'm sure you already have many copies of the GPL on your machine.
+;; If you're using GNU Emacs, try typing C-h C-c to bring it up. If
+;; you're using XEmacs, C-h C-l does this.
+
+;;; Commentary:
+
+;; This is my .emacs file. There are many like it but this one is
+;; mine. My .emacs file is my best friend. It is my life. I must
+;; master it as I must master my life. Without me, my .emacs file is
+;; useless. Without my .emacs file I am useless. I must code my .emacs
+;; file true. I must code faster than my enemy, who is trying to
+;; kill(1) me. I must kill(1) him before he kill(1)s me. I will.
+;; Before God I swear this creed: my .emacs file and myself are
+;; defenders of my country, we are the masters of my enemy, we are the
+;; saviors of my life. So be it, until there is no enemy, but peace.
+;; Amen.
+;;
+;; (with thanks to "Apocalypse Now" and Edward O'Connor <ted-at-oconnor.cx>)
+
+;;; History:
+
+;; This has been evoling since 1994
+;; GNU Emacs 22.0.50.1 (i386-mingw-nt5.1.2600) of 2006-06-04 on TPAD
+
+;;;======================================================================
+;;; Begin code here:
+;;;======================================================================
+
+;;;; macro to expand the filename appropriately
+;(defmacro common-file-name (filename)
+;  `(expand-file-name (substitute-in-file-name ,filename)))
+
+;;;------------------------------
+;;; Windows environment settings
+;;; USER = cmcmahan
+
+;;;===================================================
+;;; set the location of various directories
+(if (eq window-system 'x)
+	(defconst TOP_LEVEL  "/home/cmcmahan/")
+  (defconst TOP_LEVEL   "c:"))
+
+(defconst TEMP (concat TOP_LEVEL "/WINDOWS/Temp"))
+
+(defconst CYGWIN_DIR (concat TOP_LEVEL "/cygwin")
+  "Top level directory for the cygwin installation.
+ Default uses `TOP_LEVEL' as a prefix")
+
+(defconst HOME_DIR (concat CYGWIN_DIR "/home/cmcmahan")
+  "Home directory. I could rely on the HOME environment variable,
+  but I'm being retentive. Default uses `CYGWIN_DIR' as a
+  prefix")
+
+(defconst EMACS_DIR (concat TOP_LEVEL "/emacs")
+  "Top level directory for the emacs installation.
+  Default uses `TOP_LEVEL' as a prefix")
+
+(defconst EMACS_PKGS (concat HOME_DIR "/emacs-pkgs")
+  "Directory for the emacs pkgs and configuration files.
+ Default uses `HOME_DIR' as a prefix")
+
+(defconst UTILS_DIR (concat TOP_LEVEL "/Utils")
+  "Utils directory, defined in ~/.emacs
+  Default uses `TOP_LEVEL' as a prefix")
+
+(defconst MAIL_DIR (concat HOME_DIR "/Mail")
+  "Directory for mail files
+  Default uses `HOME_DIR' as a prefix")
+
+(setq mail-host-address "<host name here>")
+
+;(defconst MY_TRYOUT_DIR "./"
+(defconst MY_TRYOUT_DIR (concat HOME_DIR "/download/tryout")
+  "Directory for output of zip files.
+  Default uses `TOP_LEVEL' as a prefix")
+
+;(defconst MY_UNTAR_DIR "./"
+(defconst MY_UNTAR_DIR "~/download/tryout"
+  "Directory to place files extracted from tar archives. Tar
+  requires the cygwin version of the directory name")
+
+
+;;;===================================================
+;; select your preferred programs for html and media here
+(defconst MPPRG "c:/Program Files/Windows Media Player/wmplayer.exe"
+  "Media Player program, video and streaming audio")
+(defconst IEPRG "c:/Program Files/Internet Explorer/iexplore.exe"
+  "points to the Internet Explorer location")
+(defconst FRFXPRG "c:/Program Files/Mozilla Firefox 2/Firefox.exe"
+  "points to the Mozilla Firefox location")
+(defconst BRWSR FRFXPRG
+  "set the default browser to use within emacs")
+;(setq browse-url-firefox-program FRFXPRG)
+
+;;;===================================================
+;;; set some variables here that change based on
+;;; location. Used for email and news access through NTEmacs
+;;;===================================================
+(setq my_full_name "Chris McMahan")
+
+;;; set to t to queue the mail. To send the queue, execute
+;;; smtpmail-send-queued-mail
+(setq smtpmail-queue-mail nil)
+
+(setq my_email_address "cmcmahan-at-one.net")
+(setq my_domain "one.net")
+(setq my_username "cmcmahan")
+
+(setq my_mail_format "spool") ;;; imap pop pop-ssh or spool
+
+(setq my_mail_spool  (concat CYGWIN_DIR "/var/spool/mail/cmcmahan"))
+(setq my_imap_in_gnus nil)  ;;; see your imap mail from within gnus (t)
+(setq my_mail_login "cmcmahan-at-mail.one.net")
+
+
+;; use localhost when ssh tunneling is on. The server and port for the
+;; mail server are also configured in the .tcshrc for fetchmail under
+;; SSHFWD_PORTS, and the .ssh/config file
+(setq my_mail_server "localhost")
+(setq my_smtp_server "localhost")
+(setq my_smtp_port   9025)
+
+(setq my_news_server "localhost")
+(setq my_news_port   9119)
+(setq gnus-init-file (concat EMACS_PKGS "/.emacs-gnus"))
+
+(setq my_imap_server "<imap_server_name>")
+(setq my_imap_smpt_server "<imap_smtp_server_name>")
+
+;(setq my_mail_server "mail.one.net")
+;(setq my_smtp_server "mail.one.net")
+;(setq my_news_server "news.one.net")
+
+
+;;;======================================================================
+;;; convienence to get to various directories easily (optional)
+;;;======================================================================
+;;; Desktop
+(setenv "DESKTOP" "c:/Documents and Settings/cmcmahan/Desktop")
+;(setenv "HTTP_PROXY" "http://localhost:8008")
+
+;;; set the term to avoid ansi garbage in shell mode
+;(setenv "TERM" "emacs")
+
+;;;===================================================
+;;; point to the appropriate printer
+;;;===================================================
+; if there's a problem mapping the printer (spaces choke emacs) then
+; use the command (cmd prompt)
+;
+; --> net use lpt1 "\\share_machine\printer_share_name" /PERSISTENT:yes
+;
+; this maps the shared printer to your printer port. Then just point
+; the 'printer-name' variable in emacs to lpt1 to get it to work! You
+; can also use lpt2 if you don't want to use your primary parallel
+; port
+;
+; *note* the share name may not match the name given for the printer.
+; you can find the share name by opening that printer's properties dialog
+; under the tab "sharing->Share name"
+
+;;;===================================================
+; if you map to the tcp/ip port (easier), then once the printer
+; is installed, share it from the printer properties dialog, and
+; assign the SHARE name to PRINTER_NAME below
+;(defconst PRINTER_NAME "MVIC_LexmarkT522"
+;  "printer to use within emacs")
+;
+;; now build the network printer name
+;(defconst MY_PRINTER  (concat "//" (getenv "HOST") "/" PRINTER_NAME)
+;  "Point to the printer emacs is to use. Defaults to host/`PRINTER_NAME'")
+;
+;(defconst MY_PS_PRINTER MY_PRINTER
+;  "Point to the ps printer emacs is to use. Defaults to `MY_PRINTER'")
+;
+;(setq printer-name MY_PRINTER)
+
+;;;===================================================
+;; use the ghostscript printer program to open a standard printer
+;; dialog, works like a charm!!
+;(setq-default lpr-command (concat CYGWIN_DIR "/bin/enscript.exe"))
+;(setq-default lpr-command "-2Grh -fcourier6")
+;(setq-default printer-name (concat UTILS_DIR "/gs/gsview4.8/gsview/gsprint.exe"))
+
+(setq-default ps-lpr-command (concat UTILS_DIR "/gs/gsview4.8/gsview/gsprint.exe"))
+(setq-default ps-printer-name t)
+(setq-default ps-printer-name-option nil)
+(setq ps-lpr-switches '("-query")) ; show printer dialog
+
+
+;;;===================================================
+;;; Set the default font for all frames
+;;;===================================================
+(if (eq window-system 'x)
+    (defconst MY_FONT "-misc-*-medium-*-*-14-*-*-*-*-*-*-*")
+  (defconst MY_FONT "-outline-DejaVu Sans Mono-normal-r-normal-normal-13-97-96-96-c-*-iso8859-1"))
+
+
+; Set the default font to get the appropriate character height
+; for the initial height calculation
+(set-frame-font MY_FONT)
+
+; Height and vertical position is automatically calculated from
+; within the .emacs-config file The top left corner is 0 0, the
+; bottom right is -1 -1
+(defconst MY_INITIAL_WIDTH 135 
+  "Set the width for the initial emacs frame 
+within the context of cmcmahan's config files")
+
+(defconst MY_INITIAL_LEFT -25
+  "Set the left position for the initial emacs frame within the
+  context of cmcmahan's config files. Negative numbers denote
+  distance from the right edge of the screen. Positive numbers
+  from the left edge")
+
+;;;======================================================================
+;;;======================================================================
+;;;======================================================================
+;;;======================================================================
+;;; end of user configured settings. Here comes the fun part!!
+;;;======================================================================
+;;;======================================================================
+;;;======================================================================
+;;;======================================================================
+
+
+;;;======================================================================
+;;; load the byte-compiled startup file here
+;;;======================================================================
+(load (concat EMACS_PKGS "/.emacs-config"))
+(setq custom-file (concat EMACS_PKGS "/.emacs-config.el"))
+
+;;; load the predefined macros
+(load (concat EMACS_PKGS "/.emacs-macros"))
+
+;;; load the webjump URL lists
+(load (concat EMACS_PKGS "/.emacs-webjump"))
+
+;;; load the calendar and diary config
+(load-file (concat EMACS_PKGS "/.emacs-calendar.el"))
+
+;;; load the planner config
+(load-file (concat EMACS_PKGS "/.emacs-planner.el"))
+
+;;; load the color themes and package
+(when (>= (display-color-cells) 16)
+  (load-library (concat EMACS_PKGS "/.emacs-colors")))
+
+
+;;;======================================================================
+;;; gnuserv
+;;; get the gnuserv package talking to unix many thanks to "Guy
+;;; Gascoigne - Piggford" <guy-at-wyrdrune.com> for getting the
+;;; sockets-base gnuserv up and running!
+;;; http://www.wyrdrune.com/index.html?gnuserv.html~main
+;;;======================================================================
+  (if (require 'gnuserv nil t)
+    (progn
+      (setq server-program (concat EMACS_PKGS "/bin/gnuserv.exe"))
+      (require 'gnuserv)
+
+      ;;; open buffer in existing frame instead of creating new one...
+      (setq gnuserv-frame (selected-frame))
+      (gnuserv-start)
+      (message "gnuserv started.")))
+
+;;;======================================================================
+;;; set up gnuclient to call the NTEmacs process on GNU_HOST
+;;;======================================================================
+;;;     Copy ~\emacs-pkgs\bin\gnuclient_solaris to a suitable place on
+;;; your unix account system and rename it to gnuclient. Then put the
+;;; following into your .cshrc (or appropriate Unix shell startup
+;;; file) to enable gnuserv to call the NTEmacs process directly from
+;;; within a Unix prompt (xterm or telnet window).
+;;; the .localhosts file on the XP machine merely lists the
+;;; machine names that can connect to the local (xp) emacs
+;;; process
+
+;;; ==============================
+;;; on the local machine (XP) set the following
+;;; ==============================
+;;; setenv GNU_SECURE '~/.localhosts'
+;;; setenv GNUSERV_SHOW_EMACS '1'
+;;; setenv GNU_PORT '21490'
+
+;;; ==============================
+;;; on the remote machine (unix), compile the source code found
+;;; in emacs-pkgs/bin/gnuserv.zip, then set the following:
+;;; ==============================
+;;;  setenv GNU_PORT 21490    # the default port number
+;;;  setenv GNU_HOST XXX.XX.XX.XXX    # your NT box ip address,
+;;;                # can be found by typing
+;;;                # 'ipconfig' from an NT prompt
+;;;  setenv GNU_NODE /username-at-`hostname`: # just change the username
+;;;  alias gc        '~/bin/gnuclient -q'
+
+
+;;;======================================================================
+;;; some reference stuff
+;;;======================================================================
+;;; useful to see if garbage collection is causing emacs to hang
+;(setq garbage-collection-messages t)
+
+;;; Flash a message in the echo area. This works well for debugging an
+;;; .emacs file by placing various messages throughout
+;(message "Hello, this is .emacs speaking")
+;(sit-for 3) ; 3 seconds
+
+(put 'upcase-region 'disabled nil)

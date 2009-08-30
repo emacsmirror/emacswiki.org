@@ -1,0 +1,25 @@
+Inspired by how easy it is to develop Java using JavaDevelopmentEnvironment,
+the author of the Mozilla Development Environment for Emacs (MDEE) wishes to
+fully support editing Mozilla projects using Javascript, XPCOM, XUL, etc. See
+http://mdee.mozdev.org/.
+
+----
+==open-mozilla-extension-urn==
+A small defun you may find useful:
+<pre>
+(defun open-mozilla-extension-urn () 
+  "Open the extension directory for the first extension urn on the current line.
+
+Uses the directory the buffer \"Extensions.rdf\" is in as a base.
+urn's look like: \"urn:mozilla:extension:\"." 
+  (interactive) 
+  (let ((l (thing-at-point 'line))) 
+    (if (string-match "\"urn:mozilla:extension:\\(.+\\)\"" l) 
+	(find-file 
+	 (concat (file-name-directory (buffer-file-name 
+				       (get-buffer "Extensions.rdf"))) 
+		 (match-string 1 l))))))
+</pre>
+Written by JesseWeinstein; released to public domain on Wed May 25 16:51:09 2005.
+----
+CategoryProgramming

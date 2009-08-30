@@ -1,0 +1,7 @@
+I have made a bunch of cleanup changes today and hope nobody is offended. Feel free to revert ... but I hope you won't. JonasBernoulli
+
+[new:DrewAdams:2008-12-04 17:40 UTC]
+I'm not offended ;-). But I did revert a couple of them. Generally, the cleanup changes you made were good - thanks! But I see no reason to delete some of the older versions of libraries that people have explicitly posted here. In some cases, there were explicit links to those older versions from EmacsWiki pages. Even without such links, however, there might be links to them from off site. It can happen that other libraries depend on older versions of particular libraries. Let's assume for now that someone uses those libraries and wants to make them available to others. -- DrewAdams
+
+[new:JonasBernoulli:2008-12-05 01:59 UTC]
+Good you liked some of them :-). And I understand the reason you reverted some. -- JonasBernoulli

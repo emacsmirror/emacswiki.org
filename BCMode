@@ -1,0 +1,5 @@
+This is the original bc-mode.el (right margin block comment editing) created by Steve Burgett and which has apparently disappeared from the Earth when the EECS dept. at Berkeley took down his page.
+
+I've made it compatible with the latest emacs.
+
+Lisp:bc-mode-original.el

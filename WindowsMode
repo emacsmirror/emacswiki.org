@@ -1,0 +1,7 @@
+windows.el allows you to open a new configuration with a command, keeps track of most recently used configuration. Also comes with revive.el, which can store your configuration across sessions (see SessionManagement).
+
+* http://www.gentei.org/~yuuji/software/windows.el
+* http://www.gentei.org/~yuuji/software/revive.el
+
+----
+CategoryWindows

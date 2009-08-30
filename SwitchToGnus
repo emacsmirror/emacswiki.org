@@ -1,0 +1,226 @@
+Here is a function to switch to the most relevant Gnus buffer.
+
+    (global-set-key (kbd "C-c n") 'switch-to-gnus)
+
+    (defun switch-to-gnus (&optional arg)
+      "Switch to a Gnus related buffer.
+    Candidates are buffers starting with
+     *mail or *reply or *wide reply
+     *Summary or
+     *Group*
+
+    Use a prefix argument to start Gnus if no candidate exists."
+      (interactive "P")
+      (let (candidate
+            (alist '(("^\\*\\(mail\\|\\(wide \\)?reply\\)" t)
+                     ("^\\*Group")
+                     ("^\\*Summary")
+                     ("^\\*Article" nil (lambda ()
+                                          (buffer-live-p gnus-article-current-summary))))))
+        (catch 'none-found
+          (dolist (item alist)
+            (let (last
+                  (regexp (nth 0 item))
+                  (optional (nth 1 item))
+                  (test (nth 2 item)))
+              (dolist (buf (buffer-list))
+                (when (and (string-match regexp (buffer-name buf))
+                           (> (buffer-size buf) 0))
+                  (setq last buf)))
+              (cond ((and last (or (not test) (funcall test)))
+                     (setq candidate last))
+                    (optional
+                     nil)
+                    (t
+                     (throw 'none-found t))))))
+        (cond (candidate
+               (switch-to-buffer candidate))
+              (arg
+               (gnus))
+              (t
+               (error "No candidate found")))))
+
+Consider replacing the error message on the last line with (error
+"Gnus doesn't appear to be running") or something similar.
+The test for a buffer-size greater than 0 is because on my system,
+I often end up with an empty *Group* buffer after startup.  I have
+not yet found why this happens.  But switching to that buffer would
+be the wrong, anyway.  Thus the test.
+
+I run Gnus in a seperate xemacs process to spoof asynchronous access
+to the 'net and still leave my main xemacs session free for editing
+and stuff.  Here's a function(s) I wrote for the Sawfish window
+manager that will either raise or uniconify an existing "Gnus - "
+window or start one.  Note that you could bind this to some key in
+Sawfish or just call it with "sawfish-client -f raise-gnus"
+
+    (defun get-windows-by-pattern (pattern)
+      "return a list of windows whose names match the unquoted regexp PATTERN"
+      (remove-if-not #'(lambda (window)
+                     (string-match (quote-regexp pattern) (window-name window)))
+                 (managed-windows)))
+
+    (defun raise-gnus ()
+      "defun to either raise gnus if it's burried, show it if it's hidden, or start it if it's not running."
+      (let* ((window-list (get-windows-by-pattern "Gnus - "))
+             (window (and window-list (car window-list)))
+             (iconified (window-get window 'iconified)))
+        (cond 
+         ((not window) (system "xemacs -f gnus&"))
+         (iconified (uniconify-window window))
+         ((not iconified) (raise-window window))))))
+
+Note that in my .gnus.el I have (setq frame-title-format "Gnus - %b").
+Also note that if an existing window isn't found that matches the
+"Gnus - " pattern, it starts a new xemacs up and runs the "gnus"
+function.  Customize this to fit your needs.  - LathI
+
+See also: SawFishMode.
+
+I use the following:
+
+    ;;switch to gnus group buffer or start gnus
+    (defun my-switch-to-gnus-group-buffer ()
+      "Switch to gnus group buffer if it exists, otherwise start gnus"
+      (interactive)
+      (if (or (not (fboundp 'gnus-alive-p))
+              (not (gnus-alive-p)))
+          (gnus)
+        (switch-to-buffer "*Group*")))
+
+= Preserving the screen configuration =
+
+The following code uses escreen.el to preserve the window configuration when switching to and from gnus. It also turns the "priorities" into a cycle, so if you're sitting in a message buffer and hit the gnus key again, it will move to a summary, and then group, and then back again. 
+
+I'm in the habit of quitting gnus when I don't need to, so q is rebound to go back to the old window configuration instead. If all that's open is a group buffer, if I hit the gnus key again it checks for new mail.
+
+    ;; read mail
+    (global-set-key [f5] 'de-switch-to-gnus)
+    (global-set-key [f6] 'escreen-goto-last-screen)
+    
+    (defun de-switch-to-gnus ()
+      (interactive)
+      (if (or (not (fboundp 'gnus-alive-p))
+              (not (gnus-alive-p)))
+          (progn
+            (escreen-create-screen)
+            (setq gnus-screen-number escreen-current-screen-number)
+            ;; as i don't do this by default in escreen-create-screen
+            (delete-other-windows)
+            (gnus))
+        ;; gnus is running
+        (let (candidate priority in-gnus (tests '(("\\*Group" . 3))))
+          ;; move down in priorities if we're already at a high priority
+          (when (not (member mode-name '("Message" "Summary")))
+            (setq tests (cons '("^\\*\\(mail\\|\\(wide \\)?reply\\)" . 1)
+                                     tests)))
+          (when (not (string= mode-name "Summary"))
+            (setq tests (cons '("\\*Summary" . 2) tests)))
+          ;; if we're not in a gnus buffer, just switch to our gnus screen, thus
+          ;; returning us to where we were previously. otherwise determine what we
+          ;; should switch to
+          (if (not (eq escreen-current-screen-number gnus-screen-number))
+              (escreen-goto-screen gnus-screen-number)
+            (dolist (buf (buffer-list))
+              (dolist (test tests)
+                (when (and (string-match (car test) (buffer-name buf))
+                           (or (not priority) (< (cdr test) priority))
+                           (> (buffer-size buf) 0))
+                  (setq candidate buf
+                        priority (cdr test)))))
+            (if (buffer-live-p candidate)
+                (if (eq candidate (current-buffer))
+                    (gnus-group-get-new-news)
+                  (switch-to-buffer candidate))
+              (error "unlive buffer!"))))))
+    
+    (defadvice gnus-group-exit (after remove-screen (&rest args) activate)
+      (escreen-kill-screen)
+      (setq gnus-screen-number nil))
+    
+    ;; quit gnus properly instead of leaving auto-save files around
+    (defadvice save-buffers-kill-emacs (before quit-gnus (&rest args) activate)
+      (let (buf)
+        (when (and (fboundp 'gnus-alive-p)
+                   (gnus-alive-p)
+                   (bufferp (setq buf (get-buffer "*Group*"))))
+        (with-current-buffer buf
+          (gnus-group-exit)))))
+    
+    ;; i'm in the habit of quitting when i don't really need to
+    (add-hook 'gnus-group-mode-hook
+              (lambda ()
+                (local-set-key (kbd "q") 'escreen-goto-last-screen)
+                (local-set-key (kbd "Q") 'gnus-group-exit)))
+
+----
+
+Here's a little hack based on something found [http://www.xsteve.at/prg/gnus/ here] at XSteve's very useful gnus page. The original was nice and useful, because it saved your gnus window configuration and switched you back to a normal buffer. You could then switch back again later and see your gnus session, exactly as you left it. However, it did not do this for any composing buffers, and it did not save your non-gnus buffers' window configuration--so if you were looking at four windows and checked your email in gnus and then tried to go back, you'd find yourself looking at a single buffer and would have to find all those buffers again. Not a big deal, but I added that stuff anyway. I find this works best when bound to a key.
+
+New and improved! It now saves your window configuration even if you haven't already started gnus!
+
+<pre>
+(defun door-gnus ()
+  "Switch between gnus and non-gnus buffers, preserving window configurations."
+  (interactive)
+  (let ((bufname (buffer-name)))
+    (if (or
+	 (string-equal "*Group*" bufname)
+	 (string-equal "*BBDB*" bufname)
+	 (string-match "\*Summary" bufname)
+	 (string-match "\*mail" bufname)
+	 (string-match "\*wide" bufname)
+	 (string-match "\*reply" bufname)
+	 (string-match "\*Article" bufname))
+	(progn
+	  (door-bury-gnus))
+      (if (get-buffer "*Group*")
+	  (door-unbury-gnus)
+	(progn
+	  (setq gnus-unbury-window-configuration (current-window-configuration))
+	  (delete-other-windows)
+	  (gnus))))))
+
+(defun door-unbury-gnus ()
+  (interactive)
+  (setq gnus-unbury-window-configuration nil)
+  (let ((buf nil)
+	(bufname nil))
+    (dolist (buf (buffer-list))
+      (setq bufname (buffer-name buf))
+      (when (and (boundp 'gnus-bury-window-configuration) gnus-bury-window-configuration)
+	(unless gnus-unbury-window-configuration
+      (setq gnus-unbury-window-configuration (current-window-configuration)))
+    (delete-other-windows)
+    (if (eq (current-buffer) buf)
+	(bury-buffer)
+      (bury-buffer buf))
+    (set-window-configuration gnus-bury-window-configuration)))))
+
+(defun door-bury-gnus ()
+  (interactive)
+  (setq gnus-bury-window-configuration nil)
+  (let ((buf nil)
+	(bufname nil))
+    (dolist (buf (buffer-list))
+      (setq bufname (buffer-name buf))
+      (when (or
+	     (string-equal "*Group*" bufname)
+	     (string-equal "*BBDB*" bufname)
+	     (string-match "\*Summary" bufname)
+	     (string-match "\*mail" bufname)
+	     (string-match "\*reply" bufname)
+	     (string-match "\*wide" bufname)
+	     (string-match "\*Article" bufname))
+	(unless gnus-bury-window-configuration
+	  (setq gnus-bury-window-configuration (current-window-configuration)))
+	(delete-other-windows)
+	(if (eq (current-buffer) buf)
+	    (bury-buffer)
+	  (bury-buffer buf))
+	(set-window-configuration gnus-unbury-window-configuration)))))
+</pre>
+
+----
+CategoryGnus
+CategoryKeys

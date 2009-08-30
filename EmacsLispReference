@@ -1,0 +1,38 @@
+'''The Emacs Lisp Reference Manual''' (also known as the [::elisp] or [::lispref]) manual, is documentation about the language used to extend Emacs, EmacsLisp.
+
+GnuEmacs has an EmacsManual, an EmacsLispIntro, and an EmacsLispReference.  Starting with Emacs 22, all three manuals are included.
+
+XEmacs has an XEmacs User's Manual, an XEmacs Lisp Reference Manual, a introduction to XEmacs ("Getting Started With XEmacs"), an EmacsLisp introduction ("Programming in Emacs Lisp, an Introduction"), and an XEmacs Internals Manual, all distributed with XEmacs.
+
+The best way is to simply use the manual within Emacs.  Then you can simply use the Help menu or type <tt>C-h i</tt> to view it, along with all the other documentation in the info system.  If your Emacs doesn't come with the Emacs Lisp Reference Manual, you will have to download it.  All manuals are available online in various formats.
+
+For GNU Emacs:
+
+* http://www.gnu.org/manual/manual.html
+* http://www.gnu.org/software/emacs/elisp-manual/
+* Available in print from the GnuPress.
+
+You can link to the index entries in the manual using the Manual prefix.
+Command, Variable, and Concept index entries can be linked.
+If the entries contain punctuation or whitespace characters, you will
+need to put them in double square brackets:
+
+* ##Manual:apropos## -> Manual:apropos
+* ##[[Manual:,@ (with Backquote)]]## -> [[Manual:,@ (with Backquote)]]
+
+The XEmacs Lisp Reference Manual, as well as all the other manuals, are available at:
+
+* http://www.xemacs.org/Documentation/
+* http://www.dk.xemacs.org/Documentation/
+
+==How to get the manual into Emacs in some distributions==
+===Debian GNU/Linux===
+If you can't see an Elisp section after doing M-x info, or if you get the error "Info file elisp does not exist", then you need to:
+
+# Activate a *non-free* section in your /etc/apt/sources.list
+# Install the *emacs22-common-non-dfsg* package (or the one for your emacs version)
+
+The manual has license GFDL and thus the DFSG (Debian Free Software Guidelines) don't consider it /free/.
+
+----
+CategoryDocumentation

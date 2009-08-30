@@ -1,0 +1,124 @@
+The following is code that implements a simple robot for ERC.  Four things are required:
+* the erc-robot.el lisp,
+* some lisp to hook the robot into ERC,
+* an alist definition which describes the commands that your robot understands.
+
+The first of these, the lisp, is available from http://www.hollytree-house.co.uk/dme/emacs/erc-robot.el.
+
+The code to hook the robot into ERC is simple:
+     (load-library "erc-robot")
+     (add-hook 'erc-server-PRIVMSG-hook 'erc-robot-remote t)
+     (add-hook 'erc-send-completed-hook 'erc-robot-local t)
+ 
+Finally, you must declare some commands that the robot can execute.  Each of these takes the form of a tuple with three elements:
+
+* the name of the command, a string
+* the permission list for the command, either "t" meaning that anyone
+  can use the command, "nil" meanding that the command can only be
+  used by the robot owner or a string, which is a regexp compared
+  against the nick of the person instructing the robot
+* a function which implements the command.
+
+Here's an example that I use:
+<pre>
+ (setq erc-robot-commands
+       '(
+        ("cmds" t (lambda (args)
+                       (concat "commands available: "
+                               (mapconcat
+                                (lambda (e)
+                                  (car e))
+                                erc-robot-commands " "))))
+        ("hello" t (lambda (args) "hello to you too !"))
+        ("zippy" t (lambda (args)
+                     (erc-replace-regexp-in-string "\n" " " (yow))))
+        ("music" t (lambda (args)
+                     (concat "now playing: "
+                             (let ((track (dme:now-playing)))
+                               (if track
+                                   track
+                                 "nothing.")))))
+        ("echo" t (lambda (args) args))
+        ("doctor" t erc-doctor)
+        ("version" t (lambda (args) (erc-version)))
+ 
+        ("fortune" t (lambda (args)
+                       (require 'fortune)
+                       (fortune-in-buffer nil)
+                       (let ((f (get-buffer fortune-buffer-name)))
+                         (if f
+                             (progn
+                               (set-buffer f)
+                               (erc-replace-regexp-in-string
+                                "\n" " " (buffer-substring (point-min)
+                                                           (point-max))))
+                           "no fortunes!"))))
+ 
+        ("diary" t (lambda (args)
+                     (require 'calendar)
+                     (let ((entries (mapconcat
+                                     '(lambda (l) (cadr l))
+                                     (let ((diary-display-hook '(lambda () nil)))
+                                       (list-diary-entries (calendar-current-date) 1))
+                                     "\n")))
+                       (if (string-equal "" entries)
+                           "Nothing."
+                         entries))))
+ 
+        ; dangerous !
+        ("eval" nil (lambda (args)
+                          (condition-case err
+                              (pp-to-string (eval (read args)))
+                            (error
+                             (error-message-string err)))))
+        ; dangerous !
+        ("sh" nil (lambda (args)
+                        (shell-command-to-string args)))
+        ))
+
+</pre> 
+Command functions are passed a single string argument which is the remainder of the command line.
+
+When talking to the robot, use the following format:
+ nick: !command arg1 arg2 ...
+where:
+* "nick" is the name of the robot owner
+* "command" is the command to issue to the robot
+* arg1, arg2, ... are the (optional) arguments to the command
+
+So, based on the example above, I might ask my own robot for a Zippy quote:
+ ERC> dme: !zippy
+ <dme> dme: Do I have a lifestyle yet?
+
+Have fun, and please let me (DavidEdmondson) know if you do anything interesting with the robot.
+
+----
+
+Hey, this is really cool. I'm using it for MallowBot. I had to comment out two small parts of erc-robot.el to make it work on my system. Specifically, the call to `erc-format-timestamp' on line 166, and the call to `erc-log' on line 155.
+
+Also, don't you think it should probably (require 'erc)? (and erc-stamp, for the timestamp thingy to work)
+
+----
+
+Updated 2002-11-28 to work with the current CVS version of EmacsIRCClient.  The patches mentioned
+above for `erc-format-timestamp' and `erc-log' should no longer be required.
+
+----
+I'm using this as a template for writing an AIM bot.  I'm using BitlBee + the EmacsIRCClient + erc-robot.  I had to make a change to the command processing.  Because of how InstantMessaging works, I'm assuming everything addressed to the bot is a command.  Therefore, I removed the necessity for the "!" preceeding the command.  You might want to add a variable for something like erc-robot-command-prefix that gets regexp-quoted.
+
+My ultimate goal is to write an AIM -> b2 blog gateway.  I'll end up using xml-rpc to interface the b2 server engine.
+
+-- LathI - 02 Dec 2002
+
+---- 
+Thanks for erc-robot.el, it is awesome.  I used it for ErBot. -- DeepakGoel
+
+----
+As the source doesn't seem to be on the net anymore, I'll [[erc-robot.el|post it here]].  -- OlliH
+
+----
+(add-hook 'erc-server-PRIVMSG-hook 'erc-robot-remote t) should be 
+(add-hook 'erc-server-PRIVMSG-functions 'erc-robot-remote t) in  erc 5.3 ? -- ChangyingLi
+
+----
+[[ERC]]

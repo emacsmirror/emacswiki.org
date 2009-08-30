@@ -1,0 +1,8 @@
+[new:AlexSchroeder:2008-01-06 21:43 UTC]
+[[zeus]] has agreed to host a [https://svn.rizoma.cl/svn/emacswiki/ SVN repository] of the raw EmacsWiki pages.
+This is, again, a one-way deal. It's just another way to WikiDownload, I guess.
+I haven't thought this through, yet. So for the moment this is just a proof-of-concept
+thing. A cron job runs [http://www.emacswiki.org/scripts/emacs-svn-update my little shell script]
+every 24h to update the repository.
+Right now pages with uploaded files (eg. [[TummePic01]]) are decoded before being checked in, but their names
+are not changed. Thus, no suffix (such as .jpg) will be appended. I don't know whether that's good or bad.

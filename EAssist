@@ -1,0 +1,58 @@
+EAssist stands for Emacs Assist
+
+It uses CEDET to parse files and outputs list of functions/methods for current file.
+Then you can type a part of function name and list will be reduced.
+
+= Usage example =
+
+Standing in a sample C++ file, press M-m.
+Complete list of functions and methods will appear:
+
+<pre>
+void MyClass::getIntParameterOne
+void MyClass::getIntParameterTwo
+void MyClass::setIntParameterOne
+void MyClass::setIntParameterTwo
+void MyClass::fooMethod
+int fooFunction
+</pre>
+
+Type "get" and list will be reduced to:
+
+<pre>
+void MyClass::getIntParameterOne
+void MyClass::getIntParameterTwo
+</pre>
+
+You might choose method among these two, or just continue typing: "get one". It will reduce list to:
+
+<pre>
+void MyClass::getIntParameterOne
+</pre>
+
+Then press enter to jump the method.
+
+= Setup =
+
+'''Important Update''': EAssist is now a part of CEDET, provided as a module in contrib folder of CEDET distribution. CEDET 1.0pre4
+doesnt still have EAssist, but later versions will. CVS tree of CEDET already contains EAssist. If you are using CEDET from CVS or CEDET version later than 1.0pre3 please follow install instructions in contrib/INSTALL file.
+
+EAssist uses CollectionOfEmacsDevelopmentEnvironmentTools to parse files. The latter should be installed before using EAssist.
+[[eassist.el]] is EAssist source.
+Add the following lines to your .emacs file to add EAssist keybindings:
+
+<pre>
+(defun my-c-mode-common-hook ()
+   (define-key c-mode-base-map (kbd "M-o") 'eassist-switch-h-cpp)
+   (define-key c-mode-base-map (kbd "M-m") 'eassist-list-methods))
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+</pre>
+
+This will add M-o and M-m combinations to your c-mode. M-m will produce method/function list. M-o will switch from header to body file and backwards (for C++ only).
+
+= Feature requests =
+
+* It would be great if the .cpp/.h switching also searched in the ../include and ../src directory as that is quite a common way of organizing the files.
+* Flex matching/fuzzy completion would be great.
+----
+CategoryProgrammerUtils

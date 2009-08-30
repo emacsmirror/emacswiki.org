@@ -1,0 +1,226 @@
+You can resize windows using the keyboard (eg. C-x ^ to make the current windows taller and C-x { to make it wider). The default keybindings might
+not be appropriate for you, however.  Here is a very simple suggestion
+to make them more accessible.
+
+    (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+    (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+    (global-set-key (kbd "S-C-<down>") 'shrink-window)
+    (global-set-key (kbd "S-C-<up>") 'enlarge-window)
+
+Note that by default only the enlarging functions are bound to keys.
+In order to shrink a window, you can enlarge an ''other'' window or you can use a negative prefix argument (eg. C-u -1 C-x ^ behaves exactly like shrink-window). 
+
+##C-x -## (which runs the command ##shrink-window-if-larger-than-buffer##) is a convenient way to shrink windows to the length of the buffer.
+
+== Resizing Windows - As Simple as Do Re Mi... ==
+
+If you use '''DoReMi''', then just hit `C-x t w'. Then use the arrow keys or mouse wheel to resize the window: up, down, left, right. Hold the Meta key down to increase the resizing speed (increment). If you don't like `C-x t w', bind it to something else. The point is that you need only one key binding for this. 
+
+= Resizing in Big Leaps =
+
+When resizing windows by large amounts, you will have to call the
+resizing functions using a prefix argument.  The following piece
+of EmacsLisp by MathiasDahl chooses appropriate amounts of
+shrinkage or enlargement automatically.
+
+Here's the code, just cut-n-paste to your ~/.emacs file:
+
+<pre>
+(defun win-resize-top-or-bot ()
+  "Figure out if the current window is on top, bottom or in the
+middle"
+  (let* ((win-edges (window-edges))
+	 (this-window-y-min (nth 1 win-edges))
+	 (this-window-y-max (nth 3 win-edges))
+	 (fr-height (frame-height)))
+    (cond
+     ((eq 0 this-window-y-min) "top")
+     ((eq (- fr-height 1) this-window-y-max) "bot")
+     (t "mid"))))
+
+(defun win-resize-left-or-right ()
+  "Figure out if the current window is to the left, right or in the
+middle"
+  (let* ((win-edges (window-edges))
+	 (this-window-x-min (nth 0 win-edges))
+	 (this-window-x-max (nth 2 win-edges))
+	 (fr-width (frame-width)))
+    (cond
+     ((eq 0 this-window-x-min) "left")
+     ((eq (+ fr-width 4) this-window-x-max) "right")
+     (t "mid"))))
+
+(defun win-resize-enlarge-horiz ()
+  (interactive)
+  (cond
+   ((equal "top" (win-resize-top-or-bot)) (enlarge-window -1))
+   ((equal "bot" (win-resize-top-or-bot)) (enlarge-window 1))
+   ((equal "mid" (win-resize-top-or-bot)) (enlarge-window -1))
+   (t (message "nil"))))
+
+(defun win-resize-minimize-horiz ()
+  (interactive)
+  (cond
+   ((equal "top" (win-resize-top-or-bot)) (enlarge-window 1))
+   ((equal "bot" (win-resize-top-or-bot)) (enlarge-window -1))
+   ((equal "mid" (win-resize-top-or-bot)) (enlarge-window 1))
+   (t (message "nil"))))
+
+(defun win-resize-enlarge-vert ()
+  (interactive)
+  (cond
+   ((equal "left" (win-resize-left-or-right)) (enlarge-window-horizontally -1))
+   ((equal "right" (win-resize-left-or-right)) (enlarge-window-horizontally 1))
+   ((equal "mid" (win-resize-left-or-right)) (enlarge-window-horizontally -1))))
+
+(defun win-resize-minimize-vert ()
+  (interactive)
+  (cond
+   ((equal "left" (win-resize-left-or-right)) (enlarge-window-horizontally 1))
+   ((equal "right" (win-resize-left-or-right)) (enlarge-window-horizontally -1))
+   ((equal "mid" (win-resize-left-or-right)) (enlarge-window-horizontally 1))))
+
+(global-set-key [C-M-down] 'win-resize-minimize-vert)
+(global-set-key [C-M-up] 'win-resize-enlarge-vert)
+(global-set-key [C-M-left] 'win-resize-minimize-horiz)
+(global-set-key [C-M-right] 'win-resize-enlarge-horiz)
+(global-set-key [C-M-up] 'win-resize-enlarge-horiz)
+(global-set-key [C-M-down] 'win-resize-minimize-horiz)
+(global-set-key [C-M-left] 'win-resize-enlarge-vert)
+(global-set-key [C-M-right] 'win-resize-minimize-vert)
+</pre>
+
+One last note on how I am thinking when I use this: using a window
+configuration like the one below, let's say I am in window A and want
+to make that bigger because a line is too long to fit. Instead of
+thinking "I want to enlarge this window horizontally, I think "I want
+to move the border between A and B to the right a bit". I think 
+this is more intuitive.
+
+<pre>
+  .-----------------.
+  |        |        |
+  |   A    |   B    |
+  |        |        |
+  |-----------------|
+  |                 |
+  |        C        |
+  |                 |
+  .-----------------.
+</pre>
+
+In short, instead of thinking if I want to shrink or grow the windows,
+I just think about how I want to "move around" the borders between
+them. -- MathiasDahl
+
+See also [[GrowShrinkWindows]], with similar functionality. -- DavidHouse.
+
+= Interactively Resizing Windows =
+
+Note: For CVS Emacs (version 22) you may want to try winsize.el that is part of [NxhtmlMode nXhtml] or windresize.el from http://www.cognition.ens.fr/~guerry/u/windresize.el
+
+Here's a minor mode I threw together to resize the height of a window interactively:
+
+<pre>
+(defvar iresize-mode-map 
+  (let ((m (make-sparse-keymap)))
+    (define-key m (kbd "C-p") 'enlarge-window)
+    (define-key m (kbd "p") 'enlarge-window)
+    (define-key m (kbd "<up>") 'enlarge-window)
+    (define-key m (kbd "C-n") 'shrink-window)
+    (define-key m (kbd "n") 'shrink-window)
+    (define-key m (kbd "<down>") 'shrink-window)
+    (define-key m (kbd "C-c C-c") 'iresize-mode)
+    m))
+
+(define-minor-mode iresize-mode
+  :initial-value nil
+  :lighter " IResize"
+  :keymap iresize-mode-map
+  :group 'iresize)
+
+(provide 'iresize)
+</pre>
+
+What about this function by HiroseYuuji and BobWiener?  It even allows the user to interactively specify the amount by which the window should be resized.
+
+<pre>
+(defun resize-window (&optional arg)    ; Hirose Yuuji and Bob Wiener
+  "*Resize window interactively."
+  (interactive "p")
+  (if (one-window-p) (error "Cannot resize sole window"))
+  (or arg (setq arg 1))
+  (let (c)
+    (catch 'done
+      (while t
+	(message
+	 "h=heighten, s=shrink, w=widen, n=narrow (by %d);  1-9=unit, q=quit"
+	 arg)
+	(setq c (read-char))
+	(condition-case ()
+	    (cond
+	     ((= c ?h) (enlarge-window arg))
+	     ((= c ?s) (shrink-window arg))
+	     ((= c ?w) (enlarge-window-horizontally arg))
+	     ((= c ?n) (shrink-window-horizontally arg))
+	     ((= c ?\^G) (keyboard-quit))
+	     ((= c ?q) (throw 'done t))
+	     ((and (> c ?0) (<= c ?9)) (setq arg (- c ?0)))
+	     (t (beep)))
+	  (error (beep)))))
+    (message "Done.")))
+</pre>
+
+Here is another short recursive lisp function 
+which enlarges/shrinks the window
+vertically. It illustrates the use of the <code>call-interactively</code> 
+function. Type C-c + to enlarge the window. Then hit + or - repeatedly to
+enlarge/shrink the window. Any other key ends the resize operation.
+
+  (defun v-resize (key)
+   "interactively resize the window"  
+   (interactive "cHit +/- to enlarge/shrink") 
+     (cond                                  
+       ((eq key (string-to-char "+"))                      
+          (enlarge-window 1)             
+          (call-interactively 'v-resize)) 
+       ((eq key (string-to-char "-"))                      
+          (enlarge-window -1)            
+          (call-interactively 'v-resize)) 
+       (t (push key unread-command-events))))                
+
+  (global-set-key "C-c+" 'v-resize)
+
+An iterative version of the previous command was posted on the gnu.emacs.help mailing list:
+
+  (defvar enlarge-window-char ?+)        
+  (defvar shrink-window-char ?-)
+  (defun resize-window (&optional arg)
+     "Interactively resize the selected window.
+  Repeatedly prompt whether to enlarge or shrink the window until the
+  response is neither `enlarge-window-char' or `shrink-window-char'.
+  When called with a prefix arg, resize the window by ARG lines."
+     (interactive "p")
+     (let ((prompt (format "Enlarge/Shrink window (%c/%c)? "
+                          enlarge-window-char shrink-window-char))
+          response)
+       (while (progn
+               (setq response (read-event prompt))
+               (cond ((equal response enlarge-window-char)
+                      (enlarge-window arg)
+                      t)
+                     ((equal response shrink-window-char)
+                      (enlarge-window (- arg))
+                      t)
+                     (t nil))))
+       (push response unread-command-events)))
+
+
+= Resizing Frames =
+
+For information on resizing Emacs ''[[Frame]]s'' (that is, window-manager "windows"), see:
+* [[Shrink-Wrapping Frames]] and library Lisp:fit-frame.el for commands to fit frames to their buffers. In Windows, Lisp:fit-frame.el also provides commands to maximize and restore frames.
+* Libraries Lisp:frame-cmds.el and Lisp:doremi-frm.el for commands to incrementally resize a frame using the arrow keys (`C-M-' left, right, up, down arrows).
+
+----
+CategoryWindows

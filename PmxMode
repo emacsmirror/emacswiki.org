@@ -1,0 +1,6 @@
+This is a simple mode (font-lock support only) for editing PMX files (http://icking-music-archive.org/software/indexmt6.html). Is built using GenericMode, therefore you must have generic-x installed.
+
+* http://www.emacswiki.org/elisp/pmx-mode.el
+
+----
+CategoryModes

@@ -1,0 +1,55 @@
+This page is about library <tt>[[replace+.el]]</tt>, written by DrewAdams. This extends standard Emacs library ##replace.el##. That standard library contains a lot of different functionalities, including both `occur' and `query-replace'. Library <tt>[[replace+.el]]</tt> makes improvements to several of those functionalities.
+
+[:QueryReplaceImprovements]
+== Query-Replace Improvements ==
+
+Library <tt>[[replace+.el]]</tt> provides the following improvements to `query-replace':
+
+* Command '''`query-replace-w-options'''' rolls both `query-replace' and `query-replace-regexp' into one command. The prefix arg governs the behavior:
+** None -- replace ''literal'' string matches
+** Non-negative -- replace ''word'' matches
+** Negative -- replace ''regexp'' matches
+
+:: In other words, this gives you `query-replace-regexp' if you use a negative argument; otherwise, it is the same as `query-replace' (but see next). I suggest binding this to '''`##M-%##'''', in place of `query-replace'.
+
+* If option '''`isearchp-set-region-flag'''' is non-`nil', then `query-replace-w-options' ''selects the last target'' occurrence; that is, it sets the region around it. You can also select the last target manually, using command `set-region-around-search-target'. This option and command `set-region-around-search-target' are defined in library Lisp:isearch+.el.
+
+* If option '''`replace-w-completion-flag'''' is non-`nil', then you can use ''[[Completion]]'' when reading the new and old text. (If you use completion, you can enter a space or tab character using `C-q'.) This option is defined in <tt>[[replace+.el]]</tt>.
+
+* Command '''`toggle-replace-w-completion'''' toggles option `replace-w-completion-flag'.
+
+* Option '''`search/replace-default-fn'''' (defined in <tt>[[replace+.el]]</tt>) determines the default value for the new (replacement) and old (original) arguments. By default, this option has value `symbol-name-nearest-point', if that function is defined, and `word-at-point', otherwise. This means that the symbol or word at the TextCursor is the default value. (You can of course still use the history lists, and you can still enter nothing, to repeat the previous query-replacement operation.)
+
+'''See Also: IsearchPlus''' for more information on option `isearchp-set-region-flag' and command 
+`set-region-around-search-target'.
+
+[:OccurImprovements]
+== Occur Improvements ==
+
+Library <tt>[[replace+.el]]</tt> provides the following improvements to `occur':
+
+* When you visit an occurrence, the line number is highlighted in buffer `*Occur*', using face `occur-highlight-linenum'.  This is similar to highlighting links that you have already visited in Info or in a Web browser: it lets you know where you've been.
+
+* Occurrences matching the search pattern (regular expression) you supply to `occur' are highlighted in the `*Occur*' buffer, using face `list-matching-lines-face'. The effect is similar to that of highlighting with the Google toolbar. (This is now standard, in Emacs 22.)
+
+* The text matching the search pattern is highlighted in the source buffer also.
+
+* Option '''`search/replace-default-fn'''' determines the default value for the regexp argument. See [[#QueryReplaceImprovements]], above, for more information.
+
+* (Emacs 20 only) In buffer <code>*Occur*</code>, you can click anywhere on a found line: the entire line is mouse-face active. 
+
+* (Emacs 20 only) The [[Frame]] of buffer <code>*Occur*</code> is shrink-wrapped to fit the matching lines. 
+
+'''See Also:''' OccurMode, for a screenshot and more information.
+
+
+== Improvements to `flush-lines', `keep-lines', and `how-many' ==
+
+Library <tt>[[replace+.el]]</tt> provides the following improvements to commands `flush-lines', `keep-lines', and `how-many'. These improvements are not needed for Emacs 21 or greater; they are useful for Emacs 20.
+
+* Option '''`search/replace-default-fn'''' determines the default value for the regexp argument. See [[#QueryReplaceImprovements]], above, for more information.
+
+* The prompt lets you know that only lines after point are affected.
+
+----
+CategorySearchAndReplace CategoryRegexp

@@ -1,0 +1,216 @@
+Command `occur' lists all lines of the current buffer that match a regexp that you give it. The matching lines are listed in buffer `*Occur*', and you can click them there to navigate to the corresponding lines in the original buffer. That is, buffer `*Occur*' acts as a hypertext index to your buffer.
+
+This is so useful that you might want to use a keybinding in your <code>.emacs</code> for it. For example:
+
+ (global-set-key (kbd "C-c o") 'occur)
+
+Starting with Emacs 22, you can also use '''`##C-x `##'''' (`next-error') or `M-g p' (`previous-error') to navigate to the next or previous occurrence.
+
+[new:DrewAdams:2007-01-25 21:01 UTC]
+: I've asked that Emacs bind `n' and `p' in Occur mode to `next-error-no-select' and `previous-error-noselect' (and make the buffer read-only). -- DrewAdams
+[new]
+: Or you can turn on `next-error-follow-minor-mode' in the Occur
+buffer. -- SeanO
+
+[new:DrewAdams:2007-01-26 16:02 UTC]
+: Very good. I wasn't aware of that. -- DrewAdams
+
+[new]
+: Seems that will bind 'C-n' and 'C-p'. I prefer to manually bind n/p for compilation-mode-map and  occur-mode-map and leave C-n/C-p as they are.
+
+[new]
+
+See also: OccurKey, OccurFromIsearch, HideSearch.
+
+[:ReplacePlus]
+== Enhancements to Occur: Replace+ ==
+
+DrewAdams has written library Lisp:replace+.el, which provides some enhancements to the standard Emacs <code>occur</code> command.
+
+The <code>occur</code> enhancements include these:
+
+* Occurrences matching the search pattern (regular expression) are highlighted in the <code>*Occur*</code> buffer. The effect is similar to that of highlighting with the Google toolbar. 
+* The currently visited target-buffer occurrence matching the search pattern is also highlighted. This helps you see where you are and where you have been.
+* In the <code>*Occur*</code> buffer, line numbers of visited lines are highlighted, so you can see that you have already visited them.
+* In the <code>*Occur*</code> buffer, you can click anywhere on a found line: the entire line is mouse-face active. 
+* The [[Frame]] of the <code>*Occur*</code> buffer is shrink-wrapped to fit the matching lines. 
+* More user control over highlight [[Face]]s. 
+* Better default value for the string to search for.
+
+Here's a screenshot of the <code>*Occur*</code> buffer and a visited occurrence in the target buffer, showing match-string highlighting, visited-line number highlighting, and full-line mouseover highlighting (underline):
+
+[[image:DrewsEmacsOccurImage]]
+
+'''See Also:''' ReplacePlus, GrepMode
+
+[:IciclesOccur]
+== Icicles Occur and Search: Alternatives to Standard Occur ==
+
+Command '''`icicle-occur'''' in '''Icicles''' offers functionality similar to `occur', but with some additional features, including the following:
+
+* You can use '''Icicles''' [[Icicles - Progressive Completion|progressive
+completion]] to find lines using multiple regexps.
+
+* Instead of a static `*Occur*' buffer, buffer `*Completions*' is used (with [[Completion]]) for the "occur" matches for your input. The matching occurrences are updated on the fly as you edit your input (which can be a regexp) -- ''incremental occur''. 
+
+* You can search ''multiple buffers'':  `icicle-occur' is a multi-occur (like Emacs 22 commands `multi-occur' and `multi-occur-in-matching-buffers'). All '''Icicles''' search commands can be used to search multiple buffers simultaneously. You can choose the buffers individually, using completion, or pick all that match a regexp.
+
+* If the region is active, then only the region is searched. You need not narrow the buffer to use `icicle-occur' on only part of it.
+
+Here is a screenshot taken when a user is cycling among occurrences that match the regexp `##regexp.*match##'. It shows:
+
+* Buffer `*Completions*' playing a role similar to buffer `*Occur*' in standard Emacs `occur'. The occurrence highlighted light blue is the next one (for cycling).
+
+* Highlighting (green) of the matching occurrences in your buffer. The line highlighted pink is the current one.
+
+[[image:IciclesOccurScreenshot]]
+
+You can cycle among the search hits, navigating to each in turn, with `C-next'. Use `C-mouse-2' in buffer `*Completions*' to go directly to particular hits. To choose a hit as final destination and end search navigating, use `mouse-2' (no `C-'). There are many more options -- for more info, use `##C-?##' while navigating. 
+
+If your MiniBuffer input matches a unique search hit, then you can also get to the hit using completion (`TAB' or `S-TAB'), followed by `RET'. If there are multiple identical hits that match your input, then cycle to the one you want or use `mouse-2' to choose it. `C-M-mouse-2' (or any of the other `C-M-' keys) will tell you the buffer and location of any hit, in the minibuffer.
+
+The big brother of `icicle-occur' is '''`icicle-search''''. It generalizes the functionality of `occur'. The units tested for matches are not necessarily lines, as they are for `occur' and `icicle-occur'; they can be any textual unit: paragraph, sequence of words, page -- anything. A regexp you provide defines this unit and thus the set of entities to be matched (matching is then done with another regexp). Command `icicle-occur' is a special case of `icicle-search' where the initial regexp is `##.*##', which establishes ''lines'' as the text units to search for matches.
+
+Commands `icicle-occur' and `icicle-search' are bound to `##C-c '##' and `##C-c `##', respectively, when ''Icicle'' mode is turned on.
+
+'''See Also:'''
+
+* [[Icicles - Search Commands, Overview]] for more about `icicle-occur' and `icicle-search'
+* [[Icicles - Multi-Commands]] for more about the multi-command (navigation) bindings -- `next', `C-next', `C-M-next', and so on
+
+
+== A More Interactive `occur' ==
+
+  (defun occurs (&optional arg)
+    "Switch to *Occur* buffer, or run `occur'.
+  Without a prefix argument, switch to the buffer.
+  With a universal prefix argument, run occur again.
+  With a numeric prefix argument, run occur with NLINES
+  set to that number."
+    (interactive "P")
+    (if (and (not arg) (get-buffer "*Occur*"))
+        (switch-to-buffer "*Occur*")
+      (occur (read-from-minibuffer "Regexp: ")
+             (if (listp arg) 0 arg))))
+
+== switch-to-buffer vs pop-to-buffer ==
+
+Since [who?] didn't like the original behaviour of `occur', [who?] redefined one
+of the functions:
+
+ (defun occur-mode-goto-occurrence ()
+   "Go to the occurrence the current line describes.
+ This function redefined by alex!  Instead of using
+ `pop-to-buffer' it now uses `switch-to-buffer'."
+   (interactive)
+   (let ((pos (occur-mode-find-occurrence)))
+     (switch-to-buffer occur-buffer)
+     (goto-char (marker-position pos))))
+
+== A Narrow `occur' ==
+
+A numeric argument n specifies that n lines of context are to be displayed
+before and after each matching line.
+
+e.g. to show 5 line before and after each matching line:
+
+ C-U 5 M-x occur regexp-to-search
+
+== Call Recursively ==
+
+This allows you to call `occur' on an occur buffer.  Assume you have a
+buffer A.  Run `occur' gives you a buffer B.  Run `occur' again.  This
+will rename buffer B and give a you buffer C.  If you select a line in
+buffer C, that will pop you to the match in buffer B.  Select the line
+again and now you are back in buffer A.  As you can see, this is not
+optimal and it seems that Emacs 21 will have a better way to deal with
+this.
+
+ (defadvice occur (before occur-before)
+   "Allow mutliple calls to occur..."
+   (if (string-match "\*Occur\*" (buffer-name))
+       (rename-buffer (buffer-name) t)))
+ (ad-activate 'occur)
+
+== Clean the *Occur* Buffer ==
+
+This gets rid of the line numbers and the header line, so that the result is more like the output from `grep'.  You might want to bind this to C-c C-x.
+
+ (defun occur-mode-clean-buffer ()
+   "Removes all commentary from the *Occur* buffer, leaving the
+ unadorned lines."
+   (interactive)
+   (if (get-buffer "*Occur*")
+       (save-excursion
+         (set-buffer (get-buffer "*Occur*"))
+         (goto-char (point-min))
+         (toggle-read-only 0)
+         (if (looking-at "^[0-9]+ lines matching \"")
+             (kill-line 1))
+         (while (re-search-forward "^[ \t]*[0-9]+:"
+                                   (point-max)
+                                   t)
+           (replace-match "")
+           (forward-line 1)))
+     (message "There is no buffer named \"*Occur*\".")))
+
+== Multi-Occur ==
+
+Starting with emacs version 22, there is a command named 
+<code>multi-occur</code>, which searches in <em>all</em> of Emacs's buffers (that are visiting files), not just the current one. 
+
+See also `icicle-occur', which also lets you search all buffers. More flexibly, you can choose any number of buffers to search. Also, you can change regexp dynamically. (See above, [[#IciclesOccur]].)
+
+[new:DrewAdams:2005-05-11 15:24 UTC]
+FYI -- In <code>gnu-emacs-sources@gnu.org</code> on 2005-05-11, Joe Corneli posted a library of convenience commands, [[aok.el]], for use with multi-occur. -- DrewAdams
+[new]
+
+
+== View the Matched Line - color-occur ==
+
+[http://www.bookshelf.jp/elc/color-occur.el color-occur.el]
+
+Put this file into load-path'ed directory, and byte compile it if desired.  And put the following expression into your ~/.emacs.
+
+ (require 'color-occur)
+
+Run 'occur'. occur buffer will be displayed and the matched line will be showed to other window.
+
+[http://www.bookshelf.jp/elc/color-moccur.el color-moccur.el] shows all occurrences of regexp in <em>all buffers</em>. (See SearchBuffers)
+
+See also Lisp:replace+.el (''Replace+'', above), for another way to highlight occur matches.
+
+== View matches only ==
+
+The following deletes the context around the match on the same line.
+
+{{{
+(defun occurrences (regexp &rest ignore)
+  "Show all matches for REGEXP in an `occur' buffer."
+  ;; keep text covered by occur-prefix and match text-properties
+  (interactive (occur-read-primary-args))
+  (occur regexp)
+  (with-current-buffer (get-buffer "*Occur*")
+    (let ((inhibit-read-only t)
+	  delete-from
+	  pos)
+      (save-excursion
+	(while (setq pos (next-property-change (point)))
+	  (goto-char pos)
+	  (if (not (or (get-text-property (point) 'occur-prefix)
+		       (get-text-property (point) 'occur-match)))
+	      (if delete-from
+		  (delete-region delete-from (point))
+		(setq delete-from (point)))
+	    (when delete-from
+	      (delete-region delete-from (point))
+	      (if (get-text-property (point) 'occur-prefix)
+		  (insert "\n")
+		(insert " ")))
+	    (setq delete-from nil)))))))
+}}}
+
+list-matching-lines does almost the same as occur. There's also delete-matching-lines.
+
+----
+CategoryModes CategoryRegexp GrepMode CategorySearchAndReplace

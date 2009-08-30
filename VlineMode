@@ -1,0 +1,42 @@
+== What is? ==
+
+Lisp:vline.el -- Provides a vertical line displaying that follows cursor.
+
+[[image:VlineScreenShot]]
+
+
+'''See Also:''' HighlightCurrentColumn
+
+
+
+== Usage ==
+=== use vline buffer locally ===
+Type `M-x vline-mode'.
+
+=== use vline all buffers ===
+Type `M-x vline-global-mode'.
+
+
+== Discussion ==
+
+[new:DrewAdams:2008-10-16 21:41 UTC]
+It seems that Emacs 23 cannot load <tt>[[vline.el]]</tt>, at least in Windows:
+
+<pre>
+GNU Emacs 23.0.60.1 (i386-mingw-nt5.1.2600)
+ of 2008-10-03 on LENNART-69DE564
+Windowing system distributor `Microsoft Corp.', version 5.1.2600
+configured using `configure --with-gcc (3.4) --no-opt --cflags -Ic:/g/include -fno-crossjumping'
+</pre>
+
+I get this error when I try to load it. Any ideas?
+
+  Invalid read syntax: "?"
+
+I filed bug [[http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=1187|#1187]], but you never know if they will fix it. Perhaps a fix is (also) in order for ##vline.el## itself? -- DrewAdams
+
+I fixed it by your mail. Thanks! -- Sugawara
+
+----
+CategoryDisplay CategoryEditing CategoryAccessibility CategoryFaces HighlightTemporarily
+

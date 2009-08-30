@@ -1,0 +1,13 @@
+wikitext-mode.el is a simple MajorMode for editing Wikispaces' articles
+(http://www.wikispaces.com/). It provides syntax highlighting for 
+[http://www.wikispaces.com/wikitext Wikitext markup].
+
+Wikitext mode is derived from WikipediaMode v.0.3.3.
+
+The mode is still under development, so it provides not whole support for Wikitext markup.
+
+* Download: Lisp:wikitext-mode.el
+* Markup rules: http://www.wikispaces.com/wikitext
+
+----
+CategoryModes

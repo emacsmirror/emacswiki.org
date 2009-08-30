@@ -1,0 +1,30 @@
+http://mail.gnu.org/pipermail/help-emacs-windows/2002-October/002282.html
+
+<pre>
+Subject: [h-e-w] cygwin-emacs C-x C-c
+From: Harald Maier <maierh@myself.com>
+Date: Wed, 16 Oct 2002 08:29:44 +0200
+
+hawkeye.parker@autodesk.com writes:
+> when i run emacs in cygwin, the familiar C-x C-c simply produces a
+> *beep* and doesn't exit emacs.  i've searched around various and
+> sundry faqs for an answer to this problem with no luck.
+
+If you do a 'describe-key' for C-x C-c you will see that the key
+combination is mapped to 'C-x C-g'. This might help:
+
+export CYGWIN="tty"
+</pre>
+
+   (note from jimv at iwaynet dot net:  when I try this, for some
+    reason stty gets set to '-echo' as I leave emacs.  So, I can't
+    see what I type at the cygwin prompt after I exit emacs, and
+    trying to fix it with 'stty echo' fails.  Instead of using
+    'export' in the cygwin environment, I just edited the batch file
+    I use to launch the cygwin bask from my desktop:  Add
+    'set CYGWIN=tty' right before the call to bash.  This fixes
+    everything for me.)
+
+The following thread discusses the problem.
+
+http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&oe=UTF-8&threadm=42d681a7.0209041553.741dca25%40posting.google.com&rnum=5&prev=/groups%3Fas_q%3D%27C-x%2520C-g%27%26safe%3Dimages%26ie%3DUTF-8%26oe%3DUTF-8%26as_ugroup%3D*emacs*%26lr%3D%26as_scoring%3Dd%26hl%3Den

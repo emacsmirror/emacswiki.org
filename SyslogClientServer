@@ -1,0 +1,3 @@
+A syslog client and server, useful for monitoring remote machines such as firewalls, servers, etc. The server displays messages in a buffer, colored based on configurable priority levels. Requires emacs 21.4 (CVS) with support for UDP sockets.
+
+http://glozer.net/code.html#emacs

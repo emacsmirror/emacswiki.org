@@ -1,0 +1,20 @@
+An Emacs interface to command line CD players by MattHodges.
+Available at https://alioth.debian.org/projects/mph-emacs-pkgs/.
+
+At present, there are interfaces that work with [http://cdcd.undergrid.net/ cdcd], and cda, which is a component of [http://www.ibiblio.org/tkan/xmcd Xmcd].
+
+It should be possible to support other command line CD players without too much effort.
+
+There are two display modes. One where all tracks are displayed:
+
+http://mph-emacs-pkgs.alioth.debian.org/images/cdi-all-tracks.png
+
+and one where only the current track is displayed:
+
+http://mph-emacs-pkgs.alioth.debian.org/images/cdi-one-track.png
+
+The variable <code>cdi-display-type</code> controls the display behaviour.
+
+----
+CategoryModes
+MusicPlayers

@@ -1,0 +1,14 @@
+I use Emacs 23 on Ubuntu Intrepid, Debian Testing, and Windows XP.  Been using Emacs for over a year solidly.  I flirted briefly with vim since it's commonly used at my work and Emacs isn't pre-loaded on any of our systems or Xen instances, but I came back after a week or so and haven't looked back.  I look forward to many more years of learning and mastering this powerful tool.
+
+I use Emacs as my editor of choice on all platforms I actively use, using it for virtually all text editing (programming, note taking, .txt ebook paragraph filling, etc.).  I do switch to Notepad++ when I want to print under Windows or perform other lightweight editing tasks, but I do so grudgingly.
+
+I love Tramp and use it extensively for editing files on Amazon EC2 instances and other remote servers which don't have Emacs nor a copy of my .emacs file installed.  (I do wish Tramp worked a little faster...)
+
+Currently trying to teach myself Common Lisp via Peter Seibel's Practical Common Lisp, among many other ongoing personal projects.
+
+
+[new:DrewAdams:2009-08-12 20:11 UTC]
+Welcome to the wiki. -- DrewAdams
+
+----
+CategoryHomepage

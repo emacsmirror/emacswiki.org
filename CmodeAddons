@@ -1,0 +1,19 @@
+This package helps C programmers by displaying information about the arguments of C functions. It uses a C function database, which you can create from man pages or from your own sources
+
+You can get this package from:
+
+* http://vengeance.et.tudelft.nl/~smoke/pub/emacs/c-mode-addons-0.1.tar.gz
+
+You can also get a ready C functions database from 
+
+* http://vengeance.et.tudelft.nl/~smoke/pub/emacs/c_synopsis_list.tar.gz
+
+: There is also an ElDoc you might be interested. --ZajcevEvgeny
+
+---
+This package does not seem to available anymore. Any mirrors?
+: http://web.archive.org/web/20030415204219/http://vengeance.et.tudelft.nl/~smoke/pub/emacs/
+----
+If you google for c-mode-addons, you should be able to locate an AltLinux rpm which contains c-mode-addons.el. Perhaps someone could host the file and link to it here.
+---
+CategoryProgrammerUtils

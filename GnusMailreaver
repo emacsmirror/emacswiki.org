@@ -1,0 +1,82 @@
+Mailreaver is a script for CRM114, the "Controllable Regex Mutilator" (see http://crm114.sourceforge.net/). 
+For installing and configuring CRM114 see the following HOWTO: http://crm114.sourceforge.net/docs/CRM114_Mailfilter_HOWTO.txt
+
+While spam.el supports the mailfilter.crm script from CRM114, I prefer Mailreaver and like to filter my spam directly on the server through procmail anyway. 
+This is why I wrote a little script for training messages for Mailreaver from the Gnus summary buffer:
+
+<pre>
+(setq my-crm114-crm-command "ssh MY-IMAP-SERVER crm -u MY-CRM114-DIRECTORY mailreaver.crm --fileprefix=MY-CRM114-DIRECTORY")
+
+(defun my-crm114-learn ()
+  (interactive)
+  (unless (gnus-buffer-live-p gnus-article-buffer)
+    (error "No article buffer available"))
+  (save-excursion
+    (set-buffer gnus-article-buffer)
+    (save-restriction
+      (let ((commandsplit (split-string my-crm114-crm-command))
+	    (outbuf (get-buffer-create "*crm114 output*"))
+	    (spamflag (y-or-n-p "Is this spam? ")))
+	(gnus-summary-toggle-header 1)
+	(message-narrow-to-headers-or-head)
+	(unless (re-search-forward "^X-CRM114-CacheID:" nil t)
+	  (error "No CRM144-CacheID header found"))
+	(nconc commandsplit
+	       (if spamflag
+		   '("--spam")
+		 '("--good")))
+	(beginning-of-line)
+	(if (zerop (apply 'call-process-region 
+			  (point) (progn (end-of-line) (point)) 
+			  (car commandsplit) nil outbuf
+			  nil (cdr commandsplit)))
+	    (progn
+	      (set-buffer outbuf)
+	      (goto-char (point-max))
+	      (re-search-backward "^X-CRM114-Action: \\(.*\\)" nil t)
+	      (message (match-string 1))
+	      (erase-buffer))
+	  (error "Calling crm failed"))))))
+</pre>
+
+You can bind this script to a key combination by using
+
+<pre>
+(define-key gnus-summary-mode-map
+  (kbd "<KEY COMBINATION>") 'my-crm114-learn)
+</pre>
+
+To display the CRM114 headers, simply include  <code>^X-CRM114-\\(Status\\|Notice\\)</code> in gnus-visible-headers. 
+
+Another nice feature is to sort the mails in the spam group with the score provided by CRM114, so that articles with the lowest spam probability are right at the 
+top. This way it is easier to spot false positives, i.e. mails which were wrongly identified as spam (those will usually have a relatively low spam probability).
+
+First you will have to put <code>X-CRM114-Status</code> into your gnus-extra-headers. I use the following:
+
+<pre>
+(setq gnus-extra-headers '(To Newsgroups X-CRM114-Status))
+</pre>
+
+Then you can use the following sort function:
+
+<pre>
+(defun my-gnus-article-sort-by-crm114-score (h1 h2)
+  (let ((n1 (gnus-extra-header 'X-CRM114-Status h1))
+	(n2 (gnus-extra-header 'X-CRM114-Status h2)))
+    (< 
+     (string-to-number
+      (progn
+	(string-match "(\\(.*\\))" n2)
+	(match-string 1 n2)))
+     (string-to-number
+      (progn
+	(string-match "(\\(.*\\))" n1)
+	(match-string 1 n1))))))
+</pre>
+
+You can set this sort function in the group parameters of your spam group (do 'G c' on your spam group and at the end under 'variables' set <code>gnus-article-sort-functions</code> to <code>'my-gnus-article-sort-by-crm114-score</code>).
+
+
+----
+CategoryGnus SpamFiltering
+

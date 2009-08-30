@@ -1,0 +1,52 @@
+auto-dictionary-mode automatically guesses the buffer's language and sets the FlySpell dictionary.  Support for English, German, French, Spanish, Swedish, Slovenian, Hungarian and Romanian is included.  It's available [http://nschum.de/src/emacs/auto-dictionary/ here].
+
+http://nschum.de/src/emacs/auto-dictionary/auto-dictionary-1.png
+http://nschum.de/src/emacs/auto-dictionary/auto-dictionary-2.png
+
+== Conditional text ==
+
+You can insert the correct text depending on the language.  Once the language is detected, the text will be changed automatically.
+
+Use the following to get a language independent mail template (see pictures) in Gnus.
+
+  (defun my-message-insert-citation-line ()
+    "Insert a simple citation line in the correct language."
+    (when message-reply-headers
+      (insert (mail-header-from message-reply-headers) " ")
+      (adict-conditional-insert "de" "schrieb" t "wrote")
+      (insert ":")
+      (newline)
+      (newline)))
+  (setq message-citation-line-function 'my-message-insert-citation-line)
+
+  (defun message-add-regards ()
+    "Add regards in the correct language to the message."
+    (save-excursion
+      (when (message-goto-signature)
+        (if message-signature-insert-empty-line
+            (forward-line -2)
+          (forward-line -1)))
+      (set-buffer-modified-p
+       (prog1 (buffer-modified-p)
+         (insert "\n\n")
+         (adict-conditional-insert "de" "Mit freundlichen Grüßen"
+                                   t "regards")
+         (insert ",\n" user-full-name "\n")))))
+  (add-hook 'message-signature-setup-hook 'message-add-regards)
+
+-- [[nschum]]
+
+== Ignore Text ==
+Sometimes, buffer standard contents, like Email headers or IRC status messages, will confuse the detection, since they're in a different language.  It's best to disable FlySpell for these regions.  auto-dictionary will then also ignore it.
+
+For instance, this works for ERC:
+
+  (defun erc-flyspell-predicate ()
+    (let ((face (get-text-property (point) 'face)))
+      (not (memq (if (listp face) (car face) face)
+                 '(erc-notice-face erc-timestamp-face
+                   erc-nick-default-face erc-current-nick-face
+                   erc-button erc-prompt-face)))))
+  (put 'erc-mode 'flyspell-mode-predicate 'erc-flyspell-predicate)
+
+-- [[nschum]]

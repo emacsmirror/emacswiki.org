@@ -1,0 +1,19 @@
+This page is for new [[rcirc]] features that need to be documented. Not every feature needs documentatino in the manual. Basically this is where RyanYeske puts stuff and people like AlexSchroeder go and document it.
+
+* nothing
+
+You can check out a copy of the manual only using the following:
+
+{{{
+cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs/doc/misc/rcirc.texi
+}}}
+
+Developers that don't want to check out the complete Emacs tree need the following:
+
+{{{
+cvs -z3 -d:ext:<membername>@cvs.savannah.gnu.org:/sources/emacs co emacs/doc/misc/rcirc.texi
+cvs -z3 -d:ext:<membername>@cvs.savannah.gnu.org:/sources/emacs co emacs/doc/misc/doclicense.texi
+cvs -z3 -d:ext:<membername>@cvs.savannah.gnu.org:/sources/emacs co emacs/doc/misc/ChangeLog
+cvs -z3 -d:ext:<membername>@cvs.savannah.gnu.org:/sources/emacs co emacs/info
+cvs -z3 -d:ext:<membername>@cvs.savannah.gnu.org:/sources/emacs co emacs/lisp/net/rcirc.el
+}}}

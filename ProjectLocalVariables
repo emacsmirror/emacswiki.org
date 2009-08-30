@@ -1,0 +1,35 @@
+= ProjectLocalVariables
+
+This file allows you to create .emacs-project files that are evaluated
+when a file is opened. You may also create .emacs-project-$MODE files
+that only get loaded when you open files of a specific mode in the
+project. All files for which a .emacs-project file exists in an
+ancestor directory will have it loaded.
+
+Please note that as of May 2008, this functionality has been implemented
+in Emacs, so there's no need for this library. See "Directory Variables"
+in the Emacs Manual.
+
+[Lisp:project-local-variables.el Download]
+
+[new:MishaGorodnitzky:2008-11-23 20:59 UTC]
+
+I don't see this "Directory Variables" functionality in Aquamacs 1.5
+(based on GNU Emacs 22.3.2), so I think that this Lisp file is still
+relevant. Luckily it's provided via the [[ELPA]]. --MishaGorodnitzky
+
+[new]
+
+*Warning:* This is a severe security hole!  A .emacs-project file can
+contain arbitrary Lisp code, which will be run automatically when you
+try to open any file in that directory.  Unless you are on a
+single-user system, and you never open files from people you don't
+trust, /do not use this package/.  Consider using DirVarsPackage instead.
+
+== Adding Project Variables ==
+
+To add a project variable to you .emacs-project or .emacs-project-$MODE,
+define it using the function 'setl':
+
+    (setl ruby-indent-level 4)
+

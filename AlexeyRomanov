@@ -1,0 +1,12 @@
+I use Emacs because I like experimenting with languages like Erlang, Haskell and Ruby,
+and I've found there is practically always a Emacs mode for any language which is at least comparable to a dedicated IDE (which may not exist) and for which I don't need to learn a whole new set of key bindings.
+
+Recently switched to using ViperMode + [[vimpulse.el]], which gives me access to the power of Vim to edit text even better.
+
+Blog (Not updated so far) : http://alexey-rom.livejournal.com/
+
+My small functional programming library for C# : http://code.google.com/p/functional-dotnet/
+
+Email : alexey.v.romanov ([@]) gmail.com
+ ----
+ CategoryHomepage

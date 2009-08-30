@@ -1,0 +1,29 @@
+Este wiki trata sobre Emacs y XEmacs. Nos gusta la terminología usada por la IglesiaDeEmacs: Tanto "Emacs" como "XEmacs" son "emacsen". Algunas veces Emacs es llamado GNU Emacs. Eso está bien, ya que Emacs es el editor del proyecto GNU. Algunas veces Emacs es llamado FSF Emacs. Esto no está bien, ya que la FSF misma sólo conserva el copyright del código fuente.
+
+== ¿Qué son los emacsen? ==
+
+Emacsen son un conjunto de editores. Y no cualquier tipo de editores. Son editores completamente programables, usualmente con un aspecto visual y operacional muy similar al GNU Emacs original. Un Emacs programable en Haskell o Python es aun un emacs, uno de los tantos emacsen. Una versión de Vi programable en Lisp no es un Emacs, a menos que se modifique su aspecto y funcionalidad de Vi hacia algo más acorde con los demás emacsen.
+
+¿Qué es un editor programable? Básicamente es un editor tremendamente flexible. Le permite editar archivos de texto. Y dado que se puede programar, eventualmente usted puede también escribir correo, editar HTML, leer noticias, y resaltar su código fuente en él, por ejemplo. Y más. Mucho más.
+
+Consulte la excelente lista de ImplementacionesDeEmacs para más información.
+
+== Su uso en este wiki ==
+
+Si desea crear enlaces a la página de Emacs, use GnuEmacs; para enlazar hacia la página de XEmacs, use [[XEmacs]] (una limitación de los patrones de enlaces que usa este wiki).
+
+Y sea cuidadoso, hay Emacs que corren sobre consola y X, y hay XEmacs que corren sobre consola y X. La "X" en XEmacs no quiere decir "Emacs más X".
+
+== Comparación ==
+
+Hay una innumerable cantidad de pequeñas diferencias. Demasiadas para ser listadas.
+
+Desde el punto de vista del usuario, Emacs y XEmacs son muy muy similares, excepto por una gran cantidad de pequeñas diferencias que incomodan a usuarios que tengan experiencia con el otro "sabor" de Emacs. Si usted es un principiante, muy probablemente note que no hay ninguna razón realmente poderosa para elegir uno u otro. Es recomendable seguir un proceso similar al siguiente a la hora de elegir:
+
+* Use aquel que su vecino o compañero de trabajo utilice.
+* Use XEmacs si necesita un proceso que se despliegue tanto en tty como en X al mismo tiempo (si no entiende esta sentencia, salte esta regla).
+* Use GNU Emacs si su filosofía y principios son fuertes y tienden a coincidir con aquellos defendidos por RichardStallman.
+* Use ambas versiones por un periodo de prueba y use la que encuentre más apropiada para sus gustos e intereses.
+
+----
+CategoríaHumor

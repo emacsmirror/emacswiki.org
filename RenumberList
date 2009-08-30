@@ -1,0 +1,108 @@
+== The renumber-list command ==
+
+Let us first begin with an example.
+Assume you have a list as follows in your text:
+
+    1. fdsafdsa
+    2. fdsafds
+    2. fdsfdsa
+
+The code at the bottom will define a new function called renumber, which you can call using M-x renumber.
+Put point at the beginning of the paragraph and call it.
+This should change the number of the last line as follows:
+
+    1. fdsafdsa
+    2. fdsafds
+    3. fdsfdsa
+
+You can also put point at the beginning of the second line and use M-x renumber to start from there:
+
+    1. fdsafdsa
+    1. fdsafds
+    2. fdsfdsa
+
+And you can use the numeric prefix argument to start from any other number.
+Use C-u 3 M-x renumber at the beginning of the paragraph to get the following list:
+
+    3. fdsafdsa
+    4. fdsafds
+    5. fdsfdsa
+
+Code:
+
+    (defun renumber (&optional num)
+      "Renumber the list items in the current paragraph,
+    starting at point."
+      (interactive "p")
+      (setq num (or num 1))
+      (let ((end (save-excursion
+                   (forward-paragraph)
+                   (point))))
+        (while (re-search-forward "^[0-9]+" end t)
+          (replace-match (number-to-string num))
+          (setq num (1+ num)))))
+
+Here is an alternative version that does the same thing but for the current region instead of paragraph. It's good if you, like me, have set <code>paragraph-start</code> and <code>paragraph-separate</code> to treat each list item as a separate paragraph.
+
+    (defun renumber-list (start end &optional num)
+      "Renumber the list items in the current START..END region.
+    If optional prefix arg NUM is given, start numbering from that number
+    instead of 1."
+      (interactive "*r\np")
+      (save-excursion
+        (goto-char start)
+        (setq num (or num 1))
+        (save-match-data
+          (while (re-search-forward "^[0-9]+" end t)
+            (replace-match (number-to-string num))
+            (setq num (1+ num))))))
+
+
+== The replace-regexp command ==
+
+Starting with emacs version >=22, 
+it is now possible to execute arbitrary lisp code to
+generate the replacement string used by the 
+<code>replace-regexp</code> command. Let us renumber the first example given
+above using this new feature.
+
+   M-x replace-regexp RET [0-9]+ RET \,(1+ \#) RET
+
+does the trick:
+
+    1. fdsafdsa                          1. fdsafdsa 
+    2. fdsafds           =>              2. fdsafds  
+    2. fdsfdsa                           3. fdsfdsa  
+
+The expression <code>\,(   )</code> executes the Lisp code in parenthesis and
+replaces the string matching the regexp by the output of that code.
+Several variables are available in the Lisp code:
+
+   \n   returns the string matched by  group  number n  in the regexp  
+
+   \#   returns the number of replacements done so far, starting at 0.
+
+   \&   returns the whole string matched by the regexp
+
+   \?   asks in the minibuffer for an explicit replacement
+
+So, if you want to start numbering at 5, and only take into account numbers
+at the beginning of each line, you can use:
+
+   M-x replace-regexp RET ^[0-9]+ RET \,(+ 5 (string-to-int \#)) RET
+
+Use <code>query-replace-regexp</code> if you want to be asked whether to
+do the replacement for each match.
+Note that <code>replace-regexp</code> operates on the selected region
+if transient mark mode is enabled. 
+If transient-mark-mode is not enabled, it starts at point
+and proceeds until end of buffer. You can enable transient-mark-mode
+for the next command just by typing <code>C-SPC C-SPC</code>.
+
+See ReplaceRegexp for additional details.
+
+Other ways to deal with renumbering are discussed in ReplaceCount and
+IncrementNumber.
+
+----
+CategoryEditing

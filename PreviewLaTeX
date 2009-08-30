@@ -1,0 +1,42 @@
+Package [::preview-latex] runs LaTeX on equations and other environments (figures and tables) of your source and replaces the fragment of the source by an preview image. In the "edit mode" for equations, you see the normal LaTeX code.
+
+Homepage: http://www.gnu.org/software/auctex/preview-latex.html
+
+== PreviewLaTeX and NTEmacs ==
+
+By far the easiest way to get this combination going is by downloading th latest precompiled Emacs for NT including AUCTeX from ftp://alpha.gnu.org/pub/gnu/auctex and adhering to the installation instructions in the same place.
+
+== LatexMk as alternative to preview-latex ==
+
+PreviewLaTeX is very useful, but seems to be a little unstable in my installation (installed as described above). Emacs crashes occasionally when regenerating previews. Perhaps these bugs will dissapear with time. (Update 7/9/04 -- using the precompiled emacs http://nqmacs.sourceforge.net/ seems much more stable)
+
+As an alternative a useful perl program known as latexmk.pl works well under cygwin, and provides a dvi "preview window" which updates on every page save. This gives a more stable "realtime" preview of your Latex document. 
+
+latexmk -pvc yourdoc.tex      opens a preview window that continuously reflects changes to the tex source
+
+LatexMk comes as standard with the popular tex installation MixTex but is also available from
+ftp://ctan.tug.org/tex-archive/support/latexmk/
+.You may have to make some changes to the perl file as detailed in the INSTALL file
+
+You can incorporate some of the latexmk commands into the Auctex C-c C-c cycle / Toolbar menu using M-x customize-group auctex. 
+
+== Known Issues ==
+
+* PreviewLaTeX does not place images properly when LongLines Mode is enabled.
+* For Emacs 21, no image support is available in Emacs under Windows. Without images, preview-latex is useless.
+
+== See also ==
+* TexMathPreview is a spot of code for previewing TeX maths. It meant to be minimal. It just shows an image or an error.
+* WhizzyTeX for on-the-fly updated preview window. It works quite well with dealing with errors from incomplete input. Provides a minor mode for Emacs.
+* LatexMk - kind of specialized <tt>make</tt> for LaTeX - can be used in "preview continuously" mode to have automatically (on file save) updated preview window.
+* XSymbolMode provides some kind of WYSIWYG by using real characters and thumbnails for included images and real super-/subscripts.
+* Newer versions of AUCTeX have pseudo super-/subscripts.
+* Compare with InverseDviSearch which allows jumping from editor to related place in DVI file and vice versa.
+
+== Emacs 22 & Emacs 23 mess up ?
+The layout of preview-latex mess up in both my emacs22 & emacs23 installation. 
+(emacs21 is fine) 
+Any idea?   --poppyer
+
+----
+CategoryTex

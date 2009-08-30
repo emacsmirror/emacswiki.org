@@ -1,0 +1,8 @@
+MicParen is an advanced paren-matching mode, featuring:
+
+* show matching parenthesis, even if found outside the present screen.
+
+Lisp:mic-paren.el
+
+----
+CategoryParentheses ParenthesesAppearance

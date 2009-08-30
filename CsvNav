@@ -1,0 +1,8 @@
+[[image/right:csv-nav screenshot]]
+A mode to quickly navigate and edit CSV files such as contacts exported from tools and services.
+
+* Lisp:csv-nav.el
+
+As you can see, the default view is just a plain view of the CSV file.  This looks ugly, but you can use IncrementalSearch and OccurBuffer to your heart's content.  When you hit `RET' on a row, you get to edit it in a separate buffer, shown below.
+When you hit `C-c C-c' in the edit buffer, your changes replace the existing row in the CSV file.
+Use `C-c C-n' to insert new fields into the edit buffer.

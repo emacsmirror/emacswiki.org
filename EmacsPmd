@@ -1,0 +1,4 @@
+Provides an interface between Emacs and PMD, a Java source code analyzer that detects potential problems like unused local variables, empty catch blocks, and so on. The package resides at SourceForge with other PMD IDE plugins, at http://pmd.sourceforge.net/.
+
+----
+CategoryProgrammerUtils

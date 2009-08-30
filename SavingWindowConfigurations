@@ -1,0 +1,43 @@
+While [[Registers|registers]] are powerful tools to save available [[WindowConfiguration]]s and [[FrameConfiguration]]s (See [[FramesAndRegisters|Frames & Registers]] for details.), unfortunately there isn't an easy way to serialize these configuration objects asis for persistency. (In the time of this writing, neither ##desktop.el##, nor ##session.el## were supporting this feature either.) To solve this serialization problem, people tend to follow below steps.
+
+# Extract frame, window & buffer configurations from currently visible display.
+# Save these variables in a readable way. (E.g. Using s-expressions.)
+# In later sessions, using saved configuration variables, create/open related frames, windows, and buffers from scratch.
+
+For instance, see [[http://bazaar.launchpad.net/%7Enxhtml/nxhtml/main/annotate/head%3A/util/winsav.el|winsav.el]] of [[NxhtmlMode|nXhtml]] for a complete window configuration saving system using above mentioned steps to supply desired persistence.
+
+Alternatively, here are some ad-hoc dirty implementations for some basic tasks.
+
+  (defun gnus-register-window-configuration ()
+    "Register a whole `*Group*' buffer window into configuration 1."
+    (let ((group-buf (get-buffer "*Group*")))
+      (when group-buf
+        (switch-to-buffer group-buf)
+        (delete-other-windows)
+        (beginning-of-buffer)
+        (window-configuration-to-register ?1))))
+  
+  (add-hook 'gnus-started-hook 'gnus-register-window-configuration)
+  
+  (defun erc-register-window-configuration ()
+    "Register vertically split `#postgresql' and `#lisp' channel windows into
+  configuration 2."
+    (let ((psql-buf (get-buffer "#postgresql"))
+          (lisp-buf (get-buffer "#lisp")))
+      (when (and psql-buf lisp-buf)
+        (switch-to-buffer psql-buf)
+        (delete-other-windows)
+        (recenter)
+        (select-window (split-window-horizontally))
+        (switch-to-buffer lisp-buf)
+        (recenter)
+        (window-configuration-to-register ?2))))
+  
+  (add-hook 'erc-join-hook 'erc-register-window-configuration)
+
+----
+CategoryPersistence
+CategoryFrames
+WindowsAndRegisters
+CategoryWindows
+CategoryDisplay

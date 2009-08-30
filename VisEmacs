@@ -1,0 +1,62 @@
+From http://www.atnetsend.net/computing/VisEmacs :
+
+VisEmacs is a VisualStudio add-on that allows Emacs to be integrated as the default text editor. It will be used instead of the Visual Studio built-in editor when you double-click on a file or press F4 after compiling (it will go to the proper line in the emacs buffer). A note: because the Visual Studio editor is not used, reverting buffers does not have to happen, as emacs is always used (which enables auto-save recovery features lost with auto-revert-mode).
+
+
+This project is also on <nowiki>SourceForge</nowiki>:
+
+*  http://sourceforge.net/projects/visemacs/
+
+== VC 7 (Visual Studio .NET) ==
+VisEmacs doesn't work on VC 7 yet - here's an interim solution:
+
+<pre>
+> From: peter_t_yu 
+> Sent: 04 September 2003 9:32 AM
+> To: visemacs@yahoogroups.com
+> Subject: [visemacs] Re: vs7 / .net
+> 
+> 
+> I found a way to invoke NTEmacs from VC++ 7.0. Try the following :
+> 
+> In MS VC++ 7.0 IDE,
+> 1. Select Tools->External Tools menu item to open the External Tools 
+> dialog.
+> 
+> 2. Click on the Add button to add a new external tool.
+> 
+> 3. Rename the new ext. tool to whatever you want. I renamed it to 
+> Emacs.
+> 
+> 4. Specify <your\path\to>\runemacs.exe as the command to run. You can 
+> also open the file browser by clicking on the ellipses (...) button 
+> next to the Command text field and browse to runemacs.exe.
+> 
+> 5. For arguments, enter '-load "C:\Documents and Settings\YuP\.emacs" 
+> +$(CurLine) $(ItemPath)' without the single quotes. The double quotes 
+> surrounding the path to InitFile is needed due to the spaces in 
+> the path 
+> to InitFile. Just replace the above InitFile path with your own.
+> 
+> At this point you can choose Tools->Emacs menu item to open NTEmacs 
+> with the current file opened in VC++ 7 and have it jump to 
+> the current 
+> line in the file.
+> 
+> For added convenience, I've assigned Ctrl-X,Ctrl-F key stroke as the 
+> shortcut to Tools->Emacs menu item. You can do this using 
+> Tools->Options menu. Just assign your preferred key stroke for the 
+> "Tools.ExternalToolsX" command - X being the position of Emacs in the 
+> list of external commands. Mine happened to be 7.
+> 
+> Well, it doesn't replace the VC++ 7 editor like VisEmacs can so you 
+> will always have VC++ 7 editor open at the same time. If this doesn't 
+> bother you, you may like this approach.
+> 
+> Hope this helps.
+> 
+</pre>
+
+
+----
+CategoryProgrammerUtils

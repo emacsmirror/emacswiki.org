@@ -1,0 +1,65 @@
+The topic of this page is printing from within Emacs. This includes printing Emacs buffers and regions. It includes printing using different operating systems, color printing, etc.
+
+== Ways to Print Emacs Buffers and Regions ==
+
+Emacs comes with libraries <code>printing.el</code>, <code>lpr.el</code>, and <code>ps-print.el</code>, but they are not preloaded.
+
+* Standard Emacs libraries <code>lpr.el</code> and <code>ps-print.el</code> (PsPrintPackage) provide printing commands for use with text and <nowiki>PostScript</nowiki> printers.  This includes color printing and printing using the highlighting (faces) you see in Emacs itself.
+
+
+* Standard Emacs library '''<code>printing.el</code>''' is an extension of library <code>ps-print.el</code> that provides a complete set of highly customizable ''menus'' and commands for all kinds of printing from within Emacs.  It lets you easily print using different printers and different operating systems (e.g. Windows, Unix, Linux). It lets you preview printing with ghostview. Library <code>printing.el</code> (PrintingPackage) is  available from ViniciusJoseLatorre.
+(DrewAdams recommends library <code>printing.el</code>.)
+
+* PrintWithWebBrowser - uses browse-url-of-file + htmfontify.el + hfyview.el to show the current buffer in a web browser. This looks surprisingly similar (with colors) to what you can see in Emacs and you can print it from the web browser.
+This is especially useful on MS Windows where you may need to install a new external program to use Emacs standard printing libraries.
+
+* EnscriptPrint uses GNU Enscript to render a buffer into Postscript for printing, using TrueType and Type 1 fonts available on your system.
+== Tips on Printing ==
+
+===AnsiLpr===
+
+For those who wish to print on a local printer when running emacs through an ANSI terminal or alike (eg PuTTY), there is '''''ansi-lpr'' http://www.math.uvsq.fr/~meulien/ansi-lpr.el''' (a library whose code length is less than its licence!). It allows users to print using the familiar commands (`print-buffer' or `print-region') provided by lpr.el.
+
+N.B. When downloading the library, make sure the control characters are still there -- Matthias.
+
+=== Printing with ps-print on MS Windows: Using Ghostscript ===
+
+A way to easily print documents on Microsoft Windows is to add the following forms to
+your Emacs InitFile:
+
+   (setenv "GS_LIB" "e:/tools/GSTools/gs8.14/gs8.14/lib;e:/tools/GSTools/gs8.14/fonts")
+   (setq ps-lpr-command "e:/tools/GSTools/gs8.14/gs8.14/bin/gswin32c.exe")
+   (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2"))
+   (setq ps-printer-name t)
+
+You have to change the paths to reflect the actual directories on your system.  The <code>setenv</code> form might not be necessary if <code>GS_LIB</code> is already set in the underlying environment.
+
+This requires Ghostscript, but no extra Emacs library.  You can print as usual with the "ps-print" commands.  A pop-up will ask for the printer to send the output to.
+
+=== Printing with ps-print on MS Windows: Using Cygwin and PDFCreator ===
+
+First Install PDFCreator. This is a version of ghostscript & ghostview  that acts like a windows printer driver. It allows you to create PDF's from any windows application that will let you print. 
+http://sourceforge.net/projects/pdfcreator/
+
+You can tune the PDFCreator to do all sorts of things, I have it set to autosave the PDF and open it in Acrobat. Most Windows Emacsians have cygwin installed, this uses the cygwin version of lpr. To set Emacs up to use it add the following to your InitFile:
+
+    (setenv "PRINTER" "PDFCreator")
+    (cond ((eq system-type 'windows-nt)
+       (setq ps-printer-name "PDFCreator")
+       (setq ps-printer-name-option "-d")
+       (setq ps-lpr-command "/bin/lpr")))
+
+To test use ps-print-buffer.  TimOCallaghan
+
+
+'''See also:''' PrintingPackage and PsPrintPackage.
+
+=== Emacs does not allow quotes in the printer command or switches. ===
+See PrintCommandQuotes for a work-around.
+
+=== Printing with Word on MS Windows using RTF. ===
+See PrintUsingWordRtf.
+
+----
+CategoryPrinting
+CategoryExternalUtilities

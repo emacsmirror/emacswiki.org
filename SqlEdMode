@@ -1,0 +1,49 @@
+sqled-mode is a major mode for editing (not executing) SQLPLUS, SQL
+and PL/SQL code.
+
+Download:
+
+* Lisp:sqled-mode.el
+
+Its main features are:
+
+*  automatic (upper-)casing of keywords 
+*  automatic indentation 
+*  some functions that generate lists and "where" clauses from 
+       the output of a sqlplus "describe table" command.
+
+:      This probably requires some explanation:  the database I work with 
+       makes a lot of use of compound keys, so I am frequently faced with 
+       a table whose description from "describe table" looks like, say:
+
+	   key_name1    NOT NULL CHAR(5)
+	   key_name2    NOT NULL CHAR(5)
+	   key_name3    NOT NULL CHAR(5)	
+	   column_name1          INTEGER
+	   column_name2          VARCHAR2(2000)
+
+
+:      and I frequently need to generate a clause:
+
+	   WHERE x.key_name1  = y.KEY_NAME1
+	     AND x.key_name2  = y.KEY_NAME2
+	     AND x.key_name3  = y.KEY_NAME3
+
+:      or a list: key_name1,key_name2,key_name3,column_name1,column_name2
+       
+It has only been tested with Oracle, since thats the only database 
+I have any experience with, and only under unix and linux.  
+It was developed for use under X, with one sqlplus window and 
+one emacs window open, allowing for cut-paste between the
+two windows.
+
+== Discussion ==
+
+[new]
+Yay! Yet another mode to test out for programming PL/SQL on Oracle... :) It'd be great if all these SQL/PL/SQL modes where merged in some way. Well, one can always dream... :) -- MaDa
+
+[new]
+I'm not a big friend of automatic capitalization...  I liked PlsqlMode and used it often when at work... -- AlexSchroeder
+
+----
+CategorySql

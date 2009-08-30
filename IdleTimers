@@ -1,0 +1,78 @@
+The function <code>run-with-idle-timer</code> has a million and one uses.  The
+ following use has vastly improved my life using NTEmacsWithCygwin, for example.
+
+Here's the problem it solves: I frequently want to switch to a buffer named "*Shell*"; I've formed the habit of typing merely <code>* S h e RET</code>, and letting completion complete the buffer name.  However, sometimes there's a buffer lying around named "*Shell Command Output*".  Since that buffer's name shares a common prefix with the name of the buffer to which I want to switch, completion doesn't completely complete :-) the name "*Shell*"; instead it leaves me with "*Shell".  Thus, when I then hit RET, I find myself looking at a new, empty, useless buffer instead of the one I wanted.  Rather than telling completion to honor case (which is annoying on Win32, since the file system is itself case-insensitive), I simply tell Emacs to periodically kill any buffers named "*Shell Command Output*" that it finds lying around (if they're not currently displayed in a window).  The "periodically" part is what run-with-idle-timer does for us.
+
+      (if completion-ignore-case
+          (defvar reaper
+            (run-with-idle-timer 5 t (lambda ()
+                                       (let ((victim (get-buffer "*Shell Command Output*")))
+                                         (when (and victim (not (get-buffer-window victim t)))
+                                           (message "Killing buffer %s" (buffer-name victim))
+                                           (kill-buffer victim)))))
+            "idle-timer (see \\[run-with-idle-timer]) that deletes the
+      *Shell Command Output* buffer -- that buffer's name is so similar to
+      *shell* that completion makes the latter hard to type.  Use
+      \\[cancel-timer] to cancel it."))
+
+[new:DrewAdams:2006-01-27 17:28 UTC]
+[[Icicles]], IswitchBuffers, and BSBufferSelection all solve this problem in simpler ways. -- DrewAdams
+
+[new]
+Yeah, I use IswitchBuffers now. -- EricHanchrow
+
+== Cookbook ==
+
+There are a few steps to set up a function to be repeated every now and again..
+
+* Set up a variable to store the timer object
+* Define the function to repeat
+* Define functions to start and stop the repetition
+
+<pre>
+
+
+;; variable for the timer object
+(defvar idle-timer-cookbook-timer nil)
+
+;; callback function 
+(defun idle-timer-cookbook-callback ()
+  (message "I have been called (%s)" (current-time-string)))
+
+;; start functions
+(defun idle-timer-cookbook-run-once ()
+  (interactive)
+  (when (timerp idle-timer-cookbook-timer)
+    (cancel-timer idle-timer-cookbook-timer))
+  (setq idle-timer-cookbook-timer
+          (run-with-idle-timer 1 nil #'idle-timer-cookbook-callback)))
+
+(defun idle-timer-cookbook-start ()
+  (interactive)
+  (when (timerp idle-timer-cookbook-timer)
+    (cancel-timer idle-timer-cookbook-timer))
+  (setq idle-timer-cookbook-timer
+          (run-with-timer 1 1 #'idle-timer-cookbook-callback)))
+
+;; stop function
+(defun idle-timer-cookbook-stop ()
+  (interactive)
+  (when (timerp idle-timer-cookbook-timer)
+    (cancel-timer idle-timer-cookbook-timer))
+  (setq idle-timer-cookbook-timer nil))
+</pre>
+  
+== run-with-timer vs run-with-idle-timer ==
+
+These functions are quite similar, the main difference being that <code>run-with-timer</code> will call the callback function repeatedly whereas <code>run-with-idle-timer</code> does so only once (unless you specify the <code>REPEAT</code> parameter, that is)
+
+
+== Gotchas ==
+
+* Gnu Emacs allows a zero time, XEmacs does not.
+
+----
+See EmacsNiftyTricks
+
+----
+CategoryCode

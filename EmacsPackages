@@ -1,0 +1,21 @@
+This page contains info about packages of elisp files that are written to work together or are distributed together for other reasons.
+
+Some of the files in this packages may be available from ElispArea.
+The packages are perhaps also mentioned on WikifiedEmacsLispList but they do not stand out as packages there and their usefulness therefore might not be that easy to grasp.
+(Also the files are not there.)
+
+In most cases <b>these packages contains installation</b> instructions you should follow to get them to work.
+If not then please see InstallingPackages.
+
+= Packages of elisp files written to work together ==
+
+These packages mostly contains files written to work together (but may include other files too in some cases).
+* [[Anything]] -- Choose object first, by matching, then choose action.
+* [CollectionOfEmacsDevelopmentEnvironmentTools CEDET] -- Advanced development environment with intellisense style completion, parsers etc.
+* CompanyMode -- Company stands for “complete anything” and is a modular in-buffer completion mechanism.
+* CompletionUI -- Framework for using different UI's for [[completion]].
+* [EmacsCodeBrowser ECB] -- Code browser. Requires CEDET at the moment.
+* [[Icicles]] -- Enhanced [[minibuffer]] [[completion]]. 
+* [NxhtmlMode nXhtml] -- Multi major modes. Web editing. And some general utilities.
+* PredictiveMode -- Tries to predict the rest of the word, and offers you an appropriate completion.
+* RubyOnRails

@@ -1,0 +1,81 @@
+: ''The only thing necessary for the triumph of evil is for good men to do nothing.'' -- Edmund Burke
+
+On the EmacsChannel, the following behaviours are undesirable:
+
+* derailing the conversation into flaming matches,
+* insults,
+* conducting lengthy diatribes and monologues,
+* posting off-topic, links to NSFW ("Not Safe/Suitable For Work") sites,
+* flooding the channel with long, off-topic monologues,
+* deliberate abuse of language,
+* annoying the regulars,
+* giving newcomers a bad impression of #emacs and possibly,
+discourages them from returning,
+* not responding to requests from regulars to cease negative behaviour,
+* and last but not least, misogynist, sexist, racist, heterosexist and other cultural prejudices are unacceptable.
+
+Occasionally, such behaviors may coincide with the presumably desirable behaviours of:
+
+* asking on-topic questions,
+* answering newbie questions,
+* providing some amusement to the group.
+
+== Assessments ==
+
+The EmacsChannel is crucial to the global Emacs community for its longstanding service to newbies and veterans alike.  It is a place for communicating about Emacs, sharing solutions to common problems, helping newbies, and generally being a community focal point for all [[Emacsen]]. Endless spamming and trolling of the channel, making it impossible to see the questions posed by [[EmacsNewbie]]s, and a host of other negative behaviors act to reduce the channel's value.
+
+On occasion--more often than many would like, individuals with insulting behavior join the channel.  Previously, the initial response by channel participants and operators is to simply inform others that such an individual is a troll and to ignore the person with ##/ignore##.  Occasionally, attempts are made to try and abate such antisocial tendencies by directly having an intervention with such a person, and not making it a larger issue since doing so may be a source of the problem ("DO NOT FEED THE TROLLS").
+
+Unfortunately, behaviour patterns of such individuals hurt the community as a whole and the community is responsible for maintaining its own climate.  Newcomers to the channel can be scared off by long, off-topic arguments, excessive offensive language and by sexist or racist remarks.  People who have been on the channel for a while will usually either tolerate or ignore such behavior (while perhaps wondering why they have to), but for people new to the channel, first impressions matter.  Attempts should be made to try and abate such antisocial tendencies, directly and quickly.  The greater responsibility is to the community.
+
+Instead of just containing a troll, the channel has ever tolerated hostile and insulting behavior.  Some behaviors venture into sexist, racist, heterosexist or misogynistic and generally nasty comments.  There are too many technical communities that are hostile to women, in particular.  The behavior of one individual can also quickly change the channel's morphology.  The community deserves a better reputation.  A pattern by the community to not handle such behavior decisively also has a reflection on the community's reputation.
+
+Climate in a channel is the result of both the positive acts that help the community's reputation and by responding appropriately to negative acts that diminish the community.
+
+Libertarianism in #emacs is advocated by some.  Others even defend such behavior as acceptable.  Even others may see such behavior as self-evident of larger social problems that occur only in a microcosm, and therefore don't react.  It's also sometimes difficult to get people to agree on what constitutes decent behaviour on the channel. People have different standards when it comes to things like swearing, being argumentative, having an abrasive personality, or what constitutes on-topic conversation.  Short of typing in random characters, it's has ever been impossible to have any action taken against you. And with ideals like "everyone should be equal" and "we don't need big brother when we can manage ourselves", the channel always seems to be divided when it comes to dealing with trolls.
+
+Furthering community expectation by commitment from the larger group is of greater efficiency than handling personal interventions.  Improper comments in the channels of other related technical communities result in their operators demanding apologies or otherwise be kicked from the channel.  Ops have special responsibility, but everyone should participate in challenging rude behavior.
+
+== On banning ==
+
+Some are hesitant to globally ban someone unless there is some sort of globally agreed-upon metric for behavior that should cause people to be banned.  Some are in favor of ##/kicking## people (and only temporarily) only when they begin ranting (which might involve, say, 5-6 unanswered lines).  Newbie-baiting is also not so good, and should perhaps deserve a reprimand.
+
+Instead of requiring a total consensus before action is taken against someone, a handful of complaints should be enough for a short ban. There should be some minimum standards necessary for participation in the channel - no personal attacks, and a minimum level of on-topic conversation.
+
+Those against any ban on anyone suggest using ##/ignore## for providing the capability of ignoring someone.  This has been characterized as RadicalInclusiveness. Larry Sanger has said about WikiPedia, "So there was a growing problem: persistent and difficult contributors tend to drive away many better, more valuable contributors".  This is what some would like to prevent. It is true that there are abrasive people on many IRC channels, and that learning how to use ##/ignore## is an important skill for any newbie.  Not every newbie will know how to use ##/ignore##, and not every decent person joining #emacs will "suffer fools gladly".  A response should be akin to what one could do in a classroom, in a conference, in a restaurant, or under their own roof.
+
+When the offender does not oppose bans, those strictly against banning may no longer object to banning in the specific situation for the specific individual.
+
+Regarding a "predefined criteria" for banning, some disagree on the very assumption.  They cite everyday decisions that happen without such clear criteria, and something that seems appropriate today may seem rude tomorrow.  People change.  And in fact laws usually reflect this: They are intentionally vague, giving courts enough flexibility to base their decision on circumstances and current values. Decisions such as banning reflect a power hierarchy that can be abused.  The solution, however, is not to mechanise the process using well-defined rules. Instead, discussion, the right to know what you are being accused of and by whom, to see the evidence, the ability to defend yourself, to appeal decisions -- those are the elements of a fair and open process. It doesn't do away with the imbalance of power. But it makes it more bearable.
+
+Of course, laws are `predefined criteria' themselves. How wide or how narrow they are depends on the field of law. One of the key maxims in theory on fair trials is ''nullum crimen sine lege'', no crime can exist without a (prior) law, which generally is held to have to be known, or at least accessible by a person committing the crime. Another one, in criminal law, is for them to be as narrow as possible, in order to avoid abuse of power. Now, a prior law was lacking, even the most general one.
+
+Frequent silencing and kicking (perhaps using temporary bans) can be appropriate, and seem less extreme. But it requires much more extensive policing of the channel -- and when police powers are used frequently, they'll tend to expand. After all, it'd be somewhat unfair to start silencing a one person for when they go on for extended rants, and not start enforcing off-topic conversation against others.
+
+"In the spirit of Voltaire", some are opposed to any ban of #emacs channel participants.  A small amount of policing often expands into larger amounts, and could become a problem in the future of #emacs.  Channel operators should warn individuals that step over the line that a kick or time-limited ban is approaching if they don't cool down and behave like civilized people. The way discussions occurred on bans in the past proves that people in #emacs are very weary of power (mis)use.
+
+Some are skeptical that kicking and banning each individual will really change that person.  However, ending a social dynamic that the group opposes can only be enacted by refusing to tolerate the behavior as a community.  For instance, in public settings when someone is being offensive they are told to stop it.  The ##/ignore## command is in some ways a profound technical solution.  In real life, it is not possible to plug you ears to the voices of only certain individuals.  This is not possible in real life.   However, plugging your ears is not used in group settings because it doesn't do the important task of reprimanding behavior that is disruptive to the group's activities to which the general public is invited.
+
+Another position is that those complaining about such behavior should try to resolve the problem and not expect other community members to solve the issue.  Unfortunately, behaviour patterns of such individuals hurt the community as a whole and the community is responsible for its climate.  Especially troubled individuals are renowned for being inconsolable and non-negotiable.  Furthering community expectation in the direction of the group is of greater efficiency than handling personal interventions.  Climate control is carried out by positive acts that help the community's reputation and by responding appropriately to negative acts that diminish the community.  
+
+The #emacs channel is very open for discussions not directly related to Emacs, which in many peoples opinion is a good thing.  Everyone is allowed to go pretty far off course before anyone complains, so the policing would rarely increase, as most people seem to be attentive to the amount of random babble they spit out themselves.
+
+== Conclusions ==
+
+: ''Heh. Practically a DoOcracy... Of course I'd like to think that you also get ops for being a responsible channel member, but unfortunately the process is rather haphazard at best.
+:: -- AlexSchroeder
+
+The product of such hostilities from trolls includes making the channel a mess. Many people obviously ##/ignore## a troll, and many people seem to listen just to chastise everything they say, or advise newbies not to listen. The signal-to-noise ratio can diminish into the unknown.
+
+Some people have made it clear that they very much dislike the idea of any kind of banning from the EmacsChannel, but even some of those seem to think extreme cases merit it. 
+
+Other options include:
+
+* a permanent ban
+* active "policing" (time-based bans, kicking each time with justification
+* leaving it to the discretion of the channel ops
+
+Any bans or other behaviors by channel ops can be taken to the "irc controlling body" -- which in this case would be #freenode.
+
+----
+InternetRelayChat

@@ -1,0 +1,17 @@
+== Type Ahead Support ==
+
+w3m-type-ahead.el (available at https://alioth.debian.org/project/showfiles.php?group_id=30594) can be used to add type-ahead functionality
+(as seen, for example, in Mozilla and related browsers) to
+<code>w3m-mode</code>. After loading w3m and w3m-type-ahead, it
+can be switched on as a minor mode in <code>w3m-mode</code> buffers
+using:
+
+ (add-hook 'w3m-mode-hook 'w3m-type-ahead-mode)
+
+By default, this binds / to <code>w3m-type-ahead</code> and M-/ to
+<code>w3m-type-ahead-regexp</code>. With these, incremental
+searching limited to the text associated with links can be done. Use a
+prefix argument of <code>C-u 2</code> or <code>C-u C-u</code> to create a new session.
+
+----
+WThreeM

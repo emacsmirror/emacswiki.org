@@ -1,0 +1,6 @@
+Dynamic abbreviation expansion in the middle of a word.  For example, if the cursor is on the letter '<tt>b</tt>' in "<tt>foo_bar</tt>" and the word "<tt>foo_quux_bar</tt>" is in the current or other buffers, "<tt>quux_</tt>" will be inserted.  You can cycle through all expansions just like dabbrev.  This also works at the beginning and end of words, although at the end it's not as smart as regular dabbrev; e.g. you can't hit space and have it continue to add more text.
+
+Lisp:mdabbrev.el
+
+----
+CategoryCompletion

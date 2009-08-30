@@ -1,0 +1,8 @@
+List [[Face]]s using `M-x list-faces-display' and edit them by hitting
+enter.  This is useful for Emacs 20.  Emacs 21 already comes with
+something similar.
+
+* Lisp:face-list.el
+
+----
+CategoryFaces

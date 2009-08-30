@@ -1,0 +1,53 @@
+ kdic.el -- Practice your Kanji using a dictionary.
+
+The big benefit of kdic.el is that it uses existing dictionaries.
+
+This package has been abandoned by AlexSchroeder.  He now uses
+FlashCard and FlashMaker.
+
+* Lisp:kdic.el
+
+Use kdic.el to self-administer a '''multiple-choice''' test.  Emacs presents a kanji and five possible meanings.  When you fail to choose the correct answer, Emacs will remember these mistakes (and save them to a file).  As you continue, the kanji you missed have a high probability of popping up again.
+
+Alternatively, Emacs presents a meaning and five possible kanji, or Emacs presents a kanji and five possible readings.  The number of choices you are presented with is customizable.
+
+== Other languages, writing your own dictionary files ==
+
+If you are looking for a vocabulary trainer that quizzes you on vocabulary files you write yourself, see VocabTest, or write your file in the EDICT format (Google:edict+format):  Every line should match one of these:
+
+    word [] meaning
+    word [more info] meaning
+    word [more info] meaning/meaning/meaning
+    some words [] meaning
+    some words [more info] meaning
+    some words [more info] meaning/meaning/meaning
+
+All these variations match the regexp <tt>"\\(.*\\) \\[\\(.*\\)\\] /\\(.*\\)/"</tt>.
+
+== Features ==
+
+* List of missed entries is automatically maintained and trained.  It is saved to a file at the end of session and reused the next time kdic is started.
+* Training is customizable: Number of answers per question, percentage for picking a question from the missed entries.
+* Three modes available: Give the correct meaning for a Kanji, give the correct pronounciation for a Kanji, give the correct Kanji for a meaning.  Or switch between them at random.
+* Allows sorting and selecting of Kanjis from the dictionaries (since the dictionaries are huge).  This selection can be stored in a cache for faster restart times.
+
+== Bugs, Missing Features ==
+
+* Working with the dictionary files can be confusing.  If you just want to get started, send me mail and I'll send you a cache file with the 80 simplest Kanji so you can get started.
+
+== Discussion ==
+
+I'm using kdic to learn Japanese. My Japanese textbook says learning kanji is impractical although beginners often tend to do that (anyone know why?). According to my textbook, beginners should learn whole words. But there're no tools for Unix for learning anything but separate kanji (kdrill, for example, doesn't support such learning mode) and vocab-test is not yet finished, AFAIK. So, I've created an edict file where I put Japanese words as I'm making progress through my Japanese textbook. I'm using emacs-mule encoding for this file as it is allows me to have Japanese words and Russian translations in one buffer. I've made one change to kdic to make my life easier: replaced read-from-minibuffer to read-char in kdic-quiz.
+-- EugeneMorozov
+
+If you wrote the code as a user-settable option, then you can just upload the
+the version to the ElispArea.  Kdic can extract words sorted by the difficulty
+of the kanji used, and save such a list in the cache.  If you have a book on
+kanji and start at the beginning, that may be a way to learn words as you go.
+If you have a regular book, however, I think you should just do what it says:
+Learn the vocab as they present it, and thus you have no other choice than do
+what you do: Create your own edict file.
+-- AlexSchroeder
+
+----
+CategoryEducation

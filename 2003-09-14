@@ -1,0 +1,17 @@
+I gave up maintainership of SqlMode a few days ago.  MichaelMauger is the new maintainer.  Anybody want to take over ColorTheme? -- AlexSchroeder
+
+Hmm, I am interested in maintaining ColorTheme although I don't really know what it still needs. So according to your response it may or may not interest me :) -- XavierMaillard
+
+ColorTheme at the moment mostly involves adding new themes.  You can just paste-and-copy submissions, but I usually go through the following steps:
+
+# Add faces missing on the ''other'' emacsen such as the ones used for the modeline or dired or font-lock.
+# Make sure the default face has the ((t (nil))) spec.
+# Make sure no face sets absolute font sizes (:height) unless they really need to (and I think only a theme for visually impaired people needs to).
+# Check name of the theme, add entry to the color-themes list.
+# Fix bugs.  There are currently no open bugs.
+
+The reason I am offering the package is that I don't make releases often enough because I'm lazy.  The new maintainer should make releases more often. -- AlexSchroeder
+
+I can give a try to this then. Please consider me as a potential maintainer for the ColorTheme stuff. Although I may need a small period to accomodate with it. -- XavierMaillard
+
+[Update]: You told me yesterday or so, you were writing me a mail with all the needed stuff. Problem is I still don't have received anything from you. Is it normal ? -- XavierMaillard

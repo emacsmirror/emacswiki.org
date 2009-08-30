@@ -1,0 +1,2568 @@
+Timestamp: Wed Aug 12 10:35:10 BST 2009
+
+This page is based on the EmacsLispList by StephenEglen and updated automatically.
+
+*Do not edit.*
+
+<toc/dense>
+
+= 5 =
+
+[http://www.davep.org/emacs/5x5.el 5x5.el] --- Simple little puzzle game. (by Dave Pearson)
+
+= A =
+
+[http://homepage.mac.com/zenitani/comp-e.html a-menu.el] --- create a menu from a specified directory (by Seiji Zenitani)
+
+[http://groups.google.com/groups?selm=x354rp0zf2h.fsf%40altern.org&output=gplain abacus.el] --- Abacus Calculator (by Valvassori Moïse)
+
+[http://www.eskimo.com/~seldon/abbrev-sort.el abbrev-sort.el] --- Insert series of numbers into text (by Will Mengarini)
+
+[http://www.geocities.com/mkjunker/stuff.html#emacs abc-mode.el] --- Major mode for editing abc music files (by Matthew K. Junker)
+
+[http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/abc-mode.el abc-mode.el] --- Major mode for editing ABC files (by Michael Abraham Shulman)
+
+[http://compbio.uchsc.edu/Hunter/acldoc.el acldoc.el] --- [interface to the Franz Allegro Common Lisp documentation tree] (by Larry Hunter)
+
+[http://www.van-rijn.org/actr-mode/ actr-mode.el] --- ACT-R-mode/support for Emacs (by Hedderik van Rijn)
+
+[http://libre.act-europe.fr/adamode/ ada-mode.el] --- major-mode for editing Ada source. (by Emmanuel Briot)
+
+[http://www.hackGNU.org/files/advogato.el advogato.el] --- elisp mode to post diary entries to advogato.org. (by Ramakrishnan M)
+
+[http://groups.google.com/group/gnu.emacs.sources/msg/a08c0df2fa35212e?dmode=source&output=gplain after-save-commands.el] --- Run a shell command after saving a file (by Karl M. Hegbloom)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/agchat.el agchat.el] --- comint-based emacs interface for chatting on AgChat (by Noah Friedman)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/alert/ alert.el] --- Alerts for severe weather, new mail (biff), anything. (by D. Goel)
+
+[http://groups.google.com/groups?selm=m2vhho5x2h.fsf%40acid.rhein-neckar.de align.el] --- align text separated by whitespaces in columns (by Matthias Helmling)
+
+[http://www.newartisans.com/johnw/Emacs align.el] --- Align a region according to a regexp (by John Wiegley)
+
+[http://user42.tuxfamily.org/align-let/index.html align-let.el] --- align expressions in a lisp "let" (by Kevin Ryde)
+
+[http://groups.google.com/groups?selm=vd0itv3rn4x.fsf%40kogs4.informatik.uni-hamburg.de align-regexp.el] --- [Align region according to regular expressions.] (by Steve Koren)
+
+[http://www.pvv.org/~markusk/align-string.el align-string.el] --- align string components over several lines; (by Markus Bjartveit Krüger)
+
+[ftp://ftp.cis.ohio-state.edu/pub/emacs-lisp/incoming/all.el all.el] --- Edit all lines matching a given regexp. (by Per Abrahamsen)
+
+[http://www.hut.fi/u/rsaikkon/software/elisp/ alossage.el] --- view-lossage with automatic refresh (by Riku Saikkonen)
+
+[http://www.emacswiki.org/elisp/alt-font-menu.el alt-font-menu.el] --- Alternative mouse font menu for X (by Kahlil (Kal) Hodgson)
+
+[https://alioth.debian.org/projects/mph-emacs-pkgs/ analog.el] --- monitor lists of files or command output (by Matthew P. Hodges)
+
+[http://turingmachine.org/elisp/anaya.el anaya.el] --- Emacs interface to the Anaya Online Spanish Dictionaries (by Daniel M. German)
+
+[ftp://ftp.csd.uu.se/pub/users/andersl/emacs/andersl-java-font-lock.el andersl-java-font-lock.el] --- Font lock support for Java. (by Anders Lindgren)
+
+[http://www.geocities.com/TimesSquare/6120/emacs.html ansi-colors.el] --- translate ANSI into text-properties (by Alex Schroeder)
+
+[http://pbreton.ne.client2.attbi.com/emacs/ ant.el] --- Utilities for Ant (by Peter Breton)
+
+[http://antlr-mode.sourceforge.net/ antlr-mode.el] --- Major mode for ANTLR grammar files (by Christoph Wedler)
+
+[http://www.emacswiki.org/elisp/any-ini-mode.el any-ini-mode.el] --- keyword highlighting for .ini files etc based on a 'source of truth' (by Robert Fitzgerald)
+
+[http://www.emacswiki.org/cgi-bin/wiki?action=history;id=anything.el anything.el] --- open anything (by Tamas Patrovics)
+
+[http://www.emacswiki.org/cgi-bin/emacs/anything-config.el anything-config.el] --- predefined configurations for anything (by Tassilo Horn)
+
+[http://www.keelhaul.demon.co.uk/linux/#apachemode apache-mode.el] --- major mode for editing Apache configuration files (by Jonathan Marten)
+
+[ftp://ftp.m17n.org/pub/mule/apel/ apel.el] --- [A portable Emacs library] (by Apel group)
+
+[http://www.esat.kuleuven.ac.be/~vdplas/emacs/ aplac-mode.el] --- major mode for Aplac netlist files (by Brennan Sharp)
+
+[http://groups.google.com/groups?selm=i47ln2rvggf.fsf%40atticus.cisco.com apm.el] --- Using APM (Advanced Power Management) From Within (X)Emacs (by Dinesh G Dutt)
+
+[http://www.emacswiki.org/elisp/apropos-plus.el apropos+.el] --- extensions to standard library `apropos.el' (by Drew Adams)
+
+[http://www.gnulinux.org.mx/~drs/emacs/apt-sources.el apt-sources.el] --- Mode for editing apt source.list file (by Dr. Rafael Sepúlveda)
+
+[http://ignotus.hixsplit.hu/AptUpgrade.html apt-upgrade.el] --- apt-get upgrade front-end for Debian systems (by Richard Klinda)
+
+[https://alioth.debian.org/projects/mph-emacs-pkgs/ apt-utils.el] --- Emacs interface to APT (Debian package management) (by Matthew P. Hodges)
+
+[http://quimby.gnus.org/elisp/archie.el archie.el] --- query archie servers and parse the results (by Lars Magne Ingebrigtsen)
+
+[http://panix.com/~tehom/my-code/arrange.el arrange.el] --- Rearrange and filter lists (by Tom Breton)
+
+[http://www.lysator.liu.se/~tab/artist/ artist.el] --- draw ascii graphics with your mouse (by Tomas Abrahamsson)
+
+[http://www.emacswiki.org/cgi-bin/emacs/download/ascii.el ascii.el] --- ASCII code display (by Vinicius Jose Latorre)
+
+[http://web.verbum.org/~walters/ ascii-display.el] --- Highlight special ASCII characters in another buffer (by Colin Walters)
+
+[http://savannah.nongnu.org/cgi-bin/viewcvs/*checkout*/emhacks/emhacks/elisp/ascii-to-iso-8859-1.el?rev=HEAD&content-type=text/plain ascii-to-iso-8859-1.el] --- Functions to convert to ASCII to iso-8859-1. (by Marco Parrone)
+
+[http://groups.google.com/groups?selm=x0og73zc5g.fsf%40ee.ryerson.ca asm56k-f-lck.el] --- [Font Lock Keywords for Motorola 56000 DSP assembly language] (by Luis Fernandes)
+
+[http://aspectj4emacs.sourceforge.net/ aspectj-mode.el] --- AspectJ extensions to Java mode (by Gregor Kiczales and William Griswold)
+
+[http://members.wri.com/billw/astronomy astronomy.el] --- [Compute times of astronomical, nautical and civil twilight for calendar] (by Bill White)
+
+[http://nschum.de/src/emacs/async-eval/ async-eval.el] --- execute Emacs lisp in a separate process (by Nikolaj Schumacher)
+
+[http://members.a1.net/t.link/CompEmacsAttic.html attic.el] --- maintain backups with a time stamp (by Thomas Link)
+
+[http://www.nongnu.org/auctex auctex.el] --- [package that supports writing and formatting TeX files] (by David Kastrup)
+
+[http://groups.google.com/groups?selm=904976933.4168%40wren.supernews.com&output=gplain auto-arg-mode.el] --- Minor mode that makes numbers prefixes by default. (by Anders Lannerbäck)
+
+[http://groups.google.com/groups?selm=3C45E780.89BDDF06%40ihs.com&output=gplain auto-capitalize.el] --- Automatically capitalize (or upcase) words. (by Kevin Rodgers)
+
+[http://sourceforge.net/project/showfiles.php?group_id=164970&package_id=210662 auto-compile.el] --- Auto compile support for developers. (by Higepon)
+
+[http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/auto-define.el auto-define.el] --- Define functions on the fly (by Michael Abraham Shulman)
+
+[http://nschum.de/src/emacs/auto-dictionary/ auto-dictionary-mode.el] --- a dictionary switcher for flyspell (by Nikolaj Schumacher)
+
+[http://www.gnusoftware.com/Emacs/Lisp/auto-diff.el auto-diff.el] --- Automatically generate diff's for directory contents. (by Steve Kemp)
+
+[ftp://ftp.cogsci.ed.ac.uk/pub/tkld/auto-insert-tkld.tar.gz auto-insert-tkld.el] --- automatic insertion of text into new files. (by Kevin Davidson)
+
+[http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/auto-recomp.el auto-recomp.el] --- Automatically recompile Emacs Lisp files (by Michael Abraham Shulman)
+
+[ftp://dlpx1.dl.ac.uk/fx/emacs/autocap.el autocap.el] --- auto-capitalize beginning of sentences (by Dave Love)
+
+[http://subversions.gnu.org/cgi-bin/viewcvs/*checkout*/autoconf/autoconf/lib/emacs/autoconf-mode.el autoconf-mode.el] --- autoconf code editing commands for Emacs (by Martin Buchholz)
+
+[http://www.emacswiki.org/elisp/autofit-frame.el autofit-frame.el] --- automatically fit each one-window frame to its buffer (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/autoload-plus.el autoload+.el] --- extensions to standard library `autoload.el' (by Drew Adams)
+
+[ftp://ftp.csd.uu.se/pub/users/andersl/emacs/autorevert.el autorevert.el] --- Revert buffers when file on disk change. (by Anders Lindgren)
+
+[http://wiki.axiom-developer.org/AxiomEmacsMode axiommode.el] --- [Interface with the Axiom Computer Algebra System.] (by Jay Belanger)
+
+= B =
+
+[http://www.chez.com/emarsden/downloads/babel.el babel.el] --- Emacs interface to the Babelfish translation service (by Eric Marsden)
+
+[http://www.jgk.org/src/background.el background.el] --- Background jobs in GNU Emacs (by Joe Keane)
+
+[http://www.northbound-train.com/emacs-hosted/backup-dir.el backup-dir.el] --- allow backup files to live in some other directory(s). (by Greg Klanderman)
+
+[http://laurentdupuy.multimania.com/emacs/balance-mode.el balance-mode.el] --- [Major mode for recording transactions and balancing a bank account] (by Bob Newell)
+
+[http://www.cb1.com/~john/computing/emacs/lisp/misc/banner.el banner.el] --- make banners from strings (by John Sturdy)
+
+[http://www.northbound-train.com/emacs/bar-cursor.el bar-cursor.el] --- package used to switch block cursor to a bar (by Joe Casadonte)
+
+[http://freebsd.sinica.edu.tw/~gugod/lisp/battery-freebsd.el battery-freebsd.el] --- Parse apm output. (by Kang-min Liu)
+
+[ftp://ftp.codefactory.se/pub/people/daniel/elisp/battery-netbsd.el battery-netbsd.el] --- Display battery status information on NetBSD. (by Daniel Lundin)
+
+[http://bbdb.sourceforge.net/ bbdb.el] --- The Insidious Big Brother Database. [phone and address dbase] (by Ronan Waide)
+
+[http://www.esperi.demon.co.uk/nix/ bbdb-expire.el] --- expiry and expire-proof entries for the BBDB (by Nix)
+
+[http://meltin.net/hacks/emacs/src/bbdb-gnokii.el bbdb-gnokii.el] --- Export phone entries from BBDB to a gnokii contacts file. (by Martin Schwenke)
+
+[http://www.emacswiki.org/cgi-bin/wiki/bbdb-vcard-export.el bbdb-vcard-export.el] --- vCard export for the BBDB (by Jim Hourihan)
+
+[http://www.neilvandyke.org/bbdbpalm/ bbdbpalm.el] --- BBDBpalm exporter of BBDB database to Palm(R) address book (by Neil W. Van Dyke)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/bbdbrc bbdbrc.el] --- Harmonize message with BBDB+.mailRC. (by Deepak Goel)
+
+[http://zaaf.nl/emacs/emacs.html beatnik.el] --- Tries to implement a beatnik interpreter (by Arjan Bos)
+
+[http://quimby.gnus.org/elisp/benchmark.el benchmark.el] --- functions for benchmarking Emacs Lisp code (by Lars Magne Ingebrigtsen)
+
+[http://www.nongnu.org/bhl/ bhl.el] --- From (B)rute text to (H)tml and (L)aTeX. (by Bastien Guerry)
+
+[http://people.debian.org/~psg/elisp/bib-cite.el bib-cite.el] --- Display \cite, \ref or \label / Extract refs from BiBTeX file (by Peter S. Galbraith)
+
+[http://www.mts.jhu.edu/~kapur/emacs/bibfind.el bibfind.el] --- Client to get BibTeX entries from the web (by Nevin Kapur)
+
+[http://www.ida.ing.tu-bs.de/people/dirk/bibtex/index.html bibtex.el] --- BibTeX mode for GNU Emacs (by Dirk Herrmann)
+
+[http://www.gentei.org/~yuuji/software/biff-el.html biff.el] --- All-mighty biff program in Emacs-Lisp (by HIROSE Yuuji)
+
+[http://gnufans.net/~deego/emacspub/site-lisp/bigfont/ bigfont.el] --- [Implement the `banner' unix command] (by Eli Barzilay)
+
+[http://groups.google.com/groups?selm=FFG22L.ouJ.0.gobblernet%40alum.mit.edu bike.el] --- [Calculate bicycle gearing] (by Bob Newell)
+
+[http://www.davep.org/emacs/binclock.el binclock.el] --- Display the current time using a binary clock. (by Dave Pearson)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/bindings+.el bindings+.el] --- minor-mode menus from the mode-line (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/bk.el bk.el] --- Emacs support for BitKeeper configuration management (by Bryan O'Sullivan)
+
+[http://fly.srk.fer.hr/~hniksic/emacs/blackbook.el blackbook.el] --- edit [mail] aliases file in an user-friendly way (by Hrvoje Niksic)
+
+[http://www.emacswiki.org/cgi-bin/emacs/download/blank-mode.el blank-mode.el] --- Minor mode to visualize blanks (SPACE and TAB). (by Vinicius Jose Latorre)
+
+[http://www.wonderworks.com/download/blinking-cursor.el blinking-cursor.el] --- Blinking cursor mode for GNU Emacs (by Kyle Jones)
+
+[http://elisp.info/package/blogger/blogger.el blogger.el] --- Post to blogs that support the Blogger API. (by Mark A. Hershberger)
+
+[http://www.nongnu.org/bm/ bm.el] --- Visible bookmarks in buffer. (by Jo Odland)
+
+[http://groups.google.com/groups?selm=8cf8ef%241ln%241%40nw032.infoweb.ne.jp bm-man-cmplt.el] --- completion of Unix manual page names using whatis(1) (by Yuji 'bmonkey' Minejima)
+
+[http://www.brockman.se/software/bongo/ bongo.el] --- buffer-oriented media player for Emacs (by Daniel Brockman)
+
+[http://www.emacswiki.org/cgi-bin/wiki/bookmark%2b.el bookmark+.el] --- extensions to standard library `bookmark.el' (by Drew Adams)
+
+[http://bookmall.hypermart.net/cinput/emacs.html boshiamy-cue.el] --- [Help for Boshiamy input method in BIG5 Chinese; Chinese page] (by blacksburg98)
+
+[http://www.davep.org/emacs/boxquote.el boxquote.el] --- Quote text with a semi-box. (by Dave Pearson)
+
+[http://www.tenfoot.org.uk/emacs/modes.html#branch branch.el] --- working with multiple branches of projects (by Rob Walker)
+
+[http://breadcrumbemacs.sourceforge.net/ breadcrumb.el] --- Set bookmarks like a trail of breadcrumbs. (by William Wong)
+
+[http://www.emacs.mirkolinkonline.de/download/brief.el brief.el] --- Brief-Emulation for Emacs (by Mirko Link)
+
+[http://prdownloads.sourceforge.net/xpt/brief-mode-1.1.tgz brief-s.el] --- Brief 3.1 (TM) keybinding for emacs (by Tong SUN)
+
+[http://www.coling.uni-freiburg.de/~schauer/resources/emacs/browse-cltl2.el.gz browse-cltl2.el] --- browse the hypertext-version of "Common Lisp the Language, 2nd. Edition" (by Holger Schauer)
+
+[http://groups.google.com/groups?selm=3871A8D5.25B3C825%40netspace.net.au browse-help.el] --- context-sensitive help via a WWW browser for GNU Emacs (by Tim Anderson)
+
+[http://opensource.cis.ohio-state.edu/~hurley/ browse-kill-ring.el] --- interactively insert items from kill-ring (by Nick Hurley)
+
+[http://www.emacswiki.org/elisp/browse-kill-ring-plus.el browse-kill-ring+.el] --- extensions to library `browse-kill-ring.el' (by Drew Adams)
+
+[http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/lisp/net/browse-url.el browse-url.el] --- Pass a URL to a WWW browser (by Dave Love)
+
+[http://www.geekware.de/software/emacs/index.html#bs bs.el] --- menu for selecting and displaying buffers, alternative for C-xC-b (by Olaf Sylvester)
+
+[http://www.gelatinous.com/pld/bubblet.html bubblet.el] --- a bubble-popping game (by Paul Du Bois)
+
+[http://www.emacswiki.org/elisp/buff-menu-plus.el buff-menu+.el] --- extensions to standard library `buff-menu' (by Drew Adams)
+
+[http://www.sixfingeredman.net/proj/xemacs/buffer-stack.el buffer-stack.el] --- Smart movement through the buffer list. (by Adrian Kubala)
+
+[http://www.glug.org/people/ttn/software/personal-elisp/standalone/ buffer-thumbnail.el] --- Maintain an XPM interpretation of buffer contents. (by Thien-Thi Nguyen)
+
+[https://alioth.debian.org/projects/mph-emacs-pkgs buffer-time-stamp.el] --- display buffer time stamps in the mode line (by Matthew P. Hodges)
+
+[http://www.hardakers.net/elisp/buffer-timer.el buffer-timer.el] --- Track your time based on the buffers you edit. (by Wes Hardaker)
+
+[http://www.balestra.org/~bradym/emacs-lisp/buffermenu.el buffermenu.el] --- modifies the xemacs buffer menu to organize files by directory (by Brady Montz)
+
+[http://groups.google.com/groups?selm=lg4rx76w8i.fsf%40abla.agisphere.com&output=gplain buffi.el] --- BUildFile FInder, a smart compile wrapper to build multiple [java] projects (by Raphael Pierquin)
+
+= C =
+
+[http://cvs.savannah.gnu.org/viewvc/*checkout*/wdiff/c-boxes.el?root=wdiff c-boxes.el] --- Boxed comments for C mode. (by François Pinard)
+
+[http://www.wonderworks.com/download/c-comment-edit.el c-comment-edit.el] --- edit C comments (by Kyle Jones)
+
+[http://www.newartisans.com/johnw/Emacs c-includes.el] --- Find all header files included by a source file (by John Wiegley)
+
+[http://members.wri.com/billw/cal-catholic/ cal-catholic.el] --- calendar functions for the Roman Catholic liturgical calendar (by Bill White)
+
+[http://groups.google.com/groups?selm=wkr9oviig9.fsf%40rochester.rr.com&output=gplain cal-desk-calendar.el] --- Desk calendar style extensions to Calendar/Diary (by D. Dale Gulledge)
+
+[ftp://ftp.gnu.org/pub/gnu/calc/calc-2.02f.tar.gz calc.el] --- Calculator for GNU Emacs, part I (by Dave Gillespie)
+
+[http://www.barzilay.org/misc/calculator.el calculator.el] --- A simple desktop calculator. (by Eli Barzilay)
+
+[http://www.hotdispatch.com/palm/view-ip-requester?ID=14317280 camelCase-mode.el] --- minor mode for editing with camelCase words (by C.R.Manning)
+
+[http://www.shootybangbang.com/jpw/software/caps-lock.el caps-lock.el] --- caps lock mode for Emacs (by John Paul Wallington)
+
+[http://sourceforge.jp/projects/macemacsjp/files/ carbon-font.el] --- fontsets for Carbon Emacs (by Takashi Hiromatsu)
+
+[http://www.tardis.ed.ac.uk/~skx/win/catdoc.el catdoc.el] --- simple wrapper around the catdoc Word to Text converter (by Steve Kemp)
+
+[http://cc-mode.sourceforge.net/ cc-mode.el] --- major mode for editing C, C++, Objective-C, and Java code (by Alan Mackenzie)
+
+[http://www.ccm.f2s.com/emacs ccm.el] --- [Interface to continuus, a Change Management tool] (by Henrik Jönsson)
+
+[ftp://ftp.cs.indiana.edu/pub/elisp/cddb/cddb.el cddb.el] --- CD DataBase interface (by William M. Perry)
+
+[http://groups.google.com/groups?selm=lxbr9cdi865.fsf%40arctic.cse.msu.edu cddb.el] --- Get CD Tracks from CDDB.com [2] (by Christopher Bowron)
+
+[https://alioth.debian.org/projects/mph-emacs-pkgs cdi.el] --- interface between Emacs and command line CD players (by Matthew P. Hodges)
+
+[http://www.astro.uva.nl/~dominik/Tools/cdlatex/index.html cdlatex.el] --- Fast input methods for LaTeX environments and math (by Carsten Dominik)
+
+[ftp://ftp.cis.ohio-state.edu/pub/emacs-lisp/archive/cdrw.el cdrw.el] --- Dired frontend to various commandline CDROM burning tools. (by Tony Sideris)
+
+[http://dto.freeshell.org/e/cell.el cell.el] --- spreadsheet-like custom application development system (by David O'Toole)
+
+[ftp://dlpx1.dl.ac.uk/fx/emacs/cfengine.el cfengine.el] --- editing CFengine configuration files (by Dave Love)
+
+[http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/cfs-el/cfs-el/src/cfs.el?rev=HEAD&content-type=text/plain cfs.el] --- A frontend to CFS [cryptographic file system]. (by Marco Parrone)
+
+[http://www.chez.com/emarsden/downloads/cgi.el cgi.el] --- using Emacs for CGI scripting (by Eric Marsden)
+
+[http://groups.google.com/groups?selm=87lnol8yxd.fsf%40sphere.magma.ca change-mode.el] --- minor mode displaying buffer changes with special face (by Richard Sharman)
+
+[http://www.newartisans.com/johnw/Emacs check-mail.el] --- A slightly more sophisticated mail checking function (by John Wiegley)
+
+[http://cedet.sourceforge.net/checkdoc.shtml checkdoc.el] --- Check documentation strings for style requirements (by Eric M. Ludlam)
+
+[http://emacs-chess.sourceforge.net/. chess.el] --- Play chess in Emacs (by Mario Lang)
+
+[http://elina.htlw16.ac.at/~hoerandl/chill.html chill-mode.el] --- [Mode for editing CHILL (CCITT High Level Language)] (by August Hörandl)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/choose/ choose.el] --- nondeterminism inside elisp. (by Deepak Goel)
+
+[http://www.marcelotoledo.org/stuff/projetos/chronometer chronometer.el] --- a [not so] simple chronometer for Emacs (by Marcelo Toledo)
+
+[http://groups.google.com/groups?selm=qzuaeo161dx.fsf%40antares.astro.uva.nl cib.el] --- Complete into Buffer for Emacs (by Carsten Dominik)
+
+[ftp://dlpx1.dl.ac.uk/fx/emacs/cif.el cif.el] --- major mode for editing (mm?)CIF files used in crystallography (by Dave Love)
+
+[http://homepage1.nifty.com/bmonkey/emacs/elisp/cldoc.el cldoc.el] --- show Common Lisp operators and variables information in echo area (by Yuji Minejima)
+
+[http://members.verizon.net/kevin.a.esler/EmacsClearCase/ clearcase.el] --- ClearCase/Emacs integration. (by Kevin Esler)
+
+[http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/*checkout*/clisp/clisp/emacs/clhs.el?content-type=text/plain clhs.el] --- access the Common Lisp HyperSpec (CLHS) (by Sam Steingold)
+
+[http://groups.google.com/groups?selm=3islnc25414.fsf%40work.nci.nih.gov climdoc.el] --- An emacs interface the the Harlequin CLIM-2.0 reference (by Larry Hunter)
+
+[http://relativity.yi.org/el/clipper.el clipper.el] --- save strings of data for further use. (by Kevin A. Burton)
+
+[http://www.chez.com/emarsden/downloads/coffee.el coffee.el] --- Submit a BREW request to an RFC2324-compliant coffee device (by Eric Marsden)
+
+[http://cedet.sf.net/cogre.shtml cogre.el] --- COnnected GRaph Editor for Emacs (by Eric Ludlam)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/col-highlight.el col-highlight.el] --- highlight the current column (by Drew Adams)
+
+[http://www.bookshelf.jp/elc/color-moccur.el color-moccur.el] --- [show all occurrences of regexp in all file buffers] (by Akihisa Matsushita)
+
+[http://www-cs-faculty.stanford.edu/~knuth/programs/color-mode.el color-mode.el] --- minor mode for colorizing lines of a file (by Don Knuth)
+
+[http://www.bright.net/~jonadab/emacs/ color-theme.el] --- preview and install color themes (by Jonadab the Unsightly One)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/comint-popup.el comint-popup.el] --- maybe show comint process output windows (by Noah Friedman)
+
+[http://pbreton.ne.mediaone.net/emacs/comint-redirect.el comint-redirect.el] --- Redirect comint output to multiple buffers (by Peter Breton)
+
+[http://www.tls.cena.fr/~boubaker/distrib/command-other-frame.el command-other-frame.el] --- Run commands in another frame. (by Heddy Boubaker)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/comment.el comment.el] --- comment out regions of buffers (by Noah Friedman)
+
+[http://yersinia.org/homes/paolino/emacs/commented-info.el commented-info.el] --- Inserts an information/license header in the buffer (by Paolo Gianrossi)
+
+[http://nschum.de/src/emacs/company-mode/ company-mode.el] --- in-buffer completion (by Nikolaj Schumacher)
+
+[http://user42.tuxfamily.org/compilation-recenter-end/index.html compilation-recenter-end.el] --- recentre the end of compilation output (by Kevin Ryde)
+
+[http://www.emacswiki.org/elisp/compile-plus.el compile+.el] --- extensions to standard library `compile.el' (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/compile-plus-twenty.el compile+20.el] --- extensions to standard library `compile.el' for < Emacs 21 (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/compile-.el compile-.el] --- extensions to standard library `compile.el' (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/compile-twenty.el compile-20.el] --- extensions to standard library `compile.el' for < Emacs 21 (by Drew Adams)
+
+[http://nschum.de/src/emacs/compile-bookmarks/ compile-bookmarks.el] --- bookmarks for compilation commands (by Nikolaj Schumacher)
+
+[http://feff.phys.washington.edu/~ravel/software/compjuga/Welcome.html compjuga.el] --- emacs interface to the compjuga Spanish verb conjugator (by Bruce Ravel)
+
+[http://homepage1.nifty.com/bmonkey/emacs/elisp/completing-help.el completing-help.el] --- an enhancement to `display-completion-list' (by Yuji 'bmonkey' Minejima)
+
+[http://members.a1.net/t.link/concordance.el.gz concordance.el] --- Show concordance table (by Thomas Link)
+
+[http://www.astro.uva.nl/~dominik/Tools/constants/ constants.el] --- enter constant definitions into source code (by Carsten Dominik)
+
+[http://www.pobox.com/~berend/emacs/context.el context.el] --- major mode for editing ConTeXt files. (by Berend de Boer)
+
+[http://www.emacswiki.org/elisp/context.el context.el2] --- Save some context from previous editing sessions (by David Neves)
+
+[http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/coroutine.el coroutine.el] --- Coroutines for Emacs Lisp (by Michael Abraham Shulman)
+
+[http://www.eskimo.com/~seldon/counter.el counter.el] --- Insert series of numbers into text (by Will Mengarini)
+
+[http://www.hut.fi/u/rsaikkon/software/elisp/ cparen.el] --- coloured parentheses in Lisp-derived modes (by Riku Saikkonen)
+
+[http://cedet.sourceforge.net/cparse.shtml cparse.el] --- [parse a c file and allow searching for functions, variables, and types] (by Eric M. Ludlam)
+
+[ftp://ftp.math.ohio-state.edu/pub/users/ilya/emacs/cperl-mode.el cperl-mode.el] --- Perl code editing commands for Emacs (by Ilya Zakharevich and Bob Olson)
+
+[http://www.emacswiki.org/elisp/cricket.el cricket.el] --- Get live cricket scores and news updates from inside emacs. (by Anand B Pillai)
+
+[http://www.mahalito.net/~harley/elisp/crontab-mode.el crontab-mode.el] --- Mode for editing crontab files (by James H Gorrell)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/crosshairs.el crosshairs.el] --- [highlight current line and column with cross hairs] (by Drew Adams)
+
+[http://freefriends.org/~karl/crypt++/ crypt++.el] --- code for handling all sorts of compressed and encrypted files (by Karl Berry)
+
+[http://www.emacswiki.org/elisp/cscope.el.gz cscope.el] --- Interface to cscope browser (by Bill Carpenter)
+
+[http://csde.sourceforge.net/ csde.el] --- Integrated Development Environment for Csharp. (by Matt Bruce)
+
+[http://www.davh.dk/script/csharp-mode.el csharp-mode.el] --- csharp-mode (by Dennis Haney)
+
+[http://www.garshol.priv.no/download/software/css-mode/ css-mode.el] --- Trivial CSS editing mode. (by Lars Marius Garshol)
+
+[http://www.brgeight.se css-mode.el] --- Major mode for editing Cascading Style Sheets (by Karl Landström)
+
+[http://de.geocities.com/ulf_jasper/lisp/csv.el.txt csv.el] --- Functions for reading/parsing csv files (by Ulf Jasper)
+
+[http://centaur.maths.qmul.ac.uk/Emacs/ csv-mode.el] --- major mode for editing comma-separated value files (by Francis Wright)
+
+[ftp://ftp.csd.uu.se/pub/users/andersl/emacs/ctypes.el ctypes.el] --- Enhanced Font lock support for custom defined types. (by Anders Lindgren)
+
+[http://www.cua.dk/cua.html cua.el] --- emulate CUA key bindings (by Kim F. Storm)
+
+[http://www.northbound-train.com/emacs/cua-lite.el cua-lite.el] --- a light-weight, extendable & toggle-able CUA emulator (by Joe Casadonte)
+
+[http://www.northbound-train.com/emacs/cua-lite-bootstrap.el cua-lite-bootstrap.el] --- bootstrap for cua-lite (by Joe Casadonte)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/cursor-chg.el cursor-chg.el] --- automatically change the cursor form, depending on the context (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/cus-edit-plus.el cus-edit+.el] --- extensions to standard library `cus-edit.el' (by Drew Adams)
+
+[http://www.dina.kvl.dk/~abraham/custom/ custom.el] --- Tools for declaring and initializing options. (by Per Abrahamsen)
+
+[http://relativity.yi.org/el/cvs-annotate.el cvs-annotate.el] --- cvs `annotate' interface for emacs. (by Kevin A. Burton)
+
+[http://relativity.yi.org/el/cvs-commit.el cvs-commit.el] --- smart cvs-commit interface for emacs. (by Kevin A. Burton)
+
+[http://www.andersl.com/emacs/cwarn.html cwarn.el] --- Highlight suspicious C and C++ constructions (by Anders Lindgren)
+
+[http://www.cs.ualberta.ca/~vladimir/emacs/cycle-buffer.el cycle-buffer.el] --- select buffer by cycling through (by Vladimir Alexiev)
+
+[http://joereiss.net/misc/cycle-mini.el cycle-mini.el] --- Cycle through completions with arrow keys (by Joe Reiss)
+
+[http://www.geocrawler.com/archives/3/338/1998/2/0/1875389/ cyclebuffer.el] --- select buffer by cycling through (by Kurt Partridge)
+
+[http://oconnor.cx/elisp/cygwin-link.el cygwin-link.el] --- Cygwin symlink handling for Emacs (by Edward O'Connor)
+
+[http://www.emacswiki.org/elisp/cygwin-mount.el cygwin-mount.el] --- Teach EMACS about cygwin styles and mount points (by Klaus Berndl)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/czscm.el czscm.el] --- cheezy scheme interpreter for emacs (by Noah Friedman)
+
+= D =
+
+[http://gnufans.net/~deego dabbrev-hover.el] --- Tooltip-show the next completion, as does openoffice (by D. Goel)
+
+[http://www.djefer.com/dacode/ dacode.el] --- Lecture de news dacode (by Alexandre Brillant)
+
+[http://openmap.bbn.com/burstein/daml-emacs/ daml.el] --- [Major mode for filescontaining DAML+OIL/RDF descriptions.] (by Mark Burstein)
+
+[http://www.xsteve.at/prg/emacs/dar.html dar.el] --- disk archiver (DAR) interface for emacs: a frontend for a backup utility (by Stefan Reichör)
+
+[http://www.newartisans.com/johnw/Emacs/darcsum.el darcsum.el] --- a pcl-cvs like interface for managing darcs patches (by John Wiegley)
+
+[http://mail.gnu.org/pipermail/gnu-emacs-sources/2002-April/001129.html dash-outline-mode.el] --- A major-mode similar to outline-mode (by Kevin A. Burton)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/dbfrobs.el dbfrobs.el] --- useful enhancements for debugging (by Noah Friedman)
+
+[http://groups.google.com/groups?selm=x766uwv0uj.fsf%40godzilla.act.oda.fr dcd.el] --- Interface to the dcd cd-player (by Jean-Philippe Theberge)
+
+[http://cvs.alioth.debian.org/cgi-bin/cvsweb.cgi/emacs-goodies-el/elisp/debian-el/debian-bug.el?cvsroot=pkg-goodies-el debian-bug.el] --- report a bug to Debian's bug tracking system (by Peter S. Galbraith)
+
+[http://groups.google.com/groups?selm=izn1mzrs60.fsf%40elmo.atdesk.com dedicated.el] --- A very simple minor mode for dedicated buffers (by Eric Crampton)
+
+[http://www.emacswiki.org/elisp/def-face-const.el def-face-const.el] --- macro for defining faces & their variables (by Drew Adams)
+
+[http://pagesperso-systeme.lip6.fr/Christian.Queinnec/WWW/elisp.html defaultbanner.el] --- Update banners or headers when files are visited. (by Christian Queinnec)
+
+[http://pagesperso-systeme.lip6.fr/Christian.Queinnec/WWW/elisp.html defaultcontent.el] --- Fill new files when visited. (by Christian Queinnec)
+
+[http://www.emacswiki.org/elisp/defshell.el defshell.el] --- Define inferior shells. (by Kevin Rodgers)
+
+[http://www.emacswiki.org/cgi-bin/emacs/download/delim-col.el delim-col.el] --- Prettify all columns in a region or rectangle. (by Vinicius Jose Latorre)
+
+[http://www.infomatch.com/~blaak/code/delphi.el delphi.el] --- Major mode for editing Delphi source (Object Pascal) in Emacs (by Ray Blaak)
+
+[http://www.emacswiki.org/elisp/delsel.el delsel.el] --- improvements to std library `delsel.el' so it works with `completion.el' (by Drew Adams)
+
+[http://www.andersl.com/emacs/ demax.el] --- Delete too narrow windows when frame if de-maximized. (by Anders Lindgren)
+
+[http://www.bluetail.com/~luke/distel/ derl.el] --- Distributed Erlang networking code. (by Luke Gorrie)
+
+[http://meltin.net/hacks/emacs/src/desire.el desire.el] --- versatile configuration for emacs lisp packages (by Martin Schwenke)
+
+[http://lampwww.epfl.ch/~schinz/elisp/ desktop-kde-recent.el] --- [Interface Emacs and KDE desktops] (by Michel Schinz)
+
+[http://www.geekware.de/software/emacs/index.html#desktop-menu desktop-menu.el] --- menu for managing emacs desktops (by Olaf Sylvester)
+
+[http://groups.google.com/groups?selm=ye4ww2cbiry.fsf%40alpha4.bocal.cs.univ-paris8.fr df.el] --- Hack for displaying space left on device in the mode line (by Benjamin Drieu)
+
+[http://www.jgk.org/src/di.el di.el] --- Simple directory editor for GNU Emacs (by Joe Keane)
+
+[ftp://dlpx1.dl.ac.uk/fx/emacs/diary-outlook.el diary-outlook.el] --- snarf MS Outlook appointments into Emacs diary (by Dave Love)
+
+[http://meltin.net/hacks/emacs/src/diary-pilot.el diary-pilot.el] --- export Emacs diary to Palm Pilot. (by Martin Schwenke)
+
+[http://meltin.net/hacks/emacs/src/diary-todo.el diary-todo.el] --- display `to-do' list in diary. (by Martin Schwenke)
+
+[http://www.informatik.uni-freiburg.de/~utcke/English/Software/#dic dic.el] --- Emacs interface to two English-German-English dictionaries (by Sven Utcke)
+
+[http://groups.google.com/groups?selm=ogrvf18v.fsf%40sparrow.diamant.ru dict.el] --- frontend to dict client (by Alexander Vorobiev)
+
+[http://www.chez.com/emarsden/downloads/dict-web.el dict-web.el] --- Emacs interface to the Online Dictionary Database (by Eric Marsden)
+
+[http://www.newartisans.com/johnw/Emacs dictation.el] --- enable voice dictation within emacs (by John Wiegley)
+
+[http://www.informatik.uni-freiburg.de/~utcke/English/Software/index.html diction.el] --- minor mode to interface the command diction (by Sven Utcke)
+
+[http://me.in-berlin.de/~myrkr/dictionary/index.html dictionary.el] --- an interface to RFC 2229 dictionary server (by Torsten Hilbrich)
+
+[http://www.emacswiki.org/elisp/diff-plus.el diff+.el] --- extensions to standard library `diff.el' (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/diff-plus-twenty.el diff+20.el] --- extensions to standard library `diff.el' for < Emacs 21 (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/diff-mode-.el diff-mode-.el] --- extensions to standard library `diff-mode.el' (by Drew Adams)
+
+[http://user42.tuxfamily.org/diff-save-buffer/index.html diff-save-buffer.el] --- default filename when saving a diff (by Kevin Ryde)
+
+[http://josefsson.org/dig.el dig.el] --- Domain Name System dig interface (by Simon Josefsson)
+
+[http://primate.net/~itz/public/dig-browser.el dig-browser.el] --- a dired-style DNS zone browser (by Ian Zimmerman)
+
+[http://www.eskimo.com/~seldon/diminish.el diminish.el] --- Diminished modes are minor modes with no modeline display (by Will Mengarini)
+
+[http://www.emacswiki.org/elisp/dired-plus.el dired+.el] --- extensions to std libraries `dired.el', `dired-aux.el', `dired-x.el' (by Drew Adams)
+
+[http://groups.google.com/groups?selm=yzig226gpoz.fsf%40inge.nada.kth.se dired-a.el] --- Various dired extensions. (by Inge Frick)
+
+[http://www.asahi-net.or.jp/~pi9s-nnb/dired-dd-home.html dired-dd.el] --- Drag and Drop interface to dired/dired-x package (by Seiichi Namba)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/dired-details+.el dired-details+.el] --- extensions to library dired-details.el (by Drew Adams)
+
+[http://groups.google.com/groups?as_ugroup=gnu.emacs.sources&as_q=efap dired-efap.el] --- Edit Filename At Point in a dired buffer (by Juan Leon Lahoz Garcia)
+
+[http://www.northbound-train.com/emacs.html dired-single.el] --- reuse the current dired buffer to visit another directory (by Joe Casadonte)
+
+[http://centaur.maths.qmw.ac.uk/Emacs/ dired-sort-menu.el] --- add a `sort by' menu to GNU Emacs dired mode (by Francis J. Wright)
+
+[http://www.emacswiki.org/cgi-bin/wiki/dired-sort-menu%2b.el dired-sort-menu+.el] --- extensions to library dired-sort-menu.el (by Drew Adams)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/dirtree.el dirtree.el] --- functions for building directory-tree lists (by Noah Friedman)
+
+[http://www.lickey.com/env/elisp/dirvars.el dirvars.el] --- Local variables that apply to an entire directory (by Matt Armstrong)
+
+[http://www.emacswiki.org/cgi-bin/wiki.pl?DiskKey disk.el] --- simplified find-file, revert-file, save-buffer interface (by Alex Schroeder)
+
+[http://acs.ist.psu.edu/dismal/dismal.html dismal.el] --- Dis Mode Ain't Lotus. Spreadsheet program for gnu-emacs. (by Frank E. Ritter)
+
+[http://www.brownale.demon.co.uk/dms-sig.el dms-sig.el] --- Multiple automatically selected signatures (by Dewey M. Sasser)
+
+[http://www.mahalito.net/~harley/elisp/dna-mode.el dna-mode.el] --- a major mode for editing dna sequences (by James H Gorrell)
+
+[http://nschum.de/src/emacs/doc-mode/ doc-mode.el] --- convenient editing of in-code (by Nikolaj Schumacher)
+
+[http://nwalsh.com/emacs/docbookide/ docbookide.el] --- DocBook Integrated Development Environment (by Norman Walsh)
+
+[http://www.emacswiki.org/elisp/dom.el dom.el] --- DOM implementation (by Alex Schroeder)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/dope/ dope.el] --- Profile Of Dotemacs .. A per-sexp-evaltime profiler. (by D. Goel)
+
+[http://www.emacswiki.org/elisp/ doremi.el] --- incrementally adjust properties using arrow keys and/or mouse wheel (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/doremi-cmd.el doremi-cmd.el] --- miscellaneous DoReMi commands (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/doremi-frm.el doremi-frm.el] --- incrementally adjust frame properties using arrow keys or mouse wheel (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/doremi-mac.el doremi-mac.el] --- macro for defining DoReMi commands (by Drew Adams)
+
+[http://purl.org/harder/dpans.html dpans2texi.el] --- Convert the ANSI Common Lisp draft to Texinfo (by Jesper Harder)
+
+[http://spice-mode.4t.com/dracula.html dracula-mode.el] --- major mode providing a DRACULA rules mode hook for fontification (by Geert Van der Plas)
+
+[http://www.anc.ed.ac.uk/~stephen/emacs/dupwords.el dupwords.el] --- find duplicate words in sentences (by Stephen Eglen)
+
+= E =
+
+[http://people.debian.org/~psg/elisp/e-mh-alias.el e-mh-alias.el] --- MH mail alias expansion and substitution. (by Peter S. Galbraith)
+
+[http://relativity.yi.org/el/e-other-window.el e-other-window.el] --- flash while switching to other windows. (by Kevin A. Burton)
+
+[http://feff.phys.washington.edu/~ravel/software/ease/Welcome.html ease.el] --- the EXAFS Analysis System for Emacs (by Bruce Ravel)
+
+[http://williamxu.net9.org/ref/easy-todo.el easy-todo.el] --- Manage your todos in an extremely easy way! (by William Xu)
+
+[http://relativity.yi.org/el/ebackup.el ebackup.el] --- Enhanced backup operation for Emacs (by Kevin A. Burton)
+
+[http://www.emacswiki.org/cgi-bin/emacs/download/ebnf2ps.tar.gz ebnf2ps.el] --- Translate an EBNF to a syntatic chart on PostScript (by Vinicius Jose Latorre)
+
+[http://groups.google.com/groups?selm=871y6vd0hq.fsf%40lexx.delysid.org&output=gplain ecasound.el] --- Interactive and programmatic interface to Ecasound (by Mario Lang)
+
+[http://ecb.sourceforge.net ecb.el] --- a code browser [for java, C, C++ elisp] (by Klaus Berndl)
+
+[http://nschum.de/src/emacs/echo-pick/ echo-pick.el] --- filter for echo area status messages (by Nikolaj Schumacher)
+
+[http://sdg.lcs.mit.edu/~mernst/software/#EDB edb.el] --- EDB, the Emacs database; replaces forms editing modes (by Michael Ernst)
+
+[http://cedet.sourceforge.net/ede.shtml ede.el] --- Emacs Development Environment gloss (by Eric M. Ludlam)
+
+[http://www.emacswiki.org/cgi-bin/wiki/edi-mode.el edi-mode.el] --- edit raw EDI files (by Jeremy Cowgar)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/ediff+.el ediff+.el] --- extensions to library ediff.el (by Drew Adams)
+
+[http://www.logic.at/prolog/ediprolog/ediprolog.html ediprolog.el] --- Emacs does Interactive Prolog (by Markus Triska)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/edlib/ edlib.el] --- EdLib = help EDit emacs-lisp LIBraries (by Deepak Goel)
+
+[http://www.jurta.org/emacs/ee/ ee.el] --- categorizing information manager for Emacs (by Juri Linkov)
+
+[http://angg.twu.net/emacs.html eev.el] --- embed shell/tcl/perl code and elisp hyperlinks in plain text. (by Eduardo Ochs)
+
+[http://members.fortunecity.com/salkosuo/emacs/index.html efine.el] --- Interface to FinnPlace online English-Finnish[] dictionary (by Sami Salkosuo)
+
+[http://eflite.sourceforge.net/ eflite.el] --- [Interface emacsspeak with festival Lite speech synthesizer] (by Michael P. Gorse)
+
+[http://inferno.cs.univ-paris8.fr/~drieu/hacks/sources/egocentric.el egocentric.el] --- highlight your name inside emacs buffers (by Benjamin Drieu)
+
+[http://www.eicq.org/ eicq.el] --- an XEmacs EICQ client (by Steve Youngs)
+
+[http://cedet.sourceforge.net/eieio.shtml eieio.el] --- Enhanced Implementation of Emacs Interpreted Objects (by Eric M. Ludlam)
+
+[http://meltin.net/hacks/emacs/src/eiffel.el eiffel-mode.el] --- major mode for editing Eiffel files. (by Martin Schwenke)
+
+[http://www.gohome.org/eldav/ eldav.el] --- Yet Another WebDAV interface for Emacsen. (by Yuuichi Teranishi)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/elder elder.el] --- ELDER, the ELisp Document wRitER. (by Deepak Goel)
+
+[http://spice-mode.4t.com/ eldo-mode.el] --- major mode for Eldo netlist files [analog simulator] (by Emmanuel Rouat and Geert Van der Plas)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/eldoc.el eldoc.el] --- show function arglist or variable docstring in echo area (by Noah Friedman)
+
+[http://www.emacswiki.org/elisp/elect-mbuf.el elect-mbuf.el] --- minibuffer completion and default input cycling (by Drew Adams)
+
+[ftp://ftp.lysator.liu.se/pub/emacs/ elib.el] --- [Emacs lisp library] (by Inge Wallin)
+
+[http://www.gnuvola.org/software/elip elip.el] --- The Emacs Learning Instruction Program (by Thien-Thi Nguyen)
+
+[http://www.bluetail.com/~luke/misc/emacs/elit/elit.el elit.el] --- semi-literate programming (by Luke Gorrie)
+
+[http://members.fortunecity.com/salkosuo/elite-for-emacs/ elite.el] --- Elite for EMACS (by Sami Salkosuo)
+
+[http://nschum.de/src/emacs/elk-test/ elk-test.el] --- Emacs Lisp testing framework (by Nikolaj Schumacher)
+
+[http://www.anc.ed.ac.uk/~stephen/emacs/ell.el ell.el] --- Browse the Emacs Lisp List (by Jean-Philippe Theberge)
+
+[http://elmake.sourceforge.net/ elmake.el] --- a "make" for emacs lisp projects in pure emacs lisp (by Michael Schierl)
+
+[http://www.python.org/emacs/elp.el elp.el] --- Emacs Lisp Profiler (by Barry A. Warsaw)
+
+[http://elpoint.sourceforge.net/ elpoint.el] --- Elpoint -- Yet Another Presentation Tool for Emacsen. (by Yuuichi Teranishi)
+
+[http://www.xcf.berkeley.edu/~ali/elpp/elpp.el elpp.el] --- [Embed arbitrary elisp code within your source code] (by Ali Rahimi)
+
+[http://www.zip.com.au/~peterm/download/else-mode.el else-mode.el] --- Emacs Language Sensitive Editor (ELSE) (by Peter Milliken)
+
+[http://elserv.sourceforge.net/ elserv.el] --- Yet another HTTP server on Emacsen (by Yuuichi Teranishi)
+
+[http://groups.google.com/groups?selm=run0fogc0u.fsf%40manaira.local&output=gplain em-zle.el] --- ZSH Line Editor compatibility functions for EShell (by Emilio Lopes)
+
+[http://www.sourceforge.net/projects/emacro/ emacro.el] --- [Example startup file for both Emacs and XEmacs] (by Bruce Ingalls)
+
+[http://www.lisp.se/emacs-cl emacs-cl.el] --- Common Lisp implementation for Emacs (by Lars Brinkhoff)
+
+[http://www.tapsellferrier.co.uk/downloads/emacs-imap.el emacs-imap.el] --- a purely IMAP based email client for EMACS (by Nic Ferrier)
+
+[http://www.emacswiki.org/elisp/emacs-init.el emacs-init.el] --- Emacs initialisation file - commentary explains all (by Drew Adams)
+
+[ftp://dlpx1.dl.ac.uk/fx/emacs/Mule emacs-mule.el] --- [various Mule-related files, some mod from Emacs 21.1, some new.] (by Dave Love)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/emacs-name.el emacs-name.el] --- emacs acronym expansions (by Noah Friedman)
+
+[http://emacs-w3m.namazu.org/ emacs-w3m.el] --- [Interface to w3m, a tex-mode www browser] (by Masatoshi Tsuchiya)
+
+[http://download.savannah.gnu.org/releases/emacs-wiki/ emacs-wiki.el] --- Maintain a local Wiki using Emacs-friendly markup (by Michael Olson)
+
+[http://emacspeak.sourceforge.net/ emacspeak.el] --- Emacspeak -- The Complete Audio Desktop (by T. V. Raman)
+
+[http://www.messengers-of-messiah.org/~csebold/emacs/emacsvfaq.el emacsvfaq.el] --- [randomly select a one-line answer to a FAQ] (by Charles Sebold)
+
+[http://www.gnu.org/software/emms/ emms.el] --- The Emacs Multimedia System (by Jorgen Schäfer)
+
+[http://shasta.cs.uiuc.edu/~lrclause/emvaders.el emvaders.el] --- clone of a famous arcade game program. (by Lars R. Clausen)
+
+[http://dto.freeshell.org/notebook/Eon.html eon.el] --- object-oriented programming for emacs (by David O'Toole)
+
+[https://alioth.debian.org/projects/mph-emacs-pkgs eperiodic.el] --- periodic table for Emacs (by Matthew P. Hodges)
+
+[http://www.yatex.org/epo/ epo.el] --- [Editing process organizer: supports editing source in any language] (by HIROSE Yuuji)
+
+[http://paddington.ic.uva.nl/public/ep3m0995.zip epop3mail.el] --- retrieve mail using epop3.el ("extended" pop3.el) (by Franklin Lee)
+
+[http://mwolson.org/static/dist/erbot-latest.tar.gz erbot.el] --- IRC robot for ERC (by D. Goel)
+
+[http://ftp.gnu.org/gnu/erc erc.el] --- an Emacs IRC client (by Michael Olson)
+
+[http://www.bluetail.com/~luke/erlext.el erlext.el] --- Socket communication with Erlang External Term Format (by Luke Gorrie)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/escreen.el escreen.el] --- emacs window session manager (by Noah Friedman)
+
+[http://esheet.sourceforge.net esheet.el] --- [Spreadsheet for Emacs or Xemacs] (by Daniel Speyer)
+
+[http://www.newartisans.com/johnw/EmacsShell.html eshell.el] --- [an OS command shell written entirely in Lisp] (by John Wiegley)
+
+[http://emacs-sms.sourceforge.net/ esms.el] --- [Send SMS messages directly from Emacs] (by Jarl Friis)
+
+[http://ess.r-project.org ess.el] --- Emacs Speaks Statistics: statistical programming within Emacs (by Martin Maechler)
+
+[http://rulnick.com/etach/ etach.el] --- [Extension for handling MIME mail in RMAIL] (by John M. Rulnick)
+
+[http://members.chello.at/rene.weichselbaum/etask.html etask.el] --- GNU Emacs extension for managing your tasks (by Rene Weichselbaum)
+
+[http://lspwww.epfl.ch/~figueire/Software/eudc/ eudc.el] --- Emacs Unified Directory Client (by Oscar Figueiredo)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/eval-expr.el eval-expr.el] --- enhanced eval-expression command (by Noah Friedman)
+
+[http://www.geocities.com/TimesSquare/6120/elisp/eval-sexp-in-comments.el.txt eval-sexp-in-comments.el] --- evaluate sexps in comments (by Alex Schroeder)
+
+[http://members.a1.net/t.link/CompEmacsExcerpt.html excerpt.el] --- extraxt text & report to main file (by Thomas Link)
+
+[http://quimby.gnus.org/elisp/expect.tar.gz expect.el] --- support for external process communication (by Lars Magne Ingebrigtsen)
+
+[http://www.emacswiki.org/cgi-bin/emacs/extview.el extview.el] --- open files with external viewer (by Tamas Patrovics)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/eyedropper.el eyedropper.el] --- copy foreground or background color (by Drew Adams)
+
+= F =
+
+[http://groups.google.com/groups?selm=ud7lj825b.fsf%40bsiag.com face-list.el] --- convenience functions for face customization (by Alex Schroeder)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/facemenu+.el facemenu+.el] --- extensions to standard library facemenu.el (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/faces-plus.el faces+.el] --- extensions to standard library `faces.el' (by Drew Adams)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/faith/ faith.el] --- [Helps reinforce and spread faith in the ONE TRUE EDITOR] (by Deepak Goel)
+
+[http://liyu2000.nease.net/code/faq-mode.el faq-mode.el] --- Minor mode for editing faq-like page. (by Yu Li)
+
+[http://www.eskimo.com/~seldon/fastfuzz.el fastfuzz.el] --- Compensate fast for floating-point roundoff error (by Will Mengarini)
+
+[ftp://ftp.csd.uu.se/pub/users/andersl/emacs/fdb.el fdb.el] --- Debug filter (Sanity saver) [for use when debug-on-error is t] (by Anders Lindgren)
+
+[http://www.carpenter.org/feedmail/feedmail.html feedmail.el] --- assist other email packages to massage outgoing messages (by Bill Carpenter)
+
+[http://www.davep.org/emacs/festival.el festival.el] --- emacs interface into festival [speech synthesis program]. (by Dave Pearson)
+
+[http://deego.gnufans.org/~deego/emacspub/lisp-mine/fetch fetch.el] --- Never type the long remote file name again.. (by Deepak Goel)
+
+[http://people.debian.org/~psg/elisp/ff-paths.el ff-paths.el] --- find-file-using-paths searches certain paths to find files. (by Peter S. Galbraith)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/ffap-.el ffap-.el] --- extensions to standard library ffap.el (by Drew Adams)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/fff.el fff.el] --- fast file finder (by Noah Friedman)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/fff-elisp.el fff-elisp.el] --- find emacs lisp libraries and function definitions (by Noah Friedman)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/fff-rfc.el fff-rfc.el] --- locate IETF RFC (Request For Comments) texts quickly (by Noah Friedman)
+
+[http://www.iki.fi/pema/emacs/file-confirm.el file-confirm.el] --- Confirm creation of duplicate frames (by Pekka Marjola)
+
+[http://www.eskimo.com/~seldon/filemenu.el filemenu.el] --- Mode for buffers that present menus of files to visit (by Will Mengarini)
+
+[http://www.emacswiki.org/elisp/files-plus.el files+.el] --- extensions to standard library `files.el' (by Drew Adams)
+
+[http://members.a1.net/t.link/CompEmacsFilesets.html filesets.el] --- filesets [for] (X)Emacs (by Thomas Link)
+
+[http://relativity.yi.org/el/fileutils.el fileutils.el] --- unix utils as emacs functions (by Kevin A. Burton)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/filewatch filewatch.el] --- watches files for you, and does stuff if they get modified. (by Deepak Goel)
+
+[http://www.wonderworks.com/download/filladapt.el filladapt.el] --- adaptively set fill-prefix and overload filling functions (by Kyle Jones)
+
+[http://snarfed.org/space/fillcode fillcode.el] --- Fillcode minor mode (by Ryan Barrett)
+
+[http://savannah.nongnu.org/cgi-bin/viewcvs/*checkout*/emhacks/emhacks/elisp/find-and-play.el?rev=HEAD&content-type=text/plain find-and-play.el] --- Interface to find-and-play. (by Marco Parrone)
+
+[http://www.emacswiki.org/elisp/find-dired-plus.el find-dired+.el] --- extensions to standard library `find-dired.el' (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/find-dired-.el find-dired-.el] --- extensions to standard library `find-dired.el' (by Drew Adams)
+
+[http://www.robf.de/Hacking/elisp/find-files.el find-files.el] --- handle globing or regexp patterns for find-file (by Robert Fenk)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/find-func+.el find-func+.el] --- extensions to standard library find-func.el (by Drew Adams)
+
+[http://groups.google.com/groups?selm=8bb3j2%24c9u4%40nntp.cig.mot.com find-library.el] --- a library finder with completion capability [+ lists shadow libraries] (by Takeshi Morishima)
+
+[http://www.emacswiki.org/elisp/find-library.el find-library.el] --- find emacs-lisp library with completion (by Kahlil (Kal) Hodgson)
+
+[http://pbreton.ne.mediaone.net/emacs/find-lisp.el find-lisp.el] --- Emulation of find in Emacs Lisp (by Peter Breton)
+
+[http://groups.google.com/groups?selm=cxjhfml4b2c.fsf_-_%40acs5.bu.edu findr.el] --- Breadth-first file-finding facility for (X)Emacs (by David Bakhash)
+
+[http://sourceforge.net/projects/emhacks/ findstr.el] --- Use Windows NT findstr to match expression in files (by David Ponce)
+
+[http://www-sor.inria.fr/~giraud/emacs/fip.el fip.el] --- Interface to the FIP [French] radio. (by Manuel Giraud)
+
+[http://www.emacswiki.org/elisp/fit-frame.el fit-frame.el] --- resize (shrink-wrap) a frame to fit its selected window (buffer) (by Drew Adams)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/flash-paren.el flash-paren.el] --- flash matching parens a la Zmacs (by Noah Friedman)
+
+[http://www.emacswiki.org/cgi-bin/wiki.pl?FlashMaker flashmaker.el] --- created flashcard decks using existing dicitonary files (by Alex Schroeder)
+
+[http://www.shootybangbang.com/jpw/software/floatbg.el floatbg.el] --- slowly modify background color (by John Paul Wallington)
+
+[http://www.wonderworks.com/download/floating-toolbar.el floating-toolbar.el] --- popup toolbar support for XEmacs. (by Kyle Jones)
+
+[http://www.emacswiki.org/elisp/flobl.el flobl.el] --- frame-local buffer list (by Kai Grossjohann)
+
+[http://josefsson.org/flow-fill.html flow-fill.el] --- interprete RFC2646 "flowed" text (by Simon Josefsson)
+
+[http://flymake.sourceforge.net/ Flymake] --- an on-the-fly syntax checker for Emacs (by Pavel Kobiakov)
+
+[http://kaolin.unice.fr/~serrano/emacs/flyspell flyspell.el] --- On-the-fly spell checker (by Manuel Serrano)
+
+[http://www.dur.ac.uk/p.j.heslin/emacs/download/flyspell-babel.el flyspell-babel.el] --- Switch flyspell language according to LaTeX Babel commands (by 2004 P J Heslin)
+
+[http://www.anc.ed.ac.uk/~stephen/emacs/fm.el fm.el] --- follow mode for compilation/output buffers (by Stephen Eglen)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/fmailutils.el fmailutils.el] --- random mail frobnication utilities (by Noah Friedman)
+
+[http://user.it.uu.se/~andersl/emacs.shtml#folding folding.el] --- A folding-editor-like minor mode. (by Anders Lindgren)
+
+[http://pagesperso-systeme.lip6.fr/Christian.Queinnec/WWW/elisp.html foldingo.el] --- A minor folding mode with mouse/menu/face support. (by Christian Queinnec)
+
+[http://user.it.uu.se/~andersl/follow.shtml follow.el] --- Minor mode, Synchronize windows showing the same buffer. (by Anders Lindgren)
+
+[http://www.emacswiki.org/elisp/follow-mouse.el follow-mouse.el] --- Automatically select the window under the mouse. (by Kevin Rodgers)
+
+[http://people.debian.org/~psg/elisp/font-latex.el font-latex.el] --- LaTeX fontification for Font Lock mode. (by Peter S. Galbraith)
+
+[http://www.emacswiki.org/cgi-bin/wiki/font-lock%2b.el/ font-lock+.el] --- extensions to standard library font-lock.el (by Drew Adams)
+
+[http://shasta.cs.uiuc.edu/~lrclause/footnotes.el footnotes.el] --- Functions for automatically inserting footnotes. (by Lars Clausen)
+
+[http://www.coling.uni-freiburg.de/~schauer/resources/emacs/fortune.el.gz fortune.el] --- Use fortune to create signatures (by Holger Schauer)
+
+[http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/fortune-mode.el fortune-mode.el] --- Interface to write fortunes quickly (by Michael Abraham Shulman)
+
+[http://pagesperso-systeme.lip6.fr/Christian.Queinnec/WWW/elisp.html fracc.el] --- French accent towards Latin1, TeX, BibTeX, HTML. (by Christian Queinnec)
+
+[http://www.emacswiki.org/elisp/frame-plus.el frame+.el] --- extensions to standard library `frame.el' (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/frame-cmds.el frame-cmds.el] --- frame and window commands (interactive functions) (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/frame-fns.el frame-fns.el] --- non-interactive frame and window functions (by Drew Adams)
+
+[http://nschum.de/src/emacs/fringe-helper/ fringe-helper.el] --- helper functions for fringe bitmaps (by Nikolaj Schumacher)
+
+[http://www.enberg.org/emacs/ from.el] --- Show who messages in mailspools is from (by Henrik Enberg)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/fshell.el fshell.el] --- enhancements to shell.el (by Noah Friedman)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/ftcp.el ftcp.el] --- a front end for open-network-stream (by Noah Friedman)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/ftelnet.el ftelnet.el] --- remote login interface (by Noah Friedman)
+
+[http://www.glue.umd.edu/~milgram/ftnchekel.html ftnchek.el] --- ftnchek support for fortran mode. (by Judah Milgram)
+
+[http://nschum.de/src/emacs/full-ack/ full-ack.el] --- a front-end for ack (by Nikolaj Schumacher)
+
+[http://www.eskimo.com/~seldon/fuzz.el fuzz.el] --- Compensate for floating-point roundoff error (by Will Mengarini)
+
+[http://24.71.17.22/wiki?HomeEmacs fvwm-command.el] --- Interface to FvwmCommand (and hence fvwm) (by Cyprian Laskowski)
+
+= G =
+
+[http://www.davep.org/emacs/garble.el garble.el] --- emacs interface to garble. (by Dave Pearson)
+
+[http://www.rempe-online.de/genealogie/lines/ gedcom.el] --- Aid in editing lifelines GEDCOM records (by Matthias Rempe)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/geek.el geek.el] --- annoy lusers who think the geek code is wAY ko0l RADIKuL D00D!1 (by Noah Friedman)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/genauto/ genauto.el] --- helps generate autoloads for your elisp packages (by Deepak Goel)
+
+[http://pagesperso-systeme.lip6.fr/Christian.Queinnec/WWW/elisp.html genconv.el] --- Table-driven string conversions. (by Christian Queinnec)
+
+[http://www.geocities.com/mkjunker/stuff.html#emacs ggo-mode.el] --- Gengetopt major mode (by Matthew K. Junker)
+
+[http://www.geekware.de/software/emacs gimp-shell.el] --- shell for Gimp Script Fu Server. (by Olaf Sylvester)
+
+[http://www.han.de/~racke/ginel/ ginel-announce.el] --- Compose and Parse Announces (by Stefan Hornburg)
+
+[http://www.han.de/~racke/ginel/ ginel-string.el] --- GINEL string manipulation functions (by Stefan Hornburg)
+
+[http://www.han.de/~racke/ginel/ ginel-template.el] --- Template insertion (by Stefan Hornburg)
+
+[http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/lisp/progmodes/glasses.el glasses.el] --- make cantReadThis readable (by Milan Zamazal)
+
+[http://users.ox.ac.uk/~wadh1342/gle-mode.el gle-mode.el] --- major mode for editing .gle files (by Graham Lee)
+
+[http://groups.google.com/groups?selm=edWwRzEh%24GA.188%40net003s&output=gplain global-modes.el] --- enables activating minor modes globally. (by Hans van Dam.)
+
+[http://www.geocities.com/kensanata/elisp/globrep.el.txt globrep.el] --- [Search and replace in multiple files] (by Martin Boyer)
+
+[http://wuarchive.wustl.edu/usenet/gnu.emacs.sources/articles/6203482.Z glyph-highlight.el] --- Highlight special characters, such as control chars (by Samuel Padgett)
+
+[http://feff.phys.washington.edu/~ravel/software/gnuplot-mode/Welcome.html gnuplot.el] --- drive gnuplot from within emacs (by Bruce Ravel)
+
+[http://www.gnus.org/ gnus.el] --- a newsreader for GNU Emacs (by Lars Magne Ingebrigtsen)
+
+[http://www.northbound-train.com/emacs/gnus-alias.el gnus-alias.el] --- an alternative to gnus-posting-styles (by Joe Casadonte)
+
+[http://www.comsecmilnavpac.net/elisp/ gnus-eyecandy.el] --- add some eyecandy to Gnus (by BrYan P. Johnson)
+
+[http://www.comsecmilnavpac.net/elisp/ gnus-filterhist.el] --- Gnus Personalities, an alternative to gnus-posting-styles (by BrYan P. Johnson)
+
+[http://www.comsecmilnavpac.net/elisp/ gnus-pers.el] --- Gnus Personalities, an alternative to gnus-posting-styles (by BrYan P. Johnson)
+
+[http://www-uk.hpl.hp.com/people/ange/gnuserv/ gnuserv.el] --- Lisp interface code between Emacs and gnuserv (by Andy Norman)
+
+[http://www.neilvandyke.org/gnushush/ gnushush.el] --- make Gnus be a little secretive in message headers (by Neil W. Van Dyke)
+
+[http://www.mew.org/~kazu/proj/goby/index.html.en goby.el] --- WYSIWYG presentation tool which runs on Emacs 21.3 or later (by Kazu Yamamoto)
+
+[http://dto.freeshell.org/notebook/GoLisp.html golisp.el] --- navigate lisp source code with hyperlinks (by David O'Toole)
+
+[http://oconnor.cx/elisp/google.el google.el] --- Emacs interface to the Google API (by Edward O'Connor)
+
+[http://xsteve.nit.at/prg/emacs/grabbox.el grabbox.el] --- Keep a bookmark file for often used files/text snippets (by Stefan Reichoer)
+
+[ftp://vh213601.truman.edu/pub/Grade/grade.el grade.el] --- Program for keeping track of grades (by Jay Belanger)
+
+[http://www.emacswiki.org/cgi-bin/wiki/grep%2b.el grep+.el] --- extensions to standard library grep.el (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/grep-.el grep-.el] --- extensions to standard library `grep.el' (by Drew Adams)
+
+[http://people.debian.org/~psg/elisp/gri-mode.el gri-mode.el] --- major mode for Gri files (by Peter S. Galbraith)
+
+[http://www.antisleep.com/elisp/gse-locate.el gse-locate.el] --- [Interface to locate] (by Scott Evans)
+
+[http://www.antisleep.com/elisp/gse-number-rect.el gse-number-rect.el] --- Inserts incremental numbers in a rectangle. (by Scott Evans)
+
+[http://www.antisleep.com/elisp/gse-rename.el gse-rename.el] --- Bulk renames made easy through The Power Of Emacs[tm]. (by Scott Evans)
+
+[http://www.gnu.org/software/global/ gtags.el] --- [GLOBAL system for finding functions in C/C++/Java/Yacc source] (by Shigio Yamaguchi)
+
+[http://user42.tuxfamily.org/gtk-look/index.html gtk-look.el] --- lookup Gtk and Gnome documentation (by Kevin Ryde)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/guess-offset.el guess-offset.el] --- Guess tab-width for C-like source codes and adjust c-basic-offset (by Julian Scheid)
+
+[http://nschum.de/src/emacs/guess-style/ guess-style.el] --- Automatic setting of code style variables (by Nikolaj Schumacher)
+
+[http://user42.tuxfamily.org/gutenberg-coding/index.html gutenberg-coding.el] --- coding system for Project Gutenberg texts (by Kevin Ryde)
+
+[http://www.djcbsoftware.nl/projecten/emacs/ gwizard.el] --- helper functions for Gtk+/Gnome/Glib/Bonobo programming (by Dirk-Jan C. Binnema)
+
+= H =
+
+[http://www.emacswiki.org/elisp/hachette.el Hachette.el] --- Lookup a word on the Hachette's online french dictionary. (by Jean-Philippe Theberge)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/hack-locals.el hack-locals.el,] --- replacement for `hack-local-variables' (by Noah Friedman)
+
+[http://furius.ca/downloads/haddoc/releases/ haddoc.el] --- Browse Python HTML documentation from Emacs (by Martin Blais)
+
+[http://cedet.sourceforge.net/ftp/hangman.el-0.1.gz hangman.el] --- Hangman game (by Eric M. Ludlam)
+
+[ftp://dlpx1.dl.ac.uk/fx/emacs/haskell.el haskell.el] --- simple major mode for editing Haskell (by Dave Love)
+
+[ftp://dlpx1.dl.ac.uk/fx/emacs/haskell-latex.el haskell-latex.el] --- editing literate Haskell using the LaTeX convention (by Dave Love)
+
+[http://www.haskell.org/haskell-mode/ haskell-mode.el] --- A Haskell editing mode (by Simon Marlow)
+
+[http://panix.com/~tehom/my-code/hbmk.el hbmk.el] --- Manage bookmarks in HTML (by Tom Breton)
+
+[http://www.coling.uni-freiburg.de/~schauer/resources/emacs/header-action.el.gz header-action.el] --- Do something before sending mail/news based on some header settings. (by Holger Schauer)
+
+[http://www.emacswiki.org/elisp/header.el header2.el] --- support for creation and update of file headers (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/help-plus.el help+.el] --- extensions to standard library `help.el' (by Drew Adams)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/help+20.el help+20.el] --- extensions to standard library help.el (Emacs 20) (by Drew Adams)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/help-fns+.el help-fns+.el] --- extensions to standard library help-fns.el (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/help-macro-plus.el help-macro+.el] --- extensions to standard library `help-macro.el' (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/help-mode-plus.el help-mode+.el] --- extensions to standard library `help-mode.el' (by Drew Adams)
+
+[http://groups.google.com/groups?selm=buhb0j%24hu8n8%242%40ID-39741.news.uni-berlin.de&output=gplain helpex.el] --- useful extensions for the C-h prefix (by Michael Schierl)
+
+[http://www.emacswiki.org/elisp/hexrgb.el hexrgb.el] --- manipulate RGB hex strings (by ??)
+
+[http://www.tfkp.physik.uni-erlangen.de/~ralf/src/hhm-umlaute.el hhm-umlaute.el] --- support for german umlaute (by Ralf Stubner)
+
+[http://xarch.tu-graz.ac.at/autocad/lsp_tools/ntemacs/hide-copyleft.el hide-copyleft.el] --- hide obnoxious copyright prologs (by Reini Urban)
+
+[http://plig.net/~ture/emacs/hide-lines.el hide-lines.el] --- Commands for hiding lines based on a regexp (by Mark Hulme-Jones)
+
+[http://www.emacswiki.org/cgi-bin/emacs/hidesearch.el hidesearch.el] --- incrementally search while hiding non-matching lines (by Craig Muth)
+
+[http://www.glug.org/people/ttn/software/hideshow/ hideshow.el] --- [selectively display blocks of code] (by Thien-Thi Nguyen)
+
+[http://ydirson.free.fr/en/software/hier-imenu.html hier-imenu.el] --- Hierarchical index menus, using imenu.el. (by Y.Dirson)
+
+[http://www.emacswiki.org/elisp/highlight.el highlight.el] --- highlighting commands (by Drew Adams)
+
+[http://nschum.de/src/emacs/highlight-80+/ highlight-80+.el] --- highlight characters beyond column 80 (by Nikolaj Schumacher)
+
+[http://groups.google.com/groups?selm=Kykh7.6465%24sa.2682126%40news1.rdc1.sfba.home.com&output=gplain highlight-beyond-fill-column.el] --- highlight lines that are too long (by Sandip Chitale)
+
+[http://www.math.washington.edu/~palmieri/Emacs/hlc.html highlight-completion.el] --- completion with highlighted provisional text (by John Palmieri)
+
+[http://www.skamphausen.de/cgi-bin/ska/highlight-context-line highlight-context-line.el] --- Highlight last visible line when scrolling (by Stefan Kamphausen)
+
+[http://www.emacswiki.org/elisp/highlight-current-line.el highlight-current-line.el] --- highlight line where the cursor is (by Christoph Conrad)
+
+[http://nschum.de/src/emacs/highlight-parentheses/ highlight-parentheses.el] --- highlight surrounding parentheses (by Nikolaj Schumacher)
+
+[http://nschum.de/src/emacs/highlight-symbol/ highlight-symbol.el] --- automatic and manual symbol highlighting (by Nikolaj Schumacher)
+
+[http://nic-nac-project.de/~necui/ht.html highlight-tail.el] --- draw a "tail" while writing, by smoothly changing background color (by Rafal Jedrusze)
+
+[http://www.emacswiki.org/cgi-bin/emacs/download/highline.el highline.el] --- Minor mode to highlight current line in buffer. (by Vinicius Jose Latorre)
+
+[http://www.tfkp.physik.uni-erlangen.de/~winkler/src/himark.el himark.el] --- marking text by highlighting (by Roland Winkler)
+
+[http://groups.google.com/groups?selm=rzq67eqzj8h.fsf%40djlvig.dl.ac.uk&output=gplain hl-line.el] --- highlight the current line (by Dave Love)
+
+[http://www.emacswiki.org/cgi-bin/wiki/hl-line%2b.el/ hl-line+.el] --- Extensions to standard library hl-line.el (by Drew Adams)
+
+[http://oconnor.cx/elisp/hl-sexp.el hl-sexp.el] --- highlight the current sexp (by Edward O'Connor)
+
+[http://www.northbound-train.com/emacs/hobo.el hobo.el] --- remote editting via SCP (by Joe Casadonte)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/horoscope.el horoscope.el] --- generate horoscopes (by Noah Friedman)
+
+[http://howm.sourceforge.jp/ howm.el] --- a wiki-like note-taking tool on Emacs. (by HIRAOKA Kazuyuki)
+
+[http://user42.tuxfamily.org/html-coding/index.html html-coding.el] --- coding system for HTML files (Emacs 21) (by Kevin Ryde)
+
+[http://www.hgsc.bcm.tmc.edu/~harley/elisp/html-helper-imenu.el html-helper-imenu] --- imenu support for html-helper (by James H Gorrell)
+
+[http://www.nongnu.org/baol-hth/index.html html-helper-mode.el] --- Major mode for composing html files. (by Gian Uberto Lauri)
+
+[http://www.coling.uni-freiburg.de/~schauer/resources/emacs/html-lang-timestamp.el.gz html-lang-timestamp.el] --- Set language specific timestamps in HTML buffers. (by Holger Schauer)
+
+[http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Download/html-script.el html-script.el] --- narrow/widen on blocks of php, css, javascript and visual basic embedded in (X)HTML (by Peter Heslin)
+
+[http://www.pvv.org/~rolfn/html-toc.el html-toc.el] --- creates a table-of-contents on a html-document (by Rolf Rander Næss)
+
+[http://rtfm.etla.org/emacs/htmlfontify/ htmlfontify.el] --- [htmlise a buffer/source tree with optional hyperlinks] (by Vivek Dasmohapatra)
+
+[http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el htmlize.el] --- HTML-ize font-lock buffers (by Hrvoje Niksic)
+
+[http://members.fortunecity.com/salkosuo/emacs/index.html http-headers.el] --- Get HTTP headers from specified URL. (by Sami Salkosuo)
+
+[http://www.emacswiki.org/cgi-bin/wiki/http-post-simple.el http-post-simple.el] --- HTTP POST requests using the url library (by Tom Schutzer-Weissmann)
+
+[http://www.chez.com/emarsden/downloads/httpd.el httpd.el] --- a web server in Emacs Lisp (by Eric Marsden)
+
+[http://meltin.net/hacks/emacs/src/hugs-mode.el hugs-mode.el] --- Major mode for editing Hugs. (by Martin Schwenke)
+
+[http://yersinia.org/homes/paolino/emacs/hyper-compile.el hyper-compile.el] --- Different styles of compile with completion (by Paolo Gianrossi)
+
+[http://sourceforge.net/projects/hyperbole hyperbole.el] --- [efficient, programmable information management and hypertext system] (by Bob Weiner)
+
+[http://sourcery.naggum.no/emacs/hyperspec.el hyperspec.el] --- Browse documentation from the Common Lisp HyperSpec (by Erik Naggum)
+
+= I =
+
+[http://www.geekware.de/software/emacs/ibs.el ibs.el] --- windows like buffer selection mode by C-TAB. (by Olaf Sylvester)
+
+[http://www.shootybangbang.com/software/ibuffer.el ibuffer.el] --- operate on buffers like dired (by Colin Walters)
+
+[http://de.geocities.com/ulf_jasper/lisp/icalendar.el.txt icalendar.el] --- Emacs iCalendar implementation. (by Ulf Jasper)
+
+[http://www.emacswiki.org/emacs/Icicles icicles.el] --- [enhances minibuffer completion] (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/icomplete-plus.el icomplete+.el] --- extensions to standard library `icomplete.el' (by Drew Adams)
+
+[http://www.oakden.org/mark/icsel/ ics.el] --- a major mode for communicating with Internet Chess Servers (by Mark Oakden)
+
+[http://www.cs.utah.edu/~eeide/emacs/idl-font-lock.el.gz idl-font-lock.el] --- Font Lock configuration for CORBA IDL files (by Eric Eide)
+
+[http://nschum.de/src/emacs/idle-require/ idle-require.el] --- load elisp libraries while Emacs is idle (by Nikolaj Schumacher)
+
+[http://gnufans.net/~deego/pub/emacspub/lisp-mine/idledo/ idledo.el] --- do stuff when emacs is idle.. (by Deepak Goel)
+
+[http://idlwave.org idlwave.el] --- IDL and WAVE CL editing mode for GNU Emacs (by JD Smith)
+
+[http://savannah.gnu.org/cgi-bin/viewcvs/libidn/libidn/idna.el idna.el] --- Internationalizing Domain Names in Applications. (by Simon Josefsson)
+
+[http://www.cua.dk/ido.html ido.el] --- interactively do things with buffers and files (by Kim F. Storm)
+
+[http://groups.google.com/groups?selm=i47r9alc74c.fsf%40atticus.cisco.com&output=gplain ietfdoc.el] --- IETF Document Retrieval [internet drafts, rfcs ...] (by Dinesh G Dutt)
+
+[http://www.ai.mit.edu/~jhbrown/ifile-gnus.html ifile-gnus.el] --- provides support for using the 'ifile' mail-classification program with the gnus nnml backend. (by Jeremy H. Brown)
+
+[http://www.emacswiki.org/elisp/igrep.el igrep.el] --- An improved interface to `grep` and `find`. (by Kevin Rodgers)
+
+[http://www.netlaputa.ne.jp/~kose/Emacs/iimage.html iimage.el] --- Inline image minor mode. (by KOSEKI Yoshinori)
+
+[http://ilisp.cons.org/ ilisp.el] --- Lisp interaction support for GNU Emacs (by Marco Antoniotti)
+
+[http://groups.google.com/groups?selm=3D751F54.C9C48E12%40drizzle.com&output=gplain ilocate-library.el] --- Interactive replacement for locate-library with completion. (by Michael Slass)
+
+[http://user42.tuxfamily.org/imagetext/index.html imagetext.el] --- view text comments etc in image files (by Kevin Ryde)
+
+[http://members3.jcom.home.ne.jp/imaxima/ imaxima.el] --- Maxima mode with images (by Y. Honda.)
+
+[http://www.emacswiki.org/elisp/imdb.el imdb.el] --- Search IMDB (internet movie database) from Emacs. (by Girish Bharadwaj)
+
+[http://home.snafu.de/ohei/FTP/imdb-adds-mode.el.gz imdb-adds-mode.el] --- Major Emacs mode for editing IMDb data submissions (by Oliver Heidelbach)
+
+[http://www.emacswiki.org/elisp/imdbs.el imdbs.el] --- compute movies statistic using your imdb vote history (by Jean-Philippe Theberge)
+
+[http://www.emacswiki.org/elisp/imenu-plus.el imenu+.el] --- extensions to standard library `imenu.el' (by Drew Adams)
+
+[ftp://ftp.math.ohio-state.edu/pub/users/ilya/emacs/imenu-go.el imenu-go.el] --- Go to definition of item using imenu and tags (by Ilya Zakharevich)
+
+[https://www.idrive.com/kbroadey/files/Shared/imenu-outline/ imenu-outline.el] --- [Create an imenu structure from outline headings] (by Kevin Broadey)
+
+[ftp://dlpx1.dl.ac.uk/fx/emacs/indent-tabs-maybe.el indent-tabs-maybe.el] --- guess whether to use indent-tabs-mode when finding file  (by Dave Love)
+
+[http://www.emacswiki.org/elisp/info-plus.el info+.el] --- extensions to standard library `info.el' - use with `setup-info.el' (by Drew Adams)
+
+[http://purl.org/harder/ info-apropos.el] --- Search all Info indices (by Jesper Harder)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/infobook.el infobook.el] --- keep info node "hot list" (by Noah Friedman)
+
+[http://www.newartisans.com/johnw/Emacs initsplit.el] --- code to split customizations into different files (by John Wiegley)
+
+[http://www.gnusoftware.com/Emacs/Lisp/insert-random-quote.el insert-random-quote.el] --- Insert a random quote from a file. (by Steve Kemp)
+
+[http://www.emacswiki.org/cgi-bin/emacs/install-elisp.el install-elisp.el] --- Simple Emacs Lisp installer (by rubikitch)
+
+[http://www.emacswiki.org/cgi-bin/emacs/ipa.el ipa.el] --- In-place annotations (by Tamas Patrovics)
+
+[http://www.chez.com/emarsden/downloads/ipp.el ipp.el] --- implementation of the Internet Printing Protocol (by Eric Marsden)
+
+[http://ipython.scipy.org/dist/ ipython.el] --- Adds support for IPython to python-mode.el (by Alexander Schmolck)
+
+[http://www.emacswiki.org/elisp/isearch-plus.el isearch+.el] --- extensions to standard library `isearch.el' (by Drew Adams)
+
+[http://www.newartisans.com/johnw/Emacs/isearchb.el isearchb.el] --- a marriage between iswitchb and isearch (by John Wiegley)
+
+[http://www.zanshin.com/~bobg/ishl.html ishl.el] --- extra isearch highlighting (by Bob Glickstein)
+
+[http://www.ibiblio.org/pub/packages/TeX/support/iso-tex/iso-html.el iso-html.el] --- Translating HTML to ISO-8859/1 while editing a file (by Gerd Neugebauer)
+
+[ftp://ftp.csd.uu.se/pub/users/andersl/emacs/iso-oem.el iso-oem.el] --- set up char tables for ISO 8859/1 for an OEM (ms-dos) font. (by Anders Lindgren)
+
+[http://www.teaser.fr/~flepied/iso-sgml.el.gz iso-sgml.el] --- display SGML entity references as ISO 8859-1 characters (by Frederic Lepied)
+
+[http://kdstevens.com/~stevens/ispell-page.html ispell.el] --- Interface to International Ispell Version 3.1 (by Ken Stevens)
+
+[http://xsteve.nit.at/prg/emacs/iss-mode.el iss-mode.el] --- Mode for InnoSetup install scripts (by Stefan Reichoer)
+
+[http://github.com/joodie/iswitch-menu/tree/master iswitch-menu.el] --- Use iswitch to access menus (by Joost Diepenmaat)
+
+[http://www.anc.ed.ac.uk/~stephen/emacs/iswitchb.el iswitchb.el] --- switch between buffers using substrings (by Stephen Eglen)
+
+[http://groups.google.com/groups?selm=87oeqkfzo9.fsf%40osu.edu&output=gplain iswitchb-fc.el] --- switch to buffers or file-cache entries with 1 command (by Benjamin Rutt)
+
+[http://www.mahalito.net/~harley/elisp/osx-itunes.el itunes.el] --- control itunes from emacs (by Harley Gorrell)
+
+= J =
+
+[http://www.tenfoot.org.uk/emacs/jam-mode.el jam-mode.el] --- Font-lock support for Jam files (by Rob Walker)
+
+[http://www.neilvandyke.org/jasmin-emacs/ jasmin.el] --- major editing mode for Jasmin Java bytecode assembler files (by Neil W. Van Dyke)
+
+[http://www.tapsellferrier.co.uk/nics-blog/emacs-java-completion.html java-complete.el] --- [tools for java completion] (by Tapsell-Ferrier Limited)
+
+[http://www.mayura.com/misc/ java-open.el] --- open source file of Java class name under point (by Rajeev Karunakaran)
+
+[http://javadochelp.sourceforge.net/ javadoc-help.el] --- Search through multiple online/local javadocs for Java (by William Wong)
+
+[http://www.brgeight.se javascript.el] --- Major mode for editing JavaScript source code (by Karl Landström)
+
+[http://www.brigadoon.de/peter/javascript-mode.el javascript-mode.el] --- major mode for editing javascript (.js) files (by Peter Kruse)
+
+[http://www.russet.org.uk/download/emacs/jde-cflow.el jde-cflow.el] --- java control statement expander (by Phillip Lord)
+
+[http://sugarshark.com/elisp/mylisp/jde-gen-extra.el jde-gen-extra.el] --- Autocoding additions to the JDEE (by Ole Arndt)
+
+[http://www.russet.org.uk/download/emacs/jde-hotspot.el jde-hotspot.el] --- hot spot support for JDE (by Phillip Lord)
+
+[http://home.nc.rr.com/nascifandelaine/jde-jalopy.el jde-jalopy.el] --- JALOPY interface for JDE (by Nascif A. Abousalh Neto)
+
+[http://relativity.yi.org/el/jde-stack.el jde-stack.el] --- Jump to source from Java stack trace (by Kevin A. Burton)
+
+[http://home.nc.rr.com/nascifandelaine/jde-transmogrify.zip jde-transmogrify.el] --- [interface between JDEE and Transmogrify] (by Nascif A. Abousalh Neto)
+
+[http://jdee.sunsite.dk/ jdee.el] --- Java Development Environment for Emacs (by Paul Kinnucan)
+
+[http://sourceforge.net/projects/emhacks/ jdok.el] --- Javadoc template generator (by David Ponce)
+
+[http://groups.google.com/groups?selm=8ptco5%24sdh%241%40nnrp1.deja.com jess-mode.el] --- Jess [Java expert system shell] editing mode. (by David E. Young)
+
+[http://www.russet.org.uk/download/emacs/jfolding.el jfolding.el] --- quick and dirty folding package for emacs (by Phillip Lord)
+
+[http://www.hgsc.bcm.tmc.edu/~harley/elisp/jhg-pine.el jhg-pine.el] --- Read a pine addressbook (by James H Gorrell)
+
+[http://www.eskimo.com/~seldon/jiggle.el jiggle.el] --- Minor mode to jiggle cursor when changing buffers (by Will Mengarini)
+
+[http://sourceforge.net/projects/emhacks/ jjar.el] --- Java Archive builder (by David Ponce)
+
+[http://www.djefer.com/jlog/index.htm jlog.el] --- Helper for java logging/trace message (by Alexandre Brillant)
+
+[http://sourceforge.net/projects/emhacks/ jmaker.el] --- Java Makefile generator (by David Ponce)
+
+[http://www.emacswiki.org/elisp/joccur.el joccur.el] --- An improved 'occur' implementation. (by Javier Oviedo)
+
+[http://sourceforge.net/projects/emhacks/ jpack.el] --- Java package statement generator (by David Ponce)
+
+[http://www.cb1.com/~john/computing/emacs/lisp/graphics/jpeg-mode.el jpeg-mode.el] --- major mode for JPEG files (by John Sturdy)
+
+[http://sourceforge.net/projects/emhacks/ jsee.el] --- Javadoc viewer (by David Ponce)
+
+[https://sourceforge.net/snippet/detail.php?type=snippet&id=100223 jsp-html-helper-mode.el] --- JSP add-on for html-helper-mode.el (by Ben Tindale)
+
+[http://home.nc.rr.com/nascifandelaine/jswat.el jswat.el] --- [interface between JDEE and JSwat] (by Nascif A. Abousalh Neto)
+
+[http://www.djefer.com/~jtemplate jtemplate.el] --- Helper for building java class (by Alexandre Brillant)
+
+[http://www.neilvandyke.org/junkbust-emacs/ junkbust.el] --- tools for configuring the Internet Junkbuster Proxy (by Neil W. Van Dyke)
+
+= K =
+
+[http://www.neilvandyke.org/kbdraw/ kbdraw.el] --- generates html to render a keyboard layout (by Neil W. Van Dyke)
+
+[http://www.emacswiki.org/cgi-bin/wiki.pl?KanjiDictionary kdic.el] --- Practice your Kanji using a dictionary. (by Alex Schroeder)
+
+[http://www.gnusoftware.com/Emacs/Lisp/keep-buffers.el keep-buffers.el] --- Attempt to prevent named buffers from deletion. (by Steve Kemp)
+
+[http://groups.google.com/groups?selm=r0adx6boc5.fsf%40thor.ams.org&output=gplain keydef.el] --- a simpler way to define key mappings (by Michael John Downes)
+
+[http://www.ifa.au.dk/~harder/keywiz.el keywiz.el] --- Emacs key sequence quiz (by Jesper Harder)
+
+[http://www.geocrawler.com/archives/3/338/1998/6/0/1875116/ keywords.el] --- [extend font lock to multiple variable declarations, struct/class and function declarations] (by Chris Holt)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/kibologize.el kibologize.el] --- generate ravings about kibology, in the style of kibo (by Noah Friedman)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/kill-a-lawyer.el kill-a-lawyer.el] --- hide legal verbiage at the start of programs (by Noah Friedman)
+
+[http://groups.google.com/groups?selm=3805A06B.497EBCF9%40dis.uniroma1.it kill-buffers.el] --- Various functions to kill buffers by mode (by Diego Calvanese)
+
+[http://nschum.de/src/emacs/kill-ring-search/ kill-ring-search.el] --- incremental search of the Emacs kill ring (by Nikolaj Schumacher)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/killbuf.el killbuf.el] --- Emacs 19--style kill-buffer for emacs 18 (by Noah Friedman)
+
+= L =
+
+[http://www.russet.org.uk/download/emacs/labbook.el labbook.el] --- provides a labbook log (by Phillip Lord)
+
+[http://www.russet.org.uk/download/emacs/labbook-sign.el labbook-sign.el] --- provides support for PGP signing the labbook. (by Phillip Lord)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/lacarte.el lacarte.el] --- [Execute menu items as commands, with completion.] (by Drew Adams)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/lat1conv.el lat1conv.el] --- convert latin-1 chars to 7bit ascii equivalents (by Noah Friedman)
+
+[http://ee.usyd.edu.au/~thlai/emacs/index.html latex-doc.el] --- Show summary of LaTeX command/environment/package (by Triet Hoai Lai)
+
+[http://www.newartisans.com/johnw/Emacs latex-markup.el] --- Publish an emacs-wiki file using LaTeX markup (by John Wiegley)
+
+[http://clip.dia.fi.upm.es/Software/latex-spread.el latex-spread.el] --- Simple spreadsheet minor mode for LaTeX (by M. Hermenegildo)
+
+[http://ee.usyd.edu.au/~thlai/emacs/index.html latex-toolbar.el] --- XEmacs LaTeX toolbar [for common latex symbols] (by Triet Hoai Lai)
+
+[http://people.debian.org/~psg/elisp/latex-units.el latex-units.el] --- Add a Units sub-menu to auctex's math-mode's menu. (by Peter S. Galbraith)
+
+[http://www.russet.org.uk/download/emacs/lazy-desktop.el lazy-desktop.el] --- Modify desktop to open slowly in the idle-cycle. (by Phillip Lord)
+
+[http://www.geocrawler.com/archives/3/338/1999/2/0/1874725 lazy-look.el] --- Lazy observation of language content (by Eric M. Ludlam)
+
+[http://www.davep.org/emacs/lbdb.el lbdb.el] --- Little Brother's Database interface. (by Dave Pearson)
+
+[http://polydistortion.net/sw/emacs-lisp/ldap.el ldap.el] --- LDAP searching routines (by Andrew J Cosgriff)
+
+[http://www.math.uio.no/~fredrigl/technic/ldraw-mode/ ldraw-mode.el] --- major mode for editing LDraw DAT-files (by Fredrik Glöckner)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/lib-requires.el lib-requires.el] --- list Emacs Lisp library dependencies (extends standard library  loadhist.el) (by Drew Adams)
+
+[http://www.marcelotoledo.org/stuff/projetos/license/latest/license.el license.el] --- insert a license header into the active buffer (by Marcelo Toledo)
+
+[http://www.unixuser.org/~ueno/liece/ liece.el] --- IRC client for Emacsen (by Daiki Ueno)
+
+[http://lilypond.org/ lilypond-indent.el] --- Auto-indentation for lilypond code [part of dist] (by Chris Jackson)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/line-num.el line-num.el] --- display line numbers in left-margin (by Darryl Okahata)
+
+[http://www.geocities.com/gchen275/xemacs/ line-numbers-mode.el] --- a minor mode for on-screen/window line numbering. (by Jerry G. Chen)
+
+[http://groups.google.com/groups?oi=djq&selm=an_527357523 linemenu.el] --- Hook function to highlight current line in buffer (by Bill Brodie)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/lines lines.el] --- lines functions to help deal with data-files. (by Deepak Goel)
+
+[http://relativity.yi.org/el/links.el links.el] --- links browser integration for GNU Emacs (by Kevin A. Burton)
+
+[http://www.skamphausen.de/cgi-bin/ska/linmag-mode linmag-mode.el] --- Writing articles for the Linux Magazin (by Stefan Kamphausen)
+
+[http://stud4.tuwien.ac.at/~e0225855/linum/linum.html linum.el] --- Display line numbers to the left of buffers (by Markus Triska)
+
+[http://www.gnusoftware.com/Emacs/Lisp/lisp-index.el lisp-index.el] --- Generate a HTML index of all lisp files in a directory. (by Steve Kemp)
+
+[http://groups.google.com/groups?selm=87hfgzj5iz.fsf%40magrathea.outer.space.org&output=gplain lisp-re.el] --- Transform REs written in a Lisp like notation to strings (by Detlev Zundel)
+
+[http://www.bookshelf.jp/elc/list-register.el list-register.el] --- [list contents of registers] (by Akihisa Matsushita)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/listbuf.el listbuf.el] --- build buffer menu for use in Buff-menu-mode (by Noah Friedman)
+
+[http://www.zanshin.com/~bobg/live-mode.html live-mode.el] --- view/edit a changing file (by Bob Glickstein)
+
+[http://www.freesoftware.fsf.org/ljupdate/ ljupdate.el] --- LiveJournal posting tool for Emacs (by Edward O'Connor)
+
+[http://quimby.gnus.org/elisp/locdict.el locdict.el] --- Using a local Webster dictionary (by Lars Magne Ingebrigtsen)
+
+[http://groups.google.com/groups?selm=72pves5oy3.fsf%40circa.mcs.vuw.ac.nz&output=gplain logger.el] --- log work time and activities. (by Ray Nickson)
+
+[http://www.cs.berkeley.edu/~bh/logo.html logo.el] --- Major mode for editing Logo source code (by Hrvoje Blazevic)
+
+[http://www.emacswiki.org/elisp/longlines.el longlines.el] --- automatically wrap long lines (by Kai Grossjohann)
+
+[http://de.geocities.com/ulf_jasper/ lookout.el] --- Tools for converting an Outlook-csv file to diary format (by Ulf Jasper)
+
+[http://lookup.sourceforge.net/ lookup.el] --- An integrated search interface with electronic dictionaries (by Keisuke Nishida)
+
+[http://purl.org/net/emarsden/home/lout/ lout-mode.el] --- an Emacs major-mode for editing Lout source. (by Eric Marsden)
+
+[http://rtfm.etla.org/emacs/lpc-mode/ lpc-mode.el] --- syntax highlighting/indentation for LPC (by Vivek Dasmohapatra)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/ls-lisp+.el ls-lisp+.el] --- extensions to library ls-lisp.el (by Drew Adams)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/lude.el lude.el] --- hacks for quickly finding LUDE-related files (by Noah Friedman)
+
+= M =
+
+[http://groups.google.com/groups?selm=7vk8git7cs.fsf%40dlci77.coho.net&output=gplain m56k.el] --- major mode for editing Motorola's DSP56300 assembly code (by Richard Y. Kim)
+
+[ftp://ftp.wellfleet.com/netman/users/psmith/emacs/mabbrev-menu.el mabbrev-menu.el] --- Add a pull-down menu of mail abbrevs to GNU Emacs 19 (by Paul Smith)
+
+[http://homepage.mac.com/zenitani/comp-e.html mac-key-mode.el] --- provide mac-style key bindings on Carbon Emacs (by Seiji Zenitani)
+
+[http://www.dtek.chalmers.se/~d3rydma/Hack/emacs/Archive/macro-generate.el macro-generate.el] --- [Turn a keyboard macro into lisp code.] (by [unknown])
+
+[http://nschum.de/src/emacs/macro-math/ macro-math.el] --- in-buffer mathematical operations (by Nikolaj Schumacher)
+
+[http://www.emacswiki.org/elisp/macros-plus.el macros+.el] --- extensions to standard library `macros.el' (by Drew Adams)
+
+[http://savannah.nongnu.org/cgi-bin/viewcvs/*checkout*/emhacks/emhacks/elisp/mail-centric-reminder.el?rev=HEAD&content-type=text/plain mail-centric-reminder.el] --- Mail-centric reminder. (by Marco Parrone)
+
+[http://www.newartisans.com/johnw/Emacs mail-markup.el] --- Send HTML alternative mail based on emacs-wiki markup (by John Wiegley)
+
+[http://mailcrypt.sourceforge.net/ mailcrypt.el] --- mail encryption with PGP (by Len Budney)
+
+[http://www.phys.ntnu.no/~hove/lisp/ mailrc.el] --- [mode to view, edit and expand aliases defined in ~/.mailrc] (by Joakim Hove)
+
+[http://randomsample.de/mairix.el mairix.el] --- Mairix interface for Emacs (by David Engster )
+
+[http://shasta.cs.uiuc.edu/~lrclause/make-hex.el make-hex.el] --- functions for drawing small ASCII hexes (by Lars R. Clausen)
+
+[http://user42.tuxfamily.org/makeinfo-info/index.html makeinfo-info.el] --- view makeinfo-buffer output with Info-mode (by Kevin Ryde)
+
+[http://www.ifarchive.org/if-archive/infocom/interpreters/emacs/malyon.el malyon.el] --- mode to execute z code files version 3, 5, 8 (by Peter Ilberg)
+
+[http://user42.tuxfamily.org/man-preview/index.html man-preview.el] --- preview nroff man file source (by Kevin Ryde)
+
+[ftp://ftp.cis.ohio-state.edu/pub/emacs-lisp/old-archive/misc/maniac.el.Z maniac.el] --- fill paragraphs like a maniac. (by Per Abrahamsen)
+
+[http://www.archi.is.tohoku.ac.jp/~yamauchi/otherprojects/manued/index.shtml manued.el] --- MANUscripting EDitor; A proofreading assisting mode. (by YAMAUCHI Hitoshi)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/map-win.el map-win.el] --- run expressions for various windows (by Noah Friedman)
+
+[http://schwieters.org/cds/maple-mode.el maple-mode.el] --- [major mode for editing maple code] (by C. Schwieters)
+
+[http://www.k-online.com/~joer/maplev/maplev.html maplev.el] --- Maple mode for GNU Emacs (by Joseph S. Riel)
+
+[http://www.wonderworks.com/download/mapreplace.el mapreplace.el] --- Mapping replace commands for GNU Emacs. (by Kyle Jones)
+
+[http://www.emacswiki.org/cgi-bin/wiki.pl?MarkLines mark-lines.el] --- triple-click like line marking functions (by Le wang)
+
+[http://www.bloomington.in.us/~brutt/marker-visit.el marker-visit.el] --- navigate through a buffer's marks in order (by Benjamin Rutt)
+
+[http://www.hompo.co.jp/~mas/mas-file-history.tar.gz mas-file-history.el] --- [menu buffer to select/re-open previously opened files] (by masahiro kawata)
+
+[http://library.wolfram.com/infocenter/MathSource/4567/ math.el] --- a mode package for Mathematica. (by David Jacobson)
+
+[http://pivarski.watson.org/home/mathematica.el mathematica.el] --- mathematica-mode  (by Jim Pivarski)
+
+[ftp://dlpx1.dl.ac.uk/fx/emacs/maths-menu.el maths-menu.el] --- insert maths characters from a menu (by Dave Love)
+
+[http://www.mathworks.com/matlabcentral/fileexchange/loadFile.do?objectId=104&objectType=file matlab.el] --- major mode for MATLAB dot-m files (by Eric M. Ludlam)
+
+[ftp://vh213601.truman.edu/pub/Maxima maxima.el] --- Major modes for writing Maxima code (by Jay Belanger)
+
+[ftp://vh213601.truman.edu/pub/Maxima maxima-font-lock.el] --- [Font lock code for maxima.el] (by Jay Belanger)
+
+[http://relativity.yi.org/el/mc.el mc.el] --- Midnight Commander emulation for emacs using dired (by Kevin A. Burton)
+
+[http://www.emacswiki.org/elisp/mc-gpg-file-mode.el mc-gpg-file-mode.el] --- [automatically gpg decrypt / encrypt .gpg files] (by Josef Bauer)
+
+[http://relativity.yi.org/el/mc-safe-sign-message.el mc-safe-sign-message.el] --- Code to encrypt message but make sure they aren't also signed. (by Kevin A. Burton)
+
+[http://www.phys.ntnu.no/~hove/lisp/ mcalc.el] --- [small and simple RPN based calculator living in the minibuffer.] (by Joakim Hove)
+
+[http://homepage1.nifty.com/bmonkey/emacs/elisp/mcomplete.el mcomplete.el] --- minibuffer completion with prefix and substring matching (by Yuji 'bmonkey' Minejima)
+
+[http://www.gentei.org/~yuuji/software/md5.el md5.el] --- MD5 Message Digest Algorithm (by Gareth Rees)
+
+[http://maruska.dyndns.org/comp/emacs/mdb mdb.el] --- mdb, the Emacs interface to SQL database (by Michal Maru¹ka)
+
+[http://mdee.mozdev.org mdee.el] --- [integration within Emacs for Mozilla] (by Kevin A. Burton)
+
+[http://hacks-galore.org/darcs?r=mdfind-el;a=plainblob;f=/mdfind.el mdfind.el] --- Interface to OS X's mdfind command (by Jose Antonio Ortega)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/meditate.el meditate.el] --- talk to ZenMOO and optionally make emacs meditate (by Noah Friedman)
+
+[http://www.emacswiki.org/elisp/menu-bar-plus.el menu-bar+.el] --- extensions to standard library `menu-bar.el' (by Drew Adams)
+
+[http://www.coling.uni-freiburg.de/~schauer/resources/emacs/message-utils.el.gz message-utils.el] --- Utils for message-mode (by Holger Schauer)
+
+[http://www.emacswiki.org/elisp/message-x.el message-x.el] --- customizable completion in message headers (by Kai Grossjohann)
+
+[http://www.charcoal.com/~karl/gnus/messkeyw.el messkeyw.el] --- automatic keyword support during composition. (by Karl Kleinpaste)
+
+[http://www.mew.org mew.el] --- Messaging in the Emacs World [MIME mail reader for Emacs/XEmacs] (by Kazu Yamamoto)
+
+[http://www.umverkehr.ch/egli/mgp.el mgp.el] --- Generic mode for magicpoint files (by Christian Egli)
+
+[http://mh-e.sourceforge.net/ mh-e.el] --- [Emacs front end for the mail reader MH] (by Bill Wohler)
+
+[http://www.quickhack.net/mhc/ mhc.el] --- [personal schedule management package for Mew, Wanderlust or Gnus] (by Yoshinari Nomura)
+
+[http://www.gnuvola.org/software/j/mic-paren/ mic-paren.el] --- highlight matching parenthesises much more sophisticated (by Klaus Berndl)
+
+[http://ftp.xemacs.org/Attic/elisp/mime-compose.el mime-compose.el] --- Utility routines for composing MIME-compliant mail. (by Kenichi Handa)
+
+[http://www.emacswiki.org/elisp/minibuffer-complete-cycle.el minibuffer-complete-cycle.el] --- Cycle through the *Completions* buffer. (by Kevin Rodgers)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/miniedit/ miniedit.el] --- enhanced editing for minibuffer-fields. (by Deepak Goel)
+
+[http://meltin.net/hacks/emacs/src/miranda-mode.el miranda-mode.el] --- Major mode for editing Miranda. (by Martin Schwenke)
+
+[http://www.emacswiki.org/elisp/mirror.el mirror.el] --- Maintain a (remote) copy of a (local) file (by Kahlil (Kal) Hodgson)
+
+[http://www.emacswiki.org/elisp/misc-cmds.el misc-cmds.el] --- miscellaneous commands (interactive functions) (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/misc-fns.el misc-fns.el] --- miscellaneous non-interactive functions (by Drew Adams)
+
+[http://users.skynet.be/ppareit/mixal-mode.html mixal-mode.el] --- Major mode for the mix asm language. (by Pieter E.J. Pareit)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/mkback mkback.el] --- advanced assistance to manual archiving/backup of files. (by Deepack Goel)
+
+[http://www.emacswiki.org/elisp/mkhtml.el mkhtml.el] --- create HTML with links (extensions to library `htmlize.el') (by Drew Adams)
+
+[http://www.physik.fu-berlin.de/~dhansen/mldonkey/ mldonkey.el] --- Emacs Interface to MlDonkey (by David Hansen)
+
+[http://www.itwm.fhg.de/as/asemployees/wichmann/mma.html mma.el] --- programming mode for writing Mathematica package files (by Tim Wichmannn)
+
+[http://sourceforge.net/projects/mmm-mode mmm.el] --- Multiple Major Modes for XEmacs (by Jerry G. Chen)
+
+[http://mmm-mode.sourceforge.net/ mmm-mode.el] --- Allow Multiple Major Modes in a buffer (by Michael Abraham Shulman)
+
+[http://user42.tuxfamily.org/mo-mode/index.html mo-mode.el] --- decode and view gettext .mo message files (by Kevin Ryde)
+
+[http://www.bookshelf.jp/elc/moccur-edit.el moccur-edit.el] --- [edit moccur buffer and apply changes to the file] (by Akihisa Matsushita)
+
+[http://www.tls.cena.fr/~boubaker/distrib/mode-compile.el mode-compile.el] --- Smart command for compiling files according to major-mode. (by Heddy Boubaker)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/modeline-posn.el modeline-posn.el] --- enhanced mode-line (by Drew Adams)
+
+[http://m3.polymtl.ca/m3/pkg/pm3/language/modula3/m3tools/gnuemacs/src/.ghindex.html modula3.el] --- [Modula-3 mode] (by Eric Muller)
+
+[http://www.tc.bham.ac.uk/molpro/molpro.el molpro.el] --- [major mode for editing molpro files for quantum chemistry] (by Unknown)
+
+[http://groups.google.com/groups?selm=m34sanmt9u.fsf%40gnu.org&output=gplain momentary.el] --- momentarily display a buffer, then restore (by John Wiegley)
+
+[http://www.monaos.org mona-compile.el] --- Auto compile support for Mona OS developer. (by Higepon)
+
+[http://www.asahi-net.or.jp/~pi9s-nnb/monk/ monk.el] --- Multimedia Object Navigator Kluge [play mpeg, mp3] (by sn)
+
+[http://regexps.srparish.net/www-ancient/monkey.html monkey.el] --- [a nice directory editor for Emacs] (by Tom Lord)
+
+[http://www.emacswiki.org/elisp/mouse-plus.el mouse+.el] --- extensions to standard library `mouse.el' (by Drew Adams)
+
+[http://xsteve.nit.at/prg/emacs/mouse-embrace.el mouse-embrace.el] --- Minor Mode to embrace text with mouse selections (by Stefan Reichör)
+
+[http://www.isi.edu/~johnh/SOFTWARE/index.html mouse-extras.el] --- `one-click' mouse commands to scroll, copy/move text (by John Heidemann)
+
+[http://www.skamphausen.de/cgi-bin/ska/mouse-focus mouse-focus.el] --- Focus follows mouse in XEmacs windows (by Stefan Kamphausen)
+
+[http://pagesperso-systeme.lip6.fr/Christian.Queinnec/WWW/elisp.html mousymacro.el] --- Run macros via simple mouse clicks. (by Christian Queinnec)
+
+[http://www.shootybangbang.com/jpw/software/mouumo.el mouumo.el] --- completing mount and umount (by John Paul Wallington)
+
+[http://www.gnusoftware.com/Emacs/Lisp/mp3-tools.el mp3-tools.el] --- A simple MP3 Tag Editor (by Steve Kemp)
+
+[http://www-rocq.inria.fr/~fleuret/files/mp3play.el mp3play.el] --- [Front end for mpg321] (by François Fleuret)
+
+[http://emacsmp3player.sourceforge.net/ mp3player.el] --- Interface to mpg123 (by Jean-Philippe Theberge)
+
+[http://www.iro.umontreal.ca/~monnier/elisp mpc.el] --- A client for the Music Player Daemon (by Stefan Monnier)
+
+[http://jbbourgoin.free.fr/site/index.php?option=com_content&task=view&id=19&Itemid=53 mpcel.el] --- A mpd client (by Jean-Baptiste Bourgoin)
+
+[http://www.gentei.org/~yuuji/software/mpg123el/ mpg123.el] --- A front-end program to mpg123 (by HIROSE Yuuji)
+
+[http://groups.google.com/groups?selm=buhb0f%24hu8n8%241%40ID-39741.news.uni-berlin.de&output=gplain msgcodes.el] --- common and rare Usenet message "encodings" (by Michael Schierl)
+
+[http://www.mts.jhu.edu/~kapur/emacs/msn.el msn.el] --- Client to get BibTeX entries from MathSciNet (by Nevin Kapur)
+
+[http://www.anc.ed.ac.uk/~stephen/emacs/mspools.el mspools.el] --- show mail spools waiting to be read. (by Stephen Eglen)
+
+[http://mathias.dahl.net/pgm/emacs/elisp/mss.el mss.el] --- Make smart shortcuts to programs in your Win95/98/NT4 start menu (by Mathias Dahl)
+
+[http://www.emacswiki.org/elisp/mthesaur.el mthesaur.el] --- Thesaurus look-up of a word or phrase. (by Tad Ashlock)
+
+[http://www.skamphausen.de/cgi-bin/ska/mtorus mtorus.el] --- navigation with marks on a ring of rings (torus) (by Stefan Kamphausen)
+
+[http://www.emacswiki.org/cgi-bin/wiki.pl?MtraceMode mtrace.el] --- keep track of hidden buffer changes (by Michele Bini)
+
+[http://www.loveshack.ukfsn.org/emacs/multi-mode.el multi-mode.el] --- support for multiple major modes using indirect buffers (by Dave Love)
+
+[http://yersinia.org/homes/paolino/emacs/multi-mode-mode.el multi-mode-mode.el] --- Switches between major modes, depending on position of point in file (by Paolo Gianrossi)
+
+[http://purl.org/NET/wence/multi-region.el multi-region.el] --- Mapping commands over multiple active regions. (by Lawrence Mitchell)
+
+[http://www.skamphausen.de/cgi-bin/ska/multiselect multiselect.el] --- Select non-contiguous regions and yank them later (by Stefan Kamphausen)
+
+[http://download.gna.org/muse-el/ muse.el] --- An authoring and publishing tool for Emacs (by Michael Olson)
+
+[http://www.ma.utexas.edu/~jcorneli/a/elisp/musical-letters.el musical-letters.el] --- play the fluidsynth software synthesizer (by Joe Corneli)
+
+[http://astro.utoronto.ca/~reid/mutt/mutt.el mutt.el] --- Use Emacs 20 as an external editor for the Mutt mailer (by Eric Kidd)
+
+[http://www.davep.org/emacs/mutt-alias.el mutt-alias.el] --- Lookup/insert mutt mail aliases. (by Dave Pearson)
+
+= N =
+
+[http://cvs.namazu.org/namazu/lisp/namazu.el namazu.el] --- Interface to namazu, a full-text search engine (by Namazu group)
+
+[http://home.ivm.de/~Klaus.Schilling/naos.el naos.el] --- Naos User Frontend for GNU Emacs (by Klaus Schilling)
+
+[http://www.imada.sdu.dk/~blackie/emacs/narrow-stack.el narrow-stack.el] --- [Allow to narrow within a narrowed region] (by Jesper Kjær Pedersen)
+
+[http://groups.google.com/groups?selm=m3k8iuujq8.fsf%40chemeng.iisc.ernet.in natsel.el] --- [Richard Dawkin's natural selection for evolving strings] (by L Srinivasa Mohan)
+
+[http://www.ne.jp/asahi/love/suna/pub/soft/navi.el/index-e.html navi.el] --- Subroutine Navigator mode (by Sunagawa Youichi)
+
+[ftp://ftp.math.ohio-state.edu/pub/users/ilya/emacs/nc.el nc.el] --- emulate famous ms-dog file browser (by Ilya Zakharevich)
+
+[http://www.davh.dk/script/nesc.el necs.el] --- necs mode (by Dennis Haney)
+
+[http://web.springies.com/~ats/emacs/neophyte.el neophyte.el] --- Makes it easier to learn emacs (by Alan Shutko)
+
+[http://www.ma.utexas.edu/~jcorneli/a/elisp/nero.el nero.el] --- a fast Lynx-based browser for Emacs (by Joe Corneli)
+
+[http://pbreton.ne.mediaone.net/emacs/net-utils.el net-utils.el] --- Network functions (by Peter Breton)
+
+[http://savannah.gnu.org/projects/nethack-el nethack.el] --- run Nethack as a subprocess (by Ryan Yeske)
+
+[http://zaaf.nl/emacs/netrexx-mode.el netrexx-mode.el] --- highlight and indent Netrexx program files. (by Arjan Bos)
+
+[ftp://flint.cs.yale.edu/pub/monnier/misc/newcomment.el newcomment.el] --- (un)comment regions of buffers (by Stefan Monnier)
+
+[http://www.phys.ntnu.no/~hove/lisp/ newmail-modeline.el] --- [GNUS feature to report waiting mail in modeline] (by Joakim Hove)
+
+[http://www.geocities.com/drgazowen/lisp/news-hack.el.gz news-hack.el] --- create newsrc buffers for foreign groups (by Gareth Owen)
+
+[http://www.nongnu.org/newsticker newsticker.el] --- A Newsticker for Emacs. (by Ulf Jasper)
+
+[http://www.davep.org/emacs/ngn.el ngn.el] --- Quickly insert a newsgroup name into a buffer using completion. (by Dave Pearson)
+
+[http://www.emacswiki.org/elisp/nnir.el.gz nnir.el] --- search mail with various search engines (by Kai Grossjohann)
+
+[http://www.mts.jhu.edu/~kapur/emacs/nnir-grepmail.el nnir-grepmail.el] --- A grepmail plugin for nnir.el (by Nevin Kapur)
+
+[http://www.emacswiki.org/cgi-bin/emacs/nnmairix.el nnmairix.el] --- Mairix back end for Gnus, the Emacs newsreader (by David Engster)
+
+[http://sourceforge.net/projects/notebook Notebook-mode.el] --- [notebook mode for communicating with other processes] (by Fred Gylys-Colwell)
+
+[http://www.isi.edu/~johnh/SOFTWARE/NOTES_MODE/ notes-mode.el] --- [An indexing system for on-line note-taking] (by John Heidemann)
+
+[http://www.emacswiki.org/elisp/novice-plus.el novice+.el] --- extensions to standard library `novice.el' (by Drew Adams)
+
+[ftp://dlpx1.dl.ac.uk/fx/emacs/noweb.el noweb.el] --- noweb mode for literate programming (by Dave Love)
+
+[ftp://ftp.th-darmstadt.de/pub/programming/literate-programming/Tools/noweb-mode.el.Z noweb-mode.el] --- edit noweb files with GNU Emacs (by Thorsten Ohl)
+
+[http://www.dfan.org/real/noweb-outline.html noweb-outline.el] --- [Show the outline of a noweb document] (by Dan Schmidt)
+
+[http://v2.noniq.at/tech/emacs/lisp/ nqmbm.el] --- advanced mouse buffer menu mainly for win32 (by Stefan Daschek)
+
+[http://homepages.inf.ed.ac.uk/sterratt/progs/neuron nrnhoc.el] --- major mode for Neuron HOC dot-hoc files (by David C. Sterratt)
+
+[http://user42.tuxfamily.org/nroff-filladapt/index.html nroff-filladapt.el] --- filladapt setups for nroff comments (by Kevin Ryde)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/ns-browse.el ns-browse.el] --- view html-enriched mail/news buffers using Netscape for you (by Noah Friedman)
+
+[http://hjem.get2net.dk/storm/emacs/nt-url.el nt-url.el] --- Glue between browse-url.el and WWW browser on Windows95 & NT. (by Kim Storm)
+
+[http://groups.google.com/groups?selm=usnz8luy4.fsf%40pobox.com numbered-outline.el] --- Numbered Outline mode (by Gareth Rees)
+
+[http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html nxhtml.el] --- Edit XHTML files (by Lennart Borgman)
+
+[http://www.thaiopensource.com/nxml-mode/ nxml-mode.el] --- a new XML mode (by James Clark)
+
+= O =
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/obarray-fns.el obarray-fns.el] --- obarray-manipulating routines (by Noah Friedman)
+
+[http://www.brgeight.se oberon-2.el] --- major mode for editing Oberon-2 source code (by Karl Landström)
+
+[http://www.davep.org/emacs/obfusurl.el obfusurl.el] --- Obfuscate URLs so they aren't spoilers (by Dave Pearson)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/oct oct.el] --- some GNU octave functions in elisp. (by D. Goel)
+
+[http://aiki.ccaps.cs.cmu.edu/ omdoc-mode.el] --- Major mode for composing/editing/looking at OMDoc files. (by Peter Jansen)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/oneonone.el oneonone.el] --- [define a special multi-frame setup] (by Drew Adams)
+
+[http://sourceforge.net/projects/oo-browser/ oo-browser.el] --- [advanced object-oriented class browser] (by Bob Weiner)
+
+[http://www.cs.utah.edu/~karra/code/OpenGL.el.gz OpenGL.el] --- Minor mode commands for editing OpenGL C/C++ code. (by Sriram Karra)
+
+[http://www.emacswiki.org/elisp/options-plus.el options+.el] --- extensions to standard library `options.el' (by Drew Adams)
+
+[http://pbreton.ne.mediaone.net/emacs/orbix.el orbix.el] --- Emacs Orbix utilities and functions (by Peter Breton)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/order-head.el order-head.el] --- re-arrange mail headers into pleasing order (by Noah Friedman)
+
+[http://www.astro.uva.nl/~dominik/Tools/org/ org.el] --- Carstens outline variant for keeping track of everything. (by Carsten Dominik)
+
+[http://www.cl.cam.ac.uk/~pz215/files/org-mouse.el org-mouse.el] --- Better mouse support for org-mode (by Piotr Zielinski )
+
+[http://home.attbi.com/~shannon1679/organizer-mode.html organizer-mode.el] --- major mode for editing organizer list files (by Tom Shannon)
+
+[http://www.eskimo.com/~seldon/orthodox.el orthodox.el] --- Save the orthodox keymap before hacking it (by Will Mengarini)
+
+[http://www.eskimo.com/~seldon/orwell.el orwell.el] --- Exchange [C-h] & [DEL] without affecting prefix mappings. (by Will Mengarini)
+
+[http://www.mahalito.net/~harley/elisp/osx-osascript.el osx-osascript.el] --- invoke osascript on OSX (by Harley Gorrell)
+
+[http://www.mahalito.net/~harley/elisp/osx-typecreator.el osx-typecreator.el] --- Set OSX type and creator (by Harley Gorrell)
+
+[http://www.python.org/emacs/outdent.el outdent.el] --- Indentation-based outline exposure and maneuvering (by Ken Manheimer)
+
+[http://www.emacswiki.org/elisp/outline-plus.el outline+.el] --- extensions to standard library `outline.el' (by Drew Adams)
+
+[http://www.astro.uva.nl/~dominik/Tools/outline-magic.el outline-magic.el] --- outline mode extensions for Emacs (by Carsten Dominik)
+
+= P =
+
+[http://p4el.sourceforge.net/ p4.el] --- Simple Perforce-Emacs Integration (by Rajesh Vaidheeswarran)
+
+[http://www.russet.org.uk/download/emacs/pabbrev.el pabbrev.el] --- Predictive abbreviation expansion (by Phillip Lord)
+
+[http://www.neilvandyke.org/padr/ padr.el] --- Converts USR Palm OS PDF text to HTML, TeXinfo, and ASCII. (by Neil W. Van Dyke)
+
+[http://www.docs.uu.se/~mic/pager.el pager.el] --- windows-scroll commands [alternate scroll-up and scroll-down] (by Mikael Sjödin)
+
+[http://www.emacswiki.org/cgi-bin/wiki/palette.el palette.el] --- Color palette useful with RGB, HSV, and color names (by Drew Adams)
+
+[http://www.brgeight.se paren-glint.el] --- Unhighlight matching paren after a timeout (by Karl Landström)
+
+[http://groups.google.com/groups?selm=iluoetqyogy.fsf%40latte.josefsson.org&oe=UTF-8&output=gplain password.el] --- Read passwords from user, possibly using a password cache. (by Simon Josefsson)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/pb-popup.el pb-popup.el] --- ensure display of a process buffer when new output arrives (by Noah Friedman)
+
+[http://www.bluetail.com/~luke/misc/emacs/pbook.el pbook.el] --- Format a program listing for LaTeX. (by Luke Gorrie)
+
+[http://asfys3.fi.uib.no/~boukanov/emacs/lisp/pc-bufsw.el pc-bufsw.el] --- Support for a quick switch between Emacs buffers. (by Igor Boukanov)
+
+[http://www.emacswiki.org/elisp/pc-keys.el pc-keys.el] --- smart `home' and `end' keys (by Kai Grossjohann)
+
+[ftp://rum.cs.yale.edu/pub/monnier/pcl-cvs pcl-cvs.el] --- A Front-end to CVS. (by Stefan Monnier)
+
+[http://groups.google.com/groups?selm=87wu3qazic.fsf%40sacha.ateneo.edu&oe=UTF-8&output=gplain pcmpl-arch.el] --- functions for dealing with arch/tla completions (by Sacha Chua)
+
+[ftp://ftp.aifb.uni-karlsruhe.de/pub/wwe/pdb.el pdb.el] --- [ Python Debugging from Emacs, via gud.el] (by Wolfgang Weitz)
+
+[ftp://dlpx1.dl.ac.uk/fx/emacs/pdb.el pdb.el] --- major mode for editing Protein Databank files (by Dave Love)
+
+[http://www.neilvandyke.org/perkymbf/ perkymbf.el] --- dedicated minibuffer frame that highlights when prompting (by Neil W. Van Dyke)
+
+[http://www.mahalito.net/~harley/elisp/perl-myvar.el perl-myvar.el] --- Declare lexicaly scoped vars as my(). (by Harley Gorrell)
+
+[http://www.gnusoftware.com/Emacs/Lisp/perldoc.el perldoc.el] --- Show help for Perl functions, builtins, and modules. (by Steve Kemp)
+
+[http://www.online-marketwatch.com/pgel/pg.html pg.el] --- Emacs Lisp socket-level interface to the PostgreSQL RDBMS (by Helmut Eller)
+
+[http://groups.google.com/groups?selm=x69046mnzc.fsf%40pbreton.ne.mediaone.net pgp-wrapper.el] --- Runs PGP command-lines (by Peter Breton)
+
+[http://groups.google.com/groups?selm=m3hfgj2num.fsf%40vh213601.truman.edu phonebook.el] --- a mode to keep a phone/address book (by Jay Belanger)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/phonemode phonemode.el] --- number-->letter and letter-->number (by Deepak Goel)
+
+[http://www.ontosys.com/src/php-mode.el php-mode.el] --- major mode for editing PHP source files (by Fred Yankowski)
+
+[http://sourceforge.net/projects/php-mode/ php-mode.el] --- major mode for editing PHP3 code [2] (by Turadg Aleahmad)
+
+[http://deboutv.free.fr/lisp/php/ php-mode.el] --- major mode for editing PHP code [3] (by Vincent DEBOUT)
+
+[http://nschum.de/src/emacs/pick-backup/ pick-backup.el] --- easy access to versioned backup files (by Nikolaj Schumacher)
+
+[http://www.planetnz.com/palmheads/files/pilot-doc.el pilot-doc.el] --- write the current buffer out to a PalmOS device as a doc formated file. (by Daryn W Hanright)
+
+[http://polydistortion.net/sw/emacs-lisp/ pilot-memo.el] --- write the current buffer out to ones' Palm device as a memo. (by Andrew J Cosgriff)
+
+[http://download.gna.org/planner-el/ planner.el] --- The Emacs Planner (by John Sullivan)
+
+[http://groups.google.com/groups?selm=87elghya25.fsf%40foo.foo&output=gplain playlist.el] --- A music file playlist (by Shawn Betts)
+
+[ftp://ftp.gnu.org/pub/gnu/windows/emacs/docs/ntemacs/contrib/sql/ pls-mode.el] --- An Emacs major-mode for editing PL/SQL source. (by Dmitry Nizhegorodov)
+
+[http://www.emacswiki.org/elisp/plsql.el plsql.el] --- Programming support for PL/SQL code (by Kahlil (Kal) Hodgson)
+
+[https://sourceforge.net/project/showfiles.php?group_id=56262&release_id=138075 pmd.el] --- Major mode for plugging PMD [java source code analyzer] into Emacs. (by Nascif A. Abousalh-Neto)
+
+[http://www.pmichaud.com/wiki/Cookbook/EmacsPmWikiMode pmwiki.el] --- edit PmWiki pages within Emacs (by Christian Ridderström)
+
+[http://cvs.savannah.gnu.org/viewvc/*checkout*/gettext/gettext-tools/misc/po-mode.el?root=gettext po-mode.el] --- for helping GNU gettext lovers to edit PO files. (by François Pinard)
+
+[http://stud4.tuwien.ac.at/~e0225855/pointback/pointback.html pointback.el] --- Restore window points when returning to buffers (by Markus Triska)
+
+[http://sugarshark.com/elisp/mylisp/pom.el pom.el] --- Utility functions for dealing with maven project.xml files (by Ole Arndt)
+
+[http://groups.google.com/groups?selm=ye4u2lhhkie.fsf%40alpha12.bocal.cs.univ-paris8.fr pong.el] --- Emacs implementation of pong (by Benjamin Drieu)
+
+[ftp://ftp.cs.bham.ac.uk/pub/dist/poplog/emacs/ pop-mode.el] --- major mode for editing Pop-11 code. (by Brian Logan)
+
+[http://groups.google.com/groups?selm=m33dv87dp7.fsf%40monolith2.nodomain.nowhere popup-menu.el] --- pop up a menu under the mouse pointer (by Robert Kiesling)
+
+[http://astro.utoronto.ca/~reid/mutt/ post.el] --- Use (X?)Emacs(client) as an external editor for mail and news. (by Eric Kidd)
+
+[http://www.xahlee.org/3d/povray_emacs.html pov-mode.el] --- Major mode for editing PoVray scene Files (by Marco Pessotto)
+
+[http://www.imada.sdu.dk/~blackie/emacs/power-macros.el power-macros.el] --- [manage a group of keyboard macros with descriptions] (by Jesper K. Pedersen)
+
+[http://www.emacswiki.org/elisp/pp-plus.el pp+.el] --- extensions to standard library `pp.el' (by Drew Adams)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/pp-c-l.el pp-c-l.el] --- display C-l (page-break; form-feed) characters in a pretty way (by Drew Adams)
+
+[http://www.dr-qubit.org/emacs.php predictive.el] --- predictive completion minor mode for Emacs (by Toby Cubitt)
+
+[http://www.emacswiki.org/elisp/prefixkey.el prefixkey.el] --- Prefix key processing. (by Zajcev Evgeny)
+
+[ftp://ftp.codefactory.se/pub/people/daniel/elisp/pretty-minibuffer.el pretty-minibuffer.el] --- Give the minibuffer a face (by Daniel Lundin)
+
+[http://preview-latex.sourceforge.net/ preview.el] --- embed preview LaTeX images in source buffer (by David Kastrup)
+
+[http://aurelien.tisne.free.fr/emacs-pages/emacs/prg-comment-doc.html prg-comment.el] --- This package helps to comment source code (by Aurélien Tisné)
+
+[http://www.emacswiki.org/cgi-bin/emacs/download/printing.el printing.el] --- Printing utilities (by Vinicius Jose Latorre)
+
+[http://www.zsplat.freeserve.co.uk/progs/proc-mode.el proc-mode.el] --- Major mode for working with Proc files in EMACS. (by Pat Thoyts)
+
+[http://xsteve.nit.at/prg/emacs/progr-align.el progr-align.el] --- Align stuff via regexpressions found in the buffer (by Stefan Reichoer)
+
+[http://web.springies.com/~ats/emacs/project.el project.el] --- Keep track of time devoted to projects (by Alan Shutko)
+
+[http://proofgeneral.inf.ed.ac.uk/ proofgen.el] --- [Generic Emacs interface for proof assistants] (by Proof General maintainer)
+
+[http://members.a1.net/t.link/CompEmacsProperties.html properties.el] --- non-intrusive file local variables (by Thomas Link)
+
+[http://www.cs.caltech.edu/~nkapur/emacs/prosper.el prosper.el] --- Prosper style file for AUCTeX (by Nevin Kapur)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/protbuf.el protbuf.el] --- protect buffers from accidental killing (by Noah Friedman)
+
+[http://www.davep.org/emacs/protocols.el protocols.el] --- Protocol database access functions. (by Dave Pearson)
+
+[http://odur.let.rug.nl/~kleiweg/postscript/ps-mode.el ps-mode.el] --- PostScript mode for GNU Emacs [1] (by Peter Kleiweg)
+
+[http://groups.google.com/groups?selm=371F596C.16C95F5A%40hotmail.com ps-mode.el] --- mode for editing postscript code [2] (by Lars-Olof Öhberg)
+
+[http://www.emacswiki.org/cgi-bin/wiki/PsPrintPackage ps-print.el] --- print text from the buffer as PostScript (by Vinicius Jose Latorre)
+
+[http://www.emacswiki.org/cgi-bin/emacs/download/ps-print-19.el ps-print-19.el] --- print text from the buffer as PostScript (Emacs 19) (by Vinicius Jose Latorre)
+
+[http://www.emacswiki.org/cgi-bin/wiki/PostScriptToPDF ps2pdf.el] --- Convert Postscript to PDF (by Mathias Dahl)
+
+[http://www.lysator.liu.se/projects/about_psgml.html psgml.el] --- SGML-editing mode with parsing support (by Lennart Staflin)
+
+[http://www.megginson.com/Software/psgml-dsssl.el psgml-dsssl.el] --- create a skeleton DSSSL spec for an SGML document. (by David Megginson)
+
+[http://ourworld.compuserve.com/homepages/hoenicka_markus/psgml-jade.el psgml-jade.el] --- add jade, jadetex and customize support to psgml. (by Matthias Clasen)
+
+[http://groups.google.com/groups?selm=7ul021%24gb1%241%40nnrp1.deja.com psgml-table.el] --- Editing table for SGML-mode (by Erik Helander)
+
+[http://www.hgsc.bcm.tmc.edu/~harley/elisp/psql-mode.el psql.el] --- Mode for editing postgres sql (by James H Gorrell)
+
+[http://www.xsteve.at/prg/emacs/psvn.el psvn.el] --- Subversion interface for emacs (by Stefan Reichoer)
+
+[http://savannah.gnu.org/cgi-bin/viewcvs/libidn/libidn/punycode.el punycode.el] --- An ASCII compatible Unicode encoding format. (by Simon Josefsson)
+
+[https://alioth.debian.org/projects/mph-emacs-pkgs puzzle.el] --- slide puzzle for Emacs (by Matthew P. Hodges)
+
+[http://www.xsteve.at/prg/emacs/pwsafe.el pwsafe.el] --- emacs interface to pwsafe (by Stefan Reichoer)
+
+[http://www.python.org/emacs/python-mode/python-mode.el python-mode.el] --- Major mode for editing Python programs (by Barry A. Warsaw)
+
+= Q =
+
+[http://www.qfs.de/en/projects/elisp/index.html qflib.el] --- [utilities for writing java code and with free Java library qflib] (by Quality First Software)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/qpdecode.el qpdecode.el] --- decode mime quoted-printable messages (by Noah Friedman)
+
+[http://www.emacswiki.org/cgi-bin/wiki.pl?QuasimodeSearch qsearch.el] --- simple isearch implemented as a quasimode (by Alex Schroeder)
+
+[http://www.neilvandyke.org/quack/ quack.el] --- support for editing and running PLT MzScheme code (by Neil W. Van Dyke)
+
+[http://deego.gnufans.org/~deego/emacspub/lisp-mine/querer/ querer.el] --- Display menu/message, QUERY for options, and select one. (by D. Goel)
+
+[http://user42.tuxfamily.org/quick-yes/index.html quick-yes.el] --- M-y to answer "yes" to `yes-or-no-p' (by Kevin Ryde)
+
+[http://www.davep.org/emacs/quickurl.el quickurl.el] --- Insert an URL based on text at point in buffer. (by Dave Pearson)
+
+[ftp://vh213601.truman.edu/pub/Quotes/quotes.el quotes.el] --- a mode to keep list of easily searchable quotes (by Jay Belanger)
+
+= R =
+
+[https://opensvn.csie.org/mvision/emacs/.emacs.d/rails.el rails.el] --- minor mode for editing RubyOnRails code (by Galinsky Dmitry)
+
+[http://groups.google.com/groups?selm=87n0q5wn9p.fsf%40cut.hotdog.tmp&output=gplain rain.el] --- display raindrops in a buffer (by Ryan Yeske)
+
+[ftp://ftp.cs.utah.edu/pub/users/karra/random-man.el.gz random-man.el] --- generate a random unix manual page each time. (by Sriram Karra)
+
+[http://www.emacswiki.org/cgi-bin/emacs/download/rational.el rational.el] --- rational number in factorial-base format (by Vinicius Jose Latorre)
+
+[http://www.stanford.edu/~priimak/code/rays.el rays.el] --- [Game of Rays] (by Dmitri Priimak)
+
+[http://www.emmett.ca/~rcyeske/rcirc rcirc.el] --- lightweight emacs irc client (by Ryan Yeske )
+
+[http://groups.google.com/groups?selm=87puv66dxt.fsf%40magrathea.outer.space.org re-builder.el] --- Building Regexps with visual feedback (by Detlev Zundel)
+
+[http://groups.google.com/groups?selm=uog8gtq8y.fsf%40pobox.com read-library.el] --- read library from minibuffer with completion (by Gareth Rees)
+
+[http://www.emacswiki.org/elisp/rebind-mbuf-maps.el rebind-mbuf-maps.el] --- rebind minibuffer completion maps - subset of `elect-mbuf.el' (by Drew Adams)
+
+[http://nschum.de/src/emacs/recent-addresses/ recent-addresses.el] --- store and recall recently used email addresses (by Nikolaj Schumacher)
+
+[http://groups.google.com/groups?selm=pcbtk31c8p.fsf%40aigf.sncf.fr recent-files.el] --- Maintain menu of recently opened files. (by Juergen Nickelsen)
+
+[http://sourceforge.net/projects/emhacks/ recentf.el] --- Setup a menu of recently opened files (by David Ponce)
+
+[http://sourceforge.net/projects/records records.el] --- [Indexes your personal journal/diary by subject and date.] (by Ashvin Goel)
+
+[http://www.emacswiki.org/elisp/rect-mark.el rect-mark.el] --- Mark a rectangle of text with highlighting. (by Rick Sladkey)
+
+[http://www.wonderworks.com/download/redo.el redo.el] --- Redo/undo system for XEmacs (by Kyle Jones)
+
+[http://centaur.maths.qmw.ac.uk/Emacs/ reduce.el] --- REDUCE code editing mode for GNU Emacs. (by Francis J. Wright)
+
+[http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/lisp/textmodes/refill.el refill.el] --- `auto-fill' by refilling paragraphs on changes (by Dave Love)
+
+[http://www.astro.uva.nl/~dominik/Tools/reftex reftex.el] --- Minor mode for doing \label, \ref and \cite in LaTeX (by Carsten Dominik)
+
+[http://panix.com/~tehom/my-code/regress.el regress.el] --- Regression test harness for Emacs Lisp code (by Tom Breton)
+
+[http://www.remem.org/ remem.el] --- implements emacs front-end for the remembrance agent (by Bradley Rhodes)
+
+[http://sacha.free.net.ph/notebook/emacs/emacs-wiki/remember.el remember.el] --- a mode for quickly jotting down things to remember (by Sacha Chua)
+
+[http://www.emacswiki.org/elisp/replace-plus.el replace+.el] --- extensions to standard library `replace.el' (by Drew Adams)
+
+[http://www.python.org/emacs/reporter.el reporter.el] --- customizable bug reporting of lisp programs (by Barry A. Warsaw)
+
+[http://www.gnusoftware.com/Emacs/Lisp/require-all.el require-all.el] --- Load all files beneath a named directory. (by Steve Kemp)
+
+[http://www.neilvandyke.org/revbufs/ revbufs.el] --- reverts all out-of-date buffers safely (by Neil W. Van Dyke)
+
+[http://www.gentei.org/~yuuji/software/revive.el revive.el] --- [Save current editing status and window configuration.] (by HIROSE Yuuji)
+
+[http://www02.so-net.ne.jp/~komuro/Lisp/EmacsLisp/ rewrite.el] --- rewrite text files with easier regular expression handling. (by Mutsumi Komuro)
+
+[http://www.cis.udel.edu/~sivakuma/rfc.el rfc.el] --- [see rfc-view.el] (by Kaarthik Sivakumar)
+
+[http://relativity.yi.org/el/rfc-util.el rfc-util.el] --- RFC-util interface for emacs. (by Kevin A. Burton)
+
+[http://www.cis.udel.edu/~sivakuma/rfc-view.el rfc-view.el] --- See RFC's narrowed to pages. Jump to a page number. (by Kaarthik Sivakumar)
+
+[http://www.pdc.kth.se/~jas/rfc2104.el rfc2104.el] --- RFC2104 Hashed Message Authentication Codes (by Simon Josefsson)
+
+[http://members.fortunecity.com/salkosuo/emacs/index.html rfcr.el] --- Interface to RFC repository at www.ietf.org (by Sami Salkosuo)
+
+[http://www.neilvandyke.org/rfcview/ rfcview.el] --- view IETF RFCs with readability-improved formatting (by Neil W. Van Dyke)
+
+[http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/11751 ri.el] --- browse the output of the ri command (by Colin Steele)
+
+[http://www.nongnu.org/riece/index.html.en riece.el] --- yet another IRC client for Emacs (by Daiki Ueno)
+
+[http://groups.google.com/groups?selm=lyhfi1uqc7.fsf%40shasta.cs.uiuc.edu rightjustify.el] --- Right justifies the region (by Lars Clausen)
+
+[http://josefsson.org/aes/ rijndael.el] --- Rijndael (AES) block cipher implementation (by Simon Josefsson)
+
+[http://www.emacswiki.org/elisp/ring-plus.el ring+.el] --- extensions to standard library `ring.el' (by Drew Adams)
+
+[http://ignotus.hixsplit.hu/rk-nym.html (brief tutorial) rk-nym.el] --- nym services support for Mailcrypt and Gnus (by Richard Klinda)
+
+[http://ignotus.hixsplit.hu/rk-todo.html rk-todo.el] --- very simple todo (paragraph) sorter (by Richard Klinda)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/rlogin.el rlogin.el] --- remote login interface (by Noah Friedman)
+
+[ftp://ftp.m17n.org/pub/mule/semi/rmail-mime rmail-mime.el] --- MIME extender for RMAIL (by TM mailing list)
+
+[http://www.weizmann.ac.il/home/eli/Downloads/rmail-spam-filter/ rmail-spam-filter.el] --- filter spam in rmail based on sender, subject and contents. (by Eli Tziperman)
+
+[http://www.cinti.net/~rmoody/rmime/ rmime.el] --- read MIME messages (by Ray Moody)
+
+[http://shasta.cs.uiuc.edu/~lrclause/rotate.el rotate.el] --- rotate region or rectangle 90 degrees. (by Lars R. Clausen)
+
+[http://groups.google.com/groups?selm=ypr9u30q9h5h.fsf%40rzstud1.rz.uni-karlsruhe.de&output=gplain rpm.el] --- a dired-like major mode for the "Red Hat Package Manager" (by Detlev Zundel)
+
+[http://theotp1.physik.uni-ulm.de/~ste/comp/emacs/misc/rs-info.el rs-info.el] --- Some info related functions (by Reiner Steib)
+
+[http://elisp.info/package/rss-helper/rss-helper.el rss-helper.el] --- Utilities for using RSS files with Gnus (by Mark A. Hershberger)
+
+[http://docutils.sourceforge.net/tools/editors/emacs/rst.el rst.el] --- ReStructuredText Support for Emacs (by Martin Blais, Stefan Merten, and David Goodger.)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/rsz-mini.el rsz-mini.el] --- dynamically resize minibuffer to display entire contents (by Noah Friedman)
+
+[http://savannah.nongnu.org/projects/emacs-rtf/ rtf.el] --- Mode for editing RTF documents. (by Oliver Scholz)
+
+[http://ftp.codefactory.se/pub/gnu/xemacs/Attic/patches/clipboard-rtf-support-20000704/rtf-support.el rtf-support.el] --- MS Rich Text Format support functions (by Alastair J. Houghton)
+
+[http://www.ruby-lang.org/cgi-bin/cvsweb.cgi/ruby/misc/ruby-mode.el ruby-mode.el] --- Mode for editing Ruby code. (by Yukihiro Matsumoto)
+
+[http://pbreton.ne.mediaone.net/emacs/run-command.el run-command.el] --- Library to facilitate running external commands (by Peter Breton)
+
+= S =
+
+[http://www.balestra.org/~bradym/emacs-lisp/safescrollmouse.el safescrollmouse.el] --- Adds a timeout mechanism to scroll mice to prevent accidental button-2 presses (by Brady Montz)
+
+[http://asf.void.at/emacs/saft-to.el saft-to.el] --- Interface to the Simple Asynchronous File Transfer program. (by Andreas Fuchs)
+
+[http://panix.com/~tehom/my-code/sandbox.el sandbox.el] --- Help run untrusted code (by Tom Breton)
+
+[ftp://ftp.biostat.wisc.edu/pub/cook/sas-mode/ sas-mode.el] --- [Indent and run SAS programs] (by Tom Cook)
+
+[http://groups.google.com/groups?selm=lyiu0s1k73.fsf%40shasta.cs.uiuc.edu save-history.el] --- Save mini-buffer histories between sessions (by Lars R. Clausen)
+
+[http://csl.anu.edu.au/~kahlil/emacs/save-history.el save-history.el] --- Save mini-buffer histories between sessions (by Kahlil (Kal) Hodgson)
+
+[http://www.iki.fi/pema/emacs/saveframes.el saveframes.el] --- Save and restore frames (by Pekka Marjola)
+
+[http://www.emacswiki.org/cgi-bin/wiki/savehist-20+.el savehist-20+.el] --- extensions to standard library savehist.el to make it available for  Emacs 20 (by Drew Adams)
+
+[http://www.davep.org/emacs/sawfish.el sawfish.el] --- Sawfish mode. [was Sawmill] (by Dave Pearson)
+
+[http://www.emacswiki.org/cgi-bin/wiki/WThreeMShimbun sb-heise.el] --- heise online shimbun backend (by David Hansen)
+
+[http://maruska.dyndns.org/comp/emacs/scan scan.el] --- [minor mode for Dired, used to scan (numbered) documents.] (by Michal Maru¹ka)
+
+[http://www.newartisans.com/johnw/Emacs scanner.el] --- Create elisp scanners using Flex (by John Wiegley)
+
+[http://www.newartisans.com/johnw/Emacs schedule.el] --- Simple schedule maintainer. (by John Wiegley)
+
+[http://www.ma.utexas.edu/~jcorneli/a/elisp/scrat.el scrat.el] --- access *scratch* like you do *shell* (by Joe Corneli)
+
+[http://homepage1.nifty.com/bmonkey/emacs/index-en.html screen-lines.el] --- screen line oriented point moving commands (by Yuji 'bmonkey' Minejima)
+
+[http://homepage1.nifty.com/bmonkey/emacs/elisp/screen-lines.el screenline.el] --- provides functions which move the cursor (by Yuji Minejima)
+
+[http://www.freesoftware.fsf.org/screenplay/ screenplay.el] --- Major mode for editing screenplays (by V. L. Simpson)
+
+[http://www.emacswiki.org/cgi-bin/wiki.pl?ScreenPlay screenplay.el] --- support writing of plain text screenplays (by Alex Schroeder)
+
+[http://groups.google.com/groups?selm=87emjqgyj0.fsf%40cr420523-a.rchrd1.on.wave.home.com script.el] --- script mode (by Richard Sharman)
+
+[http://www.cs.utah.edu/~eeide/emacs/scroll-in-place.el.gz scroll-in-place.el] --- Improved Vertical Scrolling Commands (by Eric Eide)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/second-sel.el second-sel.el] --- secondary-selection enhancements (by Drew Adams)
+
+[http://www.gohome.org/teranisi/X-Face.html select-xface.el] --- Select X-Faces graphically (by Yuuichi Teranishi)
+
+[http://cedet.sourceforge.net/semantic.shtml semantic.el] --- Semantic buffer evaluator. (by Eric M. Ludlam)
+
+[ftp://ftp.jaist.ac.jp/pub/GNU/elisp/semi semi.el] --- [MIME features for GNU Emacs] (by TM mailing list)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/sendmail-alias.el sendmail-alias.el] --- parse a sendmail-style alias file (by Noah Friedman)
+
+[http://www.keelhaul.demon.co.uk/linux/sendmail-mode.el sendmail-mode.el] --- major mode for editing Sendmail configuration files (by Jonathan Marten)
+
+[http://www.davep.org/emacs/services.el services.el] --- Services database access functions. (by Dave Pearson)
+
+[http://home.comcast.net/~jyavner/ses ses.el] --- Simple Emacs Spreadsheet (by Jonathan Yavner)
+
+[http://emacs-session.sourceforge.net/ session.el] --- use vars, registers and file/buffer places across sessions (by Christoph Wedler)
+
+[http://www.wonderworks.com/download/setnu.el setnu.el] --- vi-style line number mode for Emacs (by Kyle Jones)
+
+[http://www.emacswiki.org/elisp/setnu-plus.el setnu+.el] --- extensions to standard library `setnu.el' (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/setup.el setup.el] --- startup assignments: hooks etc. (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/setup-cygwin.el setup-cygwin.el] --- set up Emacs for using Cygwin (from Markus Hoenika) (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/setup-info.el setup-info.el] --- settings for Info --- to be used with `info+.el' (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/setup-keys.el setup-keys.el] --- some key bindings (by Drew Adams)
+
+[http://groups.google.com/groups?selm=3EB7CB77.9AAA5334%40uboot.com&output=gplain sgml-id.el] --- set of functions for finding cross-referenced IDs (by Florian v. Savigny)
+
+[http://user42.tuxfamily.org/sh-autoconf/index.html sh-autoconf.el] --- sh-mode flavour for editing autoconf files (by Kevin Ryde)
+
+[http://groups.google.com/groups?selm=uk8y2xtis.fsf%40kei.mdcnet.co.jp sha1.el] --- SHA1 Message Digest Algorithm. (by Keiichi Suzuki)
+
+[http://www.bluetail.com/~luke/shbuf/ shbuf.el] --- [Sharing buffers between Emacs processes over the network] (by Luke Gorrie)
+
+[http://www-nagao.kuee.kyoto-u.ac.jp/member/tsuchiya/elisp/shell-command.el shell-command.el] --- [enable (tab)completion of commands and dir/filenames within the shell-command input] (by TSUCHIYA Masatoshi)
+
+[http://www.docs.uu.se/~mic/shell-toggle.el shell-toggle.el] --- Toggle to and from the *shell* buffer (by Mikael Sjödin)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/shop.el shop.el] --- generate random shopping lists (by Noah Friedman)
+
+[http://www.emacswiki.org/elisp/show-wspace.el show-wspace.el] --- commands to highlight whitespace: TABs, hard spaces, trailing whitespace (by Drew Adams)
+
+[http://www.emacswiki.org/cgi-bin/wiki/sierotki.el sierotki.el] --- Introduce tildes after single-letter words (by Jakub Narebski)
+
+[http://josefsson.org/sieve/ sieve-mode.el] --- Sieve code editing commands for Emacs (by Simon Josefsson)
+
+[http://bmrc.berkeley.edu/~trey/emacs/sig-quote.html sig-quote.el] --- Add quotes to signature according to recipients (RMAIL/MH-E/Gnus) (by Trey Jackson)
+
+[http://pagesperso-systeme.lip6.fr/Christian.Queinnec/WWW/elisp.html sigadapt.el] --- Select signature depending on mailee. (by Christian Queinnec)
+
+[http://www.neilvandyke.org/sigbegone/ sigbegone.el] --- exorcize annoying isp ads and other sigs from emails (by Neil W. Van Dyke)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/silly-mail.el silly-mail.el] --- generate bozotic mail headers (by Noah Friedman)
+
+[http://www.emacswiki.org/elisp/simple-plus.el simple+.el] --- extensions to standard library `simple.el' (by Drew Adams)
+
+[http://www.emacswiki.org/cgi-bin/wiki.pl?CallTree simple-call-tree.el] --- analyze source code based on font-lock text-properties (by Alex Schroeder)
+
+[http://home.swipnet.se/~w-15919/p4/simplemerge.el simplemerge.el] --- [Major mode to help resolve conflicts in merge(1) output] (by Peter Österlund)
+
+[http://www.tardis.ed.ac.uk/~skx/win/slashdot.el slashdot.el] --- Download headlines from Slashdot.org, and make viewing simple. (by Steve Kemp)
+
+[http://homepage.mac.com/zenitani/comp-e.html smart-compile.el] --- an interface to `compile' (by Seiji Zenitani)
+
+[http://homepage.mac.com/zenitani/comp-e.html smart-dnd.el] --- user-configurable drag-n-drop feature (by Seiji Zenitani)
+
+[http://www.davep.org/emacs/smartsig.el smartsig.el] --- Smart signature selection based on message content. (by Dave Pearson)
+
+[http://deboutv.free.fr/lisp/smarty/ smarty-mode.el] --- major mode for editing Smarty templates (by Vincent DEBOUT)
+
+[http://josefsson.org/smime.html smime.el] --- S/MIME support library (by Simon Josefsson)
+
+[ftp://rum.cs.yale.edu/pub/monnier/sml-mode/ sml-mode.el.] --- Major mode for editing (Standard) ML (by Stefan Monnier)
+
+[http://oconnor.cx/smyrno/ smyrno.el] --- a Jabber client for Emacs (by Edward O'Connor)
+
+[http://oconnor.cx/elisp/soap.el soap.el] --- Simple Object Access Protocol support for Emacs (by Edward O'Connor)
+
+[http://groups.google.com/groups?selm=199904272226.SAA22719%40rds294 sorter.el] --- cycles dired listing between name/date/extension/size (by Tom Wurgler)
+
+[http://www.hendawi.com/emacs/sourcepair.el sourcepair.el] --- Load the corresponding C/C++ header or source file for the current buffer (by Mohamed Hendawi)
+
+[http://www.emacswiki.org/cgi-bin/wiki.pl?SpamStat spam-stat.el] --- detecting spam based on statistics (by Alex Schroeder)
+
+[http://www.davep.org/emacs/#spamprobe.el spamprobe.el] --- spamprobe utils for emacs. (by Dave Pearson)
+
+[http://www.neilvandyke.org/spamprod/ spamprod.el] --- generate spam complaint email (by Neil W. Van Dyke)
+
+[http://groups.google.com/groups?selm=lyogcauo51.fsf%40shasta.cs.uiuc.edu spamtrap.el] --- Check message recipients for spam traps (by Lars Clausen)
+
+[http://www.specman-mode.com/specman-mode.el specman-mode.el] --- Mode for editing specman files (by Michael McNamara)
+
+[http://spice-mode.4t.com/ spectre-mode.el] --- major mode providing a spectre mode hook for fontification (by Geert Van der Plas)
+
+[http://www.freebsoft.org/speechd-el speechd.el] --- Library for accessing Speech Dispatcher (by Milan Zamazal)
+
+[http://cedet.sourceforge.net/speedbar.shtml speedbar] --- quick access to files and tags in a frame (by Eric M. Ludlam)
+
+[http://www.chungkuo.org/elisp/speedread.el speedread.el] --- Read/display a buffer in chunks (by Bob Newell)
+
+[http://www.emacswiki.org/cgi-bin/emacs/download/spell-number.el spell-number.el] --- Spell an integer or currency. (by Vinicius Jose Latorre)
+
+[http://spice-mode.4t.com/ spice-mode.el] --- major mode providing a spice mode hook for fontification (by Geert Van der Plas & Emmanuel Rouat)
+
+[http://nschum.de/src/emacs/split-root/ split-root.el] --- Emacs root window splitter (by Nikolaj Schumacher)
+
+[http://groups.google.com/groups?selm=FFM7qx.Jvs.0.gobblernet%40alum.mit.edu spokes.el] --- Calculate [bike] spokes length (by Bob Newell)
+
+[http://www.cis.upenn.edu/~bcpierce/papers/spread.el spread.el] --- A very simple spreadsheet mode for GNU emacs (by Guillaume Marceau)
+
+[http://www.geocities.com/TimesSquare/6120/emacs.html sql.el] --- specialized comint.el for SQL interpreters (by Alex Schroeder)
+
+[http://www.geocities.com/kensanata/emacs-sql.html sql-indent.el] --- indentation of SQL statements (by Alex Schroeder)
+
+[http://www.dwwc.com/sql-mode/ sql-mode.el] --- modes for editing SQL code and interacting with SQL servers (by SQL mode maintainer)
+
+[http://www.geocities.com/TimesSquare/6120/emacs.html sql-transform.el] --- transform SQL statements (by Alex Schroeder)
+
+[http://fly.srk.fer.hr/~hniksic/emacs/sqlplus-html.el sqlplus-html.el] --- Render SQL*Plus HTML output on-the-fly. (by Hrvoje Niksic)
+
+[http://meltin.net/hacks/emacs/src/sqlplus-mode.el sqlplus-mode.el] --- Mode for editing SQL and testing via SQL*Plus. (by Martin Schwenke)
+
+[http://www.sics.se/~lofgren/emacs/sr-mode.el sr-mode.el] --- [Mode for editing sr programs] (by Thomas Lofgren)
+
+[http://www.zanshin.com/~bobg/sregex.html sregex.el] --- symbolic regular expressions (by Bob Glickstein)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/ssh.el ssh.el] --- remote login interface (by Noah Friedman)
+
+[http://www.emacswiki.org/elisp/start.el start.el] --- main Emacs startup file: require/autoload other files (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/start-opt.el start-opt.el] --- some customizations to be done at the end of startup (by Drew Adams)
+
+[http://sourceforge.net/projects/starteam-el/ starteam.el] --- VC-type mode for StarTeam (by Matthew O. Smith)
+
+[http://www.newartisans.com/johnw/Emacs/obsolete stock-quote.el] --- Grab a stock quote (delayed) from the Net (by John Wiegley)
+
+[http://panix.com/~tehom/my-code/stout.tgz stout.el] --- [Major/Minor mode for managing structured outlines] (by Tom Breton)
+
+[http://www.emacswiki.org/elisp/strings.el strings.el] --- miscellaneous string functions (by Drew Adams)
+
+[http://www.emacswiki.org/cgi-bin/wiki/struct+.el struct+.el] --- extensions to Common Lisp structs (by Tom Schutzer-Weissmann)
+
+[http://www.mahalito.net/~harley/elisp/StudlyCaps.el StudlyCaps.el] --- StudlyCapify as you type. (by Harley Gorrell)
+
+[http://www.nongnu.org/stufe/ stufe.el] --- Some Technical & Useful Functions for Emacs (by Thomas Degris)
+
+[http://www.columbia.edu/~jr2075/elisp/index.html sudoku.el] --- Simple sudoku game, can download puzzles from the web. (by Jesse Rosenthal)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/suggbind.el suggbind.el] --- suggest key bindings for M-x commands AFTER they complete (by Noah Friedman)
+
+[http://www.emacswiki.org/emacs/Sunrise_Commander sunrise-commander.el] --- Two-pane file manager for Emacs based on Dired and inspired by MC. (by José Alfredo Romero L.)
+
+[http://yersinia.org/homes/paolino/emacs/ super-fold.el] --- Minor mode which adds cool folding capabilities to Emacs (by Paolo Gianrossi)
+
+[http://pagesperso-systeme.lip6.fr/Christian.Queinnec/WWW/elisp.html supertab.el] --- Enhanced TAB in Lisp-based modes. (by Christian Queinnec)
+
+[http://www.glug.org/people/ttn/software/ttn-pers-elisp survey.el] --- conduct survey and email results. (by Thien-Thi Nguyen)
+
+[http://sourceforge.net/projects/emhacks/ swbuff.el] --- Quick switch between Emacs buffers. (by David Ponce)
+
+[http://www.ctan.org/tex-archive/support/emacs-modes/swiftex/swiftex.el swiftex.el] --- major modes for LaTeX and LaTeX doc.sty documents (by Matt Swift)
+
+[http://www.skamphausen.de/cgi-bin/ska/swiss-move swiss-move.el] --- Swiss Cursor Movement (by Stefan Kamphausen)
+
+[http://www.hardakers.net/elisp/switch-files.el switch-files.el] --- [switch between matched pairs of files and for following include directives] (by Wes Hardaker)
+
+[http://xsteve.nit.at/prg/emacs/sww.el sww.el] --- Switch to a named window on win32 systems (by Stefan Reichör)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/synonyms.el synonyms.el] --- search and browse a hyperlinked thesaurus (by Drew Adams)
+
+[http://www.emacswiki.org/cgi-bin/emacs/download/sys.el sys.el] --- Determine which kind of system Emacs is running. (by Vinicius Jose Latorre)
+
+[http://www.mahalito.net/~harley/elisp/syslog-mode.el syslog-mode.el] --- Mode for viewing system logfiles (by Harley Gorrell)
+
+= T =
+
+[http://relativity.yi.org/el/tab-display.el tab-display.el] --- tab display code for managing tabs visually. (by A: Kevin A. Burton)
+
+[http://sourceforge.net/projects/emhacks/ tabbar.el] --- Display a tab bar in the header line (by David Ponce)
+
+[http://table.sourceforge.net table.el] --- create and edit text based embedded tables (by Takaaki Ota)
+
+[http://groups.google.com/groups?selm=uj0hllqrtbeo95%40corp.supernews.com&output=gplain tabs.el] --- [Display tabs, one per buffer, at top of window.] (by Zack Rusin)
+
+[http://www.emacswiki.org/cgi-bin/wiki/TaclMode tacl-mode.el] --- Handles the Tandem/NSK/Guardian TACL language. (by Rick Bielawski)
+
+[http://www.ugcs.caltech.edu/~shulman/pub/Main/Software/tagbody.el tagbody.el] --- Common Lisp `tagbody' for Emacs Lisp (by Michael Abraham Shulman)
+
+[http://www.grassouille.org/code/sources/tail.el tail.el] --- "tail -f" a file or a command form within Emacs; (by Benjamin Drieu)
+
+[http://dapfy.bei.t-online.de/tail-mode.el tail-mode.el] --- follow the growing tail of a file in Emacs (by Daniel Pfeiffer)
+
+[http://www.emacswiki.org/cgi-bin/wiki/TalMode tal-mode.el] --- Handles the Tandem-Compaq-HP TAL & pTAL languages. (by Rick Bielawski)
+
+[http://talcum.sarovar.org/ talcum.el] --- [Extra features for editing LaTeX files] (by Ulrich M. Schwarz)
+
+[http://shasta.cs.uiuc.edu/~lrclause/tc.html tc.el] --- [trivial-cite] text with proper filling (by Lars R. Clausen)
+
+[http://panix.com/~tehom/my-code/tehom-3.el tehom-3.el] --- Routines to save & restore elisp objects (by Tom Breton)
+
+[http://panix.com/~tehom/my-code/tehom-psgml.el tehom-psgml.el] --- Psgml extensions (by Tom Breton)
+
+[http://panix.com/~tehom/my-code/tehom-psgml-fold-by-key.el tehom-psgml-fold-by-key.el] --- Fold/unfold XML according to keywords (by Tom Breton)
+
+[http://panix.com/~tehom/my-code/tehom-psgml-link.el tehom-psgml-link.el] --- bare-bones hyperlinks in psgml (by Tom Breton)
+
+[http://members.a1.net/t.link/CompEmacsTellib.html tellib.el] --- Thomas' ELisp LIBrary (by Thomas Link)
+
+[http://www.emacswiki.org/cgi-bin/wiki.pl?TempbufMode tempbuf.el] --- kill unused buffers in the background (by Michele Bini)
+
+[http://emacs-template.sourceforge.net/ template.el] --- file templates and headers, standardized comments (by Christoph Wedler)
+
+[http://nschum.de/src/emacs/tempo-snippets/ tempo-snippets.el] --- visual insertion of tempo (by Nikolaj Schumacher)
+
+[http://nschum.de/src/emacs/test-case-mode/ test-case-mode.el] --- unit test front-end (by Nikolaj Schumacher)
+
+[http://mywebpages.comcast.net/jyavner/unsafep/testcover.el testcover.el] --- Pretty interface to edebug code-coverage (by Jonathan Yavner)
+
+[http://www.skamphausen.de/cgi-bin/ska/tex-letter tex-letter.el] --- Inserting LaTeX letter templates with a menu (by Stefan Kamphausen)
+
+[http://user42.tuxfamily.org/tex-math-preview/index.html tex-math-preview.el] --- preview TeX math expressions (by Kevin Ryde)
+
+[http://www.agh.edu.pl/pub/tex/macros/mathematica/ tex-mma.el] --- Major modes for interaction with Mathematica from a TeX buffer (by Dan Dill)
+
+[http://groups.google.com/groups?selm=m3k89s58bw.fsf%40line.sucon.cam.ac.uk&output=gplain tex-wcount.el] --- keep a running count of words in a latex buffer (by Seb James)
+
+[http://www.ctan.org/tex-archive/macros/texinfo/texinfo/util/texi-docstring-magic.el texi-docstring-magic.el] --- munge internal docstrings into texi (by David Aspinall)
+
+[http://www.newartisans.com/johnw/Emacs texinfo-markup.el] --- Publish an emacs-wiki file using Texinfo markup (by John Wiegley)
+
+[http://www.skamphausen.de/software/skamacs/texletter.html texletter.el] --- LaTeX letter templates (by Stefan Kamphausen)
+
+[http://savannah.nongnu.org/cgi-bin/viewcvs/*checkout*/emhacks/emhacks/elisp/text-to-html.el?rev=HEAD&content-type=text/plain text-to-html.el] --- Plain-text to HTML converter. (by Marco Parrone)
+
+[http://members.a1.net/t.link/textstats.el.gz textstats.el] --- Show text statistics (by Thomas Link)
+
+[http://anxiety-closet.mit.edu/afs/sipb/project/sipbsrc/src/Roget/software thesaurus.el] --- [Access via perl scripts to Roget's thesaurus] (by Darryl Okahata)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/thing-cmds.el thing-cmds.el] --- commands to select things at or near the cursor (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/thingatpt-plus.el thingatpt+.el] --- extensions to standard library `thingatpt.el' (by Drew Adams)
+
+[http://www.davep.org/emacs/thinks.el thinks.el] --- Insert text in a think bubble. (by Dave Pearson)
+
+[http://www.emacswiki.org/elisp/thumb-frm.el thumb-frm.el] --- thumbnail frames: a fisheye view and an alternative to iconifying (by Drew Adams)
+
+[http://www.emacswiki.org/cgi-bin/wiki.pl?ThumbsMode thumbs.el] --- Thumbnails previewer for images files (by Jean-Philippe Theberge)
+
+[http://www.emacswiki.org/elisp/tidy.el tidy.el] --- Interface to Dave Raggett's the HTML Tidy program (by Kal Hodgson)
+
+[http://oconnor.cx/elisp/tiger.el tiger.el] --- Mode for editing programs written in Appel's Tiger language. (by Edward O'Connor)
+
+[http://groups.google.com/groups?selm=87k8qmkywk.fsf%40pdm.pvt.net tildify.el] --- adding hard spaces into texts (by Milan Zamazal)
+
+[http://www.emacswiki.org/elisp/timeclock-x.el timeclock-x.el] --- Extra features for John Wiegley's timeclock (by Kahlil (Kal) Hodgson)
+
+[http://www.emacswiki.org/elisp/timer-plus.el timer+.el] --- extensions to standard library `timer.el' (by Drew Adams)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/timerfunctions timerfunctions.el] --- Enhancements to timer.el. (by Deepack Goel)
+
+[http://yersinia.org/homes/paolino/emacs/timingup.el timingup.el] --- Minor mode which adds timing informations to buffer (by Paolo Gianrossi)
+
+[http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&safe=off&selm=s6wen8439d0.fsf%40eddie.fzi.de tint-instances.el] --- Tint all instances of the current word. (by Bruno Daniel)
+
+[http://freshmeat.net/projects/emacs-tiny-tools tiny-tools] --- Jari Aalto's collection of tiny tools. (by Jari Aalto)
+
+[http://www.emacswiki.org/elisp/title-time.el title-time.el] --- Display time etc in the title bar (by Kahlil (Kal) Hodgson)
+
+[http://www.davep.org/emacs/tld.el tld.el] --- explain top-level domain names (by Dave Pearson)
+
+[http://homepage1.nifty.com/bmonkey/emacs/elisp/tmenu.el tmenu.el] --- a text based interface to the menubar (by Yuji 'bmonkey' Minejima)
+
+[http://www.russet.org.uk/download/emacs/tmmofl.el tmmofl.el] --- a minor mode which toggles other minor modes based on font lock info (by Phillip Lord)
+
+[http://tnt.sourceforge.net. tnt.el] --- Emacs client for AIM, AOL's free instant messaging service. (by Unknown?)
+
+[http://pagesperso-systeme.lip6.fr/Christian.Queinnec/WWW/elisp.html todo.el] --- A mode to support ToDo files containing scripts or mails. (by Christian Queinnec)
+
+[http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/lisp/calendar/todo-mode.el todo-mode.el] --- Major mode for editing TODO list files (by Oliver Seidel)
+
+[ftp://ftp.codefactory.se/pub/people/daniel/elisp/todoo.el todoo.el] --- Major mode for editing TODO files (by Daniel Lundin)
+
+[http://www.perlring.org/emacs/toggle-buffer.el toggle-buffer.el] --- fast switching between two buffers; (by Joseph L. Casadonte Jr)
+
+[http://www.perlring.org/emacs/toggle-case.el toggle-case.el] --- a set of functions to toggle the case of characters; (by Joseph L. Casadonte Jr)
+
+[http://24.71.17.22/wiki?HomeEmacs toggle-option.el] --- easily toggle frequently toggled options (by Cyprian Laskowski)
+
+[http://www.gnusoftware.com/Emacs/Lisp/toggle-source.el toggle-source.el] --- Toggle between source and implementation files. (by Steve Kemp)
+
+[http://www.emacswiki.org/elisp/tool-bar-plus.el tool-bar+.el] --- extensions to standard library `tool-bar.el' (by Drew Adams)
+
+[http://www.emacswiki.org/cgi-bin/emacs?ToolBox toolbox.el] --- create simple menus in buffers (by Alex Schroeder)
+
+[http://lgarc.narod.ru/xemacs/tpum.el tpum.el] --- Popup menus in text mode. (by Zajcev Evgeny)
+
+[http://www.skamphausen.de/cgi-bin/ska/track-scroll track-scroll.el] --- Enable direct scrolling with the mouse (by Stefan Kamphausen)
+
+[http://savannah.gnu.org/projects/tramp/ tramp.el] --- Transparent Remote Access, Multiple Protocol [was rcp.el] (by Kai Grossjohann)
+
+[ftp://dlpx1.dl.ac.uk/fx/emacs/Mule/trans.el trans.el] --- translation of characters via multibyte table or coding system (by Dave Love)
+
+[http://www.coling.uni-freiburg.de/~schauer/resources/emacs/translate.el.gz translate.el] --- use a wordlist to do simple translation (by Holger Schauer)
+
+[http://www-rp.lip6.fr/~deleuze/translation.el translation.el] --- translation minor mode (by Christophe Deleuze)
+
+[http://davin.50webs.com/research/2006/trashcan.el.html trashcan.el] --- A recoverable file deletion system (by Davin Pearson)
+
+[http://sourceforge.net/projects/emhacks/ tree-widget.el] --- [widget useful to display data structures organized in hierarchical order] (by David Ponce)
+
+[http://emacswiki.org/elisp/tsql-indent.el tsql-indent.el] --- indents TSQL (and other SQL) statements (by Tom Pierce)
+
+[http://user42.tuxfamily.org/tty-format/index.html tty-format.el] --- decode backspace overstrikes and ANSI colours (by Kevin Ryde)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/twiddle.el twiddle.el] --- mode-line display hack (by Noah Friedman)
+
+[http://www.dedasys.com/freesoftware/files/two-mode-mode.el two-mode-mode.el] --- switches between tcl and sgml(html) modes (by David Welton)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/type-break.el type-break.el] --- encourage rests from typing at appropriate intervals (by Noah Friedman)
+
+[http://www.eskimo.com/~seldon/typematic.el typematic.el] --- Optimize 'universal-argument for typematic keyboards (by Will Mengarini)
+
+[http://www.emacswiki.org/elisp/typing.el typing.el] --- The Typing Of Emacs [game variant on `Dead on the Dreamcast'] (by Alex Schroeder)
+
+[http://www.emacswiki.org/cgi-bin/wiki/TypographicalPunctuationMarks typopunct.el] --- Automatic typographical punctuation marks (by Oliver Scholz)
+
+= U =
+
+[http://de.geocities.com/ulf_jasper/emacs.html u-appt.el] --- Appointment parser (by Ulf Jasper)
+
+[http://de.geocities.com/ulf_jasper/ u-color-cycle.el] --- eye-candy (by Ulf Jasper)
+
+[http://de.geocities.com/ulf_jasper/ u-mandelbrot.el] --- A simple fractal browser (by Ulf Jasper)
+
+[http://de.geocities.com/ulf_jasper/ u-vm-color.el] --- Font-lock support for VM. (by Ulf Jasper)
+
+[ftp://ftp.dante.de/tex-archive/support/emacs-modes/u8tex.el u8tex.el] --- [input unicode via TeX notation] (by Sergei Pokrovsky)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/uboat.el uboat.el] --- generate u-boat-death messages, patterned after Iron Coffins (by Noah Friedman)
+
+[http://www.tfkp.physik.uni-erlangen.de/~winkler/src/umlaute.el umlaute.el] --- support for german umlaute (by Roland Winkler)
+
+[http://www.emacswiki.org/elisp/unaccent.el unaccent.el] --- functions dealing with accented characters (by Drew Adams)
+
+[http://inferno.cs.univ-paris8.fr/~drieu/hacks/sources/under.el under.el] --- underline a region with ^ characters; (by Benjamin Drieu)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/undo-browse  undo-browse.el] --- Powerful Undo system. Browser/movie/redo/hilit (by D. Goel)
+
+[http://www.mahalito.net/~harley/elisp/undo-group.el undo-group.el] --- Undo groups of changes (by James H Gorrell)
+
+[http://www.ccs.neu.edu/home/guttman/undoc.el undoc.el] --- strip MS Word-style formatting to leave a readable ASCII file (by Joshua Guttman)
+
+[http://www.zsplat.freeserve.co.uk/progs/unibasic.el unibasic.el] --- Major mode for working with UniBasic files in EMACS. (by Pat Thoyts)
+
+[http://www.cs.uu.nl/~otfried/Mule/ unicode.el] --- Unicode encoding for GNU Emacs (by Otfried Cheong)
+
+[http://groups.google.com/groups?selm=8790228dyt.fsf%40deneb.cygnus.argh.org unicode-input.el] --- Inputting a Unicode subset in TeX transcription. (by Florian Weimer)
+
+[http://www.astrogoth.com/~reeses/software/uniq.el uniq.el] --- Remove duplicate lines (by Art Taylor)
+
+[http://groups.google.com/groups?selm=uwupkc08n.fsf%40linhdang.home&output=gplain units.el] --- units conversion using units.dat (by Linh Dang)
+
+[http://www.geocities.com/drgazowen/lisp/unmunge-general.el.gz unmunge-general.el] --- Change address/sig with context in gnus (by Gareth Owen)
+
+[http://mywebpages.comcast.net/jyavner/unsafep/unsafep.el unsafep.el] --- Determine whether a Lisp form is safe to evaluate (by Jonathan Yavner)
+
+[http://www.zanshin.com/~bobg/unscroll.html unscroll.el] --- functions to restore the screen after scrolling (by Bob Glickstein)
+
+[http://www.dedasys.com/freesoftware/files/uptime.el uptime.el] --- [Report uptime of an emacs process.] (by David N. Welton)
+
+[http://www.davep.org/emacs/uptimes.el uptimes.el] --- Track and display emacs session uptimes. (by Dave Pearson)
+
+[http://www.cis.upenn.edu/~bcpierce/papers/uuinsert.el uuinsert.el] --- [uu-encode/decode files and directories into text buffers] (by Benjamin Pierce)
+
+= V =
+
+[http://www.emacswiki.org/elisp/vc-plus.el vc+.el] --- extensions to standard library `vc.el' (by Drew Adams)
+
+[http://www.emacswiki.org/elisp/vc-.el vc-.el] --- extensions to standard library `vc.el' (by Drew Adams)
+
+[http://www.pps.jussieu.fr/~jch/software/repos/vc-darcs/vc-darcs.el vc-darcs.el] --- a VC backend for darcs (by Juliusz Chroboczek)
+
+[http://www.emacswiki.org/elisp/vc-hooks-plus.el vc-hooks+.el] --- extensions to standard library `vc-hooks.el' (by Drew Adams)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/vcard.el vcard.el] --- vcard parsing and display routines (by Noah Friedman)
+
+[http://gnufans.net/~deego/emacspub/lisp-mine/vel vel.el] --- An extra velocity-based scroll-method. (by Deepak Goel)
+
+[https://intrigeri.boum.org/svn/pub/verbiste/verbiste.el verbiste.el] --- Emacs interface to verbiste (by Ben Voui)
+
+[http://www.verilog.com/register.html verilog-mode.el] --- major mode for editing verilog source in Emacs (by Michael McNamara)
+
+[http://www.gnusoftware.com/Emacs/Lisp/version-info.el version-info.el] --- Some utilities for operating on lisp file versions. (by Steve Kemp)
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/versions.el versions.el] --- version string comparison (by Vinicius Jose Latorre)
+
+[http://opensource.ethz.ch/emacs/vhdl-mode.html vhdl-mode.el] --- major mode for editing VHDL code (by VHDL Mode Maintainers)
+
+[http://emacswiki.org/elisp/vimpulse.el vimpulse.el] --- emulates Vim's most useful features, including Visual mode (by Jason Spiro)
+
+[http://www.newartisans.com/johnw/Emacs visit-url.el] --- Front-end function to the `browse-url' package (by John Wiegley)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/vkill.el vkill.el] --- view and kill Unix processes from within Emacs (by Noah Friedman)
+
+[http://www.emacswiki.org/emacs/download/vline.el vline.el] --- highlight a column (by Taiki Sugawara)
+
+[http://vlog-mode.sourceforge.net vlog-mode.el] --- a new major mode for editing verilog files (by Sun Yijiang)
+
+[http://www.nongnu.org/viewmail/ vm.el] --- another mail reader within Emacs (by Robert Fenk (taken over from Kyle Jones))
+
+[http://www.robf.de/Hacking/elisp/vm-biff.el vm-biff.el] --- a xlbiff like tool for VM (by Robert Fenk)
+
+[http://www.cis.upenn.edu/~bjornk/vm-bogofilter.el vm-bogofilter.el] --- [interface between VM and the bogofilter spam filter] (by Bjorn Knutsson)
+
+[http://www.robf.de/Hacking/elisp/vm-grepmail.el vm-grepmail.el] --- VM interface for grepmail (by Robert Fenk)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/vm-multdom.el vm-multdom.el] --- multiple-domain reply header manipulation for VM (by Noah Friedman)
+
+[http://www.robf.de/Hacking/ vm-pcrisis.el] --- wide-ranging auto-setup for personalities in VM (by Rob Hodges)
+
+[http://www.robf.de/Hacking/ vm-pine.el] --- Draft handling of messages and other helpful functions for VM. (by Robert Fenk)
+
+[http://www.robf.de/Hacking/elisp/vm-ps-print.el vm-ps-print.el] --- PS-printing functions for VM (by Robert Fenk)
+
+[http://www.robf.de/Hacking/elisp/vm-serial.el vm-serial.el] --- [automatic creation of personalized emails] (by Robert Fenk)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/vm-vcard.el vm-vcard.el] --- vcard parsing and formatting routines for VM (by Noah Friedman)
+
+[http://www.emacswiki.org/elisp/volctrl.el volctrl.el] --- Elisp interface to controling audio output (by Anand B Pillai)
+
+[http://purl.org/harder/ vorbiscomment.el] --- Edit comments in Ogg Vorbis files (by Jesper Harder)
+
+[http://yersinia.org/homes/paolino/emacs/vov-mode.el vov-mode.el] --- Major modes for VOV and Chivas (by Paolo Gianrossi)
+
+[http://quimby.gnus.org/elisp/vtx-emacs.tar.gz vtx.el] --- a package for reading videotext [tar.gz file] (by Lars Magne Ingebrigtsen)
+
+[http://www.geocities.com/gchen275/xemacs/ vvb-mode.el] --- a minor mode to display a Visible Vertical Bar(s) (by Jerry G. Chen)
+
+[http://groups.google.com/groups?selm=%3Ffnord%3Fulm1kpvqv.fsf!FNORD!%40ID-97657.usr.dfncis.de&output=gplain vvb-mode2.el] --- a minor mode to display a Visible Vertical Bar(s) [works with Emacs] (by Jerry G. Chen)
+
+= W =
+
+[http://www.emacswiki.org/elisp/w-browser.el w-browser.el] --- run Windows application associated with a file (by Drew Adams)
+
+[http://www.gnu.org/software/w3/ w3.el] --- [The fully customizable web browser for Emacs.] (by W3 mailing list)
+
+[http://www.emacswiki.org/elisp/w32-browser.el w32-browser.el] --- same file as `w-browser.el' (by Drew Adams)
+
+[http://www.gnusoftware.com/Emacs/Lisp/w32-faq.el w32-faq.el] --- Download, and display the NTEmacs FAQ (by Steve Kemp)
+
+[http://mathias.dahl.net/pgm/emacs/elisp/w32-net-send.el w32-net-send.el] --- send messages using "net send" (by Mathias Dahl)
+
+[http://www.emacswiki.org/elisp/w32browser-dlgopen.el w32browser-dlgopen.el] --- use `w32browser.el' with standard Windows Open File box. (by Drew Adams)
+
+[http://www.well.com/~discover/emacs-w3m-stuff/ w3m-multibookmarks.el] --- lynx-like multiple bookmarks (by Daryl Bunce)
+
+[https://alioth.debian.org/projects/mph-emacs-pkgs w3m-type-ahead.el] --- type ahead support for Emacs-w3m (by Matt Hodges)
+
+[http://www.neilvandyke.org/w3mnav/ w3mnav.el] --- add additional Info-like navigation to w3m (by Neil W. Van Dyke)
+
+[http://www.emacswiki.org/cgi-bin/wiki/wajig.el wajig.el] --- an interface for wajig (by William Xu)
+
+[http://www.gohome.org/wl/ wanderlust.el] --- [mail/news management system with IMAP4rev1 support] (by Yuuichi Teranishi)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/warlord.el warlord.el] --- annoy denizens of alt.fan.warlord (by Noah Friedman)
+
+[http://www.chez.com/emarsden/downloads/watson.el watson.el] --- query web search engines and aggregate results (by Eric Marsden)
+
+[http://quimby.gnus.org/elisp/ wave.el] --- Editing Sound Files (by Lars Magne Ingebrigtsen)
+
+[http://homepage1.nifty.com/blankspace/emacs/elisp.html wb-line-number.el] --- window-based line number mode (by Naoki Nakamura)
+
+[https://kanis.fr/svn/trunk/wk/lisp/ivan/wclock.el wclock.el] --- world clock (by Ivan Kanis)
+
+[http://www.zanshin.com/~bobg/wcount.html wcount.el] --- keep a running count of words in a buffer (by Bob Glickstein)
+
+[http://groups.google.com/groups?as_ugroup=gnu.emacs.sources&as_q=wdired wdired.el] --- Rename files editing their names in dired buffers (by Juan Leon Lahoz Garcia)
+
+[http://www.neilvandyke.org/webjump/ webjump.el] --- programmable Web hotlist (by Neil W. Van Dyke)
+
+[http://www.neilvandyke.org/webjump/ webjump-plus.el] --- supplemental Web site list for webjump (by Neil W. Van Dyke)
+
+[http://elisp.info/package/weblogger/weblogger.el weblogger.el] --- Weblog maintenance via XML-RPC APIs (by Mark A. Hershberger)
+
+[http://relativity.yi.org/el/wget.el wget.el] --- wget interface for emacs (by Kevin A. Burton)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/what-domain.el what-domain.el] --- top-level internet domain name information (by Noah Friedman)
+
+[http://www.gnusoftware.com/Emacs/Lisp/which.el which.el] --- search program in paths of variable `exec-path' (by Christoph Conrad)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/whitespace.el whitespace.el] --- strip trailing whitespace from buffers (by Noah Friedman)
+
+[http://www.dsmit.com/lisp/whitespace.el whitespace.el] --- Warn about and clean bogus whitespaces in the file. (by Rajesh Vaidheeswarran)
+
+[http://pauillac.inria.fr/whizzytex/ whizzytex.el] --- WhizzyTeX, a WYSIWIG environment for LaTeX (by Didier Remy)
+
+[http://purl.org/harder/who-calls.el who-calls.el] --- Display all known callers of a function (by Jesper Harder)
+
+[http://www.russet.org.uk/download/emacs/wide-column.el wide-column.el] --- Calls functions dependant on column position. (by Phillip Lord)
+
+[http://www.geocities.com/kensanata/wiki/WikiMode.html wiki.el] --- Description: Maintain Wikis using Emacs (by Alex Schroeder)
+
+[http://www.geocities.com/kensanata/elisp/wiki-inter.el.txt wiki-inter.el] --- interwikis for wiki.el (by Alex Schroeder)
+
+[http://www.emacswiki.org/cgi-bin/wiki.pl?WikiRemote wiki-remote.el] --- edit pages on a remote wiki (by Alex Schroeder)
+
+[http://en.wikipedia.org/wiki/Image:Wikipedia-mode.el wikipedia-mode.el] --- Mode for editing Wikipedia articles off-line (by Chong Yidong)
+
+[http://www.emacswiki.org/elisp/wimpy-del.el wimpy-del.el] --- require confirmation for large region deletion (by Drew Adams)
+
+[http://www.stanford.edu/~hovav/elisp/ windmove.el] --- directional window-selection routines (by Hovav Shacham)
+
+[http://www.emacswiki.org/elisp/window-plus.el window+.el] --- extensions to standard library `window.el' (by Drew Adams)
+
+[http://nschum.de/src/emacs/window-numbering-mode/ window-numbering-mode.el] --- Numbered window shortcuts (by Nikolaj Schumacher)
+
+[http://www.gentei.org/~yuuji/software/windows.el windows.el] --- [switch between multiple favorite window configurations] (by HIROSE Yuuji)
+
+[http://www.zanshin.com/~bobg/winhist.html winhist.el] --- window configuration history (by Bob Glickstein)
+
+[http://www.emacswiki.org/cgi-bin/emacs/download/winpoint.el winpoint.el] --- Remember buffer positions per-window, not per buffer (by Jorgen Schaefer)
+
+[http://www.python.org/emacs/winring/winring.el winring.el] --- Window configuration rings (by Barry A. Warsaw)
+
+[http://centaur.maths.qmw.ac.uk/Emacs/ woman.el] --- browse UN*X manual pages `wo (without) man' (by Francis J. Wright)
+
+[http://www.gnulinux.org.mx/~drs/emacs/word-counter.el word-counter.el] --- Count words in the buffer and in region (by Rafael Sepúlveda)
+
+[http://groups.google.com/groups?selm=34f44eb0.0%40news.si.com word-wrap.el] --- [Return characters within a text paragraph are not saved.] (by unknown)
+
+[http://members.a1.net/t.link/CompEmacsWordnet.html wordnet.el] --- A simple wordnet mode (by Thomas Link)
+
+[http://cedet.sourceforge.net/ working.el] --- Display a "working" message in the minibuffer. (by Eric M. Ludlam)
+
+[http://www.wiersma.org worklog.el] --- keep track of stuff you do (by Arjen Wiersma)
+
+[ftp://ftp.lysator.liu.se/pub/emacs/ws-trim.el ws-trim.el] --- Tools and minor mode to trim whitespace on text lines (by Martin Stjernholm)
+
+[http://mwolson.org/static/dist/wtf/wtf.el wtf.el] --- Look up conversational and computing acronyms (by Michael Olson)
+
+[http://www.glug.org/people/ttn/software/ttn-pers-elisp wup.el] --- [Selective recursive file copy, useful for website update] (by Thien-Thi Nguyen)
+
+[http://nwalsh.com/emacs/wwtime/ wwtime.el] --- Insert a time of day with appropriate world-wide localization (by Norman Walsh)
+
+= X =
+
+[http://www.jpl.org/elips/ x-face.el] --- X-Face encoder/decoder/viewer for Emacsen. (by Katsumi Yamaoka)
+
+[http://www.jpl.org/elips/x-face-e21.el.gz x-face-e21.el] --- X-Face utilities for Emacs 21 (by Katsumi Yamaoka)
+
+[http://www.emacswiki.org/elisp/x-migrant.el x-migrant.el] --- Support for subprocesses handling remote X displays (by Bryan O'Sullivan)
+
+[http://x-symbol.sourceforge.net/ x-symbol.el] --- semi WYSIWYG for LaTeX, HTML, etc using additional fonts (by Christoph Wedler)
+
+[http://xae.sunsite.dk/ xae.el] --- XML Authoring Environment for Emacs. (by Paul Kinnucan)
+
+[http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/xbasemode/xbasemode/xbase.el?rev=HEAD xbase.el] --- A mode for editing Xbase programs. (by Dave Pearson)
+
+[ftp://ftp.sonic.net/pub/users/darrylo/cscope/ xcscope.el] --- cscope interface for XEmacs (by Darryl Okahata)
+
+[http://members.a1.net/t.link/CompEmacsXff.html xff.el] --- extended find-file (by Thomas Link)
+
+[http://home.tiscali.de/mgidde/source/xgtags.el xgtags.el] --- gtags facility for Emacs (by Marco Gidde)
+
+[http://user42.tuxfamily.org/xml-coding/index.html xml-coding.el] --- coding system for XML files (Emacs 21) (by Kevin Ryde)
+
+[http://www.dogbiscuit.org/mdub/software/xml-lite.el xml-lite.el] --- an indentation-engine for XML (by Mike Williams)
+
+[http://www.newartisans.com/johnw/Emacs/xml-parse.el xml-parse.el] --- code to efficiently read/write XML data with Elisp (by John Wiegley)
+
+[http://elisp.info/package/xml-rpc/xml-rpc.el xml-rpc.el] --- An elisp implementation of clientside XML-RPC (by Mark A. Hershberger)
+
+[http://nwalsh.com/emacs/xmlchars/index.html xmlunicode.el] --- Unicode support for XML (by Norman Walsh)
+
+[http://www.pobox.com/~berend/emacs/xplain-mode.el xplain-mode.el] --- major mode for editing Xplain scripts. (by Berend de Boer)
+
+[http://www.emacswiki.org/cgi-bin/emacs/download/xray.el xray.el] --- Display internal object structures in a temporary buffer. (by Vinicius Jose Latorre)
+
+[http://www.python.org/emacs/xrdb-mode.el xrdb-mode.el] --- mode for editing X resource database files (by Barry A. Warsaw)
+
+[http://www.pwstephenson.fsnet.co.uk/computing/ xref.el] --- maintain and use cross-references and hypertext links. (by Peter Stephenson)
+
+[http://www.menteith.com/xslide/ xslide.el] --- Emacs Major Mode for XSL Stylesheets (by xslide-bug@menteith.com)
+
+[http://xslt-process.sourceforge.net/index.php xslt-process.el] --- Invoke an XSLT processor on an Emacs buffer (by Ovidiu Predescu)
+
+[http://www.dur.ac.uk/p.j.heslin/emacs/download/xterm-extras.el xterm-extras.el] --- define additional function key sequences for recent versions of xterm (by Peter Heslin)
+
+[ftp://ftp.splode.com/pub/users/friedman/emacs-lisp/xterm-frobs.el xterm-frobs.el] --- manipulate xterm when running emacs in tty mode (by Noah Friedman)
+
+[http://user42.tuxfamily.org/xtide/index.html xtide.el] --- XTide display in Emacs (by Kevin Ryde)
+
+[http://xsteve.nit.at/prg/emacs/xtla.el xtla.el] --- Arch interface for emacs (by Stefan Reichoer)
+
+[http://savannah.nongnu.org/projects/xwem xwem.el] --- [XEmacs Window Manager] (by Zajcev Evgeny)
+
+[http://xxml.progiciels-bpi.ca/archives/xxml.tar.gz xxml.el] --- Supplementary tools for handling SGML and HTML. (by François Pinard)
+
+= Y =
+
+[http://groups.google.com/groups?selm=lu672trqan.fsf%40stest.ch&output=gplain y2k-mode.el] --- Mode to highlights words like "date", "time", etc for year 2000 code walkthroughs. (by Christian Egli)
+
+[http://madbat.mine.nu/public/yaham/yaham.tar.gz yaham.el] --- Yet Another HAskell Mode for GNU Emacs (by Ian Zimmerman)
+
+[http://www.yatex.org/ yatex.el] --- Yet Another TeX mode for Emacs (by HIROSE Yuuji)
+
+= Z =
+
+[http://www.emacswiki.org/cgi-bin/wiki/download/zoom-frm.el zoom-frm.el] --- commands to zoom frame (change font size) (by Drew Adams)
+

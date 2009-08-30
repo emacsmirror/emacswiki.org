@@ -1,0 +1,57 @@
+My name is Wei Ching Tang
+
+my email is wctang(at)csie.nctu.edu.tw
+
+----
+
+Welcome !! Are you going to do some transaltions on this wiki as well?
+--PierreGaston
+
+: ya:) i have do some translation about the oddmuse wiki, and i am studying Emacs now.
+I will do some translation in (Traditional) Chinese when i study in this site. 
+-- wctang
+
+I have a question related to using multiple languages
+[http://www.emacswiki.org/cgi-bin/oddmuse.pl?Multiple_Languages].  I
+would like to identify chinese text.  I think the best way to do this
+is list 10 or 20 common characters.  Can you propose a list of these
+characters?
+
+How about this for a start, based upon some chinese course material I found via Google [http://www.bendigo.latrobe.edu.au/chinese/gb-v101.htm]:
+
+啊 吧 地 和 会 就 了 吗 哪 那 是 要
+
+What do you think?
+
+If we ever add Japanese, we will put some Hiragana on the Japanese list... -- AlexSchroeder
+
+: In east asian language, Japan, Chinese, taiwan use the Hanji character, call UniHan in Unicode, but it is 
+ difficult to to distinguish them (Because these character are mixed). Japanese can use Hiragana
+ katakana to identify( because most Japanese article will contain these character, but may use
+  many Hanji character). but the Simplify Chinese and Traditional Chinese are difficult to identify,
+ but it's ok. 
+
+I think it will be:
+
+的 一 我 是 有 但 這 这 你 和 了 不 啊 要 好 沒 
+
+-- wctang
+
+Thanks for the list; I'm using your list, now.  We'll think about the distinction between traditional and
+simplified Chinese when somebody comes along and adds some simplified Chinese pages.  Thanks for your
+contributions!  :) -- Alex.
+
+After i seach the related data, this list may be more usefull, 
+the second column is the character, and the fifth column are the frequency,
+
+http://www.edu.tw/mandr/result/87news/page2-1.htm
+
+的 一 是 不 有 在 人 我 大 了 中 以 會 為 這 上 來 個 要
+
+this is only used for taiwan.
+
+--wctang
+
+
+----
+CategoryHomepage

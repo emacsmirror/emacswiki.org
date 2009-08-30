@@ -1,0 +1,17 @@
+Internet RFCs are standards and discussion documents on various communications and computer topics.
+
+: http://www.rfc-editor.org
+
+Here are some Emacs things for working with or reading such documents,
+
+* FindFileAtPoint -- download an RFC number document at point
+* [[Irfc]] -- View and download RFC document, provide advanced navigation function.
+* RfcView -- improve formatting for on-screen reading
+* Lisp:rfc.el -- browse RFC documents and the RFC index
+* GetRFC -- Retrieve RFC document (remote or local) and display it using RfcView mode (by default)
+* <code>rfcr.el</code>[http://members.fortunecity.com/salkosuo/emacs/index.html] by SamiSalkosuo -- download and cache from IETF, by number or by browsing index
+* FastFileFinder -- includes retrieval of RFCs by number, locally or remote [http://www.splode.com/~friedman/software/emacs-lisp/#ui]
+
+: It seems that Lisp:rfc.el requires w3 package for url-insert-file-contents that is already in vanila emacs 22.0.91.1.  To use it properly, just comment out the "(require 'w3)" line in rfc-insert-contents-url in Lisp:rfc.el. Someone please contact to its author to correct this. ;-) -- CinSK
+
+In the wiki here, links to RFC documents can be made just by writing say RFC 1945.

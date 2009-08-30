@@ -1,0 +1,30 @@
+bison and flex files are apparently supported by CcMode.
+- does anybody have more detail on this? I don't see anything in the cc mode docs about this.
+
+(DEAD LINK as of Sept 2004) There is a bison-mode.el to be found here: 
+  http://www.eecs.tulane.edu/www/Beuscher/emacs/elisp.html#bison-mode.el
+
+(DEAD LINK as of Sept 2004) And here is another one: 
+  http://ftp.unicamp.br/pub/emacs-lisp/elisp-archive/modes/bison-mode.el.gz
+
+(DEAD LINK as of Sept 2004) See also http://www.prismtk.de/docs/software/emacs/
+
+(note: this file is available at archive.org, just type the address and press the wayback machine button)
+
+Handy imenu function for jumping around to different rules in a bison/yacc file. call this in your .y file however you like.
+<pre>
+  (setq imenu-create-index-function 
+        (lambda ()
+          (let ((end))
+             (beginning-of-buffer)
+             (re-search-forward "^%%")
+             (forward-line 1)
+             (setq end (save-excursion (re-search-forward "^%%") (point)))
+             (loop while (re-search-forward "^\\([a-z].*?\\)\\s-*\n?\\s-*:" end t)
+                   collect (cons (match-string 1) (point))))))
+</pre>
+
+See also FlexMode.
+----
+CategoryModes
+ProgrammingModes

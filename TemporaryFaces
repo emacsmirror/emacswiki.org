@@ -1,0 +1,25 @@
+Here's how to make a temporary (anonymous) [[Face]] with a specific property set (such as fore- or background color).  The code sample is from AnsiColor.
+
+<pre>
+(defun ansi-color-make-face (property color)
+  "Return a face with PROPERTY set to COLOR.
+PROPERTY can be either symbol `foreground' or symbol `background'.  
+
+For Emacs, we just return the cons cell \(PROPERTY . COLOR).
+For XEmacs, we create a temporary face and return it."
+  (if (featurep 'xemacs)
+      (let ((face (make-face (intern (concat color "-" (symbol-name property)))
+			     "Temporary face created by ansi-color."
+			     t)))
+	(set-face-property face property color)
+	face)
+    (cond ((eq property 'foreground)
+	   (cons 'foreground-color color))
+	  ((eq property 'background)
+	   (cons 'background-color color))
+	  (t
+	   (cons property color)))))
+</pre>
+
+----
+CategoryFaces CategoryCode ComparativeEmacsology

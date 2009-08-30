@@ -1,0 +1,36 @@
+http://www.nongnu.org/bm/
+
+== Features ==
+
+* Toggle (set/remove) a [[bookmark]].
+* Jump to next/previous bookmark.
+* Different wrapping modes.
+* Setting bookmarks based on a regexp.
+* Persistence.
+* List bookmarks in a separate buffer.
+
+
+== Discussion ==
+
+[new]
+Very nice package!!
+I use bm.el much more frequently than standard bookmark.el. -- [[rubikitch]]
+
+[new:DrewAdams:2008-08-06 17:06 UTC]
+Yes, very nice. I use it differently from ##bookmark.el##, not more or less. In <tt>[[setup-keys.el]]</tt>, I bind:
+* `bm-toggle' to `S-f3'
+* `bm-next' to `C-f3'
+* `bm-previous' to `M-f3'
+
+-- DrewAdams
+
+[new]
+I have written an extension for this that adds a listing of all bookmarks in all buffers. See here: [[bm-ext.el]]  -- [[DanMcKinley]
+
+
+
+== See Also ==
+
+* Icicles commands for navigating among bookmarks and [[marker]]s. They too highlight the destinations as you visit them. See [[Icicles - Tripping]] and [[MarkCommands#IciclesGoToMarker|Icicles Commands to Go To a Marker]]. 
+
+

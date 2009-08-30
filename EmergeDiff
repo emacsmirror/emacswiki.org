@@ -1,0 +1,11 @@
+Emerge is a graphical frontend to the UNIX "diff" and "diff3" commands. It is useful if two programmers on a project team both changed the same file and you need to integrate their changes.
+
+Here is the Ediff manual section for emerge:
+http://www-2.cs.cmu.edu/cgi-bin/info2www?(emacs)Emerge
+
+Also, you might want to set the "emerge-diff-options" variable to "--ignore-all-space", so that emerge doesn't waste your time by displaying differences in whitespace. You can do so by putting the following line in your ~/.emacs:
+
+    (setq emerge-diff-options "--ignore-all-space")
+
+----
+CategoryExternalUtilities CategoryProgrammerUtils

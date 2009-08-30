@@ -1,0 +1,54 @@
+I was trying to write an erc defun that tells me 
+the top level domains of all the users on the EmacsChannel.
+Here is how far I got.
+It seems that the information per nick is only available if
+I query for it explicitly, by sending a ''/whois''
+for every nick to the server.  :/
+-- AlexSchroeder
+
+''/who #emacs'' provides enough information.
+-- CarlLunde
+
+<pre>
+(let ((erc-channel-users (with-current-buffer (get-buffer "#emacs") erc-channel-users))
+      (hash (makehash 'equal)))
+  (maphash (lambda (k v) 
+	     (let ((host (erc-server-user-host (car v)))
+		   (k "")
+		   v)
+	       (when host
+		 (setq k (car (nreverse (split-string host "\\.")))))
+	       (unless (string-match "[a-z]$" k)
+		 (setq k "unknown"))
+	       (setq v (1+ (gethash k hash 0)))
+	       (puthash (downcase k) v hash)))
+	   erc-channel-users)
+  (maphash (lambda (k v)
+	     (insert k ": " (number-to-string v) "\n"))
+	   hash))
+no: 5
+com: 26
+edu: 8
+fr: 3
+net: 34
+org: 3
+ch: 2
+se: 6
+unknown: 19
+at: 1
+br: 2
+de: 7
+ee: 2
+is: 2
+registered: 2
+au: 3
+nl: 2
+pdpc: 1
+jp: 1
+hu: 1
+fi: 2
+ca: 2
+mx: 1
+be: 2
+it: 1
+</pre>

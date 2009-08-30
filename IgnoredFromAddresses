@@ -1,0 +1,14 @@
+If you want to list the recipient instead of the author for your own postings and mails, set `gnus-ignored-from-addresses'.  If you don't want to write the regexp yourself, use RegexpOpt:
+
+    (setq gnus-ignored-from-addresses
+      (regexp-opt 
+       '("somename@company.com"
+         "othername@comp.ch"
+         "me@here.com"
+         "metoo@here.ch"
+         "otherme@klein.host.ac.at"
+         "nobody@yahoo.com"
+         "somebody@gmx.de")))
+
+----
+CategoryGnus

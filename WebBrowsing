@@ -1,0 +1,31 @@
+=Emacspeak Web Tools=
+
+==Emapspeak - Audio Formatted Map Information Via Google Maps==
+
+See http://emacspeak.sf.net/releases/release-EmapSpeak.html
+for up-to-date information and usage instructions.
+
+===Emapspeak (Mapdog) --- Talking Map Directions From Emacspeak Via Google Maps===
+
+For Immediate Release
+
+San Jose, CA, (February 18, 2005)
+Emapspeak (Mapdog) --- Talking Map Directions From Emacspeak Via Google Maps
+                                                           
+Emacspeak Inc (NASDOG: ESPK) announces the immediate world-wide availability
+of Emapspeak (Mapdog) --a powerful audio desktop tool for leveraging the
+wonderful resource provided by Google Maps.
+
+====What Is It?====
+
+The DHTML interface to Google Maps is difficult to access for someone using a
+speech-output interface. This tool uses the embeded XML metadata delivered by
+the Google Maps application to generate an audio-formatted representation of
+the content.
+
+====Features====
+
+*  Obtain location of a specified business near a given address.
+*  Obtain step-by-step directions between two given locations.
+* After finding businesses near a location, get directions with a single click.
+   

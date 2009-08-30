@@ -1,0 +1,25 @@
+I was recently trying to know how I will and could use all my printers from emacs without programming shortcuts and so... I finally discovered a solution: use a dedicated tool and get rid of the lp set commands.
+
+Now I have set my lpr-command to a GUI tool. It works for kprinter, gtklp and xpp (my prefered).
+
+How to set it up? Simply add this in your .emacs:
+
+  (setq lpr-command "xpp")
+
+Now you no longer need to remember your instances/printers/etc names and options, it now opens a new window where you can check the desired printer/instance and set of options for your current printing. What's more you these tools can listen to stdin, just great !
+
+Note: You need the X Printing Panel for this. See http://cups.sourceforge.net/xpp/.
+
+[new]
+
+There's another approach I just found that worked well: ipp.el at http://purl.org/net/emarsden/home/downloads/ipp.el, written by EricMarsden (InternetPrintingProtocol). -- BillHarris
+
+[new:DrewAdams:2004-12-24 22:03 UTC]
+'''See Also:''' library <code>printing.el</code> as an alternative, at PrintingPackage. -- DrewAdams
+
+[new]
+I just started implementing CUPS in Emacs: the general idea is to give Emacs a full control to CUPS, like the browser control via http://localhost:631. ATM (2005/05/01 15:50 CEST) you can list all the available CUPS printers (in a new buffer called "* CUPS printers *") and use the 'cups-print-buffer', basically the 'print-buffer' function with the 'printer-name' interactively set. It can be found at http://luca.pca.it/projects/elisp/cups.el. -- LucaCapello
+
+----
+CategoryPrinting,
+CategoryExternalUtilities

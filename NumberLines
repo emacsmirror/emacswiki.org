@@ -1,0 +1,119 @@
+This page is about adding line numbers to the beginnings of lines in a buffer.
+
+'''See Also:''' LineNumbers for temporary ''display'' of line numbers in a buffer. That is, while the code here adds line numbers to the buffer content, LineNumbers is about just showing the line numbers without actually changing the buffer text.
+
+----
+
+Here are a few basic functions I use to number lines of code that I'm using in another document.  For example, this works great for putting line numbers in a verbatim environment.  This makes referencing the code in the text of the document easier.
+<pre>
+(defun number-line (n padding)
+  (beginning-of-line)
+  (insert (number-to-string n))
+  (let ((counter 0))
+    (while (< counter padding)
+      (insert " ")
+      (setf counter (+ counter 1))))
+  (forward-line))
+
+(defun compute-padding (i n)
+  (+ 1 (- (truncate (log10 n))
+          (truncate (log10 i)))))
+
+(defun number-lines (n)
+  (interactive "p")
+  (let ((counter 1))
+    (while (<= counter n)
+      (number-line counter (compute-padding counter n))
+      (setf counter (+ counter 1)))))
+
+(defun number-lines-region (start end)
+  (interactive "r")
+  (let ((num-lines (count-lines start end)))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region start end)
+        (goto-char (point-min))
+        (number-lines num-lines)))))
+
+(defun unnumber-line (padding)
+  (beginning-of-line)
+  (re-search-forward "[0123456789]+" (get-end-line) t)
+  (replace-match "" nil nil)
+  (delete-char padding)
+  (forward-line))
+
+(defun unnumber-lines (n)
+  (interactive "p")
+  (let ((counter 1))
+    (while (<= counter n)
+      (unnumber-line (compute-padding counter n))
+      (setf counter (+ counter 1)))))
+
+(defun unnumber-lines-region (start end)
+  (interactive "r")
+  (let ((num-lines (count-lines start end)))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region start end)
+        (goto-char (point-min))
+        (unnumber-lines num-lines)))))
+
+
+</pre>
+
+Here is an alternative to the code above:
+
+<pre>
+  (defun numerotate-line ()
+    (interactive)
+    (let ((P (point))
+  	(max (count-lines (point-min)(point-max)))
+  	(line 1))
+      (goto-char (point-min))
+      (while (< line max)
+        (insert (format "%04d " line))
+        (beginning-of-line 2)
+        (setq line (+ line 1)))
+      (goto-char P)))
+</pre>
+
+Yet another solution:
+
+    (defun number-lines-region (start end &optional beg)
+      (interactive "*r\np")
+      (let* ((lines (count-lines start end))
+             (from (or beg 1))
+             (to (+ lines (1- from)))
+             (numbers (number-sequence from to))
+             (width (max (length (int-to-string lines))
+                         (length (int-to-string from)))))
+        (if (= start (point))
+            (setq numbers (reverse numbers)))
+        (goto-char start)
+        (dolist (n numbers)
+          (beginning-of-line)
+          (save-match-data
+            (if (looking-at " *-?[0-9]+\\. ")
+                (replace-match "")))
+          (insert (format (concat "%" (int-to-string width) "d. ") n))
+          (forward-line))))
+
+This version allows you to indicate the starting value with the numeric prefix argument. The default value is 1. To begin at zero, type <tt>M-0 M-x number-lines-region</tt>. Negative numbers are also supported. Numbers are right aligned followed by a period and a space. If the point is at the beginning of the region, the lines will be numbered in descending order. If a line is already prefixed with a number, it will be overwritten with the new value.
+
+I don't know if it is something that I'm missing (in GNU Emacs 21.4.1), but I had to write the function "number-sequence" for the above to work:
+
+    (defun number-sequence (from to)
+      (let ((out '())
+            (counter from))
+        (while (<= counter to)
+          (setf out (cons counter out))
+          (setf counter (+ 1 counter)))
+        (reverse out)))
+
+[new]
+In emacs 22, I found it is rather simple to use M-x replace-regexp to fulfill the job:
+Replace regexp  ^.*$ with \#<tab>\&
+where <tab> stand for tab key
+
+----
+CategoryEditing

@@ -1,0 +1,82 @@
+English:CategoryGnus
+
+Click on the header to list all Gnus related pages.  [[Gnus]] is the news and mail reader for Emacs.
+
+Suggestions:
+
+幫助
+
+* [[Gnus指南]] -- 為Gnus新手而準備
+* MyGnus -- 一個為所有Gnus用戶建立的站點
+* Français -- http://www.gnusfr.org/
+
+連綫
+
+* GetNewsWithGnus
+* GettingMail
+* SendingMail -- sending the stuff
+** SentMail -- archiving what you sent
+** ArchivingMail -- 郵件歸檔
+
+組織妳的郵件和新聞
+
+* HighlineAndGnus -- a nice use of the highline package with Gnus
+* HighVolumeNews -- tricks to aid the flooded...
+* CustomizeThreading -- how to change threading
+* SplitMail -- 郵件分組(排序)
+** FancySplitMail -- fancy mail splitting explained
+** SplitMailUsingBbdb -- 依據BBDB為郵件做高級分組
+** NnmailSplitHistory -- pops up a buffer to show you recent splits
+* SpamFiltering -- 過濾垃圾郵件
+** GnusSpam -- uses the spam.el interface (gateway to others technics : bogofilter, ifile, spam-stat)
+** SpamStat -- uses statistics to filter spam (by splitting it into a spam group)
+** GnusBogofilter -- use the external bogofilter program for the same purpose
+** BlacklistSpammers -- Get rid of noise
+
+索引和查找特定的郵件
+
+* IndexMail -- use an index/search engine to help you in finding special mails
+
+Alternate Personalities
+
+* GnusAlias -- switch personalities from the MessageMode buffer
+* GnusPers -- switch "personalities" (from address, sig, etc.) while composing your message
+* PostingStyles -- changing your name, address, and more based on the current group (this is part of Gnus)
+
+其它設置
+
+* GroupParameters -- configuring the various groups themselves
+* ScoreFile -- scoring posts up and down (thus making kill files obsolete)
+* AdaptiveScoring -- setting scores according to how you read posts
+
+Gnus 和安全
+
+* GnusPGG -- setting crypting tools
+* SigningMail -- general page
+* EncryptingMail -- general page
+
+Gnus Buffers
+
+* SummaryBuffer -- 為妳顯示某個群組的消息列錶
+* GroupBuffer -- 為妳顯示一個所有群組的列錶
+* ArticleBuffer -- 顯示文章
+
+Misc
+
+* PreventingMultipleGnus -- how to prevent different emacsen from starting gnus
+* SwitchToGnus -- how to find your Gnus buffers
+* LoadingGnus -- how to add CVS Gnus to your .emacs
+* CompFace -- how to create your X-face header
+* IgnoredFromAddresses
+* MimeTypesWithGnus -- how to deal with MIME stuff in Gnus
+* ExecuteSigFile - How to execute your .signature script
+* TodoGnus -- maintaining todo lists in Gnus
+* GnusPropFont -- Proportional fonts in Gnus
+* GnusStats -- Statistics on the articles in the summary buffer
+* DealingWithGroups -- deleting and renaming groups
+* BrowsingUrlsInGnusArticle - using your favorite browser to display a URL from the current Article
+
+獲得 Gnus
+
+* GnusCvs -- CVS for the bleeding edge
+** GnusCvsForDebian -- Useful for Debian lazy users

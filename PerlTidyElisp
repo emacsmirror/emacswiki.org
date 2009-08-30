@@ -1,0 +1,58 @@
+{{{
+(defun perltidy-command(start end)
+  "The perltidy command we pass markers to."
+  (shell-command-on-region start 
+                           end 
+                           "perltidy" 
+                           t
+                           t
+                           (get-buffer-create "*Perltidy Output*")))
+
+;; Updated as a dwim.  I like using the existing buffer rather than creating a new buffer.
+(defun perltidy-dwim (arg)
+  "Perltidy a region of the entire buffer"
+  (interactive "P")
+  (let ((point (point)) (start) (end))
+	(if (and mark-active transient-mark-mode)
+		(setq start (region-beginning)
+			  end (region-end))
+	  (setq start (point-min)
+			end (point-max)))
+	(perltidy-command start end)
+	(goto-char point)))
+
+}}}
+
+--[[wjt]]
+
+I think perltidy-dwim (like comment-dwim) is better. --Anonymous
+
+--
+
+Is this better? With a prefix arg, display the perltidy result in another
+buffer. Otherwise replace the select region. If marker-active and use 
+transient-mark-mode, call the command on the region, otherwise do with the 
+whole buffer.
+
+But perltidy is too slow, is it the problem of my program?
+{{{
+(defun my-perltidy (arg)
+  (interactive "P")
+  (let ((buffer (generate-new-buffer "*perltidy*"))
+        (point (point))
+        start end)
+    (if (and mark-active transient-mark-mode)
+        (setq start (region-beginning)
+              end (region-end))
+      (setq start (point-min)
+            end (point-max)))
+    (shell-command-on-region start end "perltidy" buffer)
+    (if arg
+        (with-current-buffer buffer
+          (perl-mode)
+          (display-buffer buffer))
+      (delete-region start end)
+      (insert-buffer buffer)
+      (kill-buffer buffer)
+      (goto-char point))))
+}}}

@@ -1,0 +1,35 @@
+This page is about libraries that highlight the current column of characters.
+
+== Library `column-marker.el' ==
+
+Library ColumnMarker lets you highlight and unhighlight any column. With no prefix argument, the commands `column-marker-1', `column-marker-2', and `column-marker-3' highlight the current column. The highlighting stays on that column until you highlight a different one or remove the highlighting.
+
+[:col-highlight.el]
+== Library `col-highlight.el' ==
+
+Library Lisp:col-highlight.el uses and extends VlineMode in several ways. It provides these commands:
+
+* `toggle-highlight-column-when-idle' -- Highlight the current column whenever Emacs is idle more than a certain number of seconds.
+
+* `column-highlight-mode' -- Continually highlight the current column, tracking the TextCursor as it moves. If you bind this to a key, you can also use it to briefly show the current column, by hitting the key twice.
+
+* `flash-column-highlight' -- Highlight the current column for `col-highlight-period' seconds. Another way to show the current column temporarily.
+
+'''See Also:'''
+
+* HighlightCurrentLine for similar highlighting, but for the current line, not the current column.
+* CrosshairHighlighting for ways to highlight the current line and the current column at the same time.
+* ChangingCursorDynamically for a way to change the cursor type when Emacs is idle, making it more visible.
+* ModeLinePosition for a way to highlight the column number in the mode-line when the cursor is past some limit column you set.
+* VlineMode for another way to highlight the current column.
+* FindLongLines for how to find the longest lines (so you can shorten them).
+
+
+----
+
+CategoryDisplay
+CategoryEditing
+CategoryAccessibility
+CategoryFaces
+HighlightTemporarily
+

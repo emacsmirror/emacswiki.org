@@ -1,0 +1,21 @@
+Just follow instructions and it goes as smoothly as it gets.
+
+A gotcha for newbies like me: 
+
+  Often the 'make' on sun is the Sun make, not the GNU make. 
+  Please make sure that GNU make is what gets called.
+
+ Also, nice to have gcc installed rather than sun's cc...
+
+Also, if you are receiving errors such as:
+
+Fatal error (11).make[1]: *** [blessmail] Segmentation Fault (core dumped)
+
+Try building with cc, by using --without-gcc
+
+Building GNU emacs 21.3 with GCC 3.3: There is a known bug in emacs 21.3 where it assumes that zero-initialized data is in the .data segment (GCC 3.3 optimizes zero-initalized data into the .bss segment). emacs will compile and the temacs executable will run but emacs itself will segfault in __do_global_dtors_aux (). The workaround is to patch emacs yourself (see the bugreport link below for more information and patches) or grab the emacs source from CVS.
+
+http://gcc.gnu.org/bugzilla/show_bug.cgi?id=11386
+
+----
+CategoryBuilding

@@ -1,0 +1,6 @@
+English: WritingChinese
+* 一篇[http://202.38.99.17/~huxw Robinh的网页]上的文章“
+[http://202.38.99.17/~huxw/emacs/daily-emacs/daily-emacs-Z-H-13.html#node_chap_11 让Emacs支持中文]”值得一读。该文是Robinh的[http://202.38.99.17/~huxw/emacs/daily-emacs/daily-emacs-Z-H-1.html Emacs日常生活]系列的一章，该系列同样推荐阅读。
+* [http://mule-gbk.sourceforge.net/ mule-gbk] GNU Emacs 的GBK中文解决方案, 已经支持X下GBK文本的复制/粘贴.
+----
+回到 [[Emacs入门]]

@@ -1,0 +1,14 @@
+I'll post things here as I find out how to migrate from using VM (under GnuEmacs) to Gnus. I would like to preserve the mail history I have, and migrate over to using Gnus as my mail reader. Any pointers would be appreciated. I'd like to try to split mail in the way I have my VmAutoSave rules set up. -- BruceDurling
+
+: I did this a while ago, but I don't remember anything helpful. Had the EmacsWiki only existed then... -- EdwardOConnor
+
+: Gnus can handle mail in the the unix mbox format used by Vm.  To import your old vm mailboxes into Gnus, type `G f' in the GroupBuffer.  You'll be prompted for the name of file.  Give the path to one of your Vm mail files.  You can now read that file with Gnus.  Note that you should probably not use Vm for that file after this, although I'm not sure of that. After doing this, you probably want to choose one of the normal gnus mailbox styles (I suggest nnml), and copy all your old mail into your new gnus folders. -- DaleHagglund
+
+:: Is there an easy way to copy all of the old mail into an nnml folder? -- BruceDurling
+
+: First create an nndoc group like described above, then type <code>SPC</code> to enter the SummaryBuffer for that group.  In the SummaryBuffer, type <code>M P a</code>.  All the articles will now be marked with the ProcessMark, which shows up in the buffer as a <code>#</code> sign.  Now type <code>B c</code> to copy the marked articles.  You'll be prompted for the group to copy them to.
+
+: The other possible way is to tell Gnus that your old mail folders are mail sources.  Then, when you start Gnus, it will automatically suck the old messages from them, and then delete them.  However, this approach is tricky unless you're already familiar with Gnus, so I recommend against it. -- DaleHagglund
+
+----
+CategoryGnus CategoryMail

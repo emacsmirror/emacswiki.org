@@ -1,0 +1,79 @@
+: Those who cannot remember the past are condemned to repeat it.
+: -- [http://www.iupui.edu/~santedit/ George Santayana], //Life of Reason//, Reason in Common Sense, Scribner's, 1905, page 284.
+
+'''Emacs''' began at the Artificial Intelligence Laboratory at
+MIT (See MeatBall:MitAiLab). Beginning in 1972, staff hacker CarlMikkelson added
+display-editing capability to '''[[TECO]]''', the text editor on the AI Lab's
+IncompatibleTimeSharingSystem (ITS) "Display-editing" meant
+that the screen display was updated as the user entered new commands;
+compare the behavior of '''ed'''.  In 1974, RichardStallman added macro
+features to the TECO editor.
+
+The users at the AI Lab Large soon accumulated a collection of custom
+macros, [[TECO]] programs that could be launched from within the display
+editing mode. In 1976, Stallman wrote the first Emacs ("Editor
+!MACroS"), which organized these macros into a single command
+set and added facilities for SelfDocumentation and to be [[extensible]]. TecoEmacs soon
+became the standard editor on ITS.
+
+In January 1978, EugeneCiccarelli wrote an internal document for the MIT AI Lab, introducing the features of Emacs to users.
+The title of the report was AnIntroductionToTheEmacsEditor.
+
+Several Emacs-like editors were written in the following years, such
+as '''[[EINE]]''' (__E__INE __I__s __N__ot __E__MACS) and '''[[ZWEI]]''' (__Z__WEI __W__as __E__INE __I__nitially),
+written by Daniel Weinreb and Mike !McMahon.  ZWEI later became '''[[Zmacs]]'''.
+
+In 1978, Bernard Greenberg wrote '''MulticsEmacs''' at Honeywell's Cambridge
+Information Systems Lab. The editor was written in MacLisp, a dialect
+of the LISP programming language. User-supplied extensions were also
+written in Lisp. The choice of [[Lisp]] provided more extensibility than
+ever before, and has been followed by most subsequent Emacsen.
+
+'''Gosling Emacs''', the first Emacs to run on Unix, was written by
+JamesGosling in 1981. It was written in C, with MockLisp as its
+extension language.  Mock Lisp looked a bit like Lisp, but it was not really Lisp: it lacked true lists (it couldn't `cons'), and handling of function arguments was done in an error-prone, artificial way. For more info, see [[WikiPedia:Gosling Emacs]]).
+
+In 1981, Stallman wrote a report on Emacs as an internal document of the MIT AI Lab.  The title of the report was
+''EmacsTheExtensibleCustomizableSelfDocumentingDisplayEditor''.
+He also gave a speech on his experiences, ''My Lisp Experiences and the Development of GNU Emacs'', 28 Oct 2002, at the International Lisp Conference.[http://www.gnu.org/gnu/rms-lisp.html]
+
+In 1984, Stallman began writing a new Emacs implementation, '''GnuEmacs''', which became the first program in the nascent GNU project. See [[WikiPedia:GNU Emacs]] for an extensive history and description. GNU Emacs
+was written in C and used EmacsLisp for extension. The first widely
+distributed version of GNU Emacs was 15.34, which appeared in
+1985. Like Gosling Emacs, GNU Emacs ran on Unix, but it had more
+features and a more advanced extension language. It soon replaced
+Gosling Emacs as the ''de facto'' Emacs editor on Unix.
+
+Beginning in 1991, '''LucidEmacs''' was developed by JamieZawinski and
+others at Lucid Inc., based on an early alpha version of GNU Emacs
+19. The codebases soon diverged, and the separate development teams
+gave up trying to merge them back into a single program. Lucid Emacs
+has since been renamed '''[[XEmacs]]'''. To paraphrase George Bernard Shaw, GNU Emacs and XEmacs are two editors separated by a common language.
+
+JamieZawinski drew up an Emacs timeline a couple of years back.[http://www.jwz.org/doc/emacs-timeline.html]
+
+A graphical version of Jamie's timeline can be found at [http://www.aisee.com/graph_of_the_month/emacs.htm].
+
+CraigFinseth has some interesting Emacs stuff on his web pages.  See
+EmacsImplementations for a huge list of Emacs-like editors.
+
+Beginning with version 21, GNU Emacs was able to display inline images, so
+it was possible to display a splash image when
+starting-up. For the story behind the creation of the GNU Emacs logo, see [http://www.ee.ryerson.ca/~elf/emacs/logo/]
+
+There is also an [http://www.softwarepreservation.org/projects/LISP/index.html#Emacs_Lisp_ Emacs Lisp section at the "History of Lisp" project page].
+
+EmacsGrepAndUnix contains a detailed (30 page) description of Emacs's early years and the resulting politicization around free and proprietary software.
+
+EmacsAtWorkPaper covers the history of GnuEmacs and dynamics of the FreeSoftware community.
+
+[http://www.free-soft.org/gpl_history The History of the GPL] is also very much about the One True Editor.
+
+: "Because programming and the world of computers moves so fast it's tempting to think of arguments about old versions of Emacs as ancient history. But the people who had those bitter arguments then are still important to us now. The relationships that were forged, or broke down are still having an impact.
+: "As far as I can see the only thing that can be done about this is that we all consider the motivation and history when we consider these issues. That's normally a history student thing rather than a computer science student thing."
+:: -- NicFerrier's Web blog.[http://www.tapsellferrier.co.uk/nics-blog/223523400.nicferrier.tapsellferrier.co.uk] 2006-05-11
+
+You can try an old emacs Version 165 online running on Tops-20 using "telnet twenex.org". (The help key is C-_, the info manual is installed C-_ i ). See http://www.twenex.org/ for more info about the system. 
+
+----
+CategoryHistory

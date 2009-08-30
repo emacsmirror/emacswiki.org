@@ -1,0 +1,14 @@
+I guess I may as well take ownership of this page.  [[日本語:StephenTurnbull(日本語)]].
+
+I use XEmacs.  At first it was just luck.  I'd been using Emacs since the TECO days, but when I got here to Japan, I asked both groups to help me fix a crash in XIM.  Neither was much help directly but XEmacs had good internals documentation, readable code, MULE already integrated, and an open development model so I could actually see what people were doing and how they did it (this was 1996).  Then I found I liked the people, and I liked the code, and then I found I didn't get along with Richard Stallman's management and political styles.  Why fight *or* switch?  So I stuck with XEmacs.
+
+Besides being a feisty proponent of XEmacs in various public fora, I'm an economist with an interest in how free software business works (well, to be honest, at the moment I'm interested in how it can be made to work, or even /if/ it can be made to work!)  You can find the beginnings of a serious website about my research at http://turnbull.sk.tsukuba.ac.jp/Zope/OSSEcology.  It won't be *good* (let alone *great*) for several months, but the trend is definitely up due to installing Zope (after a couple of years of bitrot).
+
+I also led the release of XEmacs 21.4 as an OutsideAgitator, though now I'm an insider.  Presently, besides occasionally rolling and releasing beta tarballs, I'm the main proponent of the Xft branch of XEmacs (CVS branch tag "sjt-xft").  Sometime soon I'll write a bit more about the Xft branch (where most of the credit is actually due MatthiasNeubauer and EricKnauel, and a bit to AidanKehoe and a couple of Russian guys whose names I'll look up), and where it's going.
+
+Also, it's about time we did something about releasing XEmacs 22 (yep, it'll be XEmacs 22).  BenWing seems to like wikis, so maybe I'll plant my "plans" tree here.  Odds are not bad that it will turn into the official one, but if you get impatient, feel free to start your own (and put a pointer to it here!)  ... a couple hours later, and I've decided that insomnia really sucks, but I'll get started on my XEmacsDesiderata page.
+
+http://turnbull.sk.tsukuba.ac.jp/Tools/XEmacs is kinda outdated; I plan to Zope-ify that in the near future, which should help to keep it up to date.
+
+----
+CategoryHomepage

@@ -1,0 +1,44 @@
+To connect to password protected servers you need the .authinfo file.
+
+Create it with only read-write rights for the user. Under Unix say
+
+ touch ~/.authinfo
+ chmod 600 ~/.authinfo
+
+in a shell. Consider encrypting it ([[GnusEncryptedAuthInfo]]).
+
+Add a line for each user like this with following field(s) {where applicable}:
+
+<code>machine HOST login NAME password VALUE port NUMBER</code>
+
+i.e. in following example from John Doe's ~/.authinfo:
+
+<code>machine imap.gmail.com login john_doe@gmail.com password notapassword port 993</code>
+
+The relevant IMAP fields would map as:
+
+machine -> <code>imap.gmail.com</code> ;
+login -> <code>johnDoe@gmail.com</code> ;
+password -> <code>notapassowrd</code> ; 
+port -> <code>993</code> ;
+
+Optional parameters are (depending on protocol) might include <code>port number</code> (you can also use symbolic names like <code>imap</code> here), <code>force yes</code> and <code>default</code>.
+
+You can use different authinfo files for different server methods. For example use this variable:
+
+<code>nntp-authinfo-file</code> for setting the nntp authinfo file
+
+<code>nnimap-authinfo-file</code> for setting the nnimap authinfo file
+
+<code>smtpmail-auth-credentials</code> for setting the smtpmail authinfo file
+
+== Connecting to another Box on an Exchange Server ==
+Using the nnimap backend you can connect to another box by giving the domain, username and boxname explicitly:
+
+ machine <mailserver> login "<domain>/<username>/<boxname>" password "secret"
+
+== Encrypting passwords
+It is possible to encrypt the whole file so that Emacs asks a passwords to access it. See [[GnusEncryptedAuthInfo]].
+
+----
+CategoryGnus

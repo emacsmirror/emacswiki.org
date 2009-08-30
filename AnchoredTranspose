@@ -1,0 +1,76 @@
+[http://www.emacswiki.org/elisp/anchored-transpose.el
+anchored-transpose.el] defines an interactive autoloaded function to
+transpose portions of a region around an anchor phrase.  
+
+<b>In other words it swaps 2 regions.</b>  For example:
+
+   `this phrase but not that word'    can be transposed into
+   `that word but not this phrase'
+
+Here's how.
+
+   I want this phrase but not that word.
+          |                            |   This is the entire phrase.
+                      |     |              `but not' is the anchor phrase.
+
+First select the entire phrase and type C-x t.  Then select the anchor
+phrase and type C-x t again.  You're done!
+
+You can select the anchor phrase first followed by the phrase to be
+transposed if more convenient.  Or select the 2 phrases independently.  If you select 2 overlapping sections it ignores the overlap and swaps the non-overlapping sections.
+It even supports SecondarySelection.  Somehow it can always tell what you want ;-)
+
+Typing C-x t with nothing selected cancels a previous selection if you 
+need to start over.
+
+Multi-line regions transpose as easily as words.  Check it out in the
+ElispArea at [http://www.emacswiki.org/elisp/anchored-transpose.el
+anchored-transpose.el].
+
+21/07/2005 -- A bug handling multi-line selection was fixed. Re-download your copy.
+
+=== The philosophy section ===
+
+Don't mistake me for a troll now, these are my sincere thoughts.
+
+Sometimes I wonder what for and how people use functions like this. I
+mean, I understand the description of what, for example,
+transpose-chars does, but I never get it into my spine to actually use
+this. (Not that I have tried that hard really, maybe it is worth
+trying to learn it). I just <nowiki><backspace> <backspace>
+<backspace></nowiki> and retype instead. And now this function, even
+cooler, to transpose whole regions. I mean, gosh! I would love to have
+a situation where I could use it; it looks so cool! :) I almost get
+what we in Sweden call "performance anxiety" when I see all nice text
+manipulation commands that I *know* I could use but which seems to
+cumbersome to use.
+
+Maybe it is because some people have different kind of jobs than me,
+where they need different kinds of text manipulation?
+
+Or maybe they just want to look cool... :)
+
+Comments? How do you use this or similar commands? Does it really save time? etc etc...
+
+-- MaDa
+
+: I wouldn't want to live w/o C-t and C-x C-t (transpose-lines).  The former I use mainly 
+for human language texts like documentation and emails, the latter I use for coding regularly.
+Although I had to modify transpose-chars to go back one space before transposing because that's 
+what I usually want: I recognize a transposing-typo and change it with just a quick C-t, without 
+the need of moving back or something. -- StefanKamphausen
+
+-- [[Rick Bielawski]] 
+
+: Actually I wrote it after asking on the NGs if such a function existed.  I use it all the
+time.  Being a programmer who does a lot of maintenance I might use it more often than a writer 
+but as a lousy writer I'm always finding I need to reword what I just said and so often there 
+is a connecting phrase between the items I want to exchange.  That's where the name came from.  
+I was too dumb to realize I was just swapping regions or I'd have named it swap.el.
+
+-- Adam Duck
+
+: well, I can recommend [http://www.emacswiki.org/cgi-bin/wiki/ReplaceRecentCharacter rrc.el]
+to replace certain characters...
+-----
+CategoryRegion

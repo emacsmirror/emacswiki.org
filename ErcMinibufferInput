@@ -1,0 +1,11 @@
+rw suggested input in the minibuffer.
+[http://www.marcelotoledo.org/pub/stuff/screenshots/erc-minibuffer.jpg
+here] is a screen shot.
+
+You need to set the variable `erc-prompt-interactive-input' to t to
+get this feature.
+
+Note: This above mentioned variable has been removed from ERC (as of erc.el CVS revision 1.601).
+
+----
+[[ERC]]

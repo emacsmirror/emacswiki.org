@@ -1,0 +1,167 @@
+Un mecanismo que puede ahorrarnos muchas pulsaciones de teclas es el
+modo menor <code>abbrev-mode</code>. Su funcionamiento se basa en que
+cuando emacs reconoce cierta <i>palabra</i> mientras escribimos la
+sustituye por un texto que hayamos preestablecido. A la palabra que
+desencadena el reemplazo se la llama <i>abreviación</i> y el texto que
+se inserta <i>expansión</i>.
+
+Para empezar nada mejor que un ejemplo. Escribimos <code>foo</code> en
+un buffer de emacs, con el cursor situado tras la segunda
+<code>o</code> pulsamos la combinación de teclas <code>C-x a i
+g</code> y cuando en el minibuffer nos pida <code>Global expansión for
+"foo":</code> escribimos <code>foo bar baz</code>.
+
+Con esto le hemos dicho a emacs que defina una abreviación global
+asociando a la palabra <code>foo</code> (la abreviación) el texto
+<code>foo bar baz</code> (la expansión).
+
+Si ahora escribimos <code>foo</code> en el buffer veremos que no
+ocurre nada. Para poder utilizar el <code>abbrev-mode</code> primero
+hay que activarlo, por ejemplo con <code>M-x abbrev-mode</code>. Si
+ahora escribimos <code>foo<espacio></code> veremos que es reemplazado
+por la expansión.
+
+* <b>¿cuando se realiza la expansión?</b> cuando emacs reconoce una
+  abreviación en una palabra por si misma. Si escribimos
+  <code>foofoo</code> se considera una palabra y no se realiza
+  expansión de ningún <code>foo</code>.
+
+* <b>¿donde se guardan las abreviaciones?</b> normalmente cada modo
+  mayor tiene una tabla de abreviaciones y existe también una tabla de
+  abreviaciones global activa en todos los modos.
+
+
+== referencia de comandos mas importantes ==
+
+
+
+=== Definir abreviaciones ===
+
+emacs define atajos de teclado que permiten definir abreviaciones a
+partir del contenido del buffer:
+
+* <code>C-x a g</code> define una expansión global, utilizando una o
+  mas palabras situadas antes del punto de inserción como texto de la
+  expansión
+
+* <code>C-x a l</code> igual que la anterior, pero se guarda en la tabla del
+  modo mayor activo
+
+En ambos casos emacs pedirá el nombre de la abreviación. Estos
+comandos por defecto toman una única palabra del buffer para formar la
+expansión, pero podemos utilizar el comando prefijo (<code>C-u</code>)
+para indicar el numero de palabras.
+
+Los dos comandos que siguen son equivalentes a los dos anteriores,
+pero en lugar de tomar del buffer el valor para la expansión toman el
+valor para la abreviación. En cierto sentido son inversos:
+
+* <code>C-x a i g</code>
+
+* <code>C-x a i l</code>
+
+En ambos casos emacs pedirá el texto de la expansión. Esto comando por
+defecto toman como abreviación la palabra situada justo antes del
+punto de inserción. Con el prefijo <code>C-u</code> podemos indicarle
+que utilice una palabra anterior.
+
+=== Expandir abreviaciones ===
+
+Si tenemos el modo <code>abbrev-mode</code> activo emacs expandirá
+automáticamente las abreviaciones, pero en ocasiones los comandos
+siguientes pueden resultar útiles:
+
+* <code>C-x a e</code> expande la abreviación situada antes del punto
+  de inserción. Funciona aun cuando <code>abbrev-mode</code> no está
+  activo
+
+* <code>M-x expand-region-abbrevs</code> expande la abreviaciones que
+  hay en la región
+
+=== Editar abreviaciones ===
+
+Con <code>M-x edit-abbrevs</code> se crea un buffer en el que podemos
+modificar las abreviaciones definidas. Para finalizar e instalar los
+cambios hay que pulsar <code>C-c C-c</code>.
+
+=== Guardar/cargar abreviaciones ===
+
+Para mantener las abreviaciones entre sesiones de edición podemos
+utilizar los comandos <code>M-x write-abbrev-file</code> y <code>M-x
+read-abbrev-file</code>. En ambos casos nos pedirá el nombre del
+fichero.
+
+
+== Un poco de elisp ==
+
+En el buffer <code>*scratch*</code> podemos probar el siguiente ejemplo:
+
+<pre>
+(define-abbrev lisp-interaction-mode-abbrev-table "foo" "(foo bar baz)")
+  -> "foo"
+foo.
+(abbrev-mode)
+  -> t
+<foo.>>(foo bar baz).
+</pre>
+
+En la linea 1 añadimos a la tabla de abreviaciones utilizada en el
+buffer <code>*scratch*</code>
+(<code>lisp-interaction-mode-abbrev-table</code>) la abreviación
+<code>foo</code>, que expandirá a <code>(foo bar baz)</code>.
+
+En la linea 3 vemos que al escribir <code>foo.</code> no se efectúa la
+expansión de la abreviación, esto es porque el modo menor
+<code>abbrev-mode</code> no está activo en el buffer. En la linea 4
+activamos el modo <code>abbrev-mode</code> (puede hacerse con
+<code>M-x abbrev-mode</code>) y en la linea 6 , con ese simbolismo
+extraño, intento mostrar que al escribir <code>foo.</code> es
+expandido a <code>(foo bar baz).</code>. Observar que el carácter que
+ha disparado la expansión (un punto en el ejemplo) es conservado.
+
+Lo realmente interesante de <code>define-abbrev</code> es que permite
+ejecutar una función después de expandir una abreviación. Esto
+posibilita definir abreviaciones cuya expansión puede variar en
+función del contexto. Veamos un ejemplo sencillo, como definir una
+abreviación cuya expansión depende de la palabra situada delante del
+punto de inserción.
+
+<pre>
+;; función de ejemplo para ilustrar el uso de abreviaciones dinámicas
+(defun crea-defun ()
+  (backward-word 1)
+  (insert "(defun ")
+  (forward-word 1)
+  (insert " () )")
+  (backward-char 2))
+  -> crea-defun
+
+(define-abbrev lisp-interaction-mode-abbrev-table
+               "foo"
+               ""
+               'crea-defun)
+  -> "foo"
+</pre>
+
+De la linea 1 a la 6 definimos la función <code>crea-defun</code>, que
+<i>envuelve</i> en un <code>(defun ... () )</code> la palabra situada
+antes del punto de inserción. Es importante observar que la función no
+tiene argumentos.
+
+De la linea 7 a la 10 definimos una abreviación. Como expansión
+especificamos la cadena vacía y pasamos la función como argumento.
+
+Si en un buffer tenemos el texto <code>hola mundo*</code> (el
+asterisco representa el punto de inserción) y escribimos
+<code>foo</code>, la expansion lo convertirá en <code>hola (defun
+mundo () *)</code>.
+
+== Ver tambien ==
+
+Los paquetes [http://www.emacswiki.org/cgi-bin/wiki?MsfAbbrev msf-abbrev],
+[http://www.emacswiki.org/cgi-bin/wiki?ElseMode else-mode], 
+[http://www.emacswiki.org/cgi-bin/wiki/SkeletonMode skeleton-mode],
+[http://www.emacswiki.org/cgi-bin/wiki/TempoMode tempo-mode] y
+[http://www.emacswiki.org/cgi-bin/wiki?SemanticBovinator semantic]
+pueden resultar utiles.
+

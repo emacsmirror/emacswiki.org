@@ -1,0 +1,15 @@
+Zone mode 'zones' emacs out, choosing one of its random modes to obfuscate the current buffer, which can be used as a screensaver. With the following you can lock X11 with M-x lock-screen:
+
+ (defun lock-screen ()
+   "Lock screen using (zone) and xtrlock
+ calls M-x zone on all frames and runs xtrlock"
+   (interactive)
+   (save-excursion
+     ;(shell-command "xtrlock &")
+     (set-process-sentinel
+      (start-process "xtrlock" nil "xtrlock")
+      '(lambda (process event)
+         (zone-leave-me-alone)))
+     (zone-when-idle 1)))
+
+NOTE: this depends on the program xtrlock (package 'xtrlock' in Debian GNU/Linux)

@@ -1,0 +1,259 @@
+== ''Use Keyboard Macros'' ==
+
+
+When I need to make the same kind of change to a number of
+similar entities, I use a [[keyboard macro]].
+
+For instance, I once used an Emacs keyboard macro to reduce the content
+of a HTML table down to gnuplot's input format (to plot the data). I once used Emacs macro to translate Ruby 
+code to Scheme code, by adding parenthesis at the right places. I was once debugging somebody else's code, and their debugging output was generating lots of noise that did not pertain to the bug. Instead of spending time to
+discover how the debugging output was generated, I used Emacs macro to search and remove the noise from the
+output. I once needed to write a C switch() statement for an enumerated type.  I copied the list of enumerated constants from the header file to my .c file, and recorded a keystroke macro that converts "MY_CONSTANT" into "case MYCONSTANT: break". I used keyboard macros to manipulate this page. I changed all the bold asterisks into into <code>...</code> markers.
+
+
+Emacs macro are a powerful one-shot text-processing tool. It can do a lot of file-munging that you would
+do otherwise with a throw-away Perl script or Awk script.
+
+=== A powerful keyboard macro idiom ===
+This method leaves the TextCursor positioned at the beginning of a search target, which means that you can see what will be changed should you again invoke the macro.  If you find the cursor positioned at a point you do not wish to change, <code>C-s C-s</code> repeats the last search of the macro and will move you to the next likely modification point.  Of course, when merely changing successive lines it may not be necessary to search at all.  Simply writing the macro so it moves the cursor to the next line may be adequate.
+
+=== How To Use Keyboard Macros ===
+
+You tools for this are:
+
+* <code>start-kbd-macro</code> default binding: '<code>C-x (</code>' --- Starts recording a keyboard macro.
+
+* <code>end-kbd-macro</code> default binding: '<code>C-x )</code>' --- Ends recording of a keyboard macro.
+
+* <code>call-last-kbd-macro</code> default binding: '<code>C-x e</code>' --- Executes the last keyboard macro defined.
+
+The basic steps of the method are:
+
+* Use incremental search (<code>C-s</code>) to position the cursor within the block of text to be edited.  Exit incremental search mode with `RET'.
+
+* Hit start-kbd-macro <code>C-x (</code>  --- (that is control-x followed by an opening parenthesis.) 
+Alternatively, starting with emacs22, hit the F3 key.
+
+* Apply the edits using whatever keystrokes or commands you like. Be careful not to ring the bell, by accident or with <code>C-g</code>, as this will cancel the collection of macro keystrokes and you will have to start over.  In this case you may also wish to undo (<code>C-/</code>) the changes just made, or just finish them and try again with the next block of text to be edited.
+
+* Repeat your original incremental search to position the cursor within the next block of text to be edited.  Again, exit incremental search mode with `RET'.
+
+* Hit end-kbd-macro <code>C-x )</code> --- (that is control-x followed by a closing parenthesis.)
+Alternatively, with emacs22, hit the F4 key.
+
+* Hit call-last-kbd-macro <code>C-x e</code> multiple time to execute the macro on each search target.
+Macro execution can be repeated by hitting the e key the appropriate
+number of times. For example, C-x e e e  executes the macro three times.
+Alternatively, with emacs22, hit the F4 key multiple time.
+
+
+=== Advice and tricks ===
+
+Here are a few tricks to get the most out of Emacs macros:
+
+* Don't bother trying to figure out how to produce the desired result using the fewest keystrokes.  Use undo (<code>C-/</code>) to backtrack if you make mistaken edits.
+
+* When writing macros to be applied to successive lines, begin your macro by moving to the beginning or end of the line (<code>C-a</code> or <code>C-e</code>) rather than counting on being at any specific position within the line when the macro is invoked.  Command repeation (e.g. preceeding <code>C-f</code> command with escape and the number of repeations) can be used to go to specific columns, or incremental search can be used, in conjunction with narrowing if necessary.
+
+* Use <code>RET</code> to exit incremental searches done within the macro.  <code>C-g</code> will abort the macro collection and <code>C-f C-b</code> will fail if you happen to be positioned at the end of the buffer.
+
+* Take care to make your macro independent of the length of the manipulated text, the number of words being manipulated, and independent of indententaion.  Within your macro use positioning commands like <code>C-a</code> (beginning of line), <code>C-e</code> (end of line), <code>M-f</code> (forward word), <code>M-b</code> (backward word), and ~especially~ incremental search (<code>C-s</code>).  Edit with <code>M-d</code> (delete word forward), <code>M-backspace</code> (delete word backward), <code>C-k</code> (kill-line) erase to end of line, and especially cut (mark, <code>C-space</code>, move cursor, and then kill-region <code>C-w</code>) and paste (<code>C-y</code> yank, and <code>M-y</code> pop kill ring and yank).  Both yanks will paste the text deleted with any of the commands mentioned.  It often takes very little effort to make a macro independent of where the cursor is positioned in the line when the macro is invoked.
+
+* Use 0 as argument to call-last-kbd-macro <code>C-x e</code> to execute the macro until an error occurs (e.g. because a search failed or the end of buffer has been reached ), i.e. <code>C-u 0 C-x e</code>.
+
+* Limit the region that is affected by the macro by narrowing your buffer with narrow-to-region <code>C-x n n</code>.  Undo narrowing with <code>C-x n w</code>.
+
+* Alternatively, select a region, then use apply-macro-to-region-lines, which is bound to C-x C-k r. From the docstring: /Apply last keyboard macro to all lines in the region. For each line that begins in the region, move to the beginning of the line, and run the last keyboard macro./
+
+* `call-last-kbd-macro' is, in effect, bound to F4 by default, for recent versions of emacs  (> 21). If you have an older version, bind `call-last-kbd-macro' to a single key (or use ##repeatable.el## to add a repeatable advice on `call-last-kbd-macro'). That way, you can trigger the macro in riffle by simply resting your finger on the key.
+
+         (define-key global-map [f4] 'call-last-kbd-macro)
+
+* Another way to trigger a macro riffle is: <code>C-x e C-x z z z z z z z</code> (keep your finger on the z key)
+This can also be achieved with : <code>C-x e e e e e</code> (keep your finger on the e key)
+
+* Alternatively, you can give a name to the macro with M-x ''name-last-kbd-macro''. This way you can invoke the macro with M-x ''name'' just like any other Emacs command.
+
+* Bind apply-macro-to-region-lines to a key, such *M-F2*. For each complete line between point and mark, this function move to the beginning of the line, and runs the last keyboard macro.
+
+         (define-key global-map [\M-f2] 'apply-macro-to-region-lines)
+
+* If one or two of the entities to edit does not quite match the pattern (e.g., the last constant in the list isn't followed by a comma), make them look the same first.
+
+* [[Icicles]] offers these [[Icicles - Multi-Commands|multi-commands]] for using keyboard macros:
+** `icicle-kmacro', bound to `f5' in ''Icicle'' mode. Execute a keyboard macro according to its position in `kmacro-ring'.
+** `icicle-execute-named-keyboard-macro', bound to `C-x M-e' in ''Icicle'' mode. Execute a named keyboard macro by name. Unlike `M-x', the completion candidates are only the keyboard macro names.
+
+
+=== Saving a macro ===
+
+Emacs provides a number of functions to save macros for use in
+future sessions:
+
+M-x ''kmacro-name-last-macro'', bound to <code>C-x C-k n</code>, gives a command name to the last defined macro. As explained above, the macro can then be called by typing M-x ''name-of-the-macro''.
+
+M-x ''insert-kbd-macro'' asks for the name of a macro and inserts its 
+definition at point. The use is to insert the definition in the ''.emacs''
+init file, so that the macro will be ready for use in future sessions.
+
+I use the following code to automate the process:
+
+  (defun save-macro (name)                  
+    "save a macro. Take a name as argument
+     and save the last defined macro under 
+     this name at the end of your .emacs"
+     (interactive "SName of the macro :")  ; ask for the name of the macro    
+     (kmacro-name-last-macro name)         ; use this name for the macro    
+     (find-file "~/.emacs")                ; open the .emacs file 
+     (goto-char (point-max))               ; go to the end of the .emacs
+     (newline)                             ; insert a newline
+     (insert-kbd-macro name)               ; copy the macro 
+     (newline)                             ; insert a newline
+     (switch-to-buffer nil))               ; return to the initial buffer
+
+Put it in your .emacs file. You can then save your last macro
+by typing M-x ''save-macro''.
+
+
+=== ELisp in Macros ===
+
+Emacs macro can also make use of simple Elisp expressions to take care of situations too complex for normal keyboard macros.
+
+A good example is the need to create, say, a list of hostnames that differ by a number added to the first component:
+
+   * hostname1.lm.com
+   * hostname2.lm.com
+   * hostname3.lm.com
+
+Before starting the macro, I set an Elisp variable to 1:
+
+ M-: (setq x 1)
+
+M-: evaluates an Lisp expression. In this case it simply create a variable call *x* assigns it the value 1.
+
+Then I start recording a macro, type "hostname," then insert the variable's value:
+
+ C-u M-: x
+
+The prefix C-u instruct M-: to insert the result of the evaluation at the point. Then I increment the variable:
+
+ M-: (setq x (+ x 1))
+
+then finish typing *.lm.com^J*.  Now, I've got a macro that will insert a new unique hostname each time I invoke it.  With an argument of 50, I've got 50 unique hostnames in a snap.
+
+[new]
+I find it easier in cases like these to use [[registers]]:
+<pre>
+C-u 1 C-x r n a ;; put 1 in register a
+C-x (           ;; start macro
+hostname        ;; type hostname
+C-x r i a       ;; insert register a
+C-e             ;; end of line
+C-x r + a       ;; increment register a
+.lm.com<RET>    ;; finish typing hostname
+C-x )           ;; finish keyboard macro
+</pre>
+
+I have even used this method along with a calc buffer to increment in hex.
+[new]
+
+[new]
+Keyboard macros do have a counter feature: EmacsKeyboardMacroCounter, although it is apparently very recent. (Since I can't find any online copy of the info file with it in it...
+[new]
+
+Use Macro counter
+[new]
+<pre>
+  01. C-x C-k C-a  to set the incrementing number
+  02. C-x C-k C-f  to set the output format.  %02d for example
+  03. C-x (        to start the recording
+  04. C-x C-k C-i  to insert the counter
+  05. C-x )        to end the recording
+  06. C-x C-k C-c  to set the count 
+
+  Then you are ready to go.  For example, you can choose a
+  region and use 
+  07. C-x C-k r to run it at each complete line
+
+The index is generated in this way actually.
+gejun
+</pre>
+[new]
+
+You can also do incrementing list using increment-register function.
+
+If you want to produce this list:
+
+<pre>
+test1
+test2
+test3
+...
+</pre>
+
+Do like this:
+
+<pre>
+C-x r n q           (store the number 1 in register q)
+C-x (               (start macro recording)
+test C-x r i q      (insert contents of register q)
+C-x r + q           (increment register q by 1)
+RET                 (new line)
+C-x )               (stop macro recording)
+</pre>
+
+
+If you want to increment by more than one step at a time, send a prefix argument to C-x r +
+
+
+
+=== Make a keyboard macro out of your lossage === 
+
+You can create a macro out of your last 100 keystrokes. Type <code>C-x C-k C-h l</code>. 
+
+If you want to define a kbd macro, you dont necessarily need
+to <code>C-x ( ... C-x )</code>. you can simply do what you wanted to do,
+and hit <code>C-x C-k C-h l</code> afterwards. This presents you with
+your last 100 keystokes in a editable form. Simply fill in a
+name, and a keybinding, hit <code>C-c C-c</code>, and you are done.
+
+One caveat is that this doesn't work when there are mouse or frame events in the lossage buffer.  Only pure keyboard events are supported.
+
+[new]
+I find it a good idea to use C-q to insert electric characters while recording
+a macro.  This makes them execute faster (at least on my very slow machine).
+-- PiotrMieszkowski
+
+=== Really Dumb Question ===
+Is there a way to convert an existing keyboard macro to elisp code?
+
+The use-case for such a facility would be to explore the way emacs works internally.  In *cough* MS Office *cough* applications, you can discover much about the object model from recording macros (though the comparison may be unfair).
+-- ChristopherSmith
+
+[new]
+You can do this with M-x insert-kbd-macro but the result is probably not to your liking. If I do:
+
+ C-x (
+ C-n
+ foo
+ C-x )
+ M-x name-last-kbd-macro RET newline-and-foo
+ M-x insert-kbd-macro RET newline-and-foo RET
+
+emacs will insert the following into the buffer:
+
+
+ (fset 'newline-and-foo
+   "\C-nfoo")
+
+I would very much like to be able to insert something like this:
+
+  (defun newline-and-foo ()
+    (interactive)
+    (next-line)
+    (insert "foo"))
+
+But it appears emacs does not have this feature. A casual glance at the source for insert-kbd-macro in macros.el would suggest that the best way to go about this would be to write a function that called <code>(key-binding)</code> on each key it was about to insert and inserted the corresponding function name instead. -[[avar]]. 
+
+[new:IainDalton:2009-02-12 10:17 UTC]
+edit-kbd-macro lists the names of the commands used in the function.  With some regexing you could turn this into a function.  Better yet, look in edmacro.el and write a function that writes the function.

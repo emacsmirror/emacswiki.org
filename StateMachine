@@ -1,0 +1,194 @@
+Edited by AlexSchroeder, who thinks the code looks impressive,
+eventhough I doesn't understand it.  I'm keeping it here for myself to
+read when I have some more time.
+
+ From: ThomasBurdick
+ Subject: Re: producing nice code (was Re: (very longish!) Re: how to read  input from a file)
+ Newsgroups: gnu.emacs.help
+ Date: 01 Oct 2001 01:40:00 -0700
+
+Below is a revised implementation that keeps states in their own
+(dynamically-scoped) namespace, so you can use the same name for a
+variable and a state, which is how it should be.  I think it's kind of
+a nice example of how much you can accomplish in a screen-full of
+lisp.
+
+ (require 'cl)
+ (defvar state-hash (make-hash-table))
+
+ (defmacro define-state (name &rest body)
+   (let ((thunk `(lambda () ,@body)))
+     `(setf (gethash ',name state-hash) ',thunk)))
+
+ (defmacro define-state-machine (name &rest states)
+   (let ((-starting-state (gensym "starting-state--"))
+  	 (-state (gensym "state--"))
+	 (-state-machine (gensym "state-machine--"))
+	 (state-alist (loop for state in (cons 'halt states)
+			   collect (cons state (gensym (symbol-name state)))))
+	(-state-alist (gensym "state-alist--")))
+     `(defun ,name (,-starting-state)
+        (block ,name
+	  (let ((,-state-alist ',state-alist))
+	    (macrolet ((state (name)
+		 	(let ((sym (cdr (assoc name ,-state-alist))))
+			  (list 'throw '(quote ,-state-machine) sym))))
+	     (let ((,(cdr (assoc 'halt state-alist)) (lambda () (return-from ,name)))
+		   ,@(loop for state-name in states
+			   collect `(,(cdr (assoc state-name state-alist)) 
+				     ',(gethash state-name state-hash))))
+	       (let ((,-state (symbol-value
+			       (cdr (assoc ,-starting-state ,-state-alist)))))
+		 (while t
+		   (setf ,-state (catch ',-state-machine
+				   (funcall ,-state))))))))))))
+
+----
+
+The above code goes together with this older message by Thomas.
+
+ From: ThomasBurdick
+ Date: 30 Sep 2001 17:36:08 -0700
+
+It's kind of hairy, because it's doing two low-level things: building
+a state machine, and emulating a tagbody.  Just so you know, in Common
+Lisp, TAGBODY and GO allow you to do go-to statements:
+
+ (let ((a))
+   (tagbody
+     START
+      (setf a 0)
+     PART-1
+      (incf a)
+      (princ a)
+      (terpri)
+      (cond
+        ((>= a 10) (go end))
+        ((oddp a) (go part-1))
+        (t (go part-2)))
+     PART-2
+      (incf a)
+      (go part-1)
+     END
+      (princ "We're done printing the odd numbers between 0 and 10")))
+
+will print:
+
+ 1
+ 3
+ 5
+ 7
+ 9
+ We're done printing the odd numbers between 0 and 10
+
+(Again, this only works in Common Lisp; Elisp doesn't have tagbody or
+go)
+
+Generally go-to statements are the wrong thing to do.  However, they
+are quite useful for implementing more abstract control structures
+(such as state machines, to pick a random example :), which are
+generally the right thing to use.
+
+Now, let's start defining a state machine to count to 10, and look at
+the expansion of the macros as we go:
+
+ (define-state start
+   (princ "I am starting...")
+   (terpri)
+   (setf number 1)
+   (state count))
+
+This expands to:
+
+ (setf (gethash 'start state-hash)
+       '(lambda ()
+	  (princ "I am starting...")
+	  (terpri)
+	  (setf number 1)
+	  (state count)))
+
+Now let's define the rest of our states:
+
+ (define-state count
+   (cond
+     ((<= number 10)
+      (princ number)
+      (incf number)
+      (state count))
+     (t (state end))))
+
+ (define-state end
+   (terpri)
+   (princ "I am ending...")
+   (terpri) (terpri)
+   (state halt))
+
+These act similarly to functions, but they run in the context of a
+machine that switches between various states.  When the machine is in
+the state `count', for example it executes the body we defined above.
+A state should end by sitching to another state, via a call to the
+function `state' (which we saw above).  `halt' is a special state that
+will always be defined, and will halt the state machine and cause it
+to return `nil' (even though I forgot to include this in the first
+version, whoops).
+
+Now let's define and use our state machine:
+
+ (define-state-machine counter start end count)
+ (counter 'start)
+ I am starting...
+ 12345678910
+ I am ending...
+
+ nil
+
+What did the (define-state-machine counter ...) form do?  Let's look
+at what it expands into:
+
+ ELISP> (macroexpand '(define-state-machine counter start end count))
+ (defun counter (starting-state--30201)
+   (block counter
+     (flet ((state (name)
+	      (throw 'state-machine--30203 name)))
+       (let ((halt (lambda ()
+		     (return-from counter)))
+	     (start '(lambda ()
+		       (princ "I am starting...")
+		       (terpri)
+		       (setf number 1)
+		       (state count)))
+	     (end '(lambda ()
+		     (terpri)
+		     (princ "I am ending...")
+		     (terpri) (terpri)
+		     (state halt)))
+	     (count '(lambda ()
+		       (cond
+			((<= number 10)
+			 (princ number)
+			 (incf number)
+			 (state count))
+			(t (state end))))))
+	 (let ((state--30202 (symbol-value starting-state--30201)))
+	   (while t
+	     (setf state--30202
+		   (catch 'state-machine--30203
+		     (funcall state--30202)))))))))
+
+So, first look at the `while' loop: we funcall the value of state*
+(these are uninterned symbols, which means they won't conflict with
+any symbols you might use).  This should be a function that does
+something then calls `state', which should `throw' to our 
+(catch 'state-machine* ...) form.  The value this catches is assigned
+to state*, and we repeat.  So the form (state end) in the count state
+calls the `state' function, passing it the value of `end', which we
+can see in the `let', which `state' throws.
+
+So, the whole point of the define-state and define-state-machine
+macros are so that you don't need to worry about the nastiness in the
+expansion; instead you can just write up the behavior of your states
+in nice little modules, and leave it to the macros to put them
+together.
+
+----
+CategoryCode

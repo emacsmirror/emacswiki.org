@@ -1,0 +1,14 @@
+I am using GNU Emacs and wrote a little utility that helps me to program easily in C++ 
+under Emacs. Just some "project managment" stuff. Generally pieces of
+code that somehow emulates RHIDE and similars.
+
+The project is not oftenly maintained and has few minor bugs but it might 
+be helpful after all. You can find it in http://neorural.jinak.cz/emacs
+
+[new]
+Welcome on the wiki ! Your package looks interesting, I always wanted to code something like that, I'll have a look at it. -- LucasBonnet
+[new]
+Well, actually I'm more interested in the Makefile automatic handling, to add new targets and modules with few keystrokes
+
+----
+CategoryHomepage

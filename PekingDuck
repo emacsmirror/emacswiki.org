@@ -1,0 +1,23 @@
+== How to combine Twiki mode and OutlineMinorMode ==
+
+erin.el can be downloaded at http://www.neilvandyke.org/erin-twiki-emacs
+
+<pre>
+(require 'erin)
+
+(add-hook 'erin-mode-hook 
+  (lambda()
+    (interactive)
+    (outline-minor-mode 1)
+    (make-local-variable 'outline-regexp)
+    (setq outline-regexp "---\*+")
+    ;; customize the bindings yourself
+    (local-set-key "\C-c\C-q" 'hide-sublevels)
+    (local-set-key "\C-c\C-a" 'show-all)
+    (local-set-key "\C-c\C-t" 'hide-body)
+    (local-set-key "\C-c\C-s" 'outline-toggle-children)))
+</pre>
+
+
+----
+CategoryHomepage

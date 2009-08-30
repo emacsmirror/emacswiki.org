@@ -1,0 +1,44 @@
+== Este es el Wiki Emacs ==
+
+Esta información contiene meta-información sobre el Wiki Emacs. Vea el MapaDelSitio para encontrar diferentes puntos de entrada al contenido del sitio. Utilice el formulario de búsqueda al final de cada página. Puede utilizar expresiones regulares de Perl. Pulse sobre los títulos de las páginas para encontrar referencias hacia la página original.
+
+* Visite el WikiCómo si desea más información sobre cómo editar páginas existentes o agregar nuevas.
+* Visite la DeclaraciónDeMisión para ver algunos lineamientos dirigidos a los autores.
+* Visite NombreDeUsuario para más información sobre los nombres de usuario utilizados.
+* Visite la página del LogoEmacs para más información sobre el logo que usa este sitio.
+* Visite [[CSS]] para encontrar algunos temas de estilo simples de dónde elegir.
+* Visite AparienciaWikiEmacs para más información sobre cómo crear un estilo CSS si no le gusta alguno de los disponibles.
+
+== Hospedaje ==
+
+El Wiki Emacs se encuentra ubicado en http://www.emacswiki.org/, o http://purl.org/wiki/emacs/, o http://emacswiki.wikiwikiweb.de/, si emacswiki.org está abajo. Este es un entorno de hospedaje virtual, de modo que necesitará HTTP/1.1 para acceder a este sitio.
+
+Puede contactar al proveedor en http://www.wikiwikiweb.de/ y http://www.thinkmo.de/. Sin embargo, si llega a notar alguna corrupción de página u otros problemas, envíe un correo electrónico a mailto:alex@emacswiki.org o mailto:alex@gnu.org.  El webmaster de emacswiki.org es también el webmaster de los demás dominios virtuales.
+
+== Dinero ==
+
+En este momento, AlexSchroeder se supone que está pagando por el servidor. Aunque la gente de thinkmo.de no ha pedido dinero alguno hasta el momento. La decisión fue pospuesta indefinidamente. Nos hemos transladado a thinkmo.de en Marzo de 2003, si tal información llega a tener relevancia.
+
+No habrán avisos publicitarios en emacswiki.org; yo mismo los odio. Si usted aprecia este sitio y desea hacer una contribución, contribuya ya sea con tiempo o dinero: Escriba nuevo contenido, arregle errores de ortografía o gramaticales, limpie las páginas removiendo discusiones antiguas, unifique y divida las páginas siguiendo un estilo consistente, y cree enlaces que representen la jerarquía de las páginas. Si no dispone de tiempo, siempre tiene la opción de realizar una donación. Muestre su apoyo comentando en su página personal de este wiki cuánto ha donado a obras de caridad gracias a este Wiki Emacs. Eso sería genial. --AlexSchroeder
+
+== El Motor Wiki ==
+
+Este wiki usa el motor Oddmuse [http://www.emacswiki.org/cgi-bin/wiki.pl?action=version].
+
+Haber usado un motor de wiki escrito en Lisp o Scheme hubiese estado más acorde con el espíritu de Emacs y XEmacs, pero Perl es omnipresente, y Oddmuse es tan solo un script Perl, fácil de instalar.
+
+Por favor discuta sobre nuevas características para agregar al script (y las razones por las que éstas representarían mejoras para el wiki) en MeatBall:EmacsWiki.
+
+Por favor anote los fallos en la página de Problemas Conocidos en el Wiki Oddmuse [http://www.emacswiki.org/cgi-bin/oddmuse.pl?Known_Problems].
+
+== Scripts Utilizados ==
+
+El acceso al wiki se ofrece a través de wiki.pl, el cual es parte del paquete original (vea la información anterior). Aquí están listados los demás scripts que usted necesitará para implementar la archivación y una ÁreaElisp. Los scripts son intencionadamente sencillos:
+
+* http://www.emacswiki.org/scripts/list-archive -- lista los tarballs existentes
+* http://www.emacswiki.org/scripts/archive -- crea el archivo de páginas
+* http://www.emacswiki.org/scripts/elisp-archive -- crea el archivo de elisp
+* http://www.emacswiki.org/scripts/upload -- sube archivos elisp y actualiza el índice y changelog
+* http://www.emacswiki.org/scripts/link-scripts -- enlaza los scripts con los archivos de texto, e instala una nueva copia del script
+
+Los enlaces mencionados deben estar funcionando en la actualidad. Note que los nombres de los archivos de texto no necesariamente corresponden con los nombres de los scripts.

@@ -1,0 +1,48 @@
+= A Modest Proposal =
+
+Alex and myself were talking about expanding the [http://sourceforge.net/projects/emacswikicode examples] repository to also include the list of files in WikifiedEmacsLispList. 
+
+It should not be very hard to do. Is there any interest?  Would it be useful to have?
+
+-- Tennis 
+
+[new]
+Added same query to usenet. -- Tennis
+
+[new]
+After some talk on the EmacsChannel...
+
+It seems that the benefit would be small:
+
+# Packages would not drop off the Internet as easily as they do now. (Do they?)
+# There'd be a minimum assurance that the packages are up to date.
+
+And we'd piggy back on the efforts of the EmacsLispList. That's awesome.
+
+The high road would be to take all the packages in the [[ELL]] and add them to [[ELPA]].
+
+I'm too lazy to do that. So what do we do instead? -- AlexSchroeder
+
+[new]
+[[dto]] likes ELPA. [http://lists.emacsen.org/pipermail/metaconference/2008-January/000009.html]
+-- AlexSchroeder
+
+[new]
+Yeah, it looks like we don't have the critical mass to do this.  There just isn't enough interest.  Looks like ELL -> ELPA is probably a better solution. -- Tennis
+
+[new]
+At least we know where to point people if they ask about a Comprehensive Elisp Archive.
+-- Alex
+
+[new]
+I think it would be very interesting to have some kind of canonical repository for all those half-finished half-maintained hacks that many people copy in their configuration and then forget :)
+As a Emacs user, one thing I'd really love to be able to do is some kind of "pull" that would update all those little extensions. Right now, I'd need to explore ELL or the wiki or usenet in search for the latest version. Of course, that's not something I do gladly. I understand ELPA is a nice solution for this, except maybe that if it were to be populated by all those hacks, it would need a better interface, with categories for example.
+Also, I think that because of its nature, Emacs is primarily used by developpers. Those are different from normal users because they usually have a more precise idea of what they want their software to do. As a developper, I find myself often hacking one of those extensions to fix small bugs, or enhance it to suit my needs. Therefore, it would be a great benefit for everyone if it was easier to share the code improvements and to maintain patches. I think this is the perfect place for a DVCS (of course I'm not talking about bigger projects, where some structure already exists to manage contributors).
+
+IMHO, the ideal distribution scheme would be something like :
+* a central place, where people take and give code (like launchpad ?)
+* a "raw" branch, where the "official" releases would be put, either by the maintainers, or by some random hacker after reading on ELL, wiki, usenet, whatever...
+* a "package" branch that would add the necessary code/comments to produce ELPA packages when needed. This would require some kind of scripts to generate an ELPA repository from this branch
+* many user branches that would contain more or less useful hacks, and that could serve as inspiration for maintainers. Of course, nothing would prevent from generating extra ELPA repositories from those branches.
+
+I'd really love to have something like that, sorry if I sound a bit too much enthusiastic :) -- YannHodique

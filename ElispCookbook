@@ -1,0 +1,664 @@
+This page contains snippets of code that demonstrate basic elisp
+programming operations in the spirit of the o'reilly cookbook
+series of books. For every task addressed, a worked-out solution
+is presented as a short, focused, directly usable piece of code.
+
+All this stuff can be found elsewhere, but it is scattered about in
+libraries, manuals, etc.  It would be helpful to have here in one
+spot.
+
+These recipes should be pastable into the ##*scratch*## buffer so that
+users can hit `C-j' and evaluate them step by step.
+
+There's going to be some overlap with CategoryCode, obviously. Just
+link to more elaborate pages when appropriate. Should this page grow
+too large, we'll split it up later.
+
+
+== Strings ==
+
+=== Strings vs Buffer Content ===
+
+While it is quite common in other programming languages to work on
+strings contained in variables in Emacs it is even more idiomatic to
+work on strings in buffers. That's why the following contains examples
+of both.
+
+=== Substrings ===
+
+    (substring "abcdefg" 0 3)
+    ==> "abc"
+    (substring "abcdefg" -3 -1)
+    ==> "ef"
+
+The TO argument is optional:
+
+    (substring "abcdefg" -3)
+    ==> "efg"
+
+Buffers:
+
+    (with-temp-buffer
+      (insert "abcdefg")
+      (buffer-substring 2 4))
+    ==> "bc"
+
+=== Processing Characters ===
+
+Reversing a string:
+
+    (string-to-list "foo")
+    ==> (102 111 111)
+    (reverse (string-to-list "foo"))
+    ==> (111 111 102)
+    (apply 'string (reverse (string-to-list "foo")))
+    ==> "oof"
+
+See CharacterProcessing and StringModification.
+
+Looking at characters in buffers:
+
+    (with-temp-buffer
+      (insert "abcdefg")
+      (goto-char (point-min))
+      (while (not (= (char-after) ?b))
+        (forward-char))
+      (point))
+    ==> 2
+
+=== Trim Whitespace ===
+
+Trim whitespace from the end of a string:
+
+    (setq test-str "abcdefg  ")
+    (when (string-match "[ \t]*$" test-str)
+      (message (concat "[" (replace-match "" nil nil test-str) "]")))
+
+Trim whitespace from a string with a perl-like chomp function:
+
+    (defun chomp (str)
+     "..."
+     (let ((s (if (symbolp str)(symbol-name str) str)))
+        (save-excursion
+          (while (and
+	          (not (null (string-match "^\\( \\|\f\\|\t\\|\n\\)" s)))
+	          (> (length s) (string-match "^\\( \\|\f\\|\t\\|\n\\)" s)))
+	    (setq s (replace-match "" t nil s)))
+          (while (and
+	          (not (null (string-match "\\( \\|\f\\|\t\\|\n\\)$" s)))
+	          (> (length s) (string-match "\\( \\|\f\\|\t\\|\n\\)$" s)))
+	    (setq s (replace-match "" t nil s))))
+        s))
+
+=== Splitting strings ===
+
+See SplitString.
+
+=== Joining strings ===
+
+Use `mapconcat' to join a list into a string using a separator ("glue") between elements in the string.
+
+Example:
+
+  (mapconcat 'identity '("" "home" "alex " "elisp" "erc") "/")
+    ==> "/home/alex /elisp/erc"
+
+=== Formatting ===
+
+== Killing text ==
+
+As the ElispManual says, "Most of the kill commands are primarily for
+interactive use [...]  When you need to delete text for internal
+purposes within a Lisp function, you should normally use deletion
+functions, so as not to disturb the kill ring contents."
+
+The following mimic the `kill-' commands but without disturbing the kill ring.
+
+=== Delete region ===
+
+The Lisp equivalent of `kill-region' (`C-w') but without kill ring side effects::
+
+  (delete-region (region-beginning)
+                 (region-end))
+
+According to the ElispManual, "Few programs need to use the
+`region-beginning' and `region-end' functions."  This is because
+Lisp code should not rely on nor "alter the mark unless altering
+the mark is part of the user-level functionality of the
+command.  (And, in that case, this effect should be documented.)
+To remember a location for internal use in the Lisp program,
+store it in a Lisp variable.  For example: [...]"
+
+ (let ((beg (point)))
+   (forward-line 1)
+   (delete-region beg (point)))
+
+=== Delete line ===
+
+The equivalent of `kill-line' (`C-k') but without kill ring side effects:
+
+ (let ((beg (point)))
+   (forward-line 1)
+   (forward-char -1)
+   (delete-region beg (point)))
+
+Alternatively, replacing the `let' with `save-excursion'.
+
+  (delete-region (point)
+                 (save-excursion
+                   (forward-line 1)
+                   (forward-char -1)
+                   (point)))
+
+=== Delete line backwards ===
+
+The equivalent of killing the line backwards (`C-0 C-k') but without kill ring side effects:
+
+ (let ((beg (point)))
+   (forward-line 0)
+   (delete-region (point) beg))
+
+Alternatively, replacing the `let' with `save-excursion'.
+
+  (delete-region (save-excursion
+                   (forward-line 0)
+                   (point))
+                 (point))
+
+
+=== Delete line to next line  ===
+
+The equivalent of killing the line and the newline (`C-1 C-k') but without kill ring side effects:
+
+ (let ((beg (point)))
+   (forward-line 1)
+   (delete-region beg (point)))
+
+Alternatively, replacing the `let' with `save-excursion'.
+
+  (delete-region (point)
+                 (save-excursion
+                   (forward-line 1)
+                   (point)))
+
+=== Delete whole line ===
+
+The equivalent of `kill-whole-line' (`C-S-DEL') but without kill ring side effects:
+
+ (let ((beg (progn (forward-line 0)
+		   (point))))
+   (forward-line 1)
+   (delete-region beg (point)))
+
+Alternatively, replacing the `let' with `save-excursion'.
+
+  (delete-region (save-excursion
+                   (forward-line 0)
+                   (point))
+                 (save-excursion
+                   (forward-line 1)
+                   (point)))
+
+=== Delete word ===
+
+The equivalent of `kill-word' (`M-d') but without kill ring side effects:
+
+ (let ((beg (point)))
+   (forward-word 1)
+   (delete-region beg (point)))
+
+Alternatively, replacing the `let' with `save-excursion'.
+
+  (delete-region (point)
+                 (save-excursion
+                   (forward-word 1)
+                   (point)))
+
+=== Delete sentence ===
+
+The equivalent of `kill-sentence' (`M-k') but without kill ring side effects:
+
+ (let ((beg (point)))
+   (forward-sentence 1)
+   (delete-region beg (point)))
+
+Alternatively, replacing the `let' with `save-excursion'.
+
+  (delete-region (point)
+                 (save-excursion
+                   (forward-sentence 1)
+                   (point)))
+
+== Numbers ==
+
+=== check if string is a valid number ===
+
+ (defun string-integer-p (string)
+   (if (string-match "\\`-?[0-9]+\\'" string)
+       t
+     nil))
+
+ (string-integer-p "1234")
+   ==> t
+
+ (string-integer-p "x1234")
+   ==> nil
+
+=== random numbers ===
+
+  (random 2)  ;coin toss (0 or 1)
+  (+ (random 6) 1)  ;dice
+
+=== put commas in numbers ===
+
+Using the Common Lisp package:
+
+  (require 'cl)
+  (let ((number (/ (random) (expt 2.0 28))))
+    (substitute ?\, ?\. (format "%g" number)))
+
+=== break up large numbers with commas ===
+
+(This does what I expected the previous recipe to do.)
+
+  (progn
+    (defun commafy (n)
+      "Put commas in an integer"
+      (let ((chunks ()))
+	(do ((chunk (mod (abs n) 1000) (mod rest 1000))
+	     (rest (floor (abs n) 1000) (floor rest 1000)))
+	    ((and (zerop chunk) (zerop rest)))
+	  (push (number-to-string chunk) chunks)
+	  (when (< chunk 100) (push "0" chunks))
+	  (when (< chunk 10) (push "0" chunks))
+	  (when (plusp rest) (push "," chunks)))
+	(while (string= (first chunks) "0") (pop chunks))
+	(when (minusp n) (push "-" chunks))
+	(apply 'concat chunks)))
+    (commafy (random)))
+
+
+
+=== incrementing numbers ===
+
+See IncrementNumber.
+
+== Dates and Times ==
+
+=== get today's date ===
+
+See InsertingTodaysDate.
+
+=== conversions ===
+
+See StrPTime.
+
+=== Formatting dates ===
+
+Use the function <code>format-time-string</code> which is a build in function in both Emacsen and works like <code>strftime</code>:
+
+    ;; Year-Month-Day:
+    (insert (format-time-string "%Y-%m-%d"))
+    ;; Hour:Minutes:Seconds
+    (insert (format-time-string "%H-%M-%S"))
+
+=== Timers ===
+
+See [[IdleTimers]]
+
+== Pattern Matching ==
+
+"Patterns" refers to RegularExpression""s.
+
+There's a set of functions that work in strings, and a set that work in buffers.
+
+=== Finding ===
+
+    (string-match "foo*" "Fight foo for food!")
+    ==> 6
+
+Buffers:
+
+    (with-temp-buffer
+      (insert "Fight foo for food!")
+      (goto-char (point-min))
+      (re-search-forward "foo*")
+      (point))
+    ==> 10
+
+Alternative without regular expressions: `search-forward'.
+
+Note that the functions working on buffers move point to the end of the occurrence found and return it.
+That's why the result is 10 instead of 6!
+
+=== Search and Replace ===
+
+    (replace-regexp-in-string "foo*" "fu" "Fight foo for food!")
+    ==> "Fight fu fur fud!"
+
+Buffers:
+
+    (with-temp-buffer
+       (insert "Fight foo for food!")
+       (goto-char (point-min))
+       (while (re-search-forward "foo*" nil t)
+         (replace-match "fu"))
+       (buffer-string))
+    ==> "Fight fu fur fud!"
+
+Alternative without regular expressions: `search-forward'.
+
+See also StringSearchAndReplace.
+
+=== Verifying ===
+
+Sometimes you just want to check whether you're at the right place:
+
+    (with-temp-buffer
+      (insert "Fight foo for food!")
+      (goto-char (point-min))
+      (looking-at "fight"))
+    ==> t
+
+== Sequences ==
+
+Datatypes used to represent sequences of things:
+
+     _____________________________________________
+    |                                             |
+    |          Sequence                           |
+    |  ______   ________________________________  |
+    | |      | |                                | |
+    | | List | |             Array              | |
+    | |      | |    ________       ________     | |
+    | |______| |   |        |     |        |    | |
+    |          |   | Vector |     | String |    | |
+    |          |   |________|     |________|    | |
+    |          |  ____________   _____________  | |
+    |          | |            | |             | | |
+    |          | | Char-table | | Bool-vector | | |
+    |          | |____________| |_____________| | |
+    |          |________________________________| |
+    |_____________________________________________|
+
+
+=== Lists ===
+
+List basics are explained on ListStructure.
+Lists can shrink and grow, but access to elements towards the end of the list is slow if the list is long.
+
+Use `cons' to append a new element to the front of a list.
+Use `nth' to access an element of the list.
+
+    (let ((words '("fight" "foo" "for" "food!")))
+      (when (string= "foo" (nth 1 words))
+	(setq words (cons "bar" words)))
+      words)
+    ==> ("bar" "fight" "foo" "for" "food!")
+
+See ListModification for more ways of changing a list.
+
+Iteration:
+
+    (let ((result))
+      (dolist (word '("fight" "foo" "for" "food!"))
+        (when (string-match "o" word)
+          (setq result (cons word result))))
+      (nreverse result))
+    ==> ("foo" "for" "food!")
+
+Note how `cons' adds an element to the front of the list,
+so that usually the list has to be reversed after the loop.
+`nreverse' is particularly efficient because it does this
+destructively by swiveling pointers around. See
+DestructiveOperations for more about this.
+
+Filtering:
+
+Emacs Lisp doesn't come with a `filter' function to keep elements that satisfy a conditional and excise the elements that do not satisfy it.  One can use `mapcar' to iterate over a list with a conditional, and then use `delq' to remove the `nil' values.
+
+  (defun my-filter (condp lst)
+    (delq nil
+	  (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
+
+Therefore,
+
+  (my-filter 'identity my-list)
+
+is equivalent to
+
+  (delq nil my-list)
+
+For example:
+
+  (let ((num-list '(1 'a 2 "nil" 3 nil 4)))
+    (my-filter 'numberp num-list))
+  ==> (1 2 3 4)
+
+Actually the package cl-seq contains the functions <i>remove-if</i> and <i>remove-if-not</i>.  The latter can be used instead of <i>my-filter</i>.
+
+  (let ((num-list '(1 'a 2 "nil" 3 nil 4)))
+    (remove-if-not 'numberp num-list))
+  ==> (1 2 3 4)
+
+  (let ((num-list '(1 'a 2 "nil" 3 nil 4)))
+    (remove-if 'numberp num-list))
+  ==> ((quote a) "nil" nil)
+
+As an example here is the quick sort algorithm:
+
+  (defun quicksort (lst) 
+    "Implement the quicksort algorithm."
+    (if (null lst) nil
+      (let* ((spl (car lst)) 
+             (rst (cdr lst)) 
+             (smalp (lambda (x) 
+                   (< x spl))))
+        (append (quicksort (remove-if-not smalp rst)) 
+                (list spl)
+                (quicksort (remove-if smalp rst))))))
+
+  (quicksort '(5 7 1 3 -9 8 7 -4 0))
+  ==> (-9 -4 0 1 3 5 7 7 8)
+
+=== Vectors ===
+
+Vectors are fixed in size but elements can be accessed in constant time.
+
+    (let ((words ["fight" "foo" "for" "food!"]))
+      (when (string= "foo" (aref words 1))
+	(aset words 1 "bar"))
+      words)
+    ==> ["fight" "bar" "for" "food!"]
+
+== Hashes ==
+
+Hashes map keys to values. In a way they are similar to alists, except
+they are more efficient for a large number of keys.
+
+More info is available on the HashMap page.
+
+=== Storing and retrieving keys and values ===
+
+By default, hash tables use `eql' to compare keys. This is not appropriate
+for strings: ##(eql "alex" "alex")## ==> nil. Thus, use `equal' in these cases:
+
+    (let ((nick-table (make-hash-table :test 'equal)))
+      (puthash "kensanata" "Alex Schroeder" nick-table)
+      (gethash "kensanata" nick-table))
+    ==> "Alex Schroeder"
+
+Iterate:
+
+    (let ((nick-table (make-hash-table :test 'equal))
+          nicks)
+      (puthash "kensanata" "Alex Schroeder" nick-table)
+      (puthash "e1f" "Luis Fernandes" nick-table)
+      (puthash "pjb" "Pascal J. Bourguignon" nick-table)
+      (maphash (lambda (nick real-name)
+                 (setq nicks (cons nick nicks)))
+               nick-table)
+      nicks)
+      ==> ("pjb" "e1f" "kensanata")
+
+=== Sorting Keys  ===
+
+Use `maphash' to build up a list of keys, sort it, and then loop through
+the list:
+
+    (let ((nick-table (make-hash-table :test 'equal))
+          nicks)
+      (puthash "kensanata" "Alex Schroeder" nick-table)
+      (puthash "e1f" "Luis Fernandes" nick-table)
+      (puthash "pjb" "Pascal J. Bourguignon" nick-table)
+      (maphash (lambda (nick real-name)
+                 (setq nicks (cons nick nicks)))
+               nick-table)
+      (mapcar (lambda (nick)
+                (concat nick " => " (gethash nick nick-table)))
+              (sort nicks 'string<)))
+      ==> ("e1f => Luis Fernandes"
+           "kensanata => Alex Schroeder"
+           "pjb => Pascal J. Bourguignon")
+
+== Files ==
+
+=== Read ===
+
+Processing a file is usually done with a temporary buffer:
+
+ (defun process-file (file)
+   "Read the contents of a file into a temp buffer and then do
+ something there."
+   (when (file-readable-p file)
+     (with-temp-buffer
+       (insert-file-contents file)
+       (goto-char (point-min))
+       (while (not (eobp))
+       ;; do something here with buffer content
+         (forward-line)))))
+
+=== Write ===
+
+To write something to a file you can create a temporary buffer, insert the things to write there and write the buffer contents to a file.  The following example read a string and a filename (with completion, but doesn't need to exist, see InteractiveCodeChar F) and write the string to that file.
+
+ (defun write-string-to-file (string file)
+   (interactive "sEnter the string: \nFFile to save to: ")
+   (with-temp-buffer
+     (insert string)
+     (when (file-writable-p file)
+       (write-region (point-min)
+                     (point-max)
+                     file))))
+
+=== Filter ===
+
+=== Locking ===
+
+=== Stat ===
+
+An interface to the kernel's stat(2) is provided by the function file-attributes. The way times are represented may be a bit unexpected, though.
+
+=== Deleting ===
+
+(delete-file filename)  ;The file needs to exist
+
+=== Copy, move and rename ===
+
+== Directories ==
+
+=== Traversing ===
+
+    (defun walk-path (dir action)
+       "walk DIR executing ACTION with (dir file)"
+       (cond ((file-directory-p dir)
+              (or (char-equal ?/ (aref dir(1- (length dir))))
+                  (setq dir (file-name-as-directory dir)))
+              (let ((lst (directory-files dir nil nil t))
+                     fullname file)
+                (while lst
+                  (setq file (car lst))
+                  (setq lst (cdr lst))
+                  (cond ((member file '("." "..")))
+                        (t
+                         (and (funcall action dir file)
+                              (setq fullname (concat dir file))
+                              (file-directory-p fullname)
+                              (walk-path fullname action)))))))
+             (t
+              (funcall action
+                       (file-name-directory dir)
+                       (file-name-nondirectory dir)))))
+
+    (defun walk-path-visitor (dir file)
+       "Called by walk-path for each file found"
+       (message (concat  dir file)))
+
+    (walk-path "~/" 'walk-path-visitor)
+
+=== Path splitting ===
+
+Splitting the path can be done with `split-string' and with the slash.  Previously, Emacs would determine the character separating directory names with `directory-sep-char'.  However, the variable is obselete with Emacs 21.1.
+
+  (split-string default-directory "/")
+  ==> ("" "usr" "share" "emacs" "22.2" "lisp" "")
+
+For splitting a path variable, Emacs already has the `parse-colon-path' function.
+
+  (parse-colon-path (getenv "PATH"))
+  ==> ("/usr/lib/qt-3.3/bin/" "/usr/kerberos/bin/" "/usr/local/bin/" "/usr/bin/" "/bin/" "/usr/local/sbin/" "/usr/sbin/" "/sbin/")
+
+== Processes ==
+
+=== Running a program ===
+
+=== Collecting output from a running program ===
+
+Again you have to make a difference between capturing the output in a string variable or in a buffer.  
+
+* shell-command-to-string:
+
+ (defun insert-output (command)
+   (interactive "sCommand: ")
+   (insert (shell-command-to-string command)))
+
+* call-process which can be called with a buffer to insert the output to:
+
+ (defun output-to-buffer (buffer command)
+   (interactive "sBuffer name: \nsCommand: ")
+   (get-buffer-create buffer)
+   (call-process command nil buffer)
+   (switch-to-buffer (get-buffer buffer)))
+
+* The function start-process can be used to insert the output of a program into a buffer, too.  See e.g. GlobalFF for an example.
+* XEmacs also comes with exec-to-string:
+
+  (defun test-insert-exec-text (command)
+    "Insert the output of an executable program at the 
+  current cursor postion."
+    (interactive "sEnter command-string: ")
+    (insert (exec-to-string command)))
+
+=== Handling signals ===
+
+== Sockets ==
+
+=== TCP client ===
+
+=== TCP server ===
+
+Perhaps EmacsEchoServer and EmacsDaytimeServer can be useful here.
+
+== Keyboard Events ==
+
+* Call function bound to key
+  
+  (funcall (key-binding (kbd "M-TAB")))
+
+  or
+
+  (call-interactively (key-binding (kbd "M-TAB")))
+
+
+
+

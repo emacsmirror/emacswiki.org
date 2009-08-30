@@ -1,0 +1,27 @@
+top-mode.el can run the unix programm "<tt>top</tt>" from Emacs.
+
+You can find it here: Lisp:top-mode.el
+
+=== Installation ===
+
+Load it with <tt>auoload</tt> or <tt>require</tt>.
+The enter
+
+ M-x top-mode
+
+or load it permanently with
+
+ (top-mode 1)
+
+in your emacs configuration file.
+
+=== Usage ===
+
+Press <tt>g</tt> to run top and <tt>q</tt> to quit.
+Other features are:
+
+* strace a process
+* kill processes
+* renice processes
+----
+CategoryModes | CategoryExternalUtilities

@@ -1,0 +1,30 @@
+The parent page is CategoryWThirtyTwo.
+
+Obtain Plink from [http://www.chiark.greenend.org.uk/~sgtatham/putty/ this] site.
+
+Put plink.exe in a directory on your PC, then install and modify the following function; you need to change "path/to/plink.exe" to match your setup, at a minimum.  This is definitely NOT a terminal emulator - just a dumb terminal.
+
+<pre>
+
+(defun start-termx (host)
+  "Open a network login connection to host named HOST (a string).
+   Communication with HOST is recorded in a buffer `*termx*'.
+   Normally input is edited in Emacs and sent a line at a time."
+  (interactive "sOpen telnet connection to host: ")
+  (let* ((comint-delimiter-argument-list '(?\  ?\t))
+         (name "termx")
+         (buffer (get-buffer "*termx*"))
+         process)
+    (setq telnet-new-line (char-to-string 13))
+
+    (if (and buffer (get-buffer-process buffer))
+        (pop-to-buffer buffer)
+      (pop-to-buffer (make-comint name "path/to/plink.exe" nil "-telnet" host))
+      (setq process (get-buffer-process (current-buffer)))
+      (set-process-filter process 'telnet-initial-filter)
+      (accept-process-output process)
+      (telnet-mode)
+      (setq comint-input-sender 'telnet-simple-send)
+      (setq telnet-count telnet-initial-count))))
+</pre>
+

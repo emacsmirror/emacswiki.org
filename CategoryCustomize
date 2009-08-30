@@ -1,0 +1,21 @@
+Click the title to search for all pages belonging to category Customize.
+
+This category is about customizing Emacs, in general, and the "easy customize" feature called '''Customize''', in particular.
+
+Here are some of the pages in category Customize:
+
+* '''CustomizingAndSaving''' -- Overview of '''Customize''': how to set and save your preferences.
+* UseCustomizeForKeyBindings -- How to let users customize their key bindings entirely within Customize.
+* CustomizingFaces -- changing [[face]] preferences.
+* HowtoChangeFrameColors -- what it says -- then see CustomizingAndSaving.
+* ColorTheme -- how to choose and save a predefined color scheme.
+* DoReMi -- how to change [[face]] and [[frame]] properties incrementally -- then see CustomizingAndSaving.
+* VariableDefinition -- when to use `defcustom', when to use `defvar', when to use `defconst', and when to start a DocString with an asterisk ‘*’.
+* FrameParameters -- a little info on frame parameters (see also CustomizingAndSaving).
+* AddToListWidget, CustomDiffList  -- `defcustom's that add elements to a standard list without overwriting it.
+* CustomizingBoth -- dealing with differences between different Emacsen.
+* InitSplit -- splitting saved customizations among multiple files.
+* CustomizeNewGUI -- a proposal for some changes to Emacs GUI that you can test.
+* ChangeFontsPermanentlyOnWindows -- how to save fonts on Windows.
+* MsWindowsRegistry -- How X Windows resources are handled on Windows ports, via the Windows Registry
+

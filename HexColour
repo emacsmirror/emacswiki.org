@@ -1,0 +1,91 @@
+It is possible to teach Emacs to highlight HTML-style colour specifications a là #034fa3 ''in the colour they specify''.
+
+If you are using GNU Emacs from a recent (as of summer 2003) CVS (the one that will probably become Emacs 22.1) this is as simple as putting ...
+
+ (defvar hexcolour-keywords
+   '(("#[abcdef[:digit:]]\\{6\\}"
+      (0 (put-text-property (match-beginning 0)
+                            (match-end 0)
+			    'face (list :background 
+				        (match-string-no-properties 0)))))))
+
+
+ (defun hexcolour-add-to-font-lock ()
+   (font-lock-add-keywords nil hexcolour-keywords))
+
+
+ (add-hook <your favourite major mode hook> 'hexcolour-add-to-font-lock)
+
+... into your .emacs.
+
+Due to some quirks in the implementation of font-lock, this won't work with Emacs 21.2 or 21.3. But you can use the package "hexcolour.el" (Lisp:hexcolour.el) to achieve this nevertheless. Read the commentary section for details.
+
+
+I managed to get this working on Emacs 21.3, with some enhancements:  contrasting colour for the text and support for 3 and 6 character hex codes.  Very nice in css-mode.
+
+  (defvar hexcolour-keywords
+        '(("#[abcdef[:digit:]]\\{3,6\\}"
+           (0 (let ((colour (match-string-no-properties 0)))
+                (if (or (= (length colour) 4)
+                        (= (length colour) 7))
+                    (put-text-property 
+                     (match-beginning 0)
+                     (match-end 0)
+                     'face (list :background (match-string-no-properties 0)
+                                 :foreground (if (>= (apply '+ (x-color-values 
+                                                                (match-string-no-properties 0)))
+                                                     (* (apply '+ (x-color-values "white")) .6))
+                                                 "black" ;; light bg, dark text
+                                               "white" ;; dark bg, light text
+                                              )))))
+              append))))
+
+  (defun hexcolour-add-to-font-lock ()
+    (interactive)
+    (font-lock-add-keywords nil hexcolour-keywords t))
+
+-- DaveS
+
+
+[new:DrewAdams:2005-02-09 02:02 UTC]
+See also libraries Lisp:doremi-frm.el and Lisp:hexrgb.el, which let you manipulate hex colors and the [[Face]]s and [[Frame]] parameters that use them. -- DrewAdams
+
+[new]
+Two more improvements, using luminance instead of average values, and fontifying color names (e.g. "blue" as well).
+
+  (require 'cl)
+  (defun hexcolour-luminance (color)
+    "Calculate the luminance of a color string (e.g. \"#ffaa00\", \"blue\").
+  This is 0.3 red + 0.59 green + 0.11 blue and always between 0 and 255."
+    (let* ((values (x-color-values color))
+           (r (car values))
+           (g (cadr values))
+           (b (caddr values)))
+      (floor (+ (* .3 r) (* .59 g) (* .11 b)) 256)))
+
+  (defun hexcolour-add-to-font-lock ()
+    (interactive)
+    (font-lock-add-keywords nil
+     `((,(concat "#[0-9a-fA-F]\\{3\\}[0-9a-fA-F]\\{3\\}?\\|"
+                 (regexp-opt (x-defined-colors) 'words))
+        (0 (let ((colour (match-string-no-properties 0)))
+             (put-text-property
+              (match-beginning 0) (match-end 0)
+              'face `((:foreground ,(if (> 128.0 (hexcolour-luminance colour))
+                                         "white" "black"))
+                      (:background ,colour)))))))))
+
+-- [[nschum]]
+
+[new]
+I like this.  Just one change to the regexp for colour names:
+<pre>
+(regexp-opt (x-defined-colors) 'words))
+</pre>
+This keeps it from colouring parts of words like 'redistribute'.  Oh and for some reason I need to use the 'append flag to font-lonk-add-keywords to get it working with Emacs 21.3.  I really need to upgrade.
+
+-- DaveS
+
+[new]
+Good idea, added 'words for easier copy&paste.
+-- [[nschum]]

@@ -1,0 +1,12 @@
+ConversationalEmacs is what you would have if you combined EmacSpeak with VrMode or ShortTalk.
+
+This probably isn't as easy as it might at first sound. Given that speech input is far from perfectly accurate, you need feedback on what it reckons you've said, and putting that through speech output, along with the speech output that you need to follow what the software is doing, is probably non-trivial.
+
+There's a proprietary package, Jawbone, for making the proprietary screen reader Jaws (for Windows users who are blind) work with Dragon.
+
+It would be even more interesting if you could run it through a bluetooth headset (for short-range ubiquitous computing), but the microphone quality from those is unlikely to be good enough for the present generation of speech recognition software, which is fussy about microphone positioning.
+
+----
+
+CategoryAccessibility
+

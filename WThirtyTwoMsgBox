@@ -1,0 +1,22 @@
+=== What? ===
+
+When the error- or message-functions in emacs on w32 is not enough for you.
+
+=== The code ===
+
+http://groups.google.com/groups?q=w32-msgbox
+
+The latest version is 0.3 and was posted 2004-02-24, around 170.00 CET.
+
+=== Prerequisites ===
+
+* It relies on the cscript.exe vbscript interpreter. If it is not available (quite uncommon if you're not extremely paranoid), well, bad luck!
+
+=== Test it ===
+
+Test it with:
+
+ M-: (w32-msgbox "Message" "Title" 'vb-yes-no-cancel 'vb-question 'vb-default-button-2 t)
+
+----
+CategoryWThirtyTwo

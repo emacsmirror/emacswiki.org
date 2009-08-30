@@ -1,0 +1,11 @@
+This package provides an implementation of AES natively in elisp.
+
+Additionally this library contains implementations of Cipher-block chaining and Offset Codebook Mode as modes for buffer encryption and decryption.
+Further a mechanism for random password generation from random user input is also implemented.
+
+It is recommended to byte-compile the library before usage.
+
+Version 0.4: Lisp:aes.el
+
+----
+CategoryCryptography

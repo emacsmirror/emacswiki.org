@@ -1,0 +1,19 @@
+O EmacsWiki coleciona:
+
+* código EmacsLisp (conhecido como "elisp");
+* questões e respostas relacionadas a código e estilo elisp;
+* introduções a pacotes elisp e ligações para o código fonte ou o próprio código fonte;
+* manuais completos ou fragmentos de documentação;
+* comentários sobre características do Emacs e do XEmacs, bem como diferenças e história;
+* referências a implementações (''ports''), clones e editores que se parecem com o Emacs;
+* referências a outras informações relacionadas ao Emacs na internet.
+
+Você pode usar este wiki para documentar coisas de "conhecimento comum", como raridades que apenas algumas poucas pessoas conhecem, ou problemas que emergem constantemente, mas que não têm uma solução simples documentada em parte alguma. Você pode, inclusive, usar esse wiki para administrar um manual sobre certo código elisp que você tenha escrito.
+
+Esse wiki é multilíngüe (MultilingualWiki).
+
+As contribuições permanecerão aqui por muito tempo.
+
+Pessoas que contribuíram para a criação original dessa página: AlexSchroeder, JohnWiegley, DeepakGoel.
+
+Eu diria que o caráter colaborativo do wiki fez com que ele ultrapassasse em muito seu objetivo inicial, tornando-se uma espécie de central do Emacs. -- DeDaLu

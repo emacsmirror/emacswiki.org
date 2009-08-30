@@ -1,0 +1,44 @@
+A '''[::face]''' provides text with various visible properties, such as color and font.
+
+[new:DrewAdams:2004-12-24 22:54 UTC]
+We need a clear description of the relation between ''fonts'' and ''faces''. -- DrewAdams
+
+
+
+== Finding the Face at Point ==
+You can use `##C-u C-=##' to find out which faces are applied to the text at [[point]] (under the [[cursor]]).
+
+Alternatively, you can use `M-x describe-face RET'. The faces used are listed as the default value for [[completion]].
+
+[new:DrewAdams:2009-07-13 20:22 UTC]
+: If you use [[Icicles]], then `describe-face' shows the face-name candidates in buffer `*Completions*' using their own faces -- WYSIWYG.
+([[Icicles - Customization_and_General_Tips#icicle-WYSIWYG-Completions-flag|Screenshot]]) -- DrewAdams
+
+
+
+
+== Faces and Emacs Lisp ==
+
+A symbol can be used as a face, if it has the face property.  Check it out by evaluating the following:
+
+    (apropos "font-lock-comment-face")
+
+This will show you that the symbol <code>font-lock-comment-face</code> has a variable value.  You can examine the value and read the DocString by clicking on "Variable".  The value is the symbol <code>font-lock-comment-face</code> -- it stores its own "name" or "pointer"!
+
+Therefore, you can use <code>font-lock-comment-face</code> as a variable.  It will evaluate to the symbol with the same name.  And the symbol is a valid face because it has the face property.
+
+Check the output of <code>apropos</code> again.  If you click on "Face" you will be put in a customization buffer where you can edit the value of the font "spec".  The spec is a data structure specifying how text should look.
+
+[new:DrewAdams:2009-07-13 20:00 UTC]
+The above description is confusing. A face need not have a variable associated with it. In fact, nowadays, faces are typically ''not'' associated with variables. Font-lock faces are an exception in this regard. -- DrewAdams
+
+[new]
+Is it possible to add the `invisible' property to a face?  I want to be able to hide/show regions defined by a face so font-lock can take care of the work for me.  -- PatrickAnderson
+[new]
+: No, because `face' and `invisible' are different text properties.  The `face' property can have a value such as `bold', and the `invisible' porperty can have a value such as `t'.  But there is no face that makes text invisible.  Adding such a face was discussed on emacs-devel.  You can emulate such a thing though with some elisp.
+See the EmacsManual (`<code>C-h i RET g (emacs)faces RET</code>') -- AlexSchroeder
+
+
+
+----
+CategoryGlossary

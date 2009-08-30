@@ -1,0 +1,58 @@
+==eBay Time==
+
+To my constant dismay many internet companies with a 'global footprint' insist that the flow of time is centered somewhere just off the West coast of California. For years I've been annoyed by "Official eBay Time" i.e. Ebay's time server which is hardwired to PDT/PST and which Ebay appears to synch internally according to an arbitrary algorithm designed by the Mad-Hatter. 
+
+: Lisp:mon-time-utils.el
+
+Convert from 'eBay official time' to 'YOUR Official Time ®'
+
+Helps cleaning up three different "official eBay time" strings three different
+ways.
+
+There are at least three styles of ebay timestamp.  
+Apparently each of these is 'official'...
+
+* Style1 from eBay webpage i.e. copy/paste from web browser
+
+* Style2 from eBay listing manager
+
+* Style3 from eBay post listing email confirmations
+
+None of these 3(three) styles can be processed with 'parse-time-string' without
+some cleaning first.
+
+The function `mon-cln-ebay-time-string' returns an extended timestamp 
+formatted to allow further processing according to ISO 8601 spec. 
+See: [http://isotc.iso.org/livelink/livelink/4021199/ISO_8601_2004_E.zip?func=doc.Fetch&nodeid=4021199]
+See also: Erik Naggum's "A Long, Painful History of Time" [http://naggum.no/lugm-time.html]
+
+The three ebay timestring styles are cleaned as follows:
+
+  * Style1
+    (Aug 07, 200913:52:24 PDT)   
+    ;=>  <Timestamp: #{2009-08-07T16:52:24-04:00Z}#{09325} - by Ebay>
+
+  * Style2
+    Jul-29 11:05                
+    ;=> <Timestamp: #{2009-07-29T14:05:00-04:00Z}#{09313} - by Ebay>
+
+  * Style3
+    Aug-10-09 09:16:14 PDT       
+    ;=> <Timestamp: #{2009-08-06T21:17:10-04:00Z}#{09325} - by Ebay>
+
+If you don't like the default timestamp adjust 
+format-time-string in tail of `mon-convert-ebay-time'
+
+The form: 
+
+  (put-tz (if (nth 7 (decode-time)) "PDT" "PST"))
+
+In `mon-cln-ebay-time-string' assumes your Daylight-Savings-Time (DST) flag 
+is in synch with the Northern Hemisphere. 
+
+If it is Summer in California and Winter where you are you may want to swap
+PDT -> PST See: [http://en.wikipedia.org/wiki/Daylight_saving_time]
+
+
+----
+CategoryCalendar

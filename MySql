@@ -1,0 +1,1442 @@
+This patch gives you access to MySQL from within Emacs.  If this patch
+is available online, please remove the source.
+
+ From: ScottLanning
+ Subject: MySQL C API using emacs primitive functions
+ Newsgroups: gnu.emacs.sources
+ Date: 12 Dec 2001 00:13:43 -0500
+
+<pre>
+/*
+  A wrapper around libmysqlclient to allow one to use emacs primitive
+  functions to call MySQL C API functions.
+  Example elisp is at bottom. Note that you'll need MySQL client
+  headers/libraries as well as access to a MySQL server (don't use
+  this anywhere near a server that's actually used for anything).
+
+  DISCLAIMER: This may very well hose your entire system. Good luck! :)
+
+  BUILDING: (sorry no patch yet :/)
+  0) Compile emacs normally.
+  1) Copy the first part below (wrapped in a `#ifndef VMYSQL_H') to
+  a file called `vmysql.h' in the `src' directory. Put the rest
+  in `vmysql.c'.
+  2) Edit `Makefile' in the `src' directory. Assuming you installed
+  the mysql client stuff (headers and libs) into /usr/local/mysql/,
+    a) Add `-I/usr/local/mysql/include/mysql' to CFLAGS.
+    b) Add `-L/usr/local/mysql/lib/mysql -lmysqlclient' to LDFLAGS
+    (maybe you need to put /usr/local/mysql/lib/mysql into
+    /etc/ld.so.conf and run /sbin/ldconfig)
+    c) Add `vmysql.o' to the `obj' list.
+    d) Add the line `vmysql.o: vmysql.c vmysql.h $(config_h)' to the
+    list of targets.
+  3) Edit emacs.c.
+    a) Add `syms_of_mysql ();' to the rest of the "syms_of_*" calls.
+    (I somewhat arbitrarily put it beneath `syms_of_eval'.)
+
+  TODO:
+  * figure out how to access enums/#defines (like error
+  return codes) from lisp (I think with DEFVAR_* functions)
+  * error checking.... (e.g. calling mysql_close then
+  trying mysql_query with the closed (MYSQL *) causes
+  emacs to segfault)
+  * maybe make some of the values returned be more lispy
+  (e.g., instead of returning 0 from mysql_query, return nil)
+  * eventually figure out how to use the load-dynamic-library
+  patch to load this dynamically (I had problems where I couldn't
+  use regular emacs functions due to using dlopen() it seems).
+* /
+
+
+
+/* Put the following code into a file called vmysql.h */
+
+# ifndef VMYSQL_H
+# define VMYSQL_H
+
+
+# include <config.h>
+# include "lisp.h"
+# include <mysql.h>
+
+
+# define DEFUN_FIXED(f, n, s)  DEFUN(#f, F ## f, S ## f, n, n, 0, s)
+
+# define STRING_OR_NULL(s) \
+  do { \
+    s = (STRINGP (s ## _lo))  ? XSTRING (s ## _lo)->data : NULL; \
+  } while (0)
+
+# define INT_OR_NULL(n) \
+  do { \
+    n = (INTEGERP (n ## _lo )) ? XINT (n ## _lo) : 0; \
+  } while (0)
+
+
+/* Ugly names.. MYSQL is already taken. V stands for vector.
+   I didn't claim to be creative. Vector wrappers for MySQL
+   structs (maybe replace with a union?) */
+
+struct vmysql
+{
+  EMACS_INT size;
+  struct Lisp_Vector *next;
+
+  MYSQL *mysql;
+};
+
+struct vmysql_res
+{
+  EMACS_INT size;
+  struct Lisp_Vector *next;
+
+  MYSQL_RES *mysql_res;
+};
+
+struct vmysql_field
+{
+  EMACS_INT size;
+  struct Lisp_Vector *next;
+
+  MYSQL_FIELD *mysql_field;
+};
+
+struct vmysql_field_offset
+{
+  EMACS_INT size;
+  struct Lisp_Vector *next;
+
+  /* XXX: MYSQL_FIELD_OFFSET is an unsigned int */
+  MYSQL_FIELD_OFFSET mysql_field_offset;
+};
+
+struct vmysql_row
+{
+  EMACS_INT size;
+  struct Lisp_Vector *next;
+
+  /* MYSQL_ROW is a (char **) */
+  MYSQL_ROW mysql_row;
+};
+
+struct vmysql_row_offset
+{
+  EMACS_INT size;
+  struct Lisp_Vector *next;
+
+  /* MYSQL_ROW_OFFSET is a (MYSQL_ROWS *) */
+  MYSQL_ROW_OFFSET mysql_row_offset;
+};
+
+typedef struct vmysql VMYSQL;
+typedef struct vmysql *VMYSQL_PTR;
+typedef struct vmysql_res VMYSQLRES;
+typedef struct vmysql_res *VMYSQLRES_PTR;
+typedef struct vmysql_field VMYSQLFIELD;
+typedef struct vmysql_field *VMYSQLFIELD_PTR;
+typedef struct vmysql_field_offset VMYSQLFIELDOFFSET;
+typedef struct vmysql_field_offset *VMYSQLFIELDOFFSET_PTR;
+typedef struct vmysql_row VMYSQLROW;
+typedef struct vmysql_row *VMYSQLROW_PTR;
+typedef struct vmysql_row_offset VMYSQLROWOFFSET;
+typedef struct vmysql_row_offset *VMYSQLROWOFFSET_PTR;
+
+
+/* XXX: these macros basically only test for vectorness
+   and aren't sufficient. It's mostly unnessary anyway,
+   I just was in a "copy how emacs does it" mode. */
+
+/* VMYSQL */
+# define VMYSQLP(x) (VECTORP (x) && XVECTOR (x)->size == VECSIZE (VMYSQL))
+# define GC_VMYSQLP(x) GC_VECTORP ((x))
+# define VMYSQL_LIVE_P(m) ((m)->size != 0)
+# define XVMYSQL(p) (eassert (GC_VMYSQLP(p)),(VMYSQL_PTR) XPNTR (p))
+# define XSETVMYSQL(a, b) (XSETVECTOR (a, b))
+# define CHECK_VMYSQL(x, i)				           \
+     do {						           \
+       if (! VECTORP (x))	                                   \
+         x = wrong_type_argument (Qvmysqlp, (x));	           \
+     } while (0)
+
+/* VMYSQLRES */
+# define VMYSQLRESP(x) (VECTORP (x) && XVECTOR (x)->size == VECSIZE (VMYSQLRES))
+# define GC_VMYSQLRESP(x) GC_VECTORP ((x))
+# define VMYSQLRES_LIVE_P(m) ((m)->size != 0)
+# define XVMYSQLRES(p) (eassert (GC_VMYSQLRESP(p)),(VMYSQLRES_PTR) XPNTR (p))
+# define XSETVMYSQLRES(a, b) (XSETVECTOR (a, b))
+# define CHECK_VMYSQLRES(x, i)				           \
+     do {						           \
+       if (! VECTORP (x))	                                   \
+         x = wrong_type_argument (Qvmysqlresp, (x));	           \
+     } while (0)
+
+/* VMYSQLFIELD */
+# define VMYSQLFIELDP(x) (VECTORP (x) && XVECTOR (x)->size == VECSIZE (VMYSQLFIELD))
+# define GC_VMYSQLFIELDP(x) GC_VECTORP ((x))
+# define VMYSQLFIELD_LIVE_P(m) ((m)->size != 0)
+# define XVMYSQLFIELD(p) (eassert (GC_VMYSQLFIELDP(p)),(VMYSQLFIELD_PTR) XPNTR (p))
+# define XSETVMYSQLFIELD(a, b) (XSETVECTOR (a, b))
+# define CHECK_VMYSQLFIELD(x, i)				           \
+     do {						           \
+       if (! VECTORP (x))	                                   \
+         x = wrong_type_argument (Qvmysqlfieldp, (x));	           \
+     } while (0)
+
+/* VMYSQLFIELDOFFSET */
+# define VMYSQLFIELDOFFSETP(x) (VECTORP (x) && XVECTOR (x)->size == VECSIZE (VMYSQLFIELDOFFSET))
+# define GC_VMYSQLFIELDOFFSETP(x) GC_VECTORP ((x))
+# define VMYSQLFIELDOFFSET_LIVE_P(m) ((m)->size != 0)
+# define XVMYSQLFIELDOFFSET(p) (eassert (GC_VMYSQLFIELDOFFSETP(p)),(VMYSQLFIELDOFFSET_PTR) XPNTR (p))
+# define XSETVMYSQLFIELDOFFSET(a, b) (XSETVECTOR (a, b))
+# define CHECK_VMYSQLFIELDOFFSET(x, i)				           \
+     do {						           \
+       if (! VECTORP (x))	                                   \
+         x = wrong_type_argument (Qvmysqlfieldoffsetp, (x));	           \
+     } while (0)
+
+/* VMYSQLROW */
+# define VMYSQLROWP(x) (VECTORP (x) && XVECTOR (x)->size == VECSIZE (VMYSQLROW))
+# define GC_VMYSQLROWP(x) GC_VECTORP ((x))
+# define VMYSQLROW_LIVE_P(m) ((m)->size != 0)
+# define XVMYSQLROW(p) (eassert (GC_VMYSQLROWP(p)),(VMYSQLROW_PTR) XPNTR (p))
+# define XSETVMYSQLROW(a, b) (XSETVECTOR (a, b))
+# define CHECK_VMYSQLROW(x, i)				           \
+     do {						           \
+       if (! VECTORP (x))	                                   \
+         x = wrong_type_argument (Qvmysqlrowp, (x));	           \
+     } while (0)
+
+/* VMYSQLROWOFFSET */
+# define VMYSQLROWOFFSETP(x) (VECTORP (x) && XVECTOR (x)->size == VECSIZE (VMYSQLROWOFFSET))
+# define GC_VMYSQLROWOFFSETP(x) GC_VECTORP ((x))
+# define VMYSQLROWOFFSET_LIVE_P(m) ((m)->size != 0)
+# define XVMYSQLROWOFFSET(p) (eassert (GC_VMYSQLROWOFFSETP(p)),(VMYSQLROWOFFSET_PTR) XPNTR (p))
+# define XSETVMYSQLROWOFFSET(a, b) (XSETVECTOR (a, b))
+# define CHECK_VMYSQLROWOFFSET(x, i)			           \
+     do {						           \
+       if (! VECTORP (x))	                                   \
+         x = wrong_type_argument (Qvmysqlrowoffsetp, (x));	   \
+     } while (0)
+
+
+# endif
+
+
+Lisp_Object Qvmysqlp;
+Lisp_Object Qvmysqlresp;
+Lisp_Object Qvmysqlfieldp;
+Lisp_Object Qvmysqlfieldoffsetp;
+Lisp_Object Qvmysqlrowp;
+Lisp_Object Qvmysqlrowoffsetp;
+
+
+/***** HELPER FUNCTIONS *****/
+
+
+/* MYSQL */
+
+MYSQL *
+xmysql (vmysql)
+  Lisp_Object vmysql;
+{
+  VMYSQL_PTR v = XVMYSQL (vmysql);
+  MYSQL *mysql = v->mysql;
+
+  return mysql;
+}
+
+VMYSQL_PTR
+allocate_vmysql ()
+{
+  EMACS_INT len = VECSIZE (VMYSQL);
+  struct Lisp_Vector *v = allocate_vector (len);
+  EMACS_INT n;
+
+  for (n = 0; n < len; n++)
+    v->contents[n] = make_number (0);
+  v->size = len;
+
+  return (VMYSQL_PTR) v;
+}
+
+void
+delete_vmysql (vmysql)
+  Lisp_Object vmysql;
+{
+  VMYSQL_PTR v;
+
+  CHECK_VMYSQL (vmysql, 0);
+  v = XVMYSQL (vmysql);
+/*   v->size = 0; */
+}
+
+/* MYSQL_RES */
+
+MYSQL_RES *
+xmysqlres (vmysqlres)
+  Lisp_Object vmysqlres;
+{
+  VMYSQLRES_PTR v = XVMYSQLRES (vmysqlres);
+  MYSQL_RES *mysql_res = v->mysql_res;
+
+  return mysql_res;
+}
+
+VMYSQLRES_PTR
+allocate_vmysqlres ()
+{
+  EMACS_INT len = VECSIZE (VMYSQLRES);
+  struct Lisp_Vector *v = allocate_vector (len);
+  EMACS_INT n;
+
+  for (n = 0; n < len; n++)
+    v->contents[n] = make_number (0);
+  v->size = len;
+
+  return (VMYSQLRES_PTR) v;
+}
+
+void
+delete_vmysqlres (vmysqlres)
+  Lisp_Object vmysqlres;
+{
+  VMYSQLRES_PTR v;
+
+  CHECK_VMYSQLRES (vmysqlres, 0);
+  v = XVMYSQLRES (vmysqlres);
+/*   v->size = 0; */
+}
+
+/* MYSQL_FIELD */
+
+MYSQL_FIELD *
+xmysqlfield (vmysqlfield)
+  Lisp_Object vmysqlfield;
+{
+  VMYSQLFIELD_PTR v = XVMYSQLFIELD (vmysqlfield);
+  MYSQL_FIELD *mysql_field = v->mysql_field;
+
+  return mysql_field;
+}
+
+VMYSQLFIELD_PTR
+allocate_vmysqlfield ()
+{
+  EMACS_INT len = VECSIZE (VMYSQLFIELD);
+  struct Lisp_Vector *v = allocate_vector (len);
+  EMACS_INT n;
+
+  for (n = 0; n < len; n++)
+    v->contents[n] = make_number (0);
+  v->size = len;
+
+  return (VMYSQLFIELD_PTR) v;
+}
+
+void
+delete_vmysqlfield (vmysqlfield)
+  Lisp_Object vmysqlfield;
+{
+  VMYSQLFIELD_PTR v;
+
+  CHECK_VMYSQLFIELD (vmysqlfield, 0);
+  v = XVMYSQLFIELD (vmysqlfield);
+/*   v->size = 0; */
+}
+
+/* MYSQL_FIELD_OFFSET */
+
+MYSQL_FIELD_OFFSET
+xmysqlfieldoffset (vmysqlfieldoffset)
+  Lisp_Object vmysqlfieldoffset;
+{
+  VMYSQLFIELDOFFSET_PTR v = XVMYSQLFIELDOFFSET (vmysqlfieldoffset);
+  MYSQL_FIELD_OFFSET offset = v->mysql_field_offset;
+
+  return offset;
+}
+
+VMYSQLFIELDOFFSET_PTR
+allocate_vmysqlfieldoffset ()
+{
+  EMACS_INT len = VECSIZE (VMYSQLFIELDOFFSET);
+  struct Lisp_Vector *v = allocate_vector (len);
+  EMACS_INT n;
+
+  for (n = 0; n < len; n++)
+    v->contents[n] = make_number (0);
+  v->size = len;
+
+  return (VMYSQLFIELDOFFSET_PTR) v;
+}
+
+void
+delete_vmysqlfieldoffset (vmysqlfieldoffset)
+  Lisp_Object vmysqlfieldoffset;
+{
+  VMYSQLFIELDOFFSET_PTR v;
+
+  CHECK_VMYSQLFIELDOFFSET (vmysqlfieldoffset, 0);
+  v = XVMYSQLFIELDOFFSET (vmysqlfieldoffset);
+/*   v->size = 0; */
+}
+
+/* MYSQL_ROW */
+
+MYSQL_ROW
+xmysqlrow (vmysqlrow)
+  Lisp_Object vmysqlrow;
+{
+  VMYSQLROW_PTR v = XVMYSQLROW (vmysqlrow);
+  MYSQL_ROW mysql_row = v->mysql_row;
+
+  return mysql_row;
+}
+
+VMYSQLROW_PTR
+allocate_vmysqlrow ()
+{
+  EMACS_INT len = VECSIZE (VMYSQLROW);
+  struct Lisp_Vector *v = allocate_vector (len);
+  EMACS_INT n;
+
+  for (n = 0; n < len; n++)
+    v->contents[n] = make_number (0);
+  v->size = len;
+
+  return (VMYSQLROW_PTR) v;
+}
+
+void
+delete_vmysqlrow (vmysqlrow)
+  Lisp_Object vmysqlrow;
+{
+  VMYSQLROW_PTR v;
+
+  CHECK_VMYSQLROW (vmysqlrow, 0);
+  v = XVMYSQLROW (vmysqlrow);
+/*   v->size = 0; */
+}
+
+/* MYSQL_ROW_OFFSET */
+
+MYSQL_ROW_OFFSET
+xmysqlrowoffset (vmysqlrowoffset)
+  Lisp_Object vmysqlrowoffset;
+{
+  VMYSQLROWOFFSET_PTR v = XVMYSQLROWOFFSET (vmysqlrowoffset);
+  MYSQL_ROW_OFFSET mysql_row_offset = v->mysql_row_offset;
+
+  return mysql_row_offset;
+}
+
+VMYSQLROWOFFSET_PTR
+allocate_vmysqlrowoffset ()
+{
+  EMACS_INT len = VECSIZE (VMYSQLROWOFFSET);
+  struct Lisp_Vector *v = allocate_vector (len);
+  EMACS_INT n;
+
+  for (n = 0; n < len; n++)
+    v->contents[n] = make_number (0);
+  v->size = len;
+
+  return (VMYSQLROWOFFSET_PTR) v;
+}
+
+void
+delete_vmysqlrowoffset (vmysqlrowoffset)
+  Lisp_Object vmysqlrowoffset;
+{
+  VMYSQLROWOFFSET_PTR v;
+
+  CHECK_VMYSQLROWOFFSET (vmysqlrowoffset, 0);
+  v = XVMYSQLROWOFFSET (vmysqlrowoffset);
+/*   v->size = 0; */
+}
+
+
+
+/***** DEFUNs FOR THE MYSQL C API *****/
+
+DEFUN_FIXED (mysql_affected_rows, 1,
+  "Returns the number of rows changed by the last UPDATE,\n\
+deleted by the last DELETE, or inserted by the last INSERT statement.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  int numrows;
+  Lisp_Object lispy_numrows;
+
+  numrows = mysql_affected_rows (mysql);
+  XSETINT (lispy_numrows, numrows);
+
+  return lispy_numrows;
+}
+
+/* should be variable, db param optional */
+DEFUN_FIXED (mysql_change_user, 4,
+  "Changes the user and causes the database specified\n\
+by db to become the default database.")
+  (vmysql, user_lo, password_lo, db_lo)
+    Lisp_Object vmysql, user_lo, password_lo, db_lo;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  int rv;
+  Lisp_Object lispy_rv;
+  const char *user, *password, *db;
+
+  STRING_OR_NULL (user);
+  STRING_OR_NULL (password);
+  STRING_OR_NULL (db);
+
+  rv = mysql_change_user (mysql, user, password, db);
+  XSETINT (lispy_rv, rv);
+
+  return lispy_rv;
+}
+
+DEFUN_FIXED (mysql_character_set_name, 1,
+  "Returns the default character set for the current connection.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  const char *name;
+//  Lisp_Object lispy_name;
+
+  name = mysql_character_set_name (mysql);
+  return build_string ((char *) name);
+
+//  XSETSTRING (lispy_name, name);
+//  return lispy_name;
+}
+
+DEFUN_FIXED (mysql_close, 1,
+  "Closes a previously opened connection.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+
+  mysql_close (mysql);
+
+  return Qt;
+}
+
+DEFUN_FIXED (mysql_data_seek, 2,
+  "Seeks to an arbitrary row in a query result set.")
+  (vmysqlres, offset_lo)
+    Lisp_Object vmysqlres, offset_lo;
+{
+  MYSQL_RES *result = xmysqlres (vmysqlres);
+  unsigned long long offset;
+
+  CHECK_NUMBER (offset, 0);
+  offset = XINT (offset_lo);
+
+  mysql_data_seek (result, offset);
+
+  return Qt;
+}
+
+DEFUN_FIXED (mysql_debug, 1,
+  "Does a DBUG_PUSH with the given string.")
+  (debug_lo)
+    Lisp_Object debug_lo;
+{
+  const char *debug;
+  STRING_OR_NULL (debug);
+
+  mysql_debug (debug);
+
+  return Qt;
+}
+
+DEFUN_FIXED (mysql_dump_debug_info, 1,
+  "Instructs the server to write some debug information to the log.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  int rv;
+  Lisp_Object lispy_rv;
+
+  rv = mysql_dump_debug_info (mysql);
+  XSETINT (lispy_rv, rv);
+
+  return lispy_rv;
+}
+
+DEFUN_FIXED (mysql_errno, 1,
+  "Returns the error code for the most recently invoked\n\
+API function that can succeed or fail.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  unsigned int rv;
+  Lisp_Object lispy_rv;
+
+  rv = mysql_errno (mysql);
+
+  XSETINT (lispy_rv, rv);
+  return lispy_rv;
+}
+
+DEFUN_FIXED (mysql_error, 1,
+  "Returns the error message for the most recently invoked\n\
+API function that can succeed or fail.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  char *err;
+
+  err = mysql_error (mysql);
+  return build_string (err);
+}
+
+DEFUN_FIXED (mysql_fetch_field, 1,
+  "Returns the definition of one column of a result set\n\
+as a MYSQL_FIELD structure.")
+  (vmysqlres)
+    Lisp_Object vmysqlres;
+{
+  MYSQL_RES *result = xmysqlres (vmysqlres);
+  MYSQL_FIELD *field = mysql_fetch_field (result);
+
+  if (field == NULL)
+    return Qnil;     /* no more fields left */
+  else
+    {
+      VMYSQLFIELD_PTR v;
+      Lisp_Object vmysqlfield;
+
+      v = allocate_vmysqlfield ();
+      v->mysql_field = field;
+      XSETVMYSQLFIELD (vmysqlfield, v);
+
+      return vmysqlfield;
+    }
+}
+
+DEFUN_FIXED (mysql_fetch_fields, 1,
+  "Returns an array of all MYSQL_FIELD structures for a result set.")
+  (vmysqlres)
+    Lisp_Object vmysqlres;
+{
+  MYSQL_RES *result = xmysqlres (vmysqlres);
+  MYSQL_FIELD *fields;
+  VMYSQLFIELD_PTR v;
+  Lisp_Object vmysqlfield, array, args[2];
+  unsigned int num_fields, i;
+
+  num_fields = mysql_num_fields (result);
+  fields = mysql_fetch_fields (result);
+
+  for (i = 0; i < num_fields; i++)
+    {
+      v = allocate_vmysqlfield ();
+      v->mysql_field = &fields[i];
+      XSETVMYSQLFIELD (vmysqlfield, v);
+
+      args[0] = array;
+      args[1] = vmysqlfield;
+      Fnconc (2, args);
+    }
+
+  return array;
+}
+
+DEFUN_FIXED (mysql_fetch_field_direct, 2,
+  "Given a field number for a column within a result set,\n\
+returns that column's field definition as a MYSQL_FIELD structure.")
+  (vmysqlres, fieldnr_lo)
+    Lisp_Object vmysqlres, fieldnr_lo;
+{
+  MYSQL_RES *result = xmysqlres (vmysqlres);
+  unsigned int fieldnr = XFASTINT (fieldnr_lo);
+  MYSQL_FIELD *field = mysql_fetch_field_direct (result, fieldnr);
+  VMYSQLFIELD_PTR v;
+  Lisp_Object vmysqlfield;
+
+  v = allocate_vmysqlfield ();
+  v->mysql_field = field;
+  XSETVMYSQLFIELD (vmysqlfield, v);
+
+  return vmysqlfield;
+}
+
+DEFUN_FIXED (mysql_fetch_lengths, 1,
+  "Returns the lengths of the columns of the current row\n\
+within a result set.")
+  (vmysqlres)
+    Lisp_Object vmysqlres;
+{
+  MYSQL_RES *result = xmysqlres (vmysqlres);
+  Lisp_Object lispy_length, array, args[2];
+  unsigned int num_fields, i;
+  unsigned long *lengths;
+
+  num_fields = mysql_num_fields (result);
+  lengths = mysql_fetch_lengths (result);
+
+  for (i = 0; i < num_fields; i++)
+    {
+      XSETFASTINT (lispy_length, lengths[i]);
+
+      args[0] = array;
+      args[1] = lispy_length;
+      Fnconc (2, args);
+    }
+
+  return array;
+}
+
+/* XXX: mysql_fetch_row returns (char **), so maybe we need
+   to return an array here... */
+DEFUN_FIXED (mysql_fetch_row, 1,
+  "Retrieves the next row of a result set.")
+  (vmysqlres)
+    Lisp_Object vmysqlres;
+{
+  MYSQL_RES *result = xmysqlres (vmysqlres);
+  MYSQL_ROW row = mysql_fetch_row (result);
+  VMYSQLROW_PTR v;
+  Lisp_Object vmysqlrow;
+
+  if (row == NULL)
+    return Qnil;
+  else
+    {
+      v = allocate_vmysqlrow ();
+      v->mysql_row = row;    /* MYSQL_ROW is (char **) */
+      XSETVMYSQLROW (vmysqlrow, v);
+
+      return vmysqlrow;
+    }
+}
+
+DEFUN_FIXED (mysql_field_count, 1,
+  "Returns the number of columns for the most recent\n\
+query on the connection.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  unsigned int count = mysql_field_count (mysql);
+  Lisp_Object lispy_count;
+
+  XSETFASTINT (lispy_count, count);
+  return lispy_count;
+}
+
+DEFUN_FIXED (mysql_field_seek, 2,
+  "Sets the field cursor to the given offset.")
+  (vmysqlres, vmysqlfieldoffset)
+    Lisp_Object vmysqlres, vmysqlfieldoffset;
+{
+  MYSQL_RES *result = xmysqlres (vmysqlres);
+  MYSQL_FIELD_OFFSET offset = xmysqlfieldoffset (vmysqlfieldoffset);
+  MYSQL_FIELD_OFFSET prev_offset = mysql_field_seek (result, offset);
+  VMYSQLFIELDOFFSET_PTR v = allocate_vmysqlfieldoffset ();
+  Lisp_Object lispy_prev_offset;
+
+  v->mysql_field_offset = prev_offset;
+  XSETVMYSQLFIELDOFFSET (lispy_prev_offset, v);
+  return lispy_prev_offset;
+}
+
+DEFUN_FIXED (mysql_field_tell, 1,
+  "Returns the position of the field cursor used for the last\n\
+mysql_fetch_field().")
+  (vmysqlres)
+    Lisp_Object vmysqlres;
+{
+  MYSQL_RES *result = xmysqlres (vmysqlres);
+  MYSQL_FIELD_OFFSET offset = mysql_field_tell (result);
+  VMYSQLFIELDOFFSET_PTR v = allocate_vmysqlfieldoffset ();
+  Lisp_Object lispy_offset;
+
+  v->mysql_field_offset = offset;
+  XSETVMYSQLFIELDOFFSET (lispy_offset, v);
+  return lispy_offset;
+}
+
+DEFUN_FIXED (mysql_free_result, 1,
+  "Frees the memory allocated for a result set.")
+  (vmysqlres)
+    Lisp_Object vmysqlres;
+{
+  MYSQL_RES *result = xmysqlres (vmysqlres);
+  mysql_free_result (result);
+
+  return Qt;
+}
+
+DEFUN_FIXED (mysql_get_client_info, 0,
+  "Returns a string that represents the client library version.")
+  ()
+{
+  char *info = mysql_get_client_info ();
+  return build_string (info);
+
+//  Lisp_Object lispy_info;
+
+//  XSETSTRING (lispy_info, info);
+//  return lispy_info;
+}
+
+DEFUN_FIXED (mysql_get_host_info, 1,
+  "Returns a string describing the type of connection in use.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  char *info = mysql_get_host_info (mysql);
+  return build_string (info);
+
+//  Lisp_Object lispy_info;
+
+//  XSETSTRING (lispy_info, info);
+//  return lispy_info;
+}
+
+DEFUN_FIXED (mysql_get_proto_info, 1,
+  "Returns the protocol version used by current connection.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  unsigned int version = mysql_get_proto_info (mysql);
+  Lisp_Object lispy_version;
+
+  XSETFASTINT (lispy_version, version);
+  return lispy_version;
+}
+
+DEFUN_FIXED (mysql_get_server_info, 1,
+  "Returns a string that represents the server version number.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  char *version = mysql_get_server_info (mysql);
+  return build_string (version);
+
+//  Lisp_Object lispy_version;
+
+//  XSETSTRING (lispy_version, version);
+//  return lispy_version;
+}
+
+DEFUN_FIXED (mysql_info, 1,
+  "Retrieves a string providing information about the most\n\
+recently executed query, for certain statements.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  char *info = mysql_info (mysql);
+  return build_string (info);
+
+//  Lisp_Object lispy_info;
+
+//  XSETSTRING (lispy_info, info);
+//  return lispy_info;
+}
+
+DEFUN_FIXED (mysql_init, 1,
+  "Allocates or initializes a MYSQL object suitable for mysql_real_connect().")
+  (vmysql)
+/* XXX: change to variable number of args (0 or 1) */
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql;
+
+  /* If an already allocated VMYSQL is passed,
+     pass that to mysql_init() for it to reinitialize,
+     then set the mysql member of VMYSQL to the reinitialized
+     MYSQL pointer. */
+  if (VMYSQLP (vmysql))
+    {
+      mysql = mysql_init (xmysql (vmysql));
+
+      if (mysql == NULL)
+        {
+	  delete_vmysql (vmysql);
+	  return Qnil;
+	}
+      else
+        {
+	  VMYSQL_PTR v = XVMYSQL (vmysql);
+	  v->mysql = mysql;
+
+	  XSETVMYSQL (vmysql, v);  /* not sure this is necessary */
+	  return vmysql;
+	}
+    }
+
+  /* If vmysql is nil, do mysql_init(NULL) so it allocates
+     a new MYSQL struct, and then we have to allocate a VMYSQL
+     vector using that struct. */
+  else
+    {
+      mysql = mysql_init (NULL);
+
+      if (mysql == NULL)
+        {
+	  return Qnil;
+	}
+      else
+        {
+	  VMYSQL_PTR v = allocate_vmysql ();
+	  v->mysql = mysql;
+
+	  XSETVMYSQL (vmysql, v);   /* not sure this is necessary */
+	  return vmysql;
+	}
+    }
+}
+
+DEFUN_FIXED (mysql_insert_id, 1,
+  "Returns the ID generated for an AUTO_INCREMENT column\n\
+by the previous query.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  my_ulonglong id = mysql_insert_id (mysql);
+  Lisp_Object lispy_id;
+
+  /* XXX: this will fail if id > ~1.34x10^8 due to 28-bit ints... */
+
+  XSETFASTINT (lispy_id, id);
+  return lispy_id;
+}
+
+DEFUN_FIXED (mysql_kill, 2,
+  "Asks the server to kill the thread specified by pid.")
+  (vmysql, pid_lo)
+    Lisp_Object vmysql, pid_lo;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  unsigned long pid = XFASTINT (pid_lo);
+  int rv = mysql_kill (mysql, pid);
+  Lisp_Object lispy_rv;
+
+  XSETINT (lispy_rv, rv);
+  return lispy_rv;
+}
+
+/* Note: this assumes MySQL v3.22.24 or newer.
+   Previous versions took (MYSQL *) instead of (MYSQL_RES *).
+   Could use #if defined(MYSQL_VERSION_ID) && MYSQL_VERSION_ID >= 32224. */
+DEFUN_FIXED (mysql_num_fields, 1,
+  "Returns the number of columns in a result set.")
+  (vmysqlres)
+    Lisp_Object vmysqlres;
+{
+  MYSQL_RES *result = xmysqlres (vmysqlres);
+  unsigned int num_fields = mysql_num_fields (result);
+  Lisp_Object lispy_num_fields;
+
+  XSETFASTINT (lispy_num_fields, num_fields);
+  return lispy_num_fields;
+}
+
+DEFUN_FIXED (mysql_num_rows, 1,
+  "Returns the number of rows in the result set.")
+  (vmysqlres)
+    Lisp_Object vmysqlres;
+{
+  MYSQL_RES *result = xmysqlres (vmysqlres);
+  my_ulonglong num_rows = mysql_num_rows (result);
+  Lisp_Object lispy_num_rows;
+
+  XSETFASTINT (lispy_num_rows, num_rows);
+  return lispy_num_rows;
+}
+
+DEFUN_FIXED (mysql_options, 3,
+  "Set extra connect options and affect behavior for a connection.")
+  (vmysql, option_lo, arg_lo)
+    Lisp_Object vmysql, option_lo, arg_lo;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  const char *arg;
+  int option, rv;
+  Lisp_Object lispy_rv;
+
+  STRING_OR_NULL (arg);
+
+  /* option is an enum, so maybe there should be a way
+     to specify those like MYSQL_OPT_COMPRESS, etc.. */
+  option = XFASTINT (option_lo);
+
+  rv = mysql_options (mysql, (enum mysql_option) option, arg);  
+
+  XSETINT (lispy_rv, rv);
+  return lispy_rv;
+}
+
+DEFUN_FIXED (mysql_ping, 1,
+  "Checks whether or not the connection to the server is working.\n\
+If it has gone down, an automatic reconnection is attempted.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  int rv = mysql_ping (mysql);
+  Lisp_Object lispy_rv;
+
+  XSETINT (lispy_rv, rv);
+  return lispy_rv;
+}
+
+/* XXX: segfaults if vmysql has been closed... */
+DEFUN_FIXED (mysql_query, 2,
+  "Executes the SQL query pointed to by the string query.")
+  (vmysql, query_lo)
+    Lisp_Object vmysql, query_lo;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  const char *query;
+  int rv;
+  Lisp_Object lispy_rv;
+
+  STRING_OR_NULL (query);
+
+  rv = mysql_query (mysql, query);
+  XSETINT (lispy_rv, rv);
+  return lispy_rv;
+}
+
+DEFUN_FIXED (mysql_real_connect, 8,
+  "Attempts to establish a connection to a MySQL database engine.")
+  (vmysql, host_lo, user_lo, password_lo, db_lo, port_lo, socket_lo, flag_lo)
+/* XXX: would be nice if this was variadic */
+    Lisp_Object vmysql, host_lo, user_lo, password_lo, db_lo,
+      port_lo, socket_lo, flag_lo;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  const char *host, *user, *password, *db, *socket;
+  unsigned int port, flag;
+
+  STRING_OR_NULL (host);
+  STRING_OR_NULL (user);
+  STRING_OR_NULL (password);
+  STRING_OR_NULL (db);
+  STRING_OR_NULL (socket);
+  INT_OR_NULL (port);
+  INT_OR_NULL (flag);
+
+  mysql = mysql_real_connect (mysql, host, user, password,
+				  db, port, socket, flag);
+
+  if (mysql != NULL)
+    {
+      VMYSQL_PTR v = XVMYSQL (vmysql);
+      v->mysql = mysql;
+
+      XSETVMYSQL (vmysql, v);   /* not sure this is necessary */
+      return vmysql;
+    }
+  else
+    {
+      return Qnil;
+    }
+}
+
+/* XXX: Hrm.. this one's problematic. The 2nd arg (char *to) to
+   mysql_real_escape_string() is a buffer that's going to get filled
+   in. Also, it returns the length of the allocated string. For now,
+   I just return the new (char *to) string. Maybe can do
+   something like Fsetq() does to set the value of its argument. */
+/* DEFUN_FIXED (mysql_real_escape_string, 4, */
+DEFUN_FIXED (mysql_real_escape_string, 2,
+  "Create a legal SQL string that you can use in a SQL statement.")
+/*   (vmysql, to_lo, from_lo, length_lo) */
+/*     Lisp_Object vmysql, to_lo, from_lo, length_lo; */
+/* XXX: accepts only (MYSQL *mysql) and (const char *from) arguments */
+  (vmysql, from_lo)
+    Lisp_Object vmysql, from_lo;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  int length = STRING_BYTES (XSTRING (from_lo));
+  char *to;
+  const char *from;
+  Lisp_Object lispy_to;
+
+  STRING_OR_NULL(from);
+
+  to = (char *) xmalloc (2 * length + 1);
+
+  length = mysql_real_escape_string (mysql, to, from, (unsigned int) length);
+  XSETSTRING (lispy_to, to);
+
+  xfree (to);
+
+  /* XXX: return the escaped string rather than the length */
+  return lispy_to;
+}
+
+/* DEFUN_FIXED (mysql_real_query, 3, */
+DEFUN_FIXED (mysql_real_query, 2,
+  "Executes the SQL query pointed to by query, which\n\
+should be a string length bytes long.")
+/*   (vmysql, query_lo, length_lo) */
+/*     Lisp_Object vmysql, query_lo, length_lo; */
+/* XXX: took out length similar to mysql_real_escape_string */
+  (vmysql, query_lo)
+    Lisp_Object vmysql, query_lo;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  int length = STRING_BYTES (XSTRING (query_lo));
+  const char *query;
+  int rv;
+  Lisp_Object lispy_rv;
+
+  STRING_OR_NULL(query);
+
+  rv = mysql_real_query (mysql, query, (unsigned int) length);
+  XSETINT (lispy_rv, rv);
+
+  return lispy_rv;
+}
+
+DEFUN_FIXED (mysql_row_seek, 2,
+  "Sets the row cursor to an arbitrary row in a query result set.")
+  (vmysqlres, vmysqlrowoffset)
+    Lisp_Object vmysqlres, vmysqlrowoffset;
+{
+  MYSQL_RES *result = xmysqlres (vmysqlres);
+  MYSQL_ROW_OFFSET offset = xmysqlrowoffset (vmysqlrowoffset);
+  MYSQL_ROW_OFFSET prev_offset = mysql_row_seek (result, offset);
+  VMYSQLROWOFFSET_PTR v = allocate_vmysqlrowoffset ();
+  Lisp_Object lispy_prev_offset;
+
+  v->mysql_row_offset = prev_offset;
+  XSETVMYSQLROWOFFSET (lispy_prev_offset, v);
+  return lispy_prev_offset;
+}
+
+DEFUN_FIXED (mysql_row_tell, 1,
+  "Returns the current position of the row cursor for the last\n\
+mysql_fetch_row().")
+  (vmysqlres)
+    Lisp_Object vmysqlres;
+{
+  MYSQL_RES *result = xmysqlres (vmysqlres);
+  MYSQL_ROW_OFFSET offset = mysql_row_tell (result);
+  VMYSQLROWOFFSET_PTR v = allocate_vmysqlrowoffset ();
+  Lisp_Object lispy_offset;
+
+  v->mysql_row_offset = offset;
+  XSETVMYSQLROWOFFSET (lispy_offset, v);
+  return lispy_offset;
+}
+
+DEFUN_FIXED (mysql_select_db, 2,
+  "Causes db to become the default (current) database.")
+  (vmysql, db_lo)
+    Lisp_Object vmysql, db_lo;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  const char *db;
+  int rv;
+  Lisp_Object lispy_rv;
+
+  STRING_OR_NULL(db);
+
+  rv = mysql_select_db (mysql, db);
+  XSETINT (lispy_rv, rv);
+  return lispy_rv;
+}
+
+DEFUN_FIXED (mysql_shutdown, 1,
+  "Asks the database server to shut down.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  int rv = mysql_shutdown (mysql);
+  Lisp_Object lispy_rv;
+
+  XSETINT (lispy_rv, rv);
+  return lispy_rv;
+}
+
+DEFUN_FIXED (mysql_stat, 1,
+  "Returns a character string containing information\n\
+similar to that provided by the mysqladmin status command.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  char *status = mysql_stat (mysql);
+
+//  Lisp_Object lispy_status;
+
+  if (status == NULL)
+    return Qnil;
+  else
+    {
+//      XSETSTRING (lispy_status, status);
+//      return lispy_status;
+
+      return build_string (status);
+    }
+}
+
+DEFUN_FIXED (mysql_store_result, 1,
+  "Reads the entire result of a query to the client,\n\
+allocates a MYSQL_RES structure, and places the result\n\
+into this structure.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  MYSQL_RES *result = mysql_store_result (mysql);
+  VMYSQLRES_PTR v;
+  Lisp_Object lispy_result;
+
+  if (result == NULL)
+    return Qnil;
+  else
+    {
+      v = allocate_vmysqlres ();
+      v->mysql_res = result;
+      XSETVMYSQLRES (lispy_result, v);
+      return lispy_result;
+    }
+}
+
+DEFUN_FIXED (mysql_thread_id, 1,
+  "Returns the thread ID of the current connection.\n\
+This value can be used as an argument to mysql_kill() to kill the thread.")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  unsigned long id = mysql_thread_id (mysql);
+  Lisp_Object lispy_id;
+
+  XSETFASTINT (lispy_id, id);
+  return lispy_id;
+}
+
+DEFUN_FIXED (mysql_use_result, 1,
+  "mysql_use_result() initiates a result set retrieval\n\
+but does not actually read the result set into the client like\n\
+mysql_store_result() does. Instead, each row must be retrieved\n\
+individually by making calls to mysql_fetch_row().")
+  (vmysql)
+    Lisp_Object vmysql;
+{
+  MYSQL *mysql = xmysql (vmysql);
+  MYSQL_RES *result = mysql_use_result (mysql);
+  VMYSQLRES_PTR v;
+  Lisp_Object lispy_result;
+
+  if (result == NULL)
+    return Qnil;
+  else
+    {
+      v = allocate_vmysqlres ();
+      v->mysql_res = result;
+      XSETVMYSQLRES (lispy_result, v);
+      return lispy_result;
+    }
+}
+
+
+/* DEFUNs FOR ACCESSING STRUCTS */
+
+DEFUN ("mysql-row-nth", Fmysql_row_nth, Smysql_row_nth, 2, 2, 0,
+  "Return the NTH element of ROW. Used for accessing columns\n\
+in MYSQL_ROWs returned by mysql_fetch_row(result).")
+  (vmysqlrow, nth)
+    Lisp_Object vmysqlrow, nth;
+{
+  MYSQL_ROW row = xmysqlrow (vmysqlrow);
+  unsigned int n = XFASTINT (nth);
+  char *col;
+//  Lisp_Object lispy_col;
+
+  col = row[n];
+
+  if (col == NULL)
+    return Qnil;
+  else
+    {
+//      XSETSTRING (lispy_col, col);
+//      return lispy_col;
+
+      return build_string (col);
+    }
+}
+
+
+
+void syms_of_mysql () {
+  defsubr(&Smysql_init);
+  defsubr(&Smysql_real_connect);
+  defsubr(&Smysql_close);
+  defsubr(&Smysql_query);
+  defsubr(&Smysql_affected_rows);
+  defsubr(&Smysql_change_user);
+  defsubr(&Smysql_character_set_name);
+  defsubr(&Smysql_data_seek);
+  defsubr(&Smysql_debug);
+  defsubr(&Smysql_dump_debug_info);
+  defsubr(&Smysql_errno);
+  defsubr(&Smysql_error);
+  defsubr(&Smysql_fetch_field);
+  defsubr(&Smysql_fetch_fields);
+  defsubr(&Smysql_fetch_field_direct);
+  defsubr(&Smysql_fetch_lengths);
+  defsubr(&Smysql_fetch_row);
+  defsubr(&Smysql_field_count);
+  defsubr(&Smysql_field_seek);
+  defsubr(&Smysql_field_tell);
+  defsubr(&Smysql_free_result);
+  defsubr(&Smysql_get_client_info);
+  defsubr(&Smysql_get_host_info);
+  defsubr(&Smysql_get_proto_info);
+  defsubr(&Smysql_get_server_info);
+  defsubr(&Smysql_info);
+  defsubr(&Smysql_insert_id);
+  defsubr(&Smysql_kill);
+  defsubr(&Smysql_num_fields);
+  defsubr(&Smysql_num_rows);
+  defsubr(&Smysql_options);
+  defsubr(&Smysql_ping);
+  defsubr(&Smysql_real_escape_string);
+  defsubr(&Smysql_real_query);
+  defsubr(&Smysql_row_seek);
+  defsubr(&Smysql_row_tell);
+  defsubr(&Smysql_select_db);
+  defsubr(&Smysql_shutdown);
+  defsubr(&Smysql_stat);
+  defsubr(&Smysql_store_result);
+  defsubr(&Smysql_thread_id);
+  defsubr(&Smysql_use_result);
+
+  defsubr(&Smysql_row_nth);
+}
+
+/*
+  These functions are deprecated and thus were not included:
+
+   mysql_connect
+   mysql_create_db
+   mysql_drop_db
+   mysql_eof
+   mysql_escape_string
+   mysql_list_dbs
+   mysql_list_fields
+   mysql_list_processes
+   mysql_list_tables
+   mysql_reload
+* /
+
+
+/*
+  REFERENCES:
+
+  MySQL
+  * MySQL C API in section 8.4 of the MySQL manual.
+  * "MySQL", by Paul Dubois
+
+  Emacs
+  * node "GNU Emacs Internals" in the "Emacs Lisp Reference".
+  * emacs-devel@gnu.org mailing list, especially Stefan Monnier
+* /
+
+
+
+
+/*
+
+;;; Sample elisp snippets
+;;; 
+;;; The following snippets work when I evaluate them:
+;;;   * in the order given
+;;;   * on pc-linux-gnu (i686)
+;;;   * with MySQL 3.23.41
+;;;   * and Emacs 21.1
+;;; Anything other than that, and who knows.. :)
+
+;;; Elisp versions of MYSQL C API functions use underscores
+;;; (mysql_init, mysql_real_connect), whereas special struct
+;;; accessor functions (for example, mysql_fetch_row returns
+;;; a MYSQL_ROW, which is an array of (char *), so you need to
+;;; be able to get row[3], say) use dashes (mysql-row-nth)
+
+;; Get a connection handle
+(setq mysql (mysql_init nil))
+
+(if (not mysql)
+    (message "mysql_init failed... out of memory??"))
+
+;; XXX: use mysql_options() to read password from ~/.my.cnf
+(setq host 0
+      user "mysql"
+      password "h0b;BERG!"
+      db "site1"
+      port 3306
+      socket 0
+      flag 0)
+
+;; Connect to the server
+(if (not (mysql_real_connect mysql host user password db port socket flag))
+    (message (mysql_error mysql)))
+
+;; Test mysql_select_db (though we already selected it)
+(if (mysql_select_db mysql "site1")
+    (message (mysql_error mysql)))
+
+;; Query returning rows  (SELECT/SHOW/DESCRIBE/EXPLAIN)
+;; XXX: 
+(if (/= 0 (mysql_query mysql "SHOW TABLES FROM mysql"))
+    (message (mysql_error mysql))
+  (progn
+    (let (res)
+      (setq res (mysql_store_result mysql))
+      (if (not res)
+	  (message (mysql_error mysql))
+	(progn
+	  ;; process result set
+	  (let (row row_string)
+	    (while (setq row (mysql_fetch_row res))
+	      (let (num_fields (i 0) col)
+		(setq num_fields (mysql_num_fields res))
+		(while (< i num_fields)
+		  (if (setq col (mysql-row-nth row i))
+		      (insert (concat col "\t"))
+		    (insert "NULL\t"))
+		  (setq i (1+ i)))
+		(insert "\n"))))
+	  (mysql_free_result res))))))
+
+;; Query that doesn't return rows  (INSERT/UPDATE/DELETE)
+;; (need example of mysql_real_escape_string)
+(if (/= 0 (mysql_query mysql "INSERT INTO elisp SET str='NO WAY!'"))
+    (message (mysql_error mysql))
+  (message (concat "Affected "
+		   (number-to-string (mysql_affected_rows mysql))
+		   " rows")))
+
+(mysql_close mysql)
+
+
+
+* /
+</pre>
+
+----
+CategorySql
+CategoryPorts

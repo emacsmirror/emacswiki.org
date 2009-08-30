@@ -1,0 +1,71 @@
+CharlesSebold has been working on a function to convert some of the standard fortune quotes, which rely on teletypes' abilities to backspace and overstrike characters, to something more like Gnus' style of marking up text, as well as replacing special character sequences with their ISO-8859-1 equivalents.
+
+The result, so far, is here:
+
+ ; Convert strings which assume that you have terminal functions like
+ ; backspace for things like underlining, to something a little more modern
+ (defun crs-unterminal-string (input-string)
+  "Convert INPUT-STRING from vt-style accents to Gnus-style accents."
+  (let ((output-string)
+        (accent-table '(("e\b'" "é") ("'\be" "é") ("a\b'" "á")
+                        ("'\ba" "á") ("i\b'" "í") ("'\bi" "í")
+                        ("u\b'" "ú") ("'\bu" "ú") ("o\b'" "ó")
+                        ("'\bo" "ó") ("n\b~" "ñ") ("~\bn" "ñ")
+                        ("a\b`" "à") ("`\ba" "à") ("e\b`" "è")
+                        ("`\be" "è") ("i\b`" "ì") ("`\bi" "ì")
+                        ("o\b`" "ò") ("`\bo" "ò") ("u\b`" "ù")
+                        ("`\bu" "ù") ("a\b\"" "ä") ("\"\ba" "ä")
+                        ("e\b\"" "ë") ("\"\be" "ë") ("\"\bi" "ï")
+                        ("i\b\"" "ï") ("\"\bo" "ö") ("\"\bo" "ö")
+                        ("u\b\"" "ü") ("\"\bu" "ü") ("\\^\ba" "â")
+                        ("a\b\\^" "â") ("\\^\be" "ê") ("e\b\\^" "ê")
+                        ("\\^\bi" "î") ("i\b\\^" "î") ("\\^\bo" "ô")
+                        ("o\b\\^" "ô") ("\\^\bu" "û") ("u\b\\^" "û"))))
+    (save-excursion
+      (let ((starting-buffer (current-buffer)))
+        (set-buffer (get-buffer-create "unterminal-temp"))
+        (insert input-string)
+        (beginning-of-buffer)
+        ; underlining
+        (while (re-search-forward "\\(_+\\)\b+" nil t)
+          (replace-match "_")
+          (forward-char (length (match-string 1)))
+          (insert "_"))
+        ; boldface
+        (beginning-of-buffer)
+        (while (re-search-forward "\\([^ \b]+\\)\b+\\([^ \b]+\\)" nil t)
+          (if (string= (match-string 1) (match-string 2))
+              (replace-match "*\\1*")))
+        ; accents
+        (dolist (this-kind accent-table)
+          (beginning-of-buffer)
+          (while (re-search-forward (car this-kind) nil t)
+            (replace-match (cadr this-kind))))
+        (setq output-string (buffer-string))
+        (kill-buffer "unterminal-temp")))
+    output-string))
+
+One could then call this function to convert a fortune quote, something like this:
+
+ (defun crs-fortune ()
+   (crs-unterminal-string (shell-command-to-string "/usr/games/fortune")))
+
+For the latest version of this, check Charlie's [http://www.livingtorah.org/~csebold/emacs/dot.emacs .emacs file].
+----
+I would be interested in hearing from somebody, who knows how to hook this into Gnus to convert things that people send me into Gnus' style of boldface/underline/etc., <em>before</em> Gnus marks up the *Article* buffer.  Please leave a note here if you know how to do that.  Here is what I have tried; it doesn't always work:
+
+ (add-hook 'gnus-visual-mark-article-hook
+          (function
+           (lambda ()
+             (save-excursion
+               (set-buffer "*Article*")
+               (toggle-read-only)
+               (let ((my-string (buffer-string)))
+                 (kill-region (point-min) (point-max))
+                 (insert
+                  (crs-unterminal-string my-string)))
+               (toggle-read-only)))))
+
+Thanks - if I get someting like this to work I would like to submit it as a washing possibility to Gnus also. - CharlesSebold
+----
+CategoryDotEmacs

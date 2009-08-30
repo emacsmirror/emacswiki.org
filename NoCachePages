@@ -1,0 +1,10 @@
+This page lists all pages with dynamic content.
+Each page must stand on a line of its own, preceded by exactly one space.
+The page name itself must not contain spaces.
+Replace spaces with underlines (page id, not page name).
+
+This will be used to implement a 404 Not Found handler for the wiki.
+See [[Oddmuse:404 Handler Extension]].
+
+ RecentChanges
+ Letzte_Änderungen

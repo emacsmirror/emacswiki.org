@@ -1,0 +1,76 @@
+On 2006-06-29, PaulLussier asked the EmacsChannel which situations called for featurep and which for locate-library.  TrentBuck provided the following typical "use cases":
+
+== Writing functions ==
+
+My function needs the function sum from the package math:
+
+    (require 'math)
+
+    (defun mean (&rest xs)
+      (/ (sum xs)
+         (length xs)))
+
+but the math package isn't available in some Emacsen, so in those cases I will use my slower alternative:
+
+    (if (locate-library "math")
+        (require 'math)
+      (defun sum (&rest xs)
+        (apply #'+ xs)))
+
+    (defun mean (&rest numbers)
+      (/ (sum numbers)
+         (length numbers)))
+
+[new]
+Now, for this it's better to use this macro
+
+    (defmacro require-soft (feature &optional file)
+      "*Try to require FEATURE, but don't signal an error if `require' fails."
+      `(require ,feature ,file 'noerror))
+
+And then use it like
+
+    (unless (require-soft 'math)
+      (defun sum (&rest xs)
+        (apply #'+ xs)))
+[new]
+
+Now, suppose I've written a version of sum that is *faster* than the one in math.  I want to override math's definition with mine -- so I need to tell Emacs to evaluate my defun expression *after* math is loaded:
+
+    (eval-after-load 'math
+      '(defun sum (&rest xs)
+         (fold #'+ 0 xs)))
+
+== Configuring libraries ==
+
+Suppose global-font-lock-mode is not available on some Emacsen.  When I try my normal .emacs:
+
+    (global-font-lock-mode +1)
+
+on those machines, Emacs refuses to start!  But I want to call that function on those Emacsen that have it.  The solution is to when for the function's availability:
+
+    (when (fboundp 'global-font-lock-mode)
+      (global-font-lock-mode +1))
+
+Suppose I use EMMS sometimes and part of my configuration is to call emms-standard to set things up.  If I put this:
+
+    (require 'emms-setup)
+    (emms-standard)
+
+then every time I boot Emacs, I have to wait for EMMS to load -- even when I don't want to use EMMS.  I note that I always start using EMMS with the emms-play-directory function, so I autoload that and use eval-after-load to defer EMMS configuration until I actually need it:
+
+    (autoload 'emms-play-directory "emms-source-file" nil t)
+    (eval-after-load 'emms
+      '(progn
+         (require 'emms-setup)
+         (emms-standard)))
+
+There's no point doing all that configuration if emms isn't even
+installed on my machine, so I wrap it all in a call to locate-library:
+
+    (when (locate-library "emms")
+      (autoload 'emms-play-directory-tree "emms-source-file" nil t)
+      (eval-after-load 'emms
+        '(progn
+           (require 'emms-setup)
+           (emms-standard))))

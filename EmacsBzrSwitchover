@@ -1,0 +1,50 @@
+== Emacs CVS → BZR Switchover Checklist ==
+
+GNU Emacs development is switching from CVS to [http://bazaar-vcs.org Bzr].  This is a checklist of things we need to do to make that switchover go smoothly.
+
+* Prepare a switchover document for regular Emacs developers (base it on [http://bazaar-vcs.org/Scenarios/RepeatedContributions this scenario]), so they don't all have to read the entire [http://doc.bazaar-vcs.org/bzr.dev/en/user-guide/index.html Bzr Users Guide] to continue working on Emacs.
+** See [[BzrForEmacsDevs#RegularContributors]]
+
+* Prepare one-off contribution document (base it on [http://bazaar-vcs.org/Scenarios/OneOffContribution this scenario])
+** See [[BzrForEmacsDevs#PatchContributors]]
+
+* Figure out how to handle external repositories (basically Gnus's), which is sync'd *both* ways (currently going via Arch).
+** See [[BzrForEmacsDevs#PackageMerging]]
+
+* Document how to do a release from bzr (or adjust our existing release procedure documentation... where is it, anyway?) Possibly ...emacs/admin/FOR-RELEASE
+** See [[BzrForEmacsDevs#Releases]]
+
+* Set up a test branch.
+
+* Test the test branch!
+
+* Rename and rewrite INSTALL.CVS.  (Just rename to "INSTALL.DEV", so it's not VC-specific anymore?)
+
+* Make sure Loggerhead or some other repository web browsing software is installed on Savannah.  (Seems to be [http://savannah.gnu.org/support/index.php?106612#comment16 done] now, but may still need some [https://savannah.gnu.org/support/index.php?106612#comment17 debugging].
+
+* Test that anon access works.
+
+* Test that SSH dev access works.
+
+* Make sure commit emails work.
+** Fix the email diff generator, if necessary; see https://savannah.gnu.org/support/?106531
+
+* Update http://www.gnu.org/software/emacs/.
+
+* Update http://savannah.gnu.org/projects/emacs.
+
+== References ==
+
+* [http://savannah.gnu.org/support/index.php?106612 Savannah ticket #106612] about the Emacs Bzr switchover in general.
+
+* [https://savannah.gnu.org/support/index.php?106951 Savannah ticket #106951] about upgrading Bazaar to 1.17 on Savannah.
+
+* [https://savannah.gnu.org/support/index.php?106531 Savannah ticket #106531] about bzr commit emails omitting large diffs.
+
+* [http://lists.gnu.org/archive/html/emacs-devel/2009-01/msg00575.html Email with high-level plan].
+
+* <nowiki>bzr://bzr.notengoamigos.org/emacs-merges-ce/master/</nowiki>, the current test conversion bzr repository.
+
+* [http://lists.gnu.org/archive/html/emacs-devel/2009-02/msg00258.html Email about the data conversion].
+
+* [https://bugs.edge.launchpad.net/bzr/+bugs?field.searchtext=&orderby=-importance&assignee_option=any&field.assignee=&field.bug_reporter=&field.bug_supervisor=&field.bug_commenter=&field.subscriber=&field.omit_dupes.used=&field.omit_dupes=on&field.has_patch.used=&field.has_cve.used=&field.tag=emacs-adoption&field.tags_combinator=ANY&search=Search List of Bazaar bugs tagged with "emacs-adoption"].

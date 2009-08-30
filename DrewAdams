@@ -1,0 +1,252 @@
+Cette page est aussi disponible en franglais ;-): Français:DrewAdamsFrançais
+
+; '''Emacs''': The "''spirit of building up gigantic, complicated programs to use in your own editing, and then exchanging them with other people''" -- [[RMS]], [http://www.gnu.org/gnu/rms-lisp.html|Lisp conf speech, 2002-10-28] (taken slightly out of context).
+
+See EmacsHistory for info on the various Emacs incarnations mentioned here, and [http://www.jwz.org/doc/emacs-timeline.html] for the Emacs family tree.
+
+
+== Where's the Glue? ==
+
+Favorite Emacs quote:
+
+[new]
+|| || || ||  || '''EMACS exists because I felt free to make individually useful small improvements on a path whose end was not in sight.''' -- RichardStallman, ''EMACS: The Extensible, Customizable Display Editor'', <tt>http://www.gnu.org/software/emacs/emacs-paper.html </tt> || ||  ||  || ||
+[new]
+
+That's not a bad summary of what free/open software development is all about, IMO:
+* freedom to modify (source)
+* individually useful changes
+* small changes
+* on a path, but one without a clear destination
+
+The fact that useful software changes can be ''individually'' useful and small, without being part of an overall predefined design, is maybe not an explicit tenet of the philosophy of free software development, but it is in fact a precondition and a consequence of such development. The idea that individually useful changes are ''likely'' to lead to something that is useful in the aggregate is important -- and ''not obvious'', in terms of modularity and group design & development.
+
+This free/open software development model (combine individually useful changes, without necessarily adhering to a predefined design) reminds me of the Unix philosophy (vs what came before it) of producing small, modular programs that can easily be combined to produce more powerful functionality (vs monolithic, swiss-army-knife, do-all systems/functions). Here's the question:
+
+: What makes Unix (or GNU/Linux) so ''modular'' -- so propitious to the ''combination'' of small programs?
+* character streams as both input and output (what one program outputs, another can input)
+* pipes (glue programs together: outputs to inputs)
+
+The same question, applied to functional programming:
+
+: What makes (pure, lazy, higher-order) functional programming so ''modular'' --  so propitious to the ''combination'' of small programs? 
+* higher-order functions (glue simple functions together to make complex functions)
+* lazy evaluation (glue whole programs together: outputs to inputs)
+
+IOW, it's about '''modularity''', and modularity is all about '''glue''': the ''ability to combine'' pieces.
+
+For a fabulous essay on the modularity and "glue" of functional programming, see John Hughes's classic, ''Why Functional Programming Matters'': <tt>http://www.md.chalmers.se/~rjmh/Papers/whyfp.html. </tt> From the Introduction (emphasis added):
+
+[new]
+: The special characteristics and advantages of functional programming are
+often summed up more or less as follows. Functional programs contain _no assignment statements_, so variables, once given a value, never change. More
+generally, functional programs contain _no side-effects_ at all. A function call can
+have no effect other than to compute its result. This eliminates a major source
+of bugs, and also makes the order of execution irrelevant -- since no side-effect
+can change the value of an expression, it can be evaluated at any time. This
+relieves the programmer of the burden of prescribing the _flow of control_. Since
+expressions can be evaluated at any time, one can freely replace variables by
+their values and vice versa -- that is, programs are “referentially transparent”.
+This freedom helps make functional programs more tractable mathematically
+than their conventional counterparts.
+
+: Such a catalogue of “advantages” is all very well, but one must not be surprised
+if outsiders don’t take it too seriously. It says a lot about ''what functional programming is '''not''''' (it has _no assignment_, _no side effects_, _no flow of control_) but
+not much about what it ''is''. The functional programmer sounds rather like a medieval
+monk, denying himself the pleasures of life in the hope that it will make
+him virtuous. To those more interested in material benefits, these “advantages”
+are not very convincing.
+
+: Functional programmers argue that there ''are'' great material benefits -- that
+a functional programmer is an order of magnitude more productive than his
+conventional counterpart, because functional programs are an order of magnitude
+shorter. Yet why should this be? The only faintly plausible reason one
+can suggest on the basis of these “advantages” is that conventional programs
+consist of 90% assignment statements, and in functional programs these can be
+omitted! This is plainly ridiculous. If omitting assignment statements brought
+such enormous benefits then FORTRAN programmers would have been doing it
+for twenty years. '''''It is a logical impossibility to make a language more powerful
+by omitting features, no matter how bad they may be.'''''
+
+: Even a functional programmer should be dissatisfied with these so-called
+advantages, because they give him no help in exploiting the power of functional
+languages. One cannot write a program which is particularly lacking in assignment
+statements, or particularly referentially transparent. There is no ''yardstick
+of program quality'' here, and therefore no ideal to aim at.
+
+: Clearly this characterisation of functional programming is inadequate. We
+must find something to put in its place -- something which not only explains the
+power of functional programming, but also gives a clear indication of what the
+functional programmer should strive towards.
+[new]
+
+An analogy is then drawn with the "no <code>GOTO</code>!" arguments in favor of structured programming -- and the conclusion is that it is its ''modularity'', not its lack of <code>GOTO</code>, that gives structured programming its advantage. The rest of the paper explores the modularity advantages provided by higher-order functions and lazy evaluation.
+
+I heartily recommend this 20-year old paper. I guarantee that it is an eye-opener, no matter how familiar you are with functional programming and programming-language design.
+
+Coming back to free/open software development -- By analogy, what is the "glue" that makes this kind of development work? What makes it possible to glue many small, individually useful software changes together and still get something worthwhile accomplished? How does this work, even in the absence (some might argue ''especially'' in the absence) of a predefined design? That's a question for reflection. Some may hark back to Adam Smith for an answer; others, to Mikhail Bakunin; still others, to Karl Marx. I'd say that the question is open, but these are at least part of the "glue" answer:
+
+* open source code (your output is my input)
+* Internet communication (pipes, if you will)
+
+[new]
+<pre>
+
+</pre>
+[new]
+== I Use Emacs ==
+
+... though sometimes I think ''Emacs uses me''.  In fact, Emacs and I have used each other since the mid 1980s. 
+
+First, I used '''[http://en.wikipedia.org/wiki/Gosling_Emacs Gosling Emacs]''' (we just called it Emacs), with Mock Lisp. Mock Lisp was fun -- er, a mess. No real lists at all. No real arguments to functions -- just error-prone global-variable pseudo-arguments. In fact, about the only thing it had in common with Lisp was the parentheses. Fun, though.
+
+But Gosling Emacs was Emacs, in any case: an extendable text editor that you could do what you want with. It impressed me quite a lot, after years (don't ask!) programming with other editors of various sorts (I said, don't ask!). I was impressed with its programmability -- on the fly, no less (interpreted language). I was particularly impressed with '''''[[EmacsTags|TAGS]]''''' -- hit a key on a name in a program somewhere and ''shazzam!''...takes you to the defining source code. Magic. Cool. Handy. The other remarkable thing I noticed about Emacs was that it was self documenting. Long before objects began orienting themselves with an eye to fashion, Emacs objects spoke to you about themselves. And, though Emacs's hyperlinked '''''[[Info]]''''' manuals might seem, well, ordinary now, next to the Web, at that time there was no Web, and online hyperlinked documentation didn't even exist -- except for Emacs Info. Cool it was.
+
+Anyway... From Gosling Emacs we moved to '''[http://en.wikipedia.org/wiki/GNU_Emacs GNU Emacs]''', with EmacsLisp, when it came along. We also used '''Zmacs''', on Symbolics Lisp machines. I programmed mostly in Lisp then anyway (Franz and Common), so these Emacs versions were great to have. 
+
+Over the years, I've customized the hell out of Emacs. At first it was just new [[command]]s, functions, and [[key binding]]s, but when '''Epoch''' came out in the early 90's (with proportional fonts, colored [[face]]s, [[frame]]s, images, menus, and such) there was suddenly a ''lot'' more you could do to make Emacs (Epoch) fit your individual needs or dreams. The combination of these new, powerful features with the somewhat limited out-of-the-box user interface positively ignited user customization, and I was no exception.
+
+The downside of doing a lot of customization is having to ''redo'' it when a new Emacs version comes out and lots of basic stuff has changed so that things are incompatible. I've been there & done that way too many times. The last couple of major releases, I've ended up abandoning useful stuff I wrote just because I didn't have the time to upgrade it. That's OK; some of it deserved to be left behind.
+
+And Emacs has improved greatly over the years. I still use Emacs 20, for the most part, but I've finally converted most of my customizations to run on Emacs 20, 21, 22, and 23 (see the list at DrewsElispLibraries). Sometimes I work at converting some of the rest, when I get the chance.
+
+[new]
+<pre>
+
+</pre>
+[new]
+== My Emacs Lisp Stuff ==
+
+=== My EmacsWiki Elisp Libraries: ===
+
+This page describes my Emacs Lisp libraries: '''DrewsElispLibraries'''.
+
+=== Recent Developments ===
+
+[new]
+* '''[[Icicles]]''' --  [[minibuffer]] input [[completion]] and [[Icicles - Cycling Completions|cycling]] like you've never seen 
+* '''LaCarte'''  --  execute ''menu'' commands using the keyboard, with [[completion]]
+* '''DoReMi'''   -- define [[command]]s to use the arrow keys or mouse wheel to change things incrementally
+* '''ColorPalette''' -- examine color properties or choose colors
+* '''[[Synonyms]]'''  -- search and browse a hyperlinked thesaurus for synonyms
+
+* '''FaceMenuPlus'''  -- enhancements to the '''Text Properties''' menu
+* '''ThingAtPointCommands''' -- commands to select things near the [[cursor]]
+* HighLight -- highlight text in different ways, hide/show [[face]]s
+* MousePlus -- highlight the [[yank]] position while you press ‘mouse-2’; other mouse enhancements
+* ModeLinePosition -- enhanced [[mode line]] support for [[variable]] `mode-line-position' (Emacs 22 and later)
+* CrosshairHighlighting, HighlightCurrentLine, HighlightCurrentColumn, ChangingCursorDynamically -- ways to make the [[cursor]] location ([[point]]) more apparent
+* CustomizingAndSaving  -- how to make [[Customize]] play better with the rest of Emacs
+* ModeLineMinorModeMenu -- Pop up MinorMode menus from the [[mode line]]
+
+
+=== One place to start: ===
+'''[[Icicles]]''' -- Explore, explore, explore...
+
+=== Another place to start: ===
+
+'''OneOnOneEmacs''' -- [[frame|Frame]]s, yes! Emacs [[window]]s, ''no''! Try it. Pages linked from OneOnOneEmacs:
+
+* [[Shrink-Wrapping Frames]] -- Make [[frame]]s be the right size automatically. 
+* [[Frame Tiling Commands]] -- Be able to tile the visible [[frame]]s horizontally or vertically.
+* [[Dedicated Minibuffer Frame]] -- Background color indicates current state.
+* [[Special Frames]] -- Special [[buffer]]s (<code>*grep*</code>, <code>*Occur*</code>, <code>*Messages*</code> etc.) are in [[frame]]s with a different style.
+* [[Help and Completions Frames]] -- Special [[frame]]s for the <code>*Help*</code> and <code>*Completions*</code> [[buffer]]s. Redirection of frame focus from <code>*Completions*</code> to the [[minibuffer]] frame.
+* [[Delete Frames Easily - But Not Too Easily]] -- Commands `delete-window', `kill-buffer', and `mouse-tear-off-window' redefined to behave better with [[frame]]s.
+* [[Iconifying, Deiconifying, and Hiding Frames]] -- Commands for showing and hiding [[frame]]s. Also: resize frames incrementally.
+* '''FisheyeWithThumbs'''  -- thumbnail frames give a fisheye view of your [[frame]]s and provide an alternative to iconifying
+
+
+
+=== Some other EmacsWiki pages to look at: ===
+
+[new]
+* EmacsNewbie -- a gentle intro to Emacs, including Emacs-speak -- and pick up my <tt>[[emacs-init.el]]</tt> for info on using my libraries
+* [[ToolBar#ToolBarPlus|ToolBarPlus]] -- a pop-up [[tool bar]], to save screen real estate
+* HelpPlus, HelpMenuBarPlus, and HelpModePlus -- extra help: help commands and menus
+* DiredPlus -- '''Dired+''' (<tt>[[dired+.el]]</tt>): new commands, menus, highlighting...
+* SaveAsHtml -- create HTML with hyperlinks from Emacs [[buffer]]s ([[Info]] etc.): <tt>[[mkhtml.el]]</tt>
+* InfoPlus -- '''Info+''' (<tt>[[info+.el]]</tt>): new commands, menus, highlighting...
+* MenuBarPlus -- '''Menu-Bar+''' (<tt>[[menu-bar+.el]]</tt>): enhancements to the [[menu bar]] (new menus and commands)
+* FrameModes -- a different introduction to my [[frame]] libraries than that presented in OneOnOneEmacs
+* BufferMenuPlus -- '''Buffer Menu+''' (<tt>[[buff-menu+.el]]</tt>): a mouse popup menu (`mouse-3'), sorting, filtering, highlighting, time-last-accessed column,...
+* GrepPlus -- '''Grep+''' (<tt>[[compile-.el]]</tt>, <tt>[[compile+.el]]</tt>, <tt>[[grep+.el]]</tt>): highlighting, frame fitting
+* [[OccurBuffer#ReplacePlus]] -- '''Occur+''' (<tt>[[replace+.el]]</tt>): regexp highlighting, frame fitting
+* KillingBuffers -- replacement for `kill-buffer' that also deletes [[window]]s on [[buffer]]
+* RingPlus -- extensions to standard library ##ring.el##. Circular lists etc.
+* ThingAtPointPlus -- functions to return various Lisp objects and text entities at or near [[point]]
+* ThingAtPointCommands -- commands to select various Lisp objects and text entities at or near [[point]]
+* HighlightTemporarily -- highlight/unhighlight [[region]]s, [[regexp]]s...  (<tt>[[highlight.el]]</tt>)
+* CrosshairHighlighting, HighlightCurrentLine, HighlightCurrentColumn, ChangingCursorDynamically -- ways to make the [[cursor]] location ([[point]]) more apparent
+* [[IcompleteMode#IcompleteModePlus]] -- '''Icomplete Mode+''' (<tt>[[icomplete+.el]]</tt>): highlight possible [[completion]]s to [[minibuffer]] input
+* [[ImenuMode#ImenuModePlus]] -- '''Imenu+''' (<tt>[[imenu+.el]]</tt>): dynamically add mode-specific menus for definitions ([[key]]s, functions, macros, [[variable]]s...)
+* IncrementalSearch -- [[key binding]] recommendations
+* ShowWhiteSpace -- toggle highlighting of TABs, hard spaces, or trailing whitespace
+
+
+=== Screen Shots ===
+
+Here are some screenshots of my Emacs.
+
+* DrewsEmacsScreenShot -- General view of some [[buffer]]s: special-display buffers (<code>*Buffer List*</code> and <code>*grep*</code> shown here) have a different [[frame]] background from normal frames (Dired shown here)
+* [[Icicles - Screenshots]] - Enhancements to input [[completion]]
+* DrewsEmacsIcompleteImage -- [[minibuffer|Minibuffer]] icompletion highlighting
+* DrewsEmacsSSMinibuff -- [[minibuffer|Minibuffer]] background color reflects current user activity
+* [[Help and Completions Frames]] -- Special [[frame]]s dedicated to [[buffer]]s <code>*Help*</code> and <code>*Completions*</code>.
+* ColorPalette -- A palette for choosing and editing colors: RGB, HSV, color names
+* DrewsEmacsTileSS -- View of whole desktop (Windows XP shown here): comparing two [[buffer]]s with `ediff-buffers' after tiling the [[frame]]s horizontally
+* DrewsEmacsBufferMenu -- Buffer Menu, showing context-sensitive `mouse-3' popup menu and highlighting (marks, columns, full-line mouse-over). More screenshots of Buffer Menu: [[Shrink-Wrapping Frames]].
+* DiredPlus -- [[DiredMode|Dired]]: similar features to Buffer Menu, but more
+* InfoPlus -- [[Info]], showing extra highlighting (quoted text, strings) and merged Info nodes
+* DrewsEmacsOccurImage -- `*Occur*' buffer, and a visited occurrence in a target [[buffer]], showing highlighting: match-string, visited-[[line]] number, full-line mouse-over (underline)
+* DrewsEmacsGrepImage -- `*grep*' buffer: features similar to `*Occur*' buffer
+* DrewEmacsImenuImage -- '''Defs''' imenu in Emacs-Lisp mode
+* ToolBar -- Pop-up [[tool bar]] buttons
+* DrewsEmacsMenuBarBar -- [[menu bar|Menu bar]], showing division into local and global menus
+* DrewsEmacsHighlight -- Highlighting a [[regexp]] with command `highlight-regexp'
+* DrewsEmacsWindowCallouts -- Emacs [[frame]] with parts defined ([[window]]s, [[mode line]], [[menu bar]])
+* DrewsEmacsShowWspace -- Highlighting of trailing whitespace
+* [[Shrink-Wrapping Frames]] -- Buffer Menu frame, showing shrink-wrapping of [[frame]] to fit [[buffer]]
+
+[new]
+<pre>
+
+</pre>
+[new]
+== My Contributions to EmacsWiki, Chronologically ==
+
+
+* [EmacsWiki:action=rc;rcuseronly=DrewAdams;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;days=28;all=1;showedit=1 Library changes in the last 28 days]
+
+* [EmacsWiki:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=1117497600;showedit=1;rcuseronly=DrewAdams All Library changes]
+
+* [EmacsWiki:action=rc;rcuseronly=DrewAdams This week's wiki contributions]
+
+* [EmacsWiki:action=rc&all=1&showedit=1&from=1&rcuseronly=DrewAdams All wiki contributions]
+
+
+
+
+
+== Emacs Wiki Index and Statistics ==
+
+* [http://www.emacswiki.org/cgi-bin/wiki.pl?action=index All Emacs Wiki pages] --  just so I have a link somewhere.
+* Statistics -- http://www.emacswiki.org/usage/ (only up to 2004)
+
+
+== Mailbox ==
+[new]
+Hey Drew, I just wanted to let you know that your emacs libraries are so much awesome.  I totally dig [[Icicles]], and can hardly wait to install DoReMi.  Even the ones I don't use (FisheyeWithThumbs isn't much use for a guy who prefers a single frame) are still awesome in their design.  Thank you!  -- JonathanArkell
+
+[new:DrewAdams:2009-05-18 16:20 UTC]
+Thank you Jonathan. Enjoy! Bug reports and suggestions welcome. Thx -- DrewAdams
+
+----
+
+Libraries referenced here: 
+
+Lisp:buff-menu+.el, Lisp:compile-.el, Lisp:compile+.el, Lisp:dired+.el, Lisp:emacs-init.el, Lisp:grep+.el, Lisp:highlight.el, Lisp:icomplete+.el, Lisp:imenu+.el, Lisp:info+.el, Lisp:menu-bar+.el, Lisp:mkhtml.el, Lisp:replace+.el
+
+
+------
+CategoryHomepage

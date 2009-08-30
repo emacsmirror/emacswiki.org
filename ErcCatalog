@@ -1,0 +1,47 @@
+At some point in development, I decided to implement a catalog
+system for ERC much like the one zenirc uses.
+
+Basically, you can have multiple catalogs where each defines messages for
+certain events.
+
+Here is an example on how to create a catalog:
+
+ (erc-define-catalog
+  'english
+  '((ACTION . "* %n %a")
+    (INVITE . "%n (%u@%h) invites you to channel %c")
+    (JOIN   . "%n (%u@%h) has joined channel %c")
+  (JOIN-you . "You have joined channel %c")
+    (MODE   . "%n (%u@%h) has changed mode for %t to %m")
+    (NICK   . "%n (%u@%h) is now known as %N")
+  (NICK-you . "Your new nickname is %N")
+    (PART   . erc-message-english-PART)
+    (QUIT   . "%n (%u@%h) has quit: %r")
+    (TOPIC  . "%n (%u@%h) has set the topic for %c: \"%T\"")
+    (s004   . "%s %v %U %C")
+    (s221   . "User modes for %n: %m")))
+
+Every catalog entry can either have a string which format specifiers in it,
+or a symbol which names a function to call. The function gets called
+with the format specifiers as arguments. See `erc-message-english-PART'
+for an example on how to handle this.
+
+=== Notes ===
+There are still some (many?) messages which need to be added to the catalog. 
+So if you have CVS write access, and you are slightly
+bored today, have a look and convert more of those remaining messages to the catalog.
+
+There is only one catalog defined for now. The english catalog. When the conversion is finished, we
+can start buidling alternative catalogs, or find friendly translators.
+
+=== Discussion ===
+Random idea: If we once have multiple language catalogs, we could utilize something
+like auto-lang-mode to automatically determine a channels language
+and switch to the right catalog if available.
+
+Heh, this is cool.  Now ERC can be like google and support "languages" like Sweedish-chef or Elmer Fudd. :) -- MarioLang
+
+I wrote some times ago, a french catalog. I am not using it since it is pain to have it working. I mean I have problems to automatically have it set in place of the english catalog. Maybe someone can help me fix that and then I will post the catalog. -- XavierMaillard
+
+----
+[[ERC]]

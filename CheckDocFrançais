@@ -1,0 +1,9 @@
+CheckDoc examine votre programme  ''Lisp'' d<nowiki>'</nowiki>''Emacs'' pour déceler les erreurs éventuelles dans la documentation ou les imperfections concernant le style.  CheckDoc est une nécessité avant de poster votre programme source sur ''gnu.emacs.sources'' ou de le télécharger sur ''ElispArea''. 
+
+La page d'accueil est http://cedet.sourceforge.net/checkdoc.shtml
+
+http://cedet.sourceforge.net/checkdoc.jpg
+
+checkdoc.el fait partie de ''GNU'' ''Emacs'' depuis la version 21.
+----
+CatégorieCode

@@ -1,0 +1,8 @@
+pick-backup is a package for browsing versioned backup files.
+
+You can view them, revert to them or (e)diff them with your current version.
+
+It's available on my [http://nschum.de/src/emacs/pick-backup/ website].  -- [[nschum]]
+
+----
+CategoryFiles

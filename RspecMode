@@ -1,0 +1,42 @@
+== Overview ==
+
+Rspec mode is a minor mode that provides some enhancements to
+ruby-mode in the contexts of RSpec specifications.  Namely, it
+provides the following capabilities:
+
+== Features ==
+
+* toggle back and forth between a spec and it's target (bound to
+   `\C-c ,t`)
+
+* verify the spec file associated with the current buffer (bound to
+   `\C-c ,v`)
+  
+* verify the spec defined in the current buffer if it is a spec file
+  (bound to `\C-c ,v`)
+
+* verify the example defined at the point of the current buffer
+   (bound to `\C-c ,s`)
+
+* re-run the last verification process (bound to `\C-c ,r`)
+
+* toggle the pendingness of the example at the point (bound to `\C-c
+    ,d`) 
+
+* disable the example at the point by making it pending
+
+* reenable the disabled example at the point
+
+* run all specifications for project (bound to `\C-c ,a`)
+
+== Installation ==
+
+# Download latest version of RspecMode at http://github.com/pezra/rspec-mode
+# Place rspec-mode.el in your Emacs load path
+# Add `(require 'rspec-mode)` do your .emacs file
+
+== Dependencies ==
+
+This minor mode depends on `mode-compile`.  The expectations depend
+`on el-expectataions.el`.
+ 

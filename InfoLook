@@ -1,0 +1,23 @@
+Major mode sensitive help agent. Help is provided according to the buffer's major mode
+
+Author: Ralph Schleicher
+
+Part of GNU Emacs.
+
+Supported modes (in GNU Emacs 21.2): CcMode, BisonMode, MakefileMode, [[Texinfo]], M4Mode, AutoconfMode, AwkMode, PerlMode, CPerlMode, LaTeXMode, EmacsLispMode, LispInteractionMode, LispMode, SchemeMode, OctaveMode
+
+Installation:
+
+    (require 'info-look)
+
+Usage:
+
+    C-h TAB -- calls `info-lookup-symbol'
+
+or in GNU Emacs 22 or newer, `C-h S'.
+
+See also InfoMode, GtkLook.
+
+----
+CategoryHelp
+CategoryModes

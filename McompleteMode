@@ -1,0 +1,33 @@
+Mcomplete Mode == IcompleteMode + IswitchBuffers
+
+http://homepage1.nifty.com/bmonkey/emacs/elisp/mcomplete.el
+
+Currently I use mcomplete.el, but [[Icicles]] is more functionable? -- Anonymous
+
+http://www.bookshelf.jp/elc/mcomplete-history.el
+
+minibuffer completion from only history with mcomplete
+
+== Comparison with Icicles ==
+
+This was moved here from IciclesDiscussion:
+
+[new]
+: What is the difference between McompleteMode and [[Icicles]]? -- Anonymous
+
+[new:DrewAdams:2006-03-12 16:44 UTC]
+: You tell me. '''Icicles''' is documented extensively here. What's McompleteMode? 
+
+: The ##mcomplete.el## commentary says that it is "''##icomplete.el## + ##iswitchb.el## +/- something.''" 
+
+** '''Icicles''' supports icompletion in several ways, including an enhancement to ##icomplete.el## (via <tt>[[icomplete+.el]]</tt>). In any case, ##icomplete.el## is ''not'' about ''completion'', and '''Icicles''' is mostly about completion. See [[Icicles - Icompletion]].
+
+** '''Icicles''' is not specifically about what ##iswitchb.el## does, though you can have iswitchb-like behavior with '''Icicles'''. And you can use ##iswitchb.el## and '''Icicles''' together.
+
+** What does "''+/- something''" mean? What is added (+)? What is missing (-)? What is different from simply "''##icomplete.el## + ##iswitchb.el##''"?
+
+: The ##mcomplete.el## commentary also says that mcomplete supports ''substring'' matching. Substring matching is a proper subset of the regexp matching that '''Icicles''' provides. Also, you can toggle substring vs regexp matching at any time, using '''`##C-`##'''' in the minibuffer.
+
+: ''Suggestion:'' Someone interested in McompleteMode and familiar with it can complete that page, argue for it, and compare/contrast it with '''Icicles'''. If there are questions about '''''Icicles''''' that can contribute to that comparison, I'll be glad to try to answer them. -- DrewAdams
+
+MComplete is basically "ido-*" style completion for all minibuffer input.  It's pretty straightforward.  I've used it with great results for the past few years.  And now I'm probably going to switch to icicles.  MComplete seeks to do all completions right in the minibuffer; while icicles uses a separate "Completions" buffer.  Functionally icicles is MComplete's superset; but MComplete is lighter weight and fulfills its purpose very well.   It depends on what you need, I guess.  Also for MCompleter users looking at icicles, I find icomplete+ very useful.  Keep in mind though, the minubuffer completions you see [with Icomplete] are not selectible.  --LeWang

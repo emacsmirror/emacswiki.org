@@ -1,0 +1,32 @@
+This function inserts a new signature on <code>C-c C-w</code>.
+
+If there already is one it is correctly removed before the new is inserted.
+
+<pre>
+    ;; insert signature, delete previous, if existing
+    (defun bhaak-signature-change()
+      "Replace signature with new one"
+      (interactive)
+      (save-excursion
+        (when (message-goto-signature)
+          (if message-signature-insert-empty-line
+              (forward-line -2) (forward-line -1)))
+        (delete-region (point) (point-max))
+        (message-insert-signature)))
+
+    (define-key message-mode-map "\C-c\C-w" 'bhaak-signature-change)
+</pre>
+
+----
+What I like to do is to have [[Fortune]] give me a nice signature when I start gnus. So I've got this in my .gnus.el file:
+
+<pre>
+(add-hook 'gnus-startup-hook 'fortune-to-signature)
+(add-hook 'message-setup-hook 'fortune-to-signature)
+</pre>
+
+This causes gnus, on start, to create a signature from [[Fortune]]. This signature will then be inserted into the first message I send. The second part causes it to create a /new/ signature from fortune when I start composing my first message. This new signature will be automagically inserted into the /second/ message I send. Very nifty.
+
+----
+CategoryGnus
+[[Fortune]]

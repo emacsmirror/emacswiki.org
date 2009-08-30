@@ -1,0 +1,45 @@
+[http://www.emacswiki.org/elisp/tacl-mode.el tacl-mode.el] provides emacs
+support for Tandem Advanced Command Language. A proprietary command
+language used on Tandem/NSK/Guardian systems.  See TandemNskSupport
+for other Tandem specific modes.
+
+Put the .el file into a directory in your LoadPath and add the following
+to your ~/.emacs file:
+
+    (autoload 'tacl-mode "tacl-mode" "A major mode for editing TACL files." t nil)
+
+
+When you are visiting a TACL macro file, use 'M-x tacl-mode' to activate
+the mode.
+
+For best performance you should byte compile .el files but it's not
+required. A CompiledFile usually runs faster. There should be no warnings
+when compiling this file.
+
+See TandemNskSupport for a method of automatically recognizing the
+language of Tandem files since they don't have an extension and coders
+often can't stick a -*-tacl-*- comment in line 1.
+
+=== Downloading ===
+
+If you are unfamiliar with this site, you can get files from the
+ElispArea.
+
+Or go directly to [http://www.emacswiki.org/elisp/tacl-mode.el
+tacl-mode.el] from [http://www.emacswiki.org/elisp/index.html here].
+
+=== ElDoc Support ===
+
+This mode has builtin support for ElDoc mode.  But there is no way to
+automate the generation of the help strings themsleves like TalMode can.
+
+By default tacl-mode looks for a file named
+[http://www.emacswiki.org/elisp/tacl-syntax.el tacl-syntax.el] which is
+expected to contain help string definitions.  You can customize
+tacl-eldoc-def-files to look for a different file or even a list of files.  
+The one I've uploaded contains around 750 doc strings I hope you find useful.
+Files on the tacl-eldoc-def-files list need only be somewhere on your 
+LoadPath to be found.
+
+----
+ProgrammingModes

@@ -1,0 +1,40 @@
+[new:DrewAdams:2008-11-20 18:16 UTC]
+Does <tt>[[icicles-iswitchb.el]]</tt> still serve a purpose? As far as I can see, it is no longer needed -- the behavior seems to be the same with and without it. My impression is that it served a purpose long ago, but no longer does. AFAICT, there is no problem using `C-x C-f' with `iswitch-buffer' -- it just calls `iswitchb-find-file'. -- DrewAdams
+
+----
+----
+
+[[icicles-iswitchb.el]]: Integration of '''[[Icicles]]''' and '''[[IswitchBuffers]]''', by [[rubikitch]].
+
+If you find that the file you are after is not in a buffer, you can
+press C-x C-f to immediately drop into `find-file' in iswitchb.
+But because `icicle-find-file' hijacks `iswitchb-find-file', this feature is not usable when `icicle-mode' is enabled.
+This package fixes this problem.
+
+You can show <code>*Completion*</code> buffer in iswitchb by pressing TAB.
+This package enhances this feature.
+Pressing TAB enters `icicle-buffer'.
+Then you can cycle and narrow candidates. -- [[rubikitch]]
+
+[new]
+Good to see some coding that takes advantage of '''[[Icicles]]''' features. And Iswitchb users will appreciate being able to use both together. Thanks for doing this.
+
+How about some info here and in the file header about how to use <tt>[[icicles-iswitchb.el]]</tt>? This seems to be what works, in ##.emacs##, for instance:
+
+<pre>
+(require 'icicles)
+(require 'icicles-iswitchb)
+(iswitchb-default-keybindings)
+(icy-mode)
+</pre>
+
+In particular, don't try entering ''Icicle'' mode before you have called `iswitchb-default-keybindings', or else '''Icicles''' will have already co-opted `C-x b' for `icicle-buffers'. ''[No longer true -- see below]'' -- DrewAdams
+
+[new]
+Thank you for replay. I just added installation info. -- [[rubikitch]]
+
+[new:DrewAdams:2007-01-01 01:27 UTC]
+I just updated '''Icicles''' so that it refreshes its keymap each time you
+turn it on. This means that the order of entering ''Icicle'' mode and calling `iswitchb-default-keybindings' makes no difference anymore.  That is, when you enter ''Icicle'' mode again, after calling `iswitchb-default-keybindings', '''Icicles''' will not find `switch-to-buffer' bound to `C-x b', so it will not substitute `icicle-buffer' for `C-x b' -- it will leave `iswitch-buffer' bound to `C-x b'.
+
+However, be aware that, in Emacs 22, `iswitchb-default-keybindings' still works but is obsolete. In Emacs 22, minor mode `iswitchb-mode' is defined as the replacement. If you use `iswitchb-mode', then you must use it before you use `icicle-mode', because Emacs respects the order in which minor modes are defined (see `minor-mode-map-alist' in the Elisp manual). Whereas `iswitchb-mode' binds `C-x b' in its minor-mode map, `iswitchb-default-keybindings' binds it instead in the global map. -- DrewAdams

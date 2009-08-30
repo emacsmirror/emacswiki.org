@@ -1,0 +1,34 @@
+This is my home page on emacswiki.org. This is also my first ever wiki homepage.
+
+I am from Egypt, I am 28
+
+I been using Emacs for a while now, and I really really like it!
+
+I am interested in Emacs as tool that have a special maybe kinda unique design, and also a unique community. I expect that as I learn more about Emacs I will learn more about software in general, something in which I am also very interest.
+
+Things I find Intreguing.
+
+* Tcl/Tk
+* Perl
+* Sql
+* JavaScript
+* C
+* C++
+* ObjectiveCaml
+* Emacs
+* !NetBSD (I never used it thought)
+* Debian 
+* Text, text encoding, text files
+* Moorish Spain 
+* Religion, Islam
+* Modeling systems
+* Planning
+* The desert
+* The sea
+* Dreams (while you are sleeping)
+* People
+
+Ahlan!  :)  Unfortunately emacs-bidi is on hold right now until we can make the new Emacs release, and then the next step will be to integrate the emacs-unicode-2 branch, and only /then/ will emacs-bidi be integrated into Emacs CVS.  This means no Arabic in the current GNU Emacs...  :(  See DisplayEngineForArabic. -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -1,0 +1,90 @@
+[[Narrowing]], as seen in the GNU Emacs, is a simple method of restricting
+actions to a given part of the buffer.  This area is a simple,
+continuous block, specified either by the ''region'', a ''page''
+usually separated by formfeeds ("^L", 0x14) by themselves on a line or
+a ''defun''.  When narrowing is in effect, the excluded portions seems
+to not exist at all, and the commands only operate that visible area.
+When saving, the entire file is written, though, so nothing will be
+lost.
+
+This feature is among the DisabledCommands as it sure can confuse
+users who don't know it, thus it must be undisabled before use.  You
+can use either the `enable-command' command, or use the following EmacsLisp:
+
+    (put 'narrow-to-defun 'disabled nil)
+    (put 'narrow-to-page 'disabled nil)
+    (put 'narrow-to-region 'disabled nil)
+
+Another way to deal with disabled commands is to automatically enable them on the fly.
+
+    ; We hook up the enable-me using setq instead of add-hook. Thats because the
+    ; add-hook would cause the original hook to come after enable-me. Instead we
+    ; want only enable-me to execute.
+
+    ; Thanks to Roland McGrath.
+
+    (defun enable-me (&rest args)
+      "Called when a disabled command is executed. Enable it and reexecute it."
+      (put this-command 'disabled nil)
+      (message "You typed %s.  %s was disabled.  It ain't no more."
+               (key-description (this-command-keys)) this-command)
+      (sit-for 0)
+      (call-interactively this-command))
+
+    (setq disabled-command-hook 'enable-me)
+
+So, the narrowing can be set to the current region, page or defun, and
+each of these has it's own command.  By default the narrowing-commands
+are behind <code>C-x n</code> prefix.  When narrowing is in effect,
+the ModeLine states so in the MinorMode portion.  To cancel it, either
+click the word "Narrow" in the modeline with MouseButton 2, or run the
+`widen' command with <code>C-x n w</code>.
+
+This isn't the most useful way to exclude stuff, as there's the region
+for limiting commands, and then there's the whole CategoryOutline to
+properly not see portions of a buffer.  If the commands to jump from
+page to page (`forward-page' and `backward-page') overrided narrowing,
+then texts with formfeeds as page separators could be viewed page at a
+time.
+
+See the EmacsManual node "Narrowing".
+
+The InfoMode also uses narrowing, by page.  You see, the nodes are
+separated by formfeeds.
+
+= Narrowing Example =
+
+I often replace a regular expression, but want to limit its effective region:
+
+    (defun replace-regexp-in-region (start end)
+      (interactive "*r")
+
+      (save-excursion
+        (save-restriction
+          (let ((regexp (read-string "Regexp: "))
+                (to-string (read-string "Replacement: ")))
+            (narrow-to-region start end)
+            (goto-char (point-min))
+            (while (re-search-forward regexp nil t)
+              (replace-match to-string nil nil))))))
+
+
+= CUA-mode and narrow-to-region =
+
+In CUA-mode C-x is doing "cut" when the region is highlighted. 
+Then obviously C-x n n can't run narrow-to-region.
+It is easy to work around the problem: 
+Just move the point back and forward one char.
+This will dehighlight the region but it is still there.
+So now C-x n n will run narrow-to-region.
+
+= Search Narrowing =
+
+* TransientMarkMode -- Replaces can be narrowed to a region with `transient-mark-mode'.
+* [[Icicles - Search Commands, Overview]] -- A new kind of incremental search in a region, using multiple regexps, and searches on filtered results.
+
+
+
+----
+CategoryRegion
+CategoryHideStuff

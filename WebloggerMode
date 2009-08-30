@@ -1,0 +1,115 @@
+WebloggerMode (<i>weblogger.el</i>) is an Emacs package that allows you to post to one of the following blog sites from emacs:
+
+* Blogger
+* MetaWeblog
+* Moveable Type
+* LiveJournal
+* WordPress
+
+This package is primarily written by MarkHershberger. It was developed from BloggerMode (blogger.el).
+
+=Requirement=
+
+WebloggerMode requires Lisp:xml-rpc.el .
+
+=Download location=
+
+(please improve this section)
+
+Currently it is not clear where is the correct location to download. There are several location floating about, some has older version, some are defunct url, some as empty. The possible locations are:
+
+* Lisp:weblogger.el
+* http://savannah.nongnu.org/projects/emacsweblogs
+
+=Discussion=
+
+(please improve this section)
+
+In any case, after getting WebloggerMode, the user should either run
+
+    M-x weblogger-setup-weblog RET
+
+or define `weblogger-config-alist' manually to define the blogs (s)he wishes to post to.  
+
+The biggest problem I had was when it asked me for the "Server Endpoint (URL)".  I'm using blogger.com, but I had no idea what to put here.  After a fair bit of hunting around, I found that this worked: "http://www2.blogger.com/api"
+
+The version 1.3 is giving me hassle.  When trying to post, i get an <tt>if: Wrong number of arguments: cdr, 2</tt> error.  Also `weblogger-next-entry' or `weblogger-prev-entry' commands yield the same error.  I'm succesfully speaking to my Pivot blog, since `weblogger-fetch-entries' does fill the variable `weblogger-entry-ring' and displays the last entry in buffer named ##*weblogger-entry*##.  Anyone?  --[[tekonivel]]/29.10.2006
+
+Edit the function weblogger-api-blogger-get-content in weblogger.el so that is is like so:
+
+    (defun weblogger-api-blogger-get-content (struct)
+      "Return the content for this post, optionally inserting the
+    title in the first row if weblogger-blogger-firstline-title is
+    set."
+      (if weblogger-blogger-firstline-title
+          (concat "<title>"
+    	      (cdr (assoc "title" struct))
+    	      "</title>\n"
+    	      (cdr (assoc "content" struct)))
+        (cdr (assoc "content" struct))))
+
+The change is the last line
+
+    (cdr (assoc "content" struct))))
+
+instead of
+
+     (cdr (assoc "content") struct)))
+
+This is another small patch to weblogger.el 1.3 version.  
+If blog supports another APIs, which is not described in weblogger-no-capabilities, weblogger-determine-capabilities fails to set correct capabilities. -- jmjeong 
+
+ --- weblogger.el	(revision 1002)
+ +++ weblogger.el	(working copy)
+ @@ -1081,7 +1081,8 @@
+      (condition-case nil
+ 	(progn (mapcar
+  		(lambda (method)
+ -		  (setcdr (assoc method weblogger-capabilities) t))
+ +		  (and (assoc method weblogger-capabilities) 
+ +			   (setcdr (assoc method weblogger-capabilities) t)))
+  		(xml-rpc-method-call
+ 		 weblogger-server-url
+  		 'mt.supportedMethods)))
+
+_A link to version 1.3 should be added._ I'm using version 1.2, with Emacs 22.1, Drupal 5.0 and Slackware 12, and I get some odd behavior:
+
+* When I do M-x weblogger-fetch-entries starting off it doesn't go into weblogger-entry mode. I have to do M-x weblogger-entry-mode and then M-x weblogger-fetch-entries again to get it to function correctly.
+
+* If I start emacs and then start something in weblogger-entry mode before starting gnus, gnus malfunctions when it tries to retrieve syndicated feeds (nnrss).
+
+* If the entry doesn't start with something in <title> tags it treats the first ten words or so as the title.
+
+Still, in spite of the oddities, it's a very useful addition to emacs. It's worth noting, as another usage quirk, that if you're revising an entry and do C-x C-s ("save") the entry revises, while if you do C-c C-c ("send") it will create a new entry.
+
+
+There is also another version available at http://jwickers.wordpress.com/2007/09/20/webloggerel-enhanced/ which includes the patches listed here and also:
+* support categories (only for metaWebBlog)
+* fix the date formating for Wordpress (and maybe others)
+
+Please note that i only test it with the Wordpress used on my blog, but feedback is appreciated. 
+There are also some oddities in regard of whether the post get published or not and sometimes may come back as Draft .. so i will  go on working on it when i have free time. 
+
+===Does It Work?===
+
+I spent about 2 hours in frustration trying to get  blogger.el  or weblogger.el to work.
+For detail, see  http://xahlee.org/UnixResource_dir/writ/emacs_blogger_package_pain.html . In the end, i found http://code.google.com/p/e-blog/ that works fantastically. And if you want livejournal,http://code.google.com/p/ljupdate/ works wonders. — [[Xah Lee]]
+
+[new]
+Thanks Xah, we need to know what works and what does not.
+I think this is one of the big problems with the elisp files out in the wild.
+
+[new]
+I've played around with this and find it to be functional for WordPress. Posts made are in raw HTML, allowing for links and &lt;!--more--&gt; parsing without a hitch during posting (but not during editing; see below). Categories (via "Keywords") also worked fairly well.
+
+It's worth noting, however, that the full API isn't implemented (no comments), and there are still gremlins and undocumented dependencies in this package. For example, I use SSL encryption (via self-signed and/or CACert), which caused all sorts of annoying terminal beeps and Lisp errors during parsing. After a little experimentation and log reading, I discovered that only GnuTLS (gnutls-cli) was implemented functionally for my purposes, as an external dependency.
+
+
+That said, I found this package to be quite functional after getting over those hurdles, posting to my blog nicely and cleanly in HTML. The gnus-style posting is much appreciated.
+
+I also fixed up handling of &lt;!--more--&gt; tag functionality (in WordPress) and added the Keywords header to new entries by default. You can find my changes over at [[weblogger.el]]. Feel free to drop me a line on whether they work for you. :) -- [[Tom Robinson]]
+
+----
+
+CategoryJournaling
+

@@ -1,0 +1,15 @@
+Errors are not that very visible unless you set debug-on-error to t. 
+A way to make them more visible is to use the utilities in warnings.el:
+
+    (defadvice error (before
+                      error-to-warn-ad
+                      (&rest args)
+                      activate)
+      (unless debug-on-error
+        (let ((s (apply 'format args)))
+          (put-text-property 0 (length s)
+                             'face 'font-lock-warning-face
+                             s)
+          (display-warning '(Debug) s :error))))
+
+This will show the *Warnings* buffer when an error occurs. 

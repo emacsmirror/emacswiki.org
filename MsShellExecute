@@ -1,0 +1,75 @@
+This page is about Emacs functions that execute Microsoft Windows shell commands.
+
+[:w32-browser]
+== w32-browser, w32browser-dlgopen.el  ==
+
+On Microsoft Windows, files are typically associated with applications according to their file extension.  Library <tt>[[w32-browser.el]]</tt> defines command `w32-browser', which calls a Windows application, passing it a string argument such as a file name.  This lets you open ##*.doc##
+files in Word, open URLs in a Web browser, and so on.
+
+##w32-browser.el## also defines command `w32explore', which opens Windows Explorer to a file or folder; it selects the file in Explorer.
+
+Library '''[[DiredPlus | Dired+]]''' uses ##w32-browser.el## and defines similar commands that are bound to keys and menu items in DiredMode. They act on either the current file or folder or the one under the mouse. See [[DiredPlus#w32-browser]].
+
+Library <tt>[[w32browser-dlgopen.el]]</tt> combines ##w32-browser.el## with ##dlgopen.el##, a library by BinuJosePhilip. It opens the Windows *Open Files* dialog box, then applies `w32-browser' to the files you select. 
+
+
+
+
+== gse-shellex-file (XEmacs) ==
+
+XEmacs provides `mswindows-shell-execute', which is similar to `w32-browser'.
+I wrote this little function, which I generally bind to `f4':
+
+<pre>
+(defun gse-shellex-file (file)
+  "My interface to shellex.  In dired, filename under point is the default."
+  (interactive
+   (list
+    (read-file-name
+     (concat
+      ;; Include default if we're in dired-mode and point is over a file.
+      "shellex file"
+      (if (and (string-equal major-mode "dired-mode") (dired-get-filename nil t))
+          (concat " [" (dired-get-filename 'no-dir t) "]"))
+      ": ")  ;; prmopt
+     nil ;; dir
+     (if (string-equal major-mode "dired-mode") (dired-get-filename nil t)) ;; default
+     t   ;; must-match
+     )))
+
+  (setq file (expand-file-name file))
+  (mswindows-shell-execute nil file))
+</pre>
+
+Comments are welcome.  -- ScottEvans
+
+
+== mswindows-shell-execute ==
+
+I suspect something like `w32-browser' was named `mswindows-shell-execute' on FSFmacs, until RMS decided to rename all symbols pertaining to windows, changing everything to "w32".  There's some speculation he didn't like the word "win" in "win32", but I think (for once regarding RMS) that unlike the linux --> gnulinux thing, this was for reasons of consistency.  There's still some political problems I have with FSFmacs, but that's a whole other story. -- ChuckAdams
+
+== dired-custom-execute-file ==
+
+EmacsMacro has file ##e-w32.el## where functionality similar to `w32-browser' is implemented like this:
+
+<pre>
+
+  (defun dired-custom-execute-file (&optional arg)
+    (interactive "P")
+    (mapcar #'(lambda (file)
+		(w32-shell-execute "open" (convert-standard-filename file)))
+	    (dired-get-marked-files nil arg)))
+
+  (defun dired-custom-dired-mode-hook ()
+    (define-key dired-mode-map "X" 'dired-custom-execute-file))
+  (add-hook 'dired-mode-hook 'dired-custom-dired-mode-hook))
+
+</pre>
+
+-- HorstDuchene
+
+== SexMode, Shell Execute Mode ==
+With SexMode on any command to open a file that is specified in OrgMode to be open by windows shell will be opened that way.
+
+----
+CategoryWThirtyTwo CategoryExternalUtilities WThirtyTwoShellExecute

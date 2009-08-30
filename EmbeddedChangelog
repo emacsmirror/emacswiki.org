@@ -1,0 +1,23 @@
+This package allows you to add entries to an embedded changelog in an Emacs Lisp source file, like this:
+
+  ;;; History:
+  ;; 2002-02-27  Michele Bini  <mibin@libero.it>
+  ;;
+  ;;   * embedded-changelog.el (embedded-changelog-add-entry): Left
+  ;;   margin set to 2.
+  ;;   (embedded-changelog-write-file): Return true.  Use
+  ;;   set-buffer-modified-p.  Ask about adding a Code section before
+  ;;   adding an History one.
+  ;;   (embedded-changelog-left-margin): New variable.
+
+To install it add the following to you ~/.emacs:
+
+  (autoload 'embedded-changelog-add-entry
+    "/path/to/embeddedchangelog.el" nil t)
+
+To use it invoke M-x embedded-changelog-add-entry while visiting your emacs lisp source file.  You will be warped to a buffer editing the changelog. When you save the buffer the changes will be saved to the original source file with proper indentation/filling.
+
+Elisp source code: Lisp:embeddedchangelog.el.
+
+----
+MicheleBini

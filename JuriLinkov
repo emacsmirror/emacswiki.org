@@ -1,0 +1,21 @@
+http://www.jurta.org/emacs/
+
+I've been using Emacs since 1989.  At the beginning, it was
+MicroEmacs, and circa 1996 I switched to GnuEmacs version 19.  I tried
+dozens of different editors, but never switched to them from Emacs,
+because Emacs is simply superior to other editors (even such
+comparison is not justified, because Emacs is not only an editor but a
+complete "Lisp Machine").  So I was greatly satisfied with Emacs,
+however, with one exception: I lacked one kind of Emacs functionality
+- the ability to easily and conveniently organize data from diverse
+information sources.  But I had only the feeling of unhappiness from
+lack of such package, I had no idea how it should look.  I waited many
+years in hope that somebody will write such package, but to no avail.
+So eventually I sat down, thought about own needs, designed and
+implemented CategorizingInformationManager, with which I am fully
+satisfied now.
+
+: Welcome to the wiki!  :)  The thing that interests me most about ee is the idea of a uniform interface for many things. -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -1,0 +1,1192 @@
+[new]
+*Latest News:*
+Released version 1.58.
+It will be that for a long while.
+I do not change the /EmacsW32/ version number though I upload versions of %%Emacs+EmacsW32%% based on the latest CVS Emacs.
+
+[new]
+/Tip for editing here: ms windows file names and the name EmacsW32 upsets this wiki software. Put %%...%% around those things./
+
+[new]
+== EmacsW32 Home Page ==
+
+For more information, and for downloadable packages, look at the '''home page:
+http://ourcomments.org/Emacs/EmacsW32.html'''.
+
+== Latest Important News About EmacsW32 ==
+
+=== 2008-03-21 Release version 1.55 ===
+Emacs 23 from CVS.
+
+=== 2006-12-15 Nxhtml/Nxml Modes Included ===
+NxhtmlMode and NxmlMode are distributed together with %%EmacsW32%% from %%EmacsW32%% version 1.18.
+
+=== 2006-11-30 Unix Programs Included ===
+From %%EmacsW32%% version 1.14 it includes the unix programs most commonly used by Emacs.
+
+== EmacsW32 - Enhancements for Emacs W32 Users ==
+
+From the [http://ourcomments.org/Emacs/EmacsW32Util.html documentation for EmacsW32]:
+
+: <nowiki>EmacsW32</nowiki> tries to make it easier for an MS
+  Windows user to get used to Emacs. It consists of two parts:
+
+* ''<nowiki>EmacsW32</nowiki>'' is a collection of
+  Emacs lisp modules and MS Windows programs. It can make the
+  keyboard and other things in Emacs function more like they do
+  usually in MS Windows programs.
+
+* ''<nowiki>EmacsW32</nowiki> Install Wizard'' is what you use
+  to install and setup <nowiki>EmacsW32</nowiki> on MS
+  Windows. They can also be used to install Emacs itself. Note
+  that you can even easily build your own installation program.
+
+New installation packages based on the latest version of CVS Emacs are regularly uploaded.
+The date of the last upload is most often entered on CategoryWThirtyTwo
+but please see also the home page above.
+There is also a guide for building Emacs yourself
+from the developers CVS for Emacs, using MinGW.  To make this
+really simple there is a cmd-script too to do that.
+
+Note that you can download both [http://ourcomments.org/Emacs/EmacsW32.html#unpatched patched and upatched]
+ versions of Emacs together with <nowiki>EmacsW32</nowiki>. 
+From the download statistics for my web site I can see that nearly all who download prefer the patched versions.
+
+
+<nowiki>EmacsW32</nowiki> was before called ''Emacs Setup
+Utilities for MS Windows'' (the wiki page was
+%%WThirtyTwoInstallationKit%%).  ''Thanks to DrewAdams for pointing
+out the need for a name and better documentation and to all
+others who have encouraged me in my work with this.''
+
+
+== Background: The Whys ==
+
+I may be the only person on this planet who thinks that it is too
+difficult to begin using Emacs on MS Windows. However I did find some
+things unnecessarily difficult.
+
+First of all, there was no installation program of the type you normally
+get on MS Windows. To install Emacs you had to get some unpacking
+utilities that were not so easily found. (Or you could use some
+commercial utility program, but is not that a little bit against the
+mindset of Emacs?)  
+
+If you get past this trouble you find that some of
+the most commonly used keyboard keys for editing under MS Windows,
+like control-x and control-v, does not function at all in Emacs.  And
+then you find that the menus do not seem to work unless you are
+using a mouse.  Well, you are a keyboard user, for sure, otherwise you
+would not even think about the trouble of learning Emacs. So you are a
+bit disappointed about the menus. 
+(OK, after a while you may discover that you can use F10 to get to the menus.)
+
+Naturally you want to associate some files with Emacs to work
+comfortably in MS Windows.  You do and find that it takes a lot of
+time to start edit any file.  Seems like Notepad is a better
+alternative since you just do not have time to do anything in Emacs!
+
+If you happen to get over this and do some work in Emacs you soon
+discover that you have trouble printing. If you are lucky you can find
+some tips and get over it. But do not bet on it! I could not (until I
+wrote my own hack to do it).
+
+Then you may think you are ready, but you are not!
+Now you discover that you need some Unix programs to do the job.
+After some search you may find some that seems to do work for you.
+Ready? Oh no! There are those small things called "line endings" ... - they are different on Unix and w32.
+So you hope that the maintainers of these utilities tries to take care of this.
+Hope is a good thing, but you may find they do not care much about this.
+Some of them say that "it is not my fault, it is MS Windows that mess things up".
+Maybe, but it does not help you ;-)
+
+And still it is easy - now. I hope.
+Just try <nowiki>EmacsW32</nowiki> and the pre-built binaries for CVS Emacs.
+And read the documentation in <nowiki>EmacsW32</nowiki> for how to get the Unix tools you need.
+There are some problems with those, but it has actually improved.
+
+
+
+== Some Other Sites that Use or Recommend EmacsW32 ==
+
+I built <nowiki>EmacsW32</nowiki> in a way that I hoped would
+make it easy for other to use it.  It is rather easy to make your
+own distribution package (but I am not aware of anyone that has
+done that yet) and it could also serve as just an easy
+installation.  The following sites are among those that currently
+recommends or use <nowiki>EmacsW32</nowiki>:
+
+* http://www.tei-c.org.uk/Software/tei-emacs/index.xml.ID=install - Text Encoding Initiative Consortium. Recommends <nowiki>EmacsW32</nowiki> as an easy installation of Emacs 21.3.
+
+* http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Easymacs/windows-install.php - Easymacs. Recommends <nowiki>EmacsW32</nowiki> as an easy installation. (But apart from that currently does not recommend using other features in <nowiki>EmacsW32</nowiki> because they maybe interferes with Easymacs.
+However the enhancements to the menus in the prebuilt CVS binaries and the possibility to use the windows keys as META probably does not interfere with Easymacs).
+
+* http://www.math.unl.edu/~rdieter1/Software/Windows/ - Emacs repackaged in .MSI format. Uses Emacs 21.3 with <nowiki>EmacsW32</nowiki>. (I can not see it there any more?)
+
+
+
+== Suggestions and Comments about the Setup Utilities ==
+
+Please enter enter your suggestions and comments on the setup utilities below.
+However if you find an Emacs or XEmacs bug then report this to the Emacs developers.
+Please see EmacsBugs or XEmacsBugs
+
+The best place to ask questions about %%EmacsW32%% or Emacs on MS Windows is probably the mailing list
+[http://lists.gnu.org/mailman/listinfo/help-emacs-windows help-emacs-windows].
+You can also put suggestion and comments about %%EmacsW32%% below.
+
+=== (enter your comments here!) ===
+
+=== The Customize EmacsW32 startup screen ===
+
+The screen you get with %%EmacsW32%% options when you start EmacsW32 the first time looks weird, it has "nil" and "t" in some input fields which will not be intuitive to a new user.  The "real" customize screen you get with an explicit 
+<pre>
+  M-x customize-group <ret> emacsw32 <ret>
+</pre>
+has proper on/off toggles and buttons to save the changes.  I'd suggest that one be used for start instead, or maybe a special emacsw32-start customize group with just the most important options.
+
+[new]
+Thanks Per. I have changed nil/t to off/on, but I do not want to change the page right now.
+I think it gives a reasonable good overview over the settings that %%EmacsW32%% can assist with.
+Also some users would like me to just turn on the things in the top section.
+Making it possible to turn them on with just one click is a middle way.
+
+In the long run I would like to turn that section into something more generic, ie choose between w32 setup, mac setup, gnu/linux dito etc.
+(And of course then move it into another package...)
+
+
+=== How can &lt;language-change&gt; be bound to (toggle-input-method)? ===
+
+Is this pseudo-key added by %%EmacsW32%%? Searching for "site:gnu.org "language-change" emacs" shows no relevant results and all references to it that I can find seem to be about %%EmacsW32%%. It is bound to (ignore) by default and I would like to toggle the input method instead. The problem is that <code>(global-set-key (kbd "&lt;language-change&gt;") 'toggle-input-method)</code> will mean that changing language toggles /both/ input method and Windows language -- not at all what I want! I could do something like (borrowed from http://dima-exe.ru/2007/4/win32-emacs-and-change-language for those who read Russian) 
+
+<pre>
+(defvar safe-language-change-flag nil)
+(defun safe-language-change ()
+  (interactive)
+  (setq safe-language-change-flag (not safe-language-change-flag))
+  (when safe-language-change-flag
+    (toggle-input-method)
+    (???))
+
+(global-set-key (kbd "&lt;language-change&gt;") 'safe-language-change)
+</pre>
+
+Trouble is, what goes in place of ??? I want Emacs to send a language-change event to Windows, so it thinks Emacs is using English /and/ makes Emacs call (safe-language-change) again to toggle the flag back. But how can I do this?
+
+-- AlexeyRomanov
+
+[new]
+I have no idea how this works and I do not think the question is specific to %%EmacsW32%%.
+It sounds like there could be some bug here and it might be better if you ask on Emacs developers list.
+
+
+=== Patched Emacs 22.2 + EmacsW32 ===
+
+Is there a possibility to release patched Emacs 22.2 (and to track v22.x branch) binaries? In the times of Emacs 21, CVS version was much more usable option. However arguably things are different now, it is probable that part of the users will want to use latest patched version 22 and not CVS 23.
+
+[new]
+It is a good question, but I have decided I do not have time to do that too.
+What I normally do is try to check if the patched version I upload is usable.
+However there has been a lot of small problems right now because of the big changes that have been done to
+CVS Emacs 23.
+It looks however like it is going to be ok now.
+I have just uploaded a new Emacs+EmacsW32 binary from today.
+It looks very good to me.
+
+=== A different CONTROL Key ===
+
+I love that you switched META to the Windows key!  It would be nice to bind CONTROL to something other than Ctrl.  cua-mode sorta works, but I'd rather dedicate Ctrl just to Windows CUA stuff and use something else for emacs C- commands.  CAPS LOCK or the Apps key seem like the best choices.  I suspect this would take a patch to do. -- Chiok
+
+[new]
+Yes, it would be a rather big job. Actually Emacs CUA mode works nicely without this change. Have you tried it?
+
+=== Directory problem ===
+I've installed latest %%EmacsW32%% and have a problem: when emscsclient runs i receive an error in emacs stating:
+ make-directory: Creating directory: invalid argument, %%c:/Documents and Settings/Администратор%%
+
+my %HOME% variable points to other directory namely %%M:\MD\%% (the listed is the default one on Russian Windows one and my .emacs loads from %%M:\MD%% quite OK)
+
+[new]
+Please file a bug report, use /Help - Send Bug Report/ from the menus.
+
+[new]
+Oops! Not sure that it's an emacs problem. But I have gmail as mail default email-client and when I try to send a bug report I receive "compose new email" window with subj and text but with no email address.
+
+[new]
+There is something wrong here. Please look up my email in the sources and contact me by mail -- LennartBorgman
+
+
+=== Meadow and EmacsW32 ===
+
+(question/comment by [[piyo]]) How is <nowiki>EmacsW32</nowiki> different from Meadow (Multilingual Enhancement to GNU Emacs with Advantages Over Windows)? Is it mainly the add-on lisp files? Meadow has a Cygwin-like installer (setup.exe), and you can select elisp packages just like cygwin packages. Is it possible to make a <nowiki>EmacsW32</nowiki> package for Meadow?
+
+[new]
+<nowiki>EmacsW32</nowiki> is a bit more than add-on lisp files. It would however be easy to add the add-on lisp files to Meadow I guess.
+If you just want the lisp files then download the zip file with just <nowiki>EmacsW32</nowiki>. 
+
+For more information of what <nowiki>EmacsW32</nowiki> is please see the home page (there is a link in the beginning of this page).
+Things you might be interested in is the gnuclient/server solution and the installation of this.
+Part of the latter is in the installer however.
+You may also be interested in the patches to the Emacs C sources.
+
+
+=== Sharing .emacs file ===
+
+For people interested, here the content for ##C:\.emacs## in to order to share both Emacs versions configuration files:
+
+    ;; Bootstrap in %APPDATA% area
+    
+    (message (concat "Bootstrapping in " (getenv "APPDATA")))
+    (setenv "HOME" (getenv "APPDATA"))
+    (load "~/.emacs")
+
+Another way is to setup the registry: see MsWindowsDotEmacs. Beware that you cannot use environment variables like ##APPDATA##, so use the complete pathname. Moreover, if your administrators are doing a migration, you will have to update the registry entry by yourself.
+
+Off course, you have to check Emacs version in ##.emacs## in order to avoid odd behaviour in 21.3 or 22.x versions. I use a vanilla version not the w32 version, so I just configure emacsw32 only in 22.x version:
+
+  (when (and (eq system-type 'windows-nt)
+               (string= (substring emacs-version 0 3) "22."))
+      (setq pr-gs-command "c:\\gs\\gs8.51\\bin\\gswin32c.exe")
+      (setq pr-gv-command "C:\\Program Files\\Ghostgum\\gsview\\gsview32.exe")
+      (setq w32-print-menu-show-print nil)
+      (setq w32-print-menu-show-ps-print nil)
+      (setq htmlize-view-print-visible t)
+      (setq emacsw32-style-frame-title t)
+      (setq emacsw32-mode nil) ; Keep Emacs bindings
+      (setq w32shell-cygwin-bin "C:\\cygwin\\bin")
+      (setq w32shell-msys-bin "C:/msys/1.0/bin")
+      (require 'emacsw32)
+      (require 'w32-integ)
+      (require 'w32shell)
+      (w32shell-add-emacs)
+      (w32shell-set-shell "msys")
+      (require 'cmd-mode)
+      (require 'w32-print))
+
+The ##(eq system-type 'windows-nt)## is here because I use the same ##.emacs## on Windows, Linux, FreeBSD and OSX.
+
+I barely know LISP so I apologize if the style is bad. My English is not very good too. Sorry.
+
+-- LaurentBoulard
+
+== Resolved and Included ==
+
+=== How to see if Emacs+EmacsW32 is patched? ===
+
+Is there an Elisp variable (or two) to check to determine if you are running a patched Emacs and, if so, what version?
+
+[new]
+Yes, but no particulary good way. I will add one. At the moment use
+  (fboundp 'w32-wh-keyboard-ll)
+
+=== starting external programs with start-process in patched Emacs ===
+
+We use some in-house made lisp code to start an external program from Emacs and to interact with it through Emacs buffer.
+It basically goes through (start-process ...) with some process filtering.
+Now what happens with the patched version, is that a DOS window starts with the external program running, and no output shows up in the assigned buffer.
+It doesn't happen with an unpatched version. I use %%Emacs-22-CvsP070215-EmacsW32-1.39.exe%% resp. %%Emacs-22-CvsU070219-EmacsW32-1.39.exe%%.
+I tried to set w32-start-process-show-window to nil or t before (start-process..) but it doesn't change anything in patched Emacs.
+Any ideas how to fix it lisp-wise?
+
+--KonstantinMalakhanov
+
+
+[new]
+This problem is solved.
+Thanks Konstantin for the help with testing this!
+-- LennartBorgman
+
+=== patched emacs crashes with -nw option ===
+
+After installing recent versions (including the latest) of emacsw32 with patched emacs.exe, running 'emacs -nw' results in "A fatal error has occurred!"  I have not debugged at all.  However, a colleague says that the same sequence does not crash when using the latest emacsw32 distribution with your unpatched emacs.exe.
+
+[new]
+This has been solved in emacsw32 version 1.52.
+
+
+=== Support for -e and ediff from CMD.EXE ===
+
+Added better support for -e and ediff in version 1.03 of %%EmacsW32%%.
+See http://ourcomments.org/Emacs/EmacsW32.html for more details.
+
+=== Minor *.cmd bugs ===
+
+%%EmacsW32%% is a great set of tools, making it much easier to get started with Emacs on Win32.  Among other things, the *.cmd files included are quite helpful.  A couple of small suggestions for them:
+
+* elc.bat is a for loop that iterates over %1; from context, I believe the intent is to iterate over %*
+[new]
+Thanks, fixed.
+
+[new]
+* as written, the e.cmd support for turning backslashes into slashes has no effect because while the characters are changed in %args%, the actual final emacsclient invocation still uses %*
+[new]
+True. Fixed.
+
+[new]
+* as written, e.cmd launches emacsclient and doesn't wait; this is good and feels appropriate for a command line tool that launches a GUI app.  But, there are times when a version that waits is appropriate.  For example, when wanting to set e.cmd as your EDITOR.  Personally, I've created a copy of e.cmd -- emacsw.cmd -- that doesn't pass the -n option to emacsclient.  But, with the fix for the preceding item, it becomes quite reasonable to consider having e.cmd recognize an additional option (-w?) to wait?
+[new]
+Unfortunately it still seems hard to fix this easily. The "shift" command does not change %*.
+
+[new]
+* e.cmd starts with a comment claiming it's named emacs.cmd, and suggests renaming it to e.cmd.  Perhaps at one time it was named emacs.cmd?
+[new]
+It no longer starts with that comment ;-)
+
+[new]
+thanks,
+stephan();
+[new]
+Thanks for the feedback. Fixes will be in %%EmacsW32%% 1.39.
+
+=== Missing Elisp manual? ===
+Choosing from the menu Help/More Manuals/Emacs Lisp Reference gives the error:
+Info-find-file: Info file elisp does not exist
+[new]
+I can't reproduce this problem? Is there someone who still sees it?
+
+
+=== Emacs binaries as a zip file ===
+
+There has been some requests for unpatched Emacs binaries for w32 in a zip file.
+Due to this I now also upload such files at the same time as I upload a setup program for the unpatched Emacs+<nowiki>EmacsW32</nowiki>.
+It is quite a bit larger than the installer though it contains less.
+
+I realize that it may seem useful, but in fact I do not believe it is.
+If you take the unpatched version of Emacs+<nowiki>EmacsW32</nowiki> and install just the Emacs part that is in effect the same as unzipping the Emacs file.
+There is also one little change to the Registry at [HKLM\SOFTWARE\Microsoft\Windows\<nowiki>CurrentVersion</nowiki>\Uninstall\Emacs+<nowiki>EmacsW32</nowiki>_is1]. 
+(This is the entry in Add/Remove Programs in the Control Panel. It may also be at HKCU.) Otherwise all that is happening is that the files for Emacs itself are unpacked. 
+
+I understand that some of the worries about using the installer is that it is hard to know exactly what it does.
+I have tried to describe this in [http://ourcomments.org/Emacs/EmacsW32SetupUtilities.html EmacsW32 Installation Wizard].
+
+See also CategoryWThirtyTwo for other possibilities to get precompiled binaries.
+
+=== Black & white graphics ===
+
+I just downloaded the zip file for Emacs 22.0.92 (CVS 2006-12-30).  Everything is working, but the GNU Emacs logo in the splash screen and the tool bar icons are not in color!  Otherwise the color support seems fine, as evidenced by `M-x list-faces-display'.  What could be causing that? 
+
+-- KevinRodgers
+
+==== Answer: Missing image libraries ====
+That is how it is supposed to work. 
+You have to download the image libraries yourself if you use the unpatched version.
+Please see the documentation that comes with Emacs.
+
+
+=== Want Emacs C sources ===
+
+I got some requests to include the Emacs C sources in the installer. 
+(The elisp sources are already there of course.)
+
+I do not want to do that because it makes the download a bit bigger. 
+It is however easy to get the sources and arrange so that they will be opened when you want to look at them using the links in help.
+Just download the sources from my site, unpack them and set the variable
+
+    find-function-C-source-directory
+
+to the directory where the C sources subdirectory "src" has been unpacked.
+
+The sources can be found in the http://ourcomments.org/Emacs/DL/EmacsW32/src/ folder.
+Choose the ~2MB files with a name corresponding to the name of the installer you used to install Emacs+%%EmacsW32%%.
+(I thought I had written this clearly in the readme-files, but it looks like I have erased that.
+I will put it back there.)
+
+=== frame-title-format issue ===
+
+I setq frame-title-format in my .emacs, but this was getting clobbered by the emacsw32-style-frame-title which seemed to be setting my frame-title-format to nil after my .emacs was run. -- DamyanPepper
+
+[new]
+Thanks Damyan, this has been resolved now in %%EmacsW32%%.
+
+
+=== Old .emacs files ===
+I recommend placing a warning in your instructions about old .emacs files.  When I installed, I had an old .emacs file in the ##C:/## directory that caused emacs to crash during the install procedure so that the install didn't complete.  After I changed the name of this file, the installation when smoothly and I am happy with the result.
+
+--EdwinStearns
+
+[new:20060517:2006-05-17 14:16 UTC]
+
+I hit the problem too, wanting to keep both 21.3 and 22.0.50.1 on my 2k system. 
+
+The symptom is "<tt>Error (initialization): User  has no home directory</tt>" and no <tt>.emacs</tt> file loaded.
+
+A quick look at HOME env. var shows:
+
+    (getenv "HOME") -> "Š,ûw"
+
+
+==== Resolved in CVS Emacs ====
+This problem has been solved in CVS Emacs from 2006-05-20. -- LennartBorgman
+
+
+=== EmacsClient ERROR ==
+
+After downloading %%Emacs-22-CvsP061205-EmacsW32-1.11.exe%% and installing, I get the following error when I double-click the Emacs icon:
+
+"The requested Emacs remote server is not running"
+
+This error pops up in a window-box titled "EmacsClient ERROR". This leaves an "emacsclientw" process running as well.
+
+I get a similar error when I run "emacsclient" from the command-line.
+
+Emacs runs (and seems to run successfully) if I run "runemacs", but it doesn't allow newly opened files (outside of emacs) to use the already running emacs version (which is the whole point behind gnuserv, and emacsclient, I believe).
+
+I'm familiar with the old gnuserv stuff, but I'm not that familiar with "emacsclient". I don't even know where to look.
+
+Thanks.
+
+--StewartBryson
+
+[new]
+I had this problem too.  It appears that the problem is due to your %HOME% environment variable not being set, or being set incorrectly.  <nowiki>EmacsW32</nowiki> used to behave as if %HOME% pointed to <nowiki>C:\Documents and Settings\Username\Application Data\</nowiki>.  It now behaves as if it were set to <nowiki>C:\Documents and Settings\Username\</nowiki>, but, and this is the important thing, emacsclient and emacsclientw can't find your emacs if the environment variable is not actually set.  I think the registry munging that happens when you install is supposed to take care of this, but it doesn't actually do so.
+
+This isn't really a gnuclient vs. emacsclient issue; emacsclient on Unix doesn't act like this.
+
+--JasonMcBrayer
+
+==== Resolved in latest version of Emacs+EmacsW32 ===
+
+Hi Stewart and Jason, I am sorry for this trouble. I did not notice it myself first. It was a missing initialization in my patched version of Emacsclient.
+
+I think I had to explain some details here. Some history first. GnuClient did not automatically start Emacs from the beginning. I however found that so awful so I added this feature to the version of GnuClient that came with <nowiki>EmacsW32</nowiki> before. Some weeks ago EmacsClient finally became available for MS Windows. This however also lacked the feature to start Emacs automatically so I added it to the patched version of Emacs before I removed GnuClient. Actually the patched EmacsClient should work for any platform, but the code is currently untested on other platforms. It was decided on the Emacs developers list that this feature should not be added now, see the archives there.
+
+So at the moment EmacsClient that comes with the patched version of <nowiki>Emacs+EmacsW32</nowiki> starts Emacs automatically, but the unpatched version of EmacsClient does not do that. I do not think the HOME environment variable is involved here, since when EmacsClient starts Emacs it also tells Emacs to start Emacs server (with the parameters given to EmacsClient of course).
+
+==== Resolution Confirmed ===
+
+I've got the newest <nowiki>Emacs+EmacsW32</nowiki> with EmacsClient and everything works great.
+Thanks.
+--StewartBryson
+
+=== Emacs 23 Builds ===
+Curently %%EmacsW32%% is based on Emacs 22. Would it be possible to create Emacs-23 based version of /EmacsW32/, or at least unpatched version, if patched require too much time.
+
+[new]
+The latest version is from CVS Emacs 23.
+
+=== Emacs 22 builds ===
+
+At http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl you say that "There will be know unpatched binaries for the released version of Emacs 22.1 here".
+What about patched binaries? Or can the latest /EmacsW32/ only work with Emacs 23?
+
+[new]
+At the moment I have no plan to build Emacs 22. However you can use the /EmacsW32 only/ downloads.
+
+[new]
+Also, is it possible/safe/a good idea to have both old and new version of %%EmacsW32%% installed at the same time?
+
+[new]
+No problems I hope.
+
+[new]
+According to http://www.emacswiki.org/cgi-bin/wiki/IciclesIssues,
+Icicles may have some problems with Emacs 23. -- AlexeyRomanov
+
+[new:DrewAdams:2008-03-23 14:20 UTC]
+What '''Icicles''' problems are you referring to? I just searched IciclesIssues for "23", and AFAICT all of the issues reported for Emacs 23 have been solved. I'm not making any guarantees, but I see no reported problems, at least. Let me know what problems you have in mind. Thx -- DrewAdams
+
+
+=== Missing rebind.el ===
+Downloaded %%Emacs-23-CvsP080321-EmacsW32-1.55.exe%% on 24 Mar 2008 and found that the file rebind.el is missing, yet required from %%c:/Program Files/Emacs/EmacsW32/lisp/emacsw32.el%% -- JamesKingston
+
+[new]
+Fixed in version 1.56
+
+=== htmlize-view-print-visible ===
+
+Just installed /Emacs-23-CvsP080325-EmacsW32-1.56.exe/
+(initially over a version 1.54 install, then uninstalled that and reinstalled in a different directory).
+After launching emacs and doing "Customize <nowiki>EmacsW32</nowiki>" I see everything as usual up to: 
+
+  Add quick printing to File menu (htmlize-view-print-visible
+
+without a closing parenthesis and nothing more.
+%%*Messages*%% buffer shows "format: Symbol's value as variable is void: htmlize-view-print-visible".
+--AlexeyRomanov
+
+[new]
+Hi Alexey, that is clearly a bug. Htmlize is no longer in the distribution.
+It has been replaced by htmlfontify. Fixed in 1.58
+
+
+
+
+=== CVS Emacs 23 is still slow on screen updates ===
+[new]
+Hello,
+I just upgraded to the latest version of %%EmacsW32%%, GNU Emacs 23.0.60.1 (i386-mingw-nt5.1.2600)
+ of 2008-06-12 on LENNART-69DE564 (patched), and now emacs is running extremely slowly. Is this a common issue?
+Thank you.
+
+[new:DrewAdams:2008-06-21 20:37 UTC]
+Yes. Emacs 23 is unstable and has not yet been optimized. It is ''very'' slow on some platforms. -- DrewAdams
+
+[new:JoonhwanLee:2008-06-25 01:24 UTC]
+I'd been using 2008-06-12 on LENNART-69DE564 (patched) version of emacsW32 for a while, but changed back to 22.1.50.1
+(installed it using ntemacs binary which i got from http://ntemacs.sourceforge.net) and that I now can play emacs as fast as usual.
+I tried to find old releases at %%EmacsW32%% site but failed.  Is there any place where I can download old releases of %%EmacsW32%% patched version? -- JoonhwanLee
+
+[new]
+The slowness is because of the new font backend.
+So it is just the screen update that is slow.
+I think it is good if people test this new font backend and report any problem.
+That will help to fix problems.
+(However the slowness is well known.)
+
+I have also compiled with no optimizations at the moment.
+I can remove that and see if it helps a little bit.
+
+If this is unbearable then I can fetch an old binary and place that on the download page.
+The problem with that is that the old Emacs instead will be more buggy.
+
+[new]
+The screen update is now much faster.
+
+=== Cursor stays on top in compilation buffers ===
+
+[new]
+Greetings!  The cursor in my *compilation* buffer no longer follows the build output (stubbornly stays at the top of the buffer) since I upgraded to GNU Emacs 23.0.60.1 (i386-mingw-nt5.1.2600) of 2008-06-12 on LENNART-69DE564 (patched).  Has anyone else experienced this or can recommend a fix?  Thanks!  -- AllanErskine
+
+[new]
+I am not quite sure, but I believe this has been resolved in the latest CVS sources.
+Please try the latest installation package.
+
+[new]
+Thanks!  The latest installation package fixes this problem (get it here folks: http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl) -- AllanErskine
+
+=== Slow redisplay ===
+
+Emacs 23 had a redisplay problem which would make scrolling very slow. Today I downloaded this version
+
+"GNU Emacs 23.0.60.1 (i386-mingw-nt5.1.2600)
+ of 2008-08-13 on LENNART-69DE564 (patched)"
+
+and scrolling feels just like the 22. I'm moving to 23 again. Did you do something related to this, Lennart? Thanks anyway :)
+
+-- hsuh
+
+[new]
+No, I did not do anything.
+JasonRumney and others did the work, I just waited (having quite a bit to do with [NxhtmlMode nXhtml] and not enough knowledge at all about the display code to help with it). :-)
+
+
+
+----
+== Unconfirmed or waiting for feedback ==
+
+=== Visit new file problem ===
+Menu item File->visit new file should be able to _create_ a new file, right? Because as it is (emacsw32-version 1.58), it balks at visiting non-existent files... 
+
+[new]
+I can't reproduce this. Can you give a precise recipe and file a bug report with it?
+
+[new]
+If you try to visit a new file from the File menu command and then select a path and filename, Emacs complains that it cannot find the file.
+
+
+
+----
+== Current Problems ==
+
+=== "Waiting for Emacs server to start" fails ===
+Downloaded %%Emacs-23-CvsP080325-EmacsW32-1.56.exe%% on 25 Mar 2008 and found that (should be!) transient window "Waiting for Emacs server to start" is actually failing with message " ERROR Timeout waiting for server". Is it related to the fact that gnuserv.el is missing in packaging? -- ThierryDaucourt
+
+[new]
+Could you please try running emacs/bin/usethis.exe? If that does not help then check the shortcut you start Emacs from.
+
+
+[new:ThierryDaucourt:2008-03-26 14:23 GMT]
+Trying to launch usethis.exe and then the shortcut to emacsclient -n, it is actually worse, as the GUI appears but blank windows that is frozen. I am forced to kill process via Task Manager -- ThierryDaucourt
+
+[new]
+Do you really mean the shortcut to /emacsclient -n/, not /emacsclientw -n/?
+This should just work without problem and I am a bit surprised that it does not work for you.
+
+It might be that there are some old shortcuts left.
+The new EmacsClient for CVS Emacs 23 works a bit different from the old Emacs 22 one.
+Can you examine what the short cut runs?
+
+While trying to get this to work could you please rename your .emacs so it does not get in the way.
+
+[new:ThierryDaucourt:2008-03-26 17:59 GMT]
+* rename .emacs in @.emacs (to not get read)
+* uninstall %%Emacs+EmacsW32%% through control panel
+* delete %%Program Files\Emacs%%
+* reboot
+* go through installer for full install, all users (no tweaking, only next-next-next) and wait for the 20 seconds
+* launch through shortcut (that actually calls for emacsclientw.exe with a 'w')
+* got message : server-ensure-safe-dir: The directory %%c:/Documents and Settings/user/Application Data/.emacs.d/server%% is unsafe
+* now, no more freeze of emacs window
+* still get the message "Waiting for Emacs server to start" that fails with "ERROR Timeout waiting for server"
+* close emacs windows
+* launch emacs/bin/usethis.exe
+* And... emacs window is frozen (blank, no toolbar, no answer to C-x C-c or click on X upper right. I also have the the message "Waiting for Emacs server to start" that fails with "ERROR Timeout waiting for server"
+* I close the window about server not started (that has the effect to kill emacsclientw.exe), but windows is stil frozen
+* I kill cmdproxy.exe that is child process of emacs.exe
+* And then the emacs window is no more frozen. Well, that unfrozed the things, but this is not usable...
+
+Definitely, usethis.exe makes things worse as emacs is frozen
+
+[new]
+I wonder if there is something wrong with the "server" file.
+Could you please try moving that file out of the way?
+
+[new:ThierryDaucourt:2008-03-26 20:10 GMT]
+I suppose you meant emacs\lisp\server.el and .elc files, that I moved away. Again, the emacs is frozen, I close the "server fail", then kill cmdproxy.exe, and I have my emacs un-frozen. For me this is more related to cmdproxy.exe isn't it ? Any way to debug that latter ? Because I just tested to launch "emacs.exe" and "emacs.exe --debug-init", and those two command runs correctly as I can see in TaskManager that no cmdproxy.exe is run. -- ThierryDaucourt
+
+[new]
+Hi I am having the same problem.  I installed emacs 23 without %%EmacsW32%% and it has the same problem also.  I launched it with
+runemacs.exe.  It gave me this error: The directory ~/.emacs.d/server is unsafe. -- Juan Fonseca
+
+[new]
+Thierry, sorry for being unclear. I meand the file that you got the server-ensure-safe-dir message about.
+
+Juan, do you mean that you have installed the unpatched version? If you use the unpatched version you must start Emacs first.
+EmacsClient can not start Emacs when you are using the unpatched version.
+But anyway, you got the same error as Thierry.
+Could you also try remove the file I told about above?
+
+Maybe I should say I have not seen this problem myself.
+
+[new]
+
+* un-install of %%Emacs+EmacsW32%%
+* reboot
+* delete of %%DocumentsAndSettings\user\ApplicationData\.emacs.d\server%% and %HOME%\.emacs.d\auto-save-list
+* delete Program Files\Emacs directory
+* install of %%Emacs-23-CvsP080325-EmacsW32-1.56.exe%% (no tweaking, all default options)
+* Launch GNU Emacs through shortcut (actually emacsclientw -n
+)
+* emacs window is frozen, and together there is a window with error message : "Waiting for Emacs server to start ERROR Timeout waiting for server"
+* I click on close button of this later dialog. Emacs is still frozen.
+* kill of cmdproxy.exe
+* Emacs window is unfrozen 
+* I then have a look in *Messages* buffer and get : 
+
+server-ensure-safe-dir: The directory %%c:/Documents and Settings/user/Application Data/.emacs.d/server%% is unsafe
+
+* I am able to check that %%"C:\Documents and Settings\to26992\Application Data\.emacs.d\server"%% directory has been created. 
+Also %%"C:\Home\to26992\.emacs.d\auto-save-list"%% has been created. 
+
+I still believe that cmdproxy.exe is guilty. How to debug it, and understand what it is blocked on?
+
+--ThierryDaucourt
+
+[new]
+Thanks Thierry. The only thing I can think of right now is this:
+
+* Delete that server file above again
+* Start emacs by just running /emacs.exe/ from the command window
+* In emacs do M-x server-mode
+
+If this does not help then try /emacs.exe -Q/
+
+[new]
+* Deleted the .emacs.d directories
+* Launch emacs.exe from command window
+* emacs window is frozen
+* kill cmdproxy.exe
+* emacs window is unfrozen
+* in emacs, done M-x server-mode
+* got the message "server-ensure-safe-dir: The directory ~/.emacs.d/server is unsafe"
+
+Also tried emacs -q (or emacs -Q) in step 2, and did not get step 3,4,5, but still get the unsafe message.
+
+--ThierryDaucourt
+
+[new]
+Thanks. That emacs did not freeze when you used /emacs -Q/ is a big step forward.
+Now we know that there is something in you emacs initialization files that causes the problem.
+Could you try to find out what?
+
+I believe the unsafe message might be unrelated, but I am not sure.
+
+[new]
+Hi, going back to the waiting for server to start.  I downloaded the unpatched emacs 23 zipped file and installed it.
+I have (server-start) in my .emacs files.  When I lunch emacs with runemacs.exe, emacs.exe or emacsclient.exe I get the server error (described above).  If I remove (server-start) from .emacs, the problem goes away when I run runemacs.exe or emacs.exe.
+This is the same problem that I see with emacs + emacsW32.  I think that the problem is in emacs 23 server-start not emacsW32.
+Or maybe there is a problem in my system setup.  Juan Fonseca.
+
+[new]
+"emacs -q" means no loading of ~/.emacs and default.el.
+As I have no ~/.emacs, the issue comes from default.el.
+default.el loads emacsw32.
+emacsw32.el loads a lot of things, and I have no idea which one to not load.
+
+As I suspect cmdproxy to be the guilty, I did a find|grep that tells me that w32shell is the only one to use cmdproxy, this in function w32shell-set-shell. In the documentation of this function, SHELLNAME env variable may be understood to be set. I set it to cygwin.
+Running the shortcut "emacsclientw -n" still lead to an frozen emacs window that killing cmdproxy.exe makes it unfrozen.
+
+Instead, I set SHELLNAME env variable to cmd.    Same result.
+
+Re-reading the documentation in w32shell, I will set SHELL instead of SHELLNAME. So I set SHELL env variable to cygwin.
+
+First progress : emacs window is not frozen, I have still the "Waiting for Emacs server to start" that fails with "ERROR Timeout waiting for the server" and inside emacs I have **Messages** buffer with some errors :
+
+---
+
+An error has occurred while loading `~/.emacs':
+
+File error: Searching for program, no such file or directory, cygwin
+
+To ensure normal operation, you should investigate and remove the
+cause of the error in your initialization file.  Start Emacs with
+the `--debug-init' option to view a complete error backtrace.
+
+For information about GNU Emacs and the GNU system, type C-h C-a.
+server-ensure-safe-dir: The directory %%c:/Documents and Settings/user/Application Data/.emacs.d/server%% is unsafe
+
+---
+
+First remark, strange that not finding the ~/.emacs should cause an error in emacs !
+I can also see that cygwin installation was not found while existing on my PC, but yes, not in the standard %%c:\Cygwin%% directory.
+
+
+Anyway, I set now SHELL env variable to 'cmd' to see if this is different than setting it to 'cygwin'. Now, the emacs window is not frozen, but emacsclientw.exe windows has still "Waiting for Emacs server to start" failing with "ERROR Timeout waiting for server". Inside Emacs window, in **Messages** buffer, I have the "server-ensure-safe-dir: The directory %%c:/Documents and Settings/user/Application Data/.emacs.d/server%% is unsafe", but more noticeable, is the output of *Shell Configuration* buffer
+
+---
+
+Warning! The SHELL environment variable uses cmd.
+You probably want to change it so that it uses cmdproxy.exe instead.
+
+Warning! shell-file-name uses cmd.
+You probably want to change it so that it uses cmdproxy.exe instead.
+
+Warning! shell-command-switch is "-c".
+You should set this to "/c" when using a system shell.
+
+Warning! w32-quote-process-args is t.
+You should set this to nil when using a system shell.
+
+---
+
+What I understand, is that by setting SHELL env variable to 'cmd', then 'cmdproxy' is not used. As I suspected it, not using cmdproxy make the things progress by not frozing. I still have Warnings above.
+
+Again, cmdproxy.exe, by not using it, or by killing it, it looks better. How to debug that latter?
+
+--ThierryDaucourt
+
+[new]
+Hi again Thierry, thanks for trying to investigate this.
+I would be surprised if cmdproxy or cmd was involved here, but I am not sure.
+w32shell is a way to try to make it more easy to use different shells within Emacs.
+When you are using that you should not have to bother with the environment variable SHELL.
+
+However this has nothing to do with starting Emacs.
+I am getting a bit lost here. I think we need to coordinate. Can you please help me by answering some questions?
+
+* Does everything work when you start with /emacs -Q/ ?
+* If that work can you try /M-x server-mode/ there?
+* Does everything work when you start with /emacs -q/ ?
+* If that work can you try /M-x server-mode/ there?
+* Does the path to Application Data contain any non-ascii chars? (I think there is a bug there in this CVS version of Emacs. Please remember this is not a released version, though mainly stable.)
+
+[new]
+Tentative 1 : no %%EmacsW32%%
+
+* uninstall %%Emacs+EmacsW32%%
+
+* reboot
+
+* delete %%Program Files\Emacs%%, .emacs.d directories, .emacs file
+
+* install Emacs, EmacsClient integration, but NOT %%EmacsW32%%
+
+* launch through shortcut (actually emacsclientw -n)
+
+* Emacs window is not frozen
+
+* And I have still this "Waiting for Emacs server to start" that fails with "ERROR Timeout waiting for server", coupled with what I can see in **Messages** buffer : "server-ensure-safe-dir: The directory %%c:/Documents and Settings/user/Application Data/.emacs.d/server%% is unsafe"
+
+
+
+Tentative 2 : no EmacsClient integration
+
+* uninstall %%Emacs+EmacsW32%%
+
+* reboot
+
+* delete %%Program Files\Emacs%%, .emacs.d directories, .emacs file
+
+* install Emacs, %%EmacsW32%%, but NOT EmacsClient integration (through option "Minimam installation of %%Emacs+EmacsW32%%" in installer)
+
+* no shortcut is installed, 
+
+
+
+* launch Emacs through %%C:\Program Files\Emacs\emacs\bin\emacs.exe%% 
+
+* Emacs window is frozen, killing cmdproxy makes Emacs windows unfrozen
+
+
+
+* launch Emacs through cmd, cd %%C:\Program Files\Emacs\emacs\bin%%, and launch "emacs -q"
+
+* Emacs window is not frozen, **Messages** buffer has same content than 2 lines above
+
+
+
+Tentative 3 : no %%EmacsW32%%, no EmacsClient integration
+
+* uninstall %%Emacs+EmacsW32%%
+
+* reboot
+
+* delete %%Program Files\Emacs%%, .emacs.d directories, .emacs file
+
+* install Emacs, but NOT EmacsClient integration, but NOT %%EmacsW32%% (through option "Install only Emacs itself" in installer)
+
+* no shortcut is installed
+
+
+
+* launch Emacs through cmd, cd %%C:\Program Files\Emacs\emacs\bin%%, 
+
+* Emacs window is not frozen
+
+
+
+* launch Emacs through cmd, cd %%C:\Program Files\Emacs\emacs\bin%%, and launch "emacs -q"
+
+* Emacs window is not frozen
+
+
+
+* launch EmacsClient through cmd, cd %%C:\Program Files\Emacs\emacs\bin%%, and launch "emacsclientw -n"
+
+* Emacs window is not frozen
+
+* I have still this "Waiting for Emacs server to start" that fails with "ERROR Timeout waiting for server", coupled with what I can see in **Messages** buffer : "server-ensure-safe-dir: The directory %%c:/Documents and Settings/user/Application Data/.emacs.d/server%% is unsafe"
+
+
+
+
+
+My conclusions so far:
+
+* installing %%EmacsW32%% make Emacs freeze (via cmdproxy)
+
+* installing only Emacs itself, Without installing %%EmacsW32%%, EmacsClient is unable to start, complaining about directory unsafe
+
+
+
+
+So I began to dig about the unsafe thing. The unsafe message is in function server-ensure-safe-dir of server.el file. Here is function:
+
+
+<pre>
+(defun server-ensure-safe-dir (dir)
+  "Make sure DIR is a directory with no race-condition issues.
+Creates the directory if necessary and makes sure:
+- there's no symlink involved
+- it's owned by us
+- it's not readable/writable by anybody else."
+  (setq dir (directory-file-name dir))
+(message "dir %s" dir)
+  (let ((attrs (file-attributes dir)))
+(message "attrs %s" attrs)
+    (unless attrs
+      (letf (((default-file-modes) ?\700)) (make-directory dir t))
+      (setq attrs (file-attributes dir))
+(message "attrs %s" attrs)
+)
+    ;; Check that it's safe for use.
+(message "nth 2 attrs %s" (nth 2 attrs))
+(message "user id %s" (user-uid))
+(message "system type %s" system-type)
+(message "file modes dir %s" (file-modes dir))
+    (unless (and (eq t (car attrs)) (eql (nth 2 attrs) (user-uid))
+                 (or (eq system-type 'windows-nt)
+                     (zerop (logand ?\077 (file-modes dir)))))
+      (error "The directory %s is unsafe" dir))))
+</pre>
+
+
+All the non indented lines with message are from my own, to enable the debug after byte-compiling the file. Here is what I found:
+
+
+
+I deleted .emacs.d/server directory, then run emacs.exe, and inside launched M-x server-mode. In Messages buffer I got the following extract:
+
+
+<pre>
+attrs (t 1 -14706 513 (18414 17797) (18414 17797) (18414 17797) 0 drwxrwxrwx nil 34842 (7173 . 33003))
+nth 2 attrs **-14706**
+user id **50830**
+</pre>
+
+
+But from the command line:
+
+<pre>
+$ ls -ld server/
+drwxr-xr-x+ 2 my_user mkgroup-l-d 0 Mar 29 14:35 server/
+$ id
+uid=**60830**(my_user) gid=10545(mkgroup-l-d) groups=0(root),544(Administrators),545(Users),10545(mkgroup-l-d)
+</pre>
+
+I have added bold chars where is the mess: inside emacs my uid is 50830, but on command line, my uid is 60830. And emacs reading attributes of the server idrectory find that uid is -14706.
+
+Any idea?
+
+PS: I made my investigation above off-line, and pasting here, without having seen your last answer. I will investigate it later when time available. Thanks.
+
+--ThierryDaucourt
+
+[new]
+Hi again Thierry.
+I think there are some small misunderstandings.
+%%EmacsW32%% is not that involved as you might think.
+Here are some important points:
+
+* If you start Emacs with *emacs -Q* then %%EmacsW32%% is not in any way involved here.
+* When you try to start Emacs through EmacsClient that will only work with the patched version of %%Emacs+EmacsW32%%
+
+But there is something interesting happening in server-ensure-safe-dir.
+It looks there like you are not the owner of the directory.
+Can you check this in Windows Explorer?
+What version of MS Windows are you running?
+Have you set the HOME environmental variable in Windows?
+
+[new]
+---
+I apologize for any misunderstanding. I make it very hard to only write fact, and to avoid any opinion/sentiment/judgment.
+I just want emacs to run on my PC, running Windows XP SP2 with last %%Emacs-23-CvsP080325-EmacsW32-1.56.exe%%, patched version.
+
+Until now:
+* installing %%EmacsW32%% make Emacs freeze (via cmdproxy).
+* but running /emacs -Q/ and then /M-X server-mode/ fails complaining about directory unsafe
+* As the first freeze may be related to the server-mode fail, I try to investigate the server-mode fail, and will then go back to %%Emacsw32%%
+
+My investigation about server-mode:
+* I grep in code where is "unsafe" message, found it in /server.el/, function /server-ensure-safe-dir/.
+* I modify that function to just add some printing for debugging. See my last post.
+* running /emacs.exe -Q/ then /M-x server-mode/ leads to following extract from /Messages/ buffer:
+
+<pre>
+attrs (t 1 -14706 513 (18414 17797) (18414 17797) (18414 17797) 0 drwxrwxrwx 
+nil 34842 (7173 . 33003))
+nth 2 attrs **-14706**
+user id **50830**
+</pre>
+
+* The guilty directory is ~/.emacs.d/server. As I set %HOME% windows env variable to %%c:\Home\myuser%%, the true path is %%c:\Home\myuse\.emacs.d\server%%. Before the test I deleted that directory, so emacs re-create it. (%APPDATA% should not be involved as I set %HOME%. Both those directories have only ascii characters.)
+
+Emacs when creating that directory makes me as the proprietary of the file. I can check that through /Windows Explorer/, but also via cygwin:
+
+<pre>
+$ ls -ld server/
+drwxr-xr-x+ 2 my_user mkgroup-l-d 0 Mar 29 14:35 server/
+$ id
+uid=**60830**(my_user) gid=10545(mkgroup-l-d) groups=0(root),544(Administrators),545(Users),10545(mkgroup-l-d)
+</pre>
+
+So ~/.emacs.d/server, belongs to me, and my id is **60830** from cygwin command line.
+But emacs, says that ~/.emacs.d/server is belonging to **-14706** and also report that my id **50830**.
+
+That where I have not so much idea:
+* why emacs creates a directory with the good userid, but reading the attrs it fails, and getting my userid it fails too.
+
+--ThierryDaucourt
+
+[new]
+I think we are getting closer to a solution now, Thierry, because of your last report.
+It looks to me like there is a bug somewhere, but I am not sure where.
+I have sent a bug report to Emacs pretest for CVS Emacs 23.
+
+Just to be sure some more questions:
+
+* Did you do all this in your last report with the unpatched version?
+* Do you get the same user id when you check through Windows Explorer?
+
+We are discussing the bug with the id above on emacs-pretest-bug@gnu.org and it would be good if you could join the discussion there.
+
+[new]
+As said, I did my test with on my PC, running Windows XP SP2 with last %%Emacs-23-CvsP080325-EmacsW32-1.56.exe%%, patched version.
+I redo the same test, with unpatched version %%Emacs-23-CvsU080325-EmacsW32-1.56.exe%%. I have the exact same results and outputs.
+
+About checking user id through Windows Explorer, I do not know how to do it. I am only able to check that proprietary of file is "my_user" in full text, but I am not able to print any user id that is a number.
+
+I could join the emacs-pretest-bug@gnu.org, but I do not know how to... Yes that's stupid, but I googled that email address, and I am unable to find the subscribe page of this mailing list.
+
+Reading an archive of this mailing list, I can give some more information. Maybe my user id of 50830 is coming from the fact that my company has more than 100,000 employees, and that I try to run emacs on my work pc. And yes my id is belonging to a domain, so that's perhaps why the 10000 is added. -- ThierryDaucourt
+
+[new:DrewAdams:2008-03-30 18:32 UTC]
+##emacs-pretest## was redirected to ##emacs-devel##, and it looks like someone got rid of the ability to subscribe to ##emacs-pretest## (not good, IMO). You can subscribe to ##emacs-devel@gnu.org##, however. -- DrewAdams
+
+[new]
+Thierry, yes, please follow Drew's advice.
+The subject of the thread is "23.0.60; uid problems on w32".
+
+And your guess about the domain seems correct.
+
+[new]
+Hello -- I am having the same issues as Thierry, with the culprit seemingly cmdproxy. I, too, have tried both patched and unpatched versions of /Emacs-23-CvsP080325-EmacsW32-1.56.exe/. I'm also having problems displaying the font face of customization buffers. Will do some more tinkering, as well as clean installs. Also found a correction of the server problem by calling M-x Server-start after killing cmdproxy, and thus the editing server capabilities are usable. 
+-John
+
+[new]
+John, I have just uploaded a new unpatched version (and also a patched version).
+Could you please try the new binaries?
+
+[new]
+I downloaded and installed ##Emacs-23-CvsP080819-EmacsW32-1.58.exe## today (2008-08-19) and ##cmdproxy.exe## did not hang (executable is 30380 bytes, Properties page shows no file version information).  Past revisions of ##cmdproxy.exe## would hang every time.  Thanks for the fix :-)! OS is Microsoft Windows Vista SP1 32-bit. I still get the error message from server.el ("##server-ensure-safe-dir: The directory c:/Users/xxxxxxx/AppData/Roaming/.emacs.d/server is unsafe##"). In my case, no domain server is involved.  Will update if I find a resolution to the server-ensure-safe-dir problem and thank you for the update to ##cmdproxy.exe##.
+
+Update: In an attempt to further debug the ##server-ensure-safe-dir## error message I edited ##%ProgramFiles%\Emacs\emacs\lisp\server.el## to add the ##(message ...)## statements above from Thierry and then deleted ##server.elc##. Upon restarting Emacs, the ##server-ensure-safe-dir## error message did not appear! I tried undoing the changes to get the message back by first removing the ##(message ...)## statements; still no error message.  I then byte-compiled the original ##server.el## file and the message /still/ does not appear. A ##dired## listing shows changed file ownership:
+<pre>
+  ...
+  -rw-rw-rw-  1 mark           None   52841 08-19 12:46 server.el
+  -rw-rw-rw-  1 mark           None   53048 08-19 12:45 server.el-messages
+  -rw-rw-rw-  1 Administrators None   52841 08-19 12:44 server.el-orig
+  -rw-rw-rw-  1 mark           None   38215 08-19 12:48 server.elc
+  -rw-rw-rw-  1 Administrators None   52841 2008-08-19  server.el~
+  -rw-rw-rw-  1 Administrators None  117691 2008-08-19  ses.el
+  -rw-rw-rw-  1 Administrators None   90355 2008-08-19  ses.elc
+  ...
+</pre>
+
+Also, ##server.elc## is now strangely /only/ visible using ##dired## in Emacs - it's not visible from a ##cmd.exe## command line nor in Windows Explorer!
+
+[new]
+Thanks mark (I guess you are "mark" in the listing above?).
+
+I looked at the code in `server-ensure-safe-dir' and it looks to me like the test that gives the error
+is probably
+
+  (eql (nth 2 attrs) (user-uid))
+
+but I do not understand why. Could you please show what dired shows for the file mentioned in the server-ensure-safe-dir message?
+
+Could you also find out what
+
+  M-: (user-uid)
+
+gives + what calling (user-uid) in server-ensure-safe-dir gives?
+
+Is it possible for you to change owner for server.elc to Administrator?
+What happens if you do that?
+
+[new]
+Yes, I am the Mark in the file listing.  ##dired## for the dir shown in the ##server-ensure-safe-dir## now shows (going down the path elements):
+
+<pre>
+  drwxrwxrwx  1 mark   None     0 08-19 12:46 Roaming
+  drwxrwxrwx  1 mark   None     0 08-19 12:56 .emacs.d
+  drwxrwxrwx  1 mark   None     0 08-19 20:31 server
+  -rw-rw-rw-  1 mark   None    85 08-19 20:31 server
+</pre>
+
+Unfortunately, I did not look at these values before I unintentionally fixed the problem. 
+##Eval: (user-uid)## returns ##1002 (#o1752, #x3ea)## from an interactive emacs session and similarly adding ##(message ...)## calls to ##server.el## shows ##nth 2 attrs 1002## and ##user id 1002##.
+
+I don't know how to change the owner of ##server.elc## back to ##Administrators## because the emacs byte-compiler manages to create a file that the rest of the OS cannot "see".
+
+[new]
+Mark, there is currently a discussion on [http://lists.gnu.org/archive/html/emacs-devel/ Emacs devel] that I think is about a problem similar to this.
+Maybe you want to join a while and give some information?
+The subject of the thread is "File Owner and Group ID on Windows".
+
+[new]
+I'll take a look at the emacs-devel thread. Here is some more information that I've found as well. To recreate the ##server-ensure-safe-dir## error, I've uninstalled and re-installed %%Emacs+EmacsW32%% several more times.  In my experiments, the problem only occurs if a) the installer is "Run as Administrator" /and/ b) the installer is allowed to start Emacs directly (e.g. leave the checkbox enabled on the last screen to "Start Emacs with %%EmacsW32%% Options Page"). 
+
+<pre>
+Install with Privs of:    Installer Starts Emacs?  Error?
+Administrators            Yes                      Yes
+Administrators            No                       No
+mark                      Yes                      No
+mark                      No                       No
+</pre>
+
+Installing to ##C:\Program Files\## requires admin privileges in Vista and so the two conditions will be seen by many people. When the Installer does have Administrator privileges /and/ is allowed to start Emacs, the started Emacs process runs with Administrator privileges too (in the first, special Emacs ##Eval: (user-uid)## returns the Administrator's user-uid ##1001## instead of the user-uid 1002 for the mark account).  ##dired## shows Emacs creates an ##C:\Users\mark\AppData\Roaming\.emacs.d\## directory owned by ##Adminstrators## (user-uid 1001) instead of by ##mark## (user-uid 1002).  In the other three, non-error cases, Emacs runs with a user-uid matching the user and ##.emacs.d## gets created with ownership set to the user's own user-uid.
+
+One possible solution might be to modify the installer to launch Emacs with just the user's privileges, instead of Administrator privileges, even if the installer is run as Admin.  The quick workaround I'm using now on Vista is to uncheck the "Start Emacs with %%EmacsW32%% Options Page" at the end of the install.
+
+: Thanks, I have changed the installer so that Emacs is started with user's priv.
+
+
+There are a couple of other Installer modifications that would be nice too. The installer returns the error message "Setup was unable to create the directory "##C:\Program Files\Emacs##".
+Error 5: Access is denied."  if it is not "Run as Administrator" under Vista.  Can the Installer catch that Error 5 and request a [http://technet.microsoft.com/en-us/magazine/cc546565.aspx privileges escalation] when it tries to write to ##C:\Program Files\## on Vista?
+
+: I am using Inno Setup. I just changed to the latest version of it. It looks to me like this is already taken care of in the installer, but I am not quite sure (I do not have Vista).
+
+Second, one of the installer screens (third one) has static text with an outdated version number: "This setup program will install the Emacs developers CVS version *22.1.0.0* of Emacs. Please notice that this is not an official GNU release of Emacs!".
+
+: Thanks, fixed.
+
+[new]
+I am just uploading a new installer to http://ourcomments.org/Emacs/DL/EmacsW32/test/.
+Can you please test that version?
+
+[new]
+I downloaded and did some quick tests this morning; will do more tonite. Installing with Admin privs and letting the installer start EmacsClient still gets the ##server-ensure-safe-dir## error message.  Exiting Emacs and then starting it again works properly EmacsClient; only the initial start from the Installer hits the error message.
+
+
+=== Windows 7 Taskbar ===
+
+[new]
+
+The Windows 7 taskbar has merged the concepts of (1) a shortcut to start a program and (2) the taskbar button of the running program.  When you start a program using a shortcut pinned to the taskbar, the shortcut is displayed differently while the program is running, but no new taskbar button is displayed.  If you start a program that is not pinned to the taskbar, a new taskbar button is created.  This is different than previous versions of Windows that always created a taskbar button for each window open.
+
+This doesn't work with emacs, however.  To eliminate the console window, it must be started with runemacs.  This means we'd have to pin runemacs.exe to the taskbar to start emacs.  When it is run, however, it simply starts emacs.exe and exits.  Windows will recognize that these are two different programs and will not highlight the pinned icon and will create a new button for emacs.exe.
+
+The "fix" is to create a non-console version of emacs.exe.
+
+I'm compiling a custom version for myself right now, but this is going to become a general issue for Windows emacs users soon.  It would make sense to me to (1) stop supporting console emacs at all in /EmacsW32/, (2) provide two versions (e.g. emacs and emacsw?), or (3) patch emacs.exe to accept an option to allocate a console (or detect, if possible, if the parent is a console).
+
+[new]
+Thanks mkleehammer.
+I wonder if the situation is not even more complicated.
+With /EmacsW32/ you often start Emacs by running emacsclient.exe/emacsclientw.exe.
+So it is indeed two different programs.
+
+Maybe you want to report the problem as a bug so this issue will not be forgotten?
+Then please send a message to emacs-pretest-bug@gnu.org
+
+[new]
+Actually I think emacsclient won't be a problem -- the only issue is you need the main EXE to be able to be used to start the program.  If you pin emacs.exe to the taskbar and use emacsclient to start the first instance, the taskbar would recognize the emacs.exe has been started and would highlight the pinned version appropriately.
+
+I'd be happy to issue a bug report, but I'm not sure where to do so.  Where is the appropriate bug tracker for this?
+
+[new]
+Just use the bug mail address for this report. You will get information back about the bug tracker.
+(Normally you should use the command in the menus to send bug reports, but in this case it is not
+needed since no information from your Emacs should be collected.)
+
+[new]
+There is another way. I submitted this to emacs-devel, but got no response, which I take to mean they're not interested.
+
+The fix is for all executables that want to stack their icons to set an Application Identifier, as documented at http://msdn.microsoft.com/en-us/library/dd378459.aspx.  Just have runemacs.exe, emacsclientw.exe, and emacs.exe all call %%SetCurrentProcessExplicitAppUserModelID%% with "GNU.Emacs" during their startup. I'd be happy to write the code myself, but I'm not sure how to contribute a patch-patch.
+
+[new]
+I think the interest is there, it is just that few people are looking especially in w32 internal things.
+So if you can contribute it as patch that saves time for them.
+See http://ourcomments.org/Emacs/w32-build-emacs.html#patching for how to make a patch.
+
+Please send the patch to Emacs devel as a bug report. Then it will not be forgotten that easily.
+
+[new]
+It turns out this is emacs bug #1849 [http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=1849]. I updated that bug with the same information, and it appears it'll be tested after the 23.1 branch is made.
+
+[new]
+Jason fixed this bug today. He happened to do that between my uploads of the patched and the unpatched version of %%EmacsW32%%.
+The bug should be fixed in the unpatched version.
+
+[new]
+Can someone more familiar with the release procedure confirm whether this is in 23.1 or not?  A comment above seems to indicate it isn't and I can't make 23.1 stack icons, but I'd be surprised if something this important didn't make it.  Also, since emacsclientw gives me an error if I don't have a file for it to edit, I can't really pin it on the taskbar can I?  Shouldn't we also have the same fix in runemacs.exe?
+
+[new]
+I am not quite sure but I believe that it is not in the released 23.1.
+It will be in the next release.
+(Maybe the last comments in the bug report has some information I do not understand.)
+
+I think there are several important things that just do not make it into the w32 version.
+There are just too few hands there I think.
+Contributors are welcome!
+
+----
+Related subjects
+CategoryKeys
+CategoryPorts
+CategoryWThirtyTwo
+EmacsMacro
+EmacsNewbie
+PrintWithWebBrowser
+WThirtyTwoDotEmacs

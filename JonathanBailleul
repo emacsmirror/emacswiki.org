@@ -1,0 +1,17 @@
+Bonjour,
+
+J'utilise emacs 21.3.2 pour l'édition de texte (LaTex), de code (C/C++, Lisp, shell), comme interprête de commande et comme IDE. Je termine ma thèse, et mes enseignements m'ont amené à inculquer emacs aux étudiants de manière plus ou moins formelle ou approfondie selon les publics. 
+
+Je prépare un tutorial en français, librement inspiré du tutorial emacs, et visant à convaincre n'importe quel étudiant un peu curieux d'adopter emacs. Mes idées directrices: proposer un remapping des touches rendant accessibles et mnémotechniques la plupart des fonctions essentielles (combien de temps j'ai perdu et combien d'étudiants j'ai effrayé avec 'C-x C-f'), oublier les macros et mettre plutôt l'accent sur la programmation emacs-lisp, même facile. 
+
+Mais pour l'instant, je termine ma thèse...
+
+
+------------------------------------------------------------------------
+
+Ma config' emacs est disponible ici: http://www.greyc.ensicaen.fr/~bailleul/Ressources/.emacs-wiki 
+et là: http://www.greyc.ensicaen.fr/~bailleul/Ressources/emacsconf.tar.bz2
+
+J'essaie de mettre à jour quelques liens emacs à partir de ma page: http://www.greyc.ensicaen.fr/~bailleul/Ressources/summary.html
+
+J'ai encore du mal avec wiki ;(

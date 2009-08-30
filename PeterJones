@@ -1,0 +1,39 @@
+http://pmade.com/static/images/people/pjones/vegas-200px.jpg
+
+I'm an Emacs newb (been using Emacs since Oct. 2007), and used vi for 10 years before that.
+
+Some of my favorite packages:
+
+* OrgMode
+* EmacsMuse
+* [[ERC]]
+* [[Gnus]]
+
+Stuff I've Written:
+
+* Lisp:external-abook.el (ExternalAbook)
+* Lisp:bitlbee.el
+
+Contact Info:
+
+* [http://pmade.com Website]
+* [::pmade] on IRC
+
+Configuration Files:
+
+I keep my configuration files in [[Git]]:
+
+<pre>
+git clone git://pmade.com/rc
+</pre>
+
+[new]
+Welcome to the dark side! :D -- AlexSchroeder
+
+[new]
+Thanks for your changes to twit.el!  -- JonathanArkell
+
+----
+CategoryHomepage
+
+

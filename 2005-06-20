@@ -1,0 +1,82 @@
+[new:AlexSchroeder:2005-06-20 08:38 UTC]
+After some prodding by [[twb]] on the EmacsChannel, I decided to look into
+highlighting EmacsLisp on the wiki.  What I implemented right now is that
+for pure EmacsLisp pages (the ones starting with ";;;" on the first line),
+lisp highlighting will be used.
+
+Example: [[css-mode.el]]
+
+[new:DrewAdams:2005-06-21 13:30 UTC]
+: Cool! Any chance this could also be applied to 1) the non-Wiki-page EmacsLisp files uploaded at ElispArea and 2) EmacsLisp snippets in the middle of a page -- say those that start with `<code>;;;</code>' or those between <code><pre></code> tags? I'm guessing no, but thought I'd ask. -- DrewAdams
+[new]
+
+What we need, now, is for somebody to hack the lisp file and turn it into
+an EmacsLisp file!
+
+Here's the lisp file:
+
+* http://www.emacswiki.org/scripts/HFile/HFile_lisp.pm
+
+It's converted from the PHP version, so it will probably be suboptimal.
+It was written for an older version of the Beautifier module.  The
+scheme file is supposed to be "newer":
+
+* http://www.emacswiki.org/scripts/HFile/HFile_scheme.pm
+
+Maybe there's some inspiration there.
+You'll note that the colors have been hardcoded.  Yuck!
+I think we'll have to work on the output module, too:
+
+* http://www.emacswiki.org/scripts/Output/HTML.pm
+
+Looks totally simple to me!
+
+Here's the homepage of the Perl module:
+
+* http://www.beautifier.org/
+
+Once we're done, we might look into using a color-theme that suits the default
+highlighting we're used to...
+But that's for stage two, I think.  :)
+
+[new]
+: What of the perl situation: some Emacs-related source code files are in perl? -- AaronHawley
+
+* [[emo2html.pl]]
+
+[new]
+Done!  A page starting with "#!/usr/bin/perl" will be considered Perl code and highlighted as such. -- AlexSchroeder
+
+* http://www.emacswiki.org/scripts/HFile/HFile_perl.pm
+
+[new]
+
+: Great.  The HTML is getting double-quoted. -- AaronHawley
+
+[new]
+Should be fixed. -- Alex
+
+[new]
+[[e1f]] wrote an Emacs Wiki search plugin for Firefox...
+
+* http://www.ee.ryerson.ca/~elf/emacs/emacswiki-plugin.tgz
+
+[new]
+Happy useless facts for emacswiki.org:
+
+                MSIE      15561    43%
+             Firefox       9952    27%
+             Unknown       6489    18%
+            Netscape       1936     5%
+              Safari       1085     3%
+               Opera        670     1%
+         AOL Browser         23     0%
+                Lynx         10     0%
+
+This uses CPAN's HTTP::!BrowserDetect module.
+
+[new]
+: Seems like the standard breakdown for web browser statistics of a technical Web site. I recall being a MSIE user in my lifetime.  I would crawl over FreeSoftware Web sites as drool came out the side of my mouth.  "Unknown" must be robots, no? -- AaronHawley
+
+[new]
+Unknown must be be bots and weirdo browsers I assume.  18% is a lot of robo traffic...  :( -- AlexSchroeder

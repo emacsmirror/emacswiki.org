@@ -1,0 +1,21 @@
+EmacsVersor (http://emacs-versor.sourceforge.net/) provides:
+
+* A block (or region) cursor, with motion and text selection by semantically significant units e.g. statements, statement parts, sentences, phrases, table rows and cells
+
+* Editing in terms of these (e.g. "Make the selected code conditional" or "Delete the selected text")
+
+* Easy access to these through flexible, dynamic, rebinding of the arrow keys and others, with easy ways to navigate the space of possible navigation spaces
+
+* High-level editing operations such as:
+
+** Converting an expression to a local variable initialized to that value
+
+** Converting a block of code to a procedure/function, working out automatically what parameters are required 
+
+* Means to access these (and other) navigation and editing commands through a narrow-channel interface such as FootSwitches or GamePad (suitable for disability access, including RepeatedStrainInjury)
+
+* VoiceRecognition for use with emacs-vr-mode 
+
+----
+CategoryAccessibility
+CategoryEditing

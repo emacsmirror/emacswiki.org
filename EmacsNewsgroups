@@ -1,0 +1,47 @@
+A bunch of Usenet groups exist for Emacs.
+
+= Generic groups =
+; [::comp.emacs], news:comp.emacs: Emacs and XEmacs related stuff.  [http://groups.google.com/groups?group=comp.emacs archive at Google]
+; [::comp.emacs.xemacs], news:comp.emacs.xemacs: XEmacs related stuff.  [http://groups.google.com/groups?group=comp.emacs.xemacs archive at Google]
+; [::gnu.emacs.help], news:gnu.emacs.help: Emacs related stuff.  Non free stuff is frowned upon (such as recommendations for certain books).  [http://mail.gnu.org/pipermail/help-gnu-emacs/ Archive], [http://groups.google.com/group/gnu.emacs.help/topics?lnk=srg archive at Google]
+; [::gnu.emacs.sources], news:gnu.emacs.sources: Emacs Lisp source code for Emacs.  Discussion is discouraged.  [http://mail.gnu.org/pipermail/gnu-emacs-sources/ Archive], [http://groups.google.com/groups?group=gnu.emacs.sources archive at Google]
+; [::gnu.emacs.bugs], news:gnu.emacs.bugs: Bug reports and feature requests, see also EmacsMailingLists.  [http://groups.google.com/groups?group=gnu.emacs.bug archive at Google]
+; [::alt.religion.emacs], news:alt.religion.emacs: This group is dedicated to Emacs as a philosophy or religion.  See CategoryHumor.  [http://groups.google.com/groups?group=alt.religion.emacs archive at Google]
+
+== Some groups specific to Emacs packages ==
+
+; [::gnu.emacs.gnus], news:gnu.emacs.gnus: Information about the [[Gnus]] package.  [http://groups.google.com/groups?group=gnu.emacs.gnus archive at Google]
+; [::gnus.gnus-bug], news:gnus.gnus-bug: Known Gnus bugs.  [http://groups.google.com/groups?group=gnus.gnus-bug archive at Google]
+; [::ding], news://news.gnus.org/gnus.ding: The Ding list is for the CVS version of Gnus.  [http://groups.google.com/groups?group=gnus.ding archive at Google]
+; news:gnu.emacs.vm.info: Information about the Emacs ViewMail mail package.  [http://groups.google.com/groups?group=gnu.emacs.vm.info archive at Google]
+; news:gnu.emacs.vm.bug: Bug reports on the Emacs ViewMail mail package.  [http://groups.google.com/groups?group=gnu.emacs.vm.bug archive at Google]
+
+== Other newsgroups ==
+
+; [::sfnet.atk.ohjelmistot.emacs] news:sfnet.atk.ohjelmistot.emacs: A generic Emacs-group in Finnish, eli yleinen Emacs-ryhmä suomeksi.  [http://groups.google.fi/groups?group=sfnet.atk.ohjelmistot.emacs Googlen arkistoimana]
+
+Some newsgroups that have more or less existed at some point in time,
+but whose existance in the current point is not known include the
+<code>gnu.emacs.sex</code> for those who truly feel passionate <3 <3
+<3 about their most favourite editor and legendaric
+<code>comp.talk.emacs.recovery</code> for those who've come to notice
+their passion's grown wrong.
+
+Some of the EmacsNewsgroups are also available as mailing lists, in
+addition to the actual, real, proper EmacsMailingLists.  And vice
+versa.  Generally it is better to read and post news.  Some of the
+gateways don't work too well, however.  When reporting bugs, for
+example, make sure you use the M-x report-emacs-bug command instead of
+posting to the newsgroup.
+
+One bidirectional gateway is [http://gmane.org Gmane].  Emacs has it's
+own hierarchy there called <code>gmane.emacs</code>, most of which the
+Emacs-related lists populate.  It's directory is at
+http://dir.gmane.org/index.php?prefix=gmane.emacs.  Some lists have
+been categorized differently though, for instance the [[MH-E]] groups
+are under the <code>gmane.mail</code> hierarchy.  Use the
+[http://gmane.org/find.php] Gmane search facility if need be.
+
+----
+
+CategoryHelp

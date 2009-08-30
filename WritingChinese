@@ -1,0 +1,89 @@
+== Input ==
+
+Emacs has built-in support for many chinese input methods, packaged in leim. You can switch input method with C-\
+
+Also Emacs supports the XIM protocol for X Windows applications and IME input method for M$ Windows apps, such as wineinput or minichinput for Linux, and pyjj or M$ pinyin for MS windows. Beware that you need to set the charset coding of your input method in the <tt>.emacs</tt> file to use windows IME input method, for example:
+<pre>
+(set-keyboard-coding-system 'chinese-iso-8bit)
+</pre>
+
+See also the <em>Specify Coding</em> node in EmacsManual.
+
+If you want the double-width gb2312 equivalents of ASCII characters instead of the normal ASCII characters then this is useful:
+
+
+    (global-set-key [(f2)]
+		'(lambda () (interactive) 
+		   (if (equal current-input-method "chinese-tonepy-punct")
+		       (set-input-method 'chinese-qj)
+		     (set-input-method 'chinese-tonepy-punct)
+		     )
+		   )
+		)
+
+Change <code>chinese-tonepy-punct</code> to your favourite Chinese input method.
+
+An input method which does this automatically would be better, but this is beyond my expertise to write.
+
+== Setup Example ==
+
+This is my Chinese section in my .emacs file:
+
+<pre>
+; -*- Chinese-*-
+
+(set-keyboard-coding-system 'chinese-iso-8bit)   ; input
+
+(set-selection-coding-system 'chinese-iso-8bit)  ; copy/paste
+
+(setq w32-enable-synthesized-fonts t)
+
+(if (not (member '("-*-courier new-normal-r-*-*-13-*-*-*-c-*-fontset-chinese"
+   . "fontset-chinese") fontset-alias-alist))
+
+    (progn
+        (create-fontset-from-fontset-spec	; chinese fontset
+        "-*-Courier New-normal-r-*-*-14-*-*-*-c-*-fontset-chinese,
+         chinese-gb2312:-*-MS Song-normal-r-*-*-12-*-*-*-c-*-gb2312*-*,
+         chinese-big5-1:-*-MingLiU-normal-r-*-*-12-*-*-*-c-*-big5*-*,
+         chinese-big5-2:-*-MingLiU-normal-r-*-*-12-*-*-*-c-*-big5*-*" t)
+         
+         (setq default-frame-alist
+            (append
+             '((font . "fontset-chinese"))
+             default-frame-alist))
+    )
+)
+
+; end
+
+</pre>
+
+--[[maddog]]
+
+== A Different Chinese Input Method ==
+
+Recently, I wrote a package [[Eim]] to input chinese character. I think this is better
+than quail for a chinese input method. I provide two input method
+associate this package, the wubi and pinyin. The pinyin input method need a word file which 
+can be found in my pages[http://learn.tsinghua.edu.cn:8080/2005211356/src/eim.zip]. More detail
+describe can see EimForChinese
+
+I test in emacs22 and cvs emacs. 
+
+-- [[Ye Wenbin]]
+
+== WuBi ==
+
+There is a nice wubi package that I use.  Some information and tips are at WritingChineseWithWuBi.
+
+-----
+
+Does anyone have the configuration w/o using M$ fonts, but AR PL fonts?  
+
+-----
+
+* [http://mule-gbk.sourceforge.net/ mule-gbk] this package will let Emacs support Chinese GBK
+
+-----
+CategoryInternationalization

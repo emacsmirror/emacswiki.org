@@ -1,0 +1,65 @@
+= About =
+
+This is a proof-of-concept to see how adding file properties in the form of "tags" and "comments" to files from Emacs, could work. The ideas are borrowed from the tag support in [[Tumme]] and a recent discussion in gnu.emacs.help made me hack this together.
+
+The functionality is still quite limited but I will hopefully add more useful features to it. Feedback is appreciated.
+
+Here is the code:
+
+Lisp:file-props.el
+
+= Installation =
+
+Place the source file in your `load-path'.
+
+Put the following in your .emacs file:
+
+ (require 'file-props)
+
+If you want to activate display of comment and tags for Dired, put
+this in your .emacs as well:
+
+ (file-props-dired-activate-display)
+
+To setup convenient Dired keybindings, put this:
+
+ (file-props-dired-setup-keybindings)
+
+= Usage =
+
+== Adding tags ==
+
+In dired, mark a couple of files and type
+
+ M-x file-props-dired-add-tags RET.
+
+There are three ways to enter tags. The default is to separate multiple tags with a comma. You can customize how to enter tags with the option `file-props-read-tag-multi-method'.
+
+You can add tags to the currently open file:
+
+ M-x file-props-add-tags-to-current-file RET
+
+Enter tags in the same way as described above.
+
+You can also add a comment to the files by doing this:
+
+ M-x file-props-dired-add-comment RET
+
+== Finding files ==
+
+Type 
+
+ M-x file-props-find-tags-dired RET.
+
+Enter a tag and type RET.
+
+You will be presented with a dired buffer containing the files
+having the tag you searched for. The default directory for the Dired buffer will be the same that was set when you executed the command.
+
+== Edit properties ==
+
+Since version 0.1.2 there is a new mode for editing both comment and tags. Mark a number of files in Dired and execute `file-props-dired-edit' and you will be presented with a buffer where you can edit the data.
+
+----
+
+CategoryFiles CategoryDirectories CategorySearchAndReplace 

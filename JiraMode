@@ -1,0 +1,44 @@
+`jira-mode' is a major mode for connecting and using a Jira bug tracking server from emacs. Currently, only GNU emacs (22 and 23) is tested and supported; that's not to say other versions will or won't work.
+
+The source can be found [[jira.el|here]].
+
+== What is Jira? ==
+
+Jira is a bug and issue tracking program. More information can be found on [[http://www.atlassian.com/software/jira/|the Atlassian website]].
+
+== What is `jira-mode'? ==
+
+`jira-mode' is an emacs major mode for working with Jira. Using `jira-mode', you can:
+* create tickets, 
+* comment on tickets,
+* assign tickets,
+* list projects and issues,
+* search projects and issues
+
+== Requirements ==
+
+In order to run jira-mode you will need:
+* [[XmlRpc]]
+
+== How do I start `jira-mode'? ==
+
+# Download the source file: [[jira.el]]
+# Place the source file in your emacs load path.
+# Put the following line in your .emacs:
+<code>(require 'jira)</code>
+# Before running `jira-mode' the first time, use `M-x customize-variable' to set `jira-url' to the XML-RPC url of your jira server. This is typically at <tt><nowiki>http://<where jira is installed>/rpc/xmlrpc</nowiki></tt>.
+# Type `M-x jira-mode <return>'.
+# Enter your username and password.
+# You are in `jira-mode' when you see <tt>"Welcome to jira-mode!"</tt>
+
+== How do I use `jira-mode'? ==
+
+When `jira-mode' loads, it creates a new buffer called *Jira*. Once you are in `jira-mode', you use simple key strokes to perform actions. For instance, to quit `jira-mode', press 'Q'. To view an issue, press 'i' then give the project key (i.e. MYPROJ-1). To make reading the comments for a ticket easier, you can press 'n' and 'p' which will place the next or previous (respectively) comment at the top of the buffer. There are many  other functions that can be used. For a full list of key-bindings an functions, type `C-h m' from within `jira-mode'.
+
+== Known Issues and Problems ==
+
+# Currently, some tasks seem to run a bit slow, especially logging in. I believe this has to do with the connection xmlrpc has to establish. It seems that once the connection is established things run much more quickly and smoothly. However, the connection will timeout, which can cause the next action to take longer again. 
+
+# Atlassian does not support all functions over XMLRPC. For instance, ticket resolution and changing ticket status can not be performed over XMLRPC. This is a part of Jira by design and I can do nothing about it. I have looked into possibly using SOAP instead of XMLRPC, as SOAP seems to support more functions, but have not done more than a little reading and research.
+
+# If the jira system not the newest, you may get "Exception: java.lang.NoSuchMethodException: com.atlassian.jira.rpc.xmlrpc.JiraXmlRpcService.getProjectsNoScheme(java.lang.String)" exception, you can just replace the getProjectsNoScheme with getProjects method in jira.el, which is a old interface, which may cause the list efficiency is low, but you can use;) - fireinice

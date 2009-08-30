@@ -1,0 +1,132 @@
+==== The query-replace-regexp command ====
+
+The command /query-replace-regexp/ is a versatile tool which 
+deals with regular expressions. It is bound to <tt>C-M-%</tt>.
+You may want to rebind it to a friendlier key sequence
+like <tt>C-c r</tt> by putting in the InitFile
+
+    (set-global-key (kbd "C-c r") 'query-replace-regexp)
+
+or just activate it by typing <tt>M-x query-replace-regexp</tt>.
+This command asks for a regular expression and a replacement string.
+Then it starts from point, looking for all strings matching the
+regular expression and asks whether it should replace it. 
+Type yes or no. Type ! if you want replacement to be done without query, until end of file. Note that in Transient-mark-mode, 
+it acts on the selected region if there is one.
+
+==== Caveat Emptor ====
+
+The <tt>query-replace-regexp</tt> does case-conversion by default,
+e.g.  <tt>Foo->Bar, FOO->BAR</tt>. 
+To be short, type <code> M-: (setq case-replace nil)</code> to disable case-conversion; 
+this is mandatory in examples that use the <code>[:upper:]</code> class. Finally, recall that you can always undo the replacement by typing <tt>C-x u</tt>, <tt>C-/</tt> or <tt>C-_</tt>.
+
+==== The examples ====
+
+Format is as follows :
+
+  C-M-% Regexp RET Replace RET
+
+SPC stands for space, RET for return.
+Recall that you can enter a literal newline by typing either 
+<tt>C-q C-j</tt>, <tt>C-q 012</tt> or <tt>C-o</tt>. 
+Spaces have been added around 
+SPC, RET and control characters, for sake of readability. Don't type them.
+If no replacement is specified, just type RET at the prompt.
+
+
+  Remove trailing spaces          Regexp :  SPC +$                
+                                  Replace:                  
+  Remove lines beginning by ;     Regexp :  ^;;                    
+                                  Replace:                  
+  Keep only uppercase letters     Regexp :  [^[:upper:]]+          
+                                  Replace:  SPC              
+  Keep only numbers, one per line Regexp :  [^0-9]+
+                                  Replace:  C-o
+  Remove from first ; to the end  Regexp :  ;.*                    
+                                  Replace:                  
+  Remove all empty lines          Regexp :  C-q C-j +              
+                                  Replace:  C-q C-j          
+  Remove duplicate empty lines    Regexp :  C-q C-j \{2,\}         
+                                  Replace:  C-q C-j          
+  Replace word foo by bar         Regexp :  \<foo\>                
+                                  Replace:  bar              
+  Permute foo and bar             Regexp :  \(foo\)\|bar
+                                  Replace:  \,(if \1 "bar" "foo")
+  Replace _ by -                  Regexp :  _                      
+                                  Replace:  -                
+  Remove DOS style newlines       Regexp :  C-q 015 RET
+                                  Regexp :
+  Number chapter                  Regexp :  \(chapter \)        
+                                  Replace:  \1 \,(1+ \#)     
+  Keep only number at end of line Regexp :  ^.*[^0-9 C-q C-j ]       
+                                  Replace:                  
+  Capitalize char beginning line  Regexp :  ^.
+                                  Replace:  \,(capitalize \&)
+  Add 1 to number starting line   Regexp :  ^[0-9]+                
+                                  Replace:  \,(1+ \#&)       
+  Add 2 to number ending line     Regexp :  [0-9]+$                
+                                  Replace:  \,(+ 2 \#&)      
+  Count words                     Regexp :  \<
+                                  Replace: 
+  Convert dd/mm/ to mm-dd-        Regexp :  \([0-9][0-9]\)/\([0-9][0-9]\)/
+                                  Replace:  \2-\1-
+  Add line number, start at 1     Regexp :  ^
+                                  Replace:  \,(1+ \#) SPC
+  Add line number, from position  Regexp :  ^
+                                  Replace:  \,(+ (line-number-at-pos) \#) SPC
+  Promote header tags in HTML     Regexp :  <\(/?h\)\([0-9]\)> 
+                                  Replace:  <\1\,(1+ \#2)>
+  Open dot files listed in buffer Regexp :  \<\.\w+
+                                  Replace:  \,(find-file-noselect \&)   
+  Put email adress in buffer buf  Regexp :  \w+\(\.\w+\)?@\(\w\|\.\)+
+                                  Replace:  \,(print \& (get-buffer "buf"))
+  Beep and kill word foo, slowly  Regexp :  \<foo\>
+                                  Replace:  \,(progn (beep)(sit-for 1) "")
+  Kill buffer if contains "yop"   Regexp :  yop
+                                  Replace:  \,(progn (kill-buffer nil) \&)
+  Open url in browser             Regexp :  http://\S-+
+                                  Replace:  \,(browse-url \&)
+
+/Note/: if you feel confident, you can replace without query with the 
+<tt>replace-regexp</tt> command, which is not bound to any key by default.
+
+== A short text to test the examples ==
+
+Try these examples on the following text.      
+    
+    <h3> This is test 1.1 </h3>
+    
+    
+    <b>my_visitor</b>      Last visit
+    ---------------------------------
+    foo                       3/11
+    Foo and FOO              28/04
+    foo@gnu.org              31/01
+    bar@erewhon.xxx          01/09
+    foo and yop              20/04
+    .emacs                   Today
+    3 spaces_at_the_end          3   
+    
+    chapter : see the spaces ->        
+    Chapter : (insert "\r")
+    chapter : http://www.emacswiki.org
+              http://www.google.com
+
+
+    <h4> End of test 1.1 <\h4>         
+
+
+==== A final note ====
+
+Some of these examples  may be done by other means 
+(e. g. with other commands like <tt>M-x delete-trailing-whitespace</tt>
+or <tt>M-x keep-lines</tt>). Have a look to RegularExpression, for
+other ways to deal with regular expressions.
+See also ReplaceRegexp for additional examples
+and other commands that deal with regexps.
+
+See also EmacsCrashCourse 
+
+----
+CategoryHelp CategoryRegexp CategorySearchAndReplace

@@ -1,0 +1,62 @@
+The LSDB (The Lovely Sister Database) is a rolodex-like database program for [[SEMI]] based MUA. 
+
+It is intended to be a lightweight relacement for BBDB (The Insidious Big Brother Database).
+
+Homepage: http://lsdb.sourceforge.jp/
+
+Download: http://sourceforge.jp/projects/lsdb/files/?release_id=7488#7488
+
+Note: The LSDB requires [[APEL]] 10.2 or later and [[FLIM]] 1.12 or later. It works with Emacs 20.7 or later and XEmacs 21.4 or later.
+
+== Screenshot ==
+
+LsdbScreenshot
+
+== Import records from the BBDB ==
+
+This can be done by bbdb-to-lsdb.el which comes with the LSDB. Type the following command from shell:
+
+ emacs -batch -l ./bbdb-to-lsdb.el
+
+== Configuration ==
+
+For SemiGnus, put the following lines into your ~/.gnus:
+
+ (autoload 'lsdb-gnus-insinuate "lsdb")
+ (autoload 'lsdb-gnus-insinuate-message "lsdb")
+ (add-hook 'gnus-startup-hook 'lsdb-gnus-insinuate)
+ (add-hook 'message-setup-hook
+           (lambda ()
+             (define-key message-mode-map "\M-\t" 'lsdb-complete-name)))
+ (add-hook 'gnus-summary-mode-hook
+           (lambda ()
+             (define-key gnus-summary-mode-map ":" 'lsdb-toggle-buffer)))
+
+For WanderLust, put the following lines into your ~/.wl:
+
+ (autoload 'lsdb-wl-insinuate "lsdb")
+ (add-hook 'wl-init-hook 'lsdb-wl-insinuate)
+ (add-hook 'wl-draft-mode-hook
+           (lambda ()
+             (define-key wl-draft-mode-map "\M-\t" 'lsdb-complete-name)))
+ (add-hook 'wl-summary-mode-hook
+           (lambda ()
+             (define-key wl-summary-mode-map ":" 'lsdb-wl-toggle-buffer)))
+
+For [[Mew]], put the following lines into your ~/.mew:
+
+ (autoload 'lsdb-mew-insinuate "lsdb")
+ (add-hook 'mew-init-hook 'lsdb-mew-insinuate)
+ (add-hook 'mew-draft-mode-hook
+           (lambda ()
+             (define-key mew-draft-header-map "\M-I" 'lsdb-complete-name)))
+ (add-hook 'mew-summary-mode-hook
+           (lambda ()
+             (define-key mew-summary-mode-map "L" 'lsdb-toggle-buffer)))
+
+== Discussion ==
+[new]
+So far this page nor the home page really tell me what I'd /really/ like to know...
+What has lsdb got that makes it more attractive than bbdb? ;)  --MartinSchoenmakers
+----
+CategoryMailAddons

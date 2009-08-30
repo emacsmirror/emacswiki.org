@@ -1,0 +1,53 @@
+Suppose your code offers a variable holding a long list of entries.
+Users may add to this list using custom.  Once they save their
+changes, however, the entire list will be saved.  If you change the
+standard value in a later release of your package, these users will
+never see this -- or they will have to merge their saved list with the
+new standard list manually.
+
+You need to implement a diff-list.  A diff-list is like a normal list,
+but with a crucial difference: You specify which entries to delete
+from the standard value, and you specify which entries to add to the
+standard value.  This will be saved into your users ~/.emacs file.
+The standard value itself is not saved.
+
+Here's how it will look like in a custom buffer (I am using
+mm-automatic-display from Gnus as an example):
+
+<pre>
+Mm Automatic Display: [Hide] [Value Menu] Modify the standard value:
+Add to and remove from the standard value
+Items to add to the standard value:
+[INS] [DEL] Regexp: alex
+[INS] [DEL] Regexp: barbarella
+[INS]
+Items to remove from the standard value:
+[X] text/plain
+[X] text/enriched
+[X] text/richtext
+[X] text/html
+[X] text/x-vcard
+[ ] image/.*
+[ ] message/delivery-status
+[ ] multipart/.*
+[ ] message/rfc822
+[ ] text/x-patch
+[ ] application/pgp-signature
+   [State]: you have edited the value as text, but you have not set the option.
+A list of MIME types to be displayed automatically.
+Parent groups: [Mime Display]
+</pre>
+
+Instead of saving the complete list:
+
+ '("alex" "barbarella" "image/.*" "message/delivery-status" ...)
+
+The additions and removales themselves will be saved in your .emacs
+file:
+
+ '(diff-list ("alex" "barbarella") ("text/plain" "text/enriched" ...))
+
+For the implementation, see AddToListWidget.
+
+----
+CategoryCode CategoryCustomize

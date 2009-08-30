@@ -1,0 +1,118 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - History Enhancements]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Search Commands, Overview]] ||
+
+----
+
+== Isearch Enhancements ==
+
+'''Icicles''' provides two different enhancements for searching:
+
+* '''Icicles''' search: Top-level '''Icicles''' [[command]]s that provide an entirely
+new and different way for you to search.  This is described in [[Icicles - Search Commands, Overview]].
+
+* Extensions to standard Emacs incremental search, '''[[Isearch]]'''.  These are
+described here.
+
+** Search string [[completion]] against previous search strings.
+** OccurMode interface for Isearch hits.
+** '''Icicles''' search (`icicle-search') interface, reusing the Isearch search string (by default).
+
+'''See Also:''' [[Icicles - Support for Projects]] for information about using `grep' to search all of the files in a project.
+
+
+
+[:SearchStringCompletion]
+=== Isearch Completion Against the Search History ===
+
+When you search incrementally (`C-s'), Emacs lets
+you use `M-TAB' to complete your input to a string that you have sought
+previously, that is, a string in the current search history
+(`search-ring' or `regexp-search-ring').  In ''Icicle'' mode, this feature is enhanced so that you
+can use all of the completion enhancements provided by '''Icicles''': `M-TAB' is bound to `icicle-isearch-complete' during Isearch.
+
+On MS Windows, the operating system itself grabs `M-TAB' (by default), making it
+unavailable for Emacs.  For this reason, on Windows, '''Icicles''' binds
+'''`C-M-TAB'''' also to `icicle-isearch-complete'.  But note that
+you can also use '''##(w32-register-hot-key [M-tab])##''' to enable Emacs to
+use `M-TAB'.
+
+'''Icicles''' users are in the habit of using '''`<tt>[[Icicles - History Enhancements#M-o|M-o]]</tt>'''' to complete the
+current minibuffer input against previously entered inputs.
+Because of the similarity, you can likewise use `M-o' during
+Isearch to complete the current search string: '''`M-o'''' is equivalent
+to `M-TAB'.
+
+The keys bound by default to `icicle-isearch-complete' in
+`isearch-mode-map' are thus `M-o' and `M-TAB' (and `C-M-TAB' on MS
+Windows).  But you can change the keys to use for this by
+[[Customize|customizing]] [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>''''.
+
+When you use `M-o' (or `M-TAB') while searching, Isearch exits momentarily,
+giving way to '''Icicles''' completion in the [[minibuffer]] (Isearch
+actually uses the [[echo area]], not the minibuffer).  You can then
+use either `S-TAB' or `TAB' to complete your search string.  After
+you finish completing (e.g. by hitting `RET'), Isearch resumes
+with the new, completed search string.  It's pretty seamless, and
+easier to try than to describe.
+
+''Reminder:'' Using `S-TAB' vs `TAB' for [[regexp]] vs
+non-regexp ''completion'' against
+previous search strings has nothing to do with regexp vs
+non-regexp ''searching''.  You can of course use either kind of
+searching before or after having used either kind of completion.
+Isearch uses different [[search ring]]s for regexp and non-regexp
+searching.  The kind of search in progress (regexp or not) at the
+moment you ask Isearch for completion determines which search ring
+provides the candidates for completion.
+
+
+[:OccurFromIsearch]
+=== Launch Occur using the Isearch Search String ===
+
+If you use library <tt>[[color-moccur.el]]</tt> or library <tt>[[occur-schroeder.el]]</tt>, then '''`C-o'''' is bound
+during Isearch to `isearch-moccur', which provides an OccurMode buffer
+interface for search hits.  This has nothing per se to do with
+'''Icicles''', but you might find it useful.  (Library ##color-moccur.el##
+itself binds `M-o' for this, but `<tt>[[Icicles - History Enhancements#M-o|M-o]]</tt>' is used in '''Icicles''' for
+search-string completion.)
+
+
+[:IciclesSearchFromIsearch]
+=== Launch Icicles Search using the Isearch Search String ===
+
+'''Icicles''' search is described in section [[Icicles - Search Commands, Overview]].
+
+You can start '''Icicles''' search from Isearch: Hit `S-TAB' to choose
+the Icicles search initial regexp -- the default value is the
+current Isearch search string, but you can edit that.  Completion
+is available for your input -- completion against your previous
+Isearch regexp search strings.
+
+For example, use `##C-s C-w C-w S-TAB##' to pick up the next two words
+at the cursor, then type `##.*##' before and after them and hit `RET'.
+That puts you in '''Icicles''' search with the completion candidates
+being all of the lines in the buffer that contain that two-word
+phrase.  Type some more text to narrow the candidate lines to
+those that match what you type.  Then use `C-next' to visit search
+hits.
+
+The key to initiate '''Icicles''' search from Isearch is `S-TAB' only by
+default.  You can change this key by customizing option '''`<tt>[[Icicles - Customization and General Tips#icicle-search-from-isearch-keys|icicle-search-from-isearch-keys]]</tt>''''.
+
+
+----
+
+
+|| *Previous:*  [[Icicles - History Enhancements]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Search Commands, Overview]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:highlight.el, Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryRegion
+CategoryModes
+CategoryDirectories

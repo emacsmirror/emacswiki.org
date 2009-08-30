@@ -1,0 +1,86 @@
+Use this elisp to color IRC nicks according to a list of usable colors.  Note that the colors are determined by the MD5 sum of a nick string, and if the nick-colors-list changes, so will the color indexes.  Enjoy!  Put this in your emacs load path and add <code>(require 'erc-nick-colors)</code> to your <code>.emacs</code>.  If you have any improvements or suggestions, contact me at <code>cygnus at cprogrammer dot org</code>.
+
+<pre>
+(setq nick-face-list '())
+
+;; Define the list of colors to use when coloring IRC nicks.                                                                     
+(setq-default erc-colors-list '("blue" "green" "yellow"
+                                "gray" "brown" "red"
+                                "purple" "white" "cyan"))
+
+(defun build-nick-face-list ()
+  "build-nick-face-list builds a list of new faces using the                                                                     
+foreground colors specified in erc-colors-list.  The nick faces                                                                  
+created here will be used to format IRC nicks."
+  (setq i -1)
+  (setq nick-face-list
+        (mapcar
+         (lambda (COLOR)
+           (setq i (1+ i))
+           (list (custom-declare-face
+                  (make-symbol (format "erc-nick-face-%d" i))
+                  (list (list t (list :foreground COLOR)))
+                  (format "Nick face %d" i))))
+         erc-colors-list)))
+
+(defun my-insert-modify-hook ()
+  "This insert-modify hook looks for nicks in new messages and                                                                   
+computes md5(nick) and uses substring(md5_value, 0, 4) mod (length                                                               
+nick-face-list) to index the face list and produce the same face for a                                                           
+given nick each time it is seen.  We get a lot of collisions this way,                                                           
+unfortunately, but it's better than some other methods I tried.                                                                  
+Additionally, if you change the order or size of the erc-colors-list,                                                            
+you'll change the colors used for nicks."
+  (if (null nick-face-list) (build-nick-face-list))
+  (save-excursion
+    (goto-char (point-min))
+    (if (looking-at "<\\([^>]*\\)>")
+        (let ((nick (match-string 1)))
+          (put-text-property (match-beginning 1) (match-end 1)
+                             'face (nth
+                                    (mod (string-to-number
+                                          (substring (md5 nick) 0 4) 16)
+                                         (length nick-face-list))
+                                    nick-face-list))))))
+
+;; This adds the ERC message insert hook.                                                                                        
+(add-hook 'erc-insert-modify-hook 'my-insert-modify-hook)
+
+(provide 'erc-nick-colors)
+</pre>
+
+
+Here is a reformulation of the above. It is simpler to hack, and allows you to specify colors for some people (in case you're tired of their usual color, if you want to avoid collision, or whatever). Contact at antoine d0t levitt, at gmail.
+<pre>
+;; Pool of colors to use when coloring IRC nicks.
+(setq erc-colors-list '("green" "blue" "red"
+			"dark gray" "dark orange"
+			"dark magenta" "maroon"
+			"indian red" "black" "forest green"
+			"midnight blue" "dark violet"))
+;; special colors for some people
+(setq erc-nick-color-alist '(("John" . "blue")
+			     ("Bob" . "red")
+			     ))
+
+(defun erc-get-color-for-nick (nick)
+  "Gets a color for NICK. If NICK is in erc-nick-color-alist, use that color, else hash the nick and use a random color from the pool"
+  (or (cdr (assoc nick erc-nick-color-alist))
+      (nth
+       (mod (string-to-number
+	     (substring (md5 nick) 0 6) 16)
+	    (length erc-colors-list))
+       erc-colors-list)))
+
+(defun erc-put-color-on-nick ()
+  "Modifies the color of nicks according to erc-get-color-for-nick"
+  (save-excursion
+    (goto-char (point-min))
+    (if (looking-at "<\\([^>]*\\)>")
+	(let ((nick (match-string 1)))
+	  (put-text-property (match-beginning 1) (match-end 1) 'face
+			     (cons 'foreground-color
+				   (erc-get-color-for-nick nick)))))))
+
+(add-hook 'erc-insert-modify-hook 'erc-put-color-on-nick)
+</pre>

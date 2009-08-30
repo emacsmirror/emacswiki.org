@@ -1,0 +1,139 @@
+I decided to try using one maximized Emacs [[Frame]] instead of multiple
+frames on the same X desktop. The problem I've always had was how to
+quickly navigate between the various windows. Sure, if you're only
+doing horizontal splits you're ok. However, when you start doing
+vertical splits it starts getting harder to move to the window you
+want. The more windows you have open the worse it gets. So, I wrote
+these functions to ease the navigation. One of them, other-column,
+will move the point to the next vertical split. The other one,
+other-window-this-column, will move the point to the next window in
+this column. With a prefix arg (just C-u) it will reverse the
+direction of travel.
+
+See also WindMove, which is part of Emacs.
+
+<pre>
+(defun other-column (prefix)
+  "Switch to the buffer in the vertical split to the right whose top
+of window is closest to the top of the selected window.  With PREFIX
+arg move to the left."
+  (interactive "p")
+  (let ((curr-col (car (window-pixel-edges)))
+	(curr-top (cadr (window-pixel-edges)))
+	(slop 25)
+	(dir (if (not (eq prefix 1)) -1 1))
+	next-col)
+    (setq next-col
+	  (cond
+	   ((and (eq dir 1) (window-rightmost-p (selected-window))) 0)
+	   ((and (eq dir -1) (window-leftmost-p (selected-window)))
+	    (car (window-pixel-edges (frame-rightmost-window))))
+	   (t
+	    (while (or (and (eq dir 1) (<= (car (window-pixel-edges)) curr-col))
+		       (and (eq dir -1) (>= (car (window-pixel-edges)) curr-col)))
+	      (other-window dir))
+	    (car (window-pixel-edges)))))
+    (let ((smallest-delta (frame-pixel-height))
+	  closest-window)
+      (walk-windows 
+       '(lambda (window)
+	  (if (eq (car (window-pixel-edges window)) next-col)
+	      (let ((this-delta (abs (- curr-top (cadr (window-pixel-edges window))))))
+		(if (< this-delta smallest-delta)
+		    (setq smallest-delta this-delta closest-window window))))))
+      (select-window closest-window))))
+
+
+(defun other-window-this-column (prefix)
+  (interactive "p")
+  (let ((window-list (get-column-window-list)))
+    (select-window 
+     (cond
+      ((and (eq prefix 1)
+	    (> (length window-list) 1))
+       (cadr (get-column-window-list)))
+      ((eq prefix 1) (car window-list))
+      (t
+       (car (last (get-column-window-list))))))))
+
+
+(defun jump-to-window (buffer-name)
+  (interactive "bEnter buffer to jump to: ")
+  (let ((visible-buffers (mapcar '(lambda (window) (buffer-name (window-buffer window))) (window-list)))
+	window-of-buffer)
+    (if (not (member buffer-name visible-buffers))
+	(error "'%s' does not have visible window" buffer-name)
+      (setq window-of-buffer
+	    (delq nil (mapcar '(lambda (window) 
+				  (if (equal buffer-name (buffer-name (window-buffer window)))
+				      window nil)) (window-list))))
+      (select-window (car window-of-buffer)))))
+
+(defun get-column-window-list (&optional side)
+  (let ((column (if (eq side 'right) (caddr (window-pixel-edges))
+		  (car (window-pixel-edges))))
+	(current-window (selected-window))
+	column-window-list)
+    (mapc '(lambda (window)
+	     (when (eq (car (window-pixel-edges window)) column)
+	       (add-to-list 'column-window-list window)))
+	  (window-list))
+    (setq column-window-list 
+	  (sort column-window-list
+		'(lambda (a b) 
+		   (< (cadr (window-pixel-edges a))
+		      (cadr (window-pixel-edges b))))))
+    (while (not (eq (car column-window-list) current-window))
+      (setq column-window-list (rotate-list column-window-list 1)))
+    column-window-list))
+
+(defun rotate-list (list count)
+  (cond
+   ((eq count 0) list)
+   ((not list) list)
+   (t
+    (rotate-list (nconc  (cdr list) (list (car list)) '()) (1- count)))))
+
+
+(defvar winnav-prefix-char (kbd "C-c o")
+  "Prefix character for using winnav commands")
+
+(defvar winnav-map (make-sparse-keymap)
+  "*Keymap for winnav commands.")
+(global-set-key winnav-prefix-char winnav-map)
+(cond
+ ((define-key winnav-map "v"    'other-window-this-column)
+  (define-key winnav-map "h"    'other-column)
+  (define-key winnav-map "j"    'jump-to-window)
+  (define-key winnav-map "o"    'other-window)))
+</pre>
+
+Alternative jump-to-window using ido-mode:
+
+<pre>
+;; This command is AMAZING. I recommend mapping it to `C-x v' or `C-x w'
+;; depending on which is easier on your keyboard.
+(defun ido-jump-to-window ()
+  (interactive)
+  (let* ((swap (lambda (l)
+                 (if (cdr l)
+                     (cons (cadr l) (cons (car l) (cddr l)))
+                   l)))
+         ;; Swaps the current buffer name with the next one along.
+         (visible-buffers (swap (mapcar '(lambda (window) (buffer-name (window-buffer window))) (window-list))))
+         (buffer-name (ido-completing-read "Window: " visible-buffers))
+         window-of-buffer)
+    (if (not (member buffer-name visible-buffers))
+        (error "'%s' does not have a visible window" buffer-name)
+      (setq window-of-buffer
+                (delq nil (mapcar '(lambda (window)
+                                       (if (equal buffer-name (buffer-name (window-buffer window)))
+                                           window
+                                         nil))
+                                  (window-list))))
+      (select-window (car window-of-buffer)))))
+</pre>
+-- ChrisDone
+
+----
+CategoryWindows

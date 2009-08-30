@@ -1,0 +1,40 @@
+Edwin Scheme is the [[Scheme]] programming language available from within the EdWin
+emacs editor.
+
+==Comparing Edwin Scheme with Emacs Lisp==
+
+In EmacsLisp, there is limited barriers between user objects and the internal application objects of
+Emacs.  In EdwinScheme, the [[Scheme]] language available in the EdWin editor,
+Scheme code evaluated by the user is by default independent of the editor's environment.
+This is a consequence of Edwin's
+primary role as the integrated development environment (IDE) for
+MitSlashGnuScheme.  Typical [[Emacsen]] and Emacs Lisp implementations
+aim to provide advanced text editing.  Edwin is for
+hacking the Scheme programming language by both beginning students and
+expert scheme programmers.  Differences between Emacs and Edwin in their
+extensibility strengths are an outcome of their purposes.
+
+The [[Scheme]] programming language available
+in EdWin from the listening `*scheme*' buffer, a buffer analogous to
+combining Emacs's `*scratch*' and `*Messages*' buffers, is the same
+dialect of Scheme that Edwin is implemented in.  There are only a handful of
+additions to the dialect made by Edwin.  EmacsLisp, on the other hand, has many primitives that
+are made available by the editor and intentionally extend and customize
+the editor for the Emacs programmer. This is not the case in Edwin.  Potential conflicts in Scheme
+programming between the user's Scheme environment and the editor's is nearly
+avoided in Edwin.
+
+For this reason, EdWin commands are not equivalent to [[Scheme]] procedures.  In
+GnuEmacs, Emacs commands are simply EmacsLisp procedures (functions
+created with `defun').  Edwin commands are entirely different objects
+from procedures.  Further, the libraries of Scheme code that compose Edwin
+only reveal the identity of the commands and hide the definitions of any
+auxillary functions.  This is unlike Emacsen where all definitions are global
+in scope.
+
+Compared to most Emacsen, EdWin has limited extensibility.
+
+See HackingEdwinScheme, MitSlashGnuScheme.
+
+----
+CategoryExtensionLanguage

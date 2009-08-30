@@ -1,0 +1,109 @@
+Ee is the categorizing information manager for Emacs.
+It works by collecting information from different
+sources and converting information to a relational or
+associative database.  It uses the fields of database
+table records to build the category trees, which are
+displayed in the Emacs view buffer.  The rules for
+creating the views are also specified by similar data
+structures and include the rules for building category
+paths, sorting records and categories, calculating
+the totals of category fields, filtering records, and
+printing category tree and record lines.
+
+The list of available ee extensions:
+
+* ee-buffers - display and manipulate Emacs buffers
+* ee-windows - display and switch Emacs window configurations
+* ee-menubar - categorized access to Emacs MenuBar
+* ee-commands - categorized menu of Emacs commands
+* ee-processes - display and manipulate Emacs processes
+* ee-history - display lists from Emacs history variables
+* ee-customize - browse Emacs customization groups
+* ee-info - browse Info documentation
+* ee-finder - keyword-based Emacs code finder
+* ee-tags - etags facility
+* ee-imenu - categorized mode-specific buffer indexes
+* ee-outline - manipulate outlines collected from outline-mode
+* ee-marks - display and go to marked lines in the current Emacs buffer
+* ee-gnus - summary and topic mode for Gnus
+* ee-bbdb - summary mode for BBDB
+* ee-edb - summary mode for EDB
+* ee-ps - display CPU processes
+* ee-dired - categorized directory listings
+* ee-programs - categorized program menu
+* ee-dselect - Debian package handling frontend
+* ee-datafile - display and edit data files
+* ee-textfile - organize information from text files
+* ee-fields - display and edit fields of the current record
+* ee-views - display, edit and switch views
+
+You can get it here:
+
+* http://www.jurta.org/emacs/ee/
+
+The exact purpose of ee is to represent data by different tree views (outlines)
+and to allow to manipulate data by operating on displayed tree views (expand/collapse outlines,
+mark and delete data, create new data records, change field values of existing records,
+call functions on selected data record or group of records, etc.)
+Ee has a separate database for describing how different views are created from data.
+Since data processed by ee is arbitrary, so ee could be used as an "indexer" for other Emacs packages.
+In this case ee knows how to extract and update data from other Emacs packages.
+The main advantage of ee is a simple and uniform interface for displaying and manipulating
+any kind of data.
+
+The core of ee is just the display and database engine: simple, but flexible.
+So such kind of application as gnome dashboard can be easily implemented
+as ee extension. -- JuriLinkov
+
+== Screenshots ==
+
+Use M-x ee to get the list of extensions available (categorized, of course).
+Choose ''ee-ps'':
+
+[[image:EeScreenshot|Showing the list of extensions available]]
+
+Mark two processes for deletion using 'd' and then kill them using 'x':
+
+[[image:EePsScreenshot|Showing the list of processes and marking two for killing]]
+
+== XEmacs ==
+
+: I developed it under GNU Emacs and have not yet ported it to XEmacs.
+If you are interested in such a port, could you contribute?
+-- JuriLinkov
+
+I added the following:
+<pre>
+(require 'overlay)
+(defun line-end-position ()
+  (save-excursion
+    (end-of-line)
+    (point)))
+</pre>
+I had to comment out two lines in <tt>ee-buffers.el</tt> where we call <tt>(buffer-display-time)</tt> and <tt>(buffer-display-count)</tt>, as they are not available in XEmacs. Now I have to learn how to use <tt>ee</tt> :-) before I can find out if anything else needs to be done -- AlainMellan
+
+[new]
+You can use <code>point-at-bol</code>/<code>point-at-eol</code> instead of <code>line-beginning-position</code>/<code>line-end-position</code> if you want to be compatible. Emacs defines these aliases for this purpose.
+
+[new]
+: I'll create new file ee-xemacs.el with this code for the next release.  But I wonder why every package I've seen reimplement the same compatibility code? Why doesn't exist some standard package which handles compatibility issues between GNU Emacs and XEmacs? But maybe such a package already exist?  Does anybody know about this? -- JuriLinkov
+
+I've found a package <tt>fsf-compat</tt> that should do the trick. In addition to <tt>(require 'overlay)</tt>, we need a <tt>(require 'goto-addr)</tt> and we don't need to define <tt>(line-end-position)</tt>, but I haven't found anything for <tt>(buffer-display-time)</tt>. -- AlainMellan
+
+: It is very good that such compatibility package exists! You can try to use it on other extensions too and set buffer-display-time to nil and buffer-display-count to 0.
+-- JuriLinkov
+
+== Discussion ==
+
+I would love a more close merge between ee-dired and dired so that you could to the normal file/directory operations when in ee-dired mode. That way, Ci could completely switch from using Windows' explorer.exe to dired. This package really has a lot of potential. -- MathiasDahl
+
+: BTW, I've just looked at your MakeSmartShortcuts.  It could be adapted to generate similar trees for http://www.jurta.org/emacs/ee/programs.en.html which already works with Windows' Start-Menu. -- JuriLinkov
+
+Awesome package! -- AlexSchroeder
+
+Fantastic!  I love coming across pacakges like this; they really
+breathe new life into emacs by reminding us how extensible it is
+-- Jesse Alama
+
+----
+CategoryPersonalInformationManager

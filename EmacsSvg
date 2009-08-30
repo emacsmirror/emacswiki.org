@@ -1,0 +1,21 @@
+== Emacs and SVG ==
+
+The SVG patch for emacs was accepted 20070822. This means SVG images can now be displayed with emacs! You need to have librsvg2-devel installed, and it needs work before it can be used 
+on other plattforms than X. Type C-c C-c to view an svg file as an image or add (auto-image-file-mode 1) to your .emacs. 
+
+
+I think Emacs and SVG is a very good match!
+
+For instance:
+* edit SVGfiles directly with nxml mode and view them instantly within emacs
+* generate svg with elisp and display
+
+I have 2 applications in particular in mind:
+* mindmaps with PlannerMode and SVG
+** Did you notice FreeMind?
+* beautify uml diagrams generated with COGRE (ConnectedGraphEditor)
+
+== Editing SVGs ==
+To get auto completion and validation of SVGs using NxmlMode, install the schema from NxmlModeSchemas.
+
+it wouldalso be neat to integrate Inkscape and emacs, particularily with EmacsXembed patches

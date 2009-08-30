@@ -1,0 +1,51 @@
+Show the current directory in the mode-line:
+
+    (defun add-mode-line-dirtrack ()
+      (add-to-list 'mode-line-buffer-identification 
+                   '(:propertize (" " default-directory " ") face dired-directory)))
+    (add-hook 'shell-mode-hook 'add-mode-line-dirtrack)
+
+//mode-line-buffer-identification// is inserted into //mode-line-format//, which in turn controls the what appears in the mode-line.
+
+The variable //default-directory// is colored as directories are in dired-mode.
+
+You may also want to add something like the following to //.emacs_bash//:
+
+    export PS1="[\u@\h \#/\!]$ "
+
+Which gives a nice, short prompt such as:
+
+    [me@host 3/9003]$ 
+
+No directory information, which is fine, as now it's right there in the mode-line!
+
+
+**See also**: ModeLine and ModeLineConfiguration
+
+----
+
+**Q**. How would one display the \u@\h (user@host) from the above bash prompt in the mode-line? Not the user and host of the emacs process, or even that of the inferior bash process, but the machine where the commands you type will take effect. This will change for example if you //ssh// to another machine.
+
+A. ???
+
+----
+
+==Show file path in the mode-line==
+
+Here is a variant which puts the last 2 directories of the path before the buffer name when editing a file.  This can be useful when working in source trees that have a lot of similarly named files.  For instance, it would assist with distinguishing buffers when editing both <code>app/views/home/index.haml</code> and <code>app/views/categories/index.haml.</code>  ''Although it's probably more elegant to use [[uniquify]] as described below.''
+
+  (defun add-mode-line-dirtrack ()
+    "When editing a file, show the last 2 directories of the current path in the mode line."
+    (add-to-list 'mode-line-buffer-identification 
+                 '(:eval (substring default-directory 
+                                    (+ 1 (string-match "/[^/]+/[^/]+/$" default-directory)) nil))))
+  (add-hook 'find-file-hook 'add-mode-line-dirtrack)
+
+[new]
+You can also use [[uniquify]] for a similar effect:
+
+  (setq uniquify-buffer-name-style 'forward)
+  (require 'uniquify)
+
+-- [[nschum]]
+

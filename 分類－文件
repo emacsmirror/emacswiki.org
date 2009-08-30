@@ -1,0 +1,34 @@
+English: CategoryDocumentation
+
+本页简体中文的确切意思应该是Emacs 文档
+
+''要看Emacs或Emacs文档的介绍请参见 EmacsNewbie (中文:[[Emacs初學者]]).''
+
+Emacs 带有一份教程(<tt>C-ht</tt>).  它将通过编辑课程一步一步地教你Emacs作为一个编辑器的最基础的方面.参见: [[EmacsNewbie#EmacsTutorial]]
+
+Emacs 还带有一份完整的文档.  The EmacsManual can be
+accessed using the command <tt>info</tt> either in a shell window
+under GNU and Unix operating systems, or in Emacs, by typing <tt>M-x
+info RET</tt> (that's Meta- or ESC x, the word "info", followed by the
+return key), or by typing <tt>C-h i</tt> (that's Control-h followed by
+i).
+
+如果你想扩展Emacs, 你可以使用 EmacsLisp 或者 Elisp (缩写).  
+你可以通过阅读 EmacsLispIntro 来学习 Emacs Lisp 编成基础.
+完整的Emacs Lisp参考手册参见: EmacsLispReference.
+
+Emacs 附带一份文件: refcard.tex (and refcard.ps in
+<nowiki>PostScript</nowiki> format), which gives most of the
+keybindings for basic editing.  Emacs is known as "the
+SelfDocumenting" editor, though, so while the refcard can be useful,
+one should learn to rely on <code>info</code> or <code>C-h i</code>
+for most of the more complicated features of this editor.  If you do
+not have access to <nowiki>TeX</nowiki> or some sort of
+<nowiki>PostScript</nowiki> interpreter like
+<nowiki>GhostScript</nowiki>, then http://refcards.com/ has PDF
+versions of this, XEmacs' card, and AdvancedDeskCalculator as well.
+
+There is an online book called TheCraftOfTextEditing by CraigFinseth that describes how text editors work internally, and uses Emacs for many of its examples.
+
+----
+CategoryHelp

@@ -1,0 +1,47 @@
+Jiseki is an idea of further turning Emacs into your OS.  It aims to
+be similar to your typical desktop/dashboard.
+
+Right now this is in very Beta mode, and needs some help from other competent elisp hackers.
+
+== Installation ==
+Download here: Lisp:jiseki.el
+As is usual with most elisp, put this file somewhere on your load path, and just add to your emacs file:
+{{{
+(require 'jiseki)
+}}}
+
+== Configuration  ==
+Jiseki is super configurable like [[Anything]] or AutoComplete, and
+has a similar configuration scheme.  If you are used to how these
+packages are configured, then configuring Jiseki will be a breeze.
+
+The variable jiseki-sources contains a list of all the "widgets" for your desktop.
+
+Currently the only Jiseki items provided are a few different clocks
+(time, unix time, and sunrise/sunset).  Creating new Jiseki items is
+fairly simple.  Once this package matures, more will be made
+available.
+
+== Usage ==
+You can use jiseki-dwim function to push/pop the desktop, just like
+the Mac dashboard key.  I bound it to F3.
+{{{
+(global-set-key [f3] 'jiseki-dwim)
+}}}
+
+jiseki-desktop will show the desktop.  jiseki-push will show the
+desktop as well, but allow you to go back to the previous window
+configuration with jiseki-pop. 
+
+== Other Packages that work with Jiseki ==
+* Lisp:work-timer.el - (bundled with jiseki.el)
+* Lisp:yahoo-weather.el - (source provided by yahoo-weather.el, but you need to add it to your sources yourself.)
+
+== Trivia ==
+The name comes from the Japanese word 自席 which translates to "one's
+seat" or "one's place".  I went for this name because the concept of a
+desktop in emacs has a very different meaning.
+
+== Bugs ==
+
+

@@ -1,0 +1,35 @@
+The [::auto-mode-alist] variable is an AssociationList that associates [[MajorMode]]s with a pattern to match a buffer filename when it is first opened.  See SetAutoMode.
+
+Something like this:
+
+   (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+
+Where `python-mode' is a function that is either AutoLoad""ed or already defined.
+
+Note that ##\'## matches the end of a string, where as ##$## matches the empty string before a newline.
+Thus, ##$## may lead to unexpected behavior when dealing with filenames containing newlines.
+(Should be pretty rare...  ;))
+
+If you write your own major mode that associate with a file extension,
+here is what you do:
+
+# Put some documentation in the commentary section.
+# As part of the documentation, your users should:
+## add the file to a directory in their LoadPath
+## add the following lines to their InitFile:
+
+    (autoload 'foo-mode "foo" "Some documentation." t)
+    (add-to-list 'auto-mode-alist '("\\.foo\\'" . foo-mode))
+
+The autoload expression makes sure that the library "foo" is loaded when
+the function `foo-mode' is called.  Use `M-x locate-library RET foo RET'
+to figure out what file this will be.  The last parameter says that
+foo-mode is interactive.  Most major modes are.
+
+The add-to-list expression associates the .foo extension with foo-mode.
+The ##\\'## matches the end of the filename; a $ would match newlines within
+filenames (true, this should be rare...  ;)).
+
+----
+CategoryDotEmacs
+CategoryModes

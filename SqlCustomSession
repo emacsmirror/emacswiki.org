@@ -1,0 +1,50 @@
+<pre>
+;; I use sql-oracle from sql.el to connect to our databases. Oracle
+;; reads one global login file for every started sqlplus.exe to which
+;; sql.el talks via the comint package. When you reconnect to another
+;; database via the sql "connect" command within the same sqlplus
+;; session, the login file isn't read again, so some customizations are
+;; lost. The following code supplies customizing at startup and when
+;; executing a "connect" command
+</pre>
+ 
+  (defvar sql-session-custom-commands
+    '("set linesize 32000"  ;; not needed when re-"connect"
+      ;; test with "select sydate from dual"
+      "alter session set nls_date_format='DD.MM.YYYY HH24:MI:SS'"))
+  
+  ;; intentionally without umlaut
+  (defvar sql-session-connect-string "Connect durchgef")
+  
+  (defun sql-session-custom-send-commands()
+    (mapcar (lambda( line )
+              (process-send-string (get-buffer-process (current-buffer))
+                                   (concat line ";\n")))
+            sql-session-custom-commands))
+  
+  ;; customize at startup
+  (defadvice sql-oracle( around sql-oracle-session-custom act )
+    ad-do-it
+    (sql-session-custom-send-commands))
+  
+  ;; customize when executing a "connect" command
+  (defun sql-session-custom-check-connect( output )
+    (when (string-match (concat "^[ \t]*" sql-session-connect-string)
+                        output)
+      (sql-session-custom-send-commands))
+    output)
+
+  (defun make-local-comint-input-filter-functions()
+    (make-variable-buffer-local 'comint-preoutput-filter-functions)
+    (add-hook 'comint-preoutput-filter-functions
+              'sql-session-custom-check-connect))
+  ;; newer Emacsen understand this:
+  ;; (add-hook 'comint-preoutput-filter-functions
+  ;;           'sql-session-custom-check-connect nil t))
+  
+ 
+  (add-hook 'sql-interactive-mode-hook
+            'make-local-comint-input-filter-functions)
+
+----
+CategorySql

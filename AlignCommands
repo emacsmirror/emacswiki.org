@@ -1,0 +1,164 @@
+Emacs has a few commands that can line up text with respect to 
+whitespace, assignment, columns or regexp specified delimiters.
+
+== Commands available starting with emacs 22 ==
+
+For version 22 or higher, the following commands are available:
+
+  align
+  align-current
+  align-entire
+  align-newline-and-indent
+  align-regexp
+
+Alignment is done with respect to a set of rules (e.g. line up the = signs). Which rules exactly depend on the current mode, and should provide some sort of "Do What I Mean" feeling. These rules are described in the variable <code>align-rules-list</code>, a few of them are explained below. Documentation is scarce at the moment and inspection of the list given by this variable is perhaps the best way to find which one is available in which mode.
+
+Some custom settings are available through the use of the customize buffer.
+Just type <code>M-x customize-group RET align RET</code>.
+
+<b>Sidenote:</b> there is no rule given by default in text mode. Hence, <code>M-x align</code> has no effect in that mode. See below the section dealing with the <code>align-rules-list</code> variable for an example showing how to define a rule in text-mode. However, a few rules are provided by default if the command <code>M-x align</code> is given an argument; see next section.
+
+
+=== The align command ===
+
+In text mode, <code>C-u M-x align</code> 
+lines up text in selected region, using whitespaces (or tabs) as the column delimiter:
+
+  lastname firstname                          lastname firstname      
+  Smith John 33-88                            Smith    John      33-88
+  Gere Alan    24-23              =>          Gere     Alan      24-23
+  Verne Bill 12-34                            Verne    Bill      12-34
+
+Note that <code>C-u M-x align</code> fails to align words of length one (bug ? feature ?). See below for a fix. Figures can also be lined up with respect to the decimal point, using <code>M-- M-x align</code>.
+
+  green apples 10.00                          green apples 10.00 
+  carrots  16.5                   =>          carrots      16.5  
+  patatoes      12.                           patatoes     12.   
+
+
+=== The align-current command ===
+
+Instead of working on a region, <code>M-x align-current</code> operates on the current section. Here is an example, taken from the blog of the Lazy Programmer, which shows how the <code>align-current</code> command works in perl-mode:
+
+  my %h =                                     my %h         =             
+     (                                           (                        
+         key1 => value1,                             key1   => value1,    
+         key11 => value11,        gives              key11  => value11,   
+         key111 => value111,                         key111 => value111,  
+     );                                          );                       
+
+Here is another example in c-mode:
+
+  LongTypeName a;                             LongTypeName a;
+  int b;                          gives       int          b;
+  float c;                                    float        c;
+
+
+
+=== The align-regexp command ===
+  
+This command aligns the current region using a column delimiter given by a regular expression. For example, assume we want to align firstnames in a list of the form:
+
+   LASTNAME Firstname
+   SMITH John
+   BOLL� �milien
+   MOHAMED SALEM El Balem
+
+There are two difficulties here: case and accented letters.
+First ensure that the case is taken into account. For this,
+just type:
+ 
+   M-: RET (setq case-fold-search nil) RET
+
+Then, select the region and use the align-regexp command:
+
+   M-x align-regexp RET [[:upper:]][[:lower:]] RET
+
+The regular expression given above matches the beginning of the
+firstname, which is of the form, a upper-case letter followed by a lower-case letter. This syntax is sufficiently general to deal with accented letters. The result is as follow:
+
+   LASTNAME      Firstname
+   SMITH         John
+   BOLL�         �milien
+   MOHAMED SALEM El Balem
+
+
+
+==How do I align several whitespace-separated columns?==
+
+
+=== Using align-regexp with options ===
+
+For example, let us align numbers as follows:
+
+  4000 1 2                4000  1     2    
+  11 1 44          =>     11    1     44   
+  1  0000 999             1     0000  999  
+
+<code>M-x align-regexp</code> with <code> [[:space:]]</code> only align with respect to the first match of the regular expression. <code>C-u M-x align</code> fails to align strings of length one (bug ? feature ?). 
+
+
+The <code>align-regexp</code> command, however, allows a few options.
+These are activated by giving a prefix to the command: <code>C-u M-x align-regexp</code>. The user is then prompted with a few choices:
+
+* First, the regular expression to align with. This expression begins with <code>\(\s-*\)</code>, which stands for "an arbitrary number of spacing characters". 
+
+* Then the parenthesis group to modify, 1 by default. This will align the expression by modifying the matching whitespaces in front of the regular expression, if any. The modification amounts to adding some number of whitespaces to that part of the regular expression. 
+
+* Additional number of whitespaces to add, the default 1 is fine. Set to 0 if no additional whitespace is needed.
+
+* Finally, answer <code>n/y</code>, depending whether the alignment must be done once or repeated. 
+
+
+So, to be short, lining up numbers as given above amounts to type:
+
+   C-u M-x align-regexp RET SPC RET RET RET y 
+
+Don't forget to mark the region first.
+
+
+=== Repeating align-regexp ===
+
+Arguably, for daily use, it's better to redefine some adhoc align command, e.g.
+
+  (defun align-repeat (start end regexp)
+    "repeat alignment with respect to 
+     the given regular expression"
+    (interactive "r\nsAlign regexp: ")
+    (align-regexp start end 
+        (concat "\\(\\s-*\\)" regexp) 1 1 t))
+
+The final <code>t</code> (aka true) is responsible for repeating the task.
+Call that command with the regular expression <code>[[:space:]]+</code> 
+
+
+=== The align-rules-list variable ===
+
+An alternate way is to modify the <code>align-rules-list</code> variable.
+Here is a quick hack: eval the following code, just by entering it in the scratch buffer and typing <code>C-x C-e</code> at the end. 
+
+   (add-to-list 'align-rules-list
+     '(text-column-whitespace
+        (regexp  . "\\(^\\|\\S-\\)\\([ \t]+\\)")
+        (group   . 2)
+        (modes   . align-text-modes)
+        (repeat  . t)))
+
+This defines a new alignment rule, valid both in text-mode and outline mode, lining up sequences of whitespaces, repeatedly. You must have used <code>M-x align</code> at least once before, in order to activate the <code>align-rules-list</code> variable. In text mode or in outline-mode, <code>M-x align</code> and <code>M-x align-current</code> now put text strings in columns, using whitespace as delimiter.
+
+This alignment rule may be loaded at startup by adding the above code to the <code>align-load-hook</code>:
+
+  (add-hook 'align-load-hook (lambda ()
+       (add-to-list 'align-rules-list
+                    '(text-column-whitespace
+                      (regexp  . "\\(^\\|\\S-\\)\\([ \t]+\\)")
+                      (group   . 2)
+                      (modes   . align-text-modes)
+                      (repeat  . t)))))
+
+== Tabs for indentation, spaces for alignment ===
+
+See SmartTabs.
+
+----
+CategoryAlignment

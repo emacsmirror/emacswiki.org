@@ -1,0 +1,124 @@
+* Emacs Memory Debugging
+
+What to do if you think that Emacs leaks memory ([http://en.wikipedia.org/wiki/Memory_leak what's a memory leak?]).
+
+==How to extract more information==
+
+===Generic GNU/Linux programs===
+* ##top## will tell you the virtual memory (VIRT) and the resident memory (RES)
+* ##pmap -d 25952## (use correct PID) will tell you the memory map of a process
+* ##cat /proc/25952/smaps## may hint you to the memory space which is getting too big
+
+For instance this was in ##/proc/25952/smaps##. 2580 Mb is much for 180 small buffers open.
+{{{
+09abc000-a72fa000 rw-p 09abc000 00:00 0          [heap]
+Size:            2580728 kB
+Rss:             1009120 kB
+Pss:             1009120 kB
+Shared_Clean:          0 kB
+Shared_Dirty:          0 kB
+Private_Clean:     57676 kB
+Private_Dirty:    951444 kB
+Referenced:       397968 kB
+Swap:            1571492 kB
+}}}
+
+===Investigating inside Emacs===
+Look at ##M-: (info "(elisp) Memory Usage")##.
+
+You can examine the following variables:
+
+; Variable cons-cells-consed:
+     The total number of cons cells that have been allocated so far in this Emacs session.
+; Variable floats-consed:
+     The total number of floats that have been allocated so far in this Emacs session.
+; Variable vector-cells-consed:
+     The total number of vector cells that have been allocated so far in this Emacs session.
+; Variable symbols-consed:
+     The total number of symbols that have been allocated so far in this Emacs session.
+; Variable string-chars-consed:
+     The total number of string characters that have been allocated so far in this Emacs session.
+; Variable misc-objects-consed:
+     The total number of miscellaneous objects that have been allocated so far in this Emacs session.  These include markers and overlays, plus certain objects not visible to users.
+; Variable intervals-consed:
+     The total number of intervals that have been allocated so far in this Emacs session.
+; Variable strings-consed:
+     The total number of strings that have been allocated so far in this Emacs session.
+
+Run also ##(garbage-collect)## and inspect the results. If it returns ##nil##, it means *no garbage collection is being done* and therefore Emacs will only increase in size. This is due to a miscompilation; see below.
+
+===Run into a special program to detect memory leaks===
+TODO: explain and recommend some
+
+===If you can reliably reproduce the memory leak===
+You can go through the previous revisions in the version control system until you find the most recent version which didn't show this behaviour. An easy way to do this is via the bisect operation offered by version control programs.
+
+===Some tips for a program that's consuming too much memory===
+If a program (like Emacs) seems to want progressively all your computer's memory there is risk that it will slow down your system or is killed by your kernel. A easy thing you can do is to stop the program via ##kill -SIGSTOP 25952## to freeze it (and ##SIGCONT## to restore it). Then go on with debugging (##gdb## etc.).
+
+==Interpret the results==
+What does it mean if you have a very high numbers of [CategoryGlossary conses]? Etc.
+
+TODO: explain
+
+==Discussion about particular memory problems==
+===Emacs grows and dies===
+(this is currently a stub, please help out with ideas)
+
+My emacs routinely grows from a small size to about 300 mb, and then it dies.
+I have had this for a long time and have no real clue why it happens, other than its a problem in some of the packages I use.
+
+The real problem is that its very difficult to figure out where the memory is consumed.
+
+memory-usage.el by StefanMonnier gives a human readable report of garbage-collect:s output,
+but doesn't give any real info about which package owns the memory.
+
+Another idea is to create a "memory meter" in the modeline, then it would at least be possible to see when
+memory is consumed, and maybe get a clue. The problem is how to get the information out of garbage-collect.
+
+Yet another idea would be to modify the garbage collector, to make some form of dump to a file, when 
+the "mark" stage occurs. Maybe the dump could be made sufficiently human readable to give some hints where memory goes.
+
+It could also be possible to modify the garb so as to flag an object for "pretend delete". then a pretend garb would be done,
+and a measure of how much memory would be reclaimed if that object was to be deleted would be returned.
+
+===Building Emacs overflowed pure space. SOLVED===
+One day, compiling Emacs as I always did, Emacs started eating memory progressively up to 1 Gb resident and more than 2 Gb virtual at the step when it does ##`/bin/pwd`/temacs --batch --load loadup bootstrap##. It also froze the system.
+
+The backtrace of that ##temacs## was:
+{{{
+(gdb) bt
+#0  0x081d7115 in mark_maybe_object (obj=0) at alloc.c:4114
+#1  0x081d7646 in mark_memory (start=0x7da99bd0, end=0xbffff858, offset=0) at alloc.c:4278
+#2  0x081d7700 in mark_stack () at alloc.c:4532
+#3  0x081d83bb in Fgarbage_collect () at alloc.c:5103
+#4  0x081f4de5 in Ffuncall (nargs=3, args=0x7da99e00) at eval.c:2979
+#5  0x081f4c5e in call2 (fn=0, arg1=138577505, arg2=171542709) at eval.c:2852
+#6  0x081f2e93 in Fsignal (error_symbol=138577505, data=171542709) at eval.c:1678
+#7  0x081f30a5 in xsignal (error_symbol=138577505, data=171542709) at eval.c:1751
+#8  0x081f30e4 in xsignal1 (error_symbol=138577505, arg=0) at eval.c:1768
+#9  0x081f5359 in Ffuncall (nargs=3, args=0x7da99f30) at eval.c:3097
+#10 0x081f4c5e in call2 (fn=0, arg1=138577505, arg2=171542701) at eval.c:2852
+#11 0x081f2e93 in Fsignal (error_symbol=138577505, data=171542701) at eval.c:1678
+#12 0x081f30a5 in xsignal (error_symbol=138577505, data=171542701) at eval.c:1751
+#13 0x081f30e4 in xsignal1 (error_symbol=138577505, arg=0) at eval.c:1768
+…
+}}}
+
+I tried to see the outer stack trace but gdb itself want to take >1'7 Gb for that and crashed with ##/build/buildd/gdb-6.8/gdb/utils.c:905: internal-error: virtual memory exhausted: can't allocate 4096 bytes.##
+
+In addition, I recently compiled this code successfully. The resulting binary shows this message when entering:
+        Warning (initialization): Building Emacs overflowed pure space.  (See the node [http://www.gnu.org/software/emacs/elisp/html_node/Pure-Storage.html Pure Storage] in the Lisp manual for details.)
+
+It works slower and grows in size more and more (above in this page are some results from that Emacs instance). This makes sense because, according to the documentation, *the resulting Emacs will not do garbage collection*.
+
+Apparently this has some relation to this line of code in ##src/puresize.h##:
+{{{
+    #define BASE_PURESIZE (1260000 + SYSTEM_PURESIZE_EXTRA + SITELOAD_PURESIZE_EXTRA)
+}}}
+It was later increased to 1270000. But the original problem was due to [http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00233.html this recent change]. After reverting it, everyone could compile Emacs again and they lived happily ever after.
+
+-- 6.Aug.2009 [[DanielClemente]]
+
+----
+[[CategoryDebug]], [[DebugEmacs]]

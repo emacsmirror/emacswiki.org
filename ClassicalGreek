@@ -1,0 +1,111 @@
+m17n.org, the Organization for Multilingualization, has a link to
+the CGreek Project.
+
+* http://www.m17n.org/cgreek/index.en.html
+
+This offers you an add on package for Emacs including BDF fonts, a new
+input method, and the option of saving your files for
+<nowiki>TeX</nowiki>.
+
+Follow the manual for the installation.  I found it unproblematic.
+
+== NT Emacs ==
+
+I'll have to check...  Creating the fontsets and using the BDF fonts
+works when you follow the NT Emacs FAQ to the point.  No idea about
+cgreek, though.
+
+== TeX, LaTeX ==
+
+Your files will be saved in the Ibycus4 style.
+
+That means, you will have to get Ibycus4 as well.  You can find it on
+any CTAN (http://www.ctan.org/) or Sunsite mirror in the .../language/greek/ibygrk
+subdirectory.
+
+Installing this might be difficult for non-<nowiki>TeXies</nowiki>.
+So here goes for owners of the <nowiki>TeTeX</nowiki> distribution.
+
+* Unpack it.
+* You'll find four directories in ibycus4.
+* Copy their contents recursively to /usr/local/share/texmf/.
+
+If you are using stow:
+
+* Unpack the stuff in /usr/local/stow.
+* mkdir -p ibycus/share/texmf
+* mv ibycus4/* ibycus/share/texmf
+* rmdir ibycus4
+* stow ibycus
+
+Now verify that you have it installed in the correct places:
+
+* ls /usr/local/share/texmf/tex/generic/ibycus4/*.sty
+
+This should at least list ibycus4.sty.  When you have that,
+rebuild ls-R:
+
+* mktexlsr
+
+If you want a little test file, take this one:
+
+ \documentclass{letter}
+ \usepackage{ibycus4}
+ \begin{document}
+ \begin{letter}{Test}
+
+ This is a test.
+
+ \end{letter}
+ \end{document}
+
+When you compile it using `C-c C-f' (this runs the command `tex-file'),
+you should see no errors and some output like this:
+
+ Document Class: letter 1999/04/29 v1.2z Standard <nowiki>LaTeX</nowiki> document class
+ (/usr/share/texmf/tex/latex/base/size10.clo))
+ (/usr/local/share/texmf/tex/generic/ibycus4/ibycus4.sty
+ (/usr/local/share/texmf/tex/generic/ibycus4/ibycus4.map
+ . . .
+
+Done!
+
+== ConTeXt ==
+
+With the ancientgreek module, ConTeXt can process Unicode Greek input. I use the carbon (OS X) version of emacs (22.0.96.1), and I found it easy to write and display Unicode polytonic Greek. 
+
+=== Writing polytonic Greek in Unicode ===
+
+The most convenient method is greek-babel. Type ##C-\## When you're prompted for an Input method, type ##greek-babel##. This will allow you to type the same keystrokes as if you were inputting the babel transliteration, but emacs will translate them to the corresponding Unicode glyphs. Very neat!
+
+=== Displaying polytonic Greek ===
+
+This is code that I picked up here on the wiki. I like a very large font so I can recline in my chair while typing; just adapt the size if you like something smaller. It works on my copmuter: OS X 10.4.9, with the Gentium fonts installed. YMMV:
+
+<pre>
+(create-fontset-from-fontset-spec
+   "-apple-andale mono-medium-r-normal--24-*-*-*-m-*-fontset-andale,
+     ascii:-apple-andale mono-medium-r-normal--24-*-*-*-m-*-mac-roman" t 'noerror)
+(set-frame-font "-apple-andale mono-medium-r-normal--24-*-*-*-m-*-fontset-andale" 'keep)
+
+(set-fontset-font "fontset-andale"
+		  (cons (decode-char 'ucs #x0374)
+			(decode-char 'ucs #x03fb))
+		  "-apple-gentiumalt-medium-r-normal--24-*-*-*-*-*-iso10646-1")
+
+(set-fontset-font "fontset-andale"
+		  (cons (decode-char 'ucs #x1f00)
+			(decode-char 'ucs #x1fef))
+		  "-apple-gentiumalt-medium-r-normal--24-*-*-*-*-*-iso10646-1")
+</pre>
+
+==  Thesaurus Linguae Graecae (TLG) ==
+
+Some more TLG related stuff (cgreek already contains some of that).
+
+* http://www.tlg.uci.edu/
+* http://www.dur.ac.uk/p.j.heslin/diogenes/index.html
+
+
+----
+CategoryInternationalization

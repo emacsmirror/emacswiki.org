@@ -1,0 +1,23 @@
+Perl mode helps you write [PerlLanguage Perl] code.  Since the Perl syntax is very hairy,
+Perl mode will often mess up syntax hilighting.
+
+We recommend using CPerlMode instead of PerlMode.
+
+== font-lock problems ==
+
+If you are having problems because lone apostrophes (') confuse Perl mode,
+add a #' at the end of the offending line.  That helps a lot.
+
+If you are having problems with perldoc comments in Emacs 20, remember
+that font-lock operates only on lines.  Font-locking will be correct
+when you open the file, but you can mess it up.  Use `M-g' to
+refontify the current block of code.  That should fix most problems.
+
+If you see no colors at all, maybe you have font-lock switched off?
+In Emacs, try `M-x global-font-lock-mode'.  If that helps, add the
+following to your ~/.emacs file:
+
+ (global-font-lock-mode 1)
+
+----
+CategoryModes CategoryDotEmacs

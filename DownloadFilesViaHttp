@@ -1,0 +1,44 @@
+If you do not have the UrlPackage, you can still download files via http, if you use open-network-stream and code the http stuff yourself.
+
+Here is an example from Lisp:wikiarea.el by EdwardOConnor, for example:
+
+<pre>
+(defun wikiarea-download-file (filename)
+  "Fetch FILENAME from the Emacs Wiki's elisp area."
+  (let* ((proc (open-network-stream "EmacsWiki"
+                                    (format "*EmacsWiki-%s*" filename)
+                                    ;; These should perhaps not be hardcoded.
+                                    "www.emacswiki.org"
+                                    80))
+         (buf (process-buffer proc))
+         (retval nil))
+    (process-send-string proc
+                         ;; This should also not be hardcoded.
+                         (format "GET /elisp/%s HTTP/1.0\r\n\r\n" filename))
+
+    ;; Watch us spin and stop Emacs from doing anything else!
+    (while (equal (process-status proc) 'open)
+      (when (not (accept-process-output proc 180))
+        (delete-process proc)
+        (error "Network timeout!")))
+
+    (with-current-buffer buf
+      (goto-char (point-min))
+      (if (looking-at "^HTTP/1.1 200 OK$")
+          (progn
+            (forward-line 1)
+            (while (looking-at "^.+[:].+$")
+              (forward-line 1))
+            (forward-line 1)
+            (delete-region (point-min) (point))
+            (set-visited-file-name (concat wikiarea-managed-directory filename))
+            (save-buffer)
+            (kill-buffer buf)
+            (setq retval t))
+        (error "Unable to fetch %s from the Emacs Wiki." filename)))
+    retval))
+</pre>
+
+----
+CategoryHypermedia
+CategoryCode

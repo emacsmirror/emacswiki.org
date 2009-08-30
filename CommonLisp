@@ -1,0 +1,80 @@
+The first Lisp compiler was developed by JohnMcCarthy at Dartmouth College between 1955 and 1959.  This makes it the second oldest programming language in common use today (only Fortran is older, developed between 1954 and 1957).  Lisp went forth and grew many many dialects: the most notable of these are AutoLisp, EmacsLisp, Interlisp, MacLisp, [[Scheme]] and Common Lisp.
+
+Around 1980, there were many dialects of Lisp in development: Interlisp at Xerox,
+MacLisp, Lisp Machine Lisp and NIL ("New Implementation of Lisp") at MIT, Portable
+Standard Lisp, SpiceLisp at CMU, S-1 Lisp at Stanford and others.  There
+was clearly a need for a standard.  RichardGabriel, JonWhite, GuySteele
+and DavidMoon were the driving force behind the standardization effort,
+which resulted in 1984 in GuySteele's book CommonLispTheLanguage
+which set out a design for the new language CommonLisp; in 1986 the ANSI
+standardization committee (X3J13) was working; and in 1994 the ANSI
+CommonLisp standard was released. By the late 1990s, most commercial
+Lisp vendors had adopted CommonLisp.  (AutoLisp remains a holdout.)
+
+The CommonLisp standard is available online as the CommonLispHyperspec.
+
+See http://www.lisp.org/ for a list of free and proprietary implementations for different platforms.
+
+== Why isn't more of CommonLisp in GNU Emacs? ==
+
+EmacsLisp predates the CommonLisp standard; it is a MacLisp derivative.
+
+Changing Emacs to use CommonLisp would require a number of significant and incompatible changes, most notably:
+* The package system.
+* Lexical scoping for variables by default.
+* Keyword arguments to functions.
+* Closures.
+
+RichardStallman has chosen not to adopt CommonLisp.  He said in
+[http://mail.gnu.org/archive/html/emacs-devel/2003-08/msg00436.html this
+post, 2003-08-31] on the [http://savannah.gnu.org/mail/?group_id=40
+emacs-devel mailing list], when asked to include a large part of the
+<b>cl</b> package into the EmacsLisp core:
+
+    I am willing to consider a small number of functions for inclusion
+    as standard parts of Emacs.  I don't have time to consider a large
+    number, and I can't agree to them without considering them.
+
+    I do not like the Common Lisp style of using keyword arguments
+    for many common functions.  I basically do not have a very high
+    opinion of many of the decisions that were made in Common Lisp.
+
+== How to use CommonLisp in Emacs Programs ==
+
+See CommonLispForEmacs.
+
+== Using  Emacs as an interface to your CommonLisp system ==
+
+Emacs has a simple interface to a running Lisp top-level.  Use `M-x run-lisp'.  This will run the `lisp' program on your system. See the (emacs)Running an External Lisp. node of the EmacsManual for details.
+
+If your program is not called `lisp' but `clisp' or `glisp' or whatever, customize the option `inferior-lisp-program'.
+
+For a really good interface to an external lisp, check ILispMode,
+SlimeMode or VanillaLispShell.  Other useful packages include:
+
+* CommonLispHyperspec -- lookup functions and variables in the spec
+* CommonLispTheLanguage -- lookup functions and variables in the book
+* http://edward.oconnor.cx/elisp/hl-sexp.el -- useful for dealing with sexp all day
+* http://homepage1.nifty.com/bmonkey/emacs/elisp/cldoc.el -- database of parameters and results of Common Lisp's standard stuff (an "eldoc clone for Common Lisp", according to the file header)
+* http://homepage1.nifty.com/bmonkey/emacs/elisp/cl-lookup.tar.gz -- lookup various entries relating to Common Lisp in various sources
+
+
+== Using EmacsLisp Code in your CommonLisp implementation ==
+
+There is CommonLisp code by SamSteingold out there that can read EmacsLisp.
+
+See [http://clocc.cvs.sourceforge.net/clocc/clocc/src/cllib/elisp.lisp?view=markup elisp.lisp] for the code.
+
+http://clocc.sourceforge.net/
+
+== Emacs implementations written in Common Lisp ==
+
+See CommonLispEmacs.
+
+== References ==
+
+* [http://www.cliki.net/index The Common Lisp Wiki]
+* [http://www-formal.stanford.edu/jmc/history/lisp/lisp.html John McCarthy, History of Lisp]
+* [http://www.elwoodcorp.com/alu/table/Lisp-History.html Kent Pitman, Brief History of the Lisp Language]
+* [http://www-2.cs.cmu.edu/Groups/AI/html/cltl/cltl2.html Guy L Steele, Common Lisp: The Language, 2nd Edition]
+* [http://www8.informatik.uni-erlangen.de/html/lisp/histlit1.html Herbert Stoyan, Early LISP History (1956-1959)]

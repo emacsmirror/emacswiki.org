@@ -1,0 +1,43 @@
+MHC, the Message Harmonized Calendaring system, integrates well with MEW, Wanderlust and Gnus, and the MH system in general.  But MHC is not particularly an EMACS application, there are numerous other programs to access MHC calendars.
+
+== Obtaining, Installing and Configuring MHC ==
+
+The latest version of MHC can be found on the page behind the following URL.  Note that, although, the contents of this page are in Japanese at the moment, MHC's EMACS user interface is by default set to English.
+
+http://www.quickhack.net/mhc/
+
+To install MHC follow the instructions in the file <code>00readme</code> and at the top of the file <code>emacs/mhc.el</code>.  With version snap20050220 (and probably others), the icons have to be installed manually, for example as follows.
+
+# Copy the directory <code>mhc-current-snap20050220/icons</code> into the directory <code>/usr/share/emacs/21.3/etc/mhc</code>
+# Set the value of the variable mhc-icon-path to <code>/usr/share/emacs/21.3/etc/mhc/icons</code> by using EMACS' customization facility.
+
+To further configure MHC, edit the EMACS customization group <code>mhc</code>.
+
+== Mailing List ==
+
+For discussion of issues related to MHC, use the mailing list mhc@quickhack.net.  Don't get distracted by the fact that messages on that list are frequently written in Japanese: Many participants are happy to join discussions in English and other languages.
+
+To subscribe to the MHC mailing list send an email to mhc-ctl@quickhack.net with the text "subscribe Your Name" (subscitute "Your Name" accordingly) on a single line in the body.  Afterwards you'll receive an email with further instructions.
+
+An archive of the list is available: http://search.luky.org/mhc/
+
+== Conversion to/from Other Calendar Formats ==
+
+Included in version snap20050220 of MHC are programs to synchronize data
+
+* with a PalmPilot/Workpad,
+* with ADB DB of HP200LX,
+* with Outlook,
+* with !GigaPocket, and,
+* perhaps, with additional programs.
+
+Separately available is mhc2ical, a program to convert data from MHC format to iCalendar: http://yuo.nui.org/Works/mhc2ical/?lang=ja
+
+== Miscellaneous Hints =
+
+* The possible values of <code>X-SC-Category</code> are not limited to <code>Todo</code> and <code>Done</code>: One can insert any category that one desires and it is possible to enter several categories (word separator must be *a single space*).  Some category values such as <code>Private</code> and <code>Holiday</code> are displayed in the summary using a different face with a dedicated icon.  More icons can be added and must be set up in an alist dedicated to you EMACS version (e.g. <code>mhc-e21-icon-alist</code>).  Note that MHC snap20050220 includes several sample icons that are not by default included in the <code>mhc-e21-icon-alistation.xpm</code> - you have to add them manually by e.g. using EMACS' customization facility.
+
+* Some additional icons: MessageHarmonizedCalendaringIcons
+
+----
+CategoryCalendar

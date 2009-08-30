@@ -1,0 +1,10 @@
+LSL modes are modes for
+[[http://en.wikipedia.org/wiki/Linden_Scripting_Language Linden Scripting Language]].
+
+There are a few LSL modes for emacs. Two of the most robust ones are:
+
+• xlsl-mode by [[Xah Lee]], at [[http://code.google.com/p/lsl-mode/ Google Code]]
+
+• lsl-mode by Reinhard Neurocam. At: [[http://github.com/taladar/lsl-mode/tree/master]]
+
+There are also others, created many years ago and not up to date. For some detail, see: [[http://forums.secondlife.com/showthread.php?p=886077]]

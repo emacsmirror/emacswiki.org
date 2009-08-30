@@ -1,0 +1,15 @@
+Something like this:
+
+    (add-to-list 'interpreter-mode-alist '("python" . python-mode))
+
+Where `python-mode' is AutoLoad""ed or already defined, and the file starts like this:
+
+    #!/usr/bin/python
+
+or:
+
+    #!/usr/local/bin/python
+
+The name of the executable is the relevant part.
+
+See LoadPath.

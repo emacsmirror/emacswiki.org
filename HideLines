@@ -1,0 +1,34 @@
+This page is about `M-x hide-lines' written by MarkHulmeJones. It provides a function to quickly hide lines based on a regexp. 
+
+* Lisp:hide-lines.el
+
+There is no copyright information with this, but contributions to the Wiki are multi-licensed with the copying terms at the bottom of each Web page.
+
+Remove the word "cucumber" to decode MarkHulmeJones's email address found at the top of the Lisp file.
+
+For similar functionality, check out HideRegion and also HighLight. For isearch-like functionality that hides non-matching lines incrementally, check out HideSearch (it utilizes HideLines).
+
+[new]
+Does anyone knows why it doesn't work in shell-script-mode?
+
+[new]
+Why not make it reversely hidden, i.e. when the Regxp is found ,the correspoended line will be preserved,while other will be hidden, I find this feature in Multieditor
+
+[new]
+the prefix arg (press C-u first, before the key for the hide-lines function) lets you do this. - MarkHulmeJones
+
+[new]
+I suggest the addition of the following two lines in the definition of "hide-matching-lines", allowing the user to show all hidden areas giving an empty regexp for the normal call of the function. In this way there is no need to define yet another keystroke for "show-all-invisible" (which will presumably be used aprox. as many times as "hide-matching-lines" itself):
+
+  (interactive "MHide lines matching regexp: ")
+  ;; --- addition ---
+  (if (equal search-text "")
+      (show-all-invisible)
+    ;; else, the rest of the function definition follows
+
+Another suggestion: it would be good to have some indicator in the mode line about having lines currently hidden.
+
+----
+CategoryEditing
+CategoryHideStuff
+CategoryRegexp

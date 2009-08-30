@@ -1,0 +1,14 @@
+word-wrapping.el by RafaelSepúlveda is a MinorMode much like
+AutoFillMode.  The difference is that it fills the paragraph when
+point reaches the fill-column, instead of waiting for a white space
+character.
+
+Additionally, if auto-fill-mode is not active, fill-column is ignored
+and the width of the [[Frame]] is used instead.
+
+* Groups:word-wrapping.el
+
+See also LineWrap.
+
+----
+CategoryFilling

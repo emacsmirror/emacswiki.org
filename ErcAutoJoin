@@ -1,0 +1,39 @@
+The autojoin module is enabled by default.  To disable it, use M-x customize-variable RET erc-modules.
+
+This package allows us to customize an `erc-autojoin-channels-alist'.
+As we /JOIN and /PART channels, this alist is updated to reflect our
+current setup, so that when we reconnect, we rejoin the same channels.
+The variable can be customized, so that the customized value will be used
+when we reconnect in our next Emacs session.
+
+Example setup:
+
+    (setq erc-autojoin-channels-alist
+          '(("freenode.net" "#emacs" "#wiki" "#nethack")))
+
+If you want to automatically connect to freenode.net, add the following:
+
+    (erc :server "irc.freenode.net" :port 6667 :nick "yournick")
+
+For multiple channels on multiple servers:
+
+    (setq erc-autojoin-channels-alist
+          '(("freenode.net" "#emacs" "#wiki" "#nethack")
+            ("oftc.net" "#bitlbee")))
+    (erc :server "irc.freenode.net" :port 6667 :nick "yournick")
+    (erc :server "irc.oftc.net" :port 6667 :nick "yournick")
+
+Or if you'd like to join the same channels on any server:
+
+    (setq erc-autojoin-channels-alist '((".*" "#help" "#emacs")))
+
+== Problems with networks using servers without a common domain ==
+[new]
+Some servers, like Efnet, operate a round-robin system whereby connecting to efnet.net will in actual fact connect you to a random server from the pool. This will screw up autojoining, because unless the servers follow a common naming convention (like all Freenode servers ending in "freenode.net"), any regexp you put in the car of an entry in `erc-autojoin-channels-alist' won't necessarily get matched. To work around this, I just picked a server from Efnet's server list [http://www.efnet.org/?module=servers] and always connect to that server, rather than to the general efnet.net.
+
+== Join after freenode hostname cloak is set ==
+[new]
+If you want to delay auto-joining until after freenode's hostname cloaking happens, see [http://edward.oconnor.cx/2007/09/freenode-cloaking-and-erc Freenode cloaking and ERC].
+
+----
+[[ERC]]

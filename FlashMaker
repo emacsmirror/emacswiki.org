@@ -1,0 +1,35 @@
+This little package was forked from KanjiDictionary by AlexSchroeder.
+It contains wizards to produce FlashCard files from a number of
+electronically distributed dictionaries in the KANJIDIC and EDICT
+format (this includes JDDICT for Japanese-German, ENAMDIC for Japanese
+proper names, and COMPDIC for Japanese-English computing and
+communications vocabulary).
+
+* Lisp:flashmaker.el
+
+== Getting Dictionaries ==
+
+If you are looking for dictionary files, here is the master archive in
+Australia, including links to some US mirrors.  The original site is
+often overloaded, so I've added the finland mirror as well.
+
+* ftp://ftp.cc.monash.edu.au/pub/nihongo/00INDEX.html
+* ftp://ftp.funet.fi/pub/culture/japan/mirrors/monash/pub/nihongo/
+
+Examples:
+
+* kanjidic (more than 6000 Kanji in the JIS X 0208 Standard)
+* kanj212 (more than 5000 Kanji in the JIS X 0212 Standard)
+* edict (more than 90000 Japanese/English entries)
+* jddict.v02 (more than 11000 Japanese/German entries)
+
+Failed:
+
+* JMdict (XML file incorporating all the other dictionary files)
+
+Writing an XML parsing wizard is on the TODO list.  If you have an
+example you want to use, let me know.
+
+----
+CategoryEducation
+CategoryInterface

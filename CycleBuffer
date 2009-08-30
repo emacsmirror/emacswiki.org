@@ -1,0 +1,31 @@
+Cycle-Buffer package:
+
+  ;; Author:     Vladimir Alexiev <vladimir@cs.ualberta.ca>
+  ;; Created: 05 June 1996
+  ;; Keywords: switch-to-buffer, cycle buffer list
+
+For alternatives ways to cycle buffers, see '''[[SwitchingBuffers#BufferCycling]]'''.
+
+I have been using the cycle-buffer package for a few years now and for the way that I normally work it is better than any of the alternatives I have tried. Fast! You press a key and you immediately see the next buffer in the current frame, no waiting for confirmation.
+--MichaelJohnDownes
+
+You also see the neighboring buffers of the current buffer listed in the message line, which helps you to orient yourself within the list. ([[ControlTABbufferCycling#BufferStack]] can do this too, and is better at keeping your currently active buffers near the top.)
+
+I bind two keys for cycling:
+
+    (global-set-key [f11] 'cycle-buffer-backward)
+    (global-set-key [f12] 'cycle-buffer)
+
+This makes it easy to back up when I overshoot (as I often do) because the cycling is so fast.
+
+For dealing with buffer clutter I also bind the shifted versions of those keys as follows:
+
+    (global-set-key [S-f11] (lambda () (interactive) (kill-buffer nil)))
+    (global-set-key [S-f12] 'bury-buffer)
+
+For general principles of key bindings and other tips see CategoryKeys.
+
+Lisp:cycle-buffer.el
+
+----
+CategoryBufferSwitching

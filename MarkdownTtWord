@@ -1,0 +1,25 @@
+Turns (asdf foo-baz) into (asdf foo-`baz)`, then (asdf `foo-baz)`, then `(asdf foo-baz)`.  Originally by KragenJavierSitaker.
+
+
+    (defun markdown-tt-word ()
+      "Hit N times to enclose previous N chunks of nonwhitespace in `` (for Markdown)."
+      (interactive)
+      (if (looking-back "`")
+          (save-excursion
+            (backward-char)
+
+            (search-backward "`")
+            (delete-char 1)
+
+    ;;         (backward-word) previously
+            (search-backward-regexp "\\S-")
+            (search-backward-regexp "\\s-")
+            (forward-char)
+
+            (insert "`"))
+        (progn
+          (insert "`")
+          (save-excursion
+            (backward-word)   ; should this use the same simpler approach?
+            (insert "`")))))
+    (global-set-key [(meta ?`)] 'markdown-tt-word)

@@ -1,0 +1,40 @@
+A mode to insert footnotes in texts and messages. footnote.el is included in Emacs 21 and a XEmacs package is available.
+
+== Configuration ==
+
+ (autoload 'footnote-mode "footnote" nil t)
+ ;; Example for Gnus. If you use an other mailer you will replace the hook with the appropriated hook of your mailer.
+ (add-hook 'message-mode-hook 'footnote-mode)
+
+
+== Finding FootnoteMode Commands ==
+
+There are a number of modes where C-c ! doesn't work.  But I always forget the names of the functions. Using auto-complete doesn't help because all of the commands, except footnote-mode itself begin with a Uppercase F.
+
+  - Footnote-add-footnote
+  - Footnote-back-to-message
+  - Footnote-cycle-style		   
+  - Footnote-delete-footnote
+  - Footnote-goto-footnote		   
+  - Footnote-narrow-to-footnotes
+  - Footnote-renumber-footnotes	   
+  - Footnote-set-style
+
+So remember all of these commands begin with a capital F.  I have forgotten this a dozen times and it drives me nuts...
+
+== Questions ==
+
+* How do you re-number the footnotes? c-c ! r  did not re-number the footnotes while editing a text file.  I tried marking the whole buffer, just the number, with TextCursor in the footnote part; nothing worked.  Auto-fill and text-mode were along with FN minor mode. This is on the standard emacs-21.3 on windows.
+
+: I looked at the Xemacs package and it doesn't seem like the package has any way to read in a buffer and initialize the set of footnotes.  This means you can edit footnotes in a single editing session, but if you close the file and reopen it, footnote mode will be badly bollixed up.  That seems unfortunate.  But I may have an old version of the code.
+
+:: Still correct.  The current version of the package (from a Dec 2008 CVS of Emacs 23) starts numbering afresh each time.  There is however [http://osdir.com/ml/emacs.muse.general/2007-11/msg00009.html a fix for this], and some code for Muse ([https://mail.gna.org/public/muse-el-discuss/2007-11/msg00027.html description] and [https://mail.gna.org/public/muse-el-discuss/2007-11/msg00033.html latest known version]) that lets you use footnotes with named references instead of numbers, which eliminates the need for renumbering. The code doesn't manage auto-insertion of footnotes like footnote.el.  It just converts the referenced (=named) footnotes to numbered footnotes automatically just before a Muse export.  Perhaps it could be made to work in other modes (org-mode) which currently rely on numbered footnotes?
+
+* Where do we get the elisp source for the most up-to-date footnote mode?  There's no link in the elisp files page....
+
+== Other Implementations of Footnoting ==
+
+For longer documents which might incur multiple edits, org mode has a robust footnote mode.  [http://orgmode.org/manual/Footnotes.html]
+
+----
+CategoryMailAddons

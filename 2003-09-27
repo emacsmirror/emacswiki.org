@@ -1,0 +1,15 @@
+I think more people should download copies of the archive for this wiki.
+[http://www.emacswiki.org/cgi-bin/list-archive.pl]
+This way, we get distributed backup copies, and I feel much safer.  ;)
+-- AlexSchroeder
+
+Sleep well Alex, a copy of the wiki is safely backupted on my computer.
+Do you want me to set a cron job and download it every night?
+--JeanPhilippeTheberge
+
+Currently there is no locking strategy for the archive creation, so
+if more than one person starts using a cron job to recreate the archive,
+we migh corrupt the files.  Perhaps I should add that.  Right now you
+have to look at the timestamp and create a new archive if you feel the
+current copy is not good enough.
+-- AlexSchroeder

@@ -1,0 +1,65 @@
+It's me...
+
+lately I feel like a WikiFixture
+
+see one of my primary wiki pages on theOriginalWiki:
+* Wiki: http://c2.com/cgi-bin/wiki?ShaeErisson
+* email: mailto:shae@scannedinavian.com
+* irc: I spend way too much time on irc.openprojects.net, find me with the nickname [::shapr] on #emacs, #haskell, #lojban, #python, etc etc etc
+
+I use XEmacs, whatever is latest in Debian/sid
+ at home, at work I use the latest Gnu Emacs in Debian/sid. I'm enjoying learning the differences.
+
+I'd like to find better project management for emacs...
+
+something like (narrow-to-list-of-files project-file-list) and then be able to C-s and regexp-replace in those files, as well (find-file project-file-list)
+
+regexp-replace can happen with IbufferMode, it has a "do elisp expression in every buffer" command
+MarioLang has suggested first class limits to the maintainer, that could be the basis of a project system.. but it's still kinda cheesy. How do you do build a "set of files" object in elisp? Seems like one is needed.
+fileset.el would need to be integrated into JavaDevelopmentEnvironment, and what else?
+
+[new:DrewAdams:2008-09-10 21:09 UTC]
+These links might interest you wrt this topic:
+* [[Icicles - Support for Projects]]
+* [[Icicles - Dired Enhancements]]
+* [[GrepMode#GrepOnlyMarkedFiles]]
+[new]
+
+
+
+find-file in fsf emacs takes an optional wildcard... hmmm
+----
+ToDo:
+* add d for "diff" to C-x s
+* post info for Emacs lojbanic tengwar
+* edit-face-at for color-theme.el? see FaceList
+----
+pages I've created:
+* EmacsNiftyTricks
+* GnusNiftyTricks
+* BbdbNiftyTricks
+* <nowiki>KinesisKeyboard</nowiki>
+* <nowiki>CategoryKeyboards</nowiki>
+* EmacsWarts
+* WishList (was EmacsWishlist)
+* MeaningfulNames
+* WritingTengwar
+* InternetTime
+* ErcXemacs
+----
+pages I keep forgetting the name of:
+CategorySearchAndReplace
+----
+XEmacs imperfections:
+* Shift-Insert does not paste from the X selection, but it does work in gnumacs
+Gnumacs imperfections:
+* M-x load-library does not have tab autocompletion
+----
+I wrote InternetTime (from swatch.com) for DisplayTime, check it out.
+----
+a discussion on #haskell about making a Haskell Emacs clone turned up this interesting link: http://cristal.inria.fr/ICFP2001/Abstracts/50.html
+
+: The same paper is referenced in DynamicBindingVsLexicalBinding.  There is also code by SamSteingold, referenced on CommonLisp. -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -1,0 +1,205 @@
+Channel tracking is enabled by default. To disable it, use M-x customize-variable RET erc-modules RET.  To disable it temporarily, use M-x erc-track-mode.
+
+== What is it? ==
+
+Channel tracking is for keeping track of activity in channels which are currently not visible on some frame/window.
+It is defined as global minor mode in erc-track.el.
+It uses `global-mode-string' as an indicator. global-mode-string is used in nearly every mode-line in different emacs modes, so you will
+see active channels even in windows which belong to buffers which are not in erc-mode.
+
+A mode-line with active channels in them might look like this:
+
+<pre>
+ :** #emacs@zahn.OPN [#lisp,#lin,#d] (ERC Voice)--Bot----------------------------
+</pre>
+
+Note the abbreviations. This line indicates that there was activity in channel #lisp, #linux and #debian. A nifty algorithm written by AlexSchroeder is responsible for this smart reduction.
+
+You can customize the reduction algorithm by setting the variable `erc-track-shorten-function'. The default is `erc-track-shorten-names'.  Setting it to nil disables channel name reduction.
+
+If you have erc-match.el (ErcHighlighting) loaded and have defined some pals or keywords in your .emacs, the mode-line will indicate pal/keyword activity with the corresponding face (erc-pal-face, erc-keyword-face and so on).
+
+If you are using Emacs 21, you can also use mouse-2 on a channel name to switch that window to the corresponding channel.  Mouse-3 will switch to the channel in another Emacs window.
+
+To exclude some types of messages, use the following:
+
+    (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
+
+To also exclude messages sent by the server when you join a channel, such as the nicklist and topic:
+
+    (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+                                    "324" "329" "332" "333" "353" "477"))
+
+To ignore changes in the server buffer, set `erc-track-exclude-server-buffer'.
+
+== Switch to last active channel ==
+
+This functionality is now available in ERC. The default key binding is C-c C-SPC (or C-c C-@). Try it out! By default if you press it when there are no more active channels to jump to, it will take you back to what file you were working on before.
+
+Numeric arguments can be given to the keystroke, too, to specify which active channel to jump to. Otherwise jumping will happen from the channel that was active first.
+
+== Useful Functions: ==
+
+This is useful if, for instance, ChanServ restarts:
+<pre>
+;; Clears out annoying erc-track-mode stuff for when we don't care.
+;; Useful for when ChanServ restarts :P
+(defun reset-erc-track-mode ()
+  (interactive)
+  (setq erc-modified-channels-alist nil)
+  (erc-modified-channels-update))
+(global-set-key (kbd "C-c r") 'reset-erc-track-mode)
+</pre>
+ -- DavidMcCabe
+
+== Minimal Distraction ==
+Combining ErcHighlighting with channel tracking can help reduce distraction.
+
+This example shows how to have channels added to the mode-line (in the corresponding face) only when your current nickname or any of your keywords are mentioned.
+<pre>
+    (setq erc-current-nick-highlight-type 'nick)
+    (setq erc-keywords '("\\berc[-a-z]*\\b" "\\bemms[-a-z]*\\b"))
+
+    (setq erc-track-exclude-types '("JOIN" "PART" "QUIT" "NICK" "MODE"))
+    (setq erc-track-use-faces t)
+    (setq erc-track-faces-priority-list
+          '(erc-current-nick-face erc-keyword-face))
+    (setq erc-track-priority-faces-only 'all)
+</pre>
+
+Maybe you want minimal distraction for all channels but #emacs (the following is only useful after ERC is running and you've joined some channels)...
+<pre>
+    (defun my-erc-md-all-but-emacs ()
+      "Minimal distraction for all channels except #emacs"
+      (interactive)
+      (setq erc-track-priority-faces-only
+            (remove "#emacs" (my-erc-joined-channels))))
+
+    (defun my-erc-joined-channels ()
+      "Return all the channels you're in as a list.  This does not include queries."
+      (save-excursion
+        ;; need to get out of ERC mode so we can have *all* channels returned
+        (set-buffer "*scratch*")
+        (mapcar #'(lambda (chanbuf)
+                    (with-current-buffer chanbuf (erc-default-target)))
+                (erc-channel-list erc-process))))
+</pre>
+
+For <b>zero</b> distraction, use `erc-track-exclude' instead of `erc-track-priority-faces-only' or turn off `erc-track-mode' for a while.
+
+=== Tracking and untracking channels commands ===
+
+You could want to add and remove channel and users from the `erc-track-exclude' variable interactively, just like \ignore and \unignore commands do. So, you could use following commands for this task.
+
+<pre>
+   (defun erc-cmd-UNTRACK (&optional target)
+     "Add TARGET to the list of target to be tracked."
+     (if target
+         (erc-with-server-buffer
+   	(let ((untracked (car (erc-member-ignore-case target erc-track-exclude))))
+   	  (if untracked
+   	      (erc-display-line
+   	       (erc-make-notice (format "%s is not currently tracked!" target))
+   	       'active)
+   	    (add-to-list 'erc-track-exclude target)
+   	    (erc-display-line
+   	     (erc-make-notice (format "Now not tracking %s" target))
+   	     'active))))
+
+       (if (null erc-track-exclude)
+   	(erc-display-line (erc-make-notice "Untracked targets list is empty") 'active)
+
+         (erc-display-line (erc-make-notice "Untracked targets list:") 'active)
+         (mapc #'(lambda (item)
+   		(erc-display-line (erc-make-notice item) 'active))
+   	    (erc-with-server-buffer erc-track-exclude))))
+     t)
+
+
+   (defun erc-cmd-TRACK (target)
+     "Remove TARGET of the list of targets which they should not be tracked.
+   If no TARGET argument is specified, list the contents of `erc-track-exclude'."
+     (when target
+       (erc-with-server-buffer    
+         (let ((tracked (not (car (erc-member-ignore-case target erc-track-exclude)))))
+   	(if tracked
+   	    (erc-display-line
+   	     (erc-make-notice (format "%s is currently tracked!" target))
+   	     'active)
+   	  (setq erc-track-exclude (remove target erc-track-exclude))
+   	  (erc-display-line
+   	   (erc-make-notice (format "Now tracking %s" target))
+   	   'active)))))
+     t)
+
+</pre>
+
+
+
+
+
+=== Cycling through buffers ===
+
+If you're in a low or zero distraction mode like explained above, you may
+still want to periodically cycle through existing channels to see what traffic is like. YOu can use the following fragments, then.
+<pre>
+  (defvar erc-channels-to-visit nil
+    "Channels that have not yet been visited by erc-next-channel-buffer")
+  (defun erc-next-channel-buffer ()
+    "Switch to the next unvisited channel. See erc-channels-to-visit"
+    (interactive)
+    (when (null erc-channels-to-visit)
+      (setq erc-channels-to-visit 
+	    (remove (current-buffer) (erc-channel-list nil))))
+    (let ((target (pop erc-channels-to-visit)))
+      (if target 
+	  (switch-to-buffer target))))
+</pre>
+
+== Explaining the Unexplained.  == 
+
+Here are some minor notes that shouldn't really be of concern unless you are a nitpicker like me :D
+
+* Join #emacs and #emdummy. Then /leave #emdummy, but don't kill its buffer.  #emacs would continue showing up as #ema in the modeline. Puzzled?  Kill the #emdummy buffer and #emacs will again become #e.  Also consider setting the variable `erc-track-shorten-aggressively' to 'max, and looking at its documentation. 
+
+''Is this behaviour good or bad?''
+
+== Proposed features ==
+
+Channel tracking should have an associated temperature. This comes about from a combination of two ideas. 
+  
+  I want to handle a situation where a channel is quiescent, and then people start talking. It's possible they've started
+  talking about something interesting so it should show up as activity until I go and take a look at it. However, if I 
+  take a look at it and do not mark up the keywords or channel of interest for regular tracking, it will then ignore the 
+  channel until a second period of quiscence, when it starts up again
+
+There's also the issue of, if you go away for a while, it may not be worthwhile to jump back into a conversation that has passed the channel by. Brainstorming on #emacs, it seems one good solution is to associate a temperature with each channel based on channel activity. Each bit of channel activity should be passed to a function which may alter the channel temperature accordingly. (The erc-track display in the modeline should indicate the temperature, as in [#e(75d)] , or ?). 
+
+
+Originally the proposal was to also have a timer function periodically reset each channel's temperature towards equilibrium. FOr now, this seems like it might not be necessary. 
+
+Could this be used to simplify erc-match a bit?
+This actually is a step towards a scorefile instead of erc's current kill-file like set up
+if certain keywords could be assigned a negative temperature, to chill the channel down to -100 deg celsius, and over time it resets itself towards room temperature and that'd be a nice way to consolidate the horrible erc-keywords/erc-pals/erc-fools/erc-half-adozen-other-match-variables. Have one list of (predicate face temperature-delta) elements. 
+
+The predicate could be a symbol, to indicate such things as to affect temperature based on time since last activity, perhaps? or a function to be invoked, instead. Hmm. 
+
+-- BrianPalmer
+
+: This sounds like quite a nice idea.  Though to make more sense on the "temperature" side, I'd do everything in Kelvins.  i.e. have the channel sitting in a heat bath at 273K, i.e. 0 degrees, and then only vaguely interesting.
+: One could then have automatic parsing of channel content, on who says things, and what they mention, to increase, or decrease the temperature, with some constant rate of heat flow in from the heat bath.
+: e.g. The temperature of the channel would be something along the lines of T(t) = T(t-1) + f(channel content) + (T(t-1) - T_bath)*dT
+: We would also have functions to interactively change the temperature of the channel, say people start talking about something you don't like, you could set the temperature to 0K and go away until it reached some interesting temperature.
+: Do these sound like sensible suggestions?
+
+-- LawrenceMitchell
+----
+XEmacs version: Lisp:erc-track-xmas.el. 
+
+Colors and mouse with erc-track modeline.
+Synched with 1.62 cvs version
+
+* As of ERC 5.0 faces can be shown in the modeline to indicate channel activity in XEmacs - 
+is this file necessary anymore?
+----
+[[ERC]]

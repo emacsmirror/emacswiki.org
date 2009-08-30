@@ -1,0 +1,21 @@
+This minor modes changes the next-line and previous-line commands to move across visible instead of logical lines. The two differ when Emacs display wraps lines, they never differ if Emacs display "truncates" lines (TruncateLines).
+
+* http://taiyaki.org/elisp/physical-line/index.html.en
+* http://taiyaki.org/elisp/physical-line/src/physical-line.el
+
+ ;; do not truncate and wrap long lines
+ (setq truncate-partial-width-windows nil)
+ (setq truncate-lines nil)
+ ;; and move up down end begin over the real visible screen lines
+ (require 'physical-line)
+ (physical-line-mode 1)
+ (global-set-key [(end)] 'end-of-line)
+ (global-set-key [(home)] 'beginning-of-line)
+
+(I have GNU Emacs 22.1.1 (i386-mingw-nt5.1.2600) of 2007-06-02 on RELEASE)
+
+--bdimych
+
+----
+See also
+MoveByVisibleLineCommands

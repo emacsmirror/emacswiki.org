@@ -1,0 +1,117 @@
+[[en:SiteMap]]
+[[ko:대문]]
+[[ja:サイトマップ]]
+[[zh:網站地圖]]
+[[ru:КартаСайта]]
+[[pt:MapaDoSite]]
+[[fr:PlanDuSite]]
+[[es:MapaDelSitio]]
+<include "WikiLanguageMenu">
+
+EmacsWiki är tillägnad EmacsAndXEmacs-innehåll.... Se MissionStatement för mer information.
+
+Alla kan bidra. Du är välkommen att lägga till nya eller ändra redan existerande sidor. Läs mer på HowTo-sidan.
+
+Att lära sig emacs
+* EmacsNewbie -- för nybörjare
+* CategoryHelp -- onlinehjälpen i Emacs eller hjälp från Emacs-användare; ordlista, frågor
+* CategoryDocumentation -- Emacs är självdokumenterande och hjälpsam
+* CategoryHistory -- hur Emacs har utvecklats
+
+Grundläggande textredigering i Emacs
+* CategoryFilling -- radbrytning
+* CategoryIndentation -- indrag i text och källkod
+* CategoryParentheses -- om parenteser, hur man matchar och ändrar dem
+* CategoryRegexp -- sök, ersätt osv.
+* CategoryRegion -- operationer på markerad text
+* CategoryOutline -- att gömma delar av en buffer genom att använda "outlining" eller "zooming" (även kallat "folding")
+* CategoryEditing -- smarta tips om hur du redigerar text mer effektivt
+** CategoryHideStuff -- göm godtyckliga delar av en buffer
+* CategoryFiles -- lokala filer, "fjärrfiler" (hjälp!), backup av filer
+* CategoryCommands -- M-x kommandon, kommandohistorik, att öppna filer
+* CategoryBufferSwitching -- hur man växlar mellan olika buffrar
+* CategoryTemplates -- använd "canned text", mallar, formulär osv. för att minimera ditt skrivande
+
+Speciella mode för att redigera och manipulera olika filformat och filtyper
+* CategoryHypermedia -- HTML, Wikis, Info
+* CategoryXML -- XML-relaterad teknologi
+* CategorySql -- SQL och databaser
+* CategoryTex -- TeX och LaTeX
+* CategoryModes -- pointers, documentation, and extensions to all the other modes
+* CategoryVocab -- lär dig nya ord
+* CategoryDirectories -- Jobba med kataloger, även känt som dired.
+
+Andra specialfunktioner; interagera med externa program och fjärr-services
+
+* CategoryCalculators -- interaktiv matematik
+* CategoryCalendar -- kalender, dagbok, uppgifter
+** CategoryTodo -- underhålla att göra-listor
+* CategoryChatClient -- socialisera medan man sitter ensam framför skärmen
+* CategoryGames -- mindre produktiva sätt att använda sin tid på i Emacs
+* CategoryInterface -- Emacs-interface mot online-verktyg
+* CategoryProgrammerUtils -- verktyg för programmerare, t.ex. kod-browsers
+* CategoryRemoteEmacs -- kör Emacs på en maskin långt långt bort
+* CategoryExternalUtilities -- anropa externa program för att göra saker i Emacs
+* CategoryMail -- enklare hantering av e-post, icke Gnus-relaterat
+* CategoryGnus -- kraftfull hantering av nyhetsgrupper och e-post
+* CategoryBbdb -- Big Brother Database: håll koll på telefonnummer, e-postadresser osv.
+* CategoryVersionControl -- interface mot CVS, RCS, etc.
+* CategoryJournaling -- Emacs-interface mot webloggar
+
+Anpassa din Emacs-miljö
+
+* CategoryKeys -- anpassa tangenter; användarinterface
+* CategoryDotEmacs -- saker att lägga in i din ~/.emacs, för nybörjare i EmacsLisp
+* CategoryProgramming -- anpassningar folk använder vid programmering
+* CategoryFaces -- syntax highlighting, färger, font-lock
+** CategoryDisplay -- displayrelaterade saker (X-Window muspekarformer, ramar, ...)
+* CategoryInternationalization -- dressera Emacs att parlez-vous francais eller tala svenska
+* CategoryPaths -- Merga OS- och Emacs-sökvägar.
+
+Utökningar av Emacs: programmering i EmacsLisp, modifiera Emacs-källkoden
+
+* CategoryCode -- material för EmacsLisp-programmerare
+** CategoryDebug -- felsökning av och med Emacs
+* CategoryEshell -- en kommandotolk (shell) skriven helt i EmacsLisp
+* CategoryBuilding -- hur man kompilerar Emacs från källkoden
+* CategoryPatches -- patchar till Emacs, huvudsakligen på C-nivån
+* CategoryExtensionLanguage -- andra programspråk än EmacsLisp: Guile, Erlang, Python, ...
+* CategoryBiDi -- stöd för skriftsystem som skrivs från höger till vänster
+
+Hur man laddar hem och installerar Emacs
+* CategoryPorts -- anpassningar för olika operativsystem: NT, Mac, GNU/Linux medräknat Debian, BSD
+* CategoryWThirtyTwo -- speciellt för W32 (Microsoft Windows 32-bit)
+
+Vi som älskar Emacs
+* CategoryHomepage -- Emacs-vännernas egna hemsidor
+* CategoryHumor -- den humoristiska sidan
+
+Mera om EmacsWiki
+* EmacsChannel -- IRC-kanal där vi kan chatta
+* SiteMapDiscussion -- diskussion om kategorierna på den här wikin.
+* MeatBall:EmacsWiki -- wiki-teknik, organisation, säkerhet m.m.
+
+Filer
+* ElispArea -- ladda upp och ner EmacsLisp-filer
+
+Felrapporter och önskelista
+* EmacsBugs -- felrapporter
+* WishList -- önskelista
+
+Underhåll av EmacsWiki
+* [EmacsWiki:action=index Samtliga sidor] -- anger även antalet sidor
+* [EmacsWiki:action=random Slumpvis utvald sida] ett bra sätt att börja läsa och hitta sidor som behöver förbättras
+* [EmacsWiki:action=links&amp;url=2 Externa länkar]
+* [EmacsWiki:action=unlock Ta bort redigeringslås när allt har hängt sig]
+* [EmacsWiki:action=maintain Påbörja underhållsarbete]
+* [EmacsWiki:action=version Visa wiki-programvarans version]
+* [http://www.emacswiki.org/cgi-bin/list-archive.pl Ladda hem wiki-databasen]
+    (alla kan hjälpas åt att bevara en reservkopia)
+* [http://emacswiki.org/usage/ Statistik över användningen] (och OldStats)
+
+----
+Detta låter som en intressant idé! Folk har provat många olika sätt för att försöka samla ihop all Emacs-visdom som finns där ute, men faktumet att folk fortsätter bevisar att inget riktigt bra finns än. Med rätt mängd struktur och översikt kan kanske en Wiki fungera... -- JohnWiegley, fritt översatt till svenska av MathiasDahl
+----
+I have a question regarding the text "[se, en]" that can be seen on the RecentChanges page when it lists for example this page. Normally, Swedish websites are located under the top-domain ".se". But the "short-name" for the Swedish language, the "Swedish language code" is (now, you have to correct me if I'm wrong) "sv". And, for those interested, we have a lonely "S" on our cars... :) -- MathiasDahl
+
+You're probably correct, this seems like an error. -- EraEriksson

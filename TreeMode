@@ -1,0 +1,40 @@
+This is a mode to manage tree widgets in the buffer. Two library use this lib.
+
+== Download == 
+
+* Lisp:tree-mode.el
+* Lisp:imenu-tree.el
+* Lisp:glade-mode.el
+* Lisp:tags-tree.el
+* [http://www.newsmth.net/att.php?s.573.50692.4283.zip A package contain all files needed]
+
+== Installation ==
+
+Unpack the zip file, and put all .el file to load-path. Put image directory "imenu" to 
+tree-widget folder under data-directory, or put tree-widget/imenu to ~/.emacs.d and add
+this in .emacs:
+<pre>
+(eval-after-load "tree-widget"
+  '(if (boundp 'tree-widget-themes-load-path)
+       (add-to-list 'tree-widget-themes-load-path "~/.emacs.d/")))
+</pre>
+
+Add this to .emacs:
+<pre>
+(autoload 'imenu-tree "imenu-tree" "Imenu tree" t)
+(autoload 'tags-tree "tags-tree" "TAGS tree" t)
+</pre>
+
+== Screenshot ==
+
+Here is screenshot for imenu-tree:
+
+[[image:ImenuTreeImg]]
+
+And tags-tree:
+
+[[image:TagsTreeImg]]
+
+Glade-mode:
+
+[[image:GladeModeImg]]

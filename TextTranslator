@@ -1,0 +1,126 @@
+= Text Translation package =
+
+translates the character string on Emacs.
+this packages use the text translation service that exists
+on the Internet.
+
+== Download ==
+
+* <s>[http://www.oti-orz.mydns.jp/~khiker/file/elisps/text-translator-0.6.6.1.tar.bz2 text-translator-0.6.6.1.tar.bz2]</s> not available now...
+* Lisp:text-translator.el
+* Lisp:text-translator-vars.el
+* Lisp:text-translator-load.el
+
+== Quick use ==
+
+<pre>
+(require 'text-translator)
+(global-set-key "\C-x\M-t" 'text-translator)
+</pre>
+
+You can translate text selected by region with C-x M-t.
+
+You can also specify translator engine with prefix key like C-u C-x M-t google.com_jaen RET.
+
+== Configuration sample ==
+
+put text-translator.el, text-translator-load.el and text-translator-vars.el to load-path.
+
+=== use autoload ===
+
+<pre>
+(require 'text-translator-load)
+</pre>
+
+=== use require ===
+
+<pre>
+;;;; not autoload, use require
+(require 'text-translator)
+</pre>
+
+=== change prefix key ===
+
+<pre>
+;; set prefix-key to M-n
+(setq text-translator-prefix-key "\M-n")
+</pre>
+
+=== set global key ===
+
+<pre>
+(global-set-key "\C-x\M-t" 'text-translator)
+(global-set-key "\C-x\M-T" 'text-translator-translate-last-string)
+</pre>
+
+=== add keys to major-mode ===
+
+<pre>
+(add-hook
+ 'text-translator-mode-hook
+ (lambda()
+   ;; if you do not change prefix-key, it is executed by C-c M-a
+   (define-key text-translator-mode-pkey-map "\M-a" 'text-translator-translate-recent-type)))
+</pre>
+
+=== use proxy ===
+
+<pre>
+;; ;; if you are setting environment variables HTTP_PROXY,
+;; ;; you have not to set this.
+;; (setq text-translator-proxy-server "proxy.hogehoge.com")
+;; (setq text-translator-proxy-port   8080)
+</pre>
+
+=== use translation type auto selection (english/japanese only) ===
+
+<pre>
+;; set function that use auto selection
+(setq text-translator-auto-selection-func
+      'text-translator-translate-by-auto-selection-enja)
+;; set global-key
+(global-set-key "\C-xt" 'text-translator-translate-by-auto-selection)
+</pre>
+
+== Keys allocated to major-mode ==
+
+you can see key allocation by typing prefix-key C-h on the
+text-translator-mode.
+
+||\C-q||text-translator-quit||
+||\C-a||text-translator-translate-recent-type||
+||\C-l||text-translator-display-last-string||
+||\C-d||text-translator-translate-default||
+||\C-s||text-translator-toggle-leave-string||
+
+== Translation sites ==
+
+* google.com
+* yahoo.com
+* freetranslation.com
+* livedoor.com
+* fresheye.com
+* excite.co.jp
+* yahoo.co.jp
+* ocn.ne.jp
+* lou5.jp
+* traduku.net
+
+== Links ===
+
+* [http://d.hatena.ne.jp/khiker/20070503/emacs_text_translator Home Page(Japanese)]
+
+== Comments ===
+
+Great package. I recommend adding a function similar to M-$, which runs the command ispell-word. It would be great. Thanks!
+
+
+[new]
+Thank you for your comment.
+
+I'll think about it. -- [[khiker]]
+
+----
+CategoryInterface CategoryInternationalization
+
+

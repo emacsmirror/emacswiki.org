@@ -1,0 +1,216 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  IciclesIssues || '''[[Icicles]]''' || IciclesIssuesStale || IciclesIssuesClosed || 
+
+----
+
+== Open Icicles Issues ==
+
+This page is for discussion of open issues you might have with library '''<tt>[[icicles.el]]</tt>''' ('''[[Icicles]]'''), including bugs.
+
+See also:
+
+* IciclesIssuesStale -- Issues that users did not follow up on -- never heard back from them. Could mean that the problem is not a problem; could mean that they gave up ;-).
+
+* IciclesIssuesClosed -- Issues that were resolved. Bugs that were fixed. Explanations of non-bugs. Issues from this page (IciclesIssuesOpen) and IciclesIssuesStale are moved there when they are resolved.
+
+* IciclesDiscussion -- General discussion about the library, feedback, possible uses, and possible enhancements.
+
+
+
+
+=== How To Report an Icicles Issue ===
+
+You can report an '''Icicles''' issue (bug) on this page -- please follow the formatting suggestion provided below ([[#HowToUseThisPage]]).
+
+Alternatively, you can report an '''Icicles''' issue by email, by doing 
+one of the following:
+
+* Choose item '''Send Bug Report''' from MenuBar menu '''Icicles'''
+* `##M-x icicle-send-bug-report##'
+* (1) `C-h' from the minibuffer; (2) click button '''Icicles Options and Faces''' in buffer `*Help*'; (3) click link `##Send Bug Report##' in buffer `##*Customize Group: icicles*##'
+
+Always mention your Emacs version and platform (e.g. Windows, GNU/Linux). If you aren't using the latest '''Icicles''' files, let me know which you are using. '''Icicles''' files each have an <code>Update #</code> field in the header, which identifies the file exactly.
+
+The advantage of reporting a bug here is that others can share in the discussion. The advantage of reporting a bug by email is that I will see it immediately. Sometimes I don't notice a bug report on this page for a while.
+
+
+
+
+=== Debugging Tips ===
+
+1. If you use the debugger to report a backtrace, first delete all '''Icicles''' byte-compiled files, so that you use only the source files (##icicles*.el##) for debugging.
+
+2. By default, in ''Icicle'' mode, `M-x' is bound to command '''`icicle-execute-extended-command''''. This is a multi-command, which presents certain advantages over the standard command bound to `M-x' in Emacs, `execute-extended-command' -- see [[Icicles - Multi M-x]] for details.
+
+However, `icicle-execute-extended-command' has one disadvantage: an error backtrace is less informative, which can make debugging more difficult. If you want to see a normal backtrace at the point of error, then do what I do:
+
+  M-: (define-key icicle-mode-map "\M-x" 'execute-extended-command)
+  M-x set-variable debug-on-error t
+
+
+
+
+[:HowToUseThisPage]
+=== How To Use This Page ===
+
+For readability, please separate each issue thread with `----' (horizontal line), and introduce each entry within a thread with `<code>[new]</code>'. 
+
+Better yet, use this to separate threads (puts space before and after the horizontal line):
+
+ <pre>
+
+ </pre>
+ ----
+ <pre>
+
+ </pre>
+
+
+
+
+
+
+== (Open) Issues ==
+
+
+''Enter your report below''
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Hi, i'm trying to use icicle-search-buffer to perform a search and
+replace on all open buffers. But i just cannot get it to work. Here's
+what i'm doing (windows, emacsw32 v23.0.x, icicles from current CVS):
+
+<pre>
+1. M-x icicle-search-buffer RET
+2. Find (regexp): \(\.\.\\\)*xxx\\yyy RET
+3. Subgroup to use as search context [0, 1, 2,...] (default 0): 0 RET
+4. Choose buffer (`RET' when done): .* S-Tab <completion window with all buffers selected> M-!
+5. Choose buffer (`RET' when done): RET
+6. Choose an occurrence: C-S-RET
+7. Replace with: $(Dir)\xxx\yyy RET
+8. 'No match for $(Dir)\xxx\yyy' appears in echo area for a short time) and i'm back at 6.
+</pre>
+
+Now, i was trying for quite some time to convince icicles to perform
+my replacement until i finally realized, that what doesn't work are
+the single '\' in the replacement string (this is emacs 23.0.x on
+windows). As soon as i replaced them with '\\' i actually got a
+hit. So i finally could continue with:
+
+<pre>
+9. Choose an occurrence: M-,
+10. Replace with: $(Dir)\\xxx\\yyy RET
+11. Choose an occurrence: C-S-RET
+12. Choose an occurrence: C-|
+</pre>
+
+But it took me more than an hour (ok, feels stupid now) to realize
+what's happening. So maybe it would be possible to provide some more
+meaningful error message than just the 'No match for ...'?
+
+Also, what is really expected as input in 6. wasn't quite clear to
+me. I've been trying a lot of different things here (like using '.*
+S-Tab M-!' to select all occurrences, and a couple of other stupid
+things). It might be worth adding some example to the documentation?
+
+Ok, then i realized that my replacement did not work and that the
+search had to be changed to:
+
+<pre>
+2a. Find (regexp): \(\(?:\.\.\\?\)*\)\(\\xxx\\yyy\) RET
+</pre>
+
+with a replacement of:
+
+<pre>
+10a. Replace with: ..\\..\\..\\\1\\aaa\\bbb\\ccc\2 RET
+</pre>
+
+But now, \1 and \2 are somehow not getting replaced with the matches
+from the search expression.
+
+E.g. an input of:
+
+<pre>
+..\xxx\yyy\zzz
+</pre>
+
+would result in:
+
+<pre>
+..\..\..\\aaa\bbb\ccc\zzz
+</pre>
+
+However, a normal query-replace-regexp with the same
+search/replacement expressions and input is giving the expected result
+of:
+
+<pre>
+..\..\..\..\aaa\bbb\ccc\xxx\yyy\zzz
+</pre>
+
+I'm lost - no clue what i'm doing wrong now.
+
+Thanks for any pointers in the right direction! -- [[Kai]]
+
+[new:DrewAdams:2009-05-27 02:26 UTC]
+Hi, Kai. Sorry for your trouble.
+
+I have difficulty following your example -- there is too much going on at once here, for one thing. A couple of suggestions:
+
+1. Let's do this by email, since it sounds like there will be a bit of discussion, to be able to understand the situation etc. Send me a mail via `M-x icicle-send-bug-report'. Don't repeat what you've already said. The place to start is with something simpler.
+
+2. We need to break it down into the separate questions. First, I need to know what ''does'' work. Give me an example of what you're doing, but using a very simple regexp -- no backslashes etc. That will make sure we're on the same page wrt the expected sequence of events and whether things basically work or not. Once we've got that down, we can proceed to fancy regexps, fancy replacements, etc.
+
+Give me a recipe with just a few, simple buffer names -- maybe just one -- and a simple regexp (e.g. a literal string) and a simple replacement string -- no `##\,##' constructs etc. Then we'll make it more complex bit by bit.
+
+4. You say that you used `##M-!##'. That won't work for '''Icicles''' search and replace. `##M-!##' applies an action that is designed to act on a list of candidates. What you want is `##C-|##', which is an ''alternative action'' (which is replacement, for Icicles search) and which acts on ''each'' candidate -- not on the ''list'' of candidates. Summary:
+
+* `##C-!##' -- normal action, applied to ''each'' candidate
+* `##M-!##' -- normal list action, applied to the ''list of all'' candidates
+* `##C-|##' -- ''alternative'' action, applied to each candidate -- for search, this is replacement
+* `##M-|##' -- ''alternative list'' action, applied to the list of all candidates
+
+For '''Icicles''' search, no list actions are defined -- no `##M-!##', no  `##M-|##'. For search, the normal action browses search hits, so applying the normal action to ''each'' hit in turn makes no sense -- so no `##C-!##' either (it's not undefined, but it's useless). If you want to perform replacement for all candidates, then you want to apply the alternative action to each candidate: `##C-|##'.
+
+I know there is a lot to get used to. But once you do, it's pretty logical.
+
+We'll eventually get to your fancy replacement, but let's do it a step at a time, making sure both (a) that we're on the same page and (b) that things do in fact work as they should. ;-)
+
+Once we understand each other and we are sure things work as they should, we can discuss how I might make things clearer in the doc. Thanks for your patience. Hopefully, it will be rewarded.
+
+Thx -- DrewAdams
+
+[new:DrewAdams:2009-08-12 04:08 UTC]
+Followed up with Kai off-wiki. There was indeed a bad bug, which I've hopefully fixed now. Thx -- DrewAdams
+
+
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+----
+
+|| *Previous:*  IciclesIssues || '''[[Icicles]]''' || IciclesIssuesStale || IciclesIssuesClosed || 
+
+
+CategoryCompletion

@@ -1,0 +1,88 @@
+: Because serendipity is too important to be left to chance...
+
+From the web page:
+
+Remembrance Agents are a set of applications that watch over a user's
+shoulder and suggest information relevant to the current
+situation. While query-based memory aids help with direct recall,
+remembrance agents are an augmented associative memory. For example,
+the word-processor version of the RA continuously updates a list of
+documents relevant to what's being typed or read in an emacs
+buffer. These suggested documents can be any text files that might be
+relevant to what you are currently writing or reading. They might be
+old emails related to the mail you are currently reading, or abstracts
+from papers and newspaper articles that discuss the topic of your
+writing.
+
+We are experimenting with remembrance agents in word processors, web
+browsers, and on wearable computers. The word-processor version works
+in Emacs and XEmacs.
+
+* http://www.remem.org/
+
+== What it does ==
+
+The RA consists of two parts: One part is an indexing program which
+you should probably run in the background once a day.  It is written
+in C and understands lots of document formats such as HTML, mail
+folders, etc.  This index is used in the second part: An Emacs add-on
+which looks at the text around point and searches for similar
+documents in the index.  A little window at the bottom of the frame
+lists the best matches and allows you to move there with a click.
+
+== Discussion ==
+
+I find remem fascinating and use it often when I write. The novel
+Angel Deep
+
+* http://paystream.sourceforge.net/cgi-bin/thr33?page=demos/easy_episodes/angel [Broken link again]
+
+is an example of remem's use.  Here is the load defun I use
+<pre>
+;;;  remem mode
+(defun rharris-load-remem ()
+  "Load remembrance agent mode"
+  (interactive)
+  (setq load-path (cons "/usr/local/share/emacs/remem" load-path))
+  (load "remem.el")
+  (setq remem-prog-dir "/usr/local/bin")
+  (setq remem-database-dir "/usr/local/share/remem/db")
+; scopes take form: (DIRN NUM-LINES UPDATE-TIME QUERY-RANGE) where:
+;   DIRN is the subdirectory of remem-database-dir with the desired database
+;   NUM-LINES is the number of lines that you want the scope to show (initially)
+;   UPDATE-TIME is the time between scope updates (in seconds)
+;   QUERY-RANGE number of words around your cursor that you want the scope to query on
+  (setq remem-scopes-list '(("kjv" 2 10 500)
+                            ("hdt" 2 10 500)))
+)
+</pre>
+
+Then I use a data defining fn for each of the novel's voices.
+
+<pre>
+(defun rharris-remem-uncas ()
+"Angel Deep: Uncas's voice"
+(interactive)
+(setq remem-scopes-list '(("bard_mov" 2 10 500)
+                          ("hdt" 2 10 500)
+                          ("lotm" 2 10 500)))
+			  )
+														  
+</pre>
+
+-- RichardHarris
+
+== next ==
+
+It has been a while since I used it.  I ended up not finding it
+useful, perhaps there wasn't really that much personal data around,
+thus not many related documents.  Perhaps this is for people like
+RichardStallman who gets 400 mails a day or so... -- AlexSchroeder
+
+I like RemembranceAgents. I index my blog and my mail during my shutdown sequence. I wish I had a faster computer, though... -- SachaChua
+
+----
+BradleyRhodes
+CategoryPersonalInformationManager
+CategoryHypermedia,
+CategoryExternalUtilities

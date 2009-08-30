@@ -1,0 +1,15 @@
+After wasting a lot of time head-scratching and swearing I discovered: *start-process* needs *default-directory* to be set to a directory that exists.
+
+Eg
+<pre>
+    (setq default-directory "@")
+    (start-process "ls" nil "ls")
+</pre>
+will produce the error "(wrong-type-argument stringp nil)"
+
+==
+
+Sounds like a bug; please report it!
+
+[new]
+This doesn't sound like a bug to me. On POSIX systems (so far as I understand things), processes have to be started within some working directory. `default-directory' simply is the working directory of the current buffer, so if it's set to a non-existent path, what's the exec call to do?

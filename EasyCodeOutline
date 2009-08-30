@@ -1,0 +1,46 @@
+It's quite easy to configure outline minor mode (see OutlineMode) with some customization to show/hide bodies of functions, class definitions, etc. in code.
+
+Here's the .emacs to set it up for Python and PHP.  This rebinds C-arrows and M-arrows to do basic folding/unfolding and navigation of the outline structure.  Class and function definition lines are marked as outline headers, using indentation to determine level.  
+
+The only 'gotcha' with this setup is that code immediately following a function/class definition, but outside of it, will still be gobbled up by OutlineMode as part of the preceding section, until the next function/class definition is found.  Occasionally this might actually be appropriate - most places it is not.  One hack-around is to stick in a comment beginning with '#head' and mark such lines also as outline headers.
+
+(I'm a relative EmacsNewbie myself, so if I'm doing something stupid here please educate me! -- CarlMeyer)
+
+    (defun show-onelevel ()
+      "show entry and children in outline mode"
+      (interactive)
+      (show-entry)
+      (show-children))
+    
+    (defun cjm-outline-bindings ()
+      "sets shortcut bindings for outline minor mode"
+      (interactive)
+      (local-set-key [?\C-,] 'hide-sublevels)
+      (local-set-key [?\C-.] 'show-all)
+      (local-set-key [C-up] 'outline-previous-visible-heading)
+      (local-set-key [C-down] 'outline-next-visible-heading)
+      (local-set-key [C-left] 'hide-subtree)
+      (local-set-key [C-right] 'show-onelevel)
+      (local-set-key [M-up] 'outline-backward-same-level)
+      (local-set-key [M-down] 'outline-forward-same-level)
+      (local-set-key [M-left] 'hide-subtree)
+      (local-set-key [M-right] 'show-subtree))
+    
+    (add-hook 'outline-minor-mode-hook
+              'cjm-outline-bindings) 
+    
+    (add-hook 'php-mode-user-hook
+              '(lambda ()
+                 (outline-minor-mode)
+                 (setq outline-regexp " *\\(private funct\\|public funct\\|funct\\|class\\|#head\\)")
+                 (hide-sublevels 1)))
+    
+    (add-hook 'python-mode-hook
+              '(lambda ()
+                 (outline-minor-mode)
+                 (setq outline-regexp " *\\(def \\|clas\\|#hea\\)")
+                 (hide-sublevels 1)))
+   
+----
+CategoryHideStuff
+CategoryOutline

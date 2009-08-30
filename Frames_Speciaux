@@ -1,0 +1,50 @@
+'''Cette page fait partie de la description de OneOnOneEmacs, par DrewAdams.'''
+
+This page is also available in English: [[Special Frames]]
+
+*  
+*  
+*  
+
+Emacs te permet de faire en sorte que certains buffers, pour lesquels Emacs cree normalement une deuxieme fenetre lorsqu'il n'y a qu'une fenetre, sont affiches dans des [[Frame]]s speciaux propres a eux" (traduit du manuel d'utilisateur Emacs).
+
+Alors, j'ai profite de cette fonctionalite. Ca n'est peut-etre pas d'une grande utilite, mais au moins ca met en evidence la qualite "special" d'un buffer. Puis, tu peux donner des proprietes differentes a ces frames speciaux. Voici un capture d'ecran d'un buffer special (<code>*Occur*</code>) et d'un buffer ordinaire :
+
+[[image:DrewsEmacsOccurImage]]
+
+Peut-etre plus important : les buffers speciaux sont en effet dans des ''frames dedies'' -- tu ne peux pas les dissocier de leur frames.
+
+Alors, c'est quoi un "'''buffer special'''" au juste ? Tout buffer qui correspond a 
+`special-display-regexps' ou a `special-display-buffer-names'. Dans mon cas,
+`special-display-regexps' est simplement
+<code>"[ ]?[*][^*]+[*]"</code>, donc tous les buffers dont le nom commence et termine par un asterisk (<code>*</code>) ont des frames speciaux. Exemples :
+<code>*grep*</code>, <code>*Messages*</code>, <code>*scratch*</code>.
+
+Les frames speciaux sont similaires aux fenetres Emacs ''dedies'' (fenetres qui satisfont le predicat `window-dedicated-p') : la fonction `display-buffer' ne reutilise pas une fenetre ou un frame qui est dedie a un buffer pour afficher un autre buffer.
+
+Traiter les frames de la meme facon que sont traitees les fenetres impliquait aussi la modification de qq fonctions qui traitent les fenetres dediees specialement. Par exemple, j'ai modifie la commande `Buffer-menu-select' pour qu'elle utilise `pop-to-buffer' (qui se sert d'un nouveau frame, pourvu que `pop-to-frames' n'est pas nil) lorsqu'une fenetre est dediee a son buffer (`window-dedicated-p').
+
+'''Voir le package :''' Lisp:oneonone.el
+
+== Frames Speciaux Invisibles ==
+
+Puisque les frames speciaux sont dedies a leurs buffers, ce n'est pas trop utile de les detruire lorsqu'on en a plus besoin pour l'instant. On peut les inconifier ou on peut les rendre ''invisibles''. Un '''frame invisible''' est exactement ca : il n'est ni visible ni iconifie -- il n'a ''aucune representation visible''.
+
+J'ai modifie plusieurs commandes afin de rendre les frames speciaux invisibles au lieu de les detruire ou les inconifier.
+
+Par exemple, la command `remove-window' est comme la command `delete-window', mais elle traite les fenetres qui sont seules dans leur frames ainsi : Si la fenetre est dediee a son buffer, alors son frame est rendu invisible ; sinon, son frame (ainsi que la fenetre elle-meme) est detruit. J'utilise la commande `remove-window' a la place de `delete-window' interactivement (meme ma version de `delete-window' -- voir 
+[[Delete Frames Easily - But Not Too Easily#Redefineddelete-window]]) :
+
+  (substitute-key-definition 'delete-window
+                             'remove-window
+                             global-map))
+
+La commande `mouse-remove-window' (<code>[mode-line
+C-mouse-3]</code>) est l'equivalent de `remove-window' pour la souris.
+
+
+'''Voir les packages :''' Lisp:frame-cmds.el, Lisp:setup-keys.el
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay
+

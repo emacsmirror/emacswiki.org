@@ -1,0 +1,32 @@
+This page provides supplementary information about DiredMode and some enhancements to it.
+
+* DiredOmitMode -- Hide boring files
+* DiredSortDirectoriesFirst
+* DiredReuseDirectoryBuffer -- Make Dired reuse the Dired buffer when you visit a directory
+* DiredLineCommands -- Improvements to next and previous line in Dired.
+* DiredDoShellAsynchronous -- Run shell command in background
+* DiredGetFileSize -- File size of selected files
+* DiredPlus -- Enhancements to Dired Bindings, Menus, Font-Locking, ...
+* DiredFindInLisp -- Run `find-dired' and `find-grep-dired' with only Emacs Lisp code.
+* FindGrepDiredSearchAndReplace -- interactive regexp search/replace in, say "*.rb" in current dir and all subdirs.
+* DiredWThirtyTwoTweaks -- Dired Enhancements for MS Windows
+* ExecuteSomeDiredCommand -- Execute Command whose Name Contains `dired'
+* DiredOfFile -- Open Dired for current file only
+* FilesPlus -- Together with <tt>[[ls-lisp+.el]]</tt>, modifies `insert-directory' so that Dired's second header line lists the number of files:
+ '''##files 691##''' ##space used 49439 available 56233408##
+
+
+See also: [[DiredMode#DiredEnhancements|Other Dired Enhancements]].
+
+== Mode Description in XEmacs ==
+
+In [[XEmacs]]'s dired mode, `C-h m' does not work the way it does in other modes.
+not sure why.  In any case, I use this:
+
+  (define-key dired-mode-map "\C-hm" 'dired-describe-mode)
+
+It is not a perfect solution because it is not electric, but it works. -- gambarimasu who is at gmail
+
+----
+CategoryDirectories
+

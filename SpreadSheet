@@ -1,0 +1,26 @@
+Several packages provide the capabilities for working with Spreadsheets (See [[WikiPedia:Spreadsheet]]) in Emacs.
+
+* SimpleEmacsSpreadsheet --  A major mode in Emacs that mimics traditional spreadsheet software, but uses EmacsLisp formulas.
+* [[Dismal]] -- An older spreadsheet mode
+* [[ESheet]] -- A spreadsheet with its own extensible formula language.
+* SpreadMode -- A forumula language that Emacs can generate spreadsheets from.
+* LatexSpread -- A simple spreadsheet minor mode for TeX/LaTeX documents.
+LaTeX files can include formulas for Emacs to evaluate.
+* [[OrgMode]] -- Its table editor uses AdvancedDeskCalculator to
+  provide spreadsheet functionality. All the power of Calc in a grid!
+* [[CellMode]] -- Visual dataflow language with a spreadsheet interface
+* [http://table.sourceforge.net/ Table.el] -- Table editor for Emacs
+
+See also
+
+* ElectricFormMode -- calculations in a buffer, but free-form
+* UnXls -- reading MS Excel spreadsheet files
+
+----
+[new]
+Using NT Xemacs, could only get [[Dismal]] to work properly. It compiled and worked, pretty much 'out of the box'. Using it for a simple timesheet app.
+-TimOCallaghan
+
+----
+CategoryCalculators
+CategoryFinancial

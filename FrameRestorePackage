@@ -1,0 +1,9 @@
+This package by PatrickAnderson allows you to save/restore frame size/position at the end of your session (when you quit Emacs).
+
+Lisp:frame-restore.el
+
+----
+CategoryFrames
+FrameConfiguration 
+SessionManagement
+CategoryDisplay

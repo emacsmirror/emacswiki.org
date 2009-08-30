@@ -1,0 +1,37 @@
+Lisp:eform.el is a minor mode to help you with light calculations in a buffer.  It has several advantages over other things that I've seen:
+
+* It's a minor mode, so you can still use it with whatever major mode you want
+* It's more light-weight than a full fledged SpreadSheet, and imposes no constraints on the overall formatting of your file.  There's just a simple markup syntax to tell it where the data are and where you want the result to go.
+
+I wrote this because I was keeping my cycling log as a text file in emacs.  I want to do a few simple things like total up the numbe of miles or number of hours I've ridden, but a full-blown spreadsheet seems like overkill for this.  I also wanted some space for free-form text so that I could take notes on where I went, how I felt, etc.  So I defined a simple mark-up syntax that instructs emacs to sum up the numbers in a certain rectangle, etc.  I also wanted to create sub-totals which were then added together to produce a grand total, so there's also a facility for adding up all of the subtotals matching some regexp.            
+                                                               
+I call this "Electric Forms Mode" because it functions sort of like a web form where you fill in a few numbers and then they get crunched into some sort of result, but the format is not so rigid as a spreadsheet.                                                    
+
+So, Electric Form mode takes a file that looks like this (the #'s mark where the action is):
+<pre>
+       (#dist-jan  (#time-jan
+ 1-1     11.1         0:38
+ 1-2     15.3         1:01 
+ 1-3      5.5         0:25
+       #dist-jan)   #time-jan)
+
+       (#dist-feb  (#time-feb
+ 2-1     11.0         0:37
+ 2-2     15.2         1:00 
+ 2-3      5.4         0:24
+       #dist-feb)   #time-feb)
+
+Here are some subtotals
+
+#dist-jan ()
+#time-jan fhm + thm ()
+#dist-feb ()
+#time-feb fhm + thm ()
+
+Here are the grand totals
+(dist-.*) #total-dist ()
+(tim-.*) #total-time ()
+</pre>
+and fills in the sum of the numbers in the four columns into appropriate spots between the parenthesis.  
+
+See the comments in the file for details and further capabilities.  The code is not battle hardened, so I'd appreciate comments about what goes wrong, how you use it, what you'd like to see, etc.  That is, if anyone wants to use it besides me!  :-)

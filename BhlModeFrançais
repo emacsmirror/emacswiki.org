@@ -1,0 +1,88 @@
+:Note: this page is also available in <i>english</i>: BhlMode
+
+== Qu'est-ce que BHL? ==
+
+Le mode BHL vous permet d'éditer du texte avec une structure implicite
+et de le convertir ensuite en HTML, LaTeX, Texinfo ou SGML
+(Linuxdoc). Ce mode supporte la conversion des sections (sur trois
+niveaux), des listes en tous genres, des tableaux, des noms Wiki,
+etc. Vous pouvez aussi utiliser les environnements verbatim et
+minipage.
+
+Quelques scripts vous permettent aussi d'utiliser BHL en ligne de
+commande, sans ouvrir Emacs.
+
+La version actuelle est la 1.7.3 (november 2004).
+
+== Où l'obtenir? ==
+
+Vous pouvez télécharger BHL depuis ElispArea ou
+http://www.nongnu.org/bhl.
+
+* [http://www.cognition.ens.fr/~guerry/bhl/download/bhl.el bhl.el]
+
+Une documentation complète est disponible ici (voir le site pour une
+documentation en français):
+
+* [http://www.cognition.ens.fr/~guerry/bhl/manuals/bhl.html HTML manual]
+* [http://www.cognition.ens.fr/~guerry/bhl/manuals/bhl.pdf PDF manual]
+
+== Le dernier BHL ==
+
+BHL est toujours en développement. N'hésitez pas à signaler des bogues
+et à suggérer de nouvelles fonctionnalités.
+
+CVS: à vos risques et périls !
+
+    cvs -z3 -d:ext:anoncvs@cvs.savannah.nongnu.org:/cvsroot/bhl co bhl
+
+== Tutoriel ==
+
+Peut-être aurai-je le temps un jour d'écrire ici un petit tutoriel
+pour BHL. En attendant, vous pouvez toujours consulter les exemples
+sur le site:
+
+* 
+  [http://www.cognition.ens.fr/~guerry/bhl/examples/ Examples]
+
+BastienGuerry
+
+=== Demande de fonctionalités ===
+
+J'aimerais pouvoir specifier a BHL des formats de lignes a eviter.
+Par exemple j'aime faire mes tableau comme ceci:
+
+    +---+---+
+    |   |   |
+    +---+---+
+
+bhl devrait ignorer les "+---+" plutot que les considerer du texte.
+
+: Je ne comprends pas bien... vous voulez que ces lignes soient <b>effacées</b> ?
+
+:: Oui.  Voula un exemple pour m'expliquer mieux.
+:: Si mon fichier source contient:
+
+    +--+----+
+    |01|test|
+    +--+----+
+    |02|test|
+    +--+----+
+
+et je fait bhl2html, le resultat est deux tables et le texte
+"+--+----+" entre les deux (et non pas une table ayant deux lignes).
+Bhl aurait voulu plutot:
+
+    |01|test|
+    |02|test|
+
+ -- JeanPhilippeTheberge
+
+: Voir la variable `<b>bhl-ignored-regexps</b>' dans M-x customize-group RET bhl.
+
+BastienGuerry
+
+----
+CategoryModes
+MarkupModes
+BhlMode

@@ -1,0 +1,53 @@
+`recode' is a program that allows you to change the encodings of files.  
+
+Most of the time Emacs can do this for you.  
+For example, to convert a file encoded with latin-1 in the utf-8 encoding,
+open the file with emacs, specifying the latin-1 encoding:
+
+  C-x RET c latin-1 RET C-x C-f file-name
+
+Then use 
+
+  M-x set-buffer-file-coding-system
+
+and specify utf-8 that time as the real coding system. You can now save and the file will be recorded
+using the utf-8 encoding.
+
+There is another way to recode the file from latin-1 to utf-8, assuming
+that utf-8 is your default system encoding. Load the file in utf-8 format 
+and use
+
+  C-x h M-x recode-region
+
+specifying this time latin-1. The resulting buffer will be in utf-8 format.
+
+
+Sometimes, however, recode comes handy.
+
+You might want to convert a unicode file to an ASCII HTML file with
+HTML entities, for example, when you want to paste some text you have
+written in Emacs into a field that cannot be encoded using the charset
+of the website you are visiting. This can happen, for example, when
+you want to paste some non-Latin-1 onto a wiki with a Latin-1 charset.
+
+Here's how:
+
+ recode utf8..html file.txt
+
+`iconv' is often present
+by default on a system and does a similar job to recode.  
+
+----
+
+On a file written on Mac OS X, I found that umlauts were translated
+correctly -- with one exception: The German sharp S, `ß', is not
+translated correctly, it seems. Furthermore, the file continued to be
+full of `^M' characters. I assume that both `^M' and `^M^J' are used
+-- `^M' for newlines within a paragraph and `^M^J' for newlines
+separating paragraphs. -- AlexSchroeder (please update this info and
+remove signature if you know more)
+
+----
+CategoryExternalUtilities
+CategoryInternationalization
+CategoryPorts

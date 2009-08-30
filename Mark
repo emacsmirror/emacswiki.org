@@ -1,0 +1,16 @@
+The '''[::mark]''' is one end of the [[region]]; the other end is [[point]].
+
+There is only one current mark in a [[buffer]], but you can access past positions of the mark, sometimes also referred to also as "marks". In particular, you can cycle among these positions.
+
+Being a buffer position, the mark is located before or after a character. It is updated dynamically whenever the buffer's contents are modified.
+
+You can set the mark in any of these ways:
+
+* `C-SPC' (point stays where it was)
+* dragging point with `mouse-1' (old point becomes mark)
+* clicking `mouse-3' (clicked position becomes point; old point becomes mark)
+
+See MarkCommands for information on commands involving the mark.
+
+----
+CategoryGlossary

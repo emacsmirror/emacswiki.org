@@ -1,0 +1,60 @@
+==What is AutoDocument ?==
+AutoDocument is a package to generate some document automatically.
+
+==Why the need for AutoDocument ?==
+Command list in Emacs Lisp file header is helpful to understand what the file is. But maintaining the list by hand is cumbersome and tend to forget updating. Let's generate it automatically.
+
+==Install==
+Put Lisp:auto-document.el in your load-path, add
+{{{
+     (require 'auto-document)
+     ;; If you want to update auto document before save
+     (add-to-list 'before-save-hook 'auto-document-maybe)
+}}}    
+in ~/.emacs
+
+==Usage==
+If you setup before-save-hook, update document automatically. But auto document can be generated manually.
+
+* M-x auto-document -- Insert or update command list of current buffer.
+* M-x auto-document-test -- Display generated document of FILENAME.
+
+==ScreenShot==
+[[image:AutoDocumentScreenshot]]
+
+==Customize==
+All below option can customize by: M-x customize-group RET auto-document RET
+
+==Problem Reports==
+When I try to run auto-document on vestion 0.1.0 of twit.el, I get the error: (wrong-type-argument listp "Header format:  (or part we care about)").  Is this something wrong with me, or auto-document?  Here is the stacktrace:
+
+  car("Header format:  (or part we care about)")
+  (eq (car (nth 4 sexp)) (quote interactive))
+  (and (memq func (quote ...)) (eq (car ...) (quote interactive)))
+  (or (and (memq func ...) (eq ... ...)) (memq func adoc-define-command-functions))
+  (and (stringp doc) (or (and ... ...) (memq func adoc-define-command-functions)))
+  (if (and (stringp doc) (or ... ...)) (progn (setq commands ...)))
+  (while (consp --cl-var--) (setq sexp (car --cl-var--)) (setq func (car sexp)) (setq doc (ignore-errors ...)) (if (and ... ...) (progn ...)) (if (and ... ...) (progn ...)) (setq --cl-var-- (cdr --cl-var--)))
+  (let* ((doc nil) (--cl-var-- sexps) (sexp nil) (func nil) (doc nil) (commands nil) (options nil)) (while (consp --cl-var--) (setq sexp ...) (setq func ...) (setq doc ...) (if ... ...) (if ... ...) (setq --cl-var-- ...)) (list commands options))
+  (catch (quote --cl-block-nil--) (let* (... ... ... ... ... ... ...) (while ... ... ... ... ... ... ...) (list commands options)))
+  (cl-block-wrapper (catch (quote --cl-block-nil--) (let* ... ... ...)))
+  (block nil (let* (... ... ... ... ... ... ...) (while ... ... ... ... ... ... ...) (list commands options)))
+  (loop with doc for sexp in sexps for func = (car sexp) for doc = (ignore-errors (nth ... sexp)) when (and (stringp doc) (or ... ...)) collect (cons (nth 1 sexp) doc) into commands when (and (stringp doc) (eq func ...)) collect (list (nth 1 sexp) doc (nth 2 sexp)) into options finally (return (list commands options)))
+  adoc-construct-from-sexps(((defvar twit-version-number "0.1.0") (require (quote xml)) (require (quote url)) (require (quote url-http)) (eval-when-compile (require ...)) (defvar twit-status-mode-map (make-sparse-keymap)) (defvar twit-followers-mode-map (make-sparse-keymap)) (defun twit-set-user-pass (sym val) "Set the username/password pair after a customization.\n\nNote that this function uses a really cheap hack.\nBasically the problem is that we need to run this whenever the twit-user\nand twit-pass variables are customized and loaded.  The problem is, this\nfunciton is executed by cutomzie on emacs initialization, during the\nsetting of twit-user, but before the binding to twit-pass, throwing an \nerror.\n\nWe get around this by using condition-case and handling the void-varible\nerror." (set-default sym val) (condition-case nil ... ...)) (when nil (set url-basic-auth-storage nil)) (defgroup twit nil "twit.el is an emacs package for interfacing with Twitter (http://www.twitter.com)\na microblogging service.  The twit.el package provides you with the ability to post\nstatus updates and driect messages, as well as recieve them.  Additionally you can\nopt to \"follow\", and the timeline will be updated automagickally.\n\ntwit.el also makes use of the Todochiku package, which you can install from here:\nhttp://www.emacswiki.org/emacs/todochiku.el" :version "0.1" :group (quote twit)) (defcustom twit-user "" "Your twitter username.\nIf this is set, attempt to automagickally log into twitter." :group (quote twit) :type (quote string) :set (quote twit-set-user-pass)) (defcustom twit-pass "" "Your twitter password.\nIf this is set, attempt to automagickally log into twitter." :group (quote twit) :type (quote string) :set (quote twit-set-user-pass)) (defcustom twit-new-tweet-hook (quote nil) "Functions to execute when there is a new tweet.\nIf you have Todochiku, add \"twit-todochiku\" here, and you will be notified when a new tweet appears. " :type (quote hook) :group (quote twit)) (defcustom twit-follow-idle-interval 90 "How long in time to wait before checking for new tweets.\nRight now it will check every 90 seconds, Which will generate a maximum of 40 requests, leaving you another 30 per hour to play with.\n\nThe variable name is a bit of a misnomer, because it is not actually based on idle time (anymore)." :type (quote integer) :group (quote twit)) (defvar twit-shadow-follow-idle-interval twit-follow-idle-interval "Shadow definition of `twit-follow-idle-interval' that we can modify on the fly.") (defcustom twit-show-user-images nil "Show user images beside each users tweet." :type (quote boolean) :group (quote twit)) (defcustom twit-user-image-dir (concat ... "twitter") "Directory where twitter user images are to be stored.\n\nThis directory need not be created." :type (quote string) :group (quote twit)) (defcustom twit-debug nil "Whether or not to run twit.el in debug mode" :group (quote twit) :type (quote boolean)) (defcustom twit-debug-mem nil "Turn on memory debugging." :group (quote twit) :type (quote boolean)) (defcustom twit-filter-tweets-regex "" "Filter all tweets with this regex.\n\nThis is useful if you do not want to see a particular style of tweet.\nFor isntance, if hash-tagging pisses you off, you could set this to \"#\" and\nno hash-tagging messages would get to you.\n" :type (quote regexp) :group (quote twit)) (defcustom twit-filter-at-tweets nil "Whether or not to filter any tweets that have @user of a user you do not know.\n\nIf enabled, every tweet will be scanned for any @msgs.  If they contain one, and\nthe username is not a user that you are following (or you) then it will be ignored." :type (quote boolean) :group (quote twit)) (defcustom twit-completing-searches nil "A list of searches you perform over and over again.\n\nThis is so that you can use the completion interface for when you want to run a\nsearch." :type (quote ...) :group (quote twit)) (defface twit-message-face (quote ...) "The font face to use for a twitter message." :group (quote twit)) (defface twit-author-face (quote ...) "The font face to use for the authors name" :group (quote twit)) (defface twit-info-face (quote ...) "Face for displaying where, how and when someone tweeted." :group (quote twit)) (defface twit-title-face (quote ...) "Title Area of the recent tweets buffer." :group (quote twit)) (defface twit-zebra-1-face (quote ...) "Color one of zebra-striping of recent tweets and followers list." :group (quote twit)) (defface twit-zebra-2-face (quote ...) "Color two of zebra-striping of recent tweets and followers list." :group (quote twit)) (defface twit-error-face (quote ...) "Color of twit.el errors." :group (quote twit)) (defface twit-fail-whale-face (quote ...) "(_x___}<" :group (quote twit)) (defvar twit-key-list (quote ...)) (define-key twit-status-mode-map "r" (quote twit-show-recent-tweets)) (define-key twit-followers-mode-map "r" (quote twit-list-followers)) (dolist (info twit-key-list) (define-key twit-status-mode-map ... ...) (define-key twit-followers-mode-map ... ...)) (defun twit-mode-help nil (interactive) (message "Help: %s" ...)) (defvar twit-timer nil "Timer object that handles polling the followers") (defvar twit-rate-limit-timer nil "Timer object to poll the rate-limiting.") (defvar twit-first-time-through nil) (defconst twit-base-search-url "http://search.twitter.com") (defconst twit-base-url "http://twitter.com") (defconst twit-update-url (concat twit-base-url "/statuses/update.xml")) (defconst twit-puplic-timeline-file (concat twit-base-url "/statuses/public_timeline.xml")) (defconst twit-friend-timeline-file (concat twit-base-url "/statuses/friends_timeline.xml?page=%s")) (defconst twit-followers-file (concat twit-base-url "/statuses/followers.xml")) (defconst twit-friend-list-url (concat twit-base-url "/statuses/friends.xml")) (defconst twit-mentions-url (concat twit-base-url "/statuses/mentions.xml")) (defconst twit-rate-limit-file (concat twit-base-url "/account/rate_limit_status.xml")) (defconst twit-direct-msg-send-url (concat twit-base-url "/direct_messages/new.xml")) (defconst twit-direct-msg-get-url (concat twit-base-url "/direct_messages.xml")) (defconst twit-search-url (concat twit-base-search-url "/search.atom?q=%s")) ...))
+  (save-excursion (set-buffer buf) (goto-char (point-min)) (adoc-construct-from-sexps (loop with it while ... collect it)))
+  adoc-construct(#<buffer twit.el>)
+  (let* ((--cl-rest-- ...) (commands ...) (options ...)) (adoc-output-commands commands) (adoc-output-separator) (adoc-output-customizable-options options))
+  (progn (let* (... ... ...) (adoc-output-commands commands) (adoc-output-separator) (adoc-output-customizable-options options)))
+  (destructuring-bind (commands options) (adoc-construct buf) (adoc-output-commands commands) (adoc-output-separator) (adoc-output-customizable-options options))
+  adoc-output(#<buffer twit.el>)
+  (let ((standard-output standard-output)) (adoc-output (current-buffer)))
+  (let ((standard-output ...)) (let (...) (adoc-output ...)) (with-current-buffer standard-output (prog1 ... ...)))
+  (with-output-to-string (adoc-output (current-buffer)))
+  (insert (with-output-to-string (adoc-output ...)) "\n")
+  (save-excursion (adoc-prepare (current-buffer)) (insert (with-output-to-string ...) "\n"))
+  auto-document()
+  call-interactively(auto-document)
+--JonathanArkell
+
+[new:rubikitch:2009-05-26 02:58 UTC]
+I just fixed the bug. -- [[rubikitch]]

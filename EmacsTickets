@@ -1,0 +1,39 @@
+The problem is next. Suppose you are tired going from work to home,
+get to the bus, paid for a ticket. There is a game which will shake
+you a little. We have six digits is ticket number, our aim is put
+"+","-","*" or "/" between any two digits, eval an expression and we
+should get 100! If it were easy to find, try to find other solution.
+
+Here is also how Emacs can play this game.
+
+    (defvar bil-list nil "list of valid tickets.")
+    
+    (defun bil-calc (pbil pidx)
+      "nil"
+      (let ((idx pidx)
+    	(sbil pbil))
+        (condition-case nil
+    	;; prevent division by zero
+    	(when (string= (calc-eval sbil) "100")
+    	  (add-to-list 'bil-list sbil))
+          (error nil))
+        (if (= idx (length sbil))
+    	nil
+          (mapcar (lambda (lid)
+    		(mapcar (lambda (sign)
+    			  (bil-calc (concat (substring sbil 0 lid) sign (substring sbil lid)) lid))
+    			'("+" "-" "*" "/")))
+    	      (let ((lix (+ idx 1)))
+    		(mapcar (lambda (not-used) (setq lix (+ lix 1))) (make-list (- (length sbil) lix) nil)))))))
+    
+    (defun bil-findit (num)
+      "Find play solution for number NUM."
+      (progn
+        (setq bil-list nil)
+        (bil-calc num 0)
+        bil-list))
+
+    (bil-findit "168264")
+
+----
+CategoryHumor

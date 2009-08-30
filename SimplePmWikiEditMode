@@ -1,0 +1,136 @@
+See SimpleWikiEditMode before you read this page.
+
+Based on the file 'simple-emacswiki.el' I (ChristianRidderström) created a file 'simple-pmwiki.el' to allow retrieving and editing files from PmWiki (http://www.pmichaud.com/wiki/PmWiki/PmWiki).
+
+I haven't programmed Lisp in years, so the code is the way it is :-) Anyway, it worked and since I didn't know where to actually put the file, I simply pasted it below.
+
+Note 1: I rewrote this quite a bit and made it work properly, so don't use the stuff below, use the package from this URL http://www.pmichaud.com/wiki/Cookbook/EmacsPmWikiMode?action=browse instead.
+
+Note 2: Uh.. the stuff below looks awful, to get the file content, edit this page and copy the source from there.
+----
+<pre>
+;;; simple-pmwiki.el --- edit www.pmichaud.com/wiki within Emacs
+
+;; Copyright (C) 2003  Alex Schroeder
+
+;; Author: Alex Schroeder <alex@gnu.org>
+;; 	   Christian Ridderström <christian.ridderstrom@home.se>
+;; Maintainer: Christian Ridderström <christian.ridderstrom@home.se>
+;; Version: 1.0.0
+;; Keywords: hypermedia
+;; URL: http://www.emacswiki.org/cgi-bin/wiki.pl?SimplePmWikiEditMode
+
+;; This file is not part of GNU Emacs.
+
+;; This is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+
+;; This is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+;; Boston, MA 02111-1307, USA.
+
+;;; Commentary:
+
+;; This file is based on simple-emacswiki.el, modified for PmWiki
+;; Use `pmwiki-wiki-browse' to download a page from the PmWiki Wiki.
+;; 
+;; Usage:
+;; 
+;; The simplest way to use this is to do the following:
+;; 1. Add the directory (http-emacs) where this file is stored to
+;;    the load-path of Emacs, e.g add the text.
+;; 
+;;	(add-to-list 'load-path "~/public_html/Public/emacs/http-emacs")
+;; 
+;;    to the file .emacs. Then restart emacs.
+;; 
+;; 2. Use the command 'load-file' to load this file, i.e. simple-pmwiki.el
+;; 
+;; 3. Now you can use the command 'pmwiki-wiki-browse' to open for
+;;    instance the page 'Main/WikiSandbox' from within Emacs. After
+;;    you have made some changes, you can use the keyboard shortcut C-c C-c
+;;    to save it back to http://www.pmichaud.com/wiki/Main/WikiSandbox
+;; 
+;; Enjoy. /Christian
+
+;;; Code:
+
+(require 'simple-wiki-edit)
+(require 'http-post)
+
+;; 
+;; The requirement that the names only consist of a-z,A-Z,0-9 is probably
+;; not enough, but it'll have to do for now.
+;; 
+(defun simple-pmwiki-save-url ()
+  "Return a new URL to save the current buffer.
+This takes `simple-wiki-url' and returns the base url, i.e. everything before
+ \"/<group>/<page>?\"."
+  (unless simple-wiki-url
+    (error "Current buffer is not associated with an URL"))
+  (if (string-match "^\\(.*?\\)/[a-zA-Z0-9]+/[a-zA-Z0-9]+\\?" simple-wiki-url)
+      (match-string 1 simple-wiki-url)
+    (error "Cannot determine current script name in %s"
+	   simple-wiki-url)))
+
+;; 
+;; The requirement that the names only consist of a-z,A-Z,0-9 is probably
+;; not enough, but it'll have to do for now.
+;; 
+(defun simple-pmwiki-page ()
+  "Return the page name for the current buffer.
+This takes `simple-wiki-url' and returns <group>.<page> by extracting that
+part from the url (e.g. url=http://../wiki/<group>/<page>?....)"
+  (if (string-match "^.*/\\([a-zA-Z0-9]+\\)/\\([a-zA-Z0-9]+\\)\\?"
+		    simple-wiki-url)
+      (concat (match-string 1 simple-wiki-url) 
+	      "."
+	      (match-string 2 simple-wiki-url))
+    (error "Cannot determine current page name in %s" simple-wiki-url)))
+
+(defun pmwiki-wiki-save ()
+  "Save the current page to a PmWiki wiki."
+  (let ((cur-buffer (buffer-name))
+	(url simple-wiki-url)
+	(save-func simple-wiki-save-function))
+    (print (concat "Output from http-post is in "
+		   (buffer-name 
+		    (process-buffer
+		     (http-post
+		      (simple-pmwiki-save-url)		;; Get destination
+		      (list (cons "pagename" (simple-pmwiki-page))
+			    (cons "action" "post")
+			    (cons "text" (buffer-string)))
+		      'iso-8859-1))))
+	   t)
+    (switch-to-buffer cur-buffer)
+    (simple-wiki-edit-mode)
+    (set (make-local-variable 'simple-wiki-url) url)
+    (set (make-local-variable 'simple-wiki-save-function) save-func)
+    ) 
+  )
+
+(defun pmwiki-wiki-browse (page)
+  "Browse the PmWiki Wiki. Ex: 'Main/WikiSandbox' will open the page from
+	http://www.pmichaud.com/wiki/Main/WikiSandbox"
+  (interactive "sPage: ")
+  (simple-wiki-edit
+   (concat
+    "http://www.pmichaud.com/wiki/"
+    page
+    "?action=source")
+   'pmwiki-wiki-save)
+  )
+  
+(provide 'simple-pmwiki)
+
+;;; simple-pmwiki.el ends here
+</pre>

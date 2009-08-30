@@ -1,0 +1,18 @@
+Trivial Cite is a very capable Citation package, much simpler than supercite, and helps to stomp out that horrible "initials" quoting style: CL> foo was here
+
+* You can find some more information at http://shasta.cs.uiuc.edu/~lrclause/tc.html
+* Download it at: http://shasta.cs.uiuc.edu/~lrclause/tc.el
+* Mailing list: http://shasta.cs.uiuc.edu/cgi-bin/mailman/listinfo/trivial-cite-users
+
+Note: The above links no longer work.  Does anyone know where to get the latest version?  The latest I have is 0.12; I can post it here if desired.
+
+[new]
+Please do. All I can suggest is the Internet Archive, Google, and related services. -- AlexSchroeder
+
+[new]
+Here is the version I have locally: Lisp:tc.el . It's version 0.13.3 from 2003-05-14 -- YannHodique
+
+[new]
+Debian's emacs-goodies-el package has version 0.13.4 from 2003-05-14 -- AlokSingh
+----
+CategoryMailAddons | CategoryFilling

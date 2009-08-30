@@ -1,0 +1,62 @@
+This is the summary of a thread started on 2004-12-09,
+called /Permission to use portions of the recent GNU Emacs Manual/.
+
+BenWing [http://lists.gnu.org/archive/html/emacs-devel/2004-12/msg00379.html]:
+
+<pre>
+Richard --
+
+The GNU Emacs user's manual has changed its license to the GFDL.  The XEmacs
+manual has a different license -- the GPL.  Because of contributions from
+various parties, we cannot easily change our license, and apparently there
+are incompatibilities between the GFDL and the GPL.
+
+Therefore I am wondering if you will give us permission to incorporate parts
+of the GNU Emacs manual under the existing XEmacs license [...]
+</pre>
+
+
+RichardStallman [http://lists.gnu.org/archive/html/emacs-devel/2004-12/msg00406.html]:
+
+<pre>
+Too bad.  I won't relicense such a large amount of material all
+together.
+    
+If you show me specific parts you would like to use, I will consider
+relicensing them.
+</pre>
+
+BenWing [http://lists.gnu.org/archive/html/emacs-devel/2004-12/msg00681.html]:
+
+<pre>
+Richard, please reconsider.  You have a reputation of antipathy towards
+XEmacs.  If you're at all interested in mending fences a little, this would
+be a very easy step -- simply declare that we are allowed to use the code
+under our license (which was your license up through 2000 or so).  Otherwise
+you give the impression of actively hindering the XEmacs project.
+</pre>
+
+RichardStallman [http://lists.gnu.org/archive/html/emacs-devel/2004-12/msg00715.html]:
+
+<pre>
+I did not choose this license with a view to its effects on you; it is
+the general FSF policy for manuals.  However, the fact that it is
+inconvenient for XEmacs does not strike me as a disadvantage.  After
+all, you have been uncooperative towards us for 10 years, and you
+don't see that as a disadvantage.  We don't owe you anything, not even
+small favors.
+
+Despite my well-known and justified antipathy towards XEmacs, I
+offered to consider changing licenses on parts.  However, the response
+was an ungreatful threat, so I now withdraw that offer.  If I did even
+the slightest thing for XEmacs now, I might give the impression of
+being a pushover.
+
+
+I ask all Emacs developers not to respond any further to whatever
+they may say here about this.
+</pre>
+
+----
+
+[new:PierreGaston:2004-12-22 06:35 UTC] freedom..... 

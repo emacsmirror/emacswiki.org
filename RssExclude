@@ -1,0 +1,7 @@
+Add pages to be excluded from the RSS feed.  These are regular expressions.
+Put one space at the beginning of the line.
+
+ SandBox
+ BannedContent
+ StrangeBannedContent
+ WikifiedEmacsLispList

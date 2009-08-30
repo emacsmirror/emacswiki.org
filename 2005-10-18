@@ -1,0 +1,174 @@
+Here's the output of ##user-agent-grouping < logs/access.log.1## where user-agent-grouping is the following trivial Perl script:
+
+<pre>
+#!/usr/bin/perl
+use HTTP::BrowserDetect;;
+while (<STDIN>) {
+  s/\\"/'/g;
+  m/"(([^" ;()\/]*)[^"]*)"$/ or die "Cannot parse:\n$_";
+  my $browser = new HTTP::BrowserDetect($1);
+  my $brand = $browser->browser_string() || $2;
+  $agent{$brand}++;
+  $total++;
+}
+@result = sort {$agent{$b} <=> $agent{$a}} keys %agent;
+foreach $label (@result) {
+  printf "%30s %10d   %3d%%\n", $label, $agent{$label}, 100* $agent{$label} / $total;
+}
+</pre>
+
+== User Agent Statistics ==
+
+<pre>
+                       Firefox      11639    35%
+                          MSIE       5393    16%
+                       Mozilla       2437     7%
+                      Netscape       2210     6%
+                           Rad       1356     4%
+                        Safari       1216     3%
+                          Wget        993     3%
+                         Opera        891     2%
+                      Twiceler        873     2%
+                             -        468     1%
+                     Microsoft        375     1%
+                          Java        337     1%
+                        Hatena        333     1%
+                        msnbot        273     0%
+                       Liferea        221     0%
+                     MagpieRSS        198     0%
+                   NetNewsWire        160     0%
+                     Emacs-w3m        155     0%
+                   libwww-perl        153     0%
+                     Bloglines        148     0%
+                       No-Gnus        148     0%
+                     rss2email        148     0%
+            FeedFetcher-Google        144     0%
+                     Googlebot        137     0%
+              changelog-to-rss        135     0%
+                          Lynx        130     0%
+                          lftp         98     0%
+                  larbin_2.6.3         94     0%
+                   SharpReader         85     0%
+              AppleSyndication         72     0%
+                      kinjabot         69     0%
+                          cron         59     0%
+                    topicblogs         54     0%
+               NewsGatorOnline         50     0%
+                   KNewsTicker         48     0%
+                      Feedster         47     0%
+                        rawdog         41     0%
+                    YandexBlog         40     0%
+                     FeedDemon         38     0%
+                   ping.blo.gs         36     0%
+                         http:         35     0%
+            Feedfetcher-Google         34     0%
+                   AOL Browser         31     0%
+                    FeedBurner         30     0%
+                   lwp-trivial         28     0%
+          Mediapartners-Google         26     0%
+               ZeBot_www.ze.bz         25     0%
+              livedoorCheckers         25     0%
+                  Java1.3.1_15         25     0%
+                         Straw         24     0%
+                     SearchFox         24     0%
+                   AmphetaDesk         24     0%
+                 Waggr_Fetcher         24     0%
+                      Snownews         23     0%
+                           w3m         23     0%
+                         Munin         22     0%
+                      NutchCVS         21     0%
+                        mm-url         20     0%
+                         Links         20     0%
+                          Shim         20     0%
+               YandexSomething         19     0%
+                       Jakarta         18     0%
+                           URL         17     0%
+               LiveJournal.com         17     0%
+                   TrillianPRO         17     0%
+                          curl         17     0%
+                        Pompos         16     0%
+           UniversalFeedParser         16     0%
+                        SBIder         12     0%
+                      Sleipnir         12     0%
+                    Blogdigger         11     0%
+                       nntprss         11     0%
+                  Baiduspider+         11     0%
+            LinkLint-checkonly         10     0%
+                       RWiki's         10     0%
+                          Xenu         10     0%
+                       Gigabot          9     0%
+                       Syndic8          9     0%
+    Microsoft-WebDAV-MiniRedir          9     0%
+                     SpiderMan          8     0%
+                   NATSU-MICAN          8     0%
+                      Bookmark          8     0%
+                         Argus          8     0%
+                           1.0          8     0%
+                   FEEDBRINGER          7     0%
+                      NewsPipe          7     0%
+                         McBot          6     0%
+                    LinkWalker          6     0%
+                      Teleport          6     0%
+                         Avant          6     0%
+                   sohu-search          6     0%
+                    UP.Browser          6     0%
+                        rssBot          6     0%
+                  NaverBot-1.0          6     0%
+                   FeedOnFeeds          5     0%
+                       blogmap          5     0%
+                        Mozdex          5     0%
+                     JetBrains          5     0%
+                 PrivacyFinder          5     0%
+                       SiteBar          5     0%
+                 HTTPClientBox          5     0%
+                        ELinks          4     0%
+                             0          4     0%
+                      Mozilla:          4     0%
+                kinja-imagebot          4     0%
+                           Web          4     0%
+                         Pluck          4     0%
+                     GreatNews          3     0%
+                      Emacs-W3          3     0%
+                     SurveyBot          3     0%
+                        cfetch          3     0%
+                    BigBlogZoo          3     0%
+                         Dillo          3     0%
+                       Bitacle          3     0%
+                      libfetch          3     0%
+                      W3CRobot          3     0%
+                    BlogBridge          3     0%
+                      lmspider          3     0%
+                     RssReader          2     0%
+                         psbot          2     0%
+                      KummHttp          2     0%
+                    Feed24.com          2     0%
+                         appie          2     0%
+                          Gnus          2     0%
+                          WWWC          2     0%
+                       nicebot          2     0%
+                       Visicom          2     0%
+                       Sunrise          2     0%
+                           PHP          2     0%
+             envolk[ITS]spider          2     0%
+                                        1     0%
+                       Gaisbot          1     0%
+                        Pockey          1     0%
+                        INGRID          1     0%
+     POE-Component-Client-HTTP          1     0%
+                          FAST          1     0%
+                 Python-urllib          1     0%
+                        Oracle          1     0%
+                           Hi!          1     0%
+                    Portsurvey          1     0%
+   ia_archiver-web.archive.org          1     0%
+                    CheckLinks          1     0%
+                        RSSOwl          1     0%
+                   vdvf2bqnUaa          1     0%
+                      ForVohun          1     0%
+                     Deepindex          1     0%
+                        geourl          1     0%
+                      TheSuBot          1     0%
+                       Findexa          1     0%
+                         Sauce          1     0%
+                  GreenBrowser          1     0%
+</pre>

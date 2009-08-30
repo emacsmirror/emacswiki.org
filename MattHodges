@@ -1,0 +1,18 @@
+I use Emacs, and have developed several packages that can be
+downloaded from https://alioth.debian.org/projects/mph-emacs-pkgs/:
+
+* Lisp:analog.el (MonitorListsOfFilesOrCommandOutput) -- A tool for logging files and commands;
+* Lisp:apt-utils.el (InterfaceToAPT) -- An interface to the Debian package management system (APT);
+* Lisp:buffer-time-stamp.el (DisplayBufferTimeStamps) -- Maintain buffer time-stamps;
+* Lisp:cdi.el (CommandLineCDPlayersInterface) -- A command line CD player interface;
+* Lisp:eimp.el (EmacsImageManipulation) -- Emacs Image Manipulation Package;
+* Lisp:eperiodic.el (PeriodicTableForEmacs) -- An interactive periodic table of the elements;
+* Lisp:puzzle.el (SlidePuzzleForEmacs) -- Slide puzzle for Emacs (only works with recent CVS versions of GNU Emacs);
+* Lisp:w3m-fb.el ([[FrameLocalBuffersSupportForW3m]]) -- Frame-local buffers support for w3m-mode;
+* Lisp:w3m-type-ahead.el ([[TypeAheadSupportForW3m]]) -- Type ahead support for w3m-mode.
+
+See their homepage (http://mph-emacs-pkgs.alioth.debian.org/) for more
+information, including screenshots.
+
+----
+CategoryHomepage

@@ -1,0 +1,29 @@
+== About ==
+
+My name is Vitaly Ostanin, nickname "vyt".
+
+== Fixes ==
+
+* Fix for [[AutoComplete]]:
+http://git.altlinux.org/people/vyt/packages/?p=emacs23-auto-complete-mode.git;a=summary
+Added support for menu to be appear inside long line. Don't waste undo list by selecting candidate. Fixed menu shift in lines containing Tab before completion point.
+
+Here is screenshot both for original completion menu and for fixed version:
+[[image:AutoCompleteScreenShotLongLinesFix]]
+
+
+== Contacts ==
+
+You can contact me via:
+* vitaly.ostanin@gmail.com (mail, jabber)
+
+
+
+[new:DrewAdams:2009-05-27 16:26 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+
+----
+CategoryHomepage

@@ -1,0 +1,12 @@
+This is a page to talk about syncing the PalmPilot with emacs.
+
+* CalendarSyncWithPalm -- sync the CalendarMode entries
+* MessageHarmonizedCalendaring -- sync MHC calendar entries
+* ToDoAndPalmPilot -- sync todo lists
+* BbdbSyncWithPalm -- sync the BigBrotherDataBase
+* WikiSyncWithPalm -- sync a local wiki (see EmacsWikiMode) with a wiki on the Palm 
+
+-----
+
+Notes on possible wiki sync with Palm: and great program exists at http://www.geocities.com/ddvteach/Manual.html that gives your Palm the ability to wiki link between notes, addresses, todos, etc.  Syncing your Palm notes with existing tools and then editing the EmacsWikiMode to be able to edit these synced text files might provide a nice way to edit your wiki information either on Emacs or your Palm.
+Another wiki like Hack for palm is availaible at http://www.csl.sony.co.jp/person/masui/PalmWiki/index_e.html

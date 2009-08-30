@@ -1,0 +1,49 @@
+==Description==
+
+This small mode fetches your lyrics from LyricWiki.com and pops a new buffer
+with them, nothing too complex.
+
+==Installation==
+
+Clone the Git repository:
+
+    $ git clone git://github.com/febuiles/lyricwiki.el.git
+
+Or download the .tar.gz file from:
+
+    http://github.com/febuiles/lyricwiki.el/tarball/master
+
+Add it to your load list and require it:
+
+    (add-to-list 'load-path "~/some_directory/lyricwiki.el")
+    (require 'lyricwiki)
+
+(Optional) If you want this mode to automatically fetch your current playing
+song in Amarok, iTunes or Rhythmbox then set the defalias in lyricwiki.el to
+whatever you want:
+
+    ;; Any of these 3 will do
+    (defalias 'lyrics 'lyrics-itunes)
+    (defalias 'lyrics 'lyrics-amarok)
+    (defalias 'lyrics 'lyrics-rhythmbox)
+
+Now just press:
+
+    M-x lyrics
+
+Finally, if you want to manually enter the song details you can just call:
+
+    M-x lyrics-manual
+
+==Acknowledgements==
+
+LyricWiki.com provides this service for free so I have to thank them for
+doing this.
+
+==Contact==
+Email: federico.builes@gmail.com
+
+Project: [http://github.com/febuiles/lyricwiki.el GitHub]
+
+----
+CategoryMusic

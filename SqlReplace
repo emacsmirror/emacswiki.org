@@ -1,0 +1,33 @@
+In order to search and replace text before sending it over to the SQLi buffer, use the following in your ~/.emacs:
+
+    (require 'sql)
+    
+    (define-key sql-mode-map (kbd "C-c C-b") 'my-sql-replace-and-send)
+    
+    (defcustom my-sql-replacements
+      '(("#USER#" . "'crueger'"))
+      "Strings to replace."
+      :type '(repeat (cons (string :tag "search") (string :tag "replace"))))
+    
+    (defun my-sql-replace-and-send ()
+      (interactive)
+      (let* ((start (save-excursion
+		      (backward-paragraph)
+		      (point)))
+	     (end (save-excursion
+		    (forward-paragraph)
+		    (point)))
+	     (statement (buffer-substring start end))
+	     (things my-sql-replacements)
+	     (buf sql-buffer))
+	(with-temp-buffer
+	  (insert statement)
+	  (dolist (thing things)
+	    (goto-char (point-min))
+	    (while (search-forward (car thing) nil t)
+	      (replace-match (cdr thing))))
+	  (let ((sql-buffer buf))
+	    (sql-send-buffer))))) 
+
+----
+SqlMode

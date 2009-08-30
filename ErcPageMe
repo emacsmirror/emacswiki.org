@@ -1,0 +1,207 @@
+This bit of code will notify you via the GNOME notification area when someone addresses you in an IRC conversation.
+
+I might put this into a module called erc-gnome.el some day.
+
+(See also Lisp:notify.el if you have a DBus-capable Emacs.)
+
+== Features ==
+
+* It ignores spurious messages from IRC servers and fsbot.
+
+* If the same user tries to message you twice within a given number of seconds, it only shows one message box.  This prevents a potential form of abuse.
+
+== Usage ==
+
+Put the code in one of your Emacs startup files (like ##.emacs##) and
+customize the `erc-keywords' variable to contain the various regexps
+that match your nickname.  You can also put a common phrase in here
+like "hey <your name>".
+
+As an example, set `erc-keywords' to:
+
+<pre>
+  ("MYNICK *[,:;]" "\\bMY-FIRST-NAME[!?.]+$" "hey MY-FIRST-NAME")
+</pre>
+
+where MYNICK is your handle and MY-FIRST-NAME is your first name
+
+Finally, you need to enable the triggering on `erc-keywords' by specifying
+
+<pre>
+  (erc-match-mode 1)
+</pre>
+
+in your ##.emacs## or similar.
+
+== Code ==
+
+<pre>
+;;; Notify me when a keyword is matched (someone wants to reach me)
+
+(defvar my-erc-page-message "%s is calling your name."
+  "Format of message to display in dialog box")
+
+(defvar my-erc-page-nick-alist nil
+  "Alist of nicks and the last time they tried to trigger a
+notification")
+
+(defvar my-erc-page-timeout 30
+  "Number of seconds that must elapse between notifications from
+the same person.")
+
+(defun my-erc-page-popup-notification (nick)
+  (when window-system
+    ;; must set default directory, otherwise start-process is unhappy
+    ;; when this is something remote or nonexistent
+    (let ((default-directory "~/"))
+      ;; 8640000 milliseconds = 1 day
+      (start-process "page-me" nil "notify-send"
+                     "-u" "normal" "-t" "8640000" "ERC"
+                     (format my-erc-page-message nick)))))
+
+(defun my-erc-page-allowed (nick &optional delay)
+  "Return non-nil if a notification should be made for NICK.
+If DELAY is specified, it will be the minimum time in seconds
+that can occur between two notifications.  The default is
+`my-erc-page-timeout'."
+  (unless delay (setq delay my-erc-page-timeout))
+  (let ((cur-time (time-to-seconds (current-time)))
+        (cur-assoc (assoc nick my-erc-page-nick-alist))
+        (last-time))
+    (if cur-assoc
+        (progn
+          (setq last-time (cdr cur-assoc))
+          (setcdr cur-assoc cur-time)
+          (> (abs (- cur-time last-time)) delay))
+      (push (cons nick cur-time) my-erc-page-nick-alist)
+      t)))
+
+(defun my-erc-page-me (match-type nick message)
+  "Notify the current user when someone sends a message that
+matches a regexp in `erc-keywords'."
+  (interactive)
+  (when (and (eq match-type 'keyword)
+             ;; I don't want to see anything from the erc server
+             (null (string-match "\\`\\([sS]erver\\|localhost\\)" nick))
+             ;; or bots
+             (null (string-match "\\(bot\\|serv\\)!" nick))
+             ;; or from those who abuse the system
+             (my-erc-page-allowed nick))
+    (my-erc-page-popup-notification nick)))
+(add-hook 'erc-text-matched-hook 'my-erc-page-me)
+
+(defun my-erc-page-me-PRIVMSG (proc parsed)
+  (let ((nick (car (erc-parse-user (erc-response.sender parsed))))
+        (target (car (erc-response.command-args parsed)))
+        (msg (erc-response.contents parsed)))
+    (when (and (erc-current-nick-p target)
+               (not (erc-is-message-ctcp-and-not-action-p msg))
+               (my-erc-page-allowed nick))
+      (my-erc-page-popup-notification nick)
+      nil)))
+(add-hook 'erc-server-PRIVMSG-functions 'my-erc-page-me-PRIVMSG)
+</pre>
+
+== Alternative version (much simpler) ==
+
+This version lacks the features mentioned above.
+
+<pre>
+;; Notify my when someone mentions my nick.
+(defun erc-global-notify (matched-type nick msg)
+  (interactive)
+  (when (eq matched-type 'current-nick)
+    (shell-command
+     (concat "notify-send -t 4000 -c \"im.received\" \""
+             (car (split-string nick "!"))
+             " mentioned your nick\" \""
+             msg
+             "\""))))
+(add-hook 'erc-text-matched-hook 'erc-global-notify)
+</pre>
+
+Make sure you're using erc-match.el.
+
+== Another option (similar to one above) ==
+
+This also uses libnotify, but does so through Lisp:notify.el, so you need a
+version of Emacs with support for D-Bus (current snapshots of Emacs 23 have
+this).
+
+<pre>
+(defun my-notify-erc (match-type nickuserhost message)
+  "Notify when a message is received."
+  (notify (format "%s in %s"
+                  ;; Username of sender
+                  (car (split-string nickuserhost "!"))
+                  ;; Channel
+                  (or (erc-default-target) "#unknown"))
+          ;; Remove duplicate spaces
+          (replace-regexp-in-string " +" " " message)
+          :icon "emacs-snapshot"
+          :timeout -1))
+
+(add-hook 'erc-text-matched-hook my-notify-erc)
+</pre>
+
+As with the previous version, you need to be using erc-match.el. The advantage
+to this one is that it does not need to start an external process, but it only
+works with recent versions of Emacs. Take your pick.
+
+== Notes ==
+
+[new]
+At the peril of stating the painfully obvious, this will trigger even when you are in the middle of the conversation where your name is being mentioned. It would be neat if this could be coupled with ErcAutoAway but that requires a couple of small changes to that library.
+
+[new]
+This could be accomplished by changing the first (when ...) condition as follows. --MichaelOlson
+
+<pre>
+  (when (and (erc-away-p)
+             (eq match-type 'keyword)
+              ...))
+</pre>
+
+[new]
+Looks like this only activates on a PRIVMSG from a user -- as a feature request, could it be extended to handle mentions of your erc-keywords on-channel, as well as in private?  Thanks!
+
+[new]
+PRIVMSG in the IRC protocol includes messages from one user to another user
+and users to channels, so this should work fine for both. --DianeMurray
+
+[new]
+I believe there is one more nil missing at the end of my-erc-page-me-PRIVMSG. At least it did not work for me until I added it. Thanks for the stuff anyway. --Martin Jambor
+
+[new]
+Martin, I don't understand what you mean.  Can you show me exactly what the resulting code is?  --MichaelOlson
+
+[new]
+You may also be interested in [http://lists.gnu.org/archive/html/gnu-emacs-sources/2007-03/msg00047.html erc-status.el].  This is a somewhat more fully-featured variant of the same idea, packaged as an ERC module.  --TomTromey
+
+[new]
+Michael, sorry for the noise, I simply forgot to (require 'erc) and everything was just weird, now it works like a charm. --Martin Jambor
+
+[new]
+I think it's simplest to use the built-in x-popup-dialog if you're on a windowing system...
+<pre>
+(defun erc-global-notify (matched-type nick msg)
+  (interactive)
+  (when (eq matched-type 'current-nick)
+    (let* (
+	   (referer (car (split-string nick "!")))
+	   (msg (concat referer " is trying to reach you on IRC!")))
+      (x-popup-dialog t (list msg '("Ok" . 1))))))
+</pre>
+--RoyMathew
+
+[new]
+Using x-popup-dialog is suboptimal for several reasons.
+
+# It blocks Emacs.
+# It does not look as nice.
+# With notify-send, the user can click anywhere to close the notification, but with x-popup-dialog, they have to click on the OK button.
+
+--MichaelOlson
+
+----
+[[ERC]]

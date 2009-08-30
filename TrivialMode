@@ -1,0 +1,103 @@
+The following piece of code by CyprianLaskowski defines a new
+function, `define-trivial-mode'.  You can then use it to define
+"trivial-modes".  Each trivial-mode is defined using a program name
+and filename regexp.  These trivial-modes are added to
+`auto-mode-alist', such that whenever a file is opened, and the
+filename matches the regexp, the matching trivial-mode is called.  And
+the trivial mode calls the program with the filename as its only
+parameter.
+
+Thus, if you open a .pdf file within Emacs, for example, the
+trivial-mode will open xpdf in the background.
+
+<pre>
+(defun define-trivial-mode(mode-prefix file-regexp &optional command)
+  (or command (setq command mode-prefix))
+  (let ((mode-command (intern (concat mode-prefix "-mode"))))
+    (fset mode-command
+          `(lambda ()
+             (interactive)
+             (start-process ,mode-prefix (current-buffer)
+                            ,command (buffer-file-name))))
+    (add-to-list 'auto-mode-alist (cons file-regexp mode-command))))
+
+(define-trivial-mode "ghostview" "\\.ps$")
+(define-trivial-mode "xpdf" "\\.pdf$")
+...
+</pre>
+
+== Discussion ==
+
+[new]
+I prefer not having the output of the command appended to the current buffer.  Further,
+I like to mark the buffer as read-only, so that it doesn't get modified by accident.
+
+The function then looks like this:
+
+<pre>
+(defun define-trivial-mode(mode-prefix file-regexp &optional command)
+  (or command (setq command mode-prefix))
+  (let ((mode-command (intern (concat mode-prefix "-mode"))))
+    (fset mode-command
+          `(lambda ()
+             (interactive)
+	     (toggle-read-only t)
+	     (start-process ,mode-prefix nil
+			    ,command (buffer-file-name))))
+    (add-to-list 'auto-mode-alist (cons file-regexp mode-command)))
+  )
+</pre>
+
+StefanVanDerWalt
+
+
+[new]
+I think the current buffer should be closed after we invoke the external program
+The function is like this now:
+<pre>
+(defun define-trivial-mode(mode-prefix file-regexp &optional command)
+  (or command (setq command mode-prefix))
+  (let ((mode-command (intern (concat mode-prefix "-mode"))))
+    (fset mode-command
+          `(lambda ()
+             (interactive)
+	     (toggle-read-only t)
+	     (start-process ,mode-prefix nil
+			    ,command (buffer-file-name))
+	     (kill-buffer (current-buffer))))
+    (add-to-list 'auto-mode-alist (cons file-regexp mode-command))))
+
+</pre>
+
+[new:AntonNazarov:2008-06-01]
+I think that we need to restore current buffer correctly after starting external program and killing temporary file buffer:
+<pre>
+(defun define-trivial-mode(mode-prefix file-regexp &optional command)
+  (or command (setq command mode-prefix))
+  (let ((mode-command (intern (concat mode-prefix "-mode"))))
+    (fset mode-command
+          `(lambda ()
+             (interactive)
+             (toggle-read-only t)
+	     (start-process ,mode-prefix nil
+			    ,command (buffer-file-name))
+	     (let ((obuf (other-buffer (current-buffer) t)) ;; Select correct buffer
+		   (kbuf (current-buffer)))
+	       (set-buffer obuf)			    ;; set it as current
+	       (kill-buffer kbuf))))			    ;; kill temporary buffer
+    (add-to-list 'auto-mode-alist (cons file-regexp mode-command))))
+</pre>
+
+[new]
+An idea: I use recentf-mode (see RecentFiles) to quickly open files I am working on.
+Maybe this can be combined with trivial-mode to open files in other programs too?
+(Or does it automatically work that way?)
+
+One way to do this would be to use file-name-handler-alist.
+Then I believe it would be possible to avoid reading the files content into a buffer at all.
+
+BTW it would be nice to have URLs handled too.
+
+
+----
+CategoryExternalUtilities

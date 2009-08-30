@@ -1,0 +1,21 @@
+<code>gtk-look.el</code> finds and displays HTML documentation for Gtk, Glib and Gnome functions and variables, similar to what InfoLook <code>C-h C-i</code> (`info-lookup-symbol') does for info format documentation (like the GNU C Library manual).
+
+: http://user42.tuxfamily.org/gtk-look/index.html
+
+The documentation is displayed using <code>browse-url</code>.  WThreeM is a good choice for that if you're on a text terminal (or just like it in an Emacs window).  In addition to plain C, smart guessing of the symbol at point supports [http://gtk2-perl.sourceforge.net Gtk2-Perl], [http://www.gnu.org/software/guile-gtk/ Guile-Gtk] and [http://www.gnu.org/software/guile-gnome/ Guile-Gnome].
+
+The actual [http://live.gnome.org/devhelp devhelp] program obviously does the same sort of thing.  DebianPackage:devhelp even comes with a little <code>devhelp-word-at-point</code> (bound to <code>f7</code>) for invoking it.  I made <code>gtk-look</code> to use it on a text terminal with a plain emacs window, like InfoLook.
+
+RichardStallman asked if Gtk/Gnome documentation is available in info format, which could be used directly by InfoLook.  All I (KevinRyde) could tell was that it looks like it's supposed to be possible, but it
+didn't work for me.
+
+See also:
+
+* Lisp:gtk-perl.el by [[Ye Wenbin]] -- completions and eldoc for functions etc in Perl-Gtk2
+* [[Icicles]] -- for advanced completions browsing (good on a big list like <code>gtk-look</code>)
+
+----
+
+It would rock tremendously if eldoc-mode could be added to this.  i.e. when I hover over some C gtk function it reminds me about the correct arguments.
+
+: CEldocMode (which needs Emacs 22) has a bit for that, done by grepping cpp output (which might be more reliable than looking up docs).  It even has "<code>pkg-config gtk+-2.0</code>" already in its cpp options, ready for use with Gtk.  -- KevinRyde

@@ -1,0 +1,47 @@
+= Note =
+Functionality of this package was integrated into org-mode (edge on May 2009).
+Check http://orgmode.org/Changes.html#sec-1.4.2 for details.
+
+= Tea-time =
+Tea-time is an extention to emacs.
+Kind of analog of gnome applet tea-time http://det.cable.nu/teatime/index.rbx?r=2.8.0
+
+It allows you to set up time intervals and after this
+interval is elapsed, Emacs will notify you with sound and    notification.
+It could be useful if you make a tea or if you would like to
+be more productive by setting time limit for a task.
+
+If available, notification would be done with great tool
+mumbles ( http://www.mumbles-project.org )
+If not, then simply use standard emacs message.
+
+= Requirements: =
+
+Tested on Emacs 23, but should work on any version.
+
+= Installation: =
+
+1. Download from http://github.com/krick/tea-time/tree/master,
+   or simply <code>git clone git://github.com/krick/tea-time.git</code>
+
+2. Add tea-time directory to the load path, if needed
+  <code>(add-to-list "path-to-tea-time")</code> 
+
+3. Add in your .emacs:
+   <code>(require 'tea-time)</code>
+
+4. Customize variable <code>tea-time-sound</code> via <code>M-x customize</code>
+or simply  put <code>(setq tea-time-sound "path-to-sound-file")</code> in .emacs
+
+
+= Usage: =
+
+* <code>M-x tea-time</code>
+ 
+	* Enter period in minutes if you want to start timer
+        * Or press Enter without giving any number - if you would like to
+        know how much time is left before the timer expires
+ 
+* Use <code>M-x tea-timer-cancel</code> to cancel currently running timer.
+
+* Suggested binding: <code>(define-key global-map "\C-ct" 'tea-time)</code>

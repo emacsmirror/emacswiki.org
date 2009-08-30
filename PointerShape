@@ -1,0 +1,22 @@
+The MousePointer is not the same as the TextCursor. The pointer shows where the mouse is; the cursor shows where [[Point]] is.
+
+You can change the shape of the mouse pointer using the following example by
+KaiGrossjohann:
+
+    (setq x-pointer-shape x-pointer-top-left-arrow)
+    (set-mouse-color "black")
+
+Setting the mouse-color is believed to be necessary to "refresh" the
+pointer shape.
+
+All the shapes are predefined by X in CVS:term/x-win.el.
+
+If you are trying to make the mouse unobtrusive, MouseAvoidance can
+move the mouse out of your way.
+
+This article by ThienThiNguyen defines a new command that uses
+mouse-avoidance to browse the available shapes and set them
+interactively: Groups:browse-pointer-shapes
+
+----
+CategoryMouse CategoryKeys CategoryFrames CategoryDisplay

@@ -1,0 +1,173 @@
+: "sometimes i feel like we're making emacs better and better because we don't know what to do with emacs once it is finished." -- AlexSchroeder on InternetRelayChat
+
+Click the heading to search for all pages belonging to the writing
+of lisp code.  These pages contain information for would-be authors of
+new major and minor modes: EmacsLisp style, coding conventions,
+pointers and documentation to existing features.  What follows are
+some suggestions; find more other pages by searching for
+backlinks via the heading.
+
+Before you get starting diving into Emacs Lisp, it's a good idea to be
+aware of some EmacsLispLimitations.  Once upon a time I thought I
+wanted to use Emacs Lisp for all of my coding needs, but then
+rediscovered the old truism: some languages are better suited for some
+tasks. -- JohnWiegley
+
+== Learning Emacs Lisp ==
+
+Ordered for pedagogy:
+
+* EmacsLispReference -- Free manual for the EmacsLisp programming language.
+* EmacsLispIntro -- Free tutorial to EmacsLisp.
+* OnlineResources -- Some external sites have Emacs Lisp learning materials.
+* ElispCookbook -- A collection of various code snippets for getting things done.
+* EvaluatingExpressions -- basic stuff you need to check variables
+* InteractiveFunction -- how to write a function that you can call via M-x or bind to keys
+** UniversalArgument -- how to write a function that knows whether the C-u prefix was provided
+** RegionArgument -- how to write a function that uses the region
+* LambdaExpression -- anonymous functions
+* VariableDefinition, BufferLocalVariable -- how to define variables
+* ComparisonFunctions -- does this variable contain that string, do these numbers match, does this equal that
+* ListStructure -- a list is made of cons cells
+* ListModification -- for Lisp newbies: nconc, append, cons, and friends
+** DestructiveOperations -- for Lisp newbies: some examples using sort and explaining the use of copy-sequence
+** ListModificationCl -- for Lisp authors: using functions from the CL library to modify lists
+** ListModificationLibrary -- for Lisp authors: more functions to modify lists
+** IntList -- basic examples showing how to recursively create lists of integers
+* StringModification -- You cannot modify an Emacs string; you return a modified copy instead.
+* AlistVsPlist -- difference between association lists and property lists.
+* HashMap -- hash map stuff
+* VectorUsage -- searching vectors
+* NotANumber -- not-a-number is a number! How to test for it.
+* BackquoteSyntax -- using backquotes
+
+== Writing a Major Mode ==
+
+Tips and tricks to writing a MajorMode.
+
+* GenericMode -- for very simple modes including font-locking and comments
+* DerivedMode -- for new modes very similar to existing modes
+* SampleMode -- complete Emacs Lisp example for a real major mode
+* ModeTutorial -- a tutorial for mode writers
+* ImenuMode -- provide an index menu to the interesting parts in the buffer
+* Font-lock programming
+** AddKeywords -- just add new keywords and highlighting to an existing mode
+** EasyFontLock -- How to color only one line at once 
+** MultilineFontLock -- How more lines get their color.
+* Other tools and solutions
+** AddToListWidget -- code to use if a user is supposed to add items to a list which you provide (see CustomDiffList for the result)
+** AdvisingFunctions -- instead of copying them
+** BitConversion -- numbers to bits and back
+** CoRoutines -- defining functions which can pick up where they left off
+** CyclingOfValues -- how to choose the next symbol from a list
+** DebuggerMode -- how to debug your lisp
+** LocalFunctions -- evil hackery when implementing local functions
+** MultiLineWidget
+** ProgrammableCompletion
+** ReplaceInString -- for Emacs 20 and its ilk
+** StateMachine -- example source making heavy use of macros
+** StringPermutations -- code example that shows how to write permutations
+** SymbolicRegexp -- writing readable regular expressions in your code
+** UniqueSubstrings -- generating abbreviations
+** UnsafeP -- detecting unsafe Lisp expressions
+** UseIswitchBuffer -- for things it was not intended
+** MajorComint -- associates a particular major mode with a comint subprocess.
+
+== Style and suggestions ==
+
+* AdviceVsHooks -- Sometimes a package cannot be customized using variables and hooks; in these situations defadvice must be used.
+* AvoidConsing -- Advice which may no longer be appropriate.
+* CheckDoc -- A tool to check your documentation strings.
+* ElispPackageChecklist -- A document with suggestions for package authors.
+* MeaningfulNames -- choosing identifiers (symbols) for code
+* NonLocalExit -- Examples of error handling and `throw'...`catch'.
+* NonNilValues -- Which non-`nil' value should I use? `t'? `42'? Does it matter?
+* QuotedLambda -- There is no need to quote lambda expressions.
+* UnitTesting -- How to write unit-test code.
+* WhenToUseIf -- When to use which conditional control structure (`cond', `if', `when', `unless', `and', `or', `case').
+
+Writing code that works on different versions of Emacs and XEmacs is ComparativeEmacsology.
+* EasyMenu -- Write Emacs/XEmacs compatible menu definitions
+* ElispCompatibility -- General recommendations for writing compatible code.
+* InvisibleText -- using TextProperties, EmacsOverlays or XEmacsExtents
+* LineInformation -- eolp vs. line-end-position
+* MouseEvent -- where was the mouse clicked
+* WindowHeight -- how big is a window
+
+== Emacs Lisp Tools and Tricks ==
+
+* AutomaticFileHeaders -- File headers that are automatically inserted and updated.
+* AutoRecompile - re-byte-compile Emacs lisp files.
+* CommonLispForEmacs -- How to use CommonLisp to program Emacs.
+* ElispFormat -- Format elisp code automatically.
+* ElispDepend -- Generate depend information of elisp code.
+* EmacsLispObjects -- An implementation of Common Lisp Object System for Emacs
+* EmacsLispProfiler -- elp.el comes with Emacs.
+* EmacsScripts -- Run scripts from the shell that use Emacs
+* HttpServer -- Emacs as a web-server
+* LibraryDependencies -- Keep track automatically of Emacs Lisp libraries `require'd by another library
+* LiterateEmacsLisp -- documenting and writing lisp, simultaneously.
+
+[:Installers]
+== Emacs Lisp Installers ==
+
+* [http://www.xemacs.org/Documentation/packageGuide.html XEmacs package manager] -- (Could an XEmacs please describe her experience with this)
+* InstallElisp - Retrieve and install elisp from Internet
+* [[ELPA]] - Emacs Lisp Package Archive by TomTromey
+* [[Pases]] -- Packaging system for Emacsen
+* AutoInstall - Asynchronous retrieve and install elisp file from Internet. 
+* [http://gmarceau.qc.ca/plugin.el plugin.el] -- Automatic fetching, installing and loading of Emacs modules
+* [http://www.cb1.com/~john/computing/emacs/lisp/basics/use-package.el use-package.el] -- Arrange use of an elisp package
+* UsePackage - Describe how to get and configure a package, then install on demand with an autoload-like mechanism
+
+== Emacs Lisp Libraries ==
+
+* ArrayExtension -- Support for arrays, and matrixes.
+* AutoOverlays -- Overlays defined by regexps, automatically created, updated and destroyed as buffer is modified.
+* [[AVLtrees]] -- AVL tree data structures (self-balancing binary trees)
+* CompletionUI -- Completion user interface, providing various highly customizable completion mechanisms (dynamic, hotkeys, cycling, tab-completion, help-echo, tooltip, menu...)
+* DoReMi -- Macro `define-doremi' and command `doremi'.  Use them to define commands that let you use the arrow keys and/or mouse wheel to ''make incremental changes'' to things or ''cycle through a ring'' of things.
+* DictionaryTrees -- Advanced dictionary data structures
+* ElispParser -- A small parser tool written in EmacsLisp.
+* EmacsDataBase is a flexible system for defining, accessing, modifying, summarizing, and generally playing with, a set of records.  You can view each record individually or summarized (with other records) in separate buffer. Record format (field names and their types) can be arbitrarily complex.
+* ParserCompiler -- A macro that compiles Recursive Descent parsers in elisp.
+* [[Heaps]] -- Heap data structures (a.k.a. priority queues)
+* [[Icicles]] -- New possibilities for using completion and cycling of completion candidates.
+* LaterDo -- Calling functions later, thus do some sort of fake threading
+* LuiMode -- A Linewise User Interface
+* MacroUtilities -- Utilities for writing macros.
+* ModeLocal -- Causing a variable or function to have a value/behavior based on major mode.
+* PasswordGenerator
+* [[Queues]] -- Queue data structures
+* RecordType -- Definition of a new type: record. A record is a set of named fields with their associated type.
+* SemanticBovinator -- A flex/bison lexer and parser generator written in EmacsLisp.
+* SubdirsToList -- Adding subdirectories to a list recursively
+* TaggedNFA -- Tagged non-deterministic finite state automata (generally used for regular expression matching algorithms)
+* TcpClient -- Network interface to ease the creation of network related script
+* TernarySearchTrees -- ternary search tree data structures (obsolete - use [[Tries]] instead)
+* ThingAtPoint -- Functions to return various kinds of Emacs Lisp entity at or near point. For example, return the Lisp symbol name nearest point.
+* [[Tries]] -- General trie data structures (including ternary search trees)
+* UseCustomizeForKeyBindings -- Widget and `defcustom' code to let users use Customize for key bindings.
+* VectorModificationLibrary -- Functions to modify vectors
+* XmlParser -- Writing code which reads and manipulates XML.  Pointers to DOM, XPath, etc.
+
+== Proof of Concept ==
+
+* FakeClosures -- How to fake a closure in Emacs Lisp.
+* DefiningErrors -- How to easily define errors types.
+
+== Discussion About Emacs Lisp ==
+
+* CategoryExtensionLanguage -- Other Emacs extension languages currently supported, and future implementations of Emacs in other languages.
+* DynamicBindingVsLexicalBinding -- Benefits and pitfalls of dynamic binding and a way to simulate lexical binding.
+* EmacsLispLimitations -- Limitations of EmacsLisp and reasons not to use it for everything.
+* LangPollResults -- Preliminary results of the language poll on the #emacs channel.
+* WhyDoesElispSuck -- Why people say that EmacsLisp is a bad language, deprecated, not the ideal choice for the future, or <your remark here>...
+* RationalElispPackaging -- Design of a packaging system for Emacs Lisp software.
+* Emacs Internals -- I've been reading the source for a while. Trying to start annotate how to read the source for others. Here's a [http://members.cox.net/nish4111/modules.gif diagram] of how I see it presently. (Not sure if this is correct place to put this?)
+[new]
+WikiTodo: This page still needs reorganization.
+
+
+
+

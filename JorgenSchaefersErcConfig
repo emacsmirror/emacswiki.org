@@ -1,0 +1,73 @@
+<pre>
+w;;;;;;;
+;;; ERC
+(autoload 'erc-select "erc"
+  "Interactively select connection parameters and run ERC." t)
+
+;; Use my local copy if available
+(when (file-directory-p "~/.elisp/erc")
+  (add-to-list 'load-path "~/.elisp/erc"))
+
+(when (file-exists-p "~/.private.el")
+  (load-file "~/.private.el"))
+(defun irc ()
+  "Connect to the default IRC servers."
+  (interactive)
+  (load-library "erc")
+  ; (erc "sarg" 6667 "forcer" "http://www.forcix.cx/" t nil)
+  ; (erc "irc.tu-ilmenau.de" 6667 "forcer" "http://www.forcix.cx/" t nil)
+  ; (erc "irc.quakenet.org" 6667 "forcer-" "http://www.stud.uni-hamburg.de/~jorgen/" t nil)
+  (erc "sarg" 23523 "forcer" "http://www.forcix.cx/" t muh-passwd)
+  (erc "irc.freenode.net" 6667 "forcer" "http://www.forcix.cx/" t nil))
+
+(add-hook 'erc-mode-hook 'erc-add-scroll-to-bottom)
+(add-hook 'erc-insert-post-hook 'erc-make-read-only)
+(add-hook 'erc-send-post-hook 'erc-make-read-only)
+
+(add-hook 'erc-mode-hook 'myerc-fix-keymap)
+(defun myerc-fix-keymap ()
+  "Remove some annoying keys from the default ERC keymap."
+  (define-key erc-mode-map "\C-c\C-p" 'undefined)
+  (define-key erc-mode-map "\C-c\C-q" 'undefined)
+  (define-key erc-mode-map "\C-c\C-i" 'undefined))
+
+(setq-default erc-nick "forcer"
+              erc-nick-uniquifier "-"
+              erc-email-userid "forcer"
+              erc-user-full-name "http://forcix.cx/"
+              erc-server "irc.tu-ilmenau.de"
+              erc-port 6667
+              erc-prompt-for-password nil
+              erc-join-buffer 'window-noselect
+              erc-auto-query 'window-noselect
+              erc-disable-ctcp-replies nil
+              erc-flood-protect 'normal
+              erc-header-line-format nil
+              erc-ignore-list nil
+              erc-ignore-reply-list erc-ignore-list
+              erc-paranoid t  ; show CTCP requests
+              erc-prompt ">"
+              erc-show-my-nick nil
+              erc-default-coding-system '(latin-9 . undecided)
+              ;; Modules
+              erc-modules '(autoaway autojoin button fill match
+                            netsplit pcomplete ring stamp track truncate)
+              ;; erc-autoaway:
+              erc-auto-set-away t
+              erc-autoaway-use-emacs-idle nil
+              ;; erc-autojoin:
+              erc-autojoin-channels-alist '(("tu-ilmenau\\|uni-erlangen"
+                                             "#StarWars" "+linux.de"
+                                             "#kollektiv")
+                                            ("openprojects\\|freenode"
+                                             "#emacs"))
+              ;; erc-button:
+              erc-button-buttonize-nicks nil
+              ;; erc-fill:
+              erc-fill-prefix "    "
+              ;; erc-match:
+              erc-current-nick-highlight-type 'nick
+              erc-keywords '()
+              ;; erc-track:
+              erc-track-exclude-types '("NICK" "JOIN" "PART" "QUIT" "MODE"))
+</pre>

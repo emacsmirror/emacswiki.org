@@ -1,0 +1,8 @@
+Fails with gcc 3.4 as of April 2007 -- 
+
+##make[2]: Entering directory `/usr/local/src/cygwin-emacs/lisp'
+wd=/usr/local/src/cygwin-emacs/lisp; subdirs=`(cd $wd; find . -type d -print)`; for file in $subdirs; do case ...
+/usr/local/src/cygwin-emacs/lisp/./url
+Fatal error (6)/bin/sh: line 2:   220 Aborted                 (core dumped) ../src/emacs -batch --no-site-file --multibyte -l finder --eval '(setq generated-finder-keywords-file "/usr/local/src/cygwin-emacs/lisp/finder-inf.el")' -f finder-compile-keywords-make-dist $wins##
+
+I tried again with gcc 4.something (as suggested by etc/PROBLEMS) and it worked just fine (note that I built gcc 4 from source by hand, as it doesn't appear to be packaged for Cygwin).

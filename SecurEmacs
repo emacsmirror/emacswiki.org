@@ -1,0 +1,20 @@
+This page describes a patch adding TLS support to an Emacs version older than version 22.  In Emacs 22, TLS is the default: use `open-tls-stream' instead of `open-ssl-stream'.
+
+----
+SimonJosefsson posted a message to emacs-devel announcing:
+
+I rewrote my native TLS support for Emacs using GNU TLS instead of
+Open SSL:
+
+* http://josefsson.org/securemacs/
+
+Beware, the patch is very ugly but at least it allows me to read my
+mail over TLS with Gnus.
+
+Install GNU TLS, do "aclocal" and "autoconf" in the Emacs directory
+after applying the patch, build Emacs and load "gnutls.el" and you
+should have the usual `open-ssl-stream' available.
+
+
+----
+CategoryPorts

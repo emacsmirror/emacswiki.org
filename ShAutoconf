@@ -1,0 +1,8 @@
+<code>sh-autoconf.el</code> extends ShMode with an <code>autoconf</code> shell flavour designed for editing [http://www.gnu.org/software/autoconf/ Autoconf] <code>configure.in</code> scripts and <code>acinclude.m4</code>  etc macro files.  Get it from
+
+: http://user42.tuxfamily.org/sh-autoconf/index.html
+
+The default for autoconf files is AutoconfMode which is geared towards autoconf macro calls.  Whether you prefer it or <code>sh-autoconf</code> depends mainly on how much shell code you're writing in amongst the macros.  A simple configure might be all macros, a big complicated one inevitably ends up with lots of shell.
+
+----
+ShMode

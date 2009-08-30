@@ -1,0 +1,23 @@
+TexinfoMode is an editing mode that comes with Emacs for editing [[Texinfo]] files.  It was originally written by Robert J. Chassell.
+
+* CVS:textmodes/texinfo.el, CVS:textmodes/texnfo-upd.el
+
+A useful feature of Texinfo mode is combining the UniversalArgument command with various markup-insertion commands to automatically surround words with markup.  According to the TexinfoManual:
+
+: "To put a command such as `@code{...}' around an *existing* word, position the cursor in front of the word and type `C-u 1 C-c C-c c'. [...] The value of the prefix argument tells Emacs how many words following point to include between braces--`1' for one word, `2' for two words, and so on.  [...]  This feature works only for those @-commands that operate on a word or words within one line, such as `@kbd' and `@var'." (original emphasis)
+
+Here are some things to help when working with Texinfo in Emacs,
+
+* AutoInsertForTexinfo -- Start a new Texinfo file with `M-x auto-insert'.
+* [[eval-to-texi]] -- insert @lisp with an elisp expression and its result
+* InfoXref -- check cross references to other documents
+* MakeinfoInfo -- <code>makeinfo-buffer</code> previewing using Info mode
+* [http://user42.tuxfamily.org/texinfo-nobreak/index.html texinfo-nobreak.el] -- avoid line breaks after <code>@:</code>, as a workaround for makeinfo 4.11
+* [http://user42.tuxfamily.org/texinfo-warn/index.html texinfo-warn.el] -- warning face on tabs and bad line breaks
+
+See also InfoMode.
+
+----
+CategoryDocumentation
+CategoryModes
+CategoryTex

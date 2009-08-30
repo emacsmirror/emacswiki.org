@@ -1,0 +1,25 @@
+Emacs tinha um ManualEmacs, uma IntroduçãoaoEmacsLisp, e uma ReferênciaEmacsLisp. Até Emacs 21, os dois últimos manuais devem ser baixados de um espelho ftp da GNU. As versões mais novas do Emacs incluirão todos os três manuais. Similarmente o XEmacs tem um manual de referência Emacs Lisp e um manual interno, ambos distribuidos com XEmacs.
+
+O Manual de Referência Emacs Lisp é também conhecido como o Manual Elisp.
+
+A melhor maneira é saber a versão e usa-la dentro do Emacs. Então você pode simplesmente usar <tt>C-h i</tt> para ver isso, junto com toda documentação restante no sistema de informação.  Se seu Emacs não vier com o manual de referência Emacs Lisp, você terá que baixa-lo.  Todos manuais estão disponíveis online em vários formatos:
+
+* http://www.gnu.org/manual/manual.html
+* http://www.gnu.org/software/emacs/elisp-manual/
+
+Versão impressa:
+
+* http://www.gnupress.org/book3.html
+
+A referência de XEmacs Lisp está disponível em:
+
+* http://www.xemacs.org/Documentation/21.5/html/lispref.html
+* http://www.dk.xemacs.org/Documentation/21.5/html/lispref.html
+
+O manual interno de XEmacs está disponível em:
+
+* http://www.xemacs.org/Documentation/21.5/html/internals.html
+* http://www.dk.xemacs.org/Documentation/21.5/html/internals.html
+
+----
+CategoriaDocumentação

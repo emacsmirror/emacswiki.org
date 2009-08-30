@@ -1,0 +1,21 @@
+== Emacs and MIDI ==
+
+Many people are using Emacs for many music related tasks, be it editing csound files, lilypond files, or playing mp3:s with emms.
+
+It would also be interesting to be able to use emacs as a soundtracker-like environment.
+That is, edit midi-data in the form of a text based piano roll, and also play it with a real-time updated cursor
+that highlight all notes currenly being played.
+
+
+=== some links ===
+
+EmacsCsound
+
+http://abc.sourceforge.net/
+
+midi.el in emacs.sources
+
+http://utopia.knoware.nl/~hlub/rlwrap/README.midi-input.txt
+
+http://ccrma-mail.stanford.edu/pipermail/cmdist/2005-August/002556.html
+

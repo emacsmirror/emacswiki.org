@@ -1,0 +1,222 @@
+Cette page est aussi disponible en franglais ;-): Français:EmacsUneSurUn
+
+=== Abstract === 
+
+A project to make Emacs more frame-oriented is introduced. Discussion
+of the problem and suggestions of solutions are invited. An existing
+implementation is described.
+
+= Problem: Emacs Is Biased Toward Windows, Not Frames =
+
+Several major versions ago, Emacs introduced '''[[frame]]s''', which
+correspond to window-manager windows. A frame is tiled into one or
+more ''panes'' -- we call them '''[[window]]s''' in Emacs-speak. See also
+FrameModes for more information on
+the relation between frames and Emacs windows.
+
+The reason for this uncommon terminology is that Emacs itself dates
+from before window managers. Emacs was originally designed for tty
+terminals, which had no graphics, no windows, no mouse, and only one font.
+(Many people still find this an optimum setup for editing text.)
+
+Emacs windows were ''designed'' for that environment -- and they were a
+great match. They live on today in the same form they had back in the
+mid 1980s. You could say that that is a testament to their ongoing
+usefulness. Or you could say that additional Emacs features like
+frames and mouse support have come along to address the specific
+aspects of modern computer interfaces, while Emacs windows have become
+a ''vestige'' feature that is useful mainly for lack of a good
+alternative.
+
+I (DrewAdams) tend to the latter view, but I recognize that the
+specific functionality of Emacs windows can sometimes be useful in a
+window-manager setting too. That is, it can sometimes be useful to
+have more than one pane (Emacs window) in the same frame.
+
+Most Emacs users would argue that Emacs windows are ''indispensable'',
+and they're right, but I would argue that this is only because frames
+have not been given their due: much of ''Emacs is still heavily oriented
+toward using Emacs windows, not frames'', and this bias is built-in.
+
+This bias manifests itself in ways like the following:
+
+* Emacs pops up windows, instead of creating separate frames, for
+relatively temporary buffers like <code>*Help*</code> and <code>*Completions*</code>. And it
+automatically removes some of these windows when you're done with
+them. Very handy.
+* Without simple ways to get rid of frames (e.g. for temporary
+buffers), frames proliferate. And how do you iconify a lot of frames
+all at once? Lots of raised frames can be a mess to manage.
+* Key sequences bound to commands to access frames are, by default,
+more contorted: `C-x 5 f' to visit a file, `C-x 5
+0' to delete a frame, and so on. Bindings are easily changed,
+of course, but other things tend to make you want to keep the simple
+bindings (`C-x f', `C-x 0') for Emacs
+windows, not frames. As long as you have to use windows most of the
+time, you want windows command bindings to be short.
+
+There are in fact several Emacs functions, some built-in, that
+manipulate windows and are not at all geared toward frames.
+
+= Goal: Make Emacs More Frame-Oriented =
+
+Given this state of affairs, is there any sense in trying to use
+Emacs in a primarily frame-oriented fashion? To me, it's worth trying
+to adapt Emacs a bit, to wean it from its dependence on Emacs
+windows. 
+
+So, when frames first came out, I set about customizing my Emacs, to
+try to take advantage of window-manager windows (frames)...
+
+First, of course, I set `pop-up-frames' to non-nil, so
+`display-buffer' would use a new frame each time. That's
+when I came to know the various ways in which a window bias was
+built-in. Little by little, I tried to overcome this bias, and I
+pretty-much succeeded.
+
+But I'd be interested in other opinions and, other, better
+enhancements to ''make Emacs more frame-oriented''. What should this mean?
+What are the best ways to realize it?
+
+Call this goal or project "'''Paneless Emacs'''", or perhaps
+"'''One-On-One Emacs'''". ''One window per frame'' is the basis: when
+a buffer is displayed in a window, that window is in its own frame (by
+default). The idea is not to do away with window operations, but just
+to make it more natural to use frames instead of Emacs windows for
+most things.
+
+= How I've Tackled the Problem =
+
+I describe here how I've approached the problem. After that
+(see [[#OneOnOneEmacsLibraries]]), I describe the individual Emacs Lisp libraries for my implementation of One-On-One Emacs, in case you want to try it out. Enhancements and
+alternative approaches are invited.
+
+In summary, I did this:
+
+* <code>(setq pop-up-frames t)</code>
+* Redefined some basic Emacs functions to treat frames better.
+* Created some new Emacs functions for working with frames.
+
+Here are descriptions, with screenshots, of the major frame-friendly functionalities I implemented.
+
+* '''[[Shrink-Wrapping Frames]] --''' Made frames be the right size automatically.
+* '''[[Frame Tiling Commands]] --''' Be able to tile the visible frames horizontally or vertically.
+* '''[[Dedicated Minibuffer Frame]] --''' Only one [[minibuffer]], in its own [[frame]] at the bottom of your display (or wherever).
+* '''[[Special Frames]] --''' Special buffers (<code>*grep*</code>, <code>*Occur*</code>, <code>*Messages*</code> etc.) are in frames with a different style.
+* '''[[Help and Completions Frames]] --''' Special frames for the <code>*Help*</code> and <code>*Completions*</code> buffers. Redirection of frame focus from <code>*Completions*</code> to the minibuffer frame.
+* '''[[Delete Frames Easily - But Not Too Easily]] --''' Made `delete-window', `quit-window', `kill-buffer', and `mouse-tear-off-window' behave better with frames. 
+* '''[[Iconifying, Deiconifying, and Hiding Frames]] --''' New commands for showing and hiding frames.
+* '''FisheyeWithThumbs --''' Thumbnail frames: a fisheye view of your frames and an alternative to iconifying.
+
+In addition to those major changes, I changed a few other standard Emacs functions to take better advantage of frames:
+
+* `dired-simultaneous-find-file': Redefined to use
+separate frames instead of windows if `pop-up-frames' is
+non-nil.
+* Various <code>*Help*</code> buffer functions, like
+`locate-library', make the <code>*Help*</code> frame
+invisible when you're through with it.
+* `menu-bar-select-buffer': Calls
+`switch-to-buffer-other-frame' instead of
+`switch-to-buffer'.
+* `switch-to-completions': Selects
+<code>*Completions*</code> window even if it is on another frame.
+* `count-windows': Only uses the optional MINIBUF argument
+if the current frame has a minibuffer.
+
+'''See Libraries:''' Lisp:dired+.el, Lisp:help+.el, Lisp:menu-bar+.el, Lisp:simple+.el, Lisp:window+.el
+
+[:OneOnOneEmacsLibraries]
+== One-On-One Emacs Libraries ==
+
+See DrewsElispLibraries for which libraries work with which Emacs versions.
+
+Each library has `require' code that lets you know which other libraries it uses. In most cases, these are ''soft'' `require's: if the required library isn't found, nothing happens.
+
+These are the libraries for (my version of) One-On-One Emacs:
+
+* Lisp:autofit-frame.el -- automatically fit each one-window frame to its window (buffer); see also '''[[Shrink-Wrapping Frames]]'''
+* Lisp:buff-menu+.el -- extensions to standard library `buff-menu'; see also '''BufferMenuPlus'''
+* Lisp:compile-.el, Lisp:compile+.el and Lisp:grep+.el -- extensions to standard libraries `compile' and `grep'; see also '''GrepMode'''
+* Lisp:dired+.el -- extensions to standard libraries `dired', `dired-aux', and `dired-x'; see also '''DiredPlus'''
+* Lisp:fit-frame.el -- fit a frame to its selected window (buffer); see also '''[[Shrink-Wrapping Frames]]'''
+* Lisp:frame-cmds.el -- frame and window commands (interactive functions); see also '''[[Frame Tiling Commands]]''', '''[[Iconifying, Deiconifying, and Hiding Frames]]''', '''[[Delete Frames Easily - But Not Too Easily]]''', and '''FrameModes'''
+* Lisp:frame-fns.el -- non-interactive frame and window functions
+* Lisp:frame+.el -- extensions to standard library `frame'
+* Lisp:help+.el -- extensions to standard library `help'; see also '''HelpPlus'''
+* Lisp:info+.el -- extensions to standard library `info'; see also '''InfoMode'''
+* Lisp:menu-bar+.el -- extensions to standard library `menu-bar'; see also '''MenuBar''' and '''HelpMenuBarPlus'''
+* Lisp:mouse+.el -- extensions to standard library `mouse'
+* Lisp:oneonone.el -- define a special multi-frame setup; see also '''[[Dedicated Minibuffer Frame]]''', '''[[Special Frames]]''', and '''[[Help and Completions Frames]]'''
+* Lisp:setup-keys.el -- some key bindings
+* Lisp:simple+.el -- extensions to standard library `simple'
+* Lisp:thumb-frm.el -- use thumbnail frames in addition to or instead of frame icons
+* Lisp:window+.el -- extensions to standard library `window'
+
+All of the libraries I've posted at EmacsWiki are listed at '''DrewsElispLibraries'''. Putting all of them in a directory pointed to by variable `drews-lisp-dir', and using Lisp:emacs-init.el as is, you live Emacs more or less as I do.
+
+= Comments (Log) =
+
+This space is for chronological comments (interaction).
+----
+
+[new]
+LiuJin: When tiling multiple frames, wouldn't multiple frame borders, title bars, menubars and toolbars consume too much screen space?
+
+[new:DrewAdams:2004-04-12]
+: Good question. I haven't found that to be the case. Try it, and let me know what you think. It's true that a ScrollBar, MenuBar, and frame title bar each take up about 1 cm (e.g. in M.S. Windows). The other frame borders are usually negligeable.
+
+: I really only tile frames before using ediff, and for ediff I'm using only two (or three) frames. In that context, I haven't noticed any significant loss of screen real estate. -- DrewAdams
+
+[new]
+'''JodyKlymak, 2004-04-19:'''  Looks very interesting.  Why does it need its own layer of customization for frame look (i.e. default-frame-background)?  This seems to override my color-themes call for the first frame.  Subsequent frams seem OK.  Thanks,  Jody
+
+[new:DrewAdams:2004-04-19]
+: Not sure I understand you. Perhaps you mean that you like the general idea but you don't like the particular default frame look?  `default-frame-background' and such are user variables, which you can set in your init file to get the look you want. They are used to define the standard variable `default-frame-alist'. 
+
+: Perhaps you mean that this doesn't play well with library Lisp:color-theme.el.gz. If so, you may be right; I haven't used color-theme. Looking at its code (version 6.5.4), I see that it prepends some settings to `default-frame-alist'. Perhaps you need only change the order of loading libraries Lisp:color-theme.el.gz. and Lisp:oneonone.el.
+
+: The doc string for function `color-theme-install-frame-params' (in Lisp:color-theme.el.gz) says that "the value of `initial-frame-alist' is not
+modified."  In Lisp:oneonone.el, I do this:
+
+  (setq initial-frame-alist default-frame-alist).
+
+: I might be able to be more helpful if I understood your problem better. Perhaps someone with more understanding of color-theme (than I) can suggest something. -- DrewAdams
+
+[new]
+'''Matthias, 2004-11-10:''' Its seems that the most popular feature of Firefox are its tabs. Don't you feel they are a weak version of emacs windows? I say weak because an existing buffer     may have no associated windows...
+[new:DrewAdams:2004-12-25 18:01 UTC]
+: Yes, a lot of people seem to like Firefox's tabs. I don't see such tabbed panels (technically, the "tab" is just the projected part of the panel that is always visible) as being similar to Emacs windows, except that there can be several such panels (tabs) per frame. 
+
+I see tabs as similar to the ability in Emacs to use the same frame successively for different buffers -- only one "buffer" is visible at a time with tabs. What tabs offer, which is not currently available in standard Emacs, is the ability to ''click'' (rather than using, say, `C-x b') to display a buffer in the frame. However, things like BufferMenuPlus and SpeedBar offer something very similar. And there are Emacs packages that apparently offer just that ability -- see TabBarMode, ErcTabs, and WThreeMTabs. -- DrewAdams
+
+[new]
+Is there a specific reason that files here are only available as seperate files instead of tarballs? Clicking through the dependencies including the 20sec limit for 10 pages is really annoying. In any case compressed tarballs would also cause less trafic. (This might not be the right place to mention that but i felt the need to
+express this SOMEWHERE after collecting files for half an hour...) -- Dondy
+
+[new:DrewAdams:2007-01-29 16:43 UTC]
+Hi [[Dondy]],
+
+I offer my software as a free service, with no warranty; I'm not selling anything here. If you want to download and use it, fine; I hope you find it useful. If not, have a nice day anyway  :-).
+
+If you want to make a set of files available as a tarball, feel free to do so. There is a huge number of possible tarball combinations, of course. Even for a single library such as <tt>[[oneonone.el]]</tt>, there is a large number of possible tarballs, depending on which optional libraries people might want to use with <tt>oneonone.el</tt>.
+
+You see, <tt>oneonone.el</tt> has provisions to exploit features from multiple libraries that are not strictly required by it. This means that there are multiple possible versions of OneOnOneEmacs, from bare-bones to fully loaded. And the same is true of some of the libraries that <tt>oneonone.el</tt> can exploit. For example, <tt>[[frame-cmds.el]]</tt> offers more if you also load its option libraries. And so on. Different strokes for different folks.
+
+I encourage people to try fully-loaded versions of my libraries. Someone could post a bare-bones tarball for each library, which included only what that library strictly needs, but that would of course annoy people who downloaded the same library in more than one tarball. My preference is to not try to package my libraries together, and thus to let people pick and choose. The downside to that is that they must then, themselves, pick and choose ;-).
+
+Now, to your problem. What "dependencies" are you referring to? The only library required by <tt>oneonone.el</tt> is '''<tt>[[hexrgb.el]]</tt>'''.
+
+Perhaps you are confused by this statement in the file header:
+
+: ##;; Features that## '''''##might##''''' ##be required by this library:##
+
+     ;;   `avoid', `cl', `files+', `frame-cmds', `frame-fns', `hexrgb',
+     ;;   `misc-fns', `oneonone', `strings', `thingatpt', `thingatpt+',
+     ;;   `zoom-frm'.
+
+This lists all libraries that ##oneonone.el## can take advantage of, not all libraries that are strictly required. Please see [[DrewsElispLibraries#LibraryDependencies]] for an explanation.  -- DrewAdams
+
+----
+
+CategoryFrames CategoryModes FrameModes CategoryDisplay CategoryHistory CategoryDotEmacs CategoryWishList CategoryCustomize

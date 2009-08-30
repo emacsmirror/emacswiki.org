@@ -1,0 +1,59 @@
+Click on the title to list all pages relating to TeX and LaTeX.
+
+Here's a possibly incomplete selection:
+
+!TeX implementation:
+* TeX
+* LaTeX
+* PdfTeX
+* PDFLaTeX
+* ConTeXt
+* [[Texinfo]]
+* BibTeX
+
+!TeX and !LaTeX major modes:
+* AUCTeX -- IDE for LaTeX
+* UltraTexMode -- dynamic completion through LightningCompletion
+* CDLaTeX -- minor mode, templates
+* YaTeX -- Yet Another TeX mode for Emacs
+* [http://www.ctan.org/tex-archive/help/Catalogue/entries/swiftex.html SwifTeX] -- created for doc.sty, derived mode
+
+With a bit of EmacsLisp:
+* RefTeX -- support for labels, references, citations and indices
+* BibTeX -- bibliography in LaTeX, editing style files
+* FileFormat -- edit with accented characters in the buffer, but sequences like <code>{\"a}</code> in the file
+* [[Talcum]] -- unclutter, command insertion, refresh preview window after compilation
+* PreviewLaTeX -- visualization of images, tables, math directly as images in the source buffer.
+* TexMathPreview -- minimal previewing of <nowiki>TeX</nowiki> maths for TeX, [[Texinfo]] and WikipediaMode markup.
+* LaTeXMathPreview -- a fork of tex-math-preview.el. making preview only for LaTeX.
+* XSymbolMode -- assist input of symbols in some token languages; uses a special font to display math
+* WhizzyTeX -- real-time updates in a separate preview window while you type
+* LatexOverview -- describes how to get overview without AUCTeX
+* LaTeXSymbols -- input of TeX symbols, XEmacs only
+* LatexEnc -- coding system from <code>inputenc</code>
+* InverseDviSearch -- going from dvi preview to editor and vice versa
+* NonbreakableSpace -- inserting nonbreakable spaces into document
+* [[iTe]] -- A semi-WYSIWYG TeX mode, for in buffer manipulation of objects (images fragments)
+* [http://gatxan.cimne.upc.es/texpict/ TeXPict] -- LaTeX picture Tcl/Tk editor, with some Emacs integration (via clipboard)
+* [http://ee.usyd.edu.au/~thlai/emacs/index.html latex-doc.el] -- displays a brief document of LaTeX commands, environments and packages
+* DviViewMode -- display a DVI file inside an Emacs buffer (uses dvipng); major mode with basic navigation
+* AuxLabel -- refer to labels and references using the number that appears in the typeset document
+
+Other
+* GNU TeXmacs -- not quite !TeX or Emacs, but with a similar spirit
+* LatexMk -- specialized make alike for !LaTeX; refresh preview on save
+* LaTeXManual -- Free [[Texinfo]] manual for !LaTeX
+
+Other (La)!TeX editors (free software only)
+* [http://www.lyx.org LyX] -- pseudo-WYSIWYG editor, using !LaTeX as typesetting engine
+* [http://www.texmacs.org/ GNU TeXmacs] -- free scientific text editor, with Scheme plugin system. Has export to and requires !LaTeX
+* [http://kile.sourceforge.net Kile], <b>K</b>DE <b>I</b>ntegrated <b>L</b>aTeX <b>E</b>ditor
+* [http://www.xm1math.net/texmaker/ Texmaker], Qt free cross-platform LaTeX editor
+* [http://www.latexeditor.org/ LEd], <b>L</b>aTeX <b>Ed</b>itor, free IDE for MS Windows
+* [http://winefish.berlios.de/ Winefish], GTK+ !LaTeX editor based on Bluefish HTML editor
+* For [http://www.vim.org VIM] there are [http://vim-latex.sourceforge.net/ Vim-LaTeX Suite] (for VIM version at least 6.0) and [http://www.vimoutliner.org/ Vim Outliner]
+* For [http://www.eclipse.org/ Eclipse] there are [http://etex.sourceforge.net/ ecleTeX], [http://texlipse.sourceforge.net/ TeXlipse] and [http://www.eclipse-plugins.info/eclipse/plugin_details.jsp?id=467 LatEc] plugins
+* For [http://www.jedsoft.org/jed/ Jed] there is [http://www.ctan.org/tex-archive/support/jed/ latex4jed], enhanced !LaTeX mode for the Jed editor
+
+----
+CategoryModes

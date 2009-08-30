@@ -1,0 +1,137 @@
+Sometimes there are defcustoms for lists with decent default values.
+People customize them, adding a few entries.  Now what happens when
+the maintainers change the default value?  The people that customized
+their variables are out of luck.  They will have to review the changes
+carefully.
+
+This page presents solutions that allow lisp authors to offer
+defcustoms that will add elements to the standard value without
+overwriting it.
+
+= Very Simple List Without Add-To-List Effect =
+
+Here's an example which will be rewritten below.
+The current custom type will not allow users to specify additions only.
+
+ (defcustom mm-automatic-display
+   '("text/plain" "text/enriched" "text/richtext" "text/html"
+     "text/x-vcard" "image/.*" "message/delivery-status" "multipart/.*"
+     "message/rfc822" "text/x-patch" "application/pgp-signature"
+     "application/emacs-lisp" "application/x-pkcs7-signature"
+     "application/pkcs7-signature" "application/x-pkcs7-mime"
+     "application/pkcs7-mime")
+   "A list of MIME types to be displayed automatically."
+   :type '(repeat string)
+   :group 'mime-display)
+
+= Comparing  =
+
+ From: <nowiki>SimonJosefsson</nowiki>
+ Subject: Re: changed default values
+ To: PerAbrahamsen
+ CC: (<nowiki>MailingList</nowiki> for Emacs Custom)
+ Date: Mon, 10 Sep 2001 13:53:54 +0200
+
+This implement my other idea, of only storing the difference between
+the default value in .emacs.  It doesn't require modifications in
+custom or elsewhere, but something like this could be used by
+e.g. Gnus.
+
+ (defvar mm-automatic-display-default '("text/plain"
+					"text/enriched" "text/richtext"))
+
+ (defun jas-custom-set (symbol value)
+   (let (res)
+     (dolist (val value)
+       (if (not (member val (symbol-value (intern (concat (symbol-name symbol) "-default")))))
+	   (push (cons val t) res)))
+     (dolist (val (symbol-value (intern (concat (symbol-name symbol) "-default"))))
+       (if (not (member val value))
+	   (push (cons val nil) res)))
+     (set-default symbol res)))
+
+ (defun jas-custom-get (symbol)
+   (let ((res (symbol-value (intern (concat (symbol-name symbol) "-default")))))
+     (dolist (val (symbol-value symbol))
+       (if (cdr val)
+	   (setq res (append res (list (car val))))
+	 (setq res (delete (car val) res))))
+     res))
+
+ (defcustom mm-automatic-display 'nil
+   "A list of MIME types to be displayed automatically."
+   :group 'mime-display
+   :type '(repeat string)
+   :set 'jas-custom-set
+   :get 'jas-custom-get)
+
+and in code where you want to know the value of `mm-automatic-display'
+you insert `(jas-custom-get 'mm-automatic-display)'.  This step could
+probably be hidden by clever programming as well.
+
+= Storing Additions and Removals when Saving =
+
+In this solution, additions and removals are stored in a property
+which is used to modify the standard value everytime the variable is
+changed via custom.
+
+In code where you want to know the value of `mm-automatic-display',
+you could just use the variable itself.
+
+See CustomDiffList for the result.
+
+ (require 'cl)
+
+ (defun custom-diff-list-apply (symbol value)
+   "Return VALUE for diff-lists.
+ If VALUE is a list starting with the symbol DIFF-LIST,
+ it must have the form (DIFF-LIST ADDITIONS REMOVALS).
+ In that case, the standard value of SYMBOL is used.
+ All elements of ADDITIONS are added and all elements
+ of REMOVALS are removed.
+ In all other cases, VALUE is returned."
+   (if (and (listp value)
+	    (> (length value) 2)
+	    (eq 'diff-list (nth 0 value)))
+       (let ((additions (reverse (nth 1 value)))
+	     (removals (nth 2  value))
+	     (result (copy-list (eval (car (get symbol 'standard-value))))))
+	 (dolist (item removals)
+	   (setq result (remove item result)))
+	 (dolist (item additions)
+	   (setq result (cons item result)))
+	 result)
+     value))
+
+ (defun custom-set-diff-list (symbol value)
+   "Set SYMBOL to VALUE for diff-lists.
+ See `custom-diff-list-apply'."
+   (put symbol 'diff-list (list value))
+   (set-default symbol (custom-diff-list-apply symbol value))
+   (message "Set %S to %S, prop to %S" symbol (default-value symbol) (get symbol 'diff-list)))
+
+ (defun custom-get-diff-list (symbol)
+   "Returns SYMBOL's DIFF-LIST property.
+ It is stored there by `custom-set-diff-list'."
+   (let ((diff-list (get symbol 'diff-list)))
+     (or (car diff-list) (symbol-value diff-list))))
+
+ ;; Example
+
+ (defcustom mm-automatic-display
+   '("text/plain" "text/enriched" "text/richtext" "text/html"
+     "text/x-vcard" "image/.*" "message/delivery-status" "multipart/.*"
+     "message/rfc822" "text/x-patch" "application/pgp-signature")
+   "A list of MIME types to be displayed automatically."
+   :type '(choice (repeat :tag "Edit saved value" string)
+		  (list :tag "Modify the standard value"
+			(const :tag "Add and remove selected entries" diff-list)
+			(repeat :tag "Additions" string) 
+			(repeat :tag "Removals"  string)))
+   :initialize 'custom-initialize-reset
+   :set 'custom-set-diff-list
+   :get 'custom-get-diff-list
+   :group 'mime-display)
+
+----
+CategoryCode CategoryCustomize

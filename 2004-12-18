@@ -1,0 +1,11 @@
+I switched the wiki to '''indexed search''' -- instead of crawling the wiki with Perl regular expressions,
+the site is indexed once a week, and the search form at the bottom of every page uses this index.
+
+One problem is that this doesn't work for languages that don't know word boundaries: Chinese and Japanese, for example.
+In order to not inconvenience these people, there's a hack: If your browser language preferences or the URL you use take you to the Chinese or Japanese interface, the old search form is used.
+
+If you are using the Chinese or Japanese interface but search for English terms, then your search will be unnecessarily slow.  If you are using any other interface but search for Chinese or Japanese terms, your search will return no results.
+I don't like this compromise, but it seems that finding word boundaries in Chinese and Japanese is an unresolved problem.
+There is no Perl library available to do it for me.  If you know of a solution, I'd love to hear it!
+
+-- AlexSchroeder

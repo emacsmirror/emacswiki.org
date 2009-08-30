@@ -1,0 +1,12 @@
+== Major mode for creating statistical model with AD Model Builder (ADMB) ==
+
+Provides syntax highlighting, IDE compilation and file manipulation, outline code navigation, templates, and smaller tools.
+
+You can get it here:
+
+* [http://admb-project.org/community/editing-tools/emacs/admb.el/view admb.el]
+
+[http://admb-project.org AD Model Builder] is an environment for nonlinear statistical modeling, built around the AUTODIF Library, a C++ language extension which transparently implements reverse-mode automatic differentiation.
+
+----
+ProgrammingModes

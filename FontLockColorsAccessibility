@@ -1,0 +1,16 @@
+Chong suggested changing the font-lock-* faces colors, see http://lists.gnu.org/archive/html/emacs-devel/2009-07/msg01577.html.
+
+I checked the WAC guidelines at http://www.w3.org/TR/2008/REC-WCAG20-20081211/#visual-audio-contrast-contrast and wrote a file for checking Emacs font-lock-* face colors:
+
+Lisp:font-lock-color-test.el
+
+This file contains Chongs suggestion and a test of the contrast they gives.
+I have also added my own suggestions.
+To see those suggestions, load the file and do
+
+  M-x test-font-lock-colors
+
+You are welcome to add your own suggestions to this file.
+
+----
+CategoryAccessibility

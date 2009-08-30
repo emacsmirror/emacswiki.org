@@ -1,0 +1,32 @@
+In a similar vein to <tt>show-paren-mode</tt> (ShowParenMode) <tt>paren-set-mode</tt> allows one to see matching pairs of parentheses. When point is on one of the pair, one of three highlighting options shows the matching parenthesis. To activate it manually:
+
+ M-x paren-set-mode
+
+Which will cycle through the four modes of operation:
+
+   OFF   - turn the feature on,
+   blink - annoying, blinking parentheses, 
+   paren - nice, neat, highlight of matching parenthesis, and
+   sexp  - highlight everything between the parentheses. 
+
+You can set, say, paren style by:
+
+  C-u 2 M-2x paren-set-mode RET
+
+or in a .el as:
+
+  (paren-set-mode 'paren)
+
+The only difficulty arises when you have a sequence such as the following:
+
+  (a)(b)(c)
+
+If point is on the parenthesis before the <tt>a</tt>, the corresponding parenthesis after the <tt>a</tt> highlights. If point is after that close-parenthesis, then the open-parenthesis highlights. However, this also means that point is <em>on</em> the opening parenthesis of the <tt>b</tt> pair, yet the matching close-parenthesis does not highlight - the 'match openening paren' takes precedence, in other words.
+
+---
+
+Has this been removed from CVS? I can't seem to find it. I used to use flash-paren.el for this 
+but it seems that it no longer works under CVS. -- Brad Collins
+
+----
+CategoryParentheses

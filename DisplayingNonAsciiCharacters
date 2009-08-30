@@ -1,0 +1,72 @@
+When the display for some characters does not work, you will see
+little empty boxes instead of the glyphs you would like to see.
+
+One way to debug this is to check whether you have the fonts necessary
+for this character set.  If you do, then you will have to check wether
+your fontset has the correct mapping from charset to font (see
+FontSets).
+
+== Check character set ==
+
+Put point on the empty box, and use `C-u C-x ='.  The result should
+tell you the charset you want to know.  Here is an example from the
+HELLO file (use `C-h h' to display it):
+
+   character: ? (07067, 3639, 0xe37)
+     charset: cyrillic-iso8859-5
+	      (Right-Hand Part of Latin/Cyrillic Alphabet (ISO/IEC 8859-5): ISO-IR-144)
+  code point: 55
+      syntax: word
+    category: y:Cyrillic  
+ buffer code: 0x8C 0xB7
+   file code: ESC 2C 4C 37 (encoded by coding system iso-2022-7bit-unix)
+	font: -- none --
+
+When I go to check the list of installed fonts, I find none for ISO
+8859-5:
+
+    ~% xlsfonts | grep 8859-5
+
+I do, however, have fonts for other encodings, such as 8859-1:
+
+    ~% xlsfonts | grep 8859-1 | head -n 3
+    -adobe-avant garde gothic-book-o-normal--0-0-0-0-p-0-iso8859-1
+    -adobe-avant garde gothic-book-r-normal--0-0-0-0-p-0-iso8859-1
+    -adobe-avant garde gothic-demi-o-normal--0-0-0-0-p-0-iso8859-1
+
+That explains why my Emacs cannot display a character in ISO 8859-5.
+There just is no font capable of it.  [Note that Emacs can do arbitrary mapping of characters onto font glyphs via `font-ccl-encoder-alist', so the above isn't the whole story; see below.  For instance, you might display Cyrillic with fonts encoded in any of iso8859-5, koi8-r,
+windows-1251 or iso10646-1, though vanilla Emacs 21.2 only supports the first two. -- fx]
+
+== Check font set ==
+
+Call M-x describe-fontset to see what the current fontset defines:
+
+<pre>
+    Fontset: -*-*-medium-r-normal--14-130-75-75-c-70-fontset-startup
+    CHARSET or CHAR RANGE	FONT NAME
+    ---------------------	---------
+    ascii			-misc-fixed-medium-r-normal--14-130-75-75-c-70-iso8859-1
+    ...
+    latin-iso8859-1		-misc-fixed-*-iso8859-1
+	 [-Misc-Fixed-Medium-R-Normal--14-130-75-75-C-70-ISO8859-1]
+    latin-iso8859-2		-*-iso8859-2
+    latin-iso8859-3		-*-iso8859-3
+    latin-iso8859-4		-*-iso8859-4
+    ...
+    cyrillic-iso8859-5	-*-*-*-iso8859-5
+    latin-iso8859-9		-*-iso8859-9
+    latin-iso8859-15	-*-iso8859-15
+    ...
+</pre>
+
+What this means is that Emacs will use a font matching
+-*-*-*-iso8859-5 for any character of the charset cyrillic-iso8859-5.
+And as we have seen above, there is none.
+
+If you believe you have the correct fonts installed, this is the place
+to check whether Emacs will consider them.
+
+----
+CategoryInternationalization
+

@@ -1,0 +1,7 @@
+The hostname for the GNU Savannah CVS server has changed.  It is now ##cvs.savannah.gnu.org##.
+
+* http://savannah.gnu.org/forum/forum.php?forum_id=4168
+
+Recently rsync access to repositories and ArchVersionControl were added.
+
+The savannah is a great service and doesn't seem it's going to stop improving.

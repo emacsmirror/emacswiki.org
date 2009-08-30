@@ -1,0 +1,97 @@
+This page describes how you can get tables in emacs-w3m (WThreeM) to
+display using the original IBM graphics characters instead of plain
+ASCII +, -, and |.  You can see them in xterm (if you are using the
+correct fonts).
+
+ From: JohnWiegley
+ Subject: Even easier solution for displaying PC graphics characters
+ Newsgroups: comp.emacs
+ Date: 16 Jun 2001 18:36:28 -0400
+
+By sheer chance, I run into the fact that's Emacs 2x's glyph table
+lets you access font elements directly.  And when I looked at the
+standard "fixed" font, there were all the graphics characters sitting
+at the beginning!
+
+So, you don't need Mule or multibyte or Unicode fonts.  Just do this:
+
+ (standard-display-ascii ?\200 [15])
+ (standard-display-ascii ?\201 [21])
+ (standard-display-ascii ?\202 [24])
+ (standard-display-ascii ?\203 [13])
+ (standard-display-ascii ?\204 [22])
+ (standard-display-ascii ?\205 [25])
+ (standard-display-ascii ?\206 [12])
+ (standard-display-ascii ?\210 [23])
+ (standard-display-ascii ?\211 [14])
+ (standard-display-ascii ?\212 [18])
+ (standard-display-ascii ?\214 [11])
+
+ (standard-display-ascii ?\222 [?\'])
+ (standard-display-ascii ?\223 [?\"])
+ (standard-display-ascii ?\224 [?\"])
+ (standard-display-ascii ?\227 " -- ")
+
+That will give you line drawing characters for those who browse with
+w3m.
+
+----
+
+This is the original posting, slightly edited.  It is no longer
+relevant.
+
+ From: JohnWiegley
+ Subject: Displaying PC graphics characters in Emacs (works great with w3m-el)
+ Newsgroups: comp.emacs
+ Date: 13 Jun 2001 18:04:43 -0400
+
+I missed the pretty graphic characters I was used to under xterm.  And
+so the hunt began.  If xterm can do anything, Emacs can do it. :)
+
+Here are the steps to take:
+
+* Set your font to an iso10646 (unicode) encoded font.  XFree86 4.0's "fixed" font supports such an encoding.  Just put this in your .Xdefaults:
+
+ Emacs*font: -misc-fixed-medium-r-semicondensed--13-*-*-*-*-*-iso10646-1
+
+: Or something close to it.
+
+* Now that you have a font which contains PC graphics characters, you need to map the appropriate 8-bit control characters to their Unicode equivalents.  Put this in your .emacs:
+
+ (standard-display-ascii ?\200 (vector (decode-char 'ucs #x253c)))
+ (standard-display-ascii ?\201 (vector (decode-char 'ucs #x251c)))
+ (standard-display-ascii ?\202 (vector (decode-char 'ucs #x252c)))
+ (standard-display-ascii ?\203 (vector (decode-char 'ucs #x250c)))
+ (standard-display-ascii ?\204 (vector (decode-char 'ucs #x2524)))
+ (standard-display-ascii ?\205 (vector (decode-char 'ucs #x2502)))
+ (standard-display-ascii ?\206 (vector (decode-char 'ucs #x2510)))
+ (standard-display-ascii ?\210 (vector (decode-char 'ucs #x2534)))
+ (standard-display-ascii ?\211 (vector (decode-char 'ucs #x2514)))
+ (standard-display-ascii ?\212 (vector (decode-char 'ucs #x2500)))
+ (standard-display-ascii ?\214 (vector (decode-char 'ucs #x2518)))
+
+: You can use the "xfd" utility to see what all these hex codes mean.  Just keep hitting "Next page" until you get to the 0x2500 page, which is where all the graphics characters live.  Feel free to chose other characters if you want, perhaps to support rounded corners, for example.
+
+* You must have mule installed (multibyte character support) for any of this to work.
+
+Now you will see pretty tables.  Ah.
+
+John
+
+----
+
+This doesn't worked for me, but setting <tt>`w3m-default-symbol'</tt>
+does (I hope the UTF-8 chars don't get screwed anywhere):
+
+<pre>
+(setq w3m-default-symbol
+      '("─┼" " ├" "─┬" " ┌" "─┤" " │" "─┐" ""
+        "─┴" " └" "──" ""   "─┘" ""   ""   ""
+        "─┼" " ┠" "━┯" " ┏" "─┨" " ┃" "━┓" ""
+        "━┷" " ┗" "━━" ""   "━┛" ""   ""   ""
+        " •" " □" " ☆" " ○" " ■" " ★" " ◎"
+        " ●" " △" " ●" " ○" " □" " ●" "≪ ↑ ↓ "))
+</pre>
+
+----
+emacs-w3m (WThreeM)

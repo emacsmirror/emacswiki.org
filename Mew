@@ -1,0 +1,159 @@
+Mew is yet-another mail reader for emacs.
+
+Homepage: http://www.mew.org/
+
+== Setup ==
+
+To install: download and unpack, run ./configure && make && make install. Initial setup is done in .emacs. Main configuration file for mew is ~/.mew.el, which is loaded //after// mew is started.
+
+~/.emacs:
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;; mew -- mail
+ (autoload 'mew "mew" nil t)
+ (autoload 'mew-send "mew" nil t)
+ ;; Optional setup (Read Mail menu for Emacs 21):
+ (if (boundp 'read-mail-command)
+     (setq read-mail-command 'mew))
+ ;; Optional setup (e.g. C-xm for sending a message):
+ (autoload 'mew-user-agent-compose "mew" nil t)
+ (if (boundp 'mail-user-agent)
+     (setq mail-user-agent 'mew-user-agent))
+ (if (fboundp 'define-mail-user-agent)
+     (define-mail-user-agent
+       'mew-user-agent
+       'mew-user-agent-compose
+       'mew-draft-send-message
+       'mew-draft-kill
+       'mew-send-hook))
+
+~/.mew.el:
+
+ (setq mew-name "full name")
+ (setq mew-user "name")           ; from name@domain
+ (setq mew-mail-domain "domain")                                                                
+                                                                                                  
+ (setq mew-smtp-user "name@domain")                                                             
+ (setq mew-smtp-server "smtp.domain")                                                           
+ (setq mew-smtp-auth-list '("LOGIN"))   ; "CRAM-MD5", "PLAIN", and "LOGIN" can be used
+                                                          
+ ;; i use fetchmail to get mail from all boxes to /var/mail/banan
+ (setq mew-mailbox-type 'mbox)                                                                    
+ (setq mew-mbox-command "incm")                                                                   
+ (setq mew-mbox-command-arg "-u -d /var/mail/username")                                              
+ (setf mew-mail-path "~/.mail")                                                        
+                                                                                                  
+ ;; some customization                                                                            
+ (setq mew-use-unread-mark t)                                                                     
+ (setq mew-summary-form '(type " " (5 date) " " (5 time) "   " (30 from) " " t (0 subj)))         
+ (setq mew-summary-form-extract-rule '(address))                                                  
+ ;; make mew to show date in "dd/mm" format in summary instead of "mm/dd"                         
+ (defun mew-summary-form-date ()                                                                  
+   "A function to return a date, DD/MM."                                                          
+   (let ((s (MEW-DATE)))                                                                          
+     (when (or (string= s "")                                                                     
+ 	      (not (string-match mew-time-rfc-regex s)))                                         
+       (setq s (mew-time-ctz-to-rfc                                                               
+ 	       (mew-file-get-time (mew-expand-msg (MEW-FLD) (MEW-NUM))))))                       
+     (if (string-match mew-time-rfc-regex s)                                                      
+ 	(format "%02d/%02d"                                                                      
+ 		(mew-time-rfc-day)                                                               
+ 		(mew-time-mon-str-to-int (mew-time-rfc-mon)))                                    
+       "")))                                                                                      
+                        
+== Fixing problem with sending mail ==
+
+In versions 6.1 and 6.2 I found that I can't send email because of very strange error: draft file was meant to be renamed to +queue, but was deleted before renaming. I wrote to the author, but he didn't reply.
+
+So if you have such a problem, just add this to you .mew.el:
+                                                                          
+ ;; bugfix                                                                                        
+ ;; draft was deleted before it could be renamed to +queue                                        
+ ;; redefine that function to fix this                                                            
+ (defun mew-encode-save-draft ()                                                                  
+   (mew-frwlet mew-cs-dummy mew-cs-text-for-write                                                 
+     (write-region (point-min) (point-max) (buffer-file-name) nil 'no-msg)                        
+     (clear-visited-file-modtime)                                                                 
+     ;;;(mew-delete-file buffer-auto-save-file-name)     ; delete draft too early?                  
+     (set-buffer-modified-p nil)))                                                                
+
+
+
+== Other stuff ==
+
+-----
+
+To view Html messages in Message Mode, you can either install w3m etc, or insert the following in your .mew.el :
+<pre>
+(setq mew-prog-text/html 'etk-mime-text/html)
+(defun etk-mime-text/html (begin end)
+    (save-excursion 
+        (goto-char (point-min))
+        (shell-command-on-region begin end "html2text -nobs" nil t)
+        )
+    )
+</pre>
+
+-----
+
+Is there a way to let mew remember the password for a pop3 account? I already set the timeout rather high and activited caching.
+<pre>
+(setq mew-use-cached-passwd t)
+(setq mew-passwd-timer-unit 1000)
+</pre>
+But I want to save it in my .emacs, so it don't need to retype it, when I startup  emacs.
+
+A:
+You can.
+<pre>
+(setq mew-passwd-alist '(("username@ringding.cs.umd.edu:imap" "password" 0)))
+</pre>
+Found on http://www.cs.umd.edu/~nakamura/misc/mew_imap.html 
+
+-----
+
+To use different signature file for different Email address, include following line in each account's setting
+<pre>
+("signature-file" . "/location/of/signature")
+</pre>
+
+-----
+I create [http://zhangw.com/emacs/dotmewel.html a list of .mew.el] (i.e. the configuration file of Mew) on [http://zhangw.com/ my website]
+
+WenZhang
+
+-----
+<Strong>The way [http://t2100cdt.kippona.net/linux/emacs/mew/ bbdb-mew] works</Strong>
+
+From http://mew.iijlab.net/ml/mew-int-3.1/msg00140.html
+
+* In the bbdb buffer entering <b>m</b> in the address will open a mew draft with the To: field filled in.
+* Entering <b>;</b> in the summary should prompt to create a new bbdb record.
+
+-----
+<b>Fighting Spam: bogofilter in Mew</b>
+Sven Hartrumpf offers another way to use Bogofilter in Mew. (http://pi7.fernuni-hagen.de/hartrumpf/bogofilter_in_mew.html)
+
+
+* Installing
+
+Install a recent version of Mew and bogofilter. Then create a script called bogo containing the following lines: 
+<pre>
+#!
+bogofilter -v -T -B $* | grep -e ' S ' -e ' U '
+</pre>
+(Leave out -e ' U ' if you don't want to mark messages classified by bogofilter as unsure.) Add to your .emacs (or .emacs.mew or similar Emacs' init file): 
+<pre>
+(setq mew-prog-grep "bogo")
+</pre>
+
+* Training the classifier
+
+Type ls on spam message (in Mew's summary mode). (ls stands for learn spam.) Type lh on ham message (in Mew's summary mode). (ls stands for learn ham.) 
+
+* Using the spam classifier
+
+In Mew, press "?". bogo will be presented as the default program, so just press return when shown. This will mark spam (and unsure, see above) messages. Then put delete mark on all marked messages: md Later: press x (to delete really). 
+
+WenZhang
+

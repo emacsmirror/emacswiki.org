@@ -1,0 +1,20 @@
+A common complaint by Emacs newbies is that it doesn't scroll like
+they are used to.  Most notable is scrolling down one line at a time,
+also known as the NextLineBehavior.
+
+Another common issue is horizontal scrolling and line wrapping.  Line
+wrapping can be disabled with:
+
+    (setq truncate-lines t)
+
+or M-x toggle-truncate-lines
+
+In Emacs versions before 21, you also need this:
+
+    (hscroll-global-mode 1)
+
+See also [[Scrolling]]
+
+----
+CategoryDisplay
+CategoryDotEmacs

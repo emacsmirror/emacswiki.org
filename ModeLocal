@@ -1,0 +1,40 @@
+mode-local is a package for managing variables and functions that are mode specific.  mode-local.el is a part of CollectionOfEmacsDevelopmentEnvironmentTools.  Mode local variables and functions are used extensively throughout the SemanticBovinator package, such that these routines are key to providing parser support through Semantic.
+
+You can download the latest version of mode-local from CVS: 
+
+[http://cedet.cvs.sourceforge.net/*checkout*/cedet/cedet/common/mode-local.el mode-local.el]
+
+At its simplest, you can create a variable with a value belonging to a specific mode with <code>defvar-mode-local</code>.
+Here is an example from the Semantic C parser support:
+
+<pre>
+(defvar-mode-local c-mode semantic-type-relation-separator-character 
+  '("." "->")
+  "Separator characters between something of a given type, and a field.")
+</pre>
+
+You can also create a function that has mode specific behavior.  For example, this simple example for splitting language specific names, where in C++, you might have foo::bar.
+
+<pre>
+(define-overload semantic-analyze-split-name (name)
+  "Split a tag NAME into a sequence.
+Sometimes NAMES are gathered from the parser that are compounded,
+such as in C++ where foo::bar means:
+  \"The class BAR in the namespace FOO.\"
+Return the string NAME for no change, or a list if it needs to be split.")
+
+(defun semantic-analyze-split-name-default (name)
+  "Don't split up NAME by default."
+  name)
+
+;; and in a file specific to C code...
+
+(define-mode-local-override semantic-analyze-split-name c-mode (name)
+  "Split up tag names on colon (:) boundaries."
+  (let ((ans (split-string name ":")))
+    (if (= (length ans) 1)
+	name
+      (delete "" ans))))
+</pre>
+
+There is also support for constants, mode-inheritance (such as when C++ inherits behaviors and values of C), and support for to help multi-modes, though no explicit support for any particular multi-mode.

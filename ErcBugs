@@ -1,0 +1,124 @@
+This page is comprised of lists of bugs, requested features, and
+developers' tasks, both new and old.
+
+The best place to report bugs is via the 
+[http://lists.gnu.org/mailman/listinfo/erc-discuss erc-discuss mailing list], 
+also available on [http://www.gmane.org gmane] as 
+<code>gmane.emacs.erc.general</code>.
+
+Please remember to give the ERC and Emacs version numbers. The current date
+would also be helpful.
+
+= Bugs =
+
+* When you're in two channels with the same name, e.g. #hello, on different networks, the buffers are called #hello and #hello<2>.  Now, if you temporarily lose your connection (e.g. unplug the network cable and plug it back in) and ERC reconnects, #hello<2> will not be re-used, but instead #hello<nowiki><3></nowiki> will be created.
+* On a daily basis, Freenode's Tor hidden service will be unavailable or in a state that'll break ERC at its first reconnection attempt. It won't attempt to reconnect anymore after this first failed attempt. The last *Messages* I get are:
+<pre>
+Connecting to mejokbp2brhw4omd.onion:ircd...
+error in process sentinel: if: SOCKS: General SOCKS server failure
+error in process sentinel: SOCKS: General SOCKS server failure
+Quit
+</pre>
+* Are the possible values of `erc-track-visibility' correct? Cf. `get-buffer-window'
+** The options for `erc-track-visibility' should match the possible FRAME (WHICH-FRAMES in XEmacs) values sent to `get-buffer-window', but they don't.
+* `erc-is-message-ctcp-p' allows only a single CTCP query per message, but `erc-process-ctcp-query' is written to handle more then one. If it should process multiple CTCP queries per message, then it should return the remaining string, else its return value should not be used anymore in the PRIVMSG/NOTICE response handler.
+* erc tries to connect 1000 times if the connect fails because of a wrong user/password connection (seen with erc <→ psybnc).
+* erc 5.1.3 tries to re-connect infinite (maybe less) times when you get killed by the IRC server due to a temporary block of a certain type of user (for instance, the banning of Tor users due to abuse). It's very annoying because it's difficult to re-gain control of your Emacs suddenly possessed by an obsessed erc instance. Tor users get blocked at Freenode on a daily basis. 
+* It'd be cool if erc could handle a netiquette aware "always connected" feature so that the tedious task of reconnecting is done automatically.
+* `erc-iswitchb' doesn't work until `erc-track-mode' is toggled (on GnuEmacs 21.2 with ERC Version 3.0 $Revision: 1.466 $)
+* ErcDcc: Incoming files should really, really be written out to disk as they arrive rather than kept in a buffer.  A file fourty megs in size is hell on the VM.
+* ErcHighlighting: Function <i>erc-log-matches-come-back</i> in <tt>erc-match.el</tt> never tells the user "You have logged messages waiting in ...", because it looks for a <tt>'timestamp</tt> text property in the log, but that text property is never added to the logged text.
+* ErcStamp: In an ERC buffer, when point is at the beginning of a line that is not the last line in the buffer and the line ends with a timestamp, function <i>next-line</i> sometimes does nothing. And more often that, C-e doesn't work when you are at the beginning of a line. 
+** FranLitterio thinks this may be caused by the <tt>'intangible</tt> text property on the timestamp and a bug in function <i>line-move</i> in <tt>lisp/simple.el</tt> (where there is a comment saying that the function might be confused by intangible text).
+** JohnSullivan and a few others have observed that the width of the <i>frame</i> is important. If the frame is resized so that the timestamp is not at the frame edge, then <code>next-line</code> will work again. Also, this exact same behavior has been noticed in PlannerMode, when a highlighted annotation link ends at the edge of the frame. 
+
+== Cleaning up the source code ==
+* (Various places): Over-long first-sentence in docstrings.
+
+== Renaming variables ==
+* Abnormal hooks should not be named -hook. Renaming them all could get messy and break things though (especially user customizations).
+** erc.el: erc-disconnected-hook, erc-insert-pre-hook, erc-quit-hook, erc-send-pre-hook, erc-send-completed-hook, erc-ctcp-query-*-hook, erc-ctcp-reply-*-hook
+** erc-backend.el: erc-timer-hook, erc-join-hook, erc-kick-hook, erc-part-hook, erc-echo-notice-always-hook, erc-echo-notice-hook
+** erc-dcc.el: erc-dcc-send-hook, erc-dcc-chat-connect-hook, erc-dcc-chat-filter-hook, erc-dcc-chat-exit-hook
+** erc-match.el: erc-text-matched-hook
+** erc-netsplit.el: erc-netjoin-hook, erc-netsplit-hook, erc-netsplit-hook
+** erc-notify.el: erc-notify-signon-hook, erc-notify-signoff-hook
+* erc-before-connect and erc-after-connect should be named *-functions
+
+== XEmacs compatability issues ==
+* The text-property `point-entered' doesn't exist in [[XEmacs]]
+
+== DCC issue ==
+* When doing a DCC send from Xchat to Erc, Erc sends back apparently random ack numbers (see dcc protocol docs) which cause the transfer to run irregularly and end up with a corrupted file.
+
+
+= Resolved =
+
+Resolved bugs are removed from this page. That's why we have
+RecentChanges. Here, we keep stuff that is only partly resolved - e.g.
+maybe only in CVS Emacs or so - for further reference.
+
+* 2004-05-28, erc.el CVS 1.669: Running NT Emacs 21.3 on my Windows XP box.  If an ERC server buffer is killed while the connection is active, function <i>erc-process-sentinel</i> is not called. Thus, <i>erc-disconnected-hook</i> is never called, so user code that should run at disconnect-time never runs.  Another negative consequence is that the timer stored in <i>erc-ping-handler</i> is never cancelled, thus leaving a timer on the timer list that refers to a killed buffer.  Each time a server buffer is killed while connected, a new dangling timer accumulates on the timer list.
+
+** Update: lawrence verifies that this is also a problem on a UNIX box.
+** Further update:  This appears to, in fact, be a problem in Emacs, see [http://article.gmane.org/gmane.emacs.erc.general:423 this article] on gmane. So this will hopefully be resolved in Emacs soon.
+** Fixed in Emacs CVS 2004-05-38  -- NoahFriedman
+** BUT ... any user who runs ERC in a version of Emacs that has this bug suffers from the symptoms described above.  Should we change ERC to cope with the many released versions of Emacs that have this bug?
+** Is there any way we can actually do this sensibly?  I suppose we can handle the killed buffer error in the timer and remove ourselves should we catch an error.  Comments? -- LawrenceMitchell
+
+* Use the <tt>CAPAB IDENTIFY-MSG</tt> of Freenode server (http://freenode.net/faq.shtml#spoofing) to define erc-response.extensions to IDENTIFY-MSG for example, after the we can use a special face for it and/or make some special functionnality in bot (ErBot for example). We need to keep a per server flag, if it's set (we have activated the CAPAB), freenode prefix by a + the erc-response.content of the identified users, unidentified users have a -.
+** I've had a working personal module that does this for a while.  I'll try and fix
+things up and commit this to ErcDevelopment as soon as possible. -- DianeMurray 2005-10-28
+*** I've added ErcCapab to ERC (erc-capab.el in ErcDevelopment). -- DianeMurray 2006-02-11
+
+* ErcTrack Channel names in modeline are clickable by middle mouse.. That is awesome. Is it somehow possible to make them look like buttons?  (Or at least highlight if the mouse happens to move over them)
+** Added to ErcDevelopment a couple weeks ago. -- DianeMurray 2006-09-03
+
+= Wishlist =
+''Things that are not real bugs, but might be nice to have.''
+* ErcHighlighting, ErcLogging: It'd be nice if matched messages would have its own buffer and logfile.
+* auto-fill-mode inserts automatic newlines, so a long line is sent as multiple single lines. Does this make sense? Perhaps we should turn it off when erc-mode is initialized.
+* It would be nice if one could specify a face for a channel with normal activity to be highlighted in the modeline.
+* Same idea as function for highlighting background to make it so that you could alternate background colors with each new message author.
+* Some way of sending a bbdb record to another erc user?
+** This could be done with a PRIVMSG to that user where the bbdb record was encoded in the text of the message somehow.  One problem to overcome is how to handle records that encode to more than 510 bytes (the maximum message size in the IRC protocol).
+* ERC has a great interface, with timestamps and all. It would be really cool if this interface was separated into a standalone interface.   It could be used at many places, one example being: Using it for a personal (non-IRC) fsbot. (See LuiMode)
+* Interface with the tooltip features, so that I can see whois and other info depending on what the mouse cursor is over. E.g. nicks could have their real-name and other info as a tooltip (available via erc-get-channel-members)
+* DCC should be able to send not only files, but also buffer contents
+* I read that some irc clients have a URL harvester. I think having pasted URLs collected in a file would be useful for those people that trim their conversation buffers. I think having the nick, the previous line and the next line around the pasted url would also be useful for context and to weed-out bots.
+* Improved "/me" support: it would be nice if ERC converted "/me's" into, e.g. "e1f's"; so "/me's" could be aliased to "/me" with "'s" appended.
+* When restoring a session to a server where identifying to NickServ is part of the process, erc should wait for successful NickServ negotiation before attempting to join channels.  Presently the previous channels are joined before NickServ identification even begins, much less completes.  This can lead to the user being rejected to join certain channels that require negotiation to complete first.
+* It should be easy to save (via a command such as a modified C-c C-l) all active ERC buffers without having to visit each one in turn.  The extreme of automatically saving the buffers with every new message can create too much overhead, so it should be possible for the user to save all active ERC buffers on demand, or alternatively to batch the save-to-disk operation on a periodic basis.
+
+== Message Handling ==
+* We need a way to let the user to configure where and how /MSGs, /NOTICEs, DCC requests, CTCP requests, internal ERC warnings and errors, etc. should appear.
+** FranLitterio is thinking about how to implement this, so please coordinate with him (but he hasn't written any code yet).
+** The options for where each kind of message should appear should include:
+*** Always display in server buffer (which is pretty much how it works now, with some special-cased exceptions).
+*** If current buffer is an ERC buffer, display in currently active ERC buffer (otherwise fall back to one of the other options).
+*** Always display in minibuffer (with or without an audible alert).
+*** Always display in small pop-up buffer.
+*** Always display in small pop-up frame.
+*** Always run an external command (e.g., to pop up a graphical notice, play a sound, or do anything the user wants).
+
+== erc-list.el featuritis ==
+* <tt>erc-list.el</tt> needs features.  FranLitterio is overhauling <tt>erc-list.el</tt> to add these features, so please coordinate your changes with him:
+** The user needs to be able to provide a channel name (or channel name regexp) to restrict the channel list output.  Not all servers support regexps in LIST commands, but all servers should allow a list of channel names to be supplied.
+** The channel list buffer's default sorting method should be user-configurable.
+** mIRC-style min/max-user filtering (i.e., only show channels having between MIN and MAX users, inclusive).
+** NB: can we do this post /list - it's nice to be able to update the restrictions (including narrowing to a regexp if the server doesn't support it), without having to rebuild the list
+** the ability to page through the output of /list and stop it at any time from listing endlessly if you happened to accidently type /list
+*** I believe once you let that /list command go with no arguments, the server
+throws everything it's got at you and you can't stop it.  -- DianeMurray 2005-10-28
+
+== Directed nick prompting ==
+
+When you're talking to somebody, you may want to prepend their nickname to the line, so that they know it's intended for them, and, in case of
+high traffic situations, their client can help distinguish lines that are relevant to them from the morass. It'd be nice if erc had some support for that. Here's a proposed feature that'd be nice (hashed out over a quick conversation on #emacs):
+
+* When the user writes <tt>ERC&gt; nick: message</tt>, ERC captures the nickname.
+* Subsequent ERC input lines will automatically insert the <tt>nick: </tt> so that it's easy for the user to continue a conversation with that user
+* When the user erases the nick and sends a line, future lines will not have the initial <tt>nick </tt>
+
+----
+[[ERC]]

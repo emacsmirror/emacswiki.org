@@ -1,0 +1,106 @@
+Here are two examples of the eshell equivalent of bash for loops:
+
+This in bash:
+
+    for i in *.pm
+    do
+      rm $i
+      cvs remove $i
+    done
+
+becomes this in eshell:
+
+    for i in *.pm { rm $i; cvs remove $i }
+
+and this in bash:
+
+    for i in 1 2 3 4; do echo $i; done
+
+becomes this in eshell:
+
+    for i in 1 2 3 4 {echo $i}
+
+and this in bash:
+
+    for i in `find -name Root`; do cp -f ~/src/emacs/CVS/Root $i; done
+
+becomes this in eshell:
+
+    for i in {find -name Root} {cp -f ~/src/emacs/CVS/Root $i}
+
+== Extended example ==
+
+In other shells, we might want to do convert all xpm files to png.
+This means we need a loop, and we need the basename of a file.
+In other shells, this is done via backticks:
+
+   ~ $ for f in *.xpm; do convert $f `basename $f .xpm`.png; done
+
+or via parameter expansion:
+
+   ~ $ for f in *.xpm; do convert $f ${f/%.xpm/.png}; done
+
+In eshell, this won't work:
+
+   for f in *.xpm {convert $f (file-name-sans-extension $f)}
+
+The function `file-name-sans-extension' gets the symbol $f instead the
+value.
+
+You have to write it out in Lisp:
+
+    (mapc (lambda (f)
+            (shell-command (format "convert %s %s"
+                                   f
+                                   (concat (file-name-sans-extension f)
+                                           ".png"))))
+          (eshell-extended-glob "*.xpm"))
+
+[new]
+Does anybody know how to do it with less lisp?
+
+[new]
+How about:
+
+    (dolist (f (eshell-extended-glob "*.xpm"))
+       (shell-command (format "convert %s %s.png" f (file-name-sans-extension f))))
+
+Which has the advantage of looking like the original for loop and still being fairly lisp-ish.
+
+-- Shaleh
+[new]
+Tried this little example out and it seems that it works if you do not use the dollar-sign. I don't know why it works, I solved it by trial and error :) Maybe someone else can explain and clean up my mess below:
+
+  ~ $ echo 1 > 1.txt; echo 2 > 2.txt; echo 3 > 3.txt
+  ~ $ ls
+  1.txt  2.txt  3.txt
+  ~ $ for f in *.txt {mv $f (concat (file-name-sans-extension f) ".renamed")}
+  ~ $ ls
+  1.renamed  2.renamed  3.renamed
+
+[new]
+The code above works because eshell create a let-bound elisp variable called f for the loop variable that is called $f in the shell.  Expansion with eshell-parse-command bears this out.
+
+== More examples ==
+
+I just needed to create 1000 dummy files and though that using eshell was a good idea. This is what I came up with:
+
+ $ echo test > original.txt
+
+ $ for i in (let (lst) (dotimes (i 1000) (setq lst (append lst (list i)))) lst) {cp original.txt $i.txt}
+
+Of course I could have made this entirely in lisp, copying and all, but it was good practice... :)
+
+-- MaDa
+
+[new]
+
+ouch, in a modern 'normal' shell:
+
+ $ echo test | tee {1..1000}.txt
+
+Perhaps a DSL for (very) advanced globbing is in order?
+
+-- PhilJackson
+----
+CategoryEshell

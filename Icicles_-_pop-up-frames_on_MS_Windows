@@ -1,0 +1,62 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - La Petite Histoire]] || '''[[Icicles]]''' || IciclesIndex || *Next:* IciclesDiscussion ||
+
+----
+
+= Note on Non-Nil `pop-up-frames' on MS Windows =
+
+If you use '''`pop-up-frames'''' = `t', like I do, you might have noticed
+that Emacs [[completion]] does not play well with using separate
+[[frame]]s for each buffer.  In particular, it does not play well with
+having a separate frame for [[buffer]] `*Completions*'.  When you try to
+complete input using `TAB', a new frame is created for buffer
+`*Completions*', and, at least on MS Windows, it is ''selected, '''taking
+the input focus away''' from the original frame's [[minibuffer]]!''
+
+This means that, once the `*Completions*' buffer has been displayed
+in a separate frame, you cannot, for instance, [[Icicles - Cycling Completions|cycle]] completion
+candidates, without first reselecting the original frame
+manually.  You cannot even use normal completion -- you cannot add
+text in the minibuffer, or delete text there, because the
+minibuffer in the original frame no longer has the input focus.
+''Bummer.''
+
+In general, Emacs does not play too well
+with one-buffer-per-frame (`pop-up-frames' = `t'), and this is a
+good example of that general problem.  See '''OneOnOneEmacs''' for a discussion of this.  I reported this Emacs bug. I've been hoping it will be corrected since Emacs 21...
+
+I don't have this problem of loss of frame input focus in my own setup, even though I use
+`pop-up-frames' = `t', because I use my library '''<tt>[[oneonone.el]]</tt>'''.  (Try
+it!)  If you need a solution while waiting for the Emacs fix, you can
+try doing something similar to what I do in <tt>[[oneonone.el]]</tt>:
+
+
+'''1.''' Use dedicated frames for both `*Completions*' and the minibuffer.
+
+'''2.''' Display buffer `*Completions*' using a special-display function that
+explicitly ''redirects the input focus'' from the `*Completions*' frame
+back to the minibuffer frame.
+
+See '''[[Help and Completions Frames]]''' for more information on this. -- DrewAdams
+
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - La Petite Histoire]] || '''[[Icicles]]''' || IciclesIndex || *Next:* IciclesDiscussion ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el, Lisp:oneonone.el
+
+
+CategoryModes
+CategoryCode
+CategoryFrames
+
+
+
+

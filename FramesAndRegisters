@@ -1,0 +1,42 @@
+You can store [[frame]] configurations in [[register]]s.  Registers are
+referred to by a single character, therefore, you can use register 1,
+2, a, b, etc.
+
+* C-x r f -- frame-configuration-to-register
+* C-x r j -- jump-to-register
+
+Example:
+
+* C-x r f 1 -- store the current configuration
+* C-x 5 2 -- make a new frame
+* C-x r j 1 -- restore the stored frame configuration
+
+== Commands that Save/Restore Frame Configurations using Registers ==
+
+* [[FrameModes#FrameCommands|Frame Commands]]:
+** `C-M-z' (`show-hide') -- iconify/hide all frames and restore them
+**  `<code>C-x t .</code>' (`save-frame-config') -- save the current frame configuration to register `C-l' and to the DoReMi `frame-config-ring'. 
+
+:: Restore it: `C-x r f C-l' (`jump-to-frame-config-register') or `C-x t u' (`cycle-frame-configs').
+
+* DoReMi -- commands that save the current frame configuration to a ring (and to register `C-l'). You can then cycle through the ring of configurations with command `cycle-frame-configs' -- see [[DoReMi#FrameConfigCycling|Frame Configuration Cycling]]. Each of these commands changes frame properties incrementally with the arrow keys. For example, `adjust-frame-width' makes the frame narrower or wider each time you press the left or right arrow.
+
+** `doremi-bg' -- Change frame ''background'' color by incrementing/decrementing any of its ''RGB'' (red, green, blue), ''HSV'' (hue, saturation, value), or ''CMY'' (cyan, magenta, yellow) components.
+
+** `doremi-face-bg', `doremi-face-fg' -- Like `doremi-bg', but for individual ''[[Face]]s'': incrementally change their foreground and background colors (RGB/HSV/CMY).
+** `doremi-bg-color-name' -- Set frame background color by scaling through a list of all colors (by name).
+** `doremi-frame-height' -- Change frame height incrementally.
+** `doremi-frame-width' -- Change frame width incrementally.
+** `doremi-font' -- Set frame font, choosing from a list of installed fonts.
+** `doremi-font-size' -- Change frame font size incrementally.
+** `doremi-frame-horizontally' -- Move frame left/right incrementally.
+** `doremi-frame-vertically' -- Move frame up/down incrementally.
+
+
+----
+CategoryFrames
+CategoryFaces
+WindowsAndRegisters
+CategoryWindows
+CategoryDisplay
+

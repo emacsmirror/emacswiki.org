@@ -1,0 +1,1259 @@
+;;; -*-mode: emacs-lisp -*-
+
+;;;======================================================================
+;;; convience functions
+;;;======================================================================
+;;;======================================================================
+;;; Functions to convert the line endings. Uses the eol-conversion
+;;; package
+;;;======================================================================
+
+(require 'eol-conversion)
+(defun d2u ()
+  "convert current buffer from dos to unix format using the 
+`set-buffer-eol-conversion' function withing emacs"
+  (interactive)
+  (if (y-or-n-p "Convert DOS to Unix format?")
+      (set-buffer-eol-conversion 'unix)
+    (message "format unchanged")
+  ))
+
+(defun u2d ()
+  "convert current buffer from unix to dos format using the 
+`set-buffer-eol-conversion' function withing emacs"
+  (interactive)
+  (if (y-or-n-p "Convert Unix to DOS format?")
+      (set-buffer-eol-conversion 'dos)
+    (message "format unchanged")
+  ))
+
+;;; set the directory separator character
+(setq eol-mnemonic-dos "\\")
+(setq eol-mnemonic-unix "/")
+(setq eol-mnemonic-mac ":")
+(setq eol-mnemonic-undecided "?")
+
+;;;======================================================================
+;;; convert a string of 3 decimal numbers to hex and place the result
+;;; into the kill ring for pasting
+;;;======================================================================
+(defun d2h (red green blue)
+  "Convert decimal RGB color specification to hexidecimal and insert
+  at the current point"
+  (interactive "nRed:
+nGreen:
+nBlue: ")
+  (setq s (concat (format "#%02x%02x%02x" red green blue)))
+  (message (concat "DEC RGB: "
+                   (int-to-string red) " "
+                   (int-to-string green) " "
+                   (int-to-string blue) "    HEX: " s))
+  (kill-new s))
+
+;;;;======================================================================
+;;;; automatically color hex color strings
+;;;;======================================================================
+;(defvar hexcolor-keywords
+;  '(("#[abcdef[:digit:]]\\{6\\}"
+;     (0 (put-text-property (match-beginning 0)
+;			   (match-end 0)
+;			   'face (list :background 
+;				       (match-string-no-properties 0)))))))
+;
+;(defun hexcolor-add-to-font-lock ()
+;  (font-lock-add-keywords nil hexcolor-keywords))
+;(add-hook 'emacs-lisp-mode-hook 'hexcolor-add-to-font-lock)
+;(add-hook 'nxml-mode-hook 'hexcolor-add-to-font-lock)
+
+;;;======================================================================
+;;; scratch buffer function to immediately go to the scratch buffer
+;;; from anywhere else
+;;;======================================================================
+(defun scratch ()
+  (interactive)
+  (switch-to-buffer "*scratch*")
+  ;(lisp-interaction-mode)
+  (if current-prefix-arg
+      (delete-region (point-min) (point-max))
+    (goto-char (point-max)))
+  )
+
+;;;======================================================================
+;;; another method (in addition to shellex) of launching associated
+;;; programs from within dired
+;;;======================================================================
+(defun dired-execute-file (&optional arg)
+  (interactive "P")
+  (mapc
+   (lambda (path)
+     (w32-shell-execute
+      "open"
+      (mapconcat
+       (function
+	(lambda (x)
+	  (char-to-string (if (eq x ?/) ?\\ x))))
+       path nil)))
+   (dired-get-marked-files nil arg)))
+
+;;;======================================================================
+;;; Toggle the top menu bar. Gets the max editor screen for your money!
+;;;======================================================================
+(defun toggle-menu-bar ()
+  "Toggle Menubar."
+   (interactive)
+   (let ((height (frame-height)))
+     (menu-bar-mode nil)
+     (set-frame-height 
+      (selected-frame)
+      (if menu-bar-mode
+          (1- height)
+        (1+ height)))
+     (force-mode-line-update t)))
+
+;;;======================================================================
+;;; From: lawrence mitchell <wence@gmx.li>
+;;; Find the function under the point in the elisp manual
+;;;
+;;; C-h TAB runs the command info-lookup-symbol
+;;;    which is an interactive autoloaded Lisp function in `info-look'.
+;;; [Arg list not available until function definition is loaded.]
+;;;
+;;; Display the definition of SYMBOL, as found in the relevant manual.
+;;; When this command is called interactively, it reads SYMBOL from the minibuffer.
+;;; In the minibuffer, use M-n to yank the default argument value
+;;; into the minibuffer so you can edit it.
+;;; The default symbol is the one found at point.
+;;;
+;;; With prefix arg a query for the symbol help mode is offered.
+;;;======================================================================
+(defun find-function-in-elisp-manual (function)
+  (interactive
+   (let ((fn (function-called-at-point))
+	 (enable-recursive-minibuffers t)
+	 val)
+     (setq val
+	   (completing-read
+	    (if fn
+		(format "Find function (default %s): " fn)
+	      "Find function: ")
+	    obarray 'fboundp t nil nil (symbol-name fn)))
+     (list (if (equal val "")
+	       fn
+	     val))))
+  (Info-goto-node "(elisp)Index")
+  (condition-case err
+      (progn
+	(search-forward (concat "* "function":"))
+	(Info-follow-nearest-node))
+    (error (message "`%s' not found" function))))
+
+
+;;;======================================================================
+;;; functions for setting the shell and creating shell windows.
+;;; Borrowed heavily from setup-cygwin.el by Markus Hoenika
+;;; Maintainer: Drew Adams
+(defun set-shell (shellPrg)
+  "Set the default shell within emacs to the shell program specified"
+  (setenv "SHELL" shell-file-name)
+  (setq shell-file-name          shellPrg
+        explicit-shell-file-name shell-file-name
+        w32-quote-process-args   t
+        shell-command-switch     "-c")
+  (message shell-file-name))
+
+(defun setShell (shellPrg)
+  "Interactive function to provide completion for shells to set
+  the current shell within emacs. Calls `set-shell to implement the changes"
+ (interactive "i") (setq
+  shellPrg
+        (completing-read
+         "Shell program (sh tcsh bash cmd cmdproxy): "
+         '(("sh" 1) ("tcsh" 2) ("bash" 3) ("cmd" 4) ("cmdproxy" 5))
+         nil t))
+  (set-shell shellPrg))
+
+(defun getShell ()
+  "Return the name of the current shell program within emacs"
+  (interactive)
+  (message 
+   (concat "shell-file-name:          " shell-file-name "\n"
+           "explicit-shell-file-name: " explicit-shell-file-name "\n"
+           "shell-command-switch:     " shell-command-switch "\n"
+           "w32-quote-process-args:   " (pp-to-string w32-quote-process-args))))
+
+(defvar shell-window-height 24
+  "Number of text lines to display in the shell buffer when invoked through `newShell'")
+
+;;; create a new shell buffer with the selected shell program
+(defun newShell(shellPrg)
+  "open a shell buffer with the option of selecting a shell program to use"
+  (interactive "i")
+  (let ((current-shell shell-file-name))
+    ; run the setShell method and get the prompt from there
+    (setShell nil)
+    (let ((buffer-name (concat "*" shell-file-name "*")))
+      (shell buffer-name)
+      (message buffer-name)
+      (set-window-text-height nil shell-window-height))
+    ;; return to the previous default shell
+    (set-shell current-shell)))
+
+
+;;;======================================================================
+;;; From: Jim Janney <jjanney@xmission.xmission.com>
+;;; in comp.emacs
+;;; show and hide comments in program code.
+(defun overlay-comments(beg end attrs)
+  (save-excursion
+    (goto-char beg)
+    (let (state comment-start comment-end overlay)
+      (while (nth 4 (setq state
+                          (parse-partial-sexp (point) end nil nil nil t)))
+        (goto-char (nth 8 state))
+        (setq comment-start (point))
+        (forward-comment 1)
+        (setq comment-end (point))
+        (while (= (char-before comment-end) ?\n)
+          (setq comment-end (1- comment-end)))
+        (setq overlay (make-overlay comment-start comment-end))
+        (mapc #'(lambda (attr)
+                (overlay-put overlay (car attr) (cdr attr)))
+              attrs)))))
+
+(defun hide-comments()
+  (interactive)
+  (overlay-comments (point-min)
+                    (point-max)
+                    '((category . comment) (invisible . comment))))
+
+(defun show-comments()
+  (interactive)
+  (dolist (ov (overlays-in (point-min) (point-max)))
+    (if (eq (overlay-get ov 'category) 'comment)
+        (delete-overlay ov))))
+
+;;;======================================================================
+;;; modify the buffer centering command C-l
+;;; (thanks to Michael.Luetzeler@unibw-muenchen.de)
+;;;======================================================================
+(defun cm-recenter-display (arg)
+  "Move point in window and redisplay screen.
+First time, leaves point in the middle of the window.
+Second time, leaves point near top of window.
+Third time, leaves point near bottom of window.
+With just one \\[universal-argument] arg, redraw screen without moving point.
+With numeric arg, redraw around that line."
+  (interactive "P")
+    (cond ((consp arg)
+	   (recenter)
+	   (recenter line));; (redraw-display) bombs in Epoch 3.1.
+	  (arg
+	   (recenter (prefix-numeric-value arg)))
+;;  (prefix (redraw-display))
+	((eq last-command 'recenter-first)
+	   (setq this-command 'recenter-second)
+	   (recenter 1))
+	((eq last-command 'recenter-second)
+	   (setq this-command nil)
+	   (recenter -2))
+	(t
+	   (setq this-command 'recenter-first)
+	   (recenter nil))))
+
+(global-set-key "\C-l" 'cm-recenter-display)
+
+;;;======================================================================
+;;; kill trailing whitespace
+;;; Thanks Roman Belenov <roman@nstl.nnov.ru>
+;;;======================================================================
+(defun kill-whitespace ()
+  "Kill trailing whitespace"
+  (interactive)
+  (save-excursion
+    (progn
+      (goto-char (point-min))
+      (while (re-search-forward "[ \t]+$" nil t)
+	(replace-match "" nil nil)))))
+
+;;;======================================================================
+;;; Extend the behavior of query-replace such that if a region has
+;;; been marked, the query replace will only operate within that
+;;; region:
+;;;======================================================================
+(defadvice query-replace (around replace-on-region activate)
+  (if mark-active
+      (save-excursion
+	(save-restriction
+	  (narrow-to-region (point) (mark))
+	  (let ((mark-active nil))
+	    (goto-char (point-min))
+	    ad-do-it)))
+    ad-do-it))
+
+;;;======================================================================
+;;; frame sizing functions
+;;;======================================================================
+(defun frame-fix ()
+  "Restore the frame back to the initial height, width and position as
+set up in the .emacs
+uses the global variables:
+   `MY_INITIAL_WIDTH'
+   `MY_INITIAL_HEIGHT'
+   `MY_INITIAL_LEFT'
+   `MY_INITIAL_RIGHT'
+defined in the .emacs file"
+  (interactive)
+  (set-frame-size (selected-frame) MY_INITIAL_WIDTH MY_INITIAL_HEIGHT)
+  (set-frame-position (selected-frame) MY_INITIAL_LEFT MY_INITIAL_TOP)
+  )
+
+(defun f-adjust (&optional frame-width &optional left-offset &optional screen-width &optional screen-height)
+  "Enlarge the selected frame to fill a sizeable portion of the screen, based on the current screen resolution.
+- frame-width is the number of columns in the desired frame
+- screen-width is the number of pixels in the screen. Defaults to the primary screen resolution
+- left-offset is the offset in pixels to place the
+  screen from the left. Good for moving a frame to the
+  secondary screen to the right of the primary screen by just
+  using the width of the primary screen in this field."
+
+  (if (null screen-width)
+      (setq screen-width (display-pixel-width)))
+
+  (if (null screen-height)
+      (setq screen-height (display-pixel-height)))
+
+  (if (null frame-width)
+      (setq frame-width (- (/ screen-width (frame-char-width)) 10)))
+
+  (if (null left-offset)
+      (setq left-offset 0))
+
+  (setq frame-height (/ (- screen-height MY_HEIGHT_ADJUST) (frame-char-height)))
+
+  ; set the new frame size to get an accurate frame-pixel-width
+  (set-frame-size (selected-frame) frame-width frame-height)
+
+  ; fix the right side of the emacs frame 25 pixels from the edge plus any left-offset value
+  (setq frame-left (+ (- (- screen-width (frame-pixel-width)) 25) left-offset))
+
+  ; set the frame position with the yoffset calculated from the screen height
+  (set-frame-position (selected-frame)
+    frame-left (/ (- screen-height (+ (frame-pixel-height) MY_WINDOW_MGR_ADJUST)) 2))
+  )
+
+(defvar frame-enlarged 'nil 
+  "t if the current frame is enlarged (frame-enlarge has been called), nil otherwise")
+
+(defun frame-enlarge ()
+  "Enlarge the frame to fill a sizable portion of the current screen"
+  (interactive)
+  (setq frame-enlarged t)
+  (if (> (frame-parameter nil 'left) (display-pixel-width))
+      (f-adjust nil (display-pixel-width) 1600 1200)
+  (f-adjust)))
+
+(defun frame-adjust ()
+  "Adjust the frame size for the current frame to the appropriate height and default MY_INITIAL_WIDTH value"
+  (interactive)
+  (setq frame-enlarged nil)
+  (if (> (frame-parameter nil 'left) (display-pixel-width))
+      (f-adjust MY_INITIAL_WIDTH (display-pixel-width) 1600 1200)
+    (f-adjust MY_INITIAL_WIDTH nil nil nil)))
+
+(defun frame-left ()
+  "Move the current frame to the left (primary) monitor"
+  (interactive)
+  (if frame-enlarged
+      (f-adjust)
+    (f-adjust MY_INITIAL_WIDTH nil nil nil)))
+
+(defun frame-right ()
+  "Move the current frame to the right (secondary) monitor with a 1600x1200 resolution"
+  (interactive)
+  (if frame-enlarged
+      (f-adjust nil (display-pixel-width) 1600 1200)
+    (f-adjust MY_INITIAL_WIDTH (display-pixel-width) 1600 1200)))
+
+(global-set-key "\C-cfa" 'frame-adjust)
+(global-set-key "\C-cfe" 'frame-enlarge)
+(global-set-key "\C-cfl" 'frame-left)
+(global-set-key "\C-cfr" 'frame-right)
+
+;;;============================================================
+;;; sql setup with the following commands
+;;;============================================================
+;;; set linesize 120;
+;;; set pagesize 10000;
+(fset 'sql-setup
+   [?s ?e ?t ?  ?l ?i ?n ?e ?s ?i ?z ?e ?  ?1 ?2 ?0 ?\; return ?s ?e ?t ?  ?p ?a ?g ?e ?s ?i ?z ?e ?  ?1 ?0 ?0 ?0 ?0 ?\; return])
+
+;;;======================================================================
+;;; define a function to scroll with the cursor in place, moving the
+;;; page instead
+;;;======================================================================
+(defun scroll-down-in-place (n)
+  (interactive "p")
+  (previous-line n)
+  (scroll-down n))
+
+(defun scroll-up-in-place (n)
+  (interactive "p")
+  (next-line n)
+  (scroll-up n))
+
+(global-set-key "\M-n" 'scroll-up-in-place)
+(global-set-key "\M-p" 'scroll-down-in-place)
+
+;;; set the keys within vm as well (normally mapped to previous and
+;;; next unread messages
+(add-hook 'vm-mode-hook '(lambda ()
+(local-set-key "\M-n" 'scroll-up-in-place)
+(local-set-key "\M-p" 'scroll-down-in-place)))
+
+;;;======================================================================
+;;; define a function to toggle truncate lines and redraw the display
+;;;======================================================================
+(defun trunc ()
+  "Toggle the truncate-line variable"
+  (interactive)
+  (toggle-truncate-lines nil)
+  (message
+   (if truncate-lines
+       "truncating lines (... $)"
+     "wrapping lines (...\\)")
+   (redraw-display)))
+
+;;;; load the auto-show library, which keeps the text under the cursor
+;;;; visible even if it goes past the right edge of the window
+;(require 'auto-show)
+;(setq-default auto-show-mode t)
+;(auto-show-mode 1)
+
+;;;======================================================================
+;;; functions to display file and path information
+;;;======================================================================
+;;; show the full path and filename in the message area
+(defun path ()
+  (interactive "*")
+  (message "%s" buffer-file-name))
+
+;;; set filename only in the Modeline display
+(defun short-file-name ()
+  "Display the file path and name in the modeline"
+  (interactive "*")
+  (setq-default mode-line-buffer-identification '("%12b")))
+
+;;; set the full path and filename only in the Modeline display
+(defun long-file-name ()
+  "Display the full file path and name in the modeline"
+  (interactive "*")
+  (setq-default mode-line-buffer-identification
+    '("%S:"(buffer-file-name "%f"))))
+
+;;;======================================================================
+;;; Define function to match a parenthesis otherwise insert a %
+(show-paren-mode t)
+(defun match-paren (arg)
+  "Go to the matching parenthesis if on parenthesis otherwise insert %."
+  (interactive "p")
+  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+	((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+	(t (self-insert-command (or arg 1)))))
+
+(global-set-key "%" 'match-paren)
+
+;;; Place cursor at the begining of a string after matching with isearch
+(defun my-beginning-of-search ()
+  (if (and isearch-success
+	  isearch-forward)
+      (goto-char isearch-other-end)))
+
+;;;; from fkosowsky@consult.pretender (Jeffrey J. Kosowsky)
+;;;; on gnu.emacs.vm.bug (08 Feb 2004)
+;(defun shell-quote-argument-winxp (argument)
+;  "Quote an argument for passing as argument to an inferior shell.
+;Special fixed version for WinXP (JJK)"
+;  (let
+;	  ((result "") (start 0) end)
+;	(while (string-match "[][&(){}^=;!'+,`~ ]" argument start)
+;	    (setq end (match-beginning 0)
+;		  result (concat result (substring argument start end)
+;				 "\"" (substring argument end (1+ end)) "\"")
+;		  start (1+ end)))
+;	(concat result (substring argument start))))
+;
+;(if (eq system-type 'windows-nt)
+;	(defalias 'shell-quote-argument 'shell-quote-argument-winxp))
+
+;;;======================================================================
+;;; provide save-as functionality without renaming the current buffer
+;;; From: Robinows@aol.com
+;;;======================================================================
+(defun save-as (new-filename)
+  (interactive "FFilename:")
+  (write-region (point-min) (point-max) new-filename))
+
+;;;======================================================================
+;;; Functions to insert the date, the time, and the date and time at
+;;; point.  Useful for keeping records and automatically creating
+;;; program headers
+;;;======================================================================
+(defvar insert-time-format "%H:%M"
+  "*Format for \\[insert-time] (c-h f 'format-time-string' for info on how to format).")
+
+
+(defvar insert-date-format "%d %b %Y"
+  "*Format for \\[insert-date] (c-h f 'format-time-string' for info on how to format).")
+
+(defun insert-time ()
+  "Insert the current time according to the variable \"insert-time-format\"."
+  (interactive "*")
+  (insert (concat (format-time-string insert-time-format (current-time)) " "))
+  )
+
+(defun insert-date ()
+  "Insert the current date according to the variable \"insert-date-format\"."
+  (interactive "*")
+  (insert (concat (format-time-string insert-date-format (current-time))" "))
+  )
+
+(defun insert-date-time ()
+  "Insert the current date according to the variable \"insert-date-format\", then a space, then the current time according to the variable \"insert-time-format\"."
+  (interactive "*")
+  (progn
+    (insert-date)
+    (insert " ")
+    (insert-time))
+  )
+
+(defun insert-current-file-name ()
+  (interactive)
+  (insert (buffer-file-name (current-buffer))))
+
+;;;======================================================================
+;;; byte compile the current buffer on saving it
+;;;======================================================================
+(defvar mode-specific-after-save-buffer-hooks nil
+  "Alist (MAJOR-MODE . HOOK) of after-save-buffer hooks
+specific to major modes.")
+
+(defun run-mode-specific-after-save-buffer-hooks ()
+  "Run hooks in `mode-specific-after-save-buffer-hooks' that match the
+current buffer's major mode.  To be put in `after-save-buffer-hooks'."
+  (let ((hooks mode-specific-after-save-buffer-hooks))
+    (while hooks
+      (let ((hook (car hooks)))
+    (if (eq (car hook) major-mode)
+	(funcall (cdr hook))))
+      (setq hooks (cdr hooks)))))
+
+(defun ask-to-byte-compile ()
+  "Ask the user whether to byte-compile the current buffer
+if its name ends in `.el' and the `.elc' file also exists."
+  (let ((name (buffer-file-name)))
+    (and name
+     (string-match "\\.el$" name)
+     (file-exists-p (concat name "c"))
+     (if (y-or-n-p (format "Byte-compile %s? " name))
+	 (byte-compile-file name)
+       (message "")))))
+
+(setq mode-specific-after-save-buffer-hooks
+      '((emacs-lisp-mode . ask-to-byte-compile)
+		(lisp-mode       . ask-to-byte-compile)
+    ))
+
+(setq after-save-hook '(run-mode-specific-after-save-buffer-hooks))
+
+;;;======================================================================
+;;; enable the mail queue features of smtpmail
+;;;======================================================================
+(defun queue-mail ()
+  "enable mail queueing through the smtpmail package.
+Sets the value of the variable smtpmail-queue-mail to t.
+Use smtpmail-send-queued-mail to send the mail."
+  ;(interactive)
+  (interactive "*")
+  (if (y-or-n-p "Enable Mail Queue? ")
+      (progn
+	(setq smtpmail-queue-mail t)
+	(message "Mail queue enabled"))
+    (progn
+      (setq smtpmail-queue-mail nil)
+      (message "Mail queue disabled"))
+  ))
+
+(defun queue-mail-send-it ()
+  "send any mail that has been queued"
+  (interactive "*")
+  (if (y-or-n-p "Send Mail Queue? ")
+      (progn
+	(smtpmail-send-queued-mail)
+	(message "Mail sent"))
+    (message "Mail not sent")
+  ))
+
+;;;======================================================================
+;;; replaces the path to windows format and puts it into the clipboard
+;;;======================================================================
+(define-key minibuffer-local-completion-map
+	    "\M-\C-w" 'find-file-copy-path-win)
+
+(defun find-file-copy-path-win ()
+ "While at the find-file prompt, replaces the file path with the
+corresponding Windows backslash style AND copies the replacement to the
+clipboard.
+"
+ (interactive) ; required b/c it's a keypress
+ ;; FIX: Would like to validate the input here, but (minibuffer-complete)
+ ;; <f> is too verbose and too noisy. I will just trust that the user
+ ;; wanted to copy exactly what is shown in the minibuffer.
+ ;;(if (not (eq last-command 'minibuffer-complete)) ;;
+ ;;       (minibuffer-complete))                    ;;
+ (save-excursion
+  (let ((mini-buf (current-buffer))
+	(string (buffer-string))
+	(temp-buf (get-buffer-create " find-file-copy-pathclip-buf")))
+   (set-buffer temp-buf)
+   (insert-string string)
+   ;; If prefixed with a tilde, replace it with a full path to HOME
+   (goto-char (point-min))
+   (while (search-forward-regexp "^~" nil t)
+    (replace-match (getenv "HOME") nil t))
+   ;; Do unix->dos filename separator conversion.
+   (goto-char (point-min))
+   (while (search-forward "/" nil t)
+    (replace-match "\\" nil t))
+   ;; Copy to the windows clipboard.
+   (clipboard-kill-ring-save (point-min) (point-max))
+   (kill-buffer temp-buf)
+   ;; Show the user that you made the change
+   (set-buffer mini-buf)
+   (delete-region (point-min) (point-max))
+   (clipboard-yank)
+   )))
+
+;;;======================================================================
+;;; this function prints an ascii table in a new buffer 4 columns
+;;;======================================================================
+(defun ascii-table (&optional extended)
+  "Print the ascii table (up to char 127).
+Given an optional argument, print up to char 255."
+  (interactive "P")
+  (defvar col)
+  (defvar limit)
+  (setq limit 255)
+  (if (null extended)
+      (setq limit 127))
+  (setq col (/ (+ 1 limit) 4))
+  (switch-to-buffer "*ASCII*")
+  (erase-buffer)
+  (insert (format "ASCII characters up to %d. (00 is NULL character)\n\n" limit))
+  (insert " DEC OCT HEX CHAR\t\t DEC OCT HEX CHAR\t\t DEC OCT HEX CHAR\t\t DEC OCT HEX CHAR\n")
+  (insert " ----------------\t\t ----------------\t\t ----------------\t\t ----------------\n")
+  (let ((i 0) (right 0) (tab-width 4))
+    (while (< i col)
+      (setq col2 (+ i col))
+      (setq col3 (+ i (* col 2)))
+      (setq col4 (+ i (* col 3)))
+	  ; special condition to insert a <TAB> instead of an actual tab
+      (cond
+	   ((= i 9)
+		(insert (format "%4d%4o%4x  <TAB>\t\t%4d%4o%4x%4c\t\t%4d%4o%4x%4c\t\t%4d%4o%4x%4c\n"
+				i i i  col2 col2 col2 col2 col3 col3 col3 col3 col4 col4 col4 col4)))
+		; special conditon to insert a <LF> instead of an actual line feed
+	   ((= i 10)
+		(insert (format "%4d%4o%4x  <LF>\t\t%4d%4o%4x%4c\t\t%4d%4o%4x%4c\t\t%4d%4o%4x%4c\n"
+				i i i  col2 col2 col2 col2 col3 col3 col3 col3 col4 col4 col4 col4)))
+	   (t
+	    ; insert the actual character
+		(insert (format "%4d%4o%4x%4c>\t\t%4d%4o%4x%4c\t\t%4d%4o%4x%4c\t\t%4d%4o%4x%4c\n"
+				i i i i col2 col2 col2 col2 col3 col3 col3 col3 col4 col4 col4 col4))))
+      (setq i (+ i 1))
+      )
+    )
+  (beginning-of-buffer)
+  (local-set-key "q" (quote bury-buffer)))
+
+;;;======================================================================
+;;; functions to get and set current fonts
+;;;======================================================================
+(defun get-font()
+  "Insert a string in the X format which describes a font the user can
+select from the Windows font selector."
+  (interactive)
+;  (if (y-or-n-p "Proportional? ")
+;      (insert (prin1-to-string (w32-select-font (selected-frame) w32-list-proportional-fonts)))
+;  (insert (prin1-to-string (w32-select-font))))
+  (insert (prin1-to-string (w32-select-font)))
+  (message ""))
+
+
+(defun set-font()
+  "Select the default font for this frame from the windows font selector dialog"
+  (interactive)
+;  (if (y-or-n-p "Proportional? ")
+;      (set-default-font (w32-select-font (selected-frame) w32-list-proportional-fonts))
+;    (set-default-font (w32-select-font)))
+  (set-default-font (w32-select-font))
+  (if frame-enlarged
+      (frame-enlarge)
+    (frame-adjust))
+  (message ""))
+
+
+;;;======================================================================
+;;; this command will list all available fonts. Good if the font
+;;; you want does not appear in the font dialog
+;;;======================================================================
+(defun list-fonts()
+  "Return a list of all available fonts"
+  (interactive)
+    (pop-to-buffer "*fontlist*")
+    (erase-buffer)
+    (insert-string (prin1-to-string (x-list-fonts "*")))
+
+    ; delete the leading ("
+    (goto-char (point-min))
+    (delete-char 2)
+
+    ; replace " " with a newline
+    (while (re-search-forward "\" \"" nil t)
+      (replace-match "\n"))
+
+    ; delete the trailing ")
+    (goto-char (point-max))
+    (delete-char -2)
+
+    ; sort the region
+    (sort-lines nil (point-min) (point-max))
+    (goto-char (point-min))
+
+    ; set the 'q' key to hide the window
+    (local-set-key "q" (quote delete-window))
+  )
+
+;;;======================================================================
+;;; get the font information for the text under the cursor
+;;;======================================================================
+(defun what-face (pos)
+  "Return the font-lock face information at the current point
+Thanks to Miles Bader <miles@lsi.nec.co.jp> for this (gnus.emacs.help)"
+  (interactive "d")
+  (let ((face (or (get-char-property (point) 'read-face-name)
+		  (get-char-property (point) 'face))))
+    (if face
+	(message "Face: %s" face)
+      (message "No face at %d" pos))))
+
+;;;======================================================================
+;;; sum a column of numbers.
+;;;======================================================================
+(defun sum-column (start end)
+  "Adds numbers in a rectangle. Digits must be aligned correctly"
+  (interactive "r")
+  (copy-rectangle-to-register 9 start end)
+  (set-buffer (get-buffer-create "*calc-sum*"))
+  (erase-buffer)
+  (insert-register 9)
+  (let ((sum 0))
+    (while (re-search-forward "[0-9]*\\.?[0-9]+" nil t)
+      (setq sum (+ sum (string-to-number (match-string 0)))))
+    (message "Sum: %f" sum)))
+
+;;;======================================================================
+;;; follow links from w3 or w3m region buffers (works in vm)
+;;;======================================================================
+;;; thanks to Edward O'Connor <ted@oconnor.cx>
+
+(defun ted-follow-link-at-point (point)
+  "Try to follow an HTML link at point.
+This works for links created by w3-region and/or by w3m-region."
+  (interactive "d")
+  (let* ((props (text-properties-at point))
+	 (w3-h-i (plist-get props 'w3-hyperlink-info))
+	 (w3m-h-a (plist-get props 'w3m-href-anchor)))
+    (cond (w3-h-i
+           (browse-url (plist-get w3-h-i :href)))
+	  (w3m-h-a
+	   (browse-url w3m-h-a))
+	  (t
+	   (message "Couldn't determine link at point.")))))
+
+;;; map this function within vm to the C-j key
+(add-hook 'vm-mode-hook '(lambda ()
+(local-set-key "\C-j" 'ted-follow-link-at-point)))
+
+;;;======================================================================
+;;; Load various web pages into the browser of choice
+;;;======================================================================
+;;; use the webjump package for web pages. It provides completion of
+;;; all available pages and has provisions for search engines already
+;;; built in (C-c j)
+
+;BRWSR is set in the .emacs file
+(defun browse (&optional url &optional arg)
+  "Launch your preferred browser (`BRWSR) with an optional URL"
+  (interactive "MURL (optional): ")
+  (if (string= url "")
+	  (w32-shell-execute "open" BRWSR)
+	(w32-shell-execute "open" BRWSR url arg)))
+
+(defun ie (&optional url &optional arg)
+  "Launch Internet Explorer with an optional URL"
+  (interactive "MURL (optional): ")
+;  (interactive (browse-url-interactive-arg "URL: "))
+;  (interactive)
+;  (read-minibuffer "URL: " (format "%s" (url-atpt)))
+  (if (or (string= url "") (null url))
+      (w32-shell-execute "open" IEPRG "-nohome")
+    (w32-shell-execute "open" IEPRG url arg)))
+
+(defun fx (&optional url)
+  "Launch the Mozilla Firefox browser with an optional URL"
+  (interactive "MURL (optional): ")
+;  (interactive (browse-url-interactive-arg "URL: "))
+;  (interactive)
+;  (read-minibuffer "URL: " (format "%s" (url-atpt)))
+  (if (or (string= url "") (null url))
+      (w32-shell-execute "open" FRFXPRG "/prefetch:1")
+    (w32-shell-execute "open" FRFXPRG url)))
+
+(defun css ()
+  "Load the Cascading Style Sheet specification into the default browser
+Local or Remote (web-based) copies available"
+  (interactive)
+  (if (y-or-n-p "Local copy? ")
+;      (browse (concat "file://" UTILS_DIR "/reference/CSS1/index.html"))
+;    (browse "http://www.htmlhelp.com/reference/css/"))
+      (w3m-find-file (concat UTILS_DIR "/reference/CSS1/index.html"))
+    (w3m-goto-url "http://www.htmlhelp.com/reference/css/"))
+  (message ""))
+
+(defun html ()
+  "Load the HTML specification into w3m
+Local or Remote (web-based) copies available"
+  (interactive)
+  (if (y-or-n-p "Local copy? ")
+;      (browse (concat "file://" UTILS_DIR "/reference/HTML4/index.html"))
+;    (browse "http://www.htmlhelp.com/reference/html40/"))
+      (w3m-find-file (concat UTILS_DIR "/reference/HTML4/index.html"))
+    (w3m-goto-url "http://www.htmlhelp.com/reference/html40/"))
+	(message ""))
+
+;;;======================================================================
+;;; load various web pages
+;;;======================================================================
+(defun google (what)
+  "Use google to search for WHAT."
+  (interactive "sSearch: ")
+  (w3m-browse-url (concat "http://www.google.com/search?q="
+                          (w3m-url-encode-string what))))
+
+;;;======================================================================
+;;; wiki functions for planner, muse and emacs-wiki
+;;;======================================================================
+(defun wikitoday ()
+  "Load the HTML copy of the planner WikiIndex"
+  (interactive)
+  (browse (concat "file:///" HOME_DIR "/notebook/html/" (planner-today) ".html")))
+(defun wikiindex ()
+  "Load the HTML copy of the planner WikiIndex"
+  (interactive)
+  (browse (concat "file:///" HOME_DIR "/notebook/html/wikiindex.html")))
+;  (browse-url (concat "file://" HOME_DIR "/notebook/html/wikiindex.html")))
+
+;;;======================================================================
+;;; Browse the javadoc for the selected java version by class
+;;;======================================================================
+;;; the jkd1x_classes.el files contain the entire class list and the
+;;; corresponding URL. These are used to build a url to the specified
+;;; class and launching the javadoc for that class. It has the added
+;;; benefit of providing completion on the class names, so you can
+;;; easily see if a class is defined within that java version
+
+(require 'jdk15_classes)
+(setq javadoc-base-url (concat "file:///" (expand-file-name (getenv "JAVA_HOME")) "/"))
+;(setq javadoc-base-url "http://java.sun.com/j2se/1.5.0/")
+(setq javadoc-doc-path "docs/api/")
+(setq javadoc-use-w3m t)
+
+;;;======================================================================
+;;; Browse the javadoc for the selected java version by class
+;;;======================================================================
+(defun javadocs ()
+  "Launch the Java 1.4.2 Standard Edition API documentation from
+Local or Remote copy"
+  (interactive)
+  (if (y-or-n-p "Local copy? ")
+      (browse (concat "file://" (expand-file-name (getenv "JAVA_HOME")) "/docs/api/index.html"))
+    (browse "http://java.sun.com/j2se/1.5.0/docs/api/"))
+  (message ""))
+
+(defun jdedocs ()
+  "Launch the JDE user documentation"
+  (interactive)
+  (browse 
+   (concat "file://" EMACS_PKGS "/jde-2.3.5.1/doc/html/jde-ug/jde-ug.html")))
+
+;;;======================================================================
+;;; Launch various tasks (apps with predefined switches)
+;;;======================================================================
+;;; the XTerm switches and geometry are defined in the .tcshrc
+
+(defun console ()
+  "Launch a shell in the normal console location using rxvt"
+  (interactive)
+  (w32-shell-execute
+   "open"
+   "rxvt"
+   (concat (getenv "CONSOLE_SWITCHES") " -T '" (getenv "HOSTNAME") "' -e tcsh")))
+
+(defun xterm ()
+  "Launch a shell using the rxvt application."
+  (interactive)
+  (w32-shell-execute
+   "open"
+   "rxvt"
+   (concat (getenv "XTERM_SWITCHES") " -T 'xterm' -e tcsh")))
+
+(defun wordpad ()
+  "Launch the Wordpad editor"
+  (interactive)
+  (w32-shell-execute
+   "open"
+   "C:/Program Files/Windows NT/Accessories/wordpad.exe"))
+
+(defun eclipse ()
+  "Launch the Eclipse IDE"
+  (interactive)
+  ; must be in the eclipse directory to launch correctly
+  (let ((eclipse-directory "c:/eclipse"))
+  (w32-shell-execute
+   "open"
+   (concat eclipse-directory "/eclipse.exe"))))
+
+
+(defun sshfwd (&optional targetIn)
+  "Launch an ssh shell to [optional] target. using the rxvt
+  application, with port forwarding. Forwarded ports are set in
+  the env variable SSHFWD_PORTS in the ~/.tcshrc as are the
+  default fonts and colors"
+	(interactive "Mtarget (default.target.here): ")
+	(if (string= targetIn "")
+			(setq target "default.target.here")
+		(setq target targetIn))
+	(w32-shell-execute
+   "open"
+   "rxvt"
+   (concat (getenv "SSHFWD_SWITCHES") " -T '" target "' -e ssh " target " " (getenv "SSHFWD_PORTS"))))
+
+(defun cmd ()
+  "Launch the NT Command console"
+  (interactive)
+	(w32-shell-execute
+	 "open"
+	 "cmd"))
+
+(defun dterm ()
+  "Launch tcsh shell with the NT shell window"
+  (interactive)
+  (w32-shell-execute
+   "open"
+   "cmd"
+   "/C tcsh"))
+
+(defun explorer ()
+  "Launch the windows explorer in the current directory"
+  (interactive)
+  (w32-shell-execute
+   "open"
+   "explorer"
+   (concat "/e, " (convert-standard-filename default-directory))))
+
+;;; the substring with default-directory is necessary becaus NAV
+;;; chokes on a trailing /
+(defun scan ()
+  "Scan the current dired directory with Norton's scanner
+Uses the program vpscan.exe, which can be found at on the web at:
+http://service1.symantec.com/SUPPORT/ent-security.nsf/552ba2f7636bedf088256818006f78bf/3d66d1a3231ad46088256b43005f1948?OpenDocument&prev=http://search.symantec.com/custom/us/techsupp/enterprise/kb/query.html?*col=kb%20us*st=1*nh=10*pcode=*qp=url:/ent-security.nsf/552ba2f7636bedf088256818006f78bf*qt=%2Bcommand%20%2Bline*miniver=nav_76_ce*sone=nav_76_ce_tasks.html*stg=*prod=Norton%20AntiVirus*ver=7.6%20Corporate%20Edition*base=http://www.symantec.com/techsupp/enterprise/products/nav/nav_76_ce/*next=*boolean=and&sone=nav_76_ce_tasks.html&stg=&prod=Norton%20AntiVirus&ver=7.6%20Corporate%20Edition&base=http://www.symantec.com/techsupp/enterprise/products/nav/nav_76_ce/&next=&src=ent&pcode=&dtype=corp&svy="
+  (interactive)
+  (w32-shell-execute
+   "open"
+   (concat UTILS_DIR "/bin/vpscan.exe")
+   (concat "/ADMIN " (substring dired-directory 0 -1))))
+
+
+;;;======================================================================
+;;; Remote desktop shortcuts
+;;;======================================================================
+(defun remote-desktop (rdpfile)
+  "Connect to a machine using the XP remote desktop connection in console mode.
+  The rdpfile must exist in c:/Remote_Machines since no error
+  checking is done."
+  (w32-shell-execute "open" "c:/Windows/System32/mstsc.exe"
+                     (concat "c:/Remote_Machines/" rdpfile " /console")))
+
+;; format for shortcuts to launch remote desktop might be
+;;(defun computername() (interactive) (remote-desktop "computername.rdp"))
+
+(defun virtual-machine ()
+  (interactive)
+  (w32-shell-execute "open" "C:/Program Files/Microsoft Virtual Server/VMRC Client/vmrc.exe"))
+
+;;;======================================================================
+;;; Launch various applications
+;;;======================================================================
+(defconst path_to_office "c:/Program Files/Microsoft Office/Office11/")
+
+(defun access ()
+  "Launch the MS Access database program"
+  (interactive)
+  (w32-shell-execute "open" (concat path_to_office "/msaccess.exe")))
+
+(defun excel ()
+  "Launch the MS Excel spreadsheet application"
+  (interactive)
+  (w32-shell-execute "open" (concat path_to_office "/excel.exe")))
+
+(defun outlook ()
+  "Launch the MS Outlook calander and email program"
+  (interactive)
+  (w32-shell-execute "open" (concat path_to_office "/outlook.exe") "/recycle"))
+
+(defun powerpoint ()
+  "Launch the MS PowerPoint presentation program"
+  (interactive)
+  (w32-shell-execute "open" (concat path_to_office "/powerpnt.exe")))
+
+(defun word ()
+  "Launch the MS Word application"
+  (interactive)
+  (w32-shell-execute "open" (concat path_to_office "/winword.exe")))
+
+(defun hotsync ()
+  "Launch the Palm hotsync program"
+  (interactive)
+  (w32-shell-execute "open" "c:/Program Files/palmOne/hotsync.exe"))
+
+(defun palm ()
+  "Launch the Palm desktop program"
+  (interactive)
+  (w32-shell-execute "open" "c:/Program Files/palmOne/palm.exe"))
+
+(defun pskill (pid)
+  "Kill the process with the specified pid using the pstools
+  pskill command"
+  (interactive "sPID or Executable Name: ")
+  (let ((default-directory TOP_LEVEL)))
+  (shell-command (concat "pskill " pid)))
+
+;;;======================================================================
+;;; the following functions use the program nircmd
+;;; found at http://www.nirsoft.net
+(defun nircmd (cmd)
+  (interactive "MCmd: " cmd)
+  (w32-shell-execute "open" (concat UTILS_DIR "/nircmd/nircmd.exe") cmd))
+
+(defun cdeject ()
+  "Eject the cd in drive d:"
+  (interactive)
+  (nircmd "cdrom open d:"))
+
+(defun cdopen ()
+  "Eject the cd in drive d:"
+  (interactive)
+  (cdeject))
+
+(defun screensaver ()
+  "Start the default screensaver"
+  (interactive)
+  (nircmd "screensaver"))
+
+(defun lock ()
+  "Lock the workstation"
+  (interactive)
+  (nircmd "lockws"))
+
+
+;;;======================================================================
+;;; Play with the volume control
+;;;======================================================================
+(defun volset ()
+  "Set the system and waveout volume to 15%"
+  (interactive)
+  (let ((lvl (number-to-string (* 65535 (* .01 15)))))
+    (nircmd (concat "setsysvolume " lvl " master"))
+    (nircmd (concat "setsysvolume " lvl " waveout"))))
+
+(defun volchange (percent &optional component)
+  "Change the volume by arg percent up or down. Optional component
+Optional 'component' refers to one of the possible sound components, and can be
+ - master
+ - waveout
+ - synth
+ - cd
+ - microphone
+ - phone
+ - aux
+ - line
+ - headphones
+ - wavein"
+  (interactive "p")
+  (let ((lvl (number-to-string (* 65535 (* .01 percent)))))
+    (if (null component)
+        (nircmd (concat "changesysvolume " lvl " master"))
+    (nircmd (concat "changesysvolume " lvl " " component)))))
+    
+(defun volup (&optional component)
+  "Raise the system volume 2%
+Optional 'component' refers to one of the possible sound components, and can be
+ - master
+ - waveout
+ - synth
+ - cd
+ - microphone
+ - phone
+ - aux
+ - line
+ - headphones
+ - wavein"
+  (interactive)
+  (if (null component)
+      (volchange 2 "master")
+    (volchange 2 component)))
+
+(defun voldown (&optional component)
+  "Raise the system volume 2%
+Optional 'component' refers to one of the possible sound components, and can be
+ - master
+ - waveout
+ - synth
+ - cd
+ - microphone
+ - phone
+ - aux
+ - line
+ - headphones
+ - wavein"
+  (interactive)
+  (if (null component)
+      (volchange -2 "master")
+    (volchange -2 component)))
+
+(defun volmute ()
+  "Toggle the volume between mute and unmute"
+  (interactive)
+  (nircmd "mutesysvolume 2"))
+
+(defun volapp()
+  "Launch the windows volume application"
+  (interactive)
+  (w32-shell-execute "open" "C:/WINDOWS/system32/sndvol32.exe"))
+
+(defun vol ()
+  "Create a buffer to adjust the volume interactively. The
+following keybindings are in effect within this buffer
+C-p or u -- raise volume
+C-n or d -- lower volume
+       l -- launch the volume control app
+       m -- mute/unmute 
+       r -- reset the master and waveout to 15%
+       q -- quit"
+  ;Look at the function `read-from-minibuffer' for suggestions on how to
+  ;use the minibuffer instead of a dedicated buffer for this function"
+  (interactive)
+  (switch-to-buffer "*volume*")
+  (erase-buffer)
+  (insert "Volume buffer,
+- C-p or u raise volume
+- C-n or d lower volume
+- l launch the volume control app
+- m mute/unmute 
+- r reset the master and waveout to 15%
+- q quit\n\n-> ")
+  (local-set-key "d"    (quote voldown))
+  (local-set-key "\C-n" (quote voldown))
+  (local-set-key "u"    (quote volup))
+  (local-set-key "\C-p" (quote volup))
+  (local-set-key "l"    (quote volapp))
+  (local-set-key "m"    (quote volmute))
+  (local-set-key "r"    (quote volset))
+  (local-set-key "q"    (quote bury-buffer)))
+  
+
+;;;======================================================================
+;;; keyboard macro definitions.
+;;;======================================================================
+;;; The macro name is just after defalias '<macro>.  You execute the
+;;; macro by typing;;; Esc-x <macro_name>;;;
+;;; 1) define the macro ( C-x ( to begin, type macro then C-x ) to end )
+;;; 2) name the macro ( M-x name-last-kbd-macro )
+;;; 3) insert the macro into your .emacs file. Go the the end of the
+;;; .  emacs and execute the following
+;;;    M-x insert-kbd-macro <return> macro name <return>
+
+;;; bring up the color display
+(defalias 'colors
+  (read-kbd-macro "M-x list-colors-display RET"))
+
+;;; bring up the faces display
+(defalias 'faces
+  (read-kbd-macro "M-x list-faces-display RET"))
+
+;;; justification of a paragraph at the current fill column
+(defalias 'justify-center
+  (read-kbd-macro "M-x set-justification-center"))
+(defalias 'justify-full
+  (read-kbd-macro "M-x set-justification-full"))
+(defalias 'justify-right
+  (read-kbd-macro "M-x set-justification-right"))
+(defalias 'justify-left
+  (read-kbd-macro "M-x set-justification-left"))
+(defalias 'justify-none
+  (read-kbd-macro "M-x set-justification-none"))
+
+;;;=====================
+;;; Stefan Monnier <foo at acm.org>. It is the opposite of
+;;; fill-paragraph Takes a multi-line paragraph and makes it into a
+;;; single line of text.
+(defun unfill-paragraph ()
+  (interactive)
+  (let ((fill-column 46488))
+    (fill-paragraph nil)))
+
+(defun unfill-region ()   "Do the opposite of fill-region; stuff all
+paragraphs in the current region into long lines."
+  (interactive)
+  (let ((fill-column 9000))
+    (fill-region (point) (mark))))
+
+;;;======================================================================
+(defun find-backups ()
+  "Find all emacs backup files (*~) from the home directory.
+  Useful for deleting quickly prior to running a system backup"
+  (interactive)
+  (let ((current-shell shell-file-name))
+    ;; use cmdproxy to run the find program
+    (set-shell "cmdproxy")
+    (find-name-dired "~/" "*~")
+    ;; return to the current shell
+    (set-shell current-shell)))
+
+(defun gnus-help ()
+  "call up the list of useful gnus commands in a separate frame"
+  (interactive)
+  (find-file-other-frame (concat planner-directory "/EmacsGnusCommands.muse")))
+
+;;;======================================================================
+;;; convert (XXX) XXX-XXXX area code formats into XXX-XXX-XXXX for use
+;;; in the palm pilot. The bbdb-pilot conversion keeps the former phone
+;;; format, but in the pilot, I use the latter, so this macro will
+;;; globally fix the area codes.
+;;; Here's the regular expression to search: "(\([0-9][0-9][0-9]\)) "
+;;; And here's the one it is replaced with:  "\1- RET"))"
+(defalias 'area-code
+  (read-kbd-macro "M-x replace-regexp RET (\\([0-9][0-9][0-9]\\)) SPC RET \\1- RET"))
+
+
+(provide '.emacs-macros)

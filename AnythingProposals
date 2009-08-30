@@ -1,0 +1,329 @@
+== Proposals for anything.el ==
+
+===  subject-predicate-attributes paradigm ===
+
+Just a random thought for a possible future improvement in anything.el: the current implementation could be extended, so that it supports the Quicksilver-like [http://en.wikipedia.org/wiki/Quicksilver_(software)#Three-panel_interface subject-predicate-attributes paradigm]:
+
+''The user first chooses the subject of the command (an application, a file, an e-mail address, an IM contact, a bookmark, etc.), then an action (predicate) to be performed on that subject, and finally additional details (attributes) for the action.''
+
+This would add further versatility for actions which can have an additional parameter. For example, when moving a file to a folder the user chooses the file (subject), chooses the Move To action (predicate) and then chooses a folder where the file is moved (attribute).
+
+Of course, it involves heavy changes in the current code, so it's only food for thought for times when the maintainer needs ideas how to improve Anything further. :) 
+
+There may be more practical applications than the file moving example above. One can look up the plugins for [http://en.wikipedia.org/wiki/Quicksilver_(software) Quicksilver] or [http://do.davebsd.com/ Gnome Do] for further ispiration.
+
+-- TamasPatrovics
+
+
+=== Fuzzy completion ===
+
+see for example: http://mirrors.wikifusion.info/gnu/elisp-archive/packages/fuzzy-match.el.Z
+
+[new]
+It should be a proposal for anything-config, since the ##match## attribute is provided by the platform, so the default match algorithm can be overriden with it. So someone should provide a match function which anything-config would optionally offer for sources -- TamasPatrovics
+
+=== Request: Quick start / tutorial ===
+
+
+Hi, 'anything' looks fantastic but I'm not sure how to get started. It would be really helpful to me if someone could put together a short introduction/tutorial for setting up anything.el. 
+
+Something like "download anything.el and anything-config.el, add something to your .emacs, create a file for personal options and run <command> in emacs..." is all I need. I'm just not sure how I'm supposed to set this thing up.
+
+Thanks! 
+
+-- sneazle
+
+[new:rubikitch:2009-01-16 18:35 UTC]
+I'm writing anything-startup.el to address installation/configuration complexity. The file will have useful configuration and many anything applications with user-friendly comments. It aims to be a template. -- [[rubikitch]]
+[new:sneazle:2009-01-17]
+Great - I added a very basic Getting Started section at the top now, because I figured some of it out. Would you be so kind as to update the Getting Started section once it's ready?
+
+
+
+----
+
+== Proposals for anything-config.el ==
+
+You can post your anything-c-source-* in AnythingSources.
+
+Similar to Imenu: fume aka functions-menu integration
+
+[new]
+I don't know it. It seems not to come with emacs and I cannot find anything about it here on the wiki. Please provide a patch. --TassiloHorn
+
+=== Dired Jump ===
+
+Anything can make life inside Emacs easier in a million ways! How can we share ideas on how to use it? 
+Here's one I'm trying these days:
+
+<pre>
+(setq my-dired-places '(( "project1" "c:/home/project1/")
+			( "project2" "c:/home/project2/")))
+
+(defun special-dired-jump (name)
+  (dired-other-window (cadr (assoc name my-dired-places))))
+
+(defvar anything-dired-commonplace
+  `((name . "Dired common places")
+	(candidates . (lambda () (mapcar (lambda (x) (nth 0 x)) my-dired-places)))
+    (action . (("Dired jump" . special-dired-jump)))))
+</pre>
+
+[new:DrewAdams:2007-10-06 22:40 UTC]
+What's wrong with bookmarks? Lisp:anything-config.el defines a `Bookmarks' source (see above). Your `my-dired-places' seems to be just another set of bookmarks that can only be directories. Or am I missing something? -- DrewAdams
+
+
+== Implemented Proposals for anything-config.el ==
+
+=== Highlighting matches ===
+
+<pre>
+(defvar anything-match-face 'bold)
+
+(defun anything-insert-match (match insert-function)
+  "Insert MATCH into the anything buffer. If MATCH is a list then
+insert the string inteneded to appear on the display and store
+the real value in a text property."
+  (let ((beg (line-beginning-position))
+        (end (line-end-position))
+        (string (if (listp match) (car match) match)))
+    (funcall insert-function string)
+
+    (if (listp match)
+        (put-text-property beg end
+                           'anything-realvalue (cdr match)))
+    (if (and anything-match-face
+             (string-match anything-pattern string))
+        (put-text-property (+ beg (match-beginning 0))
+                           (+ end (match-end 0))
+                           'face anything-match-face))
+
+    (funcall insert-function "\n")))
+</pre>
+
+-- [[Matsuyama]]
+
+[new:rubikitch:2009-03-03 16:31 UTC]
+Implemented in Lisp:anything-match-plugin.el -- [[rubikitch]]
+   
+=== imenu on emacs23 ===
+
+[new:AndyStewart:2009-02-24 13:45 UTC]
+This source have add in Lisp:anything-config.el -- AndyStewart
+
+Here are the sources i use on
+
+GNU Emacs 23.0.60.1 (i686-pc-linux-gnu, GTK+ Version 2.12.11) of 2008-09-03 on tux
+
+for imenu
+
+That define three sections in anything:
+
+* imenu types
+* imenu variables
+* imenu functions
+
+NOTE: if you use icicles and imenu+.el it will not work
+
+why? ==> i don't know :)
+
+However, `icicle-anything' work very well with this code.
+
+The output is better than with the normal icicle-imenu. 
+
+<pre>
+(defvar anything-c-imenu-cache-types nil)
+(make-variable-buffer-local 'anything-c-imenu-cache-types)
+(defvar anything-c-source-imenu-types
+  '((name . "Imenu Types")
+    (init . (lambda ()
+              (require 'imenu)
+              (setq anything-c-imenu-current-buffer
+                    (current-buffer))
+              (condition-case nil
+                  (setq anything-c-imenu-cache-types
+                        (assoc "Types" (imenu--make-index-alist)))
+                (error nil))))
+    (candidates . (lambda ()
+                    (condition-case nil
+                        (with-current-buffer anything-c-imenu-current-buffer
+                          (mapcar (lambda (x)
+                                    ;; Don't append cdr to history
+                                    ;; it will corrupt file
+                                    (car x))
+                                  (remove-if-not (lambda (x)
+                                                   (when (listp x)
+                                                     (markerp (cdr x))))
+                                                 anything-c-imenu-cache-types)))
+                      (error nil))))
+    (volatile)
+    (action
+     ("Imenu Types" . (lambda (item)
+                            (anything-c-imenu item anything-c-imenu-cache-types))))))
+
+
+(defvar anything-c-imenu-cache-var nil)
+(make-variable-buffer-local 'anything-c-imenu-cache-var)
+(defvar anything-c-source-imenu-variables
+  '((name . "Imenu Variables")
+    (init . (lambda ()
+              (require 'imenu)
+              (setq anything-c-imenu-current-buffer
+                    (current-buffer))
+              (condition-case nil
+                  (setq anything-c-imenu-cache-var
+                        (assoc "Variables" (imenu--make-index-alist)))
+                (error nil))))
+    (candidates . (lambda ()
+                    (condition-case nil
+                        (with-current-buffer anything-c-imenu-current-buffer
+                          (mapcar (lambda (x)
+                                    ;; Don't append cdr to history
+                                    ;; it will corrupt file
+                                    (car x))
+                                  (remove-if-not (lambda (x)
+                                                   (when (listp x)
+                                                     (markerp (cdr x))))
+                                                 anything-c-imenu-cache-var)))
+                      (error nil))))
+    (volatile)
+    (action
+     ("Imenu Variables" . (lambda (item)
+                            (anything-c-imenu item anything-c-imenu-cache-var)))
+     ("Describe variable" . (lambda (item)
+                              (describe-variable (intern item))))
+     ("Add variable to kill ring" . kill-new))))
+
+(defvar anything-c-imenu-cache-func nil)
+(make-variable-buffer-local 'anything-c-imenu-cache-func)
+(defvar anything-c-source-imenu-functions
+  '((name . "Imenu Functions")
+    (init . (lambda ()
+              (require 'imenu)
+              (setq anything-c-imenu-current-buffer
+                    (current-buffer))
+              (condition-case nil
+                  (setq anything-c-imenu-cache-func
+                        (cddr (imenu--make-index-alist)))
+                (error nil))))
+
+    (candidates . (lambda ()
+                    (condition-case nil
+                        (with-current-buffer anything-c-imenu-current-buffer
+                          (mapcar (lambda (x)
+                                    ;; Don't append cdr to history
+                                    ;; it will corrupt file
+                                    (car x))
+                                  (remove-if-not (lambda (x)
+                                                   (when (listp x)
+                                                     (markerp (cdr x))))
+                                                 anything-c-imenu-cache-func)))
+                      (error nil))))
+    (volatile)
+    (action
+     ("Imenu Functions" . (lambda (item)
+                            (anything-c-imenu item anything-c-imenu-cache-func)))
+     ("Describe function" . (lambda (item)
+                              (describe-function (intern item))))
+     ("Add function to kill ring" . kill-new))
+    (candidate-transformer . (lambda (candidates)
+                               (anything-c-compose
+                                (list candidates)
+                                '(anything-c-mark-interactive-functions))))))
+
+(defun anything-c-imenu (item cache)
+  (imenu
+   (assoc item cache))
+  (highlight-regexp item)
+  (sit-for 1)
+  (unhighlight-regexp item))
+
+</pre>
+
+-- ThierryVolpiatto
+
+----
+=== bookmarks sorted ===
+[new:AndyStewart:2009-02-24 13:45 UTC]
+This source have add in Lisp:anything-config.el -- AndyStewart
+
+Thats the same source-bookmarks but sorted like Emacs [[bookmark]]s
+
+Tested on:
+
+GNU Emacs 23.0.60.1 (i686-pc-linux-gnu, GTK+ Version 2.12.11) of 2008-09-03 on tux
+
+<pre>
+(defvar anything-c-source-bookmarks
+  '((name . "Bookmarks")
+    (init . (lambda ()
+              (require 'bookmark)))
+    (candidates . (lambda ()
+                    (let (lis)
+                      (setq lis (bookmark-all-names))
+                      (sort lis 'string-lessp))))
+    ;(volatile)
+    (type . bookmark))
+  "See (info \"(emacs)Bookmarks\").")
+</pre>
+
+----
+
+=== Jabber contacts ===
+[new:AndyStewart:2009-02-24 13:45 UTC]
+This source have add in Lisp:anything-config.el -- AndyStewart
+
+For those who use JabberEl:
+
+<pre>
+(defun anything-c-jabber-online-contacts ()
+  "List online Jabber contacts."
+  (let (jids)
+    (dolist (item (jabber-concat-rosters) jids)
+      (when (get item 'connected)        
+        (push (if (get item 'name)
+                  (cons (get item 'name) item)
+                (cons (symbol-name item) item)) jids)))))
+
+(defvar anything-c-source-jabber-contacts
+  '((name . "Jabber Contacts")
+    (init . (lambda () (require 'jabber)))
+    (candidates . (lambda ()
+                    (mapcar
+                     'car
+                     (anything-c-jabber-online-contacts))))
+    (action . (lambda (x)
+                (jabber-chat-with
+                 (jabber-read-account)
+                 (symbol-name
+                  (cdr (assoc x (anything-c-jabber-online-contacts)))))))))
+</pre>
+
+[new]
+Added! Thanks Mathias. --TassiloHorn
+
+----
+
+=== Shortening home path ===
+
+I think tilde(~) is more readable than $HOME. Don't you?
+
+<pre>
+(defun anything-c-shorten-home-path (files)
+-  "Replaces /home/user with $HOME."
++  "Replaces /home/user with ~."
+  (mapcar (lambda (file)
+            ;; replace path of HOME directory in paths with the string <home>
+            (let ((home (replace-regexp-in-string "\\\\" "/" ; stupid Windows...
+                                                  (getenv "HOME"))))
+              (if (string-match home file)
+-                  (cons (replace-match "$HOME" nil nil file) file)
++                  (cons (replace-match "~" nil nil file) file)
+                file)))
+          files))
+</pre>
+
+Yes! -- [[rubikitch]]
+
+----
+[[Anything]]

@@ -1,0 +1,30 @@
+==Introduction==
+If you are not Gnus user, and don't want load so many file when using smiley, Try Lisp:emoticons.el.
+
+Icons is downloaded from http://www.adiumxtras.com/index.php?a=xtras&xtra_id=980.
+Extract the zip file and rename the directory `<nowiki>iChat-Complete.AdiumEmoticonSet</nowiki>' to your favorite place, the default is $HOME/.emacs.d/icons/adium. You can download the emoticons from [[Emoticons]] too.
+Be sure rename the file to .tar.gz and extract it with:
+<pre>
+ $ tar zvxf Emoticons.tar.gz
+</pre>
+
+Add this to you .emacs:
+<pre>
+(require 'emoticons)
+(add-hook 'erc-insert-modify-hook 'emoticons-fill-buffer)
+(add-hook 'erc-send-modify-hook 'emoticons-fill-buffer)
+</pre>
+
+If you want use it in other place, you may try M-x emoticons-mode.
+
+==Tips==
+* If you think the text is replace incorrectly, you can use M-x emoticons-erase-region to remove the icons.
+* If you want look the text of the icon , put mouse on the icon. It will show by tooltip if you turn on tooltip-mode. Or you can use C-u C-x = to see the text properties you self. Or you just turn on eldoc-mode like:
+<pre>
+   (add-hook 'erc-mode-hook
+             (lambda ()
+                (eldoc-mode t)
+                (setq eldoc-documentation-function
+                  'emoticons-help-echo)))
+</pre>
+the help-echo will show in minibuffer when cursor is on the icon.

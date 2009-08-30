@@ -1,0 +1,14 @@
+RichardStallman is asking for help in verifying CVS diffs for Emacs:
+
+: It would be very useful for someone to take overall charge of the
+verification activity--to make sure that at least the important files
+do get checked.  I can't do it myself, though; I don't have time.
+(Since my elbow broke, I have barely been able to work on Emacs at
+all.)
+
+: Can someone volunteer to do this?
+
+Context: Savannah was compromised, and slowly they are bringing the
+system back.  At the moment they are trying to help maintainers figure
+out wether their particular source trees were compromised.
+[http://savannah.gnu.org/statement.html]

@@ -1,0 +1,32 @@
+The '''[::fringe]''' is a thin strip down the left and/or right edge of a [[window]].
+They can contain glyphs to indicate various things (usually things associated with the same line). For example, they can 
+show where a buffer line has been wrapped over multiple window lines.
+The `fringe' [[face]] controls their appearance (e.g. color).
+
+You can toggle display of fringes on all frames using `M-x fringe-mode' (starting with Emacs 22). You can also set [[frame]] parameter `left-fringe' or `right-fringe' to 0, to turn off display of that fringe.
+
+== Discussion ==
+
+[new]
+How does one programmatically put pointers or similar into the fringe? I know gnus does it, but I couldn't find out where. Also, I couldn't find any documentation for this behaviour in the EmacsLispReference. -- AndreasFuchs
+
+[new]
+: The variables of interest are overlay-arrow-position and overlay-arrow-string. In the top level of the EmacsLispReference there is also a node called "Overlay Arrow" that describes this. -- SatyakiDas
+
+[new]
+Is there any documentation at all for using the fringe programmatically? User documentation (fringe off and on) is there, but I am missing documentation about having it do anything for me, like in the gnus *Summary* buffer --AndreasFuchs
+
+[new]
+Personally I really like the fringe, with `default-indicate-empty-lines' set to t it becomes very handy in most buffers. As to the question of patching emacs to remove the fringe, it is my understanding that it will be an optional feature in the next non-bugfix release (or, if you want it now, you can pull the latest sources from EmacsFromCVS). -- DavePearson
+
+[new:DrewAdams:2006-05-07 02:54 UTC]
+Turning off the fringe was the first thing I did. Because I use OneOnOneEmacs I never have wrapped lines anyway (frames fit their buffers), so fringe is just wasted real estate. -- DrewAdams
+
+[new]
+Is there a way to get the "\" end-of-line behavior in X? The little bars on the left and right with arrows showing where text overflows the width of the window are nice, but they take up too much space. -- DanDebertin
+
+
+
+----
+CategoryDisplay
+CategoryGlossary

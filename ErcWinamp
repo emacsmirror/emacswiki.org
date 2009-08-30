@@ -1,0 +1,46 @@
+This works on Windows, because Winamp works on Windows.
+If you do not use Winamp3, then the filename to look 
+for in the tasklist is different.  Change the winamp
+function as appropriate.
+
+<pre>
+    (defun winamp ()
+      "Print what winamp is playing."
+      (interactive)
+      (let ((str (shell-command-to-string "c://WINDOWS/system32/tasklist.exe /v")))
+	(when (string-match "^studio.exe.*?[0-9]+\\. \\(.*?\\)[ \t]*$" str)
+	  (match-string 1 str))))
+
+    (defun erc-cmd-WINAMP (&rest ignore)
+      "Post what Winamp is playing." 
+       (interactive)
+      (erc-send-message (concat "NP: " (winamp))))
+</pre>
+
+Alternate regexp for winamp2 users: "^winamp.exe.*?[0-9]+\\. \\(.*?\\)[ \t]*\\((playing)\\)?\\(- winamp\\)?[ \t]*\r?$"
+
+The second function makes a /WINAMP command available in ERC, such that you will send to the current channel what you are listening to right now, according to the window title.
+
+See also NowPlaying.
+
+Here are some modifications to the script to get better output with Windows and Winamp5.
+
+<pre>
+(defun winamp ()
+      "Print what winamp is playing."
+      (interactive)
+      (let 
+((str (shell-command-to-string "c://WINDOWS/system32/tasklist.exe /v")))
+	(when (string-match "^winamp.exe.*?[0-9]+\\. \\(.*?\\)[ \t]*$" str)
+	  (match-string 1 str))))
+
+    (defun erc-cmd-WINAMP (&rest ignore)
+      "Post what Winamp is playing." 
+       (interactive)
+      (erc-send-message (substring(concat "np: " (winamp)) 0
+      (- (length(winamp)) 5))))
+</pre>
+
+----
+[[ERC]]
+CategoryWThirtyTwo

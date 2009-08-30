@@ -1,0 +1,27 @@
+Sawfish is a window manager that can be extended using a Lisp dialect.  See ExtensibleSoftware and http://sawmill.sourceforge.net/.
+
+[http://www.davep.org/emacs/#sawfish.el sawfish.el] is some elisp code that will put your ~/.sawfishrc file (and other sawfish source files) into sawfish mode.  There, you can use `C-x C-e' to run `sawfish-eval-last-sexp'.
+
+My ~/.sawfishrc contains the following lines, for example:
+
+<pre>
+(require 'sawmill-defaults)
+
+(setq apps-menu
+      '(("Terminal" (system "terminal &"))
+	("Root" (system "root &"))
+	("Emacs 20.7" (system "emacs-20.7 &"))
+	("XEmacs 21.4" (system "xemacs-21.4.1 &"))
+	("Netscape" (system "netscape &"))
+	("Galeon" (system "galeon &"))
+	("xchat" (system "xchat &"))
+	("The GIMP" (system "gimp &"))
+	("XFIG" (system "xfig &"))))
+</pre>
+
+Editing these lines and hitting `C-x C-e' I can change the apps-menu on the fly.
+
+For more Sawfish code, check the [http://sawfish.wikia.com/ Sawfish Wiki].
+
+----
+CategoryModes

@@ -1,0 +1,10 @@
+Building emacs on AIX is straighforward, aside from one issue:
+
+The configure script only detects AIX versions up to 5.1.  If you are using AIX 5.2 or higher, the configure script will assume you are on an ancient version of AIX (3.x) and error out while compiling.  To force emacs to build correctly,  run configure as follows:
+
+./configure --host=powerpc-ibm-aix5.1.0.0 
+
+--Brandon Tallent
+
+----
+CategoryPorts

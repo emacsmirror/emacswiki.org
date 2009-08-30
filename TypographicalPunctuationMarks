@@ -1,0 +1,248 @@
+: "Think man! Think of all those quotation marks!"[http://www.csd.uwo.ca/staff/magi/personal/humour/Computer_Audience/Douglas%20Adams%27%20Guide%20to%20the%20Macintosh.html]
+
+The package <tt>[[typopunct.el]]</tt> provides a minor mode to enter typographical punctuation marks in a DWIM (DoWhatIMean) manner.
+
+When ##typopunct-mode## is on, hitting '##-##' two times will insert an en-dash (&ndash;); hitting '##-##' once more will change that to an em-dash (&mdash;). Also, hitting '##"##' and '##'##' will insert typographical quotation marks (AKA "smart quotes") depending on context and various national typographical conventions. By default, the following quotation styles are supported:
+
+* ##deutsch## -- for German „quotation marks“ and ‚single quotation marks‘ (default)
+* ##francais## -- for French «double quotation marks» and ‹single quotation marks›
+* ##deutsch-2## -- for an alternative style of German »double« and ›single quotation marks‹
+* ##english## -- for English “double” and ‘single quotation marks’
+
+Hit '##C-q "##' and '##C-q '##' to insert literal ASCII double and single quotation marks.
+
+== Setting it up ==
+
+Set the default language in your <tt>[InitFile .emacs]</tt> with, e.g.,
+
+    (require 'typopunct)
+    (typopunct-change-language 'english t)
+
+Use ##M-x typopunct-mode## to enter the mode and ##M-x typopunct-change-language RET## to change the language for the current buffer.
+
+To set up ##typopunct-mode## automatically for a particular mode, use
+
+    (add-hook 'org-mode-hook 'my-org-init)
+    (defun my-org-init ()
+      (require 'typopunct)
+      (typopunct-change-language 'english)
+      (typopunct-mode 1))
+
+The example sets it up for [OrgMode org-mode], switches to English (the default is German), and enables the minor mode. The ##require## statement also makes sure the library is loaded when you switch to org-mode without forcing you to load it every time you start Emacs.
+
+== Minus sign ==
+
+The minus sign (&minus;) is separate from the hyphen (-), en dash (&ndash;) and em dash (&mdash;). To build upon the clever behavior of the '##-##' key, we may put the following in <tt>[InitFile .emacs]</tt>:
+
+    (defconst typopunct-minus (decode-char 'ucs #x2212))
+    (defconst typopunct-pm    (decode-char 'ucs #xB1))
+    (defconst typopunct-mp    (decode-char 'ucs #x2213))
+    (defadvice typopunct-insert-typographical-dashes
+      (around minus-or-pm activate)
+      (cond
+       ((or (eq (char-before) typopunct-em-dash)
+            (looking-back "\\([[:blank:]]\\|^\\)\\^"))
+        (delete-char -1)
+        (insert typopunct-minus))
+       ((looking-back "[^[:blank:]]\\^")
+        (insert typopunct-minus))
+       ((looking-back "+/")
+        (progn (replace-match "")
+               (insert typopunct-pm)))
+       (t ad-do-it)))
+    (defun typopunct-insert-mp (arg)
+      (interactive "p")
+      (if (and (= 1 arg) (looking-back "-/"))
+          (progn (replace-match "")
+                 (insert typopunct-mp))
+        (self-insert-command arg)))
+    (define-key typopunct-map "+" 'typopunct-insert-mp)
+
+Then, to insert a minus sign, type '##----##' or '## ^-##'. The space is significant. To insert a plus-or-minus sign (&plusmn;), type '##+/-##'. To insert a minus-or-plus sign (&#8723;), type '##-/+##'.
+
+== Ellipsis and middle dot ==
+
+To insert a typographical ellipsis sign (&hellip;) on three consecutive dots, or a middle dot (&middot;) on '##^.##', use the following code:
+
+    (defconst typopunct-ellipsis (decode-char 'ucs #x2026))
+    (defconst typopunct-middot   (decode-char 'ucs #xB7)) ; or 2219
+    (defun typopunct-insert-ellipsis-or-middot (arg)
+      "Change three consecutive dots to a typographical ellipsis mark."
+      (interactive "p")
+      (cond
+       ((and (= 1 arg)
+             (eq (char-before) ?^))
+        (delete-char -1)
+        (insert typopunct-middot))
+       ((and (= 1 arg)
+             (eq this-command last-command)
+             (looking-back "\\.\\."))
+        (replace-match "")
+        (insert typopunct-ellipsis))
+       (t
+        (self-insert-command arg))))
+    (define-key typopunct-map "." 'typopunct-insert-ellipsis-or-middot)
+
+To actually insert three dots (##...##), you may type '##C-u 3 .##' (or just '##C-3 .##'), or break the chain of dot insertions.
+
+== Multiplication sign ==
+
+If you want the cross (&times;) rather than the middle dot, do
+
+    (defconst typopunct-times (decode-char 'ucs #xD7))
+    (defun typopunct-insert-times (arg)
+      (interactive "p")
+      (if (and (= 1 arg) (looking-back "\\([[:blank:]]\\|^\\)\\^"))
+          (progn (delete-char -1)
+                 (insert typopunct-times))
+        (self-insert-command arg)))
+    (define-key typopunct-map "x" 'typopunct-insert-times)
+
+Then, to insert a multiplication sign, type '## ^x##'. The space is significant.
+
+== Primes ==
+
+For easy insertion of [http://en.wikipedia.org/wiki/Prime_(symbol) prime symbols], such as <b>&prime;</b> (feet, arcminutes, derivatives) and <b>&#8243;</b> (inches, arcseconds, double derivatives), the following code does the trick:
+
+    (defconst typopunct-prime  (decode-char 'ucs #x2032))
+    (defconst typopunct-dprime (decode-char 'ucs #x2033))
+    (defconst typopunct-tprime (decode-char 'ucs #x2034))
+    (defadvice typopunct-insert-quotation-mark (around primes activate)
+      (cond
+       ((or mark-active
+            (not (eq last-command-char ?')))
+        ad-do-it)
+       ((eq (char-before) ?^)
+        (delete-char -1)
+        (insert typopunct-prime))
+       ((eq (char-before) typopunct-prime)
+        (delete-char -1)
+        (insert typopunct-dprime))
+       ((eq (char-before) typopunct-dprime)
+        (delete-char -1)
+        (insert typopunct-tprime))
+       (t ad-do-it)))
+
+To insert a single prime, type '##^'##'. To insert a double prime, type '##^''##'. To insert a triple prime (not supported by most fonts), type '##^'''##'.
+
+There exists a "quadriple prime" at Unicode position U+2057. I haven't found a font that contains it, but adding it to the above code is trivial.
+
+== Polish quotation marks ==
+
+To use Polish-style quotation marks, use the following code:
+
+    (add-to-list 'typopunct-language-alist
+                 `(polish ,(decode-char 'ucs #x201E) ; opening-double-q (outer)
+                          ,(decode-char 'ucs #x201D) ; closing-double-q (outer)
+                          ,(decode-char 'ucs #xBB)   ; opening-single-q (inner)
+                          ,(decode-char 'ucs #xAB))) ; closing-single-q (inner)
+    (setq-default typopunct-buffer-language 'polish)
+
+== Norwegian quotation marks ==
+
+To use [http://www.typografi.org/sitat/sitatart.html Norwegian-style] quotation marks, use the following code:
+
+    (add-to-list 'typopunct-language-alist
+                 `(norwegian ,(decode-char 'ucs #xAB)     ; opening-double-q (outer)
+                             ,(decode-char 'ucs #xBB)     ; closing-double-q (outer)
+                             ,(decode-char 'ucs #x2018)   ; opening-single-q (inner)
+                             ,(decode-char 'ucs #x2019))) ; closing-single-q (inner)
+    (setq-default typopunct-buffer-language 'norwegian)
+
+== Wrapping the region in quotes ==
+
+We may use [SkeletonMode skeletons] to wrap any [TransientMarkMode selected text] in quotes when we hit '##"##' and '##'##'. All we need to do is [AdvisingFunctions advice] ##typopunct-insert-quotation-mark##:
+
+    (defadvice typopunct-insert-quotation-mark (around wrap-region activate)
+      (let* ((lang (or (get-text-property (point) 'typopunct-language)
+                       typopunct-buffer-language))
+             (omark (if single
+                        (typopunct-opening-single-quotation-mark lang)
+                      (typopunct-opening-quotation-mark lang)))
+             (qmark (if single
+                        (typopunct-closing-single-quotation-mark lang)
+                      (typopunct-closing-quotation-mark lang))))
+        (cond
+         (mark-active
+          (let ((skeleton-end-newline nil)
+                (singleo (typopunct-opening-single-quotation-mark lang))
+                (singleq (typopunct-closing-single-quotation-mark lang)))
+            (if (> (point) (mark))
+                (exchange-point-and-mark))
+            (save-excursion
+              (while (re-search-forward (regexp-quote (string omark)) (mark) t)
+                (replace-match (regexp-quote (string singleo)) nil nil)))
+            (save-excursion
+              (while (re-search-forward (regexp-quote (string qmark)) (mark) t)
+                (replace-match (regexp-quote (string singleq)) nil nil)))
+            (skeleton-insert (list nil omark '_ qmark) -1)))
+         ((looking-at (regexp-opt (list (string omark) (string qmark))))
+          (forward-char 1))
+         (t ad-do-it))))
+
+This does a number of things. If we have selected a word,
+
+    this [word] is quoted
+
+where '##[##' and '##]##' are the start and end of the region, hitting '##"##' gives
+
+    this “word” is quoted
+
+If we now select the whole sentence and hit '##"##' again, the inner quotation marks are automatically converted to single marks:
+
+    “this ‘word’ is quoted”
+
+Furthermore, the '##"##' and '##'##' keys will “move over” any existing quotation marks, so that if the point is at the beginning of ##“word”##, hitting '##"##' places it at the first letter.
+
+== Other symbols ==
+
+The ##iso-transl.el## library, included with Emacs, defines keyboard bindings for Latin-1 characters. These have the advantage of working /everywhere/, not just in ##typopunct-mode##. For example,
+
+* '##C-x 8 SPC##' gives a [http://en.wikipedia.org/wiki/Hard_space hard space].
+* '##C-x 8 o##' gives ° (degree symbol).
+* '##C-x 8 ~ ~##' gives ¬.
+* '##C-x 8 1 / 2##' gives ½.
+* '##C-x 8 * C##' gives ©.
+* '##C-x 8 ^ 1##' gives ¹, '##C-x 8 ^ 2##' gives ², and '##C-x 8 ^ 3##' gives ³.
+
+The rest of the superscripts are not found in Latin-1, but we may extend the bindings as such:
+
+    (require 'iso-transl)
+    (iso-transl-define-keys
+     `(("^0" . ,(vector (decode-char 'ucs #x2070)))
+       ("^4" . ,(vector (decode-char 'ucs #x2074))) ; 1-3 already defined
+       ("^5" . ,(vector (decode-char 'ucs #x2075)))
+       ("^6" . ,(vector (decode-char 'ucs #x2076)))
+       ("^7" . ,(vector (decode-char 'ucs #x2077)))
+       ("^8" . ,(vector (decode-char 'ucs #x2078)))
+       ("^9" . ,(vector (decode-char 'ucs #x2079)))
+       ("^+" . ,(vector (decode-char 'ucs #x207A)))
+       ("^-" . ,(vector (decode-char 'ucs #x207B)))
+       ("^=" . ,(vector (decode-char 'ucs #x207C)))
+       ("^(" . ,(vector (decode-char 'ucs #x207D)))
+       ("^)" . ,(vector (decode-char 'ucs #x207E)))
+       ("_0" . ,(vector (decode-char 'ucs #x2080)))
+       ("_1" . ,(vector (decode-char 'ucs #x2081)))
+       ("_2" . ,(vector (decode-char 'ucs #x2082)))
+       ("_3" . ,(vector (decode-char 'ucs #x2083)))
+       ("_4" . ,(vector (decode-char 'ucs #x2084)))
+       ("_5" . ,(vector (decode-char 'ucs #x2085)))
+       ("_6" . ,(vector (decode-char 'ucs #x2086)))
+       ("_7" . ,(vector (decode-char 'ucs #x2087)))
+       ("_8" . ,(vector (decode-char 'ucs #x2088)))
+       ("_9" . ,(vector (decode-char 'ucs #x2089)))
+       ("_+" . ,(vector (decode-char 'ucs #x208A)))
+       ("_-" . ,(vector (decode-char 'ucs #x208B)))
+       ("_=" . ,(vector (decode-char 'ucs #x208C)))
+       ("_(" . ,(vector (decode-char 'ucs #x208D)))
+       ("_)" . ,(vector (decode-char 'ucs #x208E)))))
+
+Now, '<tt>C-x 8 ^ <i>number</i></tt>' gives any numerical superscript and '<tt>C-x 8 _ <i>number</i></tt>' any numerical subscript. There are also bindings for plus, minus and equal signs, and parentheses.
+
+----
+
+See also InputMethods.
+
+----
+
+CategoryWriting

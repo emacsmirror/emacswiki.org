@@ -1,0 +1,32 @@
+Been using Emacs since 2005.
+
+Several Emacs Lisp packages carry my signature:
+
+* [[GimpMode]], an interaction/editing mode for GIMP script-fu code.
+* [[Mingus]], an mpd-interface for emacs.  
+* Lisp:poor-mans-bidi.el a mode for editing bidirectional text.
+
+Also I am -- though not very actively -- making an emacs interface for use of TV-cards:
+[http://niels.kicks-ass.org/index.php/emacs/zap zap.el]. Zap.el is what you might call a
+settopbox-application. Changing channels, ripping output of tv%%_grab_%%** for a tv-guide in
+emacs lisp, scheduling recordings, stuff like that is on my (partially fulfilled)
+wish-list.
+
+Note that zap.el is way from being produktionsfaehig, but for the interested, there it is.
+
+I started using emacs beginning 2005 because I got fed up with
+word processors dictating what I write while I was writing papers for
+my study of Public International Law (in the intermediate phase, I
+simply used a typewriter). Using emacs and GNU/Linux (which I began to
+use because of my inner tendency to question mainstream thoughts and
+practices), and a desire to make things work as I want them drew me
+into the world of programming. 
+
+For more info on me you can look on [http://niels.kicks-ass.org my website], which has also has an
+[http://niels.kicks-ass.org/index.php/emacs emacs section], with some more small elisp
+libraries.
+
+On IRC and elsewhere on this wiki, I happen to be known as [::pft].
+
+----
+CategoryHomepage

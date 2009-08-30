@@ -1,0 +1,11 @@
+Gmane is a Mail2News Gateway which host many mailinglists.
+
+Homepage: http://gmane.org/
+
+It's administrated by LarsMagneIngebrigtsen.
+
+=== Emacs related groups/hierachies ===
+
+* gmane.emacs.ALL -- many groups for emacs and his applications
+* gmane.mail.wanderlust.ALL
+* gmane.mail.mew.ALL

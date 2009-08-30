@@ -1,0 +1,9 @@
+GNU Gettext provides facilities for translating program messages into a user's selected language. The home page is
+
+: http://www.gnu.org/software/gettext/
+
+Here are some things for working with Gettext in Emacs,
+
+* PoMode -- edit <code>.po</code> catalogues
+* [[po-mode+.el]] -- extra features for <nowiki>PoMode</nowiki>, by GauteHvoslefKvalnes
+* MoMode -- view <code>.mo</code> compiled catalogues

@@ -1,0 +1,23 @@
+QUESTION
+
+If you have a regular expression with a fixed delimiter as part of the regular expression at the beginning and the end, how can one replace multiple occurrences of this expression in a series?  
+
+Example:
+
+ xxxx A1 AB6 AC4 AF2 xxxxxx
+
+Now you want the regular expression to be <tt>" A[B-F][1-9] "</tt>.
+Notice the spaces at both ends.  This means that the first match will "eat" the space following the digit,
+so that the next group does not have a leading space.
+
+ANSWER
+
+Regular expressions have "zero-width assertions" for this.  use \b to match a "word boundary".
+Example: "\\bA[B-F][1-9]\\b" (remember to double backslashes in Lisp strings).
+
+If you want to replace the
+space as well, choose wether you want to eat the leading or the trailing space, or (better), make eating
+spaces optional: "A[B-F][1-9] *" -- this will eat all following spaces, if any.
+
+----
+CategoryRegexp

@@ -1,0 +1,10 @@
+Palm has put out a new device called the Palm Pre, running the WebKit OS, and Mojo Framework.  Basically it is a browser-like os on your phone, running HTML 5, CSS 3, and Javascript.  The Mojo SDK has a suite of commandline tools to st up a base application, launchc the emulator, interact with the phone, etc.
+
+Lisp:mojo.el is a set of interactive functions to help out with the development of a Mojo application.  Right now it is in its early alpha/beta phase, and could use more work.
+
+Eventually I would like it to be easier to interact with the running emulator (i.e. provide completion for launching and deleting applications), and helping out with the build process (installing and launching the application, and maybe even interacting with it).
+
+I'm also open to outside ideas and contributions.  If you fix bugs, or add functionality, just update it on emacswiki, and increment the version number.
+
+Happy Hacking!
+

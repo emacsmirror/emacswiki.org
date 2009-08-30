@@ -1,0 +1,79 @@
+I've decided to respond to some of the answers to questions on <code>help-gnu-emacs@gnu.org</code> and <code>emacs-devel@gnu.org</code> by asking the questioner to create a short write-up of the Q&A on EmacsWiki. If one person didn't know something useful but not-so-obvious, it's possible others also aren't aware of it.
+
+''Case in point:'' Today[http://lists.gnu.org/archive/html/emacs-devel/2005-06/msg00401.html], someone asked <code>emacs-devel</code> for "hidden" buffers as a new feature. After he explained (very well) what he meant and what he would use the feature for, the answer was of course that the feature already exists: just use a space as the first character of the buffer name. But it's likely that some other users won't be aware of this. It's in the EmacsManual, no doubt, but it would be good to get a motivating example and a short explanation on the Wiki also.
+
+IOW, some FAQs that would be useful for the Wiki can come out of the mailing lists, and we might get those who receive their answers to write the FAQ up on the Wiki, as "penance". Among other things, EmacsWiki is a list (network) of FAQs.
+
+In a related vein, I noticed that EliZaretskii today asked[http://lists.gnu.org/archive/html/help-gnu-emacs/2005-06/msg00275.html] someone if he had first looked in the EmacsManual for an answer, and, if so, how he tried to look it up (and failed to find it) -- in order to fix the EmacsManual by possibly adding cross references or index entries. Helpful. -- DrewAdams
+
+See EmacsMailingLists.
+
+[new]
+I agree.  I've long considered newsgroups and mailing lists as critical resources for creating documentation.  In response to this post, I've created an EmacsFaq article for pointing to external FAQs.  See OnlineResources.  -- AaronHawley
+
+[new]
+Back when I was a regular newsgroup reader, I often turned interesting posts into wiki pages.  The point is, I believe, not to collect interesting posts on one singe page.  Instead, create a single page for every interesting point.  That is the only way for the system to scale.  If we then need an index linking to the various interesting points including a short comment (like many of the current category pages), we shall write one.  If we need better search functionality, we'll code something up.  We can do better than a single FAQ page.  -- AlexSchroeder
+
+[new]
+I know that what I'm about to propose is a sensitive issue, but I must bring it up, because there seems no other way:
+
+Even though there are drawbacks (and I believe every one can be individually addressed), turning the wiki into a variation of a ''very controlled'' "plain text markup"  wiki would solve this probelm (and many more) thusly:
+
+The questioner could add the question to a 'transitional' or 'temporary' page (such as these 'Date' pages) or the FAQ or whatever.
+
+Once the question is processed and page is viewed, the words he chose to describe the problem will hopefully already be _hyperlinked_, in other words, already _answered_.
+
+Once he follows the link (in this case it might be [hidden buffer] or maybe even just [[hidden]], or (get your rotten fruit an vegetables ready) even (remember extra controlls that only lets more <b>qualified</b> users add such small keywords, and other limitations that keep these tags from linking too many things etc.) synonyms of [[hid]] and [[hide]])...
+
+The question (as EliZaretskii notes) is "how to get to it".  But if the data of the wiki were "transparent" (instead of hidden behind a spelling system that only the old-timers know), each <b>regularly spelled</b> question ''automatically'' exposes it's own answer! This lets users do all of their own work if the pages are named with the intention of "intercepting" such requests to expose all connections.
+
+By the way, my homepage is not yet a good example (though getting closer) of what I'm trying to describe.  -- PatrickAnderson
+
+[new]
+Essentially you're complaining about:
+
+# This Wiki's use of CamelCase, 
+# the lack of a topic or keyword index system on this Wiki (and others)
+# and an inadequate search engine for the Wiki.
+
+My responses in order:
+
+# CamelCase is unpolished. WikiPedia has improved on this to some degree, especially in the important aspects of WebAccessibility.  I think both computer newbies and "experts" have a few greater hurdles, including finding out that Wikis are these cool things containing useful information, that there is a Wiki related to their problem or personal interest, or where the _Edit_ link is on a page and what it does.  If they could get that far, they wouldn't need to use CamelCase to just type their question in on OpenQuestions. 
+# Indexing would be helpful, but even categorization is far from completed on this Wiki.  The category system is generally open for discussion.  See [[Problems]].
+# Adding an auxilary database and user interface capable of "intercepting" all possible questions written in natural language is a good idea. Spending the effort to create both the system and the knowledge base for a Wiki (that in many places is not organized and linked through in a logical and helpful way) would become an avoidance of the latter and a bad idea.  I think providing a user community who can promptly answer questions well is a magnitude better than the most hypothetical artificial intelligence device that could do the same "automatically".
+
+This Wiki:WikiSucks, so what?  It's getting better all the time. -- AaronHawley
+
+
+[new]
+I'm really not meaning to Troll.
+
+Just to clarify:
+I didn't mean to (I don't think I did) complain about these two things:
+# the lack of a topic or keyword index system on this Wiki (and others)
+# and an inadequate search engine for the Wiki.
+
+I know this subject brings out emotion, and I can feel your defense of the current system.  I'm not trying to ''topple the wiki''.  I know it won't change.  I'm talking about future efforts.
+
+I definitely didn't mean to say this  Wiki:WikiSucks.  The EmacsWiki is extremely important.
+
+The only thing I meant to communicate was a way to increase accessibility while lowering effort. -- PatrickAnderson
+
+[new:DrewAdams:2005-06-11 03:57 UTC]
+Good discussion!
+
+'''WRT a FAQ on the Wiki:''' I agree generally with Alex on this one. EmacsWiki pages are, in general, a better way to organize such info than just in one or more FAQ pages. That is, some info ("answers") is best treated on its own page, or perhaps pieces of it on more than one page -- new pages or additions to existing pages. 
+
+On the other hand, although most such info fits better into the regular Wiki organization (Alex's point), there is probably a use for a FAQ page (or pages, in a FAQ hierarchy) on the Wiki to deal with truly '''''frequently''''' asked questions. Perhaps the links that Aaron set up to existing Emacs FAQ pages are sufficient for this need -- they certainly help. In general, the FAQ answers should be short, possibly linking to regular Wiki pages for part of the story.
+
+IOW, most info to be added from mailing-list members probably isn't best added to the Wiki as simply frequently asked questions, but there may be a use for a FAQ on the Wiki. We should add clear instructions to the FAQ page(s), to guide inputs there so they are truly short Q&As. We don't want the FAQ page to become a dump. 
+
+'''My main point was this:''' We can ''encourage people who get answers from mailing lists to plug the info into the Wiki (contribute)'' -- by sending them a followup email. As opposed to just having Wiki "regulars" transfer info from the mailing lists, we can ask people to pay back for the answers they get on the lists by adding the info to the Wiki. Some might not appreciate the unsolicited suggestion; others will. 
+
+''Reasons:'' 1) more good info for the Wiki, 2) new contributors, who might only have known about the mailing lists. WRT #2, there is also a benefit for the mailing lists: people often ask questions there that are already answered by info on the Wiki, and some of those asking just don't know about the Wiki. -- DrewAdams
+
+
+----
+CategoryEmacsWikiSite
+CategoryHelp
+CategoryDocumentation

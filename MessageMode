@@ -1,0 +1,75 @@
+Mode used by Gnus to edit mail messages
+
+= What is message mode ? =
+
+Message mode is an alternative to mail mode for composing and sending messages inside emacs. This is part of the standard emacs distribution, and is the preferred mode used by gnus for composing and sending messages. It can be used independently from gnus however, and has its own manual. This manual can be browsed online at
+[http://www.gnu.org/software/emacs/manual/message.html]
+or directly from inside emacs (<code>C-h i m message RET</code>).
+
+Message mode handles MIME attachments. This is the main benefit
+over the default mail mode.
+
+= Configuration =
+
+Using message mode instead of mail mode for sending mail is as simple as
+putting the following in the InitFile
+
+  (setq mail-user-agent 'message-user-agent)
+
+The basic settings are specified as in mail mode
+
+  (setq user-mail-adress "my-mail-adress@somewhere.edu"
+        user-full-name "me myself and I")
+
+The standard method on the system is used by default for sending mail.
+You may want however to use some specific smtp server, say smtp.somewhere.edu
+
+  (setq smtpmail-smtp-server "smtp.somewhere.edu")
+  (message-send-mail-function 'message-smtpmail-send-it)
+
+Here are some other configuration tweaks that may be useful
+
+  ;; use the default input method in message mode
+  (add-hook 'message-mode-hook 'toggle-input-method)
+
+  ;; report problems with the smtp server
+  (setq smtpmail-debug-info t)
+
+  ;; add Cc and Bcc headers to the message buffer
+  (setq message-default-mail-headers "Cc: \nBcc: \n")
+
+  ;; postponed message is put in the following draft file
+  (setq message-auto-save-directory "~/Mail/drafts")
+
+
+
+= sending mails =
+
+Use <code>C-x m</code> to bring a message buffer. 
+The following basic shortcuts becomes available
+
+  C-c C-c   send the message and exit the message buffer
+  C-c C-a   add an attachment
+  C-c C-k   cancel the message
+
+Here are some other shortcuts available in message mode 
+
+  C-c C-d  postpone the message
+  C-c C-s  send the message but don't exit the message buffer
+  C-c C-b  go to the start of the message
+  C-c C-z  kill text from point until end of buffer
+
+Type <code>C-h m</code> to browse the full list.
+
+In order to go back to a postponed message, just open the 
+\*message\* buffer. This buffer has been saved in the directory
+specified above: <code>~/Mail/drafts/\*message\*</code>. In case
+the message is from a previous emacs session, you may have to
+put it manually in message mode by typing <code>M-x message-mode</code>. There is only support for saving a single postponed message. For a better handling of postponed messages, please consider using message mode from gnus.
+
+
+Finally, recall that you can activate mail adresses in any buffer at any time by typing <code> M-x goto-address</code>. Cliking on a mail address will then bring a message buffer.
+
+
+----
+CategoryGnus CategoryMail

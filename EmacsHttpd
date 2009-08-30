@@ -1,0 +1,21 @@
+EmacsHttpd is an HTTP server embedded in the Emacs. It supports GET
+and HEAD requests for static and dynamic content. Since Emacs doesn't
+support server sockets, you need to cheat a little and run it from a
+service such as tcpserver or inetd. You can get better performance by
+running a proxy server which forwards requests to a persistent emacs
+instance using gnuserv; see the commentary for details.
+
+* http://www.chez.com/emarsden/downloads/httpd.el
+
+To run this from a service such as inetd, using a
+line such as the following in /etc/inetd.conf:
+
+: ##8080 stream tcp nowait.10000 nobody /usr/bin/emacs emacs -batch -l /path/to/httpd.el -f httpd-serve##
+
+To use tcpserver instead, invoke as
+
+: ##/usr/bin/tcpserver 0 8080 /usr/bin/fixcrio /usr/bin/emacs -batch -l /path/to/httpd.el -f httpd-serve##
+
+EmacsHttpd was written by EricMarsden. See HttpServer for a different branch.
+-----
+CategoryHypermedia

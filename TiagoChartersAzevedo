@@ -1,0 +1,19 @@
+Eu uso o Emacs. 
+
+* URL: http://www.diale.org
+* BLOG: http://www.diale.org/w3log/index.html
+
+[20080430] 
+Introduzido as regras para Português no GuessBufferLanguage 
+
+Em alternativa, em vez de 
+
+<pre>
+("pt" . "\\<\\(de\\|para\\|e\\|ou\\|como\\)\\>"))
+</pre>
+
+pode por-se, dependendo da configuração do Ispell,
+
+<pre>
+(portugues" . "\\<\\(de\\|para\\|e\\|ou\\|como\\)\\>")
+</pre>

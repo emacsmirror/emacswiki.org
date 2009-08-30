@@ -1,0 +1,29 @@
+<i>Common Lisp the Language</i> is a book by GuySteele about CommonLisp.  It pre-dates the ANSI Common Lisp specification (see the CommonLispHyperspec) but being in textbook style it's much more useful for beginners than a formal specification.
+
+The second edition of the book is available online in electronic form:
+
+: http://www.cs.cmu.edu/Groups/AI/html/cltl/cltl2.html
+
+On a [http://www.debian.org Debian] system the <code>cltl</code> will download a local copy of the HTML.
+
+The following two Emacs packages let you lookup functions and variables.
+
+== cltl2.el ==
+
+<code>cltl2.el</code> by UtzUweHaus provides a simple <code>cltl2-lookup</code> for opening your web browser (the usual <code>browse-url</code>) at the page for a function or variable.  The package is included as an extra in the ILispMode distribution.
+
+By default <code>cltl2.el</code> uses the online copy at CMU, but <code>cltl2-root-url</code> can be set to a different location, including a local downloaded copy.
+
+== browse-cltl2.el ==
+
+<code>browse-cltl2.el</code> by HolgerSchauer does the same sort of thing, using <code>browse-url</code> to goto a function, or to go to the book's index.  Some ILispMode hooks are included.  The package can be obtained from the author at
+
+: http://www.coling.uni-freiburg.de/~schauer/emacs.html
+: http://www.coling.uni-freiburg.de/~schauer/resources/emacs/browse-cltl2.el.gz
+
+The default is to look for a local copy under <code>/usr/doc/html/cltl</code> but that can be customized or an online copy used.
+
+For current Emacs (both GnuEmacs and [[XEmacs]]) the call <code>(make-hash-table 0)</code> needs to be changed to just <code>(make-hash-table)</code>.
+
+----
+LispLispLisp

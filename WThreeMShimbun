@@ -1,0 +1,164 @@
+The Shimbun module is a library set of [[emacs-w3m]] that enables you to read
+certain web contents using Gnus, Wanderlust, or Mew as if they were
+email messages. Shimbun means a newspaper in Japanese.
+
+You will need to install the following packages, before installing emacs-w3m:
+
+* [[FLIM]] (ftp://ftp.m17n.org/pub/mule/flim/)
+* [[APEL]] (ftp://ftp.m17n.org/pub/mule/apel/)
+
+: ftp.m17n.org doesn't seem to allow anonymous access at the
+: moment. Here are some alternatives, however I'm not sure how current they are:
+: * ftp://ftp.jpl.org/pub/elisp/apel/
+: * http://www.kanji.zinbun.kyoto-u.ac.jp/~tomo/lemi/dist/flim/
+
+Note that, with my config Emacs 21.3, I had to remove the smtp.el and
+smtpmail.el files that comes with FLIM as they override the files that
+comes with emacs.
+
+I had to delete some more files from FLIM and APEL. Just use M-x list-load-path-shadows to find packages from FLIM and APEL that shadow other more recent files. (StefanReichoer)
+
+To add a group to gnus simply put
+
+    (autoload 'gnus-group-make-shimbun-group "nnshimbun" nil t) 
+
+in your .gnus and use M-x gnus-group-make-shimbun-group RET asahi RET
+national RET (asahi and national are examples, you can use completion to
+see the list of server).
+
+Originally, the defined servers were Japanese servers, but there are a
+growing number of English language news sources as well (The New York
+Times, the BBC, The Register, etc.). The library allows to create a
+new server definition based on an existing server class. For instance
+there are classes for mhonarc archive, geocrawler.com ...
+
+Here's a
+[http://www.physik.fu-berlin.de/~dhansen/screens/bbcshimbun.png Screenshot]
+of the BBC module. (Link down as of 2007-08-14)
+
+You can browse the cvs repository to see all the shimbun currently
+available:
+
+* http://cvs.namazu.org/emacs-w3m/shimbun/
+
+=== EmacsWiki ===
+
+==== Simple Version ====
+
+Because EmacsWiki has a good user interface and a RSS Feed it's quite
+easy to write a shimbun.  This approach takes the URL from the RSS feed
+and strips the header and footer:
+
+    ;; This program is free software; you can redistribute it and/or modify
+    ;; it under the terms of the GNU General Public License as published by
+    ;; the Free Software Foundation; either version 2, or (at your option)
+    ;; any later version.
+    
+    (require 'shimbun)
+    (require 'sb-rss)
+    
+    (luna-define-class shimbun-emacswiki (shimbun-rss) ())
+    
+    (defvar shimbun-emacswiki-url
+      "http://www.emacswiki.org/cgi-bin/wiki.pl?action=rss")
+    (defvar shimbun-emacswiki-groups '("changes"))
+    (defvar shimbun-emacswiki-from-address  "invalid@emacswiki.org")
+    (defvar shimbun-emacswiki-content-start "<h1>")
+    (defvar shimbun-emacswiki-content-end "<div class=\"footer\">")
+    
+    (luna-define-method shimbun-index-url ((shimbun shimbun-emacswiki))
+      shimbun-emacswiki-url)
+    
+    (luna-define-method shimbun-rss-build-message-id
+      ((shimbun shimbun-emacswiki) url date)
+      (unless (string-match "id=\\(.*?\\);revision=\\([0-9]+\\)" url)
+        (error "Cannot find message-id base"))
+      (concat "<" (match-string 1 url) (match-string 2 url) "@emacswiki.org>"))
+    
+    (provide 'sb-emacswiki)
+
+To get it work put the file in e.g. <tt>~/.elisp/</tt> and add 
+
+    (setq shimbun-server-additional-path '("~/.elisp"))
+
+to your <tt>~/.emacs</tt>,
+
+This code is posted mainly for ''educational'' reasons ;-) to show how
+easy it is to write your own shimbun.  Read on for an improved version.
+
+==== Showing the diff Page ====
+
+This EmacsWiki shimbun overwrites the <tt>`shimbun-get-headers'</tt>
+method to modify the URL.  Instead of a specific revision it fetches
+the page showing the differences to the previous revision.
+
+This Shimbun is now part of the emacs-w3m CVS repository.
+
+* http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-emacswiki.el?rev=HEAD&content-type=text/plain
+
+If you don't update you news reader often enough and fear to miss some
+topics you can set <tt>shimbun-emacswiki-url</tt> to get a RSS Feed
+with more items:
+
+     (setq shimbun-emacswiki-url "http://www.emacswiki.org/cgi-bin/wiki.pl?action=rss&days=15&rsslimit=all&all=1")
+
+See GnusRss for details.
+
+=== Heise Online ===
+
+There's Shimbun for the popular German (tech) news site
+heise online.  It supports
+
+* the newsticker http://www.heise.de/newsticker/
+* and telepolis http://www.heise.de/tp/
+
+This Shimbun is now part of the emacs-w3m CVS repository.
+
+* http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-heise.el?rev=HEAD&content-type=text/plain 
+
+=== Spiegel Online ===
+
+Here's another German shimbun.  Read the mainstream news site
+http://www.spiegel.de/ without the html annoyances.
+
+This Shimbun is now part of the emacs-w3m CVS repository.
+
+* http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-spiegel.el?rev=HEAD&content-type=text/plain
+
+=== More german news ===
+
+I got conditioned by the above two shimbun backends and built some
+more on top of the rss feeds I have been reading anyway. The more
+complete and stable of them found their way into emacs-w3m CVS.
+
+* A German TV station: http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-n24-de.el?rev=HEAD
+* This feed seems to be directly forwarded from a German press agency, the traffic is quite high: http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-welt-de.el?rev=HEAD
+* Some teaser articles of one of the better german newspapers: http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-zeit-de.el?rev=HEAD
+* Music news and reviews in German: http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-laut-de.el?rev=HEAD
+
+=== RSS and Atom Feeds ==
+
+While there is great power in writing your own shimbun, the
+development version of emacs-w3m comes with "generic" shimbun
+that parse rss and atom feeds:
+
+* rss-hash.el: http://cvs.namazu.org/emacs-w3m/shimbun/sb-rss-hash.el?rev=1.6&view=log
+* atom-hash.el: http://cvs.namazu.org/emacs-w3m/shimbun/sb-atom-hash.el?rev=1.8&view=log
+
+You can add feeds for reading in [[Gnus]], [[Wanderlust]], and [[Mew]]
+by using the variables shimbun-rss-hash-group-path-alist and
+shimbun-atom-hash-group-path-alist.
+
+There is also a module rss-blogs.el that will display the full text of
+articles for blogs that do not publish the full text in a feed. This
+shimbun module performs automatic html filtering on Wordpress,
+Blogger, and TypePad Blogs. Or, one can specify regular expressions
+that mark the beginning and end of the content.
+
+ ----
+
+See Also: GnusRss
+
+----
+WThreeM
+CategoryJournaling

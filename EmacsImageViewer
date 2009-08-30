@@ -1,0 +1,7 @@
+EmacsImageViewer
+
+A simple image viewer for emacs.
+
+Need Lisp:traverselisp.el and the package imagemagick that provide mogrify.
+
+* Lisp:eiv.el

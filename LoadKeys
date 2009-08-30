@@ -1,0 +1,16 @@
+If you want to change to keys on the Linux console, read the following manpages on your system:
+
+* dumpkeys -- dump keyboard translation tables, use the -l option to obtain the complete list
+* showkey -- examine the scan codes and keycodes sent by the keyboard
+* loadkeys -- load keyboard translation tables
+* keymaps -- keyboard table descriptions for loadkeys and dumpkeys
+
+Use dumpkeys to get the current configuration.  This will also show
+you what kind of things are possible with the Linux kernel's keyboard
+driver.  Use showkey to find out, what a single key does.  And use
+loadkeys to load a new configuration.  See MissingKeys for an example.
+
+----
+CategoryKeys
+
+

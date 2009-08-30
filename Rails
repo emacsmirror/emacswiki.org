@@ -1,0 +1,31 @@
+See http://dima-exe.ru/rails-on-emacs or page in rubyforge http://rubyforge.org/projects/emacs-rails/
+
+Dmitry Galinsky just released a rails minor mode that ties many features into one location:
+
+Features:
+* Identation
+* Code highlight
+* Non-intellectual autocomplete
+* Class/methods navigation
+* Management of WEBrick/Mongrel
+* Display color log file
+* Toggle Switch between Action/View and other file (tests, helpers) automatically or with menu
+* Switching to file from current line f.e. from redirect_to :controller => "foo", :action => "bar", swtiches to this controller/action
+* TextMate-like snippets (snippets.el)
+* ERb refactoring (create partial from selection, create helper from block)
+* Automatic TAGS generation in RAILS_ROOT directory
+* Quick access to the main configuration files
+* Documentation search using ri or chm file and Rails API reference in HTML
+* Quick start svn-status in RAILS_ROOT
+* Integration with script/generate script/destroy (controller, model, scaffold, migration)
+* Goto menus for quick access to controllers, models, and other.
+* Auto-determination of current rails DB settings and running SQL console
+* Automatic opening of browser on current action (from view or controller)
+* Debug integration with firefox/ie
+* Integration with interactive scripts script/console and script/breakpointer
+* Fast navigation in Rails root hierarchy 
+* Fast running of rails rake with autocomplete
+* Integration with tests
+
+Forks: there are a whole bunch of active forks of this mode on GitHub, which may be useful since the original hasn't been updated since early 2007. 
+http://github.com/remvee/emacs-rails/tree/master is the one I'm pushing to, but there are more: http://github.com/remvee/emacs-rails/network

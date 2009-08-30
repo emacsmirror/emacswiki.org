@@ -1,0 +1,60 @@
+= Presentation =
+portrait:http://www.dd.chalmers.se/~bojohan/img/avatar.png
+A.k.a. [::bojohan]
+
+I use Emacs.
+
+http://www.dd.chalmers.se/~bojohan/emacs/
+
+: Welcome to the wiki!!  :) -- AlexSchroeder
+
+= Bits and Pieces =
+
+The right amount of active region highlighting (for emacs 22):
+
+*  Multiple advice, using reader macros:
+
+    ;; transient-mark-mode nil
+    (progn
+      '#1=((after transient-mark activate)
+           "Activate Transient Mark mode temporarily."
+           (setq transient-mark-mode 'only))
+      (defadvice mark-sexp             . #1#)
+      (defadvice mark-word             . #1#)
+      (defadvice mark-paragraph        . #1#)
+      (defadvice mark-defun            . #1#)
+      (defadvice mark-end-of-sentence  . #1#)
+      (defadvice mark-page             . #1#)
+      (defadvice mark-whole-buffer     . #1#))
+
+* Ditto, using an anonymous macro.
+
+    ((macro
+      . (lambda (&rest args)
+          `(progn ,@(mapcar
+                     (lambda (sym)
+                       `(defadvice ,sym
+                          (after transient-mark activate)
+                          "Activate Transient Mark mode temporarily."
+                          (setq transient-mark-mode 'only)))
+                     args))))
+     mark-sexp mark-word mark-paragraph mark-defun
+     mark-end-of-sentence mark-page mark-whole-buffer)
+
+
+Overwrite mode in scary red
+
+    (put 'overwrite-mode 'risky-local-variable t)
+    (put 'overwrite-mode-textual 'risky-local-variable t)
+    (setq overwrite-mode-textual (propertize " Ovwrt" 'face 'font-lock-warning-face))
+
+I have a lot of code in my ever-growing ~/.emacs. Most of it is even sillier.
+
+== IOELCC ==
+<pre>
+ELISP> #@4({,$(#@7.X.)+!&-'?{#@3=:##1=?(#1#1)
+42
+</pre>
+
+----
+CategoryHomepage

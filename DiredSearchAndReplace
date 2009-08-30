@@ -1,0 +1,42 @@
+In DiredMode, 'Q' will query-replace-regexp on each filesname marked.  As with query-replace-regexp, a prefix arg will limit the search to whole words.
+
+To mark files, there are a number of options including:
+* use the `m' key to mark individual files
+* `##% m##' to mark all filenames matching a regexp
+* `##% g##' to mark all files containing a regexp
+* `##% m RET##' (empty regexp) to mark all files.  If there are no files already marked, you can use `t' to do the same thing (it toggles marked and unmarked files).
+
+Use the `i' key on a subdirectory name to include the subdirectory in the dired listing, before marking as above.
+
+Note also there are options to recursively find files into a dired buffer for marking and replacing as above: 
+* `find-grep-dired' to find all files containing a grep match
+* `find-name-dired' to find all filenames matching a given shell wildcard pattern
+* `find-dired' allows you to specify freeform arguments to find
+
+----
+As far as I can see, what is below adds no further information to that above.  If you disagree, please edit.  Dired-X doesn't seem to be necessary.
+
+= Dired-X =
+
+Put <code>(require 'dired-x)</code> in your <code>~/.emacs</code>.
+
+To do a search and replace on all *.c files in a directory and all its subdirs, do this:
+
+  M-x find-dired RET /path/to/dir RET -name "*.c" RET
+
+Then, mark all the files you want to mark with `m' (or any of the various other marking commands such as `% m' or `% g').
+
+Use the `Q' key to query replace in marked files.
+
+: This sounds cool, but I can't find dired-x.el on my XEmacs installation.  Also a google search doesn't turn it up.  The closest I came was ftp://roebling.poly.edu:/pub/packages/dired-x.tar.gz.  Unfortunately, roebling.poly.edu isn't a valid hostname any longer. -- LathI
+
+Hm, it is part of Emacs.  Maybe you can get it from an Emacs distro and see wether it works out of the box?  This might be a good thing to adapt and put into the fsf-compat package, what do you think? -- AlexSchroeder
+
+: As I understand it, the fsf-compat package is designed to handle things that xemacs offers a very thin compatibility layer for, but has no real interest in maintaining. For example, the [[overlay]] compatibility 
+is `fsf-compat', but [[XEmacs]] is committed to [[extent]]s being a superior solution. `dired-x', if it were brought
+into XEmacs, might do better as an actual maintained package.  -- BrianPalmer
+
+: I think the GnuEmacs `dired-x' will work for MS Windows -- just download the cvs version from Emacs repository and replace ##(require 'dired-aux)## with ##(require 'dired-xemacs)##.  -- SurendraSinghi
+
+----
+CategorySearchAndReplace CategoryDirectories

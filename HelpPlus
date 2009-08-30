@@ -1,0 +1,95 @@
+This page is about the following libraries, which together enhance the Emacs help system:
+
+* <tt>[[help-macro+.el]]</tt>
+* <tt>[[help+.el]]</tt> (or <tt>[[help+20.el]]</tt>, for Emacs 20)
+* <tt>[[help-fns+.el]]</tt>
+* <tt>[[help-mode+.el]]</tt>
+
+Each of these libraries provides enhancements to the standard Emacs library of the same name but without the `##+##'. Library <tt>[[help+20.el]]</tt> is an exception to this naming convention; it enhances standard library ##help.el## for Emacs 20. Library <tt>[[help-macro+.el]]</tt> works for Emacs 20 and later. The other libraries work with Emacs 22 and later.
+
+== New Commands ==
+
+The following new commands are provided:
+
+* '''`describe-command'''' ('''`C-h c'''') -- Same as `describe-function', but only for commands ([[InteractiveFunction]]s).
+
+* '''`describe-option'''' ('''`C-h o'''') -- Same as `describe-variable', but only for user variables (options).
+
+* '''`describe-option-of-type'''' ('''`C-h C-o'''') -- Same as `describe-option', but you first specify the ''custom type'' of the option. Completion is available for both the custom type and the option of the chosen type. With a prefix arg, candidate options are not only those whose custom-type definition matches the chosen type, but also those whose current value satisfies the chosen type. So, for example, with a prefix argument, a variable whose value is a string satisfies a type such as ##(choice (const :tag "None" nil) string)##, (as does a variable whose value is `nil'). This command is particularly useful if you also use '''[[Icicles]]''', because you can use substring and regexp matching, and you can use progressive completion to match multiple patterns.
+
+* '''`describe-keymap'''' ('''`C-h M-k'''') -- Describe the bindings in a keymap. Enter the keymap variable using completion.
+
+* '''`describe-file'''' ('''`C-h M-f'''') -- Display information about a file or directory: its type, permissions, size, time of last access/modification/status change, number of links, UID, GID, inode, and device number.
+
+* `'''<code>help-on-click/key</code>'''' ('''`C-h RET'''') -- ''Super'' help: it gives help on ''any key/menu'' sequence or ''any object'' clicked with the mouse. Bind it to, for instance, `C-h RET'. The object can be ''any part of an Emacs window'' or ''any name'' appearing in a
+buffer.  You can do any of the following:
+** type a KeySequence (e.g. `C-M-s')
+** choose a menu item (e.g. `Files' > `<code>Open File...</code>')
+** click on a ScrollBar
+** click on the ModeLine
+** click in the MiniBuffer
+** click on an Emacs-related name in a buffer: `apropos-documentation' and
+`apropos' provide information on the name
+** click anywhere else in a buffer: its modes are described
+
+* '''`pop-to-help-toggle'''' ('''`C-h M-o'''') -- Pop to buffer `*Help*' or back to the buffer that sent you to `Help*'. Especially useful if you use non-`nil' `pop-up-frames' (it raises and selects the [[Frame]]).
+
+* '''`save-*Help*-buffer'''' ('''`C-h C-s'''') -- (Emacs 20 only) Lets you rename the current <code>*Help*</code> buffer as a new buffer <code>*Help*<N></code>, <code><N></code>=2, 3....
+* '''`view-emacs-lisp-news'''' ('''`C-h C-n'''') -- (Emacs 20 only) Displays information on recent changes to Emacs Lisp.
+
+
+== Enhanced Commands ==
+
+The following ''standard'' Emacs commands have been ''improved'':
+
+* '''`describe-function'''' -- Prefix arg means describe a command (InteractiveFunction). Uses `symbol-nearest-point' instead of `function-called-at-point' to provide a default value. 
+* '''`describe-variable'''' -- Prefix arg means describe a user variable (option). Uses `symbol-nearest-point' instead of `variable-at-point' to provide a default value.
+* '''`where-is'''' -- Uses `symbol-nearest-point' instead of `function-called-at-point' to provide a default value. Requires that a ''command'' be input, not just a function. Removes help window when you're done with it.
+* '''`locate-library'''' ('''`C-h C-l'''') -- (Emacs 20 only) Removes help window when you're done with it.
+* '''`describe-key'''' -- Returns nil if the key sequence is undefined; else returns `t'. (This feature is used by command `help-on-click/key'.) Lines that would be overly long are filled (Emacs 22 only).
+* '''`help-with-tutorial'''', '''`describe-project'''', '''`view-emacs-news'''', '''`view-emacs-FAQ'''' -- (Emacs 20 only) Uses a separate window/frame.  Removes help window when you're done with it.
+
+
+
+== Additional Key Bindings ==
+
+The following key bindings have been added:
+
+* '''`C-h c'''' --  `describe-command' (replaces `describe-key-briefly')
+* '''`C-h o''''    --     `describe-option'
+* '''`C-h u''''    --         `manual-entry'
+* '''`C-h C-a''''  --         `apropos'
+* '''`C-h C-c''''  -- `describe-key-briefly' (replaces `C-h c')
+* '''`C-h C-l''''  --         `locate-library'
+* '''`C-h C-n''''  --         `view-emacs-lisp-news' (Emacs 20 only)
+* '''`C-h C-o'''' -- `describe-option-of-type'
+* '''`C-h C-s''''  --         `save-*Help*-buffer' (Emacs 20 only)
+* '''`C-h RET''''  --     `help-on-click/key'
+* '''`C-h M-a''''  --         `apropos-documentation'
+* '''`C-h M-c'''' --       `describe-copying' (replaces (`C-h C-c')
+* '''`C-h M-k'''' --     `describe-keymap'
+* '''`C-h M-l'''' -- `find-function-on-key'
+* '''`C-h M-o''''  --     `pop-to-help-toggle'
+* '''`C-h C-M-a''''  --       `tags-apropos'
+* '''`mouse-1''''  --         `mouse-help-on-click' (not on mode-line)
+* '''`mouse-1''''   --        `mouse-help-on-mode-line-click' (mode-line)
+
+
+== Other Enhancements ==
+
+Library <tt>[[help-mode+.el]]</tt> enhances the `*Help*' buffer by providing ''links for libraries'' that are mentioned there -- see HelpModePlus.
+
+The doc string for command `help-for-help' (`C-h C-h') was rewritten to be more informative and clearer. Library <tt>[[help-macro+.el]]</tt> enhances macro `make-help-screen' (which is used to create the `help-for-help' display) to play well with [[frame]]s (e.g. non-`nil' `pop-up-frames').
+
+
+
+== See Also ==
+
+* HelpMenuBarPlus -- extensions to the MenuBar '''Help''' menu
+
+----
+DrewsElispLibraries referenced here: Lisp:help-macro+.el, Lisp:help+.el, Lisp:help+20.el, Lisp:help-fns+.el, Lisp:help-mode+.el
+
+
+CategoryHelp
+

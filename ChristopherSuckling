@@ -1,0 +1,12 @@
+Musician and very, very amateur Emacs hacker.
+
+Currently using CarbonEmacsPackage by S. Zenitani et al. GNU Emacs 22.0.50.1, initially because AUCTeX is beautiful, but then I was sucked into PlannerMode and all that goes with that.
+
+Kept trying to live in Emacs, but have to cope with far too many PDFs, SIbelius files etc. Still spend far to much time fiddling with it rather than actually producing text.
+
+Finally found a need for something that wasn't on the wiki: using [http://quicksilver.blacktree.com/ QuickSilver] to access RememberMode whatever program I happened to use at the time. So I've appended my solution to the CarbonEmacsPackage page; it's a bit exclusive - OS X, [http://quicksilver.blacktree.com/ QuickSilver], CarbonEmacsPackage, RememberMode all required, but hopefully someone else will find it useful...
+
+And now I see there is already a QuickSilver page, so I've dumped the hack there as well...
+
+----
+CategoryHomepage

@@ -1,0 +1,72 @@
+;;;
+
+;; In GNU Emacs prin1-to-string on a string containing properties
+;; generates a string which, when read and eval'ed back in, contains the
+;; same font properties as the initial string. This can be used for
+;; saving all the text property information as well as just the text.
+
+;; However, XEmacs (at least 21.4 Patch 19) does not support this. Here
+;; is a mostly untested compatibility wrapper I created. It may work for
+;; you.
+
+;; Usage:
+
+;; (string-from-prin1
+;;   (prin1-string-with-properties some-string-with-properties))
+
+
+
+;;;
+;; Serialize and unserialize strings with text properties. Since FSF
+;; Emacs already correctly handles this, it's basically just a wrapper
+;; for XEmacs.
+
+(defun prin1-handles-text-properties-p ()
+  "Returns non-nil if the emacs implementation of `prin1-to-string'
+correctly handles strings with properties. (FSF Emacs 21 and 22 do while
+XEmacs 21 does not.)"
+  (let* ((test "test")) ; can't use `propertize'--not in XEmacs
+    (put-text-property 0 (length test) 'test-prop 'test-val)
+    (let ((reconstituted (eval (read (prin1-to-string test)))))
+      (if (eq (plist-get (text-properties-at 0 reconstituted)
+                         'text-prop)
+              'text-value)
+          (defun prin1-handles-text-properties-p () t)
+        (defun prin1-handles-text-properties-p () nil)
+        nil))))
+
+(defun prin1-string-with-properties (string &optional disable-shortcut)
+  "Returns a string (with no properties) in the same format as
+returned by `prin1-to-string' in GNU Emacs. If DISABLE-SHORTCUT is
+non-nil then GNU Emacs will be prohibitted from using
+`prin1-to-string' directly."
+  (if (and (prin1-handles-text-properties-p) (not disable-shortcut))
+      (prin1-to-string string)
+    (let* ((end (length string))
+           (props (text-properties-at 0 string))
+           (pos 0)
+           found)
+      (while (< pos end)
+        (let ((change-pos (or (next-property-change pos string) end)))
+          (push (list pos change-pos props) found)
+          (setq props (text-properties-at change-pos string))
+          (setq pos change-pos)))
+      (concat "#"
+              (prin1-to-string
+               (cons (substring-no-properties string)
+                     (apply 'nconc (reverse found))))))))
+
+(defun string-from-prin1 (prin1 &optional allow-eval)
+  "Returns a string (with properties) as reconstituted from PRIN1.
+See `prin1-string-with-properties'. If ALLOW-EVAL is t then GNU
+Emacs (and others that support the read syntax it does) can take a
+shortcut."
+  (if (and allow-eval (prin1-handles-text-properties-p))
+      (eval (read prin1-string))
+    (let* ((forms (read (substring prin1-string 1))) ;skip #
+           (string (car forms))
+           (prop-data (cdr forms)))
+      (loop for (start end props) on prop-data by #'cdddr do
+            (loop for (prop value) on props by #'cddr do 
+                  (put-text-property start end prop value string)))
+      string)))

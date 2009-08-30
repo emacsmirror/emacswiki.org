@@ -1,0 +1,12 @@
+Some of [[ERC]]’s modules aren't part of GnuEmacs due to copyright assignment issues or because they depend on other packages that aren't a part of it.
+
+* ErcBbdb
+* ErcChess
+* ErcList (ERC 5.3's erc-list.el will be available in the next Emacs release, see also EmacsFromCvs)
+* ErcNicklist
+* ErcSpeak
+
+If you use the version of ERC that comes with GnuEmacs you'll have to download the ##erc-5.x-extras## (replace ##x## with the number from your version of ERC) package from http://ftp.gnu.org/gnu/erc/ or one of GNU's mirrors.
+
+----
+[[ERC]]

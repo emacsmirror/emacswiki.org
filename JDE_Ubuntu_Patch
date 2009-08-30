@@ -1,0 +1,18 @@
+;;;
+--- 50ede.el	2007-10-19 22:53:29.202621165 +0100
++++ 50ede.el	2007-10-19 22:55:55.139809264 +0100
+@@ -26,6 +26,7 @@
+ (setq jde-doc-directory "/usr/share/doc/jde")
+ 
+ ; Workaround for JDK 1.6
++(require 'beanshell)
+ (require 'jde-compile)
+ (defclass jde-compile-javac-16 (jde-compile-javac-15)
+   ()
+@@ -41,3 +42,6 @@
+  
+ (add-to-list 'jde-compile-javac-compilers
+              (jde-compile-javac-16 "javac 1.6.x") t)
++
++(autoload 'jde-mode "jde" "Java Development Environment" t)
++(add-to-list 'auto-mode-alist '("\\.java$" . jde-mode)

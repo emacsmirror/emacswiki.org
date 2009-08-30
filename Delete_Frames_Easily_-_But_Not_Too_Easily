@@ -1,0 +1,98 @@
+'''This page is part of the description of OneOnOneEmacs, by DrewAdams.'''
+
+Cette page est aussi disponible en franglais ;-): [[Supprimer des Frames Facilement - Mais Pas Trop]]
+
+
+*  
+* 
+* 
+   
+   
+== Delete Frames Easily ==
+
+Emacs commands `kill-buffer' (`C-x k'),
+`delete-window' (`C-x 0'), and `quit-window' (typically `q' in some modes) are handy to get
+rid of a buffer or window. But they don't do much that's useful with
+[[Frame]]s.
+
+[:Redefineddelete-window]
+=== Redefined `delete-window' ===
+
+`delete-window' does nothing but complain if you try to
+delete the sole window in a frame -- it's useless in a one-on-one
+situation.
+
+So, I redefined `delete-window' to call
+`delete-frame' if the window is the only one in its
+frame.
+
+'''See Library:''' <tt>[[frame-cmds.el]]</tt>
+
+
+[:Redefinedquit-window]
+=== Redefined `quit-window' ===
+
+`quit-window' is bound to `q' in lots of modes, such as DiredMode, the `*Help*' buffer, the `*grep*' buffer, and others. In vanilla Emacs, unless a window is dedicated, `quit-window' in a one-window frame just replaces the current buffer by some irrelevant buffer -- totally useless, to me.
+
+With the use of dedicated special-display buffers (see [[Special Frames]]), the problem remains only for certain buffers such as Dired. The solution was to redefine `quit-window' as it should have been defined all along. 
+
+If you use my redefined `delete-window', then the redefined `quit-window' will also delete the frame, if `one-window-p'. If you don't use my `delete-window' or the frame has more than one window, then the behavior is the same as for vanilla Emacs. 
+
+'''See Library:''' <tt>[[window+.el]]</tt>. 
+
+
+=== Created Alternative to `kill-buffer' ===
+
+`kill-buffer' displays a different buffer in the window,
+in place of one you've killed. With windows, this may make sense, but
+with frames this is more annoying than useful. (Command
+`kill-buffer-and-window' doesn't do this, but it suffers
+from the same problem as `delete-window'.)
+
+Redefining `kill-buffer' would be problematic,
+however. Adding a `delete-window' to it would get rid of
+the buffer's window -- and the frame, given my redefinition of
+`delete-window'. However, some Emacs functions count on a
+specific other buffer taking the place of the killed buffer in the
+window. And you don't necessarily want to delete the window each time
+you call `kill-buffer' from a Lisp function.
+
+So, I created a new command to use interactively, in place of
+`kill-buffer':
+`kill-buffer-and-its-windows'.
+
+Of course this also required changing some key occurrences of
+`kill-buffer' in various standard Emacs functions. For
+example:
+
+* When you delete multiple buffers in `buffer-menu' (=
+`list-buffers'), their frames are also deleted, because I
+changed `Buffer-menu-execute' to use
+`kill-buffer-and-its-windows'.
+* Similarly, I changed MenuBar item `Files' -> `<code>Kill
+This Buffer</code>' to use
+`kill-buffer-and-its-windows'.
+
+Next, I used `substitute-key-definition' to replace any
+key bindings for `delete-window' and
+`kill-buffer' with the frame-oriented replacements. For
+example:
+
+   (substitute-key-definition 'kill-buffer
+                              'kill-buffer-and-its-windows
+                              global-map)
+
+'''See Libraries:''' Lisp:misc-cmds.el, Lisp:setup-keys.el
+
+== Don't Delete Frames Too Easily ==
+
+I modified command `mouse-tear-off-window'
+(<code>[mode-line C-mouse-1]</code>) to only delete the window if it
+is ''not'' the only one in the frame.  If it is the only window (more
+common, in my setup), it clones the frame and window.
+
+
+'''See Libraries:''' Lisp:mouse+.el, Lisp:setup-keys.el
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay

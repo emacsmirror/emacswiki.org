@@ -1,0 +1,5 @@
+When you link to a page that does not exist on this wiki, but it exists on one of the wikis on the NearMap, the link will automatically link to the page on the ''other'' wiki. At the bottom of the page you'll see a list of all these links, with a text saying:
+
+: _EditNearLinks_: ...
+
+Following the links in that list will take you to an edit page that allows you to edit the page on ''this'' wiki, instead of taking you to the ''other'' wiki. Just in case.  :)

@@ -1,0 +1,33 @@
+You can build Emacs cleanly with Visual Studio 6.0 as well.  There is
+one issue with the CVS GNUEmacs -- configure.bat seems to generate
+extra ^Ms at the end of makefiles generated.  Use an editor to rip out
+those ^Ms before attempting building the sources.  The makefiles you
+need to change are here:
+
+* emacs\src
+* emacs\nt
+* emacs\lib-src
+* emacs\lisp
+* emacs\leim
+
+With Emacs as editor, you can just do M-% C-q C-m RET RET ! to get rid
+of all ^ Ms.
+
+== Problems ==
+
+I can't seem to get the cvs source finish - it fails with a return
+code of 0xffffffff when temacs.exe is attempting to dump.  I wondered
+about the path to temacs.exe - which contained both \'s and /'s, but
+fiddling with that didn't seem to matter.
+
+I removed the extraneous ^M's, but that didn't help.
+
+environment:
+: hardware: P4, 128 megs ram
+: OS: XP
+: devl: DevStudio+sp5, CygWin, WinDbg
+
+any suggestions?
+
+----
+CategoryBuilding

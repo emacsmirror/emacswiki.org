@@ -1,0 +1,234 @@
+== Prerequisites ==
+
+You will need to install git.
+
+There is a Debian package called <code>git-core</code> that you can
+install if you use Debian or Ubuntu.  If you are using Windows, then
+visit http://code.google.com/p/msysgit/.  Mac OS X users may
+visit http://code.google.com/p/git-osx-installer/.  Otherwise, visit
+http://git.or.cz and download the latest source.
+
+== Shared project repo ==
+
+If you are a developer that is registered with the
+[https://savannah.gnu.org/projects/erc/ ERC project on Savannah], you
+will want to do the following, replacing <code>loginname</code> with
+your Savannah login name.
+
+<pre>
+git clone ssh://loginname@git.sv.gnu.org/srv/git/erc.git
+</pre>
+
+Note that this will not work until you have added your SSH key to
+Savannah.
+
+If you do not have developer access but wish to track the latest
+development changes, do one of the following instead.  If you are
+behind a restrictive firewall, use the second method; otherwise, use
+the first method.
+
+First:
+
+<pre>
+git clone git://git.sv.gnu.org/erc.git
+</pre>
+
+Second:
+
+<pre>
+git clone http://git.sv.gnu.org/r/erc.git
+</pre>
+
+=== Picking a branch ===
+
+To see a list of the available branches, run the following command in
+the checked out copy of ERC.
+
+<pre>
+git branch -r
+</pre>
+
+Here is a description of the available branches.
+
+|| <code>HEAD</code> || The branch you are currently on ||
+|| <code>master</code> || Main development branch ||
+|| <code>emacs23</code> || Emacs 23 integration branch ||
+|| <code>erc-status</code> || Experimental branch containing erc-status.el, which can show a status icon in the notification area.  Requires Emacs from CVS, plus the systray support patch. ||
+
+If you want to browse the available branches via the web, visit
+http://git.sv.gnu.org/gitweb/?p=erc.git;a=summary.
+
+The default branch that you get when cloning the ERC project is
+<code>master</code>.
+
+To see which branch you are currently on, do:
+
+<pre>
+git branch
+</pre>
+
+To check out a branch, do the following.  This changes the contents of
+the current directory to match that branch, rather than creating a new
+directory.
+
+<pre>
+git checkout [branch name]
+</pre>
+
+For the shared branch, this would be the following.
+
+<pre>
+git checkout master
+</pre>
+
+== Using the archive ==
+
+=== Keeping up-to-date ===
+
+To keep up-to-date on the latest ERC happenings, run git's
+<code>pull</code> command from the directory that contains your copy
+of ERC.
+
+<pre>
+git pull origin
+</pre>
+
+This will update ERC, taking care to preserve any changes that you
+have checked in to your local copy.
+
+=== Telling git your name ===
+
+If you have made some changes that you would like to commit to the ERC
+project, first you will need to provide a name and email address.
+This information is used in the change log for each change you commit.
+To do this, edit the <code>.gitconfig</code> file in your home
+directory to include the following contents.
+
+<pre>
+[user]
+        name = Your Name Goes Here
+        email = you@yourdomain.example.com
+</pre>
+
+Now you are ready to make the change log, and then commit.  Read on
+for the change log instructions before doing the commit.
+
+=== Committing changes ===
+
+If you wish to commit just a few files that you have changed, instead
+of all the files that you have changed, then do the following.
+
+<pre>
+git add changed-file-1
+git add changed-file-2
+git commit
+</pre>
+
+If you instead wish to commit all changes in one go, then do:
+
+<pre>
+git commit -a
+</pre>
+
+In both cases, git will open an editor that you can use to make a log
+message.  Add a brief one-line description of your changes at the top
+of the file.
+
+The rest of the file (keeping a blank line after the very first line)
+is for describing your changes in detail.  If you want, you can either
+leave this blank or just copy the relevant part of your ChangeLog
+entry here.  The information you use here will appear in the
+[http://lists.gnu.org/mailman/listinfo/erc-commit erc-commit mailing
+list] when you are done, once you have either pushed your changes or a
+developer has committed a patch that you have sent.
+
+Make sure that you have described your changes in the ChangeLog file
+before committing, or at minimum, use ChangeLog-style syntax in your
+log entries (or something similar to it).
+
+Here is one example of an acceptable commit log.
+
+<pre>
+erc-track: Allow switching to buffer with most important message type first
+
+* erc-track.el (erc-track-switch-direction): Add 'importance option.
+  (erc-modified-channels-display): If erc-track-switch-direction is
+  'importance, call erc-track-sort-by-importance.
+  (erc-track-face-priority): New function that returns a number
+  indicating the position of a face in erc-track-faces-priority-list.
+  (erc-track-sort-by-importance): New function that sorts
+  erc-modified-channels-list according to erc-track-face-priority.
+  (erc-track-get-active-buffer): Make 'oldest a rough opposite of
+  'importance.
+
+* NEWS: Mention this change.
+</pre>
+
+=== Giving changes back ===
+
+If you have changes that you have committed to ERC, they are only
+local to your copy of ERC so far.  If you want to share them, you must
+either push them back to the shared repo, or email them to the
+erc-discuss AT gnu.org mailing list.
+
+If you have developer access to the shared archive, you can push
+changes back by doing:
+
+<pre>
+git push origin
+</pre>
+
+If you do not yet have developer access, read on.
+
+You may send your changes via email by doing:
+
+<pre>
+git format-patch -M origin
+</pre>
+
+and then sending the generated patch files to the erc-discuss
+mailing list.  Be sure to describe your changes and include a sample
+ChangeLog entry for them.  Be sure that the patch is the body of the
+message, and not an attachment.  Any comments that you wish to make,
+but don't want to appear in the commit log, should be placed between
+the "<code>---</code>" and the diffstat.
+
+If you want to send the resulting patches from the commandline, rather
+than opening up an email client, you can do the following, where
+PATCH-FILE is the file that <code>git format-patch</code> made:
+
+<pre>
+git send-email --to erc-discuss@gnu.org PATCH-FILE
+</pre>
+
+== Becoming an ERC Developer ==
+
+If you want commit access to the shared ERC repository on Savannah,
+then register an account at http://sv.gnu.org/ (be sure to add an SSH
+key), browse to the ERC project at http://sv.gnu.org/p/erc, and
+request to be add to the group.  It would be best to send some patches
+to the erc-discuss AT gnu.org mailing list first, so that we know
+that you know what you are doing.
+
+You must also be willing to sign a copyright assignment for your
+changes to ERC, since ERC is a GNU project.  The current maintainer
+(mwolson AT gnu.org) will assist you in this process if you contact
+him.
+
+== Emacs modes, Tutorials, and Documentation ==
+
+DVC (see DistributedVersionControl) is a highly-recommended Emacs
+add-on that allows you to see changes that you have made, log
+messages, and (eventually) merging changes easily between branches.
+
+Alternatively, the development version of Emacs should include some
+regular VC bindings for git, so that you can use the same key-bindings
+that you would use for CVS.
+
+git's documentation may be browsed at [http://git.or.cz/ the git website].
+There has been a significant effort since March 2007 to make the
+documentation more thorough and easy to read.  Several tutorials are
+there, as well as a User's Manual.
+
+----
+[[ERC]]

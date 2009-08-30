@@ -1,0 +1,397 @@
+= Running emacs like a Daemon  =
+
+This a new feature that is included in emacs-23.1.
+
+== Simple setup ==
+
+Put
+
+export ALTERNATE_EDITOR=""
+
+in your .bashrc
+
+or
+
+setenv ALTERNATE_EDITOR ""
+
+in your .cshrc depending on your default shell.
+
+after that using:
+
+emacsclient
+
+(or emacsclient -t)
+
+will automatically start an emacs in deamon mode and connect to it if one is not found running.
+
+== Debian/Ubuntu ==
+
+Here a little init script for GNU Debian/Ubuntu
+(please help to improve!)
+Save in /etc/init.d/emacs
+<pre>
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          emacs
+# Default-Start:     2 3 4 5
+# Default-Stop:      S 0 1 6
+# Description:       This file should be placed in /etc/init.d.
+### END INIT INFO
+
+#change this
+USERNAME=YourUserName
+DESC="Run the emacs daemon."
+NAME=emacs
+#change this
+DAEMON=/opt/emacs23/bin/$NAME
+DAEMON_ARGS="--daemon"
+PIDFILE=/var/run/$NAME.pid
+SCRIPTNAME=/etc/init.d/$NAME
+#change this
+EMACSCLIENT=/opt/emacs23/bin/emacsclient
+EVALEXIT="(progn (setq kill-emacs-hook 'nil) (kill-emacs))"
+
+# Exit if the package is not installed
+[ -x "$DAEMON" ] || exit 0
+
+# Read configuration variable file if it is present
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+
+# Load the VERBOSE setting and other rcS variables
+[ -f /etc/default/rcS ] && . /etc/default/rcS
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
+. /lib/lsb/init-functions
+
+#
+# Function that starts the daemon/service
+#
+do_start()
+{
+	# Return
+	#   0 if daemon has been started
+	#   1 if daemon was already running
+	#   2 if daemon could not be started
+	start-stop-daemon -c $USERNAME -d ~$USERNAME --start --quiet --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
+		|| return 1
+	start-stop-daemon -c $USERNAME -d ~$USERNAME --start --quiet --pidfile $PIDFILE --exec $DAEMON -- \
+		$DAEMON_ARGS \
+		|| return 2
+	# Add code here, if necessary, that waits for the process to be ready
+	# to handle requests from services started subsequently which depend
+	# on this one.  As a last resort, sleep for some time.
+}
+
+#
+# Function that stops the daemon/service
+#
+do_stop()
+{
+        $EMACSCLIENT --eval "$EVALEXIT" 
+	# Return
+	#   0 if daemon has been stopped
+	#   1 if daemon was already stopped
+	#   2 if daemon could not be stopped
+	#   other if a failure occurred
+	start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile $PIDFILE --name $NAME
+	RETVAL="$?"
+	[ "$RETVAL" = 2 ] && return 2
+	# Wait for children to finish too if this is a daemon that forks
+	# and if the daemon is only ever run from this initscript.
+	# If the above conditions are not satisfied then add some other code
+	# that waits for the process to drop all resources that could be
+	# needed by services started subsequently.  A last resort is to
+	# sleep for some time.
+	start-stop-daemon --stop --quiet --oknodo --retry=0/30/KILL/5 --exec $DAEMON
+	[ "$?" = 2 ] && return 2
+	# Many daemons don't delete their pidfiles when they exit.
+	rm -f $PIDFILE
+	return "$RETVAL"
+}
+
+#
+# Function that sends a SIGHUP to the daemon/service
+#
+do_reload() {
+	#
+	# If the daemon can reload its configuration without
+	# restarting (for example, when it is sent a SIGHUP),
+	# then implement that here.
+	#
+	start-stop-daemon --stop --signal 1 --quiet --pidfile $PIDFILE --name $NAME
+	return 0
+}
+
+case "$1" in
+  start)
+	[ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$NAME"
+	do_start
+	case "$?" in
+		0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
+		2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
+	esac
+	;;
+  stop)
+	[ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$NAME"
+	do_stop
+	case "$?" in
+		0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
+		2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
+	esac
+	;;
+  #reload|force-reload)
+	#
+	# If do_reload() is not implemented then leave this commented out
+	# and leave 'force-reload' as an alias for 'restart'.
+	#
+	#log_daemon_msg "Reloading $DESC" "$NAME"
+	#do_reload
+	#log_end_msg $?
+	#;;
+  restart|force-reload)
+	#
+	# If the "reload" option is implemented then remove the
+	# 'force-reload' alias
+	#
+	log_daemon_msg "Restarting $DESC" "$NAME"
+	do_stop
+	case "$?" in
+	  0|1)
+		do_start
+		case "$?" in
+			0) log_end_msg 0 ;;
+			1) log_end_msg 1 ;; # Old process is still running
+			*) log_end_msg 1 ;; # Failed to start
+		esac
+		;;
+	  *)
+	  	# Failed to stop
+		log_end_msg 1
+		;;
+	esac
+	;;
+  *)
+	#echo "Usage: $SCRIPTNAME {start|stop|restart|reload|force-reload}" >&2
+	echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
+	exit 3
+	;;
+esac
+
+:
+</pre>
+
+I use also this start script placed in /usr/bin/emacs
+<pre>
+#!/bin/bash
+USER=`id | sed 's/uid=[0-9][0-9]*(\([^)]*\)).*/\1/'`
+USERID=`user -u $USER`
+if test -e /tmp/emacs$USERID/server
+then
+	echo "Ready."
+else
+	echo "Starting server."
+	/etc/init.d/emacs start
+        while [ ! -e "/tmp/emacs$USERID/server" ] ; do sleep 1 ; done
+fi
+
+emacsclient -c "$@"
+</pre>
+
+*bug* : unfortunately this does not work on Debian Lenny using sudo. I get:
+<pre>
+start-stop-daemon: Unable to chdir() to /home/root/ (No such file or directory)
+</pre>
+
+*Fixed* : replaced <code>/home/$USERNAME/</code> with <code>~$USERNAME</code> (root's home directory is /root not in /home)
+
+
+Since start-stop-daemon needs root should they be sudo calls? Otherwise surely on root can run emacs in this way!
+* This init script requires you to change the USERNAME variable - not ideal :/
+* How do you think deal with the choose of a user? One server per user? I think its a bad idea. The server is not useful for all users.
+** How about starting  a server for every user in group 'emacs' or 'emacs-daemon'?
+
+You should rather change the variables in /etc/default/emacs, this is how other init scripts work. You could extend the script to start daemons for several users, e.g. by looking for a .start-emacs-daemon file in their home directories. But then, the init script wouldn't make much sense on a system with multiple users, anyway: such a computer should never get powered off, so the init script will not run, anyway. A better solution would be to start the daemon lazily: just create a wrapper around emacsclient, starting the daemon if it isn't already running. -- AnselmHelbig
+
+several *bugs*
+* no <code>user</code> command on my debian machine, better replace <code>USERID=`user -u $USER`</code> with <code>USERID=`id -u`</code> and remove the previous line.
+* <code>start-stop-daemon</code> is in /sbin which is not in default <code>$PATH</code>, better add <code>PATH=/usr/sbin:/usr/bin:/sbin:/bin</code> below the line <code>. /lib/lsb/init-functions</code>
+* still got <code>start-stop-daemon: Unable to chdir() to ~username (No such file or directory)</code>
+       emacsclient "$@"
+       return $?
+
+After fixing all these, I still can't stop the daemon, <code>sudo /etc/init.d/emacs stop</code> gives
+<pre>
+        /usr/bin/emacsclient: can't find socket; have you started the server?
+        To start the server in Emacs, type "M-x server-start".                         
+        /usr/bin/emacsclient: No socket or alternate editor.  Please use:
+
+             --socket-name
+             --server-file      (or environment variable EMACS_SERVER_FILE)
+             --alternate-editor (or environment variable ALTERNATE_EDITOR)
+</pre>
+
+== Gentoo ==
+
+Gentoo includes support for running Emacs as a daemon in the
+<code>app-emacs/emacs-daemon</code> package.
+
+: emerge app-emacs/emacs-daemon
+
+Every user who wants to connect to an Emacs server must have an own
+instance of the daemonized Emacs. The init script automatically
+determines the user by its name, so you create a symbolic link
+(do not copy the script, or you will miss eventual updates!) in your
+<code>/etc/init.d</code> directory:
+
+: ln -s emacs /etc/init.d/emacs.''username''
+
+This may be added to the boot sequence (and will run under the user's
+privileges)
+
+: rc-update add emacs.''username''
+
+Further customizations can be done through the
+<code>/etc/conf.d/emacs</code> file, which is extensively commented.
+You may also create individual <code>/etc/conf.d/emacs.</code>''username''
+files for "multiplexed" user configuration.
+
+== Emacs as Daemon on OS X using Launchd ==
+
+If you're running Emacs 23, you can run Emacs As Daemon via OS X's launchd.  The easiest solution is to use a tool like [http://lingon.sourceforge.net/ Lingon] to create the plist file or can create one manually like this:
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" 
+        "http://www.apple.com/DTDs/PropertyList-1.0.dtd"> 
+     <plist version="1.0">
+      <dict> 
+        <key>Label</key>
+        <string>gnu.emacs.daemon</string>
+        <key>ProgramArguments</key>
+        <array>
+          <string>/Applications/Emacs.app/Contents/MacOS/Emacs</string>
+          <string>--daemon</string>
+        </array>
+       <key>RunAtLoad</key>
+       <true/>
+       <key>ServiceDescription</key>
+       <string>Gnu Emacs Daemon</string>
+       <key>UserName</key>
+       <string>[YOUR USERNAME HERE]</string>
+      </dict>
+    </plist>
+
+
+This can then be installed in ##/Library/LaunchAgents## and loaded via:
+
+    sudo launchctl load -w /Library/LaunchAgents/gnu.emacs.daemon.plist
+
+For further instructions see [http://cubiclemuses.com/cm/articles/2009/08/06/emacs-and-os-x-launchd/]
+
+
+== Stopping the Emacs Daemon ==
+
+The simplest way to stop the emacs daemon from within emacs is to use the <code>kill-emacs</code> or <code>save-buffers-kill-emacs</code> commands.
+
+From outside of emacs this can be achieved using emacsclient:
+{{{
+    emacsclient -e '(kill-emacs)'
+}}}
+This will shutdown the daemon immediately with out prompting or saving files.
+
+If you would like emacs to prompt if there are unsaved buffers or existing clients/frames, you can add the following functions to your .emacs file then use the command:
+{{{
+    emacsclient -e '(client-save-kill-emacs)'
+}}}
+
+Note: If a prompt is required this function will always open an frame as an x window.
+
+{{{
+(defun client-save-kill-emacs()
+  " This is a function that can bu used to shutdown save buffers and 
+shutdown the emacs daemon. It should be called using 
+emacsclient -e '(client-save-kill-emacs)'.  This function will
+check to see if there are any modified buffers or active clients
+or frame.  If so an x window will be opened and the user will
+be prompted."
+
+  (let (new-frame modified-buffers active-clients-or-frames)
+
+    ; Check if there are modified buffers or active clients or frames.
+    (setq modified-buffers (modified-buffers-exist))
+    (setq active-clients-or-frames ( or (> (length server-clients) 1)
+					(> (length (frame-list)) 1)
+				       ))  
+
+    ; Create a new frame if prompts are needed.
+    (when (or modified-buffers active-clients-or-frames) 
+      (progn
+	(message "window-system: %s" (window-system))
+	(when (not (eq (window-system) "x"))
+	  (x-initialize-window-system))
+	(select-frame (make-frame-on-display (getenv "DISPLAY") '((window-system . x))))))   
+
+
+    ; Save the current frame.  
+    (setq new-frame (selected-frame))
+
+
+    ; When displaying the number of clients and frames: 
+    ; subtract 1 from the clients for this client.
+    ; subtract 2 from the frames this frame (that we just created) and the default frame.
+    (when ( or (not active-clients-or-frames)
+	       (yes-or-no-p (format "There are currently %d clients and %d frames. Exit anyway?" (- (length server-clients) 1) (- (length (frame-list)) 2)))) 
+      
+      ; If the user quits during the save dialog then don't exit emacs.
+      ; Still close the terminal though.
+      (let((inhibit-quit t))
+             ; Save buffers
+	(with-local-quit
+	  (save-some-buffers)) 
+	      
+	(if quit-flag
+	  (setq quit-flag nil)  
+          ; Kill all remaining clients
+	  (progn
+	    (dolist (client server-clients)
+	      (server-delete-client client))
+		 ; Exit emacs
+	    (kill-emacs))) 
+	))
+
+    ; If we made a frame then kill it.
+    (when (or modified-buffers active-clients-or-frames) (delete-frame new-frame))
+    )
+  )
+
+
+(defun modified-buffers-exist() 
+  "This function will check to see if there are any buffers
+that have been modified.  It will return true if there are
+and nil otherwise. Buffers that have buffer-offer-save set to
+nil are ignored."
+  (let (modified-found)
+    (dolist (buffer (buffer-list))
+      (when (and (buffer-live-p buffer)
+		 (buffer-modified-p buffer)
+		 (not (buffer-base-buffer buffer))
+		 (or
+		  (buffer-file-name buffer)
+		  (progn
+		    (set-buffer buffer)
+		    (and buffer-offer-save (> (buffer-size) 0))))
+		 )
+	(setq modified-found t)
+	)
+      )
+    modified-found
+    )
+  )
+
+}}}
+
+
+
+----
+
+See also EmacsClient

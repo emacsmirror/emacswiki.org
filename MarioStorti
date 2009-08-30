@@ -1,0 +1,73 @@
+Hi all, using Emacs since 1994 (already twelve years, wow!!). 
+
+Learning Lisp and Scheme since then. 
+
+My home page is at http://www.cimec.org.ar/mstorti
+
+mail: mstorti(at)intec(dot)unl(dot)edu(dot)ar
+
+My .emacs: MarioStortiEmacsConfigFile
+
+This snnipet defines the holidays in argentina
+<pre>
+(setq general-holidays nil)
+(setq christian-holidays nil)
+
+;; Feriados en Argentina
+;; Enero 1         Año Nuevo
+;; Marzo/Abril #   Semana Santa - Viernes Santo
+;; Abril 2##       Día del Veterano y de los Caídos en la Guerra de Malvinas
+;; Mayo 1°         Día del Trabajo
+;; Mayo 25         Aniversario del Primer Gobierno Patrio
+;; Junio 20###     Día de la Bandera Nacional
+;; Julio 9         Día de la Independencia Nacional
+;; Agosto 17###    Aniversario de la muerte del general José de San Martín
+;; Octubre 12##    Día de la Raza
+;; Diciembre 8     Día de la Inmaculada Concepción
+;; Diciembre 25    Navidad
+
+;; # Feriado de fecha variable.
+	 
+;; ## Feriado que si se produce un día martes o miércoles, se traslada al
+;;    lunes anterior y, si coincide con un día jueves o viernes, se
+;;    cumple el lunes siguiente.
+	 
+;; ### Feriado que será cumplido el día que corresponda al tercer lunes del
+;;     mes respectivo.
+
+;;(setq islamic-holidays nil)
+(defun movable-holiday(date)
+  (let* ((week-day (calendar-day-of-week date))
+         (day (calendar-absolute-from-gregorian date)))
+    ;; (format "date %s, week day %d, day %d\n" date week-day day)
+    (cond ((= week-day 2)
+           (calendar-gregorian-from-absolute (- day 1)))
+          ((= week-day 3)
+           (calendar-gregorian-from-absolute (- day 2)))
+          ((= week-day 4)
+           (calendar-gregorian-from-absolute (+ day 4)))
+          ((= week-day 5)
+           (calendar-gregorian-from-absolute (+ day 3)))
+          (t date))))
+;;
+(setq other-holidays 
+      '((holiday-fixed 1 1   "Anio Nuevo") 
+        (funcall 'holiday-sexp 
+         '(movable-holiday (list 4 2 year)) "Dia de Malvinas")
+        (holiday-fixed 5 1   "Dia del Trabajo") 
+        (holiday-fixed 5 25  "Revolucion de Mayo") 
+        (holiday-float 6 1 3 "Dia de la Bandera")
+        (holiday-fixed 7 9   "Dia de la Independencia") 
+        (holiday-float 8 1 3 "Dia de José de San Martín")
+        (funcall 'holiday-sexp 
+         '(movable-holiday (list 10 12 year)) "Dia de la Raza") 
+        (holiday-fixed 12 8  "Dia de la Virgen?") 
+        (holiday-fixed 12 25 "Navidad")))
+
+
+</pre>
+
+
+----
+CategoryHomepage
+

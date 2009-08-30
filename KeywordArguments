@@ -1,0 +1,43 @@
+: I do not like the Common Lisp style of using keyword arguments
+for many common functions.  I basically do not have a very high
+opinion of many of the decisions that were made in Common Lisp.
+-- RichardStallman [http://article.gmane.org/gmane.emacs.devel/16216]
+
+Keyword arguments are used in CommonLisp. What's their purpose (advantage)? They let you provide certain optional arguments in ''any order''. If function `my-func' is defined with keyword parameters ##:foo##, ##:bar##, and ##:titi##, then you can, for example, write any of the following:
+
+ (my-func :foo foo-val :titi titi-val)
+ (my-func :titi titi-val :foo foo-val :bar bar-val)
+ (my-func :bar bar-val :foo foo-val)
+
+Being able to write keyword arguments in any order is especially advantageous (for reading code) when there are many keyword parameters.
+
+In EmacsLisp, here's part of the description of function `make-hash-table', which uses the common keyword parameter ##:test##:
+
+: ##:test TEST## -- ##TEST## must be a symbol that specifies how to compare
+keys.  Default is `eql'.  Predefined are the tests `eq', `eql', and
+`equal'.  [...]
+
+You might use this as follows:
+
+: ##(let ((map (make-hash-table :test '##'''##equal##'''##))) ...)##
+
+In this case, the comparison function `equal' will override the default comparison function, `eql'.
+
+'''Note:''' `make-hash-table' is an ''exception'' in two regards:
+
+* In EmacsLisp (outside of its common-lisp compatibility libraries), `make-hash-table' seems to be the only place (so far) where ##:test## is recognized. You can, of course, write your own Emacs-Lisp code that recognizes ##:test##.
+
+* In CommonLisp, you can supply any comparison function for ##:test## -- it need not be one of those that are mentioned above as predefined for `make-hash-table': `eq', `eql', and `equal'. This is also true for Emacs-Lisp's  `make-hash-table', but in that case you will need to use `define-hash-table-test' to define your own key-comparison function for hash tables. In the usual case, you can just use `defun' to define a comparison function.
+
+
+You can also use the cl-parsing-keywords as defined in the common lisp compatibility library in Emacs:
+
+
+ (defun foobar (&rest cl-keys)
+   "`foobar' takes keyword arguments of :foo and :bar like this:
+  (foobar :foo 23)
+  (foobar :bar 42)"
+   (cl-parsing-keywords ((:foo nil) (:bar nil)) nil
+     (format "cl-foo is %S and cl-bar is %S" cl-foo cl-bar)))
+
+'''See Also:''' [http://ccrma.stanford.edu/courses/220b/cltl/clm/node64.html] ''Common Lisp the Language'' for more on keyword parameters.

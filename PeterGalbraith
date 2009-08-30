@@ -1,0 +1,11 @@
+My home page is http://people.debian.org/~psg
+
+There's some Emacs lisp stuff near the bottom of that page, some also listed in
+http://people.debian.org/~psg/elisp
+
+At some point I'll copy the relevant parts here.
+
+I use Emacs, develop for MH-E, maintain some Emacs related packages for Debian, and wrote font-latex.el and bib-cite.el (part of AUCTeX).
+
+----
+CategoryHomepage

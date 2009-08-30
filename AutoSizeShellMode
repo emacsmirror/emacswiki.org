@@ -1,0 +1,51 @@
+15:58 <jinzougen> Is there a way to automatically expand an
+      emacs buffer window to take up as much room as possible,
+      without killing the adjacent window?
+15:58 <jinzougen> Kind of like a "maximize" command...
+15:59 <jinzougen> Because I like to use a shell buffer and
+      most of the time it being just a line or two tall is
+      fine, but I need to examine many lines of output on
+      occasion and would rather not click-drag the bar all the
+      time.
+15:59 <jinzougen> (or use a shrink/grow command with arguments
+      that involves more than one keypress.
+16:00 <kensanata> jinzougen: Hm... But at the same time, you
+      only want the output of the last command, right?
+16:00 <jinzougen> Yeah, if possible.
+
+Try this:
+
+{{{
+(defun jinzougen-shell ()
+  "Show the last output of the shell buffer."
+  (interactive)
+  (let ((win (selected-window)))
+    (switch-to-buffer-other-window "*shell*")
+    (set-window-text-height
+     nil (1+ (save-excursion
+	       (goto-char comint-last-output-start)
+	       (count-matches "\n"))))
+    (recenter -1)
+    (select-window win)))
+
+(global-set-key (kbd "C-c s") 'jinzougen-shell)
+}}}
+
+`C-c s' should show the output of the last shell-command in a different window.
+
+[new:DrewAdams:2009-05-13 15:01 UTC]
+
+{{{
+(let ((w (selected-window)))
+  (switch-to-buffer-other-window ...) ... (select-window w))
+}}}
+
+--> ##pop-to-buffer##
+
+-- DrewAdams
+
+
+
+----
+CategoryWindows
+ShellMode

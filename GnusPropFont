@@ -1,0 +1,17 @@
+gnus-propfont.el by OliverScholz displays articles in Gnus in a
+proportional font. It is possible to define faces on a per-group
+basis.  It is possible to define rules to _exclude_ certain parts of an
+article from being "fontificated". So that -- for example -- code
+snipplets are displayed in the default font and not in a proportional
+font.
+
+* Lisp:gnus-propfont.el
+
+After putting the file into your LoadPath, add the following to your
+~/.gnus file:
+
+    (require 'gnus-propfont)
+    (add-hook 'gnus-article-prepare-hook 'gpf-add-faces)
+
+----
+CategoryGnus

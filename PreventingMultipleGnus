@@ -1,0 +1,62 @@
+I sometimes accidentally start 2 gnus in 2 different emacs on the same
+computer. The result, with the file-lock warnings is scary.  Kheb on
+the EmacsChannel suggested file-locking and so here's my solution. Am
+I killing a fly with a cannon here? -- DeepakGoel
+
+In ~/.emacs:
+
+    (defvar gnus-lock-filename)
+    (setq gnus-lock-filename "~/.machine-lock-gnus-my")
+    (put 'gnus 'disabled t)
+
+    (defun gf-touch (file)
+      "Touches file"
+      (save-excursion
+	(unless (file-exists-p file)
+	  (find-file file)
+	  (write-file file)
+	  (kill-buffer (current-buffer)))))
+
+    (defun gnus-my (&rest args)
+      (interactive "P")
+      (if (file-exists-p gnus-lock-filename)
+	  (error "Can't start gnus, Lock file exists %S" gnus-lock-filename)
+	(call-interactively 'gnus)))
+
+In ~/.gnus:
+
+    (add-hook 'gnus-startup-hook
+	      '(lambda ()
+		 (gf-touch gnus-lock-filename)))
+    (add-hook 'gnus-after-exiting-gnus-hook
+	      '(lambda ()
+		 (if (file-exists-p gnus-lock-filename)
+		     (delete-file gnus-lock-filename)
+		   (message "Funky.. %S does not exist.." gnus-lock-filename))))
+
+And from now on, use gnus-my instead of gnus.
+
+Also, this checks before exiting emacs if gnus is active
+
+    (defun query-kill-emacs-my ()
+      (interactive)
+      (cond
+       ((and
+         (fboundp 'gnus-alive-p)
+         (gnus-alive-p))
+
+        (message "Please quit gnus before exiting emacs. ")
+        nil)
+       ((y-or-n-p "Really kill emacs? ")
+        t)
+       (t
+        (progn
+          (message "okay..Not exiting yet..")
+          ;; the most important part..
+          nil))))
+
+Instead of rebinding C-x C-c as above, one could use kill-emacs hooks,
+but the behavior is slightly different, and I prefer this one.
+
+----
+CategoryGnus

@@ -1,0 +1,12 @@
+: ''Unix is not my ideal system, but it is not too bad.'' -- [[rms]], The GNU Manifesto, 1985.
+
+A founding document of the free software movement written early in the life of the GNU project, the GNU manifesto still influences the technical design and moral philosophy of the GNU operating system.
+
+From the [http://www.gnu.org/gnu/manifesto.html The GNU Manifesto],
+
+: I consider that the golden rule requires that if I like a program I must share it with other people who like it. Software sellers want to divide the users and conquer them, making each user agree not to share with others. I refuse to break solidarity with other users in this way. I cannot in good conscience sign a nondisclosure agreement or a software license agreement.
+
+This is a nontechnical section included in the EmacsManual.
+
+----
+CategoryHistory

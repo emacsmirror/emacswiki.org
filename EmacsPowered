@@ -1,0 +1,59 @@
+There are various "emacs powered" or "powered by GNU EMACS" logos and buttons around the place, but I can't find a definitive list or any distribution terms for them.
+
+So, I'll start a list here and see what happens.
+
+= Powered by Emacs =
+
+* '''Copyright status unknown'''
+** http://hocwp.free.fr/powered_by_GNU_Emacs.jpeg  (I've emailed the owners of these two pages)
+*** http://www.estv.ipv.pt/PaginasPessoais/bmarq/
+*** http://hocwp.free.fr/xbindkeys/xbindkeys.html
+** http://www.contrib.andrew.cmu.edu/usr/tjs/icons/also-powered-by-emacs.jpg
+*** http://www.contrib.andrew.cmu.edu/usr/tjs/icons/
+
+*** http://www.sonic.net/euler/
+** http://sourcepole.com/shared/images/powered_by_emacs.gif
+*** http://sourcepole.com/about_us/index.xml
+* '''Apparently with permission for distribution'''
+** http://fsinfo.cs.uni-sb.de/~abe/pictures/fan/emacs-powered.png (green, blue and orange flavours). Seems quite widespread, but closely resembles a logo for ''That Other Editor''.
+*** http://fsinfo.cs.uni-sb.de/~abe/download/
+
+
+** http://www.zid.tugraz.at/lang/gnu_emacs_icon_grey.jpg The neatest one I've seen so far. It's what MarioLang has on his work page.
+*** I've created this one, it's free, check it out at http://www.marcelotoledo.org/stuff/graphics/gnu_emacs_icon -- MarceloToledo
+
+There are others, but I'm tired of that game now. See also http://images.google.co.uk/images?q=emacs+powered
+
+
+** http://gondolin.debian.net/~kyle/files/images/emacs.png
+
+** http://www.atrustrivalie.org/madewithemacs.png
+
+** http://www.joereiss.net/images/butns/Emacs.gif
+
+** http://www.pemberley.com/janeinfo/crtemacs.gif
+
+** http://www.pvv.ntnu.no/~madsb/jc/_gfx/logos/created_with_t.gif
+
+** http://www.cogsci.ed.ac.uk/~tkld/emacs.gif
+:: http://www.cogsci.ed.ac.uk/~tkld/
+
+** http://dq.com/images/emacs.gif
+
+** http://www.dotsphinx.com/software/dotemacs/gfx/emacs-icon.gif
+
+** http://users.erols.com/ziring/emacsicon.gif
+
+** http://www.coling.uni-freiburg.de/~schauer/pics/emacs.gif
+:: http://www.coling.uni-freiburg.de/~schauer/emacs.html
+
+** http://wwwa7.udic.org/~charlton/andrew/media/animemacs.gif
+
+** http://sakito.jp/shared/icon/emacs.png
+
+
+= Powered by Emacs Add-On Package =
+* http://ourcomments.org/Emacs/nXhtml/doc/img/use-nXhtml-trans2.png [NxhtmlMode nXthml] logo (I think no one has used this, though someone has added a link to nXhtml).
+
+----
+See also EmacsLogo.

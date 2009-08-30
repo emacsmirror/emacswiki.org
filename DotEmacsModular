@@ -1,0 +1,14 @@
+EraEriksson created a simple library for keeping your DotEmacs simple
+by allowing you to divide it into a modular collection of files.
+It's called <tt>my-site-start</tt> and can be downloaded from http://porkmail.org/elisp
+
+By default it will recursively load all files and directories starting from <tt>%%~/.emacs.d/site-start.d/%%</tt> but this can easily be customized to use a different directory, not recurse, etc.
+
+The library is just a simple framework for loading a modularized set of startup files.
+It does not include any functionality to actually create this modularized set of files.
+
+As of 2009-02-05 this should be considered beta software.
+The author would appreciate any comments from users;
+please email ee are aye plus ee el eye es pea at eye kay eye dot ef eye.
+
+CategoryDotEmacs

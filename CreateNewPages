@@ -1,0 +1,14 @@
+[[fr:CréerPages]]
+See WikiOrganization for some info on how the pages are organised amongst each other.
+
+# Find the appropriate category on the SiteMap.
+# Edit the category page and add a link to the new page.  See NamingNewPages for more.
+# Follow the newly created link to the edit page.
+# Enter the text, add a link back to the category page, and save.
+
+You can also create a new page by ''URL munging''.
+Just edit the current URL to point to a new page which doesn't exist.
+The new URL might look like this, for example:
+
+* http://www.emacswiki.org/cgi-bin/wiki?SampleUndefinedPage
+  

@@ -1,0 +1,104 @@
+The variable 'scroll-preserve-screen-position' may be useful to some.
+When you scroll down, and up again, point should end up at the same position you started out with.
+The value can be toggled by the built in mode <code>M-x scroll-lock-mode</code>.
+
+== Using the Mouse ==
+
+Besides using the scrollbar, there are other ways for scrolling with
+the mouse. For GnuEmacs this can be found in mouse-drag.el (which
+should be installed by default) and for [[XEmacs]] you might use the
+simple replacement TrackScroll.
+
+== Scrolling without moving the point ==
+
+I like to align my window exactly to the relevant pieces of code.  Being able to move the view while point stays at its place makes this easier.
+
+    (defun gcm-scroll-down ()
+      (interactive)
+      (scroll-up 1))
+
+    (defun gcm-scroll-up ()
+      (interactive)
+      (scroll-down 1))
+
+    (global-set-key [(control down)] 'gcm-scroll-down)
+    (global-set-key [(control up)]   'gcm-scroll-up)
+
+[http://user42.tuxfamily.org/scroll-1/index.html scroll-1.el] can bind the j/k keys for view style modes (don't be put off by those keys being the same in the EvilOne).
+
+[new]
+
+You can achieve the same effect and avoid writing those two defuns separately using the holy lambda() function. Here are my two bindings for scrolling the windows without moving the point.
+
+    (global-set-key "\M-n"  (lambda () (interactive) (scroll-up   4)) )
+    (global-set-key "\M-p"  (lambda () (interactive) (scroll-down 4)) )
+
+-- avi
+
+[new]
+
+But it's usually better to use a named function:  You can give it documentation, bind it to multiple keys, share it, advise it, etc. -- SeanO
+
+== Specific behavior with "page up" and "page down" keys ==
+
+I would like to bind my page up and page down keys to move the *point* a window-height number of lines rather than scrolling the window (of course scrolling would automatically happen since the point would move off the top or bottom of the window).  If the point was close to the top, it would move it to the beginning of the buffer.  If it was close to the bottom, it would move it to the end of the buffer.  I've tried "##scroll-(down|up)-nomark##" (from Pc selection mode) and "##scroll-(down|up)##" (the Emacs default).  None of them quite have the behavior I'm looking for (they scroll the window rather than move the point).
+
+I searched help for "##pager-page-(down|up)##" (using "##C-h a pager-page-up##" and "##C-h f pager-page-up##")[http://user.it.uu.se/~mic/pager.el].  Doesn't quite do what I want -- it moves the point to keep it at the same position in the window when the window scrolls.  It seems to provide the same functionality as setting `scroll-preserve-screen-position' to non-nil (I'm using an Emacs 22 snapshot -- 22.0.50.1 -- in case that matters).
+
+Further, suppose the window is 40 lines tall.  I want ##<PgDn>## to behave as if I pressed the down arrow 40 times (except near the end of the document).  Likewise, I want ##<PgUp>## to behave as if I pressed the up arrow 40 times (except near the beginning of the document).  Is this possible?
+
+I partially figured it out (adapted from some code on SmoothScrolling):
+
+    (defun sfp-page-down ()
+      (interactive)
+      (next-line
+       (- (window-text-height)
+          next-screen-context-lines)))
+    
+    (defun sfp-page-up ()
+      (interactive)
+      (previous-line
+       (- (window-text-height)
+          next-screen-context-lines)))
+    
+    (global-set-key [next] 'sfp-page-down)
+    (global-set-key [prior] 'sfp-page-up)
+
+The only problem is that it forgets which column I'm on:  If I start at column 40, then page up/down and land on a line with only 10 characters, then page up/down to a line with more than 40 characters, the point will be at column 10, not column 40.  This is odd considering the up/down arrow keys don't have this problem and they're bound to `next-line' and `previous-line'.
+
+This works, instead:
+
+    (defun sfp-page-down ()
+      (interactive)
+      (setq this-command 'next-line)
+      (next-line
+       (- (window-text-height)
+          next-screen-context-lines)))
+    
+    (defun sfp-page-up ()
+      (interactive)
+      (setq this-command 'previous-line)
+      (previous-line
+       (- (window-text-height)
+          next-screen-context-lines)))
+    
+    (global-set-key [next] 'sfp-page-down)
+    (global-set-key [prior] 'sfp-page-up)
+
+The functions `next-line' and `previous-line' use a previously-remembered column number only if the previous command was either `next-line' or `previous-line'.  Otherwise, they save the current column number to be used in future calls.  Since the previous command was always either `sfp-page-down' or `sfp-page-up', whatever column the point landed on would be used for the next destination column.  So, I set `this-command' to trick them.  --sfp
+
+== Other Scrolling Pages ==
+
+* BufferScrolling -- horizontal scrolling
+* SmoothScrolling -- no half-page jumps
+* NextLineBehavior -- scroll one line at a time
+* ScrollMargs -- yet another smooth scroll mode
+* ScrollAllMode -- scroll several buffers together
+* FollowMode -- display a buffer in two windows as if it were two columns
+* HalfScrolling -- scrolling by half pages
+* IdleScrolling -- scroll down one line per second when idle
+* SwissMove -- scroll with decreasing stepsizes
+
+
+----
+CategoryDisplay

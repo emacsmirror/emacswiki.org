@@ -1,0 +1,30 @@
+AddressBook is a simple vCard based addressbook for Emacs. It is still in development.
+
+It is similar to the insidious big brother database, but instead of using a custom format for data storage, it uses the 
+standard vCard format to maintain contacts data.
+
+The homepage of the Emacs Addressbook is http://www.nongnu.org/addressbook
+
+== Screenshots ==
+
+* [http://es.gnu.org/~jemarch/images/addrbook-sc1.jpg Adressbook buffer showing a contact]
+
+== Comments ==
+
+Please, insert your suggestion/comment about AddressBook here.
+
+[new]
+Is this project still alive? I hope it is because it would solve a lot of synchronization headaches.
+
+[new]
+Yes, it is still alive :) - JoseEMarchesi
+
+[new]
+The vcard.el from this repo fails to work with Gnus already. VCard attachment is not displayed in a ASCII form in the article buffer. - Leo
+
+[new]
+~/.addressbook is used by Alpine.
+
+[new]
+Yep. I changed the addressbook to use ~/.abook instead - JoseEMarchesi
+

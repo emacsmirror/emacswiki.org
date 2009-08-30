@@ -1,0 +1,35 @@
+The following executes a commands whose name contains `dired'.
+
+{{{
+(defun execute-extended-dired-command ()
+  "Execute extended Dired command.
+Same as `execute-extended-command' with the difference that only
+command names matching the regexp \"dired\" are available.  This
+is useful for commands that operate on files in Dired together
+with `partial-completion-mode' as limiting the number of matching
+commands makes it easier to find the relevant command.  For
+example, typing e-p-d TAB at the M-x prompt would match four commands
+on my system whereas this command only matches the one I want,
+`emms-play-dired'."
+  (interactive)
+  (let (sym-list cmd)
+    (mapatoms
+       (lambda (sym)
+         (if (and (string-match "dired" (symbol-name sym))
+                  (commandp sym))
+             (setq sym-list (cons (symbol-name sym) sym-list)))))
+    (setq cmd (completing-read "Executed extended Dired command: " sym-list))
+    (if cmd
+        (call-interactively (intern cmd)))))
+}}}
+
+The binding I use:
+
+ (define-key dired-mode-map "\M-d" 'execute-extended-dired-command)
+
+-- MaDa
+
+[[Smex]] includes the command 'smex-major-mode-commands' that generalizes this approach by applying the same routine to the currently active major-mode. When you are in dired-mode, it will present you with all commands relevant to Dired.
+
+----
+CategoryDirectories

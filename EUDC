@@ -1,0 +1,49 @@
+=Get email adress expansion with EUDC and LDAP=
+
+Adapt and add the following to your .emacs file:
+
+<pre>
+(require 'ldap)
+(require 'eudc)
+
+(setq eudc-default-return-attributes nil
+      eudc-strict-return-matches nil)
+
+(setq ldap-ldapsearch-args (quote ("-tt" "-LLL" "-x")))
+(setq eudc-inline-query-format '((name)
+                                 (firstname)
+                                 (firstname name)
+                                 (email)
+                                 ))
+
+(setq ldap-host-parameters-alist
+      (quote (("your_server" base "ou=addressbook,dc=your_dc_here,dc=fr"
+               binddn "cn=admin,dc=your_dc_here,dc=fr"
+               passwd "your_password"))))
+
+(eudc-set-server "your_server" 'ldap t)
+(setq eudc-server-hotlist '(("your_server" . ldap)))
+(setq eudc-inline-expansion-servers 'hotlist)
+
+(defun enz-eudc-expand-inline()
+  (interactive)
+  (move-end-of-line 1)
+  (insert "*")
+  (unless (condition-case nil
+              (eudc-expand-inline)
+            (error nil))
+    (backward-delete-char-untabify 1))
+  )
+
+;; Adds some hooks
+
+(eval-after-load "message"
+  '(define-key message-mode-map (kbd "TAB") 'enz-eudc-expand-inline))
+(eval-after-load "sendmail"
+  '(define-key mail-mode-map (kbd "TAB") 'enz-eudc-expand-inline))
+(eval-after-load "post"
+  '(define-key post-mode-map (kbd "TAB") 'enz-eudc-expand-inline))
+</pre>
+----
+CategoryMailAddons
+

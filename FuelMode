@@ -1,0 +1,13 @@
+FUEL extends Eduardo's Factor mode with features inspired by SLIME. Among them:
+* Syntax highlighting, auto indent, s-expression navigation
+* Word completion
+* Jumping to definitions
+* Listing word usages
+* Some refactoring commands: extract word and extract vocab
+* Lots more; see the documentation
+
+Slava Pestov screencast on FUEL
+http://factor-language.blogspot.com/2009/01/screencast-editing-factor-code-with.html
+----
+CategoryModes
+ProgrammingModes

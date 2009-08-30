@@ -1,0 +1,19 @@
+In Emacs Lisp code, you can require the loading of a Lisp library that provides a feature, as follows:
+
+  (require 'the-feature "the-library-file" <soft-flag>)
+
+A library declares that it provides a certain '''feature''' as follows:
+
+  (provide 'the-feature)
+
+The first argument to `require' is a symbol naming the required feature. The second argument is an optional string that names the file (library) that provides the feature (with or without extension). If the second argument is missing or nil, then the print-name of the first argument is used as the file name.
+
+The optional third argument, if non-nil, specifies that no error is to be raised if loading the library fails for some reason (`nil' is returned instead). The most common cause for such failure is that the library cannot be found in your `load-path'.
+
+If the optional third argument is non-nil, then the `require' expression is a '''soft `require''''; otherwise, it is a '''hard `require'''':
+
+: _Soft require_: <code>(require 'frame-cmds nil t)</code> -- no error if not found
+: _Hard require_: <code>(require 'ring+)</code> -- error if not found
+
+----
+CategoryGlossary

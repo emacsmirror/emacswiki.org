@@ -1,0 +1,12 @@
+This is old discussion about the InterMap that previously took place at EmacsWikiAdministrators.
+
+== WikiSource? ==
+
+Wikisource should now be:
+
+  WikiSource http://en.wikisource.org/wiki/
+
+so that [[WikiSource:Free as in Freedom]] -- or some variation -- works. -- AaronHawley
+
+----
+CategoryEmacsWikiSite

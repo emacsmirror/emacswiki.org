@@ -1,0 +1,153 @@
+The ##<tab>## key is usually bound to do some mode-specific indentation. People new to Emacs often feel like they just want ##<tab>## to insert a tab. This is of course possible, but discouraged. Why make Emacs dumber than it is? Emacs can figure out how much indentation you need and do the right thing!
+
+Remember, often the indentation engines of major modes can be customized. Specially modes based on [CcMode CC Mode] are notorious for their support of /styles/. See IndentingC for examples.
+
+== Basic Control ==
+
+The variable ##indent-tabs-mode## controls whether tabs are used for indentation. It is ##t## (true) by default; to deactivate it, put the following in <tt>[InitFile .emacs]</tt>.
+
+    (setq-default indent-tabs-mode nil)
+
+The rest of this page will assume tabs are used and discuss the use of the following two variables:
+
+* ##c-basic-offset##: The basic indentation offset in [CcMode CC Mode], default is 2. For Perl, it is controlled by ##cperl-indent-level##.
+* ##tab-width##: How wide a tab is, default is 8.
+
+You /should/ ensure these variables have the same value, e.g.,
+
+    (setq tab-width 4) ; or any other preferred value
+    (defvaralias 'c-basic-offset 'tab-width)
+    (defvaralias 'cperl-indent-level 'tab-width)
+
+[new:DrewAdams:2009-05-29 17:25 UTC]
+Why did you change `setq' here to `defvaralias'? Why assume that every time someone sets `tab-width' in some buffer (in whatever mode) s?he also wants to set `c-basic-offset' and `cperl-indent-level' to the same value? This seems misguided. Also, the intro line is no longer accurate: you are not simply setting these variables to the same value. -- DrewAdams
+
+[new]
+Because it helps make the indentation less dependent on the value of `tab-width'. The defaults are [http://lxr.linux.no/linux+v2.6.29/Documentation/CodingStyle#L467 notoriously horrible] -- try opening the code with different settings, and then try to /figure out/ the original settings necessary to make it readable. It's a mess.
+
+It's worse than that, actually. Different values for "tab size" and "indentation" are known to [http://lists.macromates.com/textmate/2007-November/023215.html cause problems for users of the TextMate editor], which treats this as the same number. So the default values of ##2## and ##8## are really a '''hindrance to interoperability'''.
+
+If the indentation offset and tab width are equal when indenting lines, on the other hand, only [[TabsAreEvil#TabsAndAlignment|a few lines]] are garbled with different settings. (Or [SmartTabs none].) `tab-width' and `c-basic-offset' are buffer-local, so changing any of them will only affect the current buffer.
+
+----
+
+The following two commands will be useful when looking at the examples below:
+
+* ##M-x tabify##: Change spaces to tabs where appropriate.
+* ##M-x untabify##: Change all tabs to the correct number of spaces (controlled by ##tab-width##).
+
+If you are [IndentingPerl indenting Perl] and the mode is configured to indent by four, and you didn't change the variables above, then the following example will use /no/ tabs! There are no eight spaces in it to replace with a tab.
+
+    sub SmileyReplace {
+      foreach my $regexp (keys %Smilies) {
+        if (m/\G($regexp)/cg) {
+          return $q->img({-src=>$Smilies{$regexp}, -alt=>$1, -class=>'smiley'});
+        }
+      }
+    }
+
+If ##indent-tabs-mode## is ##t## and ##tab-width## is 4, however, you will see three tabs looking four spaces wide:
+
+    sub SmileyReplace {
+      foreach my $regexp (keys %Smilies) {
+    ____if (m/\G($regexp)/cg) {
+    ____  return $q->img({-src=>$Smilies{$regexp}, -alt=>$1, -class=>'smiley'});
+    ____}
+      }
+    }
+
+If you are collaborating with other people, however, and they use different settings, things will get ugly. The tabs may look twice as wide, since the default is 8:
+
+    sub SmileyReplace {
+      foreach my $regexp (keys %Smilies) {
+    ________if (m/\G($regexp)/cg) {
+    ________  return $q->img({-src=>$Smilies{$regexp}, -alt=>$1, -class=>'smiley'});
+    ________}
+      }
+    }
+
+Thus, you should either not change ##tab-width##, or make sure that it matches whatever the indentation steps of your current major mode are.
+
+If you are a die-hard tab user, try using a ##tab-width## of 2. Here's how it will look for you:
+
+    sub SmileyReplace {
+    __foreach my $regexp (keys %Smilies) {
+    ____if (m/\G($regexp)/cg) {
+    ______return $q->img({-src=>$Smilies{$regexp}, -alt=>$1, -class=>'smiley'});
+    ____}
+    __}
+    }
+
+And here for the other poor bastards:
+
+    sub SmileyReplace {
+    ________foreach my $regexp (keys %Smilies) {
+    ________________if (m/\G($regexp)/cg) {
+    ________________________return $q->img({-src=>$Smilies{$regexp}, -alt=>$1, -class=>'smiley'});
+    ________________}
+    ________}
+    }
+
+In summary:
+
+* Only change these variables when you know what you are doing.
+* Rely on the indentation suggested by the Emacs major modes.
+
+== Discussion ==
+
+I disagree strongly with the idea that we should rely on the indentation suggested by the Emacs major mode. Instead, I think we should rely on the indentation suggested by the code base we're using. If the code uses tabs, then I believe we should use tabs: Not try to convert everyone to the wisdom of Emacs' major mode.
+-- LionKimbro
+
+[new]
+Sure. When looking at C code, the best is to figure out what style they are using, and switch to the correct style using Emacs Power -- see IndentingC for details. Or, if you are unlucky enough to be on a project requiring special indentation, then set Emacs up to know about this new style. It may take a while, but once you're done, you're going to be so much faster. -- AlexSchroeder
+
+[new]
+I'm using GNU Emacs 21.3.1, and don't see "##indent-tabs-mode##" when I do a ##C-h f indent-TAB##. Is this a custom emacs lisp collection, or, ...?
+-- LionKimbro
+
+[new]
+It's a variable. Don't ask me why, I cannot explain it. :) -- AlexSchroeder
+
+[new]
+I haven't been able to find this. Is it possible to make Emacs use a /smart/ mix of tabs and spaces? This seems like the obvious right thing to do.
+
+For instance (using 2-space tabs):
+
+    class myclass
+    __void mymethod(int arg1,
+    __              int arg2,
+    __              int arg3) {
+    ____statement1;
+    ____statement2;
+    ____callSomeFunction(someotherarg1,
+    ____                 someotherarg2);
+    __}
+    }
+
+The same code using 8-space tabs would look like this:
+
+    class myclass
+    ________void mymethod(int arg1,
+    ________              int arg2,
+    ________              int arg3) {
+    ________________statement1;
+    ________________statement2;
+    ________________callSomeFunction(someotherarg1,
+    ________________                 someotherarg2);
+    ________}
+    }
+
+You see, the point is to use tabs to indent to a new level (so someone using a different tab-width sees the indentation they like), and use spaces when appropriate to line up with an arbitrary point defined by the actual code (so someone using a different tab-width does /not/ get someotherarg2 way off the side of their screen)
+
+Surprisingly, I don't know of any editor that does this.
+
+[new]
+I've often wanted the above suggestion, of using tabs for indentation level and spaces for alignment, but not only have I not found it for Emacs, I think the people I share code with wouldn't have anything similar for their editors. So I've given up and just use spaces. --AmitPatel
+
+[new]
+**Yes**, it is possible. See SmartTabs.
+
+[[image:SmartTabsScreenshot]]
+
+----
+CategoryIndentation

@@ -1,0 +1,36 @@
+This module is disabled by default.  To enable it, use M-x customize-variable
+RET erc-modules.
+
+=Mark unidentified users=
+
+[http://freenode.net/ freenode] (irc://irc.freenode.net) added a capability to
+its ircd (dancer) a couple years ago which makes it possible to see who has
+identified to NickServ (see ErcNickserv if you'd like to identify your own
+nickname) and who hasn't.  It's called CAPAB IDENTIFY-MSG.  If you send
+that command to a server running an ircd based on dancer, a flag will be added
+to all messages sent by users. A plus sign is added to identified users'
+messages and a minus sign is added to the messages of unidentified users.
+
+The `erc-capab-identify' module enables this capability on servers that
+support it.  It then removes the flag from all incoming messages and marks
+unidentified users by adding the prefix `erc-capab-identify-prefix' to users'
+nicknames, by default an asterisk (*).
+
+Here's an example of how users are marked in a sample conversation (new-user
+is unidentified).
+
+    <user1> this is a sample conversation
+    <user2> testing, testing
+    <*new-user> hey
+
+Customize `erc-capab-identify-unidentified' to change the look of the prefix's
+face.  You might want to choose a color that is close to the background
+color so that users' nicknames stand out more.
+
+
+See http://freenode.net/faq.shtml#spoofing and
+http://freenode.net/faq.shtml#registering to find further explanations of this
+capability.
+
+----
+[[ERC]]

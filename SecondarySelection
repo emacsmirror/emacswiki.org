@@ -1,0 +1,76 @@
+Emacs has a primary selection, called the [[region]]. It also has a '''[::secondary selection]'''. What for?
+
+Use the secondary selection for, well, a second selection. This lets you use the region for other things, while keeping another selection available for [[yank|yanking]] etc. IOW, think of the secondary selection as something less ephemeral than the region, something that is unaffected by changes in the region.
+
+
+== Using the Secondary Selection (Vanilla Emacs) ==
+
+How do you use the secondary selection? See the Emacs manual, node '''Secondary Selection''' (duh...). Selection and yanking are the same as for the region, except that you use the Meta modifier key.
+
+* To select, do any of the usual things, but with the Meta key held down:
+** Hold the Meta key while you drag the mouse (mouse-1).
+** Meta click mouse-1, then Meta click mouse-3, to select a sequence of characters.
+** Meta ''double''-click mouse-1, then Meta click mouse-3, to select a sequence of whole ''words''.
+** Meta ''triple''-click mouse-1, then Meta click mouse-3, to select a sequence of whole ''lines''.
+* To yank (paste): Meta click mouse-2.
+
+You can also use the secondary selection as another way to do what you do with `query-replace' -- sometimes it is more convenient or more flexible:
+
+# Select the replacement text as the secondary selection.
+# Select the text to replace as the primary selection.
+# Paste the secondary selection.
+# Kill the primary selection.
+
+
+
+[:secondary-sel.el]
+== Library secondary-sel.el - Secondary Selection Enhancements ==
+
+Library '''<tt>[[second-sel.el]]</tt>''' enhances secondary selection.
+
+It adds the secondary selection to a new selection ring, '''`secondary-selection-ring'''', which is similar to, but separate from, the `kill-ring'. It also prevents the secondary selection from being added to the `kill-ring', so you now have two separate selection-history rings. 
+
+'''`M-y'''' cycles items from the appropriate ring, depending on whether it follows a yank of the primary (region) or the secondary selection (see below). 
+
+##second-sel.el## defines new secondary-selection commands. Library <tt>[[menu-bar+.el]]</tt> adds some of these to the '''Edit''' menu as items '''Paste Secondary''', '''Move Secondary to Region''', '''Swap Region and Secondary''', and '''Select Secondary as Region'''. 
+
+
+=== `secondary-dwim' (`C-M-y') ===
+
+Command '''`secondary-dwim'''' rolls several secondary-selection commands into one. Library <tt>[[setup-keys.el]]</tt> binds this to '''`C-M-y''''.
+
+Its behavior depends on the [[prefix argument]]:
+
+* No prefix arg -- same as `yank-secondary': Yank the secondary selection at point.
+
+* Zero prefix arg -- same as `secondary-to-primary': Select the secondary selection as the region, popping to its buffer.
+
+* Non-zero arg: Move the secondary selection to this buffer's region.
+** Negative arg -- same as `secondary-swap-region': Swap the region and the secondary selection. That is, also go to where the secondary selection was and select it as the region.
+** Positive arg: Same as `primary-to-secondary'.
+
+DWIM summary: Use `C-M-y':
+* Define the secondary using the keyboard ('''`C-1 C-M-y'''').
+* Go to the secondary location and select it ('''`C-0 C-M-y'''').
+** And put the secondary where the region is now ('''`C-- C-M-y''''), so you can easily bounce back.
+
+
+=== `yank-pop-commands' (`M-y') ===
+
+Library <tt>[[setup-keys.el]]</tt> binds command '''`yank-pop-commands'''' to '''`M-y''''. It cycles among selections in a selection ring: either the `kill-ring' or the secondary-selection ring.
+
+* If the previous command was a normal yank, then cycle the `kill-ring'.
+* If the previous command yanked the secondary selection, then cycle the secondary-selection ring.
+
+In addition, if you also use library <tt>[[browse-kill-ring+.el]]</tt>, then if the previous command was not a yank at all, browse the last-used selection ring. With a prefix arg, switch to the other selection ring and browse it.
+
+
+== See Also ==
+
+AnchoredTranspose makes use of the secondary selection.
+
+
+----
+CategoryEditing
+CategoryGlossary
+CategoryRegion

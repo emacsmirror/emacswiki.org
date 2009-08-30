@@ -1,0 +1,106 @@
+There may exist some advantages to use external programs to do some work for Gnus. A situation where this may be true could be to get your mail from a pop3 account and split it. Here's how to do that.
+
+== Configuring Fetchmail ==
+
+Well... this should be fairly simple. Just create a ~/.fetchmailrc with the following:
+
+  poll <your.mail.server> with proto POP3
+       user <your.mail.account> there with password <your.mail.password> \
+       is <your.local.account> here \
+       options fetchall mda "<path.to.procmail>/procmail -d %T"
+
+For details, just take a look at the fetchmail documentation.
+
+== Configuring Procmail ==
+
+The configuration of procmail is also very simple:
+
+  MAILDIR=$HOME/.mail
+  DEFAULT=$MAILDIR/inbox/
+  LOGFILE=$MAILDIR/procmail
+
+  # Spamassassin! 
+  # I just pasted the default configuration of spamassassin...
+  :0fw: spamassassin.lock
+  * < 256000
+  | spamassassin
+  :0:
+  * ^X-Spam-Status: Yes
+  spam.spool
+
+  :0:
+  * (^To|^Cc):.*ding@gnus.org
+  ding.spool
+
+  :0:
+  inbox.spool
+
+Just insert something similar in your ~/.procmailrc file. Some warnings:
+* make sure that your MAILDIR directory exists;
+* make sure you have a default entry at the end of the file (in the example, the inbox.spool)
+
+=== For nnmaildir backend ===
+
+The ~/.procmailrc looks very similar:
+
+  MAILDIR=$HOME/Mail
+  # set the following to yes for debugging 
+  VERBOSE=no
+  # to enable logging
+  # LOGFILE=$HOME/.procmaillog 
+  DEFAULT=$MAILDIR/inbox/
+
+  #all
+  :0:
+  * ^TOall@mycompany\.com
+  $MAILDIR/company-all/
+
+  #eng-stuff
+  :0:
+  * ^TOeng-stuff@mycompany\.com
+  $MAILDIR/eng-stuff/
+
+  .
+  .
+  
+  # Accept all the rest to your default mailbox
+  :0:
+  ${DEFAULT}
+
+Important to note that trailing slash (/) at the end of each procmail destination.
+
+Note: This last "accept all" rule is the default behavior for procmail: anything not matched by another rule will be saved in $DEFAULT. -- JohnWiegley
+
+== Configuring Gnus ==
+
+Ok, now all you have to do is to tell Gnus that it shall get the mail from the ~/.mail/ directory. This directory will contain the *.spool files where the mail is stored. The following line will do the job:
+
+  (setq mail-sources '((directory :path "~/.mail" :suffix ".spool")))
+
+Then, add the following in order to Gnus delete the files that were created by procmail (they are not needed anymore):
+
+  (setq mail-source-delete-incoming t)
+
+And that's it! You do not need to use any of the split functionalities that Gnus offers.
+
+=== For nnmaildir backend ===
+
+The gnus configuration is very similar:
+
+ (setq
+	gnus-select-method '(nnmaildir "mymailbox" (directory "~/Mail/"))
+ 	mail-sources '((maildir :path "~/Mail/" :subdirs ("cur" "new")))
+	mail-source-delete-incoming t
+ )
+ (setq gnus-secondary-select-methods nil)
+ (setq gnus-message-archive-group "nnmaildir+mymailbox:outbox")
+
+== Discussions ==
+
+Does `procmail' help improving speed comparing to Gnus' split method? I've always be annoyed by fetching new mails from /var/mail/user (with fetchmail), which takes quite some time.
+- WilliamXu
+
+Not only is procmail faster, but it usually happens in the background and thus the time taken is not perceived by the user at all.  You don't get the fancy Lisp options that you do with Gnus splitting, but I prefer the speed. -- JohnWiegley
+
+----
+CategoryGnus

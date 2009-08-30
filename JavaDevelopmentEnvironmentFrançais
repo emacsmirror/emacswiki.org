@@ -1,0 +1,33 @@
+Obtenez le ici:
+
+* http://jdee.sunsite.dk/
+
+Sur la page web on peut lire:
+
+Le "Java Development Environment for Emacs" (Environnement de
+Développement Java pour Emacs) est un paquetage logiciel servant
+d'interface entre Emacs et les outils de développement Java en
+ligne de commande (par exemple le JDK de
+<nowiki>JavaSoft</nowiki>). Les fonctions de JDEE comprennent:
+
+* menu JDEE avec des commandes pour la compilation, le lancement
+  d'applications, le débogage, la navigation, la gestion de projets,
+  l'aide...
+* coloration du code source
+* indentation automatique
+* liens vers le code source lors d'erreurs de compilation
+* débogage
+* navigation dans le code source
+* support des makefiles
+* support de ant
+* génération automatique de code
+* interpréteur de source Java (<nowiki>BeanShell</nowiki>  de Pat Neimeyer)
+
+== Réponses Souvent Données ==
+
+Avez-vous effectué l'installation comme elle est documentée ?
+
+This page is also available in english : English:JavaDevelopmentEnvironment
+
+----
+CatégorieOutilsDuProgrammeur

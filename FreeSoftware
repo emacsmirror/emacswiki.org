@@ -1,0 +1,19 @@
+Free software refers to freedom rather than price.  The most common method of expressing the difference in English is "free speech, not free beer."  In French it would be expressed as "libre" as opposed to "gratis."
+Free software must give all the freedom to 0. use it, 1. change it, 2. share it, and 3. redistribute your changed version of the software.  Free software consequently requires availability of the entire source code.[http://www.gnu.org/philosophy/free-sw.html]
+These four freedoms are what make software "free" in the sense of the [[FSF]].
+
+In addition, a CopyLeft license requires you to pass those four freedoms along when you distribute or modify the software.  Not all free software uses a CopyLeft license, however.
+
+Software that doesn't have these freedoms for its users is non-free (often called "proprietary software").  Only the copyright holder can 
+choose how and to whom it is distributed, know exactly what it does or make changes.  Very unfortunate.
+
+For more information, check the
+[http://www.gnu.org/philosophy/categories.html categories of free and non-free software] at the GNU web site.
+
+----
+This might be worth another page at some point, but
+[http://www.benkler.org/CoasesPenguin.html Coase's Penguin, or Linux and the Nature of the Firm]
+by Yochai Benkler offers a traditional, economic slant on FOSS.
+-- ChristopherSmith
+
+I'm not sure Emacs Wiki is the place to delve into this discussion...  I suggest we cut it back to two or three paragraphs and remove the reference to software hoarding, since that's the phrase that caused the current explosion. -- Alex.

@@ -1,0 +1,118 @@
+This guide contains practical advice and the most basic facts you need to know to get up and running with VM.
+
+These instructions are about VM 8.  Instructions for VM 7.19 can still be found at ViewMailSevenQuickStart.
+
+== Organization ==
+
+=== Installation ===
+
+Get VM from http://www.nongnu.org/viewmail/, and build it as per the instructions in the file INSTALL.  It is not necessary to `make install'.  You can eliminate a step from installation by running it from the build directory.  You should, however, install the binary mime encoders and decoders.  VM also has encode and decode functions written in elisp, but these programs are much faster.  Both GNU Emacs and XEmacs now also have fast internal encoders and decoders, and those will be used instead of these programs, if they are present.  Better to install them anyway and forget about it.
+
+  # after you have done a successful `make' in the top level directory...
+  cd src
+  make install
+
+Your .emacs now needs something like this:
+
+  (add-to-list 'load-path "/path/to/vm/lisp")
+  (require 'vm-autoloads)
+
+=== Directory ===
+
+Make a directory to store your email folders.  ~/email would not be a bad choice.
+
+=== Configuration ===
+
+We configure VM by setting variables that tell it where to get your mail and where to put your mail, among other things.  Broadly speaking, you can either write your VM configuration in ~/.vm or ~/.emacs.  Which you choose depends on how you prefer to organize your emacs session.  Let us consider the relative merits of each way.
+
+* Writing the configuration in vm-init-file (~.vm)
+
+vm-init-file defaults to ~/.vm
+
+This file is loaded the first time you run VM in an Emacs session.
+
+In vm-mode, "L" is bound to vm-load-init-file, so you have a convenient key binding available for when you make changes to your .vm.
+
+* Writing the configuration in ~/.emacs
+
+Maybe you want your VM settings grouped with other email-related settings in your .emacs, or in a separate script loaded from it.  A lot of people like to keep private information in a script separate from their .emacs.
+
+For tidiness, you should set vm-init-file to nil.
+
+    (setq vm-init-file nil)
+
+----
+== Most Important Variables ==
+
+=== vm-primary-inbox ===
+
+The mailbox visited by VM at startup.  The default is `~/INBOX' if that file exists, otherwise `~/Mail/inbox'.  But don't worry about that craziness.  Just choose a file that is not a default for any mail client you use.  It will be one small measure of protection if you need to debug, hack, or run multiple clients at once.
+
+For example:
+
+    (setq vm-primary-inbox "~/email/inbox.mbox")
+
+=== vm-crash-box ===
+
+VM transfers mail from the spool to the primary inbox via a temporary file called the crash box.  This variable names the crash box file.
+
+For example:
+
+    (setq vm-crash-box "~/email/inbox.crash.mbox")
+
+=== vm-spool-files ===
+
+When you start VM, it will check for incoming mail in the spools listed in <code>vm-spool-files</code>.  This list can be defined in /simple form/ or /complete form/.  Forget about simple form.  Complete form is easy, and if you ever need to add another spool, you can just copy and modify what you have already written.
+
+In complete form, each element of <code>vm-spool-files</code> is a list of three strings: <code>(INBOX-PATH SPOOL CRASH-BOX-PATH)</code>
+
+You should have already set <code>vm-primary-inbox</code> and <code>vm-crash-box</code> so we have only to define SPOOL.
+
+* Spool File
+
+    (setq vm-spool-files `((,vm-primary-inbox
+                            "/var/mail/me"
+                            ,vm-crash-box)))
+
+* POP
+
+VM can download mail via pop.
+
+    (setq vm-spool-files `((,vm-primary-inbox
+                            "pop:HOST:PORT:AUTH:USER:PASSWORD"
+                            ,vm-crash-box)))
+
+See ViewMailAndPop for more details.
+
+
+* IMAP
+
+If your spool is an IMAP server, set vm-spool-files like this:
+
+    (setq vm-spool-files `((,vm-primary-inbox
+                            "imap:HOST:PORT:MAILBOX:AUTH:USER:PASSWORD"
+                            ,vm-crash-box))
+
+See ViewMailAndImap for more details.
+
+==== Adding Spools ====
+
+To add another spool apart from the primary, simply add another (INBOX-PATH SPOOL CRASH-BOX-PATH) form to the <code>vm-spool-files</code> list.  Multiple spools may go into the same inbox.  Spools that go to different inboxes should use different crash-boxes.
+
+----
+== Other Basic Setup ==
+
+=== Autoloading ===
+
+Here are some tips to better integrate VM in Emacs.  These things should go in your .emacs, since if they are in your .vm, they would not be loaded  until you run VM, which almost defeats the point.
+
+Make vm-mode load for files with the extension `.mbox'.
+
+    (add-to-list 'auto-mode-alist '("\\.mbox$" . vm-mode))
+
+Make `M-x compose-mail' (also `C-x m') create a VM-style composition buffer.
+
+    (setq mail-user-agent 'vm-user-agent)
+
+----
+CategoryViewMail

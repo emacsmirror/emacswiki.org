@@ -1,0 +1,104 @@
+== Emacs On Windows CE / Pocket PC ==
+
+There is a port of Emacs 20 to Windows CE.
+
+You can download it from the following site, BUT watch out, there are different versions there and I think the officially linked one is not the most recent and not the best.
+
+As far as I remember, this is how to get the latest version:
+
+* Get the Emacs distribution from http://www.rainer-keuchel.de/wince/emacs-wince.html (This looks like all files: http://www.rainer-keuchel.de/wince/dirlist.html)
+* Now you will need to update some files. Old version of these are already in that distribution.  
+** You should also download from the site:
+*** "celib-3.13-dll-bin-all-platforms.tar.gz". This will give you menus and connection to the Windows CE-clipboard. ( I installed "wince-arm-
+pocket-wce300-release/celib.dll")
+*** "emacs-wince-arm-xbuild-2.03.tar.gz". Replace your emacs.exe from this file.
+
+More info: This is a recent post from the other about the newest builds: http://groups.yahoo.com/group/wince-devel/message/1750
+
+People who use the Emacs port to Windows CE PDAs seem to hang round in the following mailing list. On the page there is a "Search archive" button. Type "Emacs" in there to check for news.
+
+http://groups.yahoo.com/group/wince-devel/ 
+
+Alternatively, you can head to this direct link to search for emacs on the list:
+
+http://groups.yahoo.com/group/wince-devel/messagesearch?query=emacs
+----
+
+
+This is working fine for me.
+
+I am working to customize it to make Emacs better suited for a PDA. If you're interested, contact me: summerswimming at gmx dot de
+
+----
+
+I (cpence at princeton dot edu) can also confirm that this works on a (very new) Windows Mobile 5 VGA Dell Axim x51v.  The registry editor included with the package is now broken (at least with !ActiveSync 4), so the registry batch file won't work.  I used [http://www.breaksoft.com/Blog/Utilities/2005/1/Mobile_Registry_Editor.aspx Mobile Registry Editor] installed on my desktop computer with the AEConfig fix from [http://www.breaksoft.com/Blog/Posts/2005/8/Mobile_Registry_Editor_FAQ.aspx this FAQ page] to make the requisite registry changes.
+
+On this VGA device changing to 10-pt font is a must, but everything appears to still work perfectly.  Important notes:
+
+* You should definitely set the geometry in the shortcut file, as mentioned again below.  Make a shortcut (find the emacs binary, Copy it, Paste Shortcut in the Windows\Start Menu\Programs directory), then open the shortcut in Emacs (or another text editor) and add the parameters at the end, after the closing quotation marks for the executable.
+* Disabling Emacs' backup file creation by placing "(setq make-backup-files nil)" in your InitFile is also a good idea, as the Windows Mobile file explorer is confused by the ~-files.
+* When Emacs crashes, it crashes hard, and usually requires a soft reset of the device.  The most common way for this to happen is upon startup if you've messed up the registry settings.
+* Definitely use the ##.emacs-sample##!  It includes CE battery life and free-space display on startup.  To alter the locations shown on the free space display (i.e. if you don't have German Windows Mobile) edit the wince.el file in the HOME\lisp directory.
+
+
+----
+
+
+== Emacs on the Zaurus Linux PDA ==
+
+Updated (17 March 2007): I (zdevil in www.oesf.org/forums ) have the latest Emacs 23 working on Sharp Zaurus SL-C1000 (running pdaXrom). 
+http://www.oesf.org/forums/index.php?showtopic=23455
+The good news is CJK display and input are not fully supported!
+I have also compiled and packaged a PIM suite (Muse + BBDB + Remember + Planner) and it runs great, too!
+Right now I am testing the build and preparing short how-tos for newbies. Will keep here updated.
+
+
+
+----
+
+I (hhalvors at princeton dot edu) have emacs 21 running on a Sharp Zaurus C750.  Emacs 21 can be obtained by apt-get from within Klaus Weidner's distribution of Debian for the Zaurus (see http://pocketworkstation.org/ ).  
+
+(But I have other troubles with Debian on Zaurus -- e.g., I can't yet get suspend to work!)  
+
+Although I'm glad to have emacs 21 on a PDA, I can't say that I would strongly recommend getting a Zaurus just to run emacs 21 -- mainly because it is an awful lot of work to get things running.  (The main problem is that the Zaurus isn't set up, out of the box, to run X-Windows programs such as emacs.)
+
+If you have a SL-C (clamshell model) series there are 2 other options:
+* run pdaxrom, an xemacs binary is available in the unstable feed, emacs can be build easily with the native sdk. see [http://www.pdaxrom.org] and the corresponding feed [http://www.pdaxrom.org/ipk_feed.php?showfeed=unstable]
+
+http://www.pdaxrom.org/unstable/shots/xemacs.png
+
+* run Xqt (which can perhaps been used with other zaurus model) inside the original rom, for which an emacs binary is available see [http://xqt.sourceforge.jp/index.html] and the corresponding feed [http://xqt.sourceforge.jp/feed/]
+
+Update (August 2006) from hhalvors: I can confirm that Emacs 21 runs well under Xqt.  I used it on a Zaurus SL-C750 for a couple of years.  Xqt was stable about 95\% of the time, with only occasional debilitating crashes.  For an even better experience, run Emacs on pdaXrom on the latest Zaurii, e.g. SL-C3200.  I have not yet had to reboot or even restart Emacs after several months of use.    
+
+
+----
+
+I (summerswimming at gmx dot de) am using Emacs and EmacsWikiMode on my Pocket PC (=Windows CE, on Dell Axim). For more information than on this page, please email me. Anyone who wants to use the Emacs on a PDA, please tell me, so we can share our customizing.
+
+You don't need any complex Emacs-keystrokes when you customize things. And in terms of customizing nothing is better than Emacs. Most navigating can be done with the stylus and the RETURN-key.
+
+I like it very much as a PIM.
+
+The syncing is quite easy: I just sync all files of the wiki.
+
+On my Pocket PC Emacs is running very good, including menus and stylus-navigation. I can recommend my combination. It works. I also have a foldable keyboard and with that it is nearly like a sub-notebook, but much lighter and smaller. I carry it around much more often than I would do with a sub-notebook.
+
+----
+
+== Misc ==
+
+* If you are missing parts of your Emacs-window, e. g. the menu, maybe your window does not fit on the screen. On the Windows CE you can set the window size in characters by calling Emacs with a *.lnk file containing the following text:
+
+# /emacs/bin/emacs.exe -geometry 38x22
+
+: One more port of Emacs for Sharp Zaurus (Qtopia) is here http://sourceforge.jp/projects/zaurus-ja/ (but it works in console only) --DmitriBrechalov
+
+* You can also run emacs on your google phone - EmacsOnAndroid
+----
+
+Keywords: PDA
+
+-----
+CategoryPorts
+CategoryPersonalInformationManager

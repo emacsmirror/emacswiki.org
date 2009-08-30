@@ -1,0 +1,181 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Customization and General Tips]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Key Bindings]] ||
+
+----
+
+
+== File-Name and Directory-Name Completion Tips ==
+
+This page contains some tips about [[completion|completing]] file and directory names.
+
+----
+[:icicle-sort-dirs-last]
+==== Sort Function icicle-dirs-last-p ====
+Function '''`icicle-dirs-last-p'''' is
+provided as a possible value for [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-function|icicle-sort-function]]</tt>''''.  It treats
+file and directory names specially, sorting directory names ''after''
+file names; otherwise, it is the same as `icicle-case-string-less-p'.  (You can
+of course reach directory names ''before'', instead of after, file
+names, by [[Icicles - Cycling Completions|cycling]] using `up' and `prior' instead of `down' and `next'.)
+
+----
+[:icicle-cycle-into-subdirs-flag]
+==== Option icicle-cycle-into-subdirs-flag ====
+User option '''`<tt>[[Icicles - Customization and General Tips#icicle-cycle-into-subdirs-flag|icicle-cycle-into-subdirs-flag]]</tt>'''' controls whether or
+not [[minibuffer]]-input cycling ''explores subdirectories''.  By default,
+it is `nil', meaning that cycling does ''not'' descend into
+subdirectories. 
+
+* non-`nil' -- When this option is non-`nil', you might want to use a
+function such as `icicle-dirs-last-p' for option
+`icicle-sort-function', to prevent cycling depth first
+into the subdirectories.
+
+* `nil' -- When this option is `nil', you can still choose to cycle
+into a given directory (which is why `nil' is the default
+value).  When cycling reaches a candidate directory that
+you want to cycle through, just: '''1)''' move the [[cursor]]
+(e.g. `C-e'), '''2)''' hit `TAB' or `S-TAB' to "complete" the
+candidate, and then '''3)''' use any of the cycle keys, such as
+`up', to cycle within the candidate directory.
+Although the candidate directory was already completed by
+cycling, moving the cursor and explicitly "completing" it
+tells '''Icicles''' that you want to treat the candidate in the
+minibuffer as real input, just as if you had typed it, not
+merely as a cycling candidate.
+
+----
+[:DotDotSlashAndTilde]
+==== .., /, and ~/ ====
+
+You can use '''`##..##'''' during [[completion]] to access a parent directory,
+and you can use '''`##/##'''' and '''`##~/##'''' to shadow input to the left.  There
+is currently no special treatment of MS Windows drive letters
+(e.g. `<code>C:</code>') -- I use CygWin on Windows.
+
+
+----
+[:icicle-hide-common-match-in-Completions-flag]
+==== Option icicle-hide-common-match-in-Completions-flag, C-x . ====
+
+Non-`nil' user option '''`icicle-hide-common-match-in-Completions-flag'''' hides the common
+match for your current input from each candidate in
+`*Completions*'.  You can toggle this at any time during
+completion using '''`##C-x .##'''' (`icicle-toggle-hiding-common-match').
+This can be especially useful when reading an absolute file name
+(e.g. `C-u C-x C-f'), by removing any common directory
+component.
+
+
+----
+[:completion-ignored-extensions]
+==== Option completion-ignored-extensions ====
+
+Standard Emacs user option '''`completion-ignored-extensions'''' is a list of file-name extensions. File names that match any of these extensions are generally ignored for completion (but see the doc string for particulars).  In '''Icicles''', however, the behavior is slightly different:
+
+* In vanilla Emacs the option is itself ignored for display in buffer `*Completions*'.  That is, even file names that are ignored for completion are shown in `*Completions*' as available completion candidates.
+
+* In '''Icicles''' this is not the case.  When a file name is ignored it is ignored completely; it is not shown in `*Completions*'.  But in '''Icicles''' you can toggle this ignoring off or on at any time during completion, using '''`##C-.##'''' in the minibuffer.
+
+----
+[:icicle-use-tilde-for-home-dir-flag]
+==== Option icicle-use-~-for-home-dir-flag ====
+User option '''`##icicle-use-~-for-home-dir-flag##'''' controls whether
+your home directory is written in the minibuffer using `##~##' or in
+expanded form, during completion.  The default value is `t',
+which means to use `##~##', saving minibuffer space.  You can toggle
+this option at any time using [[command]]
+`##icicle-toggle-~-for-home-dir##', bound to '''`##M-~##''''.
+
+
+----
+[:RegexpMatchingAndGlobbing]
+==== Regexp Completion and File-Name Globbing ====
+
+Remember that you can use a ''[[regular expression]]'' (regexp) to [[apropos completion|apropos-complete]] file names.  This is a powerful feature.  Do
+not confuse its use with the ability to use ''shell wildcards'' (globbing) to
+access multiple files at once.  For example, if you use `##C-x 4 f *.el RET##', then all files with suffix `el' will be opened.
+Regexp matching is used only for apropos (not [[prefix completion|prefix]]) completion and cycling.  See [[Icicles - Special Characters in Input Patterns]].
+
+----
+[:DollarInEnvVarAndRegexps]
+==== $ in Environment Variables and in Regexps ====
+
+You can use '''`<code>$</code>'''' for both environment variables and as a regexp
+special character.  For example, you can use a pattern such as
+`##$HOME.*t$##' to match the files in your home directory (`##$HOME##') whose names end in `t'.  See [[Icicles - Special Characters in Input Patterns]].
+
+----
+[:BackslashWDollarMatchesDirectories]
+==== \W$ Matches Directories ====
+
+You can use the idiom `'''##\W$##'''' as input to match only ''directories'',
+when a command asks for a file or directory name.  The `##\W##' says
+to match any ''non word''-syntax character.  The `##$##' says to match
+this at the ''end'' of the name.  This works because directory names appear as completion candidates with a trailing slash (`##/##'), and
+slash is about the only non word-syntax character that is
+likely to appear in file-name completions.  See [[Icicles - Special Characters in Input Patterns]].
+
+----
+[:FFAP]
+==== FFAP: Find File At Point ====
+
+You can use library FindFileAtPoint (`##ffap.el##'), if you like, with '''Icicles''', to
+pick up the file, directory, or URL name under the [[cursor]].  All
+'''Icicles''' features are available during file-name and URL
+completion.  If you like `##ffap.el##', you might also like to try
+my extension library <tt>[[ffap-.el]]</tt>. See also [[Icicles - Inserting Text from Cursor]].
+
+----
+[:DefaultDirectory]
+==== Default Directory and Regexp Matching ====
+
+Many '''Icicles''' commands that target file or directory names look only in the current directory ([[default directory]]). This means
+that the directory part of the name is ignored for matching
+purposes. You can thus use apropos completion to match a
+''substring'', without needing to prefix the substring with `'''##.*##''''.  For example, to match file
+`##favorite-foo-file.bar##' in directory `##/some/path/to/my/##', it is sufficient to use either '''`foo'''' or 
+`##/some/path/to/my/##'''##foo##''''.
+
+----
+[:AbsoluteFileNames]
+==== Matching Absolute File Names ====
+
+Some '''Icicles''' commands that target file names match your input
+against ''absolute'' file-name completion candidates. This is
+the case for commands `icicle-locate-file', `icicle-recent-file', `icicle-find-file-in-tags-table', and `icicle-find-file-absolute', as well as `icicle-file' with a [[prefix argument]].
+These commands let you regexp-match against ''any part'' of the
+absolute file name, including ''directory'' components.  See [[Icicles - File-Name Input]].
+
+'''See Also:'''
+
+* [[Icicles - Customization and General Tips]] for
+general tips about using '''Icicles'''.  Many of those tips apply also
+to file-name and directory-name completion.
+
+* [[Icicles - File-Name Input]]
+
+----
+
+
+|| *Previous:*  [[Icicles - Customization and General Tips]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Key Bindings]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:ffap-.el, Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryModes
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

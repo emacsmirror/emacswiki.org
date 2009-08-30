@@ -1,0 +1,1057 @@
+;;; This is Jonathan Arnold's _emacs file.  I've been carrying it around for years
+;;; and years, so I have no idea how much of it really does what it says it does!
+;;; I currently mostly use Emacs 21 on Windows XP, but it also has some minor tweaks
+;;; for work on Linux, FreeBSD and MacOSX, although I'm sure I've made changes on those
+;;; platforms that aren't reflected here.
+;;;
+;;; This file is hereby declared in the public domain. Have at it!  Any comments,
+;;; catcalls or suggestions can be sent to jdarnold@buddydog.org
+
+;;
+;; keys
+;;			        
+
+(setq load-path (cons (concat (getenv "HOME") "/lisp/gnuserv") load-path))
+(setq load-path (cons (concat (getenv "HOME") "/lisp") load-path))
+(setq load-path (cons (concat (getenv "HOME") "/lisp/cc-mode") load-path))
+(setq load-path (cons (concat (getenv "HOME") "/lisp/w32-help") load-path))
+(setq load-path (cons (concat (getenv "HOME") "/lisp/mmm-mode-0.4.7") load-path))
+
+(define-key esc-map "\^h" 'backward-kill-word)
+(define-key ctl-x-map "\^k" 'my-compile)
+(define-key global-map "\r" 'newline-and-indent)
+(define-key esc-map "q" 'fill-paragraph)
+
+
+(setq text-mode-hook 'turn-on-auto-fill)
+(setq default-major-mode 'text-mode)
+
+(put 'eval-expression 'disabled nil)
+
+(setq autosave-interval 1000)
+
+(setq enable-recursive-minibuffers t)
+(setq inhibit-startup-message t)
+(setq grep-command "grep -n ")
+
+;(setq display-time-day-and-date t)
+(if (load "time" t t) (display-time))
+(column-number-mode t)
+
+; Make mouse-button-2 be right button and mouse-button-3 be "middle button" (ie., both together)
+(setq w32-swap-mouse-buttons t)
+(setq backup-by-copying t)
+(setq find-file-existing-other-name t)
+(setq w32-downcase-file-names t)
+
+;; -----------------------------------------------------------------
+
+
+;(setq debug-on-error t)
+
+(defun at (str)
+ (message "%s..." str)
+; (sleep-for 2)
+ str)
+
+(message "loading .emacs")
+
+(at "text-mode")
+(setq default-major-mode 'indented-text-mode)
+;(define-key indented-text-mode-map "\r" 'newline-and-indent)
+(setq text-mode-hook 'turn-on-auto-fill)
+
+;; -----------------------------------------------------------------
+;; -----------------------------------------------------------------
+(at "key maps")
+
+;jda (define-key global-map "\r" 'newline-and-indent)
+;jda (define-key global-map "\n" 'newline)
+
+(define-key help-map "A" 'fast-apropos)
+(define-key help-map "\^A" 'super-apropos)
+(define-key help-map "\^S" 'set-variable)
+(define-key help-map "\^V" 'describe-variable-briefly)
+
+(define-key ctl-x-map " " 'set-mark-command)
+(define-key ctl-x-map ":" 'goto-line)
+(define-key ctl-x-map "=" 'my-what-line)
+(define-key ctl-x-map "?" 'what-cursor-position)
+(define-key ctl-x-map "\^D" 'toggle-debug)
+(define-key ctl-x-map "\^H" 'backward-to-indentation)
+(define-key ctl-x-map "\^L" 'next-long-line)
+(define-key ctl-x-map "\^N" 'next-error)
+;(define-key ctl-x-map "\^O" 'put-other-buffer-in-other-window)
+(define-key ctl-x-map "\^P" 'my-print)
+(define-key ctl-x-map "\^U" 'undefined)
+(define-key ctl-x-map "n" 'goto-next-window)
+(define-key ctl-x-map "p" 'goto-previous-window)
+
+(define-key esc-map "g" 'goto-line)
+(define-key esc-map "#" 'renumber-region)
+(define-key esc-map "!" 'shell)
+(define-key esc-map "(" 'my-backward-list)
+(define-key esc-map ")" 'paren-skip)
+(define-key esc-map "," 'my-tags-loop-continue)
+;;(define-key esc-map "-" 'toggle-syntax)
+;;dangerous (define-key esc-map "." 'my-find-tag)
+(define-key esc-map ":" 'kill-comment)
+(define-key esc-map "T" 'throw-line-to-other-window)
+
+(define-key esc-map "\^B" 'backward-paragraph)
+(define-key esc-map "\^D" 'delete-whitespace)
+(define-key esc-map "\^F" 'forward-paragraph)
+(define-key esc-map "\^G" 'goto-char)
+(define-key esc-map "\^^" 'case-toggle-char)
+(define-key esc-map "\^S" 'toggle-case-fold-search)
+(define-key esc-map "\^Y" 'copy-yank-line)
+;;(define-key esc-map "\t" 'backward-to-indentation)
+(define-key esc-map "n" 'next-file)
+(define-key esc-map "o" 'open-previous-line)
+(define-key esc-map "r" 'query-replace-regexp)
+(define-key esc-map "s" 'isearch-forward-regexp)
+;(define-key esc-map "\r" 'compile)
+
+
+(setq
+      case-fold-search t
+      comment-multi-line t
+      completion-ignore-case t          ;Do case-insensitive completion.
+      enable-recursive-minibuffers t    ;Allow recursion using minibuf.
+      inhibit-startup-message t         ;I've read it already.
+      require-final-newline t           ;Always append a newline.
+      scroll-step 1
+      tab-stop-list '(4 8 12 16 20 24 28 32 36)
+      track-eol nil
+      version-control 'never)             ;Real programmers don't use vc.
+
+(setq completion-ignored-extensions
+      '(".o" ".lo" ".mh" ".elc" "~"
+ ".bin" ".lbin" ".fasl" ".dvi" ".toc"   ".aux" ".lof" ".blg" ".bbl"
+ ".glo" ".idx" ".lot"))
+
+(put 'narrow-to-region 'disabled nil)   ;Allow narrowing.
+(put 'narrow-to-page 'disabled nil)     ;Allow narrowing.
+
+(at "abbrevs")
+(condition-case ()                      ;don't bitch if no .abbrev_defs
+    (progn
+      (quietly-read-abbrev-file "~/.abbrev_defs")
+      (setq default-abbrev-mode t)
+      (setq save-abbrevs t)
+      )
+  (error))
+
+;; -----------------------------------------------------------------
+(at "c-mode")
+
+;(load "c-mode")
+;(load "cplus-md")
+
+; (fmakunbound 'c-mode)
+; (makunbound  'c-mode-map)
+; (fmakunbound 'c++-mode)
+; (makunbound  'c++-mode-map)
+; (makunbound  'c-style-alist)
+
+; (autoload 'c++-mode  "cc-mode" "C++ Editing Mode" t)
+; (autoload 'c-mode    "cc-mode" "C Editing Mode" t)
+; (autoload 'objc-mode "cc-mode" "Objective-C Editing Mode" t)
+; (autoload 'java-mode "cc-mode" "Java Editing Mode" t)
+
+(setq auto-mode-alist
+      (append
+       '(("\\.C$"    . c++-mode)
+	 ("\\.H$"    . c++-mode)
+	 ("\\.cc$"   . c++-mode)
+	 ("\\.hh$"   . c++-mode)
+	 ("\\.hpp$"  . c++-mode)
+	 ("\\.c$"    . c-mode)
+	 ("\\.h$"    . c-mode)
+	 ("\\.m$"    . objc-mode)
+	 ("\\.java$" . java-mode)
+	 ("\\.cgi$"  . perl-mode)
+	 ("\\.dfm$"  . c-mode)		; For BCB forms, to get auto-revert
+	 ) auto-mode-alist))
+
+(setq c-auto-newline nil)
+(setq c-brace-offset -2)
+(setq c-continued-statement-offset 2)
+(setq c-indent-level 2)
+(setq c-tab-always-indent t)
+(setq c-indent-comments-syntactically-p nil)
+
+(defun my-c-mode-common-hook ()
+  ;; use Ellemtel style for all C, C++, and Objective-C code
+  (c-set-style "ellemtel")
+  (c-set-offset 'inclass '+)
+  (c-set-offset 'case-label 0)
+  (c-set-offset 'statement-case-intro '+)
+  (c-set-offset 'inline-open '0)
+  (c-set-offset 'substatement '+)
+  (c-set-offset 'comment-intro '0)
+  
+ (abbrev-mode 1)
+  (setq dabbrev-case-replace nil)
+
+  (setq c-tab-always-indent t
+	c-basic-offset 2
+	tab-width 2
+	indent-tabs-mode nil
+	c-double-slash-is-comments-p t
+	)
+
+  (imenu-add-to-menubar "Functions")
+  (which-function-mode 1)
+  (auto-revert-mode 1)
+
+  )
+
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+(load-library "find-file")
+(global-unset-key [C-down-mouse-1])
+(global-set-key [C-mouse-1] 'ff-mouse-find-other-file)
+(setq cc-search-directories '("." "f:/dxsdk/include/" "f:/Microsoft SDK/include/" "f:/Microsoft SDK/include/mfc" "d:/Program files/Microsoft Visual Studio/vc98/Include" "d:/Program files/Microsoft Visual Studio/vc98/mfc/Include" "d:/borland/CBuilder6/Include" "d:/borland/CBuilder6/Include/vcl" "d:/borland/CBuilder5/Include" "d:/borland/CBuilder5/Include/vcl" ))
+
+(defun instant-find-tag ()
+  ()
+  )
+
+(defun my-cmode-hook ()
+;  (setq tab-width 2)
+  (define-key c++-mode-map [mouse-3] 'find-tag)
+  (define-key c++-mode-map "\C-c\C-f" 'c-forward-conditional)
+  (define-key c++-mode-map "\C-c\C-b" 'c-backward-conditional)
+  (setq truncate-lines 1)
+  (auto-revert-mode 1)
+  (c-toggle-auto-hungry-state 1)
+  
+;  (setq font-lock-maximum-decoration '((c++-mode . 3)))
+;  (setq font-lock-defaults '((font-lock-comment-face "Yellow")))
+  (function
+   (lambda ()
+     (make-local-variable 'compile-command)
+     (setq compile-command
+	   (concat "make -a "
+		   (file-name-sans-extension buffer-file-name)))))
+
+  )
+
+(add-hook 'c++-mode-hook 'my-cmode-hook)
+
+(defun my-pas-mode-hook ()
+  (setq pascal-indent-level       2
+	pascal-case-indent        2
+	pascal-auto-newline       nil
+	pascal-tab-always-indent  t
+	pascal-auto-endcomments   t
+	pascal-auto-lineup        nil
+	pascal-toggle-completions nil
+	pascal-type-keywords      '("array" "file" "packed" "char" 
+				    "integer" "real" "string" "record")
+	pascal-start-keywords     '("begin" "end" "function" "procedure"
+				    "repeat" "until" "while" "read" "readln"
+				    "reset" "rewrite" "write" "writeln")
+	pascal-separator-keywords '("downto" "else" "mod" "div" "then")
+	auto-revert-mode 1
+	indent-tabs-mode nil
+	)
+  )
+
+(add-hook 'pascal-mode-hook 'my-pas-mode-hook)
+
+;
+;(define-key c-mode-map "\^j" 'next-error)
+;(define-key c-mode-map "\ep" 'beginning-of-defun)
+;(define-key c-mode-map "\en" 'end-of-defun)
+
+(setq tags-table-list '("/hsw/tags"))
+
+(defun string-find-last-char (str c)
+  ;; Returns position of last C in STR.
+  (let ((n (1- (length str)))
+	(pos -1))
+    (while (>= n 0)
+      (if (eql (aref str n) c)
+	  (setq pos n n 0))
+      (setq n (1- n)))
+    pos))
+
+(defun file-suffix (filename)
+  (interactive "M")
+  (let ((n (string-find-last-char filename ?.)))
+    (if n
+	(substring filename (1+ n)))))
+
+(defun file-sans-suffix (filename)
+  (interactive)
+  (let ((n (string-find-last-char filename ?.)))
+    (if n (substring filename 0 n))))
+
+(setq my-compile-command "make ")
+
+(defun my-compile (append)
+  "Compile with compile-command, but try to guess compile-command
+based on the current buffer."
+  (interactive "p")
+  (let ((cmd my-compile-command)
+	(file (and
+	       (buffer-file-name)
+	       (file-name-nondirectory (buffer-file-name))))
+	suffix)
+    
+    (cond
+     ((and
+       (> append 1)			; do special make commandline if arg passed
+       (> (length file) 0)
+       (> (length (file-suffix file)) 0))
+      (setq suffix                    ;of file we want to regenerate
+	    (concat (file-sans-suffix file)
+		    (cond
+		     ((equal major-mode 'c-mode) ".obj")
+		     ((equal major-mode 'c++-mode) ".obj")
+		     ((string= (file-suffix file) "m") ".mh")
+		     ((string= (file-suffix file) "lsp") ".lo")
+		     (t " "))
+		    )))
+     (t (setq suffix " ")))		;I used to add -i
+    (setq cmd (read-string "Compile command: " (concat cmd suffix)))
+    (compile cmd)))
+
+(defun insert-today ()
+  "Insert today's date into buffer"
+  (interactive)
+  (insert (format-time-string "%A, %B %e %Y" (current-time))))
+
+; Make C++-mode be the default for .c and .h files
+;(setq auto-mode-alist (cons '("\\.c\\'" . c++-mode) auto-mode-alist))
+;(setq auto-mode-alist (cons '("\\.h\\'" . c++-mode) auto-mode-alist))
+
+;(load "perl-mode")
+
+(defun goto-next-window ()
+  (interactive)
+  (select-window (next-window)))
+
+(defun goto-previous-window ()
+  (interactive)
+  (select-window (previous-window)))
+
+(setq bookmark-save-flag 3)
+
+(at "special stuff")
+
+;; Some optional stuff
+(load "paren")
+(load "compare-w")
+(load "pc-select")
+(pc-selection-mode)
+
+;; Use special completion which includes wildcards
+(load "complete")
+(partial-completion-mode t)
+;(load "completion")
+;(initialize-completions)
+(icomplete-mode)			;Show me my options
+(setq PC-include-file-path '("e:/msvc/include" "h:/msdev/include" "e:/hsw/include"))
+
+(transient-mark-mode t)
+
+(global-set-key "" 'newline-and-indent)
+(global-set-key [(meta g)] 'goto-line)
+(global-set-key [?\C-H-M-S-s-DEL] 'backwards-kill-word)
+;(global-set-key [delete] 'delete-char)
+
+; M-C-f  M-C-bou
+(global-set-key [(control meta f)] 'forward-sexp)
+(global-set-key [(control meta b)] 'backward-sexp)
+(global-set-key [f10] 'forward-sexp)
+(global-set-key [f9] 'backward-sexp)
+
+(setq frame-title-format "Emacs: %f")     
+(setq icon-title-format "Emacs: %b")
+
+(setq default-frame-alist '((cursor-color . "orange")
+			    (background-color . "navy")
+			    (height . 40)
+			    (width . 80)
+			    (menu-bar-lines . 1)
+; -*-Andale Mono-normal-r-*-*-11-82-*-*-c-*-*-ansi-
+; -*-Lucida Console-normal-r-*-*-12-90-*-*-c-*-*-ansi-			    
+;       (font . "-*-Lucida Console-normal-r-*-*-13-97-*-*-c-*-*-ansi-")
+;       (font . "-*-Lucida Console-normal-r-*-*-11-82-*-*-c-*-*-ansi-")
+;       (font . "-*-Courier New-normal-r-*-*-12-90-*-*-c-*-*-ansi-")
+;      '(font . "-*-6X13-medium-r-*-*-13-97-*-*-c-*-*-ansi-")
+			      '(font . "-*-Courier New-normal-r-*-*-12-90-*-*-c-*-*-ansi-")
+
+			    (if (string= "x" window-system)
+				'(font . "-*-lucidatypewriter-medium-*-normal-*-10-*-72-*-*-*-*-*")
+			      '(font . "-*-Andale Mono-normal-r-*-*-12-90-96-96-c-*-iso8859-1-")
+			      )
+			    ))
+;(w32-select-font)
+
+;(setq initial-frame-alist '(
+;			    (width . 85)
+;			    (left . 400)
+;			    (top . 10)
+;			    (height . 60)
+;			    ))
+
+;; Some Emacs 19 stuff
+(progn
+      (global-set-key [S-f2] 'bookmark-set)
+      (global-set-key [f2] 'bookmark-jump)
+      (global-set-key [f3] 'query-replace-regexp)
+      (global-set-key [f4] 'find-tag)
+      (global-set-key [f6] 'compare-windows)
+      (global-set-key [f10] 'grep)
+      (global-set-key [f12] 'call-last-kbd-macro)
+					;(global-set-key [delete] 'backward-delete-char-untabify)
+      (global-set-key [backspace] 'backward-delete-char-untabify)
+      (global-set-key [M-backspace]  'backward-kill-word)
+      (global-set-key [home] 'beginning-of-line)
+      (global-set-key [end] 'end-of-line)
+					;      (set-default-font
+					;       "-*-6X13-medium-r-*-*-13-97-*-*-c-*-*-ansi-")
+      (set-face-background 'default "navy")
+      (set-face-foreground 'default "white")
+      (set-face-background 'highlight "yellow")
+      (set-face-foreground 'highlight "black")
+      (set-face-background 'region "lightblue")
+      (set-face-foreground 'region "navy")
+      (set-face-background 'bold "blue")
+      (set-face-foreground 'bold "white")
+      (set-face-background 'bold-italic "blue")
+      (set-face-foreground 'bold-italic "white")
+      (set-face-foreground 'underline "springgreen")
+      (set-face-background 'underline "dark green")
+      (set-face-foreground 'italic "grey")
+
+      (make-face 'info-node)
+      (set-face-foreground 'info-node "chartreuse")
+      (set-face-background 'info-node "light goldenrod")
+      (make-face 'info-xref)
+      (set-face-foreground 'info-xref "yellow")
+      (set-face-background 'info-xref "violet red")
+      (make-face 'info-menu-5)
+      (set-face-foreground 'info-menu-5 "yellow")
+      ;(set-face-background 'info-menu-5 "violet red")
+      
+      (set-face-foreground 'modeline "papaya whip")
+      (set-face-background 'modeline "black")
+      (setq cursor-color "red")
+      
+      (global-set-key [S-down-mouse-1] 'mouse-major-mode-menu)
+      ;(global-set-key [S-down-mouse-2] '
+      (define-key minibuffer-local-completion-map "\en" 'next-history-element)
+      (define-key minibuffer-local-must-match-map "\en" 'next-history-element)
+      (define-key minibuffer-local-completion-map "\ep" 'previous-history-element)
+      (define-key minibuffer-local-must-match-map "\ep" 'previous-history-element)
+      (set-foreground-color "light grey")
+      t)
+
+;; Some packages I use
+(load "uniquify")
+
+(add-hook 'find-file-hooks
+	  (lambda ()
+	    (cond
+	     (emacs-iconified
+	      (iconify-or-deiconify-frame)
+	    (raise-frame)
+	    ))))
+
+;; Some Emacs for Win95 stuff
+;(scroll-bar-mode nil)
+
+(defun string-replace-string (from to str)
+  "Replace all occurrences of string FROM with string TO in string STR."
+  (interactive)
+  (let (res
+        (qfrom (regexp-quote from))
+        (i 0))
+    (while (string-match qfrom str i)
+      (setq res (concat res (substring str i (match-beginning 0)) to))
+      (setq i (match-end 0)))
+    (concat res (substring str i))))
+
+;; Stuff just for NTEmacs
+(if (string= window-system "w32")
+    (progn
+
+      ;; Gnuserve stuff
+      (require 'gnuserv)
+      (gnuserv-start)
+      (get-buffer-create "*server*")
+      (setq gnuserv-frame (car (frame-list)))
+
+      (setq w32-enable-italics t)
+
+      )
+  )
+
+(setq message-send-mail-function 'smtpmail-send-it)
+
+;; GNUS
+(setq gnus-select-method '(nntp "news.ne.mediaone.net"))
+(setq gnus-button-url 'shell-execute-url)
+;(if (string= "win32" window-system)
+;    (setq browse-url-netscape-program "c:\\bin\\netscape.bat")
+;  (setq browse-url-netscape-program "netscape")
+;  )
+(setq gnus-check-new-newsgroups 'ask-server)
+(setq gnus-read-active-file 'some)
+(setq gnus-thread-sort-functions
+      '(gnus-thread-sort-by-number
+	gnus-thread-sort-by-subject
+	gnus-thread-sort-by-score))
+(setq gnus-asynchronous t)
+(setq gnus-use-cache 'passive)
+(setq gnus-use-long-file-name t) 
+(setq gnus-default-article-save 'gnus-summary-save-in-file) ; no encoding
+(setq gnus-interactive-catchup nil)
+(setq gnus-interactive-exit nil)
+(setq gnus-novice-user nil)
+(setq gnus-carpal-mode-hook t)
+;(setq gnus-use-nocem t)
+;(setq gnus-nocem-expiry-wait 7)
+(add-hook 'nntp-server-opened-hook 'harald-send-nntp-authinfo)
+(defvar harald-nntp-authinfo-file "~/news.password")
+(defun harald-send-nntp-authinfo ()
+  (if (file-exists-p harald-nntp-authinfo-file)
+      (save-excursion
+	(set-buffer (get-buffer-create " *nntp-authinfo*"))
+	(buffer-disable-undo (current-buffer))
+	(erase-buffer)
+	(insert-file-contents harald-nntp-authinfo-file)
+	(goto-char (point-min))
+	(and (search-forward nntp-address nil t)
+	     (re-search-forward
+	      "login[ \t]+\\(\\S +\\)\\s +password[ \t]+\\(\\S +\\)"
+	      nil t)
+	     (let ((login (match-string 1))
+		   (passwd (match-string 2)))
+	       (nntp-send-command "^.*\r?\n" "AUTHINFO USER" login)
+	       (nntp-send-command "^.*\r?\n" "AUTHINFO PASS" passwd)))
+	(kill-buffer (current-buffer))
+	)))
+
+(require 'font-lock)
+(global-font-lock-mode t)
+;(font-lock-make-faces t)
+
+;(setq font-lock-support-mode 'lazy-lock-mode)
+(setq font-lock-support-mode 'jit-lock-mode)
+(setq font-lock-maximum-decoration t)
+
+(setq lazy-lock-defer-on-scrolling nil)       ;new name for -defer-driven
+(setq lazy-lock-defer-time 1)
+(setq lazy-lock-stealth-time 20)
+(setq lazy-lock-stealth-lines 25)
+(setq lazy-lock-stealth-verbose nil)
+(require 'lazy-lock)
+
+;; To fix bug in sh-script-mode
+(defun my-sh-mode-hook ()
+  (sh-set-shell "ksh")
+  )
+(add-hook 'sh-mode-hook 'my-sh-mode-hook)
+
+; (setq font-lock-face-attributes
+;       '((font-lock-comment-face          "lime green")
+; 	(font-lock-string-face           "Gold" "DarkSlateBlue")
+; 	(font-lock-keyword-face          "Yellow")
+; 	(font-lock-function-name-face    "Snow1")
+; 	(font-lock-variable-name-face    "Gold")
+; 	(font-lock-type-face             "plum1")
+; 	(font-lock-reference-face        "orange1")
+; 	))
+
+;; Ediff
+
+;; python mode
+(autoload 'python-mode "python-mode" "Python editing mode." t)
+(setq auto-mode-alist
+      (cons '("\\.py$" . python-mode) auto-mode-alist))
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+(defun my-python-mode-hook ()
+  (local-set-key [delete] 'py-delete-char)
+  (auto-revert-mode 1)
+  )
+
+;;
+;; html helper mode
+;;
+(autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
+(autoload 'html-helper-mode "html-helper-mode" "Yay HTML" t)
+(setq auto-mode-alist (cons '("\\.htm$" . html-helper-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.html$" . html-helper-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.asp$" . html-helper-mode) auto-mode-alist))
+
+(setq html-helper-do-write-file-hooks t)
+(setq html-helper-build-new-buffer t)
+
+(add-hook 'html-helper-load-hook '(lambda ()
+				    (require 'html-font)
+				    ))
+(add-hook 'html-helper-mode-hook '(lambda ()
+				    (font-lock-mode 1)
+				    (turn-off-auto-fill)
+				    ))
+
+(setq html-helper-address-string
+      "<a href=\"mailto:jdarnold@buddydog.org\">Jonathan Arnold &lt;jdarnold@buddydog.org&gt;</a>")
+(setq html-helper-timestamp-start "<!-- hhmts start -->")
+
+(require 'php-mode)
+(setq auto-mode-alist (cons '("\\.php$" . php-mode) auto-mode-alist))
+
+;; IMENU - add functions to menu bar
+(defun my-add-to-menubar ()
+  (imenu-add-to-menubar "Index"))
+
+(add-hook 'emacs-lisp-mode-hook 'my-add-to-menubar)
+(add-hook 'cperl-mode-hook      'my-add-to-menubar)
+
+
+
+
+;; Subject:      revert-some-buffers
+;; From:         Bart Robinson <lomew@cs.utah.edu>
+;; Date:         1996/06/07
+;; Message-Id:   <5vpw7c55rk.fsf@sal.cs.utah.edu>
+;; Newsgroups:   gnu.emacs.sources
+;;
+;; This is useful sometimes.  It is similar in operation to
+;; save-some-buffers.
+;;
+;; -- bart
+
+(defun revert-some-buffers (force)
+  "Revert some buffers whose underlying file has changed underneath them.
+Asks user about each one.  Optional arg FORCE (interactive prefix arg)
+means to ask no questions."
+  (interactive "P")
+  (save-window-excursion
+    (let ((reverted 0)
+          (bufs (buffer-list))
+          buf)
+      (while bufs
+        (setq buf (car bufs))
+        (if (and (buffer-file-name buf)
+                 (not (verify-visited-file-modtime buf))
+                 (file-exists-p (buffer-file-name buf))
+                 (or force
+                     (y-or-n-p (format "Revert buffer %s? "
+                                       (buffer-name buf)))))
+            (progn (set-buffer buf)
+                   (revert-buffer nil t)
+                   (setq reverted (1+ reverted))))
+        (setq bufs (cdr bufs)))
+      (if (zerop reverted)
+          (message "(No buffers need reverting)")))))
+
+
+
+;;
+;; Diary and todo
+;;
+(diary)
+(add-hook 'diary-hook 'appt-make-list)
+(setq list-diary-entries-hook
+     '(include-other-diary-files sort-diary-entries))
+(setq diary-display-hook 'fancy-diary-display)
+
+;Daylight savings time
+;(calendar-nth-named-day 1 0 4 year)
+;(calendar-nth-named-day -1 0 10 year)
+
+(autoload 'todo-mode "todo-mode"
+ "Major mode for editing TODO lists." t)
+(autoload 'todo-show "todo-mode"
+ "Show TODO items." t)
+(autoload 'todo-insert-item "todo-mode"
+ "Add TODO item." t)
+(global-set-key "\C-ct" 'todo-show) ;; switch to TODO buffer
+(global-set-key "\C-ci" 'todo-insert-item) ;; insert new item
+(global-set-key "\C-cc" 'calendar)
+
+(require 'generic)
+;(require 'generic-x)
+
+(require 'custom)
+
+(require 'shellex)
+(require 'browse-url)
+
+;(defvar shell-execute-helper "shelex.exe")
+;(defun shell-execute-url (url &optional new-window)
+;  "Invoke the shell-execute-helper program to call ShellExecute and launch
+;     or re-direct a web browser on the specified url."
+;  (interactive "sURL: ")
+;  (call-process shell-execute-helper nil 0 nil url))
+
+;(setq browse-url-browser-function 'shell-execute-url)
+;(setq gnus-button-url 'shell-execute-url)               ; GNUS
+;(setq vm-url-browser 'shell-execute-url)                ; VM
+
+;; JDE Stuff
+(add-to-list 'load-path (expand-file-name "~/lisp/jde/lisp"))
+(add-to-list 'load-path (expand-file-name "~/lisp/semantic"))
+(add-to-list 'load-path (expand-file-name "~/lisp/speedbar"))
+(add-to-list 'load-path (expand-file-name "~/lisp/elib"))
+(add-to-list 'load-path (expand-file-name "~/lisp/eieio"))
+
+(require 'jde)
+
+(global-set-key [f8] 'speedbar-get-focus)
+
+;; (if (string= window-system "w32")
+;;     (progn
+;;       (setq jde-web-browser "h:/Win95/Netscape40/Communicator/Program/NETSCAPE.EXE")
+;;       (setq jde-doc-dir "g:/jdk/docs/")
+;;       (jde-db-set-source-paths "g:/jdk/src/;")
+;;       (jde-run-set-vm-w "f:\\borland\\jbuilder\\java\\bin\\javaw.exe")
+;;       ))
+
+;; Java mode
+(add-hook 'java-mode-hook 'my-java-mode-hook)
+(defun my-java-mode-hook ()
+  (cond (window-system
+	 (load-library "java-font-lock")
+	 (turn-on-font-lock)))
+  (if (string= window-system "win32")
+      (if (not (string-match "java" (getenv "PATH")))
+	  (setenv "PATH" (concat "f:\\borland\\jbuilder\\java\\bin;"
+				 (getenv "PATH")))))
+  (abbrev-mode 1)
+  (c-set-offset 'access-label 0)
+  (c-set-offset 'inline-open '+)
+  (c-set-offset 'substatement '+)
+  (setq dabbrev-case-replace nil)
+  (local-set-key "\^j" 'next-error)
+  (local-set-key "\^x\^k" 'jde-compile)
+  (local-set-key "\^x\^r" 'jde-run)
+  )
+
+
+;;
+;; For Win32 Help files
+;;
+(load "w32-help")
+
+(setq w32-help-bcb "e:/bcb5/cbuilder5/help/bcb5.hlp")
+(global-set-key "\C-h2" '(lambda () (interactive)
+			   (w32-help-on-topic
+			    w32-help-bcb
+			    (current-word 'strict))))
+(define-key menu-w32-help-map [C++Builder]
+  '("C++Builder\tC-h 2" . (lambda () (interactive) (w32-help-on-topic w32-help-bcb (current-word)))))
+
+(setq w32-help-w32api "e:/bcb5/Borland Shared/MSHelp/win32.hlp")
+(global-set-key "\C-h1" '(lambda () (interactive)
+			   (w32-help-on-topic
+			    w32-help-w32api
+			    (current-word 'strict))))
+(define-key menu-w32-help-map [win32api]
+  '("Win32 API\tC-h 1" . (lambda () (interactive) (w32-help-on-topic w32-help-w32api (current-word)))))
+  
+(setq w32-help-wxwin "e:/wxwindows//wxwindows/docs/winhelp/wx.hlp")
+(global-set-key "\C-h3" '(lambda () (interactive)
+			   (w32-help-on-topic
+			    w32-help-wxwin
+			    (current-word 'strict))))
+(define-key menu-w32-help-map [win32api]
+  '("Win32 API\tC-h 3" . (lambda () (interactive) (w32-help-on-topic w32-help-wxwin (current-word)))))
+
+(autoload 'sqlplus "sql-mode" 
+  "Run an interactive SQL*plus session in a separate buffer." t)
+
+(autoload 'sql-mode "sql-mode"
+  "Major mode for editing SQL*plus batch files." t)
+
+(setq auto-mode-alist (cons '("\\.sql$" . sql-mode) auto-mode-alist))
+
+(load "getcomics")
+(setq comics-filedir "c:/temp/")
+(setq comics-known (append '(("forbetter") ("arlonjanis")) comics-known))
+(setq comics-viewer "dg")
+(add-hook 'kill-emacs-hook 'clear-comics-files)
+(global-set-key [S-f4] 'get-comic)
+
+;;
+;; source code control
+;;
+(load-library "p4")
+(setq p4-executable "p4")
+(p4-set-p4-port "192.168.1.149:1666")
+(setq p4-do-find-file nil)
+(define-key p4-prefix-map "R" 'p4-refresh-files-in-buffers)
+
+;;
+(show-paren-mode t)
+
+;; Get rid of the MULE menu
+(define-key global-map [menu-bar mule] nil )
+
+;; Don't stop
+(add-hook 'kill-emacs-query-functions
+  (lambda () (yes-or-no-p "Really kill Emacs? ")))
+
+;; auto-insert stuff
+(add-hook 'find-file-hooks 'auto-insert)
+(setq auto-insert-directory (concat (getenv "HOME") "/auto/"))
+(setq auto-insert-alist
+      '(
+	("\\.cpp$" . ["insert.cpp" auto-update-c-source-file])
+        ("\\.h$"   . ["insert.h" auto-update-header-file])
+	("\\.c$" . ["insert.c" auto-update-c-source-file])
+	))
+(setq auto-insert 'other)
+
+;; function replaces the string '@@@' by the current file
+;; name. You could use a similar approach to insert name and date into
+;; your file.
+(defun auto-update-header-file ()
+     (save-excursion
+       (while (search-forward "@@@" nil t)
+	 (save-restriction
+	   (narrow-to-region (match-beginning 0) (match-end 0))
+	   (replace-match (upcase (file-name-nondirectory buffer-file-name)))
+	   (subst-char-in-region (point-min) (point-max) ?. ?_)
+	   ))
+       )
+     )
+
+(defun auto-update-c-source-file ()
+  (save-excursion
+    ;; Replace HHHH with file name sans suffix
+    (while (search-forward "HHHH" nil t)
+      (save-restriction
+	(narrow-to-region (match-beginning 0) (match-end 0))
+	(replace-match (concat (file-name-sans-extension (file-name-nondirectory buffer-file-name)) ".h") t
+		       )
+	))
+    )
+  (save-excursion
+    ;; Replace @@@ with file name
+    (while (search-forward "@@@" nil t)
+      (save-restriction
+	(narrow-to-region (match-beginning 0) (match-end 0))
+	(replace-match (file-name-nondirectory buffer-file-name))
+	))
+    )
+  (save-excursion
+    ;; replace DDDD with today's date
+    (while (search-forward "DDDD" nil t)
+      (save-restriction
+	(narrow-to-region (match-beginning 0) (match-end 0))
+	(replace-match "")
+	(insert-today)
+	))
+    )
+  )
+
+(make-variable-buffer-local 'backup-inhibited)
+(setq hippie-expand-try-functions-list
+      '(try-expand-dabbrev
+        try-expand-dabbrev-visible
+        try-expand-dabbrev-all-buffers
+        try-expand-dabbrev-from-kill
+        try-expand-whole-kill
+        try-complete-file-name
+        try-complete-lisp-symbol
+        try-expand-list
+        try-expand-list-all-buffers))
+(global-set-key [M-/] 'hippie-expand)
+
+(require 'msb)
+
+(setq printer-name "//big-n-fast/Samsung")
+(setq lpr-command "print")
+(setq ps-printer-name "//big-n-fast/Samsung")
+;(setq compilation-error-regexp-alist (append '(("\\(Error\\|Warning\\) [^ ]* \\([a-zA-Z]?:?[^:( \t\n]+\\) \\([0-9]+\\)\\([) \t]\\|:[^0-9\n]\\)" 2 3)) compilation-error-regexp-alist))
+
+(require 'bs)
+(require 'slashdot)
+
+;(iswitchb-default-keybindings)
+
+(defun yank-and-indent ()
+  "yank and then indent the newly formed region according to mode"
+  (interactive)
+  (yank)
+  (call-interactively #'indent-region))
+(global-set-key [(control meta y)] 'yank-and-indent)
+
+(require 'ishl)
+(ishl-mode 1)
+
+(require 'mouseme)
+(global-set-key [S-mouse-2] 'mouse-me)
+
+(require 'htmlize)
+
+(defun ^m ()
+  "Remove all ^M's from the buffer."
+  (interactive)
+  (^m-region (point-min) (point-max)))
+
+(defun ^m-buffer ()
+  "Remove all ^M's from the buffer."
+  (interactive)
+  (^m-region (point-min) (point-max)))
+
+(defun ^m-region (min max)
+  "Remove all ^M's from the region."
+  (interactive "r")
+  (save-excursion
+    (goto-char max)
+    (while (re-search-backward "\C-m$" min t)
+      (delete-char 1))))
+
+(defalias '^m '^m-buffer)
+
+;; with a few alii in case my fingers are too slow with the shift key:
+
+(defalias '^M '^m-buffer)
+(defalias '6m '^m-buffer )
+
+;; No new lines!
+(setq next-line-add-newlines nil)
+
+;; XAE
+;(add-to-list 'load-path (expand-file-name
+;			 (concat (getenv "HOME") "/lisp/xae-1.0beta6/lisp")))
+;(require 'xae)
+
+;; Path stuff from David V.
+(defun dv-clipboard-copy-backslashified (beg end)               
+  "Copies the region to the clipboard replacing slashes with backslashes."
+  (interactive "r")
+  (save-excursion 
+    (let ((string (buffer-substring beg end))
+          (temp-buf (get-buffer-create " dv-temp-clip-buf")))
+      (set-buffer temp-buf)
+      (insert-string string)
+      (goto-char (point-min))
+      (replace-string "/" "\\")
+      (clipboard-kill-ring-save (point-min) (point-max))
+      (kill-buffer temp-buf))))
+(global-set-key [(control shift insert)] 'dv-clipboard-copy-backslashified)
+
+;; dired stuff to open files a la Windows from Howard Melman
+(defun dired-execute-file (&optional arg)
+  (interactive "P")
+  (mapcar #'(lambda (file)
+      (w32-shell-execute "open" (convert-standard-filename file)))
+          (dired-get-marked-files nil arg)))
+
+(defun dired-mouse-execute-file (event)
+  "In dired, execute the file or goto directory name you click on."
+  (interactive "e")
+  (set-buffer (window-buffer (posn-window (event-end event))))
+  (goto-char (posn-point (event-end event)))
+  (if (file-directory-p (dired-get-filename))
+      (dired-find-file)
+    (dired-execute-file)))
+(global-set-key [?\C-x mouse-2] 'dired-mouse-execute-file)
+
+(defun hrm-dired-mode-hook ()
+  "Hook run when entering dired-mode."
+    (define-key dired-mode-map "X" 'dired-execute-file)
+    (define-key dired-mode-map [M-down-mouse-1] 'dired-mouse-mark-file))
+
+(add-hook 'dired-mode-hook 'hrm-dired-mode-hook)
+
+;; (require 'epop3mail)
+;; (autoload 'epop3-mail "epop3mail"
+;;   "Get mail from pop server for PO:USER@HOST and put it in TOFILE." t)
+
+; (autoload 'start-biff "epop3mail" "pop3 biff, unleashed" t)
+; (autoload 'stop-biff "epop3mail" "pop3 biff, muzzled" t)
+; (autoload 'restart-biff "epop3mail" "pop3 biff, RE-unleashed" t)
+; (autoload 'flush-pop-passwords "epop3mail" "flush passwords" t)
+; (autoload 'stuff-pop-passwords "epop3mail" "pre-load passwords" t)
+; (autoload 'biffs-current-language "epop3mail" "what is biff talking?" t)
+; (autoload 'biffs-last-check "epop3mail" "when did biff last check?" t)
+; (autoload 'speak-biff! "biff-mode" "make biff speak" t)
+
+; ;(start-biff 30 t)
+;(add-hook 'mail-setup-hook 'mail-abbrevs-setup)
+
+(load "desktop")
+(desktop-load-default)
+(desktop-read)
+
+;; Don't save too much with desktop
+(add-hook 'kill-emacs-hook
+	  '(lambda ()
+	     (desktop-save (concat (getenv "HOME") "/"))
+	     (desktop-truncate search-ring 3)
+	     (desktop-truncate regexp-search-ring 3)))
+
+
+;; Some CYGWIN stuff
+
+;; This assumes that Cygwin is installed in C:\cygwin (the
+;; default) and that C:\cygwin\bin is not already in your
+;; Windows Path (it generally should not be).
+;;
+;(setq exec-path (cons "d:/cygwin/bin" exec-path))
+;(setenv "PATH" (concat "d:\\cygwin\\bin;" (getenv "PATH")))
+
+(setenv "PATH" (concat "d:\\MinGW\\bin;d:\\cygwin\\bin;" (getenv "PATH")))
+
+(require 'cygwin-mount)
+(cygwin-mount-activate)
+
+;;
+;; NT-emacs assumes a Windows command shell, which you change
+;; here.
+;;
+(setq process-coding-system-alist '(("bash" . undecided-unix)))
+(setq shell-file-name "bash")
+(setenv "SHELL" shell-file-name) 
+(setq explicit-shell-file-name shell-file-name) 
+;;
+;; This removes unsightly ^M characters that would otherwise
+;; appear in the output of java applications.
+;;
+(add-hook 'comint-output-filter-functions
+	  'comint-strip-ctrl-m)
+
+(setq Info-directory-list nil) ;;'("d:/cygwin/usr/info/"))
+
+(setq ispell-program-name "aspell")
+
+(global-cwarn-mode 1)
+
+(add-hook 'comint-mode-hook 'ansi-color-for-comint-mode-on)
+
+;;(w32-select-font)
+
+;; Toggle between PHP & HTML Helper mode.  Useful when working on
+;; php files, that can been intertwined with HTML code
+(defun toggle-php-html-mode ()
+  (interactive)
+  "Toggle mode between PHP & HTML Helper modes"
+  (cond ((string= mode-name "HTML helper")
+	 (php-mode))
+	((string= mode-name "PHP")
+	 (html-helper-mode))))
+
+(global-set-key [f5] 'toggle-php-html-mode)
+
+;; For javascript mode
+(require 'generic-x)
+(add-to-list 'generic-extras-enable-list 'javascript-generic-mode)
+
+(when (locate-library "javascript")
+  (autoload 'javascript-mode "javascript" nil t)
+  (add-to-list 'auto-mode-alist '("\.js" . javascript-mode))
+  (setq js-indent-level 2)
+  )
+

@@ -1,0 +1,154 @@
+You can call simulate an EmacsLisp-based  script by putting stuff like this in a batch script: 
+
+emacs -batch -nw -l ~/.emacs.editor --eval="(require 'foo)" 
+--eval="(require 'bar)" 
+--eval="(some-function $*)"
+
+Better yet, with the Emacs 22, you can write emacs scripts
+just as if you were writing bash or perl scripts, when you include
+this at the top of your script file:
+
+#!/usr/bin/emacs --script
+                                                                        
+---- 
+
+With emacs, you can take care of all things bash, like stderr, stdout,
+return code, etc., with a few minor exceptions.
+
+[If you want an Emacs mode for editing Dos scripts (batch files), then
+take a look at DosScripts.]
+
+==Examples==
+
+===Indenting C files===
+
+  emacs -batch sample.c --eval '(indent-region (point-min) (point-max) nil)' -f save-buffer
+
+The above opens `sample.c' and runs `indent-region' from the begining (`point-min')
+to the end (`point-max') of the file, then saves the file.  Because Emacs is thoughtful,
+it automatically saves a copy of the original file to `sample.c~'.
+
+[:fill]
+===Filling Paragraphs===
+
+Emacs is provided with an intelligent paragraph filling command, which can be helpful for use on numerous files.
+To have Emacs fix the long lines of one or more files from the command-line, use the following command:
+
+  emacs -batch long-file.txt --eval '(fill-region (point-min) (point-max))' -f save-buffer
+
+Emacs will use the filling rules for the mode the file is opened in, and fill all lines in the file.  ''This could
+have unexpected results in certain modes.''
+
+Here is a link to a script that wraps up the command so it can be conveniently used on the command line with command line arguments:
+
+* http://www.cslab.pepperdine.edu/warford/BatchIndentationEmacs.html
+
+[:texinfo]
+===Texinfo Files===
+
+Emacs can, from the command-line, update or insert [[Texinfo]] menus
+and nodes in a Texinfo document using the `texinfo-every-node-update'
+and `texinfo-all-menus-update' commands.  This is especially helpful
+when a Texinfo file is being generated or converted from another
+source document.  Consider the following Make rule which can convert
+some ''JUNK'' format into Texinfo (where ''JUNK'' is some other document
+format like XML or HTML):
+
+  %.texi: %.junk $(JUNK2TEXI)
+          $(JUNK2TEXI) $< > $@                                             
+          emacs -batch $@ \
+           -f texinfo-every-node-update -f texinfo-all-menus-update \
+           -f save-buffer
+
+===Shell Script===
+
+The example script shs-example demonstrates all the things you'd want
+to do with emacs scripts, and is meant to serve as a tutorial (I am
+teaching myself and improvements are very welcome) as well as
+demonstrate some useful functions from shs.el.  Save these files
+somewhere in your bash path, change the path to that path in
+example-emacs-script and change the "#/usr/local/bin/emacs" address
+call to that of your actual Emacs path.  Then, on bash prompt, type
+example-emacs-script.
+
+
+* http://www.gnufans.net/~deego/emacspub/lisp-mine/shs/dev/shs.el
+* http://www.gnufans.net/~deego/emacspub/lisp-mine/shs/dev/shs-example
+* http://www.gnufans.net/~deego/emacspub/lisp-mine/shs/dev/shs-example-fn.el
+
+If active Emacs developers are reading this, we'd like to point out that
+(princ) in batch-mode prints to stdout, as opposed to stderr, which is
+not what the EmacsLispReference says.  On the other hand, that is the only
+way at this time (we think) that you can print to stdout through an
+emacs batch script, so we hope that this "bug" is not fixed, but
+retained as a feature. 
+
+This is not a bug. princ function and all the print functions) direct their output
+depending on the variable standard-output. This variable can be set to a buffer, a marker,
+any function of 1 argument or the symbol t. The last case is the default. In interactive
+mode the output goes to the echo area. In batch mode it is directed to the normal stdout.
+The message function prints to stderr in batch mode. Perhaps there is an error in the
+documentation you referenced above (I have not checked)
+
+
+
+
+===Prompts in w32 cmd-files===
+Example:
+
+@"c:\Program Files\Emacs\emacs-21.3\bin\emacs.exe" -batch -no-site-file -q -eval "(unless (y-or-n-p \"Do you want to continue? \") (kill-emacs 1))
+
+@if %errorlevel% GTR 0 goto fin
+
+
+
+==Nomenclature==
+
+We need a term more descriptive than "scripting" for this, since some people
+think that writing an emacs package is scripting.  "batch mode" kind of
+implies no interactivity, which isn't true.  "command line or executable
+scripting with emacs lisp" is a mouthful.  Maybe "scripting" is the best.
+
+==Discussion==
+
+Scripting is within a hair of opening up a huge new market for emacs.  People
+who use bash or Python or whatever could be using emacs:
+        
+        o you're already using it
+        o it's lisp
+        o it's pretty cl compatible
+        o it's already installed
+        o it's portable
+        o it does everything
+        o it won't go away
+        o it supports unique features like buffers
+        o you can record a keyboard macro and save the script
+
+The EASILY FIXABLE THINGS holding it back are:
+
+        o fear that emacs lisp isn't a real language (as if bash were)
+                o some people don't know about (require 'cl) or lexical-let
+        o uncertainty about whether it will handle stdio and the like
+                o how to get rid of "Loading" messages?
+                o how to pipe something to a command and back to emacs lisp?
+                o is "a few minor exceptions" above famous last words?
+        o doubt that this usage will be supported
+                o see note about princ above
+                o no detailed discussion in documentation
+                o paucity of open source shebang scripts
+
+Does anybody agree?  Drop me a line just to let me know somebody read this.
+
+(gambarimasu who is at gmail.com)
+
+==
+
+You've got to be out of your mother-loving mind.
+
+[new]
+
+Why?  This page makes sense to me.  The only thing that doesn't is why Emacs hasn't been used more in the past for such purposes.
+
+==See also==
+
+See also EmacsScripts.

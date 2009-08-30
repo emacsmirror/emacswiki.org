@@ -1,0 +1,223 @@
+I use Emacs under for Mac OS X.
+
+I'm on #emacs and #lisp as bjc.
+
+: Welcome to the wiki! -- AlexSchroeder
+
+My .emacs (for v23.x):
+<pre>
+(add-to-list 'load-path "~/src/elisp")
+(add-to-list 'load-path "~/src/elisp/color-theme-6.6.0")
+(add-to-list 'load-path "~/src/elisp/mmm-mode-0.4.8")
+(add-to-list 'load-path "~/src/elisp/slime")
+;(add-to-list 'load-path "~/src/elisp/icicles")
+(add-to-list 'load-path "~/src/elisp/emacs-rails")
+(add-to-list 'load-path "~/src/ruby/misc")
+;(add-to-list 'load-path "~/src/git/contrib/emacs")
+(add-to-list 'load-path "~/src/otp_src_R11B-5/lib/tools/emacs")
+(add-to-list 'load-path "~/src/distel/elisp")
+
+(load-file "~/src/elisp/nxml-mode/rng-auto.el")
+
+(require 'slime)
+(require 'mmm-auto)
+(require 'rails)
+(require 'jshell)
+;(require 'vc-git)
+;(require 'icicles)
+(require 'erlang-start)
+(require 'distel)
+(require 'color-theme)
+(require 'vc)
+
+(autoload 'twitter "twitter" "Make a post to twitter." t)
+(autoload 'javascript-mode "javascript" nil t)
+(autoload 'css-mode "css-mode" "Load CSS mode." t)
+(autoload 'lsl-mode "lsl-mode" "Load LSL mode." t)
+(autoload 'ruby-mode "ruby-mode" "Load ruby mode" t)
+(autoload 'run-ruby "inf-ruby" "Run an inferior ruby process")
+(autoload 'inf-ruby-keys "inf-ruby" "Set local key defs for inf-ruby")
+(autoload 'ri "/Users/bjc/src/elisp/ri/ri-ruby.el" nil t)
+(autoload 'rubydb "rubydb3x" "Ruby debugger" t)
+(autoload 'moz-minor-mode "moz" "Mozilla REPL minor modes." t)
+(autoload 'svn-status "psvn" "Load subversion SCM commands." t)
+(autoload 'pabbrev-mode "pabbrev" "Predictive Abbreviations." t)
+(autoload 'php-mode "php-mode" "PHP source code major mode." t)
+;(autoload 'ecmascript-mode "ecmascript-mode" "ECMAScript derived language modes" t)
+(autoload 'etags-select-find-tag-at-point "etags-select"
+  "Browse through multiple tags" t)
+;(autoload 'git-status "git" "Load PCVS style git interface." t)
+(autoload 'autotest "autotest" "Load autotest." t)
+(mapcar (lambda (fn)
+          (autoload fn "mode-compile" "Load better compile mode." t))
+        '(mode-compile mode-compile-kill))
+
+(defalias 'perl-mode 'cperl-mode)
+(defalias 'js-mode 'javascript-mode) 
+(defalias 'js-mode-syntax-table 'javascript-mode-syntax-table)
+
+;; Function definitions.
+(defun goto-matching-paren (arg)
+  "Go to the matching parenthesis if on parenthesis."
+  (interactive "p")
+  (cond ((looking-at "(") (forward-list 1) (backward-char 1))
+	((looking-at ")") (forward-char 1) (backward-list 1))
+	(t nil)))
+
+(defun c-mode-keybindings ()
+  (local-set-key (kbd "C-c C-d") 'man))
+
+(defun lisp-mode-keybindings ()
+  (local-set-key (kbd "RET") 'newline-and-indent)
+  (local-set-key (kbd "M-RET") 'slime-complete-symbol)
+  (local-set-key (kbd "C-h a") 'slime-apropos)
+  (local-set-key (kbd "C-h f") 'slime-describe-function)
+  (local-set-key (kbd "C-h v") 'slime-describe-symbol)
+  (local-set-key (kbd "C-h h") 'slime-hyperspec-lookup))
+
+(defun elisp-mode-keybindings ()
+  (local-set-key (kbd "RET") 'newline-and-indent)
+  (local-set-key (kbd "M-RET") 'lisp-complete-symbol))
+
+(defun perl-mode-keybindings ()
+  (local-set-key (kbd "M-n") 'next-error)
+  (local-set-key (kbd "M-p") 'previous-error)
+  (local-set-key (kbd "M-RET") 'cperl-linefeed)
+  (local-set-key (kbd "RET") 'newline-and-indent)
+  (local-set-key (kbd "C-c C-d") 'cperl-perldoc))
+
+(defun javascript-mode-keybindings ()
+  (local-set-key (kbd "M-n") 'next-error)
+  (local-set-key (kbd "M-p") 'previous-error))
+
+(defun my-cperl-eldoc-documentation-function ()
+  "Return meaningful doc string for `eldoc-mode'."
+  (car
+   (let ((cperl-message-on-help-error nil))
+     (cperl-get-help))))
+
+(defun my-perl-hook ()
+  (set (make-local-variable 'eldoc-documentation-function)
+       'my-cperl-eldoc-documentation-function))
+
+(defun ruby-mode-keybindings ()
+  (local-set-key (kbd "M-n") 'next-error)
+  (local-set-key (kbd "M-p") 'previous-error)
+  (local-set-key (kbd "C-c C-d") 'ri)
+  (local-set-key (kbd "C-c C-z") 'run-ruby))
+
+(defun wrap-sexp (point &optional direction)
+  "Wrap s-expression at POINT in parenthesis. If DIRECTION is
+set to BACK, then point is placed at the start of the new
+grouping. Otherwise, point is placed at the end."
+  (cond ((eq (char-syntax (char-before point)) ?\))
+         (backward-sexp))
+        ((not (eq (char-syntax (char-after point)) ?\())
+         (skip-syntax-backward "^()")
+         (backward-char 1)))
+  (let ((point (point)))
+    (insert-char ?\( 1)
+    (forward-sexp)
+    (insert-char ?\) 1)
+    (goto-char (1+ point))
+    (when (eq direction 'back)
+      (forward-sexp))))
+
+(defun wrap-sexp-forward (point)
+  "Wrap s-expression at POINT in parenthesis. Leaving the
+cursor at the end of the new expression."
+  (interactive "d")
+  (wrap-sexp point))
+
+(defun wrap-sexp-backward (point)
+  "Wrap s-expression at POINT in parenthesis. Leaving the
+cursor at the beginning of the new expression."
+  (interactive "d")
+  (wrap-sexp point 'back))
+
+(defun find-tag-by-directory ()
+  (visit-tags-file ""))
+
+(defun php-outline-mode ()
+  (interactive)
+  (setq outline-regexp " *\\(private funct\\|public funct\\|funct\\|class\\|#head\\)"))
+
+(defun enable-moz-minor-mode ()
+  (local-set-key (kbd "C-c C-z") 'run-mozilla)
+  (moz-minor-mode t))
+
+;; Hooks.
+(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'emacs-lisp-mode-hook 'elisp-mode-keybindings)
+(add-hook 'lisp-mode-hook 'lisp-mode-keybindings)
+(add-hook 'cperl-mode-hook 'perl-mode-keybindings)
+(add-hook 'cperl-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'c-mode-hook 'c-mode-keybindings)
+(add-hook 'php-mode-hook 'php-outline-mode)
+(add-hook 'ruby-mode-hook 'ruby-mode-keybindings)
+(add-hook 'javascript-mode-hook 'javascript-mode-keybindings)
+(add-hook 'javascript-mode-hook 'enable-moz-minor-mode)
+;(add-hook 'javascript-mode-hook 'jshell-minor-mode)
+
+(add-to-list 'auto-mode-alist '("[Rr]akefile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.lsl$" . lsl-mode))
+(add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
+(add-to-list 'auto-mode-alist '("\\.js$" . javascript-mode))
+(add-to-list 'auto-mode-alist '("\\.as$" . javascript-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(php\\|inc\\)$" . php-mode))
+(add-to-list 'auto-mode-alist '("\\.svg$" . xml-mode))
+(add-to-list 'auto-mode-alist '("\\.xhtml$" . html-mode))
+
+(add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
+(add-to-list 'interpreter-mode-alist '("php" . php-mode))
+
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-x C-k") 'kill-region)
+;(global-set-key (kbd "C-x v d") 'git-status)
+(global-set-key (kbd "C-c ]") 'goto-matching-paren)
+(global-set-key (kbd "C-c c") 'mode-compile)
+(global-set-key (kbd "C-c C-k") 'mode-compile-kill)
+(global-set-key (kbd "C-c e") 'calc)
+(global-set-key (kbd "C-c o") 'occur)
+(global-set-key (kbd "M-9") 'wrap-sexp-forward)
+(global-set-key (kbd "M-0") 'wrap-sexp-backward)
+(global-set-key (kbd "M-?") 'etags-select-find-tag-at-point)
+
+(global-set-key [(meta f12)] 'recentf-open-files)
+
+(global-set-key [M-left] 'hide-body)
+(global-set-key [M-right] 'show-all)
+(global-set-key [M-up] 'outline-previous-heading)
+(global-set-key [M-down] 'outline-next-heading)
+(global-set-key [C-M-left] 'hide-sublevels)
+(global-set-key [C-M-right] 'show-children)
+(global-set-key [C-M-up] 'outline-previous-visible-heading)
+(global-set-key [C-M-down] 'outline-next-visible-heading)
+
+(setq mmm-global-mode 'maybe)
+(setq truncate-partial-width-windows nil)
+(setq-default indent-tabs-mode nil)
+(setq frame-title-format '(buffer-file-name "%f" ("%b")))
+(setq custom-file "~/.emacs.d/custom.el")
+(setq inferior-lisp-program "/usr/local/bin/openmcl")
+;(setq inferior-lisp-program "/usr/local/bin/sbcl")
+(setq erlang-root-dir "~/src/otp_src_R11B-5")
+(setq inferior-erlang-machine-options '("-sname" "elisp"))
+
+(set-frame-height (selected-frame) 70)
+(set-frame-width (selected-frame) 80)
+
+(slime-setup)
+(distel-setup)
+(server-start)
+(load custom-file)
+(put 'narrow-to-region 'disabled nil)
+(color-theme-initialize)
+(color-theme-clarity)
+</pre>
+
+----
+CategoryHomepage

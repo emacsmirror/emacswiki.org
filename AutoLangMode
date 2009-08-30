@@ -1,0 +1,23 @@
+CategoryInternationalization | GuessBufferLanguage | GuessLang | WikiSpell | ColinMarquardt
+----
+auto-lang.el is a minor mode that tries to find out the language of the current buffer/paragraph. It can set the ispell dictionary (see InteractiveSpell) accordingly and switch on flyspell (see FlySpell) for you. It can be gotten from http://www.marquardt-home.de/auto-lang.el
+
+Supported languages are French, Spanish, Italian, Portugese, Danish, Swedish, Polish, Latvian, German and English, but it's easy to add support for a new language by introducing a new wordlist. 
+If you have done so, please contribute it back.
+
+I don't consider this code finished nor nice, but it works for me. Tell me if you want to 
+help improve it.
+
+I should add support for iso-8859-15 to be used with a dictionary definition like this:
+
+ (add-to-list 'ispell-dictionary-alist
+              '("ndeutsch8-15"
+                "[a-zA-Z\304\326\334\344\366\337\374]"
+                "[^a-zA-Z\304\326\334\344\366\337\374]"
+                "[']" t
+                ("-C" "-d" "ndeutsch")
+                "~latin1" iso-8859-15))
+----
+see also: AutoDictionaryMode
+----
+CategoryModes

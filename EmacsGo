@@ -1,0 +1,23 @@
+From Joe Corneli at http://www.ma.utexas.edu/users/jcorneli
+
+* http://groups.google.com/groups?hl=en&lr=&group=gnu.emacs.sources&client=firefox-a&selm=mailman.2487.1100339203.8225.gnu-emacs-sources%40gnu.org
+
+<pre>
+;; I thought it would be fun to write a go program in lisp.
+
+;; I'm not done, but I do have a functional goban.
+
+;; The next step I'd like to add is "simple" -- counting the final
+;; score.  This simple step seems to require not-inconsiderable go
+;; knowledge.
+
+;; Anyone interested in helping?
+
+;; (goe.el follows)
+</pre>
+
+
+See also GoMode.
+
+----
+CategoryGames

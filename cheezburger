@@ -1,0 +1,25 @@
+cheezburger lets you easily view http://www.icanhascheezburger.com without leaving Emacs.
+
+Obligatory Image (Using version 1.1):
+
+[[image:cheezburger.jpg]]
+
+
+Default key bindings:
+
+* n: next image
+* p: previous image
+* P: goto page #
+* b: browse to post (with browse-url)
+* u: copy the url of the blog post to the kill ring
+* i: copy the url of the image to the kill ring
+* q: quit and go back to being productive (If you must...)
+
+
+Get the source here: Lisp:cheezburger.el
+
+Other things to note:
+* Requires [http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/lisp/json.el?root=emacs json.el] (Which is part of EmacsFromCVS)
+* I'm not responsible for lost productivity
+* I will however take credit for a small portion of the fun you have while using it :-)
+

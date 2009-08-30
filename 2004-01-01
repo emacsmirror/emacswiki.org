@@ -1,0 +1,26 @@
+The license was changed!  See the footer of this page.
+
+If you remember the old suggestion from the texinfo manual before the FDL
+was written, please help me fix http://www.emacswiki.org/OLD.  The current
+version I derived from the XEmacs manual license, which reads as follows:
+
+<pre>
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the sections entitled "The GNU Manifesto", "Distribution" and "GNU
+General Public License" are included exactly as in the original, and
+provided that the entire resulting derived work is distributed under the
+terms of a permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the sections entitled "The GNU Manifesto",
+"Distribution" and "GNU General Public License" may be included in a
+translation approved by the author instead of in the original English.
+</pre>
+
+But we don't have the three sections mentioned in this text, and so I shortened the thing, replaced "manual" with "document" and now I am wondering whether that's good enough or not.

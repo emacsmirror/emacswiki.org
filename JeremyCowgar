@@ -1,0 +1,50 @@
+I use Emacs
+
+I created and maintain EdiMode, PmxMode and RandomIdleQuote.
+
+: Welcome to the wiki! -- AlexSchroeder
+
+My nick on #emacs is jeremy_c. You can find my home page at: http://jeremy.cowgar.com
+
+I have a few customizations in my .emacs that I believe are pretty handy. Don't yell, but they came from learning a bit about vim.
+
+This function allows you to delete from the current cursor position until the next occurance of the given character. Now, before I go further, let me say that I have mapped my Caps Lock key to the ESC key functionality. ESC now acts as a Caps Lock toggle. Who uses the caps lock anyway? I find this to be very handy, not in just editing source, but in all sorts of things such as web browsing, email editing, etc... So, simply put, I map this function to ESC-d ... Quick on my keyboard, Caps Lock-d
+
+    (defun jnc-delete-to-char (ch)
+      (interactive "cDelete to character: ")
+      (let ((curpoint (point)))
+        (search-forward (string ch) nil t)
+        (backward-char-nomark)
+        (delete-region curpoint (point))))
+
+Here's what it does. ^ will signify the cursor position:
+
+    def sayHello(^first_name, last_name, greeting):
+
+Now, quickly hit ESC-d ) Here's what your line will look like then:
+
+    def sayHello(^):
+
+[new]
+I'm not seeing the same point behavior you are in the last two functions.
+I always end up at the beginning or end of the line.
+
+Hitting `C-a C-M-o'and `C-e C-j' in Emacs are equivalent to your `ESC-O' and `ESC-o', respectively,
+and likely easier then hitting `END' and `RET'.
+
+"Delete-to" is `zap-to-char' in Emacs, available from `M-z'.  See ViKeys. -- AaronHawley
+
+[new]
+I guess my functions that I find usefull are just that, usefull, therefore part of the Emacs core. Guess they were programming exercises! Thanks for pointing that out AaronHawley, I'll update my key mappings.
+
+zap-to-char deletes the character that you are zapping to also, most of the time I use it, I use to to delete a parameter in a function call, or to a paren, or something like that. <html abc=""> I would use ESC-d> to delete from html to the > which would leave <> with my cursor in the middle.  I noticed that XEmacs has that and it has 1 additional function, zap-up-to-char which deletes right up to the character but not the character. It seems that Emacs needs that as well.  I could just type the character twice for `zap-to-char' to get `zap-up-to-char', but typing the character twice doesn't quite get it because it places the cursor after the character then, so for instance,  when removing characters from a function string "def helloWorld(^greeting, name):" ^ being the cursor. zap-to-char )) would produce: "def helloWorld()^:" ... zap-up-to-char would produce (in the same situation): "def helloWorld(^):" ... So, to fully mimic zap-up-to-char with zap-to-char you would have to zap-to-char )) LEFT-ARROW ... I think I like zap-up-to-char better.
+
+So far, from this discussion, I believe that my open-line-above, open-line-below, and zap-up-to-char functions are all valid functions that do not currently exist in Emacs functionality. -- JeremyCowgar
+
+[new]
+A new user could adapt to `zap-to-char', but I could understand your preference.  See ZapUpToChar.
+
+KeyboardMacros could replace your functions, see also OpenNextLine. -- AaronHawley
+
+----
+CategoryHomepage

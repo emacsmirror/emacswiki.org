@@ -1,0 +1,31 @@
+For a more complete, and upto date page see EmacsForMacOS (perhaps consider merging...)
+
+== Classic ==
+
+Emacs can be compiled on the classic MacOS using the Macintosh
+Programmer's Workshop.  MPW is a unix-like environment for the
+MacOS, which used to cost thousands $$$$ USD but is
+now freely available due to believed obsolescence.  Die hard
+MacOS9 aficiondos rejoice.
+
+MPW is available from:
+ftp://ftp.apple.com/developer/Tool_Chest/Core_Mac_OS_Tools/MPW_etc./
+
+Then, follow the instructions in the Emacs source, in the file $EMACS/mac/INSTALL .
+
+== OS X ==
+
+Directions for accessing the emacs CVS are found at ##<http://savannah.gnu.org/cvs/?group=emacs>##. To download emacs, use the command:
+
+     cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
+
+Directions to build and install may be found in the file newly downloaded to emacs/mac/INSTALL. The basic build and installation of the carbon Emacs application uses the commands:
+
+    ./configure --enable-carbon-app
+    make
+    sudo make install
+
+There are many options for building emacs (such as whether to build the X11 version), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer.
+
+----
+CategoryBuilding

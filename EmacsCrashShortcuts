@@ -1,0 +1,47 @@
+Some arcane shortcuts that may be useful in some situations.
+Note that C-c /letter/ shortcuts are reserved for users.
+This is for emacs version >= 22. Contribute your own.
+
+  List all shortcuts               : C-h b
+  List shortcuts with prefix C-x   : C-x C-h
+  List user-defined shortcuts      : C-c C-h
+  Undo                             : C-x u, C-/ or C-_
+  Repeat last command              : C-x z
+  Write in a read-only buffer      : C-x C-q
+  Word expansion                   : M-/
+  Center buffer on cursor          : C-l
+  Scroll all buffers               : M-x scroll-all-mode
+  Read man in emacs                : M-x man
+  Insert with octal code           : C-q octal-code
+  See last inputs                  : C-h l or F1 l
+  Put a ~ over a n                 : C-x 8 ~ n
+  Sort lines                       : M-x sort-lines
+  Sort numerically wrt last field  : C-u -1 M-x sort-numeric-fields
+  Reverse lines in region          : M-x reverse-region
+  Replace tabs by spaces           : M-x untabify
+  Default shell                    : C-h v shell-file-name
+  Begin writing in bold face       : C-u M-o b
+  Mark whole buffer                : C-x h
+  Hide indented text               : C-x $ 1
+  Insert a comment delimiter       : M-;
+  Goto line by number              : M-g M-g
+  Activate input method            : C-\
+  Leave single space between words : M-SPC
+  Highlight trailing whitespaces   : C-x w h RET SPC + $
+  Suppress trailing whitespaces    : M-x delete-trailing-whitespace
+  Put previous word in uppercase   : M-- M-u
+  Put region in uppercase          : C-x C-u
+  Go to previous mark position     : C-u C-SPC
+  Align text by column             : C-u M-x align
+  Align with respect to : (column) : M-x align-regexp RET :
+  Fit window to buffer content     : C-x -
+  Put >> in front of selected lines: C-x r t RET >>
+  Count words in buffer            : M-x how-many RET \<
+  Compute square root of 2         : M-: (srqt 2)
+  Scroll down other window         : C-M-v
+  Scroll up other window           : C-M-- C-M-v
+
+See also: EmacsCrashCourse
+
+----
+CategoryHelp

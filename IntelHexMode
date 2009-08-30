@@ -1,0 +1,18 @@
+This page describes package Lisp:intel-hex-mode.el, by Rubens Ramos.
+
+== About intel-hex-mode ==
+
+This is a major mode to allow easy updating of checksums in Intel Hex files. It also does some font-locking. Developed and tested on XEmacs, but should work on Emacs as well. The mode will detect and use easymenu if available.
+
+To use intel-hex-mode, add 
+
+    (load-file "PATH_TO_FILE/intel-hex-mode.el")
+
+to your ##~/.emacs(.el)## or ##~/.xemacs/init.el##.
+
+By default, .a90 and .hex files will be recognized.
+
+Use `C-c C-c' to update the current line's checksum, and `C-c C-b' to update the whole buffer.
+
+Licensed as [[GPL]].
+

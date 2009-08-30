@@ -1,0 +1,75 @@
+== Ignoring notices ==
+
+    (setq erc-hide-list '("JOIN" "PART" "QUIT"))
+
+See also ErcChannelTracking for how to disable modeline notifications.
+
+== Ignoring nicks temporarily ==
+
+Use the /IGNORE ''nick'' command to ignore a nick for this session.
+Since nothing gets set, next time you will see messages from this
+nick again.
+
+== Ignoring nicks permanently ==
+
+You need to customize `erc-ignore-list', or set it as follows:
+
+    (setq erc-ignore-list '("kensanata"))
+
+The list contains regular expressions which are matched against "nick!login@host", so you might also set it as follows:
+
+    (setq erc-ignore-list '("^j[a-z]*bot!" "^fussbot!" "^shorten!"))
+
+== Conference mode snippet ==
+
+Got the idea from X-Chat, conference mode disables joins, parts and quits in channels where it's turned on.  Unfortunately it doesn't work, i think because functions somewhere don't respect the buffer local setting of ERC-HIDE-LIST, or maybe it's just my ERC that's old, I'll investigate later. :-)  (Join ignore works.)  RichardKlinda
+
+<pre>
+;; conference mode
+(setq erc-conference-p nil)
+
+(defun erc-cmd-CONFERENCE (&optional force)
+  (if (and (boundp 'erc-conference-p)
+           erc-conference-p)
+      (progn
+        (setq erc-conference-p nil
+              erc-hide-list (default-value 'erc-hide-list))
+        (erc-display-line (erc-make-notice "Conference mode is OFF.")
+                          'active))
+      (progn
+        (make-local-variable 'erc-hide-list)
+        (make-local-variable 'erc-conference-p) 
+        (setq erc-conference-p t
+              erc-hide-list '("JOIN" "PART" "QUIT"))
+        (erc-display-line (erc-make-notice "Conference mode is ON.")
+                          'active)))
+  t)
+</pre>
+
+== Ignoring some content ==
+
+Sometimes people start playing with bots until it gets on your nerves.  Here is how to stop it.  You can ignore the bots themselves
+using erc-ignore-list, but you need something else to ignore the
+bot commands.
+
+    (defcustom erc-foolish-content '("^<.*?> \\?" "^<.*?> , *rr"
+                                     "\\*CLICK\\*" "\\*BANG\\*")
+      "Regular expressions to identify foolish content.
+    Usually what happens is that you add the bots to
+    `erc-ignore-list' and the bot commands to this list."
+      :group 'erc
+      :type '(repeat regexp))
+
+    (defun erc-foolish-content (msg)
+      "Check whether MSG is foolish."
+      (erc-list-match erc-foolish-content msg))
+
+    (add-hook 'erc-insert-pre-hook
+	      (lambda (s)
+		(when (erc-foolish-content s)
+		  (setq erc-insert-this nil))))
+
+See also: ErcHighlighting
+
+----
+[[ERC]]

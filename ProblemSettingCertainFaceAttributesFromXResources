@@ -1,0 +1,57 @@
+
+It seems that at least in GnuEmacs 21.2.1 and 21.3.1, a problem exists
+where certain face-attributes, namely '':inherit'', '':overstrike'',
+'':underline'' and '':strike-through'' are not correctly set up from
+ResourceFiles, or X11 Resources in general.  This leads to error
+messages similar to this in the MessagesBuffer
+
+ Face woman-bold-face, frame #<frame emacs@DreamHouse.lahti 0x86e74f0\ >: invalid attribute :inherit 'bold from X resource
+
+It is not (yet) explained here where why this happens, but if the
+following lot of EmacsLisp by VivekDasmohapatra (alias [[fledermaus]])
+is loaded, the attributes are set properly.  This is a candidate to be
+put in ones DotEmacs.
+
+    ;; Loading this patch will make face-attributes inherit, underline,
+    ;; overline and strike-through properly be set up from X11 resources.
+    ;; Values `t', `nil' and facenames must be quoted.
+    ;;
+    ;; code by fledermaus
+    (defun set-face-attribute-from-resource (face attribute resource class frame)
+      "Set FACE's ATTRIBUTE from X resource RESOURCE, class CLASS on FRAME.
+    Value is the attribute value specified by the resource, or nil
+    if not present.  This function displays a message if the resource
+    specifies an invalid attribute."
+      (let* ((face-name (face-name face))
+    	 (value (internal-face-x-get-resource (concat face-name resource)
+    					      class frame)))
+        (when value
+          (if (and (string-match "^'" value)
+                   (or (eq attribute :inherit       ) 
+                       (eq attribute :underline     ) 
+                       (eq attribute :overline      ) 
+                       (eq attribute :strike-through)))
+              (progn
+                (setq value (intern (substring value 1)))
+                (condition-case ()
+                    (internal-set-lisp-face-attribute
+                     face attribute value frame)
+                  (error
+                   (message "Face %s, frame %s: attribute %s %S from XRDB"
+                            face-name frame attribute value))))
+            (setq value (downcase value))
+            (condition-case ()
+                (internal-set-lisp-face-attribute-from-resource
+                 face attribute value frame)
+              (error
+               (message "Face %s, frame %s: bad attribute %s %s from X resource"
+                        face-name frame attribute value)))))
+        value))
+    
+
+It seems that because the basic faces ''default'', ''italic'',
+''bold'' and so on are set up at startup before this patch kicks in,
+they cannot be cured this way.
+
+----
+CategoryFaces

@@ -1,0 +1,64 @@
+== Self-Introduction ==
+
+I use Emacs on both IBM ThinkPad and Sharp Zaurus SL-C860 
+
+I use EmacsWikiMode as PIM on my Zaurus to maintain my own personal and other information.
+
+Also I maintain eEmacs -- Emacs-like editor (ersatz emacs) for Psion PDAs (5mx, Revo, works under Linux/FreeBSD/CygWin as well).
+For more info see http://ru.oramezo.org/projects/eemacs/en
+
+----
+
+Я использую Emacs на всех компьютерах, включая КПК Sharp Saurus SL-C860.
+
+Я использую EmacsWikiMode на Заурусе в качестве PIM.
+
+Кроме того, я делаю и сопровождаю Emacs'оподобный редактор eEmacs для карманных компьютеров Psion (5mx, Revo, также работает под Linux/FreeBSD/CygWin). 
+
+== Usefull Things ==
+
+* SharpZaurusDotEmacs - here is my <code>.emacs</code> file I use on my Sharp Zaurus PDA
+* [http://ru.oramezo.org/articles/emacs-ref-man-rus Краткое руководство по работе с текстовым редактором Emacs и его клонами]
+  (см. также другие материалы на этом сайте)
+* [[ВведениеВEmacsWikiMode]] - Краткое описание EmacsWikiMode
+* [[ТабличныйРежим]] - Описание работы с таблицами (пакет table.el Такааки Ота, TableMode)
+
+== Modes I use ==
+
+There are a couple of modes and packages I constantly use on my Zaurus with Emacs:
+
+* PythonMode - 'cause I'm a Python programmer; now I use python.el (python-21.el)  instead of simple python-mode.el. With python mode I use [http://www.loveshack.ukfsn.org/emacs/pair-mode.el pair-mode] and ElDoc.
+* EmacsWikiMode with PlannerMode and RememberMode (now I'm trying EmacsMuse).
+* EmacsMuse as WYSIWYM for blogs and pages at WordPress.com
+* JabberEl and EmacsIRCClient to communicate with people
+* WikipediaMode which I use to edit MetaWiki pages (such as http://www.zaurus.ru/wiki/)
+* WikitextMode which I made from WikipediaMode to use it editing my articles on [http://www.wikispaces.com/ Wikispaces] (see [http://www.wikispaces.com/wikitext wikitext markup rules])
+* SimpleWikiEditMode which I slightly modified (support for TWiki markup rules, MediaWiki syntax improved a bit...)
+* BalanceMode (a bit hacked by myself) - I use it to keep track of my bank account 
+* GoMode - I like this game and often play against GNU Go
+* WebloggerMode - 
+
+All my version of the packages you can find here: [http://ru.oramezo.org/projects/emacs-packages].
+
+== Links ==
+
+* I found port of Emacs for Zaurus here: http://sourceforge.jp/projects/zaurus-ja/
+
+* [[Emacs_and_EmacsWikiMode_on_PDAs]] -- also contains interesting information
+
+
+== Discussions ==
+
+: Welcome to the EmacsWiki Dmitri, your EmacsRefManRus is really good aproach for newbies! --ZajcevEvgeny
+
+Note that pages can have Russian names, too.  So you could create a new EmacsWikiIntroRus with a Russian name.
+And link to it from [[КартаСайта]]. -- AlexSchroeder
+
+: Done -- DmitriBrechalov
+
+----
+
+Keywords: PDA
+
+----
+CategoryHomepage

@@ -1,0 +1,32 @@
+Here's how to have query buffers open automatically when someone sends a private message.
+
+For those who use customization, M-x customize-variable RET erc-auto-query RET
+
+
+Otherwise, set the variable `erc-auto-query' in your .emacs or ERC init file:
+
+    (setq erc-auto-query 'buffer)
+
+Using one of the following options, the new query buffer...
+
+; ##'buffer##: pops up in place of the current buffer
+; ##'window##: pops up in another window, the new window is selected
+; ##'window-noselect##: pops up in another window, the current buffer remains selected
+; ##'bury##: does not pop up, the current buffer remains visible
+; ##'frame##: opens in a new frame
+
+If the variable is nil (the default), private messages are displayed in the server buffer.
+
+
+As a default, only private messages trigger automatic creation of query buffers.  If you'd like have the same behavior when you receive notices you can use the following:
+
+    (add-hook 'erc-after-connect
+              (lambda (server nick)
+                (add-hook 'erc-server-NOTICE-hook 'erc-auto-query)))
+
+You may also wish to customize erc-echo-notice-always-hook.
+
+<b>Warning</b>: During the connection process the server sends special AUTH notices.  In order to make sure things don't get messed up and the connection is established without problems, you'll need to add `erc-auto-query' to the `erc-server-NOTICE-hook' after you are connected to the server as explained here.
+
+----
+[[ERC]]

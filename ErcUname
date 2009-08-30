@@ -1,0 +1,15 @@
+This will display the output from running `uname -a' on your system.  In other words, it will display some interesting info about the kernel you are running and your operating system.
+
+<pre>
+(defun erc-cmd-UNAME (&rest ignore)
+  "Display the result of running `uname -a' to the current ERC
+buffer."
+  (let ((uname-output
+         (replace-regexp-in-string
+          "[ \n]+$" "" (shell-command-to-string "uname -a"))))
+    (erc-send-message
+     (concat "{uname -a} [" uname-output "]"))))
+</pre>
+
+----
+[[ERC]]

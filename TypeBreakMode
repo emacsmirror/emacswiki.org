@@ -1,0 +1,18 @@
+'''Type break''' is a mode by NoahFriedman that comes with Emacs and encourage rests from typing at appropriate intervals.  It can figure out if your typing is above or below a certain threshold and vary its suggestions.  It also will avoid interrupting your typing and ask for you to find time to take a break.
+
+To take a typing break, use `M-x type-break' and watch Emacs conduct some demonstration.  To make Emacs force you to take a 10 minute break very 60 minutes, use `M-x type-break-mode'.  More information at `C-h f type-break-mode'.
+
+* CVS:type-break.el
+
+See also RepeatedStrainInjury.
+
+[new]
+; **Question**: //My type-break-mode doesn't work.  When the time limit is passed,
+nothing happens.  When I check the status by// `M-x type-break-statistics', //it shows something like "-4 minutes
+from now".  Does anyone met this also?// -- Jun Ge[mailto:gejun@cs.iastate.edu]
+
+[new]
+No idea, but I did not know about this mode so I wrote pause.el in [NxhtmlMode nXhtml].
+
+----
+CategoryModes

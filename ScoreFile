@@ -1,0 +1,38 @@
+A SCORE file usually ends in with the ".SCORE" suffix.  It contains all your up- and downscoring in effect for one or more groups.
+
+== Score Favorite Authors Up, Trolls Down ==
+
+I use `I a s p' and `L a s p' regularly: It means "Increase Author Substring Permanent" or "Lower Author Substring Permanent".  Very easy, very effective.
+
+For more interesting things, I use AdaptiveScoring.  See HighVolumeNews for more.
+
+== Topic / Group Parameters ==
+
+You could put all related groups in an appropriate Topic and set the topic parameters (`G p') accordingly.  If you don't want to use TopicMode, you will have to paste and copy the modified Group Parameters to every related group.
+
+Here, I want to use the same score file for all my Emacs groups.  Example Group Parameters (use `G p' to edit, then use `C-c C-c to save'):
+
+ ((score-file . "emacs.SCORE"))
+
+== Switch Adaptive Scoring On for Some Groups Only ==
+
+I like AdaptiveScoring for HighVolumeNews.
+Here's how to activate it for selected groups only,
+continuing my Emacs example from above:
+
+<pre>
+(("from"
+  ...)
+ ("subject"
+  ...)
+ (adapt t))
+</pre>
+
+This will enable AdaptiveScoring for all groups that use this score file.  If you made this score file the default for the Emacs Topic, for example, everything will continue to work -- only better.
+
+Note that using this setup, all the newsgroups in the Emacs topic use the score file emacs.SCORE.  Adaptive scoring, however, uses a different *.ADAPT file for every newsgroup.  This is not a problem because the adaptive scoring rules in HighVolumeNews try to eliminate threads based on subjects.  So all you have to worry about is crosspostings between sessions.  (There is no problem in crosspostings in the same session because Gnus will hide the crosspost in all other groups once you read it in one.)
+
+Actually, you <i>could</i> share adaptive scores by using the `adapt-file' symbol in your score file.  There is a bug in CVS Gnus of summer 2001, however: while the entries in the adapt-file get updated, the scores are not used.
+
+----
+CategoryGnus

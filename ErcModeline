@@ -1,0 +1,42 @@
+This page deals with ERC's mode-line and header-line.
+
+== Change header-line face on disconnect ==
+
+If you've ever found yourself reading the backlog of messages in an ERC channel buffer, and only //after// you've made it down to the ERC propmt you see you've been disconnected for a while, you might need more than the "ERC: CLOSED" text in the mode-line to give you a clue.  The following code makes the header-line face red whenever the connection to the IRC server is closed.
+
+    ;;; change header line face if disconnected
+
+    (defface erc-header-line-disconnected
+      '((t (:foreground "black" :background "indianred")))
+      "Face to use when ERC has been disconnected.")
+    
+    (defun erc-update-header-line-show-disconnected ()
+      "Use a different face in the header-line when disconnected."
+      (erc-with-server-buffer
+        (cond ((erc-server-process-alive) 'erc-header-line)
+              (t 'erc-header-line-disconnected))))
+    
+    (setq erc-header-line-face-method 'erc-update-header-line-show-disconnected)
+
+== Number of members in a channel ==
+
+Add this to your .emacs to see the number of opped/voiced/normal members of the current channel in the modeline:
+
+    (define-minor-mode ncm-mode "" nil
+      (:eval
+       (let ((ops 0)
+             (voices 0)
+             (members 0))
+         (maphash (lambda (key value)
+                    (when (erc-channel-user-op-p key)
+                      (setq ops (1+ ops)))
+                    (when (erc-channel-user-voice-p key)
+                      (setq voices (1+ voices)))
+                    (setq members (1+ members)))
+                  erc-channel-users)
+         (format " %S/%S/%S" ops voices members))))
+
+-- RomainFrancoise
+
+----
+[[ERC]]

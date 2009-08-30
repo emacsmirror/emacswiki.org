@@ -1,0 +1,25 @@
+Some code for interacting with [http://spamprobe.sf.net spamprobe] from within [[Rmail]]. 
+This code assumes that you have a functional mailsystem with procmail calling
+spamprobe and inserting an X-!SpamProbe header in filtered messages
+before the messages reaches RMAIL.
+
+Lisp:rmail-spamprobe.el
+
+[new]
+I wonder: When you run spamprobe train within procmail, and it misclassifies an email,
+and you then use your dwim defun to reverse the decision, doesn't that just cancel what
+it learnt previously?  Perhaps you have to delete the old info and add the new, instead
+of just adding the new. -- AlexSchroeder
+
+[new]
+No, telling spamprobe that tokens previously learned as spam is in fact good or vice versa
+does more than just just removing them from the wrong database, it will also add them to
+the correct one.  The reason I decided to run the message through procmail again is in fact
+laziness.  It was easier to do than to decide which babyl file it really oughta be in and 
+move it there by way of lisp code.  -- HenrikEnberg
+
+I tried to use your package and it does not work here. When trying to debug, I found 
+that it never catches the spamprobe header. -- XavierMaillard
+
+----
+CategoryMail

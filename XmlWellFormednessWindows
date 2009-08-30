@@ -1,0 +1,58 @@
+Its easy to check a document for well formedness in windows with emacs and a script.
+
+You need [http://www.microsoft.com/downloads/details.aspx?displaylang=en&FamilyID=0CDD34BF-50EA-4238-846B-243C58FF224A msxml4] for this to work.  Download that from microsoft (its unlikely your windows computer has msxml 4).
+
+Paste this text into wellformed.vbs (a vb script file)
+----
+    file=wscript.arguments(0)
+    if wscript.arguments.Count = 1 then
+    wscript.echo "XML Well-formedness checker"
+    wscript.echo "Usage: wscript wellformed.vbs file"
+    end if
+    wscript.echo "Checking xml well formedness of " + file
+
+    set o=wscript.createobject ("Msxml2.DOMDocument.4.0")
+    o.validateonparse=false
+    loaded=o.load(file)
+    if not loaded then
+    set e=o.<nowiki>ParseError</nowiki>
+    wscript.echo "Error line:", e.line , " column " ,  e.linepos, " because: " , e.Reason
+
+    else
+    wscript.echo "Loaded"
+
+    end if
+----
+put this text into wellformed.bat and stick wellformed.bat into your bath:
+----
+    cscript -nologo REPLACETHISWITHPATHTOSCRIPT/wellformed.vbs %1
+----
+if you want, hook xml-lite-mode so that the compile command automatically runs wellformed.bat.  Note I have hard coded "path-to-wellformed.bat".  Change that to the file location of your batch file.
+
+----
+    ;; xml compiler
+    (message "Adding xml syntax checking -- use the compile command in xml-lite mode ")
+    (defun US-set-xml-command () 
+      "This function sets the compile command for java"
+      (interactive) 
+      (progn (make-local-variable 'compile-command)
+        	 (setq compile-command (concat "path-to-wellformed.bat/wellformed.bat " 
+    				       (file-name-nondirectory buffer-file-name) )
+    	       )) )
+
+    
+    
+    (add-hook 'xml-lite-mode-hook  'US-set-xml-command)
+    
+    (setq auto-mode-alist (append '(("\\.xsd" . xml-lite-mode)
+    				("\\.sch" . xml-lite-mode)
+    				("\\.html" . xml-lite-mode)
+    				("\\.wsdl" . xml-lite-mode)
+    				)auto-mode-alist))
+    ;; end xml compiler
+----
+The one thing that doesn't work well is the compile-mode can't seem to find the errors in the output of the script and therefore, when you hit return on an error in the compile buffer, it doesn't automatically take you to the line number of the error, but you can move their yourself.  If you can fix the problem by tweaking the vb script output, please tweak the script above and remove this message.
+
+----
+CategoryXML
+CategoryWThirtyTwo

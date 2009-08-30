@@ -1,0 +1,9 @@
+A simple hack to quickly lookup the Java API documentation for a specific Java class. Not very fancy, but it works.
+
+Lisp:java-class-doc.el
+
+Don't know a good place to link to this from, but somebody else will probably find some... :)
+
+-- MaDa
+----
+CategoryProgrammerUtils

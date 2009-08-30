@@ -1,0 +1,22 @@
+Here you will get some infos concerning the use and configuration of the Gnus Group buffer.
+You should find keybindings to easily access some gnus functions and also find some way to configure the groups.
+
+* Some usefull keybindings
+
+  - G DEL => will delete the group under the point
+  - C-u G DEL => This is "deleted" as in "removed forever from the face of the Earth".
+  - G r => rename the group under the point
+  - g => fetch new news
+  - M-g => only fetch new news for the group under the point
+:: Or the <em>topic</em> under point.
+
+... others to come :)
+
+* Some way to set the groups buffer
+
+XXXX Add it here
+
+For other information you can go to GroupParameters page.
+
+----
+CategoryGnus GroupParameters

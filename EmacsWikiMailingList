@@ -1,0 +1,51 @@
+(see also EmacsWikiMode, PlannerMode, EmacsMuse)
+
+*The information on this page is outdated. Separate lists have been created for PlannerMode and EmacsMuse. Please see their respective pages for further details. The Emacs Wiki mailing list described here is no longer active. This page will be phased out.*
+
+= Purpose =
+
+The mailing list is a good place to report a bug, suggest a change,
+dialogue about wiki markup possibilities, and hobnob with some
+knowledgeable folks.  This list is for EmacsWikiMode.
+
+= Sending mail to the list =
+
+To send mail to the list, use the address "emacs-wiki-discuss AT
+nongnu DOT org". 
+
+Using the bug-tracker interface at
+http://nongnu.org/projects/emacs-wiki/ will send a copy of the bug to
+the list.
+
+= Access methods =
+
+There are several different ways to view the list and add content
+to it.
+
+== Email ==
+
+The standard URL to use for subscribing to the mailing list is
+http://lists.nongnu.org/mailman/listinfo/emacs-wiki-discuss.
+
+== Newsgroup ==
+
+If you want to be able to read the emacs-wiki mailing list as a
+newsgroup, the only way to do so is to add <code>nntp://news.gmane.org</code>
+as a news server and subscribe to <code>gmane.emacs.wiki.general</code>.
+
+This service is provided by Gmane, which is a mailing list to news
+gateway.
+
+== Internet ==
+
+* Newsreader-like Gmane interface: http://news.gmane.org/gmane.emacs.wiki.general
+* Blog-like interface: http://blog.gmane.org/gmane.emacs.wiki.general
+* RSS feed: http://rss.gmane.org/gmane.emacs.wiki.general
+
+= Searching for answers =
+
+Searching the list before posting questions is generally considered to be
+a good idea.
+
+* Archived messages may be found at http://lists.gnu.org/pipermail/emacs-wiki-discuss/.
+* Gmane's interface at http://blog.gmane.org/gmane.emacs.wiki.general also has search capability.

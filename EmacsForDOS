@@ -1,0 +1,27 @@
+EliZaretskii maintains the port of GNU Emacs for
+MSDOS and MS Windows (notice that there is a separate EmacsForWindows).
+You can download precompiled
+versions with the latest DJGPP archives.
+Choose a [http://www.delorie.com/djgpp/getting.html mirror] 
+and see -> current -> v2gnu -> emacs.README.
+
+The emacs.README file contains crucial info about what's in the other 10 zip
+files and how to install them and get started with Emacs on MSDOS/MS-Windows platforms.
+
+More from Eli: 
+
+: It might be of interest to Windows users that this version of Emacs supports long filenames (only on Windows 9x and Windows 2000 - not Windows NT) and the Windows clipboard (all versions of MS-Windows). It also supports multiple frames, but they all overlap, like when Emacs runs on a "glass teletype" terminal. 
+
+: People who would like to run Emacs on plain DOS (as opposed to Windows) will need to download and install a DPMI host.
+
+Choose a [http://www.delorie.com/djgpp/getting.html mirror] 
+and see -> current -> v2misc -> csdpmi5b.zip.
+
+From knagano:
+
+: I strongly recommend Meadow, especially for Japanese.
+  Meadow is a port of GNU Emacs 20.x for Windows, made by himi.
+  See http://meadow-faq.sourceforge.net/FAQ-Meadow-en.html
+
+----
+CategoryPorts

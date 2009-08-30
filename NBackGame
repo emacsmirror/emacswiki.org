@@ -1,0 +1,4 @@
+n-back-game is a game that takes some of the ideas in [http://brainworkshop.sourceforge.net/ Brain Workshop] into Emacs.
+It is included in [NxhtmlMode nXhtml].
+
+Surprisingly enough the research from Jaeggi et al (see link above) seems to show that both working memory and intelligence can be improved by this sort of games.

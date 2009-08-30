@@ -1,0 +1,59 @@
+These commands find the documentation for any item at the current point (see ThingAtPoint).
+
+== `help-on-click/key' ==
+
+Command `help-on-click/key', in library Lisp:help+.el (see also HelpPlus) describes ''any key/menu'' sequence or ''any object'' clicked with the mouse. Bind it to, for instance, `C-h RET'. The object can be ''any part of an Emacs window'' or ''any name'' appearing in a
+buffer.  You can do any of the following:
+** type a KeySequence (e.g. `C-M-s')
+** choose a menu item (e.g. `Files' > `Open File...')
+** click on a ScrollBar
+** click on the ModeLine
+** click in the MiniBuffer
+** click on an Emacs-related name in a buffer: `apropos-documentation' and
+`apropos' provide information on the name
+** click anywhere else in a [[Buffer]]: its [[MajorMode]] and its [[MinorMode]]sare described
+
+== `describe-foo-at-point' ==
+
+Describe function/variable or function call. Found here:
+http://www.sugarshark.com/elisp/init/lisp.el.html
+
+	;;; describe this point lisp only
+	(defun describe-foo-at-point ()
+          "Show the documentation of the Elisp function and variable near point.
+	This checks in turn:
+
+	-- for a function name where point is
+	-- for a variable name where point is
+	-- for a surrounding function call
+	"
+	  (interactive)
+	  (let (sym)
+	    ;; sigh, function-at-point is too clever.  we want only the first half.
+	    (cond ((setq sym (ignore-errors
+                               (with-syntax-table emacs-lisp-mode-syntax-table
+                                 (save-excursion
+                                   (or (not (zerop (skip-syntax-backward "_w")))
+                                       (eq (char-syntax (char-after (point))) ?w)
+                                       (eq (char-syntax (char-after (point))) ?_)
+                                       (forward-sexp -1))
+                                   (skip-chars-forward "`'")
+        	                   (let ((obj (read (current-buffer))))
+                                     (and (symbolp obj) (fboundp obj) obj))))))
+                   (describe-function sym))
+                  ((setq sym (variable-at-point)) (describe-variable sym))
+                  ;; now let it operate fully -- i.e. also check the
+                  ;; surrounding sexp for a function call.
+                  ((setq sym (function-at-point)) (describe-function sym)))))
+
+: Bind it to <F1> and friends
+
+    (define-key emacs-lisp-mode-map [(f1)] 'describe-foo-at-point)
+    (define-key emacs-lisp-mode-map [(control f1)] 'describe-function)
+    (define-key emacs-lisp-mode-map [(shift f1)] 'describe-variable)
+
+[new]
+This is very similar to a replacement to `##\M-.##' I've had in my config for awhile (on my homepage) -- SeanO
+
+----
+CategoryCode CategoryHelp

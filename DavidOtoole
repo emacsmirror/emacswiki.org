@@ -1,0 +1,20 @@
+My website "The Notebook" is at http://dto.github.com/notebook/
+
+I have written several things for GnuEmacs. 
+
+* LinkdMode is a universal hyperlinker thing inspired by EevMode. http://dto.github.com/notebook/linkd.html
+* RLX is a graphical roguelike engine with alpha transparency. http://dto.github.com/notebook/rlx.html 
+* CellMode is a weird spreadsheet thing that I am currently rewriting. http://github.com/dto/cell-mode
+* DTOX is a set of configurations for building a digital media authoring workstation centered around GnuEmacs. http://dto.github.com/notebook/Dtox.html
+* org-publish.el adds website-publishing management support to OrgMode. It is part of the OrgMode distribution.
+* I also have some ColorTheme themes at http://dto.github.com/notebook/ColorThemes.html
+
+List of cool people I know: EduardoOchs SachaChua CarstenDominik MichaelOlson
+
+Visit me on EmacsChannel, or email dto AT gnu DOT org
+
+Aka. [::dto].
+
+----
+CategoryHomepage
+

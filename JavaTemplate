@@ -1,0 +1,17 @@
+Jtemplate is a java helper for building classes or interfaces by AlexandreBrillant.
+
+You can get it from here:
+
+* http://www.djefer.com/~jtemplate (Broken link)
+
+This version uses a database with all the JDK 1.4 interfaces. When a
+user
+wants to implement one or several interfaces, jtemplate searches and
+proposes
+to user all the needed methods.
+
+The site can be found on archive.org at :
+* http://web.archive.org/web/20030625104531/www.djefer.com/~jtemplate/
+
+----
+CategoryTemplates

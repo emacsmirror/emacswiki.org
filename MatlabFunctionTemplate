@@ -1,0 +1,21 @@
+The following [[XEmacs]] defun can be used to do a quite smart function insertion.
+Actually it uses <code>point-at-eol</code> which is not available in GnuEmacs, I think.
+
+: No, but there is of course such a function, namely <code>line-end-position</code>.
+
+http://www.emacswiki.org/elisp/ska-skel-matlab.el
+
+You need some additional code to have the variable <code>auto-insert-copyright</code> available:
+
+    (if (boundp 'my-copyright-holder)
+        (setq auto-insert-copyright my-copyright-holder)
+      (setq auto-insert-copyright (user-full-name)))
+
+Using this somewhere in your init section you can always override the default copyright holder (your full name as known to the system) with any other string. Comes in handy when working in corporate environments.
+
+    (setq my-copyright-holder "Your Company Inc.")
+
+Actually, MatlabMode already comes with a function template (C-c C-c F), but this is a bit more sophisticated I hope -- StefanKamphausen
+
+----
+MatlabMode

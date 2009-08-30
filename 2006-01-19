@@ -1,0 +1,6 @@
+We could add a Geocities entry to the InterMap.  Then we could link to __Geocities:gchen275/xemacs/__ or __Geocities:kensanata__ without triggering
+the BannedContent check.  I don't think spammers would be able to figure
+it out unless they spent some more time on the wiki.
+
+*Update*: As [[alephnull]] asked about it on the EmacsChannel, this is now implemented.
+Example: Geocities:gchen275/xemacs/

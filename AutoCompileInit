@@ -1,0 +1,37 @@
+== Automatically compile the init file ==
+
+An Emacs init file can get big, very big. When it gets large or has a lot of function definitions, you should consider compiling it: it will load faster when Emacs starts, and its functions will execute faster.
+
+But keeping the compiled ##.emacs.elc## file up-to-date with the ##.emacs## source file can be a hassle.  So here is a way to automate that, by compiling your InitFile each time you save it:
+
+    (defun byte-compile-user-init-file ()
+      (let ((byte-compile-warnings '(unresolved)))
+        ;; in case compilation fails, don't leave the old .elc around:
+        (when (file-exists-p (concat user-init-file ".elc"))
+          (delete-file (concat user-init-file ".elc")))
+        (byte-compile-file user-init-file)
+        ;; (message "%s compiled" user-init-file)
+        ))
+
+    (defun my-emacs-lisp-mode-hook ()
+      (when (equal buffer-file-name user-init-file)
+        (add-hook 'after-save-hook 'byte-compile-user-init-file t t)))
+
+    ;; (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+    (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+
+Of course, this is not the only way. You could instead compile it each time you quit Emacs (see `kill-emacs-hook'), or when you close the ##.emacs## buffer (see `kill-buffer-hook'), or when you start Emacs and the ##.emacs## source file is more recent than the compiled ##.emacs.elc## file, and so on. For more information, see [[AutoRecompile]].
+
+== Alternate Method ==
+
+The following version doesn't require the byte compiled version of the file to exist. However, it clutters up 'after-save-hook for all buffers, irrespective of the name/type of the file. You can look at the earlier section for an example of how to add the hook to a buffer-local 'after-save-hook. If your user-init-file is named ##.emacs.el##, replace <code>(concat user-init-file ".elc")</code> with <code>(concat user-init-file "c")</code>.
+
+ (defun byte-compile-init-file ()
+   (when (equal user-init-file buffer-file-name)
+     (when (file-exists-p (concat user-init-file ".elc"))
+       (delete-file (concat user-init-file ".elc")))
+     (byte-compile-file user-init-file)))
+ (add-hook 'after-save-hook 'byte-compile-init-file)
+
+----
+CategoryDotEmacs

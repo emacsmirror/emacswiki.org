@@ -1,0 +1,203 @@
+English:EmacsNewbie |
+Français:NouvelUtilisateurEmacs
+
+'''''这里是获取Emacs相关信息的第一步.'''''
+
+中文支持请参见: [[Emacs的中文支持问题]] WritingChinese
+
+[:EmacsTutorial]
+== Emacs Tutorial == 
+Emacs 內含有容易閱讀的使用說明。不用太多時間就可以看過去了，而且看過以後你會對 Emacs 更熟悉的。使用方法是：
+
+* 用 `C-h t' 就可以看到了 (按 Control 和 h，同時放開，然後按 t)。
+* 如果不行的話，試試 `F1 t'。
+* 如果也不行的話，試試 `M-x help-with-tutorial' (按 Escape，放開，按 x，放開，然後輸入 help-with-tutorial，最後按 Enter)。
+
+哦，這不是因為 Emacs 不可靠－－而是我們不知道你現在是在什麼系統上使用 Emacs，是 X ， Windows ，是在主控台 (console) 模式，或是模擬終端機 (termial) 模式，我們也不知道你的模擬終端機設定，是不是透過 ssh 來連線……等等。你所使用的環境會影響 C-h 或 F1 的作用的。
+
+如果你想看非英語的使用手冊，請用 M-x help-with-tutorial-spec-language。( 現在可用的有：bg, cn, cs, de, es, fr, it, ja, ko, nl, pl, ro, ru, sk, sl, sv, th, zh)
+
+== 初學者的參考資料 ==
+This section provides general info on using Emacs. It introduces the basic concepts and notations used in the EmacsManual. The manual itself (`C-h i') introduces Emacs and everything about it very well -- ''except'' for some of the info in section '''Emacs-Speak (Jargon)'''.
+
+=== 符号 ===
+在Emacs文档中:
+: '''C-''' 意思是按住 Ctrol 键
+: '''M-''' 意指 Meta 键 (在大多数键盘上指 Alt 键)
+: '''DEL''' 意指退格键 (''不是'' 删除(Delete) key)
+: '''RET''' 意指回车键
+: '''SPC''' 意指空格键
+: '''ESC''' 意指Escape键
+: '''TAB''' 意指Tab键
+
+像 "C-M-" (or "M-C") 这样连在一起的意味着同时按住 Control 和 Meta 键不放.
+
+=== Emacs-Speak (行话) ===
+Here is a translation to/from Emacs-speak:
+
+||'''通用术语'''||'''Emacs术语'''||'''中文意思'''||
+||selection||[[Region]]||选定区域||
+||cut||kill||剪切||
+||paste||yank||粘贴||
+||window||[[Frame]]||窗口||
+||shortcut||KeySequence||快捷键||
+
+開檔： C-x C-f －－然後輸入檔名，用 TAB 可以自動補齊。
+
+建立新文件： C-x C-f －－然後輸入一個尚未存在的檔名；用 TAB 可以自動補齊。
+
+存檔： C-x C-s。
+
+刪除暫存 (buffer) (關閉檔案)： C-x k。
+
+分割 (Split) 視窗 (同時看兩個檔案)： C-x 2。
+
+合併視窗 (把視窗最大化)： C-x 1。
+
+切換視窗 (在分割視窗後)： C-x o。
+
+切換暫存 (如果你同時編輯很多檔案): C-x b.
+
+暫存Buffer menu (list of buffers): C-x C-b.
+
+如果你不記得鍵盤設定的話，使用命令列： M-x －－然後輸入命令名稱，用 TAB 可以自動補齊。
+
+獲得幫助： C-h ，然後接著下列這些鍵：
+
+* k －鍵盤設定為何？
+* f －函式功能為何？
+* m －在目前模式下的鍵盤設定為何？
+* w －某個函式設定到哪個鍵上？
+* a －和某個字串相關的函式？
+
+== Tip for Starting Out ==
+
+對大多數的人而言，邊學邊做可以學得更好，而不是只讀過一連串的指令然後試著去記住。找個大一點的文字檔，然後用它來玩玩看 (如果你怕搞壞文件的話，記得先備件吧－－不過別怕，你會發現 Emacs 使用暫存而使你的工作不容易流失)。
+看看 Project Gutenberg ( http://www.promo.net/pg ) 如果你需要一個可以玩玩看的文件檔。 (Project Gutenberg 是一個提供電子形式的公有書籍的網站 )
+
+== If You Want An Ordinary Book ==
+== 如果你要一本书 ==
+
+
+=== Review of O'Reilly's "Learning GNU Emacs" 2nd Edition ===
+=== O'Reilly的“学习GNU Emacs”第二版 书评 ===
+
+Some people absolutely hate the idea of paying money for a book about
+open source software, especially since you generally get free
+electronic documentation.  Then, there are others, like myself, who
+find that sometimes it helps to have a book in print, because
+sometimes when you have time to learn you aren't right beside your
+computer.
+
+
+有些人接受不了为开放源代码软件的书付钱的想法，特当别是你能获得免费的电子文档时。其他人，如我自己，发现有本印刷的书是有帮助的，因为有时当你想学习时你并不在电脑旁边。
+
+When I first got started with emacs I picked up a copy of <i>Learning
+GNU Emacs</i>, by Cameron, Rosenblatt & Raymond (it's published by
+O'reilly press which most techies have heard of).  It's pretty well
+laid out.  It won't teach you anything you couldn't find in the
+electronic documentation, but it be useful none the less.
+
+
+我开始用emacs的时候用了本<i>Lerning GNU Emacs【学习 GNU Emacs】</i>的书，作者是Cameron, Rosenblatt & Raymond（O'reilly出版社出版，大部分搞技术的【techies】都知道它。国内版机械工业出版社出版，杨涛、杨晓云、王建桥 等译）。书写很清晰。它教的东西电子文档中都能找到，但还是本有用的书。
+
+
+The first 5 chapters, or 150 pages, are dedicated to the basics of
+using Emacs.  After that it's got a number of specialized sections
+meant for different people.  In fact, in the preface the author
+provides a guide for what people in different occupations may find
+useful.  Topics include:
+
+
+前5章，或者说150页，专注于使用Emacs的基础知识。之后，是一些针对不同人群的专门的章节。实际上，作者在前言提供了不同职业的人可能会觉得有用的章节向导。主题包括
+
+
+* Basic Editing
+* Advanced Editing
+* Email and Usenet
+* Telnet, Ange-ftp, and W3 (How to access the 'net from inside Emacs)
+* Basic Macros and LISP -- More Advanced Topics
+* Using Emacs as an IDE (Integrated Development Enviornment)
+* Customizing Emacs
+
+
+* 基本编辑
+* 高级编辑
+* 电子邮件和新闻组
+* 远程登陆、Ange-Ftp和W3（如何在Emacs内访问因特网）
+* 基本的宏和LISP —— 更高级的主题
+* 用Emacs作为IDE (Integrated Development Enviornment 集成开发环境)
+* 定制Emacs
+
+
+Personally, I liked the book.  It has a lot of screenshots and
+diagrams so even if you're not on your box you can see what they're
+talking about.  And it's written for non-techies.  My only real
+complaint was that the author assumed the Meta key on your box was
+ESC[0].  You probably won't read it completely through, as with most
+computer books there will be some sections that just <i>won't</i>
+apply to you.  But it is an invaluable reference -- if of course you
+like paper editions.
+
+我个人是喜欢这本书的。有很多屏幕截图和图表所以即使您不在机子边上也知道谈的是什么。且该书为非技术人员编写的。我唯一的抱怨就是作者假定您机子上的Meta键是ESC[0]。您很可能不会把书全部读完，像大多数计算机书籍一样，有些地方就<i>不</i>适合您。但它可作为个非常好的参考 —— 如果您喜欢纸媒介版的话。
+
+If you're interested in buying a copy go to your favorite bookshops to
+see if it might be useful.  There are also lots of used book shops
+online.  You can get it for as little as $7 including shipping.  Good
+luck!
+
+如果您有兴趣买一本可以去您最喜欢的书店瞅瞅这书是否会对您有所帮助。网上也有不少二手书书店。包运费7美元的低价就可以搞到。祝好运！
+
+
+[0] Emacs does many things through key bindings.  M-x means hit the
+Meta key on your box along with the character x.  Likewise, C-x and
+A-x means hit Control-x and Alt-x respectively.  Emacs decides which
+key should be Meta when compiled.  Sometimes it decides that your meta
+key should be the Alt key (the preferred method), the ESC key, or the
+Windows key, or something else entirely.  It is possible to change the
+Meta key to Alt and you should do that at your earliest possible
+convenience if you have to hit ESC as your meta.
+
+[0]Emacs的很多事情要靠键绑定来完成。M-x意思是按您机子上的Meta键和字符x。同样地，C-x和A-x意思是相应的按Contorl-x和Alt-x。编译Eamcs时它会决定那个键作为Meta键。有时它决定meta键是您的Alt键（优先的方式）、ESC键或Windows键、或其它根本不搭边的。有可能将Meta键改为Alt，并且如果您用ESC作为meta，应该尽可能早的改过来。
+
+
+【bxy批注：机工社的版本应该加上如何在emacs中设置中文环境，没有这部分，是不可容忍的欠缺！】
+
+
+=== Sams "Teach Yourself Emacs in 24 Hours" ===
+=== Sams "24小时自学Emacs" ===
+
+
+I found the section on Gnus especially helpful. -- Anonymous
+
+我觉得Gnus的那一部分特别有帮助。 ——匿名
+
+
+Please do not add a link to online copies of this book, unless you are
+certain that this publication is legal in at least Switzerland (where
+I am) and Germany (where the server is).  Please link to the
+appropriate note as well.  A simple
+disclaimer[http://freebooks.by.ru/disclaim.html] will not do.
+-- "Dot Freeze: The Fear of Lawyers!" AlexSchroeder
+
+
+请不要加入本书网络版的链接，除非您肯定该出版物是合法的，至少在瑞士（我住的地方）和德国（服务器的地方）是合法的。也请连接合适的注意事项【note】。简单的免责声明【disclaimer】[[http://freebooks.by.ru/disclaim.html]是不行的。
+-- "Dot Freeze: The Fear of Lawyers!" (点 别动：律师的恐惧)【？】 AlexSchroeder
+
+
+-- Aren't the authors (at least one of them) wiki users?  They can
+tell us if we can (or can't) place this link here. (It's a very
+interesting link!) --JeanPhilippeTheberge
+
+
+--这些作者（至少其中一个）是wiki用户吗？他们能告诉我们是否能将链接放到这儿。（很有意思的链接！）----JeanPhilippeTheberge
+
+
+--The authors of the book may not own the copyright.  They probably don't if the book was published in the US.  --AnonymousUserErikaWhoMaySomedayRegister
+
+--书的作者可能没有版权。他们大多数时候没有，如果书是在美国出版的话。 --AnonymousUserErikaWhoMaySomedayRegister
+
+
+----
+CategoryHelp
+类别：帮助

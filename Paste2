@@ -1,0 +1,90 @@
+==What is paste2.el ?==
+: paste2.el is simple interface for http://www.paste2.org in Emacs.
+: Send or get paste *asynchronous*.
+: Integrate with [[ERC]] or [[rcirc]] for IRC sharing.
+
+==Install==
+
+: Put Lisp:paste2.el in your load-path, and then add
+:: (require 'paste2)
+: in ~/.emacs .
+
+==Usage==
+
+* Send current buffer content quickly.
+## Select region you want paste, and M-x paste2-send-paste 
+## Type channel name for paste, typically something like "#emacs". 
+## Type paste announce, typically something like "test".
+## Then paste2.el will upload your paste to paste2.org, and show correspond information in erc (or rcirc) buffer, like below:
+::: "ManateeLazyCat pasted "test" at http://paste2.org/get/148166" , ManateeLazyCat is me. :) 
+
+* Send command output:
+## Switch IRC channel that you want to sharing.
+## M-x paste2-send-paste-with-command-output RET.
+## Type paste announce, typically something like "test".
+## That's all.
+
+* Create a buffer and then send content of buffer.
+## M-x paste2-buffer-create, then will popup buffer "paste2-send".
+## Type anything in buffer, and hit "C-c C-c" when you complete.
+## Type channel name for paste, typically something like "#emacs". 
+## Type paste announce, typically something like "test".
+## That's all! 
+
+* Append content to buffer `paste2-buffer'.
+## Select region you want to append buffer "paste2-send", and M-x "paste2-buffer-append" will append region to buffer "paste2-send".
+
+* Get paste with from paste2.org.
+## Get paste with *paste link* or *paste id*. 
+## Example, you want get paste from "http://paste2.org/p/123456" or "http://paste2.org/get/123456", just type "http://paste2.org/p/123456" , "http://paste2.org/get/123456" or "123456", then will popup paste content when retrieve complete. 
+
+==Customize==
+All below option can customize by: M-x RET customize-group RET paste2 RET
+
+* `paste2-blank-announce' 
+: default nil for prompt announce.
+If you don't send announce, setup it with t.
+
+* `paste2-blank-channel' 
+: default nil for prompt channel.
+Then i will use `paste2-buffer-channel' to get channel from current buffer
+if current major-mode is `erc-mode' (or `rcirc-mode').
+And it will try to show link in corresponding IRC channel after paste completed.
+If you don't want to use those, set it to t.
+
+* `paste2-user' 
+: Is user name for paste, default is nil.
+
+* `paste2-send-buffer' 
+: Is the name of buffer that send paste content, you can customize the name of buffer.
+
+* `paste2-get-buffer' 
+: Is the name of buffer that get paste content, you can customize the name of buffer.
+
+==Tips==
+* paste2-send-paste:
+: If you select region in buffer, will send region. If select nothing, will send entire buffer.
+
+* paste2-send-paste-with-command-output:
+: You can use command `paste2-send-paste-with-command-output' send special command output to the server.
+
+* paste2-buffer-create:
+: If current buffer is mark, then `paste2-buffer-create' will insert mark region to buffer "paste2-send".
+
+* IRC channel name:
+: Default if you use command `paste2-send-paste' or `paste2-buffer-create' in erc (or rcirc) buffer, then won't prompt channel name when you read paste, it will use channel name in current buffer.
+
+* paste2-buffer-append:
+: Default, `paste2-buffer-append' region to buffer "paste2-send", if use hit "C-u" before this command, then it will switch to buffer "paste2-send" after append.
+
+* paste2-get-paste:
+: If you move cursor to a valid paste2.org url, example "http://paste2.org/p/123456" or "http://paste2.org/get/123456", and function `paste2-get-paste' will pick up current link as default input, then you just hit *RETURN* can get paste.
+
+* Load emacs-lisp syntax highlight:
+: You can type `C-u' before command `paste2-get-paste', the it will load `emacs-lisp-mode' syntax highlight for paste buffer.
+
+* Avoid send null string:
+: By default, all send paste function will check send string, if string is null, will ignore and stop send.
+
+----
+CategoryInterface

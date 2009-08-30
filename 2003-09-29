@@ -1,0 +1,24 @@
+There's talk on emacs-devel about the use of `and' used as opening quotes and closing quotes in many GNU documents.  EmacsLisp docstrings use them.  Info readers use them.  Usually they don't look "paired".  But when you start you emacs -q, and type them, you'll see them rendered as matching quotes!
+
+When you examine the opening "quote" using C-u C-x =, you'll see this:
+
+    character: ` (0140, 96, 0x60, U+0060)
+
+The solution to the riddle:  Emacs displays ''replacement quotes''.  And since these other quotes can come from ''other fonts'', you open a whole can of worms.
+
+James Clark says that Markus Kuhn has a good article about quotes [http://www.cl.cam.ac.uk/~mgk25/ucs/quotes.html] and goes on to say:
+
+The problem here is that there's a clash between
+
+* Unicode, and
+* established GNU documentation practice
+
+Unicode says that the characters 0x60 and 0x27 are a grave accent and
+a vertical quote, not an open and close quotation mark.  The XFree86
+fonts are doing the right thing.  However, GNU documentation (info and
+doc strings) use them as open and close quotation marks.  It seems to
+me that the right solution is by default to map 0x60/0x27 to the
+Unicode quotation marks only in buffers displaying documentation (help
+and info); users should also be able to enable this mapping on a
+per-buffer
+basis and globally.

@@ -1,0 +1,1490 @@
+;;; Chris McMahan's .emacs-config file. Use this in conjunction with the
+;;; other files loaded to set the working environment.
+;;; all email addresses have been 'sterilized' to prevent harvesting
+;;; .emacs (this file)
+;;; .emacs-config (main configuration)
+;;; .emacs-macros (custom functions and macros)
+;;; .emacs-webjump (webjump package sites)
+;;; .emacs-calendar (calendar/diary configuration)
+;;; .emacs-planner (planner/muse configuration)
+;;; .emacs-colors (color-theme configuration)
+
+;;; -*-mode: emacs-lisp -*-
+
+;;; Time-stamp: <06 Dec 2006  13:18 >
+
+;;;======================================================================
+;;;||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+;;;======================================================================
+;;; variables are set within the .emacs file... now on to setting up
+;;; emacs itself
+;;;======================================================================
+;;;||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+;;;======================================================================
+
+(setq-default buffer-file-coding-system 'undecided-unix)
+
+
+;;;======================================================================
+;;; Set the load path
+;;;======================================================================
+;;; Extend the load-path for lisp files and packages. Places the default
+;;; emacs/lisp last so newer packages in lisp/XXX directories are loaded
+;;; first, without the need to delete any files from the lisp directory
+(or (boundp 'my-path)            ; prevent repeatedly lengthening list
+    (progn
+      (setq load-path-orig load-path)
+      (setq load-path
+	    (append
+	     (list
+	      "."
+	      (concat EMACS_PKGS "/bbdb/lisp")
+	      (concat EMACS_PKGS "/cedet-1.0pre3/common")
+	      (concat EMACS_PKGS "/color-theme")
+	      (concat EMACS_PKGS "/dictionary-1.8")
+	      (concat EMACS_PKGS "/ecb-2.32")
+	      (concat EMACS_PKGS "/elib-1.0")
+	      (concat EMACS_PKGS "/emacs-w3m-1.4.4")
+	      (concat EMACS_PKGS "/emacs-wget-0.5.0")
+	      (concat EMACS_PKGS "/emacs-wiki")
+	      (concat EMACS_PKGS "/jde-2.3.5.1/lisp")
+	      (concat EMACS_PKGS "/muse/lisp")
+	      (concat EMACS_PKGS "/nxml-mode-20041004")
+	      (concat EMACS_PKGS "/nxhtml")
+	      (concat EMACS_PKGS "/pcomplete-1.1.7")
+	      (concat EMACS_PKGS "/personal")
+	      (concat EMACS_PKGS "/planner-3.41")
+	      (concat EMACS_PKGS "/predictive")
+	      (concat EMACS_PKGS "/remember-el-1.8")
+	      (concat EMACS_PKGS "/TDTD")
+	      (concat EMACS_PKGS "/test")
+	      (concat EMACS_PKGS "/vm-7.19"))
+	     load-path-orig))))
+
+;;; enable font-lock for ALL modes that support it
+(global-font-lock-mode 1 t)
+
+;;; reset the delay for fontification of changes to take place within
+;;; the JIT package (in seconds)
+;(setq jit-lock-stealth-time 1)
+
+;;;======================================================================
+;;; set the relative paths and environments required for the external
+;;; programs emacs uses
+;;;======================================================================
+;(setenv "TEMP"      TEMP)
+;(setenv "TMP"       TEMP)
+;(setenv "TMPDIR"    TEMP)
+;(setenv "ENSCRIPT_LIBRARY" (concat UTILS_DIR  "/enscript-6.51/enscript"))
+(setenv "DICTIONARY"       (concat CYGWIN_DIR "/usr/local/lib/english.hash"))
+(setenv "GNU_SECURE"       (concat (getenv "HOME") "/.localhosts"))
+
+(setenv "DISPLAY" ":0")
+(setenv "TERM" "VT102")
+(setq temporary-file-directory TEMP)
+
+;(if (eq window-system 'w32)
+(defconst SHELLEX (concat EMACS_PKGS "/bin/shellex.exe"))
+;(defconst SHELLEX (concat CYGWIN_DIR "/bin/cygstart.exe"))
+
+
+;;;======================================================================
+;;; set bash as the shell
+;;;======================================================================
+;;; cmdproxy.exe, the default in this case, causes problems with
+;;; the 'man' command within emacs. Change to bash or sh
+
+;(setq shell-file-name "bash")
+;(setq shell-file-name "cmd.exe")
+;(setq shell-file-name "sh")
+;(setq shell-file-name "cmdproxy.exe")
+;(setenv "SHELL" shell-file-name)
+;(setq explicit-shell-file-name shell-file-name)
+
+
+
+;;;======================================================================
+;;; set the frame sizes and fonts for the initial and subsequent frames
+;;;======================================================================
+;Cursor to use in window displaying this buffer.
+;Values are interpreted as follows:
+;  t              use the cursor specified for the frame
+;  nil            don't display a cursor
+;  `bar'          display a bar cursor with default width
+;  (bar . WIDTH)  display a bar cursor with width WIDTH
+;  others         display a box cursor.
+
+;;; turn off the visible cursor in non-selected windows
+(setq cursor-in-non-selected-windows nil)
+;; can be set to '(bar . 2) or 't
+(setq-default cursor-type '(bar . 3))
+
+;; turn the blinking off
+(blink-cursor-mode 0)
+
+;;; turn off the tool-bar (<=0 off, >0 on)
+(tool-bar-mode 0)
+
+;;; turn off the menu bar (<=0 off, >0 on)
+(menu-bar-mode 0)
+
+;;; this is done already in the .emacs. Here for convience and
+;;; reference
+;;;(set-frame-font MY_FONT)
+(if (not window-system)
+    nil
+
+  ;; set an adjustment to allow for space above and below the window
+  ;; when calculating the window height. This accounts for the menubar
+  ;; as well.
+(defconst MY_HEIGHT_ADJUST (if (not menu-bar-mode) (setq MY_HEIGHT_ADJUST 60) (setq MY_HEIGHT_ADJUST 80))
+"Arbitrary adjustment factor to allow for any space above and
+   below the emacs frame. Window manager height is contained in the const
+  `MY_WINDOWMGR_ADJUST'")
+
+  ;; account for the window manager title bar and frame spaces
+  (defconst MY_WINDOW_MGR_ADJUST 30
+    "Height adjustment factor to account for the window manager
+    titlebar and frame heights when calculating the height of the
+    frame and centering the initial frame")
+
+
+
+  ;; use the screen resolution, font height, and whether or not
+  ;; there's a menubar to calculate the height and center the frame
+  (defconst MY_INITIAL_HEIGHT
+    (/ (- (x-display-pixel-height) MY_HEIGHT_ADJUST)
+       (frame-char-height))
+    "Calculate the initial height of the frame based on the screen
+	resolution and character height")
+;  (defconst MY_INITIAL_HEIGHT 100)
+
+  ;;; set the height of the frame so the top can then be calculated to
+  ;;; center it
+  (set-frame-height (selected-frame) MY_INITIAL_HEIGHT)
+
+  ;;; calculate the top to center the frame
+  (defconst MY_INITIAL_TOP
+    (/ (- (x-display-pixel-height)
+	  (+ (frame-pixel-height) MY_WINDOW_MGR_ADJUST)) 2)
+    "Calculate the initial top of the frame based on the screen
+	resolution and character height")
+;  (defconst MY_INITIAL_TOP 40)
+
+  ;;; set the top position of the frame (fixed position)
+  ;;(defconst MY_INITIAL_TOP 8
+  ;;  "Set the top position (in pixels) of the initial frame")
+
+
+  ;;; now that the initial frame info is known, set the size and
+  ;;; position for subsequent windows
+  (defconst MY_DEFAULT_HEIGHT (- MY_INITIAL_HEIGHT 15)
+    "set the default height")
+  (defconst MY_DEFAULT_TOP    (+ MY_INITIAL_TOP 45))
+  (defconst MY_DEFAULT_LEFT   (- MY_INITIAL_LEFT 150))
+  (defconst MY_DEFAULT_WIDTH   MY_INITIAL_WIDTH)
+
+
+  ;;; Set the font and frame size for the initial frame.
+  (progn
+    (setq initial-frame-alist
+	  `(
+	    (top . ,MY_INITIAL_TOP)
+	    (left . ,MY_INITIAL_LEFT)
+	    (width . ,MY_INITIAL_WIDTH)
+	    (height . ,MY_INITIAL_HEIGHT)
+	    (internal-border-width . 1)
+	    (cursor-type . t)
+	    (font . ,MY_FONT)))
+
+  ;;; Set the default font and frame size
+    (setq default-frame-alist
+	  `(
+	    (top . ,MY_DEFAULT_TOP)
+	    (left . ,MY_DEFAULT_LEFT)
+	    (width . ,MY_DEFAULT_WIDTH)
+	    (height . ,MY_DEFAULT_HEIGHT)
+	    (internal-border-width . 1)
+	    (cursor-type . t)
+	    (font . ,MY_FONT)))))
+
+;;;======================================================================
+;;; adjust confirmations
+;;;======================================================================
+;; get rid of yes-or-no questions - y or n is enough
+;(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; confirm on quitting emacs
+(setq confirm-kill-emacs 'yes-or-no-p)
+
+;;;======================================================================
+;;; increase this from the default of 300 to complete font
+;;; locking on larger files
+;;;======================================================================
+(setq max-lisp-eval-depth 1000)
+
+;;;======================================================================
+;;; turn off space-bar auto-compelte in the minibuffer
+;;;======================================================================
+;(define-key minibuffer-local-completion-map " " 'self-insert-command)
+;(define-key minibuffer-local-must-match-map " " 'self-insert-command)
+
+;;;======================================================================
+;;; Global Programming indentation
+;;;======================================================================
+;;; DO NOT CHANGE THIS! It will make the code look horrible to others
+;;; if you use any tabs for indenting
+(setq default-tab-width 8)
+
+;;; use this to change the indentation offset
+(setq c-basic-offset 4)
+
+;;; use tabs for indentation (t)
+(setq indent-tabs-mode nil)
+
+;;;======================================================================
+;; Make Emacs behave like most X11 programs with regard to pasting
+;; text. Paste at the point rather than where the mouse clicks when
+;; pasting
+;;;======================================================================
+(when window-system (setq-default mouse-yank-at-point t))
+
+;;;======================================================================
+;;; turn off the mule menu
+;;;======================================================================
+;(global-unset-key [menu-bar mule])
+
+;;;======================================================================
+;;; cua mode provides windows-like keybinds. It also provides
+;;; mapping to C-d to delete a region without placing it into the
+;;; kill ring
+(cua-mode t)
+;; Enable using C-z, C-x, C-c, and C-v for undo, cut, copy, and
+;; paste (t)
+(setq cua-enable-cua-keys 'nil)
+
+;;;======================================================================
+;;; follow mode allows two frames to display a single buffer
+;;; coordinated as you scroll through it
+;;;======================================================================
+;(autoload 'follow-mode "follow"
+;    "Synchronize windows showing the same buffer, minor mode." t)
+
+;;;======================================================================
+;;; allows emacs to understand cygwin paths
+;;;======================================================================
+;; This assumes that Cygwin is installed in C:\cygwin (the
+;; default) and that C:\cygwin\bin is not already in your
+;; Windows Path (it generally should not be).
+;;
+;(setq exec-path (cons (concat CYGWIN_DIR "/bin") exec-path))
+;(setenv "PATH" (concat "C:\\cygwin\\bin;" (getenv "PATH")))
+
+;; This removes unsightly ^M characters that would otherwise
+;; appear in the output of java applications.
+(add-hook 'comint-output-filter-functions
+	  'comint-strip-ctrl-m)
+
+;;; NOT compatible with TRAMP. Use
+;;; (cygwin-mount-deactivate)
+;;; prior to accessing remote directories using Tramp.
+;(require 'cygwin-mount)
+;(cygwin-mount-activate)
+
+;(setq cygwin-mount-cygwin-bin-directory (concat CYGWIN_DIR "/bin"))
+
+;; Load Drew Adams setup-cygwin package, which handles cygwin
+;; integration also provides commands to set the shell interactively
+;; (bash, sh, tcsh, cmdproxy). To view man pages, you need to set the
+;; shell to sh or bash prior to launching the man function.
+(load-library "setup-cygwin")
+
+;;;======================================================================
+;;; shell mode
+;;;======================================================================
+;;; prevent echoed commands from being printed (t)
+(setq comint-process-echoes nil)
+
+;;; show all of the output, without scrolling a half-page at once
+(setq comint-scroll-show-maximum-output t)
+
+;;; replace password text with ******* when prompted
+(add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
+
+;;; load the ansi-color package to provide ls coloring in the shell
+(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+
+;;; C-a places the cursor at the end of the prompt, another C-a goes
+;;; to the beginning of the line
+(defun beginning-of-line-maybe ()
+  (interactive)
+  (unless (and (eq last-command 'beginning-of-line-maybe)
+	       (not (bolp))
+	       (forward-line 0))
+    (let ((inhibit-field-text-motion t))
+      (end-of-line))
+    (beginning-of-line)))
+
+(substitute-key-definition 'beginning-of-line
+			   'beginning-of-line-maybe
+			   global-map)
+
+;;;======================================================================
+;;; find-library builds a completion list of lisp libraries that you
+;;; can use to auto-complete an entry in M-x find-library
+;;;======================================================================
+(autoload 'find-library "find-library" "find-library" t)
+
+
+;;;======================================================================
+;;; igrep and grep
+;;;======================================================================
+;;; settings taken from another .emacs file at
+;;; http://www.dotemacs.de/dotfiles/DavidJolley.emacs.html
+
+(defvar grep-null-device null-device)
+(setq igrep-expression-quote-char ?')
+(setq igrep-parenthesis-escape-char ?\\)
+(autoload (function igrep) "igrep"
+  "*Run `grep` PROGRAM to match EXPRESSION in FILES..." t)
+(autoload (function igrep-find) "igrep"  "*Run `grep` via `find`..." t)
+(autoload (function dired-do-igrep) "igrep"
+  "*Run `grep` on the marked (or next prefix ARG) files." t)
+(autoload (function dired-do-igrep-find) "igrep"
+  "*Run `grep` via `find` on the marked (or next prefix ARG) directories." t)
+;; Ignore case by default:
+(setq igrep-options "-i")
+;; To search subdirectories by default:
+(setq igrep-find t)
+
+;;;======================================================================
+;;; ignore case when sorting (t)
+;;;======================================================================
+(setq sort-fold-case t)
+
+;;;======================================================================
+;;; Info mode settings
+;;;======================================================================
+;;; point the packages to the appropriate info directory
+(setq Info-default-directory-list (list
+;			   (concat CYGWIN_DIR "/usr/share/info")
+;			   (concat CYGWIN_DIR "/usr/info")
+			   (concat EMACS_DIR  "/info")
+			   (concat EMACS_PKGS "/info")
+			   (concat EMACS_PKGS "/info/elisp")
+			   (concat EMACS_PKGS "/info/gnus")))
+(setq Info-directory-list Info-default-directory-list)
+
+;(add-to-list Info-default-directory-list (concat EMACS_PKGS "/info"))
+;(add-to-list Info-default-directory-list (concat EMACS_PKGS "/info/elisp"))
+;(add-to-list Info-default-directory-list (concat EMACS_PKGS "/info/gnus"))
+;(add-to-list Info-default-directory-list (concat EMACS_DIR  "/info"))
+;(add-to-list Info-default-directory-list (concat CYGWIN_DIR "/usr/info"))
+
+;;;======================================================================
+;;; make backup files (xxxx~) by copying the existing file rather than
+;;; renaming it. This avoids potential problems with permissions and
+;;; dos-shortened names
+;;;======================================================================
+;(setq backup-by-copying t)
+
+;;;======================================================================
+;;; Printing using ps-print
+;;; the printer is set up in the .emacs through the variable
+;;; 'printer-name
+;;;======================================================================
+(require 'ps-print)
+
+; set the prologue directory (default works fine)
+;(setq ps-postscript-code-directory
+;      (concat EMACS_PKGS "/ps-print-6-7-0/etc/ps-print/"))
+
+(setq ps-paper-type `letter)
+; set the n-up printing to 2 pages
+(setq ps-n-up-printing 2)
+(setq ps-n-up-border-p nil)
+(setq ps-n-up-margin 1)
+
+;; set the border sizes to maximize the printed area. Scale is
+;; 1/72 of an inch
+;(setq ps-font-size (quote (8 . 10)))
+;(setq ps-top-margin 18)
+;(setq ps-bottom-margin 18)
+;(setq ps-left-margin 18)
+;(setq ps-right-margin 18)
+;(setq ps-n-up-margin 18)
+;(setq ps-inter-column 18)
+;
+;(setq-default
+; ps-print-color-p nil
+; ps-bold-faces
+; '(font-lock-type-face
+;   font-lock-keyword-face
+;   font-lock-reference-face)
+; ps-italic-faces 
+; '(font-lock-comment-face
+;   font-lock-string-face))
+
+;;;======================================================================
+;;; printing package
+;;; provides a plethora of additional printing commands that use
+;;; the ps-print package, including print
+;;; preview (pr-ps-buffer-preview)
+;;;======================================================================
+(require 'printing)
+(setq pr-temp-dir "/cygdrive/c/windows/temp")
+;(setq pr-path-style "unix")
+;(setenv TEMP "/cygdrive/c/windows/temp")
+(setq pr-gv-command    (concat UTILS_DIR "/gs/gsview4.8/gsview/gsview32.exe"))
+(setq pr-gs-command    (concat UTILS_DIR "/gs/gs8.54/bin/gswin32.exe"))
+(pr-update-menus)
+
+;;;======================================================================
+;;; set the characters displayed in the modeline for each of of the
+;;; encoding
+;;;======================================================================
+(setq eol-mnemonic-dos ?\\
+      eol-mnemonic-unix ?/
+      eol-mnemonic-mac ?:
+      eol-mnemonic-undecided ??)
+
+;;;======================================================================
+;;; To prevent emacs from adding lines to the bottom of a buffer if
+;;; the end of the buffer is reached, set to nil
+;;;======================================================================
+(setq next-line-extends-end-of-buffer nil)
+(setq next-line-add-newlines nil)
+
+;;;======================================================================
+;;; set the 2 button mouse to function in emacs
+;;;======================================================================
+;(setq w32-num-mouse-buttons 2)
+
+;;;======================================================================
+;;; force emacs to revert the buffer automatically if the file has
+;;; changed on disk (1)
+;;;======================================================================
+;(global-auto-revert-mode 1)
+
+;;;======================================================================
+;;; get rid of the default messages on startup
+;;;======================================================================
+(setq initial-scratch-message nil)
+(setq inhibit-startup-message t)
+(setq inhibit-startup-echo-area-message t)
+
+;;;======================================================================
+;;; Remove the menu bar and scroll bars (for better performance)
+;;;======================================================================
+(defun my-after-init-hook ()
+;  (menu-bar-mode nil)
+  (scroll-bar-mode nil))
+
+(add-hook 'after-init-hook 'my-after-init-hook)
+
+; From: "Jeff Rancier" <jeff.rancier-at-softechnics.com>
+; Hit Ctrl-tab, and the Buffers menu button depresses.  At that
+; time I can just hit any of the first letters of any other menu
+; items, and then expand if there's only one with that letter, or they
+; toggle between multiple ones.
+(defun jbr-w32-simulate-Alt-tap ()
+  (interactive)
+  (w32-send-sys-command 61696))
+
+(global-set-key [C-tab] 'jbr-w32-simulate-Alt-tap)
+
+;;;======================================================================
+;;; Dired
+;;;======================================================================
+;; let dired guess the target directory. If another dired window is
+;; visible, use that as the target for copy, move, etc
+(setq dired-dwim-target t)
+
+; switches to pass to the default ls command for dired. Must contain -l
+(setq insert-directory-program "/bin/ls"
+      dired-use-ls-dired t)
+
+;(setq dired-listing-switches "-lah")
+
+;;; find-file dired
+;;; posted by Kevin Rodgers on comp.emacs:
+(defadvice find-file (around dired-x-default-directory activate)
+  "Happy advice around `find-file'.
+In dired-mode, use dired-x.el's `default-directory' function instead of
+the `default-directory' variable.
+From Kevin Rodgers <kevin-at-ihs.com>"
+  (interactive
+   (let ((default-directory
+	   (if (and (eq major-mode 'dired-mode)
+		    (fboundp 'default-directory))
+	       (default-directory)
+	     default-directory)))
+     (list (read-file-name "Find file: "
+			   nil nil nil nil))))
+  ad-do-it)
+
+;;;======================================================================
+;;; wdired
+;;;======================================================================
+;;; allow in-place file name editing within dired mode
+;;; use the method wdired-change-to-wdired-mode to enable
+(eval-after-load "dired" '(load-library "wdired"))
+
+;;;======================================================================
+;;; dired-x
+;;;======================================================================
+;;; dired-x provides added functions to dired, including the ability
+;;; to save a dired listing for later use as XXXXX.dired and the
+;;; ability to run vm on a dired file listing by typing "V" on the
+;;; file, "I" for info files, and so on...
+(add-hook 'dired-load-hook
+	  (function (lambda ()
+		      (load "dired-x")
+		      ;; Set dired-x global variables here.  For example:
+		      (setq dired-bind-vm t))))
+
+;;; associate files with a .dired extension with virtual dired
+;;; mode. To get the file back into dired mode, hit 'g' to refresh the
+;;; current file listing.
+(setq auto-mode-alist (cons '("[^/]\\.dired$" . dired-virtual-mode) auto-mode-alist))
+
+;;;======================================================================
+;;; dired-a
+;;;======================================================================
+;;; dired-a provides added functions to dired, including recursive
+;;; copy and delete (to handle entire directories)
+(eval-after-load "dired" '(load-library "dired-a"))
+
+;;; recursive copies and deletes
+;;; Nil means no recursive deletes/copies.
+;;; always means delete recursively without asking.
+;;; top means ask for each directory at top level.
+;;; Anything else means ask for each directory.
+(setq dired-recursive-deletes 'always)
+(setq dired-recursive-copies  'always)
+
+;;;======================================================================
+;;; auto-compression-mode
+;;;======================================================================
+;;; handles gz and tgz compression
+(auto-compression-mode t)
+
+;;;Alist with information how to add files to an archive.
+;;;Each element has the form (REGEXP ADD-CMD NEW-CMD). If REGEXP matches
+;;;the file name of a target, that target is an archive and ADD-CMD is a command
+;;;that adds to an existing archive and NEW-CMD is a command that makes a new
+;;;archive (overwriting an old one if it exists). ADD-CMD and NEW-CMD are:
+;;;1. Nil (meaning we cannot do this for this type of archive) (one of
+;;;   ADD-CMD and NEW-CMD must be non-nil).
+;;;2. A symbol that must be a function e.g. dired-do-archive-op.
+;;;3. A format string with two arguments, the source files concatenated into
+;;;   a space separated string and the target archive.
+;;;4. A list of strings, the command and its flags, to which the target and
+;;; the source-files are concatenated."
+(setq dired-to-archive-copy-alist
+      '(("\\.sh\\(ar\\|[0-9]\\)*$" nil "shar %s > %s")
+	("\\.jar$" ("jar" "uvf") ("jar" "cvf"))
+	("\\.tar$" ("tar" "-uf") ("tar" "-cf"))
+;    ("\\.tgz$\\|\\.tar\\.g?[zZ]$" "tar -uf %s | gzip > %s" "tar -cf %s | gzip > %s")
+	("\\.tgz$\\|\\.tar\\.g?[zZ]$" ("tar" "-uf %s" "|" "gzip > %s") ("tar" "-czvf"))
+	("\\.ear$" ("zip" "-qr") ("zip" "-qr"))
+	("\\.rar$" ("rar" "a")   ("rar" "a"))
+	("\\.war$" ("zip" "-qr") ("zip" "-qr"))
+	("\\.zip$" ("zip" "-qr") ("zip" "-qr"))
+	("\\.rjs$" ("zip" "-qr") ("zip" "-qr")) ;; for realOne player skins
+	("\\.wsz$" ("zip" "-qr") ("zip" "-qr")) ;; for winamp skins
+	("\\.wmz$" ("zip" "-qr") ("zip" "-qr")) ;; for media player skins
+	("\\.arc$" ("arc" "a") nil)
+	("\\.zoo$" ("zoo" "aP") nil)
+	))
+
+;;; use pkzip with manipulating zip files (t) from within dired (use zip
+;;; and unzip otherwise)
+;(setq archive-zip-use-pkzip nil)
+
+;;; add these file types to archive mode to allow viewing and changing
+;;; their contents
+(add-to-list 'auto-mode-alist '("\\.[ewj]ar$\\'" . archive-mode))
+(add-to-list 'auto-mode-alist '("\\.rar$\\'" . archive-mode))
+;(add-to-list 'auto-mode-alist '("\\.ear\\'" . archive-mode))
+;(add-to-list 'auto-mode-alist '("\\.jar\\'" . archive-mode))
+
+;;; modify the dired-extract switches to use the directory
+;;; ~/temp/tryout as the default extract directory for zip files
+(setq dired-extract-alist
+      `(
+	("\\.u\\(ue\\|aa\\)$" . dired-uud)
+	("\\.jar$" . "jar -xvf %s")
+	("\\.tar$" . ,(concat "tar -xf %s -C " MY_UNTAR_DIR))
+	("\\.tgz$\\|\\.tar\\.g?[zZ]$" . ,(concat "tar -xzf %s -C " MY_UNTAR_DIR))
+	("\\.arc$" . "arc x %s ")
+	("\\.bz2$" . ,(concat "bunzip2 -q %s"))
+	("\\.rar$" . ,(concat "rar x %s " MY_TRYOUT_DIR "\\"))
+	("\\.zip$" . ,(concat "unzip -qq -Ux %s -d " MY_TRYOUT_DIR))
+	("\\.ear$" . ,(concat "unzip -qq -Ux %s -d " MY_TRYOUT_DIR))
+	("\\.war$" . ,(concat "unzip -qq -Ux %s -d " MY_TRYOUT_DIR))
+	("\\.rjs$" . ,(concat "unzip -qq -Ux %s -d " MY_TRYOUT_DIR)) ;; realOne skins
+	("\\.wsz$" . ,(concat "unzip -qq -Ux %s -d " MY_TRYOUT_DIR)) ;; winamp skins
+	("\\.wmz$" . ,(concat "unzip -qq -Ux %s -d " MY_TRYOUT_DIR)) ;; media player skins
+	("\\.zoo$" . "zoo x. %s ")
+	("\\.lzh$" . "lha x %s ")
+	("\\.g?[zZ]$" . "gzip -d %s")   ; There is only one file
+;   ("\\.g?[zZ]$" . dired-uncompressing) ; There is only one file
+	))
+
+;;;; redefine the function in dired-a to refresh the buffer after
+;;;; the operation
+;;(defun dired-do-archive-op (operation rfn-list fn-list target &optional buf)
+;;  (if dired-archive-rm (delete-file target))
+;;  (dired-arcs-process dired-archive-op operation target rfn-list buf)
+;;  (revert-buffer))
+
+;;;======================================================================
+;;; w32-symlinks
+;;;======================================================================
+(require 'w32-symlinks)
+
+;;;======================================================================
+;;; ls-lisp
+;;;======================================================================
+;;; load the new ls-lisp file package, which emulates the ls command
+;;; and provides a nicer format for the dired mode listings. It does
+;;; not provide accurate info on permissions and owners
+(add-hook 'dired-load-hook
+	  (lambda ()
+	    (load "ls-lisp")
+	    (require 'dired-sort-menu)))
+
+;;; use an external ls program to provide the capability
+;;; of executing recursive listings (nil to use ls-lisp emulation)
+;;; and provide more accurate information on owners and permissions.
+
+;;; This creates a problem in displaying the root directory of the c:/
+;;; drive. The reason could be that the cygwin ls program generates
+;;; the following error message at the top of this listing:
+;;; ls: pagefile.sys: No such file or directory
+
+;(setq insert-directory-program (concat CYGWIN_DIR "/bin/ls"))
+;(setq ls-lisp-use-insert-directory-program t)
+;(setq dired-listing-switches "-la")
+;
+;;;; from "Dr Francis J. Wright" <F.J.Wright-at-qmul.ac.uk>
+;(defadvice insert-directory (around insert-directory-advice activate)
+;  "FJW: Hack around a bug in the Cygwin beta 20.1 `ls' program
+;when listing the root partition under Windows NT (not 9x).
+;For use with (setq ls-lisp-use-insert-directory-program t)."
+;  (condition-case desc ad-do-it
+;    (file-error
+;     (save-excursion
+;       (goto-char (point-min))
+;       (if (looking-at ".*pagefile\.sys: No such file or directory")
+;    (delete-region (point) (1+ (line-end-position)))
+;  ;; This may not work in all cases:
+;  (error (concat (nth 1 desc) ": " (nth 2 desc) ", " (nth 3 desc))))
+;       ))))
+
+;;; sort the dired buffer to place the directories on top (t)
+(setq ls-lisp-dirs-first t)
+
+;;; set the ls-lisp emulation for the windows system (puts the
+;;; directories first)
+(setq ls-lisp-emulation 'MS-Windows)
+
+;;; sort without regard to case (t)
+(setq ls-lisp-ignore-case t)
+
+;;;; display the following optional file attributes
+(setq ls-lisp-verbosity '(links uid))
+
+;;;; From Kin Cho <kin-at-dynarc.com>
+;;;; prevent the message 'Directory has changed on disk; type g to update Dired'
+;;;; from appearing
+;(defadvice dired-internal-noselect (before my-auto-revert-dired activate)
+;  (let ((buffer)(dirname (ad-get-arg 0)))
+;    (when (and (not (consp dirname))
+;           (setq buffer (dired-find-buffer-nocreate dirname nil)))
+;      (set-buffer buffer)
+;      (if (let ((attributes (file-attributes dirname))
+;        (modtime (visited-file-modtime)))
+;        (or (eq modtime 0)
+;        (not (eq (car attributes) t))
+;        (and (= (car (nth 5 attributes)) (car modtime))
+;             (= (nth 1 (nth 5 attributes)) (cdr modtime)))))
+;           nil
+;         (kill-buffer buffer)))))
+
+;;; set the find program to which dired-find point for executing find
+;;; commands and placing the output into a dired buffer.
+(setq find-dired-find-program (concat CYGWIN_DIR "/bin/find.exe"))
+(setq find-ls-option '("-ls" . "-la"))
+
+;;;======================================================================
+;;; gse-number-rect
+;;;======================================================================
+;;; Like string-rectangle, but inserts incremental numbers in the
+;;; rectangle. Can be very useful when used in conjuction with wdired
+;;; to rename files in bulk
+(require 'gse-number-rect)
+(global-set-key "\C-xru" 'gse-number-rectangle)
+
+;;;======================================================================
+;;; Highline
+;;;======================================================================
+(require 'highline)
+
+;;; turn on highline for the all modes
+;;; this interferes with the tooltip because it highlights the tooltip line as well
+(highline-mode-on)
+
+;;;; turn on highline for the following modes
+;(dolist (hook '(
+;       change-log-mode-hook
+;       cperl-mode-hook
+;       emacs-lisp-mode-hook
+;       gnus-summary-mode-hook
+;       java-mode-hook
+;       makefile-mode-hook
+;       planner-mode-hook
+;       shell-mode-hook
+;       texinfo-mode-hook
+;       text-mode-hook
+;       vm-summary-mode-hook
+;       vm-display-buffer-hook
+;       w3m-mode-hook))
+;  (add-hook hook 'highline-on))
+;
+;;;; Turn on local highlighting for Dired (C-x d)
+;(add-hook 'dired-after-readin-hook 'highline-on)
+;(add-hook 'dired-after-readin-hook 'turn-on-font-lock)
+;
+;;;; Turn on local highlighting for list-buffers (C-x C-b)
+;(defadvice list-buffers (after highlight-line activate)
+;  (save-excursion
+;    (set-buffer "*buffer-selection*")
+;    (highline-on)))
+
+;;;======================================================================
+;;; shellex
+;;;======================================================================
+;;; load the shellex package, which allows emacs to launch associated
+;;; apps. Use the "j" key to launch the associated app. This also
+;;; associates html files within VM and Gnus to launch the associated
+;;; browser!
+;;;======================================================================
+
+;; does not require the outside program shellex to run programs.
+(defun dired-custom-execute-file (&optional arg)
+  (interactive "P")
+  (mapcar #'(lambda (file)
+	      (w32-shell-execute nil (convert-standard-filename file)))
+	  (dired-get-marked-files nil arg)))
+
+(defun dired-custom-dired-mode-hook ()
+  (define-key dired-mode-map "j" 'dired-custom-execute-file))
+(add-hook 'dired-mode-hook 'dired-custom-dired-mode-hook)
+
+;;;======================================================================
+;;; modeline modifications
+;;;======================================================================
+;;; first turn on column line mode
+;(setq column-number-mode nil)
+
+;;; the standard display time package
+;;; see documentation for the function
+;;; format-time-string
+;;; for an explanation of the format
+(setq display-time-day-and-date t)
+(setq display-time-format "%m/%d %H:%M ")       ;;; 11/10 15:26
+;(setq display-time-format "%a %d %b %I:%M %p") ;;; Fri 10 Nov 3:26 PM
+;(setq display-time-format "%a %d %b %H:%M")    ;;; Fri 10 Nov 15:26
+(display-time)
+
+;;; format for the filename in the modeline
+;;; The default, "%12b", just displays the filename.
+;;; You can find the complete path by invoking the macro 'M-x path',
+;;; defined in .emacs-macros.el
+(setq-default mode-line-buffer-identification '("%12b"))
+
+;;; format for the title on the titlebar
+(setq frame-title-format
+      (concat invocation-name "@"
+              system-name
+;	      (shell-command-to-string "hostname|tr -d \\\\n")
+	      " -- %f"))
+
+;(setq frame-title-format "%b")
+;(setq icon-title-format "%b")
+
+;; Bonus: This handles cases where you edit the same file name in
+;; two different directories.
+;(require 'uniquify)
+;(setq uniquify-buffer-name-style 'forward)
+
+;;; now adjust the strings shown for the minor modes (to shorten them)
+(setq minor-mode-alist
+      '((font-lock-mode " Fnt")
+	(filladapt-mode " FA")
+	(server-buffer-clients " Svr")
+	(vc-mode vc-mode)
+	(abbrev-mode " Abv")
+	(overwrite-mode " Ovrwrt")
+	(auto-fill-function " Fill")
+	(defining-kbd-macro " Def")
+	(isearch-mode " Srch")))
+
+;;;======================================================================
+;;; enable the shift-arrow keys to mark regions of text, and C-d delete
+;;; highlighted text without placing it in the kill ring
+;;;======================================================================
+(pc-selection-mode)
+
+;;;======================================================================
+;;; enable highlighting regions from the keyboard
+;;;======================================================================
+(setq transient-mark-mode t)
+
+;;;======================================================================
+;;; fix the problems with the M-del and M-backspace keys for the
+;;; windows version
+;;;======================================================================
+(global-set-key [delete] "\C-d")
+(global-set-key [M-delete] "\M-d")
+(global-set-key [M-backspace] [?\M-\177])
+
+;;; re-enable the commands upcase region and downcase-region
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+;;;======================================================================
+;;; load the frame sizing functions. Do this here instead of the
+;;; emacs-macros file because these functions are referenced from
+;;; within this file
+;;;======================================================================
+;
+;;;======================================================================
+;;; set partial width windows to automatically truncate (t)
+;;;======================================================================
+(setq truncate-partial-width-windows t)
+
+;;;======================================================================
+;;; Enable the commands `narrow-to-region' ("C-x n n") and
+;;; `eval-expression' ("M-ESC", or "ESC ESC").
+;;;======================================================================
+(put 'narrow-to-region 'disabled nil)
+(put 'eval-expression 'disabled nil)
+
+;;; Make the sequence "C-c g" execute the `goto-line' command,
+;;; which prompts for a line number to jump to.
+(global-set-key "\C-c\C-g" 'goto-line)
+
+;;; Make the sequence "C-x w" execute the `what-line' command,
+;;; which prints the current line number in the echo area.
+(global-set-key "\C-c\C-w" 'what-line)
+
+;;;======================================================================
+;;; color select lets you select background and foreground colors from
+;;; a list
+;;;======================================================================
+(load-library "colorsel")
+(setq *x-rgb-file* (concat EMACS_PKGS "/personal/rgb.txt"))
+
+
+;;;======================================================================
+;;; face-list provides you the ability to examine/customize a face
+;;; under the point
+;;;======================================================================
+(load-library "face-list")
+
+;;;======================================================================
+;;; ediff configuration
+;;;======================================================================
+;; split windows horizontally:
+(setq ediff-split-window-function 'split-window-horizontally)
+
+;; wide by default
+(add-hook 'ediff-mode-hook 'frame-enlarge)
+
+;; only hilight current diff:
+(setq-default ediff-highlight-all-diffs 'nil)
+
+;; turn off whitespace checking:
+(setq ediff-diff-options "-w")
+
+;; highlight changes to characters rather than whole words
+;(setq ediff-forward-word-function 'forward-char)
+
+;;;======================================================================
+;;; Abbreviation mode stuff
+;;;======================================================================
+;;; automatically read in the abbrev definition file (~/.abbrev_def)
+;(setq abbrev-file-name (concat TOP_LEVEL "/.abbrev_def"))
+;(read-abbrev-file)
+
+;;======================================================================
+;; load the time-stamp package
+;;======================================================================
+; Updating Time Stamps Automatically
+;
+; You can arrange to put a time stamp in a file, so that it will be
+; updated automatically each time you edit and save the file.  The time
+; stamp has to be in the first eight lines of the file, and you should
+; insert it like this:
+;
+;      Time-stamp: <>
+; or like this:
+;      Time-stamp: ""
+;
+; Then add the hook function `time-stamp' to the hook
+; `write-file-hooks'; that hook function will automatically update the
+; time stamp, inserting the current date and time when you save the
+; file.  You can also use the command `M-x time-stamp' to update the
+; time stamp manually.  For other customizations, see the Custom group
+; `time-stamp'.  Note that non-numeric fields in the time stamp are
+; formatted according
+
+;(add-hook 'write-file-functions 'time-stamp)
+
+;;;======================================================================
+;;; bs  (another implementation of the buffer mode (C-xC-b))
+;;;======================================================================
+(require 'bs)
+
+;; If you don't want to see internal buffers beginning with '*'
+;; but you want to see buffer *scratch* then:
+;(setq bs-dont-show-regexp "^\\*")
+;(setq bs-must-show-regexp "^\\*scratch\\*")
+
+;; possible values for the configuration are:
+;;    ("all"                . bs-config--all)
+;;    ("files"              . bs-config--only-files)
+;;    ("files-and-scratch"  . bs-config--files-and-scratch)
+;;    ("all-intern-last"    . bs-config--all-intern-last)
+(setq bs-default-configuration "all")
+
+;; the current definition of this method just returns an error
+;; message. Override it with the older definition
+(defun bs-delete ()
+  "Kill buffer on current line."
+  (interactive)
+  (let ((current (bs--current-buffer))
+	(inhibit-read-only t))
+    (setq bs-current-list (delq current bs-current-list))
+    (kill-buffer current)
+    (beginning-of-line)
+    (delete-region (point) (save-excursion
+			     (end-of-line)
+			     (if (eobp) (point) (1+ (point)))))
+    (if (eobp)
+	(progn
+	  (backward-delete-char 1)
+	  (beginning-of-line)
+	  (recenter -1)))
+    (bs--set-window-height)))
+
+;; bind bs to the standard buffer keys (C-x\C-b)
+(global-set-key "\C-x\C-b" 'bs-show)
+
+
+;;;======================================================================
+;;; whitespace eliminates trailing whitespaces... good for source code
+;;;======================================================================
+;; tends to be intrusive on opening files. It opens another buffer
+;; to let you know about whitespace problems
+;(require 'whitespace)
+
+
+;;;======================================================================
+;;; nxhxml. Derived from nxml mode, good for HTML files 
+;;;======================================================================
+;; load the nxml package
+(load "rng-auto.el")
+(setq nxml-slash-auto-complete-flag t)
+
+;; now load the nxhtml package
+(load "nxhtml-autoload")
+(setq tidy-shell-command "c:/cygwin/bin/tidy")
+
+
+;;;======================================================================
+;;; calculator, a simple calculator mode for emacs
+;;;======================================================================
+(require 'calculator)
+
+;;; to run the calculator from within the echo area, set t
+(setq calculator-electric-mode t)
+
+;;; set the number of digits displayed to 12 (3 default)
+(setq calculator-number-digits 12)
+
+;;;======================================================================
+;;; dictionary
+;;;======================================================================
+(autoload 'dictionary-search "dictionary"
+  "Ask for a word and search it in all dictionaries" t)
+(autoload 'dictionary-match-words "dictionary"
+  "Ask for a word and search all matching words in the dictionaries" t)
+(autoload 'dictionary-lookup-definition "dictionary"
+  "Unconditionally lookup the word at point." t)
+(autoload 'dictionary "dictionary"
+  "Create a new dictionary buffer" t)
+(autoload 'dictionary-mouse-popup-matching-words "dictionary"
+  "Display entries matching the word at the cursor" t)
+(autoload 'dictionary-popup-matching-words "dictionary"
+  "Display entries matching the word at the point" t)
+(autoload 'dictionary-tooltip-mode "dictionary"
+  "Display tooltips for the current word" t)
+(autoload 'global-dictionary-tooltip-mode "dictionary"
+  "Enable/disable dictionary-tooltip-mode for all buffers" t)
+
+;; the proxy server is kicking the port request out, so use an ssh
+;; tunnel to route requests to the dictionary server on port 2628
+;; see the config file in ~/.ssh for details on the forwarded ports
+(setq dictionary-server "localhost")
+
+;; In addition, some key bindings for faster access can be useful. I
+;; use the following ones in my installation key bindings:
+(global-set-key "\C-cs" 'dictionary-search)
+(global-set-key "\C-cm" 'dictionary-match-words)
+
+;;;======================================================================
+;;; webjump package (and webjump-plus) provide a nice keyboard
+;;; interface to web pages of your choosing
+;;; web site list is located in the emacs-pkgs/.emacs-webjump.el file
+;;;======================================================================
+(require 'webjump-plus)
+(global-set-key "\C-cj" 'webjump)
+
+;;;======================================================================
+;;; w3m browser mode:
+;;;======================================================================
+;;; integrates the external browser w3m with emacs. The configuration
+;;; is in .emacs-w3m
+(load (concat EMACS_PKGS "/.emacs-w3m"))
+
+;;;======================================================================
+;;; wget mode:
+;;;======================================================================
+;;; integrates wget program with emacs
+(autoload 'wget "wget" "wget interface for Emacs." t)
+(autoload 'wget-web-page "wget" "wget interface to download whole web page." t)
+(load "w3m-wget")
+
+;;;======================================================================
+;;; ispell:
+;;;======================================================================
+; use aspell, which provides a much richer set of suggested
+; replacements than does ispell
+(setq ispell-program-name "aspell.exe")
+
+;;;;======================================================================
+;;;; fold-dwim mode
+;;;;======================================================================
+;;;; The goal of this package is to reduce this complexity to three
+;;;; globally-defined keystrokes: one to toggle the state of the fold at
+;;;; point, whatever its type may be, one to hide all folds of all types
+;;;; in the buffer, and one to show all folds.
+;;;;
+;;;; This package currently knows about folding-mode (from folding.el),
+;;;; hs-minor-mode (from hideshow.el), outline-minor-mode (from
+;;;; outline.el), TeX-fold-mode (from AUCTeX), and nXML-mode outlining.
+;;;; More could be added.  It is not necessary to have folding.el,
+;;;; AUCTeX or nXML-mode installed, if you just want to use it with the
+;;;; built-in modes.
+;;(hs-minor-mode 1)
+;(require 'fold-dwim)
+;(global-set-key (kbd "<f7>")      'fold-dwim-toggle)
+;(global-set-key (kbd "<M-f7>")    'fold-dwim-hide-all)
+;(global-set-key (kbd "<S-M-f7>")  'fold-dwim-show-all)
+
+
+;;;======================================================================
+;;; filladapt
+;;;======================================================================
+;;; filladapt is a package that automatically adapts the next program
+;;; line to match the previous type. So if the previous line is a
+;;; comment, the next one will default to continue that comment
+;;; M-x filladapt-mode toggles Filladapt mode on/off in the current
+;;; buffer.
+(require 'filladapt)
+(turn-on-auto-fill)
+(setq fill-column 70)
+
+;;; Note that in this release Filladapt mode is a minor mode and it is
+;;; _off_ by default.  Turn on by default.
+(setq-default filladapt-mode t)
+
+;;; to have Filladapt always enabled in Text mode.
+(add-hook 'text-mode-hook 'turn-on-filladapt-mode)
+
+;;; allow sentences to end with a single space
+(setq sentence-end-double-space nil)
+
+;;;======================================================================
+;;; css-mode, for cascading style sheets
+;;;======================================================================
+(autoload 'css-mode "css-mode")
+
+;;; set the indentation style to the c-mode style
+(setq cssm-indent-function 'cssm-c-style-indenter)
+
+;;; use this mode when loading .css files
+(setq auto-mode-alist (cons '("\\.css\\'" . css-mode) auto-mode-alist))
+
+
+;;;======================================================================
+;;; blank-mode, visually indicates blank spaces and tabs within a file
+;;;======================================================================
+;;; toggle with M-x blank-mode
+(require 'blank-mode)
+
+
+;;;======================================================================
+;;; cedet, combines eieio, semantic, ede, speedbar, cogre packages
+;;;======================================================================
+;; Configuration variables here:
+;(setq semantic-load-turn-useful-things-on t)
+
+; Load CEDET
+(load-file (concat EMACS_PKGS "/cedet-1.0pre3/common/cedet.elc"))
+;(load-file "cedet.elc")
+
+;(semantic-load-enable-code-helpers)
+
+; place all of the semantic.cache files into a single directory
+(setq semanticdb-default-save-directory (concat EMACS_PKGS "/semantic_cache"))
+
+;(global-semantic-show-tag-boundaries-mode -1)
+;(global-semantic-stickyfunc-mode -1)
+
+
+;;;======================================================================
+;;; jde java development environment
+;;;======================================================================
+;;; delay loading jde until a java file is opened
+(setq defer-loading-jde t)
+(if defer-loading-jde
+    (progn
+      (autoload 'jde-mode "jde" "JDE mode." t)
+      (setq auto-mode-alist
+	    (append
+	     '(("\\.java\\'" . jde-mode))
+	     auto-mode-alist)))
+  (require 'jde))
+
+;;; jde settings are stored at the end of the this file in the custom
+;;; section
+
+;;; Some more customization for JDEE
+(defun my-jde-mode-hook ()
+  (c-set-offset 'substatement-open 0)
+  (c-set-offset 'statement-case-open 0)
+  (c-set-offset 'case-label '+)
+  (c-set-offset 'arglist-intro '+)
+  (c-set-offset 'arglist-cont-nonempty '+)
+  (setq c-comment-continuation-stars "* ")
+  (setq c-basic-offset 4))
+(add-hook 'jde-mode-hook 'my-jde-mode-hook)
+
+
+;;;======================================================================
+;;; ecb-mode, emacs code browser. Integrates with jde
+;;;======================================================================
+;;; 'ecb-activate' starts ecb mode.
+;;; 'ecb-deactivate' turns it off
+;;; 'ecb-hide-ecb-windows' hides the extra windows without deactivating ecb
+
+(require 'ecb-autoloads)
+
+;;; Modify the variable ecb-layout-name to use change the layout
+;;; then C-c . l to refresh the ecb screen
+;;; or just use the function ecb-change-layout
+(setq ecb-layout-name "left1")
+
+;;; turn off the tip of the day
+(setq ecb-tip-of-the-day 'nil)
+
+;;; use the icons in the tree displays (t)
+(setq ecb-tree-use-image-icons t)
+
+(add-hook 'ecb-activate-before-layout-draw-hook
+          'frame-enlarge)
+
+;;; show .emacs-config and such in the emacs-pkgs directory
+;;; still trying to get the regexp right for this...
+;(setq ecb-source-file-regexps
+;      '((".*"
+;        ("\\(^\\(\\.\\|#\\)\\|\\(~$\\|\\.\\(elc\\|obj\\|o\\|class\\|lib\\|dll\\|a\\|so\\|cache\\)$\\)\\)")
+;        ("^\\.\\(emacs*\\|gnus\\)$"))))
+
+
+;;; set the height of the compilation window for compile mode
+(setq compilation-window-height 12)
+
+;;; highlight the results immediately
+(defun my-compilation-mode-hook ()
+  (setq truncate-lines t)
+  (font-lock-mode t))
+
+(add-hook 'compilation-mode-hook 'my-compilation-mode-hook)
+
+
+;;;======================================================================
+;;; sql-oracle
+;;;======================================================================
+(setq sql-oracle-program "c:/oracle/ora92/bin/sqlplus.exe")
+(setq sql-product "Oracle")
+
+;;;======================================================================
+;;; SMTP
+;;;======================================================================
+;;; configuration to send outgoing mail
+(setq user-full-name my_full_name)
+(setq user-mail-address my_email_address)
+(setq mail-envelope-from my_email_address)
+
+(setq send-mail-function 'smtpmail-send-it)
+(setq smtpmail-default-smtp-server my_smtp_server)
+(setq smtpmail-smtp-server my_smtp_server)
+(setq smtpmail-smtp-service my_smtp_port)
+(setq smtpmail-sendto-domain my_domain)
+(setq smtpmail-local-domain my_domain)
+(setq smtpmail-code-conv-from nil)
+(setq smtpmail-debug-info t)
+;(setq smtpmail-auth-credentials '(("localhost" 8025 "cmcmahan-at-one.net")))
+(load-library "smtpmail")
+
+;;; use this variable to change servers after loading (good for
+;;; debugging)
+;(setq smtpmail-smtp-server "SMTPGATE")
+
+
+;;;======================================================================
+;;; fetchmail mode for editing fetchmailrc files
+;;;======================================================================
+(autoload 'fetchmail-mode "fetchmail-mode.el" "Mode for editing .fetchmailrc files" t)
+
+(setq auto-mode-alist
+      (append '(("\..fetchmailrc$" . fetchmail-mode))
+	      auto-mode-alist))
+
+;;;======================================================================
+;;; vm
+;;;======================================================================
+(setq vm-init-file (concat EMACS_PKGS "/.emacs-vm.el"))
+
+(autoload 'vm "vm" "Start VM on your primary inbox." t)
+(autoload 'vm-other-frame "vm" "Like `vm' but starts in another frame." t)
+(autoload 'vm-visit-folder "vm" "Start VM on an arbitrary folder." t)
+(autoload 'vm-visit-virtual-folder "vm" "Visit a VM virtual folder." t)
+(autoload 'vm-mode "vm" "Run VM major mode on a buffer" t)
+(autoload 'vm-mail "vm" "Send a mail message using VM." t)
+(autoload 'vm-submit-bug-report "vm" "Send a bug report about VM." t)
+
+;;; save all mail messages in unix format to avoid messing up the mail
+;;; box with mixed dos/unix line endings
+(modify-coding-system-alist
+ 'file (concat "^" MAIL_DIR) 'raw-text-unix)
+
+;(require 'vm-grepmail)
+
+;;;======================================================================
+;;; Turn on filladapt and auto-fill for reply messages
+;;;======================================================================
+(add-hook 'mail-mode-hook '(lambda () (setq fill-column 70)))
+(add-hook 'mail-mode-hook 'turn-on-filladapt-mode)
+(add-hook 'mail-mode-hook 'turn-on-auto-fill)
+(add-hook 'vm-message-mode-hook '(lambda () (setq fill-column 70)))
+(add-hook 'vm-message-mode-hook 'turn-on-filladapt-mode)
+(add-hook 'vm-message-mode-hook 'turn-on-auto-fill)
+
+
+;;;======================================================================
+;;; report mail
+;;;======================================================================
+;;; reportmail checks the incoming spool file and alerts you to new
+;;; mail with the subject and author of the message
+(load-library "reportmail")
+;(setq reportmail-debugging 1)
+
+;;; set the polling interval for reportmail
+;;; the fetchmail interval is 150 seconds as well
+(setq reportmail-interval 150)
+
+;;; set the location of the incoming mail file
+(setq reportmail-incoming-mail-file my_mail_spool)
+
+;;; Set the addresses not to display in the message announcement
+;;; broken... don't set as it causes reportmail to fail
+;(setq reportmail-my-addresses my_email_address)
+
+;;; Set the message separator
+(setq reportmail-message-separator "From ")
+(set-message-beep 'silent)
+
+;;; let the display-time package handle time since there is more
+;;; control over the format of the output
+(setq reportmail-time 'nil)
+(setq reportmail-day-and-date 'nil)
+
+;;; clear the echo-area after displaying subject
+(setq reportmail-flush-echo-area t)
+
+;;; set vm to delete the reportmail spool file on retrieving the email
+(add-hook 'vm-retrieved-spooled-mail-hook
+	  '(lambda ()
+	     (reportmail-del-file reportmail-incoming-mail-file)
+	     (reportmail)))
+
+;;;======================================================================
+;;; bbdb
+;;;======================================================================
+;;;  is an emacs-based contact database that hooks well in the mail
+;;;  and gnus programs. It can also be used to conviently look up
+;;;  names, addresses, and phone numbers from within emacs itself by
+;;;  typing M-x bbdb <RET>
+(require 'bbdb-autoloads)
+(require 'bbdb)
+(bbdb-initialize 'vm 'gnus 'message)
+
+(setq bbdb-default-area-code 513
+      bbdb-file "~/.bbdb"
+      bbdb-north-american-phone-numbers-p t
+      bbdb-dwim-net-address-allow-redundancy t)
+
+;;; Create XML files from displayed records
+;;; in the BBDB buffer, hit 'X' to convert
+(require 'bbdb-xml-print)
+
+;;; Hook bbdb into reportmail
+;(bbdb-insinuate-reportmail)
+
+;;; use the name or the first email address on completion
+(setq bbdb-completion-type (quote primary-or-name))
+
+;;; Whether bbdb-complete-name (M-x bbdb-complete-name in mail-mode)
+;;; will update the *BBDB* buffer to display the record whose email
+;;; address has just been inserted.
+(setq bbdb-completion-display-record nil)
+
+;;; set the from address
+(setq bbdb-user-mail-names my_email_address)
+
+;;; adds or updates a timestamp notes field for each record to flag when
+;;; it was created (set by default) or changed (set by default)
+;(setq bbdb-create-hook bbdb-creation-date-hook)
+;(add-hook 'bbdb-change-hook 'bbdb-timestamp-hook)
+(setq bbdb-create-hook nil)
+(setq bbdb-change-hook nil)
+
+;;; if non-nil automatically generate database records for every mail
+;;; message viewed
+(setq bbdb/mail-auto-create-p nil)
+
+;;; if non-nil, pop a database record of every mail sender when
+;;; message is viewed. If a record for a mail message does not exist,
+;;; use : to create a new one. display vbls control the popup format
+(setq bbdb-use-pop-up t)
+
+;;; format the popup display
+;;; necessary to get the pop-up-target-lines less than 3
+;(setq window-min-height 1)
+;(setq bbdb-pop-up-target-lines 1)
+
+;;; turn on the electric mode (t) for popup behavior
+(setq bbdb-electric-p t)
+
+;;; format the default bbdb display and popup display to 1 line for
+;;; each record (t)
+;;; use this for M-x bbdb results
+;(setq bbdb-display-layout 'multi-line)
+
+;;; automatically uppercase the state names in bbdb
+(add-hook 'bbdb-change-hook 'wsm-bbdb-upcase-states)
+(defun wsm-bbdb-upcase-states (r)
+  (mapcar
+   '(lambda (addr)
+      (bbdb-address-set-state addr (upcase (bbdb-address-state addr))))
+   (bbdb-record-addresses r)))
+
+;;; sort the phone fields in bbdb
+;(add-hook 'bbdb-change-hook 'wsm-bbdb-sort-phones)
+;(defun wsm-bbdb-sort-phones (r)
+;  (bbdb-record-set-phones
+;    r
+;    (sort (bbdb-record-phones r)
+;     '(lambda (x y) (not (string< (elt x 0) (elt y 0)))))))
+
+;;; tab complete to fill in the name on messages
+(require 'message)
+
+(defun my-bbdb-tab-complete ()
+  (interactive)
+  (if (mail-abbrev-in-expansion-header-p)
+      (bbdb-complete-name)
+    (message-tab)))
+
+(define-key message-mode-map [tab] 'my-bbdb-tab-complete)
+
+;;;------------------------------
+;;; message-x allows the tab key to intelligently map to
+;;; auto-completion when in the message headers, and normal indent when
+;;; not. Avoids conflict with ispell M-tab key binding.
+;;; submitted to the bbdb group by
+;;; Kai Grossjohann <grossjohann-at-charly.cs.uni-dortmund.de>
+(require 'message-x)
+
+;;;------------------------------
+;;; bbdb-query is an add-on package that provides the following commands within a
+;;; BBDB buffer to refine a query on the results of the previous query:
+;;; "B" query
+;;; "A" append
+;;; "F" flush
+;;; "K" keep
+(require 'bbdb-query)
+
+;;;======================================================================
+;;; fontify all buffers, regardless of buffer size
+;;;======================================================================
+(setq font-lock-maximum-size nil)
+
+
+;;;======================================================================
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(TeX-expand-list (quote (("%p" TeX-printer-query) ("%q" (lambda nil (TeX-printer-query TeX-queue-command 2))) ("%v" TeX-style-check (("^a5$" "yap %d -paper a5") ("^landscape$" "yap %d -paper a4r -s 4") ("." "yap %d"))) ("%l" TeX-style-check (("." "latex"))) ("%s" file nil t) ("%t" file t t) ("%n" TeX-current-line) ("%d" file "dvi" t) ("%f" file "ps" t) ("%a" file "pdf" t))))
+ '(canlock-password "f5f6454817bef0e834fe02df38c73273bf29c84c")
+ '(ecb-auto-expand-tag-tree-collapse-other (quote only-if-on-tag))
+ '(ecb-directories-menu-user-extension-function (quote ignore))
+ '(ecb-history-menu-user-extension-function (quote ignore))
+ '(ecb-methods-menu-user-extension-function (quote ignore))
+ '(ecb-options-version "2.32")
+ '(ecb-sources-menu-user-extension-function (quote ignore))
+ '(ecb-tree-buffer-style (quote image))
+ '(global-semantic-decoration-mode nil nil (semantic-decorate-mode))
+ '(indent-tabs-mode nil)
+ '(jde-check-version-flag nil)
+ '(jde-compiler (quote ("javac" "")))
+ '(jde-enable-abbrev-mode t)
+ '(jde-jdk (quote ("1.5")))
+ '(jde-jdk-doc-url "")
+ '(jde-jdk-registry (quote (("1.5" . "c:/Java/jdk1.5.0_08"))))
+ '(tooltip-mode nil nil (tooltip))
+ '(vm-grepmail-command "perl /bin/grepmail"))
+
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(ecb-default-general-face ((t (:height 1.0))))
+ '(ecb-directories-general-face ((t (:height 1.0))))
+ '(ecb-history-general-face ((t (:height 1.0))))
+ '(ecb-methods-general-face ((t (:slant normal))))
+ '(ecb-sources-general-face ((t (:height 1.0)))))
+
+

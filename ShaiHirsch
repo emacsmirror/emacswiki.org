@@ -1,0 +1,21 @@
+I use Emacs.
+
+: Welcome to the wiki! -- AlexSchroeder
+:: Thanks! It's a pleasure to be here. -- ShaiHirsch
+
+=== Local Links ===
+* NxmlMode (CategoryXML)
+* AUCTeX - A wonderful LaTeX mode (together with PreviewLaTeX is bliss)
+* GenericMode
+* SqlMode
+* CcMode
+* CategoryProgrammerUtils
+* DotEmacsChallenge
+
+=== External Links ===
+* EmacsManual: [http://www.gnu.org/software/emacs/manual/html_node/index.html HTML]
+* EmacsLispReference: [http://www.gnu.org/software/emacs/elisp-manual/html_mono/elisp.html HTML]
+* Resources on the [http://emacro.sourceforge.net/ Emacro] (EmacsMacro) project page -- [http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/emacro/emacs/doc/resources.html?rev=HEAD&content-type=text/html]
+
+----
+CategoryHomepage

@@ -1,0 +1,9 @@
+As proposed by JohnWiegley in order to select a Message-ID from any nnml group:
+
+    (defun gnus-goto-article (message-id)
+      (let ((info (nnml-find-group-number message-id)))
+        (gnus-summary-read-group (concat "nnml:" (car info)) nil t)
+        (gnus-summary-goto-article (cdr info) nil t)))
+
+----
+CategoryGnus

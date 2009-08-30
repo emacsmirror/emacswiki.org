@@ -1,0 +1,29 @@
+==I love Emacs==
+
+[mailto:dove.young@gmail.com dove.young@gmail.com]
+
+* CopyWithoutSelection -- simply copy current line, current word and current paragraph to the kill-ring without select to each line, each word or each paragraph
+* NavigatingParentheses -- navigating between paretheses
+
+This is my own favor. I used to run many Shell scripts on a region. For example, make some calculation or some text formating using AWK script, make some text filter using SED script. Then I used to be need to copy and paste processed results in my current buffer as a part of my document.
+
+In my principle, anything will be doing repeatedly, it will be made as simple as possible.
+
+So I just want to say "Hey! Come here." You see, I got it. :-)
+
+      (defun come-here ()
+        "Bring content from *Shell Command Output* to current buffer"
+        (interactive)
+        (insert-buffer-substring (get-buffer "*Shell Command Output*"))
+      
+      )
+
+This is another boring matter. When I use Emacs Muse mode, actually I use it everyday, if I want to write a link to an anchor, I must input the current buffer name followed by a # charactor and anchor name. Buffer name used to be a long string and there used to be many anchors to be link to. Input buffer name repeatedly is really boring, especially when I am busy to write meeting minutes.
+
+You know, the same principle as before. I leverage my computer to do it for me.
+
+      (defun insert-buffer-name ()
+       "Insert current buffer name at point"
+        (interactive) 
+        (insert-string (buffer-name (current-buffer)))
+      )

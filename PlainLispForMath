@@ -1,0 +1,45 @@
+Generally, you can execute any Lisp expression by hitting `C-x C-e'
+after the closing parenthesis.  Example: Entering the expression ##(+ 1
+2)## into any Emacs buffer and pressing `C-x C-e' after the closing
+parenthesis will display the result in the echo area: 3.  Hitting
+`##M-:##' will use the minibuffer to prompt for an expression to evaluate.
+
+`C-x C-e' calls the function `eval-last-sexp'.  [[Sexp]]s typically
+include symbols, numbers, and string constants, as well as anything
+contained in parentheses, brackets or braces.  The first symbol within
+the parenthesis is the function to call.  After the function the
+arguments are listed.  The expression ##(+ 1 2)## can therefore be read as
+"apply the ##+## function to the arguments ##1## and ##2##".
+
+* You can add more arguments to the function call: ##(+ 1 2 3 4)## adds up to 10.
+* You can use subexpressions:  ##(* (+ 1 2) 3)## yields 9.
+
+The following standard mathematical functions are defined (see the
+Numbers node in the EmacsLispReference):
+
+* mod,
+* sin,
+* cos,
+* tan,
+* asin,
+* acos,
+* atan,
+* exp,
+* log (with an optional argument for the base),
+* log10,
+* expt, and
+* sqrt.
+
+Example: ##(+ (expt (sin .5) 2) (expt (cos .5) 2))## yields 1.
+
+Watch out for implicit types.  When all the arguments to math
+functions are integers, then some functions will return an integer
+result as well.  If you do not want that, you must promote one of the
+arguments to a float.
+
+Example: ##(/ 3 2)## yields 1, ##(/ 3 2.0)## yields 1.5.
+
+See Lisp:bmi.el for an example of EmacsLisp functions that perform simple arithmetic and are also [[InteractiveFunction]]s.
+
+----
+CategoryCalculators

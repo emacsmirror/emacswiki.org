@@ -1,0 +1,50 @@
+yod.el is a client for the Yahoo! Messenger chat protocol (YMSG 12). It is written in emacs lisp (with a little help from C), and supports chatrooms, instant messages, and conferences.
+
+* http://marti.textdriven.com/yodel/
+
+* updated to fix a problem where yodel breaks syntax hiliting in erc: http://www.artwerkz.com/yod.el
+
+[new]
+I am having trouble using YodEl
+
+The Messages buffer shows this after the unsuccessful attempt to logon:
+
+trying scs.msg.yahoo.com
+
+connected
+
+Password: 
+
+Password: .
+
+Password: ..
+
+Password: ......
+
+error in process filter: yodel-list-pending-handler: unsuccessful logon (2)
+
+error in process filter: unsuccessful logon (2)
+
+disconnected
+
+Can anybody help me with this one? Thanks! :)
+
+-ClairChing
+
+[new]
+Since I started working on yod.el, Yahoo! has changed their encryption scheme
+at least twice. To handle those changes easily, yod.el uses a small C program
+(called "ycrypt") to do password encyrption. The C source comes from whatever
+other open source Yahoo client cracks the password change first.
+
+Most of the problems people have reported with yod.el are due to a
+misconfigured setting for ycrypt. It looks to me like that
+ClairChing 's problem too.
+
+One of the yod.el customization options is 'yodel-crypt-program -- the value of
+that option should be set to the path of your ycrypt program.
+
+DennisMarti
+
+
+[new]Things seem to be ok now =) Thanks for the help - ClairChing

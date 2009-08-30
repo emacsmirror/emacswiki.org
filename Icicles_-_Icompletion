@@ -1,0 +1,237 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Completions Display]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Sorting Candidates]] ||
+
+----
+
+== Icompletion ==
+
+Emacs incremental completion, or '''icompletion''', provided by standard
+library `##icomplete.el##', displays matching [[prefix completion]]s in
+the [[minibuffer]].  This display is updated incrementally as you type
+characters.  In spite of the name, icompletion does ''not'', in fact,
+provide any [[completion]]; it provides completion ''help'', letting you
+know which (prefix) completions are available.
+
+'''Icicles''' enhances Emacs icompletion in three ways:
+
+* It works with my library '''`<tt>[[icomplete+.el]]</tt>'''' to provide minibuffer
+feedback on the number of completion candidates.
+
+* It highlights the part of your input that does not match any completion candidate.
+
+* It provides a new kind of icompletion, using [[buffer]]
+`*Completions*'.
+
+
+
+[:icomplete+.el]
+=== icomplete+.el Displays the Number of Other Prefix Candidates ===
+
+Library '''<tt>[[icomplete+.el]]</tt>''' enhances `##icomplete.el##' in various ways.
+One of these ways is to complement '''Icicles''' by displaying the
+number of other prefix-completion candidates when cycling.  This
+number is displayed whenever you change direction when [[Icicles - Cycling Completions | cycling]].
+For example:
+
+[new]
+: ##M-x forward-line   [Matched]  ##'''''<tt>(13 more)</tt>'''''
+[new]
+
+Like `##icomplete.el##', `<tt>[[icomplete+.el]]</tt>' provides help for only ''prefix'' completions, not [[apropos completion]]s. (Reminder: There is no icompletion for file-name completion -- see
+standard library `##icomplete.el##'.) 
+
+'''See also:''' [[IcompleteMode#IcompleteModePlus|Icomplete+]]
+
+
+
+[:CompletionsIcompletion]
+=== Icompletion in *Completions*: Apropos and Prefix Completion ===
+
+Buffer `*Completions*' shows you the current set of candidates for
+either prefix or apropos completion.  Together, [[user option]]s
+`icicle-incremental-completion-flag',
+`icicle-incremental-completion-delay', and
+`icicle-incremental-completion-threshold' control incremental
+updating of `*Completions*'.
+
+
+If '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>'''' is non-`nil', then
+`*Completions*' is ''automatically updated'' when you change your input
+in the minibuffer -- that is, with each character that you type or
+delete. This '''[::incremental completion]''' is another form of icompletion, unique to '''Icicles'''. It uses buffer `*Completions*', instead of the minibuffer, to show the completion help.
+
+The particular non-`nil' value of `icicle-incremental-completion-flag' determines when `*Completions*' is
+displayed and updated.  The default value, `t', means that
+`*Completions*' is updated only if it is already displayed.  Use `t'
+if you don't want `*Completions*' to be too intrusive but you want
+it to provide the most help when you ask for help (via `TAB' or
+`S-TAB').
+
+Any other non-`nil' value displays and updates `*Completions*'
+whenever there is more than one completion candidate.  That can be
+more helpful, but it can also be more distracting.  A value of `nil'
+turns off automatic updating altogether -- `*Completions*' is then
+displayed only upon demand.  I find that `t' represents a good
+compromise, providing help when I ask for it, and then continuing
+to help until I've finished choosing a candidate.
+
+Option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-delay|icicle-incremental-completion-delay]]</tt>'''' is the number of
+seconds to wait before updating `*Completions*' incrementally.  It
+has an effect only when the number of completion candidates is
+greater than '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-threshold|icicle-incremental-completion-threshold]]</tt>''''.  This
+delay can improve performance when there are many candidates.  It
+lets you type ahead before any redisplay occurs; otherwise,
+redisplay occurs for each character you type or delete.
+
+You can toggle incremental completion at any time (changing `icicle-incremental-completion-flag' between `nil' and
+`t') using command `icicle-toggle-incremental-completion', which is bound to
+'''`C-#'''' in the minibuffer.  If the number of completion candidates
+is very large, then use `<tt>C-#</tt>' to toggle incremental completion off -- that will save time by not updating `*Completions*'. See also
+[[Icicles - Large Candidate Sets]] for other ways to deal with a large number of candidates.
+
+Note: Incremental completion is effectively turned off when a
+remote file name is read, that is, whenever your file-name input
+matches a remote-file syntax.
+
+There are several advantages of using `*Completions*' for
+icompletion, as opposed to the minibuffer:
+
+1. Many ''more candidates'' can be displayed in `*Completions*' than can
+   be displayed by standard icompletion, which uses the minibuffer
+   for feedback.
+
+2. Standard (minibuffer) icompletion provides feedback only on matches for
+   prefix completion.  If you use both standard icompletion and
+   '''Icicles''' icompletion, you can have incremental help for both
+   prefix completion and apropos completion at the same time, one
+   in the minibuffer and the other in `*Completions*'.
+
+3. The other '''Icicles''' `*Completions*' features are available for the
+   current set of matching candidates: cycling, highlighting of
+   match root, highlighting of
+previously used candidates, and so on.  See
+   [[Icicles - Completions Display]].
+
+
+
+[:HighlightNonmatch]
+=== Icicles Highlights the Input that Won't Complete ===
+
+When you are typing or correcting your input during completion,
+'''Icicles''' highlights the part of your minibuffer input that prevents
+it from matching any completion candidates, by default.  This works for both
+prefix completion and apropos completion.  For
+both, it highlights your input from the leftmost mismatch through
+the input end.
+
+Here are screenshots showing the highlighting -- 
+
+Prefix completion -- only `cha' matches a command prefix:
+[[image:IciclesHighlightInputFailurePrefix]]
+
+Apropos completion -- `char-u' matches a command substring:
+[[image:IciclesHighlightInputFailureApropos]]
+
+You can use '''`C-M-l'''' to move the cursor to the start of the
+highlighted, mismatched part of your input.  Repeat `C-M-l' to
+kill the highlighted portion.  (Because it is killed, `C-y' yanks
+it back.)
+
+User options '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>'''', '''`<tt>[[Icicles - Customization and General Tips#icicle-test-for-remote-files-flag|icicle-test-for-remote-files-flag]]</tt>'''',
+'''`<tt>[[Icicles - Customization and General Tips#icicle-highlight-input-completion-failure|icicle-highlight-input-completion-failure]]</tt>'''', '''`<tt>[[Icicles - Customization and General Tips#icicle-highlight-input-completion-failure-delay|icicle-highlight-input-completion-failure-delay]]</tt>'''', and '''`<tt>[[Icicles - Customization and General Tips#icicle-highlight-input-completion-failure-threshold|icicle-highlight-input-completion-failure-threshold]]</tt>'''' control this highlighting, which is done using [[face]]
+'''`icicle-input-completion-fail'''' (for strict completion) or '''`icicle-input-completion-fail-lax'''' (for [[lax]] completion).
+
+If either `icicle-incremental-completion-flag' or
+`icicle-highlight-input-completion-failure' is `nil', then no
+such highlighting is done.  Remember that you can toggle
+incremental completion using `C-#' in the minibuffer.
+
+Because this highlighting can have a negative impact on
+performance, you can fine-tune when you want it to occur.  The
+value of `icicle-highlight-input-completion-failure' determines
+when this highlighting can take place.
+
+In particular, highlighting the non-matching part of ''remote file
+names'' can be slow.  Two values of the option allow remote file
+name highlighting: `always' and `explicit-remote'.  The other
+values do ''not'' highlight remote file names.  You probably do not
+want to use a value of `always'.
+
+If the value is `nil', then highlighting never occurs.  If the value
+is `explicit-strict', `explicit', or
+`explicit-remote', then highlighting occurs only upon demand: when
+you hit `TAB' or `S-TAB' to request completion.  If the value is
+`implicit-strict', `implicit', or `always', then highlighting
+occurs also when you update input during incremental completion (if incremental completion is turned on).
+
+I use a value of '''`implicit'''' myself, but the default value is
+`implicit-strict' because, depending on your setup and use cases,
+`implicit' can impact performance for file-name completion (which
+is lax, not strict).  I suggest you try `implicit' to see -- this
+feature is especially useful for file names.
+
+Summary of `icicle-highlight-input-completion-failure' choices:
+
+* `nil' -- Never 
+* `explicit-strict' -- Only on demand and only during strict completion
+* `explicit' -- Only on demand (lax and strict completion)
+* `explicit-remote' -- Only on demand, even for remote file names
+* `implicit-strict' -- Incremental or explicit completion -- strict completion only
+* `implicit' -- Incremental/explicit, lax/strict completion
+* `always' -- Always (including for remote file names)
+
+These values are listed here in terms of increasing
+permissiveness, which also can mean increasing performance impact.
+That is, a value of `implicit' is more likely to affect
+performance than a value of `explicit'.  The greatest performance
+hit comes from file-name matching, in particular if remote files
+are involved.
+
+If you know that you will not be using remote file names for a
+while, you can let '''Icicles''' and [[Tramp]] know this by using the toggle '''`##C-^##'''' in
+the minibuffer to turn off option
+'''`icicle-test-for-remote-files-flag''''.  When this is off, you ''cannot
+use remote files''.
+
+Turning off `icicle-test-for-remote-files-flag' using `##C-^##' also
+turns off Tramp's remote file-name completion and remote file handling.  If you turn off
+the option using `##C-^##', then turn it back on using `##C-^##' also (instead
+of just setting the option to non-`nil'), in order to re-enable
+Tramp's file-name handling and completion.
+
+Turning off `icicle-test-for-remote-files-flag' can slightly speed
+up file-name completion for local files, by avoiding any check for
+remote file names.  If you seldom use remote files, then you might
+want to customize `icicle-test-for-remote-files-flag' to `nil' and
+use `##C-^##' to toggle it back on whenever you do use remote files.
+
+A `nil' value of `icicle-test-for-remote-files-flag' also overrides
+the `icicle-highlight-input-completion-failure' values
+`implicit-strict', and `explicit-strict' for file-name completion,
+treating them the same as `implicit'.  It is assumed that you use
+those values only to avoid the cost of remote file-name matching.
+
+'''See Also:''' IsearchPlus for similar highlighting of the non-matching portion of your input during Isearch.
+
+
+
+----
+
+
+
+|| *Previous:*  [[Icicles - Completions Display]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Sorting Candidates]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el, Lisp:icomplete+.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryDocumentation
+CategoryHelp
+CategoryProgrammerUtils
+
+
+
+

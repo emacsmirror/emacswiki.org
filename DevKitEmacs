@@ -1,0 +1,9 @@
+This is a small Emacs minor mode for working with [http://www.devkitpro.org/ DevkitPro].  This is hopefully sufficiently general enough so that it shouldn't matter if you are writing DS or PSP games, in C, C++ or Scheme.
+
+More documentation to come.  
+
+Lisp:devkitemacs.el
+
+----
+ProgrammingModes
+

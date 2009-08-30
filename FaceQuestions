@@ -1,0 +1,27 @@
+This page is for questions and answers about [[face]]s. See also: ColorThemeQuestions.
+
+
+== How To List Faces In Effect? ==
+Is there a way to list which faces are in effect for the text currently under the [[cursor]]?
+
+: ##M-x list-text-properties-at## (??? Emacs v22.1 doesn't know anything like this; maybe you meant `list-faces-display' -- Peter Tury) and ##M-x describe-text-properties## will list faces at point if they are used in [[text property|text properties]]. Faces due to [[overlay]]s are harder to get at.
+
+ M-: (apply (lambda (o) (overlay-get o 'face)) (overlays-at (point))
+
+or something like that (untested). (Tested version:
+
+ (mapc (lambda (o) (princ (overlay-get o 'face))) (overlays-at (point)))
+
+-- Peter Tury)
+
+[new]
+: `##C-u C-x =##' (which is the same as ##M-: (what-cursor-postion t) RET)## will show the faces in the overlays too.
+
+
+== How To Make Background Full Width? ==
+
+How do you make a background color fill the width of a frame to get a zebra stripe effect? For example, in the gnus summary buffer there is one message per line. I want read messages to have a grey background and unread messages to have a purple background (say..). However, just setting the background color of the faces leaves a jagged right edge, depending on how much text is on the line.  Can this be fixed?
+
+----
+
+CategoryFaces

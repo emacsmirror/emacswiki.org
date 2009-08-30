@@ -1,0 +1,5 @@
+[http://packages.debian.org/quilt Quilt] is a patch management system previously used 
+to maintain Linux Kernel management.
+Matt Mackall has written an Emacs interface for quilt, available at:
+
+* http://www.selenic.com/quilt

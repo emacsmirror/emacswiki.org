@@ -1,0 +1,301 @@
+= Download =
+* Lisp:mysql.el
+* Lisp:bibus.el
+
+Or You can download all file here: http://learn.tsinghua.edu.cn:8080/2005211356/src/bibus.zip
+
+= Installation =
+* Make sure you have install mysql in your mashine, and you have
+ privilege to access and change database.
+* reate database from command line:
+<pre>
+ $ mysql -u user -p -e "CREATE DATABASE biblio"
+</pre>
+* Create tables using give file mysql.sql:
+<pre>
+ $ mysql -u user -p biblio < mysql.sql
+</pre>
+
+  If you want have a try, you can import example data as well.
+<pre>
+ $ mysql -u user -p biblio < biblio.sql
+</pre>
+
+* install package for emacs. Add this lines to .emacs:
+<pre>
+ (add-to-list 'load-path "/path/to/bibus")
+ (require 'bibus)
+</pre>
+
+That's all! Let's begin.
+
+= Start up =
+bibus invoke by <code>M-x bibus</code>.
+When it start up, three windows will show in current frame. Typically
+it will like as following:
+<pre>
+         +-----+----------+
+         | key |  ref     |
+         |     |          |
+         |     |          |
+         |     |          |
+         |     |          |
+         |     +----------+
+         |     |  entry   |
+         +-----+----------+
+</pre>
+
+When you in other buffer, you can back to the bibus by use
+<code>M-x bibus</code>, too.
+
+= In KEY buffer =
+In "key" buffer, there is a tree widget like this:
+<pre>
+[-] Bibus
+ |-[-] References
+ |  |-  RNA2ndStruct
+ |  |-  Database
+ |  `-  Junk
+ |-  Tagged
+ |-  All
+ |-[+] Query
+ |-  Online
+ |-  Import
+ `-  Cited
+</pre>
+
+The first node "References" contain several keys. In bibus, a
+reference can associate with one or more keys. When put button of the
+keys, the references associate with this key will be displayed in ref
+buffer. So when you move the TextCursor to the word "RNA2ndStruct", and press
+key RET, the reference related with RNA second struct will be
+displayed. You can use TAB to navigate from one widget to other.
+You can use key "a" and "d" to add a new key or delete key at current
+line. 
+
+The "Tagged" is a special key, which you can't temporarily tagged some
+references. The "All" key contain all references in the database. You
+can't delete this keys.
+
+The subtree "Query" contain some query items. When press RET when
+cursor on the icon before Query, the items will be show. You can use
+key "s" to view the query sql. Edit the sql with key "e", and
+delete with key "d". To add new query, use key "A". For a temporary
+query, you can use C-c C-s which also work in ref or entry buffer.
+If you want save the temporary query, use key "R" to name the query.
+
+To move to REF buffer, use key sequence C-c C-r, C-c C-e to move
+to ENTRY buffer, and C-c C-k to move back to KEY buffer. This command
+is common to REF and ENTRY buffer.
+
+Summary:
+<pre>
+Key mode:
+ key             binding
+---             -------
+
+A               bibus-add-query
+R               bibus-name-last-query
+a               bibus-add-key
+d               bibus-delete-key
+e               bibus-edit-query
+r               bibus-rename-key
+s               bibus-show-key
+
+C-c C-e         bibus-switch-to-entry
+C-c C-k         bibus-switch-to-key
+C-c C-n         bibus-name-last-query
+C-c C-r         bibus-switch-to-ref
+C-c C-s         bibus-query
+</pre>
+
+= In REF buffer =
+When you select a key to display, a table like this will display REF buffer:
+<pre>
+ Identifier      Author               Year  Title                                   
+ Bernhart2006#7> Bernhart, Stephan H> 2006  Local RNA base pairing probabilities in>
+ Fekete2000      Fekete, M;Hofacker,> 2000  Prediction of RNA base pairing probabil>
+ Flamm2000       Flamm, C;Fontana, W> 2000  RNA folding at elementary step resoluti>
+ Flamm2001       Flamm, C;Hofacker, > 2001  Design of multistable RNA molecules     
+ Fontana1993     Fontana, W;Stadler,> 1993  RNA folding and combinatory landscapes  
+ Hofacker2006    Hofacker, Ivo L;Sta> 2006  Memory efficient folding algorithms for>
+ Kidd-Ljunggren> Kidd-Ljunggren, K;Z> 2000  The hepatitis B virus pregenome: predic>
+ Muckstein2006   Muckstein, Ulrike;T> 2006  Thermodynamics of RNA-RNA binding       
+</pre>
+
+You can use TAB and BACKTAB to move between columns. You can widen the
+current column by key ">" and "<" to narrow it. This is only take
+effect in this section. If you want to save it, you should modify the
+variable `bibus-formats' and save it in you .emacs. The table can be
+sort use key "S". "C-u S" mean sort the table by ascent.
+
+If you want to see the full content of current field, you can press
+key "s". And "w" can add the content to kill ring, which you can paste
+to other place.
+
+To tag the reference to other key, use key "t". You can tag several
+reference by marked it first. Mark a reference by use key "m". After
+mark the reference, you can do some command with the marked reference,
+such as associate with other key, add to "Tagged" key, delete them from
+current key, and delete them from database. Note that, when you delete
+the reference from current key when press key "d", the reference is
+not delete from database. You can delete the reference from database
+in "All" key using key "D". When you has some references marked, and
+you want add a new key name to current reference, you can use key
+"C-t" to set key for reference of current line. C-c C-o to open the
+"URL" of the reference, and C-c C-f to open the file. The reference
+table bibref doesn't contain a field "File", so you have to save the
+file name to a custom field, such as "Custom5". To change the file
+name, press key "R". 
+
+Summary:
+<pre>
+ key             binding
+---             -------
+TAB             bibus-next-field
+C-t             bibus-set-current-ref-key
+C-v             bibus-scroll-up
+<               bibus-narrow-column
+>               bibus-widen-column
+D               bibus-delete-ref
+K               bibus-ref-assoc-keys
+M               bibus-mark-ref-all
+R               bibus-relocate-ref-file
+S               bibus-sort-ref
+T               bibus-tag-ref
+U               bibus-unmark-ref-all
+d               bibus-delete-key-ref
+j               next-line
+k               previous-line
+m               bibus-mark-ref-forward
+s               bibus-show-field-at-point
+t               bibus-set-ref-key
+u               bibus-unmark-ref-forward
+w               bibus-copy-field-at-point
+<backtab>       bibus-prev-field
+
+C-c C-e         bibus-switch-to-entry
+C-c C-f         bibus-open-ref-file
+C-c C-k         bibus-switch-to-key
+C-c C-n         bibus-name-last-query
+C-c C-o         bibus-browse-ref-url
+C-c C-r         bibus-switch-to-ref
+C-c C-s         bibus-query
+
+M->             bibus-end-of-buffer
+M-v             bibus-scroll-down
+</pre>
+
+= In ENTRY buffer =
+ENTRY buffer is to show the detail information for the reference. When
+you move to difference line in REF buffer, the ENTRY will change
+accord to the line of you cursor. This may take sometime to update,
+because it is done by a timer which repeat after a delay of certain
+seconds. The content to show in ENTRY buffer can be customize by
+modify the variable `bibus-entry-list-fields' which may require to
+familar with elisp.
+
+When press key "E" in ENTRY buffer, a form will display, you can set
+the field, and submit by press button in the last line or press key
+"C-c C-c" outside the text field(I don't know how to modify keymap in
+the text field). Quit without change can use key C-u C-c C-c. Reset
+all field by use key "E".
+
+Summary:
+<pre>
+TAB             widget-forward
+RET             widget-button-press
+E               bibus-entry-edit
+<S-tab>         advertised-widget-backward
+<backtab>       widget-backward
+
+C-c C-c         bibus-entry-edit-submit
+C-c C-e         bibus-switch-to-entry
+C-c C-k         bibus-switch-to-key
+C-c C-n         bibus-name-last-query
+C-c C-r         bibus-switch-to-ref
+C-c C-s         bibus-query
+</pre>
+
+= More about customize =
+
+== Change the buffer name of ref, key, entry ==
+Set bibus-buffer-names in the form of its definition.
+
+== Change the window config ==
+Set bibus-window-configuration as the docstring,
+And Type M-x bibus-erase-window-config, then M-x bibus.
+
+To explain how to work out a setting of bibus-window-configuration,
+take the setting <code>(key (vertical 0.8 (entry)) (horizontal 0.35 (ref)))</code>
+as an example.
+
+Let us start at one window, the CAR part of bibus-window-configuration
+is key, that told set the window associate with the buffer key. the
+second slot of bibus-window-configuration is <code>(vertical 0.8 (entry))</code>.
+It tell emacs to split current window vertically with portion 0.8. The
+third slot is <code>(entry)</code>, this is mean set the other window, the below
+one, as with config <code>(entry)</code>, which just set the window associate with entry
+buffer.
+
+Then we get the windows like this, and current selected window still
+in key, the above one:
+<pre>
+      +--------------------+
+      | key                |
+      |                    |
+      |                    |
+      |                    |
+      |                    |
+      |                    |
+      +--------------------+
+      | entry              |
+      |                    |        
+      +--------------------+        
+</pre>
+
+The third slot is <code>(horizontal 0.35 (ref))</code>. It tell emacs
+to split current window horizontally with poition 0.35 and set the
+other window with config <code>(ref)</code>.
+
+At last we get windows like this:
+<pre>
+      +-----+--------------+
+      | key | ref          |
+      |     |              |
+      |     |              |
+      |     |              |
+      |     |              |
+      |     |              |
+      +-----+--------------+
+      | entry              |
+      |                    |        
+      +--------------------+        
+</pre>
+
+The setting is done recursively. Before set up a configuration, draw it
+out and split the window step by step, you can easily make it.
+
+== key binding ==
+There is a common map bibus-common-map. Modify this map will take
+effect in the three buffer. But certain command only can be preformed
+in one buffer, be careful.
+
+== elide string ==
+You can set your elide string in ref buffer, such as "...". But I
+don't think it is a good idea.
+
+== reference table formats ==
+You can set the table fields to display in ref buffer. Take the
+default as example:
+
+<pre>
+(setq bibus-formats
+  '(("Author" 20) " " ("Year" 5) " " ("Journal" 10) " " ("Title" 40)))
+</pre>
+
+If the element is a string, this will insert to every line.
+If it is a list, the CAR part is field name, the CDR part is widen of
+the column. After change the format, you should compile it by
+<code>M-x bibus-compile-format</code>.
+

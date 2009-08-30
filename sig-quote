@@ -1,0 +1,7 @@
+So you've amassed a set of quotes you think is funny, and a random one gets attached to every email you send out.
+
+The only problem is, last week you sent the Microsoft recruiter a not-so-funny Microsoft joke, and then you accidentally posted to comp.emacs something with a vi quote, and then you sent your girlfriend an email with a blonde joke...
+
+Enter Lisp:sig-quote.el
+
+This package lets you group your quotes into categories, and mail/usenet recipients are then used to determine which categories of quotes the outgoing email/posting will get.  It integrates with Gnus, VM, Rmail, and mh-e.

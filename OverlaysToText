@@ -1,0 +1,42 @@
+EmacsOverlays and XEmacsExtents allow you to change the appearance of a buffer.
+GlassesMode does this, for example. The result is this: The text in the buffer remains unchanged.
+It just looks different. The confusing thing is that saving or copying the buffer will save or copy
+the underlying text, not what is currently being displayed.
+
+The following defun will allow you to turn the overlays into plain text, allowing you to save or copy it as you want.
+
+{{{
+;;; Originally posted to #emacs by phf on 2007-10-24.
+
+(defun overlays-to-text ()
+  "Create a new buffer called *text* containing the visible text
+of the current buffer, ie. it converts overlays containing text
+into real text."
+  (interactive)
+  (let ((tb (get-buffer-create "*text*"))
+        (s (point-min))
+	(os (overlays-in (point-min) (point-max))))
+    (with-current-buffer tb
+      (erase-buffer))
+    (setq os (sort os (lambda (o1 o2)
+			(< (overlay-start o1)
+			   (overlay-start o2)))))
+    (mapc (lambda (o)
+            (let ((bt (buffer-substring-no-properties s (overlay-start o)))
+                  (b (overlay-get o 'before-string))
+                  (text (buffer-substring-no-properties (overlay-start o) (overlay-end o)))
+                  (a (overlay-get o 'after-string))
+                  (inv (overlay-get o 'invisible)))
+              (with-current-buffer tb
+                (insert bt)
+                (unless inv
+                  (when b (insert b))
+                  (insert text)
+                  (when a (insert a))))
+              (setq s (overlay-end o))))
+          os)
+    (let ((x (buffer-substring-no-properties s (point-max))))
+      (with-current-buffer tb
+        (insert x)))
+    (pop-to-buffer tb)))
+}}}

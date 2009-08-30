@@ -1,0 +1,82 @@
+== Editing wiki pages ==
+
+The latest version of WikiRemote includes the function
+`wiki-remote-get-w3m'.  Call it to edit the wiki page you are
+currently visiting.  Here's an example which allows you to hit `e' to
+edit the page you are currently browsing.
+
+ (autoload 'wiki-remote-get-w3m "wiki-remote"
+   "Edit wiki pages currently visited using w3m." t)
+
+ (add-hook 'w3m-mode-hook
+	   (lambda ()
+	     (define-key w3m-mode-map "e" 
+	       (lambda ()
+		 (interactive)
+		 (condition-case nil
+		     (wiki-remote-get-w3m)
+		   (error (w3m-edit-current-url)))))))
+
+Be sure to look at the customizations of WThreeM for the
+w3m-form-input-textarea-mode-hook.
+
+== Jumping to Wiki-like Pages ==
+
+I defined this little defun for quickly going to specific pages of a
+Wiki.  It's kindof like the Interwiki Names.
+
+<pre>
+ (defvar dka-w3m-wikis
+  '(("lathi" "http://www.lathi.net/twiki-bin/view/Main/" "WebHome")
+    ("emacs"  "http://www.emacswiki.org/cgi-bin/wiki.pl?" "RecentChanges")
+    ("google" "http://www.google.com/search?q=" "")
+    ("debian" "http://wiki.debian.net/" "")))
+
+ (defun dka-w3m-goto-wiki ()
+  (interactive)
+  (let ((wiki-topic (read-input "Wiki:Topic? "))
+        topic wiki wiki-list)
+    (message wiki-topic)
+    (if (string-match "\\(.*\\):\\(.*\\)" wiki-topic)
+        (setq wiki (match-string 1 wiki-topic) 
+              topic (match-string 2 wiki-topic)
+              wiki-list (assoc wiki dka-w3m-wikis))
+      (error "Must specify a wiki name and topic (Wiki:TopicName)"))
+    (unless wiki-list
+      (error (format "\"%s\" is not a defined wiki" wiki)))
+    (unless topic
+      (setq topic (nth 2 wiki-list)))
+    (w3m-goto-url (concat (nth 1 wiki-list) topic))))
+</pre>
+
+== Editing CGI::Kwiki Pages ==
+
+CGI::Kwiki (http://kwiki.org/) pages can be edited simply with WThreeM's form support and some help from LongLines mode and RefillMode.  A few customizations are in order:
+
+    (setq w3m-form-input-textarea-buffer-lines 50
+          w3m-form-input-textarea-mode-hook
+          '(longlines-mode
+            (lambda () (save-excursion
+                         (goto-char (point-min))
+                         (while (search-forward (string 13) nil t)
+                           (replace-match "" nil t))))
+            flyspell-mode
+            refill-mode)
+          w3m-form-input-textarea-set-hook '(longlines-mode))
+
+== Use Oddmuse mode instead ==
+
+Not a lot of people use w3m in Emacs to edit this Wiki, EmacsWiki.  More often people use OddmuseMode in Emacs to browse and edit pages.
+
+[new]
+Are there people who happily use emacs-w3m for editing pages on EmacsWiki? -- AaronHawley
+[new]
+There are people who tried getting past the captcha many times and gave up editing emacswiki because emacs-w3m simply does not work for it.  This is the first I heard of oddmusemode.  There are also people who have caching problems where recent changes does not show edits made in another browser.  --
+[new]
+Yeah, the reCaptcha extension was added on [[2008-09-05]].  That's a bummer it doesn't work for w3m visitors.
+
+Perhaps the solution is making a hook in w3m that edits pages on Emacs Wiki in Oddmuse mode?  That'd be cool.  Again, Oddmuse mode can handle browsing *and* editing of pages.  I can understand if one prefers the interaction and keyboard commands the know and prefer in w3m.  -- AaronHawley
+
+----
+CategoryHypermedia
+WThreeM

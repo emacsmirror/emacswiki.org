@@ -1,0 +1,23 @@
+There are various "toolkits" that Emacs can use. The toolkit is used for the following:
+
+* scroll-bars
+* menu
+* pop-up menu
+* toolbar
+* dialogues, if you activated a command that requires user input using the mouse
+
+The various toolkits for X11, with links to screenshots. Note that running ##./configure## should pick the most appropriate option for you automatically.
+
+* NoToolkit -- for X11, black and white by default, looks like the old window manager `twm' on an AIX, use ##--with-x-toolkit=no## when calling ##./configure## to force it, use ##--without-toolkit-scroll-bars## to disable the toolkit for scrollbars only
+* [[Xaw3d]] -- for X11, black on gray with shadows by default, looks like the old motif library, use ##--with-x-toolkit=athena## when calling `./configure' to force it; if you have `motive' or `lesstif' installed, you can use ##--with-x-toolkit=motif##
+* [[GTK]] -- for X11, uses the widgets determined by your GTK theme, ##--with-x-toolkit=gtk## when calling `./configure' to force it
+
+On other graphical systems such as Windows or OSX, the native toolkit will be used.
+
+* CarbonToolkit is used by EmacsForMacOS
+* Win32 API is used by EmacsForWindows
+
+More notes on configuration if you compile yourself:
+
+* use ##--without-carbon## to compile without Carbon support even if you are on a Mac (meaning you will run Emacs using X11 for the Mac)
+* use ##--with-x## to compile with X11 support even you are on a system that would usually not do that (meaning Windows?)

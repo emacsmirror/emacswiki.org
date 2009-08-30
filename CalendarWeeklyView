@@ -1,0 +1,55 @@
+This is a diary-display-hook that will show a week's worth of diary appointments in a graph-like view.
+
+=To Do=
+
+* Doesn't handle having more than one appointment in a given time slot.
+* Hard to distinquish when two appointments back up to each other
+* Display events that don't have times grouped together under a "no time" header
+
+You can download the code from Lisp:weekly-view.el.
+
+Attention, do not forget to download http://sacha.free.net.ph/notebook/emacs/cal-desk-calendar.el too.
+
+=To Use=
+
+* Load weekly-view
+
+ (require 'weekly-view)
+
+* Add a hook to diary-display-hook 
+
+ (add-hook 'diary-display-hook 'fancy-diary-display-week-graph)
+
+* To get the week view, you'll need to put the point on Sunday and hit either '7 d' or just 'd'.  I'm not sure if just 'd' will work or not.  I think so.
+
+* There's also an interactive function week-graph-view-diary-entries that will show the entries for the current week
+ 
+Here's an example of what I'm talking about:
+
+<pre>
+     |  Sunday  |  Monday  | Tuesday  |Wednesday | Thursday |  Friday  | Saturday |
+-----------------------------------------------------------------------------------
+ 8:00|          |          |          |          |          |          |          |
+ 8:30|          |          |          |          |          |          |          |
+ 9:00|          |          |          |          |          |          |          |
+ 9:30|          |          |          |          |          |          |          |
+10:00|          |          |          |          |          |          |          |
+10:30|          |          |          |          |          |          |          |
+11:00|          |          |Quality Co|          |          |          |          |
+11:30|          |          |ntrol/Regu|          |          |          |          |
+12:00|          |          |lartory Af|          |          |          |          |
+12:30|          |          |airs meeti|          |          |          |          |
+13:00|          |          |          |          |          |          |          |
+13:30|          |          |          |          |          |          |          |
+14:00|          |          |          |          |          |          |          |
+14:30|          |          |          |          |          |          |          |
+15:00|          |Pick up Jo|          |Pick up Jo|          |          |          |
+15:30|          |sh########|          |sh########|          |          |          |
+16:00|          |          |          |          |          |          |          |
+16:30|          |          |          |          |          |Weely Stat|          |
+17:00|          |          |          |          |          |us Meeting|          |
+17:30|          |          |          |          |          |##########|          |
+-----------------------------------------------------------------------------------
+</pre>
+----
+CategoryPersonalInformationManager CategoryCalendar

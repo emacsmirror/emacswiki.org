@@ -1,0 +1,9 @@
+Screen Term is an extension for running
+[http://www.gnu.org/software/screen/ GNU Screen]
+inside an emacs terminal.
+It provides some functions for controlling screen that you can bind to
+emacs keys, and gives the functionality of a tabbed terminal.
+
+This is a first extension from an emacs newbie, feel free to improve.
+
+* [Lisp:screen-term.el screen-term.el]

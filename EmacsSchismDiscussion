@@ -1,0 +1,75 @@
+This page is for discussion related to the EmacsSchism.
+
+== An "FSF Position" ==
+
+The EmacsSchism page may be one-sided, though Jamie Zawinski's page does include many messages from Richard Stallman giving his point of view. If anyone has a convenient link to the FSF's position, please add it here. --AidanKehoe (originally posted on [[XEmacs]] article)
+
+[new]
+There /is no FSF position/ on this.
+"The FSF's point of view" is just one thing that XEmacs page misrepresents.  --- Dave Love
+[new]
+So all those messages from Stallman are not to be interpreted as representing his, and the FSF's, opinions? They're just hypotheticals? --- AidanKehoe
+
+[new]
+There seems to be no voice from the GnuEmacs camp on this issue. --AidanKehoe
+
+[new]
+I guess people have better things to do than throwing insults -- not even in private, let alone in code -- and prefer implementation to propaganda.  Please don't believe generally all the bad stuff attributed to rms (and other contributors) without evidence; not that anyone thinks he's perfect.  Much that has been written on this topic, e.g. in the references at EmacsSchism, is wrong or misleading from my personal experience -- some of it demonstrably so.  Some things correctly attributed to rms, for which he has been maligned, seem to have held up well in retrospect.  --DaveLove (not speaking for anyone else)
+
+[new]
+The thing about the "preferring implementation to propaganda" hypothesis is that it's directly contradicted by the actions of the FSF over the years, where, certainly from an [[XEmacs]] coder's point of view, getting copyright assignments for every contribution when the file's licence means that's not necessary, and crusading, without regard for the likelihood of it happening, for the wholesale renaming of an operating system, come under "propaganda." But, hey, if you buy that there's a realistic chance that GnuEmacs will be taken and made closed-source by some unscrupulous software company who think it has enough mass appeal that it will make them millions, then I can see where you might differ from us on that. --- AidanKehoe
+
+[new]
+
+The necessity for copyright assignment of CopyLeft""ed FreeSoftware is explained here: http://www.fsf.org/licensing/licenses/why-assign.html among other places.  -- AaronHawley
+
+[new] 
+
+I do beg your pardon if I gave you the impression I hadn't come across that argument before. -- AidanKehoe
+
+[new]
+My impression of AidanKehoe's confusion on the motivation for copyright assigment came from his statement, "getting copyright assignments for every contribution when the file's licence means that's not necessary".  My understanding is that assignment is necessitated from copyright law, and not the software license, in this case the [[GPL]].  -- AaronHawley
+
+[new]
+Neither law nor license leads to /necessity/.  The necessity comes from the FSF's charter to protect and advance
+free software, and its policy decision to do that via Copyleft.  Copyleft, by withholding certain freedoms, creates an adversarial relationship between the copyright holder and would-be derivative businesses ... thus creating a real need to defend the license.  And Copyleft requires sole ownership for evolution of movement strategy by "improving" licenses.  See, for example, the farce that ensued when Ben Wing asked Richard Stallman for permission to relicense GNU Emacs documentation from the GFDL (a license that is not a free software license) to an older Stallman-authored Emacs documentation license.  Quite /impossible/ under a permissive license ... but that wouldn't serve the FSF's goals.
+
+Now, if Larry Wall had written Emacs ... (^^;;  --- StephenTurnbull
+
+[new]
+CopyLeft is part of the license ([[GPL]] and [[FDL]]), and thus creates the legal necessity.  If you object to CopyLeft, ok. -- AaronHawley.
+
+== On "Evil entity takeovers" and Copyright Assignment ==
+
+[new]
+The "evil entity" takeover of the FSF hinted at in one of the EmacsSchism links is simply wrong.  The contract people sign when transferring code copyright is terminated if the FSF should try to make the code proprietary.  The FSF would lose its rights to the code.  --HenrikEnberg
+
+[new]
+I imagine that's recent--there is a paragraph to that effect in mine, from December 2004. Anyone got an older version of it handy? --AidanKehoe
+
+[new]
+Well it isn't.  The language in the assignment contract
+which commits the FSF to keep the work free and "agrees to grant me non-exclusive
+rights to use the Work as I see fit" dates back at least to 1993 (the
+modification time of a copy on gnu.org).  It is one-sided, but you can release a
+proprietary version and the FSF can't.  Don't believe Wing.
+: /We want to cooperate, but we are not doormats./  --- rms
+: --- Dave Love
+
+[new]
+Ah, here it is: [http://groups.google.ie/groups?selm=87k89pish3.fsf%40turnbull.sk.tsukuba.ac.jp 87k89pish3.fsf@turnbull.sk.tsukuba.ac.jp]. 
+
+: "For example, rms has acknowledged that there is a bug in the standard assignment as of 18 months ago or so: the FSF can allow proprietary use of assigned code by rewriting the GPL (eg, as a BSD-style license) or by abandoning the code to the public domain." (not something Stephen's worried about, which is reasonable enough.)
+
+and
+
+: "Another example is the widespread belief that the author of an assigned program can use it in a proprietary, closed-source product. The lawyer I asked (but admittedly didn't pay) says he believes that is false.  In the assignment I signed (the document he had for analysis) the author gives up all such rights---that's what assignment means, legally---and the FSF cannot do so by the terms of the assignment itself, which allows redistribution by the FSF only as free software."
+
+As to believing Ben Wing, everything I've ever read from or about him leads me to believe he has consistently excellent judgment, both in technical and wider contexts. [http://del.icio.us/aidan/rms-is-mad Which is not the case for RMS.] But that's an individual judgment that I don't propose to impose on you. 
+
+--- AidanKehoe
+
+:: That Google Groups link seems to have stopped working; see http://groups.google.com/group/comp.emacs/msg/9b2b0e949884ba1e , which currently works. I don't know why the first link stoppped working, the message ID remains the same. If it stops working again, try searching for ten words in order from a paragraph, in double quotes.  --- AidanKehoe
+
+----
+CategoryHistory

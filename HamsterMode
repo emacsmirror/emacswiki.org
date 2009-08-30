@@ -1,0 +1,28 @@
+hamster-mode.el is a mode for editing hamster scripts. Hamster is a mail- and newsserver for Windows.
+
+Download: http://www.fhaun.de/files/hamster-mode.el
+
+Screenshots: HamsterModeScreenshots
+
+== Configuration ==
+
+Put hamster-mode.el in your <code>load-path</code> and this in your .emacs file:
+
+ (require 'hamster-mode)
+ (add-to-list 'auto-mode-alist '("\\.hsc$" . hamster-mode))
+ (add-to-list 'auto-mode-alist '("\\.hsm$" . hamster-mode))
+
+If you want get rid of the <code>hamster-indent-line</code> put the following in
+your .emacs:
+
+ (add-hook 'hamster-mode-hook
+		  '(lambda()
+			 (setq indent-line-function 'insert-tab)))
+
+== Alternative ==
+
+There is an alternativly hamster-mode available. But it hasn't all features of the mode above.
+
+Download: http://www2.mikro.biologie.tu-muenchen.de/rs/code/emacs/win/hamster-mode.el
+----
+CategoryModes

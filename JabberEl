@@ -1,0 +1,284 @@
+jabber.el aims to be a minimal Jabber client.
+
+* jabber.el is hosted at http://emacs-jabber.sourceforge.net/ -- there you'll find a quick howto too.
+* You can read the manual at http://emacs-jabber.sourceforge.net/manual-0.7.1/
+* If you encounter bugs, please use the [http://sourceforge.net/tracker/?group_id=88346&atid=586350 bug tracker] at SF.net
+* Finally there's a mailing list too: http://lists.sourceforge.net/lists/listinfo/emacs-jabber-general
+* And the mailing list can be [http://dir.gmane.org/gmane.emacs.jabber.general accessed through Gmane] as gmane.emacs.jabber.general
+* You can ask questions in the [https://sourceforge.net/forum/?group_id=88346 forums], too (no registration required)
+
+== Screenshots ==
+
+Roster:
+
+[[image:JabberElScreenshotRosterActionMenu]]
+
+A chat can also be started using the keyboard:
+
+ M-x jabber-chat-with
+
+If you want to, you can configure special-display-regexps to open chats in their own window:
+
+ (setq 
+  special-display-regexps 
+  '(("jabber-chat" 
+      (width . 80)
+     (scroll-bar-width . 16)
+     (height . 15)
+     (tool-bar-lines . 0)
+     (menu-bar-lines 0)
+     (font . "-GURSoutline-Courier New-normal-r-normal-normal-11-82-96-96-c-70-iso8859-1")
+     (left . 80))))
+
+Looking like this:
+
+[[image:JabberElScreenshotRosterAndChatWindow]]
+
+== Customizations ==
+
+=== Nifty keybindings ===
+
+I have this function in my .emacs that I run after I have started emacs. It logs on and defines some nifty keybindings:
+
+<pre>
+(defun jabber ()
+  (interactive)
+  (require 'jabber)
+  (define-key jabber-chat-mode-map [escape] 
+    'my-jabber-chat-delete-or-bury)
+
+  (define-key mode-specific-map "jr"
+    (lambda () 
+      (interactive) 
+      (switch-to-buffer "*-jabber-*")))
+  
+  (define-key mode-specific-map "jc"
+    '(lambda () 
+       (interactive) 
+       (call-interactively 'jabber-connect)))
+
+  (define-key mode-specific-map "jd"
+    '(lambda () 
+       (interactive) 
+       (call-interactively 'jabber-disconnect)))
+
+  (define-key mode-specific-map "jj"
+    '(lambda () 
+       (interactive) 
+       (call-interactively 'jabber-chat-with)))
+
+  (define-key mode-specific-map "ja"
+    '(lambda () 
+       (interactive) 
+       (jabber-send-presence "away" "" 10)))
+  
+  (define-key mode-specific-map "jo"
+    '(lambda () 
+       (interactive) 
+       (jabber-send-presence "" "" 10)))
+
+  (define-key mode-specific-map "jx"
+    '(lambda () 
+       (interactive) 
+       (jabber-send-presence "xa" "" 10)))
+  
+  (jabber-connect))
+
+
+</pre>
+
+Here is the function ''my-jabber-chat-delete-or-bury'' used above:
+
+<pre>
+(defun my-jabber-chat-delete-or-bury ()
+  (interactive)
+  (if (eq 'jabber-chat-mode major-mode)
+      (condition-case e 
+          (delete-frame)
+        (error 
+         (if (string= "Attempt to delete the sole visible or iconified frame" 
+                      (cadr e))
+            (bury-buffer))))))
+</pre>
+
+=== Automatically highlight URLs ===
+
+Here's a hook which will highlight URLs, and bind C-c RET to open the URL using browse-url:
+
+    (add-hook 'jabber-chat-mode-hook 'goto-address)
+
+=== Show your status in the header ===
+
+This snippet will show your buddy's resource in the HeaderLine, and also show your status if you're not &quot;online&quot;:
+
+    (setq jabber-chat-header-line-format
+          '(" " (:eval (jabber-jid-displayname jabber-chatting-with))
+    	" " (:eval (jabber-jid-resource jabber-chatting-with)) "\t";
+    	(:eval (let ((buddy (jabber-jid-symbol jabber-chatting-with)))
+    		 (propertize
+    		  (or
+    		   (cdr (assoc (get buddy 'show) jabber-presence-strings))
+    		   (get buddy 'show))
+    		  'face
+    		  (or (cdr (assoc (get buddy 'show) jabber-presence-faces))
+    		      'jabber-roster-user-online))))
+    	"\t" (:eval (get (jabber-jid-symbol jabber-chatting-with) 'status))
+    	(:eval (unless (equal "" *jabber-current-show*)
+    		 (concat "\t You're " *jabber-current-show*
+    			 " (" *jabber-current-status* ")")))))
+
+=== AutoSmiley mode ===
+
+Get smileys automatically in jabber chat windows:
+
+    (require 'autosmiley)
+    (add-hook 'jabber-chat-mode-hook 'autosmiley-mode)
+
+(Needs Lisp:autosmiley.el (AutoSmiley)
+
+=== Switching accounts ===
+
+(this hack is obsoleted by multiple account support in jabber-el cvs version)
+
+My main Jabber server and its transport goes down from time to time so I also have a secondary server that I can switch to. I got tired setting the server and usernames manually so I wrote this:
+
+<pre>
+(defun my-jabber-switch-account ()
+  (interactive)
+  (require 'jabber)
+  (let* ((accounts
+          '(("jabbernet" ("jabbernet.dk" nil "USERNAME"))
+            ("chalmers" ("jabber.cd.chalmers.se" nil "USERNAME"))
+            ("80" ("jabber80.com" 80 "USERNAME"))))
+         (acc (cadr (assoc (completing-read "Account: " accounts nil t) accounts)))
+         (server (nth 0 acc))
+         (user (nth 2 acc))
+         (port (nth 1 acc)))
+    (when server
+      (message "Switching to %s..." server)
+      (jabber-disconnect)
+      (setq jabber-server server
+            jabber-port port
+            jabber-username user)
+      (jabber-connect))))
+</pre>
+
+=== Announcing about new message with xosd ===
+This code will alert about incoming message through xosd. Obviously, it requires xosd.
+<pre>
+(setq jabber-xosd-display-time 5)
+
+(defun jabber-xosd-display-message (message)
+  "Displays MESSAGE through the xosd"
+  (let ((process-connection-type nil))
+    (start-process "jabber-xosd" nil "osd_cat" "-p" "bottom" "-A" "center" "-f" "-*-courier-*-*-*-*-30" "-d" (number-to-string jabber-xosd-display-time))
+    (process-send-string "jabber-xosd" message)
+    (process-send-eof "jabber-xosd")))
+
+(defun jabber-message-xosd (from buffer text propsed-alert)
+  (jabber-xosd-display-message "New message."))
+
+(add-to-list 'jabber-alert-message-hooks
+    	     'jabber-message-xosd)
+</pre>
+
+=== Preventing messages in the echo area from clobbering the mini buffer ===
+
+I found that redefining ''define-jabber-alert'' as follows prevents messages arriving while I am using the mini buffer from stealing my focus.
+
+<pre>
+;; Message alert hooks
+(define-jabber-alert echo "Show a message in the echo area"
+  (lambda (msg)
+    (unless (minibuffer-prompt)
+      (message "%s" msg))))
+</pre>
+
+=== Viewing histories ===
+
+To open a new chat-like buffer in view mode that visits a contact's history file:
+
+<pre>
+(defun jabber-visit-history (jid)
+  "Visit jabber history with JID in a new buffer.
+
+Performs well only for small files.  Expect to wait a few seconds
+for large histories.  Adapted from `jabber-chat-create-buffer'."
+  (interactive (list (jabber-read-jid-completing "JID: ")))
+  (let ((buffer (generate-new-buffer (format "*-jabber-history-%s-*"
+                                             (jabber-jid-displayname jid)))))
+    (switch-to-buffer buffer)
+    (make-local-variable 'jabber-chat-ewoc)
+    (setq jabber-chat-ewoc (ewoc-create #'jabber-chat-pp))
+    (mapc 'jabber-chat-insert-backlog-entry
+          (nreverse (jabber-history-query nil nil t t "."
+                                          (jabber-history-filename jid))))
+    (view-mode)))
+</pre>
+
+Some ideas for improvement:
+
+   1 Make it work for global history.
+   1 Improve performance.
+   1 Add searching capabilities (e.g., keyword).
+
+== Success-stories :) ==
+
+I'm using this as my primary jabber client now and have no need for the extra jabber client (I primarily used JAJC on Windows and GAIM on Linux before) and it works really good. The nice thing is of course that you can hack it, customize key bindings etc, something that is much harder to do in most other clients. Among other things I use it as a &quot;agent&quot; to do stuff remotely. Read more about this in the forum on the SourceForge page. -- MathiasDahl
+
+[new]
+I am also using it for two days now. It is a good substitute to the BitlBee/[[ERC]] couple. I use it when I do not want to shoot a whole IRC session. Works pretty good. -- XavierMaillard
+
+[new]
+I am using it now, works pretty well under EmacsForWindows with cygwin (for the SSL part). I have to find a way thought to have under linux to show me an icon in my status bar when i get messages. (i guess some kind of python + dbus client server for it). Good work. -- [[chmouel]]
+
+[new]
+A note on the above - dbus support is in GNU Emacs in CVS now --GeoffTeale 
+
+[new]
+Jabber.el is my XMPP client for last year. Before I used gaim, tkabber, but I not found happiness in it. Jabber.el makes me happy... -- Zert
+
+[new]
+After a bit of googling, I got jabber.el to work with my Google Talk account. I'll save others some googling:
+
+* jabber-connection-type: ssl
+* jabber-server: "gmail.com"
+* jabber-network-server: "talk.google.com"
+* jabber-port: 5223
+
+-- Hamsterboy
+
+[new]
+With emacs-jabber-0.7.92 put
+
+<pre>
+;; For debug purpose.
+;; (setq jabber-debug-log-xml t)
+;; (setq jabber-debug-keep-process-buffers t)
+
+(add-to-list 'load-path "/home/user/usr/share/emacs/site-lisp/emacs-jabber-0.7.92")
+(require 'jabber)
+
+(setq jabber-account-list '(
+                            ("your-name@gmail.com"
+                            ;;   (:password . nil) or (:password . "your-pass")
+                              (:network-server . "talk.google.com")
+                              (:port . 443)
+                              (:connection-type . ssl))
+                            ))
+</pre>
+
+in your .emacs in order to connect to gtalk. And press "C-x C-j C-c"!
+
+-- gavenkoa
+
+== Page discussion ==
+
+[new]
+Are there any catches in using JabberEl to connect to two different jabber services at the same time? (i.e. google talk and an ordinary jabber...) How does one go about that? --MartinJ
+
+[new]
+This is currently only possible in the CVS version.  You can set up all your accounts in jabber-account-list (e.g. by using Customize), or just connect them manually with M-x jabber-connect-one.  (C-x C-j C-c will connect to all accounts in jabber-account-list, or if that is empty, ask you for an account to connect to) --MagnusHenoch
+
+----
+CategoryChatClient

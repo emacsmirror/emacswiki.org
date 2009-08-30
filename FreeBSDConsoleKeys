@@ -1,0 +1,14 @@
+If you use Emacs in a FreeBSD console (cons25), you may be disappointed by the default keymap, in which Alt doesn't act as Meta, among other things.
+Unfortunately, the Emacs-friendly keymap that comes with FreeBSD is horribly out-of-date, and doesn't quite do what I want.
+So I've created my own [http://edward.oconnor.cx/config/.freebsd-keymap keymap], essentially a blend of <tt>us.emacs.kbd</tt> and <tt>us.pc-ctrl.kbd</tt>, which acts the way I want it to.
+Don't forget to disable <tt>normal-erase-is-backspace-mode</tt> if you decide to use it.
+
+If you'd like to make use of the Windows and Menu keys, you could do something like this:
+
+ ;; Make the left Windows key into a Super modifier
+ (define-key function-key-map (kbd "ESC [ J") 'event-apply-super-modifier)
+ ;; Make the right Windows key into a Hyper modifier
+ (define-key function-key-map (kbd "ESC [ ~") 'event-apply-hyper-modifier)
+ ;; Make the menu key actually be a menu key.
+ (define-key function-key-map (kbd "ESC [ }") (kbd "<menu>"))
+

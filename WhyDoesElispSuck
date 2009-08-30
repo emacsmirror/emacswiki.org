@@ -1,0 +1,198 @@
+(See also EmacsLispLimitations, SchemeAndLisp)
+
+= Background =
+
+I'm a long-time Emacs user who is new to the under-the-hood side of things. I recently started learning EmacsLisp and writing my own Emacs extensions. I like sitting in IRC channels devoted to technical subjects I'm interested in, so I found #emacs and started hanging out there. It was not long before I discovered the Terrible Secrets of the Emacs community: /EmacsLisp Sucks/ and /Emacs Is Dying/.
+
+This caused me a great deal of consternation and confusion, because I love Emacs and had recently become quite fond of EmacsLisp, so much so that I was toying with learning LISP as a standalone language. I tried to get more information, but "What do you mean, 'EmacsLisp sucks'?" was more often than not met with a reply which seemed either elliptical, tautological, or a non sequiteur, at least to someone with my level of understanding of the issues (none)[1].
+
+Common replies:
+* EmacsLisp isn't [[Scheme]]
+* EmacsLisp doesn't have lexical scoping
+* EmacsLisp isn't CommonLisp
+* EmacsLisp isn't Haskell
+* The Emacs APIs suck
+* EmacsLisp isn't multithreaded / lacks coroutines (programs like Gnus can make everything stall)
+* Do you mean EmacsLisp-the-language or EmacsLisp-the-library?
+
+= EmacsLisp Isn't Scheme =
+
+This, from my highly unscientific sample, is far and away the most popular reason EmacsLisp sucks. Well, that's good to know. EmacsLisp is also not Perl, or COBOL, or IBM 1130 assembler, or a bicycle, or an orange. Thanks for the help!
+
+I didn't know Scheme -- and in fact do not now claim to know Scheme, though I have begun working through /SICP/ -- and to my untrained eye, the main difference between EmacsLisp and Scheme was that Scheme required hitting the shift key a lot more (#t, #f, set!, predicate?, etc). Further inquiry eventually yielded the conclusion that this reason is really just a restatement of "EmacsLisp doesn't have lexical scoping"[2].
+
+[new]
+
+That conclusion is not justified.  There's a great deal of difference between Scheme and EmacsLisp beyond just the question of lexical scoping.  As the OP mentions in passing, but then ignores, there's the fact that <tt>nil</tt> isn't false in Scheme, but is in CommonLisp and EmacsLisp.  Scheme has a stylistic convention of marking destructive operations with an exclamation point and predicates (boolean functions) with a question mark; again noted in the OP.  I'm not sure the latter is so significant, but the former indicates a stigmatization of side-effecting in the Scheme community, more closely wedded to function programming concepts, that we certainly don't see in EmacsLisp.  Scheme is a Lisp-1, sharing the same namespace for variable and function definitions, so that the name <tt>list</tt> must be bound (at least locally) <em>either</em> to a function, or a variable, but not both.  In a Lisp-2, you can use the same name for both a function and a variable.
+
+----
+
+= EmacsLisp Doesn't Have Lexical Scoping =
+
+This is a perfectly valid criticism of a programming language. I can see immediately how automatic lexical scoping of variables is a big win when writing complex and/or large Emacs extensions[3]. 
+
+However, as a new EmacsLisp programmer writing /simple/ Emacs extensions which deal more with buffers and words than with turning Emacs into, say, a realtime financial analysis suite with embedded web browser, I really like the fact that I have access to every state variable in the whole editor. I can see if anything is set, and what it's set to. It's really quite great, being able to instantly harness the whole power of Emacs to frob my text around in an automated fashion. Is it possible to get lexical scoping without losing this?
+
+:  It is. It's called "fluids", and they need to be specified explicitly. 
+:: ...in Scheme, or "special variables" in CommonLisp, FWIW.
+
+[new]
+
+Allegedly optional lexical scoping is coming after Emacs 23 is released. (according to emacs-devel) Once it's in place, adding coroutines will be feasible, which addresses the "single-threading sucks" argument that's surprisingly absent on this page. Should also make closures possible.
+
+= EmacsLisp Isn't CommonLisp/Haskell/Other =
+
+I don't know enough about any of these to offer any informed commentary, except to note that aside from Common Lisp, they all seems to be edge cases that either no one supports seriously, or only one or two people in the universe actually want.
+
+= The Emacs APIs Suck =
+
+I heard this a lot as well, but I have no idea what exactly is being referred to. Elucidation greatly appreciated.
+
+: My wild guess would be "because they're not OO", which doesn't really bother me, but can be seen as a problem given the typical Java-centric way people are taught CS in the US.
+
+= Do You Mean EmacsLisp (Language) Or EmacsLisp (Library)? =
+
+I don't know. Which do you, the EmacsLisp detractor, mean?
+
+Most people seem to hate EmacsLisp-the-language, but the primary obstacle to replacing EmacsLisp is, of course, EmacsLisp-the-library. 30+ years and 80+ megabytes of Emacs functionality, all in EmacsLisp. Redoing even the core editing functions is a terrifying thought to me[4].
+
+= Who Is EmacsLisp For? Who Wants EmacsLisp Dead? =
+
+This is the larger question I referred to in the Scheme section. I can't say for sure, but my gut feeling is that most of the people who are unhappy with EmacsLisp are the people who are using Emacs as an application development platform rather than as an extensible editor.
+
+I am, of course, aware of the kitchen-sink nature of Emacs, and revel in it. I know that the design of Emacs evolved in the time when a programmer only had access to a single terminal session to a computer, thus becoming in effect the world's first Integrated Development Environment so a user could meet all their needs without dropping in and out of their primary application: the editor.
+
+But I believe there is a difference between making Emacs read mail or news or have a shell because you /needed to/ in the 1970s and making Emacs browse web sites or act as an httpd because /you can/ in the 2000s. I wonder if perhaps the people who want to fix all of EmacsLisp's problems want to do so more for their own benefit -- so it will be a better general-purpose development base and toolkit -- than to make Emacs better for everyone. I wonder if they have lost sight of the primary application: the editor[5].
+
+= Conclusion =
+
+This is meant to be polemic but not dogmatic[6]. I have stated my observations, opinions, and conclusions, but I have done this to show my point of view and /lack/ of full understanding rather than to try and convince others that I am correct. I am not against fixing or replacing EmacsLisp, but I have yet to see any logical, thorough, and cogent arguments for it. Therefore: get to arguing!
+
+--ShawnBoyette
+
+----
+
+= Other commonly-named problems =
+* No namespaces/modules/packages. This leads to dozens of functions that all start with e.g. "dired-", even inside the library itself.
+* No object system (CLOS). This remark isn't really true - there's eieio - but the basic point is that the whole design isn't object oriented (it's debateable wether that's a worthwhile goal)
+** Related to this, there's no way to create a new abstract type that's disjoint from other types (e.g. vectorp doesn't return t on those, for example).
+*** Other than for "conceptual purity" or something, why is this relevant?  i.e. why would you pass an object to code that expects an ordinary vector, and expect that code to distinguish this case and treat it correctly?
+* No concurrency. Dynamic scoping really bites here, btw.
+* The regular expressions are clumsy, especially when stored as strings (call this "EmacsLisp is not perl", if you like): http://obsidianrook.com/devnotes/whinery/elisp-regexps.html
+
+----
+
+= Pipeline's Commentary =
+
+[1] The last sentence of this paragraph is especially telling.  The author has:
+
+* A special love for Emacs
+* Never experimented with any lisp besides EmacsLisp.
+* Only "toyed with" the idea of learning lisp.
+
+[2] Scheme is a standard lisp dialect, easier to implement than CL, partly because it's smaller, partly because the standard was written with optimization in mind.  In contrast, CL was written with commonality in mind.  Important differences include a focus on tail recursion and CPS optimization. I think Scheme used to not have keyword arguments, but I'm no longer sure about that one.
+** Some Scheme implementations, notably my favorite Gambit-C, have keywords.  It's not specified in R5RS or IEEE.  -JoelAdamson
+I think one may sum up the "EmacsLisp isn't <foo>" problems pretty simply.  EmacsLisp appears quite similar to other lisp dialects, but it has enough "gotchas" and differences to frustrate the beginning EmacsLisp programmer very badly.  There's tons of people with some understanding of scheme or lisp, but relatively few who really get into EmacsLisp.  I expect that many EmacsLisp programmers are like me, desperately trying to apply knowledge of another language.  Part of this problem is that twenty years ago, lisp programmers were accustomed to widely varying dialects.  Today, most Lisp dialects are quite similar.  EmacsLisp looks like an aberration if one does not consider its history.
+
+[3] A tremendous number of emacs extensions are both large and complex, even untenably so.
+
+[4] This is partly because, as you pointed out, dynamic scoping makes large projects "interesting."  Is it not a sign of EmacsLisp's flaws that we're all desperately afraid of an attempt to rewrite EmacsLisp libraries?
+
+[5] As you pointed out, Emacs is not primarily an editor, it's known first and foremost as a "kitchen sink." There's a reason that the first word in its name is "Extensible."  I feel I should also mention a popular Microsoft anecdote. Microsoft, at some point in its office research, discovered that any given feature is really only used by a insignificant fraction of users -- but if it's taken out, that individually insignificant fraction becomes irate.  By the time you trim Word down to its "primary application," you've lost 99% of its users.
+
+[new]
+: I just wish to clarify that I was ''not'' pointing out that Emacs is not primarily an editor when mentioning the kitchen sink. My point is that Emacs ''should'' be regarded as an editor first and foremost. --mdxi
+[new]
+
+[new]
+: Isnt the first word in the name actually "Editor?" http://www.gnu.org/software/emacs/emacs.html#Why
+[new]
+
+[6] The dogma comes through anyway.
+
+----
+
+= Utis' Commentary =
+
+== ad Pipeline's Commentary [2] ==
+
+Scheme is probably easier to implement than CL, because it is much, much smaller. But I definitely wouldn't say that its standard has been written with optimization in mind. Following the book "Lisp in Small Pieces", the existence of continuations as first class objects alone implies a performance penalty; likewise the fact that the first element of a form has to be evaluated, possibly at runtime; likewise the fact that scheme programs may overwrite built in functions. I guess that modern compiler techniques may be able to deal with that, I don't know. But it is definitely not easy.
+
+
+== ad the OP's topic "EmacsLisp Doesn't Have Lexical Scoping" ==
+
+EmacsLisp's lack of lexical scoping isn't so much a matter of writing and maintaining large and complex programs.  The byte compiler <em>does</em> warn you, if you access a dynamically bound variable outside of its let-form. You have to add a variable declaration in order to get rid of that warning.
+
+There are two other reasons why I, at least, want lexical scoping: 1) it allows faster variable bindings and better optimization techniques. Introducing lexical scoping could vastly improve EmacsLisp's speed. In fact the slowness of creating a dynamical environment urges people (myself included) to use such ugly constructs as (let (var) (while <condition> (setq var ...))). This won't be necessary with lexical scoping.
+
+2) Lexical scoping is a requirement for closures. Closures would allow for a lot of very useful programming techniques.
+
+In that context: ad Pipeline's comment [4]: I explained above, why I fail to see that EmacsLisp's dynamical scoping "makes large projects 'interesting'". I hardly recall any problem comming up in emacs-devel or gnu.emacs.help that could have been attributed to dynamical scoping. So this point would require some extra arguments. After all, Emacs /is/ a very large project. Moreover, I don't understand why that would anybody make afraid of <em>rewriting</em> an EmacsLisp library in a different language -- presumably one that does provide lexical scoping.
+
+== ad the OP's topic "Who Is EmacsLisp For? Who Wants EmacsLisp Dead?" ==
+
+I strongly agree with Pipeline here. What does "editor" mean for the OP? Just writing ASCII text? Just writing text/plain in general? Just writing text/plain and offering special support for programming source code? Does "just an editor" include functionality like Tramp (for remotely accessing files)? If yes, why doesn't it include a newsreader?
+
+For me most of the so-called "kitchen-sink" stuff is simply part of an editor. There is a big benefit in having everything in a unified environment with a common user interfacec. If my editor would not provide functionality to read mail and news, then I'd drop it and look for a 
+mail reader that let's me edit programming text.  In fact what the OP is attacking here is that Emacs is an Emacs, and not just an Emacs-like editor.
+
+== ad EmacsLisp in general ==
+
+I didn't know that "Emacs is dying" is a Terrible Secret of the Emacs community. If so then they haven't told me in all those years. Well, yes, EmacsLisp sucks. And at the same time: EmacsLisp is a very nice language. A contradiction? Well, EmacsLisp is just lacking a few features and I'd wish by heart that they were introduced to that language: a few problems are mentioned above. But the most important problem is: speed. EmacsLisp (or rather its implementation, but that amounts to the same here) is too slow. Closures are lacking, too. Yes, a deeply integrated, efficient object-system would be necessary, too. Oh, and modules or a package system. And, as a personal wish of mine: tail call reduction.
+
+So, I agree: EmacsLisp could and should be improved. But that doesn't mean that we need to replace it with something else.
+    --OliverScholz
+
+----
+
+= Mathrick's plug-in =
+
+== Why Emacs Should Die (a.k.a Death Rebirth Revolution [1]) ==
+
+Second of Terrible Secrets is discussed so often I doubt it's a secret any longer (maybe it's fact it's secret that's Terrible Secret :)). So here are my reasons why I want to see current Emacs code thrown out the window and rewritten (and most importantly, redesigned) from scratch. What we want to retain is Emacs-the-project, Emacs-the-team, Emacs-the-community, Emacs-the-spirit, and also, Emacs-the-name :). But actual source code should be redone, because:
+
+# Emacs is extensible, yet its core is horrible example of one of most inflexible designs I have ever seen in use. Let just one word suffice: fringes. Options allowing to influence them in _any_ way were introduced only in CVS, and still all you can do is use them for predefined you're-debugging-this-line indicator.
+
+# Another example is that you can't advice built-in function (you partly can, but only in EmacsLisp invocations, core will continue to use unadviced one). In general, your ability to do anything with builtins is most often void or negligible.
+
+# After all these years, you still have to do full edit .c file -- save -- recompile -- try cycle to change core even in slightest detail. You cannot change it, you cannot extend it. No dynamic modules, no FFI, and (AFAICU) if you dump image with particular set of EmacsLisp preloaded, you're stuck with that EmacsLisp in effect forever
+
+# You can't use anything besides C for core. This, in advent of .NET-like runtimes, and era of omnipresent bindings, is Not Nice(TM). I'd really like to be able to use python for that, and maybe one day seamlessly interface Emacs with .NET runtime (if nothing else, just for introspection data you can get for free in .NET / Java, it's really kinda necessary when writing in environment that consist almost 100% of library functions and classes)
+
+# EmacsLisp (as it is today) really sucks. It has loads of small annoyances, my personal pet peeve is lack of anything near concurrency. And I don't even use Gnus (if I did, I suppose I'd kill for any threads in EmacsLisp ;). I don't know how that's usually done in "big" Lisps, but I presume CL _has_ to have threads or equivalent primitive.
+
+What I envision is ultra small and lean core, that does only one thing - allows extensions to interface each other, binary objects and Lisp-written alike. Ideally, there shouldn't be any difference between C and Lisp code, each should be overridable and changable by outside. This way, you could plug in different display engines on console and X, making it possible to introduce for example structured graphics manipulation primitives (another long-time wish of mine). That means to see and manipulate pretty UML figures, I don't need to leave Emacs, and I can still use all the graphics capabilities offered by X I use, without making life hard for console users. And plugging Emacs into .NET would be matter of one extension that bridges between Emacs binary and runtime. Incidentally, that seems to be design employed by MonoDevelop/SharpDevelop IDE running on .NET, where core has astonishing size of 23KB, and everything else (including GUI) is a plugin. Yes, I know it's not small undertaking. But I can't see how could Emacs survive and grow in its current incarnation (unless we are content with I'm-too-hardcore-to-move-from-console users only and no new souls coming)
+
+That's my 3 cents, hope I was clear enough and managed not to offend anyone :). Oh, and I don't say everyone and their dog have to use .NET for everything, I just say that modern programmer's editor needs to be able to do that, or will get forgotten in world of runtimes everywhere.
+
+[1] Yes, I know lame anime references are lame. But I couldn't resist :)
+
+ --MaciejKatafiasz
+
+= Mornfall's comment =
+
+I think Mathrick is on crack. [1]
+
+[1] Really.
+
+= Spirit's comment =
+
+Mathrick, you will want Eclipse. :)
+
+Seriously, I tried that a few months ago. Still have the core but not much functionality. I'm not sure where such elementary things, like buffers, are supposed to be in that design. There's one single static plugin, which can hold scripting engines, which in turn use the core library to communicate with each other.
+Different window systems are no problem at all, since you can just plug them in (need a streamlined interface though).
+
+But then...there's Eclipse and I think it does all of the above minus console modes (and it's slow).
+
+ --Spirit
+
+= blandest's comment =
+
+I'v been using Gnus for a short period of time (less than 2 months) and found the lack of threads quite annoying. The only hack that I could come up with was to make an idle timer that will scan for new mail once every 30 seconds or so. There is also a 3 minutes delay between consecutive scans to avoid useless request to the mail server.
+How hard would it be to add only one background thread that runs these idle tasks ? (We don't need Emacs to be a scalable, multi-threaded web server :)) I guess it's the same thing as adding support for any number of threads ...
+
+ -- Blandest
+
+----
+CategoryCode
+CategoryHistory

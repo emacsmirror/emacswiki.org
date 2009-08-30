@@ -1,0 +1,26 @@
+There are some PGP plugins for outlook which may be able to decrypt the message you send them with PGP/MIME, but encrypted attachments will show up in outlook with a random name and the file extension .dat.
+
+When searching the interweb for help I found lots of rants and just a few hints[http://article.gmane.org/gmane.emacs.gnus.general/35727/][http://article.gmane.org/gmane.emacs.gnus.general/56323], thus I will describe a workaround.
+
+= Configuration =
+First of all, install [[MailCrypt]].
+
+Then add this elisp code to your ~/.gnus.el.
+
+   ;; "put Content-Type: text/plain at top of empty parts" (gnus manual)
+   (setq mml-insert-mime-headers-always t)
+
+   ;; encrypt always with my key
+   (setq mc-encrypt-for-me t)
+
+   ;; don't sign the message
+   (setq mc-pgp-always-sign 'never)
+
+= Workflow =
+* Write the message
+* Encrypt it using M-x mc-encrypt
+* PGP ASCII-armor your attachments (outside Emacs you would use ''gpg -a'')
+* Use M-x mml-attach-file to add those PGP ASCII-armored attachments (''after'' you have already encrypted your mail with mc-encrypt)
+
+----
+CategoryGnus

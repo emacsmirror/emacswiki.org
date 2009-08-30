@@ -1,0 +1,114 @@
+This page is also available in English: English:FisheyeWithThumbs.
+----
+
+Dans Emacs, un [[Frame]] peut etre dans un de ces "etats" :
+
+* visible -- de taille reglable ; peut etre maximise pour remplir le console
+
+* iconifie (minimise)
+
+* invisible (null part)
+
+Français:DrewAdamsFrançais a ecrit le package Lisp:thumb-frm.el, qui ajoute un autre "etat" frame a Emacs : ''onglet''. Dans le spectre du visible a l'invisible, l'onglet se situe entre le visible et l'iconifie.
+
+== Image ==
+
+Une image vaut mille mots. Un onglet ne vaut que 50 mots, peut-etre :
+
+[[image:DrewEmacsFisheye]]
+
+== FAQ Pour Frames Onglets ==
+
+; '''''Qu'est-ce que c'est ?''''': Un frame onglet n'est rien d'autre qu'un [[Frame]] tout petit : tout est retreci : caracteres, ScrollBar, MiniBuffer (s'il y en a) -- tout -- et il n'y a pas de MenuBar ou ToolBar. C'est comme une grande icone qui montre ce qui est dans le frame -- une ''icone transparente''.
+
+; '''''Alors, c'est juste une image ?''''': Non, c'est un frame actif qui fonctionne parfaitement. Donc, ''ATTENTION'' : on peut modifier son contenu sans se rendre compte, puisqu'on n'y voit pas grande chose ! (Je n'ai pas encore trouve un moyen de verrouiller un frame en lecture seulement, sans rendre ses buffers read-only partout.)
+
+; '''''Peut-on utiliser <tt>[[thumb-frm.el]]</tt> pour visualiser des images (ex. photos) en onglets ?''''': Non, le texte est la seule chose reduit, pas des images -- un frame onglet avec buffer contenant une image ne montre qu'une petite partie de l'image a grandeur reel. Pour creer et visualiser des images onglets, voir ThumbsMode.
+
+; '''''Alor, a quoi ca _sert_ ?''''': On peut voir ce qui est dans un frame onglet, est ca ne prend pas beaucoup de place. C'est aussi facile d'onglefier et desonglefier un frame que de l'iconifier et desiconifier. Les frames onglets sont mise en ''palette'' (mosaique) pour acces et reference. Ils sont plus visibles que des icones, et ils donnent plus d'infos que des icones et un acces direct au contenus des frames.
+
+: On peut, par exemple, directement rechercher du texte dans un buffer ou controller le progres d'un processus (make, grep, shell, communication) associe a un buffer, puis elargir le frame lorsque qq chose interessante se presente.
+
+; '''''Oeil de poisson ? C'est quoi ca ?''''': Un objectif "oeil de poisson" montre le centre de l'image en grandeur reel et tout le reste (la peripherie) de facon retrecie. On se sert de cet effet parfois en conception d'interface utilisateur pour bien montrer l'essentiel et au meme temps donner un peu de son contexte.
+
+: La commande `fisheye' onglefie tout les frames sauf le frame courant -- on voit tout, mais on peut concentrer sur le contenu essentiel -- les autre frames sont presents mais "timides", hors le champs.
+
+; '''''Est-ce vraiment utile, ou juste un gadget ?''''': Oui ;-). Essayer et decider. Ces frames bebes sont "mignons" en tout cas, non ?
+
+: En fait, au debut je n'ai pas pense que cette fonctionnalite serait trop utile. Mais apres l'avoir utilisee je me suis rendu compte que je la prefere a l'iconisation. Donc, j'ai decide de l'offrir comme replacement general a l'iconisation : le package Lisp:thumb-frm.el remplace l'iconisation par l'onglefication. Si l'on prefere, on peut retrouver le comportement normale.
+
+; '''''Comment retrouver l'iconisation normale d'`iconify-frame' ?''''': Affecter `thumbify-instead-of-iconify-flag' a `nil', ou utiliser `ad-deactivate' sur `iconify-frame' et `iconify-or-deiconify-frame'.
+
+
+== Commandes, Cles, et Parametres ==
+
+=== Options Utilisateur ===
+
+* `'''<code>thumbify-instead-of-iconify-flag</code>'''' -- Mettre ceci a `nil' si l'on ne veut pas remplacer l'iconisation part l'onglefication de facon generale. Si ceci est non `nil' (valeur par defaut), les commandes `iconify-frame' et `iconify-or-deiconify-frame' onglefient ou desonglefient.
+
+* `'''<code>frame-thumbnail-font-difference</code>'''' -- Changer la valeur de ce parametre pour changer la taille des onglets.
+
+=== Commandes ===
+
+* `'''<code>thumbify-other-frames</code>'''' (= `'''<code>fisheye</code>'''') -- Rendre chaque frame sauf le frame courant en onglet. Les mettre en palette. Je lie cette command aux cles `<code>[C-S-mouse-3]</code>' -- un clique suffit pour changer un frame (meme un frame onglet) en oeil de poisson (centre d'attention).
+
+* `'''<code>doremi-thumbnail-frames</code>'''' -- Cycler parmi les frames visibles avec l'oeil de poisson ; c.a.d., appeler `thumbify-other-frames' sur chaque frame visible en succession. Je lie cette commande aux cles `C-x t e'. (Voir DoReMi (en) pour des commandes Do Re Mi similaires.)
+
+* `'''<code>dethumbify-all-frames</code>'''' -- Restaurer tous les frames onglets a leurs tailles normales. Ils retrouvent leurs etats precedents (MenuBar, ToolBar, taille de caracteres).
+
+* `'''<code>toggle-thumbnail-frame</code>'''' -- Onglefier ou desonglefier un frame individuel. Je lie cette commande aux cles `<code>[S-mouse-3]</code>' -- un clique suffit pour retrecir ou restaurer un frame. Cette commande est une combinaison des commandes `thumbify-frame' et `dethumbify-frame'.
+
+* `'''<code>thumbify-frame</code>'''' -- Onglefier un frame individuel.
+
+* `'''<code>dethumbify-frame</code>'''' -- Desonglefier un frame individuel.
+
+* `'''<code>iconify-thumbnail-frames</code>'''' -- Iconifier tous les frames onglets. On se debarasse sans les detruire -- les retrouver avec la commande `deiconify-thumbnail-frames'.
+
+* `'''<code>deiconify-thumbnail-frames</code>'''' -- Desiconifier tous les frames onglets.
+
+* `'''<code>stack-thumbnail-frames</code>'''' -- Ranger les onglets sur la cote gauche de l'ecran. Dans l'ordre (alphabetique), si `thumbfrm-sort-function' est non-`nil'.
+
+* `'''<code>toggle-sort-thumbnail-frame-stack</code>'''' -- Ranger dans l'ordre ou le desordre (bascule).
+
+* `'''<code>iconify-frame</code>'''' -- ''Redefiniee'' (avisee) pour onglefier.
+
+* `'''<code>iconify-or-deiconify-frame</code>'''' -- ''Redefiniee'' (avisee) pour onglefier ou desonglefier. Lie a `C-z', normalemment.
+
+* `'''<code>really-iconify-frame</code>'''' -- Ce que faisait `iconify-frame' auparavant.
+
+* `'''<code>really-iconify-or-deiconify-frame</code>'''' -- Ce que faisait `iconify-or-deiconify-frame' auparavant.
+
+=== Liaison de Cles ===
+
+Par defaut, les liaisons de cles standardes telle que `C-z' onglefient au lieu d'iconifient. Voici qq liaisons supplementaires recommendees :
+
+     (global-set-key [S-mouse-3] 'toggle-thumbnail-frame)
+     (global-set-key [C-S-mouse-3] 'thumbify-other-frames)
+ 
+     ;; Ajouter `doremi-thumbnail-frames' aux commandes Do Re Mi - voir le package `doremi-frm.el'.
+     (defalias 'doremi-prefix (make-sparse-keymap))
+     (defvar doremi-map (symbol-function 'doremi-prefix) "Keymap for Do Re Mi commands.")
+     (define-key global-map "\C-xt"  'doremi-prefix)
+     (define-key global-map "\C-xte" 'doremi-thumbnail-frames) ; "Eye"
+
+En plus, j'utilise les liaisons de cles suivantes. Les trois premieres enlevent tout et le remettent comme avant. Ces commandes sont definies dans le package Lisp:frame-cmds.el.
+
+     (global-set-key [(control meta ?z)] 'show-hide)
+     (global-set-key [(control ?x) (control ?z)] 'iconify-everything)
+     (global-set-key [C-down-mouse-1] 'mouse-show-hide-mark-unmark)
+     (global-set-key [mode-line mouse-3] 'mouse-iconify/map-frame)
+     (global-set-key [(control ?z)] 'iconify/map-frame)
+
+On peut lier la commande `really-iconify-or-deiconify-frame' a une cle pour iconifier un frame individuel.
+
+== Discussion ==
+
+Vos commentaires et questions ici :
+
+----
+
+* '''''Interdiction formelle d'afficher... Loi du...'''''
+
+----
+
+OneOnOneEmacs CategoryFrames CategoryDisplay

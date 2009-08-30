@@ -1,0 +1,431 @@
+The variable `compile-command' holds the default value for the `M-x
+compile' command.  The default value is "make -k" which is good enough
+for most projects, because you'll either have a Makefile, or you can
+rely on the default rules within make.  And if you change the default,
+Emacs will remember that.
+
+However, some people might still want to experiment with it.  Take a
+look at the compile-command documentation (use `C-h v
+compile-command').  Or look at this here:
+
+ (require 'compile)
+ (add-hook 'c-mode-hook
+           (lambda ()
+	     (unless (file-exists-p "Makefile")
+	       (set (make-local-variable 'compile-command)
+                    ;; emulate make's .c.o implicit pattern rule, but with
+                    ;; different defaults for the CC, CPPFLAGS, and CFLAGS
+                    ;; variables:
+                    ;; $(CC) -c -o $@ $(CPPFLAGS) $(CFLAGS) $<
+		    (let ((file (file-name-nondirectory buffer-file-name)))
+                      (format "%s -c -o %s.o %s %s %s"
+                              (or (getenv "CC") "gcc")
+                              (file-name-sans-extension file)
+                              (or (getenv "CPPFLAGS") "-DDEBUG=9")
+                              (or (getenv "CFLAGS") "-ansi -pedantic -Wall -g")
+			      file))))))
+
+This will run Make if there is a Makefile in the same directory as the
+source-file, or it will create a command for compiling a single
+file and name the executable the same name as the file with the extension
+stripped.
+
+Put the code in your ~/.emacs file.  If you don't use the require
+statement, the first invokation of M-x compile will load the compile
+package and possibly overwrite your setting of compile-command.
+Replace c-mode-hook with the appropriate hook of your language
+(c++-mode-hook, for example).  make-local-variable creates a
+BufferLocalVariable.  This is important, because the default value
+will vary for every buffer.
+
+For a very nicely-done package, check out SmartCompile; it will figure out how it should compile your file based on filename.
+
+== Not just for compiling ==
+
+compile is not just limited to compiling source-code.  For example, you
+can put the following LocalVariables at the bottom of a file called
+.crontab in your home directory:
+<pre>
+ # Local Variables:
+ # compile-command: "crontab ~/.crontab"
+ # End:
+</pre>
+Now you just have to do M-x compile and the contents of the file is
+installed as your crontab.  (See also CrontabMode.)
+
+[new]
+You can also put the following LocalVariables at the beginning of the file:
+<pre>
+ # -*- compile-command: "crontab ~/.crontab" -*-
+</pre>
+
+== Success or failure of compile ==
+
+It would be nice to be able to do something upon failed or successful compilations. Often I switch to other desktops after I've initiated a compilation, and a success "ding!" or failure "dong!" sound would be somewhat useful ...
+
+<em>M-x compile just runs a shell command.  So you could append commands to play different sounds upon success or failure like so:
+<pre>
+ make -k || bplay failure.wav && bplay success.wav
+</pre>
+<em>Of course I'm assuming you have bplay installed and that your shell supports the "||" and "&&" conditionals.</em>
+
+[new]
+You can use tooptip-show or any other way to notify the compilation results.
+<pre>
+(defun notify-compilation-result(buffer msg)
+  "Notify that the compilation is finished,
+close the *compilation* buffer if the compilation is successful,
+and set the focus back to Emacs frame"
+  (if (string-match "^finished" msg)
+    (progn
+     (delete-windows-on buffer)
+     (tooltip-show "\n Compilation Successful :-) \n "))
+    (tooltip-show "\n Compilation Failed :-( \n "))
+  (setq current-frame (car (car (cdr (current-frame-configuration)))))
+  (select-frame-set-input-focus current-frame)
+  )
+
+(add-to-list 'compilation-finish-functions
+	     'notify-compilation-result)
+</pre>
+It is very useful for me, since I alway browse the webs while compiling ;-)
+-- Xu Yuan
+
+== No prompt for command ==
+
+If you get tired of having to hit enter after "make -k" (or whatever your compile-command is) set compilation-read-command to nil.  If you do that M-x compile will only prompt for a compile-command if you give it a prefix argument.
+
+<pre>
+    (setq compilation-read-command nil)
+</pre>
+-- Greg Rowe
+
+[new]
+What I do is:
+<pre>
+    (global-set-key "\C-x\C-m" 'compile)
+</pre>
+and then my normal compile invocation became C-x C-m C-m
+
+[new]
+Note that after you have hit the enter once for your compile command, you can run the same command again (without confirming the command) with M-x recompile.
+
+== Recompiling ==
+
+I use this command to compile, which will recompile in the exact same way as last time, unless given a prefix argument.  This is really handy for big projects where I need to edit a lot of files in different directories.
+
+<pre>
+(global-set-key [(control c) (c)] 'compile-again)
+
+(setq compilation-last-buffer nil)
+(defun compile-again (pfx)
+  """Run the same compile as the last time.
+
+If there was no last time, or there is a prefix argument, this acts like
+M-x compile.
+"""
+ (interactive "p")
+ (if (and (eq pfx 1)
+	  compilation-last-buffer)
+     (progn
+       (set-buffer compilation-last-buffer)
+       (revert-buffer t t))
+   (call-interactively 'compile)))
+</pre>
+
+- NealePickett
+
+[new]
+How is that different from M-x recompile?
+
+Answer: M-x recompile just executes the last compile command in the directory of the current buffer which can be different from the directory of the compile buffer. So you would have to manually switch to the compile buffer and do compile there. This is what the above command does.
+
+==Running Make with the closest Makefile==
+
+In some projects, systems do not have a Makefile in each directory. As an example, you may be working on files in src/h/, and you'd like to execute <code>make -f ../../Makefile</code>. To do this, you'll need to extract the closest makefile in the parent directory and above:
+<pre>
+(require 'cl) ; If you don't have it already
+
+(defun* get-closest-pathname (&optional (file "Makefile"))
+  "Determine the pathname of the first instance of FILE starting from the current directory towards root.
+This may not do the correct thing in presence of links. If it does not find FILE, then it shall return the name
+of FILE in the current directory, suitable for creation"
+  (let ((root (expand-file-name "/"))) ; the win32 builds should translate this correctly
+    (expand-file-name file
+		      (loop 
+			for d = default-directory then (expand-file-name ".." d)
+			if (file-exists-p (expand-file-name file d))
+			return d
+			if (equal d root)
+			return nil))))
+</pre>
+Then just use one of the above advice to change compile-command to (format "make -f %s" (get-closest-pathname)), or just compute it anew every time you press F5 or so on.  For example,
+<pre>
+ (require 'compile)
+ (add-hook 'c-mode-hook (lambda () (set (make-local-variable 'compile-command) (format "make -f %s" (get-closest-pathname)))))
+</pre>
+
+==Similar, but using nearest Makefile in directory with "configure.ac"==
+
+Here's an alternative to the above that I've been using for a year or so now, which tries to find a directory with configure.ac in it - assuming this will be the top level of an autoconf package (this is important if you want to run e.g. make install).
+
+<pre>
+(defun compile-pkg (&optional command startdir)
+  "Compile a package, moving up to the parent directory
+  containing configure.ac, if it exists. Start in startdir if defined,
+  else start in the current directory."
+  (interactive)
+
+  (let ((dirname)
+	(dir-buffer nil))
+    (setq startdir (expand-file-name (if startdir startdir ".")))
+    (setq command  (if command command compile-command))
+
+    (setq dirname (upward-find-file "configure.ac" startdir))
+    (setq dirname (if dirname dirname (upward-find-file "Makefile" startdir)))
+    (setq dirname (if dirname dirname (expand-file-name ".")))
+    ; We've now worked out where to start. Now we need to worry about
+    ; calling compile in the right directory
+    (save-excursion
+      (setq dir-buffer (find-file-noselect dirname))
+      (set-buffer dir-buffer)
+      (compile command)
+      (kill-buffer dir-buffer))))
+
+(defun upward-find-file (filename &optional startdir)
+  "Move up directories until we find a certain filename. If we
+  manage to find it, return the containing directory. Else if we
+  get to the toplevel directory and still can't find it, return
+  nil. Start at startdir or . if startdir not given"
+
+  (let ((dirname (expand-file-name
+		  (if startdir startdir ".")))
+	(found nil) ; found is set as a flag to leave loop if we find it
+	(top nil))  ; top is set when we get
+		    ; to / so that we only check it once
+
+    ; While we've neither been at the top last time nor have we found
+    ; the file.
+    (while (not (or found top))
+      ; If we're at / set top flag.
+      (if (string= (expand-file-name dirname) "/")
+	  (setq top t))
+      
+      ; Check for the file
+      (if (file-exists-p (expand-file-name filename dirname))
+	  (setq found t)
+	; If not, move up a directory
+	(setq dirname (expand-file-name ".." dirname))))
+    ; return statement
+    (if found dirname nil)))
+</pre>
+
+I then wrote this mini-function...
+<pre>
+(defun std-compile ()
+  "Like 'compile', but uses compile-pkg"
+  (interactive)
+  (compile-pkg compile-command))
+</pre>
+... and bound it to F7, having used VC6.0 for far too long!
+
+Yet another variant of much the same thing (using upward-find-file above):
+
+<pre>
+(defun compile-next-makefile ()                                                           
+  (interactive)                                                                           
+  (let* ((default-directory (or (upward-find-file "Makefile") "."))                       
+         (compile-command (concat "cd " default-directory " && "                          
+                                  compile-command)))                                      
+    (compile compile-command))) 
+</pre>
+
+== Compile in another directory ==
+
+This isn't a compile-specific tweak, but I tend to use it for that and grep mostly.  Often I'll want to run M-x compile or M-x grep, but I will want the default-directory to be something other than the current buffer's.  I wrote the following command and bound it to M-X (ie, shift-M-X):
+
+<pre>
+(defun in-directory ()
+  "Reads a directory name (using ido), then runs
+execute-extended-command with default-directory in the given
+directory."
+  (interactive)
+  (let ((default-directory 
+          (ido-read-directory-name "In directory: "
+                                   nil nil t)))
+    (call-interactively 'execute-extended-command)))
+</pre>
+
+So I can type M-X, select a directory, and then type compile or grep at the M-x prompt. (It also passes prefix args through correctly.)  You can use read-directory-name instead of the ido version if you'd like.
+
+[new:DrewAdams:2006-06-27 23:47 UTC]
+That has the advantage that the directory change is only for compile/grep.
+Not to take anything away from what you suggest, but just to let people know, in case they don't:
+
+* You can change the current (working) directory, aka `default-directory', in Emacs using command `cd'.
+* You can specify a directory when you use Emacs command `grep'. You can specify it absolutely or relatively. For instance, you can give something like this as the file-pattern argument: ##*/*.el## or ##../*.el##.
+
+-- DrewAdams
+[new]
+
+== Compile alternatively with make or with nmake on Win32 ==
+
+When working on a windows system a want to use the standard `make' for compilation in some
+directories, but in other cases I want to use `nmake' for VC project files (or to be more
+precise for Makefiles generated from VisualStudio projects).
+
+Compared to `make' the `nmake' from Visual Studio requires a lot of typing until you have
+the complete command with its lengthly specification of the target. So my decision was to
+use a command for nmake, when ever I find a file with the extension `.mak' in the working
+directory. If I really decide to run the usual make instead it is only Ctrl-a, Ctrl-k
+and 7 more keys and I'm ready to run.
+
+I put the following lisp code in my .emacs:
+
+  ;; Try to handle nmake and make in a clever way for c-mode
+  (defun my-make-command ()
+    (let ((mak-file))
+      ;; Check if a .mak file exists in the current directory
+      (setq mak-file (car (directory-files default-directory nil "\\.mak$")))
+      (if mak-file
+        (concat "nmake /nologo -f " mak-file " CFG=\""
+                (file-name-sans-extension mak-file) " - Win32 Release\"")
+        (concat "make -k " (file-name-sans-extension (file-relative-name buffer-file-name)) ".o")
+      ))
+  )
+
+and later on in the c-mode hook:
+
+  (set (make-local-variable 'compile-command) (my-make-command))
+
+If I have a file Test.mak in the working directory, `M-x compile' would run with the following
+command:
+
+  nmake /nologo -f Test.mak CFG="Test - Win32 Release"
+
+== External compile and parse error messages ==
+
+There are cases where I can't compile from within emacs (complex environment setup, proprietary
+tools, etc). There is a simple way with ##emacsclient## to still get emacs to parse the errors:
+
+I'm using the following to get emacs to load and parse a log file as if it was the result of a
+compile command:
+<pre>
+    $ make > make.log
+    $ emacsclient -a cat --eval '(let () (setq compile-command "cat /full/path/to/make.log")(recompile))'
+</pre>
+
+-- AlainMellan
+[new]
+Alain, can you explain what good "-a cat" does here?
+
+
+== Compile Do What I mean ==
+
+Here is a small function `compile-dwim' which is a combination of
+`compile' and `recompile'.
+
+It allows you to have one global compile command and several
+buffer-local compile commands while remembering the respective
+compilation directories.
+
+This is meant to be bound to your favourite compile-key,  like:
+
+    (global-set-key (kbd "<f5>") 'compile-dwim)
+    ;; Try it out by pressing F5 and C-u F5 and C-u C-u F5.
+
+Code:
+
+{{{
+    (defvar get-buffer-compile-command (lambda (file) (cons file 1)))
+    (make-variable-buffer-local 'get-buffer-compile-command)
+    
+    (setq-default compile-command "")
+    
+    (defun compile-dwim (&optional arg)
+      "Compile Do What I Mean.
+    Compile using `compile-command'.
+    When `compile-command' is empty prompt for its default value.
+    With prefix C-u always prompt for the default value of
+    `compile-command'.
+    With prefix C-u C-u prompt for buffer local compile command with
+    suggestion from `get-buffer-compile-command'.  An empty input removes
+    the local compile command for the current buffer."
+      (interactive "P")
+      (cond
+        ((and arg (> (car arg) 4))
+         (let ((cmd (read-from-minibuffer
+                     "Buffer local compile command: "
+                     (funcall get-buffer-compile-command
+                              (or (file-relative-name (buffer-file-name)) ""))
+                     nil nil 'compile-history)))
+           (cond ((equal cmd "")
+                  (kill-local-variable 'compile-command)
+                  (kill-local-variable 'compilation-directory))
+                 (t
+                  (set (make-local-variable 'compile-command) cmd)
+                  (set (make-local-variable 'compilation-directory)
+                       default-directory))))
+         (when (not (equal compile-command ""))
+           ;; `compile' changes the default value of
+           ;; compilation-directory but this is a buffer local
+           ;; compilation
+           (let ((dirbak (default-value 'compilation-directory)))
+             (compile compile-command)
+             (setq-default compilation-directory dirbak))))
+        ((or (and arg (<= (car arg) 4))
+             (equal compile-command ""))
+         (setq-default compile-command (read-from-minibuffer
+                                        "Compile command: "
+                                        (if (equal compile-command "")
+                                            "make " compile-command)
+                                        nil nil 'compile-history))
+         (setq-default compilation-directory default-directory)
+         (when (not (equal (default-value 'compile-command) ""))
+           (compile (default-value 'compile-command))))
+        (t
+         (recompile))))
+}}}
+
+
+Additionally its possible to specify command suggestions (when
+calling `compile-dwim` with prefix C-u C-u) for certain modes.
+This is done setting the variable `get-buffer-compile-command' 
+to a function that returns a suggestion.
+
+{{{
+    ;; simple example:
+    (defun my-latex-mode ()
+      (setq get-buffer-compile-command
+            (lambda (file) (format "pdflatex %s" file))))
+    (add-hook 'latex-mode-hook 'my-latex-mode)
+
+    ;; examples where `get-buffer-compile-command'
+    ;; returns a cons cell (TEXT . CURSORPOS)
+
+    (defun my-c-mode ()
+      (setq get-buffer-compile-command
+            (lambda (file)
+              (cons (format "gcc -Wall  -o %s %s && ./%s"
+                            (file-name-sans-extension file)
+                            file
+                            (file-name-sans-extension file))
+                    11))))
+    (add-hook 'c-mode-hook 'my-c-mode)
+
+    (defun my-c++-mode ()
+      (setq get-buffer-compile-command
+            (lambda (file)
+              (cons (format "g++ -Wall  -o %s %s && ./%s"
+                            (file-name-sans-extension file)
+                            file
+                            (file-name-sans-extension file))
+                    11))))
+    (add-hook 'c++-mode-hook 'my-c++-mode)
+}}}
+
+-- Denis
+
+----
+CompilationMode CompileCommandForDotNet FlyMake
+CategoryDotEmacs CategoryProgrammerUtils

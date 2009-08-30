@@ -1,0 +1,87 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Specifying Match Functions for Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Note to Programmers]] ||
+
+----
+
+== Defining  Buffer-Text Completion for Comint Modes ==
+
+This section is for EmacsLisp programmers.
+
+Out of the box, '''Icicles''' provides [[completion]] for [[buffer]] text in
+some contexts.  This includes Shell mode, for example.  Whenever
+there are two or more candidate completions, you can use '''Icicles'''
+completion, with all of its features ([[Icicles - Cycling Completions|cycling]], [[progressive completion]], [[apropos completion]], and so on).  See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]].
+
+ShellMode is an example of a mode that inherits from ComintMode.
+Other libraries sometimes define modes that also extend Comint
+mode in different ways.  Library ESS does so, for example.
+
+In such modes, the top-level completion [[command]] used is typically
+`comint-dynamic-complete', and it is typically bound to `TAB'.  In
+''Icicle'' mode, `TAB' in such a buffer is instead bound to the
+'''Icicles''' version of this command, `icicle-comint-dynamic-complete'.
+
+'''Icicles''' provides the infrastructure for you to take advantage of
+'''Icicles''' completion with your own modes that inherit from Comint
+mode.  For that, just do the following:
+
+'''1.''' Define replacement functions for the functions that perform the
+   completion.  The functions to be replaced themselves typically
+   call a Comint completion function, such as
+   `comint-dynamic-complete-filename'.  You can typically use the
+   same definitions as the original functions, except replace the
+   call to a function that displays multiple matching candidates
+   by a call to a corresponding Icicles function that performs
+   completion.
+
+[:icicle-comint-dynamic-complete-replacements]
+'''2.''' Customize [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-comint-dynamic-complete-replacements|icicle-comint-dynamic-complete-replacements]]</tt>'''' adding the mappings that specify which standard functions to
+   replace with your completion functions (from #'''1''').  Take a look
+   at the default value of this option to see what I mean.
+
+'''3.''' Use `eval-after-load' to toggle ''Icicle'' mode when the vanilla
+   code for your mode is loaded, to ensure that the original
+   definitions are picked up.  See the end of <tt>[[icicles-mode.el]]</tt>
+   for an example of this.
+
+[:icicle-shell-dynamic-complete-command]
+If you are interested in trying this, take a look at the '''Icicles'''
+code for, say, `icicle-shell-dynamic-complete-command', comparing
+it with the original code for `shell-dynamic-complete-command'.
+You will see that the only change is to substitute a call to
+`icicle-shell-dynamic-complete-as-command' for a call to
+`shell-dynamic-complete-as-command'.  Likewise,
+`icicle-shell-dynamic-complete-as-command' is a trivial alteration
+of `shell-dynamic-complete-as-command'.
+
+The key is to ultimately call an '''Icicles''' completion command, such
+as `icicle-comint-dynamic-simple-complete', whenever there are
+multiple completion candidates.  This has the effect of using
+'''Icicles''' [[minibuffer]] completion instead of simply displaying the
+alternatives in buffer `*Completions*'.
+
+'''Icicles''' uses this same technique, of substituting '''Icicles'''
+completion for simple display of alternatives, for all buffer-text
+completion that it supports out of the box, even when there is no
+relation with Comint mode.
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Specifying Match Functions for Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Note to Programmers]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryShell
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryProgrammerUtils
+CategoryCode
+

@@ -1,0 +1,16 @@
+HttpdServe is a Python-based web server which also knows how to communicate with Emacs directly using a gnuserv socket.  It does not depend on the gnuclient or gnudoit programs, but rather talks with Emacs directly over the socket itself.  Because of this tight integration with a dedicated Emacs, it is able to request HTML generation of EmacsWikiMode pages from Emacs very quickly.  HttpdServe will also handle serving of static content on its own, and recognizes all the various browser extensions related to compressing content, and not re-serving content if a browser has already seen it.  It was originally developed to optimize for the low-bandwidth of PPP connection, but works great over faster connections as well.  You can download HttpdServe at:
+
+    http://www.gci-net.com/~johnw/Emacs/httpd-serve
+
+If you want to initialize httpd-serve through the /etc/rc.d mechanism, also download:
+
+    http://www.gci-net.com/~johnw/Emacs/httpd-serve.init
+
+This latter script is just an example, and should be modified to suit your tastes.
+
+----
+just a note, the above link to httpd-serve gives a 404...anyone know where else it may be available?
+: http://groups.google.com/groups?selm=m3lmhzmf2d.fsf%40alice.dynodns.net -- Markus Knittig
+
+For those who have trouble with spaces not being preserved in the above link, try:
+: http://groups.google.com/groups?selm=m3lmhzmf2d.fsf%40alice.dynodns.net&output=gplain -- Nick Goffee

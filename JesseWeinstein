@@ -1,0 +1,21 @@
+Hello fellow wiki-ites.  I'm a college student at [http://www.reed.edu Reed College] and I use Emacs on Mac OS X.  My nick on the EmacsChannel is [:: JesseW]. (I changed "am using" to "use" so I show up on the [http://www.emacswiki.org/cgi-bin/wiki.pl?search=uses%3F%20emacs%20and%20CategoryHomepage Emacs users] list ;-))  As I write this, I just found out about Imenu (it's really cool!).  In the past few days I've been submitting patches to OliverScholz 's emacs-rtf project.  
+
+I have succeded in building emacs from CVS, but I don't remember why I wanted to...
+
+Here is my .emacs file: JesseWeinsteinDotEmacs
+Here is a collection of other useful bits I've written: JesseWeinsteinMyBitsFile
+
+I can be emailed through: http://purl.oclc.org/NET/JesseW/email@purl.org (it's a mailto link)
+I'm working on cleaning up the EmacsNiftyTricks page...
+== Tricks I really like ==
+* M-x apropos (not C-h a!) will give you the entire list of commands, functions, variables and macros that match a regex.
+* When doing isearch, C-w adds the word following point to the search buffer. 
+
+== Talk ==
+
+ Welcome on this Wiki -- zeDek
+
+Thanks! :-)
+
+----
+CategoryHomepage

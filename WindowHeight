@@ -1,0 +1,10 @@
+An example from IbufferMode:
+
+    (if (fboundp 'window-buffer-height)
+        (defalias 'ibuffer-window-buffer-height 'window-buffer-height)   ; GNU Emacs
+      (defalias 'ibuffer-window-buffer-height 'window-displayed-height)) ; XEmacs
+
+----
+CategoryCode ComparativeEmacsology
+
+

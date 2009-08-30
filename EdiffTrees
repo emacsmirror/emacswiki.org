@@ -1,0 +1,38 @@
+The EdiffTrees package is a simple frontend to EdiffMode
+to allow a simpler comparison of two similar directory
+trees.
+
+I wrote this package because I often need to compare two different
+versions of the same directory tree and ediff-directories is not
+very helpful in this case.  Specially when the directory trees to
+compare are deep and only a few files have changed.
+
+For further instructions, please see the comentary in the file.
+
+: Lisp:ediff-trees.el
+
+Any comments are welcomed, of course.
+[new]
+There seems to be something wrong with the link above.
+
+[new]
+Somebody uploaded a file instead of just pasting the elisp into the text area... -- AlexSchroeder
+
+[new]
+Oops, I've fixed that with the update to a new version of the package.
+
+[new]
+
+I did something similar with the concept of secondary project roots. The example code is pasted in [[EdiffMode]]. I shall have a play with your mode :-)
+
+[[AlexBennee]]
+
+[new]
+i've been looking for this functionality for a long time. getting "function definition is void: eql" errors on diffs (everything i've tried so far), even for simple directories that only differ in one line of 1 file. any thoughts ? using emacs 21.2.1
+
+lytles
+
+
+
+----
+CategoryProgrammerUtils

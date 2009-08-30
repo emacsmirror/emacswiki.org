@@ -1,0 +1,41 @@
+The '''[::mode line]''' is at the bottom of every Emacs [[Window]]. It has useful summary information about the buffer shown in the window, including its name and current modes.
+
+Here is a screenshot that shows three windows with their mode lines:
+
+[[image:DrewsEmacsWindowCallouts]]
+
+For complete information on the contents of mode lines, see [[Manual:mode line]] in the EmacsManual. The information in a mode line usually includes the following:
+* Whether or not the buffer has been modified:
+** '''##**##''' -- modified since last save
+** '''##--##''' -- not modified since last save
+** '''##%*##''' -- read-only, but modified
+** '''##%%##''' -- read-only, not modifed
+: In the screenshot, buffers ##*Help*## and ##drews-lisp-20## are read-only (unmodified); buffer ##shrink-fit.el## is writable and unmodified.
+* Buffer name -- for example, a file name.
+* The name of one or more [[MajorMode]]s or [[MinorMode]]s of the buffer , surrounded by parentheses. In the screenshot, buffer ##shrink-fit.el## is in major mode ##Emacs-Lisp## (and in no minor mode). In Emacs 22, you can click the major-mode and minor-mode names for additional behavior.
+: '''Note:''' If the modes are surrounded by square brackets (as in ##[(Emacs-Lisp)]##), then you are in a ''recursive'' edit. You may want to do `##C-]##' (command `abort-recursive-edit') to get out of it.
+* Line number of the TextCursor (and [[Point]]), and perhaps the column number. In the screenshot, the cursor is in column 0 (`C0') of line 234 (`L234') of buffer ##shrink-fit.el##.
+* Portion of buffer that is displayed:
+** `Top' -- the ''beginning'' of the buffer is shown in the window
+** `Bot' -- the ''end'' of the buffer is shown in the window
+** `All' -- ''all'' of the buffer is shown in the window
+** a percentage -- percentage of the buffer ''above'' the top of the window.
+In the screenshot, the first ##48%## of buffer ##shrink-fit.el## is not shown.
+* Coding system of the buffer: a character indicating the general conversion and possibly a string indicating the end-of-line translation
+** ##-## -- no code conversion, except possibly end-of-line translation
+** ##=## -- no code conversion or end-of-line translation
+** ##1## -- ISO Latin 1 code conversion
+** another character - another code conversion -- see the Emacs manual
+: All of the buffers in the screenshot are unconverted (##-##).
+* End-of-line translation:
+** ##(Unix)## -- newline character separates lines
+** ##(DOS)## or ##\## -- carriage-return plus linefeed separates lines
+** ##(MAC)## or ##/## -- carriage-return separates lines
+: All of the buffers in the screenshot have newline-separated lines (##(Unix)##).
+
+See also ModeLineConfiguration.
+
+----
+CategoryDisplay
+CategoryGlossary
+CategoryWindows

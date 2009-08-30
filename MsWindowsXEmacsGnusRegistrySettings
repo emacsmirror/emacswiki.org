@@ -1,0 +1,37 @@
+Save following text in a file with .reg extension:
+
+[new]
+
+<pre>
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\XEmacs Gnus]
+@="XEmacs Gnus"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\XEmacs Gnus\DefaultIcon]
+@="c:\\Program Files\\XEmacs\\XEmacs-21.5-b28\\i586-pc-win32\\gnuclientw.exe,0"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\XEmacs Gnus\Protocols]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\XEmacs Gnus\Protocols\mailto]
+"URL Protocol"=""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\XEmacs Gnus\Protocols\mailto\DefaultIcon]
+@="c:\\Program Files\\XEmacs\\XEmacs-21.5-b28\\i586-pc-win32\\gnuclientw.exe,0"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\XEmacs Gnus\Protocols\mailto\Shell]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\XEmacs Gnus\Protocols\mailto\Shell\Open]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\XEmacs Gnus\Protocols\mailto\Shell\Open\Command]
+@="c:\\Program Files\\XEmacs\\XEmacs-21.5-b28\\i586-pc-win32\\gnuclientw.exe -F -w -e \"(and (gnus) (gnus-url-mailto \\\"%1\\\"))\""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\XEmacs Gnus\Shell]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\XEmacs Gnus\Shell\Open]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\XEmacs Gnus\Shell\Open\Command]
+@="c:\\Program Files\\XEmacs\\XEmacs-21.5-b28\\i586-pc-win32\\gnuclientw.exe -F -w -e \"(and (gnus) (gnus-url-mailto \\\"%1\\\"))\""
+
+
+</pre>

@@ -1,0 +1,32 @@
+portrait:http://polydistortion.net/lib/photos/2007-09-14-s.jpg
+
+I started off with Emacs 18.59 (or thereabouts). I ran XEmacs under
+Linux (and DEC OSF/1, Solaris, etc.) for years, even helping out with
+the XEmacs website for a little while in the late 90's. Mid-2003 I got
+a Mac and left a decade of desktop Linux use behind. It's been ok. I
+get by with MacPorts (when it works), and OS X's Mail and Addressbook
+clients have been mostly bearable. TextMate is kinda cool, but after 4
+years I started feeling like something's missing. I dusted off my
+config, installed the MacPorts carbonized Emacs, and started playing
+around again - it feels like coming home. 
+
+These days, I run Emacs on a Mac (nothing personal, I just don't like
+running X if I don't have to). On the few occasions I show up on
+EmacsChannel, I'm [::cyflea].
+
+
+In my previous (X)Emacs life, I wrote some small hacks, still
+available from http://polydistortion.net/sw/emacs-lisp/ despite being
+of fairly limited use these days:
+
+* http://polydistortion.net/sw/emacs-lisp/goofey.el - a sending (not receiving) interface to Monash University's homegrown IM service.
+* http://polydistortion.net/sw/emacs-lisp/pilot-memo.el - use the <tt>install-memo</tt> command to shoot an Emacs buffer off to your Palm Pilot. hacked up on request by a friend.
+* as a result of doing some integration work with Netscape's Directory, Mail, Calendar and News servers in the latish 90's, I hacked up these:
+** http://polydistortion.net/sw/emacs-lisp/ldap.el - a precursor to [[EUDC]] - all mine did was parse the output of the command-line <tt>ldapsearch</tt> command
+** http://polydistortion.net/sw/emacs-lisp/tm-vcard.el - back when Gnus used TM for MIME-related guff, I wrote something to make it display vcards (of course, all the hard work was done by vcard.el from NoahFriedman). When Gnus changed to its own MIME library around the 5.8.x days, I got a patch accepted into the distribution that provided the same functionality.
+
+[new]
+Welcome to the wiki! :) CarbonEmacsPackage has been my introduction to Emacs on the Mac, and I've been very happy with it. When I first moved to a Mac, I had Fink, later Darwin/Mac Ports – but the older I grow, the less inclined I am to compile stuff myself. -- AlexSchroeder
+
+----
+CategoryHomepage

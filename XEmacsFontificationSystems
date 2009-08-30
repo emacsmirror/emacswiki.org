@@ -1,0 +1,53 @@
+There are four main options for fontification (syntax highlighting) in XEmacs. This page discusses the pros and cons of each. Please feel free to edit this page: just click the "Edit this page" link at the bottom. But, for copyright reasons, please do not copy and paste in any material; original writing only please.
+
+== Plain old font-lock ==
+
+Pros:
+
+* foo
+* bar
+
+Cons:
+
+* foo
+* bar
+
+== fast-lock ==
+
+Pros:
+
+* foo
+* bar
+
+Cons:
+
+* foo
+* bar
+
+See also the [http://www.xemacs.org/Documentation/packages/html/edit-utils_28.html fast-lock documentation].
+
+== lazy-lock ==
+
+Pros:
+
+* Can be configured to re-highlight syntactically correct on multi-line-relevant changes (e.g., starting /* in C-Mode)
+
+Cons:
+
+* Regular wakeups, even if no activity in xemacs (ca. 5% CPU Usage on an Core2Duo 2.x GHz).  This is very annoying.
+
+See also the [http://www.xemacs.org/Documentation/packages/html/edit-utils_29.html lazy-lock documentation].
+
+== lazy-shot ==
+
+Pros:
+
+* foo
+* bar
+
+Cons:
+
+* foo
+* bar
+
+See also the [http://www.xemacs.org/Documentation/packages/html/edit-utils_30.html lazy-shot documentation].

@@ -1,0 +1,6 @@
+One thing that I noticed if you use or run Emacs from both cmd.exe and cygwin, it's best to set %home% (through the usual system properties tab, or by setting the envvar in the script that you use to launch cygwin) to cygwin's $HOME to make sure that your InitFile is read from the same place.
+
+Alternatively, note that cygwin does symlinks, so you can also symlink your cygwin ##$HOME/.emacs## to your emacs ##home/.emacs##, if desired.
+
+----
+CategoryWThirtyTwo

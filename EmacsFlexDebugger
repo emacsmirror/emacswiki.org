@@ -1,0 +1,14 @@
+fdb, the Flex Debugger, is available in the Flex 2 SDK (same 'bin' directory that contains mxmlc etc). Because fdb is modeled
+after gdb (the gnu debugger), emacs already supports it to some degree through gud-mode.
+
+Within emacs, enter M-x gdb ENTER. Emacs will request a command that will be used to start the debugger. I use: fdb -f path/to/my_project.swf
+
+Now emacs should create a new buffer to control fdb and automatically connect to your swf.
+
+You can set a breakpoint by switching to an actionscript buffer, moving point to the desired line, and typing C-x space.
+This will send the breakpoint request to fdb.
+
+As long as the "-f" or "-fullname" option is given to fdb, it should also give a graphical indication of the breakpoint in the source file.
+
+It's also possible to debug swf's embedded in web pages if the debug Flash plugin is installed in the default browser. Tramp may interfere with including URLs in the minibuffer line.  Start the debugger with just M-x gdb , "fdb -f" then enter "r http://path/to/page_embedding_swf.html" at the debug prompt.  You can also just enter "r" in the debugger, right-click in a swf running in the debug player, and choose Connect to attach to a running flash movie.
+ 

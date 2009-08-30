@@ -1,0 +1,281 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Expanded-Common-Match Completion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Regressive Completion]] ||
+
+----
+
+== Progressive Completion ==
+
+Perhaps the best way to explain this feature is to use a familiar analogy.
+Unix or GNU/Linux command `grep' takes a regular-expression ([[regexp]])
+argument, and matches it against lines in files.  A common idiom
+that people use is to chain, or cascade, multiple calls to `grep',
+using ''the output of one as the input to the next''.  For example:
+
+  grep plant *.txt | grep food | grep mineral
+
+The output of the search for "##plant##" is used as the input for the
+search for "##food##", and the output of that search serves as the
+input for the search for "##mineral##".  The order of the three
+component searches can make a difference in terms of performance,
+but not in terms of the result, which is always the set of lines
+in files ##*.txt## that match "##plant##" '''''and''''' "##food##" '''''and''''' "##mineral##", in any
+order. Each of the `grep' operations defines a set of matches,
+and the chain of `grep' operations effects the ''intersection'' of
+those sets.
+
+Of course, you could try to accomplish the same thing with a
+single call to `grep' using a complex regexp.  ''But why would you?''  
+
+Moreover, it is in fact impossible to express such an unordered
+set intersection using a single regexp.  On their own, regular
+expressions cannot express set intersection (conjunction) or
+complementing (negation).  (However, most `grep' programs provide
+a way to obtain the lines that do ''not'' match a regexp.)
+
+The same idea of combining multiple regexp matches is behind the '''Icicles''' feature of '''[::progressive completion]''': instead of trying to come up with a single complex regexp
+that does what you want, try getting there a step at a time:
+
+# Match an input regexp against the set of all possible
+    completions.
+
+# Narrow the set of matched candidates by matching them against
+    another input regexp (or by filtering them with a predicate).
+
+# Narrow those results down by matching them against a third
+    input regexp (or by filtering them with another predicate).
+
+# ... And so on.
+
+
+[:Regexps]
+=== `M-*': Matching Additional Regexps ===
+
+During [[completion]], '''`M-*'''' is bound in the [[minibuffer]] to [[command]]
+'''`icicle-narrow-candidates'''', which prompts for a new regexp and
+matches it against the current set of completion candidates.
+
+For example, suppose that you want to know about an Emacs function that deletes the character to the left of [[point]] (that is,
+backward).  You don't recall if it's `delete-character-back',
+`delete-backward-char', `character-delete-backward', or whatever.order.
+You take a guess that the name contains `delete', `char', and `back' in some 
+
+# `C-h f char S-TAB' displays function names that contain "'''##char##'''".
+
+# `##M-* delete##' narrows that set of function names to those that ''also''
+contain "'''##delete##'''".
+
+# `##M-* back##' narrows the set of matching names further, to
+those that ''also'' contain "'''##back##'''".
+
+This displays a list of functions like this in `*Completions*' (your
+list might be somewhat different):
+
+[new]
+
+     backward-delete-char             backward-delete-char-untabify
+     delete-backward-char             icicle-backward-delete-char-untabify
+     icicle-delete-backward-char      quail-conversion-backward-delete-char
+
+[new]
+
+Then, of course, you can pick one (or you can use `C-M-next'
+repeatedly to view the [[doc string]] of each of these functions in turn -- see [[Icicles - Help on Candidates]]).
+
+You get the idea.  This feature is both very simple to use and
+very useful.  It's easy to appreciate using multiple simple
+matching steps (regexp or not) instead of a single regexp.  ''Try it
+once, and you'll be hooked.''
+
+
+
+[:SuccessiveApproximation]
+=== Successive Approximation... ===
+
+You can use as many invocations of `##M-*##' (and of `##M-&##', described
+in the next section) as you like, in
+any order.  It works with both [[prefix completion]] and [[apropos completion]].
+You can, for instance, first use `TAB' to require the target to start with some
+string, and then use `M-*' to specify other patterns that parts of
+it must also match.  However, it of course makes no sense to
+use `TAB' instead of `S-TAB' ''after'' you use `M-*': once you've said
+that the target must start with "##fo##" there is no sense saying that
+it also starts with "##ti##"! 
+
+As a shortcut, instead of using `S-TAB'
+followed by `##M-*##', you can use '''`S-SPC'''' (command
+'''`icicle-apropos-complete-and-narrow'''') to do the same thing.    You can thus use only `S-SPC', any number of
+times, to choose a candidate by narrowing down the matches.
+
+I call this process of completion by
+successive approximation, or progressively narrowing the candidate
+set, "'''progressive completion'''".  If the name "incremental completion" (= icompletion)
+were not already taken to mean incremental completion ''help''
+(which actually performs ''no'' completion), then that might be a good name for
+this.  This might also be called "stepped", "cascaded", or
+"piecewise" completion.
+
+Another possible name for it would be "multiple completion", but I
+use that to stand for simultaneous (parallel) completion of
+multiple parts of a compound target, which is something different
+(see [[Icicles - Multi-Completions]]).  Progressive completion is a set of mini-completions that
+are wired in series, not in parallel.
+
+Note that when you use `##M-*##' (or `S-SPC') in the minibuffer, it calls
+`completing-read', which creates a ''recursive minibuffer''.  That is,
+the minibuffer depth is increased.    (This is not the case
+for `##M-&##', however.)  In vanilla Emacs, there is no indicator
+of the current minibuffer depth, and this can sometimes be
+disorienting.  Each time you use `##M-*##' you push down one level of
+minibuffer recursion (that is, minibuffer depth is incremented).
+Each time you use, say, `C-g', you pop up one level of minibuffer
+recursion (that is, minibuffer depth is decremented).
+
+If you use library ##mb-depth.el##, which is included with Emacs 23
+and which also works with Emacs 22, ''Icicle'' mode takes advantage of
+this library by indicating the current depth in the minibuffer.  I
+recommend you also use my library <tt>[[mb-depth+.el]]</tt>, which lets you
+customize the form and face of the depth indicator.  See MinibufferDepthIndicator.
+
+If you use my library '''<tt>[[oneonone.el]]</tt>''', then you get visual
+feedback on the current minibuffer depth.  '''OneOnOneEmacs''' gives you a
+standalone minibuffer frame, and it changes the background hue
+(color) of that frame slightly with each change in minibuffer
+depth.  This is especially helpful with '''Icicles''', where use of
+`##M-*##' (or `S-SPC') is common.  See [[Dedicated Minibuffer Frame]].
+
+There is a slight difference in behavior between
+'''Icicles''' commands and some other Emacs commands when you accept
+input after `##M-*##'.  When possible, '''Icicles''' accepts your input and
+passes it immediately to the top level, bypassing any intermediate
+recursive minibuffer levels that are waiting for input.  However,
+Emacs commands that are defined with `interactive' specs, such as
+##(interactive "fFile:")##, do not use `completing-read' or
+`read-file-name', so there is no way for '''Icicles''' to take this
+shortcut with them.  In that case, you will simply need to hit
+`RET' again to accept your input at each recursive minibuffer
+level, until you get back to the top level.  Sorry for this
+inconvenience!  If you are an EmacsLisp programmer, note that
+this is one reason to use `completing-read' and `read-file-name'
+when you write commands that use completion.
+
+Note: If you use progressive completion with file names in Emacs
+20 or 21, `##M-*##' calls `completing-read', not `read-file-name'.
+This is because `read-file-name' does not accept a ##PREDICATE##
+argument before Emacs 22.  The effect is that instead of there
+being a default directory for completion, the current directory at
+the time you hit `##M-*##' is tacked onto each file name, to become
+part of the completion candidates themselves.  Yes, this is a hack.
+It works, but be aware of the behavior.
+
+Progressive completion lets you match multiple regexps, some of
+which could of course be literal substrings, with their regexp
+special characters, if any, escaped.  If you need to match such
+substrings at particular locations in the target completion
+candidate, then progressive completion won't do the job -- it
+matches its component regexps independently.  You can regexp-quote
+(escape) parts or all of your input using '''`##C-M-;##''''
+(`icicle-regexp-quote-input').
+See [[Icicles - Special Characters in Input Patterns#Escaping|Escaping Special Characters]].
+
+
+
+[:Predicates]
+=== `M-&': Satisfying Additional Predicates ===
+
+If you use '''Icicles''', then you will use `##M-*##' very often.  This
+section describes a seldom-used feature that can be useful in
+certain contexts.  If you are new to '''Icicles''' or you are unfamiliar
+with EmacsLisp, then you might want to just ''skim this section'' or
+skip it and come back to it later.
+
+Just as you can use `##M-*##' to narrow the set of candidates by
+matching an additional regexp, so you can use '''`##M-&##'''' (bound to
+'''`icicle-narrow-candidates-with-predicate'''') to narrow by satisfying
+an additional predicate.  The idea is the same; the only
+difference is that, instead of typing a regexp to match, you type
+a predicate to satisfy.
+
+The predicate is a Boolean function of a single completion
+candidate.  At the prompt, you enter its name or its [[LambdaExpression | lambda-expression]]
+definition (anonymous function).  The predicate is used the same
+way as the ##PREDICATE## argument to `completing-read' and
+`read-file-name'.  This means that the candidate argument to the
+predicate is whatever is used in the original call to
+`completing-read' or `read-file-name'; it is not just a string
+such as you see in buffer `*Completions*'.  To provide an appropriate
+predicate, you must be familiar with the kind of candidate
+expected by the [[command]] you invoked before just before `##M-&##'.
+
+For example:
+
+* Command `describe-function' (`C-h f') uses candidates that are
+[[symbol]]s.  An appropriate predicate would accept a symbol as
+argument.
+
+* Command `icicle-search' (`##C-c `##') uses candidates that have this
+form: ##(CONTEXT . MARKER)##, where ##CONTEXT## is a string, the search
+hit (search context), and ##MARKER## is a [[buffer]] [[marker]] that locates
+the ##CONTEXT##.  An appropriate predicate would accept such a
+candidate as argument.
+
+Although entering a lambda expression at a prompt might not seem
+too convenient, you can at least retrieve previously entered
+predicates (using `M-p' and so on).  
+
+You can also use '''`##C-M-&##'''' (bound to
+'''`icicle-save-predicate-to-variable'''') at any time during completion to save the
+current predicate as a string-valued variable.  By default, the
+variable is `icicle-input-string'.  You can then retrieve the
+saved string later, using `##C-=##' at the prompt for `##M-&##'.  The
+current predicate is what is saved.  You can build up a complex
+predicate, and then save it for later use.
+
+The inconvenience of typing an 
+EmacsLisp [[sexp]] must be balanced against the power of applying
+predicates on the fly.  Whereas regexp matching is purely
+syntactic, with a predicate you can perform ''semantic'' tests.
+During search, for instance, you can look not only for a syntax
+match; you can look for matching search candidates that also
+belong to a particular class of objects (e.g. function, [[variable]],
+type) or that satisfy some other semantic property.
+See also [[Icicles - Search Commands, Overview]].
+
+
+
+'''See Also:'''
+
+* [[Icicles - Candidate Sets]] for information about `##C-~##' and for another way to perform a set intersection on sets of candidate completions
+
+* [[Icicles - Search Commands, Overview]] for a way to ''search'' using multiple regexps and predicates -- command `icicle-search' uses the same idea as that behind progressive completion
+
+* [[Icicles - Other Search Commands]], for a way to grep files using
+multiple levels of regexps, and performing selected replacements
+
+* [http://blogs.gnome.org/xan/2007/10/08/gtk-hacking-with-emacs-a-small-trick/ Locane Powder] for someone else's description of the joys of '''Icicles''' progressive completion.
+
+
+----
+
+|| *Previous:*  [[Icicles - Expanded-Common-Match Completion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Regressive Completion]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

@@ -1,0 +1,174 @@
+This page is for tips about using the !WuBi Quail input method by Yuwen Dai and William Xu, available at <http://daiyuwen.freeshell.org/gb/wubi/wubi.html>.
+
+== Aliasing the Input-method Name ==
+
+You can save a few keystrokes when selecting input methods by making "wubi"
+an alias for "chinese-wubi" as follows.
+
+<pre>
+;; make "wubi" an input-method alias for "chinese-wubi".
+;;
+(defun wubi-alias (&rest args)
+  (quail-use-package "chinese-wubi" "wubi"))
+
+(add-to-list
+ 'input-method-alist
+ '("wubi" "Chinese-GB" wubi-alias "WuBi" "WuBi" "wubi"))
+
+</pre>
+
+-- [[JohnFoerch]]
+
+
+== Removing Shortcut Sequences ==
+
+!WuBi contains a wealth of shortcuts for typing multiple characters
+with just a few keystrokes.  As a language learner though, I'm constantly
+using tab completion to try to figure out how to type characters.  Therefore,
+I wanted to remove all the shortcuts because they cluttered up the completions
+list.  The following kludge removes all the shortcuts from the !WuBi quail input
+map.
+
+<pre>
+
+;;; fn will be called with SEQ and CHAR.  Don't pass in a seq.  it is
+;;; for internal use (hack).  note: we were too lazy to support
+;;; non-integer KEYs because we didn't need it for the project at
+;;; hand.
+(defun map-quail-map (fn map &optional seq)
+  (mapc
+   (lambda (x)
+     (let ((key (car x))
+           (alist (cdr x)))
+       (when (and (integerp key) alist)
+         (let ((char (car alist))
+               (more (cdr alist)))
+           (if char
+               (funcall fn
+                        (apply 'string (reverse (cons key seq)))
+                        char))
+           (map-quail-map fn more (cons key seq))))))
+   map)
+  ;; return nil
+  nil)
+
+(let ((quail-current-package (quail-package "chinese-wubi"))
+      (oldmap (quail-map)))
+  (setcar
+   (nthcdr 2 (assoc "chinese-wubi" quail-package-alist))
+   '((nil . nil)))
+  (map-quail-map
+   (lambda (seq char)
+     (let (good)
+       (cond
+         ((or (integerp char)
+              (and (stringp char)
+                   (= 1 (length char))))
+          (setq good (list char)))
+
+         ((vectorp char)
+          (mapcar
+           (lambda (x)
+             (if (or (integerp x)
+                     (= 1 (length x)))
+                 (setq good (cons x good))))
+           char)))
+
+       (when good
+         (quail-defrule
+          seq
+          (apply 'vector (reverse good))))))
+   oldmap)
+  (message "Removed shortcuts from chinese-wubi input method."))
+
+</pre>
+
+-- [[JohnFoerch]]
+
+
+== Buffer-local Default-Input-Method ==
+
+Here is a handy command for making !WuBi the default input method for the
+current buffer.
+
+<pre>
+
+;; command to set chinese-wubi as default-input-method in current buffer only.
+;;
+(defun wubi-buffer ()
+  (interactive)
+  (set (make-local-variable 'default-input-method)
+       "chinese-wubi"))
+
+</pre>
+
+-- [[JohnFoerch]]
+
+
+== Customizing Sequences in your .emacs ==
+
+I prefer to keep all input method customizations in my dot-emacs, so I don't
+use a phrases file.  Without boring you with all the key sequences I have
+customized, here is the basic skeleton of how I customize the input method.
+
+<pre>
+(eval-after-load 'wubi
+  `(let ((quail-current-package (quail-package "chinese-wubi")))
+
+     ;; big tilde
+     (quail-defrule "~" [,(char-to-string 37035) "~"])
+
+     ;; default to long dash
+     (quail-defrule "-" [,(char-to-string 37034) "-"])
+  ))
+</pre>
+
+-- [[JohnFoerch]]
+
+
+== Pinyin Character Lookups ==
+
+Here is a command called `pyw' that lets you look up how to type
+characters in !WuBi by typing them with pinyin in the minibuffer.
+
+<pre>
+
+(defun shortest-string (strings)
+  "Returns the first shortest string from the list STRINGS in a
+way that carefully side-steps the most sensible way, because that
+would entail using a macro from cl.el, and I just don't want to
+deal with it."
+  (let ((shortest nil)
+        (shortestl 0))
+    (dolist (s strings shortest)
+      (let ((sl (length s)))
+        (if (or (null shortest)
+                (< sl shortestl))
+            (setq shortest s
+                  shortestl sl))))))
+
+(defun wubi-lookup (char)
+  (let ((quail-current-package (quail-package "chinese-wubi")))
+    (shortest-string (quail-find-key char))))
+
+(defun pyw (text)
+  (interactive
+   (list
+    (let ((method current-input-method)
+          (input-method-history nil)
+          ;; Hack around viper.
+          ;;
+          (viper-mule-hook-flag nil)
+          (viper-special-input-method nil))
+      (inactivate-input-method)
+      (activate-input-method "chinese-py")
+      (unwind-protect
+           (read-from-minibuffer "pinyin: " nil nil nil nil nil t)
+        (inactivate-input-method)
+        (when method
+          (activate-input-method method))))))
+  (message (mapconcat 'wubi-lookup text " ")))
+
+</pre>
+
+-- [[JohnFoerch]]

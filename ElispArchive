@@ -1,0 +1,28 @@
+The Ohio Emacs Lisp Archive is closed.  Use the ElispArea instead.
+
+ From: ColinWalters
+ Subject: closing of OSU Emacs Lisp Archive
+ To: undisclosed-recipients: ;
+ Date: 02 May 2001 12:15:30 -0400
+ Organization: The Ohio State University Dept. of Computer and Info. Science
+
+Hello,
+
+If you are receiving this message, hopefully you are one of the people
+who has submitted an entry to the OSU Emacs Lisp Archive.  If not, I
+apologize, as my "grep" must have accidentally pulled in your name :)
+
+Due to time constraints and duplication of functionality, I currently
+plan to close the OSU Emacs Lisp archive as soon as [http://savannah.gnu.org Savannah] allows
+for non-GNU programs.
+
+Savannah is a much more advanced technology; it will allow for CVS
+access, web space, etc.  And the [EmacsLispList Emacs Lisp List] and Google seem to be
+much better resources for finding particular EmacsLisp programs.  But I
+currently do plan to keep the OSU archive open until Savannah is fully
+operational, and probably some time after.
+
+I think this change is for the better, but if you feel otherwise,
+please feel free to say so, and why.
+
+Thanks!

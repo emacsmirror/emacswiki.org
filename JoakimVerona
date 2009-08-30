@@ -1,0 +1,56 @@
+Joakim Verona 
+
+Joakim at verona dot se
+
+http://www.verona.se (down atm, will be up future-ish)
+http://wiki.openmoko.org/wiki/User:Jave
+
+
+I've worked on some emacs stuff like:
+
+* Javascript and Ebrowse support for Cedet, CollectionOfEmacsDevelopmentEnvironmentTools
+(Of course hand-held by the illustrious Mr EricLudlam)
+
+* maven2 support for Cedet
+
+* Java support for Cedet
+
+* zen-mode.el, a facility to quickly change between fullscreen and windowed mode for emacs.
+
+* a patch for windows.c such that windows can be tagged to not be deleted by delete-other-windows.
+This is useful for ECB like windows layouts, implemented at the C level.
+
+* a semanticdb backend for java, which moves the responsibility of handling completions
+from jdee to semantic.
+
+* Fixed buglets in various modes such as visual basic mode and wdired mode.
+
+* A package called Lisp:fsdired.el for sorting files with dired.
+
+* EmacsXembed, a patch for embedding gtk widgets in emacs windows!
+
+* A patch for Emacs so ImageMagick can be used to load image files.
+I can already sucessfully load .djvu files.
+
+* dired-sequence.el, dired functions to handle sequentialy named files.
+
+* A patch for emacs to call the libmagic library for file info
+
+I've used Emacs since '88, but I only realised the potential of emacs nirvana in '04 when I migrated nearly all
+my applications to emacs, except multimedia. Slow learner I suppose. Recently I've even been interested in moving 
+musical and graphical workflows to Emacs.
+
+A TODO of some stuff I should fill in:
+
+* BabelMode
+* EmacsCsound
+* EmacsMidi
+* EmacsSvg
+* EmacsMemoryDebugging
+* EmacsOnFreerunner
+
+[new]
+Welcome to the wiki! CEDET scared me when I started fiddling with it... :) -- AlexSchroeder
+
+----
+CategoryHomepage

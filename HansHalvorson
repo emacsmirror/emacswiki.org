@@ -1,0 +1,22 @@
+I find Emacs to be an extremely useful tool for academic work.   I edit TeX in AUCTeX mode, manage BibTeX files in BibTeX mode, read and write email using WanderLust, print envelopes, etc in Emacs. 
+
+My Emacs Lisp projects:
+
+* [[amazon.el]]
+
+* [[bibsnarf.el]]
+
+* [[env-print.el]]
+
+* [[gradebook.el]]
+
+
+
+
+
+
+
+
+
+----
+CategoryHomepage

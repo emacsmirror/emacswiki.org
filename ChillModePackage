@@ -1,0 +1,280 @@
+This page describes package Lisp:chill-modee.el, by ViniciusJoseLatorre.
+
+: .:: ''v3.1'' ::.
+
+*Warning:* This is a very old package.
+
+
+== Introduction ==
+
+ChillModePackage facilitates editing of CHILL code by automatically expanding
+syntax constructs and handling the indentation of lines of code.  Besides a few
+ideas of our own we tried to stay as close as possible to the philosophy of
+cc-mode.  Please, refer to the GNU Emacs manual, /Editing Programs/ chapter.
+
+ChillModePackage is based on CCITT Z.200/92 recommendation (COM X-R 34-E).
+
+ChillModePackage was tested on GNU Emacs 19.33.1, 19.34.1 and 20.3.1, there is
+no warranty that will run properly on older version or on other Emacs variants
+(XEmacs, or any other).
+
+
+== Installation ==
+
+To use ChillModePackage, add the following to your ##~/.emacs## file:
+
+   (autoload 'chill-mode "chill-mode" "CHILL Editing Mode" t)
+   (setq auto-mode-alist
+         (append '(("\\.chl$" . chill-mode) ; CHILL program source
+                   ("\\.spc$" . chill-mode)) ; CHILL specification source
+                  auto-mode-alist))
+
+You may want to customize certain ChillModePackage variables (e.g. for
+controlling the indentation).  The best place to do this is in the mode hook
+variable called `chill-mode-hooks'.  See the Emacs manual (/Editing Programs/
+chapter) and the ChillModePackage's documentation for more information.
+
+It is recommended to compile ChillModePackage, because it is used a lot of
+macros on sentence indentation, forward sentence and backward sentence.
+
+
+== Syntax Structure Expansion ==
+
+The syntax structure expansion is made when user type an upper case keyword
+(for example: ##IF##) followed by a punctuation (space, tab, newline,
+##=##, ##<##, etc.), for example:
+
+: 1) type ##"IF "##
+
+: 2) the following expansion is made:
+:: ##IF  THEN##
+:: ##FI;##
+: cursor is positioned between strings ##"IF "## and ##" THEN"##
+
+If user type ##"if "##, no expansion occurs; lower case keyword may be
+expanded through `chill-upper-keyword' (##C-return##) with cursor on
+the keyword or just at right of the keyword.
+
+It is also possible to type all in lower case, then select the proper region
+and turn all keyword to upper case through `chill-upper-region'
+(##M-return##).
+
+See also documentation for `chill-upper' (##M-C-return##).
+
+
+== Indentation ==
+
+Line indentation is made through `chill-indent-line' (##TAB## or
+##NEWLINE##).
+
+See also documentation for `chill-indent' (##C-tab##).
+
+Sentence indentation is made through `chill-sentence-indent-parser'
+(##M-C-q##), this command indents a complete CHILL action at once,
+that is, if sentence indentation is activated in the beginning of an
+##IF## action the indentation proceeds until find the corresponding
+##FI##.
+
+The following variables control indentation behavior:
+
+; `chill-indent-comment' : Non-##nil## value indicates to indent
+##/*...*/## comment.
+
+; `chill-tab-always-indent' : Controls the operation of the ##TAB##
+key.
+: Accept the following values:
+: ##t##
+:: hitting ##TAB## always just indents the current line.
+: ##nil##
+:: hitting ##TAB## indents the current line if point is at the left
+margin or in the line's indentation, otherwise it insert a real
+##TAB## character.
+: any other
+:: ##TAB## is inserted only within literals -- defined as comments
+and strings -- , but line is always reindented.
+: Note that indentation of lines containing ##/*...*/## comments is
+also controlled by the `chill-indent-comment' variable.
+
+; `chill-group-level' : Indentation of CHILL actions within group delimited by
+##(...)## and ##[...]##.
+
+; `chill-indent-level' : Indentation of CHILL actions within surrounding block.
+
+; `chill-else-level' : Indentation of the ##ELSE##/##ELSIF##
+lines within the surrounding ##IF## (or ##CASE##, if it is
+##ELSE## line).
+
+; `chill-label-offset' : Extra indentation given to a line which preceding line
+is a label.
+
+; `chill-alternative-offset' : Extra indentation given to a line which is an
+alternative of ##CASE##, ##DELAY## ##CASE##,
+##RECEIVE CASE##, or ##ON## structures.
+
+; `chill-continued-statement-offset' : Extra indentation given to a line that
+does not begin a new action, like the lines beginning with ##WHILE##,
+##FOR##, or ##WITH##.
+
+The default values are:
+
+   chill-indent-comment              t
+   chill-tab-always-indent           'indent
+   chill-group-level                 1
+   chill-indent-level                3
+   chill-else-level                  0
+   chill-label-offset                2
+   chill-alternative-offset          0
+   chill-continued-statement-offset  2
+
+See documentation for `chill-set-style' and `chill-add-style'.
+
+
+== Line Comment ==
+
+Line comment is defined on CHILL language since CCITT Z.200/1989, but some
+CHILL implementation may not define it.
+
+The variable `chill-line-comment' specifies which string is the line comment
+delimiter (see documentation on the code).  The default line comment is
+##"--"##, like Ada.
+
+See below for filling comment paragraph.
+
+
+== Quick Help Feature ==
+
+When editing a text that contains some action which syntax is not so easy, or a
+built in procedure which has a lot of parameters, it displays a window that has
+a tip of syntax action or built in procedure parameters.
+
+The variable `chill-quick-help' specifies if quick help feature is on
+(non-##nil## value) or off (##nil## value).  The default is
+on (non-##nil##).
+
+See documentation for `chill-quick-help-alist'.
+
+
+== Other Commands ==
+
+; /Index/ (##C-c C-x##) : Create an index menu on MenuBar using imenu.
+
+; /Fill Comment Paragraph/ (##C-c C-j##) : Fills the current comment
+paragraph.
+: Only for line comments (like ##--...end of line##).
+
+; /Justify Comment Paragraph/ (##M-q##) : The same as //Fill Comment
+Paragraph// with justification.
+
+; /Postfix Comment Paragraph/ (##M-Q##) : The same as //Justify Comment
+Paragraph// with appending of a postfix.
+
+; /Hungry Delete Minor Mode/ (##C-c C-v C-d##) : The same as on
+cc-mode.
+: When this minor mode is on, the delete key eliminate at once all preceding
+spaces, tabs and newlines.
+
+; /Send Bug Report/ (##C-c C-v C-b##) : Send a bug report via email to
+ChillModePackage's maintainer.
+
+; /End of Reach/ (##M-C-e##) : Go to the end of current reach, that
+is, to the end of current procedure, process, module, or region.
+
+; /Beginning of Reach/ (##M-C-a##) : Go to the beginning of current
+reach, that is, to the beginning of current procedure, process, module, or
+region.
+
+; /Forward Sentence/ (##M-e##) : Go to the end of current command, for
+example, if it is at beginning of ##IF## command, goes to
+corresponding ##"FI;"##.
+
+; /Backward Sentence/ (##M-a##) : Go to the beginning of current
+command, for example, if it is at end of ##IF## command
+(##"FI;"##), goes to corresponding ##"IF"##.
+
+; /Forward Sibling/ (##M-E##) : It is like /Forward Sentence/, but
+stops at intermediate parts of ##IF##, ##CASE##, ##DELAY
+CASE##, ##RECEIVE CASE##, ##AFTER##, ##AT##,
+##CYCLE##, ##ON## handler, ##MODULE##,
+##PROC##, ##PROCESS##, and ##REGION##, that is,
+stops at ##TIMEOUT##, ##ELSE## and ##ELSIF##
+branchs, and nested ##MODULE##, ##PROC##,
+##PROCESS## or ##REGION##.
+
+; /Backward Sibling/ (##M-A##) : It is like /Backward Sentence/, but
+stops at intermediate parts of ##IF##, ##CASE##, ##DELAY
+CASE##, ##RECEIVE CASE##, ##AFTER##, ##AT##,
+##CYCLE##, ##ON## handler, ##MODULE##,
+##PROC##, ##PROCESS##, and ##REGION##, that is,
+stops at ##TIMEOUT##, ##ELSE## and ##ELSIF##
+branchs, and nested ##MODULE##, ##PROC##,
+##PROCESS## or ##REGION##.
+
+; /Mark Block/ (##M-C-h##) : Go to the beginning of current block,
+that is, do a /Backward Sentence/.
+: Do a mark of end of current block.
+
+; /Show All Comments/ (##C-c C-h C-s##) : Show all comment
+##/*...*/##.
+
+; /Hide All Comments/ (##C-c C-h C-h##) : Hide all comment
+##/*...*/##.
+
+; /Comment Region/ (##C-c C-h C-r##) : Comment all region.
+: It is used the following mapping:
+: - ##/*{{...}}*/## is placed at region border
+: - ##/*...*/## comment is replaced by ##{{...}}##
+: - ##/*{{...}}*/## comment inside region is replaced by
+##{{...}}##
+: - ##{{...}}## remains intact
+
+; /Uncomment Region/ (##C-c C-h C-u##) : Uncomment all region.
+: It is used the following mapping:
+: - ##/*{{...}}*/## comment delimiters are eliminated
+: - ##{{...}}## is replaced by ##/*{{...}}*/##, if have
+nested ##{{...}}##; otherwise, is replaced by ##/*...*/##
+: - nested ##{{...}}## remains intact
+
+
+== Credits ==
+
+Some features were adapted from other packages.
+
+Many thanks to all people who made the following packages:
+
+: cc-mode.el
+:: A lot of features/ideas:
+:: * ##TAB## command,
+:: * hungry delete/auto insert minor mode,
+:: * style indentation setting
+: ada-mode.el
+:: Fill comment paragraph (##--...$##)
+: hideif.el
+:: Show/Hide comments (##/*...*/##)
+
+Many thanks to Gustavo Chaves <_gustavo_@_cpqd_._com_._br_> who made the very
+first ChillModePackage.
+
+
+
+== To Do ==
+
+* full support Auto Insert Minor Mode from cc-mode.
+* better treatment for preprocessor pragmas.
+* support for XEmacs.
+
+
+== Bugs ==
+
+To submit bug reports, type "C-c C-v C-b".
+
+Feel free to send any comments, compliments, or complaints to the maintainer.
+
+
+== See Also ==
+
+* ChillMode
+
+
+----
+CategoryModes,
+ProgrammingModes

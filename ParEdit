@@ -1,0 +1,72 @@
+ParEdit mode (<code>paredit.el</code>) is a minor mode for performing
+structured editing of S-expression data.  The typical example of this 
+would be Lisp or Scheme source code.  
+
+ParEdit helps keep parentheses balanced and adds many keys for 
+moving s-expressions and moving around in S-expressions.
+
+The latest stable version is available at
+[http://mumble.net/~campbell/emacs/paredit.el paredit.el].  
+[http://mumble.net/~campbell/emacs/paredit.html Reference Table].  
+[http://mumble.net/~campbell/emacs/paredit.release Release Notes].
+
+Here is one page cheatsheet: PareditCheatsheet
+
+The latest development version (*recommended* /by whom?/) is available at
+[http://mumble.net/~campbell/emacs/paredit-beta.el paredit-beta.el]
+[http://mumble.net/~campbell/emacs/paredit-beta.html Reference Table].  
+
+A spinoff of ParEdit (by the same author) is also now available in the
+current CVS version of EdWin, MIT Scheme's Emacs clone. Type <code>M-x
+paredit-mode RET</code> to enable it, or add the following code to
+your <code>.edwin</code> file to enable it automatically in the Scheme
+mode:
+
+<pre>
+(add-event-receiver! (ref-variable scheme-mode-hook)
+  (lambda (buffer)
+    (enable-buffer-minor-mode! buffer (ref-mode-object paredit))))
+</pre>
+
+(You can substitute other modes for <code>scheme-mode</code> also.)
+
+== Activate it automatically ==
+
+This is what I am currently using to activate paredit in EmacsLispMode
+and LispMode (plus SlimeMode too):
+
+<pre>
+(mapc (lambda (mode)
+	(let ((hook (intern (concat (symbol-name mode)
+				    "-mode-hook"))))
+	  (add-hook hook (lambda () (paredit-mode +1)))))
+      '(emacs-lisp lisp inferior-lisp))
+</pre>
+
+(Ok actually I commented it out in my DotEmacs. To know the reasons
+why, look at #Questions)
+
+== Questions ==
+
+I downloaded paredit a long time ago but I did not succeed in using it
+daily. I have two questions here:
+
+ 1. What is really *useful* with paredit that we can't get with
+ standard skeletons ?
+
+[new] Check out the ParEdit reference table mentioned above, especially the parts "Depth-Changing Commands" and "Barfage & Slurpage". Skeletons are like templates, they're static. ParEdit can modify the structure of Lisp code. So basically, they have different purposes. -- PeterBarabas
+
+[new] 2. How do you delete a parenthesis ? I often end up with unbalanced
+ parentheses when coding something (without paredit) and activating
+ paredit prevents me from deleting the leading parenthesis.
+
+[new] It takes a bit of getting used to, but after that you'll never end up with unbalanced parentheses. Just use ParEdit's commands, e.g. paredit-open-parenthesis, paredit-wrap-sexp instead of manually typing/editing parentheses. ParEdit really makes transforming Lisp code easy. -- PeterBarabas
+
+[new] Expression validity isn't enforced with C-w; I find that's the easiest way to make a quick fix that paredit won't like.
+
+[new] ##C-u DEL## falls back to `backward-delete-char'. Similarly, you can insert single parentheses with ##C-q (## and ##C-q )## -- YannHodique
+
+[new] Works like a charm ! -- XavierMaillard
+
+----
+CategoryCode CategoryEditing CategoryParentheses.

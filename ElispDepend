@@ -1,0 +1,88 @@
+==What is elisp-depend.el ?==
+ElispDepend is mode that parse depend libraries of elisp file. And generate appropriate information for depend libraries.
+
+==Install==
+* Load file:
+: Make file Lisp:elisp-depend.el (Download:elisp-depend.el) in your load-path, and put
+{{{
+        (require 'elisp-depend)
+}}}
+: in ~/.emacs.
+* Setup directory:
+: If you install emacs at path "/usr/share/emacs/", please ignore below step. 
+: Otherwise you need setup your emacs directory with option `elisp-depend-directory-list', like below:
+{{{
+        (setq elisp-depend-directory-list '("YourEmacsDirectory"))
+}}}
+: And simplest way to setup is by:
+:: M-x customize-group RET elisp-depend RET
+
+==Usage==
+* elisp-depend-insert-require:
+: Insert appropriate depend libraries code at cursor.
+
+* elisp-depend-insert-comment:
+: Insert appropriate depend libraries comment at cursor.
+
+==Describe==
+Default, this package will use function `symbol-file' to get depend file with current symbol. 
+And then use `featurep' to test this file whether write `provide' sentences for feature reference.
+If `featurep' return t, generate depend information as "(require 'foo)" format.
+If `featurep' return nil, generate depends as "(autoload 'foo "file")" format.
+
+This packages will always return depend information as `autoload'
+format if a feature not write `provide' information in source code.
+
+==Implement==
+ElispDepend will loop all symbol in current buffer, and try to get appropriate depend information.
+But this's unnecessary check all symbol, example symbol in string, comment...etc.
+
+So i describe some detail in function `elisp-depend-map':
+* (elisp-depend-skip-string)
+: Will skip all symbol in string for fast check. If sense point in string, this function will jump end of string.
+* (elisp-depend-skip-comment)
+: Will skip all symbol in comment for fast check. If sense point in comment, this function will jump end of comment.
+* (elisp-depend-skip-defun-name-and-argument)
+: Will skip all symbol in function argument-list, if current symbol is "defun", this function will jump end of argument-list.
+* (not (elisp-depend-let-variable-p))
+: Make sure symbol is not local variable define in "let" or "let*".
+* (elisp-depend-filter-pseudo-function-symbol symbol)
+: Default, some function and variable have some name, example i use "buffer" with local variable, but have a function named "buffer" icicles-cmds.el. So this function is test a symbol whether use as function when found same name function.
+: This function will check whether have ' or ( at front of test symbol, otherwise skip this symbol.
+* (not (elisp-depend-build-in-function-p symbol))
+: Default some function is build-in function, such as "assoc". 
+: This function use `symbol-function' to check this, if function define as format "#<subr foo>", skip this build-in function.
+: For example, function define of "assoc" is "#<subr assoc>", so this function will skip symbol "assoc".
+* (not (elisp-depend-match-build-in-library filepath))
+: `elisp-depend-map' will get all depend information for current buffer, including the libraries the load along with Emacs.
+: So this function will use value of `elisp-depend-directory-list" to filter those libraries.
+
+==Bug==
+* This still have bug when some local-variable symbol have same name with exist function, then it will generate unnecessary depend information.
+
+==Comment==
+[new:DrewAdams:2009-01-11 17:45 UTC]
+''Very nice.'' You might also want to relate it to Lisp:lib-requires.el. IIUC, this is generally complementary, but there is also some overlap. One important difference seems to be the method of determining dependencies: ##elisp-depend.el## does not rely on `load-history'; instead, it parses the buffer code. -- DrewAdams
+
+[new]
+: Yep, before i write Lisp:elisp-depend.el, i try to use Lisp:lib-requires.el, and i found it use `load-history' to get depend information, and i found sometimes those information is not correct when i modified source code.
+: So i write those code to parse valid symbol at current buffer, and return correct depend information file *real* need. -- AndyStewart
+
+[new:DrewAdams:2009-01-12 05:38 UTC]
+:: Actually, I see now that I was mistaken. Like ##lib-requires.el##,  ##elisp-depend.el## relies on `load-history' -- that is how `symbol-file' is defined. The difference is that `symbol-file' (hence ##elisp-depend.el##) considers `autoloaded' definitions too (not just loaded libraries) as dependencies. -- DrewAdams
+
+
+[new:DrewAdams:2009-01-12 05:38 UTC]
+Consider mentioning in the doc string of `elisp-depend-insert-require' how to use it: If you want a `require', make sure the library is loaded; otherwise you get an `autoload'. And perhaps mention `elisp-depend-directory-list' there also. That variable is nice, because code can bind it to affect the behavior of `elisp-depend-insert-require' and `elisp-depend-insert-comment'.  -- DrewAdams
+
+[new]
+: Thanks, i have write those information at this page and source code. -- AndyStewart
+
+[new:DrewAdams:2009-01-12 05:38 UTC]
+I added something about ##elisp-depend.el## at LibraryDependencies and AutomaticFileHeaders. Feel free to correct or embellish it. -- DrewAdams
+
+: Thank you very much. :) -- AndyStewart
+
+
+----
+CategoryCode

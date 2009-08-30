@@ -1,0 +1,18 @@
+A friend of mine asked me this over IM:
+
+from the beginning of the line (or before the proper indent level), the TAB key will indent a line to the proper stop - but beyond it on a given line, it has no effect. I'd like to just advance another tab stop. what do I have to set?
+
+Here's my solution, which someone might find useful:
+
+ (defun ted-tab-dwim ()
+   "If point is before the code on this line, indent this line.
+ Otherwise, insert a TAB."
+   (interactive)
+   (let ((pivot (save-excursion (back-to-indentation) (point))))
+     (if (< pivot (point))
+         (call-interactively 'self-insert-command)
+       (call-interactively 'indent-for-tab-command))))
+
+----
+
+CategoryIndentation

@@ -1,0 +1,44 @@
+The ##/back## command sends a simple ##/away## to the server to tell it that you're back.
+Typing ##/away## to tell the server that you're back is a bit weird.
+
+This code depends on [[rcircAwayTime]].
+
+<pre>
+(defvar rcirc-away-time '()                                                                                                                      
+  "Time at which I was marked as away.")                                                                                                         
+                                                                                                                                                
+(defvar rcirc-show-away-time t                                                                                                                
+  "If non-nil, display how long we were away.")
+
+(defun-rcirc-command back (args)                                                                                                                 
+  "Cancels my /AWAY state on all channels."                                                                                                      
+  (if (null rcirc-away-time)                                                                                                                     
+      (rcirc-do-notice "+++ You are not marked as being away.")                                                                                  
+      (rcirc-cmd-away "")))
+</pre>
+
+Now you will be back just by typing /back in a chan buffer
+
+You will also need this:
+
+<pre>
+(defun rcirc-handler-305 (process sender args text)                                                                                              
+  "RPL_UNAWAY: You are no longer marked as being away"                                                                                           
+  (let ((target (car args)))                                                                                                                     
+    (rcirc-do-notice "+++ You are no longer marked as being away!")                                                                              
+    (when rcirc-show-away-time                                                                                                                   
+      (rcirc-do-notice (format "You have been away for %s." (duration-to-string))))                                                              
+    (setq rcirc-away-time '())                                                                                                                  ))                                                                               
+                                                                                                                                                 
+(defun rcirc-handler-306 (process sender args text)                                                                                              
+  "RPL_NOWAWAY: You have been marked as being away"                                                                                              
+  (let ((target (car args)))                                                                                                                     
+    (rcirc-do-notice "+++ You have been marked as being away!")                                                                                  
+    (setq rcirc-away-time (current-time))                                                                                                       ))                                
+</pre>
+
+These two handlers do not exist (yet) in rcirc.
+
+----
+CategoryChatClient [[rcirc]]
+

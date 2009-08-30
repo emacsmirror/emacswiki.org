@@ -1,0 +1,28 @@
+Here is a little grep list that will search a list of strings for matches -- and it will recurse into sublists.
+
+ (defun grep-list (pattern input)
+   "Grep for regexp PATTERN in INPUT.
+ Each element of INPUT must be either a string or a list of string.
+ grep-list will recurse through these lists."
+   (let ((things input)
+	 result thing)
+     (while things
+       (setq thing (car things)
+	     things (cdr things))
+       (cond ((listp thing)
+	      (setq result (append (grep-list pattern thing) result)))
+	     ((stringp thing)
+	      (when (string-match pattern thing)
+		(setq result (append (list thing) result))))
+	     (t (error "neither string nor list item"))))
+     (nreverse result)))
+
+Some examples:
+
+ (grep-list "alex" '("this" "is" "alex" "and" "alexa"))
+   => ("alex" "alexa")
+ (grep-list "alex" '("this" "is" "alex" ("and" "some" "alex2" "stuff") "alexa"))
+   => ("alex" "alex2" "alexa")
+
+----
+CategoryRegexp

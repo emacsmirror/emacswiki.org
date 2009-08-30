@@ -1,0 +1,53 @@
+== Installing a new file ==
+
+Make sure you have a local directory where you put elisp files.  I use ~/elisp, for example.
+
+Make sure this directory is listed in your `load-path' variable.  I use the following statement in my ~/.emacs file to make sure it is:
+
+    (add-to-list 'load-path "~/elisp")
+
+XEmacs documentation (21.4 (patch 14)) for load-path says: "Note that the elements of this list *may not* begin with '~', so you must call <code>expand-file-name</code> on them before adding them to this list." So, for [[XEmacs]], the above should be:
+
+    (add-to-list 'load-path (expand-file-name "~/elisp"))
+
+You can read more about the `load-path' at LoadPath. You can also add the needed paths to the <code>EMACSLOADPATH</code>
+environment variable, if you prefer.
+
+== Installing Modes ==
+
+If the code in the elisp file is supposed to be a mode for files whose names match a pattern, see AutoModeAlist.
+If the code in the elisp file is supposed to be a mode for files who are run by certain interpreters, see InterpreterModeAlist.
+
+== Installing bigger packages ==
+
+For bigger packages such as [[Gnus]] or [[BBDB]], you usually install them somewhere, run ''./configure; make; make install'' and then figure out where the package got installed.
+Then add that directory to your ''load-path''.
+
+Some packages can be run uncompiled.  In that case, just unpack them, and add the corresponding directory to your ''load-path''.
+
+Example:
+
+    (add-to-list 'load-path "/home/alex/src/erc")
+    (require 'erc-auto)
+    (autoload 'erc "erc")
+
+This requires some knowledge about the package, of course.  In the above case, for example, I
+knew that erc-auto defines lots of autoloads, but does not autoload ''erc'' itself (use ''erc-select''
+to connect to network)...
+
+== Installing packages from Internet ==
+
+There exist hundreds of Emacs Lisp libraries but GNU Emacs does not contain a package manager allowing users to easily install those libraries and keep them up-to-date.
+
+There is a list of package managers on CategoryCode that have been created to fill this gap.
+
+Some packages exist whose only purpose is to update another single package.
+
+* Lisp:icicles-install.el -- Download and optionally byte-compile Icicles
+
+See WishList for discussion of adding package management to Emacs.
+
+----
+CategoryDotEmacs.
+
+

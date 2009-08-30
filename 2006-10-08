@@ -1,0 +1,9 @@
+Recent SPAM to the site added a long string of numbers, to which there was an attempt to block such SPAM by adding strings of numbers as StrangeBannedContent.  Unfortunately, number strings appear on many existing pages on EmacsWiki.[EmacsWiki:search=%22%5Cd%7B11%7D%22]
+
+I discovered this while trying to add a link to a newsgroup post which had a message ID that contained a long string of numbers.  There's probably other links to newsgroup posts that also contain long number strings.[EmacsWiki:search=selm=] -- AaronHawley
+
+[new]
+I see. I've commented the regexp for the moment. Perhaps we'll find another pattern involving newlines or always at the bottom of the page, then I'll try again. -- AlexSchroeder
+
+[new]
+Thanks.  I think you could put a caret at the beginning of the regular expression and it wouldn't cause false positives. -- AaronHawley

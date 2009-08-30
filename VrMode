@@ -1,0 +1,7 @@
+An elisp library (with a C++ glue program to talk to Dragon's API) for connecting Dragon Naturally Speaking to GNUemacs.
+
+http://emacs-vr-mode.sourceforge.net/
+
+----
+
+CategoryAccessibility

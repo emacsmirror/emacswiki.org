@@ -1,0 +1,23 @@
+This is a set of functions intended to process SQL statements with placeholders inside them. 
+
+Placeholders should look like ##:name##. For each placeholder in statement user is asked for a value, and placeholder is replaced with that value, quoted with apostrophes. Which is not of much elegance, but works pretty well most times.
+
+To use it, install file somewhere in your ##load-path## and add next code to your ##.emacs## file:
+
+<pre>
+(eval-after-load "sql"
+  '(load-library "sql-with-placeholders"))
+
+(add-hook 'sql-mode-hook (lambda nil
+                           (local-set-key [(control c) (control b)] 'sql-send-buffer-with-placeholders)
+                           (local-set-key [(control c) (control c)] 'sql-send-paragraph-with-placeholders)
+                           (local-set-key [(control c) (control r)] 'sql-send-region-with-placeholders)))
+
+</pre>
+
+Download: Lisp:sql-with-placeholders.el
+
+Hope this helps, AndreyBalaguta
+
+----
+CategorySql

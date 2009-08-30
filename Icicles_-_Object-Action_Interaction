@@ -1,0 +1,241 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Complex Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Anything]] ||
+
+----
+
+== Icicles OO: Object-Action Interaction ==
+
+Here's another crazy '''Icicles''' feature: Instead of choosing a
+function (e.g. [[command]]) and then the object to apply it to, choose
+the object first and then the function.
+
+The first thing to say about this feature is that Emacs is not
+really designed for this, so it's not feasible to do this in a
+entirely satisfactory way.  In particular, there is no practical
+way, given an object, to find all of the functions that apply to
+it, in order to allow all of those functions, and only those functions, as [[completion]] candidates.
+
+The second thing to say is that there are several ways that '''Icicles'''
+helps you operate on an object that you have already chosen:
+
+* apropos completion -- (1) choose an object type by name, (2) choose a function, (3) choose the target object
+
+* alternative action by type, during completion -- (1) choose a
+target object, (2) choose a function appropriate for the
+object's type.
+
+* '''`M-RET'''' during completion -- (1) choose a target object, (2) choose any function
+
+* '''`icicle-object-action'''' and '''`icicle-anything'''' -- (1) choose an object type by name, (2) choose the target object, (3) choose a function
+
+
+As a special case, if you use library [[Anything]] (<tt>[[anything.el]]</tt>),
+then `icicle-object-action' lets you apply one or more Anything
+actions defined for the object.  See [[Icicles - Anything]] for more information.
+
+
+
+
+=== Apropos Completion ===
+
+You can use [[apropos completion]] with `M-x' to narrow the set of
+possible commands to those that have a given object type in their name.  You
+choose the command before the individual object, but you at
+least choose the object type first (which narrows the set of
+possible objects).
+
+If you use '''Icicles''', you already use apropos completion this way,
+but you might not have thought about it in these terms.  If you
+want to invoke some command on a [[buffer]], you might start by typing
+`M-x buffer S-TAB' or `M-x buff S-TAB'.  This is simple, but it
+really does get you most of the way toward object-action
+interaction.  And you can of course then use [[progressive completion]] (`##M-*##') to filter the matching commands for additional
+object-type names; for example `##M-* window##' keeps only those
+commands whose names contain both `buffer' and `window'.
+
+Of
+course, this approach requires the command name to actually advertise
+truthfully the object types that it operates on.  There are false
+positives and true negatives, but Emacs is generally quite helpful
+in this respect.
+
+See Also: [[Icicles - Apropos Completions]].
+
+
+
+
+
+[:AlternativeActionAsOO]
+=== Alternative Action as OO ===
+
+As explained in
+[[Icicles - More About Multi-Commands#AlternativeActions|Icicles - Alternative Actions]], many '''Icicles''' commands, as their alternative action (e.g. `C-S-RET'), prompt you to choose an action to be applied to
+the current completion candidate.  The actions you can choose are
+all appropriate functions for the current type of object
+(candidate).  If you use library [[Anything]] (see below), then any
+actions defined for the current type by Anything are included.
+
+See Also: [[Icicles - More About Multi-Commands#AlternativeActions|Icicles - Alternative Actions]].
+
+
+
+
+
+
+
+[:M-RET]
+=== M-RET ===
+
+'''`M-RET'''' (`icicle-candidate-read-fn-invoke') during completion provides a typeless object-action interaction, which is always
+available.  This is similar to the action choice provided for some
+commands by `C-S-RET', except that there is no notion of the
+current object type -- you can choose from among all EmacsLisp
+functions.
+
+
+Whenever
+you [[Icicles - Cycling Completions|cycle]] through completion candidates, `M-RET' enters a
+recursive edit that prompts you for a function to apply to the
+current candidate.  '''`M-mouse-2''''
+does the same thing.  For example, if the current candidate is a
+buffer named `##foo.el##', then `M-RET' prompts you for a function to
+apply to it.  (Actually, the function is applied to the 
+candidate, which is the buffer ''name'' in this case, but many
+functions accept an object name in place of the object.)
+
+The function you enter can be anything, including a [[lambda expression]] that accepts an argument of the appropriate type.  The
+function is read with ([[lax]]) completion.  It is up to you to choose
+a function that is appropriate for the current object type.
+
+If you use a [[prefix argument]] (`C-u M-RET' or `C-u M-mouse-2'),
+then the result of the function application is pretty-printed.
+Otherwise, the function is called for effect only.
+
+
+
+
+
+[:icicle-object-action]
+[:icicle-anything]
+=== `icicle-object-action' and `icicle-anything' ===
+
+Another way that '''Icicles''' helps with object-action interaction is
+provided by command '''`icicle-object-action''''.  This reads an
+object-type name ("''what''"), with completion; then it reads an object of that
+type ("''which''"), with completion; then it reads a function (name or lambda
+expression) to apply to the object ("''how''"), with (lax) completion.
+Again, use a prefix argument if you want to pretty-print the
+result.
+
+'''`what-which-how'''' is an alias for command `icicle-object-action'.
+It is easy to remember, taking its name from the successive input prompts: "''What?''" - a file.  "''Which?''" - ##icicles.el##.  "''How?''" `open'.
+Another alias for the same command is '''`a'''', because the command acts on '''a'''
+file, '''a''' buffer, '''a''' symbol, '''a''' process, and so on. The first thing it does is prompt you for the type of object, so you do `##M-x ##'''##a##''' ##RET## ''##buffer##'' ', `##M-x ##'''##a##''' ##RET## ''##symbol##'' ', and so on. 
+
+The aliases `what-which-how' and `a' are just convenience commands.  They are
+defined only if [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-define-alias-commands-flag|icicle-define-alias-commands-flag]]</tt>'''' is
+non-`nil'.  Two related commands are also defined only if this option is non-`nil':
+
+* `file' - same as `##a RET file##'
+* `buffer' - same as `##a RET buffer##'
+
+For example: `M-x file RET'.  You are prompted for a file to act
+on, and then for the action to use.
+
+[:AUCTeXbug]
+[new:DrewAdams:2007-10-06 21:36 UTC]
+'''Note:''' If you use AUCTeX, then be aware of an %%AUCTeX%% bug that
+causes problems if `icicle-define-alias-commands-flag' is non-`nil'.
+Here is the bug description, filed 2007/10/05 by Bjorn Haagensen:
+http://lists.gnu.org/archive/html/bug-auctex/2007-10/msg00006.html.
+The problem is that %%AUCTeX%% mistakenly invokes the '''Icicles''' `file'
+command, in an inappropriate context.  %%AUCTeX%%
+does not define any function `file' when it is loaded, but it
+invokes one, if defined.  This appears to be a name-capture
+problem.  Since there is no `file' function defined when '''Icicles'''
+is loaded, '''Icicles''' defines its command.  %%AUCTeX%% developers
+will no doubt fix this bug.  Until then, %%AUCTeX%% users can avoid
+the bug by setting `icicle-define-alias-commands-flag' to `nil'.
+[new]
+
+The "''type''" of an object is one of these:
+
+: '''a.''' A type defining an entry in user option '''`<tt>[[Icicles - Customization and General Tips#icicle-predicate-types-alist|icicle-predicate-types-alist]]</tt>''''.  These are type ''predicates'', such as `bufferp', `keywordp', or `atom'.
+
+: '''b.''' The `type' of an [[Anything]] source, or its `name' if it has no
+ `type'.  This is available only if you use library
+ <tt>[[anything.el]]</tt>.
+
+: '''c.''' A type defining an entry in user option '''`<tt>[[Icicles - Customization and General Tips#icicle-type-actions-alist|icicle-type-actions-alist]]</tt>''''.
+
+'''Icicles''' completion is available for each prompt: the type, the
+object, and the action to apply to the object.  Types defined by
+Anything are highlighted in buffer `*Completions*' using [[face]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-special-candidate|icicle-special-candidate]]</tt>''''.  In the case of an Anything type, you
+can use [[multi-command]] features to act on multiple objects in
+multiple ways, all within a single `a' invocation.
+See [[Icicles - Anything]] for more information about using
+Anything types.
+
+
+The objects of types '''(b)''' and '''(c)''' above are easily named, and
+their names serve as the completion candidates when you choose
+them.  So, for instance, if you choose type `buffer', then you can
+act on a buffer by choosing its name.
+
+The objects of predicate type (type '''(a)''', above) are not necessarily
+named.  The completion candidates for these objects are symbols
+whose values are the objects that are acted upon. The object-type
+names used for these candidates are really EmacsLisp type
+predicate names, which all end in `p', except for `atom'.
+
+So, for instance, if you choose type `bufferp', then you can
+choose a symbol whose [[symbol value|value]] is a buffer, in order to act on that
+buffer.  A buffer is of course always named, but an object of type
+`stringp' is not.  The value of `emacs-version' is one such string
+that you can act on.
+
+Be aware that the action function you choose must accommodate the
+object you choose as its only argument.  Also, completion of
+the function candidate itself is lax, so you can enter a
+lambda expression as the action.
+
+Objects that are naturally associated with names are treated
+differently, depending on the type.  Besides Anything types, the following object types
+are used for named objects: `buffer', `command', `face', `frame',
+`function', `option', `process', `symbol', `variable', `window'.
+For all of these except `window', the name of the object is used.
+For `window', the candidate objects are the names of the buffers
+that are currently shown in a [[window]] (on any [[frame]]).
+
+You'll note that some types are treated both ways, 1) using named
+objects and 2) using symbols whose values are objects.  An example
+is `frame' and `framep': the completion candidates (objects) for
+type `frame' are frame names; the candidates for type `framep' are
+symbols whose values are frames.
+
+'''See Also:'''
+
+* [[Icicles - Anything]]
+* [[Icicles - Apropos Completions]]
+* [[Icicles - Progressive Completion]]
+
+----
+
+
+|| *Previous:*  [[Icicles - Complex Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Anything]] ||
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryModes
+CategoryProgrammerUtils
+CategoryCode
+CategorySearchAndReplace
+
+

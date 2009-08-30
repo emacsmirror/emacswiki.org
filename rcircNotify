@@ -1,0 +1,16 @@
+Libnotify notifications for [[rcirc]].
+
+Source:
+
+* Lisp:rcirc-notify.el
+
+To install, put it in your LoadPath and add the following to your InitFile:
+
+    (eval-after-load 'rcirc '(require 'rcirc-notify))
+
+== How do I change the message? ==
+
+Redefine `my-rcirc-notify-message`. Use %s for where you want the name of the person calling your name to go.
+
+----
+CategoryChatClient [[rcirc]]

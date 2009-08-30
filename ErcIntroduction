@@ -1,0 +1,74 @@
+== New to ERC? ==
+
+This page is here for people who are new to ERC, the EmacsIrcClient, but have used other IRC clients previously.
+
+== Installation ==
+
+Once you have ERC (see the main page for download instructions), ErcLoading is a good place to start.
+
+== Connecting ==
+
+After following the installation instructions on the main page, restart emacs (or evaluate the new load-path forms on the fly, by moving one char past the final ")", and type C-x C-e). After you have done this, type M-x erc RET, and you will be prompted for a server, port, username and password. You can leave the password blank.
+
+You can now join channels like other IRC clients, using commands such as:
+
+    /j #mychannel
+
+You can enter these commands in either a server buffer or channel buffer. If you are already on a particular channel, the channel modes and creation time will be displayed again.
+
+Basic IRC commands should now work as normal. There are some differences between ERC and other IRC clients, however.
+
+== Differences in message/notice handling from other IRC clients ==
+
+Currently, when someone sends you a /notice, it lands in your server buffer and you may not notice it. There are two ways to correct this. The first way is to add the following form to your startup files
+
+    (setq erc-echo-notices-in-minibuffer-flag t)
+
+Another approach is to have all notices appear in a query buffer as explained in ErcAutoQuery.
+
+Likewise, messages will automatically open up a query buffer with the sender.  See ErcAutoQuery for the ways of changing this behavior.
+
+: I have <tt>(setq erc-auto-query 'bury)</tt>. Is there some way to exclude certain users from that treatment. I.e. the root user in [[BitlBee]]. -- [[bkhl]]
+
+: I use <tt>(add-hook 'erc-echo-notice-hook 'erc-echo-notice-in-active-buffer)</tt>. This makes notices show in the active and server buffer. -- Keegan Carruthers-Smith
+
+== Tracking changes ==
+
+Erc is capable of tracking changes on other channels, and can even highlight channels where certain "keywords" you've defined are mentioned. See ErcChannelTracking for more information.
+
+== Wrapping long lines ==
+
+Erc is not configured to wrap lines by default. If you experience weird behavior with lines being wrapped, you may have fill mode turned on in that buffer (some people set it to be on by default in all buffers). You can read about a workaround for this, and how to turn wrapping on by default, at this page here: ErcFilling
+
+== Keeping the input at the bottom of the screen ==
+
+See ErcScrollToBottom.
+
+== Custom PAGE function ==
+
+Many IRC clients allow you to execute a custom command upon receipt of a CTCP PAGE command, ERC does also. Here's a short demonstration function that plays bark.wav via esdplay:
+
+    (defun shae-erc-page (SENDER MSG)
+      (interactive)
+      (progn
+        (shell-command "esdplay /home/shae/download/bark.wav")
+        (message (concat SENDER " sent " MSG))))
+    (setq erc-page-function 'shae-erc-page)
+
+== Highlighting references to yourself, or words you are interested in ==
+
+Add something like the following into your configuration files:
+
+    (require 'erc-match)
+    (setq erc-keywords '("resolve" "damien"))
+
+This will cause all instances of these words to be highlighted in the channel buffers. Not only this, but if you are using track-modified-channels-mode, channels that mention the keywords in them will appear in a difference face in your modeline, so you can quickly tell if someone has directed a question at you, or if they've said something you're interested in.
+
+Similar variables "erc-pals" and "erc-fools" also exist, which allow you to control how certain people's text is highlighted.
+
+== Show when friends sign on ==
+
+Notification support is documented in ErcNotify
+
+----
+[[ERC]]

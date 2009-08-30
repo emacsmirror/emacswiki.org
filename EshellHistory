@@ -1,0 +1,90 @@
+Keys like M-p, M-n function just as in shell --- they can be used to access history (see MinibufferHistory)..
+
+ <more details>
+
+There are additional modes within eshell (see eshell-startup help) which allow you to configure eshell such that commands like <arrow-up> and <arrow-down> can be used to access history.. just as in tcsh or bash. 
+
+
+ <plug>:
+
+Imagine i am running lisp or some other application inside eshell.  In that application, I type a hairy expression:
+
+ (some:hairy/function\ (+ (if dkjhjhdfkhfd kjdfhkjhdfkj) 33))).
+
+Now, on the next line, you want to write the same expression but
+modify the 33 to 34.  How do you do that?  A simple M-p <and some
+editing> right?  No.  eshell-hist stops working within applications.
+A way around is to use shellhist.el ---
+http://www.gnufans.net/~deego/emacspub/lisp-mine/shellhist/ which
+allows eshell-history to work across applications.
+
+
+----
+
+I came up with another way to enable the eshell history from within applications. It involves patching the elisp source however. I am fairly new to elisp and not intimately familiar with the eshell source, so use this at your own risk.
+
+Download the following patch file: http://www.gazingus.org/misc/esh-mode.patch
+
+This file contains the following lines:
+
+    --- esh-mode.el Fri Aug 13 22:43:12 2004
+    +++ esh-mode.my Fri Aug 13 22:43:13 2004
+    @@ -710,7 +710,8 @@
+                      (process-send-string (eshell-interactive-process) "\n"))
+                  (process-send-region (eshell-interactive-process)
+                                       eshell-last-input-start
+    -                                  eshell-last-input-end)))
+    +                                  eshell-last-input-end)
+    +             (run-hooks 'eshell-input-filter-functions)))
+            (if (= eshell-last-output-end (point))
+                (run-hooks 'eshell-post-command-hook)
+              (let (input)
+
+From the directory where you saved the patch file, run this command:
+
+    cat esh-mode.patch | patch -b -d /path/to/eshell/directory
+
+This will patch <tt>esh-mode.el</tt> and create a backup of the original named <tt>esh-mode.el.orig</tt>. Byte-compile the patched file (<tt>M-x byte-compile-file RET</tt>).
+
+You will then need to tell eshell how to recognize the prompts in the various applications you will be using. Set the <tt>eshell-prompt-regexp</tt> variable in your <tt>.emacs</tt> file to something like this:
+
+    (setq eshell-prompt-regexp
+          (mapconcat
+           '(lambda (str) (concat "\\(" str "\\)"))
+           '("^[^#$\n]* [#$] "                    ; default
+             "^\\(mysql\\|[ ]\\{4\\}[-\"'`]\\)> "
+             "^>>> "                              ; python
+             "^ftp> "
+             )
+           "\\|"))
+
+Restart emacs, invoke eshell, and run an application (say, mysql). You should now be able to use <tt>M-p</tt>, <tt>M-n</tt>, and the up/down arrow keys to cycle through the eshell history within the application!
+
+The downsides to this method are:
+
+* you don't have direct access to the application's history mechanism, if any.
+* your eshell history gets littered with application-specific commands.
+* you have to alter the eshell source, which might have undesireable side-effects.
+
+----
+
+
+Not sure if this is the right page - but in eshell currently you can't use !$ to refer to the last component of the previous command. (I use this all the time in other shells). Anyway, here's a quick fix:
+
+    ;; Fix eshell history completion to allow !$
+    ;; This is done by advising eshell-history-reference to expand !$
+    ;; into !!:$ which works...
+    (defadvice eshell-history-reference (before ben-fix-eshell-history)
+      "Fixes eshell history to allow !$ as abbreviation for !!:$"
+      (if (string= (ad-get-arg 0) "!$")
+          (ad-set-arg 0 "!!:$")))
+    (ad-activate 'eshell-history-reference)
+
+
+--Ben Moseley
+
+I just retrained myself to use $_, which works in both eshell and bash.
+
+-- JoeE
+----
+CategoryEshell

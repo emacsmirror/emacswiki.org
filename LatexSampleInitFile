@@ -1,0 +1,401 @@
+Stefan Pofahl has this example XEmacs init file for AucTeX or MikTeX users
+stuck on Windows.  [http://www.jpberlin.de/st.pofahl/xemacs/sample-xemacs-init-files.zip]
+It might be a good source of cut-n-paste for experienced
+users, or for users that have no init-file, yet.  If you already have an init
+file, you don't want to just overwrite it, I asssume.  ;)
+
+The zip file he distributes also contains a very small custom.el file that enables
+FontLockMode, ColumnNumberMode, etc.  Nothing too important, I assume.
+
+<pre>
+;;;; c:\.xemacs\init.el
+;; for xemacs under win32 together with auctex and miktex
+;; this sample-file is made for beginners, please read carefully
+;; the commends.
+;; for tips for your local xemacs see also the actual file 
+;; sample.init.el of your distribution 
+;; Ulm, Germany, Sept. 2003, stefan@pofahl.de 
+;; ------- Start ----------------------------------------------------------
+;;;; base configuration of xemacs under win32:
+;;
+(setq default-frame-plist      '((top . 000) (left . 000)
+    (width . 100) (height . 44)  (cursor-color . "red")
+    (background-color . "wheat")
+    (vertical-scroll-bars . right)
+   ;fonts found on the mailing list, uncomment one at your convenience
+   ;(font . "-*-Courier-normal-r-*-*-13-97-*-*-c-*-*-ansi-")
+   ;(font . "-*-Terminal-normal-r-*-*-8-60-*-*-c-*-*-oem-")
+   ;(font . "-*-Terminal-normal-r-*-*-12-72-*-*-c-80-*-oem-")
+   ;(font . "-*-Terminal-normal-r-*-*-8-60-*-*-c-*-*-oem-")
+   ;(font . "-*-Terminal-normal-r-*-*-19-142-*-*-c-*-*-oem-")
+    )
+    ) 
+;;;   Add the following  to display the line number:
+(line-number-mode 1)
+;;;   Stop down-arrow from adding empty lines to the bottom of the buffers?
+(setq next-line-add-newlines nil)
+;; Use C-h v or `Help->Commands, Variables, Keys->Describe Variable...'
+;; to find out what these variables mean.
+(setq
+ find-file-compare-truenames t
+ minibuffer-max-depth nil
+ )
+;; -------------------------------------------------------------------
+;;;; behave like a Program under MS-Windows
+;;
+;;; pending-delete-mode causes typed text to replace a selection,
+;;; rather than append -- standard behavior under all window systems
+;;; nowadays.
+(load "pending-del")
+(pending-delete-mode 1)
+;;; enable region selection with shift+arrows (on by default in 21.5
+;;; and up)
+(setq shifted-motion-keys-select-region t)
+;;-------------------------------------------------------------------------------------------
+;;;; format: column width, auto-fill-mode, auto-indent
+(setq-default fill-column 85) ; column width, (Textbreite)
+;; enable auto-formating, -line-wrapping, -indent
+(add-hook 'text-mode-hook 'turn-on-auto-fill) ; turn on auto-fill-mode
+;; indent-line
+(setq default-major-mode 'indented-text-mode)
+(setq indent-line-function 'indent-relative-maybe) ;; from xemacs help-file
+;;-------------------------------------------------------------------------------------------
+;;;; dired.el
+;(load "dired") ;; to use it together with `recent-files', it has to loaded first.
+;;-------------------------------------------------------------------------------------------
+;;;; recent-files.el
+;;;  provides a menu: `Recent_Files', with a list of the recently opened files
+(load "recent-files")
+(recent-files-initialize)
+;;; In order to use recent-files with `dired', `dired' has to be loaded first.  
+;;-------------------------------------------------------------------------------------------
+;;;; Autosave-Files at one Place   (from sample.init.el)
+;;
+;;; ********************
+;;; Put all of your autosave files in one place, instead of scattering
+;;; them around the file system.  This has many advantages -- e.g. it
+;;; will eliminate slowdowns caused by editing files on a slow NFS
+;;; server.  (*Provided* that your home directory is local or on a
+;;; fast server!  If not, pick a value for `auto-save-directory' that
+;;; is fast fast fast!)
+;;;
+;;; Unfortunately, the code that implements this (auto-save.el) is
+;;; broken on Windows in 21.4 and earlier.
+(unless (and (eq system-type 'windows-nt)
+	     (not (emacs-version>= 21 5)))
+  (setq auto-save-directory (expand-file-name "~/.autosave/")
+	auto-save-directory-fallback auto-save-directory
+	auto-save-hash-p nil
+	efs-auto-save t
+	efs-auto-save-remotely nil
+	;; now that we have auto-save-timeout, let's crank this up
+	;; for better interactive response.
+	auto-save-interval 2000
+	)
+  ;; We load this afterwards because it checks to make sure the
+  ;; auto-save-directory exists (creating it if not) when it's loaded.
+  (require 'auto-save)
+  )
+;;;; --- func-menu.el -----------------------------------------------------------
+;; Support for non X Window versions of Emacs:
+;; ===========================================
+;; This package can also be used for non X versions of Emacs. In this case,
+;; only modeline display and completing read input from the minibuffer are
+;; possible.
+;;(add-hook 'find-file-hooks 'fume-setup-buffer) ;; this line collides with AUCTeX, 
+;; don't use it. This will disable for example some key bindings for LaTeX-mode. 
+;;; The following is the AUCTeX compatible code of Stephen J. Turnbull to enabel 
+;;; find file-file-hooks outside latex- and tex-mode: 
+(defun polatexly-correct-fume-setup-buffer ()
+  (unless (memq major-mode '(latex-mode tex-mode))
+    (fume-setup-buffer)))
+(add-hook 'find-file-hooks 'polatexly-correct-fume-setup-buffer)
+;;; --- End code of Stephen J. Turnbull ---
+(add-hook 'Manual-mode-hook 'turn-on-fume-mode)
+;;;; ------ End of func-menu.el ----------------------------------------------------
+
+;;;; resize-minibuffer -------------------------------------------------------------
+;;;; ********************
+;;; resize-minibuffer-mode makes the minibuffer automatically
+;;; resize as necessary when it's too small to hold its contents.
+(when (fboundp 'resize-minibuffer-mode)
+  (resize-minibuffer-mode)
+  (setq resize-minibuffer-window-exactly nil))
+;;;;   ------- END resize-minibuffer ---------------------------------------------
+;
+;;;;   ------  gnuserver ---------------------------------------------------------
+;;;   XEmacs start as multi instance one. The GNUserv provides one instance mode.
+;;;   good for inverse search with yap (mikTeX), you have to install a special gnuserv 
+;;;   for win32, I took `gnuserv-2.1p1.zip', this is for ntemacs, but it works with
+;;;   win32-xemacs too, but you have to start xemacs first, perhaps there is although
+;;;   a version for xemacs, you need this while winclient.exe is not able to pass line
+;;;   number to xemacs.
+;;;  (for locations see at the end of the file)
+(gnuserv-start)
+(setq gnuserv-frame (selected-frame))
+;;; attention!!! I had also to edit custom.el,
+;;; I inserted in custom.el `'(gnuserv-frame (selected-frame))', now it looks like:
+;;; (custom-set-variables
+;;;   '(column-number-mode t)
+;;;   '(gnuserv-frame t)
+;;;   '(gnuserv-frame (selected-frame))
+;;;   '(server-make-window-visible t)
+;;;   '(font-lock-mode t nil (font-lock))
+;;;   '(modeline-scrolling-method (quote scrollbar)))
+;;;;;------End xemacs base configuration------------------------------------------------
+
+;;;;; ------ LaTeX ---------------------------------------------------------------------
+;;; latex-math-symbol.el --- LaTeX math symbol decoder
+;;; This file is part of MU (Message Utilities).
+;;; Keywords: LaTeX, math, mule
+;;  my version of `latex-math-symbol.el' was incompatible with my auctex
+;(autoload 'latex-math-decode-buffer "latex-math-symbol" nil t)
+;(add-hook 'mime-viewer/plain-text-preview-hook
+;          'latex-math-decode-buffer)
+;;; ---- END latex-math-symbol.el ------------------------------------------------------
+
+;;;; --- AUC TeX ------------------------------------------------------------
+(setq load-path (cons "C:\\Program Files\\XEmacs\\xemacs-packages\\lisp\\" load-path))
+;(setq load-path (cons "C:\\Program Files\\XEmacs\\XEmacs-21.4.13\\lisp\\" load-path))
+(load "tex-site")
+
+;;;   If you want to make AUC TeX aware of style files and multi-file
+;;;   documents right away, insert the following in your `init.el' file.
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+;;
+;;; change in macro-completion-mode after hitting '\'
+(setq TeX-electric-escape t) ;turn on macro-completion-mode after hitting `\'
+
+;;;    - Constant: TeX-auto-full-regexp-list
+;;;    Parse all TeX and LaTeX commands that AUC TeX can use.
+(setq TeX-auto-full-regexp-list t)
+;;; ----------------------------------------------------------------------------------
+;;; some more menu entries in the command list:
+;;; see tex-mik.el from package auctex: %v is defined in tex-mik.el
+;;; other variables are defined in tex.el from auctex
+;;; the meaning of some auctex-varibles:
+        ;symbols defined in tex.el and tex-mik.el:
+        ;%b name slave tex-file  %t name master tex-file   %d dvi-file  %f ps-file 
+        ;%l "latex --src-specials"
+        ;%n line number  %p printcommand  %q "lpq"  %r (TeX-style-check TeX-print-style)
+        ;%s master-file-name without extention
+        ;%v yap command view line
+
+;;;; ---- Begin of own Command Menu Entries entries: ------------------------------------
+;;; Put your first entry at the End of the list.
+(add-to-list 'TeX-command-list
+	(list "5-original-----------" "" 'TeX-run-command t t))
+
+;;; for command evaluation / zum Überprüfen der Variablenwerte:
+;(add-to-list 'TeX-command-list
+;  (list	"View-Command" "echo  %a%f%s\.pdf > c:\\bla.txt" 
+;         'TeX-run-discard nil nil)
+;)
+; ---
+;;; --- pdf related -----------------------------------------------------------
+;; works only if the pdf-file has the same main name as the LaTeX-Masterfile
+(add-to-list 'TeX-command-list
+  (list "Ghostview pdf" "C:\\Programme\\Ghostgum\\gsview\\gsview32.exe -t1 -e %s\.pdf" 
+    'TeX-run-discard nil nil)
+)
+(add-to-list 'TeX-command-list
+  (list "Acrobat Reader" "\"C:\\Programme\\Adobe\\Acrobat 5.0\\Reader\\acrord32.exe\" %s.pdf"
+    'TeX-run-command nil t)
+)
+(add-to-list 'TeX-command-list
+  (list "Texify pdf" "texify --clean --pdf %s.tex"
+    'TeX-run-command nil t) 
+)
+;; this produces smaller pdf-files than `texify --pdf', but it works only interaktive,
+;; you have to input the pdf-file-name manually, perhaps someone has a better idea for that 
+(add-to-list 'TeX-command-list
+  (list "PS->PDF" "C:\\Programme\\Ghostgum\\gsview\\gsview32.exe -t1 -fpdfwrite -r600x600 \"%f\"" 
+         'TeX-run-command nil t)
+)
+; ---
+(add-to-list 'TeX-command-list
+	(list "4---------" "" 'TeX-run-command t t))
+
+;;; --- do it on temp directory -----------------------------------------------
+(add-to-list 'TeX-command-list
+  (list "Ghostview on temp" "C:\\Programme\\Ghostgum\\gsview\\gsview32.exe -t1 -e \"c:\\temp\\%f\"" 
+         'TeX-run-discard nil nil)
+)
+(add-to-list 'TeX-command-list
+  (list	"DVI-View on temp" "c:\\Programme\\MiKTeX\\texmf\\miktex\\bin\\yap -1 c:\\temp\\\"%d\""     
+          'TeX-run-command nil t)
+)
+(add-to-list 'TeX-command-list
+  (list "->PostScript on temp" "dvips %d -N0 -Pamz -o c:\\temp\\%f " 
+        'TeX-run-command nil t)
+)
+(add-to-list 'TeX-command-list
+  (list "LaTeX on temp" 
+     "%l -include-directory=.;c:\\temp -output-directory=c:\\temp \"\\nonstopmode\\input{%t}\""
+     'TeX-run-command nil t)
+)
+; ---
+(add-to-list 'TeX-command-list
+	(list "3--------" "" 'TeX-run-command t t))
+
+;;; --- Post script things -----------------------------------------------------
+(add-to-list 'TeX-command-list
+  (list "Ghostview" "C:\\Programme\\Ghostgum\\gsview\\gsview32.exe -t1 -e \"%f\"" 
+         'TeX-run-discard nil nil)
+)
+(add-to-list 'TeX-command-list
+  (list "->PS landscape for pdf" "dvips %d -N0 -Ppdf -G0 -T 297mm,210mm -o %f " 
+        'TeX-run-command nil t)
+)
+(add-to-list 'TeX-command-list
+  (list "->PostScript for pdf" "dvips %d -N0 -Pamz -Ppdf -G0 -o %f " 
+        'TeX-run-command nil t)
+)
+(add-to-list 'TeX-command-list
+  (list "->PostScript" "dvips %d -N0 -Pamz -o %f " 
+        'TeX-run-command nil t)
+)
+; ---
+(add-to-list 'TeX-command-list
+	(list "2-------" "" 'TeX-run-command t t))
+
+;;; --- general entries -------------------------------------------------------
+(add-to-list 'TeX-command-list
+  (list "Spell" "<ignored>" 
+        'TeX-run-ispell-on-document nil nil)
+)
+(add-to-list 'TeX-command-list
+  (list "Clean Dir" "del *.aux *.log %s.out %s.exa %s.ilg %s.idx %s.ind %s.lof %s.lot %s.toc %s.bbl %s.blg %s.dvi %s.ps %s.pdf *~" 
+    'TeX-run-command nil t) 
+)
+(add-to-list 'TeX-command-list
+  (list	"View-Line" "\"%v\"" 
+        'TeX-run-discard nil nil)
+)
+(add-to-list 'TeX-command-list
+  (list "All Texify run-viewer" "texify --tex-opt=--src --run-viewer --clean %s.tex"
+    'TeX-run-command nil t)
+)
+(add-to-list 'TeX-command-list
+  (list "Texify" "texify --tex-opt=--src --clean %s.tex"
+    'TeX-run-command nil t)
+)
+; ---
+(add-to-list 'TeX-command-list
+	(list "1------" "" 'TeX-run-command t t))
+
+;;;; ---- End of own Command Menu Entries entries: ------------------------------------
+
+;;;;; ------ End AucTeX	-------------------------------------------------------------------
+;; ----------------------------------------------------------------------------------------
+
+;;;;; Spelling
+;;; ispell ispell-local-dictionary-alist
+;;; binaries are not includet in xemacs for win32, I took:
+;;; "ispell-3.2.06-cygwin-1.3-bin.tar.gz.tar" and "cygwin1.dll",
+;;; it works, but not fine, perhaps someone can add the necessary
+;;; things here, I still have not found for example the file german8.hash 
+;;; proper for ispell-3.2.06-cygwin-1.3.
+;;; (for locations see at the end of the file)
+;;;; ----- german --------
+;(setq ispell-local-dictionary-alist
+;      '(("german8" "[a-zA-ZÄÖÜäößü]" "[^a-zA-ZÄÖÜäößü]" "[']" t
+; ("-C" "-d" "Deutsch8") "~latin1" iso-8859-1)
+;   ))
+;;;;german default dictionary
+;(setq flyspell-default-dictionary "german8")
+;;;; ----- end german ---- 
+;; When running ispell, consider all 1-3 character words as correct.
+(setq ispell-extra-args '("-W" "3"))
+;;
+;(setq ispell-menu-map nil)
+(load-library "ispell")
+;; use ispell in tex-mode
+(setq ispell-parser 'tex)
+(setq ispell-parser 'latex)
+(autoload 'ispell-word "ispell" "Check the spelling of word in buffer." t)
+(autoload 'ispell-region "ispell" "Check the spelling of region." t)
+(autoload 'ispell-buffer "ispell" "Check the spelling of buffer." t)
+;;;
+;;; Flyspell is a minor Emacs mode performing on-the-fly spelling
+;;; checking.
+;;;
+;;; To install flyspell, add this to your ~/.emacs file:
+;;;
+;(autoload 'flyspell-mode "flyspell" "On-the-fly spelling checking" t)
+;(autoload 'global-flyspell-mode "flyspell" "On-the-fly spelling" t)
+
+;;;; --- customizing the key definitions --------------------------------------------------
+;;;  --- LaTeX-mode-map -----
+(add-hook 'LaTeX-mode-hook 
+  '(lambda nil
+      ; control key bindings
+      (define-key LaTeX-mode-map '(control !) "\\!\n")
+      (define-key LaTeX-mode-map '(control ,) "\\,\n")  ;; small space `\,'
+      (define-key LaTeX-mode-map '[(control c)~] 'LaTeX-math-mode)      ;; LaTeX-math-mode
+      (define-key LaTeX-mode-map '[(control c)(control a)] 'do-LaTeX)   ;; safe buffer, run latex
+      (define-key LaTeX-mode-map '[(control c)(control v)] 'do-DVIview) ;; view dvi-file
+      (define-key LaTeX-mode-map '(meta f12) 'do-All-LaTeX)             ;; compile and view Latex
+    )    ) ;;end add-hook 'LaTeX-mode-hook
+
+;;; see beneath for the definition of the functions bound to the keys.
+;;; if you want to change the TeX-font selection command insert the following, the original 
+;;; key binding `c-c c-f' collides with func-mode, (see above)
+;;      (define-key LaTeX-mode-map '[(control c)(control v)] #'TeX-font)
+;;;  --- END LaTeX-mode-map -----
+;;; ------------------------------------------------------------------- 
+
+;;; --- global key map ------------------------------------------------
+; control key bindings
+(global-set-key '(control backspace) 'backward-kill-word)    ;; kill word backward 
+; meta key bindings
+(global-set-key "\e$" 'ispell-word)            ;; meta-shift-$, spell word
+; function key bindings
+(global-set-key 'f1 'advertised-undo)          ;; Undo
+(global-set-key 'f2 'kill-primary-selection)   ;; Cut
+(global-set-key 'f3 'copy-primary-selection)   ;; Copy
+(global-set-key 'f4 'yank-clipboard-selection) ;; Paste
+(global-set-key 'f5 'find-file)                ;; C-x C-f
+(global-set-key 'f7 'save-buffer)              ;; C-x C-s
+(global-set-key '(meta f9) 'auto-fill-mode)    ;; Toggle auto-filling. 
+;;; --- global key map ------------------------------------------------
+
+;;------------------------------------------------------------------------------------------
+;;;; define functions that can be bind to key strokes
+(defun do-DVIview ()
+   "YAPview the curent file."
+   (interactive)
+   (save-buffer)
+   (TeX-command "View-Line" 'TeX-master-file)
+   )
+(defun do-Texify ()
+   "Texify the curent file."
+   (interactive)
+   (save-buffer)
+   (TeX-command "Texify" 'TeX-master-file)
+   )
+(defun do-LaTeX ()
+   "Texify the curent file."
+   (interactive)
+   (save-buffer)
+   (TeX-command "LaTeX" 'TeX-master-file)
+   )
+(defun do-All-LaTeX ()
+   "Texify the curent file and view."
+   (interactive)
+   (save-buffer)
+   (TeX-command "All Texify run-viewer" 'TeX-master-file)
+   )
+
+;;;; end of init.el
+;;; ********************
+;;; some iinteresting things:
+;;; http://www.esat.kuleuven.ac.be/~minten/NTTeXing/NTTeXing.html
+;;; http://www.math.auc.dk/~dethlef/Tips/download.html
+</pre>
+
+
+----
+CategoryTex

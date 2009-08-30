@@ -1,0 +1,12 @@
+article-mode is a minor (formerly major) mode that helps writing articles from a marketers view. It focuses on the specified keywords and their densities which are displayed in a separate window continuously.
+
+<pre>
+# Words      : (6125)
+# Keywords   : 22
+Density      : 0.36%
+Keywords     : (emacs)
+</pre>
+
+You can get the latest code from http://www.timepoorblogger.com/files/article-mode.el.
+
+Author Brian Gardner regularly posts enhancements and updates on article-mode to [http://www.timepoorblogger.com/ his blog].

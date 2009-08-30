@@ -1,0 +1,27 @@
+Emacs creates a backup only when you save the first time. This incompatible with most people's basic editing behavior of leaving Emacs and its  buffers open all the time and constantly making changes and writing them to disk.
+
+This code will have Emacs backup each time you save. Mix this with a separate BackupDirectory for extra whiz-bang.
+
+  (setq version-control t ;; Use version numbers for backups
+	kept-new-versions 16 ;; Number of newest versions to keep
+	kept-old-versions 2 ;; Number of oldest versions to keep
+	delete-old-versions t ;; Ask to delete excess backup versions?
+	backup-by-copying-when-linked t) ;; Copy linked files, don't rename.
+
+  (defun force-backup-of-buffer ()
+    (let ((buffer-backed-up nil))
+      (backup-buffer)))
+
+  (add-hook 'before-save-hook  'force-backup-of-buffer)
+
+
+See also BackupEachSave which is probably similar but has more features and is maybe more stable.
+
+[new]
+The above function force-backup-of-buffer doesn't preserve file permissions.  As an alternative, how about simply:
+
+  (defun force-backup-of-buffer ()
+    (setq buffer-backed-up nil))
+
+----
+CategoryFiles

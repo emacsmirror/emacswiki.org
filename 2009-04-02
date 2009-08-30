@@ -1,0 +1,48 @@
+It’s time for the irregular EmacsChannel ChatClient test again!
+
+{{{
+ 120 irssi
+  52 erc
+  47 xchat
+  11 rcirc
+  11 purple
+  10 colloquy
+   7 konversation
+   7 bip
+   2 ctrlproxy
+   2 bitchx
+   2 hydrairc
+   2 weechat
+   2 cl
+   2 limechat
+   2 hello, world
+   1 anyfoo
+   1 heya, wassup?!
+   1 OMG! LOL i'm on teh intarweb!!!1111
+   1 riece
+   1 quassel
+   1 rcirc.el
+   1 mirc
+   1 wtf
+   1 Hey - I use IRSSI... no more questions!
+   1 telnet
+   1 epic4
+   1 eggdrop
+   1 piespy
+   1 miranda
+   1 dircproxy
+----
+ 294 total
+}}}
+
+IrcClientSurvey says how I produced the list.
+
+Irssi, ERC, and XChat continue dominating the list.
+I continue to think that irssi remains popular because people keep it running inside GNU screen sessions.
+We never learn  anything new from these lists!
+
+I'm impressed by the guy who uses telnet to chat. :)
+
+-- AlexSchroeder
+
+Previous issues: [[2008-09-30]]

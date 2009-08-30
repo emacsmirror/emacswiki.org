@@ -1,0 +1,20 @@
+Emacs vem com um manual detalhado; acesse à informação completa teclando <tt>C-h i</tt>.
+
+O manual também está disponível online de qualquer espelho ftp da GNU ou aqui:
+
+* http://www.gnu.org/manual/
+
+Versão impressa:
+
+* http://www.gnupress.org/emacs15.html
+
+O manual do XEmacs também está disponível online:
+
+* http://www.xemacs.org/Documentation/
+
+
+A linguagem de extensão EmacsLisp está documentada na ReferênciaEmacsLisp.
+
+----
+CategoriaDocumentação
+

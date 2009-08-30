@@ -1,0 +1,107 @@
+Gnus comes with an nnmail-split-history function.  This is pretty
+handy for checking your most recent mail.  I have display-time set to
+show when new mail arrives in my modeline.  However, I only really
+want to go read my mail if something "interesting arrives".  What to
+do, what to do?  An old option is to use procmail to filter all your
+mail for you.  Then you can tell the display-time stuff only to
+monitor important groups.  However, if you really want to use nnmail
+splitting (as I do) then you're out of luck.  That's where
+nnmail-split-history comes in.  I've bound f5 to switch over to Gnus
+and get new mail.  I've bound C-f5 to get new mail and then show me
+the nnmail-split-history.
+
+There's one catch.  The nnmail-split-history function that ships with
+Gnus is a little unfriendly on your window configuration.  So, I
+re-wrote it borrowing heavily from the [[XEmacs]] (boy how i hate that
+spelling) code for poping up a help buffer.  The way the help buffers
+work in XEmacs is that the buffer is selected and put into help-mode.
+In help-mode you have two key bindings.  SPC will scroll the buffer
+and 'q' will quit the help window.  When you quit your previous window
+configuration is restored.  That's very friendly.  Without further ado
+
+<pre>
+(defun dka-nnmail-split-history () "Generate an overview of where the
+last mail split put articles.  \"Re-written\" to make the
+* nnmail-split-history* buffer more temporary like XEmacs help
+windows."
+     (interactive)
+     (gnus-group-get-new-news)
+     ;; had to do my own implementation of nnmail-split-history
+     ;; because of bad window configuration mangling
+     (if (not nnmail-split-history)
+	 (message "No current split history")
+       (let* ((winconfig (current-window-configuration))
+	      (was-one-window (one-window-p))
+	      (buffer-name "*nnmail split history*")
+	      (split-not-visible
+	       (not (and (windows-of-buffer buffer-name)
+			 (memq (selected-frame)
+			       (mapcar 'window-frame (windows-of-buffer buffer-name))))))
+	      (history nnmail-split-history)
+	      elem)
+	 (prog1
+	     (with-output-to-temp-buffer buffer-name
+	       (prog1
+		   (while (setq elem (pop history))
+		     (princ (mapconcat (lambda (ga)
+					 (concat (car ga) ":" (int-to-string (cdr ga))))
+				       elem
+				       ", "))
+		     (princ "\n"))
+		 (save-excursion
+		   (set-buffer standard-output)
+		   (funcall mode-for-help)))))
+	 (let ((splitwin (get-buffer-window buffer-name)))
+	   (when splitwin
+	     (when split-not-visible
+	       (with-current-buffer (window-buffer splitwin)
+		 (setq help-window-config winconfig)))
+	     (when help-selects-help-window
+	       (select-window splitwin)))))))
+</pre>
+
+And the version for GNUEmacs :
+
+<pre>
+(defun dka-nnmail-split-history () "Generate an overview of where the
+last mail split put articles.  \"Re-written\" to make the
+* nnmail-split-history* buffer more temporary like XEmacs help
+windows."
+  (interactive)
+  (gnus-group-get-new-news)
+  ;; had to do my own implementation of nnmail-split-history
+  ;; because of bad window configuration mangling
+  (if (not nnmail-split-history)
+      (message "No current split history")
+    (let* ((winconfig (current-window-configuration))
+           (was-one-window (one-window-p))
+           (buffer-name "*nnmail split history*")
+           (split-not-visible
+            (not (and (windows-of-buffer buffer-name)
+                      (memq (selected-frame)
+                            (mapcar 'window-frame (get-buffer-window-list buffer-name))))))
+           (history nnmail-split-history)
+           elem)
+      (prog1
+          (with-output-to-temp-buffer buffer-name
+            (prog1
+                (while (setq elem (pop history))
+                  (princ (mapconcat (lambda (ga)
+                                      (concat (car ga) ":" (int-to-string (cdr ga))))
+                                    elem
+                                    ", "))
+                  (princ "\n"))
+              (save-excursion
+                (set-buffer standard-output)
+                (help-mode)))))
+      (let ((splitwin (get-buffer-window buffer-name)))
+        (when splitwin
+          (when split-not-visible
+            (with-current-buffer (window-buffer splitwin)
+              (setq help-window-config winconfig)))
+          (when 't
+            (select-window splitwin)))))))
+</pre>
+
+----
+CategoryGnus

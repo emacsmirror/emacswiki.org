@@ -1,0 +1,148 @@
+Jorgen Schaefer (aka. [::JorgenSchäfer]) is some happy emacs user with a homepage at
+http://www.forcix.cx/.  His nick on #emacs is [::forcer].
+
+: Welcome, forcer. -- AlexSchroeder
+:: Absolutely. (-: -- AndreasFuchs
+::: hiya forcer! -- ShaeErisson
+: Thanks all <nowiki>:)</nowiki> -- JorgenSchaefer
+
+== Emacs Wishlist ==
+Some things I have missed in Emacs, and don't see a way to implement
+it easily.
+
+* A minor mode that allows point to move past the end of a line without modifying the buffer. Going to the next line should always keep the current column.
+* A `hl-column-mode' similar to `hl-line-mode'.
+
+[new:DrewAdams:2006-09-04 17:45 UTC]
+: You might try adapting code from Lisp:column-marker.el. I might do that myself, when I get some time. -- DrewAdams
+
+== Configuration ==
+These are some configuration files I use. It's not all of my
+configuration -- some of the Gnus stuff is missing -- but it's most of
+it.
+
+* JorgenSchaefersEmacsConfig (2007-07-27)
+* JorgenSchaefersGnusConfig (2006-12-07)
+
+JorgenSchaefersUpdateEmacswikiConfigfiles is the shell script I use to update these config files here. You will also need my [http://www.forcix.cx/software/wikiput.html wikiput utility] for this.
+
+== Emacs Projects ==
+
+* [[Circe]] - Yet Another Client for IRC in Emacs
+* [[EMMS]] - The Emacs Multi Media System
+
+* Lisp:bracketphobia.el - If you think that brackets in Lisp sources are a Bad Idea, this is for you
+* Lisp:comint-scroll-to-bottom.el - Persuade comint-mode to keep the input line at the end of the window
+* ErecMode - Trivial interface to sound recording and playback
+* FlashCard - Flashcard learning program
+* Lisp:golb.el - The way I generate my home page http://www.forcix.cx/
+* LaterDo - Pseudo-concurrent "threading"
+* Lisp:legalese.el - Add legal headers
+* LuiMode - A line-oriented user-interface
+* Lisp:mudel.el - Small but extensible MUD client
+* [[Scheme48Mode]] - A major mode for improved Scheme48 interaction
+* Lisp:srfi.el - Access SRFIs like from quack.el
+* Lisp:tracking.el - Track buffer changes (application API)
+* UnicodeHelperMode - Some quick functions to work with UnicodeData.txt
+* Lisp:winpoint.el - Store point per-window, not per-buffer
+
+=== Orphaned Projects ===
+I don't use these things anymore, or they have found better
+maintainers.
+
+* AntMode - A very simple mode for ant files of http://www.ant-wars.net/
+* Lisp:duck.el - All the stuff from quack.el that I actually use, slightly improved
+* Lisp:emacs-wiki-finddead.el - Find dead files within an EmacsWikiMode wiki
+* Lisp:idlehelp.el - Display configureable help when idle
+* OutlineWikiMode - Outline-mode with file links
+* VisibleMark - Make mark visible
+
+I used to help with the EmacsIRCClient, but I switched to [[Circe]].
+
+VcDarcs was originally written by me, but has found a better
+maintainer since then.
+
+== Mailbox ==
+
+[new]
+What emacsen do you use? I use Emacs 21.4. I cannot find `with-selected-window' macro.
+<code>(defalias 'with-selected-window 'save-selected-window)</code>
+Is this workaround wrong?
+
+[new]
+Oh, this is GNU Emacs 22.0.50.1 (2006-06-03). A workaround might be
+
+<pre>
+(defmacro with-selected-window (win &rest body)
+  `(let ((win ,win))
+     (save-selected-window
+       (select-window win t)
+       (with-current-buffer (window-buffer win)
+         ,@body))))
+</pre>
+
+The definition from subr.el:
+
+<pre>
+(defmacro with-selected-window (window &rest body)
+  "Execute the forms in BODY with WINDOW as the selected window.
+The value returned is the value of the last form in BODY.
+
+This macro saves and restores the current buffer, since otherwise
+its normal operation could potentially make a different
+buffer current.  It does not alter the buffer list ordering.
+
+This macro saves and restores the selected window, as well as
+the selected window in each frame.  If the previously selected
+window of some frame is no longer live at the end of BODY, that
+frame's selected window is left alone.  If the selected window is
+no longer live, then whatever window is selected at the end of
+BODY remains selected.
+See also `with-temp-buffer'."
+  (declare (indent 1) (debug t))
+  ;; Most of this code is a copy of save-selected-window.
+  `(let ((save-selected-window-window (selected-window))
+	 ;; It is necessary to save all of these, because calling
+	 ;; select-window changes frame-selected-window for whatever
+	 ;; frame that window is in.
+	 (save-selected-window-alist
+	  (mapcar (lambda (frame) (list frame (frame-selected-window frame)))
+		  (frame-list))))
+     (save-current-buffer
+       (unwind-protect
+	   (progn (select-window ,window 'norecord)
+		  ,@body)
+	 (dolist (elt save-selected-window-alist)
+	   (and (frame-live-p (car elt))
+		(window-live-p (cadr elt))
+		(set-frame-selected-window (car elt) (cadr elt))))
+	 (if (window-live-p save-selected-window-window)
+	     (select-window save-selected-window-window 'norecord))))))
+</pre>
+
+-----
+
+[new]
+Could you explain how did you produce the screenshot with the dvorak layout on top of your background image ?
+And then, could you explain how to setup screen with Emacs C-a is taken by Emacs and I don't know what key to use instead of this one.
+
+Thank you
+[new]
+
+The screenshot is simple. I added the dvorak layout using Gimp to my usual background image. The reason it can be seen is that I run Emacs in console mode - i.e. <code>emacs -nw</code> - and my terminal ([http://software.schmorp.de/#rxvt-unicode urxvt]) supports transparent backgrounds.
+As for <code>C-a</code>, to the horror of some people on the EmacsChannel, I actually use <code>C-a</code> for both screen and ratpoison, resulting in me having to type <code>C-a a a</code> to get to the beginning of the line - or just the <code>Home</code> key. But for those who are not as crazy, you can tell screen to use for example <code>C-z</code> as the escape key using <code>screen -e ^Zz</code>. (I just couldn't find a better key than <code>C-a</code> for this...)
+
+[new]
+As for the Screen escape key: I've used <code>C-q</code> and liked it.  I've change recently to <code>`</code> (<code>escape `~</code>) and I'm liking it better so far. --EmilioLopes
+[new]
+As recommended in a .screenrc sample i use <code>C-p</code>. -- AnalphaBestie
+
+[new]
+ Thanks for the suggestion! I tried <code>C-q</code> for a bit, but for some reason it stressed my fingers more than <code>C-a</code>. <code>C-o</code> works nicely, but I used that for something else already (lengthy explanation). What keyboard layout do you use? --JorgenSchaefer
+
+[new]
+I also use the Dvorak layout but with some changes, e.g. unshifted parentheses.  I also implemented some of the tweaks from http://ratpoison.elektrubadur.se/Tweaks.  Nice tips there...
+ --EmilioLopes
+
+----
+CategoryHomepage

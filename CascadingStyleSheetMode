@@ -1,0 +1,65 @@
+== Overview ==
+
+A CSS mode is now included in Emacs version 22.2.2. This is the version from Stefan Monnier:
+
+* http://www.iro.umontreal.ca/~monnier/elisp
+
+There are several other stabs at creating a CSS major mode for Emacs, but I think it would be preferable to base any attempt to make a better CSS mode on the version now in Emacs. Therefore I have moved all other CSS modes mentioned here to /Old CSS Modes/ below.
+
+== Comments and Questions ==
+
+=== Feedback discussion ===
+Thanks for posting this survey of CSS modes; it certainly beats googling myself (it needs more pagerank - grin.) I hope it develops into the key resource for CSS mode until a definitive implementation is chosen for Emacs v22.
+Where do you want the feedback posted to?  This Wiki page, or to a mailing list?
+David
+
+[new]
+Posting feedback here is a very good alternative I believe. 
+It could also be good to post a link to help-gnu-emacs when there are something new and important here.
+
+=== Discussion on CSS as an embedded language ===
+Somewhere on EmacsWiki, it would be useful to see a discussion about the tidiest way to support CSS embedded in other languages, such as HTML and XHTML.  Perhaps for Emacs v 23.  David
+
+[new]
+Please do this on the page MultipleModes.
+
+=== CSS Tips ===
+* Sorting CSS
+
+First, make sure your CSS is neatly formatted, with a \n between each section. You can usually jump paragraphs, by hitting C-arrow down. Also check for any CSS hacks, which might depend on order of declaration, while doing this.
+sort.el should already be loaded. Select the region you wish to sort. Finally, call *M-x sort-paragraphs*
+
+
+== Old CSS Modes ==
+
+* http://www.slackwerks.com/the-crew/arete/css-mode.el -- ''404 Not Found''
+* http://www.garshol.priv.no/download/software/css-mode/ -- by Lars Marius Garshol.  It offers font locking, some rather primitive indentation handling, and some typing help (short-cuts, mirror mode and property completion.)
+* Lisp:css-mode.el -- by AlexShinn; major mode for editing level 1 and 2 Cascading Style Sheets.  It offers font locking, indentation, and auto-completion of various CSS elements.  It has a customization group.
+I was having trouble with Alex Shin's css-mode so I fixed some things like the element capitolization and tab completion.  It suits my tastes nicely now.  I'll try and post it.  Lisp:css-mode-fixed.el
+* http://purl.org/NET/wence/#css -- by LawrenceMitchell; quite simple, just does font-locking and indentation.
+** Lisp:css-mode-simple.el -- by AlexSchroeder, based on LawrenceMitchell's mode.  The major change is that indentation is based on `parse-partial-sexp' which will handle nested braces correctly.  This happens if you use @media -- this opens a block.  Inside the block, you can have selectors, which open another block.  Most other modes will not indent twice in this situation.  He also supports M-q.
+* There's another CSS mode, authored by *Karl Landström*, author of most current javascript.el -- http://web.comhem.se/~u34308910/emacs/css-mode.el.zip.
+* Last Css Mode comes from [http://mewde.blogspot.com/2007/05/what-comes-with-mewde.html Mewde Project] This css mode based Karl Landstrom css-mode, mixed from Alex Shinn css-mode and Stefan Monnier css-mode from nxhtml-pack, at the end we have M-ENTER completion for property list; C-c C-c comment out region, C-c C-u url adding and imenu support. Additional, speedbar support for navigating css-source code, class, id's, html elements. You can see detailed introductions and screenshot here :
+[http://mewde.blogspot.com/2007/05/what-comes-with-mewde.html emacs last css-mode] and download here : [http://mewde.googlecode.com/files/css-mode.el css-mode.el] 
+
+[new]
+An article with a screenshot of Lars Marius Garshol's mode can be found at http://www.irt.org/articles/js148/ .    For what it is worth, I have quickly evaluated the scripts by *Lars Marius Garshol* and *Alex Shinn*.  I am a CSS beginner, and generally sloppy with punctuation, so I need as much help as possible.  Therefore I find features in both useful:  I find  Lars' *mirror mode* very handy, as is his *comment shortcut*.  Alex has *element completion* (though it capitalizes elements) and his font lock highlights them.  I tend to prefer Alex's default formatting, but that is always a matter of personal preference.    There are lots of nice things that could be added to both by someone with the right blend of hubris and laziness, such as validation, class and id completion from a tags table, and the M-q support from AlexSchroeder's css-mode-simple.  *Q: What is your preferred key-binding for completion?*  Lars uses ESC TAB (M-Tab if that isn't owned by the window manager) while Alex has a clever auto Tab that completes in the first word of the line, and indents at the start of the line or after the first semicolon.  David
+
+[new]
+This is from a user I asked to try Stefan Monnier's version:
+
+I tried this mode over the last few days, while I was revamping a web
+site.  I must say that I like the indenting work that it does a LOT better
+than the version that I have in my emacs-snapshot (Debian though, which is
+now outdated by almost 2 months now: GNU Emacs 22.0.95.1
+(x86_64-pc-linux-gnu, X toolkit, Xaw3d scroll bars) of 2007-03-02 on
+excelsior, modified by Debian).  The font-locking is also a LOT better.
+Overall, this is a major improvement, so I hope this makes into Emacs
+proper soon!
+
+
+----
+MarkupModes,
+CategoryHypermedia,
+CategoryModes,
+MultipleModes

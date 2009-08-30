@@ -1,0 +1,7 @@
+Jasmin Emacs Mode is an Emacs major mode for editing [http://www.cat.nyu.edu/meyer/jasmin/ Jasmin] Java bytecode assembler files. It provides automatic formatting, customizable fontifying, and quick-reference syntax help. Font-lock specifications are derived from an encoded grammar, for detailed syntax coloring.
+
+It was written by NeilVanDyke in 1996, and used extensively by as many as a billion people throughout the known universe.
+
+* http://www.neilvandyke.org/jasmin-emacs/jasmin.el
+
+See old screenshot at: http://www.neilvandyke.org/jasmin-emacs/

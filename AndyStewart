@@ -1,0 +1,414 @@
+==About me==
+
+Hi all,
+
+My name is Andy Stewart and I am a programmer living and working in China. Please excuse my English as it is not always the best! Feel free to correct any glaring errors you encounter.
+
+I've used Gnu Emacs since 2007, I love it and use it for pretty much everything (programming, irc, music, file-manager, mail, newsgroup, wiki, notes... etc.). Almost anything that you can imagine.
+
+I use Debian as my main Operating System.
+
+I have signed the copyright document for the FSF so my contributions may be distributed accordingly.
+Free feel to copy any code you like and don't need my permission, just enjoy! :)
+
+==Packages==
+* Standalone packages.
+
+: Below are standalone packages, i will update them all the time.
+
+** Part of Gnu Emacs.
+
+*** [http://repo.or.cz/w/org-mode.git?a=blob_plain;f=lisp/org-w3m.el;hb=HEAD CVS:org-w3m.el] -- Copy and paste from [[emacs-w3m]] to [[OrgMode]].
+
+** Not part of Emacs.
+*** AutoInstall -- Download and install elisp package automatically. (Maintainer: [[rubikitch]]).
+
+*** [[Yaoddmuse]] -- Edit and manage Oddmuse wikis (like EmacsWiki) page.
+
+*** OrgOddmuse -- Transform OrgMode text to Oddmuse Wiki format (see TextFormattingRules) for sharing. :)
+
+*** MultiTerm -- Manages multiple terminal buffers.
+
+*** MultiShell -- Manages multiple shell buffers.
+
+*** MultiScratch -- Manages multiple scratch buffers. 
+
+*** [[Paste2]] -- Send and get paste with paste2.org asynchronous, convenient for IRC communion.
+
+*** ElispFormat -- Automatic format elisp code, not need format line by line.
+
+*** ElispDepend -- Parse elisp file and generate depend information, convenient for elisp developer.
+
+*** GnusSwitch -- Smart switch Gnus layout.
+
+*** OneKey -- A new keystroke menu system, save your time and free your head!
+
+*** LazySearch -- A lazy search mode based on [[OneKey]].
+
+*** [[Irfc]] -- [[RFC]] reader and downloader.
+
+*** ChmView -- CHM reader.
+
+*** ThingEdit -- Copy and paste various object around point.
+
+*** MailNotify --  Popup notify window when you have new mail.
+
+*** GnusNotify -- Display gnus news notify information at mode-line.
+
+*** ErcNickNotify -- Popup notify window when someone calls you in [[ERC]].
+
+*** RcircNotify -- Popup notify window when someone calls you in rcirc.
+
+*** NewstickerNotify -- Display newsticker notify information at mode-line.
+
+*** [[Alarm]] -- Popup window with alarm message.
+
+*** ShowHelp -- Popup help information for elisp symbol at cursor.
+
+*** StripeBuffer -- Stripe color with buffer.
+
+*** GnusSummaryStripe -- Make Gnus summary buffer with stripe color, based on [[StripeBuffer]].
+
+*** LazySetKey -- Set keystroke binding lazily.
+
+*** [[AutoScroll]] -- Scroll current buffer automatically.
+
+*** [[Gotochar]] -- For fast jump character position you want.
+
+*** [[Doi]] -- Do Or Insert, handy move in buffer that mix read-only and editable area.
+
+*** [[Sdcv]] -- An interface for sdcv ([http://sourceforge.net/projects/stardict/ StartDict] console version).
+
+*** [[Oicq]] -- An interface for OICQ, to talk QQ (A popular IM client in China) in Emacs.
+
+*** DiredSort -- Sort dired files in various methods.
+
+*** DiredOpen -- Open various files in dired.
+
+*** [[Fullscreen]] -- Fullscreen support for Emacs.
+
+* Enhanced packages.
+
+: Below are enhanced packages, some packages need many depend libraries, so copy any code you like. :)
+
+** Basic:
+
+*** Lisp:basic-edit-toolkit.el -- My basic edit toolkit, have many useful functions.
+
+*** Lisp:window-extension.el -- Some useful functions for window manipulation.
+
+*** Lisp:buffer-extension.el -- Some enhanced functions for buffer manipulation.
+
+*** Lisp:isearch-extension.el -- Some enhanced functions for [[IncrementalSearch]].
+
+*** Lisp:thing-edit-extension.el -- Some enhanced functions for [[ThingEdit]].
+
+*** Lisp:tabbar-extension.el -- Some enhanced functions for [[TabBarMode]].
+
+*** Lisp:lazy-search-extension.el -- Some enhanced functions for [[LazySearch]].
+
+*** Lisp:rect-extension.el -- Some enhanced functions for [[RectangleMark]].
+
+*** Lisp:windresize-extension.el -- Some enhanced functions for WindowResize.
+
+*** Lisp:doi-extension.el -- Some enhanced functions for [[Doi]].
+
+** Notes:
+
+*** Lisp:org-extension.el -- Some enhanced functions for [[OrgMode]].
+
+** Programming:
+
+*** Lisp:auto-complete-extension.el -- Some enhanced module for [[AutoComplete]], including Haskell.
+
+*** Lisp:flymake-extension.el -- Some enhanced module and config (including Haskell, C, Java) for [[FlyMake]].
+
+*** Lisp:eldoc-extension.el -- Highlight function argument with [[ElDoc]].
+
+*** Lisp:speedbar-extension.el -- Some enhanced functions for [[SpeedBar]].
+
+*** Lisp:paredit-extension.el -- Some enhanced functions for [[ParEdit]].
+
+*** Lisp:shell-command-extension.el -- Some enhanced functions for [http://www.emacswiki.org/emacs/ExecuteExternalCommand shell-command].
+
+*** Lisp:find-func-extension.el -- Find function, variable, face definition position, convenient for elisp developers.
+
+*** Lisp:etags-extension.el -- Some enhanced functions for [[EmacsTags]].
+
+*** Lisp:xgtags-extension.el -- Some enhanced functions for [http://www.mail-archive.com/help-global@gnu.org/msg00022/xgtags.el Xgtags].
+
+*** Lisp:haskell-extension.el -- Some enhanced functions for [[HaskellMode]].
+
+** [[Anything]]:
+
+*** Lisp:anything-extension.el -- Some enhanced functions for [[Anything]], more extensions see Lisp:anything-config.el.
+
+*** Lisp:anything-auto-install.el -- Integrate AutoInstall with [[Anything]] for fast install elisp package.
+
+*** Lisp:anything-yaoddmuse.el -- Integrate [[Yaoddmuse]] with [[Anything]] for fast manage Oddmuse Wikis (including EmacsWiki) page. This extension had obsolesce, please use Lisp:anything-config.el.
+
+*** Lisp:anything-emms.el -- Integrate [[EMMS]] with [[Anything]], search music for play!
+
+*** Lisp:anything-irfc.el -- Integrate [[Irfc]] with [[Anything]], for fast jump [[RFC]] content.
+
+** File:
+
+*** Lisp:dired-extension.el -- Some enhanced functions for [[DiredMode]].
+
+*** Lisp:wdired-extension.el -- Some enhanced functions for [[WDired]].
+
+** Music:
+
+*** Lisp:emms-extension.el -- Many useful functions for [[EMMS]].
+
+** Reader:
+
+*** Lisp:doc-view-extension.el -- Some enhanced functions for [[DocViewMode]].
+
+** Elisp installer:
+
+*** Lisp:auto-install-extension.el -- Some enhanced functions for [[AutoInstall]].
+
+** Wiki:
+
+*** Lisp:yaoddmuse-extension.el -- Some enhanced functions for [[Yaoddmuse]].
+
+** IRC:
+
+*** Lisp:erc-extension.el -- Some enhanced functions for [[ERC]].
+
+*** Lisp:rcirc-extension.el -- Some enhanced functions for Rcirc.
+
+*** Lisp:lisppaste-extension.el -- Some enhanced functions for Lisp:lisppaste.el
+
+** Web:
+
+*** Lisp:w3m-extension.el -- Many useful functions for [[emacs-w3m]].
+
+** RSS and Atom:
+
+*** Lisp:newsticker-extension.el -- Some enhanced functions for [[NewsTicker]].
+
+** Newsgroup and Mail:
+
+*** Lisp:gnus-extension.el -- Some enhanced functions for [[Gnus]].
+
+** Input method:
+
+*** Lisp:scim-bridge-extension.el -- Some enhanced functions for [http://www11.atwiki.jp/s-irie/pages/12.html scim-bridge.el]
+
+*** Lisp:eim-extension.el -- Some enhanced functions for [[Eim]].
+
+** Miscellaneous:
+
+*** Lisp:festival-extension.el -- Some enhanced functions for Lisp:festival.el
+
+*** Lisp:lazycat-toolkit.el -- Miscellaneous personal code, have many depend libraries, just copy you like :)
+
+*** Lisp:one-key-config.el -- Some examples to use [[OneKey]].
+
+*** Lisp:wget-extension.el -- Some enhanced functions for [[EmacsWget]].
+
+==Miscellaneous==
+===Configuration file===
+
+: Below are part of my configuration files. 
+: Just for example, i won't update those configuration files all the time.
+
+* Startup:
+
+** [[.emacs-AndyStewart.el | ~/.emacs]] -- My dot emacs file.
+
+** Lisp:LazyCatFont.el -- Configuration file for font.
+
+** Lisp:LazyCatDepend.el -- Configuration file for load depend libraries.
+
+** Lisp:LazyCatRedefine.el -- Some functions redefine.
+
+** Lisp:LazyCatKeystoke.el -- Keybinding for Emacs.
+
+** Lisp:LazyCatSetup.el -- Setup initiation file.
+
+** Lisp:LazyCatTheme.el -- Color theme for Emacs.
+
+** Lisp:LazyCatStartup.el -- Startup configuration.
+
+* Programming:
+
+** Lisp:init-ide.el -- Some configuration for IDE.
+
+** Lisp:init-eldoc.el -- Configuration file for [[ElDoc]].
+
+** Lisp:init-haskell.el -- Configuration file for [[HaskellMode]].
+
+** Lisp:init-auto-complete.el -- Configuration file for [[AutoComplete]].
+
+** Lisp:init-company-mode.el -- Configuration file for [[CompanyMode]].
+
+** Lisp:init-flymake.el -- Configuration file for [[FlyMake]].
+
+** Lisp:init-paredit.el -- Configuration file for [[ParEdit]].
+
+** Lisp:init-shell.el -- Configuration file for ShellMode.
+
+** Lisp:init-yasnippet.el -- Configuration file for [[Yasnippet]].
+
+** Lisp:init-hideshow.el -- Configuration file for [[HideShow]].
+
+** Lisp:init-etags.el -- Configuration file for [[EmacsTags]].
+                                                   
+* File and Buffer:
+
+** Lisp:init-dired.el -- Configuration file for [[DiredMode]].
+
+** Lisp:init-ido.el -- Configuration file for [[InteractivelyDoThings]].
+
+** Lisp:init-icicles.el -- Configuration file for [[Icicles]].
+   
+** Lisp:init-anything.el -- Configuration file for [[Anything]].
+
+** Lisp:init-backup.el -- Some configuration for backup file.
+
+** Lisp:init-auto-save.el -- Some configuration for auto save file.
+
+* Spell Check:
+
+** Lisp:init-ispell.el -- Configuration file for [[InteractiveSpell]].
+
+** Lisp:init-predictive.el -- Configuration file for [[PredictiveMode]].
+
+* Notes:
+
+** Lisp:init-org.el -- Configuration file for [[OrgMode]].
+
+* Music:
+
+** Lisp:init-emms.el -- Configuration file for [[EMMS]].
+
+* IRC:
+
+** Lisp:init-erc.el -- Configuration file for [[ERC]].
+
+** Lisp:init-rcirc.el -- Configuration file for [[rcirc]].
+
+* Newsgroup and Mail:
+
+** Lisp:init-gnus.el -- Configuration file for [[Gnus]].
+
+** Lisp:init-bbdb.el -- Configuration file for [[BBDB]].
+
+* RSS and Atom:
+
+** Lisp:init-newsticker.el -- Configuration file for [[NewsTicker]].
+
+* Web:
+
+** Lisp:init-w3m.el -- Configuration file for [[emacs-w3m]].
+
+* Download:
+
+** Lisp:init-wget.el -- Configuration file for [[EmacsWget]].
+
+** Lisp:init-mldonkey.el -- Configuration file for [[MlDonkey]].
+                                                   
+* Miscellaneous:
+
+** Lisp:init-misc.el -- Miscellaneous configuration file.
+
+** Lisp:init-sdcv.el -- Configuration file for [[Sdcv]].
+   
+** Lisp:init-linum.el -- Configuration file for [http://www.emacswiki.org/cgi-bin/wiki/LineNumbers#toc4 linum-mode].
+
+** Lisp:init-maxima.el -- Configuration file for [http://maxima.sourceforge.net/ Maxima].
+
+** Lisp:init-time.el -- Time setup.
+
+===Yasnippet Template Code===
+: [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate Here] have my template code for [[Yasnippet]].
+
+===Use SCIM in Emacs===
+: I have wrote [http://www.emacswiki.org/cgi-bin/emacs/ScimBridge EnglishTutorial] that how to use [http://www.scim-im.org/ SCIM] in Emacs.
+: And [http://www.emacswiki.org/cgi-bin/emacs/ScimBridge_Chinese ChineseTutorial] have the Chinese version of tutorial.
+
+==Reading Notes==
+===Emacs Lisp Reference Manual===
+: I have wrote Chinese notes about "Emacs Lisp Reference Manual (23.0.60.1)" at [http://www.emacswiki.org/emacs/?action=browse;id=EmacsLispManual_Chinese_Notes here].
+: Chinese user can read those notes to study Emacs.
+===Emacs Lisp Programming==
+: I have wrote Chinese notes about "Emacs Lisp Programming" at [http://www.emacswiki.org/emacs?action=browse;id=EmacsLispProgramming_Chinese_Notes here].
+===Programming in Emacs Lisp: An introduction===
+: I have wrote Chinese notes about "Programming in Emacs Lisp: An introduction" at [http://www.emacswiki.org/cgi-bin/emacs/ProgrammingInEmacsLisp_Chinese_Notes here].
+
+==Contact me==
+
+: IRC: [::ManateeLazyCat].
+
+: Mail: lazycat dot manatee at gmail dot com
+
+==Acknowledgments==
+: Thanks to RichardRiley correct my English, advices and many other help. 
+: Thanks to [[rubikitch]] for patches, advices and many other help. 
+: Thanks to DrewAdams for improve documentation and advices.
+: Thanks to Juanma Barranquero for patches, advices for [[Irfc]].
+: ...
+: And thanks all emacsers that provide help! :)
+
+==Comment==
+[new]
+Welcome to the Wiki!  Thanks for sharing your large collection of Emacs libraries. -- AaronHawley
+[new]
+Thanks! -- AndyStewart
+
+----
+==Leave Emacs==
+* Bye
+:: Hi, all.
+
+:: I will leave Emacs soon. 
+:: The main reason that make me leave Emacs is not Emacs environment, is elisp, elisp is not powerful enough.
+:: So i think it's time to change...
+:: Sorry i can't do more contributions for Emacs world, but i'm very enjoy the time that explored Emacs.
+:: And i'm very happy to know so many emacsers...
+
+* My code
+
+:: I'm glad to help others even i never use Emacs anymore, i like share my knowledge. 
+:: My code perhaps have bug or flaw, please hacking it self, i really haven't time to write elisp code. Sorry.
+:: And anyone can re-release my code and don't need my permission, all my code is under GPL!
+
+* Find someone take over my extension
+
+:: Now i'm finding someone to take over my elisp package.
+:: If anyone interested my elisp package, please add at below (or mail to me). 
+
+:: Please don't ask me why, i don't want to fall into an endless debate. 
+:: If you want to take over my elisp package, just leave your name here, otherwise i will ignore. Thanks! -- AndyStewart
+
+[new]
+I wish you'd elaborate. How is elisp not powerful enough? What are you migrating to?
+
+: Sorry,  i do not want to further. Just one thing, I will leave... -- AndyStewart
+
+:: That's OK, didn't mean any offense. Thank you for your many contributions, and good luck. :)
+
+[new:rubikitch:2009-05-01 22:07 UTC]
+I want to take over AutoInstall. Thank you for evolving InstallElisp. And I would
+merge Lisp:anything-auto-install.el and Lisp:anything-yaoddmuse.el into
+Lisp:anything-config.el if you prefer, because they are very useful. -- [[rubikitch]]
+
+: Yes, AutoInstall is yours. I think you're the best person to take over AutoInstall.
+About merge Lisp:anything-auto-install.el and Lisp:anything-yaoddmuse.el into Lisp:anything-config.el, feel free to do that. BTW, are you have interested below packages? 
+:: [[Yaoddmuse]], [[OneKey]], [[LazySearch]]? -- AndyStewart
+
+
+[new:DrewAdams:2009-05-01 14:02 UTC]
+Best of luck to you, Andy, and thanks for all of your EmacsLisp contributions. -- DrewAdams
+
+[new:XavierMaillard:2009-05-02 04:45 UTC]
+I am very sad to read that. Anyway, thank you very much for your
+contributions. We hope to see you again soon :) -- XavierMaillard
+
+----
+
+CategoryHomepage
+

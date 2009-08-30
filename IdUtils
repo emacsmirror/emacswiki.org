@@ -1,0 +1,19 @@
+The GNU ID utilities maintains a database of identifiers in your source
+code, similar to EmacsTags but it works with binary files rather than text source files.  The package comes with a simple interface for Emacs.
+
+* http://www.gnu.org/software/idutils/
+* ftp://ftp.gnu.org/gnu/id-utils
+* http://sv.gnu.org/projects/idtils/
+
+ElScreen-GF (in conjunction with EmacsLispScreen) is an yet another
+interface to GNU ID utilities.
+
+* http://www.morishima.net/~naoto/software/elscreen/
+
+CEDET (CollectionOfEmacsDevelopmentEnvironmentTools) has support for using ID Utils as a back end for several tasks.
+Those tasks include:
+* EDE locate - Helps EDE file include files, or jump to a file.
+* SemanticBovinator - The Symref tool in semantic uses IDUtils to find symbols usages.
+
+----
+CategoryExternalUtilities

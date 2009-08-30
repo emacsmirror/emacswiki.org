@@ -1,0 +1,29 @@
+I just learnt today on the EmacsChannel that
+Emacs user blogs are available via [http://planet.emacsen.org/ Planet Emacsen]! :)
+-- AlexSchroeder
+
+[new]
+I've been holding off on announcing it until I get around to styling the page... guuess I should make that a higher priority now! -- EdwardOConnor
+
+[new]
+I don't mind the plain vanilla version.  KISS, works.  Something like [http://emacsen.org emacsen.org] would be easy to read, too.  I never had time to read my favorite Emacs blogs.  Now I can. -- AaronHawley
+
+[new]
+I like the new design with the fake modeline for every post. :)
+The "window title" being black on purple is a bit hard to read.
+(Actually I sent about three mails to poor [[hober]] already with CSS related stuff.)
+Do we add Emacs categories only, or are all articles OK?
+I have little experience with this planet thing.
+Or do we run it like the EmacsChannel: OffTopic is OnTopic, but OnTopic is also OnTopic?
+
+[[alephnull]] says off-topic, [[bpalmer]] says on-topic...
+
+And: Wouldn't it be cool if there was a decentralized way of determining the feeds in that list?
+For example: Have a page PlanetEmacsFeeds on this wiki, listing feeds? (Retrieve the list using
+Self:action=browse;id=PlanetEmacsFeeds;raw=1.)
+Or automatically slurp all posts on Technorati with the appropriate emacs/xemacs tags?
+I have no idea how these things work, somebody help me out. :)
+-- AlexSchroeder
+
+[new]
+Just a discussion point: is there a better way to do this that only pulls in posts that are actually about emacs? I find it annoying that "Planets" are usually 90% off-topic material.

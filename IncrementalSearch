@@ -1,0 +1,180 @@
+'''[::Isearch]''', that is, '''[::incremental search]''', is the standard way to search in vanilla Emacs.  Type `C-s' and start typing a search string -- Emacs finds a match to what you've typed so far. Change your input, and Emacs adjusts to find the new target. This dynamic, on-the-fly behavior is what is meant by "incremental" search.
+
+[:StdIsearchKeys]
+= Standard Isearch Keys =
+You can define your own keymap to extend Isearch with some other key bindings (see [[#MoreIsearchKeys]], below), but Isearch already comes with these handy keybindings (and more):
+
+* ''Quitting'' Isearch -- Many [[KeySequence]]s quit Isearch.  One that many people use is `RET'. You ''cannot'' use `RET' to search for the end of a line -- use `C-q C-j' for that. The cursor is left on the last match.
+* `C-g' -- Abort the search, putting back the cursor to its initial position.
+* `C-s' -- Repeat the search as many times as you want throughout the buffer.
+* `C-w' -- Select the (rest of the) ''word'' the TextCursor is on as the search string; repeating `C-w' appends more words to the search string.
+* `C-y' -- Select the text up to the end of the ''line'' as the search string.
+* `M-y' -- Yank (paste) the ''text last copied'' to the kill-buffer (clipboard) to the end of the search string.
+* `M-n', `M-p' -- Re-use a ''previous'' search string. Repeat to choose older strings. `M-n' moves forward in the search history; `M-p' moves backward.
+* `M-TAB' -- ''Complete'' the current search string against all ''previous'' search strings.
+* `M-c' -- Toggle search ''case-sensitivity''.
+* `M-r' -- Toggle between ''regular-expression'' searching and literal-string searching.
+* `M-e' -- Pause to ''edit'' the search string. Searching is disabled until you explicitly resume it with `C-j' (or `C-s' or `C-r').
+* ##`M-%'## -- Start ''query replace'' using the current string (available in development GNU Emacs).
+* ##`C-M-%'## -- Start a regular-expression query replace using the current search string (available in development GNU Emacs).
+
+''Sidenote'': to enter a literal newline in the search field, you can type
+<code>C-q C-j</code>. You can also bind the literal newline to a simpler shortcut (e.g. <code>C-o</code>) by putting in your init file:
+
+    (define-key isearch-mode-map "\C-o" 
+          '(lambda ()(interactive)(isearch-process-search-char ?\n)))
+
+
+[:MoreIsearchKeys]
+= More Isearch Keys: Adding Key Bindings =
+
+* '''[[Icicles]]''' lets you use `S-TAB' to complete the current search string against all previous search strings. This is thus similar to `M-TAB' (see [[#StdIsearchKeys]], above), but it gives you all of the '''Icicles''' [[Completion]] features: regexp matching, candidate cycling, ... In particular, you can see all matching previous searches in buffer `*Completions*' and either click one (`mouse-2') or cycle to it with '''Page Up'''/'''Down'''.  See [[Icicles - Isearch Enhancements]].
+
+* IsearchPlus adds the following bindings (the standard bindings for some of these use the Meta modifier (`M-') instead).
+** `C-h' provides '''''help''''' on Isearch while isearching. Library IsearchPlus also redefines `isearch-mode-help' so that it lists ''all'' Isearch bindings and ends Isearch properly
+** `C-t' lets you toggle between ''regular-expression'' isearching and normal isearching. (Standard binding `M-r'.)
+** `C-c' lets you toggle ''case-sensitivity'' while isearching. (Standard binding `M-c'.)
+** `C-SPC' lets you toggle setting the region around the last found occurrence. IsearchPlus adds a function to `isearch-mode-end-hook' that respects the state of this toggle.
+** `C-j' lets you edit the search string. It also provides other options, like changing to ''word search'' (`C-w' as first char) or ''non-incremental search'' (RET). (Standard binding `M-e'.)
+
+* Make `C-h' in Isearch provide help on Isearch.  See IncrementalSearchHelp. This is also done by IsearchPlus (see above).
+
+* Make `C-y' in Isearch act like `M-y' does in the default map:
+
+       (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
+
+:: Why? By default, `C-y' in Isearch doesn't do what you might expect: Instead of yanking from the `kill-ring' to the search string, it acts on the current line.
+
+
+* `isearch-occur' -> OccurFromIsearch: Invoke `occur' on Isearch hits.
+
+* `isearch-highlight-phrase' -> HighlightFromIsearch: Highlight Isearch hits even after searching.
+
+* The following pulls the next expression or symbol from buffer into the search string:
+
+       (defun isearch-yank-sexp ()
+         "*Pull next expression from buffer into search string."
+         (interactive)
+         (isearch-yank-internal (lambda () (forward-sexp 1) (point))))
+
+:: Bind it to some key of your preference in <code>isearch-mode-map</code>.
+
+* When you do long searches (when you search for a keyword in a large file and get many hits) if you sometimes get tired in your left pinky (all those repeated C-s), you might want to try the following code. It rebinds `C-s' and `C-r' to the <nowiki><next></nowiki> and <nowiki><prior></nowiki> keys (page down and up):
+
+       (define-key isearch-mode-map [next]
+         'isearch-repeat-forward)
+
+       (define-key isearch-mode-map [prior]
+         'isearch-repeat-backward)
+
+
+
+
+[:RegexpSearches]
+= Regexp Searches (On Beyond Wildcards) =
+
+Searching with regular expressions (regexps) is searching with ''wildcards'' (and more). If you aren't already searching using regexps, then that's the ''next thing you should learn'' -- *NOW!*
+
+Try `C-M-s' (forward) or `C-M-r' (backward) -- or you can just do `M-r' from isearch (or `C-t' if you make the binding recommended above -- see [[#MoreIsearchKeys]]).
+
+With regexp searching you will need to think a little more, but will do fewer searches for a task, and will be able to more precisely get what you're searching for. 
+
+To learn about regexps, see RegularExpression. 
+
+
+
+= Position of Point =
+
+Note that when you type `C-r', isearch goes backwards.  When you search
+backwards, find something, and then end the search, for example by
+hitting `RET', point is at the beginning of the string you searched.
+When you search forwards, point is not necessarily at the end of the string you
+were searching for, but only after the last character that you typed
+-- bad usability!  That means that you cannot predict point
+based on the string you are searching for (and thinking about).  You
+must predict point based on the numbers of characters you typed.
+
+Here is how to change that in your InitFile, courtesy of AdrianKubala:
+
+    (add-hook 'isearch-mode-end-hook 'my-goto-match-beginning)
+    (defun my-goto-match-beginning ()
+      (when isearch-forward (goto-char isearch-other-end)))
+
+    (defadvice isearch-exit (after my-goto-match-beginning activate)
+      "Go to beginning of match."
+      (when isearch-forward (goto-char isearch-other-end)))
+
+With this hook, both `C-g' and `RET' exit the search at the begining of the search string. To recover the old behaviour of `C-g' (going back to where you where before starting the search), you can change the hook to (only tested on Emacs 22):
+
+    (defun my-goto-match-beginning ()
+      (when (and isearch-forward (not isearch-mode-end-hook-quit))
+        (goto-char isearch-other-end)))
+
+
+'''''Tip:''''' To get back to where you started the search, just use `C-x C-x'. This works because isearch sets the mark at the search start (if point ends up elsewhere after searching).
+
+''Note:'' Emacs 21 currently has a bug in that `isearch-mode-end-hook' is called ''after'' `C-g' exits an isearch. That means that if you end a search with `C-g' you cannot use `C-x C-x' to get back to where you were before searching.
+[new:DrewAdams:2004-12-25 17:33 UTC]
+Since I submitted that bug, I've heard back that it will be corrected in the next GNU Emacs release. -- DrewAdams
+[new]
+
+See also: IsearchOtherEnd.
+
+= Minibuffer Feedback During Isearch =
+
+Lisp library Lisp:oneonone.el, from DrewAdams, changes the background color of the (separate) MiniBuffer [[Frame]] when you isearch. Screenshots of the minibuffer frame (normal, followed by isearch):
+
+[[image:DrewsEmacsMinibufferFrame]]
+[[image:DrewsEmacsMinibufferFrameIsearch]]
+
+
+= Icicles Search: Another Way to Search Incrementally =
+
+Besides enhancing Isearch completion (see [[#MoreIsearchKeys]], above), '''[[Icicles]]''' provides an additional, unusual way of searching incrementally that is akin to both isearch and `occur' -- but weirder! The explanation is here: [[Icicles - Search Commands, Overview]]. Highlights:
+
+* Perform a regexp search for ''search contexts'' in a buffer, the region, multiple buffers, or multiple saved regions. You can limit the contexts to matches of a regexp subgroup, if you want. 
+
+* (Optional) Search incrementally ''within'' the search contexts, using another, fine-tuning regexp -- that is, filter all of the original hits at once, using a second regexp.
+
+* (Optional) Hit a key to ''replace'' the current search hit with different text at any time, or replace all search hits.
+
+"Incremental" has a double meaning here:
+
+* You can change your (optional) fine-tuning regexp on the fly, and see the changes among the original search hits.
+
+* You can move incrementally among search hits in the target buffer(s).
+
+
+
+= More Isearch Stuff =
+
+Here are some more EmacsWiki pages having to do with Isearch in some way:
+
+* IncrementalSearchHelp -- Get Isearch help interactively from Isearch.
+* IsearchOtherEnd -- Use Isearch to navigate buffers by controlling the point behavior.
+* OccurFromIsearch -- Run `occur' with the current Isearch search string.
+* SearchingTheMinibuffer -- How to use Isearch in the mini-buffer.
+* SearchAtPoint -- A feature from VI that is useful to programmers.  Also shows how to extend Isearch.
+* KillISearchMatch -- Bind C-k in isearch to kill the match
+
+
+I often search for a string which I want to grab and paste elsewhere:
+So I want to find it, mark it, and kill it.
+I can use C-w/C-z to extend the search string (either by word or by sexp), and then I just want to grab is somehow:  I think it's natural to bind it to M-w.
+
+Here's how:
+
+  (defun isearch-save-and-exit ()
+     "Exit search normally. and save the `search-string' on kill-ring."
+    (interactive)
+    (isearch-done)
+    (isearch-clean-overlays)
+    (kill-new isearch-string))
+ 
+  (define-key isearch-mode-map    "\M-w" 'isearch-save-and-exit)
+
+
+----
+SearchAndReplace
+CategoryRegexp
+

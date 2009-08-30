@@ -1,0 +1,31 @@
+= Overview =
+
+Emacs to Maya (etom) is a package used for communication between emacs and 
+Autodesk Maya. For example you can use it together with Shuji Narazaki's 
+mel-mode to send pieces of mel code to Maya and get the results back in emacs.
+
+= Instalation ==
+
+Download Lisp:etom.el and Shuji Narazaki's mel-mode and add this to your 
+~/.emacs file:
+
+<pre>
+(add-hook
+ 'mel-mode-hook
+ (lambda ()
+   (require 'etom)
+   (setq etom-default-host "localhost")
+   (setq etom-default-port 2222)
+   (local-set-key (kbd "C-c C-r") 'etom-send-region)
+   (local-set-key (kbd "C-c C-c") 'etom-send-buffer)
+   (local-set-key (kbd "C-c C-l") 'etom-send-buffer)
+   (local-set-key (kbd "C-c C-z") 'etom-show-buffer)))
+</pre>
+
+You should also have an open command port in Maya. To do this execute
+
+<pre>
+commandPort -eo -n ":2222";
+</pre>
+
+or add it to you Maya startup file.

@@ -1,0 +1,19 @@
+Clique no título para procurar por páginas que descrevem os clientes de bate-papo escritos para Emacs.
+
+
+* EmacsMessenger -- Um cliente MSN.
+* TNT -- Um AimClient.
+* http://eicq.sourceforge.net - Cliente ICQ , apenas XEmacs.
+* Jabber clients
+** EmacsJab -- Um cliente Jabber.
+** SmyrnoJabberClient -- Outro cliente Jabber.
+** JabberEl -- Um pequeno cliente Jabber.
+* Clientes InternetRelayChatBr
+** EmacsIRCClient -- O fantástico ERC
+** BitlBee pode ser usado como um gateway IRC para serviços de mensagem instantânea (AIM, ICQ, MSN)
+* Clientes Yahoo!
+** ElGyach -- Cliente Yahoo! Chat 
+** YodEl -- outro cliente Yahoo!
+* EmacsTalk -- 
+* [[ETalk]] -- Uma interface para vários sabores de Unix 'talk' 
+* [[Lispy]] -- Um cliente para servidores de chat <Mtp>

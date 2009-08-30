@@ -1,0 +1,40 @@
+The basic mechanism for spellchecking in Emacs involves the external program ispell/aspell.  For information on using this, see InteractiveSpell. There are also some alternatives:
+
+* FlySpell mode runs ispell/aspell in the background and highlights misspelled words as you type.
+
+* SpeckMode is similar to FlySpell but it only corrects words when you stop typing and allows to use different dictionaries in the same buffer.
+
+* WcheckMode is a general-purpose (spell-)checker which works not only with Ispell, Enchant, Aspell, Hunspell etc. but also with any command-line text-filtering program. Wcheck is configurable and not tied to semantics of spell-checking human languages.
+
+* AutoCorrection corrects misspellings automatically as you type.
+
+See also CategoryWriting.
+
+There are a number of packages that will help you if you use several different languages, either in different buffers, or mixed together in the same buffer.
+
+These pages offer spelling help:
+
+* FlyspellBabel -- Switch flyspell language according to LaTeX
+Babel commands.
+
+* AutoLangMode -- Guesses the language of the current buffer/paragraph from content.
+
+* GuessLang -- Similar guessing from content, but only for a whole buffer.
+
+* GuessBufferLanguage -- A simpler approach for guessing the language of a buffer.
+
+* AutoDictionaryMode -- Yet another dictionary guesser.  Works during idle time and supports self-updating templates.
+
+* WikiSpell -- GuessBufferLanguage adapted for use with Wikis.
+
+* [[Synonyms]] -- One way to check spelling is to look words up in a dictionary -- or, in this case, a thesaurus. You can also check spelling by displaying matching completions, without bothering to look for synonyms.
+
+* If you already use [[Icicles]] and [[Synonyms]], then you can quickly check the spelling of a word (if it is in the thesaurus!) with command `icicle-complete-thesaurus-entry'. I bind it to `##C-c /##'. If the word is correctly spelled, it appears as a complete completion (is highlighted as such in the minibuffer).
+
+* PredictiveMode -- In-buffer completion of words from a dictionary (British English dictionary included). Completions are, of course, spelled correctly. Especially useful when auto-complete and dynamic-completion are enabled (the default). This helps with those long, awkward, illogically spelled words English loves to taunt you with.
+
+* SpellNumber -- Spell out an integer or currency in words. It is multi-language and multi-country.
+
+* CocoAspell -- Using cocoAspell on Mac OSX.
+
+* GnusSpelling -- Switching dictionaries depending on group parameters in Gnus.

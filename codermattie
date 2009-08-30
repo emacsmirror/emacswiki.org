@@ -1,0 +1,78 @@
+*Mike Mattie*
+
+I am a programmer currently residing in Seattle. I have been using Emacs since ~1999. I started coding
+in elisp at the end of 2007. 
+
+In the course of maintaining my creeping Emacs configuration I am factoring
+the least idiosyncratic bits from my configuration and posting them. I hope others may derive some
+benefit from reading or using my forays in Emacs.
+
+== Contact ==
+
+My E-Mail is codermattie@gmail.com
+
+I check it frequently now, every couple of days or so.
+
+If you want to get ahold of me within a day or so use my .mac account which has the same username.
+Please do not publish that e-mail as it is still spam-free. Feel free to reference the gmail account
+though.
+
+== GNUPG ==
+I use GnuPG to sign the elisp files I post, and for e-mail if people are so inclined.
+
+*My key ID*
+
+B9012279
+
+can be obtained from pgp.mit.edu
+
+== Projects ==
+
+* [[Grail]]
+* [[BufferRing]]
+* [[Submerge]]
+* [[ParserCompiler]]
+
+== Snippets ==
+
+Here is a bit of code that automatically kills the buffer after a process exits.
+
+<pre>
+
+(defun run-hooks-with-arg ( hook-list &rest args )
+  "run the hook list with arg"
+  (mapc
+    (lambda ( hook )
+      (apply hook args))
+      hook-list))
+
+;; setup a hook that runs when the term process exits
+(defvar term-process-exit-hook nil
+  "a hook run when the term process exists")
+
+;; infect the term-sentinel function
+(defadvice term-sentinel (around term-sentinel-hook (proc msg))
+  (let
+    ((pbuffer (process-buffer proc))
+     (did-exit (memq (process-status proc) '(signal exit))))
+    ad-do-it
+    (when did-exit (run-hooks-with-arg term-process-exit-hook pbuffer)) ))
+
+;; get rid of the buffer when the process exits
+(add-hook 'term-process-exit-hook (lambda ( pbuffer )
+                                    (kill-buffer pbuffer)))
+
+(ad-activate 'term-sentinel)
+</pre>
+
+To get keybindings right execute this function. When you enter the key sequence it will generate
+the (kbd) call in the buffer. handy for executing after (local-set-key _here_
+
+<pre>
+(defun insert-key-notation ()
+  "inject a complete \(kbd \"sequence\"\) with key notation for a key sequence given by prompt"
+  (interactive)
+  (insert "(kbd \"")
+  (insert (format-kbd-macro (read-key-sequence "Key? " nil t)))
+  (insert "\")"))
+</pre>

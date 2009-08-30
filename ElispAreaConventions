@@ -1,0 +1,51 @@
+This is the place for guidelines and existing coding practices for EmacsLisp files on EmacsWiki pages.
+
+Guidelines that say "'''should'''" are paraphrased from the EmacsLispReference. Text in angle brackets (<code><</code>, <code>></code>) is exemplary only -- replace it with your text. Note, in particular, the difference between lines that start with <code>;;;</code> and lines that start with <code>;;</code>. Three semi-colons indicate ''major'' file sections.
+
+The major section headings are, in order:
+
+* <code>;;; <name>.el --- <one-line description of the library></code>
+* <code>;;; Commentary:</code>
+* <code>;;; Change Log:</code> (optional)
+* <code>;;; Code:</code>
+* <code>;;; <name>.el ends here</code>
+
+Here are descriptions of all commonly used (or proposed) sections:
+
+* The file should start with <code>;;; <name>.el --- <one-line description of the library></code>. This should contain the same description as the <code>;; Description:</code> field, if that exists. The filename should be the same as the <code>;; Filename:</code> field. Both <code>;; Description:</code> and <code>;; Filename:</code> are considered obsolete.
+* The file should contain a copyright notice, unless you want to put it in public domain. Use message like this: <code>;; Copyright (C) <YEAR> <NAME></code> -- for example, <code>;; Copyright (C) 2000-2005  J. Random Hacker</code> or <code>;; Copyright (C) 2000-2005  J. Random Hacker, all rights reserved.</code>. Copyright could be granted to organization, for example <code>Free Software Foundation, Inc.</code>. If there are more than one copyright holders, list them separated by commas.
+* The author or authors (at least the principal ones) and the current maintainer of the library should be noted, using <code>;; Author:</code> and <code>;; Maintainer:</code>. Those fields should state the name, and they can also indicate the net address, if appropriate. For example <code>;; Maintainer: Joe Hacker <jhacker@foo.bar></code>. If there are multiple authors, you can list them on continuation lines led by `<code>;;</code>' and a tab character (use `<code>C-q TAB</code>' to insert it).
+* To check if the file on the wiki changed from the version downloaded, the following convention can be followed -- modify the following fields:
+
+** <code>;; Last-Updated: <date in UTC, or with timezone present></code>
+** <code>;;           By: <name of modifier></code>
+** <code>;;     Update #: <counter incremented after each update></code> -- successive Wiki updates need not have successive update numbers).
+
+:: These fields can be automatically updated by using Lisp:header2.el -- see AutomaticFileHeaders.
+* Other common fields include:
+** <code>;; Created: <creation date></code>, for example <code>14 Jul 1992</code>
+** <code>;; Version: <library version></code>, for example <code>1.11</code>
+** <code>;; RCS version: $Revision: x.yy $</code> or equivalent (configuration-control version; the example is for RCS and CVS, updated automatically by VersionControl software when committing changes)
+** <code>;; Keywords: <finder keywords, separated by commas></code>. This line lists keywords for the `<code>finder-by-keyword</code>' help command.
+** <code>;; URL: <location of the file></code> -- use <code>http://www.emacswiki.org/emacs/name.el</code> or <code>http://www.emacswiki.org/cgi-bin/emacs/download/name.el</code> if you want to host it here
+** <code>;; Compatibility: <target Emacs versions></code> and <code>;; Incompatibility:</code>
+* *Proposition* -- Use <code>;; EmacsWiki:</code> (EmacsWiki page that describes the library). For example, this would be <code>;; EmacsWiki: OccurBuffer</code> for Lisp:color-moccur.el (OccurBuffer). A good place for this is just after <code>;; URL</code>.
+* A description of the library and how to use it should be entered under <code>;;; Commentary:</code>. Sometimes, the <code>Commentary</code> section is divided into <code>;; Installation:</code> and <code>;; Description:</code>.
+* If you store change log information in the elisp file, you should begin it with <code>;;; Change Log:</code>.
+* You can add the [[GPL]] boilerplate somewhere -- typically, it appears before <code>;;; Code:</code>.
+* If you like, you can add <code>;; This file is *NOT* part of GNU Emacs.</code>, or <code>;; This file is part of GNU Emacs.</code>, or <code>;; This file is part of XEmacs.</code>, as appropriate. If present, this appears typically before <code>;;; Code:</code>.
+* The actual code should be in section <code>;;; Code:</code>
+* The file should end with <code>;;; <name>.el ends here</code>. The final full stop is optional.
+
+FWIW, the EmacsLispReference suggests for files contributed to GNU (Info node `Emacs Lisp Coding Conventions'):
+
+: *Please keep the names of your Emacs Lisp source files to 13 characters or less.*  This way, if the files are compiled, the compiled files' names will be 14 characters or less, which is short enough to fit on all kinds of Unix systems.
+
+Relying on case in filenames is not a very good idea, either. Sure, it works on UNIX:ish systems, but not in Windows.
+
+Due to the repeated requests of certain individuals ;) the ElispArea currently accepts files containing the characters a-z, A-Z, and 0-9.
+
+*See also:* AutomaticFileHeaders for automatic insertion of appropriate file headers.
+
+*See also:* CheckDoc for help in following self-documentation practices for EmacsLisp code
+

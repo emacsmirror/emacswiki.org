@@ -1,0 +1,32 @@
+This page contains ideas for the next versions of Eicq I want to see.
+SteveYoungs asked me to write them down to gain his motivation for further development. :)
+
+=== contact management ===
+* contacts should be arranged in arbitrary sets of subsets of the plain contacts list (I call them contact groups from now on)
+* these contact groups should be flexible in arrangement (this implies it cannot be mapped to the icq server that way :/)
+* with flexible I mean, they should just contain a reference to a specific contact (that'd allow to have a contact in multiple groups)
+* the actual arrangement should depend on my current mood (that means there should be references from my current mood to a certain set of contact groups)
+
+These thoughts are motivated from my habits that sometimes my business contacts are also private contacts, sending an amsg to all contacts of a specific groups becomes easier then.
+
+=== scoring messages ===
+* messages should get a score (similarly to the Gnus scoring)
+* scoring of messages should depend on my current mood (often I hate these static rules in Gnus and therefore I have loads of rule sets)
+* scoring should be done on any of the usual parameters (From, Keywords, Length, etc.)
+
+Often it's nerving to have people that ask too much in too short time intervals, therefore I'd like to have something like a (semi-)ignore via scoring in order to concentrate on not so frequent but important talks.
+
+=== moods ===
+* as proposed within the last to sections, eicq should be `mood-driven'
+* this may induce the idea to have the mood set automagically depending on other stuff (such as the score of messages, or inherited from the facts which people I communicate to)
+
+Steve even suggested an eicq-moodwatch-mode. Personally I think that's the biggest idea ever :).
+
+=== Gnus backend ===
+* Make possible to write gnus backend to view/group/score/sort/archive messages arrived in eicq.
+* Make possible to use native eicq interface and gnus backend at the same time.
+
+It is great when all your messaging like mail/news/icq performes in same manner.
+
+----
+CategoryWishList

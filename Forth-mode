@@ -1,0 +1,15 @@
+== Support for Editing Forth Code ==
+
+gforth.el provides auto-indent, documentation search and an interactive environment.
+
+gforth.el is typically included with an install of gForth (GNU Forth).
+
+== Basic Setup ==
+
+    (autoload 'forth-mode "gforth.el")
+    (autoload 'forth-block-mode "gforth.el")
+    (add-to-list 'auto-mode-alist '("\\.fs$" . forth-mode))
+
+----
+CategoryModes
+ProgrammingModes

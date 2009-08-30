@@ -1,0 +1,101 @@
+I wrote a short `print-it' function because I got addicted to Smalltalk's `#printIt' and wanted something similar inside Emacs.
+
+All it does is eval the current line or region as a shell command and insert the output in the current buffer.
+
+I also included examples to execute Lua & Ruby code with the same function.
+
+It's the same as `eval-print-last-sexp' (C-j in the *scratch* buffer), but generalizable to other scripting languages.
+
+-- SebastienRoccaSerra
+
+== How to Use ==
+
+Call the ad-hoc function when on a line or with an active mark.
+
+The resulting output is selected as a region, ready to cut and paste or replace-regexp.
+
+=== Shell Example ===
+
+If I have the following line anywhere in a buffer:
+{{{
+ls -aF | grep emacs
+}}}
+Calling `my-print-it' results in:
+{{{
+ls -aF | grep emacs
+.emacs*
+.emacs.d/
+.emacs~*
+}}}
+
+=== Ruby Example ===
+
+If I have the following line anywhere in a buffer:
+{{{
+7.times {|i| puts "toto #{i}"}
+}}}
+Calling `my-print-it-ruby' results in:
+{{{
+7.times {|i| puts "toto #{i}"}
+toto 0
+toto 1
+toto 2
+toto 3
+toto 4
+toto 5
+toto 6
+}}}
+
+== Code ==
+
+Here's the code:
+{{{
+;;;
+;; Main function
+
+(defun my-print-it (&optional language-command)
+  (interactive)
+  (let* ((start (or (and mark-active
+                         (region-beginning))
+                    (beginning-of-thing 'line)))
+         (end (or (and mark-active
+                       (region-end))
+                  (end-of-thing 'line)))
+         (command (buffer-substring start end)))
+    (when language-command
+      (setq command
+            (concat language-command " '"
+                    command
+                    "'")))
+    (let ((result (shell-command-to-string command)))
+      (when result
+        (goto-char end)
+        (push-mark)
+        (insert result)
+        (setq deactivate-mark nil)
+        (exchange-point-and-mark)))))
+}}}
+
+=== Print It Lua, Print It Ruby, Print It Perl, and Print It Python ===
+
+Here:
+{{{
+;;;
+;; Extensions
+
+(defun my-print-it-lua ()
+  (interactive)
+  (my-print-it "lua -e"))
+
+(defun my-print-it-ruby ()
+  (interactive)
+  (my-print-it "ruby -e"))
+
+(defun my-print-it-perl ()
+  (interactive)
+  (my-print-it "perl -e"))
+
+(defun my-print-it-python ()
+  (interactive)
+  (my-print-it "python -c"))
+}}}

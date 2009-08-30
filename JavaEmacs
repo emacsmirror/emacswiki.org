@@ -1,0 +1,45 @@
+The homepage is here:
+
+* http://jemacs.sourceforge.net/
+
+From the web page (update when appropriate):
+
+JEmacs is a re-implementation of Emacs, written in a mix of
+<b>Java</b>, <b>Scheme</b>, and EmacsLisp.
+
+JEmacs uses Kawa to compile Scheme and ELisp into Java bytecodes. Kawa
+is a widely-praised Scheme implementation that includes many Scheme
+extensions, powerful Java/Scheme interoperability, and high
+performance though a sophisticated compiler.
+
+Kawa is being extended to support ELisp. This is so JEmacs can run the
+many existing Emacs packages written in ELisp. These will be compiled
+into Java bytecodes, which means ELisp will run on any Java engine,
+and benefit from the engineering being put into JVMs, such as
+"Just-In-Time" compilers. This could be substantially faster than the
+existing Emacs bytecode interpreter.
+
+It will also be possible to write Emacs packages using Scheme. This
+should provide higher performance and cleaner design through the use
+of static scoping. You also get all the extensions and optimizations
+of Kawa. (The FSF also plans to base a future Emacs on Scheme, using
+Guile; however, I believe Kawa will provide better performance and a
+better design.)
+
+Status:
+
+Currently, JEmacs is a functional but very minimal editor. For
+example, searching commands are not implemented. And JEmacs is not
+robust or reliable. Many of the core Emacs concepts (keymaps, windows,
+frames, buffers, markers) are implemented, and generally in such a way
+as to provide the standard Emacs semantics. Enough of ELisp is
+implemented to compile non-trivial ELisp file, though many of the
+necessary functions and macros are missing.
+
+== Kawa Instead of Guile? ==
+
+This seems like an interesting alternative to GuileEmacs. --
+AlexSchroeder
+
+----
+CategoryExtensionLanguage EmacsImplementations

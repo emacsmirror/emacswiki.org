@@ -1,0 +1,29 @@
+[http://developer.apple.com/tools/xcode/ XCode] is an IDE by Apple Inc.
+
+==Emacs Integration==
+Carbon Emacs can be easily selected for editing source code from within XCode's Preferences.
+
+If you prefer to use /emacsclient/ with X11 emacs it is possible to make a simple applescript wrapper.
+
+
+    on open theFile
+      set thePath to POSIX path of theFile
+      tell application "System Events" to keystroke tab using (command down)
+      set theApp to name of (info for (path to frontmost application))
+      tell application "X11" to activate
+      set scriptVar to ""
+      set scriptVar to scriptVar & ". ~/.bashrc;" 
+      set scriptVar to scriptVar & "emacsclient \"" & thePath & "\" -a emacs;"
+      set scriptVar to scriptVar & "osascript -e \"tell application \\\"" & theApp & "\\\" to activate\";"
+      set scriptVar to "(" & scriptVar & ") &> /dev/null &"
+      do shell script scriptVar
+    end open
+
+
+Simply paste the above into "Script Editor.app" and save as an Application Bundle. You may then set this application as your text editor in XCode or anywhere else you should wish.
+
+It is also possible to trigger compilation of an XCode project with M-x compile using ''xcodebuild''.  For example:
+
+  xcodebuild -sdk macosx10.5 -configuration Debug build
+
+

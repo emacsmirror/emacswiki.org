@@ -1,0 +1,12 @@
+Shell EXecute mode / Send to EXterna program
+
+Whenever you open certain kind of files in Emacs they will be sent to an external application.
+This works with find-file, from dired etc.
+
+sex-mode.el is part of [NxhtmlMode nXhtml]
+
+This uses the same functions as OrgMode to start external applications.
+See the comment in CategoryExternalUtilities
+
+----
+CategoryExternalUtilities OpenWith

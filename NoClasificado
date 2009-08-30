@@ -1,0 +1,32 @@
+
+* CategoríaAyuda -- ayuda en línea de usuarios de Emacs o Emacs mismo; glosario, preguntas.
+
+==Mantenimiento==
+
+* [EmacsWiki:action=index Todas las páginas] incluyendo el conteo de
+páginas
+* [EmacsWiki:action=random Página al azar] es un buen lugar para comenzar a leer y mejorar este sitio
+* [EmacsWiki:action=links&amp;url=2 Enlaces externos]
+* [EmacsWiki:action=unlock Quitar el bloqueo de edición después de un fallo]
+* [EmacsWiki:action=maintain Iniciar la tarea de administración]
+* [EmacsWiki:action=version Consultar la versión del script]
+* [http://www.emacswiki.org/cgi-bin/list-archive.pl Descargar la base de datos de la páginas]
+    (todos pueden ayudar a crear copias de respaldo)
+* [http://emacswiki.org/usage/ Estadísticas de uso] (y EstadísticasViejas)
+
+
+Edición básica de texto en Emacs
+
+* CategoríaLlenado -- ajuste de líneas
+* CategoríaSangría -- control sobre la forma en que el texto o código fuente es sangrado
+* CategoríaParéntesis -- búsqueda de coincidencias, modificarlos
+* CategoríaRegexp -- búsquedas, reemplazos y demás usando expresiones regulares
+* CategoríaRegión -- operaciones sobre el texto seleccionado
+* CategoríaBosquejo -- escondiendo ciertas partes del búfer, uso de contracciones y expansiones del texto, también conocido como plegado
+* CategoríaEdición -- ideas interesantes para hacer más eficiente su edición
+* CategoríaArchivos -- archivos locales y remotos, creación de copias de respaldo
+* CategoríaComandos -- comandos <code>M-x</code>, historial de comandos, apertura de archivos
+* CategoríaCambioDeBúfer -- como pasar de un búfer a otro
+* CategoríaPlantillas -- uso de texto predeterminado, plantillas, formas, etc. para ahorrar escritura
+* CategoríaDeshacer -- deshaciendo cambios, ubicando cambios para deshacerlos
+

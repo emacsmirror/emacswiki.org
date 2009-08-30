@@ -1,0 +1,105 @@
+* Manual: http://www.shellarchive.co.uk/content/etest.html
+* Get it: git clone git@github.com:philjackson/etest.git
+
+**Feedback would be much appreciated in these early stages of development.**
+
+Another test framework. An example of use might be:
+    
+    (etest
+     ("Etest tests"
+      ("Simple"
+       (ok 1)
+       (null nil "Is nil null?")
+       (eq 1 1)
+       (eql 1.1 1.1)
+       (equal '(1 2) '(1 2))
+       (error (/ 1 0))
+       (noerror (+ 1 1))
+       (like "Hello" "^\\(H\\).+\\(o\\)$"))
+
+Which yields:
+
+    (("Etest tests"
+      ("Simple"
+       (:result t :comments "got: '1'" :doc "(ok 1)")
+       (:result t :comments "got: 't'" :doc "Is nil null?")
+       (:result t :comments "both: '1'" :doc "(eq 1 1)")
+       (:result t :comments "both: '1.1'" :doc "(eql 1.1 1.1)")
+       (:result t :comments "both: '(1 2)'" :doc "(equal (quote (1 2)) (q...)))
+       (:result t :comments "got: '(arith-error)'" :doc "(error (/ 1 0))")
+       (:result t :comments "got: '2'" :doc "(noerror (+ 1 1))")
+       (:result t :comments "searching: 'Hello'\nmatch   1: 'H'\nmatch...))))
+
+And, in another buffer, outputs:
+    
+    * Etest tests
+    ** Simple
+       ok ................ (ok 1)
+                           # got: '1'
+       ok ................ Is nil null?
+                           # got: 't'
+       ok ................ (eq 1 1)
+                           # both: '1'
+       ok ................ (eql 1.1 1.1)
+                           # both: '1.1'
+       ok ................ (equal (quote (1 2)) (quote (1 2)))
+                           # both: '(1 2)'
+       ok ................ (error (/ 1 0))
+                           # got: '(arith-error)'
+       ok ................ (noerror (+ 1 1))
+                           # got: '2'
+       ok ................ (like "Hello" "^\\(H\\).+\\(o\\)$")
+                           # searching: 'Hello'
+                           # match   1: 'H'
+                           # match   2: 'o'
+
+With syntax highlighting, folding and... stuff. ETest works beautifully with [[el-mock.el]]
+
+== Screenshot ==
+
+The following screenshot uses a custom etest function called eres which allow it to test itself. The basic buildin functions are the ones that are under the "Simple" heading.
+
+[[image:ETestScreenShot]]
+
+----
+== Feedback ==
+[new:OtherMichael:2008-08-11 19:14 UTC]
+I'm using the patched [[EmacsW32]] -- after getting other errors with make, I decided to use the non-byte-compiled version. THEN I kept getting "Debugger entered--Lisp error: (void-function declare-function)" in etest-result-mode.el. commenting out the declare-function line allowed etest to work happily --OtherMichael
+
+[new]
+declare-function was added 2007-11-17 to Emacs CVS sources (and moved to subr.el 2007-12-03 if that matters).
+Please notice that it matters which sources Emacs was built from, saying [[EmacsW32]] is not enough ;-)
+
+[new]
+Why not put the ##(declare-function...)## code inside a version test? -- DrewAdams
+
+[new]
+Thanks all, I'll wrap the function and see if I can persuade OtherMichael to retest :) - done - PhilJackson
+
+[new:OtherMichael:2008-08-14 17:52 UTC]
+heh. 22.0.990.1 (i386-mingw-nt5.1.2600) of 2007-05-23 on LENNART-69DE564 (patched) So, yeah, I wouldn't have that function. I'll give the new one a shot and let you know --OtherMichael
+
+[new:OtherMichael:2008-08-15 12:57 UTC]
+Okay, works fine for "old-timers" like me.  I suppose this is NOT the time to say that I'm still using the 1992 edition of "Learning GNU Emacs" .... --OtherMichael
+
+[new]
+Maybe I should say here that I am using ert for testing in [NxhtmlMode nXhtml] / [[EmacsW32]].
+I added quite a few functions that are needed to do that kind of testing that is nessecary there.
+So far I have got no feed back on this.
+This means that as far as I know there is no testing framework out in the wild except the one I currently have in nXhtml (which is a modified version of ert)
+that can do what I need.
+But of course it would be nice to know someone more had looked at those requirements.
+
+However my thoughts on this, because of this lack of feedback, is that we need a test framework inside of Emacs instead that we can make it better.
+-- LennartBorgman
+
+[new]
+You're dead right. Out of interest, what do all other frameworks lack that nXhtml needs? -- PhilJackson
+
+[new]
+I am not sure all lacks it... ;-)
+What I added was functions for emulating calling commands.
+There are also some convenience functions for setting up using a file/buffer to play with.
+It is in the nxhtml/tests sub dir in the repository.
+----
+UnitTesting

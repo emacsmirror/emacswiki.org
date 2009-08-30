@@ -1,0 +1,121 @@
+It is time to discuss the future of GNU Emacs.
+
+This is not quite the same thing as the WishList.
+
+==Don't rewrite or fork GNU Emacs==
+
+GNU Emacs is basically the Right Thing, and we just need to keep
+improving it and adding new stuff. A fork would be a disaster, because
+we are trying to unify the Emacsverse. -- [[dto]]
+
+[new]
+* Forks already exist. If they are disasters, that's up to you. But the numbers of users speak otherwise.
+* Your sentence (disaster, "because we are trying to unify the Emacsverse") doesn't make sense. You (and even others) trying to unify the "Emacsverse" does not turn other people's forks into disasters.
+* Forks happen because people have ideas that they aren't able to implement and push in the mainstream Emacs, and because users see a need for those features and make a fork successful.  
+
+-- DR
+
+[new]
+Those are some good points. I'll have to modify my comments on forks in order to explain why I do not want another fork, and respond to your ideas about forks.
+
+Yes, forks of Emacs exist. But if you care about the integrity and cohesion of Emacs as a software development platform, then they ARE disasters---because each of them is ALSO a fork of the Emacs Lisp language definition. (Imagine if each fork of the Linux kernel were to significantly modify the C language or the UNIX library system call interface.)
+
+The forks' definitions of Emacs Lisp have diverged significantly from one another, requiring ugly "#ifdef"-ish code, and that will only solve the smaller problems (such as `propertize' not being defined in XEmacs, or `define-error' not being defined in GNU Emacs) for which you can define a compatibility function of a few lines. 
+
+The larger differences just fragment/java-ify the elisp space (XWEM, XLIB, and other stuff that for some reason only works on XEmacs---or conversely, anything that takes advantage of the newer GNU-only features of GNU Emacs.) As these variants' featuresets grow this will become even more of a problem.
+
+"The numbers of users" of XEmacs, SXEmacs, etc does NOT somehow make this okay. Diverging elisp variants erode the integrity of the Emacs Lisp platform.
+
+Furthermore: your argument about users seeing a need for a feature but not being able to get it into mainstream Emacs isn't the whole story on forks.
+
+Just look at http://www.sxemacs.org/ and its list of what's cool about SXEmacs. There are a lot of really interesting bits that I would love to have in the mainstream GNU Emacs:
+
+* FFI (foreign function interface). Would be great to have this in GNU.
+
+
+* Enhanced Numerics. We sorely need this too.
+* Apparently much better multimedia support (Of particular interest to me.) 
+* Doubly-linked lists, skip lists, and some other possibly interesting data structures.
+
+So my question is: are ALL these much-needed improvements exclusive to SXEmacs just because they were rejected from the mainstream GNU Emacs? Or are they just here because the SXEmacs maintainers decided to throw every feature they want into the fork (instead of at least trying to contribute some of it to the platform as a whole?)
+
+GNU Emacs will get its bignums too, and they will probably be different from XEmacs's and SXEmacs's. So this will just get worse and fragment the language further, until coders like me decide to just
+standardize on GNU Emacs and not fix code for anything else.
+
+Speaking of forks, some of their bullet points are not so pleasing:
+
+* Now SXEmacs as a (presumably incompatible) network server library. I didn't look into it deeply but it will need at least some compatibility code to handle transparently.
+* They are promising multithreadedness at some point in the future. If it means changes to Emacs Lisp, well, not everyone thinks this is desirable, practical, or possible. It would certainly fragment the platform in that case.
+* "SXEmacs does not support the Win32 platform and it never will. Yes, we consider this a feature." 
+
+This last one is just stupid.
+
+-- DavidOtoole (dto)
+
+[new]
+Adding support via libffi would be pretty darn easy. -- [[Anonymous]]
+
+[new]
+It has already been done see DynamicallyExtendingEmacs and the reason
+why it has not been included is [http://mail.gnu.org/archive/html/emacs-devel/2003-07/msg00425.html there]  -- not relevant
+
+==We are stuck with Emacs Lisp==
+
+It has a three-decades-deep archive of working code, and a thriving
+development community today, so it isn't going anywhere. My solution
+is 1. develop workarounds for, and raise awareness of, what exactly
+these awful problems supposedly are with Emacs Lisp, and 2. promote
+cl.el and object-orientation. -- [[dto]]
+
+==The CL policy sucks==
+
+Please see [http://dto.freeshell.org/blog/blog-2007-09-07-2323.html "(require 'cl) considered harmful" considered harmful]
+and also [http://www.nabble.com/un-deprecating-CL-t4443873.html un-deprecating CL].
+-- [[dto]]
+
+==We should push Emacs to its limits==
+
+The problems we encounter will
+point the way to (and show the need for) changes in Emacs itself.
+-- [[dto]]
+==Miscellaneous==
+
+I want ELPA to integrate with the Debian packaging system somehow
+-- [[dto]]
+
+[new]
+Ultimately I'd like distros to use ELPA-style installs, so that everything can play well together.  And, ideally, I'd like Emacs to export the information ELPA needs.  -- TomTromey
+
+[new]
+We need to improve the display engine. There was something in the
+Emacs TODO about emacs being able to absorb an X window within one of
+its windows.
+-- [[dto]]
+
+[new]
+Embedding X windows would be quite nice.  With this you could set up a fun web development environment by embedding a browser under Emacs control.  Maybe Emacs could have better graphics support too.  Or, perhaps Emacs could get the display features it needs to be able to wysiwyg-edit ODF.  -- TomTromey
+
+[new]
+The XEmacs approach to characters is better. In GNU Emacs characters are just integers, while in XEmacs they are a separate data type. It would be a nice new feature for GNU Emacs. -- PeterBarabas
+
+== Threading ==
+
+What about implementing multithreaded features in Emacs? Many programs now require this - mail fetching, etc? -- AlexOtt
+[new]
+
+I'd prefer a compromise approach that does not problematize the entire existing elisp codebase.
+
+I found this very interesting: http://www.mail-archive.com/gnu-emacs-sources@gnu.org/msg00308/fsm.el
+
+[new]
+Some interesting links on NoThreading. -- AlexSchroeder
+
+[new]
+A related page: [http://www-pu.informatik.uni-tuebingen.de/users/sperber/xemacs/next-generation/ XEmacs - The Next Generation] -- PeterBarabas
+
+[new]
+An interesting opinion essay on why threads suck: http://www.wellquite.org/shared_mutable_memory_must_die.html
+-- [[Anonymous]]
+
+[new]
+I don't think adding threads to Emacs is practical.  The language simply isn't designed for it.  Instead we should just fix things that block; the only one I run into daily is Gnus.  These packages can be fixed by doing work incrementally in a process filter and temporarily installing a "please wait" keymap in the appropriate buffers.  This is a pain, and the programming is ugly, but at least it is doable.  -- TomTromey

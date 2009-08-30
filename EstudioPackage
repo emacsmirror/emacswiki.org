@@ -1,0 +1,79 @@
+
+<pre>
+;;; estudio.el --- control DevStudio using Windows Scripting Host (wsh) [cscript.exe or wscript.exe]
+;; this is a pretty rickety solution, but is at least entertaining.
+;; single stepping (f10 or f11) too quickly can blow up DevStudio.
+;; Author: Patrick Anderson 
+;;    soon at: http://sourceforge.net/projects/estudio (soon as i get my IT staff to open the cvs port).
+;; Version: 1
+;; License: GPL
+
+; required:
+; If you have an old VisEmacs.dll, SAVE IT - since this package is broken with the latest version.
+; the dll is fixed, and should be on sourceforge soon - hopefully tomorrow
+;    http://sourceforge.net/projects/visemacs/
+
+; install:
+; this file in your load path
+; the .vbs files in your .exe path.
+
+; add
+; (require 'estudio)
+; to your .emacs file
+
+; execute
+; M-x eval-buffer
+; so you don't have to restart
+
+; todo:
+; if more than one DevStudio is open, you cannot specify which to control
+
+
+(require 'cc-mode)
+(define-key c++-mode-map [(f1)] '(lambda () (interactive) (w32-shell-execute "open" "HelpSystemIndex.vbs")))
+(define-key c++-mode-map [(f4)] '(lambda () (interactive) (w32-shell-execute "open" "GoToNextErrorTag.vbs")))
+(define-key c++-mode-map [(shift f4)] '(lambda () (interactive) (w32-shell-execute "open" "GoToPrevErrorTag.vbs")))
+(define-key c++-mode-map [(f5)] '(lambda () (interactive) (w32-shell-execute "open" "DebugGo.vbs")))
+(define-key c++-mode-map [(shift f5)] '(lambda () (interactive) (w32-shell-execute "open" "DebugStopDebugging.vbs")))
+(define-key c++-mode-map [(f7)] '(lambda () (interactive) (w32-shell-execute "open" "Build.vbs")))
+; (define-key c++-mode-map [(meta f7)] '(lambda () (interactive) (w32-shell-execute "open" "ProjectSettings.vbs")))
+(define-key c++-mode-map [(M-f7)] '(lambda () (interactive) (w32-shell-execute "open" "ProjectSettings.vbs")))
+; (define-key c++-mode-map "\M-f7" '(lambda () (interactive) (w32-shell-execute "open" "ProjectSettings.vbs")))
+(define-key c++-mode-map [(f9)] '(lambda () (interactive) (w32-shell-execute "open" "DebugToggleBreakpoint.vbs")))
+(define-key c++-mode-map [(f10)] '(lambda () (interactive) (w32-shell-execute "open" "DebugStepOver.vbs")))
+(define-key c++-mode-map [(f11)] '(lambda () (interactive) (w32-shell-execute "open" "DebugStepInto.vbs")))
+(define-key c++-mode-map [(shift f11)] '(lambda () (interactive) (w32-shell-execute "open" "DebugStepOut.vbs")))
+; (define-key c++-mode-map [(f12)] '(lambda () (interactive) (w32-shell-execute "open" "BrowseGoToDefinition.vbs"))) 'this is covered in etags-iterator.el for now
+
+(define-key c++-mode-map [(f12)] '(lambda () (interactive) (w32-shell-execute "open" "BrowseGoToDefinition.vbs")))
+(define-key c++-mode-map [(pause)] '(lambda () (interactive) (w32-shell-execute "open" "DebugBreak.vbs")))
+(define-key c++-mode-map [(control pause)] '(lambda () (interactive) (w32-shell-execute "open" "BuildStop.vbs")))
+
+(provide 'estudio)
+</pre>
+
+
+here are the actual .vbs sources.  each line will become an individual file of the same name.
+for example:
+copy/paste the line <code>"GetObject(,"MSDev.Application").Application.ExecuteCommand("BrowseGoToDefinition")"</code> into a buffer, then save it as <code>BrowseGoToDefinition.vbs</code>
+make sure the files end up in your path.
+<pre>
+GetObject(,"MSDev.Application").Application.ExecuteCommand("BrowseGoToDefinition") 'must send in arg.  
+'the problem with BrowseGoToDefinition is first line is that we'll need something on the elisp side that will create a <string perhaps> that can be 'transformed' into an argument to the WSH
+GetObject(,"MSDev.Application").Application.ExecuteCommand("Build")
+GetObject(,"MSDev.Application").Application.ExecuteCommand("BuildStop")
+GetObject(,"MSDev.Application").Application.ExecuteCommand("DebugBreak")
+GetObject(,"MSDev.Application").Application.ExecuteCommand("DebugGo")
+GetObject(,"MSDev.Application").Application.ExecuteCommand("DebugStepInto")
+GetObject(,"MSDev.Application").Application.ExecuteCommand("DebugStepOut")
+GetObject(,"MSDev.Application").Application.ExecuteCommand("DebugStepOver")
+GetObject(,"MSDev.Application").Application.ExecuteCommand("DebugStopDebugging")
+GetObject(,"MSDev.Application").Application.ExecuteCommand("DebugToggleBreakpoint")
+GetObject(,"MSDev.Application").Application.ExecuteCommand("GoToNextErrorTag")
+GetObject(,"MSDev.Application").Application.ExecuteCommand("HelpSystemIndex")
+GetObject(,"MSDev.Application").Application.ExecuteCommand("HelpSystemSearch")
+GetObject(,"MSDev.Application").Application.ExecuteCommand("ProjectSettings")
+GetObject(,"MSDev.Application").Application.ExecuteCommand("VisEmacsCommand")
+GetObject(,"MSDev.Application").Application.HelpGetObject(,"MSDev.Application").Application.ExecuteCommand("GoToPrevErrorTag")
+
+</pre>

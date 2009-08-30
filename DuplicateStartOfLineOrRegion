@@ -1,0 +1,140 @@
+I use this a lot to easily duplicate the beginning of a line or a whole region. I bind it to [(meta shift down)].
+
+== Why Use it ==
+
+Note: [] shows point position.
+
+=== You want to duplicate the beginning of a line ===
+Suppose you have:
+{{{
+    someObject:[d]oSomething( usefull )
+}}}
+Pressing [(meta shift down)] results in:
+{{{
+    someObject:doSomething( usefull )
+    someObject:[]
+}}}
+
+=== You want to duplicate a whole region ===
+
+Suppose the text below is selected as a region.
+{{{
+    --------------------------------------
+    function toto:getSize()
+        return self._size
+    end
+}}}
+Pressing [(meta shift down)] results in:
+{{{
+    --------------------------------------
+    function toto:getSize()
+        return self._size
+    end
+    --------------------------------------
+    function toto:getSize()
+        return self._size
+    end
+}}}
+The region is set to what you just duplicated.
+
+Now you can:
+* duplicate it again with [(meta shift down)]
+* or press [(meta %)] to replace "size" by "width" -- presto, you now have an accessor for <code>self._width</code>!
+
+== Code ==
+
+{{{
+;; (global-set-key [(meta shift down)] 'duplicate-start-of-line-or-region)
+(defun duplicate-start-of-line-or-region ()
+  (interactive)
+  (if mark-active
+      (duplicate-region)
+    (duplicate-start-of-line)))
+
+(defun duplicate-start-of-line ()
+  (let ((text (buffer-substring (point)
+                                (beginning-of-thing 'line))))
+    (forward-line)
+    (push-mark)
+    (insert text)
+    (open-line 1)))
+
+(defun duplicate-region ()
+  (let* ((end (region-end))
+         (text (buffer-substring (region-beginning)
+                                 end)))
+    (goto-char end)
+    (insert text)
+    (push-mark end)
+    (setq deactivate-mark nil)
+    (exchange-point-and-mark)))
+}}}
+
+Thanks to DrewAdams for the tip about `deactivate-mark' !
+
+[new]
+See also PictureMode which comes with a simple command that duplicates the whole line, and EdtMode, which comes with a command that also duplicates the line, but can duplicate the current line //N// times.  Who knows why.
+
+(Nobody's asking, but) If I had to duplicate lines, I'd have a command called `duplicate-line' that was a lot like `kill-line'.
+
+    (defun dup-duplicate-line (&optional arg)
+      "Duplicate ARG lines.
+    
+    The default duplicate the rest of the current line.
+    With prefix argument, kill that many lines forward.
+    With negative argument, duplicate lines backward.
+    With zero argument, duplicate the start of the line.
+    
+    Behaviors are inherited from `kill-line'."
+      (interactive "*p")
+      (insert (buffer-substring (point)
+                                (save-excursion
+                                  (forward-line arg)
+                                  (point)))))
+
+Then, `duplicate-whole-line' could also mimic Emacs's `kill-whole-line' and simply use `duplicate-line', and as is suggested above, maintain the column for the point.
+
+    (defun dup-duplicate-whole-line (&optional arg)
+      "Duplicate ARG entire lines.
+
+    If negative, duplicate lines backward.
+    If ARG is zero, duplicate current line but on same line.
+
+    Behaviors are inherited from `kill-whole-line'."
+      (interactive "*p")
+      (move-to-column ;; Preserving column is less disruptive to user?
+       (prog1 (current-column)
+         (forward-line 0)
+         (if (zerop arg)
+             (progn
+               (dup-duplicate-line 1)
+               (delete-char -1))
+           (dup-duplicate-line arg)))))
+
+After the duplication, I'm not sure which line the point should be on.  Right now, it moves with the inserted line(s), but perhaps something else?  The behavior wouldn't be hard to change.
+
+For `duplicate-start-of-line', that becomes as easy as giving `duplicate-line' a PrefixArgument of zero, `C-0 M-x duplicate-line'.  But that duplicates the start of the line twice.  To put it on the beginning in a line will take a modification of `duplicate-line'.  The variation is making the duplication onto the next line.  I suppose when the argument is zero, the function should exceptionally make the insertion on the next line.  I've defined instead a wholly separate function, though I'm not sure how novel it is outside of this corner case.
+
+    (defun dup-duplicate-line-in-open-line (&optional arg)
+      "Duplicate ARG lines at start of next line.
+
+    Same as `dup-duplicate-line', except duplication is inserted at
+    the start of the next line."
+      (interactive "*p")
+      (insert
+       (prog1
+           (buffer-substring (point)
+                             (save-excursion
+                               (forward-line arg)
+                               (point)))
+         (forward-line 1)
+         (open-line 1))))
+
+So `duplicate-start-of-line' is `C-0 M-x duplicate-line-in-open-line', or in code.
+
+    (defun dup-duplicate-start-of-line ()
+      "Duplicate start of lines onto next line."
+      (interactive "*")
+      (dup-duplicate-line-in-open-line 0))
+
+Perhaps these could each be taken further by having a `duplicate-thing' command using ThingAtPoint's facilities, but I'm not sure to any real benefit to the editing task.  Although, you duplicate a '''defun''', a Python function, in the example above with `duplicate-region', so maybe so. -- AaronHawley

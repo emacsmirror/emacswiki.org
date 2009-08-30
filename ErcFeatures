@@ -1,0 +1,16 @@
+ERC provides all the features that users expect from an IRC client:
+
+* multi channels / multi servers: every channel is put in a separate buffer;  several IRC servers may be used at the same time.
+* queries: private conversations are treated as channels, and are put into private buffers.
+* highlighting: some occurences of words can be highlighted, thus easing conversation tracking (ErcHighlighting)
+* notification: ERC can notify you that users are online (ErcNotify)
+* channel tracking: channels can be hidden and conversation continue in the background.  You are notified when something is said in such a hidden channel. (ErcChannelTracking)
+* nick completion: ERC can complete words so as to ease the writing of nicknames. (ErcCompletion)
+* history: past actions are kept in history rings for future use. (ErcHistory)
+* multi languages: messages are multilingual and can be customized. (ErcCatalog)
+* user scripting: users can load scripts (e.g. auto greeting scripts) at ERC startup.
+
+ERC works with both GNU Emacs and XEmacs; it also uses optional features specific to each flavour.  It can also use some Emacs modules, such as the BBDB (Big Brother Database).
+
+-----------
+[[ERC]]

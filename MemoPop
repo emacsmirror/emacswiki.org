@@ -1,0 +1,56 @@
+Memo-Pop is a utility which helps you pop up and pop out a specific file buffer window easily.
+
+== Download ==
+----
+You can download memo-pop.el from the following link.
+
+Lisp:memo-pop.el
+
+
+== How to use ==
+----
+1. Place this file in a directory in your load-path.
+
+2. (require 'memo-pop)
+
+3. M-x memo-pop-set-key-and-file
+
+4. You can type the key you set, and visit your file promptly.
+
+5. You can type the key you set again, and window destroyed. The buffer is not buried. 
+
+== Configration for your .emacs ==
+----
+<pre>
+(require 'memo-pop)
+(memo-pop-set-key-and-file [f1] "/home/kyagi/memo.txt")
+(memo-pop-set-key-and-file [f2] "/home/kyagi/dict.txt")
+(memo-pop-set-key-and-file [f3] (concat "/home/kyagi/diary/"
+                            (format-time-string "%Y-%m-%d") ".txt"))
+</pre>
+
+== Screenshot ==
+----
+[[image:MyScreenShotPage2]]
+
+== Update Info ==
+----
+<pre>
+$Log: memo-pop.el,v $
+Revision 1.3  2009/06/09 06:23:10  kyagi
+- Enabled saving buffer when poping out the visiting buffer window.
+
+Revision 1.2  2009/06/05 08:15:03  kyagi
+- Improved the function 'memo-pop-set-key-and-file' to handle many combination of key and file.
+
+Revision 1.1  2009/06/03 11:33:07  kyagi
+- Initial revision
+</pre>
+
+== Conversation ==
+----
+[new]
+Do you know RememberMode? -- [[rubikitch]]
+
+Thank you for your advice and it seems like a kind of reinvention of the wheel. 
+I always did things like that although you get me noticed about it many times. (T_T -- [[KazuoYAGI]]

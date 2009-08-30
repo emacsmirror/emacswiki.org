@@ -1,0 +1,15 @@
+This is a more elaborate solution to the GuessBufferLanguage problem by BenjaminDrieu.
+
+It works basically by counting occurrences of common words in every
+language that is known and comparing respective numbers.  Languages
+currently supported are English, French, German, Danish, Polish,
+Spanish and somewhat Russian (based on loosely collected words from
+various .po files ... does anybody want to help ?).
+
+You can get it from here:
+
+* http://www.grassouille.org/code/sources/guess-lang.el
+
+The file was also posted to gnu.emacs.sources so you might have better luck there.  See EmacsNewsgroups for the archive.
+----
+See also AutoLangMode.

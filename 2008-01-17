@@ -1,0 +1,20 @@
+[new:AlexSchroeder:2008-01-17 14:21 UTC]
+I'm thinking of no longer generating the tarballs.
+
+# No more elisp.tar.gz -- you can get the elisp files from the [[CVS repository]].
+# No more emacs.tar.gz -- you can get the entire system from the [[Rsync repository]].
+# No more static.tar.gz -- ok, I confess, I don't have a good reason for discontinuing the HTML tarball. If there's demand for this, I think we should create a new version control repository somewhere and check the HTML files in.
+# Bonus episode: You can get the raw text of all the pages from the [[SVN repository]].
+
+What do you think?
+[new]
+I like the idea.  Seems simpler. I'm sure you thought of this, but why not simply have everything in one repository?
+--Tennis
+[new]
+# "historical reasons" -- hahaha :)
+# "avoiding single points of failure" -- except that two of the three repositories are run by [[zeus]] 8-)
+# Unfortunately that leads to the last possibility: "no planning"
+
+Instead of getting it right straight from the start I was more interested in seeing what worked, and once I confirmed that, other things started falling into place.
+
+Now that I think of it, "avoiding single points of failure" sounds like a good idea. -- Alex

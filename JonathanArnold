@@ -1,0 +1,45 @@
+I've been using Emacs ever since I started programming, back in the early 80s.  It is an important arsenal in my programming toolbox, as I am usually working on cross-platform development. These days, I work on Linux (usually Red Hat), Mac OSX and, most often, Windows.  I use the [EmacsForWindows NTEmacs] port on Windows (it has better Windows integration than the Cygwin port), and GnuEmacs on the other ones.  I don't think I would be half as productive if I had to use a special editor on each and every platform I've ever used in the past 25 years.
+
+You can find more info about me at my various blogs, all hosted on my FreeBSD box:
+
+[http://freebsd.amazingdev.com/blog Daemon Dancing in the Dark] : My FreeBSD and other technical matters blog
+
+[http://jiggle.anaze.us Jiggle the Handle] : My personal blog
+
+[new]
+Actually, I think nobody welcomed you to the wiki before -- so let me do it now: Welcome to the wiki! :) -- AlexSchroeder
+[new]
+Thanks! I've already learn alot from this wiki - teaching an old dog new tricks. -- JonathanArnold
+[new]
+Cool quote from my fortune today:
+"Calling EMACS an editor is like calling the Earth a hunk of dirt."
+  -- <nowiki>Chris DiBona</nowiki> on Dirt (Open Sources, 1999 O'Reilly and Associates)  -- JonathanArnold
+
+== My .emacs file ==
+
+Here is my .emacs file.  I've been carrying it around with me for years. Probably lots of it is obsolete, or could be done better, or completely mysterious!
+
+Lisp:JonathanArnoldDotEmacs
+
+== Packages I use ==
+
+Here are the various Emacs bits I use.  Some come with it, some are external. These are all either required or autoloaded in my JonathanArnoldDotEmacs file:
+
+* PlannerMode - Just started to use this.  It is a ToDo list, notes, etc.
+* CPlusPlusMode - Where I spend 75% of my time, editing C++ files
+* GnuClient - The best OS interface, where you can easily pop a file into Emacs from whereever you are in the OS
+* PhpMode - Another favorite programming language
+* MsShellExecute - Win32 shell interaction
+* BrowseUrl - Pass a url to a web browser
+* JavaDevelopmentEnvironment -   a priceless interface when I'm doing Java work (rarely these days)
+* [[MSB]] - Mouse Select Buffer. Yeah, I know, I shouldn't be using a mouse...
+* [[BS]] - an improved Buffer Selection
+* SlashDot - Download headlines from Slashdot.org, and make viewing simple.
+* [[Ishl]] - extra isearch highlighting
+* MouseMe - mouse menu with commands that operate on strings (yeah yeah, more mouse stuff)
+* HTMLize (see SaveAsHtml for more info) - HTML-ize font-lock buffers
+* cygwin-mount - Teach EMACS about CygWin styles and mount points. See NTEmacsWithCygwin for more.
+* generic-x - Extra Modes for generic-mode (used for Javascript mode).  See HtmlModeDeluxe for more info on this
+* JavaScriptMode - Major mode for editing JavaScript source code
+* ErcMode - Emacs IRC
+* [[emacs-w3m]] - an Emacs interface to w3m

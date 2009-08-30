@@ -1,0 +1,10 @@
+Hobo facilitates editing remote files by automating file transfers via SCP, relying on SSH-AGENT (or RSA/DSA) to authenticate.  Hobo stores files locally in a temporary directory structure and can automatically clean up the temporary files and directories when you're done.  In addition, it makes accessing the remote files a lot easier using aliases/shortcuts with all of the connection info already set up.
+
+Hobo is an alternative to TRAMP (see TrampMode) and AngeFtp.
+
+The latest version of Hobo can be found at:
+
+* http://www.northbound-train.com/emacs.html
+
+----
+CategoryFiles CategoryExternalUtilities CategoryRemoteEmacs

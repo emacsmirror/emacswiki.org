@@ -1,0 +1,49 @@
+Cette page existe aussi en <i>français</i> : BhlModeFrançais
+
+== What is BHL? ==
+
+The BHL mode enables you to edit plain txt files with an implicit structure and to convert them into HTML, LaTeX, Texinfo and SGML (Linuxdoc) formats.  It can convert three levels of sections, any kind of lists and tables, URLs, wikinames, etc.  It handles also a verbatim and a minipage environments.
+
+Some scripts allow you to run BHL from your shell: bhl2xxx, bhl2html, bhl2latex, bhl2sgml, bhl2txt.
+
+The current version is 1.7.3 (novembre 2004).
+
+== Where do I get it? ==
+
+You can get it from the ElispArea or from http://www.nongnu.org/bhl. 
+
+* [http://www.cognition.ens.fr/~guerry/bhl/download/bhl.el bhl.el]
+
+Full documentation is available here:
+
+* [http://www.cognition.ens.fr/~guerry/bhl/manuals/bhl.html HTML manual]
+* [http://www.cognition.ens.fr/~guerry/bhl/manuals/bhl.pdf PDF manual]
+
+== The Latest BHL ==
+
+BHL is (always) under development.  Feel free to report any bug and to suggest new features.
+
+CVS: use at your own risk!
+
+    cvs -z3 -d:ext:anoncvs@cvs.savannah.nongnu.org:/cvsroot/bhl co bhl
+
+== Tutorial ==
+
+I hope I will have some time is the next few days to write a small tutorial in this page. 
+However, some examples are already available on the website:
+
+* [http://www.cognition.ens.fr/~guerry/bhl/examples/ Examples]
+
+BastienGuerry
+
+== Discussion == 
+
+I found BHL very convenient but I was wondering if you plan to implement bibliographic reference ?
+
+: Definitly YES! I'm currently rewriting BHL from scratch. Bib references are a priority. -- BastienGuerry
+
+----
+MarkupModes
+CategoryModes
+BhlModeFrançais
+

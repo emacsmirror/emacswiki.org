@@ -1,0 +1,42 @@
+Just a quick evening hack written down on a napkin this time. I like the way you can increment/decrement number in CSS editor in Firebug and changes are instantly visible on the screen. Just press up-arrow and it increases.
+
+I thought: "Why not implementing it for Emacs, it could come quite handy eg. increasing the serial number of Bind's domain zones or editing CSS".
+
+So here it is:
+
+    (require 'thingatpt)
+    
+    (put 'decimal 'end-op
+         (lambda ()
+           (re-search-forward "[0-9-]*" nil t)))
+    (put 'decimal 'beginning-op
+         (lambda ()
+           (if (re-search-backward "[^0-9-]" nil t)
+               (forward-char))))
+    
+    (defun change-number-at-point (func)
+      (let* ((bounds (bounds-of-thing-at-point 'decimal))
+             (number (buffer-substring (car bounds) (cdr bounds)))
+             (point (point)))
+        (goto-char (car bounds))
+        (delete-char (length number))
+        (insert (number-to-string (funcall func (string-to-number number))))
+        (goto-char point)))
+
+    (defun inc-number-at-point ()
+      (interactive)
+      (change-number-at-point (lambda (number) (+ number 1))))
+    
+    (defun dec-number-at-point ()
+      (interactive)
+      (change-number-at-point (lambda (number) (- number 1))))
+    
+    (global-set-key [(meta up)] 'inc-number-at-point)
+    (global-set-key [(meta down)] 'dec-number-at-point)
+
+
+It relies on 'thingatpt package which is a part of standard Emacs these days. How does it work:
+
+Place your point on a number and press M-up / M-down and enjoy :)
+
+hosiawak - http://www.blik.it

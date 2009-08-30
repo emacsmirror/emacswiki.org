@@ -1,0 +1,32 @@
+= NS Extended Platform Support Mode =
+
+This package was part of the EmacsApp (Nextstep / Cocoa) port (see also EmacsForMacOS), which has since been integrated into Emacs 23 (in development).
+
+The package is now available as "ns-platform-support.el" here:
+
+http://braeburn.aquamacs.org/code/master/lisp/contrib/ns-platform-support.el
+
+
+== Features ==
+
+The package:
+
+* tweaks the menus to be more platform compliant
+* adds an entry for the Emacs.app manual to the Help menu
+* sets scroll-preserve-screen-position and transient-mark-mode
+* provides ns-grabenv, a function to import shell environment variables and paths
+
+
+== Installation ==
+
+To install, download the package and put it where Emacs can find it.  Then, add this code to your .emacs:
+
+ (require 'ns-platform-support)
+ (ns-extended-platform-support-mode 1)
+
+
+== Suggestions, Comments ==
+
+(please add here.)
+
+How does this code differ from the one in the recent nswin.el?

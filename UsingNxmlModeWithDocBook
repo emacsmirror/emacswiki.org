@@ -1,0 +1,121 @@
+This article concerns using NxmlMode to edit DocBook XML documents.
+
+== What DOCTYPE should I use? ==
+
+Find the newest file named docbookx.dtd on your system (the version is
+listed in the first few lines).  It is probably version 4.4.
+
+Assuming it is, use this declaration in your DocBook documents:
+
+    <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+           "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+
+== Is NxmlMode using the correct version of DocBook? ==
+
+The DocBook packages provided by Debian, Ubuntu and Fink (OS X)
+contain DocBook DTDs (v4.4) that are newer than the corresponding
+RelaxNG schemas that ship with NxmlMode (v4.2).  Therefore NxmlMode is
+validating against a slightly older standard than your document
+production toolchain will use.  It is advisable to provide NxmlMode
+with the correct version.
+
+Here is a small shell script to download the DocBook 4.4 RelaxNG
+schemas and tell nxml about them.  **Beware**, it will clobber things
+in ~/.schema/ and append to your ~/.emacs without asking.
+
+    #!/bin/sh
+    set -ex
+    
+    d=~/.schema
+    u=http://www.oasis-open.org/docbook/rng/4.4/docbook-rng-4.4.zip
+    
+    mkdir -p $d
+    cd $d
+    curl -O $u
+    unzip -o `basename $u`
+    rm -f `basename $u`
+    cat >schemas.xml <<EOF
+    <locatingRules xmlns="http://thaiopensource.com/ns/locating-rules/1.0">
+      <documentElement localName="section" typeId="DocBook"/> 
+      <documentElement localName="chapter" typeId="DocBook"/>
+      <documentElement localName="article" typeId="DocBook"/>
+      <documentElement localName="book" typeId="DocBook"/>
+      <typeId id="DocBook" uri="docbook.rnc"/>
+    </locatingRules>
+    EOF
+
+    cat >>~/.emacs <<EOF
+    (eval-after-load 'rng-loc
+      '(add-to-list 'rng-schema-locating-files "$d/schemas.xml"))
+    EOF
+
+Basically, you need to download the files from
+http://www.oasis-open.org/docbook/rng/, put them somewhere, add a
+schemas.xml file, and tell nxml about them.  You can examine the
+schemas.xml file that ships with NxmlMode for a more detailed example.
+
+References: [http://www.sagehill.net/docbookxsl/ToolsSetup.html#XMLCatToDtd XML Catalog]
+
+== Docbook 5.x ==
+
+Today (2008-06) the above information seems a little outdated to me.  To use Docbook in version 5 with namespace support you can start with a document head like this:
+
+<pre>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book [
+<!ENTITY % projectentities SYSTEM "entities.xml">
+%projectentities;
+]>
+<book xmlns="http://docbook.org/ns/docbook"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xml:lang="de">
+....
+</pre>
+
+Load the document, put all the required tags missing in the example in it (like title, chapters, book-end-tag etc) and make sure that nXML uses the correct RelaxNG schema.  You can use the <code>Set Schema</code> submenu from the XML menu.  For me this resulted in a schema file that looks like this:
+
+<pre>
+<?xml version="1.0"?>
+<locatingRules xmlns="http://thaiopensource.com/ns/locating-rules/1.0">
+  <uri resource="user_doc.xml" uri="docbook5xi.rnc"/>
+</locatingRules>
+</pre>
+
+Please note that this uses [http://www.docbook.org/xml/5.0/rng/docbookxi.rnc  docbook5xi] which includes support for namespaces. To translate this to xhtml call <code>xsltproc</code> like this:
+
+<pre>
+shell> xsltproc --xinclude --output user_doc.html docbook-xsl-ns-1.73.2/xhtml/docbook.xsl user_doc.xml 
+</pre>
+
+This uses the downloaded [http://sourceforge.net/project/showfiles.php?group_id=21935&package_id=219178 docbook-XSL-stylesheets] that have be unpacked in the current working directory.
+
+== Questions ==
+
+=== Completion of IDs ===
+Is it possible to auto-complete xml:id's?  For example you have a section you want to refer to:
+
+<pre>
+  <section xml:id="label1">
+    <title>This is the section with Label1</title>
+  </section>
+  <!-- ... later then -->
+
+  <xref linkend="la<CURSOR IS HERE>
+</pre>
+
+And then hitting the magic C-RET would complete on the IDs found in the document (ah, I am missing RefTeX here!)
+
+[new]
+I am not sure, but I do not think so.
+There is however some code in [NxhtmlMode nXhtml] that does similar things when completing /href=la/<CURSOR IS HERE>.
+Maybe someone wants to generalize this to attributes like xml:id etc?
+
+=== Multi-File Documents ===
+
+Coming from a largish LaTeX-Project (a book of 300-odd pages) and being on very friendly terms with AuCTEX and it's friends I currently miss the ability to deal with multi-file documents.  The concept of a master document which contains all the declarations has become a habit for me.  Is there any way of achieving this with docbook and nXML?  I seem to remember that PSGML had some way of dealing with multi-file documents but I never used that.  I know that I could create a master-XML which then xincludes all the (e.g.) chapters.  But how would Emacs know when I am in such a chapter-file what is the master and then know about the schema and entities and stuff like that? (As a side-note: I don't like outlines so this is no workaround.)
+
+[new]
+Maybe you should take this question to the NxmlMode mailing list?
+
+----
+CategoryHypermedia CategoryXML

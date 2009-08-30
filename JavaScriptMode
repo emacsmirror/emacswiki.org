@@ -1,0 +1,188 @@
+== Espresso mode ==
+
+Espresso-mode is a fork of Karl Landstrom's mode below, but with additional features and robustness improvements. See http://www.nongnu.org/espresso
+
+It includes:
+* Support for cc-mode's comment wrapping
+* C preprocessor support - yes, people use this with Javascript
+* Full suite of movement commands, including beginning-of-defun, end-of-defun, and so on.
+* Configurable recognition of class definitions. Javascript, being a prototype-based language, has no “classes” per se, but there are constructions used to mean the same thing.
+* Hierarchical imenu support using the aforementioned class definition recognition. In addition to recognizing top-level functions, imenu will recognize methods.
+* Improved fontification of regular expression literals
+
+
+== JavaScript mode ==
+The most useful javascript mode may be Karl's implementation: http://www.brgeight.se/downloads/emacs/javascript.el
+
+The one from XEmacs works fine also in GNU Emacs: http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/prog-modes/javascript-mode.el
+
+Mewde Project contain Xemacs javascript mode with adding Mozilla Spider Monkey Project Javascript-Shell support. It works inside Emacs, but only primitively.
+You can see details and screenshot here [http://mewde.blogspot.com/2007/05/what-comes-with-mewde.html] and download here [http://mewde.googlecode.com/files/javascript.el javascript-el] Also it has a most powerful javascript-mode, because it supports object-class-function browsing into speedbar for new javascript libraries and frameworks; like prototype, jquery, mochikit, and dojo.
+
+An older one at http://www.brigadoon.de/peter/javascript-mode.el needs ##(require 'hilit19)## in order to work correctly, and does not work in latest Emacs. It requires obsolete c-mode.el. The functionality is very limited. You're better off using JavaMode for Javascript.
+
+There's also ECMAScriptMode.
+
+Many of these modes have glitches.
+
+if you have a line like this:
+
+    fileDescr   = fileDescr.replace(/"/gi,'&quot;') 
+
+the modes will both mistakenly believe the " starts a string.
+
+you can work around it like this:
+
+  fileDescr   = fileDescr.replace(/\"/gi,'&quot;') 
+
+There is a
+[http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js version of CC mode]
+which provides a PHP mode that doesn't have that problem, at least in Emacs with
+font-lock mode on.  If people who edit more Javascript than its author will report deficiencies in http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js (modulo those inherited from CC mode), they will probably get fixed.
+
+This blog post, [http://edward.oconnor.cx/2005/09/editing-javascript-in-emacs Editing JavaScript in Emacs], has some good info about javascript modes for Emacs.
+
+And here is yet another one, mentioned at the discussion page for [[Js2Mode]] because of its good indentation:
+http://mihai.bazon.net/projects/emacs-javascript-mode
+
+Other implementations can be found at [[#Discussion]].
+
+David, the author of ECMAScriptMode recommends Karl's mode! Here are his words.
+
+: "From what I can tell looking at Karl's code (my Elisp skills are a bit
+rusty!), it looks like it is comparable to my code in
+functionality. Both support font lock, indentation, comments,
+etc. Karl's also supports imenu, a feature in Emacs I am not familiar
+with. I think however that Karl's module has a better approach in that
+it is not derived from another mode the way mine is. I took the easy
+(lazy) route and derived mine from java-mode, seeing that the two
+languages had a lot of keywords in common, and similar C-style
+syntax. While this facilitated the syntax highlighting, comments, and
+the like, it also produced some odd behavior in indentation and
+colorizing, owing to the differences in the languages. You will notice
+that my module is quite short, since a lot of the functionality is
+handled by java-mode (and by extension, cc-mode). I think Karl is
+right in defining javascript-mode as its own top-level
+mode. %%JavaScript%% really has not much to do with Java, aside from some
+common ancestry with C. If you are going to include one in nXhtml, I
+would recommend basing it on Karl's. I will install Karl's version and
+use it for a few days, and provide more comments if I discover
+anything further."
+
+And then some weeks later:
+
+"I have been using Karl's %%JavaScript%% mode in my everyday work for a few
+weeks now, and it is a real treat to use. It does not exhibit some of
+the annoying bugs (indentation, font lock problems, etc.) found in my
+version; I have not noticed any ill effects. The only minor nitpick I
+have is that is does not colorize as many keywords as my version, for
+example, built-in methods (e.g. toString) and constants of the Number
+class (e.g. Number.MAX_VALUE, etc.). But overall I think it is an
+excellent mode. I plan to continue using it instead of my version."
+
+[new]
+It is interesting to read the above comments, as I have just switched from Karl's javascript-mode to ECMAScriptMode, because I found a few problems in Karl's module that I am not comfortable with:
+
+1. The module does not seem to follow Emacs conventions. There is no hook for the major mode and I have
+to define an advice to work around it.
+
+2. Quite a few keys are bound to javascript-insert-and-indent, which generates too many error messages and feels intrusive.
+
+3. It does not work with fill-adapt, which I suspect is another indication that it does not follow some kind of emacs convention, as fill-adapt works with almost all major-modes I have ever used. 
+
+ECMAScriptMode does not have those problems, however, it has its glitches too. For example, even keywords (like "var") in comments are highlighted. But I can tolerate that.
+
+Just as a disclaimer to the above comparison, I have to admit that I have not used either package for a long time.
+
+Since even the author of ECMAScriptMode recommends javascript-mode, it seems ECMAScriptMode will no longer be maintained and improved. Pity. js2-mode is too big a monster to me. I can not help wondering, javascript has been there for so many years and there is not even one simple and polished major mode module for it? :-(
+
+-- Wanrong
+
+== JS2-mode ==
+[[Js2Mode]] is now in CVS Emacs.
+
+So please report any bugs to the Emacs bug tracker.
+(Someone said there are annoying bugs in it.)
+
+
+== Imenu integration ==
+
+This integration supports prorotoype.js class representation and original class representation.
+
+{{{
+(defvar javascript-identifier-regexp "[a-zA-Z0-9.$_]+")
+
+(defun javascript-imenu-create-method-index-1 (class bound)
+  (let (result)
+    (while (re-search-forward (format "^ +\\(\%s\\): *function" javascript-identifier-regexp) bound t)
+      (push (cons (format "%s.%s" class (match-string 1)) (match-beginning 1)) result))
+    (nreverse result)))
+
+(defun javascript-imenu-create-method-index()
+  (cons "Methods"
+        (let (result)
+          (dolist (pattern (list (format "\\b\\(%s\\) *= *Class\.create" javascript-identifier-regexp)
+                                 (format "\\b\\([A-Z]%s\\) *= *Object.extend(%s"
+                                         javascript-identifier-regexp
+                                         javascript-identifier-regexp)
+                                 (format "^ *Object.extend(\\([A-Z]%s\\)" javascript-identifier-regexp)
+                                 (format "\\b\\([A-Z]%s\\) *= *{" javascript-identifier-regexp)))
+            (goto-char (point-min))
+            (while (re-search-forward pattern (point-max) t)
+              (save-excursion
+                (condition-case nil
+                    (let ((class (replace-regexp-in-string "\.prototype$" "" (match-string 1)))
+                          (try 3))
+                      (if (eq (char-after) ?\()
+                          (down-list))
+                      (if (eq (char-before) ?{)
+                          (backward-up-list))
+                      (forward-list)
+                      (while (and (> try 0) (not (eq (char-before) ?})))
+                        (forward-list)
+                        (decf try))
+                      (if (eq (char-before) ?})
+                          (let ((bound (point)))
+                            (backward-list)
+                            (setq result (append result (javascript-imenu-create-method-index-1 class bound))))))
+                  (error nil)))))
+          (delete-duplicates result :test (lambda (a b) (= (cdr a) (cdr b)))))))
+
+(defun javascript-imenu-create-function-index ()
+  (cons "Functions"
+         (let (result)
+           (dolist (pattern '("\\b\\([[:alnum:].$]+\\) *= *function" "function \\([[:alnum:].]+\\)"))
+             (goto-char (point-min))
+             (while (re-search-forward pattern (point-max) t)
+               (push (cons (match-string 1) (match-beginning 1)) result)))
+           (nreverse result))))
+
+(defun javascript-imenu-create-index ()
+  (list
+   (javascript-imenu-create-function-index)
+   (javascript-imenu-create-method-index)))
+
+
+(add-hook 'javascript-mode-hook (lambda ()
+                                   (setq imenu-create-index-function 'javascript-imenu-create-index))
+          t)
+}}}
+
+-- [[Matsuyama]]
+
+== See also ==
+
+* MozRepl -- connect to Mozilla and Firefox apps and modify/extend them interactively with Javascript from Emacs
+* JavascriptShellServer
+
+[:Discussion]
+== Discussion ==
+
+[new]
+I've got a slightly modified version of Karl's mode with better string/regex/comment recognition here: 
+http://joost.zeekat.nl/wp-content/javascript.el (see http://joost.zeekat.nl/2007/10/31/javascript-regex-en-string-literal-highlighting-in-emacs/ for some screenshots of the differences)
+
+I also sent him my changes but I haven't heard anything back for a week, so I'll leave my links above for now. -- JoostDiepenmaat
+
+----
+ProgrammingModes

@@ -1,0 +1,46 @@
+Hexadecimals are used for colors by X windows, for example.  (See
+ListColors.)  Instead
+of specifying the color "black", for example, specify the red, green
+and blue (RGB) values instead: "#000" is equivalent to "black" -- 0
+red, 0 green and 0 blue.
+
+Hexadeximal notation uses the digits 0 to 9 and the letters A to F.
+It is common to specify RGB (red, green, blue) values in the range from 0 to 255 using
+two hexadecimal digits (from 00 to FF).  You can, however, use between one and four hexadecimal digits (0 to F, 00 to FF, 000 to FFF, 0000 to FFFF).
+
+Here is an example from the rgb.txt file:
+
+ 250 240 230            linen
+
+If we want to transform these three numbers into hexadecimals, we can
+use the `format' function:
+
+ (format "%02X" 250) ==> "FA"
+ (format "%02X" 240) ==> "F0"
+ (format "%02X" 230) ==> "E6"
+
+Therefore "#FAF0E6" and "linen" are equivalent colors.
+
+The format control string says to print leading zeroes ("0"), to use
+at least two digits ("2") and to use uppercase hexadecimal notation
+("X").
+
+See also: SimpleCalculator
+
+[new:DrewAdams:2005-01-04 16:01 UTC]
+Library '''Lisp:hexrgb.el''' does the calculating for you. There are functions there to convert both directions between decimal and hex RGB codes and functions to increment and decrement hex RGB color codes. There are also functions to convert between ''RGB'' (red, green, blue) and ''HSV'' (hue, saturation, value) color components. Standard libraries `<code>hexl.el</code>' (hexl mode) and `<code>float.el</code>' (deprecated) also offer a few conversion functions.
+
+1. Use '''ColorPalette''' to examine color properties or choose colors. You can input colors using recognized color names, RGB components (red, green, blue), or HSV components (hue, saturation, value).
+
+2. See also '''DoReMi''' and library '''Lisp:doremi-frm.el''' for commands to incrementally modify colors ([[Face]]s or [[Frame]] background) using the arrow keys or mouse wheel. You can modify any color component: red, green, blue, hue, saturation, value, cyan, magenta, or yellow -- RGB, HSV, CMY.
+
+Lisp:doremi-frm.el also contains commands to convert and tweak colors:
+
+* `'''<code>doremi-color-name-to-RGB</code>'''' -- Return the hexadecimal RGB code for a given color name. Provides [[Completion]] based on all existing color names.
+
+* `'''<code>doremi-increment-color-component</code>'''' -- Increment any component (red, green, blue, hue, saturation, value) of a given color. This returns another color that is redder, greener,..., or brighter than a given color by some amount.
+
+-- DrewAdams
+
+----
+CategoryFrames CategoryFaces

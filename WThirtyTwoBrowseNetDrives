@@ -1,0 +1,76 @@
+<pre>
+(defun netdir()
+  (interactive)
+  (require 'widget)
+  (let* ((drvL))
+    (with-temp-buffer
+      (let ((out (shell-command "net use" (current-buffer))))
+	(if (eq out 0)
+	    (while (re-search-forward "[A-Z]: +\\\\\\\\[^ ]+" nil t nil)
+	      (setq drvL (cons (split-string (match-string 0)) drvL)))
+	    (error "Unable to issue the NET USE command"))))
+    (pop-to-buffer "*NET DIR LIST*")
+    (erase-buffer)
+    (widget-minor-mode 1)
+    (mapcar
+     (lambda (x)
+       (lexical-let ((x x))
+	 (widget-create 'push-button
+			:notify (lambda (widget &rest ignore)
+				  (kill-buffer (current-buffer))
+				  (dired (car x)))
+			(concat (car x) "  " (cadr x))))
+       (widget-insert "\n"))
+     (reverse drvL))))
+</pre>
+
+-----
+
+I have made up this version to add my local drives.
+
+The below code uses copy-sequence because if you don't, your variable localdrives will change in weird ways.
+The reason is this: drvL points to the first cell in localdrives.  Then we append more items to the front of
+the list.  Then we use sort*.  When you read the description, sort* is destructive.  See DestructiveOperations.
+This means it changes
+the order of the cells in the list.  So next time you use localdrives, the first cell will be the same, but
+the rest of the cells might be different.
+
+<pre>
+(setq localdrives '(("A:" "Floppy")("C:" "Home")("D:" "Datadisk")("E:" "CD")))
+
+(defun netdir()
+  (interactive)
+  (require 'widget)
+  (let ((drvL (copy-sequence localdrives)))
+    (with-temp-buffer
+      (insert (shell-command-to-string "net use"))
+      (goto-char (point-min))
+      (while (re-search-forward "[A-Z]: +\\\\\\\\[^ ]+" nil t nil)
+	(setq drvL (cons (split-string (match-string 0)) drvL))))
+    (switch-to-buffer "*NET DIR LIST*")
+    (erase-buffer)
+    (widget-minor-mode 1)
+    (mapcar
+     (lambda (x)
+       (lexical-let ((x x))
+	 (widget-create 'push-button
+			:notify (lambda (widget &rest ignore)
+				  (kill-buffer (current-buffer))
+				  (dired (car x)))
+			(concat (car x) "  " (cadr x))))
+       (widget-insert "\n"))
+     (sort* drvL 'string-lessp :key 'car)))
+  (goto-char (point-min)))
+
+
+(global-set-key [C-M-return] 'netdir)
+
+(defun show-net-connections ()
+      (interactive) 
+      (shell-command "net use"))
+</pre>
+
+
+
+----
+CategoryWThirtyTwo

@@ -1,0 +1,87 @@
+FYI - I had two browser windows open to two different EmacsWiki pages. I tried to click a file name in ElispArea in one of the windows, and I got an error "Too many instances. Only 10 allowed." This was only a temporary problem, though. -- DrewAdams
+
+[new]
+I complained about this too a long time ago as it breaks
+pre-fetching proxies.  Maybe the limit should be a little
+bit more liberal if it's really needed to prevent DoS
+attacks. -- DavidHansen
+
+[new]
+What do you suggest? I can tune two numbers: Currently I'm allowing 10 requests in 20 seconds, ie. a request every two seconds, basically. That also means that pages containing more than five images that were uploaded to the wiki may no longer render correctly, as some of the images will not be served.
+
+Does "more liberal" mean more requests on average, more peaks? Then again, perhaps pre-fetching proxies are even more evil on sites that are serving dynamic content than they already are. I must confess that pre-fetching looks like bandwidth waste to me, which is tough on those hosts that pay for bandwidth. But I guess since I don't use a pre-fetching proxy, I can't really tell wether it's worth the price.
+-- AlexSchroeder
+
+[new]
+I don't use a pre-fetching proxy anymore (thanks to the
+emacswiki :)).  For the user it's very convenient but i
+understand your objections.
+
+But as Drews comment shows the limit is to strict even for
+"normal" browsing (BTW happened to me too once when I
+clicked several times on RandomPage during a coffee break).
+
+I forgot why you installed this "feature" in the first
+place.  Was it a bandwidth or a CPU problem?
+
+If it's a CPU problem maybe the wiki engine can be tuned. As
+far as i can see the only dynamics in a page are the
+style-sheet link and maybe some cookie.
+
+If it's a bandwidth problem (and the server runs on
+GNU/Linux) it should be possible (as far as i understand) to
+solve the problem more elegant using ipchains'
+<code>dstlimit</code> module.  It limits the packets/second
+send per destination IP.
+
+-- DavidHansen
+
+[new]
+It's a load problem, that is independent of my code, but dependent on
+my decision to use Perl and the regular CGI library. This alone causes
+CPU load everytime the script is invoked, as Perl is started in a separate
+process and the (big) CGI library needs to be compiled -- all of that takes
+a certain fixed amount of CPU power, independently of how well my code
+is written.
+
+Therefore, if somebody writes a spider that follows all the links, assuming
+10 links per page, and who doesn't slow down between requests, will create
+1 process at t=1, 10 processes at t=2, 100 processes at t=3, etc. As you
+can see, this kind of behaviour will create incredible load. On a shared
+host, this affects all the other sites as well.
+
+Previous web hosting service providers have had to shut down
+EmacsWiki a few times in the past because of such stupid mistakes.
+Note that this doesn't require any malice, it could happen to anybody who is
+trying to write his first spider and thinks that archiving EmacsWiki
+is actually a pretty cool idea.
+
+Similarly, it slows down spammers -- if they start spamming many pages
+in rapid succession, their rate goes down to a maximum of 2 per second
+after their first 20 hits. 2 per second is still a lot for humans to fix, but
+on their side, that basically means that nearly all their edits are being denied,
+which is good, since most spammers quit their attacks after a while.
+
+Anyway. That explains why I have [[Oddmuse: Surge Protection]] enabled.
+-- AlexSchroeder
+
+[new]
+I got the "Too many instances" error today on my first access to the
+site while trying to visit
+http://www.emacswiki.org/cgi-bin/wiki?action=rc;days=1;all=1;showedit=1.
+-- DianeMurray 2006-09-06
+
+[new]
+Yeah, it's not impossible if ten other people (or misbehaving spiders) are
+running things that take a long time to complete, eg. searches, maintenance,
+or reindexing the site. Mostly I think the bots are causing a certain background
+level of activity using searches. -- AlexSchroeder
+
+[new:DrewAdams:2006-09-06 13:52 UTC]
+What DianeMurray described is what I tried to say in my first post in this thread: It can happen on your first access. Anyway, thanks for the explanation. If this starts to happen more frequently, perhaps change the error message to tell someone to try again (the problem is likely temporary), and maybe mention that the problem ''might'' be because they tried to send too many requests too quickly. IOW, the behavior is not as bad as the possible misunderstanding from the message, when it's your first page access. -- DrewAdams
+
+[new:AlexSchroeder:2006-09-06 21:31 UTC]
+Good point. I added 'Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.' -- AlexSchroeder
+
+[new:DrewAdams:2006-09-08 15:06 UTC]
+Sounds helpful to me. Thx -- DrewAdams

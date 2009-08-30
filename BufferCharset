@@ -1,0 +1,10 @@
+<code>buffer-charset.el</code> lists charsets used in a buffer and can highlight characters from a particular charset.  Get it from the emacs-devel post
+
+: http://lists.gnu.org/archive/html/emacs-devel/2002-07/bingzGAekbu7M.bin
+
+(rename to <code>buffer-charset.el</code> after downloading).  The message is http://lists.gnu.org/archive/html/emacs-devel/2002-07/msg00672.html
+
+Listing charsets used is good for finding out what you've cut and pasted, especially when emacs is arguing with you about a "safe coding system".  It's also good to see if there actually are any characters from a <code>coding</code> cookie, or if it's in fact just ASCII.
+
+----
+CategoryInternationalization

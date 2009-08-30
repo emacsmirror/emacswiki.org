@@ -1,0 +1,55 @@
+'''_Vocabulary:_''' In Emacs, we call '''killing''' what others call ''cutting'', and '''yanking''' what others call ''pasting''. We call "saving onto the kill-ring" what others call ''copying'' text. The '''kill-ring''' is similar to a ''clipboard'': it is a list of the last 60 killed items, from which items can be yanked.
+
+The default command for killing the selected region is `kill-region' (`C-w'). The command for saving (copying) text to the `kill-ring' is `kill-ring-save' (`M-w').
+
+Text removed with the `delete-*' commands, such as `delete-backwards-char' (`DEL'), is not saved to the `kill-ring'. 
+
+Yanking inserts the last killed item from the head of the list, but you can cycle through the list to instead yank previously killed or copied text using `M-y'.
+
+== Cycling forwards ==
+
+`M-y' (`yank-pop') cycles backwards through the `kill-ring'. Here's a way to cycle in the reverse direction with `M-Y' (Meta-<i>Shift</i>-Y):
+
+    (defun yank-pop-backwards ()
+      (interactive)
+      (yank-pop -1))
+     
+    (global-set-key "\M-Y" 'yank-pop-backwards) ; M-Y (Meta-Shift-Y)
+
+== Deleting word backwards ==
+
+The following may be of interest to people who (a) are happy with `C-w' and friends for killing and yanking, (b) use `transient-mark-mode', (c) also like the traditional Unix TTY behaviour that `C-w' deletes a word backwards and (d) use GnuEmacs. It tweaks `C-w' so that, if the mark is inactive, it deletes a word backwards instead of killing the region:
+
+    (defadvice kill-region (before unix-werase activate compile)
+      "When called interactively with no active region, delete a single word
+    backwards instead."
+      (interactive
+       (if mark-active (list (region-beginning) (region-end))
+         (list (save-excursion (backward-word 1) (point)) (point)))))
+
+[new:Who?:Who?]
+Doing this as advice (as opposed to a new function bound to C-w) seems like a bad idea -- what happens if some other elisp function calls `kill-region'?
+
+[new]
+Could not agree more.  What if `transient-mark-mode' is not on?  This is a poor use of advice.
+
+    (defun unix-werase-or-kill (arg)
+      (interactive "*p")
+      (if (and transient-mark-mode
+        	   mark-active)
+          (kill-region (region-beginning) (region-end))
+        (backward-kill-word arg)))
+
+-------------------
+
+See also:
+* EmacsNewbie
+* CategoryGlossary
+* [[Region]]
+* EmacsManual, chapter "Killing"
+* CopyAndPaste
+* Lisp:LRU-yank.el for a stacked based kill-ring manipulation package.  Think alt-tab for the kill-ring.
+
+----
+
+CategoryRegion

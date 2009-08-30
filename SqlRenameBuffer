@@ -1,0 +1,26 @@
+If you work with multiple connections, you need to rename them such that the next sql-foo command creates a new *SQL* buffer instead of popping you to the existing one.  Use M-x sql-rename-buffer for that, or the SQL menu entry.
+To do it autmatically, after every connection, use the following in your ~/.emacs file:
+
+    (add-hook 'sql-interactive-mode-hook 'sql-rename-buffer)
+
+Sometimes you can change the connection parameters, however.  In Oracle, for example, you would to it as follows:
+
+    connect vdb/vdb@vdbdev;
+
+This does not set `sql-alternate-buffer-name', so a subsequent renaming will not produce a new name.  Subsequent connections will also not provide the correct default parameters.  Here is an Oracle-specific solution, including an automatic renaming of the buffer:
+
+    (defun my-sql-connect-watch (line)
+      "Watch for connect statements and set variables accordingly.
+    Add this to `comint-input-filter-functions'."
+      (set-text-properties 0 (length line) nil line)
+      (when (string-match "connect \\([a-z_]+\\)/\\([a-z_]+\\)@\\([a-z_]+\\)" line)
+	(setq sql-user (match-string 1 line)
+	      sql-password (match-string 2 line)
+	      sql-database (match-string 3 line)
+	      sql-alternate-buffer-name (sql-make-alternate-buffer-name))
+	(sql-rename-buffer)))
+
+    (add-to-list 'comint-input-filter-functions 'my-sql-connect-watch)
+
+----
+CategorySql

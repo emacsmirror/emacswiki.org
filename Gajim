@@ -1,0 +1,23 @@
+Here is a function to open a [http://www.gajim.org/ gajim] chat window within Emacs :
+
+<pre>
+(defvar gajim-remote "/usr/bin/gajim-remote")
+(defvar gajim-user-list ())
+(defun my-gajim-get-list()
+  (save-excursion
+	(with-temp-buffer
+	  (call-process gajim-remote nil t nil "list_contacts")
+	  (goto-char (point-min))
+	  (while (re-search-forward "^jid[ ]*:[ ]*\\(.*\\)$" (point-max) t )
+		(setq gajim-user-list (append gajim-user-list (list (match-string-no-properties 1)))))))
+  gajim-user-list)
+
+(defun my-gajim-talk()
+  (interactive)
+  (let* ((ff (if (not gajim-user-list)(my-gajim-get-list) gajim-user-list))
+		 (answer (completing-read "Jabber: " (mapcar (lambda (tt)(list tt)) ff))))
+	(message answer)
+	(start-process "*GAJIM*" nil gajim-remote "open_chat" answer)
+	)
+  )
+</pre>

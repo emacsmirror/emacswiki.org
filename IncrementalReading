@@ -1,0 +1,87 @@
+See http://www.supermemo.com/help/read.htm to learn what incremental reading is. Basically, this is the only way I can imagine making it through the entire EmacsManual.
+
+== Quick and Dirty ==
+
+=== Setup ===
+
+# Get FlashCard.
+# Configure FindFileAtPoint.
+# Configure SavePlace.
+# (optional) Install lynx.
+
+=== Usage ===
+
+# Save a buffer of text you want to incrementally read.
+## For HTML, use ##M-! lynx -dump URL## (//Does anyone know of a way to get numbered links with either// ##links## //or// ##w3m##//?//).
+# Close the buffer.
+# Create a new flashcard with the filename of the buffer as the question.
+
+[new]
+Could you please explain how to do this? The prompts in fc.el are in Japanese and it seems quite impossible to understand what to do if you do not understand them.
+
+[new::2007-03-05 04:00 UTC]
+You probably want to avoid fc.el, which is an extension to FlashCard for studying Japanese.
+
+[new]
+Ah, thanks. Yes, I probably because lack of time want to avoid fc.el ;-)
+
+[new]
+# When drilling flashcards
+## Use ##C-x C-f## on any filenames you come across.
+## Read part of the buffer.
+## Close the buffer.
+## If using a Supermemo algorithm, choose either 4 or 5 for how well you "remembered" what you read (//I would use 4 if I only read a little and 5 otherwise.//).
+# If SavePlace is working, the next time you open the file you'll be where you left off!
+
+== Multi-file HTML ==
+
+Sometimes you want to read a book or manual from the web that's in separate HTML files. Here are a few ways to do it:
+
+=== Lazy Evaluation ===
+
+* Advantages: less up-front work
+* Disadvantages: no archival/"paper trail" of what you've read, distracting work while reading
+
+# Dump the first file and use it like in the above instructions.
+# When you come to the end of the buffer, find the link for the next file and dump it.
+# Save the new buffer (with the newly dumped text) over top of the old file and set point to the top.
+
+=== Up-front cURLing ===
+
+* Advantages: less distractions later
+* Disadvantages: more up-front work
+
+==== Method #1 ====
+
+This method works best if the HTML files are not regularly named (e.g. they use chapter titles).
+
+# Dump the Table of Contents page into a buffer.
+# Trim the buffer to just links you want (a list of URLs on separate lines).
+# Convert the buffer to cURL config file format using a function or keyboard macro. (Lines should look like ##url = "http://site/path"##.)
+# Mark the URLs.
+# ##M-| curl -s -K -##
+# ##C-x h##
+# ##M-! lynx -dump -stdin##
+
+==== Method #2 ====
+
+This method only works if the HTML files are regularly named (numerically), but can save some time.
+
+# ##M-x | curl -s http://site/page[1-8].html##
+# ##C-x h##
+# ##M-! lynx -dump -stdin##
+
+[new::2007-03-06 06:40 UTC]
+Does anyone know of a program that does the above more gracefully? Perhaps something like [http://www.plkr.org/ plucker]? ##lynx -crawl -dump## doesn't seem to work.
+
+[new]
+
+== Emacs Mode ==
+
+It would be great to have a mode that assists with this more. Some ideas:
+
+* Make lynx dumps more automatic.
+* Convert numbered links into clickable ones ala Gnus/Org-mode.
+* Create region->flashcard function.
+* Create a "finished reading buffer" function that archives the material.
+* Parse and font-lock HTML buffers (something like emacs-w3m-mode).

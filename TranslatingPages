@@ -1,0 +1,129 @@
+[[fr:TraduireLesPages]]
+
+To request new languages to be added, or for suggestions on how to improve the system, contact AlexSchroeder.
+
+TranslationHelp has step by step instructions on how to translate a page. This page is about the technical infrastructure that supports the interlinking of the various translations.
+
+== Known languages ==
+
+The wiki tries to automatically determine the language a page is written in using a regular expression. If the regular expression matches more than three times, it's a "hit". Pages can be written in multiple languages.
+
+* en -- English -- ' (the|that|and|why|what) '
+* de -- Deutsch -- ' (der|das|und|oder) '
+* fr -- Français -- ' (et|une|les|est|je|avec|même) '
+* it -- Italiano -- ' (gli|che|perchè|così) '
+* es -- Español -- '(¡|¿|ñ)'
+* ru -- Русский -- '(т|р|а|н|ц|э|о|м|е|в|л|ы|ч|ж)'
+* zh -- 中文 -- '(是|但|這|这|你|了|啊|沒)'
+* pt -- Português -- '(ã|õ)'
+* se -- Svenska -- ' (är|från|för) '
+* ja -- 日本語 -- '(ま|す|ん|し|ょ|う|の|は)'
+* ko -- 한국어 -- '(이)'
+
+This heuristic is far from perfect, but at least it's automatic. :)
+
+== Translation links
+
+This is a translation link: ##[[de:SeitenÜbersetzen]]##. It tells the wiki that the German translation of the current page is on the page called SeitenÜbersetzen. The wiki will offer a link to this German translation at the bottom of the current page.
+
+== Languages offered
+
+When you click on the _Add Translation_ link, you'll be offered the list of known languages listed above minus the languages that already have a translation link. If there is but one remaining language that is not accounted for, the wiki assumes that this is the copy you’re looking at, and doesn’t offer it anymore.
+
+It is always possible to edit a page and change the translation links manually.
+
+Using the _Add Translation_ link will automatically add a translation link based on the information you provided to the page you just left.
+
+== How to translate the interface
+
+The wiki interface also needs translation. Check Oddmuse:Translations. Every language needs one of these files.
+
+In addition to that, every language needs the *names of some important pages* that appear at the top and bottom everywhere. The most important ones are SiteMap and RecentChanges. Some sort of HowTo would be good. The TranslationHelp page is also somewhat important. :)
+
+== Discussion ==
+
+[new:DrewAdams:2008-10-29 13:48 UTC]
+Any chance for an automatically translated page (which could then be corrected manually), like Google translation but also keeping the format? If not, then the name TranslatingPages is a bit misleading, no? -- DrewAdams
+
+If I put part of its source into Google translate, I get back this (see below). The language translation is what it is. ;-) More interesting is what happens to wiki markup.
+
+Formatting such as the bullet is retained, but the ##''## in front of "Suggestion:" was moved and a space removed, ##--## was changed to - and of course ##[new:## was translated. Another possibility is to translate not the source but the displayed page. 
+
+Some pretreatment would be needed before asking Google or whatever for translation. Things like ##[new:## would need to be skipped (saved and restored), as well as things like ##<pre>## sections and code starting on lines prefixed by a space. 
+
+FWIW, here's the Google translation (I added newlines):
+
+<pre>
+[neuf: DrewAdams :2008-10-29 13:48 UTC] 
+* Je vois. C'est encore une quatrième interprétation de la cible espace - 
+qui ne s'était pas produit pour moi. (Je me serais attendu le nom de la 
+page cible à traduire (!) Du nom de la page en cours ...). Voir ci-dessus
+pour les trois autres interprétations, ce qui suppose que toutes 
+les "cibles" l'espace était destiné à indiquer que la page à traduire (vide = page, 
+pleine page Web, nom de la page seulement: URL sans dir). Suggestion'':''ce
+que vous avez dit tout à l'heure quelque part, de préférence sur la page
+qui s'attend à ce que d'entrée.
+
+</pre>
+
+And here it is displayed (I indented it):
+
+: [neuf: DrewAdams :2008-10-29 13:48 UTC] 
+** Je vois. C'est encore une quatrième interprétation de la cible espace - 
+qui ne s'était pas produit pour moi. (Je me serais attendu le nom de la 
+page cible à traduire (!) Du nom de la page en cours ...). Voir ci-dessus
+pour les trois autres interprétations, ce qui suppose que toutes 
+les "cibles" l'espace était destiné à indiquer que la page à traduire (vide = page, 
+pleine page Web, nom de la page seulement: URL sans dir). Suggestion'':''ce
+que vous avez dit tout à l'heure quelque part, de préférence sur la page
+qui s'attend à ce que d'entrée.
+
+Such an automatic translation might be useful as a first pass. It would save much of the translation and formatting drudgery and would immediately provide at least something that is more or less understandable. Obviously, humans would need to clean things up to make the result truly helpful. -- DrewAdams
+
+[new:XavierMaillard:2008-10-29 14:26 UTC]
+I really disagree. Google translation is the worse thing to do even as a first pass. For your information, I have read your translation and I really can not understand what it is all about :) (I am serious). The act of translating is something only humans can do in my opinion (if we want a good level). -- XavierMaillard
+
+[new:DrewAdams:2008-10-29 15:30 UTC]
+Well, it's a controversial subject, admittedly. ;-) FWIW, I can understand what that translated text is about without any problem -- about 90% of the sense is communicated, IMO. I have anglophone colleagues who use Google to translate articles from Libe or Le Monde into English, and they understand most of the content -- certainly much more than they would understand trying to read the French (even when they know some French), which is the real point here. And I've used it to try to understand Japanese articles -- in which case I'd say that the result is much less favorable but still usually better than nothing. 
+
+I don't really care, for myself, since most of the wiki pages are either written in English or already translated into English. But I can imagine that someone might well appreciate being able to see some translation on the fly -- even a poor one, if there is none already available for his/her native language. This is a case, I think, of not letting the perfect be the enemy of the good. And obviously anyone is welcome to improve a poor translation, perhaps even by tossing it and starting over. 
+
+I agree that "the act of translating is something only humans can do in my opinion (if we want a good level)." (In fact, I said that: "Obviously, humans would need to clean things up to make the result truly helpful.") I've translated, myself, and worked with and managed professional translators for years. I have a huge respect for what's involved and for the differences between professional translation, translation by a non-professional, and automatic translation. And between translation into one's maternal tongue and into another (you vs I translating into French or English, even though we both understand both).
+
+It is the last part of your sentence that is important here. Automatic translation doesn't provide a high level of quality, but it is usually better than no translation.  
+
+Here's a fun exercise: let Google translate the translated text back into English. Naturally, given "l'effet [[http://fr.wikipedia.org/wiki/T%C3%A9l%C3%A9phone_arabe|telephone arabe]]"[http://en.wikipedia.org/wiki/Chinese_whispers], one would expect a multiplication of degradation of meaning. Even so, one can still understand much of what is said (assuming knowledge of the context).
+
+[new]
+At the moment I'm not going to add an interface to a translation service.
+I used to have such a thing as part of my blog, but nobody ever used it
+and when I asked people they said that it was not worth the effort trying to decipher it. -- AlexSchroeder
+
+----
+
+[new:DrewAdams:2008-10-30 17:03 UTC]
+Another crazy thought occurred to me. How about automatically indicating on a page in one language that the equivalent page in another language has been updated (so that the current page is perhaps not up-to-date wrt its counterpart)? For example, if SiteMap gets updated, then a notification would automatically be added to PlanDuSite, [[Übersicht]], etc. 
+
+This could be done either for both directions or it could be done (more easily, probably) only to notify translated pages of updates to their "parent". The "parent" would be the original page from which the translated page was created.
+
+Some state-saving would be required to implement this feature, but it might prove useful. It's not obvious, when some correction is made to a page, that you might want to update a "derived" page accordingly. And that potential problem will only become more pronounced with an increase in translation activity (such as might be encouraged by the new link feature). -- DrewAdams
+
+[new]
+Such an extension actually exists. It will tell you that the current page is a translation of page X, and whether it is up to date or not (and offer a diff link if it is not). In real life for a website driven by volunteer contributors, most of them monolingual, I think this is overkill. I think this might make sense for a government site in a multilingual country. But on sites like Wikipedia the various language groups don't necessarily have the same number of pages, the language groups have different interests (maybe not true for a site about Emacs, haha), the pages might have a slightly different focus, and so on. Essentially, I don't think this will work. It might work – I'm not giving up hope, yet. But I'll try it a few months down the line, if at all. -- Alex
+
+[new:DrewAdams:2008-10-30 18:51 UTC]
+I see; that's good that it already exists. I don't think it's useless/overkill. A user might well want to know that, say, the English page was updated more recently, to check there for the latest info (e.g. via a diff). And a page translator might want to know also, to check whether a given update is worth reflecting in the translated page. -- DrewAdams
+
+[new]
+Maybe we'll give it a try when I'm back from my holidays. CU in three weeks. :) -- Alex
+
+[new:DrewAdams:2008-10-30 20:47 UTC]
+''Bonnes vacances !'' -- Drew
+
+----
+
+[new:DrewAdams:2008-10-30 17:37 UTC]
+I tried to create %%[[de:SandKasten]]%% so the link at TranslationHelp would be a real link, but I guess I don't know what I'm doing. Help? -- DrewAdams
+
+[new]
+Yeah, I think we've hit a limitation of the markup. :( -- Alex

@@ -1,0 +1,23 @@
+http://www.wikiservice.at/image/wikibus.jpg
+This is the EmacsWiki bus stop.  This wiki is dedicated to Emacs and
+XEmacs knowhow, history, people, configuration, examples, etc.  The
+reason these two editors are so special is that they include a Lisp
+interpreter, such that they were extended in totally unexpected
+directions (web-browsers, news readers, mail clients, IRC clients).
+This makes for a very powerful editor -- and for a very steep learning
+curve.  Thus the need for a wiki.
+
+Bus connections:
+
+* Bus Nr. 42 - '''SOFTWARE-DEVELOPER-TOUR''' - next stop is [http://wiki.beyondunreal.com/wiki/TourBusStop UnrealWiki]
+
+Famous sights to visit here at the EmacsWiki:
+
+; SiteMap: The place to start.  When we started, we decided to integrate categories and a sitemap and "starting points" into the main page in order to have only one central page from where to start.  This approach might be interesting for wiki editor wannabes as an example of how to start off.
+; [[ERC]]: This package was developed very actively and the developers produced its documentation on this wiki as they went along.  Its a nice example of what this wiki has to offer for developers and users.  This is what it is supposed to turn into, only on a larger scale.
+; EmacsChannelPeople: The site drew many contributors from the EmacsChannel.
+; ComparativeEmacsology: This page shows how the schism between Emacs and XEmacs is making life harder for the developers, and it also shows how we try to cope with it using a bit of hacking humor.
+
+----
+MeatBall:TourBus
+MeatBall:TourPassengerHelpDesk

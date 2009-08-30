@@ -1,0 +1,14 @@
+Erc nickserv module support for Azzurra network (a popular italian irc
+server):
+
+
+    (add-to-list 'erc-nickserv-alist
+	          '(Azzurra
+	           "NickServ!service@azzurra.org"
+                   "^B/ns\sIDENTIFY\spassword^B"
+	           "NickServ"
+	           "IDENTIFY"
+	           nil))
+
+    ;;; replace ^B with true ^B
+

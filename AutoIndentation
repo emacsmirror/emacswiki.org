@@ -1,0 +1,164 @@
+'''If you want automatic indentation, try to use ##C-j## instead of ##RET## for a while. ##C-j## usually runs ##newline-and-indent##. If you really like it, you might want to bind it to ##RET##.''' Add something along the following lines to your ##.emacs##:
+
+    (add-hook 'lisp-mode-hook '(lambda ()
+      (local-set-key (kbd "RET") 'newline-and-indent)))
+
+Replace ##lisp-mode-hook## with the appropriate hook. Note that for any mode derived from ##c-mode##, the hook ##c-mode-common-hook## will do the trick.
+
+If you feel squeamish about using anonymous functions in your hooks, the following will work just as well:
+
+    (defun set-newline-and-indent ()
+      (local-set-key (kbd "RET") 'newline-and-indent))
+    (add-hook 'lisp-mode-hook 'set-newline-and-indent)
+
+On the other hand, this thing is a little bit cleaner and works with most modes:
+
+    (define-key global-map (kbd "RET") 'newline-and-indent)
+
+For some programming languages, e.g., Fortran, using ##reindent-then-newline-and-indent## instead of ##newline-and-indent## may be clearer. Incidentally, ##f90-mode## (for Fortran 90, Fortran 95, etc.) is one in which redefining the key in the ##global-map## does not work. One must write something like:
+
+    (add-hook 'f90-mode-hook
+      (lambda () (local-set-key (kbd "RET") 'reindent-then-newline-and-indent)))
+
+----
+
+[:SmartPaste]
+'''"In !TextMate, pasted lines are automatically indented, which is extremely time-saving. This should be fairly straightforward to implement in Emacs, but how?"'''
+
+I've [http://emacs.wordpress.com/2007/01/22/killing-yanking-and-copying-lines/ found] the following code, which accomplishes this beautifully:
+
+    (defadvice yank (after indent-region activate)
+      (if (member major-mode
+                  '(emacs-lisp-mode scheme-mode lisp-mode
+                                    c-mode c++-mode objc-mode
+                                    latex-mode plain-tex-mode))
+          (let ((mark-even-if-inactive t))
+            (indent-region (region-beginning) (region-end) nil))))
+
+Just put the above in your ##.emacs## file and enjoy automatic indentation of yanked text in the listed programming modes. (To add your own modes, check the value of the ##major-mode## variable (##C-h v## or ##M-x describe-variable##) and add it to the list.)
+
+Note that for consistency, you should define the same advice for the ##yank-pop## command:
+
+    (defadvice yank-pop (after indent-region activate)
+      (if (member major-mode
+                  '(emacs-lisp-mode scheme-mode lisp-mode
+                                    c-mode c++-mode objc-mode
+                                    latex-mode plain-tex-mode))
+          (let ((mark-even-if-inactive t))
+            (indent-region (region-beginning) (region-end) nil))))
+
+Alternatively, you may define a separate ##yank-and-indent## command as such:
+
+    (defun yank-and-indent ()
+      "Yank and then indent the newly formed region according to mode."
+      (interactive)
+      (yank)
+      (call-interactively 'indent-region))
+
+and then bind it as you see fit, e.g., ##(global-set-key "\C-y" 'yank-and-indent)##. However, note that the ##defadvice## method is recommended if you use modes such as CuaMode.
+
+[new]
+Note that '''mark-even-if-inactive''' is only useful/necessary/possible when transient mark mode is on (which is now the default).
+The line:
+
+  (let ((mark-even-if-inactive t))
+
+would be better written:
+
+  (let ((mark-even-if-inactive transient-mark-mode))
+
+so these cool defadvices can also be used successfully by those who prefer to disable transient mark mode (even when they occasionally enable it temporarily).
+
+----
+
+'''Normally, killing the newline between indented lines doesn't remove any extra spaces caused by indentation.''' That is, placing the cursor (symbolized by ##[]##) at
+
+        AAAAAAAAAA[]
+        AAAAAAAAAA
+
+and pressing ##C-k## (bound to ##kill-line##) results in
+
+        AAAAAAAAAA[]        AAAAAAAAAA
+
+when it might be more desirable to have
+
+        AAAAAAAAAA[]AAAAAAAAAA
+
+which is what would have happened if the lines were ''not'' indented.
+
+The following command, ##kill-and-join-forward##, accomplishes this:
+
+    (defun kill-and-join-forward (&optional arg)
+      (interactive "P")
+      (if (and (eolp) (not (bolp)))
+          (progn (forward-char 1)
+                 (just-one-space 0)
+                 (backward-char 1)
+                 (kill-line arg))
+        (kill-line arg)))
+
+It may be inserted into ##.emacs## and bound to ##C-k## (e.g., ##(global-set-key "\C-k" 'kill-and-join-forward)##). In conjunction with the code above for automatic indentation of yanked text, this reduces the need to press ##<tab>## in order to re-indent misaligned lines.
+
+Alternatively, ##defadvice## may be used to alter the ##kill-line## command itself:
+
+    (defadvice kill-line (before check-position activate)
+      (if (and (eolp) (not (bolp)))
+          (progn (forward-char 1)
+                 (just-one-space 0)
+                 (backward-char 1))))
+
+This affects all modes. Checking the value of the ##major-mode## variable allows for filtering:
+
+    (defadvice kill-line (before check-position activate)
+      (if (member major-mode
+                  '(emacs-lisp-mode scheme-mode lisp-mode
+                                    c-mode c++-mode objc-mode
+                                    latex-mode plain-tex-mode))
+          (if (and (eolp) (not (bolp)))
+              (progn (forward-char 1)
+                     (just-one-space 0)
+                     (backward-char 1)))))
+
+[new]
+##(delete-indentation t)## & Viper's ##J## in ##vi-mode## do exactly that, except that
+* point can be anywhere on the first line
+* just one space is left between the two joined lines, which isn't necessarily a bad thing.
+
+##M-^## (##delete-indentation##) does the same thing, except that point can be anywhere on the second line.
+
+Here's the doc of ##delete-indentation##:
+{{{
+Join this line to previous and fix up whitespace at join.
+If there is a fill prefix, delete it from the beginning of this line.
+With argument, join this line to following line.
+}}}
+Cheers!
+-- SebastienRoccaSerra
+
+[new]
+Yes, but you can only use ##delete-indentation## to /join/ lines (and the original ##kill-line## command only to /kill/ them). The above tip is admittedly a little inspired by TextMate, which tends to use the same keys for multiple things (depending on context). The ##kill-and-join-forward## command is essentially an indentation-ignoring version of ##kill-line##: it either joins lines (by killing the newline character plus any spaces) or kills them. I find that my editing is speeded up by the use of such "general-purpose" commands. (Another example is your brilliant
+<tt>[[TabCompletion#SmarTab|smart-tab]]</tt> command.)
+
+[new]
+I modified ##kill-and-join-forward## command a little -- it work almost as the original and uses standard ##delete-indentation## function.
+
+    (defun kill-and-join-forward (&optional arg)
+      "If at end of line, join with following; otherwise kill line.
+    Deletes whitespace at join."
+      (interactive "P")
+      (if (and (eolp) (not (bolp)))
+          (delete-indentation t)
+        (kill-line arg)))
+
+[new]
+That's indeed more elegant :) (I've edited the docstring a little so that the first line stands on its own when calling ##M-x apropos##.) How does it differ from the original behavior?
+
+[new:DrewAdams:2009-05-12 16:03 UTC]
+If you don't have a non-`nil' `fill-prefix', then just `C-k M-SPC'. -- DrewAdams
+
+[new]
+That leaves one space between the lines, which may or may not be what you want.
+
+----
+
+CategoryIndentation

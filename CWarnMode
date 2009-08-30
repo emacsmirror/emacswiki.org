@@ -1,0 +1,11 @@
+cwarn-mode is a minor mode that can highlight a few dangerous typos in C (or derived languages).
+
+cwarn.el comes installed on Emacs.
+
+By default it highlights:
+* Semicolons right after conditions and loops (e.g.  <code>if (x == y);</code>)
+* Assignments in tests (e.g. <code>if (x = y) {</code>)
+* Functions with reference parameters (e.g. <code>void funct(string &p) {</code>)
+
+----
+ProgrammingModes

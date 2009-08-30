@@ -1,0 +1,66 @@
+In order to make Eshell scroll to the bottom of the screen, instead of making Emacs waste half the screen, use the following, which is taken from my attempts to make Erc scroll to the bottom of the screen (and includes various
+patches made by others):
+
+<pre>
+;; scroll to bottom for eshell
+
+(defun eshell-scroll-to-bottom (window display-start)
+  (if (and window (window-live-p window))
+      (let ((resize-mini-windows nil))
+	(save-selected-window
+	  (select-window window)
+	  (save-restriction
+	    (widen)
+	    (when (> (point) eshell-last-output-start) ; we're editing a line. Scroll.
+	      (save-excursion
+		(recenter -1)
+		(sit-for 0))))))))
+
+(defun eshell-add-scroll-to-bottom ()
+  (interactive)
+  (make-local-hook 'window-scroll-functions)
+  (add-hook 'window-scroll-functions 'eshell-scroll-to-bottom nil t))
+
+(add-hook 'eshell-mode-hook 'eshell-add-scroll-to-bottom)
+</pre>
+
+eshell comes with the functionality already.  At first I had it scrolling to the bottom whenever there was output, but that's annoying if you're trying to scroll back to look at something while a command is printing, so now I have it scroll only if I'm at the end of the buffer already:
+
+    (custom-set-variables
+     [...]
+     '(eshell-output-filter-functions (quote (eshell-handle-control-codes eshell-watch-for-password-prompt eshell-postoutput-scroll-to-bottom)))
+     '(eshell-scroll-show-maximum-output t)
+     '(eshell-scroll-to-bottom-on-output nil)
+     [...]
+
+-- ZwaX
+
+----
+
+Does anyone know why the scrolling to bottom behavior is not turned on by default?
+
+In any case, even after turning on the above customization options, Eshell will still recenter the screen after input is entered and before eshell-output-filter-functions is called. This is most noticeable when running X applications. For example, when the prompt is at the bottom of the screen, run "gv" and watch the prompt jump up to the center of the window.
+
+The fix for this requires altering the function eshell-send-input in esh-mode.el:
+
+<pre>
+--- esh-mode.el      2002-06-10 01:32:57.000000000 -0700
++++ esh-mode.new.el     2003-07-26 01:31:06.000000000 -0700
+@@ -696,6 +696,7 @@
+                  (and eshell-send-direct-to-subprocesses
+                       proc-running-p))
+        (insert-before-markers-and-inherit ?\n))
++      (recenter -1)
+       (if proc-running-p
+          (progn
+            (eshell-update-markers eshell-last-output-end)
+</pre>
+
+-- CYD
+
+---
+
+Has anyone been able to figure out how to get Eshell to scroll to the bottom of the screen *only* when the output is longer than $LINES? Sometimes I like to clear the screen and issue a command with compact output (like <code>ls</code>) so I only see that command's output on the screen. With <code>eshell-scroll-show-maximum-output</code>, the screen *always* scrolls to the bottom. I want it to behave like <code>bash</code>. I haven't found the right combination of custom-set variables to make this happen. Any ideas?
+
+----
+CategoryEshell

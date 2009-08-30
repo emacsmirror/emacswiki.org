@@ -1,0 +1,135 @@
+Incremental search, or ''isearch'', is what everybody uses to search.  Type `C-s' and start typing a search string.
+
+
+= Isearch Keys =
+You can define your own keymap to extend isearch with some nice key definitions.  These are given below, but isearch already comes with a handful of nifty keybindings:
+
+* ''Quitting'' Isearch -- Many key sequences quit Isearch.  One that many people use is `RET'. (You ''cannot'' use `RET' to search for the end of a line -- use `C-q C-j' for that.)
+* `C-w' -- Select the (rest of the) word the cursor is on as the search string; repeating `C-w' appends more words to the search string.
+* `C-y' -- Select the text up to the end of the line as the search string.
+* `M-y' -- Append the text last copied to the kill-buffer (clipboard) to the search string.
+* `M-n', `M-p' -- Re-use a previous search string. Repeat to choose older strings. `M-n' moves forward in the search history; `M-p' moves backward.
+* `M-c' -- Toggles search ''case-sensitivity''.
+* `M-r' -- Toggles between ''regular-expression'' searching and literal-string searching.
+* `M-e' -- Lets you pause to ''edit'' the search string. Searching is disabled until you explicitly resume it with `C-j' (or `C-s' or `C-r').
+* ##`M-%'## -- Start query replace using the current string (available in development GNU Emacs).
+* ##`C-M-%'## -- Start a regular-expression query replace using the current search string (available in development GNU Emacs).
+
+
+
+[:MoreIsearchKeys]
+[:更多的Isearch键绑定]
+== 更多的 Isearch 键绑定：添加键绑定 ==
+
+* Library Lisp:isearch+.el adds the following bindings (the standard bindings for some of these use the Meta modifier (`M-') instead).
+** `C-h' provides '''''help''''' on Isearch while isearching. Library <tt>[[isearch+.el]]</tt> also redefines `isearch-mode-help' so that it lists ''all'' Isearch bindings and ends Isearch properly
+** `C-t' lets you toggle between ''regular-expression'' isearching and normal isearching. (Standard binding `M-r'.)
+** `C-c' lets you toggle ''case-sensitivity'' while isearching. (Standard binding `M-c'.)
+** `C-j' lets you edit the search string. It also provides other options, like changing to ''word search'' (`C-w' as first char) or ''non-incremental search'' (RET). (Standard binding `M-e'.)
+
+* See OccurFromIsearch for `isearch-occur'.
+
+* The following pulls the next expression or symbol from buffer into the search string:
+
+       (defun isearch-yank-sexp ()
+         "*Pull next expression from buffer into search string."
+         (interactive)
+         (isearch-yank-internal (lambda () (forward-sexp 1) (point))))
+
+:: Bind it to some key of your preference in <code>isearch-mode-map</code>.
+
+* When you do long searches (when you search for a keyword in a large file and get many hits) if you sometimes get tired in your left pinky (all those repeated C-s), you might want to try the following code. It rebinds `C-s' and `C-r' to the <nowiki><next></nowiki> and <nowiki><prior></nowiki> keys (page down and up):
+
+       (define-key isearch-mode-map [next]
+         'isearch-repeat-forward)
+
+       (define-key isearch-mode-map [prior]
+         'isearch-repeat-backward)
+
+* Changing `C-h' -- See IncrementalSearchHelp for how to make `C-h' during Isearch provide help on Isearch.
+
+* Changing `C-y' -- 
+Some people find the default keymap confusing.  `C-y' doesn't do what they expect: Instead of yanking from the `kill-ring' to the search string, it acts on the current line. You can change `C-y' to act like `M-y' does in the default map:
+
+       (define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
+
+
+
+[:正则表达式查找]
+= 正则表达式查找(不仅仅是使用通配符) =
+
+使用正则表达式(regexps查找是在查找的时候使用''通配符''（或许更多功能）。如果你没有用正则表达式查找，那么这就是你    *现在* 就要''学习的东西''了。
+
+请试试 `C-M-s' (向前) 或 `C-M-r' (向后) —— 或者你可以从 isearch 中仅使用 `M-r' (又或者是 `C-t'， 前提是你已经了前面推荐的绑定， 参见 [[#更多的Isearch键绑定]])。
+
+使用正则表达式查找，你将需要考虑更一点，但在一个任务中将需要更少的查找，并且可以更精确地获得你想查找的东西。要学习正则表达式，参见[[分类－正则表达式]]。事实上，想''学习''正则表达式，只要看一些相关的资料，然后试着在 Emacs 中使用它们就可以了——在Emacs使用正则表达式进行立即搜索就是一个很好的开始。
+
+另一个实践正则表达式的方式是Emacs的 OccurMode （参见 OccurFromIsearch）) 以及 ReBuilder 中使用它们。另外，还有一个库（[[Icicles]]补齐），它支持在 minibuffer 输入中使用 `S-TAB' 显示所有与你输入的正则表达式匹配的结果。如此，只要在 mimibuffer 中输入正则表达式并敲击`S-TAB'就可以看到与其匹配的结果了。试着用这个与输入命令(`M-x')、缓冲切换(`C-x b')、打开文件(`C-x C-f')等命令配合，几乎所有在minibuffer输入的时候都可以输入正则表达式并用`S-TAB'查找匹配的结果。
+
+Don't get discouraged -- regexps take a bit of getting used to. But the power they provide will reward you amply. Regexps will be your best friends in Emacs, so get acquainted.
+
+= More Isearch Stuff =
+
+* IncrementalSearchHelp -- Get Isearch help interactively from Isearch.
+* IsearchOtherEnd -- Use Isearch to navigate buffers by controlling the point behavior.
+* OccurFromIsearch -- Run `occur' with the current Isearch search string.
+* SearchingTheMinibuffer -- How to use Isearch in the mini-buffer.
+* SearchAtPoint -- A feature from VI that is useful to programmers.  Also shows how to extend Isearch.
+
+= Position of Point =
+
+Note that when you type `C-r', isearch goes backwards.  When you search
+backwards, find something, and then end the search, for example by
+hitting `RET', point is at the beginning of the string you searched.
+When you search forwards, point is not necessarily at the end of the string you
+were searching for, but only after the last character that you typed
+-- bad usability!  That means that you cannot predict point
+based on the string you are searching for (and thinking about).  You
+must predict point based on the numbers of characters you typed.
+
+Here is how to change that in your InitFile, courtesy of AdrianKubala:
+
+    (add-hook 'isearch-mode-end-hook 'my-goto-match-beginning)
+    (defun my-goto-match-beginning ()
+      (when isearch-forward (goto-char isearch-other-end)))
+
+    (defadvice isearch-exit (after my-goto-match-beginning activate)
+      "Go to beginning of match."
+      (when isearch-forward (goto-char isearch-other-end)))
+
+'''''Tip:''''' To get back to where you started the search, just use `C-x C-x'. This works because isearch sets the mark at the search start (if point ends up elsewhere after searching).
+
+''Note:'' Emacs 21 currently has a bug in that `isearch-mode-end-hook' is called ''after'' `C-g' exits an isearch. That means that if you end a search with `C-g' you cannot use `C-x C-x' to get back to where you were before searching.
+[new:DrewAdams:2004-12-25 17:33 UTC]
+Since I submitted that bug, I've heard back that it will be corrected in the next GNU Emacs release. -- DrewAdams
+[new]
+
+See also: IsearchOtherEnd.
+
+= Minibuffer Feedback During Isearch =
+
+Lisp library Lisp:oneonone.el, from DrewAdams, changes the background color of the (separate) MiniBuffer [[Frame]] when you isearch. Screenshots of the minibuffer frame (normal, followed by isearch):
+
+[[image:DrewsEmacsMinibufferFrame]]
+[[image:DrewsEmacsMinibufferFrameIsearch]]
+
+
+= Icicles Search: Another Way to Search Incrementally =
+
+'''[[Icicles]]''' provides an unusual way of searching incrementally that is akin to standard isearch -- but even weirder! The full explanation is here: [[Icicles - Search Enhancements]]. Highlights:
+
+# Make a rough search for occurrences of regexp matches in a buffer or region -- somewhat like `occur' (but the unit of matching is not necessarily a line -- it is the regexp that determines the unit).
+
+# Make an incremental regexp search, using a different, fine-tuning regexp, to filter the original hits. "'''Incremental'''" here has a double meaning:
+
+** You can change this regexp on the fly, and see the changes among the original hit set -- as you type, the hit set is updated (fine-tuned).
+
+** You can incrementally move among occurrences of matches in the target buffer.
+
+-- DrewAdams
+
+
+
+----
+SearchAndReplace
+[[分类－正则表达式]]

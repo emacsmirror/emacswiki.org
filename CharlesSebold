@@ -1,0 +1,34 @@
+I have been using Emacs for nearly ten years.  I've had a patch accepted
+to OrgMode, which will be part of Emacs 23!  I used to have time to help
+out a bit on EmacsNewsgroups.
+
+I have a web site of my own about various Emacs issues:
+
+http://zancanda.staticcling.org/emacs
+
+...which includes a feature which has been translated and published in a
+few oriental countries, apparently, and which gained me a bit of
+notoriety and a few flames:
+
+http://zancanda.staticcling.org/emacs/why.php
+
+My biggest current project is a Textile HTML generator written in Emacs
+Lisp, whose home page can be found at
+http://zancanda.staticcling.org/emacs/textile/ if you are curious.  1.0
+hasn't been released yet but anything could happen if I got a few more
+days to work on it.
+
+I just started a new project to look up ESV Bible passages using the ESV
+API in Emacs.  See EsvMode for more information.
+
+I also just whipped up a MoinMoin to MediaWiki converter in Emacs.  See
+MoinMoinToMediaWiki for more information.
+
+I hate VBScript so I wrote a pseudo-REPL for it in Emacs; see
+VbsReplMode.
+
+In my life outside of Emacs, I am a computer system administrator in the
+St. Louis, Missouri, USA area.
+----
+CategoryHomepage
+

@@ -1,0 +1,144 @@
+Gotta start somewhere.
+
+= C =
+
+A good place is your friendly linux kernel source tree, at
+Documentation/CodingStyle.  At the other end of the spectrum are the
+GNU Coding Standards, available at
+http://www.gnu.org/prep/standards_toc.html.
+
+It's worth mentioning that TabsAreEvil and that 6-8 spaces for a tab
+are preferable as they force the coder to find better ways to do
+things than infinite nesting.  6-8 spaces is of course very hard to
+maintain with something like java where just a method name can take up
+40 columns.
+
+= Emacs Lisp =
+
+== Indenting ==
+
+Use the default indentation.  Closing parenthesis shall never stand on
+their own.
+
+== Overall Structure ==
+
+Split the code into many small functions.  Functions should not be
+longer than 24 lines, and no line should be longer than 80 characters.
+Eventhough not many people use displays limited to the traditional
+sizes anymore, its a good limit to set yourself so that you force
+yourself to split the code up into small functions.
+
+These are easier to document, maintain, and test.
+
+When your source files grow too big, consider splitting them up into
+various modules, to make it easier for other people to work on them
+using CVS.
+
+== Functional Style ==
+
+As many functions as possible should be writen in a functional style,
+ie. they should not work by side effect.  This means that the they can
+use parameters and defvar variables as input, but they should not
+modify them.  All they should do is return interesting values.  Thus,
+these functions do not change the internal state of Emacs when called.
+All variables continue to have the same values.  Therefore they can be
+tested again and again easily.
+
+Usually that means that you have some functions that do change the
+state -- functions that deal with input and output, and that you have
+tons of small helper functions that split the tasks up into smaller
+and smaller pieces.
+
+Often a function A needs to call function B with some variable being
+set to a specific value X.  Use `let' to bind these temporarily:
+
+    (defvar X nil
+      "...")
+
+    (defun A ()
+       "..."
+       (let ((X "foo"))
+          (B)))
+
+Consider writing tests into your source code:
+
+    (eval-when-compile
+      (assert (equal '(foo bar) (ueber-fun 12))))
+
+= Documentation =
+
+You can use M-x checkdoc and friends to check part of the documentation style for an elisp module.
+
+== Module Header ==
+Each elisp module should have header with information about the module. 
+See Emacs Info for more.
+
+Lisp:header2.el is a tool that lets you create module headers automatically. 
+It can also update last update time, dependencies etc.
+
+M-x copyright-update and M-x copyright-fix-years are useful too.
+
+== Symbols (functions, variables, macros etc) ==
+
+Document every function, variable, macro etc. using DocStrings -- or
+at least every such entity that you expect users to inquire
+about. DocStrings must be ''split'' into separate lines, each of which
+should be ''shorter than 71 characters''. The ''first'' DocString line
+should be able to stand on its own as a ''summary'' of the documented
+entity. When a doc-string line starts with a left parenthesis, precede
+it with a backslash: `<code>\(</code>'.
+
+In the documentation of functions, mention every formal parameter, and write the names of the formal parameters (variables) in upper case.  The actual parameters are not in upper case, of course.
+
+    (defun foo (input)
+      "Calculate output based on INPUT.
+    INPUT is a number specifying the number of intervals."
+      (bar))
+
+Refer to other functions and variables that might be of interest --
+usually the variables that can be customized the result, or the hooks
+where the functions can be used, etc.  When referring to such other
+functions or variables, enclose their names like `this'.  Emacs will
+then automatically link to these other symbols when the doc string is
+displayed.
+
+    (defun foo ()
+      "Calculate output based on `bar'.
+    This function can be added to the list of actions `baz'."
+      (bar))
+
+= ChangeLog =
+
+Use `C-x 4 a' to maintain a ChangeLog.  Depending on the project, this
+file may or may not be checked in.  When you commit, remove the file
+name and the indentation, and use the same text for your commit
+message.
+
+In the <nowiki>ChangeLog</nowiki> file:
+
+    2002-12-24  Alex Schroeder  <alex@emacswiki.org>
+
+            * erc-track.el (erc-make-mode-line-buffer-name): Removed a
+            superfluous if construct around erc-track-showcount-string.
+            (erc-track-modified-channels): Use 1+.
+            Plus some doc and comment changes.
+
+When checking into CVS:
+
+    (erc-make-mode-line-buffer-name): Removed a 
+    superfluous if construct around erc-track-showcount-string.
+    (erc-track-modified-channels): Use 1+.
+    Plus some doc and comment changes.
+
+Remember what the purpose of the ChangeLog is:  It helps to find when
+variables and functions were introduced, when they were changed, why
+they where changed, and by whom.  For doc strings, this is much less
+interesting.  Often changes to doc strings are not listed in the log
+when other, more important changes were also made.  Generally, making
+an entry for doc string changes is only necessary when you want to
+record that somebody made a contribution without writing any code, or
+when the usage of a variable changed in backwards-incompatible ways.
+But those are special circumstances, anyway.
+
+----
+CategoryCode

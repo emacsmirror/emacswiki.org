@@ -1,0 +1,21 @@
+tinypage.el is part of the TinyTools. It can be used to browse text files that contain ^L page feed markers,
+typically for LPT printer. Select, cut, copy, renumber headings, create table of contents.
+
+== Install ==
+
+{{{
+(autoload 'tinypage-mode "tinypage" "" t)
+
+;; Select suitable binding. Here "m" for modes.
+(global-set-key "\C-cmp" 'tinypage-mode)
+}}}
+
+== Configuration ==
+
+Add the following to your .emacs file:
+
+ (global-set-key "\C-cmp" 'tinypage-mode)   ;; "m" for minor modes
+ (autoload 'tinypage-mode "tinypage" "" t)
+
+----
+CategoryDisplay | CategoryModes | TinyTools

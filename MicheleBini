@@ -1,0 +1,123 @@
+This is my little space on the EmacsWiki.
+
+I use Emacs to IRC (using a heavily modified zenirc version), run shells, as a terminal emulator, and (in case you had been wondering) to edit text.
+
+Here is some elisp code of mine (kindly hosted by the EmacsWiki).
+
+* UniDiffMode: major mode for editing unified format patches, with commands for doing partial updates.
+* TempbufMode: automatically delete inactive buffers from the buffer list.
+* MTraceMode: keep track buffer changes in hidden buffers, useful when keeping track of multiple irc channels or commands that take a some time to complete like a download or a compilation.
+* EmbeddedChangelog: edit a change log embedded in an elisp source file.
+* ZenircChanbuf: enable one channel per buffer in ZenIRC.
+* MazeMax: navigate through randomly generated (and possibly very complex) mazes.
+* SuperEgoMode: highlight occurrences of your name or e-mail in the current buffer.
+* LojbanMode: support for the lojban constructed language.
+
+=== Bits from my .emacs ===
+(placed under the public domain)
+
+* Completing numeric or algebraic expressions (using Calc (aka AdvancedDeskCalculator) and HippieExpand)
+
+** To use this type an expression like 3^2 = and hit your "complete" button (which should be bound to hippie-expand).  You should make sure that the equal sign is surrounded by whitespace before hitting complete.
+
+** A few very basic examples:
+
+*** 19 * 22 = 418
+*** 11^9 = 2,357,947,691
+*** 
+*** M-x calc-normal-language
+*** M-x calc-alg-simplify-mode
+*** 
+*** (22 a - 19 a) / 3 = a
+
+** As you see calc parameters affect the result and its format.
+
+** The rule supports variable substitution (it will only look in the current paragraph for variables to substitute, and substitutions will only take place if the expression cannot be processed further by calc).
+
+*** a = 19
+*** b = 22
+*** b - (a * b) = b - a b = -396
+
+ (defun my-try-complete-with-calc-result (arg)
+  (and
+   (not arg) (eolp)
+   (save-excursion
+     (beginning-of-line)
+     (when (and (boundp 'comment-start)
+		comment-start)
+       (when (looking-at
+	      (concat
+	       "[ \n\t]*"
+	       (regexp-quote comment-start)))
+	 (goto-char (match-end 0))
+	 (when (looking-at "[^\n\t ]+")
+	   (goto-char (match-end 0)))))
+     (looking-at ".* \\(\\([;=]\\) +$\\)"))
+   (save-match-data
+     (require 'calc-ext nil t))
+   ;;(require 'calc-aent)
+   (let ((start (match-beginning 0))
+	 (op (match-string-no-properties 2)))
+   (save-excursion
+     (goto-char (match-beginning 1))
+     (if (re-search-backward (concat "[\n" op "]") start t)
+	 (goto-char (match-end 0)) (goto-char start))
+     (looking-at (concat " *\\(.*[^ ]\\) +" op "\\( +\\)$"))
+     (goto-char (match-end 2))
+     (let* ((b (match-beginning 2))
+	    (e (match-end 2))
+	    (a (match-string-no-properties 1))
+	    (r (calc-do-calc-eval a nil nil)))
+       (when (string-equal a r)
+	 (let ((b (save-excursion
+		    (and (search-backward "\n\n" nil t)
+			 (match-end 0))))
+	       (p (current-buffer))
+	       (pos start)
+	       (s nil))
+	   (setq r
+		 (calc-do-calc-eval
+		  (with-temp-buffer
+		    (insert a)
+		    (goto-char (point-min))
+		    (while (re-search-forward
+			    "[^0-9():!^ \t-][^():!^ \t]*" nil t)
+		      (setq s (match-string-no-properties 0))
+		      (let ((r
+			     (save-match-data
+			       (save-excursion
+				 (set-buffer p)
+				 (goto-char pos)
+				 (and
+				  ;; TODO: support for line
+				  ;; indentation
+				  (re-search-backward
+				   (concat "^" (regexp-quote s)
+					   " =")
+				   b t)
+				  (progn
+				    (end-of-line)
+				    (search-backward "=" nil t)
+				    (and (looking-at "=\\(.*\\)$")
+					 (match-string-no-properties 1))))))))
+			(if r (replace-match (concat "(" r ")") t t))))
+		    (buffer-substring (point-min) (point-max)))
+		  nil nil))))
+       (and
+	r
+	(progn
+	  (he-init-string b e)
+	  (he-substitute-string (concat " " r))
+	  t)))))))
+
+
+ (setq hippie-expand-try-functions-list
+      (cons
+       'my-try-complete-with-calc-result
+       (delq 'my-try-complete-with-calc-result
+	     hippie-expand-try-functions-list)))
+
+
+
+----
+CategoryHomepage

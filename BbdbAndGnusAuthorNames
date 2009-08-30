@@ -1,0 +1,121 @@
+(slightly edited to remove email address -- AlexSchroeder)
+
+ From: Francois Fleuret
+ Subject: A function for a neat mail author display under Gnus (requires bbdb)
+ Newsgroups: comp.emacs
+ Date: 27 Aug 2001 03:09:39 -0500
+
+Hi people,
+
+I wrote a simple function to display the mail authors names in Gnus
+summary mode, according to bbdb. If the author email matches
+gnus-ignored-from-addresses, then the recipient's name is used. If
+there is no bbdb entry, the "guessed" identity is used, quoted between
+<>. And also, if there are several recipient, the first one is
+printed, and "& al." is added to the name.
+
+To use it, I have in my .gnus (the color stuff is used to highlight
+the names of authors/recipients) :
+
+<pre>
+(copy-face 'default 'my-gray)
+(set-face-foreground 'my-gray "gray50")
+(setq gnus-face-1 'my-gray
+      gnus-summary-line-format "%U\%R\%z %1{%5L%} %d%I %1{%ua%} %s\n")
+
+Regards,
+
+P.S: In the following source, there is another function ff-create-mail
+(not related to the preceeding one) to start to write a mail to
+someone taken in the bbdb database.
+
+;; Some stuff I find usefull for emacs & gnus & bbdb.
+;; (c) Francois Fleuret
+;; 
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 2 of the
+;; License, or (at your option) any later version.
+;; 
+;; This program is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;; 
+;; You should have received a copy of the GNU General Public License
+;; along with this program; if not, write to the Free Software
+;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+(defun ff-create-mail (string)
+  "Asks for a regexp for the recipient, proposes a bbdb record list if more than one is found"
+  (interactive "sRecipient : ")
+
+  (let* ((notes (cons '* string))
+	 (records (bbdb-search (bbdb-records) string string string notes nil)))
+
+    ;; Records now contains the list of potential recipients
+    (if	records
+
+	;; We found some entries
+	(if (= 1 (length records))
+	    ;; Only one -> we use it as a recipient
+	    (bbdb-send-mail records)
+	  ;; More than one -> we show the list in another window
+	  (bbdb-display-records records)
+	  (switch-to-buffer-other-window bbdb-buffer-name))
+
+      ;; We did not find an entry -> a mail with the given string as recipient
+      (bbdb-send-mail-internal string)
+      )
+    )
+  )
+
+(defun ff-add-al (email str) "Returns str if emails does contains only
+one address, and str + \"& al.\" if email contains more than one
+address"
+  (and str
+       (if (string-match "," (gnus-mail-strip-quoted-names email)) (concat str " & al.") str)))
+
+(defun ff-explicit-name (email) "Returns a string identity for the
+first address in email. The identity is got in bbdb if possible or
+from the address itself with mail-extract-address-components. The
+sufix \"& al.\" is added if there are more than one address."
+  (if email
+      (let* ((data (condition-case () (mail-extract-address-components email) (error nil)))
+	     (name (car data))
+	     (net (car (cdr data))))
+	
+	(or (and data 
+		 (or (and bbdb/gnus-summary-prefer-bbdb-data bbdb/gnus-summary-prefer-real-names
+			  (let* ((record (bbdb-search-simple
+					  name 
+					  (if (and net bbdb-canonicalize-net-hook) (bbdb-canonicalize-address net) net))))
+			    (and record bbdb/gnus-summary-prefer-real-names (ff-add-al email (bbdb-record-name record)))))
+		     (and data (concat "<" (ff-add-al email (or name net email)) ">"))))
+	    "**undefined**")
+	)
+    nil)
+  )
+
+(defun gnus-user-format-function-a (header)
+  (let* ((from (gnus-header-from header)))
+    (if (string-match gnus-ignored-from-addresses from)
+	(let ((recipient (gnus-extra-header 'To)))
+	  ;; no recipient, looks like into a newsgroup
+	  (if (string= recipient "") (ff-explicit-name from)
+	    ;; There is an undisclosed-recipients, looks like posted
+	    ;; in a newsgroups and cc: to ourself
+	    (if (string= recipient "undisclosed-recipients:;") (concat "to: " (gnus-extra-header 'Newsgroups))
+	      ;; There is a disclosed recipient, show its name
+	      (concat "to: " (ff-explicit-name recipient)))))
+      ;; The sender is not me, show who it is
+      (ff-explicit-name from)
+      )
+    )
+  )
+</pre>
+
+----
+CategoryGnus
+CategoryBbdb
+

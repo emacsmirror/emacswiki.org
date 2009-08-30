@@ -1,0 +1,35 @@
+ wiki-projects.el --- manage wiki projects
+
+This code allows you to switch between different wiki projects.  Every project is associated with a list of wiki directories, a publishing directory and publishing rules.  [http://www.geocities.com/kensanata/elisp/wiki-projects.el.txt Download]
+
+Customize `wiki-projects' to set them up.  The default setup includes a public and a private project.  The public project uses the ~/Wiki directory and publishes HTML files into the ~/<nowiki>WebWiki</nowiki> directory.  The private project uses the ~/Wiki and the ~/Notes directories and it disables publishing.
+
+If you do not customize `wiki-projects' , the public project will take the default values from the variables `wiki-pub-directory', `wiki-directories' and `wiki-pub-rules'.  Once you customize `wiki-projects', switching to a project will overwrite any values stored in those three variables.
+
+As I used plain WikiMode before, what I did to define a little extra wiki project for temporary pages from the Emacs Wiki is the following code in my .emacs file:
+
+    (load "wiki-projects")
+    (add-to-list 'wiki-projects
+                 `("<nowiki>EmacsWiki</nowiki>" (,(expand-file-name"~/<nowiki>EmacsWiki</nowiki>/")) nil nil))
+
+''Don't mode me''
+
+Unfortunately this introduces "modes" -- if you want to treat a certain file as a wiki page, you have to be sure to be using the correct project.  Maybe I should make publishing directory and publishing rules buffer local variables.  One unresolved issue with that is what to do with pages that are part of several projects.
+
+---------------------------
+
+Question from the peanut gallery...  I'd love a quick tutorial on how to use wiki mode and wiki-projects to set up two distinct wikis.  They live in separate directories, they publish to separate directories, they have separate indices, and never the twain shall meet...  I've mucked my way through wiki.el and wiki-project.el, and I'm still getting commingled files when I wiki-publish-all...  Thanks, MichaelSippey
+
+=== Help Needed for Emacs Wiki Mode (+Wiki Projects) ===
+* Can anyone try to give a step by step installation instructions for both emacs extensions
+** emacs wiki mode
+** emacs wiki-projects?
+* The installation instructions should be for
+** emacs beginners
+** emacs or xemacs
+** (I'm planning to use emacs or xemacs with windows 2000 and windows xp)
+* my only reason of using emacs is to have an offline wiki system on my pc/laptop 
+** with html-export capabilities
+** automatic version control? (i suppose that's not available in emacs wiki mode?)
+
+Thanks, --[[TonyArmani]]

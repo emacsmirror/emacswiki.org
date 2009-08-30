@@ -1,0 +1,31 @@
+English: CategoryInterface
+
+Emacs Interfaces to Online Utilities.
+
+(Most of theses packages required w3)
+
+* Anaya ([http://turingmachine.org/elisp/anaya.el anaya.el]) -- Emacs interface to the Anaya Online Spanish Dictionaries (by DanielMGerman)
+* Archie ([http://www.stud.ifi.uio.no/~larsi/other/archie.el archie.el]) -- query archie servers and parse the results (by LarsMagneIngebrigtsen)
+* Dict servers as defined by RFC 2229
+** DictWeb -- lookup stuff on dict.org by EricMarsden
+** DictMode -- lookup stuff on dictionaries by TorstenHilbrich
+* Hachette (Lisp:hachette.el]) -- Lookup a word on the Hachette's online french dictionary (by JeanPhilippeTheberge) NB. This is currently broken!
+* Rdict ([http://lgarc.narod.r_u/xemacs-tips/packages/rdict-0.2.tar.gz rdict-0.2.tar.gz]) -- Emacs interface to the Lingvo online English<->Russian Dictionary.
+* Slashdot ([http://www.tardis.ed.ac.uk/~skx/win/slashdot.el slashdot.el]) -- View headlines from Slashdot.org (by SteveKemp)
+* Editing remote wikis (see WikiModeDiscussion)
+** WikiRemote -- Edit pages on this and other wikis.
+** SimpleWikiEditMode -- Edit pages on this wiki, supercedes WikiRemote
+** EmacsWikiRemoteMode -- Alternative to SimpleWikiEditMode which uses emacs-wiki.el + w3m
+** HttpGet and HttpPost -- used for web services
+* WebJump -- Programmable hotlist/bookmarks to many sites (by NeilVanDyke)
+* watson ([http://www.chez.com/emarsden/downloads/watson.el watson.el]) -- experimental meta-search package to submit search requests to several search engines at once (includes ranking mechanisms) by EricMarsden
+* babel ([http://www.chez.com/emarsden/downloads/babel.el babel.el]) -- A interface to several web translation engines also by EricMarsden
+* imdb ([http://www.gbvsoft.com/imdb.el.txt imdb.el]) -- Interface to ([http://us.imdb.com IMDB] ) to search movies by title -- GirishB
+* CorbaImplementation -- CORBA Dynamic Invocation interface using the IIOP protocol.
+* XmlRpc -- call functions on remote systems by sending them some XML
+* saft-to ([http://asf.void.at/emacs/saft-to.el saft-to.el]) -- A simple emacs interface for the Simple Asynchronous File Transfer Protocol.
+* EmacsWeather:
+** RainOrShine -- slurping it from a web site
+** MetarReport -- getting coded reports from airports all over the world
+** EmacsMeteo -- an attempt to a more abstract fetcher of metar data
+* TinyUrl -- Easily convert the url at point to a tinyurl via tinyurl.com. 

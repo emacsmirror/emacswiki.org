@@ -1,0 +1,19 @@
+Yet Another Emacs Junkie.  You can email me at <joelh@gnu.org>.
+
+Here's my .emacs.el, for the interested.  I've been randomly extending
+it for a decade now (but regrettably lost my CVS server so only have
+logs back to 2000).  The file presently is now a hefty 92k; it's
+gotten quite a lot of cruft.  But in the interest of letting other
+people use the same cruft, I'll post it here.
+
+This is mostly for giving people ideas.  If you intend to actually use
+something out of this, then you may want to email me.  I don't update
+this page often, and I may have improved on whatever you're copying.
+
+I use Emacs.  More specifically, I exclusively use GNU Emacs.  I have
+no idea if this works with XEmacs or not.
+
+[removed out-of-date and broken version of my .emacs; I'll post a fresh one soon.]
+
+----
+CategoryHomepage

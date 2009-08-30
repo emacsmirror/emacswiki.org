@@ -1,0 +1,16 @@
+This is a graphical action/adventure-game heavily inspired by the good old "Rodent's revenge". Be careful, the game is in early development and not very stable. It may cause Emacs to hang and other nasty things. PLEASE start a new emacs-session before playing it. Things may not work as expected
+
+http://www.efd.lth.se/~f03kr/amshot.png
+
+[http://www.efd.lth.se/~f03kr/alienmangel.tar.gz Download (sourcecode and datafiles)]
+
+[http://www.efd.lth.se/~f03kr/alienmangel2.ogg Screencast (OGG/Theora)]
+
+**News**
+
+They aliens are now animated, they can chase the player, and the player can lock them inside blocks (where they die with an animation and become cash). For now, the player can pick the money up or crush it (no score is counted though). Of cource the aliens can also kill the player (nasty animation). The game contains some graphical violence and blood, but not much compared to "Itchy and scratchy" ;)
+
+If someone can help me figure out how to reset the game after one has killed the buffer and ran ALT + X alienmangel a second time, I would be grateful. Also the games does not run under emacs 21 (debian stable), the timer doesn't tick. If someone could help me solve this too I'll be so happy :)
+
+----
+CategoryGames

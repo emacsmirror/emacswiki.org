@@ -1,0 +1,20 @@
+Hey guys.
+
+RepetitionDetection sounds like a good idea.
+
+But...
+
+1. I'm wary of frobbing pre-command-hook.
+2. I would like the system to detect any length sub-key-sequence.
+3. and I'm OK with it not being real-time.
+
+And since I don't have a job, I get to hack on this all day. <tt>:)</tt>
+So I started working on a longest-repeated-substring detector (with a suffix tree) to run on dribble files.
+The idea is, you'll `open-dribble-file' at the top of your .emacs.
+After a few days or whatever of playing, you run the analysis tool thingy, which will report to you in descending order the longest repeated sub-key-sequences you typed.
+At this point, you could have some mechanism for auto-macroizing them or some such.
+
+So, anyway, I'll post dribble-x.el once I have a preliminary version working.
+
+-- EdwardOConnor
+ 

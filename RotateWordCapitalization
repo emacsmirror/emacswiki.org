@@ -1,0 +1,8 @@
+In a certain office productivity suite, pressing Shift-F3 will rotate among the different capitalizations of the current word. This functions implements the same behavior.  Note that Emacs already has default bindings for CaseConversion -- downcase-word, capitalize-word and upcase-word. However, this function tries to be "intelligent" to act on the current word regardless of where the point is, and it also tries to implement the "rotate" idea.
+
+* Lisp:fdlcap.el
+
+This is all a neat idea for a command, but has never been proposed elsewhere.  Probably because the "do what I want" commands are adequate.
+
+----
+CategoryEditing

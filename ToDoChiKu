@@ -1,0 +1,70 @@
+Lisp:todochiku.el
+
+ToDoChiKu is a notification package for emacs.  It started life interfacing with Growl (OS X, http://growl.info/) and Snarl (Win 32, http://www.fullphat.net/) and libnotify (linux/unix).  It can also do standard messages (in the minibuffer) and pop up a tooltip. 
+
+It also features icon sets for the external notifiers, so that different kinds of messages can have different kinds of icons.
+
+You can customize it with customize-group todochiku.
+
+Currently it notifies you on the following conditions:
+* After a set interval (with the interactive command todochiku-in)  Great for reminders
+* When an appointment is coming up (hooks into appt-disp-window-function) Great for planner mode or org mode!
+* After compilation has finished
+* when you are mentioned in rcirc
+
+The following packages also use ToDoChiKu features:
+* TwIt
+* [[cruisecontrol.el]]
+
+== Installing ==
+
+Fire todochiku on your load path, and then load it with:
+
+  (require 'todochiku)
+
+Additionally you may want to add the iconset,  which is available at http://bunny.jonnay.net/todochiku-icons.tar.gz
+
+Once that is done, you will want to customize todochiku.  If you already have a notification program (Growl or Snarl) set the variable Todochiku Command.  The documentation string has a few suggestions for you, and the default should be filled in according to your os.
+
+If you do not have an external notification program, figure out which way you wish to be notified (either by message on the minibufer, or by tool tip) and enable one or both.  The message method is somewhat subtle and easy to miss.  The tooltip is a bit obtrusive, but it seems to display whether or not emacs is in focus or not (at least on win32).  
+
+The other customization options are for setting up when a ToDoChiKu notification should fire (after compilation, when appt-message is displayed, etc.) 
+
+== Using ToDoChiKu In Your Own Programs ==
+
+Until ToDoChiKu gets a little more widely used, I don't think it is entirely apropos to require it as part of another package.  It is probably far more useful to instead use featurep to see if todochiku is available, and if so, then notify:
+
+  (if (featurep 'todochiku)
+      (add-hook 'cruisecontrol-post-build-hooks
+                (lambda ()
+                  (todochiku-message "Cruise Control"
+                                     "build Started."
+                                     (todochiku-icon 'compile)))))
+
+''todochiku-message'' is the meat of this package.  It takes 3 arguments, a Title, a message, and an icon.   
+
+The ''todochiku-icon'' function takes a symbol, and returns (if available) an iocn for that symbol.  The icon:symbol mapping is stored in the customizeable alist ''todochiku-icons''.  Below is a list of icons that are defined by default.  If you want a new type of icon, just send JonathanArkell a message (via email or on the wiki) and I'll do my best to add it.
+
+* default
+* alert
+* bell
+* compile
+* irc
+* check
+* emacs
+* star
+* social
+* alarm
+* music
+* mail
+* term
+* package
+
+== Extending ToDoChiKu with another notifier ==
+
+The function todochiku-get-arguments is responsible for formatting the arguments into something that growl or snarl will understand.  
+
+== Getting it to work with Snarl R2.1 ==
+I had to download snarl_command from http://www.darrenkitchen.net/temp/snarl_command.rar. snarl_command doesn't appear to come with Snarl, and appears different from snarl_cmd.
+
+The todochiku-icons link was broken as well, and I had to download them from http://github.com/jpenney/emacs-starter-kit/tree/b8bb2858a85fb3cbfaeeb795ce549490d545e790/jpenney/todochiku-icons

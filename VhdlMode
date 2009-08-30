@@ -1,0 +1,69 @@
+vhdl-mode is an emacs mode for editing VHDL code.
+
+[http://www.iis.ee.ethz.ch/~zimmi/emacs/vhdl-mode.html VHDL Mode Home Page]
+
+==Installation==
+
+See the file INSTALL in the vhdl-mode directory.
+
+==Usage==
+
+===Syntax highlighting aka font-lock===
+
+In GNU Emacs 21, 'global-font-lock-mode' controls the font-locking.
+
+===Setting up a project===
+
+Note: it is assumed that all files in a project are compiled into the same library.
+
+vhdl-mode support configurations if they are hierarchical (one configuration per design unit).
+A flat configuration (i.e., one big configuration for the whole design unit hierarchy) 
+is not supported.
+
+===Compiling from within vhdl-mode===
+
+If your compiler is not supported, give the following information to the
+vhdl-mode maintainer (reto at gnu dot org)L 
+* name of the command line tool
+* necessary (common) options
+* some example error messages and warnings 
+* the design unit to compiled filename mapping 
+  (basically: if you compile e.g. an entity, what is the filename that gets compiled into your work directory?)
+
+Here is an example of the specification of a compiler in VHDL-Mode:
+
+ [INS] [DEL] Compiler:
+  Compiler name      : Synopsys Design Compiler
+  Compile command    : vhdlan
+  Compile options    : -nc -spc -work \1
+  Make command       : make
+  Make options       : -f \1
+  Generate Makefile  : [Value Menu] Built-in function
+  Library command    : mkdir \1
+  Compile directory  : ./
+  Library directory  : work/
+  Makefile name      : Makefile
+  ID string          : synopsys_dc
+  Error message:
+    Regexp           : \*\*Error: vhdlan,[0-9]+ \(.+\)(\([0-9]+\)):
+    File subexp index: 1
+    Line subexp index: 2
+  File message:
+    Regexp           : 
+    File subexp index: 0
+  Unit-to-file name mapping: [Value Menu] To string:
+    Entity           : \1.syn
+    Architecture     : \2__\1.syn
+    Configuration    : \1.syn
+    Package          : \1.syn
+    Package Body     : \1__.syn
+    Case adjustment  : [Value Menu] Upcase
+
+==Frequently Asked Questions==
+
+* Q: I want to indent with tabs instead of spaces
+
+: Use the menus to customize the following: 'VHDL | Options | Mode | Indent tabs mode'.
+: Or do M-x customize-option RET vhdl-indent-tabs-mode RET
+
+See also [[SmartTabs#VHDL]].

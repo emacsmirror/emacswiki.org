@@ -1,0 +1,82 @@
+'''SLIME''' is the Superior Lisp Interaction Mode, Enhanced.
+
+See also CLiki:SLIME and its project page at http://common-lisp.net/project/slime/.
+
+It is based on EmacsLisp magic by EricMarsden (who called it SLIM) to highlight CLiki:CMUCL error/warning/compiler note output directly in the Lisp editing buffer. LukeGorrie and HelmutEller added control of the Lisp process similar to that found in Distel, CLiki:CMUCL XREF support, good debugger interaction, and many other Lisp interaction enhancements. Most people consider it superior to ILispMode. It has been ported to CLiki:OpenMCL, CLiki:SBCL, CLiki:ACL, CLiki:LispWorks, though support varies a bit between implementations (with CLiki:CMUCL and CLiki:SBCL being the best).
+
+A few good (but old) screenshots of SlimeMode in action can be found on LukeGorrie's site: http://fresh.homeunix.net/~luke/misc/lisp/ (the slime*.png files). MarcoBaringer made a tutorial video http://common-lisp.net/movies/slime.torrent (http://common-lisp.net/movies/slime.mov) [156 MillionBytes!]  Peter Christensen wrote an annotated reference guide for the tutorial video http://www.pchristensen.com/blog/articles/reference-for-the-slimelispemacs-screencast/
+
+[new] All Slime users should watch this video. It is AWESOME, really ! 
+-- XavierMaillard 
+[new]
+
+All *Emacs* users should see this video and make sure more modes like SLIME are developed!
+
+
+== Fontify *SLIME Description* buffer for SBCL ==
+
+    (defun slime-description-fontify ()
+      "Fontify sections of SLIME Description."
+      (with-current-buffer "*SLIME Description*"
+        (highlight-regexp
+         (concat "^Function:\\|"
+                 "^Macro-function:\\|"
+                 "^Its associated name.+?) is\\|"
+                 "^The .+'s arguments are:\\|"
+                 "^Function documentation:$\\|"
+                 "^Its.+\\(is\\|are\\):\\|"
+                 "^On.+it was compiled from:$")
+         'hi-green-b)))
+
+    (defadvice slime-show-description (after slime-description-fontify activate)
+      "Fontify sections of SLIME Description."
+      (slime-description-fontify))
+
+It is easy to adjust to other CL implementations. -- [[rubikitch]]
+
+== Improve usability of slime-apropos: slime-apropos-minor-mode ==
+
+    (defvar slime-apropos-anchor-regexp "^[^ ]")
+    (defun slime-apropos-next-anchor ()
+      (interactive)
+      (let ((pt (point)))
+        (forward-line 1)
+        (if (re-search-forward slime-apropos-anchor-regexp nil t)
+            (goto-char (match-beginning 0))
+          (goto-char pt)
+          (error "anchor not found"))))
+
+    (defun slime-apropos-prev-anchor ()
+      (interactive)
+      (let ((p (point)))
+        (if (re-search-backward slime-apropos-anchor-regexp nil t)
+            (goto-char (match-beginning 0))
+          (goto-char p)
+          (error "anchor not found"))))
+
+    (defvar slime-apropos-minor-mode-map (make-sparse-keymap))
+    (define-key slime-apropos-minor-mode-map "\C-m" 'slime-describe-symbol)
+    (define-key slime-apropos-minor-mode-map "l" 'slime-describe-symbol)
+    (define-key slime-apropos-minor-mode-map "j" 'slime-apropos-next-anchor)
+    (define-key slime-apropos-minor-mode-map "k" 'slime-apropos-prev-anchor)
+    (define-minor-mode slime-apropos-minor-mode "")
+
+    (defadvice slime-show-apropos (after slime-apropos-minor-mode activate)
+      ""
+      (when (get-buffer "*SLIME Apropos*")
+        (with-current-buffer "*SLIME Apropos*" (slime-apropos-minor-mode 1))))
+
+-- [[rubikitch]]
+
+== UsageMemo with SLIME ==
+UsageMemo enables you to write annotation in *Help* and *SLIME Description*. TAKE A NOTE IN *SLIME Description*! -- [[rubikitch]]
+
+== Fix end-of-defun's behavior in repl mode ==
+After (require 'slime), eval follow form.
+(defun slime-repl-mode-end-of-defun ()
+  (forward-sexp)
+  t)
+
+----
+CategoryModes
+CategoryProgramming

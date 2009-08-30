@@ -1,0 +1,53 @@
+A new major version of Emacs was released last week.
+
+What are some new and cool features available in the this new version?
+
+* Improved UnicodeEncoding support (the internal character representation is
+now based on UTF-8).
+
+* Font rendering with Fontconfig and Xft, see XftGnuEmacs.
+
+* Support for using X displays and text terminals in one session,
+  and for running as a daemon.  See MultiTTYSupport and EmacsAsDaemon.
+
+* Per-buffer text scaling.
+
+* ShiftSelectMode, TransientMarkMode and PartialCompletionMode are on by default.
+
+* Emacs now supports the XEmbed specification.  You can embed Emacs in another application on X11.  See EmacsXembed.
+
+* Directory-local variables.  See ProjectSettings.
+
+* Emacs now supports the SVG image format through librsvg2.  See EmacsSvg.
+
+* New !NeXTSTEP-based port provides support for GNUstep (via the GNUstep libraries) and Mac OS X (via the Cocoa libraries).  Currently, the Nextstep port is not as stable as the other existing ports; but will be improved in future releases.  See EmacsApp.
+
+* Mac OS X is no longer supported via Carbon.
+
+* The ReferenceCards are now shipped as PDF files.
+
+* The manuals are now licensed under the GnuFreeDocumentationLicense version 1.3, or any later version.
+
+* Emacs 23 comes with a new set of default EmacsIcons.
+
+* New packages for:
+** viewing PDF and postscript files with DocViewMode
+** connecting to processes via DbusSupport
+** using the GNU Privacy Guard with EasyPG
+** displaying line numbers in the fringe with LinumMode
+** editing XML documents with on-the-fly validation with NxmlMode
+** editing Ruby programs with RubyMode
+** display-based word wrapping with VisualLineMode
+** ZeroConf offers service discovery and service publishing interfaces
+by communicating with Avahi, a zeroconf implementation, via D-Bus
+messages on systems which have installed this software.
+** [[JSON]]
+** ProcedMode
+** [[reStructuredText]]
+** RememberMode
+
+The easiest way to find new stuff is to read the NEWS file (`C-h n') or
+
+* http://www.gnu.org/software/emacs/NEWS.23.1
+
+See the [http://lists.gnu.org/archive/html/info-gnu-emacs/2009-07/msg00000.html Emacs 23.1 release announcement].

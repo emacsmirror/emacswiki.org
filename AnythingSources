@@ -1,0 +1,1985 @@
+This page contains many contributed sources for [[Anything]].
+
+It is starting to bulk up, perhaps we should consider splitting it into a few different page types?
+
+RubikitchAnythingConfiguration may contain newer version of [[rubikitch]]'s sources.
+
+
+== Discussion ==
+What do you think about collecting those anything sources into one elisp file, such as anything-sources-emacswiki.el, which is publicly editable? Doing this enables us to use sources by installing elisp by InstallElisp or AutoInstall. -- [[rubikitch]]
+
+== Imenu (improved) ==
+I tried to handle 2nd level completions.
+
+<pre>
+(defvar anything-c-imenu-delimiter "/")
+(defvar anything-c-source-imenu
+  '((name . "Imenu")
+    (init . (lambda ()
+              (setq anything-c-imenu-current-buffer
+                    (current-buffer))))
+    (candidates
+     . (lambda ()
+         (condition-case nil
+             (with-current-buffer anything-c-imenu-current-buffer
+               (mapcan
+                (lambda (entry)
+                  (if (listp (cdr entry))
+                      (mapcar (lambda (sub)
+                                (concat (car entry) anything-c-imenu-delimiter (car sub)))
+                              (cdr entry))
+                    (list (car entry))))
+                (setq anything-c-imenu-alist (imenu--make-index-alist))))
+           (error nil))))
+    (volatile)
+    (action
+     . (lambda (entry)
+         (let* ((pair (split-string entry anything-c-imenu-delimiter))
+                (first (car pair))
+                (second (cadr pair)))
+           (imenu
+            (if second
+                (assoc second (cdr (assoc first anything-c-imenu-alist)))
+              entry))
+           )))))
+</pre>
+
+-- [[rubikitch]]
+
+=== Cached Version ===
+`anything-c-source-imenu' now uses cache because (imenu--make-index-alist) is pretty SLOW.
+
+<pre>
+(defvar anything-c-imenu-delimiter "/")
+(defvar anything-c-cached-imenu-alist nil)
+(defvar anything-c-cached-imenu-candidates nil)
+(defvar anything-c-cached-imenu-tick nil)
+(make-variable-buffer-local 'anything-c-cached-imenu-alist)
+(make-variable-buffer-local 'anything-c-cached-imenu-candidates)
+(make-variable-buffer-local 'anything-c-cached-imenu-tick)
+(setq anything-c-source-imenu
+  '((name . "Imenu")
+    (init . (lambda ()
+              (setq anything-c-imenu-current-buffer
+                    (current-buffer))))
+    (candidates
+     . (lambda ()
+         (with-current-buffer anything-c-imenu-current-buffer
+           (let ((tick (buffer-modified-tick)))
+             (if (eq anything-c-cached-imenu-tick tick)
+                 anything-c-cached-imenu-candidates
+               (setq anything-c-cached-imenu-tick tick
+                     anything-c-cached-imenu-candidates
+                     (condition-case nil
+                         (mapcan
+                          (lambda (entry)
+                            (if (listp (cdr entry))
+                                (mapcar (lambda (sub)
+                                          (concat (car entry) anything-c-imenu-delimiter (car sub)))
+                                        (cdr entry))
+                              (list (car entry))))
+                          (setq anything-c-cached-imenu-alist (imenu--make-index-alist)))
+                       (error nil))))))))
+    (volatile)
+    (action
+     . (lambda (entry)
+         (let* ((pair (split-string entry anything-c-imenu-delimiter))
+                (first (car pair))
+                (second (cadr pair)))
+           (imenu
+            (if second
+                (assoc second (cdr (assoc first anything-c-cached-imenu-alist)))
+              (assoc entry anything-c-cached-imenu-alist))))))))
+
+</pre>
+
+-- [[rubikitch]]
+
+=== Cached Version + Some Extension ==
+
+* changed anything-c-imenu-delimiter to " / "
+* support multi level index
+* add buffer local index filter
+
+<pre>
+(defvar anything-c-imenu-delimiter " / ")
+(defvar anything-c-imenu-index-filter nil)
+(defvar anything-c-cached-imenu-alist nil)
+(defvar anything-c-cached-imenu-candidates nil)
+(defvar anything-c-cached-imenu-tick nil)
+(make-variable-buffer-local 'anything-c-imenu-index-filter)
+(make-variable-buffer-local 'anything-c-cached-imenu-alist)
+(make-variable-buffer-local 'anything-c-cached-imenu-candidates)
+(make-variable-buffer-local 'anything-c-cached-imenu-tick)
+(defun anything-imenu-create-candidates (entry)
+  (if (listp (cdr entry))
+      (mapcan (lambda (sub)
+                (if (consp (cdr sub))
+                    (mapcar
+                     (lambda (subentry)
+                       (concat (car entry) anything-c-imenu-delimiter subentry))
+                     (anything-imenu-create-candidates sub))
+                  (list (concat (car entry) anything-c-imenu-delimiter (car sub)))))
+              (cdr entry))
+    (list entry)))
+(setq anything-c-source-imenu
+      '((name . "Imenu")
+        (init . (lambda ()
+                  (setq anything-c-imenu-current-buffer
+                        (current-buffer))))
+        (candidates
+         . (lambda ()
+             (with-current-buffer anything-c-imenu-current-buffer
+               (let ((tick (buffer-modified-tick)))
+                 (if (eq anything-c-cached-imenu-tick tick)
+                     anything-c-cached-imenu-candidates
+                   (setq anything-c-cached-imenu-tick tick
+                         anything-c-cached-imenu-candidates
+                         (condition-case nil
+                             (mapcan
+                              'anything-imenu-create-candidates
+                              (setq anything-c-cached-imenu-alist
+                                    (let ((index (imenu--make-index-alist)))
+                                      (if anything-c-imenu-index-filter
+                                          (funcall anything-c-imenu-index-filter index)
+                                        index))))
+                           (error nil))))))))
+        (volatile)
+        (action
+         . (lambda (entry)
+             (let ((path (split-string entry anything-c-imenu-delimiter))
+                   (alist anything-c-cached-imenu-alist))
+               (imenu
+                (progn
+                  (while path
+                    (setq alist (assoc (car path) alist)
+                          path (cdr path)))
+                  alist)))))))
+</pre>
+
+-- [[Matsuyama]]
+
+The following code is a sample of anything-c-imenu-index-filter for java-mode. This behaves as just a my semantic tag source.
+
+<pre>
+(defun java-mode-condense-imenu-index (entry depth)
+  (if (not (listp (cdr-safe entry)))
+      (list (cons (concat ;(make-string (* depth 2) ? )
+                          (car entry))
+                  (cdr entry)))
+    (mapcan
+     (lambda (sub)
+       (java-mode-condense-imenu-index sub (1+ depth)))
+     (cdr entry))))
+
+(defun setup-java-mode ()
+  (c-subword-mode)
+
+  (require 'semantic-imenu)
+
+  (setq semantic-imenu-summary-function
+        (lambda (tag)
+          (semantic-format-tag-summarize tag nil t)))
+
+  (setq anything-c-imenu-index-filter
+        (lambda (index)
+          (apply 'append
+                 (mapcar
+                  (lambda (entry)
+                    (java-mode-condense-imenu-index entry 0))
+                  index)))))
+
+(add-hook 'java-mode-hook 'setup-java-mode t)
+</pre>
+
+=== Imenu History ===
+Remember recent Imenu jumps. This also works if the target is not in the current buffer.
+<pre>
+(defvar imenu-recent-jumps nil)
+
+(defvar anything-imenu-history-max 20)
+
+(defun anything-imenu-history-save-jump ()
+  (let ((cnt 0))
+    (setq imenu-recent-jumps (delete-if
+			      '(lambda (item)
+				 (setq cnt (1+ cnt))
+				 (or (> cnt anything-imenu-history-max)
+				     (equal (car item) (car index-item))))
+			      imenu-recent-jumps)))
+  (setq imenu-recent-jumps (push index-item imenu-recent-jumps)))
+
+(defun anything-imenu-history-candidates (unused)
+  (let ((cands nil))
+    (dolist (item imenu-recent-jumps)
+      (if (and item (car item)
+	       (buffer-live-p (marker-buffer (cdr item))))
+	  (setq cands (cons
+		       (cons (car item) item)
+		       cands))))
+    cands))
+
+(defun anything-imenu-history-action (selection)
+  (let ((buffer (marker-buffer (cdr selection)))
+	(position (marker-position  (cdr selection))))
+    (when (buffer-live-p buffer)
+      (set-window-buffer (frame-selected-window) buffer)
+      (goto-char position)))
+  (setq imenu-recent-jumps (delete-if
+			    '(lambda (item)
+			       (or (equal (car item) (car selection))
+				   (not (buffer-live-p (marker-buffer (cdr item))))))
+			    imenu-recent-jumps))
+  (setq imenu-recent-jumps (push selection imenu-recent-jumps)))
+
+(defvar anything-c-source-imenu-history '((name . "Imenu History")
+					  (candidates
+					   . nil)
+					  (candidate-transformer
+					   . anything-imenu-history-candidates)
+					  (action
+					   . anything-imenu-history-action)
+					  (volatile)))
+
+(add-hook 'imenu-after-jump-hook 'anything-imenu-history-save-jump)
+</pre>
+
+-HannesJanetzek
+
+== Dummy Sources ==
+
+Dummy sources are triggered only when no exact match is found.
+For example, creating new buffer, setting new [[bookmark]], defining new abbrev, executing commands.
+
+If you use dummy candidates, define the following functions.
+
+<pre>
+(defun anything-c-define-dummy-source (name func &rest other-attrib)
+  `((name . ,name)
+    (candidates "dummy")
+    ,@other-attrib
+    (filtered-candidate-transformer
+     . (lambda (candidates source)
+         (funcall ',func)))
+    (requires-pattern . 1)
+    (volatile)
+    (category create)))
+
+(defun anything-c-dummy-candidate ()
+  ;; `source' is defined in filtered-candidate-transformer
+  (list (cons (concat (assoc-default 'name source)
+                      " '" anything-input "'")
+              anything-input)))
+</pre>
+=== Create Buffer ===
+
+This allows Anything users to create buffers without having to use `switch-to-buffer'. It's likely you won't need `switch-to-buffer' anymore if you use this source...
+<pre>
+(defvar anything-c-source-buffer-not-found
+  (anything-c-define-dummy-source
+   "Create buffer"
+   (lambda () (unless (get-buffer anything-input)
+                (anything-c-dummy-candidate)))
+   '(type . buffer)))
+</pre>
+
+-- [[rubikitch]]
+
+=== New Bookmark ===
+For BookMarks users.
+
+<pre>
+(defvar anything-c-source-bookmark-set
+  (anything-c-define-dummy-source
+   "Set Bookmark"
+   #'anything-c-dummy-candidate
+   '(action . bookmark-set)))
+</pre>
+
+-- [[rubikitch]]
+
+=== New Abbrev ==
+
+<pre>
+(defun define-abbrev-interactively (abbrev &optional table)
+  (let ((expansion (read-string (format "abbrev(%s) expansion: " abbrev))))
+    (define-abbrev (or table global-abbrev-table) abbrev expansion)
+    (insert expansion)))
+(defun define-mode-abbrev-interactively (abbrev)
+  (define-abbrev-interactively abbrev local-abbrev-table))
+
+(defvar anything-c-source-define-global-abbrev
+  (anything-c-define-dummy-source
+   "Define Global Abbrev"
+   #'anything-c-dummy-candidate
+   '(action . define-abbrev-interactively)))
+
+(defvar anything-c-source-define-mode-abbrev
+  (anything-c-define-dummy-source
+   "Define Mode-specific Abbrev"
+   #'anything-c-dummy-candidate
+   '(action . define-mode-abbrev-interactively)))
+
+</pre>
+
+-- [[rubikitch]]
+
+=== M-x ===
+
+You can expand Emacs commands with HippieExpand.
+
+<pre>
+(defvar anything-c-source-M-x
+  (anything-c-define-dummy-source
+   "M-x"
+   #'anything-c-dummy-candidate
+   '(type . command)))
+</pre>
+
+-- [[rubikitch]]
+
+=== Web Search ===
+
+Does a browse-url for a given websearch.  This is implemented just enough to get the job done.  It would be cool if it could be expanded to have all websearches under the same category. Ideally a function could be built that parses a bunch of mycroft/sherlock/opensearch xml files, and sets them as anything sources.
+
+  ;;*dummy websearch
+  (defun make-anything-c-source-websearch (name url &rest extra)
+    (anything-c-define-dummy-source
+      (concat "Websearch for " name)
+      #'anything-c-dummy-candidate
+      `(action . ,(eval `(lambda (args)
+		 (browse-url (apply 'concat ,url anything-pattern (quote ,extra))))))))
+
+Use it like so
+
+ 	(make-anything-c-source-websearch "Google"
+ 					  "http://www.google.com/search?q="
+ 					  "&client=emacs-anything")
+	(make-anything-c-source-websearch "Emacs Wiki"
+ 					  "http://www.google.com/cse?cx=004774160799092323420%3A6-ff2s0o6yi&q=" 					   					   		  "&client=emacs-anything")
+ 	(make-anything-c-source-websearch "Wikipedia"
+ 					  "http://en.wikipedia.org/wiki/Special:Search?search="
+ 					  "&sourceid=emacs-anything")
+
+-- JonathanArkell
+
+=== Line/Char Position ===
+
+Sadly I don't think that the Char position thing is working right, but lines work just fine:
+{{{
+;;*dummy goto
+(defvar anything-c-goto
+  (anything-c-define-dummy-source
+    "Goto Position"
+	#'anything-c-dummy-candidate
+	`(action . (("Goto Line" . ,(lambda (args) (push-mark) (goto-line (string-to-number anything-pattern))))
+		    ("Goto Char Position" . ,(lambda (args) (push-mark) (goto-char (string-to-number anything-pattern))))))))
+}}}
+
+--JonathanArkell
+
+=== Twit.el Post ===
+<pre>
+;;*dummy twit
+(defvar anything-c-source-twit-dummy
+  `((name . "Post Tweet")
+	(candidates "dummy")
+	(filtered-candidate-transformer . (lambda (c s) (funcall #'anything-c-dummy-candidate)))
+	(action . (lambda (args) (twit-post-function twit-update-url anything-pattern)))
+	(volatile)
+	(category create)))
+</pre>
+It's pretty awesome that the dummy source is a twit.  --JonathanArkell
+
+== File Search ==
+
+This one searches for a matching file recursively, either in your project (please implement `my-get-source-directory') or down from the default directory. The search uses `find' and starts when the input is 4 or more characters.
+
+Currently it skips '.svn' directories.
+{{{
+(defun my-get-source-directory (path)
+  "Please imlement me. Currently returns `path' inchanged."
+  path)
+
+(defvar my-anything-c-source-file-search
+  '((name . "File Search")
+    (init . (lambda ()
+              (setq anything-default-directory
+                    default-directory)))
+    (candidates . (lambda ()
+                    (let ((args
+                           (format "'%s' \\( -path \\*/.svn \\) -prune -o -iregex '.*%s.*' -print"
+                                   (my-get-source-directory anything-default-directory)
+                                   anything-pattern)))
+                    (start-process-shell-command "file-search-process" nil
+                                   "find" args))))
+    (type . file)
+    (requires-pattern . 4)
+    (delayed))
+  "Source for searching matching files recursively.")
+}}}
+
+-- SebastienRoccaSerra
+
+I think using localized locatedb is better solution. -- [[rubikitch]]
+
+[new]
+You're right I guess. But on a Windows system, it's rather easy & common to have access to `find' (e.g. with cygwin), but I never use `locate'. I'll try & see if it's something easily done though.
+-- SebastienRoccaSerra
+[new]
+Ok, I set a daily updatedb in cygwin pretty easily with both cron or Windows' task scheduler.
+
+I still like the `find' variant because it reduces the scope to my current active project. And it's always up to date, and it's as fast as `locate' in my case (going through 8000 files every time).
+-- SebastienRoccaSerra
+
+== Rake Task Completion ==
+I use this source to issue rake within Emacs.
+
+<pre>
+(defvar anything-current-buffer nil)
+(defadvice anything (before get-current-buffer activate)
+  (setq anything-current-buffer (current-buffer)))
+(setq anything-c-source-rake-task
+  '((name . "Rake Task")
+    (candidates
+     . (lambda ()
+         (when (string-match "^rake" anything-pattern)
+           (cons '("rake" . "rake")
+                 (mapcar (lambda (line)
+                           (cons line (car (split-string line " +#"))))
+                         (with-current-buffer anything-current-buffer
+                           (split-string (shell-command-to-string "rake -T") "\n" t)))))))
+    (action ("Compile" . compile)
+            ("Compile with command-line edit"
+             . (lambda (c) (let ((compile-command (concat c " ")))
+                             (call-interactively 'compile)))))
+    (requires-pattern . 4)))
+
+</pre>
+
+-- [[rubikitch]]
+
+== Occur ==
+
+<pre>
+(defvar anything-c-source-occur
+  '((name . "Occur")
+    (init . (lambda ()
+              (setq anything-occur-current-buffer
+                    (current-buffer))))
+    (candidates . (lambda ()
+                    (let ((anything-occur-buffer (get-buffer-create "*Anything Occur*")))
+                      (with-current-buffer anything-occur-buffer
+                        (occur-mode)
+                        (erase-buffer)
+                        (let ((count (occur-engine anything-pattern
+                                                   (list anything-occur-current-buffer) anything-occur-buffer
+                                                   list-matching-lines-default-context-lines case-fold-search
+                                                   list-matching-lines-buffer-name-face
+                                                   nil list-matching-lines-face
+                                                   (not (eq occur-excluded-properties t)))))
+                          (when (> count 0)
+                            (setq next-error-last-buffer anything-occur-buffer)
+                            (cdr (split-string (buffer-string) "\n" t))))))))
+    (action . (("Goto line" . (lambda (candidate)
+                                (with-current-buffer "*Anything Occur*"
+                                  (search-forward candidate))
+                                (goto-line (string-to-number candidate) anything-occur-current-buffer)))))
+    (requires-pattern . 3)
+    (volatile)
+    (delayed)))
+</pre>
+
+-- [[Matsuyama]]
+
+== Semantic ==
+
+<pre>
+(defun anything-semantic-construct-candidates (tags depth)
+  (apply 'append (mapcar (lambda (tag)
+                           (if (listp tag)
+                               (let ((type (semantic-tag-type tag))
+                                     (class (semantic-tag-class tag)))
+                                 (if (or (and (stringp type)
+                                              (string= type "class"))
+                                         (eq class 'function)
+                                         (eq class 'variable))
+                                     (cons (cons (concat (make-string (* depth 2) ?\s)
+                                                         (semantic-format-tag-summarize tag nil t)) tag)
+                                           (anything-semantic-construct-candidates (semantic-tag-components tag) (1+ depth)))))))
+                         tags)))
+
+(defvar anything-c-source-semantic
+  '((name . "Semantic Tags")
+    (init . (lambda ()
+              (setq anything-semantic-candidates
+                    (condition-case nil
+                        (anything-semantic-construct-candidates (semantic-fetch-tags) 0)
+                      (error nil)))))
+    (candidates . (lambda ()
+                    (if anything-semantic-candidates
+                        (mapcar 'car anything-semantic-candidates))))
+    (action . (("Goto tag" . (lambda (candidate)
+                               (let ((tag (cdr (assoc candidate anything-semantic-candidates))))
+                                 (semantic-go-to-tag tag))))))))
+</pre>
+
+-- [[Matsuyama]]
+
+== Linemark ==
+
+<pre>
+(defvar anything-c-source-linemark
+  '((name . "Line Marks")
+    (init . (lambda ()
+              (let ((name (buffer-name))
+                    (file-name (buffer-file-name)))
+                (setq anything-linemark-marks
+                      (delq nil (mapcar (lambda (e)
+                                          (when (or (string= (oref e filename) name)
+                                                    (string= (oref e filename) file-name))
+                                            (format "%7d: %s"
+                                                    (line-number-at-pos (linemark-begin e))
+                                                    (buffer-substring (linemark-begin e)
+                                                                      (linemark-end e)))))
+                                        (oref viss-bookmark-group marks)))))))
+    (candidates . (lambda ()
+                    anything-linemark-marks))
+    (action . (("Goto line" . (lambda (candidate)
+                                (goto-line (string-to-number candidate))))))))
+</pre>
+
+-- [[Matsuyama]]
+
+== Visible Bookmarks (bm.el) ==
+
+<pre>
+(defvar anything-c-source-bm
+  '((name . "Visible Bookmarks")
+    (init . (lambda ()
+              (let ((bookmarks (bm-lists)))
+                (setq anything-bm-marks
+                      (delq nil
+                            (mapcar (lambda (bm)
+                                      (let ((start (overlay-start bm))
+                                            (end (overlay-end bm)))
+                                        (if (< (- end start) 2)
+                                            nil
+                                          (format "%7d: %s"
+                                                  (line-number-at-pos start)
+                                                  (buffer-substring start (1- end))))))
+                                    (append (car bookmarks) (cdr bookmarks))))))))
+    (candidates . (lambda ()
+                    anything-bm-marks))
+    (action . (("Goto line" . (lambda (candidate)
+                                (goto-line (string-to-number candidate))))))))
+</pre>
+
+-- [[Matsuyama]]
+
+Improved.
+
+<pre>
+(defvar anything-c-source-bm
+  '((name . "Visible Bookmarks")
+    (init . anything-c-source-bm-init)
+    (candidates-in-buffer)
+    (action . (("Goto line" . (lambda (candidate)
+                                (goto-line (string-to-number candidate))))))))
+(defun anything-c-source-bm-init ()
+  (let ((bookmarks (bm-lists))
+        (buf (anything-candidate-buffer 'global)))
+    (dolist (bm (sort* (append (car bookmarks) (cdr bookmarks))
+                       '< :key 'overlay-start))
+      (let ((start (overlay-start bm))
+            (end (overlay-end bm))
+            (annotation (or (overlay-get bm 'annotation) "")))
+        (unless (< (- end start) 1)   ; org => (if (< (- end start) 2)
+          (let ((str (format "%7d: [%s]: %s\n"
+                             (line-number-at-pos start)
+                             annotation
+                             (buffer-substring start (1- end)))))
+            (with-current-buffer buf (insert str))))))))
+</pre>
+
+-- [[rubikitch]]
+
+
+== CPAN Modules ==
+
+This source is a experimentation of power of anything.
+Action is not implemented yet.
+
+<pre>
+(defvar anything-cpan-modules-search-url
+  "http://search.cpan.org/search?mode=modules&query=")
+
+(defun anything-cpan-modules-fetch (input)
+  (let ((result (with-current-buffer
+                    (url-retrieve-synchronously
+                     (concat anything-cpan-modules-search-url
+                             (url-hexify-string input)))
+                  (buffer-substring (point-min) (point-max))))
+        (start 0)
+        (modules ()))
+    (while (string-match "<a href=\"[^\"]+\"><b>\\(.+\\)</b></a>" result start)
+      (push (match-string 1 result) modules)
+      (setq start (match-end 1)))
+    (nreverse modules)))
+
+(defvar anything-c-source-cpan-modules
+  '((name . "CPAN Modules")
+    (candidates . (lambda ()
+                    (anything-cpan-modules-fetch anything-input)))
+    (requires-pattern . 3)
+    (delayed)))
+</pre>
+
+-- [[Matsuyama]]
+
+== Kill Ring ==
+
+This source needs a patch that enables anything to display multiline candidates.
+You have to apply my patch (AnythingMultiline) first to work perfectly.
+
+<pre>
+(defvar anything-kill-ring-threshold 10)
+
+(defvar anything-c-source-kill-ring
+  '((name . "Kill Ring")
+    (init . (lambda ()
+              (setq anything-kill-ring-buffer (current-buffer))))
+    (candidates . (lambda ()
+                    (remove-if
+                     (lambda (kill)
+                       (or (< (length kill) anything-kill-ring-threshold)
+                           (string-match "^[\\s\\t]+$" kill)))
+                     kill-ring)))
+    (action . (("Insert" . (lambda (candidate)
+                             (with-current-buffer anything-kill-ring-buffer
+                               (insert candidate))))))
+    ;(requires-pattern . 3)
+    (multiline)))
+</pre>
+
+You can use it as a replacement for kill-ring browser like:
+
+<pre>
+(defun something (&rest sources)
+  (let ((anything-sources sources))
+    (call-interactively 'anything)))
+
+(defmacro something-command (&rest sources)
+  `(lambda ()
+     (interactive)
+     (something ,@sources)))
+
+(global-set-key "\C-x\C-y" (something-command anything-c-source-kill-ring))
+</pre>
+
+-- [[Matsuyama]]
+
+== Commands With Abbrevs ==
+
+The version of anything-c-source-emacs-functions-with-abbrevs specialized for emacs commands.
+For example, this source expands "ttl" into "toggle-truncate-lines" and also expands "cu-v" into "customize-variable" (this feature is inspired from [[ExecAbbrevCmd]]).
+This is very useful but too heavy (TODO).
+
+<pre>
+(defvar anything-c-source-emacs-commands-with-abbrevs
+  (append anything-c-source-emacs-commands
+          '((match . (anything-c-match-function-by-abbrev
+                      anything-c-string-match)))
+          '((init . (lambda ()
+                      (defadvice anything-update
+                        (before anything-c-update-command-abbrev-regexp activate)
+                        (let ((char-list (if (string-match "-" anything-pattern)
+                                             (split-string anything-pattern "-")
+                                           (mapcar (lambda (c) (list c)) (append anything-pattern nil))))
+                              (str "^"))
+                          (dolist (c char-list)
+                            (setq str (concat str c "[^-]*-")))
+                          (setq str (concat (substring str 0 (1- (length str))) "$"))
+                          (setq anything-c-function-abbrev-regexp str))))))))
+</pre>
+
+-- [[Matsuyama]]
+
+== Registers ==
+<pre>
+(defvar anything-c-source-register
+  '((name . "Registers")
+    (candidates . anything-c-registers)
+    (action ("insert" . insert))))
+
+;; based on list-register.el
+(defun anything-c-registers ()
+  (loop for (char . val) in register-alist
+        collect
+        (let ((key (single-key-description char))
+              (string (cond
+                       ((numberp val)
+                        (int-to-string val))
+                       ((markerp val)
+                         (let ((buf (marker-buffer val)))
+                           (if (null buf)
+                               "a marker in no buffer"
+                             (concat
+                              "a buffer position:"
+                              (buffer-name buf)
+                              ", position "
+                              (int-to-string (marker-position val))))))
+                        ((and (consp val) (window-configuration-p (car val)))
+                         "conf:a window configuration.")
+                        ((and (consp val) (frame-configuration-p (car val)))
+                         "conf:a frame configuration.")
+                        ((and (consp val) (eq (car val) 'file))
+                         (concat "file:"
+                                 (prin1-to-string (cdr val))
+                                 "."))
+                        ((and (consp val) (eq (car val) 'file-query))
+                         (concat "file:a file-query reference: file "
+                                 (car (cdr val))
+                                 ", position "
+                                 (int-to-string (car (cdr (cdr val))))
+                                 "."))
+                        ((consp val)
+                         (let ((lines (format "%4d" (length val))))
+                           (format "%s: %s\n" lines
+                                   (truncate-string
+                                    (mapconcat (lambda (y) y) val
+                                               "^J") (- (window-width) 15)))))
+                        ((stringp val)
+                         val)
+                        (t
+                         "GARBAGE!"))))
+          (cons (format "register %3s: %s" key string) string))))
+</pre>
+
+-- [[rubikitch]]
+
+== extended-command-history ==
+
+<pre>
+(defvar anything-c-source-extended-command-history
+  '((name . "Emacs Commands History")
+    (candidates . extended-command-history)
+    (type . command)))
+</pre>
+
+-- [[rubikitch]]
+
+== eev anchor ==
+For EevMode users.
+
+<pre>
+(defvar anything-c-source-eev-anchor
+  '((name . "Anchors")
+    (invariant)
+    (candidates . (lambda ()
+                    (save-excursion
+                      (set-buffer anything-current-buffer)
+                      (goto-char (point-min))
+                      (let (anchors)
+                        (while (re-search-forward (format ee-anchor-format "\\(.+\\)") nil t)
+                          (push (match-string-no-properties 1) anchors))
+                        (nreverse anchors)))))
+
+    (action . ee-to)))
+</pre>
+
+-- [[rubikitch]]
+
+This source don't work for me so i redefine it:
+
+<pre>
+(defvar anything-c-source-eev-anchor
+  '((name . "Anchors")
+    (init . (lambda ()
+              (setq anything-c-eev-anchor-buffer
+                    (current-buffer))))
+    (candidates . (lambda ()
+                    (condition-case nil
+                        (save-excursion
+                          (with-current-buffer anything-c-eev-anchor-buffer
+                            (goto-char (point-min))
+                            (let (anchors)
+                              (while (re-search-forward (format ee-anchor-format "\\([^\.].+\\)") nil t)
+                                (push (match-string-no-properties 1) anchors))
+                              (setq anchors (reverse anchors)))))
+                      (error nil))))
+
+    (action . (("Goto link" . (lambda (item)
+                                 (ee-to item)))))))
+</pre>
+
+-- ThierryVolpiatto
+
+== project-root.el files ==
+For use with [http://www.shellarchive.co.uk/content/lisp/project-root.el project-root.el]. This hack also requires [http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/lisp/find-cmd.el?root=emacs find-cmd.el] which comes with emacs 23 and also originates from shellarchive. If you would rather not use `find-to-string' then just add the find arguments as you might on the command line. - [[PhilJackson]]
+
+<pre>
+(defun anything-project-root-find-files (pattern)
+  (when anything-project-root
+      (start-process-shell-command "project-root-find"
+                                   nil
+                                   "find"
+                                   anything-project-root
+                                   (find-to-string
+                                    `(and (prune (name "*.svn" "*.git"))
+                                          (name ,(concat "*" pattern "*"))
+                                          (type "f"))))))
+
+(defvar anything-c-source-project-files
+  '((name . "Project Files")
+    (init . (lambda ()
+              (unless project-details (project-root-fetch))
+              (setq anything-project-root (cdr project-details))))
+    (candidates . (lambda ()
+                    (anything-project-root-find-files anything-pattern)))
+    (type . file)
+    (requires-pattern . 2)
+    (volatile)
+    (delayed)))
+</pre>
+
+== makefile targets ==
+
+Have the targets for the nearest makefile up the filesystem tree from cwd appear as a source using [http://www.shellarchive.co.uk/content/lisp/anything-make.el anything-make.el].
+
+== expand/undefine abbrev ==
+AbbrevMode.
+
+<pre>
+(defun anything-c-abbrev-candidates (table-sym)
+  (with-temp-buffer
+    (let ((table (with-current-buffer anything-current-buffer
+                   (symbol-value table-sym))))
+      (insert-abbrev-table-description
+       (abbrev-table-name  table)
+       nil)
+      (goto-char 0)
+      (let ((abbrevs (car (cdaddr (read (current-buffer))))))
+        (mapcar
+         (lambda (abb)
+           (let ((name (car abb))
+                 (desc (if (and (equal "" (cadr abb)) )
+                           (setq desc (format "%s" (cadadr (caddr (caddr abb)))))
+                         (setq desc (cadr abb)))))
+             (list (format "%s: %s" name
+                           (replace-regexp-in-string
+                            "\n" " "
+                            (truncate-string-to-width desc (- (window-width) 15))))
+                   name table)))
+         abbrevs)))))
+
+(let ((actions '(action ("expand" . (lambda (c)
+                                      (let ((p (point)))
+                                        (insert " " (car c))
+                                        (expand-abbrev)
+                                        (save-excursion
+                                          (goto-char p)
+                                          (delete-char 1))
+                                      )))
+                        ("undefine" . (lambda (c)
+                                        (define-abbrev (cadr c) (car c) nil))))))
+  (setq anything-c-source-abbrev-local
+    `((name . "Local Abbrev")
+      (candidates . (lambda () (anything-c-abbrev-candidates 'local-abbrev-table)))
+      ,actions))
+  ;; (setq anything-sources (list anything-c-source-abbrev-local))
+  (setq anything-c-source-abbrev-global
+    `((name . "Global Abbrev")
+      (candidates . (lambda () (anything-c-abbrev-candidates 'global-abbrev-table)))
+      ,actions))
+  ;; (setq anything-sources (list anything-c-source-abbrev-global))
+  )
+</pre>
+
+-- [[rubikitch]]
+
+== Yahoo meteo ==
+
+This have to be used with Lisp:w3m-meteo.el
+
+<pre>
+(defvar anything-c-source-yahoo-meteo
+  '((name . "Yahoo Meteo")
+    (candidates . (lambda ()
+                    (get-meteo-keys)))
+    (action . (("W3m search meteo" . (lambda (item)
+                                       (w3m-frweather item)))))
+    (volatile)
+    (requires-pattern . 3)
+    (delayed)))
+</pre>
+
+-- ThierryVolpiatto
+
+
+== Cheat Sheets ==
+You must install the cheat program before using it.
+
+http://cheat.errtheblog.com/
+http://sami.samhuri.net/assets/2007/8/10/cheat.el
+
+$ gem install cheat
+
+<pre>
+(defvar anything-c-source-cheat
+  '((name . "Cheat Sheets")
+    (init . (lambda ()
+              (unless (anything-candidate-buffer)
+                (with-current-buffer (anything-candidate-buffer 'global)
+                  (call-process-shell-command
+                   "cheat sheets" nil  (current-buffer))
+                  (goto-char (point-min))
+                  (forward-line 1)
+                  (delete-region (point-min) (point))
+                  (indent-region (point) (point-max) -2)))))
+    (candidates-in-buffer)
+    (action . (lambda (entry)
+                (let ((buf (format "*cheat sheet:%s*" entry)))
+                  (unless (get-buffer buf)
+                    (call-process "cheat" nil (get-buffer-create buf) t entry))
+                  (display-buffer buf)
+                  (set-window-start (get-buffer-window buf) 1))))))
+</pre>
+
+-- [[rubikitch]]
+
+== Double persistent action for anything-c-source-buffers ==
+
+Say persistent-action is bind to C-z, if you hit C-z in
+
+Buffers source it will switch as normal to this buffer but if you prefix
+
+(C-u) your persistent-action it will kill this buffer and update the anything
+
+display.
+
+
+<pre>
+(defvar anything-c-source-buffers
+  '((name . "Buffers")
+    (candidates . anything-c-buffer-list)
+    (volatile)
+    (type . buffer)
+    (candidate-transformer . (lambda (candidates)
+                               (anything-c-compose
+                                (list candidates)
+                                '(anything-c-highlight-buffers))))
+    (persistent-action . (lambda (name)
+                           (flet ((kill (item)
+                                    (with-current-buffer item
+                                      (if (and (buffer-modified-p)
+                                               (buffer-file-name (current-buffer)))
+                                          (progn
+                                            (save-buffer)
+                                            (kill-buffer item))
+                                          (kill-buffer item))))
+                                  (goto (item)
+                                    (switch-to-buffer item)))
+                             (if current-prefix-arg
+                                 (progn
+                                   (kill name)
+                                   (anything-delete-current-selection))
+                                 (goto name)))))))
+
+</pre>
+
+-- ThierryVolpiatto
+
+== Add colors to source-buffers ==
+
+This will define 3 differents colors for:
+
+* files
+* directories
+* Not file-name buffers
+
+Note:
+
+For directory, it use a face from dired+.el, so if you don't use this library,
+
+set another face to `anything-c-buffers-face1'.
+
+Screenshot: http://farm4.static.flickr.com/3105/3170487268_7d1c415f66.jpg
+
+<pre>
+(defun anything-c-buffer-list ()
+  "Return the list of names of buffers with the `anything-buffer'
+and hidden buffers filtered out.  The first buffer in the list
+will be the last recently used buffer that is not the current
+buffer."
+  (let ((buffers (remove-if (lambda (name)
+                              (or (equal name anything-buffer)
+                                  (eq ?\  (aref name 0))))
+                            (mapcar 'buffer-name (buffer-list)))))
+    (append (cdr buffers) (list (car buffers)))))
+
+(defvar anything-c-buffers-face1 'diredp-dir-heading)
+(defvar anything-c-buffers-face2 'font-lock-type-face)
+(defvar anything-c-buffers-face3 'italic)
+(defun anything-c-highlight-buffers (buffers)
+  (let ((cand-mod (loop for i in buffers
+                       if (rassoc (get-buffer i) dired-buffers)
+                       collect (propertize i
+                                           'face anything-c-buffers-face1)
+                       if (buffer-file-name (get-buffer i))
+                       collect (propertize i
+                                           'face anything-c-buffers-face2)
+                       if (and (not (rassoc (get-buffer i) dired-buffers))
+                               (not (buffer-file-name (get-buffer i))))
+                       collect (propertize i
+                                           'face anything-c-buffers-face3))))
+    cand-mod))
+
+(defvar anything-c-source-buffers
+  '((name . "Buffers")
+    (candidates . anything-c-buffer-list)
+    (volatile)
+    (type . buffer)
+    (candidate-transformer . (lambda (candidates)
+                               (anything-c-compose
+                                (list candidates)
+                                '(anything-c-highlight-buffers))))
+    (persistent-action . (lambda (name)
+                           (flet ((kill (item)
+                                    (with-current-buffer item
+                                      (if (and (buffer-modified-p)
+                                               (buffer-file-name (current-buffer)))
+                                          (progn
+                                            (save-buffer)
+                                            (kill-buffer item))
+                                          (kill-buffer item))))
+                                  (goto (item)
+                                    (switch-to-buffer item)))
+                             (if current-prefix-arg
+                                 (progn
+                                   (kill name)
+                                   (anything-delete-current-selection))
+                                 (goto name)))))))
+
+</pre>
+
+-- ThierryVolpiatto
+
+`anything-delete-current-selection' deletes the current line.
+It is useful when deleting a candidate in persistent action.  -- [[rubikitch]]
+
+[new] Great! i will use it now. Thank you! -- ThierryVolpiatto
+
+== Mercurial Qpatchs ==
+
+DVC is needed for these sources
+
+Define two sources here:
+
+* anything-c-source-qapplied-patchs
+
+* anything-c-source-qunapplied-patchs
+
+Lisp:anything-mercurial.el
+
+-- ThierryVolpiatto
+
+== Highlight bookmarks ==
+
+Highlight bookmarks like dired+.
+
+You have to rename your "root bookmarks" (/su:...) like:
+
+(su) /etc
+
+When you are not logged as root via tramp, your (su) bookmarks will be red with no
+
+difference between dirs and files.
+
+As soon as you are logged, your bookmarks will be like in dired+, with different faces
+
+for files and dirs.
+
+Note: The face used here are from dired+.el and traverselisp.el, so if you don't use these
+
+libraries, set the faces variables with faces available in your emacs.
+
+<pre>
+(defvar anything-c-source-bookmarks-su
+  '((name . "Bookmarks-su")
+    (init . (lambda ()
+              (require 'bookmark)))
+    (candidates . (lambda ()
+                    (let (lis-all
+                          lis-su)
+                      (setq lis-all (bookmark-all-names))
+                      (setq lis-su (loop for i in lis-all
+                                      if (string-match "^(su)" i)
+                                      collect i))
+                      (sort lis-su 'string-lessp))))
+    (candidate-transformer . (lambda (candidates)
+                               (anything-c-compose
+                                (list candidates)
+                                '(anything-c-highlight-bookmark-su))))
+
+    (type . bookmark))
+  "See (info \"(emacs)Bookmarks\").")
+;; (anything 'anything-c-source-bookmarks-su)
+
+(defvar anything-c-bookmarks-face1 'diredp-dir-heading)
+(defvar anything-c-bookmarks-face2 'diredp-file-name)
+(defvar anything-c-bookmarks-face3 'traverse-match-face)
+
+(defun tv-root-logged-p ()
+  (catch 'break
+    (dolist (i (mapcar #'buffer-name
+                       (buffer-list)))
+      (when (string-match "*tramp/su ." i)
+        (throw 'break t)))))
+
+
+(defun anything-c-highlight-bookmark-su (files)
+  (if (tv-root-logged-p)
+      (anything-c-highlight-bookmark files)
+      (anything-c-highlight-not-logged files)))
+
+(defun anything-c-highlight-not-logged (files)
+  (let ((cand-mod (loop for i in files
+                       collect (propertize i
+                                           'face anything-c-bookmarks-face3))))
+    cand-mod))
+
+(defun anything-c-highlight-bookmark (files)
+  (let ((cand-mod (loop for i in files
+                       if (file-directory-p (bookmark-get-filename i))
+                       collect (propertize i
+                                           'face anything-c-bookmarks-face1)
+                       else
+                       collect (propertize i
+                                           'face anything-c-bookmarks-face2))))
+    cand-mod))
+
+(defvar anything-c-source-bookmarks-local
+  '((name . "Bookmarks-Local")
+    (init . (lambda ()
+              (require 'bookmark)))
+    (candidates . (lambda ()
+                    (let (lis-all
+                          lis-loc)
+                      (setq lis-all (bookmark-all-names))
+                      (setq lis-loc (loop for i in lis-all
+                                       if (and (not (string-match "^(ssh)" i))
+                                               (not (string-match "^(su)" i)))
+                                       collect i))
+                      (sort lis-loc 'string-lessp))))
+    (candidate-transformer . (lambda (candidates)
+                               (anything-c-compose
+                                (list candidates)
+                                '(anything-c-highlight-bookmark))))
+    (type . bookmark))
+  "See (info \"(emacs)Bookmarks\").")
+;; (anything 'anything-c-source-bookmarks-local)
+
+</pre>
+
+-- ThierryVolpiatto
+
+== Use traverselisp to grep current-buffer or current dir==
+
+You need version 1.32 or later of Lisp:traverselisp.el to use this source
+
+Traverselisp in anything will search in current buffer or in all files of
+
+dired buffer if current-buffer is a dired buffer.
+
+Lisp:anything-traverse.el
+
+Screenshot: http://farm4.static.flickr.com/3070/3170487688_cbd3049287.jpg
+
+-- ThierryVolpiatto
+
+== Icicles Menu ==
+
+You do not have to install [[Icicles]] to use it. -- [[rubikitch]]
+
+<pre>
+(require 'icicles-menu)
+(defvar anything-c-source-icicles-menu
+  '((name . "Icicles Menu")
+    (candidates
+     . (lambda () (delete '(nil) (icicle-get-overall-menu-item-alist))))
+    (candidate-number-limit . 9999)
+    (action . call-interactively)))
+</pre>
+
+
+[new:DrewAdams:2008-11-02 07:54 UTC]
+<tt>[[icicles-menu.el]]</tt> is obsolete. It was replaced by <tt>[[lacarte.el]]</tt> (LaCarte). It is more useful when combined with [[Icicles]]. ;-) -- DrewAdams
+
+
+
+
+== LaCarte ==
+<pre>
+(require 'lacarte)
+(defvar anything-c-source-lacarte
+  '((name . "Lacarte")
+    (candidates
+     . (lambda () (delete '(nil) (lacarte-get-overall-menu-item-alist))))
+    (candidate-number-limit . 9999)
+    (action . call-interactively)))
+</pre>
+
+-- [[rubikitch]]
+
+Here's an updated LaCarte that grabs the menu from the active buffer, not the anything buffer:
+
+<pre>
+(defvar anything-c-source-lacarte
+  '((name . "Lacarte")
+    (init . (lambda ()
+              (setq anything-c-lacarte-current-buffer (current-buffer))))
+    (candidates .
+                (lambda ()
+                  (with-current-buffer anything-c-lacarte-current-buffer
+                    (delete '(nil) (lacarte-get-overall-menu-item-alist)))))
+    (candidate-number-limit . 9999)
+    (action . (("Open" . (lambda (candidate)
+                           (call-interactively candidate)))))))
+</pre>
+
+-- ts
+
+Hi, pressing TAB to see actions while we are in lacarte make anything crashing.
+I set action like that to avoid that:
+
+<pre>
+(action . (("Open" . (lambda (candidate)
+                             (call-interactively candidate)))))))
+</pre>
+
+-- ThierryVolpiatto
+
+I fixed this bug in anything.el v1.138. -- [[rubikitch]]
+
+== Directory of Files ==
+<pre>
+;;*directory
+(defun make-anything-directory-source (source-name dir)
+  "Returns an anything source for a particular directory"
+  `((name . ,(concat source-name))
+	(candidates . (lambda ()
+					(directory-files
+					 ,dir)))
+	(action . find-file)
+	(type . file)))
+</pre>
+
+-- JonathanArkell
+
+This is especially handy for org-mode.  I use it to set up an anything source to my org directory.
+
+
+== Delicious ==
+
+This anything source get your "[http://delicious.com/ del.icio.us] bookmark dump" and search.
+
+If you refresh bookmark dump, M-x anything-delicious-get-dump.
+
+http://trac.codecheck.in/share/browser/lang/elisp/anything-delicious/trunk/anything-delicious.el
+
+<pre>
+(defvar anything-delicious-file "~/.delicious")
+
+(defun anything-delicious-get-dump ()
+  "Get del.icio.us dump file."
+  (interactive)
+  (let
+      ((url "https://api.del.icio.us/posts/all")
+       (entry-list nil)
+       (tag ""))
+    (switch-to-buffer (url-retrieve-synchronously url))
+    (goto-char (point-min))
+    (re-search-forward "^$" nil 'move)
+    (delete-region (point-min) (1+ (point)))
+    (goto-char (point-min))
+    (while (re-search-forward "\n" nil t)
+      (replace-match ""))
+    (goto-char (point-min))
+    (while (re-search-forward "> +<" nil t)
+      (replace-match "><"))
+    (setq entry-list (xml-get-children (car (xml-parse-region (point-min) (point-max))) 'post))
+    (delete-region (point-min) (point-max))
+    (loop for elm in entry-list
+          do (insert
+              (progn
+                (setq tag (xml-get-attribute elm 'tag))
+               (while (string-match " " tag)
+                 (setq tag (replace-match "][" nil nil tag)))
+                (concat
+                 "[" tag "] "
+                 (xml-get-attribute elm 'description)
+                 " [summary:"
+                 (xml-get-attribute elm 'extended)
+                 "][[href:"
+                 (xml-get-attribute elm 'href)
+                 "]\n"))))
+    (write-file anything-delicious-file)
+    (kill-buffer (current-buffer))))
+
+(defvar anything-c-source-delicious
+  '((name . "del.icio.us")
+    (init
+     . (lambda ()
+         (call-process-shell-command
+          (concat "less -f " anything-delicious-file)  nil (anything-candidate-buffer 'global))))
+    (candidates-in-buffer)
+    (action
+     ("Browse URL" . (lambda (candidate)
+                       (string-match "\\[href:\\(.+\\)\\]$" candidate)
+                       (browse-url (match-string 1 candidate))))
+     ("Show URL" . (lambda (candidate)
+                     (string-match "\\[href:\\(.+\\)\\]$" candidate)
+                     (message (match-string 1 candidate))))
+     ("Show Summary" . (lambda (candidate)
+                         (string-match "\\[summary:\\(.+\\)\\]\\[" candidate)
+                         (message (match-string 1 candidate)))))))
+</pre>
+
+-- [[k1LoW]]
+
+== Another Delicious ==
+
+Include is code to add and delete delicious bookmarks.
+
+Lisp:anything-delicious.el
+
+Screenshot: http://farm4.static.flickr.com/3430/3237847025_1221e94db4.jpg
+
+-- ThierryVolpiatto
+
+==W3m bookmarks==
+
+Use w3m bookmarks in anything with w3m or firefox
+
+NOTE: if you want to use the variable `w3m-bookmark-file' set it in your
+
+anything config. (This variable take effect only when W3m is started once).
+
+Screenshot: http://farm2.static.flickr.com/1132/3170487390_8774553c20.jpg
+
+<pre>
+;; (setq w3m-bookmark-file "<path/of/your/w3m-bookmark-file>")
+
+(defvar anything-w3m-bookmarks-regexp ">[^><]+[^</a>]+[a-z)0-9]+")
+(defun anything-w3m-bookmarks-to-alist ()
+  (let ((bookmarks-alist)
+        (url)
+        (title))
+    (with-temp-buffer
+      (insert-file-contents "~/.w3m/bookmark.html") ;; or w3m-bookmark-file
+      (goto-char (point-min))
+      (while (not (eobp))
+        (forward-line)
+        (when (re-search-forward "href=" nil t)
+          (beginning-of-line)
+          (when (re-search-forward "http://[^>]*" nil t)
+            (setq url (concat "\"" (match-string 0))))
+          (beginning-of-line)
+          (when (re-search-forward anything-w3m-bookmarks-regexp nil t)
+            (setq title (match-string 0)))
+          (push (cons title url) bookmarks-alist))))
+    (setq bookmarks-alist (reverse bookmarks-alist))))
+
+(defvar anything-c-w3m-bookmarks-alist nil)
+(defvar anything-c-source-w3m-bookmarks
+  '((name . "W3m Bookmarks")
+    (init . (lambda ()
+              (setq anything-c-w3m-bookmarks-alist
+                    (anything-w3m-bookmarks-to-alist))))
+    (candidates . (lambda ()
+                    (mapcar #'car
+                            anything-c-w3m-bookmarks-alist)))
+    (filtered-candidate-transformer . (lambda (candidates source)
+                                        (anything-c-compose
+                                         (list candidates)
+                                         '(anything-c-highlight-w3m-bookmarks))))
+    (action . (("Browse Url" . (lambda (candidate)
+                                 (anything-c-w3m-browse-bookmark candidate)))
+               ("Browse Url firefox" . (lambda (candidate)
+                                         (anything-c-w3m-browse-bookmark candidate t)))
+               ("Delete Bookmark" . (lambda (candidate)
+                                      (anything-c-w3m-delete-bookmark candidate)))
+               ("Rename Bookmark" . (lambda (candidate)
+                                      (anything-c-w3m-rename-bookmark candidate)))))
+    (persistent-action . (lambda (candidate)
+                           (anything-c-w3m-browse-bookmark candidate nil t)))
+    (delayed)
+    (volatile)))
+
+(defun anything-c-w3m-browse-bookmark (elm &optional use-firefox new-tab)
+  (let* ((fn (if use-firefox
+                'browse-url-firefox
+                'w3m-browse-url))
+         (arg (if (and (eq fn 'w3m-browse-url)
+                       new-tab)
+                  t
+                  nil)))
+    (funcall fn
+             (replace-regexp-in-string "\"" ""
+                                       (cdr (assoc elm
+                                                   anything-c-w3m-bookmarks-alist)))
+             arg)))
+
+(defun anything-c-highlight-w3m-bookmarks (books)
+  (let ((cand-mod (loop for i in books
+                       collect (propertize i
+                                           'face 'underline))))
+    cand-mod))
+
+(defun anything-c-w3m-delete-bookmark (elm)
+  (save-excursion
+    (find-file-literally "~/.w3m/bookmark.html")
+    (goto-char (point-min))
+    (when (re-search-forward elm nil t)
+      (beginning-of-line)
+      (delete-region (point)
+                     (line-end-position))
+      (delete-blank-lines))
+    (save-buffer (current-buffer))
+    (kill-buffer)))
+
+(defun anything-c-w3m-rename-bookmark (elm)
+  (let* ((old-title (replace-regexp-in-string ">" "" elm))
+         (new-title (read-string "NewTitle: " old-title)))
+    (save-excursion
+      (find-file-literally "~/.w3m/bookmark.html")
+      (goto-char (point-min))
+      (when (re-search-forward (concat elm "<") nil t)
+        (goto-char (1- (point)))
+        (delete-backward-char (length old-title))
+        (insert new-title))
+      (save-buffer (current-buffer))
+      (kill-buffer))))
+
+;; (anything 'anything-c-source-w3m-bookmarks)
+
+</pre>
+
+-- ThierryVolpiatto
+
+==ESS/R objects==
+
+Use anything with [http://ess.r-project.org/ ESS] Emacs speaks statistics, an interface to R and other statistical languages. It's only been tested with R. Use it as a help browser and object browser.
+
+<pre>
+(setq anything-c-source-R-help
+  '((name . "R objects / help")
+    (init . (lambda ()
+              ; this grabs the process name associated with the buffer
+              (setq anything-c-ess-local-process-name ess-local-process-name)))
+    (candidates . (lambda ()
+                    (condition-case nil
+                        (ess-get-object-list anything-c-ess-local-process-name)
+                      (error nil))))
+    (action
+     ("help" . ess-display-help-on-object)
+     ("head (10)" . (lambda(obj-name)
+                      (ess-execute (concat "head(" obj-name ", n = 10)\n") nil (concat "R head: " obj-name))))
+     ("head (100)" . (lambda(obj-name)
+                       (ess-execute (concat "head(" obj-name ", n = 100)\n") nil (concat "R head: " obj-name))))
+     ("tail" . (lambda(obj-name)
+                 (ess-execute (concat "tail(" obj-name ", n = 10)\n") nil (concat "R tail: " obj-name))))
+     ("str" . (lambda(obj-name)
+                (ess-execute (concat "str(" obj-name ")\n") nil (concat "R str: " obj-name))))
+     ("summary" . (lambda(obj-name)
+                    (ess-execute (concat "summary(" obj-name ")\n") nil (concat "R summary: " obj-name))))
+     ("view source" . (lambda(obj-name)
+                        (ess-execute (concat "print(" obj-name ")\n") nil (concat "R object: " obj-name))))
+     ("dput" . (lambda(obj-name)
+                 (ess-execute (concat "dput(" obj-name ")\n") nil (concat "R dput: " obj-name)))))
+    (volatile)))
+
+</pre>
+
+This one is similar but focuses on viewing local objects. It also shows a summary of objects using ls.str(). The default action is str(), but you can change it by reordering the appropraite lines:
+
+<pre>
+(setq anything-c-source-R-local
+  '((name . "R local objects")
+    (init . (lambda ()
+              ; this grabs the process name associated with the buffer
+              (setq anything-c-ess-local-process-name ess-local-process-name)
+              ; this grabs the buffer for later use
+              (setq anything-c-ess-buffer (current-buffer))))
+    (candidates . (lambda ()
+                    (let (buf)
+                      (condition-case nil
+                            (with-temp-buffer
+                              (progn
+                                (setq buf (current-buffer))
+                                (with-current-buffer anything-c-ess-buffer
+                                  (ess-command "print(ls.str(), max.level=0)\n" buf))
+                                (split-string (buffer-string) "\n" t)))
+                        (error nil)))))
+    (display-to-real . (lambda (obj-name) (car (split-string obj-name " : " t))))
+    (action
+     ("str" . (lambda(obj-name)
+                (ess-execute (concat "str(" obj-name ")\n") nil (concat "R str: " obj-name))))
+     ("summary" . (lambda(obj-name)
+                    (ess-execute (concat "summary(" obj-name ")\n") nil (concat "R summary: " obj-name))))
+     ("head (10)" . (lambda(obj-name)
+                      (ess-execute (concat "head(" obj-name ", n = 10)\n") nil (concat "R head: " obj-name))))
+     ("head (100)" . (lambda(obj-name)
+                       (ess-execute (concat "head(" obj-name ", n = 100)\n") nil (concat "R head: " obj-name))))
+     ("tail" . (lambda(obj-name)
+                 (ess-execute (concat "tail(" obj-name ", n = 10)\n") nil (concat "R tail: " obj-name))))
+     ("print" . (lambda(obj-name)
+                        (ess-execute (concat "print(" obj-name ")\n") nil (concat "R object: " obj-name))))
+     ("dput" . (lambda(obj-name)
+                 (ess-execute (concat "dput(" obj-name ")\n") nil (concat "R dput: " obj-name)))))
+    (volatile)))
+</pre>
+
+
+-- ts
+
+== BS buffer selection ==
+
+This uses bs.el to display a filtered and sorted buffer list. It lists the
+buffer type, file size if appropriate, read-write status, and other
+information. You can customize the filtering and sorting; see
+[[BufferSelection]].
+
+<pre>
+(setq anything-c-source-buffers-bs
+  '((name . "BS buffers")
+    (init . (lambda () (bs-set-configuration (or bs-cycle-configuration-name bs-default-configuration))))
+    (header-name . (lambda (a) (car (bs--create-header))))
+    (candidates . (lambda ()
+                    (loop for i in (bs-buffer-list) collect
+                          (cons (with-temp-buffer (bs--insert-one-entry i))
+                                (buffer-name i)))))
+    (volatile)
+    (type . buffer)))
+</pre>
+
+
+== mark-ring and global-mark-ring ==
+
+<pre>
+;; mark-ring
+(defvar anything-c-source-mark-ring
+  '((name . "mark-ring")
+    (candidates . anything-c-source-mark-ring-candidates)
+    (action . (("Goto line" . (lambda (candidate)
+                                (goto-line (string-to-number candidate))))))
+    (persistent-action . (lambda (candidate)
+                           (switch-to-buffer anything-current-buffer)
+                           (goto-line (string-to-number candidate))
+                           (set-window-start (get-buffer-window anything-current-buffer) (point))))))
+(defun anything-c-source-mark-ring-candidates ()
+  (with-current-buffer anything-current-buffer
+    (let* ((marks (cons (mark-marker) mark-ring))
+           (lines (mapcar (lambda (pos)
+                            (save-excursion
+                              (goto-char pos)
+                              (beginning-of-line)
+                              (let ((line  (car (split-string (thing-at-point 'line) "[\n\r]"))))
+                                (when (string= "" line)
+                                  (setq line  "<EMPTY LINE>"))
+                                (format "%7d: %s" (line-number-at-pos) line))))
+                          marks)))
+      lines)))
+
+
+
+;; global-mark-ring
+(defvar anything-c-source-global-mark-ring
+  '((name . "global-mark-ring")
+    (candidates . anything-c-source-global-mark-ring-candidates)
+    (action . (("Goto line" . (lambda (candidate)
+                                (let ((items (split-string candidate ":")))
+                                  (switch-to-buffer (second items))
+                                  (goto-line (string-to-number (car items))))))))
+
+    (persistent-action . (lambda (candidate)
+                           (let ((items (split-string candidate ":")))
+                             (switch-to-buffer (second items))
+                             (goto-line (string-to-number (car items)))
+                             (set-window-start (get-buffer-window anything-current-buffer) (point)))))))
+
+(defun anything-c-source-global-mark-ring-candidates ()
+  (let* ((marks global-mark-ring)
+         (lines (mapcar (lambda (pos)
+                          (if (or (string-match "^ " (format "%s" (marker-buffer pos)))
+                                  (null (marker-buffer pos)))
+                              nil
+                            (save-excursion
+                              (set-buffer (marker-buffer pos))
+                              (goto-char pos)
+                              (beginning-of-line)
+                              (let ((line  (car (split-string (thing-at-point 'line) "[\n\r]"))))
+                                (when (string= "" line)
+                                  (setq line  "<EMPTY LINE>"))
+                                (format "%7d:%s:    %s" (line-number-at-pos) (marker-buffer pos) line)))))
+                        marks)))
+    (delq nil lines)))
+</pre>
+
+-- vin
+[new] I can't find function ==> current-line? -- ThierryVolpiatto
+
+Use line-number-at-pos instead. -- [[rubikitch]]
+
+I changed from current-line to line-number-at-pos. Thank you for rubikitch.  -- vin
+
+[new] These sources have been rewrited and safe versions are available in Lisp:anything-config.el
+
+== Info elisp and CL ==
+
+Quickly find info on functions in elisp or common-lisp infos.
+
+<pre>
+(defvar anything-c-info-cl-fn nil)
+(defvar anything-c-source-info-cl
+  `((name . "Info Common-Lisp")
+    (init . (lambda ()
+              (save-window-excursion
+                (unless anything-c-info-cl-fn
+                  (with-temp-buffer
+                    (Info-find-node "cl" "Function Index")
+                    (setq anything-c-info-cl-fn (split-string (buffer-string) "\n"))
+                    (Info-exit))))))
+    (candidates . (lambda ()
+                    (loop for i in anything-c-info-cl-fn
+                         if (string-match "^* [^ \n]+[^: ]" i)
+                         collect (match-string 0 i))))
+    (action . (("Goto Info Node" . (lambda (candidate)
+                                (Info-find-node "cl" "Function Index")
+                                (Info-index (replace-regexp-in-string "* " "" candidate))))
+               ("Find Example" . (lambda (candidate)
+                                   (and (fboundp 'traverse-deep-rfind)
+                                        (traverse-deep-rfind traverse-example-directory
+                                                             (replace-regexp-in-string "* " "" candidate)
+                                                             ".el"))))))
+    (volatile)
+    (requires-pattern . 2)))
+
+;; (anything 'anything-c-source-info-cl)
+
+
+(defvar traverse-example-directory "~/elisp")
+(defvar anything-c-info-elisp nil)
+(defvar anything-c-source-info-elisp
+  `((name . "Info Elisp")
+    (init . (lambda ()
+              (save-window-excursion
+                (unless anything-c-info-elisp
+                  (with-temp-buffer
+                    (Info-find-node "elisp" "Index")
+                    (setq anything-c-info-elisp (split-string (buffer-string) "\n"))
+                    (Info-exit))))))
+    (candidates . (lambda ()
+                    (loop for i in anything-c-info-elisp
+                         if (string-match "^* [^ \n]+[^: ]" i)
+                         collect (match-string 0 i))))
+    (action . (("Goto Info Node" . (lambda (candidate)
+                                (Info-find-node "elisp" "Index")
+                                (Info-index (replace-regexp-in-string "* " "" candidate))))
+               ("Find Example" . (lambda (candidate)
+                                   (and (fboundp 'traverse-deep-rfind)
+                                        (traverse-deep-rfind traverse-example-directory
+                                                             (replace-regexp-in-string "* " "" candidate)
+                                                             ".el"))))))
+    (volatile)
+    (requires-pattern . 2)))
+
+;; (anything 'anything-c-source-info-elisp)
+</pre>
+
+-- ThierryVolpiatto
+== Planner ==
+Find a planner page with anything.
+
+<pre>
+(setq anything-c-source-planner-pages
+      `((name . "Planner Pages")
+        (candidates . (lambda () (mapcar 'car (muse-project-file-alist (muse-read-project "Find in project: "  current-prefix-arg))))
+                    )
+        (action . (("Show" . (lambda (x)
+                               (planner-find-file  x)
+                               ))))
+        (require . 2)))
+</pre>
+
+-- JoakimVerona
+
+== Etags ==
+Etags with anything.
+
+Define anything-c-source-etags-select.
+
+Lisp:anything-etags.el
+
+--[[k1LoW]]
+
+== Anything Sources Selection ==
+Selecting a source and execute it.
+
+<pre>
+(defvar anything-call-source-buffer "*anything source select*")
+(defvar anything-c-source-call-source
+  `((name . "Call anything source")
+    (candidate-number-limit . 9999)
+    (candidates
+     . (lambda ()
+         (loop for vname in (all-completions "anything-c-source-" obarray)
+               for var = (intern vname)
+               for name = (ignore-errors (assoc-default 'name (symbol-value var)))
+               if name collect (cons (format "%s (%s)" name vname) var))))
+    (action . (("Invoke anything with selected source" .
+                (lambda (candidate)
+                  (anything candidate nil nil nil nil
+                            anything-call-source-buffer)))
+               ("Describe variable" . describe-variable)))
+    (persistent-action . describe-variable)))
+
+(defun anything-call-source ()
+  "Call anything source."
+  (interactive)
+  (anything 'anything-c-source-call-source nil nil nil nil
+            anything-call-source-buffer))
+</pre>
+
+-- [[rubikitch]]
+
+== .*sh_history ==
+Selecting from .*sh_history(/bash_history or .zsh_history) file and execute command.
+
+Lisp:anything-c-shell-history.el
+
+But this source is too late when execute command...
+
+--[[k1LoW]]
+
+==Find Elisp Library==
+In Lisp:anything-config.el, have source `anything-c-source-elisp-library-scan' for find or load elisp library, but it slow when it add in `anything-sources', below have faster version use `crontab' update package list background:
+
+<pre>
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Sources ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Elisp Library catalog
+;;
+;; `anything-c-source-elisp-library-catalog' is faster than `anything-c-source-elisp-library'
+;; But this need you setup it.
+;;
+;; If you want use those code,
+;; you have to use `crontab' to update `~/MyEmacs/Document/library-list.txt', like me:
+;;
+;; crontab -e
+;;
+;; */5 * * * * find ~/MyEmacs \( -name '*.el' -o -name '*.el.gz' \) > ~/MyEmacs/Document/library-list.txt
+;;
+(defvar anything-c-elisp-library-catalog-timeout 150
+  "The timeout that update library list.")
+
+(defvar anything-c-elisp-library-catalog-alist nil
+  "The alist for storage library filepath.")
+
+(defvar anything-c-elisp-library-catalog-filename "~/MyEmacs/Document/library-list.txt"
+  "The filename that contain library list.")
+
+(defvar anything-c-source-elisp-library-catalog
+  '((name . "Elisp libraries (Catalog)")
+    ;; The file `~/MyEmacs/Document/library-list.txt' is a library list
+    ;; that update by `crontab', and my command is:
+    ;; find ~/MyEmacs \( -name '*.el' -o -name '*.el.gz' \) > ~/MyEmacs/Document/library-list.txt
+    (candidates . (lambda ()
+                    (or anything-c-elisp-library-catalog-alist (anything-c-elisp-library-catalog-update))))
+    (type . file)
+    (requires-pattern . 1)
+    (major-mode emacs-lisp-mode)))
+
+(defun anything-c-elisp-library-catalog-update ()
+  "Update library list"
+  (setq anything-c-elisp-library-catalog-alist (anything-c-elisp-library-catalog-fileline-to-alist anything-c-elisp-library-catalog-filename)))
+
+(run-with-timer 0 anything-c-elisp-library-catalog-timeout 'anything-c-elisp-library-catalog-update)
+
+(defun anything-c-elisp-library-catalog-fileline-to-alist (file)
+  "Transform line in special file to element of list.
+And return list."
+  (let (return-list)
+    (with-temp-buffer
+      (insert-file-contents file)
+      (goto-char (point-min))
+      (while (not (eobp))
+        (push (buffer-substring-no-properties (line-beginning-position) (line-end-position)) return-list)
+        (forward-line +1))
+      (nreverse return-list))))
+</pre>
+-- AndyStewart
+
+==msf-abbrev==
+
+Insert, edit or delete an MsfAbbrev abbreviation, depending on the current buffer major mode.
+
+<pre>
+(setq anything-c-source-msf-abbrev
+  '((name . "msf-abbrev abbreviations")
+    (init . (lambda ()
+	      (setq msf-abbrev-table nil)
+	      (msf-abbrev-load)
+              (setq anything-c-msf-abbrev-buffer (current-buffer))
+              (setq anything-c-msf-abbrev-mode major-mode)
+              (setq anything-c-msf-abbrev-mode-dir
+		   (let* ((current-mode-str
+			   (cond
+			    ;; create an exception case for AUCTeX
+			    ((and
+			      (eq major-mode 'latex-mode)
+			      (boundp 'AUCTeX-version))
+			     "LaTeX-mode")
+			    ((and
+			      (eq major-mode 'tex-mode)
+			      (boundp 'AUCTeX-version))
+			     "TeX-mode")
+			    (t (format "%s" major-mode))))
+			  (d (msf-abbrev-locate-mode-dir current-mode-str)))
+		     (file-name-as-directory d)))))
+    (candidates . (lambda ()
+		    (cadr (assoc (format "%s" anything-c-msf-abbrev-mode) msf-abbrev-table))))
+    (action
+     ("insert" . (lambda(obj-name)
+                (insert obj-name) (expand-abbrev)))
+     ("edit" . (lambda(obj-name)
+		 (find-file (concat anything-c-msf-abbrev-mode-dir obj-name))))
+     ("delete" . (lambda(obj-name)
+		 (delete-file (concat anything-c-msf-abbrev-mode-dir obj-name))))
+     )))
+</pre>
+
+-- JulienBarnier
+
+Since I am on Ubuntu, I am using sudo instead of su.
+I would propose to add customization to anything-config.el.
+Like this:
+<pre>
+(defcustom anything-su-or-sudo "su"
+  "What command to use for root access."
+  :type 'string
+  :group 'anything-config)
+
+(defun anything-find-file-as-root (candidate)
+  (find-file (concat "/" anything-su-or-sudo "::" (expand-file-name candidate))))
+</pre>
+-- KonstantinAntipin
+
+[new]
+Applied! Thank you, i modify also `anything-c-source-bookmarks-su', so you can now
+
+set your sudo bookmarks beginning with ==> (sudo)
+
+--ThierryVolpiatto
+
+==goto-line==
+<pre>
+(setq anything-c-source-goto-line
+      '((name . "Goto line")
+	(filtered-candidate-transformer . (lambda (candidates source)
+					    (if (string-match "^[0-9]*$" anything-pattern)
+						(with-current-buffer anything-current-buffer
+						  (if (>= (max-line) (string-to-number anything-pattern))
+						      (list (concat "line number: " anything-pattern))
+						    nil))
+					      nil)
+					    ))
+	(action . (("Goto line" . (lambda (arg)
+				    (if (string-match "[0-9]*$" arg)
+					(let ((line-number (string-to-number (match-string 0 arg))))
+					    (goto-line line-number)))))))
+	))
+</pre>
+
+-- yamaguchi
+
+==windows.el==
+<pre>
+(defun win-switch-to-window1()
+  (interactive) (let ((last-command-char ?1)) (call-interactively 'win-switch-to-window)))
+(defun win-switch-to-window2()
+  (interactive) (let ((last-command-char ?2)) (call-interactively 'win-switch-to-window)))
+(defun win-switch-to-window3()
+  (interactive) (let ((last-command-char ?3)) (call-interactively 'win-switch-to-window)))
+(defun win-switch-to-window4()
+  (interactive) (let ((last-command-char ?4)) (call-interactively 'win-switch-to-window)))
+(defun win-switch-to-window5()
+  (interactive) (let ((last-command-char ?5)) (call-interactively 'win-switch-to-window)))
+(defun win-switch-to-window6()
+  (interactive) (let ((last-command-char ?6)) (call-interactively 'win-switch-to-window)))
+(defun win-switch-to-window7()
+  (interactive) (let ((last-command-char ?7)) (call-interactively 'win-switch-to-window)))
+(defun win-switch-to-window8()
+  (interactive) (let ((last-command-char ?8)) (call-interactively 'win-switch-to-window)))
+(defun win-switch-to-window9()
+  (interactive) (let ((last-command-char ?9)) (call-interactively 'win-switch-to-window)))
+(defun win-switch-to-last-window()
+  (interactive) (win:switch-window win:last-config))
+
+(setq anything-c-source-other-windows
+      '((name . "Other Windows")
+	(candidates . (lambda ()
+			(win:store-config win:current-config)
+			(let ((i 1) (l (list))
+			      (form (format "[w%%c]%%s %%-%ds [%%s]" win:names-maxl)))
+			  (while (< i win:max-configs)
+			    (add-to-list 'l
+					 (if (aref win:configs i)
+					     (format form
+						     (+ win:base-key i)
+						     (cond ((= i win:current-config) "*")
+							   ((= i win:last-config) "+")
+							   (t " "))
+						     (format "%s" (aref win:names-prefix i))
+						     (aref win:names i))
+					   (format form (+ win:base-key i) " " "" "")))
+			    (setq i (1+ i)))
+			  (sort l 'string<))))
+	(action . (("Switch to Other Window" . (lambda (arg)
+						 (if (string-match "^\\[w\\(.\\)\\]" arg)
+						     (let ((num (string-to-number (match-string 1 arg))))
+						       (call-interactively (intern (format "win-switch-to-window%d" num)))
+						       ))))))
+	))
+</pre>
+
+-- yamaguchi
+
+==eproject==
+
+For use with [[eproject]].
+
+[[anything-eproject.el]]
+
+-- DanielHackney
+
+==Make calculation result only show actual calculation results==
+<pre>
+(defvar anything-c-source-calculation-result
+  '((name . "Calculation Result")
+    (requires-pattern)
+    (match (lambda (candidate) t))
+    (candidates  "dummy")
+    (filtered-candidate-transformer . (lambda (candidates source)
+					(let ((result (condition-case nil
+							  (calc-eval anything-pattern)
+							(error "error"))))
+					  (if (and (string-match "\\([0-9.]*\\)" result)
+						   (eq (match-end 0) (length result)))
+					      (list result)))))
+    (volatile)
+    (action ("Copy result to kill-ring" . kill-new))))
+</pre>
+
+----
+[[Anything]]

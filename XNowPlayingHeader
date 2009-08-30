@@ -1,0 +1,210 @@
+The X-Now-Playing header displays the current song your listening. If you use XMMS for listen music it's very easy to write the current song to your header. Create the file xmms_np.c with the following content: 
+
+<pre>
+ #include <stdio.h>
+ #include <glib.h>
+ #include <xmms/xmmsctrl.h>
+
+ gint session = 0;
+
+ int main(void)
+ {
+  gint pos;
+
+  if ( xmms_remote_is_running(session) == FALSE ||
+       xmms_remote_is_playing(session) == FALSE )
+   return 1;
+
+  pos = xmms_remote_get_playlist_pos(session);
+
+  printf("%s\n", xmms_remote_get_playlist_file(session, pos));
+
+  return 0;
+ }
+</pre>
+
+Note: If you use xmms_remote_get_playlist_title(session, pos) rather than xmms_remote_get_playlist_file(session, pos), you will get the just the title rather than a pathname.
+
+Now compile it with
+
+ cc -o xmms_np xmms_np.c `glib-config --cflags --libs` -lxmms
+
+and move the program xmms_np to /usr/bin.
+
+Here is the function for Gnus:
+
+ (defun mak-insert-x-now-playing ()
+   "Insert the title of the song I'm currently listening to."
+   (interactive)
+   (if (string-match "." (shell-command-to-string (expand-file-name "/usr/bin/xmms_np")))
+       (shell-command-to-string (expand-file-name "/usr/bin/xmms_np"))))
+
+To use add a new selection to your PostingStyles:
+
+ (setq gnus-posting-styles
+  '(
+    (...)
+    (mak-insert-x-now-playing
+     ("X-Now-Playing" mak-insert-x-now-playing))))
+
+
+If you don't use XMMS, but your favorite music player can write to current song to a file you can use this code snipplet:
+
+ (defun ajc/x-now-playing ()
+   "Return the song now playing"
+   (when (file-exists-p (expand-file-name "~/.now_playing"))
+     (save-excursion
+       (beginning-of-buffer)
+       (re-search-forward "^--text follows this line--")
+       (beginning-of-line)
+       (insert "X-Now-Playing: ")
+       (insert-file-contents (expand-file-name "~/.now_playing")))))
+ (add-hook 'message-setup-hook 'ajc/x-now-playing)
+
+Replace <code>~/.now_playing</code> with the outputed file that your player create.
+----
+Hmm.. 
+All I had to insert was:
+
+      ("X-Now-Playing" mak-insert-x-now-playing)
+
+-- Gijs
+
+: That's also possible, but if you use this the header will always insert.
+The solution on the top prevent that. -- MarkusKnittig
+----
+
+
+Here is an alternative version of the emacs code, that I think works better.
+
+ (defun chly-insert-x-now-playing ()
+   "Insert the title of the song I'm currently listening to."
+   (interactive)
+   (let ((homedir (expand-file-name "~/"))
+	 (np (save-window-excursion (shell-command-to-string "xmms_np"))))
+     (cond
+       ((string-match "command not found" np) nil)
+       ((string-match "." np)
+        (when (search homedir np)
+ 	 (setq np (concat "~/" (substring np (length homedir)))))
+        np))))
+
+ (pushnew '(mak-insert-x-now-playing
+ 	   ("X-Now-Playing" mak-insert-x-now-playing))
+ 	 gnus-posting-styles :test 'equal)
+
+----
+
+How about:
+
+<pre>
+;; mn-now-playing   v0.1   by Michal Nazarwicz (mina86/AT/tlen.pl)
+
+(defvar mn-now-playing-source
+;  '("xmms_np")
+;  '(nil . "~/.now_playing")
+;  '(shell-file-name shell-command-switch "wired shell command goes here")
+  '("mpc" "--format"
+    "[[[%artist% <&%album%> ]|[%artist% - ]|[<%album%> ]]%title%]|[%file%]")
+  "Describes how `mn-now-playing' should get the title of
+currently played song.  If it is a string it's value will be used
+as a title of the song.  If it is a list which car is nil it's
+cdr will be treated as a path to a file which contains title of
+the song.  Otherwise, if it is a list it's car will be used as
+command name and tail as list of arguments.")
+
+(defvar mn-now-playing nil
+  "Cached value returned by last `mn-now-playing' call.")
+
+(defun mn-now-playing-cache (&optional message insert)
+  "Just like calling `mn-now-playing' with 3rd argument t."
+  (interactive (list t current-prefix-arg))
+  (mn-now-playing message insert))
+
+(defun mn-now-playing (&optional message insert cache)
+  "Returns now playing song or nil if playing nothing or unable
+   to retrive song title.  If command or file specified bye
+   `mn-no-playing-source' returns/contains more then one line
+   only the first non-empty line is returned.
+If message is non-nil or called interactively also echoes the song
+   using `message'.
+If insert is non-nil or called with prefix argument will insert the
+  song title into current buffer.
+If cache is non-nill won't accualy try to get the song title but
+  instead will use value cached in `mn-now-playing' variable."
+  (interactive (list t current-prefix-arg nil))
+  (unless cache
+    (save-current-buffer
+      (set-buffer (get-buffer-create
+                   (generate-new-buffer-name " *string-output*")))
+      (setq mn-now-playing
+            (and (mn-now-playing--get) (goto-char (point-min))
+                 (search-forward-regexp "[^[:space:]].*[^[:space:]]" () t)
+                 (match-string 0)))
+      (kill-buffer nil)))
+  (if message
+      (if mn-now-playing (message "Now playing: %s" mn-now-playing)
+        (message "Nothing is being played")))
+  (if (and insert mn-now-playing) (insert mn-now-playing))
+  mn-now-playing)
+
+(defun mn-now-playing--get ()
+  (cond
+   ((stringp mn-now-playing-source) mn-now-playing-source)
+   ((not (and mn-now-playing-source (listp mn-now-playing-source))) nil)
+   ((not (car mn-now-playing-source))
+    (not (= 0 (cadr (insert-file-contents (cdr mn-now-playing-source))))))
+   (t
+    (let* ((form mn-now-playing-source) (cmd (car form)))
+      (setq form (cdr form))
+      (dolist (i '(nil '(t nil) nil cmd call-process)) (push i form))
+      (setq cmd (eval form))
+      (and (numberp cmd) (= 0 cmd))))))
+</pre>
+
+Probably the only thing it's missing is (defcustom) instead of (defvar) :] -- mina86
+
+----
+
+I'm a big fan of emms, personally. So after seeing this page I looked at some of the functions described here and decided there needed to be one for emms (why not, right?). So here it is:
+
+<pre>
+(defun door-insert-x-now-playing ()
+  "Insert the title of the song I'm currently listening to."
+  (interactive)
+  (if (string-match "." emms-show-format)
+      (save-excursion
+	(goto-char (point-min))
+	(if (re-search-forward "^X-Now-Playing: " nil t)
+	    (progn
+	      (kill-line)
+	      (emms-show 4))
+	  (re-search-forward "^--text follows this line--" nil t)
+	  (beginning-of-line)
+	  (insert "X-Now-Playing: ")
+	  (emms-show 4)
+	  (newline)))))
+
+(add-hook 'message-setup-hook 'door-insert-x-now-playing)
+</pre>
+----
+I just adapted an older variant of these for audacious, 
+<pre>
+;; x-now-playing-with-audacious
+(defun audacious-now-playing ()
+    "Insert the title of the song I'm currently listening to."
+      (let ((track (shell-command-to-string "audtool --current-song")))
+        (unless (string-equal "No song playing.\n" track)
+          (save-excursion
+          (goto-char (point-min))
+          (re-search-forward "^--text follows this line--")
+          (forward-line 0)
+          (insert "X-Now-Playing: " track)))))
+
+(add-hook 'message-setup-hook 'audacious-now-playing)
+
+</pre>
+-- Gijs, March 2008
+
+----
+CategoryGnus

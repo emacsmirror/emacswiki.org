@@ -1,0 +1,11 @@
+Topics are a nice way of structuring newsgroups in a hierarchy.
+The nice thing is that you can use GroupParameters for Topics.
+This way, you can for example set the ScoreFile for an entire topic -- for all the related newsgroups in the topic.
+
+To toggle topic mode, use `t'.  To switch it on permanently, add the following to your ~/.gnus file:
+
+ (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+
+----
+CategoryGnus
+

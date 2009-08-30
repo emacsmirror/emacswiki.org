@@ -1,0 +1,47 @@
+This page is about different ways to locate a file anywhere on your file system. 
+
+Emacs command `find-file' (`C-x C-f') finds a file within a given directory -- you can change directory, but only one directory is searched at a time. ''What do you do if you don't know what directory to search?'' The answer is here.
+
+* Unix or GNU/Linux `find' command -- Use `find' from within Emacs -- commands `find-dired', `find-name-dired'. See node "Dired and `find'" in the EmacsManual.
+
+** Library <tt>[[find-dired+.el]]</tt> adds a '''Run find Command''' submenu to the '''Dir''' menu of DiredPlus, with enhanced versions of the Emacs `find-*dired' commands.
+
+* Emacs front ends to Unix or GNU/Linux `locate' command, which maintains a database of file locations in your file system:
+
+** Standard Emacs library ##locate.el##, with Emacs command `locate'.
+
+** GlobalFF -- library ##globalff.el##, shows matching files with `locate' command as you type
+
+** LocateMode -- library ##gse-locate.el##.
+** `<tt>[[IciclesUserDefinedCommands#icicle-locate|icicle-locate]]</tt>' -- Icicles [[multi-command]] wrapper for `locate' program.
+
+* [[Icicles - File-Name Input]] -- Provides '''[[Icicles]]''' [[regexp]] [[completion]] for [[command]]s like `find-file'. You can match any part(s) of a file name, including parts of any of its ancestor directories. No need for another, OS program, such as `find' or `locate'. Match also against file mofication date.
+
+* [[Icicles - Persistent Completions]] -- Save a set of completion candidates persistently. Create a persistent image of all of the files in your file system. Retrieve it quickly anytime, to find a file. 
+
+* FileNameCache -- You load file names into a (non-persistent) cache, which you can subsequently use for finding files with `find-file'. See section "File Name Cache" in the EmacsManual
+
+* [[gds]] -- Uses Google Desktop Search to find files to open. Current interfaces to the hits are `iswitchb' and `dired'.
+
+* [[Glimpse]] -- Search for files with glimpse
+
+
+== Comparison of Approaches ==
+
+* [[Icicles]] is the only approach that does not require you to use an operating-system command such as `find' or `locate'.
+
+* [[Icicles]] is the only approach that lets you save a cache of file names persistently. In Icicles, you can have any number of cache files, and they can contain any strings to use as completion candidates -- you are not limited to file names.
+
+* [[Icicles]] and [[GlobalFF]] are the only approaches that let you use a [[regexp]] to match a file name, and to let you match parts of directory names.
+
+* [[Icicles]] is the only approach that lets you also find files by (regexp) matching last modification date. 
+
+* All of the approaches let you glob file names (use shell wildcards).
+
+
+----
+CategoryFiles
+CategoryDirectories
+CategoryCompletion
+CategoryProgrammerUtils
+

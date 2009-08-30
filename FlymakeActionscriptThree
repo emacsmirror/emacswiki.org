@@ -1,0 +1,215 @@
+==Something to Whet Your Appetite==
+
+http://farm1.static.flickr.com/190/525351721_eff59e2b6c_o.png
+
+==Flymake==
+
+[http://www.ldc.usb.ve/docs/emacs/Flymake.html Flymake-mode] is a minor mode available in emacs 22 that uses an external program to perform syntax checking on your code, as you write it. This document describes my own solution for making flymake-mode work with AS3.
+
+Flymake works by periodically (whenever it detects a change in your code) feeding your code to an external helper program. This program will print any errors it detects to standard output, emacs then parses this output and highlights the specified lines.
+
+==FCSH==
+
+The AS3 compiler(mxmlc) is slow. In order to mitigate this slowness, Adobe released a commandline app called [http://labs.adobe.com/wiki/index.php/Flex_Compiler_Shell fcsh] (flex compiler shell). 
+After the first time fcsh compiles you application, it keeps the compiled information in memory, and then on subsequent compiles it will only compile the files that have changed. This results in muuch faster compiles.
+
+==Flymake and FCSH==
+
+There's a bit of a mismatch between Flymake and FCSH in that Flymake expects its helper program to run to completion (it waits for an exit status-code) and FCSH does not exit between compiles. My solution to this was to wrap fcsh in a mini http server, and then use a small bit of helper code to perform a request to this server whenever Flymake requests a compile. Here is the unified ruby code that performs these tasks (The first run will start the server, subsequent runs will send commands to fcsh and return its output): [[build_manage.rb]]
+
+-------------------------------
+<pre>
+#!ruby
+require 'webrick'
+include WEBrick
+require 'net/http'
+require 'fileutils'
+
+COMPILE_COMMAND = "mxmlc +configname=flex -compiler.warn-no-type-decl=false -compiler.source-path C:/sdfddf/trunk/src C:/boostworthy_animation_v2_1/src/classes  C:/corelib/src -file-specs=main.mxml"
+
+SWF_TO_RUN = "main.swf"
+PORT = 2001
+HOST = "localhost"
+
+############################################
+# If a parameter was provided, take action #
+############################################
+
+begin
+  case ARGV[0]
+  when "compile"
+    http = Net::HTTP.new(HOST, PORT)
+    resp, date = http.get('/compile')
+    puts resp.body
+    exit
+  when "compile_and_show"
+    http = Net::HTTP.new(HOST, PORT)
+    resp, date = http.get('/compile_and_show')
+    puts resp.body
+    exit
+  when "exit"
+    http = Net::HTTP.new(HOST, PORT)
+    resp, date = http.get('/exit')
+    puts resp.body
+    exit
+  end
+rescue => e
+  puts "Command failed: #{e}"
+  exit(1)
+end       
+
+
+#################################################################
+# Otherwise, if there are no parameters, start the build server #
+#################################################################
+
+def read_to_prompt(f)
+  f.flush
+  output = ""
+  while chunk = f.read(1)
+    STDOUT.write chunk
+    output << chunk
+    if output =~ /^\(fcsh\)/
+      break
+    end
+  end
+  STDOUT.write ">"
+  output
+end
+
+fcsh = IO.popen("fcsh.exe  2>&1", "w+")
+read_to_prompt(fcsh)
+fcsh.puts COMPILE_COMMAND
+read_to_prompt(fcsh)
+
+
+#####################################################
+# Now expose the shell through a small http server  #
+#####################################################
+
+s = HTTPServer.new(
+  :Port => PORT,
+  :Logger => Log.new(nil, BasicLog::WARN),
+  :AccessLog => []
+)
+
+s.mount_proc("/compile"){|req, res|
+  fcsh.puts "compile 1"
+  output = read_to_prompt(fcsh)
+  res.body = output
+  res['Content-Type'] = "text/html"
+}
+
+s.mount_proc("/compile_and_show"){|req, res|
+  fcsh.puts "compile 1"
+  output = read_to_prompt(fcsh)
+  res.body = output
+  res['Content-Type'] = "text/html"
+  if output =~ /#{SWF_TO_RUN} \([0-9]/
+      system "SAFlashPlayer.exe #{SWF_TO_RUN}"
+  end
+}
+
+s.mount_proc("/exit"){|req, res|
+  s.shutdown
+  fcsh.close
+  exit
+}
+
+trap("INT"){
+  s.shutdown 
+  fcsh.close
+}
+
+s.start
+
+</pre>
+------------------------------------------------
+
+Notice that the constant COMPILE_COMMAND contains the command required to compile my entire project.
+
+
+==Now the Emacs Lisp==
+
+Flymake requires a bit of customization for every language it supports. Here's the elisp to integrate the ruby helper script with emacs and flymake-mode:
+
+<pre>
+(require 'actionscript-mode)
+(add-to-list 'auto-mode-alist '("\\.as$" . actionscript-mode))
+
+(require 'compile)
+;; Find error messages in flex compiler output:
+(push '("^\\(.*\\)(\\([0-9]+\\)): col: \\([0-9]+\\) Error: \\(.*\\)$" 1 2 3 2) compilation-error-regexp-alist)
+
+
+(require 'flymake)
+
+(defvar as3-build-file nil)
+
+(defvar as3-default-build-file-name "build_manager.rb")
+
+(defun flymake-as3-mode (&optional file)
+  (interactive 
+   (list (read-file-name "Build file: " default-directory as3-default-build-file-name)))
+  (message file)
+  (flymake-mode 0)
+  (let* ((build-file 
+	  (if file (expand-file-name file)
+	    (if as3-build-file as3-build-file
+	      (expand-file-name (concat default-directory as3-default-build-file-name))))))
+    (if (file-exists-p build-file)
+	(progn
+	  (setq as3-build-file build-file)
+	  (flymake-mode 1)
+	  (message (concat "Set flymake mode with build file, " build-file ".")))
+      (message (concat "Build file, " build-file ", does not exist.")))))
+
+(defun flymake-as3-init ()
+  (if as3-build-file
+      (progn
+	(remove-hook 'after-save-hook 'flymake-after-save-hook t)
+	(save-buffer)
+	(add-hook 'after-save-hook 'flymake-after-save-hook nil t)
+	(list "ruby" (list as3-build-file "compile")))))
+
+(defun flymake-as3-cleanup () (message "Flymake finished checking AS3."))
+(defun flymake-as3-get-real-file-name (tmp-file) tmp-file)
+
+
+(setq flymake-allowed-file-name-masks
+      (cons '(".+\\.as$\\|.+\\.mxml$"
+	      flymake-as3-init
+	      flymake-as3-cleanup
+	      flymake-as3-get-real-file-name)
+	    flymake-allowed-file-name-masks))
+
+(setq flymake-err-line-patterns
+      (cons '("^\\(.*\\)(\\([0-9]+\\)): col: \\([0-9]+\\) Error: \\(.*\\)$" 1 2 3 4)
+	    flymake-err-line-patterns))
+
+(define-key actionscript-mode-map (kbd "C-c p") 'flymake-goto-prev-error)
+(define-key actionscript-mode-map (kbd "C-c n") 'flymake-goto-next-error)
+
+
+(defun as3-compile ()
+  "Launch an emacs compile for the current project"
+  (interactive)
+  (if as3-build-file
+      (let ((command (concat "ruby " as3-build-file " compile_and_show")))
+	(save-some-buffers (not compilation-ask-about-save) nil)
+	(setq compilation-directory (file-name-directory as3-build-file))
+	(compilation-start command))))
+
+(define-key actionscript-mode-map (kbd "C-c k") 'as3-compile)
+
+
+
+(add-hook 'actionscript-mode-hook
+          '(lambda ()
+	     (flymake-as3-mode)
+	     ))
+</pre>
+
+
+----
+FlyMake

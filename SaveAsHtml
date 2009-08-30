@@ -1,0 +1,44 @@
+= Htmlfontify =
+
+* See HtmlFontify
+
+
+= Htmlize =
+
+* See [[Htmlize]]
+
+
+= Mkhtml =
+
+Mkhtml, by DrewAdams, lets you create hypertext-linked HTML output from Emacs buffers. It uses the [[Htmlize]] library by HrvojeNiksic.
+
+Htmlize, by itself, creates HTML (without links) that corresponds to any font-lock-using Emacs buffer.  The HTML uses CSS, which reflects the
+definitions of the font-lock [[Face]]s you are using.
+
+Mkhtml adds preservation of links to the functionality provided by Htmlize: It interprets mouse-face'd text in Info and Dired buffers as links. These Emacs links then become hypertext links in the output HTML.
+
+In ''Info'', Mkhtml adds these items to the MenuBar '''Info''' menu:
+* '''HTMLize Buffer''' (`mkhtml-info-buffer') -- Save the current Info buffer as a new HTML file (named after the Info node).
+* '''HTMLize Whole Info File''' (`mkhtml-file') -- Create a new HTML file for ''each node'' in the current Info ''file'' (whole manual).
+
+The Info mouse-face links are converted to HTML links.
+
+In ''DiredMode'', Mkhtml adds this item to the menu-bar '''Operate''' and '''Immediate''' menus:
+* '''Create HTML''' (`mkhtml-dired-files') -- Create an HTML file that corresponds to each marked (or pointed) file. DiredMode mouse-face links are converted to HTML links.
+
+In buffers other than `Info' and `Dired', Mkhtml adds item '''HTMLize Buffer''' (`mkhtml-info-buffer') to the menu-bar '''Tools''' menu.
+
+Mkhtml works with GnuEmacs 20; it has not been tested with Emacs 21 or more recent.
+
+'''Get it here:'''
+* Mkhtml: Lisp:mkhtml.el
+* Htmlize: http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el
+
+[new]
+Hey, mkhtml.el calls the function `htmlize-make-face-hash', that seems to have been dropped out of htmlize.el ages ago! Cheers :), EduardoOchs
+[new:DrewAdams:2004-12-29 01:16 UTC]
+Yeah, I know. I haven't really updated mkhtml.el in years. It works with an old version of htmlize.el. Maybe someday I'll get around to updating it. Sorry about that :-(. -- DrewAdams
+
+
+----
+CategoryFaces CategoryHypermedia CategoryXML

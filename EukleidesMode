@@ -1,0 +1,28 @@
+[[eukleides.el]] is major mode to edit [http://eukleides.org eukleides] files.  Eukleides is very flexible and powerful language to describe figures and their relation on plane.  Unlike other plane geometry products such as kseg and geometer's sketchpad eukleides is designed as language without any GUI.  This gives some charm and power, however complicates feedback.  [[EukleidesMode]] makes use of eukleides very easy, even easier then kseg and friends.  [[EukleidesMode]] has great support for interactive forms, that allows you to tune geometry figures and values in extremely emacs user friendly way.  [[EukleidesMode]] supports many Emacs features, such as [[ImenuMode]], [[ElDoc]], etc
+
+NOTE that [[EukleidesMode]] yet works(checked) only under XEmacs and SXEmacs.
+
+== Extending eukleides ==
+
+Eukleides language does not provide mechanism to extend its constructs.  For example it is not possible to create some function for defining trapezium or regular decagon, so you could write <code>A B C D trapezium(..)</code> or <code>A B C D E F G H J K decagon(..)</code>.  The idea is to provide mechanism for code translation.  For example using EukleidesMode you could write:
+
+  M N tangent(A, c)
+
+and this code translates to next before the actual compilation by eukleides:
+
+  M N intersection(circle(A, center(c)), c)
+
+so <code>M</code>, <code>N</code> are points of contacts of tangents from point <code>A</code> to circle <code>c</code>, or
+
+  A B C D trapezium(45:, 60:, 4, 2)
+
+translates to:
+
+  A B AB_TOP_temp triangle(4, 45:, 60:)
+  C = homothecy(B, AB_TOP_temp, 2/4)
+  D = homothecy(A, AB_TOP_temp, 2/4)
+
+so A, B, C, D defines trapezium
+
+----
+CategoryExternalUtilities

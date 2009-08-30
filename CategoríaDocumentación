@@ -1,0 +1,18 @@
+Emacs trae consigo un tutorial, el cual puede ser consultado usando <tt>C-h t</tt>. Este tutorial le guiará paso a paso a través de una sesión de edición en la cual aprenderá los elementos básicos del uso de Emacs como editor de texto.
+
+Emacs también viene con un manual completo. El Manual de Emacs puede ser consultado usando el comando <tt>info</tt> ya sea en una terminal de sesión bajo sistemas operativos GNU y Unix, o en Emacs, escribiendo <tt>M-x info RET</tt> (esto quiere decir Meta- o ESC x, la palabra "info", seguido de la tecla return), o escribiendo <tt>C-h i</tt> (eso es Control-h seguido de la i).
+
+http://www.gnu.org/software/emacs/manual/html_node/index.html
+
+http://www.rpublica.net/emacs/emacs.html
+
+Si desea extender Emacs, puede hacerlo mediante EmacsLisp, o Elisp para abreviar. Puede aprender lo básico de la programación en Elisp leyendo la IntroducciónAEmacsLisp, y asi mismo se encuentra disponible un manual de referencia de Elisp en ReferenciaEmacsLisp.
+
+http://www.gnu.org/software/emacs/elisp-manual/html_node/index.html
+
+Emacs viene con un archivo, <code>refcard.tex</code> (y <code>refcard.ps</code> en formato <nowiki>PostScript</nowiki>), que contiene la mayoría de secuencias de teclado para realizar edición básica. En todo caso, Emacs es conocido como el editor "auto-documentable", así que mientras que el <i>refcard</i> puede ser útil, uno debe aprender a hacer uso de <code>info</code> o <code>C-h i</code> para la mayoría de características complicadas de este editor. Si no tiene acceso a <nowiki>TeX</nowiki> o a algún tipo de intérprete <nowiki>PostScript</nowiki> como <nowiki>GhostScript</nowiki>, entonces puede encontrar una versión PDF de este documento, la tarjeta de XEmacs, y de la CalculadoraDeEscritorioAvanzada en http://refcards.com/ .
+
+Hay también un libro en línea llamado TheCraftOfTextEditing por CraigFinseth que describe cómo operan los editores internamente, y usa Emacs para muchos de sus ejemplos.
+
+----
+CategoríaAyuda

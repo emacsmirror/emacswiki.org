@@ -1,0 +1,21 @@
+[[ERC]] is now included in Emacs! [http://article.gmane.org/gmane.emacs.erc.general/750]
+
+Related RMS quotes:
+
+: I would rather not put two IRC clients in Emacs.  One is enough. -- RichardStallman
+[http://lists.gnu.org/archive/html/emacs-devel/2002-08/msg00305.html]
+
+But later, when somebody asked how it can be desirable to have two IRC packages but not two thumbnail packages, he said:
+
+: Because the details of the situation are different.  rcirc and ERC cater to very different groups of users, who want very different things.  We don't see how any one program could be good for all of them.
+
+: By contrast, thumbs and tumme do pretty much the same thing. -- RichardStallman [http://article.gmane.org/gmane.emacs.devel/49771]
+
+[new]
+Congratulations!  :) -- AlexSchroeder
+
+[new]
+Here as well ! But I am asking myself why there are now two IRC clients in the standard GNU Emacs distribution though -- XavierMaillard
+
+[new]
+You can read mail using Rmail, MH-E, and Gnus.  You can edit Perl in perl-mode and cperl-mode...  Many things come in several different approaches in Emacs. -- AlexSchroeder

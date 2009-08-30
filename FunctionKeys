@@ -1,0 +1,11 @@
+Binding your F1...F12 keys can be useful.
+
+See also DedicatedKeys.
+
+[new]
+I bind F12 to compile, it makes a nifty mini-shell for running various utilities.
+[new]
+Especially grep like things.
+
+----
+CategoryKeys

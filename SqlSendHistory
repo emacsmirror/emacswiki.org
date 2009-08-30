@@ -1,0 +1,21 @@
+When you are using SqlMode, you can send text from your SQL buffer to your SQLi buffer.  This text is usually not added to the history of SQL statements in the SQLi buffer.  If you want that, add the following piece of advice to your .emacs file:
+
+    (defadvice sql-send-region (after sql-store-in-history)
+      "The region sent to the SQLi process is also stored in the history."
+      (let ((history (buffer-substring-no-properties start end)))
+        (save-excursion
+          (set-buffer sql-buffer)
+          (message history)
+          (if (and (funcall comint-input-filter history)
+                   (or (null comint-input-ignoredups)
+                       (not (ring-p comint-input-ring))
+                       (ring-empty-p comint-input-ring)
+                       (not (string-equal (ring-ref comint-input-ring 0)
+                                          history))))
+              (ring-insert comint-input-ring history))
+          (setq comint-save-input-ring-index comint-input-ring-index)
+          (setq comint-input-ring-index nil))))
+    (ad-activate 'sql-send-region)
+
+----
+CategorySql

@@ -1,0 +1,131 @@
+This function automatically fills your commit logs in VC. You can call ##log-edit-fill## when you are in a ##log-edit-mode## buffer, and it will fill all the contents as if you were iterating over the changes shown in the diff file (##vc-diff##). As the code uses the already existent ##log-edit-insert-changelog-entries##, ##log-edit-fill## will benefit from any improvements in it.
+
+This code is inspired on what i read in http://stackoverflow.com/questions/826155/emacs-is-there-a-way-to-generate-a-skeleton-changelog-from-diff plus the function in VcAddLogEntries.
+
+Any comments and feedback are welcome (see //Comments// section).
+
+
+== Configuration ==
+
+To use it, simply add this to your initialization file:
+
+    (setq log-edit-fill-full t)
+    (setq log-edit-fill-change-log-no-update t)
+    (setq log-edit-fill-show-diff t)
+    (add-hook 'log-edit-mode-hook
+              (lambda ()
+                (define-key log-edit-mode-map "\C-c\C-A" 'log-edit-fill)
+                (define-key log-edit-mode-map "\C-n" 'log-edit-fill-next)
+                (define-key log-edit-mode-map "\C-p" 'log-edit-fill-prev)
+                ))
+
+
+== Code ==
+
+And now onto the code:
+
+    (defcustom log-edit-fill-full nil
+      "If non-nil, insert changelog messages as-is.
+    Otherwise, changes are inserted with `log-edit-insert-changelog'."
+      :group 'log-edit
+      :type 'boolean)
+    
+    (defcustom log-edit-fill-change-log-no-update nil
+      "If non-nil, immediatly close changelog buffer without writing.
+    This is useful if you do not want to maintain any changelog file with your
+    commits."
+      :group 'log-edit
+      :type 'boolean)
+    
+    (defcustom log-edit-fill-show-diff nil
+      "If non-nil, show differences to commit in other window."
+      :group 'log-edit
+      :type 'boolean)
+    
+    (defun log-edit-fill ()
+      "Fill the log message with skeletal contents based on the changes."
+      (interactive)
+      ;; Generate change log
+      (save-window-excursion
+        (log-edit-show-diff)
+        (diff-add-change-log-entries-other-window)
+        )
+      ;; Insert contents
+      (if log-edit-fill-full
+          (save-window-excursion
+            (switch-to-buffer (change-log-name))
+            (copy-to-buffer "*VC-log*" (buffer-end -1) (buffer-end 1))
+            ;; Re-format text
+            (switch-to-buffer "*VC-log*")
+            (kill-line 2)
+            (while (re-search-forward "^[\t]+" nil t)
+              (replace-match "" nil nil)
+              )
+            )
+        (log-edit-insert-changelog)
+        )
+      ;; Delete change log buffer
+      (if log-edit-fill-change-log-no-update
+          (save-window-excursion
+            (switch-to-buffer (change-log-name))
+            ;; Hopefully enough... otherwise will prompt when killing buffer
+            (undo-only 9999)
+            (kill-buffer)
+            )
+        )
+      ;; Show diff
+      (if log-edit-fill-show-diff
+          (progn
+            (display-buffer "*vc-diff*")
+            (with-selected-window (get-buffer-window "*vc-diff*")
+              (end-of-buffer)
+              )
+            )
+        )
+      ;; Reposition cursor to first entry
+      (beginning-of-buffer)
+      (log-edit-fill-next)
+      )
+    
+    (defun log-edit-fill-done ()
+      "Actions to perform when finishing a log file."
+      (if log-edit-fill-show-diff
+          (delete-windows-on "*vc-diff*" t)
+        )
+      )
+    (add-hook 'log-edit-done-hook 'log-edit-fill-done)
+    
+    (defun log-edit-fill-next ()
+      "Jump to next commit log placeholder."
+      (interactive)
+      (re-search-forward ": ")
+      (if log-edit-fill-show-diff
+          (with-selected-window (get-buffer-window "*vc-diff*") (diff-hunk-prev))
+        )
+      )
+    
+    (defun log-edit-fill-prev ()
+      "Jump to previous commit log placeholder."
+      (interactive)
+      (move-beginning-of-line nil)
+      (re-search-backward ": ")
+      (move-end-of-line nil)
+      (if log-edit-fill-show-diff
+          (with-selected-window (get-buffer-window "*vc-diff*") (diff-hunk-next))
+        )
+      )
+
+
+== ToDo ==
+
+Tried to add ##log-edit-fill## into ##log-edit-mode-hook##, but appears ##log-edit-show-diff## is still not available at that precise moment.
+
+Navigation commands can be renamed to something more general (e.g. ##log-edit-next-entry##).
+
+Navigating through the diff chunks (when navigating commit entries with ##log-edit-fill-show-diff## active) is pretty fragile, as it simply moves through chunks without knowing on which commit entry you are.
+
+== Comments ==
+
+[new:XavierMaillard:2009-06-04 05:11 UTC] although it sounds interesting and cool, I am pessmistic in its possibilities; With new VC, the rule is: commit small, commit often which in this regard discard the usefulness of this code, doesn't it ? -- XavierMaillard
+----
+CategoryVersionControl

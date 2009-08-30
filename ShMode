@@ -1,0 +1,33 @@
+Shell Script mode, `sh-mode', is the major mode for editing Unix and GNU/Linux shell script code.  It was originally authored by DanielPfeiffer
+
+It supports several shell variants, including ##bash##, ##csh##, ##ksh## and ##zsh##, as well as plain Bourne shell, ##sh##.
+
+* CVS:sh-script.el
+
+See ShellMode, for using the shell interactively.
+
+See DosMode, for editing Dos scripts (batch files).
+
+== Icicles Enhancements to Shell Script Mode ==
+
+In Shell Script mode, command `complete-tag' is remapped to `comint-dynamic-complete', so the latter is bound to the keys that would normally be bound to the former. This is the vanilla Emacs behavior.
+
+Icicle mode remaps `comint-dynamic-complete' (hence the same keys) in Shell Script mode to a similar command that uses [[Icicles]] [[completion]] whenever there are multiple completion candidates. This means that you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
+
+
+== Other Extensions to Shell Script Mode ==
+
+* ShAutoconf -- An autoconf flavour for ##sh-mode## as an alternative to AutoconfMode
+
+[new]
+WishList item: There should be a manner to send commands to an inferior ShellMode buffer.
+
+[new]
+It's X-mas. Your wish has become true! Try
+
+  (process-send-string (current-buffer) "echo Merry X-mas!\n")
+[new]
+Thanks.  And happy Christmas to you!
+
+----
+CategoryShell

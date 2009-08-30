@@ -1,0 +1,47 @@
+This is one of the ways to change foreground and background colors.  See 
+HowtoChangeFrameColors for others.
+
+You can use <code>M-x set-foreground-color</code> and <code>M-x set-background-color</code> interactively to set the colors for the selected frame.
+
+If you use these in your .emacs file, the colors will only be changed for the first frame.
+
+Sample:
+
+ (set-foreground-color "white")
+ (set-background-color "blue")
+
+Note that the colors must be strings -- and there must be a mapping from the
+name to a RGB value somewhere on your system.  One of these places is typically
+the /usr/X11/include/rgb.txt file.  Instead of naming the colors, you can also
+use the RGB values directly:
+
+ (set-foreground-color "#FFF")
+ (set-background-color "#0000FF")
+
+These RGB values cannot be entered interactively, because the interactive input
+checks wether the names are defined.  The RGB values can have 3, 6, or 9 hex digits.
+
+[new:DrewAdams:2005-01-04 15:51 UTC]
+1. To enter RGB values interactively, just use `<code>M-: (set-background-color "000000FFF")</code>', or whatever.
+
+2. To find a color interactively, try ColorPalette. You can also use the color palette to analyze color components in color models RGB and HSV or to convert between them.
+
+3. See library '''Lisp:doremi-frm.el''' for commands to convert and tweak colors:
+
+* `'''<code>doremi-color-name-to-RGB</code>'''' -- Return the hexadecimal RGB code for a given color name. Provides [[Completion]] based on all existing color names.
+
+* `'''<code>doremi-increment-color-component</code>'''' -- Increment any component (red, green, blue, hue, saturation, value) of a given color. This returns another color that is redder, greener,..., or brighter than a given color by some amount.
+
+4. See library '''Lisp:hexrgb.el''' for functions to do the following:
+
+* convert between decimal and hex RGB values
+* convert between RGB and HSV (hue, saturation, value) component values
+* increment hex RGB color specs such as <code>#FFAD39C40A16</code>
+
+5. You can set foreground and background [[Face]] color interactively by incrementing/decrementing the current color components (RGB, HSV, or CMY: cyan, magenta, yellow). You can do that using the arrow keys or mouse wheel with library '''Lisp:doremi-frm.el''', commands `doremi-face-bg-rgb' and `doremi-face-fg-rgb'. Just hold down an arrow key to continue modifying the color; stop when you get the face color you like -- WYSIWYG. See '''DoReMi'''.
+
+6. At first <someone> misread the statement above to mean that "there must be a mapping" between a name and an RGB value in order for you to use a particular RGB value, which is incorrect: any hex RGB values can be used. The statement above is, however, correct: in order to use a given ''name'', that name must map to RGB.
+
+
+----
+CategoryFaces CategoryFrames

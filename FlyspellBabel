@@ -1,0 +1,13 @@
+flyspell-babel.el -- Switch flyspell language according to LaTeX
+                     Babel commands
+
+From the commentary:
+
+Flyspell is an Emacs package that highlights misspelled words as you type; Babel is the standard mechanism for switching languages in LaTeX.  There are a number of Emacs packages available that will try to guess the current language of a buffer or part of a buffer, and make flyspell switch to a different dictionary; but I didn't find one that used the explicit language-switching commands available in a LaTeX file for this purpose.  This file makes flyspell use the correct dictionary for the language used in each part of a LaTeX file.  Version 2.0 is much faster than 1.0.
+
+* http://www.dur.ac.uk/p.j.heslin/Software/Emacs/
+
+--PeterHeslin
+
+----
+LaTeX

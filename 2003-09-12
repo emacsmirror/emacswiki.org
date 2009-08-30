@@ -1,0 +1,18 @@
+FrankSchmitt started a thread on emacs-devel called "May I publish a Windows Installer for GNU Emacs?"  I always thought installation of Emacs on Windows to be trivial.  Just unpack the archive, start addpm.exe, start Emacs.  Works. -- AlexSchroeder
+
+Even though it is extremely easy to install Emacs it might have been cool to have a setup-program which:
+
+* optionally downloaded the latest version from ftp.gnu.org
+* created a HOME directory and environment variable
+* installed a basic .emacs file, maybe the user could choose among a couple of different ones:
+** for coding purposes
+** for other purposes
+** etc...
+* runs addpm.exe (or optionally does what it already does, eneter registry data and adding start menu item)
+* there is a project where you can install a .emacs file that asks the user if he wants to do X or Y, maybe the same questions could be incorporated in a installation program?
+
+Or whatever... :)
+
+-- MathiasDahl, having no problems installing emacs...
+
+Started the Emacs community blog...  ;) -- AlexSchroeder

@@ -1,0 +1,37 @@
+: just trying to wrestle meme-dominance from the language-headz on this channel!
+:: kensanata on #emacs
+
+Click on the header to list all pages discussing alternative extension languages.  Emacs and XEmacs are the most popular Lisp engines.  As new interpreted languages develop, however, EmacsLisp need not remain the only choice.  See ExtensionLanguageAdvocacy for some ranting.  ;)
+
+For an interesting view about extension languages, take a view of
+[http://www.advogato.org/article/550.html#12 
+Comparing Different Strategies for Adding Scripting to an Application], especially the last comment.
+
+* ErlangEmacs -- uses Erlang
+* GuileEmacs -- uses Guile (Scheme) and Lisp
+* JavaEmacs -- implemented in Kawa, thus uses Scheme and Java
+* PyMacs -- use Python in an external process
+* EmacsLispForRuby -- (el4r) use Ruby in an external process
+* EmacsEpl -- the Perl module Emacs::EPL to use Perl in an external process
+** PerlMacs -- uses Perl and Lisp (superceded by EPL)
+* CommonLispEmacs -- uses CommonLisp (not yet usable)
+* EmacsCommonLisp -- an EmacsLisp library that makes GNU Emacs and XEmacs understand CommonLisp
+* EdWin -- uses scheme and is written in MitSlashGnuScheme
+* EmacsObjectOrientedProgrammingSystem -- implements a Smalltalk-80-like language in GNU EmacsLisp
+* [[Zile]] -- uses Zile Lisp
+
+Not Emacs but what can we say:
+
+* TeXmacs -- uses Guile (Scheme)
+* EfunsEditor -- a small text editor, entirely written in ObjectiveCaml
+* MicroEmacs -- also small, Linus uses it, it does have a proprietary extension language
+
+See also EmacsImplementations.
+
+----
+
+Perhaps a section on AddingExtensionLanguages would be good?
+
+----
+CategoryCode
+

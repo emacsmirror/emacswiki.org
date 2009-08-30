@@ -1,0 +1,42 @@
+License let's you choose a licence to copyright your file by inserting the terms in the buffer you choose.
+
+== Downloading ==
+
+* http://www.marcelotoledo.org/stuff/license/latest/license.el
+
+== Installing ==
+
+To install, you just need to load it, an option is:
+
+    (load-library "~/.emacs-dir/license.el")
+
+JorgenSchaefer and I recommends the following setup:
+
+    (setq comment-style 'extra-line)
+    (add-hook 'scheme-mode-hook
+        (lambda ()
+            (set (make-local-variable 'comment-add) 1)))
+
+
+== Using ==
+
+If you run license like this: 
+
+    M-x license
+
+It will insert the license described in the 'license-default' variable, the default value is GPL. If you would like to use another license try:
+
+    C-u M-x license
+
+It will prompt you for the license you want to use, you may see the available options by hitting tab.
+
+If you would like to modify the default license, try:
+
+    (setq license-default "license")
+
+== Some limits ==
+
+There is no LGPL or GPL 3 in license.el, I added them in my copy and going to email to the Marcelo for a new release after some tests
+
+----
+CategoryModes EmacsLispList MarceloToledo

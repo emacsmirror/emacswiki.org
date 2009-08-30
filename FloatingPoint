@@ -1,0 +1,48 @@
+Floating-point is a way to represent decimal numbers. It is what Emacs uses when you write 5.0 instead of 5, or other decimals like 5.3.
+
+You can read an introduction to floating points at the [http://www.gnu.org/software/emacs/elisp/html_node/Float-Basics.html#Float-Basics  Emacs manual].
+
+==Unexpected results==
+
+One can obtain intriguing results when dealing with floating numbers. For instance, even though <code>(+ 3.1 0.1)</code> does return the expected result 3.2, the code <code>(+ 3.2 0.1)</code> returns 3.3000000000000003. Furthermore, <code>(= 3.3 (+ 3.2 0.1))</code> returns <code>nil</code>, and that means that 3.2 + 0.1 is not equal to 3.3 when working with floating-point arithmetic.  This straightforward example shows why it's bad practice to test floating-point numbers for equality.
+
+While it's better the organize the code in such a way that such equality tests are unnecessary, one can resort to fuzzy arithmetic in such cases.  Basically one tests equality of two floating-point numbers within a given tolerance.
+See [http://www.eskimo.com/~seldon/fuzz.el fuzz.el] for code implementing fuzzy tests in Emacs.
+
+Note that the tolerance is bound by the way floating-point numbers are represented in a specific computer processor.
+
+==Precision==
+
+Question: how to get more precision than 1e-14? For instance, in 3.3000000000000003 the error is relatively big if you require 14 decimal digits. If precision were 1e-80, the result could be 3.300000000...{80 zeros here}...00003 and could be easily trimmed off. -- DCL
+
+: Answer:  See above and also the reference bellow ("What every Computer Scientist should know...").
+:: Not an answer. One) The document is interesting+important but so long that I cannot see the answer in O(1) time :-). Two) Avoiding using float numbers is not always possible: not always you are comparing them, but sometimes you need the result. For instance, (+ 0.14285700113456 0.111111) seems to be 0.25396800113456003, but that's wrong! The last 3 decimals are spurious, and therefore I would not like it for instance in a public document produced by Emacs. So: how can you calculate in Emacs with more precision than 1e-14? -- DCL
+::: If you want the short answer:  You can't.  At least not with '+, the built-in float type and in O(1).  [[Calc]], see below, offers arbitrary precision, though.  -- [[nschum]]
+
+==How to use the arbitrary precision from calc==
+Make sure you have [[Calc]] loaded. It is part of Emacs.
+
+===Interactively===
+You can use the interactive mode to do calculations without precision loss. For instance: <code>M-x calc RET 3.2 RET 0.1 RET +</code> is <code>3.3</code>, not the <code>3.3000000000000003</code> from before.
+
+You can change the precision with the „p“ key followed by a number. For instance: <code>M-x calc RET p 50 RET 1 RET 7 /</code> is <code>0.14285714285714285714285714285714285714285714285714</code>.
+
+===From LISP programs===
+Use this to change the precision: <code>(calc-eval '(calc-precision 20) 'eval)</code>
+
+And this to compute the result of an expression: <code>(calc-eval "1/7")</code>
+
+So, if you need to avoid precision loss, substitute your <code>(+ 3.2 0.1)</code> by <code>(calc-eval "3.2+0.1")</code>
+
+==Consider changing also calc's float display format==
+You may find that, even with 50-digits precision, calc still displays (calc-eval "0.008+10.0^-3") as "9e-3". If you were expecting to see the 50 decimal numbers, maybe you want to change the display format from the default to „fixed“:
+* Either by using „d f 50“ in interactive mode. (Try also: „d n“ to return to what calc calls „normal“)
+* or by using <code>(setq calc-float-format '(fix 50))  (setq calc-full-float-format '(fix 50))</code> in Lisp
+
+This will make calc show <code>"0.00900000000000000000000000000000000000000000000000"</code> instead of "9e-3". Remember: this is <em>display</em> format (not calculation precision), so don't ask for an excessive number of decimals!
+
+==See also==
+* [[NotANumber]]
+* working with big numbers: see functions *-bignum provided by [[Calc]]
+* [http://docs.sun.com/source/806-3568/ncg_goldberg.html What Every Computer Scientist Should Know About Floating-Point Arithmetic]
+** (warning: ~70 pages full of formulae). Should ''all'' computer scientists really know so much? :-)

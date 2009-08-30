@@ -1,0 +1,3 @@
+The original author of [[VC]] mode, EricRaymond, announced a major rewrite of VC mode with the principal goal "to change VC so that its primitive operations (notably checkin/commit) take sets of files as arguments rather than single files".  The necessary changes to the VC backend have already been added to EmacsFromCVS as a "felicitous mistake".  The new frontend is being asked to be reviewed, however.[http://lists.gnu.org/archive/html/emacs-devel/2007-10/msg00097.html]
+
+Find a copy of the new frontend at Lisp:vc.el.

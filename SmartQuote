@@ -1,0 +1,53 @@
+Originally by KragenJavierSitaker.
+
+    ;; Thanks to bpt (Brian Templeton) and snogglethorpe (Miles Bader) for
+    ;; help with this.
+    (defun momentary-highlight (beg end &optional delay face)
+      "Momentarily display a highlight overlay until a delay, or there's input.
+
+      Highlights the chars from BEG to END until the next event is
+      input, or until DELAY seconds expire.  By default, uses the
+      face \"highlight\", but you can override this with FACE.
+
+      "
+      (save-excursion
+        (let ((overlay (make-overlay beg end)))
+          (unwind-protect
+              (progn
+                (overlay-put overlay 'face (or face 'highlight))
+                ;; code from momentary-string-display
+                (if (<= (window-end nil t) end)
+                    (recenter (/ (window-height) 2)))
+                (sit-for (or delay 1)))
+            (delete-overlay overlay)))))
+
+
+    (defun smartquote ()
+      "Turn the previous '\"' character into either '“' or '”', based on context.
+
+      This highlights the area around the changed character so you
+      can see if it screwed up.
+      "
+      (interactive)
+      (save-excursion
+        (search-backward "\"")
+        (cond ((bobp) (replace-match "“"))
+              ((looking-at ".\\s-")         ; before whitespace, close
+               (delete-char 1) (insert "”")) 
+              ((looking-back "\\s-")        ; after whitespace, open
+               (delete-char 1) (insert "“"))
+              ((looking-at ".\\sw")         ; before a word, open (e.g. '("hi")')
+               (delete-char 1) (insert "“"))
+              ((looking-back "\\sw")        ; after a word, close
+               (delete-char 1) (insert "”"))
+              ((looking-back "\\s(")        ; after an open paren, open quote
+               (delete-char 1) (insert "“"))
+              ((looking-at ".\\s)")         ; before a close paren, close quote
+               (delete-char 1) (insert "”"))
+              (t (delete-char 1) (insert "”"))) ; default: close
+        ;; Without this momentary-highlight, sometimes this command
+        ;; replaces "'s that are off the top of the screen, and even when
+        ;; they're on the screen, it's easy to not notice which one they
+        ;; are.
+        (momentary-highlight (- (point) 2) (+ 1 (point)))))
+    (global-set-key [(meta ?\")] 'smartquote)

@@ -1,0 +1,162 @@
+==What do C++ programmers really need when programming?==
+
+In brief:
+
+# When I am calling a member function, or referring to a member
+  variable, I need:
+## quick confirmation of its name;
+## quick typing of its name, with some sort of automatic [[Completion]];
+# When I am calling a function: I need a reminder of its arguments,
+  and more precisely about their names, type and order.
+# When I am reading someone else's code:
+## I need to rapidly jump to the implementation of a function, and get
+   back.
+## I need to rapidly know the type of a variable.
+## I need to have a tree view of the classes, which shows the
+   inheritance relations.
+## When calling a function: a quick unobtrusive display of any doc comments for it
+
+These needs are especially important when calling library code written by somone else and stored in include/ and lib/ outside my project.
+
+Let us explain those needs one by one.
+
+===Quick confirmation/reminder of a member's name===
+
+Suppose I write the name of an object and then the dot:
+
+  my_class my_object;
+  my_object.
+
+Of course, now I will probably want to write the name of a member
+function (or variable) declared as public in class my_class.
+
+Now there are some main things to point out:
+
+<b>
+Usually, <em>I can't remember</em> the names of the members of
+my_class. For instance, I never remember whether it is string::size()
+or string::length(). :-)</b>
+
+<b>Let me repeat that:<em>I do not usually know the name of the member I
+am calling</em>. I <em>do</em> know its semantics, but I don't know
+its <em>name</em>. Very often, I <em>presume</em> to know the name,
+but I am <em>not sure</em> of that name, and I need a confirmation.
+</b>
+
+Of course :
+
+* I don't want to open the file containing the declaration of the
+class:-);
+* I don't want to compile the file just to know if the member's name
+is correct. 
+
+I need some kind of assistance: a tool which knows my code better than
+me, and which can promptly remind me the names of the class members.
+
+Notice there are two distinct situations where I need such a reminder:
+
+# (Rarely) I have no idea of the name of the method I want to call;
+# (Often) I seem to recall its name, but I need a confirmation.
+
+----
+
+A C++ programmer which uses such a reminder feature essentially
+repeats the following process thousands of times:
+
+0. Precondition: I have typed the name of the object, then the dot,
+   but <b>I can't remember</b> the name of the member I must write; I
+   just <em>presume</em> it is called "size()", but it might as weel
+   be "length()". I need a confirmation.
+
+1. I press some key to <b>get the list</b> of possible member names;
+   The list should appear in a separate window (without hiding the
+   source code).
+
+2. I <em>read</em> the list and <b>locate the name</b> I had in
+   mind. If it's not there, I find the correct one.
+
+3. (Now I <b>know</b> the name I want to type:) 
+: <b>Type the name</b>---possibly with automatic completion.
+
+
+Actually, the above scheme is too optimistic: point 2 is often
+impossible to do, because the list is often too long to be read!  For
+example, take std::string: there are a hundred items (counting
+functions, variables, typdefs, enums). So the above process should be
+rewritten as follows (notice that point 2 has been expanded into two
+points: 2.1 and 2.2):
+
+0. Precondition: I have typed the name of the object, then the dot,
+   but <b>I can't remember</b> the name of the member I must write; I
+   just <em>presume</em> it is called "size()", but it might as weel
+   be "length()". I need a confirmation.
+
+1. I press some key to <b>get the list</b> of possible member names;
+   The list should appear in a separate window (without hiding the
+   source code).
+
+2.1  while (the list is too long to be read):
+
+: I tentatively type a letter, e.g. the letter you PRESUME to be
+: the first (next) letter of the name you want to locate.  
+
+: As soon as I type that letter, the list of possible
+: completions <em>is automatically refreshed</em>.
+
+2.2.   (Now the list is narrow enough for you to read, and I have
+       written zero or more letters of the member's name).
+
+: I glance through the list and try to LOCATE the name of the
+       member you want to call (e.g. "size()").
+
+: 2.2.1  If the name is there:
+                  
+:: now I know it. goto point 3.
+
+: 2.2.2  If I cannot find the name:
+           
+:: I delete the letter(s) you typed (if any);
+:: I make another guess about the name;
+:: I go back to point 1.
+
+3. (Now I know the name I want to type, and the list displays only a
+   few members)
+: I type the name by hand, or press the arrow keys until I select the
+: right member in the list. Press enter to accept.
+
+==Reminder of a function's arguments==
+
+After typing the function name and open parenthesis, show the list of arguments (name and type). In C++ there may be multiple definitions with the same function name (overloading), so it would be necessary to show all possible matches.
+
+==Jumping to the implementation of a function==
+
+* ffap Find File At Point is useful for popping open #include files.
+* Run etags to build a tags 'database'. Better yet, get Exhuberant CTags from Sourceforge.net
+
+==Knowing the type of a variable==
+
+To be written.
+
+==Having a tree which shows the inheritance between classes==
+
+* OObrowse is an old app which did this in Emacs, but is obsolete.
+* Take a look at EmacsCodeBrowser.
+
+==List all referers of a member function==
+
+For C++ and other languages that have the concept of a member function: be able to find and display in some new window or buffer all callers of the member function under point. Note that this should <b>not</b> list all member functions of that name, so it should be able to sense the context.  Oh, and it must not get confused by preprocessing directives and macros!!
+
+==Resilient against code changes==
+
+When I change a file and save it, and then want to locate a symbol (class, type, variable, member function, etc. etc.) don't make me wait for the code parser/scanner thingy to reparse every file in the project.  See CScopeAndEmacs for info on cscope that does allow locating symbols in large filesets, but forces you to wait for it to rebuild its <b>entire</b> symbol database each time it detects a change to a single file. 
+
+==Fast==
+
+Should be significantly faster than grepping the entire source code tree.  Threshold of waiting should be < 1 second.  For initial parsing of the tree, that would of course take longer, but once it is done, lookup operations should not take longer than 1 second to find symbols.
+
+==Work on ultra-large-scale software trees==
+
+5 million lines is a start.  
+
+----
+HowSemanticFulfillsThoseNeeds

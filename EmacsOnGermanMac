@@ -1,0 +1,97 @@
+== Emacs in Terminal.app ==
+
+=== Konfiguration der Shell ===
+
+deutsche Sprache und den gewünschten Mime-Zeichensatz in ~/.zprofile bzw. ~/.bash_profile festlegen
+
+  LANG=de_DE.ISO8859-1
+  MM_CHARSET=ISO-8859-1
+  export LANG MM_CHARSET
+
+oder auch in der ~/.cshrc
+
+  setenv LANG de_DE.ISO8859-1
+  setenv MM_CHARSET ISO-8859-1
+
+Leider lesen bash und andere Shells die LANG Umgebungsvariable nur einmal während des Starts ein. Änderungen die danach vorgenommen werden, sind wirkungslos. Startet man eine Shell durch Terminal.app, dann werden die Umgebungsvariablen zwar korrekt gesetzt, aber die Lokalisierung ist immer noch die durch die Umgebungsvarible des Parent-Prozesses vererbte. Die korrekte Lokalisierung im gesamten Bereich der aktuellen Benutzersitzung einzustellen ist möglich, indem man im Verzeichnis "~/.!MacOSX/" die Datei "environment.plist" erstellt, welche die gewünschten Default-Werte der Umgebungsvariablen enthält. Beispiel:
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    <plist version="1.0">
+    <dict>
+            <key>LANG</key>
+            <string>de_DE</string>
+    </dict>
+    </plist>
+
+
+=== Umlaute in Emacs eingeben ===
+
+wir bereiten Emacs auf Latin1 Zeichen vor:
+
+  (set-keyboard-coding-system 'iso-latin-1)
+
+Danach stellen wir das Terminal''''''Emulations Programm so ein, dass es Emacs die Zeichen auch genießbar serviert
+
+Terminal -> Fenstereinstellungen -> Emulation
+[ ] Nicht-ASCII-Zeichen in Escape-Sequenz umwandeln (demarkieren)
+
+ein Workaround Umlaute einzugeben, ohne das Terminal.app umzustellen wäre das vorinstallierteGNU Screen: `C-a C-v "a' für ein "ä" oder `C-a C-v "s' für "ß".
+(siehe `info screen -O "Virtual Terminal" -O "Digraph"')
+
+
+=== Alt Taste als Meta ===
+
+Terminal -> Fenstereinstellungen -> Tastatur
+[X] Wahltaste als Meta-Taste verwenden (soll heißen markieren)
+
+Eigentlich eine prima Möglichkeit, um nicht vi-like die Escape Taste malträtieren zu müssen. Könnte man zumindestens meinen, dummerweise gehen nämlich nach dem Aktivieren dieser Option die mit Alt angesprochenen Sonderzeichen, insbesondere '@', [', ']', '|', '\', '{' und '}' nicht mehr.
+
+Nun könnte man Emacs wieder in GNU Screen starten um diese Zeichen einzugeben:`C-a C-v' und der ASCII Wert (siehe man ascii) als Oktal-Wert (beginnend mit einer 0) oder als Hex-Wert (beginnend mit 0x). `C-a C-v 0100' ergibt "@", wie auch`C-a C-v 0x40'.
+
+Für Emacs können wir uns aber auch einfach selbst die Tasten belegen, z.B. so:
+
+  (set-keyboard-coding-system 'iso-latin-1)
+
+  (if (eq system-type 'darwin)
+      (if (eq window-system 'mac)
+          (progn
+            (setq mac-keyboard-text-encoding kTextEncodingISOLatin1)
+            ;; Workaround for not having Latin-9 Fonts                            
+            (latin1-display 'latin-9))
+        (if (eq window-system 'nil)
+            (progn
+              ;; "fix" the broken keyboard                                        
+              (global-set-key "\M-l" '(lambda () (interactive) (insert "@")))
+              (global-set-key "\M-5" '(lambda () (interactive) (insert "[")))
+              (global-set-key "\M-6" '(lambda () (interactive) (insert "]")))
+              (global-set-key "\M-7" '(lambda () (interactive) (insert "|")))
+              (global-set-key "\M-/" '(lambda () (interactive) (insert "\\")))
+              (global-set-key "\M-8" '(lambda () (interactive) (insert "{")))
+              (global-set-key "\M-9" '(lambda () (interactive) (insert "}")))
+              (global-set-key "\M-n" '(lambda () (interactive) (insert "~")))
+              ))))
+
+Und für alles weitere auf der Shell, wäre es eine Option immer GNU Screen zu nutzen (was auch sonst sehr zu empfehlen ist) und sich einen Shortcut zu basteln, mit dessen Hilfe die Sonderzeichen eingegeben werden können. Auszug meiner ~/.screenrc
+
+  bindkey "^o" command -c keyhack
+  bind -c keyhack l digraph 0100
+  bind -c keyhack 5 digraph 0133
+  bind -c keyhack 6 digraph 0135
+  bind -c keyhack 7 digraph 0174
+  bind -c keyhack / digraph 0134
+  bind -c keyhack 8 digraph 0173
+  bind -c keyhack 9 digraph 0175
+  bind -c keyhack n digraph 0176
+
+Hier wird nun nach Drücken von "C-o 5" ein '[' eingefügt, mit "C-o n" das Homezeichen/Tilde usw.
+
+Eine andere Möglichkeit wäre, sich mit einem Patch für eine ältere Version von [http://gnufoo.org/ucontrol/ uControl] zu beschäftgen, zu finden hier: http://www.snark.de/mac/keys/#meta
+
+== Allgemein ==
+
+Eine Alternative könnte es aber auch sein, einfach das US Layout zu verwenden und Umlaute mittels dem erwähnten digraph in Screen, sowie mittels M-u (alt-u) in anderen OS X Anwendungen einzugeben. Also zB. 'C-a C-v "a' in Screen oder 'M-u a' im Carbon Emacs und in Safari für jeweils ein "ä".
+
+=== Carbon Emacs ===
+
+Noch eine Alternative: Eine native OSX Anwendung wie CarbonEmacsPackage (http://homepage.mac.com/zenitani/emacs-e.html)

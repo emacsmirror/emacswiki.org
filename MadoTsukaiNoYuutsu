@@ -1,0 +1,27 @@
+
+=== What is this? ===
+
+* http://mayu.sourceforge.net
+
+: It is a generic tool to change key bindings in Windows95/98/Me/NT4.0/2000/XP.
+: It can set up 2-stroke keys.
+: It can assign different key bindings for each window.
+: It can create any modifier keys such as Control.
+: It can create a key to move, maximize, or minimize a window.
+: It can make an edit control emacs-like.
+: It provides a nifty U*IX-like customization function.
+
+=== Discussion ===
+
+Does this really belong here? I don't like to see any little tool that brings a un*x-like behavior or another goodie to MS Windows mentioned on this wiki in a separate page. Maybe one page like EasingThePainOfWindows would be enough to collect them? -- StefanKamphausen
+
+: ''I almost agree, but in the case of this tool and [[XKeymacs]] they both provide ways to make Windows itself more emacs-like. Isn't that what we want really? To make emacs our OS... :) -- MathiasDahl''
+
+These applications/drivers allow you to stay in mental `emacs-mode' even when interacting with inferior processes (such as Mozilla - which I notice i'm using right now...).  Then again, I would like to see EmacsWiki <b>become</b> the EmacsManual (after InfoToWiki is written), and in that case it does seem less appropriate - though not inappropriate (to me). -- PatrickAnderson
+
+=== Experiences ===
+
+Ok, I tried it out. As the big emacs-freak I am, I actually thought this would be fantastic. The result: it drove me CRAZY! Apparently all years living in Windows had trained me to cope with all different keyboard shortcuts in different applications. I do almost everything using the keyboard. Seems my brain is mutaded and has a specific memory area for keyboard shortcut. Tried to override the settings in XKeymacs but in the long run it did not work out very well. I guess I have to wait until Emacs controls everything in windows, with keymaps and all... -- MathiasDahl
+
+----
+[[XKeymacs]]

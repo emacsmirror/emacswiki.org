@@ -1,0 +1,23 @@
+O código fonte de desenvolvimento do Gnus pode ser acedido através do pserver do CVS.  Para isso tens de ter instalado o cvs 1.8 ou superior.
+
+A magia para obter as fontes do Gnus pela primeira vez é esta:
+
+    $ cvs -d :pserver:gnus@cvs.gnus.org:/usr/local/cvsroot login
+    CVS password: gnus
+    $ cvs -d :pserver:gnus@cvs.gnus.org:/usr/local/cvsroot checkout gnus
+
+Para construir e instalar usando o stow:
+
+<pre>
+./configure
+make
+make install prefix=/usr/local/stow/gnus
+cd /usr/local/stow
+stow gnus
+</pre>
+
+----
+Os utilizadores da Debian podem dar uma olhada em CvsDoGnusParaDebian para obterem um pacote Debian de uma imagem diária do Gnus.
+
+----
+CategoryGnus

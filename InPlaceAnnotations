@@ -1,0 +1,76 @@
+With this package you can add annotations to your files without
+modifying them. Each file can have multiple annotations at various
+buffer positions. The annotation texts are not parts of the files,
+they are stored separately.
+
+All annotations are stored in a common file, so searching
+annotations is trivial.
+
+Original author is TamasPatrovics. Current maintainer is XavierMaillard.
+
+Lisp:ipa.el
+
+Lisp:anything-ipa.el is [[Anything]] interface.
+
+== Prettier Annotations ==
+I like overlay which is above the target line. Because default IPA messes the line.
+
+<pre>
+;; REDEFINED!!
+(defun ipa-set-overlay-text (overlay text)
+  (if (string-match ipa-annotation-id-regexp text)
+      (setq text (match-string 2 text)))
+  (save-excursion
+    (beginning-of-line)
+    (overlay-put overlay 'before-string
+                 (if (equal text "")
+                     ""
+                   (propertize (concat "[" text "]\n") 'face ipa-annotation-face)))))
+
+;; REDEFINED!!
+(defun ipa-create-overlay (pos text)
+  (save-excursion
+    (goto-char pos)
+    (setq pos (point-at-bol))
+    (let ((overlay (make-overlay pos pos nil t nil)))
+     (ipa-set-overlay-text overlay text)
+     (push (cons overlay text) ipa-annotations-in-buffer)
+     (ipa-sort-overlays))))
+</pre>
+
+-- [[rubikitch]]
+
+[new:XavierMaillard:2009-02-14 22:33 UTC]
+Thank you. I will check your code and see how I can integrate both
+approach.
+
+== Problem with VisibleLines ==
+InPlaceAnnotations does not work with VisibleLines in some condition. This advice solves the problem.
+<pre>
+(defadvice vertical-motion (around ipa activate)
+  (let ((pos (point)))
+    ad-do-it
+    (when (and (= lines 1) (eq pos (point)))
+      (vertical-motion 2))))
+</pre>
+
+-- [[rubikitch]]
+
+== Annotations on right? ==
+
+I find the inline annotations to be kind of disruptive. I would rather have the
+annotations float to the right of the text, without interfering with the
+movement of point. Is it possible to do something like this:
+
+<pre>
+text
+text
+more text                       [annotation floats here]
+suff here
+</pre>
+
+Where the annotation stays at some (configurable) offset from the rest of the
+text? I looked into modifying it myself, but my overlay- and properties-foo is
+not strong.
+
+-- [[DanielHackney]]

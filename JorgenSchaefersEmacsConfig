@@ -1,0 +1,1561 @@
+;;;
+;; forcer's .emacs -- emacs, this is -*- emacs-lisp -*-
+
+;; i don't use XEmacs.  This file does not work with XEmacs.
+(when (featurep 'xemacs)
+  (error "This .emacs file does not work with XEmacs."))
+
+;; Local elisp files
+(when (file-directory-p "~/.elisp")
+  (add-to-list 'load-path "~/.elisp"))
+
+;; C-h alone doesn't load the source mapping, unless this buffer
+;; exists ;)
+(get-buffer-create " *DOC*")
+(setq source-directory "/home/forcer/data/software/src/emacs/cvs/")
+
+;;;;;;;;;;;;;;;;
+;;; Fix keys ;;;
+;;;;;;;;;;;;;;;;
+
+;; This is mainly for the urxvt here, and a bit for the vt510.
+(mapc (lambda (map)
+        (define-key function-key-map
+          (read-kbd-macro (cadr map))
+          (read-kbd-macro (car map))))
+      '(("<S-tab>"     "M-[ Z")
+        ("<S-up>"      "M-[ a")
+        ("<S-down>"    "M-[ b")
+        ("<S-right>"   "M-[ c")
+        ("<S-left>"    "M-[ d")
+        ("<M-up>"      "ESC M-O A")
+        ("<M-down>"    "ESC M-O B")
+        ("<M-right>"   "ESC M-O C")
+        ("<M-left>"    "ESC M-O D")
+        ("<C-up>"      "M-O a")
+        ("<C-down>"    "M-O b")
+        ("<C-right>"   "M-O c")
+        ("<C-left>"    "M-O d")
+        ("<C-M-up>"    "ESC M-O a")
+        ("<C-M-down>"  "ESC M-O b")
+        ("<C-M-right>" "ESC M-O c")
+        ("<C-M-left>"  "ESC M-O d")
+        ("<M-S-up>"    "ESC M-[ a")
+        ("<M-S-down>"  "ESC M-[ b")
+        ("<M-S-right>" "ESC M-[ c")
+        ("<M-S-left>"  "ESC M-[ d")
+        ))
+
+(mapc (lambda (map)
+        (define-key function-key-map
+          (read-kbd-macro (cadr map))
+          (make-string 1 (decode-char 'ucs (car map)))))
+      '((197 "C-x 8 a A")
+        (229 "C-x 8 a a")
+        ))
+
+;;;;;;;;;;;;;;;;
+;;; Commands ;;;
+;;;;;;;;;;;;;;;;
+
+(global-set-key (kbd "C-x r a") 'fc-add-rectangle)
+(defun fc-add-rectangle (start end)
+  "Add all the lines in the region-rectangle and put the result in the
+kill ring."
+  (interactive "r")
+  (let ((sum 0))
+    (mapc (lambda (line)
+            (string-match "-?[0-9.]+" line)
+            (setq sum (+ sum (string-to-number (match-string 0 line)))))
+          (extract-rectangle start end))
+    (kill-new (number-to-string sum))
+    (message "%s" sum)))
+
+(global-set-key (kbd "C-c e") 'fc-eval-and-replace)
+(defun fc-eval-and-replace ()
+  "Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (prin1 (eval (read (current-kill 0)))
+         (current-buffer)))
+
+(global-set-key (kbd "C-c d") 'fc-insert-date)
+(defun fc-insert-date (prefix)
+  "Insert the current date. With prefix-argument, use ISO format. With
+two prefix arguments, write out the day and month name."
+  (interactive "P")
+  (let ((format (cond
+                 ((not prefix) "%Y-%m-%d")
+                 ((equal prefix '(4)) "%d.%m.%Y")
+                 (t "%A, %d. %B %Y")))
+        (system-time-locale "de_DE"))
+    (insert (format-time-string format))))
+
+(global-set-key (kbd "C-c C-u") 'fc-kill-to-beginning-of-line)
+(defun fc-kill-to-beginning-of-line ()
+  "Kill from the beginning of the line to point."
+  (interactive)
+  (kill-region (point-at-bol)
+               (point)))
+
+;; (setq browse-url-firefox-arguments '("-chrome chrome://conkeror/content"))
+;; (setq browse-url-new-window-flag t
+;;       browse-url-firefox-new-window-is-tab t)
+(defun fc-choose-browser (url &rest args)
+  (interactive "sURL: ")
+  (if (y-or-n-p "Use external browser? ")
+      (browse-url-firefox url)
+    (w3m-browse-url url)))
+
+(defun etherterm ()
+  "Set up emacs for etherterm shortcomings."
+  (interactive)
+  (global-set-key (kbd "C-c SPC") 'lui-track-next-buffer)
+  (global-set-key (kbd "C-z") 'set-mark-command))
+
+(defun lorem ()
+  "Insert a lorem ipsum."
+  (interactive)
+  (insert "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do "
+          "eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad "
+          "minim veniam, quis nostrud exercitation ullamco laboris nisi ut "
+          "aliquip ex ea commodo consequat. Duis aute irure dolor in "
+          "reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla "
+          "pariatur. Excepteur sint occaecat cupidatat non proident, sunt in "
+          "culpa qui officia deserunt mollit anim id est laborum."))
+
+;;; Quick commands for web pages
+
+(defun google (what)
+  "Use google to search for WHAT."
+  (interactive "sSearch: ")
+  (w3m-browse-url (concat "http://www.google.de/search?q="
+                          (w3m-url-encode-string what))))
+
+(defun google-file (file)
+  "Use google to search for a file named FILE."
+  (interactive "sSearch for file: ")
+  (w3m-browse-url
+   (concat "http://www.google.de/search?q="
+           (w3m-url-encode-string
+            (concat "+intitle:\"index+of\" -inurl:htm -inurl:html -inurl:php "
+                    file)))))
+
+(defun google-message-id (message-id)
+  "View MESSAGE-ID in Google Groups."
+  (interactive
+   (list (read-from-minibuffer "Message-ID: "
+                               (let ((url (thing-at-point 'url)))
+                                 (when (string-match "mailto:\\(.*\\)" url)
+                                   (match-string 1 url))))))
+  (when (string-match "<\\(.*\\)>" message-id)
+    (setq message-id (match-string 1 message-id)))
+  (w3m-browse-url (concat "http://www.google.de/groups?selm="
+                          (w3m-url-encode-string message-id))))
+
+(defun s48-doc ()
+  "Browse Riastradh's Scheme 48 documentation."
+  (interactive)
+  (info "~/data/workspace/s48-ref/scheme48-6.info"))
+
+(defun s48-doc-official ()
+  "Browse the Scheme 48 documentation."
+  (interactive)
+  (browse-url "file:///usr/share/doc/scheme48-doc/html/manual.html"))
+
+(defun scsh-doc ()
+  "Browse the scsh documentation."
+  (interactive)
+  (browse-url "file:///usr/share/doc/scsh-0.6-doc/scsh-manual/html/man-Z-H-1.html"))
+
+(defun scheme-logs ()
+  "Browse #scheme logs."
+  (interactive)
+  (browse-url (format-time-string "http://meme.b9.com/clog/scheme/%y.%m.%d")))
+
+(defun tex-doc ()
+  (interactive)
+  (browse-url "file:///usr/share/doc/tetex-doc/help/Catalogue/brief.html"))
+
+(defun leo (word)
+  (interactive "sWord: ")
+  (browse-url (format "http://dict.leo.org/?search=%s" word)))
+
+(defun rfc (num)
+  "Show RFC NUM in a buffer."
+  (interactive "nRFC (0 for index): ")
+  (let ((url (if (zerop num)
+                 "http://www.ietf.org/iesg/1rfc_index.txt"
+               (format "http://www.ietf.org/rfc/rfc%i.txt" num)))
+        (buf (get-buffer-create "*RFC*")))
+    (with-current-buffer buf
+      (let ((inhibit-read-only t))
+        (delete-region (point-min) (point-max))
+        (let ((proc (start-process "wget" buf "wget" "-q" "-O" "-" url)))
+          (set-process-sentinel proc 'rfc-sentinel))
+        (message "Getting RFC %i..." num)))))
+
+(defun rfc-sentinel (proc event)
+  "Sentinel for `rfc'."
+  (with-current-buffer (process-buffer proc)
+    (goto-char (point-min))
+    (view-mode 1)
+    (when (fboundp 'rfcview-mode)
+      (rfcview-mode)))
+  (display-buffer (process-buffer proc)))
+
+;;;;;;;;;;;;;;;;;;;;;
+;;; Global config ;;;
+;;;;;;;;;;;;;;;;;;;;;
+
+;; we speak utf-8 here
+(prefer-coding-system 'latin-1)
+(if (not (assoc "UTF-8" language-info-alist))
+    (set-language-environment "latin-1")
+  (set-language-environment "utf-8")
+  (set-keyboard-coding-system 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8))
+
+;; And quotation marks are NOT parens!
+(modify-syntax-entry ?\» " ")
+(modify-syntax-entry ?\« " ")
+
+;; get rid of yes-or-no questions - y or n is enough
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(setq-default
+ ;; we usually want a final newline...
+ require-final-newline 'ask
+ ;; No, please, no tabs in my programs!
+ indent-tabs-mode nil
+ ;; If you don't know, just give me text-mode
+ default-major-mode 'text-mode
+ ;; I don't like emacs destroying my window setup
+ even-window-heights nil
+ ;; Same here
+ resize-mini-windows nil
+ ;; Two spaces after a colon is wrong[tm] in german.  There's even a
+ ;; DIN for that... (DIN 5008)
+ sentence-end-double-space nil
+ ;; No am/pm here
+ display-time-24hr-format t
+ ;; Use w3m for URLs
+ browse-url-browser-function 'fc-choose-browser
+ ;; A tab is 8 spaces is 8 spaces is 8 spaces
+ default-tab-width 8
+ ;; Scrolling is moving the document, not moving my eyes
+ scroll-preserve-screen-position 'keep
+ ;; My email address
+ user-mail-address "forcer@forcix.cx"
+ ;; I kinda know my emacs
+ inhibit-startup-message t
+ ;; context is nicer to read
+ diff-switches "-c"
+ ;; nice comment format
+ comment-style 'extra-line
+ ;; case insensitivity for the masses!
+ case-fold-search t
+ read-file-name-completion-ignore-case t
+ completion-ignore-case t
+ ;; Don't show a cursor in other windows
+ cursor-in-non-selected-windows nil
+ ;; A wide characters ask for a wide cursor
+ x-stretch-cursor t
+ ;; i want a mouse yank to be inserted where the point is, not where i click
+ mouse-yank-at-point t
+ ;; Don't highlight stuff that I can click on all the time. I don't click
+ ;; anyways.
+ mouse-highlight 1
+ )
+
+;; Always update time stamps on writing
+(add-hook 'before-save-hook 'time-stamp)
+
+;; On a windowing system, set colors
+(when window-system
+  (set-foreground-color "white")
+  (set-background-color "black"))
+
+;;; Backup files
+;; Put them in one nice place if possible
+(if (file-directory-p "~/.backup")
+    (setq backup-directory-alist '(("." . "~/.backup")))
+  (message "Directory does not exist: ~/.backup"))
+
+(setq backup-by-copying t    ; Don't delink hardlinks
+      delete-old-versions t  ; Clean up the backups
+      version-control t      ; Use version numbers on backups,
+      kept-new-versions 3    ; keep some new versions
+      kept-old-versions 2)   ; and some old ones, too
+
+;;;;;;;;;;;;;;;;;;;
+;;; Keybindings ;;;
+;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "C-x <up>") 'windmove-up)
+(global-set-key (kbd "C-x <down>") 'windmove-down)
+(global-set-key (kbd "C-x <left>") 'windmove-left)
+(global-set-key (kbd "C-x <right>") 'windmove-right)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+;; Have TAB expand in M-:
+(define-key read-expression-map (kbd "TAB") #'lisp-complete-symbol)
+
+;;;;;;;;;;;;;;;;;;;;
+;;; Global modes ;;;
+;;;;;;;;;;;;;;;;;;;;
+
+;; no menu bar
+;; On Macs, this causes weird behavior, though.
+(when (not (eq window-system 'mac))
+  (menu-bar-mode -1))
+
+;; and no toolbar in emacs21 either
+(when (and (featurep 'tool-bar)
+           window-system)
+  (tool-bar-mode -1))
+
+(when (fboundp 'blink-cursor-mode)
+  (blink-cursor-mode -1))
+
+(when (fboundp 'scroll-bar-mode)
+  (scroll-bar-mode -1))
+
+;; But I like syntax highlighting
+(global-font-lock-mode 1)
+
+;; transparently work with compressed files
+(auto-compression-mode 1)
+
+;; Give me columns and lines
+(column-number-mode 1)
+(line-number-mode 1)
+
+;; Display time
+(display-time)
+
+;; Show the region by default
+(transient-mark-mode 1)
+;; But don't bitch if it's not shown
+(setq mark-even-if-inactive t)
+
+;; Start the emacs server
+(server-start)
+
+;; Do random numbers
+(random t)
+
+;; Show me your parens!
+(setq show-paren-delay 0
+      show-paren-style 'parenthesis)
+(show-paren-mode 1)
+
+;; Sometimes, Emacs fucks up my window config.
+;; Let me fix it easily.
+(winner-mode 1)
+
+;; Oh, and I want useful mouse selection.
+(mouse-sel-mode 1)
+
+;;;;;;;;;;;;;;;;;;;
+;;; Mode config ;;;
+;;;;;;;;;;;;;;;;;;;
+
+;;; Mail config
+;; Auto-wrap lines in mails
+(defun fc-mail-fill-column ()
+  (turn-on-auto-fill)
+  (set-fill-column 66))
+(add-hook 'mail-mode-hook 'fc-mail-fill-column)
+(add-hook 'message-mode-hook 'fc-mail-fill-column)
+(add-hook 'message-mode-hook (lambda () (auto-save-mode 0)))
+(add-hook 'message-mode-hook (lambda () (flyspell-mode 1)))
+(setq mail-user-agent 'gnus-user-agent)
+
+;; Sometimes, I want to see trailing whitespace
+(defun fc-turn-on-show-trailing-whitespace ()
+  "Set `show-trailing-whitespace' to t."
+  (setq show-trailing-whitespace t))
+
+(mapc (lambda (hook)
+        (add-hook hook 'fc-turn-on-show-trailing-whitespace))
+      '(text-mode-hook
+        scheme-mode-hook
+        emacs-lisp-mode-hook
+        java-mode-hook
+        c-mode-hook))
+
+;;;;;;;;;;
+;;; AUCTeX
+
+;(when (file-directory-p "/usr/share/emacs/site-lisp/auctex/")
+;  (load-file "/usr/share/emacs/21.4/site-lisp/tex-site.el")
+;  (add-to-list 'load-path "/usr/share/emacs/site-lisp/auctex/"))
+
+(autoload 'LaTeX-mode "tex-site" "AucTeX mode." t)
+
+(add-to-list 'auto-mode-alist '("\\.\\(la\\)?tex$" . LaTeX-mode))
+
+(add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
+(add-hook 'LaTeX-mode-hook (lambda () (flyspell-mode 1)))
+(add-hook 'find-file-hook 'fc-insert-latex-skeleton)
+
+(setq TeX-parse-self t
+      TeX-quote-after-quote nil
+      LaTeX-german-quote-after-quote nil
+      LaTeX-babel-hyphen nil)
+
+;;; Rubber configuration
+(eval-after-load "tex"
+  '(progn
+     (setq TeX-command-list (cons '("Rubber" "rubber %(PDFd) \"%t\"" TeX-run-command nil
+                                    (latex-mode)
+                                    :help "Run rubber")
+                                  TeX-command-list)
+           TeX-expand-list (cons '("%(PDFd)"
+                                   (lambda ()
+                                     (if TeX-PDF-mode
+                                         "-d"
+                                       "")))
+                                 TeX-expand-list))
+     (TeX-global-PDF-mode 1)))
+
+;;; Helper functions
+(defun fc-insert-latex-skeleton ()
+  "Insert a LaTeX skeleton in an empty file."
+  (when (and (eq major-mode 'latex-mode)
+             (= (point-min)
+                (point-max)))
+    (insert "\\documentclass[a4paper,12pt]{scrartcl}\n"
+            "\\usepackage{ngerman}\n"
+            "\\usepackage[utf8]{inputenc}\n"
+            "%\\usepackage{url}\n"
+            "%\\usepackage{natbib}\n"
+            "%\\usepackage{setspace}\n"
+            "%\\usepackage{qtree}\n"
+            "%\\usepackage{booktabs}\n"
+            "\n"
+            "\\title{}\n"
+            "\\date{\\today}\n"
+            "\\author{}\n"
+            "\n"
+            "\\begin{document}\n"
+            "\\maketitle\n"
+            "\n"
+            "\n"
+            "\\end{document}\n")
+    (forward-line -2)))
+
+;;;;;;;;
+;;; bbdb
+(eval-after-load "gnus"
+  '(when (require 'bbdb "bbdb" t)
+     (bbdb-initialize 'gnus 'message)
+     (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
+     (setq bbdb-check-zip-codes-p nil
+           bbdb-default-country "Germany"
+           bbdb-north-american-phone-numbers-p nil
+           bbdb-use-pop-up nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;
+;;; calendar and diary
+(eval-after-load "calendar"
+  '(european-calendar))
+(setq number-of-diary-entries 5
+      mark-diary-entries-in-calendar t
+      calendar-offset -1
+      calendar-location-name "Hamburg"
+      calendar-latitude 53.33
+      calendar-longitude 9.59
+      calendar-time-display-form '(24-hours ":" minutes
+                                            (if time-zone " (")
+                                            time-zone
+                                            (if time-zone ")"))
+      calendar-holidays '((holiday-fixed 01 01 "Gesetzlicher Feiertag (Neujahr)")
+                          (holiday-fixed 05 01 "Gesetzlicher Feiertag (Maifeiertag)")
+                          (holiday-fixed 10 03 "Gesetzlicher Feiertag (Tag der Deutschen Einheit)")
+                          (holiday-fixed 12 25 "Gesetzlicher Feiertag (1. Weihnachtstag)")
+                          (holiday-fixed 12 26 "Gesetzlicher Feiertag (2. Weihnachtstag)")
+                          (holiday-easter-etc -2 "Gesetzlicher Feiertag (Karfreitag)")
+                          (holiday-easter-etc  1 "Gesetzlicher Feiertag (Ostermontag)")
+                          (holiday-easter-etc 39 "Gesetzlicher Feiertag (Christi Himmelfahrt)")
+                          (holiday-easter-etc 50 "Gesetzlicher Feiertag (Pfingstmontag)")))
+
+(add-hook 'diary-display-hook 'fancy-diary-display)
+
+(when (file-exists-p "~/info/diary")
+  ;; (setq calendar-debug-sexp t)
+  (setq diary-file "~/info/diary")
+  ;; (diary)
+  )
+
+(defvar fc-calendar-regex
+  (if (< emacs-major-version 22)
+      "\\(?:^\\(\\(?:[[:digit:]][[:digit:]][[:digit:]][[:digit:]]\\)-\\(?:[[:digit:]][[:digit:]]\\)-\\(?:[[:digit:]][[:digit:]]\\)\\)\\(?:-\\(\\(?:[[:digit:]][[:digit:]][[:digit:]][[:digit:]]\\)-\\(?:[[:digit:]][[:digit:]]\\)-\\(?:[[:digit:]][[:digit:]]\\)\\)\\)? \\(.*\\)\\)"
+    (rx bol
+        (submatch (: digit digit digit digit)
+                  "-"
+                  (: digit digit)
+                  "-"
+                  (: digit digit))
+        (? "-"
+           (submatch (: digit digit digit digit)
+                     "-"
+                     (: digit digit)
+                     "-"
+                     (: digit digit)))
+        " "
+        (submatch (* not-newline))))
+  "A regular expression matching YYYY-MM-DD or YYYY-MM-DD-YYYY-MM-DD lines.")
+
+(defun fc-calendar (file)
+  "Check whether today is mentioned in FILE."
+  (let* ((old (get-file-buffer file))
+         (buf (or old
+                  (find-file-noselect file t)))
+         (result '())
+         (now (format "%04d-%02d-%02d"
+                      (nth 2 date)
+                      (nth 0 date)
+                      (nth 1 date))))
+    (with-current-buffer buf
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward fc-calendar-regex nil t)
+          (cond
+           ((match-string 2) ; It's a timespan
+            (let ((from (match-string 1))
+                  (to (match-string 2)))
+              (when (or (and (string-lessp from now)
+                             (string-lessp now to))
+                        (string-equal now from)
+                        (string-equal now to))
+                (setq result (cons (match-string 3)
+                                   result)))))
+           ((string-equal now (match-string 1))
+            (setq result (cons (match-string 3)
+                               result)))))))
+    (when result
+      (cons "!"
+            (mapconcat #'identity (reverse result) "\n")))))
+
+(defun fc-stundenplan (file)
+  "Check whether today is mentioned in FILE."
+  (let* ((old (get-file-buffer file))
+         (buf (or old
+                  (find-file-noselect file t)))
+         (date-string (format "%04d-%02d-%02d"
+                              (nth 2 date)
+                              (nth 0 date)
+                              (nth 1 date)))
+         (now (encode-time 0 0 0
+                           (nth 1 date)
+                           (nth 0 date)
+                           (nth 2 date)))
+         (in-semester nil))
+    (with-current-buffer buf
+      (save-excursion
+        (goto-char (point-min))
+        (while (and (not in-semester)
+                    (re-search-forward
+                     (concat "^\\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\\)"
+                             "-"
+                             "\\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\\)")
+                     nil t))
+          (let ((from (match-string-no-properties 1))
+                (to (match-string-no-properties 2))
+                (string<= (lambda (a b)
+                            (or (string= a b)
+                                (string< a b)))))
+            (when (and (funcall string<= from date-string)
+                       (funcall string<= date-string to))
+              (setq in-semester t))))
+        (when in-semester
+          (goto-char (point-min))
+          (let* ((system-time-locale "de_DE")
+                 (weekday (format-time-string "%a" now))
+                 (entries nil))
+            (while (re-search-forward (format "^%s \\(.*\\)" weekday)
+                                      nil t)
+              (setq entries (cons (match-string 1)
+                                  entries)))
+            (cons nil
+                  (mapconcat #'identity entries "\n"))))))))
+
+;;;;;;;;;;
+;;; c-mode
+(add-hook 'c-mode-hook 'fc-c-setup)
+(defun fc-c-setup ()
+  "Set up C mode for my needs."
+  (c-set-style "k&r")
+  (setq c-basic-offset 5)
+  (c-set-offset 'case-label '+)
+  (c-set-offset 'inextern-lang 0))
+
+;;;;;;;;;;;;;;;
+;;; comint-mode
+
+(autoload 'comint-add-scroll-to-bottom "comint-scroll-to-bottom"
+  "Activate `comint-scroll-to-bottom'.")
+
+;; should check for passwords
+(add-hook 'comint-mode-hook 'fc-setup-comint-mode)
+
+(defun fc-setup-comint-mode ()
+  (add-to-list 'comint-output-filter-functions
+               'comint-watch-for-password-prompt)
+  (ansi-color-for-comint-mode-on)
+  (comint-add-scroll-to-bottom))
+
+;;;;;;;;;;;;;;
+;;; cperl-mode
+(add-to-list 'auto-mode-alist '("\\.pl$" . cperl-mode))
+
+;;;;;;;;;;;
+;;; Crypt++
+(setq crypt-encryption-type 'mcrypt)
+
+;;;;;;;
+;;; CSS
+(add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
+(autoload 'css-mode "css-mode" "CSS mode" t)
+
+;;;;;;;;;;;;;;;;;
+;;; dictionary-el
+(setq dictionary-server "localhost")
+(defalias 'dict 'dictionary-search)
+
+;;;;;;;;;;;;;;;;;;;
+;;; emacs-lisp-mode
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(define-key emacs-lisp-mode-map (kbd "M-.") 'dabbrev-expand)
+(define-key lisp-interaction-mode-map (kbd "M-.") 'dabbrev-expand)
+
+;;;;;;;;
+;;; EMMS
+(global-set-key (kbd "<C-down>") 'emms-next)
+(global-set-key (kbd "<C-up>") 'emms-previous)
+(global-set-key (kbd "C-c m w") 'emms-show)
+(global-set-key (kbd "C-c m n") 'emms-next)
+(global-set-key (kbd "C-c m p") 'emms-previous)
+(global-set-key (kbd "C-c m s") 'emms-stop)
+(global-set-key (kbd "C-c m i") 'fc-emms-insert)
+(global-set-key (kbd "C-c m I") 'fc-sarg-insert)
+
+(add-to-list 'load-path "~/.elisp/emms")
+(autoload 'emms-play-all "emms" "Play my media." t)
+(autoload 'emms-play-file "emms-source-file" "Play media." t)
+(autoload 'emms-play-directory-tree "emms-source-file" "Play media." t)
+(autoload 'emms-play-find "emms-source-file" "Play media." t)
+(autoload 'emms-source-directory-tree "emms-source-file" "Tracks from a dire
+ctory tree.")
+(eval-after-load "emms"
+  '(progn
+     (require 'emms-player-simple)
+     (require 'emms-player-mplayer)))
+(add-hook 'emms-player-started-hook 'emms-show)
+(setq emms-show-format "NP: %s"
+      emms-track-description-function 'fc-emms-track-description
+      emms-player-list '(emms-player-mpg321
+                         emms-player-ogg123
+                         ; emms-player-mplayer
+                         )
+      emms-player-mpg321-parameters '() ; '("-o" "alsa")
+      emms-source-list '((emms-source-directory-tree "~/snd/"))
+      emms-play-all-preparation-function 'emms-play-all-shuffle
+      emms-play-all-except '((lambda (track)
+                               (string-match (concat "/misc-lehrwerke/\\|"
+                                                     "/misc-uz-no/")
+                                             (emms-track-name track))))
+      emms-source-file-default-directory "~/snd/musik/artists/"
+      emms-source-file-directory-tree-function
+      'emms-source-file-directory-tree-find)
+
+(defun fc-emms-insert ()
+  "Insert a Playing MPEG stream from ... string."
+  (interactive)
+  (emms-show 'insert))
+
+(defun fc-sarg-insert ()
+  "Insert what we're playing right now as queried from the living room
+server."
+  (interactive)
+  (insert "NP: ")
+  (save-excursion
+    (let ((coding-system-for-read 'latin-1))
+      (call-process "nc" nil t nil "sarg" "4050"))
+    (backward-delete-char 1))
+  (when (looking-at "/ocean/public/mp3/individual/[^/]*/\\(musik/\\(artists/\\)?\\)?")
+    (replace-match ""))
+  (goto-char (point-at-eol)))
+
+(defun fc-emms-track-description (track)
+  "Return a nice description of TRACK."
+  (let ((desc (emms-track-simple-description track)))
+    (if (string-match "^/home/forcer/snd/\\(musik/\\(artists/\\)?\\)?\\(.*\\)" desc)
+        (match-string 3 desc)
+      desc)))
+
+;;;;;;;;;;;
+;;; escreen
+(setq escreen-prefix-char (kbd "C-c a")
+      escreen-new-screen-default-buffer "Notes")
+(when (require 'escreen nil t)
+  (escreen-install))
+
+;;;;;;;;;
+;;; Circe
+(autoload 'circe "circe" "Connect to an IRC server" t)
+
+(when (file-directory-p "~/.elisp/circe")
+  (add-to-list 'load-path "~/.elisp/circe"))
+
+(if (file-exists-p "~/.private.el")
+    (load-file "~/.private.el")
+  (setq muh-passwd nil
+        freenode-passwd nil
+        bitlbee-passwd nil))
+
+(setq circe-default-realname "http://www.forcix.cx/"
+      circe-ignore-list '("!.*\\(jihad\\|arab\\|rape\\)@.*\\(adsl\\|verizon\\)")
+      circe-server-coding-system '(utf-8 . undecided)
+      circe-server-killed-confirmation 'ask-and-kill-all
+      circe-server-auto-join-channels
+      '(("^freenode$" "#emacs" "#scheme" "#scsh"
+                      "#fbi-oe" "#ideologies"
+                      "#paredit")
+        ("^IRCnet" "#StarWars" "#kollektiv" "+linux.de")
+        ("^coldfront" "#grd" "#electusmatari"))
+      circe-nickserv-passwords `(("freenode" ,freenode-passwd)
+                                 ("oftc" ,oftc-passwd)
+                                 ("coldfront" ,coldfront-passwd))
+      circe-format-server-topic "*** Topic change by {origin}: {topic-diff}")
+
+(setq lui-max-buffer-size 30000
+      lui-flyspell-p t
+      lui-flyspell-alist '(("#kollektiv" "german8")
+                           ("+linux.de" "german8")
+                           ("#fbi-oe" "german8")
+                           ("##learn-spanish" "castellano8")
+                           ("#emacs-es" "castellano8")
+                           ("." "american"))
+      lui-highlight-keywords
+      `((,(let ((nicks '(or "xah"      ;; Troll
+                            "jordanb"  ;; Annoying person
+                            "GartenFlakk" ;; Troll
+                            "ayrnieu"  ;; Annoying person, doesn't respect ignore wishes
+                            "tilt"     ;; Annoying, full-of-himself polemical ranter
+                            "rahul"    ;; Knows-it-all. Always.
+                            "ams"      ;; The evil twin of rms
+                            "dalias"   ;; Just ignores comments that might be bad for his position
+                            )))
+            (if (< emacs-major-version 22)
+                nil
+              (rx (or (: bos
+                         "<" (* (not (any ">")))
+                         (eval nicks)
+                         (* (not (any ">")))
+                         ">"
+                         (* anything))
+                      (: bos
+                         "* " (* (not (any whitespace)))
+                         (eval nicks)
+                         (* anything))
+                      (: bos
+                         "<" (* (not (any ">"))) "> "
+                         (* (not (any whitespace)))
+                         (eval nicks)
+                         (* (not (any whitespace)))
+                         (or ":" " - " ",")
+                         (* anything)
+                         )))))
+         (lui-fool t
+          face fc-lui-fool-face))))
+
+(defface fc-lui-fool-face
+  '((t (:foreground "grey40" :bold t)))
+  "A face for fools on IRC.
+Readable, but not disturbing.")
+
+(eval-after-load "circe"
+  '(progn
+     (add-hook 'circe-receive-message-functions
+               'fc-bitlbee-auth)
+     (require 'lui-irc-colors)
+     (enable-lui-irc-colors)))
+
+(defun fc-bitlbee-auth (nick user host command args)
+  "Authenticate to a bitlbee server."
+  (when (and (string= command "JOIN")
+             (circe-server-my-nick-p nick))
+    (with-circe-server-buffer
+      (when (string= circe-server-network "bitlbee")
+        (circe-server-send (format "PRIVMSG &bitlbee :identify %s"
+                                   bitlbee-passwd))))))
+
+(defun irc ()
+  "Connect to IRC."
+  (interactive)
+  (circe "irc.freenode.net" "6667" "freenode")
+  (circe "irc.tu-ilmenau.de" "6668" "IRCnet")
+  (circe "localhost" "6668" "bitlbee")
+  (circe "irc.coldfront.net" "6667" "coldfront" nil "Arkady"))
+
+(defun oftc ()
+  "Connect to OFTC."
+  (interactive)
+  (circe "irc.oftc.net" "6667" "oftc"))
+
+(defadvice circe-server-send-queue (after fc-flood-debug (buffer) activate)
+  "Debug IRC throttling."
+  (with-current-buffer buffer
+    (when (not (null circe-server-flood-queue))
+      (let ((len (length circe-server-flood-queue))
+            (q circe-server-flood-queue))
+        (circe-server-message (format "Throttling (%s message%s)" len
+                                      (if (= len 1) "" "s")))))))
+(ad-activate 'circe-server-send-queue)
+
+(add-hook 'lui-pre-input-hook 'fc-there-is-no-wether)
+(defun fc-there-is-no-wether ()
+  "Throw an error when the buffer contains \"wether\"
+Or other words I used repeatedly"
+  (goto-char (point-min))
+  (when (re-search-forward (regexp-opt '("wether"
+                                         "occurence" "occurrance" "occurance"
+                                         )
+                                       'words)
+                                       nil t)
+    (error "There is \"wether\", only \"whether\"; and it's \"occurrence\"")))
+
+;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph
+;;; Takes a multi-line paragraph and makes it into a single line of text.
+(defun unfill-paragraph ()
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil)))
+
+;;;;;;;;
+;;; ffap
+(setq ffap-machine-p-known 'accept)
+
+;;;;;;;;;;;;;
+;;; flashcard
+(autoload 'flashcard-mode "flashcard" "Flashcard mode" t)
+(add-to-list 'auto-mode-alist '("\\.deck$" . flashcard-mode))
+
+(add-hook 'flashcard-mode-hook
+          'flashcard-add-scroll-to-bottom)
+(add-hook 'flashcard-positive-feedback-functions
+          'flashcard-method-leitner-positive-feedback)
+(add-hook 'flashcard-positive-feedback-functions
+          'flashcard-feedback-congratulate)
+(add-hook 'flashcard-positive-feedback-functions
+          'flashcard-feedback-highlight-answer)
+
+;;;;;;;;;;;;;;;;;
+;;; flyspell-mode
+;; I dislike the flyspell word completion stuff.
+(eval-after-load "flyspell"
+  '(define-key flyspell-mode-map "\M-\t" 'ispell-complete-word))
+
+;;;;;;;;
+;;; golb
+
+(autoload 'golb "golb" nil t)
+
+(global-set-key (kbd "C-c b") 'fc-blog-it)
+(defun fc-blog-it ()
+  "Open the blog page for today."
+  (interactive)
+  (find-file (format-time-string "~/websites/forcix/weblog/%Y-%m-%d.ht")))
+
+(add-hook 'after-save-hook 'golb)
+
+(setq golb-page-regexp "/websites/forcix\\(\\.cx\\)?/.*\\.ht\\'"
+      golb-weblog-regexp "/websites/forcix\\(\\.cx\\)?/weblog/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].*\\.ht\\'"
+      golb-weblog-file-regexp "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].*\\.ht\\'"
+
+      golb-weblog-index-file-name "index.html"
+      golb-weblog-index-full-entry-count 5
+      golb-weblog-index-template-header "~/websites/forcix/templates/index-header.html"
+      golb-weblog-index-template-separator "~/websites/forcix/templates/index-separator.html"
+      golb-weblog-index-template-footer "~/websites/forcix/templates/index-footer.html"
+      golb-weblog-index-short-function 'golb-weblog-index-short
+      golb-weblog-index-long-function 'golb-weblog-index-long
+
+      golb-weblog-rss-file-name "index.rss"
+      golb-weblog-rss-count 5
+      golb-weblog-rss-title "Jorgen Schäfer’s Weblog"
+      golb-weblog-rss-url "http://www.forcix.cx/weblog/"
+      golb-weblog-rss-description "Personal weblog of Jorgen Schäfer"
+      golb-weblog-rss-language "en"
+
+      golb-page-template-header "~/websites/forcix/templates/header.html"
+      golb-page-template-footer "~/websites/forcix/templates/footer.html"
+
+      golb-section-list '(("forcix" "Preface"))
+
+      golb-beautify-list '(("<current-year />" (lambda ()
+                                                 (format-time-string "%Y")))
+                           ("<current-time />" (lambda ()
+                                                 (current-time-string)))
+                           ("<de />" "<span class=\"lang\">(German)</span>")
+                           ("\\.\\.\\." "…")
+                           ("---" "&#8212;")
+                           ("\\([^!]\\)--\\([^>]\\)" "\\1&#8211;\\2")
+                           ("LaTeX2e" "<span class=\"latex2e\">L<span class=\"latex-a\">a</span>T<span class=\"tex-e\">e</span>X 2<span class=\"latex-epsilon\">&#949;</span></span>")
+                           ("LaTeX" "<span class=\"latex\">L<span class=\"latex-a\">a</span>T<span class=\"tex-e\">e</span>X</span>")
+                           ("\\\\/" "")
+                           )
+      )
+
+;;;;;;;;;;;;;
+;;; html-mode
+(add-to-list 'auto-mode-alist '("\\.ht$" . html-mode))
+
+(add-hook 'html-mode-hook 'fc-init-html-mode)
+
+(setq sgml-quick-keys t)
+
+(defun fc-init-html-mode ()
+  "Initialize the HTML mode for my purposes."
+  (set (make-local-variable 'time-stamp-start)
+       "<!-- time stamp start -->\n")
+  (set (make-local-variable 'time-stamp-end)
+       "\n<!-- time stamp end -->")
+  (set (make-local-variable 'time-stamp-format)
+       "Last modified: %3a %3b %2d %02H:%02M:%02S %Z %:y")
+  (set (make-local-variable 'time-stamp-line-limit) 0)
+  (define-key html-mode-map (kbd "C-c RET") 'fc-html-toggle-paragraph)
+  (define-key html-mode-map (kbd "<") 'self-insert-command)
+  (define-key html-mode-map (kbd "<SPC>") 'self-insert-command)
+  (define-key html-mode-map (kbd "\"") 'self-insert-command)
+  (when (= (point-min)
+           (point-max))
+    (let ((ins nil))
+      (if (string-match "\\.ht$" (buffer-file-name))
+          (progn
+            (insert "<h1>")
+            (setq ins (point))
+            (insert "</h1>\n")
+            (insert "\n"
+                    "<!-- time stamp start -->\n"
+                    "\n"
+                    "<!-- time stamp end -->\n"))
+        (insert "<?xml version=\"1.0\"e encoding=\"utf-8\"?>\n"
+                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n"
+                "                      \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
+                "<html>\n"
+                "<head>\n"
+                "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n"
+                "<title>")
+        (setq ins (point))
+        (insert "</title>\n"
+                "</head>\n"
+                "\n"
+                "<body>\n"
+                "<h1></h1>\n"
+                "\n"
+                "\n"
+                "\n"
+                "<hr>\n"
+                "<address></address>\n"
+                "<!-- Created: "
+                (format-time-string "%a %b %e %T %Z %Y")
+                " -->\n"
+                "<!-- time stamp start -->\n"
+                "\n"
+                "<!-- time stamp end -->\n"
+                "</body> </html>\n"))
+        (goto-char ins))))
+
+
+(defun fc-html-toggle-paragraph ()
+  "Add or remove HTML paragraph tags from the current paragraph"
+  (interactive)
+  (save-excursion
+    (backward-paragraph)
+    (when (looking-at "^\\s-*$")
+      (forward-char 1))
+    (if (looking-at "<p>")
+        (replace-match "")
+      (insert "<p>"))
+    (forward-paragraph)
+    (when (looking-at "^\\s-*$")
+      (backward-char 1))
+    (if (looking-back "</p>")
+        (replace-match "")
+      (insert "</p>"))))
+
+;;;;;;;;;;;;
+;;; ido-mode
+
+(if (not (fboundp 'ido-mode))
+    (iswitchb-mode 1)
+  (ido-mode 1)
+  (setq ido-everywhere t
+        ido-case-fold t
+        ido-use-filename-at-point t
+        ido-use-url-at-point t
+        ido-confirm-unique-completion t
+        ido-auto-merge-work-directories-length -1)
+
+  (add-hook 'ido-setup-hook
+            (lambda ()
+              (define-key ido-common-completion-map (kbd "C-c")
+                (make-sparse-keymap))
+              (define-key ido-common-completion-map (kbd "C-c C-u")
+                'fc-ido-copy-selection)
+              (define-key ido-file-dir-completion-map (kbd "<up>")
+                'ido-prev-work-directory)
+              (define-key ido-file-dir-completion-map (kbd "<down>")
+                'ido-next-work-directory))))
+
+(defun fc-ido-copy-selection ()
+  "Copy the current ido selection to the kill ring."
+  (interactive)
+  (kill-new (abbreviate-file-name (concat ido-current-directory
+                                          ido-text))))
+
+;;;;;;;;;;
+;;; Ispell
+
+;; Aspell takes ages to start. This is annoying in Circe.
+(setq ispell-program-name "/usr/bin/ispell")
+(eval-after-load "ispell"
+  '(add-to-list 'ispell-dictionary-alist
+                '("german8"
+                  "[a-zA-ZäöüßÄÖÜ]" "[^a-zA-ZäöüßÄÖÜ]" "[']" t
+                  ("-C" "-d" "german")
+                  "~latin1" iso-8859-1)))
+
+;; Aspell and UTF-8:
+;(add-to-list 'ispell-dictionary-alist
+;             '("german8"
+;               "[a-zA-ZäöüßÄÖÜ]" "[^a-zA-ZäöüßÄÖÜ]" "[']" t
+;               ("-C" "-d" "german")
+;               "~utf-8" utf-8))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;
+;;; java-mode, jde-mode
+;; (autoload 'jde-mode "jde" "Java Development Environment mode." t)
+;; (add-to-list 'auto-mode-alist '("\\.java$" . jde-mode))
+
+;; (setq jde-complete-add-space-after-method t
+;;       jde-complete-unique-method-names t)
+
+(add-hook 'java-mode-hook 'fc-java-insert-public-class)
+(add-hook 'java-mode-hook 'fc-java-setup)
+
+(defun fc-java-setup ()
+  (c-set-style "k&r")
+  (setq c-basic-offset 3)
+  (c-set-offset 'case-label '+)
+  ;(define-key jde-mode-map [(control meta ?i)] 'jde-complete-at-point)
+  ;(define-abbrev jde-mode-abbrev-table "main" "" 'jde-main-skeleton)
+  ;(define-skeleton jde-main-skeleton
+  ;  "Insert a Java main function."
+  ;  > "public static void main (String[] args) {\n"
+  ;  _ "\n"
+  ;  "}" >)
+  )
+
+(defun fc-java-insert-public-class ()
+  (let ((filename (buffer-file-name (current-buffer))))
+    (when (and (= 1 (point-max))
+               filename)
+      (let ((classname (file-name-sans-extension
+                        (file-name-nondirectory filename))))
+        (skeleton-insert
+         '(nil "public class " classname " {\n"
+               > _
+               "\n}"))))))
+
+;;;;;;;;;;;;;;;
+;;; legalese.el
+(autoload 'legalese     "legalese"    "Add legalese." t)
+
+;;;;;;;;;;;;;;;;
+;;; lisppaste.el
+(autoload 'lisppaste-create-new-paste "lisppaste" "Interactively create a new paste." t)
+(autoload 'lisppaste-create-new-annotation "lisppaste" "Interactively annotate a paste." t)
+(autoload 'lisppaste-paste-region "lisppaste" "Send the region between BEG and END as a paste." t)
+
+;;;;;;;;;;;;;;
+;;; Mudel/MUME
+(setq mudel-truncate-buffer-size (* 256 1024))
+
+(add-hook 'mudel-mode-hook (lambda () (setq fill-column 80)))
+(add-hook 'mudel-mode-hook 'mudel-add-scroll-to-bottom)
+;(add-hook 'mudel-output-filter-functions 'mudel-output-fill)
+
+(autoload 'mudel "mudel" "The mudel MUD client." t)
+(autoload 'mume-mode "mume" "MUME settings for the mudel MUD client." t)
+
+(defun mume ()
+  "Connect to MUME."
+  (interactive)
+  (with-current-buffer (mudel "MUME" "fire.pvv.org" 23)
+    (mume-mode)
+    (add-hook 'comint-output-filter-functions 'mudel-truncate-buffer nil t)))
+
+;;;;;;;;;;;;
+;;; Org Mode
+
+(add-to-list 'load-path "~/.elisp/org/current")
+(require 'org)
+
+(setq org-fontify-emphasized-text nil
+      org-agenda-files '("~/.notes/Notes")
+      org-descriptive-links nil
+      org-agenda-include-diary t
+      org-agenda-start-on-weekday nil
+      org-agenda-include-all-todo t)
+
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c t") 'org-agenda)
+
+(add-to-list 'auto-mode-alist '("/.notes/" . org-mode))
+
+(global-set-key (kbd "<f1>") 'fc-toggle-inbox)
+(global-set-key (kbd "C-c c") 'fc-toggle-inbox)
+(defun fc-toggle-inbox ()
+  "Switch to the inbox buffer."
+  (interactive)
+  (let ((inbox-file "~/.notes/Inbox"))
+    (when (file-exists-p inbox-file)
+      (if (and (buffer-file-name)
+               (string= (expand-file-name inbox-file)
+                        (expand-file-name (buffer-file-name))))
+          (bury-buffer)
+        (find-file inbox-file)
+        (goto-char (point-max))))))
+
+(global-set-key (kbd "<f2>") 'fc-toggle-notes)
+(defun fc-toggle-notes ()
+  "Switch to the notes file, or switch to the previous buffer."
+  (interactive)
+  (let ((notes-file "~/.notes/Notes"))
+    (when (file-exists-p notes-file)
+      (if (and (buffer-file-name)
+               (string= (expand-file-name notes-file)
+                        (expand-file-name (buffer-file-name))))
+          (bury-buffer)
+        (find-file notes-file)))))
+
+(global-set-key (kbd "<f3>") 'fc-org-agenda)
+(defun fc-org-agenda ()
+  "Show the agenda."
+  (interactive)
+  (call-interactively 'org-agenda-list))
+
+(defadvice org-agenda-switch-to (after fc-show-tree activate)
+  "Show the full subtree when switching to an item from the agenda view."
+  (interactive)
+  (save-excursion
+    (outline-up-heading 0 t)
+    (let ((poss nil))
+      (while (not (= 1 (funcall outline-level)))
+        (outline-up-heading 1 t)
+        (setq poss (cons (point)
+                         poss)))
+      (mapc (lambda (p)
+              (goto-char p)
+              (show-children))
+            poss))))
+
+;;;;;;;;;;;;;;;;
+;;; Outline mode
+(eval-after-load "outline"
+  '(progn
+     (define-key outline-mode-map (kbd "C-c C-u")
+       'fc-kill-to-beginning-of-line)
+     (define-key outline-minor-mode-map (kbd "C-c C-e") 'show-entry)
+     (define-key outline-minor-mode-map (kbd "C-c C-c") 'hide-entry)
+     (define-key outline-minor-mode-map (kbd "C-c C-t") 'hide-body)
+     (define-key outline-minor-mode-map (kbd "C-c C-a") 'show-all)))
+
+;;;;;;;;;;;
+;;; Oz mode
+;; Don't fuck up my modeline!
+(setq oz-change-title nil)
+
+;;;;;;;;;;;;;;;;
+;;; Paredit mode
+(autoload 'enable-paredit-mode "paredit" "Pseudo-structural editing." t)
+
+(eval-after-load "paredit"
+  '(progn
+     (mapc (lambda (binding)
+             (define-key paredit-mode-map (car binding) (cadr binding)))
+           `((,(kbd "RET")  newline)
+             (,(kbd "C-j")  paredit-newline)
+             (,(kbd "<C-left>") paredit-forward-barf-sexp)
+             (,(kbd "<C-right>") paredit-forward-slurp-sexp))
+           )))
+
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
+(add-hook 'scheme-mode-hook 'enable-paredit-mode)
+
+;;;;;;;;;;;;;
+;;; pcomplete
+;; I prefer bash-style to zsh-style
+(setq pcomplete-cycle-completions nil)
+
+;;;;;;;;;;;;;;;
+;;; Prolog mode
+(autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
+(autoload 'prolog-mode "prolog" "Major mode for editing Prolog programs." t)
+
+(add-hook 'prolog-mode-hook 'fc-add-prolog-string)
+
+(defun fc-add-prolog-string ()
+  (when (not (eq major-mode 'inferior-prolog-mode))
+    (save-excursion
+      (goto-char (point-min))
+      (when (not (re-search-forward "-\\*-.*prolog.*-\\*-" nil t))
+        (goto-char (point-min))
+        (insert "%% Emacs, this is -*-prolog-*-\n")))))
+
+;; I use SWI Prolog
+(setq prolog-system 'swi)
+;(setq prolog-program-name "prolog")
+;(setq prolog-consult-string "[%f].")
+
+;; Somewhat nicer
+(setq prolog-indent-width 4)
+
+;;;;;;;;;;;;;;;
+;;; scheme-mode
+(setq scheme-program-name "scheme48"
+      scheme-mit-dialect nil)
+(add-hook 'scheme-mode-hook 'fc-init-scheme-mode)
+(autoload 'scheme48-mode "scheme48" "Major mode for Scheme48 interaction." t)
+(add-to-list 'auto-mode-alist '("\\.scm\\'" . scheme48-mode))
+(add-to-list 'interpreter-mode-alist '("scsh" . scheme48-mode))
+
+(defun run-scsh ()
+  "Run SCSH, the Scheme Shell."
+  (interactive)
+  (run-scheme "scsh"))
+
+(defun fc-init-scheme-mode ()
+  "Initialize the scheme mode."
+  (set (make-local-variable 'comment-add) 1)
+  ;; This is used in scsh and the default symbol interpretation screws
+  ;; up the paren highlighting.
+  (modify-syntax-entry ?| "_")
+  (visit-tags-table "~/scheme48.tags" t)
+  )
+
+(defun scheme-define-record-type (name fields)
+  "Insert a DEFINE-RECORD-TYPE."
+  (interactive "sRecord Type Name: \nsRecord Type Fields: ")
+  (let ((fields (split-string fields)))
+    (insert "(define-record-type " name "\n"
+            "  (make-" name " " (mapconcat (lambda (x) x) fields " ") ")\n"
+            "  " name "?")
+    (while fields
+      (insert "\n  (" (car fields) " " name "-" (car fields) " set-" name "-" (car fields) "!)")
+      (setq fields (cdr fields)))
+    (insert ")\n")))
+
+;; When I open a buffer named s, I want it to be in scheme mode.
+(add-hook 'text-mode-hook 'fc-maybe-make-scheme)
+
+(defun fc-maybe-make-scheme ()
+  "Maybe make the current buffer a scheme-mode buffer."
+  (when (and (string= "s" (buffer-name (current-buffer)))
+             (= (point-min) (point-max)))
+    (scheme48-mode)))
+
+(global-set-key (kbd "C-c s") 'fc-scheme-buffer)
+(defun fc-scheme-buffer ()
+  "Make a buffer in Scheme."
+  (interactive)
+  (switch-to-buffer-other-window "s")
+  (scheme48-mode))
+
+;; Make parens less visible
+(font-lock-add-keywords 'scheme48-mode '(("[()]" . 'paren-face)))
+(defface paren-face
+  '((t (:foreground "gray60")))
+  "The face used for parenthesises.")
+
+;; my own stuff
+(put 'assert 'scheme-indent-function 'defun)
+(put 'assert-fails 'scheme-indent-function 'defun)
+
+;; gauche
+(put 'with-error-handler 'scheme-indent-function 1)     ; 'defun)
+(put 'with-exception-handler 'scheme-indent-function 1)
+(put 'with-exit-exception-handler 'scheme-indent-function 1)
+(put 'with-exit-exception-handler* 'scheme-indent-function 2)
+(put 'my-with-exception-handler 'scheme-indent-function 2)
+(put 'for-debug 'scheme-indent-function 'defun)
+(put 'test-expected 'scheme-indent-function 'defun)
+(put 'call-with-input-string 'scheme-indent-function 1)
+(put 'with-port-locking 'scheme-indent-function 1)
+
+;;;;;;;;;;;
+;;; srfi.el
+(autoload 'srfi         "srfi"        "Read a SRFI." t)
+
+;;;;;;;;;;;;;;;;
+;;; texinfo-mode
+(add-hook 'find-file-hook 'fc-insert-texinfo-skeleton)
+(defun fc-insert-texinfo-skeleton ()
+  "Insert a texinfo skeleton in an empty file."
+  (when (and (eq major-mode 'texinfo-mode)
+             (= (point-min)
+                (point-max)))
+    (let ((basename (file-name-nondirectory
+                     (file-name-sans-extension
+                      (buffer-file-name)))))
+      (insert "\\input texinfo.tex     @c -*-texinfo-*-\n"
+              "@comment %**start of header\n"
+              "@setfilename " basename ".info\n"
+              "@settitle FIXME\n"
+              "@afourpaper\n"
+              "@comment %**end of header\n"
+              "\n"
+              "@copying\n"
+              "Copyright @copyright{} Jorgen Sch@\"afer\n"
+              "\n"
+              "FIXME\n"
+              "@end copying\n"
+              "\n"
+              "@dircategory FIXME\n"
+              "@direntry\n"
+              "* " basename ":: FIXME\n"
+              "@end direntry\n"
+              "\n"
+              "@titlepage\n"
+              "@title FIXME\n"
+              "@subtitle FIXME\n"
+              "@author Jorgen Sch@\"afer\n"
+              "\n"
+              "@page\n"
+              "@vskip 0pt plus 1filll\n"
+              "@insertcopying\n"
+              "@end titlepage\n"
+              "\n"
+              "@contents\n"
+              "\n"
+              "@ifnottex\n"
+              "@node top\n"
+              "@top FIXME (Title: Subtitle)\n"
+              "\n"
+              "FIXME (first page of info manual)\n"
+              "\n"
+              "@end ifnottex\n"
+              "\n"
+              "@node FIXME\n"
+              "@chapter FIXME\n"
+              "\n"
+              "@bye\n")
+      (goto-line 0))))
+
+
+;;;;;;;;;;;;;;
+;;; tramp-mode
+(setq shell-prompt-pattern "^[^#$%\n]*[#$%*>] *")
+
+(when (file-directory-p "~/.tramp-auto-save-directory")
+  (setq tramp-auto-save-directory "~/.tramp-auto-save-directory"))
+(when (file-directory-p "~/.tramp-backup-directory")
+  (setq tramp-backup-directory-alist '(("." . "~/.tramp-backup-directory"))))
+
+(eval-after-load "tramp"
+  '(progn
+     (defun tramp-touch (file time)
+       "Set the last-modified timestamp of the given file.
+     TIME is an Emacs internal time value as returned by `current-time'."
+       (let ((touch-time (format-time-string "%Y%m%d%H%M.%S" time)))
+         (ignore-errors
+           (with-parsed-tramp-file-name file nil
+             (let ((buf (tramp-get-buffer multi-method method user host)))
+               (unless (zerop (tramp-send-command-and-check
+                               multi-method method user host
+                               (format "touch -t %s %s"
+                                       touch-time
+                                       localname)))
+                 (pop-to-buffer buf)
+                 (error "tramp-touch: touch failed, see buffer `%s' for details"
+                        buf)))))))))
+
+;;;;;;;;;;;;;;;;;;;
+;;; type-break-mode
+
+;; Remind me to take typing breaks
+(setq type-break-mode-line-message-mode t
+      type-break-demo-functions '(type-break-demo-boring)
+      type-break-time-warning-intervals '()
+      ;; No type break file
+      type-break-file-name nil)
+(type-break-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;
+;;; unicode-helper-mode
+(when (require 'unicode-helper nil t)
+  (unicode-helper-mode 1))
+
+;;;;;;;;;;;
+;;; vc-mode
+(setq vc-diff-switches diff-switches
+      vc-initial-comment t)
+
+;; vc-darcs:
+(when (locate-library "vc-darcs")
+  (add-to-list 'vc-handled-backends 'DARCS))
+
+;;;;;;;;;;;
+;;; webjump
+(setq webjump-sites
+      '(("csw" . "http://community.schemewiki.org/")
+        ("EmacsWiki" . "http://www.emacswiki.org/cgi-bin/wiki/RecentChanges")
+        ("OeWiki" . "http://www.informatik.uni-hamburg.de/cgi-bin/oe/wiki.pl?action=rc;all=1;showedit=1")
+        ("FsWiki" . "http://www.informatik.uni-hamburg.de/cgi-bin/fsr-wiki.pl")
+        ("fb18" . "http://3773.rapidforum.com/")
+        ("DB" . "http://bahn.hafas.de/bin/query.exe/dl")
+        ("Haspa" . "https://ssl2.haspa.de/OnlineBanking/login_banking.jsp")
+        ("geofox" . "http://www.geofox.de/")
+        ("srfi" . "http://srfi.schemers.org/")
+        ("google" . "http://www.google.de/")
+        ("css" . "http://www.w3.org/TR/CSS21/")
+        ("riablog" . "http://www.mumble.net/~campbell/blog.txt")
+        ("emacs-devel" . "http://dir.gmane.org/gmane.emacs.devel")
+        ))
+
+;;;;;;;;;;;;;;;;;
+;;; winpoint-mode
+
+(require 'winpoint)
+(window-point-remember-mode 1)
+
+;;;;;;;;;;;;
+;;; w3m-mode
+
+;; Thanks to marienz (#emacs) on .emacs for the idea
+(defun fc-w3m-rename-buffer (url)
+  (rename-buffer url t))
+(add-hook 'w3m-display-hook 'fc-w3m-rename-buffer)
+
+
+(defun fc-w3m-setup ()
+  "Setup a w3m buffer."
+  (set (make-local-variable 'auto-hscroll-mode) nil)
+  (mapc
+   (lambda (mapping)
+     (apply #'define-key w3m-mode-map mapping))
+   `((,(kbd "C-c C-@") lui-track-next-buffer)
+     (,(kbd "C-c c") fc-copy-url)
+     (,(kbd "<down>") next-line)
+     (,(kbd "<up>") previous-line)
+     (,(kbd "<right>") forward-char)
+     (,(kbd "<left>") backward-char)
+     (,(kbd "C-x b") ido-switch-buffer))))
+
+(defun fc-remove-cr ()
+  "Remove all occurrences of ^M in the current buffer."
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "\r" nil t)
+      (replace-match ""))))
+
+(defun fc-copy-url (n)
+  "Copy the current URL to the kill ring, or the current anchor URL if
+a prefix argument is given."
+  (interactive "p")
+  (let ((url (if (= n 1)
+                 w3m-current-url
+               (w3m-anchor))))
+    (if url
+        (kill-new url)
+      (error "No url."))))
+
+(autoload 'w3m-browse-url "w3m" "Ask emacs-w3m to browse URL." t)
+
+(add-hook 'w3m-mode-hook 'fc-w3m-setup)
+(add-hook 'w3m-form-input-textarea-mode-hook 'fc-remove-cr)
+
+(setq w3m-use-cookies t
+      w3m-cookie-accept-bad-cookies t
+      w3m-use-tab nil
+      w3m-use-tab-menubar nil
+      w3m-auto-show nil)
+;; This might help in saving cookies
+(eval-after-load "w3m"
+  '(progn
+     (add-hook 'kill-emacs-hook
+               (lambda ()
+                 (w3m-quit t)))))
+
+
+;;;;;;;;;;;;;;;;;;;;
+;;; Local config ;;;
+;;;;;;;;;;;;;;;;;;;;
+
+(cond
+ ;; Settings specific to my home system
+ ((string-equal "forcix.kollektiv-hamburg.de" (system-name))
+  (setq gc-cons-threshold 4000000))
+
+ ;; Settings speicifc to the MacOS X at work...
+ ((eq window-system 'mac)
+  (when (string= default-directory "/")
+    (setq default-directory "~/"))
+  (setq mac-command-key-is-meta t
+        process-connection-type nil
+        mac-keyboard-text-encoding kTextEncodingISOLatin1)
+  (create-fontset-from-fontset-spec
+   "-apple-monaco-medium-r-normal--14-*-*-*-*-*-fontset-monaco,
+ascii:-apple-monaco-medium-r-normal--14-140-75-75-m-140-mac-roman,
+latin-iso8859-1:-apple-monaco-medium-r-normal--14-140-75-75-m-140-mac-roman")
+  (modify-frame-parameters (selected-frame)
+                           '((font . "fontset-monaco")))
+  (add-to-list 'load-path "/usr/local/oz/share/elisp")
+  (require 'oz))
+
+ ;; Settings specific to the computer science campus
+ ((string-match "informatik.uni-hamburg.de" (system-name))
+  ;; Use SCM here
+  (setq scheme-program-name "scm")
+  ;; SWI Prolog is pl
+  (setq prolog-program-name "pl")
+  ;; This isn't bound in CS, wonder why?
+  (global-set-key (kbd "M-SPC") 'just-one-space)
+  ;; add auctex to the load path
+  (add-to-list 'load-path "/opt/share/emacs/site-lisp/auctex/")))
+
+;;; Startup code
+(when (file-exists-p "~/.notes/Notes")
+  (find-file "~/.notes/Notes")
+  (setq default-directory "~/")
+  (require 'calendar)
+  (when (require 'org nil t)
+    (call-interactively 'org-agenda-list)))
+
+;;;;;;;;;;;;;;;;;
+;;; Customize ;;;
+;;;;;;;;;;;;;;;;;
+
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(font-lock-comment-face ((((class color) (background dark)) (:foreground "red")))))
+
+(put 'narrow-to-region 'disabled nil)
+(put 'scroll-left 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )

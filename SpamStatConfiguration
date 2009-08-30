@@ -1,0 +1,70 @@
+AlexSchroeder's configuration for SpamStat:
+
+    (require 'spam-stat)
+    (spam-stat-load)
+
+I do SplitMailUsingBbdb, and use spam-stat-split-fancy:
+
+    (setq nnmail-split-fancy
+          '(| ("Gnus-Warning" "This is a duplicate" "mail.spam.duplicates")
+              ;; HTML only is spam
+              ("Content-Type" "text/html" "mail.spam.filtered")
+              ;; weird character sets are spam, too
+              ("Subject" "=?ks_c_5601-1987" "mail.spam.filtered")
+              ;; spam filtering based on statistics
+              (: spam-stat-split-fancy)
+              ;; now use the BBDB to split -- note that all the groups
+              ;; this splits into must be used as "good" mails for
+              ;; spam-stat!
+              (: (lambda ()
+                   (car (bbdb/gnus-split-method))))
+              ;; the rest is probably for me
+              "mail.misc"))
+
+To train spam-stat, I must train it on the spam, and on the non-spam,
+and since I want very large dictionaries, I make sure that none of the
+groups I use here are expirable.  Here is a function I run every now
+and then when I think that too much spam is getting through again.
+
+    (defun my-spam-stat-reset ()
+      "Train my spam-stats."
+      (interactive)
+      (spam-stat-reset)
+      (spam-stat-process-spam-directory "~/Mail/mail/spam")
+      ;; This should list all mail directories that are not spam.
+      ;; It should exclude spam and filter directories.
+      (mapc 'spam-stat-process-non-spam-directory
+	    (non-spam-mail-directories))
+      (spam-stat-reduce-size)
+      (let ((coding-system-for-write 'emacs-mule))
+	(spam-stat-save)))
+
+Generally speaking, I want to use all my nnml mail folders as non-spam.
+There are a few exceptions, however: The "spam" hierarchy including "spam.filtered" (the spam I filtered by checking for weird coding system or by checking for a text/html content type without a text/plain alternative), "bogus", "news", "drafts" (groups Gnus will create automatically), and "sent" which is where I put temporary copies of mail I send out.  I use the following defun to produce that list.
+Note that all the files without a period in their filename will be processed in the list of directories returned, therefore make sure the list does not contain bogus directories on your system.
+
+    (defun non-spam-mail-directories ()
+      "Return non-spam directories."
+      (let (existing new
+	    (current (list nnml-directory)))
+	(while current
+	  (dolist (parent current)
+	    (message "Reading %s..." parent)
+	    (condition-case nil
+		(dolist (dir (directory-files parent t))
+		  (when (and (not (member (file-name-nondirectory dir)
+					  '("." ".."  "news" "drafts" "bogus"
+					    "sent" "spam" "duplicates" "archive")))
+			     (file-directory-p dir))
+		    (setq new (cons dir new))))
+	      (error (message "Cannot access %s" parent))))
+	  (setq existing (nconc existing new)
+		current new
+		new nil))
+	existing))
+
+'''Important''': When I get spam in my mail.misc group, or non-spam in my
+mail.spam group, I must move them to the correct group using `B m'.
+
+----
+SpamStat SpamFiltering CategoryGnus

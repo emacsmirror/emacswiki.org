@@ -1,0 +1,54 @@
+= Aquamacs 0.9.7 and newer - printing out-of-the-box =
+
+Aquamacs 0.9.7  supports printing with Preview and via the OS X printing system.
+No additional software needed.
+
+== Printing with ps-print-buffer? ==
+
+I do love the way Aquamacs prints but I would love to also use ps-print-buffer in conjunction with this. In particular I sometimes want to print with the nice headers and footers etc. ps-print-* provides. Does anyone have a suggestion on how to do this?
+
+-- sdt
+
+= For older versions: =
+
+Peter Dyballa, 23/5/2005, Emacs-on-OS-X mailing list:
+
+IMO Apple's software that converts PS to PDF is faulty, in Panther and probably Tiger too.
+
+When I do <nowiki>PostScript</nowiki> Print Buffer (or Region) or the same in (B+W) the actual functions used are ps-print-buffer-with-faces/ps-print-region-with-faces or ps-print-buffer/ps-print-region. They produce valid <nowiki>PostScript</nowiki> code. Right now the only support ISO Latin-1, so you see a message telling you that some characters can't be printed. If your printer is a <nowiki>PostScript</nowiki> one it has no problems to print the buffer or the region correctly, according to the limitation the glyphs have to be ISO Latin-1.
+
+If your printer is not PS, then there is the chance that the printed output can be strange looking. You get better results with Ghostscript. The Ghostscript script ps2pdf converts the PS code correctly to PDF that Preview or any other PDF viewer can display.
+
+Besides this you *should* do some customization by invoking M-x customize-group printing RET, and particularly ps-print and its subgroups. Then you'll see that you can't print in the fontset's face but are restricted to the usual 35 <nowiki>PostScript</nowiki> 1 fonts that are always built into the printer.
+
+If you have Ghostscript installed you can change the ps-print-* settings of the menu to the corresponding ps-spool-* functions. Now you 'print' into a buffer, <nowiki>PostScript</nowiki>. Marking this 'print' spool buffer's contents you can pass it to a UNIX command, ps2pdf, or ps2pdf12 or ps2pdf13 or ps2pdf14 for the PDF version you wish to get, with the options "- -". You get then a *Shell Command Output* with the PDF code. Now you can save this buffer to a file and print this file with Mac OS X.
+
+[new:DrewAdams:2005-06-22 16:44 UTC]
+Have you tried `<code>printing.el</code>'? Does it work with Aquamacs? It is a great printing package. See PrintingFromEmacs and PrintingPackage. -- DrewAdams
+ 
+== Installing all you need to print with Ghostscript ==
+
+Install a current GhostScript, e.g. using this nice package:
+
+* http://www2.kumagaku.ac.jp/teacher/herogw/ (in Japanese language)
+* http://www2.kumagaku.ac.jp/teacher/herogw/archive/gplgs041101.dmg
+
+Download the pdfpreview Emacs package here:
+http://homepage.mac.com/matsuan_tamachan/emacs/PdfPreview.html
+
+You can install the pdf-preview.el in your folder ~/Library/Application Support/Aquamacs Emacs/ if you like - then it'll be easily available. Use M-x pdf-preview to show a preview of the buffer, then print it from Preview if you're happy. You can use all of OSX's printing facilities.
+
+[new]2005-09-25 (Aquamacs 0.96)
+
+I downloaded and installed pdf-preview.el (see link above) into ~/Library/Preferences/Aquamacs Emacs/ and added the following to my preferences.el (located in the same folder):
+<pre>
+(load "pdf-preview")
+;; make Command-P work to print (pdf-preview-buffer)
+(global-set-key [(hyper p)] "\M-x pdf-preview-buffer")
+(global-set-key [(shift hyper p)] "\M-x pdf-preview-buffer-with-faces")
+</pre>
+
+Now Command-P churns out a ready-to-print black & white copy in Preview; Command-Shift-P produces a color Preview.  Perfect!
+(I didn't realize Ghostscript was necessary for this, but I already had it installed, so I can't say it's unnecessary.)
+----
+CategoryPrinting

@@ -1,0 +1,143 @@
+== Standard Emacs ==
+
+There are various way to copy the copy the current [[line]] to the [[kill ring]] in vanilla GnuEmacs:
+
+[:CopyLineWithMouse]
+__Using the mouse__
+* Triple-click `mouse-1' somewhere on the line.
+* Click `mouse-1' at the the start of the line, then click `mouse-3' at the start of the next or previous line.
+
+You can also use either of these mouse selection methods to select whole lines as the SecondarySelection -- just hold down the Meta key while you click.
+
+
+__Using the keyboard__
+* `C-a C-SPC C-e M-w' copies the current line without the newline.
+* `C-a C-SPC C-n M-w' copies the current line, including the newline.
+* `C-a C-k C-k C-y' kills the line with newline and yanks it back, in effect saving it to the kill ring. If ##kill-whole-line## is non-##nil##, it saves /two/ lines. 
+* `C-a C-k C-y' kills and yanks back the line without newline if ##kill-whole-line## is ##nil##, or including the newline otherwise.
+
+In the key sequences above, `C-a' goes to beginning of line, `C-e' goes to the end of line, `C-n' goes to the next line, `C-SPC' sets the mark, `M-w' saves the region, `C-k' kills from point to the end of line, and `C-y' yanks the last kill back.
+
+You can also copy whole lines using [ViperMode Viper]: ##yy## (current line), ##yj## (current + next etc.).
+
+
+== Enhancements ==
+
+This section presents some additional ways to copy a line, besides those available out of the box.
+
+# [[#NewCommands|Define a new command]] for copying the current line. It can then be bound to a shorter key sequence, e.g., '##C-c C-k##'.
+
+# [[#ModifyVanillaCommands|Modify the vanilla commands]], for some context-dependent behavior.
+
+[:NewCommands]
+=== New commands ===
+
+[:GeneralPurposeCopyLine]
+==== A copy-line with variable arguments ====
+
+    (defun copy-line (arg)
+      "Copy lines (as many as prefix argument) in the kill ring"
+      (interactive "p")
+      (kill-ring-save (line-beginning-position)
+                      (line-beginning-position (+ 1 arg)))
+      (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
+
+   ;; optional key binding
+   (global-set-key "\C-c\C-k" 'copy-line)
+
+==== A copy-line that uses kill-line in a read-only context ====
+
+Originally by GregReagle; improvements by [[Bodhi]].
+
+    (defun copy-line (&optional arg)
+      "Do a kill-line but copy rather than kill.  This function directly calls
+    kill-line, so see documentation of kill-line for how to use it including prefix
+    argument and relevant variables.  This function works by temporarily making the
+    buffer read-only."
+      (interactive "P")
+      (let ((buffer-read-only t)
+            (kill-read-only-ok t))
+        (kill-line arg)))
+    ;; optional key binding
+    (global-set-key "\C-c\C-k" 'copy-line)
+
+
+==== quick-copy-line ====
+
+[[Anonymous]]'s first EmacsLisp function.
+
+    (defun quick-copy-line ()
+      "Copy the whole line that point is on and move to the beginning of the next line.
+    Consecutive calls to this command append each line to the
+    kill-ring."
+      (interactive)
+      (let ((beg (line-beginning-position 1))
+            (end (line-beginning-position 2)))
+        (if (eq last-command 'quick-copy-line)
+            (kill-append (buffer-substring beg end) (< end beg))
+          (kill-new (buffer-substring beg end))))
+      (beginning-of-line 2))
+
+I bind this command to ##<f11>##. Hitting ##<f11>## multiple times appends each line to the [[kill ring]] (which is why the command moves to the beginning of the next line). This makes it really quick and easy to copy multiple lines.
+
+==== avi-kill-line-save ====
+
+I too always wondered why stock Emacs didn't have a convenient line copying keybinding, or even a function. There are ##C-w## (##kill-region##) and ##M-w## (##kill-ring-save##), but ##C-k## (##kill-line##) doesn't seem to have a counterpart that just saves the lines into the kill ring.
+
+This one behaves the same way as `kill-line', except that it doesn't move [[point]] at all, because I felt that it suits me the best this way. What I'd like to expand it with is the possibillity to be able to call it consecutively and copy multiple lines one for one, as ##quick-copy-line## does, and let this behaviour depend on a variable or a prefix. When I find time for that. As of now I use both functions with different keys, depending on the situation i need them. -- [[avi]]
+
+    (defun avi-kill-line-save (&optional arg)
+      "Copy to the kill ring from point to the end of the current line.
+    With a prefix argument, copy that many lines from point. Negative
+    arguments copy lines backward. With zero argument, copies the
+    text before point to the beginning of the current line."
+      (interactive "p")
+      (save-excursion
+        (copy-region-as-kill
+         (point)
+         (progn (if arg (forward-visible-line arg)
+                  (end-of-visible-line))
+                (point)))))
+
+
+
+[:ModifyVanillaCommands]
+=== Modifying the default commands ===
+
+One way that SlickEdit does is to change the copy and cut behavior so that if there's no region highlighted, by default it'll copy/cut the line where the [TextCursor cursor] is.
+
+I think this is a very neat hack, and VisualStudio.NET copied the idea.
+
+In Emacs, ##C-w## or ##M-w## will complain "The mark is not active now" if no region is selected.
+
+Can anyone suggest ways to implement this hack? Maybe some before/around/after advice for ##kill-ring-save## / ##kill-region##?
+
+[:SlickCopy]
+In the editors Visual !SlickEdit and !TextMate, "cut" and "copy" act on the current line when no text is selected -- one key press only. To implement this behavior in Emacs, use SlickCopy.
+
+[new]
+I spent friday night cooking up the solution. Although it's very simple but the learning experience is priceless -- MacChan
+
+[new]
+##M-w## with no selection copies the current line, ##C-w## kills it entirely, and ##C-a M-w C-y## duplicates it (cf. ‘##dd##’ and ‘##yyp##’ in [ViKeys vi]).
+
+    (defadvice kill-ring-save (before slick-copy activate compile)
+      "When called interactively with no active region, copy a single line instead."
+      (interactive
+       (if mark-active (list (region-beginning) (region-end))
+         (message "Copied line")
+         (list (line-beginning-position)
+               (line-beginning-position 2)))))
+
+    (defadvice kill-region (before slick-cut activate compile)
+      "When called interactively with no active region, kill a single line instead."
+      (interactive
+       (if mark-active (list (region-beginning) (region-end))
+         (list (line-beginning-position)
+               (line-beginning-position 2)))))
+
+[new]
+A more versatile solution is provided by [[Leo]]: if the region is active, ##M-w## behaves like normal, otherwise it copies an URL, e-mail address or the current line, in that order. ##M-w## followed by the key ##f##, ##l##, ##s## or ##w## copies file name, list, S-expression and word, respectively. See [[Leo|his page]] for more details.
+
+----
+CategoryRegion CategoryMouse

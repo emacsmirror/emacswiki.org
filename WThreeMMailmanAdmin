@@ -1,0 +1,20 @@
+I'm the list admin on a couple of GNU Mailman mailing lists.  Both of them get tremendous amounts of spam.  I get multiple messages a day about messages with "suspicious headers" needing approval.  The default operation is "Defer".  For the longest time I just let them build up because it was such a PITA to use mozilla to go through and click on "Discard" for all of them.
+
+Here's some WThreeM, KeyboardMacro goodness:
+
+ (fset 'mailman-discard-next
+   [?\C-s ?D ?i ?s ?c ?a ?r ?d ?\C-m down down left left return])
+
+Run this with the appropriate number of C-u's and all your pending messages will be marked "Discard".  You can then go through and figure out which ones you actually want to approve.
+The problem is that recent versions of Mailman use RFC2019 (which has since been made obsolete by RFC2965) for cookies and WThreeM doesn't support either type.  What that means is that when you submit pages to Mailman from WThreeM Mailman will punt on an error about misuse of keyword "version".  The trick is to remove your "Version" cookie before you submit the pages.  Here's a defun to make that easy:
+
+ (defun w3m-cookie-remove-version ()
+  (interactive)
+  (mapcar 
+   (lambda (cookie) 
+     (if (string= (w3m-cookie-name cookie) "Version") 
+	 (w3m-cookie-remove (w3m-cookie-domain cookie)
+			    (w3m-cookie-path cookie)
+			    (w3m-cookie-name cookie))))
+   w3m-cookies))
+

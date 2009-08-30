@@ -1,0 +1,39 @@
+[[en:HowToEdit]]
+Un wiki est un site web collaboratif. /Vous pouvez y contribuer/.
+
+Avant de vous lancer, il convient de prendre un peu de temps et de se
+rendre sur la page OrganisationDuWiki pour apprendre les rouages de
+EmacsWiki.
+
+* Pour editer une page *existante* du wiki, il suffit de cliquer sur
+le lien "Modifier cette page" visible dans la partie inferieure de la
+page.
+  
+  Raccourcis: avec certains navigateurs repandus, `M-e' ou 'C-e'
+  permettent d'editer une page sans avoir a cliquer. Il faudra
+  peut-etre valider le raccourci avec une pression sur la touche
+  RETURN.
+
+* OddmuseMode vous permettra d'editer EmacsWiki depuis Emacs.
+* MinorEdit -- qu'est-ce qu'un ChangementMineur
+* UserName -- comment signer vos contributions
+* TextFormattingRules -- syntaxe utilisee par le moteur de wiki Oddmuse
+* CreateNewPages -- comment ajouter de nouvelles pages sur le wiki.
+ 
+  Une maniere toute simple de commencer est d'ajouter votre UserName
+  sur la page CategoriePagePerso
+
+* ElispArea -- comment charger un fichier lisp sur le wiki.
+* UploadingImages -- comment ajouter des images sur le wiki.
+* UsingPortraits -- comment avoir un avatar sur le wiki.
+* SupprimerPage -- comment supprimer une page du wiki.
+* PageRedirection -- comment faire rediriger une page du wiki vers une autre.
+
+== Netiquette ==
+
+* [[MediaApproprié]] -- quand ou pourquoi utiliser ce wiki
+* CrossPosting -- regles pour copier un post USENET sur le wiki
+* IfYouRenameOrDeletePages -- comment gerer un renommage ou une suppression de page 
+
+
+Pour en savoir d'avantage, voir aussi la page CommentFaire.

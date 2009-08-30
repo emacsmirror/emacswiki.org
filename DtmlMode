@@ -1,0 +1,25 @@
+*DTML* (Document Template Markup Language) is Zope's scripting language. Zope is a great deal of fun to play with; but that discussion is obviously outside this wiki.
+
+* http://www.zope.org/
+
+DtmlMode is an elegent editing mode based on PsgmlMode. Configuring these modes is involved; but well worth the effort. There is a PsgmlMode page on this wiki. Alastair D. Burt's (DtmlMode's author) <nowiki>HowTo</nowiki> provides detailed instructions and further links.
+
+* http://www.zope.org/Members/alburt/dtml_mode.html
+* http://www.zope.org/Members/nemeth/usingEmacsWithZope
+
+== twiddle files ==
+
+Zope's contents live within a database. As such, no Zope elements are available via the filesystem. Normal editing within Zope is done via an http interface (much like this wiki). Optionally, Zope can open up ftp and WebDAV network sockets.  I haven't had much luck hooking emacs into WebDAV; but AngeFtp works well into the ftp socket.
+
+While using dtml-mode via AngeFtp, you really want to disable backup-files. This is because objects in the Zope database have a number of properties (e.g. //object type//, //title//, etc.) which are not accessible via the ftp interface.  While a variety of object-types are editable via ftp; all newly created objects are //DTML Document//. Emacs' normal backup-file process renames the visited file to <tt>[filename]~</tt> and then creates a copy with the old name. In Zope, this has the unfortunate side-effect of changing the object's type to //DTML Document// and deleting any existing properties.
+
+    (for-each
+     (function
+      (lambda (list)
+	(apply 'add-after-load-alist list)))
+
+     '(("dtml-mode"
+	(setq make-backup-files 			nil))))
+
+-----
+CategoryModes

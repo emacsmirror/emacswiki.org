@@ -1,0 +1,18 @@
+== Compiler automatiquement son .emacs ==
+
+Quand le fichier de configuration d'Emacs grossit, le compiler permet d'accélérer son chargement. Les fonctions qu'il contient sont également plus rapides.
+Voici une des nombreuses façons d'automatiser cette compilation : à chaque sauvegarde du fichier d'initialisation (en général .emacs), celui-ci est compilé.
+
+    ;; dans le .emacs
+    (defun compile-init-file ()
+      (let ((byte-compile-warnings '(unresolved)))
+        (byte-compile-file user-init-file)
+        (message "Emacs init file saved and compiled.")))
+    (defun my-emacs-lisp-mode-hook ()
+      ; rajouter ici le code souhaité, par exemple : (turn-on-eldoc-mode)
+      (if (string-equal buffer-file-name (expand-file-name user-init-file))
+          (progn (add-hook 'after-save-hook 'compile-init-file t t)
+    	     )))
+    (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+
+On pourrait opter pour une autre démarche : compiler en quittant Emacs, à chaque démarrage d'Emacs si la source est plus récente que la compilation, à la fermeture du buffer .emacs, etc.

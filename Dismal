@@ -1,0 +1,17 @@
+A SpreadSheet mode by FrankRitter (frank.ritter @ psu.edu):
+
+* http://acs.ist.psu.edu/projects/dismal/dismal.html
+
+The introduction warns against bugs and missing features, but this is
+certainly the one which has been around the longest.  It is no
+longer in hugely active development, but I (FER, 29/dec/08) am still around to answer questions.
+There is a manual and some example uses of it have been published in conferences and also in a journal.  It is also part of the Emacspeak (audio interface) desktop
+http://emacspeak.sourceforge.net/applications.html
+
+You would be very welcome to merge it with another spreadsheet, or take over development.
+
+
+----
+CategoryCalculators
+CategoryFinancial
+CategoryModes

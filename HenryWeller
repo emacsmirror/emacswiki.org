@@ -1,0 +1,64 @@
+== What I use Emacs for ==
+
+I have been using [[Emacsen]] almost exclusively since 1990, [[XEmacs]] since
+release, but moved to GnuEmacs about two years ago and regret not having made
+the move sooner.  I now download and build GnuEmacs from the CVS repository
+weekly.
+
+I use GnuEmacs for pretty much everything from code and document editing,
+information organization, Email and most recently as a shell.  My favourite
+packages are CcMode, AUCTeX, OrgMode, WanderLust, BbdbMode, [[Eshell]],
+[[Magit]], [[EMMS]], [[Icicles]], [[Anything]] and CompletionUI.  For
+web-browsing I have changed from [[emacs-w3m]] to the excellent [[Conkeror]]; if
+only it was written in Lisp/Scheme rather than JavaScript.  Also in a fit of
+Emacsophilia I changed from !IceWM to the StumpWM window manager which is very Emacs like in configuration (in
+CommonLisp) and use.
+
+== Emacs Lisp packages in progress ==
+
+: Here are some emacs packages I have been toying with I hope some of this is
+useful to someone.
+
+=== Completion-UI extensions ===
+
+: These provide additional source functions I have written (with a great deal of
+help from TobyCubitt) for the excellent CompletionUI to interface it to
+InteractiveSpell, EmacsLisp, BbdbMode, OrgMode and ProgrammableCompletion for
+the [[Eshell]].
+
+* Lisp:completion-ui-more-sources.el -- Completion-UI more completion sources.
+* Lisp:thingatpt-ext.el -- Thing at point extensions (required by completion-ui-more-sources.el).
+
+: This is an extension to CompletionUI I am developing to allow convenient
+switching between the many completion mechanisms.
+
+* Lisp:completion-selection.el -- Completion mechanism selection for completion-ui.
+
+=== Org-mode extensions ===
+
+: These are two of the OrgMode extension packages I am playing with.
+
+* Lisp:org-pua.el -- Org based pop-up annotation system.
+* Lisp:wn-org.el -- An org-mode interface for Word Net.
+
+== Emacs Configuration Files ==
+
+: Here are a few of my Emacs configuration files.  The contents of these files
+has been cobbled together from many sources, in particular this Wiki, many
+mailing lists, the web and of course by reading the documentation and source
+code of GnuEmacs itself and the many add-on packages which are readily
+available.
+
+* Lisp:hgw-init-wl.el -- Configuration file for the Wanderlust Email client.
+
+== A Word of Thanks ==
+
+I would like to thank all those who organize and contribute to this excellent
+Wiki, which adds greatly to the pleasure of configuring, extending and using
+Emacs.
+
+----
+Welcome to wiki! :) -- AndyStewart
+
+----
+CategoryHomepage

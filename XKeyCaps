@@ -1,0 +1,35 @@
+<nowiki>XKeyCaps</nowiki> is a graphical tool by JamieZawinski that
+allows one to click on a picture of one's keyboard and manipulate the
+keysyms and modifier bits associated with one's keys in real time.
+When you're done, <nowiki>XKeyCaps</nowiki> can generate an XModMap
+input file so that you can persist your key rebindings at startup.
+This is interesting for Emacs users, since we are some of the last X
+users who actually care about modifier keys other than "shift" and
+"control."
+
+In addition to allowing you to ignore XModMap (certainly a benefit),
+<nowiki>XKeyCaps</nowiki> also prevents you from committing all kinds
+of common sins with your keymap.  For example, it will warn you if you
+try to assign a modifier bit to a key that generates an incompatible
+keysym, if you try to assign the same modifier bit to keys with
+semantically different keysyms, etc.
+
+You can download a copy of the source code at
+http://www.jwz.org/xkeycaps/, although users of FreeSoftware operating
+systems will probably have binary packages available to them.
+
+A tutorial on keysyms, keycodes, modifier bits, etc. is
+contained in the [http://www.jwz.org/xkeycaps/man.html#7
+XKeyCaps manual page].  If you have never dealt with the X keyboard
+model before, it's an entertaining bit of information.  By
+"entertaining" I mean "nauseating," and by "information" I mean
+"indescribable pain."
+
+Note that there hasn't been a new release of <nowiki>XKeyCaps</nowiki>
+since 1999, and JamieZawinski has officially orphaned the
+project.  That said, one shouldn't have a problem with the 1999 version
+of the program, excepting possibly
+some new, impossibly eccentric keyboard.
+
+----
+CategoryKeys MovingTheCtrlKey MetaKeyProblems

@@ -1,0 +1,6 @@
+elk-test is a testing framework and front-end for Emacs Lisp.  (It can use FringeHelper to highlight errors.)
+
+It is available at:
+http://nschum.de/src/emacs/elk-test
+
+http://nschum.de/src/emacs/elk-test/elk-test.png

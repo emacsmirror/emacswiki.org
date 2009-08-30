@@ -1,0 +1,65 @@
+'''Cette page fait partie de la description de OneOnOneEmacs, par DrewAdams.'''
+
+Cette page n'est pas a jour -- voir la version anglaise:
+
+This page is also available in English: [[Shrink-Wrapping Frames]]
+
+*  
+*  
+*  
+
+Un des avantages qu'a un [[Frame]] par rapport a une fenetre ([[Window]]) Emacs c'est qu'un frame peut etre taille au buffer qu'il affiche. Avec des fenetres Emacs, ca n'aurait pas de sens, car differentes fenetres Emacs "en mosaique" dans le meme frame ont tous la meme hauteur ou la meme largeur. (On peut varier la hauteur ou la largeur de ''toutes'' les fenetres en mosaique dans le meme sens, mais ca n'est pas trop naturel.)
+
+Ce n'est pas seulement possible de tailler les frames ; c'est aussi tres utile. Ca fait que le texte de la plupart des buffers ''n'est jamais tronque ni contourne'' (wrapped around). Et ca fait que le ''frame n'est jamais trop grand'' pour le buffer. Le frame est toujours la bonne taille.
+
+J'ai defini une command `fit-frame' qui taille un frame pour correspondre a sa fenetre (buffer) selectionnee.
+
+
+Voici qq captures d'ecran :
+
+* Frame trop large et trop court :
+: [[image:DrewsEmacsShrinkWide]]
+
+* Frame trop etroit et trop grand :
+: [[image:DrewsEmacsShrinkNarrow]]
+
+* Frame de la bonne taille -- resultat de la commande `fit-frame' :
+: [[image:DrewsEmacsShrinkFit]]
+
+La taille est calculee automatiquement par `fit-frame', mais il existe des variables utilisateurs qui te permettent de controller ce calcul. Et, avec argument prefixe, la commande `fit-frame' ne calcule rien -- elle te demande des valeurs pour la largeur et la hauteur. Enfin, un argument prefixe negatif a pour effet d'utiliser la valeur de la variable `fill-column' pour la largeur.
+
+Puisque j'ai trouve cette fonctionnement si utile, j'ai decide de ''tailler tous les frames de facon automatique'', par defaut. Pour faire cela, le premier etape etait d'utiliser la commande `fit-frame' comme accroche (hook) lors de la creation d'un frame :
+
+  (add-hook 'after-make-frame-functions 'fit-frame)
+
+Ca fait l'affaire pour des frames crees par l'utilisateur, mais que faire lorsqu'un nouveau buffer s'affiche dans un frame existant ? Pour repondre a ce besoin, j'ai fait des modifications au comportement de base d'Emacs pour utiliser des frames au lieu des fenetres Emacs, de facon generale. Pour fair en sorte qu'Emacs taille tous les frames quand il faut, j'ai redefini qq fonctions importantes pour qu'elles appellent la fonction `fit-frame' au bon moment.
+
+Chacune de ces fonctions a ete modifiees pour tailler le frame actuel si la fenetre de son buffer est seule dans le frame :
+
+* `pop-to-buffer'
+* `display-buffer'
+* `switch-to-buffer'
+* `Info-find-node'
+* `special-display-popup-frame'
+* `occur'
+
+J'ai ajoute aussi la fonction `fit-frame-if-one-window' a `temp-buffer-show-hook'. Cette accroche (non documente en Emacs 20) est utilisee par qq fonctions Emacs standards -- par exemple, `pp-eval-expression'. (La fonction `fit-frame-if-one-window' appelle la fonction `fit-frame' si le frame a une seule fenetre Emacs.)
+
+Apres avoir fait ca, j'ai cree qq variables utilisateurs pour activer/desactiver l'ajustage automatique de frames.
+
+Dans qq cas, j'ai utilise ces variables pour inhiber un ajustage de frame inapproprié par des fonctions standards d'Emacs. Par exemple, dans la fonction `compile-internal' d'Emacs 20, qui effectue une operation `make' ou `grep' et affiche les resultats de l'operation, j'ai utilise`inhibit-fit-frame' pour inhiber un adjustage prematurre du frame par `display-buffer' : 
+
+  (let ((inhibit-fit-frame t)) (display-buffer outbuf))
+
+'''Voir les packages :''' 
+* Lisp:autofit-frame.el et Lisp:fit-frame.el taillent les frames. Lisp:fit-frame.el contient aussi des commandes, dans Windows, pour maximiser et restaurer un frame.
+* Lisp:frame-cmds.el a des commandes pour tailler un frame de facon ''incrementale''(avec les cles fleches).
+* Lisp:zoom-frm.el a des commandes pour ''zoomer'': changer la taille d'un frame et de sa police de caracteres.
+* Lisp:doremi-frm.el a des commandes pour tailler un frame de facon ''incrementale''(avec les cles fleches ou la roue de la souris).
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay
+
+
+
+

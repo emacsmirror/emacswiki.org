@@ -1,0 +1,13 @@
+Three years ago, not so long after I became an emacser, I started to customize my favorite editor. During this time I developed a number of emacs enhancements that I still use daily with great satisfaction. Due to time constraints, however, I cannot provide a proper introduction for all of them, so I'm going to post "as is". Feel free to contact me at (dmr at c0nc3pt dot com) for extensions, information, ideas, etc.
+
+Further stuff - not necessarily emacs-related - can be found in my personal [http://www.c0nc3pt.com homepage]
+
+[new]
+Cool! Posting as-is is not a problem. Welcome to the wiki. -- AlexSchroeder
+
+==Projects==
+
+Lisp:flyspell-guess.el --- flyspell dictionary guesser
+
+----
+CategoryHomepage

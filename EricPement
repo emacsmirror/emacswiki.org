@@ -1,0 +1,34 @@
+I use Emacs. I guess it really started in 1984, when I got my first Kaypro computer.
+It used the CP/M operating system and came with two word processors: <nowiki>WordStar</nowiki>
+and Perfect Writer. I used both of them quite a bit, and found out years later that
+Perfect Writer was an Emacs clone for CP/M: same look, feel, keybindings, commands,
+swap file, all the rest. Perfect Writer was nearly bulletproof software--you might lose
+a file in <nowiki>WordStar</nowiki>, but never in Perfect Writer.
+
+I graduated to GNU Emacs when I switched to DOS a few years later, and have been using it
+ever since. Here are a few things I've tried to contribute to the Emacs community:
+
+* Understanding GNU Emacs and Tabs - http://www.pement.org/emacs_tabs.htm
+* Some awk scripts to convert Emacs OutlineMode to real outline formats
+** Change to classic format (I, A, 1, a ...) - [http://www.pement.org/awk/outline_classic11.awk.txt]
+** Change to numbered format (1, 1.1, 1.1.1 ...) - [http://www.pement.org/awk/outline_numbered11.awk.txt]
+* emacs131.zip - Make Multi-Edit for Windows emulate the keybindings for Emacs;
+this file works for ME version 7.11 and 8, but it's not optimized for Multi-Edit 9.+ yet. I was working on it, so if you're curious, email me. - visit 
+http://www.pement.org/develop/ and scroll down.
+* emacs_key.zip - keymap redefinition file to make PFE (Programmer's File Editor) emulate the keybindings of GNU Emacs, as much as possible - visit
+http://www.pement.org/develop/ and scroll down
+
+
+My home page is here: http://www.pement.org/
+
+[new]
+: Hello and welcome to the wiki!  Funny that I wrote RenumberList just
+the other day.  It is not very sophisticated, but somebody ;) could
+expand it... -- AlexSchroeder
+
+[new]
+: I read some of your Awk scripts not too long ago, and just came upon your "Emacs Tabs"
+document, and discovered it was authored by the same character.  Keep on hacking.  --AaronHawley
+
+----
+CategoryHomepage

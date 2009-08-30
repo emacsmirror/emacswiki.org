@@ -1,0 +1,20 @@
+ This page is empty.
+
+I consider existence of this page[[#1]] a bug of OddmuseMode, which initializes oddmuse-username from user-full-name, which is almost certain to contain a space between first- and lastname.
+
+How about something like this to initialize oddmuse-username?
+
+ (replace-in-string user-full-name "[ .,]" "")
+
+AdrianAichner
+
+Footnotes:
+
+[:1][1]  OK, I created this page manually, I must admit.  But having OddmuseMode signing changes with the value of user-full-name by default is likely to cause users to create such pages by accident.
+
+[new]
+It is true, there is a convention on this wiki and on many others to use CamelCase for a username. But that is not a technical requirement. And who is to say that this convention will remain? On oddmuse.org I no longer follow this convention, for example. Either way, OddmuseMode will be sending a signal. I'm just saying that it isn't obvious (to me) which signal we ought to send. -- AlexSchroeder
+
+[new]
+
+I see.  I thought the CamelCase convention was a stronger one.  Since that's not the case I'm happy to leave things as they are. -- AdrianAichner

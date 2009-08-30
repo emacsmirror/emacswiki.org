@@ -1,0 +1,5 @@
+This addon to ProtBuf is used for ProtectingBuffers with certain names, or matching certain functions or regexps.
+
+Lisp:protbuf-by-name.el
+
+Install this library and ProtBuf, load it, then M-x customize-group protect-buffer.

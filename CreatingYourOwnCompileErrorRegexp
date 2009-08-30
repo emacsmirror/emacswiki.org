@@ -1,0 +1,49 @@
+<code>compilation-error-regexp-alist</code> is used to parse the CompilationMode buffer, and allow you to jump from compile error messages directly to the problem in the source line.
+
+The default entries in Emacs work for many compilers, but not all, so here's some tips to allow you to add support for your own compiler.  Or you might find it useful if you have your own wierd parser, custom build scripts, or even perl HTML templating engine, you can use this method to filter through the compile output, and take you directly to the problem.
+
+The operative part should be a simple regexp, and it is, but the tricky bit is getting it to work.  Some subtle differences between Emacs and XEmacs are particularly tedious.  In Emacs you can just add to <code>compilation-error-regexp-alist</code>, but in XEmacs you're supposed to add to <code>compilation-error-regexp-alist-alist</code> and then call <code>compilation-build-compilation-error-regexp-alist</code> to construct the plain list.  And for extra confusion Emacs 22 also has a <code>compilation-error-regexp-alist-alist</code>, but in a different format (and not needing an explicit "build").
+
+[new]
+Here's an example by TimOCallaghan to support the native HP/Compaq <nowiki>OpenVms</nowiki> C compiler output in XEmacs.
+
+<pre>
+;; add vms to the systems list for the error alist creation
+(pushnew '(vms ("^at line number \\([0-9]+\\) in file [A-Z]+:\\[[A-Z0-9\\.]+\\]\\([A-Z0-9]+\\.[A-Z]+\\)" 2 1))
+         compilation-error-regexp-alist-alist)
+
+;; the only system i want to support compiler output from is VMS
+(setq compilation-error-regexp-systems-list (list 'vms))
+
+;; rebuild the compilation-error-regexp-alist
+(compilation-build-compilation-error-regexp-alist)
+</pre>
+
+For more information on how to brew your own <code>compilation-error-regexp-alist</code> type <code>M-? v compilation-error-regexp-alist</code>.
+
+-- TimOCallaghan
+
+[new]
+The above did not work for me, but the following link was helpful:
+http://www.tddft.org/programs/octopus/wiki/index.php/Emacs_helpers.
+To get g95 to work first tried to add to f90-mode-hook:
+
+  (add-hook 'f90-mode-hook (lambda ()
+    (add-to-list 'compilation-error-regexp-alist '("^In file \\(.*?\\):\\([0-9]+\\)$" 1 2))
+    ))
+
+Unfortunately this only worked if I evaluated it manualy (with M-x eval-region or M-x load-file), but when I tried running it from .emacs it gave a "File mode specification error". I suspect that is some sort of bug in Emacs (my version is 23.0.0.1, on Ms Windows), so I ended up adding the following line to the definition of ##compilation-error-regexp-alist-alist## in compile.el (located in ##.../lisp/progmodes##):
+
+   (g95 "^In file \\(.*?\\):\\([0-9]+\\)$" 1 2)
+
+(and then did M-x byte-compile-file compile.el). Of course this will not survive a reinstallation of Emacs!
+
+-- KristjánJónasson
+
+[new]
+Usually additions to <code>compilation-error-regexp-alist</code> (etc) can only be made after <code>compilation-mode</code> has loaded.  I use <code>(eval-after-load "compile" ...)</code>, as I suspect the standard <code>compilation-mode</code> hooks are run too late to make additions there.
+
+-- KevinRyde
+
+----
+CompilationMode

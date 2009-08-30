@@ -1,0 +1,44 @@
+== Bookmark Jumping ==
+
+I could not figure out how to give bookmark-menu-jump an event to simulate the menu it is normally called from so I hacked together this:
+
+    (defun my-bookmark-menu-jump ()
+      (interactive)
+      (bookmark-jump (x-popup-menu 
+                      (list '(400 200) (selected-window)) 
+                      (bookmark-menu-build-paned-menu 
+                       "Select bookmark" 
+                       (bookmark-all-names)))))
+
+    (global-set-key "\C-cb" 'my-bookmark-menu-jump)
+
+Now I can happily jump to a [[bookmark]] using the arrow [[key]]s (no, I don't like the normal bookmark-jump because it does not work like iswitchb does).
+If anyone knows how to avoid this hack or how to get the menu center regardless of screen resolution, please enhance the function above.
+
+== Emacs 22 ==
+
+The above appears not to work in emacs 22.
+
+I was able to get it to work by using:
+
+    (global-set-key [C-down-mouse-1] (lambda (e)
+                                   (interactive "e")
+                                   (bookmark-jump (bookmark-menu-popup-paned-menu 
+                                     e 
+                                     "Select bookmark"
+                                     (bookmark-all-names)))))
+
+=== Using iswitchb ===
+
+Here is an example how you can use `iswitchb' to jump to bookmark:
+
+    (defun my-switch-to-bookmark (bname)
+      "Interactively switch to bookmark as `iswitchb' does."
+      (interactive (list (flet ((iswitchb-make-buflist
+    				 (default)
+    				 (setq iswitchb-buflist (bookmark-all-names))))
+    			   (iswitchb-read-buffer "Jump to bookmark: "))))
+      (bookmark-jump bname))
+
+----
+CategoryHypermedia

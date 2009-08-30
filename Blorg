@@ -1,0 +1,23 @@
+Publish a blog with an OrgMode file.
+
+http://www.cognition.ens.fr/~guerry/u/blorg.el
+
+Blorg uses an OrgMode file to publish a static html blog with many of the features of dynamic blog engines (tags, rss feeds, and archive views). The blog views are created dynamically each time the blog is published from the file. 
+
+On his web page[http://lumiere.ens.fr/~guerry/bastien-org-mode.php], the author[BastienGuerry] of blorg says that he no longer maintains it, because he plans to rewrite it on top of OrgPublish. 
+
+A basic blorg configuration & template can be found in a git repo here: http://github.com/RickMoynihan/sourcesmouth-blorg-theme/tree/theme-branch
+
+Here are some blogs in the wild created with org:
+
+* http://sourcesmouth.co.uk/blog/
+* http://home.arcor.de/u.jochum/index.html
+* http://www.wsl.ch/staff/adrian.lanz/
+
+None of them seem to be actively maintained.
+
+----
+BastienGuerry 
+OrgMode
+OrgBlog
+

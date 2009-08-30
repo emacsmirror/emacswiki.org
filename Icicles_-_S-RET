@@ -1,0 +1,85 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Alternative Libraries]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Completions Display]] ||
+
+----
+
+== Exiting the Minibuffer Without Confirmation ==
+
+Normally, if you exit the [[minibuffer]] with input that only
+partially matches a [[completion]] candidate, the value you input is
+exactly what you typed.  That is, exiting does not automatically
+complete your input -- what you type is what you get.  This is '''[::lax]''' (or '''permissive''') completion, and it is
+desirable most of the time, because it lets you input a value that
+does not correspond to any of the completion candidates.  This is
+how, for instance, you can use `C-x C-f' to open a new file or
+`C-x b' to create a new [[buffer]].
+
+However, some people prefer "'''strict'''" completion:  limiting input to the available
+completion candidates.  This can be handy in the case of switching
+to a buffer, for instance.  If you have a buffer named
+`##new-ideas.txt##', you might like to be able to type only `new'
+followed by `RET', and not have to first complete the input text.
+This is the behavior of libraries `##ido.el##' and `##iswitchb.el##'.
+
+It is the [[command]] you use that decides whether `RET' first
+completes your input before exiting the minibuffer (strict completion) or not (lax completion).  This is done
+in the command definition by providing a non-`nil' or `nil' `REQUIRE-MATCH'
+argument to function `completing-read', which prompts you and
+reads your input, possibly completing it.
+
+If you use standard Emacs command `switch-to-buffer' then completion is lax:  `RET' does not complete your input `new' to
+`##new-ideas.txt##'; it simply accepts your input as is, and
+creates a new buffer with that name, `new'.  
+
+=== Using `S-RET' to Accept a Partial Match ===
+
+By default, '''Icicles''' command '''`icicle-buffer'''', not `switch-to-buffer', is bound to `C-x b' in ''Icicle'' mode.  The default behavior of `icicle-buffer' is the same as the behavior of `switch-to-buffer' with respect to `RET'.  However, you can obtain the complete-and-exit `RET' behavior with `icicle-buffer' by
+setting [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-require-match-flag|icicle-buffer-require-match-flag]]</tt>'''' to
+`partial-match-ok'.  This value overrides the `REQUIRE-MATCH'
+argument to `completing-read', in effect forcing it to `t'.
+
+Whenever completion is ''strict'', requiring a match against one of the
+completion candidates (typically, an existing file or buffer
+name), you can complete and exit the minibuffer all at once, with
+only partial input in the minibuffer, by using `RET'.  But what
+about ''apropos'' completion?  Simply use '''`S-RET'''' (`icicle-apropos-complete-and-exit') instead of `RET': `RET' is
+standard in Emacs and uses [[prefix completion]]; `S-RET' is specific
+to '''Icicles''' and uses [[apropos completion]].  For example, you can type
+`idea' followed by `S-RET' to switch to buffer `##new-ideas.txt##'.
+
+'''Note:''' You can customize '''`icicle-top-level-key-bindings'''' to
+prevent the rebinding of `C-x b' in ''Icicle'' mode.
+
+
+=== Accepting Partial Matches by Default ===
+
+For those people who prefer that a partial match always be
+accepted immediately, regardless of the context (whether a match
+is required or not) and without having to use `RET' or `S-RET', there is
+'''Icicles''' user option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>''''.
+If you set this to non-`nil', then, whenever your input matches only one
+candidate completion, that candidate is used immediately.  I don't
+recommend this practice, but some people might prefer it.
+
+----
+
+|| *Previous:*  [[Icicles - Alternative Libraries]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Completions Display]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

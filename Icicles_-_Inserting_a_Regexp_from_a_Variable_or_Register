@@ -1,0 +1,79 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Moving Between the Minibuffer and Other Buffers]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Special Characters in Input Patterns]] ||
+
+----
+
+== Inserting a Regexp from a Variable or Register ==
+
+[[regexp | Regexps]] are powerful, but they can sometimes be complex to compose
+and hard to remember, once composed.  A shortcut is to compose a
+regexp that you want to use and assign it to an Emacs
+[[variable]] or register.
+
+If you assign it to a register (using `C-x r s'), then you can use
+`C-x r i' (`insert-register') in the [[minibuffer]] to insert it.  If
+you assign it to a string, then you can use '''`C-='''' 
+(`icicle-insert-string-from-variable') to insert it.
+
+
+If you use `##C-u C-=##' (provide a [[prefix argument]]) then you are
+prompted for the variable to use.  You can use any variable.
+Without `C-u', the default variable is used (no prompting),
+'''`icicle-input-string''''.  So, for example, if `icicle-input-string'
+had value ##"[a-zA-Z]+"## then it would match any [[completion]] candidate
+composed only of letters.  You can customize `icicle-input-string'.
+
+For convenience, instead of using Lisp evaluation of a [[sexp]] such
+as ##(setq icicle-input-string "[a-zA-Z]+")## or ##(setq my-var ".*")##,
+you can use '''Icicles''' command '''`icicle-save-string-to-variable'''' to
+save a regexp to a variable.  You are prompted for the regexp to
+save.  Just as for `icicle-insert-string-from-variable', with a
+prefix argument you are prompted for the variable to use; with no
+prefix argument the regexp is saved to variable
+`icicle-input-string'.
+
+Another way of inserting a string into the minibuffer is to use a
+negative prefix arg with `##M-:##'
+(e.g. `##M-- M-:##') during minibuffer
+input.  With this method, you can type not only a string-valued
+variable name but any EmacsLisp expression that evaluates to a
+string.
+
+These shortcut features are especially convenient for use with
+command `icicle-search' -- you can use it to search text for
+sentences, paragraphs, file names, URLs, dates, times, function
+definitions, and any other text entities that
+you can specify by regexp.  Create a ''library'' of regexp-valued variables that are
+useful to you, and use `C-=' to quickly access them in
+`icicle-search'.  See [[Icicles - Search Commands, Overview]] for
+more information.
+
+'''See Also:''' [[Icicles - Inserting Text from Cursor]]
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Moving Between the Minibuffer and Other Buffers]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Special Characters in Input Patterns]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

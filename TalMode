@@ -1,0 +1,40 @@
+[http://www.emacswiki.org/elisp/tal-mode.el tal-mode.el] provides emacs support for both TAL (Transactional Application Language) and pTAL (its 'portable' version).  These are proprietary programming languages used on Tandem/NSK/Guardian systems.  See the TandemNskSupport page for other Tandem specific modes.
+
+Put the .el file into a directory in your LoadPath and add the following to your ~/.emacs file:
+
+    (autoload 'tal-mode "tal-mode" "A major mode for editing TAL files." t nil)
+
+
+When you are visiting a TAL source file you can use 'M-x tal-mode' to activate the mode.
+
+For best performance you should byte compile .el files but it's not required.  
+A CompiledFile usually runs faster.  
+There should be no warnings when compiling this file.  
+
+See the TandemNskSupport page for a method of automatically recognizing the language of Tandem files since they don't have an extension and coders often can't stick a  -*-tal-*-  comment in line 1.
+
+
+=== ElDoc Support ===
+
+[http://www.emacswiki.org/elisp/tal-mode.el tal-mode.el] now supports the ElDoc minor mode.  
+
+A function that builds eldoc compatible help from files such as $SYSTEM.SYSTEM.EXTDECS0 or other external declaration files has been added.  There is also a keystroke to dynamically add similar help entries for functions declared in the file you are currently editing.
+
+Open a file containing external declarations.  Run M-x tal-make-eldoc-list <ret>.  A buffer containing eldoc help is created.  You can modify the help strings if you really want to.  Save the buffer with a descriptive name like tal-extdecs.el and then make sure the filename is on the tal-eldoc-def-files list.  The next time you enter tal-mode the definitions will automatically be loaded into eldoc.
+
+
+=== Auto Indent ===
+
+At long last some automatic indentation support is ready for beta testing.  There is no formal configuration in this version.  You've got to change the source.  That area is being reworked.  Meanwhile, let me know if there are any problems with the functionality that is present.
+
+The current version of tal-mode.el will automatically use tal-indent.el if it finds the module on your load path.  Simply put [http://www.emacswiki.org/elisp/tal-indent.el tal-indent.el] on your load path.  Byte compile it if you like.  Then use tal-mode as usual.
+
+=== Downloading ===
+
+If you are unfamiliar with this site, you can get files from the ElispArea.
+
+Or go directly to [http://www.emacswiki.org/elisp/tal-mode.el tal-mode.el] or [http://www.emacswiki.org/elisp/tal-indent.el tal-indent.el] from [http://www.emacswiki.org/elisp/index.html here].
+
+
+----
+ProgrammingModes

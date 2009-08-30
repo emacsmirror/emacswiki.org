@@ -1,0 +1,72 @@
+I just read some Terry Pratchett, and came across an Igor section.
+As we all know, Emacs can do everything, so here is what I 
+ended up doing:
+<pre>
+ (defun igor-reformat-buffer ()
+   (let ((ruleth '("\\bsir\\b" "thur"
+                   "ce" "the"
+                   "ci" "thi"
+                   "cy" "thy"
+                   "ation" "athion"
+                   "s" "th")))
+     (while ruleth
+       (goto-char (point-min))
+       (while (re-search-forward (car ruleth) nil t)
+           (replace-match (nth 1 ruleth) nil t))
+         (setq ruleth (cddr ruleth)))
+       (remove-text-properties (point-min) (point-max) '(personality)))) 
+</pre>
+For those fans of <code>loop</code>, this could also be written as:
+<pre>
+(defun igor-reformat-buffer ()
+  (let ((ruleth '("\\bsir\\b" "thur"
+                  "ce"        "the"
+                  "ci"        "thi"
+                  "cy"        "thy"
+                  "ation"     "athion"
+                  "s"         "th")))
+    (loop for (word sub) on ruleth by #'cddr do ; destructure `ruleth'
+          (goto-char (point-min))
+          (loop while (re-search-forward word nil t) do
+                (replace-match sub nil t)))
+    (remove-text-properties (point-min) (point-max) '(personality))))
+</pre>
+Anyhow, on with the show.
+<pre>
+ (defun igor-tetht (thtring)
+   (interactive "sText: ")
+   (with-temp-buffer
+     (insert thtring) (igor-reformat-buffer) (message (buffer-string)))) 
+
+ (defun erc-igor-output (thtring)
+   (with-temp-buffer
+     (insert thtring)
+     (igor-reformat-buffer)
+     (setq str (buffer-string))))
+
+ (add-hook 'erc-insert-modify-hook 'igor-reformat-buffer)
+ ; And for those very extreme:
+ (add-hook 'erc-send-pre-hook 'erc-igor-output)
+</pre>
+The replace-match code does have problems with text-properties, 
+that's why I had to put the remove-text-properties call in there 
+to get emacspeak to behave nice again. Any ideas on that?
+Anyway, it's fun, and ViaVoice seems to pretty nicely pronounce 
+this :) 
+
+Here is an example of what terrible things will happen if you do 
+this: 
+<pre>
+ <mihtjel> I'm thure I've heard the thoundtrack on TV thometime..
+ <Joy> i'm wondering if the movie ith worth watching
+ <mihtjel> dunno
+ <Robot101> Joy: yeth, it'th good.
+ <broonie_laptop> Joy: It ith.
+ <mihtjel> Robot101: What kind of movie ith it?
+ <Robot101> mihtjel: a tom hankth movie =)
+ <mihtjel> ah.. then ;)
+ <Robot101> it'th a thob thtory to thome extent
+ <Robot101> but it hath a thpooky athpect
+</pre>
+----
+MarioLang, [[ERC]]

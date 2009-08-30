@@ -1,0 +1,11 @@
+This is a minimalistic html browser with no external dependencies.  Lisp:ewb.el
+
+Bugs in the macros which expand inside of font-lock could cause it to go haywire.
+
+If that happens, press C-g several times.  If a page locks up Emacs, please paste the URL here.
+
+=== URLs which cause problems ===
+
+
+----
+CategoryHypermedia, PatrickAnderson

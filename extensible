@@ -1,0 +1,15 @@
+: ''Emacs environments encourage extension.  Users build functions and load them into the global environment, utilizing functions and data already there. This extensibility encourages the development of large optional packages, such as mail editing systems and specialized editing modes knowledgeable about specific programming languages. The abundance of such packages is an earmark of Emacs.''
+:: -- Bernard S. Greenberg, ''Multics Emacs (Prose and CONS): A commercial text-processing system in Lisp'', August 1980.
+
+Emacs is an [::Extensible] SelfDocumenting editor.  
+
+The ExtensibleSoftware facet of emacs uses EmacsLisp to add desirable customizations and extensions.    
+
+The SelfDocumentation facet consists of comments in each InteractiveFunction, variable, and other entities, as well as the InfoMode documentation.  
+
+Recommended CodingStyle suggests that each function and variable be documented.  
+
+For significant contributions and extensions, please consider InfoMode documentation written in [[Texinfo]].
+
+----
+CategoryGlossary

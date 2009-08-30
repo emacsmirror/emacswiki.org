@@ -1,0 +1,45 @@
+WritingMail in GNU Emacs is as simple as typing `C-x m'.
+
+Action behind this key binding depends on `mail-user-agent' variable.
+It is set to `sendmail-user-agent' by default which means you will be
+using MailMode to composer your mail.
+
+Other candidates are:
+
+# `mh-e-user-agent' mostly used with [[MH-E]] client.
+# `message-user-agent' for [[Gnus]]. It uses MessageMode.
+# `gnus-user-agent' also for [[Gnus]]
+
+[[Rmail]] and [[VM]] users are likely to use the default value and
+thus they use MailMode.
+
+These are the default clients shipped in the GNU Emacs distribution.
+There are many other [[MUA]] not part of GNU Emacs
+(WanderLust,[[Mew]], etc.).
+
+Here is a short list of how you would configure GNU Emacs
+
+* [[Rmail]]:
+
+ (setq mail-user-agent 'sendmail-user-agent)
+
+* [[Gnus]]:
+
+ (setq mail-user-agent 'gnus-user-agent)
+
+* [[MH-E]]:
+
+ (setq mail-user-agent 'mh-e-user-agent)
+
+* WanderLust:
+
+ (setq mail-user-agent 'wl-user-agent)
+
+To change the package used for composition, just add one of the above
+line to you InitFile.
+
+See also MailclientConfiguration (will be soon deleted), GettingMail.
+
+A comparison grid may be available at ComparisonOfMuas.
+----
+CategoryMail

@@ -1,0 +1,31 @@
+With the following file you'll be able to have ClusterSSH like experience from within Emacs and some term buffers.
+
+The <tt>cssh.el</tt> offer those bindings:
+
+* C-=       asks remote hostname then opens a term and ssh to it
+* C-=       from IBuffer mode opens ClusterSSH controler on marked buffers
+* C-u C-=   asks for the name of the ClusterSSH controler buffer
+* C-M-=     matches given regexp against ssh <tt>known_hosts</tt> and open buffers in which ssh <remote> is typed
+* C-u C-M-= asks for a name before 
+
+While in the <tt>* cssh *</tt> controler buffer, you're in line mode. Free typing will not impact any <tt>term.el</tt> buffer until you hit one of those keys:
+* RET    sends current line (skipping the prompt) to all controlled terms
+* C-c    sends C-c to all controlled terms
+* C-d    sends C-d to all controlled terms    
+* C-l    sends C-l to all controlled terms
+* [up]   sends up to all controlled terms
+* [down] sends down to all controlled terms
+* [tab]  sends current line content to all controlled terms, then a tab (C-i)
+
+And those special keys for the mode to be more than practical:
+* C-=  reopens the windows, so you can switch to full screen other buffers etc and get back to your controller and its terms
+* C-!  send the ssh command to log to remote places to all buffers, in case your emacs buffers live for more time than the ssh connection they host
+
+
+*NOTE:* In Emacs < 22, requires package http://www.emacswiki.org/emacs/pcmpl-ssh.el
+
+What happens when cssh.el goes overboard: [http://p.hagelb.org/cssh-crazy.png]
+
+
+
+Lisp:cssh.el

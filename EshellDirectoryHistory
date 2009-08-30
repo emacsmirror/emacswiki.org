@@ -1,0 +1,103 @@
+There is a directory history in eshell. It is quite easy to use:
+
+<pre>
+ $ cd =
+</pre>
+
+displays a list of the directories you have visited
+
+<pre>
+ $ cd -<NUMBER>
+</pre>
+
+cd to number <NUMBER> in the list
+
+<pre>
+ $ cd -0
+
+or
+
+ $ cd -
+</pre>
+
+works like in bash, i.e. you will change current directory to the previous working directory. A real time-saver, for example when switching back and forth between two directories that are "far away" from each other in two different branches of the directorty tree. You can also use $- as a variable if you want to use the last directory in a command. Example:
+
+<pre>
+ $ cp myfile.txt $-/
+</pre>
+
+Changing to a directory from history using a regexp:
+
+<pre>
+ $ cd =<REGEXP>
+</pre>
+
+cd to the first directory in the list matching the regular expression <REGEXP>
+
+If you need a persistent bookmark list of often used directories (not only in Emacs but in the shell, too) you might want to have a look (my) cdargs (just google for it) which comes with an elisp file. Of course this uses the usual Emacs 'cd' command, so I don't think it will change the eshell directory, too, er? -- StefanKamphausen
+
+=== Manipulate the PWD and change to a dir with that name ===
+
+(someone, please come up with a better heading!)
+
+The following is something I found today by looking in the source code for the definition of the function eshell/cd. It does not really have anything to do with directory history, but I could not find a better page to place it right now. (Maybe we should have a EshellDirectoryNavigation page?):
+
+ The following two lines is how my prompt look like:
+
+ d:/dat/prj/Salsa/Docmaw/Source/Java/ifs/Docmaw/edm  
+ $  
+
+The example below shows a "hidden" (well, it's in the source but it is not documented) feature of the eshell/cd function that lets you replace part of the current working directory (PWD) with another string and make that your new working directory. Regexps are supported:
+
+ d:/dat/prj/Salsa/Docmaw/Source/Java/ifs/Docmaw/edm  
+ $ cd edm portlets
+
+("edm" is replaced by "portlets")
+
+ d:/dat/prj/Salsa/Docmaw/Source/Java/ifs/Docmaw/portlets
+ $ cd docmaw.* fndweb
+
+("docmaw" and the rest of the string is replaced ny "fndweb")
+
+ d:/dat/prj/Salsa/fndweb
+
+This is also neat if you like me is too lazy to "count" how many ".." that would be required to navigate higher up in the structure:
+
+ d:/dat/prj/Salsa/Docmaw/Source/Java/ifs/Docmaw/edm
+ $ cd source.* .
+ d:/dat/prj/Salsa/Docmaw
+ $ 
+
+This can be quite handy if you want to move between different "sub-trees" in the directory structure.
+
+=== Interactively selecting directory ===
+
+<pre>
+(defun eshell-get-dir-from-dir-ring (dir-name)
+  "Interactively select directory from eshell-last-dir-ring"
+  (interactive (list (flet ((iswitchb-make-buflist
+                             (default)
+                             (setq iswitchb-buflist (ring-elements eshell-last-dir-ring))))
+                       (iswitchb-read-buffer "Change to directory: "))))
+  dir-name)
+
+(defun eshell-electric-insert-dir ()
+  "Handy when copying and moving files to, or changing to a certain
+directory. On the prompt, type a space, a colon (`:') and call this function,
+preferably bound to the TAB key."
+  (interactive)
+  (if (save-excursion
+        (goto-char (- (point) 2))
+        (if (looking-at " :")
+            t
+          nil))
+      (let ((dir (call-interactively 'eshell-get-dir-from-dir-ring)))
+        (delete-char -1)
+        (insert (pcomplete-quote-argument dir)))
+    (pcomplete)))
+</pre>
+
+I know that it is possible to train pcomplete to do all of the above, but I'm no elisp-guru, so... Also, I guess you can bake the two functions into one, but I was too scared to try that... :) -- MaDa
+
+----
+CategoryEshell

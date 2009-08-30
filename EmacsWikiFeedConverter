@@ -1,0 +1,86 @@
+These are CGI scripts. Setup in your local WWW server.
+
+= Up-to-date RSS feed =
+
+To reduce server load, the [http://www.emacswiki.org/cgi-bin/wiki?action=rss RSS feed] is cached.
+Therefore the RSS feed is delayed by a few hours.
+But the [http://www.emacswiki.org/cgi-bin/wiki?action=rc;raw=1 text feed] is up to date.
+
+Because my favorite RSS/Atom aggregator cannot handle TXT feeds, I created TXT -> RSS converter script.
+
+<pre>
+#!/usr/local/bin/ruby
+require 'rss/2.0'
+require 'time'
+require 'open-uri'
+
+def parse(block)
+  hash = {}
+  block.split(/\n/).map{|line| k, v = line.split(/: /,2); hash[k]=v}
+  hash
+end
+
+text = open("http://www.emacswiki.org/cgi-bin/wiki?action=rc;raw=1").read
+header, *items = text.split(/\n\n/)
+
+feed = RSS::Rss.new("2.0")
+
+header = parse(header)
+
+chan = RSS::Rss::Channel::new
+chan.title=header["title"]
+chan.description = header["description"]
+chan.link = header["link"]
+
+feed.channel = chan
+
+for i in items
+  i = parse(i)
+  item = RSS::Rss::Channel::Item.new
+  item.title = i["title"]
+  item.link = i["link"]
+  author = item.author = i["generator"]
+  item.description = (i["description"] || "") + "<br><br>(by #{author})"
+  item.date = Time.parse(i["last-modified"])
+  
+  feed.channel.items << item
+end
+
+puts "Content-Type: application/xml"
+puts
+puts feed
+</pre>
+
+-- [[rubikitch]]
+
+= Up-to-date RSS feed with minor edits =
+
+Replace 
+<pre>
+http://www.emacswiki.org/cgi-bin/wiki?action=rc;raw=1
+</pre>
+with
+<pre>
+http://www.emacswiki.org/cgi-bin/wiki?action=rc;days=7;all=0;showedit=1;raw=1
+</pre>
+in above script.
+
+-- [[rubikitch]]
+
+[new]
+I don't understand. Are you parsing the HTML? Why are you not using the TXT feed with the showedit=1 parameter? 
+
+http://www.emacswiki.org/cgi-bin/wiki?action=rc;days=7;all=0;showedit=1;raw=1
+
+-- AlexSchroeder
+
+[new]
+Yes, that script parses the HTML.
+I simply did not know TXT feed with minor edits. thanks.
+  
+-- [[rubikitch]]
+
+----
+CategoryEmacsWikiSite
+
+

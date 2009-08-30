@@ -1,0 +1,18 @@
+Le meilleur moyen d'apprendre le ''Lisp'' est de lire le livre ''introduction à la programmation en Lisp d<nowiki>'</nowiki>Emacs''. Ce livre est vivement recommandé à tous ceux qui n'ont aucune  connaissance préalable du langage ''Lisp''.
+
+Jusqu'à la version 21 d<nowiki>'</nowiki>''Emacs'', l'introduction au ''Lisp'' d<nowiki>'</nowiki>''Emacs'' était distribuée séparément. Cette introduction était rédigée dans le format de ''Texinfo'', et pouvait être convertie vers une multitude d'autres formats: ''info'', ''HTML'', etc. Ainsi, par exemple, dans la distribution ''Debian'' de ''Linux'', la commande ''apt-get install emacs-lisp-intro'' effectuait cette conversion.
+
+Pour lire l<nowiki>'</nowiki>''intro'' il faut tapper au clavier <code>C-h i</code> sous ''Emacs''  pour démarrer ''Info'', puis <code>m Emacs Lisp Intro</code> et suivi de la touche <code>Entrée</code>. Veuillez consulter l'article InfoMode pour avoir de l'aide sur l'utilsation d<nowiki>'</nowiki>''Info''.
+
+Téléchargez <code>emacs-lisp-intro</code> depuis n'importe quel miroir  ''ftp'' de ''GNU'' ou depuis les sites suivants:
+* http://www.gnu.org/manual/manual.html
+* http://www.gnu.org/software/emacs/emacs-lisp-intro/html_mono/emacs-lisp-intro.html
+
+Une version imprimée est disponible aux éditions GnuPress.
+
+Vous trouverez davantage  d'informations sur l<nowiki>'</nowiki>''introduction au Lisp d<nowiki>'</nowiki>Emacs'' (format ''pdf'') à l'adresse 
+http://www.gnupress.org/Intro-Elisp-Review1.pdf.
+
+Vous pourrez également lire la RéférenceLispEmacs dès que vous désirerez apprendre le fonctionnement du ''Lisp'' d<nowiki>'</nowiki>''Emacs''. Il faut préciser que IntroLispEmacs s'adresse aux débutants; alors que RéférenceLispEmacs est vraiment une référence, et pas un guide pour débuter.
+----
+CatégorieDocumentation

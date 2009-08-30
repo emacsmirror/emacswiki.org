@@ -1,0 +1,26 @@
+This is a very small and simple add-on to be used with TemplatesMode that creates "project" templates.
+
+* Download: http://www.joseman.net/code/emacs/projectwizard.el
+* Example template: http://www.joseman.net/code/emacs/TEMPLATE.wxproj.tpl
+
+Example:
+
+Say you want to create a new wxWindows (http://www.wxwindows.org) application. Put the example template in your ~/.templates directory, then open a new file in emacs: C-x C-f and name it foo.wxproj. Answer 'y' if asked whether you've checked the template functions.
+
+Five files will be created, each in their own window (provided there is enough height space to make new windows):
+
+* fooFrame.h
+* fooFrame.cc
+* fooApp.h
+* fooApp.cc
+* Makefile
+
+With classes FooApp and FooFrame.
+
+The project is ready to be make'd. The example would make "Hello World" app from wxWindows website (though my makefile could be better).
+
+If asked to kill foo.wxproj, answer 'y' and toggle the template.el option to create unmodified files to avoid the question again.
+
+<i>Note: Any number of files can be made in this way, each capable of using replacement statements like (>>>FILE_SANS<<<) from templates.el with the exception of (>>>POINT<<<), since the opened file is actually cut up after it's made. If someone can modify the function code to add an extension to allow (>>>POINT<<<) to be used for each file in the project (including the last), and adhere to templates.el conventions, that would be great. Also, if you know of any similar, better "wizards", please link them.
+
+Check example to see format of "project" templates.

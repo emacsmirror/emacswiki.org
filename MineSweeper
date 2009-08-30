@@ -1,0 +1,26 @@
+Mine sweeper is a grid-based solitaire computer game (WikiPedia:Minesweeper_%28computer_game%29).  It is available in Emacs with  <code>mine-sweeper.el</code> written by ToshihideShimayama.  You can get it from <code>archive.org</code> (the author's original web page has gone),
+
+* http://web.archive.org/web/20030204205410/http://www.stanford.edu/~tshm/mine-sweeper.el
+
+The number of mines has a hard coded limit of 100, no matter how large the grid is.  If you play a big grid or want to make the game harder you can change that in the <code>mine-start</code> function.
+
+Incidentally, the author's name isn't in the <code>mine-sweeper.el</code> file but is presumed from the home page in this old <code>debian-pilot</code> mailing list post
+http://lists.debian.org/debian-pilot/2000/12/msg00011.html
+
+== Better Open ==
+
+A version with better open function; if space is pressed on an already open square but there are as many flags surrounding it as mines (ie either all mines are flagged or user guessed wrong) it opens the unflagged squares. Also sets mine maximum higher and adds color. [[mine-sweeper.el]]
+
+[new]
+The original mine-sweeper isn't under a free software license.  You can't publish modified versions here.
+
+: I tried to contact the original author of mine-sweeper.el via mail. (The @yahoo.com address.) -fr
+
+== Automation ==
+
+<code>mine-sweeper-auto.el</code> is a fun add-on for <code>mine-sweeper.el</code>.  It gets the computer to do safe moves for you, ie. the mechanical bits of sweeping.  Bind to a key like "<code>a</code>" and watch it go around.  When it gets to only 50/50 guesses or whatever left, it leaves those to the player.  Get it from
+
+:  http://user42.tuxfamily.org/mine-sweeper-auto/index.html
+
+----
+CategoryGames

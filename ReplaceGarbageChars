@@ -1,0 +1,99 @@
+The below is not textbook elisp, but it works, is easily understandable,
+and so too is easy to modify and add other "characters" to.  As written below, it will replace
+a non-latin1 character or set of characters with a latin1 equivalent.  For example, a "####" 
+will show up in an emacs latin1 buffer as <tt>\222</tt>, making it a PITA to edit.  The "—" 
+character is an extraordinary rendition of an em-dash and appears in emacs (latin1 coding)
+as a long string of garbage characters.  The elisp code below replaces it with "<tt>--</tt>", 
+the typical ASCII version of an em-dash.  
+
+This elisp is meant to be simple enough that elisp newbies can easily amend to include yet
+other garbage characters or even for completely different purposes.  Just insert another
+line like all the <code>replace-string...</code> lines and edit the values between the
+double-quotes.  The value in the first set of quotes is the (garbage) characters to search for
+and the characters within the second set of double-quotes is what to replace that with.
+
+Pretty much this same elisp code can be used also for more quickly converting a regular
+ASCII file into a LaTeX or HTML file.  For example, if 
+you have a typical set of chars which signal the beginning
+of paragraph (like "<tt>\n\n</tt>"), you could insert another <tt>replace-string</tt> line
+to convert that to the appropriate LaTeX (or HTML or whatever) coding
+for "paragraph".  Such a set of replacements might be better organized
+into a separate (but similar) function however.  Open Source == Your Choice.
+
+<pre>
+(defun replace-garbage-chars ()
+"Replace goofy MS and other garbage characters with latin1 equivalents."
+(interactive)
+(save-excursion				;save the current point
+  (replace-string "΄" "\"" nil (point-min) (point-max))
+  (replace-string "“" "\"" nil (point-min) (point-max))
+  (replace-string "’" "'" nil (point-min) (point-max))
+  (replace-string "“" "\"" nil (point-min) (point-max))
+  (replace-string "—" "--" nil (point-min) (point-max)) ; multi-byte
+  (replace-string "" "'" nil (point-min) (point-max))
+  (replace-string "" "'" nil (point-min) (point-max))
+  (replace-string "" "\"" nil (point-min) (point-max))
+  (replace-string "" "\"" nil (point-min) (point-max))
+  (replace-string "" "\"" nil (point-min) (point-max))
+  (replace-string "" "\"" nil (point-min) (point-max))
+  (replace-string "‘" "\"" nil (point-min) (point-max))
+  (replace-string "’" "'" nil (point-min) (point-max))
+  (replace-string "¡\"" "\"" nil (point-min) (point-max))
+  (replace-string "¡­" "..." nil (point-min) (point-max))
+  (replace-string "" "..." nil (point-min) (point-max))
+  (replace-string "" " " nil (point-min) (point-max)) ; M-SPC
+  (replace-string "" "`" nil (point-min) (point-max))  ; \221
+  (replace-string "" "'" nil (point-min) (point-max))  ; \222
+  (replace-string "" "``" nil (point-min) (point-max))
+  (replace-string "" "''" nil (point-min) (point-max))
+  (replace-string "" "*" nil (point-min) (point-max))
+  (replace-string "" "--" nil (point-min) (point-max))
+  (replace-string "" "--" nil (point-min) (point-max))
+  (replace-string " " " " nil (point-min) (point-max)) ; M-SPC
+  (replace-string "¡" "\"" nil (point-min) (point-max))
+  (replace-string "´" "\"" nil (point-min) (point-max))
+  (replace-string "»" "<<" nil (point-min) (point-max))
+  (replace-string "Ç" "'" nil (point-min) (point-max))
+  (replace-string "È" "\"" nil (point-min) (point-max))
+  (replace-string "é" "e" nil (point-min) (point-max)) ;; &eacute;
+  (replace-string "ó" "-" nil (point-min) (point-max))
+))
+</pre>
+
+Note that chars/strings within the first set of double-quotes in each
+pair of replace-string args appear in emacs as, e.g., "<tt>\221</tt>".  To enter
+these escaped numbers, e.g. "<tt>\221</tt>", do <code>C-q 2 2 1 RETURN</code>.
+
+Also, multi-byte strings such as the first should be toward
+the top of the list so that single-byte replacements don't
+cut them up, making subsequent searches for them impossible.
+
+To discover the code for a new (garbage) char to be replaced,
+put the point over it and do "<code>C-x=</code>"; the first code returned in
+the minibuffer tells you the escaped number you want to replace.
+
+With this function in a file which is in a directory in the emacs path, and with this in
+my ~/.emacs:
+
+<code>(global-set-key "\C-cr" 'replace-garbage-chars)</code>
+
+doing <code>C-cr</code> in an emacs buffer performs the replacements without moving
+the point... exactly what I was looking for.  Hope you find it useful too.
+
+If you know of or find other garbage characters which you find frequently need to be cleaned out, post them below along
+with latin1 equivalents.  Share the knowledge.  It's good karma. -- KenFrCleveland
+
+[new]
+Since these pages are UTF-8 encoded, your code might not work when copied and pasted directly.
+To make it work, I think all you need to do is use octal escapes in string literals.
+Use code like the following:
+
+  (replace-string "\221" "`" nil (point-min) (point-max))  ; opening single quote
+  (replace-string "\222" "'" nil (point-min) (point-max))  ; closing single quote
+
+To convince yourself that this is indeed equivalent, consider ##(length "\221")## -> 1. :)
+
+-- AlexSchroeder
+
+----
+CategorySearchAndReplace

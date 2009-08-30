@@ -1,0 +1,39 @@
+The library [[uniquify]] overrides Emacs' default mechanism for making buffer names unique (using suffixes like <code><2></code>, <code><3></code> etc.) with a more sensible behaviour which use parts of the file names to make the buffer names distinguishable.
+
+For instance, buffers visiting "/u/mernst/tmp/Makefile" and "/usr/projects/zaphod/Makefile" would be named "Makefile|tmp" and "Makefile|zaphod", respectively (instead of "Makefile" and "Makefile<2>"). Other buffer name styles are also available.  To enable this, <code>(require 'uniquify)</code> then customize <tt>uniquify-buffer-name-style</tt>.
+
+[[uniquify]] is distributed with GnuEmacs.
+
+<b>About the Unix uniq utility</b>
+
+Note that the uniquify functions provided with Emacs, 
+<code>uniquify-buffer-file-name</code>,
+<code>uniquify-rename-buffer</code>,
+<code>uniquify-rationalize-file-buffer-names</code>,
+deals with the problem of uniqueness of buffer names.
+It has nothing to do with the problem of removing identical
+adjacent lines in a given buffer. 
+
+If you want a command which mimics the uniq utility found 
+on Unix systems, put the following in your InitFile:
+
+  (defun uniquify-region (beg end)
+    "remove duplicate adjacent lines in the given region"
+    (interactive "*r")
+    (goto-char beg)
+    (while (re-search-forward "^\\(.*\n\\)\\1+" end t)
+      (replace-match "\\1")))
+  
+  (defun uniquify-buffer ()
+    (interactive)
+    (uniquify-region (point-min) (point-max)))
+
+`M-x uniquify-buffer' will remove identical adjacent lines
+in current buffer, giving a result similar to what would be obtained with
+the Unix uniq command.
+
+See also DuplicateLines.
+
+----
+CategoryCustomize
+CategoryFiles

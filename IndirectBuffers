@@ -1,0 +1,81 @@
+Indirect buffers allow you to edit the same buffer in another buffer.
+The most interesting thing, however, is that the indirect buffer can
+have '''a different major mode'''.
+
+This is great: If you want to write some elisp in a mail, start
+writing the mail, create an indirect buffer, put it in
+emacs-lisp-mode, write your lisp function, switch back to the original
+mail, and send it.
+
+: A comment: if I do as suggested above, although I can turn on lisp mode in the cloned buffer (Emacs 21) and get indentation etc correct, font locking is still as in the original buffer. Why? -- MaDa
+:: I have the opposite problem. Font locking works fine in the indirect buffer with the new mode, but when i go back, the rest of the base buffer is also colored according to the indirect major mode. Anyone with insights into the workings of font-lock-mode and indirect buffers/narrowing?
+::: The indirect buffer shares it's text with the original buffer, including properties.  
+= Emacs 21 and More Recent =
+
+Emacs 21 provides functions to do this easily:
+
+; <code>clone-indirect-buffer</code>: This creates an indirect buffer visiting the same file as the current buffer.
+; <code>clone-buffer</code>: Use this for <nowiki>*Info*</nowiki> and <nowiki>*Help*</nowiki> buffers.  You
+cannot clone buffers visiting files. You can clone buffers with inferior processes; anything which uses comint, such as *SQL*, *shell*, and *ssh* buffers. A new inferior process is spawned for the cloned buffer.
+
+= Emacs 20 =
+
+Here's the code to put in your ~/.emacs in order to get something like
+<code>clone-indirect-buffer</code>.
+
+    (defun indirect-buffer ()
+      "Edit stuff in this buffer in an indirect buffer.
+    The indirect buffer can have another major mode."
+      (interactive)
+      (let ((buffer-name (generate-new-buffer-name "*indirect*")))
+        (pop-to-buffer (make-indirect-buffer (current-buffer) buffer-name))))
+
+Use `M-x indirect-buffer' to create an indirect buffer of the current buffer.
+
+----
+And this is what I use now regularly for reading book material containing
+sourcecode examples. 
+
+    (defvar indirect-mode-name nil
+      "Mode to set for indirect buffers.")
+    (make-variable-buffer-local 'indirect-mode-name)
+
+    (defun indirect-region (start end)
+      "Edit the current region in another buffer.
+    If the buffer-local variable `indirect-mode-name' is not set, prompt
+    for mode name to choose for the indirect buffer interactively.
+    Otherwise, use the value of said variable as argument to a funcall."
+      (interactive "r")
+      (let ((buffer-name (generate-new-buffer-name "*indirect*"))
+            (mode
+             (if (not indirect-mode-name)
+                 (setq indirect-mode-name
+                       (intern
+                        (completing-read 
+                         "Mode: "
+                         (mapcar (lambda (e) 
+                                   (list (symbol-name e)))
+                                 (apropos-internal "-mode$" 'commandp))
+                         nil t)))
+               indirect-mode-name)))
+        (pop-to-buffer (make-indirect-buffer (current-buffer) buffer-name))
+        (funcall mode)
+        (narrow-to-region start end)
+        (goto-char (point-min))
+        (shrink-window-if-larger-than-buffer)))
+
+-- MarioLang
+
+----
+It seems one can also set the mode from a fake <code>buffer-file-name</code> (using
+<code>auto-mode-alist</code> in the usual way). At least with Emacs v20.  So a
+fake-file-name of say "x.el" will result in emacs-lisp-mode.
+
+     (with-current-buffer the-indirect-buffer
+       (set 'buffer-file-name fake-file-name)
+       (set-auto-mode) ; in files.el
+       ; (set 'buffer-file-name nil) doesn't appear necessary.
+       )
+
+----
+CategoryDotEmacs CategoryRegion CategoryCode

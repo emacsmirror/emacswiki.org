@@ -1,0 +1,131 @@
+I'm an undergrad maths student at the University of Warwick. I was
+originally a C/C++ programmer, but I'm slowly learning the True Way of
+lisp, with a bit of help from the wonderful slime.
+
+My IRC nick is [::rswarbrick]
+
+== Killing Frames and Buffers ==
+
+I never really got along with the whole using a different command to
+kill frames, kill buffers or kill emacs thing, so I wrote the
+following function:
+
+<pre>
+ (defun buffer-used-elsewhere-p (&optional buf)
+   "Returns true if more than one window is attached to BUF in all
+ frames. If buf is nil or not supplied, search
+ for (CURRENT-BUFFER)."
+   (unless buf (setq buf (current-buffer)))
+   (< 1 (length (get-buffer-window-list buf nil t))))
+
+ (defun delete-frame-ex ()
+   "Delete frame as normal, unless we're on the last frame, in
+   which case, exit emacs as we would normally do"
+   (interactive)
+   (if (eq (selected-frame) (next-frame (selected-frame) 0))
+       ;; This is the last frame
+       (save-buffers-kill-emacs)
+     ;; There's more!
+     (unless (buffer-used-elsewhere-p) (kill-buffer nil))
+     (delete-frame)))
+</pre>
+
+and bound it to C-x C-c. This means that hitting C-x C-c won't kill a
+frame on a different gnome desktop, which I was using in a completely
+different context and had forgotten about. From the length of that
+description, you might realise this happened a few times...
+
+Incidentally, if your emacs load goes horribly wrong, and C-x C-c is
+bound to delete-frame-ex but this wasn't loaded, exiting is less
+obvious. My workaround is the "x" in the top right hand corner, but I
+don't know whether there's something nicer...
+
+[new]
+Welcome to the wiki! :) -- AlexSchroeder
+
+[new]
+Thanks!
+
+== Common Lisp Stuff ==
+
+=== inpackage abbrev ===
+
+I've got rather tired of the whole defpackage/inpackage
+thing. Defpackage I've got an MsfAbbrev for, but inpackage would be
+cool if it did something slightly cleverer. That is, I normally have
+code like the following (at least when I'm originally writing a
+package). There's no exports yet, because we're imagining these are
+the only lines of code so far.
+
+    (defpackage
+        cl-ogg
+        (:use :common-lisp))
+
+    (in-package :cl-ogg)
+
+Now, it would be nice if we could take the work out of the second
+line. To do this, I wrote the following function:
+
+    (defun lisp-inpackage () (interactive)
+      (let ((packname nil))
+        (unwind-protect
+            (save-excursion
+              (backward-sexp)               ; Go to start of defpackage
+              (down-list)                   ; Descend into it.
+              (mark-sexp)
+              (unless
+                  (string= (buffer-substring (region-beginning)
+                                             (region-end))
+                           "defpackage")
+                (error "Previous sexp not a defpackage command"))
+
+              (forward-sexp 2)
+              (backward-sexp)               ; These two things jump to the
+                                            ; front of the package name
+
+              (mark-sexp)
+              ;; TODO? Check this is a valid package name in some fashion...
+              (setq packname
+                    (buffer-substring (region-beginning) (region-end))))
+          (if packname
+              (insert "(in-package :" packname ")")
+            (progn
+              (insert "(in-package :)")
+              (backward-char 1))))))
+
+Maybe there's a more elegant method, but the above seems to
+work. Personally, I decided to bind it to an abbrev from "inp", which
+takes the following command:
+
+    (define-abbrev lisp-mode-abbrev-table "inp" 
+      "" 'lisp-inpackage)
+
+== Toggling variables ==
+
+I'm looking at various bits of source code at the moment, which (of
+course) have differing opinions about tabs and spaces. Clearly
+TabsAreEvil, but some differ...
+
+Anyway, I wanted code to switch indent-tabs-mode on and off again
+easily and realised that toggling variables needs doing all the time. So:
+
+    (defun toggle-variable (sym)
+      (cond
+       ((not (boundp sym))
+        (setq sym t))
+       ((symbol-value sym)
+        (set sym nil))
+       (t
+        (set sym t)))
+      (message "The variable '%s' is now set to %s"
+               sym (symbol-value sym)))
+
+Which you can set up for my original needs with:
+
+      (local-set-key (kbd "C-<kp-enter>")
+                     '(lambda () (interactive)
+                        (toggle-variable 'indent-tabs-mode)))
+
+
+----
+CategoryHomepage

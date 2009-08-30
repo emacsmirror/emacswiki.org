@@ -1,0 +1,41 @@
+Copy and Paste from the [http://my.gnus.org/faq/html-nochunks/ Gnus FAQ] 
+
+<b>I don't like the layout of summary and article buffer, how to change it?
+Perhaps even a three pane display?
+</b>
+
+You can control the windows configuration by calling the function
+gnus-add-configuration. The syntax is a bit complicated but explained
+very well in the EmacsManual InfoMode node "Window Layout". Some popular examples:
+
+* Instead 25% summary 75% article buffer 35% summary and 65% article
+  (the 1.0 for article means "take the remaining space"):
+
+<pre>
+(gnus-add-configuration '(article (vertical 1.0 (summary .35 point) (article 1.0))))
+</pre>
+
+
+* A three pane layout, Group buffer on the left, summary buffer top-right, article buffer bottom-right:
+
+<pre>
+(gnus-add-configuration
+ '(article
+   (horizontal 1.0
+	       (vertical 25
+			 (group 1.0))
+	       (vertical 1.0
+			 (summary 0.25 point)
+			 (article 1.0)))))
+(gnus-add-configuration
+ '(summary
+   (horizontal 1.0
+	       (vertical 25
+			 (group 1.0))
+	       (vertical 1.0
+			 (summary 1.0 point)))))
+
+</pre>
+
+----
+CategoryGnus

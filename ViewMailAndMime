@@ -1,0 +1,1 @@
+Does anyone know if it is possible to get ViewMail to allow you to choose which subpart of a multipart mime message it will display?  It seems that some mailers will embed attachments in the html part of a multipart message, and since my VM is set to prefer to display text/plain I don't get to see the attachments.

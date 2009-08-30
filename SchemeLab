@@ -1,0 +1,13 @@
+Hi, my real name is Terrence Brannon. I've been an Emacs User since 1991. I have a module that ships with GNU Emacs. Just type M-x lm-test-run to see it work. It's an Emacs Lisp implementation of Andy Barto's Landmark Learning Neural Network.
+
+On IRC, I usually go by the name "metaperl" but recently I have returned to "schemelab" because I am working on [http://redick.metaperl.com a Scheme implementation of the J programming language].
+
+But anyway, I've been working on a mode to make using [http://methods.co.nz/asciidoc Asciidoc] easier to use from emacs when I ran across  [http://xpt.sourceforge.net/tools/doc-mode/ doc-mode.el] which does font-locking already. 
+
+So I'm hoping merge my changes with this author soon.
+
+[new]
+Hi Terrence. You might want to move this page over to TerrenceBrannon, and on that page, write ##[::schemelab]## and ##[::metaperl]## -- this will create permanent anchors. It's what I do on my page as well -- ##[[kensanata]]## links to a permanent anchor on my homepage -> [[kensanata]]. -- AlexSchroeder
+
+----
+CategoryHomepage

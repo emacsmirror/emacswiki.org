@@ -1,0 +1,14 @@
+Many default key bindings in Emacs don't really make sense to an EmacsNewbie, but members of the ChurchOfEmacs would defend such legacy settings to the hilt.
+
+* Forward and backward are `C-f' and `C-b', respectively.  Forward and backward by word are `M-f' and `M-b', respectively.  Moving up and down a line are `C-n' and `C-p', respectively.  Then `M-n' and `M-p' ''should'' be scrolling up and down a screen, respectively.
+* The key `M-h' is `mark-paragraph', `C-M-h' is `mark-defun', then `C-h' really ''should'' be `mark-line', instead of `help'.
+* Inserting a space is done with `SPC'.  Deleting all space and inserting one space (`just-one-space') is `M-SPC'.  Deleting all horizontal space could be `C-SPC', but is instead ##`M-\'##.  Set the mark is `C-SPC'--an alias for ##`C-@'##.
+* Forward and backward are `C-f' and `C-b'.  Delete forward and backward are `C-d' and `DEL'.  Forward and backward by word are `M-f' and `M-b'.  Delete forward and backward by word are are `M-d' and `M-DEL'.  Forward and backward by [[Sexp]] are `C-M-f' and `C-M-b'.  Delete forward and backward by [[Sexp]] is `C-M-DEL' and `C-M-k'.  Move forward one parentheses (`down-list') is bound to `C-M-d'!
+
+== References ==
+
+* Peter M. Bagnall.  [http://www.surfaceeffect.com/essays/emacs.html Using Emacs - the good and the bad].  17 Feb 2000.  Last downloaded: 11 June 2006.  http://www.surfaceeffect.com/essays/emacs.html
+
+----
+CategoryHumor
+CategoryKeys

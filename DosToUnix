@@ -1,0 +1,28 @@
+DosToUnix ([::Dos2Unix]) is a quick interactive function for replacing all DOS carriage returns (^M) with Unix line feeds in a selected buffer.  Use [::dos2unix] if you can actually see the ^M at the end of each line.
+
+    (defun dos2unix (buffer)
+      "Automate M-% C-q C-m RET C-q C-j RET"
+      (interactive "*b")
+      (save-excursion
+        (goto-char (point-min))
+        (while (search-forward (string ?\C-m) nil t)
+          (replace-match (string ?\C-j) nil t))))
+
+Usually that is not what you want, though, because a DOS line end is \r\n, and you just want \n for Unix, so you need to replace \r (^M) with nothing.  Manually: M-% C-q C-m RET RET.  This also helps against really corrupt text files that have \r\r\n line ends.  This sometimes happens with text files uploaded and downloaded from the web; one such example are the source files in the ElispArea.
+
+Now, if you cannot see ^M at the end of each line, but nevertheless know that the file is indeed a DOS file (perhaps because Win32 Emacs shows a backslash or "DOS" in the "coding system" part of the mode line), do the following:
+
+: If the file is a well-formed DOS file, then you can use C-x C-m f (also C-x RET f).  This runs set-buffer-file-coding-system; use "unix" or "undecided-unix" as the new coding system.  When you have a corrupt file as described above, that does not help, however.
+
+To make remembering this function easier you can add this code to your .emacs:
+
+    (defun dos2unix ()
+      "Not exactly but it's easier to remember"
+      (interactive)
+      (set-buffer-file-coding-system 'unix 't) )
+
+See EndOfLine
+
+----
+CategoryFiles
+CategoryPorts

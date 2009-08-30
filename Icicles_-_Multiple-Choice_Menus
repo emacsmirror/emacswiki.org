@@ -1,0 +1,164 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Defining Tripping Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Defining Multi M-x]] ||
+
+----
+
+== Defining Multiple-Choice Menus ==
+
+
+'''Icicles''' [[multi-command]]s can be used
+provide users with multiple-choice menus.  While the possible
+choices can be accessed by [[minibuffer]] [[completion]] or [[Icicles - Cycling Completions|cycling]], a
+user can also display them in [[buffer]] `*Completions*' using `TAB' or
+`S-TAB', and click them there to choose them.
+
+That is, buffer `*Completions*' can act as a multiple-choice menu.
+
+Simple use case: Suppose that you use special characters (Greek
+letters, math symbols, accented letters in another language...),
+but only occasionally -- you don't want to take the trouble to
+learn a special input method for them or flip to a different soft
+keyboard.  One simple way to handle this is to create a menu of
+such special characters -- Greek letters, for instance.  You only
+need to create the menu once, providing the necessary completions
+as, say, Unicode characters.  When you need to input such a
+character, just use your command that pops up buffer `*Completions*'
+with the available special characters.  Even if you don't know how
+to type them on your keyboard, you can cycle through them or use
+`mouse-2' to choose them.
+
+Here's a simple example of defining a command that uses a
+multiple-choice menu.  Other examples of multi-commands, such as
+`my-delete-file-or-directory' (see [[Icicles - Defining Icicles Commands]]), are also examples, but this one uses
+menu items that look more like menu items ;-).
+
+  (icicle-define-command my-menu-command         ; Command name
+      "Display menu and act on choice(s)."       ; Doc string
+      my-menu-action                             ; Function to perform the action
+      "`TAB' for menu.  `C-mouse-2' to choose. " ; completing-read args
+      my-menu-items nil t)
+
+  (defvar my-menu-items 
+    '(("Foobar" . foobar-fn) ("Toto" . toto-fn) ("Titi" . titi-fn))
+    "Alist of menu items and their associated commands.")  
+
+  (defun my-menu-action (item)
+    "Call function associated with menu-item ITEM."
+    (funcall (cdr (assoc item my-menu-items))))
+
+  (defun foobar-fn () (message "Foobar chosen"))                    
+  (defun toto-fn () (message "Toto chosen"))                     
+  (defun titi-fn () (message "Titi chosen"))
+
+A user does `M-x my-menu-command' and hits `TAB' to display this
+menu in the `*Completions*' buffer:
+
+  Click mouse-2 on a completion to select it.  (C-h: help)
+
+  Possible completions are:
+  Foobar                             Titi
+  Toto
+
+* The user presses and holds the Control key.  
+* S?he clicks `Foobar' -- message "Foobar chosen" appears.  
+* S?he clicks `Toto -- message "Toto chosen" appears.
+
+And so on -- all while holding Control pressed. Any number of menu
+items can be chosen, any number of times. The command is finally
+exited with `RET' or `C-g'.
+
+The ##COLLECTION## argument passed to `completing-read' here is
+`my-menu-items', an [[alist]] of key-value pairs ([[cons]]es), where the key is a
+menu-item name and the value is the function that implements the
+menu item. For example, menu item `Foobar' is implemented by
+function `foobar-fn', and the alist element is therefore
+##("Foobar" . foobar-fn)##.
+
+Function `my-menu-action' is executed when a user clicks
+`C-mouse-2' on a menu item. It just looks up the menu item's
+function in alist `my-menu-items', and then calls that function.
+
+What? You think it's odd that the user must hit `TAB' to display
+the menu? Then just use this code instead:
+
+  (icicle-define-command
+   my-menu-command
+   "Display menu and act on choice(s)."
+   my-menu-action
+   "`C-mouse-2' or `C-RET' to choose menu items"
+   my-menu-items nil t nil nil nil nil
+   ((icicle-show-*Completions*-initially-flag t))) ; Extra bindings
+
+This just adds a binding for
+`icicle-show-*Completions*-initially-flag', so that `*Completions*'
+is displayed initially.
+
+Granted, the `*Completions*' display doesn't exactly look like your
+average menu. And the header line doesn't mention the
+multiple-choice possibility (holding Control while clicking). But
+the header does say to use `C-h' for help, and that help does
+mention `C-mouse-2' (as does the prompt). And the menu does act
+like a menu. And the doc string of `my-menu-command' can provide
+more help, as needed.
+
+There are also some freebie advantages of using such menus,
+besides the feature of multiple-choice. These include choosing
+menu items from the keyboard, with completion, and cycling among
+menu items. The additional features are all explained when the
+user hits `##C-?##'.
+
+One common use of a multiple-choice menu is letting the user select a [[list]] of items from a larger list of candidates.  The list is returned, with the items in the order selected.  Examples of this include these multi-commands:
+
+* `icicle-buffer-list' -- buffer names, selected from `buffer-list' (possibly after filtering)
+* `icicle-directory-list' -- directory names, selected from subdirectories in the current directory and any directories you navigate to
+* `icicle-face-list' -- [[face]] names, selected from `face-list'
+* `icicle-file-list' -- file names, selected from files in the current directory  and any directories you navigate to
+* `icicle-keyword-list' -- keywords ([[regexp]]s), selected from those you have previously entered
+* `hlt-choose-faces', `hlt-choose-visible-faces', `hlt-choose-invisible-faces' -- face names, selected from the (visible/invisible) highlighting faces in the buffer
+
+Such commands can be used on their own, or they can be used in the `interactive' specs of other commands that act on an entire list of selected items.  And don't forget that the set of "menu items"
+(completion candidates) is susceptible to sorting in various ways,
+as well as filtering in the usual ways: [[progressive completion]], [[Icicles - Nutshell View#ChippingAway|
+chipping away the non-elephant]], and so on.
+
+Here as an example definition is `icicle-file-list':
+
+  (icicle-define-command icicle-file-list
+    "Choose a list of file names. The list of names (strings) is returned."
+    (lambda (name) (push name file-names))
+    "Choose file (`RET' when done): "
+    (mapcar #'list (directory-files default-directory nil icicle-re-no-dot))
+    nil nil nil 'file-name-history nil nil
+    ((file-names  ()))                    ; Additional bindings
+    nil nil
+    (prog1 (setq file-names (delete "" file-names)) ; Last code - return list
+      (when (interactive-p) (message "Files: %S" file-names))))
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Defining Tripping Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Defining Multi M-x]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+
+
+

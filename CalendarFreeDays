@@ -1,0 +1,75 @@
+I like when freedays shown as holidays in calendar.  But I does not found such feature in CalendarMode (bad search?).  So here quick and dirty workauround.  This stuff need enhancement, it will work only if week starts from Monday :)
+
+Week starts from Monday:
+
+    (setq calendar-week-start-day 1)
+
+Define face to highlight freedays:
+
+    (defface mycal-freeday-face nil nil)
+    (set-face-background 'mycal-freeday-face "pink")
+
+Action:
+
+    (defun mycal-hightlight-free-day (date &optional face)
+      "Highlight DATE with FACE if DATE is free-day.
+    Default face is `mycal-freeday-face'."
+      (when (and (calendar-date-is-visible-p date)
+                 (member (calendar-day-of-week date) '(0 6)))
+        (save-excursion
+          (calendar-goto-date date)
+          (if (fboundp 'set-extent-properties)
+	      (set-extent-properties (make-extent (1- (point)) (1+ (point)))
+				     (list 'face (or face 'mycal-freeday-face)
+					   'priority -1))
+	    (set-text-properties (1- (point)) (1+ (point))
+				 (list 'face (or face 'mycal-freeday-face)
+				       'priority -1))))
+        ))
+    
+    (defun mycal-mark-freedays ()
+      "Scan Calendar buffer and highlight freedays.
+    Prefix ARG specifies number of weeks to highlight."
+      (interactive)
+
+      (save-excursion
+        (beginning-of-buffer)
+
+        ;; Process first week
+        (calendar-end-of-week 1)
+        (let* ((date (calendar-cursor-to-nearest-date))
+               (day (car (cdr date))))
+          (when (> day 7)
+            (calendar-backward-week 1))
+          ;; Refresh date and day
+          (setq date (calendar-cursor-to-nearest-date))
+          (setq day (car (cdr date)))
+          (mycal-hightlight-free-day date)
+
+          (unless (= day 1)
+            (calendar-backward-day 1)
+            (mycal-hightlight-free-day (calendar-cursor-to-nearest-date))
+            (calendar-end-of-week 1)))
+
+        ;; Process other monthes
+        (let* ((date (calendar-cursor-to-nearest-date))
+               (absdate (+ 6 (calendar-absolute-from-gregorian date)))
+               (gregd (calendar-gregorian-from-absolute absdate)))
+          (while (calendar-date-is-visible-p gregd)
+            (mycal-hightlight-free-day gregd)
+
+            (setq gregd (calendar-gregorian-from-absolute (+ absdate 1)))
+            (mycal-hightlight-free-day gregd)
+
+            (setq absdate (+ 7 absdate))
+            (setq gregd (calendar-gregorian-from-absolute absdate))))
+        ))
+
+Advice `mark-calendar-holidays' to highlight freedays:
+
+    (defadvice mark-calendar-holidays (after highlight-free-days activate)
+      "Highlight freedays as well."
+      (mycal-mark-freedays))
+
+----
+CategoryCalendar

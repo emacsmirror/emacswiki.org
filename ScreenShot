@@ -1,0 +1,51 @@
+==What is ScreenShot ?==
+ScreenShot is mode to automate taking a screenshot.
+
+==Why the need for ScreenShot ?==
+Taking a screenshot and uploading a server are cumbersome. So let's automate them.
+
+==Install==
+You must have installed ImageMagick and optional scp and [[Yaoddmuse]].
+
+Put Lisp:screenshot.el in your load-path, add
+{{{
+    (require 'screenshot)
+    (setq screenshot-schemes              ; edit as you like
+          '(
+            ;; To local image directory
+            ("local"
+             :dir "~/images/")            ; Image repository directory
+            ;; To current directory
+            ("current-directory"          ; No need to modify
+             :dir default-directory)
+            ;; To remote ssh host
+            ("remote-ssh"
+             :dir "/tmp/"                 ; Temporary saved directory
+             :ssh-dir "www.example.org:public_html/archive/" ; SSH path
+             :url "http://www.example.org/archive/")  ; Host URL prefix
+            ;; To EmacsWiki (need yaoddmuse.el)
+            ("EmacsWiki"                 ; Emacs users' most familiar Oddmuse wiki
+             :dir "~/.yaoddmuse/EmacsWiki/"  ; same as yaoddmuse-directory
+             :yaoddmuse "EmacsWiki")         ; You can specify another Oddmuse Wiki
+            ;; To local web server
+            ("local-server"
+             :dir "~/public_html/"           ; local server directory
+             :url "http://127.0.0.1/")))     ; local server URL prefix
+    (setq screenshot-default-scheme "local") ; default scheme is "local"
+}}}    
+in ~/.emacs
+
+==Usage==
+M-x screenshot prepares to take a screenshot. It prompts for a image file name and a scheme name. Then set up screen and press C-c C-c! Emacs invokes import command (ImageMagick) and save the screenshot to local. Finally Emacs uploads it to remote server ASYNCHRONOUSLY (via scp or [[Yaoddmuse]]).
+
+After taking a screenshot, the URL of the image are ready to yank. Press C-y!
+
+==Customize==
+All below option can customize by: M-x customize-group RET screenshot RET
+
+`screenshot-schemes' is a list to contain schemes. Edit as you like.
+
+`screenshot-take-delay` is delay time to take a screenshot. It is recommend to have a delay time to enable us to take a screenshot of other application.
+
+==See Also==
+[[Yaoddmuse]] has a screenshot feature (M-x yaoddmuse-post-screenshot). On the other hand, ScreenShot provides a unified way to take a screenshot in various scheme.

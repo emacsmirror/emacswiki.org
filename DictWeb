@@ -1,0 +1,9 @@
+Here is code by EricMarsden allows you to query a dict server from within Emacs.
+
+* Source: http://www.chez.com/emarsden/downloads/dict-web.el
+
+This uses the UrlPackage (which, for older versions, is part of [[w3]]).
+See DictMode for a version that uses the dict protocol directly.
+
+----
+CategoryInterface

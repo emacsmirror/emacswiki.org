@@ -1,0 +1,13 @@
+== Slide Puzzle for Emacs ==
+
+Slide puzzle for Emacs.  See the code Lisp:puzzle.el.
+
+Start with <code>M-x puzzle RET</code>.
+
+Press <code>?</code> for help.
+
+/Note:/ It only works with recent CVS versions of GNU Emacs.
+
+
+----
+CategoryGames

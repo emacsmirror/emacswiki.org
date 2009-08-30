@@ -1,0 +1,33 @@
+[new:DrewAdams:2009-01-04 19:17 UTC]
+Hi. How does this compare with using a zero prefix arg with `byte-recompile-directory': `C-0 M-x byte-recompile-directory'? That too will compile all ##*.el## files in the current directory and all its subdirectories. How does your command differ? -- DrewAdams
+[new:Tatsuhiko Kubo:2009-01-05 15:48 UTC]
+Thanks for your insight. I did not know a zero prefix arg with 'byte-recompile-directory'. Through I tried to byte-recompile-directory with a zero prefix arg, it is not difference between my-byte-compile-directory and byte-recompile-directory within the goal of both. -- Tatsuhiko Kubo.
+
+ ;; Author:Tatsuhiko Kubo
+ ;; This elisp can byte compile all elisp files on current directory and sub directories.
+
+ (defun my-byte-compile-directory ()
+   (interactive)
+   (defun byte-compile-directories (dir)
+     (if (file-directory-p dir)
+         (byte-compile-directory-r (mapcar (function (lambda (f) (concat dir "/" f)))
+                                           (directory-files dir)))))
+   (defun byte-compile-directory-r (file-list)
+     (cond ((null (car file-list))
+            nil)
+           ((and (file-directory-p (car file-list))
+                 (not (string-match "/\.\.?$" (car file-list))))
+            (byte-compile-directories (car file-list))
+            (if (not (null (cdr file-list)))
+                (progn
+                  (byte-compile-directories (cadr file-list))
+                  (byte-compile-directory-r (cdr file-list)))))
+           ((string-match "\.el$" (car file-list))
+            (progn
+              (byte-compile-file (car file-list))
+              (byte-compile-directory-r (cdr file-list))))
+           (t
+            (if (not (null (cdr file-list)))
+                (byte-compile-directory-r (cdr file-list))))))
+   (byte-compile-directories (replace-regexp-in-string "/$" "" default-directory)))
+

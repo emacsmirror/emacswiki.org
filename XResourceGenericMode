@@ -1,0 +1,14 @@
+In your .Xdefaults or .Xresources files, put the following on the
+first line of the file:
+
+ ! -*- mode: x-resource-generic -*-
+
+Then make sure that Emacs knows what x-resource-generic-mode actually does.  Add the following to your ~/.emacs file:
+
+ (autoload 'x-resource-generic-mode "generic-x" nil t)
+
+The power of GenericMode!
+
+----
+CategoryModes
+CategoryDotEmacs

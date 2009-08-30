@@ -1,0 +1,45 @@
+====WiKen's EmacsWiki Page===
+===The Spirit of Emacs===
+
+Yes,
+I use emacs...
+since around 1990.  About the second week I was using it, I posted a question about emacs to a discussion list and among the helpful replies I received was one from a guy named Richard Stallman.  Of course I didn't know who he was at the time, didn't find out until about a year later.  Then I was impressed that a guy with his credentials and his todo list would bother answering a question from such a total newb.  It's that kind of spirit that help make emacs what it is.
+
+===Manuscript Mode===
+====Rationale====
+
+By <tt>manuscript-mode</tt> is meant a mode for writers of fiction, nonfiction, essays, books, and poetry which they can use for creating, editing and submitting manuscripts.  The submission format for such writing is dictated by the (human) editors who work at publishing houses or the publishing houses themselves.  Writers are absolutely in no position to negotiate with publishers about the kind of format submissions may be in.  The writer either conforms to the standards of the publishing house or the writer's manuscript is tossed into the trash.
+
+It's probably an understatement to say that emacs is a very feature-rich editor.  This is why it's baffling to me that emacs works for all kinds of natural languages, even those that read from right to left, that it can read and write gzipped files without intervention, that it neatly formats numerous  programming languages, that it can color-code the text of programming and scripting languages for syntax, that it can nicely format calendars in a variety of ways and note holidays quite deftly, and that it does dozens of other complex operations, but that it can't handle double-spaced text... and that people don't think it should.
+
+Well actually, I do understand why some say that emacs shouldn't bother with double-spacing and other formatting features specified below.  The reasoning is based on the theory of <i>content</i> vs. <i>presentation</i>.  Emacs is a <i>text processor</i> and therefore should concern itself only with creating the content.  Once the content is created and finished, then other applications (such as LaTeX) are used for the <i>presentation</i> of this content. The rationale for this paradigm is that the writer shouldn't have to be concerned with the details of how something is formatted or, more generally, how it will appear on the printed page; instead the writer should  concentrate solely on producing the content and let others concern themselves with the formatting of the finished product.  I don't disagree with this paradigm, but do believe that its application to the creation a manuscript is not apt.
+
+Before an article is actually published, the manuscript can (and often does) go back and forth between author and (human) editor several times before it is considered finished.  Then and only then is it passed on to the (human) typesetter.  It is at this point where the work, the manuscript, passes from the <i>content</i> phase into the phase where its <i>presentation</i> is the concern- here and not any time before this point. We should, then, consider double-spacing and other features as part of the <i>content</i> development phase and not features to be delegated to the <i>presentation</i> phase.
+
+It's been suggested that an author could pre- and post-process the manuscript text (using the UNIX utilities "tr" and "pr" for single- and double-spacing) and still use emacs in between.  But should an author have to preprocess the text every time s/he sends out and every time s/he receives back a manuscript?   This is an acceptable short term, ad hoc method for the more computer savvy author.  But it is the complete opposite of the maxim that "a writer should concentrate solely on creating content and not worry about formatting."  Would we ask the same of a person who writes, say, shell scripts?  Would we say, "Every time, after writing the text of the script, you must post-process it. And, every time you want to be able to make changes to it, you must pre-process it"?  This sort of necessity will certainly discourage authors, even many tech-savvy ones, from using emacs. Even committed emacs users will  regard this sort of rote activity as unvarnished tedium.  The fact that C compilers universally handle preprocessing transparently (for a long time now) attests to the fact that, when- and wherever possible, we like to hand off to our software any and all rote tasks and other forms of tedium.  Given all the countless other things emacs does and does with nicely formatted output, it doesn't seem beyond reason to ask if double-spacing might be something emacs could do.  
+
+Is it perhaps the case that an emacs solution for this situation just too difficult?  This is what I'm currently trying to determine.
+
+====Features of manuscript-mode====
+
+Manuscript-mode should initally contain the following features (perhaps others will suggest themselves later):
+
+* Character set will be nothing special- ordinary ASCII (Latin 8859-1) for English, the standard character sets for other natural languages.  In other words, there will be no non-printable characters.  The only characters which will serve the formatting of the text are the newline and TAB.
+* Text must be double-spaced. Doing auto-fill should maintain double-spacing.
+* Owing to the need for margins, text should wrap. Wordwrapping and auto-filling should maintain double-spacing.
+* A tab character will indicate the beginning of a new paragraph. By this is meant a ^I character. Unlike other modes in emacs, this should be provided by the TAB key (by default).
+* Use regular double-spacing between paragraphs.  That is, the spacing between paragraphs will be the same as that as between lines.
+* Use only one character space, not two, between sentences.
+* All of these specifications should be parts of a single mode to avoid having to change a lot of variables every time a relevant file needs to be edited.
+* Emacs should be capable of detecting that a file complies with this mode and  invoke that mode when the file is loaded.
+
+This format is not my idea.  This sort of formatting is what magazine and book editors generally specify... this or <i>Word</i>. (ugh!)  
+
+====Feasibility of manuscript-mode====
+
+So how deep into emacs would this need to go?  Is it possible and feasible to do in emacs?
+
+: Welcome to the wiki!  I think it would be much easier on you if you wrote the text single-spaced (and then figure out all the variables you need to change, that should be possible), and leave the double-spaced printing to the printing module (eg. ps-print), or add the double-spaces just before sending the document.  I don't think you really want to work on a double-spaced document for days and weeks anyway. -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -1,0 +1,88 @@
+Doxygen is a system for extracting documentation from source code. It supports a variety of programming languages, human languages, and output formats. You can find it at http://www.doxygen.org.
+
+Try http://www.xeqt.com/doxygen/ if the link above does not work. - Veronica Loell 
+
+Doxymacs is a minor-mode for (X)emacs to edit files with doxygen documentation. You can find it at http://doxymacs.sourceforge.net.
+
+With doxymacs minor-mode, you can insert doxygen tempo templates, start a browser to see
+a symbol's documentation, and you get a nice font-lock mode.
+
+To generate the doxygen 'tags file' needed by doxymacs, put something like:  
+
+  GENERATE_TAGFILE = ~/.tmp/doxy.tag
+
+in your doxygen config file.
+
+-------
+
+From August 2004, CVS version of GnuEmacs require patching DoxyMacs in order to avoid conflicts in font-lock management:
+the `doxymacs-font-lock' function should be implemented as follows (or at leat I think so :-)):
+
+<pre>
+(defun doxymacs-font-lock ()
+  (interactive)
+  (font-lock-add-keywords nil doxymacs-doxygen-keywords))
+</pre>
+
+-- YannHodique
+
+-------
+Doxymacs' author is RyanTSammartino.
+
+----
+CategoryProgrammerUtils
+
+------
+I made a small function that is inspired by Eclipse editing of the Java files.
+When the point is inside a multiline comment it automatically adds an asterisk 
+when you enter a newline. There may be some minor glitches if you have 
+"/*"' or "*/" inside your strings but it works fine in general. There is a piece 
+of code at the end that binds the function to return key, use it if you want.
+
+-- JakubHozak
+
+<pre>
+(defun my-javadoc-return () 
+  "Advanced C-m for Javadoc multiline comments.   
+
+Inserts `*' at the beggining of the new line if 
+unless return was pressed outside the comment"
+  (interactive)
+
+  (setq last (point))
+
+  (setq is-inside
+	(if (search-backward "*/" nil t)
+	    ;; there are some comment endings - search forward
+	    (if (search-forward "/*" last t)
+		't
+	      'nil)
+	
+	  ;; it's the only comment - search backward
+	  (goto-char last)
+	  (if (search-backward "/*" nil t)
+	      't
+	    'nil
+	    )
+	  )
+	)
+
+  ;; go to last char position
+  (goto-char last)
+
+  ;; the point is inside some comment, insert `*'
+  (if is-inside
+      (progn 
+	(insert "\n*")
+	(indent-for-tab-command))
+    
+    ;; else insert only new-line
+    (insert "\n"))
+      
+  )
+
+(add-hook 'c++-mode-hook (lambda () 
+				     (local-set-key "\r" 'my-javadoc-return)				     
+))
+</pre>
+

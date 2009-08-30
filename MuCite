@@ -1,0 +1,28 @@
+mu-cite.el is a powerful citation tool for (X)Emacs.
+
+Homepage: http://www.lab3.kuis.kyoto-u.ac.jp/~tsumura/emacs/mu-cite.html (Japanese) (broken link on 2008-Feb-18)
+
+Download: ftp://ftp.jpl.org/pub/elisp/mu/mu-cite-8.1.tar.gz
+
+mu-cite requires [[APEL]] 9.20 or later                                                                                                                                                                and [[FLIM]] 1.12.2 or later.
+
+=== Configuration ===
+
+Unpack the archive an type make in the programm directory. Then add the directory to your load-path and write the following in your .emacs file:
+
+ (autoload 'mu-cite-original "mu-cite" nil t)
+
+When you use [[Gnus]]:
+
+ (add-hook 'message-cite-function 'mu-cite-original)
+
+When your use another mailer:
+
+ (add-hook 'mail-citation-hook 'mu-cite-original)
+
+By default the citing is very ugly. To fix that put something like this in your configuration file:
+
+ (setq mu-cite-top-format '(full-name " write:\n\n"))
+ (setq mu-cite-prefix-format '(">"))
+----
+CategoryMailAddons

@@ -1,0 +1,28 @@
+PdbTrack has some dependencies on the standard comint mode. This should help:
+
+
+<em>Hi Ken, I just made pdbtrack work with eshell. Not sure how to do it cleanly, but here it is in case you want to roll in. I'll post on emacswiki too. Thanks!</em>
+
+ (add-hook 'eshell-output-filter-functions
+	  '(lambda () "" 
+	     (when (eshell-interactive-process)
+	       (pdbtrack-track-stack-file 
+		(buffer-substring (eshell-beginning-of-output) eshell-last-output-end)))))
+
+<em>and in pdbtrack-track-stack-file:</em>
+
+ ;eshell support 
+ ;             (procmark (process-mark currproc))
+ ;             (block (buffer-substring (max comint-last-input-end
+              (procmark eshell-last-output-end)
+              (block (buffer-substring (max eshell-last-input-end
+
+Also, add a 
+
+ (when eshell-interactive-process
+ )
+
+around pdbtrack-track-stack-file to make it work with ange-ftp.
+
+----
+CategoryEshell

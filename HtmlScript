@@ -1,0 +1,8 @@
+Here is a link to a package that allows you easily to narrow an html-mode or nxml-mode buffer to view only a PHP/CSS/JavaScript/VB block in the appropriate major-mode for that block, and then switch back to editing the whole file in the original mode.  This package used to be called nxml-script, but it was rewritten to be more general.
+
+* http://www.dur.ac.uk/p.j.heslin/Software/Emacs/
+
+-- PeterHeslin
+
+----
+CategoryHypermedia 

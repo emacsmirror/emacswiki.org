@@ -1,0 +1,30 @@
+==What is ErcNickNotify ?==
+ErcNickNotify is a mode that popup notify window when someone call you in [[ERC]].
+
+==Install==
+* Install notify program:
+: In Debian it's simple, just type below command to install:
+:: sudo aptitude install libnotify-bin -y
+
+* Put Lisp:erc-nick-notify.el in your load-path, add
+{{{
+    (require 'erc-nick-notify)
+}}}    
+: in ~/.emacs
+
+==Customize==
+* `erc-nick-notify-delay'
+: The delay time that between two messages.
+* `erc-nick-notify-cmd'
+: The command that use for notify.
+* `erc-nick-notify-icon'
+: The file name of icon display.
+* `erc-nick-notify-timeout'
+: The timeout in milliseconds at which to expire the notification.
+* `erc-nick-notify'
+: The urgency level.
+* `erc-nick-notify-category'
+: The notification category.
+
+==Screenshot==
+[[image:ErcNotifyScreenshot]]

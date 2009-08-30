@@ -1,0 +1,8 @@
+[new]
+Currently documentation is authored in [[Texinfo]] format. It is available in HTML (chunked and single page). There are issues with this process. Suggestion. Soundly decried on the emacs-list. Master in XML, to the docbook schema, utf-8/16 encoded. Down-transform into required formats for delivery. texinfo, info, html, PDF etc. Updates authored lightly in something not dissimilar to texinfo, to be agreed with current authors, until or if they are happy to edit the XML. The changes should be relatively easy to add to the current masters. Transforms are available from docbook to html/texinfo/pdf. The up-transform, texinfo to XML docbook is largely correct, at revision 4.11 of makeinfo, but requires a good review, particularly for indexing, which seems a relativly hot topic with users of less than ten years standing.  The objective is to improve the toc generation and automatic indexing as well as to introduce Unicode usage. Until the new processes are proven there need be no change to the current way of working. 
+
+Downside. It appears that the gnu masters are wedded to texinfo as a document format, indeed it's been suggested that they wish to own all copyright in all processing. I think that's unreasonable and unrealistic. If the source is accessible and modifiable, as it is with the docbook toolset? Ah well. Many emacs users want any alternate system to emulate fully the emacs way of working, with 145 dedicated keybindings. -- [[Anonymous]]
+
+----
+CategoryDocumentation
+CategoryHelp

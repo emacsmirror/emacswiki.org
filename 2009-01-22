@@ -1,0 +1,22 @@
+[new]
+Anyone know of package or hack to make `dired-do-shell-command' complete against filenames (like `find-file' does) when pressing TAB?
+
+This way, I can less painfully dig around for an executable that is not in the path such as ##c:/Program Files (x86)/VideoLAN/VLC/vlc.exe##
+
+Thanks,
+PatrickAnderson
+
+[new]
+I'm annoyed that `shell-command' and `shell-command-on-region' don't have completion as well.  See shell-command.el described at ExecuteExternalCommand.  It doesn't have an advised version of `dired-do-shell-command', but perhaps it would be easy to hack something together based on it.
+
+I can't tell whether you're doing something more complicated than just opening files, so perhaps MsShellExecute. -- AaronHawley
+
+[new]
+Thanks Aaron.  I'll look more at the various shell-command fns.  MsShellExecute isn't quite what I'm looking for, but I understand what you mean. -- PatrickAnderson
+
+
+[new:DrewAdams:2009-01-26 07:24 UTC]
+In Icicles, `##!##' in [[DiredMode|Dired]] (`dired-do-shell-command') lets you complete against shell commands. By default, the commands that Emacs thinks might be appropriate for the marked files are the candidates, but you can optionally complete against all available shell commands (determined by your ##PATH## etc.). See [[Icicles - Dired Enhancements]]. (Yes, I realize that you were asking for file-name completion, so as to get an executable that is ''not'' in your ##PATH##.) -- DrewAdams
+
+[new:DrewAdams:2009-02-21 23:01 UTC]
+Icicles now does what you requested. Whenever you are prompted to enter a shell-command, you can use completion. The completion is lax file-name completion, so you can navigate to any program file, but extra, non-file-name candidates are also available. The latter are highlighted specially in `*Completions*'. They correspond to both (1) commands (plus possibly switches and arguments) that Emacs thinks might be appropriate for a given set of target files (e.g. files marked in [[DiredMode|Dired]]), and (2) all available shell commands, as determined by your search path (see above). See [[Icicles - Shell-Command Enhancements]] -- DrewAdams

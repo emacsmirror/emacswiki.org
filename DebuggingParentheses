@@ -1,0 +1,21 @@
+Unbalanced parentheses will cause errors in elisp files when they are loaded.
+
+As of GNU Emacs 21.1, the command `check-parens' checks
+for unbalanced parentheses automagically.
+Without it, use M-C-f and M-C-b across [[Sexps]].
+These include balanced parentheses, so when it fails, you know you
+have reached the problematic spot.
+
+= Recommend one use of check-parens =
+
+If you're editing emacs-lisp code, why not turn on check-parens on a save? Here's the highly uncustomizable code to do it. Note that it will not let you save until you correct the error, which maybe not good for your situation.
+
+ ; could be bad, will not let you save at all, until you correct the error
+ (add-hook 'emacs-lisp-mode-hook
+  (function (lambda ()
+   (add-hook 'local-write-file-hooks 
+    'check-parens))))  
+
+
+----
+CategoryParentheses

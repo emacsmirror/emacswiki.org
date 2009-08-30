@@ -1,0 +1,121 @@
+To avoid having to remember to do chmod u+x to set FileModes after saving a perl or sh or bash script, put something like this (you might want to add regexes for other interpreters) in your startup file:
+
+    ; Check for shebang magic in file after save, make executable if found.
+    (setq my-shebang-patterns 
+          (list "^#!/usr/.*/perl\\(\\( \\)\\|\\( .+ \\)\\)-w *.*" 
+	        "^#!/usr/.*/sh"
+	        "^#!/usr/.*/bash"
+	        "^#!/bin/sh"
+	        "^#!/bin/bash"))
+    (add-hook 
+     'after-save-hook 
+     (lambda ()
+       (if (not (= (shell-command (concat "test -x " (buffer-file-name))) 0))
+           (progn 
+	     ;; This puts message in *Message* twice, but minibuffer
+    	     ;; output looks better.
+	     (message (concat "Wrote " (buffer-file-name)))
+	     (save-excursion
+	       (goto-char (point-min))
+	       ;; Always checks every pattern even after
+	       ;; match.  Inefficient but easy.
+	       (dolist (my-shebang-pat my-shebang-patterns)
+	         (if (looking-at my-shebang-pat)
+		     (if (= (shell-command  
+			     (concat "chmod u+x " (buffer-file-name)))
+			    0)
+		         (message (concat 
+			           "Wrote and made executable " 
+			           (buffer-file-name))))))))
+         ;; This puts message in *Message* twice, but minibuffer output
+         ;; looks better.
+         (message (concat "Wrote " (buffer-file-name))))))
+
+----
+
+Or in Emacs 21:
+
+ (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+
+or
+    M-x customize-option RET after-save-hook RET
+
+(Emacs 21 does this for free on shell and perl scripts, the after-save-hook is not needed. --JCBingham)
+
+Some comments regarding elisp code:
+
+You can use `file-executable-p' to check whether file executable or
+not.  Also when there no else statement in `if' construction it is
+prefered to use `when'.  `dolist' can be ommited using <code>(when
+(looking-at (mapconcat 'identity my-shebang-patterns "\\|")) ..</code>
+so code may be simplified a little. --ZajcevEvgeny
+
+== A Variation on the Theme ===
+
+This is what I've been using for several years now.  It never got in my way and saved me hundreds of chmods :-) --StefanKamphausen
+
+<pre>
+(add-hook 'after-save-hook
+        #'(lambda ()
+        (and (save-excursion
+               (save-restriction
+                 (widen)
+                 (goto-char (point-min))
+                 (save-match-data
+                   (looking-at "^#!"))))
+             (not (file-executable-p buffer-file-name))
+             (shell-command (concat "chmod u+x " buffer-file-name))
+             (message
+              (concat "Saved as script: " buffer-file-name)))))
+</pre>
+
+* uses file-executable-p
+* widens the buffer just in case it's narrowed
+* doesn't iterate over a list of shebangs, just uses #!
+* uses short-circuit logic with and to do all the things one after another.
+* has been used for years without a single failure.
+
+----
+buffer-file-name should be quoted as (shell-quote-argument buffer-file-name) before passing it to the shell --deego
+
+: Good point, so it would be
+
+              (shell-command (concat "chmod u+x " (shell-quote-argument buffer-file-name)))
+
+?  I ''absolutely never'' use filenames with funny stuff like spaces or umlauts etc.  Makes life easier and $HOME a better place ;-)
+----
+I this this variation (only tested on Emacs 22):
+<pre>
+(defun hlu-make-script-executable ()
+  "If file starts with a shebang, make `buffer-file-name' executable"
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (when (and (looking-at "^#!")
+		 (not (file-executable-p buffer-file-name)))
+	(set-file-modes buffer-file-name
+			(logior (file-modes buffer-file-name) #o100))
+	(message (concat "Made " buffer-file-name " executable"))))))
+
+(add-hook 'after-save-hook 'hlu-make-script-executable)
+</pre>
+Since it doesn't rely on ##chmod##, it also works for remote files, i.e. those accessed by TrampMode.
+
+--HilkoBengen
+----
+Another variation when running under cygwin (to ensure that shell scripts are saved with UNIX eol characters)
+<pre>
+(defun my-before-save-hook ()
+  "Ensure that shell script files are saved with UNIX EOL characters."
+  (if (save-excursion
+        (goto-char (point-min))
+        (looking-at "^#!"))
+      (set-buffer-file-coding-system 'emacs-mule-unix)))
+
+(add-hook 'before-save-hook 'my-before-save-hook)
+</pre>
+----
+Reece Hart wrote [http://harts.net/reece/emacs/shebang.el shebang.el] doing the same job. Works in Emacsen 22 and 23.
+----
+CategoryProgrammerUtils

@@ -1,0 +1,1 @@
+KimStorm started a very intersting thread on emacs-devel, "Fix to long-standing crashes in GC".  He ends up discussing bugs appearing during garbage collection, memory corruption, and gets replies from RichardStallman, StefanMonnier, LucTeirlinck and others.  Very interesting read. -- AlexSchroeder

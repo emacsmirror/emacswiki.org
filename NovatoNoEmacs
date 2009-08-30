@@ -1,0 +1,258 @@
+Nunca é tarde para começar!
+
+== Características do Emacs ==
+
+Apesar de novato, você já deve saber que o Emacs é um editor de
+textos. Nós pensamos que é o melhor! A seguir, algumas características
+que nos fazem pensar assim:
+
+* adapta-se segundo o tipo de arquivo a ser editado; alguns exemplos:
+** hipermídia (CategoriaHipermedia), linguagens de marcação
+   (CategoriaXML), linguagens de programação
+   (CategoriaUtilitáriosProgramador).
+* edita muitos arquivos ao mesmo tempo, inclusive no terminal;
+* edita arquivos remotos de forma transparente;
+* suporta buscas com expressões regulares;
+* suporta correção ortográfica;
+* suporta diversas codificações de alfabeto;
+* aceita todo tipo de personalização que lhe venha à cabeça;
+* possui inúmeros pacotes adicionais, desde jogos a IDEs sofisticados
+  para programação.
+
+Diríamos então que ele não é só um editor, mas uma plataforma
+computacional completa escondida sob uma fachada inocente. Alguns dos
+serviços adicionais para os quais ele é usado mais freqüentemente:
+
+* email e notícias (ver CategoriaMail e CategoriaGnus);
+* organização e agendamento (ver CategoriaCalendário,
+  CategoriaGestãoDeInformaçãoPessoal);
+* controle de versões (ver CategoriaControloDeVersões). 
+
+== Comece pelo tutorial ==
+
+O Emacs possui um ótimo tutorial, que pode ser acessado da seguinte
+forma:
+
+* Tecle 'C-h t' (pressione e mantenha a tecla 'Control' enquanto tecla 'h',
+  em seguida, tecle 't').
+** Se não funcionar, tente 'F1 t'.
+** Se ainda não funcionar, tente 'M-x help-with-tutorial' (tecle
+  'Escape', depois 'x' e, então, digite 'help-with-tutorial, tecle
+  'Enter'/'Return')
+
+Não se assuste. As seqüências de tecla podem variar dependendo do "meio"
+no qual você está (modo gráfico (X), console, emulação de terminal,
+ssh etc.) pois estes interpretam as teclas de formas
+diferentes. Pagamos um certo custo por programas tão portáteis, mas
+isso não vai influenciar tanto assim seu trabalho com o Emacs.
+
+Para ler o tutorial em outras línguas [já existe em português?], use o
+comando 'help-with-tutorial-spec-language' (tecle 'Escape', depois 'x'
+e, então, digite).
+
+== Conceitos fundamentais ==
+
+Os conceitos abaixo são fundamentais para a compreensão do manual do
+Emacs e já estão bem explicados no próprio manual ('C-h i'), exceto
+pelo jargão próprio do Emacs.
+
+=== Notação ===
+
+; C-: pressionar e manter a tecla 'Control'
+; M-: pressionar e manter a tecla 'Alt', ou pressionar a tecla ESC
+; DEL: tecla 'Backspace' (<i>não</i> a tecla 'Delete')
+; RET: tecla 'Enter' ou 'Return'
+; SPC: barra de espaços
+; ESC: tecla 'Escape'
+; TAB: tecla 'Tab'
+
+Uma combinação como 'C-M-' (ou 'M-C-') significa pressionar e manter
+ambas as teclas. A boa notícia é que 'M-' geralmente pode ser obtido
+com ESC (teclar, sem manter).
+
+=== Jargão (Gíria) ===
+
+[Preciso da ajuda do pessoal de Portugal: quais os termos mais comuns
+para vocês? No Brasil, vários são empregados em inglês mesmo; por isso
+alguns termos sem tradução imediata ou cuja tradução geraria uma frase
+não foram traduzidos.]
+
+Termos em português:
+||<b>Termo comum</b>||<b>Termo no Emacs</b>||
+||seleção||região||
+||cortar||matar||
+||colar||yank||
+||janela||frame||
+||atalho||seqüência de teclas||
+
+Termos em inglês, já que alguns mnemônicos são baseados neles:
+||<b>Common Term</b>||<b>Emacs Term</b>||
+||selection||region||
+||cut||kill||
+||paste||yank||
+||window||frame||
+||shortcut||key sequence||
+
+No Emacs:
+
+* uma <b>janela</b> é um <i>painel</i> dentro do frame, um subframe;
+* a <b>linha de modo</b> é o texto localizado na parte inferior da
+  borda de uma janela;
+* o <b>buffer em miniatura</b> (ou <b>mini-buffer</b>) é um buffer especial para a entrada de
+  comandos; ele aparece tanto em um frame separado quanto na parte
+  inferior de cada frame;
+* o <b>cursor</b> (de texto) é o local onde você digita o texto; por
+  padrão ele é retangular;
+* o <b>ponteiro</b> (do mouse) mostra a posição do mouse; por padrão
+  ele é uma seta;
+* a posição do cursor é denominada <b>ponto</b> (não confundir com
+  ponteiro); quando o cursor está no terceiro caracter de um buffer,
+  então o ponto = 3;
+* os botões do mouse são chamados <b>MB1</b>, <b>MB2</b> e <b>MB3</b>
+  (geralmente da esquerda para a direita); são algumas vezes chamados
+  <b>mouse-1</b>, <b>mouse-2</b> e <b>mouse-3</b>;
+* uma <b>definição de teclas</b> é um mapa (uma relação) entre um
+  comando e uma seqüência de teclas; o mesmo comando pode ser ligado a
+  mais de uma seqüência, enquanto a seqüência só está ligada a um
+  comando.
+
+<b>Nota</b>: itens de menu e ações de mouse algumas vezes também podem
+ser entendidos como <b>seqüência de teclas</b>. Se lhe for perguntada
+uma seqüência, você geralmente pode responder apontando um ítem de
+menu ou realizando uma ação com o mouse (ex. clicar MB1) em vez de
+usar o teclado.
+
+Os termos "ponto" e "marca" são melhor discutidos na seção <b>Região
+(Seleção)</b>. Para mais definições, ver CategoriaAjuda.
+
+=== Abortando (Cancelando) ===
+
+Você pode usar 'C-g' (ou 'ESC ESC ESC', mnemônico, mas não tão ágil)
+para abortar qualquer ação que tenha iniciado. Em alguns casos pode
+ser necessário repetir a seqüência. Se ainda assim não houver
+cancelamento, use 'C-]' ou o comando 'top-level'. 
+
+=== Auto-completando (TAB) ===
+
+É um bom momento para falar sobre a tecla TAB. Se você já utilizou
+o Bash, sabe o quão útil esta tecla é. Ela completa (e lhe dá
+alternativas caso não consiga) o que você começou a digitar no buffer
+em miniatura.
+
+TAB é especialmente útil quando digitamos comandos, quando queremos
+abrir um arquivo e quando queremos obter ajuda para uma função ou
+variável, como veremos abaixo.
+
+=== Abrindo e salvando ===
+
+Seria bom abrir ou criar um arquivo, não é? Para abrir um arquivo,
+use 'C-x C-f' e digite o nome do arquivo (lembre-se: TAB). Se o
+arquivo não existir, ele será criado. 
+
+<b>Importante</b>: Acostume-se a criar o arquivo antes de editá-lo
+(não use o 'scratch') para beneficiar-se do salvamento automático.
+
+Para salvar o arquivo, use 'C-x C-s'. Para salvá-lo com outro nome,
+'C-x C-w'. E para fechar o arquivo (matar o buffer), 'C-x k'.
+
+=== Algumas dicas para memorizar as seqüências de teclas ===
+
+Cansou-se de tanto 'C-x'? Pois é, existe uma lógica nas seqüências de
+tecla do Emacs. Ela é:
+
+; C-[uma tecla]: as operações mais comuns, como procurar 'C-s', por
+ exemplo, são fáceis de lembrar.
+
+; C-x [tecla]: aquelas operações comuns, mas que não fazemos toda hora,
+ como salvar todos os arquivos 'C-x s' (no Emacs não é necessário salvar tanto
+ quanto em  outros editores :)).
+
+; C-x [tecla][tecla][tecla]: como você poderia esperar, aquelas menos
+ comuns, como 'C-x 4 C-f', que abre um arquivo em outra janela.
+
+; C-c [tecla]: operações relacionadas ao modo atual do buffer.
+
+Com tal esquema em mente, fica fácil usar os dois comandos de ajuda
+relacionados a teclas, que descrevemos a seguir.
+
+=== Obtendo ajuda ===
+
+A ajuda do Emacs é sensacional! Habitue-se a ela e nada mais será
+segredo para você. Há, inclusive, uma ajuda para a ajuda, 'C-h C-h',
+com o mesmo tipo de informação que segue. Lembramos que existem
+diversas opções no menu Ajuda, inclusive um FAQ.
+
+Comandos úteis:
+
+; C-h k (ou 'M-x describe-key'): descreve a seqüência de teclas
+ (que também pode ser uma operação de mouse ou menu).
+
+; [início da seqüência] C-h: lista todas as seqüências que começam como
+ você indicou; teste 'C-x C-h'.
+
+; C-h w ('where-is'): faz o oposto, descreve qual seqüência de teclas
+ pode ser usada para executar o comando.
+
+; C-h f ('describe-function'): descreve uma função (lembre-se da tecla
+ TAB).
+
+; C-h v ('describe-variable'): descreve uma variável e se ela for
+ personalizável, exibe um atalho para que você o faça.
+
+; C-h m ('describe-mode'): descreve o modo do buffer atual, incluindo
+ definições de teclas, comandos e outras informações importantes.
+
+E comandos que considero poderosos!
+
+; C-h a ('apropos'): lista todos os comandos cujo nome possui o texto
+ que você digitar.
+
+; C-h i ('info'): abre uma interface para os manuais info do seu
+ sistema, dentre os quais está o do Emacs. Use o recém aprendido 'C-h
+ m' para conhecer as teclas usadas para navegar ou use o menu 'Info'.
+
+Voltando ao assunto da memorização... você já deve ter percebido que
+todos os comandos de ajuda começam com 'C-h' ;).
+
+=== Desfazer ===
+
+Use 'C-_' ou 'C-/' para desfazer. Veja CategoriaAnular para maiores
+informações.
+
+=== Procurar e substituir ===
+
+Use 'C-s' para procurar e 'M-%' para substituir. 'C-M-s' para procurar
+usando expressões regulares e 'M-C-%' para substituir usando
+expressões regulares. Mais em CategoriaRegexp.
+
+=== Região (Selecionar) ===
+
+Use 'C-barra de espaços' para marcar o início e as setas do
+teclado para selecionar ou simplesmente arraste o mouse enquanto
+pressiona MB1. 
+
+Uma região é o espaço entre a marca inicial ('C-barra') e o cursor do
+texto; ou seja, movendo o cursor de texto você aumenta ou reduz a
+região selecionada. 'C-x C-x' intercambeia a marca pelo cursor, algo
+útil em dois casos:
+
+# quando você não vê a seleção (em alguns terminais, por exemplo) e
+# quando você quer ampliar a seleção para o outro lado sem começá-la
+  novamente.
+
+== Por onde continuar? ==
+
+A melhor forma de aprender Emacs é usando. Ele é tão poderoso que
+seria estafante ler todo o manual (manual != tutorial). O melhor é
+usá-lo, ter dúvidas e tentar saná-las usando as inúmeras opções de
+ajuda.
+
+Se você gosta de aventuras, não há lugar melhor que o menu
+'Opções'. Melhor ainda: 'Opções' > 'Customize Emacs' (ver
+CategoriaPontoEmacs).
+
+Boa sorte. -- DeDaLu
+
+----
+CategoriaAjuda
+

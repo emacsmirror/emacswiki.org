@@ -1,0 +1,22 @@
+Control character handling is enabled by default.  To disable it use M-x customize-variable RET erc-modules.
+
+When the control characters B, _, V, C, O, or G are in messages, part or all of the message is meant to be
+highlighted - or someone wants your client to beep.
+
+By default, messages are highlighted bold, underlined, and inverse.
+If you don't want to highlight messages but would like to strip all control characters:
+
+    (setq erc-interpret-controls-p 'remove)
+
+Beeping is disabled.  If you'd like to enable it, set `erc-beep-p'.  Note that you cannot both remove control
+characters and beep.
+
+=== Colors ===
+
+Color highlighting is not enabled.  You'll need to set `erc-interpret-mirc-color' for that.
+
+If you'd like to change the colors, you can customize the faces
+`fg:erc-color-face0' - `fg:erc-color-face15' and `bg:erc-color-face0' - `bg:erc-color-face15'
+
+----
+[[ERC]]

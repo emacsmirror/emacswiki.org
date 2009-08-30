@@ -1,0 +1,55 @@
+Since everyone seems to want some method for handling diary/journal-like entries, I hacked up daily-journal mode.  Basically, it binds the `j' key in the CalendarMode to a function which displays a text buffer for the day.  It's just a plain text buffer, and can contain notes, events, holidays, your Daily Affirmation (if you're inclined to that sort of thing)--whatever.  The current version is available at:
+
+* http://home.midsouth.rr.com/svartulf/emacs.html#daily-journal
+
+Let me know if it's useful, or /dev/null fodder :) ...
+
+-- MichaelBarillier
+
+It '''is''' useful! Maybe it could be even more useful if there was something like
+
+    (defun daily-journal-weekly-report (&optional mdy start-day)
+      "Collects all journal entries of the current week into a temporary buffer."
+      (interactive)
+      (let* ((cur-date (or mdy (calendar-cursor-to-date t)))
+    	 (abs-day (calendar-absolute-from-gregorian cur-date))
+    	 (day (calendar-day-of-week
+    	       (calendar-gregorian-from-absolute abs-day)))
+    	 (i 0))
+        ;; search first day
+        (while (not (= day (or start-day calendar-week-start-day)))
+          (setq abs-day (1- abs-day))
+          (setq day (calendar-day-of-week
+    	       (calendar-gregorian-from-absolute abs-day))))
+        ;; prepare buffer
+        (switch-to-buffer-other-window
+         (get-buffer-create "*Weekly Journal Summary*"))
+        (let ((inhibit-read-only t))
+          (erase-buffer)
+          ;; insert journal entries for next seven days
+          (while (< i 7)
+    	(let* ((greg-day (calendar-gregorian-from-absolute abs-day))
+    	       (date-string (calendar-date-string greg-day))
+    	       (entry (daily-journal:get-entry greg-day
+    					       daily-journal-default-filename)))
+    	  (if entry
+    	      (insert (format "%s\n%s\n%s\n\n" 
+    			      date-string (make-string (length date-string) ?=)
+    			      entry)))
+    	  (setq abs-day (1+ abs-day))
+    	  (setq i (1+ i)))))
+        (setq buffer-read-only t)
+        (goto-char (point-min))))
+    
+    (define-key calendar-mode-map "w" 'daily-journal-weekly-report)
+
+which might be helpful when you prepare yourself for your weekly deparment meeting. -- UlfJasper
+
+This is great! I'll try to add some font-locking sometimes when I have the time. -- HenrikJönsson
+
+Great! I want this for a long time. It will be better if the entries can be marked with color in the calendar and can be visited handily.
+And, with password-protected, it will be perfect! :) -- RockyDd
+----
+CategoryModes
+CategoryCalendar
+CategoryJournaling

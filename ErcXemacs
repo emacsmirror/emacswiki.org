@@ -1,0 +1,31 @@
+Here's where we dump problems, questions, or code specific to getting ERC working happily in XEmacs.
+
+----
+for ErcChannelTracking, aka erc-track.el
+
+first, I think advice might work differently in XEmacs, this works for me, though I also had to change switch-to-buffer to iswitchb-buffer:
+
+ (require 'advice)
+ (defadvice switch-to-buffer (after erc-remove-channel-from-modded-list activate)
+  "remove channel from mod list when switching to that channel"
+  (erc-modified-channels-update))
+
+second, go to the beginning of this line "(if (fboundp 'define-minor-mode)" (it's 140 in ERC 2.93 Revision 1.286) of erc-track and hit M-x macroexpand-sexp, and replace that entire if (lines 140 to 226 for me) with the macroexpand result. Also, you'll need to comment out these two lines in the result:
+ :global t
+ :group 'erc
+it seems that define-minor-mode in XEmacs does not have those two extra arguments.
+
+That should at least get modified channels showing up in the modeline, and have them removed from the modeline when you switch to them.
+
+I've mostly figured out how to get colors working in the modeline, but I need time to finish it.
+
+--ShaeErisson
+
+----
+
+Is there a way to change the face properties of `buffers-tab' locally for each
+buffer?  If so, that might add an interesting (possibly simpler, yet not always
+visible because buffer tabs are shown in groups) way for tracking channels in ERC.
+
+----
+[[ERC]]

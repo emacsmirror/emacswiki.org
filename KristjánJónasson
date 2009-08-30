@@ -1,0 +1,19 @@
+I am working on an environment to edit and compile Fortran 95 programs using "Windows native keystrokes" (those used for example in Microsoft Word). I've been writing the pages MsWindowsInstallation and MsWindowsCustomize (and am still working on them).
+
+The keystrokes I am referring to include ^S (control-S) to save, ^A to select all etc. and the ones used by the cua-mode of GNU-Emacs (e.g. ^Z, ^x, ^c, ^v).
+
+I use Emacs.
+
+E-mail: jonasson@hi.is
+
+[new]
+A suggestion: Give up on ^O, ^S etc. These are used for common operations in Emacs. Reaching the menus is a bigger problem, since it is a rather common thing. In the Emacs binaries distributed with [[EmacsW32]] (the patched version) I have included the possibility to use Alt as in other Windows programs (and instead the Windows keys are used for Emacs META key).
+
+[new]
+Welcome to the wiki! I think most people start using CuaMode for cut, copy, and paste. Then you need to use RedoMode in order to get rid of Emacs' strange (but powerful) notion [[Undo]]. Then manually bind the relevant function to your C-z and C-y. -- AlexSchroeder
+
+[new]
+Thanks for the suggestion, I will look into the redo-mode. About ^S, ok maybe one could try to give it up, but if one has been using these Windows editors for decades, it is difficult. About !EmacsW32, I tried that first but there were complications so I decided on the CVS binaries. I should maybe summarize the problems that I ran into and report to the author(s)? I am not sure how to carry out discussions on this wiki -- is this normal to do it here on a personal page? How would one report suggestions to the !EmacsW23 people? -- KristjánJónasson
+
+----
+CategoryHomepage

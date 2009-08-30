@@ -1,0 +1,29 @@
+Ledger is a command-line accouting tool by JohnWiegley, it provides a double-entry accouting ledger.  The input file is a very simple text file.
+
+You can get it from John's homepage.
+
+Ledger comes with a ledger-mode and a function to add new entries.
+Here is an alternate entry function.
+The accounts are in German.  All accounts for my expenses start with
+"Ausgaben:".  All accounts for my capital start with "Vermögen:" (basically
+I can take money from my cash reservers, or from one of my bank accounts).
+
+    (defun ledger-add-entry (title in amount out)
+      (interactive
+       (let ((accounts (mapcar 'list (ledger-accounts))))
+         (list (read-string "Entry: " (format-time-string "%Y-%m-%d " (current-time)))
+               (let ((completion-regexp-list "^Ausgaben:"))
+                 (completing-read "What did you pay for? " accounts))
+               (read-string "How much did you pay? " "CHF ")
+               (let ((completion-regexp-list "^Vermögen:"))
+                 (completing-read "Where did the money come from? " accounts)))))
+      (insert title)
+      (newline)
+      (indent-to 4)
+      (insert in "  " amount)
+      (newline)
+      (indent-to 4)
+      (insert out))
+
+----
+CategoryFinancial

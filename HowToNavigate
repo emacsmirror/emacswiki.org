@@ -1,0 +1,42 @@
+The coolest thing about the Emacs Wiki is the ability for anyone to contribute.  However, before you edit a page, you should probably learn HowTo navigate.
+
+== Categories ==
+
+The pages of Emacs Wiki are organized into '''categories'''. This SiteMap page lists all of the categories.  Most categories contain information about Emacs or user-contributed Emacs libraries.  There is one category, however, that contains information about the site itself: '''CategoryEmacsWikiSite'''.
+
+== Header and footer navigation ==
+
+Some of the links in the CategoryEmacsWikiSite are repeated in the header and footer of ''each'' Wiki page:
+
+* SiteMap -- The main Emacs-Wiki entry point, with links to category pages.
+* HowTo -- ''How to use the Emacs Wiki'' -- especially, how to contribute.
+* [[Search]]  --  ''Search'' the wiki in different ways.
+* ElispArea -- Upload and download EmacsLisp source code for extending and customizing Emacs.
+* RecentChanges -- Recent changes to the wiki.
+* [[News]] -- Chronological Web log (blog) about the wiki.
+* [[Problems]] -- Problems people are having with the wiki.
+* [[Suggestions]] -- Your suggestions for improvement of the wiki.
+
+There's a link, '''Edit this page''', at the bottom of each page.  Feel free to add new material or rework existing material.  See HowToEdit.
+
+== Linking and reverse links ==
+
+On this site, making new pages and links between pages is easy.  Clicking on a word or phrase give details about that word or phrase.  Links appear in a list, in a paragraph, or at the bottom or top of the page.
+
+The reverse is also possible with links and pages.  The relation between words -- or phrases -- with their respective pages allows you to find the pages that link to the current page.  Click the title heading at the top of the page to find the pages that mention the current topic.  In the case of category pages, click the title heading and the Wiki will list all pages that are in that category.  See WikiOrganization.
+
+== Wiki community ==
+
+* WikiNode -- Neighbouring sites: Text editors in general, Vim.
+* NearMap -- Wikis in the neighborhood (Meatball, Community)
+* InterMap -- Wikis outside the neighborhood, but useful for InterLinks.
+
+== Advanced ==
+
+* EmacsWikiAppearance -- User features for customizing the experience at EmacsWiki.
+* [[CSS]] -- changing the look of the wiki with complete custom stylesheets.
+* [[Mozilla]] -- Using mozex and Emacs, using a quicksearch for the wiki.
+* RssFeeds -- Including RSS feeds from your blog onto your page on this wiki.
+
+----
+HowTo

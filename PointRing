@@ -1,0 +1,5 @@
+It is similar to PointStack, but is enhanced and implemented by ring.
+
+Lisp:point-ring.el provides 4 functions: point-ring-insert, point-ring-remove, point-ring-next, point-ring-previous. You can bind to whatever keys suit your fancy.
+
+See also PointStack.

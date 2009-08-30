@@ -1,0 +1,12 @@
+<code>gutenberg-coding.el</code> is a spot of code to select the Emacs coding system for an  EBook or Etext from [http://www.gutenberg.org Project Gutenberg], [http://www.gutenberg.net.au Project Gutenberg of Australia] or [http://www.gutenberg.nl Project Gutenberg EU], using the "<code>Character set encoding:</code>" specified in the header information (which most non-ASCII texts have).  Get it from:
+
+: http://user42.tuxfamily.org/gutenberg-coding/index.html
+
+This is designed for GnuEmacs 21 and 22.  Some texts have a UTF-8 marker sequence which Emacs 22 recognises already, but for others you need <code>gutenberg-coding.el</code>.
+
+See also:
+
+* EtxtMode -- friendly viewing and bookmarking of Gutenberg texts
+
+----
+CategoryInternationalization

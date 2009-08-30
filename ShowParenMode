@@ -1,0 +1,74 @@
+show-paren-mode allows one to see matching pairs of parentheses (however these are defined; we aren't just talking about "(,)" here).  When point is on one of the pair, the other one is highlighted, and when point is near a pair they both light up.  Activate it once by running
+
+ M-x show-paren-mode RET
+
+or make it permanent by putting the following into your .emacs file:
+
+ (show-paren-mode 1)
+
+You can use the variable <tt>show-paren-delay</tt> to control how quickly Emacs shows you the matching paren. This variable is global, and must be set before the call to <tt>show-paren-mode</tt>. 
+
+To make this mode local to the buffer use <tt>(make-variable-buffer-local 'show-paren-mode)</tt>, add something like this to your .emacs:
+
+<pre>
+(defun lispy-parens ()
+  "Setup parens display for lisp modes"
+  (setq show-paren-delay 0)
+  (setq show-paren-style 'parenthesis)
+  (make-variable-buffer-local 'show-paren-mode)
+  (show-paren-mode 1)
+  (set-face-background 'show-paren-match-face (face-background 'default))
+  (if (boundp 'font-lock-comment-face)
+      (set-face-foreground 'show-paren-match-face 
+			   (face-foreground 'font-lock-comment-face))
+    (set-face-foreground 'show-paren-match-face 
+			 (face-foreground 'default)))
+   (set-face-attribute 'show-paren-match-face nil :weight 'extra-bold))
+
+(add-hook 'scheme-mode-hook 'lispy-parens)
+(add-hook 'lisp-mode-hook 'lispy-parens)
+(add-hook 'emacs-lisp-mode-hook 'lispy-parens)
+</pre>
+
+To change the color/face:
+<pre>
+(require 'paren)
+(set-face-background 'show-paren-match-face (face-background 'default))
+(set-face-foreground 'show-paren-match-face "#def")
+(set-face-attribute 'show-paren-match-face nil :weight 'extra-bold)
+</pre>
+
+= How to show the matching paren when it is offscreen =
+
+When the matching paren is offscreen, show-paren-mode highlights only the paren at point. It is more useful to show the line of matching paren in the minibuffer. Execute the following to get this behavior:
+
+<pre>
+(defadvice show-paren-function (after show-matching-paren-offscreen
+                                      activate)
+  "If the matching paren is offscreen, show the matching line in the                               
+echo area. Has no effect if the character before point is not of                                   
+the syntax class ')'."
+  (interactive)
+  (let ((matching-text nil))
+    ;; Only call `blink-matching-open' if the character before point                               
+    ;; is a close parentheses type character. Otherwise, there's not                               
+    ;; really any point, and `blink-matching-open' would just echo                                 
+    ;; "Mismatched parentheses", which gets really annoying.                                       
+    (if (char-equal (char-syntax (char-before (point))) ?\))
+        (setq matching-text (blink-matching-open)))
+    (if (not (null matching-text))
+        (message matching-text))))
+</pre>
+
+[new:PaulTipper:2008-06-05 09:02 UTC]
+
+This behaviour seems to occur already in my GNU Emacs 23.0.60.2 with (show-paren-mode), but I'm fairly sure it happens in stock GNU Emacs 22 as well, can anyone confirm?
+
+
+Not in my emacs: 22.2.1.  Glad to have it though.
+
+==Links==
+http://emacs-fu.blogspot.com/2009/01/balancing-your-parentheses.html
+
+----
+CategoryParentheses CategoryModes ParenthesesAppearance

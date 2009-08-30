@@ -1,0 +1,50 @@
+I'm !RetroJ on freenode, and can often be found in #emacs.  Here are a few bullet-points about me:
+
+= Favorite.... =
+* os: debian
+* web browser: conkeror
+* window manager: ratpoison
+* program: gnu emacs
+
+= Unfavorites =
+* tabs
+* `M-x customize' (It is evil--evil I say!)
+* ChangeLog format
+
+= Facts =
+* I connect to the internet with a modem.
+* I speak a little mandarin, and a little more esperanto.
+* I like perl.  Wanna fight about it?
+
+= Road to Emacs =
+
+In January, 2003, I was a Windows user, illiterate with GNU/Linux, studying the Microsoft .Net platform.  From my vantage, C# appeared to be the logical successor to C++, which I had been studying without impressive results for many years.  The enthusiasm I once had for programming was all but gone.  Then one day at the library, on a whim, I checked out /Learning Perl/.  This book awakened me to the idea that programming could be both easy and fun, and resparked my interest in computing.  This then, is the natural starting point for my Road to Emacs story.
+
+I learned Perl and used it, and later PHP, for text utilities, web sites, and a fancy map-making program[http://jjfmapper.sourceforge.net].  At some point I realized that almost all the software I was using was open-source software targetted at Linux-based platforms, and that I was only complicating my life by continuing to use Windows.  I switched to !SuSe GNU/Linux with KDE and began to learn all new computer skills.
+
+For text editing in Windows I had been using the commercial program !EmEditor.  I was not immediately sure what would be a good editor to use in !SuSe.  At first I used the KDE program, Kate, but Kate was not great compared to !EmEditor, so I knew there must be better programs out there.  I had read that Emacs was good, but that it was hard to learn.  The prospect of challenge only interested me more.
+
+The learning curve of Emacs is a slippery slope, a slope that, as famously depicted, goes around and around and around.  Emacs was a fantasy manifest, designed as I wanted to design programs, but never knew how: a program that challenges a person's potential, rather than condescends to a person's limits.  Using Emacs introduced me to new ideas, which fed back into my understanding of Emacs.  And around, and around, and around.
+
+With time and experimentation, bit by bit, I configured my Emacs to replace other programs, and configured other programs to be more like Emacs.  I ditched !SuSe for Debian, switched to the window manager Ratpoison, and the web browser Conkeror.  Using Emacs and chatting with other Emacs users led me to study interesting programming languages, including Elisp, Common Lisp, Scheme, and Haskell.
+
+= Quest for the Perfect Keymap =
+
+I have a confession.  I never liked Emacs' default key bindings.  Therefore, an important locus of my effort to configure Emacs has been the quest for the perfect keymap.
+
+I used Dvorak for at least a year, then a layout of my own design based on Dvorak, but with the numbers in the bottom row, and Q and X transposed.  I became quite good at configuring xkb, and programmed in new arrow keys on Mod4-I, J, K, and L.  I made my right Windows key a Mod4 key, so by pressing it with my palm, I had arrow keys in home position.  This was quite cool for a while, but it eventually resulted in pain.
+
+I finally went back to standard Qwerty for two reasons: I was not keeping practiced with Qwerty, so it was a needless challenge to type on other people's computers, and although my typing speed was good with Dvorak, it was not faster than my Qwerty speed, nor did I make fewer mistakes--just different mistakes.
+
+As I re-acclimated to Qwerty, I borrowed an idea from vim, and bound C-h, C-j, C-k, and C-l to movement commands, and rebound the commands that are normally on those keys to C-b (kill), C-f (recenter), and C-p (help).  I left C-n alone because I found it useful to leave as it was.  I put various `eval' related commands on C-z, M-z, and C-M-z.  This seemed good for a long time, but I still experienced pain in my left pinky after extended sessions of emacs-use.  (Yes, I had long since rebound my capslock to be a control key, which helped a little.)
+
+In the summer of 2007, for reasons unrelated to my quest for perfect emacs key bindings, I decided to finally learn vim so I wouldn't feel so helpless on those infrequent occasions when it was more convenient to use vim than emacs.  I liked what I found.  Vim-style modal editing made a great deal of sense to me--introduce a `command mode' and suddenly all the unmodified alphabetic keys are freed up for useful functions other than self-insert.  So began the long process of configuring the Emacs package VIPER, plus various add-ons, to use Vim-style modal editing in Emacs.
+
+
+To be continued?!
+
+[new]
+Welcome to the wiki! :) -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -1,0 +1,31 @@
+I am a long-time user of Emacs and an occasional reader of EmacsWiki.
+
+I decided to create a page for me in the EmacsWiki so that I have 
+a place where to put some of the elisp code I wrote over the years.
+
+I'll start with a simple package that I wrote for some time now but that
+I never made available publicly (except for a few friends).  I cleaned it up
+a bit today and decided to make it public.  I called it the EdiffTrees package.
+
+[new]
+Welcome to the wiki! -- [[JoakimVerona]]
+
+[new]
+Yeah, and feel free to create páginas portuguesas... :) -- AlexSchroeder
+
+[new]
+Thank you by your friendly welcome :)
+
+Alex, I think I'll stick with the English.
+Unless my English is so bad that it would be clearer if I wrote it all in Portuguese...
+
+Regarding the EmacsWiki way of doing things, should I put a link to the EdiffTrees package
+somewhere else?  Perhaps a link in the EdiffMode page would be appropriate... -- JoaoCachopo
+
+[new]
+EdiffMode belongs to CategoryProgrammerUtils, so perhaps you should add link both ways for CategoryProgrammerUtils and EdiffTrees. That would be the wiki way of categorizing it.
+And a link from EdiffMode is probably appropriate as well.
+-- AlexSchroeder
+
+----
+CategoryHomepage

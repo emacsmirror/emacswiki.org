@@ -1,0 +1,21 @@
+A crossreferencing package by PeterStephenson.
+
+Get it from: http://www.pwstephenson.fsnet.co.uk/computing/
+
+This has *nothing* to do with "xref: A Refactoring Browser for Emacs"
+mentioned on CategoryProgrammerUtils.
+
+To quote from the website:
+
+"This is nothing to do with the HTML or the world wide web; it allows
+you to make links between and within any of your own files from within
+Emacs with just a couple of keystrokes. The links are remembered in
+such a way that your original files are not altered (or you can have
+the links simply appended to the file for portability). Works best
+under a windowing system --- any windowing system will do, as long as
+your Emacs supports it."
+
+This can also be used as a text marker mode, see TextMarker.
+
+----
+CategoryHypermedia

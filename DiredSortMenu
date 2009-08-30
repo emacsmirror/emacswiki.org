@@ -1,0 +1,27 @@
+'''dired-sort-menu''' is a library by FrancisJWright that sorts the directory listings in DiredMode in various ways and provides a [[menu bar]] and popup menu. The popup menu is bound to `S-mouse-2', which is compatible with the `mouse-3' popup menus of '''[[DiredPlus|Dired+]]'''.
+
+Download ##dired-sort-menu.el## from
+
+* http://centaur.maths.qmw.ac.uk/Emacs/ or Lisp:dired-sort-menu.el
+
+Here is a screenshot showing the `dired-sort-menu' popup menu with sorting by file '''Extension''' and '''Recursive''' sorting selected (so that subdirectories are included). This screenshot also shows '''Dired+''''s treatment of an inserted subdirectory (purple band to set it off).
+
+[[image:DrewsEmacsDiredSortMenu]]
+
+
+== Dired Sort Menu Plus ==
+
+Library <tt>[[dired-sort-menu+.el]]</tt> enhances ##dired-sort-menu.el## in some minor ways: better key bindings and menu locations.
+
+== Dired Sort Map ==
+
+##dired-sort-map.el## is a library that provides DiredMode with sorting by pressing `s' then `s', `x', `t' or `n' to sort by Size, eXtension, Time or Name.
+
+* Lisp:dired-sort-map.el
+
+
+
+----
+CategoryDirectories
+
+

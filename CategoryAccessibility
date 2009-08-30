@@ -1,0 +1,26 @@
+[[image/right:http://sachachua.com/notebook/pics/sacha-wearable.jpg|Sacha Chua with mobile Emacs|SachaChua]]
+
+This page is about ways to improve accessibility for Emacs. It includes:
+* Non-traditional ways of using Emacs, in particular to provide Emacs functionality to people who cannot or do not want to use only a standard keyboard, mouse, and screen. Such non-traditional means include speech activation, screen readers, FootSwitches, special or modified keyboards, key-chording, GamePad, and mobile access.
+* Enhancements to traditional ways of using Emacs, which improve accessibility.
+
+These pages are in CategoryAccessibility:
+
+* FontLockColorsAccessibility -- Suggestion to change font-lock-* faces to enhance accessibility.
+* StickyModifiers -- reducing repetitive strain injury by clicking keyboard keys in a combination like C-M-s one by one.
+* EmacSpeak -- a complete audio desktop environment
+** EmacspeakTricks -- Tips and tricks for Emacspeak users.
+* EmacsVersor -- editing semantically relevant parts of text (not just the traditional set of character, word, line, sentence, sexp, paragraph or defun, and page) through a narrow-channel interface such as keypad, GamePad or FootSwitches
+* VrMode -- a library to interface with Dragon Naturally Speaking
+* ShortTalk -- a special spoken language for editing
+* ShortStep -- custom FootSwitches hardware
+* FootSwitches -- using pedals with Emacs
+* ConversationalEmacs -- using speech input and output together
+* [[Icicles]]
+** Access all of Emacs -- all keys and commands -- using a single key, `S-TAB'. This includes all MenuBar menus and `##M-:##', which evaluates an arbitrary EmacsLisp sexp. Navigate the key-binding hierarchy. Use [[Completion]] on keys. See [[Icicles - Key Completion]] and [[Icicles - Key Completion#ThreeKeyEmacs]].
+** Browse your file system and choose files using cycling & completion instead of DiredMode -- see [[Icicles - File-Name Input]]
+* ChangingCursorDynamically – change cursor type and color, depending on context
+* CrosshairHighlighting – making the cursor location more apparent by highlighting current line and column; track cursor or show cross hairs momentarily.
+* HighlightCurrentLine
+* HighlightCurrentColumn
+* [[Anything]]

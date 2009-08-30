@@ -1,0 +1,100 @@
+Cette page est aussi disponible en francais:  ThumbsModeFrancais
+----
+
+Make Emacs your choice of image viewer!
+
+Use the 'convert' program from <nowiki>ImageMagick</nowiki> [http://www.imagemagick.org/] to:
+
+* Create preview pages with thumbnails.(see screenshot below)
+* View an image and zoom with the '+' and '-' keys. 
+* Interface with the 'convert' program to modify an image (emboss, swirl e.t.c)
+* Set your desktop wallpaper (via the xloadimage program)
+* You can use ThumbsMode to post to [http://www.flickr.com/ flickr]; see FlickrClient.
+
+The thumbs page at Savannah at: http://savannah.nongnu.org/projects/thumbs/ will no longer be maintained as CVS:thumbs.el will be part of emacs.
+
+The more recent version can be found on the ElispArea as Lisp:thumbs.el
+
+[http://www.bookshelf.jp/cgi-bin/goto.cgi?file=meadow&node=thumbs Information about thumbs.el in japanese]
+
+Also see [[Tumme]] which is more actively developed, provide approximately the same functionality (and more) and comes with Emacs 22.
+
+----
+Xemacs version: Lisp:thumbs-xmas.el
+
+*NOTE*: The more recent version of thumbs in it's xemacs version
+exist but have not been tested.  I dont want to maintain it.
+If you are volunteer to do so, please tell me.
+
+== What's New? ==
+
+* support for customize have been added
+* A lot of bugs have been fixed
+* xemacs support have been removed :-(
+
+== Configuration ==
+
+
+In your ~/.emacs file:
+
+    (autoload 'thumbs "thumbs" "Preview images in a directory." t)
+
+Then:
+
+    M-x thumbs
+
+will prompt you for a directory name (defaulting to the current one).
+
+In dired, C-t m will pop a thumbs directory with the marked files.
+
+== Screenshots ==
+
+[[image:ThumbsModeScreenshot]]
+
+More screenshots [http://learn.tsinghua.edu.cn/homepage/015450/emacs-thumbs.png][http://www.bookshelf.jp/soft/thumbs.jpg]
+
+== See Also ==
+
+* For another, slightly different way of browing your images as thumbnails, see [[Tumme]].
+
+* For a different kind of thumbnail -- active thumbnail Emacs ''frames'' (not images), see FisheyeWithThumbs. You can use these frames to monitor buffers at thumbnail size.
+
+
+== Wish List and To-Do List ==
+
+* Make it work with tramp mode for remote connections
+* add your features request here!
+
+== Discussion ==
+
+[new]
+I had to make a change to get this to work on Windows.  The function thumbs-thumbname tried to make a filename that looked like 'c:pathtofilethenfilename' which didnt' work.  I changed it to the following and it worked great. -- RyanBowman
+
+    (defun thumbs-thumbname (img)
+      "Return a thumbnail name for the image IMG."
+      (concat thumbs-thumbsdir "/"
+	      (thumbs-subst-char-in-string
+	       ?\  ?\_
+	       (apply
+	        'concat
+	        (split-string
+	         (expand-file-name img) "[:/]"))))) ;; changed "/" to "[:/]"
+
+[new]
+I tried an alternate change after running into and debugging the same problem (should have looked here first!). -- RobDavenport
+
+    (defun thumbs-thumbname (img)
+      "Return a thumbnail name for the image IMG."
+      (concat thumbs-thumbsdir "/"
+	      (thumbs-subst-char-in-string
+	       ?\  ?\_
+	       (apply
+	        'concat
+	        (split-string
+                 (file-relative-name (expand-file-name img)) "/")))))
+
+Ryan's is probably the better solution.
+
+----
+CategoryDirectories
+MultimediaModes

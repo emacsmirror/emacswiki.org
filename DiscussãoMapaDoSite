@@ -1,0 +1,119 @@
+Essa página discute como a página inicial, MapaDoSite, deve ser estruturada. É inspirada na experiência SiteMapDiscussion. Parte da página listará questões já decididas e a outra parte será usada para a discussão.
+
+O que o MapaDoSite deve conter:
+
+* uma breve introdução para novatos, direcionando-os para páginas com maiores informações;
+* uma lista das principais categorias; uma categoria é uma etiqueta anexada às páginas, permitindo sua classificação. As páginas de categoria oferecem uma lista de páginas pertencentes à categoria, bem como a possibilidade de buscar aquelas etiquetas.
+* um número pequeno de bons comentários de usuários "conhecidos" (dos grupos de notícia, #emacs etc.).
+
+= Questões abertas =
+
+== Estrutura inicial ==
+
+Decidi abrir essa página primeiro para discutirmos se devemos tentar acompanhar a estrutura do sítio em inglês. Existem muito menos colaboradores em português que em inglês e por isso acho que devemos pensar em uma solução nossa, mais humilde e que cumpra um objetivo simples: introduzir o básico do Emacs, ao menos inicialmente.
+
+Outro motivo é discutir algumas questões de adequação como:
+
+* CategoriaIndentação -- palavra que não existe em português;
+* CategoriaEncher -- de Fill, tudo bem, mas é inteligível?
+* Site (usado no Brasil com reservas) ou sítio?
+* Vamos traduzir o HowTo? Será ComoFazer?
+* etc.
+
+-- DeDaLu
+
+[new]
+Na parte Alemã do sítio, comecei com uma liste bastante simples: Todas as páginas Alemães. Se uma vez termos demasiadas páginas, começaremos com as categorias as mais úteis para as páginas que temos. Em fim: Escrever algo agora e encontrar uma melhor estrutura no futuro. -- AlexSchroeder
+
+[new]
+É isso mesmo, Alex! Amanhã farei um levantamento das colaborações em português já existentes e, caso os outros colaboradores não tenham nada contra, farei como na parte Alemã: uma listagem simples. Acredito ser bem mais produtivo e apresentável. -- DeDaLu
+
+[new]
+Nem precisei esperar até amanhã. Realmente há pouca coisa e muitas delas precisam de revisão pois fazem ligação com páginas em inglês que ficariam melhor sob um tópico '''Veja também, em inglês:'''. Após um levantamento inicial, temos:
+
+* NovatoNoEmacs
+* CanaldoEmacs (ver também InternetRelayChatBr)
+* CategoriaDocumentação
+** ManualEmacs
+** ReferênciaEmacsLisp
+** AutoDocumentado
+* CategoriaHistória
+** HistóriaDoEmacs
+** EmacsEXEmacs
+** ImplementaçõesEmacs
+* CategoriaCalendário
+** ModoPlanner
+* CategoriaClientesDeChat
+* CategoriaGnus
+** ObterNewsComGnus
+** PersonalizarThreading
+** UsarProcmailComGnus
+* CategoriaControloDeVersões
+** DicasParaPclCvs
+* CategoriaTeclas
+** TeclasBásico
+** ModoCua
+* CategoriaPontoEmacs
+** PontoEmacsBásico
+** MeuPrimeiroPontoEmacs 
+* CategoriaCódigo
+** AvaliarExpressões
+** FunçõesInteractiva
+** ArgumentoUniversal
+
+Algumas dessas categorias, após revisão, acabarão saindo... -- DeDaLu
+
+[new]
+Gostaria que opinassem. Vou aguardar alguns dias após o Carnaval; se ninguém for contra ou opinar, aplicarei as revisões propostas ao MapaDoSite. -- DeDaLu
+
+[new]
+Gostei da estrutura, na minha opinião, pode começar já a implementar essa estrutura. -- ViniciusJoseLatorre
+
+[new]
+Já apliquei as revisões propostas no MapaDoSite. -- ViniciusJoseLatorre
+
+[new]
+Fiquei um pouco afastado (trabalho, trabalho...) e peço desculpas. 
+
+Vinicius, minha proposta é reduzir o índice ao mínimo, só haver ligação para o que já existe, facilitando o uso.
+
+Se para você estiver tudo certo, passarei essa questão para o tópico "Questões resolvidas" e farei as alterações drásticas no MapaDoSite.
+
+-- DeDaLu
+
+[new]
+Ok, concordo com a minimização, manda ver. :-) -- ViniciusJoseLatorre
+
+== Língua Portuguesa ==
+
+No MapaDoSite usa-se algumas palavras que são do Português de Portugal.
+
+Devemos usar /ecrã/ ou /monitor/, /ficheiro/ ou /arquivo/, /teu/ ou /seu/, /controlo/ ou /controle/?
+
+Enfim, qual Português é o que será usado nessas páginas: do Brasil, Portugal, Moçambique, etc.?
+
+Usaremos a nova ortografia unificada da língua Portuguesa que talvez saia no final desse ano (2007)?
+
+-- ViniciusJoseLatorre
+
+[new]
+Português de Portugal for the win! :) Seriously though, how does Wikipedia handle it? I think it has no variant for Brazilian Portuguese.
+
+E até os Ingleses aqui têm o mesmo Problema: Color ou colour, center ou centre, etc.
+
+-- Alex Schröder
+
+[new]
+Não vejo problema em usarmos essa mistura; afinal, nós nos entendemos apesar das diferenças. O que vale é a unificação da ortografia na prática; à medida que escrevermos juntos, como fazemos aqui, acabaremos chegando a consensos. 
+
+-- DeDaLu
+
+[new]
+Gostei da idéia de irmos criando o consenso conforme formos trabalhando juntos.
+
+E NMHO (Na Minha Humilde Opinião), não acho que o português de Portugal seja o /winner/. ;-)
+-- ViniciusJoseLatorre
+
+= Questões resolvidas =
+
+

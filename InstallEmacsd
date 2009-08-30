@@ -1,0 +1,19 @@
+#!/bin/bash
+# UID check only work in bash, not sh.
+# So keep this heading
+
+if [ $UID != 0 ] 
+then
+	echo emacsd: Error: This script should be run as root.
+	echo
+	exit 1
+fi
+
+cp emacsd /etc/init.d/
+chmod 755 /etc/init.d/emacsd
+update-rc.d emacsd defaults
+#this equals: update-rc.d emacsd start 20 2 3 4 5 . stop 20 0 1 6 .
+#will make all links in /etc/rc.X
+
+exit 0
+

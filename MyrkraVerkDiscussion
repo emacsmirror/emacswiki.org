@@ -1,0 +1,28 @@
+
+== The Discussion ==
+
+: Welcome! -- AlexSchroeder
+
+Waoow. nice editing conflicts...Have you seen that I had also added a solution
+for the modeline (1 minute before you) and btw completely reformated the page? 
+Use show revisions to see the modified page.
+
+Did the script told you about editing conflict or you didn't notice anything?
+
+Note that I am just trying to know what happened and I'm not criticizing you. --PierreGaston
+
+Note that Oddmuse uses the `merge' tool (the same mechanism CVS uses to resolve conflicts).
+Therefore, if `merge' thinks it can resolve the conflict, the user is not warned about the conflict.
+-- AlexSchroeder
+
+Yes, but I had  made a lot of changes to the page and the version of myrkraverk (version 7)
+is like the version 5 with an addition, throwing out all my changes.
+That's why I wanted to know if he had just ignore an edit conflict message or if 
+there is a problem with the script. -- PierreGaston
+
+Interesting, I was not aware of this discussion until now ;)  -- MyrkraVerk [23-08-2003]
+ 
+----
+MyrkraVerk
+
+

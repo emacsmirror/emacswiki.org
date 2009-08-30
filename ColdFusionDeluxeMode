@@ -1,0 +1,255 @@
+This will document my recent attempts to get a good combined mode working for editing HTML, ColdFusion (a non-free Web development platform), JavaScript, CSS.  Some of this will require, depending on your platform, EmacsFromCvs. Such features will be noted.  --Patrick
+
+[[image:ColdFusionDeluxeModeSC]]
+
+==Thanks==
+This material draws on HtmlModeDeluxe, PsgmlMode, HtmlHelperMode, and EmacsCodeBrowser. Those people deserve most of the credit.
+
+==ToDo==
+* Indentation.
+* Better support of comments (CSS and JS code found in comments overrides comments).
+* Semantic support for ColdFusion, or a ColdFusion DTD of some sort.
+
+==Intro==
+I was frustrated with HtmlModeDeluxe. Multi-line comments never seemed to work. It didn't distinguish between different tags (which is actually appropriate for basic HTML). There were no tooltips in Windows. I could never get indentation to work properly. And of course, ColdFusion was only vaguely supported in a now-not-seemingly-available coldfusionhelpermode.el. It's not my fault I have to write in ColdFusion all day! ;) Now that I have overcome those things, I wanted a place to document all the little hacks I have made in case anyone else is equally frustrated. 
+
+
+
+= Beginnings =
+* Review HtmlModeDeluxe. 
+* Also, http://www.dzr-web.com/people/darren/projects/emacs-webdev/ .
+
+: Everything at first is based off these two resources so you will want to be familiar with them. They are superb.
+
+    
+: <b>1.</b> First, download and install the following packages, which provide our foundation:
+* psgml 1.25 (http://sourceforge.net/project/showfiles.php?group_id=9156&package_id=9226)
+* mmm 0.48 (http://sourceforge.net/project/showfiles.php?group_id=8658)
+* generic-x 
+* css-mode (http://www.garshol.priv.no/download/software/css-mode/)
+* xxml (http://xxml.progiciels-bpi.ca/showfile.html?mode=archives)
+
+    
+: <b>2.</b> Second, if you wish to have EmacsCodeBrowser support (you will!), you will need to install:
+* speedbar 0.14beta4 (http://sourceforge.net/project/showfiles.php?group_id=17886)
+* eieio 0.17 (http://sourceforge.net/project/showfiles.php?group_id=17886)
+* semantic 1.4.4 (http://sourceforge.net/project/showfiles.php?group_id=17886)
+
+: I do not recommend installing the whole cedet package, but that's up to you. 
+
+    
+: <b>3.</b> Third, edit your .emacs so as to setup...
+* PsgmlMode:
+
+    (autoload 'sgml-mode "psgml" "Major mode to edit SGML files." t )
+    (autoload 'xml-mode "psgml" "Major mode to edit XML files." t)
+    
+    (setq auto-mode-alist
+      (append
+      (list
+        '("\\.sgm$" . sgml-mode)
+        '("\\.sgml$" . sgml-mode)
+        '("\\.xml$" . xml-mode)
+        )
+      auto-mode-alist))
+
+* Syntax Highlighting via xxml:
+
+    (autoload 'xxml-mode-routine "xxml")
+    (add-hook 'sgml-mode-hook 'xxml-mode-routine)
+    (add-hook 'xml-mode-hook 'xxml-mode-routine)
+
+* ColdFusion support via sgml-mode, as well as ImenuMode support for certain ColdFusion and JavaScript tags (to be used in EmacsCodeBrowser):
+
+    (define-derived-mode sgml-html-mode sgml-mode "HTML"
+      "This version of html mode is just a wrapper around sgml mode."
+      (make-local-variable 'sgml-declaration)
+      (make-local-variable 'sgml-default-doctype-name)
+      (make-local-variable 'imenu-sort-function)
+      (setq
+       sgml-default-doctype-name    "html"
+    ;   sgml-declaration             "~/lib/DTD/html401/HTML4.decl"
+       sgml-always-quote-attributes t
+       sgml-indent-step             2
+       sgml-indent-data             nil
+       sgml-minimize-attributes     nil
+       sgml-omittag                 nil
+       sgml-shorttag                nil
+       imenu-generic-expression   '(("Includes" "<cfinclude[ ]*template=\"\\([a-zA-Z0-9-_./#]*\\)\"[ ]*>" 1)
+    				  ("Cases" "<cfcase[ ]*value=\"\\([a-zA-Z0-9-_,. ]*\\)\".*>" 1)
+        		          ("Forms" "<form.*action[ ]*=[ ]*\"\\([a-zA-Z0-9-_#.\?=]*\\)\".*>" 1)
+    				  ("Queries" "<cfquery.*name[ ]*=[ ]*\"\\([a-zA-Z0-9-_#.]*\\)\".*>" 1)
+    				  ("Loops" "<\\(cfloop\\|cfoutput\\).*\\(list\\|to\\|query\\)[ ]*=[ ]*\"\\([a-zA-Z0-9-_#.=]*\\)\".*>" 3)
+    				  ("JSFunctions" "function[ ]*\\([a-zA-Z0-9-_]*\\)[ ]*(.*)" 1)
+    				  ("Content" "<cfcontent.*type=\"\\([a-zA-Z0-9-_./]*\\)\".*>" 1)
+    ;cfmodule, cflocation, cftransaction, cfabort, cfif?, add cfform to forms, cflock
+    				  )
+       imenu-sort-function 'imenu--sort-by-name
+       imenu-auto-rescan t
+       )
+      )
+
+* Some (admitedly clunky...they may need to be rewritten to speedup parsing) functions to handle multi-line comments, which will be used in MultipleModes below:
+
+    ;; multi-line html comments!
+    (defvar lastpos 0)
+    (defun check-comment2 ()
+      (setq lastpos (point))
+      t)
+    
+    (defun count-matches2 (count exp)
+      (let ((x (search-backward exp lastpos t)))
+        (if x (count-matches2 (+ 1 count) exp)
+          count)))
+
+    (defun count-matches3 (exp p)
+      (save-excursion
+        (goto-char p)
+        (count-matches2 0 exp)))
+    
+    (defun check-comment ()
+      (save-match-data
+        (save-excursion
+          (let ((x (count-matches3 "--->" (- (point) 4)))
+    	    (y (count-matches3 "<!---" (point))))
+    ;	(message "%d %d" x y)
+    	(if (eq x y) t nil)))))
+
+
+
+* MultipleModes support to combine this all together:
+
+    (mmm-add-group
+     'fancy-html
+     '(
+             (html-javascript-embedded
+                    :submode javascript-generic-mode
+                    :face mmm-code-submode-face
+                    :front "<script\[^>\]*>"
+                    :back "</script>")
+             (html-css-embedded
+                    :submode css-mode
+                    :face mmm-declaration-submode-face
+                    :front "<style\[^>\]*>"
+                    :back "</style>")
+             (html-comment-embedded        ; multi-line html comments!
+    ;                :submode text-mode
+                    :face font-lock-comment-face
+                    :front "<!---"
+                    :back "--->"
+                    :front-verify check-comment2
+                    :back-verify check-comment
+                    :include-front
+                    :include-back)
+             (html-javascript-attribute
+                    :submode javascript-generic-mode
+                    :face mmm-code-submode-face
+                    :front "\\bon\\w+=\\s-*\""
+                    :back "\"")
+             (html-css-attribute
+                    :submode css-mode
+                    :face mmm-declaration-submode-face
+                    :front "\\bstyle=\\s-*\""
+                    :back "\"")
+       )
+    )
+    
+    (setq mmm-submode-decoration-level 2)
+
+
+
+= Hacks =
+===Multi-Line Comments===
+
+See above .emacs code. The idea is that the comments are handled with MultipleModes, not FontLock support. We use some custom functions to make sure that the new submode starts and stops on the correct start and end tags. For example, 
+
+    <!--- <!--- ---> ---> 
+
+is valid ColdFusion.
+
+===Syntax Highlighting, Color Theme===
+
+In order to support some new syntax highlighting, you will need to customize some faces. Here is a snippet from the ColorTheme that I use that mimics Dreamweaver's default colors:
+
+    (header-line ((t (:background "#eeeeee" :foreground "grey40" :box (:line-width 1 :style nil)))))   ; used when we "move" the modeline to the top of windows
+    (modeline ((t (:background "#eeeeee" :foreground "grey40" :box (:line-width 1 :style nil)))))
+    (font-lock-builtin-face ((t (:foreground "#00999c"))))      
+    (font-lock-comment-face ((t (:foreground "#9c999c" :background "white"))))     ; light gray
+    (font-lock-constant-face ((t (:foreground "Blue"))))                           ; blue
+    (font-lock-doc-face ((t (:foreground "#006500"))))                             ; dark green
+    (font-lock-doc-string-face ((t (:foreground "RosyBrown"))))
+    (font-lock-function-name-face ((t (:foreground "#00999c"))))                   ; dark red
+    (font-lock-keyword-face ((t (:foreground "#9c0000"))))                         ; teal, for HTML
+    (font-lock-preprocessor-face ((t (:foreground "#9c0000"))))
+    (font-lock-reference-face ((t (:foreground "Orchid"))))                        ; not used so far
+    (font-lock-string-face ((t (:foreground "#006500"))))
+    (font-lock-type-face ((t (:foreground "ForestGreen"))))                        ; not used so far
+    (font-lock-variable-name-face ((t (:foreground "DarkGoldenrod"))))             ; not used so far
+    (font-lock-warning-face ((t (:bold t :foreground "Red" :weight bold))))        ; not used so far
+    (coldfusion-tag-face ((t (:foreground "#9c0000"))))
+    (coldfusion-form-face ((t (:foreground "orange"))))                            
+    (font-lock-entity-face ((t (:foreground "black" :weight bold))))
+    (ecb-method-non-semantic-face ((t (:foreground "black"))))
+    (ecb-mode-line-face ((t (:background "#eeeeee" :foreground "grey40" :box (:line-width 1 :style nil)))))
+    
+
+*Note* that coldfusion-tag-face and coldfusion-form-face are new.
+
+
+===ECB===
+===Crypto "Intellisense"===
+
+If you are using Windows, you know emacs 21.3 does not support tooltips. Neither does it support the disabling of "fringe". Therefore I highly recommend getting a CVS binary. In my experience it is quite stable. It supports tooltips and disabling of fringe. See [[EmacsW32]]. There is a workaround, however, below, that uses Python.
+
+The idea is this: first, we need a function to recognize which coldfusion tag point is current "near" and then another function to pull up the data for this tag. Second, we need a way to display the tooltip. 
+
+# ToDo: deposit the cftag code.
+# To Display a tooltip on Windows Emacs 21.3:
+
+: We will use Python to display the tooltip. To do so we will need Python, of course, and the wxPython libraries (http://wxpython.org). 
+
+: ToDo: deposit msgbox.py code.
+
+
+===Line Numbering===
+
+Use setnu.el. The color-theme code above provides the syntax coloring for it. See LineNumbers.
+
+
+===Fringe===
+Windows emacs 21.3 does not support disabling of the "fringe", which is a visual annoyance. Upgrade to CVS version. You can find a binary at [[EmacsW32]].
+
+
+===HeaderLine instead of ModeLine===
+
+If you use EmacsCodeBrowser, you may want the ModeLine at the top of the windows, ie. in the HeaderLine, as usual in most developing environments with this layout.
+
+In general, you can do this by setting default-header-line-format to default-mode-line-format, then setting default-mode-line-format to nil:
+
+    (setq default-header-line-format default-mode-line-format
+          default-mode-line-format nil)
+
+However, to get EmacsCodeBrowser to not show the ModeLine, you will need to hack it. I wasn't able to find a hook that supported this feature, unfortunately. Edit /ecb/ecb-mode-line.el. You are looking for the function ecb-mode-line-update-buffer. Remove mode-line-format and replace it with header-line-format. i.e., it should look like:
+
+    (defun ecb-mode-line-update-buffer (buffer-name new-mode-line-format)
+      "Update the given buffer...."
+    
+      (if (get-buffer buffer-name)
+          (save-excursion
+            (set-buffer buffer-name)
+            (setq header-line-format new-mode-line-format)
+            (setq mode-line-format nil)
+            (if ecb-running-xemacs
+                (redraw-modeline)
+              (force-mode-line-update)))
+        (message "This buffer isn't available: %s"  buffer-name)))
+
+
+
+
+= Discussion =
+[new]
+comments? -Patrick
+
+----
+HtmlMode | MarkupModes | CategoryHypermedia | CategoryModes

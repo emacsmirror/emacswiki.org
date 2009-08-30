@@ -1,0 +1,62 @@
+Original article by KaiGrossjohann:
+
+The basic data structure is a cons cell.  It is a pair consisting of a
+car and a cdr.  The car and the cdr can be numbers or strings etc, or
+pointers to other cons cells.
+
+For example, (1 . 2) is a cons cell where the car is 1 and the cdr is
+2.
+
+You can build binary trees from cons cells:
+
+    ((1 . 2) . (3 . 4))
+
+This corresponds to the following tree:
+
+        *
+       / \
+      *   *
+     / \ / \
+     1 2 3 4
+
+There is a special value nil which means "empty", other languages use
+the term "null".
+
+A list is a degenerated binary tree, where the cars contain the list
+elements, and the cdr points to the rest of the list.  And nil means
+the empty list.  So (1 . nil) is a one-element list, and (1 . (2 .
+nil)) is a two-element list, and (1 . (2 . (3 . nil))) is a
+three-element list.  The three-element list as a tree:
+
+        *
+       / \
+      1   *
+         / \
+        2   *
+           / \
+          3   nil
+
+In Lisp code, you would create such a list using one of the following
+idioms.
+
+Generate a list using the `list' function: 
+
+    (list 1 2 3) => (1 2 3)
+
+The following expression is equivalent:
+
+    (cons 1 (cons 2 (cons 3 nil))) => (1 2 3)
+
+A constant list using a quote:
+
+    '(1 2 3) => (1 2 3)
+
+Thus, you can add items to the front of the list using cons.  Here's an
+equivalent expression:
+
+    (cons 1 '(2 3)) => (1 2 3)
+
+For ways to modify lists, see ListModification.
+
+----
+CategoryCode

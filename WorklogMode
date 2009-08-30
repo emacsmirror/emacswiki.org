@@ -1,0 +1,63 @@
+Lisp:worklog.el is used to keep track of time you spend on tasks. It allows you to summarize the tasks for easy overview of how much time you spent on tasks.
+
+Lisp:worklog.el was created by KaiGrossjohann but since version 2.0 it is maintained by ArjenWiersma.
+
+Since version 2.3 worklog.el is compatible between GNU Emacs and XEmacs.
+
+I put up my development version on github: http://github.com/credmp/worklog/tree/master
+
+The actual homepage of the mode moved to: http://www.credmp.org/WorkLog.html
+
+----
+
+I found that worklog is nice but the fact that it has to switch to the .worklog buffer was pretty annoying.
+
+I wrote a cheezy hack to get around it. I'm not a very talented ELisp hacker so please feel free to better this code.
+
+    (defun worklog-quick-start (task)
+      (interactive "sTask: ")
+      (let (curbuf (current-buffer))
+           (worklog-do-task task t)
+           (switch-to-buffer curbuf t)))
+
+    (defun worklog-quick-stop ()
+      (interactive)
+      (let (curbuf (current-buffer))
+           (worklog-task-stop)
+           (switch-to-buffer curbuf t)))
+
+ErikHollensbe
+
+----
+
+Cool! I will take this into the development version of worklog... probably more people would like to use this :)
+-- ArjenWiersma
+
+----
+
+I use worklog.el for all my time tracking, and it's been very good so far.
+
+It wouldn't be bad if I could either do a *worklog_summary* page in hh:mm or hours and (decimal) fractional hours.  It's easy to convert the few entries under tasks; it's more work to do all the entries under "by date."
+
+Finally, I found an anomaly today.  I have a day in my .worklog that looks like
+
+ 2006-06-08 08:35 login
+ 2006-06-08 08:35 task1
+ 2006-06-08 10:17 stop
+ 2006-06-08 13:30 task2
+ 2006-06-08 15:30 stop   
+ 2006-06-08 21:03 task1
+ 2006-06-08 22:19 stop
+ 2006-06-08 22:19 logout
+
+Unfortunately, the *worklog_summary* page section looks like
+
+ 2006-06-08
+  2.58	task1
+
+I noticed it, because I added task2 today manually, and it didn't increment the overall sum for task2.  I have this problem with version 2.3 and 2.4.1.  If you see what could be causing this and fix it, I'd be really grateful.
+
+BillHarris
+
+----
+CategoryModes CategoryTimeTracking

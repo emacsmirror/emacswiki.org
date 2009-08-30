@@ -1,0 +1,70 @@
+This page describes package Lisp:sys.el, by ViniciusJoseLatorre.
+
+: .:: ''v1.0'' ::.
+
+
+== About sys ==
+
+Sometimes you need to know on which system Emacs is running, so it's
+possible to fine tune/adapt/parameterize your code.
+
+This package determines which kind of system Emacs is running by setting
+the variables:
+
+; `sys-cygwin-system' : Non-nil means Emacs is running on Cygwin (Windows 9x/NT system).
+
+; `sys-windows-system' : Non-nil means Emacs is running on Windows 9x/NT.
+
+; `sys-lp-system' : Non-nil means Emacs is running on Unix which has lp as printing utility.
+
+; `sys-emacs-type' : Specify which kind of Emacs is running.
+
+; `sys-path-style' : Specify which path style to use for external commands.
+
+To use Lisp:sys.el, insert in your package:
+
+   (require 'sys)
+
+So, if you're fine tunning a package, the code will look like:
+
+   (require 'sys)
+   (eval-and-compile
+     ;; define `some-function' depending on Emacs kind.
+     (cond ((eq sys-emacs-type 'emacs)
+            ...
+            (defun some-function (some-arg)
+              ;; code for GNU Emacs
+              )
+            ...
+            )
+           ((eq sys-emacs-type 'xemacs)
+            ...
+            (defun some-function (some-arg)
+              ;; code for XEmacs
+              )
+            ...
+            ))
+     ;; initialize `some-variable' depending on which system is running
+     (defvar some-variable
+       (cond (sys-cygwin-system
+              ;; initialization for Cygwin
+              )
+             (sys-windows-system
+              ;; initialization for Windows
+              )
+             (sys-lp-system
+              ;; initialization for Unix using lp utility
+             (t
+              ;; initialization for GNU Linux/Unix (using lpr utility)
+              ))))
+
+
+== See Also ==
+
+* CustomizingBoth
+
+
+----
+
+CategoryCode,
+CategoryProgrammerUtils

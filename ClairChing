@@ -1,0 +1,115 @@
+Clair Ching
+
+Somewhat new to Emacs and maybe I will always be having the newbie's sense of wonder :)
+
+Used Emacs because of the influence of SachaChua =)
+
+I am also keeping a sort of tech blog on http://clair.free.net.ph
+
+I am really amazed at how much I can do on Emacs.
+
+_Stuff I use on Emacs a lot:_
+* PlannerMode
+* [[EMMS]] (Thanks to LucasBonnet for dropping by and showing me that EMMS exists!)
+* WThreeM (w3m)  
+* YodEl (Thanks to Dennis for helping me out on this one!)
+* DiredMode (dired)
+* EmacsShell (eshell)
+
+[new]2005.04.08 from http://clair.free.net.ph/64
+
+This was where I babbled about YodEl =)
+
+[new]
+2005.03.09 (from http://clair.pinoyweb.net/?p=157)
+
+Jgotangco has IMed me yesterday. He was asking stuff about Emacs and Planner. I was more than happy to share my thoughts, of course! :D Anyhow, I was sorry to have had to go because I really would have enjoyed gushing about Emacs a bit more ;)
+
+I hope that he did get the latest Planner files because of the cross-referencing capabilities :) It’s one thing that I was wanting in Planner that is actually available already! So good!
+
+For people who don’t even know what Emacs is but have Emacs installed on their computers, they could check out links to the following in order to get acquainted the ultracool Planner mode:
+
+http://www.emacswiki.org
+
+The Planner Mode page (http://www.emacswiki.org/cgi-bin/wiki/PlannerMode)
+
+The Planner Quick Start Page (http://www.emacswiki.org/cgi-bin/wiki/PlannerModeQuickStart)
+
+Sacha Chua’s blog (http://sacha.free.net.ph)
+
+My screenshots of Planner 
+
+www.emacswiki.org is where one can find the details of various stuff about Emacs and where the Planner Mode and Planner Quick Start pages are.
+
+The Planner Mode page on emacswiki.org is informative. It has plenty of links, info, tips and links to people who use Planner :)
+
+Planner Quick Start is always a good place to start because it explains the steps in setting up Planner for beginners. It has helped me a lot when I started out. (Remember, I only started using Linux last year August.) I had no idea what Emacs was but the Quick Start was able to make it clear as to what I ought to do.
+
+Sacha Chua’s blog is a good example of a published version of her Plan pages :) She is the maintainer of Planner and she posts some tips and tricks every once in a while. In any case, you might want to check out all her Planner related posts.
+
+I have posted some screenshots on my old site. This would have the screenshots. I have taken them in January 2005. I should update that already but they are still useful so in case you already have looked at the Planner Quick Start page and yet you want to see some examples, I think my screenshots would be useful. In case they are not so helpful or you would like to see other things, you can send me email to clair@free.net.ph
+
+And last but not the least, sign up for the emacs-wiki discussion list so that you would always be updated on what is going on with emacs-wiki and planner :) I am actually a lurker on this list because I have nothing much to contribute but it’s always nice to follow what the active people are talking about on the list. Also, if you are having trouble, you could always write your questions. The people in the community are quite helpful :)
+
+For me, I use planner as my all-around notebook and planner :) You could easily add certain features to your planner as time goes by. There is a way to integrate planner and the diary mode of Emacs. And you could also integrate it with Gnus and BBDB (mail reader and contact info database) the way that Sacha does. You could make Planner work the way you want it to. You have various .el files to choose from =) Or you could write your own ELISP code. (Which I don’t because I simply can’t.) Or you could ask Sacha and the other people on the mailing list for certain features. A wishlist of sorts ;) I think that there is space on emacswiki.org for a wishlist of features.
+
+Planner is a wonderful tool :) Try it and see for yourself. (In my case, it got me hooked on to Emacs so I am biased. <laughs>)
+
+And guess what Jgotangco IMed me today:
+
+    (10:42:59) jsgotangco: good morning. thanks to you i am hopelessly attached to planner mode
+
+Now that is always something I am happy to read on my messenger ;) 
+[new]
+Welcome on the wiki !
+[new]
+Thanks to Lucas for the warm welcome! :)
+[new]
+Hehe, sachac is recruiting...  :) -- AlexSchroeder
+[new]
+Hi, AlexSchroeder! Yes, she is recruiting ;) 
+[new]
+By the way, I am having trouble using yodel. I need help.  I couldn't log on. :(
+[new]
+I must confess that from within Emacs, there's just one IM client I use:
+[[ERC]] + BitlBee.  Bitlbee is a local IRC server that acts as a gateway to
+IM services, and ERC is the Emacs IRC Client.  The question is, whether bitlbee
+would support Yahoo...  I've used it for AIM, ICQ, and Jabber.  It /claims/
+to support Yahoo, though.  ;)  Anyway.  You can also just connect with your
+favorite IRC client to a public bitlbee server and set up your accounts there.
+See the bitlbee homepage for more info.
+-- Alex
+[new]
+I think that Sacha has mentioned that to me already. Hmmm. Would there be quirks if I am using Emacs on Windows? Thanks, Alex!
+[new]
+I use Emacs on Windows practically every working day.  No unexpected quirks.  ;) -- Alex.
+[new]
+Goodie! Anyhow, I will post again what will happen when I try and use [[ERC]]. I hope it would work :D 
+
+Follow-up on the ERC thing: I didn't use it anymore because I have been having trouble setting it up. Oh well. Thanks for the tip!
+[new]
+Ouch!  Too bad...  Maybe [[rcirc]] suits you better? -- Alex.
+
+[new]
+Strange. I can't seem to extract the .tar.gz file of [[rcirc]]. Invalid file structure. -ClairChing
+
+[new]
+Depending on your browser, the compression could be wrong.  I've seen several times that compressed files are renamed to .tar, or that automatically uncompressed files remain .tar.gz... -- Alex
+
+[new]
+Power Archiver doesn't seem to be able to extract it at all :(
+
+[new]
+As a temporary solution (until rcyske becomes available to fix this), I've put a copy of the latest CVS version in http://stp.ling.uu.se/~bkhl/rcirc/. I hope to see you later in <tt>#rcirc</tt>. :) -- [[bkhl]]
+
+[new]
+Newbie question: CVS? So how do I?
+
+[new]
+http://www.nongnu.org/rcirc has links to getting the cvs version, as well as (hopefully non broken) tarballs (sorry about that). [[RyanYeske]]
+
+[new]
+Thanks for the link, RyanYeske. [[bkhl]] also helped me out with it over Y!IM :) - Clair
+
+----
+CategoryHomepage

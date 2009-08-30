@@ -1,0 +1,15 @@
+== Welcome! ==
+
+Hi, I'm Alexey Mikhailov. I use XEmacs and it is vitally important thing for me.
+
+It is my primary IDE, my mail\news reader ([[Gnus]]), my desktop enviroment ([[XWindowEmacsManager]]),
+my multimedia center ([[MpthreePlayer]]\[[EMMS]]), my communication tool ([[Eicq]]\[[ERC]]).
+
+[new:ZajcevEvgeny:2005-03-22 06:36 UTC]
+Hey!  Welcome to the wiki!  As person of charmed circle of [[XWindowEmacsManager]] users could you please tell few words about it :)
+
+[new]
+Sure! XWEM is one true window manager. You have full control on X11 behaviour using Emacs Lisp! No one desktop environment can be compared  to XWEM because of it's features: flexiblity, stability (Yeah, it's very stable, so pity that XEmacs not), extensibility (you can easy write features that you missing using your favorite Lisp). I'm absolutely addicted to XWEM and wouldn't change it for anything, be sure! -- AlexeyMikhailov
+----
+CategoryHomepage
+

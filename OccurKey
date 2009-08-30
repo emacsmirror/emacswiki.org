@@ -1,0 +1,76 @@
+Tired of having to decide whether to hit M-x occur, or whether
+SwitchingBuffers to the OccurBuffer *Occur* is more appropriate?  Here
+is a defun to do either-or, inspired by MeatBall:HumaneInterface:
+
+    (defun my-occur ()
+      "Switch to *Occur* buffer, or run `occur'."
+      (interactive)
+      (if (get-buffer "*Occur*")
+          (switch-to-buffer "*Occur*")
+        (call-interactively 'occur)))
+
+Emacs reserves `C-c' followed by an ordinary letter for users.
+You could bind occur to `C-c o' as follows:
+
+    (global-set-key "\C-co" 'my-occur)
+
+
+----
+This is a slightly different version - keeps the top window displaying the original buffer when typing `C-c o' for the second time (that is, when both the *Occur* buffer and the original buffer are visible). The *Occur* buffer becomes active. Pressing RET (or mouse-2) on an item in the *Occur* buffer makes the original window active again and moves the point to the occurrence. Thus you can jump back and forth without the windows swapping. 
+
+    (defun my-occur ()
+      "Switch to *Occur* buffer, or run `occur'."
+      (interactive)
+      (if (get-buffer "*Occur*")
+          (switch-to-buffer-other-window "*Occur*")
+        (call-interactively 'occur)))
+
+This key binding is the same as mentioned above, only written slightly differently.
+
+    (global-set-key (kbd "C-c o") 'my-occur)
+
+Also, once you're done with the *Occur* buffer (when you no longer need that list), and the original buffer is active, here's a key binding that allows you to kill the *Occur* buffer. If you only remove the window *Occur*, and not the buffer *Occur* (say, as happens with `C-x 1'), the next time you press `C-c o', Emacs assumes you're looking for the same regexp (unless you've pressed `z' in the *Occur* buffer).
+
+    (global-set-key (kbd "C-c C-M-o")
+                    '(lambda ()
+                       "Kill the *Occur* buffer"
+                       (interactive)
+                       (kill-buffer "*Occur*")
+                       (delete-other-windows)))
+
+
+
+----
+
+
+
+Here is a somewhat more sophisticated version of the above
+command extracted from module emacspeak-wizards --- 
+it sets a file local variable to the occur pattern.
+
+I use this trick to then have files that contain slides in LaTeX
+to have an occur pattern that match slide header lines as an
+example.
+
+   (defun emacspeak-wizards-occur-header-lines (prefix) 
+     "If you define a file local variable called 
+    `emacspeak-occur-pattern' that holds a regular expression that 
+    matches header lines, you can use this command to conveniently 
+    run `occur' to find matching header lines. With prefix arg, 
+    prompts for and sets value of the file local pattern." 
+     (interactive "P") 
+     (declare (special emacspeak-occur-pattern)) 
+     (cond 
+      ((and (not prefix) 
+            (boundp 'emacspeak-occur-pattern) 
+            emacspeak-occur-pattern) 
+       (occur emacspeak-occur-pattern) 
+       (message "Displayed header lines in other window.") 
+       (emacspeak-auditory-icon 'open-object)) 
+      (t 
+       (let ((pattern  (read-from-minibuffer "Regular expression: "))) 
+         (setq emacspeak-occur-pattern pattern) 
+   (occur pattern))))) 
+---- 
+CategoryKeys 
+ 

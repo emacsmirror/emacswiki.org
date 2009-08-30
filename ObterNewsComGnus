@@ -1,0 +1,18 @@
+Configurar a variável de ambiente NNTPSERVER com o servidor de news e escreve <code>M-x gnus</code> para invocar o Gnus, e depois faz L para listar os grupos.
+
+Se vires a mensage "No news is no news":
+
+`A k' mostra uma lista de grupos? Carrega em `u' naqueles que gostas.
+
+Se `A k' não funcionar, tenta `A z'. Usa o `u' como em cima, mas faz `C-k' naqueles que não quiseres.
+
+Se isto ainda não resultar, tenta `A A'.
+
+Ou uma alternativa que usa o buffer *Server*:
+
+No buffer *Group*, faz `^'.  Depois deverás estar no buffer de servidor. Aí, move o cursor para o nome do servidor que estás a tentar ler e carrega no SPC.  Aqui, deverás ver uma listagem de todos os grupos que o servidor tem para oferecer. Procura o grupo que desejas. Carrega em `u' sobre ele. Depois, carrega em q q e deverás estar de volta para o buffer *Group*. O cursor deverá também estar no grupo seleccionado.  Agora, carrega em `g' para obteres as news.  Carrega em SPC para entrar no grupo.
+
+Contribuintes: BrianWhite, KaiGrossjohann, GalenBoyer
+
+----
+CategoryGnus

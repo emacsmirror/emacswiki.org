@@ -1,0 +1,160 @@
+*Question:* When I receive mail in gnus from someone who's not in my bbdb (and I don't try to do any autonoticing or whatnot), I still get a bbdb buffer popped up sometimes with just my own bbdb record.  Is there some way to tell bbdb to _never_ pop-up my own email?
+
+    (setq bbdb-use-pop-up nil)
+
+SachaChua's BbdbMode configuration:
+
+    (require 'bbdb-autoloads)
+    (require 'bbdb)
+    (load "bbdb-com" t)
+    (bbdb-initialize 'gnus 'message 'reportmail 'w3)
+    (bbdb-insinuate-reportmail)
+    (bbdb-insinuate-message)
+    ;; (bbdb-insinuate-sc)
+    (bbdb-insinuate-w3)
+    (setq bbdb-north-american-phone-numbers nil)
+    (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+    (setq bbdb-auto-notes-alist
+          (quote (("To"
+                   ("w3o" . "w3o")
+                   ("plug" . "plug")
+                   ("linux" . "linux")
+                   ("emacs-commit" . "emacs commit")
+                   ("emacs" . "emacs")
+                   ("pinoyjug" . "pinoyjug")
+                   ("digitalfilipino" . "digitalfilipino")
+                   ("sacha" . "personal mail"))
+                  ("From"
+                   ("admu" company "Ateneo de Manila University")
+                  ("Organization" (".*" company 0 nil))
+                  ))))
+    (setq bbdb-auto-notes-ignore (quote (("Organization" . "^Gatewayed from\\\\|^Source only"))))
+    (setq bbdb-auto-notes-ignore-all nil)
+    (setq bbdb-check-zip-codes-p nil)
+    (setq bbdb-default-area-code 632)
+    (setq bbdb-default-country "Philippines")
+    (setq bbdb-ignore-some-messages-alist (quote (("From" . "hotmail") ("To" . "handhelds") ("From" . "yahoo.com"))))
+    (setq bbdb-notice-hook (quote (bbdb-auto-notes-hook)))
+    (setq bbdb/mail-auto-create-p t)
+    (setq bbdb/news-auto-create-p (quote bbdb-ignore-some-messages-hook))
+
+AlexSchroeder's config:
+
+    (add-to-list 'load-path "/usr/local/src/bbdb/lisp")
+    (require 'bbdb)
+    (add-to-list 'file-coding-system-alist
+                 (cons "\\.bbdb\\'" bbdb-file-coding-system))
+    (bbdb-initialize 'gnus 'message)
+    (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
+    (global-set-key (kbd "C-c b") 'bbdb)
+    (setq bbdb-canonicalize-net-hook
+          '(lambda (addr)
+             (cond ((string-match "\\`\\([^@+]+\\)\\+[^@]+\\(@.*\\)\\'" addr)
+                    (concat (match-string 1 addr) (match-string 2 addr)))
+                   ((string-match "\\`\\([^@]+@\\).*\\.\\(\\w+\\.\\w+\\.\\w+\\)\\'"
+                                  addr)
+                    (concat (match-string 1 addr) (match-string 2 addr)))
+                   (t addr)))
+          bbdb-north-american-phone-numbers-p nil
+          bbdb-default-country "Schweiz"
+          bbdb-print-require t
+          bbdb-print-net 'all)
+
+    ;; FIXME: The From: header is no longer special.
+
+    (defun bbdb/gnus-split-method nil
+      "This function expects to be called in a buffer which contains a mail
+    message to be spooled, and the buffer should be narrowed to the message
+    headers.  It returns a list of groups to which the message should be
+    spooled, using the addresses in the headers and information from the
+    BBDB."
+      (let ((prq (list (cons 0 nil) (cons 1 nil) (cons 2 nil) (cons 3 nil))))
+        ;; the From: header is special
+        (let* ((hdr (or (mail-fetch-field "from") (user-login-name)))
+               (rv (bbdb/gnus-split-to-group hdr t)))
+          (setcdr (nth (cdr rv) prq) (cons (car rv) nil)))
+        ;; do the rest of the headers
+        (let ((hdr (or (concat (mail-fetch-field "to" nil t) ", "
+                               (mail-fetch-field "cc" nil t) ", "
+                               (mail-fetch-field "apparently-to" nil t)) "")))
+          (setq hdr (rfc822-addresses hdr))
+          (while hdr
+            (let* ((rv (bbdb/gnus-split-to-group (car hdr)))
+                   (pr (nth (cdr rv) prq)))
+              (or (member (car rv) pr) (setcdr pr (cons (car rv) (cdr pr)))))
+            (setq hdr (cdr hdr))))
+        ;; find the highest non-empty queue
+        (setq prq (reverse prq))
+        (while (and prq (not (cdr (car prq)))) (setq prq (cdr prq)))
+        ;; and return...
+        (if (not (or (not (cdr (car prq)))
+                     (and (equal (cdr (car prq)) (list bbdb/gnus-split-default-group))
+                          (symbolp bbdb/gnus-split-nomatch-function)
+                          (fboundp bbdb/gnus-split-nomatch-function))))
+            (cdr (car prq))
+          (goto-char (point-min))
+          (funcall bbdb/gnus-split-nomatch-function))))
+
+    (add-hook 'bbdb-list-hook 'my-bbdb-display-xface)
+
+    (defun my-bbdb-display-xface ()
+      "Search for face properties and display the faces."
+      (when (or (gnus-image-type-available-p 'xface)
+                (gnus-image-type-available-p 'pbm))
+        (save-excursion
+          (goto-char (point-min))
+          (let ((inhibit-read-only t); edit the BBDB buffer
+                (default-enable-multibyte-characters nil); prevents corruption
+                pbm faces)
+          (while (re-search-forward "^           face: \\(.*\\)" nil t)
+            (setq faces (match-string 1))
+            (replace-match "" t t nil 1)
+            (dolist (data (split-string faces ", "))
+              (setq pbm (uncompface data))
+              (if (gnus-image-type-available-p 'xface)
+                  (insert-image
+                   (gnus-create-image
+                    (concat "X-Face: " data)
+                    'xface t :ascent 'center :face 'gnus-x-face))
+                (when pbm
+                  (insert-image
+                   (gnus-create-image
+                    pbm 'pbm t :ascent 'center :face 'gnus-x-face))))
+              (insert " ")))))))
+
+    (add-hook 'bbdb-notice-hook 'bbdb-auto-notes-hook)
+    (setq bbdb-auto-notes-alist '(("X-Face" (".+" face 0 'replace))))
+
+Matthieu Moy has code that allows BBDB to automatically create records for all outgoing mail. Every time you reply to an e-mail or a newsgroup posting, the recipients are added to the database. His code can be found here:
+http://www-verimag.imag.fr/~moy/emacs/moy-bbdb.el
+
+---- 
+I had a tough time activating the ":" as described in the manual '1.6.4. Using the BBDB with Web Browsers' for emacs-w3m.
+Leo sent me this working setup:
+
+>> I have the following in my setup.
+>>
+>> ;;; integrate with bbdb
+>> (define-key w3m-mode-map ":" 'sdl-bbdb-www-grab-homepage-w3m)
+>> ;; Based on `bbdb-www-grab-homepage'
+>> (defun sdl-bbdb-www-grab-homepage-w3m (record)
+>>   "Grab the current URL and store it in the bbdb database"
+>>   (interactive (list (bbdb-completing-read-one-record
+>>                       "Add WWW homepage for: ")))
+>>   ;; if there is no database record for this person, create one
+>>   (unless record
+>>     (setq record (bbdb-read-new-record))
+>>     (bbdb-invoke-hook 'bbdb-create-hook record))
+>>   (if (bbdb-record-getprop record 'www)
+>>       (bbdb-record-putprop
+>>        record 'www
+>>        (concat (bbdb-record-getprop record 'www) "," w3m-current-url))
+>>     (bbdb-record-putprop record 'www w3m-current-url))
+>>   (bbdb-change-record record t)
+>>   (bbdb-display-records (list record)))
+
+Just add it to your .emacs and you should be ready to go.
+
+----
+CategoryBbdb
+CategoryDotEmacs

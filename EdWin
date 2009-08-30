@@ -1,0 +1,14 @@
+'''EdWin''' is part of MitSlashGnuScheme.  It's a remarkably Emacs-like editor written entirely in Scheme.  Early editions of the ''MIT Scheme User Manual'' listed the differences between '''Emacs 18''' and Edwin.
+
+* [http://www.gnu.org/software/mit-scheme/documentation/mit-scheme-user/Edwin.html Edwin User Manual]
+* EdwinScheme - About Edwin's scheme programming language, with a comparison with EmacsLisp. 
+* HackingEdwinScheme - Notes on how to extend and customize Edwin.
+
+Some time ago, the MIT student MattBirkholz implemented enough of Emacs Lisp
+to have [[Gnus]] run within Edwin.
+
+* [ftp://publications.ai.mit.edu/ai-publications/pdf/AITR-1451.pdf Emacs Lisp in Edwin Scheme] by Matthew Birkholz.  MIT AI Technical Report 1451.  September 1993.
+* [http://groups.google.com/groups?selm=y9l4sjj8tij.fsf%40brabantio.informatik.uni-tuebingen.de Newsgroup thread on running Emacs Lisp in Scheme]
+
+----
+CategoryExtensionLanguage EmacsImplementations

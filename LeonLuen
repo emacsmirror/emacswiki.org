@@ -1,0 +1,168 @@
+hello world?
+
+: Hello and welcome! -- AlexSchroeder
+
+----
+
+here are a set of elisp functions i use to manage buffers in my .emacs
+
+<pre>
+;;; crbuffer.el begins here
+
+;; these functions were written by me and can be freely used or altered
+
+(defun crkill-buffer ()
+  "kill current buffer"
+  (interactive)
+  (kill-buffer (get-buffer (buffer-name)))
+)
+
+(defun crregister-window (reg)
+  "register a buffer arrangment"
+  (window-configuration-to-register reg)
+)
+
+(defun crjump-to-window (reg)
+  "jump to a saved buffer"
+  ;first save previous window
+  (crregister-window 0)
+  (jump-to-register reg)
+  (message "window %d" reg)
+)
+
+; currently registers 9 and 8 are temp regs and 0 stores the previous or "recall" window
+(setq crcur-window 1)
+(setq crmax-window 6)
+
+; set the initial windows to the first window opened
+(crregister-window 1)
+(crregister-window 2)
+(crregister-window 3)
+(crregister-window 4)
+(crregister-window 5)
+(crregister-window 6)
+
+(defun crjump-to-next-window ()
+  "jump to next numerical buffer"
+  (interactive)
+  (setq crcur-window (+ crcur-window 1))
+  (if (> crcur-window crmax-window)
+      (setq crcur-window 1))
+  (if (not (crjump-to-window crcur-window))
+      (message "window %d is not set" crcur-window)
+    )
+)
+
+(defun crjump-to-prev-window ()
+  "jump to previous numerical buffer"
+  (interactive)
+  (setq crcur-window (- crcur-window 1))
+  (if (< crcur-window 1)
+      (setq crcur-window crmax-window))
+  (if (not (crjump-to-window crcur-window))
+      (message "window %d is not set" crcur-window)
+    )
+)
+
+;; the following are meant to be mapped to hotkeys
+;; each set saves or retrieves a buffer arrangement 
+;; for example:
+;; creggister-window-1 is mapped to "C-c <up> 1"
+;; crjump-to-window-1 is mapped to "C-c 1"
+;; creggister-window-2 is mapped to "C-c <up> 2"
+;; crjump-to-window-2 is mapped to "C-c 2"
+
+;;;; here are the mappings i like to use
+;; (global-set-key (kbd "C-c <up> 1") 'crregister-window-1)
+;; (global-set-key (kbd "C-c 1") 'crjump-to-window-1)
+;; (global-set-key (kbd "C-c <up> 2") 'crregister-window-2)
+;; (global-set-key (kbd "C-c 2") 'crjump-to-window-2)
+;; (global-set-key (kbd "C-c <up> 3") 'crregister-window-3)
+;; (global-set-key (kbd "C-c 3") 'crjump-to-window-3)
+;; (global-set-key (kbd "C-c <up> 4") 'crregister-window-4)
+;; (global-set-key (kbd "C-c 4") 'crjump-to-window-4)
+;; (global-set-key (kbd "C-c <up> 5") 'crregister-window-5)
+;; (global-set-key (kbd "C-c 5") 'crjump-to-window-5)
+;; (global-set-key (kbd "C-c <up> 6") 'crregister-window-6)
+;; (global-set-key (kbd "C-c 6") 'crjump-to-window-6)
+;; (global-set-key (kbd "C-c 0") 'crjump-to-window-0)
+;; (global-set-key (kbd "C-c <right>") 'crjump-to-next-window)
+;; (global-set-key (kbd "C-c <left>") 'crjump-to-prev-window)
+
+(defun crregister-window-1 ()
+  (interactive)
+  (crregister-window 1)
+)
+
+(defun crjump-to-window-1 ()
+  (interactive)
+  (crjump-to-window 1)
+)
+
+(defun crregister-window-2 ()
+  (interactive)
+  (crregister-window 2)
+)
+
+(defun crjump-to-window-2 ()
+  (interactive)
+  (crjump-to-window 2)
+)
+
+(defun crregister-window-3 ()
+  (interactive)
+  (crregister-window 3)
+)
+
+(defun crjump-to-window-3 ()
+  (interactive)
+  (crjump-to-window 3)
+)
+
+(defun crregister-window-4 ()
+  (interactive)
+  (crregister-window 4)
+)
+
+(defun crjump-to-window-4 ()
+  (interactive)
+  (crjump-to-window 4)
+)
+
+(defun crregister-window-5 ()
+  (interactive)
+  (crregister-window 5)
+)
+
+(defun crjump-to-window-5 ()
+  (interactive)
+  (crjump-to-window 5)
+)
+
+(defun crregister-window-6 ()
+  (interactive)
+  (crregister-window 6)
+)
+
+(defun crjump-to-window-6 ()
+  (interactive)
+  (crjump-to-window 6)
+)
+
+(defun crjump-to-window-0 ()
+  "recall previous buffer arrangement"
+  (interactive)
+  ;//~~- need to find a better way to do this...
+  (crregister-window 9)
+  (jump-to-register 0)
+  (crregister-window 8)
+  (jump-to-register 9)
+  (crregister-window 0)
+  (jump-to-register 8)
+)
+
+;;; crbuffer.el ends here
+</pre>
+
+----
+CategoryHomepage

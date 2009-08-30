@@ -1,0 +1,20 @@
+We are all but functions in the runtime environment of the Great
+Hacker. There he tests us. And when he `fmakunbound's us and turns on
+the GC, then it won't matter in which modes we run. As well as it
+won't matter whether we were large or small, whether we did important
+things or whether we were only helper functions. All that matters is
+whether we were well implemented or whether we were broken and
+corrupted his data structures. And if he is pleased with us, then he
+puts our code into heaven.el, which is the source for the Eternal
+Mode, and there he will funcall us forever.
+
+-- OliverScholz, on news:alt.religion.emacs
+
+
+Calling EMACS an editor is like calling the Earth a hunk of dirt.
+
+-- <nowiki>Chris DiBona on Dirt (Open Sources, 1999 O'Reilly and Associates)</nowiki>
+
+
+----
+CategoryHumor

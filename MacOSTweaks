@@ -1,0 +1,442 @@
+Emacs on Mac OS 9 and OS X Tweaks ... (and tricks, trifles, traps, and other  tips that start with 't' (or not.) )
+
+Stuff moved to other pages: CocoAspell.
+
+
+== Integration with Mac OS Programs ==
+
+=== Printing ====
+
+See MacPrintMode.
+
+=== Integrating the Mac Address Book ===
+
+You can download [http://www.opensource.apple.com/darwinsource/Current/emacs-70.1/emacs/lisp/net/eudcb-mab.el eudc-mab.el], by JohnWiegley, which implements
+a back-end to EUDC that can query <nowiki>AddressBook.app</nowiki>.
+
+=== Open Terminal.app ===
+
+ (defun mac-open-terminal ()
+   (interactive)
+   (let ((dir ""))
+     (cond
+      ((and (local-variable-p 'dired-directory) dired-directory)
+       (setq dir dired-directory))
+      ((stringp (buffer-file-name))
+       (setq dir (file-name-directory (buffer-file-name))))
+      )
+     (do-applescript
+      (format "
+ tell application \"Terminal\"
+   activate
+   try
+     do script with command \"cd %s\"
+   on error
+     beep
+   end try
+ end tell" dir))
+     ))
+
+=== Using Emacs and Gnus as the system's default mail client ===
+
+Anyone know of a way to make Mac OS X regard gnus, as part of CarbonEmacsPackage, as the Mac OS X mail application?  In other words, it would be great if when following "mailto" links in web pages with, say, Firefox.app, a Message buffer is configured and sending or aborting the message with C-c C-c or C-c C-k brings the focus back to the browser.  It would also be fantastic if there were a Spotlight interface for gnus.  In other words, if there were a way to search for messages with spotlight and then select the found messages with, for example, gnus.
+
+*UPDATE* There ''is'' a gnus spotlight interface!  Check out http://www.yoshidam.net/diary/Spotlight.
+
+I've already selected Emacs.app as my defaul mail client (I did this within the Mail.app preferences).  Following mailto links with Firefox raises my emacs window, but apparently nothing happens.  Also the messages I've downloaded to my laptop with the gnus agent are entirely disregarded by spotlight. 
+
+Try this:
+
+ (defun switch-to-or-start-gnus ()
+   "If there is no buffer *Group*, call (gnus-start)"
+   (interactive)
+   (if (get-buffer "*Group*")
+       (switch-to-buffer (get-buffer "*Group*"))
+     (gnus)))
+
+ (setq url-mail-command (lambda () (progn (switch-to-or-start-gnus) (gnus-group-mail))))
+
+This will start gnus if it's not already running, btw.  -- JamesFelixBlack
+
+
+=== Use M-x locate to use Spotlight for searching ===
+
+Apple's Spotlight search facility has its command-line version in the mdfind command (man mdfind). It wouldn't be too hard to write up an Emacs Lisp interface to it, but Emacs' own locate interface makes it even easier - just bind the variable 'locate-command' to mdfind, and you're done; now you can get your Spotlight searches straight in your Emacs buffer.
+
+KamenNedev
+
+
+== Fink Tips ==
+
+=== Getting at Fink's Info Pages ===
+
+Do M-X customize-variable RET Info-additional-directory-list RET, and add the value
+/sw/share/info.
+
+Since fink doesn't have "everything", you may also wish to create an
+info directory which you will maintain manually, for the pages that you couldn't get
+otherwise.  You can add a path to it as /Users/yourname/info.  Note that you cannot
+use a ~ in this pathname.
+
+=== Getting at Fink's Manpages ===
+
+ (setenv "MANPATH" "/sw/share/man:/usr/share/man")
+
+This is necessary because your .bash_profile isn't run by the Finder.  I thought there
+was supposed to be some way to set the environment variables which the Finder will
+pass to apps it starts, but I haven't been able to find it?
+
+:  See the link to the developer.apple.com article some lines above, just add a <key>MANPATH</key>, like you do for PATH.
+
+: The <code>man</code> program is smart enough to construct a MANPATH on-the-fly based on your PATH.  If you set MANPATH manually (in the shell), <code>man</code> trusts that it's correct, and doesn't look for additional man directories.  Unfortunately, it looks like Emacs can't take advantage of that mechanism, so maybe setting it in your .emacs file is the best approach.
+
+(Note that running <code>man -w</code> will give you <code>man</code>'s current idea of the search path, so it might be possible to set MANPATH within Emacs at startup by writing some code to do that parsing.)
+
+==  Aquamacs ==
+
+AquamacsEmacs is a distribution of up-to-date CVS builds with additional patches and very extensive customizations to make Emacs fit in with other apps on OS X - mainly in terms of the user interface. Nice fonts are supported, as are OS X keyboard shortcuts and selecting, copying, pasting, deleting text with the mouse and the standard keys. More features: mode-specific frame settings (colors, fonts...), smart frame positioning, opens a new frame for every file (if wanted - configurable).
+
+
+The intention seems to be to make Emacs feel more like an OSX application and less like Emacs, with respect to key bindings (use the command key for the usual OSX commands, use Option for meta), cut and paste functionality (just selecting text does not pollute the OSX clipboard any more), window usage, etc.  AUCTeX (for LaTeX) and a range of other packages come with it and are ready to use. If you don't want to use it wholesale (an old Emacs hack wouldn't), a lot of it still can be pilfered as an example .emacs.
+
+
+It's pretty configurable and runs on OSX 10.3 / 10.4. Most customizations are default, but can be turned off. Apple shortcuts do not replace standard Emacs shortcuts. 
+
+[http://aquamacs.org]
+[http://www.david-reitter.com/software/osx_emacs.html]
+
+
+== Misc Tips ==
+
+=== A fix for the CVS error: Operation timed out ===
+
+I'm using Mac OS X, and haven't got around to changing my shell, so I'm using tcsh (sigh).  Whenever I would try to run cvs update, it would fail to work with the error "Operation timed out".  I finally found that the solution is just to put in "setenv CVS_RSH ssh", which is the equivelent to the "export CVS_RSH=ssh" command that is suggested in a lot of places.  Sigh.  Tcsh is _so_ much "fun".
+
+-- Panther has bash as the default shell.
+
+=== Emacs environment variables when running from the Finder ===
+
+When running from the Finder, applications do not get the same enviroment that command line tools see. This may prevent Emacs from seeing stuff in ''/usr/local/bin'' or other places.
+
+This is how add stuff to the PATH variable, a must if you try to use Emacs for TeX work. Add this to your .emacs file:
+
+ (setenv "PATH"
+     (concat (getenv "PATH")
+        
+ ":/usr/local/bin:/usr/local/teTeX/bin/powerpc-apple-darwin-current"))
+
+ (setq exec-path (append exec-path
+     '("/usr/local/bin" 
+ "/usr/local/teTeX/bin/powerpc-apple-darwin-current")))
+
+
+Alternatively, you can set up the path for all applications launched from the Finder by editing <code>~/.MacOSX/environment.plist</code> [http://developer.apple.com/qa/qa2001/qa1067.html]
+[http://www.astro.washington.edu/owen/AquaEnvVar.html], or using the RCEnvironment preferences pane [http://www.rubicode.com/Software/RCEnvironment/].
+
+Emacs lisp support for Mac OS X plist files (including the environment plist file used by the Finder) is here: [[MacOSXPlist]]
+
+Changing the Finder's environment variables doesn't take effect until you log out entirely and back in, though.  Whether this is a problem depends on whether you're in the habit of rebooting (ever), or not.
+
+=== open-network-stream gives the error "No address associated with nodename" ===
+
+Open-network-stream is called to create a socket connection to a remote host; it's given a string in the form <nowiki>"host:port"</nowiki>, where
+port is usually a symbolic name.
+
+Anytime ERC tried to use it, or I tried to use it to connect to an IRC server, it gave an error, "No address associated with nodename."
+Yet if I used it by hand to connect to, say, port 80, it worked fine.  Mysteeerious.
+
+I originally thought this was due to the fact that certain Mac-api calls translate pathnames by replacing colons with slashes, but I
+now think it's much more likely to be that ''/etc/services'' exists, like it does on Linux (and doesn't on Win), but doesn't contain all
+of the same things.  For example, there's no entry for ircd (port 6667).
+
+The workaround is to designate the port with a number rather than with a service name.  Or, of course, you could edit your
+''/etc/services'', but then you'd have to ask your users to make the same changes.
+
+=== Multiple Instances? ===
+
+I haven't had much success launching multiple instances (not frames) of the AndrewChoi build of Emacs.  Anyone know whether this is possible, and if so how it might be done?
+
+Via Terminal.app, like `/Applications/Emacs.app/Contents/MacOS/Emacs' you can start multiple instances. I haven't used it, but at least confirmation on exit doesn't work that way with the Carbon Emacs.
+
+=== Problems with shell-mode or TrampMode? ===
+
+If you cannot get TrampMode to login via ssh or even sshx, and you cannot start an ssh session from within ShellMode, try:
+
+  (setq process-connection-type t)
+
+in your .emacs (or type it in the scratch buffer and press C-x C-e after it to evaluate the expression)
+
+Before OSX.3, there was a bug in OSX's handling of pseudo terminals, which meant that output from certain commands could be lost [http://members.shaw.ca/akochoi-emacs/031022.html].  Apple fixed the bug in OSX.3 [http://members.shaw.ca/akochoi-emacs/031030.html].
+
+As a workaround, process-connection-type is set to nil by default when Emacs CVS after the end of January 2005 is built on OSX.2 or lower [http://lists.gnu.org/archive/html/emacs-devel/2005-01/msg00811.html].  Before that date, process-connection-type was set to nil by default whatever the OS version.  This breaks a number of other things (eg ssh and TrampMode).  
+
+If you are running on OSX.3 or higher, try setting process-connection-type back to t.
+[http://lists.gnu.org/archive/html/help-gnu-emacs/2004-06/msg00012.html]
+[http://lists.gnu.org/archive/html/help-gnu-emacs/2003-08/msg00579.html]
+-- LawrenceAkka
+
+
+=== Dealing with alpha-quality software ===
+
+Emacs on OSX is IMHO better than the other editors I've used on Mac, but it's still annoyingly unstable.  In particular, it has a nasty tendency to hang on bad bytecode and stalled network connections, and these hangs can't be broken with a C-g.  The solution I've found is to attach to it with GDB, then enter a recursive edit:
+
+    $ gdb /Applications/Emacs.app/Contents/MacOS/Emacs `ps uxwww | grep [E]macs | awk '{ print $2 }'`
+    ...
+    (gdb) p Frecursive_edit()
+
+then hit C-c.  Finally
+
+    (gdb) detach
+    (gdb) quit
+
+
+=== Meta and the X11 server ===
+
+When running the X11 server application of MacOSX, there will be
+MetaKeyProblems.  See, the *Option* key serves as the meta all
+Emacsers depends on so much.  Macintosh proggies use Option
+extensively, and X11 is no different.  Thus keys with the meta bit on
+often don't reach the client programs, even if the meta down and up
+events are reported by *xev*(1x) and similar programs.  If one flips
+off the <code>Enable key equivalents in X11</code> at
+<code>X11->Preferences...->Input</code>, the server lets the meta-bit
+pass without interpreting it itself.  This of course disables all the
+useful keyboard shortcuts of the server, like jumping among the
+windows with sideways arrows and digits.
+
+Of course one can use the <code>ESC</code> in the usual prefix-manner, if the
+above setting seems unpleasant.
+
+----
+[new]
+Another option is to run `xev' from the xterm. Press your *Option* key. In the xterm it'll display something like this:
+
+    KeyRelease event, serial 24, synthetic NO, window 0xe00001,
+    root 0x57, subw 0x0, time 58951838, (-197,69), root:(369,302),
+    state 0x8, keycode 66 (keysym 0xffe7), same_screen YES,
+    XLookupString gives 0 bytes:  ""
+
+Notice the keycode, in my case it's 66. Then in the xterm run: 
+
+    xmodmap -e "keycode 66 = Meta_L"
+
+..this sets my *Option* key to the Left Meta Key. Replace `66' with the keycode that was returned for you.
+
+To make this persistent you need to create two files in my home directory. One called `.xinitrc' (a default `.xinitrc' can be found at "/private/etc/X11/xinit/xinitrc" on MacOSX 10.3.9. Copy it to your home directory) and one called `.Xmodmap'. You will need to create the file `.Xmodmap' with you favourite plain text editor.  My `.Xmodmap' looks like this:
+
+    ! bindings for xmodmap. set Option to Meta
+    keycode 66 = Meta_L
+    ! set Enter to Return
+    keycode 60 = Return
+
+You do not need to alter the contents of the default `.xinitrc', but you should make sure it's executable. Do this from an xterm currently in your home directory with:
+
+    chmod 744 .xinitrc
+
+=== Mac OSX File dialogs ===
+
+Although from about October 2004 Emacs can use OSX native file open/save dialog boxes, it will only do so if the Find File command is invoked using the mouse (i.e. from the File/Open or Save menu) [http://lists.gnu.org/archive/html/help-emacs-windows/2002-07/msg00104.html].  
+
+If you want to use OSX dialogs when you invoke Find File from the keyboard you can use the applescript hacks below.  Alternatively, you might try this in your dot emacs, which uses the built-in dialog and is quicker:
+
+ (defun mac-open-file (filename &optional wildcards)
+   (interactive
+     (let ((last-nonmenu-event nil)) 
+     (find-file-read-args "Find existing file: " t))
+   )
+ ;  (find-file-existing filename wildcards)
+   (find-file-existing filename)
+ )
+ (global-set-key [(alt o)] 'mac-open-file)
+
+I have not worked out the equivalent for saving files yet -- LawrenceAkka.
+
+
+
+==== File open dialog, using Applescript ====
+To open a file using the system's open dialog, add the below lines to your .emacs.el:
+
+ (defun mac-open-file ()
+   (interactive)
+   (let ((file (do-applescript "try
+ POSIX path of (choose file)
+ end try")))
+     (if (> (length file) 3)
+         (setq file
+	       (substring file 1 (- (length file) 1))
+	       ))
+     (if (and (not (equal file ""))(file-readable-p file))
+         (find-file file)
+       (beep))
+     ))
+  
+ ;; command + O
+ (setq mac-command-key-is-meta nil)
+ (global-set-key [(alt o)] 'mac-open-file)
+
+ ;; menu item
+ (define-key menu-bar-file-menu [open-file] '("Open File..." . mac-open-file))
+
+==== File Save Dialog using Applescript ====
+Similar to the above, you can get a Cocoa "Save As..." dialog by putting the following in your .emacs:
+
+ (defun mac-save-file-as ()
+   (interactive)
+   (let ((file (do-applescript "try
+ POSIX path of (choose file name with prompt \"Save As...\")
+ end try")))
+     (if (> (length file) 3)
+         (setq file
+	       (substring file 1 (- (length file) 1))
+	       ))
+     (if (not (equal file ""))
+         (write-file file)
+       (beep))
+     ))
+  
+  ;; command + S
+  (setq mac-command-key-is-meta nil)
+  (global-set-key (kbd "M-s") 'mac-save-file-as)
+
+=== Mighty Mouse Scrolling ===
+
+By default the scrolling with the Mighty Mouse is very jerky. The following setting feel more reasonable:
+
+  (setq mouse-wheel-scroll-amount '(0.01))
+
+=== mac-key-mode ===
+
+See also MacKeyMode.
+
+
+=== capitalize-word-or-kill-ring-save ===
+
+Less intrusive than above, See also CapitalizeWordOrKillRingSave.
+
+
+=== Running Emacs Daemon with Launchd ===
+
+See EmacsAsDaemon for instructions on running the emacs server via OS X's launchd.
+
+----
+
+== The Control+Meta combination and Terminal.app ==
+
+Terminal.app is unable to send the Control+Meta combination. This is the case even if the "alt sends meta" option is enabled in the preferences. For people who want to use emacs remotely under an ssh session in Terminal.app (and who hence cannot use the Carbon package), this is known to be very frustrating.
+
+[new]
+I'm using Terminal.app 2.0 on Mac OS X 10.5 and ticking Preferences->Keyboard->Use option as meta key makes C-M combination work on both the system's emacs and remote emacs through ssh. --[[avar]]
+[new]
+Ticking Preferences->Keyboard->Use option as meta key makes C-M combination work on Mac OS X 10.4.11.
+--WeakishJiang
+
+
+----
+== Unanswered Questions ==
+
+1 - How can I use Emacspeak on Mac OS X?
+
+2 - How do you tell the carbon CVS emacs what fonts are available and how do I include them into the shift-mouse-left menu? -- Dirk
+
+you can modify the shift-mouse-left menu manually -- PhilipF:
+
+ (setq x-fixed-font-alist
+       '("Font Menu"
+ 	("Misc"
+ 	 ("monaco-9" "-*-monaco-medium-r-*--9-*-*-*-*-*-*-*")
+ 	 ("monaco-10" "-*-monaco-medium-r-*--10-*-*-*-*-*-*-*")
+ 	 )))
+
+I'm weird about my fonts, constantly fidgeting with them.  Here's a function that I use to explore -- James Felix Black
+
+  (defun font-name-size (n s) (format "-*-%s-medium-r-*--%s-*-*-*-*-*-*-*" n s))
+
+  (defun set-mac-font (n s)
+    (interactive
+     (let* ((font-name (completing-read "font-name: "
+                                        (mapcar (lambda (n) (list n n)) (mapcar (lambda (p) (car p)) (x-font-family-list)))
+                                        nil t))
+            (size (read-number "size: " 12)))
+       (list font-name size)))
+    (let ((font-spec (font-name-size n s)))
+      (if (null (assq 'font default-frame-alist))
+          (add-to-list 'default-frame-alist '(font . "")))
+      (setcdr (assq 'font default-frame-alist) font-spec)
+      (set-default-font font-spec)))
+
+  (set-mac-font "bitstream vera sans mono" 14)
+
+A better way, that works in 22:
+
+  (defun jfb-set-mac-font (name  size)
+    (interactive
+     (list (completing-read "font-name: " (mapcar (lambda (n) (list n n)) (mapcar (lambda (p) (car p)) (x-font-family-list))) nil t) 
+           (read-number "size: " 12)))
+    (set-face-attribute 'default nil 
+                        :family name
+                        :slant  'normal
+                        :weight 'normal
+                        :width  'normal
+                        :height (* 10 size)))
+
+This seems to be "more correct."  -- JamesFelixBlack
+
+-- Horrible style or no, it works like a charm (Jonathan Simms)
+
+3 - I'm having trouble os displaying correcty iso-latin-1 characters on Andrew Choi build of emacs (I'm trying to use apple-monaco font).
+I've already tried what he suggests on his F.A.Q and achieved some results. Emacs recognizes the key code but doesn't seen to know how to display it. It just displays a white square instead of the char. I've also read EmacsManual, but i'm still stuck. 
+Did anyone achieve to display correctly iso-latin-1 chars with monaco font?
+Ricardo Jota 
+
+-- Sure:
+
+ (create-fontset-from-fontset-spec
+   "-apple-andale mono-medium-r-normal--9-*-*-*-*-*-fontset-mac,
+    ascii:-apple-andale mono-medium-r-normal--9-*-*-*-m-*-mac-roman,
+    latin-iso8859-1:-apple-andale mono-medium-r-normal--9-*-*-*-m-*-mac-roman,
+    mule-unicode-0100-24ff:-apple-andale mono-medium-r-normal--9-*-*-*-m-*-mac-roman")
+ (set-frame-font "-apple-andale mono-medium-r-normal--9-*-*-*-*-*-fontset-mac" 'keep)
+ (add-to-list 'default-frame-alist '(font . "-apple-andale mono-medium-r-normal--9-*-*-*-*-*-fontset-mac"))
+
+This is for Andale Mono (much more readable than Monaco), but Monaco should do, too.
+
+You probably also want:
+
+ (set-keyboard-coding-system 'mac-roman)
+ (setq selection-coding-system 'mac-roman) ; This is broken, but better than the default
+
+(All this is for the CVS version as of 2004-09-14.
+To obtain a recent Emacs, install darwinports and then do
+"sudo port install emacs +carbon")
+
+CarstenBormann
+
+[new]
+Has anyone succeded in using the scrolling trackpad in the new powerbook for scrolling in emacs? 
+
+[new]
+Yes, that bug has been fixed. It's available in the latest version of AquamacsEmacs (starting 0.9.2b8).
+
+-- DavidReitter
+
+[new]
+4 - I started using an Emacs installation on an MAC OSX (not mine), but the keyboard seems to be completely misconfigured.
+The function keys are missing - emacs receives just escape codes, so I guess it is a problem with the terminal
+configuration. I found out about the manual repair method in function-key-map, but if the terminal were properly
+set up, this problem should not be there. How do I set up the terminal correctly? Or, how to configure Emacs correctly for the Mac OS X terminal.
+-- MatthiasKievernagel
+
+
+[new]
+5 - I'd like to be able to change the icon (or name?) of a running instance of Emacs.app. I use one instance for mail and another one for coding. Would like to be able to differentiate them when switching between apps using Cmd-TAB.
+
+
+== See Also ==
+
+* CarbonEmacsPackage
+* EmacsForMacOS
+
+
+----
+CategoryPorts
+ 

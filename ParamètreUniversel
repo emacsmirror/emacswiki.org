@@ -1,0 +1,30 @@
+Lorsque vous définissez une fonction interactive (FonctionInteractive), vous pourriez vouloir qu'elle produise des résultats différents, selon la façon dont l'utilisateur l'appelle.
+La moyen traditionnel de réaliser une telle fonction est d'utiliser comme préfixe le '''paramètre universel'''  <code>C-u</code>. Ainsi vous pouvez par exemple, écrire une fonction qui détruit un tampon uniquement si aucune modification de celui-ci n'est à sauvegarder, mais qui détruit ce tampon même si son contenu a changé, lorsque la fonction est appelée avec le préfixe <code>C-u</code>.
+
+Voici une fonction qui va vous permettre de mieux comprendre:
+
+    (defun essai (param)
+      "Exemple de fonction qui affiche son paramètre universel"
+      (interactive "P")
+      (message "param vaut %S" param))
+
+Cela définit une fonction à un seul paramètre et qui affiche la valeur de son paramètre. L'instruction ''interactive'' rend cette fonction interactive, ainsi vous pouvez l'appeler par la commande <code>M-x</code> ou la lier à une touche du clavier.
+La chaîne de caractère "P" demande à ''Emacs'' à ce que le paramètre universel soit utilisé pour ''param''.
+
+; <code>M-x essai</code>: appelle ''essai'' avec ''nil'' comme valeur de ''param''
+; <code>C-u M-x essai</code>: appelle ''essai'' avec la liste '(4) comme valeur de ''param''
+; <code>C-u C-u M-x essai</code>: appelle ''essai'' avec la liste '(16) comme valeur de ''param''
+; <code>C-u 3 M-x essai</code>: appelle ''essai'' avec 3 comme valeur de ''param''
+; <code>C-h a essai</code>: affiche la chaîne de documentation (ChaîneDoc)
+
+== Paramètre brut ou paramètre numérique ==
+
+Avec l'instruction <code>(interactive "P")</code>, la fonction utilise le paramètre '''brut''' alors qu'avec l'instruction <code>(interactive "p")</code>, la fonction utilise le paramètre '''numérique'''. 
+
+Pour avoir davantage d'informations, vous pouvez consulter le paragraphe '''Prefix Command Arguments''' de la documentation Info d<nowiki>'</nowiki>''Emacs''.
+
+Ce paragraphe de l'article Info explique aussi l'utilisation des fonctions ''prefix-arg'' et ''current-prefix-arg''. (Inutile de répéter ici ces explications.)
+----
+Note du traducteur: je n'ai pas trouvé cette aide dans ma version d<nowiki>'</nowiki>''Emacs''.
+----
+CatégorieCode

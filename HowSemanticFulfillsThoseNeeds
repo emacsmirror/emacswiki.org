@@ -1,0 +1,156 @@
+Semantic is included in the CEDET tools:
+
+* http://cedet.sourceforge.net/
+
+==What can Semantic do for C++ programmers?==
+
+Semantic can:
+* complete the names of your identifiers (feature known as Smart Completion)
+* print the members of your classes;
+* display the arguments of the function you are calling;
+* display the types of your objects.
+
+Let us examine those features one by one.
+
+===Smart completion, part 1: Completing the name of your identifiers, up to the first ambiguity===
+
+It is a feature meant to save you typing. It can be used when you
+already know the name of a member function/variable and do not want to
+type its name as a whole.
+
+For example, suppose you have the following class:
+
+  class c{
+  public:
+    int member_variable;
+  };
+
+Now, if you type
+
+  c my_instance_of_c;
+  my_instance_of_c.m
+
+and then call M-x semantic-ia-complete-symbol, Semantic automatically
+completes as follows:
+
+  my_instance_of_c.member_variable
+
+since it was the only possible completion in that context. Semantic
+can do that because it understands your source code.
+
+Of course, this also works for completing the names of your member functions (as opposed to member <em>variables</em>).
+
+Unfortunately :-(, this is not much useful if there are ambiguities: in the previous example, if more than one member starts with 'm', Semantic is unable to decide to which member you are referring, and only completes the name up to the first ambiguity. 
+
+For example, suppose you have the following class:
+
+  class c{
+  public:
+    int member_variable_1;
+    int member_variable_2;
+  };
+
+Now, if you type
+
+  c my_instance_of_c;
+  my_instance_of_c.m
+
+and then call M-x semantic-ia-complete-symbol, Semantic cannot understand if you mean member_variable or member_variable_2 (of course is not a psychic :-) ), so it only completes as much as possible:
+
+  my_instance_of_c.member_variable_
+
+and the rest of typing is up to you.
+
+In my opinion, this is not a satisfactory behavior. There are two problems: 
+
+* In that case, you usually have no way to know wheter Semantic has completed enough, or has stopped due to an ambiguity. In the above example, you probably <em>can't remember</em> wheter member_variable_ actually was the complete name of a member of the class, or just the beginning of a name. Then you have to manually open the file where the class was defined and look at its definition, thus defeating the whole purpose of Semantic!
+* <em>even if</em> you have a big memory and you know that Semantic has not completed enough, you must type the completion by hand. This is unbearable on the long run.
+
+<em>Suggested fix:</em> IMHO, in that situation (e.g. an ambiguity in the completion), Semantic should <em>automatically</em> pop up a list of possible completions. This is what Microsoft VisualStudio has been doing for years. I'm trying to convince the authors to do that, so stay tuned;-). In the meantime, you can get the list of possible completions by calling M-x semantic-analyze-possible-completions. See the next section for more informations on this feature.
+
+: Instead of emulating Visual Studio it could be better to see how Emacs already handles this situation. Take a look at how dabbrev-completion (and dabbrev-expand) works. -- VJ
+
+===Smart completion, part 2: listing the identifiers starting with the given letters===
+
+Suppose you are stuck with the problem in the previous section: Semantic could not complete all the member name due to an ambiguity, and now the text on your screen is
+
+      my_instance_of_c.member_variable_
+
+You can get the list of possible completions by invoking
+
+    M-x semantic-analyze-possible-completions
+
+Now Semantic opens a pop-u window, which tells you how you can complete:
+
+    int member_variable_1;
+    int member_variable_2;
+
+But the typing itself is up to you.
+
+===Listing the members of your class===
+
+Suppose you have the following class
+
+  class c{
+  public:
+    int first_function();
+    int second_function();
+    int member_variable;
+  };
+
+but it is defined in another file. You do not remember the names of
+the member functions/variables, and don't want to waste time finding
+the declaration by hand. Then, with Semantic you can just write
+
+  c my_instance_of_c;
+  c.
+
+and then call M-x semantic-analyze-possible-completions, Semantics
+shows you the name of all the member functions/variables declared in
+that class:
+
+    int first_function();
+    int second_function();
+    int member_variable();
+
+Then, in order to write the name of the member you desire, you can
+type it by hand or tyoe just a letter and use smart completion (see the previous paragraphs).
+
+<em>Note</em>: up til now, this feature is buggy. [TO DO: explain the bug]
+
+===Printing the arguments of the function you are calling===
+
+Suppose you are calling a function, and you don't remember the order
+or the type of the arguments.
+
+You write the name of the function and open the parenthesis:
+
+  my_function(
+
+Normally, you would have to find the file where the function is
+declared, and learn the order of the arguments. With Semantic you
+don't need to do that, because it automatically displays the
+function's prototype on Emacs' minibuffer. e.g.
+
+  int my_function(int a, int b , char c);
+
+Somebody may already know this features as ElDoc, which was originally
+available for the Lisp language only, but now also works with PythonMode and C (using CEldocMode).
+
+
+===Quickly displaying the type of a variable===
+
+Unless you use prefixes for your indentifiers, such as iCounter,
+strWord, you will often want to know the type of your
+identifiers. Semantic displays the type as soon as you move the TextCursor
+on the identifier.
+
+Note: At present, this is only true for identifiers declared outside the current
+scope.
+
+----
+CategoryProgrammerUtils
+
+
+=== Howto Request ===
+Could someone please make a how to for setting up Semantic?

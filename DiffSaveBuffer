@@ -1,0 +1,8 @@
+<code>diff-save-buffer</code> is a little replacement <code>save-buffer</code> offering a filename in DiffMode based on the parent filename, eg. a diff of <code>foo.c</code> would offer <code>foo.c.diff</code>.  Get it from
+
+: http://user42.tuxfamily.org/diff-save-buffer/index.html
+
+This is designed for use with <code>M-x diff</code> and also <code>M-x vc-diff</code> (the latter actually being <code>compilation-mode</code>).
+
+----
+DiffMode

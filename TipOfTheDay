@@ -1,0 +1,110 @@
+This small code snippet (by DavePearson) that displays a "tip of the
+day":
+
+ (require 'cl)
+ (defun totd ()
+  (interactive)
+  (with-output-to-temp-buffer "*Tip of the day*"
+    (let* ((commands (loop for s being the symbols
+                           when (commandp s) collect s))
+           (command (nth (random (length commands)) commands)))
+      (princ
+       (concat "Your tip for the day is:\n========================\n\n"
+               (describe-function command)
+               "\n\nInvoke with:\n\n"
+               (with-temp-buffer
+                 (where-is command t)
+                 (buffer-string)))))))
+
+You could invoke it in .emacs to stumble upon a random command every
+time you start Emacs.
+
+: Does this work for anyone?  I get function definition is void: loop
+:: loop is a Lisp macro in `cl-macs'.  code fixed, it should work now.
+::: I'm addicted already.  You probably meant (require 'cl) though.
+:::: If it always displays the same tip try adding (random t) before calling it the first time to initialize the random seed
+
+
+--
+
+You can also try this which reads a random line from the totd-file 
+and displays it on startup.  
+
+Place somewhere in .emacs:
+
+ (setq totd-file "/path/to/emacsTOTD")
+
+ (defun totd()
+   (random t)
+   (let ((stars "*****************************")
+         (tip (with-temp-buffer 
+                (insert-file-contents totd-file)
+                (goto-line (1+ (random
+                                (count-lines (point-min)
+                                             (point-max)))))
+                (buffer-substring (point) (line-end-position)))))
+     (momentary-string-display
+      (concat "\n\n" stars "\n"
+              "Tip of the Day\n"
+              random-command "\n"
+              stars "\n\n")
+      (window-start) ?\r
+      "Hit any key when done reading")))
+
+Then place the following at the end of your  .emacs :
+
+(totd)
+
+[new]
+Ive altered this function and added some parts of emacs-reloaded to display it in a more fancy way, its working now in the scratch after reading you can delete whole buffer:
+
+
+<pre>
+ (defconst animate-n-steps 3)
+(require 'cl)
+(random t)
+(defun totd ()
+  (interactive)
+  (let* ((commands (loop for s being the symbols
+                      when (commandp s) collect s))
+         (command (nth (random (length commands)) commands)))
+    (animate-string (concat ";; Initialization successful, welcome to "
+                            (substring (emacs-version) 0 16)
+                            "\n"
+                            "Your tip for the day is:\n========================\n\n"
+                            (describe-function command)
+                            (delete-other-windows)
+                            "\n\nInvoke with:\n\n"
+                            (where-is command t)
+                            (delete-other-windows) 
+                            )0 0)))
+
+and calling it like this in your .emacs:
+
+(add-hook 'after-init-hook 'totd)  
+</pre>
+                                                 by greboides.
+
+[new]
+As of emacs-unicode-2 of 2007-11-23 (emacs 23.0.60), totd doesn't have the doc in the *Tip of the day* buffer, but in *Help* buffer. I think this is because describe-function do 
+<pre>
+    (save-excursion
+      (with-help-window (help-buffer)
+</pre>
+I worked around it by using describe-function-1 instead (it is undocumented), but the output is printed before the "Your tip of the day is" line
+-- hđh
+
+I had the same problem mentioned above (help in separate help buffer), I now use this to get the same result as in the older emacs versions:
+<pre>
+    (save-excursion
+      (describe-function command)
+      (switch-to-buffer "*Help*")
+      (buffer-string))
+</pre>
+instead of
+<pre>
+    (describe-function command)
+</pre>
+
+----
+CategoryDotEmacs

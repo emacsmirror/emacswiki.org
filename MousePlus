@@ -1,0 +1,98 @@
+This page is about library '''<tt>[[mouse+.el]]</tt>''', which enhances standard Emacs library ##mouse.el##. Besides some minor enhancements of `mouse-choose-completion', `mouse-tear-off-window', and `mouse-yank-secondary', <tt>[[mouse+.el]]</tt> provides these new features:
+
+* Temporarily highlight the exact mouse position when you click `mouse-2' -- [[#HighlightYankPosition]].
+
+* Highlight the line under the mouse as you move it and hold `S-mouse-2' -- [[#MouseScanLines]].
+
+* Initiate `M-x' or `##M-:##' when you click `mouse-2' in the echo area -- [[#M-xViaMouse2]].
+
+* Initiate `M-x' when you click `mouse-1' in the echo area and buffer `*Messages*' is already displayed.
+
+* Get all of these features together -- [[#AllTogether]].
+
+[:HighlightYankPosition]
+== Highlight Yank Position ==
+
+Do you sometimes have trouble telling exactly where your MousePointer is pointing, and end up pasting one character to the left or right of what you wanted? Do you resort to setting `mouse-yank-at-point' to `t' just because of this annoyance? There's no need to do that -- no need to give up using the mouse as a pointing device!
+
+Library <tt>[[mouse+.el]]</tt> can help. Load it, and bind `down-mouse-2' to `mouse-flash-position':
+
+  (global-set-key [down-mouse-2] 'mouse-flash-position)
+
+Then, when you press `mouse-2' to paste, you'll see the paste position highlighted temporarily -- just until you release the mouse button. You can then move the mouse to the correct location before releasing the button. As  long as the mouse button is depressed, the paste-position highlight tracks the mouse movement.
+
+If you ever want to prevent the `mouse-2' up-button yank from taking place altogether,
+perhaps because you change your mind, you can press and hold `C-g'
+while releasing the mouse button. That is:
+
+# press `mouse-2'
+# drag
+# press `C-g'
+# release `mouse-2'
+# release `C-g'
+
+'''Note:''' Although the main utility of command `mouse-flash-position' is for yanking, it works for other uses of `mouse-2' as well -- it always shows the mouse position. So, for instance, it works in DiredMode too, where `mouse-2' is bound to `dired-mouse-find-file-other-window'.
+
+
+
+[:MouseScanLines]
+== Scan Lines with the Mouse as "Ruler" ==
+
+Some buffers, such as DiredMode and BufferMenu (BufferMenuPlus), are essentially tables with rows and columns. Sometimes it's difficult to see which entry in a far left column corresponds to which entry in a far right column, because you lose track of the row. What you need is a "ruler" that shows you the row alignment.
+
+Library <tt>[[mouse+.el]]</tt> can help here too. Load it, and bind `S-down-mouse-2' to `mouse-scan-lines':
+
+  (global-set-key [S-down-mouse-2] 'mouse-scan-lines)
+
+When you then press and hold Shift and `mouse-2', mouse movement is tracked by highlighting the line under the MousePointer. When you release the key and button, the highlighting disappears. (This highlighting is only a visual aid; it does not affect what happens if you click ‘mouse-2’ on the highlighted line.)
+
+
+
+[:M-xViaMouse2]
+== Use `mouse-2' to Initiate `M-x' and `M-:' ==
+
+When the [[minibuffer]] is active, you can use `mouse-2' to yank text there. When it is inactive, the space used by the minibuffer is called the [[echo area]] (technically, it is ''not'' the minibuffer).
+
+If you click `mouse-2' in the echo area, vanilla Emacs just shows the error message "##Minibuffer window is not active##", which is informative, but otherwise not very useful.
+
+If you bind `down-mouse-2' to command '''`mouse-flash-position-or-M-x'''' instead of `mouse-flash-position', then clicking `mouse-2' in the echo area will initiate `M-x' (whatever that KeySequence is bound to -- by default, `execute-extended-command'). In all other respects, `mouse-flash-position-or-M-x' is the same as `mouse-flash-position'.
+
+IOW, this gives you a quick way to execute a command if your hand is already on the mouse: just click `mouse-2' in the echo area.
+
+If you also bind `S-down-mouse-2' to command '''`##mouse-M-:##'''', then holding the Shift key while clicking `mouse-2' in the echo area will initiate `##M-:##' (whatever that KeySequence is bound to -- by default, `eval-expression'). 
+
+If you like the effect of using `mouse-scan-lines' for a horizontal guide ruler (see [[#MouseScanLines]], above), then bind `S-down-mouse-2' to command '''`##mouse-scan-lines-or-M-:##'''' instead. Then, if you use Shift and click `mouse-2' in the echo area you get `##M-:##', and if you use Shift and drag `mouse-2' elsewhere you get the horizontal-guide highlighting.
+
+
+
+[:M-xViaMouse1]
+== Use `mouse-1' to Initiate `M-x' If *Messages* Is Displayed ==
+
+Starting with Emacs 22, clicking `mouse-1' (not `mouse-2') in the echo area displays buffer `*Messages*'. This can be useful or annoying (or both!), depending on your point of view. The idea is that users sometimes try to select text from a message displayed in the echo area, which is impossible. They forget and mistake the echo area for the minibuffer, where you can select text. Showing `*Messages*' lets you select the message text in `*Messages*', where it is logged. Command `mouse-flash-position-or-M-x' is specifically intended for `mouse-2', so it will not interfere with the `mouse-1' echo-area behavior.
+
+But if `*Messages*' is already displayed when you click `mouse-1' in the echo area, then nothing happens. Nada. No error message, nothing.
+
+Why not let `mouse-1' do something in this case? Library ##mouse+.el## changes the behavior so that `mouse-1' in the echo area still displays `*Messages*' (so you can see or select message text). But if `*Messages*' is already displayed, then it initiates `M-x', just like `mouse-flash-position-or-M-x'. And it also deletes the `*Messages*' window. The idea is that if you didn't really want to see `*Messages*', or if you want to get rid of it after you see it, just click again. If you don't want to execute a command either, then just hit `C-g' to exit `M-x'.
+
+
+
+
+[:AllTogether]
+== Putting It All Together ==
+
+To take advantage of ''all'' of the features discussed on this page, load <tt>[[mouse+.el]]</tt> and make both of these bindings:
+
+  (global-set-key [down-mouse-2]   'mouse-flash-position-or-M-x)
+  (global-set-key [S-down-mouse-2] 'mouse-scan-lines-or-M-:)
+
+There is no need to do anything about `mouse-1'.  ##mouse+.el## redefines the command `mouse-drag-region' so that it does the right thing.
+
+----
+
+'''Note:''' If you use a good [[Completion]] library, such as '''[[Icicles]]''', then you can use `mouse-flash-position-or-M-x' to execute commands pretty much without even using the keyboard. Just click `mouse-2' in the minibuffer, hit `TAB' or `S-TAB', and pick a completion candidate with `mouse-2'. (Unless you bind a mouse button to replace `TAB' or `S-TAB', you will still need the keyboard for that.) Unless you have a particular reason for avoiding use of a keyboard, you most likely won't want to do this, but you can. See also [[Icicles - Key Completion#ThreeKeyEmacs]].
+
+
+----
+CategoryKeys CategoryMouse CategoryRegion CategoryEditing CategoryFaces CategoryAccessibility
+
+DrewsElispLibraries mentioned here: Lisp:mouse+.el

@@ -1,0 +1,18 @@
+Each buffer in Emacs is in a (single) '''[::major mode]'''. Different kinds of buffer have different major modes. For example, if you edit an EmacsLisp file, the major mode (by default) is <code>emacs-lisp-mode</code>.  The mode for a file is determined by the SetAutoMode function.
+
+Each major mode customises Emacs's behaviour to make it appropriate for the type of buffer by providing appropriate commands, display and key bindings.
+For example, in emacs-lisp-mode, commands are available that are appropriate to editing EmacsLisp code. In DiredMode, commands are available for manipulating files and directories.  Major modes often have SyntaxHighlighting for the visually unimpaired.
+
+The name of the current major mode is displayed in the [[mode line]].  You can change to a different major mode by executing its command.  For TextMode (indicated by "Text" in the mode-line), for example, do `M-x text-mode'.  You can use `C-h m' for help on the current major mode, and `C-h b' to see all the bindings in effect.  The symbol identifying the current major mode is stored in the variable <code>major-mode</code>.
+
+Although many major modes ship with Emacs, sometimes you will need to download an elisp package off the Internet and install it.  See InstallingPackages.
+
+There are also [[minor mode]]s.  Minor modes are orthogonal to major modes.  There can be any number of minor modes in a buffer.
+
+See also
+MajorModeConfiguration,
+MultipleModes.
+
+----
+CategoryGlossary
+CategoryModes

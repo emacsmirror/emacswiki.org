@@ -1,0 +1,96 @@
+[new:AlexSchroeder:2005-06-28 19:45 UTC]
+To anybody interested in the [http://news.gmane.org/find-root.php?message_id=%3cE1DlyZk%2d00044o%2dWA%40fencepost.gnu.org%3e custom theme] discussion on emacs-devel,
+here's an [http://article.gmane.org/gmane.emacs.devel/7002 old position of mine]:
+
+<pre>
+From: Alex Schroeder <alex <at> emacswiki.org>
+Subject: Re: color-theme.el
+Newsgroups: gmane.emacs.devel
+Date: 2002-08-27 23:18:08 GMT (2 years, 43 weeks, 4 days, 8 hours and 13 minutes ago)
+</pre>
+
+Per Abrahamsen <abraham <at> dina.kvl.dk> writes:
+
+> I think there is plenty of need, but nobody both able and willing to
+> do the work.  I tried to re-sync custom with the XEmacs version a
+> couple of years ago (which would have got us themes), and quickly
+> burned out.
+
+Since RMS is interested, let me explain my position.  I worked on
+porting the XEmacs code by Jan Vroonhof to Emacs, so I know something
+about the code.  (I actually met him in person in Zuerich before doing
+it!)  I think the code is complex.  I really tried to make it happen.
+I even proposed a solution to make alists customizable.  This was one
+of the open problems.  And yet, I am convinced that we do not need
+this complexity.  We should not bother.  Why?
+
+First, let us look at the kind of effort involved in using
+cus-theme.el.  To create a theme involves about as much work as
+writing a setq statement for all the variables, and giving this
+collection of settings a name.  So for an author, there is no benefit
+compared to writing a defun.  The defun has a name and can set tons of
+variables.  The benefit for users is that undoing the theme is
+straightforward.
+
+Now, let us look at the scenarios where this is going to be used.  One
+of the examples cited is that authors at big sites could prepare
+themes so that their users can selectively do and undo the site
+settings.  But how many users are there that actually need this?
+Power users will skip the site code and do it all in their own .emacs
+file.  Newbies will rely on the site code.  In the few cases, where
+more choice is involved, big sites have already done the correct
+thing:  They offer a collection of functions that users can call from
+their .emacs to selectively install parts of the site configuration.
+
+If this is the only benefit, however, then perhaps we are better off
+with another solution altogether:  Let us create a new list of
+functions to call at startup.  Let us call it `startup-functions'.
+Let us make this customizable.  Now site authors can install a
+suitable default, and users can still customize it to their liking.
+The customizations will be saved to their .emacs file.  Problem
+solved!  And the solution was easy to understand.
+
+Now let us look at another problem.  For example my problem <grin>: A
+color theme package.  What is the requirement?  People want to call a
+function that sets lots of faces and variables.  People might want to
+undo this once or twice.  Well, using the existing custom machinery, I
+was able to implement this easily!  Problem solved!  People do not
+want to do fancy stuff with themes.  Just setting the variables is
+enough.  And even simple undoing the settings is possible, because we
+have the normal custom stuff in place.
+
+Sure, this does not solve the problem of people installing themes A,
+B, and C, and then undoing the settings of B.  What settings should be
+used now?  Something equivalent to installing only A and C.  But do
+users really want this?  My claim is that they do not.  cus-theme.el
+is going for the perfect solution, but nobody needs it enough to fix
+it.
+
+This holds, eventhough there is very little fixing to do.  When I
+finished porting the code, it worked.  All I asked for was some
+testing, and for some feedback for the alist customizing (I called
+them diff-lists at the time).  It does not even matter wether Dave
+Love looked at the code or not -- nobody ever asked about it anyway!
+Thus I conclude that nobody is suffering from a problem.
+
+Note that the totally perfect solution would use cus-theme.el, and
+implemented some UI for theme authors.  Currently nobody seems to have
+such ideas.  I faintly remember that I used a widget for simple theme
+creation at the time.  But nobody tested that, either.
+
+And guess what?  My color-theme.el provides a possibility to save a
+snapshot of the current configuration.  Thus M-x customize-faces
+suddenly is the interface to produce new themes.  What else could a
+user possibly want.  So not even that is really needed.
+
+Thus here is my opinion on the cus-theme.el efforts: Implementing the
+perfect solution took effort (cus-theme.el, my simple make-theme.el),
+still is not finished (a more elaborate UI might be required, real
+testing), is not required for power users, is not required for
+newbies, does not help site administrators, does not improve the
+color-theme.el experience, is not asked for in the newsgroups.  
+
+"As far as I am concerned, these last years have shown that there is
+just no need for that."
+
+Alex.

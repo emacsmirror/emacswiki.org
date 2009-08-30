@@ -1,0 +1,8 @@
+ELPA is the *Emacs Lisp Package Archive*, by TomTromey.
+
+http://tromey.com/elpa/
+
+"Our goal is to make it simple to install, use, and upgrade Emacs Lisp packages. We supply ##package.el##, a simple package manager for Emacs, and a repository of pre-packed Emacs Lisp code."
+
+--
+CategoryCode

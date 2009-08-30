@@ -1,0 +1,12 @@
+Purpose: When you visit a file, point goes to the last place
+where it was when you previously visited the same file.
+
+How to use it -- add the following to your InitFile:
+
+    (require 'saveplace)
+    (setq-default save-place t)
+
+Note that using setq will not do because the variable is buffer-local.
+
+----
+SessionManagement CategoryPersistence

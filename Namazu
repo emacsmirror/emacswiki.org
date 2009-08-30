@@ -1,0 +1,15 @@
+Namazu is a text indexing and search program.
+
+* http://www.namazu.org/
+
+The tool has Emacs integration.
+
+* http://cvs.namazu.org/namazu/lisp/namazu.el
+[new]
+* WanderLust is an Emacs mail client with namazu support built in.
+[new]
+
+See IndexMail for Gnus integration with gnus-namazu.el.
+
+----
+CategorySearchAndReplace

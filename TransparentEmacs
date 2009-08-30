@@ -1,0 +1,115 @@
+== Emacs -nw in a Transparent Term ==
+
+Just make sure your terminal emulator has enough colors available to look good.  Then run `emacs -nw' in a transparent terminal.
+
+Here's how you would start Emacs in a 256 color xterm:
+
+    xterm -tn xterm-256color -e emacs -nw
+
+(Please change the above to use transparent aterm or eterm...)
+
+== Transparent Emacs Branch ==
+
+If you use MilesBader transparent Emacs branch (currently only available via arch) you can make the buffer have a variety of different image backgrounds. Example [http://snogglethorpe.googlepages.com/emacs-candy-light-0.png here].
+
+It's possible to use the wallpaper pixmap directly, but I'd recommend processing the wallpaper image a bit in the Gimp first -- in the above example the iamge has been lightened and blurred. This means it won't distract you from your work.
+
+To get the branch of emacs that supports this, get a copy of tla installed (see gnuarch.org, or use the "tla" package Debian etc) and run:
+
+  $ tla register-archive http://arch.sv.gnu.org/archives/emacs
+
+  $ tla get emacs@sv.gnu.org/emacs--tiling--0
+
+Then build it in the normal way (hint: enabling gtk2 makes it look nicer too).
+
+I (IvanAndrus) get the following today (June 21, 2008):
+
+ $ tla register-archive http://arch.sv.gnu.org/archives/emacs
+
+ unable to access URL: /archives/emacs/.listing
+
+ webdav error: 301 Moved Permanently
+
+I'd just like to add my ditto to the above error (Feb 20, 2009 ZacharyHamm)
+
+Does anyone know if this is still in development, or perhaps has been merged into EmacsFromCVS?
+
+-----
+
+In order to enable transparent emacs, you have to add these lines in your InitFile:
+
+    (custom-set-faces
+     '(default ((t (:stipple nil :background ((image :type jpeg :file "/Path/to/your/image.png") :origin display) :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 101 :width normal :family "misc-fixed")))))
+
+You could also configure transparent background like that in Emacs without modify your configuration file by hand :
+
+M-x customize-face -> default -> Background -> Value Menu -> 1 = Image -> File (path)
+
+Then you could <i>Save for Future Sessions</i> to save this configuration in your InitFile.
+
+----
+
+: [ I removed the text about merging multi-tty, because the branch referenced above already has multi-tty merged -- MilesBader  ]
+
+----
+
+== The frame parameter "alpha" ==
+
+On the following platforms,
+
+* Emacs 23
+** X Window System and a compositing window manager (e.g. Compiz, Beryl and Compiz Fusion)
+* Emacs 22 with [http://homepage.mac.com/zenitani/comp-e.html transparency patch]
+** X Window System and a compositing window manager (e.g. Compiz, Beryl and Compiz Fusion)
+** Mac OS X; AquamacsEmacs, CarbonEmacsPackage and Fink's emacs
+
+the user can controls the frame opacity by adding the below lines in InitFile. 
+
+ ;;(set-frame-parameter (selected-frame) 'alpha '(<active> [<inactive>]))
+ (set-frame-parameter (selected-frame) 'alpha '(85 50))
+ (add-to-list 'default-frame-alist '(alpha 85 50))
+
+I have a transparency toggle defined which seems to work pretty well:
+
+ (eval-when-compile (require 'cl))
+ (defun toggle-transparency ()
+   (interactive)
+   (if (/=
+        (cadr (find 'alpha (frame-parameters nil) :key #'car))
+        100)
+       (set-frame-parameter nil 'alpha '(100 100))
+     (set-frame-parameter nil 'alpha '(85 60))))
+ (global-set-key (kbd "C-c C-t") 'toggle-transparency)
+
+Note that unlike the transparency hacks for Linux, it's not merely showing your desktop background image, but is true translucency—you can see other windows behind your Emacs window. It's not terribly useful to show text underneath because it's hard to read the text in the foreground window. I (AmitPatel) use it to watch TV or movies behind my Emacs. 
+
+: The toggle-transparency function doesn't work for me as listed.  I get "Symbol's function definition is void: find", using Emacs 23 from CVS.
+
+:: The person who added it forgot to tell it is a cl macro. I have added that above
+
+: Is there anything with emacs 23/gtk-snapshot ?
+: -- elmarco
+
+: Or anything KDE4/KWin related ?
+: -- w0
+
+: Is it only me, or does it make everything transparent? Including toolbars and the actual text.
+: gnome-terminal, for example, has only transparent *background*
+: -- thomas001
+
+:: Yes, thats the idea of transluncacy a.k.a. true transparency -- mina86
+
+::: I concur with thomas001: having the whole window transparent is somewhat undesirable, and I would prefer to have only the background beeing transparent (as is the case in Terminal.app on OSX). Any ideas/plans about how to obtain that behaviour ? I'm using stock Carbon Emacs (Spring 2008) on OSX (Tiger) -- [[Gyom]]
+
+: Does anyone know how to disable it though? Emacs handling alpha value messes with my window manager (ie. I have such a feature configured in my WM). -- mina86
+
+== Transparent background color ==
+
+For me setting the background-colors alpha value just works with Emacs 23.1 on Mac OS X
+
+  (set-background-color "ARGBBB000000")
+
+
+----
+
+CategoryDisplay

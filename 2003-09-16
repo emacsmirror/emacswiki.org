@@ -1,0 +1,5 @@
+People keep adding themselves to EmacsChannelLatLong, but I still don't know how xplanets works, exactly.  It shows the earth, and it shows the position of the channel members.  How can I add clouds, however?  Oh and the name EmacsChannelLatLong is a bit confusing.  Can't think a really neat alternative, however.  EmacsChannelGeography?  EmacsChannelCoordinates? -- AlexSchroeder
+
+The web hosting guys at thinkmo.de did a kernel upgrade and so you might have gotten an "Internal Server Error" when editing pages.  This should be fixed, now. -- AlexSchroeder
+
+If you ever get the error again, the most important think is to remember how to remove the edit lock: http://www.emacswiki.org/cgi-bin/wiki.pl?action=unlock. -- AlexSchroeder

@@ -1,0 +1,9 @@
+Emacs 22 has WebDAV support.  See CVS:url/url-dav.el and ElDav.
+
+How can I save documents using URL !WebDAV support? I see in the sources that it's possible but documents I fetch using url-handler-mode are readonly.
+
+----
+CategoryHypermedia
+CategoryRemoteEmacs
+CategoryInterface
+

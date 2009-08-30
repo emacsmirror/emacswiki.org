@@ -1,0 +1,100 @@
+Desde esta sección puedes preguntar cuestiones muy concretas de tu día a día con emacs.
+¿Cómo activo el resaltado de sintáxis?
+
+ M-x global-font-lock-mode
+
+¿Cómo puedo cambiar las opciones?
+
+Para navegar por todas las opciones de Emacs:
+
+ M-x customize
+
+Para buscar opciones por su nombre:
+
+ M-x customize-apropos
+
+También pueden editarse mediante el propio menú del emacs guardando posteriormente los cambios realizados.
+¿Cómo puedo utilizar solo la sintaxis highlight de un modo, por ejemplo, c desde el modo fundamental?
+
+ M-x c-mode
+ Aunque eso te entra en el modo C completamente, no sólo en el resaltado de sintaxis.
+
+¿Cómo puedo descativar los pitidos?
+
+Se debe agregar en el archivo InitFile la siguiente línea
+
+ (setq visible-bell t)
+
+¿Cómo puedo usar el scroll con la rueda del ratón?
+
+Se debe agregar en el archivo InitFile la siguiente línea
+
+ (mwheel-install) 
+
+¿Cómo ocultar la barra de utilidades?
+
+Se debe agregar en el archivo InitFile la siguiente línea
+
+ (tool-bar-mode nil)
+
+¿Cómo puedo activar de forma permanente el resaltado en Emacs?
+
+ (global-font-lock-mode t)
+
+¿Cómo puedo asociar las teclas F11 y F22 para avanzar o retroceder entre buffers?
+
+ (global-set-key (quote [f11]) (quote bs-cycle-previous))
+ (global-set-key (quote [f12]) (quote bs-cycle-next))
+
+¿Cómo evitar el mensaje inicial de emacs?
+
+ (setq inhibit-startup-message t)
+
+¿Cómo puedo simplificar el mensaje de confirmación yes/no por y/n?
+
+ (fset 'yes-or-no-p 'y-or-n-p)
+
+¿Cómo mostrar el número de columna en la barra inferior?
+
+ (column-number-mode 't)
+
+¿Cómo compilar desde emacs?
+
+La primera vez
+
+ M-x compile comando
+
+El resto de veces
+
+ M-x recompile
+
+¿Cómo avanzar o retroceder en los errores de compilación?
+
+ M-x next-error
+ M-x previous-error
+
+next-error está asociado por defecto a C-x ` (desgraciadamente el carácter ` en el teclado español requiere la pulsación de espacio después de este acento, pero siempre se puede asociar a otra tecla)
+¿Cómo grabar macros en emacs?
+
+ C-x ( start-kdb-macro
+ ¡Estamos grabando!
+ C-x ) end-kbd-macro
+
+start-kdb-macro comienza la grabación de nuestra macro, dónde se graba lo que escribimos y los comandos ejecutados. end-kbd-macro, finaliza la grabación de nuestro macro.
+
+ C-x e call-last-kbd-macro 
+
+call-last-kbd-macro ejecuta el último macro grabado en la sesión actual.
+¿Cómo puedo guardar mis macros para sesiones posteriores?
+
+ M-x name-last-kbd-macro
+
+name-last-kbd-macro pide en el minibuffer como argumento el nombre que le queremos asignar al último macro grabado, luego podremos ejecutarlo como todo comando con la cominación M-x nombre-elegido
+
+ M-x global-set-key
+
+Nos preguntará por una secuencia de teclas y luego por el nombre del comando al cual queremos asociarla. ¡Tenemos todo listo! Ahora a guardarla Editamos nuestro archivo InitFile de nuestro directorio home y nos dirigimos a la última línea, luego:
+
+ M-x insert-kbd-macro
+
+insert-kbd-macro se encargará de generar e insertar en el fichero el código lisp del nuestro macro incluso la definición de nombre elegida y las teclas que le hemos asociado. Los macros ya estarán disponibles para siguientes sesiones.

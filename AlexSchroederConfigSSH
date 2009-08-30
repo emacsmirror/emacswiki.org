@@ -1,0 +1,108 @@
+;;; another config file
+;; http://www.emacswiki.org/cgi-bin/emacs?action=edit;id=AlexSchroederConfigSSH
+;; (set-terminal-coding-system 'latin-1)
+;; (set-keyboard-coding-system 'latin-1)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+(require 'dired-x)
+(defalias 'perl-mode 'cperl-mode)
+
+(setq visible-bell t
+      dired-dwim-target t)
+
+(auto-compression-mode 1)
+(column-number-mode 1)
+(show-paren-mode 1)
+(global-font-lock-mode 1)
+(iswitchb-mode 1)
+
+(server-start)
+
+(add-to-list 'load-path "~/elisp")
+(add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
+(autoload 'css-mode "css-mode" "Mode for editing CSS files" t)
+
+(setq backup-by-copying t)
+
+(put 'erase-buffer 'disabled nil)
+
+(eldoc-mode 1)
+
+(global-set-key (kbd "<f2>") 'occur)
+(global-set-key (kbd "<f3>") 'comment-region)
+(global-set-key (kbd "<f4>") 'indent-region)
+(global-set-key (kbd "<f5>") 'dabbrev-expand)
+
+(setq dired-recursive-copies 'always
+      dired-recursive-deletes 'top)
+
+(global-set-key (kbd "C-x C-b") 'bs-show)
+
+(add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
+(add-to-list 'interpreter-mode-alist '("python" . python-mode))
+(autoload 'python-mode "python-mode" nil t)
+
+(require 'session)
+(add-hook 'after-init-hook 'session-initialize)
+
+(define-generic-mode 'htaccess-mode
+  '(?#)
+  '(;; core
+    "AcceptPathInfo" "AccessFileName" "AddDefaultCharset" "AddOutputFilterByType"
+    "AllowEncodedSlashes" "AllowOverride" "AuthName" "AuthType"
+    "CGIMapExtension" "ContentDigest" "DefaultType" "DocumentRoot"
+    "EnableMMAP" "EnableSendfile" "ErrorDocument" "ErrorLog"
+    "FileETag" "ForceType" "HostnameLookups" "IdentityCheck"
+    "Include" "KeepAlive" "KeepAliveTimeout" "LimitInternalRecursion"
+    "LimitRequestBody" "LimitRequestFields" "LimitRequestFieldSize" "LimitRequestLine"
+    "LimitXMLRequestBody" "LogLevel" "MaxKeepAliveRequests" "NameVirtualHost"
+    "Options" "Require" "RLimitCPU" "RLimitMEM"
+    "RLimitNPROC" "Satisfy" "ScriptInterpreterSource" "ServerAdmin"
+    "ServerAlias" "ServerName" "ServerPath" "ServerRoot"
+    "ServerSignature" "ServerTokens" "SetHandler" "SetInputFilter"
+    "SetOutputFilter" "TimeOut" "UseCanonicalName"
+    ;; .htaccess tutorial
+    "AddHandler" "AuthUserFile" "AuthGroupFile"
+    ;; mod_rewrite
+    "RewriteBase" "RewriteCond" "RewriteEngine" "RewriteLock" "RewriteLog"
+    "RewriteLogLevel" "RewriteMap" "RewriteOptions" "RewriteRule"
+    ;; mod_alias
+    "Alias" "AliasMatch" "Redirect" "RedirectMatch" "RedirectPermanent"
+    "RedirectTemp" "ScriptAlias" "ScriptAliasMatch")
+  '(("%{\\([A-Z_]+\\)}" 1 font-lock-variable-name-face)
+    ("\\b[0-9][0-9][0-9]\\b" . font-lock-constant-face)
+    ("\\[.*\\]" . font-lock-type-face))
+  '(".htaccess\\'")
+  nil
+  "Generic mode for Apache .htaccess files.")
+
+(recentf-mode 1)
+(global-set-key (kbd "C-c f") 'recentf-open-files)
+
+;;; eshell
+(global-set-key (kbd "C-z") 'eshell)
+(setq eshell-save-history-on-exit t)
+(add-hook 'eshell-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-z") 'bury-buffer)
+	    (local-set-key (kbd "C-a") 'eshell-bol)
+	    (local-set-key (kbd "<up>") 'previous-line)
+	    (local-set-key (kbd "<down>") 'next-line)))
+(defalias 'eshell/emacs 'find-file)
+(defun eshell/dired () (dired (eshell/pwd)))
+(defun eshell/fg () (bury-buffer))
+
+(autoload 'eshell-here "eshell" nil t)
+
+(require 'wdired)
+(define-key dired-mode-map (kbd "C-c C-r") 'wdired-change-to-wdired-mode)
+
+(put 'narrow-to-region 'disabled nil)
+
+(autoload 'rcirc "rcirc" nil t)
+
+(global-set-key (kbd "<deletechar>") 'backward-delete-char)
+(global-set-key (kbd "ESC <deletechar>") 'backward-kill-word)
+
+(set-face-foreground 'diff-context-face "grey60")

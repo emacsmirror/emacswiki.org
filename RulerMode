@@ -1,0 +1,16 @@
+Emacs 22 has a minor mode, `ruler-mode', that displays a ruler at the top of the window. The ruler doesn't measure inches or centimeters; it measures columns, changing its scale with the font size.
+
+It also shows you the current column (TextCursor) and the positions of `comment-column', `fill-column', `goal-column', and the tab stops (as in `tab-stop-list'). You can use the mouse to control whether such things are displayed, and to move them around. Just hover over the ruler for tooltips that tell you how to do this. The `ruler-mode' help via `C-h m' is scanty, though.
+
+Ruler mode can be enabled for a specific window by typing <code>M-x ruler-mode</code>. It can be enabled for all windows at startup by putting in the InitFile the following line
+
+  (add-hook 'window-configuration-change-hook (lambda () (ruler-mode 1)))
+
+Or you can enable ruler mode for windows containing files with
+
+  (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
+
+'''See Also:''' PopupRuler.
+
+----
+CategoryEditing

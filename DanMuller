@@ -1,0 +1,13 @@
+I started out using Gnu Emacs, mostly in UNIX-derivative environments. (Banyan VINES network operating system.)
+
+Over time, I had a growing need to work on MS Windows. At the time (early to mid 90s), it was much easier to get XEmacs installed and configured in that environment, so I switched.
+
+Lately, I'm finding that XEmacs binaries for Windows tend to lag quite a bit behind, and generally development and package updates seem to be slower there. So I'm in the process of transitioning to Gnu Emacs. I'm currently trying out the WThirtyTwoInstallationKit, and it seems very nice -- thanks, Lennart!
+
+For more about me, see http://www.c2.com/cgi/wiki?DanMuller.
+
+: Welcome to the wiki! -- AlexSchroeder
+Thanks!
+----
+
+CategoryHomepage

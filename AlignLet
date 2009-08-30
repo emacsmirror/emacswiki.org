@@ -1,0 +1,20 @@
+<code>align-let.el</code> is a spot of code for aligning values in a Lisp <code>let</code> form (or similar), eg.
+
+    (let ((x 1)
+          (foo   2)
+          (zz (blah)))
+      ...)
+
+becomes
+
+    (let ((x   1)
+          (foo 2)
+          (zz  (blah)))
+      ...)
+
+Get the code from
+
+: http://user42.tuxfamily.org/align-let/index.html
+
+----
+CategoryIndentation  CategoryAlignment

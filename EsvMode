@@ -1,0 +1,92 @@
+EsvMode is a simple interface to the ESV API, so you can get passages
+from the English Standard Version of the Bible.  CharlesSebold wrote it.
+
+Current version of the code just gets the text and displays it.  I'm
+still trying to figure out this whole XML thing.  Requires at least
+Emacs 21 and the XmlParser and UrlPackage libraries (should work with Emacs 22 out of the box).
+
+Download the latest uploaded version at Lisp:esv.el if you care.
+
+To use this, you must customize or otherwise set the variable
+ESV-KEY!  Otherwise by default the ESV API handlers will not call out
+to the ESV website.  At the minimum, do this:
+
+  M-x customize-variable RET esv-key RET
+
+And set it to "Non-keyed usage" (IP) if you're just going to use this
+for personal use in Emacs.  Details of the ESV license for this
+information can be found at http://www.esvapi.org/ and I recommend
+looking it over.
+
+This package consists of two functionalities:  one is to recognize
+passages in your buffers and make it easy for you to look them up in
+the ESV (that's esv-mode), and one is a way to retrieve ESV passages
+using their web API and display them internally in Emacs.  This can
+be used to get individual passages (which you can specify or retrieve
+from your text using esv-mode), or you can go through a daily reading
+plan (great for those of us who live in Emacs).
+
+To use this package, you can save this file somewhere in your
+load-path and put the following in your .emacs at a minimum:
+
+<pre>
+  (require 'esv)
+  ; the following keys should be mapped to whatever works best for
+  ; you:
+  ; C-c e looks up a passage and displays it in a pop-up window
+  (define-key global-map [(control c) ?e] 'esv-passage)
+  ; C-c i inserts an ESV passage in plain-text format at point
+  (define-key global-map [(control c) ?i] 'esv-insert-passage)
+  ; If you don't want to use customize, you can set this for casual
+  ; usage (but read http://www.esvapi.org/ for license):
+  (setq esv-key "IP")
+</pre>
+
+To make esv-mode work whenever text-mode does, you can put this in
+your .emacs as well:
+
+<pre>
+  (add-hook 'text-mode-hook 'turn-on-esv-mode)
+</pre>
+
+If you only want it in certain files, you can add it to the first
+line or the local variables (see (info "(emacs)File Variables") for
+more information):
+
+<pre>
+    -*- mode: text; mode: esv; -*-
+</pre>
+
+or
+
+<pre>
+    Local Variables:
+    mode: esv;
+    End:
+</pre>
+
+However, note the warning about imposing your individual preferences
+on files at the end of the info node above.
+
+1.11 includes reading plan support (esv-reading-plan, use prefix
+argument to specify date), plain text insertion which is good for email
+(esv-insert-passage), and more prep work for better support in the
+future.
+
+1.16 makes it possible to run esv-mode, a minor mode that makes Bible
+references clickable, and can be configured to either display them
+internally or externally via web-browser (or other function of your
+choice).
+
+1.18 adds documentation and fixes a customization problem.
+
+1.19 fixed a problem with the regexp that finds passages (but not every
+problem) and attempts to fix the multiline problem too
+
+1.20 wasn't really a change (I pulled out the CVS ID, I've switched to git)
+
+1.21 adds esv-region()
+
+1.22 adds yank if mouse-2 happens in a non-clickable region
+
+1.23 adds new reading plans from Crossway

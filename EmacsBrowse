@@ -1,0 +1,10 @@
+Emacs comes with EBrowse -- something I ran into when Emacs 21.1 came
+out.  I gave it a test drive, but its feature set seemed to be a very
+small subset of ObjectOrientedBrowser.  This is my humble opinion
+based on 20 minutes of time spent using ebrowse. I would like to hear
+what an experienced user might have to say.
+
+EBrowse might have a smaller set of features than ObjectOrientedBrowser, but it does play nicely with others in a way that OO-Browser doesn't (or didn't in my experience). I've found it to be useful when using the JavaDevelopmentEnvironment which used to have fights with OO-Browser. If only EBrowse could use my SemanticBovinator information.
+
+----
+CategoryProgrammerUtils

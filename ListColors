@@ -1,0 +1,27 @@
+Use `M-x list-colors-display' to list some of the colors Emacs can
+display.  You can use these colors while CustomizingFaces, for
+example.
+
+You can, however, use many more colors!  You can use all of the colors in your
+rgb.txt file if you are using X Window System, for example.  The file should
+be somewhere around /usr/X11/lib/X11/rgb.txt.  You need to convert
+these colors into HexNotation, however.  In fact, you can use any RGB
+value, if you use HexNotation.  Therefore, you can use "black" or
+"#000000" -- the two should be equivalent.
+
+See HexNotation and SetColor.
+
+[new:DrewAdams:2005-01-04 16:05 UTC]
+Better than simply listing the colors that happen to be named is viewing all available colors, in a color palette -- See '''ColorPalette'''.  With the color palette you can examine color properties or choose colors. You can input colors using color names, RGB components (red, green, blue), or HSV components (hue, saturation, value).
+
+The easiest way to access colors is to use the '''Text Properties''' popup menu available via `C-mouse-2' -- provided you use library Lisp:facemenu+.el, that is. See '''FaceMenuPlus'''. If you want the colors of a particular [[Face]] or [[Frame]] that you see in Emacs, just point the mouse at it and use `C-mouse-2'. The enhanced '''Text Properties''' menu also lets you:
+
+* Modify face colors in various ways, including incrementally using the arrow keys or mouse wheel.
+* Copy a foreground or background color from anywhere in Emacs -- an '''''eye dropper'''''.
+ 
+See also '''DoReMi''' and libraries Lisp:hexrgb.el and Lisp:doremi-frm.el. 
+
+-- DrewAdams
+
+----
+CategoryFaces CategoryFrames

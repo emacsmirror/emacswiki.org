@@ -1,0 +1,13 @@
+Monotone is ''Yet Another'' modern distributed version control system.
+
+* http://venge.net/monotone/
+
+It has a very handy emacs mode, distributed in its contrib/ directory.  You can also download it directly:
+  [http://grahame.angrygoats.net/viewmtn/fileinbranch.psp?branch=net.venge.monotone&path=contrib/monotone.el monotone.el] (alternate link: [http://viewmtn.angrygoats.net/getfile.py?id=file&path=contrib/monotone.el monotone.el]) is available.
+
+Generic link doesn't seem to work, there is [http://viewmtn.angrygoats.net/file.psp?id=c1dbb3899d226f7587a94189982af758b7495e1a&path=contrib/monotone.el monotone.el 0.2], or it is included in the monotone source distribution.
+
+[http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsMonotone.html Small article about working with monotone.el]
+
+----
+CategoryVersionControl

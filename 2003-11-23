@@ -1,0 +1,20 @@
+After reading about OliverScholz's adventures, I decided to try it as well:
+
+    export CVS_RSH="ssh"
+    cvs -z3 -d:ext:anoncvs@savannah.gnu.org:/cvsroot/emacs \
+        co -d emacs-unicode -r emacs-unicode-2 -P emacs
+    cd emacs-unicode
+    ./configure
+    make
+    src/emacs &
+
+The anonymous checkout is documented on the Emacs project page.
+[https://savannah.gnu.org/cvs/?group=emacs]
+
+Works!  And I was even able to use [[ERC]].  Awesome!
+
+    20:43 <kensanata> I'm using ERC Version 4.0 $Revision: 1.560 $
+            with Emacs 22.0.0.1!
+    20:43 <kensanata> BOW IN PHEAR!!!
+
+Report bugs to emacs-unicode@gnu.org.  :) -- AlexSchroeder

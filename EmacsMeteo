@@ -1,0 +1,59 @@
+EmacsMeteo is a general emacs interface to provide meteorologic data.
+Although it is currently in alpha status, the code feels ready for public usage. Don't blame me if something does not work, blame the code instead ;).
+
+* project page: http://gna.org/projects/emeteo/
+
+At the moment, EmacsMeteo cannot provide a list of weather stations.
+Instead, you need to find them on the web (or whatever) yourself and insert an appropriate URI.
+
+----
+
+== Obtaining emeteo ==
+
+=== GnuArch archive ===
+Check it out via our gnu arch archive: hroptatyr@gna.org--archive/emeteo--dev--1.0 at http://arch.gna.org/emeteo/archive 
+
+* <code>tla register hroptatyr@gna.org--archive http://arch.gna.org/emeteo/archive</code>
+* <code>tla get hroptatyr@gna.org--archive/emeteo--dev--1.0</code>
+
+=== CVS ===
+
+* <code>cvs -d:pserver:anonymous@cvs.gna.org:/cvs/emeteo co emeteo</code>
+
+----
+
+== Installing emeteo ==
+
+Put in your .emacs:
+
+    (require 'emeteo)
+
+and some of the frontends, for example:
+
+    (require 'emeteo-modeline)
+
+Then <code>M-x emeteo-modeline RET</code>
+
+----
+
+== General usage ==
+
+* To get some actual metar content you have to fiddle with <code>emeteo-data-sources</code> variable.
+* For an example see http://www.math.tu-berlin.de/~freundt/.emeteo
+
+----
+
+== Further interfaces ==
+
+Emeteo is intended to work as a backend.
+Any actual functionality visible to the user is provided by frontend modules.
+
+Currently there are following frontend modules:
+* EmeteoEyecandy -- display status pictures in the modeline
+* EmeteoGnus -- funs for generating X-Weather headers
+* EmeteoModeline -- display regularly updated metar information in the emacs modeline
+* EmeteoStations -- select metar sources from a list of icao and wmo weather stations
+* EmeteoStorage -- save fetched metar data to file
+
+----
+CategoryInterface

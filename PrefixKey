@@ -1,0 +1,111 @@
+Assume you want to add a new prefix key.  On a german keyboard, there
+is no way to enter å and Å, for example.  In Emacs, you can use `C-x 8
+/ a' and `C-x 8 / A' respectively.  But, if you are used to
+"deadkeys", then you might expect `° a' and `° A' to do the right
+thing.  Therefore, we want to use `°' as a prefix key, and then define
+`° a' to call the same command that `C-x 8 / a' does.
+
+The first thing to note is that we need a new command for the prefix
+key.  To do that, we call `define-prefix-command':
+
+    (define-prefix-command 'ring-map)
+
+Next, we call `global-set-key':
+
+    (global-set-key (kbd "°") 'ring-map)
+
+When you test this, however, it may not work:  Try `C-h k °' -- if it
+returns "° runs the command self-insert-command", then it did not
+work.  What went wrong?  The problem with the character `°' is that it
+is not an ASCII character; if your locale is "C", then this character
+is not interpreted correctly.  So what we would need instead of "°" is
+this (assuming a Latin-1 setup):
+
+    (encode-coding-string "°" 'iso-8859-1) => "\260"
+
+If you have your locale setup correctly, then you might not need this.
+Therefore, if you are using the C locale, write the call to
+`global-set-key' as follows:
+
+    (global-set-key (kbd "\260") 'ring-map)
+
+The rest is easy:
+
+    (define-key ring-map (kbd "a") 'iso-transl-a-ring)
+    (define-key ring-map (kbd "A") 'iso-transl-A-ring)
+
+But how will we enter the real `°'?  The obvious solution does not
+work, because a string as a function definition will call the
+corresponding keyboard macro!
+
+    (define-key ring-map (kbd "SPC") "°")
+
+The next idea is to call the command that `C-x 8 o' calls:
+iso-transl-degree-sign.  Use `C-x 8 C-h' to list all available
+commands on that keymap.  Unfortunately, it does not work:
+
+    (define-key ring-map (kbd "SPC") 'iso-transl-degree-sign)
+
+Why not?  See `C-h f iso-transl-degree-sign': "iso-transl-degree-sign
+is a keyboard macro."  And this keyboard macro probably just calls the
+keybinding we have been changing anyway.  So we will have to write our
+own command.
+
+    (define-key ring-map (kbd "SPC")
+                         (lambda () (interactive) (insert "°")))
+
+Done.
+
+== Duplicating prefix keys ==
+Since I'm a Windows user and use CUA, I copy C-x functionality onto the <C-lwindow>
+key.  This way I can reach C-x prefixed functions consistantly even when I've 
+got text selected.  The same technique could copy them to just about any other 
+available key.
+
+  (global-set-key (kbd "<C-lwindow>") (lookup-key global-map (kbd "C-x")))
+
+**NOTE** This only copies the PREFIX KEY not any followup key.  
+Meaning the C-x C-x function can now be reached using <C-lwindow> C-x 
+but unless C-x <C-lwindow> is mapped to something, <C-lwindow> <C-lwindow> 
+won't be either.
+
+=== Duplicating C-c ==
+You need to use a mode hook to copy the the C-c prefixed chords because 
+the key convention says major modes define those keys so a different 
+keymap is usually defined by each major mode.
+
+  (defun copy-C-c-to-M-lwindow ()
+    (local-set-key
+     (kbd " <M-lwindow>")
+     (lookup-key (current-local-map) (kbd "C-c"))))
+
+  (add-hook 'tal-mode-hook 'copy-C-c-to-M-lwindow)
+  (add-hook 'ddl-mode-hook 'copy-C-c-to-M-lwindow)
+  ...
+
+=== About using <lwindow>, <rwindow> and <apps> ===
+The [START] key on Windows systems (also called the windows key) is visible 
+to Emacs.  The one on the left is called <lwindow>.  Some keyboards have
+one on the right called <rwindow>.  They can make convenient prefix keys 
+for user functions thus making thousands of convenient unused 
+keystrokes available to users.  
+
+Some Windows keyboards don't have an <rwindow> key.  Tough luck.  
+If you have both remember that they are seperate keys and seperately 
+mappable.  So stuff you map to one key can't be reached from the
+other key unless you explicitly map the same thing to both keys.
+
+*Very IMPORTANT* Don't try to map the plain <lwindow> or <rwindow> keys.  
+Stick to the modified versions like <C-lwindow> <S-rwindow> etc which 
+should work essentially like function keys.
+
+On a Windows keyboard the key to the right of the spacebar with a picture 
+of a menu on it is the <apps> key.  It should be completely available both 
+in its plain form and the shift, alt, ... modified flavors.  For example:
+
+  (global-set-key (kbd "<apps>") (lookup-key global-map (kbd "C-x")))
+
+
+----
+CategoryKeys
+CategoryInternationalization

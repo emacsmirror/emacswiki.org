@@ -1,0 +1,15 @@
+How to encrypt and decrypt anything you might want to edit using Emacs.
+
+* GnuPG -- "GNU Privacy Guard" aka. GPG is the de-facto standard tool for cryptography on the command-line and is what almost all Emacs packages use under the hood.
+
+* AutoEncryption -- transparently encrypt and decrypt files
+
+* EasyPG -- a package that interfaces with GPG
+
+* MailCrypt -- a package that plugs encryption, decription, signing, and signature verification into mail and news
+
+* CryptPlusPlus -- Automatically work with encrypted and compressed files.
+
+* [http://ccrypt.sourceforge.net ccrypt] is an encryption utility based on the Rijndael cipher, supplying its own emacs mode for editing encrypted text files, which also handles non-ASCII-encodings.
+
+* AdvancedEncryptionStandard -- Implementation of AES in elisp.

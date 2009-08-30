@@ -1,0 +1,116 @@
+Yes, you can use Emacs as the editor for Microsoft Outlook email. I haven't tried doing it myself, but these websites list some different solutions to this question. It basically lets you grab the text of an Outlook email reply/forward/etc., use Emacs to edit the reply or create a new message, and return the result to the Outlook editing window:
+
+* http://disgruntled-programmer.com/notes/emacs-with-outlook.html -- Requires Python to be installed to communicate with Outlook. (FIXME)
+
+* http://mini.net/tcl/EmacsOutlook -- Requires Tcl to be installed to communicate with Outlook.
+
+:: <em>I just set this up under XP w/ Office XP and it worked beautifully.</em>&mdash;EphremChristopherWalborn[http://www.tuirgin.com]
+
+-- can I do the same with Mozilla Mail ?
+
+I put together a small package based on the Python code mentioned above, but taking advantage of PyMacs for better integration. It provides two commands:
+
+* outlook-load -- to load the e-mail reply body (or Notes, or Calendar entry) to an Emacs buffer;
+
+* outlook-set -- to set it back. 
+
+The code can be downloaded from my Emacs page at http://home.nc.rr.com/nascifandelaine/emacs.html -- NascifAbousalh
+
+If your machine has the windows script host installed which should be true for almost all
+versions currently in use (see
+http://msdn.microsoft.com/library/default.asp?url=/nhp/default.asp?contentid=28001169)
+then you can use the following script instead of python or tcl. It is merely a port from
+tcl to Windows script. The outlookedit.el from the first link mentioned above is still
+needed. Simply save the following code with extension .wsf somewhere on your path and
+adjust the variables mno-get-outlook-body and mno-put-outlook-body -- MartinStemplinger
+
+outlookedit.el can also be downloaded from http://wiki.tcl.tk/9198. The disgruntled-programmer link above seems to broken. -- NascifAbousalh
+
+
+<pre>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<package>
+  <job id="getMessage">
+      <runtime>
+          <description>
+            This script gets a Message from an open Outlook window
+      </description>
+    </runtime>
+    <script language="JScript">
+      try {
+        var app = new ActiveXObject("Outlook.Application");
+        var inspector = app.ActiveInspector;
+        
+        WScript.StdOut.Write(inspector.CurrentItem.Body);       
+      } catch (e) {
+        WScript.Echo("Error: " + e)
+      }
+    </script>
+  </job>
+  <job id="putMessage">
+    <runtime>
+      <description>
+        This script puts the content of StdIn back into an open Outlook
+        window.
+      </description>
+    </runtime>
+    <script language="JScript">
+      try {
+        var stdin = WScript.StdIn;                                 
+        var app = new ActiveXObject("Outlook.Application");
+        var inspector = app.ActiveInspector;
+        var body = stdin.ReadAll();
+
+       inspector.CurrentItem.Body= body;       
+       inspector.display();
+       inspector.Activate();
+      } catch (e) {
+       WScript.Echo("Error: " + e)
+      }
+    </script>
+  </job>
+</package>
+</pre>
+
+In outlookedit.el (assuming you put the wsf script in ~/bin) --TimAnderson
+
+<pre>
+ (defvar mno-get-outlook-body
+   "cscript //Job:getMessage ~/bin/outlook_emacs.wsf")
+ (defvar mno-put-outlook-body
+   "cscript //Job:putMessage ~/bin/outlook_emacs.wsf")
+</pre>
+
+You can also add a macro to Outlook and place that macro on a customized button in the toolbar:
+
+<pre>
+Sub mnoEditInEmacs()
+  Shell ("<PATH_TO_EMACS>\bin\gnudoit.exe (mno-edit-outlook-message)")
+End Sub
+</pre>
+
+When you are replying to a mail, just press this button.
+
+(snatched code from http://wiki.tcl.tk/9198)
+
+It is worth adding ##//B## to above <tt>cscript</tt> call -- this ensures that no banner is being output.  Also, it maybe worth using ##//U## switch to force UNICODE communication, but this would require forcing that onto outlookedit mode as well...
+
+The message has to be opened for Reply for the above to work (M-r in Outlook ;-)). I added the snippet after the line beginning <i>var inspector...</i> to remind myself:
+
+<pre>
+  // As above
+  var inspector = app.ActiveInspector;
+
+  // Reminder
+  if (inspector == null) {
+    WScript.StdOut.Write("You haven't opened the message up for Reply...");
+    WScript.Quit(1);
+  }
+</pre>
+
+
+Another python solution is at http://barnson.org/node/295
+
+----
+CategoryWThirtyTwo
+WThirtyTwoSendMAPI

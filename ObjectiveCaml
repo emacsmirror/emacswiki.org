@@ -1,0 +1,7 @@
+ObjectiveCaml is an ML variant programming language by Xavier Leroy's /Projet Cristal/ at INRIA in France.  It is a /very/ strongly-typed functional language which also provides imperative features.  It has a top-level interpreter loop, so you can run OCaml scripts.  It compiles into bytecode like EmacsLisp and Java.  On many platforms, it can also compile into machine code.  Benchmarks place compiled OCaml code at about the same speed as equivalent C code, and in some situations it runs faster.
+
+If you are an EmacsLisp hacker, you may enjoy ObjectiveCaml.
+
+homepage: http://www.ocaml.org/
+
+There are two major modes for OCaml programming: CamlMode and TuaregMode. Does anyone have an opinion of which is best? 

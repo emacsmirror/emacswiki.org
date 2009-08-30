@@ -1,0 +1,8 @@
+[new:AlexSchroeder:2005-06-26 11:09 UTC]
+As for the SiteMap spam, how about this: I lock the SiteMap, but symlink it to another page called RealSiteMap.  If bots of humans looking for a page with high Google pagerank try to edit SiteMap, it will not work.  Anybody else can just edit RealSiteMap.
+
+[new:MathiasDahl:2005-06-26 17:13 UTC]
+If it works (prevents SPAM) and people are aware of how to change SiteMap, I think it is worth trying.
+
+[new:AlexSchroeder:2005-06-27 12:48 UTC]
+Instead of using symlinks on the filesystem, I've used the page transclusion feature Oddmuse provides.   I hope it is good enough to fool the uneducated spammers.  All we need to do now is document this somewhere...

@@ -1,0 +1,145 @@
+See also: HowmAndCalendar PlannerAndHowmComparison
+----
+
+Howm allows you to take notes fragmentarily and browse them collectively.
+It has hyperlinks and full-text search like EmacsWikiMode.
+It is a minor mode and can be combined with other modes.
+
+* http://howm.sourceforge.jp/
+
+There is no distinction between pages - each record can be arbitrarily
+timestamped, hyperlinked, and displayed with other related pages in
+one buffer, if needed. Quite convenient if one wants what did he put
+in about X, and next day - what was marked as Y. Very practical tool
+for organizing notes into ad-hoc searchable ontology.
+
+The interesting thing about this mode is that it doesn't only have
+"normal" forward pointing links -- it also has backwards pointing
+links:
+
+'''Goto link''': These can point to keywords or to filenames.
+
+      >>> ~/BabyloniaWave.txt
+      >>> highway planet
+
+'''Come-from link''': These can point "from" keywords.
+
+      <<< crystal star cluster
+
+The string 'crystal star cluster' in all other files will now automatically point here.
+
+Todo and Notifiers are created as you type and displayed in a separate buffer according to the importance, so you can click and see the context of the appontment. 
+
+
+''The format is as follows:''
+
+[YYYY-MM-DD]- sink after the date (reminder)
+
+[YYYY-MM-DD]+ float after the date (todo)
+
+[YYYY-MM-DD]! float until the date (deadline)
+
+http://howm.sourceforge.jp/s-menu.png
+
+----
+
+As for recurring scheduled tasks, you can simply list them :-)
+<pre>
+      [2005-06-13]@ hogehoge
+      [2005-06-20]@ hogehoge
+      [2005-06-27]@ hogehoge
+      [2005-07-04]@ hogehoge
+</pre>
+A method to input such lists is described in http://howm.sourceforge.jp/README.html.
+
+: Thanks to SebastianBlatt for this question; it was not documented in English.
+I am lazy and tend to leave problems until someone gives comments. --khi
+
+: That's pretty convenient, thanks! One more question, though: is it possible to get howm to query the diary file or abuse diary-lib (diary-mode supports cyclic tasks and also has a nice entry format to specify e.g. the third Monday of August), so that I wouldn't have to enter holidays by hand every year? ...yes, I know I'm lazy. :-) --SebastianBlatt
+
+Some codes to integrate howm and diary are found in
+http://www.bookshelf.jp/cgi-bin/goto.cgi?file=meadow&node=howm%20calendar
+(Please search the word "mark-calendar" in this page).
+I expect everyone can read elisp part at least.
+
+''To simplify things for others, I've pasted the code at HowmAndCalendar.'' --DavidOtoole
+
+These codes provide the below features.
+
+(calendar to howm)
+* If you write "%hdiary" in your menu file ~/howm/0000-00-00-000000.howm, schedule from diary is shown in howm menu by "C-c , ,".
+* M-x calendar, move TextCursor to a certain date, and type "d" to search that date in howm notes.
+
+(howm to calendar)
+* Dates for tasks in howm notes are highlighted in calendar.
+* Type "d" in howm menu to open calendar.
+
+----
+
+I have a question: is it possible to show and maybe highlight "missed" appointments in the Schedule section? That is, appointments of the form "[date]@ text" that were not explicitly finished by hitting RET on the "@"? --SebastianBlatt
+
+This should work. --[[khi]]
+<pre>
+    ;; show schedule items in menu...
+    (setq howm-menu-schedule-days-before (* 365 30)) ;; from (today - X days)
+    (setq howm-menu-schedule-days 7) ;; to (today + Y days)
+</pre>
+
+Highlighting is not available at now. How about "separators" instead?
+* Write %reminder instead of %schedule and %todo in menu file 0000-00-00-000000.howm. Both appointments and todo items are shown in an unified form. (experimental hidden feature)
+* Set separator lines as you like.
+<pre>
+    (setq howm-menu-reminder-separators
+          '(
+            ;; missed
+            (-1  . "----------- m -----------------")
+            ;; today
+            (0   . "----------- 0 -----------------")
+            ;; 1-3 days
+            (3   . "----------- 3 -----------------")
+            ;; 3-7 days
+            (nil . "----------- t -----------------")
+            ;; todo
+            ))
+</pre>
+
+== Discussion ==
+
+[new] Is there any way to have "templates" in howm ? I mean, I'd like
+to create all my notes and put them in a "inbox" category (goto-link)
+so that I could review them easily at each end of day ?
+Also, is there any possibility exclude certain tags when searching for
+notes ? -- XavierMaillard
+
+Yes. Please read docstring of the variable `howm-template'.
+You can exclude certain notes by typing C-u f contents RET
+or C-u f summary RET in *howmS* buffer. -- [[khi]]
+
+[new:XavierMaillard:2008-10-26 18:35 UTC]
+Yes, I have seen it after having asked it here ... -- [[XavierMaillard]]
+----
+
+== Tips ==
+
+* rd-mode (yet another document format)
+http://lists.sourceforge.jp/mailman/archives/howm-eng/2005/000014.html
+* sort todo list
+http://lists.sourceforge.jp/mailman/archives/howm-eng/2005/000007.html
+http://lists.sourceforge.jp/mailman/archives/howm-eng/2005/000009.html
+* highlight specified words
+http://lists.sourceforge.jp/mailman/archives/howm-eng/2005/000016.html
+* add new action-lock (embed buttons, toggle-switches, etc. into notes)
+http://lists.sourceforge.jp/mailman/archives/howm-eng/2006/000023.html
+http://lists.sourceforge.jp/mailman/archives/howm-eng/2006/000024.html
+http://lists.sourceforge.jp/mailman/archives/howm-eng/2006/000027.html
+* combination with OrgMode
+http://lists.sourceforge.jp/mailman/archives/howm-eng/2008/000038.html
+* save and kill buffer by C-c C-c
+http://lists.sourceforge.jp/mailman/archives/howm-eng/2008/000050.html
+* switch context (separating work and personal)
+http://lists.sourceforge.jp/mailman/archives/howm-eng/2008/000059.html
+* howmoney (manage expense)
+http://lists.sourceforge.jp/mailman/archives/howm-eng/2008/000089.html
+
+----
+CategoryHypermedia | CategoryPersonalInformationManager

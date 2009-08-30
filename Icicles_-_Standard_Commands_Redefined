@@ -1,0 +1,57 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Customizing Key Bindings]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Programming with Fancy Candidates]] ||
+
+----
+
+
+= Icicles Redefines Some Standard Commands =
+
+If [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-redefine-standard-commands-flag|icicle-redefine-standard-commands-flag]]</tt>'''' is
+non-`nil', then '''Icicles''' automatically redefines a few standard Emacs
+[[command]]s when you are in ''Icicle'' mode, enhancing them for '''Icicles''' [[completion]]:
+
+* `bbdb-complete-name' (from BBDB)
+* `customize-apropos'
+* `customize-apropos-faces'
+* `customize-apropos-groups'
+* `customize-apropos-options'
+* `customize-face'
+* `customize-face-other-window'
+* `dabbrev-completion'
+* `lisp-complete-symbol'
+* `repeat-complex-command'
+* `switch-to-completions'
+
+'''Icicles''' automatically redefines these standard Emacs commands for
+use in the minibuffer or `*Completions*':
+
+* `choose-completion'
+* `exit-minibuffer'
+* `minibuffer-complete-and-exit'
+* `mouse-choose-completion'
+* `next-history-element'
+
+When you exit ''Icicle'' mode, the standard definitions are
+restored.
+
+
+
+----
+
+
+
+|| *Previous:*  [[Icicles - Customizing Key Bindings]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Programming with Fancy Candidates]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

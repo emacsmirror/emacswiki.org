@@ -1,0 +1,12 @@
+To change your default font in windows:
+
+* find out the name of the font you want to change to by selecting the font.
+  press S-Mouse1 and choose the font you desire.
+* copy the name of this font into a buffer somewhere
+  M-x describe-face RET RET
+  select the face name, eg: outline-bitstream vera sans mono and M-w to copy to the kill ring
+* customise the default-face
+  M-x customize-face RET default RET
+  edit Font Family: and yank the font name from the kill buffer C-y
+* click the safe for future sessions, and then click finish.
+

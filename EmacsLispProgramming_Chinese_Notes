@@ -1,0 +1,277 @@
+以下是 "Emacs Lisp Programming" 的读书笔记.
+你可以从 [http://www.emacswiki.org/emacs/download/EmacsLispProgramming_Chinese_Notes_Archive  这里] 下载 OrgMode 的文件.
+
+==Emacs Lisp Programming==
+===基本语法===
+===progn===
+{{{
+        	 progn的作用在于使许多语句块看起来像一个单一的块, 像Java中的"{"和Pascal中"begin" "end"的作用.
+}}}
+===let===
+{{{
+        	(let (var1 var2 ...)
+        		statement-block)
+        	let 的作用在于初始化局部变量的值, 默认为nil
+        
+        	(let (var1 (var2 value2) var3 ...)
+        		statement-bloack)
+        	在这里可以以混合的书写形式初始化特定的局部变量的值.
+}}}
+===let*===
+{{{
+        	(let* ((var1 value1) (var2 (+1 var1)))
+        		statement-block)
+        	let* 的一个与let重要区别在于, 执行下一步前先赋值当前的变量, 在这里先计算var1的值, 然后在计算var2
+            的值
+}}}
+===if===
+{{{
+        	(if condition true-case false-block)
+        	如果条件condition是non-nil, true-case 语句执行,
+        	如果条件condition是nil, false-block 执行.
+        		true-case false-block都是一个语句块, false-block是可选项, 可以没有
+        
+        
+        	if 的 执行语句必须是一个代码块, 当多于一条语句以上就要用 progn 修饰
+        	(if (true-conditional)
+        		(only-one-implement))	;; 单个语句写法
+        
+        	(if (true-conditional)
+        		(progn		;; 多条语句要加progn,
+        			(first-implement)
+        			(second-implement)))
+}}}
+===concat===
+{{{
+        	(concat arg1 arg2 ... )
+        	连接所有的参数, 变成一个单一的字符串
+}}}
+===cond===
+{{{
+        	(cond
+        		(condition1	statement-block1)
+        		(condition2	statement-block2)
+        		(condition3	statement-block3)
+        		...)
+        	cond是一种更通用的条件控制结构, 类似Java和Perl中的:
+        		if ... then
+        		else if ... then
+        		else if ... then
+        	或者是另一种switch语句.
+        	cond函数中止执行或返回语句块中的最后一块值, 通常switch语句中的default和if ... else if 语句中的最后一个else 语句用于"otherwise"情况, cond的最后一个语句块可以写成:
+        	(t last-execute)
+        	这里面的statement-block要用()括起来, 如果是函数的话, 写成 'function1 是不能执行的, 要写成 (function1)
+        	(conditional1 'function1) -> wrong
+        	(conditional1 (function1)) -> right
+}}}
+===buffer and text functions===
+====point: 光标所在的字符位置====
+====mark: 标记的字符位置====
+====point-min: 最小的字符位置(通常为 1 )====
+====point-max: 最大的字符位置(通常为buffer的大小)====
+====bolp: 光标是否在一行的起始位置(布尔值, t or nil)====
+====eolp: 光标是否在一行的结尾位置====
+====bobp: 光标是否在buffer的起始位置====
+====eobp: 光标是否在buffer的结尾位置====
+====insert: 在buffer里面插入任意参数(字符串 或者 字符)到光标位置后面====
+====number-to-string: 转换数字为字符串====
+====string-to-number: 转换字符串为数字====
+====char-to-string: 转换字符为字符串====
+====substring: 返回相应索引的子字符串:====
+{{{
+                (substring "SomeString" start-index end-index)
+                比如: (substirng "appropriate" 2 5) 返回 "prop",
+                起始索引以后, 结束索引以前, 索引开始于"0".
+}}}
+====aref: 返回字符串指定索引处字符的ASCII编码====
+{{{
+                比如, (aref "appropriate" 3) 返回 114 - 字母"r"的ASCII编码
+            
+}}}
+===正则表达式===
+====操作符====
+=====.		匹配任何字符(character)=====
+======"a.b" 表示匹配所有以"a"开始, 以"b"结束地三个字符的字符串======
+=====.*		匹配任何字符串(string)=====
+=====[abc]	匹配a, b, or c.=====
+=====[a-z]	匹配小写字母=====
+=====[A-Za-z]	所有字母字符, 正则表达式可以在一个单一的字符串中写入多个范围=====
+{{{
+                	 所以[A-Za-z_]代表所以所以字母字符后面跟一个 _
+}}}
+=====[^A-Za-z]	代表所有非字母的字符, ^在字符串的最前面表示 逻辑 not 操作符=====
+=====^		用于正则表达式时, 其后面的表达式只能用于行首, 比如 ^\\*+ 表示行首的一个 或 多个 *=====
+=====$		于 ^ 相似, 只能用于行尾=====
+{{{
+                	 如果 ^ 和 $ 用于表达式的中间时并不表示处理跨越多行的一行的行首或行尾, 只能在表达式中间插入 \n 来实现
+                	 [.?!][]\"')}]*\\($\\|\t\\|  \\)[ \t\n]* 则表示按键 M-e (段尾) 的正则表达式, 可以分成四部分:
+                		 [.?!] 表示匹配 标点符号
+                		 []\"')}]* 表示匹配 右括号
+                		 \\($\\|\t\\|  \\) 表示匹配 行尾的 TAB, 两个空格j
+                		 [ \t\n]* 表示 匹配 零个 或 多个空格, 或 TAB 或 换行符
+}}}
+=====\b		匹配空串，但仅在一个词的开始或者结尾的。=====
+{{{
+                例如，“\bfoo\b”匹配任何作为单独的词出现的“foo”。“\bballs?\b”匹配作为单独的词出现的“ball”或 “balls”。
+                在缓冲区的开始和结束位置时，“\b”不考虑紧接其前的文本是什么。
+}}}
+=====\B		匹配空串，但不在词的开始或结尾处。=====
+=====\\< 和 \\>	分别代表只在 单词前 和 单词后 匹配正则表达式=====
+{{{
+                	 \\<program\\('s\\|s\\)?\\> 表示 program, program's, programs
+}}}
+=====\\( 和 \\)=====
+======\\( 代表 正则表达式的组的开始标识======
+======\\) 代表 正则表达式的组的结束标识======
+{{{
+                    	 正则表达式可以把\\( 和 \\) 之间的字符串当成一个处理单元, 用\\) 后面的表达式来处理.
+                    	 比如,	\\(read\\)* 匹配 空字符串, read, readread.
+                    		 read\\(file\\)? 匹配 read, readfile
+}}}
+=====\\|		间隔操作符, 类似 逻辑 or 操作,=====
+{{{
+                	 比如, read\\|get 匹配 "read" or "get"
+                	 \\(read\\|get\\)file 匹配 "readfile" or "getfile"
+}}}
+=====\(?: ... \) “谨慎的”分组("shy" group)，这个分组不记录匹配的子串=====
+{{{
+                	你不能用“\D”来引用。这在机械的结合正则表达式的时候有用，这样，你可以为语法目的加入分组，而不用干涉
+                     使用者写的分组的个数。
+}}}
+=====\D=====
+{{{
+                     匹配和“\( ... \)”结构第 D 次出现时所匹配的同样的文本。
+                     在“\( ... \)”结构结束之后，匹配程序保存被这个结构匹配的文本（的开始和结束）；之后的正则表达式中，你可以使用“\”跟着一个数字 D 来表示“匹配和‘\( ... \)’结
+                     构第 D 次出现时所匹配的同样的文本。”
+                     正则表达式中前九个出现的“\( ... \)”结构，按正则表达式中左括号出现的次序从 1 到 9 赋值。因此可以用“\1”到“\9”来引用相应的“\( ... \)”结构。
+                     例如，“\(.*\)\1”匹配任何有完全相同的两部分而无换行符的串。“\(.*\)” 匹配前一半，可以是任意的串，“\1”匹配后面的，但必须和前面的完全相同。
+                     如果一个特定的“\( ... \)”结构匹配了多次（比如后面有一个“*”，这很显然），那么仅记录最后一次的匹
+                     配。
+}}}
+=====\{N\}	表示重复次数为N地后缀操作符, 一个前导表达式必须恰好匹配了N次=====
+======"x\{4\}" 仅仅匹配"xxxx"======
+=====\{N,M\}	指定重复次数在N和M之间的后缀操作符，就是说它的前导表达式的匹配次数至少 N 次但不能超过 M 次。如果省略 M，表示没有上限，但它的前导表达式至少匹配 N 次。=====
+======“\{0,1\}”等同于“?”。“\{0,\}”等同于“*”。“\{1,\}”等同于 “+”。======
+=====注解=====
+======所有的正则表达式在Emacs中书写时都应该在前面加上 \ 以注明 \ 后面的字符串是一个正则表达式, 因为转义字符 \ 的原因, 所以Emacs中 \ 表示为 \\======
+{{{
+                    	 因此, 在Emacs中正则表达式前面应该加上 \\ 以此注明 \\ 后面的字符串是一个正则表达式.
+}}}
+======正则表达式的操作符 *, +, ?, 都是要和前面的一个字符结合起来然后根据规则生成新的字符或者字符串======
+======操作符 * 在Emacs的意义不同于Unix shell里面的意义, 他的意思是: 没有字符或者在 * 之前的字符, 后一种情况要根据 * 之前的字符进行判断,======
+{{{
+                    	 比如, d* 代表的是 没有字符 或者 d. 所以 read* 代表 rea 或者 read
+                    	 由于 . 在Emacs里面代表任意字符, 所以 .* 代表 没有 或者 任意字符,
+                    	 因此 read.* 代表 read 或者 read后面跟任意一个字符
+}}}
+======操作符 + 跟正则表达式中 * 的意思匹配方法相似, 表示: 之前一个字符的一次或多次重复.======
+{{{
+                    	 所以 read+ 则表示 read 或者 readdddddddd (read后面跟任意数量的 d)
+}}}
+======操作符 ? 表示: 之前的一个字符或者没有字符======
+{{{
+                    	 比如 html? 则表示 htm 或者 html
+}}}
+====操作符分类====
+=====Many characters are special when they follow a backslash ; see below. =====
+======.        any character (but newline)======
+======*        previous character or group, repeated 0 or more time======
+======+        previous character or group, repeated 1 or more time======
+======?        previous character or group, repeated 0 or 1 time======
+======^        start of line======
+======$        end of line======
+======[...]    any character between brackets======
+======[^..]    any character not in the brackets======
+======[a-z]    any character between a and z======
+======\        prevents interpretation of following special char======
+======\|       or======
+======\w       word constituent======
+======\b       word boundary======
+======\sc      character with c syntax (e.g. \s- for whitespace char)======
+======\( \)    start\end of group======
+======\< \>    start\end of word======
+======\` \'    start\end of buffer======
+======\1       string matched by the first group======
+======\n       string matched by the nth group======
+======\{3\}    previous character or group, repeated 3 times======
+======\{3,\}   previous character or group, repeated 3 or more times======
+======\{3,6\}  previous character or group, repeated 3 to 6 times======
+======.? +? ?? are non-greedy versions of . + and ? See NonGreedyRegexp======
+======\W \B \Sc match any character that does not match \w \b \sc======
+=====Here are some classes that can be used between brackets [].=====
+======[:digit:]  a digit, same as [0-9]======
+======[:upper:]  a letter in uppercase======
+======[:space:]  a whitespace character, as defined by the syntax table======
+======[:xdigit:] an hexadecimal digit======
+======[:cntrl:]  a control character======
+=====Here is the meaning of the syntax classes.=====
+======\s-   whitespace character======
+======\s/   character quote character======
+======\sw   word constituent======
+======\s$   paired delimiter======
+======\s_   symbol constituent======
+======\s'   expression prefix======
+======\s.   punctuation character======
+======\s<   comment starter======
+======\s(   open delimiter character======
+======\s>   comment ender======
+======\s)   close delimiter character======
+======\s!   generic comment delimiter======
+======\s"   string quote character======
+======\s|   generic string delimiter======
+======\s\   escape character======
+====例子====
+{{{
+              Remove trailing spaces          Regexp :  SPC +$
+                                              Replace:
+              Remove lines beginning by ;     Regexp :  ^;;
+                                              Replace:
+              Keep only uppercase letters     Regexp :  [^[:upper:]]+
+                                              Replace:  SPC
+              Keep only numbers, one per line Regexp :  [^0-9]+
+                                              Replace:  C-o
+              Remove from first ; to the end  Regexp :  ;.*
+                                              Replace:
+              Remove all empty lines          Regexp :  C-q C-j +
+                                              Replace:  C-q C-j
+              Remove duplicate empty lines    Regexp :  C-q C-j \{2,\}
+                                              Replace:  C-q C-j
+              Replace word foo by bar         Regexp :  \<foo\>
+                                              Replace:  bar
+              Permute foo and bar             Regexp :  \(foo\)\|bar
+                                              Replace:  \,(if \1 "bar" "foo")
+              Replace _ by -                  Regexp :  _
+                                              Replace:  -
+              Remove DOS style newlines       Regexp :  C-q 015 RET
+                                              Regexp :
+              Number chapter                  Regexp :  \(chapter \)
+                                              Replace:  \1 \,(1+ \#)
+              Keep only number at end of line Regexp :  ^.*[^0-9 C-q C-j ]
+                                              Replace:
+              Capitalize char beginning line  Regexp :  ^.
+                                              Replace:  \,(capitalize \&)
+              Add 1 to number starting line   Regexp :  ^[0-9]+
+                                              Replace:  \,(1+ \#&)
+              Add 2 to number ending line     Regexp :  [0-9]+$
+                                              Replace:  \,(+ 2 \#&)
+              Count words                     Regexp :  \<
+                                              Replace:
+              Convert dd/mm/ to mm-dd-        Regexp :  \([0-9][0-9]\)/\([0-9][0-9]\)/
+                                              Replace:  \2-\1-
+              Add line number, start at 1     Regexp :  ^
+                                              Replace:  \,(1+ \#) SPC
+              Add line number, from position  Regexp :  ^
+                                              Replace:  \,(+ (line-number-at-pos) \#) SPC
+              Promote header tags in HTML     Regexp :  <\(/?h\)\([0-9]\)>
+                                              Replace:  <\1\,(1+ \#2)>
+              Open dot files listed in buffer Regexp :  \<\.\w+
+                                              Replace:  \,(find-file-noselect \&)
+              Put email adress in buffer buf  Regexp :  \w+\(\.\w+\)?@\(\w\|\.\)+
+                                              Replace:  \,(print \& (get-buffer "buf"))
+              Beep and kill word foo, slowly  Regexp :  \<foo\>
+                                              Replace:  \,(progn (beep)(sit-for 1) "")
+              Kill buffer if contains "yop"   Regexp :  yop
+                                              Replace:  \,(progn (kill-buffer nil) \&)
+              Open url in browser             Regexp :  http://\S-+
+                                              Replace:  \,(browse-url \&)
+}}}

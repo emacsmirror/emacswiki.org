@@ -1,0 +1,30 @@
+I’m [::nicferrier], a hacker trying to do interesting things. I use Emacs every day all the time.
+
+I am currently the CTO at [http://woome.com woome.com]
+
+Anyone interested in hacking on woome.com can come talk to [mailto:nic@woome.com me]
+
+I've done a few things with emacs which I'm trying to push into this wiki:
+
+* [[pastebin]] - a simple interface to the [http://www.pastebin.com pastebin.com] webservice
+* [[rcircPresence]] - for syncing rcirc with some other presence thing (eg: skype)
+* [[imapua]] -- a purely IMAP based email client for Emacs
+* [[trac_editor]] -- a very simple interface to trac.py
+
+== Other interesting points ==
+
+* I use [http://www.selenic.com/mercurial/ mercurial] to get emacs you can get it to by just using mercurial to clone [http://hg.intevation.org/emacs/ this]
+* My emacs bits and pieces are in a mercurial repo [http://making.woome.com/repos/nics-emacs-bits/ here]
+
+== Things I am interested in doing ==
+
+* getting emacs to talk to dbus for things like IM alerts
+** I use bitlbee/rcirc for all my im... but it's not good notification wise
+* improving emacs as a mail client
+* xml edting
+* python editing
+ 
+----
+CategoryHomepage
+
+

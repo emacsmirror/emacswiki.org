@@ -1,0 +1,12 @@
+This will replace any email address you enter like foo@bar.org ==> foo at bar.org
+
+     (add-hook 'erc-send-pre-hook 
+	  (lambda (s1) 
+              (setq str 
+	         (replace-regexp-in-string 
+                       "\\([^ \t\n]+\\)@\\([^ \t\n]+\\)" 
+                       "\\1 at \\2" 
+                       s1))))
+
+----
+[[ERC]]

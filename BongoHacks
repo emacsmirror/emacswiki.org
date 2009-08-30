@@ -1,0 +1,109 @@
+I did not want to pollute the main [[Bongo]] page, so...
+
+This page contains some hacks to make this nice player even better.
+
+== Add files from dired ==
+
+<pre>
+(defun my-bongo-add-dired-files ()
+  "Add marked files to Bongo library"
+  (interactive)
+  (let (file-point file (files nil))
+    (dired-map-over-marks
+     (setq file-point (dired-move-to-filename)
+           file (dired-get-filename)
+           files (append files (list file)))
+     nil t)
+    (save-excursion
+      ;; Is this always safe or can there be more than
+      ;; one Bongo buffer?
+      (set-buffer bongo-default-library-buffer-name)
+      (mapc 'bongo-insert-file files))))
+</pre>
+
+== Tags using FileProps ==
+
+If you use FileProps, you can use it to tag your songs in various ways. Here are some examples:
+
+<pre>
+(require 'file-props)
+
+;; I download a lot of mixes from DjMixes2k and want to
+;; mark the ones I like really well.
+
+(defun my-bongo-good-mix ()
+  "Mark Bongo library file as a good mix."
+  (interactive)
+  (file-props-add-tags (bongo-line-file-name) '("good-mix")))
+
+(defun my-bongo-add-tag ()
+  "Add file tag for current file in Bongo library."
+  (interactive)
+  (file-props-add-tags (bongo-line-file-name) (file-props-read-tags)))
+
+(define-key bongo-mode-map (kbd "tg") 'my-bongo-good-mix)
+(define-key bongo-mode-map (kbd "ta") 'my-bongo-add-tag)
+
+;;; TODO
+;; A nice command that uses the file properties to add files 
+;; to the Bongo library. Something like `my-bongo-add-dired-files'
+;; will probably do.
+
+</pre>
+
+== Stop after playing a video ==
+
+Usually, after one track finishes playing, Bongo immediately plays the next track (`C-u C-c C-s' disables this for all tracks).  This can be annoying especially when playing videos, as you will not have a chance to stop the playback because Bongo keeps bringing up new videos.
+
+The following hack makes Bongo stop playback after having played a video.
+
+<pre>
+(add-hook 'bongo-player-started-hook
+          (lambda ()
+            (with-bongo-playlist-buffer
+              (when (bongo-video-file-name-p
+                     (bongo-player-get bongo-player 'file-name))
+                (setq bongo-next-action 'bongo-stop)))))
+</pre>
+
+== VLC not playing next track  ==
+Discovered that VLC was not stopping after each track and thus prevented the next track in playlist from playing.
+Use this...
+<pre>
+(setq bongo-vlc-extra-arguments '("--play-and-exit"))
+</pre>
+
+"I've added this to the official Bongo repository, so if you pull you should be able to remove that line." - Daniel Brockman 13.07.09
+
+== Random playback mode follows marked tracks ==
+
+To make random playback mode follow marked tracks, i.e., to pick only marked tracks when they are available, use the following.
+
+<pre>
+(defadvice bongo-randomly-playable-track-line-p (after random-follows-marks
+                                                       (&optional point)
+                                                       activate)
+  (setq ad-return-value (and ad-return-value
+                             (or (null bongo-marked-track-line-markers)
+                                 (bongo-marked-track-line-p point)))))
+
+</pre>
+
+== Dealing with redirecting HTTP streams ==
+
+Here's a hack (courtesy of DanielJensen) for listening to HTTP streams that redirect you (like those at live365.com), because VLC ignores it. You need curl.
+
+<pre>
+(defadvice bongo-start-vlc-player (before redirect-vlc-uris
+                                    (file-name &optional extra-arguments)
+                                    activate)
+  "Use curl to pick up redirect locations in HTTP streams."
+  (when (string-match "\\`http://www\\.live365\\.com" file-name)
+    (let ((http-header (shell-command-to-string
+                        (format "curl -I -s '%s'" file-name))))
+      (when (string-match "^Location: \\(.*\\)$" http-header)
+        (setq file-name (match-string 1 http-header))))))
+</pre>
+
+----
+[[Bongo]] MusicPlayers

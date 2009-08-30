@@ -1,0 +1,50 @@
+Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
+
+= mumamo.el =
+
+MuMaMo (short for multiple major modes) is written for Emacs 22. I believe this is the only one that can support NxmlMode/NxhtmlMode. It is distributed as part of [NxhtmlMode nXhtml]; thus if you do web development and need to mix HTML+CSS+JavaScript, Java+HTML (JSP), PHP, ... then [NxhtmlMode nXhtml] is an easy option. It is centered around web development modes and it is not clear how to add custom non-XHTML-ish multimodes, eg. C with embedded SQL.
+
+[new]
+Why do you think MuMaMo is centered around web development? nXhtml is, but I can't remember that there is anything in MuMaMo that is that.
+
+Please explain what you found unclear about how to add for example C with embedded SQL?
+
+= mmm-mode.el =
+
+Multiple Major Modes by MichaelAbrahamShulman.
+This one is used on the OracleProC page.
+It seems to have been the method of choice for combining major modes, but the latest version is now from 2004.
+You can find description of using it, together with psgml-mode, php-mode, javascript-mode and css-mode to edit HTML files at HtmlModeDeluxe.
+
+* http://mmm-mode.sourceforge.net/
+
+There has been some attempts to get it working with NxmlMode for XHTML, see NxmlModeForXHTML.
+
+= multi-mode.el =
+
+Multi Mode is an implementation of the approach referred to in Emacs' TODO.
+It probably only works in Emacs 21.
+
+- I have been using it with Emacs 23 with no issue. It also has 2009 in its copyright notice, so it seems like it is still being updated. 
+
+* http://www.loveshack.ukfsn.org/emacs/multi-mode.el
+
+See also its uses in noweb.el and haskell-latex.el in the same directory.
+
+= mmm.el =
+
+Multiple Major Modes for XEmacs by JerryChen.
+
+= two-mode-mode.el =
+
+Two Mode Mode by DavidWelton.
+This one is used for one of the solutions on the PhpMode page.
+It seems to be very easy to use.
+Just specify the start and end regular expressions for the second mode.
+
+* http://www.dedasys.com/freesoftware/files/two-mode-mode.el
+
+See EmacsLispAndLaTeX for an example.
+
+----
+CategoryCode

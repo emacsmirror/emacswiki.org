@@ -1,0 +1,16 @@
+From its documentation:
+
+: //Hyperbole (pronounced Hi-per-bo-lee) is an open, efficient, and programmable hypertextual information management and outliner system.//
+
+The project page is http://sourceforge.net/projects/hyperbole.  There is also an older version available from the FSF at http://directory.fsf.org/hyperbole.html.
+
+[new]
+I would like to see a comparison between the various Information Management tools and [[Hyperbole]].  Could anyone comment on this?
+
+[new]
+Am I right if I assume that the major components of Hyperbole are something similar to outline minor mode + the ability to create links to different places (a position in a file for example)?
+
+In that case I think that OrgMode can do the same things very good. And that already comes with Emacs 22.
+
+----
+CategoryPersonalInformationManager

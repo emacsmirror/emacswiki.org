@@ -1,0 +1,904 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - File-Name Completion Tips]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Customizing Key Bindings]] ||
+
+----
+
+You can customize any of the key bindings that '''Icicles''' uses -- see
+[[Icicles - Customizing Key Bindings]].  I recommend that you first try
+using the default bindings, however.  There are many '''Icicles''' key bindings (in particular in the minibuffer), but they are grouped
+into a few natural sets, to help you remember them.
+
+
+[:GlobalBindings]
+== Global Bindings ==
+
+'''Icicles''' ''does not change your global [[key binding]]s''. It changes some
+[[minibuffer]] bindings, and it adds some bindings for ''Icicle'' mode,
+but it does not change your global bindings.
+
+There are two exceptions:
+
+'''1.''' In ''Icicle'' mode, various '''Icicles''' [[command]]s
+are added to [[menu bar]] menus.  File commands are added to the '''File'''
+menu, and so on, under an '''Icicles''' submenu.  Those items that do not belong naturally to any
+existing menu-bar menu are added to a new top-level '''Icicles''' menu and to the
+existing '''Minibuf''' menu.  Whatever the menu they appear in, however,
+'''Icicles''' menu items are visible only when ''Icicle'' mode is active.
+
+If you do not want '''Icicles''' to add items to menus besides '''Minibuf'''
+and '''Icicles''', then set [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-touche-pas-aux-menus|icicle-touche-pas-aux-menus]]</tt>'''' to
+non-`nil'.  See [[Icicles - Customizing Key Bindings]].
+
+'''2.''' '''Icicles''' adds the [[key]] `S-TAB' (bound to `icicle-complete-keys')
+to each existing [[keymap]].  This allows you
+to [[completion|complete]] keys in any keymap.  For technical reasons, these bindings
+are not part of `icicle-mode-map'; other keymaps are enhanced to
+include this binding.  However, this '''Icicles''' binding of `S-TAB'
+never replaces any existing binding of `S-TAB'.   See [[Icicles - Key Completion]] for
+more information about this use of `S-TAB'.
+
+(The documentation always refers to the key that performs key
+completion as `S-TAB'.  Actually, it is `S-TAB' only by default.
+You can [[Customize]] it, using option '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>''''.)
+
+
+
+
+
+
+
+[:icicle-top-level-key-bindings]
+[:IcicleModeBindings]
+== Icicle-Mode Bindings ==
+
+Most ''Icicle''-mode bindings are in the '''Icicles''' menu-bar menu.  In
+addition, option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''' causes
+'''Icicles''' to bind some keyboard keys to some top-level '''Icicles'''
+commands.  Some of these take the place of similar,
+global bindings whenever you are in ''Icicle'' mode.  Typically, these
+top-level commands are '''Icicles''' [[multi-command]] versions of the vanilla Emacs commands.
+
+You can customize option `icicle-top-level-key-bindings' to
+specify the top-level '''Icicles''' commands that you want to bind, and
+the keys you want to bind them to. 
+
+Here is a screenshot of part of the Customize buffer for option `icicle-top-level-key-bindings', to give you an idea. You use '''INS''' to insert another binding and '''DEL''' to delete a binding. You type the key sequence you want in the '''Key''' field and its command in the '''Command''' field. As an alternative to specifying a key, you can choose '''Command to remap''' in the '''Value Menu''' and then enter the command you want to remap.
+
+[[image:IciclesCustomizingKeys]]
+
+
+With the default value of `icicle-top-level-key-bindings',
+'''Icicles''' makes the following ''Icicle''-mode bindings:
+
+
+[:icicle-occur]
+[:icicle-imenu]
+[:icicle-search]
+[:icicle-compilation-search]
+[:icicle-comint-search]
+[:icicle-comint-command]
+[:icicle-complete-thesaurus-entry]
+[:icicle-execute-menu-command]
+[:icicle-execute-extended-command]
+[:icicle-describe-option-of-type]
+[:icicle-command-abbrev]
+[:icicle-execute-named-keyboard-macro]
+[:icicle-kmacro]
+[:icicle-switch-to-from-minibuffer]
+* '''`##C-c '##'''' -- [[Icicles - Search Commands, Overview|`icicle-occur']]
+* '''`##C-c =##'''' -- [[Icicles - Other Search Commands#IciclesImenu|`icicle-imenu']]
+* '''`##C-c `##'''' -- [[Icicles - Search Commands, Overview|`icicle-search']]
+* '''`##C-c `##'''' -- [[Icicles - Other Search Commands#IciclesCompileOrGrep|`icicle-compilation-search']] (in `*grep*' etc.)
+* '''`##C-c `##'''' -- [[Icicles - Other Search Commands#IciclesShell|`icicle-comint-search']] (in `*shell*' etc.)
+* '''`C-c TAB'''' -- [[Icicles - Other Search Commands#IciclesShell|`icicle-comint-command']] (in `*shell*' etc.)
+* '''`##C-c /##'''' -- [[Icicles - Completion in Other Buffers#ThesaurusCompletion|`icicle-complete-thesaurus-entry']]
+* '''`C-h C-o'''' -- [[Icicles - Multi-Completions|`icicle-describe-option-of-type']]
+* '''`##ESC M-x##'''', '''`##M-`##'''' -- [[LaCarte|`lacarte-execute-menu-command']]
+* '''`M-x'''' -- [[Icicles - Multi M-x|`icicle-execute-extended-command']]
+* '''`C-x SPC'''' -- [[Icicles - Multi M-x#icicle-command-abbrev|`icicle-command-abbrev']]
+* '''`C-x M-e'''' -- `icicle-execute-named-keyboard-macro'
+* '''`S-f4'''' -- `icicle-kmacro'
+* '''`pause'''' -- [[Icicles - Moving Between the Minibuffer and Other Buffers|`icicle-switch-to/from-minibuffer']]
+
+[:icicle-complete-keys]
+'''`S-TAB'''' is bound, in effect, to [[Icicles - Key Completion|`icicle-complete-keys']], which
+completes a [[key sequence]].  [[prefix key|Prefix keys]] followed by `S-TAB' are
+also bound to `icicle-complete-keys'.  (`S-TAB' is effectively
+bound to other commands in [[buffer]] `*Completions*' and in the
+minibuffer.)
+
+(The documentation always refers to the key that performs key
+completion as `S-TAB'.  Actually, it is `S-TAB' only by default.
+You can customize it, using option '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>''''.)
+
+When `icicle-top-level-key-bindings' has its default value, '''Icicles''' also substitutes all of the key bindings for some standard Emacs
+commands.  For example, '''Icicles''' binds `icicle-buffer' to ''all'' keys that
+are globally bound outside ''Icicle'' mode to standard command `switch-to-buffer'.  By default, the
+following standard commands have their bindings co-opted this way
+by '''Icicles''' commands:
+
+[:icicle-abort-recursive-edit]
+[:icicle-bookmark-cmd]
+[:icicle-buffer]
+[:icicle-buffer-other-window]
+[:icicle-dabbrev-completion]
+[:icicle-delete-window]
+[:icicle-exchange-point-and-mark]
+[:lacarte-execute-extended-command]
+[:icicle-file]
+[:icicle-file-other-window]
+[:icicle-find-tag]
+[:icicle-find-first-tag-other-window]
+[:icicle-goto-global-marker-or-pop-global-mark]
+[:icicle-goto-marker-or-set-mark-command]
+[:icicle-Info-goto-node]
+[:icicle-Info-index]
+[:icicle-Info-menu]
+[:icicle-kill-buffer]
+[:icicle-lisp-complete-symbol]
+[:icicle-pop-tag-mark]
+[:icicle-pp-eval-expression]
+[:icicle-select-frame]
+[:icicle-select-window-or-frame]
+[:icicle-where-is]
+[:icicle-yank-maybe-completing]
+
+ Standard Command                   Icicles Command
+
+ `abort-recursive-edit'.............`icicle-abort-recursive-edit'
+ `bookmark-set'.....................`icicle-bookmark-cmd'
+ `dabbrev-completion'...............`icicle-dabbrev-completion'
+ `delete-window'....................`icicle-delete-window'
+ `eval-expression'..................`icicle-pp-eval-expression'
+ `exchange-point-and-mark'..........`icicle-exchange-point-and-mark'
+ `execute-extended-command'.........`icicle-execute-extended-command'
+ `find-file'........................`icicle-file'
+ `find-file-other-window'...........`icicle-file-other-window'
+ `find-tag'.........................`icicle-find-tag'
+ `find-tag-other-window'............`icicle-find-first-tag-other-window'
+ `Info-goto-node'...................`icicle-Info-goto-node'
+ `Info-index'.......................`icicle-Info-index'
+ `Info-menu'........................`icicle-Info-menu'
+ `kill-buffer'......................`icicle-kill-buffer'
+ `lisp-complete-symbol'.............`icicle-lisp-complete-symbol'
+ `other-frame'......................`icicle-select-frame'
+ `other-window'.....................`icicle-select-window-or-frame'
+ `pop-global-mark'..................`icicle-goto-global-marker-or-pop-global-mark'
+ `pop-tag-mark'.....................`icicle-pop-tag-mark'
+ `pp-eval-expression'...............`icicle-pp-eval-expression'
+ `set-mark-command'.................`icicle-goto-marker-or-set-mark-command'
+ `switch-to-buffer'.................`icicle-buffer'
+ `switch-to-buffer-other-window'....`icicle-buffer-other-window'
+ `where-is'.........................`icicle-where-is'
+ `yank'.............................`icicle-yank-maybe-completing'
+
+Actually, by default, '''Icicles''' binds `icicle-yank-maybe-completing'
+to whatever the value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-yank-function|icicle-yank-function]]</tt>'''' is.  By
+default, this value is `yank'.
+
+Here are some other '''Icicles''' commands that you might want to bind
+to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to menu items):
+
+[:clear-option]
+[:icicle-add-buffer-candidate]
+[:icicle-add-buffer-config]
+[:icicle-add-entry-to-saved-completion-set]
+[:icicle-add-update-saved-completion-set]
+[:icicle-apply]
+[:icicle-apropos]
+[:icicle-apropos-command]
+[:icicle-apropos-variable]
+[:icicle-apropos-zippy]
+[:icicle-bookmark]
+[:icicle-buffer-config]
+[:icicle-buffer-list]
+[:icicle-clear-history]
+[:icicle-color-theme]
+[:icicle-customize-icicles-group]
+[:icicle-delete-file]
+[:icicle-delete-windows]
+[:icicle-doc]
+[:icicle-font]
+[:icicle-frame-bg]
+[:icicle-frame-fg]
+[:icicle-fundoc]
+[:icicle-imenu]
+[:icicle-completing-yank]
+[:icicle-insert-thesaurus-entry]
+[:icicle-keyword-list]
+[:icicle-locate-file]
+[:icicle-minibuffer-help]
+[:icicle-recent-file]
+[:icicle-recompute-shell-command-candidates]
+[:icicle-remove-buffer-candidate]
+[:icicle-remove-buffer-config]
+[:icicle-remove-entry-from-saved-completion-set]
+[:icicle-remove-file-from-recentf-list]
+[:icicle-remove-saved-completion-set]
+[:icicle-reset-option-to-nil]
+[:icicle-save-string-to-variable]
+[:icicle-select-window]
+[:icicle-set-option-to-t]
+[:icicle-toggle-option]
+[:icicle-vardoc]
+[:toggle]
+
+* `clear-option'  (alias) -- Set value of binary option to `nil'
+* `icicle-add-buffer-candidate' -- Add buffer to those always shown
+* `icicle-add-buffer-config' -- Add to `icicle-buffer-configs'
+* `icicle-add-entry-to-saved-completion-set' -- Add a completion candidate to a [[Icicles - Candidate Sets|saved set]]
+* `icicle-add/update-saved-completion-set' -- Add a set to `icicle-saved-completion-sets'
+* `icicle-apply'        -- Apply function to [[alist]] items
+* `icicle-apropos'     --  Like `apropos', but shows matches
+* `icicle-apropos-command' -- Enhanced `apropos-command'
+* `icicle-apropos-variable' -- Enhanced `apropos-variable'
+* `icicle-apropos-zippy' -- Show matching Zippy quotes
+* `icicle-bookmark'     -- Jump to a [[BookMarks|bookmark]]
+* `icicle-buffer-config' -- Pick `icicle-buffer' options
+* `icicle-buffer-list'  -- Choose a [[list]] of buffer names
+* `icicle-clear-history' -- Clear minibuffer histories
+* `icicle-color-theme'  -- Change color theme
+* `icicle-customize-icicles-group' -- Customize '''Icicles''' options and [[face]]s
+* `icicle-delete-file'  -- Delete a file or directory
+* `icicle-delete-windows' -- Delete all [[window]]s for a buffer
+* `icicle-doc'          -- Display doc of function, [[variable]], or face
+* `icicle-font'         -- Change the [[frame]] font
+* `icicle-frame-bg'     -- Change the frame background color
+* `icicle-frame-fg'     -- Change the frame foreground color
+* `icicle-fundoc'       -- Display the doc of a function
+* `icicle-imenu'        -- Navigate among [[ImenuMode|Imenu]] entries
+* `icicle-completing-yank' -- Yank text using completion
+* `icicle-insert-thesaurus-entry' -- Insert a thesaurus entry
+* `icicle-keyword-list' -- Choose a list of keywords ([[regexp]]s)
+* `icicle-locate-file'  -- Open a file located anywhere
+* `icicle-minibuffer-help' -- Show '''Icicles''' minibuffer help
+* `icicle-recent-file'  -- Open a recently used file
+* `icicle-recompute-shell-command-candidates' -- Update commands from search path
+* `icicle-remove-buffer-candidate' -- Remove buffer from those always shown
+* `icicle-remove-buffer-config' -- Remove from `icicle-buffer-configs'
+* `icicle-remove-entry-from-saved-completion-set' -- Remove a candidate from a saved set
+* `icicle-remove-file-from-recentf-list' -- Remove files from recent-files list
+* `icicle-remove-saved-completion-set' -- Remove a set from `icicle-saved-completion-sets'
+* `icicle-reset-option-to-nil' --  Set value of binary option to `nil'
+* `icicle-save-string-to-variable' -- Save text for use with `C-='
+* `icicle-select-window' -- Select a window by its buffer name
+* `icicle-set-option-to-t' -- Set value of binary option to `t'
+* `icicle-toggle-option' -- Toggle the value of a binary option
+* `icicle-vardoc'       -- Display the doc of a variable
+* `toggle' (alias)      -- Toggle the value of a binary option
+
+
+
+
+
+
+
+[:MinibufferBindings]
+== Minibuffer Bindings ==
+
+There are many key bindings available during completion.  Most of
+these key sequences are bound in the minibuffer completion
+keymaps, but some are bound in the `*Completions*' buffer keymap.
+In addition, clicking '''`C-mouse-3'''' on a completion candidate in buffer
+`*Completions*' pops up a menu of available commands.
+
+Some of these menu commands are applicable to the completion you
+click; others apply to the current state of completion or to the
+complete set of completion candidates.  The associated key
+bindings are indicated in the menu items, so this can be a good
+way to learn minibuffer and `*Completions*' bindings.
+
+The following key bindings are made for the minibuffer completion
+keymaps.  They are in effect whenever you are using the minibuffer
+for input with completion (e.g. `completing-read',
+`read-file-name', `M-x').
+
+[:icicle-minibuffer-help]
+* '''`##C-?##'''' -- `icicle-minibuffer-help': Pop up a `*Help*' buffer with
+information on using the minibuffer in ''Icicle'' mode.  During completion, this includes information similar to what you are reading now.
+
+[:icicle-previous-prefix-candidate]
+[:icicle-next-prefix-candidate]
+* '''`down'''', '''`up'''' -- `icicle-next-apropos-candidate', `icicle-next-candidate-per-mode' (modal),
+`icicle-previous-apropos-candidate', `icicle-previous-candidate-per-mode' (modal), which [[Icicles - Cycling Completions|cycle]] candidate [[prefix completion]]s.
+
+[:icicle-next-apropos-candidate]
+[:icicle-previous-apropos-candidate]
+* '''`next'''', '''`prior'''' -- `icicle-next-apropos-candidate', 
+`icicle-previous-apropos-candidate', which cycle candidate [[apropos completion]]s.
+
+:: (The documentation always refers to the keys
+that cycle completion candidates as `down',
+`up', `next', and `prior'.  Actually, these are
+the cycling keys only by default.  You can
+customize the cycling keys, using options
+'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-keys|icicle-prefix-cycle-next-keys]]</tt>'''',
+'''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|icicle-modal-cycle-down-keys]]</tt>'''' (modal),
+'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-keys|icicle-prefix-cycle-previous-keys]]</tt>'''',
+'''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-keys|icicle-modal-cycle-up-keys]]</tt>'''' (modal),
+'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-keys|icicle-apropos-cycle-next-keys]]</tt>'''', and
+'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|icicle-apropos-cycle-previous-keys]]</tt>''''.)
+
+* Keys bound globally to commands that perform simple text
+insertion, deletion, and transposition operations -- commands
+such as `self-insert-command' -- are bound to '''Icicles''' versions of
+those commands that do the same thing but also provide apropos
+icompletion.  This includes keys such as `C-d',
+`C-k', and `C-w' (and lots more).  See [[Icicles - Icompletion]].
+
+[:icicle-switch-to-from-minibuffer]
+* '''`pause''''  -- `icicle-switch-to/from-minibuffer': Move [[cursor]] to the buffer from which the minibuffer was activated.
+
+[:icicle-switch-to-Completions-buf]
+* '''`C-insert'''' -- `icicle-switch-to-Completions-buf': Move cursor to the
+current candidate in buffer `*Completions*'.
+
+[:icicle-narrow-candidates]
+* '''`M-*'''' -- `icicle-narrow-candidates': Narrow the set of completion candidates using another input regexp.
+
+[:icicle-prefix-word-complete]
+* '''`M-SPC'''' -- `icicle-prefix-word-complete': Complete current input
+in minibuffer, as a prefix, a single word at a time.
+This replaces `minibuffer-complete-word'.    In fact,
+it is the keys in `icicle-word-completion-keys' that
+are bound to this command; `M-SPC' is by default.
+
+[:icicle-apropos-complete-and-narrow]
+* '''`S-SPC'''' -- `icicle-apropos-complete-and-narrow': Same as
+`S-TAB' followed by `M-*'.
+
+[:icicle-prefix-complete]
+* '''`TAB'''' -- `icicle-prefix-complete': Complete current input in minibuffer, as a prefix.  If there is more than one [[prefix completion]] candidate,
+display them in buffer `*Completions*', highlighting the
+common prefix. This replaces `minibuffer-complete'.  (The documentation always refers to the key that does
+ this as `TAB'.  Actually, it is only `TAB' by
+default.  You can customize it, using option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-keys|icicle-prefix-complete-keys]]</tt>''''.)
+
+[:icicle-apropos-complete]
+[:icicle-previous-candidate-keys]
+* '''`S-TAB'''' -- In the minibuffer: `icicle-apropos-complete' -- like `TAB', but use [[apropos completion]].   In buffer `*Completions*': `icicle-move-to-previous-completion' -- move backwards among candidates. (The documentation always refers to the keys that do these things as `S-TAB'.  Actually, they are only `S-TAB' by
+default.  You can customize the keys, using options
+'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-previous-candidate-keys|icicle-previous-candidate-keys]]</tt>''''.)
+
+[:icicle-prefix-complete-no-display]
+* '''`C-M-TAB'''' -- `icicle-prefix-complete-no-display': Like `TAB', but
+does not display candidates in `*Completions*'.  (The documentation always refers to the key that does
+this as `C-M-TAB'.  Actually, it is only `C-M-TAB' by
+default.  You can customize it, using option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-no-display-keys|icicle-prefix-complete-no-display-keys]]</tt>''''.)
+
+[:icicle-apropos-complete-no-display]
+* '''`C-M-S-TAB'''' -- `icicle-apropos-complete-no-display': Like
+`S-TAB', but does not display candidates in `*Completions*'.  (The documentation always refers to the key that does
+this as `C-M-S-TAB'.  Actually, it is only
+`C-M-S-TAB' by default.  You can customize it, using
+option '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-no-display-keys|icicle-apropos-complete-no-display-keys]]</tt>''''.)
+
+[:icicle-save-predicate-to-variable]
+* '''`##C-M-&##''''  -- `icicle-save-predicate-to-variable': Save the current
+predicate used for completion to a variable.
+
+[:icicle-remove-candidate]
+* '''`delete'''' -- `icicle-remove-candidate': Remove the current candidate from consideration.
+
+[:icicle-mouse-remove-candidate]
+* '''`S-mouse-2'''' -- `icicle-mouse-remove-candidate': Same as `delete' key.
+
+[:icicle-insert-key-description]
+* '''`M-q'''' -- `icicle-insert-key-description': Insert the textual
+representation of a key sequence, during [[Icicles - Key Completion|key completion]].
+
+[:icicle-insert-history-element]
+* '''`M-o'''' -- `icicle-insert-history-element': Invoke completion to insert a previously entered input in the minibuffer.
+
+[:icicle-read+insert-file-name]
+* '''`C-M-S-f'''' -- `##icicle-read+insert-file-name##': Invoke completion to
+insert a file name in the minibuffer.
+
+[:icicle-completing-read+insert]
+* '''`C-M-S-c'''' -- `##icicle-completing-read+insert##': Invoke completion
+to insert something other than a file name (not
+always available).
+(`C-M-S-f' and `C-M-S-c' are the default values for
+the keys that invoke completion on demand.  You can
+customize the keys to use, using options
+'''`<tt>[[Icicles - Customization and General Tips#icicle-read+insert-file-name-keys|icicle-read+insert-file-name-keys]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-completing-read+insert-keys|icicle-completing-read+insert-keys]]</tt>''''.)
+
+
+In '''Icicles''', multi-line completion candidates are not uncommon.
+You can move up and down minibuffer lines with `C-p' and `C-n',
+and you can use the following keys to move among [[line]] beginnings
+and ends:
+
+* '''`C-a'''', '''`C-e'''' -- `##icicle-beginning-of-line+##', `##icicle-end-of-line+##': Like normal `C-a', `C-e', but repeating goes to the previous or next line.
+
+If you use libraries <tt>[[fit-frame.el]]</tt> and <tt>[[oneonone.el]]</tt> with a standalone minibuffer frame (non-`nil' `1on1-minibuffer-frame-flag'), and if option `1on1-fit-minibuffer-frame-flag' is non-`nil', then the minibuffer frame is automatically resized to fit its content as you edit that
+content.  (Options `1on1-fit-minibuffer-frame-max-height' and `1on1-fit-minibuffer-frame-max-height-percent' define the maximum height for this.)
+
+If, in addition, you bind `1on1-fit-minibuffer-frame' to a key,
+then you can use that key repeatedly to increase the height by one
+line, even beyond the maximum.  Library <tt>[[setup-keys.el]]</tt> binds this
+to `C-o'.
+
+(If you do not use a separate minibuffer frame, then you will
+likely want to set standard option `resize-mini-windows' to `t', not
+to `grow-only', at least while in ''Icicle'' mode.)
+
+[:icicle-insert-list-join-string]
+* '''`C-M-j'''' -- `icicle-insert-list-join-string': Insert `icicle-list-join-string'. See also [[Icicles - Multi-Completions]].
+
+[:icicle-insert-dot-command]
+[:icicle-toggle-dot]
+You can insert a single '''Icicles''' [[multi-line dot]] using '''`##C-u .##'''', or
+by turning on this dot magic generally, using '''`##C-M-.##'''':
+* '''`##.##'''' -- `icicle-insert-dot-command'
+* '''`##C-M-.##'''' -- `icicle-toggle-dot'
+
+If option `<tt>[[Icicles - Customization and General Tips#icicle-cycling-respects-completion-mode|icicle-cycling-respects-completion-mode]]</tt>' is non-`nil', then you can use the keys that are defined by the following options for
+both prefix and apropos completion (as well as for input-history
+traversal):
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-keys|icicle-modal-cycle-up-keys]]</tt>''''
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|icicle-modal-cycle-down-keys]]</tt>''''
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-action-keys|icicle-modal-cycle-up-action-keys]]</tt>''''
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-action-keys|icicle-modal-cycle-down-action-keys]]</tt>''''
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-alt-action-keys|icicle-modal-cycle-up-alt-action-keys]]</tt>''''
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-alt-action-keys|icicle-modal-cycle-down-alt-action-keys]]</tt>''''
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-help-keys|icicle-modal-cycle-up-help-keys]]</tt>''''
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-help-keys|icicle-modal-cycle-down-help-keys]]</tt>''''
+
+By default, the keys defined for these options are, respectively, `up', `down', `C-up', `C-down', `C-S-up', `C-S-down', `C-M-up', and `C-M-down'.  Whether one of the keys is used for prefix or apropos completion at a given time
+depends on the current completion mode, which is determined by
+which of `TAB' and `S-TAB' was used last.
+
+In vanilla Emacs, the following keys have a special purpose during
+input completion, but in '''Icicles''' they simply insert the character
+typed -- they are ''self-inserting''.  This is because (1) there are
+better ways to do what vanilla Emacs uses these keys for and (2)
+it is useful to be able to insert these characters without first
+typing `C-q' to quote them.
+
+* '''`##?##''''   -- see also [[Icicles - Special Characters in Input Patterns]]
+* '''`SPC'''' (space)
+
+[:icicle-insert-newline-in-minibuffer]
+* '''`C-j'''' (newline) -- see also `C-o', above, and [[Icicles - Multi-Completions]]
+
+
+
+
+
+The following minibuffer bindings are made to clear minibuffer
+input, making them handy for editing and removing completions
+(e.g. default or initial values) in the minibuffer.
+
+[:icicle-erase-minibuffer-or-history-element]
+[:icicle-erase-minibuffer]
+
+* '''`M-k'''' -- `icicle-erase-minibuffer-or-history-element'
+* '''`M-S-backspace'''', '''`M-S-delete'''' -- `icicle-erase-minibuffer'
+
+`M-k' has an alternative behavior when you are cycling minibuffer history
+items: it deletes the current item from the history.
+
+
+
+
+
+During (absolute or relative) file-name completion, the following
+minibuffer binding navigates up the directory hierarchy.  It
+removes the last directory component (and any partial file name)
+from your minibuffer input.
+
+* '''`C-backspace'''' -- `icicle-up-directory'
+
+
+
+
+The following minibuffer binding moves the [[cursor]] to the start of
+the part of your input, if any, that is highlighted because it does not match any
+completion candidate (see option '''`<tt>[[Icicles - Customization and General Tips#icicle-highlight-input-completion-failure|icicle-highlight-input-completion-failure]]</tt>'''').  Repeating this
+command kills the rest of the line, removing the highlighted
+mismatched input.
+
+[:icicle-goto-kill-failed-input]
+
+* '''`C-M-l'''' -- `icicle-goto/kill-failed-input'
+
+The remaining input matches at least one candidate.
+
+
+
+
+
+The following minibuffer bindings can be used to get rid of a
+completion inserted during cycling, and retrieve what you last
+typed during completion or any previous completion inputs:
+
+[:icicle-retrieve-previous-input]
+[:icicle-retrieve-next-input]
+
+* '''`C-l'''' -- `icicle-retrieve-previous-input'
+* '''`C-S-l'''' ('''`C-L'''') -- `icicle-retrieve-next-input'
+
+You can use these to cycle among and reuse inputs that you typed
+during completion but ''did not enter''.  This '''completion input''' is not
+recorded in the standard input histories -- they record only input
+that you have entered with `RET'. See [[Icicles - History Enhancements]].
+
+For example, suppose that you used `C-h v hook' to examine
+various hook variables, and you did this using`C-next' to display
+their documentation.  If you finished the command by just typing
+`C-g', then your input (`hook') was never really entered, so it is
+not available via the minibuffer history (`M-p').  You can
+retrieve it with `C-l', to use it again, in your next command.  User option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-C-l-uses-completion-flag|icicle-C-l-uses-completion-flag]]</tt>'''' controls the behavior of `C-l'
+and `##C-##'''##L##''''; if non-`nil', then, instead of cycling inputs, these
+commands let you access previous inputs using completion.
+
+
+
+
+
+You of course have the standard access to the minibuffer history,
+via `M-p', `M-n', `M-r', and `M-s'.  In addition to these, the
+following minibuffer bindings let you use ''apropos completion'' on
+the current minibuffer history list.  For explanation, see [[Icicles - History Enhancements]].
+
+[:icicle-history]
+[:icicle-keep-only-past-inputs]
+
+* '''`M-h'''' -- `icicle-history'
+* '''`M-pause'''' -- `icicle-keep-only-past-inputs'
+
+
+
+Minibuffer binding '''`C-M-pause'''' lets you use a different minibuffer
+history during the current input reading with completion.
+Normally, you are prompted for the history to use.  Starting with
+Emacs 23, if option '''`<tt>[[Icicles - Customization and General Tips#icicle-populate-interactive-history-flag|icicle-populate-interactive-history-flag]]</tt>'''' is
+non-`nil', then during command, abbrev, and keyboard-macro
+completion, `C-M-pause' completes your input against the history
+of all commands that were invoked interactively in any way,
+'''`icicle-interactive-history''''.
+
+
+The following minibuffer bindings let you act on candidate
+completions.  For explanation, see [[Icicles - Multi-Commands]], [[Icicles - More About Multi-Commands]], and [[Icicles - Choose All Candidates]], and [[Icicles - Object-Action Interaction]].
+
+[:icicle-all-candidates-action]
+[:icicle-all-candidates-list-action]
+[:icicle-candidate-action]
+[:icicle-candidate-read-fn-invoke]
+[:icicle-delete-candidate-object]
+[:icicle-mouse-candidate-action]
+[:icicle-mouse-candidate-read-fn-invoke]
+[:icicle-mouse-yank-secondary]
+[:icicle-next-apropos-candidate-action]
+[:icicle-next-candidate-per-mode-action]
+[:icicle-next-prefix-candidate-action]
+[:icicle-previous-candidate-per-mode-action]
+[:icicle-previous-prefix-candidate-action]
+[:icicle-previous-apropos-candidate-action]
+
+* '''`C-RET'''' -- `icicle-candidate-action': current candidate
+* '''`C-mouse-2'''' -- `icicle-mouse-candidate-action': clicked candidate
+* '''`C-up''''    -- `icicle-previous-prefix-candidate-action'
+* '''`C-up''''    -- `icicle-previous-candidate-per-mode-action' (modal)
+* '''`C-down''''  -- `icicle-next-prefix-candidate-action'
+* '''`C-down''''  -- `icicle-next-candidate-per-mode-action' (modal)
+* '''`C-prior''''  -- `icicle-previous-apropos-candidate-action'
+* '''`C-next''''  -- `icicle-next-apropos-candidate-action'
+* '''`##C-!##'''' -- `icicle-all-candidates-action': each candidate, in turn
+* '''`##M-!##'''' -- `icicle-all-candidates-list-action': all candidates, as a list
+* '''`M-RET'''' -- `icicle-candidate-read-fn-invoke': apply a function to current candidate
+* '''`M-mouse-2'''' -- `icicle-mouse-yank-secondary' (in minibuffer)
+* '''`M-mouse-2'''' -- `icicle-mouse-candidate-read-fn-invoke': apply a function to clicked candidate (in `*Completions*')
+* '''`S-delete'''' -- `icicle-delete-candidate-object': delete object named by candidate
+
+(Actually, some of these are only default key
+ bindings.  You can customize the keys to use for
+`previous' and `next' actions.)
+
+Except as noted, the bindings for `icicle-mouse-*' are actually in the `*Completions*' buffer.
+
+
+
+
+
+
+The following minibuffer bindings provide help on candidate
+completions.  For explanation, see [[Icicles - Help on Candidates]] and [[Icicles - Multi-Commands]].
+
+[:icicle-help-on-candidate]
+[:icicle-mouse-help-on-candidate]
+[:icicle-help-on-previous-prefix-candidate]
+[:icicle-help-on-next-prefix-candidate]
+[:icicle-help-on-previous-apropos-candidate]
+[:icicle-help-on-next-apropos-candidate]
+
+* '''`C-M-RET'''' -- `icicle-help-on-candidate': current candidate
+* '''`C-M-mouse-2'''' -- `icicle-mouse-help-on-candidate': clicked candidate
+* '''`C-M-up'''' -- `icicle-help-on-previous-prefix-candidate'
+* '''`C-M-down''''  -- `icicle-help-on-next-prefix-candidate'
+* '''`C-M-prior'''' -- `icicle-help-on-previous-apropos-candidate'
+* '''`C-M-next'''' -- `icicle-help-on-next-apropos-candidate'
+
+(Actually, some of these are only the default key
+bindings.  You can customize the keys to use for
+`previous' and `next' candidate help.)
+
+
+
+
+
+
+The following minibuffer bindings provide an [[Icicles - More About Multi-Commands#AlternativeActions|alternative action]]
+for individual candidates.  The alternative action is specific to
+the given command.  Most commands define no alternative action.
+
+[:icicle-candidate-alt-action]
+[:icicle-mouse-candidate-alt-action]
+[:icicle-previous-prefix-candidate-alt-action]
+[:icicle-next-prefix-candidate-alt-action]
+[:icicle-previous-apropos-candidate-alt-action]
+[:icicle-next-apropos-candidate-alt-action]
+
+* '''`C-S-RET'''' -- `icicle-candidate-alt-action': current candidate
+* '''`C-S-mouse-2'''' -- `icicle-mouse-candidate-alt-action': clicked
+* '''`C-S-up'''' -- `icicle-previous-prefix-candidate-alt-action'
+* '''`C-S-up'''' -- `icicle-previous-candidate-per-mode-alt-action' (modal)
+* '''`C-S-down'''' -- `icicle-next-prefix-candidate-alt-action'
+* '''`C-S-down'''' -- `icicle-next-candidate-per-mode-alt-action' (modal)
+* '''`C-S-prior'''' -- `icicle-previous-apropos-candidate-alt-action'
+* '''`C-S-next'''' -- `icicle-next-apropos-candidate-alt-action'
+* '''`##C-|##'''' -- `icicle-all-candidates-alt-action': each candidate, in turn
+* '''`##M-|##'''' -- `icicle-all-candidates-list-alt-action': all candidates, as a list
+
+
+
+
+
+
+The following minibuffer and `*Completions*' buffer bindings let you perform set operations
+on sets of completion candidates.  For explanation, see [[Icicles - Candidate Sets]].
+
+[:icicle-candidate-set-complement]
+[:icicle-candidate-set-difference]
+[:icicle-candidate-set-union]
+[:icicle-candidate-set-intersection]
+[:icicle-candidate-set-retrieve]
+[:icicle-candidate-set-save]
+[:icicle-candidate-set-retrieve-more]
+[:icicle-candidate-set-save-more]
+[:icicle-candidate-set-save-selected]
+[:icicle-candidate-set-save-more-selected]
+[:icicle-save-candidate]
+[:icicle-mouse-save-candidate]
+[:icicle-mouse-candidate-set-save]
+[:icicle-mouse-candidate-set-save-more]
+[:icicle-candidate-set-swap]
+[:icicle-candidate-set-define]
+
+* '''`##C-~##'''' -- `icicle-candidate-set-complement'
+* '''`##C--##'''' -- `icicle-candidate-set-difference'
+* '''`##C-+##'''' -- `icicle-candidate-set-union'
+* '''`##C-*##'''' -- `icicle-candidate-set-intersection'
+* '''`##C-M-<##'''' -- `icicle-candidate-set-retrieve': retrieve saved set
+* '''`##C-M->##'''' -- `icicle-candidate-set-save': save current set
+* '''`##C-M-)##'''' -- `icicle-candidate-set-save-selected': save mouse-selected candidates as set
+* '''`##C-<##'''' -- `icicle-candidate-set-retrieve-more': add from saved set
+* '''`##C->##'''' -- `icicle-candidate-set-save-more': add to saved set
+* '''`##C-)##'''' -- `icicle-candidate-set-save-more-selected': add mouse-selected candidates to saved set
+* '''`insert'''' -- `icicle-save/unsave-candidate': save or unsave current candidate
+* '''`##C-%##'''' -- `icicle-candidate-set-swap': swap saved and current sets
+* '''`##C-:##'''' -- `icicle-candidate-set-define': define current (EmacsLisp)
+* '''`M-S-mouse-2'''' -- `icicle-mouse-save/unsave-candidate': click candidate to save or unsave
+* '''`M-S-mouse-3'''' -- `icicle-mouse-candidate-set-save': save candidates in region or save clicked candidate
+* '''`M-mouse-3'''' -- `icicle-mouse-candidate-set-save-more': add region candidates or clicked candidate to saved set
+
+
+
+
+
+The following minibuffer bindings insert text in the minibuffer:
+
+[:icicle-insert-string-at-point]
+[:icicle-insert-string-from-variable]
+
+* `##M-.##' -- `icicle-insert-string-at-point'
+* `##C-=##' -- `icicle-insert-string-from-variable'
+* `##M-:##' -- `icicle-pp-eval-expression-in-minibuffer' (with a [[prefix argument]])
+
+
+
+
+
+
+The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cycle among alternative Icicles behaviors.
+
+[:icicle-next-apropos-match-function]
+[:icicle-toggle-case-sensitivity]
+[:icicle-toggle-ignored-extensions]
+[:icicle-change-alternative-sort-order]
+[:icicle-toggle-alternative-sorting]
+[:icicle-toggle-C-for-actions]
+[:icicle-toggle-dot]
+[:icicle-toggle-expand-to-common-match]
+[:icicle-toggle-fuzzy-completion]
+[:icicle-toggle-hiding-common-match]
+[:icicle-toggle-highlight-all-current]
+[:icicle-toggle-highlight-historical-candidates]
+[:icicle-toggle-incremental-completion]
+[:icicle-toggle-ignored-space-prefix]
+[:icicle-toggle-literal-replacement']
+[:icicle-toggle-proxy-candidates]
+[:icicle-toggle-regexp-quote]
+[:icicle-toggle-remote-file-testing]
+[:icicle-toggle-transforming]
+[:icicle-toggle-search-cleanup]
+[:icicle-toggle-search-replace-whole]
+[:icicle-toggle-search-whole-word']
+[:icicle-toggle-tilde-for-home-dir]
+
+* '''`C-A'''' (that is, `C-S-a') -- `icicle-toggle-case-sensitivity'
+* '''`##C-.##'''' -- `icicle-toggle-ignored-extensions' (file-name completion)
+* '''`##C-.##'''' -- `icicle-toggle-search-cleanup' (search)
+* '''`##C-M-.##'''' -- `icicle-toggle-dot'
+* '''`##C-x .##'''' -- `icicle-toggle-hiding-common-match
+* '''`##C-;##'''' -- `icicle-toggle-expand-to-common-match'
+* '''`##C-,##'''' -- `icicle-change-sort-order'
+* '''`##C-,##'''' -- `icicle-toggle-search-replace-whole' (search)
+* '''`##M-,##'''' -- `icicle-change-alternative-sort-order'
+* '''`##C-M-,##'''' -- `icicle-toggle-alternative-sorting'
+* '''`##C-^##'''' -- `icicle-toggle-remote-file-testing'
+* '''`##C-^##'''' -- `icicle-toggle-highlight-all-current' (search)
+* '''`<tt>C-#</tt>'''' -- `icicle-toggle-incremental-completion'
+* '''`##C-(##'''' -- `icicle-toggle-fuzzy-completion'
+* '''`##C-`##'''' -- `icicle-toggle-regexp-quote'
+* '''`##C-M-`##'''' -- `icicle-toggle-literal-replacement' (search)
+* '''`##C-$##'''' -- `icicle-toggle-transforming': removal of duplicates
+* '''`C-pause'''' -- `icicle-toggle-highlight-historical-candidates'
+* '''`M-g''''     -- `icicle-toggle-C-for-actions'
+* '''`M-q'''' -- `icicle-toggle-search-whole-word' (search)
+* '''`##M-(##'''' -- `icicle-next-apropos-match-function'
+* '''`##M-~##'''' -- `##icicle-toggle-~-for-home-dir##'
+* '''`##M-_##'''' -- `icicle-toggle-ignored-space-prefix'
+* '''`##C-M-_##'''' -- `icicle-toggle-proxy-candidates'
+
+
+
+
+
+
+[:icicle-doremi-candidate-width-factor]
+[:icicle-doremi-inter-candidates-min-spaces]
+[:icicle-doremi-zoom-Completions]
+The following minibuffer bindings let you incrementally change
+options that affect the `*Completions*' display columns and text
+size.  To take
+advantage of these, you must also use '''DoReMi'''.
+
+* '''`C-x w'''' -- `icicle-doremi-candidate-width-factor' (requires 
+<tt>[[doremi.el]]</tt>)
+* '''`##C-x |##'''' -- `icicle-doremi-inter-candidates-min-spaces' (requires 
+<tt>[[doremi.el]]</tt>)
+* '''`C-x -'''' -- `icicle-doremi-zoom-Completions' (requires 
+<tt>[[doremi-frm.el]]</tt> and Emacs 23 or later)
+
+
+
+When used in the minibuffer, the following '''Icicles''' global binding lets you remove the `*Completions*' window.
+
+[:icicle-delete-window]
+
+* '''`C-x 0''''  -- `icicle-remove-Completions-window'
+
+
+
+
+The following minibuffer bindings are in effect
+during '''Icicles''' [[Icicles - Search Commands, Overview|search]]:
+
+[:icicle-toggle-search-cleanup]
+[:icicle-toggle-search-replace-whole]
+[:icicle-search-define-replacement]
+[:icicle-toggle-search-whole-word]
+[:icicle-toggle-highlight-all-current]
+[:icicle-toggle-literal-replacement]
+
+* '''`##C-.##'''' -- `icicle-toggle-search-cleanup'
+* '''`##C-,##'''' -- `icicle-toggle-search-replace-whole'
+* '''`##M-,##'''' -- `icicle-search-define-replacement'
+* '''`M-q'''' -- `icicle-toggle-search-whole-word'
+* '''`##C-^##''''    -- `icicle-toggle-highlight-all-current'
+* '''`##C-M-`##''''  -- `icicle-toggle-literal-replacement'
+
+
+
+
+The following minibuffer binding lets you evaluate an EmacsLisp
+[[sexp]] at any time, using a recursive minibuffer.  It displays the result of evaluation in the [[echo area]] or in
+a pop-up buffer, `##*Pp Eval Output*##'.  With a prefix arg (`C-u M-:'), it inserts the result into the minibuffer at [[point]].
+
+[:icicle-pp-eval-expression-in-minibuffer]
+
+* '''`##M-:##'''' -- `icicle-pp-eval-expression-in-minibuffer'
+
+
+
+[:CompletionsListBindings]
+The following bindings are made for `completion-list-mode', that
+is, for buffer `*Completions*', which shows the list of candidate
+completions:
+
+[:icicle-move-to-previous-completion]
+[:icicle-move-to-next-completion]
+
+* '''`left'''', '''`right'''' (`TAB') -- `icicle-move-to-previous-completion', `icicle-move-to-next-completion': Navigate backward & forward among candidates.
+
+[:icicle-previous-line]
+[:icicle-next-line]
+
+* '''`up'''', '''`down'''' -- `icicle-previous-line', `icicle-next-line': Navigate up & down among candidates.   (The
+documentation refers to these keys as `up' and
+`down'.  Actually, these are the keys only by
+default.  You can customize them using options
+'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-keys|icicle-prefix-cycle-next-keys]]</tt>'''' and
+'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-keys|icicle-prefix-cycle-previous-keys]]</tt>''''.)
+
+[:icicle-insert-completion]
+
+* '''`C-insert'''' -- `icicle-insert-completion': Move
+cursor to the minibuffer, with the current `*Completions*' candidate
+as input.
+
+[:icicle-abort-recursive-edit]
+[:icicle-beginning-of-line]
+[:icicle-end-of-line]
+[:icicle-mouse-choose-completion]
+[:icicle-mouse-candidate-action]
+[:icicle-mouse-help-on-candidate]
+[:icicle-Completions-mouse-3-menu]
+
+* '''`C-a'''', '''`C-e'''' -- `##icicle-beginning-of-line+##', `##icicle-end-of-line+##' (repeatable)
+* '''`C-g'''', '''`q'''' -- `icicle-abort-recursive-edit'
+* '''`mouse-2'''' -- `icicle-mouse-choose-completion'
+* '''`C-mouse-2'''' -- `icicle-mouse-candidate-action'
+* '''`M-mouse-2'''' -- `icicle-mouse-candidate-read-fn-invoke'
+* '''`C-M-mouse-2'''' -- `icicle-mouse-help-on-candidate'
+* '''`M-S-mouse-2'''' -- `icicle-mouse-save/unsave-candidate': click candidate to save or unsave
+* '''`C-mouse-3'''' -- `icicle-Completions-mouse-3-menu'
+* '''`M-mouse-3'''' -- `icicle-mouse-candidate-set-save-more': add region candidates or clicked candidate to saved set
+* '''`M-S-mouse-3'''' -- `icicle-mouse-candidate-set-save': save candidates in region or save clicked candidate
+
+----
+
+
+|| *Previous:*  [[Icicles - File-Name Completion Tips]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Customizing Key Bindings]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryKeys
+CategoryMenus
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryRegion
+CategoryModes
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

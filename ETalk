@@ -1,0 +1,28 @@
+'etalk' is an Emacs interface to the unix chatsystem called 'talk',
+among other things.  That's what this page describes.
+
+Talk, quite like VMS's PHONE, is an older chatting system that can be
+used to reach users on remote hosts, if their system is running some
+compatible ''daemon'', a program serving clients.  Several extended
+variants of the BSD flavour exist. ''ntalk'', ''otalk'', ''ytalk'' and
+''GNU Talk'' (gtalk) at least, and the KDE project has it's own
+variant too, ''ktalk''.
+
+Etalk in an interface to, and depends on the GNU Talk program
+'''gtalk'''(1), which implements protocol versions 0 and 1, and
+proposes 2.  Several features are available only when thge GNU Talk
+deamon, '''gtalkd'''(8) is used.  Among these are the games, sending
+files over the connection, auto-answer and so on.
+
+There's a Debian package for etalk.  Last entry in changelog.Debian.gz
+is dated October 2002, though.
+
+At least for version 0.99, after loading etalk library, the Tools menu
+gets an entry but it doesn't do anything.  In etalk buffers
+<code>C-h</code> doesn't do what it usually does, but tells the other
+end to move her image of your point backwatrds one step... there'll be
+a ^H though on the local display though.
+
+----
+
+CategoryChatClient

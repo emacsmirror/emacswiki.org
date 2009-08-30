@@ -1,0 +1,25 @@
+To help structure the tangled mess that the DotEmacs file can become, the following technique can be used. This technique is based around keeping a list of variable which corresponds to particular features, additional modes or customisations, with a corresponding ##when## clause to wrap the code related to that specific feature.
+
+for example, something like the following at the beginning of the file.
+
+<pre>
+(defvar *slime-enabled* t)      ;; superior lisp interaction mode
+(defvar *globrep-enabled* nil)  ;; global find and replace
+(defvar *dict-enabled* nil)     ;; mizspellnigs & dictionaries
+(defvar *vc-darcs-enabled* nil) ;; darcs using vc interface  
+(defvar *paredit-enabled* nil)  ;; paredit-mode
+</pre>
+
+then somewhere further down...
+
+<pre>
+(when *paredit-enabled*
+  (autoload 'enable-paredit-mode "paredit" 
+            "Turns on pseudo-structural editing of Lisp code." t)
+  (add-hook 'lisp-mode-hook 'enable-paredit-mode)
+  (add-hook 'scheme-mode-hook 'enable-paredit-mode))
+</pre>
+
+so setting ##*paredit-enabled*## to either ##t## or ##nil## would enable or disable the feature completely. This can be especially useful when testing several modes for interoperability, or moving to a new setup. 
+
+See also DotEmacsRestructuring and DotEmacsModular

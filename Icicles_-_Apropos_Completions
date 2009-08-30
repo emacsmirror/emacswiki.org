@@ -1,0 +1,123 @@
+: [[image:iciclesimage]]
+
+|| *Previous:* [[Icicles - Traversing Minibuffer Histories]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Expanded-Common-Match Completion]] ||
+
+----
+
+== Apropos Completions ==
+
+'''Icicles''' offers a new way to complete your
+partial input in the [[minibuffer]].  Instead of considering the
+string of input characters to be the ''prefix'' of various complete
+names, you can look for names that ''match'' that string ''anywhere''. This is the single most important feature that '''Icicles''' offers.
+
+This is similar in effect to using command `apropos' to find
+"apropos completions" of a string (except it  works also for file and
+[[buffer]] names), so that's the term I use for this: '''[::apropos completion]'''.  The more correct
+characterization of this is that of the previous paragraph,
+however: ''names that match the given string''.
+
+Just as with prefix [[completion]], '''Icicles''' lets you cycle among the
+apropos candidates.  To do this, you use keys `next' and `prior'. The root that was completed is ''underlined''
+in the minibuffer completion candidate.
+
+For example, suppose you use `M-x' to enter a [[command]].  You don't
+remember the exact command name, but it has something to do with
+[[line]]s, so you type `M-x line', then hit `next' repeatedly until you
+see the right "<code>line</code>" command -- `transpose-lines', perhaps.  Prefix
+completion cannot find this command, because "<code>line</code>" is not a
+prefix of "<code>transpose-lines</code>".
+
+Because `M-x' expects a command name, only command names are
+inserted into the minibuffer as the apropos-completion candidates
+for `M-x'.  Likewise, in other contexts, where names of other
+kinds of object are expected, apropos completion inserts only
+names of objects of the appropriate type.  Prefix completion works
+the same way.
+
+For example, using `next' and `prior' with `C-x b at' lets you
+cycle through all buffers (such as `*scratch*') that have "<code>at</code>" in
+their name -- only [[buffer]] names appear as candidates.
+
+As an alternative to using `next' to cycle forward, you can hit
+`S-TAB' repeatedly.  Similarly, for prefix completion you can
+repeat `TAB' to cycle forward.  See [[Icicles - Nutshell View#PrefixAndAproposCompletion|Prefix And Apropos Completion]].
+
+Apropos completion uses a '''''regular expression''''' ([[regexp]]) as its input string.
+You can type `##M-x \bes##', for instance, to find commands with "<code>es</code>"
+at the start of a word within the command name (`##\b##' matches the start of a word). It will find
+`'''''<tt>es</tt>'''''##hell-test##' and `##color-theme-blue-##'''''<tt>es</tt>'''''##hell##', but not
+`count-lines' --  "<code>es</code>" does not start a word in `count-lines'. Similarly, for file names, buffer names, and so on.
+
+
+Prefix completion is actually a special case of apropos
+completion, where the regexp starts with "<code>^</code>".  (That is not how it
+is implemented, however.)
+
+What if you want to see the list of all completion candidates that match the minibuffer input? Instead of cycling candidates blindly, just hit `S-TAB' (Shift TAB) at any time to display the matching candidates in pop-up buffer `*Completions*'. This is analogous to `TAB' for prefix completion.
+
+(The documentation always refers to the [[key]] that performs apropos
+completion as `S-TAB'.  Actually, it is `S-TAB' only by default.
+You can customize it, using [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>''''.)
+
+Everything said in [[Icicles - Cycling Completions]] about the `*Completions*' buffer for prefix
+completion is also true for apropos completion.  It is updated to
+reflect the current set of matching candidates, and the current completion is
+highlighted. The root that was completed is highlighted within each
+candidate (first occurrence only).  Root highlighting is more important in the case of
+apropos completion, because the match position is different in
+different candidates. In the case of apropos completion, the root is not the input string, taken literally, but the part of a candidate that the input matches.  See
+[[Icicles - Completions Display]] for additional ways to use the minibuffer with `*Completions*'.
+
+
+Regexp matching is perhaps the ''most powerful feature'' of '''Icicles'''.
+''Enjoy! Explore!''  You can at any time switch back and forth between prefix
+completion (`down', `up'), apropos completion (`next', `prior'),
+and input history traversal (`M-n', `M-p').
+
+Here is a screenshot showing apropos completion and cycling in the minibuffer. It corresponds to input `M-x minib S-TAB' followed by hitting `next' several times. 
+
+[[image:iciclesscreenshot]]
+
+This screenshot shows several '''Icicles''' features: 
+
+* Input `minib' was completed to the expanded common match among all candidates, `minibuffer' (not shown, because of subsequent candidate cycling).
+
+* The expanded common match is underlined in the minibuffer and highlighted in magenta in buffer `*Completions*'. What your input regexp matched (just `minib' in this case) is highlighted in red in `*Completions*'.
+
+* Candidate cycling replaced `minibuffer' in the minibuffer with one possible candidate: `insert-in-minibuffer'. 
+
+* The current completion candidate during cycling is highlighted in cyan in buffer `*Completions*'.
+
+* Whenever you reverse the cycle direction, [[Icicles - Icompletion |  icompletion]] lets you know how many other candidates there are (especially useful when you do ''not'' display buffer `*Completions*').
+
+
+'''See also:'''
+* [[Icicles - Cycling Completions]] for information on cycling candidates
+* [[Icicles - Expanded-Common-Match Completion]] for information on the expanded common match among candidates
+* [[Icicles - Icompletion]] for information on icompletion
+* [[Icicles - Completions Display]] for additional ways to use the minibuffer with `*Completions*'
+
+
+
+
+
+----
+
+|| *Previous:*  [[Icicles - Traversing Minibuffer Histories]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Expanded-Common-Match Completion]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el, Lisp:icomplete+.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryProgrammerUtils
+
+
+
+

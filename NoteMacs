@@ -1,0 +1,20 @@
+NoteMacs wants to help MinEmacs package the OneTrueEditor as an instantly configurable yet still infinitely helpful environment, but for now is just PatrickAnderson's DotEmacs, and his collection of EmacsLisp experiments along with the EmacsLisp of many others.
+
+Some of the packages are redundant when using newer GnuEmacs {META: oh the day when a wiki will link the language even when a word is cased as it should be.  In that day I will then write "GNU Emacs" (without quotes) and it will link.}, but are applicable when you must use an older version.
+
+* http://patware.FreeShell.org/NoteMacs.tar.bz2
+
+===Goals similar to===
+: PopularOptions
+: [[EmacsW32]]
+: PeterHeslin is writing http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Easymacs
+: EmacsMacro
+: AquamacsEmacs
+
+[new:DrewAdams:2005-12-15 03:17 UTC]
+Hmm... Interesting name: Note Macs is Not Emacs? -- shades of "GNU's Not Unix"? -- DrewAdams
+
+
+[new:PatrickAnderson:2005-12-15 16:54 UTC]
+I wanted to warn of NotEmacs behavior whenever emulating Notepad.exe
+I was surprised and happy those titles were variations of each other.

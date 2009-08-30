@@ -1,0 +1,8 @@
+If you have multi.el (the ArrayExtension package), then you can now
+do matrix operations on them using matrix.el from DavidBakhash.
+
+Groups:matrix.el
+
+----
+CategoryCalculators
+CategoryCode

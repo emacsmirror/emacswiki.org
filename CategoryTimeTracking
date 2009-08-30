@@ -1,0 +1,11 @@
+There are several modes to help you track the time spent on various activities and do reporting.
+
+* TimeClock - part of emacs
+* Extensions to TimeClock: Lisp:timeclock-x.el
+* Groups:timelog.el - written by Thomas Gehrlein (posted on gnu.emacs.sources)
+* WorklogMode - another mode by KaiGrossjohann
+* Alan Shutko's [http://web.springies.com/~ats/emacs/project.el|project.el]
+
+PlannerMode has a quite useful feature to time your tasks using timeclock.
+
+OrgMode also has time tracking and reporting.

@@ -1,0 +1,17 @@
+This page lists extensions to Eshell that have not made it into the main distribution.
+
+== em-joc ==
+
+by JoeCasadonte
+
+* http://www.northbound-train.com/emacs.html
+
+Provides some small additional function of eshell, the full-featured
+shell written in elisp. Functions include a prompt replacement
+(primarily replaces value of $HOME with a "~"), a "clear" function,
+which clears the screen/buffer much like clear (Unix) or cls (DOS),
+and a remote command, which lets you send the eshell a command from
+some outside piece of lisp code.
+
+----
+CategoryEshell

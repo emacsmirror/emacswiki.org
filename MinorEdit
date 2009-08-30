@@ -1,0 +1,32 @@
+[[fr:ModificationMineure]]
+To declare an edit '''minor''', check the box next to "This change is a
+minor edit", before hitting the '''Save''' button.
+
+Examples of minor edits include
+
+* typos,
+* small fixes,
+* and repetitive, "humdrum" changes to multiple files.
+
+In general, a minor edit is any change that you don't want to draw
+attention to, or clutter the RecentChanges page with. Overall, it is
+/your/ judgment.
+
+Deleting and creating a page is generally considered a major
+edit. When a deletion and creation constitutes a page /renaming/,
+updating the links to the deleted page could be hidden. See
+IfYouRenameOrDeletePages.
+
+As with major edits, provide a short summary describing a minor
+edit. By default, summaries for [::MinorEdits] are hidden from the
+RecentChanges page, but can be displayed by clicking the link [EmacsWiki:action=rc;showedit=1 Include
+minor changes]. The link shows the recent major and minor edits as if
+there was no distinction.
+
+The /purpose/ of having minor edits is to display the more important
+changes and remove the clutter of less-important changes. It is good
+etiquette to avoid abusing the system to hide major changes as minor
+changes or "skywriting" minor changes as major.
+
+----
+CategoryEmacsWikiSite

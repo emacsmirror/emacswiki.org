@@ -1,0 +1,21 @@
+Lisp:stripes.el previously published to gnu.emacs.sources, Message-ID: <bo186d$16q88d$1@ID-39741.news.uni-berlin.de> by MichaelSchierl.
+
+  ;;; Commentary:
+  ;;
+  ;; highlights every even line with an alternative background
+  ;; color. Useful for buffers that display lists of any kind - as a
+  ;; guide for your eyes to follow these lines.
+  ;;
+  ;; when invoked with a numeric prefix arg, color that many lines
+  ;; instead of every other line.
+  ;;
+  ;; Put this file into your load path,
+  ;; (require 'stripes) and do a (turn-on-stripes-mode)
+  ;;  whenever you need this (e.g. in hooks).
+
+[new:DrewAdams:2004-12-30 04:04 UTC]
+Only slightly related: Library <code>printing.el</code> (PrintingPackage) lets you print a buffer with zebra striping (alternating colors as described above) as an option. Library <code>printing.el</code> (PrintingPackage) is available from ViniciusJoseLatorre. -- DrewAdams
+
+
+----
+CategoryModes

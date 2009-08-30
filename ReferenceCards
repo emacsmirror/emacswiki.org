@@ -1,0 +1,15 @@
+Emacs is distributed with printable reference cards.
+
+A file, `refcard.tex' (and `refcard.ps' in
+<nowiki>PostScript</nowiki> format), which gives most of the
+keybindings for basic editing.
+
+If you do not have access to TeX or some sort of
+<nowiki>PostScript</nowiki> interpreter like GhostScript, then http://refcards.com/ has PDF
+versions of this, an XEmacs card, and one for AdvancedDeskCalculator as well.
+
+I generated an Emacs 22 reference card from refcard.tex. Available at http://marc-abramowitz.com/archives/2006/04/10/emacs-22-reference-card/
+
+----
+CategoryDocumentation
+CategoryReferenceSheet

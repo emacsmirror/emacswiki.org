@@ -1,0 +1,79 @@
+For the vi user:
+
+* If you only need "'''##%##'''" functionality, see ParenthesisMatching.
+
+* If you long for the "'''##.##'''" (redo) command, see DotMode and RepeatingCommandsLikeVi.
+
+* If you miss "'''##*##'''" or "'''<tt>#</tt>'''", see SearchAtPoint or [[vimpulse.el]].
+
+* If you need swift line-wise editing like "'''##yyp##'''", see SlickCopy.
+
+* If you depend on "'''##cfz##'''" and "'''##dfz##'''", use the <tt>[[zap-to-char]]</tt> command (`M-z').
+
+* If you prefer "'''##ctz##'''" and "'''##dtz##'''", use ZapUpToChar.
+
+* If you miss "'''##cw##'''", use the strategies to ChangeWord in Emacs.
+
+* If you wish that ##C-o## worked more like "'''##o##'''" and also want "'''##O##'''" back in your life, look at OpenNextLine.
+
+* If you wonder how to "read in" a file like Vim's "'''##:r##'''", use `M-x insert-file' (or `C-x i').
+
+* If you miss pressing '''##Ctrl-P##''' (possibly repeatedly) in Vim to autocomplete the current word based on what else is in the file, see DynamicAbbreviations.
+
+* If you miss "'''##:g/pattern/command##'''", see KeyboardMacros or KeyboardMacrosTricks.
+
+* If you miss "'''##%s/pattern/replacement##'''", see ReplaceRegexp or SearchAndReplace.
+
+* If you miss "'''##z##'''", "'''##z.##'''" or "'''##z-##'''", see RecenterLikeVi.
+
+See also ViEmacsTable.
+
+[ViAndEmacs vi and Emacs] have different philosophies when it comes to keystrokes. Emacs has long keystrokes involving special modifier keys, such as Meta and Control (see EscapeMetaAltControlShift :)). This is analogous to a Very Long Instruction Word (VLIW) architecture.
+
+vi's philosophy is ''modal editing'', i.e., an editing mode and an insertion mode. Commands (typically between one and two characters) can be issued in editing mode, including the command to enter insert mode. Commands do things like "delete a word", "change to the end of the line" or "insert text at the end of this line". The Escape key exits insertion mode and returns to editing (command) mode.
+
+Many people, like AaronL, find vi keybindings efficient.
+
+Furthermore, vi's keys are ergonomic (see [RepeatedStrainInjury RSI]) as they largely adhere to the touch typing principle of staying as close to the home row as possible.[http://www.vi-improved.org/tutorial.php] (The key exception is Escape, which many vi users remap to Caps Lock just like Emacs users do for [MovingTheCtrlKey Ctrl].)
+
+If you are sufficiently open-minded to appreciate the eloquence and economy of at least some of the vi key bindings at least some of the time, there are a variety of Emacs packages that emulate vi keybindings:
+
+== vi emulation ==
+
+The most notable is '''ViperMode'''. It does an excellent job of emulating vi and ex commands.
+
+[[vimpulse.el]] extends !ViperMode with Vim features. It is [EmacsWiki:vimpulse somewhat buggy], though.
+
+''If you want basic vi emulation'', you might find that '''vip''' provides a nice togglable vi emulation without the complexity of Viper. Try ##(load "vip")## in your InitFile and toggle it with `C-z'. (Last time I checked, vip was not bundled with XEmacs.)
+
+[new]
+What is the complexity of Viper that you avoid when you use vip instead of Viper? In my ##~/.emacs## I have
+
+    (setq viper-mode t)
+    (require 'viper)
+
+and in ##~/.viper##
+
+    (setq viper-inhibit-startup-message 't)
+    (setq viper-expert-level '5)
+
+That is all and with this you have the full power of Viper.
+
+[new]
+'''Vile''' is another alternative. Rather than being a package for Emacs, it is an editor which is "vi-like Emacs". Use of it is cautioned, as it could cause you to stray from [TheTruePath The True Path].
+
+'''mlessvim.el'''[http://tat.wright.name/mlessvim] (modeless Vim) tries to add many of the text editing functions of vi, but without using modal insertion and without overriding the default Emacs bindings. Instead a prefix key is used before Vim-like key sequences.
+
+'''modal-mode'''[http://jjfoerch.com/git/modal-mode/] is an effort to provide modal editing to Emacs, but remain light, and not step too far into the territory of vi emulation. Its default bindings are based on vi, but its design accommodates the creation of other modality styles. It has explicit support for vi-like text-objects through transient modes that turn movement keys into selection keys, in order to provide compound commands like those of vi's ##d##, ##y## and ##c## keys.
+
+There is also the [PoorMansViMode poor man’s vi mode]. :)
+
+----
+If you want to go the other way, ViMacs emulates Emacs inside Vim.
+
+----
+CategoryKeys
+CategoryEmulation
+
+
+

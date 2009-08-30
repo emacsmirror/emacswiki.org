@@ -1,0 +1,75 @@
+== How to Install ==
+
+Build from source:
+
+# get Emacs sources (version 23 or later)
+# ./configure --with-ns
+# make
+# make install
+# copy nextstep/Emacs.app to target location
+
+Emacs.app is the result of building Emacs with support for the !NeXTstep / !OpenStep / Cocoa API family. [http://lists.gnu.org/archive/html/emacs-devel/2005-09/msg00634.html]
+It will run on Mac OS 10.3 and later as well as [http://gnustep.org/ GNUstep], the free implementation of !OpenStep for GNU/Linux, Windows, Darwin, the free BSDs, and other unix platforms.
+
+Install via macports:
+
+{{{
+sudo port install emacs-app-devel
+}}}
+
+[[http://drop.io/emacsapp|Emacs.app 23 binary package]] (built from 2009-01-04 CVS version using macports) for Mac OS X Tiger (10.4) or higher users (PowerPC only).
+
+== Enhancement ==
+
+A set of enhancements making Emacs.app more Mac-like without going as far as AquamacsEmacs or similar distributions is available as an elisp package: NSPlatformSupport.
+
+
+== Path ==
+
+Emacs.app on Mac OS X does not inherit the same value of PATH environment variable as on another OS, or as in the shell running in either Terminal or Emacs. Apple describes this behaviour a bit here: http://developer.apple.com/qa/qa2001/qa1067.html. The file ~/.MacOSX/environment.plist can also be used as central place to save key:value pairs for all shells. The defaults programme allows to read and write, for example:
+
+	export PATH=$(defaults read "${HOME}/.MacOSX/environment" PATH)         # bash
+	set path=(`defaults read ~/.MacOSX/environment PATH | tr ':' ' '`)           # tcsh
+
+NOTE: Remember when you make a change to environment.plist, you need to restart your computer before it takes effect.
+
+For those that like their PATHs from .bashrc and would like the environment.plist to update itself at every start up, put the following in your /etc/profile file:
+
+#/etc/profile begin
+
+if [ -x /usr/libexec/path_helper ]; then
+
+eval `/usr/libexec/path_helper -s`
+
+defaults write $HOME/.MacOSX/environment PATH "$PATH"
+
+fi
+
+#/etc/profile end
+
+
+CREDIT GOES TO: http://www.nabble.com/unicode-character-in-aquamacs-td24259615.html
+
+NOTE: It appears launching emacs through spotlight will not pick up the env variables.  Launching in Finder or the terminal will work.  Don't know why this is the case.  -- Vinh Nguyen
+
+== Keyboard Handling and European Characters ==
+
+Some useful resources: http://en.wikipedia.org/wiki/Keyboard_layout &nbsp;&nbsp;&nbsp; http://www.petermaurer.de/nasi.php?section=keycodes
+
+I have tried outlining 3 basic options for European users in a blog post/video [[http://blog.enqueue.eu/emacs_mac_2 here]]. I do not have a clue about Asian character input, though. Open to comment.
+
+
+== Questions ==
+
+* I'm missing an "emacs" binary, to execute from the command line, from Emacs.app. It's expected by some Makefiles, for instance. Does anyone know how to create or fake one? -- ThomasKappler
+
+[new]
+The executable binary is already there: Emacs.app/Contents/MacOS/Emacs. -- UntitledApple
+
+[new]
+* Is there a way to get visual beep to NOT be a 100x100 black square
+in the middle of the window? That's beyond unusable and completely
+preventing me from upgrading from 22 to 23. -- RyanDavis
+
+----
+CategoryPorts

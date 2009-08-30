@@ -1,0 +1,67 @@
+This is what worked on my NT Emacs 20.7 and 21.2 based on the NT Emacs FAQ.  See OnlineResources.
+
+* http://www.gnu.org/software/emacs/windows/faq5.html
+
+The following code will define additional FontSets for you to use.
+
+<pre>
+ ;; BDF font stuff (Japanese for NT Emacs 20.4)
+ (when (featurep 'mule)
+
+   ;; Then set w32-bdf-filename-alist to the list of fonts returned by
+   ;; using w32-find-bdf-fonts to enumerate all of the font files. It is a
+   ;; good idea to set the variable bdf-directory-list at the same time so
+   ;; ps-print knows where to find the fonts:
+
+   (setq bdf-directory-list
+	 '("c:/Internet/Emacs/intlfonts-1.1/Asian" 
+	   "c:/Internet/Emacs/intlfonts-1.1/Chinese" 
+	   "c:/Internet/Emacs/intlfonts-1.1/Chinese-X" 
+	   "c:/Internet/Emacs/intlfonts-1.1/Chinese-BIG" 
+	   "c:/Internet/Emacs/intlfonts-1.1/Ethiopic" 
+	   "c:/Internet/Emacs/intlfonts-1.1/European" 
+	   "c:/Internet/Emacs/intlfonts-1.1/European-BIG" 
+	   "c:/Internet/Emacs/intlfonts-1.1/Japanese"
+	   "c:/Internet/Emacs/intlfonts-1.1/Japanese-X" 
+	   "c:/Internet/Emacs/intlfonts-1.1/Japanese-BIG" 
+	   "c:/Internet/Emacs/intlfonts-1.1/Korean-X" 
+	   "c:/Internet/Emacs/intlfonts-1.1/Misc"
+	   "c:/Internet/Emacs/unicode/Fonts"))
+
+   (setq w32-bdf-filename-alist
+	 (w32-find-bdf-fonts bdf-directory-list))
+
+   ;; Then create fontsets for the BDF fonts
+
+   (create-fontset-from-fontset-spec
+     "-*-fixed-medium-r-normal-*-16-*-*-*-c-*-fontset-bdf,
+     japanese-jisx0208:-*-*-medium-r-normal-*-16-*-*-*-c-*-jisx0208.1983-*,
+     katakana-jisx0201:-*-*-medium-r-normal-*-16-*-*-*-c-*-jisx0201*-*,
+     latin-jisx0201:-*-*-medium-r-normal-*-16-*-*-*-c-*-jisx0201*-*,
+     japanese-jisx0208-1978:-*-*-medium-r-normal-*-16-*-*-*-c-*-jisx0208.1978-*,
+     thai-tis620:-misc-fixed-medium-r-normal--16-160-72-72-m-80-tis620.2529-1,
+     lao:-misc-fixed-medium-r-normal--16-160-72-72-m-80-MuleLao-1,
+     tibetan-1-column:-TibMdXA-fixed-medium-r-normal--16-160-72-72-m-80-MuleTibetan-1,
+     ethiopic:-Admas-Ethiomx16f-Medium-R-Normal--16-150-100-100-M-160-Ethiopic-Unicode,
+     tibetan:-TibMdXA-fixed-medium-r-normal--16-160-72-72-m-160-MuleTibetan-0")
+
+
+   ;; Need to add some fonts to font-encoding-alist since the bdf fonts
+   ;; are type 0 not the default type 1.
+   (setq font-encoding-alist
+           (append '(("MuleTibetan-0" (tibetan . 0))
+		   ("GB2312"        (chinese-gb2312 . 0))
+		   ("JISX0208"      (japanese-jisx0208 . 0))
+		   ("JISX0212"      (japanese-jisx0212 . 0))
+		   ("VISCII"        (vietnamese-viscii-lower . 0))
+		   ("KSC5601"       (korean-ksc5601 . 0))
+		   ("MuleArabic-0"  (arabic-digit . 0))
+		   ("MuleArabic-1"  (arabic-1-column . 0))
+		   ("MuleArabic-2"  (arabic-2-column . 0))) font-encoding-alist))
+
+   ;; Tell NT Emacs to use a font menu similar to the one it uses on Unix
+
+   (setq w32-use-w32-font-dialog nil))
+</pre>
+----
+CategoryInternationalization CategoryPorts

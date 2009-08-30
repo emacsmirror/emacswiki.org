@@ -1,0 +1,22 @@
+Outline Wiki is a mode by JorgenSchaefer that extends the usual outline
+mode with the ability to link to files like EmacsWikiMode does. Enclosing
+a string of text in braces - {like-this} - will turn it into a link to a
+file you can hit RET on to follow. Those files can again be in Outline Wiki Mode, of course. Combined with Outline Mode, this
+allows for an easy organization of data.
+
+The link syntax also allows for subdirectories - {foo/bar} will link
+to the file bar in the foo directory - as well as linking to outline
+topics within a file: {foo#bar} will jump to the outline topic
+beginning with bar within the file foo.
+
+An example configuration would be:
+
+  (require 'outline-wiki)
+  (add-to-list 'auto-mode-alist '("/\\.notes/" . outline-wiki-mode))
+
+This will turn on outline-wiki-mode for all files in any
+directory called <code>.notes</code> and its subdirectories.
+
+Lisp:outline-wiki.el
+----
+CategoryOutline

@@ -1,0 +1,279 @@
+How do you learn to format Wiki pages?
+
+* Use the SandBox page to test stuff!
+* Check how others have done things you want to do (bullets, indentation, whatever): Click '''Edit this page''' at the bottom of a page to see its source code.
+* Use '''Preview''' when you edit, to see the effect of what you write.
+
+== Basics ==
+
+Generally, it is important to use as little markup as possible:
+# It makes the "source code" easier to read and modify.
+# On the other hand, we also want to make the text easy to read.
+# This sometimes calls for making things stand out.
+# These two goals can sometimes conflict.
+
+These are the most important formatting rules:
+
+* Empty lines separate paragraphs.
+* Paragraphs may span several lines.
+* Paragraphs begin in column 1.
+* For simple words and sentences:
+** ##*bold*##, ##/italic/##, ##_underline_##
+   -> *bold*, /italic/, _underline_ (the pattern matching is pretty restrictive, to prevent mismatches).
+** ##%%*escaped*%%## -> %%*escaped*%% (instead of bold, by ignoring markup)
+** <code>##*escaped and monospaced*##</code>
+   -> ##*escaped and monospaced*## (instead of bold and variable width)
+* The following markup works as well, and even in some contexts where the basic punctuation-based markup  (##*bold*##, ##/italic/##, ##_underline_##)
+does ''not'' work:
+** ##//italic//## or ##''italic''## -> ''italic''
+** ##**bold**## or ##'''bold'''## -> '''bold'''
+** ##__underline__## -> __underline__
+* Variable names can be surrounded by matching quotes, a syntax used in EmacsLisp and in [[Info]]: ##`foo'## -> `foo'.
+* For horizontal lines, use hyphens (##----##) on a separate line. Horizontal lines are used for the category section of pages, see WikiOrganization.
+* For a short punctuation dash (//en//-dash) in a sentence use two hyphens (##--##) surrounded by spaces.
+** ##--## -> -- 
+* For a long punctuation dash (//em//-dash) in a sentence use three hyphens (##---##) surrounded by spaces.
+** ##---## -> ---
+
+The official documentation is here:
+
+* [[Oddmuse:Text_Formatting_Rules]]
+* [[Oddmuse:Markup Extension]]
+* [[Oddmuse:Usemod Markup Extension]]
+
+
+[:AlternativeMarkup]
+== Alternative Markup ==
+
+The basic punctuation-based markup (see above) is preferable in all cases where it works. Alternative markup works in some additional contexts.
+
+[:WikiTags]
+=== Wiki Tags ===
+
+The following markup tags have special effects on this wiki.  Use them like HTML tags. 
+
+; '''##<code>##''': Code (usually monospaced, plus escaping of wiki
+processing): %%<code>foo</code>%% -> <code>foo</code>
+
+; '''##<nowiki>##''': No wiki processing (usually to unlink mixed case words): ##<nowiki>[[No Link]]</nowiki>## -> <nowiki>[[No Link]]</nowiki>
+
+; '''##<pre>##''': Preformatted (usually monospaced, for paragraphs, plus
+whitespace is preserved, plus escaping of wiki processing). ##<pre>## tags must be alone on a line, to work. Example: to produce a line with ##foo##, use this:
+
+        <pre>
+        foo
+        </pre>
+
+=== HTML Tags ===
+
+The following standard HTML tags can be used on the wiki.  Use them like HTML tags.
+
+; '''##<u>##''': <u>underline</u>: ##<u>foo bar (toto)</u>## -> <u>foo bar (toto)</u>
+
+; '''##<i>##''': <i>Italics</i>: ##<i>foo bar (toto)</i>## -> <i>foo bar (toto)</i>
+
+; '''##<b>##''': <b>Bold</b>: ##<b>foo bar (toto)</b>## -> <b>foo bar (toto)</b>
+
+; '''##<tt>##''': <tt>Teletype</tt> (usually monospaced): ##<tt>foo bar (toto)</tt>## -> <tt>foo bar (toto)</tt>
+
+; '''##<em>##''': <em>Emphasis</em> (usually italics): ##<em>foo bar (toto)</em>## -> <em>foo bar (toto)</em>
+
+; '''##<strong>##''': <strong>Strong</strong> (usually bold): ##<strong>foo bar (toto)</strong>## -> <strong>foo bar (toto)</strong>
+
+== Links and Anchors ==
+
+* Words in %%CamelCase%% (mixed case) are transformed
+into links to other wiki pages.  This works best for ASCII characters (a-z and A-Z),
+because the wiki doesn't know what case non-ASCII characters have.
+* You use ! in front of mixed case word to prevent making it into link:
+** ##!NoLink## -> !NoLink
+* %%[[Words in double brackets]]%% are also transformed into
+links to other wiki pages.  This works for all characters except punctuation characters.
+* You can create PermanentAnchors to serve as targets of links. You can link to an anchor on the same page or on a different page.
+* To create a new page, just add a link to it from an existing page and
+click on the question-mark link that appears after the page name.
+See CreateNewPages.
+* Just type a URL to link to it. A URL ending in .png or .jpg links to an image that is displayed on the same page.  See UploadingImages.
+* Put a URL in square brackets to make it a reference
+** %%[http://www.gnu.org/software/emacs/]%% -> [http://www.gnu.org/software/emacs/]
+* For longer URLs, give the URL link text by following the URL with whitespace and the link text in square brackets
+** %%[http://www.emacswiki.org/ Emacs Wiki]%% -> [http://www.emacswiki.org/ Emacs Wiki]
+* If you do have lots of explicit links that end up pointing to emacswiki.org (perhaps causing the "You linked more than 10 times to the same domain." error), just prefix the the action with "!EmacsWiki:" or your language (see InterMap)
+**  EmacsWiki:action=history;id=SiteMap
+* To give an EmacsWiki action link text, follow the action with whitespace and link text in square brackets (mysteriously, just like a URL)
+** %%[EmacsWiki:action=edit;id=SandBox Play in the Sandbox]%% -> [EmacsWiki:action=edit;id=SandBox Play in the Sandbox]
+* To link to an index entry in the Emacs manual, use prefix `Manual' -- see EmacsManual.
+* See also InterLinks for URL abbreviations for commonly used Web sites, and NearLinks for linking to nearby Wikis.
+* It is a good idea to provide links to appropriate category (or "parent") pages at the bottom of a page -- see WikiOrganization.
+
+[:Lists]
+== Lists ==
+
+Lists and indented paragraphs start with a special character ''followed by at least one space character''. For example, a bulleted list item starts with `##* ##', not with just `##*##'.
+
+* A bulleted list is an unordered list. List items start with an asterisk (`##*##').
+** A sublist item starts with two asterisks (`##**##')
+*** a level 3 with (`##***##'), and so on
+* etc.
+
+# A numbered list is an ordered list that uses numbers sequentially as labels. List items start with a pound sign (`<code>#</code>').
+# second item
+## ordered sublist (with `<code>##</code>')
+# etc.
+
+; Definition list: A definition list is a list with text labels. Items in definition lists start with a semi-colon (`##;##') and a space (see above), followed by any amount of text, and the description starts with a colon ('##:##'). Your syntax should look like this:
+{{{
+           ; Term: Description.
+}}}
+; Example: This list is an example of definition list
+; Third item: and its definition
+
+
+== Tables ==
+
+For tabular information that doesn't fit in lists or definition lists, use tables.
+
+For example, this table has two columns, with the second row having an empty first column, and the third and final column spanning all the rows.
+
+{{{
+||First row||||Second column||
+|| ||Not empty||
+||||Span the columns||
+}}}
+
+Becomes:
+
+||First row||||Second column||
+|| ||Not empty||
+||||Span the columns||
+
+Official documentation is at [[Oddmuse:Table Markup Extension]].
+
+== Indentation ==
+
+Indented lines start with one or more colons ('##:##') -- more colons
+mean more indention.  (This is useful for personal replies. See also [[#Dialog]].)
+
+
+[:Dialog]
+== Dialog ([new]) ==
+
+Conversation should be separated with ##[new]## on a line by itself (starting in column 1).  Currently, everything below each ##[new]## is visually separated by having an alternate background color.
+
+Alternate contributions (alternate ##[new]##'s) are shaded, like this:
+
+[new]
+Someone's contribution...
+[new]
+Someone else's contribution.
+[new]
+Another contribution.
+[new]
+Yet another.
+
+Putting
+<tt>
+[<nowiki>new::</nowiki>]
+</tt>
+will insert your UserName, and adds a timestamp to your contribution when you save the page.  The timestamp appears when you move the mouse over the contribution.  See also UsingPortraits.
+
+[new:SamuelBronson:2009-04-29 17:33 UTC]
+
+##<rant>##
+
+Please refrain from altering the above example's wiki markup in an attempt to "clean it up"; usually this leaves it looking like this:
+<pre>
+[new:SamuelBronson:2009-04-29 17:27 UTC]
+</pre>
+##<nowiki>##, ##<code>##, ##<pre>##, {{##...##}}, etc. do not prevent it's being expanded; you must actually prevent those characters from all appearing next to one another in the source of the page in order to prevent their being expanded. (This is arguably a bug.) Also, we must use ##<tt>## to get fixed-width formatting because otherwised the ##<nowiki>## tags used to break up the string show up:
+<pre>
+[<nowiki>new::</nowiki>]
+</pre>
+##</rant>##
+
+[new]
+
+A contribution after a ##[new]## ends at either the next ##[new]##, the next heading (see below), or the next horizontal line (see above).
+
+Use headings, horizontal lines or even new pages to separate threads of discussions, but use ##[new]## to separate entries in the thread.
+
+[:SourceCode]
+== Source Code ==
+
+* Pages starting with three semicolons (##;;;##) are formatted as code.  No other rules are applied.
+
+* Lines starting with one or more spaces are formatted as code.  We suggest
+four (4) spaces.
+
+* Lines between tags ##{{{## and ##}}}## are formatted as code.
+
+== Headings ==
+
+Headings are enclosed in equals signs (%%=%%) on a line of their own.  You can use up to six equals signs to produce headers of level one to
+six.  Level one is the most important one, and should not be used
+because the page title already uses a level one heading.  This is why
+level one headings are automatically translated to level two headings.
+
+Example:
+
+{{{
+== Heading 2 ==
+=== Heading 3 ===
+}}}
+
+Using two or three equals signs is recommended (##== like this ==##).
+Nothing beyond a level 4 heading is supported by the [[CSS]] stylesheet.
+After level 4, they are not displayed differently.
+Overuse of headings is poor style, as short Wiki pages are
+preferred to long ones.  Consider splitting the page into two or more
+pages.
+
+== Images ==
+
+To put an image on a page, insert the URL with an image suffix.
+
+Example:
+
+  http://www.emacswiki.org/emacs_logo.png
+
+Result:
+
+http://www.emacswiki.org/emacs_logo.png
+
+Alternatively, put '''image:''' and a page name inside double square brackets to insert inline images.  The images must exist on the Wiki, or be uploaded to a page on the Wiki.  See UploadingImages.
+
+Example:
+
+  [[image:AngryFruitSaladTwo_Screenshot]]
+
+Result:
+
+[[image:AngryFruitSaladTwo_Screenshot]]
+
+== IRC Quotes ==
+
+Discussions in the EmacsChannel can be copied directly to the Wiki.
+
+Example:
+
+{{{
+<hybrid> emacs has a text adventure game in it
+<PyroMithrandir> emacs IS a text adventure game
+}}}
+
+Result:
+
+<hybrid> emacs has a text adventure game in it
+<PyroMithrandir> emacs IS a text adventure game
+
+== See Also ==
+
+For questions, problems, and comments see TextFormattingDiscussion.
+
+For discussions on formatting style see WikiFormattingStyle.
+
+See also HowToEdit.
+
+----
+CategoryEmacsWikiSite
+

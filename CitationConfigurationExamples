@@ -1,0 +1,135 @@
+My configuration for TrivialCite:
+
+ ;;(require 'tc)
+ (autoload 'trivial-cite "tc" t t)
+
+ ;;Trivial Cite
+ (add-hook 'mail-citation-hook 'trivial-cite)
+ (setq tc-remove-signature "^\\(-- \\|--\\|--- \\|---\\|___ \\|___\\|\\.\\.\\.\\)$")
+ (setq tc-cleanup-cited-marks-p t)
+ (setq tc-mouse-overlays t)
+ (setq tc-guess-cite-marks nil)
+
+ (defvar mw/rs-tc-verb "schrieb")
+ (defvar mw/rs-tc-anon "Ein Namenloser")
+
+ (defun mw/rs-tc-simple-attribution ()
+  "Produce an attribution string, using configurable strings."
+  (let ((email (assoc "email-addr" tc-strings-list))
+   (name (assoc "real-name" tc-strings-list))
+   (date (assoc "date" tc-strings-list)))
+  (if (null name)
+  (concat mw/rs-tc-anon " <" (cdr email) "> " mw/rs-tc-verb ":\n\n")
+  (concat (cdr name) " " mw/rs-tc-verb " am " (cdr date)":\n\n"))))
+
+ ;;(setq tc-make-attribution 'mw/rs-tc-simple-attribution)
+ (setq tc-make-attribution 'mak-citation-line-sep)
+
+ (require 'time-date)
+ (require 'mail-parse)
+ (defun mak-citation-line-sep ()
+   "Produce an attribution string, using configurable strings."
+   (let ((name (assoc "real-name" tc-strings-list))
+ 	(date (assoc "date" tc-strings-list)))
+     (concat "Quote [ "
+     (if (null name)
+ 	"Ein Namenloser"
+       (cdr name))
+     " * "
+     (int-to-string
+      (-
+       (time-to-days  (mail-header-parse-date
+ 		      (cdr date)))
+      (time-to-days (encode-time 0 0 0 01 09 1993))))
+     ". September 1993"
+       " ]\n\n")))
+
+ (defun tc-parse-date (str)
+   "tc-parse-date uses tc-time-format to parse the date for use in attributions.
+ The resulting string is inserted into tc-strings-list."
+     (setq tc-strings-list (cons (cons "date" str) tc-strings-list)))
+
+-- MarkusKnittig
+----
+And here is a useful snipplet for removing empty quoted lines (should work with all citation tools):
+
+ (defun rs-message-remove-blank-cited-lines (&optional remove)
+   "Remove cited lines containing only blanks.
+ If REMOVE is non-nil, remove newlines, too."
+   ;; Idea by Karl Plästerer,
+   ;; see <m3adiiup8o.fsf@hamster.pflaesterer.de> ff.
+   (interactive "P")
+   (let ((citexp
+   (concat
+    "^\\("
+    tc-citation-string
+    "\\)+ *$"
+    (if remove "\n" ""))))
+     (save-excursion
+       (while (re-search-forward citexp nil t)
+  (replace-match "")))))
+
+ (add-hook 'tc-post-hook 'rs-message-remove-blank-cited-lines 't)
+
+-- MarkusKnittig
+----
+My citation settings for [[Gnus]]:
+
+ ;; Eigene Einleitungszeile
+ (defun mak-citation-line ()
+   (when message-reply-headers
+     (insert
+      "Quote [ "
+      (or (car (gnus-extract-address-components
+           (mail-header-from message-reply-headers)))
+           "Namenlos")
+      " * "
+      (format-time-string "%a %b %d %Y at %R"
+             (gnus-date-get-time
+                (mail-header-date message-reply-headers)))
+      " ]\n\n")))
+ ;;(setq message-citation-line-function 'mak-citation-line)
+
+ ;;http://www.tuxedo.org/~esr/jargon/html/entry/September-that-never-ended.html
+ (require 'time-date) ;; part of Gnus
+ (defun mak-citation-line-sep ()
+   (when message-reply-headers
+     (insert
+      "Quote [ "
+      (or (car (gnus-extract-address-components
+ 	       (mail-header-from message-reply-headers)))
+           "Namenlos")
+      " * "
+      (int-to-string
+       (-
+	   (time-to-days (mail-header-parse-date
+	 		  (mail-header-date message-reply-headers)))
+	   (time-to-days (encode-time 0 0 0 01 09 1993))))
+      ". September 1993"
+      " ]\n\n")))
+ (setq message-citation-line-function 'mak-citation-line-sep)
+
+-- MarkusKnittig
+----
+A good-enough-for-me method for pulling names / attributions from BbdbMode :
+
+  (defun ejr/tc-find-attr (addr)
+    (let ((attribution
+           (let* ((record (bbdb-search-simple nil addr))
+                  (possible-attribution (bbdb-record-getprop record 'attribution)))
+             (or possible-attribution (bbdb-record-name record)))))
+      (if attribution (cons t attribution) nil)))
+  (defun ejr/tc-attribution ()
+    "Produce an attribution scheme, trying to find entries in BBDB first."
+    (let ((email (assoc "email-addr" tc-strings-list))
+          (name (assoc "real-name" tc-strings-list)))
+      (let ((attribution (ejr/tc-find-attr (cdr email))))
+        (concat "And " (cdr (or attribution name email '(t . "Somebody"))) " writes:\n"))))
+  (setq tc-make-attribution 'ejr/tc-attribution)
+
+You may want to swap attribution and name in the concat if you'd prefer using the name
+in the message.
+
+-- JasonRiedy
+----
+CategoryMailAddons | CategoryGnus

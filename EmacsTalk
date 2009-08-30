@@ -1,0 +1,9 @@
+The simplest of all chat clients.  All you need to know is the X
+display of your partner.  M-x talk-connect will create a frame on the
+other display.  You need to trust each other, and probably you need to
+fiddle with the xauth program or whatever authorization method your X
+server is using, in order to allow your partner to create a frame on
+your display.
+
+----
+CategoryChatClient

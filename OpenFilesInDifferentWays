@@ -1,0 +1,31 @@
+There are *many* different ways to find the files you want to open in Emacs. Here is a list of some of them:
+
+= The Basics =
+
+* FindFile -- the basic command
+* FindFileAtPoint -- filename (and other things) at [[point]]
+* ViewMode -- Emacs as a pager
+* DiredMode -- find files by browsing directories
+** use the Unix or GNU/Linux `find' command to fill a Dired [[buffer]] with file names
+** WThirtyTwoFindDired
+** WThirtyTwoFindDiredWithUnixUtils
+* RecentFiles -- open recently used files from a menu
+* BookMarks -- find bookmarked files
+
+= Other ways =
+
+* [[Icicles - File-Name Input]]
+
+** open files with prefix, substring, or [[regexp]] match
+** open recently used files
+** find and open files located anywhere, even if you don't know where they are -- find by date
+* InteractivelyDoThings -- open files with prefix, substring, or regexp match
+* IswitchRecentFiles -- open recently used files
+* LocateFilesAnywhere, GlobalFF -- find and open files located anywhere, even if you don't know where they are
+* EmacsClient, GnuClient -- open files from outside of Emacs (or even inside), without starting a new, separate Emacs session
+* [[Anything]] -- open anything
+* [[Gpicker]] – quickly pick a file in project by typing just few characters of it’s name
+* [[FindFileSuggest]] – create a file index under a certain directory, and then navigate it using a convenient autocompletion interface
+
+----
+CategoryFiles

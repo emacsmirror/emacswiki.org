@@ -1,0 +1,45 @@
+As a Mac Os X user, the only regret that I have about emacs is its lack of integration with the rest of the so user-friedly Mac desktop.
+In particular, I have a _mental_ problem when switching apps, to or from emacs, that is, the change of the copy-and-paste key shortcuts. Even Mac Os X's Terminal.app understands the "M-c" and "M-v" shortcuts, while in emacs, We're stuck with those ugly "M-w" "C-y".
+
+As I don't needed it (I have the "prior page" and "next page" keys on my keyboard) , I quickly replaced my "M-v" shortcut by a yank :
+<pre>
+   (global-set-key (kbd "M-v") 'yank)
+</pre>
+
+But I still had the "M-c" problem: I could not just bind M-c to kill-ring-save, because I really often use the traditional command bound to "M-c": capitalize-word. So I wrote this little function in my .emacs, and it really made my life easier :
+
+<pre>
+    (defun capitalize-word-or-kill-ring-save ()
+      (interactive)
+      (if mark-active
+          (kill-ring-save (region-beginning) (region-end))
+        (capitalize-word 1)
+        )
+    )
+(global-set-key (kbd "M-c") 'capitalize-word-or-kill-ring-save)
+</pre>
+
+I'm posting this here because I hope it will be useful to others. Feel free to add comments, or to move this snippet if there is a more appropriate place for it.
+
+Cheers, 
+-- [[Gyom]]
+
+[new]
+
+This does not work in my Carbon Emacs because mark-active is always t. You probably have transient mode enabled. Here is a function you can use if transient mark mode is disabled:
+
+<pre>
+
+(defun capitalize-word-or-kill-ring-save-transient-region ()
+  (interactive)
+  (if transient-mark-mode
+      (kill-ring-save (region-beginning) (region-end))
+    (capitalize-word (or current-prefix-arg 1))))
+</pre>
+
+-- VagnJohansen
+
+[new]
+
+This means that you are one of those people able to remember where is the mark without having the active region highlighted ? Wow. (I didn't even believe that you people existed ;-)
+-- [[ Gyom ]]

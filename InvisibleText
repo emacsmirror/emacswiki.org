@@ -1,0 +1,12 @@
+== Using Text Properties ==
+
+This code will insert "foobarbaz" but "bar" will be invisible.
+
+ (let ((a "foobarbaz"))
+   (put-text-property 3 6 'invisible t a)
+   (insert a))
+
+
+See also: TextProperties.
+
+FIXME: Add examples for overlays, extents, etc.

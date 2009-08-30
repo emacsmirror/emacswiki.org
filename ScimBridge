@@ -1,0 +1,54 @@
+scim-bridge.el is SCIM-Bridge client for GNU Emacs. ([http://www.emacswiki.org/cgi-bin/emacs/ScimBridge_Chinese ChineseVersion])
+
+scim-bridge.el can keep local input status of buffer, you can use it input various languages fast. 
+
+==What is the SCIM?==
+[http://www.scim-im.org/ SCIM] is the Smart Common Input Method platform (SCIM) is an input method (IM) platform containing support for more than thirty languages (Chinese, Japanese, Korean and many European languages) for POSIX-style operating systems including Linux and BSD.
+
+==Installation==
+* Install SCIM:
+** In Debian, this is simple, like below:
+:: sudo aptitude install scim scim-bridge-agent scim-bridge-client-gtk scim-bridge-client-qt4 scim-qtimm -y
+** If you use Chinese input method, you should install `scim-pinyin':
+:: sudo aptitude install scim-pinyin -y
+
+* Install scim-bridge.el:
+** Download newest version from [http://www11.atwiki.jp/s-irie/pages/12.html scim-bridge].
+** Disable XIM with Emacs:
+*** Add below in ~/.Xresources:
+::: Emacs*useXIM: false
+*** And then execute command:
+::: xrdb ~/.Xresources
+** Add scim-bridge.el to load-path:
+*** Unpack scim-bridge and put it under directory "~/elisp", then add the following to your ~/.emacs:
+{{{
+            (add-to-list 'load-path (expand-file-name "~/elisp"))
+}}}    
+** Add another key to switch SCIM status:
+*** Because Emacs binding keystone "Ctrl-Space" default. So i add another keystroke to switch SCIM input status, example, Super-Space.
+** Load and setup scim-bridge.el:
+*** And put the following in your ~/.emacs:
+{{{
+            ;; Load scim-bridge.
+            (require 'scim-bridge)
+            ;; Turn on scim-mode automatically after loading .emacs
+            (add-hook 'after-init-hook 'scim-mode-on)
+            ;; Setup input status switch keystroke.
+            (scim-define-common-key (kbd "s-SPC") t)
+            ;; Use C-SPC for Set Mark command
+            (scim-define-common-key (kbd "C-SPC") nil)
+            ;; Use C-/ for Undo command
+            (scim-define-common-key (kbd "C-\\") nil)
+            ;; Change cursor color depending on SCIM status
+            (setq scim-cursor-color '("red" "blue" "limegreen"))
+}}}
+
+: That's all, type "Super-Space" for input something. :)
+
+==Customize==
+* You can customize scim-bridge by:
+:: M-x customize-group RET scim-bridge RET
+
+==Screenshot==
+[[image:ScimBridgeScreenshot]]
+

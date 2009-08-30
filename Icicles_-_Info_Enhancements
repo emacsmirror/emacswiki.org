@@ -1,0 +1,247 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Dired Enhancements]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Support for Projects]] ||
+
+----
+
+== Icicles Info Enhancements ==
+
+'''Icicles''' can help with InfoMode in these ways:
+
+* '''Icicles''' [[completion]] is available for any input.
+
+* You can use `icicle-search' on part or all of a manual, if you flatten it first with `Info-merge-subnodes' .
+
+
+
+[:IciclesCompletionForInfo]
+=== Icicles Completion for Info ===
+
+Whenever completion is available for InfoMode [[command]]s, such as `g'
+(`Info-goto-node'), `i' (`Info-index'), and `m' (`Info-menu'),
+you can take advantage of '''Icicles''' completion.  For instance, if
+you type `##g yan##', you can use `S-TAB' for [[apropos completion]] and
+choose node `##Isearch Yank##', whose name contains `yan' but does not
+start with it.  This is an obvious and standard '''Icicles''' feature.
+
+Although vanilla Emacs also accepts a substring as input for `i',
+it does not provide substring or regexp completion, and it won't
+accept a [[regexp]] as final input.
+
+'''Icicles''' binds `g', `i', and `m' to ''[[multi-command]]s''
+`icicle-Info-goto-node', `icicle-Info-index', and `icicle-Info-menu', which means that
+you can also use `g', `i', and `m' with `C-next', `C-RET', `C-mouse-2',
+and so on, to browse among matching Info nodes. Unlike browsing with repeated use of `##,##' after `i' in vanilla
+Emacs, you can continue to see all of the matching candidates, in buffer
+`*Completions*', and you need not visit the index hits in sequential
+order.
+
+If you use '''`M-g'''' in the [[minibuffer]] to toggle
+'''`<tt>[[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]</tt>'''', then you can use just `next'
+instead of `C-next' to navigate.  See also [[Icicles - More About Multi-Commands#icicle-use-C-for-actions-flag|More about Multi-Commands]].
+
+As usual in '''Icicles''', you can sort completion candidates in various
+ways, using `##C-,##' (`icicle-change-sort-order').  For `g', in particular, although the default order is alphabetical, you can choose '''`in
+book order'''', which shows the node candidates in the same order as in the book.
+In that case, using `g' and then navigating among candidates
+sequentially using `C-up', `C-down', `C-next', or `C-prior' visits
+the nodes in their natural order.
+
+As a special case of this, if you use a negative [[prefix argument]]
+(that is, `M-- g'), then not only are the candidate nodes presented
+'''`in book order'''', they are also ''limited to the nodes that follow''
+your current location in the book -- that is, to the remainder
+of the book.  (A non-negative numeric prefix
+argument has the same meaning as for `Info-goto-node'.)
+
+In addition, except when you are at the `Top' node, a pseudo-node
+'''`##..##'''' is added to the set of completion candidates.  Choosing this
+takes you up to the parent of the current node.  You can thus use
+`g' in Info not only to explore nodes by name, but also as another
+means to traverse the Info menu hierarchy.
+
+
+
+
+
+[:VirtualInfoBooks]
+==== Virtual Info Books ====
+
+You can take advantage of '''Icicles''' set operations to create your
+own ''virtual'' Info books.  That is, you can define and save sets of
+Info nodes or Info index entries, and then reuse them later.
+
+Both `m' and `g' in Info use nodes as candidates, so you can use
+`m' or `g' or a combination of `m' and `g' to define a node set,
+and you can use either `m' or `g' to reuse a node set.  A set of
+index entries is different: You must
+use `i' to create and reuse such a set.
+
+Remember that you can define a candidate set incrementally,
+adding more elements using `##C->##', `##C-)##', `insert', `M-S-mouse-2',
+`M-mouse-3', or `##mouse-1 mouse-3 mouse-3##'.  And you can save a
+candidate set persistently.
+
+You can even create a virtual book that includes Info nodes from
+''different manuals''.  For example, you might want to collect
+together specific nodes that deal with some particular topic, such
+as faces, from both the EmacsManual and the ElispManual.
+
+You do this using '''`C-u g'''' (a plain prefix argument).  This
+prepends the Info file name (book identifier) to each node-name
+completion candidate.  For example, when you are in the Emacs
+manual, each node candidate is prefixed by `##(emacs)##', and in the
+Elisp manual each candidate is prefixed by `##(elisp)##'.  You define a set
+of candidates in the usual '''Icicles''' ways, changing manuals as needed to add
+additional nodes to the set you save.
+
+A node name prefixed by its file name is analogous to an absolute
+file name, that is, a relative file name prefixed by its
+directory.  Because such a saved candidate has a book prefix,
+e.g. `##(emacs)##', it is absolute and unambiguous.  You can use it
+wherever you happen to be in Info, to go directly to that node.
+This is a feature of `g' even in vanilla Emacs: you can go to a
+node in a different manual from the one you are currently
+visiting.
+
+When you want to reuse a virtual book, hit `g' again, retrieve the
+saved set of node candidates that defines the book, and navigate
+among the saved nodes.
+
+If you use library <tt>[[info+.el]]</tt>, you can also take advantage of its
+definition of virtual books and saved Info nodes.  That library
+defines command '''`Info-virtual-book'''', which opens Info on a Table
+of Contents of a virtual book of nodes that you have saved either
+using command '''`Info-save-current-node'''' or by customizing user
+[[option]] '''`Info-saved-nodes''''.
+
+'''Icicles''' command '''`icicle-Info-virtual-book'''' extends
+`Info-virtual-book' by letting you define the virtual book nodes
+using completion.  That is, you can use `g' to save a set of
+node-name completion candidates (as the value of variable
+`icicle-saved-completion-candidates'), and then use command
+`icicle-Info-virtual-book' to open an Info buffer with those nodes
+as a menu.
+
+If you have not saved any node-name candidates, then
+`icicle-Info-virtual-book' acts the same as `Info-virtual-book':
+it opens the virtual book that is defined by '''`Info-saved-nodes''''.  With <tt>[[info+.el]]</tt>, the key '''`##.##'''' adds the current node to
+`Info-saved-nodes', which gives you a convenient way to build up a
+virtual book as you read.  This is like Emacs [[BookMarks|bookmarking]], but it
+keeps your saved Info nodes separate from your other bookmarks.
+
+With a prefix argument, `icicle-Info-virtual-book' lets you choose
+a persistently saved completion set to use instead of
+`icicle-saved-completion-candidates' or `Info-saved-nodes'.  This
+means that you can have any number of such saved node sets as
+virtual books, to use at any time.
+
+
+'''See Also:'''
+[[Icicles - Candidate Sets]] for information about defining, saving, and reusing sets of completion candidates.
+
+
+
+
+
+
+[:UsingIcicleSearchWithInfo]
+=== Using Icicle-Search With Info ===
+
+'''Icicles''' searching (`icicle-search') is not [[Isearch]].
+It searches for all matches in the portion of text you tell it to
+search.  This means that you cannot use it to search an entire
+manual in one operation, unless you have the entire manual
+available in a single buffer to be searched.
+
+So, when you use `icicle-search' (`##C-c `##') to search with InfoMode, you
+are limited to a few options:
+
+* You can use it normally, to search within a single Info node. 
+
+* You can widen the visible portion of the Info buffer (`C-x n w'), to use it on an
+  entire Info file.  However:
+
+## It is not obvious how a given Info manual is divided into
+     files.  That is, you need to be aware of the point at which
+     the manual moves from one file to the next.
+
+## Only the nodes in the same file that you have already visited
+     are highlighted, and lots of ugly Info "plumbing" becomes
+     visible in the other nodes.
+
+## You lose all Info features, such as navigation using links.
+
+* There is another way to search across nodes, which addresses #1
+  and #2, but still does not give you navigable links and such.
+  Think of it as a hack that can sometimes be handy.  That is what
+  is described below.
+
+The idea is to ''flatten'' a subtree of Info nodes -- possibly an
+entire manual, but more typically a node and its children -- and
+then use `icicle-search' (`##C-c `##') over that flattened document.
+What is needed is a command that flattens Info subtrees.  '''InfoPlus''' provides such a command, `Info-merge-subnodes', and
+binds it to `##+##' in InfoMode.
+
+You can control how you want the flattening to occur, by using
+different values of prefix argument.  For searching, you probably
+want complete flattening of the chosen subtree, in a single
+buffer, so you use a prefix arg of zero: `##C-u 0 +##'.
+
+This does not replace the `*Info*' buffer that you started with; it
+creates a new buffer, named after the root node of the subtree you
+flattened.  A principle use of `Info-merge-subnodes' is to print
+out a manual or a portion of it.  Also, I wrote a library
+(<tt>[[mkhtml.el]]</tt>, outdated now) that lets you convert the result to
+HTML.
+
+''In sum'', you can use '''Icicles''' search in Info: `##C-u 0 +##', then `##C-c `##'.
+
+One ''caveat'', however: You will generally want to limit your search
+to a reasonably small subtree of a manual, instead of flattening
+and then searching the entire manual.  Flattening a large manual
+can take a while: it took me 10 minutes to flatten the Emacs
+Manual.  Of course, you could flatten a large manual once, and
+save the result in a file for later searches.
+
+Obviously, flattening in order to search is less convenient than
+using manual-wide incremental search (`C-s') with Info (starting
+with Emacs 22), and it is often less convenient than using
+`Info-search' (bound to `s' in Info).  '''Icicles''' searching is
+different from both, and it has its advantages and disadvantages.
+When you want the advantages of '''Icicles''' searching in Info, the
+flattening hack can be useful.  When you don't need those
+advantages, other search methods can sometimes be more
+appropriate.
+
+'''See Also:'''
+* [[Icicles - Multi-Commands]] for information on using multi-commands.
+* [[Icicles - Search Commands, Overview]] for information on `icicle-search'.
+* InfoPlus for information on `Info-merge-subnodes'.
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Dired Enhancements]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Support for Projects]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands
+CategoryHelp
+CategoryCompletion
+CategoryRegexp
+CategoryModes
+CategoryProgrammerUtils
+CategoryCode
+CategorySearchAndReplace
+CategoryShell
+
+
+
+

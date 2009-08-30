@@ -1,0 +1,179 @@
+These are nifty tricks for working with PclCvs.
+
+With projects large and small, it is desirable to have <nowiki>ChangeLog</nowiki> file to track your changes to the project.  But often this process is so monotonous. If you start project in the [[CVS]] there is easily way to automatically generate <nowiki>ChangeLog</nowiki> entries according to the diff between working file and the file in CVS.
+
+You will need pcl-cvs/pcvs and add-log packages to do this. pcl-cvs is great front-end to CVS and add-log is for maintenance 
+<nowiki>ChangeLog</nowiki> files.
+
+Note as of 2003-11-26, this apparently will only work with [[XEmacs]], as GnuEmacs does not contain the <tt>patch-to-change-log</tt> function in its <tt>add-log.el</tt> package (even in Emacs 22).  As of 2007-06-02, Emacs 22 has a `diff-current-defun' function provided by DiffMode.
+
+The new name for pcl-cvs is pcvs and comes with Emacs starting with version 21.  See CVS:pcvs.el.  It comes with a manual.  Visit it in [[Info]]: `C-h i m pcl-cvs RET'.
+
+<pre>
+(require 'pcl-cvs)
+(require 'add-log)
+</pre>
+
+With Emacs21, this would supposedly be 
+<pre>
+(require 'pcvs)
+(require 'add-log)
+</pre>
+
+== Generate ChangeLog entries from the patch ==
+
+If you do changes in a buffer and don't save it before calling add-change-log-entry, it (add-change-log-entry) will take the buffer contents and buffer-file-name file contents and make proper <nowiki>ChangeLog</nowiki> entries. But if you saved your buffer so there is no place for add-log to take the origin, pcl-cvs will help. We always can take the original file from CVS. add-log has a useful function - patch-to-change-log which will take a diff file in unified format and translate it to <nowiki>ChangeLog</nowiki> entries.
+
+<pre>
+(defun my-cvs-changelog-in-other-window ()
+  "Switch to ChangeLog file in other window."
+  (interactive)
+  (let* ((fi (cvs-mode-marked nil nil :one t))
+	 (default-directory (cvs-expand-dir-name (cvs-fileinfo->dir fi)))
+	 (buffer-file-name (expand-file-name (cvs-fileinfo->file fi)))
+	 change-log-default-name)
+    (save-excursion (find-file-other-window (find-change-log)))))
+
+(defun-cvs-mode (cvs-mode-mydiff . DOUBLE) (flags)
+  "Diff the selected files against the repository and
+patch-to-change-log it after processing."
+  (interactive
+   (list (cvs-add-branch-prefix
+	  (cvs-add-secondary-branch-prefix
+	   (cvs-flags-query 'cvs-diff-flags "cvs diff flags")))))
+  (cvs-mode-do "diff" flags 'diff
+	       :show nil :postproc '((patch-to-change-log default-directory))))
+
+(defun my-cvs-patch-to-change-log ()
+  "Make patch of file in working directory and in CVS. Create
+ChangeLog entries according to diff."
+  (interactive)
+  (progn
+    (cvs-mode-mydiff)
+    (my-cvs-changelog-in-other-window)))
+
+(define-key 'cvs-mode-map "\C-cA" 'my-cvs-patch-to-change-log)
+</pre>
+
+Also you may need to add:
+
+<pre>
+(setq-default diff-switches "-u")
+</pre>
+
+(You could also do this with 'diff -u' in your ~/.cvsrc.)
+
+==Key bindings==
+
+Add the following line to your ~/.emacs, which will bind F12 to PCL CVS without asking for a directory to examine:
+
+<pre>
+(global-set-key [f12] '(lambda () 
+			 (interactive)	
+			 (cvs-examine	
+			  (file-name-directory	
+			   (buffer-file-name)) '("-d" "-P"))))
+</pre>
+
+I found that I often miss the following default keybindings from the menu, so I list them here: 
+
+* 'm' - marks the file under point for the next action, 
+* 'u' - unmarks the file under point.
+
+<pre>
+From: KaiGrossjohann
+Subject: Re: checking in two files while in CVS mode
+Newsgroups: comp.emacs
+Message-ID: <84smutapnf.fsf@lucy.is.informatik.uni-duisburg.de>
+
+
+I did (global-set-key (kbd "C-x v D") 'cvs-update) so instead of C-x
+v d I can use C-x v D to get PCL-CVS.
+
+PCL-CVS also supports doing `=' on a directory.
+
+I think you will find that the additional information that PCL-CVS
+gives you will more than compensate for the simple command that you
+have to run.
+
+Another useful feature in PCL-CVS is its handling of ChangeLog files
+and commit entries.  While you are editing, when you are in the
+function you've changed, you can type C-x 4 a.  This will prepare a
+ChangeLog entry for that file and that function.  Then, from PCL-CVS,
+you can just type `C' (instead of `c') to commit, and that will snarf
+all the relevant ChangeLog entries and use them for the commit
+message.  I like this a lot, especially since you get information on
+the current spot in the file for free.
+
+After having requested a diff with `=', you can use `a' (or `C-x 4
+a') from the diff buffer, too -- no need to change back to the source
+code buffer.
+</pre>
+
+== Substitute $TAG$ by CVS tag ==
+
+Not really a pcl-cvs function, but maybe someone will find it useful:
+
+<pre>
+(defun my-insert-cvs-tag ()
+  "Substitutes $TAG$ by CVS tag."
+  (interactive)
+  (let ((tbuf nil)
+	(tstr "HEAD"))
+
+    (when (file-exists-p "CVS/Tag")
+      (setq tbuf (find-file-noselect "CVS/Tag")))
+
+    (when tbuf
+      (with-current-buffer tbuf
+	(if (re-search-forward "T\\(.*\\)")
+	  (setq tstr (match-string 1))
+	  (setq tstr "unknown"))
+	(kill-buffer tbuf)))
+
+    (save-excursion
+      (beginning-of-buffer)
+      (when (re-search-forward "\\$TAG\\(: .*\\$\\|\\$\\)")
+	(replace-match (format "$TAG: %s$" tstr) nil nil)))
+    ))
+</pre>
+
+== Different CVS repositories ==
+
+I find myself using a few different CVS repositories for different projects, and sometimes my CVSROOT isn't in sync with the file I'm working on currently.  Here's a little function I keep in my .emacs to pick which server I want to work with on the fly:
+
+<pre>
+;; I have to ssh into all the computers I connect to.  Make sure CVS_RSH is set right
+(if (not (getenv "CVS_RSH"))
+    (setenv "CVS_RSH" "ssh"))
+
+;; An alist of name/cvsroot pairs
+(defvar cvsroot-alist '(
+			("host1" . "user@host1:/home/user/cvs")
+			("host2" . "user@host2:/usr/local/CVS")
+			("host3" . "user@host3:/home/user/cvsroot")))
+
+
+(defun select-cvs (server)
+  (interactive
+   (let ((out
+          ;;This will ask for the name of the cvs server you want, pulling the
+          ;;names from cvsroot-alist, above.  It does completion.
+	  (completing-read "Cvs server: "
+			   cvsroot-alist
+			   nil
+			   t
+			   nil
+			   nil
+			   (cdr (cdr cvsroot-alist))
+			   nil)))
+     (list out)))
+     ;;the variable we actualy want to set is cvs-cvsroot
+  (setq cvs-cvsroot (cdr (assoc server cvsroot-alist))))
+</pre>
+
+M-x select-cvs will now prompt you for the name of a host you want to user for your repository (i.e. host1, host2, host3 from cvsroot-alist).  Of course, you can bind this to any key combination you want.
+
+
+----
+CategoryVersionControl

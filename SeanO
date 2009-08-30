@@ -1,0 +1,381 @@
+I guess I'm an addict -- even on a Mac, I write my code, read my
+mail, keep a diary, and even sometimes browse the web in
+GnuEmacs.  I've even been known to control iTunes with a bastard
+child of Emacs and MySQL.
+
+Here are the functions I use to control iTunes: [Lisp:itunes.el].  There is another library out there to do this, but I didn't know about it at the time.
+
+I am currently developing [http://search.cpan.org/~seano/Sepia/
+Sepia], a set of tools to improve
+interactive Perl development in Emacs, adding things like an
+interactive mode, find-function, eldoc, and cross-referencing.  It now
+has a [http://search.cpan.org/~seano/Sepia/Sepia.html manual], and is
+mostly ready for public consumption.
+
+[new]
+Some time ago I wrote SimpleCallTree, trying to find bits of unused
+code in my Perl script.  It uses font-lock-function-name to identify
+function names, so if you're writing trivial Perl, it might actually
+work...  I'm interested in your code.  :) -- AlexSchroeder
+
+[new]
+Heh -- that's pretty clever.  My code is perl-specific, and so
+probably less interesting, relying on a Perl backend to crawl over the
+compiled program.
+
+[new:rubikitch:2007-01-14 10:02 UTC]
+I develop EmacsLispForRuby, talking Emacs with
+[http://www.ruby-lang.org/ Ruby].
+I'll consult Sepia. -- [[rubikitch]]
+
+[new]
+I've tried el4r, and in most ways, it's *much* better than Sepia...
+though Sepia does have a few of its own tricks.  -- SeanO
+
+----
+
+= Peeves / Hall of Shame =
+
+When you write Emacs extensions, please use the built-in facilities
+where possible, as reinvented wheels are annoying.  Today's example,
+which disables iswitchb in *w3m* buffers:
+
+    (defun w3m-e21-switch-to-buffer (buffer &optional norecord)
+      "Run `switch-to-buffer' and redisplay the header-line.
+    Redisplaying is done by wobbling the window size."
+      (interactive "BSwitch to buffer: ")
+      (prog1
+          (switch-to-buffer buffer norecord)
+        (when (and header-line-format
+                   (eq major-mode 'w3m-mode))
+          (w3m-force-window-update))))
+
+----
+
+= Snippets =
+
+A bit of code I've had in my init file for awhile to go to the
+definition of whatever elisp thing is at point:
+
+    (defun find-thing-at-point (&optional always-ask)
+      (interactive "P")
+      (let* ((at-point (thing-at-point 'symbol))
+             (s (and at-point (intern at-point)))
+             (v (or (variable-at-point)
+                    (and s (boundp s) s)))
+             (f (or (function-called-at-point)
+                    (and s (fboundp s) s))))
+        (push-mark (point) t)
+        (cond
+          (always-ask (call-interactively 'find-function))
+          ((and v (not (numberp v)))
+           (find-variable v))
+          ((and f (subrp (symbol-function f)))
+           (let ((buf-pos (find-function-search-for-symbol
+                           f nil (help-C-file-name (symbol-function f) 'subr))))
+             (and (car buf-pos) (pop-to-buffer (car buf-pos)))))
+          (f (find-function f))
+          (t (call-interactively 'find-function)))))
+
+[new:DrewAdams:2006-12-08 18:20 UTC]
+Good idea. Based on this, I've added a similar command
+(`find-fn-or-var-nearest-point') to Lisp:thingatpt+.el. Thanks. --
+DrewAdams
+[new]
+
+----
+
+Another bit to jump to a function within the buffer using ido and
+semantic:
+
+    (defun my-semanticdb-minor-mode-p ()
+    "Query if the current buffer has Semanticdb mode enabled."
+      (condition-case blah
+          (and (semanticdb-minor-mode-p)
+               (eq imenu-create-index-function
+                   'semantic-create-imenu-index))
+        (error nil)))
+    
+    (defun my-icompleting-read (prompt choices)
+      (flet ((ido-make-buffer-list (default)
+               (setq ido-temp-list choices)))
+        (ido-read-buffer prompt)))
+    
+    (defun my-jump-to-function ()
+    "Jump to a function found by either Semantic or Imenu within the
+    current buffer."
+      (interactive)
+      (cond
+        ((my-semanticdb-minor-mode-p) (my-semantic-jump-to-function))
+        ((boundp 'imenu-create-index-function) (my-imenu-jump-to-function))))
+    
+    (defun my-imenu-jump-to-function ()
+    "Jump to a function found by Semantic within the current buffer
+    with ido-style completion."
+      (interactive)
+      (save-excursion
+        (setq imenu--index-alist (funcall imenu-create-index-function)))
+      (let ((thing (assoc
+                       (my-icompleting-read "Go to: "
+                                            (mapcar #'car imenu--index-alist))
+                       imenu--index-alist)))
+        (when thing
+          (funcall imenu-default-goto-function (car thing) (cdr thing))
+          (recenter))))
+    
+    (defun my-semantic-jump-to-function ()
+    "Jump to a function found by Semantic within the current buffer
+    with ido-style completion."
+      (interactive)
+      (let ((tags
+             (remove-if
+              (lambda (x)
+                (or (getf (semantic-tag-attributes x) :prototype-flag)
+                    (not (member (cadr x) '(function variable type)))))
+              (semanticdb-file-stream (buffer-file-name (current-buffer)))))
+            (names (make-hash-table :test 'equal)))
+        (dolist (tag tags)
+          (let ((sn (semantic-tag-name tag)))
+            (when (gethash sn names)
+              (setq sn
+                    (loop for i = 1 then (1+ i)
+                       for name = (format "%s<%d>" sn i)
+                       while (gethash name names)
+                       finally return name)))
+            (puthash sn tag names)))
+        (goto-char (semantic-tag-start
+                    (gethash
+                     (my-icompleting-read "Go to: " (hash-table-keys names))
+                     names)))
+        (recenter)))
+
+[new]
+Great, exactly what I was looking for :) Unfortunately this results in
+"Symbol's function definition is void: hash-table-keys" on Aquamacs
+0.99d - any thoughts? JanR
+
+[new]
+Oops!  This is one of mine:
+
+    (defun hash-table-keys (hash)
+      (let ((ret nil))
+        (maphash (lambda (k v) (push k ret)) hash)
+        ret))
+
+Also, IMHO you should switch to the normal Carbon Emacs.  Aquamacs is
+a mutant abomination.
+----
+Another bit to use Spotlight as a stand-in for locate on OSX:
+
+    (defun spotlight ()
+      (interactive)
+      (let ((locate-command "mdfind"))
+        (call-interactively 'locate nil)))
+    
+----
+Useful snippet for Perl hackers:
+
+    (defun w3m-about-perldoc-buffer (url &optional no-decode no-cache &rest args)
+      "Handle perldoc in the current buffer."
+      (when (string-match "\\`about://perldoc-buffer/" url)
+        (let ((buf (get-buffer (w3m-url-decode-string
+    			    (substring url (match-end 0)))))
+    	  (default-directory w3m-profile-directory)
+    	  (process-environment (copy-sequence process-environment)))
+          ;; To specify the place in which pod2html generates its cache files.
+          (setenv "HOME" (expand-file-name w3m-profile-directory))
+          (insert-buffer buf)
+          (when (zerop (apply #'call-process-region
+    			  (point-min) (point-max)
+    			  w3m-perldoc-pod2html-command
+    			  t '(t nil) nil
+    			  (append w3m-perldoc-pod2html-arguments
+    				 '("--htmlroot=about://perldoc-buffer"))))
+    	(let ((case-fold-search t))
+    	  (goto-char (point-min))
+    	  (while (re-search-forward
+    		  "<a href=\"about://perldoc\\(-buffer\\)?/\\([^\"]*\\)\\(\\.html\\)\">" nil t)
+    	    (delete-region (match-beginning 3) (match-end 3))
+    	    (save-restriction
+    	      (narrow-to-region (match-beginning 2) (match-end 2))
+    	      (while (search-backward "/" nil t)
+    		(delete-char 1)
+    		(insert "::"))
+    	      (goto-char (point-max))))
+    	  "text/html")))))
+    
+    (defun w3m-view-pod (&optional buffer)
+      "View POD for the current buffer."
+      (interactive)
+      (w3m-goto-url (concat "about://perldoc-buffer/"
+    			(w3m-url-encode-string (buffer-name buffer)))))
+    
+    (defun w3m-pod-file (file)
+      "View POD for FILE."
+      (interactive)
+      (with-temp-buffer
+        (insert-file file)
+        (w3m-goto-url
+         (concat "about://perldoc-buffer/"
+                 (w3m-url-encode-string (buffer-name (current-buffer)))))))
+----
+A generic version of `X-other-window' (specific `X-other-window'
+functions are usually better):
+
+    (defun make-other-window-map (okmap)
+      (unless (eq window-system 'ns)
+        (let ((kmap (if (consp okmap) (cadr okmap) okmap)))
+          (cond
+            ((consp kmap)
+             (let ((ret (make-sparse-keymap)))
+               (dolist (kv kmap)
+                 (define-key ret (car kv) (other-windowize (cdr kv))))
+               ret))
+            ((char-table-p kmap)
+             (let* ((ret (copy-keymap okmap)))
+               (map-char-table (lambda (k v)
+                                 (unless (keymapp k)
+                                   (aset (cadr ret) k (other-windowize v))))
+                               (cadr ret))
+               (dolist (kv (cddr ret))
+                 (setf (cdr kv) (other-windowize (cdr kv))))
+               ret))
+            (t (error "wtf is this: %s" kmap))))))
+    
+    (defun other-windowize (fn)
+      `(lambda ()
+         (interactive)
+         (switch-to-buffer-other-window
+          (save-window-excursion (call-interactively ',fn) (current-buffer)))))
+----
+Go to the indicated line with `find-file-at-point':
+
+    (defadvice find-file-at-point (around goto-line compile activate)
+      (let ((line (and (looking-at ".*:\\([0-9]+\\)")
+                       (parse-integer (match-string 1)))))
+        ad-do-it
+        (and line (goto-line line))))
+
+----
+
+Awesome, thank you! -- RyanDavis
+
+----
+A better way to define hooks, particularly when you're experimenting
+with them, than "(add-hook 'blah (lambda () ...))":
+
+    (defmacro defhook (mode &rest body)
+      (let ((name (intern (concat "my-" (symbol-name mode) "-hook"))))
+      `(progn
+         (add-hook
+          ',(intern (concat (symbol-name mode) "-hook"))
+          (defun ,name ()
+            ,@body))
+         (put ',name 'definition-name ',mode))))
+    (put 'defhook 'lisp-indent-function 1)
+
+----
+
+Since it took me so long to figure this one out (hey, it is late), I
+thought I'd add an example:
+
+    (defhook text-mode ; note not 'text-mode
+      (blah-blah-blah))
+
+-- RyanDavis
+    
+----
+A function to go to the definition of a function bound to a key;
+basically, a shortcut for `C-h k', `C-x o', `TAB', 'RET':
+
+    (defun my-find-key (k &optional untranslated up-event)
+      "Find the definition of a key."
+      (interactive "kKey Sequence: \np\nU")
+      (if (numberp untranslated)
+          (setq untranslated (this-single-command-raw-keys)))
+      (save-excursion
+        (let ((modifiers (event-modifiers (aref k 0)))
+    	  window position)
+          ;; For a mouse button event, go to the button it applies to
+          ;; to get the right key bindings.  And go to the right place
+          ;; in case the keymap depends on where you clicked.
+          (if (or (memq 'click modifiers) (memq 'down modifiers)
+    	      (memq 'drag modifiers))
+    	  (setq window (posn-window (event-start (aref k 0)))
+    		position (posn-point (event-start (aref k 0)))))
+          (when (windowp window)
+    	    (set-buffer (window-buffer window))
+    	(goto-char position))
+          (let ((defn (key-binding k)))
+            (if (or (null defn) (integerp defn) (equal defn 'undefined))
+                (message "%s is undefined" (help-key-description k untranslated))
+                (find-function defn))))))
+----
+If you're on a Mac, ##M-tab## switches between applications. 
+Unfortunately if, like any civilized human, you use Command as Meta,
+it also does useful things in Emacs.  This makes ##S-tab## do those
+things as well:
+
+    (define-key global-map (kbd "<S-tab>")
+      (lambda ()
+        (interactive)
+        (call-interactively (key-binding "\M-\t"))))
+
+----
+The GNUstep/Cocoa port doesn't have `do-applescript', so here's a
+cheap replacement:
+
+    (defun do-applescript (str)
+      "Synchronously run applescript STR."
+      (with-temp-buffer
+        (insert str)
+        (shell-command-on-region (point-min) (point-max) "osascript" nil t)
+        (buffer-string)))
+
+----
+Icicles faces for dark backgrounds:
+
+    (custom-set-faces
+     '(icicle-complete-input ((((background dark)) nil)))
+     '(icicle-completing-mustmatch-prompt-prefix ((((type x w32 mac graphic) (class color)) (:foreground "Cyan"))))
+     '(icicle-completing-prompt-prefix ((((type x w32 mac graphic) (class     color)) (:foreground "Red"))))
+     '(icicle-current-candidate-highlight ((((background dark)) (:background "gray20"))))
+     '(icicle-historical-candidate ((((background dark)) (:foreground "White"))))
+     '(icicle-prompt-suffix ((((type x w32 mac graphic) (class color) (background dark)) (:foreground "LightSlateBlue"))))
+     '(icicle-search-context-level-1 ((((background dark)) (:background     "gray20" :weight bold))))
+     '(icicle-search-context-level-2 ((((background dark)) (:background     "gray15" :weight bold))))
+     '(icicle-search-context-level-3 ((((background dark)) (:background     "gray10" :weight bold))))
+     '(icicle-search-context-level-4 ((((background dark)) (:weight bold))))
+     '(icicle-search-context-level-5 ((((background dark)) (:weight bold))))
+     '(icicle-search-context-level-6 ((((background dark)) (:weight bold))))
+     '(icicle-search-context-level-7 ((((background dark)) (:weight bold))))
+     '(icicle-search-context-level-8 ((((background dark)) (:weight bold))))
+     '(icicle-search-current-input ((t (:foreground "green"))))
+     '(icicle-search-main-regexp-current ((((background dark)) (:foreground "DodgerBlue"))))
+     '(icicle-search-main-regexp-others ((((background dark)) (:foreground     "SeaGreenk"))))
+     '(icicle-special-candidate ((((background dark)) (:foreground "yellow"))))
+     '(icicle-whitespace-highlight ((t (:background "#300")))))
+----
+Current curmudgeon code:
+
+    (blink-cursor-mode		0)
+    (tool-bar-mode			0)
+    (when (fboundp 'tooltip-mode)
+      (tooltip-mode			0))
+    (with-current-buffer (get-buffer-create "*scratch*")
+      (setq buffer-offer-save nil))
+    (setq
+     line-move-visual		nil
+     initial-scratch-message	nil)
+----
+Prevent the occasional disaster by confirming comint exits:
+
+    (defadvice comint-send-eof (around warn-me-please compile activate)
+      "Confirm EOF when called interactively, because accidental EOF sucks."
+      (when (or (not (member this-command '(comint-send-eof
+                                            comint-delchar-or-maybe-eof)))
+                (y-or-n-p "Really exit? "))
+        ad-do-it))
+
+----
+CategoryHomepage

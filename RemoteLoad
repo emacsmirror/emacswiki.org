@@ -1,0 +1,39 @@
+=Loading remote libraries=
+
+*Warning*: Evaluating remote source code can be a security risk to your computer.
+
+
+By defining the following functions you'll be able to load files located
+on remote web servers, in this instance the ElispArea.  This requires HttpGet.
+
+    (defvar http-default-url "http://www.emacswiki.org/cgi-bin/wiki/download/")
+
+    (defun http-load-file (url)
+      (interactive "surl: ")
+      (let ((buf (process-buffer (http-get url  nil nil nil "*temp.el"))))
+        (sleep-for 5)
+        (eval-buffer buf)
+        (kill-buffer buf)))
+
+    (defun http-require (feature &optional url)
+      (if (not (featurep feature))
+          (http-load-file (if url url
+                            (concat http-default-url (symbol-name feature) ".el")))))
+
+==Usage examples==
+To load the latest version of MenuBarPlus you would type
+##M-x http-load-file RET http://www.emacswiki.org/cgi-bin/wiki/download/menu-bar+.el##.
+.
+
+Or you could put either
+
+    (http-load-file "http://www.emacswiki.org/cgi-bin/wiki/download/menu-bar+.el")
+
+or
+
+    (http-require 'menu-bar+)
+
+in your ##~/.emacs## to have it loaded every time you start emacs.
+
+----
+CategoryRemoteEmacs

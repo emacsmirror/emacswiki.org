@@ -1,0 +1,57 @@
+=== ManHtml lets you use a command to browse HTML documentation =
+
+you have a lot of HTML documentation on your local system or URLs to remote
+resources.  you want to use your favourite HTML browser on them; here's how:
+
+    (setq man-local-alist '(
+       ("arch" "/doc/tla/arch.html")
+       ("commonlisp" "/l/backup/www.lisp.org/HyperSpec/FrontMatter/index-text.html")
+       ("emacswiki" "http://www.emacswiki.org/cgi-bin/wiki/SiteMap")
+       ("elk" "/usr/local/share/elk/doc/kernel/kernel.html")
+       ("execline" "/var/djb/package/admin/execline/doc/index.html")
+       ("gnus" "/usr/local/share/doc/emacs/manual/gnus_toc.html")
+       ("gprolog" "/l/gprolog-1.2.16/doc/Html/index.html")
+       ("guile" "file:///usr/local/backup/www.gnu.org/software/guile/docs/index.html")
+       ("handbook" "/usr/share/doc/en_US.ISO_8859-1/books/handbook/index.html")
+       ("lua" "/doc/lua/lua5/doc/contents.html")
+       ("nistp224" "/l/backup/cr.yp.to/nistp224.html")
+       ("pl" "/usr/local/share/prolog/pl-5.0.1/Manual/Contents.html")
+       ("scheme" "/l/backup/www.cs.utexas.edu/users/wilson/schintro/schintro_toc.html")
+       ("siod" "/l/lib/siod/siod.html")
+       ("t-scheme" "/usr/local/share/doc/teach-scheme/t-y-scheme-Z-H-1.html")
+       ("tinydns" "~/archiv/tinydns-data.html")
+       ("w3m" "/l/share/doc/w3m/MANUAL.html")
+       ("xref" "/l/doc/xref.html")
+    ))
+    (defun man-local (what)
+      "browse manual page"
+      (interactive
+       (let ((page (completing-read (format "What? (default %s): "
+                                            (thing-at-point 'word))
+                                    man-local-alist nil t)))
+         (list page)))
+      (browse-url (cadr (assoc what man-local-alist))) ; w3m-browse-url w3m-goto-url-new-session
+    )
+
+the prompt defaults to the word the TextCursor sits on, but you can TAB-complete
+on each of the keys in the first column of the man-local-alist.  the URL in
+the second column will be given to your browser.  think about adding a third
+column for a "method" to call up other browsers (like for viewing pictures or
+simply using emacs M-x man command), or add a few lines to split the current
+window and put the docs in the upper one.  also, it's not difficult to add a
+search string to the URL (or is it?).
+
+this code snippet used to be a (long) list of shell aliases, but for actual
+work i need an emacs with two windows:  documentation in the upper and code in
+the lower one, so there!
+
+as the alist is easily extendible, i strongly recommend keeping it sorted.
+the above is heavily shortened :)  you can put local copies as well as remote
+URLs in there, just whatever your browser can understand when given as an
+argument.
+
+ClemensFischer
+
+----
+
+CategoryCompletion

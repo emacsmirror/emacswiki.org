@@ -1,0 +1,74 @@
+=== Open a file like "Open" in Explorer ===
+
+ (defun eshell/op (FILE)
+  "Invoke (w32-shell-execute \"Open\" FILE) and substitute slashes for backslashes"
+  (w32-shell-execute "Open" (substitute ?\\ ?/ (expand-file-name FILE))))
+
+use like this
+
+ $ op my_doc.doc
+
+the following command opens current dir in Explorer
+
+ $ op . (same as op $PWD)
+
+same, but for c:
+
+ $ op c:
+
+UNC paths work too:
+
+ $ op //server/share
+
+=== Substitute doesn't work ===
+
+Under emacs 21.2 on Windows XP "substitute" doesn't work for me. "subst-char-in-string" works.
+
+By the way, the evaluation of the w32-shell-execute command shows up in the eshell buffer like this.
+
+  d:/Mahesh $ op c:
+  t
+  d:/Mahesh $
+
+How do I prevent it ? Thanks.
+
+This happens when an eshell command function has a non-nil Lisp value.
+To fix this, redefine the command thusly:
+
+  (defun eshell/op (file)
+    (w32-shell-execute "Open"
+                       (substitute ?\\ ?/ (expand-file-name file)))
+    nil)
+
+-- LucasBergman
+
+=== Play all mp3:s matching pattern ===
+
+This is very important stuff: :)
+
+ $ alias mp3 'for f in $1 {C:/Program\ Files/Winamp/winamp.exe $f &}'
+
+and to use:
+
+ $ mp3 dio*.mp3 
+
+or even:
+
+ $ mp3 **/*.mp3
+
+though it '''killed''' my Emacs (two times) now that I tried
+it... Maybe this puts too much strain on Emacs' process handling? I
+will investigate further. -- MathiasDahl
+
+=== Convert %var% to $var so the PATH variable in Windows gets evaluated correctly ===
+
+I don't know if anyone else had this problem, but GNU emacs 22.1.1 on Windows XP failed to find anything in the ##c:\windows\system32## directory for me in spite of ##%systemroot%\system32## being in my search path.  The solution I came up with:
+
+ (setenv "PATH" (replace-regexp-in-string "%\\([^%]+\\)%" "$\\1" (getenv "PATH")))
+
+It simply converts anything that looks like ##%var%## to ##$var##.  In my case ##%SystemRoot%## was converted to ##$SystemRoot##, which was then interpolated correctly (presumeably with ##(getenv "SystemRoot")##).
+
+-- KevinHammack
+
+----
+CategoryEshell, EshellAlias, EshellForLoop, CategoryWThirtyTwo, EshellLnkFileSupport

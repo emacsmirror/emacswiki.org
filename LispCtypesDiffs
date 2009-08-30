@@ -1,0 +1,44 @@
+ --- xemacs-packages\c-support\ctypes.el	2003-11-09 19:33:11.000000000 +0100
+ +++ Temp\ctypes.el	2003-11-09 19:33:11.000000000 +0100
+ @@ -8,6 +8,7 @@
+  ;; Created: 16 Mar 1997
+  ;; Date: 12 Jun 1997
+  
+ +;; ctypes.el is free software
+  ;; CTypes is free software; you can redistribute it and/or modify
+  ;; it under the terms of the GNU General Public License as published by
+  ;; the Free Software Foundation; either version 2, or (at your option)
+ @@ -232,7 +233,7 @@
+  
+  ;;{{{ Dependencies
+  
+ -;; The only reason to load font-lock is to determine the font-lock
+ +;; The only reason to load font-lock is to determinate the font-lock
+  ;; version we are using.
+  
+  (require 'font-lock)
+ @@ -301,7 +302,7 @@
+  
+  
+  (defvar ctypes-dir-read-file nil
+ -  "*Variable determining which files `ctypes-dir' should read.
+ +  "*Variable determinating which files `ctypes-dir' should read.
+  
+  When search for types in a large number of files it is difficult
+  to determine which files to parse.  Should to few be opened, we
+ @@ -676,7 +677,7 @@
+  This variable is designed to be used in a \"Local Variables\" section
+  at the end of source files.  Should this variable not be defined in a
+  Local Variables section, the global value is used.  By setting this
+ -variable to, for example, \".ctypes\" Emacs will try to read a type file
+ +varible to, for examle, \".ctypes\" Emacs will try to read a type file
+  named \".ctypes\" in every directory it opens files from.")
+  
+  
+ @@ -1734,4 +1735,4 @@
+  
+  (run-hooks 'ctypes-load-hook)
+  
+ -;; ctypes.el ends here.
+ +;;; ctypes.el ends here.
+

@@ -1,0 +1,10 @@
+ tsql-indent.el -- indents TSQL (and other SQL) statements
+
+This is a hack inspired by AlexSchroeder's SqlIndent and by the excellent tutorial on indentation in "An Emacs language mode creation tutorial" (http://two-wugs.net/emacs/mode-tutorial.html).  
+
+I wrote this code while working on a large number of Transact SQL stored procedures (yes, I know).  The code helped me indent other people's code to the same standard I was using, and it helped make the code more readable.
+
+I'm new to Elisp hackery, and always interested in feedback.
+
+----
+CategorySql

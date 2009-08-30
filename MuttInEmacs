@@ -1,0 +1,70 @@
+== Emacs as your external editor for Mutt ==
+
+Add the following to your ~/.emacs in order to have all files whose name
+contains "/mutt" to be in mail-mode.
+
+    (server-start)
+    (add-to-list 'auto-mode-alist '("/mutt" . mail-mode))
+
+Change ~/.muttrc:
+
+  set editor=emacsclient
+  set pager=emacsclient
+
+You can also use GnuClient instead of EmacsClient, if you installed it.
+
+== XEmacs as your external editor for Mutt ==
+
+Use the same as above, but change your ~/.muttrc to read as follows:
+
+  set editor=gnuclient
+  set pager=gnuclient
+
+You need that because XEmacs uses GnuClient instead of EmacsClient.
+
+== Run Mutt within Emacs or XEmacs ==
+
+You can run mutt within an AnsiTerm: M-x ansi-term.
+
+Note that ansi-term remaps your default C-x key to C-c.
+
+== Further Configuration ==
+
+Since your Mutt mails are now in mail-mode, you can use mail-mode-hook for further configurations.  Here is an example to add AutoFillMode:
+
+    (add-hook 'mail-mode-hook 'turn-on-auto-fill)
+
+== Replacing C-x # with C-x k ==
+
+This turns on auto-fill-mode, abbrev-mode and sets C-x k to server-edit so that you don't have to change from using C-x k to C-x # depending on the buffer
+
+  (defun my-mail-mode-hook ()
+     (auto-fill-mode 1)
+     (abbrev-mode 1)
+     (local-set-key "\C-Xk" 'server-edit))
+   (add-hook 'mail-mode-hook 'my-mail-mode-hook)
+
+== Replacing C-x # with C-c C-c ==
+
+Here's another way which binds C-c C-c and doesn't prompt whether you want to save the buffer first:
+
+  ;; Yes, you can do this same trick with the cool "It's All Text" firefox add-on :-)
+  (add-to-list 'auto-mode-alist '("/mutt-\\|itsalltext.*mail\\.google" . mail-mode))
+  (add-hook 'mail-mode-hook 'turn-on-auto-fill)
+  (add-hook
+   'mail-mode-hook
+   (lambda ()
+     (define-key mail-mode-map [(control c) (control c)]
+       (lambda ()
+         (interactive)
+         (save-buffer)
+         (server-edit)))))
+
+== Switching window focus between mutt and emacs when using emacsclient ==
+
+See the [[EmacsClient#WMFocus|"Automatically managing window manager focus" section]] of
+EmacsClient.
+
+----
+CategoryMail
+CategoryExternalUtilities

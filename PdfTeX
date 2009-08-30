@@ -1,0 +1,24 @@
+pdfTex is an implementation of TeX that outputs PDF documents.
+
+* [http://www.pdftex.org/ The pdfTeX home page] - Source of documentation and development information.
+
+==Using pdfTeX in Emacs `tex-mode'==
+
+To use pdfTeX in TexMode (`tex-mode'), set the `tex-command' variable by putting the following in your <tt>.emacs</tt> file
+
+  (setq tex-command "pdftex")
+
+To use a PDF-capable viewer with the `tex-view' command, you must override the definition for the `tex-view' function, by using:
+
+  (defun tex-view ()
+    (interactive)
+    (tex-send-command "xpdf" (tex-append tex-print-file ".pdf")))
+
+where /xpdf/ is the name of the PDF-capable viewing command.
+
+Simply, using <code>(setq tex-dvi-view-command "xpdf")</code> is /not/ a solution.
+
+See also PDFLaTeX.
+
+----
+CategoryTex 

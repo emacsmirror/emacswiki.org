@@ -1,0 +1,14 @@
+Emacs comes with a tutorial.  It doesn't take long
+to go through, and you will better understand and be more productive in Emacs afterward.
+
+* Type `C-h t' (hold down Control while hitting `h', then hit `t').
+
+: If the tutorial command doesn't work, you may have been caught by one of Emacs's CommonProblems.
+Try `F1 t', `M-x help-with-tutorial RET' (hold down Meta/Alt key while hitting `x', then type `help', then hit Enter).
+
+To read the tutorial in a language other than english, use
+the command `help-with-tutorial-spec-language' (hold down `Alt' while hitting `x', then type `help-with-tutorial-spec-language' and `RET'). Currently available tutorial languages include: `bg', `cn', `cs', `de', `es', `fr', `it', `ja', `ko', `nl', `pl', `ro', `ru', `sk', `sl', `sv',
+`th', and `zh'.
+
+----
+CategoryHelp

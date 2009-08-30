@@ -1,0 +1,143 @@
+Use iswitch to find recently opened files. You can configure from what sources the file names should be fetched.
+
+<pre>
+(defcustom my-open-recent-file-history-sources '(file-name-history)
+  "*Determines which history source `my-open-recent-file' uses.
+Normal file name history uses the file name history saved by
+`find-file', saved in the variable `file-name-history', Recentf
+history uses `recentf-list' from recentf.el (enable recentf-mode
+to use this) and Session uses `session-file-alist' from
+session.el (external package)."
+  :type '(set (const :tag "Normal file name history" file-name-history)
+              (const :tag "Recentf history" recentf-list)
+              (const :tag "Session" session))
+  :group 'files)
+
+(defun my-open-recent-file (fname)
+  "Using iswitchb, interactively open recently opened file.
+Configure `my-open-recent-file-history-sources' to control from
+where to get the file name history."
+  (interactive (list (flet ((iswitchb-make-buflist
+                             (default)
+                             (setq iswitchb-buflist 
+                                   (my-open-recent-file-list))))
+                       (iswitchb-read-buffer "Open file: "))))
+  (find-file fname))
+
+(defun my-open-recent-file-list ()
+  (let (result)
+    (dolist (x my-open-recent-file-history-sources result)
+      (setq result (append result (symbol-value x))))
+    (remove-duplicates result :test 'equal)))
+
+;; I don't use `frame-configuration-to-register'
+(global-set-key (kbd "C-x r f") 'my-open-recent-file)
+</pre>
+
+Ideally I would like to have this, and [[bookmark]]s, integrated into `find-file' instead of having to use a special command. How many times haven't I started `find-file' automatically, and only a second later realizing that I had that certain file bookmarked. Anyone up for the challenge? :)
+
+-- MaDa
+
+[new]
+
+Not exactly what you want, but something similar: http://www.mail-archive.com/gnu-emacs-sources@gnu.org/msg00628.html
+
+[new]
+
+Aha, timid completion! Yes, I tried that and liked it but I suspect there was something I did not like as I don't have it enabled currently. Looking at it now again I wonder if I can get it to get its content from other file name sources as well, like recentf or bookmarks. Also, the presentation would need to be different if other sources could be used, in my opinion. Something like this maybe:
+
+ Hits:
+
+  File name history
+   file1
+   file2
+
+  Recentf
+   file3
+   file4
+
+  Bookmarks
+   file5
+   file6
+
+I am fiddling with this myself right now, just a prototype, but maybe timid could be used to build this on instead of reinventing the wheel once again...
+
+-- MaDa
+
+[new]
+I also toyed with the idea of collecting completion information from different sources and presenting them in more a structured way, but it's unlikely I will have to the time to do it in these days. As for getting the file names for a different source like recentf, someone already did it. 
+
+Here's the link: http://dryice.name/blog/emacs/combile_switching_buffer_and_open_files_directories.html
+
+It seems down at the moment, so here's also the Google cache of the page: http://209.85.135.104/search?q=cache:AYFFEFnaEkYJ:dryice.name/blog/%3Fpage%3D1+timid.completion+blog&hl=en&client=opera&strip=1
+
+--TamasPatrovics
+
+----
+[new]
+How it bothers me that I don't properly search the wiki before writing this stuff myself. :)
+Anyway, here is my take, using recentf-mode.  It's different in so far that it will try to keep the files short by not showing the directory, unless necessary to avoid ambiguity:
+
+  (require 'iswitchb)
+  (require 'recentf)
+
+  (defun shorten-file-names-pop (file-name previous-guess)
+    "Prepend the next path segment of file-name to previous-guess."
+    (let ((unused (substring file-name 0
+                             (- (length file-name) (length previous-guess)))))
+      (concat (file-name-nondirectory
+               (directory-file-name
+                (file-name-directory unused)))
+              "/"
+              previous-guess)))
+
+  (defun shorten-file-names (file-list)
+    "Shorten a list of file names as far as possible while keeping them unique.
+  Returns a cons with the shortened file names as car and a hash map for looking
+  up the full names."
+    (let ((hash (make-hash-table :test 'equal))
+          (results ())
+          shortened previous)
+      (dolist (file file-list)
+        (setq shortened (file-name-nondirectory file))
+        (while (and (setq previous (gethash shortened hash))
+                    (not (equal file previous)))
+          (when previous
+            ;; conflict
+            (unless (eq previous 'burnt)
+              (puthash shortened 'burnt hash)
+              (puthash (shorten-file-names-pop previous shortened) previous
+                       hash))
+            (setq shortened (shorten-file-names-pop file shortened)))
+        (puthash shortened file hash))
+      (maphash '(lambda (k v)
+                  (unless (eq v 'burnt)
+                    (push k results))) hash)
+      (cons results hash)))
+
+  ;; based on example in iswitch.el
+  (defun recentf-completing-open-file ()
+    "Use iswitch to read the name of a recent file to open."
+    (interactive)
+    (let* ((shortened (shorten-file-names recentf-list))
+           (file (let ((iswitchb-make-buflist-hook
+  		     (lambda ()
+  		       (setq iswitchb-temp-buflist (car shortened)))))
+  		(iswitchb-read-buffer "Recent: "))))
+      (when file
+        (find-file (gethash file (cdr shortened))))))
+
+-- [[nschum]]
+
+[new]
+Or set `iswitchb-use-virtual-buffers', to be able to switch to killed buffers. This uses recentf mode:
+: <i>If non-nil, refer to past buffers when none match.</i>
+
+----
+
+'''See Also:''' 
+* Command `icicle-recent-file' in '''[[Icicles]]'''
+* RecentFiles.
+
+----
+CategoryFiles

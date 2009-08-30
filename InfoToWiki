@@ -1,0 +1,5 @@
+Idea #1: Convert info pages to wiki.  the wiki becomes the official document.  use WikiToTex or WikiToInfo to publish.
+
+Idea #2: Hack info-mode to grok wikified info pages as if they were normal info files (i.e. fetch the content from the web using a list of configured sources). Optionally cache fetched files and use them when nothing happened with the source or if internet connection is down.
+----
+CategoryHypermedia

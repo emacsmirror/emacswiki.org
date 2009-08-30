@@ -1,0 +1,59 @@
+===Inserting incrementing numbers in macros===
+
+[the following is verbatim from the EmacsManual for the coming Emacs 22]
+
+Each keyboard macro has an associated counter which is automatically
+incremented on every repetition of the keyboard macro.  Normally, the
+macro counter is initialized to 0 when you start defining the macro,
+and incremented by 1 after each insertion of the counter value; that
+is, if you insert the macro counter twice while defining the macro, it
+will be incremented by 2 time for each repetition of the macro.
+
+The command `C-x C-k C-i' (`kmacro-insert-counter') inserts the
+current value of the keyboard macro counter and increments the counter
+by 1.  You can use a numeric prefix argument to specify a different
+increment.  If you specify a `C-u' prefix, the last inserted counter
+value is repeated and the counter is not incremented.  For example, if
+you enter the following sequence while defining a macro
+
+     C-x C-k C-i C-x C-k C-i C-u C-x C-k C-i C-x C-k C-i
+
+the text `0112' is inserted in the buffer, and for the first and second
+execution of the macro `3445' and `6778' are inserted.
+
+The command `C-x C-k C-c' (`kmacro-set-counter') prompts for the
+initial value of the keyboard macro counter if you use it before you
+define a keyboard macro.  If you use it while defining a keyboard
+macro, you set the macro counter to the same (initial) value on each
+repetition of the macro.  If you specify a `C-u' prefix, the counter is
+reset to the value it had prior to the current repetition of the macro
+(undoing any increments so far in this repetition).
+
+The command `C-x C-k C-a' (`kmacro-add-counter') prompts for a value
+to add to the macro counter.
+
+The command `C-x C-k C-f' (`kmacro-set-format') prompts for the
+format to use when inserting the macro counter.  The default format is
+`%d'.  If you set the counter format before you define a macro, that
+format is restored before each repetition of the macro.  Consequently,
+any changes you make to the macro counter format while defining a macro
+are only active for the rest of the macro.
+
+===Autoincrementing: the simple case===
+
+The simple case of numbering starting from one can be handled thus
+
+<pre>
+(defun init-macro-counter-default ()
+  "Set the initial counter to 1 and reset every time it's called.
+To set to a different value call `kmacro-set-counter' interactively
+i.e M-x kmacro-set-counter."
+  (interactive)
+  (kmacro-set-counter 1))
+
+(global-set-key (kbd "<f5>") 'init-macro-counter-default)
+(global-set-key (kbd "<f6>") 'kmacro-insert-counter)
+</pre>
+
+This saves a couple of keystrokes each time when setting and inserting the counters.  As mentioned in the doc string, call it interactively if you want to set the value to a different initial value and then press F6 to increment.
+As this would be useful mostly in text mode, one could use local-set-key if required.

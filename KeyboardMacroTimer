@@ -1,0 +1,5 @@
+I needed to repeat a keyboard macro repeatedly every X seconds, so I wrote this little hack.
+
+Get the code here: Lisp:keyboard-macro-timer.el
+----
+KeyboardMacros

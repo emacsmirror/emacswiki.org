@@ -1,0 +1,114 @@
+This page discusses the introduction on EmacsWiki of table of contents at the top of pages, generated automatically from the page's headings.  Information on this feature for this wiki's WikiEngine is at [[Oddmuse:Table of Contents Extension]].
+
+[new]
+A page like <nowiki>[</nowiki>[[Suggestions]]<nowiki>]</nowiki> is rather long and it is difficult to get an overview. 
+Would it help with an automatically created table of contents for each page at the top of the page?
+[new]
+AaronHawley: I also enjoy the feature of creating tables of contents for the headings of the page, as used by MediaWiki and seen on WikiPedia.  I've pushed for EmacsWiki to have something like that for /at least/ the SiteMap.  See SiteMapDiscussion.  Apparently, using the feature is possible.
+[new]
+I've added the TOC extension to the site.  That will provide us with the necessary experience to decide.
+Personally I continue to believe that while a TOC is nice for readers, it is a symptom of very long pages
+-- and very long pages are bad for writers.  We should break such pages down into smaller pages.
+WikiPedia has different requirements than we do.  We don't need to put all the suggestions on the one page called "Suggestions".  We can split it up.  We're not an encyclopedia.
+
+Unfortunately the TOC extension does not work across page includes, so SiteMap will not show the table of contents available on RealSiteMap.  Maybe we can do away with that strange anti-spam measure?
+-- AlexSchroeder
+
+[new]
+AaronHawley: I agree with your position concerning page length, and your fears of what implications a table of contents could create.  I think the usefulness a table of contents would give readers overrides it.  Also, I believe to some degree that the table of contents is a useful tool for writers for quickly determining and improving the organization of a page and the names of headings.   Often things get added to a page ignoring the document's structure.  A table of contents in a visitor's face could avoid that.
+
+I think a fair implementation of the TOC extension would use CSS for visual separation.  Here's a friendly suggestion for the default stylesheet:
+
+  div.toc {
+      padding: 0.4em;
+      margin-left: 5%;
+      margin-right: 200px;
+      background-color:#FAFAFF;
+      border:#999 1px solid;
+      font-size: 0.8em;
+      font-family: sans-serif;
+  }
+  div.toc h2 {
+      padding-left: 1em;
+      font-size: 1em;
+  }
+
+Bummer it doesn't work on the SiteMap, though allows us to ease into better.
+
+[new]
+I'm using your style sheet now. -- AlexSchroeder
+
+[new:DrewAdams:2005-08-12 15:39 UTC]
+
+I agree with both of you. I think the TOC helps readers (and writers).
+
+I notice that the links do not seem to work. However, after I edit and save a page, they do work. My browser is IE. Thanks. -- DrewAdams
+
+[new]
+Yes, the TOC extension assumes named anchors in the HTML, but all current pages have cached HTML to make rendering faster.  So unless the pages are edited, TOC links will not work.  An EmacsWikiAdministrator could do a global search and replace, appending a newline to every page, for example, to force a re-rendering.  Since this would result in thousands of changes, I suggest we just edit the pages as we see necessary.  Unfortunately I won't be around in the next ten days, and I have not packed yet, so I cannot spend more time on it...  An EmacsWikiAdministrator could also move RealSiteMap back to SiteMap, if that helps. -- AlexSchroeder
+
+[new:MichaelOlson:2005-08-12 21:15 UTC]
+
+I don't like the idea of having a TOC generated for each page.  What would be better IMHO would be to make a <code>[TableOfContents]</code> tag or something similar.  Wherever someone inserts this tag, a table of contents would be generated.  MoinMoin accomplishes this with <code>[[TableOfContents()]]</code>.
+
+[new]
+Pages with non-trivial TOCs end up with the text previously titled by the page title being both untitled and orphaned by the TOC.  IOW they now beg for a ==heading== entry which looks silly if the TOC gets removed.  TOC seems useful and I don't mind adding a heading where needed but I'd hate to later need to find and remove them if TOC gets turned off.  Is the matter still up in the air?  -- [[Rick_Bielawski]]
+
+[new]
+Are you saying you think the title of the page should be in the TOC?  Those familiar with creating (Info) menus in [[Texinfo]] know the current node entry (in Wiki nomenclature the current page) should /not/ be in the menu.  The menu displays the sub-nodes.
+
+If you're complaining about having to fix pages that had improperly leveled (like skipping to a "===" without first using a "==") headings, then I think that's what the TOC extension is good for pointing out.
+
+This and everything else should always be up for discussion. -- AaronHawley
+
+[new] 
+I noticed that the TOC now appears after any untitled text following the page title.  That was the text I considered orphaned.  Putting the TOC after it solves the problem completely.  -- [[Rick_Bielawski]]
+
+[new:AlexSchroeder:2005-08-21 09:36 UTC]
+I'm still on holidays, so no coding.  Some feedback in the meantime:
+
+# I think the TOC should be something automatic, because I don't want to spend time on it -- either the page is complex and it needs a TOC, or it is not and does not.  So the only question is how to determine automatically that a page needs a TOC.  Currently any page with three or more headings is considered "complex".
+
+# The position of the TOC needs more consideration.  I think in Mediawiki it is placed before the first heading in the page, so "naked paragraphs" come below the page title, then the TOC, then the first heading, then the rest of the page.  Maybe we need something similar?  I don't think we can do that using CSS, unfortunately, so I'd have to code something up.
+
+# My original proposal included a floating TOC that simulated a two-column layout for the beginning of a page.  Anybody feel like returning to it and experimenting some more with similar layouts?
+
+[new:AlexSchroeder:2005-08-25 16:44 UTC]
+What do you think about the new placement of the TOC on the SiteMap?
+This change will only affect pages edited after installation of this new version.
+
+[new:DrewAdams:2005-08-25 18:27 UTC]
+Good -- DrewAdams
+
+[new]
+How about shutting off the ''automatic'' table of contents feature?  I don't remember where Alex said it or if he did, but it was about avoiding a relyance on TOCs and instead use separate pages for things.  The [[Oddmuse:Table of Contents Extension]] supports adding ''manual'' table of contents with the <code><toc></code> command?  We turned on TOCs because of pages like SiteMap and [[Suggestions]], and they're also necessary for pages like EmacsChannelFaq.
+
+The question is, what other pages are affected by this, and what are
+the ramifications of such a change?
+
+Maybe we can at least ''dial up'' the number of headings necessary to create a TOC? -- AaronHawley
+
+[new:DrewAdams:2006-12-29 22:58 UTC]
+I really like the automatic TOCs -- very helpful, on almost any page. Why remove them? If some page needs to inhibit a TOC, perhaps there could be some markup that would do that, but I don't think that should be encouraged, and I sure wouldn't want the automatic TOCs to disappear. I don't see a reason to limit the depth of a TOC either. -- DrewAdams
+
+[new]
+I don't have access to the page database, but I think only a minority of pages actually ''need'' a TOC.  [[Icicles]] pages ''et all'' are a notable exception to this observation.
+
+The TOC should not be generated by only a minimum of 2 headings.  Do you think so?  It often just looks like cruft to me.  I know it was set to 3 originally, and then changed, but why not make it 5? -- AaronHawley
+
+[new:DrewAdams:2006-12-30 08:08 UTC]
+I don't agree -- what's cruft about a TOC? There are many pages with only two headings that are widely spaced. The TOC makes it trivial to go directly to the second heading, which could be anywhere on the page. This page is itself an example. The alternative is searching or scrolling. The page organization, no matter how simple, should be available at the top as clickable links. -- DrewAdams
+
+[new]
+I must confess that I have changed my mind. My experience with automatic TOC generation has been entirely positive. I even like it when the page is relatively short and there are but two headings.
+
+There are currently three related problems I can think of. None of them suggest that we get rid of automatic TOC generation, in my opinion.
+
+# Sometimes the code seems to have bugs. I've seen it at least on pages such as [[Problems]].
+# The generated URLs are terrible to look at, which can be important when pasting them on IRC or IM.
+# Very long pages are a pain to edit, with or without TOC.
+
+-- AlexSchroeder
+
+----
+CategoryEmacsWikiSite

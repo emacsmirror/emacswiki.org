@@ -1,0 +1,135 @@
+[[image:EmSqlPlus]]
+
+Facilitates interaction with Oracle via SQL*Plus (GNU Emacs 22 only).
+Moreover, this package complements Lisp:plsql.el (Kahlil Hodgson) 
+upon convenient compilation of PL/SQL source files.
+
+= SqlPlus =
+
+This package was inspired by sqlplus-mode.el (Rob Riepel, Peter
+D. Pezaris, Martin Schwenke), but offers more features:
+
+* tables are parsed, formatted and rendered with colors, like in
+many GUI programs; you can see raw SQL*Plus output also, if you wish
+
+* table will be cutted if you try to fetch too many rows
+(SELECT * FROM MY_MILLION_ROWS_TABLE); current SQL*Plus command
+will be automatically interrupted under the hood in such cases
+
+* you can use many SQL*Plus processes simultaneously,
+
+* font locking with database object names highlighting,
+
+* history (log) of executed commands - see 'sqlplus-history-dir'
+variable,
+
+* commands for fetching any database object definition
+(package, table/index/sequence script)
+
+* query result can be presented in HTML,
+
+* input buffer for each connection can be saved into file on
+disconnect and automatically restored during next connect (see
+'sqlplus-session-cache-dir' variable); if you place some
+SQL*Plus commands between '/* init */' and '/* end */'
+comments in saved input buffer, they will be automatically
+executed on every connect
+
+* if you use plsql.el for editing PL/SQL files, you can compile
+such sources and error messages will be parsed and displayed for 
+easy source navigation
+
+* in sqlplus-mode or plsql-mode you can easy go to the definition 
+of database object name under point (table, view, synonym, index, 
+trigger, package, function, procedure) in filesystem.
+
+Simplified usage:
+
+* C-RET   execute command under point
+
+* C-S-RET execute command under point and show result table in HTML buffer
+
+* M-RET   explain execution plan for command under point
+
+* C-cC-s  show database object definition (retrieved from Oracle)
+
+* C-cC-c  compile PL/SQL buffer (must be in plsql-mode) and show errors
+
+* M-. or C-mouse-1 find the definition of database object name under point 
+in filesystem (use arrow button on toolbar to go back).
+
+Tested in Linux only for now, feedback from other sys users expected.  
+Please use Emacs22.
+
+= As Ide Skel plugin =
+
+If you decide to use sqlplus.el together with IdeSkel package, your Emacs 
+will look more like TOAD or Tora:
+
+[[image:SqlPlusIdeSkel]]
+
+Explore pop-up menu options in right window after mouse-3 click.
+
+Lisp:sqlplus.el
+
+= Bugs =
+
+There is a bad interaction with ##require-final-newline## when it is set to a value that means that the user is asked each time. When saving the output in HTML, for instance, there seems to be a hook loop that keeps asking if a final newline is to be appended. Setting the value of ##require-final-newline## to ##t## does not seem to trigger this bug.
+
+= Other =
+
+If you find this package useful, send me a postcard to address:
+
+  Peter Karpiuk
+  Scott Tiger S.A.
+  ul. Kolektorska 15
+  01-692 Warsaw
+  Poland
+
+:)
+
+[new]
+From the description above and after a quick look at the source, this looks awesome! I just hacked together something much smaller, some code to send queries to Oracle via SQL*Plus and to get that into lists that I can then manipulate. Can your hack do that as well? If so I can ditch my stuff :) -- MaDa
+
+[new]
+Yes. First, you must provide a function that will handle result of sql command:
+<pre>
+    (defun my-handler (connect-string context data)
+      (message (format "connect-string: %S\ncontext: %S\ndata: %S" connect-string context data)))
+</pre>
+CONTEXT parameter is an alist with info about command executed 
+(SQL text in particular). 
+The DATA parameter is a list (COLUMN-INFOS ROWS MSG) if
+result is a table, or string in any other case.  COLUMN-INFOS is
+a list of column descriptors (name of column etc.), ROWS is a
+table of records (record is a list of strings), MSG is a message
+under the table (something like "28 rows selected.").
+
+Now, you can execute any sql command (eg. query):
+<pre>
+    (let ((connect-string "scott/tiger@xe") ; must be password here
+	  (sql "select * from emp;"))       ; a ';' or '/' at end of command is important
+      ;; create sqlplus process for connect-string (if doesn't exist yet)
+      (sqlplus connect-string nil 'dont-create-output-buffer)
+      ;; send command - it will be executed in idle time,
+      ;; so your function 'my-handler' will be called asynchronously
+      (sqlplus-user-command connect-string sql 'my-handler))
+</pre>
+When sqlplus process is not needed, you can kill it:
+<pre>
+    ;; kill sqlplus process if no buffer uses it
+    (sqlplus-soft-shutdown connect-string))
+</pre>
+
+-- PeterKarpiuk
+
+[new]
+I saw this pop up on the Recent Changes and had to take a look.  I only had time for a little work with it but wow! See my screenshot here: http://picasaweb.google.com/hostetlerm/Geek/photo#5138784267792412514-- MikeHostetler
+
+[new]
+I'm using sqlplus with ide-skel on Windows Emacs version 22.0.92.1.  Works great. -- Ben
+----
+[new]
+Hi! Really like sqlplus. Using it on windows XP with emacs 22.1. Best regards -- Pierre
+----
+CategorySql

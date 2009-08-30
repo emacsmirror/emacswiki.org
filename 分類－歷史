@@ -1,0 +1,29 @@
+English: CategoryHistory
+
+点击抬头的英文标题可以获取所有Emacs历史相关的信息
+
+* EmacsHistory -- 宽银幕
+* EmacsSchism -- Emacs和XEmacs的分裂
+* DynamicBindingVsLexicalBinding
+
+RichardStallman 写了一篇关于Emacs设计的备忘录:                                                                               http://www.gnu.org/software/emacs/emacs-paper.html.                                                              
+他还做个一篇关于他的经验的演讲, <i>My Lisp Experiences and the Development of GNU Emacs</i>, 28 Oct 2002, at the International Lisp Conference: http://www.gnu.org/gnu/rms-lisp.html
+
+JamieZawinski 草拟了一份Emacs的时间线:
+http://www.jwz.org/doc/emacs-timeline.html.
+
+图片版:
+http://www.aisee.com/graph_of_the_month/emacs.htm
+
+CraigFinseth has some interesting Emacs stuff on his web pages.  See
+EmacsImplementations for a huge list of Emacs-like editors.
+
+最早的TECO EMACS帮助文档之一(1982-03-06): 
+http://zane.brouhaha.com/~healyzh/emacs/emacs.doc.txt
+
+Rich Alderson的PDP10模拟器上的170版TECO EMACS:
+http://pdp10.nocrew.org/
+
+从21版开始, Emacs便可以显示图片. 所以便可以在Emacs启动的时候加一个Logo.
+要想了解制作Emacs logo的背后故事,请看:
+http://www.ee.ryerson.ca/~elf/emacs/logo/

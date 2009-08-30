@@ -1,0 +1,75 @@
+Some users, especially Vi users, prefer a behavior of ZapToChar that
+
+# deletes up to the provided character,
+# doesn't delete the provided character,
+# and starts the point from before the character rather than after.
+
+A [::zap-up-to-char] can be interactively accomplished with the commands `M-z CHAR CHAR C-b'.[http://lists.gnu.org/archive/html/help-gnu-emacs/2002-12/msg00159.html]
+This is not satisfactory for some.
+In [[XEmacs]], an implementation is installed and available by default.
+There is a `zap-up-to-char' in Emacs 22, CVS:misc.el.
+
+Emacs 21 users can either define a modified `zap-to-char' implementation, or provide advice to `zap-to-char' (See AdvisingFunctions).
+The /modular/ customization would be to provide advice:
+
+  (defadvice zap-to-char (after my-zap-to-char-advice (arg char) activate)
+    "Kill up to the ARG'th occurence of CHAR, and leave CHAR.
+  The CHAR is replaced and the point is put before CHAR."
+    (insert char)
+    (forward-char -1))
+
+As with `zap-to-char', the /advised/ `zap-to-char' has the same behaviors when the user gives a PrefixArgument.
+
+In the future, Emacs could provide a `zap-to-char' hook to avoid using advice (See AdviceVsHooks):
+
+{{{
+--- simple.el	27 Dec 2005 13:43:23 -0500	1.781
++++ simple.el	27 Dec 2005 13:43:53 -0500	
+@@ -2790,7 +2790,8 @@
+   (kill-region (point) (progn
+ 			 (search-forward (char-to-string char) nil nil arg)
+ ;			 (goto-char (if (> arg 0) (1- (point)) (1+ (point))))
+-			 (point))))
++			 (point)))
++  (run-hooks 'zap-to-char-hook))
+ 
+ ;; kill-line and its subroutines.
+ 
+}}}
+
+
+This could then allow the following hook.
+
+  (defun my-zap-up-to-char-hook ()
+    "Kill up to ARG'th occurence of CHAR.
+  This function advises `zap-to-char'."
+    (insert char)
+    (forward-char -1))
+
+  (add-hook 'zap-to-char-hook 'my-zap-up-to-char-hook)
+
+This is called "pirating zap-up-to-char with a patch and a hook", argh!
+
+
+I often want to use zap-to-char to put some text into the kill-ring without killing it from the buffer. I wrote this function to accomplish that:
+ 
+  (defun zap-to-char-save (arg char)
+    "Zap to a character, but save instead of kill."
+    (interactive "p\ncZap to char: ")
+    (save-excursion
+      (zap-to-char arg char)
+      (yank)))
+
+The only issue with this is that if you use it in an unmodified buffer, it sets the modified flag. I bind it to M-Z for easy access.
+
+
+[new]
+XEmacs has zap-to-char and also zap-up-to-char which deletes up to the given character, but not the character, so deleting something like: "^Hello, World" where ^ is [[Point]], you could `M-x zap-up-to-char ,' and your result would be: "^, World" ... Obviously, if you use that *very* handy function, you would want to bind it to something as it is not bound by default. -- JeremyCowgar
+
+----
+
+See also ViKeys, ZapToCharUsage, ZapToISearch.
+
+----
+CategoryEditing
+CategoryEmulation

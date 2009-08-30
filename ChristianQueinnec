@@ -1,0 +1,133 @@
+* http://www-spi.lip6.fr/~queinnec/WWW/elisp.html
+
+defaultcontent
+    Fill new files when visited.
+   
+    The purpose of this package is to provide a default content for files. It extends the autoinsert package
+    from Charlie Martin and took the idea of expanding parameters as in auto-template from Kevin Broadey (as
+    suggested by Cedric Beust). It also allows to specify the initial position of the dot.
+
+    Whenever an unexistent file is visited, its initial content can be specified by a parameterized template
+    stored in the directory dc-auto-insert-directory or by explicit evaluation of some specified forms. A
+    single undo removes all this initialization.
+
+    Contributors: improvements by Fréderic Lepied, Luc Moreau, Stefan Reichör.
+
+defaultbanner
+    Update banners or headers when files are visited.
+   
+    It is usual when distributing a set of files to give them a constant header or banner (sometimes with a
+    pleasant drawing). Some packages do that with some parameters (autoinsert, auto-template, defaultcontent
+    and others, all in LCD). But very often, one wants to change the banner and it is a pain to consistently
+    update all the files of a distribution to reflect that new banner. This package addresses this point and
+    is compatible with the defaultcontent.el package.
+
+    Whenever a file is visited, its banner is automatically inspected and updated if needed. A hook is run
+    that knows about the various possible banners (antichronologically ordered), identifies which one is used
+    and replace it by the newest possible. When you decide to change the banner you just add the new one in
+    front of the possible banners and that's all!
+
+    The interactive function db-check-file allows to run the hook even if not installed. Another function
+    db-check-every-file updates all the files given in argument.
+
+fracc
+    French accent towards Latin1, TeX, BibTeX, HTML.
+   
+    This package is based on Marc Shapiro's ftex-mode.el package. It has been extended over time to provide
+    various kinds of accents for TeX, LaTeX, BibTeX (they're not the same), HTML, ISO latin 1 and Mac.
+
+    The basic purpose of this package is to provide an uniform way to type accents (for instance e followed
+    by ' to mean e acute) and to convert the intended character in conformance with the local conventions of
+    the buffer. HTML codes accented letters in a way (although some servers accept ISO 889 letters), BibTeX
+    (at least mine, does not support accents at all and expects them to be wrapped inside { }), etc.
+
+    This package also takes into account ligatures such as oei and cedillas. It is entirely driven by tables
+    specifying contexts that, if followed by an accent, have to be modified. Are currently supported the
+    following configurations:
+      e'   [aeou][`^]   [iu]#   c,[au]   oe[iu]    ~[:;?!]
+           
+    for (La)TeX, BibTeX, HTML, ISO 8859 and Mac encodings.
+   
+    Contributors: Paul Provost <pprovost@usa.net>, Thierry Besançon <besancon@excalibur.ens.fr>, Cedric
+    Beust, Geoffroy VILLE <ville@cena.dgac.fr>.
+
+foldingo
+    A minor folding mode with mouse/menu/face support.
+   
+    A fold editor package for Emacs is somewhat similar to the outline mode and allows you to hide/show parts
+    of your file. The following package supports explicit folds (delimited by {{{ and }}} within comments)
+    and implicit folds (any definition bigger than a given number of lines). This package gives you
+    additionally the opportunity to choose the associated faces for open/hidden folds, they can be opened/
+    closed with simple clicks. It also works for Scheme, C, Caml, Emacs Lisp and others.
+
+    Contributors: Works for Emacs 19.29 and Xemacs (thanks to Christoph Ley) with add-on from Georg Greve and
+    improvements by Dan Nicolaescu, Nadim Shaikli, Michael Brand.
+
+    Use this Xemacs version.
+
+supertab
+    Enhanced TAB in Lisp-based modes.
+   
+    The purpose of this package is to enhance the behavior of TAB in Lisp-based mode. Usually TAB only
+    indents the current line. After loading this file, TAB will perform different actions depending on where
+    it is invoked. Consider the following two lines:
+       /-----------------------------------------------
+       |        (foo   (bar hux)
+       |            wek)
+           
+    a single TAB wherever on first line will indent it, a single TAB wherever on second line will indent it:
+       /-----------------------------------------------
+       |(foo   (bar hux)
+       |       wek)
+           
+    When a line is correctly indented, TAB within the line becomes meaningful. a TAB between foo and (bar
+    hux) will leave a single space:
+       /-----------------------------------------------
+       |(foo (bar hux)
+       |       wek)
+           
+    a TAB after (bar hux) will swallow all the following (useless) spaces. a second TAB after (bar hux) will
+    swallow the newline and the a second TAB after (bar hux) following spaces before wek:
+       /-----------------------------------------------
+       |(foo (bar hux) wek)
+
+mousymacro
+    Run macros via simple mouse clicks.
+   
+    The purpose of this package is to allow to run Emacs functions with the sole help of the mouse. For
+    instance, when indexing a book, it is easier to index words by simply clicking (or dragging) on them
+    rather than moving the dot towards them then running \C-x\C-e (as one of possible choice). With
+    MousyMacro, you just define what clicks mean and then it is up to you to click wherever you want. Usually
+    the left button means "run the currently associated macro", the middle button means "stop MousyMacro" and
+    the right one allows to choose with a menu the macro to be associated to the left button as well as other
+    actions such as Undo! Left and Middle buttons can be programmed.
+
+todo
+    A mode to support ToDo files containing scripts or mails.
+   
+    A TODO file is a text file that contains text, mails, shell, urls or EmacsLisp sentences. All of them
+    have to be handled, sent, handled, executed soon or later. This package analyzes such a file and proposes
+    to perform the relevant actions. For instance, I edit my TODO file when diconnected at home with the
+    myriad of things I should do when connected at my office. Of course, this mode will be obsolete when
+    every place on the earth will be continuously connected!
+
+sigadapt
+    Select signature depending on mailee.
+   
+    This package allows when composing or sending a mail to select a signature appropriate to the mailee (as
+    mentioned in the `To:' field). This package requires the use of the marvellous BBDB package from Jamie
+    Zawinski <jwz@lucid.com>. An extra field in the BBDB database registers which signature to use. If no
+    signature is mentioned or if you want to change to the already current signature then the package offers
+    you to choose and record a signature among a set of predefined ones.
+
+    Contributor: Brady Montz <bradym@cs.arizona.edu>.
+
+genconv
+    Table-driven string conversions.
+   
+    This package performs various conversions using tables. There are currently tables toward ISO Latin1 from
+    html accentuated letters (you know the kind of &eacute; stuff), from quoted printable sequences (the ugly
+    =E20 things) or from (La)TeX (things such as \'{e}).
+
+----
+CategoryHomepage

@@ -1,0 +1,151 @@
+%%LinkdMode%% is a MinorMode for embedding little (optionally icon-decorated) hyperlinks in all kinds of text files, and doing various things with them (delimiting regions for processing, documenting and navigating source code, or creating a personal wiki notebook.) It is inspired by a lot of other modes: EevMode, HowmMode, EmacsWikiMode, and so on. But it works regardless of the MajorMode you are using, so it can be used to uniformly interlink files of many different kinds. 
+
+It's in alpha release at this point, but progressing rapidly.
+
+DavidOtoole's original page for it is at http://dto.github.com/notebook/linkd.html
+
+[new:ShaunJohnson:2009-03-17 11:07 GMT]
+The current version of <nowiki>LinkD</nowiki> is here: Lisp:linkd.el, a tarball containing linkd.el and David O'Tooles original icons is here: [[linkd.tar.gz]]. -- ShaunJohnson
+
+[new:NoahTye:2008-11-06 19:59 PST]
+Is this the canonical version that we should use, or does ShaunJohnson have a version somewhere else?
+
+[new:ShaunJohnson:2008-11-07 11:49 GMT]
+This is the canonical version - I haven't had any time to release a new version. -- ShaunJohnson
+
+[new:ShaunJohnson:2008-05-01 18:52 BST]
+I have taken over maintenance of !LinkD from DrewAdams. -- ShaunJohnson
+
+[new:ShaunJohnson:2008-05-12 18:58 BST]
+If there are any users of !LinkD out there I would like to hear from you, particularly regarding:
+
+* What you are using !LinkD for
+
+* Which aspects of !LinkD you are using
+
+* Bug reports
+
+* Enhancement requests
+
+-- ShaunJohnson
+
+[new:ShaunJohnson:2009-02-17 14:55 BST]
+New release featuring a menu for !LinkD mode and conditional enabling of !LinkD mode in the targets of @file links. These two features can be customised using the variables linkd-use-menu and linkd-enable-linkd-mode-in-target.
+
+Additionally all uses of defvar have been replaced by defcustom.
+
+This version can be found here: Lisp:linkd.el.
+
+Thanks to DrewAdams for the code to enable !LinkD mode in the targets of @file links. -- ShaunJohnson
+
+
+== Discussion ==
+
+[new:DrewAdams:2007-01-16 20:26 UTC]
+I like it! Very simple to use. Here is some feedback -- HTH:
+
+* The `mouse-2' key binding does not seem to work for me much of the time. I'm not sure why, or under what circumstances. When it doesn't work, a `yank' occurs instead. I don't know if there is a bug in Emacs 22 or in Linkd or in my own code.  
+
+: I bind `down-mouse-2' in my own code, so I thought that binding it to nil on the link text might help. I tried making these changes, but they didn't really help:
+
+<pre>
+        (defun linkd-follow-mouse (event)
+          "Follow the clicked link."
+          (interactive "e")
+          (when event
+            (select-window (posn-window (event-start event))) ; <== Added
+            (goto-char (posn-point (event-start event)))
+            (linkd-follow (linkd-link-at-point))))
+
+        (overlay-put overlay 'keymap 
+ 		 (let ((keymap (make-sparse-keymap)))
+ 		   (define-key keymap [down-mouse-2] nil) ; <== Added
+ 		   (define-key keymap [(mouse-2)]  'linkd-follow-mouse)
+		   (define-key keymap (kbd "M-RET") 'linkd-follow-at-point)
+		   keymap))
+</pre>
+
+* Please add a key binding for a command that takes you back to wherever you were before you followed a link.
+
+* I see a font-lock problem in various contexts: the font changes to your generic yellow-foreground face, and the text changes back to the full "##(@...)##". One way to reproduce this is to leave `linkd-mode' and reenter. It also occurs when `mouse-2' (incorrectly) yanks text into a link and then I undo the yank -- the undo changes the link appearance to "##(@...)##" with a yellow foreground. (I'm not using icons, BTW.)
+
+* Please handle an empty entry to the prompt for a label from, for example, `##C-c , s##' -- it seems to create an empty link, which I doubt is a good thing.
+
+* Sometimes when using `##C-c .##', I got an error "##no follow function for link nil##", which might have been appropriate, but it was not appropriate that it sent me to the beginning of the buffer. It should leave point where it was.
+
+* I imagine this would not be easy to do well, but it would be great if link (tag, star etc.) text could span lines and comment characters. IOW, be able to have a link like this in EmacsLisp:
+
+<pre>
+        ;; See (@> "Foo Bar and how it will make
+        ;; you healthy and wise)
+</pre>
+
+Anyway, thanks again. Linkd looks very promising, and it is already useful. I'm using it in the Commentary part of Lisp:icicles.el. -- DrewAdams
+
+[new]
+Hi DrewAdams,
+
+Thanks for your comments and feedback. I've added several TODO items to my OrgMode page for the project. 
+
+I'm going to remove the default keybinding for mouse-2 and let people choose their own. I'm probably going to use M-mouse-1 or something. I really hate how mouse-2 is X yank command, but also the default for following links in Emacs. Especially in light of it being a little difficult (for me) to press scroll wheels without scrolling. -- DavidOtoole
+
+[new:DrewAdams:2007-01-16 23:20 UTC]
+You're welcome; hope it helps.
+
+Do you mean that users will need to tweak the overlay code, to put key bindings on the text? Many users will never do that. I think your first approach was better: provide some mouse binding on the text itself. It doesn't really matter if it is `mouse-2' or `mouse-1', although `mouse-2' is the more conventional one, so far. 
+
+I retested, using ##emacs -q## in a December 2006 build of Emacs 22, and I ran into the same `mouse-2' problems. So it has nothing to do with my own `down-mouse-2' binding.
+
+I also retested using using ##emacs -q## in Emacs 21, and I had no such problem -- it worked perfectly. So, I think there is an Emacs 22 bug involved here. Please test this yourself and report a bug (`report-emacs-bug') if you can specify a recipe to reproduce it. Thanks again for Linkd. BTW, what does the `d' stand for, "David"? -- DrewAdams
+
+[new]
+Hi again DrewAdams,
+
+Yes my name is DavidOtoole. I will try to figure out the bug. Thanks for your testing!
+
+[new:DrewAdams:2007-03-21 03:51 UTC]
+1. Any news? Did you find and report an Emacs 22 bug? I see that your latest version does not bind a mouse button at all. That's too bad. Many potential users would gladly click a mouse button to move around buffers easily, but they might not want to use keyboard keys. Linkd is something that could be useful to novice users, as well as hardcore Emacs fans. 
+
+2. Please consider also adding some more description for the mode, so users will see, for instance info on the major features and bindings when they do `C-h m'. 
+
+3. Thanks for adding `linkd-back'. -- DrewAdams
+
+----
+[new]
+This inspired me to finish and publish an idea I have been carrying around for long.
+I have written an elisp library to make links out of the text in any buffer.
+The definition of links depends on the current major mode and it is extensible through a table.
+Links are of course created automatically.
+There is currently support for html, web mail, emacs lisp etc.
+Maybe this idea can be married with %%LinkdMode%% in some way?
+(I have asked long ago, but the interest seems low.)
+
+I have named my library mlinks.el and it can be found in the repository for [NxhtmlMode Nxhtml].
+-- LennartBorgman
+
+----
+[new:Sugawara:2008-10-27 19:27 UTC]
+linkd-edit-link-at-point seems not worked. I think follwings is worked. -- [[Sugawara]]
+
+<pre>
+        (defun linkd-edit-link-at-point ()
+          "Edit the Linkd link at point."
+          (interactive)
+          (let ((link (linkd-link-at-point)))
+            (when link
+              (goto-char (next-single-char-property-change (point) 'linkd))
+              (if (keywordp (car (cdr link)))
+                  (save-excursion       ; it's a general link. drop the @ sign
+                    (linkd-insert-link (substring (format "%S" (car link)) 1) (cdr link)))
+                ;; it's a single-arg link
+                (let ((new-value (read-from-minibuffer "New value: " (car (cdr link)))))
+                  (save-excursion (insert (format "%S" (list (car link) new-value))))))
+              ;; now erase old link
+              (re-search-backward linkd-generic-regexp)
+              (delete-region (match-beginning 0) (match-end 0)))))
+</pre>
+
+----
+
+CategoryHypermedia CategoryModes 
+

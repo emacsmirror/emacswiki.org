@@ -1,0 +1,49 @@
+Brainfuck is a really simple programming language.
+So simple, in fact, that compilers of size under 150 bytes exist.
+Needless to say, this language is totally useless in real life.
+Some people still like to play around with it.
+And Emacs has a BrainFuckInterpreter, of course.
+
+== Executive Summary ==
+
+ Assume an array of 30,000 cells initialized to 0, and a pointer at left.
+ 
+ + increments a cell
+ - decrements a cell
+ < and > move the pointer
+ . does ASCII output
+ , does ASCII input
+ [ ] loop until cell is zero
+
+
+A very simple program:
+
+ +++++++++++++++++++++++++++++++++.
+
+This increments the first cell to 33, and then prints it, resulting in a '!'.
+
+Here is one way to print "Emacs":
+
+<pre>
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+ ++++++++++++++++++++++++++++++++++++++++.------------.++.++++++++++++++++.
+</pre>
+
+The simplest loop here sets a cell to 0:
+
+ [-]
+
+This works as follows: [ checks if the current cell is 0, and if so it skips the loop contents. ] checks if the current cell is 0, and if not it repeats the loop contents.
+
+For more info about the language itself, see:
+
+* http://www.muppetlabs.com/~breadbox/bf/
+* http://home.wxs.nl/~faase009/Ha_BF.html
+* http://www.hevanet.com/cristofd/brainfuck/brainfuck.html
+
+----
+
+What about bfemacs, an emacs with EmacsLisp replaced by BrainFuck ? --JeanPhilippeTheberge
+
+----
+CategoryHumor

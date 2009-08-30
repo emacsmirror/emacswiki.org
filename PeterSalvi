@@ -1,0 +1,54 @@
+portrait:http://www.emacswiki.org/cgi-bin/wiki/download/PeterSalviFace
+Hi, I'm an Emacs fan from Budapest. "Fan" is the right word, I think, since I like it very much, and am struck with awe every time I find a feature I didn't know of... but I am still not a /power user/, though I strive to be.
+
+== Why Emacs? ==
+
+My first encounter with Emacs was when I started working part-time at a research lab. Everyone used Emacs there, and I was astonished how useful it seemed. I was instantly hooked. However, for years I did nothing to improve my "skills", and only recently did I get in the habit of reading the manual and writing small Elisp functions. One thing that helps me a lot is KeyWiz. It's really fun.
+
+== Hobbies ==
+
+I have quite a few hobbies, these take most of my time. 
+
+=== Languages ===
+
+For me, learning languages is one of the most entertaining things in the world. Not that I learn fast or can speak a lot of languages, it's simply amusing. To tell the truth, it's the writing that fascinates me. It started many-many years ago, when someone introduced me the Hebrew alphabet, then I learned the Cyrillic and Greek... and in the summer of 1999, I finally started to learn...
+
+==== Japanese ====
+
+The language, where my "need" for new characters would be satisfied forever. Or so I thought. After learning for five years, I passed the advanced exam (JLPT1) and now I'm able to read most Japanese text without difficulty. It's a beautiful language, not unlike Hungarian but still exotic. Now I only use it for chatting and reading Japanese literature, but from October 2006 I'm going to study at the graduate school of Tōkyō University (with a Japanese Government Scholarship).
+
+==== Chinese ====
+
+After learning most of the Japanese characters, it seemed only logical to start Chinese, where the number of symbols in daily use is at least five times  more (though the real motivation was that I made a few Chinese friends in Ōsaka). In my opinion, the language itself isn't near as much as nice as Japanese, but far more interesting. Maybe because I have a wonderful (Hungarian) teacher. As for my progress, I've recently passed the intermediate exam (HSK6), but I can hardly speak at all.
+
+==== Programming ===
+
+I also like to learn new programming languages and libraries. I've spent many a night reading tutorials and writing my first programs in various languages, but I usually use C++, Tcl/Tk, Emacs- and Common Lisp.
+
+=== Anime ===
+
+Or Japanese animation, with those big eyes that are so infamous here in Hungary. All that glitters is not gold, and there are a lot of bad titles, more and more each year. But every now and then there is a masterpiece. I'm a founder of the Hungarian Anime Society, an organization that tries to dissolve the conflicts around the reception of Japanese animation in Hungary, but I'm not an active member anymore.
+
+=== Cello ===
+
+Both my mother and my sister are musicians, so I naturally learned to play the piano. I've decided that I'd rather play the cello when I was 9 years old, and I still think it was a wise choice. Because of administrative reasons, I had to quit the music school in 2005, but I don't want to abandon it and I am now searching for chamber music partners.
+
+=== Other ===
+
+I regularly play German-style board games with my friends (look at [http://en.wikipedia.org/wiki/German-style_board_game Wikipedia] if you're not sure what it is). I often watch classic movies, esp. from the 30s-50s. When I overcome my lazyness, I also go hiking.
+
+== My Dream ==
+
+I've written about quite a lot of things that don't have to do anything with Emacs; at least here I will not go astray.
+
+My dream is an EmacsLiveCD. It would have some Linux and a simple X interface of course (StumpWM?), and would contain all those programs that e.g. EMMS needs. But it would be a point-and-drool-proof distribution, there wouldn't be anything unnecessary or eVIl. BitlBee and no Gaim. There would be space for all the major developer tools/libraries, too.
+
+I will make it some time. I know I will.
+
+== Contact ==
+
+You can send me a mail: mailto:vukung@yahoo.com.
+I also use the nickname [::sunwukong] on various forums and chats, including the #emacs channel. Sūn Wùkōng (孙悟空) is a monkey who accompanies Xuán Zàng (玄奘, also known as Sān Zàng (三藏)) to India in the XIV-century epic "Journey to the West" (西游记). By the way, its Japanese pronounciation is Son Gokū, which is mainly known in the West as the protagonist of the animation series /Dragonball/.
+
+----
+CategoryHomepage

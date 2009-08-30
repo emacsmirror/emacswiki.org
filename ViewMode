@@ -1,0 +1,114 @@
+= Basic view commands =
+== view-file ==
+
+`M-x view-file' (C-x C-r) allows you to scan or read a file by sequential
+screenfuls.  It reads a file name argument using the minibuffer.  After
+reading the file into an Emacs buffer, `view-file' displays the
+beginning.  You can then type <SPC> to scroll forward one windowful, or
+ <DEL> to scroll backward.  Various other commands are provided for
+moving around in the file, but none for changing it; type `?' while
+viewing for a list of them.  They are mostly the same as normal Emacs
+cursor motion commands.  To exit from viewing, type `q'.  The commands
+for viewing are defined by a special major mode called View mode.
+
+== view-buffer ==
+
+`M-x view-buffer' is much like `M-x view-file' except that it examines an already existing Emacs buffer.  View
+mode provides commands for scrolling through the buffer conveniently
+but not for changing it.  When you exit View mode with `q', that
+switches back to the buffer (and the position) which was previously
+displayed in the window.  Alternatively, if you exit View mode with
+`e', the buffer and the value of point that resulted from your perusal
+remain in effect.
+
+= Misc settings =
+
+Lisp:viewer.el is extension of view-mode. -- [[rubikitch]]
+
+== Use view-mode aggressively ==
+
+I exclusively use view-mode for unwritable files.
+
+=== Use view-file when doing find-file unwritable files ===
+<pre>
+(defadvice find-file
+  (around find-file-switch-to-view-file (file &optional wild) activate)
+  (if (and (not (file-writable-p file))
+           (not (file-directory-p file)))
+      (view-file file)
+    ad-do-it))
+</pre>
+
+[new: bojohan:2006-04-02 19:46 UTC]
+There's an easier way:
+
+    (setq view-read-only t)
+
+=== Stay view-mode for unwritable files ===
+<pre>
+(defmacro do-not-exit-view-mode-unless-writable-advice (f)
+  `(defadvice ,f (around do-not-exit-view-mode-unless-writable activate)
+     (if (and (buffer-file-name)
+              (not (file-writable-p (buffer-file-name))))
+         (message "File is unwritable, so stay in view-mode.")
+       ad-do-it)))
+
+(do-not-exit-view-mode-unless-writable-advice view-mode-exit)
+(do-not-exit-view-mode-unless-writable-advice view-mode-disable)
+
+</pre>
+
+=== Toggle view-mode ===
+I think toggling view-mode is better than toggle-read-only.
+
+<pre>
+(define-key ctl-x-map "\C-q" 'view-mode)
+</pre>
+
+== Change mode line color when view-mode ==
+I have heavily customized view-mode-map, so I want to recognize view-mode at a glance.
+
+<pre>
+(defun change-mode-line-color ()
+  (interactive)
+  (when (get-buffer-window (current-buffer))
+    (cond (window-system
+           (cond (view-mode
+                  (set-face-background 'modeline "black")
+                  (set-face-foreground 'modeline "orange")
+                  )
+                 (t
+                  (set-face-background 'modeline "black")
+                  (set-face-foreground 'modeline "white")))
+           )
+          (t
+           (set-face-background 'modeline 
+                                (if view-mode "red"
+                                  "white"))))))
+(defmacro change-mode-line-color-advice (f)
+  `(defadvice ,f (after change-mode-line-color activate)
+     (change-mode-line-color)
+     (force-mode-line-update)))
+(progn
+  (change-mode-line-color-advice set-window-configuration)
+  (change-mode-line-color-advice switch-to-buffer)
+  (change-mode-line-color-advice pop-to-buffer)
+  (change-mode-line-color-advice other-window)
+  (change-mode-line-color-advice toggle-read-only)
+  (change-mode-line-color-advice vc-toggle-read-only)
+  (change-mode-line-color-advice vc-next-action)
+  (change-mode-line-color-advice view-mode-enable)
+  (change-mode-line-color-advice view-mode-disable)
+  (change-mode-line-color-advice bury-buffer)
+  (change-mode-line-color-advice kill-buffer)
+  (change-mode-line-color-advice delete-window)
+  ;; for windows.el
+  (change-mode-line-color-advice win-switch-to-window)
+  (change-mode-line-color-advice win-toggle-window)
+  )
+</pre>
+
+= Discussion =
+
+I do not know why this page has not been available till now. -- Anonymous
+

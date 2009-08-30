@@ -1,0 +1,16 @@
+There's a very interesting thread going on on [[emacs-devel]] on the subject of
+"enriched-mode and switching major modes" -- mostly it was about moving towards
+true word-processing.  OliverScholz is trying to push for a statement of intent
+towards a sophisticated model such as the block-model used for cascading style
+sheets, which includes things as tables where cells have different font-sizes.
+Those who know the Emacs display engine will know that while font-size may
+vary on a line, a line is still a line, so Emacs currently cannot display two
+table cells where the first cell has two lines in a big font and the second cell
+has three lines in a small font, and no extra whitespace in either cell.
+
+RichardStallman is trying to figure out what kind of changes Oliver is arguing,
+defending the current mechanism as far as possible.  KimStorm as author of
+CuaMode also has some things to add.  So all in all a great read.  ;)
+[new]
+Go, Oliver!
+[new]

@@ -1,0 +1,32 @@
+There are two things you can do to force variable changes local to files, when you load them.
+
+The easiest thing is to add values to the first line, like this (all examples taken from the Emacs info page, "File Variables" (but the page's first line reads "Local Variables in Files")):
+
+ -*- mode: MODENAME; VAR: VALUE; ... -*-
+
+Here is an example:
+
+ ;; -*- mode: Lisp; fill-column: 75; comment-column: 50; -*-
+
+As you can see, you can start with whatever comment syntax is necessary.  You can add other mode commands to this line as well (for minor modes); in my text files for example I often use <code>mode: text; mode: auto-fill; mode: filladapt</code>.  (But if sharing a document be careful about putting personal preferences; <code>fill-column</code> is a property of the document, but <code>auto-fill</code> is only really for user interaction.)
+
+The other way to do this is to add a "Local Variables" section to the end of the document, like this:
+
+     ;;; Local Variables: ***
+     ;;; mode:lisp ***
+     ;;; comment-column:0 ***
+     ;;; comment-start: ";;; "  ***
+     ;;; comment-end:"***" ***
+     ;;; End: ***
+
+The prefix (";;;") and suffix ("***") are only necessary if they are necessary to make these into comments in your code.  Leave them out if you don't need one or the other or both.
+
+You can evaluate lisp code here, too:
+
+ Local Variables:
+ eval: (crs-auto-encrypt)
+ End:
+
+...but Emacs will ask you whether you want to arbitrarily run this code when you open the document, to save you from Trojan horses and the like.  You can change this by changing <code>enable-local-eval</code> to t.  Don't do this.
+----
+CategoryFiles

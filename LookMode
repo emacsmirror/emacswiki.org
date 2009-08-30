@@ -1,0 +1,39 @@
+== look-mode: a minor mode for skimming files ==
+
+Look-mode is a minor mode originally written for use with EmacsImageManipulation mode.  This should work under all operating systems, but has not been tested under MS-dos/windows.  Thanks to LennartBorgman for prodding and [[nschum]] for a solution (##directory-files## and ##wildcard-to-regexp##).  I then discovered that ##file-expand-wildcards## is a better function for this program because it works properly on wildcards going into subdirectories:
+<pre>
+(file-expand-wildcards "*/*.jpg") ;; this works
+(directory-files "./" nil (wildcard-to-regexp "*/*.jpg")) ;; this returns nil
+</pre>
+
+== What it does ==
+Takes a list of files and opens each one in turn in a temporary, writable buffer (%%*look*%%).  Defines navigation keybindings to flip through the list of files (forward: "M-n" or "C-.", reverse: "M-p" or "C-,").  Indicates in the header the current file name and the number of files in the list in the forward and reverse directions.  Usually handles default major modes properly.
+
+== Why? ==
+Emacs handles images, but photographs are frequently larger than my screen.  I found EmacsImageManipulation mode useful for resizing the photos, but the problem is that the file has to be opened in a writable buffer.  This presents the danger of accidentally altering an image file when I only want to view it temporarily (and resize it to my window size).  Look-mode eliminates this danger by inserting the file into a temporary buffer.
+
+== What else? ==
+Directories are culled from the file list and may be listed on the header line.  The directory list is by default recursively searched.  This can be turned off from the Customize interface for look.
+
+After I wrote this, I realized that it would be great for reading and sorting [http://lanl.arxiv.org arXiv abstracts], so I wrote another minor-mode piggybacking on this one called ArxivReader.
+
+== Deficiencies ==
+Can't deal with *.zip files.  Haven't tried it on tar-ed or gz-ed files yet.
+
+== Download ==
+Lisp:look-mode.el
+
+== Interactive functions ==
+* ##look-at-files## (M-l from dired)
+* ##look-at-next-file## (M-n or C-.)
+* ##look-at-previous-file## (M-p or C-,)
+* ##look-reset-variables##
+
+== Other keybindings ==
+##C-c l## runs ##(customize-group 'look)##
+
+== Author ==
+PeterMao
+
+----
+MultimediaModes

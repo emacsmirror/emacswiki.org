@@ -1,0 +1,30 @@
+Distel is distributed/concurrent programming extensions for Emacs Lisp
+(but intended for using with Erlang.) see http://www.bluetail.com/~luke/distel/ and current source at: http://jungerl.cvs.sourceforge.net/jungerl/jungerl/lib/distel/
+
+LukeGorrie, the author, says:
+The concurrency is based on TrampolinedStyle, and I'm borrowing
+Erlang's CSP-style concurrency model. Scheduling out happens when you
+need to wait for a message, so the "receive a message" macro takes
+some extra arguments so that it can make a continuation-like object.
+
+: I saw some of your comments on Cliki:CL-Emacs about this.  I was
+hoping you could elaborate more here about how this works.  For
+instance, the biggest blocker I'm seeing now is in fontifying buffers.
+A good example of this is WThreeM buffers with large forms.  Actually,
+WThreeM buffers tend to fontify slowly in general.  What would you
+suggest doing about this?
+
+Distel is one of the sweetest one person hacks I have ever seen.  It opens
+up new vistas.  It should change the meaning of emacs.  But thus far it has been completely ignored.  -- LynHeadley
+
+Not quite, LukeGorrie and a few others have used the concepts used by Distel to create a lisp interaction mode similar to (but less crufty and more featureful than) ILispMode, SlimeMode -- AndreasFuchs
+
+Also not quite in that Distel was really implemented as an Erlang development environment, and Erlang programmers are using it - it's not even a one-man hack anymore :-). A more "pure Elisp" version would be a nice hack. (And thanks for the kind words.) Answering the previous poster, I wonder if "lazy fontification" would be the answer there? -- LukeGorrie
+
+[new:rubikitch:2007-05-28 17:28 UTC]
+The www.bluetail.com seems to be down. -- [[rubikitch]]
+
+It seems that distel has moved to http://fresh.homeunix.net/~luke/distel/
+
+Distel seems to be here too: http://code.google.com/p/distel/
+-- [[hsuh]]

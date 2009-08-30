@@ -1,0 +1,82 @@
+With library Lisp:column-marker.el you can highlight a column (vertical line) of text. In fact, you can highlight any number of such columns -- 3 such highlight "'''column markers'''" are provided by default, but you can easily define more.
+
+This is especially useful for languages like COBOL or Fortran where certain columns have special meaning.  It is also handy for aligning text across long vertical distances. Multi-column characters, such as `TAB' are treated correctly.
+
+Commands `column-marker-1', `column-marker-2', and
+`column-marker-3' each highlight a given column (using different
+background colors, by default). The behavior of each command is the same, and depends on the prefix argument, as follows:
+
+* With ''no'' prefix argument, each highlights the ''current'' column (where the TextCursor is).
+
+* With a non-negative ''numeric'' prefix argument, each highlights that column.
+
+* With plain `C-u' (no number), each turns ''off'' its highlighting.
+
+* With `C-u C-u', each ''turns off all'' column highlighting.
+
+If two commands highlight the same column, the last-issued
+highlighting command shadows the other -- only the last-issued
+highlighting is seen.  If that "topmost" highlighting is then
+turned off, the other highlighting for that column will show
+through.
+
+'''Examples''' -- 
+
+* `M-x column-marker-1' highlights the column where the cursor is, in
+`column-marker-1-face'.
+
+* `C-u 70 M-x column-marker-2' highlights column 70 in
+`column-marker-2-face'.
+
+* `C-u 70 M-x column-marker-3' highlights column 70 in
+`column-marker-3-face'.  The `column-marker-2-face' highlighting no
+longer shows, because it is now shadowed by the `column-marker-3-face' highlighting.
+
+* `C-u M-x column-marker-3' turns off highlighting for `column-marker-3',
+so `column-marker-2-face' highlighting shows again for column 70.
+
+* `C-u C-u M-x column-marker-1' (or `-2' or `-3') erases ''all'' column highlighting.
+
+These commands use `font-lock-fontify-buffer', so syntax
+highlighting (`font-lock-mode') must be turned on.  There might be
+a performance impact during refontification.
+
+
+'''Installation''' -- Place <tt>[[column-marker.el]]</tt> in your load path, and put this in
+your init file (`##.emacs##'):
+
+ (require 'column-marker)
+
+Other init file suggestions (examples):
+
+* Highlight column 80 in foo mode:
+
+        (add-hook 'foo-mode-hook (lambda () (interactive) (column-marker-1 80)))
+
+* Use `C-c m' interactively to highlight with `column-marker-1-face':
+
+        (global-set-key [?\C-c ?m] 'column-marker-1)
+
+'''Defining Additional Column Markers''' -- This is all you need to do, to create an additional column marker:
+
+  (column-marker-create column-marker-4 my-favorite-face)
+
+'''Problems'''
+
+Be careful when using, it slowed my Emacs down to unrecoverable levels.  -- [[nschum]]
+   
+
+'''See also:'''
+
+* HighlightCurrentColumn -- Highlight the current column when Emacs is idle, or momentarily, or in such a way that the highlighting tracks the cursor. An extension of <tt>[[column-marker.el]]</tt>.
+* ModeLinePosition for a way to highlight the column number in the mode-line when the cursor is past some limit column you set.
+* MarginMode
+* EightyColumnRule
+
+
+
+
+-----
+CategoryEditing
+CategoryFilling
+CategoryDisplay

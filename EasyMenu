@@ -1,0 +1,42 @@
+EasyMenu (lisp/emacs-lisp/easymenu.el) is a package which allows you to write
+menu definitions which work under both, Emacs and XEmacs.
+
+Generally, there are more ways to define menus, since menus in Emacs
+are implemented as keymaps.  This is why you add a menu definition to
+the mode-map of a mode, for example.  Whenever the mode is active, its
+mode-map is also active, and your menu therefore visible.
+
+Here is some basic example code how to use EasyMenu.  my-menu is the
+symbol used to identify your menu, and my-mode-map identifies the mode-map
+for your mode where you want the menu to be visible.
+
+    (easy-menu-define my-menu my-mode-map "My own menu"
+		      '("My Stuff"
+			["One entry" my-function t]
+			("Sub Menu"
+			 ["My subentry" my-obscure-function t])))
+
+SO, and here comes the pitfall. If you are using GNU Emacs, you are done
+with this piece of code. XEmacs, however, requires you to 
+add the menu explicitly, so do it anyway, and it works in
+both flavours:
+
+    (easy-menu-add my-menu my-mode-map)
+
+You can also add menus and menu items to the global MenuBar.
+Here is an example that adds an entry to the Tools menu.
+Watch out, the name of the menu where you want to add the item (the PATH
+parameter) is case sensitive.
+
+    (require 'easymenu)
+    (easy-menu-add-item nil '("tools") ["IRC" erc-select t])
+
+One way to determine PATH is to use C-h C-k and klick on a menu item close to
+where you want your entry to appear.  The *Help* buffer then says something like:
+
+    <menu-bar> <tools> <games> <tetris> runs the command tetris
+       which is an interactive autoloaded Lisp function in `tetris'.
+
+----
+CategoryCode
+ComparativeEmacsology

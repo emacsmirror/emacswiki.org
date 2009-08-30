@@ -1,0 +1,59 @@
+You have figured out how to get and even send E-mail with Gnus under Windows.
+
+Yet, when you
+
+* click on a mailto link in your favorite web browser
+* enter a mailto link via Start->Run->%%mailto:someone@somewhere%%
+* use Start->E-mail
+
+you find yourself in Outlook or, as some corporate users will have to
+admit, even Lotus Notes.
+
+Well, that was enough motivation for me yesterday to see what I could
+do about that.
+
+My solution involves adding follwing !MsWindowsRegistry settings:
+
+*Warning*
+
+Make a backup of your ~/.emacs before you experiment with this feature.
+
+Be sure to have an XEmacs already running, since gnuclient expressions
+are currently processed too early in a newly started XEmacs, before
+initialization is complete.
+
+All of this is experimental and works fine with the !InnoSetup
+gnuclient kits available from
+http://www.xemacs.org/Download/win32/#InnoSetup-Gnuclient-Download
+when XEmacs is already running.
+
+MsWindowsXEmacsGnusRegistrySettings
+
+Save the above to a file with the .reg extension.
+
+Double-click on it in Explorer or use regedit->File->Import...
+
+You'll get a popup like this:
+
+[[image:ImportXEmacsGnusRegistry]]
+
+And another to the effect that the import was successful.
+
+Now open Start->Control Panel->Internet Options
+
+[[image:MsWindowsControlPanelInternetOptions]]
+
+Pick the XEmacs Gnus E-mail menu entry in the Programs tab and click OK.
+
+[[image:MsWindowsInternetOptionsProgramsEmail]]
+
+Now try a mailto link, e.g. by entering one in Start->Run...->Open: %%mailto:someone@somewhere%%
+
+[[image:MsWindowsStartRunOpenMailto]]
+
+A running XEmacs will get sent the lisp expression to compose a mail to someone@somewhere in Gnus, e.g.
+
+[[image:XEmacsGnusComposeMailFromMailto]]
+
+
+MsWindowsRegistry MsWindowsCustomize

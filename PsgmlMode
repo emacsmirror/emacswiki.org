@@ -1,0 +1,177 @@
+SGML covers XML, HTML, and lots of other markup languages.
+The tags allowed are defined in a DTD.
+PSGML mode reads this DTD and facilitates editing the SGML documents.
+PSGML is available for both Emacs and XEmacs.
+It is not the same as the one from "M-x sgml-mode" in Emacs 22.2, although psgml can replace sgml-mode.
+
+The main development for PSGML mode has moved to the sourceforge at http://sourceforge.net/projects/psgml/.
+As of 2008, last version is of 2001. You can also consider [[NxhtmlMode]] (and nxhtml-mode) which supports also other families of languages.
+
+The main PSGML web page (containing a manual) is at
+http://www.lysator.liu.se/~lenst/about_psgml/.
+
+From the PSGML manual:
+
+PSGML is a major mode for editing SGML documents. It works with GNU Emacs 19.19
+and later or with Lucid Emacs 19.9 and later. PSGML contains a simple SGML parser and can work with any DTD. Functions provided includes menus and commands for inserting tags with only the contextually valid tags, identification of structural errors, editing of attribute values in a separate window with information about types and defaults, and structure based editing. 
+
+SGML, a language for encoding the structure of a document, is an ISO standard: ISO 8879:1986 "Information processing -- Text and office systems -- Standard
+Generalized Markup Language (SGML)". 
+
+A good introduction to SGML is A Gentle Introduction to SGML produced by Text
+Encoding Initiative (this is really chapter 2 of TEI P3). This can be found on 
+
+* http://www.tei-c.org/Vault/GL/P3/SG.htm
+* ftp://ftp.ifi.uio.no/pub/SGML/TEI/P3SG.DOC
+* http://www.tug.org/applications/pdftex/gentlesgml.pdf
+
+A very good tutorial on setting up an ntemacs/psgml-based XML/SGML authoring/publishing
+enviroment is Markus Hoenicka's "SGML for NT" tutorial:
+
+* http://www.mhoenicka.de/software/sgml/sgmlnt.html
+
+== Getting started ==
+
+You have to separate enable syntax highlighting and indenting 
+<pre>
+(setq sgml-set-face t)
+(setq sgml-auto-activate-dtd t)
+(setq sgml-indent-data t)
+</pre>
+
+You also may want to change the faces to something else
+<pre>
+(setq sgml-markup-faces '(
+    (start-tag . font-lock-keyword-face)
+    (end-tag . font-lock-keyword-face)
+    (comment . font-lock-comment-face)
+    (pi . font-lock-constant-face) ;; <?xml?>
+    (sgml . font-lock-type-face)
+    (doctype . bold)
+    (entity . italic)
+    (shortref . font-lock-reference-face)))
+</pre>
+
+PsgmlAnt provides a step by step guide for getting PSGML to work with ant build scripts.
+----
+
+You can see an example of how to use PSGML to parse XML in e-xml.el, part of EMacro:
+
+* http://www.sf.net/projects/emacro/
+
+You will also need onsgmls (a SGML parser, part of the openjade/OpenSP project):
+
+* http://sourceforge.net/projects/openjade/
+
+Onsgmls's ancestor nsgmls can be found at SP's original site:
+
+* http://www.jclark.com/sp/
+
+: I cannot download <i>nsgmls</i> Win32 binaries from Clark's ftp site,
+: which is supposed to have them: http://www.jclark.com/sp/howtoget.htm
+: Any alternate locations available? (2003-07-31) EricPement
+
+:: Answer provided above.  (2006-10-04) StephanBrun
+
+See also:
+
+* http://www.iro.umontreal.ca/~pinard/fp-etc/dist/xxml/xxml.el
+* http://xxml.progiciels-bpi.ca/index.html (try this is above link fails)
+* http://www.menteith.com/tdtd/ -- one of these nicely font-locked DTDs
+* XmlParser -- more on other XML parsers
+* http://www.snee.com/bob/sgmlfree/ has a PDF of an introduction to Emacs+PSGML
+----
+
+In xEmacs, psgml-mode and related modes (psgml-html etc.) will display a context sensitive menu offering appropriate tags or the ability to edit a tag's attributes, depeding on the position of point in the buffer.
+
+To get the same behaviour with GNU Emacs (tested with 21.2.1) put the following in your .emacs:
+
+    ; Define a trivial function to bind the sgml-tags-menu to psgml's local key map.
+    ; (A Lambda might do as well.)
+    ; Note the down-mouse-3 action here, it must be used instead just mouse-3 to
+    ; avoid conflicts with Emacs' default binding of down-mouse-3. If you want to
+    ; use mouse-3 instead, you'll need to unset down-mouse-3 first.
+    (defun go-bind-markup-menu-to-mouse3 ()
+            (define-key sgml-mode-map [(down-mouse-3)] 'sgml-tags-menu))
+    ;
+    ; change key binding whenever psgml mode is invoked
+    (add-hook 'sgml-mode-hook 'go-bind-markup-menu-to-mouse3)
+
+----
+
+== Questions and/or wishlist about PSGML ==
+
+If psgml doesn't seem to font-lock your files, even though font-lock is 
+enabled make sure that <code>sgml-markup-faces</code> is set up to correctly
+map sgml-mode faces to font-lock faces.  Also make sure that <code>sgml-set-face</code> is set to <code>t</code>.  Finally, if you want 
+document parsing to happen when you open a file, set <code>sgml-auto-activate-dtd</code> to <code>t</code>.
+
+I use psgml a lot.  There are some thing I would like to changed but havent found yet how to do it, I hope I can get some help here.  Thanks in advance!
+
+1) External entity html not found
+
+I often need to open files created by someone else than me.  They may be no DTD of a unrecognised DTD.  I want to disable the poping of a buffer saying "External entity html not found". Maybe just a message in the minibuffer and/or a default dtd to use when none is defined.
+
+Solution: The following worked for me: create ~/site-lisp/catalog containing the line,
+
+  DOCTYPE "HTML" "xhtml1-strict.dtd"
+
+then copy xhtml1-strict.dtd to ~/site-lisp/ and add this catalog to sgml-catalog-files in ~/.emacs:
+
+  (setq sgml-catalog-files (cons "~/site-lisp/catalog" sgml-catalog-files))
+
+2) <!-- one of (TD TH) -->
+
+When I create a table, it insert this comment in the TR, I need to manualy delete it every time.
+How can I disable this?
+
+Solution:
+(setq sgml-insert-missing-element-comment nil)
+
+----
+== PSGML Snipplets ==
+
+I do not know where to put my snipplet, so if somebody will find better place for it, please move.
+I've done some add-ons which detect xml by <?xml tag at the begining. And also it detects xml encoding by
+encoding attribute and tries to recode buffer.
+
+This was written for XEmacs (21.4) but may work on other emacses.
+
+<pre>
+(defun maybe-set-xml-coding-system nil
+  "Recode xml buffer to match coding system, specified in xml encoding tag.
+Also sets xml mode"
+  (save-excursion
+    (beginning-of-buffer)
+    (let ((xml-start (search-forward "<?xml" nil t)))
+      (when (and xml-start (= xml-start 6)) ; Match "<?xml" only at the begining
+	(let ((xml-end (search-forward "?>" nil t)))
+	  (when xml-end
+	    (save-restriction
+	      (narrow-to-region xml-start (- xml-end 2)) ; length of "?>"
+	      (beginning-of-buffer)
+	      (when (search-forward-regexp " +encoding=\"\\([^\"]+\\)\"" nil t)
+		(my-recode-buffer (find-coding-system (intern (downcase (match-string 1)))))))
+	    (xml-mode)))))))
+
+(defun my-recode-buffer (encoding)
+  "Recode buffer with ENCODING if encoding is nil do nothing"
+  (when encoding
+    (let* ((old-buf (current-buffer)) (fname (buffer-file-name old-buf)))
+      (when (file-readable-p fname)
+	(with-temp-buffer
+	  (let ((new-buf (current-buffer)))
+	    (set-buffer-file-coding-system 'binary)
+	    (insert-file-contents-literally fname)
+	    (decode-coding-region (point-min) (point-max) encoding)	      
+	    (set-buffer old-buf)
+	    (erase-buffer)
+	    (set-buffer-file-coding-system encoding)
+	    (insert-buffer new-buf)
+	    (set-buffer-modified-p nil)))))))
+
+(add-hook 'find-file-hooks 'maybe-set-xml-coding-system)
+</pre>
+
+----
+CategoryModes

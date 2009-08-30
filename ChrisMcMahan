@@ -1,0 +1,150 @@
+==Emacs notes from Chris McMahan==
+I'm going to start contributing the codebase that I've been building up in the last 10 years of using emacs. A lot of it is for my own use, but may be helpful to others. My lisp skills are minimial at best, so any helpful suggestions are encouraged and most welcome!
+
+I'm currently using the XP version of Emacs 22 on Windows XP with Cygwin installed.
+
+; McMahanPlannerModeConfig: My configuration for muse and planner mode
+; McMahanDotEmacs: My .emacs file, which sets up variables and calls the other config files 
+; McMahanEmacsConfiguration: Emacs configuration called by the .emacs file
+; McMahanEmacsMacros: Various helpful functions that I've created/borrowed over time. I should probably rename this file, since it only has a few macros recorded now.
+
+==View Mail configuration with Windows XP and Cygwin==
+I was having some serious difficulty getting the 8x versions of VM to compile under Windows XP emacs (native XP version, 22.2, using cygwin tools).
+
+The solution I found was to edit the vm-8.xx/lisp/Makefile generated from the configuration and replace any occurrence of '`pwd`' with the literal path, using the format drive<colon>/emacs/lisp/vm-8xxx/lisp as the build directory
+
+
+Here's the detailed instructions that work for my installation. Your configuration and paths might vary, but the idea is the same...
+
+---
+
+Compile View Mail (vm)
+
+See CategoryViewMail for details of View Mail
+
+Use the following command line to configure vm (from the vm
+distribution root directory):
+
+  ./configure --with-emacs=emacs --with-other-dirs=c:/cygwin/home/mcmahan.cb/emacs-pkgs/bbdb-2.35/lisp
+
+Once the configuration process is done, open the Makefile in the lisp
+subdirectory and make the following changes around line 124:
+
+replace any occurrence of `pwd` with the full path to the vm lisp
+directory. This is because pwd in the cygwin environment returns
+/home/mcmahan.cb/...
+
+but the Makefile requires the full path.
+
+Here's the new and old (commented) text from the Makefile
+
+	(build_dir="c:/cygwin/home/mcmahan.cb/emacs-pkgs/vm-8.0.9-544/lisp"; cd "."; \
+	 "$(EMACS_PROG)" $(FLAGS) -l autoload \
+		-f vm-built-autoloads "c:/cygwin/home/mcmahan.cb/emacs-pkgs/vm-8.0.9-544/lisp/$@" "c:/cygwin/home/mcmahan.cb/emacs-pkgs/vm-8.0.9-544/lisp")
+
+
+Old Makefile text 
+
+  #	(build_dir="`pwd`"; cd "."; \
+  #	 "$(EMACS_PROG)" $(FLAGS) -l autoload \
+  #		-f vm-built-autoloads "/home/mcmahan.cb/emacs-pkgs/vm-8.0.9-544/lisp/$@" "`pwd`")
+
+Then run make from the vm distribution directory. Ensure the file
+vm-autoloads.el is built, and contains more than 3 or 4 lines.
+
+==EDB Database to store passwords and notes==
+I've been using a straight file with the excellent epg package that allows me to encrypt the file on saving and decrypt on opening.
+
+Over the course of time, however, as the file grew, it became more and more apparent that I needed a better organization.
+
+I picked up EDB this weekend and adapted my password file to become a full-fledged database. I also wrote a couple (hacked a couple, kludged a couple... verb of choice here) of helper functions that copy the location, username and password to a clipboard to help interacting with various web pages.
+
+I've attached the edb control file here 
+; McMahanPasswordEdb: My control file for the password EDB database
+
+Here's a sample entry for the data file. The key is to load the epg package, then name your password database with a .gpg extension. You'll then be prompted to enter the password on opening the password database.
+
+Problems:
+* I still can't find a decent way of navigating the windows within the frame to get the information from the current view/edit window when in the summary window
+* the EPG package still prompts for user when saving the database file after changes are made. This shouldn't be the case with this package. For some reason, however, when using in conjunction with EDB, it happens every time the database changes.
+* A LOT of assumptions are made regarding window configuration and such. I've created a function (another kludge) to load the password database and configure the windows to my personal taste. Use, modify and fix however you see fit.
+* Any help or comments would be most appreciated! I'm still trying to get my head around lisp programming, but that mystical light bulb has not appeared over my head yet.
+
+Here's the supporting password function to load the password database
+
+  (defun passwords ()
+    "Load the password database and associated control file, and set the window configuration"
+    (interactive)
+    (edb-interact 
+     (concat HOME_DIR "/edb/passwords.edb")
+     (concat HOME_DIR "/edb/passwords.gpg"))
+    (db-summary)
+  
+    ; delete the view/edit buffer
+    (delete-other-windows)
+  
+    ; split the summary buffer, leaving 12 lines for the edit/view window
+    (split-window-vertically -14)
+    (other-window 1)
+  
+    ; place the edit/view buffer in the lower window
+    (switch-to-buffer (previous-buffer))
+  
+    ; switch to the summary window
+    (other-window 1)
+  )
+
+Here's the password.gpg data file. This is an edb tagged format. Field names are:
+NM:  Name
+LC:  Location
+US:  User
+PW:  Password
+EM:  Email
+CT:  Category
+UD:  Last update date
+NT:  Notes (can be multi-line)
+
+
+  NM:	Delicious bookmarks
+  LC:	http://del.icio.us
+  US:	jschmuckatelli
+  PW:	jschmuckatelli
+  EM:	jschmuckatelli@gmail.com
+  CT:	Web
+  NT:	social bookmarks
+  
+  NM:	Gmail
+  LC:	http://gmail.google.com
+  US:	jschmuckatelli
+  PW:	jschmuckatelli
+  EM:	jschmuckatelli@gmail.com
+  CT:	Web
+  NT:	Web-based email
+  
+  NM:	OpenDNS
+  LC:	www.opendns.com
+  US:	jschmuckatelli
+  PW:	jschmuckatelli
+  EM:	jschmuckatelli@gmail.com
+  CT:	Web
+  UD:	2008-05-02
+  NT:	alternate dns server with great features
+  
+  NM:	Wincustomize
+  LC:	http://www.wincustomize.com/
+  US:	jschmuckatelli
+  PW:	jschmuckatelli
+  EM:	jschmuckatelli@gmail.com
+  CT:	Web
+  NT:	Customizations for Object Desktop apps
+
+
+
+[new]
+Welcome to the wiki!  Lately it seems that most of the new emacs users (and emacswiki contributors) are planner users.  Weird.  :)  -- AlexSchroeder
+
+[new]
+Welcome to the wiki! =) Thanks for documenting that calendar thing; ClairChing wants to know how to set one of those up.. =) -- SachaChua
+
+----
+CategoryHomepage

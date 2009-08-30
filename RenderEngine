@@ -1,0 +1,35 @@
+In order for Emacs to properly handle WYSIWYG editing in the future,
+it will need a scheme for:
+
+* reading/writing the various binary formats in existence
+* maintaining the data in a neutral, yet sufficiently rich form
+* editing the data using a plain Emacs buffer in a major mode; this editing mode should incorporate "styles", like any modern word processor
+* rendering the data in an attractive manner
+
+These four aspect of the problem all revolve around how Emacs will
+internally manage the data so that no information is lost.  It would
+be possible to do this using plain text that is marked up with
+properties, which is the current approach used by enriched-mode.
+
+It will also need to handle reading/writing/rendering of streaming
+data, such as rendering incoming from an HTTP GET request.
+Reading/writing thus may imply sockets as well as files, and possibly
+strings.
+
+It needs to be a flexible, very efficient, lightweight model, where
+the central housekeeping does as little as possible.  An effective
+streaming HTML renderer should not need to jump through hoops to fit
+into this design; but once it does, it should then be possible to
+save the rendered HTML text as an RTF file transparently, losing only
+those constructs that cannot be represented in binary format by the
+RTF writer module.
+
+At least these abstract modules will be necessary (names are just a
+placeholder for now):
+
+* reader-writer.el
+* stylized-data.el
+* stylized-mode.el
+* stylized-render.el
+
+: You need to more clearly identify what these modules are supposed to do.  I don't think this is much of a design at this point.  It really just seems like a prose description of what you wanted on #emacs.  I'd still like to see more of a design before I can do anything with it.

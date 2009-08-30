@@ -1,0 +1,46 @@
+These are discussions about using [[zap-to-char]].
+
+`M-z' (`zap-to-char') zaps to the char of your choice, or to delete the n'th occurence of a char.
+
+== Killing a Sentence ==
+
+`zap-to-char' can be used to delete sentences (`M-z .').
+[new]
+You can also use `M-k' (`kill-sentence').
+
+== Killing an XML Tag ==
+
+`zap-to-char' can be used to delete an XML tag (`M-z >').
+[new]
+In nXML mode, `C-M-k' (`kill-sexp') does the same thing.
+
+== Killing a Quote-delimited String ==
+
+It's handy when you're coding, imagine editing a ##System.out.println("blah blah blah");##  With the point positioned at the first ##"## you could ##`M-2 M-z "'## and kill upto and including the final ##"##, allowing you to change the output. (Corrected by JeromeRadix & IanEure)
+[new]
+In this case you'd better use `C-M-k' at the starting ##"## -- JaeyounChung
+
+== ZapToChar or ZapUpToChar ==
+[new]
+I have been reading a lot of old Usenet posts about the behavior of `zap-to-char' and most of them is about people not liking that `zap-to-char' also deletes the character that is searched for. Some say that previous to Emacs 19.xx, `zap-to-char' did not zap the search character and suggest the user switches to that version. Some suggest a trick using `zap-to-char' and typing the char twice, with the side effect that point ends up after the inserted character. Now, in none of these posts have I read about why the behavior was changed, it seems most people prefer the "up to" and not "through" variant (granted, the majority that does not complain might like the current behavior) so why doesn't it work like that? I seldom or never use the command myself but from time to time I think about it and each time I seem to come to the conclusion that the "up to" variant is what I would like to have. I can of course rebind my keys to another version but I am very interested in how people use the current version and what benefits that have; maybe it has super powers that outshines the puny old variant? -- MaDa
+
+[new]
+Interestingly, there's a line of code in [Manual:zap-to-char zap-to-char] that would turn it into [Manual:zap-up-to-char zap-up-to-char] but it's been commented out since [http://cvs.savannah.gnu.org/viewvc/emacs/emacs/lisp/simple.el?revision=1.1&view=markup the earliest version in CVS].  -- DenisHowe
+
+[new]
+: IMHO, zap-up-to-char is much more handy than zap-to-char CHAR CHAR because of the resulting TextCursor position. -- JeremyCowgar
+
+[new]
+My `M-z' is bound to `zap-up-to-char'. I use it -- to delete parts of words -- because I can find the beginning of the part I want to keep faster than the end of what I want to delete. But I'm interested in learning the advantages of `zap-to-char' as well. I believe `zap-up-to-char' is in "misc.el" (Emacs 22).
+
+Note: I use `C-M-k' to kill a quoted string or an xml tag, and `M-k' to kill a sentence. -- SebastienRoccaSerra
+
+[new]
+My conclusion is that the change done was done just because someone right then decided he/she liked the new behavior better than the old one. In my opinion no one has described any advantages that zap-to-char has over zap-up-to-char. Maybe I should move this "thread" over to emacs devel some day... Of course, I can rebind M-z to whatever I like, but I think good defaults are, well, good. -- MaDa
+
+[new]
+Also see ZapToISearch.
+
+
+----
+CategoryEditing

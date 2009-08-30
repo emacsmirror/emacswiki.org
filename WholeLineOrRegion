@@ -1,0 +1,86 @@
+In many programs, like !SlickEdit and !TextMate, "cut" and "copy" act on the /current line/ if no text is visually selected. This page lists some ways to implement this behavior in Emacs, so that
+
+* '##M-w##' copies the current line when the region is not active, and
+* '##C-w##' deletes it, [CopyingWholeLines saving keystrokes].
+
+[TransientMarkMode Transient Mark Mode] must be enabled to distinguish selected text visually: ##(transient-mark-mode t)##. (Otherwise, the [http://www.emacswiki.org/emacs/Region region] is always active.)
+
+== SlickCopy ==
+
+The SlickCopy page, inspired by !SlickEdit, provides some code to modify Emacs' default cutting and copying commands (##kill-ring-save## and ##kill-region##). It is short and can be placed in <tt>[InitFile .emacs]</tt>:
+
+    (defadvice kill-ring-save (before slick-copy activate compile)
+      "When called interactively with no active region, copy a single line instead."
+      (interactive
+       (if mark-active (list (region-beginning) (region-end))
+         (message "Copied line")
+         (list (line-beginning-position)
+               (line-beginning-position 2)))))
+
+    (defadvice kill-region (before slick-cut activate compile)
+      "When called interactively with no active region, kill a single line instead."
+      (interactive
+       (if mark-active (list (region-beginning) (region-end))
+         (list (line-beginning-position)
+               (line-beginning-position 2)))))
+
+== whole-line-or-region ==
+
+This minor mode allows functions to operate on the current line if they would normally operate on a region and region is currently undefined.
+
+The primary use for this is to kill (cut) the current line if no region is defined, and kill-region is invoked. It basically saves you the effort of going to the begining of the line, selecting the text up to the end of the line, and killing. Similarly, when yanking, it's smart enough to know that the string to be yanked was killed as a whole line, and it should be yanked as one, too. So you don't need to position yourself at the start of the line before yanking. If region *is* defined, though, all functions act as normal.
+
+The inspiration for this came from an old editor I used to use (brief maybe?), that did this exact thing for you. It was a handy feature to have, and I definitely wanted it when I moved to Emacs. I've extended the concept slightly, to let you copy N whole lines, using the standard prefix method.
+
+*NOTE:* This package will behave unexpectedly (and indeed is nearly useless) if `transient-mark-mode' is off, as there is then always a region defined.
+
+*NOTE:* I haven't gotten this to work under XEmacs (though I honestly haven't tried real hard).
+
+The latest version can be found here: http://www.northbound-train.com/emacs/whole-line-or-region.el
+
+=== Example of how this package makes a difference ===
+
+Someone posted with the following:
+
+ This is what I have had in my .emacs for years. It is one of those things that I miss most when using an Emacs that I have not yet customised:
+
+ (defun kill-entire-line (n)
+   "Kill ARG entire lines starting from the one where point is."
+   (interactive "*p")
+   (beginning-of-line)
+   (kill-line n))
+
+ (global-set-key "\M-k" 'kill-entire-line)
+
+
+If I kill the first line of the following text using that method:
+
+    The GNU Project was launched in 1984 to develop a complete
+    Unix-like operating system which is free software: the GNU system.
+
+and if point is positioned as such when I yank the killed text:
+
+    Unix-like operating system wh>|<ich is free software: the GNU system.
+
+I wind up with the following:
+
+    Unix-like operating system wh   The GNU Project was launched in 1984 to develop a complete>|<ich is free software: the GNU system.
+
+With whole-line-or-region I wind up with:
+
+    The GNU Project was launched in 1984 to develop a complete
+    Unix-like operating system wh>|<ich is free software: the GNU system.
+
+And as a bonus, point hasn't moved.
+
+For me, both of those things are important.
+
+In addition, this package provides a framework for enabling any region-based command (e.g. comment-dwim) to work on the current line if region is undefined.
+
+----
+
+See also CopyingWholeLines.
+
+----
+
+CategoryRegion

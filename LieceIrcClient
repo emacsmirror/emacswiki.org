@@ -1,0 +1,10 @@
+Liece is an InternetRelayChat (IRC) client for Emacs.
+
+Get it here:
+
+* http://www.unixuser.org/~ueno/liece/
+
+Liece looks a bit different from the other Emacs IRC Clients, it has a specific buffer to write messages and another to receive messages, you can also write in the minibuffer and use all the key bindings it provides.
+
+----
+CategoryModes

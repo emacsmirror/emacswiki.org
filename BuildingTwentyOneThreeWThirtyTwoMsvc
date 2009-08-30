@@ -1,0 +1,16 @@
+I haven't checked recently, but it's always worked fine out of the box.
+
+---------------------------------------------------------
+
+I've just downloaded emacs-21.4 leim-21.4 unpacked them
+gone to cmd shell on Windows XP
+
+> vcvars32.bat
+> cd emacs-21.4/nt
+> ./configure
+> nmake
+> nmake install INSTALL_DIR=c:\pf\emacs
+
+and voi la! emacs is running.
+
+-Anton Tagunov October 2006

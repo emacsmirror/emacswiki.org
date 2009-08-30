@@ -1,0 +1,72 @@
+Some [[Lisp]] dialects, such as Scheme and EuLisp, are Lisp1's, which
+means symbols have a single binding that you can establish with `let'.
+In such a Lisp, the following code locally binds the `add-one' function:
+
+ (let ((add-one (lambda (x)
+                  (+ 1 x))))
+   (add-one 1))
+ => 2
+
+Many Lisp dialects are Lisp2's, including MacLisp (Elisp's ancestor),
+CommonLisp, ISLISP, and EmacsLisp itself.  In these dialects, variables
+have one binding for values, and another for functions.  The above code
+does not work as intended in a Lisp2.
+
+To bind the function cell of a variable, `flet' works analagously to
+how `let' works for the value cell.  Note that `flet' comes from the
+`cl' package, which is not active by default.
+
+ (require 'cl)
+ (flet ((add-one (x)
+          (+ 1 x)))
+   (let ((a 1))
+     (add-one a)))
+ => 2
+
+Note that the body of a function defined using `flet' cannot be
+recursive: it gets the previous binding of the function.  For
+recursive functions, you must use `labels':
+
+ (require 'cl)
+ (labels ((add-positive-integers (a b)
+            (cond
+              ((= a 0) b)
+              (t (add-positive-integers (- a 1) (+ b 1))))))
+   (add-positive-integers 6 4))
+ => 10
+
+Actually, if you are really sneaky, you *can* do recursion with
+flet as well.  The following would look nicer in a Lisp1 dialect,
+since then the function cell access would not need `function' and
+the function use could omit `funcall'.
+
+ (require 'cl)
+ (flet ((recurse (f a b)
+          (cond
+	    ((= a 0) b)
+	    (t (funcall f f (- a 1) (+ b 1)))))
+        (add-positive-integers (a b) (recurse (function recurse) a b)))
+   (add-positive-integers 6 4))
+ => 10
+
+
+Contributors: ThomasBurdick, RyanYeske, DavidKastrup
+
+----
+
+If you don't want your users to fall back on such evil hackery, write
+libraries the other way around: If the function in question should be
+variable, use this idiom instead:
+
+Declare a variable which holds the functions to use:
+
+    (defvar my-error-function 'error)
+
+Later, funcall the variable instead of calling the function directly:
+
+    (funcall my-error-function "This is an error message")
+
+Contributors: JohnWiegley, AlexSchroeder
+
+----
+CategoryCode

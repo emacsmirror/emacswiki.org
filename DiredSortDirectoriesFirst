@@ -1,0 +1,39 @@
+It seems pretty hard to achieve this simple task in Linux as the gnu-ls-command don't know any option to sort in this way. That lisp-code from the usenet looks hacky, but who cares - it works!
+
+<pre>
+(defun sof/dired-sort ()
+  "Dired sort hook to list directories first."
+  (save-excursion
+   (let (buffer-read-only)
+     (forward-line 2) ;; beyond dir. header  
+     (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max))))
+  (and (featurep 'xemacs)
+       (fboundp 'dired-insert-set-properties)
+       (dired-insert-set-properties (point-min) (point-max)))
+  (set-buffer-modified-p nil))
+
+ (add-hook 'dired-after-readin-hook 'sof/dired-sort)
+</pre>
+
+Here is a better method that is based on the above code, but doesn't break after adding marks (and pressing 'g').
+
+<pre>
+(defun mydired-sort ()
+  "Sort dired listings with directories first."
+  (save-excursion
+    (let (buffer-read-only)
+      (forward-line 2) ;; beyond dir. header 
+      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+    (set-buffer-modified-p nil)))
+
+(defadvice dired-readin
+  (after dired-after-updating-hook first () activate)
+  "Sort dired listings with directories first before adding marks."
+  (mydired-sort))
+</pre>
+
+[new:DrewAdams:2004-12-24 22:18 UTC]
+See DiredSortMenu for info on FrancisWright's library <code>dired-sort-menu.el</code>. It lets you do this and much, much more. -- DrewAdams
+
+----
+CategoryDirectories DiredMode

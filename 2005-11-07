@@ -1,0 +1,41 @@
+=== Does Visual Studio Rot the Mind? ===
+
+Charles Petzold[http://charlespetzold.com/] is an author of numerous books on the (misnomered) topic of "Windows programming".
+He recently spoke in late October to a developer's group for a particular proprietary platform.
+The full text of the shockingly titled speech, "Does Visual Studio Rot the Mind?", appeared on his Web site.[http://charlespetzold.com/etc/DoesVisualStudioRotTheMind.html]
+This article has been mentioned in other Web sites including Slashdot[http://it.slashdot.org/article.pl?sid=05/10/26/1935250] and [http://lambda-the-ultimate.org/ Lambda the Ultimate].
+
+The subtitle, "ruminations on the psychology and aesthetics of coding", explains why the author goes on to review old Hollywood technophobe movies, system APIs, well-known proprietary programming environments, programming languages and programmer user interfaces.  The author has a tattoo[http://charlespetzold.com/bio.html] of the trademark of an unnamed GUI-based platform, but he is a hacker from the pre-"Visual" age with some worthy observations.
+
+Petzold begins by retelling the stories of films whose computers "'take over' their human creators".  His analogy is that software development tools are already doing this to programmers.
+
+: ''When using our computers, something a little different happens. Of course, we may get repetitive stress disorders from the keyboard or mouse, but software doesn't affect our bodies as much as our minds, and even then in subtle ways.
+
+: ''Some observers of our digital lives have noticed the way in which certain applications cause a user to think in very rigid prescribed ways, and these are not good. One of the biggest offenders, of course, is PowerPoint. Start putting what you want to communicate in PowerPoint slides, and everything you want to say is ordered into half a dozen bullet items.
+
+Examples of his concerns for programmers using so-called "Visual" tools include automatic code generation, reliance on interactive user interface designing features (programming with the mouse and "drag'n drop"), the lack of clean syntactic program representation, huge and poorly designed APIs, and a bloated code completion system called !IntelliSense(R).
+
+: ''For example, for many years programmers have debated whether it’s best to code in a top-down manner, where you basically start with the overall structure of the program and then eventually code the more detailed routines at the bottom; or, alternatively, the bottom-up approach, where you start with the low-level functions and then proceed upwards. Some languages, such as classical Pascal, basically impose a bottom-up approach, but other languages do not.
+
+: ''Well, the debate is now over. In order to get !IntelliSense to work correctly, bottom-up programming is best. !IntelliSense wants every class, every method, every property, every field, every method parameter, every local variable properly defined before you refer to it. If that’s not the case, then !IntelliSense will try to correct what you’re typing by using something that has been defined, and which is probably just plain wrong. 
+
+In a section on "The Pure Pleasures of Pure Coding", Petzold offers a better world that is included here with modification for the Emacs hacking reader:
+
+: ''A few months ago I decided it might actually be interesting solving the <nowiki>[New Scientist magazine math]</nowiki> problems with code, and then posting the programs and solutions on my web site the day after the deadline, but about a week before the answer appears in print.
+
+: ''I decided to use plain old ANSI C, and to edit the source code in <nowiki>[Emacs]</nowiki> -- which has no !IntelliSense <nowiki>[but senses of another kind]</nowiki> -- and to compile <nowiki>[using Emacs's `compile' command]</nowiki> and the Gnu C compiler. ...
+
+: ''<nowiki>[What]</nowiki> I also discovered is that the problems do require some thought before you code them up. Very often, the total number of combinations is prohibitive. You really have to whittle them down. You don't want to write a program that runs for a week before getting to the printf statement. ...
+
+: ''Even after this preliminary process, there's still coding to do, but there's no APIs, there's no classes, there's no properties, there's no forms, there's no controls, there's no event handlers, and there's definitely no Visual Studio.
+
+: ''It's just me and the code, and for awhile, I feel like a real programmer again.
+
+Besides the FreeSoftware philosophy empowering users over their software, Emacs -- of course not mentioned by Petzold -- seems to provide more of the flexibility that a programmer's brain needs.
+
+Petzold, begins to hint at the great divide that makes converting people to use Emacs (see EmacsForDevStudioUsers) more difficult.  In a word, the great divide is about the /approach/ to solving problems.
+
+This sort of wisdom from within the Windows community reinforces the importance of having available an interpreted programming language, like EmacsLisp, at the programmer's fingertips to help with "thinking" about problems, rather than code completion and API advice.  Although Emacs can provide many of the more modern facilities as customizations, Emacs focuses instead on not being "prohibitive" to completing a variety of tasks and instead is adaptable to a diversity of programmers, problems, and user preferences.
+
+[new]
+What do others think the failings of Visual Studio programs are and why they enjoy using Emacs, instead?  Maybe you disagree and think they're not such failures.  Maybe you've never used them, don't care, and now feel validated... -- AaronHawley

@@ -1,0 +1,24 @@
+See ErcExtraModules first if you use the version of ERC that comes with Emacs 22 and you don't have erc-speak.el.
+
+This module enables Emacs to convert lines in ERC to speech.
+EmacSpeak must be working to use this.
+
+To install, add the following to your ~/.emacs file:
+
+    (require 'erc-speak)
+
+----
+It should not be confused with ErcSound.
+---- 
+
+*Questions:*
+
+I have difficulties to get !ErcSpeak running. Where do I have to start?
+
+I have read that erc-speak.el is in the distribution. Where do I find it on a Debian system?
+
+* Try what's mentioned above (added to page after questions were asked), and if you still have problems you can ask on EmacsChannel or
+the [http://lists.gnu.org/mailman/listinfo/erc-discuss ERC mailing list].
+
+----
+[[ERC]], ErcExtraModules, EmacSpeak

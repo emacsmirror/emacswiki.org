@@ -1,0 +1,43 @@
+Courtesy the Emacs windows FAQ
+
+http://www.gnu.org/software/emacs/windows/faq3.html#startup
+
+How do I associate files with Emacs?
+
+The recommended way to associate files is to associate them with emacsclientw.exe. In order for this to work when Emacs is not yet started, you will also need to set the environment variable ALTERNATE_EDITOR to runemacs.exe. To open files in a running instance of Emacs, you will need to add the following to your init file:
+
+<code>(server-start)</code>
+
+For use with Internet Explorer
+
+You can use Emacs as the editor for composing mail for <mailto:> links, reading usenet for <news:> links, and viewing source. The following registry entries control this:
+
+    * Mail
+          o Key: HKCR\mailto\shell\open\command\(Default)
+          o Value: emacsclientw -e "(message-mail (substring \"%1\" 7))" 
+    * News
+          o Key: HKCR\news\shell\open\command\(Default)
+          o Value: emacsclientw -e "(gnus-fetch-group (substring \"%1\" 5)" 
+    * View Source
+          o Key: HKCR\htmlfile\shell\edit\command\(Default)
+          o Value: emacsclientw "%1" 
+
+Thanks to Jason Rumney and Sigbjorn Finne for these tips. 
+
+Following is the registry key from above exported from w32 Registry Editor 5:
+{{{
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\mailto]
+"URL Protocol"=""
+
+[HKEY_CLASSES_ROOT\mailto\DefaultIcon]
+@="c:\\Program Files\\Emacs\\emacs\\bin\\emacsclientw.EXE,0"
+
+[HKEY_CLASSES_ROOT\mailto\Shell]
+
+[HKEY_CLASSES_ROOT\mailto\Shell\Open]
+
+[HKEY_CLASSES_ROOT\mailto\Shell\Open\Command]
+@="c:\\Program Files\\Emacs\\emacs\\bin\\emacsclientw.exe -e \"(message-mail (substring \\\"%1\\\" 7))\""
+}}}

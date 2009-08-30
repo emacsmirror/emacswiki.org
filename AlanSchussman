@@ -1,0 +1,19 @@
+I'm [::schussat] on the EmacsChannel, though I had to cut myself off from IRC so that I'd get some real work done instead of just plink around with emacs.
+
+I use Emacs for maintaining my schedule and projects via PlannerMode, and writing documents with LaTeX. I'm a graduate student in sociology (find more at http://www.schussman.com/) and have been using Emacs, LaTeX, and !BibTeX for a few years. 
+
+I am at work on my doctoral dissertation now, so I'm heavily into emacs and LaTeX just about every day now. When I get some data put together, I'll also be using R and EmacsSpeaksStatistics (ESS). My officemates look at my screen and have no idea what I'm doing. 
+
+: Welcome to the wiki!  I used !LaTeX heavily at my last year in university, too...  As for office-mates, I think they finally found out that not every buffer in my Emacs is for SQL stuff; I'm not sure they found out that I am connected to AIM and IRC using Emacs.  There used to be a time when I would read the Emacs newsgroups and play in a MUSH before actually doing some work -- all within Emacs.  :)  -- AlexSchroeder
+
+== Emacs notes to myself ==
+
+A few things:
+
+* Now that I'm working with more, and more complex, documents, over a longer period of time, I have found that using RCS (RevisionControlSystem) via emacs is extremely useful. (And after the headache of installing it on Windows, too, and setting RCS_LF_ONLY=1, it's another excellent cross-platform tool.)
+* Still discovering more useful things about PlannerMode every week. Thanks in particular to SachaChua for all her work and JodyKlymak for his useful discussion. It gets better and better to have my planner integrated into my working environment.
+* I have found that <code>(setq completion-ignore-case t)</code> is very useful now that I have a number of mixed-case directories and filenames. It sets autocompletion dialogs to case-insensitive, so that entering <code>a TAB</code> will match "associations.tex" as well as "ASA2005." Nice.
+* Something everybody else figured out long ago, but that I'm just catching on to: I use emacs on three machines and two OS platforms (linux and Windows, and sometimes a third, the university mainframe), which over time led to multiple copies of byzantine .emacs files. This is a bad strategy. I recently modularized, as best I could, my config files so that just a few system-specific configurations were in .emacs, and everything else is 1) loaded by using (require 'extra-stuff) in .emacs, and 2) automatically synced, along with the rest of my documents, across the multiple machines. This has greatly reduced the headache of wondering, "Okay, I updated planner at school, but not on the laptop. Or is it the other way around?" As long as I pay attention to the system-specific differences in .emacs, everything else (which is modified more frequently, or at least has the potential to be) takes care of itself.
+----
+CategoryHomepage
+

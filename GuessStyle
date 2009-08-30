@@ -1,0 +1,11 @@
+guess-style is package for Guessing variables like c-basic-offset, tab-width and indent-tabs-mode automatically.
+
+It is available at http://nschum.de/src/emacs/guess-style/
+
+This is finally a complete approach which works with all indentation styles (tabs only, spaces only and the good old 4 spaces indent + 8 spaces make one tab mode). Great job!
+
+See also: [[GuessOffset]]
+
+----
+CategoryIndentation
+CcMode

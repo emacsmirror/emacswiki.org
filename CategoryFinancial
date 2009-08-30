@@ -1,0 +1,13 @@
+Here are some Emacs things relating to finance, money, accounting, etc.
+
+* LedgerMode -- double entry accounting.
+* BalanceMode -- tracking bank accounts
+* LoanPaymentCalculator -- calculating loan payments.
+* [[Chart]] -- stock and commodity quotes in Emacs.
+* StockQuote -- stock quotes using UrlPackage.
+
+Also of interest,
+
+* CategoryCalculators
+* CsvMode -- edit CSV files
+* SpreadSheet -- spreadsheets in Emacs.

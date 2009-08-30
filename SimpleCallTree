@@ -1,0 +1,95 @@
+This package creates a call-tree -- a data structure saying which
+function calls which function.
+
+* Lisp:simple-call-tree.el
+
+Use `M-x simple-call-tree-analyze' to run it on a buffer.  This uses
+`font-lock-function-name' to identify function names.  Therefore, you
+might have to wait for a bit until the stealth font lock has actually
+fontified all of the buffer, not only the visible part.
+
+For CPerl, some keywords like -f are also hilighted using
+font-lock-function-name.  In order to exclude these, use
+`M-x simple-call-tree-analyze-perl'.
+
+The output in ielm (see InferiorEmacsLispMode):
+
+<pre>
+    ELISP> simple-call-tree-alist
+    (("DoShowVisitors")
+     ("AddUserToRecentVisitors" "T" "GetParam" "UpdateRecentVisitors")
+     ("UpdateRecentVisitors" "T" "ReadRecentVisitors" "WriteRecentVisitors")
+     ("WriteRecentVisitors" "T" "WriteStringToFile")
+     ("ReadRecentVisitors" "T" "ReadFile")
+     ("DoShowVersion" "T" "GetHeader" "GetCommonFooter")
+     ...
+</pre>
+
+Too see which functions are called at all:
+
+<pre>
+    ELISP> (setq simple-call-tree-used (mapcar 'car (simple-call-tree-invert simple-call-tree-alist)))
+    ("DoOtherRequest" "DoBrowseRequest" "InitRequest" "DoCacheBrowse" "InitLinkPatterns" ...
+</pre>
+
+To see which functions are not called:
+
+<pre>
+    ELISP> (set-difference (mapcar 'car simple-call-tree-alist) simple-call-tree-used)
+    ("DoWikiRequest")
+</pre>
+
+== Discussion ==
+
+Hm, could be that the last function is not analyzed correctly... -- AlexSchroeder
+
+Somebody make it write out dotty files please! :-) (see http://www.research.att.com/sw/tools/graphviz/)
+
+I can't get this to work properly for me. It will only recognize functions if they have already been displayed in a window.
+I suppose that emacs only updates the text-properties when it needs to (i.e. when the text is displayed in a window). 
+Is there any way to force emacs to evaluate the text properties of a buffer? -- Aleblanc
+
+[new]
+
+See `font-lock-support-mode'. Instant fontification could be slow for large buffers, though. That's why it is not usually used as a source of syntax information. - anon
+
+== Pretty Printing ==
+
+To show a pretty-printed representation of functions and their callers, you could use something like:
+
+<pre>
+    (defun simple-call-tree-list-functions-and-callers ()
+      "List functions and callers in `simple-call-tree-alist'."
+      (interactive)
+      (let ((list (simple-call-tree-invert simple-call-tree-alist)))
+        (switch-to-buffer (get-buffer-create "*simple-call-tree*"))
+        (erase-buffer)
+        (dolist (entry list)
+          (let ((callers (mapconcat #'identity (cdr entry) ", ")))
+            (insert (car entry) " is called by "
+                    (if (string= callers "")
+                        "no functions."
+                        callers)
+                    ".\n")))))
+</pre>
+
+Alternatively, if you wanted to list which callers and the functions they call, you could use something like:
+
+<pre>
+    (defun simple-call-tree-list-callers-and-functions ()
+      "List callers and functions in `simple-call-tree-alist'."
+      (interactive)
+      (let ((list simple-call-tree-alist))
+        (switch-to-buffer (get-buffer-create "*simple-call-tree*"))
+        (erase-buffer)
+        (dolist (entry list)
+          (let ((functions (mapconcat #'identity (cdr entry) ", ")))
+            (insert (car entry) " calls "
+                    (if (string= functions "")
+                        "no functions"
+                        functions)
+                    ".\n")))))
+</pre>
+
+----
+CategoryCode CategoryProgrammerUtils

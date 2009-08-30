@@ -1,0 +1,34 @@
+This code provides the ability to 'scribble' on top of any buffer. (It has only been tested on a CVS Build of GNU Emacs, but I don't know of any reason why it shouldn't work fairly widely).
+
+See Also: MarkerPenPicTwo
+
+[[image:MarkerPenPic]]
+
+Save the file called "markerpen.el" in a directory in your load-path and add (load-library "markerpen")
+ to your ~/.emacs file. Alternatively if you don't have much customization of your own and aren't familiar with load-paths etc, you could just paste the code below straight into your ~/.emacs file.
+
+* Lisp:markerpen.el
+
+----
+I think it is rude to `define-key' when the file is loaded.
+
+<pre>
+;; disable global-set-key when loading
+(flet ((global-set-key (&rest args)()))
+  (require 'markerpen))
+</pre>
+
+----
+To change markerpen with sequence of calls, depends on DoubleKeyBinding.
+
+<pre>
+(defun markerpen-mark-region-seq ()
+  "Change markerpen with sequence of calls."
+  (interactive)
+  (flet ((prefix-numeric-value (x) (identity x)))
+    (markerpen-clear-region)
+    (markerpen-mark-region (1+ (seq-times 'markerpen-mark-region-seq 10)))))
+</pre>
+
+----
+CategoryFaces HighlightTemporarily

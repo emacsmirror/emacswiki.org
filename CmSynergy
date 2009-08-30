@@ -1,0 +1,9 @@
+CM Synergy is a Change Management (CM) tool suite from Telelogic.
+
+A minor for CM Synergy is at http://sourceforge.net/projects/synergyemacs/.
+
+This is a minor mode for Continuus/CM Synergy for GNU Emacs and XEmacs.
+The mode takes care of the most common operations when working with Continuus. 
+
+----
+CategoryVersionControl

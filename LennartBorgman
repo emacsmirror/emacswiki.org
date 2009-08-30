@@ -1,0 +1,20 @@
+I used to be a vi user. 
+Now I use Emacs. I am a quite happy Emacs Viper user (Viper is an excellent vi emulator, see ViKeys). 
+I do even have an Emacs page: http://www.OurComments.org/Emacs/Emacs.html
+
+It took some time to become an Emacs user, mostly because I am using MS Windows.
+It is quite a bit harder to start using Emacs on MS Windows than on UNIX-like systems.
+Therefore I started writing [[EmacsW32]].
+
+And then, since I wanted to edit web pages easily I wrote NxhtmlMode.
+
+Here is my .emacs if someone is interested: http://ourcomments.org/Emacs/DL/elisp/dot-emacs/
+
+If you happen to read Swedish then you are welcome to read my (currently inactive) blog at
+http://ourcomments.org/blog/ (though this is not at all about IT).
+
+[new]
+I've made some [[LookUpHTMLDoc#HTML|modifications of nXhtml]] wrt. look up. Check it out! :) -- MariusAndersen
+
+----
+CategoryHomepage

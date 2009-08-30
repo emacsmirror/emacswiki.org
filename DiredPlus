@@ -1,0 +1,89 @@
+Library <tt>[[dired+.el]]</tt> ('''Dired+''') extends functionalities provided by standard GNU Emacs libraries ##dired.el##, ##dired-aux.el##, and ##dired-x.el##. The standard functions are all available, plus more.
+
+'''Dired+''' does this:
+
+* Changes some key bindings and enhances some menus.
+* Adds many new commands. Enhances some existing commands.
+* Lets you use commands that normally operate on the marked files to operate instead on '''''all''''' files in a Dired buffer, by using `C-u C-u'.  Especially useful in Dired buffers with files from multiple directories.  Use `C-u C-u M-g' to `grep' all files, `C-u C-u C' to copy all files, and so on. Use `C-u C-u C-u' to operate on all directories as well as files.
+* Lets you open Dired on (only) the files in an Emacs [[fileset]].
+* Provides new mouse utility (extensions) -- you can select a region, then operate on its files. Alternative ways to select (mark) multiple files:
+** drag a region, then choose '''Mark''' in the popup menu
+** click, then Shift-click, as in Windows Explorer
+** Control-click, as in Windows Explorer (alternately marks and unmarks the file)
+* Adds a context-sensitive popup menu on `mouse-3'. The menu differs, depending on whether or not a region is active in Dired.
+* Provides ''fancy'' highlighting (customizable through user variables).
+** You can see immediately if a file has the wrong permissions (e.g. writable or executable when it shouldn't be).
+** Less important files (defined by variable <code>dired-omit-extensions</code> or <code>completion-ignored-extensions</code>) are in a subdued [[Face]]; other files stand out more. To hide less important files altogether, use `M-o' (it's a toggle) -- see DiredOmitMode.
+
+Here is a screenshot of '''Dired+''', showing highlighting and the `mouse-3' menu when a region is active.
+
+[[image:DrewsEmacsDired]]
+
+Things to notice in this screenshot:
+
+* Different faces are used for:
+
+** file extension (e.g. '''<code>in</code>''', '''<code>htm</code>''', '''<code>psgml</code>''', '''<code>cache</code>''', '''<code>log</code>''', '''<code>status</code>''', '''<code>map</code>''', '''<code>el</code>''', '''<code>elc</code>''', '''<code>info</code>''', '''<code>texi</code>''', '''<code>ps</code>''')
+** file name
+** directory name (e.g. '''<code>.</code>''', '''<code>..</code>''', '''<code>TESTS NOV 13</code>''')
+** file size
+** time and date
+** file permissions: a different face for each kind of permission ('''<code>rwx-</code>''')
+
+* File and directory names can contain spaces -- the entire name is highlighted. (e.g. '''<code>New PSGML Doc.htm</code>''', '''<code>TESTS NOV 13</code>''')
+
+* The entire line of a less important file is lowlighted (e.g. '''<code>iso88591.map</code>''').
+
+* When a file is marked, the entire line is highlighted (e.g. '''<code>Makefile</code>''').
+
+* Files that are marked and files that are flagged for deletion have the mark/flag highlighted differently (e.g. '''<code>Makefile</code>''' versus '''<code>psgml-api.elc</code>'''). 
+
+Here is a screenshot showing that the entire line is highlighted on mouse-over, regardless of where on the line the mouse is. Click `mouse-2' anywhere on the line to open its file or directory.
+
+[[image:DrewsEmacsDiredLine]]
+
+[new:DrewAdams:2007-01-28 17:30 UTC]
+I found this full-line mouse-over highlighting so useful as a visual alignment aid in tabular buffers such as Dired that I implemented it generally, for use in any buffer (but only on demand). So, even if you do not use '''Dired+''', you can still obtain the advantage of this highlighting, at the cost of holding down the Shift key. (This highlighting is only a visual aid; it does not affect what happens if you click `mouse-2' on the highlighted line.) Just bind `mouse-scan-lines' (or, better, `##mouse-scan-lines-or-M-:##'), in library <tt>[[mouse+.el]]</tt>, to `S-down-mouse-2'.  See MousePlus. -- DrewAdams
+[new]
+
+And here is a screenshot showing the `mouse-3' popup menu available when no region is active -- the menu items apply to the file pointed to:
+
+[[image:DrewsEmacsDiredThisFile]]
+
+(This screenshot is not quite up-to-date -- the menu now includes item '''Grep'''.)
+
+[:w32-browser]
+== If You Use Emacs on MS Windows ==
+
+'''Dired+''' loads library <tt>[[w32-browser.el]]</tt> if Emacs is running on Microsoft Windows, using it to extend Dired in a couple of ways:
+
+* (`C-RET') You can use Windows ''file associations'' to act on a file or folder. For example, if you have the application Adobe Acrobat associated with *.pdf files, then clicking `mouse-2' on a ##*.pdf## file in Dired will open the file in Adobe Acrobat.
+
+* (`M-RET') You can open '''Windows Explorer''' on a file or folder. If a file, its containing folder is opened and the file is selected (in Windows Explorer).
+
+In addition to being bound to keys `C-RET' and `M-RET', these operations are added to the '''Dired+''' menus, including the `mouse-3' context menu.
+
+----
+
+'''See also:'''
+* [[Icicles - Dired Enhancements]] for these Dired enhancements:
+** [[#SearchAndReplace|Search-and-replace]] on the marked files.
+** [[#SaveFilesAsCandidates|Save marked file names]] as [[completion]] candidates for later reuse.
+** [[#OpenDiredOnSavedFiles|Open Dired on saved file names]], that is, names that you previously saved as an Emacs [[fileset]] or as an Icicles completion candidates set.
+
+* DiredSortMenu -- Sort Dired listings in various ways using menus
+* DiredDetails -- Hide/show details in a Dired listing, so all you see (and all that IncrementalSearch sees) are the file names
+
+* <tt>[[ls-lisp+.el]]</tt> and <tt>[[files+.el]]</tt>: They add the number of files to DiredMode's second header line, like this:
+
+::  '''##files 691##''' ##space used 49439 available 56233408##
+
+* <tt>[[wuxch-dired.el]]</tt>, <tt>[[wuxch-dired-copy-paste.el]]</tt> -- libraries by WuXiaochun that build on Dired Plus
+
+
+----
+CategoryDirectories
+CategoryFiles
+CategoryMouse
+CategoryMenus
+

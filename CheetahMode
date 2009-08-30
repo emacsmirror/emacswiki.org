@@ -1,0 +1,21 @@
+Here is a simple html derived mode for [http://www.cheetahtemplate.org/ Cheetah templates] files. The font-locking regexp can be improved thought but that's a start.
+
+
+<pre>
+(define-derived-mode cheetah-mode html-mode "Cheetah"
+  (make-face 'cheetah-variable-face)
+  (font-lock-add-keywords
+   nil
+   '(
+     ("\\(#\\(from\\|else\\|include\\|extends\\|set\\|def\\|import\\|for\\|if\\|end\\)+\\)\\>" 1 font-lock-type-face)
+     ("\\(#\\(from\\|for\\|end\\)\\).*\\<\\(for\\|import\\|def\\|if\\|in\\)\\>" 3 font-lock-type-face)
+     ("\\(##.*\\)\n" 1 font-lock-comment-face)
+     ("\\(\\$\\(?:\\sw\\|}\\|{\\|\\s_\\)+\\)" 1 font-lock-variable-name-face))
+   )
+  (font-lock-mode 1)
+  )
+(setq auto-mode-alist (cons '( "\\.tmpl\\'" . cheetah-mode ) auto-mode-alist ))
+</pre>
+
+
+I'd also like to set $Q(.*) to font-lock-string-face, but my attempts so far are only matching a fraction of them. ''-- keturn''

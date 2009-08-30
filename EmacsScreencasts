@@ -1,0 +1,78 @@
+There are a lot of people who are living with Emacs around the world. 
+Sometimes, it is very fun to see how they use Emacs and even very helpful to learn from it.
+A screencast is a kind of video screen capture with or without sound. 
+Screencasts can show how people actually work with Emacs.
+You can pick up valuable usage patterns, just by looking over someones shoulder.
+
+== Screencasts about Emacs ==
+
+* [http://vimeo.com/2871241 Meet Magit] introduces [http://zagadka.vm.bytemark.co.uk/magit/ Magit], a git mode, by demonstrating a variety of features designed to keep you productive with git without ever leaving the comfort of Emacs.
+
+* [https://peepcode.com/products/meet-emacs PeepCode's Meet Emacs] is an hour-long professionally-recorded video (available in Ogg and other formats) that teaches Emacs. It is sold for $9. For a preview, see [http://peepcode.com/system/uploads/2008/peepcode-emacs-in-5-demo.mov 5 minutes of Emacs].
+
+* [http://www.vimeo.com/2854412 Rinari Screencast] is a short demonstration of the [http://rinari.rubyforge.org/ Rinari] minor-mode for RubyOnRails development
+
+* Derek Slager shows how he use emacs in [http://derekslager.com/blog/posts/2007/02/screencast-formatting-a-css-file-with-emacs.ashx Formatting a CSS File.]
+
+* Seongkook(CinSK) has very interesting screencasts in his website. see them all in [http://www.cinsk.org/emacs/ here]
+
+* Marshall Vandegrift uses EmacsCodeBrowser and show [http://platypope.org/yada/emacs-demo how to move ruby on rails with it]
+
+* MarcoBaringer [http://common-lisp.net/movies/slime.mov shows SlimeMode] (150MB Quicktime movie, also available [http://common-lisp.net/movies/slime.torrent via Bittorrent]) (see also [http://www.pchristensen.com/blog/articles/reference-for-the-slimelispemacs-screencast/ reference guide] here)
+
+* another SlimeMode demo from the [http://www.unixuser.org/~euske/vnc2swf/ vnc2swf-site]: http://www.unixuser.org/~euske/vnc2swf/slime.html
+
+* [http://www.rubyist.net/~rubikitch/images/icicles-rcodetools.gif Icicles with rcodetools], by [[rubikitch]]
+
+* DavidEsposito manages web sites using EmacsMuse : [http://greens.org/~ringo0 Here's a demo of how he uses it]
+
+* MsfAbbrev mode is very good abbreviation package. You can see it in action at [http://www.bloomington.in.us/~brutt/msf-abbrev-demo.gif here]
+
+* [http://nschum.de/src/emacs/company-mode/screencast/ A demo] of experimental CompanyMode, which offers a completion list (like intellisense) in the buffer
+
+* [http://nschum.de/src/emacs/tempo-templates/screencast/ A demo] of TempoSnippets, a snippet.el-like front-end for TempoMode.
+
+* RubyOnRails and EmacsCodeBrowser demo (no audio, Flash required):  http://emacsonrails.drozdov.net [1.8MB]
+
+* Short [http://eigenclass.org/hiki.rb?rcodetools RCodeTools]  [http://www.rubyist.net/~rubikitch/images/icicles-rcodetools.gif animation] showing use of [[Icicles]] completion with Ruby 
+
+* Editing !JavaDoc via DocMode:  http://nschum.de/src/emacs/doc-mode/screencast/
+
+* OrgMode:
+** http://jaderholm.com/screencasts.html
+** Carsten Dominik about OrgMode on /Google TechTalks/: http://www.youtube.com/watch?v=oJTwQvgfgMM
+
+* yasnippet – Yet Another Snippet extension for emacs: http://www.youtube.com/watch?v=vOj7btx3ATg
+
+* artist-mode: http://www.cinsk.org/emacs/emacs-artist.html
+
+* ido-mode: http://www.vimeo.com/1013263
+
+* General getting started screencasts for emacs on OS X: http://railsnewbie.com (6 large quicktime movies)
+
+* "Red Shank" by Michael Weber is a helper for all CommonLisp hackers. You can see a demo at
+http://www.foldr.org/~michaelw/emacs/redshank/
+
+* [NxhtmlMode nXhtml], some tutorials: http://ourcomments.org/Emacs/nXhtml/tut/tutorials.html
+
+* Emacs Column Editing (with cua-mode): http://www.vimeo.com/1168225?pg=embed&sec=1168225
+
+* [[http://www.viddler.com/explore/felix_q/videos/1/ Screencast]] covering basic Emacs setup on Mac OS X: windows/frames, key mapping
+
+* Various Emacs screencasts -- ScreencastSources and ScreencastRecordings have links to screencasts made with ScreencastMode and ScreencastRecord respectively.
+
+
+* [http://www.microsoft.com/downloads/details.aspx?FamilyId=ADF1B9E7-74A8-401D-9B0E-8326749F9419&displaylang=en Video] showing Emacs in action by Don Box. Funny. You can see how he changes slash into backslash in shell mode running ##cmdproxy.exe##. :-)
+
+
+
+== Tips about Creating Screencasts ==
+
+* ScreencastMode and ScreencastRecord are modes for creating screencasts from within Emacs easily.
+
+* Derek Slager used CommandLogMode to create a screencast.
+
+* See also [http://www.debugmode.com/wink/ wink] (freeware, is it ok to link to it here?)
+
+----
+CategoryHelp

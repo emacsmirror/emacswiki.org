@@ -1,0 +1,47 @@
+http://www.dd.chalmers.se/~bojohan/emacs/img/hello_world.png
+
+    ;;;;;;;; (sit-for 0.2)
+    10 (princ "Hello world " t)
+    20 (goto-char 10)
+
+M-x eval-buffer RET
+
+: How the heck does that work? :) -- MaDa, confuzzled
+
+:: That's cute.  It's been quite a few years since I've seen a trick like that.  Of course it makes perfect sense...  But still, just to think of doing it, very imaginative!  Hint: What does 10 evaluate to?
+
+::: Hmm... Doesn't 10 evaluae to 10 (it does if I press C-x C-e after it)? Or does it become a LF (ASCII 10) in some way? -- MaDa, still confused and impressed
+:::: Yes just 10.  There are results and there are side effects to evaluating an expression.  Remember the command in effect is eval-buffer!  10 has no side effects.  The message in the echo area is a side effect...  Keep going...  I'm beginning to suspect that rather than being a genius, the OP actually got bitten by this side effect and, rather than just warn people, made a cool illusion.  Hmm, Still imaginative.
+
+[new:DrewAdams:2005-07-07 18:59 UTC]
+Perhaps I'm not supposed to spill the beans, but...
+
+The hint is expressed poorly. It should say to check out where <code>(goto-char 10)</code> puts `point' -- it's not the result of its evaluation that is important, but the (side) effect. BTW, you can remove the 10 and 20 -- they are only obfuscation. This does the same thing:
+
+    ;;;;;;;; (sit-for 0.2)
+    (princ "Hello world " t)
+    (goto-char 10)
+
+And so does this:
+
+    (sit-for 0.2)
+    (princ "Hello world " t)
+    (goto-char 1)
+
+Final hint: the buffer is not evaluated until the command `eval-buffer' is finished, and that command evaluates the whole buffer.
+
+HTH -- DrewAdams
+
+== Spoiler ==
+So another clearer variation could be (but this is just like to explain a funny story, it's not getting anymore funny):
+
+  ;; make an eval-buffer on it!!!
+  ;; C-g to stop it
+  (sit-for 1)
+  (princ "Hello world " t)
+  (goto-char 1)
+  ;; eval the former expression, its side effect is to go at the beginning of the buffer
+  ;; then start again to eval every expression
+
+----
+CategoryHumor

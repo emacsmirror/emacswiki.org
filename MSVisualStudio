@@ -1,0 +1,141 @@
+== Working with MS Visual Studio devenv command line. ==
+
+The environment has to be set up before devenv will build from the command line. Here's the code I have in my .emacs for this (the cmd-shell function needs [[EmacsW32]]), and this is for VisualStudio 2005 - obviously for 2003 and VS6 it will be different (look for your vcvars32.bat for clues).
+
+<pre>
+(defun vc-x86-env ()
+  (interactive)
+  (setenv "VSINSTALLDIR" "C:\\Program Files (x86)\\Microsoft Visual Studio 8")
+  (setenv "VCINSTALLDIR" "C:\\Program Files (x86)\\Microsoft Visual Studio 8\\VC")
+  (setenv "FrameworkDir" "C:\\WINDOWS\\Microsoft.NET\\Framework")
+  (setenv "FrameworkVersion" "v2.0.50727")
+  (setenv "FrameworkSDKDir" "C:\\Program Files (x86)\\Microsoft Visual Studio 8\\SDK\\v2.0")
+  (setenv "CommonDevEnvDir" "C:\\Program Files (x86)\\Microsoft Visual Studio 8\\Common7")
+  (setenv "DevEnvDir" 
+	  (concat (getenv "CommonDevEnvDir") "\\IDE")) ;; "C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\\Common7\\IDE")
+  (setenv "PATH" 
+	  (concat (getenv "DevEnvDir") ;;"C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\\Common7\\IDE"
+		  path-separator
+		   (concat (getenv "VCINSTALLDIR") "\\BIN") ;;"C:\\Program\ Files (x86)\\Microsoft\ Visual\ Studio 8\\VC\\BIN"
+		   path-separator
+		   (concat (getenv "CommonDevEnvDir") "\\Tools") ;;  "C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\\Common7\\Tools"
+		   path-separator
+		   (concat (getenv "CommonDevEnvDir") "\\Tools\\bin") ;;   "C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\\Common7\\Tools\\bin"
+		   path-separator
+		   (concat (getenv "VCINSTALLDIR") "\\PlatformSDK\\bin") ;;  "C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\\VC\\PlatformSDK\\bin"
+		   path-separator
+		   (concat (getenv "FrameworkSDKDir") "\\bin") ;; "C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\\SDK\\v2.0\\bin"
+		   path-separator
+		   (concat (getenv "FrameworkDir") "\\" (getenv "FrameworkVersion")) ;;  "C:\\WINDOWS\\Microsoft.NET\\Framework\\v2.0.50727"
+		   path-separator
+		   (concat (getenv "VCINSTALLDIR") "\\VCPackages") ;;  "C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\VC\VCPackages"
+		   path-separator
+		   (getenv "PATH")))
+  (setenv "INCLUDE"
+	  (concat 
+	   (concat (getenv "VCINSTALLDIR") "\\ATLMFC\\INCLUDE")
+	   path-separator
+	   (concat (getenv "VCINSTALLDIR") "\\INCLUDE")
+	   path-separator
+	   (concat (getenv "VCINSTALLDIR") "\\PlatformSDK\\include")
+	   path-separator
+	   (concat (getenv "VSINSTALLDIR") "\\SDK\\v2.0\\include")
+	   path-separator 
+	   (getenv "INCLUDE")))
+  (setenv "LIB" (concat 
+		 (concat (getenv "VCINSTALLDIR") "\\ATLMFC\\LIB")
+		 path-separator
+		 (concat (getenv "VCINSTALLDIR") "\\LIB")
+		 path-separator
+		 (concat (getenv "VCINSTALLDIR") "\\PlatformSDK\\lib")
+		 path-separator
+		 (concat (getenv "VSINSTALLDIR") "\\SDK\\v2.0\lib")
+		 path-separator 
+		 (getenv "LIB")))
+  (setenv  "LIBPATH" 
+	   (concat
+	    (concat (getenv "FrameworkDir") "\\" (getenv "FrameworkVersion")) ;;  "C:\\WINDOWS\\Microsoft.NET\\Framework\\v2.0.50727"
+	    path-separator
+	    (concat (getenv "VCINSTALLDIR") "\\ATLMFC\\LIB")))
+  (cmd-shell))
+</pre>
+
+Commands like..
+
+<pre>
+devenv SVIPRO/SVIPro/SVIPro.sln /project SVIPRO/SVIPro/SVIPro.vcproj /Config "Debug|x86" /Clean
+</pre>
+
+..can then be used in the shell buffer that is started by the command vc-x86-env. Obviously, paths may
+haye to change for different install locations, etc. And also for an x86/x64 setup. See devenv /help
+or MSDN for the full explanation!
+
+For actually invoking devenv, here is a handy interactive function..
+
+<pre>
+(defun is-devstudio-solution (filename)
+  (or 
+   (null (file-name-extension filename))
+   (string= (file-name-extension filename) "sln")))
+
+(read-file-name "Solution: " nil nil t nil 'is-devstudio-solution) 
+
+(defun extract-projects (sln-file)
+  (save-excursion
+    (with-temp-buffer
+      (insert-file sln-file)
+      (goto-char (point-min))
+      (let ((result nil)
+	    (index 0))
+	(while
+	    (re-search-forward
+	     "Project(\"{[-A-Z0-9]+}\")[ 	]+=[ 	]+\"\\([A-Za-z0-9_]+\\)\"[ 	]*,[ 	]+\"\\([\\A-Za-z0-9_.]+\\)\""
+	     (point-max)
+	 t) 
+    (add-to-list 'result (cons (match-string-no-properties 1) (match-string-no-properties 2))))
+    result))))
+
+(defun dev-studio-build ()
+  (interactive)
+  (let*
+      ((solution-name
+	(read-file-name "Solution: " nil nil t))
+       (projects
+	(extract-projects solution-name))
+       (action
+	(completing-read "Action: " '(("Build" . 0) ("Clean" . 1) ("Run" . 2) ("RunExit" . 3))
+			 nil t "Build"))
+       (configuration
+	(completing-read "Configuration: " '(("Debug" . 0) ("Release" . 1) ("Hybrid" . 2))
+			 nil t "Debug"))
+       (platform
+	(completing-read "Platform: " '(("Win32" .0) ("x86" . 1))
+			 nil t "Win32"))
+       (project
+	(completing-read "Project " projects
+			 nil t (caar projects))))
+    (compile
+     (concat "Devenv \"" solution-name "\" /" action " \""  (concat configuration "|" platform) "\" /project \"" (cdr (assoc project projects)) "\""))))
+</pre>
+
+A  better longer term solution is to migrate away from microsofts platform specific solution building system towards something more platform neutral like make or scons or bjam or whatever, but if the pointy-haired-boss insists on Microsoft, this is at least, a useful band-aid. [[johnfredcee]]
+
+== Sending current file to Emacs from Visual Studio ==
+
+If you use gnuserv, try VisEmacs.
+
+If you use [[EmacsW32]] which comes with emacsclient instead of gnuserv you can use the following macro in Visual Studio:
+
+    Sub OpenInEmacs()
+        Dim filename As String
+        Dim linenumber As Integer
+
+        linenumber = DTE.ActiveDocument.Selection.ActivePoint.Line
+        filename = DTE.ActiveDocument.FullName
+
+        DTE.StatusBar.Text = "Opening " + filename + ":" + linenumber.ToString + " in Emacs"
+
+        DTE.ToolWindows.CommandWindow.SendInput("Tools.Shell ""emacsclientw.exe"" -n +" + linenumber.ToString + " " + filename, True)
+    End Sub
+
+Simply bind it to a key or menu command and it will open the current file in Emacs at the current line.

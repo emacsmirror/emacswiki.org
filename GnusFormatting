@@ -1,0 +1,138 @@
+The display of the various Gnus buffers is completely configurable through so called formatting variables.
+
+Quoting the manual:
+"Here's an example format spec (from the group buffer): <code>`%M%S%5y:
+%(%g%)\n'</code>.  We see that it is indeed extremely ugly, and that there are
+lots of percentages everywhere."
+
+
+== Summary Buffer Formatting ==
+
+=== Threading, version 1 ===
+
+It is possible to show threads with line drawing characters <b>in a terminal</b>.
+
+http://www.dd.chalmers.se/~bojohan/emacs/img/tree_small.png
+
+First we create the glyphs we want to use for the tree. It doesn't work to put color on these characters through faces in Emacs so we color them directly using escape sequences.
+
+    (dolist (c '((?\207 . ?q) (?\216 . ?x) (?\212 . ?t) (?\203 . ?m)))
+      (aset standard-display-table (car c)
+            (vector (create-glyph (concat "\e(0" "\e[35m" ; magenta
+                                          (char-to-string (cdr c))
+                                          "\e[0m" "\e(B")))))
+
+It may happen that standard-display-table is nil. In that case you can create it with
+
+    (unless standard-display-table
+      (setq standard-display-table (make-display-table)))
+
+Setup gnus to use the characters for threading.
+
+    (setq gnus-sum-thread-tree-vertical "\216"
+          gnus-sum-thread-tree-root ""
+          gnus-sum-thread-tree-false-root ""
+          gnus-sum-thread-tree-indent " "
+          gnus-sum-thread-tree-single-indent ""
+          gnus-sum-thread-tree-leaf-with-other "\212\207>"
+          gnus-sum-thread-tree-single-leaf "\203\207>")
+
+Gnus ordinary thread spec <code>%B</code> doesn't work here because Gnus puts some fancy highlighting on top of the summary lines (normally). So we tell Gnus to stop doing that.
+
+    (defun gnus-user-format-function-thread (dummy)
+      (propertize gnus-tmp-thread-tree-header-string 'gnus-face t))
+
+Now we can finally get the nice looking thread by using <code>%u&thread;</code> as a spec in gnus-summary-line-format. <i>Don't put it inside a %{...} face construct. That won't work.</i>
+
+
+----
+
+
+The above example may not work in GNU Emacs in all cases. It can generate alternative glyphs that do not produce the drawing line characters shown in the
+image above. Here is an approach that may allow users of gnus to tailor the glyphs to fit with their specific setup.
+
+In .gnus.el replace the code <code>(dolist ...)</code> above with:
+
+    (let ((val 129))
+      (while (< val 160)
+        (aset standard-display-table val (vector (create-glyph val)))
+        (setq val (1+ val))))
+
+The code will produce a full set of glyphs rather than simply four. The function <code>(describe-current-display-table)</code> returns the set of glyphs that have
+been generated. 
+
+The variable <code>glyph-table</code> (shown using <code>C-h v</code>) should now contain a vector:
+
+    [129 130 131 132 133 134 135 136 137 138 139 140 ... ]
+
+The order of the glyph codes in the vector corresponds to the order of the glyphs shown by <code>(describe-current-display-table)</code>.
+In the example shown here, the fourth glyph shown by <code>(describe-current-display-table)</code> corresponds to the fourth glyph code: <code>132</code>. 
+
+The octal character code <code>?\204</code> evaluates to <code>132</code>. Therefore, to use this glyph in the gnus summary, define one of the <code>gnus-sum-thread-tree-</code> variables to include <code>"\204"</code>. With some trial and error the desired glyphs can be identified.
+
+Here is an example, tailored to an alternative setup, that reproduces the drawing line characters shown in the image of the threaded gnus summary above.
+
+    (let ((val 129))
+      (while (< val 160)
+        (aset standard-display-table val (vector (create-glyph val)))
+        (setq val (1+ val))))
+
+    (setq gnus-summary-line-format "%U%R%d %-5,5L %-20,20n %B%-80,80S\n"
+          gnus-sum-thread-tree-vertical "\232"
+          gnus-sum-thread-tree-root ""
+          gnus-sum-thread-tree-false-root ""
+          gnus-sum-thread-tree-indent " "
+          gnus-sum-thread-tree-single-indent ""
+          gnus-sum-thread-tree-leaf-with-other "\226\223>"
+          gnus-sum-thread-tree-single-leaf "\217\223>")
+
+----
+
+=== Threading, version 2 ===
+
+Here's a simpler example of threaded summary view:
+
+    (setq gnus-summary-line-format "%U%R%z %(%&user-date;  %-15,15f %* %B%s%)\n"
+          gnus-user-date-format-alist '((t . "%d.%m.%Y %H:%M"))
+          gnus-sum-thread-tree-false-root ""
+          gnus-sum-thread-tree-indent " "
+          gnus-sum-thread-tree-root ""
+          gnus-sum-thread-tree-leaf-with-other "├► "
+          gnus-sum-thread-tree-single-leaf "╰► "
+          gnus-sum-thread-tree-vertical "│")
+
+The summary buffer looks like this:
+
+    O   01.08.2009 22:47  joakim@verona.s  imagemagick patch v1
+    O   02.08.2009 00:04  Eli Zaretskii    ├► 
+    O   02.08.2009 00:29  joakim@verona.s  │╰► 
+    O   02.08.2009 03:46  Stephen J. Turn  │ ├► 
+    O   02.08.2009 12:52  Andreas Schwab   │ ╰► 
+    O   02.08.2009 17:24  Chong Yidong     ╰► 
+    O   03.08.2009 01:39  joakim@verona.s   ╰►
+
+
+----
+
+== Group Buffer Formatting ==
+
+=== Topics ===
+
+Coloring empty topics differently from non-empty topics is a nice idea.
+Here is how: http://www.dd.chalmers.se/~bojohan/emacs/img/topics_small.png
+
+    (setq gnus-topic-line-format "%i[ %u&topic-line; ] %v\n")
+    
+    ;; this corresponds to a topic line format of "%n %A"
+    (defun gnus-user-format-function-topic-line (dummy)
+      (let ((topic-face (if (zerop total-number-of-articles)
+                            'my-gnus-topic-empty-face
+                          'my-gnus-topic-face)))
+        (propertize
+         (format "%s %d" name total-number-of-articles)
+         'face topic-face)))
+
+Replace <code>my-gnus-topic-empty-face</code> and <code>my-gnus-topic-face</code> with some appropriate faces or create your own.
+
+----
+CategoryGnus

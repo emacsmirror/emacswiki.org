@@ -1,0 +1,16 @@
+''Down with Emacs Lisp: Dynamic Scope Analysis'' by Matthias Neubauer (Universität Freiburg) and Michael Sperber (Universität Tübingen) September 2001.
+
+* [http://cristal.inria.fr/ICFP2001/Abstracts/50.html Abstract]
+* [http://www-pu.informatik.uni-tuebingen.de/users/sperber/papers/dynamic-scope-analysis.pdf Full paper]
+
+From the abstract:
+
+: ''It is possible to translate code written in Emacs Lisp or another Lisp dialect which uses dynamic scoping to a more modern programming language with lexical scoping while largely preserving structure and readability of the code.''
+
+Automatically, that's it.
+
+See DynamicBindingVsLexicalBinding, EmacsLispLimitations.
+
+----
+CategoryCode
+CategoryHistory

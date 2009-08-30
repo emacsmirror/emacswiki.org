@@ -1,0 +1,22 @@
+== How to jump between windows.==
+
+Lisp:window-number.el
+
+Just drop that into your load-path and place the following into your .emacs:
+
+    (require 'window-number)
+    (window-number-mode)
+
+If you like to use the meta key instead of the `C-x C-j' prefix, add the following:
+
+    (window-number-meta-mode)
+
+Here is a screenshot :)
+
+[[image:WNModeScreenShoot]]
+
+
+See also: WindowNumberingMode
+
+CategoryWindows
+

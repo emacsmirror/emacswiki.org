@@ -1,0 +1,16 @@
+Download: Lisp:email.el
+
+=== Commentary ===
+
+This package permits easy archiving of outgoing mails, sending CCs to a specified set of people automatically and add a reference id to the subject of the mail, all based on the mail headers only.  A set of three associative-lists is used to determine the behaviour.  Its a complement of vm-auto-folder-alist (used to archive incoming messages).
+
+=== Configuration ===
+
+Put email.el in your load-path and add the following line to the .emacs file:
+
+ (require 'email)
+ (setq send-mail-function 'email-send)
+
+Now configure the alists (<code>email-fcc-alist</code>, <code>email-cc-alist</code> and <code>email-id-alist</code>). Note that email.el is designed for the MailMode, but it should work with other Modes, too.
+----
+CategoryMailAddons

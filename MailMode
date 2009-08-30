@@ -1,0 +1,25 @@
+The mail-mode is a mode for writing mails. It's useful when you use Emacs as mail/news editor for other programs (e.g. mutt, slrn, tin).
+
+The mail-mode is defined in sendmail.el which is part of Emacs and included in the mail-lib package of XEmacs.
+
+To active the mode just type <code>M-x mail-mode</code>
+
+A alternative is the PostMode, and MessageMode for [[Gnus]] users.
+
+== Configuration ==
+
+Here are some typical settings:
+
+<pre>
+(add-hook 'mail-mode-hook          'turn-on-auto-fill)
+(add-hook 'mail-mode-hook          'mail-abbrevs-setup)
+(setq mail-yank-prefix "> "
+      mail-signature "\n\n-- \nhttp://www.emacswiki.org/cgi-bin/wiki/AlexSchroeder"
+      mail-default-headers "FCC: ~/SENT\n")
+</pre>
+
+See [[Manual:sending mail]] for more.
+
+
+----
+CategoryMailAddons | CategoryModes

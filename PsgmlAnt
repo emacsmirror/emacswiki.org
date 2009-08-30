@@ -1,0 +1,14 @@
+PSGML and ANT XML buildfiles (build.xml)
+
+Kendall: I can point out one thing. The DTD created by antstructure in ant 1.6.5 contains 2 element declarations for target, the last having an EMPTY content model, so it's broken for use with psgml.
+
+You can get a working DTD from: 
+http://www.sdv.fr/pages/casa/html/ant-dtd.en.html
+
+(The above link was observed to be broken on 2009-08-20.)
+
+The ant FAQ[http://ant.apache.org/faq.html#dtd] states it would be for an older version of ant, or somesuch, but works fine here.
+
+----
+CategoryXML
+JavaDevelopmentEnvironment

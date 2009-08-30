@@ -1,0 +1,85 @@
+Unfortunately, there doesn't exist a built-in feature set to decide which SMTP server should be used by looking at the "From:" header line of the current post. However, this can be easily implemented by using message hooks. Here are a couple of functions that will do this for you.
+
+ ;; Let Gnus change the "From:" line by looking at current group we are in.
+ (setq gnus-posting-styles
+       '(("foo" (address "me@foo.com"))
+         ("bar" (address "me@bar.com"))
+         ("baz" (address "me@baz.com"))))
+
+ ;; Available SMTP accounts.
+ (defvar smtp-accounts
+   '((plain "me@foo.com" "smtp.foo.com" 25  "user-foo" "pass-foo")
+     (ssl   "me@bar.com" "smtp.bar.com" 587 "user-bar" "pass-bar" "key" "cert")
+     (ssl   "me@baz.com" "smtp.baz.com" 587 "user-baz" "pass-baz" "key" "cert")))
+
+ ;; Default smtpmail.el configurations.
+ (require 'smtpmail)
+ (setq send-mail-function 'smtpmail-send-it
+       message-send-mail-function 'smtpmail-send-it
+       mail-from-style nil
+       user-full-name "Johnny B. Good"
+       smtpmail-debug-info t
+       smtpmail-debug-verb t)
+
+ (defun set-smtp-plain (server port user password)
+   "Set related SMTP variables for supplied parameters."
+   (setq smtpmail-smtp-server server
+         smtpmail-smtp-service port
+         smtpmail-auth-credentials (list (list server port user password))
+         smtpmail-starttls-credentials nil)
+   (message "Setting SMTP server to `%s:%s' for user `%s'."
+            server port user))
+
+ (defun set-smtp-ssl (server port user password key cert)
+   "Set related SMTP and SSL variables for supplied parameters."
+   (setq starttls-use-gnutls t
+         starttls-gnutls-program "gnutls-cli"
+         starttls-extra-arguments nil
+         smtpmail-smtp-server server
+         smtpmail-smtp-service port
+         smtpmail-auth-credentials (list (list server port user password))
+         smtpmail-starttls-credentials (list (list server port key cert)))
+   (message
+    "Setting SMTP server to `%s:%s' for user `%s'. (SSL enabled.)"
+    server port user))
+
+ (defun change-smtp ()
+   "Change the SMTP server according to the current from line."
+   (save-excursion
+     (loop with from = (save-restriction
+                         (message-narrow-to-headers)
+                         (message-fetch-field "from"))
+           for (acc-type address . auth-spec) in smtp-accounts
+           when (string-match address from)
+           do (cond
+               ((eql acc-type 'plain)
+                (return (apply 'set-smtp-plain auth-spec)))
+               ((eql acc-type 'ssl)
+                (return (apply 'set-smtp-ssl auth-spec)))
+               (t (error "Unrecognized SMTP account type: `%s'." acc-type)))
+           finally (error "Cannot infer SMTP information."))))
+
+ (add-hook 'message-send-hook 'change-smtp)
+
+This version is a bit simpler than the above because it only has two SMTP accounts and no SSL. --tzz
+
+ (defun tzz-change-smtp ()
+   "Change the SMTP server according to the current from line."
+   (save-excursion
+     (save-restriction
+       (message-narrow-to-headers)
+       (let* ((from (message-fetch-field "from"))
+	      (from-work (string-match "workaddress" from))) ;; is this a "work" From address?
+	 (setq smtpmail-smtp-service (if from-work 235 25)   ;; the SMTP port at work is different
+	       smtpmail-smtp-server (if from-work
+	 			       "worksmtp"           ;; the SMTP server at work
+	 			     "regularsmtp")         ;; the SMTP server otherwise
+	       smtpmail-default-smtp-server smtpmail-smtp-server)))))
+
+ (add-hook 'message-send-hook 'tzz-change-smtp)
+
+[new:DanielClemente:dt set  9 21:25:37 CEST 2008]
+Are there plans to integrate this (the first solution) in the official distribution?
+
+----
+CategoryGnus

@@ -1,0 +1,18 @@
+Hello
+
+My name is Markus Knittig. I'm a german software engineering student of the University of Stuttgart.
+
+I use Emacs for editing files, mail and news and much more.
+
+My todo list for the EmacsWiki:
+
+* extend gnus buffers entry (write something about GroupBuffer, ServerBuffer and WindowLayout)
+* write something about WanderLust (Get starting and so on)
+* fix sb-emacswiki.el in WThreeMShimbun (done by DavidHansen)
+* extend CategoryMail und CategoryMailAddons
+* extend TinyTools
+
+Thanks ''again'' for all your efforts! -- AlexSchroeder
+
+----
+CategoryHomepage

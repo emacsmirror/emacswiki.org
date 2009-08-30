@@ -1,0 +1,17 @@
+The following code will search a list for a string matching a regular expression and return it.
+
+    (catch 'match
+      (dolist (str '("foo" "bla.gz"))
+         (when (string-match ".*gz" str)
+           (throw 'match str))))
+
+Here is something similar using CL, and as a defun:
+
+  (defun member-re (re lis)
+    (member-if (lambda (item)
+                 (string-match re item))
+               lis))
+
+----
+CategoryCode
+

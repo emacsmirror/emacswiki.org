@@ -1,0 +1,8 @@
+<code>quick-yes.el</code> binds <code>M-y</code> and <code>M-n</code> to answer "yes" or "no" to a YesOrNoP question.  Get it from
+
+: http://user42.tuxfamily.org/quick-yes/index.html
+
+The idea is to keep <code>yes-or-no-p</code> as a distinct question, because it's usually about something fairly important, but have a shortcut to accept.  See YesOrNoP for other possibilities.
+
+----
+YesOrNoP

@@ -1,0 +1,88 @@
+LispInteractionMode is the mode of the buffer first selected when Emacs starts.  The first buffer is called the `*scratch*' buffer.  It is useful for evaluating EmacsLisp expressions.  Typing `C-j' after an expression will print the result on the next line.
+
+See the section "Lisp Interaction" in the EmacsManual, for more details.
+
+
+== Emacs Lisp Transcript ==
+
+The nature of the `*scratch*' buffer is to write some expressions for testing your EmacsLisp code and then dispose of them.  On the contrary, tests should not be so quickly discarded.
+
+Instead, type your tests in a file and save them.  Then use the command defined below, `M-x elisp-transcript', to generate a transcript--or sometimes called a "typescript"--of your tests.  This requires that your expressions avoid being overly interactive (especially with pointer motion) and return some printable result.  Maintaining sets of tests and their respective transcripts can be useful for UnitTesting and checking the consequences of changes made later to the target code.
+
+If the current buffer is named ##foo.el##, containing for example:
+
+{{{
+(string-to-list "")
+(string-to-list "ab")
+(string-to-list "abcde")
+(concat (reverse (string-to-list "")))
+(concat (reverse (string-to-list "abc")))
+(concat (reverse (string-to-list "abcde")))
+(mapconcat 'number-to-string (number-sequence 1 5) "")
+(mapconcat 'number-to-string (reverse (number-sequence 1 5)) "")
+}}}
+
+the new buffer will be ##*Transcript for foo.el*## with all the expressions in ##foo.el## evaluated and their result printed.
+
+{{{
+(string-to-list "")
+nil
+
+(string-to-list "ab")
+(97 98)
+
+(string-to-list "abcde")
+(97 98 99 100 101)
+
+(concat (reverse (string-to-list "")))
+""
+
+(concat (reverse (string-to-list "abc")))
+"cba"
+
+(concat (reverse (string-to-list "abcde")))
+"edcba"
+
+(mapconcat 'number-to-string (number-sequence 1 5) "")
+"12345"
+
+(mapconcat 'number-to-string (reverse (number-sequence 1 5)) "")
+"54321"
+}}}
+
+Here is the definition of `M-x elisp-transcript':
+
+{{{
+(defun elisp-transcript ()
+  "Make an Emacs Lisp interactive transcript.
+
+In a new buffer, make a transcript of the Emacs Lisp code by
+evaluating each line and printing the result under it (/a la/
+`eval-print-last-sexp')."
+  (interactive)
+  (let ((eval-expression-print-length nil)
+        (eval-expression-print-level nil)
+        (input-buffer (current-buffer)))
+    (set-buffer (get-buffer-create
+                 (concat "*Transcript for "
+                         (buffer-name input-buffer)
+                         "*")))
+    (lisp-interaction-mode)
+    (delete-region (point-min) (point-max))
+    (insert-buffer-substring input-buffer) ;; `slurp!'
+    (goto-char (point-min))
+    (forward-sexp 1)
+    (while (> (point-max) (point))
+      (condition-case err
+          (eval-print-last-sexp)
+        (error
+         (insert (format "%s" err))
+         (newline)))
+      (forward-sexp 1))))
+ 
+}}}
+
+
+----
+CategoryCode
+CategoryModes

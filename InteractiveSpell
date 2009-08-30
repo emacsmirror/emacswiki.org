@@ -1,0 +1,197 @@
+ispell.el is an Emacs interface to the ispell binary.
+
+* ispell.el homepage -- http://kdstevens.com/~stevens/ispell-page.html
+
+You need ispell installed if you want to use ispell.el.  You need ispell dictionaries installed if you actually want to use the program.  Usually the binary is distributed with an American and a British dictionary, one of them linked the to the default English dictionary.
+
+You can get the binary and lots of dictionaries from the official homepage:
+
+* International Ispell homepage -- http://fmg-www.cs.ucla.edu/geoff/ispell.html
+
+Here are direct links to a german dictionary 
+ [http://www.j3e.de/ispell/igerman98/dict/]
+and a french dictionary
+[http://www.gutenberg.eu.org/distributions/16-installation.html].
+The files contain installation instructions.
+
+The list of installed dictionaries can be obtained by typing
+
+  M-x ispell-change-dictionary RET SPC
+
+or by typing
+ 
+  M-: (ispell-valid-dictionary-list) RET
+
+Or by browsing the menu <code>Tools > Spell-checking > Change Dictionary</code>
+and typing SPC in minibuffer when asked.
+
+You can specify which dictionary to use at startup by putting in your InitFile
+
+  (setq ispell-dictionary "german")
+
+If you want to use the english dictionary in a particular buffer instead, 
+put the following on the first line of the buffer
+
+  -*- ispell-dictionary: "english" -*-
+
+
+== Making sure your personal dictionaries get used ==
+
+Use the following to make sure that Emacs starts the ispell process in your home directory.
+
+ (setq ispell-process-directory (expand-file-name "~/"))
+
+== Using other dictionaries ==
+
+Here is some code for your ~/.emacs that makes a new dictionary
+available to `ispell-change-dictionary'.  This dictionary is a
+variation of the German dictionary and is called "swiss".  The
+appropriate entry to the <em>Tools / Spell Checking</em> menu is added
+as well.
+
+    (require 'ispell)
+    (add-to-list 'ispell-dictionary-alist
+                 '("swiss"
+                   "[a-zA-Z\304\326\334\344\366\337\374]"
+                   "[^a-zA-Z\304\326\334\344\366\337\374]"
+                   "[']" t ("-C" "-d" "swiss") "~latin1" iso-8859-1))
+    (defun my-ispell-swiss-dictionary ()
+      "Switch to the Swiss dictionary."
+      (interactive)
+      (ispell-change-dictionary "swiss"))
+    (require 'easymenu)
+    (easy-menu-add-item  nil '("tools" "spell")
+      ["Select Swiss Dict" my-ispell-swiss-dictionary t])
+
+You need to require ispell, because loading ispell will modify the
+Spell Checking menu, so additions to the menu will be lost when ispell
+is loaded.
+
+If you ever need to produce the list of octal escapes yourself, use
+something like the following for each character:
+
+    (format "%o" (multibyte-char-to-unibyte ?ç))
+
+Or all in one:
+
+    (insert
+     (mapconcat (lambda (c) (format "\\%o" (multibyte-char-to-unibyte c)))
+                "äöüÄÖÜ" ""))
+
+== Changing dictionaries automatically ==
+
+Customize the variable `ispell-message-dictionary-alist' if you want
+to switch dictionary according to some header when you use
+`ispell-message'.
+
+Other than that, take a look at WikiSpell.  It has code that uses
+GuessBufferLanguage and chooses a dictionary accordingly.
+
+Other modes for that are GuessLang and AutoLangMode.
+
+== Using Another Spelling-Program ==
+=== Aspell ===
+You might be interested in using a different spell checker. In
+particular, Aspell is a fairly new replacement for much of Ispell's
+functionality. Fortunately, using Aspell with Emacs is very easy:
+
+    (setq ispell-program-name "aspell")
+
+(Aspell has an Ispell-emulation mode, so it behaves like ispell.el expects.)
+
+For lots more information on Aspell, see the Aspell website:
+
+* http://aspell.net/
+
+Compared with Ispell, Aspell is much better at coming up with suggested spellings, and at putting them in likely order.  This is particularly useful when used with flyspell-auto-correct-previous-word, where you can iterate through suggested spellings -- it's much more useful when the correct spelling is near the head of the list.
+
+The problem with using aspell with flyspell is that in its default mode, it it a *lot* slower than ispell.  Fortunately, you can tell it to speed up, though this reduces somewhat the quality of its suggestions.  So try this:
+
+    (setq ispell-program-name "aspell")
+    (setq ispell-extra-args '("--sug-mode=ultra"))
+
+According to the aspell documentation, "ultra" is the fastest mode, which is still twice as slow as ispell; but I don't notice the difference from ispell on my machine.  If your machine is fast enough, a better option might be to try "fast" mode, which is twice as slow as "ultra", but more accurate.  The "normal" mode, which is the aspell default, is even more accurate, but is reportedly 10 times slower than "fast" mode, and on my machine it makes editing and motion around the buffer noticeably sluggish when in flyspell-mode.  YMMV, depending on how fast your machine is, and how big your word-lists are.
+
+=== Hunspell ===
+
+Hunspell (http://hunspell.sourceforge.net/) is the spell checker in [http://www.openoffice.org/ OpenOffice] as of 2.0.2. Hunspell, having many updated [http://wiki.services.openoffice.org/wiki/Dictionaries dictionaries] and an ispell-compatible mode, makes a good replacement to ispell/aspell if your language has more complex rules than aspell can handle (for example in Swedish).
+
+[new]
+Does not hunspell come with OOo? I can't find it in my OOo installation (on MS Windows).
+
+[new]
+To use hunspell, add <code>(setq ispell-program-name "hunspell")</code> to your .emacs. [http://email.esm.psu.edu/pipermail/macosx-emacs/2008-May/000431.html] has a complete setup for this. 
+
+On my setup, I have the following:
+
+<pre>
+(setq
+   ispell-dictionary-alist
+   '((nil				; default 
+      "[A-Za-zçéêèóôòæøåÇÉÊÈÓÔÒÆØÅ]" "[^A-Za-zçéêèóôòæøåÇÉÊÈÓÔÒÆØÅ]" "[\"]"
+      nil ("-d" "/Users/username/.enchant/myspell/nn_NO") nil utf-8)
+     ("nynorsk"
+      "[A-Za-zçéêèóôòæøåÇÉÊÈÓÔÒÆØÅ]" "[^A-Za-zçéêèóôòæøåÇÉÊÈÓÔÒÆØÅ]" "[\"]"
+      nil ("-d" "/Users/username/.enchant/myspell/nn_NO") nil utf-8)
+     ("bokmål"
+      "[A-Za-zçéêèóôòæøåÇÉÊÈÓÔÒÆØÅ]" "[^A-Za-zçéêèóôòæøåÇÉÊÈÓÔÒÆØÅ]" "[\"]"
+      nil ("-d" "/Users/username/.enchant/myspell/nb_NO") nil utf-8)))
+(eval-after-load "ispell"
+    (progn
+      (setq ispell-dictionary "nynorsk"
+	    ispell-extra-args '("-a" "-i" "utf-8") ; aspell doesn't understand -i utf-8, hunspell needs it
+	    ispell-silently-savep t)))
+(setq-default ispell-program-name "hunspell"))
+</pre>
+
+(Where <code>/Users/username/.enchant/myspell/</code> contains nb_NO.dic and nb_NO.aff etc.) However, to use my English dictionaries, I have to switch back to aspell and change the dictionary-alist, which is a hassle... I'd rather figure out how to use enchant.
+
+
+Another possibility is to use rw-hunspell by Ralf Wachinger. rw-hunspell, rw-ispell and rw-language-and-country-codes can be found [[http://www.mail-archive.com/gnu-emacs-sources@gnu.org/msg01709.html|here]].
+On my linux setup I use the following:
+<pre>
+;; Use hunspell instead of ispell
+(setq ispell-program-name "hunspell") 
+(require 'rw-language-and-country-codes)
+(require 'rw-ispell)
+(require 'rw-hunspell)
+(setq ispell-dictionary "da_DK_hunspell")
+;; The following is set via custom
+(custom-set-variables
+ '(rw-hunspell-default-dictionary "da_DK_hunspell")
+ '(rw-hunspell-dicpath-list (quote ("/usr/share/hunspell")))
+ '(rw-hunspell-make-dictionary-menu t)
+ '(rw-hunspell-use-rw-ispell t)
+)
+</pre>
+In windows I use the following. Make sure that hunspell is in the path.
+<pre>
+(setq ispell-program-name "hunspell.exe") 
+(require 'rw-language-and-country-codes)
+(require 'rw-ispell)
+(require 'rw-hunspell)
+(setq ispell-dictionary "da_DK_hunspell")
+
+;; The following is set via custom
+(custom-set-variables
+ '(rw-hunspell-dicpath-list ("C:/Program Files/hunspell/")
+ '(rw-hunspell-make-dictionary-menu t)
+ '(rw-hunspell-use-rw-ispell t)
+)
+</pre>
+
+=== Speck Mode ==
+A third way to use emacs is with SpeckMode which is an alternative to iSpell.
+
+=== Wcheck Mode ===
+WcheckMode is a general interface for external checker programs. It can be used with any command-line spelling checkers or other text-filtering tools, even with user's own shell scripts. It is designed to be configurable and not depend on any specific tool implementation. Each language can use its own program, command-line arguments and other settings. Wcheck mode is useful for Enchant spelling checker, for example.
+
+=== Enchant ===
+[http://www.abisource.com/projects/enchant/ Enchant] is a wrapper for ispell, aspell, hunspell, myspell, voikko, zemberek, etc. 
+
+=== Checking multiple buffers/files ===
+[new] Question: Any easy way to spell-check multiple buffers/files ? Any integration with Dired ?
+
+----
+
+CategoryModes | CategorySpelling

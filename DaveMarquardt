@@ -1,0 +1,13 @@
+I've been mucking around with Emacs since around 1985 or 1986 on a VAX-11/780 running 4.2 BSD at St. Olaf College.
+
+These days I live in Round Rock, Texas and work for Sun Microsystems, where I use XEmacs on Solaris 10 and Solaris Nevada, mostly on Sun SPARC equipment but also on my PC at home.
+
+-- DaveMarquardt
+
+[new]
+
+Hi, dave.  Last week, i installed Sun Studio 12 on my Solaris 10(running on ultra20m) and found that xemacs has been came together. Is there any reason why xemacs was choosed not emacs ? I'm feeling like that you know the reason. :)
+-- JoonhwanLee
+
+[new]
+Hi. I used and adjusted (have a look :)) your code XEmacs for ErcHighlightNicknames. Even worked for Emacs. I hope it still works in XEmacs. --AndreRiemann

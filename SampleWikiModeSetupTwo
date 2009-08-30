@@ -1,0 +1,64 @@
+SimonMichael likes EmacsWikiMode and WikiRemote very much. Here are some notes
+on setup, problems, ideas etc.
+
+System details: emacs on debian GNU/linux sid, specifically
+* emacs21-21.1-7
+* emacs-wiki-2.29-2
+* w3-url-e21.2001.11.08-2
+* w3-el-e21-4.0pre.2001.10.27-6
+* xemacs21-basesupport-el-2001.12.16-1, etc
+
+'''EmacsWikiMode (emacs-wiki.el)'''
+* I want ~ to be my main wiki directory since I already keep a lot of wiki-ish notes there.
+* I want wikiname completion, C-c C-f and publishing to ignore the non-wikinamed files there. Haven't quite managed this yet. Published pages are only for local browsing right now.
+* Customizations: (I'm just pasting these from .emacs, you'll probably use &quot;M-x customize-group RET emacs-wiki&quot;) :
+ '(emacs-wiki-directories (quote (&quot;~&quot;)) nil (emacs-wiki))
+ '(emacs-wiki-file-ignore-regexp &quot;\`\(\.?#.*\|.*,v\|.*~\|\.\.?\|\..*\)\'&quot;)
+ '(emacs-wiki-private-pages (quote (&quot;[^A-Z].*&quot;)))
+ '(emacs-wiki-use-mode-flags nil)
+
+* I'm tweaking for closer support of zwiki-style wikinames, interwiki links etc. This isn't working yet:
+ '(emacs-wiki-name-regexp
+   &quot;\(\[\[\([^] ]+\)\]\(\[\([^] ]+\)\]\)?\]\|
+    \&lt;[A-Z][A-Za-z]*\([A-Z][a-z]+\)+[0-9]*\([#:][A-Za-z0-9_%]+\)?\)&quot;)
+* Use FrontPage instead of WelcomePage:
+ '(emacs-wiki-default-page &quot;FrontPage&quot;)
+ '(emacs-wiki-home-page &quot;FrontPage&quot;)
+: I like the sound of these bells and whistles. C-c ! a to create a footnote.  highlight-changes-mode shows your changes since the last save in red. I may add the cool flyspell-mode later, but it's also red and it's getting confusing.
+ '(emacs-wiki-mode-hook (quote (emacs-wiki-use-font-lock footnote-mode highlight-changes-mode)))
+* Use konqueror not netscape for opening non-wiki urls:
+ '(emacs-wiki-browse-url-function (quote browse-url-kde))
+
+'''WikiRemote (wiki-remote.el)'''
+* My url package is a newer version with asynchronous url-retrieve function.
+* Tried converting wiki-remote.el to call url-retrieve-synchronously
+** This hangs after fetching the page for reasons I don't understand.
+** My xemacs installation has the older url which will probably work fine.
+* Can I load those files in emacs? Yes.
+** I unzipped /usr/share/xemacs21/packages/lisp/w3/*.el.gz into ~/emacs/w3-old
+** (copy default.css as well so w3 will work)
+** byte-compiled the lot (dired, mark all, B)
+** Loaded wiki-remote like this:
+   (setq load-path (cons (expand-file-name &quot;~/emacs/w3-old&quot;) load-path))
+   (load &quot;url&quot;)
+   (load &quot;wiki-remote&quot;)
+** It now worked fine for http://zwiki.org/TestPage but hung on this page.
+** Commented out the (&quot;&quot; . &quot;&quot;)  in the usemod-get-data function to get usemod wikis working.  Now we're rockin'!
+** Ack no link to wiki rules on edit form - sacrilege!
+
+----------------------------------------
+'''Some ideas/projects'''
+
+ [&quot;source mode&quot; - in emacs, font-lock turned off;
+  &quot;edit mode&quot; - in emacs, font-lock on;
+  &quot;browse mode&quot; - in browser, viewing .html version]
+* edit mode: allow : for interwiki links (something like WikiInter?)
+* allow other zwiki wikinames
+* support nested lists
+* edit mode: highlight headings
+* edit mode: open interwiki links with wiki-remote if possible 
+* edit mode: more highlighting and entry support for emacs-wiki markup rules
+* edit mode: highlighting/entry support for other markup rules (zwiki structuredtext, usemod, classic wiki...)
+* wiki-remote: provide same highlighting/entry support as emacs-wiki-mode
+* wiki-remote: buffer modified indicator
+* zwiki: support emacs-wiki markup rules

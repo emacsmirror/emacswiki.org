@@ -1,0 +1,169 @@
+Un wiki est un site web collaboratif. Tout le monde peut y apporter sa contribution.  Au bas de chaque page se trouve un lien qui vous permet de la modifier. Un bon endroit pour créer votre première page est CategoryHomepage(CategoriePagesPersonnelles).
+
+* NomUtilisateur donne plus d'information sur les noms d'utilisateurs utilisés sur ce wiki.
+
+Ci-dessous quelques liens (sur d'autres wikis) introduisant les wikis:
+
+* MeatBall:StyleGuide (anglais) : Quelques remarques sur comment écrire pour les curieux. Comme c'est le bon sens qui prévaut, vous n'avez besoin de rien d'autre. Essayer d'éviter les pages superficielles : inutile de créer un page simplement pour définir des termes.
+* MeatBall:WhyWikiWorks (anglais) explique pourquoi les wikis (avec un peu de chance) créent un contenu intéressant et pourquoi il n'y a pas beaucoup d'abus.
+* Oddmuse:SiteMap (anglais) est la page du moteur du wiki -- le script CGI ( en Perl) qui produit les pages que vous êtes en train de lire.
+
+== Règles de mise en page ==
+
+Utiliser la page SandBox pour expérimenter le wiki!
+
+Les règles les plus importantes sont très simples :
+
+* les lignes vides séparent les paragraphes.
+* les paragraphes peuvent s'étendre sur plusieurs lignes.
+* les paragraphes commencent à la première colonne.
+
+Liens :
+
+* Les Mots en "casse chameau" (casse mélangée) sont transformés en lien locaux. Ces mots ne doivent pour le moment ne comporter ni accents ni cédille.
+* Les Urls complètes sont transformées en liens hypertexte.
+* Les Urls complètes qui pointent sur une image permettent d'inclure l'image dans la page.
+
+Listes, paragraphes avec retrait :
+
+* Les éléments d'un liste commencent par un astérisque (`*'). Un élément par ligne.
+* Les lignes avec retrait commencent par un ou plus deux-points (`:').
+
+Code source, exemples :
+
+* Les lignes commençant par des espaces sont considérées comme étant du code source (nous suggérons quatre espaces).
+
+Titres :
+
+* Les titres sont entourés par deux signes égal de chaque côté (`== Titre ==').
+* Les sous-titres sont entourés par trois signes égal de chaque côté (`=== Sous-titres ===').
+
+Quelques tags HTML sont aussi permis :
+
+* em: <em>Emphase</em> (souvent en italique)
+* i: <i>Italique</i>
+* strong: <strong>Renforcé</strong> (souvent en gras)
+* b: <b>Gras</b>
+* tt: <tt>Télétype</tt> (police à chasse fixe)
+* code: <code>Code</code> (souvent monospaced, de plus il n'y a pas de traitement de la part du wiki )
+* pre: <tt>Pré formaté</tt> (souvent monospaced, pour les paragraphes, de plus les espaces sont préservés, de plus il n'y a pas de traitement de la part du wiki )
+* nowiki: Pas de traitement de la part du wiki (souvent les mots ayant un casse mélangée n'apparaissent pas comme un lien : <nowiki>PasDeLien</nowiki>)
+
+Plus de règles : MeatBall:TextFormattingRules (en anglais).
+
+== Traduction ==
+
+Voir TraductionFrançaise pour plus d'information.
+
+== Reproduire des articles de Usenet ==
+
+Si vous reproduisez des articles de Usenet sur le wiki, s'il vous plaît demandez à l'auteur original s'il est d'accord pour publier son texte selon notre "licence" (la licence GPL, voir dernier paragraphe en anglais).
+
+=== Supprimer les adresses e-mail ===
+
+Supprimez les adresses e-mail de tout ce que vous publiez et transformer les noms originaux en lien vers leur pages personnelles sur ce wiki. Si les personnes le souhaitent, elles peuvent donner leurs adresses e-mail sur leur page personnelle.
+Exemple : Alex Schroeder <alex@some.adress.com> devient AlexSchroeder.
+
+Supprimez les adresses e-mail même si vous copiez un article intéressant provenant d'un newsgroup. Supprimez les adresses e-mail même si elles se trouvent dans les commentaires d'un code source. Fournissez suffisamment d'éléments pour que les parties intéressées puissent utiliser des moteurs de recherche tels que http://groups.google.com pour déterminer l'adresse e-mail de l'auteur original (Je suggère le nom de l'auteur, le sujet, le newsgroup, et la date).
+
+Conservez les adresses e-mail pour des listes de diffusions (mailing lists).
+
+== Nommer les nouvelles pages ==
+
+Un petit peu d'aide pour choisir les noms de pages:
+
+* Si le nom est court, tel que Sql ou Tcl, ajoutez "Mode" si vous parler d'un mode Emacs. Ainsi : <nowiki>SqlMode, TclMode</nowiki>.
+* Pour quelque chose d'aussi gros que Gnus, vouz pouvez vous attendre à ce qu'il y ait un grand nombre de sous pages. Vous pouvez alors en faire une catégorie : <nowiki>CategorieGnus</nowiki>.
+* Si quelque chose est une abbréviation ou un acronyme vous pouvez simplement l'eppeler: <nowiki>WTroisM</nowiki>.
+* Si la page contient votre configuration pour un package spécifique utilisez le suffixe -Configuration. Par exemple <nowiki>BbdbConfiguration</nowiki>.
+* Si vous ne trouvez toujours pas un nom qui convient, ajoutez simplement Page. Je n'ai pas vu cela utilisé sur d'autres wikis. Ils utilisent des astuces telles que  <nowiki>MoChe</nowiki>.  Bien.  <nowiki>PageTramp est plus joli puisque vous pouvez l'utiliser pour dire "pour plus d'information, voire la PageTramp.</nowiki>
+
+
+== Ajouter des Tags pour Indiquer les Choses qui ont Besoin d'être Solutionnées ==
+
+Si vous trouvez quelque chose qui ne va pas, qui est incomplet, ou qui nécessite une modification, vous pouvez ajoutez un tag FI<nowiki>X</nowiki>ME dans votre commentaire, de façon à ce que d'autres puissent remarquer que quelque chose a besoin d'être solutionné. Il y a une recherche incluse sur le plan du site (SiteMap) où vous pouvez trouver toutes les pages contenant ce texte.
+
+S'il vous plaît n'enlevez pas un commentaire FI<nowiki>X</nowiki>ME sauf si vous apportez effectivement une solution au problème décrit. Si vous êtes en désaccord avec un commentaire qui dit que quelque chose ne va pas, vous devriez peut être commencer une discussion sur la pertinence du besoin d'une solution pour la chose ; vous pouvez aussi déplacer cette discussion sur la page OpenQuestions(en anglais), ou créer une page qui y est dédiée si cette discussion aura une valeur dans le futur.
+
+Si vous voulez inclure le mot FI<nowiki>X</nowiki>ME quelque part où il ne s'agit pas en fait d'un commentaire appelant une solution, vous pouvez utiliser le tag "nowiki" au milieu du mot pour empêcher qu'il apparaisse dans la recherche. (Voir les règles de mise en page, ci-dessus, ou ouvrez simplement l'éditeur pour cette page pour voir comment ce paragraphe est écrit.)
+
+== Supprimer le Spam ==
+
+Remplacez le spam par "DeletedPage".
+
+== Abréviations d'URL  ==
+
+Vous pouvez trouver une liste de toutes les abréviations possibles sur
+InterMap.  Cette page liste les abréviations d'URL supportées ainsi
+que leurs expansions.
+
+Quelques exemples parmi les plus intéressants :
+
+* MeatBall:StartingPoints
+* Google:emacswiki
+* Groups:emacswiki
+
+=== Comment écrire les URLs ===
+
+Si vous ajoutez une réference à une homepage d'un package, ou un lien vers un fichier de sources sur une ligne toute seule, ajoutez une puce devant la ligne.
+
+* http://foo.bar/comm.this
+
+Cela fait ressortir le lien externe, et permet de ne pas perdre d'informations importantes lorsque l'on imprime la page.
+
+== Hors Sujet ==
+
+Il vaut mieux discuter de certaines choses ailleurs (en anglais...) :
+
+* CLiki:Recent%20Changes -- Common Lisp
+* Wiki:RecentChanges -- Langages de programmation, technique, modèles sans rapport avec Emacs
+* MeatBall:RecentChanges -- Communautés online, sécurité, modération, méta discussion sur les wikis, terminologie wiki 
+* Why:RecentChanges -- Trucs de religion
+* CreationMatters:RecentChanges -- Trucs sociaux
+* AndStuff:RecentChanges -- Trucs philosophique
+* SenseisLibrary:RecentChanges -- Le jeu de Go
+
+Pour plus d'idées, voir http://www.emacswiki.org/intermap.
+
+=== Quand utiliser d'autres supports ===
+
+Voir MeatBall:AppropriateMedia (en anglais) pour quelques discussions. Pour ce qui est de ce wiki jusqu'ici, je pense que ce qui suit est assez juste :
+
+* La documentation qui ne fait pas partie des manuels Emacs/XEmacs devrait aller sur le wiki.
+* Les bugs dans les manuels d'Emacs/XEmacs devraient être signalés aux personnes qui en assurent la maintenance.
+* Les exemples, typical usage, customization, et les extraits de code devraient aller sur le wiki
+* Les rapports de Bug, les solutions à des bugs de packages devraient être signalées aux personnes qui en assurent la maintenance.
+* Les discussions, questions, etc. vont normalement sur le EmacsNewsgroups (en anglais). J'aimerais voir plus de savoir-faire collecté sur le wiki, mais pour le moment je pense que beaucoup de contenu de qualité provient des groupes de discussion USENET, ce contenu étant par la suite copié, remanié et résumé sur le wiki. 
+* Souvent un nouveau contenu nous conduira à partager plus de notre savoir-faire, ou nous conduira à poser des questions à propos de trucs postés sur le wiki. Cela devrait rester sur le wiki.
+
+J'espère que cela ne décourage pas les gens d'ajouter quelque chose de nouveau. J'espère que cela montre plus ou moins notre place dans l'Infrastructure d'Information d'Emacs.
+
+== Créer un Lien vers une Page Parente ==
+
+Certaines pages ont des pages "parentes" ou appartiennent à une certaine catégorie. Cela serait bien de fournir explicitement des liens en retour à ces pages parentes et à ces catégories. Les auteurs doivent ajouter cela manuellement, c'est à dire qu'il doivent ajouter manuellement le tag parent ou de catégorie à la fin de la page. Ces liens en retour peuvent être recherchés automatiquement. Cliquez simplement sur le titre pour obtenir la liste de toutes les autres pages ayant un lien vers la page en cours. Il s'agit tout simplement d'une bonne vielle recherche classique. Les raisons pour lesquelles cela n'est pas automatisé sont que a) cela nécessiterait la maintenance d'une base de données de liens séparée, et b) dans un graphe à double lien il peut potentiellement y avoir un grand nombre de pages sans rapport pointant vers la page en cours, donc vous n'avez pas forcément toujours envie d'en obtenir la liste. D'où la stratégie manuelle consistant à ajouter un tag de catégorie ou d'une page parente à la fin.  
+
+Cela ressemble le plus souvent à cela à la fin de la page :
+
+<pre>
+----
+CategorieFoo
+</pre>
+
+== Inclure des éléments RSS  ==
+
+Vous pouvez avoir envie d'inclure des éléments RSS dans votre page perso (homepage).
+Voici un exemple illustrant comment le faire:
+
+<pre>
+    <rss "http://purl.org/NET/kensanata/home?action=rss">
+</pre>
+
+== Inclure des journaux en ligne ==
+
+Si vous maintenez un MeatBall:OnlineDiary (en anglais) sur un autre wiki, et que cet autre wiki peut vous afficher le contenu non formaté, et que les règles de mise en page sont similaires à ce wiki, alors vous pouvez tout simplement inclure cette page:
+<pre>
+    <include "http://www.usemod.com/cgi-bin/mb.pl?action=browse&id=AlexSchroeder&raw=1">
+</pre>
+
+This page is also available in english : English:HowTo
+

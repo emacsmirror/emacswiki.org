@@ -1,0 +1,17 @@
+Starting with GnuEmacs 22.1, you can click the mouse on the major and minor mode names (called "lighters") in the ModeLine to perform various actions.
+
+`mouse-1' on the major-mode name brings up the MenuBar major-mode menu, if there is one. For example, in EmacsLisp mode, clicking `mouse-1' on `Emacs-Lisp' in the mode line brings up the `Emacs-Lisp' menu-bar menu.
+
+Minor modes also sometimes have lighters in the mode line, and they sometimes have menu-bar menus, but in vanilla Emacs there is no equivalent `mouse-1' action for minor-mode lighters.
+
+Library <tt>[[bindings+.el]]</tt> provides this feature. Put this in your InitFile to take advantage of this feature:
+
+  (require 'bindings+)
+
+This library tweaks the standard library ##bindings.el##, hence the name.
+
+This feature has been included in pre-release versions of Emacs 23. Thus, <tt>[[bindings+.el]]</tt> is only useful for Emacs 22.
+
+----
+CategoryModes
+CategoryMenus

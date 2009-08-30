@@ -1,0 +1,29 @@
+Emacs-uptime is useful in bragging contests like "Hah! My emacs-uptime is 2 days bigger than yours!".
+
+Here is the code, just insert it in your dot emacs, or another file that is loaded when emacs starts up.
+
+    (defun emacs-uptime ()
+      "Shows emacs-uptime."
+      (interactive)
+      (message (format "Emacs-uptime is %d days." (random 100))))
+
+Emacs-uptime was written by [[Dabian]] with help from JorgenSchaefer.
+
+Emacs-uptime may be distributed using the GPL 2, or at your option, any later as released by the Free Software Foundation http://www.fsf.org (or whatever this wiki dictates the copyright has to be).
+
+----
+For real uptimes, try <code>uptime.el</code> by DavidNWelton (using either process table information or a recorded start time),
+
+: http://www.welton.it/freesoftware/
+: http://www.welton.it/freesoftware/files/uptime.el
+
+Or <code>emacs-uptime.el</code> by ThienThiNguyen (using a recorded start time),
+
+: http://gnuvola.org/software/personal-elisp/dist/lisp/diversions/emacs-uptime.el
+
+Or <code>uptimes.el</code> by  Dave Pearson (using a recorded start time, I think),
+
+: http://www.davep.org/emacs/uptimes.el
+
+----
+CategoryHumor

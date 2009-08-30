@@ -1,0 +1,12 @@
+The h4x0r.el file provides functions to transform normal speech into script kiddie brabble.  By CharlesSebold.
+
+* http://livingtorah.org/~csebold/emacs/h4x0r.el
+
+The "New-word" bug has been fixed (thanks, Alex).
+
+Updated 31 Oct 2003 to version 0.12, mostly to enable one to turn off the replacement of letters with symbols.  Also all words that end in "ck" now end in "x0r" automagically.
+
+This has been used in ErcHaxorCode.
+
+----
+CategoryModes

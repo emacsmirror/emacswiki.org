@@ -1,0 +1,23 @@
+Web: http://www.bookshelf.jp/soft/meadow.html (Japanese)
+http://www.bookshelf.jp/index-en.php (English)
+
+I use Meadow, Emacs and XEmacs.
+
+My Elisp
+Download from [http://www.bookshelf.jp/elc/ http://www.bookshelf.jp/elc/]
+
+* mcomplete-history.el -- minibuffer completion from history
+* color-moccur.el -- multi-buffer occur mode
+* moccur-edit.el -- edit moccur buffer and to apply the changes to the file.
+* abbrev-complete.el -- abbrev and dabbrev
+* color-occur.el -- color-occur highlight occur buffer and file buffer
+* color-grep.el -- color-grep highlight grep buffer
+* grep-edit.el -- grep-edit provides to edit grep buffer and to apply the changes to the file.
+* mgrep.el -- Run grep under your favorite directory
+* isearch-all.el -- isearch under all buffers
+* list-register.el -- List register
+
+Welcome to the wiki! -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -1,0 +1,70 @@
+[[en:SiteMap]]
+[[ko:대문]]
+[[ja:サイトマップ]]
+[[se:InnehållsFörteckning]]
+[[zh:網站地圖]]
+[[ru:КартаСайта]]
+[[pt:MapaDoSite]]
+[[es:MapaDelSitio]]
+<include "WikiLanguageMenu">
+
+Cet [[EmacsWiki-francais]] est dédié à EmacsAndXEmacs (en)... Voir MissionStatement(en) pour plus d'information.
+
+Tout le monde peut apporter sa contribution. Vous êtes libre d'ajouter des pages ou de modifier ce qui existe. Voir CommentFaire pour plus d'information.
+Si vous n'avez rien à dire, mais que vous désirez participer, vous pouvez traduire des articles. Voir TraductionFrançaise pour plus d'information.
+
+Les liens vers des pages écrites dans une autre langue sont (devraient être...) signalés par la langue utilisée entre parenthèses. Par exemple SiteMap (en).
+
+Apprendre Emacs:
+* NouvelUtilisateurEmacs -- si vous êtes totalement nouveau.
+* CatégorieAide -- où trouver de l'aide sur Emacs.
+
+* CatégorieCode -- la programmation avec Emacs Lisp
+
+Adapter Emacs à votre environnement:
+* CatégoriePointEmacs -- des choses à mettre dans votre InitFile
+* PointEmacs -- un InitFile de base, parfait pour débuter !
+
+Modes spécialisés pour un langage particulier.
+* ModeHtml
+* ScilabMode
+
+Autres facilités dédiées interagissant avec des programmes externes et des services distants
+* CatégorieOutilsDuProgrammeur -- outils qui aident le programmeur, par exemple pour naviguer dans le code 
+
+IRC -- Pour discuter a propos d'emacs sur IRC
+* SalleEmacs
+* SalleEmacsFr
+
+Interfaces -- Utiliser Emacs comme interface pour d'autres logiciels ou services web.
+* [[IMDB]] -- "<i>L'Internet Movie Database</i>"
+
+[[CategoryEditing|Édition]] (en) -- informations diverses concernant l'édition de texte
+** [[Patrons]] -- utiliser du texte préfabriqué (en-tête de fichier, patrons, formulaires)
+
+Fichiers
+* SectionElisp -- transférer et télécharger des fichiers elisp
+* ThumbsModeFrancais -- Utilisez Emacs pour visionner les images.
+
+Télécharger, compiler et/ou installer des binaires d'Emacs
+* CatégoriePortages
+
+Pages d'accueil des utilisateurs francophones
+* CategoriePagePerso
+
+Maintenance
+* [EmacsWiki:action=index Toutes les pages] 
+* [EmacsWiki:action=random Page aléatoire] 
+* [EmacsWiki:action=links&amp;url=2 Liens externes]
+* [EmacsWiki:action=unlock Pour réparer le site apres un crash]
+* [EmacsWiki:action=maintain Démarrer une maintenance]
+* [EmacsWiki:action=version Voir la version du script]
+* [http://www.emacswiki.org/cgi-bin/list-archive.pl Télécharger la base de données]
+    (tout le monde peut aider a faire les backups)
+* [http://emacswiki.org/usage/ Statistiques d'utilisation] (voir aussi OldStats)
+
+----
+Pour le moment, le nombre de pages en français est assez limité. Pour accèder au contenu en Anglais, voir SiteMap (en).
+
+Si l'interface est en anglais suivez le lien ci-dessous:
+* [http://www.emacswiki.org/cgi-bin/emacs-fr.pl Interface Française], experimentale pour plus d'information voir InterfaceFrançaise.

@@ -1,0 +1,138 @@
+Basically, you have to add and remove the MIME types you want handled
+differently from the various variables available to you.
+
+It may seem very confusing, but in the end it will allow you maximum
+flexibility.  The following examples show some common uses:
+
+Since Emacs can display images inline, you may not want to treat them
+as real attachments (ie. no clicking on them and saving them).  Here's
+how:
+
+    ;; Inline images?
+    (setq mm-attachment-override-types '("image/.*"))
+
+If there is a text alternative to an HTML message, you might want Gnus
+to show the text instead of starting a browser:
+
+    ;; No HTML mail
+    (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
+
+If the mail has only an HTML alternative, then you might want to
+prevent Gnus from starting a browser anyway.  Thus, remove the
+relevant MIME types from the following list:
+
+    ;; Don't start a browser for text/html only mails
+    (setq mm-automatic-display
+          '("text/plain" "text/enriched" "text/richtext"
+            "image/.*" "message/delivery-status" "multipart/.*" "message/rfc822"
+            "text/x-patch" "application/pgp-signature" "application/emacs-lisp"))
+
+If you have disabled HTML display as above but need to see the HTML part of a message 
+from time to time because a someone with Outlook send you his 'corrections in red', this 
+interactive command displays the HTML part 
+
+    (defun my-gnus-summary-view-html-alternative ()
+      "Display the HTML part of the current multipart/alternative MIME message
+    in current browser."
+      (interactive)
+      (save-current-buffer
+        (gnus-summary-show-article)
+        (set-buffer gnus-article-buffer)
+        (let ((file (make-temp-file "html-message-" nil ".html"))
+              (handle (nth 3 (assq 1 gnus-article-mime-handle-alist))))
+          (mm-save-part-to-file handle file)
+          (browse-url (concat "file://" file)))))
+
+    (define-key gnus-summary-mode-map [?K ?H]
+      'my-gnus-summary-view-html-alternative)
+
+Of if you want a Mozilla or Firefox specific display:
+
+    (defun my-gnus-summary-view-html-alternative-in-mozilla ()
+      "Display the HTML part of the current multipart/alternative MIME message
+    in mozilla."
+      (interactive)
+      (save-current-buffer
+        (gnus-summary-show-article)
+        (set-buffer gnus-article-buffer)
+        (let ((file (make-temp-file "html-message-" nil ".html"))
+              (handle (nth 3 (assq 1 gnus-article-mime-handle-alist))))
+          (mm-save-part-to-file handle file)
+          (browse-url-mozilla (concat "file://" file)))))
+
+    (define-key gnus-summary-mode-map [?K ?M]
+      'my-gnus-summary-view-html-alternative-in-mozilla)
+
+The above EmacsLisp may produce a "Wrong type argument..." error with emacs 22 (and the Gnus that comes with it) but replacing "nth 3" with "cdr" should fix it. 
+
+
+My lynx doesn't understand the -stdin option, so I want to use w3m
+instead -- not w3m-mode (see WThreeM).  Plus, w3m also renders tables.
+Thus I specify a new html-renderer called true-w3m, and add the
+renderer to the alist of renderers and washers as follows:
+
+    (setq mm-text-html-renderer 'true-w3m)
+    (add-to-list 'mm-text-html-renderer-alist
+                 '(true-w3m mm-inline-render-with-stdin
+                            nil "w3m" "-T" "text/html"))
+    (add-to-list 'mm-text-html-washer-alist
+                 '(true-w3m mm-inline-wash-with-stdin
+                            nil "w3m" "-T" "text/html"))
+
+The `mm-text-html-washer-alist' is used for washing using `W h' --
+ideal for HTML mails that do not contain MIME headers.
+
+Here's how you stop Gnus from showing you the vcard attachments some
+people append to every mail:
+
+    ; Never show vcard stuff, I never need it anyway
+    (setq gnus-ignored-mime-types
+          '("text/x-vcard"))
+
+When you have AntiWord installed, you might want to view Microsoft
+Word documents inline.  Here is how to do it.  First, check whether
+you installed antiword correctly.  You should find a line in
+/etc/mailcap mentioning the MIME type "application/msword":
+
+    application/msword; /usr/bin/antiword %s; copiousoutput
+
+The file ~/.mailcap is a per-user version of /etc/mailcap.
+
+If your entry looks like this, then all you need to do is use the
+following code in your ~/.gnus file:
+
+    (add-to-list 'mm-inline-media-tests
+          '("application/msword" mm-inline-text identity))
+    (add-to-list 'mm-automatic-external-display "application/msword")
+    (add-to-list 'mm-attachment-override-types "application/msword")
+    (add-to-list 'mm-automatic-display "application/msword")
+
+This displays ms-word attachments automatically without activating the
+MIME button in Gnus.
+
+Note that some broken systems have quotes around the argument,
+event hough there should be none according to the mailcap specification
+in RFC 1524:
+
+    application/msword; /usr/bin/antiword '%s'; copiousoutput; description="Microsoft Word Text"; nametemplate=%s.doc
+
+Gnus then tries to display the document using "antiword /tmp/foo" --
+somehow this does not work, either because antiword does not see the
+temp file, or because antiword does not open a new window on its own.
+
+If you cannot fix the mailcap entry, consider the following changes to
+your ~/.gnus file.  They override the data Gnus should have derived
+automatically from the mailcap entry:
+
+    (add-to-list 'mm-inlined-types "application/msword")
+    (add-to-list 'mm-inline-media-tests
+                 '("application/msword"
+                   (lambda (handle)
+                     (mm-inline-render-with-stdin handle nil
+                                                  "antiword" "-"))
+                   identity))
+
+Note that the above e-lisp for overriding the mailcap MIME types only works with Oort Gnus, and not with Gnus 5.9 which ships with the current version of Emacs (Emacs 21.2).  (Does anybody know an equivalent for current Emacs, including CVS HEAD?) 
+
+----
+CategoryGnus

@@ -1,0 +1,74 @@
+Here is some information from the homepage, http://www.astro.uva.nl/~dominik/Tools/reftex/.
+
+RefTeX provides distinct support for doing labels, references and citations in LaTeX. It works with both Emacs and XEmacs and runs as a minor mode with any of the LaTeX major modes around, most notably AUCTeX.
+
+RefTeX is bundled and preinstalled with Emacs since version 20.2.
+It was also bundled with XEmacs 19.16--20.x.
+XEmacs 21.x users want to install the corresponding plugin package which is available from the XEmacs ftp site.
+See the XEmacs 21.x documentation on package installation for details.
+
+'''Hooking into AUCTeX''
+
+Don't forget to put something in your .emacs to make RefTeX work properly with AUCTeX:
+
+   (setq reftex-plug-into-AUCTeX t)
+
+'''Custom Sections and Labels'''
+
+One nice feature of RefTeX is the ability to create custom labels in addition to those it recognizes from packages. These become available for shortcuts and navigation in the TOC feature (one of the best features of the mode). Here is an example creating a "Poem" label that also shows up as a level 3 entry in the TOC:
+
+    (add-hook 'reftex-load-hook
+      (lambda ()
+        (setq reftex-section-levels
+            (cons '("poemtitle" . -3) reftex-section-levels))))
+    
+    (setq reftex-label-alist
+	    '(("\\poemtitle" ?P "poem:" "\\ref{%s}" nil ("poem" "poemtitle"))))
+
+----
+
+Here's a small snippet I wrote which I find very handy. It's not directly related to RefTeX but it helps when dealing with bibliographic references.
+
+I keep all the electronic versions of the papers in my bibliography (<nowiki>PostScript</nowiki> or PDF) in a single directory, with the name of the file corresponding to the BibTeX key. When I'm writing a paper and want to refresh my memory about some work I cite, the following code gives me instant access to the electronic version of a papers. Just put the TextCursor on a BibTeX key, press S-F6, and GV or AcrobatReader opens the corresponding file.
+
+    ;; Change this to the place where you store all the electronic versions.
+    (defvar bibtex-papers-directory "~/workspace/bibliographie/papers/")
+
+    ;; Translates a BibTeX key into the base filename of the corresponding
+    ;; file. Change to suit your conventions.
+    ;; Mine is:
+    ;; - author1-author2-author3.conferenceYYYY for the key
+    ;; - author1-author2-author3_conferenceYYYY.{ps,pdf} for the file
+    (defun bibtex-key->base-filename (key)
+      (concat bibtex-papers-directory
+              (replace-regexp-in-string "\\." "_" key)))
+
+    ;; Finds the BibTeX key the point is on.
+    ;; You might want to change the regexp if you use other strange characters in the keys.
+    (defun bibtex-key-at-point ()
+      (let ((chars-in-key "A-Z-a-z0-9_:-\\."))
+        (save-excursion
+          (buffer-substring-no-properties
+           (progn (skip-chars-backward chars-in-key) (point))
+           (progn (skip-chars-forward chars-in-key) (point))))))
+
+    ;; Opens the appropriate viewer on the electronic version of the paper referenced at point.
+    ;; Again, customize to suit your preferences.
+    (defun browse-paper-at-point ()
+      (interactive)
+      (let ((base (bibtex-key->base-filename (bibtex-key-at-point))))
+        (cond
+         ((file-exists-p (concat base ".pdf"))
+          (shell-command (concat "acroread " base ".pdf &")))
+         ((file-exists-p (concat base ".ps"))
+          (shell-command (concat "gv " base ".ps &")))
+         (t (message (concat "No electronic version available: " base ".{pdf,ps}"))))))
+
+    (global-set-key [S-f6] 'browse-paper-at-point)
+
+----
+
+Pressing `d' in the *toc* buffer toggles the presence of a dedicated *toc* frame. You can't actually /do/ very much with this, though (SPC, TAB, RET, etc all don't work). So I'm wondering: Just what is the point of it?
+
+----
+CategoryTex

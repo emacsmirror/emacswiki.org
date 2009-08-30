@@ -1,0 +1,11 @@
+Hi! In the Wikipedia my name is 方洪渐 and fanghong, not my real name of course, but for severial weeks I cannot reach Wikipedia and I find this emacs. I donnot know what to do and just to build some Chinese page. 
+
+: Thanks for the translations!  :)
+  If you look at [[创建别名页面]] you'll see that the permanent anchors were
+  already defined elsewhere (on the HowTo page).  You will have to replace
+  them with a chinese name as well.  The names of permanent anchors are like
+  page names: There can only be one definition on the entire wiki.
+  -- AlexSchroeder
+
+----
+CategoryHomepage

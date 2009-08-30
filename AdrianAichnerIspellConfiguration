@@ -1,0 +1,12 @@
+ '(ispell-program-name "aspell")
+ '(ispell-skip-region-alist '((ispell-words-keyword forward-line)
+  (ispell-dictionary-keyword forward-line)
+  (ispell-pdict-keyword forward-line)
+  (ispell-parsing-keyword forward-line)
+  ("^---*BEGIN PGP [A-Z ]*--*" . "^---*END PGP [A-Z ]*--*")
+  ("^---* \\(Start of \\)?[Ff]orwarded [Mm]essage" . "^---* End of [Ff]orwarded [Mm]essage")
+  ("\\(/\\|\\(\\(\\w\\|-\\)+[.:@]\\)\\)\\(\\w\\|-\\)*\\([.:/@]+\\(\\w\\|-\\|~\\)+\\)+")
+  ("@\\w+")
+  ("\\b\\(and\\|catch\\|cond\\|condition-case\\|defconst\\|defmacro\\|defun\\|defvar\\|function\\|if\\|interactive\\|let\\|or\\|prog[12n]\\|quote\\|save-current-buffer\\|save-excursion\\|save-restriction\\|save-selected-window\\|save-window-excursion\\|setq\\|setq-default\\|unwind-protect\\|while\\|with-output-to-temp-buffer\\)\\b"))
+ t)
+

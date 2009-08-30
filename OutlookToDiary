@@ -1,0 +1,76 @@
+I receive meeting invitations from co-workers who use MS-Outlook for
+calendaring and scheduling.  The invitations come as "normal" email
+with a couple of extra fields.  There is a "When:" field and a
+"Where:" field.  These fields aren't part of the message header, but
+that doesn't really matter.  I've written this function that will
+allow you to parse the "*Article*" buffer and add these appointments
+to your diary.  There is no conflict checking.  It simply adds the
+appropriately formatted diary entry to the end of your diary-file and
+then saves your diary-file.  If you can think of a better user
+interface, I'd be glad to consider it.  One thing to keep in mind is
+that diary entries are only stored for the day.  The diary doesn't
+strictly know about multiple entries on the same day or even what time
+entries are for.
+
+<pre>
+(defun outlook-invitation-to-diary ()
+  (interactive)
+  (let ((buffer (or (get-buffer "*Article*") (current-buffer)))
+        date time subject where diary-buffer)
+    (save-excursion
+      (set-buffer buffer)
+      (goto-char (point-min))
+      (when (re-search-forward "^Subject: \\(.*\\)$")
+        (setq subject (match-string 1))
+        (when (re-search-forward "^When: \\w+, \\(\\w+ [0-9]\\{1,2\\}, [0-9]\\{4\\}\\) \\(.*?\\)(")
+          (setq date (match-string 1) time (match-string 2))
+          (when (re-search-forward "^Where: \\(.*\\)$")
+            (setq where (match-string 1))
+            (setq diary-buffer (find-file-noselect diary-file))
+            (set-buffer diary-buffer)
+            (goto-char (point-max))
+            (insert (format "\n%s\n %s %s (%s)\n" date time subject where))
+            (save-buffer)
+            (bury-buffer diary-buffer)))))
+      (message "%s %s %s (%s)" date time subject where)))
+</pre>
+
+This has a couple minor problems with it.  First is that the *Article* buffer may not be the right buffer.  I have per-group article buffers... that's turned on by a flag I can't remember.  This function should ask Gnus where the article buffer is.  The other problem is that it discards time-zone information.  It should either keep it (so you can see it) or it should try to convert the whole date into a form the diary and appt both understand.  I don't have time to fix either right now, but I will try eventually, because this is very useful. -- AlanShutko
+
+----
+
+Here is a German version of it (beware, it doesn't convert the date format, so you most likely need to adapt it to whatever your diary uses).
+
+<pre>
+(defun outlook-invitation-to-diary-de ()
+  (interactive)
+  (let ((buffer (or (get-buffer "*Article*") (current-buffer)))
+        date time subject where diary-buffer)
+    (save-excursion
+      (set-buffer buffer)
+      (goto-char (point-min))
+      (when (re-search-forward "^Subject: \\(.*\\)$")
+        (setq subject (match-string 1))
+        (when (re-search-forward "^Zeit: \\w+, \\([0-9]\\{1,2\\}\\. \\w+ [0-9]\\{4\\}\\) \\(.*?\\)(")
+          (setq date (match-string 1) time (match-string 2))
+          (when (re-search-forward "^Ort: \\(.*\\)$")
+            (setq where (match-string 1))
+            (setq diary-buffer (find-file-noselect diary-file))
+            (set-buffer diary-buffer)
+            (goto-char (point-max))
+            (insert (format "\n%s\n %s %s (Ort: %s)\n" date time subject where))
+            (save-buffer)
+            (bury-buffer diary-buffer)))))
+      (message "Added '%s %s %s (Ort: %s)'" date time subject where)))
+</pre>
+
+
+More would be cool: add the rest of the text of the invitation (most likely a meeting agenda) to the diary.
+
+----
+
+I wrote something similar: See *u-appt.el* at http://ulf.epplejasper.de/.
+This package should allow you to extract invitations that have been sent from Outlook (german and english) or Notes (german only). It shouldn't be too difficult to add other invitation-patterns and languages -- just send me samples.
+
+----
+CategoryCalendar

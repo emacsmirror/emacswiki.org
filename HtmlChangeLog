@@ -1,0 +1,48 @@
+To annotate the changes of an HTML file, here's how to give AddLog hooks to HtmlMode.
+
+    (add-hook 'html-mode-hook
+        (lambda ()
+          (make-local-variable
+           'add-log-current-defun-header-regexp)
+           (setq add-log-current-defun-header-regexp
+               (concat "^[ \t]*<?!?--[ \t]*\\(?:begin\\|BEGIN\\|start\\)?"
+                       "[ \t:]*\\([-_[:alnum:]]+\\)"
+                       "[ \t]*\\(?:begin\\|BEGIN\\|start\\)?[ \t]*--"))))
+
+This will give ChangeLog support of Emacs by having HTML comments to organize sections of an HTML source file. Here's a simple, made-up example of such an HTML file.
+
+    <html>
+    <head>
+    <title>Sample only</title>
+    </head>
+    <body>
+    <!-- begin header -->
+    <p>[ <a id="top" href="#bottom">bottom</a> ]</p>
+    <!-- end header -->
+    <h1>Sample title</h1>
+    <!-- BEGIN: PAGE_CONTENT -->
+    <div>
+    <p>Testing.</p>
+    </div>
+    <!-- END: PAGE_CONTENT --
+      -- footer-bottom start -->
+    <p>[ <a id="bottom" href="#top">top</a> ]</p>
+    <!-- footer-bottom end -->
+    </body>
+    </html>
+
+Use it by typing `C-x 4 a' (add-change-log-entry-other-window). An entry like the following will be added in a nearby ChangeLog file:
+
+    2009-05-05  Aaron S. Hawley  <aaronhawley@emacswiki.org>
+    
+            * file.html (PAGE_CONTENT): Add a test paragraph.
+            (footer-bottom): Added link to "#top".
+
+The regular expression for `add-log-current-defun-header-regexp' handles the cases in the example above.  It works for most cases except for scenarios where there is nested sectioning or where you've run `C-x 4 a' from a point outside of a "section" and get a false-positive.  A future programmatic solution could set the `add-log-current-defun-function'.
+
+Unfortunately, support for either the above sectioning style, or even another alternative, is not provided by the HTML mode that ships with Emacs. This is understandable because there is no consistent or accepted standard of organizing an HTML file, as people use other variations than those covered in the example. Not to mention, HTML comments are used for other reasons than naming regions of the file.
+
+----
+CategoryHypermedia
+CategoryModes
+CategoryProgramming

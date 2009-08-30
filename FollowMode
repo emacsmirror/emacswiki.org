@@ -1,0 +1,9 @@
+If two windows show the same buffer, such as after splitting one
+window vertically, you can use M-x follow-mode.
+
+To tie two arbitrary windows not sharing the same buffer, see
+MasterMode.
+
+----
+CategoryDisplay
+CategoryModes

@@ -1,0 +1,12 @@
+== apt-upgrade.el ==
+
+A simple mode for Debian users to help them select what packages to upgrade via "apt-get".
+
+Can hide libraries, minor version changes (1.0.0-X -> 1.0.0->Y), shows ChangeLog, highlights "interesting" packages.  Useful if you like to ponder about upgrading a package instead of just upgrading everything. :-)
+
+Needs apt-utils.el, browse-url.el and sudo (for starting apt-get as non-root).
+
+URL: http://ignotus.hixsplit.hu/AptUpgrade.html (screenshot) [link dead on 2008-06-20]
+
+Emacs Lisp file: http://ignotus.hixsplit.hu/apt-upgrade.el
+ [link dead on 2008-06-20]

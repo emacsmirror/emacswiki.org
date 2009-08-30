@@ -1,0 +1,14 @@
+When using [[rcirc]] you might be connected to a channel that doesn't have a lot of activity. If there is, however, you want to be alerted with a *beep*, whether your nick is mentioned or not. Enter the `rcirc-ding' minor-mode.
+
+* Lisp:rcirc-ding.el
+
+== Playing Soundfiles ==
+
+Here's what I use on my Mac OS 10.4. I play a sound file from [http://adium.im/ Adium] using a gratis but non-free command line utility I got from [http://www.hieper.nl/html/play.html Hieper Software]:
+
+{{{
+(setq rcirc-ding-this
+      (lambda (&rest ignore)
+	(call-process "play" nil nil nil 
+		      "/Applications/Adium.app/Contents/Resources/Sounds/TokyoTrainStation.AdiumSoundset/Message_Received.m4a")))
+}}}

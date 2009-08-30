@@ -1,0 +1,219 @@
+HideShow is a minor mode similar to OutlineMode -- it hides and shows blocks of text. In particular, HideShow hides balanced-expression code blocks and multi-line comment blocks.
+
+See HideIfDef mode for a way to fold <code>#ifdef</code> macro blocks in C code.
+
+== Common Use ==
+
+Invoke HideShow mode with M-x hs-minor-mode.
+
+For Emacs 20:
+
+* C-c S show all
+* C-c H hide all
+* C-c s show block
+* C-c h hide block
+
+For Emacs 21:
+
+* C-c @ ESC C-s show all
+* C-c @ ESC C-h hide all
+* C-c @ C-s show block
+* C-c @ C-h hide block
+* C-c @ C-c toggle hide/show
+
+== Example ==
+
+If you hide all (C-c H) the code looks as follows:
+
+<pre>
+    ObjectInfo::ObjectInfo(FILE *fname)...
+    ObjectInfo::~ObjectInfo()...
+</pre>
+
+If you put the TextCursor on <nowiki>~ObjectInfo()</nowiki>, and show block (C-c s), the code expands:
+
+<pre>
+    ObjectInfo::ObjectInfo(FILE *fname)...
+    ObjectInfo::~ObjectInfo() {
+      if(animations)
+        delete [] animations;
+      }
+</pre>
+
+== Versions and Language Support ==
+
+HideShow works with:
+
+* Lisp / Emacs Lisp / Scheme (ParenthesesRule)
+* Java / C / C++ / Perl (expressions delimited by curly braces)
+* C# (like the above but also includes #region/#endregion collapse, see [http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/making-hideshow-el-work-with-csharp-mode-el-and-region-endregion.aspx notes on that])
+* PHP (use php-mode from http://php-mode.sf.net --GirishB)
+* Tcl
+* VHDL
+* Fortran
+
+HideShow is included with Emacs 20 and later.  [The maintainer version, which is slightly more featureful (and perhaps slightly less stable) can be found at http://www.gnuvola.org/software/j/hideshow/ --ttn]
+
+Making it work with other languages can be simple or complex, depending on the regularity of the language's syntax.  See commentary and/or email ttn for hints.
+
+== Universal code folding ==
+
+<code>set-selective-display</code> is a simple, universal function which hides code according to its indentation level. It can be used as a fall-back for <code>hs-toggle-hiding</code>.
+
+First, define a toggling function based on <code>set-selective-display</code>:
+
+    (defun toggle-selective-display (column)
+      (interactive "P")
+      (set-selective-display
+       (or column
+           (unless selective-display
+             (1+ (current-column))))))
+
+The above is based on jao's [http://emacs.wordpress.com/2007/01/16/quick-and-dirty-code-folding/ quick and dirty code folding] code. The hiding level can be passed as an prefix argument, or is based on the horizontal position of point. Calling the function again brings the code back.
+
+Now, define another function which calls <code>hs-toggle-hiding</code> if it's available, or else falls back on <code>toggle-selective-display</code>:
+
+    (defun toggle-hiding (column)
+      (interactive "P")
+      (if hs-minor-mode
+          (if (condition-case nil
+                  (hs-toggle-hiding)
+                (error t))
+              (hs-show-all))
+        (toggle-selective-display column)))
+
+This is more robust than the mere <code>hs-toggle-hiding</code> function. Specifically, it will return the buffer to its original state if something goes awry due to an uneven number of open and close brackets (e.g., extensive use of <code>#ifdef</code> macro declarations).
+
+Finally, set up key bindings and automatically activate <code>hs-minor-mode</code> for the desired major modes:
+
+    (global-set-key (kbd "C-+") 'toggle-hiding)
+    (global-set-key (kbd "C-\\") 'toggle-selective-display)
+
+    (add-hook 'c-mode-common-hook   'hs-minor-mode)
+    (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
+    (add-hook 'java-mode-hook       'hs-minor-mode)
+    (add-hook 'lisp-mode-hook       'hs-minor-mode)
+    (add-hook 'perl-mode-hook       'hs-minor-mode)
+    (add-hook 'sh-mode-hook         'hs-minor-mode)
+
+Now we have (rudimentary) code folding for /all/ modes, not just the ones listed above.
+
+== Automatically Activating ==
+
+Does anyone else have trouble viewing the text after this next paragraph?
+
+SteveWainstead contributes the following code for Emacs 20, which automatically activates HideShow for Perl, Java, or Lisp sources.
+
+    ;; hideshow for programming
+    (load-library "hideshow")
+    (add-hook 'java-mode-hook 'hs-minor-mode)
+    (add-hook 'perl-mode-hook 'hs-minor-mode)
+    (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
+
+== Other Options ==
+
+Here is a set of perhaps other useful options you can customize:
+
+    ;; Hide the comments too when you do a 'hs-hide-all'
+    (setq hs-hide-comments nil)
+    ;; Set whether isearch opens folded comments, code, or both
+    ;; where x is code, comments, t (both), or nil (neither)
+    (setq hs-isearch-open 'x)
+    ;; Add more here
+
+Maintainer version also has spiffy new variable: hs-set-up-overlay
+
+== Extensions ==
+The extension hideshow-org makes hideshow.el's functionality behave like org-mode's.  The code is located on [http://github.com/secelis/hideshow-org/tree/master github here]. The announcement and screencast of it is [http://gnufool.blogspot.com/2009/03/make-hideshow-behave-more-like-org-mode.html here].
+
+To get <tt>+</tt>/<tt>-</tt> markers on foldable regions, have a look at <tt>[[hideshowvis.el]]</tt>.
+
+[new]
+The answer to the question "How do I get it to expand upon a goto-line? (like it does in search mode)" is by adding some <tt>advice</tt>.
+
+<tt>advice</tt> is similar to a hook. It may be executed before or after an Emacs function. It can affect both the parameters and the return value of the function. See AdvisingFunctions.
+
+For expansion on `goto-line', adding the following code to your InitFile will do the trick:
+
+    (defadvice goto-line (after expand-after-goto-line
+                                activate compile)
+
+        "hideshow-expand affected block when using goto-line in a collapsed buffer"
+        (save-excursion
+           (hs-show-block)))
+
+Similar solutions can most likely be found for the `find-tag' and `revert-file' problem questions below (unless you want to preserve all expanded/compressed parts of the code in the latter case).
+
+== Questions ==
+
+=== Suggestion for a (vastly) more powerful folding mode ===
+
+HideIfDef mode is powerful, but not always what I want. For simple toggling of <code>#ifdef</code> macro blocks, it would be nice to use HideShow's `hs-toggle-hiding' function. Unfortunately, the `hs-special-modes-alist' variable only supports a single regexp pair -- i.e., it looks up the <code>hs-special-modes-alist</code> variable for one "open" and one "close" regexp for the current language. (In C, <code>{</code> is "open" and <code>}</code> is "close".) There is no simple way to specify /multiple/ regexp pairs for a single language, e.g.,
+* Open: <code>{</code>, close: <code>}</code>
+* Open: <code>#ifdef</code>, close: <code>#else</code> or <code>#elif</code> or ... etc.
+
+[new]
+You can use the <code>FORWARD-SEXP-FUNC</code> entry in <code>hs-special-modes-alist</code> for this.
+[new]
+
+I don't know if such flexibility is difficult to implement, but it would be very easy to add support for other languages. Just think of LaTeX-mode with hierarchical folding of <code>\section</code> commands and <code>\begin ... \end</code> environments, for instance! Any takers?
+
+[new]
+Use AUCTeX.
+[new]
+
+=== Bugs ===
+I found a problem with the (correct) behavior of HideShow. In the 1st situation (see below, 1st column), if one hides the 1st block, what is shown is not entirely satisfactory (2nd column). Much better would be the last example, i.e., as though the "else" was in the next line from the '}' which closes the 1st block.
+
+    if (condition) {               |    if (condition) {...   |    if (condition) {...
+        dosomething ();            |        // 2nd block      |    else if (othercondition) {
+        // 1st block               |    }                     |        // 2nd block
+    } else if (othercondition) {   |                          |    }
+        // 2nd block               |                          |
+    }                              |                          |
+
+This problem shows up when the code is not one's own, mainly, and it's even worse when the file is not editable (say, e.g., under source control system).
+
+The question: is this behavior configurable somehow, or it would require changes in the elisp source code?
+
+I thought (and tried) changing the closing block regexp, to make it match "something just before the closing curly brace", but that's nonsense because the curly brace itself must be included anyway in the regexp, thus including anyway the line containing it, which is still the same situation. Any suggestion?
+
+I found a quick solution by excluding the last line of the block. This can be bad for small blocks, but for large blocks it's OK. The patch goes like this. 
+
+    --- hideshow-orig.el	2007-01-29 16:57:04.000000000 -0300
+    +++ hideshow.el	2007-01-29 16:58:12.000000000 -0300
+    @@ -512,6 +512,7 @@
+                    (q
+                     ;; `q' is the point at the end of the block
+                     (progn (hs-forward-sexp mdata 1)
+    +                       (forward-line -1)
+                            (end-of-line)
+                            (point))))
+               (if (and (< p (point)) (> (count-lines p q) 1))
+
+May be this could be customized with a local variable like <code>hs-block-includes-last-line</code>. MarioStorti
+
+[new]
+Also, is there some fix for the revert-file problem (all the collapses just disappear upon reverting)?  [An old version of hideshow.el used to include support for saving the hideshow state in a separate file in various ways.  These functions were excised for aesthetic reasons and are now available in hideshow-state.el, which has been mouldering away for about half a decade.  Perhaps summer or autumn 2005 will see an updated release. --ttn]
+[new]
+Also, how to get to expand upon a find-tag?
+Try replacing the two occurences of line in the above code by char; because find-tag uses goto-char. 
+[new]
+Is anyone working to add Python support?  I've been unable to find any evidence, and although I'm a lisp novice, I may attempt it.
+[new]
+: See here: http://sourceforge.net/projects/python-mode/
+(Maybe by now this mode is popular enough to remove this question from here?)
+[new]
+Is there a possibility to add some small "+" sign next to the sourcecode to toggle show/hide? E.g. like the one in the KDE editor component.
+[new]
+: S-mouse-2 toggles show/hide without need for a "+". (At least it does in CVS Emacs.)  You could map hs-toggle-hiding to a more convenient key too.  Perhaps M-+ would suit your itch for a "+".
+[new]
+: Have a look at Lisp:hideshowvis.el
+[new]
+Is anyone working on ruby support?
+[new]
+: There is something: http://www.hyperionreactor.net/node/43
+
+----
+CategoryHideStuff
+

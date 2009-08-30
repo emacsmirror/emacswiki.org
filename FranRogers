@@ -1,0 +1,12 @@
+Computer Science major at RIT and Emacs user. :)
+
+* [http://fran.sixbit.org/repo/.emacs.d/file/tip/ My dotfile] - in an hg repository, so I can take it with me
+* [http://people.rit.edu/~fsr3886/ My RIT homepage]
+
+[new]
+Welcome to the wiki! :) It seems to me that [[Zile]] is not really extensible and therefore an ErsatzEmacs. Do you agree? -- AlexSchroeder
+[new]
+Ah, good point... "Zile Lisp" does seem more like a glorified rc file than a real language. As it's an FSF product I'm surprised they don't refer to it as an ersatz Emacs per RMS's definition. :) -- FranRogers
+
+----
+CategoryHomepage

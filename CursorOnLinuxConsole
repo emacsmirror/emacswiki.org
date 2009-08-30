@@ -1,0 +1,106 @@
+On the Linux console, you can set what your TextCursor looks like.
+
+For more information, see the file VGA-softcursor.txt in the Linux
+source tree:
+
+* http://www.linuxhq.com/kernel/v2.4/doc/VGA-softcursor.txt.html
+
+== Problem Description ==
+
+Running Emacs 20 or 21 will change this cursor of yours back to the
+original cursor (a blinking underscore).  Here's a description of the
+problem (slightly edited) and a guide to solving the problem:
+
+ From: RussellMarks
+ Subject: Re: Emacs 21 on Linux console -- cannot change cursor?
+ Newsgroups: gnu.emacs.help
+ Date: 17 Nov 2001 13:25:58 +0000
+
+Let me try and summarise what I believe is happening (this is all on
+the Linux console):
+
+Linux's cursor is, by default, the normal PC text-mode cursor - it
+looks a bit like a blinking underscore.
+
+When Emacs 20 or 21 start, they use the `vs' capability to get a
+`very visible' cursor. Apparently, the `very visible' thing wasn't
+intentional...?
+
+ncurses 5.0 (and possibly other versions) comes with a `linux'
+terminfo entry that defines `cvvis' (= termcap `vs') as
+"\E[?25h\E[?8c" (show cursor, change size). This causes the cursor to
+blink just like the underscore-ish one (it's still a hardware cursor,
+and PC text-mode hardware cursors always blink when enabled), but to
+occupy an entire character cell - so you get a really terrible
+blinking block cursor.
+
+Linux also supports a software cursor. If you enable that, it disables
+the hardware cursor and shows the cursor position by changing
+foreground/background colours, giving you a non-blinking block
+cursor. I think the original poster mentioned having enabled such a
+cursor.
+
+Such cursors will not survive a cursor visibility change, if used
+with the `linux' terminfo entry that ncurses provides - the `change
+size' escape sequences used explicitly specify hardware cursors. You
+can't really use a software block cursor these days without using a
+custom terminfo entry.
+
+For anyone who has this problem, the only real solution is to save the
+output of `infocmp linux' to a file, edit that adding your
+software-cursor escape sequences to the cvvis and cnorm capabilities,
+and do `tic yourfile' (preferably as your normal user, and not root).
+
+(Alternatively, convince the ncurses terminfo database maintainer that
+fscking with the cursor size is more trouble than it's worth. :-))
+
+== A Red Block Cursor ==
+
+Here's how to change the software cursor in your ~/.bash_profile or
+similar login script:
+
+ # If on console, change cursor colour according to
+ # /usr/src/linux/Documentation/VGA-softcursor.txt
+ # Reset using echo -e '\033[?2c'
+ if [ $TERM = 'linux' -a $SHELL == '/bin/bash' ] ; then
+     echo -e '\033[?17;0;64c'
+ fi
+
+And here's how to edit your linux term entry.  First, produce two
+files: one for backup, one for editing.
+
+ ~$ infocmp linux > linux-term-orig
+ ~$ infocmp linux > linux-term-edited
+
+Now edit linux-term-edited and change the cnorm and cvvis entries.
+Replace the \E[...c entries with your own \E...c entry.  In the case
+of the big red block cursor, use \E[?17;0;64c.
+
+Here's what you should get if you diff the original and the edited
+copy:
+
+ ~$ diff linux-term-orig linux-term-edited 
+ 7c7
+ <       clear=\E[H\E[J, cnorm=\E[?25h\E[?0c, cr=^M, 
+ ---
+ >       clear=\E[H\E[J, cnorm=\E[?25h\E[?17;0;64c, cr=^M, 
+ 9c9
+ <       cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, cvvis=\E[?25h\E[?8c, 
+ ---
+ >       cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, cvvis=\E[?25h\E[?17;0;64c, 
+
+And then install it:
+
+ ~$ tic linux-term-edited
+
+----
+CategoryFaces
+
+Hmm, seemed fine, but it wouldn't work for me. I just got a black non blinking point; and not just in emacs. I could no longer see my cursor in neither emacs nor the tty cause it was the same color as the background. What worked for me was TERM=vt100 emacs. Then I got the same non blinking red block in emacs too and it works wonderful. 
+
+I still like to see a fix to the above though and avoid setting my terminal to a dumber one than what I got. 
+
+----
+Two cursors
+
+Recompiling the term entry to enable the software cursor works provided I stay on the console.  If I switch to X and return to the console the hardware cursor reappears and I see both cursors (they don't point to the same place - the hardware cursor seems to track what's displayed, rather than the actual cursor position).  Unfortunately, resending the echo codes doesn't make the hardware cursor go away.  I have not found a solution to this yet.  (X.Org X Server 1.5.0, Linux 2.6.26.6-79.fc9.i686, SiS chipset - id:1633) -- BrianGough

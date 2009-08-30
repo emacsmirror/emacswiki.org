@@ -1,0 +1,9 @@
+[[iTe]] (Interactive !TeX Editor) is a semi-WYSIWYG TeX minor mode, for in buffer manipulation (moving, rotating) of objects (images fragments etc.).
+
+iTe consists of LaTeX style file, minor mode for Emacs and Perl parser for .log and .ps file.
+It requires dvips, Ghostscript and Perl.
+
+iTe homepage: http://www.ctan.org/tex-archive/support/ite/
+
+----
+CategoryTex

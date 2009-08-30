@@ -1,0 +1,11 @@
+<code>xml-coding.el</code> is a spot of code to select an Emacs
+CodingSystem from the <code><?xml></code> tag at the start of any XML document.
+
+: http://user42.tuxfamily.org/xml-coding/index.html
+
+This is designed for Emacs 21.   Emacs 22 already has this feature builtin, so nothing is done there.
+
+Most XML files are UTF-8, so you may find it enough to just add to <code>file-coding-system-alist</code> for <code>.xml</code> or whatever filename extension you're working with (see UnicodeEncoding for more on UTF-8).
+
+----
+CategoryInternationalization CategoryXML

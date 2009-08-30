@@ -1,0 +1,13 @@
+A heap is a form of efficient self-sorting tree (sometimes called a priority queue). In particular, the root node is guaranteed to be the highest-ranked entry in the tree. (The comparison function used for ranking the data can, of course, be freely defined). They are often used as priority queues, for scheduling tasks in order of importance.
+
+The latest version  (0.2.1, released February 2009) can be obtained from:
+
+* Heap package download: http://www.dr-qubit.org/download.php?file=predictive/heap.el
+* Web-site: http://www.dr-qubit.org/emacs.php#structures
+
+Enjoy!
+
+--TobyCubitt
+
+----
+CategoryCode

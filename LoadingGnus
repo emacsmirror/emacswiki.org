@@ -1,0 +1,24 @@
+When you use Gnus from CVS, you have to add the Gnus Lisp directory to
+the front of LoadPath, you have to add the Gnus Info files to your
+private Info directory, and you have to add the correct autoloads.
+
+Here's what I do.  After a CVS update, I run make.  This will compile
+all the elisp files.  I keep Gnus in ~/elisp/gnus.
+
+  (add-to-list 'load-path "~/elisp/gnus/lisp")
+  (add-to-list 'load-path "~/elisp/gnus/contrib")
+  (require 'gnus-load)
+  (load-file "~/.gnus")
+
+The reason I load ~/.gnus from my .emacs is because I define
+PostingStyles there.  If I don't load ~/.gnus from ~/.emacs, then
+using `C-x m' to send mail would use MessageMode (since I have loaded
+"gnus-load"), but my PostingStyles will not be set.  ~/.gnus is only
+loaded by Gnus -- not MessageMode.
+
+As to the Info files, I put them in ~/info.  I edited ~/info/dir a
+long time ago to include pointers to Gnus Info files.  In my
+~/.bash_profile I prefend ~/info to the InfoPath environment variable.
+
+----
+CategoryGnus

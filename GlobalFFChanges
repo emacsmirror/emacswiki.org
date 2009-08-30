@@ -1,0 +1,16 @@
+Change log for GlobalFF. Only user-visible changes are listed.
+== 2006-11-09 ==
+* Added experimental universal file selector feature. Globalff can be used to select a path in any application, not just Emacs.
+== 2006-11-06 ==
+* Added option to match only on the basename of paths instead of on the whole path. It can be toggled on-the-fly with ##C-w## (it hides kill-region, but kill-region is not very useful during pattern editing anyway).
+== 2006-06-07 ==
+* Added binding to only copy the selected file name without visiting it. It is useful when the full file name is needed in an other application. (It is usually much faster to get to the file using globalff than with traditional means).
+== 2006-04-11 ==
+* Added option to kill the search process automatically if there are too many matches.
+* Added option to transform displayed file names, so that the list of matching files are more readable when there are very long path names.
+== 2006-03-31 ==
+* Fixed highlighting bug if the user kills the ##*globalff*## buffer.
+== 2006-03-30 ==
+* Added customize support (thanks to StefanKamphausen and LennartBorgman)
+== 2006-03-29 ==
+* Added XEmacs support (thanks to StefanKamphausen)

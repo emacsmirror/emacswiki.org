@@ -1,0 +1,86 @@
+Ebs package offers two ways for switching buffers in GNU
+Emacs/XEmacs, number indexed switch and cycle switch.
+
+= Number Indexed Switch =
+
+In number indexed switch, buffer names in current buffer list will
+be displayed in the echo area like this:
+
+  [1]buffa|[2]buffb|[3]buffc|[4]buffd|[5]buffe
+
+You can switch to whichever buffer you like by simply pressing the
+number before its name.  Shortcut keys are provided for 2-bit numbers
+([10], [11], ...).  The default key mapping is as the following:
+
+  [10] -> 0
+  [11] -> q
+  [12] -> w
+  [13] -> e
+  [19] -> o
+  [20] -> p
+  [21] -> a
+  ...
+  [39] -> .
+  [40] -> /
+
+Easy to remember and press?!  What about the buffer named
+[41]buffodd?  Sorry, remember that you can ignore annoying buffers
+by setting them in `ebs-exclude-buffer-regexps' so I don't think
+you need to simultaneously edit more than 40 buffers.  If you
+really need to the ability, crack this package yourself or cite
+more than three real examples to persuade me.
+
+= Cycle Switch =
+
+Then, what's cycle switch and what the hell does it do?
+
+Cycle switch is much alike the classic alt-tab in windows.  That
+is, when you press the default key binding C-tab more than once,
+you will cycle the buffer list until arriving at your interested
+buffer, like this:
+
+Press C-tab once:
+
+  [1]buffa|[2]buffb|[3]buffc|[4]buffd|[5]buffe
+           ~~~~~~~~ highlighted 
+
+Press C-tab twice:
+
+  [1]buffa|[2]buffb|[3]buffc|[4]buffd|[5]buffe
+                    ~~~~~~~~
+
+Press C-tab the third time:
+
+  [1]buffa|[2]buffb|[3]buffc|[4]buffd|[5]buffe
+                             ~~~~~~~~
+
+Cycle switch is essential because when you want to switch to
+buffers near the head of the buffer list, it is much more _direct_
+and _convenient_ than number indexed switch.
+
+NOTES: When you press C-tab more than once (consecutively), ebs
+will enter cycle switch mode.  That means number indexed switch are
+temporarily disabled until you select your interested buffer and
+do something in it.
+
+I design the behavior of ebs like this is because I think if you
+want to use number index switch, after you first press C-tab you
+_SHOULD_ press the buffer number.  If not, it indicates that you
+intend to cycle buffer. Am I right?
+
+= Obtaining & Installation =
+
+You can download ebs package from http://www.emacswiki.org/elisp/ebs.el
+
+There are many todos in this package, and I haven't finished it yet, ;-)
+
+Put this file on your emacs load path and add the following
+three lines into your ~/.emacs startup file.
+
+  (require 'ebs)
+  (ebs-initialize)
+  (global-set-key [(control tab)] 'ebs-switch-buffer)
+
+----
+
+CategoryBufferSwitching

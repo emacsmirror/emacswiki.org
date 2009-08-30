@@ -1,0 +1,21 @@
+To get MailCrypt to work with VM, set the following hooks:
+
+    (add-hook 'vm-mode-hook 'mc-install-read-mode)
+    (add-hook 'vm-presentation-mode-hook 'mc-install-read-mode)
+    (add-hook 'vm-summary-mode-hook 'mc-install-read-mode)
+    (add-hook 'vm-virtual-mode-hook 'mc-install-read-mode)
+    (add-hook 'vm-mail-mode-hook 'mc-install-write-mode)
+
+= Sign on sending =
+
+Here is a simple way to be asked to sign on sending, just put this in your .vm file:
+
+
+ (add-hook 'vm-mail-send-hook '(lambda()
+                                (cond ((y-or-n-p "Signer le message? ")
+                                       (mc-sign 1)))))
+
+This has been tested on Debian GNU/Linux (Sid) and Gentoo GNU/Linux with GNU Emacs 21.4 and CVS and latest available release of MailCrypt.
+
+----
+CategoryViewMail

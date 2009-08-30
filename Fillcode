@@ -1,0 +1,43 @@
+Fillcode (Lisp:fillcode.el) is an minor mode that fills some parts of source code in many languages. See the
+[http://snarfed.org/space/fillcode official page] for more details, including the latest release and a package that includes unit tests.
+
+Fillcode is best described by example. It fills this:
+
+    public static void foo(int i, float f, String s) {
+
+to this:
+
+    public static void foo(int i, float f,
+                           String s) {
+
+The motivation is described in my original
+[http://snarfed.org/space/filling+code+in+emacs call for filling code in Emacs].
+
+Fillcode can fill any parenthesized expression, including function prototypes, function calls, and conditional expressions. It only breaks lines at commas and binary operators, and correctly preserves embedded comments and string literals. It also normalizes existing whitespace and line breaks.
+
+Fillcode is supported in Emacs 21 and above and XEmacs, and works with most programming language major modes, including Java, C, C++, Objective C, Perl, Python, shell, and SQL modes.
+
+Fillcode fills when ##fill-paragraph## (usually ##M-q##) is called. If the
+major mode itself attempts to fill - inside a comment, for example - fillcode
+graciously steps back and does nothing.
+
+If you provide a prefix argument, e.g. ##C-u M-q##, fillcode will automatically
+insert a line break at the first open parenthesis or other appropriate point.
+This can be useful when the first open parenthesis is near ##fill-column##.
+
+##M-x fillcode-mode## toggles fillcode on and off in the current buffer. To turn it on automatically whenever you open source code, add these lines to your .emacs:
+
+    (add-hook 'c-mode-common-hook 'fillcode-mode)
+    (add-hook 'perl-mode-hook 'fillcode-mode)
+    (add-hook 'python-mode-hook 'fillcode-mode)
+    (add-hook 'shell-script-mode-hook 'fillcode-mode)
+    (add-hook 'sql-mode-hook 'fillcode-mode)
+
+Fillcode is a work in progress. Here's a list of known issues:
+
+* It depends on the major mode's indentation and parsing engines. These are less than perfect in some major modes.
+* It's not entirely compatible with ##auto-fill-mode## or FillAdapt ... yet
+* It doesn't break lines at ##=##, the assignment operator.
+
+Fillcode is copyright 2005-2007 RyanBarrett, and is distributed under the
+[http://www.gnu.org/licenses/gpl.html GPL].

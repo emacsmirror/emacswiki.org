@@ -1,0 +1,10 @@
+This page will describe in detail some of the typical things an experienced EMACS user might do while he is doing his daily EMACS work.  In particular it will describe him in context so that the reader can better understand how a particular feature or command can be used effectively.
+
+This page may have some similar information as the EmacsNiftyTricks page but will offer the information in the context of effective use.
+
+I begin my day of using EMACS by opening EMACS.  I type 'M-x rmail' to read and compose emails from within emacs.  
+
+I read over my email after I've written it and find that I don't like line 27 (I find the line number that the TextCursor is on in the info bar at the bottom of the EMACS screen) that I've written.   I click the left mouse button at the beginning of that line and double right click the right mouse button at the end of the line and the line disappears.  
+
+I also find that while I like what I wrote in paragraphs 3 and 4, I want to swap them.  In the email I wrote there are no blank lines between the paragraphs so I click in the empty space (but on the same line) just after the last period in paragraph 3 and then double click the right mouse button in the empty space (but on the same line) just after the last period in paragraph 4.  Then I middle click in the in the empty space (but on the same line) just after the last period in paragraph 2 and paragraph 3 and 4 are swapped.  I feel lucky that I get to use EMACS since the whole operation of swapping the paragraphs took me less than a second.  
+

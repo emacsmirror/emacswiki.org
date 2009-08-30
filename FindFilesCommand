@@ -1,0 +1,38 @@
+I tend to use this when globbing files. it blocks, but is nice on systems where gnu find isn't handy (e.g. win32)
+<pre>
+(defun findFiles (regex &optional subdir keep-p full-paths-p)
+  (interactive "sregex of file name (foo.*\\.txt):")
+  (let*
+      (
+       (buf (get-buffer-create "*findfiles*"))
+       (dir default-directory) ;; changed by with-current-buf
+       (n (if full-paths-p 0 (length dir)))
+       
+       (find-fun 
+        (lambda (regexp dir)
+          (message "searching %s" dir)
+          (loop for i in (directory-files dir) do
+                (if (and (file-directory-p (concat dir i)) (not (equal i ".")) (not (equal i ".."))) 
+                    (funcall find-fun regexp (concat dir i "/")))
+                (if (string-match regexp i) (insert (substring dir n) i ":0:\n"))))
+              )
+       )
+    (with-current-buffer buf
+      (setq buffer-read-only nil)
+      (if (not keep-p) (erase-buffer))
+      (setq default-directory dir)
+      (insert "-*- finding:; " regex "\n\n")
+      (funcall find-fun regex (concat dir (or subdir "")))
+      (insert "\n-*- done")
+      )
+    (switch-to-buffer-other-window buf)
+    (grep-mode)    
+  ))
+
+</pre>
+
+-- AaronBrady
+
+
+----
+CategoryFiles

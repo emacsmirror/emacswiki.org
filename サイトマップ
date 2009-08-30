@@ -1,0 +1,140 @@
+[[en:SiteMap]]
+[[ko:대문]]
+[[se:InnehållsFörteckning]]
+[[zh:網站地圖]]
+[[ru:КартаСайта]]
+[[pt:MapaDoSite]]
+[[fr:PlanDuSite]]
+[[es:MapaDelSitio]]
+<include "WikiLanguageMenu">
+
+Here is the Japanese page for SiteMap.
+英語ページは[EmacsWiki:SiteMap こちら]。
+
+: ''The EmacsWiki is dedicated to EmacsAndXEmacs content....  See the
+MissionStatement for more.''
+:: -- SiteMap より
+
+== 日本語ユーザーに向けて ==
+このサイトは[http://ja.wikipedia.org/wiki/Emacs Emacsen] 
+(Emacs, XEmacs, Nemacs, Mule, [[Meadow]], NTemacs)
+などの日本ユーザー向けの、ユーザー自身が作るサイトです。
+* Emacs 用日本語文書の公開場所の提供
+* 日本人制作 Elisp の公開場所の提供、
+* 日本における掲示板、日記などからのＦＡＱの収集、
+* 英語で開発されている Elisp の日本語による情報、
+などを目指します。
+
+ここはみんなで作るサイトです。既存、新規にかかわらずのページをご自由に作成してください。詳しくは [[利用手引]] / HowTo をご覧ください。
+
+* [EmacsWiki:action=index インデックス] -- このサイトの全ページ
+* [[Ｅｌｉｓｐセクション]] / ElispArea -- Elisp をアップロード＆ダウンロード 
+* [[日本語ＦＡＱ]] / [[JapaneseFAQ]] -- ＦＡＱ収集とその英訳
+
+
+バグとか、要望とか
+* [[Ｅｍａｃｓバグ]] / EmacsBugs
+* [[要望リスト]] / WishList
+
+----
+== 日本語版 サイトマップ ==
+単なる英訳にとどまらず、あなたの書いた日本語文章を作成してください。
+
+Emacs とは？
+* [[Emacsビギナー]] / EmacsNewbie -- はじめての方に
+* [[カテゴリ・ヘルプ]] / CategoryHelp -- Emacs 上のヘルプとEmacs ユーザーによるヘルプ
+* [[カテゴリ・用語集]] / CategoryGlossary -- Emacsユーザーの使用する用語について
+* [[カテゴリ・ドキュメント]] / CategoryDocumentation -- Emacsに関するドキュメントについて
+* [[カテゴリ・歴史]] / CategoryHistory -- Emacsの発展
+
+Emacs をテキストエディタとして使うには？
+* [[カテゴリ・改行と行折り返し]] / CategoryFilling -- 行の折り返しについて
+* [[カテゴリ・インデント]] / CategoryIndentation -- テキストやプログラムコードのインデントを制御する
+* [[カテゴリ・括弧の対応]] / CategoryParentheses -- matching them, changing them
+* [[カテゴリ・正規表現]] / CategoryRegexp -- 検索と置換についてなど
+* [[カテゴリ・リージョン（選択と選択範囲）]] / CategoryRegion -- テキストを選択して操作する
+* [[カテゴリ・アウトライン]] / CategoryOutline -- hiding parts of a buffer, using outlining or zooming aka folding
+* [[カテゴリ・編集]] / CategoryEditing -- 編集操作をより効率的にするためのアイディア
+* [[カテゴリ・非表示]] / CategoryHideStuff -- バッファの任意の部分を非表示にする
+* [[カテゴリ・ファイル]] / CategoryFiles -- ローカルファイル、リモートファイル、バックアップの作成について
+* [[カテゴリ・コマンド]] / CategoryCommands -- M-x コマンド、[[MinibufferHistory]]、ファイルのオープンについて
+* [[カテゴリ・バッファ切り替え]] / CategoryBufferSwitching -- バッファの切替え方法について
+* [[カテゴリ・テンプレート]] / CategoryTemplates -- 定型文、テンプレート、フォームなどを利用して、タイピング量を減らす方法
+* [[アンドゥ]] / CategoryUndo -- 変更を取り消す方法、取り消し可能な変更を検索する方法
+
+様々な形式のファイルを扱うための特別なモード
+* [[ハイパーメディア]] / CategoryHypermedia -- HTML, Wikis, Info
+* [[XML]] / CategoryXML -- XML related technologies
+* [[SQL]] / CategorySql -- SQL and databases
+* [[Tex]] / CategoryTex -- TeX and LaTeX stuff
+* [[モード]] / CategoryModes -- pointers, documentation, and extensions to all the other modes
+* [[語彙]] / CategoryVocab -- learning new words
+* [[ディレクトリ]] / CategoryDirectories -- Working with directories, otherwise known as dired.
+
+その他の機能
+* [[電卓]] / CategoryCalculators -- interactive math
+* [[カレンダー]] / CategoryCalendar -- calendar, diary, tasks
+** [[TODO]] / CategoryTodo -- maintaining todo lists
+* [[チャット]] / CategoryChatClient -- socializing while sitting alone in front of the monitor
+* [[ゲーム]] / CategoryGames -- less useful ways to waste your time with Emacs
+* [[インタフェース]] / CategoryInterface -- Emacs interface to online utilities
+* [[プログラマ向けユーティリティ]] / CategoryProgrammerUtils -- tools that help programmers, e.g., code browsers
+* [[リモートEmacs]] / CategoryRemoteEmacs -- running Emacs on a host far, far away
+* [[外部プログラム]] / CategoryExternalUtilities -- calling external programs to do stuff from Emacs
+* [[メール]] / CategoryMail -- simple mail handling things, not Gnus related
+* [Gnus ニュース・メールリーダ] / CategoryGnus -- powerful news and mail reading
+* [[BBDB（連絡帳）]] / CategoryBbdb -- Big Brother Database: maintain phone numbers, mail addresses, and more
+* [[バージョン管理]] / CategoryVersionControl -- interfacing to CVS, RCS, etc.
+* [[日記]] / CategoryJournaling -- Emacs interfaces to web logs
+* [[PIM]] / CategoryPersonalInformationManager -- various packages to cover particular aspects of a PIM
+
+Emacs をカスタマイズするには
+* CategoryKeys -- customizing your keys; usability
+* CategoryDotEmacs -- stuff to put in your InitFile, for Elisp newbies
+* CategoryProgramming -- customizations people use for programming
+* CategoryFaces -- syntax highlighting, colors, font-lock
+** CategoryDisplay -- things related to the display (X-Window pointer shapes, [[Frame]]s, ...)
+** CategoryWindows -- managing several [[Window]]s within one frame
+* CategoryInternationalization -- making Emacs do the parlez-vous
+* CategoryPaths -- Merging OS Paths and Emacs Paths.
+
+Emacs の機能を追加するには？（Elisp プログラムと Emacs ソースのハック）
+* CategoryCode -- stuff for Elisp authors
+** CategoryDebug -- debugging Emacs, debugging with Emacs
+* CategoryEshell -- a shell implemented completely in elisp
+* CategoryBuilding -- how to build Emacs from sources
+* CategoryPatches -- patches to Emacs, mostly for extensions on the C level
+* CategoryExtensionLanguage -- alternatives to EmacsLisp: Guile, Erlang, Python, ...
+* CategoryBiDi -- introduction to adding bidirectional input and output to Emacs
+
+Emacs のダウンロードとインストール
+* CategoryPorts -- NT, Mac, GNU/Linux including Debian, BSD
+* CategoryWThirtyTwo -- for w32-specific stuff
+
+Emacs ユーザーたちのコミュニティ
+* CategoryHomepage -- web pages of friends of Emacs
+* CategoryHumor -- what we do when we are not customizing Emacs
+
+Emacs Wiki Meta
+* EmacsChannel -- IRC channel where we hang out
+* SiteMapDiscussion -- the categories on this wiki and other stuff to put on the main page
+* MeatBall:EmacsWiki -- wiki technology, organization, security, etc.
+
+ファイル
+* [[Ｅｌｉｓｐセクション]] / ElispArea -- あなたの作った Elisp を公開＆ダウンロード 
+
+バグとか、要望とか
+* [[Ｅｍａｃｓバグ]] / EmacsBugs
+* [[要望リスト]] / WishList
+
+
+メンテナンス
+* [EmacsWiki:action=index 全ページのインデックス] 
+* [EmacsWiki:action=random ランダム] is a good place to start reading and improving the site
+* [EmacsWiki:action=links&amp;url=2 外部リンク]
+* [EmacsWiki:action=maintain メンテナンスを開始]
+* [EmacsWiki:action=version script versionをチェック]
+* [http://www.emacswiki.org/cgi-bin/list-archive.pl アーカイブをダウンロード]
+* [EmacsWiki:action=unlock Remove edit lock after a crash]
+    (everbody can help making backups)
+* [http://emacswiki.org/usage/ Usage Statistics] (and OldStats)

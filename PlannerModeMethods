@@ -1,0 +1,242 @@
+== Bare-bones TODO ==
+
+You can use PlannerMode to keep a task list on a single page in much the same way as you'd use a plain text file, except with pretty font-locking, a few handy shortcuts, and automatic task sorting. You can do a lot more with it, though, so check out the next few methods and see how they resemble the way you'd like to work. =)
+
+== Top-down planning: starting with projects / Franklin-Covey ==
+
+This is the method described in PlannerModeCommentary. Create a plan page for each of your major projects by typing in a WikiName or visiting the file in planner-directory. On each plan page, break your project
+down into smaller and smaller tasks until each task can be finished in one sitting. You can use empty lines and headings to separate tasks. 
+
+You can type tasks in manually or use M-x planner-create-task(-from-buffer) (C-c C-t) to create tasks. If you want to associate tasks with a particular date, specify the date when you create the task, or use M-x planner-copy-or-move-task (C-c C-c) to schedule the task. A nil date means don't associate the task with a particular date. 
+
+When you want to work on a project, open the project's plan page and select a task to work on. 
+
+This method is good if you prefer to devote blocks of time to working on a particular project and your tasks generally don't have deadlines. It also works well with timeclock support.
+
+[:GettingThingsDone]
+== David Allen's Getting Things Done ==
+
+http://www.genehack.org/2004/09/21#just-another-gtd-hacker
+
+== Hierarchical tasks ==
+
+You can use AllOut or other modes for outlining to support
+hierarchical tasks in plan pages. No special support is needed.
+
+Tasks created by <code>planner-create-task-from-buffer</code> and
+<code>planner-create-task</code> are created in the <code>* Tasks</code>
+section. If <code>planner-add-task-at-end-flag</code> is non-nil,
+tasks are added to the end of the first task block, else they are
+added to the beginning. You can then copy and paste tasks into your
+preferred hierarchy. Blank lines delimit blocks of tasks upon which
+automatic sorting is performed.
+
+You can also type in tasks manually. You may find this approach
+faster when you are comfortable with planner.
+
+For example, a <nowiki>LearnPlanner</nowiki> plan page might contain the
+following lines:
+
+     * Learn how to use planner.el
+     
+     ** Installation
+     
+     #C0 _ Decide whether you want stable or devel
+     #C0 _ Download the archives
+     
+     ** Configuration
+     
+     *** Load path
+     
+     #C0 _ Figure out how to add things to my load path
+     #C0 _ Actually add it to my load path
+     
+     ...
+
+If you create tasks for the finest level of detail available at the
+moment, you can schedule them onto day pages with <code>C-c C-c</code>
+(<code>planner-copy-or-move-task</code>). Then you can use
+<code>planner-jump-to-link</code> to switch between the day page and the plan
+page link.
+
+== Timestamped notes ==
+
+SachaChua: I use this style on my wikiblog at http://sachachua.com . The remember package allows me to quickly post text snippets on my site. Download the remember package and follow the instructions in remember-planner.el . Then M-x remember displays a buffer you can type stuff into.
+
+Get emacs-wiki, remember, and planner. (See PlannerMode for instructions.)
+Then put the following in your .emacs:
+
+    (require 'remember-planner)
+    (setq remember-annotation-functions planner-annotation-functions)
+    (setq remember-handler-functions '(remember-planner-append))
+    (setq remember-append-to-planner-hook
+          '(remember-planner-add-timestamp))
+
+With that, calling M-x remember will pop up a buffer that links to
+whatever you're currently looking at. When you're done with it, type
+C-c C-c.
+
+If you want to cross-reference most notes with plan pages,
+
+    (setq remember-append-to-planner-hook
+          '(remember-planner-add-timestamp remember-planner-add-xref))
+
+I use planner-rss to publish my notes as an RSS feed as well. If you're
+interested, check out planner-rss.el for more details.
+
+== Scheduling each task for a particular time ==
+
+Some people prefer to make sure each task is scheduled for a particular timeslot. Use the <code>sacha/planner-diary-schedule-task</code> function from http://sachachua.com/notebook/emacs/planner-config.el to associate the current task with a time from START to END.
+
+== Blogging with PlannerMode ==
+
+Some people like to have their ramblings categorized into pages and have reference to them in a daily journal. Any new visitor to their site can have a look through the entire blog. When regular visitors turn up, they can simply check the day page to see the posts of the day. Planner can help you with this. You can create plan-pages without tasks or diary-schedules (Simply remove them from the wiki page). Any remember-notes added to this page will also be added to the respective day-page. You can publish the day-pages using some calendar coding like the one used by SachaChua. You might also want to set remember-planner-copy-on-xref-flag to nil. Doing this simply adds a link to the note on the day-page instead of making a entire copy. 
+
+You may also be interested in planner-rss.el, which allows you to manually and automatically publish planner notes in an RSS feed.
+
+== Screenshots and planner examples ==
+
+I have some examples of my planner use here: http://web.uvic.ca/~jklymak/PlannerMode.html
+
+== Publishing to a remote site ==
+
+planner does not support this directly, unless you use tramp. Any other way of doing this in emacs would be great. Sitecopy is an excellent tool to update a remote site from a local directory. Hence, we could make planner publish to the local directory and sitecopy can update the pages on the remote site. Weex[http://weex.sourceforge.net/] is another "sitecopy" like program that is very easy to use and setup.
+
+Note: You can use wup.el (http://www.gnuvola.org/software/ttn-pers-elisp/dist/lisp/bofh/wup.el) to upload your website via emacs.
+
+== Synchronization ==
+
+People often need to access their planner files from multiple locations. There are a variety of tools that can help you do this. These ideas need to be fleshed out, but some of the tools that have been reported to be helpful include: subversion, unison, rsync, git, darcs, and thumb drives.
+
+This page will try to group all (known) best practices. Feel free to add yours.
+
+== Add ID tags to your task(s) ==
+
+By default there is no TaskId set. You can change this and add one to part or all your tasks with the following command :
+
+ M-x planner-id-add-task-id-to-all
+
+or just 
+
+ M-x planner-id-add-task-id
+
+for an isolated task.
+
+You will end up with task description such as :
+
+ #B   _ Demander les elisp manuals à <mailto:order@fsf.org> {{Tasks:14}} ([[TaskPool]])
+
+In order to keep and have task id installed by default, you need to add these lines to your .emacs :
+
+ (require 'planner-id)
+ (setq planner-id-add-task-id-flag t)
+
+Check PlannerId manual to get more options to tweak
+
+== Put your plan pages under RCS ==
+
+This way you feel more confortable with changing your precious plan files.
+You can add this script in a cron (it is meant to be fully automatic) to run it few times a day.
+BEWARE: not well tested, just a prototype, please add your corrections.
+
+    #! /bin/bash
+    # $Date: 2005/11/13 14:03:49 $
+    # Script to checkin the plan pages.
+    # . Plan pages are put in RCS:
+    #    . RCS is sufficient (wrt. e.g. CVS)  because there is only one user.
+    #    . make an RCS directory where you put your plan pages to NOT
+    #      clutter your directory with ",v" files
+    #    . RCS is used to prevent:
+    #      . planner bugs (e.g. when using development versions)
+    #      . changes in the pages by planner (tasks may be moved
+    #        automatically from one day to another)
+    #-------------------------------------------------------------------------------
+    # 1. Checkin changes for already registered files.
+    # Find the files that are already under RCS
+    #..............................................................................
+    for i in `ls RCS/*,v | sed -e "s:RCS/::" | sed -e "s/,v//"` ; do ci -l -m'Automatic checkin.' $i ; done
+    #------------------------------------------------------------------------------
+    # 2. Registrate new pages
+    #..............................................................................
+    #    Try to avoid #<filename># pages
+    #    or insure to have planner-save-buffers before
+    # Use default message to avoid having to type.
+    # . use "comm" to deal exclusively with file to register (or grep -v).
+    # . ci "-i" is used to report error if this is not the initial checking
+    # . ci "-t" is equivalent of "-m" for initial checkin. Note that the
+    # . message should begin with a "-" otherwise it is supposed to be a
+    #   file.
+    ls RCS/*,v | sed -e "s:RCS/::" | sed -e "s/,v//" > /tmp/ci-plans-1-$$
+    sort -o /tmp/ci-plans-1-$$ /tmp/ci-plans-1-$$
+    find . -maxdepth 1 -type f -printf "%f\n" -name "[^#]*" > /tmp/ci-plans-2-$$
+    sort -o /tmp/ci-plans-2-$$ /tmp/ci-plans-2-$$
+    comm -3 /tmp/ci-plans-1-$$ /tmp/ci-plans-2-$$ > /tmp/ci-plans-diff-$$
+    for i in `cat /tmp/ci-plans-diff-$$` ; do ci -i -l -t'-automatic first ci.' $i ; done
+    rm /tmp/ci-plans-1-$$ /tmp/ci-plans-2-$$ /tmp/ci-plans-diff-$$
+    #-------------------------------------------------------------------------------
+    ### Local Variables: ***
+    ### mode: sh ***
+    ### mode: font-lock ***
+    ### End: ***
+
+== Customize the Daily Template on a Per Day Of Week Basis ==
+
+Here is a little code snippet that inserts custom sections on the daily page depending on the day of the week.  I think the planner-jonnay-template is just ripe for a hook.  There is no reason why the Day of Month, or even Month could be customized as well.
+
+Note:  This version fixes a lot of bugs:
+
+	(defun planner-jonnay-get-current-day ()
+	  "Return the name of the day for todays planner"
+	  (format-time-string "%a" 
+						  (date-to-time (planner-get-current-date-filename))))
+	
+	(defun jonnay-day-is-p (day)
+	  "tells us if the day is the named day"
+	  (string= day (planner-jonnay-get-current-day )))
+	
+	(defun planner-jonnay-daysection ()
+	  (cond 
+	   ((jonnay-day-is-p "Tue") "*Today is Final QA Deploy\n\n\n")
+	   ((jonnay-day-is-p "Wed") "*Today is Staging Deploy\n\n\n")
+	   ((jonnay-day-is-p "Thu") "*Today is Live Deploy\n\n\n")))
+	
+	(defun planner-jonnay-template ()
+	  "set up a planner template."
+	  (interactive)
+	  (if (string-match planner-date-regexp (planner-page-name))
+		  (let* ((planner-timewarp-date (planner-get-current-date-filename))
+				 (yesterday (planner-yesterday))
+				 (tomorrow (planner-tomorrow))
+				 (daysection (planner-jonnay-daysection)))
+			(insert (concat "* Daily Planner for " (planner-page-name) "\n"
+							"** Navi: \n" yesterday " " tomorrow "\n"
+							daysection
+							"* Tasks\n\n\n"
+							"* Schedule\n\n\n"
+							"* Notes\n\n\n"
+							"* Diary\n\n\n"
+							)))))
+
+(setq planner-day-page-template 'planner-jonnay-template)
+----
+
+== Commit your plans to SVN (including new pages) ==
+
+I wrote this to try and work under win32 and linux
+
+ (defun planner-commit-svn  ()
+   (interactive)
+   (and
+    (shell-command (concat "svn " "add --force " "\"" (expand-file-name (planner-directory))"\""   nil nil)
+    (shell-command (concat "svn " "update " "\"" (expand-file-name (planner-directory))"\"") nil nil)
+    (shell-command (concat "svn " "ci " "-m " system-name " \"" (expand-file-name (planner-directory))"\"") nil nil))))
+
+----
+
+== Use ToDoChiKu to send notifications when appointments are due ==
+
+You can use ToDoChiKu to send Growl/Snarl notifications when an appointment is due.  Just set the customizable var todochiku-appts to true, and away you go.
+
+----
+
+PlannerMode

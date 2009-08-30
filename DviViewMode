@@ -1,0 +1,5 @@
+Lisp:dvi-view.el
+
+On finding that a machine I was using didn't have xdvi (but did have dvipng), I wrote a piece of elisp to run dvipng and stick the resulting images into an Emacs buffer... then I added some basic navigation ("next", "previous", "first", "last", and "jump to numbered page"). It might be nice to integrate this with some of the other TeX-previewing elisp.
+
+See also DocViewMode, which also adds support for PDF and PS files plus various other goodies like regular expression search inside documents.

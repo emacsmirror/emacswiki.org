@@ -1,0 +1,25 @@
+Assume you want to remap C-x because you have a Dvorak keyboard and
+C-x is really uncomfortable.  You want to use C-q instead.  Now,
+things are not as easy as with other keymappings because C-x doesn't
+map to a command -- it maps to another keymap.  That's why you have to
+type another key after hitting C-x.
+
+In order to make C-q work just the same as C-x, you need to define the
+keymap used for C-x as the keymap for C-q.  Luckily enough, the C-x
+keymap is also accessible via a variable.  So in this case, all you
+need is this:
+
+ (global-set-key (kbd "C-q") ctl-x-map)
+
+More on this can be found on the Prefix Keymaps node in the EmacsManual.
+
+Note that not all of the keymaps are stored in variables.  If you need
+to remap one of these anonymous keymaps, things will be only a bit more
+difficult.  As an example, this should do the same as the above.
+
+  (global-set-key (kbd "C-q") (lookup-key global-map (kbd "C-x")))
+  ;; or the perhaps less formal notation
+  (global-set-key [?\C-q]     (lookup-key global-map [?\C-x]))
+
+----
+CategoryKeys

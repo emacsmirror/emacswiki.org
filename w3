@@ -1,0 +1,112 @@
+[::W3] 
+is a web browser completely written in elisp and runs only within
+Emacs.  As the package appears to be [http://en.wikipedia.org/wiki/Emacs/W3 obsolete], please have a look at [[emacs-w3m]].
+
+w3 features forms, tables, frames and cascading style sheets.
+In combination with EmacSpeak it can also do fancy things like reading
+web pages with a speech synthesizer.
+
+There are other web browsers with names that contain "w3" but have
+nothing to do with the w3 discussed on this page:
+
+* [[w3m]] is a standalone browser/pager much like lynx. It runs on the
+console, or in xterm. It can render tables, unlike lynx.
+
+* [[emacs-w3m]] is an Emacs interface to w3m.
+
+== How to get it ==
+
+Emacs W3 requires Emacs 20.4 or greater.
+
+As of February 2003, it appears to be moribund: its home
+page
+
+* http://www.gnu.org/software/w3/
+
+says "Emacs/W3 is dead, long live Emacs/W3".
+
+You can get more information including CVS access from Savannah:
+
+* http://savannah.gnu.org/projects/w3/
+
+Emacs W3 can also be downloaded from
+ftp://ftp.xemacs.org/pub/xemacs/emacs-w3/.  That version is probably
+the most appropriate for XEmacs.
+
+=== GIT ===
+
+There is ongoing development reachable via git, at http://git.savannah.gnu.org/cgit/w3.git/
+
+You can get the lastest git version executing the following command:
+
+    git clone git://git.sv.gnu.org/w3.git
+
+
+=== URL Package ===
+
+The URL package has been broken out of the core w3 package and is now
+standalone. It's also available at subversions:
+
+    cvs -z3 -d:pserver:anoncvs@cvs.savannah.gnu.org:/cvsroot/url co url
+
+== Emacsspeak ==
+
+Emacs W3 implements some special functionality for EmacSpeak which
+allows a user to read the content of cells, rows and coloums of tables
+separate from each other.
+
+The combination of Emacs W3 and EmacSpeak also implements the w3c
+standards for aural cascading style sheet (which means a web page
+designer can set voice properties which EmacSpeak can use when
+reading web content).
+
+== Some settings which may help in browsing unbrowsable web pages or emails ==
+
+It may make the parsing of the web pages slightly slow, but if you are using emacsen you should be the last
+person to bother about speed.
+
+Add this to your .init or InitFile.
+
+  (add-hook 'w3-parse-hooks 'w3-tidy-page)
+
+You need to download and install html tidy available from  http://tidy.sourceforge.net/
+
+Set this variable to the location of the program.
+
+  (defvar w3-fast-parse-tidy-program "c:\\tidy")
+
+ 
+  (defun w3-tidy-page (&optional buff)
+    "Use html tidy to clean up the HTML in the current buffer."
+    (save-excursion
+        (if buff
+	    (set-buffer buff)
+          (setq buff (current-buffer)))
+        (widen)
+        (call-process-region (point-min) (point-max)
+	   	             w3-fast-parse-tidy-program
+			     t (list buff nil) nil ;nil nil nil;
+			     "--show-warnings" "no" "--show-errors" "0" "--force-output" "yes"
+			     "-quiet" "-clean" "-bare" "-omit"
+			     "--drop-proprietary-attributes" "yes" "--hide-comments" "yes"
+			   )))
+
+--SurendraSinghi
+
+== Encoding charsets other than ascii or Latin-1 ==
+
+Is it posible to customize encodings in w3? Seems to me, it can display Latin-1 pages only. All other (cp1251, UTF-8 etc) become unreadable garbage. --DmitriBrechalov
+
+<pre>
+/* w3m stuff removed */
+</pre>
+
+What are you talking about? Please, read the text at the top of this page! I'm asking about w3, not w3m, sorry. --DmitriBrechalov
+
+I don't know what version of w3 are you using, but the version at the git repository that I'm testing does have UTF-8 support.  --Ferk
+
+----
+Part of this page was created using Emacs W3 and EmacSpeak.
+----
+CategoryModes
+CategoryHypermedia

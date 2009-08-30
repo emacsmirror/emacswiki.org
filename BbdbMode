@@ -1,0 +1,23 @@
+BBDB (The insidious Big Brother Database)
+
+== What is that ? ==
+
+It functions as a complete address book for nearly every email and news client written for Emacs, and its functionality supports (by default) making entries in the address book automatically when reading email or posts by people, and easy lookup of addresses while composing messages.  Additionally some work has been done recently to allow it to sync to a Palm Pilot.
+
+== Authors ==
+
+Originally written by JamieZawinski, BbdbMode is now maintained by RonanWaide and many volunteers.
+
+== Project information ==
+
+* Homepage: http://bbdb.sourceforge.net
+* Sourceforge Project Page:  http://sourceforge.net/projects/bbdb
+* Mailing List Archive: http://www.mail-archive.com/bbdb-info%40lists.sourceforge.net/
+
+== Editing Notes ==
+
+If you keep elaborate notes on people, consider using MiniEdit to
+enter multi-line descriptions, instead of using the minibuffer.
+
+----
+CategoryPersonalInformationManager | CategoryBbdb | CategoryMailAddons

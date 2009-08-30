@@ -1,0 +1,120 @@
+Erik Naggum (1965&ndash;2009) was a Norwegian software engineer. He contributed many patches to GNU Emacs from version 19.26 to 20.4. A fan of [CommonLisp Common Lisp], he took [EmacsLisp Emacs Lisp] in the direction of Common Lisp. He contributed early support for multiple character sets. He quit over the [http://groups.google.com/groups?selm=3074457554801967%40naggum.no introduction of MULE] to GNU Emacs and for a while maintained a "multi-byte survival kit" for Emacs 20 users who wanted Emacs 19 character set behaviour (see below).
+
+One of the last big flamers on Usenet, veteran of countless flame wars on [http://groups.google.com/groups?&as_ugroup=comp.emacs comp.emacs] and [http://groups.google.com/groups?&as_ugroup=comp.lang.lisp comp.lang.lisp], like [http://groups-beta.google.com/group/comp.lang.lisp/browse_thread/thread/21744d089a3f1b79?tvc=2&q=naggum+suicide this one]. A master of [http://groups.google.com/groups?selm=3081328346679508%40naggum.no invective].
+
+Memories:
+
+* Wiki:ErikNaggum
+* [http://open.salon.com/blog/kent_pitman/2009/06/24/erik_naggum_rip Erik Naggum, R.I.P. by Kent Pitman]
+* [http://rondam.blogspot.com/2009/06/my-dinner-with-erik.html My Dinner with Erik by Ron Garret] 
+* [http://www.elfworld.org/vis_dag.php?id=643 Erik Naggum by Hogne Bø Pettersen]
+* [http://www.tbray.org/ongoing/When/200x/2009/06/20/Erik-Naggum Erik Naggum, R.I.P. by Tim Bray]
+* [http://www.open-voip.com/blogs/blog1/2009/06/20/erik-naggum-1965-2009-rip Erik Naggum, 1965-2009 RIP by Ruben Olson]
+* [http://trittweiler.blogspot.com/2009/06/erik-naggum-rip.html Erik Naggum, RIP. by Tobias Rittweiler]
+* [http://thesubclassexplosion.wordpress.com/2009/06/20/erik-naggum-1965-2009-rip/ Erik Naggum (1965-2009) RIP by Kjetil]
+* [http://www.grendel.no/blog/2009/06/27/rip-erik-naggum-1965-2009 In Memoriam by Rolf Marvin Bøe Lindgren]
+* [http://xahlee.org/Netiquette_dir/death_of_a_troll.html Death Of A Troll, by Xah Lee]
+* [http://en.wikiquote.org/wiki/Erik_Naggum WikiQuote:Erik Naggum]
+
+== Multi-Byte Survival Kit ==
+
+He is also the author of a "Multi-Byte Survival Kit" for Emacs 20, which removed all MULE functionality.
+
+(Edited by AlexSchroeder from the [http://groups.google.com/groups?selm=3141715753773968%40naggum.no original post].)
+
+ From: Erik Naggum
+ Subject: Re: Is LISP dying?
+ Newsgroups: comp.lang.lisp
+ Date: 1999/07/23
+
+ [. . .]  I used to think that I needed to walk through the
+ sources of stuff that I put on my machine, but it became impossible after
+ only a few years: it's too much work, and it has no direct rewards.  I
+ also used to modify my Emacs quite a bit, and since I excised MULE from
+ 20.3, it took too much effort to keep track of changes (it turns out that
+ semantic collisions are much more important than syntactic collisions,
+ which CVS could take care of -- code you haven't changed could be changed
+ incompatibly with other changes you have made, wreaking serious havoc),
+ so now I haven't been able to upgrade to 20.4-sans-MULE, even though 20.4
+ has been released.
+
+ [. . .] RedHat included my
+ "MultiByte Survival Kit" in their distribution of
+ Emacs 20.2.  and while 20.2 MBSK .elc files could be loaded into 20.2
+ pure, a change was made so that 20.2 MBSK .elc files could not be
+ loaded into 20.3, but 20.2 pure .elc files could, obviously only to
+ discourage further branching.
+
+== Common Lisp and Emacs ==
+
+I believe he uses Emacs, but prefers Common Lisp. Naggum is the author of <tt>[CommonLispHyperspec hyperspec.el]</tt>, a package to browse documentation from the Common Lisp !HyperSpec.  He actually planned to implement a [CommonLispEmacs Common Lisp Emacs]. And here's why he would like to see it come about:
+
+(Edited by AlexSchroeder from the [http://groups.google.com/groups?selm=3210587938166206%40naggum.net original post].)
+
+ From: Erik Naggum
+ Subject: Re: CL-Emacs (was Re: Multiple LISP's?)
+ Newsgroups: comp.lang.lisp
+ Date: Thu, 27 Sep 2001 13:58:59 GMT
+
+ My primary concern is the educational value of a Common Lisp
+ application that could replace the bogus Emacs Lisp as a demonstration
+ of what a good Lisp can do.  There is also the speed and convenience
+ of many sorts, but that is way below the effect of enhancing the
+ Common Lisp systems because they suddenly have to face up to a much
+ larger user community who will have all the needs that are not with
+ the current systems, and hopefully will be enthusiastic about a
+ "better Emacs" and want to do stuff in it, which will then be a real
+ Common Lisp environment that can compile their files and such things,
+ not just an application that is fairly closed.
+
+== On elegance ==
+
+ From: Erik Naggum
+ Subject: read the fine manual, please
+ Date: 1997/11/14
+ Newsgroups: comp.emacs
+ 
+ the clumsiness of people who have to engage their brain at every step is
+ unbearably painful to watch, at least to me, and that's what the
+ novice-friendly software makes people do, because there's no elegance in
+ them, it's just a mass of features to be learned by rote.  however, this
+ suits people a hell of a lot better than setting out at age 6 to become a
+ great ballet dancer and achieving their goal 20 years later after every
+ tendon and muscle and joint has been asked to perform just a little bit
+ more than nature ever intended over and over and over again.  to most
+ people, this is insanity.  but in reality, it's art, and it's the _art_
+ in what we do that makes us human.
+
+== On size ==
+
+ From: Erik Naggum
+ Subject: Re: Which one, Lisp or Scheme?
+ Newsgroups: comp.lang.lisp
+ Date: 03 Feb 1997 12:05:48 +0000
+
+ it is often said that small is beautiful.  now, anything can be beautiful
+ when it is small.  the ugliest person you can think of was probably a quite
+ pretty baby.  it doesn't take much effort to find a beautiful 16-year-old
+ girl, either.  in fact, our modern notions of beauty and elegance are
+ _defined_ in terms of size and maturity, so the chance of anything small
+ and immature being beautiful is vastly higher than anything big or mature.
+ now, despite all the marketing that seems to be aimed at telling me that I
+ should dump a girlfriend when she becomes 25 and get a new 16-year-old (or
+ even younger), I plan to stay with mine partly because of her ability to
+ grow older in a way I like.  consequently, I take exceptions to the
+ pedophilic attitudes to beauty and elegance that our societies have adopted
+ over the years.  this is why I don't like the "small is beautiful" model of
+ aesthetics.  this is why I think that almost anybody could make something
+ small and beautiful, but only a few can create something that grows from
+ small to huge and still remains beautiful.  but then again, look at
+ interior architecture -- with huge spaces come a need for size-reducing
+ ornamentation.  the scaling process _itself_ adds "junk" to what was "clean
+ surfaces" in a small model.  Schemers refer to Common Lisp's "warts", and
+ prefer to think of Scheme as "clean".  now, I wonder, would Schemers prefer
+ to live in small houses with nothing on their walls?  would they still
+ prefer this if the walls were a 100 feet high and 200 feet long, or would
+ they, too, desire some ornamentation that would have looked _very_ bad if
+ it had been on a 10 by 20 feet wall?
+
+----
+CategoryHomepage

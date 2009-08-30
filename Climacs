@@ -1,0 +1,10 @@
+Climacs is a promising and quickly growing editor implementation in [[CommonLisp]], using the Common Lisp interface Manager [[CLIM]]. It is meant to provide only text-editing facilities for CLIM. For more information (downloading, mailing lists, development, screenshots), see http://common-lisp.net/project/climacs/. The design of Climacs is mostly based on [[Zmacs]], not [[GnuEmacs]].
+
+More descriptions:
+
+* Climacs, a new Common Lisp implementation of Emacs: http://www.paoloamoroso.it/log/041224.html
+* Climacs, a modern version of the Emacs editor: http://dept-info.labri.fr/~strandh/Teaching/PdP/2004-2005/climacs-en.html
+
+----
+
+EmacsImplementations

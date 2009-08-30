@@ -1,0 +1,67 @@
+This small function is a real time saver for me, so I thought I'd put it on
+the EmacsWiki too.  It closes the last XML tag (that is, the unclosed tag,
+looking backwards from the cursor position).  Like *C-c* *C-f* in NXML mode.
+
+Why did I need it?  Because I frequently embed XML in my JavaScript or Perl
+code.  Broadly speaking, when I open a tag, I need to close it later.
+Example:
+
+    var html = [];
+    html.push("<table>");
+    if (foo.rating)
+        html.push("<tr><td>Rating:</td><td>", foo.rating, "</td></tr>");
+    if (foo.user)
+        html.push("<tr><td>User:</td><td>", foo.user, "</td></tr>");
+    html.push("</table>");
+
+In the above code, there are 7 close tags. (</td>, </tr> etc.).  Typing them
+manually is painful because I have to look back in the code to see what was
+the tag that I needed to end.  This function allows you to type *C-c* /
+(control-c slash) in order to close the previously unclosed tag.  It looks
+back, discarding tags that were already closed, or "<short />" tags, and it
+even inserts string quotes if needed (i.e. if the start tag was written in a
+string context, and *msh-close-tag* was not called in a string context).
+
+    (defun msh-close-tag ()
+      "Close the previously defined XML tag"
+      (interactive)
+      (let ((tag nil)
+            (quote nil))
+        (save-excursion
+          (do ((skip 1))
+              ((= 0 skip))
+            (re-search-backward "</?[a-zA-Z0-9_-]+")
+            (cond ((looking-at "</")
+                   (setq skip (+ skip 1)))
+                  ((not (looking-at "<[a-zA-Z0-9_-]+[^>]*?/>"))
+                   (setq skip (- skip 1)))))
+          (when (looking-at "<\\([a-zA-Z0-9_-]+\\)")
+            (setq tag (match-string 1)))
+          (if (eq (get-text-property (point) 'face)
+                  'font-lock-string-face)
+              (setq quote t)))
+        (when tag
+          (setq quote (and quote
+                           (not (eq (get-text-property (- (point) 1) 'face)
+                                    'font-lock-string-face))))
+          (if quote
+              (insert "\""))
+          (insert "</" tag ">")
+          (if quote
+              (insert "\"")))))
+
+I originally wrote it here:
+http://mihai.bazon.net/blog/close-last-xml-tag-emacs
+
+[new]
+Why not something like?:
+
+    (defun msh-close-tag ()
+      (interactive)
+      (funcall ;; Toggle modes.
+       (prog1 major-mode
+         (xml-mode)
+         (sgml-close-tag))))
+
+Not thoroughly tested, but would work for most cases I predict. -- Aaron
+

@@ -1,0 +1,28 @@
+'''''You are responsible for fixing any links that you break by renaming or deleting an EmacsWiki page.'''''
+
+= A Story =
+
+Here's a story (previously at EmacsWikiProblems) of what can happen if you do ''not'' fix links you break...
+
+The link to "Create New Pages" on [[TextFormattingRules]] leads to a page where upper half of the text is shown as just question marks (at least in Mozilla Firefox 0.9.2). Links are shown as usual, but text down to "Questions and Answers" are not.
+
+The problem has been corrected, but it's instructive to see what the problem was, so here's the explanation:
+
+The link to "Create New Pages" was a link to an anchor on the same page. (It linked to a visible named anchor (aka "page alias") on the same page. See PermanentAnchors for an explanation of named anchors.) 
+
+No problem so far. But then someone (who shall remain anonymous) simplified the page by ''removing'' the targeted section to a ''new'' page (named CreateNewPages). That is, instead of being a place on the same page, the target of the link was now a page of its own. However, this (worthwhile) cleanup operation did ''not'' include replacing the in-page link by a ''new link'' to the new page.
+
+'''''Moral:''''' If you remove material to a new page, '''''make sure that all links pointing to that material are updated accordingly'''''. How to do that? You need to ''search'' for the old target, to see which pages might point to it.
+
+The same thing holds for operations like renaming a page or an anchor: '''''Make sure you update any links that might be pointing to the old destination.'''''
+
+So what about the page with the question marks -- where did that come from? I believe that it is a page that uses non-ASCII characters, and it was translated from the original TextFormattingRules page (before the structural change). Since that page still has the original anchor targeted by the vestigial link (probably <code>[[Create New Pages]]</code>, as opposed to <code>CreateNewPages</code>), it was displayed when you clicked the vestigial link.
+
+Because your browser doesn't have the character encoding needed to properly render the non-English page, those characters appeared as question marks (in my browser they appear as empty rectangles).
+
+In this case, the problem involved using named anchors, but the problem itself has nothing to do with the kind of anchor.  A ''renamed page'' (with its implicit anchor), for instance, presents the same problem. '''''Any time a link destination is moved''''' it can mean a maintenance headache. 
+
+[new]
+'''''Question:''''' Could we have a script that picks up such broken links?
+[new]
+It would be difficult to get 100% right.  Consider, for example, links to an existing page that is marked for Deletion.  Similarly, consider links in quoted passages (eg. !HowTo, <nowiki>[[HowTo]]</nowiki>).

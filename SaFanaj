@@ -1,0 +1,31 @@
+=== SaFanaj ===
+
+My name is Marco Bardelli. I use Emacs. --- SaFanaj
+
+I haven't any Home on the Web.
+
+At now i'm interesting in [http://gstreamer.freedesktop.org Gstreamer]. 
+
+I'm planning to make a gstreamer-el library 
+to build pipeline from emacs.
+
+Maybe integrate it with [[EMMS]].
+
+----
+
+A bit of cool stuff ...
+<code>
+(defcustom minimal-height-for-window 4 "...")
+(defun minimize-window ()
+       (enlarge-window (- minimal-height-for-window (window-height))))
+(defun other-window-minimizing ()
+       (interactive) (minimize-window)(other-window 1))
+(global-set-key [?\C->] 'other-window)
+(global-set-key [?\C-<] 'other-window-minimizing)
+<code>
+
+Good Life ...
+
+-----
+CategoryHomepage
+

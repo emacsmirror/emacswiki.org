@@ -1,0 +1,14 @@
+This package by DavidBakhash provides multidimensional arrays
+simulated in EmacsLisp.  Using it, you can do MatrixOperations, for
+example.  Or you could use the AdvancedDeskCalculator.
+
+* Groups:cl-array.el -- the replacement for multi.el
+* Groups:multi.el -- the old code, do not use
+
+Note that there is another file out there called multi.el, by
+BernardVauquelin.  That one does SearchAndReplace across multiple buffers.
+
+----
+CategoryCalculators
+CategoryCode
+

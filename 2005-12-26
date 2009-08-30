@@ -1,0 +1,67 @@
+Anybody interested in using tags for wiki pages?  It comes for free right now because I rewrote the search module.
+
+To place a tag, use ##[[tag:tagging]]##.
+
+To search for a tag, use ##tag:tagging## in the search box.
+
+To search for a tag containing whitespace, use double quotes: ##tag:GNU Emacs## in the search box.
+
+[new:DrewAdams:2005-12-26 18:41 UTC]
+I'm not sure I understand. Do you mean that one can now put ##[[foo:Text for Foo]]## to have the link to `foo' use instead the text `<tt>Text for Foo</tt>'? If so, this doesn't seem to work: ##[[ToolBar#ToolBarPlus:ToolBarPlus]]##. Or do you mean to use a literal `tag'? Could you please clarify, and perhaps give an example? -- DrewAdams
+[new]
+For more info on tagging, see http://www.technorati.com/help/tags.html.  Basically it's another form of categories, plus a way of searching them efficiently (since tags are available in a separate index, we
+would not find all pages with the word "deleting" if we were searching for the tag "deleting", for example.
+
+It is nothing revolutionary for this wiki: Basically our !CategoryFoo tags already serve this purpose:
+They mark the page where they appear as belonging to the Foo category.  Using it, we can find other pages
+belonging to the Foo category.
+
+The way tags are commonly used, however, differs from our use of categories.  We've been using categories to build a tree structure three levels deep: Level 1 is the SiteMap, level 2 are the category pages, and level 3 are the single pages.  Every category we use also has a corresponding category page, which reinforces this mapping.  Commonly tags are used much more indiscriminately, however: A page would have anything between three and ten tags.  You might call them "categories light", I guess.  :)
+
+As you can tell, I'm not totally enthusiastic about them.  Some people are, however.  See UsingTags and WikiPedia:Folksonomy for starting points.
+[new:DrewAdams:2005-12-27 03:33 UTC]
+Could you please give a simple ''example'' of how to use a tag? The pages you reference don't really do that (IIUC); they discuss the pros and cons. Please show how you would add a tag to text on EmacsWiki. Thx. -- DrewAdams
+[new]
+*Tags*: [[tag:tagging]], [[tag:emacswiki]], [[tag:categories]]
+
+[new:DrewAdams:2005-12-27 17:21 UTC]
+I still don't understand. What is it that defines the tag destination? Could you please give an example of 1) adding a tag to an EmacsWiki source page (e.g. this one) that points to 2) an anchor (or tag or whatever it's called) on a destination EmacsWiki page. IOW, if <code>[[tag:something]]</code> specifies a link to a destination (a "tag"?) named `something', then how & where is that destination defined? -- DrewAdams
+[new]
+# Tags don't provide destinations.
+# Tags give search results.
+# We could have a WikiTagIndex that has things like this on it:
+** EmacsWiki:search=tag:tagging,
+** EmacsWiki:search=tag:emacswiki,
+** EmacsWiki:search=tag:categories
+
+[new:DrewAdams:2005-12-27 17:49 UTC]
+"Tags don't provide destinations. Tags give search results."
+
+OK, fine. Where do they search? EmacsWiki?  The entire Internet? What determines which destinations are found? What are the tags searching for? Are they searching for labels of some kind? Are they searching for just any string of text? What is the search-string syntax? If a label of some sort is the target, then what is its form (at the destination)? How this works is not clear to me. -- DrewAdams
+
+[new]
+We could choose.  On CommunityWiki, LionWiki wanted the occurence of a tag to link to a search of the same wiki for that tag.  I think that is what makes sense, usually.  On blogs, that is not necessarily true, so on a blog the tag might link to a global tag search such as the ones provided by Technorati, eg. http://www.technorati.com/tags/emacswiki.
+
+The destinations found are the pages that have been tagged with the same tag.  The tag is the label, and it links to the search for more of the same.  Therefore, at the destination, it works just the same: Clicking on it again will give you the set of pages having the same tag.
+
+[new:DrewAdams:2005-12-27 21:47 UTC]
+: OK, IIUC, <code>[[tag:something]]</code>, when clicked, causes a search engine to search for (other) pages that have the same <code>[[tag:something]]</code>.  -- DrewAdams
+
+[new]
+Anyway, from what you are saying, it seems pretty clear to me that you don't need tags.  
+[new:DrewAdams:2005-12-27 21:47 UTC]
+: I wasn't saying anything. I'm just trying to understand what this functionality which you mentioned is. -- DrewAdams
+
+[new]
+And since nobody else expressed any interest, I don't think we need to dig any deeper.  If people come along later looking for tags, they'll find this page and can revive the discussion.
+-- AlexSchroeder
+
+[new:DrewAdams:2005-12-27 21:53 UTC]
+That seems like an odd ending. Yesterday, you asked the question, "Anybody interested in using tags for wiki pages?" I asked some clarification questions. You then judged that I was saying that I didn't need tags and "nobody else expressed any interest" and decided it's not worth pursuing, for the moment. 
+
+I don't get it. Why bring it up, only to close it down in that way? Did you really expect lots of people to express interest within 24 hours, the day after Christmas? 
+
+Anyway, from what I now understand, I personally don't care about this, one way or the other. I just find your request-for-comments followed by your quick no-comments?-OK-question-closed a bit odd. -- DrewAdams
+
+[new]
+I was looking for people who had experience with tags in their blogs.  If they speak up, fine.  I'm not interested in explaining tags to a sceptic like you, because I'm not too enthusiastic myself.  Neither one of us is obviously going to push for it, so we'll just wait until somebody else comes along.

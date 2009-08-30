@@ -1,0 +1,297 @@
+PGG is part of (No/Oort) Gnus, and documented in the manual.
+
+PGG allows Gnus to perform mail signing/encrypting. 
+
+PGG is able to use the various cryptographic tools available such as PGP and GnuPG.
+
+== Initialization ==
+
+Normally you should not need to do anything to setup PGG. It should work out of the box.
+
+You only need to insert this in your ~/.gnus :
+
+<pre>
+    (require 'pgg)
+</pre>
+
+Or if you prefer using autoload Emacs feature, you can use this :
+
+<pre>
+    (autoload 'pgg-encrypt-region "pgg" "Encrypt the current region." t)
+    (autoload 'pgg-decrypt-region "pgg" "Decrypt the current region." t)
+    (autoload 'pgg-sign-region "pgg" "Sign the current region." t)
+    (autoload 'pgg-verify-region "pgg" "Verify the current region." t)
+    (autoload 'pgg-insert-key "pgg" "Insert the ASCII armored public key." t)
+    (autoload 'pgg-snarf-keys-region "pgg" "Import public keys in the
+      current region." t)
+</pre>
+
+== Basic customisations ==
+
+Then you can tell to nmml how you want it to act when facing a signed/encrypted mail that way:
+
+<pre>
+    ;; verify/decrypt only if mml knows about the protocl used
+    (setq mm-verify-option 'known)
+    (setq mm-decrypt-option 'known)
+    
+    ;; Here we make button for the multipart 
+    (setq gnus-buttonized-mime-types '("multipart/encrypted" "multipart/signed"))
+    
+    ;; Automcatically sign when sending mails
+    (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+    
+    ;; Enough explicit settings
+    (setq pgg-passphrase-cache-expiry 300)
+    (setq pgg-default-user-id jmh::primary-key)
+    
+</pre>
+
+[new]
+It's probably better to add mml-secure-message-sign-pgpmime to your message-setup-hook; that way you can turn signing off for individual messages. -- JohnSteeleScott)
+----
+
+Here is a way to tell when we want to pgpsign mail according to the
+current group (stolen on the ding ML)
+
+<pre>
+    ;; regexp of groups from which new messages are mime signed by default
+    (setq my-sign-mime-group-regexp "^\\(INBOX.\\|\\)mail.work")
+
+    ;; hook to setup message
+    (defun my-mml-secure-message-sign-mime ()
+      (when (string-match
+    	 my-sign-mime-group-regexp
+    	 gnus-newsgroup-name)
+        (mml-secure-message-sign-smime)))
+    
+    ;; plug this into message-setup-hook
+    (add-hook 'message-setup-hook 'my-mml-secure-message-sign-mime)
+</pre>
+
+----
+
+== Switching to a nonstandard gpg/gpg2 ==
+
+many distributions these days break out gpg and gpgv2 as distinct packages. pgg will not be able to locate gpg2 by default. try this in your .gnus:
+
+<pre>
+(defcustom pgg-gpg-program "gpg2"
+  "The GnuPG executable."
+  :group 'pgg-gpg
+  :type 'string)
+</pre>
+
+----
+
+== Automatic decryption/verification of gpg/pgp parts ==
+
+By default, you have to press "W s" or "W p" to decrypt/verify pgp parts. Mutt does this automatically, and I think gnus should do so, too. Here are my customisations to do that:
+
+<pre>
+    ;; Tells Gnus to inline the part
+    (eval-after-load "mm-decode"
+      '(add-to-list 'mm-inlined-types "application/pgp$"))
+    ;; Tells Gnus how to display the part when it is requested
+    (eval-after-load "mm-decode"
+      '(add-to-list 'mm-inline-media-tests '("application/pgp$"
+                                             mm-inline-text identity)))
+    ;; Tell Gnus not to wait for a request, just display the thing
+    ;; straight away.
+    (eval-after-load "mm-decode"
+      '(add-to-list 'mm-automatic-display "application/pgp$"))
+    ;; But don't display the signatures, please.
+    (eval-after-load "mm-decode"
+      (quote (setq mm-automatic-display (remove "application/pgp-signature"
+                                                mm-automatic-display))))
+</pre>
+
+
+== Automatic signing/encryption of messages ==
+
+You can type C-c RET s p to sign or C-c RET c p to encrypt messages
+with PGP/MIME (there are also corresponding commands for S/MIME and
+PGP) but if you want to have maximum security you probably want to
+have all your messages being encrypted if possible or at least being
+signed.
+
+Add the following if you only want to sign or encrypt all messages:
+
+<pre>
+    ;; only sign
+    (add-hook 'gnus-message-setup-hook 'mml-secure-message-sign-pgpmime)
+    ;; only encrypt
+    (add-hook 'gnus-message-setup-hook 
+              (lambda ()
+                 (mml-secure-message-encrypt-pgpmime 1)))
+</pre>
+
+This adds an MML command to your message just at the beginning of your
+message text so you can still switch from signing to encryption or
+remove the signature by typing one of those C-c RET ... commands.
+
+[new]
+Does anyone have some code to make this happen only for messages that
+are clearly not to newsgroups or mailing lists, the simplest probably
+being to just use this when writing a reply, as opposed to a follow-up? -- [[bkhl]]
+----
+
+If you want gnus to automatically decide it it can encrypt the message
+or if it only can sign it you can insert the following code into your
+.gnus file:
+
+<pre>
+(add-hook
+ 'message-send-hook
+ (lambda ()
+   (cond ((message-mail-p)
+	  (let ((toheader (message-fetch-field "To")))
+	    (let ((recipient (nth 1 (mail-extract-address-components toheader nil))))
+	      (message recipient)
+	      (cond ((and (not (null recipient))
+			  (or
+			   (pgg-lookup-key recipient)
+			   (and
+			    (pgg-fetch-key pgg-default-keyserver-address recipient)
+			    (pgg-lookup-key recipient)) ;; we might have added some keys but not the right one ! so we need to check the local base again
+                        ))
+		     (mml-secure-message-encrypt-pgpmime))
+		    (t
+		     (mml-secure-message-sign-pgpmime))))))
+	 ((message-news-p)
+	  (mml-secure-message-sign-pgpmime)))))
+</pre>
+
+This code checks if pgp/gpg can get the PGP-key of the recipient. In this case the message will be encrypted. Otherwise it will only be signed.
+
+The only drawback is that this code is executed while the message is sent so that you can no longer change the signing/encrypting behavior manually.
+
+
+[new]
+I would like to use BBDB to tell  Gnus if the message has to be signed (via, for example, an always-sign field in the contact entry) 
+or to encrypt it (with an always-encrypt field). I found a similar function with Google, but it was written for mailcrypt (and not pgg). Does anyone has this kind of function ? Thanks ! -- nba
+
+== Fetching Key ==
+
+Fetching keys depends by default on w3. But the functions it needs is
+in the url library, now in a separate package. So if fetching doesnt
+work try to apply this little patch to pgg.el(only moved a closing
+paren):
+
+<pre>
+414,416c414,416
+<     (require 'url)
+<     (let (buffer-file-name)
+<       (url-insert-file-contents url))))
+---
+>     (require 'url))
+>   (let (buffer-file-name)
+>     (url-insert-file-contents url)))
+</pre>
+
+== Snarfing keys ==
+
+Snarfing keys under Gnus using GnusPGG is an easy task. You just have
+to add an entry into your mailcap (/etc/mailcap or ~/.mailcap) such
+as :
+
+<pre>
+application/pgp-keys; gpg --import --interactive --verbose;needsterminal
+</pre>
+
+Then Gnus will automatically deal with these entries.
+
+== Mapping recipients to keys with help of BBDB ==
+
+Sometimes, people have a common, company wide GPG key which is not associated with their real email address. E.g. mail to <foo@example.com> must be encrypted with <gpg-company-key@example.com>. Trying to send an encrypted mail to <foo.example.com> will fail in this situation as PGG/GPG can not resolve the recipient.  Unfortunately, there is no direct support in PGG, but you can workaround it by defining an own scheme:
+
+<pre>
+(defun pgg-ensc-gpg-encrypt-region (start end recipients &optional sign)
+  (pgg-gpg-encrypt-region
+   start end
+   (mapcar (lambda (rcpt)
+	     (let ((bbrec (bbdb-search-simple nil rcpt)))
+	       (or (when bbrec (bbdb-get-field bbrec 'gpg-key))
+		   rcpt)))
+	   recipients)
+   sign))
+
+(defun pgg-ensc-gpg-decrypt-region (start end)
+  (pgg-gpg-decrypt-region start end))
+
+(defun pgg-ensc-gpg-sign-region (start end &optional cleartext)
+  (pgg-gpg-sign-region start end cleartext))
+
+(defun pgg-ensc-gpg-verify-region (start end &optional signature)
+  (pgg-gpg-verify-region start end signature))
+
+(defun pgg-ensc-gpg-insert-key ()
+  (pgg-gpg-insert-key))
+
+(defun pgg-ensc-gpg-lookup-key (string &optional type)
+  (pgg-gpg-lookup-key string type))
+  
+(defun pgg-ensc-gpg-snarf-keys-region (start end)
+ (pgg-gpg-snarf-keys-region start end))
+
+(provide 'pgg-ensc-gpg)
+(setq pgg-default-scheme 'ensc-gpg)
+</pre>
+
+Then add a 'gpg-key' field to people in your BBDB database and PGG will use the value from this field when recipient is within the net address.
+
+[new]
+''I am trying to use this feature for something else.  I have a person in my BBDB who has changed their email address, without changing their gpg-key accordingly. I don't see why I shouldn't be able to use this code. Unfortunately, when using "C-c RETURN c p C-c C-c" to send a message, I get the following error.  Maybe the problem is that I BCC myself, and I use a different key?''
+
+Sending...
+funcall: Wrong number of arguments: (lambda (start end recipients &optional sign) (pgg-gpg-encrypt-region start end (mapcar (lambda (rcpt) (let ((bbrec (bbdb-search-simple nil rcpt))) (or (when bbrec (bbdb-get-field bbrec (quote gpg-key))) rcpt))) recipients) sign)), 5
+
+
+== Mapping newsgroups to keys ==
+
+On my work desktop, I use one identity (email address) for work stuff, and another when posting to gmane.  I have two separate gpg keys for this purpose.  To automatically select between them, I use this in my ~/.gnus.el:
+
+<pre>
+;; change user id based on group
+(make-variable-buffer-local 'pgg-gpg-user-id)
+
+(setq gpg-user-ids
+      '(("mail.pkf.*" "myworkemail@address")
+        ("nntp.internal.*" "mygmaneemail@address")))
+
+(defun select-gpg-user-id (&optional args)
+  "Select GPG user id based on the group name."
+  (dolist (entry gpg-user-ids)
+    (when (string-match (nth 0 entry) gnus-newsgroup-name)
+      (setq pgg-gpg-user-id (nth 1 entry)
+            pgg-default-user-id (nth 1 entry))
+      ; (message (concat "set to " (nth 1 entry)))
+      (return))))
+
+(add-hook 'gnus-summary-mode-hook 'select-gpg-user-id)
+</pre>
+
+== Bug in pgg-gpg.el on emacs 22 ==
+
+In emacs 22, pgg-gpg has a bug which caused (on my newer, faster desktop) output to not be properly handled. The solution is to apply the following patch to pgg-gpg.el:
+
+{{{
+--- pgg-gpg.el.orig	2009-08-21 10:37:09.000000000 -0700
++++ pgg-gpg.el	2009-08-21 10:37:28.000000000 -0700
+@@ -106,6 +106,9 @@
+ 	  (process-send-eof process)
+ 	  (while (eq 'run (process-status process))
+ 	    (accept-process-output process 5))
++          ;; Accept any remaining pending output coming after the
++          ;; status change.
++          (accept-process-output process 5)
+ 	  (setq status (process-status process)
+ 		exit-status (process-exit-status process))
+ 	  (delete-process process)
+}}}
+
+[new]
+Can anyone tell how to do this (automaticllay selecting a particular key for signing/encryption) with gnus-parameters? See here http://permalink.gmane.org/gmane.emacs.gnus.user/12031 -- SunoAno)
+----
+CategoryGnus SigningMail EncryptingMail
+ 

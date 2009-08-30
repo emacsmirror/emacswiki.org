@@ -1,0 +1,5 @@
+The scheme.el package included with Emacs provides a major mode for editing [[Scheme]] files.  It can be used with the CmuScheme (cmuscheme.el) or ExScheme (xscheme.el) packages for interacting with inferior scheme processes.
+
+See QuackPackage for extensions to SchemeMode.
+
+See GuileIde on using SchemeMode and other tools for developing in [[Guile]].

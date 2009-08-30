@@ -1,0 +1,41 @@
+Hello all.
+
+I started using GNU Emacs in 1993.
+
+== Wish list ==
+: PlainTextWiki minor-mode to navigate within emacs and to generate AutoLink-ed HTML.
+: ConcurrentEmacs: Some buffers may be locked, but general input is never blocked.
+: MemMapEmacs: Low memory, low bandwidth incremental mapping of files.
+:: Retrieve only enough data to fill screen.  Memory-map sections if possible.
+::: Use the FTP 'REST' command if available.  Any alternatives?
+:: Network writes sent with something like xdiff, rsync if available.
+: MinEmacs: Minimal subset of license, doc, c, lisp, data files competetive with other small editors.
+:: Signed and unsigned plugins and EmacsLisp are installed on demand via TCP or removable media.
+: Integrate FireFox rendering.  Investigating http://RobRohan.com/projects/9ne and http://JoeGanley.com/code/jslisp.html for now.
+: JIT compiler with FFI and SWIG for high performace and trivial connectivity.
+: Download RTSP or mms streams.
+: MenuClock --- show the time as a menu item.
+: media-editor.el --- View and Edit audio and video with external tools (for now) with those windows set to always-on-top.
+:: Must be able to split/join lossy-compressed video and audio without recompressing.
+
+== Experiments ===
+: NoteMacs
+: [[dired-sort-map.el]] --- in Dired: press s then s, x, t or n to sort by Size, eXtension, Time or Name
+: SimpleIMAPClient --- Dumb proof of concept in 100 lines. requires InterpreterMinor.
+: InterpreterMinor --- Provide navigation, clickability, folding, interpretation.
+: EmacsWebBrowser --- Ridiculous browser in 300 lines; no dependencies.
+: FrameControl --- Control frame size and position.
+: WThirtyTwoDev --- Develop w32 apps using vss, msdev, cdb.
+: Explorer --- Act more like MicroSCOft's explorer.exe.
+: http://patware.FreeShell.org/.code/etym.el --- Poor attempt at a PlainTextWiki.  Requires InterpreterMinor.
+
+
+== MinEmacs and GNUnix ==
+MinEmacs wants to help the OneTrueEditor become a lighter yet even more instantly extendable environment by repackaging GNU Emacs as a careful minimum of bundled functionality that also makes available every EmacsLisp package ever written through available through AutoExtend.
+
+
+== Archive ==
+Personal homepage: http://patware.FreeShell.org/agnu.htm
+
+----
+CategoryHomepage

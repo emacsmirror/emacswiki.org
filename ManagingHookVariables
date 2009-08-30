@@ -1,0 +1,59 @@
+== Managing Emacs Hook Variables == by VanceSimpson
+
+Hook variables such as `text-mode-hook' and `shell-mode-hook' (and other ModeHooks)
+allow a user to customize various aspects of that mode.
+
+Hooks for the most part are a 'set-and-forget' proposition but
+the initial set-up with the standard approach of using `add-hook'
+or lambda lists in the variable can get a bit cumbersome if you
+have many function calls and setq's and you wish to manipulate
+those values as you experiment with various settings.
+
+Here's my simple approach to dealing with hook variables.
+
+I'll use my `text-mode-hook' as an example.
+
+Define a function or functions containing your customizations and
+add to the hook value:
+
+    ;; Make locals out of these variables.
+    ;; Add or delete from the vector, redefine the function.
+    ;; Any hook that runs this is instantly updated.
+    (defun vls-set-local-variables ()
+      (let ((locals [column-number-mode 
+                     fill-individual-varying-indent
+                     colon-double-space
+                     hippie-expand-try-functions-list]))
+        (mapc (lambda (x) (make-local-variable x)) locals)))
+    
+    (defun vls-text-mode-hook ()
+      (vls-set-local-variables)
+      (turn-on-auto-fill)
+      (column-number-mode 1)
+      (setq fill-individual-varying-indent t
+            colon-double-space t
+            fill-column 65
+            abbrev-mode t
+            hippie-expand-try-functions-list '(try-expand-dabbrev
+                                               try-expand-line
+                                               try-complete-file-name)))
+    
+    (add-hook 'text-mode-hook 'vls-text-mode-hook)
+
+
+This makes it easy to customize by deleting or changing within
+the function and re-defining with `eval-defun' or
+`eval-last-sexp'.  The values are immediately available for new
+buffers and if you're are already in, say, a text-mode buffer,
+just call `text-mode' again and you have the new values for that
+buffer.  No need to save, close, and re-open the file.
+
+To remove the function completely without clobbering other values
+in the hook:
+
+<code>
+(remove-hook 'text-mode-hook 'vls-text-mode-hook)
+</code>
+
+----
+CategoryDotEmacs

@@ -1,0 +1,18 @@
+==Description==
+
+Gimp Mode is an Emacs mode for developing scheme scripts for the GIMP Image Manipulation Program (script-fu). 
+It is very much aimed at discoverability, aided by a help system inside Emacs and fuzzy completion. 
+
+==Features==
+
+* Interaction with the GIMP as subprocess or as a client (via a REPL).
+* Smart and fuzzy code completion .
+* Documentation echoing.
+* Hypertext help system with history.
+* Crude code search.
+
+==Homepage/Download==
+
+You can get Gimp Mode at the [[http://niels.kicks-ass.org/gimpmode Gimp Mode Homepage]]; if that site is down for some reason, look for it at its [http://registry.gimp.org/node/7251 entry] at the [[http://registry.gimp.org Gimp Registry]] (note: the registry may not always have the latest version).
+
+

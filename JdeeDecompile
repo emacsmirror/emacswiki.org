@@ -1,0 +1,66 @@
+[http://jdee.sourceforge.net/contributions.html decompile.el] an elisp package that detects that Emacs has opened a class file, runs the class data through a decompiler, and then replaces the class data in the buffer with a Java source representation. The package can optionally create an editable buffer, constructing a .java based name from the original .class based name, that is easily saved to disk.
+
+
+== Snippets to work with decompile ==
+
+=== Decompiling from an archive===
+The following will look for CAFEBABE in files extracted from am archive: jar, war, etc.  If found, decompiles the contents of the buffer and shows the source code.
+
+<pre>
+(add-hook
+ 'archive-extract-hooks
+ (lambda () 
+   (cond ((string-match "\312\376\272\276" (buffer-substring-no-properties 1 5)) ;;CAFEBABE
+		   (jdc-buffer)))))
+</pre>
+
+[new]
+Those "\312\376\272\276" are not numbers but 4 control characters that you can copy from a .class file. Since using this will corrupt the encoding of your .emacs, you can use also (string 4194250 4194302 4194234 4194238) instead. I got it with (string-to-list (buffer-substring-no-properties 1 5)). -- [[DanielClemente]]
+
+=== Avoid a warning about unsuitable encoding after opening .class ===
+Since decompile.el does a write-file of the binary file, Emacs warns (through  select-safe-coding-system) that the selected encoding may(e.g. utf-8-unix) may not be appropriate:
+<pre>
+    These default coding systems were tried to encode text
+    in the buffer `jdc7162oDa.class':
+      (utf-8-unix (1 . 4194250) (2 . 4194302) (3 . 4194234) (4 . 4194238) (624 .
+      4194229) (628 . 4194231) (631 . 4194225) (651 . 4194199) (693 . 4194228) (696
+      . 4194232) (700 . 4194228))
+    However, each of them encountered characters it couldn't encode:
+      utf-8-unix cannot encode these:           ...
+</pre>
+
+To avoid it, add (setq buffer-file-coding-system 'raw-text) before the write-file, that is:
+
+<pre>
+(defun jdc-buffer ()
+  "Construct the command for decompiling a class file, call the resulting
+command and load the decompiled file."
+  (let ((temp-file-name (concat temporary-file-directory (make-temp-name "jdc") jdc-object-extension))
+        (orig-buffer-name (buffer-name))
+        (orig-file-name (buffer-file-name)))
+    (progn
+      (setq buffer-file-coding-system 'raw-text)
+      (write-file temp-file-name)
+      (apply 'call-process-region 
+             (point-min)
+…
+</pre> 
+
+-- 27-Jan-2009, [[DanielClemente]]
+
+===Other minor modifications to make it comfortable===
+====Put the point at the beginning of the buffer, not at the end====
+<pre>
+diff --git a/.emacs.d/jde-decompile/decompile.el b/.emacs.d/jde-decompile/decompile.el
+index c6dd569..414f5bf 100644
+--- a/.emacs.d/jde-decompile/decompile.el
++++ b/.emacs.d/jde-decompile/decompile.el
+@@ -159,6 +159,7 @@ command and load the decompiled file."
+           (rename-buffer orig-buffer-name)
+           (setq buffer-read-only t)
+           (set-buffer-modified-p nil)
++	   (beginning-of-buffer)
+           (jde-mode)))
+       (delete-file temp-file-name))))
+</pre> 
+-- 26-May-2009, [[DanielClemente]]

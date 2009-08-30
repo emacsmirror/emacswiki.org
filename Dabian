@@ -1,0 +1,54 @@
+I am Dabian.  I use Emacs.  I have been using GNU Emacs for over a decade (written at (2005mar11)) at various levels. 
+
+Lately I have taken up the interest to study a little Elisp, and I find it quite interesting. 
+
+Mostly I write code to use with Lisp:mudel.el written by JorgenSchaefer.
+
+At the time of this writing, I am trying to solve the problem of either emulating a database, or using one:
+
+Here is a data structure:
+
+(field1 field2 field3 field4 field5)
+
+Imagine this list in a list of lists like this list.  (Pun intended)
+
+((list 1) (list 2) (...) (list n))
+
+What I want to do, is to be able to sort the list of lists on for instance field3.  I havn't figured out a way to do it yet, except a very tedious one.  Then again, I'll apropos sort real soon and check if there is any suggestions.
+[new]
+Try this:
+
+      (defun my-sort (a b)(> (nth 3 a) (nth 3 b)))
+      (setq temp '((This list entry 1 of 3)(that list entry 2 of 3)(Another list entry 3 of 3)))
+      (setq temp (sort temp 'my-sort))
+
+You can always sort the result of copy-sequence if the original sequence must remain intact.
+[new]
+Thanks!  I am trying it out!
+
+I guess an even better sollution might be a list simultar to this list, pointing to the same elements, but sorted on a different field.
+
+Let me describe the problem more specificly:
+
+More specificly, imagine you have a shop that sells books.  Each book has the followering stats:
+(book-number book-spell book-school book-tier book-level)
+
+book-number is usually in range 1-999, but if you buy book number 1, all the other books changes number accordingly, if you buy book 998, then book 999 will be renumbered to 998.
+
+book-spell is the spell you can learn about from this book.
+
+book-school is the "school" the spell in the spell in the book is taught by.  As a casting player in this game, you have to decide which shools you prefer.  Each school has 8 tiers.  Each school has an opposite school, so if you learn Tier 8 spell in  divination school, you cannot study spells above Tier 1 in alteration school.  If you only learn spells of Tier 5 or less in divination school, you may study spells up to Tier 4 in alteration school.  You can always learn Tier 1 spells without penalty.
+
+book-level is the level of the spell.  Level 1 is of course entry level, so if you don't know a spell, you need to read a level 1 book first.  In other words, you cannot make sense of a level 2 book, before you read a level 1 book of that spell.  If you read a level 1 and a level 2 book of a given spell, you may still benefit from reading another level 2 book, but you will only want to do se, if you cannot get hold of a level 3 book.  Books may have up to 10 levels, though its uncommon to find books higher than level 5.
+
+Now, with 700+ books in the shop, I would like the program to know what spells I have, what Tiers I take in each school, and then present me with a usefull list.
+
+
+
+
+Here is a comment AlexSchroeder wrote for me:
+----
+Hi, and welcome to the wiki! I hope you don't mind my reverting your replacements of swearwords on EmacsChannelHarassment.  I feel that replacing these in logs which are meant to be read and discussed makes no sense.  When the issue is closed, we shall just delete the entire page (ForgiveAndForget), maybe leaving a few selected quotes to remind us of our CommunityExpectations. -- AlexSchroeder
+
+----
+CategoryHomepage

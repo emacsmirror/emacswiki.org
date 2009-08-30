@@ -1,0 +1,30 @@
+Sometimes you want to bind a key to some code.  You can use a lambda
+to create an anonymous function; but that is not enough.  You must
+make it interactive, too:
+
+    (global-set-key (kbd "C-c t")
+                    (lambda ()
+                      (interactive)
+                      (set-default 'truncate-partial-width-windows
+                                   (not truncate-partial-width-windows))
+                      (message "truncate-partial-width-windows: %S"
+                               truncate-partial-width-windows)))
+
+If you use this often, a macro like this might be useful:
+
+    (defmacro aif (&rest forms)
+      "Create an anonymous interactive function.
+    Mainly for use when binding a key to a non-interactive function."
+      `(lambda () (interactive) ,@forms))
+
+Then:
+
+    (global-set-key (kbd "C-c t")
+                    (aif (set-default 'truncate-partial-width-windows
+                                      (not truncate-partial-width-windows))
+                         (message "truncate-partial-width-windows: %S"
+                                  truncate-partial-width-windows)))
+
+----
+CategoryCode
+CategoryKeys

@@ -1,0 +1,293 @@
+My name's Víctor Peinado and I met GNU/Emacs in 2000. I use Emacs everyday at home and at work. It's my favourite editor for editing Perl, Prolog, DocBook, LaTeX and XML. I also use it as calendar, wiki editor and shell, but I don't like it much as browser. Not yet ;-)
+
+My .emacs file is changing continuously, when I find some new option I add it. This is the last one, commented in spanish. I hope it may help anybody.
+
+Regards,
+
+<pre>
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;                  Mi fichero .emacs
+;;                    Víctor Peinado
+;; 
+;;   (retazos tomados prestados de diferentes lugares)   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+
+
+;; --- Modos iniciales y por defecto ---
+
+;; Mi info personal
+(setq user-full-name "Víctor Peinado")
+
+;; Mi situación geográfica
+(setq calendar-latitude 40.20)
+(setq calendar-longitude -3.52)
+(setq calendar-location-name "Móstoles, Madrid")
+
+;; No quiero barra de scroll
+(scroll-bar-mode -1)
+
+;; Ni barra del menú
+(menu-bar-mode nil)
+
+;; Muestra la batería del porti
+(display-battery)
+
+;; Ni tampoco barra de herramientas en emacs21
+;; (if (featurep 'tool-bar)
+;;    (tool-bar-mode nil))
+;; (if (boundp 'blink-cursor-mode)
+;;    (blink-cursor-mode nil))
+
+;; Usa avisos visuales, no sonoros.
+(setq visible-bell 1)
+
+;; Sólo avisos sonoros imprescindibles
+;; (setq ring-bell-function
+;; (lambda ()
+;;  (unless (memq this-command
+;;              '(isearch-abort abort-recursive-edit exit-minibuffer keyboard-quit))
+;;   (ding))))
+
+;; ¿Estamos usando XEmacs o Emacs?
+(defvar running-xemacs (string-match "XEmacs\\|Lucid" emacs-version))
+
+;; La tecla 'Supr' borra la parte seleccionada
+(pending-delete-mode 1)
+
+;; Evita añadir líneas en blanco al final del fichero...
+(setq next-line-add-newlines nil)
+
+;; ... aunque todos los archivos terminan con línea en blanco
+(setq require-final-newline t)
+
+;; La rueda del ratón es para algo
+(cond (window-system
+       (mwheel-install)
+       ))
+
+;; i want a mouse yank to be inserted where the point is, not where i click
+mouse-yank-at-point t 
+
+;; La barra del título muestra el nombre del buffer actual 
+(setq frame-title-format '("emacs: %*%+ %b"))
+
+;; No muestres los mensajes de inicio, ya los conozco
+(setq inhibit-startup-message t)
+
+;; No muestres claves en el buffer
+(add-hook 'comint-mode-hook
+          (lambda ()
+            (add-to-list 'comint-output-filter-functions
+                         'comint-watch-for-password-prompt)))
+
+;; Usa y/n en lugar de yes/no 
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; Usa como fuente por defecto
+(set-face-font 'default "lucidasanstypewriter-14")
+
+;; Mis ficheros elisp están en 
+(setq my-lisp-directory (expand-file-name "~/emacs-lisp/"))
+
+;; Carga el directorio de los ficheros elisp
+(add-to-list 'load-path my-lisp-directory)
+
+;; Modo inicial texto
+(setq vc-initial-comment 't)
+(setq default-major-mode 'text-mode)
+(setq initial-major-mode 'text-mode)
+(add-hook 'text-mode-hook
+          (function (lambda ()
+                      (turn-on-auto-fill))))
+
+;; Colores por defecto 
+(set-foreground-color "grey100" )
+(set-background-color "#000044" )
+
+(set-cursor-color "yellow")
+(set-border-color "DarkSlateGray" )
+
+;; No crees ficheros temporales xxx~
+(setq make-backup-files nil)    
+
+;; Remarca la zona seleccionada
+(transient-mark-mode +1)
+
+;; Abre archivos comprimidos con gzip y bzip2
+(auto-compression-mode 1)
+
+;; Muestra el número de línea y de columna
+(line-number-mode 't)
+(column-number-mode 't)
+(require 'icomplete)
+
+;; Habilita las tildes y demás
+(standard-display-european +1)
+(set-input-mode (car (current-input-mode))
+                (nth 1 (current-input-mode))
+                0)
+(set-language-environment "Latin-1")
+
+;; Usa el corrector ispell en español 
+(defun ispell-check ()
+  (interactive)
+  (if mark-active
+      (if (< (mark) (point))
+	  (ispell-region (mark) (point))
+	(ispell-region (point) (mark)))
+    (ispell-buffer)))
+
+;; Para utilizar aspell, quita el comentario de la línea siguiente
+;; (setq ispell-program-name "aspell")
+(setq ispell-local-dictionary "castellano8")
+
+;; Algunas combinaciones de teclas útiles
+(global-set-key "\C-g" 'goto-line)
+(global-set-key "\M-i" 'indented-text-mode)
+(global-set-key "\C-c\c" 'compile)
+(global-set-key [?\M-\C-q] 'fill-region)
+
+
+;; --- Teclas de función personalizadas ---
+
+;; F6: arranca la shell con el modo eshell
+(global-set-key [f6] 'eshell) 
+
+;; F7: cambia el diccionario por defecto
+(global-set-key [f7] 'ispell-change-dictionary)
+
+;; F8: comprueba una palabra con ispell
+(global-set-key [f8] 'ispell-word)
+
+;; F9: comprueba el buffer actual con ispell
+(global-set-key [f9] 'ispell-check)
+
+;; F10 arranca el modo wiki de edición
+(global-set-key [f10] 'emacs-wiki-find-file)
+
+;; F11 arranca el plan para hoy
+(global-set-key [f11] 'plan)
+
+;; F12 arranca el calendario
+(global-set-key [f12] 'calendar)
+
+
+;; --- Calendario y diario ---
+
+;; Archivo del diario
+(if (file-exists-p "~/docs/diario")
+    (setq diary-file "~/docs/diario"))
+
+;; Calendario europeo y nombres en español
+(setq calendar-week-start-day 1
+      european-calendar-style t
+      calendar-day-name-array
+      ["Domingo" "Lunes" "Martes" "Miercoles"
+       "Jueves" "Viernes" "Sabado"]
+      calendar-month-name-array
+      ["Enero" "Febrero" "Marzo" "Abril" "Mayo"
+       "Junio" "Julio" "Agosto" "Septiembre"
+       "Octubre" "Noviembre" "Diciembre"])
+
+(setq view-diary-entries-initially t
+      mark-diary-entries-in-calendar t
+      number-of-diary-entries 7)
+(add-hook 'diary-display-hook 'fancy-diary-display)
+(add-hook 'today-visible-calendar-hook 'calendar-mark-today)
+
+;; (setq mark-diary-entries-in-calendar t)
+
+;; --- XML y DocBook ---
+
+;; No añadas comentarios editando XML/SGML
+(setq sgml-insert-missing-element-comment nil)
+
+
+;; Modos SGML y XML
+(autoload 'sgml-mode "psgml" "Major mode to edit SGML files." t)
+(autoload 'xml-mode "psgml" "Major mode to edit XML files." t)
+
+; Edición de atributos con el botón derecho del ratón
+; (define-key sgml-mode-map [mouse-3] 'sgml-attrib-menu)
+
+;; C-Inicio para moverse al inicio de un elemento
+(global-set-key [?\C-c (home)] 'sgml-beginning-of-element)
+;; C-Fin para moverse al final de un elemento
+(global-set-key [?\C-c (end)] 'sgml-end-of-element)
+
+
+;; --- Perl ---
+
+;; Modo cperl
+(add-to-list 'auto-mode-alist '("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
+
+(setq cperl-electric-keywords t) ; expands for keywords such as foreach, while, etc...
+(setq cperl-hairy t) ; M-x describe-variable RET cperl-hairy RET to get info (in charge of many aspects of cperl-mode syntax management
+                               ; (font-lock, electric-keywords, ...)
+
+(setq cperl-indent-level 4) ;; indentación
+(setq cperl-auto-newline t) ;; retorno de carro automático
+
+
+;; --- Modo Prolog ---
+
+;; Asocia la extensión .swi
+(setq auto-mode-alist
+      (append
+       '(("\\.swi" . prolog-mode))
+       auto-mode-alist))
+(setq prolog-program-name "pl")
+(setq prolog-consult-string "[user].\n")
+; If you want this.  Indentation is either poor or I don't use
+; it as intended.
+; (setq prolog-indent-width 8)
+
+;; --- Modo eshell ---
+(load "eshell")
+
+;; Visualiza el prompt como en bash
+;; user@host
+(setq eshell-prompt-function
+      (lambda ()
+	(concat (getenv "USER") "@"
+		(car (split-string (getenv "HOSTNAME") "[.]"))
+		(if (= (user-uid) 0) " # " " $ "))))
+
+
+;; --- Modo wiki ---
+
+;; Carga el modo de edición wiki
+(load "emacs-wiki")
+
+;; Especifica los directorios de trabajo
+(setq emacs-wiki-projects
+      `(("default" . ((emacs-wiki-directories . ("~/docs/Wiki"))))
+        ("work" . ((fill-column . 65)
+		   (emacs-wiki-directories . ("~/docs/workwiki/"))))))
+
+;; --- Modo planner ---
+;; No lo uso últimamente
+;; (require 'planner)
+
+;; Directorios de uso de planner
+;; (planner-option-customized 'planner-directory "~/docs/Planes")
+;; (planner-option-customized 'planner-publishing-directory "~/docs/PlanesPublicados")
+
+;; Carga el modo planner
+;; (load "planner")
+
+;; Usa planner junto con el calendario
+;; (planner-insinuate-calendar)
+
+
+;; --- fin de .emacs ---
+
+</pre>
+
+
+: Welcome to the Wiki!  Feel free to add pages in Spanish, by the way -- see MultilingualWiki. -- AlexSchroeder
+----
+CategoryHomepage

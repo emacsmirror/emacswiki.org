@@ -1,0 +1,12 @@
+Lorsque vous écrivez un programme ''Elisp'', et s'il doit  être placé dans votre fichier <tt>~/.emacs</tt> ou dans un paquet d'une distribution, il est généralement important de le tester et de s'assurer qu'il fonctionnera avec ''Emacs'', ''XEmacs'', et aussi bien avec des versions plus anciennes de ceux-ci.
+
+Voici quelques recommandations afin d'éviter les pièges courants.
+
+* Ne vous contentez pas de tester votre programme avec une version particulière. Utilisez des outils comme <tt>fboundp</tt>, <tt>boundp</tt>, <tt>featurep</tt>. Dans d'autres cas, vous pouvez également tester votre code, et détecter une erreur éventuelle avec <tt>condition-case</tt>.  Si vous devez écrire un programme en distinguant ''Emacs'' de ''XEmacs'', et si rien de ce qui a été dit précédemment ne vous a aidé, utilisez <tt>(featurep 'xemacs)</tt>, 
+*  Utilisez EasyMenu (en) pour fabriquer des menus,
+*  Utilisez EmacsOverlays (en) plutôt que XEmacsExtents (en):  la simulation des recouvrements de mémoire de ''XEmacs'' que vous pouvez effectuer avec <tt>(require 'overlay)</tt> est préférable à un quelconque programme de simulation des dépassements d<nowiki>'</nowiki>''Emacs'',
+*  Utilisez ''imenu'' plutôt que ''func-menu''.
+* Essayez de faire tourner le code dans un BacASable pour éventuellement détecter des problèmes de sécurité dans le code.
+
+----
+ComparativeEmacsology (en)

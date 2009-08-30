@@ -1,0 +1,11 @@
+My impression from reading mailing lists on Emacs is that many have found the customize GUI difficult. This is a pity since customize can be very useful for finding useful user options. I have therefore tried to change the layout of the GUI part of customize. 
+
+I have uploaded my changes to the file upload area on this wiki as Lisp:cus-new-gui.el.
+
+The purpose of this is to get some comments so that we can get a better GUI for customize. 
+The uploaded file has a summary in the beginning about the changes.
+
+Of course the difficulties with using the customize GUI also comes from the difficulties with the concepts and its relation to the rest of Emacs. You can find some discussion of this on CustomizingAndSaving.
+
+----
+CategoryCustomize

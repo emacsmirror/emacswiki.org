@@ -1,0 +1,14 @@
+* Lisp:spanish.el -- A small script I wrote to ask me spanish vocab and verb conjugations in the minibuffer while I'm waiting for something to compile. It:
+** Keeps a global list of questions to be asked.
+** Removes questions that are answered correctly
+** Can ask in spanish or english
+** Maintains a list of globally failed questions so you can figure out what you're having trouble with.
+: I've been meaning to expand it to have statistics about each question, but it works well enough.
+: I bind the functions as follows
+** (global-set-key '[f12] 'askAndRemoveQuestions)
+** (global-set-key [C-f12] 'initQuestions)
+: I hit C-f12 to init the questions to ask, and then f12 to ask me a single question (or C-30 f12 to ask 30 questions)
+: Let me know if someone turns this into something useful.
+
+----
+CategoryEducation

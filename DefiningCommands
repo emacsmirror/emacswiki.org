@@ -1,0 +1,38 @@
+To define commands that can be invoked via M-x or via a key shortcut, you'd usually use:
+
+ (defun command-name (args)
+  "Docstring"
+  (interactive "spec")
+  <lisp stuff> )
+
+But then, that is tedious to type, and I all to often forget the (interactive ..) magic. Enter defcommand.
+
+ (defmacro defcommand (name args interactive docstring &rest body)
+   "Define an interactive command.
+ NAME is the command name, ARGS are the command arguments.  INTERACTIVE
+ is the string passed to `interactive' and DOCSTRING is the
+ function docstring.
+ BODY is the function body."
+   `(defun ,name ,args
+      ,docstring
+      ,(if interactive
+	   `(interactive ,interactive)
+	 '(interactive))
+      ,@body))
+
+With this command, you can simply do this:
+
+ (defcommand command-name (args) "spec"
+   "Docstring"
+   <lisp stuff> )
+
+See? Much shorter, and you can't forget the interactive thingy!
+
+If you want to define a command that takes no args, use:
+
+ (defcommand command-name () nil
+   "Docstring"
+   <lisp stuff> )
+
+----
+CategoryCode

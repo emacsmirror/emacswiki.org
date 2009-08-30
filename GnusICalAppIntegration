@@ -1,0 +1,5 @@
+== extract-ical ==
+
+A small bit of Elisp that extracts iCalendar event invitations from email messages in Gnus and imports them into Apple’s iCal application.
+
+Lisp:extract-ical.el

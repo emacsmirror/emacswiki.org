@@ -1,0 +1,17 @@
+Estas páginas se refieren al concepto de regiones:
+: (Haz click en el título, arriba, para listar ''todas'' las páginas relacionadas con region.)
+
+* EditarRegiones -- Definiciones de ''region'', ''point'', y ''mark''.  La '''region''' es lo que otros programas llaman la ''selección''.
+* ModoTransientMark -- Resalta la region al activarse (puedes activarla mediante `C-x C-x').
+* ModoDeleteSelection -- Reemplaza la region con aquello que escribas.  Backspace (DEL) borra la región.
+* ModoPcSelection -- Trata la region como Windows y Motif.
+* CopiarPegarDefault -- El comportamiento común de Emacs para copiar, eliminar (cortar), y pegar.
+* CopiarPegar -- Alternativas a CopiarPegarDefault para copiar, eliminar y pegar.
+* DelimitarRegiones -- Aisla una region de modo que puedas limitar las operaciones a esa region.
+* DeshacerSelectivo -- Efectúa un deshacer sólo en la región.
+* AplicarFuncionesMultiplesRegiones -- Aplica una función a distintas regiones al mismo tiempo.
+* OcultarRegion -- Ocultar y mostrar múltiples regiones.
+* ComentarCódigo -- Comentar o descomentar líneas de código comentado en una región.
+* ResaltaTexto -- Resalta texto como un resaltador, opcionalmente anotaciones.  Usa XRefMode.
+* MarcarLineas -- Emulación mediante teclado del triple click para seleccionar una línea. (Incompatible con CUAMode.)
+* ResaltarRectángulos -- Resalta áreas rectangulares en lugar de texto continuado.

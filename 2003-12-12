@@ -1,0 +1,19 @@
+There's a discussion about coding-systems used for internal files such as the abbrev file on xemacs-design.  The question is: coding cookies or ISO 2022 format?
+
+Hrvoje Niksic says:
+
+: The problem cookies can solve is corruption when
+the user switches environments.  For example: I work in a
+Latin 2 environment and use only Latin 2 characters in
+cookies.  When the abbrev file is saved, no ISO 2022
+escapes will be used.  But I'd like the abbrev file to be
+interpreted correctly even if I happen to be in a
+different environment -- hence the coding cookie.
+
+Stephen J. Turnbull replies:
+
+: Or the ISO-2022 magic.  The _only_ difference is that the coding
+cookie is human readable and corruptible by people too smart for their
+own good.
+
+Plus other interesting points, of course.  ;) -- AlexSchroeder

@@ -1,0 +1,7 @@
+WebJump is a programmable Web hotlist (or bookmark) facility that uses Emacs completion to select a hotlist item and can prompt for query and option parameters.  WebJump is now included in GNU Emacs and XEmacs, in file webjump.el.  The WebJump home page is:
+http://www.neilvandyke.org/webjump/
+
+The following add-on hotlist packages are available:
+
+* http://www.neilvandyke.org/webjump/webjump-plus.el Some general-purpose items by NeilVanDyke.
+* ...

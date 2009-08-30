@@ -1,0 +1,102 @@
+"Nicola Paolucci" <durden (at) gmail (dot) com>
+
+My current Emacs setup:
+    [[.durdn.emacs]]
+    [[.durdn.office.el]]
+    [[.durdn.home.el]]
+
+My very personal, very limited selection of tips and things that I don't want to forget about Emacs:
+
+Buffer list:
+
+    C-x C-b will show a list of the currently open buffers
+
+[[bookmark|Bookmarks]]:
+
+    C-x r m  Create a new bookmark
+    C-x r b  Recall a previously created bookmark
+    C-x r l  Bookmark list
+
+List-buffers / Bookmarks List, useful key bindings:
+
+    o Opens file in other window keeping bufferlist open
+    1 Fills frame with selected file
+
+
+Ultra useful snippets to add to the .emacs:
+
+    ;opens list-buffers but with focus on it
+    (defun list-buffers-other-win ()
+      "Opens list-buffers and put focus on it"
+      (interactive)
+      (list-buffers)
+      (other-window 1)
+      (goto-char (+ 4 (point))))
+
+
+    (global-set-key "\C-x\C-b" 'list-buffers-other-win)
+
+    ;Moves point/cursor to matching parens
+    (defun match-paren () 
+      "Go to the matching parenthesis if on parenthesis otherwise insert %." 
+      (interactive) 
+      (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1)) 
+         ((looking-at "\\s\)") (forward-char 1) (backward-list 1)) 
+         ((progn (backward-char 1) (looking-at "\\s\)")) (forward-char 1) (backward-list 1)) 
+         (t (forward-char) (message "Não está sobre ( ou )")) 
+      ) 
+    )  
+    (global-set-key "\C-c]"  'match-paren)
+
+    ; open shell with C-c s
+    (defun open-shell-window (&optional n)
+      (interactive)
+      (split-window-vertically -10)
+      (other-window 1)
+      (shell))
+
+    (global-set-key "\C-cs"  'open-shell-window)
+
+    ;Comment or Uncomment Region python-mode style with C-c #
+    (global-set-key "\C-c#"  'comment-or-uncomment-region)
+
+    ;goto line with C-c G
+    (global-set-key "\C-cG"  'goto-line)
+
+
+Keyboard macro to format a raw xml output with using nxml:
+
+    ; Macro to format and indent a random bit of raw xml, requires nxml
+    (fset 'raw-indent-xml-output
+      [?\M-< ?\M-% ?\C-q ?\C-j return return ?! ?\M-< ?\C-\M-% ?< return ?\C-q ?\C-j ?< return ?! ?\C-x ?h ?\C-\M-\\ ?\C-k])
+    (fset 'align-small-xml-element
+       (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217788 201326629 92 40 91 94 62 93 92 41 17 10 91 94 60 93 43 return 92 49 return 33 134217788] 0 "%d")) arg)))
+    (fset 'nick-xml-reformat
+       (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217848 110 120 tab 109 111 tab return 134217848 114 97 119 tab return 11 134217848 97 108 105 103 110 45 tab 115 109 97 tab return] 0 "%d")) arg)))
+    (global-set-key "\C-cX"  'nick-xml-reformat)
+
+To save a buffer with Unix EOL format, type:
+
+    C-x <RET> f unix <RET> C-x C-s
+
+Copied from EmacsNiftyTricks:
+
+    C-u C-SPC – Easy way to navigate back to your previous editing spots. 
+                This runs the familiar set-mark, but when called with an ARG, it pops previous marks off the ring. 
+
+    C-SPC C-g – at least in in (S)XEmacs saves the point/sets the mark, 
+                without bothering you with the zmacs-region highlighting – MyrkraVerk
+                Read the previous comment again now ;)
+
+    M-z zap-to-char – Zap to the char of your choice. 
+                      Can be used to delete sentences (enter ".") or tags (">"), 
+                      or to delete the n'th occurence of a char (useful for putting quote-delimited 
+                      strings into the kill-ring).
+
+    C-u M-! command will insert the result of running command in the current buffer. 
+            I didn't know that, and wrote a small function to do that. 
+            Very handy for things like date. - AadityaSood
+
+
+----
+CategoryHomePage

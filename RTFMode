@@ -1,0 +1,17 @@
+RTF-mode is a major mode for viewing/editing ''**raw RTF source**''. I (SeanMBurke) wrote this for the sake of syntax-highlighting and for the {}-matching — and that's about all this mode does.  A screenshot example:
+
+http://interglacial.com/rtf/emacs/rtf-mode-examples.png
+
+I wrote this mode to help when I'm developing applications that output RTF and I'm having to debug their output.
+
+''Note''— So, this mode has ''nothing'' to do with getting emacs to turn things ''into'' RTF.  So it's not like rtf-support.el and PrintUsingWordRtf, which are for generating an RTF representation of fontified text from an emacs buffer.  And it's not like rtf.el which is for making emacs capable of word processing that reads and writes documents in RTF.
+
+I maintain a page for this mode [[http://interglacial.com/rtf/emacs/ over here]] as part of the site for [[http://interglacial.com/rtf/ the book I wrote about RTF]].
+
+And here we go:
+
+* Lisp:rtf-mode.el
+
+----
+CategoryModes
+MarkupModes

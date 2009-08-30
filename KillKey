@@ -1,0 +1,185 @@
+Here's another DedicatedKeys example.  This key kills the current
+buffer and ends the GnuClient edit if appropriate.
+
+<pre>
+(defun my-kill ()
+  "Kill buffer, taking gnuclient into account."
+  (interactive)
+  (if (buffer-modified-p)
+      (error "Buffer has unsaved changes")
+    (if server-buffer-clients
+ (server-edit)
+      (kill-buffer (current-buffer)))))
+</pre>
+
+I like this. It made me realise how cumbersome it is to have to hit
+enter and assume the default buffer using the normal kill buffer
+mechanism. I also think erroring out rather than prompting to save is
+a better user interface decision. CVS gnu emacs doesn't seem to have
+some of the variables you are using, so here's an alternative --
+DamienElmes
+
+<pre>
+(defun context-kill (arg)
+  "Kill buffer, taking gnuclient into account."
+  (interactive "p")
+
+  (when (and (buffer-modified-p)
+             (not (string-match "\\*.*\\*" (buffer-name)))
+             (= 1 arg))
+    (if (y-or-n-p (format "<%s> is modified, save " (buffer-name)))
+        (save-buffer)))
+  (if (and (boundp 'gnuserv-minor-mode)
+           gnuserv-minor-mode)
+      (gnuserv-edit)
+    (let ((buffer-modified-p nil))
+      (kill-buffer (current-buffer)))))
+
+</pre>
+
+I was using this bound to C-x k but annoyed that I had to do C-u C-x k
+to kill unwanted modified buffers.  So, I've added the prompt for
+saving. -- LathI
+
+This is the sort of thing DedicatedKeys tries to avoid - with a y-or-n
+prompt, it's pretty easy to get into the habit of accidently hitting n
+when you want to close the buffer. The habit of hitting C-u C-x k to
+discard buffer contents is also habit forming, though. I think I
+really want a general purpose "KillKey" which automatically displays
+an electric diff and ask for confirmation. I might come back with
+something that does that at one point.. -- DamienElmes
+
+Here is a version that works on any buffer (not just the current one):
+
+<pre>
+(defun query-kill-unconditionally (buf)
+  (interactive "b")
+  (set-buffer-modified-p nil)
+  (kill-buffer buf))
+</pre>
+
+On XEmacs21 and Emacs20, at least, buffer-modified-p is a function,
+not a variable. The following function works for me to kill a buffer
+unconditionally.
+
+<pre>
+(defun lrd-kill-buffer-unconditionally (&optional buffer)
+  (if (not buffer) (setq buffer (current-buffer)))
+  (set-buffer-modified-p nil buffer)
+  (kill-buffer buffer))
+</pre>
+
+From there, it's simple to apply the rest :) -- LarryDaffner
+
+* KillingBuffers -- related functions
+
+== With an automatic diff ==
+
+I use the following code (some of it modified from ibuffer.el) to
+display a diff of the buffer with its associated file when I try and
+kill a buffer that has unsaved changes. If I decide I don't want the
+buffer anyway, hitting c-u <killkey> will kill the file
+unconditionally and also tidy up the diff buffer.
+
+<pre>
+(defun diff-buffer-with-associated-file ()
+  "View the differences between BUFFER and its associated file.
+This requires the external program \"diff\" to be in your `exec-path'. 
+Returns nil if no differences found, 't otherwise."
+  (interactive)
+  (let ((buf-filename buffer-file-name)
+        (buffer (current-buffer)))
+    (unless buf-filename
+      (error "Buffer %s has no associated file" buffer))
+    (let ((diff-buf (get-buffer-create
+                     (concat "*Assoc file diff: "
+                             (buffer-name)
+                             "*"))))
+      (with-current-buffer diff-buf
+        (setq buffer-read-only nil)
+        (erase-buffer))
+      (let ((tempfile (make-temp-file "buffer-to-file-diff-")))
+        (unwind-protect
+            (progn
+              (with-current-buffer buffer
+                (write-region (point-min) (point-max) tempfile nil 'nomessage))
+              (if (zerop
+                   (apply #'call-process "diff" nil diff-buf nil
+                          (append
+                           (when (and (boundp 'ediff-custom-diff-options)
+                                      (stringp ediff-custom-diff-options))
+                             (list ediff-custom-diff-options))
+                           (list buf-filename tempfile))))
+                  (progn
+                    (message "No differences found")
+                    nil)
+                (progn
+                  (with-current-buffer diff-buf
+                    (goto-char (point-min))
+                    (if (fboundp 'diff-mode)
+                        (diff-mode)
+                      (fundamental-mode)))
+                  (display-buffer diff-buf)
+                  t)))
+          (when (file-exists-p tempfile)
+            (delete-file tempfile)))))))
+
+;; tidy up diffs when closing the file
+(defun kill-associated-diff-buf ()
+  (let ((buf (get-buffer (concat "*Assoc file diff: "
+                             (buffer-name)
+                             "*"))))
+    (when (bufferp buf)
+      (kill-buffer buf))))
+
+(add-hook 'kill-buffer-hook 'kill-associated-diff-buf)
+
+(global-set-key (kbd "C-c d") 'diff-buffer-with-associated-file)
+
+(defun de-context-kill (arg)
+  "Kill buffer, taking gnuclient into account."
+  (interactive "p")
+  (when (and (buffer-modified-p)
+             buffer-file-name
+             (not (string-match "\\*.*\\*" (buffer-name)))
+             ;; erc buffers will be automatically saved
+             (not (eq major-mode 'erc-mode))
+             (= 1 arg))
+    (let ((differences 't))
+    (when (file-exists-p buffer-file-name)
+      (setq differences (diff-buffer-with-associated-file)))
+    (error (if differences 
+               "Buffer has unsaved changes"
+             "Buffer has unsaved changes, but no differences wrt. the file"))))
+  (if (and (boundp 'gnuserv-minor-mode)
+             gnuserv-minor-mode)
+      (gnuserv-edit)
+    (set-buffer-modified-p nil)
+    (kill-buffer (current-buffer))))
+
+(global-set-key (kbd "C-x k") 'de-context-kill)
+</pre>
+
+[new]
+You'll probably want to do
+##(setq ediff-custom-diff-options "-u")##
+at least. --MikaelBrockman
+
+[new]
+I've put that in a file and munged it to work with XEmacs -- should I upload, or send to you, or...? (I'm not clear on what the license situation is...) --JohnAnderson
+
+[new]
+in case of  "No differences found", diff-buffer-with-associated-file  calls message, but the output is immediately overwritten. I find that confusing. Either i should see the 2 lines of messages, or ... i applied my modification. --Mmc
+
+[new:bruceingalls:2005-04-02 20:17 UTC]
+John, all posts to this Wiki must be compatible with the GPL, as per the terms of use at the bottom. However, I, too would like to know the author of the diffing code above, as I track authorship of submissions I use in EMacro.
+
+I have some code in e-functions.el at http://emacro.sourceforge.net/ which I bind to C-f4, which is the CUA keybinding for closing a window. This goes beyond the above code, closing frames and windows, before closing a buffer, and works well with gnuclient or emacsclient.
+http://emacro.sourceforge.net/images/em_ico.png -- BruceIngalls
+[new]
+Sorry for not noticing this for so long. I wrote the above code (minus diff-buffer-with-associated-file, which is pulled from the emacs sources). Of course, it's free for all to use. --DamienElmes
+
+[new]
+
+CategoryKeys
+

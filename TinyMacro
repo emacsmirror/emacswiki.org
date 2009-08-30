@@ -1,0 +1,16 @@
+= Overview =
+
+tinymacro.el is part of the TinyTools. It helps assigning macros to keys 
+with simple commands. An example:
+
+* To start recording a macro use standard Emacs command: <code>C-x (</code>
+* To end recording a macro use standard Emacs command: <code>C-x )</code>. At this stage the package asks
+  to which key user wants to assign the macro. Press a key to assign the macro, say F12.
+
+The macro can now be called from the assigned key (e.g. F12). See also section
+KeyboardMacros.
+
+= Configuration =
+
+  (add-hook 'tinymacro-:load-hook 'tinymacro-install-default-keybindings)
+  (require 'tinymacro)

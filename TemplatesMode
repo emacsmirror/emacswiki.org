@@ -1,0 +1,60 @@
+You can find the Template package at http://emacs-template.sourceforge.net/
+
+----
+You use template.el by defining file extension mappings and a ~/.templates directory full of files such as TEMPLATE.xml.tpl, README.tpl, Makefile.tpl ... when you create a file with the matching extension (or full name), the template wizard steps you through the prompts in the same way as with TempoMode, only with this mode, you can define your templates by simply inserting the markers into an example file, so the templates require much less tinkering to get right.
+
+Unlike TempoMode, however, templates.el seems to be geared exclusively towards creating initial file content.  The way it's set up, it's not very useful for inserting a new class or a new function body, or other little code snippets.
+
+See HtmlTemplateExample for an illustration.
+
+template.el also contains commands for comment decoration and for file header automatic update.
+
+----
+As far as file creation is concerned:
+
+* You can define custom expansion keys, ie tags like  <TT>(>>>foo<<&lt;)</TT>, either for all your template or on a per template basis
+* You can define custom expansion rules, these rules may use custom handler or not (ie specific lisp code to process the expansion)
+* There is some security mecanism with a warning when some handler is defined per-template and is not known to be secure
+* You can also play with a few variables, either for all templates or on a per template basis, in order to control date format, what is the expansion key decoration (ie other encapsulation than <TT>(>>></TT> and <TT>(<<&lt;</TT>)
+* There is some recursivity, ie some expansion rule may as the user to make some input, and based on this other expansion keys are inserted which may in turn trigger some expansion.
+----
+
+: The way I would put it is that "template.el" is much more like what people expect from a template system than "tempo.el".  Template.el templates look like the finished product, with embedded tags like <TT>(>>>FILE<<&lt;)</TT> or <TT>(>>>DATE<<&lt;)</TT> that act like blanks that are filled-in when you use the template.  In contrast, tempo.el is more like elisp code with strings embedded in it: it may be more powerful in many ways, but it's not the sort of thing most people would mean by "templates".  
+
+: Once nice feature is the tag <TT>(>>>POINT<<&lt;)</TT>: when you use a template, the cursor is left sitting where ever you put the <TT>(>>>POINT<<&lt;)</TT> tag in the template.
+
+
+----
+
+It's easy to define custom handlers for tags (ie expansion rules that do things more complexe that just expand the expansion key to some user input).  The default is to prompt the user for input if the tag is not found, but you can also define your own custom handler.  Here's an example I wrote to call out to a program that generates GUIIDs when a <code>(>>>GUIID<<<)</code> tag is encounterd in the template.  You could also easily make custom prompts.
+<pre>
+(add-to-list 
+ 'template-expansion-alist
+ '("GUIID" (insert (substring (shell-command-to-string "uuidgen") 0 -1))))
+</pre>
+
+----
+One thing I'm missing, however, is a way to get access to these variable settings like you can with TempoMode 's <code>(s ...)</code> tags.  In Tempo you can ask the user for a replacement once with a <code>(p ...)</code> tag and then reuse it later in the template with the 
+<code>(s ...)</code>
+
+=> Answer: you can set a policy flag telling whether user is asked for input immediately (before expansion step, this is useful for per-template expansion rule), first time expansion key is met, or evey time expansion key is met.
+
+One limitation is that when you create a file, it picks the best match template based on the filename and only gives you the option of using that one template.  It would be nice if it presented you with a list of candidates based on all plausible matches.  It's unrealistic to think the filename will tell you everything you need to know about what type of c++ file you're trying to create.  The list could be something like that used by find-file.el, or just a standard <code>completing-read</code>.
+
+: My solution with PerlNow was to provide alternate commands to "find-file" to serve special purposes, like open using the object-oriented perl template, or open using the basic perl module template, and so on.  (In general, I think this file-extension orientation is a problem with emacs that hasn't been really faced yet).
+
+It also seems to lack a reasonable mechanism for handling prompts with defaults.  When making your template you might guess that the class in a c++ file should be named after the file, i.e. <code>(>>>FILE_SANS<<<)</code> in Template nomenclature, but still you want to prompt the user just in case using FILE_SANS as the default response is wrong.
+----
+
+
+How does template.el cooperate with ido.el? simply adding
+<code>ido-find-file</code> to <code>template-find-file-commands</code>
+doesn't work, you need add this to your dot emacs file:
+<pre>
+(add-to-list 'template-find-file-commands
+	                 'ido-exit-minibuffer)
+</pre>
+
+----
+CategoryTemplates
+

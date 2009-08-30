@@ -1,0 +1,20 @@
+Use M-x auto-image-file-mode to enable Emacs to open graphic files
+such as JPEG or PNG format files.  Whether Emacs is able to display a
+certain file format depends on your installation -- Emacs must have
+been compiled with the correct options (or it must have detected the
+libraries at configuration time).
+
+The code that does this is also used by Gnus, for example, to inline
+MIME attachments of the correct format.
+
+<code>auto-image-file-mode</code> works by turning any insert-file of an image into an image display property.  This is a little bit scary, depending what sort of things you normally do with insert file.  GNU Emacs 22 has instead a new ImageMode which is a major mode, which you might prefer (it's in fact the new default).
+
+== NT Emacs ==
+
+21.2.50 already supports PBMs and XBMs... Excellent! -- GirishB
+
+----
+So, when do we this extended to use aalib for console mode viewing? :-) --ShaeErisson 
+----
+CategoryModes | MultimediaModes | CategoryGnus
+

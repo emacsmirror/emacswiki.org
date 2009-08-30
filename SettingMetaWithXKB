@@ -1,0 +1,55 @@
+== Setting Meta With the XKB Extension ==
+
+To use the XKB extension to fiddle with keys you can probably use some
+tool that I don't have nor remember the name of, but if you don't have
+it, here's a description of using xkbcomp.
+
+First, get a source file of the keyboard map with
+
+    xkbcomp $DISPLAY
+
+which creates a file that probably starts with server_ and ends with
+.xkb, the actual file name depends on the $DISPLAY variable.
+
+Then edit that file -- with emacs of course -- and change whatever
+you like ;-)
+
+I do not have win keys, but something that looks like <> which
+actually send the same codes as the win keys, aparently.  So assuming
+you have ether keys, you would look for lines containig something
+like:
+
+    <LWIN> = 115;
+    <RWIN> = 116;
+
+Now, in case you have neither win, nor <> (diamond) keys (which
+someone told me were real meta keys), you can use xev to find out the
+actual codes your keys send and use those numbers, you don't have to
+change the names of LWIN nor RWIN, just don't create name clashes.
+
+Now look for line that defines what these keys do.  They look
+something like:
+
+    key <LWIN> {         [         Meta_L ] };
+    key <RWIN> {         [         Meta_R ] };
+
+and make them look like above.
+
+After saving the file, compile it with the following command:
+
+    xkbcomp server_<whatever-here>.xkb
+
+This creates a file called server_<the-same-old-here>.xkm which you
+can apply to the server with:
+
+    xkbcomp server_<the-same-old-here>.xkm $DISPLAY
+
+Now restart emacs.
+
+Wow, now you have (probably) all of control, alt, shift and meta, and
+are therefore free to use A- prefix for you own keys!
+
+Enjoy ;-)
+
+----
+MetaKeyProblems

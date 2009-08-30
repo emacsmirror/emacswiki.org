@@ -1,0 +1,269 @@
+Largely based on FlymakeHaskell:
+
+== Introduction ==
+
+Quoting what is flymake-mode from the page FlyMake:
+
+<em> 
+  Flymake is implemented as an Emacs minor mode. It runs the syntax 
+  check tool in the background, passing it a temporary copy of the
+  current buffer, and parses the output for known error/warning message
+  patterns. Flymake then highlights erroneous lines (that is, lines for
+  which at least one error or warning has been reported), and displays
+  an overall buffer status in the mode line.
+</em>
+
+See also FlyMake for details.
+
+There are some videos for demonstrations.
+
+* emacs on tty http://www.youtube.com/watch?v=fu8rAWciQNs
+* Carbon Emacs http://www.youtube.com/watch?v=oYdkrOMhFWU
+
+This page describes how to use Flymake for ocaml to check the
+syntax and type by invoking ocamlc.
+
+
+
+
+== How to install ==
+
+=== Preliminaries ===
+
+Before changing your .emacs, put the following perl script in 'exec-path' named "ocaml_flycheck.pl"
+If you don't know about 'exec-path', then try to type 
+'M-x describe-variable' and then type again 'exec-path' on your emacs.
+
+Unfortunately, since MS-Windows does not have perl, MS-Windows users
+have to install perl itself, too. See the following page for more information: http://www.perl.com/download.csp#win32
+
+The following checker passes some linker options. It is a hack based on a cheap edit of the [FlymakeHaskell] script and could be much improved to be right for ocaml. It flags up all warnings: if you don't want to notice the warnings then edit the script.
+
+Don't forget  to set the perl script executable.
+
+You can test the perl script by running  $PATH/ocaml_flycheck.pl <filename>.
+
+
+<pre>
+#!/usr/bin/env perl
+# ocaml_flycheck.pl
+
+### Please rewrite the following 2 variables 
+### ($ocamlc, @ocamlc_options)
+
+$ocamlc = '/usr/bin/ocamlc'; # where is ocamlc
+@ocamlc_options  = ('-c -thread unix.cma threads.cma graphics.cma');   # e.g. ('-fglasgow-exts')
+
+### the following should not been edited ###
+
+use File::Temp qw /tempfile tempdir/;
+File::Temp->safe_level( File::Temp::HIGH );
+
+($source, $base_dir) = @ARGV;
+
+@command = ($ocamlc);
+
+while(@ocamlc_options) {
+    push(@command, shift @ocamlc_options);
+}
+
+push (@command,    $source);
+
+while(@ocamlc_packages) {
+    push(@command, '-package');
+    push(@command, shift @ocamlc_packages);
+}
+
+$dir = tempdir( CLEANUP => 1 );
+($fh, $filename) = tempfile( DIR => $dir );
+
+system("@command >$filename 2>&1");
+
+open(MESSAGE, $filename); 
+while(<MESSAGE>) {
+  # example message  {File "robocupenv.ml", line 133, characters 6-10:
+  if(/^File "(\S+\.ml[yilp]?)", line (\d+), characters (\d+)-\d+:\s?(.*)/) {
+	$error = (<MESSAGE>); # get the next line
+	print "\n"; 
+	print "$1:$2:$3:";
+	if ($error =~ /Warning(.*)/) {
+	    print "$error";
+	}
+	else {
+	    print "$error ";
+	}
+	    next;
+    }
+    if(/\s+(.*)/) {
+	$rest = $1;
+        chomp $rest;
+	print $rest;
+        print " ";
+	next;
+    }
+}
+close($fh);
+print "\n";
+</pre>
+
+=== Version of your emacs ===
+
+To determine the version, you can type 'M-x version RET' in emacs.
+Note that the configuration differs for Emacs21 and Emacs22.
+
+=== Instructions for Emacs21 ===
+
+Since Emacs21 does not have 'flymake-mode', you have to install it
+at first. Because of the several reasons, I don't recommend you the
+latest version of flymake-mode, but to use the revision 1.46 of the Main
+branch. You can get the library from the repository of 'flymake';
+
+http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/lisp/progmodes/flymake.el?revision=1.46
+
+Because Emacs21 does not have the variable
+'compilation-error-regexp-alist-alist', we have to edit the flymake.el
+as follows:
+
+<pre>
+--- flymake.el  2007-11-11 05:48:41.000000000 +0900
++++ /usr/local/share/emacs/site-lisp/flymake.el 2007-11-09 10:29:31.000000000 +0900
+@@ -929,8 +929,8 @@
+      ;; ant/javac
+      (" *\\(\\[javac\\]\\)? *\\(\\([a-zA-Z]:\\)?[^:(\t\n]+\\)\:\\([0-9]+\\)\:[ \t\n]*\\(.+\\)"
+       2 4 nil 5))
+-   ;; compilation-error-regexp-alist)
+-   (flymake-reformat-err-line-patterns-from-compile-el compilation-error-regexp-alist-alist))
++   compilation-error-regexp-alist)
++   ;; (flymake-reformat-err-line-patterns-from-compile-el compilation-error-regexp-alist-alist))
+   "Patterns for matching error/warning lines.  Each pattern has the form
+ \(REGEXP FILE-IDX LINE-IDX COL-IDX ERR-TEXT-IDX).
+ Use `flymake-reformat-err-line-patterns-from-compile-el' to add patterns
+</pre>
+
+Finally, put the edited flymake.el into your 'load-path'.
+If you don't know about 'load-path', then try to type 
+'M-x describe-variable' and then type again 'load-path' on your emacs.
+
+=== About Emacs22 ===
+
+Because Emacs22 has flymake-mode, you don't need to install 'flymake.el' by yourself.
+
+== Setting flymake-mode for ocaml ==
+
+Put the following into your .emacs (<i>This code also still has some relics of the Haskell ver. it was copied from</i>):
+<pre>
+  (defun flymake-ocaml-init ()
+          (flymake-simple-make-init-impl
+            'flymake-create-temp-with-folder-structure nil nil
+            (file-name-nondirectory buffer-file-name)
+            'flymake-get-ocaml-cmdline))
+    (defun flymake-get-ocaml-cmdline (source base-dir)
+       (list "ocaml_flycheck.pl"
+            (list source base-dir)))
+    
+    (push '(".+\\.ml[yilp]?$" flymake-ocaml-init flymake-simple-java-cleanup)
+          flymake-allowed-file-name-masks)
+    (push
+      '("^\\(\.+\.ml[yilp]?\\|\.lhs\\):\\([0-9]+\\):\\([0-9]+\\):\\(.+\\)"
+       1 2 3 4) flymake-err-line-patterns)
+
+    ;; optional setting
+    ;; if you want to use flymake always, then add the following hook.
+    ;; (add-hook
+    ;;  'tuareg-mode-hook
+    ;;  '(lambda ()
+    ;;     (if (not (null buffer-file-name)) (flymake-mode))))
+
+
+</pre>
+
+Tuareg-mode is an ocaml editing mode which aims to be an improvement on the standard ocaml mode. Replace instances of tuareg-mode with ocaml-mode if you prefer.
+
+== Tips ==
+
+=== Display messages at the minibuffer ===
+
+Add the following setting to see the error/warning message at the minibuffer.
+<pre>
+    (when (fboundp 'resize-minibuffer-mode) ; for old emacs
+      (resize-minibuffer-mode)
+      (setq resize-minibuffer-window-exactly nil))
+</pre>
+The following code is introduced at
+
+http://www.credmp.org/index.php/2007/07/20/on-the-fly-syntax-checking-java-in-emacs/
+<pre>
+    (defun credmp/flymake-display-err-minibuf () 
+      "Displays the error/warning for the current line in the minibuffer"
+      (interactive)
+      (let* ((line-no             (flymake-current-line-no))
+             (line-err-info-list  (nth 0 (flymake-find-err-info flymake-err-info line-no)))
+             (count               (length line-err-info-list))
+             )
+        (while (> count 0)
+           (when line-err-info-list
+           (let* ((file       (flymake-ler-file (nth (1- count) line-err-info-list)))
+                   (full-file  (flymake-ler-full-file (nth (1- count) line-err-info-list)))
+                   (text (flymake-ler-text (nth (1- count) line-err-info-list)))
+                   (line       (flymake-ler-line (nth (1- count) line-err-info-list))))
+              (message "[%s] %s" line text)
+              )
+            )
+          (setq count (1- count)))))
+</pre>
+Bind the above function to the key '\C-c d'.
+<pre>
+    (add-hook
+     'tuareg-mode-hook
+     '(lambda ()
+        (define-key tuareg-mode-map "\C-cd"
+          'credmp/flymake-display-err-minibuf)))
+</pre>
+
+=== Bind the keys C-c n to jump to the next error ===
+
+(define-key tuareg-mode-map "\C-cn" `flymake-goto-next-error)
+
+NB: This jumps to the next error *or* warning. I can't see an easy way to separate goto-next-error and goto-next-warning functions.
+
+You can combine this with the minibuffer printing... 
+<pre>
+(defun my-goto-next-error ()
+  (interactive)
+  (flymake-goto-next-error)
+  (credmp/flymake-display-err-minibuf)
+)
+
+(define-key tuareg-mode-map "\C-cn" 
+  `my-goto-next-error)
+</pre>
+
+
+=== Change the colors for errors/warnings or set underlinings:
+
+Customize the faces flymake-errline and flymake-warnline:
+
+(custom-set-faces
+ '(flymake-errline ((((class color)) (:background "LightYellow" :underline "OrangeRed"))))
+ '(flymake-warnline ((((class color)) (:background "LightBlue2" :underline "Yellow")))))
+
+You can do this using the graphical menu: Help -> Describe -> Face -> flymake-errline (select customize) and Help -> Describe -> Face -> flymake-warnline
+
+
+== FAQ : Why perl and the perl script are needed? ==
+
+The flymake-mode assumes that the checker displays error messages as one line
+
+== Acknowledgments ==
+
+The authors would like to thank Thomas Schilling, Gwern Branwen and
+Denis Bueno for useful suggestions. Credmp's hack for the mini-buffer
+is cool and very useful. We would also like to thank the developer
+team of flymake-mode and the anonymous reviewers. This article is derived strongly from the FlymakeHaskell article
+
+----
+
+== Note ==
+Please write comments on the above instruction here.
+
+----

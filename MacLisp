@@ -1,0 +1,10 @@
+Maclisp is a dialect of [[Lisp]] developed at MIT in 1966.  It added many features that we take for granted in Lisp today: functions with variable numbers of arguments, macros, arrays, and non-local dynamic exits.  It was influential on the development of EmacsLisp, [[Scheme]], ZetaLisp and CommonLisp.  The first Scheme interpreter and the first Emacs with Lisp facilities (see MulticsEmacs) were written in MacLisp. 
+
+The "Mac" in MacLisp stands for ProjectMac.
+
+Kent Pitman will provide more information about MacLisp at http://www.maclisp.info/
+
+* See WikiPedia:Maclisp
+
+----
+CategoryHistory

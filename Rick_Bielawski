@@ -1,0 +1,310 @@
+portrait:http://www.laserdoodads.com/tn/rick_tn.jpg
+I've been a programmer since 1981.##  ##Started specializing in
+  Tandem/NSK/Guardian work in 1984.##  ##Consulting in
+  1995.##  ##And using Emacs in 2000.##  ##Mainly I did 
+  systems work like custom EMS subsystems, SPI interfaces and both active
+  and passive <nowiki>NonStop(tm)</nowiki> coding in TAL and C.##  ##
+  I've also done quite a bit of C++ and ACI Base24 work and a very large
+  amount of TACL work.  But as of 06/2007 I no longer work on Tandem.
+
+You can reach me at **rbielaws at i1 dot net** (thats the letter I and
+  the number 1 before dot net) if you have a problem or would like help
+  contributing.## ## I use Emacs still but with my carreer change active
+  development of TandemNskSupport has stopped.## ## For a couple years I
+  hope to remember enough to help if you have problems or questions but I
+  won't be developing NSK modes any more.## ## Most of them were pretty
+  stable anyway.## ## Also, I no longer monitor
+  [http://groups-beta.google.com/group/comp.emacs comp.emacs] although it
+  is still probably the best place to go if you have questions.
+
+== Stuff on other pages unrelated to NSK ==
+
+* AnchoredTranspose## . . . ##Swaps 2 regions 
+* PopupRuler## . . . . . . ##Like Tedit F9 only better 
+* [http://www.emacswiki.org/cgi-bin/wiki/BackToIndentationOrBeginning#end-of-code-or-line end-of-code-or-line]## . . . ##DWIM [end] key
+* [http://www.emacswiki.org/cgi-bin/wiki/DoubleKeyBinding#rgb-insert-if-double rgb-insert-if-double]## . . . ##some HTML keys
+* ColumnizeWords## . . . . ##Formats a series of words into multiple columns
+* ColumnMarker## . . . . . ##Column markers for text alignment
+* [http://www.emacswiki.org/cgi-bin/wiki/CategoryUndo#temporary-invisible-change temporary-invisible-change]## ##Make temporary changes that go away without changing the buffer-undo-list.
+
+
+==.emacs stuff==
+=== ascii-table ===
+  (defun ascii-table ()
+    "Display basic ASCII table (0 thru 128)."
+    (interactive)
+    (switch-to-buffer "*ASCII*")
+    (erase-buffer)
+    (save-excursion (let ((i -1))
+      (insert "ASCII characters 0 thru 127.\n\n")
+      (insert " Hex  Dec  Char|  Hex  Dec  Char|  Hex  Dec  Char|  Hex  Dec  Char\n")
+      (while (< i 31)
+        (insert (format "%4x %4d %4s | %4x %4d %4s | %4x %4d %4s | %4x %4d %4s\n"
+                        (setq i (+ 1  i)) i (single-key-description i)
+                        (setq i (+ 32 i)) i (single-key-description i)
+                        (setq i (+ 32 i)) i (single-key-description i)
+                        (setq i (+ 32 i)) i (single-key-description i)))
+        (setq i (- i 96))))))
+
+See also AsciiTable and EbcdicTable.
+
+=== stark-frame ===
+   ;; This toggles on/off the menu and tool bars for more editing area.
+   (defvar stark-frame () )
+   (defun stark-frame () "Toggle toobar & menu bar on/off."
+     (interactive)
+     (setq stark-frame (not stark-frame))
+     (tool-bar-mode (if stark-frame 0 1))
+     (menu-bar-mode (if stark-frame 0 1))
+     (if stark-frame
+         (set-frame-size (selected-frame)(frame-width)(+ (frame-height) 1))
+       (set-frame-size (selected-frame)(frame-width)(- (frame-height) 1))))
+
+  (global-set-key (kbd "<S-f10>") 'stark-frame)
+
+=== horizontal-to-vertical ===
+  ;; Idea and starter code from Benjamin Rutt (rutt.4+news@osu.edu) on comp.emacs
+  (defun rgb-window-horizontal-to-vertical ()
+    "Switches from a horizontal split to a vertical split."
+    (interactive)
+    (let ((one-buf (window-buffer (selected-window)))
+          (buf-point (point)))
+      (other-window 1)
+      (delete-other-windows)
+      (split-window-horizontally)
+      (switch-to-buffer one-buf)
+      (goto-char buf-point)))
+
+=== vertical-to-horizontal ===
+  ;; complement of above created by rgb 11/2004
+  (defun rgb-window-vertical-to-horizontal ()
+    "Switches from a vertical split to a horizontal split."
+    (interactive)
+    (let ((one-buf (window-buffer (selected-window)))
+          (buf-point (point)))
+      (other-window 1)
+      (delete-other-windows)
+      (split-window-vertically)
+      (switch-to-buffer one-buf)
+      (goto-char buf-point)))
+
+=== insert-prior-line-char ===
+  (defun insert-prior-line-char ()
+    "Insert the same character as in the prior line. Space if none."
+    (interactive)
+    (let* ((cur (current-column))
+           (char (save-excursion
+                   (if (or (not (eq 0 (forward-line -1)))
+                           (not (eq cur (move-to-column cur)) ))
+                       32
+                     (char-after)))))
+      (insert char)))
+
+  (global-set-key [\C-M-x]    'insert-prior-line-char)
+
+=== insert-sequence-symbol ===
+  (defun insert-sequence-symbol (key)
+    "Insert the name of the function that key chord executes."
+    (interactive "kInseret key description: ")
+    (insert (symbol-name (key-binding key))))
+
+  (global-set-key [\C-f8]    'insert-sequence-key)
+
+=== insert-sequence-key ===
+  (defun insert-sequence-key (key)
+    "Inserts a keystroke suitable for use in fcns like global-set-key"
+    (interactive "kInseret key chord: ")
+    (insert (format "(kbd \"%s\")" (key-description key))))
+
+  (global-set-key (kbd "<C-f8>") 'insert-sequence-key)
+
+=== expand-trailing-parens & collect-trailing-parens ===
+  ;; These are for people who prefer to have closing parens line up with open parens.  
+  ;; That is, not have them all bunched up on one line.
+
+  (defun ctp () "collect trailing parens"
+    ;; bunches the `dangling parens' in your code up into the useless and unnatural
+    ;; position expected by the lisp community.  Depends on font-lock to avoid
+    ;; moving a trailing paren onto the end of a comment.
+    (interactive)
+    (while (re-search-forward "^\\s *)")
+      (end-of-line 0)
+      (if (eq 'font-lock-comment-face (get-char-property (1- (point)) 'face))
+          (end-of-line 2)
+        (delete-indentation -1)
+      )
+      (beginning-of-line 2)
+    )
+  )
+
+  (defun etp () "Expands trailing parens"
+    ;; This function ignores parens within quotes and comments only if
+    ;; font-lock is turned on.  If the closing paren is on the same line as
+    ;; the open then leave it there otherwise give it it's own line.  The
+    ;; trailing parens won't be lined up in the same column with the opening
+    ;; paren unless you have my mod for calculate-lisp-indent installed too.
+    (interactive)
+    (while (re-search-forward ")")
+      (if (not (or (eq 'font-lock-comment-face (get-char-property (1- (point)) 'face))
+                   (eq 'font-lock-string-face (get-char-property (1- (point)) 'face))
+                   (looking-back "^\\s-*)")
+               )
+          )
+          (let ((pos1 (line-beginning-position)))
+            (if (save-excursion
+                  (condition-case () (goto-char (scan-sexps (point) -1)) (error nil))
+                  (eq pos1 (line-beginning-position))
+                )
+                ()           ;do nothing if unbalanced or open on same line
+              (backward-char)
+              (newline-and-indent t)
+              (goto-char pos1)
+            )
+          )
+      )
+    )
+  )
+
+  ;; this is a patch to calculate-lisp-indent that puts parens on the 'correct' line.
+
+      ;; Point is at the point to indent under unless we are inside a string.
+      ;; Call indentation hook except when overridden by lisp-indent-offset
+      ;; or if the desired indentation has already been computed.
+      (let ((normal-indent (current-column))
+            ;; RGB fixed it to work like I want
+            (lisp-indent-offset
+             (if (save-excursion (goto-char indent-point)
+                                 (beginning-of-line)
+                                 (looking-at "\\s-*\\s)"))
+                 0
+               lisp-indent-offset)))
+        ;; end of RGB fix
+        (cond ((elt state 3)
+
+=== search-word-at-mouseclick ===
+   (defun search-word-at-mouseclick (event)
+     "Performs a nonincremental-search-forward starting from the beginning of the
+   buffer or narrowed region.  The word clicked on is the word to search for.  If
+   the click is in another window the search still occurs in the current window."
+     (interactive "e")
+     (let (searchword)
+       (save-excursion
+         (set-buffer (window-buffer (posn-window (event-end event))))
+         (save-excursion
+           (goto-char (posn-point (event-end event)))
+           (setq searchword (current-word))))
+       (if searchword
+           (let ((cpt (point)))
+             (goto-char (point-min))
+             (setq menu-bar-last-search-type 'string)
+             (isearch-update-ring searchword nil)
+             (if (string= searchword (car (symbol-value minibuffer-history-variable)))
+                 ()
+               (set minibuffer-history-variable
+                    (cons searchword (symbol-value minibuffer-history-variable))))
+             (unless (search-forward searchword nil t)
+               (goto-char cpt)
+               (error "Search Failed: \"%s\"" searchword)))
+         (ding))))
+
+   (global-set-key [mouse-2]  'search-word-at-mouseclick)
+
+=== Skeleton Pair ===
+
+    ;; THESE MAKE SKELETON PAIRS WORK BETTER IN MODES I USE.  IT MIGHT LOOK 
+    ;; EASIER TO JUST USE GLOBAL-SET-KEY BUT DOING THAT BREAKS CUA-RECTANGLES.
+    ;; Plus, this lets me set different pairs for different major modes.
+    (defun my-common-key-pairs (&rest list)
+      "local-set-key settings I put on all modes that can't go in global-map."
+      (mapcar
+       '(lambda (k)
+          (cond ((or (string= k "`")(string= k "\""))
+                 (local-set-key k 'skeleton-pair-insert-maybe))
+                ((string= k " ")
+                 (local-set-key " " 'rgb-doublespace-maybe))
+                (t
+                 (local-set-key k 'skeleton-pair-insert-maybe-here))))
+       list))       
+
+    ;; Now put the above to good use
+
+    (add-hook 'tacl-mode-hook             '(lambda () (my-common-key-pairs   "/" "|" "(" "[" "{" "\"" " ")))
+    (add-hook 'tal-mode-hook              '(lambda () (my-common-key-pairs           "(" "["     "\"" " ")))
+    (add-hook 'ddl-mode-hook              '(lambda () (my-common-key-pairs           "(" "["     "\"" " ")))
+    (add-hook 'cobol-mode-hook            '(lambda () (my-common-key-pairs           "(" "["     "\"" " ")))
+    (add-hook 'acimake-mode-hook          '(lambda () (my-common-key-pairs       "|" "(" "[" "{" "\"" " ")))
+    (add-hook 'emacs-lisp-mode-hook       '(lambda () (my-common-key-pairs   "`"     "(" "[" "{" "\"" " ")))
+    (add-hook 'lisp-mode-hook             '(lambda () (my-common-key-pairs   "`"     "(" "[" "{" "\"" " ")))
+    (add-hook 'lisp-interaction-mode-hook '(lambda () (my-common-key-pairs   "`"     "(" "[" "{" "\"" " ")))
+    (add-hook 'ielm-mode-hook             '(lambda () (my-common-key-pairs   "`"     "(" "[" "{" "\"" " ")))
+    (add-hook 'text-mode-hook             '(lambda () (my-common-key-pairs   "`"     "(" "[" "{" "\"" " ")))
+
+    ;; The mini-buffer doesn't have a mode hook so I'm stuck doing this
+    (mapcar
+     '(lambda (k)
+        (if (or (string= k "`")(string= k "\""))
+            (define-key minibuffer-local-map k 'skeleton-pair-insert-maybe)
+          (define-key minibuffer-local-map k 'skeleton-pair-insert-maybe-here)))
+     '("`" "(" "[" "{" "\"")) 
+
+   (defun skeleton-pair-insert-maybe-here (arg)
+     ;; rgb 2004 -- a modification of the skeleton.el version
+     "Like `skeleton-pair-insert-maybe' but with a slight difference.
+   Puts point here (^(fcn)) instead of here ((fcn))^ when wrapping (fcn) with ()"
+     (interactive "*P")
+     (if (or arg (not skeleton-pair))
+         (self-insert-command (prefix-numeric-value arg))
+       (let* ((marked (and skeleton-autowrap
+                           (or (eq last-command 'mouse-drag-region)
+                               (and transient-mark-mode mark-active))))
+              (skeleton-end-hook)
+              (char last-command-char)
+              (skeleton (or (assq char skeleton-pair-alist)
+           		 (assq char skeleton-pair-default-alist)
+           		 `(,char _ ,char))))
+         (if (and (not marked)
+                  (or overwrite-mode
+                      ;; Line moved for more consistency.  Here it doesn't
+                      ;; depend on point being at the correct end of region.
+                      (memq (char-syntax (preceding-char)) '(?\\ ?/))
+                      (if (not skeleton-pair-on-word) (looking-at "\\w"))
+                      (funcall skeleton-pair-filter)))
+             (self-insert-command (prefix-numeric-value arg))
+           ;; This is the main change.
+           (if (and marked (if (<= (point) (mark))
+                               (eq (following-char) char)
+                             (eq (char-after (mark)) char)))
+               (skeleton-insert
+                ;; under appropriate conditions, insert - into the skeleton
+                `(nil ,(car skeleton) - ,@(cdr skeleton)) (if marked -1))
+             (skeleton-insert (cons nil skeleton) (if marked -1)))))))
+    
+   ;; When I insert a pair of () or [] or {} etc and then type the space
+   ;; character I almost always want 2 spaces with point between them.
+   (defun rgb-doublespace-maybe (arg) ;RGB 2004
+     "Inserts 2 spaces if the previous char was a skeleton pair"
+     (interactive "*P")
+     (if (or (not (eq 'skeleton-pair-insert-maybe-here last-command))
+             (save-match-data (looking-at "\\(\"\\|'\\)"))
+             arg
+             overwrite-mode
+             (not skeleton-pair))
+         (self-insert-command (prefix-numeric-value arg))
+       (let ((skeleton-end-hook)
+             (char last-command-char))
+         (if (or (if (not skeleton-pair-on-word) (looking-at "\\w"))
+                 (funcall skeleton-pair-filter))
+             (self-insert-command (prefix-numeric-value arg))
+           (insert "  ")
+           (backward-char)))))
+
+== Messages ==
+
+[new:AlexSchroeder:2005-04-06 10:37 UTC]
+Your example for ElDoc support is awesome!  Thanks a lot.
+[new] 
+It's nice when something actually ends up being useful.  Thanks.
+[new]
+Could I ask a link to this example? I'm curious :-) SewerynKokot
+----
+CategoryHomepage

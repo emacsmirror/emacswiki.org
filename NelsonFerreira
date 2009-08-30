@@ -1,0 +1,89 @@
+I use XEmacs since '95. It is my one true editor.
+
+I am [::njsf] in the EmacsChannel.
+
+Since them I continue to read all my personal email in Gnus (CategoryGnus) and do my main programming in XEmacs (now with EmacsCodeBrowser).
+
+[new]
+Welcome to the wiki! -- AlexSchroeder
+
+[new]
+
+Here is the code I use with XEmacs to have a auto-pre-compiled init.d directory for managing my startup (and keep it speedy!)
+
+It auto detects updates to new files (via the modified date) and recompiles the init on startup.
+
+On my ~/.xemacs/init.el:
+
+<pre>
+(add-path "~/.el")
+(require 'njsf-compile-init)
+(njsf-compile-init)
+(delete-other-windows) ;; Remove the *Compile Log* buffer split
+</pre>
+
+Then I have in ~/.el/njsf-compile-init:
+<pre>
+;;
+;; Use directory ~/.xemacs/init.d as a repository of modular
+;; configuration
+;;
+(defun njsf-compile-init nil
+  "Pre-compile init into njsf-initd.el if needed"
+  (interactive)
+  (let* ((init-dir "~/.xemacs")
+         (initd-dir (concat init-dir "/init.d"))
+         (init-file (concat init-dir "/njsf-initd"))
+         (init-el (concat init-file ".el"))
+         (init-elc (concat init-el "c"))
+         (initd-files (directory-files initd-dir t "^[^\.].*\.el$" t t))
+         (files   (cons initd-dir initd-files))
+         (current nil)
+         (recompile nil)
+         (njsf-init-buffer nil))
+    (while (and files (not recompile))
+      (setq current (car files)
+            files   (cdr files))
+      (when (file-newer-than-file-p current init-elc)
+        (message "%S is newer than %S" current init-elc)
+        (setq recompile t)))
+    (when recompile
+      (message "Recompiling init files....")
+      (setq njsf-init-buffer (generate-new-buffer (concat "*" init-el "*")))
+      (with-current-buffer njsf-init-buffer
+        (set-visited-file-name init-el)
+        (setq files initd-files)
+        (while files
+          (setq current (car files)
+                files   (cdr files))
+ 	  (insert-string (concat
+			  ";; ------------------------------------\n"
+			  ";;"  current "\n"
+			  "(condition-case theError \n"
+			  "(progn\n"))
+          (insert-file-contents current)
+	  (goto-char (point-max))
+          (insert-string (concat "\n)\n"
+                 "(t (message \"Error loading \\\""
+                 current ": \\\" %S \\\" \" theError)))\n"
+                 ";; ------------------------------------\n\n")))
+        (save-buffer))
+      (condition-case nil
+	  (progn
+	    (byte-compile-file init-el)
+	    (kill-buffer njsf-init-buffer)
+	    (delete-file init-el))
+        (t . nil))
+      )
+    (load init-file)))
+
+
+(provide 'njsf-compile-init)
+</pre>
+
+Then on my ~/.xemacs/init.d I have a bunch of *.el that get compiled into ~/.xemacs/njsf-initd.elc
+
+Hope this helps someone speed up the XEmacs startup.
+
+----
+CategoryHomepage

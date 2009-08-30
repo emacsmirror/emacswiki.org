@@ -1,0 +1,159 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Object-Action Interaction]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multi-Completions]] ||
+
+----
+
+== Icicles with Anything ==
+
+Library [[Anything]] (<tt>[[anything.el]]</tt>) lets you define object types and
+associate actions with them.  It provides [[command]] `anything',
+which you can use to apply an action to an object, choosing the
+object first by name.  All objects (of all types) that have a name
+that matches your input are candidates.  You can use command
+`anything' while in ''Icicle'' mode; it has the same behavior with '''Icicles''' as without it.
+
+'''Icicles''' also integrates some Anything features within its own
+[[completion]] environment, so that you can use '''Icicles''' features such
+as [[progressive completion]] at the same time.  In particular, you
+can act on multiple Anything objects in the same command
+invocation, and you can act on them using multiple Anything
+actions.
+
+Command '''`icicle-anything'''' (alias '''`any'''') is just command
+`icicle-object-action' (alias '''`a'''') restricted to Anything types --
+see [[Icicles - Object-Action Interaction]].  It is more
+convenient than `a' if you know that you want to use an Anything
+type, because the set of type candidates to choose from is more
+limited.
+
+When you act on an object of an Anything type, you are not
+prompted for the action ("''how''").  The default Anything action is
+applied, or you can choose a different Anything action.
+
+Command `any' (or command `a' when applied to an Anything type)
+is a [[multi-command]]:
+
+* `C-RET', `C-mouse-2', and so on perform the default Anything
+  action on each chosen object.
+
+* `C-S-RET', `C-S-mouse-2', and so on, prompt you, for each chosen
+  object, to choose one or more Anything actions (with
+ completion).  
+
+You can thus act on any number of Anything objects in any number
+of Anything ways, all in the same `any' command invocation.  And you can
+of course use '''Icicles''' completion and [[Icicles - Cycling Completions|cycling]] to choose.  User
+[[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-anything-transform-candidates-flag|icicle-anything-transform-candidates-flag]]</tt>'''' determines
+whether Anything function `anything-transform-candidates' is
+applied to displayed Anything candidates in '''Icicles'''.
+
+Here's an example of using command `any'.  Let's assume that you
+have an `action' entry such as this in `anything-type-attributes'
+for the Anything type `command' (this is taken from library <tt>[[anything-config.el]]</tt>):
+
+<pre>
+(action ("Call interactively"
+         . (lambda (command-name)
+             (call-interactively (intern command-name))))
+        ("Describe command"
+         . (lambda (command-name)
+             (describe-function (intern command-name))))
+        ("Add command to kill ring" . kill-new)
+        ("Go to command's definition"
+         . (lambda (command-name)
+             (find-function (intern command-name)))))
+</pre>
+
+This defines four actions for objects of type `command', the
+default action being the first listed ("##Call interactively##").
+
+You enter command `any', choose the Anything type `command', and
+then choose the command `icicle-face-list' to act on:
+
+  M-x any RET
+  What (type): command RET
+  Which (command): icicle-face-list RET
+
+This invokes command `icicle-face-list', because the default
+Anything action for an object of type `command' is to call it.
+
+If you use `C-RET' instead of `RET' when choosing command
+`icicle-face-list', then you remain within the `any' invocation,
+and you can do something with another command after
+`icicle-face-list'.  If you use `C-S-RET' when choosing a command,
+then you are prompted for the action to invoke for that command:
+
+  Which (command): icicle-face-list C-S-RET
+  How (action): Go to command's definition RET
+
+If you choose the Anything action "##Go to command's definition##",
+then, well, that's what happens: here, you go to the definition of
+`icicle-face-list'.  Again, you could use `C-RET' instead of
+`RET', to perform this action on the command and then choose and
+apply (via `RET' or `C-RET') another action to the same command.
+
+After you've stopped (via `RET' or `C-g') acting on command
+`icicle-face-list', you can clear the [[minibuffer]] (using `M-k') and
+type another command to act on, and so on.  Or, you can stop (via
+`RET' or `C-g') and end the invocation of command `any'.
+
+At each prompt, you can use ([[apropos completion|apropos]] or [[prefix completion|prefix]]) completion or
+cycling to pick a candidate.  So, for instance, using completion,
+you could simply do this to choose `command', `icicle-face-list',
+and "##Go to command definition##":
+
+  M-x any RET c RET face-l S-TAB C-S-RET g TAB RET
+
+'''Icicles''' enhances Anything by providing multi-command features, as
+well as by providing all of the other standard '''Icicles''' features:
+apropos and prefix completion, cycling, progressive completion, help on
+individual candidates, and so on.  On the other hand, Anything by
+itself provides some features that '''Icicles''' does not exploit.  The aim of command `any' is to give you the basic
+Anything features in an '''Icicles''' completion context.
+
+A significant behavior difference between Anything (that is,
+command `anything') and '''Icicles''' command `any' is that with
+`anything' only the object ''name'' is used for filtering, whereas
+with '''Icicles''' command `any' you first narrow down the potential
+candidates by ''type'', before the object name is matched (against
+objects of only that type).
+
+That is, with Anything, your input pattern is matched against
+every possible object of ''every possible type''.  You then choose
+among the matches.  If you want, after that wide-net matching you
+can cycle among only the matches of a given type (e.g. file), but
+matching against all other types has already taken place.
+
+This behavior of starting with typeless matching can be convenient
+sometimes (you need not specify the object type), but it can also
+be inconvenient (and unnecessarily slow) to match objects of types
+totally unrelated to what you're after.  In such cases, it can
+require either a long input pattern or cycling among more
+candidates, to disambiguate among the hits.
+
+With '''Icicles''' command `any', you have the inconvenience of needing
+to specify first the type of object you want, but this has the
+advantage of eliminating searching among irrelevant types.
+Finally, remember that you can use both `anything' and `any' --
+choose whichever is most convenient for the current task.
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Object-Action Interaction]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multi-Completions]] ||
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryModes
+CategoryProgrammerUtils
+CategoryCode
+CategorySearchAndReplace
+
+

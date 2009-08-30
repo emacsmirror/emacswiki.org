@@ -1,0 +1,357 @@
+<pre>
+;; Licence : GPL
+;; Cette configuration n'est pas très propre, elle arait besoin
+;; d'un bon coup de nettoyage ;)
+
+;; #### NEWSGROUP ####
+(setq gnus-select-method '(nntp "******"))
+
+
+;; #### TOPICS ####
+;; activer les topics
+(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+
+
+;;#### MAIL ####
+
+;;**** BASIC IDENTITY
+(setq user-full-name "****"
+      user-mail-address "******"
+      mail-user-agent (quote message-user-agent))
+
+;; Def charset
+;(setq gnus-default-charset (quote utf-8)
+      ;gnus-default-posting-charset (quote utf-8))
+;(add-hook 'message-mode 
+;	  #'(lambda ()
+;	      (setq mm-coding-system-priorities
+;		    '(iso-latin-1 iso-latin-9 mule-utf-8))))
+(setq mm-coding-system-priorities
+      '(iso-latin-1 iso-latin-9 mule-utf-8))
+
+(message "gnus.el: BASIC IDENTITY initialized")
+
+;; Charset
+; reading :
+(setq gnus-group-charset-alist
+      ( append
+        (list
+          '("fr.comp.applications.emacs" iso-8859-15)
+          '("comp.editors" iso-8859-1)
+          '("fr.soc.internet" iso-8859-15)
+        )
+        gnus-group-charset-alist))
+; posting :
+;(setq gnus-group-posting-charset-alist
+;      '(("fr.comp.applications.emacs" iso-8859-1 (iso-8859-1))
+;	(message-this-is-news nil nil)))
+
+;*******************
+;;**** SENDING MAILS
+(setq sendmail-program "/usr/bin/msmtp")
+
+
+;*******************
+;;**** GETTING MAILS
+
+;; In mail-source, procmail store files that
+;; We store mails here - this is also defined in my .emacs,
+;; it's the only way I found to avoid apparition of ~/Mail/.
+(setq gnus-directory "~/.News/")
+(setq message-directory "~/.Mail/")
+
+;; fetchmail previously downloaded.
+(setq mail-sources
+      (list '(directory
+              :path "~/.mail-gnus/"
+              :suffix ""
+          ))
+      )
+
+;; We choose nnml: everybody says it's the fastest backend on earth.
+(setq gnus-select-method '(nnml ""))
+
+;; We trash duplicates mails.
+;; (setq nnmail-treat-duplicates 'delete)
+
+;; We just read mail, no newsgroups.
+;;(setq gnus-check-new-newsgroups nil)
+
+(message "gnus.el: GETTING MAILS initialized")
+
+
+;; ;;************************
+;; ;; MIME Settings for PGnus
+ (require 'mm-util)
+ (defun mm-read-charset (prompt)
+   "Return a charset."
+   'utf-8)
+ (setq gnus-default-posting-charset (quote utf-8))
+ (setq gnus-article-decode-mime-words t)
+ (setq gnus-article-decode-charset 1)
+ (setq gnus-mime-view-all-parts t) ; View all the MIME parts in current
+;; ;;article
+ (setq gnus-ignored-mime-types
+       '("text/x-vcard"))
+ (setq gnus-unbuttonized-mime-types nil) ; MIME type -> no buttons when
+;;rendered
+ ;; Add buttons
+(setq gnus-treat-buttonize t)
+ ;; Add buttons to the head
+(setq gnus-treat-buttonize-head 'head)
+ ;; Emphasize text
+(setq gnus-treat-emphasize t)
+ ;; Fill the article
+(setq gnus-treat-fill-article nil)
+ ;; Remove carriage returns
+(setq gnus-treat-strip-cr 'last)
+ ;; Hide headers
+(setq gnus-treat-hide-headers 'head)
+ ;; Hide boring headers
+(setq gnus-treat-hide-boring-headers 'head)
+ ;; Hide the signature
+(setq gnus-treat-hide-signature nil)
+ ;; Hide cited text
+(setq gnus-treat-hide-citation nil)
+ ;; Strip PGP signatures
+(setq gnus-treat-strip-pgp 'last)
+ ;; Strip PEM signatures
+(setq gnus-treat-strip-pem 'last)
+ ;; Highlight the headers
+(setq gnus-treat-highlight-headers 'head)
+ ;; Highlight cited text
+(setq gnus-treat-highlight-citation 'last)
+ ;; Highlight the signature
+(setq gnus-treat-highlight-signature 'last)
+ ;; Display the Date in UT (GMT)
+(setq gnus-treat-date-ut nil)
+ ;; Display the Date in the local timezone
+(setq gnus-treat-date-local nil)
+ ;; Display the date in the original timezone
+(setq gnus-treat-date-original nil)
+ ;; Strip trailing blank lines
+(setq gnus-treat-strip-trailing-blank-lines 'last)
+ ;; Strip leading blank lines
+(setq gnus-treat-strip-leading-blank-lines 'last)
+ ;; Strip multiple blank lines
+(setq gnus-treat-strip-multiple-blank-lines 'last)
+ ;; Strip all blank lines
+ ;; gnus-treat-strip-blank-lines nil
+ ;; Treat overstrike highlighting
+(setq gnus-treat-overstrike 'last)
+
+;;* show the text/plain part before the text/html part in
+;;multpart/alternative
+(require 'mm-decode)
+;;;-- no way do compile with this
+;;;--(push "text/plain" mm-alternative-precedence)
+;;;--(setq mm-alternative-precedence "text/plain")
+
+(message "gnus.el: MIME initialized")
+
+;***********************
+;; ARCHIVES: one file per month
+(setq gnus-message-archive-group
+      '((if (message-news-p)
+            "misc-news"
+          (concat "mail." (format-time-string
+                           "%Y-%m" (current-time)))))
+      )
+
+(message "gnus.el: ARCHIVES initialized")
+
+
+;;***********************
+;;************* INTERFACE
+
+;; Here I define how to display subject lines etc...
+;; I wanna see thoses groups everytime
+;(setq gnus-permanently-visible-groups "^inbox")
+(setq gnus-permanently-visible-groups ".*.*")
+
+;; I like it verbose
+(setq gnus-verbose 2000)
+
+;; I wanna be able to access my previous post
+(setq gnus-fetch-old-headers t)
+
+;; I wanna keep track of the last time I rode a group
+(add-hook 'gnus-select-group-hook 'gnus-group-set-timestamp)
+
+;; ;; *Group* buffer: how to format each group entry.
+;; (setq gnus-group-line-format "%M%m %4N/%4t non-lus: %(%-20,20g%) depuis le %2,2~(cut 6)d/%2,2~(cut 4)d à %2,2~(cut 9)dh%2,2~(cut 11)d\n"
+;; ;;
+;; ;; %var details C-h i
+;; ;;`M' An asterisk if the group only has marked articles.
+;; ;;'N' Number of unread articles.
+;; ;;`t' Estimated total number of articles.
+;; ;;`G' Group name.
+;; ;;`D' Newsgroup description.
+;; ;;`m' `%' (`gnus-new-mail-mark') if there has arrived new mail to the
+;; ;;    group lately.
+;; ;;`D' Last time the group as been accessed.
+;; ;;
+;; ;; For the record, a default group line format
+;; ;;(setq gnus-group-line-format "%M\%S\%p\%P\%5y: %(%-40,40g%)%6,6~(cut 2)d\n")
+;; )
+;; *Summary*: how to format each mail entry.
+(setq gnus-summary-line-format "%-1R %-1U  %-15,15n | %2,2~(cut 6)o/%2,2~(cut 4)o %2,2~(cut 9)oh%2,2~(cut 11)o | %I%(%0,40s%)\n"
+      gnus-summary-same-subject ">>>"
+      gnus-summary-mode-line-format "%V: %%b"
+;; %var details C-h i
+;; `s' Subject if the article is the root of the thread or the previous
+;;     article had a different subject, `gnus-summary-same-subject'
+;;     otherwise.  (`gnus-summary-same-subject' defaults to `""'.)
+;; `n' The name (from the `From' header).
+;; `L' Number of lines in the article.
+;; `I' Indentation based on thread level (*note Customizing Threading::).
+;; `>' One space for each thread level.
+;; `<' Twenty minus thread level spaces.
+;; `U' Unread.
+;; `R' This misleadingly named specifier is the "secondary mark".  This
+;;     mark will say whether the article has been replied to, has been
+;;     cached, or has been saved.
+;; `D'  `Date'.
+;; `d'  The `Date' in `DD-MMM' format.
+;;`o'     The `Date' in YYYYMMDD`T'HHMMSS format.
+;;
+;; For the record the default string is
+;; `%U%R%z%I%(%[%4L: %-20,20n%]%) %s\n'.
+)
+
+;; I remove mailing list identifiers for mail from list I read often, that
+;; are already stored in a particular directory
+;;(setq gnus-list-identifiers
+;;      '(    "\\[savannah-hackers\\]"
+;;        "\\[savannah-dev\\]"
+;;        ))
+
+;; I do not like graphics smileys.
+(setq gnus-treat-display-smileys nil)
+
+;; I wanna particular dimensions while reading mails
+(setq
+ gnus-build-sparse-threads 'some
+ gnus-use-trees t
+ gnus-generate-tree-function 'gnus-generate-horizontal-tree
+ gnus-tree-minimize-window nil)
+
+(if  (or (not (getenv "DISPLAY"))
+          (string-match ":0" (getenv "DISPLAY")))
+     (progn
+       (gnus-add-configuration
+        '(article
+          (vertical 1.0
+                    (summary 0.40 point)
+                    (article 1.0)
+                    )
+          )))
+   (progn
+     (gnus-add-configuration
+      '(article
+        (vertical 1.0
+          (summary 0.40 point)
+          (article 1.0)
+          )
+        )))
+   )
+ (setq font-lock-maximum-decoration t
+       font-lock-maximum-size nil)
+ (require 'font-lock)
+ (set-face-foreground 'gnus-summary-normal-ticked-face "pale violet
+          red")
+ (set-face-foreground 'gnus-summary-high-ticked-face "pale violet red")
+
+;; sorting
+;; par date
+(setq gnus-article-sort-functions '((not gnus-article-sort-by-date)))
+(setq gnus-thread-sort-functions '((not gnus-thread-sort-by-date)))
+
+
+
+ (message "gnus.el: INTERFACE initialized")
+
+
+;; W3M
+;  w3m affiche le mails html
+(setq mm-text-html-renderer 'w3m)
+; pas d'images :
+(setq mm-inline-text-html-with-images nil)
+
+
+;; ;;****************
+;; ;;********** REPLY
+;; ;;Hey, please remove my address from To: and Ccc: while I do a
+;; ;;wide reply.
+;; ;;seen at http://www.gnusfr.org/gen.php3/2002/04/02/36,0,1,0.html
+;; (setq message-dont-reply-to-names
+;;      "utilisateur@\\(gnu\\|free\\).\\(org\\|fr\\)")
+
+;; ;;I want my replies to begin with something like " writes:"
+;; (defun message-insert-citation-line ()
+;;  "La fonction qui insere une ligne aux reponses"
+;;  (when message-reply-headers
+;;    ;; In savannah-hackers group, we talk english
+;;    (if (string-equal gnus-newsgroup-name "savannah-hackers")
+;;    (insert (mail-header-from message-reply-headers) " said:\n\n")
+;;      (insert (mail-header-from message-reply-headers) " a tapoté
+;;      :\n\n")
+;;      )))
+
+;; (message "gnus.el: REPLY initialized")
+
+
+;;************************
+;;*** Plusieurs identités
+(custom-set-variables
+;; This is the hash  "group name => identity"
+'(gnus-personality-electric-headers 
+             (quote
+                     (
+                      (any "******" "****")
+                     )
+             )
+)
+
+;;There are my identities
+'(gnus-personalities (quote
+                      (
+                  ; usual
+           ("default"
+           "******* <*****@*****> "
+            ""
+            "~/.signature"
+            )
+                   ; newsgroup
+           ("camille"
+            "***** <*****@*****> "
+            ""
+            "~/.signature.camille"
+            )
+           )))
+'(gnus-pers-cc-fix nil)
+)
+(require 'gnus-pers)
+(gnus-personality-init)
+
+(message "gnus.el: IDENTITIES initialized")
+
+;; ******************
+;; *** Posting Styles
+
+    (setq gnus-posting-styles
+	  '(;(".*"
+            ;   (eval (ispell-change-dictionary "english"))
+            ;   (signature "")
+            ;   (X-Face sk:x-face))
+            ((message-mail-p)
+             (From    "**** <***@***>")
+             ;(eval (ispell-change-dictionary dico))
+             )
+            ((message-news-p);".*"
+             (From    "**** <****.no@spam.*****.invalid>")
+             (Reply-To "**** <****@****>"))
+            )
+	  )
+
+</pre>

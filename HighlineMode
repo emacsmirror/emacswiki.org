@@ -1,0 +1,270 @@
+This page describes package Lisp:highline.el, by ViniciusJoseLatorre.
+
+: .:: ''v7.2.1'' ::.
+
+
+== About highline ==
+
+This package is a minor mode to highlight the current line in buffer.
+
+Lisp:highline.el was inspired by:
+
+; ##linemenu.el## -- Bill Brodie <_wbrodie_@_panix_._com_> : Hook function to highlight current line in buffer.
+
+; ##hl-line.el## -- DaveLove : Highlight the current line.
+
+; Lisp:highlight-current-line.el -- ChristophConrad : Highlight line where the TextCursor is.
+
+To use Lisp:highline.el, insert in your ##~/.emacs##:
+
+   (require 'highline)
+
+For good performance, be sure to byte-compile Lisp:highline.el, e.g.
+
+   M-x byte-compile-file <give the path to highline.el when prompted>
+
+This will generate highline.elc, which will be loaded instead of
+Lisp:highline.el.
+
+Lisp:highline.el was tested with GNU Emacs 21, 22 and 23, XEmacs 21.4.20,
+and Aquamacs Emacs 1.5.
+
+[new]
+(I am using this with 21.4 (patch 19) -- StefanKamphausen)
+
+[new]
+
+
+== Using highline ==
+
+To customize HighlineMode, type:
+
+   M-x highline-customize RET
+
+
+<u>LOCAL HighlineMode</u> (see NOTE 1 below):
+[new]
+: To activate HighlineMode locally, type:
+:: ##C-u 1 M-x highline-mode RET##
+[new]
+
+: To deactivate HighlineMode locally, type:
+:: ##C-u 0 M-x highline-mode RET##
+
+[new]
+: To toggle HighlineMode locally, type:
+:: ##M-x highline-mode RET##
+[new]
+
+
+<u>GLOBAL HighlineMode</u> (see NOTE 1 below):
+[new]
+: To activate HighlineMode globally, type:
+:: ##C-u 1 M-x global-highline-mode RET##
+[new]
+
+: To deactivate HighlineMode globally, type:
+:: ##C-u 0 M-x global-highline-mode RET##
+
+[new]
+: To toggle HighlineMode globally, type:
+:: ##M-x global-highline-mode RET##
+[new]
+
+
+<u>INDIRECT HighlineMode</u> (see NOTE 2 below):
+[new]
+: To activate indirect HighlineMode, type:
+:: ##C-u 1 M-x highline-view-mode RET##
+[new]
+
+: To deactivate indirect HighlineMode, type:
+:: ##C-u 0 M-x highline-view-mode RET##
+
+[new]
+: To toggle indirect HighlineMode, type:
+:: ##M-x highline-view-mode RET##
+[new]
+
+: To split window and activate indirect HighlineMode, type:
+:: ##M-x highline-split-window-vertically RET##
+:: ##M-x highline-split-window-horizontally RET##
+
+
+You can also bind `highline-mode', `global-highline-mode',
+`highline-customize', `highline-view-mode',
+`highline-split-window-vertically' and
+`highline-split-window-horizontally' to some key, like:
+
+   (global-set-key "\C-c-h" 'highline-mode)
+   (global-set-key "\C-c-g" 'global-highline-mode)
+   (global-set-key "\C-c-c" 'highline-customize)
+   (global-set-key "\C-c-v" 'highline-view-mode)
+   (global-set-key "\C-c-2" 'highline-split-window-vertically)
+   (global-set-key "\C-c-3" 'highline-split-window-horizontally)
+
+; '''NOTE 1''' : There is no problem if you mix local and global minor mode usage.
+
+; '''NOTE 2''' : Indirect HighlineMode (`highline-view-mode')
+is useful when you wish to have various /visions/ of the same buffer.
+Indirect HighlineMode uses an indirect buffer to get the /vision/ of the
+buffer.  So, if you kill an indirect buffer, the base buffer is not
+affected; if you kill the base buffer, all indirect buffer related
+with the base buffer is automagically killed.  Also, any text
+insertion/deletion in any indirect or base buffer is updated in all
+related buffers.
+
+
+== Example ==
+
+As an example, try to insert this in your ##~/.emacs## file:
+
+   (require 'highline)
+   (defun highline-mode-on () (highline-mode 1))
+   ;; Turn on local highlighting for Dired (C-x d)
+   (add-hook 'dired-after-readin-hook #'highline-mode-on)
+   ;; Turn on local highlighting for list-buffers (C-x C-b)
+   (defadvice list-buffers (after highlight-line activate)
+     (save-excursion
+       (set-buffer "*Buffer List*")
+       (highline-mode-on)))
+
+
+== Hooks ==
+
+HighlineMode has the following hook variables:
+
+; `global-highline-mode-hook' : It is evaluated always when HighlineMode is turned on globally.
+
+; `highline-mode-hook' : It is evaluated always when HighlineMode is turned on locally.
+
+; `highline-view-mode-hook' : It is evaluated always when indirect HighlineMode is turned on.
+
+; `highline-load-hook' : It is evaluated after HighlineMode package is loaded.
+
+
+== Options ==
+
+Below it's shown a brief description of HighlineMode options, please, see the
+options declaration in the code for a long documentation.
+
+; `highline-face' : Specify [[Face]] used to highlight the current line.
+
+; `highline-vertical-face' : Specify [[Face]] used to highlight other than current line.
+
+; `highline-line' : Specify which part of line should be highlighted.
+
+; `highline-vertical' : Specify how many vertical lines should be highlighted.
+
+; `highline-ignore-regexp' : Specify regexp for buffers to ignore.
+
+; `highline-priority' : Specify highline [[overlay]] priority.
+
+; `highline-selected-window' : Non-##nil## means highlight current line on current window.
+
+; `highline-view-prefix' : Specify prefix used in the indirect buffer name creation.
+
+; `highline-keep-highlight' : Non-##nil##
+means keep highlight on nonselected windows with highline mode on.
+
+To set the above options you may:
+
+
+[new]
+a. insert the code in your ##~/.emacs##, like:
+
+   (setq highline-face 'highlight)
+
+This way always keep your default settings when you enter a new Emacs session.
+[new]
+
+b. or use `set-variable' in your Emacs session, like:
+
+   M-x set-variable RET highline-face RET highlight RET
+
+This way keep your settings only during the current Emacs session.
+
+[new]
+c. or use customization, for example:
+
+In Emacs 21 or lower:
+# click on MenuBar ##Help## option,
+# then click on ##Customize##,
+# then click on ##Browse Customization Groups##,
+# expand ##Editing## group,
+# expand ##Highline## group
+# and then customize HighlineMode options.
+
+In Emacs 22 or higher:
+# click on MenuBar ##Options## option,
+# then click on ##Customize Emacs##,
+# then click on ##Browse Customization Groups##,
+# expand ##Editing## group,
+# expand ##Highline## group
+# and then customize HighlineMode options.
+
+Through this way, you may choose if the settings are kept or not when you leave out the current Emacs session.
+[new]
+
+d. or see the option value:
+
+   C-h v highline-face RET
+
+and click the ##customize## hypertext button.
+
+Through this way, you may choose if the settings are kept or not when you leave out the current Emacs session.
+
+[new]
+e. or invoke:
+
+   M-x highline-customize RET
+
+and then customize HighlineMode options.
+
+Through this way, you may choose if the settings are kept or not when you leave out the current Emacs session.
+[new]
+
+
+
+== Acknowledgements ==
+
+Thanks to DavidReitter for `highline-face' less contrastive default values.
+
+Thanks to StefanKamphausen and Steven Tate <_state_@_odnosam_._com_> for testing.
+
+Thanks to Gwern Branwen <_gwern0_@_gmail_._com_> for indicating defface ##:group##
+attribute.
+
+Thanks to Sandip Chitale <_sandip_._chitale_@_brokat_._com_> for byte-compilation
+tests.
+
+Thanks to Stephan Engelke <_engelke_@_gmx_._ne_> for XEmacs tests.
+
+Thanks to Roman Belenov <_roman_@_nstl_._nnov_._ru_> for `pre-command-hook'
+suggestion.
+
+Thanks to Trey Jackson <_bigfaceworm_@_hotmail_._com_> for `highline-line'
+enhancements.
+
+Thanks to Fredrik Sundstroem <_fresun-7_@_sm_._luth_._se_> for permanent-local
+overlay property indication.
+
+Thanks to:
+: Bill Brodie <_wbrodie_@_panix_._com_> -- ##linemenu.el##
+: DaveLove -- ##hl-line.el##
+: ChristophConrad -- Lisp:highlight-current-line.el
+
+And to all people who contributed with them.
+
+
+== See Also ==
+
+* HighlightCurrentLine
+* HighlineAndGnus
+* [[Easymacs]]
+
+
+----
+
+CategoryCode,
+CategoryModes

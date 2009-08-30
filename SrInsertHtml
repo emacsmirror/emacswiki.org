@@ -1,0 +1,58 @@
+;;;
+
+(defun korrekt-end-tag(&optional num start-point)
+  "Schließt HTML-Tags. Diese Funktion sucht den letzten öffnenden Tag,
+und fügt den entsprechenden End-Tag ein. Mit \\[universal-argument] können auch mehrere
+Tags geschlossen werden.
+Um sicherzugehen, dass Tags wie '<br>' nicht geschlossen werden, muss
+in dieser Version noch XHTML-konform gearbeitet werden (Tags, die auf
+'/>' enden werden als leere Tags angesehen).
+Wird start-point spezifiziert, sucht korrekt-end-tag nur zwischen der
+aktuellen Position und start-point. Auf diese Weise kann man die
+Funktion dazu nutzen, nur die Tags in einem Doc-Kommentar zu schließen,
+wenn man Queltexte dokumentiert."
+  (interactive "*p")                    ; return if read-only.
+  (save-restriction
+    (save-match-data
+      (widen)
+      (let ( (start-tag "")
+             (old-point (point))
+             (p1 (point))
+             (p2 2)
+             (min-point (or start-point (point-min))))
+        (dotimes (i (or num 1))
+          (setq start-tag "")
+          (setq old-point (point))
+          (narrow-to-region  min-point (point))
+          (goto-char p1)
+          (re-search-backward "\\(<\\)\\([[:alnum:]]+\\)\\([^>]*[^/]\\)?>" nil t)
+          (setq p1 (match-beginning 1))
+          (setq p2 (match-end 2))
+          (setq start-tag (match-string-no-properties 2))
+          (goto-char p2)
+          (while (and (stringp start-tag)
+                      (search-forward (concat "</" start-tag ">")
+                                      old-point t))
+            (setq p2 (point))
+            (goto-char p1)
+            (if (re-search-backward
+                 "\\(<\\)\\([[:alnum:]]+\\)\\([^>]*[^/]\\)?>" nil t)
+                (progn
+                  (setq start-tag (match-string-no-properties 2))
+                  (setq p1 (match-beginning 1))
+                  (setq p2 (match-end 2))
+                  (goto-char p2))
+              (setq start-tag nil))
+            )
+        (goto-char old-point)
+        (if (stringp start-tag)
+            (progn
+              (insert "</")
+              (insert start-tag)
+              (insert ">"))
+          (message "Alle Tags geschlossen :-)")))))))
+
+(sr-set-global-key [(super ?h)] "S-." 'korrekt-end-tag      "korrekt-end-tag") ;; WIN-. auf meinem PC
+(sr-set-global-key [(hyper ?h)] "S-." 'korrekt-end-tag      "korrekt-end-tag") ;; WIN-. auf meinem Notebook
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,0 +1,3 @@
+This is a tagging extension based on EtagsSelect which uses exuberant ctags instead of ectags. The advantage of exuberant ctags being that it collects semantic information about the tags such as the function signature, the class it inherits from, what structure/union it is a member of, etc. This is used by eldoc to display information about the tag under the cursor.
+
+Lisp:ectags-select.el

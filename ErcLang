@@ -1,0 +1,10 @@
+The erc-lang module provides the command /LANG to identify
+languages and an ordinary interactive function `language' which does
+the same for normal use outside of IRC.
+
+To install, add the following to your ~/.emacs:
+
+    (require 'erc-lang)
+
+----
+[[ERC]]

@@ -1,0 +1,86 @@
+(Moved here from EmacsWikiSuggestions.)
+
+It would be helpful if the page titles would be changed from **Emacswiki: SomePage** to **SomePage - Emacswiki**. E.g. in Firefox when many tabs are open it's kind of pointless to see that a bunch of them visit pages on the Emacswiki - I would rather see what page. The favicon already tells me it's the Emacswiki they are comming from.
+
+[new]
+Done. Let me know if it works for you. I used **SomePage [EmacsWiki]** instead but I'm not sure whether that's much better. Perhaps we should just remove it altogether? -- Alex
+
+[new]
+
+(copied from [[2008-12-05]])
+
+I've tried to get used to it, but I must say that the recent addition of '''%%[EmacsWiki]%%''' to the title of each Web page is annoying. 
+
+Abstractly, it sounds like it would be something helpful, letting you know quickly which browser windows hold Emac Wiki pages, for instance. But in practice I find that it makes it harder, not easier, to find which page is which. 
+
+That's so for the Windows task bar, where browser windows are grouped together in a pop-up menu, and it's so for the '''Back''' menu, which has a similar menu. I don't know how others feel, but to me it is harder to quickly scan and pick out one wiki page from the others in such a menu. 
+
+In sum, the extra text adds clutter and drowns the text that to me is significant: the text that makes each page title ''different''.
+
+My preference would be to remove this feature altogether. If that's not possible, it would at least be better to move the '''%%[EmacsWiki]%%''' far to the right, separating it significantly from the title text that does matter.  Just one opinion. -- DrewAdams
+
+[new:DrewAdams:2008-12-06 02:24 UTC]
+I see that you've already removed the '''%%[EmacsWiki]%%''' suffix. That was quick. Thank you. -- DrewAdams
+
+[new]
+Great!
+
+I vaguely remember how windows are grouped in the task-bar in Windows. Having the common part of the page title at the end probably is a disadvantage there. However Emacswiki isn't the only site that puts the site name last in page names - so I think that's a misfeature of Windows, which should be fixed there. Tabs are common across various browsers and os but the windows-grouping-by-prefix-in-the-task-bar is unique to Windows (or even it's task-bar) - so in my opinion it's more important that tabs are distinguishable than good grouping in a Windows-only feature, sorry Drew.
+
+I like "Foo %%[EmacsWiki]%%" better than what I proposed but it adds more noise and is non-standard. But I don't think that's what Drew refered to. I would personaly prefer it if site names would never be added to page titles at all. Favicons are enougth for me and I always remove the domain part when making bookmarks. But this would be a more drastic change that a lot of people might not like. Still it might be worth considering. I vote for removal but let's see what other people think. -- JonasBernoulli
+
+[new]
+I don't care either way. It is true that I usually remove site names from bookmarks, but then again the title element is also used for other things. I just switched the site to dropping the site name altogether. Thoughts? The reason I wanted square brackets in the title was that it clearly distringuishes the site name from the page name as a simple dash is a legal character within a page name but square brackets are not. -- AlexSchroeder
+
+[new]
+Looks like all of use (you, Drew and I at least) prefer it this way! -- JonasBernoulli
+
+[new]
+Please keep "EmacsWiki" somewhere in the title - I've been relying on that text when using IswitchBuffers to see and switch to open EmacsWiki buffers, especially when I can't remember the names of all the pages I visited and how many I have left to look at ;) -- DianeMurray
+
+[new]
+Yeah, I don't think it should have been removed.  Most sites have their site name in the title, albeit at the end of the title, and the title is important to search engine optimization -- granted "EmacsWiki" is in the URL which is also emphasised.
+
+I don't have a strong opinion at the moment since I use OddmuseMode, but it would seem strange to favor Internet Explorer users over Emacs users -- *even if* Windows, IIRC, is the biggest user-agent for the site. -- AaronHawley
+
+[new]
+Not to worry – here's the data based on a few hours of log file. ([http://www.emacswiki.org/alex/user-agent-grouping source])
+
+{{{
+aschroeder@thinkmo:~$ user-agent-grouping < logs/access.log | head
+                       Firefox       9817    32%
+                       Mozilla       5493    18%
+                          MSIE       2232     7%
+                      Netscape       1835     6%
+                         Yanga       1661     5%
+                        Safari       1367     4%
+                        Yandex       1339     4%
+                          Wget        780     2%
+                        msnbot        719     2%
+            Feedfetcher-Google        460     1%
+}}}
+
+I agree with Aaron's argument and therefore suggest we just return to what we had before. -- Alex
+
+[new]
+What is before? Emacswiki after or before page title? I (obviously) vote for after. By the way the new awesome-bar (or whatever it is called) in firefox let's you enter words in the status and then find pages you bookmarked/visited by looking at the page title *as well as* the address. --JonasBernoulli
+
+[new]
+I agree with Aaron's argument, namely that I don't want to change a feature just because that's beneficial for IE users. Therefore I reverted things to their original setting.
+
+I don't really feel like spending much time on this. If you feel that it is truly important, please organize a vote -- could be here, or on a Doodle -- and gather a significant number of votes (eg. at least twelve) to choose either one or the other without any significant opposition (eg. no more than one or two). Also please take into account that users of Oddmuse mode, w3m, lynx, blind users, etc. should be given priority. Something like that.
+-- Alex
+
+[new:DrewAdams:2008-12-10 16:01 UTC]
+I must have missed something -- what does this have to do with IE? I see the same thing in Google Chrome and in Mozilla FireFox. Well, with Chrome there is nothing in the Title bar, but the titles still appear the same in the task-bar group, and they still appear the same in the Back history. (In Chrome the history appears differently, but the titles still appear the same there.) So AFAICT, the same distraction occurs regardless of browser, and even without a (Windows) task bar: the history uses the titles.
+
+That said, I was OK with what we had for years, and I'd probably be OK if the site name were placed after the page title but much farther to the right (after a fair amount of whitespace, and with no brackets). It was only putting ##[EmacsWiki]## after the page title that bothered me. (My preference is to drop the site name, however.)  BTW, I was absent during the period logged above, if that was the last few days. ;-). -- DrewAdams
+
+[new]
+I don't know about Chrome, but I was presuming Firefox users use tabs, and not the Windows task bar. -- AaronHawley
+
+[new]
+Sorry, I confused Windows and IE. I'm using Firefox on Windows and indeed the taskbar is never an issue because use tabs instead of windows. -- Alex
+
+[new:DrewAdams:2008-12-11 00:27 UTC]
+I think tabs don't necessarily have anything to do with it, either. Even if you use tabs you might still use more than one browser window (window-mgr window). Those separate windows each get a slot in the task-bar group. AFAICT, this has nothing to do with which browser is used (except that some browsers don't even provide tabs). It has only to do with MS Windows. If you use multiple browser windows with Windows, then those windows are available in the task bar -- by default in a task-bar group (aka menu). Whether you also use tabs or not is beside the point, I think. -- DrewAdams

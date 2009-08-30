@@ -1,0 +1,18 @@
+Back in the nineties, there was a development environment called SQL Windows by Gupta Technologies.
+If you no longer have the IDE but still need to look at old source code, here's a little piece of
+code that uses OutlineMode to do the job:
+
+{{{
+(defun sql-windows-mode ()
+  (interactive)
+  (outline-mode)
+  (setq auto-fill-function nil
+	outline-regexp "\\.head \\([0-9]+\\)"
+	outline-level (lambda () (string-to-number (match-string 1))))
+  (hide-sublevels 1))
+
+(add-to-list 'auto-mode-alist '("\\.app\\'" . sql-windows-mode))
+}}}
+
+----
+ProgrammingModes

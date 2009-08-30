@@ -1,0 +1,16 @@
+== What is? ==
+
+Lisp:vnesting.el -- Draws vertical lines around forms to show the nesting of lisp code.
+
+'''See Also:''' HighlightCurrentColumn VlineMode
+
+== Usage ==
+
+Type `M-x vnesting-mode' or `(add-hook 'slime-mode-hook 'vnest-mode)'
+
+== Screenshot ==
+
+[[image:VnestingScreenShot]]
+
+----
+CategoryDisplay CategoryEditing CategoryAccessibility CategoryFaces HighlightTemporarily

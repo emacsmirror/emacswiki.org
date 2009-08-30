@@ -1,0 +1,15 @@
+Quoting the manual:
+: Bibliography mode (bibl-mode) is a subsystem of GNU Emacs which allows
+you to keep track of information on the World Wide Web and elsewhere. It is primarily intended for storing information about software
+packages, Web pages, mailing lists, and other data of interest to users
+of the Internet, but can also be used to keep references to books and
+papers, and can be extended to hold a heterogeneous database of most any
+sort of textual information.
+
+BiblMode is used by RememberMode to keep track of URLs and BookMarks.
+
+Get it from
+* ftp://ftp.maths.tcd.ie/pub/bosullvn/elisp/bibl-mode/
+
+-----
+CategoryModes

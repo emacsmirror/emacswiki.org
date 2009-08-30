@@ -1,0 +1,35 @@
+If you are on a Linux console, for example, some key combinations
+might simply not exist -- it depends on the setup outside of Emacs.
+
+For example there is no C-<up> etc. on my Linux console by
+default. Therefore I created a .keymap file with the following entries
+(amonst others):
+
+ # control up down left right home end
+ control keycode 103 = Meta_p
+ control keycode 108 = Meta_n
+ control keycode 105 = Meta_Control_b
+ control keycode 106 = Meta_Control_f
+ control keycode 102 = Meta_less
+ control keycode 107 = Meta_greater
+ # C-TAB should be like M-/ (dabbrev-expand)
+ control keycode 15 = Meta_slash
+ # CapsKey should be like C-_ (undo)
+ keycode 58 = Control_underscore
+
+And it is used in my .profile:
+
+ # If console, change some keymaps
+ if [ $TERM = 'linux' -a -x /usr/bin/loadkeys -a -f .keymap ] ; then
+     loadkeys de-latin1 2> /dev/null
+     loadkeys .keymap 2> /dev/null
+ fi
+
+See LoadKeys for more information about the programs used.
+
+== How to determine the scancodes ==
+
+Run `showkey' and type the key you want.
+
+----
+CategoryKeys

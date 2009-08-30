@@ -1,0 +1,102 @@
+As seqüências de tecla do Windows (C-c, C-x, C-v, C-z, seleção usando S-[movimento] etc.) são um padrão, ninguém pode negar... Mas isso não é um problema para o Emacs!
+
+== Instalando ==
+
+Baixe o arquivo cua.el de http://www.cua.dk/ (note que versões mais recentes do Emacs já o possuem), coloque-o em um diretório acessível (ver LoadPath) e insira o seguinte em seu InitFile (ver CategoriaPontoEmacs):
+
+ (require 'cua)
+ (CUA-mode t)
+
+'''Nota''': na versão CVS do emacs você deve '''remover''' essas linhas e selecionar o estilo CUA no menu Opções.
+
+Estas novas seqüências de teclas entram em conflito com outras seqüências importantes do Emacs. Por isso, '''estando uma região ativa, o que funcionará será o modo CUA'''. Na prática, C-x será interpretado como matar se houver seleção; caso contrário, será o tradicional C-x (de C-x C-s, por exemplo). Caso precise usar C-x com uma região ativa, sem matar o texto, use '''C-S-x''' (i.e. use o Shift).
+
+== Usando no console e no terminal ==
+
+O modo cua não funciona no terminal nem no console porque, 1) o console não envia as seqüências de escape para Shift|Control|Control+Shift-movimento e 2) o emacs não interpreta as seqüências quando enviadas pelo terminal.
+
+Para resolver isso, será necessário criar um mapa de teclas, lê-lo, e dizer ao emacs como interpretá-lo.
+
+=== 1) mapa de teclas ===
+
+Crie um ~/.keymap com:
+
+ keycode 103 = Up
+  Shift keycode 103 = F49
+ keycode 108 = Down
+  Shift keycode 108 = F50
+ keycode 106 = Right
+  Shift keycode 106 = F51
+  Control keycode 106 = F53
+  Control Shift keycode 106 = F55
+ keycode 105 = Left
+  Shift keycode 105 = F52
+  Control keycode 105 = F54
+  Control Shift keycode 105 = F56
+ keycode 102 = Find
+  Shift keycode 102 = F57
+  Control keycode 102 = F59
+  Control Shift keycode 102 = F61
+ keycode 107 = Select
+  Shift keycode 107 = F58
+  Control keycode 107 = F60
+  Control Shift keycode 107 = F62
+ string F49 = "\033O2A"
+ string F50 = "\033O2B"
+ string F51 = "\033O2C"
+ string F52 = "\033O2D"
+ string F53 = "\033O5C"
+ string F54 = "\033O5D"
+ string F55 = "\033O6C"
+ string F56 = "\033O6D"
+ string F57 = "\033O2H"
+ string F58 = "\033O2F"
+ string F59 = "\033O5H"
+ string F60 = "\033O5F"
+ string F61 = "\033O6H"
+ string F62 = "\033O6F"
+
+Para ler o mapa como usuário, adicione ao ~/.bashrc:
+
+ if [ "$TERM" = "linux" ] ; then
+    loadkeys -q .keymap
+ fi
+
+Note que para usar o loadkeys como usuário é necessário configurá-lo como suid, com 'chmod +s /bin/loadkeys', por exemplo. O ideal é ler o mapa na inicialização do sistema, como uma extensão ao mapa padrão. Será necessário copiá-lo como, por exemplo, /usr/share/keymaps/i386/include/emacs_cua.map e lê-lo com, por exemplo, 'loadkeys -q br-latin1-us emacs_cua' em algum lugar do init.d. Como fazer isso corretamente varia segundo a distribuição. No Gentoo, adicionei EXTENDED_KEYMAPS="emacs_cua" ao /etc/conf.d/keymaps.
+
+=== 2) Fazendo o emacs interpretar ===
+
+Acrescente ao seu InitFile ou ao ##site-start.el## (geralmente em /usr/share/emacs/site-lisp/):
+
+ (when (or (string= (getenv "TERM") "linux")
+  	   (string= (getenv "TERM") "xterm"))
+   (define-key function-key-map "\eO2A" [S-up])
+   (define-key function-key-map "\eO2B" [S-down])
+   (define-key function-key-map "\eO2C" [S-right])
+   (define-key function-key-map "\eO2D" [S-left])
+   (define-key function-key-map "\eO5C" [C-right])
+   (define-key function-key-map "\eO5D" [C-left])
+   (define-key function-key-map "\eO6C" [C-S-right])
+   (define-key function-key-map "\eO6D" [C-S-left])
+   (define-key function-key-map "\eO2H" [S-home])
+   (define-key function-key-map "\eO2F" [S-end])
+   (define-key function-key-map "\eO5H" [C-home])
+   (define-key function-key-map "\eO5F" [C-end])
+   (define-key function-key-map "\eO6H" [C-S-home])
+   (define-key function-key-map "\eO6F" [C-S-end])
+   )
+
+'''Nota''': Não tenho qualquer problema fora do X, mas não consegui fazer isso funcionar no xterm com 'emacs -nw'. Mas (de novo), se você está no X, por que usar '-nw'? :) -- DeDaLu
+
+-----
+
+Ver (em inglês):
+* CuaMode para mais detalhes,
+
+* CuaAndIsoTransl para problemas e
+
+* CuaLightMode para alternativas.
+
+-----
+
+CategoriaTeclas CategoriaRegião

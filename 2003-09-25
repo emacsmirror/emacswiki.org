@@ -1,0 +1,13 @@
+RichardStallman asks for non-programming help in [http://mail.gnu.org/archive/html/emacs-devel/2003-09/msg00390.html this post, 2003-09-24] on [http://mail.gnu.org/archive/html/emacs-devel/ emacs-devel]:
+'''Checking the Lisp Reference Manual for errors'''
+
+I've updated the [http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/lispref/ Emacs Lisp Reference Manual] for the change that have
+been made since the previous revision, or most of them.  Now I need
+help in checking it for errors, and for places that were correct but
+are not correct any longer.  To do a good job of this would require
+that each part of the text be read by at least two people.
+
+Could people start reading whatever parts of the manual they would
+like to check?  When you check a part, please tell me which part
+whether you found any errors or not, so I can note down that it has
+been covered.

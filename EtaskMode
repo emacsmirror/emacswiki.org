@@ -1,0 +1,50 @@
+== Emacs Major Mode for (Project) Task Management and Gantt Charts ==
+
+<b>EtaskMode</b> is a major mode that supports you in your efforts to define and manage your projects or tasks. 
+
+
+Homepage with screenshots:
+
+* http://members.chello.at/rene.weichselbaum/etask.html <- broken link (2007-04-09)
+
+[new]
+Source (v0.3.91): Lisp:etask.tar.gz
+
+-- ViniciusJoseLatorre
+
+[new]
+Selected Features:
+
+# Keep track of tasks in multiple projects
+# Manage your todos
+# Organize tasks and todos in subtasks and subtodos
+# Archive tasks and todos
+# Display Gantt bars for all tasks and todos
+# Change the zoom factor of the Gantt chart
+# Classify each project task according to its criticality (normal, high risk, on critical path)
+# Make task and todo notes
+# Set task-specific progress goals (linear, moderate s-shaped, s-shaped)
+# Multilingual (German and English)
+# Print detailed project status reports
+# Generate LaTeX output for high-quality Gantt charts
+
+== Comments ==
+
+Note: Not maintained at the moment!
+If you want to take over please contact /rene dot mas at chello dot at/. <- broken email (2007-10-17)
+
+[new]
+
+Looks useful, but with GNU Emacs 21 I had to define my own <code>boolean-p</code> function to get this package to work; where is this supposed to come from? I also had to load <code>diary-lib</code> by hand. -- MattHodges
+
+[new]
+Fixed in test release 0.3.91.  -- Rene
+
+[new]
+
+I didn't found how can I reopen an existent project. Is there a way or its in the TODO list? -- Leslie
+
+[new]
+Of course you can do this (search for "Switch to" in online help; `C-h m' if online help not visible).  -- Rene
+----
+CategoryCalendar | CategoryTodo

@@ -1,0 +1,32 @@
+Hi.
+
+
+I'm Kamen Nedev. I use Emacs. I've been using it for about four years now. So I
+suppose this makes me a TOTAL newbie.
+
+
+* Things I like about Emacs: its power, its logic, its capacity to metamorphose
+  into anything and everything.
+
+* Things I use it for: Translation (RemembranceAgents, LookUp, FlySpell), web
+  development(NxmlMode), programming (Interactive Fiction, some Python, some
+  Perl, and a lot of EmacsLisp, obviously), and... erm.... just about everything else
+  ([[NewsTicker]], [[JabberEl]], [[ERC]]...)
+
+* Emacs packages I'm hooked on: NewsTicker, WThreeM, MalyonMode, OrgMode,
+MuseMode (yay!), AucTeX (nothing beats the Emacs-AUCTeX-BibCite-RefTeX!).
+
+* Stuff I've got into more recently: [[ERC]] (+bitlbee), [[EmacsLispScreen]], and I'm working my way towards switching completely to [[Gnus]] for my mail and news needs.
+
+* More recently, I have found the use of [[emacs-w3m]] with some popular online
+  a nice change from the bells&whistles of AJAX. I have documented it here:
+
+http://www.emacswiki.org/emacs-en/WThreeMHintsAndTips#toc15
+
+My website (journal, projects, podcast, etc.) is at http://www.waitingforcargo.net
+
+
+----
+
+
+CategoryHomepage

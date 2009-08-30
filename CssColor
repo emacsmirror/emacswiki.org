@@ -1,0 +1,24 @@
+Css-color.el propertizes colours in a CSS stylesheet found by 
+font-locking code with a keymap. From that keymap, you can easily
+adjust values such as red green and blue, hue, saturation and
+value, or switch between different color (space) notations. 
+
+It supports all 'css-colors', so hex, rgb(), hsl() and even
+HTML color names (although I wouldn't use them myself, it is nice
+to be able to quickly convert those), can be used and switched between.
+
+The rgb() notation can be expressed either in percentages or in values between 0-255.
+
+You can cycle between the different formats (with SPACE), so that it is
+possible to edit the color in hsl mode (which is more intuitive than
+hsv, although hsv has its merits too), and switch back to rgb or hex if
+so desired.
+
+With point on a color, the keys - and = to are bound to the down and up functions for
+channels (or 'fields'). Toggling percentage in rgb() is done with
+the % key (not sure if that is wise though). The TAB key is bound to go to the next channel,
+cycling when at the end.
+
+==Download==
+
+Css-color.el is now part of [NxhtmlMode nXhtml].

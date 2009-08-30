@@ -1,0 +1,219 @@
+: [[image:iciclesimage]]
+
+|| '''[[Icicles]]''' || IciclesIndex ||
+
+
+This page tells you how '''[[Icicles]]''' can ''help you learn to use Emacs''. '''Icicles''' is a set of libraries that you can load into GnuEmacs.  The libraries don't come installed as part of Emacs, but loading them is trivial.
+
+
+== Why use Icicles, if I want to learn about vanilla Emacs? ==
+
+You might think that it would be best to start learning about vanilla Emacs by, well, using vanilla Emacs(!), that is, using Emacs with no other libraries loaded: ##emacs -Q## or ##emacs -q -no-site-file## from the command line. Why should you try to learn both Emacs and an Emacs add-on package at the same time?
+
+There is something to be said for sticking to vanilla Emacs. In particular, the [[KeySequence | key sequences]] that you use in vanilla Emacs are those that you find in the documentation; there is never a mismatch. 
+
+However, '''Icicles''' provides features that can help you find your way around and help you discover what Emacs has to offer. I (DrewAdams) sincerely think that '''Icicles''' can lower the basic-Emacs learning curve, as well as acquaint you with useful parts of Emacs that you might not be aware of otherwise. You can think of '''Icicles''' as a set of training wheels for learning to ride Emacs...
+
+: [[image:TrainingWheels]] And soon enough, you might think of it differently...
+[[image:UnoMoto]] [http://theunouni.blogspot.com/]
+
+Here's the best news: After you load '''Icicles''', you can turn it (''Icicle'' mode) on and off at will, using `M-x icy-mode'.  When ''Icicle'' mode is off, what you experience '''''is''''' vanilla Emacs. So, my suggestion is to try '''Icicles''' from the start, and turn off ''Icicle'' mode whenever you feel that you want to experience the "raw" deal ;-).
+
+As to learning '''Icicles''' -- You can access most '''Icicles''' features from the [[menu bar]] menus '''[[Icicles - Nutshell View#IciclesMenuBarMenu|Icicles]]''' and '''[[Icicles - Nutshell View#MinibufMenuBarMenu|Minibuf]]'''. The '''Icicles''' menu is available all of the time (that is, whenever you are in ''Icicle'' mode), and the '''Minibuf''' menu is available whenever the [[minibuffer]] is active. Using menus can let you know what's available, and it can help you find your way around without struggling at the same time to learn key bindings. 
+
+
+
+
+== So what is Icicles, anyway, and why bother? ==
+
+'''Icicles''' is documented here: '''[[Icicles]]'''. The doc is pretty comprehensi__ve__, and much of it should also be comprehensi__ble__ by Emacs n00bs -- by you, that is.
+
+'''Icicles''' adds lots of features to vanilla Emacs, the most important feature being enhanced support for input [[completion]], that is, completion of what you type in the [[minibuffer]].  '''Icicles''' lets you do the following things that are of particular help to you as an EmacsNewbie:
+
+[new]
+* See ''what you can do'' at any moment:
+
+** See which possible inputs are expected by a [[command]] that reads input -> [[#PossibleInputs]] (below)
+
+** See which [[KeySequence | key sequence]]s are currently available, which of them are general vs which are local, and what each of them does -> [[#PossibleKeyBindings]] (below)
+
+* See individual descriptions of the possible inputs, that is, ''help on completion candidates'' -> [[#CandidateHelp]] (below)
+
+* ''Find menu items'' more easily -> [[#FindMenuItems]] (below)
+
+* ''Find commands'' more easily -> [[#FindCommands]] (below)
+
+* ''Find help'' in the doc -> [[#FindStuffInManuals]] (below)
+
+* Learn how to ''use [[regexp]]s'' -> [[#LearnAboutRegexps]] (below)
+
+[new]
+
+
+[:PossibleInputs]
+== Which inputs are possible now? ==
+
+Both '''Icicles''' and vanilla Emacs let you know which inputs are possible at any given time. They do this by showing the possible [[completion]]s of what you have typed as input so far. The main difference is this: 
+
+* For vanilla Emacs, the completion candidates shown are those that match your input as a ''prefix'' only. You type `M-x region TAB' and it shows you all [[command]] names that ''start'' with `region'.
+
+* For '''Icicles''', the candidates shown are those that match your input as a prefix or as a ''substring''. You type `M-x region S-TAB' and it shows you all command names that ''include'' `region'. 
+
+In both vanilla Emacs and '''Icicles''', hitting the `TAB' key when input is expected shows the prefix completions. In '''Icicles''', holding the Shift key while hitting `TAB' (that is, `S-TAB') shows the substring completions (which include the prefix completions).
+
+Skip this paragraph if you are unfamiliar with regular expressions. Actually, `S-TAB' shows completion candidates that match your input as a RegularExpression, or [[regexp]]. Substring completion, mentioned above, is a special case of regexp completion.
+
+
+
+
+[:PossibleKeyBindings]
+== Which keys can I use now, and what do they do? ==
+
+[Note: From now on, this page uses only the standard EmacsKeyNotation for key bindings: `C-h' for "press and hold the Control key while hitting the `h' key", and so on.  See also EmacsNewbie for lots of other good info about learning Emacs.]
+
+Emacs is full of krazy key kombinations (called [[KeySequence | key sequences]] or key bindings). Much of the reputation that Emacs has for being difficult to learn comes from this fact. In fact, you can use Emacs without learning lots of arcane key sequences. You can get by, for instance, by using ''only the menu and the mouse'', if you want to.
+
+But no one does.
+
+Why not? Because key bindings are very handy, once you get used to them. And it is very easy to bind keys as you like, that is, to assign different [[KeySequence | key sequences]] to [[command]]s as you see fit. The point here, however, is that you shouldn't let fear of M-krazy C-key S-M-C-kombinations intimidate you -- you can learn and use Emacs without the K.K.K. ever sneaking up and attacking you.
+
+The ''most important things to know about Emacs key bindings'' are these:
+
+* ''Know that you can use menus'' at first, and use more and more keyboard key sequences, little by little, as much or as little as you like. That is, you can get used to Emacs's krazy key bindings progressively; there is no reason to jump into 100%-keys-all-the-time right away. 
+
+** Emacs wants you to ''love'' its key bindings; it wants you to start using them because you ''want'' to; the last thing it would do is force them upon you -- Emacs is nice, and lovable, once you get to know ( her | him | it ).
+
+* ''Know how to recover'', when you accidentally use some key binding that does something you didn't intend to do.
+
+Here's how to recover, when you seem to have fallen down a key-binding black hole:
+
+* Use '''`C-g'''' to cancel any current action.
+* Use '''`##C-_##'''' or '''`##C-/##'''' to [English:CategoryUndo undo] past actions. Repeat as needed, to undo more and more. To redo, just do something else, and then undo again (undo what you undid).
+* Use '''`##C-]##'''' to cancel any [[minibuffer]] input.
+* Use '''`M-x top-level'''' to get back to the top level of Emacs, after being submerged in a recursive edit session. Use this if you see '''##[...]##''' (or '''##[[...]]##''', and so on) in the ModeLine.
+* Use '''`C-h l'''' to see what the last 100 keys you typed were (this includes mouse and menu actions; in Emacs, "key" is pretty general). Use this to try to figure out how you got into the mess that you're in!
+
+'''''Hey!''''' ''What was that about lovable Emacs '''not''' forcing key bindings on me?''    Mea culpa. Some things are missing from Emacs menus, and these things are among them. I've added them to my own '''Help''' menu, under a '''Whoops!?''' submenu -- see HelpPlus.
+
+Anyway, let's say that you are now aware in general about Emacs key bindings, and you know how to tame them or get out of their way ;-). How do you start using them?  ''Here's the problem:'' How do you know ''which keys are available'' in any given situation, and ''what they do''? This is where '''Icicles''' can help.
+
+Even in vanilla Emacs, you can always use `C-h k' to learn what any individual key sequence does. And you can use `C-h b' to learn which key bindings are current, that is, what the key sequences are currently bound to. And you can then look up what a given [[command]] bound to a [[KeySequence | key sequence]] does, using `C-h f'. You can also use `C-h m' to get information about which key sequences are special to the current [[buffer]] mode. 
+
+What '''Icicles''' offers is a quick way to get all of this information, ''on the fly'' -- while you are using the keys. Type '''`S-TAB'''' at the top level of Emacs (that is, when Emacs is not asking for input in the [[minibuffer]]). 
+
+* Every [[KeySequence | key sequence]] that you can possibly type (with the exception of keys such as `b' that just insert characters) is displayed in buffer `*Completions*'. This tells you which keys are available now.
+
+* The [[command]] that each key sequence is bound to is also shown in `*Completions*', next to the key name (e.g. `##b  =  bookmark-jump##'). This gives you a rough idea what the key (e.g. `b') does.
+
+* Each key sequence that is bound ''locally'', that is, each key that has a special meaning for the current [[buffer]] mode, is highlighted in `*Completions*' with a pale yellow background. This tells you which bindings are those offered by the current mode.
+
+* Click `C-M-mouse-2' on a key name (with its command name). A `*Help*'
+buffer opens with a complete description of the command bound to the key. This tells you what the key sequence does in detail. 
+
+** Click another key (command) to get help on it, and so on... You can do this all day, browsing through the available key bindings to learn what they do. This is a great way, in particular, to learn about the keys defined by a given mode.
+
+** Click any link in the `*Help*' buffer to find out about stuff related to a given command and its key sequence. Navigate throughout the help system -- you can do this all day too. Then pick another key to interrogate...
+
+* If you want to then ''use'' a key (command) -- oh, did you forget that you were looking up a key sequence in order to use it? -- then just click `mouse-2' on its name in `*Completions*'. Or cancel, using `C-g', and hit the key as you would normally.
+
+I call this "'''key completion'''". Why "completion"? Because you can use `S-TAB' this way even when you are in the middle of a krazy key kombination. For example, suppose that you remember somehow that you can jump to a [[bookmark]] location by some key sequence that starts with `C-x r', but you can't remember the rest of the key sequence. You type `C-x r', and then you hit `S-TAB' to see all of its possible completions. You click the completion candidate `##b  =  bookmark-jump##' to finish the key sequence and jump to your bookmark. And, in the process, you are reminded of the sequence `C-x r b', so the next time you might not need '''Icicles''' to help you.
+
+The same is true for any key-sequence prefix. Remember `C-h k', `C-h f', `C-h b', `C-h m', and `C-h l', mentioned above? (Not really? :-/)  Well, all Emacs help commands are bound to key sequences that start with the prefix `C-h' (likewise, `f1', the universal help key), so just use `C-h S-TAB' (or `##f1 S-TAB##') to see them all (and use them). Vanilla Emacs itself offers a similar functionality here, if you use `C-h C-h' (or `##f1 f1##'). But what is only a special feature for just one part of vanilla Emacs is available generally with '''Icicles''', for any prefix key, not just `C-h' (`f1').
+
+For more about this, including screenshots, see [[Icicles - Key Completion]]. [Note: '''Icicles''' key completion is not available for Emacs versions prior to 22.]
+
+
+
+[:CandidateHelp]
+== Learn about individual completion candidates (Help) ==
+
+Whenever you type input and hit `TAB' or `S-TAB', buffer `*Completions*' shows you the possible [[completion]]s of your input. The ''type'' of those completion candidates depends on what you're asked to input: if you're switching to another buffer, then the input is a [[buffer]] name; if you're opening a file, then the input is a file name; if you're executing a command, then the input is a [[command]] name, if you're setting a user option, then the input is an option (variable) name; and so on.
+
+Emacs has help keys for buffers (`C-h m'), functions (`C-h f'), and variables (`C-h v'). '''Icicles''' provides help for all of these types of input and more, on the fly, by clicking '''`C-M-mouse-2'''' on the completion candidate in `*Completions*'. You get the right kind of help, depending on the type of input: buffer, file, function, variable, and so on. And even without clicking `C-M-mouse-2', '''Icicles''' shows candidate help in the [[mode line]] automatically, whenever you cycle among candidates. (With `C-M-mouse-2' you get the entire [[doc string]], not just one line of help.)
+
+Oh, and there's also a '''[[Icicles - Nutshell View#CompletionCandidateMenu|Completion Candidate]]''' contextual menu in buffer `*Completions*' -- just click `C-mouse-3' on a candidate there to see what you can do with it.
+
+And, just as for help on keys, you can continue to click other candidates, getting help on them. This is a great way to explore and learn about everything in Emacs: commands, modes, and variables, in particular.
+
+
+
+
+[:FindMenuItems]
+== Find and understand menu items easily ==
+
+Actually, '''Icicles''' has nothing to offer in this regard, on its own. However, library '''<tt>[[lacarte.el]]</tt>''' does have something to offer, and its usefulness is amplified by '''Icicles'''.  Use '''LaCarte''' together with '''Icicles'''.  Whether you tend to think that menus are helpful or a waste of time, '''%%La Carte%%''' +  '''Icicles''' can really help you learn Emacs, no matter your level of expertise. Here's why: 
+
+* Menus organize [[command]]s (actions) in a hierarchical manner; that is, they group things together that somehow belong together. This means that when you need to look for a command, you can take advantage of the ''menu organization'' to find it.
+
+* '''Icicles''' completion lets you match your input against menu items and menu submenus, making it much easier to find stuff. That is, you can ''match any parts'' of menu branches. This means that you can take advantage of menu organization or bypass it altogether (or use a combination).
+
+* '''Icicles''' gives you help on individual menu items:
+
+** When you cycle through menu items that match your input, and when you complete your input to a full menu item, ''what the item's command does'' is displayed in the [[mode line]], as help. And as you move the mouse over the menu items in buffer `*Completions*', the same individual item help is shown, in a tooltip.
+
+** If you want more than a one-line description, you can see the entire doc for a menu item, by using `C-M-RET' when cycling, or by clicking `C-M-mouse-2' on a candidate item in `*Completions*'. See [[#CandidateHelp]] (above).
+
+See '''LaCarte''', for more about using and exploring menus.
+
+
+[:FindCommands]
+== Find commands easily ==
+
+'''Icicles''' substring completion is more flexible than vanilla-Emacs prefix completion, so it is easier to find Emacs [[command]]s. If you are inputting a command, and you type `delete', then `S-TAB' shows you all commands whose names contain that substring, not just commands that begin with it. And it just might be that the command you're looking for -- `bookmark-delete', for instance -- doesn't start with `delete'.
+
+But wait! there's more! (it slices; it dices; well, yes, it ''ices''...)  
+
+Command names often refer to one or more actions (e.g. `delete') and one or more objects to act upon (e.g. `bookmark'), and those can be in any order within the name. Suppose you're looking for a function that deletes the character that is just before the [[cursor]]. It might be called ‘delete-character-back’, ‘delete-backward-char’, ‘character-delete-backward’, `char-back-deletion', or something else. 
+
+What you need is a completion mechanism that lets you specify parts (`delet', `back', `char') to be matched ''in any order''.
+
+That's what '''Icicles''' ''progressive completion'' is all about. You type one part to match, then hit '''`##M-*##'''', then type another part to match, then hit `##M-*##' again, then another part,..., progressively narrowing down the completion possibilities to those that match all of the parts you specify, in any order. This is a very powerful feature. It means that you can creep up on what you need by a process of progressive refinement. For more about this, see [[Icicles - Nutshell View#ProgressiveCompletion|Nutshell View]] and [[Icicles - Progressive Completion]].
+
+And guess what. Progressive completion is not just for inputting command names. It is available for every kind of input: file names, buffer names, variable names,...
+
+
+
+
+[:FindStuffInManuals]
+== Find stuff easily in the manuals and the FAQ ==
+
+The InfoMode hypertext manuals, such as the [[EmacsManual|Emacs manual]], the [[ElispManual|Emacs-Lisp manual]], and the [[EmacsFaq|Emacs FAQ]], are great for helping you find your way with Emacs. In particular, I strongly recommend using the ''index'' (key `i' in Info) before trying to search (key `s' or `C-s'). 
+
+However, you might be frustrated trying to use the index, because completion with `i' is only prefix completion. '''Icicles''' changes that, giving you substring and [[regexp]] completion, [[progressive completion]], and so on.
+
+This means, for example, that you don't need to know whether an index entry happens to be `##file-name completion and space key##', `##completing file names with spaces##', `##spaces in file names##', or `##SPC file name completion##'. It turns out that the index entry in the Emacs FAQ for the page about using the space key to complete file names versus completing file names with spaces, the node named `##SPC no longer completes file names##', is `##SPC file name completion##', but it's not easy to guess that.
+
+With '''Icicles''', you can find the index entry immediately by matching both `file' and `complet' in either order: `##i file S-SPC complet##'.
+
+In addition, '''Icicles''' acts as an Info ''browser'', letting you visit any number of pages (nodes) in a single `i', `g', or `m' command (that is, these are '''Icicles''' [[multi-command]]s). So you can use `i' to scan the destinations of various index entries before settling on one you want to read in detail, and you can use `g' to similarly browse the manual by node name or in book order.
+
+See [[Icicles - Info Enhancements]].
+
+
+
+[:LearnAboutRegexps]
+== Learn About Regexps ==
+
+[[RegularExpression]]s ([[regexp]]s) are useful throughout Emacs and beyond Emacs.  '''Icicles''' helps you learn about regexps in several ways -- see [[RegularExpression#RegexpsInIcicles|Learning Regexps with Icicles]].
+
+
+
+
+== Give it a try ==
+
+If you want to give '''Icicles''' a try as an EmacsNewbie, then start here: '''[[Icicles]]'''. The first few doc pages will tell you how to add '''Icicles''' to Emacs and turn on ''Icicle'' mode, and they will give you a good overview of what's available, walking you through a few common usage scenarios. See especially '''[[Icicles - Nutshell View]]''', for a hands-on tour. And remember: you don't need to read all of the doc to make good use of '''Icicles'''; it's very easy to pick up little by little.
+
+''Have fun!'' And let me know, if you have suggestions or comments (or run into problems): IciclesDiscussion (or IciclesIssues). -- DrewAdams
+
+
+
+
+
+
+----
+
+|| '''[[Icicles]]''' || IciclesIndex ||
+
+DrewsElispLibraries referenced here: Lisp:lacarte.el, Lisp:help+.el, Lisp:icicles.el
+
+CategoryCommands CategoryCompletion CategoryDocumentation CategoryHelp CategoryAccessibility

@@ -1,0 +1,18 @@
+Lisp:log-buffer.el
+
+The purpose of this file is just to help the logging of information.
+The first feature of a log-window is: read-only. 
+The second is: if the cursor is at the bottom of the text, the windows
+scrolls automatically.
+
+; ''make-new-log-buffer'': create a read-only buffer to log the code
+; ''log-printf'':          do a c-style printf in the log buffer
+                           also scroll the buffer to the bottom if the cursor
+                           was at the end of it.
+
+e.g:
+
+   (make-new-log-buffer "*test*")
+   (log-printf "*test*" "this is a test!!!\n")
+   (log-printf "*test*" "a text of %s and number like %i\n" "string" 12)
+   (log-printf "*test*" "Test\nof\nmultiple\nlines\nof\ntext\ndisplayed\nat\nonce..\nto\nsee\nif\nthe\nscrolling\nis\nstill\nok\n")

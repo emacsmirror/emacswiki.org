@@ -1,0 +1,26 @@
+Diese Seite ist nicht auf Deutsch verfügbar.  Cette Page n'est pas disponible en Français.
+
+== Emacs to me ==
+
+Emacs is a text editor which _doesn't_ _get_ _in_ _the_ _way_.  It doesn't explode dialog(ue) boxes in my face, it doesn't compel me to oscillate my right hand continually between keyboard and mouse, doesn't force me to move my eyes' focus to the edge of the screen, it doesn't clutter up a screen with tiny little little boxes,....  It just does the Right Thing - almost.  The missing bit is different for everybody, hence everybody must fill in that last chunk h\(er\|im\)self.
+
+Emacs is the easiest to use program ever written.  It has achieved this at the cost of being difficult to learn.
+
+I use Emacs in a Linux tty, an environment optimised for text working, rather than a GUI, which makes compromises due to the need to display rather graphic descriptions.  I am a firm believer in the superiority of Emacs's standard user interface over fashionable fads, such as CUA and point'n'click interfaces.  I sometimes defend this viewpoint on Usenet.
+
+== My Projects ==
+
+I maintain CcMode, which contains the modes for 7 somewhat related languages (C, C++, Java, Objective C, IDL, Pike, and AWK).  Many thanks to my predecessors, Martin Stjernholm and BarryWarsaw.  See <http://cc-mode.sf.net/>
+I also contribute towards Emacs itself.
+
+== The Future of Programming ==
+
+The future belongs to functional languages - probably not Lisp, but languages like Erlang, Ocaml, Haskell, ...  Languages like C (C++, Java, .....) have become hoplessly baroque (I should know :-)) and are no longer adequate tools for the size of applications businesses (or even free softwarers) are currently building.
+
+----
+
+Bienvenu au wiki! Alan, I think you accidentally wiped out the content of <tt>[[king-bishop.el]]</tt> -- you might want to take a look. -- DrewAdams
+
+
+----
+CategoryHomepage

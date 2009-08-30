@@ -1,0 +1,545 @@
+;;;;;;;;;;;;;;;
+;; Minibuffer
+
+(define-key minibuffer-local-map [(control n)] 'next-complete-history-element)
+(define-key minibuffer-local-map [(control p)] 'previous-complete-history-element)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Text deletion customization
+
+(global-set-key [(control shift d)]   'backward-delete-char-untabify)
+(global-set-key [(control backspace)] 'kill-syntax-backward)
+(global-set-key [(meta shift d)]      'kill-syntax-backward)
+(global-set-key [(meta d)]            'kill-syntax-forward)
+
+(defun kill-syntax-forward ()
+  "Kill characters with syntax at point."
+  (interactive)
+  (kill-region (point)
+               (progn
+                 (skip-syntax-forward (string (char-syntax (char-after))))
+                 (point))))
+
+(defun kill-syntax-backward ()
+  "Kill characters with syntax at point."
+  (interactive)
+  (kill-region (point)
+               (progn
+                 (skip-syntax-backward (string (char-syntax (char-before))))
+                 (point))))
+
+;;;
+;; Page up & down fix
+(require 'pager)
+(global-set-key [(control v)] 'pager-page-down)
+(global-set-key [next]        'pager-page-down)
+(global-set-key [(meta v)]    'pager-page-up)
+(global-set-key [prior]       'pager-page-up)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ISearch mods
+
+;;;
+;; Always use regexps
+(global-set-key [(control s)]               'isearch-forward-regexp)
+(global-set-key [(control r)]               'isearch-backward-regexp)
+(global-set-key [(meta %)]                  'query-replace-regexp)
+(define-key isearch-mode-map (my-kbd "M-ù") 'isearch-query-replace-regexp)
+
+;;;
+;; Always end searches at the beginning of the matching expression.
+
+(add-hook 'isearch-mode-end-hook 'custom-goto-match-beginning)
+
+(defun custom-goto-match-beginning ()
+  "Use with isearch hook to end search at first char of match."
+  (when isearch-forward
+    (unless (null isearch-other-end)
+      (goto-char isearch-other-end))))
+
+;;;
+;; Move to beginning of word before yanking word in isearch-mode.
+;; Make C-s C-w and C-r C-w act like Vim's g* and g#, keeping Emacs'
+;; C-s C-w [C-w] [C-w]... behaviour.
+
+(require 'thingatpt)
+(defun my-isearch-yank-word-or-char-from-beginning ()
+  "Move to beginning of word before yanking word in isearch-mode."
+  (interactive)
+  (if (= 0 (length isearch-string))
+      (beginning-of-thing 'word))
+  (isearch-yank-word-or-char)
+  ;; Revert to 'isearch-yank-word-or-char for subsequent calls
+  (substitute-key-definition 'my-isearch-yank-word-or-char-from-beginning
+                             'isearch-yank-word-or-char
+                             isearch-mode-map))
+
+(add-hook 'isearch-mode-hook
+          (lambda ()
+            "Activate my customized Isearch word yank command."
+            (substitute-key-definition 'isearch-yank-word-or-char
+                                       'my-isearch-yank-word-or-char-from-beginning
+                                       isearch-mode-map)))
+
+;;;
+;; Zap up to char
+;; (require 'misc)
+
+;; (global-set-key "\M-z"      'zap-up-to-char)
+;; (global-set-key (kbd "M-Z") 'my-zap-back-to-char)
+
+;; (defun my-zap-back-to-char (arg char)
+;;   "No need to enter C-- to zap back"
+;;   (interactive "p\ncZap back to char: ")
+;;   (zap-to-char (- arg) char))
+
+;;;
+;; Vim's * and #
+;; (require 'etags)
+
+;; (defun isearch-yank-regexp (regexp)
+;;   "Pull REGEXP into search regexp."
+;;   (let ((isearch-regexp nil)) ;; Dynamic binding of global.
+;;     (isearch-yank-string regexp))
+;;   (if (not isearch-regexp)
+;;       (isearch-toggle-regexp))
+;;   (isearch-search-and-update))
+
+;; (defun isearch-yank-symbol ()
+;;   "Put symbol at current point into search string."
+;;   (interactive)
+;;   (let ((sym (find-tag-default)))
+;;     (if (null sym)
+;;         (message "No symbol at point")
+;;       (isearch-yank-regexp
+;;        (concat "\\_<" (regexp-quote sym) "\\_>")))))
+
+;; (define-key isearch-mode-map "\C-\M-w" 'isearch-yank-symbol)
+
+;; ;;;
+;; ;; Vim's Ctrl-r /
+;; (global-set-key (kbd "C-S-s") '(lambda ()
+;;                                  "Inserts last searched string."
+;;                                  (interactive)
+;;                                  (insert isearch-string)))
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; Vim-like line killing, copying, and opening
+
+;; (defadvice kill-ring-save (before slickcopy activate compile)
+;;   "When called interactively with no active region, copy a single line instead."
+;;   (interactive
+;;    (if mark-active (list (region-beginning) (region-end))
+;;      (progn
+;;        (beginning-of-line)
+;;        (list (line-beginning-position)
+;;              (line-beginning-position 2))))))
+
+;; (defadvice kill-region (before slickcut activate compile)
+;;   "When called interactively with no active region, kill a single line instead."
+;;   (interactive
+;;    (if mark-active (list (region-beginning) (region-end))
+;;      (list (line-beginning-position)
+;;            (line-beginning-position 2)))))
+
+;;;
+;; Marking lines
+
+;; (global-set-key "\C-h" 'my-mark-line)
+;; (defun my-mark-line ()
+;;   "Mark one whole line, similar to mark-paragraph"
+;;   (interactive)
+;;   (beginning-of-line)
+;;   (if mark-active
+;;       (exchange-point-and-mark)
+;;       (push-mark nil nil t))
+;;   (forward-line)
+;;   (exchange-point-and-mark))
+
+;;;;;;;;;;;;;;;;;;;
+;; Open next line
+
+;; (global-set-key "\C-o" 'vi-open-next-line)
+
+;; (defun vi-open-next-line (arg)
+;;   "Move to the next line (like vi) and then opens a line."
+;;   (interactive "p")
+;;   (end-of-line)
+;;   (open-line arg)
+;;   (next-line 1)
+;;   (indent-according-to-mode))
+
+;; (global-set-key (kbd "C-S-k") 'fc-kill-to-beginning-of-line)
+;; (defun fc-kill-to-beginning-of-line ()
+;;   "Kill from the beginning of the line to point."
+;;   (interactive)
+;;   (kill-region (point-at-bol)
+;;                (point)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Auto parenthesis & the like
+
+(setq skeleton-pair t)
+(global-set-key (kbd "[")  'skeleton-pair-insert-maybe)
+(global-set-key (kbd "(")  'skeleton-pair-insert-maybe)
+(global-set-key (kbd "{")  'skeleton-pair-insert-maybe)
+(global-set-key (kbd "<")  'skeleton-pair-insert-maybe)
+(global-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
+(global-set-key (kbd "`")  'skeleton-pair-insert-maybe)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Moving lines up & down with <M-up> & <M-down>
+
+(global-set-key [(meta up)]   'move-line-up)
+(global-set-key [(meta down)] 'move-line-down)
+
+(defun move-line (&optional n)
+  "Move current line N (1) lines up/down leaving point in place."
+  (interactive "p")
+  (when (null n)
+    (setq n 1))
+  (let ((col (current-column)))
+    (beginning-of-line)
+    (forward-line)
+    (transpose-lines n)
+    (forward-line -1)
+    (forward-char col))
+  (indent-according-to-mode))
+
+(defun move-line-up (n)
+  "Moves current line N (1) lines up leaving point in place."
+  (interactive "p")
+  (move-line (if (null n) -1 (- n))))
+
+(defun move-line-down (n)
+  "Moves current line N (1) lines down leaving point in place."
+  (interactive "p")
+  (move-line (if (null n) 1 n)))
+
+(global-set-key [(meta shift down)] 'duplicate-start-of-line-or-region)
+(defun duplicate-start-of-line-or-region ()
+  (interactive)
+  (if mark-active
+      (duplicate-region)
+    (duplicate-start-of-line)))
+
+(defun duplicate-start-of-line ()
+  (let ((text (buffer-substring (point)
+                                (beginning-of-thing 'line))))
+    (forward-line)
+    (push-mark)
+    (insert text)
+    (open-line 1)))
+
+(defun duplicate-region ()
+  (let* ((end (region-end))
+         (text (buffer-substring (region-beginning)
+                                 end)))
+    (goto-char end)
+    (insert text)
+    (push-mark end)
+    (setq deactivate-mark nil)
+    (exchange-point-and-mark)))
+
+(defun duplicate-region ()
+  (let* ((end (region-end))
+         (text (buffer-substring (region-beginning)
+                                 end)))
+    (goto-char end)
+    (insert text)
+    (push-mark end)
+    (setq deactivate-mark nil)
+    (exchange-point-and-mark)))
+
+(global-set-key [(control x)(control e)] 'eval-last-sexp-or-region)
+(defun eval-last-sexp-or-region ()
+  (interactive)
+  (if mark-active
+      (eval-region (region-beginning) (region-end) t)
+    (pp-eval-last-sexp nil)))
+
+;;;
+;; Arrows
+
+(defun my-restore-arrows ()
+  (interactive)
+  "Restore arrows for other people."
+  (global-set-key (kbd "<up>") 'previous-line)
+  (global-set-key (kbd "<down>") 'next-line)
+  (global-set-key (kbd "<left>") 'backward-char)
+  (global-set-key (kbd "<right>") 'forward-char))
+
+(defun my-hide-arrows ()
+  (global-set-key (kbd "<up>") 'windmove-up)
+  (global-set-key (kbd "S-<up>") 'previous-line)
+  (global-set-key (kbd "<down>") 'windmove-down)
+  (global-set-key (kbd "S-<down>") 'next-line)
+  (global-set-key (kbd "<left>") 'windmove-left)
+  (global-set-key (kbd "S-<left>") 'backward-char)
+  (global-set-key (kbd "<right>") 'windmove-right)
+  (global-set-key (kbd "S-<right>") 'forward-char))
+
+;;;
+;; Anchored transpose
+(global-set-key [?\C-x ?t] 'anchored-transpose)
+(autoload 'anchored-transpose "anchored-transpose" nil t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Buffers
+
+(global-set-key (kbd "C-x !") 'my-transpose-buffers) ;French Mac
+(global-set-key (kbd "C-x _") 'my-transpose-buffers) ;French PC
+(defun my-transpose-buffers ()
+  "Transpose this buffer and the buffer in other window"
+  (interactive)
+  (let ((current-window-buffer (current-buffer)))
+    (other-window 1)
+    (let ((other-window-buffer (current-buffer)))
+      (switch-to-buffer current-window-buffer)
+      (other-window -1)
+      (switch-to-buffer other-window-buffer)))
+  (other-window 1))
+
+(define-key my-map "k" '(lambda ()
+                          "Kill current buffer."
+                          (interactive)
+                          (kill-buffer (current-buffer))))
+
+(define-key my-map "K" 'my-kill-buffer-other-window)
+(global-set-key (kbd "C-x 4 k")   'my-kill-buffer-other-window)
+(defun my-kill-buffer-other-window ()
+  (interactive)
+  (other-window 1)
+  (kill-buffer (current-buffer))
+  (other-window -1))
+
+;; buffer list
+;; (require 'bs)
+;; (global-set-key [(control x) (control b)] 'bs-show-sorted)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+(add-hook 'ido-setup-hook
+          (lambda ()
+            (define-key ido-file-dir-completion-map (kbd "<up>")
+              'ido-prev-work-directory)
+            (define-key ido-file-dir-completion-map (kbd "<down>")
+              'ido-next-work-directory)))
+
+(define-key my-map "d" 'my-ediff-with-other-window)
+(defun my-ediff-with-other-window ()
+  "Ediff curent buffer & other window buffer."
+  (interactive)
+  (let ((current-window-buffer (current-buffer)))
+    (other-window 1)
+    (ediff-buffers
+     current-window-buffer
+     (current-buffer))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Norton Commander - like shortcuts
+
+(global-set-key [f5] '(lambda ()
+                        "Copy buffer to other window."
+                        (interactive)
+                        (let ((current-window-buffer (current-buffer)))
+                          (other-window 1)
+                          (switch-to-buffer current-window-buffer))
+                        (other-window -1)))
+
+(global-set-key [f6] '(lambda ()
+                        "Move buffer to other window."
+                        (interactive)
+                        (let ((current-window-buffer (current-buffer)))
+                          (bury-buffer)
+                          (other-window 1)
+                          (switch-to-buffer current-window-buffer))))
+
+(global-set-key [f8] '(lambda ()
+                        "Delete (burry) buffer."
+                        (interactive)
+                        (bury-buffer)))
+(global-set-key [S-f8] '(lambda ()
+                          "Delete (burry) other window buffer."
+                          (interactive)
+                          (let ((current-window-buffer (current-buffer)))
+                            (other-window 1)
+                            (bury-buffer))
+                          (other-window -1)))
+
+;; Flymake
+;; (global-set-key [f4] '(lambda ()
+;;                         (interactive)
+;;                         (flymake-goto-prev-error)
+;;                         (flymake-display-err-menu-for-current-line)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Clumsy French keyboard keys relocation & usefull function bindings
+
+(global-set-key (kbd "²")          'mark-word)
+(global-set-key (my-kbd "M-²")     'mark-word)
+(global-set-key (my-kbd "M-à")     'mark-word)
+(global-set-key (my-kbd "M-(")     'mark-sexp)
+(global-set-key (my-kbd "M-ù")     'query-replace-regexp)
+(global-set-key (kbd "C-x é")      'split-window-vertically)   ;French
+(global-set-key (kbd "C-x à")      'delete-window)             ;French
+(global-set-key [(control meta _)] 'indent-region) ;French PC
+(global-set-key [(control meta :)] 'indent-region) ;French Mac
+(global-set-key [(meta _)]         'align-regexp)
+(global-set-key [(meta n)]         'forward-paragraph)
+(global-set-key [(meta p)]         'backward-paragraph)
+(global-set-key [(control x)(control x)] 'exchange-point-and-mark-nomark)
+(define-key my-map (kbd "SPC")     'delete-trailing-whitespace)
+(define-key my-map (kbd "o")       'occur)
+(define-key my-map (kbd "l")       'longlines-mode)
+
+;; For clumsy co-workers
+(global-set-key [(control z)]       'undo)
+(global-set-key [(control shift z)] 'redo)
+(global-set-key [(control shift f)] '(lambda ()
+                                       (interactive)
+                                       (f4-rgrep-in-sources)
+                                       (pop-to-buffer grep-last-buffer)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Viper & Vimpulse
+
+(setq viper-mode t)                     ; enable Viper at load time
+(setq viper-ex-style-editing nil) ; can backspace past start of insert / line
+(setq viper-ex-style-motion nil)
+(require 'viper)                        ; load Viper
+(require 'vimpulse)                     ; load Vimpulse
+(setq woman-use-own-frame nil)   ; don't create new frame for manpages
+(setq woman-use-topic-at-point t) ; don't prompt upon K key (manpage display)
+;; Restore some Emacs keys
+(define-key viper-insert-global-user-map [(delete)] 'delete-char)
+(define-key viper-insert-global-user-map "\C-n" 'next-line)
+(define-key viper-insert-global-user-map "\C-p" 'previous-line)
+(define-key viper-insert-global-user-map "\C-w" 'kill-region)
+
+;;;
+;; Smart tab
+(setq f4-using-hippie-expand t)
+(define-key viper-insert-global-user-map [(tab)] 'f4-smart-tab)
+(define-key viper-insert-global-user-map [(shift tab)] 'f4-undo-expansion)
+
+;;;
+;; Smart End
+(global-set-key [(d)] 'my-smart-end)
+(defun my-smart-end ()
+  "bind me to [(d)]"
+  (interactive)
+  (self-insert-command 1)
+  (if (and (looking-back "^ *end")
+           (looking-at " *$"))
+      (indent-for-tab-command)))
+
+;; More Vim-like keys
+(define-key viper-vi-global-user-map [(delete)] 'delete-char)
+(define-key viper-vi-global-user-map "/" 'viper-isearch-forward)
+(define-key viper-vi-global-user-map "?" 'viper-isearch-backward)
+(define-key viper-vi-global-user-map "*" '(lambda ()
+                                            (interactive)
+                                            (f4-rgrep-in-sources-dwim)
+                                            (pop-to-buffer grep-last-buffer)
+                                            (goto-char (point-min))
+                                            (compilation-next-error 1)))
+(define-key viper-vi-global-user-map "m" 'f4-lua-find-implementors-or-assignations)
+(define-key viper-vi-global-user-map "#" '(lambda ()
+                                            (interactive)
+                                            (let ((wap (word-at-point)))
+                                              (unless (null wap)
+                                                (setq isearch-string wap)
+                                                (isearch-repeat-backward)))))
+(define-key viper-vi-global-user-map "\C-wh" 'windmove-left)
+(define-key viper-vi-global-user-map "\C-wj" 'windmove-down)
+(define-key viper-vi-global-user-map "\C-wk" 'windmove-up)
+(define-key viper-vi-global-user-map "\C-wl" 'windmove-right)
+(define-key viper-vi-global-user-map "\C-wv" '(lambda () (interactive)
+                                                (split-window-horizontally)
+                                                (other-window 1)
+                                                (switch-to-buffer (other-buffer))
+                                                (other-window -1)))
+(define-key viper-vi-global-user-map "\C-w=" 'balance-windows)
+(define-key viper-vi-global-user-map [(control s)] 'isearch-forward-regexp)
+(define-key viper-vi-global-user-map (my-kbd "M-ù") 'query-replace-regexp)
+(define-key viper-vi-global-user-map [(control v)] 'cua-set-rectangle-mark)
+
+(define-key viper-visual-mode-map "\C-g" '(lambda ()
+                                            (interactive)
+                                            (viper-visual-mode)
+                                            (signal 'quit nil)))
+(define-key viper-visual-mode-map "F" 'viper-find-char-backward)
+(define-key viper-visual-mode-map "t" 'viper-goto-char-forward)
+(define-key viper-visual-mode-map "T" 'viper-goto-char-backward)
+(define-key viper-visual-mode-map "e" '(lambda ()
+                                         (interactive)
+                                         (viper-end-of-word 1)
+                                         (viper-forward-char 1)))
+
+(defun viper-visual-mode-linewise (&optional arg)
+  "Starts viper visual mode in `linewise' mode"
+  (interactive "P")
+  (beginning-of-line)
+  (viper-visual-mode 'toggle)
+  (setq viper-visual-mode-linewise t)
+  (forward-line))
+
+(defun viper-goto-line (arg)
+  "Go to ARG's line.  Without ARG go to end of buffer."
+  (interactive "P")
+  (let ((val (viper-P-val arg))
+	(com (viper-getCom arg)))
+    (viper-move-marker-locally 'viper-com-point (point))
+    (viper-deactivate-mark)
+    (push-mark nil t)
+    (if (null val)
+	(goto-char (point-max))
+      (goto-char (point-min))
+      (forward-line (1- val)))
+
+    ;; positioning is done twice: before and after command execution
+    (back-to-indentation)
+
+    (if com
+        (viper-execute-com 'viper-goto-line val com))
+
+    (back-to-indentation)))
+
+(push '("only" (delete-other-windows)) ex-token-alist)
+(push '("close" (delete-window)) ex-token-alist)
+;; Usefull shortcuts
+(define-key viper-vi-global-user-map "gn" 'next-error)
+(define-key viper-vi-global-user-map "gp" 'previous-error)
+(push '("b" (anything)) ex-token-alist)
+;; Commodities
+(define-key viper-vi-global-user-map [?é] 'viper-toggle-case)
+
+;; pp-eval
+(substitute-key-definition 'eval-last-sexp
+                           'pp-eval-last-sexp global-map)
+(substitute-key-definition 'eval-expression
+                           'pp-eval-expression global-map)
+
+(defvar tempo-snippets-source-map (make-sparse-keymap))
+(define-key tempo-snippets-source-map (kbd "<tab>") 'tempo-snippets-next-field)
+(define-key tempo-snippets-source-map (kbd "<backtab>") 'tempo-snippets-previous-field)
+(define-key tempo-snippets-source-map (kbd "C-m") 'tempo-snippets-clear-latest)
+
+(defadvice tempo-snippets-finish-source (before clear-post-overlay (o) act)
+  (delete-overlay (overlay-get o 'tempo-snippets-post)))
+
+(defadvice tempo-snippets-insert-source (after install-custom-map act)
+  (let ((overlay (car tempo-snippets-sources)))
+    (overlay-put overlay 'keymap tempo-snippets-source-map)
+    (overlay-put overlay 'tempo-snippets-post (point))))
+
+(defadvice tempo-snippets-insert-template (after install-post-map act)
+  (dolist (s tempo-snippets-sources)
+    (let ((pos (overlay-get s 'tempo-snippets-post)))
+      (when (integerp pos)
+        (let ((o (make-overlay pos (1+ pos))))
+          (overlay-put o 'keymap tempo-snippets-source-map)
+          (overlay-put s 'tempo-snippets-post o)))))
+  ad-return-value)
+
+(message "Loaded: key-binding.el.")

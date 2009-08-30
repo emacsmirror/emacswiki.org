@@ -1,0 +1,114 @@
+This is a problem about [[DynamicBindingVsLexicalBinding]]. Emacs Lisp uses dynamic binding, in contrast to for instance [[Scheme]]. This page explains how to write [[EmacsLisp]] code that simulates lexical binding.
+
+==With macros==
+You use macros to embed the generated
+symbol into the function's definition.
+
+Example:
+
+    (require 'cl)
+
+    (defun make-adder (init)
+      (let ((sym (gensym)))
+        (set sym init)
+        `(lambda (&optional val)
+           (if val
+    	   (setq ,sym (+ ,sym val))
+    	 ,sym))))
+
+Testing:
+
+    (setq x (make-adder 1))
+    (funcall x) => 1
+    (funcall x 2) => 3
+    (funcall x) => 3
+
+Contributors: DamienElmes and MarioLang on the EmacsChannel.
+
+== With define-function ==
+You can also use define-function to set the function cell of the function.
+
+    (define-function 'x (make-adder 5))
+    (x 6) => 11
+
+Now we have the classic compose function (tho I typically use reduce instead)
+
+    (defun compose (f g)
+    (let ((fsym (gensym "*COMPOSE-FUNC"))
+        (gsym (gensym "*COMPOSE-FUNC")))
+        (define-function fsym f)
+        (define-function gsym g)
+        `(lambda (x)
+           (,f (,g x)))))
+-- ChuckAdams
+
+== With lexical-let ==
+You could also use the lexical-let macro to get closures, which doesn't look as dirty as a direct macro approach.
+
+    (defun make-adder (init)
+      (lexical-let ((tmp init))
+        #'(lambda (&optional val)
+            (if val
+                (incf tmp val)
+              tmp))))
+
+== With a new macro, defclosure
+Why not make a defclosure while we are at it? 
+
+    (require 'cl)  
+
+    (defmacro defclosure (name arglist docstring bindings &rest body)
+      "Define NAME as a closure.
+
+	DOCSTRING is *not* optional.
+	BINDINGS is an alist of lexical bindings.
+	The definition is (lambda ARGLIST DOCSTRING BODY...)."
+      (declare (indent defun))
+      `(lexical-let (,@bindings)
+	 (defun ,name (,@arglist)
+	   ,docstring
+	   ,@body)))
+
+    (defclosure counter (&optional increment)
+      "Useless and bizar counter"
+      ((one 0)
+       (two 1))
+      (incf two (incf one (or increment two))))
+
+    (counter) => 2
+    (counter) => 5
+    (counter) => 13
+    (counter 8) => 29
+    (counter 8) => 53
+    (counter) => 130
+
+--[[pft]]
+
+==Examples with fake closures==
+===N buttons which print their names===
+
+Exercise: write a loop construct that takes a list with several names and creates a button for each. When a button is clicked, its name should be displayed.
+
+    (mapc
+    
+    (lambda (buttontext)
+    
+      (lexical-let ((textsymbol buttontext))
+        (insert-text-button (concat "Button " buttontext)
+    			'action (lambda (arg) (interactive)
+    				  (message "I am button %s" textsymbol)
+    				  ))
+        (insert ", ")
+        )
+      )
+    
+    '("one" "two" "three"))
+
+--[[DanielClemente]]    
+
+
+
+
+
+----
+CategoryCode

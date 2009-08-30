@@ -1,0 +1,47 @@
+xe is a command that JoelHolveck wrote to overcome some limitations of LBX, in particular the problem with XDM-AUTHORIZATION-1.
+
+The problem is that, when running under XDM (or KDM and FIXME probably GDM), there are two authentication tokens: the MIT-MAGIC-COOKIE-1 and the XDM-AUTHORIZATION-1.  (Note that, if you're using ssh, it alters the MIT-MAGIC-COOKIE-1 auth.  This is expected.)  lbx doesn't properly handle XDM-AUTHORIZATION-1; this is documented in its manpage.  But it's possible to deal with that.  You have to pass the XDM-AUTHORIZATION-1 token to the remote Emacs.
+
+Here's the code; it's in my .bashrc.  Users of other shells should adapt accordingly.
+
+    # xe: call with an xauth spec; it launches lbxproxy and Emacs.
+    function xe
+    {
+        case $PATH in
+    	    */usr/X11R6/bin*) ;;
+    	    *) PATH=$PATH:/usr/X11R6/bin ;;
+        esac
+        lbxproxy -nocomp 2> /tmp/lbxproxy.out.${USER}.$$ &
+        sleep 1
+        DISPLAY=:`awk "/Using/ {sub(/^[^']*'/, \"\");sub(/'.*$/, \"\");print;exit 1;}" < /tmp/lbxproxy.out.${USER}.$$ `.0
+        case $? in
+    	    0) DISPLAY=:63.0;;
+    	    1) ;;
+    	    *) echo "lbxproxy failed";rm /tmp/lbxproxy.out.${USER}.$$;return;;
+        esac
+        rm /tmp/lbxproxy.out.${USER}.$$
+        export DISPLAY
+        xauth add $DISPLAY $*
+        # I have no idea why this sleep is necessary.  It looks like, on
+        # some boxes, emacs sometimes picks up the old xauth data.
+        sleep 1
+        emacs &
+    }
+
+Here's how you use it.
+On the display server (your local machine), run "xauth list $DISPLAY" and read the output.  Look for a line like this:
+    thor.example.org/unix:0  XDM-AUTHORIZATION-1  f40a8281fb549c22000aa3fb4cf4a1c0
+
+The important thing is, it says XDM-AUTHORIZATION-1.  You'll need to copy that line from XDM- to the end, and paste it as an argument to xe on the client (the remote machine):
+     xe XDM-AUTHORIZATION-1  f40a8281fb549c22000aa3fb4cf4a1c0
+
+"Passing around long hex strings?  Why?" you may ask.  Well, the reason is so that some yutz on the remote machine (or another machine) can't pretend to be you and connect to your display, where he could watch your screen and keyboard.  The hex string is random and will change each time you log in.
+
+Once xe has completed, subsequent commands in that shell (or subprocesses of your Emacs) will also use LBX.  So after you've started your Emacs, you can also start up XTerm, Mozilla, and whatever else you want.  If you exit Emacs (why?), your lbxproxy will still be running, and you can start up another.
+
+Here's an important bit.  This is a shell function, <em>not</em> a script!  This is important because only a shell function can alter the environment.  You can run this as a shell script (take it out of the <code>function xe {...}</code> wrapper), but then subsequent commands won't be part of lbx.
+
+Normally, I ssh to my work's gateway, ssh to my workstation, and run xe as soon as I log into X.  My performance is not bad, but it can be a bit sluggish around prime-time.  
+
+----
+CategoryRemoteEmacs

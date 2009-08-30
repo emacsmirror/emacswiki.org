@@ -1,0 +1,43 @@
+English:CategoryHelp |
+Français:CatégorieAide
+
+請點選在本 Wiki 中和說明及除錯相關的頁面。
+
+* SelfDocumentation －－在 Emacs 中如何取得說明
+* OnlineResources －－在網路上如何找到說明
+** EmacsNewsgroups －－USENET, 新聞群組 (newsgroups)
+** EmacsMailingLists －－郵件列表 (mailing lists)
+** EmacsChannel －－網路聊天室 (IRC)
+** OpenQuestions －－在 wiki 上公佈你的問題
+* EmacsMacro －－ EMacro 是個巨大的 .emacs 檔，可以解決多數初學者的問題
+
+特定主題的說明：
+
+* LoadPath －－如何增加你的 `load-path'
+* ConflictingLibraries -- what if you have several Emacs installations, or separate installations of packages on your `load-path'如果在你的load-path路径中有几个不同版本的emacs或emacs下软件包的几个不同版本的安装该如何做。
+
+一些 Emacs 套件提供了更多的說明，usually by automating part
+of the search for the right info:
+
+* ElectricHelp
+* WordHelp
+* InfoLook
+
+這些頁面多多少少列出了一些和 Emacs 相關的術語的彙集：
+
+* [[Display]]
+* [[Electricity]]
+* [[Face]]
+* [[Buffer]]
+* [[Window]]
+* [[Frame]]
+* [[Narrowing]]
+* [[Sexp]]
+* [[MajorMode]]
+* [[MinorMode]]
+
+其他：
+
+* EmacsReflector (speak-freely conference server)
+
+

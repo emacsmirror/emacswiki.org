@@ -1,0 +1,3 @@
+The behaviour of rxvt can be (and often is!) modified at compile time by your distribution's package maintainer.  Consult http://www.mit.edu/afs/sipb/project/outland/doc/rxvt/html/refer.html#KeyCodes for a list of keycodes.
+
+Try putting Lisp:rxvt.el (or, alternatively, http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/lisp/term/rxvt.el) in a "term" subdirectory on your load-path.

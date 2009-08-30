@@ -1,0 +1,315 @@
+Lisp:perl-completion.el - minor mode provides useful features for editing perl codes
+
+== What is perl-completion.el  ==
+perl-completion.el is a minor mode which provides several useful features such as variable/method/module code completion, easy perldoc browsing, and more described below in your perl-mode.
+
+This module is one of anything application [AnythingApplications] .
+So that means anything.el is required to run this elisp. please install anyhing.el first unless you already have.
+
+=== Screen cast is available ===
+My English is not so good, so i made ScreenCast.
+
+[http://vimeo.com/4739908 Screen Cast(vimeo)]
+
+
+== Installation ==
+=== Traditional way ===
+drop perl-completion.el into a directory in your `load-path' and byte-compile it.
+
+=== with install-elisp.el ===
+If you have install-elisp.el, you can install perl-completion.el very easily.
+
+Run code showed below to install perl-completion.el
+
+    (install-elisp "http://www.emacswiki.org/emacs/download/perl-completion.el")
+
+See [InstallElisp] for more detail.
+
+And auto-install.el is similar to install-elisp.el.
+See [AutoInstall] for more detail.
+
+=== Emacs version ===
+perl-completion.el needs emacs version higher than 22.
+
+=== requires libraries ===
+requires emacs lisps are,
+
+* Lisp:anything.el
+* Lisp:anything-match-plugin.el
+
+perl-completion.el does not really depend on anything-match-plugin.el.
+
+But I strongly recommend you to install anything-match-plugin.el
+because anything.el becomes more powerfull with anything-match-plugin.el.
+
+Lisp:anything-match-plugin.el enables you to narrow select candidates by multiple words or regexp! -- from [AnythingApplications]
+
+
+== Configuration ==
+=== Default configuration ===
+perl-completion.el is minor-mode for cperl-mode.
+so, settings (loading and configs) are typically written in `cperl-mode-hook'.
+
+below are configuration sample.
+put these lines into your .emacs file (or something like .emacs file)
+
+=== sample setting ===
+<pre>
+(add-hook 'cperl-mode-hook
+          (lambda()
+            (require 'perl-completion)
+            (perl-completion-mode t)))
+</pre>
+
+
+=== cooperation with auto-complete.el ===
+perl-completion.el export `ac-source-perl-completion' to cooperate with auto-complete.el
+add this variable to `ac-sources', perl-completion's candidates(perl keywords.methos,functions,variables,etc...) will appear in auto-complete's popup window.
+
+here's sample configrations.
+load auto-complete.el and add `ac-source-perl-completion' to `ac-sources', when cperl-mode is on.
+
+Note, ac-sources was made buffer local in new versions of auto-complete.el(i'm not sure exactly version.but ver0.1,`ac-sources' is not "buffer local variable" at least).
+      so in example, call `make-variable-buffer-local' to make buffer local variable expressly.
+
+=== sample setting ===
+<pre>
+(add-hook  'cperl-mode-hook
+           (lambda ()
+             (when (require 'auto-complete nil t) ; no error whatever auto-complete.el is not installed.
+               (auto-complete-mode t)
+               (make-variable-buffer-local 'ac-sources)
+               (setq ac-sources
+                     '(ac-source-perl-completion)))))
+</pre>
+
+=== To get more infomation about auto-complete.el ===
+see [AutoComplete] more detail.
+
+
+== Extend find-file ==
+perl-completion extends Emacs builtin find-file.
+
+after (require 'perl-completion),
+find-file-at-point (C-x C-f bind to find-file-at-point by default) is able to find installed perl module, when perl-completion-mode is on.
+
+== Accessing Documentation ==
+perl-completion.el provide some commands to open perldoc from installed modules.
+
+* Open perldoc
+* Open Module source
+
+see "Default Keybind" -> "documents support commands" section for more detail.
+
+== Commands ==
+Commands description.
+
+=== Format ===
+[Default Keybind] command-name
+
+=== Completion Commands ===
+==== [C-c C-c a] plcmp-cmd-complete-all ====
+invoke anything with all completion sources.
+difference between this command and `plcmp-cmd-smart-complete'
+is this command doesn't sort candidates smartly.
+
+
+==== [C-RET] plcmp-cmd-smart-complete ====
+[<C-return>] plcmp-cmd-smart-complete
+[M-TAB] plcmp-cmd-smart-complete
+
+complete all completion sources.
+completions are smartly sorted.
+
+e.x,
+when invoke command context like: (cursor is `!!')
+
+<pre>
+use LWP::UserAgent;
+my $ua = LWP::UserAgent->new;
+$ua->`!!'
+</pre>
+
+LWP::UserAgent's methods are shown at the top of candidates.
+
+this is the main command of perl-completion.el!!.
+
+==== [C-c v] plcmp-cmd-complete-variables ====
+invoke anything with only variables completion source.
+
+==== [C-c a] plcmp-cmd-complete-arrays ====
+invoke anything with only array completion source.
+
+==== [C-c h] plcmp-cmd-complete-hashes ====
+invoke anything with only hash completion source.
+
+==== [C-c f] plcmp-cmd-complete-functions ====
+invoke anything with only function completion source.
+
+==== [C-c m] plcmp-cmd-complete-methods ====
+invoke anything with only using module's methods completion source.
+
+==== [C-c i] plcmp-cmd-complete-modules ====
+invoke anything with only installed modules completion source.
+
+=== documents support commands ===
+==== [C-c d] plcmp-cmd-show-doc ====
+invoke anything with installed modules and man pages about perl.
+
+default action is "Show doc" that open selected candidate's document.
+
+e.x,
+[module]
+If selected DBIx::Class::ResultSet, open perldoc.
+[manpage]
+If selected perlop open manpage using `woman'
+
+press TAB to select other Actions.
+
+==== [C-c s] plcmp-cmd-show-doc-at-point ====
+same as `plcmp-cmd-show-doc'.
+only difference, word at point is used as initial-pattern.
+
+=== Other Commands ===
+==== [C-c c] plcmp-cmd-clear-all-caches ====
+remove all caches
+rebuild installed modules list asynchronously. as soon as called this command.
+caches are,
+* installed modules
+* methods
+* perl buffers last modified time. (used detect buffer is changed since last completion command is invoked
+                                    other-perl-buffer-source doesn't try to get completions non modified buffer).
+
+this command usually used, when you install new module from something like CPAN after once perl-completion-mode is on.
+
+Internally, this command sets these variables to `nil'.
+* `plcmp-other-perl-buffers-cache-hash'
+* `plcmp-module-methods-alist'
+* `plcmp-installed-modules'
+
+==== [C-c C-c s] plcmp-cmd-show-environment ====
+print infomations to *perl-completion show environment* buffer
+environment,
+perl-completion's customize variables,
+perl-completion's commands and where bound to,
+and value of PERL5LIB.
+
+this command is good for debugging.
+
+==== [C-c M] plcmp-cmd-menu ====
+show perl-completion's menu.
+
+this quite useful when before you remember perl-completion's keybinds.
+
+=== Commands support perl programing ===
+==== plcmp-cmd-eval-buffer ====
+Run current buffer string as Perl code asynchronously.
+when finished, popup result buffer.
+the result buffer is named *perl output*.
+
+==== plcmp-cmd-eval-on-region ====
+Run selected region as Perl code asynchronously.
+when finished, popup result buffer.
+the result buffer is named *perl output*.
+
+If run perl process is exit with nonzero status, using `switch-to-buffer' instead of `pop-to-buffer'
+
+== Customize Variables ==
+=== plcmp-lib-directory-re ===
+regexp to detect directory that automatically added to PERL5LIB when build completions.
+
+e.x,
+If you are editting file at "~/dev/SomeModule/lib/SomeModule/Hoge.pm",
+"~/dev/SomeModule/lib/" is added to PERL5LIB when invoke completion commands.
+
+default value is "lib/"
+
+=== plcmp-use-keymap ===
+If this value is nil,
+perl-completion-mode doesn't use own key-map.
+
+it is useful if you want to use own keybind,
+or don't like default keybinds.
+
+Note, keymap is defined at library loading phase.
+so this variables's value should be set before `require'.
+
+e.x,
+<pre>
+;; OK, dont use default keybinds.
+(setq plcmp-use-keymap nil)
+(require 'perl-completion)
+
+
+;; NG when `plcmp-use-keymap' is set, plcmp-mode-map is defined already.
+(require 'perl-completion)
+(setq plcmp-use-keymap nil)
+</pre>
+
+
+=== plcmp-extra-using-modules ===
+list of String or Alist
+
+If value is String(module name),
+module name is always appear in candidates.
+
+If value is Alist ("module-name" . "extra-module-name"),
+and module-name is using in current buffer,
+extra-module-name's methods are appear in candidates.
+
+e.x,
+<pre>
+(setq plcmp-extra-using-modules '("DBIx::Class::ResultSet"))
+(setq plcmp-extra-using-modules '(("LWP::UserAgent" . "HTTP::Response")))
+;; also can both of them
+(setq plcmp-extra-using-modules '("DBIx::Class::ResultSet" ("LWP::UserAgent" . "HTTP::Response")))
+</pre>
+
+=== plcmp-perl-buffer-re ===
+Regexp
+
+To Detect buffer is perl buffer or not.
+
+default value is "\\.[pP][lmLM]$"
+
+=== plcmp-other-perl-buffer-limit-number ===
+Number
+
+how many buffers get buffer words `plcmp-get-sources-other-perl-buffers-words'.
+
+default value is 30
+
+=== plcmp-module-filter-list ===
+list of String(module name)
+
+module is not appear in method completion list.
+
+default value is '("strict" "warning")
+
+=== plcmp-additional-PERL5LIB-directories ===
+list of String(directory)
+
+directory is added to PERL5LIB when invoke completion commands.
+
+=== plcmp-coding-system ===
+If this value is not nil,
+value is bind to `coding-system-for-read' and `coding-system-for-write' temporary around these commands:
+* `plcmp-cmd-eval-buffer'
+* `plcmp-cmd-eval-buffer-and-go'
+* `plcmp-cmd-eval-on-region'
+
+
+== FAQ ==
+=== I don't like default keybind ===
+If you don't wanna use default keybind,
+set `plcmp-use-keymap' to `nil',
+then perl-completion-mode doesn't use own key-map any more.
+
+Note, keymap is defined at library loading phase.
+
+=== I want to use perl-completion's commands everywhere ===
+you can use `global-set-key' to define global key.
+e.x,
+(global-set-key (kbd "C-M-p") 'plcmp-cmd-show-doc)
+
+see Commands section for command list.

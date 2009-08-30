@@ -1,0 +1,129 @@
+I wrote the first version, and MarioLang and AlexSchroeder fixed
+various bugs in it, though it still had several. AlexSchroeder wrote a
+second version, and MarioLang wrote a third version, which I'm now
+using.  --ShaeErisson
+
+This is a setting for DisplayTime such that Emacs will show you the
+time in InternetTime as defined by http://swatch.com/fs_index.php?haupt=itime.
+----
+== the MarioLang (delYsid) version ==
+
+ ;;; Internet Time 
+ ; version 3
+ ; written by Mario Lang
+
+ (defun itime-internal (hour minute second offset)
+  "Return internet time as a float.
+ HOUR MINUTE and SECOND are local time. OFFSET is the offset in seconds."
+   (let* ((seconds (+ (* 3600 hour)
+		      3600
+		      (- offset)
+		      (* 60 minute)
+		      second))
+	  (beats (/ seconds 86.4)))
+     (if (< beats 0)
+	 (+ 1000 beats)
+       beats)))
+
+ (assert (= (itime-internal 0 0 0 3600) 0))
+ (assert (= (round (itime-internal 12 0 1 3600)) 500))
+ (assert (= (round (itime-internal 23 0 0 3600))
+	   (round (itime-internal 0 0 0 7200))))
+
+ (defun itime-string (hour minute second &optional ticks)
+  "Return internet time formatted as a string.
+ If TICKS is non-nil, also include the decimal points."
+  (let ((result (itime-internal (if (stringp hour)
+				    (string-to-number hour)
+				  hour)
+				(if (stringp minute)
+				    (string-to-number minute)
+				  minute)
+				(if (stringp second)
+				    (string-to-number second)
+				  second)
+				(car (current-time-zone)))))
+    (if ticks
+	(format "@%03d.%02d"
+		(floor result)
+		(floor (* (- result (floor result)) 100)))
+      (format "@%03d" (round result)))))
+
+ (setq display-time-string-forms
+      '(24-hours ":" minutes " "
+	(itime-string 24-hours minutes seconds t)
+	(if mail
+	    " Mail"
+	  ""))
+      display-time-interval 5)
+ (display-time-mode 1)
+----
+== Shorter ==
+
+The following code seems easier to understand to me.  It still has
+some quirks, for example I expect (itime-string "1" "0" "0") to return
+"@0", and (itime-string "0" "59" "59") to return "@999" but due to the
+rounding I use, both will be rounded to "@0".  If you use `floor'
+instead of `round', you will find other quirks: (itime-string "13" "0"
+"0") will return "@499" for example.  Thus I stick to the simpler
+version (using `round') and do away with ticks because all
+InternetTime is supposed to provide is a way to schedule meetings on
+IRC and similar non-precise things. -- AlexSchroeder
+
+    (defun itime-string (hour minute second &optional ignore)
+      "Return internet time as string.
+        HOUR MINUTE and SECOND are strings as provided within
+        `display-time-string-forms' and are local time."
+      (let* ((seconds (+ (* 3600 (string-to-number hour))
+                         3600
+                         (- (car (current-time-zone)))
+                         (* 60 (string-to-number minute))
+                         (string-to-number second)))
+             (beats (mod (floor seconds 86.4) 1000)))
+        (format "@%03d" beats)))
+
+== Translating it back to local time ==
+
+This will change all Internet Time occurences into buttons, which show the local time in the echo area when clicked upon.  For those of us not yet hip enough to live by Internet Time...  This uses ErcButton.
+
+    (defun itime-translate (beats)
+      "Translate BEATS from internet time to local time."
+      (when (stringp beats)
+	(setq beats (string-to-number beats)))
+      (let* ((seconds (- (* beats 86.4)
+			 3600
+			 (- (car (current-time-zone)))))
+	     (hours (mod (floor seconds 3600) 24))
+	     (minutes (mod (round seconds 60) 60)))
+	(format "%d:%02d" hours minutes)))
+
+    (defun itime-message (beats)
+      "Show BEATS in local time as a message."
+      (message (itime-translate beats)))
+
+    (add-to-list 'erc-button-alist
+                  '("@\\([0-9]+\\)"
+                    0 t itime-message 1))
+
+== Type the local time, then replace it with internet time ==
+
+So you are not hip enough to read Internet Time -- you sure ain't hip
+enough to write it.  In comes the following defun.  Type your local time,
+eg. 18:14, then use M-x itime-correct to replace that with @738, which
+makes you look cool.
+
+    (defun itime-correct ()
+      "When point is on or after a local time, translate it into Internet Time."
+      (interactive)
+      (skip-chars-backward "0-9: \t")
+      (skip-chars-forward " \t")
+      (when (looking-at "\\([0-9]+\\):\\([0-9]+\\):?\\([0-9]+\\)?")
+	(let ((hours (match-string 1))
+	      (minutes (match-string 2))
+	      (seconds (match-string 3)))
+	  (when (not seconds)
+	    (setq seconds "0"))
+	  (replace-match (itime-string hours minutes seconds)))))
+
+----
+CategoryDotEmacs

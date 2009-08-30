@@ -1,0 +1,7 @@
+MidnightCommanderMode tries to emulate Midnight Commander, based on DiredMode.
+
+* Lisp:mc.el
+
+----
+CategoryDirectories
+CategoryEmulation

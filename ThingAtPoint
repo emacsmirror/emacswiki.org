@@ -1,0 +1,231 @@
+This page describes the standard GNU Emacs library ##thingatpt.el## and extensions thereof.  The library can determine and retrieve different kinds of ''things at point''. The function `thing-at-point' retrieves the ''thing'' at point.
+
+See DescribeThingAtPoint for commands that display Emacs documentation related to a thing at the TextCursor position ([[Point]]).
+
+== Using the library ==
+
+To use this library in your own EmacsLisp code, do this:
+
+  (require 'thingatpt)
+
+The possibilities of a "thing" include symbol, list, S-expression (sexp), function definition (defun), filename, URL, word, sentence, whitespace, line, page and others.    For any standard ''thing'' that has a `forward-thing' function, just pass the symbol of ''thing'' to `thing-at-point'.  If found, the thing at point is returned as a string.  Here is an example for getting the sentence at the current location:
+
+  (thing-at-point 'sentence)
+
+There are other useful functions provided by the library, including:
+
+* `bounds-of-thing-at-point' returns the beginning and end positions of a thing.
+* `beginning-of-thing' and `end-of-thing' move point to the beginning or end of a ''thing''.
+
+== How it works ==
+
+The library behind `thing-at-point' is very generic, so it is [[extensible]] to additional types of ''things''. It relies on function `bounds-of-thing-at-point', which itself uses function `forward-thing'. Function `bounds-of-thing-at-point' starts from point and uses `forward-thing' to move forward, then backward to retrieve the bounds of the ''thing''. If `forward-thing' works for a particular type of thing, then so will `bounds-of-thing-at-point'.
+
+Function `forward-thing' takes as argument a symbol naming a type of thing. For example, argument `sentence' tells `forward-thing' to move forward one sentence. That is, it does so ''if'' a function named `forward-sentence' is defined (or if the symbol `sentence' has a `forward-op' property on its property list). Because function `forward-sentence' is defined in Emacs, `forward-thing' can operate with sentences.
+
+''In sum:'' To make `forward-thing' work with a particular kind of thing, say, a `foobar', just define a function `forward-foobar' that moves forward one or more `foobar's. Oh, and `forward-foobar' should also be able to move backward one or more `foobar's, given a negative argument. 
+
+== Specific "-at-point" functions ==
+
+Rather than passing a symbol for a type of ''thing'', several `-at-point' functions are defined for specific types of things. For example,
+
+  (sentence-at-point)
+
+These functions will usually return the appropriate object type for the particular type of thing.  For example, an object of type symbol is returned for symbols and of type integer for numbers.
+
+  (sentence-at-point)      ;; returns string
+  (thing-at-point 'symbol) ;; returns string
+  (symbol-at-point)        ;; returns symbol 
+
+Specific ''thing''-at-point functions are available for most major types of things and are defined in ##thingatpt.el##.  Any other things you want the library to recognize you have to extend the library by defining functions that can recognize your ''thing''.
+
+== Example: Extending the interface for integers ==
+
+Function `thing-at-point' can find numbers.  Function `number-at-point' uses Emacs's `read-from-string' function to return the current S-expression and then verifies that it is a number. This strategy can sometimes be too general.  Sometimes you want a function that retrieves only integers or retrieves only floating-point numbers ("floats"), rather than allowing both.  The other disadvantage is that `number-at-point' is an incomplete implementation of `thing-at-point'.  Information about the number's location (buffer bounds) in the buffer is not available.  The function `number-at-point' relies on the Emacs Lisp interpreter which cannot (currently) provide the buffer location.
+
+The following code extends `thing-at-point' to find an integer at the current point.  The quickest way to use the ##thingatpt.el## features is to define `forward-thing' and `backward-thing' functions for the ''thing'' you want it to understand.  Creating simple `forward-thing' and `backward-thing' functions is easy, but providing the proper implementation that handles the UniversalArgument, with `interactive', is more difficult. A compromise is to create a `bounds-of-thing-at-point' function for integers, named `integer-bounds-of-integer-at-point'. (Note: All functions defined in the examples have their names prefixed with `integer-').
+
+  (defun integer-bounds-of-integer-at-point ()
+     "Return the start and end points of an integer at the current point.
+   The result is a paired list of character positions for an integer
+   located at the current point in the current buffer.  An integer is any
+   decimal digit 0 through 9 with an optional starting minus symbol
+   \(\"-\")."
+     (save-excursion
+       (skip-chars-backward "-0123456789")
+       (if (looking-at "-?[0-9]+")
+	   (cons (point)
+		 (1- (match-end 0)))
+	 nil)))
+
+After defining how to find the bounds of an integer, we need to only tell
+`thing-at-point' that this definition exists and it will instantly understand integers.
+
+Emacs Lisp has a convenient property-list system allowing the values of properties to be associated to symbols.  This is used in ##thingatpt.el## to associate the `thing-at-point' and `bounds-of-thing-at-point' properties with a particular type of ''thing''.  The following sets the `bounds-of-thing-at-point' for integers as
+the function `integer-bounds-of-integer-at-point'.
+
+  (put 'integer 'bounds-of-thing-at-point
+       'integer-bounds-of-integer-at-point)
+
+Function `thing-at-point' can now retrieve an integer, because it now knows how to find the bounds of integers. It can also get the beginning and end positions of an integer with `beginning-of-thing' and `end-of-thing', respectively.
+
+  (thing-at-point 'integer)
+  (beginning-of-thing 'integer)
+  (end-of-thing 'integer)
+
+By default, any integer found by `thing-at-point' is returned as a string.  A new function, `integer-at-point', can change the value of the integer `thing-at-point' found to a number.  This new function can also verify that the integer found is indeed a integer or else return nil to indicate that no integer was at point.  Defining `integer-at-point' in this way is good style and the intension of the library's framework.
+
+  (defun integer-integer-at-point ()
+    (let ((i (thing-at-point 'integer)))
+      (if (numberp i) (string-to-number i)
+	nil)))
+
+We can easily define `beginning-of-integer' and `end-of-integer' functions by
+passing the symbol `integer' to the respective `beginning-of-thing'
+and `end-of-thing' functions.
+
+  (defun integer-beginning-of-integer ()
+    (beginning-of-thing 'integer))
+
+  (defun integer-end-of-integer ()
+    (end-of-thing 'integer))
+
+We can now simply create the `forward-integer' and `backward-integer' functions--that were considered but passed over at the beginning of this example--by using what ##thingatpt.el## has created for us.
+
+  (defun forward-integer (&optional arg)
+    "Move point forward ARG (backward if ARG is negative).
+  Normally returns t if integer moved, else nil."
+    (interactive "p")
+    (let ((arg (or arg 1)))
+      (while (< arg 0)
+	(integer-beginning-of-integer)
+	(setq arg (1+ arg)))
+      (while (> arg 0)
+	(integer-end-of-integer)
+	(setq arg (1- arg)))))
+
+  (defun backward-integer (&optional arg)
+    "Move backward until encountering the beginning of an integer.
+  With argument, do this ARG many times."
+    (interactive "p")
+    (let ((arg (or arg 1)))
+      (forward-integer (- 0 arg))))
+
+The forward and backward functions don't have the intelligence to move among other kinds of things besides integers.  Specifically, they can't skip non-integer things such as whitespace or words, which would make them useful.  Compare this with Emacs's the `forward-word' command, for instance.
+
+To define a new thing by writing a "forward" function, consider syntax.  Emacs groups characters by syntax groups as defined in an EmacsSyntaxTable.  Emacs has skip-syntax commands that make it easy to write a `forward-syntax' function.
+
+  (defun syntax-forward-syntax (&optional arg)
+    "Move ARG times to start of a set of the same syntax characters."
+    (setq arg (or arg 1))
+    (while (and (> arg 0)
+                (not (eobp))
+                (skip-syntax-forward (string (char-syntax (char-after)))))
+      (setq arg (1- arg)))
+    (while (and (< arg 0)
+                (not (bobp))
+                (skip-syntax-backward (string (char-syntax (char-before)))))
+      (setq arg (1+ arg))))
+
+Then, tell thingatpt.el about this new thing.
+
+  (put 'syntax 'forward-op 'syntax-forward-syntax)
+
+Making backward-syntax, was already trivial.
+
+  (defun syntax-backward-syntax (&optional arg)
+    "Move ARG times to end of a set of the same syntax characters."
+    (syntax-forward-syntax (- (or arg 1))))
+
+Defining `syntax-at-point', `beginning-of-syntax', `end-of-syntax', `bounds-of-syntax-at-point' suddenly becomes trivial with thingatpt.el
+
+  (defun syntax-syntax-at-point ()
+    (thing-at-point 'syntax))
+
+  (defun syntax-beginning-of-syntax ()
+    (beginning-of-thing 'syntax))
+
+  (defun syntax-end-of-syntax ()
+    (end-of-thing 'syntax))
+
+  (defun syntax-bounds-of-syntax-at-point ()
+    (bounds-of-thing-at-point 'syntax))
+
+A `kill-syntax' command becomes easy to write, too:
+
+  (defun kill-syntax (&optional arg)
+    "Kill ARG sets of syntax characters after point."
+    (interactive "p")
+    (let ((opoint (point)))
+      (syntax-forward-syntax arg)
+      (kill-region opoint (point))))
+
+  (defun kill-syntax-backward (&optional arg)
+    "Kill ARG sets of syntax characters preceding point."
+    (interactive "p")
+    (kill-syntax (- (or arg 1))))
+
+The thingatpt library is quintessential Emacs, powerful but minimal. View the source code with `M-x find-library RET thingatpt RET' to learn more its features and how to extend it to things of your own.
+
+== Extensions to library `thingatpt.el' ==
+
+Libraries are available that extend library ##thingatpt.el## in various ways.
+
+=== Copy or paste various type data at cursor ===
+
+* ThingEdit -- Copy or paste various type data at cursor.
+
+* Lisp:thing-edit-extension.el -- Some enhanced functions for [[ThingEdit]].
+
+=== ThingAtPointPlus and ThingAtPointCommands ===
+
+DrewAdams has written libraries Lisp:thingatpt+.el and Lisp:thing-cmds.el:
+
+* ThingAtPointPlus -- functions for returning different objects at or near point -- a general extension of library ##thingatpt.el##.
+
+* ThingAtPointCommands -- commands for selecting successive objects of different types.
+
+=== ThingAtPointOptional ===
+
+Simple useful utilities for ThingAtPoint similar to ThingAtPointCommands.
+
+* ThingAtPointOptional
+
+
+=== Modes that provide specific "things" ===
+
+The following modes and packages add new kinds of things at point:
+
+* [[Chart]] -- stock and commodity symbols (ie. ticker codes)
+* TexMathPreview -- TeX math expressions
+
+=== More things - region if selected ===
+
+Added : 22 Oct 2008 RichardRiley
+
+Not having found something which returns word at point or the region if selected, I added this for the browse-url-apropos additions I added :
+
+http://www.emacswiki.org/emacs-fr/BrowseAproposURL
+
+I'm pretty sure this is better being integrated elsewhere. But where?
+
+<pre>
+(defun rgr/region-then-thing-at-point()
+  "Function to return the currently selected region. If no region is selected then return the word at the cursor."
+  (if mark-active
+      (buffer-substring-no-properties (region-beginning)(region-end))
+    (progn
+      (let ((word (current-word)))
+	     (if (zerop (length word))
+		(setq word ""))
+	     word))))
+</pre>
+
+Note : this is pending being brought into DrewAdams's thing-at-point libraries.
+
+[new:DrewAdams:2008-10-22 16:10 UTC]
+Thanks, Richard. I added it to <tt>[[thingatpt+.el]]</tt> as function `region-or-word-at-point'. -- DrewAdams
+
+
+----
+CategoryCode

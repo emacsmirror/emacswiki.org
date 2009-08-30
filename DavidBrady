@@ -1,0 +1,23 @@
+I've been using emacs since March 2003.
+
+http://www.bemroses.net/images/curves.jpg
+(This image is due to email: pi at nightstar.net)
+
+I got into emacs because vi just doesn't do enough.  In the Windows world, I had customized Developer Studio to the point of being arcane; I'm used to typing a function name, hitting a hotkey and having a macro document the function for me, then being able to ctrl-click on a function name to open a browser to the generated documentation.  When I asked in #vim how to do this, they stared at me like I had a third arm growing out of my forehead.
+
+In many monster movies, there is a scientist character who gazes lovingly at the monster and gives a soliloquoy about the "animal perfection, the purity of instinct, the elegance of a being bred entirely for killing."  This scientist always gets killed by the monster immediately afterwards.
+
+This is how I feel about emacs.  It's going to kill me soon, I can just tell.
+
+8/17/2009: Six years now. Seems like just yesterday. Of note, if anyone cares: I switched to a Mac, and briefly, TextMate. My recent return to emacs brings with it a renewed appreciation for open source software. I've also sat down and made *most* of the TextMate stuff work in emacs, which rocks.
+
+Seriously Cool Things about Emacs:
+: ecb - HUGE pain to set up, but SO worth it.
+: emacs-rails 
+: yasnippet - Very simple file-based snippets tool. Like MAbbrev, only it doesn't crash emacs. Unfortunately, I haven't used it much lately because emacs-rails requires regular snippets.el, which are defined in lisp rather than TextMate-style template files.
+: ido.el - fuzzy matching on EVERYTHING!
+: slime - because, mmmm, lisp
+: doing shell stuff in emacs (sql-mysql mode, eshell, etc. M-p, M-n FTW!)
+
+----
+CategoryHomepage

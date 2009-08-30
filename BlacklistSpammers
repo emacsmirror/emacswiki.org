@@ -1,0 +1,88 @@
+Spammers are the scourge of Usenet.  Luckily, Gnus provides powerful but
+slightly hard to use scoring techniques.  With the following little
+snippet of code in your ~/.gnus.el you can blacklist spammers and other
+riff-raff with a quick keystroke in the summary buffer.
+
+ (defun gnus-summary-blacklist-poster ()
+   "Put sender on current line in blacklist."
+   (interactive)
+   (let ((spammer (mail-header-from (gnus-summary-article-header)))
+         (current-score-file gnus-current-score-file))
+     (when (gnus-news-group-p gnus-newsgroup-name)
+       (gnus-score-change-score-file "all.BLACKLIST")
+       (gnus-summary-score-entry "From" spammer 'S' -1001 nil)
+       (gnus-score-change-score-file current-score-file)
+       (gnus-score-save))))
+
+ (eval-after-load "gnus-sum"
+   '(let ((map gnus-summary-backend-map))
+      (define-key map (kbd "x") 'gnus-summary-blacklist-poster)
+      ;; other summary buffer bindings
+      ))
+
+There are some prerequisites before you can start using this code.  You
+must insert this line in your "~/News/all.SCORE" file, and just to play
+it safe, touch "~/News/all.BLACKLIST"
+
+ (files "all.BLACKLIST")
+
+Now, every time you hit `B x' in the summary buffer, the sender of the
+article under point will be entered in the blacklist file with a score
+of -1001.  If you have a lower `expunge' threshold, adjust this number
+accordingly.
+
+If you use FancySplitMail and maintain a file containing blacklisted addresses
+you might want to add fancy splitting rules for them.  It can be a pain to have to maintain a
+set of nnmail-split-fancy rules by hand.  However, you can generate them automatically
+from a flat text file.  Please note, these functions haven't been tested very well.
+
+ (defun my-generate-blacklist-split-list (file &optional
+                                          headers dest-file)
+   "Generate an `nnmail-split-fancy' rule from FILE.
+ FILE should contain a list of blacklisted addresses, one per
+ line.
+ HEADERS is a regexp of which headers to match
+ against (e.g. \"from\\|to\"), the default is \"from\".
+ DEST-FILE should be the name of the mail file you want the
+ messages to end up in, default is \"mail.spam\"."
+   (let ((headers (or headers "from"))
+         (dest-file (or dest-file "mail.spam")))
+     `(| (,headers ,(regexp-opt
+                     (with-temp-buffer
+                       (insert-file-contents file)
+                       (split-string (buffer-string))))
+                   ,dest-file))))
+
+
+This builds a regular expression matching all the addresses in your blacklist file.
+If you find this is too slow because the regexp is too long, you might want to try this
+alternate version, which builds up a set of rules, each one matching a single address.
+
+ (defun my-generate-blacklist-split-list (file &optional
+                                          headers dest-file)
+   "Generate an `nnmail-split-fancy' rule from FILE.
+ FILE should contain a list of blacklisted addresses, one per
+ line.
+ HEADERS is a regexp of which headers to match
+ against (e.g. \"from\\|to\"), the default is \"from\".
+ DEST-FILE should be the name of the mail file you want the
+ messages to end up in, default is \"mail.spam\".
+
+ Note that the last address in the file is the first in the list
+ generated."
+   (let ((headers (or headers "from"))
+         (dest-file (or dest-file "mail.spam"))
+         (list (with-temp-buffer
+                 (insert-file-contents file)
+                 (split-string (buffer-string))))
+         res)
+     (dolist (el list)
+       (push `(,headers ,(regexp-quote el) ,dest-file) res))
+     (cons '| res)))
+
+If you seem to get spam from some particular email addresses more than others, put them at the
+end of the file, they will be near the beginning of the generated split rule, and hence
+get matched sooner (saving CPU cycles).
+
+----
+CategoryGnus SpamFiltering

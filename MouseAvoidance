@@ -1,0 +1,22 @@
+MouseAvoidance moves your MousePointer out of your way
+
+  M-x mouse-avoidance-mode
+
+  (mouse-avoidance-mode 'none)  ;; turn it off
+  (mouse-avoidance-mode 'jump)  ;; jump away randomly when approached
+  (mouse-avoidance-mode 'banish) ;; jump to corner when typing
+  (mouse-avoidance-mode 'exile)  ;; jump to corner when approached
+  (mouse-avoidance-mode 'animate) ;; fru-fru
+  (mouse-avoidance-mode 'cat-and-mouse) ;; same
+  (mouse-avoidance-mode 'proteus)  ;; same + change the pointer shape
+
+The above methods are not useful for preventing the mouse
+from highlighting random buttons when you scroll with pgdn
+or the mouse wheel.  banish moves the pointer to the tab bar
+in w3m which makes mouse wheel not work.  What would work is
+to move it to the minibuffer.
+
+Another way of adjusting the mouse pointer is by editing PointerShape
+
+----
+CategoryDisplay

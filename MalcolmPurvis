@@ -1,0 +1,11 @@
+I use XEmacs.
+
+My first UNIX editor was ed on a PDP11 back in 1985 at the University of NSW in Sydney, Australia.  Then I spent a year using vi on a VAX 780 (it was the only other editor available.  I still have nightmares).
+
+I finally escaped to the Emacs editor family firstly with JOVE (Jonathan's Own Version of Emacs), again on the PDP11 and a 68k based BSD 4.2 box.  Then Emacs 18.X on Apollo workstations, then Epoch and finally XEmacs across a variety of UNIX boxes and jobs.
+
+These days I'm on the XEmacs development review board and hack GTK, autoconf and miscellaneous bugs. 
+
+----
+CategoryHomepage
+

@@ -1,0 +1,567 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Isearch Enhancements]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Search-And-Replace]] ||
+
+----
+
+
+== Icicles Search Commands, Overview ==
+
+This section provides an overview of '''Icicles''' search.
+
+'''See also:'''
+
+* The ''[[doc string]]'' (`C-h f') of [[command]] '''`icicle-search''''; it provides general information on '''Icicles''' search.
+* [[Icicles - Other Search Commands]] for specialized '''Icicles''' search commands, including search in particular [[buffer]]s.
+* [[Icicles - Info Enhancements]] for information on using '''Icicles''' to search in [[InfoMode|Info]].
+* [[Icicles - Multiple Regions]] for information about searching multiple [[region]]s.
+* [[Icicles - Support for Projects]] for information about using `grep' to search all of the files in a project.
+
+
+
+
+
+[:Introduction]
+=== Introduction: On Beyond Occur... ===
+
+You've no doubt used standard Emacs command `occur' (OccurMode).  It finds all
+lines in a buffer that match a [[regexp]] that you enter.  It displays
+the matching [[line]]s as links in buffer `*Occur*' -- you can click a
+link to navigate to the corresponding line in the original buffer.
+Using buffer `*Occur*' is similar to using the output of the Emacs
+`grep' command.
+
+Command '''`icicle-occur'''' is similar to `occur', but instead of
+entering a regexp (with `RET') you type a regexp and then use
+`S-TAB' to show the matching lines  in buffer `*Completions*'.  As
+usual in '''Icicles''', you can complete to a single candidate, or [[Icicles - Cycling Completions|cycle]]
+among candidates to choose one.  To navigate to a match in the
+original buffer, use `C-RET', `C-mouse-2', `C-next', or `C-prior'. One advantage of `icicle-occur' over `occur' is that you can change the regexp
+on the fly to match different sets of lines.
+
+Another, major advantage is that you can use [[progressive completion]] to find lines using multiple regexps.  A similar,
+but less interactive, effect can be had using chained `grep'
+commands, but it is otherwise not possible with other search
+methods such as regexp Isearch.  A regexp simply cannot express
+intersection ("and") except in the limited form of "followed by".
+
+Here's a screenshot of using `icicle-occur' to find lines that match the regexp `##regexp.*match##'. The text matching the input regexp is highlighted with green. The line highlighted with pink corresponds to the current candidate during cycling (with `C-next'). The next cycling candidate is shown in the [[minibuffer]] and is highlighted in `*Completions*'.
+
+[[image:IciclesOccurScreenshot]]
+
+For more about `icicle-occur', see OccurMode.
+
+
+[:ContextRegexp--definition]
+[:SearchContext--definition]
+Command '''`icicle-search'''' is a generalization of `icicle-occur'.
+You enter an initial, search-'''[::context regexp]''' (using `RET'), which defines
+a set of completion candidates: all of the matching strings in the
+current buffer (by default).  These candidates are called '''[::search context]s'''.
+
+Command `icicle-occur' is really `icicle-search'
+with an implicit initial regexp of `##.*##' (which you do not enter, however). That is,
+the initial completion candidates for `icicle-occur' are all of
+the ''lines'' of the buffer.  ('''`##.##'''' matches any character except a
+newline).
+
+With `icicle-search', the candidates need ''not'' be single, complete [[line]]s; they can be any
+strings in the buffer, including ''multiple-line'' strings.  Your
+initial regexp is used over and over to
+find the set of matching strings in the region or buffer that you search.  These strings then serve as the completion candidates.
+
+For example, you might use a search-context regexp of "##[A-Z][^.?!]+[.?!]##"
+to search ''sentences'', "##\\(.+\n\\)+##" to search ''paragraphs'', or 
+"##\\([^\f]*[\f]\\|[^\f]+$\\)##" to search ''pages''.  (`##^L##' is the page-separator character.  (That's in fact how convenience commands
+'''`icicles-search-sentences'''', '''`icicles-search-paragraphs'''', and
+'''`icicles-search-pages'''' are defined.)
+
+`##\f##' is the form-feed, or page-separator, character.  You input
+`##\f##', `##\t##', and `##\n##' using `C-q l', `C-q TAB', and `C-j',
+respectively.  See [[Icicles - Dots, Dots, Dots]] for information about
+''multi-line dot'' ('''`##.##''''), which matches also newline.
+
+Again, you can use [[progressive completion]] (`##M-*##' or `S-SPC') to match several
+different regexps within the same page or the same sentence.  For
+example, you could find all sentences that contain `character',
+`delete', and `backward', in any order, as follows:
+
+  C-c ` [A-Z][^.?!]+[.?!] RET character M-* delete M-* backward
+
+When you visit a search context, both
+`icicle-occur' and `icicle-search' highlight that hit.  For
+`icicle-occur', the search context is the current ''line''.  For
+`icicle-search', it is whatever your search-context regexp matches.
+
+
+[:SearchHighlighting]
+Here is a screenshot that shows some of the highlighting features of `icicle-search':
+
+[[image:IciclesSearchScreenshot]]
+
+
+
+
+
+
+[:HowIciclesSearchWorks]
+=== How Icicles Search Works ===
+
+There are several '''Icicles''' search commands, some of which are bound to keys in ''Icicle'' mode:
+
+* '''`##C-c '##'''' -- '''`icicle-occur'''' -- An `occur' with [[Icicles - Icompletion|icompletion]].
+* '''`##C-c `##'''' -- '''`icicle-search'''' -- Seach buffer areas that match a regexp.
+* '''`icicle-search-buffer'''' -- Search selected buffers.
+* '''`icicle-search-file'''' -- Search selected files.
+* '''`icicle-search-region'''' -- Search selected saved regions.
+* '''`icicle-search-all-regions'''' -- Search all saved regions.
+* '''`##C-c $##'''' -- '''`icicle-search-word'''' -- Search for a whole word.
+* '''`##C-c ^##'''' -- '''`icicle-search-keywords'''' -- Search with regexp keywords.
+* '''`##C-c `##'''' -- '''`icicle-compilation-search'''' -- Search compilation hits (e.g. `grep' hits).
+* '''`##C-c "##'''' -- '''`icicle-search-char-property'''' -- Search for a given character-property value.
+* '''`##C-c =##'''' -- '''`icicle-imenu'''' -- Navigate among [[ImenuMode|Imenu]] entries.
+* '''`icicle-imenu-command'''' -- Navigate among Emacs command definitions.
+* '''`icicle-imenu-non-interactive-function'''' -- Navigate among Emacs ''non''-interactive function definitions.
+* '''`C-c TAB'''' -- '''`icicle-comint-command'''' -- Retrieve a previously used shell command.
+
+All operate in the same general way:
+
+# Unlike standard [[incremental search]], '''Icicles''' search commands search the ''entire buffer'', not just the
+part that follows the [[cursor]].  If the ''[[region]]'' is active, however,
+then the search is confined to the region. Some '''Icicles''' search commands let you search across ''multiple buffers'', ''multiple files'', or ''multiple saved regions''. Searching within one or more regions of text is a '''_first way_''' to ''limit the context'' of a search.
+
+# You limit the search context in a '''_second way_''', by providing some information, such as a ''regexp'' or a ''[[character property]]'' ([[text property]] or [[overlay]] property), that defines zones of text that you want to search.  You can use ([[lax]]) completion against previous input to enter the regexp or the character property. In some cases, the information (e.g. regexp) to define the search context is provided automatically by the search command; for example, `icicle-occur' assumes that you want to search [[line]]s.
+
+# If you use a regexp to define the search context, and if that
+regexp has ''subgroups'', that is, subexpressions of the form
+`##\(...\)##', then you are prompted for the subgroup to use to
+define the search context.  0 means the entire regexp match is
+used as a context.  1 means that whatever the first subgroup
+matches is used as a context, and so on.  Using a subgroup thus limits the search context in a '''_third way_'''.
+It lets you find a search match within a larger search-match
+context.  For example, you might choose an EmacsLisp argument list as
+the search context, specifying that it must follow `##(defun ##':
+`##(defun [^(]*\(([^(]*)\)##'.  Subgroup 1 is the argument list.
+Specifying a subgroup search context helps you become more
+familiar with regexps.  '''Icicles''' search highlighting (see below)
+shows you the subgroup matches instantly.
+
+# You can limit the set of search contexts in a '''_fourth way_''', by using '''`##M-&##''''
+to provide ''predicates'' that search-context candidates must
+satisfy.  Command `icicle-search' and its derivative functions use
+candidates of the form ##(CONTEXT . MARKER)##, where ##CONTEXT## is a
+string, the search hit (search context), and ##MARKER## is a buffer
+[[marker]] that locates the ##CONTEXT##.  Predicates you supply to the
+`##M-&##' prompt must expect such candidates.  Only contexts that satisfy the predicate are found.  For example, if
+the predicate is ##(lambda (x) (commandp (intern-soft (car x))))##, then
+only contexts that name Emacs [[command]]s are found.  Or, if
+you have a predicate `verbp' that tests whether a word is an
+English verb form, then you can use that to limit word matches
+to verbs.  In this way, you
+can combine purely syntactic searching (regexp or text-property
+match) with more semantic search criteria.  After building up a complex predicate by using `##M-&##', you can save it to a [[variable]] with `##C-M-&##' and then reuse it later with `##C-=##'.  In addition to, or instead of, using `##M-&##',
+you can set [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-search-context-match-predicate|icicle-search-context-match-predicate]]</tt>''''
+to a predicate that takes a ##CONTEXT## as argument (the match
+string only, no ##MARKER##).  See also [[Icicles - Progressive Completion]].
+
+# '''Icicles''' finds all of the qualified search contexts, and presents them to you as ''completion candidates''.  As always for
+'''Icicles''' completion, the number of search hits (matching candidates), is displayed in the [[mode line]] of buffer `*Completions*' -- e.g., '''`##72 candidates##''''.
+
+# You can ''navigate'' among the source-buffer search contexts, using the [[multi-command]] action keys (`C-next', `C-prior', `C-RET', `C-mouse-2').  The contexts are highlighted in the source buffer(s).
+
+# As always in '''Icicles''', your current minibuffer input ''filters'' the set of current candidates -- the search contexts, so that only those that contain matches to your input remain as candidates.  This is a second level of matching: looking for a ''refinement pattern within the search contexts''.   And this constitutes a '''_fifth way_''' you can limit the set of search contexts.
+
+# As always in '''Icicles''', this input can be a regexp.  This is ordinary [[apropos completion]], applied to searching. You don't type `RET' to enter this regexp, and you can change it on the fly to change the set of search hits.  '''Icicles''' searching is thus ''incremental'', in the sense that changing your input dynamically changes the set of matching search hits.  '''Icicles''' searching is not incremental with respect to the initial, context matching, however.
+
+# As always in '''Icicles''', you can type some input and then hit
+`##C-~##' to remove all candidates that match that input.  Then
+type some other input and hit `##C-~##' again to remove those
+matches.  Or you can use `##M-&##' to define a predicate, and then
+hit `##C-~##' to remove all candidates that satisfy that predicate.
+And so on.  And you can use `S-mouse-2' or the `delete' key to
+remove individual search hits.  These techniques let you [[Icicles - Nutshell View#ChippingAway|chip away]] at the search set, removing hits that are uninteresting.  This is a very powerful technique for both searching and
+search-and-replace (see next), and it constitutes a '''_sixth way_'''
+to limit the set of search contexts.
+
+
+# You can ''replace text while you search'', forward, backward, or
+randomly.  You can replace entire search contexts or just the parts that match your current input.  You can use any
+replacement string that is allowed by `query-replace-regexp'.  In Emacs 22 or later, this includes '''`##\,##'''', to substitute the result of a ''Lisp
+evaluation'' (see ReplaceRegexp for an explanation of `##\,##').  Use the alternative-action keys for replacement: '''`C-S-RET'''',
+'''`C-S-mouse-2'''', '''`C-S-next'''', '''`C-S-prior'''', '''`C-S-down'''', and
+'''`C-S-up''''.  At the first use, you are prompted for the
+replacement string; it is used thereafter.  You can use
+'''`##M-|##'''' (`icicle-all-candidates-list-alt-action') to replace all matches.  See '''[[Icicles - Search-And-Replace]]'''.
+
+# When you visit a search context (using `C-mouse-2' or
+`C-next', for example), the part of the candidate that matches
+your input is highlighted.  An entire search context is highlighted in [[face]] '''`<tt>[[Icicles - Customization and General Tips#icicle-search-main-regexp-current|icicle-search-main-regexp-current]]</tt>'''', and the part that matches your input is highlighted in face '''`<tt>[[Icicles - Customization and General Tips#icicle-search-current-input|icicle-search-current-input]]</tt>''''.    All other search contexts are also highlighted (in face '''`<tt>[[Icicles - Customization and General Tips#icicle-search-main-regexp-others|icicle-search-main-regexp-others]]</tt>'''').  
+
+# User option '''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>''''
+controls whether the input matches are highlighted within each
+search context or only within the current context.  It,
+together with '''`icicle-expand-input-to-common-match-flag'''',
+control whether the input-match highlighting covers an [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all matches or just the exact input match.  See [[#SearchHighlighting|screenshot]], above.
+
+# If you do not use a subgroup to define the search context 
+(as in #3, above), that
+is, if the search context corresponds to the entire search regexp,
+then up to eight '''[::context levels]''' (subgroups) are each
+highlighted differently, using faces
+'''`<tt>[[Icicles - Customization and General Tips#icicle-search-context-level-1|icicle-search-context-level-1]]</tt>'''' through
+'''`<tt>[[Icicles - Customization and General Tips#icicle-search-context-level-8|icicle-search-context-level-8]]</tt>''''.  This context-level
+highlighting is not done if user option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-context-levels-flag|icicle-search-highlight-context-levels-flag]]</tt>'''' is `nil'. 
+
+[:SearchHighlightingContextLevels]
+: Here is a screenshot (from <tt>[[icicles-cmd.el]]</tt>) that shows context-level highlighting. The regexp defining the search context is this:
+
+::: ##(##'''##\(##'''##[-a-z*]+##'''##\)##'''## *##'''##\(##'''##(##'''##\(##'''##([-a-z]+ *##'''##\(##'''##[^)]*##'''##\)##'''##)##'''##\)##'''##)##'''##\)##'''##.*##
+
+:: [[image:IciclesSearchContextLevelsScreenshot]]
+
+: If you type input in the minibuffer, then its matches are highlighted on top of this. For example, if your current input is `e', then each `e' in the search context of the screenshot would be highlighted with face `icicle-search-current-input' (black text on bright green background, by default). Your input match always takes highest priority.
+
+You might have noticed that out of these 13 search features, 6
+constitute independent ways in which you can narrow or limit the
+set of search hits among which you can navigate.  Restricting the
+search space is in fact what search is all about, and '''Icicles'''
+offers you some unique tools to do this.
+
+For several '''Icicles''' search commands, including `icicle-search' (`##C-c `##'),
+you provide an ''initial regexp'' to define the search contexts (step
+1, above).  Why use two regexps to search (steps 1 and 4, above)?  To make
+things simpler.  Regular expressions are powerful for searching, but they can also
+be cumbersome sometimes.  Why not use one simple regexp to set up
+a set of candidates and then, optionally, use a second simple regexp to filter
+those candidates? 
+
+This is the same
+idea as that behind [[progressive completion]]. And
+speaking of which, how would you find a line that contains a given
+set of words (each of them), but in an arbitrary (unknown) order?
+''Progressive completion''.  Which lines in this doc section contain
+the words `which', `you', and `how', in any order?  If you are
+reading this doc in file <tt>[[icicles-doc2.el]]</tt>, then just use
+`icicle-occur' with progressive completion:
+
+  C-c ' which M-SPC you M-SPC how
+
+That narrows things down to four lines that you can then navigate
+among.  Progressive completion gives '''Icicles''' search a power boost.
+
+Like `icicle-occur' (`##C-c '##'), commands '''`icicle-search-word'''' ('''`##C-c $##'''') and
+'''`icicle-search-keywords'''' ('''`##C-c ^##'''') are variants of `icicle-search'
+that differ only in the regexp used.  Each accepts your input and
+converts it to a regexp that does the right thing.
+`icicle-search-word' just adds '''`##\b##'''' before and after the word you
+type, so that it matches at word boundaries.
+
+`icicle-search-keywords' wraps the keywords you provide as input
+with regexp grouping  ('''`##\(...\)##'''') and alternative ('''`##\|##'''') syntax, so that search looks
+for ''any'' of the keywords.
+
+"'''Keywords'''" here is an understatement. Each keyword is actually a
+''regexp'' and is treated as such, unless you use `##C-`##' to turn on
+[[Icicles - Special Characters in Input Patterns#icicle-toggle-regexp-quote|escaping of regexp special characters]].  In that case, each
+keyword is matched as a substring.  At the `##C-c $##' prompt, you can
+use completion to choose keywords that you have already entered,
+or you can use `C-RET' to enter new keywords.
+
+As a shortcut, you can use the search string during [[Isearch]] as the initial regexp for `icicle-search'.  You
+do this by hitting '''`S-TAB'''' during Isearch.  This ends Isearch and
+passes its search string to `icicle-search'.  This can be a handy
+way to start `icicle-search', picking up its search pattern by
+using, say, `##C-s C-w C-w...##'.
+
+
+
+
+
+
+[:SearchMultipleBuffersFilesAndRegions]
+=== Search Multiple Buffers, Files, and Saved Regions ===
+
+If you provide a plain
+[[prefix argument]] (only `C-u') to most '''Icicles''' search functions, then you can search ''multiple [[region]]s'', which can be in multiple buffers.  The regions are those
+in user option '''`<tt>[[Icicles - Customization and General Tips#icicle-region-alist|icicle-region-alist]]</tt>'''', which you have previously
+defined using command `icicle-add-region'.  See [[Icicles - Multiple Regions]].
+
+If you provide a ''non-negative'' [[numeric prefix argument]] (e.g. `C-9')
+to most '''Icicles''' search functions, then you can
+search ''multiple [[buffer]]s'' -- you are
+prompted for the buffers to search.   If the
+prefix argument is '''99''', then only buffers that are visiting ''files''
+are candidates.  You can use `C-RET' and so on to
+choose individual buffers with completion. You can use `##C-!##' to choose all buffers or all buffers that match a regexp. (See [[Icicles - Multi-Commands]].)
+
+: '''Note:''' You can use '''`M-s i'''' in [[IbufferMode|Ibuffer]] or [[BufferMenu|Buffer Menu]] to search all
+marked buffers using '''Icicles''' search.  In Ibuffer, menu item
+'''Icicles Search (and Replace)''' does the same thing as `M-s i'.
+
+If you provide a ''negative'' numeric prefix argument (e.g. `C--')
+to most '''Icicles''' search functions, then you can
+search ''multiple files'' in the current directory -- you are prompted
+for the files to search.  As for multiple-buffer searching, you can use `C-RET' and so on.
+
+: '''Note:''' You can use '''`M-s i'''' in [[DiredMode|Dired]] to search all marked files
+using '''Icicles''' search.  Menu item '''Search (and Replace)''' is
+added to the '''Icicles''' submenu of menu '''Multiple''' (or '''Operate'''),
+and it does the same thing as `M-s i'.
+
+As a convenience, some specialized '''Icicles''' commands are defined,
+corresponding to `icicle-search' with each of the prefix-argument
+cases: '''`icicle-search-all-regions'''', '''`icicle-search-buffer'''', and
+'''`icicle-search-file''''.  If you often use `##C-c `##' with one of the
+prefix argument options, then you might want to bind one or more
+of these commands.  These commands are also available in the
+'''Icicles''' [[menu bar]] menu (or the '''Search''' menu, if it exists).
+
+
+
+
+
+
+[:UserOptions]
+=== User Options for Icicles Searching ===
+
+You can [[Customize]] the following [[user option]]s, to control search
+and replacement behavior.
+
+* If '''`<tt>[[Icicles - Customization and General Tips#icicle-add-buffer-name-flag|icicle-add-buffer-name-flag]]</tt>'''' is non-`nil' (the default
+  value), then, whenever you use a [[prefix argument]], '''Icicles''' search functions annotate each candidate with the name of the buffer where the search hit
+occurs, highlighted, to help orient you.  The buffer name is actually part of the ([[multi-completion]]) candidate, so you can match against it.  Note that even when the value of this option is
+`nil', , if option '''`<tt>[[Icicles - Customization and General Tips#icicle-help-in-mode-line-flag|icicle-help-in-mode-line-flag]]</tt>'''' is non-`nil' then you can see the buffer name in the mode-line (as well as the position and length of the search context in the buffer).
+
+* '''Icicles''' search functions that use an initial regexp highlight the first '''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-threshold|icicle-search-highlight-threshold]]</tt>'''' matches for
+  that regexp ''at once'' (using face
+  `icicle-search-main-regexp-others').  The effect is similar to
+  the Emacs 22+ ''lazy search highlighting'' of [[Isearch]] (except that
+  the highlighting is not in fact lazy).
+
+* If '''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>'''' is non-`nil', then
+ '''Icicles''' search functions highlight your current input match within ''all''
+ search contexts ''at once''.  If it is non-`nil' and
+'''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]]</tt>'''' is also non-`nil', then
+what is highlighted for each input match is the [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all input matches throughout the search area.  If
+either is `nil', then only the exact input match is highlighted.  For example (see [[Icicles - Nutshell View#IciclesSearch|Nutshell View - Icicles Search]]), if the
+initial regexp defining the search context is `##.*recursive.*##',
+and your input is `edit', then searching file <tt>[[icicles-doc1.el]]</tt>
+highlights not `edit' but `##`abort-recursive-edit'##', which
+is the longest common match among all input matches.  If `icicle-expand-input-to-common-match-flag',
+`icicle-search-highlight-all-current-flag', and
+'''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]</tt>'''' are all non-`nil', then
+a search replacement replaces the expanded common match;
+otherwise, it replaces only the exact match. The default value of `icicle-search-highlight-all-current-flag' is `nil', because
+ non-`nil' can impact performance negatively if there are
+  many search contexts -- the highlighting is updated with each input change.  You can toggle the value at any time using command
+`icicle-toggle-highlight-all-current', bound to '''`##C-^##'''' in the
+ minibuffer during '''Icicles''' search.
+
+* If '''`<tt>[[Icicles - Customization and General Tips#icicle-search-cleanup-flag|icicle-search-cleanup-flag]]</tt>'''' is non-`nil' (the default value)
+  then search highlighting is removed after the search.  If you
+  set this to `nil' then you can remove search highlighting manually
+  later using command '''`icicle-search-highlight-cleanup''''.  You can
+  toggle this search highlight removal at any time using command
+  `icicle-toggle-search-cleanup', bound to '''`##C-.##'''' in the minibuffer
+  (except during file-name completion).  One use
+  of `nil' `icicle-search-cleanup-flag' is to ''highlight'' regexp
+  matches throughout a region or buffer (or multiple files or...).  In that capacity,
+  '''Icicles''' search functions act like some of the highlighting commands in
+  my library <tt>[[highlight.el]]</tt> (see HighLight).  Note that when `icicle-search-cleanup-flag' is `nil', ''all'' '''Icicles''' search highlighting remains: last-visited
+search context, other context matches, current-input matches, and even
+regexp subgroups.  The [[face]]s for these are, respectively:
+
+** '''`<tt>[[Icicles - Customization and General Tips#icicle-search-main-regexp-current|icicle-search-main-regexp-current]]</tt>''''
+** '''`<tt>[[Icicles - Customization and General Tips#icicle-search-main-regexp-others|icicle-search-main-regexp-others]]</tt>''''
+** '''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-input-matches-here|icicle-search-highlight-input-matches-here]]</tt>'''' (everywhere, if
+`icicle-search-highlight-all-current-flag' is non-`nil')
+** '''`<tt>[[Icicles - Customization and General Tips#icicle-search-context-level-1|icicle-search-context-level-1]]</tt>'''' through '''`icicle-search-context-level-8''''
+
+* If '''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|icicle-search-replace-whole-candidate-flag]]</tt>'''' is `nil', then whatever matches your current input is
+replaced, within the current search context, when you perform
+replacement (e.g. `C-S-RET').  If the value is non-`nil' (the
+default value), then the
+entire search context is replaced, instead.  You can use '''`##C-,##'''' at
+any time during searching and replacing, to toggle the value.
+
+* Command `icicle-search-word' (bound to `##C-c $##') always searches
+for a whole word: your initial
+search string is matched only against whole words. Non-`nil' '''`<tt>[[Icicles - Customization and General Tips#icicle-search-whole-word-flag|icicle-search-whole-word-flag]]</tt>'''' makes other '''Icicles''' search commands also perform whole-word searching. The search
+string you type is matched literally, but matches must start and
+end at word boundaries.  Because it is matched literally, all
+[[Icicles - Special Characters in Input Patterns|regexp special characters]] in the search string are escaped.
+This means, for instance, that you can match `foo-bar' as a
+word, even in contexts (such as Emacs Lisp) where '''`-'''' is not a
+word-constituent character.  Similarly, you can match the
+literal four-character "word" `##f.*g##'.  You can use '''`M-q'''' while
+searching to toggle this option; the new value takes effect for
+the next complete search.
+
+* You can toggle '''`<tt>[[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]</tt>'''' at any time using
+`M-g' in the minibuffer.  This is handy for 
+multi-commands that browse, such as '''Icicles''' search.  It means that you can
+use `next' and so on instead of `C-next' and so on to navigate
+among search hits.  See [[Icicles - More About Multi-Commands#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]
+
+* '''`icicle-search-hook'''': Functions run after searching and moving
+  to a match, whether by `RET' or `C-RET' (or `C-next' or
+  `C-prior').
+
+It can sometimes be useful to highlight all regexp matches using
+a large value of `icicle-search-highlight-threshold' and a `nil' value of 
+`icicle-search-cleanup-flag', and then set `icicle-search-highlight-threshold' to zero and use an '''Icicles''' search function 
+again with a different regexp to search through the same region or
+buffer.  This lets you see the relation between the two sets of
+regexp matches.
+
+
+
+
+
+
+
+[:UsingRegexps]
+=== Using Regexps With Icicles Search ===
+
+You can use '''Icicles''' search to find text entities of a certain
+kind -- sentences, paragraphs, file names, URLs, and so on.  A
+convenient way to do this is to use '''`C-='''' (`icicle-insert-string-from-variable') or `C-x r i' (`insert-register') to ''insert a predefined
+regexp'' that matches a particular kind of text entity. Which of
+these you use depends on whether the regexp string is saved in a
+variable (`C-=') or a register (`C-x r i').
+
+For example, suppose you are in a mail client and you want to move
+between mail headers.  If you use a regexp that matches the header
+field you want (e.g. the sent date or sender) then '''Icicles''' search highlights all such occurrences and lets you navigate among them
+-- ''instant mail browser!''  Or, suppose you are in a C++ or Perl file
+and you want to navigate among function definitions or other definitions.  If
+you have a canned regexp that matches the start of a definition,
+then you can use `C-=' to quickly turn `icicle-search' into a ''code
+browser''.  In a log file, navigate among date or time entries or IP
+addresses...  Of course, most programming modes and mail clients
+already provide other ways to navigate, but you get the idea
+-- '''Icicles''' search provides a ''general'' way to navigate among things,
+as long as you can match them with regexps, and `C-=' lets you
+quickly access a library of predefined regexps.
+
+You can find useful regexps to store in variables in the standard
+EmacsLisp libraries.  Grep for `font-lock-keywords' or `regexp'
+in the Emacs `lisp' directory and its subdirectories.
+
+* See ##align.el## for regexps for programming languages.
+* See ##url-dav.el## for regexps matching ISO 8601 dates.
+* See ##rmail.el##, ##sendmail.el##, and ##mh-show.el## for regexps matching mail-header fields.
+
+[[ImenuMode|Imenu]] regexps occurring as parts of different values of
+`imenu-generic-expression' for different buffer types can be used
+as variable values for `##C-=##'.  They all work fine with
+`icicle-search', turning it into a navigator for the given mode.
+See, for example, ##generic-x.el## and ##lisp-mode.el##.  Here is a
+regexp for Javascript function definitions from ##generic-x.el##:
+
+  "^function\\s-+\\([A-Za-z0-9_]+\\)"
+
+And `lisp-imenu-generic-expression' (in ##lisp-mode.el##) provides
+regexps for Lisp function, variable, and type definitions.  Here
+is the variable-definition regexp:
+
+  "^\\s-*(\\(def\\(c\\(onst\\(ant\\)?\\|ustom\\)\\|ine-symbol-macro\\|parameter\\|var\\)\\)\\s-+\\(\\(\\sw\\|\\s_\\)+\\)"
+
+You certainly don't want to type a regexp like that into the minibuffer (and the
+function-definition regexp is twice as complex)!  Put it into a
+variable or register once and use `C-=' or `C-x r i' from then on to retrieve it -- simple.
+
+If it's so simple, then why not let a command do it?  This is exactly what command '''`icicle-imenu'''' (bound to '''`##C-c =##'''') does. You
+don't need to bother looking up Imenu regexps and assigning them
+to variables for use with `C-=' and `icicle-search' -- `icicle-imenu' does that for you automatically.  See [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]].
+
+
+'''In sum:''' For complete interactivity, type a regexp dynamically as
+input to `icicle-search'.  For isolated special regexps that you
+use, save them in variables and use `C-=' with `icicle-search'.
+For well-defined sets of regexps, especially if used frequently,
+define a command that uses `icicle-search'.  There is a spectrum
+of use cases for `icicle-search'.
+
+Command `icicle-search' is very general and very powerful.  It might never replace incremental search -- either regexp or literal
+string search, but in some cases it can be quite handy.  Think of
+it as another tool to add to your search-tool belt.  Admittedly,
+it does take a little getting used to.  Remember, in particular,
+that the initial, context regexp you enter (with `RET') cannot be changed
+without re-executing `icicle-search'.
+
+And remember too that `C-l' (`icicle-retrieve-previous-input') is your friend -- it clears the
+minibuffer during cycling, retrieving your last real input.  Use
+it to modify your second  and subsequent
+regexps on the fly -- those that filter
+the initial candidate list further.  You can repeat `C-l' to retrieve older completion inputs, and you can use `C-S-l' (that is, `##C-##'''##L##'''') to cycle previous inputs in the other direction.  See [[Icicles - History Enhancements]].
+
+Oh -- And don't forget that you can do things like take the
+''complement'' of your fine-tuning regexp matches, within the context
+of your coarse-tuning matches (see [[Icicles - Candidate Sets#icicle-candidate-set-complement|set complement]]).  For example, use `<code>^.*defun.*$</code>' as the main regexp, to find all lines containing
+`defun'.  Then type `icicle' to match only the lines with `defun'
+that also contain `icicle'.  Then complement (`<code>C-~</code>') that set, to
+see the lines that contain `defun' but not `icicle'.
+
+And you can then ''save''
+that set of matches, and then ''subtract'' it from another set of
+matches in a ''different search''...  You get the idea. When performing [[Icicles - Candidate Sets|set operations]] combined with `icicle-search', keep
+in mind that the saved set does not include any ''position''
+information -- it is only a set of matching ''strings''.  So, in
+particular, a set-union operation (`<code>C-+</code>') is not useful with
+`icicle-search' (adding a saved set of strings without positions
+is useless).  Still, you can do things like match lines that
+contain `defun' followed somewhere by `<code>()</code>', and then subtract the
+(saved) set of lines in the same region that contain `icicle'.
+Try it in an '''Icicles''' library, using regexps `<code>.*icicle.*$</code>' and
+`<code>^*.defun.*().*$</code>'.
+
+One more reminder: When you save a set of completion candidates
+(`##C-M->##'), make sure that you actually ''have'' a set of candidates to save!
+It is not enough to just enter a regexp at the `icicle-search'
+prompt.  You must also use some '''Icicles''' command, such as `TAB',
+`S-TAB', `next', or `down' to tell '''Icicles''' how to create the
+candidate set -- how to match the regexp.
+
+----
+
+'''See also:'''
+
+* The [[doc string]] (`C-h f') of command '''`icicle-search''''; it provides general information on '''Icicles''' search.
+* [[Icicles - Other Search Commands]] for specialized '''Icicles''' search commands `icicle-search-char-property', `icicle-comint-search', `icicle-compilation-search', `icicle-imenu', `icicle-imenu-command', `icicle-imenu-non-interactive-function', `icicle-search-overlay-property', and `icicle-search-text-property'.
+* [[Icicles - Search-And-Replace]] for information about replacing search hits or parts of search hits.
+* [[Icicles - Customization and General Tips]] for information about the
+`icicle-search-*' [[face]]s, which control '''Icicles''' search.
+* [[Icicles - Progressive Completion]] for information about `##M-*##' and `##M-&##'.
+* [[Icicles - Multi-Commands]] for information about `C-RET', `C-mouse-2', `C-next', and `C-prior'.
+* [[Icicles - Multiple Regions]] for information about searching multiple [[region]]s.
+* [[Icicles - Inserting a Regexp from a Variable or Register]] for more about inserting a saved string.
+* [[Icicles - Info Enhancements]] for information on using '''Icicles''' to search in InfoMode.
+
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Isearch Enhancements]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Search-And-Replace]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:highlight.el, Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryRegion
+CategoryModes
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+CategorySearchAndReplace
+
+
+
+

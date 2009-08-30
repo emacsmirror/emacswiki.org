@@ -1,0 +1,43 @@
+The jde-docindex package provides a quick and convenient interface to javadoc directly within Emacs.
+
+You can see description and get sources from http://www.peerfear.org/jde-docindex/
+
+ArjenWiersma: Looks like this site is gone... I am getting (3-nov-2005) a links only site now... 
+
+I did a search on the Internet. It looks like jde-docindex has been on freshmeat.net. 
+I asked on freshmeat.net about it and Daniel Pearson kindly replied that they do not know anything about it now.
+
+I have also asked on the gnu-emacs-help list, but there are no replies yet.
+-- LennartBorgman
+
+Perhaps someone has this package locally and can put it up here or elsewhere so that we might still be able to find it.. I was actually looking for this functionality :(
+-- Arjen Wiersma
+
+[new]
+Since no one has replied I am starting to wonder if perhaps this functionality is included in JDEE (ie JavaDevelopmentEnvironment which I have not had time to look into yet)?
+-- LennartBorgman
+
+[new]
+I don't think it is part of JDEE. I have version 0.93. Here is what the comment section says:
+<pre>
+ This is a package for the jde which supports building javadoc, exporting it
+ to .info files and installing the relevant content into the Emacs info
+ system.  The nice thing is that this provides a *quick* and nice interface to
+ javadoc without having to resort to using Mozilla and also using completion.
+</pre>
+Last time I tried it didn't work. The maintainer is listed in the package, I will drop him a note.
+-- NascifAbousalhNeto
+
+One more thing: JDEE knows how to find a HTML JavaDoc page from a class name (at point or not), either locally or from a web site. I use w3m to read JavaDoc inside Emacs and it works quite well.
+-- NascifAbousalhNeto
+
+I've been unable to upload the version 0.9.3 of jde-docindex directly. Meanwhile, I've made it available through a temporary url [1].
+
+[1] http://blog.acm-sl.net/page/chous?entry=jde_docindex
+-- chous
+
+: I'm getting a proxy server error. :-( Is there another mirror somewhere? -- MarkusKnittig
+:: Updated link: http://www.acm-sl.org/wiki/2005/11/07/17.42 -- chous
+
+[new]
+See also: JavaClassDoc, JavadocHelp.

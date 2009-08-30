@@ -1,0 +1,14 @@
+* Another DeskTop.
+
+I(WangChunYe) create this package because DeskTop is slow. Usually, I open 100+ buffers, it takes long time to load all these files, because the corresponding mode and hooks are also loaded. 
+
+this package is very small, only 93 lines of elisp code including comments.
+
+to install this packeges
+
+<pre>
+(require  'wcy-desktop)
+(wcy-desktop-init)
+</pre>
+
+download it Lisp:wcy-desktop.el(WcyDesktop)

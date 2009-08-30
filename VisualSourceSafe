@@ -1,0 +1,61 @@
+Microsoft Visual Source Safe is a proprietary version control system.  Free software alternatives are listed at VersionControl.
+
+* [http://www.chezmarshall.freeserve.co.uk/elisp/vc-vss.el vc-vss.el]
+
+[new]
+I've used this before, and it is very useful, but stopped because file access became unbearably slow. --PatrickAnderson
+
+[new]
+Also note the package seems to be no longer maintained. [http://www.chezmarshall.freeserve.co.uk/elisp/vcvss.html]
+
+-- AlexSchroeder
+
+See also http://ftp.gnu.org/old-gnu/emacs/windows/docs/ntemacs/contrib/source-safe.el --Andy Chambers
+
+[new]
+Documentation is scarce. I did this to get something working:
+
+* ss.exe must be in emacs exec-path
+* mount a drive to the vss server
+* use the example setup below
+* use vc-vss-change-database to point to your personal ss.ini file in the vss repos
+* visit a file with emacs that you have previously checked out with vss. you should get basic vc functionality
+* there is a check in the code for if a dir contains mssccprj.scc or vssver.scc files. You might want to add
+checks for vssver2.scc files there as well, depending on your vss version.
+
+One problem I've found is with files that are not version controlled within a dir that has version control enabled otherwise.
+
+-- JoakimVerona
+
+
+== Example Setup ==
+
+<pre>
+;; example setup
+(require 'vc-vss)
+
+(setq
+;; not sure what to set vc-vss-path to...
+;      vc-vss-path "//sourcesafe/someDatabase/users/you/ss.ini"
+;      vc-vss-path "c:/Program Files/Microsoft Visual Studio/VSS/srcsafe.ini"
+;      vc-vss-user "username,password"
+	  vc-default-back-end 'VSS
+; 	  diff-switches "-DV"
+	  vc-vss-open-async t
+	  vc-vss-open-async-rw t)
+
+(add-to-list 'exec-path
+			 "c:/Program Files/Microsoft Visual Studio/VSS/Win32")
+
+(add-to-list 'vc-handled-backends 'VSS)
+
+;; optional: these may be needed if you are not "logging into the domain"
+(setenv "SSDIR" "\\\\sourcesafe\\someDatabase") ;directory of the ss.ini for that database
+(getenv "PATH")
+(setenv "SSUSER" "username") ;without domain
+(setenv "SSPWD" "password")
+
+</pre>
+----
+CategoryVersionControl
+

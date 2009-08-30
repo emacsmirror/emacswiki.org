@@ -1,0 +1,16 @@
+The toolbox package allows you to call M-x toolbox to create a toolbox for
+your current buffer.
+The current buffer becomes the ''target'' for the toolbox.
+In the toolbox, you put some elisp commands, and hit C-c C-c.
+When you now click on them using the middle mouse button or RET,
+the command will be run in the target buffer.
+
+If you look at the example screenshot, you'll see how I put the the operations
+I use most of the time in my toolbox, making it much simpler to switch drawing
+ops in ArtistMode.
+See [[Toolbox Screenshot]].
+
+* Lisp:toolbox.el
+
+----
+CategoryModes

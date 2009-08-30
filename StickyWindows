@@ -1,0 +1,11 @@
+One may desire to keep certain windows (such as the window that contains certain ERC channel buffer) visible within the same frame.  One may also desire to avoid using separate frames (presumably switching between those frames using either the mouse or C-x 5 o) because of the screen real-estate wasted by the window manager decorations for titles of the window.
+
+There is a builtin Emacs function called `set-window-dedicated-p' that marks a window as dedicated so that it stays visible and is not replaced with other buffers for things like `describe-function', `describe-variable', etc. However, this so-called dedicated window does not stay visible for user-specified window deletion commands such as `delete-window' and `delete-other-windows'.
+
+To that end I created a set of functions which are replacements for the following default key bindings (the sticky-windows functions being defined in [[Lisp:sticky-windows.el]]):
+
+* C-x 0 -- Normally bound to `delete-window', but could be rebound to `sticky-window-delete-window' 
+* C-x 1 -- Normally bound to `delete-other-windows', but could be rebound to `sticky-window-delete-other-windows'
+* C-x 9 -- Normally unbound, but could be bound to `sticky-window-keep-window-visible'
+
+These sticky-window functions simply respect the dedicated window state on the window, but give you a chance to override the operation to force it through. See the documentation on each function for its special usage.

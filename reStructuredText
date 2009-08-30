@@ -1,0 +1,51 @@
+reStructuredText is perhaps the smartest smart ASCII yet devised.  
+
+Specification available as [http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.txt plain text] or [http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html HTML].
+See also MeatBall:ReStructuredText
+
+The [http://docutils.sourceforge.net/rst.html home page] has a cheat sheet, history, as well as user, reference, and developer documentation.
+
+From 'An Introduction to reStructured Text': 
+
+To clarify the primary goal, here are specific design goals, in order, beginning with the most important:
+
+# Readable. The marked-up text must be easy to read without any prior knowledge of the markup language. It should be as easily read in raw form as in processed form.
+
+# Unobtrusive. The markup that is used should be as simple and unobtrusive as possible. The simplicity of markup constructs should be roughly proportional to their frequency of use. The most common constructs, with natural and obvious markup, should be the simplest and most unobtrusive. Less common constructs, for which there is no natural or obvious markup, should be distinctive.
+
+# Unambiguous. The rules for markup must not be open for interpretation. For any given input, there should be one and only one possible output (including error output).
+
+# Unsurprising. Markup constructs should not cause unexpected output upon processing. As a fallback, there must be a way to prevent unwanted markup processing when a markup construct is used in a non-markup context (for example, when documenting the markup syntax itself).
+
+# Intuitive. Markup should be as obvious and easily remembered as possible, for the author as well as for the reader. Constructs should take their cues from such naturally occurring sources as plaintext email messages, newsgroup postings, and text documentation such as README.txt files.
+
+# Easy. It should be easy to mark up text using any ordinary text editor.
+
+# Scalable. The markup should be applicable regardless of the length of the text.
+
+# Powerful. The markup should provide enough constructs to produce a reasonably rich structured document.
+
+# Language-neutral. The markup should apply to multiple natural (as well as artificial) languages, not only English.
+
+# Extensible. The markup should provide a simple syntax and interface for adding more complex general markup, and custom markup.
+
+# Output-format-neutral. The markup will be appropriate for processing to multiple output formats, and will not be biased toward any particular format
+
+David Mertz describes reST (as it is most commonly abbreviated) well in his IBM Developer Works column, XML Matters, as a "A Light, Powerful Document Markup" 2003-02-01, http://www-106.ibm.com/developerworks/library/x-matters24/ 
+
+As of 2005-12, the emacs packages for reStructuredText have all been merged into one package: rst.el, available here:
+http://docutils.sourceforge.net/tools/editors/emacs/rst.el
+
+(This package contains StefanMerten's rst-mode.el, MartinBlais' restructuretext.el and other, and DavidGoodger's utility functions.  All those original packages are obsoleted and should be replaced by rst.el)
+
+Setup info and detailed documentation is available here:
+http://docutils.sourceforge.net/docs/user/emacs.html
+
+
+---- 
+
+I wrote rst file in Chinese, when typing <code>C-c p t</code> to display contents, only English titles displayed, all other Chinese titles didn't displayed at all. Is it a bug or I missed somthing?
+
+----
+
+Seems like this mode operates *really* slowly right now (05th April 2008).  Trying to edit a reStructuredText file with about 800 lines forces me to wait at least one second before anything I've typed will show up.  I found [http://lists.alioth.debian.org/pipermail/pkg-exppsy-maintainers/2008-February/000369.html this message] regarding the switch to jit-lock, and it helps a little, but not enough to make rst-mode actually usable with syntax highlighting.  This is not exactly a slow machine either (3.0 GHz P4 HT).  Does anybody have any ideas on how to speed it up, or is this more an implementation efficiency problem?  (UPDATE: it turns out that currently setting "rst-mode-lazy" to nil disables section and block highlighting, but improves speed incredibly.)  -- TaylorVenable

@@ -1,0 +1,49 @@
+This module highlights nicknames in ERC. It uses the first
+twelve digits of the MD5 message digest of the nickname as color (#rrrrggggbbbb).
+
+== Download ==
+Lisp:erc-highlight-nicknames.el
+
+== Usage ==
+To activate this module, put this in your init file:
+
+<pre>
+    (require 'erc-highlight-nicknames)
+</pre>
+
+and add highlight-nicknames to ##`erc-modules'## by customizing it.
+
+Or put this in your init file
+
+<pre>
+    (and
+     (require 'erc-highlight-nicknames)
+     (add-to-list 'erc-modules 'highlight-nicknames)
+     (erc-update-modules))
+</pre>
+
+If you don't just want the nicks colored, but also some other face properties, you can customize ##`erc-highlight-nick-base-face'## and for example inherit from the face ##`bold'## or ##`underline'##.
+
+<pre>
+    M-x customize-face RET erc-highlight-nick-base-face RET
+</pre>
+
+== XEmacs Usage ==
+
+I tried this in XEmacs and it didn't work, due to differences in the way Emacs and XEmacs handle text attributes.  I modified erc-nighlight-nicknames to work with XEmacs faces instead.  See Lisp:erc-highlight-nicknames-xemacs.el.  -- DaveMarquardt
+
+[new]
+I made the changes with your code and it works for Emacs too. Plus a new face every nick's face is inherited from. (customizable, see description above) -- AndreRiemann
+
+
+== Fix face bug ==
+I found function `erc-highlight-nicknames' have a bug that create many face to make Emacs slow, even crash.
+It create a new face when ERC insert text, and don't care whether have a exist face for this nickname.
+
+I add a hash-table named `erc-highlight-face-table' to storage the nick's face.
+Just create a new face when occur new nick, if find a old nick, get face from `erc-highlight-face-tabe' instead of create new one.      
+
+And i have upload a new version, enjoy!                 -- AndyStewart
+
+----
+[[ERC]], [[ErcExtraModules]]

@@ -1,0 +1,106 @@
+Why read all this?  Do you want to start Emacs in under a second?  Then read on.
+
+----
+
+Through reading the archives of emacs-devel I discovered the
+function `dump-emacs'.  It is used during the Emacs build to create
+the normal `emacs' binary from a minimal `temacs' binary, but can
+be used with any emacs binary.
+
+Anyway, below is a minimal script which allows me to dump the state
+of my Emacs after startup into a new executable. This isn't really useful, but it seems to speed up startup a lot.
+Maybe for certain applications, that's quite cool, dont you think?
+
+Here it goes; execute this with the full path to your emacs:
+
+<pre>
+#!/bin/sh
+MYEMACS=$1
+$MYEMACS --batch \ 
+ --load ~/.emacs \ 
+ --execute "(dump-emacs \"mymacs\" \"$MYEMACS\")"
+</pre>
+
+  -- MarioLang
+
+: Huh?  This doesn't work for me.  The mymacs executable works in console mode but doesn't set colors correctly.  To be fair, it does start up very quickly, heh.  In X mode, it just does not work.  This is with Emacs21 from Debian Sid. --ErikBourget
+
+:: But it does for me using Emacs from CVS and it really speed things up. --XavierMaillard
+
+::: Is Emacs from CVS usable for anything other than testing out and crashing new features?  I'd compile it just to make this work if I knew it were stable.  Maybe there should be an EmacsFromCVS discussion that goes further than just a HOWTO, I'd like to see one.  New features are fun to read about anyway.
+
+:::: It is stable enough to be used daily IMHO. I do so I think you can. I didn't get any crash of any kind for a while. There is only one problem: sometimes the CVS does not compile but an update later and all is right :) I promise you can expect stability with it. Concerning the EmacsFromCVS discussion, I do agree with you: we should do something to show new features to people and explain how they can use them simply. That's an idea. -- XavierMaillard
+
+''Can someone tell me if and why I want to dump my emacs? I'm running Emacs 21.2 on both Linux and W2k. -- MathiasDahl''
+
+The purpose for "''dumping''" Emacs is performance.  During the initial build of Emacs, a barebones Emacs is created called '''temacs''' that doesn't have a lot of the functionality that we usually see in Emacs.  Towards the end of the build process, this temacs is loaded with the libraries that we expect in a normal Emacs and then is "''dumped''" to produce an executable that "''preloads''" these libraries and, thus, loads much faster than temacs with separate loading of the libraries.  Deciding what to "''preload''", though, can be difficult as loading too much means that Emacs will use large amounts of memory unnecessarily and that Emacs will be difficult for users to configure who don't want the libraries. -- DavidMasterson
+
+I started to play with this, and it turns out I use it quite a lot now.  I have a script called `make-emacs':
+
+<pre>
+#!/usr/bin/make -f
+emacs=/usr/bin/emacs
+fast-emacs: /usr/share/emacs/site-lisp/site-start.el /usr/bin/emacs ~/.emacs
+        $(emacs) --batch --execute "(dump-emacs \"fast-emacs\" \"$(emacs)\")"
+</pre>
+
+And a calling wrapper script called `emacs'
+
+<pre>
+#!/bin/bash
+pushd `dirname $0` 
+make-emacs
+popd
+exec fast-emacs $@
+</pre>
+
+Essentially what happens is ~/bin/emacs calls the ~/bin/make-emacs script which checks whether a new ~/bin/fast-emacs binary should be built based on a few dependencies (supplement the list of dependencies as you see fit).  Finally it calls the fast-emacs binary with the original arguments. 
+
+Lastly, I think there is still a lot of room for improvement in terms of what libraries you choose to have loaded during the dump. -- MatthewKennedy
+
+: I've used the above script(s) successfully for about two months with CVS Emacs. Within the past 3 weeks, however, I've noticed that xpm support does not work with the dumped version of Emacs.  (Yes, I deleted the past dumped binary.)  This results in error messages like `use-fancy-splash-screens-p: Invalid image specification'.  When I run the undumped original Emacs binary, everything works fine.  As a temporary fix, when I remove or rename all of the xpm files in $PREFIX/share/emacs/21.3.50 , the problems go away.  Any ideas?
+
+:: I've got the same problem. It occurs when `find-image' is called before dumping. In my case I was loading time.el via (display-time) for time display in modeline(the problem was mail icon loading during the loading of time.el). But not so sure what's happening inside. 
+
+: <b>RMS just fixed this in CVS.  Update your local copy.</b>
+
+[new]
+I use fast-emacs (22.0.50) on GNU/Linux box and it works successfully.
+But it frequently SEGVs unexpectedly (1..3 times a day). What's wrong? -- [[rubikitch]]
+
+---
+One more comment. If you failed to dump up emacs 21.3 release version, You should try this (I've fixed the error in hpux 11): The definition of "dump-emacs" (located in emacs.c) has typo near 'symbol = intern ("command-line-process")'. command-line-process should be replaced to command-line-processed. 
+
+----
+
+Here is the step by step way that I built an emacs that loads very fast.
+
+* I copied my ##.emacs## file to ##.dumped.emacs##
+* I compiled ##.dumped.emacs##
+** edit ##.dumped.emacs##
+** M-x byte-compile-file <ret>
+* I went to http://savannah.gnu.org/projects/emacs/ clicked on the downloads button and chose a version I liked.  I chose emacs-21.4a.tar.gz
+* I went to the directory where I had saved the file, then executed the command "tar xzf emacs-21.4a.tar.gz"
+* I connected to the emacs-21.4 directory by "cd emacs-21.4"
+* I created a file "lisp/site-init.el" which just did (load "/home/jaysk/.dumped.emacs")
+* I did "make distclean"
+* I did "./configure --prefix=/home/jaysk/pkg/emacs-21.4" because I keep a few different versions of emacs around.  You might be able to skip the "--prefix=/home/jaysk/pkg-21.4" and use the default of /usr/local
+* I added extra pure space because my init file is so big.  You will have to experiment to find the right size for you.
+** edit src/puresize.h
+** replaced the line "#define SITELOAD_PURESIZE_EXTRA 0" with "#define SITELOAD_PURESIZE_EXTRA 100000"
+* I did a "make"  (I noticed that near the end it said "loading /home/jaysk/.dumped.emacs.elc"
+* I did a "make install"
+* I renamed ##.emacs## to ##.emacs.backup##
+
+Now I can launch Emacs like /home/jaysk/pkg/emacs-21.4/bin/emacs -fn "-Adobe-Courier-medium-r-*-*-*-140-*-*-*-*-iso8859-1" and it starts up in under a second.  Naturally I don't type that, I have an icon bound to that.
+
+There are some problems.  You can't set some variables in the ##.dumped.emacs##.  For example, ERC will crash if you customize it.  You can wait until your InitFile runs though.  Similarly, you can't directly set `load-path', `Info-directory-list', and similar directory search paths.  They have special values when dumping so you need to do some delayed setting.
+
+If all you need to do is load some libraries, put the load statements in ##lisp/site-load.el## but otherwise follow the directions above.
+
+-- JaySkeer
+
+See also NoBloat.
+
+----
+CategoryDotEmacs

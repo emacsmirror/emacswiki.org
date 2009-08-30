@@ -1,0 +1,131 @@
+I use Emacs.
+
+==Elisp snippets==
+
+I often find myself using Emacs under win32 over an ssh tunnel to some Linux system. The win32 X server available at the university is rather brain-dead, fontwise. The following code snippet looks through the list of fonts in <tt>default-fonts</tt>, asking <tt>xlsfonts</tt> if the font is available or leaves <tt>default-frame-alist</tt> alone.
+
+<pre>
+(require 'cl) ; for delete-if
+
+(defconst default-fonts
+  '("-monotype-andale mono-*-*-*-*-12-*-75-75-*-*-iso8859-*"
+    "-monotype-monotype.com-*-*-*-*-11-*-75-75-*-*-iso8859-*"
+    "-jmk-neep alt-medium-r-*-*-15-*-*-*-c-*-iso8859-1"
+    "-lfp-gamow-*-r-*-*-7-*-*-*-*-*-iso8859-1"
+    "-dec-terminal-medium-r-normal-*-*-140-*-*-c-*-iso8859-1"))
+
+(progn
+  (let
+      ((g (delete-if
+           (lambda (x) (not (eq nil (string-match
+                                "unmatched"
+                                (shell-command-to-string (concat "xlsfonts -fn \'" x "\'"))))))
+           default-fonts)))
+    (if (car g) (add-to-list 'default-frame-alist (cons 'font (car g))))))
+</pre>
+
+Once in a while, this is really useful - for example when quoting some string constants copied from somewhere (some people on comp.emacs helped me with this one, but I can't remember their names).
+
+<pre>
+(defun qw(start end)
+  "quote every word in region"
+  (interactive "r")
+  (save-excursion
+    (while (re-search-forward "\\sw+" (region-end) t)
+      (save-excursion
+        (replace-match "\"\\&\"")))))
+</pre>
+
+==unmailify==
+
+This is how I garble my email address for inclusion in program source files. Evaluating <tt>(sb-header-unmailify user-mail-address)</tt> returns e.g.
+
+  "sblatt AT frog DOT havens DOT de
+  remove the \"green animal\""
+
+The random buzzword "frog" from <tt>sb-header-unmailify-buzzword-alist</tt> is inserted after a random separator ("." or "@"), the buzzword definition is appended and the separators are then converted into words. The name buzzword might not really be apropriate, it just came to my mind when searching for a name for the defuns ;-)
+
+<pre>
+(defvar sb-header-unmailify-replacement-alist
+  '(("\\." . " DOT ")
+    ("@" . " AT ")))
+
+(defvar sb-header-unmailify-buzzword-spliton "[.@]")
+(defvar sb-header-unmailify-buzzword-filler ".")
+
+(defvar sb-header-unmailify-buzzword-alist
+  '(("barracuda" . "marine life form")
+    ("umbrella" . "water deflection device")
+    ("frog" . "green animal")
+    ("orange" . "color between yellow and red")
+    ("mir" . "space station")
+    ("emacs" . "One And Only Editor")
+    ("rincewind" . "wizzard")
+    ("cloud" . "high fog")
+    ))
+
+(defvar sb-header-unmailify-buzzword-format
+  "\nremove the \"%s\"")
+
+(defun sb-header-unmailify-replace (addr)
+  "Replace characters within ADDR according to
+  `sb-header-unmailify-replacement-alist'."
+  (mapc
+   (lambda (x)
+     (if x (setq addr (replace-regexp-in-string (car x) (cdr x) addr))))
+   sb-header-unmailify-replacement-alist)
+  (identity addr))
+
+(defun sb-header-splice-split (s r)
+  "Split S at separator regexp R and return a list of strings
+  _including_ the separators."
+   (if (string-match r s)
+       (nconc
+        (list (substring s 0 (match-beginning 0))
+              (match-string 0 s))
+        (sb-header-splice-split (substring s (match-end 0)) r))
+     (list s)))
+
+(defun sb-header-unmailify-buzzword (addr)
+  "Insert a buzzword from `sb-header-unmailify-buzzword-alist'
+into ADDR at a random place and add its definition
+according to `sb-header-unmailify-buzzword-format'. The splitting
+of the address is controlled by the regexp
+`sb-header-unmailify-buzzword-spliton' and the buzzword is pre-
+or postfixed with `sb-header-unmailify-buzzword-filler'.
+
+Example:
+
+  (sb-header-unmailify-buzzword \"joe.user@gmx.de\")
+
+might get you something like
+
+  joe.user@orange.gmx.de,
+  remove the \"color between red and yellow\""
+  (let ((x (nth (random (length sb-header-unmailify-buzzword-alist))
+                sb-header-unmailify-buzzword-alist))
+        (fmt sb-header-unmailify-buzzword-format)
+        (sp sb-header-unmailify-buzzword-spliton)
+        (bf sb-header-unmailify-buzzword-filler)
+        (l nil) (p 0))
+    (setq l (sb-header-splice-split addr sp))
+    (setq p (+ (random (- (length l) 1)) 1))
+    (setcar (nthcdr p l)
+            (if (evenp p) (concat (car x) bf (nth p l))
+              (concat bf (car x) (nth p l))))
+    (concat (mapconcat 'identity l "") (format fmt (cdr x)))))
+
+(defun sb-header-unmailify (addr)
+  "Run ADDR through buzzword and replacement unmailification."
+  (sb-header-unmailify-replace
+   (sb-header-unmailify-buzzword addr)))
+</pre>
+
+----
+
+Hmm, there's a little bug in your qw function: you should be using "end", not (region-end), but probably you only use it interactively so both will work.
+Cheers,
+hsuh
+
+----
+CategoryHomepage

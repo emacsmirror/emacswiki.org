@@ -1,0 +1,92 @@
+The "language environment" determines coding system priority and the default input method and sometimes other things.  (See InputMethods.)
+
+Emacs will usually set up the right language environment if your locale
+is set correctly through the usual environment variables: see `locale(1)'.
+For instance, if LANG
+is the only locale variable set, and it is set to `en_GB', then the Latin-1 language
+environment will be set automatically.
+
+See Info node "(emacs)General Variables" for the rules.  Support for quite a few more
+locales has been added since Emacs 21.3.
+
+== Setting it Explicitly ==
+
+Perhaps you need to set it explicitly in a startup script.
+This one here sets the language to German (de), the country to Switzerland (CH), and the coding system to Latin 1 (ISO 8859-1):
+
+    setenv LANG de_CH.ISO_8859-1
+
+(Currently, Emacs doesn't make use of the territory information, "CH" in this case.)
+
+The following enables Latin 1 Umlauts but keeps US English as the language (which results in English error messages from file tools etc.):
+
+    setenv LANG en_US.ISO_8859-1
+
+Note that the locales supported are entirely system-dependent, and you should only set one
+that is supported on the system so that other programs do the right thing rather than
+complaining about an unsupported value.  E.g. on Debian, see file `/etc/locale.gen'.
+
+== On a TTY (term, console) ==
+
+On a tty under GNU or Unix, at least, Emacs can't determine whether the tty is
+8bit clean or is configured for "Meta sends escape".  This is why you
+still need to call `set-keyboard-coding-system' (`C-x RET k') if you want to enter
+accented chars directly on a tty:
+
+    (set-keyboard-coding-system 'latin-1)
+
+This has been changed to be the default since Emacs 21.3.
+
+A note on input methods: An input method (as supplied in the separate
+LEIM package in Emacs 21 and below) allows people without the right
+keyboard or window system input method to enter the characters.  Thus people with American
+keyboards can enter German umlauts, for example.  A person with a
+German keyboard, however, would usually not need an input method:  The
+keyboard (and the correct setup of his system) take care of German
+umlauts.  Similarly, typing at an xterm, you can typically use X methods to enter
+non-ASCII characters, e.g. `Compose " u' for `&#xfc;'.
+
+If your display is not working correctly, or your LANG is set to C or
+not set at all (and you don't want to change it), then you might have
+to call `set-terminal-coding-system' (`C-x RET t'):
+
+   (set-terminal-coding-system 'latin-1)
+
+See InternationalConsoleFonts for some more info.
+
+== Working around a broken LANG ==
+
+If your LANG is not set up correctly, and you don't want to fix it, you can do the setup in your ~/.emacs file:
+
+    (set-language-environment "Latin-1")
+
+Usually you would do it interactively: `C-x RET l'.
+
+To check the environment you want see `M-x describe-language-environment' 
+and TAB to see all completions.
+
+
+               Non-exhaustive list of language environments
+
+  ASCII                 English             Latin-2            Slovenian
+  Belarusian            Esperanto           Latin-3            Spanish
+  Brazilian Portuguese  Ethiopic            Latin-4            Swedish
+  Bulgarian             French              Latin-5            Tajik
+  Chinese-BIG5          Georgian            Latin-6            Tamil
+  Chinese-CNS           German              Latin-7            Thai
+  Chinese-EUC-TW        Greek               Latin-8            Tibetan
+  Chinese-GB            Hebrew              Latin-9            Turkish
+  Croatian              IPA                 Latvian            UTF-8
+  Cyrillic-ALT          Italian             Lithuanian         Ukrainian
+  Cyrillic-ISO          Japanese            Malayalam          Vietnamese
+  Cyrillic-KOI8         Kannada             Polish             Welsh
+  Czech                 Korean              Romanian           Windows-1255
+  Devanagari            Lao                 Russian
+  Dutch                 Latin-1             Slovak
+
+
+
+On .emacs file see CategoryDotEmacs
+
+----
+CategoryInternationalization

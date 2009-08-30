@@ -1,0 +1,49 @@
+This piece of code is an extension to WikiMode.  It sets the ispell dictionary automatically based on the language returned by the GuessBufferLanguage code.
+
+First, we need to match a language returned by the GuessBufferLanguage code with an ispell dictionary.  We define a table to match the languages with the dictionaries (note that I use a non-standard Swiss dictionary for German texts), and we add a new funtion to the hook for switching WikiMode on.
+
+<pre>
+    (defvar guess-language-dictionaries
+      '(("fr" . "francais")
+        ("en" . "english")
+        ("de" . "swiss"))
+      "Alist of rules to determine the ispell dictionary for a language.
+    Each rule has the form (CODE . DICTIONARY) where CODE is a string to
+    identify the language (probably according to ISO 639), and DICTIONARY is
+    the name of an ispell dictionary that can be passed to
+    `ispell-change-dictionary'.")
+
+    (defun my-wiki-change-ispell-dictionary ()
+      "Call `ispell-change-dictionary' with buffer language.
+    The buffer language is guessed by `guess-buffer-language'."
+      (let ((language (cdr (assoc (guess-buffer-language)
+                                  guess-language-dictionaries))))
+        (if (null language)
+            (message "Language unknown, ispell dictionary unchanged")
+          (message "Guessing language: %s" language)
+          (ispell-change-dictionary language))))
+
+    (add-hook 'wiki-mode-on-hook 'my-wiki-change-ispell-dictionary)
+</pre>
+
+Now we need to tell ispell that wiki names must be skipped.  This is a little bit difficult since our regexp requires case sensitive matching.  That's why I had to advise ispell-region.  When used while WikiMode is active, case-fold-search is set to nil.  Up to now, I haven't found any problems with that.  It is a dirty hack, however.
+
+<pre>
+    (defun my-wiki-ispell-skip-setup ()
+      "Modify ispell to exclude wiki names.
+    We do that by locally setting `ispell-skip-region-alists'.
+    This will only work if some advice is given to ispell-region in
+    order to do all skipping with `case-fold-search'."
+      (make-local-variable 'ispell-skip-region-alists)
+      (add-to-list 'ispell-skip-region-alist (list wiki-name-regexp)))
+
+    (add-hook 'wiki-mode-on-hook 'my-wiki-ispell-skip-setup)
+
+    (defadvice ispell-region (around ispell-case-fold activate)
+      "When variable `wiki-mode' is non-nil, `case-fold-search' will be
+    bound to nil."
+      (let ((case-fold-search case-fold-search))
+        (when wiki-mode
+          (setq case-fold-search nil))
+        ad-do-it))
+</pre>

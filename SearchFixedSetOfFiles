@@ -1,0 +1,20 @@
+you have to search through a fixed set of files frequently? define a function like this one:
+
+        ;;
+        ;; search function for my emacs files
+        ;;
+
+        (defcustom leo-my-emacsfiles-form
+              '(append (list "~/emacs/.emacs")
+                       (file-expand-wildcards "~/emacs/user-lisp/*.el")
+                       )
+              "*doc"
+              :type 'string
+              :group 'leos)
+
+        (defun leo-search-my-emacsfiles (regexp)
+          "Search through emacs user file (as defined in `leo-emacs-userfiles-form' for a match for REGEXP.
+        Stops when a match is found.
+        To continue searching for next match, use command \\[tags-loop-continue]."
+          (interactive "sSearch emacs user files (regexp): ")
+          (tags-search regexp leo-my-emacsfiles-form))

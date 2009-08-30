@@ -1,0 +1,61 @@
+Souvent, en donnant des valeurs à des variables ou en écrivant des macro-commandes (macros), vous devez coter certains éléments seulement d'une liste, afin d'empêcher leur évaluation.
+
+L'instruction ''quote'' est trop « contraignante » et cote systématiquement tous les éléments de la liste et de plus n'a pas d'option permettant de ne pas coter certains termes. Vous pouvez employer ''list'' au lieu de ''quote'', et vous cotez individuellement les éléments de la liste que vous ne voulez pas évaluer.  Ainsi vous pourriez écrire: 
+
+    (list 'foo bar 'baz)
+
+pour produire une liste où <code>foo</code> et <code>baz</code> sont renvoyés littéralement, mais pas <code>bar</code> qui est évalué.
+
+C'est dans ce genre de situation où la contre-apostrophe (backquote) « <code>`</code> » devient utile. Elle cote tous les éléments de la liste, sauf ceux que vous décidez d'évaluer. Pour les évaluer, il vous suffit de placer une virgule « <code>,</code> » devant.
+
+Ainsi, à la place de l'instruction précédente, il vous suffit d'écrire:
+
+    `(foo ,bar baz)
+
+ce qui produit le même résultat.
+
+En fait, la contre-apostrophe est une « balise de macro », qui représente le commencement d'une forme qui est développée par ''macroexpand'' en expression qui a la même syntaxe qu'une liste, comme nous pouvons le voir ici:
+
+    (macroexpand '`("%b - " ,(getenv "USERNAME") "@" ,(getenv "USERDOMAIN")))
+        => (list "%b - " (getenv "USERNAME") "@" (getenv "USERDOMAIN"))
+
+(Tiré de l'article TitreDefenêtre.)
+
+Les contre-apostrophes sont également utiles lorsqu'on écrit des macros. En les utilisant, vous pouvez définir une macro pratiquement de la même façon qu'une fonction ''defun''.
+
+Comparez les déclarations:
+
+    (defmacro my-macro-1 (arg1 arg2)
+      (list 'setq arg1 (list 'cons arg2 arg1)))
+
+et
+
+    (defmacro my-macro-2 (arg1 arg2)
+      `(setq ,arg1 `,(cons ,arg2 ,arg1)))
+
+Comparons maintenant les développements de ces macros:
+
+    (macroexpand '(my-macro-1 list 'foo))
+        => (setq list (cons 'foo list))
+
+    (macroexpand '(my-macro-2 list 'foo))
+        => (setq list (cons 'foo list))
+
+Un autre opérateur qui s'utilise conjointement avec une contre-apostrophe est  « virgule-arobase »  noté « <code>,@</code> » et qui agit comme un  « unificateur ».  
+
+Le mieux est de donner un exemple:
+
+    (let ((list '(a b c d)))
+      `(elt1 ,list elt2))
+        => (elt1 (a b c d) elt2)
+
+et de comparer à:
+
+    (let ((list '(a b c d)))
+      `(elt1 ,@list elt2))
+        => (elt1 a b c d elt2)
+
+Cet opérateur est particulièrement utile lorsqu'on écrit des macros avec le mot-clé <code>&rest</code>.
+
+----
+CatégorieCode

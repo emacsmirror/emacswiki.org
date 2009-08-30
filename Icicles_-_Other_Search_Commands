@@ -1,0 +1,244 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Search-And-Replace]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multiple Regions]] ||
+
+----
+
+== Other Icicles Search Commands ==
+
+Function `icicle-search' is very general.  As is explained in
+[[Icicles - Search Commands, Overview]], [[command]] `icicle-occur' is defined trivially
+using `icicle-search' -- it is basically `icicle-search' with a
+[[regexp]] of `##.*##', to match entire [[line]]s.  Similarly,
+`icicle-search-word' (`##C-c $##') uses a regexp of '''`##\b##''' ''##WORD##'' '''##\b##'''', where
+`''##WORD##'' ' is the word to look for, and `icicle-search-keywords'
+(`##C-c ^##') uses a regexp of '''`##\(##''' ''##KW1##'' '''##\|##''' ''##KW2##'' '''##\|##''' ''##KW2##'' ...'''##\|##''' ''##KWn##'' '''##\)##'''', where the
+''`KWm''' are the keywords (regexps) to look for.
+
+Still other '''Icicles''' commands are available that make use
+of `icicle-search'.  And you can define your own, specialized
+search commands along the same lines.  To do that, it is instructive to look at
+the source code of the commands described in this section; they
+can serve as a model for defining your own search commands.
+
+Two of the commands described here, `icicle-compilation-search' and `icicle-comint-search', are specialized versions of `icicle-search' that work only in particular [[buffer]]s where there is little need for `icicle-search' itself. For this reason, these commands reuse the [[key sequence]], '''`##C-c `##'''' (backquote), that is normally bound to `icicle-search'.  This shadow binding occurs
+if the current [[major mode]] is a compilation mode (for `icicle-compilation-search') or an
+interactive interpreter mode such as `shell-mode' or Lisp interactive mode (for `icicle-comint-search').
+
+: ['''Programmer Note:''' Actually, the way this works is that `##C-c `##' is
+bound to the value of internal [[variable]] `icicle-search-generic'.
+You can use this mechanism to provide custom '''Icicles''' search
+commands for particular buffers.]
+
+Besides the commands described on this page, there are '''Icicles'''
+search commands for navigating TagsFile definitions and searching
+their associated source files.  These are described in section
+[[Icicles - Tags Enhancements]].
+
+If you use '''`M-g'''' in the [[minibuffer]] to toggle option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]</tt>'''', then you can use just `next'
+instead of `C-next' to navigate when using any '''Icicles''' search
+command.  See [[Icicles - More About Multi-Commands#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]].
+
+
+[:SearchingTextProperties]
+=== Searching Text with Properties ===
+
+Instead of providing a [[context regexp]], for commands
+'''`icicle-search-char-property'''' ('''`##C-c "##''''),
+'''`icicle-search-overlay-property'''', and
+'''`icicle-search-text-property'''' you provide a ''[[character property]]''
+(e.g. `face') and its value (e.g. `font-lock-function-name-face').
+All zones of text that have that property with that value become
+the [[completion]] candidates (search hits).  As always, you can
+filter this set of candidates by typing input in the minibuffer.
+
+By a "'''character property'''" is meant either a [[text property]] or an
+[[overlay]] property.  `##C-c "##' searches both kinds of [[character property]]; `##icicle-search-##'''##overlay##'''##-property##' searches only overlay
+properties; and `##icicle-search-##'''##text##'''##-property##'searches only text
+properties.  For example, if you use `##C-c "##' with a `face' property
+value `highlight', then the text searched includes text with that
+overlay value and text with that text-property value.  With a `face' property value of `font-lock-string-face', you can
+browse or search doc strings, and so on.
+
+If the property chosen is `face', then you can in fact choose
+multiple [[face]]s, in [[multi-command]] fashion (e.g. `C-mouse-2'), and the text that is
+searched has at least one of the faces you choose.  If you choose
+no face value (empty input), then the target is text that has any
+face at all.  The search hits are zones of text that are
+distinguished by their `face' values.
+
+As with other '''Icicles''' search commands, a [[prefix argument]] controls
+whether these character-property commands search the current
+[[buffer]], saved [[region]]s, selected files, or selected buffers.
+However, keep in mind that, since in this case you are searching
+character properties, you will find search hits only for buffers
+that already have such properties, for example, buffers that have
+been fontified.
+
+
+[:IciclesImenu]
+=== Icicles Imenu: `icicle-imenu' ===
+
+Command '''`icicle-imenu'''', which is bound to '''`##C-c =##'''', is an ''[[ImenuMode|Imenu]] browser''.  It lets you use '''Icicles''' completion to navigate among definitions of functions, [[variable]]s, types, [[key]]s, and so on in a programming language (in fact, any language that Imenu handles).  As always in '''Icicles''', your current input (e.g. a regexp) filters the set of available candidates.  That is, you can match against ''parts'' of an Imenu entry -- any parts. That's particularly useful if there are many entries in the Imenu menu; you don't need to read/scan the whole list.
+
+Here's a screenshot of using `icicle-imenu' to find function definitions (Imenu submenu '''Functions''') that match the regexp `kill':
+
+[[image:IciclesImenuScreenshot]]
+
+If you look at the definition of `icicle-imenu' you'll see that it
+simply lets you choose an Imenu submenu ('''Functions''', '''User Options''', and so on) that is appropriate for the
+current buffer type, and then it calls `icicle-search', passing it the appropriate Imenu regexp.
+
+You can similarly define your own specialized search commands 
+using `icicle-search' to browse regexp matches. You get all of the features of `icicle-search' when you do that. For example, `icicle-imenu' gives you these advantages over a standard Imenu menu:
+
+* You can restrict navigation (search) to a [[region]].
+* You can navigate (browse) among multiple entries, instead of choosing them one by one from a menu.
+* You can restrict the entries to browse using (regexp) pattern matching.
+* As for `icicle-search', you can search multiple saved regions, multiple buffers, or multiple files.    
+
+In addition, for EmacsLisp function definitions, '''Icicles''' provides
+two specializations of `icicle-imenu', to find only Emacs ''[[command]]''
+definitions and only ''non-interactive'' function (that is,
+non-command) definitions: '''`icicle-imenu-command'''' and
+'''`icicle-imenu-non-interactive-function''''.  The definitions of these
+two search commands provide examples of using `icicle-search' with
+a predicate argument.
+
+==== `icicle-imenu' Combines Benefits of Imenu and Emacs Tags ====
+
+* [[ImenuMode|Imenu]] lets you navigate among definitions in a single buffer.
+* EmacsTags let you navigate among definitions in multiple files, but you must build and update the TagsFile that identifies the definitions.
+
+Like Emacs [[tags]], `icicle-imenu' lets you navigate among definitions in multiple files -- and also multiple saved regions and non-file buffers. Like Imenu, you need not build a tags file.  Unlike Imenu, '''Icicles''' provides regexp completion that lets you filter Imenu hits that you want to visit.
+
+Another difference from Emacs tags, besides the need for a tags file, is that, since '''Icicles''' locates definitions using Imenu regexps, you can only navigate among definitions in buffers that you are visiting. This is both an advantage and a disadvantage: you can narrow the search to certain files, but you must know which files to search. And if you want to search all files, then you must open them all (e.g. by matching a project regexp), 
+
+The differences mean that `icicle-imenu' does not provide a substitute for Emacs tags; it provides some similar functionality. It is another tool in your belt, handier in some situations than using tags, and less useful in some other situations.
+
+'''See Also:''' [[Icicles - Tags Enhancements]]
+
+
+
+[:IciclesCompileOrGrep]
+=== Compile/Grep Search: `icicle-compilation-search' ===
+
+In a compilation-results buffer, such as `*Compilation*' or `*grep*', you can use command
+'''`icicle-compilation-search'''', bound to '''`##C-c `##'''', to search among the
+result set (search hits).  This is similar to `icicle-search', but when you use `C-RET', `C-mouse-2', 
+`C-prior', `C-next', `C-up', or `C-down', it visits the source code that corresponds to the current line in the compilation buffer.  Just as for `icicle-search', you can narrow the
+set of [[search context]]s by typing a regexp.
+
+Using `icicle-compilation-search' with `grep' gives you two levels
+of regexp searching: 1) the `grep' regexp and 2) your current input regexp. And you can of course use [[progressive completion]] (`##M-*##') to add any number of additional levels. (And, starting with Emacs 22, you can pipe to other `grep' commands in the same `M-x grep'.)
+
+
+==== Use `grep' and Compilation Output for Search-and-Replace ====
+
+In Emacs 22 and later, you can also ''replace'' search-hit text.  You
+can replace the entire `grep' regexp match or just the part of it
+that matches your current input, depending on the value of [[option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|icicle-search-replace-whole-candidate-flag]]</tt>'''' (which you can toggle
+with `##C-,##').  Replacement acts here just as it does for
+`icicle-search'.  
+
+You can also use a non-`grep' compilation buffer to perform search and replace. Use it, for example, to correct errors in source files.
+
+'''Icicles''' thus gives you several ways to perform search-and-replace throughout multiple files: `grep'/compilation, `icicle-occur', and `icicle-search'.  The latter is of course not limited to line-by-line search.
+
+'''See Also:''' [[Icicles - Search-And-Replace]].  
+
+
+[:IciclesShell]
+=== Input Reuse in Interactive Interpreter Modes: `icicle-comint-search' ===
+
+In an interactive interpreter mode such as `shell-mode' or interactive Lisp mode, you can search for and reuse a previous input, possibly editing it first.  Command '''`icicle-comint-search'''', bound to '''`##C-c `##'''', lets you use '''Icicles''' completion and
+[[Icicles - Cycling Completions|cycling]] to access your previous (shell or Lisp) inputs; it uses `icicle-search', so it
+highlights your regexp input matches, and so on. You can use `##C-$##' at any time to toggle removal of duplicate past inputs as completion candidates; by default, duplicates are removed.
+
+Being a search command, however, `icicle-comint-search' has access
+only to the commands that are visible in the buffer.  It does not
+use the `comint-input-ring', so it cannot, for instance, give you
+access to commands used in a previous session, which might have
+been recorded in a history file.
+
+Another '''Icicles''' command, '''`icicle-comint-command'''', which is not a
+search command, does use `comint-input-ring' and does give you completion and cycling against
+previous inputs that might not have come from the current session.
+It is bound to '''`C-c TAB'''' in `comint-mode' and derived modes.
+
+
+[:DefineSearchCommands]
+=== Define Your Own Icicles Search Commands ===
+
+Function `icicle-search' is not only a useful user command; it is
+also a framework for you to define your own '''Icicles''' search
+commands.  Consult the source code for the commands presented
+above for models.  And consult the [[doc string]] of `icicle-search'
+for more information about calling it non-interactively.  In
+particular, note that:
+
+* You can pass a functional argument instead of a regexp to `icicle-search', and
+it will use that ''function to define the search
+contexts''.  The function is passed, as arguments, the buffer to
+search, the beginning and end of the search region in that
+buffer, and any additional arguments that you pass to
+`icicle-search'.
+
+* You can pass a ''predicate'' argument to `icicle-search', in
+addition to passing a regexp, and the search contexts will be
+only those regexp matches that also satisfy the predicate.  The
+predicate takes two arguments, the search-context string and a
+marker at the end of the search context.  For information about
+this, consult the doc string for function
+`icicle-search-regexp-scan'.  For a model of using this feature,
+see the code that defines command `icicle-imenu'.
+
+By using your own function to define the search contexts, either
+from scratch or by limiting regexp matches using a predicate, you
+can perform ''semantic-based searching''.  That is, your search
+command can use information besides syntax to define search hits.
+For instance, commands `icicle-imenu-command' and
+`icicle-imenu-non-interactive-function' use the semantic predicate
+`commandp' to distinguish EmacsLisp commands from non-interactive
+functions.
+
+'''See Also:'''
+
+* [[Icicles - Search Commands, Overview]] for general information about '''Icicles''' search and the commands `icicle-search' and `icicle-occur'.
+
+* [[Icicles - Search-And-Replace]] for information about replacing search hits or parts of search hits.
+
+* [[Icicles - Multi-Commands]] for information about using `C-RET', `C-mouse-2', 
+`C-prior', `C-next', `C-up', and `C-down'.
+
+* [[Icicles - Progressive Completion]] for information about using any
+number of search regexps with `##M-*##' and any number of search predicates with `##M-&##'.
+
+* [[Icicles - Info Enhancements]] for information about using '''Icicles''' with InfoMode.
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Search-And-Replace]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multiple Regions]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryModes
+CategoryProgrammerUtils
+CategoryCode
+CategorySearchAndReplace
+CategoryShell
+
+
+
+

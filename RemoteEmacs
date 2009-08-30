@@ -1,0 +1,144 @@
+You can run Emacs on remote displays using the X Window System or some
+other facility for opening remote X applications.
+
+If all you need is Emacs, perhaps you can just open up an xterm and
+run <tt>emacs -nw</tt> in that (and of course this is your only option
+if you're inside a <tt>telnet</tt> or <tt>ssh</tt> terminal window
+with no X on the remote machine).
+
+For security and other reasons, you should probably run any remote
+connection over ssh. This automatically handles any cookies and
+authentication, and automatically sets your DISPLAY variable for you.
+
+=Accelerating the connection=
+
+If you're running across slow or clogged link, basically anything less
+than a, say 10 Mb LAN, you propably want to look into ways of
+accelerating the X11 traffic.  This will effectively turn CPU-cycles
+into bandwidth, so slow machines on a fast network are propably better
+off without any acceleration.  And "slow" doesn't include your ''old''
+800MHz Pentium, nor does "fast" exclude the ''ancient'' 10 Mb Ethernet.
+
+All the methods mentioned here should give you considerably less laggy
+connection.  Combining block compression with smarter systems seems to
+make sense, but some of the latter already have it in their
+repertoire.
+
+==The various methods==
+
+One good, basic thing is compressing with ssh, as running over ssh is
+a good idea anyway, security-wise.  This doesn't take any specific
+configuration, just flip on your ssh compression.  This will be
+simple, generic but quite effective block compression, similar to
+file compression programs like ''gzip''.
+
+Other, more X11-specific to compression methods exists too, that read
+the X11 protocol ran through them and do various kinds of proxying and
+compression intelligently.  Such systems are ''XRemote'', ''LBX'',
+''dxpc'', ''nx'', first of which is not to be confused with an another
+program of the same name.
+
+Oldest of these, the ''XRemote'' was originally designed by NCD to
+transfer X11 traffic over slow serial lines, modems and such.  It
+calculates deltas from the traffic, thus only sending what's really
+changed.  In addition it uses the LZW block-compression for the entire
+stream of traffic.
+
+The ''Low Bandwidth X'', LBX, was designed by the X Consortium, and
+ships with X11R6.  It's based on XRemote, but is more general so it
+doesn't expect a serial line to run on, and also proxies the protocol,
+reducing the amount of information that needs to be sent.  LBX will
+possibly not be useful with Emacs, because of fatal EmacsLbxProblems.
+
+Then there is ''Differential X11 Protocol Compressor'' by Kevin Vigor
+under the BSD license, and <nowiki>NoMachines's</nowiki> ''nx''.
+
+Of all of these LBX was part of the original X11R6.  The latest, final
+release 3.8.2 of dxpc is from November 2002, and nx is still under
+active development in March 2004, with version 1.3.1 fresh out.
+
+==Setup instructions==
+
+All of these systems are run as a separate proxy process on both ends,
+except LBX, which is supported within many X11 servers themselves.  If
+unsure, the server can be inspected with the unix-program
+'''xdpyinfo'''(1x), for example.
+
+===LBX===
+
+LBX, which often comes with X11 is simply activated by running
+''lbxproxy'' on the remote machine as <tt>lbxproxy :''display''
+&</tt>.  Here, ''display'' is the number of the new number display
+you'll be using, "20" for example.  If you're running though
+compressed ssh tunnel, you can turn off lbxproxy's compression with
+the <tt>-nocomp</tt> switch; they both use zlib anyway for
+blockcompression.  As the server-side of LBX is implemented in the
+server itself, nothing needs to be done there.
+
+GnuEmacs will freeze because of EmacsLbxProblems.  Don't mix these
+two!
+
+===dxpc===
+
+dxpc is available from the web-page at http://vigor.nu/dxpc
+pre-compiled for various platforms in addition to the sourcecode.
+Debian also has a package for it.  It requires a compression library
+called "lzo".
+
+An instance of the same program will run on both ends, but if it sees
+a hostname as a command-line argument, it starts in ''server mode'',
+otherwise in ''client mode''.  On the client end, simply execute
+<tt>dxpc -d ''display''</tt> where the ''display'' is again the new
+display number.  It will listen on port 4000 by default, but that can
+be changed with <tt>-p</tt>.  On the machine with the X11 server, run
+<tt>dxpc ''hostname''</tt>, where ''hostname'' is the name of the
+client.  Now you're ready.
+
+===nx===
+
+nx sources are available from http://www.nomachine.com/developers.php,
+and Debian also has a package for it.  The actual program, which like
+dxpc, runs in two different modes depending on the command-line
+arguments, is called <tt>nxproxy</tt>.
+
+===Using it===
+
+After setup, you connect the clients to the new display number.  In
+general X11 programs can be instructed to do so with the
+<tt>-display</tt> switch.  You might wish to set the DISPLAY
+environment variable to point to it too, to save typing and to make
+badly behaving programs (like many of those new KDE and Gnome
+programs) to do the right thing.
+
+=Emacs tips=
+
+Here various things to consider regarding Emacs and speed are
+mentioned.
+
+EmacsLbxProblems exist.
+
+See also XePage, which is useful for users of dxpc and nx too.
+
+=Discussion=
+
+How to make sure fonts on the remote application are in sync with what
+you have on your local display?
+
+: By isolating all font-settings into the X11 server's resource
+database.  It is quite a versatile system, where generic settings can
+conditionaly be made.  '''xrdb'''(1x), the program to access the
+database, filters via '''cpp'''(1) preprocessor, and sets some
+''define''s to choose behaviour upon.  [[tekonivel]] does this, and
+also sets all the colours into the XRDB too.  With X11 the xrdb
+doesn't need to run on the same machine as the X11 server, so all
+configuration can be made from the same machines where the Emacs will
+be running from, if need be.  Tools exist to ask which fonts the X11
+server has (f.ex. '''xlsfonts'''(1)), thus these preferences may be
+programmed.
+
+On the other hand, if all you want is access to some remote files,
+perhaps you want to look at HoboMode, TrampMode, AngeFtp, or one of
+the other facilities for editing remote files in your local Emacs.
+
+----
+CategoryRemoteEmacs CategoryDisplay

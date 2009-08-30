@@ -1,0 +1,27 @@
+I have been using Emacs since 1985. Before that I used vi. 
+
+For those who know, I got to use TECO in an Dec-10 machine in the 70's.
+
+My main application of Emacs was to write Latex and Lisp, read mail and news. Unfortunately I was away from Emacs in the 90's. 
+
+More recently I rediscovered Emacs while looking for a reasonable environment for developping php and java. Most of the commercial environments are just too buggy and over featured! One of the most notorious IDEs for php is so buggy that I had to push the reset button in my computer while testing it. On the other hand Eclipse is too much and other development tools, like quanta+, are not mature enough.
+
+I use an almost "vanilla" Emacs, except for exuberant tags that work well with php (instead of etags). Other things I have added to my .emacs are ibuffer, pabbrev, highlight-current-line, pager, and a few others. 
+
+Just let me say that php-mode with the addition of abbrev, pabbrev, hide/show, and tags is just what I need to write code. 
+
+You can reach me at:
+
+sergio.mujica at terra dot cl
+
+
+----
+
+Welcome on this wiki -- zeDek
+
+Hi Sergio... From what I see, I think the features you use are very similar to those I want for my work too. Could you please provide us a link to an online version of your .emacs file? I'm rather interested in taking a look at it. Thanks :) -- LeonardoBoshell
+
+
+----
+
+CategoryHomepage - I use Emacs

@@ -1,0 +1,23 @@
+The following function returns a list of bits (number 1 and 0) from a program, and prints a message if used interactively.
+
+    (defun bits (num)
+      (interactive "nNumber: ")
+      (unless (integerp num)
+	(error "%S must be an integer" num))
+      (let (result (n num))
+	(while (> n 0)
+	  (setq result (cons (mod n 2) result)
+		n (/ n 2)))
+	(if (interactive-p)
+	  (message "%d is %s" num (mapconcat 'number-to-string result ""))
+	  result)))
+
+M-x bits RET 5 RET prints "5 is 101", while (bits 5) evaluates to (1 0 1).
+
+SimpleCalculator provides a different, ''interactive-only solution'' for converting numbers: The keys B,H,O switch between binary, octal and hex-mode. M-x calculator RET 5 B prints "Calc=B=> 101"
+
+[new:DrewAdams:2005-01-04 16:25 UTC]
+Library Lisp:hexrgb.el converts between hex and decimal RGB values (and also between RGB and HSV color components). -- DrewAdams
+
+----
+CategoryCode

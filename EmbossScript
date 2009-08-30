@@ -1,0 +1,167 @@
+    #!/usr/bin/perl -w
+    # gen_doc.pl --- Create database file for emboss.el
+    # Last modify Time-stamp: <Ye Wenbin 2007-08-17 15:39:18>
+    # Version: v 0.0 2007/08/10 15:38:34
+    # Author: Ye Wenbin <wenbinye@gmail.com>
+    
+    use strict;
+    use warnings;
+    use Shell qw(mkdir rm cp cat mv);
+    use Getopt::Long qw(:config no_ignore_case auto_help);
+    use Pod::Usage;
+    use File::Spec::Functions;
+    use Cwd;
+    
+    my ($rootdir, $tempdir) = ( getcwd(), temp_dir());
+    my ($delete, $keephtml, $verbose) = (0, 0, 0);
+    my ($db, $deprecated) = (catfile(getcwd(), "efunc.dat"),
+                             catfile(getcwd(), "deprecated"));
+    GetOptions(
+        'rootdir=s' => \$rootdir,
+        'tempdir=s' => \$tempdir,
+        'db=s' => \$db,
+        'deprecated=s' => \$deprecated,
+        'delete' => \$delete,
+        'keephtml' => \$keephtml,
+        'verbose' => \$verbose,
+    );
+    
+    foreach ( $rootdir, $tempdir, $db, $deprecated ) {
+        $_ = Cwd::abs_path($_);
+    }
+    
+    my @dir = qw(ajax nucleus emboss);
+    foreach ( $rootdir, map { catfile($rootdir, $_) } (@dir, "scripts") ) {
+        unless ( -d $_ ) {
+            warn "Emboss root directory is not found!";
+            pod2usage();
+        }
+    }
+    
+    unless ( -d $tempdir ) {
+        warn "Temporary directory is not found!";
+        pod2usage();
+    }
+    
+    print "Save database to $db.\n";
+    print "Save deprecated symbols to $deprecated.\n";
+    foreach ( $db, $deprecated ) {
+        if ( -e $_ ) {
+            if ( $delete ) {
+                rm("-f", $_);
+            }
+            else {
+                print "$_ is exists, delete it? [yn]";
+                chomp(my $ans = <STDIN>);
+                if ( $ans eq 'y' ) {
+                    rm("-f", $_);
+                }
+                else {
+                    exit;
+                }
+            }
+        }
+    }
+    my $doc_prog       = catfile($rootdir, "scripts", "embossdoc.pl");
+    my $data_prog      = catfile($rootdir, "scripts", "embossdatadoc.pl");
+    
+    foreach my $d ( @dir ) {
+        local $_ = 'functions';
+        my $srcdir = catfile($rootdir, $d);
+        my $destdir = catfile($tempdir, $d);
+        unless ( -d $destdir ) {
+            message("Making directory $destdir...");
+            mkdir($destdir);
+        }
+        message("Generating document for functions in ", ucfirst($d));
+        chdir($destdir);
+        foreach ( <$srcdir/*.c> ) {
+            `perl $doc_prog $_ >/dev/null 2>&1`;
+        }
+        cat("*.srs", ">>$db");
+        cat("deprecated.new", ">>$deprecated");
+        rm("*.srs");
+        rm("*.empty");
+        rm("*.log");
+    }
+    
+    my $datadir = catfile($tempdir, "datadef");
+    unless ( -d $datadir ) {
+        mkdir($datadir);
+    }
+    chdir($datadir);
+    foreach my $d ( @dir ) {
+        my $srcdir = catfile($rootdir, $d);
+        message("Generating document for data types in ", ucfirst($d));
+        foreach my $f ( <$srcdir/*.c> ) {
+            `perl $data_prog $f >/dev/null 2>&1`;
+        }
+        cat("*.srsdata", ">>$db");
+        rm("*.srsdata");
+        foreach my $f ( <$srcdir/*.h> ) {
+            `perl $data_prog $f >/dev/null 2>&1`;
+        }
+        cat("*.srsdata", ">>$db");
+        rm("*.srsdata");
+        rm("*.empty");
+    }
+    
+    unless ( $keephtml ) {
+        foreach ( @dir, "datadef" ) {
+            rm("-rf", catfile($tempdir, $_));
+        }
+    }
+    
+    sub temp_dir {
+        return $ENV{TEMP} || $ENV{TMP} || "/tmp"
+    }
+    
+    sub message {
+        print @_, "\n" if $verbose;
+    }
+    
+    __END__
+    
+    =head1 NAME
+    
+    gen_doc.pl -  Create database file for emboss.el
+    
+    =head1 SYNOPSIS
+    
+     gen_doc.pl [-r emboss_root_dir] [-t temp_dir] [-db database_file]
+                [-deprecated deprecated_file] [-k] [-v] [-del]
+    
+      Options:
+          -r, --rootdir
+              set emboss root directory. The directory should contain
+              source files and scripts files. Default is the current
+              directory.
+    
+          -t, --tempdir
+              set temporary directory. The html files and other
+              temporary files will generate to here. Default is the
+              directory in Environment variable 'TEMP' or 'TMP' or '/tmp'.
+    
+          --db
+              set database file name to generate. The file should NOT
+              exists because all data will be appended to the file.
+              Default is 'efunc.dat' in current directory.
+    
+          --deprecated
+              set file name that contain all deprecated symbols.
+              The file should NOT exists. Default is 'deprecated' in
+              current directory.
+    
+          --delete
+              Flag which set to force delete database file and
+              deprecated when exists. Default is off, which means stop and
+              let user to decide moving or deleting the file.
+    
+          -k, --keephtml
+              Flag which set to keep html files in temporary directory.
+              Default is off, which means all files will be deleted.
+    
+          -v, --verbose
+              Flag which set to show running status.
+    
+    =cut

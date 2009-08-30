@@ -1,0 +1,850 @@
+This page describes package Lisp:ps-print-19.el, by ViniciusJoseLatorre.
+
+: .:: ''v3.06.4'' :: ''part of GNU Emacs 19'' ::.
+: .:: ''depends on ##lpr.el##'' ::.
+
+
+== Newer Versions ==
+
+* Emacs 23 -- [[PsPrintPackage-23]]
+* Emacs 22 -- [[PsPrintPackage-22]]
+* Emacs 21 -- [[PsPrintPackage-20]]
+* Emacs 20 -- [[PsPrintPackage-20]]
+
+
+== About ps-print ==
+
+This package provides printing of Emacs buffers on %%PostScript%%
+printers; the buffer's bold and italic text attributes are
+preserved in the printer output.  ##ps-print## is intended for use with
+Emacs 19 or Lucid Emacs, together with a fontifying package such as
+##font-lock## or ##hilit##.
+
+##ps-print## uses the same face attributes defined through ##font-lock## or ##hilit##
+to print a %%PostScript%% file, but some faces are better seeing on the screen
+than on paper, specially when you have a black/white %%PostScript%% printer.
+
+##ps-print## allows a remap of face to another one that it is better to print,
+for example, the face ##font-lock-comment-face## (if you are using ##font-lock##)
+could have bold or italic attribute when printing, besides foreground color.
+This remap improves printing look (see How Ps-Print Maps Faces).
+
+
+== Using ps-print ==
+
+##ps-print## provides eight commands for generating %%PostScript%% images
+of Emacs buffers:
+
+   ps-print-buffer
+   ps-print-buffer-with-faces
+   ps-print-region
+   ps-print-region-with-faces
+   ps-spool-buffer
+   ps-spool-buffer-with-faces
+   ps-spool-region
+   ps-spool-region-with-faces
+
+These commands all perform essentially the same function: they
+generate %%PostScript%% images suitable for printing on a %%PostScript%%
+printer or displaying with GhostScript.  These commands are
+collectively referred to as "`ps-print-' commands".
+
+The word ##print## or ##spool## in the command name determines when the
+%%PostScript%% image is sent to the printer:
+
+; ##print## : The %%PostScript%% image is immediately sent to the printer;
+
+; ##spool## : The %%PostScript%% image is saved temporarily in an
+Emacs buffer.  Many images may be spooled locally
+before printing them.  To send the spooled images
+to the printer, use the command `ps-despool'.
+
+The spooling mechanism was designed for printing lots of small
+files (mail messages or netnews articles) to save paper that would
+otherwise be wasted on banner pages, and to make it easier to find
+your output at the printer (it's easier to pick up one 50-page
+printout than to find 50 single-page printouts).
+
+##ps-print## has a hook in the `kill-emacs-hook' so that you won't
+accidentally quit from Emacs while you have unprinted %%PostScript%%
+waiting in the spool buffer.  If you do attempt to exit with
+spooled %%PostScript%%, you'll be asked if you want to print it, and if
+you decline, you'll be asked to confirm the exit; this is modeled
+on the confirmation that Emacs uses for modified buffers.
+
+The word ##buffer## or ##region## in the command name determines how
+much of the buffer is printed:
+
+; ##buffer## : Print the entire buffer.
+
+; ##region## : Print just the current region.
+
+The ##-with-faces## suffix on the command name means that the command
+will include font, color, and underline information in the
+%%PostScript%% image, so the printed image can look as pretty as the
+buffer.  The `ps-print-' commands without the ##-with-faces## suffix
+don't include font, color, or underline information; images printed
+with these commands aren't as pretty, but are faster to generate.
+
+Two `ps-print-' command examples:
+
+; ##ps-print-buffer## : Print the entire buffer,
+without font, color, or
+underline information, and
+send it immediately to the
+printer.
+
+; ##ps-spool-region-with-faces## : print just the current region;
+include font, color, and
+underline information, and
+spool the image in Emacs to
+send to the printer later.
+
+
+== Invoking ps-print ==
+
+To print your buffer, type
+
+   M-x ps-print-buffer RET
+
+or substitute one of the other seven `ps-print-' commands.  The
+command will generate the %%PostScript%% image and print or spool it as
+specified.  By giving the command a prefix argument
+
+   C-u M-x ps-print-buffer RET
+
+it will save the %%PostScript%% image to a file instead of sending it
+to the printer; you will be prompted for the name of the file to
+save the image to.  The prefix argument is ignored by the commands
+that spool their images, but you may save the spooled images to a
+file by giving a prefix argument to `ps-despool':
+
+   C-u M-x ps-despool RET
+
+When invoked this way, `ps-despool' will prompt you for the name of
+the file to save to.
+
+Any of the `ps-print-' commands can be bound to keys; I recommend
+binding `ps-spool-buffer-with-faces', `ps-spool-region-with-faces',
+and `ps-despool'.  Here are the bindings I use on my Sun 4 keyboard:
+
+   (global-set-key 'f22 'ps-spool-buffer-with-faces) ;f22 is prsc
+   (global-set-key '(shift f22) 'ps-spool-region-with-faces)
+   (global-set-key '(control f22) 'ps-despool)
+
+
+== The Printer Interface ==
+
+The variables `ps-lpr-command' and `ps-lpr-switches' determine what
+command is used to send the %%PostScript%% images to the printer, and
+what arguments to give the command.  These are analogous to
+`lpr-command' and `lpr-switches'.
+
+Make sure that they contain appropriate values for your system;
+see the usage notes below and the documentation of these variables.
+
+; NOTE : `ps-lpr-command' and `ps-lpr-switches' take their initial values
+from the variables `lpr-command' and `lpr-switches'.  If you have
+`lpr-command' set to invoke a pretty-printer such as `enscript',
+then ##ps-print## won't work properly.  `ps-lpr-command' must name
+a program that does not format the files it prints.
+
+
+== The Page Layout ==
+
+All dimensions are floats in %%PostScript%% points.
+
+   1 inch  ==       2.54  cm    ==     72       points
+   1 cm    ==  (/ 1 2.54) inch  ==  (/ 72 2.54) points
+
+The variable `ps-paper-type' determines the size of paper ##ps-print##
+formats for; it should contain one of the symbols:
+`a4' `a3' `letter' `legal' `letter-small' `tabloid'
+`ledger' `statement' `executive' `a4small' `b4' `b5'.
+
+The variable `ps-landscape-mode' determines the orientation
+of the printing on the page:
+##nil## means `portrait' mode, ##non-nil## means `landscape' mode.
+There is no oblique mode yet, though this is easy to do in ps.
+
+In landscape mode, the text is /NOT/ scaled: you may print 70 lines
+in portrait mode and only 50 lines in landscape mode.
+The margins represent margins in the printed paper:
+the top margin is the margin between the top of the page
+and the printed header, whatever the orientation is.
+
+The variable `ps-number-of-columns' determines the number of columns
+both in landscape and portrait mode.
+You can use:
+
+* (the standard) one column portrait mode
+* (my favorite) two columns landscape mode (which spares trees)
+
+but also
+
+* one column landscape mode for files with very long lines
+* multi-column portrait or landscape mode
+
+
+== Horizontal layout ==
+
+The horizontal layout is determined by the variables
+`ps-left-margin' `ps-inter-column' `ps-right-margin'
+as follows:
+
+    ------------------------------------------
+    |    |      |    |      |    |      |    |
+    | lm | text | ic | text | ic | text | rm |
+    |    |      |    |      |    |      |    |
+    ------------------------------------------
+
+If `ps-number-of-columns' is 1, `ps-inter-column' is not relevant.
+Usually, ##lm = rm > 0## and ##ic = lm##
+If ##(ic < 0)##, the text of adjacent columns can overlap.
+
+
+== Vertical layout ==
+
+The vertical layout is determined by the variables
+`ps-bottom-margin' `ps-top-margin' `ps-header-offset'
+as follows:
+
+   |--------|        |--------|
+   | tm     |        | tm     |
+   |--------|        |--------|
+   | header |        |        |
+   |--------|        |        |
+   | ho     |        |        |
+   |--------|   or   | text   |
+   |        |        |        |
+   | text   |        |        |
+   |        |        |        |
+   |--------|        |--------|
+   | bm     |        | bm     |
+   |--------|        |--------|
+
+If `ps-print-header' is ##nil##, `ps-header-offset' is not relevant.
+The margins represent margins in the printed paper:
+the top margin is the margin between the top of the page
+and the printed header, whatever the orientation is.
+
+
+== Headers ==
+
+##ps-print## can print headers at the top of each column or at the top
+of each page; the default headers contain the following four items:
+on the left, the name of the buffer and, if the buffer is visiting
+a file, the file's directory; on the right, the page number and
+date of printing.  The default headers look something like this:
+
+    ps-print.el                                         1/21
+    /home/jct/emacs-lisp/ps/new                     94/12/31
+
+When printing on duplex printers, left and right are reversed so
+that the page numbers are toward the outside (cf. `ps-spool-duplex').
+
+Headers are configurable.
+To turn them off completely, set `ps-print-header' to ##nil##.
+To turn off the header's gaudy framing box,
+set `ps-print-header-frame' to ##nil##.
+
+To print only one header at the top of each page,
+set `ps-print-only-one-header' to ##t##.
+
+The font family and size of text in the header are determined
+by the variables `ps-header-font-family', `ps-header-font-size' and
+`ps-header-title-font-size' (see below).
+
+The variable `ps-header-line-pad' determines the portion of a header
+title line height to insert between the header frame and the text
+it contains, both in the vertical and horizontal directions:
+.5 means half a line.
+
+Page numbers are printed in `n/m' format, indicating page ##n## of ##m## pages;
+to omit the total page count and just print the page number,
+set `ps-show-n-of-n' to ##nil##.
+
+The amount of information in the header can be changed by changing
+the number of lines.  To show less, set `ps-header-lines' to 1, and
+the header will show only the buffer name and page number.  To show
+more, set `ps-header-lines' to 3, and the header will show the time of
+printing below the date.
+
+To change the content of the headers, change the variables
+`ps-left-header' and `ps-right-header'.
+These variables are lists, specifying top-to-bottom the text
+to display on the left or right side of the header.
+Each element of the list should be a string or a symbol.
+Strings are inserted directly into the %%PostScript%% arrays,
+and should contain the %%PostScript%% string delimiters '(' and ')'.
+
+Symbols in the header format lists can either represent functions
+or variables.  Functions are called, and should return a string to
+show in the header.  Variables should contain strings to display in
+the header.  In either case, function or variable, the %%PostScript%%
+string delimiters are added by ##ps-print##, and should not be part of
+the returned value.
+
+Here's an example: say we want the left header to display the text
+
+   Moe
+   Larry
+   Curly
+
+where we have a function to return ##"Moe"##
+
+   (defun moe-func ()
+     "Moe")
+
+a variable specifying ##"Larry"##
+
+   (setq larry-var "Larry")
+
+and a literal for ##"Curly"##.  Here's how `ps-left-header' should be
+set:
+
+   (setq ps-left-header (list 'moe-func 'larry-var "(Curly)"))
+
+Note that ##Curly## has the %%PostScript%% string delimiters inside his
+quotes -- those aren't misplaced lisp delimiters!
+
+Without them, %%PostScript%% would attempt to call the undefined
+function ##Curly##, which would result in a %%PostScript%% error.
+
+Since most printers don't report %%PostScript%% errors except by
+aborting the print job, this kind of error can be hard to track down.
+
+Consider yourself warned!
+
+
+== Duplex Printers ==
+
+If you have a duplex-capable printer (one that prints both sides of
+the paper), set `ps-spool-duplex' to ##t##.
+##ps-print## will insert blank pages to make sure each buffer starts
+on the correct side of the paper.
+
+Don't forget to set `ps-lpr-switches' to select duplex printing
+for your printer.
+
+
+== Control And 8-bit Characters ==
+
+The variable `ps-print-control-characters' specifies whether you want to see
+a printable form for control and 8-bit characters, that is, instead of
+sending, for example, a ##^D## (##\004##) to printer, it is sent the string ##"^D"##.
+
+Valid values for `ps-print-control-characters' are:
+
+; ##8-bit## : This is the value to use when you want an ascii encoding of
+any control or non-ascii character. Control characters are
+encoded as "^D", and non-ascii characters have an
+octal encoding.
+
+; ##control-8-bit## : This is the value to use when you want an ascii encoding of
+any control character, whether it is 7 or 8-bit.
+European 8-bits accented characters are printed according
+the current font.
+
+; ##control## : Only ascii control characters have an ascii encoding.
+European 8-bits accented characters are printed according
+the current font.
+
+; ##nil## : No ascii encoding. Any character is printed according the current font.
+
+Any other value is treated as ##nil##.
+
+The default is `control-8-bit'.
+
+Characters ##TAB##, ##NEWLINE## and ##FORMFEED##
+are always treated by ##ps-print## engine.
+
+
+== Line Number ==
+
+The variable `ps-line-number' specifies whether to number each line;
+##non-nil## means do so.  The default is ##nil## (don't number each line).
+
+
+== Zebra Stripes ==
+
+Zebra stripes are a kind of background that appear /underneath/ the text
+and can make the text easier to read.  They look like this:
+
+   XXXXXXXXXXXXXXXXXXXXXXXX
+   XXXXXXXXXXXXXXXXXXXXXXXX
+   XXXXXXXXXXXXXXXXXXXXXXXX
+
+
+
+   XXXXXXXXXXXXXXXXXXXXXXXX
+   XXXXXXXXXXXXXXXXXXXXXXXX
+   XXXXXXXXXXXXXXXXXXXXXXXX
+
+The blocks of ##X##'s represent rectangles filled with a light gray color.
+Each rectangle extends all the way across the page.
+
+The height, in lines, of each rectangle is controlled by
+the variable `ps-zebra-stripe-height', which is 3 by default.
+The distance between stripes equals the height of a stripe.
+
+The variable `ps-zebra-stripes' controls whether to print zebra stripes.
+##Non-nil## means yes, ##nil## means no.  The default is ##nil##.
+
+See also section How Ps-Print Has A Text And/Or Image On Background.
+
+
+== Hooks ==
+
+##ps-print## has the following hook variables:
+
+; `ps-print-hook' : It is evaluated once before any printing process.  This is the right
+place to initialize ##ps-print## global data.
+For an example, see section Adding a New Font Family.
+
+; `ps-print-begin-page-hook' : It is evaluated on each real beginning of page, that is, ##ps-print##
+considers each beginning of column as a beginning of page, and a real
+beginning of page is when the beginning of column coincides with a
+paper change on your printer.
+
+; `ps-print-begin-column-hook' : It is evaluated on each beginning of column, except in the beginning
+of column that `ps-print-begin-page-hook' is evaluated.
+
+
+== Font Managing ==
+
+##ps-print## now knows rather precisely some fonts:
+the variable `ps-font-info-database' contains information
+for a list of font families (currently mainly `Courier' `Helvetica'
+`Times' `Palatino' `Helvetica-Narrow' `NewCenturySchlbk').
+Each font family contains the font names for standard, bold, italic
+and bold-italic characters, a reference size (usually 10) and the
+corresponding line height, width of a space and average character width.
+
+The variable `ps-font-family' determines which font family
+is to be used for ordinary text.
+If its value does not correspond to a known font family,
+an error message is printed into the `*Messages*' buffer,
+which lists the currently available font families.
+
+The variable `ps-font-size' determines the size (in points)
+of the font for ordinary text, when generating %%PostScript%%.
+Its value is a float.
+
+Similarly, the variable `ps-header-font-family' determines
+which font family is to be used for text in the header.
+The variable `ps-header-font-size' determines the font size,
+in points, for text in the header.
+The variable `ps-header-title-font-size' determines the font size,
+in points, for the top line of text in the header.
+
+
+== Adding a New Font Family ==
+
+To use a new font family, you /MUST/ first teach ##ps-print##
+this font, i.e., add its information to `ps-font-info-database',
+otherwise ##ps-print## cannot correctly place line and page breaks.
+
+For example, assuming `Helvetica' is unknown,
+you first need to do the following <b><i>ONLY ONCE</i></b>:
+
+* create a new buffer
+* generate the %%PostScript%% image to a file (##C-u M-x ps-print-buffer RET##)
+* open this file and find the line:
+
+      % 3 cm 20 cm moveto  10 /Courier ReportFontInfo  showpage
+
+* delete the leading `%' (which is the %%PostScript%% comment character)
+* replace in this line `Courier' by the new font (say `Helvetica') to get the line:
+
+      3 cm 20 cm moveto  10 /Helvetica ReportFontInfo  showpage
+
+* send this file to the printer (or to ghostscript).
+: You should read the following on the output page:
+
+      For Helvetica 10 point, the line height is 11.56, the space width is 2.78
+      and a crude estimate of average character width is 5.09243
+
+* Add these values to the `ps-font-info-database':
+
+      (setq ps-font-info-database
+	    (append
+	     '((Helvetica			; the family key
+	        (fonts (normal      . "Helvetica")
+		       (bold        . "Helvetica-Bold")
+		       (italic      . "Helvetica-Oblique")
+		       (bold-italic . "Helvetica-BoldOblique"))
+	        (size . 10.0)
+	        (line-height . 11.56)
+	        (space-width . 2.78)
+	        (avg-char-width . 5.09243)))
+	     ps-font-info-database))
+
+* Now you can use this font family with any size:
+
+      (setq ps-font-family 'Helvetica)
+
+* if you want to use this family in another emacs session, you must put into your ##~/.emacs##:
+
+      (require 'ps-print)
+      (setq ps-font-info-database (append ...))
+
+: if you don't want to load ##ps-print##, you have to copy the whole value:
+
+      (setq ps-font-info-database '(<your stuff> <the standard stuff>))
+
+: or, use `ps-print-hook' (see section Hooks):
+
+      (add-hook 'ps-print-hook
+                '(lambda () (setq ps-font-info-database (append ...))))
+
+You can create new `mixed' font families like:
+
+   (my-mixed-family
+    (fonts (normal               . "Courier-Bold")
+           (bold                 . "Helvetica")
+           (italic               . "Zapf-Chancery-MediumItalic")
+           (bold-italic          . "NewCenturySchlbk-BoldItalic")
+           (w3-table-hack-x-face . "LineDrawNormal"))
+    (size . 10.0)
+    (line-height . 10.55)
+    (space-width . 6.0)
+    (avg-char-width . 6.0))
+
+Now you can use your new font family with any size:
+
+   (setq ps-font-family 'my-mixed-family)
+
+Note that on above example the `w3-table-hack-x-face' entry refers to
+a face symbol, so when printing this face it'll be used the font
+`LineDrawNormal'.  If the face  `w3-table-hack-x-face'  is remapped to
+use bold and/or italic attribute, the corresponding entry (bold, italic
+or bold-italic) will be used instead of `w3-table-hack-x-face' entry.
+
+Note also that the font family entry order is irrelevant, so the above
+example could also be written:
+
+   (my-mixed-family
+    (size . 10.0)
+    (fonts (w3-table-hack-x-face . "LineDrawNormal")
+           (bold                 . "Helvetica")
+           (bold-italic          . "NewCenturySchlbk-BoldItalic")
+           (italic               . "Zapf-Chancery-MediumItalic")
+           (normal               . "Courier-Bold"))
+    (avg-char-width . 6.0)
+    (space-width . 6.0)
+    (line-height . 10.55))
+
+Despite the note above, it is recommended that some convention about
+entry order be used.
+
+You can get information on all the fonts resident in /YOUR/ printer
+by uncommenting the line:
+
+   % 3 cm 20 cm moveto  ReportAllFontInfo  showpage
+
+The %%PostScript%% file should be sent to /YOUR/ %%PostScript%% printer.
+If you send it to ghostscript or to another %%PostScript%% printer,
+you may get slightly different results.
+Anyway, as ghostscript fonts are autoload, you won't get
+much font info.
+
+
+== How Ps-Print Deals With Faces ==
+
+The `ps-print-*-with-faces' commands attempt to determine which faces
+should be printed in bold or italic, but their guesses aren't
+always right.  For example, you might want to map colors into faces
+so that blue faces print in bold, and red faces in italic.
+
+It is possible to force ##ps-print## to consider specific faces bold,
+italic or underline, no matter what font they are displayed in, by setting
+the variables `ps-bold-faces', `ps-italic-faces' and `ps-underlined-faces'.
+These variables contain lists of faces that ##ps-print## should consider bold,
+italic or underline; to set them, put code like the following into your
+##.emacs## file:
+
+   (setq ps-bold-faces '(my-blue-face))
+   (setq ps-italic-faces '(my-red-face))
+   (setq ps-underlined-faces '(my-green-face))
+
+Faces like bold-italic that are both bold and italic should go in
+*both* lists.
+
+##ps-print## keeps internal lists of which fonts are bold and which are
+italic; these lists are built the first time you invoke ##ps-print##.
+For the sake of efficiency, the lists are built only once; the same
+lists are referred in later invocations of ##ps-print##.
+
+Because these lists are built only once, it's possible for them to
+get out of sync, if a face changes, or if new faces are added.  To
+get the lists back in sync, you can set the variable
+`ps-build-face-reference' to ##t##, and the lists will be rebuilt the
+next time ##ps-print## is invoked.  If you need that the lists always be
+rebuilt when ##ps-print## is invoked, set the variable
+`ps-always-build-face-reference' to ##t##.
+
+
+== How Ps-Print Deals With Color ==
+
+##ps-print## detects faces with foreground and background colors
+defined and embeds color information in the %%PostScript%% image.
+The default foreground and background colors are defined by the
+variables `ps-default-fg' and `ps-default-bg'.
+On black-and-white printers, colors are displayed in grayscale.
+To turn off color output, set `ps-print-color-p' to ##nil##.
+
+
+== How Ps-Print Maps Faces ==
+
+As ##ps-print## uses %%PostScript%% to print buffers, it is possible to have
+other attributes associated with faces. So the new attributes used
+by ##ps-print## are:
+
+; ##strikeout## : Like underline, but the line is in middle of text.
+; ##overline##  : Like underline, but the line is over the text.
+; ##shadow##    : Text will have a shadow.
+; ##box##       : Text will be surrounded by a box.
+; ##outline##   : Print characters as hollow outlines.
+
+See the documentation for `ps-extend-face'.
+
+Let's, for example, remap font-lock-keyword-face to another foreground color
+and bold attribute:
+
+   (ps-extend-face '(font-lock-keyword-face "RoyalBlue" nil bold) 'MERGE)
+
+If you want to use a new face, define it first with `defface',
+and then call `ps-extend-face' to specify how to print it.
+
+
+== How Ps-Print Has A Text And/Or Image On Background ==
+
+##ps-print## can print texts and/or EPS %%PostScript%% images on background; it is
+possible to define the following text attributes: font name, font size,
+initial position, angle, gray scale and pages to print.
+
+It has the following EPS %%PostScript%% images attributes: file name containing
+the image, initial position, X and Y scales, angle and pages to print.
+
+See documentation for `ps-print-background-text' and
+`ps-print-background-image'.
+
+For example, if we wish to print text ##"preliminary"## on all pages and text
+##"special"## on page 5 and from page 11 to page 17, we could specify:
+
+   (setq ps-print-background-text
+         '(("preliminary")
+           ("special"
+            "LeftMargin" "BottomMargin PrintHeight add" ; X and Y position
+                                        ; (upper left corner)
+            nil nil nil
+            "PrintHeight neg PrintPageWidth atan" ; angle
+            5 (11 . 17))                ; page list
+           ))
+
+Similarly, we could print image ##~/images/EPS-image1.ps## on all pages and
+image ##~/images/EPS-image2.ps## on page 5 and from page 11 to page 17, we
+specify:
+
+   (setq ps-print-background-image
+         '(("~/images/EPS-image1.ps"
+            "LeftMargin" "BottomMargin") ; X and Y position (lower left corner)
+           ("~/images/EPS-image2.ps"
+            "LeftMargin" "BottomMargin PrintHeight 2 div add" ; X and Y position
+                                        ; (upper left corner)
+            nil nil nil
+            5 (11 . 17))                ; page list
+           ))
+
+If it is not possible to read (or does not exist) an image file, that file
+is ignored.
+
+The printing order is:
+
+# Print zebra stripes
+# Print background texts that it should be on all pages
+# Print background images that it should be on all pages
+# Print background texts only for current page (if any)
+# Print background images only for current page (if any)
+# Print header
+# Print buffer text (with faces, if specified) and line number
+
+
+== Utilities ==
+
+Some tools are provided to help you customize your font setup.
+
+`ps-setup' returns (some part of) the current setup.
+
+To avoid wrapping too many lines, you may want to adjust the
+left and right margins and the font size.  On UN*X systems, do:
+
+   pr -t file | awk '{printf "%3d %s\n", length($0), $0}' | sort -r | head
+
+to determine the longest lines of your file.
+Then, the command `ps-line-lengths' will give you the correspondence
+between a line length (number of characters) and the maximum font
+size which doesn't wrap such a line with the current ##ps-print## setup.
+
+The commands `ps-nb-pages-buffer' and `ps-nb-pages-region' display
+the correspondence between a number of pages and the maximum font
+size which allow the number of lines of the current buffer or of
+its current region to fit in this number of pages.
+
+; NOTE : line folding is not taken into account in this process and could change the results.
+
+
+== New since version 1.5 ==
+
+* Color output capability.
+* Automatic detection of font attributes (bold, italic).
+* Configurable headers with page numbers.
+* Slightly faster.
+* Support for different paper sizes.
+* Better conformance to %%PostScript%% Document Structure Conventions.
+
+
+== New since version 2.8 ==
+
+[vinicius] 980306 Vinicius Jose Latorre <_viniciusjl_@_ig_._com_._br_>
+
+* Skip invisible text
+
+[vinicius] 971130 Vinicius Jose Latorre <_viniciusjl_@_ig_._com_._br_>
+
+* Hooks: `ps-print-hook', `ps-print-begin-page-hook' and
+`ps-print-begin-column-hook'.
+* Put one header per page over the columns.
+* Better database font management.
+* Better control characters handling.
+
+[vinicius] 971121 Vinicius Jose Latorre <_viniciusjl_@_ig_._com_._br_>
+
+* Dynamic evaluation at print time of `ps-lpr-switches'.
+* Handle control characters.
+* Face remapping.
+* New face attributes.
+* Line number.
+* Zebra stripes.
+* Text and/or image on background.
+
+[jack] 960517 Jacques Duthen <_duthen_@_cegelec-red_._fr_>
+
+* Font family and float size for text and header.
+* Landscape mode.
+* Multiple columns.
+* Tools for page setup.
+
+
+== Known bugs and limitations of ps-print ==
+
+Although color printing will work in XEmacs 19.12, it doesn't work
+well; in particular, bold or italic fonts don't print in the right
+background color.
+
+Invisible properties aren't correctly ignored in XEmacs 19.12.
+
+Automatic font-attribute detection doesn't work well, especially
+with ##hilit19## and older versions of ##get-create-face##.  Users having
+problems with auto-font detection should use the lists
+`ps-italic-faces', `ps-bold-faces' and `ps-underlined-faces' and/or
+turn off automatic detection by setting `ps-auto-font-detect' to ##nil##.
+
+Automatic font-attribute detection doesn't work with XEmacs 19.12
+in tty mode; use the lists `ps-italic-faces', `ps-bold-faces' and
+`ps-underlined-faces' instead.
+
+Still too slow; could use some hand-optimization.
+
+Default background color isn't working.
+
+Faces are always treated as opaque.
+
+Epoch and Emacs 18 not supported.  At all.
+
+Fixed-pitch fonts work better for line folding, but are not required.
+
+`ps-nb-pages-buffer' and `ps-nb-pages-region' don't take care
+of folding lines.
+
+
+== Things to change ==
+
+Avoid page break inside a paragraph.
+
+Add `ps-non-bold-faces' and `ps-non-italic-faces' (should be easy).
+
+Improve the memory management for big files (hard?).
+
+`ps-nb-pages-buffer' and `ps-nb-pages-region' should take care
+of folding lines.
+
+
+== Acknowledgements ==
+
+Thanks to Matthew O Persico <_Matthew_._Persico_@_lazard_._com_> for line number on
+empty columns.
+
+Thanks to Theodore Jump <_tjump_@_cais_._com_> for adjust %%PostScript%% code order on
+last page.
+
+Thanks to Roland Ducournau <_ducour_@_lirmm_._fr_> for
+`ps-print-control-characters' variable documentation.
+
+Thanks to Marcus G Daniels <_marcus_@_cathcart_._sysc_._pdx_._edu_> for a better
+database font management.
+
+Thanks to Martin Boyer <_gamin_@_videotron_._ca_> for some ideas on putting one
+header per page over the columns and correct line numbers when printing a
+region.
+
+Thanks to Steven L Baur <_steve_@_miranova_._com_> for dynamic evaluation at
+print time of `ps-lpr-switches'.
+
+Thanks to KevinRodgers for handling control characters
+(his code was severely modified, but the main idea was kept).
+
+Thanks to some suggestions on:
+* Face color map: Marco Melgazzi <_marco_@_techie_._com_>
+* XEmacs compatibility: WilliamHenney
+* Check `ps-paper-type': Sudhakar Frederick <_sfrederi_@_asc_._corp_._mot_._com_>
+
+Thanks to Jacques Duthen <_duthen_@_cegelec-red_._fr_> (Jack) for the 3.4 version
+I started from. [vinicius]
+
+Thanks to Jim Thompson <?@?> for the 2.8 version I started from.
+[jack]
+
+Thanks to KevinRodgers for adding support for
+color and the invisible property.
+
+Thanks to Avishai Yacobi <_avishaiy_@_mcil_._comm_._mot_._com_> for writing
+the initial port to Emacs 19.  His code is no longer part of
+##ps-print##, but his work is still appreciated.
+
+Thanks to Remi Houdaille and Michel Train <_michel_@_metasoft_._fdn_._org_>
+for adding underline support.  Their code also is no longer part of
+##ps-print##, but their efforts are not forgotten.
+
+Thanks also to all of you who mailed code to add features to
+##ps-print##; although I didn't use your code, I still appreciate your
+sharing it with me.
+
+Thanks to all who mailed comments, encouragement, and criticism.
+Thanks also to all who responded to my survey; I had too many
+responses to reply to them all, but I greatly appreciate your
+interest.
+
+Jim
+
+
+== See Also ==
+
+* PsPrintPackage
+
+
+----
+
+CategoryCode,
+CategoryPrinting

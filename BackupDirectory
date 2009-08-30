@@ -1,0 +1,108 @@
+Cette page est aussi disponible en français: Français:RépertoireDeSauvegarde
+
+By default Emacs saves backup files under the original name with a
+tilde `~' appended.  Example: Editing ##README## will result in ##README## and
+##README~## in the same directory.
+
+This is primitive and boring.
+
+Civilized people want to version their backups and organize it so that backups are not laced out through their harddrive, but rather organized into specific backup directories.  This can be done in a few different ways.
+
+== Emacs's built-in backup settings ==
+
+This works out of the box in Emacsen using its ForceBackups framework:
+
+{{{
+(setq
+   backup-by-copying t      ; don't clobber symlinks
+   backup-directory-alist
+    '(("." . "~/.saves"))    ; don't litter my fs tree
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)       ; use versioned backups
+}}}
+
+The above is the bare basics.  You can get much more fancy by playing with `make-backup-file-name-function' user customizable option.
+
+When editing files on a remote machine, the backup files are put on the remote machine in the same directory as the file itself. To change the behavior, including keeping them on the hard drive of the local machine with all other backup files, use `tramp-backup-directory-alist'.  See the section [http://emacs.traduc.org/fusion/info/tramp/Auto_002dsave-and-Backup.html
+ "Auto-save and Backup" in the Tramp manual].
+
+== Placing all files in one directory ==
+
+If you don't want to clutter up your file tree with Emacs' backup files, you can save them to the system's "##temp##" directory:
+
+    (setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
+
+This will all place all [AutoSave auto-saves] and backups in the directory pointed to by ##temporary-file-directory## (e.g., ##C:/Temp/## on Windows).
+
+[new]
+
+If you visit the backup directory from time to time to retrieve an old file version then it's a good idea to prevent the directory from cluttering up with very old backup files. Put this into your .emacs to automatically purge backup files not accessed in a week:
+
+
+<pre>
+(message "Deleting old backup files...")
+(let ((week (* 60 60 24 7))
+      (current (float-time (current-time))))
+  (dolist (file (directory-files temporary-file-directory t))
+    (when (and (backup-file-name-p file)
+               (> (- current (float-time (fifth (file-attributes file))))
+                  week))
+      (message file)
+      (delete-file file))))
+</pre>
+
+== backup-dir package ==
+
+Backup-dir works very well with GNU Emacs 21 and XEmacs.  Backup-dir's features are the superset of those offered by GNU Emacs and XEmacs out of the box.
+
+{{{
+(require 'backup-dir)
+
+;; localize it for safety.
+(make-variable-buffer-local 'backup-inhibited)
+
+(setq bkup-backup-directory-info
+      '((t "~/.emacs_common/backup" ok-create full-path prepend-name)))
+(setq delete-old-versions t
+      kept-old-versions 1
+      kept-new-versions 3
+      version-control t)
+}}}
+
+The following make-backup-file-name will store your files in dated directories (for example, ##~/.backups/emacs/07/04/07/filename##):
+
+{{{
+(defun make-backup-file-name (FILE)                                             
+  (let ((dirname (concat "~/.backups/emacs/"                                    
+                         (format-time-string "%y/%m/%d/"))))                    
+    (if (not (file-exists-p dirname))                                           
+        (make-directory dirname t))                                             
+    (concat dirname (file-name-nondirectory FILE))))
+}}}
+
+* [http://www.northbound-train.com/emacs-hosted/backup-dir.el backup-dir.el]
+
+== Discussion ==
+[new]
+I only had a rough look at ebackup.  But it looks to be far less flexible than backup-dir; I'm also not sure how well it would work in Emacs 21.
+
+For example: backup-dir generates filenames so that all your backups can stay in the same directory (it appends the directory to the base filename).  This means that in Emacs 21 you can clean out your backup directory very easily.  If on the other hand you replicate the directory tree of the original file (as ebackup seems to do), it would be a bit more difficult to do this. -- LeWang
+
+Actually, I would prefer the directory hierarchy, as cleanup
+can be done easily with du or whatever.  But backup-dir.el
+doesn't have that.  -- gambarimasu
+
+OTOH, backup-dir.el redefines functions that break using it,
+which other packages don't do.  For example, diff-backup
+will stop working unless you redefine (or advise) the code
+to find backup files.  b-d.el does that.  -- gambarimasu
+
+
+
+----
+CategoryFiles

@@ -1,0 +1,25 @@
+: In the GNU/Linux world there are two major text editing programs: the
+minimalist vi (known in some implementations as elvis) and the
+maximalist emacs. I use emacs, which might be thought of as a
+thermonuclear word processor. It was created by RichardStallman;
+enough said. It is written in Lisp, which is the only computer
+language that is beautiful. It is colossal, and yet it only edits
+straight ASCII text files, which is to say, no fonts, no boldface, no
+underlining. In other words, the engineer-hours that, in the case of
+Microsoft Word, were devoted to features like mail merge, and the
+ability to embed feature-length motion pictures in corporate
+memoranda, were, in the case of emacs, focused with maniacal intensity
+on the deceptively simple-seeming problem of editing text. If you are
+a professional writer -- i.e., if someone else is getting paid to worry
+about how your words are formatted and printed -- emacs outshines all
+other editing software in approximately the same way that the noonday
+sun does the stars. It is not just bigger and brighter; it simply
+makes everything else vanish. -- Neal Stephenson, ''In the Beginning was the Command Line'' [http://www.spack.org/index.cgi/InTheBeginningWasTheCommandLine]
+
+The official link to Neal Stephenson's book ''In the Beginning was the Command Line'' is here:
+
+* http://www.cryptonomicon.com/beginning.html
+
+----
+CategoryHomepage
+

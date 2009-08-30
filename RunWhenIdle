@@ -1,0 +1,17 @@
+I plan to implement a command, possibly called run-when-idle or run-every-once-in-a-while, that can be used to run background tasks, with the following requirements:
+
+* Should not run too often
+* Should no run too rarely
+* Should run when idle if possible
+
+For example, you might want to autosave some data at least every five minutes, but not more often than every minute, and you don't want the saving to bother you if it can help it.
+
+I haven't found any current emacs command to do something like this. 
+* run-with-timer -- Will not wait for idle
+* run-with-idle-timer -- Could potentially be deferred indefinitely
+
+The interface will probably be similar to that of timer.el, and the implementation of a "job" will probably be as a set of interacting timers. This might require the use of lexical variables (via lexical-let, if it works right).
+
+[new]
+
+How probable it is run-with-idle-timer is deferred indefinitely? It can happen, of course, as lots of other things, but is it probable judging from your everyday Emacs usage?

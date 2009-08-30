@@ -1,0 +1,9 @@
+wikipediafs.el is a companion tool for [http://wikipediafs.sourceforge.net WikipediaFS]. It can be used along with WikipediaMode or any other major mode somehow supporting wikipedia/mediawiki editing in Emacs.
+
+It is available as a Git repository:
+
+<code>
+git clone git://gaffer.ptitcanardnoir.org/wikipediafs-el.git
+</code>
+
+CategoryHypermedia

@@ -1,0 +1,83 @@
+在我们开始之前的一句警告：多行的正则表达式很少能在语法高亮(Font Lock)中正常工作。你一定问为什么呢？基本上，Emacs知道你当前正编辑的行，而且语法高亮在你编辑的这些行上直作用。多行正则表达式将要求Emacs向后退过多行并判断是否有多行正则表达式与之匹配。这涉及到很多匹配，未解决的问题（向后跳到哪里——最坏情况下是缓冲(buffer)的开头），以及缓存等。所以，当装载一个文件时多行正则表达式工作得很好，但当你在编辑包含有正则表达式的头或尾的时候，font-lock就高迷惑了。参见 MultilineFontLock 。
+
+遇上偏僻的问题时，回到最基本的上去：
+
+欲匹配任意多个字符，使用这个： ##.*## —— 问题是 ##.## 匹配/除/换行外的所有字符。
+  What many people propose next works, but is inefficient if you assume that newlines are not /that/ common in your text: ##\(.|\n\)##.  Better match multiple lines instead: ##\(.*\n?\)*##.  The newline is optional so that the expression can end in the middle of a line.
+
+== Examples ==
+
+The following code snippet parses entries that look like this:
+
+    A term :: a definition 
+    which may span multiple lines 
+    and is terminated by a blank line or
+    the end of the file
+    
+    Another term :: You get the idea
+
+Code:
+
+    (defun parse-definitions ()
+      (let ((dict nil))
+        (while (re-search-forward
+                (concat "^\\(.*?\\)"               ;; a term
+                        "\\s-*::\\s-*"             ;; the separator
+                        "\\(.*\\(?:\n.*\\)*?\\)"   ;; definition: to end of line,
+                                                   ;; then maybe more lines
+                                                   ;; (excludes any trailing \n)
+                        "\\(?:\n\\s-*\n\\|\\'\\)") ;; blank line or EOF
+                nil :no-error)
+          (add-to-list 'dict (cons (match-string-no-properties 1)
+                                   (match-string-no-properties 2))) )
+        dict))
+
+The regular expression matching the definition may need some more explaining.
+
+What we have is this:
+
+    "\\(.*\\(?:\n.*\\)*?\\)"
+
+Taking it appart from the outside, we have a /group/.  This is the second group; the first group matched the term.  Therefore the later call to ##(match-string-no-properties 2)## will return the definition matched.
+
+    "\\( ... \\)"
+
+Inside the group, we start with all characters except newline.  This will match starting at point up to the end of the line.  If we are at the end of the line, this will match the empty string before the newline.
+
+    ".*"
+
+Next we have a complex little bugger.  On the outside, we have a group that is matched repeatedly, but as little as possible due to the ##*?## at the end.  Furthemore, this group will not record the matched substring (thus being faster).  It is a so-called /shy/ group due to the ##?:## at the very beginning of the group.
+
+    "\\(?: ... \\)*?"
+
+Inside the shy group, we match the newline, and all the characters following it except another newline.  That is, we match the newline we did not match two paragraphs up, and the next line, ending again in front of a newline: 
+
+    "\n.*"
+
+[new]
+
+=== Associated XEmacs Bug ===
+
+Above does not work for me in XEmacs 21.5-b22 or XEmacs 21.4.17 either.
+
+If I change the third string to
+
+                        "\\(.*?\\(?:\n.*\\)*?\\)"  ;; definition: to end of line,
+
+instead of
+
+                        "\\(.*\\(?:\n.*\\)*?\\)"   ;; definition: to end of line,
+
+to make the initial wildcard match non-greedy, the match works!
+
+As Alex points out below, "." will never match a newline, but perhaps this observation of greediness will help diagnose this XEmacs bug.
+
+This must be a bug in XEmacs.
+[new]
+Hm. can .* ever match \n? One of the main gotchas is that there is not (as far as I know)
+an equivalent of perl's /s modifier, so . can't match \n [I was also testing in scratch]
+[new]
+You are correct.  That's the whole point of having the \n in there.  I've taken in further appart.
+-- AlexSchroeder
+----
+[[分类－正则表达式]]

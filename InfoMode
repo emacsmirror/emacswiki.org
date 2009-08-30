@@ -1,0 +1,56 @@
+This page is about Info mode (`C-h i'), a major mode for reading hypertext manuals. In particular, the EmacsManual is available in Emacs as an Info manual, providing SelfDocumentation.  
+
+See also:
+
+* InfoHistory -- The history of Info in Emacs
+* [[Texinfo]] -- How to create Info manuals
+* InfoPath -- How InfoMode finds the location of Info manuals and how to open them
+* EmacsManualLicense -- Discussion about EmacsManual licensing
+
+== Common Info Commands ==
+
+Here are some common Info commands. Use `C-h m' in an Info buffer to learn more. You can also read the Info manual about Info (!). It includes a tutorial about Info.
+
+* `i' -- Search through the manual's indexes for a regexp
+
+* `s' (also `C-s' or `C-M-s' in Emacs 22) -- Search for a string or regexp
+* `g' -- Go to a node by name
+* `m' -- Choose a menu item
+
+Suppose you want to read an Info manual that is not in your InfoPath -- file ##miscpackage.info## in the current directory, for instance.  Here are several ways to do that -- the first is generally the easiest:
+
+* `C-u C-h i'
+
+* `##C-x C-f miscpackage.info M-x Info-on-current-buffer##'
+
+* `##C-x C-f miscpackage.info M-: (Info-mode)##'
+
+* Use DiredMode (munge keybinding to taste) -- `dired-x' does this automatically.
+
+    (define-key dired-mode-map "I"
+      (lambda () (interactive)
+	(info (dired-get-filename))))
+
+
+== Enhancements to Info ==
+
+* InfoPlus -- New info commands, key bindings, font-locking, and menus.
+
+[new]
+: I notice that this has the command `Info-merge-subnodes', which can put all nodes related to something into a single page.  This is my fondest wish for info: to have everything on one page so that I can just navigate normally without the hierarchy.  (Strange, isn't it?)  -- [[Gambarimasu]]
+
+[new:DrewAdams:2008-09-11 22:28 UTC]
+: Yes, and you can also use it to create Info buffers of just certain (multi-node) parts of a manual. Wrt navigating, you might also be interested in the next item below: using '''Icicles''' as an Info browser. -- DrewAdams
+
+* [[Icicles - Info Enhancements]] -- Use '''Icicles''' [[regexp]] [[completion]] and [[Icicles - Cycling Completions|cycling]] with Info [[multi-command]]s (`g', `i') -- browse among the hits. Create virtual manuals as arbitrary node sets. Use [[Icicles - Search Commands, Overview|Icicles search]] with Info.
+* InfoApropos -- Search indexes of all info documents on the system.
+* InfoLook -- Lookup symbols or files in info indexes.
+* InfoToWiki -- Converting Info to Wiki output one GNU manual at a time. 
+* InfoIndexDefaultEntry -- Make the Info-index ("i") command default to looking up the word at point.
+* [[Iman]] -- Completion for InfoManuals and ManPages when running InfoMode and ManMode.
+
+----
+CategoryDocumentation
+CategoryHelp
+CategoryHypermedia
+CategoryModes

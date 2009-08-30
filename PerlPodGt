@@ -1,0 +1,13 @@
+<code>perl-pod-gt.el</code> has some small helpers for <code>C<...></code> etc style [PerlLanguage Perl] POD markup.  It can be added on to PerlMode, CPerlMode, PodMode, or similar.  Get it from
+
+: http://user42.tuxfamily.org/perl-pod-gt/index.html
+
+The features are
+
+* A smart <code>></code> inserting <code>E<gt></code> (which is where the name "<code>perl-pod-gt</code>" comes from)
+* Line breaks avoided around <code>C<<...>></code> and in the non-break <code>S<...></code> for FillParagraph
+* [FontLockMode FontLock] warnings for <code>C<$foo->bar></code> (which is almost certainly meant to be <code>E<gt></code>)
+* And finally a "doubling" command to turn <code>C<...></code> to <code>C<<...>></code> when you want to step up
+
+----
+PerlLanguage

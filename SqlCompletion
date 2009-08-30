@@ -1,0 +1,20 @@
+This is another sql-completion for mysql. It requires Lisp:mysql.el.
+
+Installation:
+
+   (require 'sql-completion)
+   (setq sql-interactive-mode-hook
+         (lambda ()
+           (define-key sql-interactive-mode-map "\t" 'comint-dynamic-complete)
+           (sql-mysql-completion-init)))
+
+If you make changes to database or table schema, you can update it with 
+`M-x sql-mysql-update-database'
+
+Download: 
+* Lisp:sql-completion.el
+
+See also SqlComplete
+
+----
+CategorySql

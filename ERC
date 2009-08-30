@@ -1,0 +1,306 @@
+ERC is a powerful, modular, and extensible Emacs InternetRelayChat client.
+
+== Obtaining ERC ==
+ERC is part of the GNU project.  The project is hosted at Savannah at
+http://savannah.gnu.org/projects/erc/.  For a brief history of the development
+of ERC and access to older versions, code repositories, and mailing list
+archives see ErcProjectHistory.
+
+=== File releases ===
+The latest version of ERC is **5.3**.  You can find it and all previously
+released versions at http://ftp.gnu.org/gnu/erc/.
+
+=== Included with GNU Emacs ===
+ERC 5.3 is in the current release of GNU Emacs, v22.3.
+
+See ErcExtraModules to find out how to get the few modules which were not able to be included with ERC in Emacs due to licensing and dependency issues.
+
+=== Ports and packages ===
+The XEmacs ERC Package sources are at
+http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/erc/
+
+Debian users can just apt-get install erc, or use one of the emacs22 or emacs-snapshot-* packages in experimental and unstable.  The Debian ERC package is
+updated at every major or minor release.  Usually, you should expect a
+new release every month or two.
+
+Gentoo users can just emerge app-emacs/erc or app-xemacs/erc
+(for some reason portage has a hard time figuring out which).
+At present this is the latest release candidate.
+
+=== Development version ===
+See ErcDevelopment to find instructions on how to get the development version
+using git.  Or if you prefer, you can download the most recent development
+snapshot: [http://mwolson.org/static/dist/erc-latest.tar.gz erc-latest.tar.gz]
+or [http://mwolson.org/static/dist/erc-latest.zip erc-latest.zip].
+
+ERC also comes bundled with EmacsFromCVS[http://article.gmane.org/gmane.emacs.erc.general/750].
+
+Note that ErcDevelopment and EmacsFromCvs can contain two separate branches of ERC
+and are therefore not quite identical.  The modules ErcBbdb and ErcSpeak are
+not available in the Emacs version, for example.
+
+== User manual ==
+An info manual is now included with ERC.  It's also available on-line in
+several forms:
+
+# HTML (single file): http://www.mwolson.org/static/doc/erc.html
+# HTML (multiple files): http://www.mwolson.org/static/doc/erc/
+# Info: http://www.mwolson.org/static/doc/erc.info
+# PDF: http://www.mwolson.org/static/doc/erc.pdf
+
+The manual is not yet complete.  At the moment you can find more detailed
+information on certain topics on the ERC pages here in the EmacsWiki.  If
+you'd like to help write the manual, have a look at the FOR-RELEASE file which
+is available in ErcDevelopment to find out what needs to be done.
+
+== Quickstart ==
+* Download the .tar.gz file and extract it (tar -xzf ''filename'')
+: the latest release, erc-5.3.tar.gz (or erc-5.3.zip), extracts to a directory called erc-5.3/
+: Development snapshots extract to a directory called erc/
+* Move the newly created directory to, for example, ~/elisp/erc
+* And put the following in your ~/.emacs file:
+: <code>(add-to-list 'load-path "~/elisp/erc")</code>
+: <code>(require 'erc)</code>
+* XEmacs users skip the above and get the [http://www.xemacs.org/Develop/packages.html#erc XEmacs erc Package]
+
+* To connect, call M-x erc (better: M-x erc-select)
+* To customize how ERC works: M-x customize-group RET erc RET
+* ERC comes with a lot of small modules that do stuff for you. Recent versions of ERC let you just M-x customize-variable RET erc-modules RET. For previous versions, add a (require 'erc-FOO) to your .emacs to use them.
+
+== Introduction ==
+
+* ErcFeatures -- an overall idea of ERC features
+* ErcBasics -- for those new to both ERC and IRC
+* ErcIntroduction -- for those who are familiar with IRC clients but are new to ERC
+* ErcLoading -- what to put in your ~/.emacs file to get ERC ready for action
+
+* ErcEmacsChannel -- this is where the ERC folk hang out
+
+== Setting up ERC to work right for you ==
+
+The easiest way to configure ERC is to do M-x customize-group RET erc RET.  This will open a buffer with
+all possible customizable settings organized in groups.  Even if you want to add things to your ~/.emacs
+manually, you might find some settings you didn't know about by looking around.
+
+=== General configuration ===
+* ErcStartupFiles -- elisp to better start ERC
+* ErcExampleEmacsFile -- users of erc invited to put examples here
+* ErcConfiguration -- elisp to configure ERC
+* ErcTips
+
+=== SSL configuration ===
+* ErcSSL -- allow connections to ssl/tls-enabled servers (with certificates)
+
+=== Miscellaneous ===
+* ErcCvsFeatures -- what's new or different in the CVS version of ERC
+* ErcDeprecated -- possibly helpful if you're using an older version of ERC
+
+== Quick reference ==
+
+* ErcBindings -- key bindings provided by the ERC major mode
+* ErcCommands -- /-commands ERC knows about
+* ErcFaces -- text properties in ERC buffers
+
+== Some features explained ==
+
+* ErcAutoQuery -- how to automatically start queries when you receive a private message
+* ErcIgnoring -- how to ignore some notices and some nicks
+
+== Modules ==
+
+To enable or disable modules use M-x customize-variable RET erc-modules.
+
+=== Enabled by default ===
+* ErcAutoJoin -- how to automatically join lots of channels
+* ErcButton -- make words and phrases such as URLs clickable
+* ErcChannelTracking -- keep track of activity in hidden channel buffers
+* ErcCompletion -- complete nicknames of channel members
+* ErcControlCharacters -- deal with IRC control characters
+* ErcFilling -- configure ERC to wrap output
+* ErcHistory -- enable a command history for ERC
+* ErcList -- list channels sorted alphabetically or by size in a separate buffer
+* ErcMatch -- highlight pals, fools and other keywords
+* ErcNetsplit -- detect and keep track of netsplits
+* ErcNonCommands -- treat non-IRC /-commands differently
+* ErcReadOnly -- make displayed lines read-only
+* ErcStamp -- timestamps
+
+=== Disabled by default ===
+* ErcAutoAway -- set yourself away after some idletime
+* ErcBbdb -- integrate with the BigBrotherDataBase -- BBDB
+* ErcLogging -- writing channel buffers out to files at the end of a session
+* ErcMorseCode -- useful if you have weird friends sending you morse code on IRC
+* ErcNickserv -- identify to Nickserv automatically
+* ErcNotify -- have ERC notify you when selected users enter or leave IRC
+* ErcScrollToBottom -- scroll to the bottom of the buffer
+* ErcSmileys -- how to translate <nowiki>:)</nowiki> to :)
+* ErcSound -- adding sound to ERC
+* ErcSpelling -- ERC and FlySpell
+* ErcTruncation -- (automatically) truncating ERC buffers
+
+=== Non-standard modules ===
+The following modules are not enabled/disabled by changing the `erc-modules' variable.
+You should be able to find documentation on how to set them up on their pages.
+
+* ErcChess -- play chess with other ERC users using JohnWiegley's ChessMode
+* ErcDCC -- Get DCC working
+* ErcEzbounce -- interface to the EZBounce IRC bouncer (a virtual IRC server)
+* ErcHighlightNicknames -- Highlights nicknames
+* ErcImenu -- use ImenuMode functionality within ERC for fast navigation
+* ErcLang -- a new command /LANG to identify ISO language codes
+* ErcMule -- IRC in Japanese and other languages with non-ASCII coding systems.
+* ErcNicklist -- show channel nicks in a side buffer
+* ErcSpeak -- listen to what's being said in IRC channels via EmacSpeak
+* ErcSpeedbar -- integrate with SpeedBar
+* IgorThpeak -- avoid taking IRC comments the wrong way by reading them silly.
+
+== Other Goodies (not part of ERC) ==
+
+=== Bots for ERC ===
+
+* ErcRobot -- a bot for ERC, the original
+* BirnyTheBot -- another bot for ERC
+* ErBot
+* MallowBot
+
+=== Various commands ===
+
+* ErcAlias -- aliasing some commands to others
+* ErcAmsg -- how to send a message to all active channels
+* ErcChanop -- <nowiki>MODE [+-]o onto a channel for you</nowiki>
+* ErcDoctor -- help your fellow channel members
+* ErcGlobalNick -- A command for changing nick on all servers at once
+* ErcHowMany -- Show how many users and ops are in the current channel
+* ErcInfo -- help newbies with quick info manual references
+* ErcReverse -- reverse what you type, or reverse what other people typed
+* ErcSave -- Example of a very simple ERC command
+* ErcShow -- Show the result of evaluating a lisp expression
+* ErcShowoff -- Brag to others about your IRC connections
+* ErcSlap -- Various /SLAP examples.
+* ErcSpook -- Flood Echelon
+* ErcTLDDemographics -- get a quick overview of TLD frequencies in current channel
+* ErcUname -- print the result of running `uname -a' on the system
+* ErcUndernet -- ERC Undernet convenience functions.
+* ErcUptime -- Display your system's uptime, along with other stuff like load information
+* ErcYow -- Pinhead wisdom
+* NowPlaying -- tell others what EMMS or another media player is playing
+
+=== Change how ERC looks ==
+
+* ErcModeline -- Additions to your ERC mode-line and header-line.
+* ErcTabs -- provide a tab-bar interface to ERC buffers
+* ErcNickColors -- Color nicks with different colors to make them easier to pick out
+* ErcBar -- Display a bar for unread messages, ala xchat
+
+=== Change how messages are shown ===
+
+* ErcHaxorCode -- useful if you are trapped in an ''elite'' [http://catb.org/~esr/jargon/html/E/elite.html] channel
+* ErcHideEmail -- To write (more of less) safely your email address on a channel.
+
+=== Miscellaneous ===
+
+* ErcChannelKey -- SelectKey -like functionality for switching channels in ERC
+* ErcNickNotify -- Popup a notify window when someon is trying to reach you.
+* ErcPageMe -- Pop up a GNOME dialog box when someone is trying to reach you
+* ErcSpies -- find out who is also in the ''other'' channel
+* ErcYank -- Don't worry about pasting too many lines to channels
+* InternetTime -- show you the time as defined by http://swatch.com/fs_index.php?haupt=itime.
+* SwitchToErc -- how to switch to ERC with a keybinding
+* UnwrapLine -- unwrapping long lines when quoting from an existing document
+* ErcTray -- Get notified of new messages in your gnome/KDE system-tray
+* [[Paste2]] -- Send and get paste with paste2.org, and integrate with ERC.
+
+* OSD Display on gnome on Linux systems : let you know when someone messages your nick.
+
+Richard Riley : rileyrgdev AT gmail DOT com
+
+Requires the gnome-osd package to be installed. 
+
+<pre>
+
+(defun rgr/xml-escape (s)
+  (setq s (replace-regexp-in-string "'" "&apos;" 
+  (replace-regexp-in-string "\"" "&quot;"
+  (replace-regexp-in-string "&" "&amp;" 
+  (replace-regexp-in-string "<" "&lt;"
+  (replace-regexp-in-string ">" "&gt;" s)))))))
+
+  (defun rgr/osd-display (id msg &optional delay vattrib hattrib font) 
+    "Display a message msg using OSD. Currently requires gnome-osd-client"
+    (unless vattrib (setq vattrib "top"))
+    (unless hattrib (setq hattrib "right"))
+    (unless delay (setq delay 5000))
+    (unless font (setq font "Arial 12"))
+    (save-window-excursion
+      (shell-command
+       (format
+	"gnome-osd-client -f \"<message id='%s' osd_fake_translucent_bg='off' osd_font='%s' animations='on' hide_timeout='%d' osd_vposition='%s' osd_halignment='%s'>%s</message>\""    
+	id
+	font
+	delay
+	vattrib
+	hattrib
+	(rgr/xml-escape msg)
+	))))
+
+(defun rgr/erc-notify-osd (matched-type nick msg)
+  (interactive)
+  "Hook to add into erc-text-matched-hook in order to remind the user that a message from erc has come their way."
+  (when (and (string= matched-type "current-nick") (string-match "\\([^:]*\\).*:\\(.*\\)" msg))
+    (let(
+	 (text (match-string 2 msg))
+	 (from (erc-extract-nick nick)))
+      
+      (when text
+	
+	(let ((maxlength 128))
+	  (if ( > (length msg) maxlength )
+	      (setq msg (concat (substring msg 0 20) ".. *snip* .. " (substring msg (- 30)) "."))))
+	
+	(setq msg (concat from " : " msg))
+	(rgr/osd-display (format "%s:%d" from (% (nth 1 (current-time)) 3)) msg 6000 "top" "center" "Verdana 23"))
+      )))
+
+(add-hook 'erc-text-matched-hook 'rgr/erc-notify-osd)
+
+</pre>
+== Proxies ==
+
+Currently not supported.  See http://desproxy.sourceforge.net/ or
+http://transconnect.sourceforge.net/ for software to use.
+
+ErcProxy has some more information on how things are right now and what you can do to use erc through a proxy. 
+
+== For developers ==
+
+* InternetRelayChat -- references to the RFCs
+
+* ErcBugs -- bugs, bug fix history, planned features, wishlist
+* ErcDevelopment -- details on how to use git to hack on ERC
+* ErcCvs -- more about the bleeding edge
+* ErcCommit -- how to commit changes on the bleeding edge
+* ErcCatalog -- multilingual/customizable messages
+* ErcHooks -- almost everything is based on hooks in ERC
+* ErcModules -- how to write new ERC modules
+* ErcProposedChanges -- A testing and discussion area for proposed changes in ERC.
+
+== Mailing lists ==
+
+If you need help with ERC, you can ask on the erc-discuss mailing list.  If
+you encounter ErcBugs, please let us know about them by sending an email to
+the erc-discuss mailing list.  Feel free to send us the corresponding patches
+if you're able to fix things.
+
+Check the [https://savannah.gnu.org/mail/?group=erc Savannah mailing page for
+ERC] for subscription information.
+
+The mailing lists are also available on [http://gmane.org Gmane].
+# gmane.emacs.erc.announce -- Announcements
+# gmane.emacs.erc.general -- General discussion
+# gmane.emacs.erc.cvs -- Log messages for changes to the ERC source code
+
+----
+CategoryChatClient InternetRelayChat
+
+[new]
+Bug: using customize to set erc-spelling-dictionaries saves the (buffername . dictionary) elements as pairs instead of lists.

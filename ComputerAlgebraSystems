@@ -1,0 +1,17 @@
+The following are Emacs interfaces to computer algebra systems.  Some of these are proprietary or have parts that are non-free.  Alternative packages that are free software are listed in [http://directory.fsf.org/math/ the Mathematics category of the Free Software Directory].
+
+* [http://maxima.sourceforge.net Maxima] -- the Emacs interface is part of the distro.
+** [http://members3.jcom.home.ne.jp/imaxima/ imaxima.el] -- a really hardcore awesome Maxima interface.
+* [http://www.xs4all.nl/~apinkus/yacas.html Yet Another Computer Algebra System] -- the Emacs interface is part of the distro.
+* MuPAD -- a non-free computer algebra system, the Emacs interface is MuPACS
+* [http://www-gap.dcs.st-and.ac.uk/~gap/ GAP] -- a link for the Emacs interface is at   ~/Info4/deposit.html
+* [http://library.wolfram.com/infocenter/MathSource/4567 math.el] -- for running (non-free) Mathematica under Emacs.
+
+See also JayBelanger.
+
+== Question ==
+
+Why not mentioning here Emacs' own CAS system: [AdvancedDeskCalculator calc] and also [http://sage.math.washington.edu/sage/ sage]! --[[dida]]
+
+------------
+CategoryCalculators

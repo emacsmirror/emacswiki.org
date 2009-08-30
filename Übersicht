@@ -1,0 +1,38 @@
+[[en:SiteMap]]
+[[ko:대문]]
+[[ja:サイトマップ]]
+[[se:InnehållsFörteckning]]
+[[zh:網站地圖]]
+[[ru:КартаСайта]]
+[[pt:MapaDoSite]]
+[[fr:PlanDuSite]]
+[[es:MapaDelSitio]]
+<include "WikiLanguageMenu">
+
+''The EmacsWiki is dedicated to documenting and discussing EmacsAndXEmacs. See the MissionStatement for more'' -- hier geht es um Editoren der Emacs/XEmacs Familie.  :)
+
+* TextBearbeiten -- Alles was mit dem Editieren von Text /Quellcode/... zu tun hat
+* ZyklischeBuffer -- Wieviele Leute haben das schon gemacht?
+* EinfachZwischenFensterSpringen -- nicht immer C-x o
+* AktiveMenüs -- Die Menüleiste erscheint nur auf Wunsch
+* EigeneHTMLTimeStamps -- Beinflussung des Aussehens der HTML hhmts-Zeitstempel
+* AUCTeXDeutsch -- Für <nowiki>(La)TeXniker</nowiki>
+* FileVariablen -- Lokale, Datei-spezifische Einstellungen
+* EmacsOnGermanMac -- Mac-Keyboard, Emacs und Umlaute
+* OctaveMode -- Octave-Mode unter Windows mit Xemacs
+* Deutschsprachige Sites zum Emacs im ODP -- Unter http://dmoz.org/World/Deutsch/Computer/Software/Editoren/Emacs/ sind deutschprachige Sites, die sich mit dem Emacs beschäftigen gelistet. Ergänzungen sind mehr als willkommen.
+* AnSysDe -- Ansys mode 
+
+Für den Moment denke ich, dass wir die ganze Kategorien-Übersicht nicht unbedingt brauchen; wenn wir mal 10 Seiten beisammen haben, können wir mit dem Organisieren anfangen.  :) -- AlexSchroeder
+
+; XEmacs Besonderheiten: Schreib einfach auf die Seite: "Folgendes gilt nur für XEmacs" - wenn es Emacs Leute gibt, die das auch können, dann werden die das schon abändern.
+; Bilder: URL tippen und wenn die URL mit JPG oder PNG endet, wird ein IMG tag generiert.  Ansonsten kann man einen Bilderlink mit <nowiki>[[image:foo]]</nowiki> setzen, und auf der Seite "foo" dann ein Bild speichern (denn auf jeder Seite kann entweder ein Bild oder Text (evt. mit IMG tags) stehen.
+; Name ist auf Deutsch nicht eindeutig: Beispiel: EDiff.  Lösung: EDiffDeutsch, analog zu AUCTeXSpanish, wenn der Titel ohne Suffix ("EDiff") nicht auf Deutsch übersetzt werden kann.
+
+Mögliches Problem:
+test
+Normalerweise kann ich auf den Link "Übersicht" immer klicken.  Der Name der Seite ist http://www.emacswiki.org/cgi-bin/emacs-de.pl?%C3%9Cbersicht.
+Wenn ich allerdings aus meinen Bookmarks heraus recent changes aufrufe
+und die "Übersicht" dort auftaucht,
+dann ist die Übersicht mit einer anderen Seite verlinkt:
+http://www.emacswiki.org/cgi-bin/emacs-de.pl?%DCbersicht

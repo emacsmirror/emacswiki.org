@@ -1,0 +1,127 @@
+DiredDetails -- Show/hide details in DiredMode listings. `##)##' toggles between the two.
+
+Now you see the details:
+
+[[image:DrewsEmacsDiredWDetails]]
+
+Now you don't:
+
+[[image:DrewsEmacsDiredWODetails]]
+
+
+
+LsLisp (XP):
+: this is the default on Windows OSes:
+<pre>
+  d:/home/Emacs:
+  total used in directory 1202 available 23646640
+  drwxrwxrwx   1 username root            0 10-27 16:49 .
+  drwxrwxrwx   1 username root            0 11-04 10:26 ..
+  -rw-rw-rw-   1 username root          291 06-11 22:51 .arch-inventory
+  -rw-rw-rw-   1 username root          185 2004-03-07  .cvsignore
+  -rw-rw-rw-   1 username root        59807 2004-02-14  AUTHORS
+  -rw-rw-rw-   1 username root         1044 2004-04-28  BUGS
+  -rw-rw-rw-   1 username root        17992 2001-03-05  COPYING
+  drwxrwxrwx   1 username root            0 10-27 16:15 CVS
+  -rw-rw-rw-   1 username root       184003 10-20 10:16 ChangeLog
+  -rw-rw-rw-   1 username root         8946 2003-02-04  FTP
+</pre>
+
+
+Using platform ls executable (GNUWin32 ls.exe on XP):
+: [say (setq ls-lisp-use-insert-directory-program "ls") to try it out]
+<pre>
+  d:/home/Emacs:
+  total used in directory 1208 available 23646640
+  drw-rw-rw-    1 username 0               0 Oct 27 16:49 .
+  drw-rw-rw-    1 username 0               0 Nov  4 10:26 ..
+  -rw-rw-rw-    1 username 0             291 Jun 11 22:51 .arch-inventory
+  -rw-rw-rw-    1 username 0             185 Mar  7  2004 .cvsignore
+  -rw-rw-rw-    1 username 0           59807 Feb 14  2004 AUTHORS
+  -rw-rw-rw-    1 username 0            1044 Apr 28  2004 BUGS
+  -rw-rw-rw-    1 username 0           17992 Mar  5  2001 COPYING
+  drw-rw-rw-    1 username 0               0 Oct 27 16:15 CVS
+  -rw-rw-rw-    1 username 0          184003 Oct 20 10:16 ChangeLog
+  -rw-rw-rw-    1 username 0            8946 Feb  4  2003 FTP
+</pre>
+
+
+LsLisp (XP) with:
+: '(ls-lisp-emulation (quote MS-Windows))
+: '(ls-lisp-ignore-case t)
+: '(ls-lisp-verbosity nil)
+<pre>
+  d:/home/Emacs:
+  total used in directory 1202 available 23730324
+  drwxrwxrwx        0 10-27 16:49 .
+  drwxrwxrwx        0 11-02 13:50 ..
+  -rw-rw-rw-      291 06-11 22:51 .arch-inventory
+  -rw-rw-rw-      185 2004-03-07  .cvsignore
+  drwxrwxrwx        0 10-27 16:15 admin
+  -rw-rw-rw-    59807 2004-02-14  AUTHORS
+  -rw-rw-rw-      274 2004-04-23  autogen.sh
+  drwxrwxrwx        0 10-27 16:49 bin
+  -rw-rw-rw-     1044 2004-04-28  BUGS
+  -rw-rw-rw-   184003 10-20 10:16 ChangeLog
+</pre>
+
+
+LsLisp when using LsLispToggleVerbosity:
+<pre>
+  c:/home:
+  total 2  free 15868196
+  drwxrwxrwx   2        0 Oct 25 09:25 .
+  drwxrwxrwx   2        0 Jan  1  1970 ..
+  drwxrwxrwx   2        0 Oct 29 13:09 dev
+  drwxrwxrwx   2        0 Nov  4 13:53 emacs
+  drwxrwxrwx   2        0 Sep 17 15:00 formal
+  drwxrwxrwx   2        0 Aug 12 10:44 mail
+  drwxrwxrwx   2        0 Oct 13 19:28 misc
+  drwxrwxrwx   2        0 Oct 29 08:59 pim
+  drwxrwxrwx   2        0 Aug 20 19:02 shared
+  -rw-rw-rw-   1     1193 Oct 25 17:28 .bash_history
+  -rw-rw-rw-   1      148 Aug 23 13:55 .bashrc
+  -rw-rw-rw-   1       43 Oct 25 09:25 .emacs
+</pre>
+
+
+Using [[Eshell]] and DiredMode (XP):
+<pre>
+  d:/home/Emacs:
+  total 1201
+  drwxrwxrwx   1 username 5          0 Oct 27 16:49 .
+  drwxrwxrwx   1 username 5          0 Nov  4 10:26 ..
+  -rw-rw-rw-   1 username 5        291 Jun 11 22:51 .arch-inventory
+  -rw-rw-rw-   1 username 5        185 Mar  7 16:50 .cvsignore
+  -rw-rw-rw-   1 username 5        59807 Feb 14 17:01 AUTHORS
+  -rw-rw-rw-   1 username 5        1044 Apr 28 06:48 BUGS
+  -rw-rw-rw-   1 username 5        17992 Mar  5  2001 COPYING
+  drwxrwxrwx   1 username 5          0 Oct 27 16:15 CVS
+  -rw-rw-rw-   1 username 5        184003 Oct 20 10:16 ChangeLog
+  -rw-rw-rw-   1 username 5        8946 Feb  4  2003 FTP
+</pre>
+
+[[Eshell]] and DiredMode (XP) with:
+: NarrowEshellLs 
+: '(eshell-ls-dired-initial-args (quote ("-h")))
+: '(eshell-ls-initial-args (quote ("-h")))
+: '(eshell-ls-product-regexp "nil")
+<pre>
+  d:/home/Emacs:
+  total 1.2M
+  drwxrwxrwx    0 Oct 27 16:49 .
+  drwxrwxrwx    0 Nov  2 13:50 ..
+  -rw-rw-rw-  291 Jun 11 22:51 .arch-inventory
+  -rw-rw-rw-  185 Mar  7 16:50 .cvsignore
+  -rw-rw-rw-  58k Feb 14 17:01 AUTHORS
+  -rw-rw-rw- 1.0k Apr 28 06:48 BUGS
+  -rw-rw-rw-  18k Mar  5  2001 COPYING
+  drwxrwxrwx    0 Oct 27 16:15 CVS
+  -rw-rw-rw- 180k Oct 20 10:16 ChangeLog
+  -rw-rw-rw- 8.7k Feb  4  2003 FTP
+
+</pre>
+
+----
+
+CategoryDirectories

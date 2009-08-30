@@ -1,0 +1,441 @@
+The code on this page is *obsolete*. Use OddmuseMode instead. (Also [[Yaoddmuse]]).
+
+----
+
+The code on this page is for a raw wiki browser.  You can
+use it for the EmacsWiki, for example!  It uses an extended
+SimpleWikiMode for editing.  See WikiModeDiscussion for an
+overview.
+
+http://www.physik.fu-berlin.de/~dhansen/screens/ew-thumb.png
+
+[[http://www.physik.fu-berlin.de/~dhansen/screens/ew.png Large Version]]
+
+Just some words of '''warning''': i started to work on this
+project some days ago.  I think i fixed a lot of stuff but
+consider the code as ''experimental''.  Even though I'm
+currently editing this page with SimpleWikiEditMode my hands
+are shaking and i fear to screw the whole page ;-). --
+DavidHansen
+
+: Seems to work well now but still not well tested.  Please
+  test it especially with pages containing a lot of multi
+  byte characters like the Japanese emacswiki.
+
+If you want to extend it for other Usemod wikis, copy
+emacswiki-browse as a starting point.  To support other wiki
+engines, take a look at usemod-wiki-save and see whether you
+can adapt it.
+
+: I haven't touched the code in simple-emacswiki.el and I'm
+  sure it is broken at the time.  Have a look at
+  simple-wiki-completion.el.  If you want to edit another
+  Usemod wiki add it to <tt>swd-wiki-defs-list</tt>.
+
+== Server Side ==
+
+For Usemod wikis, you must install
+UseMod:WikiPatches/RawMode so that the wiki script
+understands the raw=2 parameter.  (raw=1 only delivers the
+plain text, which is enough for viewing, but raw=2 adds a
+timestamp cookie on the first line.)
+
+: oddmuse works out of the box
+
+There is a link to the patched script from the EmacsWiki
+page. But if your wiki still uses raw=1, you might still be
+able to use simple-wiki, if you use (shell-command...w3m) to
+fetch pages. (is this right?).  For that:
+
+    (setq swc-pages-get-function 'swc-pages-get-w3m)
+
+:: Well, in fact by using the w3m you build the completion
+   on the rendered html page, so you get less garbage than with
+   the http-get method. This is not perfect, but it works.
+
+== Download ==
+
+There is currently no release.  The brave may get the code from CVS.
+
+* https://savannah.nongnu.org/cvs/?group=http-emacs
+
+Now just add the appropriate directory to your load-path:
+
+    (add-to-list 'load-path "<path to http-emacs>/http-emacs")
+
+Note that the files in the ElispArea only contain a comment
+pointing to the Savannah project.  When development started,
+these files were hosted in the ElispArea, and only later
+were moved to Savannah.
+
+== Entry Points ==
+
+Use the following:
+
+* M-x swc-emacswiki-browse RET <nowiki>PageName</nowiki>RET
+  (this is the completion-enabled method)
+
+When editing, type:
+* C-c C-m to label your change as minor, type again to undo that.
+* C-c C-c to upload your change to the wiki.
+* C-c C-/ or C-/ to pcomplete a word a wiki page, ie if there is a page <nowiki>CamelCase</nowiki> on your wiki then typing Came follow by C-/ then Came will be completed <nowiki>CamelCase</nowiki>
+  (and the usual M-/ to dabbrev-expand).
+* C-c C-f to follow a page at point.
+
+
+
+== Keybinding ==
+
+This is what I use:
+
+    (global-set-key (kbd "C-c C-o") 'swc-emacswiki-browse)
+
+== User Name ==
+
+When saving a page with simple-emacswiki.el, it concatenates
+the word of the variable user-full-name to create the
+UserName used for the submission.  If you use a different
+user name for wikis, get the latest savannah version and
+customize `swd-user-name'.
+
+== Simple Wiki Mode -- Quickstart ==
+
+Here's a brief HOWTO.
+
+First add the directory hosting the files in your LoadPath variable
+as explained into the Download section.
+
+Then load all the necessary files:
+
+    (require 'simple-wiki-completion)
+
+Feel free to only load stuff you really want to use :) but
+note that loading all at the same time doesn't hurt, as long
+as you have all the files in your LoadPath.
+
+* Use M-x swc-emacswiki-browse RET
+  <nowiki>PageName</nowiki>RET to find pages with completion
+  enabled when finding pages.
+* When editing, you can enable pcomplete-based completion to
+  complete the word at point to a wikipage:
+
+
+    (add-hook 'simple-wiki-edit-mode-hook 'pcomplete-simple-wiki-setup)
+    (setq pcomplete-ignore-case t) ;; optional
+
+: Thereafter, use C-/ to pcomplete pages at point and M-/ for dabbrev-compltion.
+
+* Type C-c C-m to toggle the labeling of your edit as "minor". The
+  default value is "major".  Minor changes are not listed in
+  RecentChanges by default.  You need to use one of the
+  OtherRecentChanges to list both major and minor changes. Setting
+  simple-wiki-minor-p to t will mark all your changes as minor, and
+  annoy people to no end.  * There's no real need to softwrap, but
+  believe it or not, a lot of people still don't use emacs to edit
+  wikis.  So, if you want to make sure that the edit box looks nice
+  for these people, too, then you might want to enable the softwrap
+  features:
+
+
+** If your auto-fill-mode is usually on, you might want to turn it off
+
+    (add-hook 'simple-wiki-edit-mode-hook 'turn-off-auto-fill)
+
+** And now enable LongLines:
+
+   (setq longlines-show-hard-newlines t) ;; optional
+   (add-hook 'simple-wiki-edit-mode-hook
+      'longlines-mode-on)
+   (add-hook 'simple-wiki-save-before-hooks
+             (lambda () (when longlines-mode (longlines-mode-off))))
+
+* Note that on the Emacs Wiki, you should be able to upload
+  "filled" pages as well.  Example:
+
+    ** this item
+      is continued on the next line.
+
+: looks as follows:
+
+** this item is continued on the next line.
+
+* If simple-wiki does not already detect your username
+  correctly when saving a page, customize `swc-username'.
+
+== Renaming Buffers ==
+
+Here is code that renames your buffers.  I use the UNIQUE
+argument to rename-buffer so that I get a history of buffers
+for a page. Adapt to your liking.
+
+    (add-hook 'simple-wiki-edit-mode-hook
+              (lambda ()
+                (when simple-wiki-url
+                  (rename-buffer (simple-wiki-page) t))))
+
+Take care that simple-wiki-completion uses a rename hook
+named rename-hook.
+
+== Edit Current w3m Buffer ==
+
+Here is some code that lets you edit the emacswiki page
+displayed in the current w3m buffer:
+
+    (defvar w3m-emacswiki-url-re
+      "^http://www\\.emacswiki\\.org/cgi-bin/wiki/\\(.*\\)"
+      "Regular expression to match an emacswiki URL.")
+  
+    (defun w3m-emacswiki-edit ()
+      "Edit emacswiki page displayed in the current w3m buffer."
+      (interactive)
+      (if (string-match w3m-emacswiki-url-re w3m-current-url)
+          (swc-browse "ew" (match-string 1 w3m-current-url))
+        (error "Not an emacswiki page!")))
+
+== Importance of the Timestamp Cookie ==
+
+The timestamp on the first line is required to do automatic
+conflict resolution using merge(1) -- read the man page for
+merge: you need three files to do merging, A, B, and the
+common ancestor. The common ancestor is identified by the
+timestamp.  If you delete the timestamp, the wiki will
+complain.  If you change it, then automatic conflict
+resolution might yield suboptimal results.  Nothing you
+can't fix by using the normal interface: Click on the "Show
+History" link and edit the last good version.
+
+== Blogging ==
+
+Oddmuse (about the only wiki engine really supported by this
+mode) as now blogging capabilites. See
+Oddmuse:Minimal_Weblog_Setup.
+
+Here is a quick an dirty function that opens a date page of
+the wiki from the calendar mode to easily post a new entry.
+
+    (defun swb-insert-entry (arg)
+      "get the date page for the date indicated by point"
+      (interactive "P")
+      (let* ((date (calendar-cursor-to-date t))
+	 (month (pop date))
+	 (day (pop date))
+	 (year (pop date))
+         ;date page use ISO format YYYY-MM-DD
+	 (page (format "%04d-%02d-%02d" year month day))
+	 (nick "myblog")
+	 (buffer (get-buffer-create (concat (upcase nick) ":" page))))
+       (switch-to-buffer-other-window buffer)
+       (swc-browse nick page)))
+  
+       ;;bind the function to b
+       (add-hook 'calendar-mode-hook
+	  (define-key calendar-mode-map "b" 'swb-insert-entry))
+
+Note that you need to add my blog in the wiki definitions list
+
+== Future Development ==
+
+* take care of compatibility of different emacs versions
+* fix and improve font locking.
+* add indentation features
+
+You'are welcome to participate. If you don't know what to do
+here is a list of ideas:
+
+* modify simple-wiki-definitions to be more like
+  EmacsWikiMode projects
+* use emacs-wiki-mode rather than simple-wiki-mode
+
+:: I think simple-wiki-mode is just fine.  May need some
+   tuning but supporting the syntax of various wikis sounds
+   pretty complicated.
+
+* add a possibility to see recent changes (almost done)
+* add search possibilty (needs some patch to oddmuse)
+* try to browse other wikis whithout raw mode by filtering
+  their edit page (i.e. just diplaying the content of the
+  textarea)
+
+:: Media Wiki support would be great but i think this will
+   be the same work as writing a complete new package.
+
+In order to allow us to integrate this package into Emacs at
+some time, please make sure you are prepared to assign your
+copyright to the FSF at some point in the far away future.
+
+=== Recent Changes ===
+
+Use
+http://emacswiki.wikiwikiweb.de/cgi-bin/wiki.pl?action=rc&raw=1 to see
+recent changes, use
+http://emacswiki.wikiwikiweb.de/cgi-bin/wiki.pl?action=browse&id=RecentChanges&raw=2
+to see and edit the intro text.  -- AlexSchroeder
+
+TODO: simple elisp functions to access it
+
+=== Coding Systems ===
+
+The last version let you specify the encoding in simple-wiki-definition.
+
+===Questions===
+
+: Has anyone made this work on the latest xemacs?
+  specifically for windows.  I get a series of error
+  messages and then nothing when I try to load a page.
+
+:: Just made it work on Xemacs 21.4.  You need MuleUCS
+   installed. -- DavidHansen
+
+
+: How do I get this to work for Unicode page names? --[[bkhl]]
+
+:: URL encode the bytes: Schröder -> Schr%c3%b6der. -- AlexSchroeder
+
+::: Still seems to be trouble saving the pages. -- Sunnan
+
+:::: What kind of trouble?  (<i><b>Please</b></i> report bugs to
+     mailto:http-emacs-dev@nongnu.org or using one of these
+     web forms at savannah)
+
+: Are there any plans to make that process automatic? -- [[bkhl]]
+
+:: I guess DavidHansen could add it to the code...  There
+   already is an URL encode defun around. -- AlexSchroeder
+
+: Of course he can :)  <tt>cvs co</tt> latest version.  But
+  be careful with non ASCII characters as oddmuse seems to
+  have no clue if they are upper or lower case. -- DavidHansen
+
+:: I added support for free links.  It's maybe not a bad
+   idea to use them for non ASCII characters.  There may
+   happen weird things: ÜmlautLink (won't work as oddmuse
+   thinks "Ü" is lower case), Weird∫Link and maybe some more.
+
+----
+
+: I'm interested in trying to get this to work with a [http://interwiki.sourceforge.net/cgi-bin/wiki.pl?WikiGateway WikiGateway] backend so as to be able to cleanly support different wiki engines (right now WikiGateway doesn't have comment field setting options, etc, but that will be added..). But I don't know elisp so I need some help :)
+
+: I started out by looking at swd-usemod-wiki-save in simple-wiki-definitions. I'm planning to add a function "swd-wikiclient-wiki-save" which calls the "wikiclient" program (part of WikiGateway).  
+
+: I started by changing the stuff inside "setq proc" (I haven't run it yet, so don't be surprised if there's syntax errors):
+
+<pre>
+(defun swd-wikiclient-wiki-save ()
+  "Save the current page with wikiclient."
+  (let ((url simple-wiki-url)
+        (save-func simple-wiki-save-function)
+        (link (simple-wiki-save-link))
+        (http-version (swd-http-version (swd-nick simple-wiki-url)))
+        (content-type (swd-http-coding (swd-nick simple-wiki-url)))
+        (headers) (proc))
+    (setq proc (shell-command (concat 
+			       "../wikiclient --type=usemod1 write "
+			       "http://interwiki.sourceforge.net/cgi-bin/wiki.pl"
+			       ":"
+			       simple-wiki-page
+			       )))
+    (with-current-buffer (process-buffer proc)
+      ;; same trick as in `simple-wiki-edit'.  See comment there.
+      (set (make-local-variable 'simple-wiki-url) url)
+      (set (make-local-variable 'simple-wiki-save-function) save-func)
+      (set (make-local-variable 'simple-wiki-time) nil)
+      (set (make-local-variable 'simple-wiki-content-type) content-type)
+      (set (make-local-variable 'simple-wiki-http-version) http-version))))
+</pre>
+
+: (I need to replace "http://interwiki.sourceforge.net/cgi-bin/wiki.pl" with whatever the config variable is with the current wiki's root URL)
+
+: So, first question: I need to write "buffer-string" to the STDIN of the "./wikiclient ...." shell command. How do I do this?
+
+: Second question: swd-usemodreal-wiki-save passed a "'swd-usemod-wiki-save-sentinel" to http-post. That sounds scary; do I need to bother with it (since I'm replacing http-post with wikiclient)? And, if so, what the heck is a sentinel and what should I do with it?
+
+: Thanks -- BayleShanks
+
+:: Hi Bayle, don't have much time to answer you but here are some hints:
+*  you don't have to set proc in your case as the elisp process is hiden in the shell-command in your case.
+* a sentinel is a function that gets called when the process state change (ie stop for exemple)
+* in your case you don't need a sentinel as you can execute the process synchronously, ie the function return when the process ends. (that is if you don't put an ampersand & in your command)
+* if you need to pass the current buffer as an input to the shell command
+use (shell-command-on-region (point-min) (point-max) "my command" ) 
+check the help on this function C-h f shell-command-on-region RET
+
+
+Thanks a lot for your help! Here's the working version (at least, I think it works). This is a patch to  simple-wiki-definitions.el which makes it use the external program "wikiclient" to save a page to the wiki. The next step is to allow the --type argument to assume different values, which will enable the program to interact with various different WikiEngines (whatever is supported by WikiGateway; currently OddMuse, UseMod, and MoinMoin):
+
+<pre>
+(defun swd-usemod-wiki-save ()
+  "Save the current page with wikiclient."
+  (let ((url simple-wiki-url)
+        (save-func simple-wiki-save-function)
+        (link (simple-wiki-save-link))
+        (http-version (swd-http-version (swd-nick simple-wiki-url)))
+        (content-type (swd-http-coding (swd-nick simple-wiki-url)))
+        (headers) (proc))
+    (shell-command-on-region 
+     (save-excursion (goto-line 2) (line-beginning-position)) 
+     (point-max) 
+     (concat 
+			       "wikiclient --type=oddmuse1 write "
+			       link
+			       ":"
+			       (simple-wiki-page)
+			       ))
+))
+</pre>
+
+----
+
+So, how to cookies for use with this mode? For editor
+passwords, I mean. I'm guessing I should use http-cookies.el, but how?
+-- [[bkhl]]
+:: well a cookie is some bytes added to the header, so you will have to find what to send, fix http-post because I think it doesn't send additional headers as it is now and then modify simplewikiedit so you can add your extra cookie header....
+
+----
+
+[new]
+I'm having trouble getting SimpleWikiEditMode to post data. I've got the following lines in my .emacs:
+<pre>
+(setq load-path (cons "/usr/local/http-emacs" load-path))
+(require 'simple-wiki-completion)
+(require 'simple-ecwiki) ;; copy of simple-emacswiki.el edited
+                         ;; for my oddmuse wiki
+(require 'simple-emacswiki)
+(add-hook 'simple-wiki-edit-mode-hooks 'pcomplete-simple-wiki-setup)
+(setq pcomplete-ignore-case t) ;; optional
+(add-hook 'simple-wiki-edit-mode-hooks 'turn-off-auto-fill)
+(add-hook 'simple-wiki-edit-mode-hooks
+	  (lambda ()
+	    (when url
+	      (rename-buffer (let ((simple-wiki-url url))
+			       (simple-wiki-page)) t))))
+
+</pre>
+I get the same end results regardless of whether or not the add-hook lines are commented out. The result is that on sending the updated page, the buffer changes to read:
+: Please go on to SandBox.
+
+The buffer name doesn't change, nor does the mode change at all. And when I browse out to the updated page--in this case SandBox--I find that I <em>do</em> have a new revision, but it is quite blank. If there had previously been data in the page prior to editing it with SimpleWikiEditMode it is wiped out.
+
+I'm using Gnu Emacs 21.3.1 on Debian. And I'm using the CVS packages from Savannah.
+
+[new]
+Does SimpleWikiEditMode work with the latest xemacs? does it work on windowsxp? At least the way I have it set up it seems like it can't fetch pages properly.  Has anyone made it work?  -JoeCoffey 
+
+[new]
+Does anybody interested in other wiki markup rules? I've slightly modified simple-wiki.el adding TWiki support and improving MediaWiki syntax highlighting. Also I'm going to add WikiText support (used by http://www.wikispaces.com). -- DmitriBrechalov
+
+[new]
+Doesnt work for me. when i type M-x swc-emacswiki-browseRET i get:
+Wrong type argument: listp, "close"
+
+this is what i load:
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/http-emacs")
+(require 'simple-wiki-completion)
+
+
+----
+
+See also SimpleWikiMode,
+HttpGet
+
+----
+CategoryHypermedia CategoryInterface

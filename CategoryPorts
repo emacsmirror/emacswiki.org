@@ -1,0 +1,42 @@
+Click on the title to list all pages related to porting to other operating systems.
+
+For various other platforms where compilation is required, see CategoryBuilding.
+Here are the pages for platforms / distributions with binary packages:
+
+* EmacsDistribution -- GnuEmacs source code for Unix and Windows NT.
+* EmacsImplementations -- A list of Emacs clones and implementations.
+* EmacsForDebian -- peculiarities of Emacs on Debian systems
+* EmacsForGentoo
+* EmacsCvsAndDebian
+* EmacsForWindows -- also known as NT Emacs
+* EmacsForDOS -- also works on Windows
+* EmacsForWinCE
+* For other Windows ports, see CategoryWThirtyTwo (W32).
+* GtkXEmacs
+* EmacsForOSTwo -- (OS/2)
+* EmacsForMacOS
+* EmacsForLinuxPPC
+* EmacsForGuardianOSS -- AKA Tandem or NSK
+* EmacsForZaurus -- compiles natively with pdaxrom
+* EmacsOnFreerunner
+* EmacsOnAndroid -- run emacs on your google phone
+
+How well alternate versions of
+emacs match the capabilities of Emacs and XEmacs is documented
+in ComparativeEmacsology.
+
+Here are some pages for those interested in building Emacs.
+
+* EmacsDirectories
+
+And here are some pages relevant for people using Emacs in a non-Unix
+environment.  Mostly these pages add EmacsLisp-only replacement for common
+unix tools:
+
+* WoMan -- the man program
+* EmacsShell -- a shell
+* [[Sorting]] -- Replacing the unix `sort' command, and beyond.
+* TarMode -- Operate on existing tar files.
+
+(Some people may find the NT EmacsFaq a good resource for non-Unix
+environments.  See OnlineResources.)

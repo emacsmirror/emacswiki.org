@@ -1,0 +1,11 @@
+<code>phutball.el</code> lets you play the game of Phutball (philosopher's football) over the net, by connecting to a game server.  The home page is
+
+: http://leechuck.de/phutball/
+
+And the source is at
+
+: http://leechuck.de/phutball/phutball.el
+: Lisp:phutball.el
+
+----
+CategoryGames

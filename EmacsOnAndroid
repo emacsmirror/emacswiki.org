@@ -1,0 +1,22 @@
+==Installing Debian on G1/G2 phone==
+
+There is a lot of online information for hacking HTC mobile phones on the [http://www.xda-developers.com/ xda-developers website]. 
+This includes the G1 and G2 google phones.
+One of these hacks is to get a full Debian distribution running, on which you can then install Emacs :)
+
+Check out the [http://wiki.xda-developers.com/index.php?pagename=HTC_Dream wiki] to get an overview of hacking the G1, and how to flash the ROM etc.
+
+First you need to [http://forum.xda-developers.com/showthread.php?t=442480 root] your phone.
+
+Then you can update your ROM to a newer version. There are lots of different ROM updates available [http://www.androidspin.com/ here]. I recommend installing [http://jf.odiness.com/ JesusFreke's ROMs] initially, and then upgrading to the latest stable cyanogen ROM. If you make an ext2/3 partition on your SD card, then when you install the [http://www.cyanogenmod.com/downloads cyanogen ROM] it will apply Apps2SD which allows you to install many more apps than normal. I also recommend using [http://forum.xda-developers.com/showthread.php?t=523558 cyanogen's recovery image] (which allows you to easily backup your phone).
+You will also need to install the latest radio image available [http://www.htc.com/www/support/android/adp.html here].
+
+Read how to install new images and updates [http://wiki.xda-developers.com/index.php?pagename=HTC_Dream_overview_and_useful_information#Updatingx20.thex20.ROM here].
+
+Then have a look at these simple [http://www.androidfanatic.com/cms/community-forums.html?func=view&catid=9&id=2248 instructions] on installing Debian (Note: you may need to alter the installer.sh script as mentioned in post #3566 [http://www.androidfanatic.com/cms/community-forums.html?func=view&amp;catid=9&amp;id=2248&amp;start=60#3566 here]).
+
+Once you have Debian installed you can just "apt-get emacs" to install emacs 22.
+
+
+----
+CategoryPorts

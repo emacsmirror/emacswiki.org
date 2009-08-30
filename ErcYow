@@ -1,0 +1,23 @@
+To annoy people on IRC with some pinhead wisdom add the following function to your ~/.emacs.el
+
+ (defun erc-cmd-YOW ()
+   (let ((yow (replace-regexp-in-string "\n" "" (yow))))
+     (erc-send-message yow)))
+
+
+Now you can just type /yow to send a yow line to the current channel.
+
+: If you want the message inserted, but not shown to you as a message, try:
+
+<pre>
+(defun erc-cmd-YOW (&rest ignore)
+  "Display some pinhead wisdom into the current ERC buffer.  I'd
+rather not see it messaged to me, just sent out."
+  (let ((yow-msg (replace-regexp-in-string "\n" "" (yow nil nil))))
+    (erc-send-message
+     (concat "{Pinhead wisdom} "
+             yow-msg))))
+</pre>
+
+----
+[[ERC]]

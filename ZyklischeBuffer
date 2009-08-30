@@ -1,0 +1,82 @@
+== Vorwort ==
+Funktionen zum zyklischen Durchschalten des Buffer-Stacks gibt es wie Sand am Meer.  Auf dieser Seite werden einige davon vorgestellt.
+
+== Siehe Auch ... ===
+* [[MTorus]]
+* swbuff.el (http://perso.wanadoo.fr/david.ponce/more-elisp.html)
+* bs.el (http://www.geekware.de/software/emacs/)
+* ibs.el (http://www.geekware.de/software/emacs/)
+* bubble-buffer.el (http://www.xsteve.at/prg/emacs/bubble-buffer.el):
+  Bei diesem Package bleibt die Reihenfolge der Buffer erhalten, da
+  nur ein Buffer der Bufferliste nach vorne geholt wird.
+
+== Buffer zyklisch durchschalten ==
+
+OK, wer benutzt schon gerne die Maus? Glücklicherweise haben wohl die meisten von uns ihrem Windowmanager oder Desktop beibringen können, die einzelnen Desktops (oder auch Viewports) per Tastatur-Shortcut zu wechseln. Aber was mit den Buffern im Emacs, von denen man manchmal etliche aufzuweisen hat. Natürlich kann man die Maus und das Buffersmenu benutzen, das man sich auch via
+
+            (global-set-key '(shift button2) 'modeline-buffers-menu)
+
+bzw.
+
+            (global-set-key [\S-mouse-2] 'mouse-buffer-menu)
+
+(getestet für GNU Emacs 21.3.1)         
+
+sehr viel leichter erreichbar machen kann als den winzigen Menueintrag. Oder mittels C-x b und dann mit Erweiterung arbeiten. 
+
+So sollen nun zwei kleine Funktionen vorgestellt werden, die das Durchscrollen der Bufferliste erlauben:
+
+     ;; Buffer wechseln wie click auf modeline, aber mit
+     ;; tasten...
+     (defun ska-previous-buffer ()
+       "Hmm, to be frank, this is just the same as bury-buffer.
+     Used to wander through the buffer stack with the keyboard."
+       (interactive)
+       (bury-buffer))
+
+     (defun ska-next-buffer ()
+       "Cycle to the next buffer with keyboard."
+       (interactive)
+       (let* ((bufs (buffer-list))
+           (entry (1- (length bufs)))
+           val)
+         (while (not (setq val (nth entry bufs)
+                  val (and (/= (aref (buffer-name val) 0)
+                       ? )
+                       val)))
+           (setq entry (1- entry)))
+           (switch-to-buffer val)))
+         
+
+Dabei ist die erste Funktion mehr als trivial und die zweite irgendwo aus den Quellen der Funktion, die bei einem Mausklick auf die linke oder rechte Hälfte der Modeline genau jenes zyklische Durchgehen der Liste bewirkt, gemopst. Legen wir nun diese Funktionen auf Shift-Cursor[links|rechts]:
+
+       ;; Buffer cycling like on modeline
+       (define-key global-map '(shift right)
+         'ska-next-buffer)
+       (define-key global-map '(shift left)
+         'ska-previous-buffer)
+
+oder
+
+       ;; Buffer cycling like on modeline
+       (define-key global-map [(shift right)]
+         'ska-next-buffer)
+       (define-key global-map [(shift left)]
+         'ska-previous-buffer)
+         
+
+
+=== Mit der Maus zwischen den Buffern springen ===
+
+XEmacs stellt zusätzlich die Funktionen <tt>mouse-bury-buffer</tt> und <tt>mouse-unbury-buffer</tt> bereit, die an Mausereignisse gebunden werden könne. Besitzer einer Radmaus können zusätzlich folgende Tastenbindungen definieren, um mit dem Mausrad zwischen den Buffern bei gedrückter alt/meta- und strg-Taste hin- und herzuspringen:
+
+
+    (define-key global-map [(meta control button4)] 'mouse-bury-buffer)
+    (define-key global-map [(meta control button5)] 'mouse-unbury-buffer)
+
+
+
+
+
+----
+KategorieBufferWechseln

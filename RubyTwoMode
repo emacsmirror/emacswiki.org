@@ -1,0 +1,84 @@
+There are two modes in ruby2shoes, fiction.el and screenplay.el  They are both
+available at http://sourceforge.net/projects/ruby2shoes and the help pages
+are always up to date on http://ruby2shoes.sourceforge.net.
+
+* The ruby2shoes project doesn't seem to exist at sourceforge anymore.
+* [Update 28/05/2008] Seems to have moved here now: http://pypi.python.org/pypi/ruby2shoes
+
+ruby2shoes is first about writing and the modes help you write fiction or
+screenplays in Emacs.  Then there are the Python scripts that convert
+the ruby2shoes .sp or .fc files to HTML, TeX, LaTeX, <nowiki>PostScript</nowiki>, and
+nicely formatted text.  And finally there is ruby2web that makes it almost
+wiki-easy to create a web site of your work.
+
+Here are the comment sections of the mode files so you can see what they do.
+
+<pre>
+
+fiction.el
+
+Major mode for writing novels, children's stories, and other fiction.
+Creates .fc files which are translated into LaTeX files by an external
+python script -ruby2latex.py-. 
+
+Begin with M-1, the fiction skeleton.  Skeletons repeat a prompt until
+they get an empty string - it's an Emacs thing.  Mode expects ONE-LINE
+title and chapter name.  But use the skeleton author-prompt for multiple
+authors and the contact-info-prompt for address, phone and email lines
+in the address paragraph of the title page.
+
+It is derived from outline.el which is derived from text.el. So many
+benefits of those modes remain in the keymap. Chapters, sections, and
+subsections are first-level outline elements and show their titles.  So
+you can use single-* lines to outline your work. The second character of
+these lines MUST be a space: `* outline stuff'. Mode also ignores lines
+beginning with pound-sign so that you can make notes within the
+script. M-n creates a new note-line.
+
+Mode needs to identify normal paragraphs; use M-Return to begin them.
+The only emphasis currently is underlining. To underline a word, begin
+it with an underbar: this underlined is _this. Make sure to use M-0 for
+forcing a line-break in verse and such and M-9 for forcing a new page.
+
+If the mode becomes sluggish, as it will with novels over half a meg, 
+turn off the global font lock in Emac's Edit menu.  The sluggishness comes
+from the way Emacs colors your fonts and turning off the color returns you
+to normal, lightning-like speed.
+
+screenplay.el
+
+Major mode for writing industry-standard Hollywood spec-scripts.
+Creates .sp files which are translated into LaTeX files by an external
+python script -ruby2latex.py-. The resulting screenplays are
+identical in format and appearance to the products of ScriptThing,
+FinalDraft, and other professional scriptwriting software.
+
+The .sp files can be either *movie* or *tv* (30 or 60 minute) scripts.
+The Play menu skeletons determine this, marking the first line of the
+file with the type for the benefit of the conversion script. Skeletons
+repeat a prompt until they get an empty string - it's an Emacs thing.
+Mode expects ONE-LINE title, series, and episode.  But use the skeleton
+author-prompt for multiple authors and the contact-info-prompt for
+address, phone and email lines in the address paragraph of the title
+page.
+
+Mode is WYSISWYG [S for sort-of] and uses auto-fill-mode to maintain
+margins. It is derived from outline.el which is derived from text.el. So
+many benefits of those modes remain in the keymap. Scenes --scene, int.,
+ext.-- are second-level outline elements. Mode ignores lines beginning
+in asterisks that have more than one token. So you can use single-*
+lines to outline your play. Mode also ignores lines beginning with # so
+that you can make notes within the script. M-n creates a new note-line.
+
+Mode tracks the last two speakers and M-Return alternates them. It also
+tracks the last exterior and last interior location.  Enter a period at
+the INT. or EXT. location-prompt to get the last location automatically
+--then hit M-0 for the dash-CONTINUOUS.  Cool, no?
+
+The only emphasis in a spec-script is underlining. To underline a word,
+begin it with an underbar: this underlined is _this.  LaTeX commands
+like \newpage take the form *\command on a line by themselves.  The
+backslash in the second position is the key.
+
+
+</pre>

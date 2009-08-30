@@ -1,0 +1,4 @@
+[[Lars_Brinkhoff]] said on emacs-devel:
+
+: I'm implementing Common Lisp symbols, packages, streams, readtables,
+  and the CL reader in Emacs Lisp.  Anyone else into that kind of stuff?

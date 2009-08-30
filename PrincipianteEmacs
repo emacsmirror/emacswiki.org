@@ -1,0 +1,63 @@
+==Introducción==
+
+Emacs trae consigo un tutorial interactivo que  le guiará paso a paso a través de una sesión de edición en la cual aprenderá los elementos básicos del uso de Emacs como editor de texto. Para realizarlo, proceda de la siguiente manera:
+* Utilice ##C-h t## (presione Control y h, suelte ambas teclas, y luego pulse t).
+* Si eso no resulta, intente mediante ##F1 t##.
+* Si eso no resulta tampoco, intente ##M x help-with-tutorial## (Pulse ##Esc##, suéltela, pulse ##x##, suéltela, escriba ##help-with-tutorial##, pulse ##Enter##).
+
+No, Emacs en realidad no es tan poco confiable - simplemente puede ser que usted esté usándolo bajo un entorno X, windows, consola, emulación de terminal, sesión de ssh, etc. El entorno puede modificar el modo en que secuencias como ##C-h## o ##F1## son interpretadas.
+
+Si desea leer el tutorial en un idioma distinto al Inglés, use el comando ##M-x help-with-tutorial-spec-language##. (en el momento se encuentran disponibles: bg, cn, cs, de, es, fr, it, ja, ko, nl, pl, ro, ru, sk, sl, sv, th, zh)
+
+Emacs viene autodocumentado de serie con un manual al que puede acceder usando el comando ##info##. Ya sea desde una terminal de los sistemas operativos GNU y Unix, o desde el propio Emacs, escribiendo ##M-x info RET## (esto quiere decir ##Meta- x## o ##ESC x##, la palabra "info", seguido de la tecla return), o escribiendo ##C-h i## (eso es Control-h seguido de la ##i##). Además usted puede encontrar en la web un manual interesante llamado 
+
+Si desea extender Emacs, puede hacerlo mediante EmacsLisp, o Elisp para abreviar. Puede aprender lo básico de la programación en Elisp leyendo la IntroducciónAEmacsLisp, y asi mismo se encuentra disponible un manual de referencia de Elisp en ReferenciaEmacsLisp.
+
+Emacs también viene provisto de archivo, ##refcard.tex## (y ##refcard.ps## en formato <nowiki>PostScript</nowiki>), que contiene la mayoría de secuencias de teclado para realizar edición básica. En todo caso, Emacs es conocido como el editor "auto-documentable", así que mientras que el //refcard// puede ser útil, uno debe aprender a hacer uso de ##info## o ##C-h i## para la mayoría de características complicadas de este editor. Si no tiene acceso a <nowiki>TeX</nowiki> o a algún tipo de intérprete <nowiki>PostScript</nowiki> como <nowiki>GhostScript</nowiki>, entonces puede encontrar una versión PDF de este documento, la tarjeta de XEmacs, y de la CalculadoraDeEscritorioAvanzada en http://refcards.com/ .
+
+Por último se pueden encontrar buenas referencias en la web como por ejemplo:
+* [http://www.rpublica.net/emacs/emacs.html Iniciación a la edición]
+* TheCraftOfTextEditing por CraigFinseth que describe cómo operan los editores internamente usando emacs como ejemplo.
+* [http://www.gnu.org/software/emacs/manual/ los manuales en linea de GNU Emacs]
+
+
+== Cuadro de Referencia para Principiantes ==
+
+Apertura de archivos: ##C-x C-f## -- luego escriba el nombre del archivo, puede usar la tecla ##TAB## para completamiento automático.
+
+Creación de nuevos documentos: ##C-x C-f## -- luego escriba el nombre de un archivo que no exista aun; use ##TAB## para completamiento.
+
+Guardar archivo: ##C-x C-s##
+
+Destruir búfer (cerrar archivo): ##C-x k##
+
+Separar ventanas (para ver dos archivos al mismo tiempo):
+ 
+* Una sobre la otra:         ##C-x 2##
+* Una al lado de la otra:    ##C-x 3##
+
+Unificar ventanas (maximizar una ventana): ##C-x 1##
+
+Cambiar de ventana (luego de haber hecho una separación): ##C-x o##
+
+Cambiar de búfer (si está editando múltiples archivos): ##C-x b##
+
+Menú de búferes (listado de búferes): ##C-x C-b##
+
+Ejecutar comandos de cuyo atajo por teclado se ha olvidado: ##M-x## -- luego escriba el nombre del comando, TAB puede ser usado para completación.
+
+Obtener ayuda: ##C-h##, luego cualquiera de las siguientes teclas:
+
+* ##k## - ¿qué hace cierta secuencia de teclado?
+* ##f## - ¿qué hace cierta función?
+* ##m## - ¿qué secuencias de teclado están definidas en este modo?
+* ##w## - ¿a qué teclas está asociada una función?
+* ##a## - ¿qué nombres de comando coinciden con cierta cadena?
+
+
+== Consejo Para Quienes Están Comenzando ==
+
+Muchas personas aprenden mejor mediante la práctica que simplemente consultando una lista de comandos y tratando de memorizarlos. Obtenga un archivo de texto de gran tamaño para realizar pruebas (haga una copia de respaldo si teme perderlo -- pero no tema, como se dará cuenta, en Emacs es muy difícil perder su trabajo gracias al uso de búferes). Eche un vistazo al Proyecto Gutenberg en http://www.promo.net/pg si necesita un archivo de texto para sus pruebas. (El Proyecto Gutenberg posee un sitio web dedicado a proveer libros de dominio público en formato electrónico).
+
+----
+CategoríaAyuda

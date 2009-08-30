@@ -1,0 +1,101 @@
+Here is a feed of the recent changes without Icicles updates.
+
+[http://pipes.yahoo.com/pipes/pipe.info?_id=SJfsml_13BG_oayK8jxBKg Yahoo! Pipe of EmacsWiki recent changes without Icicles]
+
+How about using this CGI script?
+This gets TXT feeds and converts into RSS feeds except icicles-related entry. -- [[rubikitch]]
+
+<pre>
+#!/usr/local/bin/ruby
+require 'rss/2.0'
+require 'time'
+require 'open-uri'
+
+def parse(block)
+  hash = {}
+  block.split(/\n/).map{|line| k, v = line.split(/: /,2); hash[k]=v}
+  hash
+end
+
+text = open("http://www.emacswiki.org/cgi-bin/wiki?action=rc;raw=1").read
+header, *items = text.split(/\n\n/)
+
+feed = RSS::Rss.new("2.0")
+
+header = parse(header)
+
+chan = RSS::Rss::Channel::new
+chan.title=header["title"]
+chan.description = header["description"]
+chan.link = header["link"]
+
+feed.channel = chan
+
+for i in items
+  i = parse(i)
+  next if i["title"] =~ /icicle/i
+  item = RSS::Rss::Channel::Item.new
+  item.title = i["title"]
+  item.link = i["link"]
+  author = item.author = i["generator"]
+  item.description = (i["description"] || "") + "<br><br>(by #{author})"
+  item.date = Time.parse(i["last-modified"])
+  
+  feed.channel.items << item
+end
+
+puts "Content-Type: application/xml"
+puts
+puts feed
+
+</pre>
+
+[new]
+
+Thanks!  I'd thought of doing something like that in Perl ("grepping"
+the RSS feed).  Unfortunately, most of the pain is in getting the
+result integrated with your RSS reader, e.g. running the script on a
+named pipe, serving it on a local http server, or whatever.  It's not
+a big deal, but everyone has to hack together their own little setup.
+Maybe it would be best if Drew agrees to mark all (or most of) his
+icicles edits as minor changes, so they won't show up by default. -- SeanO
+
+[new]
+As an Icicles addict, I do not agree that icicles-related edits are marked as minor changes. I want to keep track of Icicles.
+It would be best if EmacsWiki's RSS feed selects include/exclude word list such as:
+http://www.emacswiki.org/cgi-bin/wiki?action=rss&excludes=icicles
+
+-- [[rubikitch]]
+
+[new]
+
+Since DrewAdams is basically using the Emacs wiki as his own personal
+version control for icicles (while doing a wonderful job of
+shepherding its other content, I should add), I think marking Icicles
+edits as minor is entirely reasonable.  Just as with any other
+software package, the general public should be informed of *releases*,
+while addicts are welcome to grab the latest from CVS (or the minor
+edit feed).  But since OddMuse is written in Perl, my personal
+scripting language of choice, I'll look into modifying it to add
+custom feeds.
+
+And FWIW, it seems to me that icicles suffers from the general Adams
+disease of a profusion of text, many idiosyncratic defaults, some
+unusual requirements, and a steep learning curve.
+
+-- SeanO
+
+[new:rubikitch:2007-01-14 09:39 UTC]
+
+Actually I knew Icicles several years ago, but I was overwhelmed by too much text.
+Recently I settled down and tried Icicles.
+Unfortunately because my natural language is not English, reading whole Icicles docs took many days.
+Maybe I do not remember whole things because of my poor memory.
+I wrote IciclesTestCases for my study and I could understand Icicles basics fairly EASILY.
+It took much less time than reading docs and found that I wanted TEST CASES than much text to understand. Picture is worth a thousand words!
+And I found that I usually use only a few key bindings: Tab, S-Tab, M-h, Up, Down, and ESPECIALLY M-*.
+They are sufficient for me but I'm learning other key bindings.
+Because the default key bindings is hard to type for me, I rebinded frequently-used keys, shown in RubikitchIciclesConfiguration.
+While understanding from docs is hard, my Emacs life is very happy with Icicles!!
+
+If you are interested in Icicles, see RubikitchIciclesConfiguration and IciclesTestCases, then experiment above key bindings before reading whole docs. -- [[rubikitch]]

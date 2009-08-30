@@ -1,0 +1,161 @@
+I had big trouble in managing multiple projects. Mainly the desktop files were conflicted. The auto save files get accumulated in the source directory. Different modes were annoying when it was not required. I just thought I could fix it. I named it as Epr. Mean it as Emacs Project?
+
+This file creates a .epr file in ~/ and it takes two arguments (epr-new-project), the project name and the source directory where you have checked out the source.
+It creates the corresponding ~/.epr/epr-projname directory and uses this directory to store.
+
+* desktop files
+* autosave files
+* cscope files
+* etags
+* Auto-complete
+
+and also loads necessary modes which I use frequently for programming. When you do epr-unload-project it clears of all loaded modes, and files. But it also saves all the buffers using [http://www.emacswiki.org/cgi-bin/wiki/DeskTop desktop].
+
+ (defvar epr-root "~/.epr")
+ (defvar ep-proj-root "")
+ 
+ (defun epr-load-project (projname)
+  "This sets the initial directory for the project
+ and enable the necessary modes."
+  (interactive "sEnter Projname:")
+ 
+  
+  (if (not (check-configured))
+    (message  "Probably you have not configued epr")
+    
+    (setq epr-proj-root (concat epr-root "/epr-" projname))
+ 
+    (if (not (file-exists-p epr-proj-root))
+ 	(message "Project not available")
+    
+ ;;;Some common mods required by all projects
+      (tool-bar-mode 0)
+      (column-number-mode 1)
+      (hs-minor-mode 1)
+      
+      (desktop-save-mode 1)
+      (desktop-read epr-proj-root)
+      
+ ;;; Undo frame operations
+      (winner-mode 1)
+
+ ;;; Change the backup dir
+      (setq
+       backup-by-copying t
+       backup-directory-alist
+       (list (cons "." epr-proj-root))
+       delete-old-versions t
+       kept-new-versions 6
+       kept-old-versions 2
+       version-control t)
+      
+ ;;; Save the frame configuration
+      (load "~/.emacs.d/revive.el")
+      (autoload 'save-current-configuration "revive" "Save status" t)
+      (autoload 'resume "revive" "Resume Emacs" t)
+      (autoload 'wipe "revive" "Wipe Emacs" t)
+ ;;;	And define favorite keys to those functions.  Here is a sample.
+      (define-key ctl-x-map "S" 'save-current-configuration)
+      (define-key ctl-x-map "F" 'resume)      (desktop-change-dir epr-proj-root)
+      (define-key ctl-x-map "K" 'wipe)
+      
+      (load-cscope)
+      (which-function-mode t)
+      (cscope-set-initial-directory epr-proj-root )
+      (visit-tags-table (concat epr-proj-root "/TAGS"))
+
+      (load "~/.emacs.d/auto-complete.el")
+      (require 'auto-complete)
+      (global-auto-complete-mode t)
+      (define-key ac-complete-mode-map "\C-n" 'ac-next)
+      (define-key ac-complete-mode-map "\C-p" 'ac-previous)
+      )))
+ 
+ (defun new-project (projname proj-root)
+  (interactive "sEnter Project Name: \nDEnter Project Root directory:")
+
+  (if (not (check-configured))
+    (message  "Probably you have not configued epr")
+
+    (if (not (check-epr-root-created))
+	(progn (message "No epr root found, creating.")
+	       (make-directory epr-root t)
+	       ))
+    (setq epr-proj-root (concat epr-root "/epr-" projname))
+    (if (file-exists-p epr-proj-root)
+	(message "Project %s already exists" projname)
+      (make-directory epr-proj-root)
+      (shell-command (concat  "for var in "
+			      "{`find "
+			      proj-root
+			      " -type d`};"
+			      " do etags -a $var/*.c $var/*.h -o "
+			      epr-proj-root
+			      "/TAGS &>/dev/null; done;" ))
+      (setq default-directory proj-root)
+      (shell-command (concat "find "
+			     default-directory
+			     " -name *.cpp -or -name *.h -or -name *.c -or -name *.py > ./cscope.files"))
+      (shell-command "cscope -b -q -k")
+      (shell-command (concat "mv cscope.* " epr-proj-root)))))
+ 
+ (defun epr-unload-project()
+  (interactive)
+  (which-function-mode 0)
+  (unload-cscope)
+  (winner-mode 0)
+  (desktop-save epr-proj-root)
+  (desktop-clear)
+  (desktop-save-mode 0)
+  (hs-minor-mode 0)
+  (tool-bar-mode 1)
+  (column-number-mode 0)
+  (tags-reset-tags-tables)
+ )
+ 
+ (defun load-cscope()
+  (load "~/.emacs.d/xcscope.el")
+  (load "~/.emacs.d/xcscope+.el")
+  (define-key global-map [(f10)]		     'cscope-find-this-symbol-no-prompting-no-updates)
+  (define-key global-map [(f11)]		     'cscope-find-global-definition-no-prompting-no-updates)
+  (define-key global-map [(control f9)]	     'cscope-find-this-text-string-no-updates)
+  (define-key global-map [(control f10)]	     'cscope-find-this-symbol-no-updates)
+  (define-key global-map [(control f11)]	     'cscope-find-global-definition-no-updates)
+  (define-key global-map [(control f12)]	     'cscope-find-functions-calling-this-function-no-updates)
+  (define-key global-map [(control shift f9)]  'cscope-find-this-text-string)
+  (define-key global-map [(control shift f10)] 'cscope-find-this-symbol)
+  (define-key global-map [(control shift f11)] 'cscope-find-global-definition)
+  (define-key global-map [(control shift f12)] 'cscope-find-functions-calling-this-function)
+  (define-key global-map [(control ?*)]	     'cscope-pop-mark)
+ 
+ )
+ 
+ (defun unload-cscope()
+  (global-unset-key [(control ?*)])
+  (global-unset-key [(control shift f12)])
+  (global-unset-key [(control shift f11)])
+  (global-unset-key [(control shift f10)])
+  (global-unset-key [(control shift f9)])
+  (global-unset-key [(control f12)])
+  (global-unset-key [(control f11)])
+  (global-unset-key [(control f10)])
+  (global-unset-key [(control f9)])
+  (global-unset-key [(f11)])
+  (global-unset-key [(f10)])
+ )
+ 
+ (defun check-configured()
+  (boundp 'epr-root)
+ )
+
+ (defun check-epr-root-created()
+  (condition-case nil
+      (directory-files epr-root)
+    (error 
+     (message "No epr root found")
+     nil )))
+ 
+  
+ (global-set-key "\C-c\C-l" 'epr-load-project)
+ (global-set-key "\C-c\C-u" 'epr-unload-project)
+ (global-set-key "\C-c\C-n" 'epr-new-project)

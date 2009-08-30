@@ -1,0 +1,30 @@
+portrait:http://www.emacswiki.org/cgi-bin/wiki.pl/download/ChrisParsonsFace
+
+Hi there, I'm a returned emacs user...
+
+I'm known as [::ChrisMDP] on #emacs (when I very occasionally turn up).
+
+I used NTEmacs in a very basic way years ago, to write my third-year dissertation in LaTeX. When I moved jobs I was forced to use emacs as it was the only editor available on the server. I thought, "ok, time to learn how to use this properly then...". Never Looked Back. Now, I'm using NTEmacs to edit the files remotely through TrampMode and SSH tunnelling :)
+
+Since starting to use emacs again, slowly it's encroaching on all my previously Microsoft-by-default tasks. I'm now using PlannerMode heavily, which has finally freed me from the shackles of Outlook Tasks (shudder), and it's sucked me into using Gnus, which I'm now busy customising the hell out of.
+
+Hopefully going to learn elisp at some point, but I have to get my [http://www.edendevelopment.co.uk business] off the ground first.
+
+[new]
+Welcome to the wiki!  When visiting your website I noticed that many of the headlines come in two lines (eg. "About Us") 
+and the menu (presumably moved there via CSS) covers a corner of the second line.
+-- AlexSchroeder
+
+[new]
+Yes indeed, under firefox and IE it renders nicely, but not optimised for emacs viewage as of yet. The two line headers are caused by a mambo oddity. Thanks for the info though.
+-- ChrisParsons
+
+[new]
+Hm.  This is Firefox...  I'm on a 1024x768 monitor, however.  Maybe that explains why the headline comes in two lines...
+I can send you a screenshot if you want. -- AlexSchroeder
+
+[new]
+Having seen the screen shot, this is a problem when viewing the CSS using X fonts, I think. Sorry about that. -- ChrisParsons
+
+----
+CategoryHomepage

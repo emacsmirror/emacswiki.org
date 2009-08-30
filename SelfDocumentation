@@ -1,0 +1,56 @@
+Emacs is an [[extensible]] self-documenting editor.  A lot of the
+knowledge the user can be supplied with comes from documentation
+strings, or "DocStrings" among the code.  Emacs also provides
+hypertext documentation in InfoMode.  You can also query 
+many of Emacs's primitives and values with AproposMode.
+
+Ask Emacs itself about anything you see in it: a [[command]], a [[key sequence]], a menu item, or a term used in the documentation.
+
+Here's how you can use Emacs to teach you Emacs.
+
+# The key sequence `C-h k' provides help about a command.
+# Use `C-h k' to have Emacs tell you about the related help commands `C-h f', `C-h v', `C-h w', `C-h m', `C-h b', `C-h a', `C-h k', and more. That is, type `C-h k', then type a key sequence you want to learn about.
+# Use `C-h f', `C-h v', `C-h a', and so on to learn about everything Emacsian!
+
+You can access nearly ''all Emacs help'' through `C-h C-h' (command `help-for-help').
+
+Here are some hints:
+
+* <code>C-h a</code> -- look for a [[command]], unless preceded by `C-u' (`universal-argument'), in which case non-interactive functions are looked up too
+* <code>C-h i d m Emacs</code> -- open the EmacsManual in InfoMode; search the indexes using <code>i</code>, or search the complete text using <code>s</code>
+* <code>C-h k</code> -- followed by a [[key]] will tell you what that key accomplishes in the current context
+* <code>C-h c</code> -- shows, in the [[echo area]], the command bound to a given key
+* <code>M-x apropos-documentation</code> -- search the [[doc string]]s of functions and [[variable]]s -- see AproposMode
+* <code>C-h F</code> -- bring up the Emacs FAQ -- search using <code>i</code> and <code>s</code> (see also the online version: OnlineResources)
+* <code>M-x apropos</code> -- search all function and variable names -- see AproposMode
+* <code>C-h p</code> -- check whether there is an appropriate package to load
+* <code>C-h m</code> -- show help on the current mode
+
+If you can remember the key prefix of some command, typing
+<code>C-h</code> after the prefix shows you all commands with this
+prefix (unless the prefix and <code>C-h</code> together is bound to
+one of the commands).
+
+For instance, if you can remember that <code>C-x r</code> is the
+prefix for various [[register]] commands, then typing <code>C-x r
+C-h</code> will give you the full list of all commands beginning with
+<code>C-x r</code> (which also happens to include some for managing
+rectangles).
+
+''For more information on obtaining help in Emacs, see EmacsNewbie.''
+
+== Extending Self-Documentation ==
+
+A few tricks for extending the self-documentation of new functions and
+tools are :
+
+* Using `quoted' terms in DocStrings to identify related
+functions.  (from CodingStyle)
+
+* For Modes, refer to [[Manual:Keys in Documentation]]
+for hints on writing documentation strings so that `C-h m'
+(`describe-mode') shows the mode's keymap.
+
+----
+CategoryDocumentation
+CategoryHelp

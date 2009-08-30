@@ -1,0 +1,345 @@
+http://flymake.sourceforge.net/
+
+    Title:       Flymake -- an on-the-fly syntax checker for Emacs
+    Environment: GNU emacs, GNU make
+    Description: Performs on-the-fly syntax checks on the files being edited
+                 using the external syntax check tool (usually the compiler).
+                 Highlights erroneous lines and displays associated
+                 error messages.
+
+Taken from the home page:
+
+Flymake is implemented as an Emacs minor mode. It runs the syntax check tool in the background, passing it a temporary copy of the current buffer, and parses the output for known error/warning message patterns. Flymake then highlights erroneous lines (that is, lines for which at least one error or warning has been reported), and displays an overall buffer status in the mode line.
+
+Flymake's author is Pavel Kobiakov.
+
+----
+
+[http://www.blik.it/2007/02/21/syntax-checking-for-php-in-emacs/ PHP syntax checking for Flymake]
+
+----
+
+FlymakeRuby for Ruby
+
+
+----
+
+[[Flymake Fortran G95]]
+
+----
+
+FlymakeJavaScript for JavaScript
+
+----
+
+FlymakeActionscriptThree for Actionscript 3, more than just syntax checking; full incremental compilation
+
+----
+
+FlymakeHaskell for Haskell
+
+----
+
+FlymakeErlang for Erlang
+
+----
+
+FlymakeLua for Lua
+
+----
+
+FlymakeShell for shell programming. Default it uses Bash.
+
+----
+
+FlymakeElisp for EmacsLisp
+
+----
+
+If you are using the JavaDevelopmentEnvironment, check JdeeFlymake.
+
+- NascifAbousalhNeto
+
+(JdeeFlymake and the[http://www.emacswiki.org/cgi-bin/emacs/jde-eclipse-compiler-server.el alternative] did not work for me and after some hacking I came up with a workable situation: FlyMakeJdeeEclipse
+
+- jwickers
+
+I have also posted some instructions on how you can tweak the ECJ options to be a little more useful, and how to integrate this with another checker such as check style: http://jwickers.wordpress.com/2008/10/13/tweaking-flymake-for-java/
+
+If you are not using jdee, but still want to run flymake for java you can try to use [http://www.khelekore.org/~robo/ecj-flymake/|ecj flymake]
+----
+
+Flymake as shipped doesn't quite work right on Linux yet, but I sent a patch to the author so hopefully soon it'll work fine (it's just a buglet in the relative path handling). It works really well! You need some makefile magic though, this is what I used for the Wine build system:
+
+<pre>
+check-syntax:
+	$(MAKE) syntax-target SYNTAX="-fsyntax-only"
+
+syntax-target: $(SOURCES:.c=.o)
+</pre>
+
+-MikeHearn
+
+----
+
+In my simple project I use the following target in the Makefile:
+
+<pre>
+.PHONY: check-syntax
+check-syntax:
+	$(CXX) -Wall -Wextra -pedantic -fsyntax-only $(CHK_SOURCES)
+</pre>
+
+This works out-of-the-box with GNU Emacs 22.0.90.
+
+----
+
+Does anybody know how to change flymake so that it sticks all of its junk files (*_flymake.*) in /tmp? 
+
+For example, you're editing the source to a folder which you do not have write permissions on. Flymake breaks because it cannot save the _flymake file to the same directory as the source. Plus this leads to ugly _flymake files all over the place if it fails to delete them.
+
+----
+
+What about resource consumption ? Does it eat all the CPU or RAM ?
+How Emacs is running when this is activated ? Except these questions,
+it really seems a killer-app :) -- XavierMaillard
+----
+I've tried it (linux, stock emacs).. GREAT.. but.. I found that the buffer is only updated after I save the buffer, even if flymake is running gcc very often... is it normal?
+
+: No, it is supposed to run automatically -- VagnJohansen
+----
+
+If you have a mode that flymake does not support (and you can't/won't add flymake support for it), then you can use lmcompile.el/linemark.el from the CEDET tools (CollectionOfEmacsDevelopmentEnvironmentTools) to at least get automatic highlighting after compiles.
+
+Assuming that cedet is properly configured you can use
+
+<pre>
+  (require 'lmcompile)
+  (add-hook 'compilation-finish-functions 'vj-compilation-finish-highlight)
+  (defun vj-compilation-finish-highlight (buffer result-str)
+    (interactive)
+    (lmcompile-do-highlight))
+</pre>
+
+
+On my system the lmcompile-do-highligth call changes point to the last highlight entry (bug?). I had to use a delayed call:
+
+<pre>
+(defun vj-compilation-finish-highlight (buffer result-str)
+  (interactive)
+  (run-at-time "1 sec" nil 'lmcompile-do-highlight))
+</pre>
+
+- VagnJohansen
+
+----
+
+If you do not want to use mouse hover to check out the error messages, I've made a small modification that puts them in as overlays
+[http://graphics.tudelft.nl/~jorik/css/flymake.html]. You may need to patch it a bit to get it to run though.
+
+- JorikBlaas
+
+----
+
+Quickly show next err-menu:
+
+  ;; flymake
+  (defun my-flymake-show-next-error()
+    (interactive)
+    (flymake-goto-next-error)
+    (flymake-display-err-menu-for-current-line)
+    )
+
+  (local-set-key "\C-c\C-v" 'my-flymake-show-next-error)
+
+----
+To use in console/tty emacs you could try the following:
+
+    (defun next-flymake-error ()
+      (interactive)
+      (let ((err-buf nil))
+        (condition-case err
+            (setq err-buf (next-error-find-buffer))
+          (error))
+        (if err-buf
+            (next-error)
+            (progn
+              (flymake-goto-next-error)
+              (let ((err (get-char-property (point) 'help-echo)))
+                (when err
+                  (message err)))))))
+
+I bind to C-` (for cperl only at the moment) which suits the way I work. If you don't care about the whole next-error thing then something like:
+
+    (flymake-goto-next-error)
+    (let ((err (get-char-property (point) 'help-echo)))
+      (when err
+        (message err)))
+
+might be all you need. - PhilJackson
+
+Another solution worth mentioning made by Nafai can be found at [http://paste.lisp.org/display/60617].
+From the comment to this code:
+: Additional functionality that makes flymake error messages appear
+: in the minibuffer when point is on a line containing a flymake
+: error. This saves having to mouse over the error, which is a
+: keyboard user's annoyance
+
+== python-mode ==
+
+Is it possible to use pychecker with flymake? -- Anon.
+
+You can use it with pylint. See PythonMode
+
+----
+== LaTeX ==
+
+Is it possible to use latex with flymake on linux machines? I try it today and it seems that the mode works only under miktex.
+
+This mode works on linux machines with customization. The default program (texify) is incorrect, so I used [http://baruch.ev-en.org/proj/chktex/ chktex]:
+
+  (defun flymake-get-tex-args (file-name)
+    (list "chktex" (list "-q" "-v0" file-name)))
+
+If you use a recent version of LaTeX having the option "-file-line-error-style",
+you can use:
+
+  (defun flymake-get-tex-args (file-name)
+    (list "latex" (list "-file-line-error-style" file-name)))
+
+----
+Another setting to use [http://baruch.ev-en.org/proj/chktex/ ChkTeX]:
+After installing the checking tool, you can put the following .chktexrc on your home direcotry:
+
+<pre>
+# ~/.chktexrc
+OutFormat
+{
+ 
+# -v0; silent mode : change the default setting of -v0 as follows:
+"%f%b%l%b%c%b%k: %m!n"
+ 
+</pre>
+
+Then, write .emacs for flymake as follows:
+
+<pre>
+;; Flymake for LaTeX
+(defun flymake-get-tex-args (file-name)
+  (list "chktex" (list "-g0" "-r" "-l" (expand-file-name "~/.chktexrc") "-I" "-q" "-v0" file-name)))
+(push
+  '("^\\(\.+\.tex\\):\\([0-9]+\\):\\([0-9]+\\):\\(.+\\)"
+   1 2 3 4) flymake-err-line-patterns)
+</pre>
+-- ike
+----
+For Japanese, unfortunately, chktex doesn't understand 2byte code e.g. Japanese character.
+Trick: we can pass the tex file to the kakasi filter, then check it.
+
+Here is another solution for Japanese TeX users:
+
+<pre>
+;; Flymake for LaTeX
+(defun flymake-get-tex-args (file-name)
+  (list (expand-file-name "~/bin/flycheck_latex.sh") (list file-name)))
+(push
+  '("^\\(\.+\.tex\\):\\([0-9]+\\):\\([0-9]+\\):\\(.+\\)"
+   nil 2 3 4) flymake-err-line-patterns)
+</pre>
+
+<pre>
+#!/bin/sh
+
+real_file_name=$@
+file_name=`basename "$real_file_name"`
+tmp_file=`mktemp`
+tmp_dir=`mktemp -d`
+fake_name="$tmp_dir/$file_name"
+
+# assumed that the source code has EUC-JP encoding                                                                                             
+cat "$real_file_name" | kakasi -ieuc -Ha -Ka -Ja -Ea -ka -s > "$tmp_file"
+
+mkdir -p $tmp_dir
+cp $tmp_file $fake_name
+chktex -g0 -r -l ~/.chktexrc -I -q -v0 $fake_name
+
+# clean up                                                                                                                                     
+rm -fr "$tmp_file"
+rm -fr "$tmp_dir"
+</pre>
+
+--ike 
+
+----
+
+To use flymake with latex or pdflatex from the texlive distribution 
+on linux (as e.g., included in OpenSuse):
+
+  (defun flymake-get-tex-args (file-name)
+    (list "pdflatex" (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
+
+--Lars
+----
+
+== Ada ==
+
+The following works with Gnat:
+
+  ;; Flymake for Ada
+  (require 'flymake)
+  (defun flymake-ada-init ()
+      (flymake-simple-make-init-impl
+        'flymake-create-temp-with-folder-structure nil nil
+        buffer-file-name
+        'flymake-get-ada-cmdline))
+
+  (defun flymake-get-ada-cmdline (source base-dir)
+    `("gnatmake" ("-gnatc" "-gnatwa",(concat "-I" base-dir) ,source)))
+
+  (push '(".+\\.adb$" flymake-ada-init) flymake-allowed-file-name-masks)
+  (push '(".+\\.ads$" flymake-ada-init) flymake-allowed-file-name-masks)
+
+  (push '("\\([^:]*\\):\\([0-9]+\\):[0-9]+: \\(.*\\)"
+	  1 2 nil 3)
+        flymake-err-line-patterns)
+----
+
+== SCons/bjam ==
+
+- Can Flymake work if SCons/bjam is used instead of make? -- Tennis
+
+By providing a makefile which invokes SCons/bjam. Not perfect but a viable alternative until Flymake has more configuration options
+
+----
+
+== Mozart/Oz ==
+
+Here are instructions how to make flymake work with Mozart/Oz: 
+http://code.google.com/p/oz-code/downloads/list
+
+- WolfgangMeyer
+
+----
+
+== HTML ==
+
+Here are instructions how to make flymake work with HTML:
+
+	(defun flymake-html-init ()
+	  (let* ((temp-file (flymake-init-create-temp-buffer-copy
+	                     'flymake-create-temp-inplace))
+	         (local-file (file-relative-name
+	                      temp-file
+	                      (file-name-directory buffer-file-name))))
+	    (list "tidy" (list local-file))))
+	
+	(add-to-list 'flymake-allowed-file-name-masks
+	             '("\\.html$\\|\\.ctp" flymake-html-init))
+	
+	(add-to-list 'flymake-err-line-patterns
+	             '("line \\([0-9]+\\) column \\([0-9]+\\) - \\(Warning\\|Error\\): \\(.*\\)"
+	               nil 1 2 4))
+
+
+----
+CategoryProgrammerUtils CategoryModes

@@ -1,0 +1,28 @@
+See also: HowmMode, PlannerMode, EduardoOchs, DavidOtoole
+----
+
+Hey Eduardo, 
+
+I've been looking into HowmMode. I'm still a bit confused because 99%
+of the apparently massive/growing howm-wiki-verse is in Japanese so I
+can't read it. But here is my initial take.
+
+Howm is like PlannerMode turned inside-out. Howm is what I have always
+wanted Planner to be! 
+[new]
+
+I tried out HowmMode a while back, but decided to stick with
+PlannerMode. (And it wasn't just because there was tons of
+documentation and code in English...) =) - SachaChua
+
+|| PlannerMode || HowmMode ||
+|| Major mode automatically detected in configured directories || Minor mode applicable to all buffers ||
+|| Extensive user and developer documentation (texi and in-source) from a quick start tutorial to descriptions of advanced features. || Plenty of Japanese information on the Net. Slowly growing collection of English webpages. Lack of docstrings makes it difficult to use M-x apropos to find relevant functions when coding. Workaround: read the whole source code to find out what's available, or make reasonable guesses as to function names. || 
+|| Create a task or note from anywhere and associate it with defined project files. Automatic context-sensitive hyperlinked annotations when you create a task or note. Planner minimizes distraction by prompting for data in the minibuffer and keeping the current buffer intact. Verbose prompts lessen the need to remember syntax. || Create a note from anywhere. Everything is a note - one command to remember. Replaces current buffer when creating a note. Minimalist syntax for marking tasks and schedule needs to be remembered and manually entered. Workaround is easy to code, but is not yet part of the distribution.
+|| Tweakable task sorting (manual, date, status, plan, score, importance/urgency, grouping rules, plugin) || Magic sorting (Todo: floats slowly. Deadline: floats rapidly when the date is approaching.) ||
+|| Links are active in special planner-mode files usually stored in your ~/Plans directory. You can hyperlink out to darn near everything, but hyperlinking from arbitrary files is not yet supported. || links are bi-directional (i.e. true hypertext!) and can reside in the files linked to, thereby marking a position of a file! Sort of like find-fline, but there is a back-link reference at the point you land upon. Any text file in any format (!) can contain links... even files you can't edit, I think! Keywords will be highlighted in other files when you use "come-from" links. If you can edit the file, you can also create "go-to" links. Automatic word-oriented hyperlinks leading to a page. ||
+|| One file per topic or date holds all of the data (notes, tasks, appointments, links) associated with that topic or date. Data is automatically copied and updated if you use functions to create, edit or delete data. Topic-related data is easy to process using external programs; little reliance on Emacs. || One file per note. Each item is stored once and only once. Dynamic search queries reassemble the data into summary views such as the most recent / pending items on a topic, or the most recent items in a bunch of topics organized dynamically, not the whole big page. External programs can search through all files to find related notes. ||
+|| Grep searches through a Planner directory for keywords. Specialized searches and summaries are easy to write using Emacs Lisp, and task and note search/summary code is included in the Planner distribution.  || Search-based browser can pull together info from lots of different files into a single color-coded display. ||
+|| Publish hyperlinked HTML (authenticated views possible with planner-authz) and RSS to share your tasks and notes with other people. Muse support allows publishing to a number of other formats || Personal wiki not for publishing ||
+|| Clock in and out of tasks and generate detailed per-project time reports || Write an external script for this ||
+|| Automatic note creation from CVS commits and other sources of information || Can be added ||

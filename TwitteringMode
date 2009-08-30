@@ -1,0 +1,86 @@
+== Description ==
+
+twittering-mode.el is a Twitter client
+
+[[image:TwitteringModeScreenshot]]
+
+Github page: http://github.com/hayamiz/twittering-mode/tree/master
+
+##git clone git://github.com/hayamiz/twittering-mode.git##
+
+== Basic configuration ==
+
+Do the following in your .emacs file for a quick start.
+
+ (load "~/.emacs.d/twittering-mode.el")
+ (require 'twittering-mode)
+ (setq twittering-username "twitter user name here")
+ (setq twittering-password "twitter password here") ; This is optional
+
+If you don't set your password it will be asked to you when you run twittering-mode
+
+== Basic key bindings ==
+
+* `C-c C-s' to write a tweet (`twittering-update-status-interactive')
+* `j' to go to the next tweet (`twittering-goto-next-status')
+* `k' to go to the previous tweet (`twittering-goto-previous-status')
+* `C-m' (Enter key) to reply to the current tweet or to open the URL under the cursor (`twittering-enter')
+* `C-c C-m' (C-c Enter) to retweet the current tweet (`twittering-retweet')
+* `C-c C-f' to read your friends' timeline (`twittering-friends-timeline')
+* `C-c C-r' to read your replies (`twittering-replies-timeline')
+* `C-c C-u' to read your own timeline (`twittering-user-timeline')
+* `g' to refresh the current timeline (`twittering-current-timeline')
+* `v' to view the timeline of the user under the cursor (`twittering-other-user-timeline')
+* `V' to view the timeline of any user (`twittering-other-user-timeline-interactive')
+
+== Customizing your key bindings ==
+
+You can use `twittering-mode-hook' to customize your configuration. This example shows how to define a few key bindings:
+
+ (add-hook 'twittering-mode-hook
+           (lambda ()
+             (local-set-key "f" 'twittering-friends-timeline)
+             (local-set-key "r" 'twittering-replies-timeline)
+             (local-set-key "u" 'twittering-user-timeline)
+             (local-set-key "w" 'twittering-update-status-interactive)))
+
+== Other useful options ==
+
+ (twittering-icon-mode)                       ; Show icons (requires wget)
+ (setq twittering-timer-interval 300)         ; Update your timeline each 300 seconds (5 minutes)
+ (setq twittering-tmp-dir "/path/to/tmp/dir") ; Directory to store buddy icons
+
+twittering-mode also provides hooks that are run when new tweets arrive. This example calls notify-send (included in the libnotify package) to display a message when new tweets arrive:
+
+ (add-hook 'twittering-new-tweets-hook (lambda ()
+   (let ((n twittering-new-tweets-count))
+     (start-process "twittering-notify" nil "notify-send"
+                    "-i" "/usr/share/pixmaps/gnome-emacs.png"
+                    "New tweets"
+                    (format "You have %d new tweet%s"
+                            n (if (> n 1) "s" ""))))))
+
+== Discussion ==
+[new]
+RichardRiley : What packages are needed for icon support? Also, wouldnt
+
+
+      (define-key km "q" 'delete-window)
+
+
+be a good addition?
+
+[new]
+For icon support, try adding ##(twittering-icon-mode)## to your ##.emacs## -- AlbertoGarcia
+
+[new]
+You need wget for icon support on Linux. it can take a while to download icons so be patient - RichardRiley.
+
+[new]
+That's a bug IMHO. The problem is that icons are downloaded while the timeline is being displayed on screen, so the first time a new user appears in your timeline, you won't see their icon because it's still being downloaded. You have to wait till the next refresh (or press "g" to force it) -- AlbertoGarcia.
+
+[new]
+I'm just wondering if I have missed something obvious. The default is to see your friends tweets. But how do I tweet to my tweet account from there? Currently I have to  go to my timeline (C-c C-u)) and then hitting return : is there a quicker way? -- RichardRiley.
+
+----
+See also: [[Twitter]] [[Identica-mode]]

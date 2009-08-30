@@ -1,0 +1,13 @@
+A trie stores data associated with "strings" (not necessarily the string data type; any ordered sequence of elements will do). It stores them in such a way that both storage size and data lookup are reasonably space- and time- efficient, respectively.
+
+But, more importantly, advanced string queries are also very efficient, such as finding all strings with a given prefix, or finding all strings matching a regular expression, with the results returned in alphabetical or any other sort-order, returning only the first few results if so desired.
+
+Requires the [[Heaps]], TaggedNFA, [[Queues]], and [[AVLtrees]] packages. The latest version (0.2.2, released February 2009) can be obtained from:
+
+* Trie package download: http://www.dr-qubit.org/download.php?file=predictive/trie.el
+* Web-site: http://www.dr-qubit.org/emacs.php#structures
+
+-- TobyCubitt
+
+----
+CategoryCode

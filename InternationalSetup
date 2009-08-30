@@ -1,0 +1,43 @@
+= Setting the language environment =
+
+The first thing to make sure is that your LanguageEnvironment is set
+up correctly.
+
+= Making sure the appropriate fonts are there =
+
+The second thing is to make sure you have all the fonts installed.  A
+good test is to check whether the HELLO file displays correctly
+(especially using the characters you are interested in).  Use `C-h h'
+to display the HELLO file.
+
+If that does not work, you will have to get the missing
+InternationalFonts.
+
+= Testing that Emacs is able to switch coding systems =
+
+Next, you should check that you are able to switch coding systems at will, even if you intend to use mostly one character set (this is an UTF-8 world out there, better be prepared to it!). All modern Emacsen can use a different coding system for every buffer, but the feature might be blocked by the contents of your InitFile.
+
+1. Create an empty file (with Emacs itself or otherwise).
+
+2. Quit Emacs and restart it anew.
+
+3. Type `C-x <RETURN> c', type in "utf-8" and `<RETURN>', then `C-x C-f' and enter the adequate path to open the empty file created above. The lower left hand corner of the current frame should display something like <code>U:</code>, indicating that the current file is interpreted in Unicode by Emacs.
+
+4. Type a few characters in the buffer, and make sure to mix characters from inside the basic ASCII range (e.g. `A', '2') with others outside it (e.g. accented Western letters like `é', Chinese characters...)
+
+5. Save the buffer and close it. Now repeat step 3, but instead of "utf-8" type "latin-1" when asked. You should now see <code>1:</code> in the lower left hand corner of the frame, indicating that the buffer is now interpreted as Latin-1 by Emacs.
+
+Latin-1 is a single-byte character set unlike UTF-8, so what you are (or should be) looking at now is sort of a "source dump" of your utf-8 file created at step 4: characters from the basic ASCII range are unchanged, and characters outside it are translated into multiple bytes that Emacs now renders as different characters from the latin-1 range in a way you may already be all too familiar with (e.g. "é" becomes "Ã©").
+
+If the above test does not work, you will have to do one or several of the following:
+
+* upgrade your version of Emacs (21.2.1 works) or XEmacs (21.4.15 works);
+* comment out any code in your InitFile that talks about <code>standard-display-european</code>;
+* insert the following code in your InitFile:
+
+    (setq-default enable-multibyte-characters 1)
+
+If it works, then congratulations! You just learned just enough to start using Emacs in a multi-lingual fashion. Namely, the command `C-x <RETURN> C' followed by the selecting of a coding system, will impose said coding system onto the next command you type (typically `C-x C-f' a.k.a find-file, but this could actually be anything else). Take the time to get used to it, then visit the rest of the CategoryInternationalization page for more tips and tricks.
+
+----
+CategoryInternationalization

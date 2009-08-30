@@ -1,0 +1,242 @@
+Je suis un récent utilisateur d'Emacs (environ 6 mois de pratique); eh oui ! Personne n'est parfait ;) Je vais simplement partager ici mon .emacs.el en attente d'autres ressources à vous faire part. Je pense que celui-ci n'est pas dénué d'intêret et pourrait servir à certain d'entre vous.
+J'utilise Emacs principalement pour la programmation (C, PHP, Elisp, Lua...) et pour l'édition de texte; si mon (win)modem était reconnu sur Linux je ne manquerait pas de l'utiliser pour les lecture de mails mais ce n'est pas le cas.
+
+apropos .emacs.el: Les commentaires sont en anglais (et pas toujours correct) si vous voyez une faute, ci-(dessus|dessous), n'hésitez pas à les corriger, merci. Faîtes attention, j'ai classé le code en différentes sections (J'ai séparé p. ex. l'initialisation de variables des définitions de fonctions) Ainsi, une portion de code nécessite peut-être une variable précedemment définis, étudiez bien le code pour éviter toutes bévues de recopiage. Ce .emacs.el a été amputé de quelques parties car elles nécessitait d'externes dépendances.
+
+== Mon .emacs.el en anglais ==
+<pre>
+;;; .emacs - Emacs's configuration of Mickaël Menu
+;;
+;; Copyright (c) 2004-2005 by Mickaël Menu
+;;
+;; This file is part of Emacs's configuration of Mickaël Menu.
+;; It was generated on 2004-12-29 02:12 pm
+;; .emacs.el - Main configuration
+;;
+;; This program is free software. You can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2 of the license.
+;;
+;; Authors: Mickaël Menu <bloodshed@xosc.org>
+
+;;;;;;;;;;;;;;;;;;;;;;
+;; Global Variables ;;
+;;;;;;;;;;;;;;;;;;;;;;
+
+;; Personal folder of Elisp files.
+(if (file-exists-p "~/.emacs.lisp/")
+    (setq personal-elisp-directory "~/.emacs.lisp")
+  (setq load-path (cons personal-elisp-directory load-path))
+)
+
+;; Personal folder of Emacs's backup files.
+(if (file-exists-p "~/.emacs.backup/")
+    (setq personal-backup-directory "~/.emacs.backup/")
+  (setq backup-directory-alist '((".".personnal-backup-directory)))
+)
+
+; Size of window in windows managers.
+(if window-system
+    (setq initial-frame-alist '((top . 5) (left . 5) (width . 100) (height . 60)))
+)
+
+;; Block file's auto-save and file's backup.
+;(setq auto-save-default nil)
+(setq make-backup-files nil)
+
+;; Turn off the bell.
+(setq visible-bell t)
+
+;; Defines time format in modeline.
+(setq display-time-string-forms
+      '((format "%s:%s" 12-hours minutes)
+        (if mail "" load)))
+
+;; Defines default titlebar of frames.
+(setq frame-title-format '(buffer-file-name "%f@emacs" "%b@emacs"))
+
+;; Hide startup message.
+(setq inhibit-startup-message t)
+
+;; Put new buffers in text mode.
+(setq default-major-mode 'text-mode)
+
+;; Joins files's type with mode.
+(setq auto-mode-alist
+      (append(list
+              (cons "\\.c\\'" 'c-mode)
+              (cons "\\.h\\'" 'c-mode)
+              (cons "\\.xml\\'" 'xml-mode)
+              (cons "\\.xhtml\\'" 'html-helper-mode)
+              (cons "\\.html\\'" 'html-helper-mode)
+              (cons "\\.php\\'" 'php-mode)
+              (cons "\\.php3\\'" 'php-mode)
+              (cons "\\.php4\\'" 'php-mode)
+              (cons "\\.php5\\'" 'php-mode)
+              (cons "\\.el\\'" 'emacs-lisp-mode)
+              ) auto-mode-alist))
+
+;; No newlines if cursor is past end of file.
+(setq next-line-add-newlines nil)
+
+;; Always end a file with a newline
+(setq require-final-newline t)
+
+;; Ignores the case during completion.
+(setq completion-ignore-case t)
+
+;; Changes tabs to spaces.
+(setq-default indent-tabs-mode nil)
+
+;; Defines tab size.
+(setq-default tab-width 4)
+
+;; Defines max characters on a line.
+(setq-default fill-column 80)
+
+;; Paste at point (cursor), not at mouse pointer.
+(setq mouse-yank-at-point t)
+
+;; Defines default shell.
+(setq shell-file-name "/bin/sh")
+(setq tex-shell-file-name "/bin/sh")
+
+;;;;;;;;;;;;;;;;;;;;;;
+;; Load and Require ;;
+;;;;;;;;;;;;;;;;;;;;;;
+
+;; Classical requires.
+(require 'paren)
+(require 'zone)
+
+;;;;;;;;;;;;;;;;;;;;;
+;; Global Settings ;;
+;;;;;;;;;;;;;;;;;;;;;
+
+;; Use ISO 8859.
+(set-language-environment "latin-1")
+(custom-set-variables '(keyboard-coding-system 'iso-latin-1))
+(standard-display-european t)
+
+;; Highlight source code.
+(global-font-lock-mode t)
+
+;; Display parens.
+(show-paren-mode t)
+
+;; Display line number.
+(line-number-mode t)
+
+;; Display column number.
+(column-number-mode t)
+
+;; Display time in the mode-line.
+(display-time)
+
+;; Replace selection by typed text.
+(pending-delete-mode)
+
+;; Hide selection.
+(transient-mark-mode nil)
+
+;; Hide toolbar.
+(tool-bar-mode nil)
+
+;; Hide menubar.
+(menu-bar-mode nil)
+
+;; Hide scrollbar.
+(scroll-bar-mode nil)
+
+;; Activate auto-compression mode.
+(autoload 'jka-compr-installed-p "jka-compr")
+(if (not(jka-compr-installed-p))
+    (auto-compression-mode)
+)
+
+;; Activate auto-fill mode.
+(auto-fill-mode t)
+
+;; Make all "yes or no" prompts show "y or n" instead.
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; Make new buffers in text mode.
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+;; Activate file's path completion in buffer.
+(autoload 'comint-dynamic-complete-filename "comint" "" t)
+
+;; Drive out the mouse when it's too near to the cursor.
+(mouse-avoidance-mode 'animate)
+
+;; Activate zone.
+(zone-when-idle 600)
+
+;; Start Emacs's server.
+(server-start)
+
+;;;;;;;;;;;;;;
+;; Set Keys ;;
+;;;;;;;;;;;;;;
+
+;; Goto line.
+(global-set-key (kbd "C-c g") 'goto-line)
+
+;; Print line number.
+(global-set-key (kbd "C-c l") 'what-line)
+
+;; Display current word's manpage.
+(global-set-key (kbd "C-c m") (lambda() (interactive) (manual-entry(current-word))))
+
+;; Highlight a word.
+(global-set-key (kbd "C-c h") 'highlight-regexp)
+
+;; Start compile command.
+(global-set-key (kbd "C-c c") 'compile)
+
+;; Go to match start or end brace
+(global-set-key (kbd "C-c b") 'backward-sexp)
+(global-set-key (kbd "C-c f") 'forward-sexp)
+
+;; Regexp interpreter.
+(global-set-key (kbd "C-c %") 're-builder)
+
+;; Activate file's path completion in buffer.
+(global-set-key [S-iso-lefttab] 'comint-dynamic-complete-filename)
+
+;; Classical key bindings.
+(global-set-key [home]      'beginning-of-buffer)
+(global-set-key [end]       'end-of-buffer)
+(global-set-key [backspace] 'delete-backward-char)
+(global-set-key [delete]    'delete-char)
+
+;;;;;;;;;;;;;;;;;;;
+;; Mode Settings ;;
+;;;;;;;;;;;;;;;;;;;
+
+;;; c-mode
+(add-hook 'c-mode-common-hook
+          (function
+           (lambda ()
+             ;; New line after `;){}...' characters.
+             (setq c-auto-newline t)
+
+             ;; Defines `gnu' style for C language.
+             (c-set-style "gnu")
+             )))
+
+;;;;;;;;;;;;;;;;
+;; Appareance ;;
+;;;;;;;;;;;;;;;;
+
+(set-background-color "black")
+(set-foreground-color "white")
+(set-face-background 'modeline "black")
+(set-face-foreground 'modeline "white")
+(set-face-foreground 'region "black")
+(set-face-background 'region "white")
+</pre>
+
+----
+
+CategoriePagePerso | CategoryHomePage

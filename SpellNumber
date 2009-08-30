@@ -1,0 +1,346 @@
+This page describes package Lisp:spell-number.el, by ViniciusJoseLatorre.
+
+: .:: ''v3.1.1'' ::.
+
+
+== About spell-number ==
+
+This package is used to spell out an integer or currency in words.  It is
+multi-language and multi-country.
+
+To use Lisp:spell-number.el, insert in your ##~/.emacs##:
+
+       (require 'spell-number)
+
+
+== Commands ==
+
+`spelln-integer-in-words' spells out an integer in words in the language
+specified by `spelln-language'.
+
+`spelln-currency-in-words' spells out a currency in words in the language
+specified by `spelln-language' and in the country specified by
+`spelln-country'.
+
+`spelln-numeric-string-in-words' and `spelln-currency-string-in-words'
+accept numeric string as parameter.
+
+
+== Variables ==
+
+`spelln-language-database' and `spelln-currency-database' contains language
+information for spelling.
+
+
+== Options ==
+
+`spelln-zero-cents' indicates if ##" and zero cents"## should be spelled.
+
+`spelln-and-p' indicates if ##" and "## should be spelled.
+
+`spelln-comma-p' indicates if ##", "## should be spelled.
+
+`spelln-gender-default' specifies the default gender to be used when there
+is no neuter gender.
+
+`spelln-period-character' specifies the character to separate periods.
+
+`spelln-decimal-character' specifies the decimal point character.
+
+`spelln-number-customize' customizes ##spell-number## options.
+
+
+== Examples ==
+
+Numeric examples:
+
+  (setq spelln-language 'english-us)
+  (spelln-integer-in-words 121121)
+ ==> "one hundred twenty-one thousand, one hundred twenty-one"
+
+  (setq spelln-language 'english-us)
+  (setq spelln-country 'united-states)
+  (spelln-currency-in-words 1121.21)
+ ==> "one thousand, one hundred twenty-one dollars and twenty-one cents"
+
+You can also use numeric strings:
+
+  (setq spelln-language 'english-us)
+  (setq spelln-period-character ?,)
+  (spelln-numeric-string-in-words "121,121")
+ ==> "one hundred twenty-one thousand, one hundred twenty-one"
+
+  (setq spelln-language 'english-us)
+  (setq spelln-country 'united-states)
+  (setq spelln-period-character ?,)
+  (setq spelln-decimal-character ?.)
+  (spelln-currency-string-in-words "1,121.21")
+ ==> "one thousand, one hundred twenty-one dollars and twenty-one cents"
+
+  (setq spelln-language 'japanese)
+  (setq spelln-period-character ?,)
+  (spelln-numeric-string-in-words "978,4510,2837,0000,4037")
+ ==> "kyûhyaku nanajû hakkei yonsen gohyaku jutchô nisen happyaku sanjû nanaoku yonsen sanjû nana"
+
+The maximum numeric string that ##spell-number## gets to spell out in words is:
+* With 3 digits per period: ##"999,999,999,999,999,999"##
+: (danish, dutch, english-gb, english-us, esperanto, finnish, french-ch,
+french-fr, german, italian, norwegian, portuguese-br and swedish)
+* With 4 digits per period: ##"9999,9999,9999,9999,9999"##
+: (japanese)
+* With 6 digits per period: ##"999999,999999,999999,999999,999999"##
+: (catalan, english-eur, portuguese-pt and spanish)
+
+Below is the answer given by ##spell-number## to numeric strings above the
+maximum value.
+
+  (setq spelln-language 'english-us)
+  (setq spelln-period-character ?,)
+  (spelln-numeric-string-in-words "2,000,000,000,000,121,121")
+ ==> "two ?10^18? , one hundred twenty-one thousand, one hundred twenty-one"
+
+From Emacs Lisp Reference Manual:
+
+: The range of values for an integer depends on the machine.  The minimum
+range is ##-268435456## to ##268435455##
+(29 bits; i.e., ##-2**28## to ##2**28 - 1##),
+but some machines may provide a wider range.
+
+: The precise range of floating point numbers is
+machine-specific; it is the same as the range of the C data type
+`double' on the machine you are using.
+
+
+== Gender Engine ==
+
+The gender engine is designed for spelling out number and currency.  It's
+beyond the scope of gender engine to handle general gender in all languages.
+
+See the following examples of gender usage:
+
+[new]
+. In english (US): (only `neuter')
+
+   (spelln-integer-in-words 101)
+	 ==> "one hundred one"
+			  `neuter'
+   (spelln-currency-in-words 101.01)
+	 ==> "one hundred one dollars and one cent"
+			  `neuter'	  `neuter'
+
+[new]
+. In german (DE): (`neuter' is used to express numeral only)
+
+   (spelln-integer-in-words 101)
+	 ==> "einhundertundeins"
+			   `neuter'
+   (spelln-currency-in-words 101.01)
+	 ==> "einhundertundeine Mark und ein Pfennig"
+			   `feminine'	 `masculine'
+
+[new]
+. In portuguese (BR): (no `neuter')
+
+   (spelln-integer-in-words 101)
+	 ==> "cento e um"
+		      `masculine'
+   (spelln-currency-in-words 101.01)
+	 ==> "cento e um reais e um centavo"
+		      `masculine' `masculine'
+
+[new]
+. In spanish (ES): (no `neuter', but it's used to express numeral only)
+
+   (spelln-integer-in-words 101)
+	 ==> "ciento uno"
+		     `neuter'
+   (spelln-currency-in-words 101.01)
+	 ==> "ciento una pesetas y un céntimo"
+		     `feminine'	   `masculine'
+
+As you can note from the examples above, there are cases where the `neuter'
+gender used by ##spell-number## differs from the usual way that `neuter' gender
+is used in a language.  This is a trick used to spell out numbers correctly.
+
+
+== Languages & Countries ==
+
+The following languages are supported:
+
+: catalan, danish, dutch, english-eur, english-gb, english-us, esperanto,
+finnish, french-fr, french-ch, german, italian, japanese, norwegian,
+portuguese-br, portuguese-pt, spanish and swedish.
+
+The following countries are supported:
+
+: andorra-french, andorra-spanish, antigua-and-barbuda, argentina, australia,
+austria, bahamas, barbados, belgium, belize, benin, bolivia, brazil, brunei,
+burkina-faso, burundi, cameroon, canada, cape-verde central-african-republic,
+chad, chile, colombia, comoros, congo, costa-rica, cuba, cyprus, denmark,
+djibouti, dominica, dominican-republic, ecuador, el-salvador,
+equatorial-guinea, fiji, finland, france, gabon, germany, grenada, guatemala,
+guinea, guinea-bissau, guyana, haiti, honduras, ireland, italy, ivory-coast,
+jamaica, japan, kenya, kiribati, liberia, liechtenstein, luxembourg,
+madagascar, mali, mexico, monaco, mozambique, namibia, nauru, netherlands,
+new-zealand, nicaragua, niger, norway, panama, paraguay, peru, philippines,
+portugal, rwanda, sao-tome-and-principe, senegal, singapore, solomon-islands,
+somalia, south-africa, spain, st-kitts-and-nevis, st-lucia,
+st-vicent-and-grenadines, sweden, switzerland, taiwan, tanzania, togo,
+trinidad-and-tobago, tuvalu, uganda, united-kingdom, united-states, uruguay,
+venezuela and zimbabwe.
+
+
+== Number in Several Language ==
+
+To see example of numbers (until million) in several languages, see the URL:
+
+: http://www.travlang.com/languages/
+
+Also, it was used:
+
+: Webster's New World College Dictionary
+: %%MacMillan%%, USA, Third Edition
+: page 876, Table of Monetary Units
+: page 1565, Numbers
+
+
+== American and British Numbers ==
+
+For numbers in english above million, see the URLs:
+
+: http://www.m-w.com/mw/table/number.htm
+: http://db.uwaterloo.ca/~alopez-o/math-faq/mathtext/node25.html
+: (or http://db.uwaterloo.ca/~alopez-o/math-faq/node54.html)
+: http://home.earthlink.net/~mrob/pub/math/largenum.html
+: http://www.unc.edu/~rowlett/units/large.html
+
+
+== Japanese Numbers ==
+
+For large numbers in japanese (above 10,000), see the URL:
+
+: http://www.sf.airnet.ne.jp/~ts/japanese/largenumber.html
+
+For small numbers in japanese (less than 1,000), see the URL:
+
+: http://www.sf.airnet.ne.jp/~ts/japanese/smallnumber.html
+
+See also:
+
+: http://www.sf.airnet.ne.jp/~ts/japanese/counter.html
+: http://www.sf.airnet.ne.jp/~ts/japanese/javanumber.html
+
+
+== How to Use the Functions From a Shell ==
+
+Create a script file (let's say currency.sh) containing the following code:
+
+   #! /bin/bash
+
+   # spell-number.el path
+   LISPDIR=/usr/local/lib/emacs/site-lisp
+
+   cat >$$.data <<EOF
+   (setq spelln-language 'english-us)
+   (setq spelln-country 'united-states)
+   (message (spelln-currency-in-words $*))
+   EOF
+
+   emacs -batch -load $LISPDIR/spell-number.el -load $$.data
+
+   rm $$.data
+
+So, when you type:
+
+   currency.sh 1121.21
+
+It's displayed:
+
+   one thousand, one hundred twenty-one dollars and twenty-one cents
+
+
+== About "and"s and "comma"s ==
+
+Some languages (and their variations) have several ways to express a
+number.  For example, in english we can have:
+
+[new]
+* american english
+: > ##2,765,133,001##
+:: 1. two billion, seven hundred sixty-five million, one hundred thirty-three thousand and one
+:: 2. two billion, seven hundred sixty-five million, one hundred thirty-three thousand one
+:: 3. two billion seven hundred sixty-five million one hundred thirty-three thousand and one
+:: 4. two billion seven hundred sixty-five million one hundred thirty-three thousand one
+: > ##960##
+:: 5. nine hundred and sixty
+:: 6. nine hundred sixty
+[new]
+
+* british english
+: > ##2,765,133,001##
+:: 7. two milliard, seven hundred and sixty five million, one hundred and thirty three thousand and one
+:: 8. two milliard seven hundred and sixty five million one hundred and thirty three thousand and one
+: > ##960##
+:: 9. nine hundred and sixty
+
+[new]
+* "european" english (I saw this variation in ##Spell::Number## Perl package)
+: > ##2,765,133,001##
+:: 10. two thousand, seven hundred sixty five million, one hundred thirty three thousand one
+:: 11. two thousand seven hundred sixty five million one hundred thirty three thousand one
+: > ##960##
+:: 12. nine hundred sixty
+[new]
+
+Note that in cases 2, 4 and 6 the /and/ is omitted.  And in cases 3, 4, 8
+and 11 the /comma/ is omitted.
+
+To accommodate these variations, use the variables:
+
+; `spelln-and-p' : to indicate if ##" and "## should be spelled.
+
+; `spelln-comma-p' : to indicate if ##", "## should be spelled.
+
+The default value for both variables above is ##t##, that is, ##" and "## and ##", "##
+are spelled.
+
+
+== Acknowledgments ==
+
+Thanks to Kalle Olavi Niemitalo <_kon_@_iki_._fi_> for finnish and finland
+corrections.
+
+Thanks to Juanma Barranquero <_lektu_@_teleline_._es_> for spanish corrections, and
+for zero cents and gender suggestions.
+
+Thanks to Florian Weimer <_fw_@_s_._netic_._de_> for german gender corrections.
+
+Thanks to Eberhard Burr <_Eberhard_._Burr_@_gmx_._de_> for german corrections.
+
+Thanks to Petra Stempfle <?@?> for german contribution.
+
+Thanks to Antonio Orlando Faro da Silva <?@?> for portuguese (PT)
+corrections.
+
+Thanks to Ailton Bauer Paschoal <?@?> for italian contribution.
+
+Thanks to Emmanuel Michon <_emmanuel_ _ _michon_@_sdesigns_._com_>, Christophe Cuq
+<_ccuq_@_teaser_._fr_> and John S. Yates Jr <_john_@_everfile_._com_> for french
+corrections.
+
+Thanks to Luciene Mastrandrea <_tucunlu_@_dglnet_._com_._br_> for french
+contribution.
+
+Thanks to Don Provan <_dprovan_@_ra_._lucent_._com_> for American and British
+Numbers.
+
+Thanks to Franz Zahaurek <_fzk_@_gams_._at_> for How to Use the Functions From a
+Shell.
+
+Thanks to all who emailed comments and contributions.
+
+
+----
+
+CategoryCode,
+CategorySpelling

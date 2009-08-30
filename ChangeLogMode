@@ -1,0 +1,27 @@
+Mode for editing 'ChangeLog' files. Press C-x 4 a to make a new entry.
+
+[new]
+Inspired by my own ChangeLog files, scattered about my disks but related to the same project, and by a question of [[ams]] on #emacs if such a function existed yet, here is a function to sort a changelog buffer by date (use this function with care: it has a call to erase-buffer and is relatively untested): --[[pft]]
+
+    (defun change-log-sort ()
+      "Sort a changelog in the format used by change-log-mode by date"
+      (interactive)
+      (goto-char (point-max))
+      (do ((expression "^[0-9]\\{4\\}-[0-1][0-9]-[0-3][0-9]")
+	   (pos (point) (point))
+	   (list nil (cons
+		      (cons 
+		       (match-string 0)
+		       (buffer-substring (match-beginning 0) pos)) list)))
+	  ((not (re-search-backward expression nil t)) 
+	   (erase-buffer)
+	   (mapc (lambda (item) 
+		   (insert (cdr item))) 
+		 (nreverse (sort* list #'string< :key 'car))))))
+[new]
+Emacs already comes with `M-x change-log-merge'.  Doesn't that do the task for you?
+
+----
+CategoryModes
+CategoryVersionControl
+

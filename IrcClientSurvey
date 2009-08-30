@@ -1,0 +1,29 @@
+Send a CTCP VERSION to all of #emacs. This is potentially rude, so don't do this lightly.
+
+Place point at the beginning of the output and invoke `M-x irc-version-summary' defined as follows:
+
+{{{
+(defun irc-version-summary ()
+  "Run this after you've sent a /CTCP #test VERSION."
+  (interactive)
+  (save-excursion
+    (let ((agents))
+      (while (re-search-forward "CTCP VERSION \\([a-z]\\([^- \n:/]+\\|[^- \n:/]*[-/][^- \n:/0-9]+\\)\\)" nil t)
+	(let* ((key (replace-regexp-in-string "-" ""
+		       (downcase (match-string-no-properties 1))))
+	       (cell (or (assoc key agents)
+			 (car (setq agents (cons (cons key 0) agents))))))
+	  (setcdr cell (1+ (cdr cell)))))
+      (setq agents (sort agents (lambda (a b) (> (cdr a) (cdr b)))))
+      (pop-to-buffer (get-buffer-create "*IRC Clients*"))
+      (erase-buffer)
+      (dolist (item agents)
+	(insert (format "%4d %s\n" (cdr item) (car item))))
+      (insert "----\n"
+	      (format "%4d total\n"
+		      (apply '+ (mapcar 'cdr agents)))))))
+}}}
+
+----
+InternetRelayChat
+

@@ -1,0 +1,51 @@
+Click on the title to list all pages related to [::Indentation] questions.
+
+: "The power of Emacs comes at a cost." -- kensanata on #emacs
+
+For people troubled by the default indentation behaviour, there is the IndentationTutorial. If that doesn't work, EricPement has a page on Emacs and Tabs at http://www.student.northpark.edu/pemente/emacs_tabs.htm
+
+Most people seem to be concerned about the following, though:
+
+* IndentingText -- for plain text without automatic indentation
+* IndentingSourceCode -- for program source or other inherently structured text
+** IndentingLisp -- Lisp, Scheme, EmacsLisp source code
+** IndentingC -- C, C++, and Java source code
+** IndentingPerl -- Perl source code
+** IndentingPython -- Python source code, where it's syntactically significant
+** IndentingHtml -- plain HTML mode does not do indentation
+** IndentingXml -- using the new SgmlMode
+* GuessOffset -- guess the offset used in existing files and use it
+* ReformatBuffer -- marking the whole buffer and reindenting it
+** CodeBeautifying -- how to wrap comments after reindenting the buffer
+* TabCompletion -- How to indent and get completion too.
+
+Related:
+
+* IndentationBasics -- various variables
+* AutoIndentation -- how to indent new lines automatically
+* NoTabs -- how to avoid tabs altogether (see also TabsAreEvil)
+* SmartTabs -- how to use tabs for indentation and spaces for alignment
+* UntabifyUponSave -- save all files with spaces instead of tabs
+* ShowWhiteSpace -- Visualize spaces and tabs with color highlighting.
+
+External:
+
+* KaiGrossjohann's indentation tutorial: http://www.xemacs.org/Links/tutorials_toc.html or http://cvs.sourceforge.net/viewcvs.py/xemacs/xemacsweb/Links/Attic/tutorials_toc.html
+* EricPement has a document that explains TABs in Emacs: http://www.pement.org/emacs_tabs.htm
+
+Aligning columns of text:
+
+* CategoryAlignment -- several ways to align text, with respect to assignment, whitespace, or regexp-provided delimiters.
+
+* AlignColumn -- align text columns, where the columns are separated by whitespace
+* AlignLet -- align values in Lisp <code>let</code> forms
+
+Indentation implementation details:
+
+* TabStopList -- the fallback usually used when no other indentation seems to work
+
+NeedHelpWithIndentations -- I have a problem with indentation and I was hoping a guru could edit the page with the answer to my problem, which could then be appended to this page in an effort to make it better.
+
+Unrelated (but homonymous):
+
+* TabBarMode -- add a tab-bar to emacs giving each buffer it's own tab

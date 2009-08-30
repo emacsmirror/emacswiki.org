@@ -1,0 +1,62 @@
+Variables can have a different value in every buffer.  If you are in
+such a buffer, the variable is said to be buffer-local.  In order to
+set a variable for one buffer only, use the following idiom:
+
+ (set (make-local-variable 'foo) "value")
+
+Normally, you'd use this:
+
+ (setq foo "value")
+
+If the variable is always buffer-local, setting it using setq will set
+the variable in the current buffer only.  In that case, using the
+set/make-local-variable idiom is not necessary, but it won't do any
+harm, either.
+
+If you really do want to set the default value for a variable that is
+always buffer-local, use setq-default, which is called just like setq:
+
+ (setq-default foo "value")
+
+If you are an EmacsLisp author and want a variable to always have a
+buffer-local value, use the following idiom:
+
+ (make-variable-buffer-local 'foo)
+
+This is usually not necessary.  There are two variants of writing the
+code:
+
+# Use defvar or defcustom to define the variable, then use make-variable-buffer-local to make it always buffer-local, or
+# Use defvar or defcustom to define the variable, then write a mode, and in the mode function, use make-local-variable.
+
+Thus, if you are writing a new mode, do not use
+make-variable-buffer-local, because your mode function will be invoked
+anyway.  In your mode function, use make-local-variable instead.
+
+Avoid make-variable-buffer-local if it is not really necessary,
+because it may confuse newbies -- they will have to use set-default to
+change the default value.
+
+== Examples ==
+
+Here's an example from mu.el:
+
+ (defun mu-input-mode (&optional conn)
+   "..."
+   (interactive)
+   (setq conn (or conn mu-connection (mu-get-connection)))
+   (kill-all-local-variables)
+   (setq major-mode 'mu-input-mode)
+   (setq mode-name "MU* Input")
+   (use-local-map mu-input-mode-map)
+   ;; Make each buffer in mu-input-mode remember the current connection.
+   (set (make-local-variable 'mu-connection) conn)
+
+Obviously, `major-mode' is always buffer-local.  That's why we can
+just set it, without changing the value for every other buffer.  The
+same is true for `mode-name'.  Now look at `mu-connection'.  There,
+you can see an example of the rule above: Use make-local-variable in
+your mode function.
+
+----
+CategoryCode

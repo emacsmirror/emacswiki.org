@@ -1,0 +1,131 @@
+[[en:SiteMap]]
+[[ko:대문]]
+[[ja:サイトマップ]]
+[[se:InnehållsFörteckning]]
+[[ru:КартаСайта]]
+[[pt:MapaDoSite]]
+[[fr:PlanDuSite]]
+[[es:MapaDelSitio]]
+<include "WikiLanguageMenu">
+
+EmacsWiki 致力於發展 EmacsAndXEmacs ……參閱 MissionStatement 以取得更多資訊。
+
+任何人都可以提出貢獻。請自由地加入新的內容和修改已有的資料。請參閱 HowTo 以取得更多資訊。
+
+* [[討論中文翻譯]] -- 請先閱讀
+<i> 翻譯固然重要，針對華文世界的本地化原創wiki文檔對 emacs 的普及也不可少。歡迎您針對中文用户所做的貢獻。</i>
+
+== 使用 Emacs Wiki ==
+你可以這樣做:
+* HowTo [[怎样作]]-- 怎樣編輯Wiki; Wikis的主要訊息
+* SandBox -- 在沙盒中試驗, 了解怎樣編輯Wiki
+* ElispArea -- 下載和上傳Emacs Lisp (elisp)文件
+其他可以作的:
+* DownloadPartOfWiki -- 應用`wget'下載小部分的Emacs Wiki, 
+* [EmacsWiki:action=all Download the Entire Emacs Wiki] 作為一個大HTML檔案下載全部Emacs Wiki-- 也許你'不想'這麽作.
+: 如果你的瀏覽器有支援，文件將在網頁伺服器中壓縮，否則此檔容量將達到3.5MB左右.
+== 下載和安裝 Emacs ==
+* CategoryPorts -- NT, Mac, GNU/Linux 包括 Debian, BSD
+* CategoryWThirtyTwo －－ w32 特定主題
+
+== 學習 Emacs ==
+* [[Emacs初學者]] －－ 如果你完全是個新手的話
+* [[分類－說明]] －－ Emacs 或 Emacs 使用者的線上說明，辭彙，問題等
+* [[分類－文件]] －－ Emacs 本身就有很豐富的文件而且可從中獲得幫助
+* [[分類－歷史]] －－ Emacs 是怎麼開發出來的
+* [[中文Emacs網站]] -- 中文Emacs網路資源
+
+== Emacs 中的基本文字編輯 ==
+* CategoryFilling －－自動換行
+* CategoryIndentation －－控制文字或程式的內縮(indented)功能
+* CategoryParentheses －－ matching them, changing them
+* CategoryRegexp [[分類－正規表示式]] －－搜尋和取代等…
+* CategoryRegion [[分类－块操作]] －－在選取區域的操作
+* CategoryOutline －－隱藏一部分的暫存，使用 outlining 或是摺疊起來 ([[OutlineMode 中文]])
+* CategoryEditing －－令你更有效地编辑的好主意
+** CategoryHideStuff －－隱藏暫存的任意部分
+* CategoryFiles －－本地端檔案，遠端檔案，備份
+* CategoryCommands －－ M-x 指令，指令的歷史記錄，開檔
+* CategoryBufferSwitching －－如何在暫存(buffer)中切換
+* CategoryTemplates -- using canned text, templates, forms, etc. to save typing
+
+== 編輯和操控各種文件格式和檔案形態的特殊模式(mode) ==
+* CategoryHypermedia －－ HTML, Wikis, Info
+* [[分類－XML]] －－ XML 相關技術
+* [[分类 - SQL]] －－ SQL 和資料庫
+* CategoryTex －－ TeX 和 LaTeX 資料
+* CategoryModes -- pointers, documentation, and extensions to all the other modes
+* CategoryVocab -- 学习新单词
+* CategoryDirectories -- Working with directories, otherwise known as dired.
+
+== 其他特殊的功能; 和外部程式與遠端伺服器的互動 ==
+* CategoryCalculators －－互動的數學
+* CategoryCalendar －－日曆，日記，行程表
+** CategoryTodo －－維護 todo 列表
+* CategoryChatClient -- socializing while sitting alone in front of the monitor
+* CategoryGames -- less useful ways to waste your time with Emacs
+* [[分類－介面]] -- 一些線上工具的 Emacs 介面
+* CategoryProgrammerUtils [[分類-编程工具]]－－編程的好工具，如：程式碼瀏覽器等
+* CategoryRemoteEmacs －－在遠端執行 Emacs
+* CategoryExternalUtilities -- 在 Emacs 中调用外部程序
+* CategoryMail －－簡單的郵件處理工具，和 Gnus 無關
+* [[分類－Gnus]] －－強大的新聞群組和郵件閱讀工具
+* CategoryBbdb -- Big Brother Database: 維護電話簿，郵件地址薄等
+* CategoryVersionControl －－ CVS, RCS 的介面（版本控制）
+* CategoryJournaling -- Emacs  之 web logs 介面
+
+== 讓 Emacs 適應你的環境 ==
+* CategoryKeys -- 設定您的快捷鍵；可用性
+* CategoryDotEmacs -- stuff to put in your InitFile, for Elisp newbies
+* CategoryProgramming -- 人們為编程而做的設定
+* CategoryFaces -- syntax highlighting, colors, font-lock
+** CategoryDisplay -- 和顯示相關的東西(X-Window pointer shapes, frames, ...)
+* CategoryInternationalization -- Emacs 軟體的國際化（包括中文化）。
+* CategoryPaths -- 合併操作系统的路径和Emacs的路径。
+
+== 修改 Emacs 的動作：Elisp 編程，研究(hacking) Emacs 的原始碼 ==
+* CategoryCode -- stuff for Elisp authors
+** CategoryDebug -- debugging Emacs, debugging with Emacs
+* CategoryEshell -- 一个完全由 elisp 实现的 shell
+* CategoryBuilding -- 如何由源码编译 Emacs 
+* CategoryPatches -- Emacs 的补丁，主要针对 C 一级的扩展
+* CategoryExtensionLanguage -- alternatives to EmacsLisp: Guile, Erlang, Python, ...
+* CategoryBiDi -- introduction to adding bidirectional input and output to Emacs
+
+== Emacs 使用者社群 ==
+* CategoryHomepage －－ 使用 Emacs 的朋友们的主页
+* CategoryHumor -- what we do when we are not customizing Emacs
+* CategoryForum -- 关于Emacs的论坛
+
+== Emacs Wiki 讨论 ==
+* EmacsChannel －－ 我们整天挂的 IRC 频道
+* SiteMapDiscussion -- the categories on this wiki and other stuff to put on the main page
+* MeatBall:EmacsWiki -- 涉及wiki技术，组织，安全等.
+
+== 檔案 ==
+* ElispArea －－上傳和下載 elisp 檔案
+
+== Emacs Bugs，期望功能 ==
+* EmacsBugs
+* WishList
+
+== 維護、统計和下載 ==
+* [EmacsWiki:action=index All Pages] 包括頁面數
+* [EmacsWiki:action=random Random Page] 是個開始閱讀和改進頁面的好地方
+* [EmacsWiki:action=links&amp;url=2 External Links]
+* [EmacsWiki:action=unlock Remove edit lock after a crash]
+* [EmacsWiki:action=maintain Start maintenance job]
+* [EmacsWiki:action=version Check script version]
+* [http://www.emacswiki.org/cgi-bin/list-archive.pl Download the page database]
+    (任何人都可以幫忙備份)
+* [http://emacswiki.org/usage/ Usage Statistics] (and OldStats)
+
+----
+听起来像个好主意！人们尝试了许多方法试图汇集Emacs有关的各种智慧，可事实表明所有这些尝试都不能令人满意。当Wiki的构建和评论达到一定的数量后，这或许是一条可行的道路... ...
+
+
+This sounds like an interesting idea!  People have tried lots of
+different ways to bring together all of the Emacs wisdom out there,
+but the fact that people keep trying proves that nothing truly
+satisfactory has emerged.  With the right amount of structure and
+overview, maybe a Wiki is the way to go... -- JohnWiegley

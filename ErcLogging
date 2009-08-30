@@ -1,0 +1,195 @@
+== Channel logging in ERC ==
+
+Logging is not enabled by default. To enable it use M-x customize-variable RET erc-modules.
+
+Tell ERC where to save log files by setting the variable `erc-log-channels-directory'.  If you don't change this variable log files will be saved in the directory ~/log (if it doesn't exist already, the directory is created the first time a log file is saved).
+
+    (setq erc-log-channels-directory "~/.erc/logs/")
+
+Hitting C-c C-l (or calling the function `erc-save-buffer-in-logs') in an ERC-mode buffer will save a log.
+
+If you want log files automatically written when you part a channel (or quit), add the following line:
+
+    (setq erc-save-buffer-on-part t)
+
+If you want timestamps in the logs but not shown while you chat, set this, too:
+
+    (setq erc-hide-timestamps t)
+
+== Restoring channel buffers from logs ==
+
+This variable actually defaults to on. If you don't like query / channel windows to be filled with the previous correspondance when you next open them, eval the following code:
+
+ (setq erc-log-insert-log-on-open nil)
+
+: I've noticed then when I had this enabled, all of the contents from the previous sessions would be rewritten in the log, leading to their exponential growth.  This is probably a bug.  --MichaelOlson
+
+:: I think revision 1.17 of erc-log.el fixes this bug, I'm not sure why I didn't spot it before. -- LawrenceMitchell
+
+:: I agree, I have fixed this in ERC 5.0.  I do still see some wrong channel content logged in channel buffers though (like #xemacs content in a logfile for the #emacs channel)  -- AdrianAichner
+
+: This seems to be broken in ERC 5.3, the log gets inserted after the prompt as text, and in *Messages* there's errors on Text being read only. Am i doing it wrong? -- Blx
+
+: Yep, I have the same problem. It's very annoying, since you can accidentally be kicked for spamming. It seems like the erc-setup-logging hook is called too late -- JanSeeger
+
+== Auto-saving log files on emacs exit ==
+
+Normally when exiting emacs with log files on, you will be prompted to save each buffer in turn. This can be quite frustrating if you need to exit in a hurry ("You ever need to leave emacs?" some might ask ;-)). Here's a lisp snippit which will save all erc buffers to logs when exiting.
+
+<pre>
+(defadvice save-buffers-kill-emacs (before save-logs (arg) activate)
+(save-some-buffers t (lambda () (when (eq major-mode 'erc-mode) t))))
+</pre>
+
+I found replacing the when line above with this avoids trying to save server buffers etc with no associated file:
+
+<pre>
+(when (and (eq major-mode 'erc-mode)
+      (not (null buffer-file-name))))
+</pre>
+
+Note that we're probably losing /notices from the logs like that..
+
+=== Problems with RCS === 
+Here's a log (edited for brevity) from the EmacsChannel, about RCS-directories:
+
+ <ZwaX> ERC has a bug...
+ <ZwaX> if I start ERC in a directory which contains an RCS directory, I can't quit it.
+ <ZwaX> is there a way to save all my ERC buffers?
+ <ZwaX> currently, i have to go to them all (4 channel and 4 server windows) and hit C-c C-l
+ <ZwaX> then I have to go to the ones that have changed since I started saving them
+ <ZwaX> otherwise, if I hit C-x C-c and have unsaved ERC buffers, I get:
+ <ZwaX> Debugger entered--Lisp error: (file-error "not a regular file" "m:/My Documents/chris/RCS/")
+ <ZwaX>   insert-file-contents("RCS/" nil 0 8192)
+ <ZwaX>   vc-rcs-fetch-master-state("" nil)
+ <ZwaX> and so on...
+ <ZwaX> down to   vc-before-save() ;  basic-save-buffer() ;  save-buffer()
+ <TerryP> ZwaX: (mapc (lambda(buf) (save-excursion (set-buffer buf) (erc-save-buffer-in-logs))) (erc-buffer-filter (lambda() t))) <-- seems to work
+ <ZwaX> is it OK to use that with your       (defadvice save-buffers-kill-emacs (before save-logs (&rest args) activate) code instead of what you currently use?
+ <TerryP> hmm.. that's not a bad idea actually
+ <ZwaX> it works for me.
+ <ZwaX> whereas your current configuration doesn't.
+ <TerryP> that defadvice thing never really worked perfectly for me
+ <TerryP> just picked it off the wiki
+ <ZwaX> i.e. (save-some-buffers t (lambda () ...)) doesn't work - 'cos save-some-buffers can't save logs of channels which have an RCS subdirectory in their default-directory
+
+So the conclusion would be something like (untested by me): 
+
+    (defadvice save-buffers-kill-emacs (before save-logs (arg) activate)
+      (mapc (lambda(buf)
+          (save-excursion
+                (set-buffer buf)
+                (erc-save-buffer-in-logs)))
+            (erc-buffer-filter (lambda() t))))
+
+Someone should probably edit this to contain only the working information, but I haven't got time to test it out properly right now, so for now, I'll leave it like this -- TerryPatcher
+
+I think the problem with RCS went away when I moved to a more recent {something}.  I now use the following in my .emacs (advising "C-x s" as well as "C-x C-c", because otherwise the prompts from "C-x s" are less than clear, asking you whether to save buffers to which it doesn't know how to refer) -- ZwaX
+
+ (defun erc-save-buffers-in-logs ()
+   (interactive)
+   (mapc (lambda(buf)
+    (save-excursion
+      (set-buffer buf)
+      (erc-save-buffer-in-logs)))
+  (erc-buffer-filter (lambda() t))))
+ 
+ (defadvice save-buffers-kill-emacs
+   (before save-logs-before-save-buffers-kill-emacs (&rest args) activate)
+   'erc-save-buffers-in-logs)
+ 
+ (defadvice save-some-buffers
+   (before save-logs-before-save-some-buffers (&rest args) activate)
+   'erc-save-buffers-in-logs)
+
+== Auto-saving log files on channel activity ==
+
+Only tested with ERC 5.3:
+
+<pre>
+(setq erc-save-buffer-on-part nil
+      erc-save-queries-on-quit nil
+      erc-log-write-after-send t
+      erc-log-write-after-insert t)
+</pre>
+
+== delYsid's advice for auto-saving logs ===
+
+ <delYsid> resolve: add erc-save-buffer-in-logs to
+ <delYsid> erc-insert-post-hook
+ <delYsid> that should do the trick
+ <delYsid> and saves every incoming line as soon as it arrives
+
+I found that this makes my ERC very slow, especially when moving up a line in the ERC buffer, that could take me up to 30 seconds :( .. Might have been something else ofcourse, but it seemed to go away when I removed logging. I just added logging again without the auto-saving part, and it hasn't affected performance yet. -- TerryPatcher
+
+I found that this works just fine.  I used this line:
+
+  (add-hook 'erc-insert-post-hook 'erc-save-buffer-in-logs)
+
+I made a 1Gb fake logfile to test what would happen when the log became large, and it is still fine.  Talk on #emacs suggested that write-region (which is used by ERC to append to the logfiles) reads the whole file into Emacs, appends to it, then writes it all back out again.  I have found that not to be the case.
+
+Note that it doesn't save outgoing lines (the lines you have typed yourself) until there is an incoming line. -- ZwaX
+
+: I'm currently looking at this further, to see if TerryPatcher's
+problems might not just be him (profiling write-region and
+erc-save-buffer-in-logs).  Currently my logfiles aren't very big, I
+shall have to see. -- LawrenceMitchell.
+
+:: As an update, I don't find any problem with logging on each input line.  
+Maybe the problem is that TerryPatcher's harddrive accesses are very slow 
+-- LawrenceMitchell.
+
+== Why logging might not work for you if you're running Windows ==
+
+The default logfile name contains a colon followed by the port number or name that you're connected to the server on.  Windows doesn't allow colons in filenames - colons are for putting after drive letters and nowhere else.
+
+The following (borrowed from TerryPatcher) fixes the problem for me -- ZwaX
+
+ (defun my-erc-generate-log-file-name-short (buffer &optional target
+          nick server port)
+   "This function uses the buffer-name as a file, with some replacing."
+   (let* ((name (buffer-name buffer))
+   (name (replace-regexp-in-string "|" "-" name)))
+     (concat erc-log-channels-directory "/" name ".txt")))
+  
+ (setq erc-generate-log-file-name-function 'my-erc-generate-log-file-name-short)
+
+Actually, the above code is just a slight modifiation of `erc-generate-log-file-name-short', that should do the same trick, with just:
+
+ (setq erc-generate-log-file-name-function 'erc-generate-log-file-name-short)
+
+The reason I modified it, was that I often found myself in queries with people who had "|" in their nicks, another character not allowed on windows-systems. This way, every time I bump into a new "illegal" character, I can just add it to `my-erc-generate-log-file-name-short'. -- TerryPatcher
+
+Well, I can tell you now ('cos Windows just told me, and I quote, only without quotation marks because that would confuse things) that a file name cannot contain any of the following nine characters...  \ / : * ? " < > |  ...I guess that's the complete list.  -- ZwaX.
+
+: I've submitted a patch to the erc-help mailing list which uses
+file-name-invalid-regexp to fix the problem for
+erc-generate-log-file-name-long.  Hopefully, I will get enough
+roundtoits to fix the filename production code for all of ERC. -- LawrenceMitchell.
+
+:: It would be nice if erc-current-logfile could call convert-standard-filename on the filename before returning it, so that the filename returned is legal on the current OS - then whatever log-file-name generating function was used, its output would be made legal before being used.  However, I'm not sure whether that function exists on XEmacs. -- ZwaX
+::: As of ERC 4.0 new code for logfile generation was
+put into ERC.  This also temporarily fixes the problem for
+filename generation on Windows.  Though I still haven't fixed it
+"properly". -- LawrenceMitchell.
+
+=== Character encoding problems ===
+If you log, and erc frequently hangs on you upon seeing certain international characters, try this:
+
+ (setq bbdb-file-coding-system 'raw-text)
+ (setq-default buffer-file-coding-system 'raw-text)
+ (setq buffer-file-coding-system 'raw-text)
+
+YMMV. Warning: the above is a *wrong* solution, As you can see, it changes the default bufer coding.  So, it will screw up your emacs and curropt your files and soul, don't do it unless of course, you want to...
+
+Perhaps this is the right solution though, since `buffer-file-coding-system' is automatically buffer local: -- JeremyMaitinShepard
+
+ (add-hook 'erc-mode-hook (lambda () (setq buffer-file-coding-system 'raw-text)))
+
+I tried this and it works so long as you add it to hook 'erc-mode-hook' rather than 'erc-mode'.  Was this a typo on your part, or is there a hook called 'erc-mode' that I've missed? -- ZwaX
+: That was a typo, hooks are added to hooks, not modes :) Fixed.
+
+Is there anyway of saving the log as HTML/XML instead of as a text file?  -- KH
+
+----
+[[ERC]]

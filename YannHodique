@@ -1,0 +1,30 @@
+portrait:http://hodique.info/_media/wiki/yann.png?w=50&h=&cache=cache
+I use Emacs for nearly everything in daily job: 
+* reading mail/news with Gnus (CategoryGnus), 
+* chatting with [[Lispy]]
+* controlling my window manager through SawFishMode, 
+* or even editing text files.
+
+The modes I frequently use are AUCTeX and CcMode.
+
+Sometimes I idle in the EmacsChannel under the nickname [::Sigma]. 
+
+Since I work on several different computers I need to keep my configuration online and up-to-date : this is the "dotemacs" project on Mtpforge. You can download it via
+
+ svn checkout https://mtpforge.melting-pot.org/svn/dotemacs/trunk dotemacs
+
+My home page also hosts a big part of my configuration (http://www.lifl.fr/~hodique/Perso/Emacs), but it's updated... when I have enough time and motivation :-)
+If someone is interested, one can also find some hacks for sawfish in these pages (http://www.lifl.fr/~hodique/Perso/Sawfish)
+
+A good part of the elisp code I use is not very clean, and I try to make it better when I have time. I like advices, macros, and wish I had a better knowledge of these interesting mechanisms (and hope I will ;))
+
+I adapted ErBot so that it can be used with http://savannah.nongnu.org/projects/octopus (an extensible chat server I wrote) through Lispy. This way I can annoy the Mtp people with emacs.
+
+I occasionally contribute to PlannerMusePort.
+
+more to come :-)
+
+: I posted Sawfish hacks to the Sawfish wiki.  It looks half dead, but it has code... -- AlexSchroeder
+
+----
+CategoryHomepage

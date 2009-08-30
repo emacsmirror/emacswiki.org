@@ -1,0 +1,42 @@
+XMLRPC (XML Remote Procedure Calls) is a protocol for remote procedure calling using HTTP as the transport and XML as the encoding. XML-RPC is designed to be as simple as possible, while allowing complex data structures to be transmitted, processed and returned.
+
+The spec can be found at http://www.xmlrpc.com/.
+
+== xml-rpc.el ==
+
+This is an implementation of XML-RPC in EmacsLisp. It allows Emacs to
+make asynchronous remote procedure calls over http.
+
+* http://savannah.nongnu.org/cgi-bin/viewcvs/emacsweblogs/weblogger/lisp/xml-rpc.el
+
+To fix a bug in that causes double escaping of string parameters in Emacs 23, apply the patch from the following bug report: http://savannah.nongnu.org/bugs/?25314
+
+If you want CVS access, please contact hexmode on Savannah.
+
+It could probably be useful for communicating with EmacsWiki using the
+MeatBall:XmlRpcToWiki API.  See the WikiRemote for further discussion
+on the topic.  -- DanielLundin
+
+== Older Versions ==
+
+Following are versions that other people have had at one time or
+other.  I’ve tried to incorporate them into the Savannah version of
+the code.
+
+* http://elisp.info/package/xml-rpc/xml-rpc.el (My old code.  I’ll put a redirect on this soon.)
+* http://purl.org/NET/wence/xml-rpc.el.patch (The latest xml-rpc.el (there are several versions floating around on the net, but the above link seems to be the most recent) is broken. A patch that I found here seems to fix it)
+* http://blogs.openaether.org/data/weblogger.el-wordpress.patch  
+* http://blogs.openaether.org/?p=126 
+
+elisp.info hasn't been updated in almost a year, so I figured this would be a good idea. The versions here work together perfectly for BloggerMode.
+
+ErikHollensbe
+
+(elisp.info should be updated as soon as I can move the weblog to my current weblog system. — MarkAHershberger)
+
+Currently maintained by [http://mah.everybody.org/ Mark
+A. Hershberger].
+
+----
+CategoryXML
+CategoryInterface

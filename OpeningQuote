@@ -1,0 +1,55 @@
+This is what I use in my ~/.emacs in order to semiautomatically insert
+a ##`## when I type a ##'##.  Read the doc string.
+
+    (defun maybe-open-apostrophe ()
+      "When called, insert an ` or a ' as appropriate.
+    When called after a space, insert a `.
+    When called after a `, replace it with a '.
+    Else insert a '."
+      (interactive)
+      (cond ((or (= (point) (point-min))
+                 (= (char-before) ? )
+                 (= (point) (line-beginning-position)))
+             (insert "`"))
+            ((= (char-before) ?`)
+             (delete-char -1)
+             (insert "'"))
+            (t
+             (insert "'"))))
+
+I need this for SimpleWikiMode:
+
+    (define-key simple-wiki-mode-map (kbd "'") 'maybe-open-apostrophe)
+
+And here is something for Elisp.  In EmacsLisp, I need lots of quotes
+while programming, but inside comments and doc-strings I often want
+the opening-quote behaviour of `maybe-open-apostrophe'.  Instead of
+analyzing the text, I rely on font-lock to do this for me:
+
+    (defun maybe-open-apostrophe-for-strings ()
+      "Call `maybe-open-apostrophe' inside strings and comments.
+    Wether we are inside a string or a comment is determined via font-lock
+    text properties `font-lock-string' and `font-lock-comment'."
+      (interactive)
+      (let ((face (plist-get (text-properties-at (point)) 'face)))
+        (if (or (and (listp face)
+                     (or (memq 'font-lock-string-face face)
+                         (memq 'font-lock-comment-face face)))
+                (and (symbolp face)
+                     (or (eq 'font-lock-string-face face)
+                         (eq 'font-lock-comment-face face))))
+            (maybe-open-apostrophe)
+          (insert "'"))))
+
+    (add-hook 'emacs-lisp-mode-hook
+              (lambda ()
+                (local-set-key (kbd "'") 'maybe-open-apostrophe-for-strings)))
+
+The following approach appears mostly to DTRT:
+
+   (dolist (c '(?` ?\" ?\( ?\[ ?\{))
+     (global-set-key (vector c) #'skeleton-pair-insert-maybe))
+   (defvar skeleton-pair t)
+
+----
+CategoryKeys

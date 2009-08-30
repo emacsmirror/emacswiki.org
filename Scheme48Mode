@@ -1,0 +1,10 @@
+[http://www.s48.org/ Scheme48] is an implementation of the programming
+language [[Scheme]]. This mode is an extension to the normal
+SchemeMode and provides specific interactions with Scheme48. This
+means that expressions evaluated with C-x C-e etc. will be evaluated
+in the correct package (a module, in the Scheme48 world)
+automatically.
+
+This mode is a successor to cmuscheme48.el which comes with Scheme48.
+
+* Download:scheme48.el

@@ -1,0 +1,69 @@
+Here's a rant by AlexSchroeder as [http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/a62f24e5707a91e2 posted to the gnu.emacs.help newsgroup on 2008-10-23]. The real information is on MissionStatement. :)
+
+== Haphazard Content ==
+
+: The content, is kinda haphazard. It is somewhat in-between of a encyclopedia-style treatment like Wikipedia and a chaotic online forum. Specifically, when you visit a article, half of article will be dialogues between different users on tips or issues or preferences.
+
+For Emacs, I don't care about a perfect wiki that can replace the manual. Emacs is and remains the [SelfDocumentation self-documenting] editor. As such, the good stuff, the well explained stuff, the carefully thought out stuff, the edited and checked stuff should go into the manual -- either the EmacsManual, or the EmacsLispManual, or the EmacsLispIntro. I don't care. When I set up the wiki I was frustrated with how slow the FAQ was changing and the endless repetitions on the newsgroups and mailing lists. That's where the wiki fits in: It changes faster than the FAQ, it has less repetitions than the newsgroups and mailing lists, but it is not as structured and honed as the manual is.
+
+Comparing it to the Wikipedia, where the wiki is the real thing, or to the Emacs manual, is a no brainer. Of course it doesn't compare. But it doesn't have to. The wiki is in a separate category.
+
+And of course the Emacs Wiki has the benefit of letting other people put their text where their mouth is: If people like Xah feel that the text of the wiki is lacking in quality, feel free to step up and work on it. Just like Free Software, complaining is far less effective than doing.
+
+The only thing I will oppose very strongly is the setting up of guidelines and requirements and all sorts of foolish rules, because that doesn't improve the text. It just prevents other people from posting. Way to go, social skills.
+
+-- AlexSchroeder
+
+[new]
+OtherMichael: I don't have a problem with the EmacsWiki format -- it doesn't look like the hyper-groomed Wikipedia, but what does? EmacsWiki looks more like the [[http://c2.com/cgi/wiki C2 wiki]] -- a wiki for people who do things. I see the same mixture of info-and-comments in the [[http://wiki.laptop.org OLPC wiki]]. Having a "talk" or "discussion" link auto-associated with each page could reduce or redirect some of this, but it will never be perfect (OLPC wiki has discussion pages, and people still make comments w/in the main body).
+
+== Switching Engines ===
+
+: Alex, have you considered using a third party wiki engine for emacs wiki before?
+
+No, never. I use my own software because I know exactly what it does, I have full control over the code, and I feel very comfortable extending it. Switching to something else would mean more work for me. That's why I suggested that anybody interested in it set up their own site, start mirroring Emacs Wiki page content, look at all the background jobs, redirects, URL rewrite rules, text formatting rules, etc. And when they're finished, handing over the domain name will be a trivial thing by comparison.
+
+But I'm not willing to do the work for somebody else. They need to do it themselves.
+
+-- AlexSchroeder
+
+[new]
+If anyone is serious about setting up a mirror, fork or re-engineered emacswiki, the content is available via various methods detailed on the WikiDownload page. 
+
+=== Engine Voting Booth ===
+
+We might just as well start voting here.  If you consider this inappropriate 
+just delete this part of the page.
+
+|| '''OddMuse'''    || '''MediaWiki''' || '''PmWiki'''  || 
+|| GiorgosKeramidas ||                 ||               ||
+|| StefanKamphausen ||                 || OtherMichael* ||
+|| XavierMaillard*  ||                 ||               ||
+
+*OtherMichael notes he doesn't advocate switching engines, but that if we do, there's a [[http://www.pmichaud.com/wiki/Cookbook/EmacsPmWikiMode?action=browse PmWikiMode]] available
+
+[new:XavierMaillard:2008-10-24 19:49 UTC]
+*XavierMaillard is opened to eventually use [[http://www.ikiwiki.info
+ikiwiki]] (at the very least).
+
+[new:PierreGaston:2008-10-25 00:04 UTC]
+Why I don't think a vote is appropriate: 
+Because switching engine means, if i read correctly, replacing Alex. Honestly, I would rather keep a buggy software (which is not what oddmuse is) and Alex than see emacswiki run by someone else, even if they set up an alternative.
+
+Alex has been paying for the site (which is ad free), has always justified every choice he made, has welcomed every new user personally, has always responded to every demands made for an enhancement on the site, has written more pages than anyone else which is why emacswiki still exists in the first place etc.etc....I honestly doubt we can find someone half as good for the job as Alex...
+
+[new:XavierMaillard:2008-10-25 04:57 UTC]
+I agree with Pierre. Alex is good at this job as already said on the mailing-list.
+
+[new]
+A absolutely agree, too.  Actually I started that booth because I am convinced that the keeping of Oddmuse will receive an overwhelming success. -- StefanKamphausen
+
+[new]
+'Unstructured' is not an argument really. Most Wikis are not very well structured. However, it's easy to find stuff. The search and categorisation is quite neat on this site. A general Google search for and Emacs related issue and the wiki is almost always in the top 5 hits. In that sense, it is pretty authoritative and reliable. As for moving to a new engine, I don't see any reason why we should. Unless there's some kind of technical limitation or performance problem with oddmuse, there's no real reason to move. I'm not aware of any till now. Finally, replacing Alex as the 'owner' (in some loose sense) of emacs wiki will be a real dumb move. His involvement with the whole project is the single strongest reason that the site has grown so much. -- NoufalIbrahim
+
+[new]
+I'd like to emphasize a point Alex is subtly making about the current setup:  Whether Oddmuse or some other WikiEngine, the EmacsWiki -- a collection of both software *and* authored works -- is from top-to-bottom FreeSoftware and FreeDocumentation and it should continue to be.  Most online resources are not socially responsible in this manner.  Through the measured work of Alex -- and a cast of hundreds, he's given the community the ability and the RightToFork (!WriteToFork?).  Obviously, he's contributed immensely to a useful community resource, but most impressive in my opinion is his commitment to software freedom and transparency.  This quality of EmacsWiki has enabled Emacs users to emphatically contribute back, and also provides the community the freedom to upgrade EmacsWiki down the road.  Thanks, Alex /et al/!  -- AaronHawley
+[new]
+
+----
+CategoryEmacsWikiSite

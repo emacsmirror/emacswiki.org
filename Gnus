@@ -1,0 +1,12 @@
+The official home for Gnus is http://www.gnus.org.
+
+That's the place where you can get the latest copy of Gnus.  You can find pointers to all sorts of Gnus information in other languages there as well.
+
+The list of topics relating to Gnus is in the page '''[[CategoryGnus]]'''.
+
+Here's a picture of two Gnus users.  Gnus is a great way to sort the high-volume <code>alt.risks.lion</code> group.
+
+http://www.bushland.de/gnus.jpg
+
+----
+CategoryGnus

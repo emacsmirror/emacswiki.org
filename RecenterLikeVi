@@ -1,0 +1,52 @@
+Note a simple text editing command I don't know how to do in vim is recenter the screen.  Say that [[Point]] (TextCursor position) is at the beginning of a function definition.  You'd like to see the whole function at once.  The bad news is that the start of the function is about 2/3s down on your screen.  What you want to do is move the current line to the top of the screen.  I've asked around and I can't find an easy way to do this in vim.  In Emacs it's just C-u 0 C-l.  Or if you want to center the function so that a few lines above it's definition are on the top of the screen (say for the comments above the function), it's just C-u 5 C-l (IOW, recenter the buffer so that the  current line is 5 lines from the top).
+
+Better than the above, try C-M-l for quasi-intelligent cycling through various displays of the current function.
+
+[new]
+Actually, z Enter will do this for you in vi.  z Enter moves the cursor to the top, z . centers the cursor, and z - moves the cursor to the bottom.
+
+[new]
+Don't know about vi but in vim there's 3 useful command for this: zz center cursor line, zt cursor-line to top, zb cursor-line to bottom. Also ^E and ^Y can be used to scroll the window without moving the cursor.
+
+here's what I have in my .emacs for this,  zz = C-l in emacs, but...
+
+<pre>
+(defun line-to-top-of-window ()
+   "Shift current line to the top of the window-  i.e. zt in Vim"
+   (interactive)
+   (set-window-start (selected-window) (point))
+)
+
+(defun line-to-bottom-of-window ()
+  "Shift current line to the botom of the window- i.e. zb in Vim"
+  (interactive)
+  (line-to-top-of-window) 
+  (scroll-down (- (window-height) 3))
+)
+
+(defun ctrl-e-in-vi (n)
+ (interactive "p")
+ (scroll-up n))
+
+(defun ctrl-y-in-vi (n)
+ (interactive "p")
+ (scroll-down n))
+
+(global-set-key "\M-n" 'ctrl-e-in-vi)
+(global-set-key "\M-p" 'ctrl-y-in-vi)
+(global-set-key "\C-x\C-a\C-a" 'line-to-top-of-window)
+(global-set-key "\C-x\C-e" 'line-to-bottom-of-window)
+</pre>
+
+[new]
+Another method is setting scrolloff to some large value like 999 so that the cursor is always in the center of the screen.
+
+: set scrolloff=999
+: help scrolloff
+
+
+See also ViKeys.
+
+----
+CategoryEmulation
+CategoryKeys

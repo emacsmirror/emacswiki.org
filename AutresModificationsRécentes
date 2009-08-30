@@ -1,0 +1,27 @@
+Voici les alternatives au lien vers les ModificationsRécentes que vous pouvez avoir envie d'ajouter à votre carnet d'adresse si vous êtes un
+MeatBall:RecentChangesJunkie (en).
+
+* [Français:action=rc&showedit=0 Montre les dernières modifications majeures] -- La liste par défaut des ModificationsRécentes.
+* [Français:action=rc&showedit=1 Montre les dernières modifications] -- modifications mineures incluses.
+* [Français:action=rc&all=1&showedit=1&days=3 Montre toutes les modifications de ces trois derniers jours] -- comprenant toutes les modifications.
+* [Français:action=rc&all=1&showedit=1&days=1&newtop=0 Montre toutes les modifications pour aujourd'hui, les plus récentes en dernier]
+
+Spécifique à une langue -- Les langues sont identifiées en utilisant une implementation similaire à GuessBufferLanguage (en).
+
+* [Français:action=rc;lang=en Montre les dernières modifications des pages anglaises]
+* [Français:action=rc;lang=es Montre les dernières modifications des pages espagnoles]
+* [Français:action=rc;lang=de Montre les dernières modifications des pages allemandes]
+* [Français:action=rc;lang=fr Montre les dernières modifications des pages françaises]
+* [Français:action=rc;lang=it Montre les dernières modifications des pages italiennes]
+
+Voir LanguageIdentification (en) pour plus d'information.
+
+Si vous pouvez intégrer des élements RSS (voir MeatBall:RichSiteSummary (en)) dans votre navigateur:
+
+* [Français:action=rss élement RSS incluant les modifications majeures seulement, les plus récents en premier] -- voir WikiRss (en) pour plus d'info.
+* [Français:action=rss&newtop=0&rsslimit=all élement RSS incluant les modifications majeures seulement, les plus récents en dernier]
+* [Français:action=rss&all=1&days=3&showedit=1&rsslimit=all élement RSS incluant les modifications des trois derniers jours ] -- comprend tous les changements.
+
+
+This page is also available in english English:OtherRecentChanges
+

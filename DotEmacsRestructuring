@@ -1,0 +1,14 @@
+Currently I'm in the process of restructuring my InitFile(along with my whole ~/elisp directory). So that I don't mess up my current configuration I created a directory ~/restructure and work on my InitFile and other EmacsLisp files there and then test it with the shell command:
+
+  $ HOME=~/restructure emacs
+
+Or one could write a small shell script to do the same:
+
+ #!/bin/sh
+ #
+ # nemacs - for new emacs setup
+ #
+ export HOME=~/restructure
+ emacs --no-site-file $@
+----
+CategoryDotEmacs

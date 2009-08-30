@@ -1,0 +1,18 @@
+"Nav is a lightweight solution for Emacs users who want something like TextMate's file browser, or the Eclipse project view. Unlike these two, Nav only shows the contents of a single directory at a time, but it allows recursive searching for filenames using the 'f' key-binding, and recursive grepping of file contents with the 'g' key-binding. Nav can be run painlessly in terminals, where Speedbar either fails on its attempt to make a new frame or is hidden. Nav's terminal-friendliness comes from running in the frame where it was started, keeping window management simple. The Nav key bindings are simple, as well -- each key command is a single keystroke long." 
+
+Nav contains three modes for easy navigation within emacs. They are the File mode, Buffers mode and Tags Mode.
+
+Get the latest from the Mercurial repository:
+{{{
+hg clone https://emacs-nav.googlecode.com/hg/ emacs-nav
+}}}  
+
+
+Project Site: [http://code.google.com/p/emacs-nav/ http://code.google.com/p/emacs-nav/].
+
+*Screen Shot*
+
+[[image:NavScreenShot]]
+----
+CategoryDirectories
+CategoryFiles

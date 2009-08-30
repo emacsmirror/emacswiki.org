@@ -1,0 +1,32 @@
+Del manual de AUCTeX, en la introducción:
+
+AUCTeX es un entorno integrado completo y configurable para escribir
+ficheros LaTeX utilizando GNU Emacs.
+
+Con AUCTeX puedes ejecutar desde Emacs los programas TeX y LaTeX, y
+otras herramientas relacionadas con LaTeX (como filtros de salida o
+postprocesadores). Resulta especialmente interesante ejecutar LaTeX,
+dado que AUCTeX te permite navegar a través de los errores
+reportados por TeX. Mueve el cursor a la situación del error
+reportado, y muestra documentación acerca del fallo en
+concreto. Esto funciona incluso cuando se trabaja con varios
+ficheros.
+
+AUCTeX tambión soporta indentación automática de las fuentes LaTeX,
+tanto de forma interactiva como indentando el documento completo de
+una vez. Además, proporciona una funcionalidad 'outline', que
+resulta de gran ayuda a la hora de hacerse una idea de la estructura
+del documento.
+
+Además de estas funcionalidades, AUCTeX proporciona una gran
+colección de macros muy útiles, que puedes utilizar de muchas
+maneras para escribir tus documentos LaTeX rápida y
+confortablemente.
+
+La nueva página web de AUCTeX es http://freshmeat.net/projects/auctex/, ¡Actualiza tus bookmarks!
+
+Puedes encontrar información sobre cómo configurar y ejecutar AUCTeX en http://www.math.auc.dk/~dethlef/Tips/introduction.html
+
+Si utilizas XEmacs, Auctex y Miktex sobre Windows, es posible que tengas problemas al ejecutar el comando C-c C-c, obteniendo el error ErrorCantFindFile.
+
+Funciona correctamente con RefTex.

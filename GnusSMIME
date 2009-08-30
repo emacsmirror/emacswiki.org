@@ -1,0 +1,232 @@
+This is a small tutorial to get you started on using S/MIME with
+gnus, i.e. signing mails with your private key and encrypting mail
+with some other person's certificate.
+
+== Basic setup ==
+
+First, you need your own X.509 certificate together with your private key in
+PEM format. If you exported your certificate from Firefox, it will be in a
+password protected p12 file. To export your certificate to a PEM file,
+use
+
+<pre>
+openssl pkcs12 -in myCert.p12 -clcerts  > myCertAndKey.pem
+</pre>
+
+You will have to enter the password for decrypting the input file and
+a new password which will be used to encrypt your private key in the
+PEM file. If you don't want to encrypt your private key, use '-nodes'
+(highly discouraged!).
+
+If you have your private key and your certificate in different files 
+(e.g. when not exported from Firefox) your openssl-call will look 
+something like this:
+
+<pre>
+cat secureprivate.key public_cert.pem | openssl pkcs12 -export -out myCertAndKey.pem -name "Your Certificate Name"
+</pre>
+
+Usually, there will be intermediate certificates between your personal
+certificate and the trusted root certificate in the certificate
+chain. These intermediate certificates should be sent in signed mails
+along with your personal certificate, so that the recipient will only need
+the root certificate to verify your signature. Therefore, put all
+intermediate certificates in another PEM file in the same
+directory. If they are in the same p12 file as your personal
+certificate, you can export them by using
+
+<pre>
+openssl pkcs12 -in myCert.p12 -cacerts -nokeys  > certChain.pem
+</pre>
+
+This file may also contain the root certificate; you can delete it
+from the PEM file to reduce the size of your signed mails.
+
+Now you should get all root certificates you want to trust in PEM
+format and put them in another directory, e.g. ~/CAcerts. Create a
+link to each root certificate, named with the corresponding hash value
+
+<pre>
+ln -s root-CA.pem `openssl x509 -noout -hash -in root-CA.pem`.0
+</pre>
+
+
+== Configuring Gnus ==
+
+Use
+
+<pre>
+M-x customize-group RET smime RET
+</pre>
+
+to configure the S/MIME section in Gnus. Under /Smime Keys/, enter
+your mail address and the file name of your private key. Under
+/Additional certificate files/, enter the filename which contains the
+intermediate certificates (if any).
+
+Under /Smime Ca Directory/, enter the directory containing the trusted
+root certificates. With /Smime Certificate Directory/, you can specify
+a directory containing other people's certificates (needed if you want
+to send them encrypted mail).
+
+Alternatively, set the variables 
+
+<pre>
+smime-CA-directory
+smime-certificate-directory
+smime-keys
+</pre>
+
+accordingly in your .emacs or .gnus. You will also have to include
+
+<pre>
+(setq mm-decrypt-option 'always)
+(setq mm-verify-option 'always)
+(setq gnus-buttonized-mime-types '("multipart/encrypted" "multipart/signed"))
+</pre>
+
+to automatically verify and decrypt S/MIME message.
+
+== Signing mail ==
+
+For testing your setup, start with writing a mail to yourself. Use
+"C-c C-m s s" to insert the MML secure tag for signing your
+mail using S/MIME and send your message. Gnus will ask you for your
+password - if your private key is not encrypted, just hit enter. The
+received mail should show up with a verified signature. If not, check
+if it contains all necessary intermediate certificates and that you
+have properly installed the root CA.
+
+It is possible to sign your email automatically. Have this in your .emacs or .gnus:
+
+<pre>
+(add-hook 'message-send-hook 'mml-secure-message-sign-smime)
+</pre>
+
+As the prompt for a passphrase will become annoying quickly, make sure passwords are cached and the timeout is something other than 16 seconds:
+
+<pre>
+(setq password-cache t) ; default is true, so no need to set this actually
+(setq password-cache-expiry 86400); default is 16 seconds
+</pre>
+
+There are some risk associated with caching a password as a core dump could leak your password unto the hard-disk.
+
+== Encrypting mail ==
+
+For encryption, use "C-c C-m c s". Gnus will then
+ask for the recipients certificate. If you want to make sure the
+message is encrypted before sending, use "C-u C-c RET P" for previewing your
+article. 
+
+: ''Will this work for several recipients, too?  I remember having some problems with that when fiddling with smime a good while back --StefanKamphausen
+
+: ''I've looked into smime.el and it internally supports multiple certificates for encryption, but it only asks for one. However, it seems you can use mml-secure-encrypt-smime for this - I'm a little confused how mml-sec exactly interacts with smime.el, but the following works for me:
+--DavidEngster
+
+If you want to encrypt a mail for more than one recipient, use "C-c C-m C s". You can then add more than certificate for encryption; each certificate can be fetched from DNS or from a local file. However, note that you have to do this for every part of the message (e.g. also for attachments).
+
+
+== Getting certificate information from the BBDB ==
+
+Since I grew tired of manually specifying the certificate files for encryption, I thought the BBDB would be a good place to store certificate information for certain users. The following code takes all addresses in the 'To', 'Cc' and 'From' headers and gets the values of the corresponding field 'certfile' in the BBDB which specifies the certificate file of the user. Afterwards, you can manually add further certificate files if needed. Since it also includes the certificate from the user in the 'From' header, the messsage is automatically encrypted to yourself (if your own address is in the BBDB with a correct 'certfile' field, of course).
+
+<pre>
+(defun DE-get-certificate-files-from-bbdb () 
+  (let ((certfiles nil))
+    (save-excursion
+      (save-restriction
+	(message-narrow-to-headers-or-head)
+	(let ((names (remq nil (mapcar 'message-fetch-field '("To" "Cc" "From")))))
+	  (mapc (function (lambda (arg)
+			    (let ((rec (bbdb-search-simple nil (cdr arg))))
+			      (when rec
+				(let ((cert (bbdb-get-field rec 'certfile)))
+				  (when (and (> (length cert) 0) (not (member cert certfiles)))
+				    (push cert certfiles)(push 'certfile certfiles)))))))
+	      (mail-extract-address-components (mapconcat 'identity names ",") t)))
+	(if (y-or-n-p (concat (mapconcat 'file-name-nondirectory (remq 'certfile certfiles) ", ") ".  Add more certificates? "))
+	    (nconc (mml-smime-encrypt-query) certfiles)
+	  certfiles)))))
+</pre>
+
+The function returns the certificate filenames in a form so that they can be processed by 'mml-secure-part'. To use the function, just add it to 'mml-encrypt-alist':
+
+<pre>
+(add-to-list 'mml-encrypt-alist '("smime" mml-smime-encrypt-buffer DE-get-certificate-files-from-bbdb))
+</pre>
+
+Now you can use "C-c C-m C s" to encrypt the current part of the mail as described above, and the certificate file  information will be taken from the BBDB.
+
+: ''This is tested with gnus 5.10.8. I don't know if this still works with newer gnus versions. 
+--DavidEngster
+
+
+== Automatically extracting certificates from signed mails ==
+
+The following function extracts the personal certificate from a signed mail, saves it in the directory where you store your user certificates (smime-certificate-directory) and puts the filename into the 'certfile' field of the user's BBDB entry (see previous paragraph for using this field when encrypting mails). The user must already have an entry in the BBDB, so you might have to add him first. The filename for the certificate is the name of the user in the BBDB (whitespaces are substituted with underscores).
+
+I strongly suggest you **make a backup of your .bbdb file** before using this function, since I may have done something wrong.
+
+<pre>
+(defun DE-snarf-smime-certificate ()
+  (interactive)
+  (if (or (assoc "certfile" (bbdb-propnames))
+	  (progn (when (y-or-n-p "Field 'certfile' does not exist in BBDB. Define it? ")
+		   (bbdb-set-propnames 
+		    (append (bbdb-propnames) (list (list "certfile"))))
+		   t)))
+      (if (get-buffer gnus-article-buffer)
+	  (progn 
+	    (set-buffer gnus-article-buffer)
+	    (beginning-of-buffer)
+	    (if (search-forward "S/MIME Signed Part:Ok" nil t)
+		(let* ((data (mm-handle-multipart-ctl-parameter 
+			      (get-text-property (point) 'gnus-data) 'gnus-details))
+		       (address (progn (string-match "^Sender claimed to be: \\(.*\\)$" data)
+				       (substring data (match-beginning 1) (match-end 1))))
+		       (rec (bbdb-search-simple nil address)))
+		  (if rec
+		      (let* ((certfile (bbdb-get-field rec 'certfile))
+			     (filename (bbdb-record-name rec))
+			     (dowrite (or (zerop (length certfile)) 
+					  (y-or-n-p "User already has a certfile entry. Overwrite? ")))
+			     (begincert nil))
+			(when dowrite
+			  (string-match (concat "\\(emailAddress=\\|email:\\)" address) data)
+			  (setq begincert (string-match "^-----BEGIN CERTIFICATE-----$" data (match-end 0)))
+			  (if (and smime-certificate-directory
+				   (file-directory-p smime-certificate-directory))
+			      (progn
+				(setq filename (concat (file-name-as-directory smime-certificate-directory) 
+						       (mm-file-name-replace-whitespace filename) ".pem"))
+				(when (or (not (file-exists-p filename))
+					  (y-or-n-p (concat "Filename " filename " already exists. Overwrite? "))) 
+				  (string-match "^-----END CERTIFICATE-----$" data begincert)
+				  (write-region (substring data begincert (+ (match-end 0) 1)) nil filename)
+				  (bbdb-record-putprop rec 'certfile filename)
+				  (bbdb-change-record rec t)
+				  (bbdb-redisplay-one-record rec)
+				  (message (concat "Saved certificate and updated BBDB record for " address))))
+			    (progn
+			      (ding)(message "smime-certificate-directory not correctly set.")))
+			  ))
+		    (progn
+		      (ding)
+		      (message (concat "No entry for address " address " in the BBDB.")))))
+	      (progn (ding)
+		     (message "No valid S/MIME signed message found.")))
+	    )  
+	(progn
+	  (ding)(message "No article buffer available.")))
+    (progn
+      (ding)(message "No field 'certfile' defined in BBDB."))))
+</pre>
+
+
+-- ''Again: tested only with gnus 5.10.8. This function does not call openssl, instead it uses the information inserted by mml-smime-verify, so this might break with newer version. --DavidEngster
+
+
+
+----
+CategoryGnus GnusPGG SigningMail EncryptingMail

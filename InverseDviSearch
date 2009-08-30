@@ -1,0 +1,154 @@
+== Introduction ==
+Inverse search in DVI file means that
+* A mouse click in the DVI previewer window can open an editor with the corresponding place in the (La)!TeX source (also called '''reverse search'''), and
+* DVI previewer can jump to (and visually highlight) a position in the DVI file that corresponds to a certain line number in the (La)!TeX source file ('''forward search''').
+
+Inverse Search is a feature of the xdvi program, not of emacs. Inverse Search
+is the ability of the dvi viewer to call an external editor to display the
+source of the dvi file. Hence, the main source of information concerning
+this feature is the xdvi man page and web site [http://xdvi.sourceforge.net/].
+
+If Inverse Search is enabled, a Control-click in the xdvi window
+should call an editor to edit the source. The next section
+explains how to specify emacs as the default editor for displaying
+the source file.
+
+== Inverse search and emacs ==
+ 
+There are several ways to specify the editor that should display the source
+corresponding to the dvi file.
+
+* set editor in .Xressource
+
+* set  environment variable
+
+* set  preference in the xdvi window
+
+* specify the editor when starting xdvi from the command line
+
+On X window, you can specify a default editor in your .Xresource file by 
+putting the following line in that file
+
+  xdvi.editor: emacsclient -a emacs --no-wait +%l %f
+
+If there is no such default, 
+xdvi checks the following variables to find which command 
+should be launched to display the source of the dvi file :
+the <code>editor</code> Xressource, <code>XEDITOR</code>, 
+<code>VISUAL</code>, <code>EDITOR</code>.
+You can set the EDITOR variable by typing in a terminal
+running bash
+
+  export EDITOR="emacsclient --alternate-editor=emacs --no-wait +%l %f"
+
+A Control-Click on the dvi file will either use an already running emacs
+session to display or update the source file, or start a new emacs to
+edit the source.
+
+Alternatively, from the xdvi menu-bar <code>Options > Preferences</code>,
+select <code>Helper Applications</code> and click on the menu entitled
+<code>Editor for Source Specials</code>. Select the line
+
+   emacsclient --no-wait +%l %f
+
+if it exists, or create it.
+  
+Finalliy, xdvi can be started from the command line with the following option
+
+  xdvi -editor 'emacsclient --no-wait -a emacs'
+
+You must start a server if you want to use an already running emacs session.
+Type <code>M-x server-start</code> in emacs to start the server, or put the
+line <code>(server-start)</code> in your InitFile. See EmacsClient or 
+GnuClient for more details.
+
+== Inverse Search and TeX modes ==
+
+Several modes have shortcuts to start automatically the dvi viewer, when
+editing TeX files.
+
+=== The default TeX mode ===
+
+In the mode used by default to edit TeX or LaTeX files, the command
+that starts the viewer is called <code>TeX-view-command</code>.
+You can put the following in your Initfile to start xdvi with
+the <code>editor</code> switch set to emacsclient.
+
+  (tex-dvi-view-command "xdvi -editor 'emacsclient -a emacs --no-wait +%l %f'")
+
+=== Auctex mode, version < 10.85 ===
+
+In version of auctex previous to 10.85, the list that holds the command
+for compilation and viewing is called <code>TeX-output-view-style</code>.
+This is where you can specify the options of the xdvi command called by
+emacs. Put the following in your InitFile to set the <code>editor</code>
+option.
+
+   (add-hook 'TeX-view-style '("." "xdvi -editor 'emacsclient --no-wait' %d"))
+
+Additional options can be set there: offsets, zoom ratio, geometry etc.
+
+=== Auctex mode, recent version ===
+
+In recent versions of auctex ( >= 10.85 ), Inverse search can be enabled
+just by putting the following in the InitFile
+
+   (TeX-source-specials-mode 1)
+
+Auctex then asks whether to start a server if necessary. You may add the 
+following in your InitFile if you want the server to be started without 
+query. 
+
+   (setq TeX-source-specials-view-start-server t)
+
+You can also add the following line to your InitFile, to prevent emacs from
+asking for confirmation when starting the dvi viewer.
+
+   (add-to-list 'TeX-command-list '("View" "%V" TeX-run-discard nil t))
+
+Starting with auctex 11.85, the list that holds the 
+commands for compilation and viewing is called 
+<code>TeX-output-view-style</code>.
+This is where options can be modified. For example, 
+the <code>-watchfile 1</code> option will update the dvi file
+after each successful compilation. You can enable it by putting
+in your InitFile
+
+   (add-to-list 'TeX-output-view-style 
+        '("^dvi$" "." 
+          "%(o?)xdvi -watchfile 1 %dS %d"))
+
+
+
+== Producing TeX files for inverse search ==
+To use !InverseDviSearch the DVI file has to be prepared in such a way that it includes '''source specials'''. They can be inserted via a macro package or a command-line option to the (La)TeX program (executable).
+
+* Preferred option is to use !TeX binary which includes the necessary information automatically. Usually there is command line switch which does the job, e.g. use <code>tex --src-specials myfile.tex</code> or <code>latex --src-specials myfile.tex</code>. You can pass this option to !TeX binary in the (La)TeX file, using magic first line, if this feature is present and turned on in your !LaTeX distribution.
+* You can use macro packages, <tt>srctex.sty</tt> or <tt>srcltx.sty</tt>, from <tt>[http://www.ctan.org/getmirror/?filename=macros/latex/contrib/srcltx/&#38;action=/getfile/&#38;catstring=macros/latex/contrib/srcltx/ CTAN:macros/latex/contrib/srcltx/]</tt>. Include it in LaTeX file using <code>\usepackage[active]{srcltx}</code>, and in TeX file using <code>\include{srctex}</code>.
+
+While the macro version might interact badly with other macro
+packages, the option for the (La)TeX executable should be more robust.
+However, both versions may affect the line breaks of your document, so
+it's generally a good idea to disable source specials for the final
+version of the document.
+
+
+== Forward Search ==
+Use <tt>xdvi-search.el</tt> for xdvi(k), <tt>kdvi-search.el</tt> for KDVI (provided with those DVI previewers). See the files for details.
+
+AUCTeX supports forward and inverse search in your DVI search via toggling `TeX-source-specials-mode'. You can set `TeX-source-specials-view-start-server' variable.
+
+Here is how to do a forward search with Auctex: 
+just type <code>C-c C-c</code>. If no change has been done since last call to
+<code>C-c C-c</code>, this executes the View command, which updates the dvi
+file, going to the page matching the position of the cursor in the source file.
+You can activate the View command at any time 
+with the shortcut <code>C-c C-v</code>.
+
+== Dvi previewers capable of inverse search ==
+* KDVI, http://developer.kde.org/~kdvi/
+* xdvi(k), http://xdvi.sourceforge.net/
+* Yap (from !MikTeX)
+
+----
+CategoryTex

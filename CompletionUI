@@ -1,0 +1,142 @@
+The latest version of the Completion User Interface (0.11.6, released April 2009) can be obtained from:
+
+* Completion User Interface package download: http://www.dr-qubit.org/download.php?file=predictive/completion-ui.tar.gz
+* Web-site: http://www.dr-qubit.org/emacs.php#completion
+
+This package can take advantage of the AutoOverlays package if it's available, but does not require it.
+
+--TobyCubitt
+
+
+
+= Overview =
+
+The Completion User Interface package implements user-interfaces for in-buffer completion.
+
+Typically, a lot of code in packages providing some kind of text completion deals with the user interface. The goal of CompletionUI is to be the swiss-army knife of in-buffer completion user-interfaces, which any source of completions can plug in to, thus freeing completion package writers to concentrate on the task of finding the completions in the first place. In fact, CompletionUI is even better than a swiss-army knife, because it's also extensible: it's easy to add new user-interfaces, as well as new completion sources. See [[#ExtendingCompletionUI]].
+
+Various completion user-interfaces and commands are provided, which can be separately enabled, disabled and tweaked by the Emacs user via the usual bewildering array of customization variables:
+
+* Dynamic completion: provisionally insert the best completion candidate in the buffer as you type.
+
+* Completion hotkeys: single-key selection of a completion candidate.
+
+* Cycling: cycle through completion candidates.
+
+* Tab-completion: "traditional" expansion to longest common substring.
+
+* Help-echo: display a list of completion candidates in the echo-area.
+
+* Tooltip: display and select from a list of completion candidates in a tool-tip located below the point.
+
+* Pop-up frame: display and select from a list of completion candidates in a tool-tip located below the point; toggle between showing some or all possible completions.
+
+* Completion menu: allow completion candidates to be selected from a drop-down menu located below the point.
+
+* Completion browser: browse through all possible completion candidates in a hierarchical menu located below the point.
+
+* <code>auto-completion-mode</code>: automatically complete words as you type.
+
+The philosophy of CompletionUI is that customization of the user-interface should be left up to users. They know what they want better than you do! And by providing a universal user-interface that can be used by all completion packages, Completion-UI lets users customize their in-buffer completion user interface once-and-for-all to suit their tastes, rather than having to learn how to customize each new package separately.
+
+CompletionUI comes with built-in support for various source of completions. For each source, it defines an interactive command that complete the word next to the point using that source:
+
+* <code>complete-dabbrev</code>: complete using DynamicAbbreviations
+
+* <code>complete-etags</code>: complete using EmacsTags
+
+* <code>complete-elisp</code>: complete [[Elisp]] symbols
+
+* <code>complete-files</code>: file-name completion
+
+as well as (if the packages are installed):
+
+* <code>complete-semantic</code>: [CollectionOfEmacsDevelopmentEnvironmentTools CEDET]'s [SemanticBovinator Semantic] completion
+
+* <code>complete-nxml</code>: NxmlMode completion
+
+* <code>complete-predictive</code>: PredictiveMode completion
+
+These commands are not bound to any keys by default. As with any Emacs command, you can run them using "M-x complete-<name>", or bind them to keys, either globally or in minor-mode key maps. See the Commentary at the top of the <pre>completion-ui.el</code> file for more details.
+
+
+[:ExtendingCompletionUI]
+= Extending CompletionUI =
+
+It is easy to add new sources of completions and even new user-interfaces to CompletionUI. All it takes is one command: <code>completion-ui-register-source</code> for completion sources, <code>completion-ui-register-interface</code> for user-interfaces. See the Commentary at the top of the <pre>completion-ui.el</pre> file for details.
+
+Feel free add examples of or links to new completion sources and new user-interfaces below.
+
+
+
+= Examples of Completion Sources =
+
+=== Using Dabbrevs With Better Ordering ===
+
+Using "dabbrev--find-all-expansions" to find candidate expansions does not generally list the most likely candidates first. The following code tries to emulate the same ordering as the dabbrev-expand command to address this. You may consider it a hack since it uses dabbrev variables intended for internal use, but at least it increases the accuracy of the expansion candidates significantly.
+
+  (require 'dabbrev)
+
+  (defun dabbrev--wrapper-ordered (prefix &optional maxnum)
+    "A wrapper for dabbrev that returns a list of expansions of
+  PREFIX ordered in the same way dabbrev-expand find expansions.
+  First, expansions from the current point and up to the beginning
+  of the buffer is listed. Second, the expansions from the current
+  point and down to the bottom of the buffer is listed. Last,
+  expansions in other buffers are listed top-down. The returned
+  list has at most MAXNUM elements."
+    (dabbrev--reset-global-variables)
+    (let ((all-expansions nil)
+          (i 0)
+          (ignore-case nil)
+          expansion)
+      ;; Search backward until we hit another buffer or reach max num
+      (save-excursion
+        (while (and (or (null maxnum) (< i maxnum))
+                    (setq expansion (dabbrev--find-expansion prefix 1 ignore-case))
+                    (not dabbrev--last-buffer))
+          (setq all-expansions (nconc all-expansions (list expansion)))
+          (setq i (+ i 1))))
+        ;; If last expansion was found in another buffer, remove of it from the
+        ;; dabbrev-internal list of found expansions so we can find it when we
+        ;; are supposed to search other buffers.
+        (when (and expansion dabbrev--last-buffer)
+          (setq dabbrev--last-table (delete expansion dabbrev--last-table)))
+        ;; Reset to prepeare for a new search
+        (let ((table dabbrev--last-table))
+          (dabbrev--reset-global-variables)
+          (setq dabbrev--last-table table))
+        ;; Search forward in current buffer and after that in other buffers
+        (save-excursion
+          (while
+              (and (or (null maxnum) (< i maxnum))
+                   (setq expansion (dabbrev--find-expansion prefix -1 ignore-case)))
+            (setq all-expansions (nconc all-expansions (list expansion)))
+            (setq i (+ i 1))))
+        all-expansions))
+
+  (completion-ui-register-source
+   'dabbrev--wrapper-ordered
+   :name 'dabbrev-ordered)
+
+-- StianSelnes (updated by TobyCubitt)
+
+
+
+= Discussion =
+
+Is it possible to make it work with hippie-expand ? --PierreJeanTurpeau
+
+[new]
+
+I'm not very familiar with hippie-expand, but from what I understand of it, the user-interface part of hippie-expand is a subset of the CompletionUI features, so it's more that CompletionUI replaces (that part of) hippie-expand.
+
+I do realise that hippie-expand also defines methods of gathering completions, as well as a user-interface for displaying and choosing them. CompletionUI now provides support for the main built-in Emacs methods of gathering completions. If hippie-expand defines a function that returns a list of possible completions of a string (ideal case), or of the word next to the point (less ideal but still useable), then it could quite easily be made used by CompletionUI. You'd need to register it using <code>completion-ui-register-source</code>.
+
+-- TobyCubitt
+
+[new:rubikitch:2009-04-14 00:54 UTC]
+AutoInstall now supports *Batch install files*, installing packages with multiple lisp files like [[Icicles]] and AutoComplete. If each completion-ui*.el has its own URL, installing process is much simpler. Only executing #M-x auto-install-batch completion-ui#. -- [[rubikitch]]
+
+----
+CategoryCode | CategoryCompletion

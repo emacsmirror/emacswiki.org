@@ -1,0 +1,8 @@
+tinygnus.el is part of the TinyTools.
+
+Add the following to your .emacs/.gnus file:
+
+ (add-hook 'gnus-startup-hook '(lambda () (require 'tinygnus)))
+
+----
+CategoryGnus | TinyTools

@@ -1,0 +1,32 @@
+Lisp:tumbl.el
+
+==Description==
+Tumbl is a set of functions for emacs which create posts to your tumblr page. It currently "Works For Me", but it's a quick attempt at getting something working. Suggestions for improvements, features or comments are welcome.
+
+==Requirements==
+* You will need to setup an account at Tumblr.com before use.
+* tumbl.el requires http-post-simple Lisp:http-post-simple.el 
+
+==Usage==
+===Interactive Functions===
+Currently, the following functions are defined:
+; tumbl-post-buffer-text: Post complete buffer text to your tumblr log as 'regular' post type. Prompts for buffer name and title
+; tumbl-post-region-text: Post region as 'regular' post. Prompts for title
+; tumbl-post-region-as-quote: Post region as tumblr quote. Prompts for quote source.
+; tumbl-post-region-as-conversation: Post region as tumblr conversation. Prompts for title.
+; tumbl-post-link-url: Post new link. The url is captured from the current region. Prompts for link name and description
+; tumbl-post-link-text: Post new link. The link name is captured from the current region. Prompts for link URL and description
+
+==Source==
+Lisp:tumbl.el
+
+==See Also==
+Other tubmlr.com libraries for emacs:
+
+[[Tumble]]
+
+[[Tumblr]]
+
+
+----
+CategoryJournaling

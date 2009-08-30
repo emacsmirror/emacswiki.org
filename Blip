@@ -1,0 +1,24 @@
+Lisp:blip.el
+
+[[image:BlipElScreenShot]]
+
+blip.el is an emacs package for interfacing with Blip (http://blip.pl),
+a Polish microblogging service. The blip.el package allows you to post
+and receive status updates.
+
+blip.el is heavily based on twit.el (version 0.3.5) which can be found on TwIt.
+Some parts had to be rewritten because of the differences between blip.pl and twitter.com,
+others where copied almost without any changes and finally some features were dropped (at least for now).
+
+There are some differences between twitter and blip.
+First of all blip allows the user to associate extra content with a blip: 
+pictures, videos and recordings.
+Twitter uses @, .@ to note replies and users. Blip uses ^username to mark users,>username to direct msgs a user and >>username to private msg.
+Blip API uses JSON for data transmission.
+
+
+Currently blip.el allows posting with M-x blip-post and seeing blips from the dashboard (M-x blip-show-recent-blips).
+
+I am aware that this package is quite messy. There is probably a lot code that could be removed and other things that could be cleaned up. Maybe I will get around to do it someday, but for now I decided that it's better to post a half working solution then to hold it for indefinite time.
+I also hope that authors of TwIt won't mind that I copied a lot of their work.
+

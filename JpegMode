@@ -1,0 +1,14 @@
+jpeg-mode displays JPEG meta-data using overlays, and tries to interpret the markers / tags to some extent.  It understands some of JFIF and EXIF too.  The annotations are quite technical, and will mainly be of interest if you're trying to understand the jpeg file format or similar.
+
+You can get the code from
+ 
+: http://www.cb1.com/~john/computing/emacs/lisp/graphics/jpeg-mode.el
+
+[new]
+I'm having problems connecting to www.cb1.com :( --ZajcevEvgeny
+
+[new]
+Working at the moment -- JohnSturdy
+
+----
+MultimediaModes

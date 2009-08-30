@@ -1,0 +1,18 @@
+HtmlAccent replaces non-ASCII characters (such as äöü) with their named entities (such as ##&auml; &ouml; &uuml;##).
+This can be useful if you want to make sure to support very old browsers that do not handle decoding correctly.
+
+Use the function provided by the package to translate non-ASCII characters to named entities when you're read to publish your files, use the other function provided to reverse the process if you want to resume editing.
+
+* html-accent: Lisp:html-accent.el
+
+[new]
+
+Why not use iso-iso2sgml and iso-sgml2iso? -- Julio
+
+= =
+I didn't know this resource existed. I think iso-iso2sgml and iso-sgml2iso are better than my functions. If you want delete this you can, because I don't think my functions are that efficient, like iso-iso2sgml and iso-sgml2iso should be.
+
+Thanks for the advice.
+
+----
+CategoryHypermedia

@@ -1,0 +1,25 @@
+=MH-E=
+
+My MUA, nmh (with [[MH-E]] interface to my GnuEmacs)) absolutely
+R'''0x'''x0r''zz''z because it follows the UnixWay, yours propably
+su''xxx''0rZ, except if it's [[MH-E]] too.  Well, if you run your
+sucky GNUS, ViewMail or whatnot under Emacs, which also doesn't follow
+the UnixWay, then it's okay to not follow it, because Emacs doesn't
+either.  With [[MH-E]] i'm not bound to Emacs, which i don't want to
+b3.  It also shows the X-Face -header, which is propably the most
+important feature of any mail-systems anyway!  Thus
+
+    (setq mail-user-agent "mh-e-user-agent")
+    (setq read-mail-command "mh-rmail")
+
+<code>setq</code> man, <code>setq</code> is b0nd!!1!! <code>(._.-' ( (O) ) '-._.)</code>
+
+; [[tekonivel]]: da original in$$pireitah!!
+
+=GNUS=
+
+Hey [[tekonivel]], don't be so daft.  I use my GNUS to read my mail.  It's
+perfect for me, i can even send hotmail and internetmessengers to my
+friends in our local stamp-collection club with it.
+
+Yours, Dwayne Dibbly

@@ -1,0 +1,144 @@
+Hi.  I'm Kragen, or Javier in Spanish.  I thought that I should stick some of my random .emacs stuff here in case someone else was interested; I'll organize it more later.  Criticism welcome!
+
+I'm currently using GNU Emacs 22.2.3, which I compiled from source.  The only other packages on my Debian Etch laptop that I compiled from source (but didn't write) are QEMU and Squeak.
+
+
+    (setq-default filladapt-mode t)
+    (require 'filladapt)
+    (require 'compile)
+    (iswitchb-mode 1)
+    (tool-bar-mode 0)
+    (menu-bar-mode 0)
+    (fringe-mode 4)                         ; half-width fringes
+    (server-start) (setenv "EDITOR" "emacsclient")
+    (setenv "PAGER" "cat")           ; prevent git from trying to use less
+
+    (setenv "DATABASE_ENGINE" "sqlite")
+
+    (display-battery-mode 1)                ; an emacs22-ism?
+    (savehist-mode 1)                       ; definitely an emacs22-ism
+
+    (require 'paren)
+
+    (require 'htmlize)
+
+    ;;; The python.el that ships with Emacs 22.2 is inferior.
+    (require 'python-mode)
+
+    (autoload 'forth-mode "gforth.el")
+    (defun auto-mode (expr mode)
+      "Add a filename-pattern/mode association to auto-mode-alist.
+
+      Why the FUCK is this not in the standard library?"
+      (push (cons expr mode) auto-mode-alist))
+
+    (auto-mode "\\.fs\\'" 'forth-mode)
+    (autoload 'forth-block-mode "gforth.el")
+    (auto-mode "\\.BLK\\'" 'forth-block-mode)
+    (auto-mode "\\.fb\\'" 'forth-block-mode)
+    (auto-mode "\\.pl\\'" 'cperl-mode)
+    (auto-mode "\\.s\\'" 'asm-mode)
+    (auto-mode "\\.scm\\'" 'scheme-mode) ; that's the default, but
+                                         ; bee-mode overrides it
+
+    (require 'inf-lisp) ; not using SLIME yet
+    (add-hook 'inferior-lisp-mode-hook 'turn-on-eldoc-mode)
+
+ReformatUsPhoneNumber goes here.
+
+    (global-set-key [f5] 'recompile)
+    (global-set-key [f6] 'browse-url-at-point)
+
+UnderlineWith, InsertEmDash, IndentRigidlyN, MarkdownTtWord, and SmartQuote go here.
+
+    ;;; do a heavy-handed <pre>
+    (defun heavy-handed-pre (start end)
+      (interactive "r")
+      ; XXX "This function is usually the wrong thing to use in a Lisp program."
+      (replace-string " " "&nbsp;" nil start end) ; nil for DELIMITED
+      (replace-string "\n" "<br />\n" nil start end))
+
+SunLight and WordsInField go here.
+
+    ;; from replace-string docs:
+    ;; This function is usually the wrong thing to use in a Lisp program.
+    ;; What you probably want is a loop like this:
+    ;;   (while (search-forward FROM-STRING nil t)
+    ;;     (replace-match TO-STRING nil t))
+    ;; which will run faster and will not set the mark or print anything.
+    ;; (search-forward STRING &optional BOUND NOERROR COUNT)
+    ;; optional second arugment bounds search
+    ;; region-end region-beginning
+    ;; exchange-point-and-mark
+    ;; so we want something like
+    (defun replace-string-in-region (old new)
+      (interactive "MOld: \nMNew: ")
+      (let ((deactivate-mark "irrelevant")) ; avoid deactivating
+        (save-excursion
+          (exchange-point-and-mark)
+          (let ((end (region-end)))
+            (goto-char (region-beginning))
+            (while (search-forward old end t)
+              (replace-match new nil t))))))
+
+    ;;; mmm-mode
+    ;; doesn't work
+    ;; (setq mmm-global-mode 'maybe)
+    ;; (mmm-add-mode-ext-class 'html-mode "\\.php\\'" 'html-php)
+
+    (fset 'fix-nationaljournal-url
+       "\344\C-d\C-dfile:///home/kragen/devel/watchdog-git/data/crawl/almanac\C-shtt\C-m\C-b\C-b\C-b")
+
+    ;;; Binding from XEmacs.
+    (global-set-key [(meta g)] 'goto-line)
+
+ToggleListOrientation goes here.
+
+    (defun tablify ()
+      "Reformat the region (or the current paragraph) using the tablify program."
+      (interactive)
+      (save-excursion
+        (if (and transient-mark-mode (not mark-active))
+            (mark-paragraph))
+        (shell-command-on-region (region-beginning) (region-end)
+                                 "~/bin/tablify" nil ; nil OUTPUT-BUFFER
+                                 t)))                ; REPLACE
+
+
+    ;;; custom
+
+    (custom-set-variables
+      ;; custom-set-variables was added by Custom.
+      ;; If you edit it by hand, you could mess it up, so be careful.
+      ;; Your init file should contain only one such instance.
+      ;; If there is more than one, they won't work right.
+     '(asm-comment-char 35)
+     '(column-number-mode t)
+     '(compilation-scroll-output t)
+     '(default-input-method "latin-1-prefix")
+     '(erlang-electric-commands (quote (erlang-electric-comma erlang-electric-semicolon)) t)
+     '(global-font-lock-mode t nil (font-lock))
+     '(indent-tabs-mode nil)
+     '(inferior-lisp-program "sbcl")
+     '(longlines-show-hard-newlines t)
+     '(mark-ring-max 64)
+     '(paren-mode (quote paren) nil (paren))
+     '(show-paren-delay 0)
+     '(show-paren-mode (quote paren) nil (paren))
+     '(transient-mark-mode t)
+     '(truncate-partial-width-windows nil)
+     '(vc-handled-backends nil)
+     '(version-control (quote never))
+     '(visible-bell t))
+    (custom-set-faces
+      ;; custom-set-faces was added by Custom.
+      ;; If you edit it by hand, you could mess it up, so be careful.
+      ;; Your init file should contain only one such instance.
+      ;; If there is more than one, they won't work right.
+     '(default ((t (:stipple nil :background "#ffffff" :foreground "#000000" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 80 :width normal :family "schumacher-clean"))))
+     '(paren-face-match ((((class color)) (:background "green"))))
+     '(paren-face-mismatch ((((class color)) (:foreground "white" :background "red"))))
+     '(paren-match ((t (:background "green"))))
+     '(paren-mismatch ((t (:background "red"))))
+     '(show-paren-match ((((class color)) (:background "green"))))
+     '(show-paren-mismatch ((((class color)) (:background "blue")))))

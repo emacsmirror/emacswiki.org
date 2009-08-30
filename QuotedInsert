@@ -1,0 +1,55 @@
+Another way of typing non-ASCII characters is to use '''C-q''' -- by default, if you type `C-q' followed by some
+digits, those are interpreted as an octal code.  Set `read-quoted-char-radix`
+to 10, and then you can type like a normal person.  ;)
+
+    (setq read-quoted-char-radix 10)
+
+Now try `C-q 160 RET` -- you should get something that looks like a space.
+Move back by one and use `C-u C-x =` -- you should get something like this:
+
+  character: &nbsp;  (0240, 160, 0xa0)
+    charset: eight-bit-graphic (8-bit graphic char (0xA0..0xFF))
+ code point: 160
+     syntax:   	which means: whitespace
+
+The article on [[WikiPedia:ISO/IEC 8859-1]] has a good representation of the Latin-1 code page to help you figure out the octal, hex or decimal value of a character.
+
+On a graphical display, you should be able to use quoted Meta-modified characters to generate character codes 128 (decimal) and up, representing non-ASCII characters.  The characters that are inserted are based on the LanguageEnvironment.  On a terminal, quoted Meta characters will not work since Meta is converted to `ESC'.
+
+For Latin-1 (ISO 8859-1), this table shows all the characters inserted with a quoted Meta.
+
+|| Key || Character || Key || Character || Key || Character || Key || Character ||
+|| ##C-q M-SPC## || NBSP || ##C-q M-8## || ¸ || ##C-q M-P## || Ð || ##C-q M-h## || è
+|| ##C-q M-!## || ¡ || ##C-q M-9## || ¹ || ##C-q M-Q## || Ñ || ##C-q M-i## || é ||
+|| ##C-q M-"## || ¢ || ##C-q M-:## || º || ##C-q M-R## || ò || ##C-q M-j## || ê ||
+|| <tt>C-q M-#</tt> || £ || ##C-q M-;## || » || ##C-q M-S## || Ó || ##C-q M-k## || ë ||
+|| ##C-q M-$## || ¤ || ##C-q M-<## || ¬ || ##C-q M-T## || Ô || ##C-q M-l## || ì ||
+|| ##C-q M-%## || ¥ || ##C-q M-=## || ½ || ##C-q M-U## || Õ || ##C-q M-m## || í ||
+|| ##C-q M-&## || ¦ || ##C-q M->## || ¾ || ##C-q M-V## || Ö || ##C-q M-n## || î ||
+|| ##C-q M-##' || § || ##C-q M-?## || ¿ || ##C-q M-W## || × || ##C-q M-o## || ï ||
+|| ##C-q M-(## || ¨ || ##C-q M-@## || À || ##C-q M-X## || Ø || ##C-q M-p## || ð ||
+|| ##C-q M-)## || © || ##C-q M-A## || Á || ##C-q M-Y## || Ù || ##C-q M-q## || ñ ||
+|| ##C-q M-*## || ª || ##C-q M-B## || Â || ##C-q M-Z## || Ú || ##C-q M-r## || ñ ||
+|| ##C-q M-+## || « || ##C-q M-C## || Ã || ##C-q M-[## || Û || ##C-q M-s## || ó ||
+|| ##C-q M-,## || ¬ || ##C-q M-D## || Ä || ##C-q M-\## || Ü || ##C-q M-t## || ô ||
+|| ##C-q M--## || ­ || ##C-q M-E## || Å || ##C-q M-]## || Ý || ##C-q M-u## || õ ||
+|| ##C-q M-.## || ® || ##C-q M-F## || Æ || ##C-q M-^## || Þ || ##C-q M-v## || ö ||
+|| ##C-q M-/## || ¯ || ##C-q M-G## || Ç || ##C-q M-_## || ß || ##C-q M-w## || ÷ ||
+|| ##C-q M-0## || ° || ##C-q M-H## || È || ##C-q M-`## || à || ##C-q M-x## || ø ||
+|| ##C-q M-1## || ± || ##C-q M-I## || É || ##C-q M-a## || á || ##C-q M-y## || ù ||
+|| ##C-q M-2## || ² || ##C-q M-J## || Ê || ##C-q M-b## || â || ##C-q M-z## || ú ||
+|| ##C-q M-3## || ³ || ##C-q M-K## || Ë || ##C-q M-c## || ã || ##C-q M-}## || ý ||
+|| ##C-q M-4## || ´ || ##C-q M-L## || Ì || ##C-q M-d## || ä || ##C-q M-|## || ü ||
+|| ##C-q M-5## || µ || ##C-q M-M## || Í || ##C-q M-e## || å || ##C-q M-~## || þ ||
+|| ##C-q M-6## || ¶ || ##C-q M-N## || Î || ##C-q M-f## || æ ||             ||   ||
+|| ##C-q M-7## || · || ##C-q M-O## || Ï || ##C-q M-g## || ç ||             ||   ||
+
+* '''NBSP''' is a NonbreakableSpace
+
+Note, many of these are not mnemonic, so you are probably better off WritingIsoLatinOne with the `C-x 8' prefix.  The only reason this works is because the function `read-quoted-char' converts meta characters with this bit of arithmetic.
+
+    (logior (logand ?\M-~ (lognot ?\M-\^@)) 128)
+    ==> 254
+
+------
+CategoryInternationalization

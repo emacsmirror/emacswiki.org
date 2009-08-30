@@ -1,0 +1,23 @@
+This is a mode for editing pages in a [http://www.atlassian.com/software/confluence/ Confluence wiki].
+
+For more information and downloads, please visit the [http://code.google.com/p/confluence-el/ Confluence-el Project].
+
+A quick feature list:
+
+* creating and editing pages
+* executing Wiki search
+* diffing your buffer versus the current page in the wiki
+* the following of links beneath the cursor (point)
+* an etags like history navigation (push/pop)
+* viewing/editing of labels
+* viewing/download of attachments
+* the quick-start describes how to use LongLines mode, which makes editing the wiki-markup much more pleasant.
+* much, much more...
+
+Note, this mode uses a slightly modified version of the XmlRpc library, which is included in the download.
+
+[new]
+Version 1.1 now supports emacs 23.
+
+----
+CategoryHypermedia

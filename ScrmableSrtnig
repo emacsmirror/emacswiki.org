@@ -1,0 +1,61 @@
+Aoccdrnig to rscheearch at Cmabrigde Uinervtisy, it deosn't mttaer
+in waht oredr the ltteers in a wrod are, the olny iprmoetnt tihng is
+taht the frist and lsat ltteer be at the rghit pclae. The rset can be
+a total mses and you can sitll raed it wouthit a porbelm. Tihs is
+bcuseae the huamn mnid deos not raed ervey lteter by istlef, but the
+wrod as a wlohe.
+
+<pre>
+ (defun scrmable-word (word)
+  "This duefn will slrabcme the word peassd in."
+  (let* ((letters (save-match-data (split-string word "")))
+         (first-letter (if (length letters) (pop letters)))
+         (last-letter (last letters))
+         order)
+    (if last-letter
+        (progn
+          (setq letters (butlast letters))
+          (mapcar (lambda (letter)
+                    (let ((rand (random* (* 2 (length letters))))) 
+                      (setq order (append order (list (cons letter rand)))))) letters)))
+    (mapcar (lambda (letter)
+              (setq first-letter (concat first-letter letter)))
+            (sort letters (lambda (a b)
+                            (< (cdr (assoc a order)) (cdr (assoc b order))))))
+    (setq first-letter (concat first-letter (car last-letter)))))
+
+ 
+ (defun scrmable-region (start end)
+  "Tihs duefn wlil sbmralce and ertnie region, word by word."
+  (interactive "r")
+  (message "%d %d" start end)
+  (goto-char start)
+  (while (re-search-forward "\\(\\([^[:space:][:punct:]]+\\)\\)[[:space:][:punct:]]*" end t)
+    (replace-match (scrmable-word (match-string-no-properties 1)) nil nil nil 1)))
+
+ 
+ (defun scrmable-buffer ()
+  "This deufn wlil sracbmle the eitnre bffuer"
+  (scrmable-region (point-min) (point-max)))
+</pre>
+
+http://jwz.livejournal.com/256229.html
+
+: Very silly package but quite fun :) -- XavierMaillard
+
+== No Such Study ==
+Actually this study was not really done.  It seems that this news that is spreading so incredibly fast through the web might be an experiment on modern legend creation.  There is a quite good German article at
+
+http://www.heise.de/tp/deutsch/special/auf/15701/1.html
+
+which also points to english resources that discuss this.
+Of course I don't know whether that article is totally correct ;-)
+
+== Limitations ==
+The above algorithm works only for simple texts with short words.  When the scrmabling is performed over several syllables the text becomes more and more unreadable.  I'd propose a modified algorithm that first does a syllable decomposition and then scrmables those letters.  Another approach might be to limit the size of the jump of each letter to a gaussian distribution or something like that. -- StefanKamphausen
+
+== Emacs 23 ==
+Note that you will have to use (split-string word "" t) with emacs 23 to make this work.
+
+----
+CategoryGames

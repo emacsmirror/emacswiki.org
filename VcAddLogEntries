@@ -1,0 +1,86 @@
+It is useful to use the ChangeLog style of comments in a RCS/CVS repository.  This lets you use rcs2log or other script to create a ChangeLog.
+Scanning through a diff of your file, and adding the requisite "(myFcn): " prefixes is a bit of a pain.  This command will help prepopulate
+your log buffer.  After hitting `C-x v v', type `M-x vc-add-log-entries' into the LogEntryBuffer, `*VC-Log*'.
+
+== code ==
+
+ (defun vc-add-log-entries ()
+   "Populate the current log with change log entry points.
+ A change log entry point starts with \"(symbolname):\" for each symbol
+ which appears in a difference."
+  (interactive)
+  ;; Find the difference for our buffer.
+  (let ((diff-functions nil))
+    (if (catch 'diff-process
+	  (save-excursion
+	    (save-window-excursion
+	      (if (get-buffer "*vc-diff*")
+		  (set-buffer "*vc-diff*")
+		(vc-diff nil))
+	      ;; In the DIFF buffer.
+	      (if (get-buffer-process (current-buffer))
+		  ;; We have a process, run something when it's over.
+		  (throw 'diff-process 'process)
+		;; We have a diff buffer, collect the info.
+		)
+	      (require 'add-log)
+	      (save-excursion
+		(goto-char (point-min))
+		(diff-hunk-next 1)
+		(while (not (eobp))
+		  (re-search-forward "^[-+!] ")
+		  (beginning-of-line)
+		  (if (looking-at "! ")
+		      ;; We need to find the match in the
+		      ;; opposite side of the entry
+		      (progn
+			(re-search-forward "^--- [0-9]")
+			(re-search-forward "^! ")))
+		  (save-excursion
+		    (let* ((b (diff-find-source-location))
+			   (buff (car b))
+			   (pos (car (car (cdr (cdr b)))))
+			   (src (car (cdr (cdr (cdr b)))))
+			   (fn nil))
+		      (set-buffer buff)
+		      (goto-char (+ pos (cdr src)))
+		      (forward-line (car (cdr b)))
+		      (end-of-line)
+		      (setq fn (add-log-current-defun))
+		      (if (not (equal (car diff-functions) fn))
+			  (setq diff-functions (cons fn diff-functions)))))
+		  (condition-case nil
+		      (diff-hunk-next 1)
+		    (error (goto-char (point-max))))
+		  ))))
+	  ;; We've collected all the entries, now pop back out, and add
+	  ;; these functions to the vc log buffer.
+	  (setq diff-functions (nreverse diff-functions))
+	  (while diff-functions
+	    (when (stringp (car diff-functions))
+	      (insert "(" (car diff-functions) "): \n"))
+	    (setq diff-functions (cdr diff-functions)))
+	  nil)
+	;; We have a catch, show the diff buffer.
+	(progn
+	  (pop-to-buffer "*vc-diff*")
+	  (error "Try again when the diff is done")
+	  ))))
+
+== Notes ==
+
+This function won't catch every modified function if your functions are close together, or if you add comments in front of a function.
+It will also miss deleted functions.
+
+This uses ##add-log-current-defun##.  This means that if you are using CEDET, it will be enabled for a wider range of languages.  See CollectionOfEmacsDevelopmentEnvironmentTools.
+
+== Comments ==
+
+A method for tying together ChangeLog entries and VersionControl log entries is sorely needed.  I hadn't thought of this approach.  I usually do the opposite workflow.  Use `C-x 4 a' (`add-change-log-entry-other-window') in the ##*vc-diff*## buffer to create the appropriate entries in the ChangeLog file, then copy them into the ##*VC-Log*## -- using the same commit message for the ChangeLog file as well.  I prefer fine-tuning the resulting ChangeLog entries too much to trust the result of the rcs2log command.  However, I wish my newly entered ChangeLog entries could be passed on to the ##*VC-Log*## -- or ##*svn-log-edit*## and so on. -- AaronHawley
+
+[new:XavierMaillard:2009-06-04 05:19 UTC] This is exactly what I am doing. And often when many commits are done per day, I have to "factorize" the ChangeLog so that it does not turn into a big mess: put all changes along files in a unique ChangeLog message, etc. This is why I manly commit ChangeLog file on a day basis so as to avoid commiting too often this file. As for the rcs2cl stuff, I like it when reading ##VC-log##'s entries but I could not rely on it to get a nice ChangeLog (I like particulary bzr log --gnu-changelog) since you would have to "pretty print" it for each checkout/update. Otherwise, all of this is pretty cool.  -- XavierMaillard
+
+I've uploaded a script that integrates this functionality into ##log-edit## mode. You can see it in [[log-edit-fill]] page.
+
+----
+CategoryVersionControl

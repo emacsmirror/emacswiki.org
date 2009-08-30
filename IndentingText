@@ -1,0 +1,65 @@
+M-q (`fill-paragraph-or-region') indents the current paragraph or region based on the first line of the paragraph. It will also wrap lines.
+
+Another way is to use `C-x TAB´ to indent the region.  This indents the region by one
+column.  Use a numeric prefix argument to change this.  Example: `C-u 5
+C-x TAB´ to indent by 5.  Remember that C-u by itself is used as
+multiplication by 4 -- thus `C-u C-x TAB´ will indent by 4, and `C-u
+C-u C-x TAB´ will indent by 16.
+
+You can "outdent" the region as well by using a negative prefix: `C-u
+- 3 C-x TAB´ outdents by 3.
+
+Generally, indenting in text-mode happens via `indent-relative'.  This
+function indents up to the indentation of the previous line, then up
+to the next word in the previous line, and if none is found, according
+to TabStopList.  It is very intuitive, once you get rid of the idea
+that TAB should insert a tab character.  :)
+
+Another way to indent is with 'open-rectangle', and unindent with 
+'kill-rectangle', usually bound to 'C-x r o' and 'C-x r k' respectively.
+
+To use this method, mark the region of text you wish to indent or outdent, 
+then move the point to the left or right the number of horizontal spaces
+you want to insert or delete. Then type 'C-x r o' or 'C-x r k'. 
+
+Useful mnemonics: 'r o' = region open, 'r k' = region kill
+
+Finally, here's some simple elisp for really easy indenting. This code
+lets you just select a region and interactively move it left or right.
+Add the following to your ~/.emacs file:
+
+<pre>
+
+;; Shift the selected region right if distance is postive, left if
+;; negative
+
+(defun shift-region (distance)
+  (let ((mark (mark)))
+    (save-excursion
+      (indent-rigidly (region-beginning) (region-end) distance)
+      (push-mark mark t t)
+      ;; Tell the command loop not to deactivate the mark
+      ;; for transient mark mode
+      (setq deactivate-mark nil))))
+
+(defun shift-right ()
+  (interactive)
+  (shift-region 1))
+
+(defun shift-left ()
+  (interactive)
+  (shift-region -1))
+
+;; Bind (shift-right) and (shift-left) function to your favorite keys. I use
+;; the following so that Ctrl-Shift-Right Arrow moves selected text one 
+;; column to the right, Ctrl-Shift-Left Arrow moves selected text one
+;; column to the left:
+
+(global-set-key [C-S-right] 'shift-right)
+(global-set-key [C-S-left] 'shift-left)
+
+</pre>
+
+
+----
+CategoryIndentation

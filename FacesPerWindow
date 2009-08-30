@@ -1,0 +1,7 @@
+In [[XEmacs]], [[Face]] properties can be set per [[Buffer]], [[Window]], [[Frame]], or device (each X11 screen, each TTY, etc.). However, the interface is confusing, with "specifiers" and "instantiators" and "tags".  Functions like `set-face-foreground' take an optional context argument, which tells XEmacs where the new property applies. For example, ##(set-face-foreground 'default "green" (selected-window))## will set the foreground to green only in one window.  A context can also be a "tag", which is a description of devices (`color', `mono', `grayscale', `tty', `x', `win').  Here's an example that sets faces separately for TTY and window-system frames:
+
+  (set-face-foreground 'default "seagreen" 'win)
+  (set-face-foreground 'default "green" 'tty)
+
+
+In Emacs, [[Face]]s can only vary from one [[Frame]] to another. However, overlays can apply to a single window by setting the `window' property with `overlay-put'. For example, ##(overlay-put my-overlay 'window (selected-window))## will make the overlay appear only in the current window. This doesn't help with font locking, but can be used with custom code.

@@ -1,0 +1,26 @@
+At times, when I'm working with an HTML file - an article about programming, for instance - I need to include a snippet of code inside a <pre> tag or a <code> tag. It's very annoying to have to indent that code by hand, and since the language may be anything from Hecl, to Erlang, to Java to C, I don't want to use something like two-mode-mode for Emacs, so I threw the following elisp together:
+
+<pre>
+(defun indent-region-as (other-mode)
+  "Indent selected region as some other mode.  Used in order to indent source code contained within HTML."
+  (interactive "aMode to use: ")
+
+  (save-excursion
+(let ((old-mode major-mode))
+  (narrow-to-region (region-beginning) (region-end))
+  (funcall other-mode)
+  (indent-region (region-beginning) (region-end) nil)
+  (funcall old-mode)))
+  (widen))
+</pre>
+
+Originally posted by DavidWelton at: http://journal.dedasys.com/articles/2008/06/06/indent-region-as
+
+See also
+HtmlMode,
+MultipleModes.
+
+----
+CategoryCode
+CategoryHypermedia
+CategoryModes

@@ -1,0 +1,37 @@
+You can use `M-x man RET ascii RET' on most systems. There is a man page with the ASCII table and code points in decimal, hexadecimal, and octal.
+
+You may also use `M-x list-charset-chars'. It is often too limited, however.
+
+In that case, use the following:
+
+* Lisp:ascii-table.el 
+
+Install by adding to your ~/.emacs file:
+
+    (autoload 'ascii-table "ascii-table" "Show ASCII table." t)
+
+There are commands for octal, decimal, and hexadecimal codes.
+
+[[Rick Bielawski]] uses the following:
+
+  (defun ascii-table ()
+    "Display basic ASCII table (0 thru 128)."
+    (interactive)
+    (switch-to-buffer "*ASCII*")
+    (erase-buffer)
+    (save-excursion (let ((i -1))
+      (insert "ASCII characters 0 thru 127.\n\n")
+      (insert " Hex  Dec  Char|  Hex  Dec  Char|  Hex  Dec  Char|  Hex  Dec  Char\n")
+      (while (< i 31)
+        (insert (format "%4x %4d %4s | %4x %4d %4s | %4x %4d %4s | %4x %4d %4s\n"
+                        (setq i (+ 1  i)) i (single-key-description i)
+                        (setq i (+ 32 i)) i (single-key-description i)
+                        (setq i (+ 32 i)) i (single-key-description i)
+                        (setq i (+ 32 i)) i (single-key-description i)))
+        (setq i (- i 96))))))
+----
+See also
+* AsciiMode -- an ascii table highlighting the char at point
+* EbcdicTable -- Like AsciiTable but for Ebcdic.
+----
+CategoryProgrammerUtils

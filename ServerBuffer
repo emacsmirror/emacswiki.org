@@ -1,0 +1,21 @@
+[new]
+Searching an nntp server for relevant newsgroups can be timeconsuming. I use the occur function to show me a list of newsgroups matching a regexp in the other window. Here are a couple of extra keybindings I defined so you can easily see the newsgroup description and toggle subscription from the occur buffer:
+
+  (defun aleblanc/toggle-newsgroup-subscription-from-occur nil
+    "Toggle subscription of newsgroup from occur buffer"
+    (interactive)
+    (other-window 1)
+    (gnus-browse-unsubscribe-current-group 1)
+    (other-window 1))
+  (defun aleblanc/show-newsgroup-description nil
+    "Show description of newsgroup from occur buffer"
+    (interactive)
+    (other-window 1)
+    (call-interactively 'gnus-browse-describe-group)
+    (other-window 1))
+  (add-hook 'gnus-browse-mode-hook
+  	    (lambda ()
+  	      (define-key occur-mode-map (kbd "u") 'aleblanc/toggle-newsgroup-subscription-from-occur)
+  	      (define-key occur-mode-map (kbd "d") 'aleblanc/show-newsgroup-description)))
+
+-- aleblanc

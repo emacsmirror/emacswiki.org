@@ -1,0 +1,34 @@
+= Introduction =
+
+I'm Japanese. I use GNU Emacs 23.1.50.2
+
+= Elisp =
+
+* TextTranslator  -- text translation package.
+* RubyBlockMode -- highlight matching block
+* DabbrevExpandMultiple -- dabbrev-expand for multiple
+* Lisp:parenthesis.el -- insert pair of parenthesis
+* Lisp:html-parse.el -- parse html
+
+= Link =
+
+* [http://d.hatena.ne.jp/khiker My Blog(Japanese)]
+
+= Comments =
+
+Welcome! -- [[rubikitch]]
+
+[new:DrewAdams:2008-04-10 16:24 UTC]
+Hi. You might want to compare <tt>[[parenthesis.el]]</tt> with `insert-pair' (in ##lisp.el##). -- DrewAdams
+
+[new]
+Thank you for your comment. and I'm sorry for answering very slowly.
+
+About the difference between <tt>[[parenthesis.el]]</tt> and `insert-pair', (Though it is still few) I wrote to the header of <tt>[[parenthesis.el]]</tt>. -- [[khiker]]
+
+
+----
+CategoryHomepage
+
+
+

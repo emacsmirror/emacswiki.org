@@ -1,0 +1,63 @@
+== Overview ==
+
+There is a nice mode for editing w32 .cmd files written by Tadamegu Furukawa: Lisp:cmd-mode.el
+
+From the commentary: 
+"Tiny mode for editing batch files of MS-DOS and command scripts of
+Windows NT [any OS with cmd.exe: NT, 2k, XP, etc.].  The purpose is to improve the readablity of those
+files that contains many `%' and are difficult to read.  So,
+basically this provides only a proper font-lock setting.  This
+program has been tested for Emacs 20.7 "Meadow-1.14 (AWSAKA:62)
+(the other versions of Emacsen are out of my focus).
+It has now been tested also on Emacs 21.3 and 22.0.50 on W2k."
+
+It has syntax coloring, jumps to labels and can give cmd help. Kenichi Handa has now kindly translated the file from Japanese to English.
+I have kept the Japanese text in the file too.
+Very beatiful signs, but you have to download the correct fonts to see them.
+
+== Alternatives ==
+
+DosScripts compares alternative Emacs modes available for editing Dos scripts, including Lisp:batch-mode.el and DosMode.
+
+== Comments ==
+
+Are you sure you saved that file correctly as coding: sjis-dos? Though it appears correct at Lisp:cmd-mode.el, when I open it from emacs, the Japanese is garbled. I suspect the file is saved as utf-8-unix and the first line -*- coding: sjis-dos -*- is confusing it.
+
+[new]
+No, I am not sure of how to save it at all. Can you correct the file and reupload it? -- LennartBorgman
+
+
+[new]
+I have a version that uses the following for cmd-exec
+<pre>
+(defun cmd-exec ()
+  "Run the current BAT file in a compilation buffer."
+  (interactive)
+  (save-buffer)
+  (let ((compilation-buffer-name-function
+         (function
+          (lambda(ign)
+            (concat "*" (buffer-file-name) "*")))))
+    (compile
+     (concat (w32-shell-name) " -c " (buffer-file-name)))))
+</pre>
+
+This version adds some comment support too, right after <code>(use-local-map cmd-local-map)</code>. 
+
+<pre>
+  ;; configure comment support
+  (make-local-variable 'parse-sexp-ignore-comments)
+  (make-local-variable 'comment-start)
+  (make-local-variable 'comment-start-skip)
+  (make-local-variable 'comment-end)
+  (setq imenu-generic-expression '((nil "^:\\(\\sw+\\)" 1))
+        parse-sexp-ignore-comments t
+        comment-end ""
+        comment-start "REM "
+        comment-start-skip "[Rr][Ee][Mm] *")
+</pre>
+
+It's not mine, I boosted them somewhere long ago. -- Bill K.
+
+----
+DosScripts

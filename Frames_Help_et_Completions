@@ -1,0 +1,28 @@
+'''Cette page fait partie de la description de OneOnOneEmacs, par DrewAdams.'''
+
+This page is also available in English: [[Help and Completions Frames]]
+
+*  
+*  
+*  
+
+Le buffer <code>*Help*</code> est un peu particulier. J'ai decide de lui donner son propre style de [[Frame]] et sa propre fonction d'affichage. J'ai ajoute cette definition de frame a `special-display-buffer-names'.
+
+Voici un capture d'ecran du frame <code>*Help*</code> :
+
+[[image:DrewsEmacsHelpImage]]
+
+J'ai fait la meme chose pour le buffer <code>*Completions*</code>. Voici un capture d'ecran du frame <code>*Completions*</code> : 
+
+[[image:DrewsEmacsCompletionsFrameImage]]
+
+Toutefois, dans ce cas la fonction d'affichage que j'utilise fait aussi ceci :
+
+  (redirect-frame-focus (selected-frame) 1on1-minibuffer-frame)
+
+Ca redirige les actions utilisateurs du frame <code>*Completions*</code> vers le frame du MiniBuffer, `1on1-minibuffer-frame', ce qui est le comportement voulu le buffer <code>*Completions*</code>.
+
+'''Voir le package :''' Lisp:oneonone.el
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay

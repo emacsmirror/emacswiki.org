@@ -1,0 +1,63 @@
+[new]
+I've been fiddling with the Apache rewrite rules again, and I've discovered a new option for the Google Custom Search we're using:
+
+    [ ] Include all pages whose address contains this URL
+    [ ] Include just this specific page or URL pattern I have entered
+    [X] Dynamically extract links from this page and add them to my search engine
+        [X] Include all pages this page links to
+        [ ] Include all partial sites this page links to
+        [ ] Include all sites this page links to 
+
+And I've picked the [Self:action=index;pages=on;permanentanchors= index of all pages] as the URL to use.
+Let's see how it goes. :)
+
+-- AlexSchroeder
+
+[new]
+When searching for a word, I get no result whereas it used to have
+page matching in the past.
+
+-- XavierMaillard
+
+[new:DrewAdams:2008-10-11 14:34 UTC]
+I'm not sure what this is about. I just typed "##icicles##" into the search field and it came up with only 5 pages, and the entries for those pages seem to start with random parts that include "##icicles##", not the first occurrences. I searched for "##"icicles-cmd.el"##" (with and without double-quotes, and it found no matches. Perhaps I'm missing the point, but it doesn't seem as useful as before -- far too many pages missed. -- DrewAdams
+
+[new]
+Indeed this is worse. Please revert. -- NielsGiesen
+
+[new:DrewAdams:2008-10-11 20:26 UTC]
+Another data point: I searched for "bidi" "bidirectional" and "right-to-left", looking for bidi stuff. I got only one hit: NielsGiesen. But I thought there was more about bidi than that on the wiki. -- DrewAdams
+
+[new]
+Let's observe this for a while. Perhaps the search engine just has to spider our site again, which might take some time given that we have several thousand pages... -- Alex
+
+[new]
+I wonder if that is the problem. You can search this site using
+
+  site:emacswiki.org ...
+
+[new:]
+Still no good result today. -- XavierMaillard
+
+[new:DrewAdams:2008-10-14 05:38 UTC]
+Any chance you could, at least for now, put this experimental thing somewhere else and restore the original search -- which works ;-)? IOW, please at least provide some search that works, somewhere.
+
+BTW, I tried searching again for `icicles', and instead of 5 pages I now get only one: [[Grail]]. -- DrewAdams
+
+[new:XavierMaillard:2008-10-14 06:13 UTC]
+I agree with DrewAdams I did another search request and got no match. -- XavierMaillard
+
+[new]
+Well, I changed the Apache rewrite rules so that the wiki uses %%http://www.emacswiki.org/emacs%% instead of %%http://www.emacswiki.org/cgi-bin/wiki%% per default. The old search was basically a Google search with results limited to matching %%http://www.emacswiki.org/cgi-bin/wiki/*%%. I want to change that to %%http://www.emacswiki.org/emacs/*%% because as Google reindexes the site all the links (and thus all the page ranking) will switch to the new pattern.
+
+In order to get out of this impasse I now set it to use both filters:
+
+* %%emacswiki.org/cgi-bin/wiki/*%% (this one being the one that has good data)
+* %%emacswiki.org/wiki/*%%
+* %%emacswiki.org/emacs/*%% (this one being the one that I really want)
+
+I also installed a [http://emacswiki.org/scripts/sitemap cronjob] that produces a [http://www.sitemaps.org/ Sitemap] listing all our pages. Hopefully this will guide search engines in the right direction.
+
+Also, feel free to take a look at the [http://www.google.com/coop/cse?cx=004774160799092323420:6-ff2s0o6yi Emacs Wiki Search] page @ Google. It says that other people can get access to the search engine configuration. Please _sign up_ and help keep it up to date.
+
+-- AlexSchroeder

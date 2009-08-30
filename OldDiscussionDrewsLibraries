@@ -1,0 +1,629 @@
+This page is for older discussions of the EmacsLisp libraries of DrewAdams. For more recent discussions, see [[DrewsElispLibraries#Discussion]].
+
+----
+[new]
+Hello, I wanted to try the line-num.el in setnu+, and it has a problem with a function that is not defined: decf. Just to let you know... 
+
+I tried the other line-num.el, and it seemed to work at first, until I accidentally issued the command turn-off-line-number-display twice instead of once. The first of removed the existing line numbers, and the second one did not notice that line numbers were already removed and deleted a rectangle of the same width all along the left margin... What's happening ???
+- Ferhun Caner
+[new:DrewAdams:2004-12-24 22:30 UTC]
+: Thanks. These pbs should be corrected now -- please download the new version of <tt>[[lineline-num.el]]</tt>. '''''However:''''' <code>-num.el</code> is not "''in'' setnu+"; they are alternatives; they need not be used together. And, as the comment in <code>lineline-num.el</code> states, I believe that <tt>[[setnu+.el]]</tt> is generally ''better'' than <code>lineline-num.el</code>. The latter is still provided because it might prove useful in some contexts. -- DrewAdams
+
+
+----
+[new]
+Suggestion for emacs.init.el
+
+Add code similar to this for users of ispell variations -- SteveTaylor
+
+     ;; UNCOMMENT AND MODIFY AS NEEDED FOR ISPELL PROGRAM
+       ;; ispell-program-name "c:/progs/aspell/bin/aspell.exe")
+
+[new:DrewAdams:2004-12-24 22:29 UTC]
+: The <code>emacs_init.el</code> library on EmacsWiki is not up-to-date anyway. For example, it hasn't yet been updated for Emacs 21.
+: The main purpose of <code>emacs_init.el</code> is to '''''get you up and running with my Emacs libraries'''''. Only incidentally does it also provide a few suggestions regarding some libraries I use but didn't write.
+: <tt>[[emacs_init.el]]</tt> doesn't try to be or do everything. It just represents (some of) what I happen to use. In particular, it brings up the main libraries I've written. Emacs users will no doubt want to tweak lots of Emacs variables such as `ispell-program-name', that are ''not'' part of my libraries. I could remove all mention in <code>emacs_init.el</code> of stuff from libraries I didn't write, or I could try to provide everything possible, for all possible Emacs libraries. Neither approach would be good -- especially the latter. In this case, I would be more inclined to remove all mention of `ispell' (especially since I don't use it often), rather than adding more ispell/aspell config stuff. -- DrewAdams
+
+----
+[new]
+Suggestion for emacs.init.el:
+
+Add setq statements if autoload cookies precede defvar statements for
+the same variable in other libraries, rendering defvars here
+... what's that compiler statement I keep getting ... call it
+pointless. (three setq statements added) -- SteveTaylor
+
+<pre>
+(defvar 1on1-separate-minibuffer-frame-flag nil)
+(setq 1on1-separate-minibuffer-frame-flag nil)
+(defvar inhibit-fit-frame t) 
+(setq inhibit-fit-frame t)
+(defvar autofit-frames-flag t)
+(setq autofit-frames-flag t)
+</pre>
+[new:DrewAdams:2004-12-24 22:29 UTC]
+: Such `setq's are only needed because of the <code>;;;###autoload</code>'s. Neither the `setq's nor the <code>;;;###autoload</code>'s belong here, in fact. Someone might not use <tt>[[emacs-init.el]]</tt> as his init file, but might instead choose to load it separately. It is not good for a Lisp library to stomp on variable values that a user might have set in his own init file. ''Mea culpa:'' I still have too many `setq's in my initialization code (in files like <tt>[[setup.el]]</tt> and <tt>[[start-opt.el]]</tt>) -- this needs to be cleaned up eventually.
+: I have just now removed all of the <code>;;;###autoload</code>'s from <code>emacs-init.el</code> (which could have made such `setq's necessary), so please download the library again. If anyone really wants to load my stuff using a <code>loaddefs.el[c]</code> file (which I don't even bother to do anymore), then he can add the necessary autoloads.
+: Thanks for bringing this to my attention, Steve. I should (and will, eventually) remove the <code>;;;###autoload</code>'s from all of my libraries (except perhaps some that replace standard <code>;;;###autoload</code>'s for replaced std code). -- DrewAdams
+
+
+----
+[new]
+Drew, this may be more work (or a reader's misunderstanding again). Thanks. -- SteveTaylor
+
+There are references to ispell4 in setup-keys and start.el. Should these be ispell? (Works as "ispell" in 21.3.1
+
+Emacs-init.el This hook documentation appears reversed, works better "comment out enabled hook to inhibit automatic frame fitting".
+
+<pre>
+;;;;;; line 472, currently
+
+;;; UNCOMMENT ANY OF THESE, TO *INHIBIT* THE CORRESPONDING FRAME AUTO-FITTING.
+;;; (add-hook 'after-make-frame-functions   ; Inhibit auto-fitting *NEW* frames.
+;;;           'fit-frame)
+;;; (defvar autofit-frames-flag nil) ; Inhibit automatic frame fitting.
+;;; (defvar inhibit-fit-frame t) ; Inhibit *ALL* frame fitting, (even `C-x C-_').
+
+;;;;;; should it be
+
+;;; UNCOMMENT ANY OF THESE, TO *INHIBIT* THE CORRESPONDING FRAME AUTO-FITTING.
+;;; (defvar autofit-frames-flag nil) ; Inhibit automatic frame fitting.
+;;; (defvar inhibit-fit-frame t) ; Inhibit *ALL* frame fitting, (even `C-x C-_').
+
+;;; COMMENT THIS OUT TO *INHIBIT* THE CORRESPONDING FRAME AUTO-FITTING.
+(add-hook 'after-make-frame-functions   ; Inhibit auto-fitting *NEW* frames.
+           'fit-frame)
+</pre>
+
+inhibit-fit-frame or inhibit-fit-frame-flag
+
+<pre>
+It's referred to as inhibit-fit-frame on 
+ - line 478 of emacs-init.el
+ - line 423 of compile+20.el
+ - line 91 of autofit-frame.el 
+but as inhibit-fit-frame-flag throughout fit-frame.el 
+</pre>
+
+[new:DrewAdams:2004-12-24 22:30 UTC]
+: Thanks for your feedback. I've changed ispell4 to ispell, though I don't know if that is correct. To be honest, I don't really use ispell - I should probably get rid of it from my files.
+: I've modified a few files to treat the frame-resizing hooks in a different place and clarify their use.
+: Please download the latest versions of these libraries to take advantage of these changes:
+** <tt>[[autofit-frame.el]]</tt>
+** <tt>[[compile+20.el]]</tt>
+** <tt>[[emacs-init.el]]</tt>
+** <tt>[[fit-frame.el]]</tt>
+** <tt>[[setup.el]]</tt>
+** <tt>[[setup-frames.el]]</tt>
+** <tt>[[setup-keys.el]]</tt>
+** <tt>[[start.el]]</tt>
+** <tt>[[start-opt.el]]</tt>
+: -- DrewAdams
+
+
+----
+[new]
+I might be missing something obvious, but I'm not completely happy about the faces in icomplete+.el. It seems that they are variables, not faces, and therefore I can only set them to a face that's already defined somewhere else. I would like to be able to set them uniquely (e.g., with set-face-attribute) if at all possible. Does that sound reasonable (and can it be done easily?)
+
+[new:DrewAdams:2005-01-14 03:15 UTC]
+Well, there are different points of view regarding faces and face variables (and the treatment of faces has changed a lot over the years -- even the etiquette of ''naming'' faces has changed). There are pros & cons to different ways of dealing with faces, no doubt. From my point of view, the current way I do things should not be less flexible, but possibly more flexible than some other ways. But I recognize that this way of doing things is considered by some to be a bit old-fashioned. In any case, that's the way it is, at least for now.
+
+With a variable, you can easily assign it to different existing faces, or create a new face if you don't want one variable to share the same face as another. Perhaps the main advantage (and disadvantage, of course!) is being able to have the same face used by several different variables, in different contexts. Depending on your use of colors generally ("color scheme"), you might well want two different variables that represent faces used in similar contexts to share the same (face) value -- or ''not''.
+
+Typical face variables include the font-lock variables such as `font-lock-keyword-face'. It's instructive to consider this comment by Stefan Monnier in the font-lock code:
+
+ ;; Originally these variable values were face names such as `bold' etc.
+ ;; Now we create our own faces, but we keep these variables for compatibility
+ ;; and they give users another mechanism for changing face appearance.
+ ;; We now allow a FACENAME in `font-lock-keywords' to be any expression that
+ ;; returns a face.  So the easiest thing is to continue using these variables,
+ ;; rather than sometimes evaling FACENAME and sometimes not.  sm.
+
+In any case, there's nothing difficult about either 1) assigning a variable to a different face or 2) defining a new face, and assigning a variable to that. I don't see what the problem is.
+
+If the issue is not the desire to not share a face among different variables, but rather not knowing ''how'' to change the face that is assigned to a variable, then the answer is to just do your `set-face-attribute' on the ''value'' of the variable -- that is, on its face. IOW, do:
+
+  (set-face-attribute icomplete-keys-face :foreground "Blue")
+
+If the value of `icomplete-keys-face' is the face named `red-foreground-face', then that changes the foreground of `red-foreground-face' to blue, but so be it ;-). There's nothing wrong with doing that, instead of, say, setting `icomplete-keys-face' to a different face, say one called `blue-foreground-face' that happens to look like what it says.
+
+(BTW, I write my code to run in Emacs 20, as well as Emacs 21, and `set-face-attribute' does not exist in Emacs 20. However, functions like `set-face-foreground' exist in both. And allow me to put in a plug for `doremi-face-fg' and `doremi-face-bg' in <tt>[[doremi-frm.el]]</tt>.)
+
+Finally, if none of this info helps, you can always modify the code to use a face instead of a face variable -- trivial to do. ''Vive la code source !'' -- DrewAdams
+
+
+[new]
+Thank you for a very enlightening answer.  I have learned plenty from this.  :-)  I realize that my first attempt was only one character off:
+
+    (set-face-attribute 'icomplete-keys-face nil :foreground "Blue")
+
+The quote is needed when icomplete-keys-face is a face, but must be removed when it's a variable.  Therefore, the following works with icomplete+.el:
+
+    (set-face-attribute icomplete-keys-face nil :foreground "Blue")
+
+However, your example above lacks the /frame/ element that set-face-attribute seems to require.  I have set /frame/ to nil here, and if it's not set, that line of code will fail for me with a 
+
+    set-face-attribute: Wrong type argument: symbolp, "Blue".
+
+I understand your point about a variable being just as easy to set, but I wasn't aware of the difference until now.  Therefore, I can not look at your way as being old-fashioned.  =)
+
+My reason for wanting a face and not a variable is that my .emacs already contains a number of set-face-attribute calls (to faces, not variables), and this would need to be different, if albeit only one character.  Hence the code is harder to read and maintain.
+
+For instance, show-paren-match-face in paren.el is only a face, not a variable.  Stefan Monnier's comment is obviously not always valid.
+
+I had actually made an attempt at changing the source code of icomplete+.  I tried replacing the `defvar' for each of the three faces with a `defface'.  I didn't realize that doing so required more changes.  It works if I add a quote to each of the face variable names being used later in the file, or if I add a
+
+    (defvar icomplete-keys-face 'icomplete-keys-face)
+
+However, not being aware of this, my attempt didn't work.  The rest of icomplete+.el still treats these as variables, and so I didn't succeed.
+
+[new:DrewAdams:2005-01-14 15:35 UTC]
+Yeah, those pesky quotes... The gotchas include: 1) self-evaluating things (numbers, strings etc.), 2) macros and special forms that look like function calls, and which might not evaluate some of their arguments (defun etc.). If everything were always evaluated, then things would be more consistent...but less fun.
+
+Actually, BTW, a face is not a self-evaluating thingy. It's not something that has a read syntax at all, apart from its name (a symbol). But all of the functions that deal with faces have been taught to dig out the internal face thingy whenever they see a symbol, expecting that the symbol is the face name. To give those functions a face name (symbol), you can supply an expression that evaluates to the symbol. That expression could be the quoted symbol or a variable (or other expression) whose value is the symbol. Such functions will also usually accept a face instead of its name, so you can usually give them a variable whose value is a face. -- DrewAdams
+
+
+----
+[new]
+cus-edit+.el bugs -- and it is useful/thanks
+
+custom-buffer-verbose-help shows up as a "void variable" in emacs 21.3.1; works fine when
+it is declared (defcustom custom-buffer-verbose-help t "...") 
+
+After loading cus-edit+, customizing a group and clicking "Set from External Changes" this is part of the backtrace that appears
+
+<pre>
+Debugger entered--Lisp error: (wrong-type-argument listp t)
+  car(t)
+  (eval (car cval))
+  (equal (eval (car cval)) (default-value symbol))
+  (not (equal (eval ...) (default-value symbol)))
+  (and cval (default-boundp symbol) (not (equal ... ...)))
+  (if (and cval (default-boundp symbol) (not ...)) (progn (put symbol ... ...)))
+  (when (and cval (default-boundp symbol) (not ...)) (put symbol (quote customized-value) (list ...)))
+  (let ((cval ...)) (when (and cval ... ...) (put symbol ... ...)))
+  (lambda (symbol) (let (...) (when ... ...)))(gnus-ignored-from-addresses)
+  mapatoms((lambda (symbol) (let (...) (when ... ...))))
+  customize-update-all-vars()
+  customize-update-all()
+  ... widget events here
+</pre>
+
+--SteveTaylor
+
+[new:DrewAdams:2005-01-27 17:40 UTC]
+
+Thanks for this feedback.
+
+1. I've corrected the `custom-buffer-verbose-help' pb. It's hard for me to know what version of Emacs first introduced a variable (sometimes) -- this exists in 21.3.50 (CVS), but not in 21.3.
+
+2. I'll try to debug this. Could you please do this: 
+
+* Download the latest cus-edit+.el, and try again, just to be sure I'm debugging the same version. Use '''Set from External Changes''' on the '''State''' menu for the changed variable (instead of using the button of the same name), to isolate this behavior a little more. (And please check the `custom-buffer-verbose-help' bug, which should be corrected now.)
+
+* Let me know which variable's value you modified (and the new value). Thanks -- DrewAdams.
+
+
+[new]
+Results: custom-verbose fixed, "Set from External Changes" not enabled for confirm-kill-emacs
+
+My intent was/is to check out cus-edit+.el by (customize-group "recentf"), which has been changed outside, and "Set from External Changes."
+
+* Specs: cus-edit+.el Last-Updated: Tue Jan 25 12:55:08 2005, Update 773 - basis of yesteday's two bugs
+* Revised specs: cus-edit+.el Last-Updated: Thu Jan 27 09:51:16 2005, Update #: 803
+
+Today the custom-buffer-verbose-help bug is fixed/thanks.
+
+After (setq confirm-kill-emacs 'y-or-n-p) and (customize-variable (quote confirm-kill-emacs)):
+
+     Confirm Kill Emacs: Hide Value Menu Ask with y-or-n-p
+     State: you have set this option, but not saved it for future sessions.
+
+* the State screen if mouse-or-return clicked shows only these commands enabled: 
+
+     Save for Future Sessions
+     Consider Unchanged
+     Reset to Current
+     Reset to Standard Setting
+     Show initial Lisp expression
+* as expected the "Set from External Changes" button causes the "(wrong-type-argument listp t)" error
+
+n.b. Deleted more of my answered questions in "Old Discussion". But it's your page. And the new sig-graphics are hard on dialup-connections ;-( Thanks. -- SteveTaylor
+
+[new:DrewAdams:2005-01-29 21:45 UTC]
+1. The signature graphic I use is only 10K, which is nothing. It is only downloaded by your browser once, regardless of how many times you see it on a Web page. (However, I don't know if the Wiki adds overhead each time it uses an image with an href -- it should not.)
+
+[new:DrewAdams:2005-04-27 00:50 UTC]
+:: Actually, since I wrote this section, I've deleted my signature graphic. Alex complained that it wasn't a true portrait.  -- Drew
+
+[new:DrewAdams:2005-01-29 21:45 UTC]
+2. I've deleted the old discussion. Thanks.
+
+3. I've made some changes to cus-edit+.el. Please try today's version. It should take care of '''Set from External Changes''' not being active in the menu, and it should update the buffer better.
+
+4. I cannot reproduce your pb with (wrong-type-argument listp t) using Emacs 20 or Emacs 21.3.50. I suspect it is Emacs 21.3 only. Please try again, using variable `apropos-do-all' this time (because it is available also in Emacs 20). Before using customize, turn off automatic updating from outside, using command `customize-toggle-outside-change-updates'. Please set `debug-on-error' to `t' and load the source file (cus-edit+.el, not .elc) and let me know the debugger backtrace. Thanks -- DrewAdams.
+
+
+[new]
+"Set from External Sources" remains inactive so 21.3.1 is the difference
+(The page size or Firefox 1.0PR may be causing slow loading.
+
+Log of Actions and Results. Testing Customize Variable and Set from External Sources
+
+1. Setup 
+
+<pre>
+(setq debug-on-error t)
+(emacs-version)
+(grep "grep -h \";; *\\(Version\\|Last-Updated\\|Update \\#\\):\" \"c:/home/my/elisp/dadams/cus-edit+.el\"")
+(load-file "~/elisp/dadams/cus-edit+.el")
+(setq apropos-do-all t)
+(featurep 'cus-edit+)
+(fboundp 'customize-toggle-outside-change-updates)
+(customize-toggle-outside-change-updates -99)
+(grep "grep -h \";; *\\(Filename\\|Version\\|Last-Updated\\|Update \\#\\):\" \"c:/home/my/elisp/dadams/cus-edit+.el\"")
+</pre>
+
+2. grep buffer (just file/version confirmed)
+<pre>
+cd ~/
+grep -h ";; *\(Filename\|Version\|Last-Updated\|Update \#\):" "c:/home/my/elisp/dadams/cus-edit+.el" NUL
+;; Filename: cus-edit+.el
+;; Version: 21.1
+;; Last-Updated: Sun Jan 30 00:41:00 2005
+;;     Update #: 920
+</pre>
+
+3. Message log (minor: confirmation only)
+<pre>
+Loading c:/home/my/elisp/dadams/cus-edit+.el (source)...done
+Turned OFF automatically telling Customize of outside changes.
+</pre>
+
+4. (customize-variable 'apropos-do-all)
+
+5. Customization Screen that results
+
+<pre>
+This is a customization buffer.
+`Raised' buttons show active fields; type RET or click mouse-1
+on an active field to invoke its action.  Editing an option value
+changes the text in the buffer; invoke the State button and
+choose the Set operation to set the option value.
+Invoke Help for more information.
+
+Operate on everything in this buffer:
+ Set for Current Session Save for Future Sessions
+ Consider Unchanged Ignore Unsaved Changes Set from External Changes
+ Reset Reset to Saved Reset to Standard   Finish
+
+Apropos Do All: Hide Toggle  on (non-nil)
+   State: this option has been changed outside the customize buffer.
+Whether the apropos commands should do more. Hide
+Parent groups: Apropos
+</pre>
+
+6. State button (A=enabled)
+
+<pre>
+  Set for Current Session
+A Save for Future Sessions
+A Consider Unchanged
+  Ignore Unsaved Changes
+  Set from External Change
+A Reset to Current
+A Reset to Saved
+  Reset to Standard Setting
+  Use Backup Value
+  Add Comment
+  Don't show Lisp..
+A Show Lisp Expression
+</pre>
+
+7. Backtrace produced by <enter> on  "Set from External Changes" button
+
+<pre>
+Debugger entered--Lisp error: (wrong-type-argument listp t)
+  car(t)
+  (eval (car cval))
+  (equal (eval (car cval)) (default-value symbol))
+  (not (equal (eval ...) (default-value symbol)))
+  (and cval (default-boundp symbol) (not (equal ... ...)))
+  (if (and cval (default-boundp symbol) (not ...)) (progn (put symbol ... ...)))
+
+    (when (and cval (default-boundp symbol) (not ...)) (put symbol
+    (quote customized-value) (list ...)))
+
+  (let ((cval ...)) (when (and cval ... ...) (put symbol ... ...)))
+  (lambda (symbol) (let (...) (when ... ...)))(gnus-ignored-from-addresses)
+  mapatoms((lambda (symbol) (let (...) (when ... ...))))
+  customize-update-all-vars()
+  customize-update-all()
+
+  (lambda (widget &optional event) (customize-update-all) (message "Updating Customize to 
+   recognize external settings...done"))
+  ((push-button :tag "Set from External Changes"
+  :help-echo "Tell Customize that all preferences changed outside it
+  are now set." :action (lambda (widget &optional event)
+  (customize-update-all) (message "Updating Customize to recognize
+  external settings...done")) :button-overlay #<overlay from 438 to
+  463 in *Customize Option: Apropos Do All*> :from #<marker
+  (before-insertion) at 438 in *Customize Option: Apropos Do All*> :to
+  #<marker at 463 in *Customize Option: Apropos Do All*>) (mouse-1
+  (#<window 53 on *Customize Option: Apropos Do All*> 448 (440 . 159)
+  56815821))) widget-apply((push-button :tag "Set from External
+  Changes" :help-echo "Tell Customize that all preferences changed
+  outside it are now set." :action (lambda (widget &optional event)
+  (customize-update-all) (message "Updating Customize to recognize
+  external settings...done")) :button-overlay #<overlay from 438 to
+  463 in *Customize Option: Apropos Do All*> :from #<marker
+  (before-insertion) at 438 in *Customize Option: Apropos Do All*> :to
+  #<marker at 463 in *Customize Option: Apropos Do All*>) :action
+  (mouse-1 (#<window 53 on *Customize Option: Apropos Do All*> 448
+  (440 . 159) 56815821))) widget-apply-action((push-button :tag "Set
+  from External Changes" :help-echo "Tell Customize that all
+  preferences changed outside it are now set." :action (lambda (widget
+  &optional event) (customize-update-all) (message "Updating Customize
+  to recognize external settings...done")) :button-overlay #<overlay
+  from 438 to 463 in *Customize Option: Apropos Do All*> :from
+  #<marker (before-insertion) at 438 in *Customize Option: Apropos Do
+  All*> :to #<marker at 463 in *Customize Option: Apropos Do All*>)
+  (mouse-1 (#<window 53 on *Customize Option: Apropos Do All*> 448
+  (440 . 159) 56815821))) widget-button-click((mouse-1 (#<window 53 on
+  *Customize Option: Apropos Do All*> 448 (440 . 159) 56815821)))
+  Custom-move-and-invoke((mouse-1 (#<window 53 on *Customize Option:
+  Apropos Do All*> 448 (440 . 159) 56815821))) *
+  call-interactively(Custom-move-and-invoke)
+</pre>
+--SteveTaylor
+
+[new:DrewAdams:2005-01-30 08:09 UTC]
+I've tried to do some testing remotely using Emacs 21.3.1 on Linux. I cannot reproduce your error (yet). I did find an error in Consider Unchanged that was due to Emacs 21.3.1 not using keyword `:tag' for all of its custom widgets. It's a pain trying to make this work for Emacs 20, 21.3.1, and 21.3.50/21.4, but I'll do what I can. I uploaded a version that fixes the error I found. Try it and see if it makes any difference with your pb.
+
+I don't understand why you get the error you do or why the Set from External Changes menu item is not active. Your error looks a bit like the Emacs 20 form of internal data structure is being used, instead of the Emacs 21 form (but you are running Emacs 21, so the code tests against that form).
+
+Wrt the Set from External Changes menu item: After you turn off automatic updating, make sure that you change `apropos-do-all' a couple of times (nil, t), so that you are sure that an "outside change" has in fact been done, as far as Customize is concerned (nil is the standard value). Then use `customize-variable'. If you still don't see the menu item active, try `eval'ing each of these (using `M-:') after ensuring that the outside value has been changed:
+* <code>(get 'apropos-do-all customized-value)</code>
+* <code>(get 'apropos-do-all saved-value)</code>
+* <code>(get 'apropos-do-all standard-value)</code>
+* <code>(default-boundp 'apropos-do-all)</code>
+
+At least one of the first three should be non-`nil', and so should the fourth. Try to `eval' the value returned by the first of the first three that is non-nil, and compare that with <code>(default-value 'apropos-do-all)</code> -- they should not be equal. -- DrewAdams
+
+
+
+
+----
+[new:GregFenton:2005-01-31 20:59 UTC]
+I am missing something...at least I think I am.  I've just started with '''[[#DrewsLibraries]]'''.  I downloaded <code>emacs-init.el</code>, renamed it to <code>.emacs</code>, read through it and tweaked some settings (e.g. directories).  But now that I have run it and answered initial questions, but now I have some questions:
+
+* Is there a single download for the all of the <code>.el</code> libs or must I download them manually?
+* Is there a single download for the "required" libs (those listed in <code>emacs-init.el</code>) ?
+* Must I manually add <code>(load-library 'ring+)</code> and <code>(require 'ring+)</code> to my .emacs?
+* Do I have to manually add <code>(load-library)</code> etc... for most or all of the libs?
+* Does someone have a "rich" <code>.emacs</code> posted somewhere that started life as <code>.emacs-init.el</code> at one point?
+* Is there a list of "suggested next steps" for someone starting off from scratch?
+
+Thanks in advance -- GregFenton
+
+[new:DrewAdams:2005-02-01 23:04 UTC]
+First, I should say that I haven't updated emacs-init.el in a while, at least not substantively. But it should be more or less OK.
+
+* There is no single download, either for all or for only the required libraries. EmacsWiki doesn't have a zip capability. However, you can now download ''all'' of the Wiki's Emacs-Lisp libraries at once (not just my libraries) -- see http://www.emacswiki.org/cgi-bin/wiki/DownloadAllElispFiles.
+* I don't understand the question about ring+. Is ring+ here just a generic example, like foo, or is this a question specifically about ring+? 
+
+:: Normally, <code>emacs-init.el</code> loads stuff like that, and you don't have to manually add code to <code>emacs-init.el</code> to load stuff. Actually, <code>emacs-init.el</code> loads library `start', which loads most everything. Library <code>start.el</code> might be better named <code>load-drews-stuff.el</code>. It does load <code>ring+.el</code>, BTW, but only when you load standard library <code>ring.el</code>. That is, <code>start.el</code> does <code>(eval-after-load "ring" '(require 'ring+ nil t))</code>. Others of my libraries also load <code>ring+.el</code>, because they use it. For example, library <code>doremi-frm.el</code> loads <code>ring+.el</code>.
+
+:: You would never need to use both `load-library' and `require' for the same library, in any case -- they do about the same thing. Also, the library file must be named <code>ring+.el</code>, not <code>ring-plus.el</code>. You must rename it after downloading it as <code>ring+.el</code>. (EmacsWiki doesn't let us upload files with names that contain a `+'.)
+
+* No, you generally do not have to manually (or in your <code>.emacs</code>) load my libraries. They are loaded by <code>start.el</code> (see previous). There are a few of my libraries that are not loaded by `start', but most of those are autoloaded, which means that they are loaded as soon as you try to use a command they define. There might be one or two libraries that are not even autoloaded -- they probably are not that useful ;-).
+
+* If you're looking for someone's <code>.emacs</code> that derived from <code>emacs-init.el</code>, then I don't have an answer. My own <code>.emacs</code> is always in a state of flux and has stuff that is particular to my local setup (machine, environment). Its essence is in <code>emacs-init.el</code>. Besides the comments, there is not a whole lot in <code>emacs-init.el</code> -- mostly it just loads <code>start.el</code>, which loads everything else. Perhaps the plethora of comments in <code>emacs-init.el</code> is intimidating. Try just setting variable `drews-lisp-dir' to the directory where my libraries are, and start it up to see what happens.
+
+* A great place to learn stuff if you're starting from scratch is EmacsNewbie -- strongly recommended.
+
+* Don't give up. If you can figure out how to edit this Wiki page, you should be able to get my stuff up and running. As I say, don't worry about everything in <code>emacs-init.el</code> for now; just define the source directory (`drews-lisp-dir') and give it a try. You can worry about setting printer addresses and stuff later. -- DrewAdams
+
+
+[new:GregFenton:2005-01-31 20:59 UTC]
+Thanks Drew.  I actually am a long time 19.x user who simply migrated to 21.3.  I'm just trying to take a completely fresh st
+
+
+
+----
+[new:Sivaram N :2005-07-10 13:36 UTC]
+I recently downloaded dired+ and installed it.  I think there is a small problem with dired+.el.  The function
+dired-unmark-all-files-no-query is not defined,  so this line 
+(define-key dired-mode-map "U" 'dired-unmark-all-files-no-query)
+ is erroring out.  Shoud it point to (define-key map "U" 'dired-unmark-all-marks) defined in dired.el?  that's as far as my elisp skills go.
+
+Another thing, changing faces of the screen under dired+, do you think it's a better idea to rename the vars as dired-face-file
+dired-face-dir
+dired-face-executable
+dired-face-symlinks
+...
+which would make it easier to customise faces for dired+.  In the current setup, one needs to know exactly what action it is & then look for a face var to customize.  Logically (at least me), M-x dired-face-  would list all possible face customisations rather than hunt for a face in all dired vars. -- Sivaram N
+
+[new:DrewAdams:2005-07-10 14:26 UTC]
+Yes. Good catch. `dired-unmark-all-files-no-query' is an obsolete name (very old - I had to google for it myself). I've made the fix; you can pick up the new version here: http://www.emacswiki.org/elisp/dired+.el. Thanks.
+
+And yes, I should rename the faces, use `defface', and get rid of the face variables altogether. Current practice is to not use "face" in face names at all, and not use variables for faces. So you would look for the face names only among faces, not among variables. I don't have time now to update this, but I plan to some day. 
+
+BTW -- If you use dired+.el, you might also want to try dired-sort-menu+.el. -- DrewAdams
+
+
+----
+[new]
+It seems most of these libraries which have been documented and uploaded on EmacsWiki contain notices for traditional [[Copyright]] in their headers, yet ThisWiki licenses things as GPL, FDL, ShareAlike.  Is this a contradiction? [posted by AaronHawley, IIRC -- DrewAdams]
+
+[new:DrewAdams:2005-08-12 15:21 UTC]
+I'm not a lawyer. Such a copyright notice is traditional in contributed Emacs-Lisp libraries. I do not believe that it conflicts with the free software notice that is also included in each of my libraries:
+ 
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2, or (at your option)
+ any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; see the file COPYING.  If not, write to the
+ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ Boston, MA 02111-1307, USA.
+
+Check out the libraries at WikifiedEmacsLispList -- do any of them ''not'' follow this convention? 
+
+You are free to use my code, under the conditions of the GPL. Relax and ''enjoy!'' - or call your lawyer ;-). -- DrewAdams
+[new]
+I didn't scroll and see the GPL notice.
+I was also confused by "All rights reserved"?  [http://www.gnu.org/licenses/gpl.html#SEC4 GPL: How to Apply These Terms]  [posted by AaronHawley, IIRC -- DrewAdams]
+
+
+----
+[new]
+An issue with info+.el. The cvs build of emacs got rid of
+'Info-escape-percent header' and I have to put this lambda() in lines 1400+6 (taken from regular info.el):
+
+<pre>
+;;;;
+;;;;;;;;;;    (put-text-property (point-min) (1+ (point-min))
+;;;;;;;;;;                       'header-line (Info-escape-percent header))
+              (put-text-property (point-min) (1+ (point-min)) 
+                               'header-line
+			       (replace-regexp-in-string
+				"%"
+				;; Preserve text properties on duplicated %'.
+				(lambda (s) (concat s s)) header))
+</pre>
+
+[new:DrewAdams:2005-11-09 23:17 UTC]
+Great -- thanks for catching that. I've updated <tt>[[info+.el]]</tt> accordingly. -- DrewAdams
+
+
+----
+[new]
+Any chance of putting your code on some kind of revision control system such as CVS or arch so that we who follow your code development don't have to return to the emacswiki so frequently? -- JesseAlama
+
+[new:DrewAdams:2005-12-01 01:37 UTC]
+: Sorry Jesse, I don't have the resources to do that. I'm thankful for EmacsWiki, to have a place to share my code. 
+Any major changes I make are usually limited to the one library I'm working on currently (lately, <tt>[[icicles.el]]</tt>), and they are less frequent than minor changes. So, if you are unable to check that frequently, you probably won't miss much. -- DrewAdams
+
+
+----
+[new]
+Just curious: do you use gnus? I'd love to be able to use your libraries, but the only thing holding me back so far is the fact that they don't seem to work well with gnus.  For example, starting gnus with `M-x gnus-other-frame' brings up the splash screen and them immediately shrinks it down into an unusuably small size. I then have to auto-fit the frame again. Any suggestions for how to deal with this issue? -- JesseAlama
+
+[new:DrewAdams:2005-12-31 07:52 UTC]
+No, I've never tried gnus, and I have no access now to a news server. I could try corresponding with you to try to debug the problems a bit -- you never know; perhaps it's something simple (but see below). You can email me at d r e w . a d a m s ''<theatsign>'' o r a c l e ''<thedot>'' c o m. 
+
+Are you having more problems than just the frame-fitting? You don't need to give up on all of my libraries just because Lisp:fit-frame.el and Lisp:autofit-frame.el give you a hard time ;-).
+
+Regarding frame-fitting: I just tried `M-x gnus-other-frame' in CVS Emacs (June 2005 snapshot), and yes, the splash screen is shrunk smaller than the gnu image. My frame-fitting code does not take into account images -- or even proportional fonts or multi-column characters such as `TAB'. It simply counts characters to determine the maximum line length (~ frame width). 
+
+It works great for most purposes (most of my purposes, I guess). I do use it with proportional fonts of different sizes and I don't notice any real problem. The occasional `TAB' in a long Info menu line can cause that line to wrap in the frame. If you use Chinese you'll probably have less than satisfactory results. And it loses on images. But otherwise it's pretty good.
+
+[new:DrewAdams:2005-12-31 22:45 UTC]
+|| I should add that the problem with multi-column character, such as TAB, is only a problem in Emacs 22, and is apparently a bug. The doc string for `current-column' (which I use to measure line width) clearly says that is is supposed to correctly measure character width, as displayed (as it did in previous versions). This probably got broken in the move to proportional fonts. I reported the bug today. -- DrewAdams ||
+
+
+[new:DrewAdams:2006-01-01 07:10 UTC]
+:: Good news -- I just got word from EliZaretskii that this bug in Emacs 22 has been fixed since the June CVS snapshot that I'm still using. So, frame-fitting should work with multi-column characters such as TAB, as well as with proportional-width fonts. I imagine that also means it will work with Chinese etc. So, the only remaining problem that I'm aware of is the inability to determine the size of inline images and taking that size into account when frame-fitting. (The rest of the thread below doesn't take this update into account.) -- DrewAdams
+
+[new:DrewAdams:2005-12-31 22:45 UTC]
+I don't know of an easy way to deal with those more complex critters. Perhaps someday I'll find out how to determine image size etc. (I don't think this is possible currently, in Emacs), but for now you have a few choices:
+
+* Turn off automatic frame-fitting. That's easy to do: `autofit-frames-flag'. That will at least let you try some of my other libraries ;-). You can still fit any frame that you want to -- I bind `fit-frame' to `##C-x _##' (underline); it's quick to fit a frame this way, if autofitting is too much of a hassle (e.g. because of images).
+
+* Leave autofitting on, but set minimum frame width and height so they are large enough for most of your uses. You can also set maximum sizes.
+
+* Leave autofitting on, and suffer with some frames that are not appropriately sized, for things like images.
+ 
+The second option is halfway between the first and third -- essentially, it ensures that frame-fitting doesn't shrink a frame too much. You can set any size you want. You can set absolute min/max sizes or relative min/max sizes (relative to your display size).
+
+If you choose the third option, thinking that frame-fitting in most buffers is worth the hassle it presents in a few buffers (e.g. with images), then be aware that you can still resize a frame quickly by hand, without fitting it. I bind `enlarge-frame', `shrink-frame', `enlarge-frame-horizontally', `enlarge-frame-vertically' to the `C-M-'''<arrow keys>''. Obviously, if you often open buffers that are going to be fit wrong, you won't want to monkey with resizing them this way after autofitting, but if there are only a few such frames then it might be worth it. It's very quick to resize a frame by just holding down `C-M-' and using the arrow keys. Even though I use autofitting, I still occasionally manually resize a frame.
+
+I don't know what else to say at this point. Please let me know what other problems my code presents for using gnus. It's not good for code to not play well with gnus; lots of people use it. If it is just the splash screen image, then I'm not too concerned (especially since I see no easy solution for the moment), but if there are other problems, I'd like to know about them. Have you tried any of my other libraries -- Lisp:icicles.el, for instance?
+-- DrewAdams
+
+[new]
+Thanks for your help with the gnus issue; I'll try out your suggestions. I believe it's just the splash screen issue (with the gnus logo) that needs to be dealt with. I'll try that middle road you mention (setting a minimum frame size, which is something I've wished I could do something about for other purposes, anyway -- thanks for the tip). --JesseAlama
+
+[new]
+When I setq'd `custom-file' to my old .emacs file and fired up gnus, I was surprised to find out that the configuration was terribly busted. It looks like all the variables that resided in the `custom-set-variables' in my old .emacs file were hosed; the only thing my old .emacs file contains within the `custom-set-variables' section is now simply `(custom-set-variables '(custom-file <path to old .emacs>))'. Everything outside the `custom-set-variables' and `custom-set-faces' sections of my old .emacs has been preserved.  How can I intelligently migrate to using your emacs-init.el together with my old .emacs, so that my old variable settings are carried forward? --JesseAlama
+
+[new:DrewAdams:2005-12-31 20:50 UTC]
+Bummer! Beware of Custom -- it has great potential, but there are a zillion pitfalls currently (and there will continue to be problems in Emacs 22 -- we hope to attack them for Emacs 23).
+
+My code doesn't mess with your custom file or your .emacs -- that's one good thing! I'd recommend that you separate your custom stuff (as you tried to do) into a separate `custom-file', don't let Custom put it in your <tt>.emacs</tt>.
+
+Be aware that some of my "libraries" are more like custom files, in that they change your settings (but not persistently). I'm thinking, in particular, of <tt>[[setup.el]]</tt>, <tt>[[setup-keys.el]]</tt>, and <tt>[[start-opt.el]]</tt>. You're welcome to try them as is, and <tt>[[emacs-init.el]]</tt> is a good guide (as is <tt>[[start.el]]</tt>), but you might find that some of the settings are not to your liking. One good thing is that using them won't change your `custom-file' or your `.emacs', so you can start up again without them.
+
+As to how to use <tt>[[emacs-init.el]]</tt> with your previous `.emacs' settings: Try selecting parts of <tt>[[emacs-init.el]]</tt> and using `M-x eval-region', starting at the top and working down. After each evaluation, check to see what has changed that you don't like. Sorry, there is currently no easier way. 
+
+Another possibility is to do a binary search: try evaling the top half of <tt>[[emacs-init.el]]</tt> (say, before it loads <tt>[[start-opt.el]]</tt>) and check what you have. If there is already stuff you don't like, then split the top half in half and try the top quarter -- and so on.
+
+As I said, most of the settings are in <tt>[[start-opt.el]]</tt>. Some are in <tt>[[setup.el]]</tt>. Library <tt>[[start.el]]</tt> only loads libraries -- it is the master load machine for my stuff. Most of the libraries it loads will not change your settings, but some might -- please report any that do. 
+
+This means that, if it turns out that one of the libraries loaded by <tt>[[start.el]]</tt> changes one of your settings, you might need to re-establish the setting after loading my stuff. Or, at the worst, modify <tt>[[start.el]]</tt> to not load that particular library.
+
+General hint: In your <tt>.emacs</tt>, load your `custom-file' '''''last'''''. And do any other setting of stuff that you might do in your <tt>.emacs</tt> ''after'' loading my stuff. Exception to this: do `defvar's before loading my stuff -- they should not be overwritten, and doing them afterward might be too late (a `defvar' has no effect if a variable has already been set).
+
+Yes, this all sounds like a mess. I've tried to make my libraries fit together well, but there is room for improvement. In particular, I should more completely separate (and identify) those "libraries" that are more like custom files from the true libraries that don't change your settings.
+
+HTH -- DrewAdams
+
+
+----
+[new]
+It looks like my emacs22 doesn't like your `(require 'gnuserv)' in your emacs-init.el. I've changed it to `(require 'server)', and things seem to work now.  Perhaps the simple `(require 'gnuserv)' could be replaced by a conditional statement whose condition tests the version of emacs being used. --JesseAlama
+
+[new:DrewAdams:2005-12-31 20:33 UTC]
+: Lisp:emacs-init.el is not very up-to-date. In particular, some stuff like gnuserv doesn't work as it is in <tt>[[emacs-init.el]]</tt> for Emacs 22 (and perhaps 21). I'm not sure the solution is as simple as you suggest -- a lot depends on the particular version of gnuserv, and so on.
+
+: The best advice is to use <tt>[[emacs-init.el]]</tt> only as inspiration. I should update it, or at least make this clear in the Commentary. -- DrewAdams
+
+
+
+----
+[new]
+I just saw this commented code in w32-browser.el:
+
+ ;;; Cannot use this.
+ ;;; For some reason, only one or two of the files get opened.
+ ;;;;;   (defun dired-multiple-w32-browser ()
+ ;;;;;     "Run default Windows applications associated with marked files."
+ ;;;;;     (interactive)
+ ;;;;;     (let ((files (dired-get-marked-files)))
+ ;;;;;       (while files
+ ;;;;;         (w32-browser (car files))
+ ;;;;;         (setq files (cdr files)))))
+
+Just wanted to say that this works on my machine. I just tested with five marked text files in dired and all of them opened up in Notepad, as they should.
+
+-- MaDa
+
+[new:DrewAdams:2006-01-02 20:06 UTC]
+: Thanks, Mathias. I've updated [[w32-browser.el]] accordingly. Actually, on my system, because it is too fast, too slow, or for some other reason, I needed to introduce a small sleep time between calls to `w32-browser' in `dired-multiple-w32-browser'. I added an option for this wait period, which you can set to 0 if your system needs no wait. The default value is the smallest I found works on my system: 0.1 seconds. I also updated the library to work with either Dired+ (DiredPlus) or vanilla Dired. Thanks again. -- DrewAdams
+
+[new]
+:: Cool! Whatever works for you... :) It would be interesting to see if this problem only applies to Emacs or if it can be reproduced in other places too. I'll see if I have the time to cook together a small VBScript or even a VB-program, to test it. A bit off-topic, I know, but still interesting... -- MaDa
+
+
+
+----
+[new]
+It looks like `dired-move-to-filename-regexp' in dired.el, which you use in Lisp:dired+.el, was killed; see http://lists.gnu.org/archive/html/emacs-commit/2005-10/msg00703.html .  The solution seems straightforwward enough: just replace `dired-move-to-filename-regexp' with `directory-listing-before-filename-regexp'. --JesseAlama
+
+[new:DrewAdams:2006-01-04 22:02 UTC]
+: Thanks for the heads-up, Jesse. I uploaded a new version of <tt>[[dired+.el]]</tt>. IMO, this is a bug in Emacs 22 -- when replacing `dired-move-to-filename-regexp' they should have provided an alias to the old name. I just reported it. -- DrewAdams
+
+[new:DrewAdams:2006-01-05 17:34 UTC]
+:: An update: RMS agrees that not providing an alias was an oversight (bug) to be corrected. So, soon the fix I made for this won't be needed. -- DrewAdams
+
+
+----
+
+CategoryHomePage

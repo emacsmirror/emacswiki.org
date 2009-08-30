@@ -1,0 +1,8 @@
+When your InitFile gets so large that you really need to start over, then you have declared ".emacs bankruptcy".
+
+The term was coined by RyanMcGeary on 2007-10-07[http://www.emacsblog.org/2007/10/07/declaring-emacs-bankruptcy/]:
+
+: ''I give up. During the past 6 years of my emacs career, my .emacs initialization file grew to embarrassing levels. As of this morning, it is well over 1000 lines and is a looming burden of disorganization. Startup time is poor, customizations exist for modes that I don’t use anymore (ahem, csharp-mode), and it has been this way for too long....''
+
+----
+CategoryDotEmacs

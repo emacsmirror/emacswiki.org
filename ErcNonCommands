@@ -1,0 +1,10 @@
+This module is enabled by default.  To disable it use M-x customize-variable RET erc-modules.
+
+/-commands which are not sent to the server are considered non-commands.  Only the results of these commands are displayed in the buffer, not the command.
+
+To add non-commands, add something like the following to your ~/.emacs:
+
+    (add-to-list 'erc-noncommands-list 'erc-cmd-FOO)
+
+----
+[[ERC]]

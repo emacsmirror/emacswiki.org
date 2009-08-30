@@ -1,0 +1,33 @@
+The humble home of [http://vmlinux.org/jocke/ Joachim Nilsson].  Emacs is my favorite toolbox and I like to explore its universe and expand my understanding of it on a daily basis.  I currently employed by [http://www.westermo.se Westermo R&D] where I work on industrial Ethernet switches based on GNU/Linux.
+
+From time to time [http://vmlinux.org/jocke/ I blog] about Emacs, those ramblings can be seen here http://vmlinux.org/jocke/blog/emacs/
+
+In Emacs I am interested in:
+
+* EnterpriseEmacs, my own tacky/twisted idea of what the defaults should be.
+* The RedoMode, we *need* redo for Emacs
+* The CapsKey should be Ctrl! Who designed today's keyboards?
+* The VhdlMode, why is it not in the default Emacs distribution?
+* The CssMode, PhpMode and PythonMode are other interesting modes
+* NroffMode - who can live without it? :)
+
+Other interesting stuff:
+
+* WordStar - http://inventors.about.com/library/weekly/aa030199.htm
+* The Hurd - http://hurd.gnu.org
+* Realtime - http://www.mrtc.mdh.se/
+
+== Comments ==
+: Hello and welcome!  The Hurd always inspires the image of things rising from the grave to haunt us -- and hurd reminds me of hurdles.  I never tried it, I am too scared.  :) -- AlexSchroeder
+
+: Thanks. The Hurd is technically almost "done", it lacks pthreads and thus a lot of programs cannot be built. It also lacks a decent installer, which eliminates all people who're scared of using a single bourne prompt to fix things. I cannot answer for the ten years of long sleep, all I know is that in a year or so the Hurd will be more usable (pthreads and installer done) to beginners and non-programmers. So being scared of the Hurd is not a sign of weakness, more a sign of good health and self preservation. :-) -- JoachimNilsson
+
+:: GNU is the future. I am actually fighting in reinstalling it onto my notebook. I hope I can help soon in development or things like that.  All I know is when I first tried it (1 year ago), I was extremelly comfortable at using it :) -- XavierMaillard
+
+: Hello, I'm not aware of any Gtk+/Gnome flavor of GNU Emacs, but if there's any effort being made in that direction I'd be happy to get involved. Do you have any pointers in this regard? Thanks! -- LeonardoBoshell
+
+:: Have a look into the EmacsCvs. I think this is the only version providing such a feature. The port may not be done totally and what's more AA is only supported on the window decorations not onto the edit area so... -- XavierMaillard
+
+
+----
+CategoryHomepage

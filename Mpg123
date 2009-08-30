@@ -1,0 +1,12 @@
+<code>mpg123.el</code> is a package by HiroseYuuji for playing <code>.mp3</code> and <code>.ogg</code> files with the <code>mpg123</code> and <code>ogg123</code> programs.  Get it from the author at
+
+: http://www.gentei.org/~yuuji/software/mpg123el/
+
+Or on a [[Debian]] system see DebianPackage:mpg123-el.
+
+<code>M-x mpg123</code> lists music files in a directory, which you can start playing, and do other things.  Tag information is read directly by <code>mpg123.el</code>, and the <code>E</code> key is setup to invoke Id3Edit to edit it.
+
+Volume is controlled by one of several mixer programs (which can be customized) depending on the system type.  On a GNU/Linux system the default is <code>aumix</code>.
+
+----
+MusicPlayers

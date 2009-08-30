@@ -1,0 +1,38 @@
+PPINDENT indents C-preprossor statements depending on the current #if..., #el.., #endif level. It only modifies lines with "#" as the first non-blank character and therefore does not conflict with the normal C indentation. Unlike a true indent, it inserts the requisite number of spaces after, rather than before the "#" character. This type of preprocesor indent is commonly used to provide the most compatibility with different C-compilers.
+
+Example:
+
+    #ifdef WOO
+    ....
+    #if defined(X) && !defined(Y)
+    #ifdef Q8
+    ...
+    #else
+    ...
+    ....
+    #elif defined (Z)
+    ....
+    #endif
+    #endif
+    #endif
+
+After "M-x ppindent-c" becomes:
+          
+    #ifdef WOO
+    ....
+    #  if defined(X) && !defined(Y)
+    #    ifdef Q8
+    ...
+    #    else
+    ...
+    ....
+    #    elif defined (Z)
+    ....
+    #    endif
+    #  endif
+    #endif
+
+Two functions are provided: PPINDENT-C indents as described above. PPINDENT-H does not indent the first level, assuming that .h/.hpp files use an #ifdef guard around the entire file.
+
+You can customize PPINDENT-INCREMENT if you want to use something other than 2 spaces for the indent.
+

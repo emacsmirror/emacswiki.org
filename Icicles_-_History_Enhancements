@@ -1,0 +1,416 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Large Candidate Sets]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Isearch Enhancements]] ||
+
+----
+
+== History Enhancements ==
+
+This page is about accessing and reusing previous input that you have typed in the [[minibuffer]].
+
+
+[:Which]
+=== What Input, What History? ===
+
+First, what is meant by "'''input'''" and "input history"?  In Emacs and
+in this doc, "'''minibuffer history'''" and "'''input history'''" generally
+refer to input that you have typed (or [[Icicles - Cycling Completions|cycled]] or [[completion|completed]]) in the
+minibuffer and then ''entered'' using '''`RET'''' (or `S-RET').  Emacs
+provides different history lists for this, depending on the kind
+of input.  The most general such list is the value of [[variable]]
+`minibuffer-history'.
+
+But what about input that you type in the minibuffer (e.g. during completion) but that you ''do not
+enter'' with `RET'?  That is not recorded in any standard history
+list, so you cannot recall it using `M-p' and `M-n'.
+
+The '''Icicles''' doc speaks ambiguously of "'''minibuffer input'''".  This
+always refers to something that you type in the minibuffer, but
+sometimes it means input that you enter with `RET' and sometimes
+it does not.  The context and the use
+of phrases such as "entered" and "entered with `RET'" should make
+clear what is meant.  Input that you type during completion but you do not necessarily enter is sometimes referred to in the '''Icicles''' doc as "'''completion input'''".
+
+Because ''completion'' is so important to '''Icicles''', because ''[[Icicles - Cycling Completions|cycling]]''
+replaces the input you type in the minibuffer, and because you sometimes
+need to retrieve such typed ''input that was never entered'', '''Icicles'''
+also records this input.  You can retrieve it during completion
+using '''`C-l'''' ('''`icicle-retrieve-previous-input'''') and `C-S-l', that
+is, '''`C-L'''', ('''`icicle-retrieve-next-input'''').  Use these [[command]]s to
+cycle among your past completion inputs (backward and forward,
+respectively).
+
+User [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-completion-history-max-length|icicle-completion-history-max-length]]</tt>''''
+limits the number of completion inputs to save. 
+
+If you customize user option '''`<tt>[[Icicles - Customization and General Tips#icicle-C-l-uses-completion-flag|icicle-C-l-uses-completion-flag]]</tt>'''' to
+non-`nil', then, instead of cycling, `C-l' lets you use '''Icicles'''
+completion to retrieve a past completion input (`##C-##'''##L##'''' does the
+same thing).  Using completion to retrieve a past input does not
+also ''choose'' that input as the candidate for the main completion;
+it just replaces your current minibuffer input with it.  Because
+`C-l' completion uses a recursive minibuffer, you can also use
+`C-g' to cancel this completion and return to the main completion.
+
+You can temporarily reverse the effect of
+`icicle-C-l-uses-completion-flag' by using a [[prefix argument]]
+(`C-u') with `C-l'.  Thus, `C-u C-l' uses completion if
+`icicle-C-l-uses-completion-flag' is `nil' and cycles if it is non-`nil'.
+
+The other sections on this page describe '''Icicles''' enhancements for
+minibuffer histories.  They are thus concerned only with inputs
+that you enter, not with completion inputs that are not entered.
+
+
+
+
+
+[:Overview]
+=== Overview of Minibuffer History Enhancements ===
+
+'''Icicles''' enhances minibuffer history during completion in these independent ways:
+
+[new]
+[:MenuItemCommands]
+'''1.''' Commands invoked using a [[menu bar]] menu are included in the
+command history for '''`M-x''''.  This helps you quickly find again
+and reuse a (possibly deep) menu item.  It lets you use
+completion to access such commands.  And it helps you learn the
+commands that correspond to menu items that you use, thus
+providing a missing bridge between menu use and minibuffer use.
+
+If you do not want to include menu-item commands in the command
+history, then set option '''`<tt>[[Icicles - Customization and General Tips#icicle-menu-items-to-history-flag|icicle-menu-items-to-history-flag]]</tt>'''' to `nil'.
+
+[:M-o]
+'''2.''' Command '''`icicle-insert-history-element'''' (bound to '''`M-o'''' in the
+minibuffer) lets you use ([[lax]]) completion to insert a history
+element in the minibuffer.
+
+[:HistoryFace]
+'''3.''' Candidates displayed in `*Completions*' are highlighted using
+   face `icicle-historical-candidate' (blue foreground, by
+   default), when they have been used previously, so you can more
+   easily recognize them.   This highlighting is controlled by
+   option '''`<tt>[[Icicles - Customization and General Tips#icicle-highlight-historical-candidates-flag|icicle-highlight-historical-candidates-flag]]</tt>''''.  You can
+   toggle this from the minibuffer at any time using `C-pause'.
+
+[:HistorySorting]
+'''4.''' Command '''`icicle-toggle-alternative-sorting'''' ('''`##C-M-,##'''' in the 
+   minibuffer) re-sorts completion candidates, 
+   placing previously used candidates first.  This is a toggle: repeat it 
+   to return to the original order.
+
+[:M-pause]
+'''5.''' Command '''`icicle-keep-only-past-inputs'''' ('''`M-pause'''' in the
+   minibuffer) restricts the current set of completion candidates
+   to those that you have used previously.  In other words, it
+   keeps only those candidates that are highlighted in blue.  To
+   use `M-pause', you must first have used `TAB' or `S-TAB' to
+   establish an explicit candidate set.  If you use `C-u M-pause',
+   then the previously used candidates are ordered
+   chronologically, most recent first.  Without `C-u', the normal
+   sort order is used (`icicle-sort-function').
+
+[:M-h]
+'''6.''' Command '''`icicle-history'''' ('''`M-h'''' in the minibuffer) matches the
+   current input against the minibuffer history directly.  It can
+   be used during completion.
+
+[:C-M-pause]
+'''7.''' Command '''`icicle-other-history'''' ('''`C-M-pause'''' in the minibuffer)
+lets you use a different history for the current completion.  You can choose the history using completion.
+
+[:M-i]
+'''8.''' Commands '''`icicle-clear-history'''' and '''`icicle-clear-current-history'''' ('''`M-i'''' in the minibuffer) provide a general way to clean up histories.
+
+[:M-k]
+'''9.''' When you cycle among previously entered inputs using `M-p' and
+`M-n', you can use '''`M-k'''' (command '''`icicle-erase-minibuffer-or-history-element'''') to delete the current occurrence from the history list.  This is a quick and handy way to clean up list entries that you are no longer interested in.  Only the occurrence that you have cycled to is deleted; if there are identical entries elsewhere in the history, they remain.
+[new]
+
+Some of these enhancements are described below in more detail. Each of 1-7 lets you see the complete list of
+previous inputs that match your current input.  In vanilla Emacs,
+the history lists are never shown as such; you can access previous
+inputs only one at a time, in order (with `M-p').  In vanilla
+Emacs, you can use a [[regexp]] to search the history list (via
+`M-r'), but the regexp matching is not dynamic, and the first
+match found is the (only) one you get.
+
+Displaying previous inputs that match the current input sounds
+like a minor advantage, but it is actually quite helpful in
+practice.  Among other things, it means that you can work with
+''long'' history lists in a practical way.
+
+
+
+
+
+[:icicle-insert-history-element]
+[:InsertPreviousInputs]
+=== Using Completion to Insert Previous Inputs: `M-o' ===
+
+Unlike the other minibuffer history enhancements, described below,
+which are available only during minibuffer completion, you can use
+'''`M-o'''' (`icicle-insert-history-element') anytime you are asked for minibuffer input.  It provides a
+recursive minibuffer in which you can match a previous input using
+completion.  After you hit `RET' to accept your choice, it is
+inserted in the minibuffer just as if you had typed it.  This is a form of on-demand completion (see [[Icicles - Completion On Demand]]), and as such is always available.
+
+This has
+the advantage over cycling with `M-n' or `M-p' and searching with
+`M-s' or `M-r', that you can use '''Icicles''' completion and cycling to
+quickly access a previous input, no matter how long ago you
+entered it.
+
+When completion is available for reading input, if you use `M-o'
+to choose a previously entered input, this just inserts that input
+in the minibuffer.  What is in the minibuffer after you use `M-o'
+is not automatically chosen for the main completion -- you can edit
+the minibuffer contents before entering it with `RET'.  You can
+also use `C-g' during the `M-o' completion to cancel it and return
+to the main completion.
+
+
+
+
+
+[:icicle-toggle-alternative-sorting]
+[:SortPreviousFirst]
+=== Putting Previous Candidates First: `C-M-,' ===
+
+At any time,  two of the '''Icicles''' sort orders are immediately available.  These are the values of user options
+'''`<tt>[[Icicles - Customization and General Tips#icicle-sort-function|icicle-sort-function]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-alternative-sort-function|icicle-alternative-sort-function]]</tt>''''.  By
+default, the former sorts alphabetically, and the latter puts all
+previously used inputs first, before the candidates you have not
+yet used.  Each of these groups, used and unused candidates, is then 
+sorted alphabetically, separately.  So, with the default
+alternative sort, you can see all matching candidates (used and
+unused), but you privilege those used previously -- they are the
+first listed in `*Completions*' and the first available for cycling.
+
+If you prefer, by customizing these user options, you can use
+`icicle-historical-alphabetic-p' as the main sort function (option
+`icicle-sort-function') and some other sort function
+(e.g. `icicle-case-string-less-p') as the alternative sort function.
+
+You can toggle at any time between normal sorting and alternative
+sorting, using command `icicle-toggle-alternative-sorting'.
+During completion, this is bound to '''`##C-M-,##''''.  Together with
+toggling between normal sorting and not sorting at all, which is
+a sort-order choice available through'''`##C-,##'''', this gives you quite a lot of flexibility.  Some
+commands, such as `icicle-complete-keys' (bound to `S-TAB' except
+during completion), use different sort orders.
+
+
+
+
+
+[:MatchHistoricalCandidates]
+=== Matching Only Historical Candidates: `M-h' and `M-pause' ===
+
+Both `M-h' and `M-pause' can be used toward the same end.  They
+both work for all input types.  They both use the appropriate
+history list for the current command.  They both provide [[apropos completion]] and cycling for the minibuffer history (as well as
+[[prefix completion]], of course).  Use them as another way to search
+through a history list or complete to one of its elements.
+
+For example, If you use `C-x C-f' to find a file, and then use
+`M-h' or `M-pause', the completion candidates will be the names of
+files that you have previously accessed (file names you have input
+in the minibuffer), and which match the current minibuffer input.
+
+`M-h' lets you complete your input against the minibuffer input
+history.  `M-pause' lets you ''restrict the current'' explicit set of
+completion candidates to those that are also in the minibuffer
+history.
+
+They provide similar functionality in different ways.  The
+difference is that `M-pause' takes the current set of matching
+candidates into account.  It is a completion-candidates ''set''
+operation, similar to those described in [[Icicles - Candidate Sets]].
+
+This means, in particular, that with `M-pause' you can first
+perform set operations on the set of candidates, and then use that
+result to restrict the history search.  For example, you can first
+complement the candidate set using `##C-~##', then use `M-pause' to
+restrict those candidates to matches in the history list.  In this
+way, you avoid including matches from the original match set when
+searching the history.
+
+Example: You are in a directory with lots of files that have the prefix `foo' and lots of C-language source files. You happen to be interested in another file, however. One way to get to that file is to use [[DiredMode|Dired]]'s ability to mark files by matching a regexp and then use Dired's ability to omit the marked files from view. You can scan through those that remain, and pick the one you want. However, it turns out that even then there are many files to scan. You accessed the one you want now just the other day, but the file date is unfortunately not significant.
+
+In '''Icicles''', you use regexp matching and take the set complement of the hits, just like in Dired: `##C-x C-f foo.*\.c$##' defines the candidate set as all
+files whose names start with `foo' and have extension `c'.  `##C-~##'
+then defines the candidate set as all files whose names are ''not''
+like that.  Finally, you use `M-pause' to restrict the file-name candidates to
+names that you have used before. You've accessed many, many files recently, so just cycling through the history with `M-p' would be tedious. You could match a regexp against the file history, but how can you come up with a regexp that finds ''anti''-matches?
+
+A consequence of this difference between `M-h' and `M-pause' is that using `TAB' or `S-TAB'
+after `M-pause' abandons use of the minibuffer history and starts
+a new set of completion candidates.  It simply completes the
+current input in the context of the current command; `TAB' and
+`S-TAB' have nothing to do with the minibuffer history in this
+case.  Using `TAB' or `S-TAB' after `M-h', however, re-completes
+your input against the current history list.
+
+Another consequence is that you can use `down' or `C-down' on the candidates
+displayed by `M-h', but not on those displayed by `M-pause'.  For
+example, to cycle through the doc for each variable that starts
+with `icicle-' which you have previously input, you can use `##C-h v
+icicle- M-h##', then repeatedly use `C-down'.
+
+Also, file-name and directory-name completion works differently in
+these two commands.  By default, the current directory is (as
+always) inserted into the minibuffer by commands such as
+`find-file', so either `M-h' or `M-pause' after `C-x C-f' will
+match previously input file names from the current directory. However, in the case of `M-h', the entire minibuffer input is
+matched against the history list, which is a list of absolute file
+names.  `M-pause' works only with the current candidate set,
+which, if you have already used `TAB' or `S-TAB' in the current
+directory, is a set of relative file names in that directory.
+
+This difference has a consequence for apropos (regexp) completion
+with `M-h'.  It means that to match a file name using a substring
+you must, in the minibuffer, either not specify a directory (erase
+it) or explicitly use `##.*##' before the file-name substring. For example, with `M-h', `/foo/bar/lph' will not apropos-match the
+previously input file name `##/foo/bar/alphabet-soup.el##'; you should
+use either `##/foo/bar/.*lph##' or `lph' (no directory).
+
+In the case of `M-pause', however, the input is matched against
+the history list as restricted by the existing completion list.
+And, since apropos file-name completion uses only the relative
+file name, without the directory name, as a regexp, the candidate
+list that is restricted has already matched the input regexp.  The
+action of `M-pause' is simply to filter the list of candidates,
+keeping those that are in the history list.  This means that, with
+`M-pause', the input `/foo/bar/lph' will match against the
+previously input file name `##/foo/bar/alphabet-soup.el##'.
+
+If this all sounds confusing, just give it a try; it is much
+harder to describe than it is to experience.
+
+
+
+
+
+[:UsingOtherHistories]
+=== Using Other Histories; Commands Any Which Way ===
+
+This section describes how to complete your input against a
+history other than the default history provided for the current
+command.  A special case of this, starting with Emacs 23, is
+completing a command, abbrev, or keyboard macro name against all
+such that were previously executed in any interactive way.  This
+includes commands invoked using a menu.
+
+
+
+
+[:C-M-pause]
+[:icicle-other-history]
+==== Completing Against All Interactive Commands ====
+
+When you execute a command using `M-x', it is added to the history
+`extended-command-history'.  Likewise, when you execute a command
+or abbrev using `icicle-command-abbrev-command'.  And when you
+execute a keyboard macro using `C-x M-e'
+(`icicle-execute-named-keyboard-macro'), it is added to history
+`icicle-kmacro-history'.
+
+However, when you execute a command, abbrev, or keyboard macro in
+other ways than these, it is not added to such a history.  For
+example, if you choose a ''menu'' item, the
+associated command is not added to any of these histories.  Thus,
+although `M-o' lets you complete against previously used commands,
+this does not include commands that were called via a menu item.
+
+To remedy this, starting with Emacs 23 '''Icicles''' can optionally add all commands that are called using
+`call-interactively' to the larger command history
+'''`icicle-interactive-history''''.  This includes commands on menus.
+To enable this feature, you must
+customize option '''`<tt>[[Icicles - Customization and General Tips#icicle-populate-interactive-history-flag|icicle-populate-interactive-history-flag]]</tt>'''', to
+make it non-`nil'.  Thereafter, when you enter ''Icicle'' mode, all
+interactive use of commands records them on this special history.
+
+During completion, you can then use '''`C-M-pause''''
+('''`icicle-other-history'''') to complete against this extended set of
+previously used commands.  For example, if you use menu item '''Open File''', then the corresponding
+command, `menu-find-file-existing', becomes available as a completion
+candidate.  (Recall too that the command associated with a given
+menu item is shown in the `*Completions*' [[mode line]] whenever you cycle
+to it.)
+
+Be aware that use of this feature can slow Emacs down, and the
+history list can become quite large.
+
+
+
+
+==== Using an Alternative History ====
+
+When you are completing something other than a command, abbrev, or
+[[keyboard macro]] (or even when you complete one of those, if you use
+a prefix argument), `C-M-pause' prompts you for an alternative
+history to use -- any history you like.  You can choose the history using completion.  This
+does not automatically complete your current input against the history you
+choose; it simply changes the current history for the duration of
+the current minibuffer completion.  (You can use `M-h', as usual,
+if you want to complete against the chosen history.)
+
+
+
+
+
+[:ClearHistoryEntries]
+=== Cleaning Up History Lists ===
+
+Besides the use of `M-k' during history cycling (`M-p', `M-n') to
+remove individual input occurrences from the current history list,
+you can use commands '''`icicle-clear-history'''' and
+'''`icicle-clear-current-history'''' to clean minibuffer histories
+entirely of selected entries.  Command
+`icicle-clear-current-history' is bound to '''`M-i'''' in the
+minibuffer.  It is `icicle-clear-history' specialized to work on
+just the current history list.
+
+These commands prompt you for a history entry to delete from a
+history list.  These are [[multi-command]]s, so you can delete
+multiple entries.  For each entry you choose, all of its
+occurrences are deleted from the history.
+
+Command `icicle-clear-history' first prompts you for a history
+list to act on.  This too is multi-command input, so you can use
+`icicle-clear-history' to remove entries from multiple histories.
+
+If you use a [[prefix argument]] with these commands, then the
+histories are emptied entirely (upon confirmation).  Thus, for
+instance, you can use `C-u M-i' at any time during minibuffer
+input to completely empty the current history list.
+
+'''See Also:''' [[Icicles - More About Multi-Commands]] for information about
+using `S-delete' to delete objects associated with completion candidates.
+
+----
+
+
+|| *Previous:*  [[Icicles - Large Candidate Sets]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Isearch Enhancements]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

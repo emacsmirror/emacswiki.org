@@ -1,0 +1,32 @@
+* I already had CygWin installed.
+* Grabbed these Cygwin ispell binaries: ftp://ftp.franken.de/pub/win32/develop/gnuwin32/cygwin/porters/Humblet_Pierre_A/V1.1/ispell-3.2.06-cygwin-1.3-bin.tar.gz (Here's the <a href="ftp://ftp.franken.de/pub/win32/develop/gnuwin32/cygwin/porters/Humblet_Pierre_A/V1.1/ispell-3.2.06-cygwin-1.3-bin.README">README</a>.)
+* From the Cygwin shell:
+ 
+    cd / #change to cygwin root dir impt!
+    tar zxvf [path/to/tarball/]cygwin-1.3-bin.tar.gz
+
+* At the Windows desktop right-click My Computer and choose Properties, click the Advanced tab and then the Environment Variables button.
+* Highlight <b>Path</b> in the bottom pane and click Edit. Add the following directories to the end of your path: 
+
+    C:\cygwin\usr\local\bin;C:\cygwin\bin
+
+Now Windows can find both <b>ispell.exe</b> and <b>cygwin1.dll</b>.
+* Launch a new DOS shell (Start Menu -> Run -> cmd) and type: 
+
+    C:\Documents and Settings\luser>ispell -v
+    @(#) International Ispell Version 3.2.06 08/01/01
+    @(#) Copyright (c), 1983, by Pace Willisson
+    @(#) International version Copyright (c) 1987, 1988, 1990-1995, 1999,
+    @(#) 2001, by Geoff Kuenning, Claremont, CA.  All rights reserved.
+    ...
+
+If you don't see that ispell output, there's probably something wrong with your PATH variable. 
+* Launch a new Emacs.  M-x ispell-buffer should start ispell. 
+
+
+Another option might be to compile the source here http://fmg-www.cs.ucla.edu/geoff/tars/ispell-3.3.02.tar.gz under Cygwin.  I ran into missing programs and was too impatient to go through that.
+
+[new]
+This inspired me to test with CVS Emacs. 
+To use ispell just install aspell from Cygwin.
+--LennartBorgman

@@ -1,0 +1,226 @@
+The canonical document is the [http://www.jwz.org/doc/emacs-timeline.html Emacs Timeline]
+by JamieZawinski. See EmacsHistory for details.
+
+Here's a short summary for [[Emacs]]:
+
+||*Major Version*||*First Release*||
+|| 18            || 1986 ||
+|| 19            || 1993 ||
+|| 20            || 1997 ||
+|| 21            || 2001 ||
+|| 22            || 2007 ||
+|| 23            || 2009 ||
+
+== People making jokes about releasing Emacs 21 ==
+
+The rest of this page contains interesting conversations from EmacsMailingLists about releasing Emacs 21.
+
+The *standard response* is this one:
+
+: From: StefanMonnier
+: Subject: Re: emacs 21
+: Newsgroups: comp.emacs
+: Date: 2001-02-06 08:25:20 PST
+
+"Bas" writes:
+
+: Does anybody know when it will be released ?
+
+As soon as it's ready,
+
+: Stefan
+----
+An excerpt from Irving Stone's ''Agony and the Ecstasy.''
+
+''During all these months the Pope kept insisting that Michelangelo complete his ceiling quickly, quickly! Then one day [Pope] Julius climbed the ladder unannounced.
+
+'' 'When will it be finished?'
+
+'' 'When I have satisfied myself.'
+
+'' 'Satisfied yourself in what? You have already taken four full years.'
+
+'' 'In the matter of art, Holy Father.'
+
+'' 'It is my pleasure that you finish it in a matter of days.'
+
+'' 'It will be done, Holy Father, when it will be done.' '' 
+
+----
+
+We've had different answers, too, however.
+It all started with a mail by Thaddeus L. Olczyk in summer 01 [http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&as_drrb=b&as_mind=29&as_minm=3&as_miny=1995&as_maxd=13&as_maxm=7&as_maxy=2001&selm=3b4e80f0.620366593%40nntp.interaccess.com]:
+
+: From: Thaddeus L. Olczyk
+: Subject: Status of Emacs 21.
+: Newsgroups: comp.emacs
+: Date: 2001-07-10 15:29:55 PST
+
+People are once again asking about Emacs 21,
+and it's been about four weeks since I asked this question.
+So once again I ask this question to stall all the posters that
+will soon come asking.
+
+: Will Emacs 21 be released:
+: Immenently (next 2-3 weeks)?
+: soon ( 2-3 months)?
+: not so soon (6 months to a year)?
+: a long time off ( one year to five years)?
+: almost never (10 years)?
+
+----
+
+: From: EliZaretskii
+: Subject: Re: Emacs 21: Two questions
+: Newsgroups: comp.emacs
+: Date: 2001-06-14 08:06:39 PST
+
+[...]
+
+It's not that we know the date but don't want to tell.  We really don't
+know.  As long as there are reports about crashes on popular platforms, we
+won't release.  And just the other day I saw two crash reports, after at
+least 2-3 weeks without a single one.
+
+: So will Emacs 21 be released:
+: Immenently (next 2-3 weeks)?
+
+Hopefully.
+
+: soon ( 2-3 months)?
+
+Most probably.
+
+: not so soon (6 months to a year)?
+
+Unlikely.
+
+: a long time off (one year to five years)?
+: almost never (10 years)?
+
+Inconceivable.
+
+----
+
+: From: JuanManuelBarranquero
+: Subject: Re: Status of Emacs 21.
+: Newsgroups: comp.emacs
+: Date: 2001-07-16 03:28:22 PST
+
+"Allan Peda" wrote:
+
+: I too am curious, but a "very stable/not very stable" reply would be better
+than nothing.
+
+<pre>
+ 90 
+ 91  2
+ 92 10
+ 93 13
+ 94  6
+ 95 23
+ 96 13
+ 97  2
+ 98 16
+ 99 18
+100  9
+101 22
+102  1
+103 33
+104 66
+</pre>
+
+First column is prerelease number, second one is the number of days
+between the prerelease and the previous one.
+
+Discounting the one-digit rows as quick corrections of small
+oversights, it is easy to see that things seems to be converging
+towards stabilization.
+
+(BTW, I'm *not* speaking for the Emacs maintainters, which I am not).
+
+:::: /L/e/k/t/u
+
+----
+: From: EliZaretskii
+: Subject: Re: Status of Emacs 21.
+: Newsgroups: comp.emacs
+: Date: 2001-07-17 09:39:47 PST
+
+Thaddeus L. Olczyk wrote:
+ 
+: OK. This would seem to be bad news. It means we have to wait at least
+  66 days after 104 was released before we can be sure that there won't
+  be a 105.
+
+EliZaretskii wrote:
+
+: Actually, it gets worse: the release criteria require that after each
+  pretest 21.0.N, we need to wait N^Pi days, and if there no crashes or
+  other similarly grave problems reported, only then we can make a release.
+
+Jonadab the Unsightly One wrote:
+
+: That's several millenia!  I'm *not* waiting *that* long.
+
+And what exactly are you going to _do_ about that, huh?  Switch to XEmacs,
+perhaps??
+
+----
+
+: From: Stefan Monnier
+: Subject: Re: Status of Emacs 21.
+: Newsgroups: comp.emacs
+: Date: 2001-07-17 11:25:30 PST
+
+Jonadab the Unsightly One writes:
+
+: That's several millenia!
+
+But think how good it'll be,
+
+: Stefan
+
+----
+
+: From: EliZaretskii
+: Subject: Re: Status of Emacs 21.
+: Newsgroups: comp.emacs
+: Date: 2001-07-17 20:18:16 PST
+
+GalenBoyer wrote:
+
+: I am perfectly happy with 20.7, and I'm really excited to see what wonders
+await with 21, but I would be perfectly happy with 20.7 for quite a few
+years.
+
+those who know me have no need of my name wrote:
+
+: you'd better be, since the formula eli gave (presuming `Pi' meant the
+irrational number 3.1415...) calls for about 3000 years of additional
+testing.
+
+David Koppelman wrote:
+
+: That would be 5943 years (104^pi days), which works out to AD 14 January 7946, according to the Mathematica date functions based on a 13 July release
+date for Emacs 104, using
+
+<pre>
+      ToDate[FromDate[{2001,7,13,0,0,0}] + Floor[N[104^Pi]] 3600 24])
+</pre>
+ 
+: Emacs' calendar package couldn't handle this:
+
+<pre>
+      (calendar-gregorian-from-absolute
+        (+ 5944 (calendar-absolute-from-gregorian (calendar-current-date)))))
+</pre>
+
+I think your calculations are wrong (3000 years is much closer to the
+accurate result than 5944), and I didn't have any trouble adding that with
+calendar (you just have to add days instead of years).  But if you think
+something is wrong with calendar, please make a bug report.  E.g., "Emacs's
+Calendar is unable to compute the date of its own final release".
+
+----
+CategoryHumor

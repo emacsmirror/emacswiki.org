@@ -1,0 +1,174 @@
+This page describes package Lisp:ascii.el, by ViniciusJoseLatorre.
+
+: .:: ''v2.2.1'' ::.
+
+== About ascii ==
+
+This package provides a way to display ASCII code on a window, that is, display
+in another window an ASCII table highlighting the current character code.
+
+Maybe the name "ascii" is not a good name for this package, as this
+package also displays non-ASCII code, that is, character code which is
+greater than ##255##.  It also displays characters codified in HTML (##&Aacute;##),
+quoted (##=2F##), escaped (##\xFF##) and Emacs Lisp character (##?\^A##).
+
+To use Lisp:ascii.el, insert in your ##~/.emacs##:
+
+   (require 'ascii)
+
+Or:
+
+   (autoload 'ascii-on        "ascii" "Turn on ASCII code display."   t)
+   (autoload 'ascii-off       "ascii" "Turn off ASCII code display."  t)
+   (autoload 'ascii-display   "ascii" "Toggle ASCII code display."    t)
+   (autoload 'ascii-customize "ascii" "Customize ASCII code display." t)
+
+For good performance, be sure to byte-compile Lisp:ascii.el, e.g.
+
+   M-x byte-compile-file <give the path to ascii.el when prompted>
+
+This will generate ##ascii.elc##, which will be loaded instead of Lisp:ascii.el.
+
+Lisp:ascii.el was tested with GNU Emacs 20.4.1.
+
+
+== Using ascii ==
+
+To activate AsciiMode, type:
+
+   M-x ascii-on RET
+
+Or:
+
+   C-u 1 M-x ascii-display RET
+
+[new]
+To deactivate AsciiMode, type:
+
+   M-x ascii-off RET
+
+Or:
+
+   C-u 0 M-x ascii-display RET
+
+[new]
+To toggle AsciiMode, type:
+
+   M-x ascii-display RET
+
+[new]
+To customize AsciiMode, type:
+
+   M-x ascii-customize RET
+
+[new]
+You can also bind `ascii-display', `ascii-on', `ascii-off' and
+`ascii-customize' to some key, like:
+
+   (global-set-key "\C-c\C-a" 'ascii-on)
+   (global-set-key "\C-c\C-e" 'ascii-off)
+   (global-set-key "\C-c\C-t" 'ascii-display)
+   (global-set-key "\C-c\C-c" 'ascii-customize)
+
+If you're using `mule' package, a good usage example is to activate
+Lisp:ascii.el on ##emacs/etc/HELLO## file.
+
+
+== Hooks ==
+
+Lisp:ascii.el has the following hook variable:
+
+; `ascii-hook' : It is evaluated once when AsciiMode is turned on.
+
+
+== Options ==
+
+Below it's shown a brief description of ascii options, please,
+see the options declaration in the code for a long documentation.
+
+; `ascii-code' : Specify list of character code to display.
+
+; `ascii-show-nonascii' : Non-##nil## means converts to unibyte and display the ASCII code.
+
+; `ascii-show-nonascii-message' : Non-##nil## means show a message when character code is above ##255##.
+
+; `ascii-window-size' : Specify initial ASCII window size.
+
+; `ascii-display-code' : Specify list of character range to be displayed.
+
+; `ascii-keep-window' : Non-##nil## means to keep ASCII window active.
+
+; `ascii-table-separator' : Specify string used to separate ASCII table columns.
+
+; `ascii-ascii-face' : Specify symbol [[Face]] used to highlight ASCII code.
+
+; `ascii-non-ascii-face' : Specify symbol [[Face]] used to highlight non-ASCII code.
+
+To set the above options you may:
+
+[new]
+a. insert the code in your ##~/.emacs##, like:
+
+   (setq ascii-window-size 6)
+
+This way always keep your default settings when you enter a new Emacs session.
+
+[new]
+b. or use `set-variable' in your Emacs session, like:
+
+   M-x set-variable RET ascii-window-size RET 6 RET
+
+This way keep your settings only during the current Emacs session.
+
+[new]
+c. or use customization, for example:
+
+# click on MenuBar ##Help## option,
+# then click on ##Customize##,
+# then click on ##Browse Customization Groups##,
+# expand ##Data## group,
+# expand ##Ascii## group
+# and then customize AsciiMode options.
+
+Through this way, you may choose if the settings are kept or not when you leave
+out the current Emacs session.
+
+[new]
+d. or see the option value:
+
+   C-h v ascii-window-size RET
+
+and click the ##customize## hypertext button.
+
+Through this way, you may choose if the settings are kept or not when you leave
+out the current Emacs session.
+
+[new]
+e. or invoke:
+
+   M-x ascii-customize RET
+
+and then customize AsciiMode options.
+
+Through this way, you may choose if the settings are kept or not when you leave
+out the current Emacs session.
+
+
+== Acknowledgments ==
+
+Thanks to Roman Belenov <_roman_@_nstl_._nnov_._ru_> for suggestion on dynamic
+ASCII table evaluation (depending on character encoding).
+
+Thanks to AlexSchroeder for suggestion on customization.
+
+
+== See Also ==
+
+* Debian ##apt-get install emacs-goodies-el## (DebianPackage:emacs-goodies-el)
+* AsciiTable -- simple table only.
+
+
+----
+
+CategoryCode,
+CategoryProgrammerUtils

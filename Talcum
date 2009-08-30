@@ -1,0 +1,22 @@
+Talcum is a minor mode that provides additional features for editing LaTeX files.
+
+=== Features: ===
+
+* uncluttering, as currently provided by unclutter.el, 
+i.e. replace footnotes by 1, refs by ->, 
+spacing commands with ordinary whitespace etc. in your Emacs buffer.
+* new insertion commands that take you to the preamble 
+(or a seperate command definition file) for \newcommands etc.
+* prodding, i.e. automatic refresh of xdvi, xpdf etc. after compilation, 
+sending the emacs frame to the bottom (to make room for the previewer's window), etc.
+* selecting chapters for \includeonly via menu
+* improved minibuffer completion
+
+http://talcum.sarovar.org/
+
+Screenshot of Talcum in action: (older version):
+
+http://talcum.sarovar.org/halfopened.png
+
+----
+CategoryTex

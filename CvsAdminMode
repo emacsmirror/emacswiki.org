@@ -1,0 +1,22 @@
+This is a simple emacs mode for [http://ximbiot.com/cvs/manual/cvs-1.12.13/cvs_18.html editing cvs configuration files in CVSROOT].
+
+It has font-lock support for all of the files, and indentation support for CVSROOT/modules
+
+Current cvs-admin-mode.el uses define-derived-mode which is a standard library of Emacs22, but I think is absent from Emacs21
+
+* [http://gropeep.org/emacs/cvs-admin-mode.el Lisp:cvs-admin-mode.el]
+
+== Install ==
+
+Add the file to your LoadPath, and add the following to your InitFile:
+
+{{{
+(require 'cvs-admin-mode)
+}}}
+
+== Usage ==
+
+Open a file stored in a directory called CVSROOT, and cvs-admin-mode should come up automatically.
+
+----
+CategoryVersionControl

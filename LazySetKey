@@ -1,0 +1,16 @@
+==What is LazySetKey ?==
+LazySetKey is a mode that setup keystroke binding in Emacs lazily.
+
+==Install==
+Put Lisp:lazy-set-key.el in your load-path, add
+{{{
+    (require 'package-name)
+}}}    
+in ~/.emacs
+
+==Usage==
+* lazy-set-key -- Set keystroke binding.
+* lazy-unset-key -- Unset keystroke binding.
+
+==Example==
+Lisp:LazyCatKeystoke.el have many example that use function `lazy-set-key' and `lazy-unset-key'.

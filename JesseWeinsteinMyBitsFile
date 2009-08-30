@@ -1,0 +1,221 @@
+My mybits.el file as of Wed Nov 22 22:14:31 2006
+
+It is a collection of useful little functions I've written.
+
+You may also be interested in JesseWeinsteinDotEmacs , my .emacs file.
+-----
+<pre>
+;;A collection of useful little functions written by Jesse Weinstein 
+;;http://purl.oclc.org/NET/JesseW/email@purl.org
+;;Unless stated otherwise, I put them all under the GPL version 2.0, or any later version. 
+;;(at least if you get them from this source)
+;;I've put some of them under other licenses in other places.
+
+;;Written Wed Nov 22 21:50:11 2006 from pointers gleaned from http://www.charlescurley.com/emacs.init.html
+(defun my-word-count () (interactive) (message "%d words." (string-to-number (how-many "\\<" (point-min) (point-max)))))
+
+;;Written Sat Sep 30 12:59:08 2006
+(defun mycompile () (interactive) (compile (concat "gcc -Wall " buffer-file-name)))
+(defun myrun () (interactive) (shell-command "./a.out"))
+
+;;Written Sat Jul 29 12:10:31 2006 by Jesse Weinstein
+(defun zsh-lookup-topic () (interactive) (let ((topic (save-excursion
+  (skip-chars-backward "-a-zA-Z0-9._+:")
+  (let ((start (point)))
+    (skip-chars-forward "-a-zA-Z0-9._+:")
+    (buffer-substring-no-properties start (point))))))  (other-window 1) (info) (Info-goto-node "(zsh)") (Info-index topic) (goto-char (point-min)) (re-search-forward (format "^%s" (regexp-quote topic)) nil t) (other-window 1)))
+
+;;Written Tue Jul 25 17:10:23 2006 by Jesse Weinstein
+(defadvice Info-index (before use-default-entry activate)
+"A blank topic name will now look up the current word, as with the `man' function.
+Use \"g Index\" to go to the Index node."
+(interactive
+   (list
+    (let ((Info-complete-menu-buffer (clone-buffer))
+	  (Info-complete-next-re "\\<Index\\>")
+	  (Info-default-entry (save-excursion
+				(skip-chars-backward "-a-zA-Z0-9._+:")
+				(let ((start (point)))
+				  (skip-chars-forward "-a-zA-Z0-9._+:")
+				  (buffer-substring-no-properties start (point))))))
+      (if (equal Info-current-file "dir")
+	  (error "The Info directory node has no index; use m to select a manual"))
+      (unwind-protect
+	  (with-current-buffer Info-complete-menu-buffer
+	    (Info-goto-index)
+	    (completing-read 
+	     (format "Index topic: %s: "
+		     (if (string= Info-default-entry "")
+			 ""
+		       (format " (default %s)" Info-default-entry)))
+	     'Info-complete-menu-item nil nil nil nil Info-default-entry))
+	(kill-buffer Info-complete-menu-buffer)))))
+)
+
+(defun mozilla-find-Extensions.rdf () "Wrap find file for Extensions.rdf" (interactive) (find-file "~/Library/Application Support/Firefox/Profiles/b1aiuy17.Default User/extensions/Extensions.rdf"))
+
+(defun jesses-format-.emacs-for-publication () "Put a decorated copy of my .emacs file in the kill ring." (interactive) 
+    (with-temp-buffer 
+      (insert "My .emacs file as of " (format-time-string "%c") 
+	      "\n-----\n<pre>\n")
+      (insert-file-contents "~/.emacs")
+      (goto-char (point-max))
+      (insert "\n</pre>\n----\nCategoryDotEmacs\n") 
+      (kill-region (point-min) (point-max))))
+(defun jesses-format-mybits.el-for-publication () "Put a decorated copy of my .emacs file in the kill ring." (interactive) 
+    (with-temp-buffer 
+      (insert "My mybits.el file as of " (format-time-string "%c") 
+	      "\nIt is a collection of useful little functions I've written."
+	      "\n-----\n<pre>\n")
+      (insert-file-contents (find-library-name "mybits"))
+      (goto-char (point-max))
+      (insert "</pre>\n----\nCategoryDotEmacs\n") 
+      (kill-region (point-min) (point-max))))
+
+(defun mozilla-open-extension-urn () 
+  "Open the extension directory for the first extension urn on the current line.
+
+Uses the directory the buffer \"Extensions.rdf\" is in as a base.
+urn's look like: \"urn:mozilla:extension:\"." 
+  (interactive) 
+  (let ((l (thing-at-point 'line))) 
+    (if (string-match "\"urn:mozilla:extension:\\(.+\\)\"" l) 
+	(find-file 
+	 (concat (file-name-directory (buffer-file-name 
+				       (get-buffer "Extensions.rdf"))) 
+		 (match-string 1 l))))))
+
+(setq jesses-char-list '((40 jesses-paren-func) (?s jesses-s-func)))
+(defun jesses-paren-func () "" (message "Paren!"))
+(defun jesses-s-func () "" (message "S!")) ;;Some booring examples for 
+;;jesses-point-changed, below.
+
+(defun jesses-point-changed () "Calls functions given in jesses-char-list 
+depending on the character the point is over.  Generally used by adding 
+it as a hook to post-command-hook."
+      (if (assoc (char-after) jesses-char-list)
+	  (progn (eval (cdr (assoc (char-after) jesses-char-list))))))
+
+(defvar jesses-char-list `(
+			 (35 (lambda () (message "Comment line")))
+			 (?C (lambda () (message "Add to Class")))
+			 (?D (lambda () (message "Define Macro")))
+			 (?E (lambda () (message "Assign Enviroment Variable")))
+			 (?F (lambda () (message "Add to Class from File")))
+			 (?H (lambda () (message "Define Header")))
+			 (?K (lambda () (message "Define database")))
+			 (?M (lambda () (message "Declare a MDA")))
+			 (?O (lambda () (message "Set option")))
+			 (?P (lambda () (message "Name a priority")))
+			 (?R (lambda () (message "Define rewriting rule."))) 
+			 (?S (lambda () (message "Name a rule-set")))
+			 (?T (lambda () (message "List \"trusted\" users")))
+			 (?V (lambda () (message "Version line")))) 
+  "A set useful for sendmail.cf parsing.")
+
+(defun fill-it-all () "Fill each paragraph, by running fill-paragraph on each one." (interactive) 
+  (save-excursion 
+    (beginning-of-buffer) 
+    (while (not (equal (point) (point-max))) 
+      (progn (fill-paragraph nil) (forward-paragraph)))))
+
+(defun load-.emacs () "Runs load-file on ~/.emacs" (interactive) (load-file "~/.emacs"))
+
+(defun toggle-real-newlines () "Toggles newlines turning into fake newlines, and back." (interactive) 
+(save-excursion (let ((fakenl "@This is a newline@")) 
+  (beginning-of-buffer) (if (search-forward fakenl nil t) 
+			    (progn (beginning-of-buffer) 
+				   (replace-string fakenl "\n")) 
+			  (progn (beginning-of-buffer) 
+				 (replace-string "\n" fakenl))))))
+
+(defun toggle-uniline-sections (replacement) 
+"Makes everything into one line, divided by `replacement`. 
+
+`replacement` should include %s, which is replaced with a real or fake newline as appropriate.  Uses toggle-real-newlines." (interactive "MReplacement: ") 
+;; Written on Tue Dec  7 14:02:46 2004
+  (save-excursion 
+    (let* ((fakenl "@This is a newline@") 
+	  (rep-real (format replacement "\n"))
+	  (rep-fake (format replacement fakenl)))
+      (beginning-of-buffer) 
+      (if (search-forward fakenl nil t) 
+	  (progn (beginning-of-buffer) (replace-string rep-real rep-fake)
+		 (toggle-real-newlines))
+	(progn (toggle-real-newlines)
+	       (beginning-of-buffer) (replace-string rep-fake rep-real))))))
+
+(defun toggle-uniline-universal-bookmarklets-page () 
+;; Written on Tue Dec  7 13:49:10 2004 
+"Makes each bookmarklet (and section title) into one line." (interactive)
+(toggle-uniline-sections "%s==="))
+
+(defun insert-date (format) "Wrapper around format-time-string." 
+  (interactive "MFormat: ") (insert (format-time-string format)))
+(defun insert-standard-date () "Inserts standard date time string." 
+  (interactive) (insert (format-time-string "%c")))
+
+(defun perl-perldoc (module) "Equivalent to `perldoc module`" 
+(interactive "MModule:") 
+(shell-command (concat "perldoc " module)))
+
+;;(defun outside-paste () "Paste from the rest of the universe." (interactive) 
+;;  (shell-command "pbpaste" t))
+;;;;Works, but is superceeded by CUA-mode; how nice, someone else did the work!
+(defun my-compile-and-run () "A simple compile and run script.  It needs to be generalized for projects other than this one, though." (interactive) 
+  (compile "gcc ~/MyProjects/itm/main.c -lopendaap") 
+  (progn (set-buffer "*compilation*") (goto-char (point-min)) 
+	 (while (and (equal "0 occurrences"
+			    (how-many "Compilation finished"))
+		     (equal "0 occurrences"
+			    (how-many "Compilation exited abnormally")))
+	   (sit-for 0.1))
+	 (if (not (equal "0 occurrences"
+			 (how-many "Compilation finished"))) 
+	     (shell-command "~/MyProjects/itm/a.out"))))
+
+(defun toggle-indent-or-empty-line () "Toggles a buffer between having a blank line between each paragrah, or having the first line of each paragraph indented by one tab."(interactive) 
+(save-excursion
+(goto-char (point-min)) (if (search-forward "
+	" nil t) (progn (goto-char (point-min)) (while (search-forward "
+	" nil t)
+  (replace-match "
+
+" nil t))) (while (search-forward "
+
+" nil t)
+  (replace-match "
+	" nil t)))))
+
+
+(defun goto-def-of-sub () "Useful in perl mode.  Goes to the def of the word at point." (interactive) 
+  (progn 
+    (backward-to-indentation 0)
+    (let ((str (prin1-to-string (read (current-buffer)))))
+    (if (not (equal str "sub"))
+	(progn (beginning-of-buffer)
+	       (search-forward (concat "sub " str))
+	       (show-entry))
+      ))))
+
+(defun goto-callers () "" (interactive)
+;;Need to put in more rigouous checks for the strings I get, so I get what I want, and not _mostly_ what I want
+;;Want to add a displayed list of functions that call, and let user pick one
+  (progn
+    (backward-to-indentation 0)
+    (setq str (prin1-to-string (read (current-buffer))))
+    (if (equal str "sub") (setq str (prin1-to-string (read (current-buffer)))))
+
+    (print str)
+    (setq defs (list))
+    (beginning-of-buffer)
+    (while (search-forward (concat str "(") nil t) 
+      (progn (setq pt (point)) (search-backward-regexp "^sub ") 
+	     (forward-word) (append defs (list (prin1-to-string (read (current-buffer))) pt))
+	     (goto-char pt))
+      )
+    ;;(with-output-to-temp-buffer "*Function's that call this function*" (
+    ))
+</pre>
+----
+CategoryDotEmacs

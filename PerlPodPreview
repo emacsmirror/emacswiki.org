@@ -1,0 +1,14 @@
+<code>perl-pod-preview.el</code> displays a formatted preview of [[Perl]] POD format documentation in a buffer.  Get it from
+
+: http://user42.tuxfamily.org/perl-pod-preview/index.html
+
+It uses <code>pod2man</code> plus <code>man -l</code> and is geared towards use while editing since it tries to preserve the buffer position when re-running the preview.
+
+CPerlMode has a similar preview using <code>pod2man</code>, but the single buffer of <code>perl-pod-preview</code> better suits editing, and <code>perl-pod-preview</code> can also be used from any buffer, it doesn't have to be a disk file, which means you can look at formatted POD while browsing a TarMode file for instance.
+
+See also:
+
+* PodMode -- editing POD
+
+----
+PerlLanguage

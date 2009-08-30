@@ -1,0 +1,43 @@
+''How can I repeat the previous [[Command]] easily? How can I repeat it, modifying it slightly?''
+
+`C-x ESC ESC' is the answer (Control-X, then Escape, then Escape). This places the Emacs Lisp code of your last command (or KeySequence) in the MiniBuffer - just hit `Enter' (`Return') to execute the previous command again. ''Example:''
+
+* You type `C-h f', which corresponds to the command `describe-function'. The minibuffer says this:  <code>Describe function: (? for help)</code>. 
+* You enter the function name "undo" at the prompt: <code>Describe function: (? for help) undo</code>. Help for function `undo' is displayed.
+* You type `C-x ESC ESC' - This appears in the minibuffer:
+
+        Redo: (describe-function (quote undo))
+
+* That's the Emacs Lisp code for the last command you executed. To execute it again, just hit `Enter' (`Return'). To describe a different function, say `forward-sexp', replace "undo" by "forward-sexp", then hit `Enter'.
+
+        Redo: (describe-function (quote forward-sexp))
+
+This example isn't very useful. But suppose you want to repeat the command `query-replace' in several different windows (different buffers) with the same arguments, replacing "bush" with "kerry". You execute it once, click in a different window, then type `C-x ESC ESC' to execute it again:
+
+        Redo: (query-replace "bush" "kerry" nil (if (and transient-mark-mode mark-active) (region-beginning)) (if (and transient-mark-mode mark-active) (region-end)))
+
+The <code>(query-replace "bush" "kerry"</code> part makes immediate sense, but what's all that other stuff? Don't worry about it, just hit `Enter'. 
+
+But if you really want to know, how can you find out? ''Correct:'' `describe-function query-replace' (`C-h f' query-replace). The help tells you that command `query-replace' really takes five arguments:
+
+* <code>FROM-STRING</code> - you supplied "bush"
+* <code>TO-STRING</code>   - you supplied "kerry"
+* <code>DELIMITED</code>   - this was nil, by default
+* <code>START</code>       - this was, by default, <code>(if (and transient-mark-mode mark-active) (region-beginning))</code>
+* <code>END</code>         - this was, by default, <code>(if (and transient-mark-mode mark-active) (region-end))</code>
+
+You can read the help to understand each argument. Summary: The last two arguments define the limits of the <code>query-replace</code> search. They say in effect that if you have a region active (that is, if you have text selected), then the search is limited to the region. Otherwise, all of the buffer following the TextCursor is searched.
+
+[What's the implicit lesson here? ''If you become a little familiar with Emacs Lisp, it can help you use Emacs more effectively.'' And the more you learn, the more effective you can be.]
+
+What if you had to do more than just click in another window to get to another buffer to reexecute your <code>query-replace</code> command? The previous command might then no longer be your <code>query-replace</code>; it might be something like <code>switch-to-buffer another-buffer</code> (command <code>switch-to-buffer</code> is bound to `C-x b'). 
+
+''How can I execute a previous command that was not the last command?''
+
+Just use `C-x ESC ESC', but then use `M-p' to retrieve the next-to-last command, `M-p M-p' to get the command previous to that, and so on. `M-p' moves backward through all your previously executed commands; `M-n' moves forward through them from some previous command.
+
+
+See also RepeatLastCommand.
+
+----
+CategoryCommands

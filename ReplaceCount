@@ -1,0 +1,65 @@
+The thread at the time (Groups:copy-down-and-increment) had people
+posting code which allowed you to "auto-increment" numbers, or similar
+stuff.  The general solution, however, seems to be M-x
+query-replace-regexp-eval.  Here's the post by Miles that explains the
+usage of it for a simple case:
+
+ From: MilesBader
+ Subject: Re: copy-down-and-increment
+ Newsgroups: gnu.emacs.sources
+ Date: Fri, 15 Mar 2002 16:27:50 GMT
+
+ Francesco Potorti` <pot@gnu.org> writes:
+ >    Vladimir Alexiev wrote this cool piece of code to copy the first line
+ >    down and increment every number is finds.
+ > 
+ > I sometimes repost my old code which I routinely use.  It does not make
+ > use of rectangles, which it should, because a number such as 000 is
+ > incremente to 1, not 001.  Anyway, here it is:
+
+A very, very useful tool for this sort of thing which is standard in emacs
+(21 at least), is `query-replace-regexp-eval', which lets you write a
+_lisp expression_ as the replacement.  It also binds the variable
+`replace-count' to the current number of the replacement when it evals it.
+
+So for instance, using it you can simply insert a template line 20 times with
+XXX where the number should be, and then use query-replace-regexp-eval to
+replace XXX with (format "%03d" replace-count).
+
+See also ReplaceRegexp, IncrementNumber and RenumberList for additional details.
+
+
+[new:DrewAdams:2007-04-29 04:12 UTC]
+In Emacs 22, you can just use '''`<tt>\#</tt>'''' in the replacement string of `query-replace', to get the number of the current replacement. Use that to increment instead of using ##(format "%03d" replace-count)## with `query-replace-regexp-eval'.  You can also use '''`<tt>\#</tt>'''' in a replacement string in [[Icicles]] -- see [[Icicles - Search-And-Replace]]. -- DrewAdams
+
+----
+
+Here is another nice function, from [Groups:increase+number+under+cursor&selm=ko65o4jxha.fsf%40ludlamelinux.dhcp.mathworks.com Groups:increase+number+under+cursor]
+
+Original author: ThienThiNguyen, 28-Jan-1996, modified for multiple lines: EricLudlam.
+
+  (defun another-line (num-lines)
+    "Copies line, preserving cursor column, and increments any numbers found.
+  Copies a block of optional NUM-LINES lines.  If no optional argument is given,
+  then only one line is copied."
+    (interactive "p")
+    (if (not num-lines) (setq num-lines 0) (setq num-lines (1- num-lines)))
+    (let* ((col (current-column))
+           (bol (save-excursion (forward-line (- num-lines)) (beginning-of-line) (point)))
+           (eol (progn (end-of-line) (point)))
+           (line (buffer-substring bol eol)))
+      (goto-char bol)
+      (while (re-search-forward "[0-9]+" eol 1)
+        (let ((num (string-to-int (buffer-substring
+                                    (match-beginning 0) (match-end 0)))))
+          (replace-match (int-to-string (1+ num))))
+        (setq eol (save-excursion (goto-char eol) (end-of-line) (point))))
+      (goto-char bol)
+      (insert line "\n")
+      (move-to-column col)))
+  (define-key global-map (kbd "M-o") 'another-line)
+
+
+----
+CategoryEditing
+CategorySearchAndReplace

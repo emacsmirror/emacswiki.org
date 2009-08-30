@@ -1,0 +1,52 @@
+Cliquez sur le titre pour lister toutes les pages concernant
+la manière d'écrire son InitFile, des exemples de InitFile etc...
+
+Problèmes spécifiques:
+
+* FaireDesChosesInteractivement -- naviguer parmi les buffers et les fichiers très rapidement à l'aide de ido.el
+* FichiersRécents -- pour conserver la liste des fichiers récents
+* Patrons -- pour créer des fichiers à partir de modèles
+* RecréerLeBufferScratch -- quand *scratch* a disparu
+* ClavierEnFrançaisEtXterm -- quand la touche "&eacute;" ne marche pas
+* AutoCompilerInit -- compiler automatiquement son InitFile
+
+Des [[InitFile]]s complets (il y en a d'autres sur les pages perso des gens, cf. CategoriePagePerso):
+
+* [http://www.emacswiki.org/johnw/Emacs/.emacs.el Le .emacs de
+  JohnWiegley] est énorme! => [[Erreur404]].
+
+* [http://vitelus.com/aaronl/conf/emacs Le .emacs de AaronL] contient
+  du code qui peut intéresser les utilisateurs de Viper et de Xemacs. => [[Erreur404]]
+
+* [http://www.livingtorah.org/~csebold/emacs/dot.emacs Le .emacs de
+  Charles Sebold] contient des fonctions pour tester les versions
+  Emacs 20/21/XEmacs, ainsi que du code pour les dates en hébreu pour
+  les signatures et TrivialCite (en). ==> vide
+
+* [http://www.hollenback.net/index.php?OneTrueEditor Le .emacs de Phil
+  Hollenback] est bien commenté et supporte à la fois Xemacs et emacs.
+
+* [http://www.marcelotoledo.org/stuff.php?c=m&t=DIR&f=/stuff/projetos/emacs_config
+  Le .emacs de MarceloToledo] : J'ai modifié ce fichier en fonction de
+  mes besoins depuis mon premier InitFile, et vous trouverez bien
+  quelque choses d'intéressant en parcourant mon passé avec GNU Emacs.
+  => [[Erreur404]].
+
+* [http://repose.cx/conf/.elisp/ Le .emacs de DamienElmes] peut être
+  intéressant; beaucoup de commentaires. => [[Erreur404]].
+
+* [http://oconnor.cx/config/dot.emacs Le .emacs de EdwardOConnor]
+  fonctionne avec différentes versions des deux Emacsen sur
+  différentes plateformes, et est plutôt bien commenté - s'il le dit
+  lui même :-) => [[Erreur404]].
+
+* L'[[InitFile]] de DominiqueQuatravaux fonctionne avec Emacs / XEmacs, il est portable, à peu près concis (700 lignes en un seul fichier) et très facile à personnaliser (car configurable par customize et truffé de commentaires en français).
+
+Il y en a bien plus sur:
+* http://www.dotemacs.de/
+* http://www.dotfiles.com/
+
+Voir aussi: DumpingEmacs (en)
+
+---
+This page is also available in english : English:CategoryDotEmacs

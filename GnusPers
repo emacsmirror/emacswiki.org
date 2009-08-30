@@ -1,0 +1,25 @@
+gnus-pers implements personalities for Message mode. It allows you to define a personality with any e-mail address, extra headers and signature you like, either as strings, functions or variables (signatures may also be files). Then it will chose a personality for you based on header info, gnus-newsgroup-name or group parameter. Additionally, you can change a personality in the middle of writing a message. This is intended to be an alternative to gnus-posting-styles, which only sets personalities (posting styles) based on which group you are in. Also, gnus-posting-styles must be defined by editing a your .gnus whereas gnus-pers uses Xemacs customize facility.
+
+in your .gnus file:
+
+    (require 'gnus-pers)
+    (gnus-personality-init)
+
+Then just M-x customize-group Personality
+
+http://www.comsecmilnavpac.net/elisp/ (this page seems dead)
+
+You can find it in http://packages.debian.org/stable/news/gnus-bonus-el again
+
+Or directly at Debian packages CVS: [http://cvs.alioth.debian.org/cgi-bin/cvsweb.cgi/~checkout~/emacs-goodies-el/elisp/gnus-bonus-el/gnus-pers.el?rev=1.1&content-type=text/plain&cvsroot=pkg-goodies-el gnus-pers.el 1.1]; probably have to apply [http://cvs.alioth.debian.org/cgi-bin/cvsweb.cgi/emacs-goodies-el/debian/patches/50_gnus-pers.dpatch?rev=1.1&content-type=text/x-cvsweb-markup&cvsroot=pkg-goodies-el 50_gnus-pers.dpatch 1.1]
+
+----
+I was having a problem with dueling From headers if I did not set a default personality. In other words. Gnus would insert a From header, then gnus-pers would insert another based on what I chose interactively at the prompt. Here's my kludge to fix it:
+
+    (setq gnus-posting-styles '((".*" ("From" nil))))
+
+Apparently, when a header is set to nil in gnus-posting-styles, gnus-posting-styles just removes it. Fortunately, gnus-posting-styles runs before gnus-pers.
+
+So, this is ugly, and maybe I'm just missing something. Can anyone point to a better fix?
+----
+CategoryGnus

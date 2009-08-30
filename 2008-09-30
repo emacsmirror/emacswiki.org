@@ -1,0 +1,54 @@
+It’s time for the irregular EmacsChannel ChatClient test again!
+
+{{{
+  89 irssi
+  57 ERC
+  55 xchat
+  13 rcirc
+   9 bip
+   6 Konversation
+   5 mIRC
+   5 Colloquy
+   5 Purple
+   4 WeeChat
+   3 LimeChat
+   2 CL
+   2 Riece
+   1 OMG
+   1 wtf
+   1 phooie
+   1 n
+   1 telnet
+   1 Quassel
+   1 schurger
+   1 HydraIRC
+   1 conspire
+   1 epic4
+   1 KVIrc
+   1 Gaim
+   1 PieSpy
+   1 Circe
+   1 Microsoft
+   1 ctrlproxy
+   1 Snak
+   1 BitchX
+   1 LostIRC
+   1 Miranda
+----
+ 275 total
+}}}
+
+IrcClientSurvey says how I produced the list.
+
+Irssi, ERC, and XChat continue dominating the list.
+I think irssi remains popular because people keep it running inside GNU screen sessions.
+
+"Purple" seems to refer to libpurple which is used by Pidgin & Gaim.
+
+Previous issues: [[2007-12-21]]. Next survey: [[2009-04-02]].
+
+Overheard on #emacs:
+
+21:08 <jrockway> kensanata: i use irssi-proxy running under
+      screen, and then connect to that with erc
+21:08 <jrockway> so... your survey is totally flawed!!111! ;)

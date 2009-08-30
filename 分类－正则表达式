@@ -1,0 +1,38 @@
+本分类关于''正则表达式'' See also: CategoryHideStuff and CategorySearchAndReplace.
+
+
+= 理解正则表达式 =
+
+* [[正则表达式]] —— 首先，什么是正则表达式？
+* [[正则表达式帮助]] —— 典型错误和常见问题集
+* [[正则表达式参考资料]] —— 哪里可以找到更多的信息
+* NonGreedyRegexp -- how to write <code>.*?</code> in old emacsen
+* [[多行正则表达式]] —— 如何匹配多行内容
+
+= 交互地使用正则表达式 =
+
+* '''[[立即查找#正则表达式查找]]''' -- Isearch 中使用正则表达式 -- 一个''学习使用''正则表达式的很好方式
+* [[Icicles]] -- Another good way to ''learn to use'' to use regexps -- lots of different uses, including:
+** completion and cycling of completion candidates through regexp matching
+** a new kind of incremental search: use multiple simple regexps, instead of struggling with a complex regexp
+* GrepMode -- `M-x grep' searches files for matches
+* OccurBuffer -- `M-x occur' works on buffers like `M-x grep' does on files
+* SearchBuffers -- Search *all* buffers
+* [[Synonyms]] -- Use regexps to search for synonyms in a thesaurus.
+* SearchAndReplaceDelimitedStrings -- Replace the prefix and suffix of a pattern while leaving the middle alone
+* ReplaceCount -- replacing stuff with the result of some lisp evaluation
+* GrepList -- search a list of strings for a regexp, recursing into sublists
+* OverlappingRegexps -- overlap regular expressions in a replace command
+* RemembranceAgents -- show a list of related documents as you type
+* RecursiveGrep -- various commands that recursively search a file system
+
+
+= Programming with Regular Expressions =
+
+* CaseFoldSearch -- 查找时的大小写敏感控制
+* [[Icicles - Defining Icicles Commands]] -- define multiple-choice commands that let users match regexp input against choices
+* NonAsciiRegexps -- catering for non-ASCII characters
+* ReBuilder -- build a regexp string and watch what it matches as you type
+* SymbolicRegexp -- for programmers who want to write readable regular expressions
+
+

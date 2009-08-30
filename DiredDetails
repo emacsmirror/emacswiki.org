@@ -1,0 +1,51 @@
+This page describes libraries Lisp:dired-details.el and Lisp:dired-details+.el, which let you hide or show the file and directory details in a Dired listing, to save space and clutter. When details are hidden, all you see (and all IncrementalSearch sees) are the file names.
+
+== dired-details.el ==
+
+RobGiardina has written library <tt>[[dired-details.el]]</tt>, which lets you hide and show the details of each file or directory in DiredMode. You use 
+`'''<tt>(</tt>'''' to show details and `'''<tt>)</tt>'''' to hide them. 
+
+Hiding details reduces a verbose directory listing such as this:
+
+       -rw-r--r--   1 rgiardin svrtech     4141 Aug 23 17:07 dired-details.el
+       -rw-r--r--   1 rgiardin svrtech       56 Aug 23 17:07 linked-file.el -> /var/tmp/checkouts/linked-file.el
+
+to just this:
+
+       [...] dired-details.el
+       [...] linked-file.el -> [...]
+
+or to just this, if you set `dired-details-hidden-string' to ##""## instead of ##"[...]"##:
+
+       dired-details.el
+       linked-file.el ->
+
+[:Screenshots]
+== Screenshots ==
+
+Here are two screenshots, one showing details, one hiding them:
+
+[[image:DrewsEmacsDiredWDetails]] [[image:DrewsEmacsDiredWODetails]]
+
+The difference in [[Frame]] size is due to the automatic frame resizing provided by <tt>[[dired-details+.el]]</tt> (see [[#DiredDetailsPlus]]).
+
+[:DiredDetailsPlus]
+== Dired Details Plus ==
+
+DrewAdams has written library <tt>[[dired-details+.el]]</tt>, which provides some minor, but convenient, enhancements to <tt>[[dired-details.el]]</tt>. This loads <tt>dired-details.el</tt> and activates show/hide, so <tt>dired-details+.el</tt> is all you ever need to load.
+
+##dired-details+.el## provides the following enhancements:
+
+* It binds `dired-details-toggle' to both `##)##' and `##(##', so you don't need to remember which shows and which hides.
+
+* It lets you optionally propagate the current hide/show setting to the next DiredMode buffer (option `dired-details-propagate-flag'). If non-`nil', future Dired buffers you open use the hide/show appearance that you last had.
+
+* It makes DiredMode commands that byte-compile, compress, rename, and create files or directories also update the hide/show overlays accordingly. Without this enhancement, for instance, even with details hidden, creating a new file lists it with details showing.
+
+* It automatically shrink-wraps a one-window Dired frame whenever you show/hide details (if you also load library Lisp:autofit-frame.el). See the screenshots above ([[#Screenshots]]).
+
+
+
+----
+CategoryDirectories
+CategoryDisplay

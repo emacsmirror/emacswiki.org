@@ -1,0 +1,83 @@
+Arjen [::credmp] is a software engineer who stubbornly evangalises Emacs wherever he can.
+
+Number of people turned from other editors: 3.
+
+Arjen maintains WorklogMode.
+
+His homepage can be found at http://www.wiersma.org 
+
+He uses Emacs.
+
+Welcome to the wiki! --PierreGaston
+
+== How I setup my Emacs ==
+
+I utilize Emacs on lots of different locations. It is installed on the development servers at my work, on my desktop as well as my laptop. Keeping each version in sync can be quite a hassle.
+
+Tramp is good when you are working on one dedicated system all the time; however, that doesn't fly for me.
+
+So I figured out the following structure that seems to work quite well for me:
+
+In my homedir I create the following directory structure:
+
+  /home/arjenw
+  `-.elisp
+    |-- .emacs
+    |-- .gnus.el
+    |-- auctex -> packages/auctex-11.14
+    |-- bbdb -> packages/bbdb-2.34
+    |-- boxquote -> packages/boxquote-1.18
+    |-- cedet -> packages/cedet-1.0beta3a
+    |-- [many more packages I use]
+    |-- session -> packages/session
+    |-- tramp -> packages/tramp-2.0.42
+    `-- packages
+        |-- auctex-11.14
+        |-- bbdb-2.34
+        |-- boxquote-1.18
+        |-- cedet-1.0beta3a
+        |-- [many more packages I use]
+        |-- session
+        `-- tramp-2.0.42
+
+As you can see, the actual packages are in '.elisp/packages' and I link a simple name to them from the top-level '.elisp' directory.
+
+In my .emacs I put the following lisp to make life easy;
+
+  (setq my-home-dir (getenv "HOME"))
+  (setq my-dir-sep "/")
+  (setq my-packages-dir (concat my-home-dir my-dir-sep ".elisp"))
+
+And a utility function to make a path to a package;
+
+  (defun aw-make-package-path (package)
+    "Create a text representation of the path of the package."
+    (setq package-path (concat my-packages-dir my-dir-sep package))
+    )
+
+For each package that I have installed, I create a seperate section in my '.emacs', for example look at the configuration of Tramp;
+
+  (setq load-path (cons (concat (aw-make-package-path "tramp") my-dir-sep "lisp" my-dir-sep) load-path))
+  (require 'tramp)
+  (if (featurep 'xemacs)
+      (add-to-list 'Info-directory-list 
+                   (concat 
+                    (aw-make-package-path "tramp") my-dir-sep "info" my-dir-sep))
+    (add-to-list 'Info-default-directory-list 
+                 (concat 
+                  (aw-make-package-path "tramp") my-dir-sep "info" my-dir-sep)))
+
+This not only adds the 'tramp/lisp' package directory to the load path and subsequently loads tramp, it will also populate the correct 'info' directory variable so you can read the documentation of Tramp in Emacs.
+
+This should also work correctly in XEmacs, although I haven't tried.
+
+I also try to keep the specific configuration settings contained to the specific section so that I have everything related to a module in one section of my '.emacs'.
+
+This setup strategy should work on any Linux, BSD distribution as well as Mac OS X (which is BSD anyways;)) and on Windows. I up to now only have tried Gentoo Linux but would appreciate feedback of anyone who tries it on a different OS.
+
+== Why not use a package manager? ==
+
+Gentoo has a ports like system called Portage, FreeBSD has ports... why not use these as Emacs package maintainers? It's all about portability... if you are contained to the an OS with a package manager that can do it for you, more power to you. If you want to be portable and have the same system where-ever you can, use something like the above.
+
+----
+CategoryHomepage

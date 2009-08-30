@@ -1,0 +1,4 @@
+I started using EMACS in 1979, on ITS.  Later, when RMS stopped maintaining PDP-10 EMACS to start the GNU project, I took over EMACS maintenance.  I think the only lasting contribution I made was the invention of "M-$" and M-X Check Buffer Spelling (now unfortunately called M-X ispell-buffer). I worked on a few small EMACS clones for various operating systems, and now happily use GNU Emacs on a variety of platforms.
+
+----
+CategoryHomepage

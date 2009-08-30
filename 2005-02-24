@@ -1,0 +1,12 @@
+In case any else having high CPU usage:
+
+I was experiencing high CPU usage with global-font-lock == t and after having used M-x compile RET.
+
+I found this: http://lists.gnu.org/archive/html/emacs-pretest-bug/2005-01/msg00199.html
+
+which is a 64bit bug fix.
+
+I'm running a CVS version built late October:
+"GNU Emacs 21.3.50.1 (i386-mingw-nt5.1.2600) of 2004-10-27 on SOVEREIGN"
+
+Maybe this is not in the current official release?

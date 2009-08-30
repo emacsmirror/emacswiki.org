@@ -1,0 +1,45 @@
+I use Emacs.  I've been an Emacs'er since 1994 when I discovered a coworker using it to perform rectangle operations that vi could not do.  So, I switched to Xemacs.  However, that was version 19.13 of Xemacs.  Within a short time, I discovered that Xemacs would become very sluggish as the number of open buffers became large.  So, I gave up on it and have been using Gnu Emacs ever since.  The recent versions of Xemacs have probably fixed that problem.  
+
+There is probably a lot of things on Xemacs that I would benefit from, and at one point I tried to go back, but there were too many interface changes and behavioural differences between the two programs that I would have to maintain essentially two different forms of .emacs file, so I stayed with Gnu Emacs. Other than that, I'm not religious about using one or the other.
+
+== Emacs packages I like to use ==
+
+* PlannerMode
+* ViewMail (the VM mail package)
+* EmacsIRCClient (I don't use it enough)
+
+== PlannerMode tricks and configuration ==
+
+From http://repose.cx/emacs/wiki/index.html#sec4, I used the <code>emacs-wiki-preview-html</code> function Damien Elmes presented 
+and bound it to the "C-c p" key in planner mode:
+
+    ;; Got this from http://repose.cx/emacs/wiki/index.html#sec4:
+    (defun emacs-wiki-preview-html ()
+      (interactive)
+      (emacs-wiki-publish-this-page)
+      (browse-url (emacs-wiki-published-file)))
+    
+    ;; Now install a new keybinding to execute emacs-wiki-preview-html above:
+    (add-hook 'planner-mode-hook
+    		  (lambda () (interactive)             
+    			(when (boundp 'planner-mode-map) 
+    			  (define-key planner-mode-map "\C-cp" 'emacs-wiki-preview-html )
+    			  )
+    			) 
+    		  )
+
+== Getting Rid of Scratch Buffers in Home directories ==
+
+ScratchBufferAutoSaveFileRemoval
+
+== Rlogin mode tricks ==
+
+I created the RloginMode wiki page in order to add customizations I found useful.
+
+== Making Emacs Windows Sticky ==
+
+StickyWindows
+
+
+----
+CategoryHomepage

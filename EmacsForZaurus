@@ -1,0 +1,28 @@
+more information is also at [[Emacs_and_EmacsWikiMode_on_PDAs]]
+
+== pdaXrom ==
+
+Latest (almost 23.0.0.1 - 2007-03-12) compiles natively too, check out the other postings in the forum for useful Zaurus/Emacs tips
+* http://www.oesf.org/forums/index.php?showtopic=23455&st=16
+
+AN older version (Emacs 21.4) compiles natively on the Zaurus clamshell and SL6000 models in pdaxrom. 
+
+ipkgs:
+* http://www.oesf.org/forums/index.php?showtopic=15331 
+
+Bugs: 
+
+default fonts don't work. start emacs with  -fn 7x13 
+sometimes you need to set -q
+
+== Qtopia ==
+
+One more port of Emacs 21.2.1 for Sharp Zaurus (Qtopia) you can find here:
+* http://sourceforge.jp/projects/zaurus-ja/ 
+
+emacs 21.4 (console) available here: 
+* http://www.2gn.com/~jjorgens/zaurus/feed/
+
+There is also a port of XEmacs there but I never tried it.
+
+No GUI, console only but it works fine on my SL-C860. See also SharpZaurusDotEmacs --DmitriBrechalov

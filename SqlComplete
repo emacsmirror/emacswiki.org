@@ -1,0 +1,59 @@
+This package provides a framework for completion of column and table names for SqlMode.
+
+You can get it here:
+
+* Geocities:/kensanata/elisp/sql-complete.el.txt
+
+First, you have to set the data dictionary up.  Call `M-x sql-oracle-data-dictionary'.  This will send a select statement to the host that dumps the data dictionary.  The data dictionary is then read and stored in a lisp variable.  Based on this information, `M-x sql-complete' now completes columns and tables.  Bind `sql-complete' to any key you like in `sql-mode-map' and `sql-interactive-mode-map'.
+
+If you want to add support for a new database vendor, proceed as follows:
+
+* Write a new defcustom called `sql-TYPE-data-dictionary' similar to `sql-oracle-data-dictionary'.  Its value must be a SQL statement which returns the data dictionary as a long list of `("TABLE NAME" "COLUMN NAME")' rows.  You don't need to parse the resulting output -- the framework does that for you.
+* Write a new defun called `sql-TYPE-data-dictionary' similar to `sql-oracle-data-dictionary'.  There will be no name clash as variables and functions are in different name spaces.  The function does nothing but save the parsed data dictionary in the `sql-data-dictionary' variable.  This effectively switches the data dictionary to use.
+
+Here is the Oracle example again:
+
+   (defcustom sql-oracle-data-dictionary
+     "select '(\"'||table_name||'\" \"'||column_name||'\")'
+      from user_tab_columns 
+      order by table_name;"
+     "SQL Statement to determine all tables and columns."
+     :group 'SQL
+     :type 'string)
+
+   (defun sql-oracle-data-dictionary ()
+     (interactive)
+     (setq sql-data-dictionary
+           (sql-data-dictionary sql-oracle-data-dictionary)))
+
+As you can see, it is not too difficult.
+
+The parsed data dictionary as returned by the function `sql-data-dictionary' and stored in the variable of the same name is very simple: It as an alist where the table name is the key and the list of columns is the value.  Here is an example:
+
+   '(("PERSON" "PERSONID" "NAME" "FIRSTNAME" "JOBID")
+     ("JOB" "JOBID" "TITLE" "DESCRIPTION" "BASE_SALARY"))
+
+You can bind the functions `sql-complete' and `sql-complete-table' (which only completes on table names to any key you want.
+
+See also SqlCompletion.
+
+----
+Mysql has a problem with this setup. There are no SELECT'able metadata views. There are commands to retreve the metadata:
+
+    show tables;
+    show columns from some_table;
+
+But the format they return is fixed. I'm about to write a defun to parse & munge the results into the required format - but it seems like the interface might need to be modified. Ideas? - JoshRobb
+
+----
+What about completion for table names with schema prefix? 
+i slightly customize sql-oracle-data-dictionary
+
+    select '("'||owner||'.'||table_name||'" "'||column_name||'")'
+       from all_tab_columns 
+       order by table_name;
+
+But its seems that after dot completion looks only for columns names.
+----
+
+CategorySql

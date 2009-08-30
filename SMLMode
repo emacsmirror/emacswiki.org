@@ -1,0 +1,12 @@
+The package, sml-mode, is an Emacs mode that allows editing SML code, and running an SML interpreter as a subprocess of Emacs. Actually, it can use any standard-compliant interpreter, like SML of New Jersey, and MoscowML. 
+
+Some useful links:
+
+* [http://www.iro.umontreal.ca/~monnier/elisp/ Package web site]
+* [http://www.smlnj.org/doc/Emacs/sml-mode.html Documentation at the SML/NJ web site]
+* Less recent tarball distributed by SML/NJ group: [ftp://flint.cs.yale.edu/pub/monnier/sml-mode/sml-mode.tar.gz Mirror 1], [ftp://ftp.research.bell-labs.com/dist/smlnj/contrib/emacs/sml-mode-3.9.5.tar.gz Mirror 2]
+
+Enjoy.
+
+----
+CategoryModes, ProgrammingModes

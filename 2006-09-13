@@ -1,0 +1,17 @@
+=== Fanning the flames of Debian flame wars ===
+
+Questions over the free documentation for [[Gnus]] arose on the [[debian-emacsen]] list recently.[http://lists.debian.org/debian-emacsen/2006/09/msg00011.html]  This has broadened the effect of Debian's position on the EmacsManualLicense, the [[GnuFreeDocumentationLicense]] (see [[2006-03-15]]).  The Gnus manual will likely be distributed separately from the Gnus package in Debian, and will need to be download from the non-free section of Debian repositories.  The Gnus manual contains no invariant sections, but requires the standard front and back-cover texts that all GNU packages do.
+
+The resolution passed earlier this year effectively declared that Debian "cannot accept in our distribution works that include" ''invariant sections'', "non-removable, non-modifiable parts" of documentation.
+
+The original BSD license and the GNU GPL have comprable restrictions to the GFDL's cover texts and invariant sections, but only the former licenses are considered free, always, by Debian.  The original BSD license has the famous "advertising clause".  The GNU GPL has requirements for interactive features (section 2c), the preservation of the license itself, and preservation of notices that refer to the license and an "absence of any warranty".  The voting process earlier this year did not offer rationale for these discrepancies.
+
+The result has been the banishment of GNU documentation from the main distribution of Debian, often because they contain works of opinion, works that support the free software movement.  The current list of FDL documentation in non-free is:
+
+* make-doc
+* texinfo-doc-nonfree 
+* autoconf-doc
+* automake-doc
+* tar-doc
+* glibc-doc-reference
+* gnu-standards

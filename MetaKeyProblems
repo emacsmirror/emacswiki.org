@@ -1,0 +1,246 @@
+== Intro ==
+
+If your Emacs does not recognize your Alt key as the Meta key anymore,
+then you probably have some other key bound to Meta.  In some
+distributions, this is the Windows key, or a Penguin key on some
+keyboards.  On Macintoshes meta is often the <code>Option</code> key,
+which often is caught for other purposes.
+
+The <code>ESC</code> key can be used as a prefix, and often works
+without initial hassle.  Well, if running EmacsOnTerminal, better see
+below.
+
+On some ports, Emacs finds an existing Meta key and no longer
+treats Alt as the Meta key.  You have the following options, then:
+
+* Start using the new Meta key
+* Make the new Meta key something else
+* Change all Emacs keybindings from Meta to Alt (don't!)
+* If using X11, another XModMap config... (Just in case the first didn't work... for me at least!)
+
+== X-window things ==
+
+=== Using the XKB Extension ===
+
+* SettingMetaWithXKB -- Using XKB to set the meta key
+
+=== XFree86 option ===
+
+If you're using XFree86 4, you can get a similar effect by putting
+something like this in XF86Config-4:
+
+    Section "InputDevice"
+    ...
+        # See /etc/X11/xkb/symbols/alt
+        Option "XkbOptions" "alt:leftaltismeta"
+    EndSection
+
+=== Other keyboard type ===
+
+Select a pc101 keyboard type instead of a pc104.  X doesn't even know
+about the Windows/Menu keys anymore, and Emacs works you would expect
+it to.  Obviously this trick only works if you don't use the
+Windows/Menu/Penguin/whatever keys.
+
+=== Use Super for mod4 ===
+
+Put the following into your ~/.Xmodmap file (create if necessary).
+
+ keycode 115 = Super_L
+ keycode 116 = Super_R
+ ! Super_L is already mod4 on my system, but Super_R is not
+ add mod4 = Super_R
+
+This will make your Windows/Penguin key the Super key.  Thus, Emacs
+notices that no key will be Meta and accepts Alt instead of Meta.
+
+This is because Meta and Alt are different and you can bind things to
+M-a and to A-a and they should not be confused.  But in the case where
+there is no Meta binding, it's preferable to treat Alt as Meta since
+Alt bindings are much more rare than Meta bindings.
+
+=== Just clear mod4 ===
+
+An alternative to adding the Super [[modifier key]] is to just clear mod4.
+
+Check your xmodmap by running xmodmap or 'xmodmap -pm'.  Assume the
+following result:
+
+ shift       Shift_L (0x32),  Shift_R (0x3e)
+ lock        Caps_Lock (0x42)
+ control     Control_L (0x25),  Control_R (0x6d)
+ mod1        Alt_L (0x40)
+ mod2        Num_Lock (0x4d)
+ mod3        Mode_switch (0x71)
+ mod4        Meta_L (0x73)
+ mod5        Scroll_Lock (0x4e)
+
+Meta_L is in mod4... that's not good. Just clear it by adding 'clear
+mod4' to .Xmodmap or running the command 'xmodmap -e "clear mod4"'.
+And now everything is fine.
+
+=== xmodmap background ===
+
+(If you know more about xmodmap, fix this.)
+
+Usually, applications talk about the Alt or the Meta key and all they
+mean is that the key acts as mod1.  Here's the output of xmodmap:
+
+ ~$ xmodmap
+ xmodmap:  up to 2 keys per modifier, (keycodes in parentheses):
+
+ shift       Shift_L (0x32),  Shift_R (0x3e)
+ lock        Caps_Lock (0x42)
+ control     Control_L (0x25),  Control_R (0x6d)
+ mod1        Alt_L (0x40)
+ mod2        Num_Lock (0x4d)
+ mod3        Mode_switch (0x71)
+ mod4        Super_L (0x73),  Super_R (0x74)
+ mod5        Scroll_Lock (0x4e)
+
+As you can see, the Shift keys act as shift, the Control keys act as
+control, and the left Alt key acts as mod1.  And in addition to that,
+you can see that the "Use Super for mod4" solution has been used in
+this setup.
+
+On some keyboards there is, however, a real Meta key.  Meta is no
+longer a modifier like mod1 -- it is a real keysym.  So that takes
+precedence.  Assuming that whichever key having mod1 is Meta is just a
+fallback.
+
+=== Emacs only changes ===
+
+If this problem exists only on X Windows, I seem to have some luck with
+setting x-alt-keysym to meta.  
+
+    (setq x-alt-keysym 'meta)
+
+Or, if you want to use the windows key (or penguin key) as meta, you can do it 
+by setting x-super-keysim to meta.
+
+    (setq x-super-keysym 'meta)
+
+
+== OS Specific things ==
+
+=== MS Windows ===
+On MS Windows you can use the Windows keys as Meta keys. 
+This allows normal menu handling through the keyboard using the Alt key.
+However to do that fully you currently need a slightly patched version of CVS Emacs.
+You can get this is from [[EmacsW32]] web site.
+
+==== Via SSH - use PUTTY ====
+
+If you are using windows and access a remote unix or GNU box using a
+term, one good term program, IMHO, is PuTTY.  Very small and compact,
+yet does all the right things.. and customizable.  Alt is
+automatically Meta.  Page up/Down get passed right through to emacs,
+etc.  The only problem I have had to date with putty is that the
+'pcprint' hasn't worked for me in putty (tried when using
+ssh).. anyone?  -- DeepakGoel
+
+
+
+=== GNU/Linux ===
+==== Use Alt for the Windows Manager ====
+
+On some systems (eg. Debian) the Alt key generates "Alt" and the
+Windows key generates "Meta".  Instead of changing things around,
+adapt to it and use "Alt" key combinations for the window manager
+(eg. Sawfish).  If you use a lot of hotkeys in your window manager,
+this is recommended.
+
+=== MacOSX ===
+
+The Apple X11 server application has the meta at the *Option* button,
+which is caught by the application itself for various purposes, and
+never passes on to the X11 client.  Disabling <code>Enable key
+equivalents under X11</code> under the input preferences is one easy
+way to fix this, but this will effectively kill a few useful
+keybindings of the X11 servers too.
+
+If one is running the native EmacsForMacOS, the variable
+<code>mac-command-key-is-meta</code> might be of interest, but it
+ought to be true by default.
+
+In AquamacsEmacs, Option (Alt) is mapped to Meta - however, because Option is used to input a lot of non-ASCII characters such as ü or £ on a variety of keyboards, the special character input methods take precedence by default. You can deselect "Option key produces only special characters" in the Options menu to use Option as Meta, or you set the variable mac-command-modifier to 'meta - you will lose functionality, of course.
+If you use a non-English keybboard layout, the emulation modes might be just what you want. While they leave the Option key mapped to Meta, they will allow you to input many common characters ([,],{,},\, etc.) directly with the Option key, just as you would otherwise. You can find them in the Options -> Option Key menu - or use, e.g., M-x emulate-mac-german-keyboard-mode.
+
+
+In CarbonEmacsPackage, you can set the variable mac-option-modifier to 'meta when your option key is used to input special characters. See also mac-control-modifier and mac-command-modifier if you want to map the meta-key to another modifier key (Ctrl, for example).
+
+Make sure you aren't mapping meta to send another modifier key.  Under System Panel -> Keyboard & Mouse -> Keyboard -> Modifier Keys - make sure Option Key is set to Option.
+
+Best option in Emacs 23 is to revert to Emacs 22 settings (alt is alt, cmd is meta) with this snippet:
+
+    (setq mac-option-key-is-meta nil)
+    (setq mac-command-key-is-meta t)
+    (setq mac-command-modifier 'meta)
+    (setq mac-option-modifier nil)
+
+
+
+
+== Console and Terminal ==
+
+=== NetBSD console ===
+
+For whatever reason, the Alt key does nothing for me.
+In /etc/wscons.conf i add these lines near the bottom:
+
+    encoding us.metaesc #this makes meta send esc
+
+I guess this may be more correctly solved by changing the wscons
+terminal types to something better than vt100, but I've not been able
+to figure out the correct naming.
+
+=== Linux console ===
+
+If your Meta key works in the console, but Meta + Control + something
+doesn't work, it may have to do with your .inputrc assuming the
+console sends 8-bit characters.  Take a look at the dumpkeys man page
+and friends.  You will find that for most Linux kernels, some
+combinations of keys and modifiers are defined, but not for all --
+because the kernel will only take around 256 different events.
+
+=== XTerm ===
+
+Before trying this make sure that Meta in other terms like aterm is
+working.  The XTerm converts per default Metacommands. To use the
+Meta-key in XTerm edit follwing:
+
+<pre>
+    ~/.inputrc
+    set meta-flag on
+    set convert-meta off
+    set output-meta on
+
+    ~/.Xdefaults
+    XTerm*metaSendsEscape: true
+    XTerm*eightBitInput: false
+</pre>
+
+=== terminals ===
+
+It might not be obvious that when using EmacsOnTerminal, at least
+certain popular DEC terminals in the absense of an Escape-key send the
+escape prefix sequence on <code>C-3</code> or <code>C-[</code>.  Often
+the Emacs term/ libraries configure the <code>f11</code> to be an
+<code>ESC</code> too.
+
+
+
+== source hacking for xemacs ==
+
+Locate src/event-Xt.c, find the lines
+
+  /* If there was no Meta key, then try using the Alt key instead.
+     If there is both a Meta key and an Alt key, then the Alt key
+     is not disturbed and remains an Alt key. */
+  if (! meta_bit && alt_bit)
+    meta_bit = alt_bit, alt_bit = 0;
+
+.. and disable the conditional.
+
+----
+CategoryKeys MovingTheMetaKey

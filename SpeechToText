@@ -1,0 +1,24 @@
+There are several packages for driving Emacs through voice input, including:
+
+* vr-mode (http://emacs-vr-mode.sourceforge.net/)
+
+[new]
+:: It seems that vr does only work with Emacs on W32. Is there any equivalent using Dragon Naturally Speaking in a virtual network? I know something like this existed.
+[new]
+
+* Ascii2x (http://www.cl.cam.ac.uk/a2x-voice/a2x-faq.html)
+* EmacsListen
+* ShortTalk
+* JohnWiegley has http://www.gci-net.com/users/j/johnw/Emacs/obsolete/dictation.el
+* http://www.codevox.com/alsopbvkit.phtml - with a downloadable kit [returns 404, right now, 9. okt. 2005]
+* http://www.speech.cs.cmu.edu/sphinx
+* http://home.hetnet.nl/~vandamhans/commander/commanderindex.htm
+* VoiceCode
+
+=== Microphones ===
+* It is very important to have a very good noise-canceling microphone.   One source I have come across is the compatibility list of (the NON-FREE) dragon naturally speaking software -- go for the few that meet their highest rating (six stars).
+
+
+----
+TextToSpeech
+CategoryAccessibility

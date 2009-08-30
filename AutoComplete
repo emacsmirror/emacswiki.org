@@ -1,0 +1,194 @@
+Auto completion with popup menu.
+
+Lisp:auto-complete.el (0.2.0 stable)
+
+Lisp:auto-complete-extension.el is some enhancement by AndyStewart.
+
+Lisp:auto-complete-octave.el    is some enhancement by Yen-Chin,Lee.
+
+Lisp:auto-complete-etags.el     is some enhancement by Yen-Chin,Lee.
+
+Lisp:auto-complete-verilog.el   is some enhancement by Yen-Chin,Lee.
+
+== Features ==
+
+* Graphical completion UI
+* Easy to use
+* Easy to extend
+* Lightweight
+* [[AutoCompleteSources]]
+
+== Development version ==
+
+You can get development version from:
+
+* http://www.cx4a.org/pub/auto-complete.el
+
+and some extensions:
+
+* http://www.cx4a.org/pub/auto-complete-cpp.el
+* http://www.cx4a.org/pub/auto-complete-css.el
+* http://www.cx4a.org/pub/auto-complete-emacs-lisp.el
+* http://www.cx4a.org/pub/auto-complete-gtags.el
+* http://www.cx4a.org/pub/auto-complete-python.el
+* http://www.cx4a.org/pub/auto-complete-ruby.el
+* http://www.cx4a.org/pub/auto-complete-semantic.el
+* http://www.cx4a.org/pub/auto-complete-yasnippet.el
+
+
+This version may include new features but it is in testing.
+
+: You can use Lisp:auto-install.el install all above packages, just:
+## M-x auto-install-batch RET
+## Entry "auto-complete development version" RET.
+
+: (How to install Lisp:auto-install.el, see AutoInstall). -- AndyStewart
+                
+Lisp:init-auto-complete.el -- [[AndyStewart]]'s configuration file for development version.
+
+Lisp:ac-anything.el uses [[Anything]] to narrow candidates. It needs development version of auto-complete.el . -- [[rubikitch]]
+
+== Screenshot ==
+
+[[image:AutoCompleteScreenshot]]
+
+== Demo ==
+
+http://www.cx4a.org/pub/ac-demo/ac-demo.html
+
+== Configuration example ==
+
+ (when (require 'auto-complete nil t)
+   (require 'auto-complete-yasnippet)
+   (require 'auto-complete-ruby)
+   (require 'auto-complete-css)
+ 
+   (global-auto-complete-mode t)
+   (set-face-background 'ac-menu-face "lightgray")
+   (set-face-underline 'ac-menu-face "darkgray")
+   (set-face-background 'ac-selection-face "steelblue")
+   (define-key ac-complete-mode-map "\t" 'ac-expand)
+   (define-key ac-complete-mode-map "\r" 'ac-complete)
+   (define-key ac-complete-mode-map "\M-n" 'ac-next)
+   (define-key ac-complete-mode-map "\M-p" 'ac-previous)
+   (setq ac-auto-start 3)
+   (setq ac-dwim t)
+   (set-default 'ac-sources '(ac-source-yasnippet ac-source-abbrev ac-source-words-in-buffer))
+ 
+   (setq ac-modes
+         (append ac-modes
+                 '(eshell-mode
+                   ;org-mode
+                   )))
+   ;(add-to-list 'ac-trigger-commands 'org-self-insert-command)
+ 
+   (add-hook 'emacs-lisp-mode-hook
+             (lambda ()
+               (setq ac-sources '(ac-source-yasnippet ac-source-abbrev ac-source-words-in-buffer ac-source-symbols))))
+ 
+   (add-hook 'eshell-mode-hook
+             (lambda ()
+               (setq ac-sources '(ac-source-yasnippet ac-source-abbrev ac-source-files-in-current-dir ac-source-words-in-buffer))))
+ 
+   (add-hook 'ruby-mode-hook
+             (lambda ()
+               (setq ac-omni-completion-sources '(("\\.\\=" ac-source-rcodetools))))))
+
+
+
+== C++ Keywords ==
+
+
+    (defconst c++-keywords 
+      (sort 
+       (list "and" "bool" "compl" "do" "export" "goto" "namespace" "or_eq" "return"
+             "struct" "try" "using" "xor" "and_eq" "break" "const" "double" "extern"
+             "if" "new" "private" "short" "switch" "typedef" "virtual" "xor_eq" "asm"
+             "case" "const_cast" "dynamic_cast" "false" "inline" "not" "protected" 
+             "signed" "template" "typeid" "void" "auto" "catch" "continue" "else" 
+             "float" "int" "not_eq" "public" "sizeof" "this" "typename" "volatile"
+             "bitand" "char" "default" "enum" "for" "long" "operator" "register"
+             "static" "throw" "union" "wchar_t" "bitor" "class" "delete" "explicit"
+             "friend" "mutable" "or" "reinterpret_cast" "static_cast" "true" 
+             "unsigned" "while" ) #'(lambda (a b) (> (length a) (length b)))))
+
+    (defvar ac-source-c++
+      '((candidates
+         . (lambda ()
+             (all-completions ac-target c++-keywords))))
+      "Source for c++ keywords.")
+
+    (add-hook 'c++-mode-hook
+              (lambda ()
+                (make-local-variable 'ac-sources)
+                (setq ac-sources '(ac-source-c++))))
+
+== Development Version Notes ==
+If you are using the current development version of AutoComplete (0.20 at the time of this edit) be aware that ac-source-semantic is now included in the package.  Furthermore, if you are using the semantic source,  make sure that you have required semantic-ia in your init file.  If you do not then it falls back to a method of gathering the tags that appears to not check the semantic cache slowing the whole thing up rather tremendously (especially with omnicompletion).
+
+Speaking of omnicompletion, the way it functions was changed recently.  Since it is not documented yet here is an example of how it works:
+
+
+  (add-hook 'c-mode-common-hook '(lambda ()
+
+          ;; ac-omni-completion-sources is made buffer local so
+          ;; you need to add it to a mode hook to activate on 
+          ;; whatever buffer you want to use it with.  This
+          ;; example uses C mode (as you probably surmised).
+
+          ;; auto-complete.el expects ac-omni-completion-sources to be
+          ;; a list of cons cells where each cell's car is a regex
+          ;; that describes the syntactical bits you want AutoComplete
+          ;; to be aware of. The cdr of each cell is the source that will
+          ;; supply the completion data.  The following tells autocomplete
+          ;; to begin completion when you type in a . or a ->
+
+          (add-to-list 'ac-omni-completion-sources
+                       (cons "\\." '(ac-source-semantic)))
+          (add-to-list 'ac-omni-completion-sources
+                       (cons "->" '(ac-source-semantic)))
+
+          ;; ac-sources was also made buffer local in new versions of
+          ;; autocomplete.  In my case, I want AutoComplete to use 
+          ;; semantic and yasnippet (order matters, if reversed snippets
+          ;; will appear before semantic tag completions).
+
+          (setq ac-sources '(ac-source-semantic ac-source-yasnippet))
+  ))
+
+Not terribly difficult but it took me a bit to puzzle out what needed to be done so I thought I would share my results.  [[AndyStewart]] has included the omnicompletion bits into his init file.
+
+-- [[LesHarris]]
+
+
+== External links ==
+
+[http://www.enigmacurry.com/2009/01/21/autocompleteel-python-code-completion-in-emacs/ Integrating Rope and Yasnippet with Auto Complete].
+
+[http://madscientist.jp/~ikegami/diary/20090215.html#p01 Integrating for Haskell (experimentally, for the Haskell compiler GHC 6.10.1)]
+
+== Questions and Feedback ==
+[new:PhilJackson:2009-01-22 12:26 UTC] Should I expect this to work in a TTY emacsen?
+
+[new] How does this compare with CompletionUI and CompanyMode? --TobyCubitt
+
+[new:AndyStewart:2009-02-11 23:03 UTC]
+: CompletionUI use tooltip as completion UI, AutoComplete and CompanyMode implement by Overlay.
+: Tooltip just can use in X, and overlay can use both X and console.
+: Tooltip is slower than overlay when finger is very fast. :)
+: But overlay have align render bug with multi-byte language (such as CJK), and tooltip haven't this problem.
+: About different between AutoComplete and CompanyMode, in fact they're very similar, but CompanyMode have more bug. -- AndyStewart
+
+[new]
+Thanks for the explanation! CompletionUI includes many other user-interfaces besides the tooltip, implements an auto-completion-mode, and includes many other features besides. My aim was to make a swiss-army knife of completion user-interface code, so no one else would have to go through the same tedium! Would you be interested in adding your overlay display code to CompletionUI? --TobyCubitt
+----
+[new]
+AutoComplete stops working as soon as I enable Flymake. I'm using the development version.
+--[[TiagoCamargo]]
+----
+[new] 
+If I'm editing [[OrgMode]] files, I can start AutoComplete (using \M-/ and not auto start), but if I don't want to make any of the completions, ESC-ESC-ESC doesn't kill the menu. I don't see this problem in other emacs files. Any debugging hints?
+----
+CategoryCompletion
+
+

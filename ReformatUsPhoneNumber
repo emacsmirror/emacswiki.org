@@ -1,0 +1,59 @@
+Originally written by KragenJavierSitaker, who tries to keep the US phone numbers in his address-book file in a consistent format: +1 234 567 8901.  This code lets you put your cursor on the phone number and hit C-M-Tab to reformat it.  Are there better ways to do this?
+
+    ;;; still doesn't handle the formats 4154975513 and 415 4975513
+    (defun reformat-us-phone-number ()
+       "Reformat a phone number in a US format into my normal phone number format."
+      (interactive)
+      (save-excursion
+        ; XXX these regexen break at end of buffer
+        (if (looking-at "[0-9]\\{3\\}[-. ][0-9]\\{3\\}[-. ][0-9]\\{4\\}[^0-9]")
+            (progn
+              (insert "+1 ")
+              (forward-char 3)
+              (delete-char 1)
+              (insert " ")
+              (forward-char 3)
+              (delete-char 1)
+              (insert " ")
+              t)
+          (if (looking-at
+               "([0-9]\\{3\\})[-. ]?[0-9]\\{3\\}[-. ][0-9]\\{4\\}[^0-9]")
+              (progn 
+                (insert "+1 ")
+                (delete-char 1)
+                (forward-char 3)
+                (delete-char 1)
+                (if (looking-at "[-. ]") (delete-char 1))
+                (insert " ")
+                (forward-char 3)
+                (delete-char 1)
+                (insert " ")
+                t)
+            nil))))
+
+    (defun magic-reformat-us-phone-number ()
+      "Reformat a US phone number somewhere in the vicinity."
+      (interactive)
+      (or (reformat-us-phone-number)
+          (save-excursion (forward-char 1) (reformat-us-phone-number))
+          (save-excursion (backward-char 1) (reformat-us-phone-number))
+          (and (looking-at "1-[0-9]\\{3\\}")
+               (progn (delete-char 2) (reformat-us-phone-number)))
+          (save-excursion (backward-char 12) (reformat-us-phone-number))
+          (save-excursion (backward-char 13) (reformat-us-phone-number))
+          (save-excursion (backward-char 14) (reformat-us-phone-number))))
+    (global-set-key [(control meta tab)] 'magic-reformat-us-phone-number)
+
+Initial feedback:
+
+    23:56 < bpalmer`> KragenSitaker: I'd probably write something which, if it matched, split it into named fields, removed the
+                      contents, and then re-insert it all at once.
+    23:57 < KragenSitaker> bpalmer`: hmm, using a regexp-search and replace-match?
+    23:57 < bpalmer`> KragenSitaker: that'd work too, although it'd be less general.
+    23:57 < KragenSitaker> what did you mean?
+    23:58 < KragenSitaker> actually I guess I wouldn't need a regexp-search
+    23:58 < KragenSitaker> since looking-at sets the match info, right?
+    23:59 < bpalmer`> Something like (loop for (pattern transformer) in number-recognizers 
+                      if (looking-at pattern) 
+                      do (erase-region (match-beginning 0) (match-end 0))
+                         (insert-canonical-number (funcall transformer (match-data))))

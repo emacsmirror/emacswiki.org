@@ -1,0 +1,31 @@
+English:CategoryXML 
+
+These are some packages used for XML processing in Emacs or XEmacs:
+
+* PsgmlMode -- 编辑SGML and XML 文档的主模式.  This is more complicated, and feature rich than XmlMode, but less flexible.  If you have a validating DTD for your XML, you PSGML will provide a variety of very useful features, most notably context sensitive help in inserting tags and attributes.
+* XmlMode -- 编辑XML的主模式, 支持缩进, 语法高亮显示等. 比PSGML简单, 不准备处理DTD.
+* XmlParser -- programming with XML, see also XmlParserExamples
+* XmlSoxMode -- edit XML in a [http://www.langdale.com.au/SOX/ SOX] view.
+* [http://www.menteith.com/xslide/ xslide] -- 编辑XSLT的主模式
+* [http://xslt-process.sourceforge.net/ XSLT-process] -- 为调试和处理XSLT而提供的副模式 
+* XmlRpc -- package for RPC calls using XML.
+* TeXmacs -- intends to support native editing of XML documents (not quite Emacs, but it has a similar spirit)
+* DtmlMode -- 编辑 Zope's DTML
+* [http://nwalsh.com/emacs/docbookide/ DocbookIDE] -- 编辑Docbook SGML/XML的主模式
+* [http://xae.sunsite.dk/] -- XML Authoring Environment for Emacs
+
+Here is an article by BrianGillan (IBM) on Getting and installing
+Emacs, Adding PSGML for SGML and XML modes, Editing a document with
+PSGML, and Using SP or <nowiki>OpenSP</nowiki> for SGML and XML
+validation...
+
+* http://www-106.ibm.com/developerworks/xml/library/x-emacs/
+* http://www-900.ibm.com/developerWorks/cn/xml/x-emacs/index.shtml --中文版
+
+From the BobDuCharme book SGML CD, here is a longish (99 pages) chapter on using Emacs to edit SGML/XML files using PSGML. Also contains Polish and Russian translations.
+
+* http://www.snee.com/bob/sgmlfree/
+
+This category is equivalent to the [http://dmoz.org/Computers/Data_Formats/Markup_Languages/XML/Tools/Editors/ Open Directory] category.
+
+

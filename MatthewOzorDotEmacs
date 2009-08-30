@@ -1,0 +1,267 @@
+This is the current .emacs file that MatthewOzor uses.
+
+Download: [http://www.emacswiki.org/emacs/download/matthew.ozor.emacs matthew.ozor.emacs]
+
+{{{
+;; Matthew Ozor's default emacs init file.
+;; For GNU/Linux & Windows XP-7 Machines   
+;; Updated 08/18/09 15:00PM
+
+;; all roads lead home
+(cd "~/.emacs.d")
+
+;; set default load path
+(setq load-path (cons "~/.emacs.d/" load-path))
+
+;; turn off welcome screen
+(setq inhibit-startup-message t) 
+
+;; set frame size and position
+(add-to-list 'default-frame-alist '(top . 1))
+(add-to-list 'default-frame-alist '(left . 1))
+;; home 
+(if (string= (system-name) "ozor-desktop")
+    (progn
+      (add-to-list 'default-frame-alist '(height . 62))
+      (add-to-list 'default-frame-alist '(width . 120))))
+;; laptop 
+(if (string= (system-name) "MELISSA-PC")
+    (progn
+      (add-to-list 'default-frame-alist '(height . 35))
+      (add-to-list 'default-frame-alist '(width . 152))))
+;; work
+(if (string= (system-name) "USER-92AB9A8CE1")
+    (progn
+      (add-to-list 'default-frame-alist '(height . 46))
+      (add-to-list 'default-frame-alist '(width . 154))))
+  
+;; Set the text for titlebar and icons
+(if window-system
+    (setq frame-title-format (list "GNU Emacs " emacs-version))
+          icon-title-format "Emacs")
+
+;; turn on/off menu bar
+(menu-bar-mode t)
+
+;;turn on/off toolbar
+(tool-bar-mode -1)
+
+;; turn on/off scroll bars
+(toggle-scroll-bar t)
+
+;; show column-number in mode line
+(column-number-mode t)
+
+;; turn on syntax highlighting
+(if (fboundp 'global-font-lock-mode)
+    (global-font-lock-mode 1))        ; GNU Emacs
+
+;; turn on parentheses highlighting
+(show-paren-mode)
+
+;;turn on highlight changes
+(highlight-changes-mode t)
+
+;; display date and time always
+(setq display-time-day-and-date t)
+(display-time)
+
+;; show file size
+(size-indication-mode)
+
+;; type "y"/"n" instead of "yes"/"no"
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; Save all backup file in this directory.
+(setq backup-directory-alist (quote ((".*" . "~/.emacs.d/"))))
+
+;; disable backup files
+(setq make-backup-files nil)
+
+;; disable auto save
+(auto-save-mode -1)
+
+;; autosave history on eshell
+(setq eshell-save-history-on-exit t)
+
+;; keep ediff in one frame
+;(ediff-setup-windows-plain)
+
+;; turn off word wrap
+(setq default-truncate-lines 1)
+
+;; highlight lines longer then 80 characters
+(add-hook 'emacs-lisp-mode-hook
+	  (lambda ()
+	    (font-lock-add-keywords nil
+				    '(("^[^\n]\\{80\\}\\(.*\\)$" 1 font-lock-warning-face t)))))
+
+;; mouse settings
+(setq mouse-wheel-progressive-speed nil)
+(global-set-key [wheel-up]' (lambda ()(interactive)(scroll-down 2)))
+(global-set-key [wheel-down]' (lambda ()(interactive)(scroll-up 2)))
+(global-unset-key [mouse-2]) ;kill mouse-2 paste
+
+;; bind meta shift mouse-3 to the imenu, and shift mouse-3 to alphabetical imenu
+(when window-system 
+  (define-key global-map [M-S-down-mouse-3] 'imenu)
+  (define-key global-map [S-down-mouse-3]
+    (lambda ()
+      (interactive)
+      (let ((imenu-sort-function 
+	     'imenu--sort-by-name))
+	(call-interactively 'imenu)))))
+
+;; turn on fancy prompts in the shell
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+;; turn off shell command echo
+(defun my-comint-init () 
+  (setq comint-process-echoes t)) 
+(add-hook 'comint-mode-hook 'my-comint-init) 
+
+;; Matthew Ozor custom elisp programs
+(add-to-list 'load-path "~/.emacs.d/mo")
+(load-library "mo-rot13.el")
+(load-library "mo-menu.el")
+
+;; line numbers
+(if (>= emacs-major-version 23) (require 'linum))
+
+
+;; Load ascii-table
+;;(require 'ascii-table)
+
+;; Load switch buffer
+(require 'swbuff)
+
+;; Load mercurial
+(require 'mercurial)
+
+;; Load sr-speedbar for putting speedbar in current frame
+;;(require 'sr-speedbar)
+
+;; Loads buffer to html and view with browser
+(require 'htmlize-view)
+(htmlize-view-add-to-files-menu)
+
+;; Load emacs-nav
+(add-to-list 'load-path "~/.emacs.d/nav/")
+(require 'nav)
+
+;; Load outline-magic
+(require 'outline-magic)
+
+;; color themes
+(require 'color-theme)
+(color-theme-initialize)
+;(load-file "~/.emacs.d/themes/color-theme-twilight.el")
+
+;; load the custom start-up screen / also to set shortcuts
+(load-file "~/.emacs.d/sr-splash.el")
+
+;; outline mode
+(add-to-list 'auto-mode-alist '("\\.outline\\'" . outline-mode))
+(add-hook 'outline-mode-hook 'hide-body)
+
+;;;Windows Section
+(when (string-equal system-type "windows-nt")
+;;DOS mode
+  (autoload 'batch-mode "batch-mode" "DOS batch file mode." t)
+  (setq auto-mode-alist (append '(("\\.\\(cmd\\|bat\\)$" . batch-mode))
+;; lisp-mode for AutoLISP menu files
+				(setq auto-mode-alist (cons '("\\.mnl" . lisp-mode) auto-mode-alist))
+				auto-mode-alist))
+  (set-default-font
+   "-outline-Monaco-normal-r-normal-normal-13-97-96-96-c-*-iso8859-1")
+  ;"-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-13-97-96-96-c-*-iso8859-1")
+)
+
+;;; Custom shortcuts
+;;(sr-set-global-key (kbd "<f1>") "F1" 'sr-speedbar-toggle "sr-speedbar-toggle")
+(sr-set-global-key (kbd "<f1>") "F1" 'nav "emacs-nav")
+(sr-set-global-key (kbd "<f2>") "F2" '(lambda () (interactive) (other-window 1)) "other-window")
+(sr-set-global-key (kbd "<f3>") "F3" 'swbuff-switch-to-next-buffer "swbuff-switch-to-next-buffer")
+(sr-set-global-key (kbd "<f4>") "F4" 'kmacro-start-macro "kmacro-start-macro")
+(sr-set-global-key (kbd "<f5>") "F5" 'kmacro-end-or-call-macro "kmacro-end-or-call-macro")
+(sr-set-global-key (kbd "<f6>") "F6" 'linum-mode "toggle line numbers")
+(sr-set-global-key (kbd "<f7>") "F7" 'eval-defun "eval-defun")
+(sr-set-global-key (kbd "<f8>") "F8" 'compile "compile")
+(sr-set-global-key (kbd "<f9>") "F9" '(lambda () 
+					(interactive)
+					(if (eq mo-bw-color-theme 0)
+					    (progn 
+					      (color-theme-sitaramv-nt)
+					      (setq mo-bw-color-theme 1))
+					  (progn
+					    (color-theme-dark-laptop)
+					    (setq mo-bw-color-theme 0)))) 
+		   "toggle bright/dark theme")
+(sr-set-global-key (kbd "<f10>") "F10" '(lambda () 
+					  (interactive)
+					  (goto-line 3)
+					  (kill-line)
+					  (insert "\;\; Updated ")
+					  (insert (format-time-string "%D %R%p"))
+					  (save-buffer)) 
+		   "timestamp and save file")
+(sr-set-global-key (kbd "<f11>") "F11" '(lambda () (interactive) (load-file "~/.emacs")) "load .emacs")
+(sr-set-global-key (kbd "<f12>") "F12" '(lambda () (interactive) (find-file "~/.emacs")) "open .emacs")
+(sr-set-global-key (kbd "\C-cb") "C-c b" 'mo-insert-find-breadcrumb "drop a breadcrumb")
+(sr-set-global-key (kbd "\C-cp") "C-c p" 'htmlize-view-buffer "send buffer to browser")
+(sr-set-global-key (kbd "\C-cg") "C-c g" 'goto-line "goto-line")
+(sr-set-global-key (kbd "\C-cs") "C-c s" '(lambda () (interactive)
+					    (split-window-vertically)
+					    (other-window 1)
+					    (shell)) 
+		   "shell")
+(sr-set-global-key (kbd "\C-ct") "C-c t" '(lambda () (interactive)
+					(if (eq mo-trans 0)
+					    (progn 
+					      (set-frame-parameter (selected-frame) 'alpha 70)
+					      (setq mo-trans 1))
+					  (progn
+					     (set-frame-parameter (selected-frame) 'alpha 100)
+					    (setq mo-trans 0)))) 
+		   "toggle transparent")
+
+;; leave a breadcrumb trail
+(defun mo-insert-find-breadcrumb ()
+ (interactive)
+ (setq current-point (point))
+ (goto-char (point-min))
+ (if (search-forward ";;breadcrumb" nil t) ()
+   (progn
+     (goto-char current-point)
+     (insert ";;breadcrumb"))))
+
+
+;; Setup workspace
+;; different theme for x or term
+(if window-system (color-theme-dark-laptop)())
+
+;; global toggle variables
+(defvar mo-bw-color-theme 0)
+(defvar mo-trans 0)
+
+;; display custom splash screen 
+;(sr-display-keys)
+
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(ediff-window-setup-function (quote ediff-setup-windows-plain))
+ '(nav-quickdir-list (quote ("~/.emacs.d/nav" "~/.emacs.d" "/tmp")))
+ '(nav-quickfile-list (quote ("~/.emacs.d/nav/nav.el" "~/.emacs.d/nav/nav-bufs.el" "~/.emacs.d/nav/nav-tags.el")))
+ '(nav-widths-percentile 100))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )
+
+}}}

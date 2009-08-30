@@ -1,0 +1,24 @@
+This small hack makes the Thinkpad light blink twice whenever the nickname is mentioned in a non-visible buffer. To take full advantage of it when not in Emacs it is better to change to some non-IRC buffer, since it will not signal the activity if the buffer is visible, even if the Emacs frame isn't.
+
+It depends on the ibm-acpi (thinkpad-acpi in version 2.6.22 and above) to provide the "/proc/acpi/ibm/light" interface, which makes it Linux-specific.
+
+{{{
+(defun thinklight-control (cmd)
+  "Turn ThinkLight on/off, depending on the value of the string cmd"
+    (condition-case nil
+	(write-region cmd nil "/proc/acpi/ibm/light" nil 1 nil nil)
+      (error nil)))
+
+(defun my-rcirc-notify-thinklight (proc sender response target text)
+  "Blink the ThinkLight when someone mentions nickname"
+  (when (and (string-match (rcirc-nick proc) text)
+	     (not (string= (rcirc-nick proc) sender))
+             (not (string= (rcirc-server-name proc) sender))
+	     (not (get-buffer-window (current-buffer) t)))
+    (dotimes (number 2 values)
+      (thinklight-control "on")
+      (thinklight-control "off")
+      (sleep-for 0.1))))
+
+(add-hook 'rcirc-print-hooks 'my-rcirc-notify-thinklight)
+}}}}

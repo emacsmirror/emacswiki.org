@@ -1,0 +1,17 @@
+Hi,
+
+I am a GNU Emacs user since about 1996. 2001 I started using CVS Emacs, it's quite stable and runs fine.
+
+I have made a lot of contributions (tests, debugging, snippets, suggestions) to elisp packages. The only mature package i wrote myself is Lisp:highlight-current-line.el.
+
+What i really like is the customizability of GNU Emacs and the tons of ready-to-use major modes available.
+
+I am craving for a working GNU Emacs plugin for Eclipse, but that seems to be a huge project. Eclipse has unique features as a java IDE, but i don't like the editor. It isn't programmable, customizable etc. It would be nice if GNU Emacs would be embeddable into other IDEs. It is a very great IDE by itself, but sometimes graphical user interfaces are very helpful.
+
+Christoph Conrad
+
+
+: Welcome to the wiki! -- AlexSchroeder
+
+----
+CategoryHomepage

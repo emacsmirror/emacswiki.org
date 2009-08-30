@@ -1,0 +1,237 @@
+I started to use emacs in Feb, 2009. I really love this editor. I'm using the cvs version, so the script I post may not work on older versions. Feel free to edit the code or ask for help.
+
+== Extensions I'm Using ==
+Here is a list of features and libraries I'm currently using:
+
+Utils
+* [http://www.splode.com/~friedman/software/emacs-lisp/src/protbuf.el ProtBuf] protect buffer from being killed
+* FixmeMode highlight some keyword like FIXME TODO
+* HighlightParentheses
+* PrettyControlL Pretty print ^L character
+* ColorTheme
+ 
+Extensions
+* SlimeMode improved lisp mode
+* [[Git]] git and git-blame
+* [[EMMS]]
+* [[emacs-w3m]]
+* PoMode
+* [[rcirc]]
+
+== Very Basic Settings == 
+Below are settings that I think should be helpful to new users which is not default in GNU Emacs. For every variable (or function), you can get help on them by put the point around the symbol, then press C-h v RET (or C-h f RET). If you are really new to emacs, try C-h t to get some basic idea first. You may also get my ~/.emacs at [[EmacsInitFileOfSylecn]].
+
+Two very help tip, don't ignore them:
+<pre>
+1. use CapsLock as Ctrl
+   This really helps. In linux, it is very easy. no need to restart or logout.
+   First copy paste the following code to ~/.xmodmaprc
+
+    ! for emacs
+    !
+    ! Swap Caps_Lock and Control_R
+    !
+    ! Please use Caps for Ctrl for *all* apps.
+    ! Because it's on the main line of keyboard. You will feel more confortable
+    ! after you get used to it. C-c, C-v, C-w, C-t all becomes easier to type.
+    remove Lock = Caps_Lock
+    remove Control = Control_R
+    keysym Control_R = Caps_Lock
+    keysym Caps_Lock = Control_R
+    add Lock = Caps_Lock
+    add Control = Control_R
+  Then run xmodmap ~/.xmodmaprc
+
+  Don't regret and try to change it back. 
+
+2. if your C-; is not used. use C-; prefix as an additional to C-x
+   Very few function makes extensive use of this prefix. Change them if necessary. Currently I only notice flyspell use this key.
+  
+   I really can't type C-x C-s very quick and comfortably.
+   use C-; C-s to save
+   use C-; f to find-file
+   use C-; ; to swap two recent buffer
+   use C-; b to switch-to-buffer
+</pre>  
+
+<pre>
+;;--------------------------------------------------
+
+;;show matching parentheses
+;; TODO add support on {}
+;;      {} is supported on Shell-script mode
+(show-paren-mode 1)
+
+;;don't swap point and mark when doing M-w
+(global-set-key (kbd "M-w") 'copy-region-as-kill)
+
+;;no backup file
+(setq make-backup-files nil)
+
+;;hide startup message
+(setq inhibit-startup-message t)
+
+;;disable beeping
+(setq visible-bell nil)
+
+;;don't blink
+(blink-cursor-mode -1)
+
+;;show nothing in *scratch* when started
+(setq initial-scratch-message nil)
+
+;;turn off transient mark mode
+(transient-mark-mode -1)
+
+;;disable menu, toolbar and scrollbar
+;;for X, use ~/.Xdefaults
+;;for console emacs
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+
+(defvar use-session nil 
+  "use session or not.
+If non-nil use session, else use saveplace and savehist.")
+(setq use-session nil)
+(if use-session
+    ;; use session, keeps hist, kill rings, registers, point and mark pos ...
+    (progn
+      (require 'session)
+      (add-hook 'after-init-hook 'session-initialize))
+  (progn
+    ;;when opening file keep point at the pos last closed
+    (require 'saveplace)
+    (setq-default save-place t)
+    ;;keep hist
+    (savehist-mode 1)))
+
+;;ido - everything becomes smart
+;;ref: http://www.emacswiki.org/emacs/InteractivelyDoThings
+;;ref: Directory /home/sylecn/fromsource/emacs/lisp/ido.el
+(require 'ido)
+(ido-mode 1)
+;;long list makes me nevous
+(setq ido-max-window-height 1)
+;;To modify the keybindings, use the ido-setup-hook.
+
+;;minibuffer size
+;;  default in v23: 25% frame's height
+;;(setq max-mini-window-height 0.25)
+
+;;never yank at mouse position, always at point
+(setq mouse-yank-at-point t)
+
+</pre>
+
+== Pieces of Code ==
+Here are some little handy functions that I use. see ExtensionsSylecn
+
+== My global keybinding file ==
+I keep global keybindings in a seperated file. see NeedForKeysSylecn.
+
+== emacs as standard daemon ==
+
+Auto start emacs like apache2.
+See [[emacsd]]
+
+== copy kill things without setting a region ==
+
+I hate move my point just for copy and yank things. Do you remember
+how many times you do "C-a C-k" a day? And how many times "C-a C-k C-y
+<move to another point> C-y"? How you copy a word like this:
+auto-mode-alist? I feel the pain moving the point just for copy and
+kill, so I write functions for that and bind them to keys.
+
+If you don't want to move points around to just form a region for
+killing and yanking, read on.
+
+<pre>
+
+;;copy-line is special, I put it here.
+;; TODO rewrite in lispy style
+;;      how to get identation point of current line?
+;; better than yy function in vim
+(defun copy-line ()
+  "copy line. without indentation spaces."
+  (interactive)
+  (save-excursion
+    (back-to-indentation)
+    ;;prefer don't use set-mark-command, I don't like the "Mark set" message
+    (set-mark-command nil)
+    (copy-region-as-kill
+     (region-beginning) (line-end-position))))
+
+;;======================================================================
+;; copy/kill things under point
+;; vim y/d function simulation
+;; use emacs bounds-of-thing-at-point, kill-region and copy-region-as-kill
+;; functions
+;; ref: http://www.emacswiki.org/emacs/ThingAtPoint
+
+;;copy-kill-ex-uni.el
+;;copy/kill things using uniform functions.
+
+(defun copy-kill (action thing)
+  "copy or kill things. action is a symbol, can be 'copy or 'kill. thing is a symbol which specifies the kind of syntactic entity you want.
+Possibilities include `symbol', `list', `sexp', `defun', `filename', `url',
+`email', `word', `sentence', `whitespace', `line', `page' and others.
+ref `bounds-of-thing-at-point'."
+  (interactive)
+  (let ((pos (bounds-of-thing-at-point thing)))
+    (cond ((eq action 'copy) (copy-region-as-kill (car pos) (cdr pos)))
+	  ((eq action 'kill) (kill-region (car pos) (cdr pos)))
+	  (t (message "wrong action %s" action)))))
+
+;; like the yy function in vim
+;; (defun copy-line ()
+;;   "copy current line."
+;;   (interactive)
+;;   (copy-if-not-nil (thing-at-point 'line)))
+
+;; better than yw function in vim
+(defun copy-symbol ()
+;;TODO symbol doesn't allow "." in them, but I want copy-symbol to contain everything except space
+  ;; "It could be called copy-word. But in emacs word doesn't contain - / etc. copy-symbol copys the thing between spaces to kill ring."
+"It could be called copy-word. But in emacs word doesn't contain - / etc."
+  (interactive)
+  (copy-kill 'copy 'symbol))
+
+;; more than y% function in vim
+;; because can copy word when not at (
+(defun copy-sexp ()
+  "copy sexp under point."
+  (interactive)
+  (copy-kill 'copy 'sexp))
+
+(defun my-kill-line ()
+  "kill current line. you don't have to put point at the beginning of line."
+  (interactive)
+  (copy-kill 'kill 'line))
+
+(defun kill-symbol ()
+  "kill symbol at point."
+  (interactive)
+  (copy-kill 'kill 'symbol))
+
+(defun my-kill-sexp ()
+  "kill sexp at point. may be no better than default `kill-sexp'. But I can use uniform prefix keys, that's a bonus."
+  (interactive)
+  (copy-kill 'kill 'sexp))
+
+</pre>
+
+My keybindings for them.
+<pre>
+(global-set-key (kbd "C-c y y") 'copy-line)
+(global-set-key (kbd "C-c y w") 'copy-symbol)
+(global-set-key (kbd "C-c y s") 'copy-sexp)
+;;I cound have put C-c d prefix to fit the vim command d, but I find C-c k
+;;easier to type. and k is also easy to remember for killing.
+(global-set-key (kbd "C-c k k") 'my-kill-line)
+(global-set-key (kbd "C-c k w") 'kill-symbol)
+(global-set-key (kbd "C-c k s") 'my-kill-sexp)
+</pre>
+
+----
+CategoryHomepage

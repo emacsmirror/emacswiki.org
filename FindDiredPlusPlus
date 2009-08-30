@@ -1,0 +1,9 @@
+Lisp:find-dired++.el
+
+find-dired++ is a modified version of find-dired in order to fix an issue I encountered. 
+
+The current find-dired surrounds the filename with quotes (") and replace the home 
+path with "~"; this creates an issue while running shell commands which doesn't interpret
+the symbol "~".
+
+This version leaves the quotes, but call the shell command with the full path instead.

@@ -1,0 +1,43 @@
+== arxiv-reader: a physics abstract reader/sorter/downloader ==
+This minor mode extends the functionality of LookMode to allow one to quickly scan abstracts from the arxiv server (http://lanl.arxiv.org) and sort them into subdirectories.  Furthermore, it provides a function to download the associated pdf file.  This requires the shell-command "curl" for downloading the pdfs.  If you know a good way to make this OS independent, please let me know.
+
+== features ==
+Highlights user-definable keywords, editable via the "customize" interface.  Displays the number of abstracts scanned and the number left (a default LookMode feature).  Displays the subdirectories of the current directory and allows one to move the abstract files (in to|out of|among) the subdirectories for sorting/categorization.
+
+Downloaded pdfs move with the abstract when using arxiv-reader.  Updated abstracts that have been saved are automatically detected, appended, and removed from the browsing list (look-forward-file-list).  
+[new]
+The list of updated abstracts is stored as a separate file list which can be switched into with "S".
+
+If one only wishes to see abstracts that contain matching keywords, one may toggle into this state with "H".
+
+== why? ==
+I always found it intimidating to sift through the mountain of abstracts that come in on astro-ph.  Then my friend, Hubert Chen, wrote a java program that made it fun and easy to skim and sort the abstracts.  The only problem with his program is that it didn't run on my OS (emacs!) so I ported it.
+
+== extra work for you ==
+This mode operates from dired on the daily email from http://lanl.arxiv.org.  You have to sign yourself up for this service.  It's no big deal.  The main function breaks the mail file into separate files and calls up LookMode to display the abstracts.
+
+You'll also want to edit the temporary additions to look-skip-file-list in the function arxiv-look-at-abstracts to skip over the email file and other trash you may have in your main abstract directory.  I save the email files as dot-files, so in stock configuration, arxiv-reader skips over the regexp equivalents of "%%*pdf%%" and "%%.*%%".
+
+== download ==
+Lisp:arxiv-reader.el
+
+== Interactive functions ==
+* ##arxiv-read-abstracts## ("r" on email file from dired)
+* ##arxiv-look-at-abstracts## ("a" from dired)
+* ##arxiv-look-at-next-file## ("." or the look-mode navigation keybindings)
+* ##arxiv-look-at-previous-file## ("," or the look-mode navigation keybindings)
+* ##arxiv-toggle-keyword-matches-only## ("H")
+* ##arxiv-move-to-subdir## ("R", #1 dir %%w/o%% numeric prefix, "C-0 R" moves the file back to ##./##)
+* ##arxiv-get-pdf## ("P")
+* ##arxiv-swap-lists## ("S" to toggle between update and main lists)
+
+== Other keybindings ==
+
+* ##C-c k## Customize keywords.
+* ##C-c a## Customize arxiv group.
+
+== Author ==
+PeterMao
+
+----
+CategoryInterface

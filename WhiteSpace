@@ -1,0 +1,708 @@
+This page describes package Lisp:whitespace.el, by ViniciusJoseLatorre.
+
+: .:: ''v11.2.2'' :: ''part of GNU Emacs'' ::.
+
+: It runs on Emacs 23.
+
+: **Note 1:** //The source here in EmacsWiki runs on Emacs 21, 22 and 23.//
+: **Note 2:** //This package replaces// BlankMode.
+
+
+== Screenshot ==
+
+The screenshots below show when WhiteSpace is turned on using
+the default setting.
+
+* //Light background//
+: 
+:: [[image:WhiteSpaceOnLight]]
+
+* //Dark background//
+: 
+:: [[image:WhiteSpaceOnDark]]
+
+
+== About whitespace ==
+
+This package is a minor mode to visualize blanks (TAB, (HARD) SPACE and NEWLINE).
+
+WhiteSpace uses two ways to visualize blanks: [[Face]]s and display table.
+
+* [[Face]]s are used to highlight the background with a color. WhiteSpace uses
+font-lock to highlight blank characters.
+
+* Display table changes the way a character is displayed, that is,
+it provides a visual mark for characters,
+for example, at the end of line (##?\xB6##),
+at SPACEs (##?\xB7##) and at TABs (##?\xBB##).
+
+The `whitespace-style' variable selects which way blanks are
+visualized.
+
+Note that when WhiteSpace is turned on, WhiteSpace saves the font-lock
+state, that is, if font-lock is on or off.  And WhiteSpace restores the
+font-lock state when it is turned off.  So, if WhiteSpace is turned on and
+font-lock is off, WhiteSpace also turns on the font-lock to highlight
+blanks, but the font-lock will be turned off when WhiteSpace is turned off.
+Thus, turn on font-lock before WhiteSpace is on, if you want that font-lock
+continues on after WhiteSpace is turned off.
+
+When WhiteSpace is on, it takes care of highlighting some special
+characters over the default mechanism of `nobreak-char-display'
+(which see) and `show-trailing-whitespace' (which see).
+
+There are two ways of using WhiteSpace: local and global.
+
+* Local WhiteSpace affects only the current buffer.
+
+* Global WhiteSpace affects all current and future buffers.  That
+is, if you turn on global WhiteSpace and then create a new
+buffer, the new buffer will also have WhiteSpace on.  The
+`whitespace-global-modes' variable controls which major-mode will be
+automagically turned on.
+
+You can mix the local and global usage without any conflict.  But
+local WhiteSpace has priority over global WhiteSpace.  WhiteSpace
+is active in a buffer if you have enabled it in that buffer or if
+you have enabled it globally.
+
+When global and local WhiteSpace are on:
+
+* if local WhiteSpace is turned off, WhiteSpace is turned off
+for the current buffer only.
+
+* if global WhiteSpace is turned off, WhiteSpace continues on
+only in the buffers in which local WhiteSpace is on.
+
+To use WhiteSpace, insert in your ##~/.emacs##:
+
+   (require 'whitespace)
+
+Or autoload at least one of the commands`whitespace-mode',
+`whitespace-toggle-options', `global-whitespace-mode' or
+`global-whitespace-toggle-options'.  For example:
+
+   (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
+   (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
+
+WhiteSpace was inspired by:
+
+: ##whitespace.el## -- Rajesh Vaidheeswarran <_rv_@_gnu_._org_>
+:: Warn about and clean bogus whitespaces in the file
+:: (inspired the idea to warn and clean some blanks)
+:: This was the original ##whitespace.el## which was replaced by
+##blank-mode.el## (BlankMode).  And later ##blank-mode.el## was renamed to
+##whitespace.el##.
+
+: ##show-whitespace-mode.el## --  Aurélien Tisné <_aurelien_._tisne_@_free_._fr_>
+:: Simple mode to highlight whitespaces
+:: (inspired the idea to use font-lock)
+
+: ##whitespace-mode.el## -- LawrenceMitchell
+:: Major mode for editing Whitespace
+:: (inspired the idea to use display table)
+
+: ##visws.el## -- MilesBader
+:: Make whitespace visible
+:: (handle display table, his code was modified, but the main
+idea was kept)
+
+For good performance, be sure to byte-compile WhiteSpace, e.g.
+
+   M-x byte-compile-file <give the path to whitespace.el when prompted>
+
+This will generate whitespace.elc, which will be loaded instead of
+Lisp:whitespace.el.
+
+WhiteSpace was tested with GNU Emacs 22 and 23.
+
+
+== Using whitespace ==
+
+There is no problem if you mix local and global minor mode usage.
+
+<u>LOCAL WhiteSpace</u>:
+: To toggle WhiteSpace options locally, type:
+:: ##M-x whitespace-toggle-options RET##
+
+[new]
+: To activate WhiteSpace locally, type:
+:: ##C-u 1 M-x whitespace-mode RET##
+[new]
+
+: To deactivate WhiteSpace locally, type:
+:: ##C-u 0 M-x whitespace-mode RET##
+
+[new]
+: To toggle WhiteSpace locally, type:
+:: ##M-x whitespace-mode RET##
+[new]
+
+
+<u>GLOBAL WhiteSpace</u>:
+: To toggle WhiteSpace options globally, type:
+:: ##M-x global-whitespace-toggle-options RET##
+
+[new]
+: To activate WhiteSpace globally, type:
+:: ##C-u 1 M-x global-whitespace-mode RET##
+[new]
+
+: To deactivate WhiteSpace globally, type:
+:: ##C-u 0 M-x global-whitespace-mode RET##
+
+[new]
+: To toggle WhiteSpace globally, type:
+:: ##M-x global-whitespace-mode RET##
+[new]
+
+
+You can also bind `whitespace-mode', `global-whitespace-mode',
+`whitespace-toggle-options' and `global-whitespace-toggle-options' to some
+key, like:
+
+   (global-set-key "\C-c_w" 'whitespace-mode)
+   (global-set-key "\C-c_t" 'whitespace-toggle-options)
+   (global-set-key "\C-c=w" 'global-whitespace-mode)
+   (global-set-key "\C-c=t" 'global-whitespace-toggle-options)
+
+There are also the following useful commands:
+
+; `whitespace-newline-mode' : Toggle NEWLINE minor mode visualization (##"nl"## on modeline).
+
+; `global-whitespace-newline-mode' : Toggle NEWLINE global minor mode visualization (##"NL"## on modeline).
+
+; `whitespace-report' : Report some blank problems in buffer.
+
+; `whitespace-report-region' : Report some blank problems in a region.
+
+; `whitespace-cleanup' : Clean up some blank problems in all buffer or at region.
+
+; `whitespace-cleanup-region' : Clean up some blank problems at region.
+
+The problems, which are cleaned up, are:
+
+: 1. empty lines at beginning of buffer.
+: 2. empty lines at end of buffer.
+:: If `whitespace-style' includes the value `empty', remove all empty
+lines at beginning and/or end of buffer.
+
+: 3. 8 or more SPACEs at beginning of line.
+:: If `whitespace-style' includes the value `indentation': replace 8 or
+more SPACEs at beginning of line by TABs, if
+`indent-tabs-mode' is non-nil; otherwise, replace TABs by
+SPACEs.
+:: If `whitespace-style' includes the value
+`indentation::tab', replace 8 or more SPACEs at beginning of line
+by TABs.
+:: If `whitespace-style' includes the value
+`indentation::space', replace TABs by SPACEs.
+
+: 4. SPACEs before TAB.
+:: If `whitespace-style' includes the value
+`space-before-tab': replace SPACEs by TABs, if
+`indent-tabs-mode' is non-nil; otherwise, replace TABs by
+SPACEs.
+:: If `whitespace-style' includes the value
+`space-before-tab::tab', replace SPACEs by TABs.
+:: If `whitespace-style' includes the value
+`space-before-tab::space', replace TABs by SPACEs.
+
+: 5. SPACEs or TABs at end of line.
+:: If `whitespace-style' includes the value `trailing', remove all
+SPACEs or TABs at end of line."
+
+: 6. 8 or more SPACEs after TAB.
+:: If `whitespace-style' includes the value
+`space-after-tab': replace SPACEs by TABs, if `indent-tabs-mode'
+is non-nil; otherwise, replace TABs by SPACEs.
+:: If `whitespace-style' includes the value
+`space-after-tab::tab', replace SPACEs by TABs.
+:: If `whitespace-style' includes the value
+`space-after-tab::space', replace TABs by SPACEs.
+
+
+== Hooks ==
+
+WhiteSpace has the following hook variables:
+
+; `whitespace-mode-hook' : It is evaluated always when WhiteSpace is turned on.
+
+; `global-whitespace-mode-hook' : It is evaluated always when WhiteSpace is turned on globally.
+
+; `whitespace-load-hook' : It is evaluated after WhiteSpace package is loaded.
+
+
+== Options ==
+
+Below it's shown a brief description of WhiteSpace options, please, see the
+options declaration in the code for a long documentation.
+
+; `whitespace-style' : Specify which kind of blank is visualized.
+
+; `whitespace-space' : [[Face]] used to visualize SPACE.
+
+; `whitespace-hspace' : [[Face]] used to visualize HARD SPACE.
+
+; `whitespace-tab' : [[Face]] used to visualize TAB.
+
+; `whitespace-newline' : [[Face]] used to visualize NEWLINE char mapping.
+
+; `whitespace-trailing' : [[Face]] used to visualize trailing blanks.
+
+; `whitespace-line' : [[Face]] used to visualize "long" lines.
+
+; `whitespace-space-before-tab' : [[Face]] used to visualize SPACEs before TAB.
+
+; `whitespace-indentation' : [[Face]] used to visualize 8 or more SPACEs at beginning of line.
+
+; `whitespace-empty' : [[Face]] used to visualize empty lines at beginning and/or end of buffer.
+
+; `whitespace-space-after-tab' : [[Face]] used to visualize 8 or more SPACEs after TAB.
+
+; `whitespace-space-regexp' : Specify SPACE characters regexp.
+
+; `whitespace-hspace-regexp' : Specify HARD SPACE characters regexp.
+
+; `whitespace-tab-regexp' : Specify TAB characters regexp.
+
+; `whitespace-trailing-regexp' : Specify trailing characters regexp.
+
+; `whitespace-space-before-tab-regexp' : Specify SPACEs before TAB regexp.
+
+; `whitespace-indentation-regexp' : Specify regexp for 8 or more SPACEs at beginning of line.
+
+; `whitespace-empty-at-bob-regexp' : Specify regexp for empty lines at beginning of buffer.
+
+; `whitespace-empty-at-eob-regexp' : Specify regexp for empty lines at end of buffer.
+
+; `whitespace-space-after-tab-regexp' : Specify regexp for 8 or more SPACEs after TAB.
+
+; `whitespace-line-column' : Specify column beyond which the line is highlighted.
+
+; `whitespace-display-mappings' : Specify an alist of mappings for displaying characters.
+
+; `whitespace-global-modes' : Modes for which global WhiteSpace is automagically turned on.
+
+; `whitespace-action' : Specify which action is taken when a buffer is visited or written.
+
+To set the above options you may:
+
+
+[new]
+a. insert the code in your ##~/.emacs##, like:
+
+   (setq whitespace-space 'underline)
+
+This way always keep your default settings when you enter a new Emacs session.
+[new]
+
+b. or use `set-variable' in your Emacs session, like:
+
+   M-x set-variable RET whitespace-space RET underline RET
+
+This way keep your settings only during the current Emacs session.
+
+[new]
+c. or use customization, for example:
+
+In Emacs 21 or lower:
+# click on MenuBar ##Help## option,
+# then click on ##Customize##,
+# then click on ##Browse Customization Groups##,
+# expand ##Data## group,
+# expand ##Whitespace## group
+# and then customize WhiteSpace options.
+
+In Emacs 22 or higher:
+# click on MenuBar ##Options## option,
+# then click on ##Customize Emacs##,
+# then click on ##Browse Customization Groups##,
+# expand ##Data## group,
+# expand ##Whitespace## group
+# and then customize WhiteSpace options.
+
+Through this way, you may choose if the settings are kept or not when you leave out the current Emacs session.
+[new]
+
+d. or see the option value:
+
+   C-h v whitespace-space RET
+
+and click the ##customize## hypertext button.
+
+Through this way, you may choose if the settings are kept or not when you leave out the current Emacs session.
+
+
+== Acknowledgements ==
+
+Thanks to DavidReitter for suggesting a
+`whitespace-newline' initialization with low contrast relative to
+the background color.
+
+Thanks to Stephen Deasey <_sdeasey_@_gmail_._com_> for the
+`indent-tabs-mode' usage suggestion.
+
+Thanks to Eric Cooper <_ecc_@_cmu_._edu_> for the suggestion to have hook
+actions when buffer is written as the original whitespace
+package had.
+
+Thanks to [[nschum]] for the idea about highlight "long"
+lines tail. See EightyColumnRule.
+
+Thanks to JuriLinkov for suggesting:
+* `define-minor-mode'.
+* `global-whitespace-*' name for global commands.
+
+Thanks to Robert J. Chassell <_bob_@_gnu_._org_> for doc fix and testing.
+
+Thanks to DrewAdams for toggle commands suggestion.
+
+Thanks to Antti Kaihola <_antti_._kaihola_@_linux-aktivaattori_._org_> for helping
+to fix `find-file-hooks' reference.
+
+Thanks to Andreas Roehler <_andreas_._roehler_@_easy-emacs_._de_> for indicating
+defface byte-compilation warnings.
+
+Thanks to TimOCallaghan for the idea about highlight "long" lines. See EightyColumnRule.
+
+Thanks to Yanghui Bian <_yanghuibian_@_gmail_._com_> for indicating a new NEWLINE character mapping.
+
+Thanks to Pete Forman <_pete_._forman_@_westgeo_._com_> for indicating
+##whitespace-mode.el## on XEmacs.
+
+Thanks to:
+
+: Rajesh Vaidheeswarran <_rv_@_gnu_._org_> -- ##whitespace.el##
+: Aurélien Tisné <_aurelien_._tisne_@_free_._fr_> -- ##show-whitespace-mode.el## (ShowWhitespaceMode)
+: LawrenceMitchell -- ##whitespace-mode.el## (WhitespaceMode)
+: MilesBader -- ##visws.el## (Emacs 21)
+
+And to all people who contributed with them.
+
+
+== Kind of Blanks ==
+
+The `whitespace-style' variable specifies which way blanks are visualized.
+
+It's a list containing some or all of the following values:
+
+; ##trailing## : trailing blanks are visualized via faces.
+
+; ##tabs## : TABs are visualized via faces.
+
+; ##spaces## : SPACEs and HARD SPACEs are visualized via faces.
+
+; ##lines## : lines whose have columns beyond
+`whitespace-line-column' are highlighted via faces.
+: Whole line is highlighted.
+: It has precedence over `lines-tail' (see below).
+
+; ##lines-tail## : lines whose have columns beyond
+`whitespace-line-column' are highlighted via faces.
+: But only the part of line which goes
+beyond `whitespace-line-column' column.
+: It has effect only if `lines' (see above)
+is not present in `whitespace-style'.
+
+; ##newline## : NEWLINEs are visualized via faces.
+
+; ##empty## : empty lines at beginning and/or end of buffer
+are visualized via faces.
+
+; ##indentation::tab## : 8 or more SPACEs at beginning of line are
+visualized via faces.
+
+; ##indentation::space## : TABs at beginning of line are visualized via faces.
+
+; ##indentation## : 8 or more SPACEs at beginning of line are
+visualized, if `indent-tabs-mode' (which see)
+is non-nil; otherwise, TABs at beginning of
+line are visualized via faces.
+
+; ##space-after-tab::tab## : 8 or more SPACEs after a TAB are
+visualized via faces.
+
+; ##space-after-tab::space## : TABs are visualized when occurs 8 or
+more SPACEs after a TAB via faces.
+
+; ##space-after-tab## : 8 or more SPACEs after a TAB are
+visualized, if `indent-tabs-mode'
+(which see) is non-nil; otherwise,
+the TABs are visualized via faces.
+
+; ##space-before-tab::tab## : SPACEs before TAB are visualized via faces.
+
+; ##space-before-tab::space## : TABs are visualized when occurs SPACEs
+before TAB via faces.
+
+; ##space-before-tab## : SPACEs before TAB are visualized, if
+`indent-tabs-mode' (which see) is
+non-nil; otherwise, the TABs are
+visualized via faces.
+
+; ##space-mark## : SPACEs and HARD SPACEs are visualized via display table.
+
+; ##tab-mark## : TABs are visualized via display table.
+
+; ##newline-mark## : NEWLINEs are visualized via display table.
+
+Any other value is ignored.
+
+If ##nil##, don't visualize TABs, (HARD) SPACEs and NEWLINEs.
+
+There is an evaluation order for some values, if some values are
+included in `whitespace-style' list.  For example, if
+indentation, ##indentation::tab## and/or ##indentation::space## are
+included in `whitespace-style' list.  The evaluation order
+for these values is:
+
+* For indentation:
+## ##indentation##
+## ##indentation::tab##
+## ##indentation::space##
+
+* For SPACEs after TABs:
+## ##space-after-tab##
+## ##space-after-tab::tab##
+## ##space-after-tab::space##
+
+* For SPACEs before TABs:
+## ##space-before-tab##
+## ##space-before-tab::tab##
+## ##space-before-tab::space##
+
+So, for example, if ##indentation## and ##indentation::space## are
+included in `whitespace-style' list, the ##indentation## value
+is evaluated instead of ##indentation::space## value.
+
+
+== Actions ==
+
+The variable `whitespace-action' specifies which action is taken when a buffer
+is visited or written.
+
+It's a list containing some or all of the following values:
+
+; ##nil## : no action is taken.
+
+; ##cleanup## : clean up any bogus WhiteSpace always when local
+WhiteSpace is turned on.
+: See `whitespace-cleanup' and `whitespace-cleanup-region'.
+
+; ##report-on-bogus## : report if there is any bogus WhiteSpace always
+when local WhiteSpace is turned on.
+
+; ##auto-cleanup## : clean up any bogus WhiteSpace when buffer is
+written.
+: See `whitespace-cleanup' and `whitespace-cleanup-region'.
+
+; ##abort-on-bogus## : abort if there is any bogus WhiteSpace and the
+buffer is written.
+
+; ##warn-read-only## : give a warning if `cleanup' or `auto-cleanup'
+is included in `whitespace-action' and the buffer is read-only.
+
+Any other value is treated as ##nil##.
+
+
+== TAB & Display Table ==
+
+When WhiteSpace is on and a TAB occupies exactly one column, it
+will display the character ##?\xBB## at that column followed by a TAB
+which goes to the next TAB column.  This is due the way the Emacs display
+engine works.
+
+The situation above is illustrated by the following images:
+
+: [[image:WhiteSpaceOffTab]] [[image:WhiteSpaceOnTab]]
+
+There are the following possibilities to deal with the situation above:
+
+* Insert in your ##~/.emacs## file:
+
+        (setq whitespace-display-mappings
+          '((space-mark   ?\    [?\xB7]     [?.])	; space
+            (space-mark   ?\xA0 [?\xA4]     [?_])	; hard space
+            (newline-mark ?\n   [?\xB6 ?\n] [?$ ?\n])	; end-of-line
+            ))
+
+: The setting above doesn't have any TAB display table mapping.
+
+* Comment the TAB display table mapping line in the ##whitespace.el## file:
+
+        (defcustom whitespace-display-mappings
+          '((space-mark   ?\    [?\xB7]     [?.])	; space
+            (space-mark   ?\xA0 [?\xA4]     [?_])	; hard space
+            (newline-mark ?\n   [?\xB6 ?\n] [?$ ?\n])	; end-of-line
+            ;; WARNING: the mapping below has a problem.
+            ;; When a TAB occupies exactly one column, it will display the character
+            ;; ?\xBB at that column followed by a TAB which goes to the next TAB
+            ;; column.
+            ;; If this is a problem for you, please, comment the line below.
+            ;;(tab-mark   ?\t   [?\xBB ?\t] [?\\ ?\t])	; tab
+            )
+            ......
+
+* Eliminate the ##tab-mark## value from
+##whitespace-style## variable, that is, don't use TAB display table mapping.
+
+* Just live with it. ;)
+
+
+== See Also ==
+
+* BlankMode
+* ShowWhiteSpace
+* ShowWhitespaceMode
+* WhitespaceMode
+* EightyColumnRule
+* [[Easymacs]]
+* SmartTabs
+
+
+----
+
+== Inbox ==
+
+//Please, put here your comments, suggestions, doubts, improvements, etc.//
+
+[new]
+
+  -------------------------------------------------------------------
+  Fri, 15 Feb 2008 08:26:15 +0100
+
+    Hi,
+
+    whitespace doesn't work with emacs-22.1.90, the pretest version,
+    because the c function characterp is only part of the cvs trunk.
+
+    Cheers
+
+    Martin
+    --
+    parozusa at web dot de
+
+  -------------------------------------------------------------------
+
+[new]
+: Indeed, it only runs on Emacs 23. I've just changed the EmacsWiki pages.
+: Thanks. -- ViniciusJoseLatorre
+
+:: Also I modified the WhiteSpace source here in EmacsWiki to run in Emacs 21, 22
+and 23.
+:: -- ViniciusJoseLatorre
+
+[new]
+
+    Hi. I really like this new and improved Blankmode.  But there are a couple 
+    things to clarify:
+        1) How do I completely disable the use of tab characters, and 
+           use 4 spaces instead?
+        2) How do I turn off a single option? For example, how can I 
+           disable the 'newline' representation only?
+
+    Finally, as well as asking questions, I have one suggestion for the 
+    80-column rule. Try drawing a box around the chars on a line > 79 
+    chars in length. IMHO, that makes the problem more obvious than 
+    highlighting the whole line. Example:
+
+          (setq my-long-line-face (make-face 'my-long-line-face))
+          (set-face-foreground 'my-long-line-face "red")
+          (set-face-background 'my-long-line-face "grey3")
+          (set-face-attribute 'my-long-line-face nil :box"green")
+
+    then for usage:
+
+          (defun c-mode-add-keywords (mode)
+            (font-lock-add-keywords
+             mode
+             '(("\t+" (0 'my-tab-face append))
+               ("^.\\{79\\}\\(.+\\)$" (1 'my-long-line-face append)))))
+     
+     Thanks,
+     -Tennis 
+
+[new]
+: Well, answering the questions:
+## I'm not sure if I understood this question, it seems that ##tab-width## variable should be set to ##4##.
+## To turn off a single whitespace option, just eliminate the option from
+##whitespace-style## variable. For example, to disable newline visualization,
+just eliminate the ##newline## symbol from ##whitespace-style##, or call
+##whitespace-toggle-options##.
+: Thanks for your suggestion, but it is already implemented via ##lines-tail##
+symbol. Please, see ##whitespace-style## documentation.
+: -- ViniciusJoseLatorre
+
+:: Since version 10.0, the `indent-tabs-mode' and `tab-width' settings from
+user are honored.
+:: -- ViniciusJoseLatorre
+
+[new]
+Hello, whitespace fail to show newlines on ubuntu with :"GNU Emacs 23.0.60.1
+(i486-pc-linux-gnu, GTK+ Version 2.12.0) of 2008-03-07 on iridium, modified by
+Debian".
+All the content of my files is diplayed on one line until i turn off newline with the "n" option.
+It work fine on my other machine (gentoo) with same files and emacs 23.0.60.1 also.
+Some thing is missing (not in whitespace) but i can't figure what.
+Any idea ? Thank you. 
+
+[new]
+: Hi Thierry, as we could see by email, this was an Emacs problem instead of a
+WhiteSpace problem. Thanks for your report.
+: -- ViniciusJoseLatorre
+
+[new]
+I have been successfully using (fromerly blank-mode.el and now) whitespace.el for a while now on Windows-based GNU Emacs, including 22.3.  I appreciate it very much.  Thank you!
+
+I just tried using whitespace.el on x86-64 Fedora 9-based GNU Emacs 22.3 & 22.2.  All space and tab characters are displayed as a rectangle, which is apparently one tab-width without regard to where the next tab-stop would naturally occur.  The perimeter of each rectangle is the foreground color, surrounding the core of the rectangle/tab-width which is the background color.  AFAIK, I have it installed and configured and loaded-via-.emacs the same way as I have successfully used on my Windows-based GNU Emacs 22.3.  The main installation act that I use is brute force:  I replace the entirety of the Rajesh Vaidheeswarran whitespace.el in /usr/local/share/emacs/22.3/lisp that was provided with GNU Emacs with yours and byte-compile to whitespace.elc.  (I am having a different problem with blank-mode.el that I have described over on that wikipage.)  -- Dan'l Miller
+
+[new]
+: Hi Dan,
+: Emacs displays rectangle when it can't display a character glyph.
+: Please, insert the following setting into ##~/.emacs## file for Fedora environment:
+
+         (setq whitespace-display-mappings '((space-mark ?\  [?.]) (newline-mark ?\n [?$ ?\n]) (tab-mark ?\t [?\\ ?\t])))
+
+: So, SPACE will be displayed as ##'.'## and TAB as ##'\'##.
+: -- ViniciusJoseLatorre
+
+[new]
+
+Hello, I am trying to use whitespace-mode under Mac OS X 10.5.6. I am getting the following horrible display while using Carbon Emacs(22.3.1) or Aquamacs(22.3.1):
+
+http://i581.photobucket.com/albums/ss258/gdelfino/Picture4.png
+
+However, it works well under Emacs.app (23). Therefore, the modification to make it works under Emacs 21 and 22 seem to have some problem which I don't know how to solve. Regards. -- Gustavo Delfino
+
+[new]
+I'm having the same display issue with whitespace-mode under Mac OS X 10.5.6 using Carbon Emacs. Anyone know how to fix it? -- Eddie
+
+[new]
+: Hi Gustavo, Hi Eddie,
+: This problem under Mac OS X is similar to the Dan above under Fedora, but instead of a rectangle it displays a diamond with an interrogation mark inside.
+: Please, try the same setting above.
+: Thanks -- ViniciusJoseLatorre
+
+:: 
+:: Thanks Vinicius, that fixed it! -- Eddie
+
+[new]
+Display of centered dot, etc. did not work on my Unicode terminal until I replaced all glyphs in whitespace-display-mappings with their Unicode equivalents: e.g. [?\xB7] becomes [?\u00B7].  Otherwise it tried to send a literal #\xB7 to the terminal, which resulted in a rectangle.  -- JimUrsetto
+
+[new]
+: Hi JimUsetto,
+: I've just tested your suggestion, it seems ok, see it:
+
+         (setq whitespace-display-mappings '((space-mark ?\  [?\u00B7]) (newline-mark ?\n [?$ ?\n]) (tab-mark ?\t [?\u00BB ?\t])))
+
+: Probably, the setting above should work on Fedora and Mac OS X.
+: If someone test in those environments, please, write here the results.
+: Thanks -- ViniciusJoseLatorre
+
+
+----
+
+CategoryCode,
+CategoryModes,
+CategoryFaces

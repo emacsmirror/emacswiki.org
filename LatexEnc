@@ -1,0 +1,22 @@
+<code>latexenc.el</code> by ArneJørgensen decides a CodingSystem based on an <code>inputenc</code> declaration in LaTeX source.  It's builtin in Emacs 22 or you can get it from the author at
+
+: http://arnested.dk/filer/latexenc.el
+
+An <code>inputenc</code> line is like
+
+    \usepackage[koi8-r]{inputenc}
+
+or
+
+    \inputencoding{latin1}
+
+<code>latexenc.el</code> operates via <code>file-coding-system-alist</code> and in Emacs 22 is enabled by default for <code>.tex</code>, <code>.ltx</code>, <code>.dtx</code> and <code>.drv</code> files.
+
+If you're writing some latex yourself you can always give a <code>coding:</code> cookie yourself, but <code>latexenc.el</code> is good for visiting other people's latex which quite possibly don't have an Emacs cookie.
+
+If you've got a multi-file document you can give a <code>TeX-master</code> local variable, or anything <code>tex-main-file</code> understands, to have <code>latexenc.el</code> look in a top-level master file for <code>inputenc</code>, instead of needing it in every file.  (Though as of Emacs 22.1 that doesn't work from a TarMode or ArchiveMode member buffer.)
+
+Latex allows the input encoding to be changed at any point, so in theory you can have different codings for different parts of a single file, but Emacs can't cope with that, it needs the whole file in one coding.
+
+----
+CategoryTex CategoryInternationalization LaTeX

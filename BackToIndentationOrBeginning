@@ -1,0 +1,114 @@
+This function switches the point to before the first non-space character, or if the point is already there it goes to the beginning of the line. Binding "Home" to this function turns it into a very nice DoWhatIMean key.
+
+ (defun back-to-indentation-or-beginning ()
+   (interactive)
+   (if (= (point) (save-excursion (back-to-indentation) (point)))
+       (beginning-of-line)
+     (back-to-indentation)))
+[new]
+If you rather it go to beginning-of-line first and to indentation on the next hit use this version instead.
+
+ (defun back-to-indentation-or-beginning ()
+   (interactive) 
+   (if (bolp) (back-to-indentation) (beginning-of-line)))
+[new]
+You can bind to "Home" key using
+(global-set-key (kbd "<home>") 'back-to-indentation-or-beginning)
+[new]
+Command `beginning-or-indentation' in Lisp:misc-cmds.el does the same thing. In addition, repeated calls back up to previous line beginnings:
+
+  (defun beginning-or-indentation (&optional n)
+    "Move cursor to beginning of this line or to its indentation.
+  If at indentation position of this line, move to beginning of line.
+  If at beginning of line, move to beginning of previous line.
+  Else, move to indentation position of this line.
+
+  With arg N, move backward to the beginning of the Nth previous line.
+  Interactively, N is the prefix arg."
+    (interactive "P")
+    (cond ((or (bolp) n)
+           (forward-line (- (prefix-numeric-value n))))
+          ((save-excursion (skip-chars-backward " \t") (bolp)) ; At indentation.
+           (forward-line 0))
+          (t (back-to-indentation))))
+[new]
+[:end-of-code-or-line]
+To get the same same type of functionality at the end of the line, try this function.  I bind it to my <end> key just like the <home> key above.  It jumps between the actual end-of-line and the end of the code line which is different if the line has comments on the end.
+
+ (defun end-of-code-or-line () 
+   "Move to EOL. If already there, to EOL sans comments.
+    That is, the end of the code, ignoring any trailing comment
+    or whitespace.  Note this does not handle 2 character 
+    comment starters like // or /*.  Such will not be skipped."
+    (interactive)
+    (if (not (eolp))
+        (end-of-line)
+      (skip-chars-backward " \t")
+      (let ((pt (point))
+            (lbp (line-beginning-position))
+            (lim))
+        (when (re-search-backward "\\s<" lbp t)
+          (setq lim (point))
+          (if (re-search-forward "\\s>" (1- pt) t)
+              (goto-char pt)
+            (goto-char lim)               ; test here ->
+          (while (looking-back "\\s<" (1- (point)))
+            (backward-char))
+          (skip-chars-backward " \t"))))))
+
+Note the similarity with HtmlEndOfLine.
+[new]
+Here comes a function which goes to the indention, begining of line or begining of buffer:
+
+ (defun my-home () (interactive)
+   "If at the begining of line go to begining of buffer.
+ If at the indention go to begining of line.
+ Go to indention otherwise."
+   (if (bolp) (beginning-of-buffer)
+     (skip-chars-backward " \t")
+     (unless (bolp) (back-to-indentation))))
+
+BTW, the first presented function can be simplified:
+
+ (defun back-to-indentation-or-beginning () (interactive)
+   (skip-chars-backward " \t")
+   (unless (bolp) (back-to-indentation)))
+
+-- mina86
+
+[new]
+: You are correct about a simplification being possible but your version doesn't behave anything like the original.  This should behave identically.
+
+ (defun back-to-indentation-or-beginning () (interactive)
+   (if (= (point) (progn (back-to-indentation) (point)))
+       (beginning-of-line)))
+
+[new]
+There is a subtle problem with the way this interacts with cua-mode: shift-home no longer selects anything.  It should alternate between expanding the shifted selection to the beginning of the line and the beginning of indentation.  If home is pressed without shift, the current shifted selection should be deselected, but not if the selection was started with ctrl-space.  I was able to get this behavior with a bit of hacking, but it depends on an internal variable, cua--last-region-shifted, and doesn't work in the simpler shift-select-mode since that variable won't exist.  Hopefully someone can improve upon this further:
+
+  (defun back-to-indentation-or-beginning ()
+    (interactive)
+    (if this-command-keys-shift-translated
+        (unless mark-active (push-mark nil t t))
+      (when (and mark-active cua--last-region-shifted)
+        (deactivate-mark)))
+    (if (= (point) (progn (back-to-indentation) (point)))
+        (beginning-of-line)))
+
+[new]
+After writing the above function, I now realize that there's a simple way to tell cua-mode about back-to-indentation-or-beginning:
+
+  (put 'back-to-indentation-or-beginning 'CUA 'move)
+
+This seems to work perfectly. It doesn't solve the problem for shift-select-mode without cua-mode, however.
+
+[new]
+There is a version of this for in ourcomments-util.el in [NxhtmlMode nXhtml] that also handles wrapped line.
+If on a wrapped part it first goes to the start of the wrapped line.
+Note: Requires the not yet released Emacs 23.
+(There is also a similar function for end of line.)
+
+----
+CategoryEditing
+CategoryIndentation
+LineCommands.

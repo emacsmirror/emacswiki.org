@@ -1,0 +1,88 @@
+== Using Registers ==
+
+[[register|Registers]] let you store and restore strings, integers (with increments), [[rectangle]]s, file and directory paths, [[WindowConfiguration]]s, [[FrameConfiguration]]s, and [[marker]]s very quickly.  
+
+== Basic Register functions ==
+
+||<code>C-x r s R</code>||<i>Copy the [[region]] into register R</i>||
+||<code>C-x r r R</code>||<i>Copy the region-rectangle into register R</i>||
+||<code>C-x r SPC R</code>||<i>Save the position of [[point]] (and the name of the current [[buffer]]) into register R</i> ||
+||<code>C-x r f R</code>||<i>Copy the [[frame]] configuration into register R</i>||
+||<code>C-x r w R</code>||<i>Copy the [[window]] configuration into register R</i>||
+
+<i>R</i> is the register name that you choose, consisting of a single character. Register names are case-sensitive. 
+
+For example, to copy the current region to a register you name ##1##, use `C-x r s 1'. To insert the contents of that register at [[point]], use `C-x r i 1'. 
+
+== Storing Numbers in Registers == 
+
+Example use of storing number in registers:
+
+<code>C-u 1000 C-x r n x</code> Store 1000 in register x. 
+
+<code>C-x r i x</code> -- Insert the  number in register x into the buffer.
+
+<code>C-x r + x</code> -- Increment the number by one.
+
+See the Node /Keeping Numbers in Registers/ in the EmacsManual.
+
+NumbersInRegisters can also be put to good use in KeyboardMacros.
+
+== Register Tips ==
+
+* To set registers buffer local (it's global by default): (<code>make-variable-buffer-local 'register-alist</code>)
+
+* To save the current configuration of ''frames'' and later restore it, use `C-x r f' (<code>frame-configuration-to-register</code>) and `C-x r j' (<code>jump-to-register</code>), respectively.
+
+* Register jumping: `C-x r j e' to open DotEmacs, `C-x r j i' to open an `ideas' file:
+
+          (set-register ?e '(file . "~/.emacs"))
+          (set-register ?i '(file . "~/org/ideas.org"))
+
+* When you are inserting from register with <code>C-x r i</code>, you may use a prefix argument to jump to the end of the inserted text, but if you forget you can use <code>C-x C-x</code>.
+
+* Copy and paste from registers - `C-x r s R'  and  `C-x r g R' (think: register-set/register-get). This works slightly different in [[XEmacs]].  From the info page ([[XEmacs]])RegText: "'`C-x r s R' stores a copy of the text of the region into the register named R.  `C-x r i R' inserts the text from the register `R' in the buffer."  At least this is true for [[XEmacs]] 21.4.x.
+
+* Store a WindowConfiguration or a FrameConfiguration to a register.
+
+== Extending Registers == 
+
+* RegAdhoc -- Keep track of registers in an adhoc manner. 
+
+* BetterRegisters -- Use whatever is in a register by pressing ‘C-j’.
+
+* Lisp:list-register.el and Lisp:register-list.el help viewing and editing the registers. 
+
+* EmptyRegisters -- Handy list of emptied register locations for most char-codes.
+
+[new]
+Lisp:list-register.el fails for me because of `truncate-string' not being defined here in Emacs 23 (CVS).  I would be glad to test this library, of course.)  -- BastienGuerry
+
+== Register Keybindings Overview ==
+
+||||**text register**||
+||##C-x r s a##||store region as "a"||
+||##C-x r i a##||insert region stored in "a"||
+||##C-x r r a##||store rectangle as "a"||
+||||**point register**||
+||##C-x r SPC a##||store current point as "a"||
+||##C-x r j a##||move to point in "a"||
+||||**window register**||
+||##C-x r w a##||store configuration of windows in frame||
+||##C-x r j a##||restore window configurations||
+||||**frame register**||
+||##C-x r f a##||store window configuration for all frames||
+||##C-x r j a##||restore all window configurations||
+||||**number register**||
+||##C-u 1 C-x r n a##||store 1 in "a"||
+||##C-u 1 C-x r + a##||add 1 to number in "a"||
+||##C-x r i a##||insert number in "a"||
+||||**position register**||
+||##C-x r m RET##||save default||
+||##C-x r m <NAME> RET##||save as NAME||
+||##C-x r b RET##||move to default||
+||##C-x r b <NAME> RET##||move to NAME||
+||##C-x r l##||list||
+
+----
+CategoryEditing CategoryRegion

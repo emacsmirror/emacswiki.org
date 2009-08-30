@@ -1,0 +1,15 @@
+When I hit down arrow (i.e. <code>next-line</code>) from the last line on the screen, Emacs takes me to the next line, but then it puts that line in the middle of the page.  This always startles me, because I am used to other editors that scroll the screen one line at a time when you reach the bottom line of the screen.
+
+Is there a way to change emacs to use the scrolling-by-one-line approach?
+
+Thanks. -- SteveHowell
+
+: Change <code>scroll-conservatively</code> to 1 or other suitably small number, not zero. -- CharlesSebold
+
+: Worked, thanks. -- SteveHowell	
+
+using GnuEmacs 21.1.1, I find that I need a combination of <code>scroll-step</code> 1 and <code>scroll-conservatively</code> 10000, as someone else mentioned on SmoothScrolling. Otherwise it will jump suddenly every once in a while - which can be quite startling when you've been scrolling smoothly for a second or two.  -- ErikDeBill
+ 
+
+See also: SmoothScrolling
+----

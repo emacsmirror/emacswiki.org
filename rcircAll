@@ -1,0 +1,29 @@
+The following code for [[rcirc]] allows you to use the ##/all## command to
+run a command for all your connections.  This only makes sense if you actually
+have multiple connections, eg. you are connected to multiple servers or you
+are using several nicks on the same server.
+
+Examples:
+
+    /all away food
+    /all away
+    /all quit zzzz
+
+== Code ==
+
+<pre>
+(eval-after-load 'rcirc
+  '(defun-rcirc-command all (input)
+     "Run the arguments as a command for all connections.
+Example use: /all away food or /all quit zzzz."
+     (interactive "s")
+     (let ((buffers (mapcar 'process-buffer (rcirc-process-list))))
+       (dolist (buf buffers)
+	 (with-current-buffer buf
+	   (goto-char (point-max))
+	   (insert "/" input)
+	   (rcirc-send-input))))))
+</pre>
+
+----
+CategoryChatClient [[rcirc]]

@@ -1,0 +1,34 @@
+There are times when it would simply be more desirable to have some process other than emacs handle completion for you. These include:
+
+* Completion of filenames in a shell gives incorrect results - when emacs can become confused (remote shell, dir tracking failures)
+* Completion of filenames in a remote shell is too slow - eg if relying on Tramp / ange-ftp etc...
+* Sophisticated completions in a subprocess - eg gdb
+
+This seems to be a recurring request - there are many requests but no ideal solutions that I found when searching various archives.
+
+Because of this I'm creating this page (of fairly random notes and comments) to document what I have managed to discover so far - and will update this if I manage to get more time to look into this (which hopefully I will as it's an incredibly frustrating problem...)
+
+Potential solutions that are often suggested:
+
+* Use M-x term. Drawbacks - very often complete terminal emulation is not desired - only completion facilities - so this can be a somewhat awkward / clumsy solution.
+* directory tracking - can get confused (particularly with remote logins) - (but is a useful feature in its own right)
+
+The following URL proposed one solution based on sending a completion character (eg a tab) and parsing the results whilst still inside shell / comint mode:
+http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&oe=UTF-8&c2coff=1&safe=off&threadm=6i1t94%24q6b%40sifon.cc.mcgill.ca&rnum=1&prev=/groups%3Fq%3Dtab%2Bcompletion%2Bshell%2Bmode%26hl%3Den%26lr%3D%26ie%3DUTF-8%26oe%3DUTF-8%26c2coff%3D1%26safe%3Doff%26start%3D0%26sa%3DN
+
+I have been trying to get this to work but have encountered a few problems with it to do with the fact that it seems to rely upon the subprocess being run through a pseudo-terminal which has 'echo' turned on.
+
+After digging around I've basically come to the conclusion that there are two approaches that can be used to solve this problem:
+* Use sub-process in-line completion (where the subprocess just tries to complete as much as it can)
+* Use sub-process out-of-line completion (where the subprocess generates a list of alternatives)
+
+Option 1 above is what the earlier solution referenced via the URL above uses. (This option sends a character like <tab> in bash, or <esc> in tcsh). The drawback here is that it will not work at all unless your shell / comint process is echoing back the characters you input (otherwise emacs simply will not receive any completions and hence is powerless to display them). (I believe this means that it has to be running in a pty rather than simply connected up via pipes, and that 'stty echo' needs to be set).
+
+Option 2 should work regardless of how your subprocess is configured / connected to emacs. (This option sends a character like \M-? in bash, or \C-d in tcsh). ie this option doesn't rely on ptys or any special environment for the subprocess.
+
+Both of these options provide alternative mechanisms to coax completion info out of the subprocess and can be mapped into what is effectively in-line completion inside emacs. Option 2 can additionally use a completion buffer if the completion is ambiguous.
+
+For the (still pretty early-days - ie buggy) code to implement these options - see SubProcessCompletionCode
+
+----
+CategoryCompletion.

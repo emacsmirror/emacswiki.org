@@ -1,0 +1,70 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Progressive Completion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Completion On Demand]] ||
+
+----
+
+== Regressive Completion ==
+
+Though generally less useful than [[progressive completion]], you can
+also widen, instead of narrow, the current set of [[completion]]
+candidates, by providing an alternative pattern ([[regexp]]) to match.
+By analogy, I call this '''[:regressive completion]'''.
+
+The analogy is not exact, because of the nature of completion:
+your current input always matches all candidates, by definition.
+With progressive completion, a recursive [[minibuffer]] is entered for
+each new pattern to match.  The candidates that matched the
+previous input of the progression become the domain of discourse
+for the current completion.
+
+That same technique is not applicable for widening.  Instead, you
+enter, using `RET', a new pattern to match as an alternative, and
+'''Icicles''' changes the current input to a regexp that matches either
+what the previous input matched or the alternative pattern.  In
+other words, it is just a short cut for typing a regexp that
+matches a choice: '''##\(...\|...\)##'''.
+
+You use '''`##M-+##'''' (`icicle-widen-candidates') for regressive completion -- think of the `##+##' as set
+union (OR), just as you think of the `##*##' in `##M-*##' as set
+intersection (AND).  And, just as for progressive completion,
+there is a shortcut, '''`S-backspace'''', for `S-TAB' followed by `##M-+##'.
+
+For example, if you want to see all of the candidates that contain
+either `for' or `back', you could type `##\(for\|back\)##' in the
+minibuffer, or you could just type `for', then `S-backspace' (or
+`S-TAB' followed by `##M-+##'), then `back'.  '''Icicles''' replaces your
+input by `##\(for\|back\)##'.  You can continue with additional
+alternative match patterns.  And you can combine narrowing with
+widening, that is, progressive with regressive completion.
+
+You can of course [[Icicles - Cycling Completions|cycle]] among all matching candidates, regardless
+of which alternative they match.  One use of regressive completion
+is with '''[[Icicles - Search Commands, Overview|Icicles search]]''' -- it corresponds to the OR searching of
+common search engines.
+
+
+----
+
+|| *Previous:*  [[Icicles - Progressive Completion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Completion On Demand]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

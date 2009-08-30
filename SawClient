@@ -1,0 +1,13 @@
+This is a little snippet of code I've (JeremyHankins) written that may be useful for folks who want closer integration between the sawfish window manager and emacs: Lisp:saw-client.el
+
+It includes `saw-client-eval', which can be used to have sawfish execute lisp code, and it provides advice that will switch to the appropriate emacs frame in sawfish if `display-buffer', `y-or-n-p', or `yes-or-no-p' are called.  To use it just put it in your `load-path' and:
+
+    (require 'saw-client)
+
+NOTE: If, like me, you also run emacs expressions from sawfish you should use `saw-client-eval' rather than `sawfish-eval' from SawFishMode for running arbitrary sawfish expressions.  `saw-client-eval' checks to see if `running-from-sawfish-p' is set, which (if you're using [http://sawfish.wikia.com/wiki/Emacs emacs.jl] to run emacs lisp from sawfish) will be set when sawfish is running emacs expressions.
+
+See also: SawFishMode, and [http://sawfish.wikia.com/wiki/Emacs emacs.jl]
+
+----
+
+I'm not really sure what category is most appropriate for this.  Any suggestions would be appreciated, or if there are any emacs wiki conventions I'm not following properly, I'd like to know that too.

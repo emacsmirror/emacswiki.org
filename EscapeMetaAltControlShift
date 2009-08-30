@@ -1,0 +1,44 @@
+Emacs has a lot of funny names.
+
+* Eight Megs And Constantly Swapping
+* Eighty Megs And Constantly Swapping
+* Emacs Makes All Computing Simple
+* Emacs Makes All Computing Slow
+* Escape Meta Alt Control Shift
+* Emacs Makers Are Crazy Sickos
+* Elsewhere Maybe All Commands Simple
+* Excellent Manuals Are Clearly Suppressed
+* Epiliptic MLISP Aggravates Compiler Seizures
+* Easily Mangles, Aborts, Crashes, Segfaults
+
+The file <i>etc/JOKES</i> in the Emacs distribution
+contains a large number of these,
+as well as a generous assortment
+of other classical editor jokes.
+(Press C-h F to view the Emacs FAQ,
+then C-x C-f to look for the file
+<i>etc/JOKES</i> in the same directory as
+the FAQ file. You'll also find
+some other funny files there.)
+
+----
+
+'''Use of the Meta key'''
+
+ From: KaiGrossjohann
+ Subject: Re: My meta key is sometimes not my meta key
+ Newsgroups: comp.emacs
+ Date: Tue, 26 Jun 2001 13:59:58 +0200
+
+Emacs looks for Meta_L and Meta_R keysyms in the output of "xmodmap
+-pm".  That will tell Emacs which modifier is the meta modifier.  From
+then on, Emacs uses that modifier to mean meta.  If there are no
+Meta_L and Meta_R keysyms in the output of "xmodmap -pm", Emacs looks
+for Alt_L and Alt_R.  If these aren't there, either, you have to use
+ESC.
+
+I forgot to mention that other programs always use the mod1 modifier
+for meta, regardless of the keysyms.
+
+----
+CategoryHumor CategoryKeys

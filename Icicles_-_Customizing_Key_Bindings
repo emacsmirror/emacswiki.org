@@ -1,0 +1,197 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Key Bindings]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Standard Commands Redefined]] ||
+
+----
+
+== Customizing Key Bindings ==
+
+See [[Icicles - Key Bindings]] for a description of the [[key binding]]s
+defined by '''Icicles'''.  The [[user option]]s mentioned here are also presented
+there, in context.  You can [[Customize|customize]] all of the key-binding user options with `M-x customize-group RET Icicles-Key-Bindings'.
+
+Key bindings are very personal choices, and reflect preferences
+and habits, as well as keyboard and other configurations.  You
+might want to change some of the bindings that '''Icicles''' creates.
+This page tells you how to do that.
+
+However, before doing so, unless the default bindings present a
+hardware or OS configuration problem for you, please try using the
+default '''Icicles''' bindings for a while, before deciding that you want to
+change them.  Habit is a powerful persuader, but its advice is not
+always the best ;-).
+
+The main user option for customizing key bindings is
+'''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>''''.  You use it to change or remove
+any of the top-level bindings in ''Icicle'' mode.
+
+There are some other user options that make it easy to customize some
+'''Icicles''' key bindings.  Most of these are [[minibuffer]] key
+bindings.
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|icicle-apropos-cycle-previous-keys]]</tt>'''' ('''`prior'''').
+ [[Icicles - Cycling Completions|Cycle]] to the previous [[apropos completion]] candidate.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-keys|icicle-apropos-cycle-next-keys]]</tt>'''' ('''`next'''').
+ Cycle to the next apropos-completion candidate.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-keys|icicle-prefix-cycle-previous-keys]]</tt>'''' ('''`up'''').
+ Cycle to the previous [[prefix completion]] candidate.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-keys|icicle-prefix-cycle-next-keys]]</tt>'''' ('''`down'''').
+ Cycle to the next prefix-completion candidate.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-keys|icicle-modal-cycle-up-keys]]</tt>'''' ('''`up'''').
+ Cycle to the next candidate (modal).
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|icicle-modal-cycle-down-keys]]</tt>'''' ('''`down'''').
+ Cycle to the previous candidate (modal).
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-action-keys|icicle-apropos-cycle-previous-action-keys]]</tt>'''' ('''`C-prior'''').
+ [[Icicles - Cycling Completions|Cycle]] to the previous apropos completion candidate and act on it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-action-keys|icicle-apropos-cycle-next-action-keys]]</tt>'''' ('''`C-next'''').
+ Cycle to the next apropos-completion candidate and act on it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-action-keys|icicle-prefix-cycle-previous-action-keys]]</tt>'''' ('''`C-up'''').
+ Cycle to the previous prefix completion candidate and act on it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-action-keys|icicle-prefix-cycle-next-action-keys]]</tt>'''' ('''`C-down'''').
+ Cycle to the next prefix-completion candidate and act on it.
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-action-keys|icicle-modal-cycle-up-action-keys]]</tt>'''' ('''`C-up'''').
+ Cycle to the next candidate and act on it (modal).
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-action-keys|icicle-modal-cycle-down-action-keys]]</tt>'''' ('''`C-down'''').
+ Cycle to the previous candidate and act on it (modal).
+
+
+
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-alt-action-keys|icicle-apropos-cycle-previous-alt-action-keys]]</tt>'''' ('''`C-S-prior'''').
+ [[Icicles - Cycling Completions|Cycle]] to the previous apropos completion candidate and alternative-act on it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-alt-action-keys|icicle-apropos-cycle-next-alt-action-keys]]</tt>'''' ('''`C-S-next'''').
+ Cycle to the next apropos-completion candidate and alternative-act on it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-alt-action-keys|icicle-prefix-cycle-previous-alt-action-keys]]</tt>'''' ('''`C-S-up'''').
+ Cycle to the previous prefix completion candidate and alternative-act on it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-alt-action-keys|icicle-prefix-cycle-next-alt-action-keys]]</tt>'''' ('''`C-S-down'''').
+ Cycle to the next prefix-completion candidate and alternative-act on it.
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-alt-action-keys|icicle-modal-cycle-up-alt-action-keys]]</tt>'''' ('''`C-S-up'''').
+ Cycle to the next candidate and alternative-act on it (modal).
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-alt-action-keys|icicle-modal-cycle-down-alt-action-keys]]</tt>'''' ('''`C-S-down'''').
+ Cycle to the previous candidate and alternative-act on it (modal).
+
+
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-keys|icicle-prefix-complete-keys]]</tt>'''' ('''`TAB'''').
+ Prefix-complete your input.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>'''' ('''`S-TAB'''').
+Apropos-complete your input.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-no-display-keys|icicle-prefix-complete-no-display-keys]]</tt>'''' ('''`C-M-TAB'''').
+ Prefix-complete without showing `*Completions*'.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-no-display-keys|icicle-apropos-complete-no-display-keys]]</tt>'''' ('''`C-M-S-TAB'''').
+ Apropos-complete without showing `*Completions*'.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-word-completion-keys|icicle-word-completion-keys]]</tt>'''' ('''`M-SPC'''').
+ Prefix-complete your input a word at a time.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>'''' ('''`S-TAB''''). [[Icicles - Key Completion|Complete keys sequences]].
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-previous-candidate-keys|icicle-previous-candidate-keys]]</tt>'''' ('''`S-TAB''''). Move to the previous candidate in `*Completions*'.
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-completing-read-insert-keys|icicle-completing-read+insert-keys]]</tt>'''' ('''`C-M-S-c'''').  Completion on demand.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-read-insert-file-name-keys|icicle-read+insert-file-name-keys]]</tt>'''' ('''`C-M-S-f'''').  Completion on demand for file names.
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-search-from-isearch-keys|icicle-search-from-isearch-keys]]</tt>'''' ('''`S-TAB'''').
+ Start `icicle-search' from [[Isearch]].
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>'''' ('''`M-TAB'''', '''`M-o'''').
+ Complete Isearch string using [[search ring]].
+
+
+These are the main kinds of '''Icicles''' key bindings:
+
+* Global bindings
+** Additions to [[menu bar]] menus
+** Key completion keys (`S-TAB' by default)
+* ''Icicle'' mode bindings
+* Minibuffer bindings
+
+
+
+[:GlobalBindings]
+[:MenuBarMenus]
+=== Customizing Global Bindings ===
+
+'''Icicles''' normally adds items to appropriate existing menu-bar
+menus, such as '''File''' and '''Options''', as well as to menu-bar menus
+'''Minibuf''' and '''Icicles'''.  These items are placed in an '''Icicles'''
+submenu (e.g. '''Files''' > '''Icicles''').  If
+you do not want to add an '''Icicles''' submenu,
+then set [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-touche-pas-aux-menus|icicle-touche-pas-aux-menus]]</tt>'''' to non-`nil' before loading '''Icicles'''.
+The menu items are then added to the '''Icicles''' menu instead.
+
+Icicles binds key completion (`icicle-complete-keys') to the keys
+defined in option '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>''''.  See
+[[Icicles - Key Bindings]] for more information about this.
+
+
+
+[:IcicleModeBindings]
+=== Customizing Icicle Mode Bindings ===
+
+In the ''Icicle'' mode keymap, several top-level commands are bound by
+default.  You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''' to
+customize the keys that are used for these commands, or to remove
+any such bindings.
+
+
+
+[:MinibufferBindings]
+=== Customizing Minibuffer Bindings ===
+
+There are user options for most '''Icicles''' minibuffer bindings that
+you might want to change -- see above for the list.  This section tells
+you how to change additional bindings.
+
+To understand how you can modify '''Icicles''' minibuffer bindings, it
+helps to know how '''Icicles''' creates the default bindings.  For that,
+the best advice is to consult the EmacsLisp code in library
+'''<tt>[[icicles-mode.el]]</tt>'''. Even if you are not very familiar with Emacs-Lisp, however, you
+should be able to do what you want by adapting the example shown here.
+
+Suppose that you want to bind `f11' and `f12' to traverse the input history up and down whenever you are in ''Icicle'' mode.  There are no user options for this, but you can do it by inserting this code into your
+init file (##~/.emacs##), before the code that requires (loads)
+library '''<tt>[[icicles.el]]</tt>''':
+
+    (add-hook 'icicle-mode-hook 'bind-my-icicles-keys)
+    (defun bind-my-icicles-keys ()
+      "Replace some default Icicles minibuffer bindings with others."
+      (dolist (map (append (list minibuffer-local-completion-map
+                                 minibuffer-local-must-match-map)
+                           (and (fboundp 'minibuffer-local-filename-completion-map)
+                                (list minibuffer-local-filename-completion-map))))
+        (when icicle-mode
+          (define-key map [f11] 'previous-history-element)
+          (define-key map [f12] 'next-history-element))))
+
+'''Icicles''' does not change the standard Emacs
+minibuffer bindings for `M-p' and `M-n', so they are still
+`previous-history-element' and `next-history-element'.  You can
+just use `define-key' to change the bindings of `M-p' and `M-n'.
+
+'''See also:'''
+
+* [[Icicles - Key Bindings]]
+* [[Icicles - Customization and General Tips]] for information on other customizations, besides key bindings.
+* [[Icicles - Key Binding Discussion]] for some discussion about customizing '''Icicles''' key bindings.
+* [[RubikitchIciclesConfiguration]] for configuration example. -- [[rubikitch]]
+
+----
+
+
+|| *Previous:*  [[Icicles - Key Bindings]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Standard Commands Redefined]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el, Lisp:icicles-fn.el
+
+
+CategoryKeys
+CategoryMenus
+CategoryCommands 
+CategoryCompletion
+CategoryModes
+CategoryCode
+
+
+
+

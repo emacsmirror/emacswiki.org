@@ -1,0 +1,15 @@
+iswitch-menu is an Emacs extension that aims to make the console menu
+interface for emacs much efficient and easy to use, by using iswitchb technology to do the display and navigation.
+
+It's a work in progress, and you can get it at:
+
+http://github.com/joodie/iswitch-menu/tree/master
+
+Motivation and some screen shots:
+
+http://joost.zeekat.nl/2008/09/14/better-consolekeyboard-menus-for-emacs/
+
+See also: MenuAccessFromKeyboard
+
+----
+CategoryMenus

@@ -1,0 +1,98 @@
+I do not maintain most of these packages anymore due to lack of time. If you are interested in taking over any of them then let me know at the bottom of the page.
+
+
+
+Packages maintained by me:
+
+* PushyCompletion -- a completion which is not timid
+
+
+Packages maintained by others
+
+
+* [[Anything]] -- open anything (maintainer: [[rubikitch]])
+* InPlaceAnnotations -- In-place annotations (maintainer: XavierMaillard)
+
+Unmaintained:
+
+* ([Self:action=history;id=tagger.el history]) Lisp:tagger.el -- Tagged information handler
+* ([Self:action=history;id=timid.el history]) Lisp:timid.el -- timid completion
+* ([Self:action=history;id=contentswitch.el history]) Lisp:contentswitch.el --- switch to buffer/file by content
+* ([Self:action=history;id=autoinfo.el history]) Lisp:autoinfo.el -- show automatic information for the current selection
+* ([Self:action=history;id=cppsense.el history]) Lisp:cppsense.el -- simple, heuristic, tag-based C++ coding assistant
+* ([Self:action=history;id=file-journal.el history]) Lisp:file-journal.el -- revisit files by date
+* ([Self:action=history;id=smart-dabbrev.el history]) Lisp:smart-dabbrev.el -- smarter dabbrev-expand (works for me, needs more testing)
+* SpartanWiki --- a really spartan personal wiki
+* ([Self:action=history;id=annotate.el history]) [[Annotate]] -- simple file annotation system
+* ([Self:action=history;id=extview.el history]) ExtView -- open files with external viewer
+* ([Self:action=history;id=multiverse.el history]) Lisp:multiverse.el -- manage multiple versions of buffers in an Emacs session
+* ([Self:action=history;id=singlebind.el history]) Lisp:singlebind.el -- bind commands to single characters
+* ([Self:action=history;id=globalff.el history]) Lisp:globalff.el -- global find file
+* ([Self:action=history;id=tooltip-help.el history]) Lisp:tooltip-help.el -- show help as tooltip
+* [Lisp:anything-TamasPatrovics.el the last version of Anything maintained by me]
+
+[new]
+Welcome to the wiki! :) -- AlexSchroeder
+
+----
+Thank you for all great stuff you wrote. Just a quick question: in what file-journal is different from recentf or similar ? -- XavierMaillard
+
+: I really don't know, since I've never used them. :) Do they provide a list of recent files grouped by date? - TamasPatrovics
+
+: Not exactly, at least for recentf (AFAIK). -- XavierMaillard
+
+: FWIW, `icicle-recent-file' lets you group file-name completion
+candidates by last modification date. You can filter and sort by
+dates. [[Icicles - File-Name Input]] -- DrewAdams
+
+----
+I want to take over anything.el. -- [[rubikitch]]
+
+AFAIK, you're a fan of Anything, so I'm OK with it. Do you plan to keep your version in a public version control repo somewhere or here on the wiki? I'm asking it, because I want to have my last version preserved -- TamasPatrovics
+
+: I use this wiki. -- [[rubikitch]]
+
+: Okay, anything.el is yours. I indicated the change of maintainership on the [[Anything]] page. I hope you will take anything.el to new heights. :) -- TamasPatrovics
+
+----
+I can take on [[Lisp:file-journal.el]].  It's pretty awesmoe.  I'd like to keep it here on the wiki if that is alright.  the changes I made set the variables to customizable variables, and added an exclusion list to the files.  If you want your old version preserved, let me know.  -- JonathanArkell
+
+: It's yours. I'm glad someone takes this idea further. It would probably be a good idea to link it to the different categories in the wiki (file opening, file history, etc) -- TamasPatrovics
+
+----
+
+I just had to comment: yesterday I wrote a little simple-wiki mode, and then SpartanWiki shows up :P And even the "ideals" are the same: simple, no plans to do exporting, just for keeping my notes. Mine also has "back" buttons, uses header-line-format...
+At least I use multiple files instead of narrowing, otherwise there would be a complete overlap... -- hsuh
+[new]
+any link to your simple wiki ?
+
+----
+
+Hot Damn, the anything package is so awesome. Thanks for your work on it.
+-- JonathanArkell
+
+[new]
+
+Glad you like it. Writing it was fun too! :) -- TamasPatrovics
+
+----
+[new:XavierMaillard:2009-01-12 21:32 UTC]
+Are you still working on InPlaceAnnotations mode ? If not, I would
+like to take over maintainership since I am heavily using it here (and
+loving it). Thank you.
+
+[new]
+
+Nope. It's yours if you want it.
+
+----
+
+I use and enjoy [[Lisp:tooltip-help.el]] very much and would like to take it over if that is OK with you.  I have already made significant developments, in particular handling the case of the mouse pointer being in the way of the tooltip pop-up, and would like to release the new version here on the wiki if that is alright.  If you are happy with my proposal and would like your original version preserved please let me know. -- HenryWeller
+
+----
+CategoryHomepage
+
+
+
+
+

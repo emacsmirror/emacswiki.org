@@ -1,0 +1,26 @@
+Homepage: http://eugene.renice.org/spamassassin_mode_en.html
+
+Download: http://eugene.renice.org/spamassassin-mode.el
+
+=== Features ===
+
+* keywords highlighting;
+* templates for basic rule types;
+* linting rules (via spamassassin --lint);
+* optimizing regular expressions (via regex-opt utility);
+* filtering message through spamassassin.
+
+=== Configuration ===
+
+Put spamassassin-mode.el in your <code>load-path</code> and the following in your .emacs file:
+
+ (autoload 'spamassassin-mode "spamassassin-mode" nil t)
+ (add-to-list 'auto-mode-alist 
+              '("\\.cf\\'" . spamassassin-mode))
+
+=== Screenshot ===
+
+http://eugene.renice.org/images/sa-mode-screen.png
+
+----
+CategoryMailAddons | CategoryModes

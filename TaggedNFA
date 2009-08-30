@@ -1,0 +1,17 @@
+A tagged, [http://en.wikipedia.org/wiki/Nondeterministic_finite_state_machine non-deterministic finite state automata] (NFA) is an abstract computing machine that recognises [http://en.wikipedia.org/wiki/Regular_language regular languages]. In layman's terms, they are used to decide whether a string matches a regular expression. The "tagged" part means that the NFA can do group-capture: it returns information about which parts of a string matched which subgroup of the regular expression.
+
+The latest version  (0.1, released February 2009) can be obtained from:
+
+* tNFA package download: http://www.dr-qubit.org/download.php?file=predictive/tNFA.el
+* Web-site: http://www.dr-qubit.org/emacs.php#structures
+
+Why re-implement regular expression matching when Emacs comes with extensive built-in support for [[RegularExpression]]s? Primarily, because some algorithms require access to the NFA states produced part way through the regular expression matching process (see [[Tries]] for an example). Secondarily, because Emacs regexps only work on strings, whereas regular expressions can equally well be used to specify other sequence types.
+
+Note that Emacs' regexps are not [http://en.wikipedia.org/wiki/Regular_expression regular expressions] in the original meaning of that phrase. Emacs regexps implement additional features (in particular, back-references) that allow them to match far more than just regular languages. This comes at a cost: regexp matching can potentially be very slow (NP-hard!), whereas there are efficient (polynomial-time) algorithms for matching regular expressions (in the original sense). Therefore, this package only supports a subset of the full Emacs regular expression syntax. (Read the docstrings for more information.)
+
+This package essentially implements Laurikari's algorithm, as described in his [http://www.iki.fi/vl/regex-submatch.ps.gz master's thesis], but it builds the corresponding tagged [http://en.wikipedia.org/wiki/Deterministic_finite-state_machine deterministic finite state automaton] (DFA) on-the-fly as needed. See also RussCox' [http://swtch.com/~rsc/regexp/regexp1.html online article] for more about NFAs, DFAs, and regular expression matching.
+
+--TobyCubitt
+
+----
+CategoryCode

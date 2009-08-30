@@ -1,0 +1,7 @@
+mode-line-hack.el by JaeyounChung will let you hide the ModeLine whenever there is only one [[Window]] displayed in the [[Frame]].  Information like buffer name and TextCursor position ([[Point]]) is put in the HeaderLine instead.  This might be useful for vi refugees.
+
+http://emacs.kldp.org/~jay/emacs/
+
+----
+CategoryDisplay
+CategoryModes

@@ -1,0 +1,18 @@
+BenWing writes on xemacs-design:
+
+: [...] one big advantage of working with wiki, warts and all, is
+that it [a] does most of what we want fairly well [yes, it does have history ...
+at least, wikipedia does], and [b] [all important!] it appears to be the leader
+of the pack -- most-used, most-in-active-development of any of the products.
+from a practical standpoint there is nothing worse than using some random
+fly-by-night piece of software that we then have to maintain ourselves.
+problems like difficulty in rearranging the structure beyond just one level will
+probably be fixed in future releases of the wiki code.
+
+: i would propose [a] using the emacs wiki, and [b] doing it incrementally.  start
+with the to-do development projects i've been thinking of.  integrate docs
+sitting in my machine and the [http://www.xemacs.org/Architecting-XEmacs/index.html Architecting-XEmacs] stuff.  then consider moving
+the [http://www.xemacs.org/FAQ/index.html faq] over to wiki-land.  after that, think about whether or not it would make
+sense to provide summaries of discussions and solutions reached, and what to do
+more in general about the idea of a common fount of xemacs knowledge,
+collaboratively maintained.

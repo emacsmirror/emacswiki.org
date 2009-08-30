@@ -1,0 +1,173 @@
+= This is what I call Humongous =
+<pre>
+c:\Users\AichnerAd\IRC\humongous # du -ha
+108M	./#emacs!anaran@irc.freenode.net!6667.txt
+14M	./#emacs!anaran`@irc.freenode.net!6667.txt
+109M	./#jspwiki!anaran@irc.freenode.net!6667.txt
+14M	./#jspwiki!anaran`@irc.freenode.net!6667.txt
+221M	./anaran@irc.freenode.net!6667.txt
+118M	./anaran`@irc.freenode.net!6667.txt
+5.0k	./erc-log-files-get-humongous.txt
+582M	.
+c:\Users\AichnerAd\IRC\humongous # 
+</pre>
+= No long streches of non-ascii in my 582MB of erc logs =
+<pre>
+cd c:\Users\AichnerAd\IRC\humongous\
+grep -Pn "[^[:ascii:]]{10,}" *.txt NUL:
+Compilation started at Sun Mar 14 18:16:01 2004 +0100 (W. Europe Standard Time)
+# emacs!anaran@irc.freenode.net!6667.txt:24889:00:16 <zeDek> Ã©Ã¨ÃªÃ´Ã Ã§
+
+grep finished (2 matches found) at Sun Mar 14 18:16:57
+</pre>
+= A lot of line-based duplication of data =
+<pre>
+cd c:\Users\AichnerAd\IRC\humongous\
+c:\cygwin\bin\sort -b 'anaran@irc.freenode.net!6667.txt' | uniq -dc
+Compilation started at Mon Mar 15 11:54:35 2004 +0100 (W. Europe Standard Time)
+<many lines deleted by Adrian>
+   2048	you got rid of a global variable and see that it can be done by
+   2048	zoology, so i always felt quite sure about things...
+   2048	zoology, so i always felt quite sure about things...
+
+   2048	    |mental| dralik chandler tpk Han aadis` ianp arete b0ef emu joe
+   2304	    3317
+   2304	    4.0 $Revision: 1.584 $ (IRC client for Emacs)"
+   2304	      Bloemfontein, South Africa,
+   2304	      Edward's School, St.
+   2304	      US.  Thanks
+   2304	      and Oxford.  His
+   2304	      carried over into
+   2304	      devised 15 entire
+   2304	      providing this server
+   2304	running version dancer-ircd-1.0.32
+   2304	      the staff of
+   2304	    tolkien.freenode.net[core1-gige-ds3.pfn.citynetwireless.net/6667],
+   2304	tolkien.freenode.net[core1-gige-ds3.pfn.citynetwireless.net/6667],
+   3072	    Max: 14918
+   3183	      hostname
+   3183	      your convenience,
+   4096	    "Leaving"
+   4096	    "Nothing's forgotten. Nothing is ever forgotten."
+   4096	    "where eagles dare""
+   4096	    $Revision: 1.584 $ (IRC client for Emacs)"
+   4096	    (Connection reset by peer)
+   4096	    (qk6188n6a7@oh-strongsvillecadent1-1f-100.clvhoh.adelphia.net)
+   4096	    (~munky@200-096-131-090.cpece7007.dsl.brasiltelecom.net.br) is
+   4096	    (~trefle_v@ABoulogne-105-1-7-229.w81-48.abo.wanadoo.fr) has
+   4096	00:04 *** TerryP (~terryp@0x3ef32d72.arcnxx6.adsl.tele.dk) has changed
+   4096	00:06 <anaran> oh, uh
+   4096	00:06 <dsmith> anaran: Too late! Gotta keep going now.
+   4096	00:06 <sebyte> anaran: np. you don't have an opinion on my foreign groups
+   4096	00:07 *** dust-puppy (~luc@polar.4002.org) has quit: Remote closed the
+   4096	00:07 <anaran> sebyte: I use foreign groups to visit remote mailboxes.
+   4096	00:08 <anaran> B t runs the command gnus-summary-respool-trace
+   4096	00:08 <anaran> sebyte: from there I use B r runs the command
+   4096	00:09 *** oknowton (~wonko@c-24-0-237-87.client.comcast.net) has joined
+   4096	00:09 <anaran> sebyte: AFAIK you can't delete articles in foreign groups,
+   4096	00:10 <anaran> sebyte: probably the terminology is just more specific.
+   4096	00:11 <forcer> TerryP: ok, i added
+   4096	00:11 <sebyte> anaran: ok thnks. i'll look into those commands.
+   4096	00:12 <TerryP> ok, cool :)
+   4096	00:12 <anaran> sebyte: I use gnus-select-method for news and
+   4096	00:12 <forcer> TerryP: i want CVS :P
+   4096	00:13 *** Erwin (~erwin@port283.ds1-he.adsl.cybercity.dk) has quit:
+   4096	00:13 *** konsti (~konsti@dialin-145-254-143-204.arcor-ip.net) has quit:
+   4096	00:13 <TerryP> hehe, get it then :)
+   4096	00:13 <TerryP> up to you, i've only tried savannah so I don't know if
+   4096	00:13 <anaran> forcer: cvs for what? I even have :local: cvs on my
+   4096	00:13 <forcer> ;)
+   4096	00:13 <forcer> TerryP: do we want savannah?
+   4096	00:13 <forcer> when i'm back lateron i guess
+   4096	00:13 <sebyte> anaran: btw afaik?
+   4096	00:14 *** forcer (~forcer@c173038.adsl.hansenet.de) has quit: Remote
+   4096	00:14 <Lukhas> cya forcer
+   4096	00:14 <anaran> cya
+   4096	00:14 <anaran> sebyte: AsFarAsIKnow
+   4096	00:14 <forcer> anaran: that's a bit less useful for collaboration efforts
+   4096	00:14 <forcer> cu
+   4096	00:14 <forcer> i'm off
+   4096	00:14 <sebyte> anaran: i got it! 'and for all i know'
+   4096	00:14 <sebyte> anaran: k
+   4096	00:14 <sebyte> ok
+   4096	00:15 <Lukhas> (defun emms-player-mpg321-start (filename)
+   4096	00:15 <Lukhas> (message "BOO!")
+   4096	00:15 <Lukhas> that's not really professionnal :-)
+   4096	00:15 <TerryP> that's not the final version :)
+dui lawyer http://winning-dui-lawyers.blogspot.com from dui lawyer
+dui attorney http://top-dui-attorney.blogspot.com from dui attorney
+   4096	00:16 <Lukhas> btw, why did you "forked" from mp3player ?
+   4096	00:16 <Lukhas> e1f`: Mwhahahahahahhaha
+   4096	00:16 <Lukhas> i hope :)
+   4096	00:16 <e1f`> :D
+   4096	00:16 <e1f`> ;)
+   4096	00:16 <e1f`> the cool breeze on my nipples turns me on
+   4096	00:16 <e1f`> whoops! wrong channel
+   4096	00:17 *** ChanServ (ChanServ@services.) has changed mode for #emacs to +o
+   4096	00:17 *** kensanata (~user@dclient217-162-140-181.hispeed.ch) has joined
+   4096	00:17 <Han> Irssi 0.8.8 (20031123) - http://irssi.org/
+   4096	00:17 <Lukhas> TerryP: i know, i'm reading it too
+   4096	00:17 <TerryP> Lukhas: the final player (or what should become it) is
+   4096	00:17 <e1f`> that's an homage to the drunken master TerryP
+   4096	00:17 <kensanata> *sniff*
+   4096	00:17 <kensanata> I'm using ERC Version 4.0 $Revision: 1.560 $ with Emacs
+   4096	00:18 <Han> Yes! And I'm proud! :D
+   4096	00:18 <Lukhas> I'm using ERC Version 4.0 $Revision: 1.584 $ with GNU
+   4096	00:18 <Lukhas> kensanata: l4m3r, where is the Emacs22 ? :)
+   4096	00:18 <TerryP> i've got a playlist-module for it in the making, btw
+   4096	00:18 <e1f`> Han, are you the solo user of irssi on this channel?
+   4096	00:18 <e1f`> i feel very punny today
+   4096	00:19 *** kensanata` (~user@dclient217-162-140-181.hispeed.ch) has joined
+   4096	00:19 <Han> Lukhas, I've got a patch for you :)
+   4096	00:19 <Lukhas> TerryP: fine :) But that doesn't answer my previous
+   4096	00:19 <TerryP> Lukhas: which question?
+   4096	00:19 <anaran> Yow, I'm using the XEmacs ERC Package to-be!
+   4096	00:19 <kensanata`> I'm using ERC Version 4.0 $Revision: 1.560 $ with
+   4096	00:20 *** ChanServ (ChanServ@services.) has changed mode for #emacs to +o
+   4096	00:20 *** kensanata (~user@dclient217-162-140-181.hispeed.ch) has quit:
+   4096	00:20 *** kensanata` (~user@dclient217-162-140-181.hispeed.ch) is now
+   4096	00:20 <Han> Lukhas,
+   4096	00:20 <Riastradh> I'm using irssi version 0.8.6 with MkLinux
+   4096	00:20 <TerryP> Lukhas: if we 'forked', what do you mean?
+   4096	00:20 <TerryP> there's no base-code from mp3player, although it does some
+   4096	00:20 <anaran> kensanata: and my erc quits when *I* tell it to :-)
+   4096	00:21 *** e1f` (~user@pascal.ee.ryerson.ca) has quit: "going to watch
+   4096	00:22 *** humasect (~humasect@h24-64-72-196.rd.shawcable.net) has joined
+   4096	00:22 <Lukhas> TerryP: i mean, mp3player was doing that already
+   4096	00:22 <TerryP> Lukhas: yes, but have you looked at the way it does it? :)
+   4096	00:22 <anaran> well, that was a long relaxing day; good night all!
+   4096	00:23 <Lukhas> not really, i'm not an elisp fan, especially if i didn't
+   4096	00:23 <Lukhas> so you give up mp3player ?
+   4096	00:23 <TerryP> every time something had to be patched someone got a
+   4096	00:23 <humasect> ;_;
+   4096	00:23 <humasect> aresnioaresno
+   4096	00:24 *** You have left channel #emacs
+   4096	00:24 <TerryP> i'm not sure yet :) depends on how far we can get this
+   4096	00:59 <dothebart> k.
+   4096	    104 (Connection reset by peer)
+   4096	2.0.38-osfmach3!
+   4096	20:08 <anaran> don
+   4096	20:50 *** -
+   4096	21.3.50.1!
+   4096	23:08 <forcer> yep
+   4096	23:29 <zeDek> :)
+   4096	23:32 <lawrence> }
+   4096	    Connection timed out
+   4096	Emacs 21.3.50.42 (i686-pc-linux-gnu)!
+   4096	Emacs 22.0.0.1!
+   4096	Lukhas :)
+   4096	    M-m -- Keybinding of the day.
+   4096	    Remote closed the connection
+   4096	    delYsid
+   4096	emms-playlist
+   4096	emms-playlist-current-changed-hook. source where it used to be and
+   4096	    error: 60 (Operation timed out)
+   4096	gnus-secondary-select-methods for nnml and nnfolder
+   4096	gnus-summary-respool-article and
+   4096	headache, and the next time it got worse
+   4096	http://www.daimi.au.dk/~terryp/emms-321.el
+   4096	http://www.xs4all.nl/~hanb/software/patch-scr_Makefile_in
+   4096	    known as kensanata
+   4096	on the net
+   4096	qu do u?
+   4096	question :)

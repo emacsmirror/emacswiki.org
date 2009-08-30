@@ -1,0 +1,80 @@
+This page is supposed to help you expand your collection of schemas for use in NxmlMode.
+
+== Why Schemas? ==
+Adding schemas to NxmlMode helps you turn a generic xml editor into one specific for your document, including content completion and validation.
+
+== Acquiring Schemas ==
+For standardized document formats, some kind of validation documents almost always exist.  Unfortunately, not all provide the RNC (RelaxNG compact syntax) schemas required by NxmlMode.  Luckily, however, some conversion tools are available. [http://relaxng.org/#conversion]
+
+== Applying Schemas ==
+The variable rng-schema-locating-files points to a list of XML files specifying when to use which schema based on file name or namespace.
+
+[new]
+Is it possible to have more then one schema per file?  For instance, can I have a buffer validate against an xhtml, jstl and svg schema?
+--JonathanArkell
+
+[new]
+Look at NxhtmlMode, which makes it possible.
+--AadityaSood
+
+[new]
+Thanks Aaditya for your trust in NxhtmlMode, but unfortunately it can not do this.
+At least I myself can not see any way to do this. 
+What it can do is handle multiple major modes in a buffer with MuMaMo.
+The XML parser however (which comes from NxmlMode) always handles the whole buffer.
+And it uses the same DTD (schema) for the whole file.
+
+But I must say I do not understand what Jonathan wants to do.
+-- LennartBorgman
+
+[new]
+It seems that what jonathan is asking, if I understand correctly, is this: and single XML file normally has a single schema, often defined by using a namespace declaration on the root tag.  But XML allows you to have certain elements be parsed according to a different schema by having a namespace declaration attached to it,  just as the root node did. This allows for such fun things as embedding an SVG directly into an XHTML page just my using an svg element, and attaching a namespace declaration to it.
+
+As I see it, this seems to be beyond the scope of nxhtml-mode, and should be handled by nxml-mode instead.  personally, I would be very happy to see this implemented.
+--Matias
+
+nxml-mode already support multiple schemas for an XML file (via namespaces as Matias describes above) --VagnJohansen
+
+
+== Schema Collection ==
+As finding and converting schemas can be a pain, here is a small collection.  Everybody please amend it.  Currently included are [http://ant.apache.org/ Ant], [http://www.w3.org/TR/SVG/ SVG], [http://www.web3d.org/x3d/ X3D] and [http://www.w3.org/TR/xsl/ XSL-FO] (thanks to MikeHostetler).
+-- [[nschum]]
+
+[http://www.wikiupload.com/download_page.php?id=37691 version 2007-03-28]
+
+To add the schemas, add this to your .emacs:
+
+  (push "~/path/to/schemas.xml" rng-schema-locating-files-default)
+  (push (cons (concat "\\." (regexp-opt '("svg" "x3d") t)
+                      "\\'") 'nxml-mode) auto-mode-alist)
+
+Grab my [http://www.box.net/shared/px05ivmdqc fo-schemas.tar.bz2] file.  This has the schema for [http://www.w3.org/TR/xsl/ xsl-fo].  I may have more, I will look later. -- MikeHostetler
+[new]
+I think you may have uploaded the wrong file ... I can't find anything new in it. -- [[nschum]]
+[new]
+Oops.  Link is fixed now -- MikeHostetler
+[new]
+Great.  I've merged the archives
+-- [[nschum]]
+
+[new]
+I cannot download schemas.xml from WikiUpload. I instead get a text file, with the error //<b>Fatal error</b>:  Call to undefined function noImage() in <b>/home/vhosts/www.wikiupload.com/website/download_page.php</b> on line <b>91</b>//
+-- BruceIngalls
+
+[new]
+I cannot download schemas.xml from WikiUpload. I get the same file as above.
+-- DavidRoss
+
+[new]
+I fixed the link.
+-- [[nschum]]
+
+[new]
+Please upload the files somewhere else. The linke to !WikiUpload is broken again
+
+[new:Unhammer:2009-08-07 16:47 UTC]
+Hi, I've uploaded some [http://apertium.org Apertium]-rng files if
+you want to include them:
+[http://www.student.uib.no/~kun041/doc/dix.rng dix.rng], [http://www.student.uib.no/~kun041/doc/modes.rng modes.rng], [http://www.student.uib.no/~kun041/doc/transfer.rng transfer.rng]
+----
+CategoryXML

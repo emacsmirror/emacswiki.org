@@ -1,0 +1,40 @@
+Buffer truncating is not enabled by default. To enable it use M-x customize-variable RET erc-modules.
+
+Some settings for your ~/.emacs or ERC init file:
+
+    ;; change this to what you like.. default is 30,000
+    ;; (setq erc-max-buffer-size 30000)      
+    (setq erc-truncate-buffer-on-save t)
+
+From then on, 'M-x erc-truncate-buffer' in an ERC buffer will truncate the buffer down to 30000 characters. 
+
+Next, if you want truncation to happen automatically, add this to ~/.emacs:
+
+    (defvar erc-insert-post-hook)
+    (add-hook 'erc-insert-post-hook
+              'erc-truncate-buffer)
+    (setq erc-truncate-buffer-on-save t)
+
+If you just want to flush the buffer (ie. erase the contents),
+here's a /FLUSH command for your:
+
+    (defun erc-cmd-FLUSH (&rest ignore)
+      "Erase the current buffer."
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (message "Flushed contents of channel")
+        t))
+
+Note that with Emacs 21.1 under Windows XP, use of the /flush command, above,  makes the emacs.exe process use EVEN MORE memory than before (approximately 6 MB per invocation of the /flush command)-- contrary to logic. -e1f
+
+Maybe we need to prevent Undo stuff. -- AlexSchroeder
+
+Adding (buffer-disable-undo) before (erase-buffer) and (buffer-enable-undo) after should fix it for this function -- HenrikEnberg
+
+Is this the solution to the problem of erc log files growing humongous, which I have only experienced lately?
+I am still not done analysing the unhandyly sized um-hundred MB log files for the possible culprit.
+However, as suggested by ErcLogFileGrownHumongous, there does not seem to be much duplication in the log files except for the channel creation lines.
+Thanks anyone for any help! -- AdrianAichner
+
+----
+[[ERC]]

@@ -1,0 +1,55 @@
+[[ja:ディレクトリ]]
+Click the heading to search for all pages related to manipulating files and directories.
+
+* '''DiredMode''' is the standard Emacs mode for manipulating files and directories -- the Emacs ''file manager''. 
+* DiredPlus -- Dired extensions.
+* FileSets -- persistent sets of files under given directories
+* Norton Commander and Midnight Commander clones written for emacs:
+** MidnightCommanderMode
+** NortonCommanderMode
+** [[Sunrise Commander]] -- also based on dired, but with many more features than mc.el and heavily influenced by the Orthodox File Manager standard.
+* Editing directories of images with thumbnails
+** ThumbsMode -- navigate through image files with thumbnail preview pages
+** [[Tumme]] -- navigate through image files, in dired, with thumbnail previews and more
+* DiMode -- a simple directory editor for Emacs
+* [[Nav]] -- a lightweight solution for Emacs users who want something like TextMate's file browser, or the Eclipse project view [http://code.google.com/p/emacs-nav/]
+* `M-x dired-virtual' with DiredX.
+* [[Icicles]] -- access files and directories by [[completion]] and cycling. Act on (e.g. delete) files whose names match a regexp -- selected matching files or all of them.
+* LsLisp -- `ls' implemented in Emacs Lisp
+* Use [[Eshell]] to read directories: Customize variable `eshell-ls-use-in-dired'
+* `eshell-ls-use-in-dired' -- change em-ls.el to narrow the listing
+
+              ;; starting at line 459:
+		(format
+		 "%s"
+		 (or (nth 8 attrs) "??????????")
+	      ;; (or (nth 1 attrs) 0)
+	      ;; (or (let ((user (nth 2 attrs)))
+	      ;;       (and (not numeric-uid-gid)
+	      ;; 			user
+	      ;; 			(eshell-substring
+	      ;; 			 (if (numberp user)
+	      ;; 				 (user-login-name user)
+	      ;; 			   user) 8)))
+	      ;;     (nth 2 attrs)
+	      ;;     "")
+	      ;; (or (let ((group (nth 3 attrs)))
+	      ;;       (and (not numeric-uid-gid)
+	      ;; 	    group
+	      ;; 	    (eshell-substring
+	      ;; 	     (if (numberp group)
+	      ;; 		 (eshell-group-name group)
+	      ;; 	       group) 8)))
+	      ;;     (nth 3 attrs)
+	      ;;     "")
+		 )
+* SystemTrash - Set up emacs to use the same trash can as GNOME and KDE (the freedesktop.org trash spec)
+----
+[new]
+Some of these packages, including lslisp, do not seem to be in xemacs
+   21.4.17, at least.  those of us trying to find a way to do
+   ##--time-style = iso## in xemacs find ourselves stymied by the way the
+   dired code handles switches.  is xemacs on the way out, at least
+   for dired?  -- gambarimasu
+
+

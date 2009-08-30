@@ -1,0 +1,77 @@
+The following function and keybinding allow you to switch to the next
+ERC buffer using `C-c e'.  If no ERC buffers exist, or ERC has not
+even been loaded yet, then `erc-select' is called to start a new
+connection.
+
+    (defun switch-to-irc ()
+      "Switch to an IRC buffer, or run `erc-select'.
+    When called repeatedly, cycle through the buffers."
+      (interactive)
+      (let ((buffers (and (fboundp 'erc-buffer-list)
+                          (erc-buffer-list))))
+        (when (eq (current-buffer) (car buffers))
+          (bury-buffer)
+          (setq buffers (cdr buffers)))
+        (if buffers
+            (switch-to-buffer (car buffers))
+          (call-interactively 'erc-select))))
+ 
+    (global-set-key (kbd "C-c e") 'switch-to-irc)
+
+Note that when you use ErcChannelTracking, You can use `C-c C-SPC' to
+switch to the recentmost active buffer.
+
+
+Another approach, to SEE some erc buffers, and C-g to 'land' in one of them:
+
+  (defun erc-switch-to-buffer ()
+    "read events(chars), and switch to appropriate erc buffer"
+    (interactive)
+    (let ((buffers (erc-channel-list nil))
+          buffer
+          (index))
+      ;;  lookup-key 
+      (while (let ((char (char-to-string (read-event "channel #: ")))
+                   )
+               (setq buffer
+                     (cond ((string-match "[a-z]" char)
+                            ;; letters -> ??
+                            (aget '(("e" . "#emacs")
+                                    ("s" . "#scheme")
+                                    ("g" . "#gentoo")
+                                    ("p" . "#postgresql")
+                                    ("x" . "#xfree86-devel")
+                                    ("c" . "#scsh")
+                                    ("f" . "#sawfish")
+                                    ("z" . "#zsh")
+                                    )
+                                  char 't))
+                           ((string-match "[0-9]" char)
+                            (nth (string-to-int char) buffers)))))
+        (switch-to-buffer buffer))))
+ 
+   (define-key erc-mode-map [(meta ?g)] 'erc-switch-to-buffer)
+
+
+
+Here's a little hack to the first approach, it sorts out all server buffers, so switching is limited between channels and query windows. I use this because I rarely want to see the server buffers, unless a /notice is waiting for me, in which case I can just use `C-c C-<space>' to get there. -- TerryPatcher
+
+    (defun erc-global-get-channel-buffer-list ()
+       "Return a list of the ERC-channel-buffers"
+       (erc-buffer-filter '(lambda() (if (string-match "^[^#].*:\\([0-9]*\\|ircd\\)$" (buffer-name (current-buffer))) nil t)) nil))
+ 
+    (defun switch-to-irc ()
+          "Switch to an IRC channel buffer, or run `erc-select'.
+        When called repeatedly, cycle through the buffers."
+          (interactive)
+          (let ((buffers (erc-global-get-channel-buffer-list)))
+            (when (eq (current-buffer) (car buffers))
+              (bury-buffer)
+              (setq buffers (cdr buffers)))
+            (if buffers
+                (switch-to-buffer (car buffers))
+              (call-interactively 'erc-select))))
+
+
+----
+[[ERC]]

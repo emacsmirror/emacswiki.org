@@ -1,0 +1,134 @@
+;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Tastenkombinationen einheitlich in Tabelle einfügen.
+;; Der Default Startup-Screen ist in fancy-splash... in
+;; /usr/share/emacs/21.4/lisp/startup.el
+
+(defvar sr-key-table (concat
+                      "\n\n\n"
+                      (propertize
+"                                                  "
+'face
+'(:weight bold :background "RosyBrown1" :foreground "black")) "\n"
+                      (propertize
+"                Gesetzte Tasten                   "
+'face
+'(:weight bold :background "RosyBrown1" :foreground "black")) "\n"
+                      (propertize
+"--------------------------------------------------"
+'face
+'(:weight bold :background "RosyBrown1" :foreground "black"))
+)
+  "Alle meine Tastenkürzel zur Ausgabe speichern.")
+
+(defvar sr-bg-toggle nil
+  "Wechselfarbe")
+
+
+(defun sr-note-key(key-string description)
+  "Zur Ausgabe notieren..."
+  (if (not sr-bg-toggle)
+      (setq sr-bg-toggle t)
+    (setq sr-bg-toggle nil))
+  (if (not sr-bg-toggle)
+      (setq sr-key-table
+            (concat sr-key-table "\n"
+                    (propertize
+                     (concat " " key-string
+                             (make-string (- 16 (length key-string)) ? )
+                             " "
+                             description
+                             (make-string (- 32 (length description)) ? ))
+                     'face
+                     '( :weight bold :background "WhiteSmoke" :foreground "black"))))
+    (setq sr-key-table
+          (concat sr-key-table "\n"
+                  (propertize
+                   (concat " " key-string
+                           (make-string (- 16 (length key-string)) ? )
+                           " "
+                           description
+                           (make-string (- 32 (length description)) ? ))
+                   'face
+                   '( :weight bold :background "gray90" :foreground "black"))))))
+
+
+;; Usage:
+;; (sr-set-key sr-html-map "w" 'function "Beschreibung")
+
+(defun sr-set-key(map prefix-key key-string function description)
+  "Tastenkombinationen setzen, und in die Tabelle zur Ausgabe eintragen lassen."
+  (define-key map  key-string function)
+  (setq key-string (concat prefix-key " " key-string))
+  (sr-note-key key-string description)
+)
+
+
+(defun sr-set-global-key(key-vector key-string function description)
+  "Tasten in global-map setzen (prefix H-h)"
+  (global-set-key key-vector function)
+  (sr-note-key key-string description))
+
+
+(defun sr-kill-startup-buffer(&optional &rest rest)
+  "Startup-Buffer bei erster Änderung entfernen."
+  (interactive "i")
+  (let ((buf (get-buffer "sr-info")))
+    (when (bufferp buf)
+      (with-current-buffer buf
+        (set-buffer-modified-p nil)
+        (kill-buffer buf))))
+  (top-level)) ; raus aus minibuffer, alle edits verwerfen!
+
+
+(defun sr-display-keys()
+  "Meine Tastenkürzel (ggf. als Splashscren)anzeigen"
+  (interactive)
+  (get-buffer-create "sr-info")
+  (switch-to-buffer "sr-info" t)
+  (with-current-buffer (get-buffer "sr-info")
+    (setq left-margin-width 20)         ; Ränder sind immer Buffer-lokal
+    (set-window-buffer (selected-window) "sr-info")
+    (let ((img (create-image "~/emacs/me.png"))
+          (map (make-sparse-keymap)))
+      (use-local-map map)
+      ; (define-key map [t]) würde auf jedes Mausevent reagieren.
+      (define-key map [mouse-1] 'sr-kill-startup-buffer) ; auf Klick reagieren.
+      (define-key map [mouse-3] 'sr-kill-startup-buffer) ; auf Klick reagieren.
+      (define-key map [mouse-2] 'sr-kill-startup-buffer) ; auf Klick reagieren.
+      (define-key map [(control meta ?k)] 'sr-kill-startup-buffer)
+      (setq cursor-type nil             ; Kein Cursor
+            display-hourglass nil
+            buffer-undo-list t)         ; Kein Undo aufnehmen.
+      (when (and window-system img)
+        (put-image img 1 " " 'left-margin))
+    (insert (concat "  " (propertize "Willkommen auf Sebastians emacs!" 'face
+            '( variable-pitch :weight bold :height 1.4 :foreground "DeepPink"))))
+    (insert sr-key-table)
+    (insert "\n")
+    (insert (propertize "--------------------------------------------------"
+                        'face
+                        '( :weight bold :background "RosyBrown1" :foreground "black")))
+    (insert "\n\n   Press Key Or Click To Get Rid Of This Buffer\n\n\n")
+    (insert "                        ")
+    (goto-char (point-min))
+    (redraw-display)                    ; sonst kein Bild im Rand.
+    (set-buffer-modified-p nil)
+    (make-local-hook 'after-change-functions)
+    (add-to-list 'after-change-functions 'sr-kill-startup-buffer)
+    )))
+
+;; Als Splash-Screen beim Start anzeigen?
+;; (add-hook 'window-setup-hook 'sr-display-keys t)
+;; Original Splash-Screen und Copyright nicht anzeigen:
+(setq inhibit-startup-message t)
+
+;; Passiert normalerweise nach dem splashen in
+;; /usr/share/emacs/21.4/lisp/startup.el :
+(with-current-buffer (get-buffer "*scratch*")
+  (erase-buffer)
+  (when initial-scratch-message
+    (insert initial-scratch-message))
+  (set-buffer-modified-p nil))

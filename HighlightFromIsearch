@@ -1,0 +1,20 @@
+Assume you're using `C-s' to run IncrementalSearch, and you want to keep all your matches highlighted after searching. There are at least two ways to do this:
+
+* Customize option `lazy-highlight-cleanup' to `nil'. When you end Isearch, its normal highlighting remains. You can later remove this highlighting using command `lazy-highlight-cleanup'.
+
+* Use the code below to highlight your Isearch hits only on demand, when you hit a particular key (e.g. `C-TAB') during Isearch. You can remove this highlighting using `C-x w r' (`unhighlight-regexp').  This uses command `highlight-phrase' from HiLock -- see HighlightTemporarily.
+
+
+      (defun isearch-highlight-phrase ()
+        "Invoke `highligh-phrase' from within isearch."
+        (interactive)
+        (let ((case-fold-search isearch-case-fold-search))
+          (highlight-phrase (if isearch-regexp
+                                isearch-string
+                              (regexp-quote isearch-string)))))
+
+      (define-key isearch-mode-map (kbd "C-<tab>") 'isearch-highlight-phrase)
+
+
+----
+CategorySearchAndReplace

@@ -1,0 +1,9 @@
+In 1981, RichardStallman authored a paper about Emacs ([::TheEmacsPaper]) called ''EMACS the extensible, customizable self-documenting display editor'' as  MitAiLab memo number 519a.  The thirteenth edition of the EmacsManual (ISBN 1-882114-06-X) suggested that readers write the Publications Department of the MitAiLab to receive a copy of the memo.  The memo is available online as
+
+* [ftp://publications.ai.mit.edu/classic-hits/AIM-519A.ps PostScript],
+* [ftp://publications.ai.mit.edu/ai-publications/pdf/AIM-519A.pdf PDF] or
+* [http://www.gnu.org/software/emacs/emacs-paper.html HTML], and as
+* [http://portal.acm.org/citation.cfm?id=806466 PDF from a later print publication].
+
+----
+CategoryHistory

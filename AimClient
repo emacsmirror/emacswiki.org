@@ -1,0 +1,54 @@
+[::TNT]
+is a client for AIM.
+
+* http://tnt.sourceforge.net/
+
+AOL's 'AIM' service may be accessed with either:
+
+Oscar - This protocol has never been "officially" documented.  It's
+the protocol AOL uses to provide "enhanced" functionality through
+their native client.  Any cloned clients that use Oscar are reverse
+engineering the protocol.  AOL has never stated that the protocol was
+a set standard and have periodically changed it just to keep everyone
+on their toes.
+
+TOC was released by AOL to provide a supposed 'open' standard.  Their
+Java client uses it.  TOC does not have as many features as Oscar.
+It's missing things like file transfers, buddy icons, and some of the
+"fancy" stuff like that.
+
+There is some clouded history around AIM.  For some period of time,
+AOL was agressively trying to keep AIM clones from working.  In
+addition (or possibly related), AIM has some availability problems.
+It's not clear if this is problems with the TOC protocol, the reverse
+engineering of the Oscar protocol, stability problems with the AIM
+servers themselves, or some combination thereof.  It's certainly true
+that AIM has had serious availability problems in the past.  It still
+has some noticeable downtime even now (as of 08 Dec 2002).
+
+However, for the most part, I (DougAlcorn) find TNT to be stable and
+usable.  I notice TNT disconnecting and reconnecting.  Sometimes (one
+a month or so) it has problems reconnecting but then finally does.  I
+wouldn't let AIM's stability problems stand in the way of using TNT.
+I find TNT to be the most convenient InstantMessaging solution around.
+
+----
+
+Does anybody know how to break trough the firewall using TNT?
+
+: AFAIK, all AIM clients require you to be able to make outgoing connections on port 5190.  I also have port 5050 open for outgoing connections (although I can't remember why).  I'm not sure you can connect to AIM through a proxy.  If your firewall is blocking outgoing connections on those ports then I think you are SOL.  I think that the TOC protocol doesn't support connection through proxy although the OSCAR protocol may.  :-/  -- DougAlcorn
+
+: In theory you could use ssh to tunnel through an open port to another machine off your network and have packets go back and forth through the tunnel (i.e. through port 80 -- web browsers).  In practice, tunneling like this could get complicated -- especially if you don't have an extra box.  man ssh for more info.  
+
+: In practice, assuming you have another box off site, you would probably be best off sshing into another box with emacs and TNT installed.  (through port 80 -- web browsers -- if you can't break out of the firewall any other way).  This has the added benefit of completely encrypting all conversations you have on AIM so any port sniffers couldn't read what you type.  The only bad part about this is if you need to ssh through port 80 and the server you're using logs suspicious outgoing packets you might get flagged and the game would be up.  (I'm assuming you want a way to AIM at work).   -- DanAnderson
+
+----
+
+Here's to wishing for Yahoo! Instant Messaging protocol support! -- DougAlcorn
+
+----
+
+We just (finally) released a new version of TNT.   Version 2.5 has lots of improvements, new features, and code cleanup.  Check it out at http://tnt.sourceforge.net.  -- ScottEvans
+
+----
+CategoryChatClient

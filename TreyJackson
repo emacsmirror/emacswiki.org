@@ -1,0 +1,7 @@
+[::bigfaceworm] Hi, my name is Trey Jackson, and I use Emacs.
+
+Learned Emacs in college in 1992, but really began to appreciate it in grad school, where I began reading email and reading usenet (in addition to coding).  Since then I've grown to teaching some classes at work and generally being the resident Emacs guru.  I currently use Emacs for reading mail (Gnus), usenet (Gnus), IM (jabber), development (Tcl, *inferior-tcl*, wish2wish), and general Unix shell interaction.
+
+I recently started a programming blog http://trey-jackson.blogspot.com where I post an Emacs tip every week.
+
+Way back when I first started using Emacs, I wrote my first package [[sig-quote]].

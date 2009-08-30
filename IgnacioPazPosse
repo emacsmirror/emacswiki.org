@@ -1,0 +1,358 @@
+I was exposed to emacs relatively recently but I'm hockeed already trying to learn and get as much as possible from this fantastic editor. 
+I use emacs both in a unix and windows environment so I come here frecuently finding ways to customize it to my taste
+
+[new:DrewAdams:2008-03-06 15:11 UTC]
+Welcome to the wiki. I moved your keyboard quit code to a new page, IgnacioKeyboardQuit. Page MiniBuffer is a glossary page (see the CategoryGlossary at the page bottom), meant only to define "minibuffer". -- DrewAdams
+
+[new]
+Thank you Drew.
+
+Here are some of my tweaking of functions, my lisp knowledge is rudimentary at best.
+
+{{{
+;;;=========================================================================
+;;; Some of the functions I put together to improve my life editing in emacs
+;;;=========================================================================
+
+;; To ease the edition of code. It allows me to indent (or unindent) several lines back and forth pressing the tab key 
+;; (or the Shift and tab key)
+
+(defun indent-block()
+	(interactive)
+	(shift-region my-tab-width)
+	(setq deactivate-mark nil))
+
+
+(defun unindent-block()
+	(interactive)
+	(shift-region -2)
+	(setq deactivate-mark nil))
+
+
+(defun shift-region(numcols)
+	; my trick to expand the region to the beginning and end of the area selected
+	; a convenient feature to which I was used, from the Dreamweaver editor
+	(if (< (point)(mark))
+			(if (not(bolp))    (progn (beginning-of-line)(exchange-point-and-mark) (end-of-line)))
+		(progn (end-of-line)(exchange-point-and-mark)(beginning-of-line)))
+	(setq region-start (region-beginning))
+	(setq region-finish (region-end))
+	(save-excursion
+		(if (< (point) (mark)) (exchange-point-and-mark))
+		(let ((save-mark (mark)))
+			(indent-rigidly region-start region-finish numcols))))
+
+
+(defun indent-or-complete () 
+	"Indent region selected as a block; if no selection present either indent according to mode,
+ or expand the word preceding point. "
+	(interactive)
+	(if  mark-active
+			(indent-block)
+		(if (looking-at "\\>")
+				(hippie-expand nil)
+			(insert "\t"))))
+
+(defun my-unindent()
+	"Unindent line, or block if it's a region selected"
+	(interactive)
+	(if mark-active
+			(unindent-block)
+		(if(not(bolp))(delete-backward-char 2))))
+
+
+(add-hook 'find-file-hooks (function (lambda ()
+																			 (local-set-key (kbd "<tab>") 'indent-or-complete))))
+
+(define-key global-map "\t" 'indent-or-complete) ;; Now remember to force tab (C-q-tab) if you want to simply insert a tab
+(define-key global-map [S-tab] 'my-unindent)
+
+;; I hate when emacs makes changes I can't control in regards of the indentation
+;; took this trick from http://www.moxleystratton.com/article/dot-emacs
+(defun indent-according-to-mode () ())
+
+;; Necessary to not mess up my indentation with the one that org-mode uses to cycle visibility of lists
+(add-hook 'find-file-hooks (function (lambda ()
+(unless (eq major-mode 'org-mode)
+ (local-set-key (kbd "<tab>") 'indent-or-complete)))))
+
+(if (not (eq  major-mode 'org-mode))
+		(progn
+			(define-key global-map "\t" 'indent-or-complete) ;; with this you have to force tab (C-q-tab) to insert a tab after a word
+			(define-key global-map [S-tab] 'my-unindent))
+	(defun indent-or-complete() ()))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Whenever I split a windows get the cursor moved to the new one
+;; 
+
+(defadvice split-window-vertically
+    (after my-window-splitting-advice first () activate)
+    (other-window 1))
+
+(defadvice split-window-horizontally
+    (after my-window-splitting-advice first () activate)
+    (other-window 1))
+
+;; For the iswitchb package
+;; 
+
+(defun my-iswitchb-select()
+	"Jump to buffer without having to hit 'RET' key or C-j. The binding to C-2 is more ergonomic"
+	(interactive)
+	(if (window-minibuffer-p (selected-window))
+			(iswitchb-select-buffer-text)))
+
+;; Jump to buffer without having to hit 'RET' key or C-j. The binding to C-2 feels more ergonomic.
+(define-key global-map (kbd "C-2") 'my-iswitchb-select)
+
+
+(defun my-iswitchb-close()
+ "Open iswitchb or, if in minibuffer go to next match. Handy way to cycle through the ring."
+ (interactive)
+ (if (window-minibuffer-p (selected-window))
+    (keyboard-escape-quit)))
+
+(define-key global-map (kbd "C-`") 'my-iswitchb-close)
+(define-key iswitchb-mode-map  (kbd "C-`") 'my-iswitchb-close)
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun my-occur (&optional arg)
+  "Make sure to always put occur in a vertical split, into a narrower buffer at the side.
+I didn't like the default horizontal split, nor the way it messes up the arrangement of windows in the frame or 
+the way in which the standard way uses a neighbor window."
+  (interactive "P")
+  (window-configuration-to-register ?y) ; store whatever frame configuration we are currently in
+  (occur (read-from-minibuffer "Regexp: "))
+  (if (occur-check-existence)
+      (progn
+        (delete-other-windows)
+        (split-window-horizontally)
+        (enlarge-window-horizontally -10)
+        (set-cursor-color "dark violet")))
+  (occur-proceed-accordingly))
+
+(defun occur-mode-quit ()
+  "Quit and close occur window. I want to press 'q' and leave things as they were before in regard of the split of windows in the frame.
+This is the equivalent of pressing C-x 0 and reset windows in the frame, in whatever layout they were,
+plus jumping to the latest position of the cursor which might have been changed by using the links out
+of any of the matches found in occur."
+  (interactive)
+  (switch-to-buffer "*Occur*")
+   (other-window 1)             ;; go to the main window
+  (point-to-register ?1)        ;; store the latest cursor position
+  (switch-to-buffer "*Occur*")  ;; back to the occur window
+  (kill-buffer "*Occur*")       ;; delete it
+  (jump-to-register ?y)         ;; reset the original frame layout
+  (set-cursor-color "red")      ;; reset cursor color
+  (register-to-point ?1))       ;; re-position cursor
+
+
+(defun occur-proceed-accordingly ()
+  "Switch to occur buffer or prevent opening of the occur window if no matches occured."
+  (interactive "P")
+  (if (not(get-buffer "*Occur*"))
+      (message "There are no results.")
+    (switch-to-buffer "*Occur*")))
+
+;; This looks like a duplications of the previous (may be setting a variable, would be more elegant?), but it works!
+(defun occur-check-existence()
+  "Signal the existence of an occur buffer depending on the number of matches."
+  (interactive)
+  (if (not(get-buffer "*Occur*"))
+      nil
+    t))
+
+(define-key global-map (kbd "C-S-o") 'my-occur)
+
+(define-key occur-mode-map (kbd "q") 'occur-mode-quit)
+(define-key occur-mode-map (kbd "C-g") 'occur-mode-quit)
+(define-key occur-mode-map (kbd "C-RET") 'occur-mode-goto-occurrence-other-window)
+(define-key occur-mode-map (kbd "C-<up>") 'occur-mode-goto-occurrence-other-window)
+(define-key occur-mode-map (kbd "RET") 'occur-mode-display-occurrence)
+(define-key occur-mode-map (kbd "p") 'previous-line)
+(define-key occur-mode-map (kbd "n") 'next-line)
+
+
+;; a way to resize windows in frame using keyboards
+(define-key global-map (kbd "C-M-<left>") 'enlarge-window-horizontally)
+(define-key global-map (kbd "C-M-<right>") 'enlarge-window-horizontally)
+(define-key global-map (kbd "C-M-<up>") 'enlarge-window)
+(define-key global-map (kbd "C-M-<down>") 'enlarge-window)
+
+ (if (window-minibuffer-p (selected-window))
+    (keyboard-escape-quit)))
+
+(define-key global-map (kbd "C-`") 'my-iswitchb-close)
+(define-key iswitchb-mode-map  (kbd "C-`") 'my-iswitchb-close)
+
+(defun my-iswitchb-select()
+ "Jump to buffer without having to hit 'RET' key or C-j. The binding to C-2 is more ergonomic"
+ (interactive)
+ (if (window-minibuffer-p (selected-window))
+    (iswitchb-select-buffer-text)
+    ))
+
+(define-key global-map (kbd "C-2") 'my-iswitchb-select)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun toggle-windows-split()
+  "Switch back and forth between one window and whatever split of windows we might have in the frame.
+The idea is to maximize the current buffer, while being able to go back to the previous split of windows in the frame
+simply by calling this command again."
+  (interactive)
+  (if (not(window-minibuffer-p (selected-window)))
+      (progn
+        (if (<  1 (count-windows))
+            (progn
+              (window-configuration-to-register ?u)
+              (delete-other-windows))
+          (jump-to-register ?u))))
+  (my-iswitchb-close))
+
+
+(define-key global-map (kbd "C-`") 'toggle-windows-split)
+(define-key global-map (kbd "C-~") 'toggle-windows-split)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; To be able to move quickly between windows in the frame
+;; 
+(global-set-key [(control tab)]  'other-window)
+(global-set-key [(shift control tab)]  'other-window-backward)
+
+;; Window shifting. C-x-o lets us go forward a window (or several). This
+;; one lets us go back one or more windows. From Glickstein.
+(defun other-window-backward (&optional n)
+  "Select previous Nth window."
+  (interactive "P")
+  (other-window (- (prefix-numeric-value n))))
+
+;; 
+
+(defun is-buffer-visible(buff-name)
+	"Returns true if the given buffer is inside window-list, that is the list of visible windows (and if also we have the frame split with 2 or more windows) "
+	(interactive)
+	(if (and (> (count-windows) 1)(string-match buff-name (message "%s" (window-list))))
+			(message "")
+		(progn 
+			(message "")
+			nil) ))
+
+;; (defun move-to-shell()
+;;   "Jumps to shell, creating it if it doesn't exit. Otherwise switch to the buffer named *shell* 
+;; respecting whatever windows split we have (stored in ?u in my case, -see function 'toggle-windows-split'"
+;;   (interactive)
+;;   (if(not(string-match "\*shell\*.*" (buffer-name)))
+;;       (progn
+;;         (if (get-buffer "*shell*") ;; if shell exists in the buffer list
+;;           (progn
+;;           (if(and(= 1 (count-windows))(get-register ?u))
+;;             (jump-to-register ?u))
+;;             (pop-to-buffer "*shell*" t ))
+;;          (shell)))))
+
+
+(defun move-to-shell ()
+  "Jump straigh to shell. To the  window where it exist if it visible or into the calling window otherwise. 
+ It creates the shell buffer if that doesn't exist yet"
+  (interactive)
+  (let ((buf "\*shell\*"))
+(if (not (string-match buf (buffer-name)))
+    (progn
+      (if (get-buffer buf ) ; if buffer shell exists in the buffer list
+          (progn
+            (if (is-buffer-visible buf)
+                (switch-to-buffer-other-window buf)
+              (iswitchb-visit-buffer buf))
+            (end-of-buffer))
+        (shell))))))
+
+(global-set-key [f4] 'move-to-shell)
+
+
+
+(defun iswitchb ()
+  "Switch to buffer matching a substring. 
+ I slightly changed it, now will jump to other window in case the selected buffer is present in the list of visible windows. This
+ helps quite a lot when I'm working remotely with emacs from a terminal. (since the redrawing of buffers is sort of costly I have the frame split in several windows and can easily switch around the open buffers."
+
+  (let
+      (prompt buf)
+
+    (setq prompt (format "iswitch "))
+
+    (setq buf (iswitchb-read-buffer prompt))
+
+    ;;(message "chosen text %s" iswitchb-final-text)
+    ;; Choose the buffer name: either the text typed in, or the head
+    ;; of the list of matches
+
+    (cond ( (eq iswitchb-exit 'findfile)
+      (call-interactively 'find-file))
+
+    (t
+     ;; View the buffer
+     ;;(message "go to buf %s" buf)
+     ;; Check buf is non-nil.
+     (if buf
+         (if (get-buffer buf)
+       ;; buffer exists, so view it and then exit
+       ;; here's nacho modification. I changed the funcion so that will jump to the other window, provided that the buffer was in the list of visible windows
+       (if (is-buffer-visible buf)
+         (switch-to-buffer-other-window buf)
+        (iswitchb-visit-buffer buf))
+     ;; else buffer doesn't exist
+     (iswitchb-possible-new-buffer buf)))
+     ))))
+;; 
+(defun my-ttree(&optional base)
+  "Inserts (and optionally runs) a sequence of two commands to clean up htdocs directory and run the ttree command 
+(ttree is a script to process entire directory trees containing template files, it's the equivalent of 'make' for the Template Toolkit)"
+  (interactive "p")
+  (let(who)
+    (setq who (shell-command-to-string "whoami | tr -d '\\n'"))
+    (insert  (concat "rm -Rf /home/"who"/src/ShimReport/trunk/t/htdocs/* && ttree -f /home/"who"/src/ShimReport/trunk/t/conf/ttree_local")))
+  (if base(comint-send-input)))
+
+(global-set-key [C-M-$] 'my-ttree)
+
+(defun run-ttree()
+  "Run my-ttree (which prepares to execute a ttree script after cleaning the destination folder, 'htdocs', in this case).
+The function briefly switches to a shell in other window to perform its magic there. It will open the split of windows that we might have 
+and either use the shell (if it exists), or create a shell in one of the available windows). 
+If we are working in a single window without a frame-configuration stored, this function adds another window for the shell. 
+It also gets the focus conveniently returned to the original buffer where we were working at."
+  (interactive)
+  (let (come-back)
+    (progn
+      (if(not(string-match "\*shell\*.*" (buffer-name)))
+          (progn
+            (setq come-back (buffer-name))
+            (if(and(= 1 (count-windows))(get-register ?u))
+                (jump-to-register ?u))
+            (pop-to-buffer "*shell*" t )
+            (if (not(eq major-mode 'shell-mode))
+                (shell))))
+      (my-ttree 1))
+    (if come-back
+        (pop-to-buffer come-back))))
+
+(defalias 'my-run-ttree
+  (read-kbd-macro "M-x run-ttree RET"))
+(global-set-key [M-S-f10] 'my-run-ttree)
+
+;; ah! this is so convenient to have in the tip of my fingers for when I'm in the shell
+(set-register ?a "find . -type f -exec grep -i '' /dev/null {} + | awk '!/svn|httdocs/'")
+(defalias 'x
+  (read-kbd-macro "M-x insert-register RET x C-u 30  M-x forward-char "))
+(global-set-key [S-f10] 'x)
+
+}}}
+
+----
+CategoryHomepage

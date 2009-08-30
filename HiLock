@@ -1,0 +1,121 @@
+Use `C-x w p' to highlight a string in the current buffer.
+
+`hi-lock-mode' minor mode bindings starting with `C-x w':
+
+ key             binding
+ C-x w b         hi-lock-write-interactive-patterns
+ C-x w r         unhighlight-regexp
+ C-x w h         highlight-regexp
+ C-x w p         highlight-phrase
+ C-x w l         highlight-lines-matching-regexp
+ C-x w i         hi-lock-find-patterns
+
+
+See also: HighlightTemporarily.
+
+= Problem on XEmacs =
+This doesn't work with XEmacs - The following was posted to comp.emacs.xemacs by Kilian A. Foth:
+
+ (defface highlight-regexp-face
+   '((t (:foreground "#ff0000")))
+   "face for highlight-regexp.")
+
+ (defun highlight-regexp (regexp &optional face property)
+   "Highlight all text matching a regexp.
+
+ FACE defaults to a combination of red on white.
+ All extents created by this function have the property 'highlight.
+ If non-NIL, PROPERTY is also added to each extent.
+
+ Returns the number of instances highlighted."
+
+   (interactive "sRegexp: ")
+   (save-excursion
+     (beginning-of-buffer)
+     (let ((num 0))
+       (while (re-search-forward regexp nil t)
+         (incf num)
+         (highlight-range
+          (match-beginning 0) (match-end 0) face property))
+       (message "%d match%s" num (if (= num 1) "" "es"))
+       num)))
+
+ (defun highlight-range (from to &optional face property)
+   "Highlight specific range of current buffer.
+
+ FACE defaults to a combination of red on white.
+ All extents created by this function have the property 'highlight.
+ If PROPERTY is a symbol, it is added to each extent with
+ the value t. If PROPERTY is a plist, it is merged into the extent."
+   (let ((ext (make-extent from to))
+         (f face))
+     (when (null f) (setq f 'highlight-regexp-face))
+     (set-extent-property ext 'highlight t)
+     (set-extent-face ext f)
+     (set-extent-mouse-face ext f)
+     (cond
+      ((listp property)
+       (set-extent-properties ext property))
+      ((not (null property))
+       (set-extent-property ext property t)))))
+
+ (defun downlight-regexp (regexp)
+   "Remove highlighted extents matching REGEXP."
+   (interactive "sRegexp: ")
+   (map-extents
+    (lambda (ext maparg)
+      (when (string-match
+             regexp
+             (buffer-substring
+              (extent-start-position ext)
+              (extent-end-position ext)))
+        (delete-extent ext)))
+    (current-buffer) (point-min) (point-max) nil nil 'highlight))
+
+ (defun no-highlight ()
+   "Remove all extents set by highlight-regexp."
+   (interactive)
+   (map-extents
+    (lambda (ext maparg)
+      (delete-extent ext))
+    (current-buffer) (point-min) (point-max) nil nil 'highlight))
+
+= Show all the hi-lock-ed lines =
+
+I use this snippet to analyze complex log files.
+It is colored multiple `occur' in a sense. -- [[rubikitch]]
+
+<pre>
+(defun hi-lock-show-all ()
+  "Show all lines in the current buffer containing a overlay of hi-lock."
+  (interactive)
+  (let ((newbuf (format "*hi-lock:%s*" (buffer-name)))
+        (hide-start (point-min)))
+    (when (get-buffer newbuf) (kill-buffer newbuf))
+    (clone-indirect-buffer-other-window newbuf t)
+    (with-current-buffer newbuf
+      (goto-char (point-min))
+      (dolist (bol (save-excursion
+                     (sort
+                      (mapcar (lambda (ov)
+                                (goto-char (overlay-start ov))
+                                (point-at-bol))
+                              (ee-flatten (overlay-lists))) '<)))
+        (goto-char bol)
+        (outline-flag-region hide-start bol t)
+        (forward-line 1)
+        (setq hide-start (point))))
+    (outline-flag-region hide-start (point-max) t)
+    (goto-char (point-min))
+    (view-mode 1)))
+
+(defun hi-lock-overlay-p (overlay)
+  "Return the overlay if overlay is a hi-lock overlay."
+  (if (and (overlayp overlay) 
+	   (eq (overlay-get overlay 'hi-lock-overlay) t))
+      overlay
+    nil))
+</pre>
+
+----
+CategoryFaces HighlightTemporarily

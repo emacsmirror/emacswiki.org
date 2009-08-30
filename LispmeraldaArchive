@@ -1,0 +1,26 @@
+== The Lispmeralda Project ==
+
+'''Note: This project is currently as dormant as a wooly mammoth.'''
+
+DanielLundin, StephenEglen and ColinWalters were working on this searchable, indexed (and someday hopefully distributed) archive of lisp packages. 
+The primary focus is Emacs packages since the need and usability is quite evident.  This project lies dormant, however.
+
+Lispmeralda was supposed to use [http://www.xmlrpc.com/ XML-RPC] as communications protocol to enable it to be as accessible as possible from different environments and enable a good foundation for a distributed service. 
+
+The serverside was written in [http://www.python.org/ Python] using the [http://www.nightmare.com/medusa/ Medusa] framework.
+For the Emacs client, [ftp://ftp.codefactory.se/pub/lispmeralda/emacs/xml-rpc.el xml-rpc.el] was used to serve as the base for the future Lispmeralda Client.
+
+The project lived at www.lispmeralda.org.
+The archive itself lived at www.elisparchive.net.
+
+== Discussion ==
+
+[new]
+The project is indeed, unfortunately, as dormant as it seems. Lack of time to spend on the project combined with too much hassle manually maintaining the initial archive led to inevitable stagnation. I think that this wiki and the ElispArea will continue to serve as an archive. I think it'll do a good job at that, given the nature of the wiki. -- DanielLundin
+
+[new]
+Yes, it is a pity that lispmeralda did not take off; Daniel did a lot of good work getting the site up and running, but none of us had the the time really to populate the database with entries -- filling in the XML markup took only a  few minutes per file, but was enough of a barrier to me entering too many files.  In contrast, I really like the idea of the emacswiki.  Recently I have  been suggesting to various people to submit their elisp files to emacswiki.org, as it is a great archive.
+-- StephenEglen
+
+[new]
+I've started a new attempt at an Emacs package archive, [http://tromey.com/elpa/ ELPA].  It is simpler than Lispmeralda was apparently intended to be (unfortunately I hadn't heard of Lispmeralda when I started), but it does have a functioning client side package manager and an auto-installer. -- TomTromey

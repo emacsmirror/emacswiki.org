@@ -1,0 +1,38 @@
+Here is an article I wrote about optimizing Emacs startup times.  Rather than posting the whole text of the article, I will just give the link to my site (feel free to edit and post the text here if you feel that would be more approriate):
+
+http://metashell-v1.blogspot.com/2006/04/howto-lightning-fast-emacs-startup.html
+
+-- kruhft
+
+[new:DrewAdams:2006-04-22 17:59 UTC]
+Part of the instructions posted involve trying to determine library dependencies by hand in an iterative fashion (add a library, try again, check the error messages, add a library, try again...).
+
+You can use library Lisp:lib-requires.el to facilitate this task of determining library dependencies. See [[LibraryDependencies#LibRequires]]. -- DrewAdams
+[new]
+Here is a function to do some of the manual work that I outlined in my article.  It parses the *Messages* buffer looking for 'Loading [file]...' lines, and then prints the lines that need to be inserted into loadup.el to preload those elisp files into the main emacs binary.
+
+<pre>
+(defun loadup-gen ()
+  "Generate the lines to include in the lisp/loadup.el file
+to place all of the libraries that are loaded by your InitFile
+into the main dumped emacs"
+  (interactive)
+  (defun get-loads-from-*Messages* ()
+    (save-excursion
+      (let ((retval ()))
+	(set-buffer "*Messages*")
+	(beginning-of-buffer)
+	(while (search-forward-regexp "^Loading " nil t)
+	  (let ((start (point)))
+	    (search-forward "...")
+	    (backward-char 3)
+	    (setq retval (cons (buffer-substring-no-properties start (point)) retval))))
+	retval)))
+  (map 'list
+       (lambda (file) (princ (format "(load \"%s\")\n" file)))
+       (get-loads-from-*Messages*)))
+</pre>
+
+----
+
+Optimizing emacs startup on another front: i wrote a library that helps optimize the startup times of your InitFile:  http://www.gnufans.net/~deego/pub/emacspub/lisp-mine/dope/ --- deego

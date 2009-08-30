@@ -1,0 +1,65 @@
+Hi, my name is Ulrik Jensen, but everywhere online I go by the name Terry Patcher (abbreviated [::TerryP] at times).
+I have been using Emacs for around 6 months now, and I am beginning to understand it :) I hope to be able to contribute alot to the Wiki, which I think has alot of great information for Emacs-users. I can be found on #emacs @ OPN, under the nick <nowiki>TerryP</nowiki>. 
+
+On a more personal note, I'm 18 years old, and I'm getting (I hope) my high-school exam this summer (Higher Technical Exam, exactly, which is a more "project"-oriented type of high-school, that also focuses more on the hard-sciences than on humanistic-subjects). After my exam, I'll be serving as a conscientious objector for 9 months, and when I'm done with that, I'm gonna enroll as a CS-student on a University I think. But you never know what the future holds :) I live in Denmark.
+
+I use Emacs.
+
+I've been playing around with EmacsWikiMode, the result of which can be seen at my website: http://www.terryp.tk. The design is very similar to DamienElmes', but I'll fix that one day, haven't been bored enough to actually  do something creative with it yet :)
+
+My .emacs, .gnus and .ercrc (self-invented name i guess, loaded from .emacs) can be found at:
+
+[The terryp.tk and qcom.dk/ulrik websites don't seem to exist anymore.]
+: Indeed. QCom domain has been taken over by someone else and I had the other one pulled off the web not long ago. I am at the moment without a web-presence! -- I can be reached by e-mail, ulrikj is my username with gmail.com, if anyone needs me :-) -- TerryPatcher
+
+* http://www.qcom.dk/ulrik/.emacs.html
+* http://www.qcom.dk/ulrik/.gnus.html 
+* http://www.qcom.dk/ulrik/.ercrc.html
+
+I can usually be reached on ICQ #23831876 or my email ulrik@qcom.dk, if I'm not on IRC.
+
+If you want to test the first draft of my bash.org interface, it's available here:
+
+* http://www.qcom.dk/ulrik/bash-quotes.el
+
+ #include <disclaimer.h>
+ 
+Please comment on it, either here, on mail/icq or the EmacsChannel, if you try it :)
+: Well, your link makes my Phoenix crash... Hopefully, IE works. And your interface is not so bad anyway, good job ! :) -- LucasBonnet
+
+== How and why I use Emacs ==
+I started using GnuEmacs primarily because of LaTeX. This was around October/November of 2002, and I was just getting very tired of using Microsoft Word with <nowiki>MathType</nowiki> for my math and physics homework. So I started looking at LaTeX, and found out that Emacs seemed to be a preferred editor for it. I had played around with Emacs before, and tried to complete the tutorial, but I never quite got through it. At first, I switched back and forth between Emacs and <nowiki>TextPad</nowiki> (a decent, but nothing but, texteditor for windows) for my LaTeX-needs, but when someone presented me with a cheat-sheat for Emacs, explaining things like C-x 2 and C-x 3, and suddenly I became alot more interested in learning Emacs :) After a short while I started using it for all my programming needs, and I'm starting to learn lisp as well now, which I must say is not as scary as it seems at first :)
+
+=== IRC ===
+I've been an IRC-addict longer than I've been using Emacs, and I've gone through alot of different clients. Seeing as my primary platform is Windows (yet, I love what I've tried with UNIX, but I still have some things I need to work out before committing to a full convertion), the client I started with was ofcourse mIRC. I hated it. For one channel it was fine, but as soon as I started hanging out in 2 or 3 channels, it annoyed me more than it did me good. After having tried Epic4 in one of my early attempts with UNIX, I got a hold of a windows-port, and I loved it. Only thing was, it started to bail on me when I was in 4-5 channels, and wanted perhaps 2 windows for queries. My screen simply wasn't big enough. Besides that, I constantly sent my messages to the wrong channels and such :) Then I learned about the EmacsWiki, and through here, I found ERC, the EmacsIRCClient. Just the power of having my favorite text-editor for IRC'ing, was an incredible boost. And when I got around to customizing it, everything just got better. My favorite feature has to be ErcChannelTracking, that allows me to follow everything going on, and still get some "work" done :) If it's ERC's features, or just the fact that it allows for me to use it like Emacs, or the fact that it is about as extensible as Emacs, anyhow, I have no doubt that ERC is the best IRC-client I've tried yet. :)
+
+=== Mail / News ===
+As a Windows-user, the "standard" mail-client is Outlook Express, but I can't stand being subjected to vbscript viruses, and besides that, the client is just not nice to work with. After having tried UNIX, I started using PINE for my mail/usenet-needs, and I was rather satisfied. It served my needs, was simple, it wasn't really very POP3-friendly, and I never quite learnt to use it with usenet properly. When I started using Emacs, I wanted to try Gnus, which I had heard of before, and since that I haven't used anything else. I haven't learned even a small fraction of what it can do yet, but it works practically just like I want it, and after getting a .gnus pasted together from different sources, I am quite happy with it. Some day I want to learn alot more about it though.
+
+== Things I want in Emacs == 
+* A good ICQ-client. I currently use <nowiki>MirandaICQ</nowiki>, but once I start playing around with UNIX again, I'm gonna need a client that works there. I hope BitlBee combined with EmacsIRCClient will be as good as Miranda, but I fear the worst :) I haven't been satisfied by any of the clients I've tried on UNIX, and the one that bothered me the least was "vicq", a perl-script. I've considered using it from a shell in Emacs, but I don't think it'll get alot better that way.
+* A bash.org interface - I'm working on this as my first "serious" attempt at making something with EmacsLisp, great fun - at times. :)
+* A full-blown IMDb interface :) - This is a rather comprehensive task, but someday maybe I'll play around with it :) Until then, GirishB has made [http://www.gbvsoft.com/imdb.el.txt imdb.el], which allows for searching, but fails when [http://www.imdb.com IMDb] redirects to the movies own page, if the search was specific enough to return only one result.
+
+== Misc ==
+
+Welcome. -- AlexSchroeder
+
+Thank you, and thanks to the wiki for showing me more of what my Emacs can do :) -- TerryPatcher
+
+Another (belated) welcome :-) -- DamienElmes
+
+Are you using the last version of SimpleWikiEditMode (the tarball
+in savannah [http://savannah.nongnu.org/download/http-emacs/http-emacs.pkg/1.0/http-emacs-10.tar.gz])? I saw your post on the Homepage of DavidBrady and
+the 14lenge function problem looks like a problem existing in a previous version of http-get.  Let me know. --PierreGaston
+
+: Hmm, I just looked it over, and I don't recall making those changes. I can't see if they got added by me either (haven't quite figured out what the revisions-page tells me yet). Anyway, I apologise if I messed something up :) I think I got my SimpleWikiEditMode by CVS from savannah, didn't find any archives to download, and I heard on the EmacsChannel that something had just been fixed so it could actually be used with EmacsWiki :) This is from simple-wiki-edit.el: ";; Version: 1.0.7", and this is from http-get.el: ";; Version: 1.0.8". I'm editing this with M-x swc-emacswiki-browse, so the error should show up when i C-c C-c in a moment. I'll edit the wiki with my regular browser until you tell me if something is wrong with my version, and how I should proceed :) -- TerryPatcher
+:: well download the tarball from the link above and everything will be fine .  You indeed didn't wrote something wrong that's the unchunking of http1.1 that was faulty and sometimes eat some parts
+of the page and leave some 3ef hex numbers. 
+::: Okay, I updated and it works fine now (I think). Thanks for the advice :) -- TerryPatcher
+
+Wowee! How do you get Emacs to run with uncountable-many transparent frames receding into infinity, like you do on your Emacs Page at [http://www.daimi.au.dk/~terryp/EmacsPage.html]?
+: Simple, use Gimp. ;) -- TerryPatcher
+
+----
+CategoryHomepage

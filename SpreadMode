@@ -1,0 +1,37 @@
+== spread.el ==
+
+A SpreadSheet mode by GuillaumeMarceau, based on code and ideas from BenjaminPierce:
+
+* Groups:spread.el
+* http://gmarceau.qc.ca/spread.el
+
+Allows to make a spreadsheet out of an ordinary text buffer. `Cells'
+are text of the form:
+
+  VALUE <= FORMULA
+
+or
+
+  VALUE <= FORMULA => NAME
+
+where
+
+* VALUE, the current value of the cell, is a single word (typically a number), or a quoted string;
+* FORMULA is an arbitrary lisp expression, used to recalculate VALUE; and
+* NAME, if present, is a lisp variable to which VALUE is assigned after each recomputation.
+
+A single recalculation step consists of scanning the buffer,
+recalculating each cell by replacing the current VALUE by the result
+of evaluating FORMULA.  A complete recalculation, triggered by typing
+\\[spread-recalc], iterates this process until the buffer stops
+changing.
+
+The buffer can also contain arbitrary free-form text between cell. This will not
+interfere will the recalculations.
+
+
+See also SpreadSheet
+----
+CategoryCalculators
+CategoryFinancial
+CategoryModes

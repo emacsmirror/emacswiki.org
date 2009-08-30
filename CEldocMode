@@ -1,0 +1,39 @@
+== What is it? ==
+
+c-eldoc mode displays the arguments of C functions while one is programming.
+
+=== Advantages ===
+This version takes the function declarations from preprocessor output, thus allowing one to use it with system-dependent functions from any library.  This was developed as a response to [[CEDET]], which I was unable to use.  If you know how to make this feature work in [[CEDET]] (I believe it is called `summary-mode'), please post the method here.  This approach is somewhat simpler than that of [[CEDET]].
+
+=== Disadvantages ===
+It currently only works with the C language.  I hope to add some C++ features one day.
+
+== Requirements ==
+This file requires the new eldoc functions available in Emacs 22.
+You'll also need a GNU-compatible version of <code>grep</code> and <code>cpp</code>.  This shouldn't be a problem for most people running GNU/Linux systems.  I have not tested this on XEmacs yet.  Please post if it works.
+
+== How do I use it? ==
+# Download Lisp:c-eldoc.el from the ElispArea and save to your emacs-lisp directory.  Eval  <code>(install-elisp-from-emacswiki "c-eldoc.el")</code> if you have InstallElisp.
+# Add the following to your <code>.emacs</code> file.
+<pre>
+;; add in your commonly used packages/include directories here, for
+;; example, SDL or OpenGL. this shouldn't slow down cpp, even if
+;; you've got a lot of them
+(setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ ")
+(load "c-eldoc")
+(add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
+</pre>
+
+Replaced English with installation code. You should not force users to translate English into code. -- [[rubikitch]]
+
+== History ==
+The code here makes a few changes to Paul Pogonyshev's c-eldoc mode, originally posted on emacs-devel [http://lists.gnu.org/archive/html/emacs-devel/2004-06/msg00196.html].  Paul's version worked using TAGS, but this version has eliminated this restriction, allowing one to use it with any function that is <code>#included</code> at the top of the C file.  It is essentially the same speed, but one no longer needs to make a large <code>TAGS</code> file for <code>/usr/include</code>.  When Paul first posted, there was some talk of putting it in a future release of GNU Emacs, but I have yet to see this actually happen.
+
+For another take on c-eldoc, see this article[http://tenkan.org/~tim/c-function-signature.html].
+
+== Comments ==
+I think caching symbol-info into alist or hashtable is better than calculating symbol-info EVERY TIME. It is immutable until the source file and included files are modified. -- [[rubikitch]]
+
+----
+CategoryModes
+CategoryProgramming

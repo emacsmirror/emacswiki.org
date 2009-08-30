@@ -1,0 +1,29 @@
+I am a vivid fan of Emacs, and one important reason is that it is extensible beyond recognition. When I started using Emacs back in 1997 (something like that) I immediately started to place common commands on the function keys, F1 - F12 (and also S-F1, C-F1 etc). I thought it was a wonderful idea since this `C-x C-f' and `C-x C-s' seemed awkward and strange to me.
+
+I cannot say exactly when it happened, but I gradually started to use the default keybindings instead. Actually I'm not totally sure why either, but I guess I was getting tired of things in manuals etc. that did not work on my setup. Also, I am thinking: "Maybe someone put it on that key for a very good/smart reason?".
+
+Anyway, I'm now quite familiar with most of the common keybindings in Emacs, and I really like things like how the rectangle-commands are bound to sequences that start the same. Things like `C-y', `C-k' and `M-w' feels as natural as the old C-v, S-End + Del and C-x did before. I have setup some keys according to the DedicatedKeys concept for things I use very very very very much though. All in all, apart from *totally* silly bindings like the default ones in outline-mode, all works quite well.
+
+One thing that I cannot understand though I am trying to make myself use it right now is the commands to move the TextCursor up/down and left/right. Even if I try to learn those `C-b', `C-f', `C-p' and `C-n' instead (`C-a' and `C-e' feels totally ok for some reason and works very well in ReadLine supporting apps also) I always tend to go back when I am pushed into a corner so to speak, when I want to do some monkey-work on many rows, jumping back and forth.
+
+I am very open to strange/odd/different ideas (this is why I sometimes at least try for a couple of minutes to use those strange creatures `C-b' and `C-f') and would really like to know how you other guys and gals think. Benefits/drawbacks (apart from the obvious ones like that it will always work wherever you find an emacs-installation, and that `C-f' means '''F'''orward, and `C-b' means '''B'''ackward)?
+
+-- MathiasDahl
+
+[new]
+I’ve been using Emacs for a couple years, though I also used it back around 1999. Until recently, I used the arrow keys for movement and the mouse for selecting text. But I recently decided to avoid these and try to use C-f, C-b, C-n, C-p, M-n, M-p, and C-m for movement, comint history, and carriage return. I’m also using C-v, M-v, C-M-v, and C-M-S-v for PgUp / PgDown.
+
+The main advantage I see is that you don’t have to take your hands off the main area of the keyboard. It takes a while to get used to, but I find it somewhat faster than using the other method.
+
+As for selection, I’m actually selecting less text. I use a variety of approaches, depending on what I need to kill or save.
+
+* `zap-to-char' (possibly with a prefix) when I need to extract part of a line of code.
+* `kill-word' with a prefix, when I need to extract part of a line of text.
+* `kill-sexp' to kill a region enclosed in quotes, parens, braces, etc.
+
+When I to need to use a selection, I use `isearch' rather than the mouse. -- [[ieure]]
+
+[new:DtW:2009-02-27 08:10 UTC]
+The cursor movement keybindings are my only complaint about Emacs. I got used to C-f, C-b, C-n and C-p but I never liked them. Eventually I wrote ErgoMovementMode for easy cursor movement.
+
+-- DtW

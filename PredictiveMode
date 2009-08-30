@@ -1,0 +1,158 @@
+Given the beginning of a word, Predictive Mode is a minor mode that tries to predict the rest of the word, and offers you an appropriate completion.
+
+It's at version 0.23.6 (released April 2009), but it's still undergoing steady development at the moment, so don't forget to check for updates every so often.
+
+**!!!!!!!!!!!!!!!!!! Danger, Will Robinson, Danger !!!!!!!!!!!!!!!!!!**
+
+The latest version of the Predictive Completion package significantly breaks compatibility with dictionaries created using previous versions (0.22.x and earlier). Read the <code>INSTALL</code> and <code>WARNING</code> files included with the package before upgrading.
+
+**!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!**
+
+* Predictive package download: http://www.dr-qubit.org/download.php?file=predictive/predictive.tar.gz
+* Online manual: http://www.dr-qubit.org/predictive/predictive-user-manual/html/index.php
+* Web-site: http://www.dr-qubit.org/emacs.php#predictive
+
+The predictive completion package uses the CompletionUI, AutoOverlays,  DictionaryTrees, [[Tries]], TaggedNFA, [[Heaps]], [[AVLtrees]], and [[Queues]] packages. For convenience, these are included in the download file (linked above).
+
+-- TobyCubitt
+
+
+
+== What is Predictive Completion? ==
+
+Scavenged from the manual:
+
+The languages we use to communicate contain a large amount of redundancy. Given the first few letters of a word, for instance, it's not too difficult to predict what should come next. Try it! You can probably easily guess how to fill in the missing letters in the following sentence:
+
+     Giv th fir fe lett o a wor i no diffi t predi wh shou com nex.
+
+This is even more true of languages used to communicate with computers, which typically have very restricted vocabularies and rigidly defined grammars. Predictive completion exploits this redundancy by attempting to complete what you are trying to type before you've finished typing it.
+
+
+What benefits does predictive completion bring?
+
+# Saving on typing (obviously!): you don't have to type the whole word.
+
+# Automatic spelling assistance: when you type the first few characters of a word, only correct spellings of the whole word are offered. This is not only useful for human languages. The predictive completion mode can be set up to complete on variable and function names in a program, helping avoid bugs due to misspelled names.
+
+# Faster typing: not quite the same as point 1. As you get used to predictive completion, your fingers will start to learn the key sequences required for frequently used words. And these key sequences will usually be much shorter than typing the full word.
+
+
+== Introduction ==
+
+The predictive completion package is fairly complicated, so it's worth reading the manual to learn how to use it to the full. But if you just want to try it out quickly, then download the predictive package from the link above, unpack the files from the tar archive which will extract them to a new <code>predictive/</code> subdirectory, byte-compile all the Lisp files by running <code>make</code> in that directory (otherwise performance will suffer hugely), move the Lisp files to a directory in your load-path, and add the following line to your emacs configuration file:
+
+ (require 'predictive)
+
+The default behaviour is quite instrusive, but predictive mode can easily be customized to make it less so. The manual is your friend! (For the impatient: try browsing the Predictive and, especially, the Completion-UI customization groups.)
+
+
+== Screenshots ==
+
+One of the easiest ways of using Predictive Mode is to start with an empty dictionary and let it learn automatically. In this case, it learned the stuff in the paragraph the user just typed. The last word starts with a T and thus Predictive Mode predicts you want either "The" or "Temple".
+
+[[image:Predictive Mode Screenshot]]
+
+If you wait for a few moments, or use the appropriate key, you get a menu, too:
+
+[[image:Predictive Mode Menu Screenshot]]
+
+If you type a second letter, Predictive Mode will automatically narrow down the completions it offers. Type a space or punctuation to accept it.
+
+[[image:Predictive Mode Completion Screenshot]]
+
+
+Here's the Predictive Mode setup used for the example above:
+
+{{{
+(add-to-list 'load-path "~/elisp/predictive")
+(autoload 'predictive-mode "predictive" "predictive" t)
+(set-default 'predictive-auto-add-to-dict t)
+(setq predictive-main-dict 'rpg-dictionary
+      predictive-auto-learn t
+      predictive-add-to-dict-ask nil
+      predictive-use-auto-learn-cache nil
+      predictive-which-dict t)
+}}}
+
+And here's the explanation:
+
+; load-path: This is where I installed Predictive Mode and byte-compiled all the files.
+; autoload: I prefer loading libraries when I use them, not when I start Emacs.
+; predictive-auto-add-to-dict: I don't understand why this variable is "buffer-local whenever it is set." This confused me to no end when I tried to get it to work.
+; predictive-main-dict: I don't want to use the default dictionary. I created it using ##‘M-x predictive-create-dict rpg-dictionary RET ~/elisp/rpg-dictionary RET’## (where ##~/elisp## is on my `load-path', obviously).
+; predictive-auto-learn: Yep, learn as I type.
+; predictive-add-to-dict-ask: I might switch this on again later when the dictionary is 99.5% complete. It's a trade-off: Learn typos, or aggravate me? Maybe it should only learn if ispell doesn't know the word...
+; predictive-use-auto-learn-cache: When I started using it, I had a hard time verifying that it worked. This setting can probably be removed after a while. Then again, I'm not sure whether Emacs on IRC is considered idle for long enough...
+; predictive-which-dict: Another debugging aid. This makes sure you see what dictionary Predictive Mode is using. Just wanting to make sure it's using my new dictionary and not the default English dictionary. This setting can probably be removed after a while.
+
+
+== Other Sources of Information ==
+
+MathiasDahl has posted a nice tutorial about using predictive mode on his blog: http://klibb.com/cgi-bin/wiki.pl/Emacs_Blog_2007-01-20
+
+
+== Comparison with pabbrev ==
+
+Phillip Lord's PredictiveAbbreviation package provides features that are on the face of it quite similar to PredictiveMode. In fact, there are fundamental and important differences, and the two packages will appeal to different users depending on what exactly they want. It should be emphasised that predictive mode is much more complicated, probably less well tested, and very likely contains more bugs than pabbrev mode. If you want something simple and lightweight, I strongly recommend pabbrev mode. On the other hand, if you're prepared to put in the time and effort to understand and configure predictive mode, it is much more flexible and powerful than pabbrev mode. For example, predictive mode can even be configured to simulate pabbrev mode!
+
+The main difference is that predictive mode normally uses predefined dictionaries to lookup possible completion candidates, whereas pabbrev works rather like DynamicAbbreviations: possible completion candidates are scavenged from the text in the buffer. Each approach has its advantages and disadvantages. Creating and training the predictive mode dictionaries requires some effort, and they will probably adapt more slowly to the idiosyncrasies of the particular piece of text that you're writing. On the other hand, pabbrev mode will only ever offer completions that you have already used in the buffer, so it won't help in typing or spelling words you haven't used yet. And if you accidentally mis-spell a word once, it will offer the mis-spelled word as a completion in future, which tends to propagate mistakes throughout your text.
+
+However, predictive mode includes a number of features which can mitigate many of these disadvantages. Enabling buffer-local dictionaries (<code>predictive-use-buffer-local-dict</code>) and increasing the buffer-local learning rate (<code>predictive-buffer-local-learn-multiplier</code>) can make predictive mode adapt much faster to the text in individual buffers. Buffer-local dictionaries are *not* predefined: they are built up from words used in a buffer. But unlike pabbrev mode, only correct words (that also exist in the main dictionary) are added by default. Enabling the auto-add feature (<code>predictive-auto-add-to-dict</code>), which automatically adds all the words you type to the dictionaries, will build up a dictionary rapidly. The price is the same disadvantage as pabbrev mode: any mis-spelled words will also be added. Training the dictionaries on existing samples of your own writing will speed up the rate at which the dictionaries adapt to your individual writing style (<code>predictive-learn-from-file</code> or <code>predictive-learn-from-buffer</code> commands). Using different dictionaries for different kinds of writing (e.g. academic articles, emails, code documentation, etc.) will allow each dictionary to adapt to the different styles of writing involved.
+
+
+The following predictive mode features have no equivalent in pabbrev mode:
+
+* Predictive mode dictionaries are persistent. They are saved to a file between Emacs sessions, so all the effort you put into training the dictionaries accumulates over time, and the accuracy of the predictions will improve the more you use predictive mode. Pabbrev mode does not retain any information between Emacs sessions: you start from scratch each time.
+
+* Predictive mode has a richer and highly customizable user-interface for viewing and choosing completion candidates. (Since the predictive mode UI is separated off into a separate package, CompletionUI, there's no reason why pabbrev mode couldn't also make use of it. But as far as I know this hasn't been done yet.)
+
+* Predictive mode provides an auto-completion feature, which searches for completions as you type, and provisionally inserts the best one. As you add more characters, the provisional completion is updated.
+
+* Predictive mode provides "IntelliSense" features for some major modes (currently: LaTeX, Texinfo, HTML). It uses different dictionaries in different regions of a buffer, for example, it will complete on LaTeX maths commands within a LaTeX maths environment, and on LaTeX environments within <code>\begin{...}</code> or <code>\end{...}</code>, etc. Pabbrev mode has no similar way of completing on different sets of words within different regions of a buffer.
+
+* Predictive mode uses more efficient data structures than pabbrev mode. For relatively small sets of words, as usually encountered in pabbrev mode, the difference is completely insignificant. But it does allow predictive mode dictionaries to contain huge numbers of words without causing any noticeable slow-down when finding completion candidates, which is especially important when using auto-completion.
+
+* Predictive mode allows prefix relationships to be defined between words, so that <code>the</code> is always given precedence over <code>there</code> and <code>their</code>, however often you use the latter two. This is particularly relevant when using auto-completion.
+
+
+
+== Comparison with other completion packages ==
+
+There are many completion packages available for Emacs. How does predictive completion compare? Warning: the following may well be somewhat subjective, since I'm obviously more familiar with predictive mode than the others...
+
+
+There are two aspects to completion: which completions are offered, and how to choose one of them.
+
+(which completions are offered)
+
+* Predictive completion mode learns which words you use most frequently, and offers those first. As far as I know, the only other package that provides a similar feature is Phillip Lord's PredictiveAbbreviation. See above for a comparison.
+
+* Predictive mode can automatically use different dictionaries based on context (e.g. within a LaTeX maths environment, it will switch to a dictionary of LaTeX maths commands). Predictive completion mode's context-sensitive completion is about as clever as you can get with regexps. CEDET's context-sensitive completion is cleverer, particularly for programming languages, since it uses a lexer/parser to analyse the text (see HowSemanticFulfillsThoseNeeds). On the other hand, CEDET doesn't provide *predictive* completion. Integrating predictive mode with CEDET's semantic package has been on the todo list for quite a long time...
+
+* It's *fast*. Even for very large dictionaries (e.g. the default ~40,000 word English dictionary), predictive mode should find completions as fast as you can type. The DynamicAbbreviations that come with Emacs, for example, can be much slower.
+
+* It's *accurate*. Predictive mode contains many features that help ensure the most appropriate completions are given higher priority. Apart from learning which words you use most often, it can for example be configured to ensure that prefixes are always given precedence over extensions of the prefix: <code>the</code> will always be offered before <code>there</code>, even if you use <code>there</code> far more often.
+
+
+(how to choose a completion)
+
+* Predictive mode offers many (configurable) ways to choose completions, in addition to selecting one from a list like DynamicAbbreviations.
+
+* It can do dynamic completion, very like LightningCompletion (unsurprisingly, since that's where the idea came from).
+
+* It lets you cycle through completions, like the [[Icicles]] package. It can not find "apropos" completions (completions that contain a regexp) as [[Icicles]] can, though apropos completions makes less sense for general buffer text than they do for minibuffer completion.
+
+* Completions can be displayed in and selected from a tooltip.
+
+* Completions can be displayed in and selected from a pop-up frame (a small Emacs frame positioned below the point), and you can toggle between displaying the most likely and all possible completions.
+
+* Completions can be selected from a drop-down menu, or from a completion browser which hierarchically organises all the possible completions.
+
+
+== Discusion ==
+
+(add comments here)
+
+----
+CategoryModes | CategoryCompletion | CategorySpelling

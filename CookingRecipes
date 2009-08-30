@@ -1,0 +1,7 @@
+An [[EDB]] database holds your recipes and then can format them for printing with LaTeX with the following package:
+
+* http://www.bobnewell.net/elisp.html
+
+----
+CategoryModes
+CategoryWriting

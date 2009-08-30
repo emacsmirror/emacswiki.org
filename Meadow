@@ -1,0 +1,37 @@
+[[image/right/inline:MeadowSplash.png]]
+
+Meadow ([http://www.meadowy.org/meadow/ Japanese], [http://www.meadowy.org/meadow/pukiwiki-en/ English]) -- the '''m'''ultilingual '''e'''nhancement to GNU Emacs with '''ad'''vantages '''o'''ver '''w'''indows. A Japanese-language oriented GNU Emacs fork with Cygwin like installer.
+
+The optional, add in elisp packages such as [[Gnus]], [[Mew]], WanderLust, [BbdbMode BBDB], [SubVersion psvn], [http://www.meadowy.org/meadow/netinstall/wiki/PkgtDiary-mode tdiary-mode], [[AUCTeX]]/[[LaTeX]], [EmacsLispScreen Elscreen], [[emacs-w3m]], [EmacsSession session], [http://www.meadowy.org/meadow/netinstall/wiki/PkgSudoku Sudoku], etc ([http://www.meadowy.org/meadow/netinstall/wiki/PkgList more]), and ImageMagick integrated installation make this a very simple to install Emacs on your Windows box.
+
+Try (view-hello-file) with one of the optional fonts "[http://www.meadowy.org/meadow/netinstall/wiki/PkgMule-fonts mule-fonts]" (just another check box in the installer) and [http://www.meadowy.org/meadow/netinstall/attachment/wiki/PkgMule-fonts/mule-fonts-HELLO.png?format=raw see all the characters without the fuss].
+
+== Download ==
+
+Meadow 2.x corresponds to Gnu Emacs 21.4 and is the latest stable version.
+
+Meadow 3.x corresponds to Gnu Emacs 22.0.50 CVS HEAD and is pretty stable, but not labelled stable.
+
+Installer and info/help pages have both English and Japanese counterparts. Installers are found at [http://www.meadowy.org/meadow/netinstall installation page], just click on setup.exe or setup-ja.exe.
+
+== Documentation ==
+
+Meadow has its own documentation site in [http://www.meadowy.org/meadow/ Japanese] and [http://www.meadowy.org/meadow/pukiwiki-en/ English].
+
+There is some Meadow-oriented information on the <nowiki>EmacsWiki</nowiki>. Please try searching in [http://www.emacswiki.org/cgi-bin/emacs-ja?search=meadow in Japanese] or [http://www.emacswiki.org/cgi-bin/emacs-en?search=meadow English] for more information. In particular, you may find these article(s) interesting:
+
+* MsWindowsRegistry
+
+== Comparison with official binaries ==
+
+The Meadow Wiki offers an overview of the additions to Meadow over the official Windows port: [http://www.meadowy.org/meadow/pukiwiki-en/pukiwiki.php?cmd=read&page=Detail%20configuration%20and%20exhancements Detailed configuration and enhancements]
+
+== Comparison with EmacsW32 ==
+
+[[EmacsW32]] is another Windows-based effort, with both source (C and Emacs Lisp) changes, and an installer for both program and file associations and even supplemental Unix utilities. <nowiki>EmacsW32</nowiki> also changes Emacs default keybindings to something easier for the Windows (perhaps leveraging the CUA mode). It seems <nowiki>EmacsW32</nowiki> is more out-of-the box friendly towards the Windows user.
+
+Meadow on the other hand does not attempt to change key bindings, do file associations or add Unix utilities (you need to add a GNU compatible diff, for example). Perhaps most significant is the support for the Microsoft Input Method Editor (MS-IME) which is important for CJK (Chinese Japanese Korean) users that are used to OS-enhanced language input. Meadow also has a alternative way of setting fonts (the original method is still supported). Meadow uses a Cygwin-like installer for the program and add-on packages. You can install, upgrade and de-install at a click. It also includes ImageMagick so you can see more graphics formats inside Emacs.
+
+----
+CategoryPorts
+CategoryWThirtyTwo

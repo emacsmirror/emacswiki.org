@@ -1,0 +1,23 @@
+= Rope =
+
+http://groups.google.com/group/gnu.emacs.sources/msg/844540d2ec531e0d?
+
+= SlimeMode =
+
+http://common-lisp.net/pipermail/slime-devel/attachments/20090328/91ce4004/attachment.asc
+
+= EmacsLispMode =
+
+=== Keywords completions ===
+
+  (defun company-elisp-finder-keyword-backend (command &optional arg &rest ign)
+    "A `company-backend' for finder-keywords."
+    (case command
+      ('prefix
+       (and (require 'finder nil t)
+            (or (company-grab ":group '\\(\\(\\sw\\|\\s_\\)*\\)" 1)
+                (company-grab "Keywords:.*[ \t]+\\(\\(\\sw\\|\\s_\\)*\\)" 1))))
+      ('candidates (all-completions arg finder-known-keywords))
+      ('meta (cdr (assoc (intern arg) finder-known-keywords)))))
+
+-- [[nschum]]

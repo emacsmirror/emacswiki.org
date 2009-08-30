@@ -1,0 +1,38 @@
+[NOTE: Eshell already sets the "buffer modified" flag while a process is running.  This is the default behavior.  So if you see "**" in your modeline, it means Eshell is doing something.  The following tidbit from Kai is useful if you want a different indicator than the usual "**". -- JohnWiegley]
+
+[NOTE: The below adds the indicator to every mode line, not just to the mode line of the eshell buffer.  That's why I like it :-) -- KaiGrossjohann]
+
+The following posting by Kai shows how to add an indicator to the modeline when eshell is processing something.  This applies to eshell 2.4.2 -- perhaps later versions have this already integrated some other way.
+
+ From: KaiGrossjohann
+ Subject: Re: Have `eshell running' indicator?
+ Newsgroups: gnu.emacs.help
+ Date: Wed, 25 Jul 2001 19:19:38 +0200
+
+ ;; show whether eshell has a running process
+ (defvar kai-eshell-process-running "[E]"
+   "*String shown in the mode line while a process is running in eshell.")
+ 
+ (defvar kai-eshell-process-stopped ""
+   "*String shown in the mode line while no process is running in eshell.")
+ 
+ (defvar kai-eshell-mode-line-process nil
+   "String shown in the mode line to indicate whether eshell command running.
+ Set to `kai-eshell-process-running' or `kai-eshell-process-stopped', as
+ appropriate.")
+ 
+ (setq mode-line-process 'kai-eshell-mode-line-process)
+ (setq-default mode-line-process 'kai-eshell-mode-line-process)
+ 
+ (defadvice eshell-command-started (before kai-eshell activate)
+   (setq kai-eshell-mode-line-process kai-eshell-process-running))
+ 
+ (defadvice eshell-command-finished (before kai-eshell activate)
+   (setq kai-eshell-mode-line-process kai-eshell-process-stopped))
+
+= Discussion =
+
+I am curious about how this is useful for you. I assume it is more than just a "toy", right? The reason I ask is that I have really tried to use eshell as much as I can the last weeks and I find it solves most file handling tasks and similar quite well. So, I am always interested in hearing other peoples experiences and how they use different tools. Care to comment?
+
+----
+CategoryEshell

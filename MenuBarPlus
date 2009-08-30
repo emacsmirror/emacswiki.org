@@ -1,0 +1,124 @@
+This page describes '''[::Menu-Bar+]''': library <tt>[[menu-bar+.el]]</tt>, which enhances the standard Emacs [[menu bar]].
+
+== Menu-Bar+ ==
+
+[:SeparateLocalAndGlobalMenus]
+=== Separation of Local and Global Menus ===
+
+The buffer-specific (local) menus are separated from the common (global) menus by a vertical bar ('''||'''). Local menus are to the left of the bar, global menus to the right. Clicking the bar itself displays an explanation: "<-- Current mode menus to left.   ||   Common menus to right -->":
+
+[[image:DrewsEmacsMenuBarBar]]
+
+
+=== Frames Menu ===
+
+A new menu, '''Frames''', is added, with these menu items:
+
+: _Fit This Frame_, _Hide Frames or Show Buffers_, _Iconify All Frames_, _Tile Frames Horizontally_, _Tile Frames Vertically_, _Set Frame Parameter from Frame_, _Set All Frame Parameters from Frame_
+
+
+=== Do Re Mi Menu ===
+
+A new menu, '''Do Re Mi''', is added, with these menu items (see [[DrewsEmacsDoReMiMenu|Screenshot]]):
+
+:  _Window Size_, _Frame Size_, _Move Frame_, _Color Themes_, _Frame Background..._, _Undo Frame Color Change_, _All Frame Backgronds..._, _Face Foreground_..., _All Faces Foreground..._, _Face Background..._, _Undo Face Color Change_, _Frame Font Size_ (_Zoom_),  _Buffer Text Size_ (_Zoom_), _Font_, _Frame Configurations_, _Save Frame Configuration_, _Buffers_, _Bookmarks_, _Marks In Buffer_, _Global Marks_
+:: See '''DoReMi'''. 
+
+
+=== Files Menu ===
+
+The standard '''Files''' menu is enhanced in these ways:
+
+* New menu items: _Execute Command_ (`execute-extended-command') and _Repeat Earlier Command_ (`repeat-complex-command'). 
+
+* '''File''' > '''Close''' (command `kill-this-buffer') also deletes the window.
+
+
+== Edit Menu ===
+
+The standard '''Edit''' menu is enhanced in these ways:
+
+* New menu items _Paste Secondary_, _Select All_, _Delete Matching Lines..._, and _Delete Non-Matching Lines..._.
+
+* New submenu, '''Fill''', with items _Fill Paragraph_, _Fill Paragraphs_, _Fill Uniform Paragraphs_, and _Fill Non-Uniform Paragraphs_. The first of these does whatever `M-q' does, if it is bound; otherwise, it does `fill-paragraph'.
+
+* New submenu '''Edit Region''', with items _Exec Keyboard Macro_, _Expand Abbrevs_, _Column - Mode Indent_, _Rigid Indent_, _Center_, _Comment_, _Untabify_, _Highlight..._, _Highlight Regexp..._, _Unhighlight_, _Upcase_, _Downcase_, _Capitalize_,  and _Unaccent_.
+
+* New submenu, '''Sort Region''', with items _Regexp Fields..._, _Pages_, _Paragraphs_, _Numeric Field_, _Field_, _Columns_, _Lines_, and _Reverse_. 
+
+* Moved submenu '''Search''' to the top level (menu bar) -- see next.
+
+
+=== Search Menu ===
+
+A new menu, '''Search''', is added (see [[DrewSearchMenu|Screenshot]]). It replaces the '''Search''' submenu under '''Edit'''.
+
+* New menu item _Occurrences..._.
+
+* New menu items for _Word_ searches.
+
+* Reorganized menu: Each target type (_String_, _Regexp_, _Word_) has _Forward_ and _Backward_.
+
+* New submenu, '''Replace''', with items _Query String_, _Regexp..._, _Map..._, _Tags..._, _Global String_, and _Regexp_.
+
+* New submenu, '''Tags''', with items  _Find Tag..._, _Find Tag Regexp..._, and _Search Tags Files_.
+
+* New submenu, '''Bookmarks''', with items _Jump to Bookmark_, _Jump to Bookmark Other Window_, _Set Bookmark_, _Insert Contents_, _Insert Location_, _Rename Bookmark_, _Delete Bookmark_, _Edit Bookmarks List_, _Save Bookmarks_, _Save Bookmarks As..._, and _Load a Bookmark File..._. 
+
+
+
+=== Help Menu ===
+
+The standard '''Help''' menu is enhanced in these ways:
+
+* New menu items _Help On Help_ (`help-for-help'), _Show Help Buffer_, and _Save Help Buffer_.
+
+* New submenu, '''Whoops!?''', with items _Cancel Current Action_ (`keyboard-quit'), _Back to Top Level_ (`top-level'), and _What Did I Do?!_ (`view-lossage').
+
+* New submenu, '''Apropos''', with items _Commands..._, _User Options..._, _All Variables..._, _Symbols..._, _Tags..._, and _Symbol Descriptions..._.
+
+* New menu items for submenu '''Describe''': _Menu Bar_, _Major Mode Syntax_, and _This..._.
+Item _This..._ gives help on any key/menu sequence or object clicked with the mouse:
+** type a KeySequence (e.g. `C-M-s')
+** choose a menu item (e.g. `<code>[menu-bar files open-file]</code>')
+** click on a scroll bar
+** click on the mode line
+** click in the MiniBuffer
+** click on a name in a buffer: `apropos' and `apropos-documentation'are called
+** click anywhere else in a buffer: its modes are described
+
+* New submenu, '''Learn More''', with (sub)submenus `'''Emacs'''' and `'''Emacs Lisp'''', and items _Last Accessed Info Manual_, _All Info Manuals_, and _Unix Man Page..._.
+** `'''Emacs'''' menu: items _Tutorial_, _Manual - Info_, _Find Command in Manual_, _Find Key in Manual_, _Change History_, and _FAQ_.
+** `'''Emacs Lisp'''' menu: items _Manual - Info_, _Locate Library..._, _Locate Libraries by Keyword_, and _Change History_.
+
+
+=== Options Menu ===
+
+The standard '''Options''' menu is enhanced with a new menu item, _Show, Edit All Options_ (`edit-options').
+
+
+== Discussion ==
+
+[new:MaDa:2005-05-16 18:54 UTC]
+: About the [[#SeparateLocalAndGlobalMenus|separation of local and global menus]]: Does this mean that the location, geometrically, of e.g. the Buffer menu, will change depending on what type of [[buffer]]/mode I am in? If so, that would make it hard to develop a habit for quickly reaching those commands. Just a thought. -- MaDa
+
+[new:DrewAdams:2005-05-16 20:46 UTC]
+:: Well, that's exactly why I made this extension, in fact ;-). It's true that most of the global, permanent menus are always in the same place in vanilla Emacs -- but one of them, the '''Help''' menu, is not. I decided to:
+
+** Keep all of the permanent menus together, and 
+
+** Clearly separate them from the local, temporary menus by a separator.
+
+:: An alternative would be to add the separator but keep the permanent menus on the left, and move the '''Help''' menu to the left also. I preferred the above design because I felt that it might help people notice the local menus more (English reads from left to right), so it might encourage their familiarity and use. "Extra" stuff appended to the end of a menu-bar is less noticeable, IMO; when it is up front, more attention is likely to be paid to it.
+
+:: So, yes, the exact position of the separator, and hence the permanent menus, changes, depending on the local menus. On the other hand, the separator is easy to notice, and the permanent menus are always in the same position relative to it (and to each other). In effect, what was true of only the '''Help''' menu before is now true of all of the permanent menus -- plus you have a separator to help you quickly distinguish global from local.
+
+:: Good question. -- DrewAdams
+
+:::: Well, I've read The Humane Interface... :) -- MaDa
+
+
+----
+ToolBar ScrollBar
+CategoryFrames CategoryDisplay OneOnOneEmacs CategoryHelp
+

@@ -1,0 +1,57 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  IciclesDiscussion || '''[[Icicles]]''' || IciclesIndex || *Next:* [[LaCarte]] ||
+
+----
+
+== Icicles Issues ==
+
+This page is a dispatch page for discussion of ''issues'' you might have with library '''<tt>[[icicles.el]]</tt>''' ('''[[Icicles]]'''), including bugs.
+
+
+* '''IciclesIssuesOpen''' -- Issues that are not yet fixed. Describe your problem here.
+
+* IciclesIssuesStale -- Issues that users did not follow up on -- never heard back from them. Could mean that the problem is not a problem; could mean that they gave up ;-).
+
+* IciclesIssuesClosed -- Issues that were resolved. Bugs that were fixed. Explanations of non-bugs. Issues from IciclesIssuesOpen and IciclesIssuesStale are moved here when they are resolved.
+
+For general discussion about the library, feedback, possible uses, and possible enhancements, see '''IciclesDiscussion'''.  (For discussion of library '''<tt>[[lacarte.el]]</tt>''', see LaCarte.)
+
+
+== How To Report an Icicles Bug ==
+
+You can report an '''Icicles''' bug at '''IciclesIssuesOpen''' -- please follow the formatting suggestion provided there.
+
+Alternatively, you can report an '''Icicles''' bug by email, but in that case others will not share in the discussion. To report by email, do ''one'' of the following:
+
+* Choose item '''Send Bug Report''' from MenuBar menu '''Icicles'''
+* `##M-x icicle-send-bug-report##'
+* (1) `C-h' from the minibuffer; (2) click button '''Icicles Options and Faces''' in buffer `*Help*'; (3) click link `##Send Bug Report##' in buffer `##*Customize Group: icicles*##'
+
+Always mention your Emacs version and platform (e.g. Windows, GNU/Linux). If you aren't using the latest '''Icicles''' files, let me know which you are using. '''Icicles''' files each have an <code>Update #</code> field in the header, which identifies the file exactly.
+
+
+== Debugging Tips ==
+
+1. If you use the debugger to report a backtrace, first delete all '''Icicles''' byte-compiled files, so that you use only the source files (##icicles*.el##) for debugging.
+
+2. By default, in ''Icicle'' mode, `M-x' is bound to command '''`icicle-execute-extended-command''''. This is a multi-command, which presents certain advantages over the standard command bound to `M-x' in Emacs, `execute-extended-command' -- see [[Icicles - Multi M-x]] for details.
+
+However, `icicle-execute-extended-command' has one disadvantage: an error backtrace is less informative, which can make debugging more difficult. If you want to see a normal backtrace at the point of error, then do what I do:
+
+  M-: (define-key icicle-mode-map "\M-x" 'execute-extended-command)
+  M-x set-variable debug-on-error t
+
+
+
+
+
+----
+
+|| *Previous:*  IciclesDiscussion || '''[[Icicles]]''' || IciclesIndex || *Next:* [[LaCarte]] ||
+
+
+
+DrewsElispLibraries referenced here:  Lisp:lacarte.el, Lisp:icicles.el
+
+CategoryCompletion

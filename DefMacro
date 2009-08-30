@@ -1,0 +1,117 @@
+You can define new language constructs in EmacsLisp using defmacro.  A
+macro is replaced by its definition when it is evaluated.
+
+See MacroUtilities for code which makes recurring macro-writing tasks easier.
+
+Here's an example:
+
+In Emacs 20, the macro `when' was not available.  People used to write
+an if statement using `progn' and no else clause to achieve this
+effect:
+
+    (if erobot-visual
+      (progn
+        (erobot-visualize turn)
+	(view-buffer (get-buffer erobot-map-name) 'kill-buffer)))
+
+Using `when', things get simpler:
+
+    (when erobot-visual
+      (erobot-visualize turn)
+      (view-buffer (get-buffer erobot-map-name) 'kill-buffer))
+
+Note that using `when' was only a benefit if the "then" part had more
+than one statement.  In the following example, using `when' would not
+simplify the expression.
+
+    (if (erobot-kill-dir dir dist)
+	(erobot-set-position-dir dir dist))
+
+What happens now, when you evaluate the code containing `when'?  The
+`when' part gets replaced by the macro definition.  You can see
+the effect by calling `macroexpand' on the code containing the macro:
+
+    (macroexpand
+      '(when erobot-visual
+        (erobot-visualize turn)
+        (view-buffer (get-buffer erobot-map-name) 'kill-buffer)))
+
+    => (if erobot-visual (progn (erobot-visualize turn) (view-buffer
+       (get-buffer erobot-map-name) (quote kill-buffer))))
+
+Thus, when the code runs, the macro is replaced by the definition -- a
+real code template, actually -- and then it is evaluated.
+
+== Compiling ==
+
+Now comes the tricky part: When you compile code, macros are replaced.
+That means that when you byte-compile a file foo.el into foo.elc, the
+macros are no longer needed when you load foo.elc.
+
+That is why you can load macro definitions only at compile time:
+
+    (eval-when-compile
+      (require 'cl))
+
+If the file foo.elc is loaded, the macros are already replaced and
+byte compiled, and the byte-code is not compiled again, and thus "cl"
+is not required anymore.  This will prevent loading of "cl" if your
+code uses only macros from the cl package and your users use the
+byte-compiled version of your file.
+
+== Indenting ==
+
+Since you are defining new language constructs using defmacro, you
+need to tell the lisp indentation engine how to indent it.  Compare
+`if' and `when':
+
+    (if foo
+        (bar)
+      (baz)
+      (barf))
+
+    (when foo
+      (bar)
+      (baz)
+      (barf))
+
+The secret is the property `lisp-indent-function'.  Use M-x apropos to
+see that both symbols have this property set.  Here's the output of
+M-x apropos RET ^when$ RET.
+
+    when
+      Macro: If COND yields non-nil, do BODY, else return nil.
+      Plist: lisp-indent-function
+
+Now press RET on the line with the PropertyList (Plist).  You should
+see the values in the list:
+
+    Symbol when's plist is
+     (lisp-indent-function 1)
+
+    Symbol if's plist is
+     (lisp-indent-function 2)
+
+If you write a macro with unusual indentation requirements, you
+therefore need to set the lisp-indent-function property as well.
+Here's an extract from lisp-mode.el, where this is done for most of
+the symbols.
+
+    ;; (put 'progn 'lisp-indent-function 0), say, causes progn to be indented
+    ;; like defun if the first form is placed on the next line, otherwise
+    ;; it is indented like any other form (i.e. forms line up under first).
+
+    (put 'lambda 'lisp-indent-function 'defun)
+    (put 'autoload 'lisp-indent-function 'defun)
+    (put 'progn 'lisp-indent-function 0)
+    (put 'prog1 'lisp-indent-function 1)
+    (put 'prog2 'lisp-indent-function 2)
+    (put 'save-excursion 'lisp-indent-function 0)
+    (put 'save-window-excursion 'lisp-indent-function 0)
+    ...
+
+See also BackquoteSyntax.
+
+----
+CategoryCode
+

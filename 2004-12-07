@@ -1,0 +1,60 @@
+Got a mail today from an email address at google.com, saying:
+
+: Google is looking to advertise on emacswiki.org.  Please contact me at your
+earliest convenience to discuss further.
+
+The email sig says that the sender works at 
+Google Inc.,
+1440 Broadway,
+New York, NY 10018.
+
+I wonder whether this is a fake.  If it is some elaborate spam scheme, I fail to see it,
+because email does in fact get sent to google.com.  Maybe it is part of a social distributed
+mail denial-of-service attack on Google?  Or Google just sends automated mail to all sites with a high pagerank
+based on WHOIS entries?  But I think they're not allowed to use WHOIS info...
+
+Weird.  I haven't replied, yet.
+-- AlexSchroeder
+
+[new]
+Weird... afaik Google is based in Mountainview CA. This page (http://www.google.com/ads/index.html) tells about their adds and that you can have them send you email details about it... not that they will contact you.
+
+Phishing is very common on the net at this time :(
+
+-- ArjenWiersma
+
+[new]
+According to this http://www.google.com/corporate/address.html it might be legitimate.
+
+-- NelsonFerreira
+
+[new]
+What do the Received headers say?
+
+-- DanielNeri
+
+[new]
+Update: Just got a *phone call* from the guy.
+I told him that I was basically not interested in the extra income.
+He said that they're willing to let people just try it out.
+No lock-in etc.
+I replied that "I'd ask my user-base."
+So here's two questions:
+
+# Should we join Ad Sense, yes or no?
+# What would we do with the money if we joined?
+
+The guys at http://www.thinkmo.de/ are billing me
+EUR 20 per month, which basicall covers bandwidth.
+So this is not about "defraying the costs
+of running the wiki" or anything.  I think the only acceptable implementation
+would be an "opt-in" thing.  A link at the bottom that says "Switch on Ad Sense"
+-- opt-in, not opt-out.
+
+-- AlexSchroeder
+
+[new:PierreGaston:2004-12-07 15:59 UTC]
+I say go for it. Google ads are not some flashing flash things, I think you can put it where you want, you can even write a small oddmuse module to give the readers  the choice to view the adds or not. Users reading this wiki are smart enough not to become victims of the advertisement propaganda. I'm sure we can trust you to spend the money where it is best needed ( [http://iccf-holland.org/ helping needy children in Uganda]  ;))  
+
+[new:AlexSchroeder:2004-12-08 01:59 UTC]
+Given the general lack of interest in Google ads, I think I will decline the offer.  ;)

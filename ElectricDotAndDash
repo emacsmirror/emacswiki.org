@@ -1,0 +1,84 @@
+== Install and test ==
+
+Install this:
+
+Lisp:electric-dot-and-dash.el
+
+Try to locally bind `.' and `-':
+
+ (local-set-key "." 'electric-dot-and-dash-dot)
+ (local-set-key "-" 'electric-dot-and-dash-dash)
+
+Now type `.' two times rapidly (by default a maximum delay of 0.5 s) and see how a left parenthesis is inserted. Next, type slowly and see the difference. Try the same with `-'.
+
+== Comments ==
+
+=== Dot and Dash ===
+
+[new:DrewAdams:2006-09-07 21:58 UTC]
+Fun. On a standard PC keyboard, `,' and `.' might be better bindings than `.' and `-'. However, I guess one would need to change more than the bindings. How about picking up what should be done in the non-double case from the normal (i.e. previous) binding for the key, or else let users specify the normal, non-double command to use for each key? -- DrewAdams
+
+[new]
+On my keyboard, `.' and `-' was the most convenient keys to bind but I understand if not everyone agrees. I thought about doing it a bit more generic and easier to configure for other keys, but this was just a small experiment so I didn't bother. -- MaDa
+
+[new:DrewAdams:2006-09-08 14:30 UTC]
+I figured that. I think it could be useful, beyond an experiment. It might be most useful to people who have unusual keyboards, where `(' and `)' are not so easy to type. In that case, generic treatment would be a plus. -- DrewAdams
+
+[new] I recently learned how to use input methods in Emacs. Now I can
+use a English keyboard layout but still be able to type Swedish
+characters. That got me thinking, maybe the hack on this page could be
+implemented using a very small input method instead? Does anyone know
+how that could be done? -- MaDa
+
+=== Bracket and Brace and ... ===
+
+Off-topic, you will say. Yes, but this is Lisp, after all -- what could be more important than parentheses (oops -- round brackets)?
+
+[new]
+I think `(' and `)' are not brackets but parentheses.
+Brackets mean `[' and `]'. -- Anonymous
+
+[new]
+You think so, but you are wrong... :) Check this out: http://en.wikipedia.org/wiki/Bracket#Types_of_brackets. It seems parentheses are just one type of brackets, which I have suspected all along... -- MaDa
+
+[new:DrewAdams:2006-09-08 14:27 UTC]
+To add to the confusion...
+
+I would say that that Wikipedia article expresses mainly British usage, or British understanding of American usage, not American usage (don't know about other usages). Generally, in American usage, neither of the terms "bracket" and "parenthesis" is considered more general, encompassing the other as a subtype. Although Americans will understand "square brackets" and "curly brackets", they are more likely to use "brackets" and "braces" for these symbols. However, see below: the dictionary does not exactly agree with me.
+
+The middle column of this table shows the terms used in America, IMO. I believe (but others will correct me if I'm wrong ;-)), that the right column reflects mainly British usage.
+
+|| Symbol || American || British (?) ||
+|| ( ) || parenthesis || round/curved bracket, or just bracket ||
+|| [ ] || bracket || square bracket ||
+|| { } || brace || curly bracket ||
+|| < > || angle bracket || angle bracket ||
+
+On the other hand, there is probably a fair degree of variety in American usage, especially since there are lots of Americans outside of America and lots of non-Americans in America who come from other shores (''even Brits!''). I know that, living abroad, one can easily pick up other conventions. Europeans, in general, tend to use British usage more than American usage, in English, so that might be why MaDa "suspected all along" that British usage was correct.
+
+Although I use the American terms, I personally think the British ones (except using "bracket" with no qualifier) are clearer to many people. If someone doesn't use these often, it's easy to forget which is a "brace" and which is a "bracket", but the qualifiers "square" and so on make things clear.
+
+The above is my own feeling for this, but probably a better source for American usage is the American Heritage Dictionary. It seems to suggest that "brace" is mainly a math term (or "maths" term, for Brits ;-)).
+
+* bracket -- http://www.bartleby.com/61/15/B0441500.html (see #4, #5)
+* brace -- http://www.bartleby.com/61/89/B0438900.html (see #14)
+
+And there are ASCII definitions (http://dict.die.net/ascii/)
+
+* ( ) Common: l/r paren; l/r parenthesis; left/right; open/close; paren/thesis; o/c paren; o/c parenthesis; l/r parenthesis; l/r banana.  Rare: so/already; lparen/rparen; ; o/c round bracket, l/r round bracket, [wax/wane]; parenthisey/unparenthisey; l/r ear.
+
+* [ ] Common: l/r square bracket; l/r bracket; ; bracket/unbracket.  Rare: square/unsquare; [U turn/U turn back].
+
+* { } Common: o/c brace; l/r brace; l/r squiggly; l/r squiggly bracket/brace; l/r curly bracket/brace. Rare: brace/unbrace; curly/uncurly; leftit/rytit; l/r squirrelly; [embrace/bracelet].  A balanced pair of these may be called `curlies'.
+
+*   < > Common: ; bra/ket; l/r angle; l/r angle bracket; l/r broket.  Rare: from/into, towards; read from/write to; suck/blow; comes-from/gozinta; in/out; crunch/zap (all from UNIX); tic/tac; [angle/right angle].
+
+And then there are brackets and braces in music: http://www.coloradocollege.edu/dept/MU/Musicpress/Braces.html...
+
+-- DrewAdams
+
+
+
+----
+CategoryParentheses
+CategoryExperiments

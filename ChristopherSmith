@@ -1,0 +1,90 @@
+nick on #emacs = smitty1e
+
+real email     = smittyUNDERSCOREoneUNDERSCOREeachAThomtailDOTcom
+
+fsf  member    #2221
+
+I use emacs.  Wish I had started earlier.  It's better understood, not as an editor, but as a collection of tools to do what you want.
+
+This wiki is heap powerful, and carefully edited portions of it ought to be a part of the distribution.
+
+Copious whack ideas to follow.  
+
+Some examples of my sophomoric humor exist over on http://slashdot.org/~smitty_one_each/journal
+
+Here is something whack I wrote while waiting for Fedora Core 2:
+
+-----------------------------------------------
+
+<b>Epiphany Minutes After Cereal Sustenance</b>
+
+Eddie made a conscious step.
+
+Every man at college snickered,
+
+even Mr. Applebee.  Couldn't someone
+
+ever match all capabilities shown
+
+effortlessly, modes and concepts simple,
+
+elegant, mature art conceived sublime,
+
+esteemed mother among computer software?
+
+'e mused again; corporate slavery?
+
+eventually making another cool system
+
+eschewing M________ and coolly succeeding.
+
+------------------------------------------
+
+[::smitty1e]
+
+: Welcome to the wiki.  Why did you enclose <nowiki>[::smitty1e]</nowiki> with nowiki tags? -- AlexSchroeder
+
+I'm st00p3d.
+
+
+------
+
+(taking a discussion from EmacsSchism)
+
+[new]
+"crusading, without regard for the likelihood of it happening, for the wholesale renaming of an operating system"
+:: Aidan, I may be slightly unfair for pulling a piece of your writing out of its context.  However, I think the quote bears technical review.  With the quote pulled into focus, the motives of some on the issue may be clarified.  Calling GNU/Linux by simply 'Linux' is perhaps similar to acquiring a Shelby Cobra Mustang, and referring to all Mustangs as Shelbys.  Sorry if the car analogy isn't helpful, but the magnitude of the disconnect may help to understand the position of those you'd characterize as 'crusading'.
+Best, ChristopherSmith
+
+[new]
+::: Note that I don't have anything against "crusading" _in itself_--I just think it's a manifestation of bad judgement to energetically promote one's position in this context. For why, read on. 
+
+[new]
+:::: I use [http://www.netbsd.org/ NetBSD], which is named for the project that distributes the code and binaries. The windowing system ([http://www.x.org/ X11]) and the toolchain ([http://gcc.gnu.org/ GCC] and binutils) are not mentioned in its title.
+
+:::: [http://www.suse.de/ SuSE Linux] is named for the project that distributes the code and binaries, and for its kernel. The desktop environment [http://www.kde.org/ (KDE)], the windowing system [http://www.x.org/ (X11)], many of the userspace tools ([http://www.gnu.org/ GNU coreutils, GNU fileutils,] etc.) and [http://www.gnu.org/ the toolchain] aren't mentioned in its title.
+
+:::: [http://www.sun.com/ Sun] Solaris is named by Sun's marketing division, to my knowledge. Its windowing system (X11), its toolchain (the GNU toolchain is probably the most widely installed), and much of its userspace tools (from SVR4) aren't mentioned in its title either.
+
+:::: Microsoft Windows is named for its windowing system; the facts that much of its code was developed in co-operation with IBM, and that much of the networking utilities were taken from the BSD project, weren't mentioned.
+
+:::: [http://www.apple.com/ Apple's] Mac OS X is named for its hardware; the fact that a huge proportion of its code comes from [http://www.next.com/ NeXTStep], BSD, and Mach isn't mentioned in its title.
+
+:::: SGI's Irix is named for a part of the human eye--its BSD code, and its excellent support for [http://www.opengl.org/ OpenGL,] are ignored.
+
+[new]
+::: What I take from this is that "Linux" is as appropriate a name for an OS--and it doesn't even describe a particular OS, for that you need to include the distribution--as any other. And that's why people keep using it. So the effort to rename it will--and this has proven to be the case--at most, be taken up by some distributions, and ignored by the huge majority of people who need to refer to it every day. 
+
+::: So, /I/ mentally file these efforts under "unrealistic propaganda." If you don't share this judgement, then, fair enough, but please respect it being expressed in a context that's appropriate for it. I think you can assume, too, that a decent proportion of the emacswiki readership have read the FSF's positions on most things, as well, so pointing us towards these positions does not necessarily achieve anything. 
+
+::: Take care, thank you for your input, --- AidanKehoe
+[new]
+huh? OS X is named for it's hardware?? Hardly.
+It is called Mac OS 10, after Mac OS 9, with 10 written as Roman Numeral X, meanwhile, pun with unix series, thus we have Mac OS X. When it came out, the Apple marketing made sure that X should be pronounced 10 as a fanfare. These days, most people just pronounce it OS eks, inline with unickeses. http://www.xahlee.org/UnixResource_dir/writ/macosx.html -- [[Xah_Lee]]
+
+[new]
+And Mac stands for? Macintosh which is? A piece of hardware. Thus Mac OS X is named for its hardware.
+[new]
+While filter spam is an obvious requirement, I'm unsure Xah falls in that category, so I'd prefer not to censor his ideas, at least on my personal page.  Thanks, C.
+----
+CategoryHomepage

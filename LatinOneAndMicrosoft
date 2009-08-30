@@ -1,0 +1,124 @@
+Jukka "Yucca" Korpela explains why the Microsoft Windows character set is not exactly the same as Latin-1.
+[http://www.cs.tut.fi/~jkorpela/www/windows-chars.html]
+
+: There are actually several character sets in use on Windows.  The one
+whch is a superset of Latin-1 is `windows-1252'.  This is registered with
+IANA for use on the net (like the rest of windows-125N).  The real problem
+is that when they're used, there often isn't correct meta-information that
+the text is encoded that way, i.e. a MIME charset specification.  Either it's
+missing in mail or HTTP headers, and iso-8859-1 is assumed, or it's
+incorrect.  The
+treatment below is only correct if the Emacs eight-bit characters concerned
+come from windows-1252 decoded as iso-8859-1.  Windows-1251, for instance,
+has different characters at those code points.  Rather than kludging it,
+it's better to decode the text properly as windows-1252 -- see below.
+
+What you can do, if you just want to display these characters correctly without caring about the characters
+that are usually found in these positions, is tweak the standard-display.
+
+Example:
+
+    (standard-display-ascii ?\205 "...")
+    (standard-display-ascii ?\221 [?\'])
+    (standard-display-ascii ?\222 [?\'])
+    (standard-display-ascii ?\223 [?\"])
+    (standard-display-ascii ?\224 [?\"])
+    (standard-display-ascii ?\225 [?\*])
+    (standard-display-ascii ?\226 "---")
+    (standard-display-ascii ?\227 "--")
+
+Note that these numbers are in octal.  Use `M-x calculator', switch to octal input using `i o',
+type the number, use decimal output using `o d' and you'll find that 0222 is 146, the
+"right single quotation mark" mentioned on Jukka's page.
+
+Please add to the table above if you extend it.  ;)
+
+----
+
+The following is quite misleading.  If you deal with text encoded as
+windows-1250 &c, then you definitely need the appropriate coding
+systems.  I don't know what the problems are for which this would not
+help.  The problem is that the coding systems in codepage.el are inadequate since
+they only use a single Emacs charset, and so mostly don't cover the repertoire
+of the relevant character sets.
+
+It is _not_ true, as sometimes claimed, that doing otherwise is a problem in Emacs 21.
+[http://www.loveshack.ukfsn.org//emacs/Mule/lisp/international/code-pages.el
+http://www.loveshack.ukfsn.org//emacs/Mule/lisp/international/code-pages.el]
+has complete implementations for Emacs 21 of most
+of the 8-bit coding systems you're likely to come across, with a macro
+you can use to add more trivially.  With these coding systems you can deal properly, 
+for instance, with windows-encoded files and MIME text sent or received
+in such charsets, at least in Gnus 5.9.  MIME charsets in fact
+correspond exactly to Emacs coding systems.  Note that the
+correct (IANA-registered) MIME name is `windows-1250', not `cp1250';
+and similarly for the rest of 125x, as reflected in the mime-charset properties
+in code-pages.el.  -- [[fx]]
+
+[new]
+I'm not sure what you're telling us, here.  Do you mean to say that codepages /could/
+solve the problem, but the current implementation does not, and your code does?
+As far as I can tell there are two options when considering codepages:
+
+# Each byte represents a character in an existing target character set such as Latin-1,
+  and the bytes representing characters not part of the target set are not mapped, showing up as \222
+  etc.
+# Each byte represents a character in various different existing target characters set such as Latin-1 and Unicode,
+  thus a character such as ä will be mapped to the Latin-1 ä whereas the ellipsis (...) will be mapped to the
+  Unicode character.
+## When saving, there are again two options: Either Emacs knows how to save the internal representation in
+   a particular character set,
+## or Emacs offers to save in some other encoding that can encode all the character sets.  This usually requires
+   "unification" which current CVS Emacs can do quite well.  So basically Emacs offers to save the file in UTF-8
+   or some ISO 2022 encoding.
+
+Is this correct?  If not, can you correct it? -- AlexSchroeder
+
+[new]
+I don't understand it.  code-pages.el just provides complete and correct (I hope)
+coding systems for those MIME character sets using their definitions in
+terms of unicodes, e.g. code point 0x80 in windows-1252 is U+20AC.  They
+just work once you've loaded the library, unlike the ones from codepage.el.
+If you read a file as windows-1252, it will normally be saved as windows-1252
+(unless you add some text which windows-1252 doesn't encode).  This isn't
+significantly different between Emacs 21.3 and subsequent development as far
+as I know.
+
+If you're concerned about the internal representation, just ignore it if
+you don't understand the code.  It only affects display (if you don't
+have the appropriate fonts).  It isn't even fixed in Emacs 21 (see the
+unification and fragmentation options in ucs-tables.el) and will be
+different in a future Unicode-based Emacs, although the same coding systems
+are implemented for that.  The idea is just to DTRT, and users shouldn't
+have to worry about it.
+
+[new]
+Sometimes windows users wonder wether the codepages 1250 and friends would help them solve their coding problems (weird characters, escaped characters, MIME encoded strings, whatever).  The answer is: No.
+
+[new]
+The following posting is an answer to a posting that suggested to use <code>M-x codepage-setup RET</code> to solve a particular coding problem on NT Emacs.
+
+ From: EliZaretskii
+ Subject: Re: Internationalization
+ Newsgroups: comp.emacs
+ Date: Sun, 25 Feb 2001 09:13:20 +0200
+
+First, Emacs doesn't even support codepage 1252, so codepage-setup will fail if you type "1252" at its prompt.  (The reason for this omission will become clear if you read on.)
+
+More importantly, one should realize what codepage.el does in its current shape.  It does <em>not</em> introduce additional characters into Emacs.  It defines coding systems: a mapping of 8-bit codepoints into a single existing character set, the target charset of the codepage, and leaves all the extra codes undefined.  For example, codepage 862 maps all the codes for Hebrew letters into the ISO 8859-8 characters, the target character set of cp862, and leaves all the IBM graphics characters supported by cp862 undefined.
+
+In other words, you cannot display additional characters present in the codepage character set by using cpNNN coding systems.  You can only display characters already present in the target character set.
+
+In the case of cp1252, the target charset is Latin-1.  Since cp1252 and ISO 8859-1 are identical where they overlap, it doesn't make much sense to have cp1252.  (Well, actually, there are a few situations where it could help, but the one discussed here is not one of them.)
+
+Repeat after me: "codepage.el defines coding systems, not character sets".
+
+[new]
+For mail readers (I use Mew but I guess it is the same for other mail readers), it is interesting that Emacs-21 knows that cp1252 is to be interpreted as latin-1 (helps to display the message mostly correctly).  You can do that with
+<code>(define-coding-system-alias 'cp1252 'latin-1)
+(define-coding-system-alias 'windows-1252 'cp1252)</code>
+For the coming Emacs-22, I believe <code>(require 'code-pages)</code> solves the problem better.
+
+
+----
+CategoryInternationalization

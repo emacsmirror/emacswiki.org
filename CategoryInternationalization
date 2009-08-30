@@ -1,0 +1,75 @@
+Click on the title to search for all pages in the internationalization ([::i18n])
+category.  This includes Latin-1 and CP-1250 questions, Japanese and
+Chinese fonts and input methods, using BDF fonts on NT Emacs, etc.
+
+Getting started:
+
+* InternationalSetup -- basic setup you need
+** LanguageEnvironment -- Emacs doesn't show or accept äöü or similar
+** InternationalFonts -- where to get the fonts to show your characters
+** FontSetsForNTEmacs -- how to install the fonts for Emacs on Windows
+** PrintingBdfFonts -- when you use the intlfonts package with the BDF fonts, here is how to print them using PsPrint
+* DisplayingNonAsciiCharacters -- debugging your setup when the display fails
+* FindingNonAsciiCharacters
+* BufferCharset -- list charsets used in a buffer
+
+* InputMethods -- the code you need to be able to type weird characters which are not part of your keyboard
+** ChangingCursorDynamically -- Automatically change the TextCursor color when you use an input method
+** Lisp:fliptext.el -- unicode upside-down characters
+
+* AltGrKey -- Emacs keys seems hidden because /AltGr/ + /Control/ + /key/ is (almost) just /AltGr/ + /key/  -- Solution: use /AltGr/ + /RControl/ (in that order!)
+* TypingNonAsciiCharacters -- debugging your setup when the keyboard fails
+* WritingArabic -- see also: DisplayEngineForArabic
+* WritingChinese -- details for Chinese readers and writers
+** [[ScimBridge Chinese]] use SCIM in Emacs.
+** WritingChineseWithWuBi
+* WritingGothic --  Details for Gothic users
+* WritingHebrew -- see also: HebEng
+* WritingIsoLatinOne -- Writing with the `C-x 8' prefix.
+* WritingJapanese -- details for Japanese readers and writers
+** InsertSpaceBetweenZenkakuAndHankaku -- Insert a space between zenkaku and hankaku (in Japanese)
+** [[Migemo]] -- Isearch Japanese characters without convertion (in Japanese)
+* WritingKorean -- details for Korean readers and writers
+* WritingRussianWithDvorak -- details for Russian users
+* GnuEmacsRussification -- configuration for Russian users
+* WritingSanskrit -- details for Sanskrit authors
+* WritingTengwar -- Tolkien's languages
+* WritingYiddish -- Details for Yiddish users
+* SupportBiDi -- Bidirectional input and output
+* SupportHindi -- How to read and write in Hindi language using Emacs
+* SupportTamil -- How to read and write in Tamil language using Emacs
+* TypographicalPunctuationMarks -- en-dashes, em-dashes and typographical quotation marks (aka "smart quotes")
+* TextTranslator -- text translation package
+
+Coding System stuff:
+
+* CodingSystem -- what coding systems are
+* GutenbergCoding -- coding system for Project Gutenberg texts
+* HtmlCoding -- coding system for HTML files (Emacs 21)
+* LatexEnc -- coding system from <nowiki>LaTeX</nowiki> <code>inputenc</code>
+* MuleUCS -- extending utf-8 and other unicode coding systems
+* PerlPodCoding -- coding system from perl POD <code>=encoding</code> declaration
+* SelectingTheRightCodingSystem through auto-detection, a keyboard command, a text mark in the file, or a project-specific configuration
+* [[Unicad]] -- universal charset auto-detection, like mozilla can do
+* XmlCoding -- coding system for XML files (Emacs 21)
+
+Special Packages:
+
+* ClassicalGreek
+* SimpleJapaneseTypesetter
+* ChineseInputMethodImprove
+* Lisp:hanconvert.el -- Convert between simple chinese character and tradition chinese character
+
+Background Information:
+
+* FontSets
+* LatinOneAndMicrosoft
+* UnicodeEncoding
+* ReCode
+* ChangingEncodings
+
+For some basic information on MULE, read the paper by Handa et al.
+
+* http://tsukuba.m17n.org/mule/pricai96/index.html
+
+

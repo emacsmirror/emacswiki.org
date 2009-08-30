@@ -1,0 +1,6 @@
+I am relatively new to emacs.  I am still just dabbling in elisp.  
+I made mods to bs.el to keep the order the same and highlight the current buffer you are in. 
+you can read about it here
+http://paddymullen.com/?p=45
+
+http://paddymullen.com/upload/try2-bsmods.el

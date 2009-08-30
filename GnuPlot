@@ -1,0 +1,11 @@
+[http://www.gnuplot.info/ Gnuplot] is used to plot graphs.  It has a
+command line interface.  And BruceRavel wrote a mode for it available
+from address
+http://feff.phys.washington.edu/~ravel/software/gnuplot-mode/
+
+There's a big screenshot of the mode
+[http://www.linux.org.ru/gallery/bigKQ9MBm.jpg here].  Beware, it is
+1280x1024 pixels, weighting 176KB.
+
+----
+CategoryModes

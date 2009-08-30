@@ -1,0 +1,32 @@
+=== Shortcut for editing wiki pages ===
+
+I just noticed a creally handy feature when surfing EmacsWiki: you can edit the text of the page without hitting that link using the mouse:
+
+In Firefox (maybe Mozilla too):
+
+Alt+e takes you directly to edit mode
+
+In Internet Explorer:
+
+Alt+e marks the "Edit text of this page" link so that you only need to press enter.
+
+Does anyone know why this works?
+
+-- MaDa
+
+[new]
+I defined 'e' as a shortcut key.  You can see it in the HTML:
+
+: <a class="edit" '''accesskey="e"''' title="Click to create this page" href="http://www.emacswiki.org/cgi-bin/wiki?action=edit;id=SiteMap">Edit text of this page</a>
+
+I think in German it is 'b' (bearbeiten).  For the other languages a translation is missing, I believe.
+
+I also note that the popup text is bogus.  :(
+
+-- AlexSchroeder
+
+[new]
+
+Aaaaah, cool! Then we need 'r' for RecentChanges too... :)
+
+-- MaDa

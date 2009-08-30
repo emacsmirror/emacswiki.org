@@ -1,0 +1,4 @@
+A basic minor mode for highlighting FIXME, TODO, BUG, and other warning comments, and jumping to these tags in the buffer.
+
+
+Lisp:fixme-mode.el

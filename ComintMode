@@ -1,0 +1,54 @@
+== What is Comint Mode? ==
+
+Comint mode is a package that defines a general command-interpreter-in-a-buffer.
+The idea is that you can build specific process-in-a-buffer modes on top of
+comint mode -- e.g., lisp, shell, scheme, T, soar, ....
+This way, all these specific packages share a common base functionality,
+and a common set of bindings, which makes them easier to use (and
+saves code, implementation time, etc., etc.).
+
+== Icicles Enhancements to Comint Mode ==
+
+You can use [[Icicles]] [[completion]] in Comint mode. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
+
+You can also use `##C-`##' to quickly find, reuse, and edit a previous shell input, matching it in several ways. See [[Icicles - Other Search Commands#IciclesShell|Icicles - Reuse Comint Inputs]].
+
+
+
+
+
+== Leveraging Comint ==
+
+Since SqlMode is based on comint-mode, several aspects of SQLi buffers
+can be controlled by setting comint variables: automatically truncate
+buffers to a certain size, size of the input ring (history).  You can
+either set these variables globally in your .emacs (in which case they
+will affect other modes such as shell-mode), or you can set these
+variables on a sql-interactive-mode-hook:
+
+    (add-hook 'sql-interactive-mode-hook
+              (function (lambda ()
+                          (setq comint-output-filter-functions 'comint-truncate-buffer
+                                comint-buffer-maximum-size 5000
+                                comint-scroll-show-maximum-output t
+                                comint-input-ring-size 500))))
+
+
+Similar settings make sense for other ComintMode based code such as
+ShellMode.
+
+== Multiline History ==
+
+If you are using Emacs 20, take a look at ComintPatched if you are
+interested in recovering multiline statements from the history.
+
+== Clearing the buffer ==
+
+Lots of times, the buffer just grows and grows, especially if you do a lot of commands in shell mode.  If I'm doing interative work like looking through repeated find results, I clear the buffer constantly so C-a C-s will search through only what I care about.
+
+  (defun cmg:shell-clear-region ()
+    (interactive)
+    (delete-region (point-min) (point-max))
+    (comint-send-input))
+
+

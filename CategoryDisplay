@@ -1,0 +1,90 @@
+Click the heading to find all pages related to display stuff.  Note
+that colors and [[Face]]s belong in CategoryFaces.
+
+== General tools for manipulating and adjusting the display ==
+
+* DoReMi -- command `doremi': use it to define other commands that let you use the arrow keys and/or mouse wheel to ''make incremental changes'' to things or ''cycle through a ring'' of things.
+* DefineFaceConstant -- a macro, `define-face-const', for defining faces and constant variables (via `defconst') having the faces as values, given the face foreground and/or background names (strings).
+* CategoryCustomize
+
+== Some pages relating to the display ==
+
+* '''CategoryFrames'''
+* '''CategoryMouse'''
+* RemoteEmacs -- running Emacs from an another machine over X11
+* HighlightCurrentLine
+* HighlightCurrentColumn
+* CrosshairHighlighting -- highline current line and column; track cursor or show cross hairs momentarily.
+* ChangingCursorDynamically -- automatically change the cursor, depending on the context
+* ModeLine -- the mode-line provides lots of information
+** ModeLineMinorModeMenu -- pop up minor-mode menus from the mode-line.
+** ModeLinePosition -- enhancements to standard minor modes ‘line-number-mode’, ‘column-number-mode’, and ‘size-indication-mode’
+** ShowPointMode -- show the value of the point in the mode line
+** DiminishedModes -- Abbreviate minor modes appearing in the ModeLine.
+* TransparentEmacs -- how to make your wallpaper shine through the buffer
+* HighlightTemporarily -- highlight parts of a buffer
+* WorkSpaces - an implementation based on registers
+* FullScreen - how to switch to fullscreen (with F11 for example)
+
+== Managing Frames within Emacs ==
+
+* '''CategoryFrames'''
+* OneOnOneEmacs -- making Emacs more [[Frame]]-oriented, less Emacs window-oriented
+* Library Lisp:doremi-frm.el -- use the arrow keys and/or mouse wheel to make incremental changes to frame properties and cycle through a ring of frame configurations (undo). See DoReMi.
+* FisheyeWithThumbs -- thumbnail frames give a fisheye view of your frames and provide an alternative to iconifying
+
+* WindowsAndFrames -- do several tasks with one Emacs
+* FrameConfiguration -- save, restore and switch [[Frame]] configurations (see also SessionManagement)
+* BumpWindowUp -- control the position of XEmacs frames on NT Windows
+
+== Scrolling ==
+
+* [[Scrolling]] -- general stuff
+* BufferScrolling -- horizontal scrolling
+* SmoothScrolling -- no half-page jumps
+* NextLineBehavior -- scroll one line at a time
+* ScrollMargs -- yet another smooth scroll mode
+* ScrollAllMode -- scroll several buffers together
+* FollowMode -- display a buffer in two windows as if it were two columns
+* HalfScrolling -- scrolling by half pages
+* IdleScrolling -- scroll down one line per second when idle
+* SwissMove -- scroll with decreasing stepsizes
+
+== Display Line Wrap ==
+
+* TruncateLines -- the display engine can do LineWrap
+
+== Modifying the DisplayTable ==
+
+* PageBreaks -- change page breaks from a ^L to a horizontal line
+
+== Saving screen real-estate ==
+
+* ScrollBar -- how to disable it, or how to put it on the other side
+* ToolBar -- how to disable it
+* MenuBar -- how to disable it
+* ActiveMenu -- let the MenuBar enable and disable itself
+* FisheyeWithThumbs -- thumbnail frames save space but still let you see your frames -- an alternative to iconifying
+* FrameModes -- shrink-wrap frames (resize to fit selected window/buffer); tile frames; iconify/hide frames
+* DiredDetails -- show/hide details in Dired
+* TheaterStyle -- how to disable everything except the buffer itself. 
+* GoodFonts -- what fonts for what screen resolutions
+* SetFonts -- how to set them
+* HideModeLine -- don't display the ModeLine
+* LineSpacing -- how to set it
+* TheFringe -- In graphical Emacs there's a space between the buffer and the window.  You either like it, or you don't.
+
+== (Add pages specific to certain displays such as MSDOS, tty, etc.) ==
+
+* InternationalConsoleFonts -- displaying international characters in a terminal
+* EmacsOnTerminal -- running Emacs with a ''real'' terminal
+* RemoteEmacs -- Emacs across machines with X11
+
+== Low-level drawing ==
+
+* XlibInterface -- an xlib interface in Emacs Lisp
+* PixelDrawing -- a patch to the C source defining a function to draw pixels
+
+== And for tons of screenshots ==
+
+* http://images.google.com/images?q=emacs

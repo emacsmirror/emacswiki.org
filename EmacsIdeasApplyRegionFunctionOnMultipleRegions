@@ -1,0 +1,16 @@
+I have an idea of something that I think would be very useful in emacs. What I would like to have is something that can loop through all overlays and/or textproperties that has a certain property, and then perform any of the millions of commants that can work on the region in emacs.
+
+Example of uses:
+
+* Use mouse to mark several different "regions" throughout a buffer. Then use this new cool feature to call for example upcase-region on all those marked "regions".
+* When in isearch-mode, add a new option to it that applies any "region-function" in emacs on all marked text in the buffer (you know, newer versions of emacs highlights matched words when doing isearch)
+* And so on...
+
+I think you see where I'm going. My guess is that this should not be hard to do at all, I would just want to see if this already exists before I try to implement it myself.
+
+-- MathiasDahl
+
+This now has several implementations. Find more here: ApplyFunctionOnMultipleRegions.
+
+----
+EmacsIdeas

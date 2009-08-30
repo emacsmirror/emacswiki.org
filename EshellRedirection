@@ -1,0 +1,43 @@
+You can use > or >> or >>> to do redirection:
+
+ >    means overwrite
+ >>   means append
+ >>>  means insert at point - this works when redirecting to a
+        buffer or to an open file
+
+The destination can be either a filename or a buffer:
+
+ echo "hello world" > universal-greeting.txt
+ echo "hello world" > #<buffer universal-greeting>
+
+If the special syntax for piping to buffers annoys you:
+
+ M-x customize-variable RET eshell-buffer-shorthand RET
+
+Eshell also supports two pseudo-devices. Try this:
+
+ echo hello > /dev/clip    goes to the clipboard 
+ echo hello > /dev/kill    goes to the kill ring
+
+Eshell can write to multiple output targets, including pipes:
+
+ (+ 1 2) > a > b > c   ; prints number to all three files
+ (+ 1 2) > a | wc      ; prints to 'a', and pipes to 'wc'
+
+----
+Does this work under Windows?  I would like to run sqlite3.exe through eshell.
+It would be highly cool to bind input to one buffer, and output to another.
+Can anyone show how such a rabbit is extracted from ye olde hat?
+ChristopherSmith
+
+Sadly, Eshell does not support input redirection.  But that's not really its place, either.  You should use M-x sql-sqlite to talk to your SQL process. -- JohnWiegley
+
+----
+On running 
+
+ ./somescript.pl > foo.xml
+
+in bash, somescript.pl puts some xml into foo.xml and then outputs "processing time: 10ms" to the shell. However, eshell puts the "processing time" line at the bottom of foo.xml. Is this a bug in eshell? -- unhammer
+ 
+----
+CategoryEshell

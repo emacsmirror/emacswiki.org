@@ -1,0 +1,77 @@
+== Questions ==
+
+Why (on "GNU Emacs 21.3.50.1 (i386-mingw-nt5.0.2195)") do some TrueType fonts (such as http://www.orindalodge.org/kadoshsamaritan.php) not show up in the <S-mouse-1> list?
+
+
+: Do I need to do something with FontSets first?  I don't understand that yet...
+
+
+== Install ==
+You may need to install additional fonts to display some
+international characters.  Here are some sources for these fonts.
+
+=== GNU Intlfonts ===
+
+This package is best integrated with Emacs.  Emacs has two FontSets by default;
+the intlfonts package has fonts for the `standard' one.  However, the latest free
+X distributions (XFree86 and X.org) now have more comprehensive sets.
+
+* ftp://ftp.gnu.org/gnu/intlfonts/
+
+You can also install these as packages from your favorite
+distribution.  In Debian, for example, the fonts have been split into
+smaller packages.  This is what it looks like in dselect, for example:
+
+  -- Opt x11      xfonts-intl- <none>      1.1-9       International fonts for X -- Asian.
+  -- Opt x11      xfonts-intl- <none>      1.1-9       International fonts for X -- Chinese.
+  -- Opt x11      xfonts-intl- <none>      1.1-9       International fonts for X -- Chinese big.
+  -- Opt x11      xfonts-intl- <none>      1.1-9       International fonts for X -- European.  
+ *** Opt x11      xfonts-intl- 1.1-9       1.1-9       International fonts for X -- Japanese.
+ *** Opt x11      xfonts-intl- 1.1-9       1.1-9       International fonts for X -- Japanese big.
+  -- Opt x11      xfonts-intl- <none>      1.1-9       International fonts for X -- Phonetic Alphabet.
+
+=== Unicode ===
+
+If you want to use the UnicodeEncoding, you will need appropriate
+fonts, too.  The fonts must be for the ISO 10646-1 encoding.  You can
+get the one from Markus Kuhn's page.  This page is a good introduction
+to the problems, too.
+
+* http://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html
+
+Note that many Unicode fonts are incomplete, so the language you are
+interested in may not yet be in the font.  Check before you download.
+
+In fact, you don't necessarily need a 10646-encoded font to display unicoded text.
+Firstly, the text doesn't have to be decoded into the mule-unicode charsets (e.g.
+the typical configuration of Mule-UCS).
+Second, you can map a character repertoire on to a font with a more-or-less arbitrary
+encoding which supports that repertoire---see `font-ccl-encoder-alist'.
+Here's an example setup to use Latin-1 fonts
+for characters from other Emacs charsets which are unified with Latin-1:
+
+    (define-ccl-program encode-iso8859-1-font
+      `(0
+        (translate-character ucs-8859-1-encode-table r0 r1)
+        (if (r0 === ,(charset-id 'latin-iso8859-1))
+    	(r1 = (r1 + 160)))))
+    (map-char-table (lambda (k v)
+    		  (if v (set-fontset-font t k '(nil . "iso8859-1"))))
+    		ucs-8859-1-encode-table)
+    (add-to-list 'font-ccl-encoder-alist '("iso8859-1" . encode-iso8859-1-font))
+
+Also, complex scripts encoded as utf-8 may require specialized fonts for the relevant
+glyphs such that you can't display them with an iso10646-1 font.
+See the Indian support added after Emacs 21.3, for instance---the glyphs
+required to display the combining characters generally don't correspond to
+Unicode characters.
+
+=== GNU Unifont ===
+
+Another attempt at creating a Unicode font.  (This URL is probably obsolete.  You can
+get an up-to-date version of unifont from Debian archives.)
+
+* http://czyborra.com/unifont/HEADER.html
+
+----
+CategoryInternationalization

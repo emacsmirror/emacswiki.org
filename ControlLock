@@ -1,0 +1,39 @@
+%%ControlLock%% is like caps-lock, but for your control key.  Give your pinky a rest!
+
+In other words, it lets you type a key shortcut (C-z, by default) that makes emacs think you're holding down the control key for subsequent key strokes (until you type C-z again to disable it).  Thus you can then navigate around etc without holding down the control key.  For example, you can type n and p to move up and down lines instead of C-n and C-p.
+
+Get it here: Lisp:control-lock.el.
+
+See also StickyModifiers.
+
+To get started:
+
+<pre>
+  ; Require the code
+  (require 'control-lock)
+  ; Make C-z turn on control lock
+  (control-lock-keys)
+</pre>
+
+See the comments at the top of Lisp:control-lock.el for other tips.
+
+It works at the emacs level, temporarily turning itself off at appropriate times (during an isearch and when you're in the mini-buffer).  In that sense, it is smarter than a caps-lock key.
+
+I've always liked the power of the large number of key shortcuts you can define in emacs, but have always found holding down the control key cumbersome.  It is quite nice to not have to do so.
+
+[new]
+> `control-lock-map-key' is incredibly ugly.
+
+I suppose you mean the code in that function?  Someone suggested using macros instead of evals.  I may try to do this at some point.  It won't affect the functionality though - just make the code prettier.
+
+> Also, can't you just use `extra-keyboard-modifiers'?
+
+Quite interesting - (setq extra-keyboard-modifiers ?\C-x) does amount to a simple version of locking the control.  I wasn't aware of it.  However, it seems as though it doesn't offer any hooks for letting you disable it at relevant times.  Control-lock's disabling itself during isearch and when in the minibuffer adds quite a bit to its usability.  Can you think of any ways to accomplish this?
+
+[new]
+
+Note that when in control-lock, M-a behaves as M-a (etc) but S-a behaves as just a.  IE you can holding down shift disables control lock.
+
+[new]
+This looks great. Alternatively, Viper mode is in the same spirit: having two locking modes, one for inserting text (insert mode), the other one to navigate and execute complex operations (vi mode). The Esc key would be Viper mode's control-lock.
+-- SebastienRoccaSerra

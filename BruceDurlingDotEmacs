@@ -1,0 +1,274 @@
+    
+    ;; Todo
+    ;;
+    ;; 1. outline-minor-mode is having a keybinding fight with planner
+    ;; mode and it is doing funny things in message mode as well.
+    ;;
+    ;; 2. I will eventually need to put my C++ and Java bits from my other
+    ;; .emacs in here as well.
+    ;;
+    ;; 3. Make bbdb-mode work under windows
+    ;;       
+    ;;     [ What's wrong with bbdb-mode under windows???  -jp ] 
+    ;;    Done. The problem wasn't windows so much as my inexperience with gnus.
+    ;;    [[bbdb://Bruce Durling]] still doesn't work though.
+    ;; 
+    ;;
+    ;; 4. Make gnus:afasdf links work from planner-mode under windows
+    ;;    Done. Works if I do the link correctly [[gnus://INBOX/verylongmsgid]]
+    ;;
+    ;; 5. Queue up mail seeing I'm working disconnected
+    ;;
+    
+    (setq load-path
+          (nconc
+           '(
+             "~/site-lisp/"
+             "~/site-lisp/bbdb-2.34/lisp/"
+             "~/site-lisp/tramp-2.0.25/lisp/"
+             )
+           load-path))
+    
+    ;; Basics
+    (setq user-full-name "Bruce Durling")
+    (setq user-mail-address "bruce.durling@foo.bar")
+    
+    ; add the extra allout goodness to outline mode
+    (require 'allout)
+    (outline-init t)
+    (defvar rf-allout-font-lock-keywords
+      '(;;
+        ;; Highlight headings according to the level.
+        (eval . (list (concat "^\\(" outline-regexp "\\).+")
+    		0 '(or (cdr (assq (outline-depth)
+    				  '((1 . font-lock-function-name-face)
+    				    (2 . font-lock-variable-name-face)
+    				    (3 . font-lock-keyword-face)
+    				    (4 . font-lock-builtin-face)
+    				    (5 . font-lock-comment-face)
+    				    (6 . font-lock-constant-face)
+    				    (7 . font-lock-type-face)
+    				    (8 . font-lock-string-face))))
+    		       font-lock-warning-face)
+    		nil t)))
+      "Additional expressions to highlight in Outline mode.")
+    
+    ;; add font-lock to allout mode
+    (defun rf-allout-font-lock-hook ()
+      (set (make-local-variable 'font-lock-defaults)
+           '(rf-allout-font-lock-keywords t nil nil outline-back-to-current-heading)))
+    
+    (add-hook 'outline-mode-hook 'rf-allout-font-lock-hook)
+    
+    
+    (add-hook 'text-mode-hook 'turn-on-auto-fill)
+    (add-hook 'text-mode-hook 'outline-minor-mode)
+    (eval-after-load "outline" '(require 'foldout))
+    
+    (global-font-lock-mode t)
+    (setq font-lock-support-mode 'lazy-lock-mode)
+    (setq font-lock-maximum-decoration t)
+    
+    (show-paren-mode t)
+    ;; can also show as a block, though it's a bit ugly
+    (setq show-paren-style 'parentheses)
+    
+    (setq inhibit-startup-message t)
+    (setq column-number-mode t)
+    
+    (setq-default indent-tabs-mode nil)     ; always use spaces
+    (setq default-tab-width 4)              ; no need to fill up the screen
+    
+    (setq sentence-end-double-space nil)    ; make M-[ae] work
+    (setq sentence-end "[.?!][]\"')]*\\($\\|\t\\| \\)[ \t\n]*")
+    
+    (setq Info-enable-edit t)
+    
+    ;; ask if missing final newline
+    (setq require-final-newline t)
+    
+    (setq kill-emacs-query-functions
+          (cons (lambda () (yes-or-no-p "Really kill Emacs? "))
+    	    kill-emacs-query-functions))
+    
+    (setenv "PATH"
+    	(concat "c:\\cygwin\\bin;" (getenv "PATH")))
+    
+    (message (concat "PATH: " (getenv "PATH")))
+    
+    (cd "c:/")
+    
+    ;; display stuff
+    (set-scroll-bar-mode nil)
+    
+    (if (display-mouse-p) (mouse-avoidance-mode 'exile))
+    
+    ;; what is going on with the black cursor in so many color themes?
+    (require 'color-theme)
+    ;(color-theme-euphoria)
+    (color-theme-comidia) ; this is a cool dark blue theme
+    ;(color-theme-kingsajz) ; a slate possibility, comments not too good though
+    ;(color-theme-oswald) ; this is a weird green on black that lights up the chars it goes over
+    ;(color-theme-raspopovic) ; good yellow on blue, but with a black cursor
+    ;(color-theme-robin-hood) ; again with a black cursor!!!
+    ;(color-theme-sitaramv-solaris) ; arrgghh!! black cursor again!
+    
+    ;; bbdb-mode stuff
+    (require 'bbdb)
+    (bbdb-initialize)
+    (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+    (add-hook 'mail-setup-hook 'bbdb-insinuate-sendmail)
+    ;(bbdb-insinuate-message)
+    ;(bbdb-insinuate-sc) ; doesnt' seem to work at the moment
+    
+    ;; make .gnus look like elisp
+    (add-to-list 'auto-mode-alist '(".gnus$" . emacs-lisp-mode))
+    
+    (defun bld-visit-planner-home ()
+      (interactive)
+      (find-file "c:/Plans/WelcomePage"))
+    
+    (global-set-key [f12] 'calendar)
+    (global-set-key [S-f12] 'bld-visit-planner-home)
+    (global-set-key (kbd "C-c g") 'goto-line)
+    (global-set-key (kbd "C-c f") 'find-file-at-point)
+    (global-set-key (kbd "M-RET") 'hippie-expand)
+    
+    (require 'pcomplete)
+    
+    ;; separate the custom stuff from my stuff
+    (setq custom-file "~/.custom.el")
+    (if (file-exists-p custom-file)
+        (progn
+          (load custom-file)
+          (message (concat "Loading " custom-file ".")))
+      (message (concat "No " custom-file " to load.")))
+    
+    ;; get our gnus settings
+    (setq gnus-file "~/.gnus")
+    (if (file-exists-p gnus-file)
+        (progn
+          (message (concat "Loading " gnus-file "."))
+          (load gnus-file))
+      (message (concat "No " gnus-file " file to load.")))
+    
+    ;; I want to use message mode for all of my mail
+    (setq mail-user-agent 'message-user-agent)
+    
+    ;; lemme UP/downcase things
+    (put 'downcase-region 'disabled nil)
+    (put 'upcase-region 'disabled nil)
+    (put 'narrow-to-region 'disabled nil)
+    
+    ;; recent files
+    (require 'recentf)
+    (recentf-mode 1)
+    
+    ;; make buffer names unique and look like this name|dir1/dir2
+    (require 'uniquify)
+    (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+    
+    ;; diary/wiki/planner modes
+    (load "emacs-wiki")
+    (load "planner")
+    ;; diary mode stuff
+    (setq european-calendar-style t)
+    ;(setq view-diary-entries-initially t)
+    ;(setq view-calendar-holidays-initially t)
+    (setq mark-diary-entries-in-calendar t)
+    (setq mark-holidays-in-calendar t)
+    (add-hook 'diary-display-hook 'fancy-diary-display)
+    (add-hook 'list-diary-entries-hook 'sort-diary-entries t)
+    (add-hook 'list-diary-entries-hook 'include-other-diary-files)
+    (add-hook 'mark-diary-entries-hook 'mark-included-diary-files)
+    
+    ;; eldoc coolness
+    (autoload 'turn-on-eldoc-mode "eldoc" nil t)
+    (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+    (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+    (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+    
+    ;; perl stuff
+    (add-to-list 'auto-mode-alist '("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode))
+    (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
+    (add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
+    (add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
+    
+    (setq cperl-electric-keywords t)        ; foreachmy expands, etc
+    (setq cperl-auto-newline t)
+    (setq cperl-hairy t)
+    
+    (eval-after-load "cperl"
+      '(cperl-set-style 'C++))
+    
+    ;; show-trailing-whitespace in some modes
+    (mapc (lambda (mode)
+            (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
+                      (lambda () (setq show-trailing-whitespace t))))
+          '(emacs-lisp lisp python eiffel shell))
+    
+    (defun bld-open-file (file)
+      "Open the file referenced at the point in the registered window$ app."
+      (interactive "fFile To Open: ")
+      (w32-shell-execute "Open" (substitute ?\\ ?/ (expand-file-name file))))
+    
+    ;; eshell functions and aliases
+    (defun eshell/op (FILE)
+      "Invoke (w32-shell-execute \"Open\" FILE) and substitute slashes for backslashes"
+      (w32-shell-execute "Open" (substitute ?\\ ?/ (expand-file-name FILE))))
+    
+    (defun eshell/emacs (&rest args)
+      "This is sort of a complex alias for find-file"
+      (if (null args)
+          ;; If I just ran "emacs", I probably expect to be launcing
+          ;; emacs, which is rather silly since I'm already in emacs. So
+          ;; just pretend to do what I ask.
+          (bury-buffer)
+        ;; We have to expand the file names or else weird stuff happens
+        ;; when you try to open a bunch of different files in wildly
+        ;; different places on the filesystem.
+        (mapc #'find-file (mapcar #'expand-file-name args))))
+    
+    ;; This isn't properly configured at all yet
+    (defun bld-where-are-you ()
+      "Find out where you are and setup the servers appropriately."
+      (interactive)
+      (let ((where
+             (completing-read "Where are you? home or work: "
+                              (mapcar 'list '("home" "work")))))
+        (cond
+         ((string= where "home")
+          ;; At home we use use sendmail
+          (setq send-mail-function 'sendmail-send-it))
+         ((string= where "work")
+          ;; At school we use the SMTP server
+          (setq smtpmail-default-smtp-server "smtp.school.edu"
+               smtpmail-smtp-server "smtp.school.edu"
+               send-mail-function 'smtpmail-send-it
+               smtpmail-local-domain nil)))))
+    
+    ;; expect mode looks cool
+    (require 'expect)
+    
+    ;; a function that uses the expect stuff
+    (defun bld-du (dir)
+      "Get output from ls."
+      (interactive "DDirectory: ")
+      (with-expect (list "du" (expand-file-name dir))
+        (expect-exit
+          (let ((buf (current-buffer)))
+            (save-selected-window
+              (pop-to-buffer "*du*")
+              (erase-buffer)
+              (insert-buffer-substring buf)
+              (goto-char (point-min)))))))
+    
+    ;; tramp mode for all of my remote shell goodness
+    (require 'tramp)
+    
+    ;; problems with tramp on win32, ange-ftp seems to be working though
+    (require 'ange-ftp)
+    
+    (message ".emacs.el is loaded")
+    
+CategoryDotEmacs

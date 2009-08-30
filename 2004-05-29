@@ -1,0 +1,53 @@
+We have a visitor from the
+Czech Republic right now
+who is trying to download the entire site using wget...
+Over 50% of all requests are from 213.211.33.17.
+They are spaced over five seconds appart, so I can't really argue with it.
+
+Next time, dear leech, consider just downloading the '''tarball'''
+from the link on the SiteMap (look for "Download the page database -- help making decentralized backups"):
+
+* http://www.emacswiki.org/cgi-bin/list-archive.pl
+
+On the EmacsChannel:
+
+<pre>
+12:38 <@kensanata> i wonder who in the czech republic is using the swedisch emacswiki script to 
+                   leech the entire wiki...  
+12:39 <@kensanata> oh no...
+12:39 <@kensanata> i found that now he is using the japanese script to download the entire site 
+                   *again*
+12:39  * kensanata flatpalms forehead.
+</pre>
+
+And on the WikiChannel:
+
+<pre>
+12:19 < ThomasWaldmann> kensanata: disallow wget ua - the more intelligent ones dont leech wikis
+12:20 < kensanata> hm.
+12:20 < kensanata> it would be nice to have a .htaccess rule that would automatically redirect to a 
+                   static page...
+12:21 < ThomasWaldmann> load is 1 currently
+12:22 < kensanata> is this good or bad?
+12:23 < ThomasWaldmann> a bit too high maybe, but no problem
+12:24 < kensanata> i just fixed my leech-detector script.
+12:24 < kensanata> he is hitting every 5.25 seconds on average.
+12:24 < kensanata> that seems reasonable, in fact.
+12:24 < kensanata> (even if leeching a wiki is bogus)
+12:25 < kensanata> specially since i provide a download for the pagedatabase.
+12:25 < ThomasWaldmann> maybe provide a html dump
+12:28 < kensanata> yeah.  
+12:28 < kensanata> i will have to write a cron-job that does it for me.
+12:28 < kensanata> (the function to provide an html dump was being abused a week ago, remember?)
+</pre>
+
+The little leech detector script availabe from my homepage. [http://www.emacswiki.org/cgi-bin/alex/WebServerLogs] -- AlexSchroeder
+
+'''Later:''' I created this page 09:59 UTC, and now, 22:21 UTC, this guy is still at it.  Compare this to the few minutes it would have taken him to download the entire page database...  Unbelievable...
+
+<pre>
+aschroeder@thinkmo:~$ cat /org/org.emacswiki/logs/access.log | leech-detector | head -1 | cut -b -80
+       213.211.33.17      10526  43%    6.1s  200 (96%), 404 (2%), 302 (1%), 304
+</pre>
+
+That's IP, hits, percentage of all hits, average time between hits, and HTTP status codes...

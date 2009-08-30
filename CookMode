@@ -1,0 +1,5 @@
+cook-mode.el is a major mode for editing cook files (a make replacement).  This mode is just the essentials right now, syntax highlighting and indentation.  I'll add more as needed.
+
+Download: http://www.emacswiki.org/elisp/cook-mode.el
+
+Cook homepage: http://www.canb.auug.org.au/~millerp/cook/cook.html

@@ -1,0 +1,10 @@
+Elserv is an HTTP server which runs on Emacs.
+
+Since Emacs 21 currently does not support server sockets (only
+Emacs 22 does), Elserv runs a dedicated server process (a ruby script)
+as a backend process.
+
+* http://elserv.sourceforge.net
+
+----
+CategoryHypermedia

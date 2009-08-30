@@ -1,0 +1,5 @@
+IMDB est une base de données cinématographique en ligne  -- http://www.imdb.com
+
+* Lisp:imdb.el -- Pour consulter la base de données.
+* Lisp:imdb-adds-mode.el -- Pour soumettre des modification à la base de données.
+* Lisp:imdbs.el -- Pour générer des statistiques sur nos préférences cinématographiques.

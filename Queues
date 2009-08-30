@@ -1,0 +1,17 @@
+A queue can be used as both a first-in last-out and a first-in first-out stack, i.e. elements can be added to and removed from either end of the queue. This package is an updated and rewritten version of the Emacs Lisp Library (Elib) queue library.
+
+The latest version  (0.1, released February 2009) can be obtained from:
+
+* Queue package download: http://www.dr-qubit.org/download.php?file=predictive/queue.el
+* Web site: http://www.dr-qubit.org/emacs.php#structures
+
+The original Elib version can be obtained from:
+
+* JDEE web site: http://jdee.sunsite.dk/elib-1.0.tar.gz
+
+Enjoy!
+
+--TobyCubitt
+
+----
+CategoryCode

@@ -1,0 +1,45 @@
+= FindFileInProject
+
+This library provides a method for quickly finding any file in a given
+project. Projects are defined in two ways. If the
+`locate-dominating-file' function is bound, it assumes you are
+using Emacs 23, in which case you it will look for a
+`.dir-settings.el' file in an ancestor directory of the current
+file. Otherwise it uses the `project-local-variables' library,
+which looks for a `.emacs-project' file.
+
+By default, it looks only for files whose names match
+`ffip-regexp', but it's understood that that variable will be
+overridden locally. This can be done either with a mode hook:
+
+(add-hook 'emacs-lisp-mode-hook (lambda (setl ffip-regexp ".*\\.el")))
+
+or by setting it in your .emacs-project.el file, in which case it will
+get set locally by the project-local-variables library. On Emacs 23
+you can use .dir-locals.el.
+
+You can also be a bit more specific about what files you want to
+find. For instance, in a Ruby on Rails project, you may be
+interested in all .rb files that don't exist in the "vendor"
+directory. In that case you could locally set `ffip-find-options'
+to "" from within a hook or your .emacs-project file. The options
+accepted in that variable are passed directly to the Unix `find'
+command, so any valid arguments for that program are acceptable.
+
+If `ido-mode' is enabled, the menu will use `ido-completing-read'
+instead of `completing-read'.
+
+It's available via ELPA or at [Lisp:find-file-in-project.el Download]
+
+
+There is also rinari-find-file-in-project. 
+Link: http://github.com/technomancy/rinari/tree/master
+
+Similar functionality can be found in fuzzy-find-in-project.
+Link: http://github.com/avvo/fuzzy-find-in-project/tree/master
+
+Another alternative is [[Gpicker]].
+
+----
+
+CategoryProgrammerUtils

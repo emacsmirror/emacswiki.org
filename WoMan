@@ -1,0 +1,56 @@
+Also known as [::WomanMode].
+
+In this case, "woman" stands for "w/o man", ie "without man"
+and allows you to view man pages without having the "man" program installed.  This is useful
+on Windows, for example.
+
+Woman is the elisp-only alternative to ManMode.
+
+For the technically minded: Woman is a reader of the man macro set of the Nroff formatting system.
+See NroffMode for more about that.
+
+== Setup ==
+
+To determine the width of man pages, set the variable
+`woman-fill-column'.
+
+ (setq woman-manpath '("c:/internet/full-man/man")
+       woman-path '("c:/internet/man"
+ 		    "c:/internet/full-man/man"
+		    "c:/emacs/man"))
+ (autoload 'woman "woman" "Browse man pages." t)
+
+The `woman-manpath' holds "real" man subdirectories, ie. directories named "man1" to "man8" as well as "mann".  Each of these subdirectories holds man pages for a particular section.  There are sections 1-8 and n.  Each file also indicates to which section it belongs: The file extension is the section number.  Therefore there will be extensions ".1" to ".8" and ".n".
+
+In Unix, the directories in the MANPATH variable are all structured using man subdirectories.  On other systems, however, you might have collected the man pages in other directories without taking care to use man subdirectories.  These directories, where the man pages are collected without any subdirectories, are listed in the `woman-path' variable.
+
+The setup above matches my directory structure.  Here are the directories containing man pages on my file system:
+
+ c:/internet/full-man/man/man1
+ c:/internet/full-man/man/man3
+ c:/internet/full-man/man/man5
+ c:/internet/full-man/man/mann
+ c:/internet/full-man/man
+ c:/internet/man
+ c:/emacs/man
+
+The code below configures woman-manpath generically for ntemacs and cygwin.  It overcomes the problem that ntemacs prepends the man pages under the gnuwin32 directory to MANPATH, using a semi-colon separator, whereas cygwin using a colon by default. However woman-parse-colon-path does not allow mixing styles.  The code requires requires cygpath to be on PATH for woman-parse-colon-path to do the translation from a unix-style path.
+
+ (setq woman-manpath
+      (append
+       (let 
+	   ((manpath (getenv "MANPATH")))
+	 (if manpath
+	     (woman-parse-colon-path 
+	      (replace-regexp-in-string ".*;" "" manpath))
+	   (progn 
+	     (message "While configuring woman, MANPATH was not set.  Some man pages may not be found")
+	     nil)))
+       (list (concat (getenv "emacs_dir") "/gnuwin32/man/"))))
+
+
+----
+CategoryPorts CategoryModes
+CategoryExternalUtilities
+CategoryModes
+CategoryWThirtyTwo

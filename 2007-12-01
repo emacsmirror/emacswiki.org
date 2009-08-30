@@ -1,0 +1,14 @@
+[http://groups.google.com/group/gnu.emacs.sources/msg/a188ece1a448b031 Deleting Emacs support for obsolete platforms] -- Emacs 23 will support fewer platforms!
+
+If you use Emacs on an obscure platform, now's the time to speak up.
+
+[new]
+As for me, I haven't even heard of 98% of these platforms. :) -- AlexSchroeder
+
+[new]
+That's because you're just a young whippersnapper!  :) 
+
+To be fair, I've only heard of most of these from compiling GNU software back in the early nineties and having to read through a bunch of stuff to figure out which headers to use. (Hurrah for auto*!)  But my first Unix account was on a Gould (also my first exposure to Emacs!), my first SA job was on Sun3s, and a coworker hauled some Apollo Domain workstations out of a dumpster in '95.  Ah, well, time marches on....
+
+-- ClaireConnelly
+

@@ -1,0 +1,19 @@
+ SteveHowell
+ Seattle, Washington
+
+I would describe myself as an Emacs newbie.  I mostly use it on GNU/Linux to edit Python code.  I am also relatively new to Linux.
+
+ (require 'pc-select)
+ (pc-selection-mode)
+ (global-set-key [f3] 'buffer-menu)
+ (global-set-key (kbd "C-w") 'save-buffer)
+ (global-set-key (kbd "C-q") 'save-buffers-kill-emacs)
+ (global-set-key (kbd "C-o") 'find-file)
+ (global-set-key [(control tab)] 'bury-buffer)
+ (setq scroll-conservatively 1)
+ (setq interprogram-cut-function 'x-select-text)
+
+http://www.dotemacs.de/
+
+----
+CategoryHomepage

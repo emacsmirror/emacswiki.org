@@ -1,0 +1,55 @@
+Beim Erstellen einer HTML Seite im XEmacs wird, wenn der psgml-mode und der hm--html-helper-mode (als minor mode) verwendet werden, was Standard ist, gleich beim Öffnen einer neuen HTML-Datei ein Template eingesetzt, das unter anderem folgende Zeilen enthält:
+
+     <!-- Created: Wed Jan  5 13:38:01 CET 2000 -->
+     <!-- hhmts start -->
+     <!-- hhmts end -->
+
+
+und nach dem ersten Abspeichern steht dort:
+
+     <!-- Created: Wed Jan  5 13:38:01 CET 2000 -->
+     <!-- hhmts start -->
+     Last modified: Sun May  7 12:16:25 MEST 2000
+     <!-- hhmts end -->
+       
+
+Die Autorin des Dokuments hat aber vielleicht andere Vorstellungen vom Format dieser Zeile, und das zu ändern ist nicht schwierig. Auf eine entsprechende Anfrage (und hartnäckiges Nachbohren ;-) ) von Ulrich Moser hin begab ich mich auf die Suche, und es folgt das Ergebnis.
+
+1. Es wird hier das Ergebnis aller Funktionen eingesetzt, die in der Variable <code>html-helper-timestamp-hook</code> stehen. Voreinstellung ist dabei <code>html-helper-default-insert-timestamp</code>, aber das lässt sich ja ändern:
+
+    (setq  html-helper-timestamp-hook
+           '(lambda ()
+           ;; Mein Timestamp (von StefanKamphausen)
+           (ska-insert-custom-html-timestamp)))
+           
+
+2. Jetzt brauchen wir noch diese Funktion:
+
+    (defun ska-insert-custom-html-timestamp ()
+      "Insert a customized time-stamp in HTML documents."
+      ;; text 
+      (insert "Letzte &#38;Auml;nderung: "
+              ;; format
+              (format-time-string "%d.%m.%y")  
+              "\n"))
+           
+----
+
+Über local-write-file-hooks lassen sich auch in beliebigen anderen Modi time-stamps einfügen.
+Das folgende Beispiel zeigt, wie man im nxml-Modus einen Zeitstempel in eine XML-Datei schreibt:
+
+  ;; update date comment between "<!-- ts start -->" and
+  ;; "<!-- ts stop -->" if file is written
+  (add-hook 'nxml-mode-hook
+          '(lambda ()
+             (add-hook
+              'local-write-file-hooks
+              '(lambda ()
+                 (save-excursion
+                   (beginning-of-buffer)
+                   (if (re-search-forward
+                        "<!-- ts start -->\\(.*\\)<!-- ts stop -->" nil t)
+                       (replace-match
+                        (format-time-string "%Y-%m-%d")
+                        nil nil nil 1)))))))
+

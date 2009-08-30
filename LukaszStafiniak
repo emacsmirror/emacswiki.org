@@ -1,0 +1,42 @@
+Hey. I am Lukasz Stafiniak.
+
+This was written looong ago and then my life took a different turn. But the ideas seem worthy enough not to delete them.
+
+Under the licentia poetica:
+
+Calc is just Calc. You use Calc for math. You need two things for
+doing Math - the brain, and the Calc. Math was discovered only after
+discovering writing. You can do Math just with your mind (that's a
+good exercise), but you need books to learn from, and you need to
+write down your ideas to make place for new ones. Then you can go back
+and forth, with no worry of forgetting, you try different
+manipulations and watch how they help your understanding. In the old
+brave times mathematicians and physicists used pen to do that. Would
+you imagine? Nowadays, we, common people, can do math with Calc.
+
+The idea is to make Calc the math buffer of Emacs. It would be a
+formula editor and manipulator, controlling the power of the many
+mathematics systems, interacting with your source code, in any
+language. With such a math-board, different systems could be bridged
+to work together, for the best cross-use of their features and
+libraries. And, first of all, it should be a convenient editing tool,
+in the broad sense.
+
+The idea of drag & drop comes from proof assistants, I think. (For
+example, Coq's interface, PCoq, and Proof General, Emacs' generic
+interface for proof assistants.) Some ideas are described in the paper
+"Proof by Pointing" by Yves Bertot, Gilles Kahn and Laurent Thery (the
+paper can be found at INRIA webpages
+ http://www-sop.inria.fr/croap/ctcoq/help/pbp.html ).
+
+You can contact me at: lukstafi at gmail dot com
+
+I hope to write a package independent of Calc (but it's all yours, Calc)
+for Lexing-Parsing-Pretty Printing, e. g. lp^3 (or Languages Per Free)
+so that it can be used for other purposes than Calc as well.
+
+I've started the work on lp3. Done: the overall structure for stand-alone lp3. In future I plan to make it a Semantic satellite and perhaps implement 2D general parsing. (sorry for delays)
+
+: Welcome to the wiki! -- PierreGaston
+----
+CategoryHomepage

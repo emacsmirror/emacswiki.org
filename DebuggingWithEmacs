@@ -1,0 +1,111 @@
+Both Emacs and XEmacs ship with the GrandUnifiedDebugger (GUD) for
+interacting with a command-line debugger (such as gdb). GUD does
+useful things like displaying source code listings in an Emacs buffer
+(so that you can effectively step through code in your editor),
+providing consistent Emacs-like keybindings for various debugger
+commands (such as setting breakpoints and stepping through code), and
+a variety of other enhancements that make using a debugger with Emacs
+a more productive experience.
+
+For more information on GUD, see:
+
+* http://www.gnu.org/software/emacs/manual/html_node/emacs/Debuggers.html#Debuggers
+
+---- 
+
+What about using it in emacs?  For me, it seems no different than running gdb in a shell.  Can someone do a step by step for a small simple program like the looping hello world with a breakpoint and source buffer?  GUD seems not to do the useful thing of displaying the source code listing in an emacs buffer.  Maybe I need a EmacsGUDTutorial.
+
+It should display the source code listing.  Did you compile with -g?  The Emacs info manual (now included with Emacs 22)
+describes debugging with Emacs.  See http://linuxjournal.com/article/7876 for a tutorial.  -- NickRoberts
+
+ #include <stdio.h> 
+ int main(int argc, char* argv[]){
+  int i;
+  printf("hello world\n");
+  for ( i=0;i<10;++i){
+    printf("%d \n",i);
+  } 
+  return 0;
+ }
+
+
+Not step by step, but:
+
+* save it in a file hello.c
+* M-x compile it with gcc -Wall -g hello.c -o hello # this will split screen
+* M-x gdb # as 'gdb hello' this will start a gdb in the code window
+* Switch your other window over to the code window
+* put the TextCursor on a line and  do M-x gud-break (bound to C-x SPC)
+* switch over to the gud window and run, and use the Gud
+* Unfortunately, this doesn't add the Gud menu to the code-window MenuBar.  I'm not sure how to do that.  It would be nice to use the Gud menu in the code window.
+* If you want more than a command window for interaction, try gdb-many-windows
+
+
+----
+
+The Perl debugger cannot (yet) be used via the GUD interface.  It has
+its own interface.  Start it via M-x perldb.
+
+M-x perldb is _part_ of the GUD interface.  GUD stands for grand unified debugger.  --NickRoberts
+
+----
+Debugging without debugger
+
+If you like to debug your code by inserting output statements at critical/interesting points, have a look at ll-debug.el, available at
+
+http://www.cbrunzema.de/software.html#ll-debug
+
+It has functions to insert output statements that display unique strings and skeletons to construct code to print out values of variables. There are some routines to comment lines or regions of code in an uniform way, too. Among the supported languages are Lisp, C, C++, Perl etc.
+
+----
+
+Completion can be used as a way of passing a list of potential executables with their complex paths destined for gdb.  All one needs for completion is a list of files to be read into using something like SubprocessCompletion. One can generate a list of potential candidates using find:
+
+ $ find . -xtype f -perm +111 -print0 | xargs -0 file | grep "ELF"
+ ./src/gtk-gnutella:              ELF 64-bit LSB executable, AMD x86-64, version 1 (SYSV), for GNU/Linux 2.6.6, dynamically linked (uses shared libs), not stripped
+
+A nice way of getting that into a list is to strip everything after the colon (assuming no executable exists with a colon in its name (a reasonable assumption)) with cut:
+
+       cut -f1 -d:
+
+----
+
+NickRoberts is working on a version of GUD, GdbMode, specialised for GDB.  It has been released as part of Emacs 22.
+
+[new]
+
+Does GUD work with valgrind in a way that valgrind offers to pass the session's debugging to a gdb run from emacs?  I.e., I'd like to have the full power of GUD instead of plain gdb from command line when using valgrind. -- Dirk
+
+See http://sources.redhat.com/ml/gdb/2003-12/msg00269.html for one trick.  I think you can do "set ann 1" (or even "set ann 3")
+after attaching to GDB. I'm not sure how useful this is as memory violations are only a small part of Valgrind and I don't think
+it attaches to GDB for memory leaks which is it's main use.  --NickRoberts 
+
+[new]
+How do you start multiple gdb sessions from emacs? -- TimotheeBesset
+
+[new]
+Though I haven't tried it (I can't get single debug to work) apparently with Emacs 22 there are is a package for multi debug sessions.
+
+http://www.inet.net.nz/~nickrob/#Multi
+
+-- IvanAndrus
+
+Multiple sessions are possible if you replace the GDB option "--annotate=3" with "--fullname".  This gives the the old basic
+behaviour as used in Emacs 21 and is called "text command mode" in the manual.  It's not perfect: there is only one [[overlay]]
+arrow and GUD commands can get confused if you use two different debuggers, e.g., gdb and perldb. --NickRoberts
+
+[new]
+Also when run gdb (via M-x gdb) and the I/O window comes up, I can type in it e.g. run, but when I hit enter (comint-send-input) the command turns bold, but nothing else happens.  I have looked online in vain, mostly because I don't know what to search for.  Is there some sort of environment variable that might screw up the emacs/gdb interface?  I realize this probably isn't the correct place to get answers, but what should I do to trouble shoot this? (gdb 6.4-debian and EmacsFromCVS)-- IvanAndrus
+
+Perhaps your program is still running.  Did you set a breakpoint.  You can stop execution by typing C-c C-c in the GUD buffer.
+The best place to ask questions like these is on help-gnu-emacs@gnu.org.  --NickRoberts
+[new]
+Turns out it was a keybinding in my .inputrc that caused the problem.
+[new]
+I have a large emacs window and I can't find the GDB marker, =>.  How can I make it blink or appear in red?
+
+----
+CategoryDebug
+CategoryProgrammerUtils
+CategoryProgramming
+CategoryModes

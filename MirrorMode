@@ -1,0 +1,33 @@
+A simple minor mode that will insert parens and string quotes in pairs.  Lisp:mirror-mode.el
+
+== Overview ==
+Similar to delimiter-minor-mode, mirror-mode is a minor mode that allows you to insert various paren and string quote characters in pairs.  It also does intelligent type-over of closing characters and escaping of string quotes.  This mode is intended to be used in any general purpose language and tries to accommodate various differences (such as Python's triple quote strings).
+
+This mode was inspired by the mirroring capability built into [[Js2Mode]].  The code has been generalized to work with (mostly) any mode.
+
+== Setup ==
+The easiest way to get started is to load the file:
+
+  (require 'mirror-mode)
+
+then add the following to the mode hook of your favorite language:
+
+  (mirror-mode t)
+
+If you want to customize the behavior you can play with a few variables (check the source for more):
+* ##mirror-keys-to-bind## : a list of mirror keys to bind. default ##nil## will bind all keys: ##{ } ( ) [ ] " '##  
+** If you wanted to exclude braces from mirroring (which you may for [[CcMode]] depending you how you've configured it) add the following to your mode hook:
+
+            (set (make-local-variable 'mirror-keys-to-bind) '( ?\( ?\) ?[ ?] ?' ?\" ))
+
+* ##mirror-escape-quotes## : non-nil will automatically escape quote characters within strings (default ##t##).
+** You probably want this disabled in python mode, which has raw and triple quote string, so put the following in your python-mode hook:
+
+            (set (make-local-variable 'mirror-escape-quotes) nil)
+
+== Discussion ==
+[new:rubikitch:2009-03-01 10:22 UTC]
+Do you know ParEdit? -- [[rubikitch]]
+
+[new]
+I've played with ParEdit a bit in the past and it does look very powerful, particularly when working with lisp, but I never got to a point where I was very proficient with it.  In writing this mode I was looking to create something simple that I could use in the modes where I spend most of my time: Python/C++.  -- DaveS

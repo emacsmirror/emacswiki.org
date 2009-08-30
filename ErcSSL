@@ -1,0 +1,71 @@
+ERC is fully equipped to connect to SSL/TLS-enabled servers (eg. OFTC) however, Certificate Authentication support is rather untested.
+
+For the purposes of this guide, head on over to the following OFTC page to get an idea on how to create the necessary certificates
+
+* http://www.oftc.net/oftc/NickServ/CertFP#AddCertFPtoNS/
+
+== Getting Started ==
+
+Hack away at your init files, ensuring that SSL/TLS support is enabled:
+
+ (require 'tls)
+
+This allows us to set the tls-program variable that calls external tools
+"openssl" or "gnutls-cli" to perform the actual connection.
+
+To see how the variable is initally defined:
+
+ [F1] V tls-program
+
+You'll notice that there are several options for tls-program. tls-program will
+cycle through the commands until a connection is established with the fallback.
+
+Please note that while you can add CA-chain & accompanying keys to gnutls-cli,
+ERC may fail to recognise them, and will proceed to create the secure connection
+using gnutls without certificate authentication.
+
+It is this reason alone that I have opted for openssl:
+
+ (setq tls-program '("openssl s_client -connect %h:%p -no_ssl2 -ign_eof
+                                       -CAfile /home/ootput/.private/certs/CAs.pem 
+                                       -cert /home/ootput/.private/certs/nick.pem" 
+                     "gnutls-cli --priority secure256 
+                                 --x509cafile /home/ootput/.private/certs/CAs.pem 
+                                 --x509certfile /home/ootput/.private/certs/nick.pem -p %p %h" 
+                     "gnutls-cli --priority secure256 -p %p %h"))
+
+Please note that your distro's implementation of libgnutls may be unsuitable for CA-chaining, as
+was my case. 
+
+Use of gnutls-cli *is* recommended in the future, however, as most linux projects
+have sought to replace openssl dependencies with gnutls
+
+Now, assuming you've already enabled 'erc, we can continue to work with the supplied erc-tls command:
+
+ (defun start-irc ()
+   "Connect to IRC."
+   (interactive)
+   (erc-tls :server "irc.oftc.net" :port 6697
+        :nick "ootput" :full-name "ootput")
+   (erc :server "irc.freenode.net" :port 6667
+        :nick "ootput" :full-name "ootput")
+   (setq erc-autojoin-channels-alist '(("freenode.net" "#emacs" "#screen" "#ion")
+                                       ("oftc.net" "#debian"))))
+
+This will establish connection to OFTC on port 6697 (SSL), but more
+importantly, it will allow us to use certificates for transparent Nickserv auth.
+
+Enjoy your SSL-encrypted IRC session!
+
+== Problems ==
+=== Re-connect ===
+
+[new]
+While the start-irc will initiate the cert-based ssl connection, a terminated connection
+will fail to trigger an auto-reconnect with certs. In the absence of valid ssl credentials,
+this will mean repeated failed attempts to reconnect. A temporary solution would be to have
+nickserv login and password saved to an erc-auth file to be loaded by erc.
+-- ootput 
+
+----
+[[ERC]]

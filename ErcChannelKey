@@ -1,0 +1,57 @@
+I wanted functionality like the SelectKey to switch to channels when I'm using the EmacsIRCClient.  If I'm already in the channel, I just want the channel buffer to come up.  If I'm not in the channel, but on the server, I want to just join the channel.  If I'm not even on the server, I want to connect and then join the channel.
+
+<pre>
+  (defun stesla-erc-join-channel (channel &optional invite)
+    (when invite
+      (progn
+        (erc-cmd-MSG (concat "ChanServ invite " channel))
+        (with-temp-message "Waiting for ChanServ..." (sleep-for 5))))
+    (erc-cmd-JOIN channel))
+
+  (defun stesla-erc-join-or-switch-with-connect (server port nick full-name
+                                                        channel &optional invite)
+    "If we are not currently in CHANNEL on SERVER, join it.  If we are not
+currently on SERVER:PORT as NICK, connect first.  Otherwise, just switch to the
+buffer"
+    (let ((server-buffer (car (erc-buffer-list
+                               (lambda () (and (string= server erc-session-server)
+                                               (erc-server-buffer-p)
+                                               (erc-process-alive)))))))
+      (if server-buffer
+          (let ((buffer (car (erc-buffer-list
+                              (lambda () (and (string= channel (erc-default-target))
+                                              (string= server erc-session-server)
+                                              (erc-process-alive)))))))
+            (if buffer
+                (switch-to-buffer buffer)
+              (progn
+                (set-buffer server-buffer)
+                (stesla-erc-join-channel channel invite))))
+        (progn
+          (erc-select :server server :port port :nick nick :full-name full-name)
+          (with-temp-message "Waiting for NickServ..." (sleep-for 5))
+          (stesla-erc-join-channel channel invite)))))
+
+  ;; stesla-f5-prefix-map is a sparse keymap defined on [f5]
+  (defvar stesla-erc-channel-map stesla-f5-prefix-map)
+
+  (defun stesla-display-erc-channel-bindings ()
+    (interactive)
+    (describe-bindings [f5]))
+
+  (define-key stesla-erc-channel-map "?" 'stesla-display-erc-channel-bindings)
+
+  (defmacro stesla-define-erc-key (fname-base key server port nick full-name channel &optional
+                                              invite)
+    "Define an erc-key function FNAME-BASE bound on KEY that will execute
+stesla-erc-join-or-switch-with-connect on the remaining params"
+    (let ((fname (intern (concat "stesla-erc-channel-" (symbol-name fname-base))))
+      `(progn
+         (defun ,fname ()
+           (interactive)
+           (stesla-erc-join-or-switch-with-connect
+            ,server ,port ,nick ,full-name ,channel ,invite))
+         (define-key stesla-erc-channel-map ,key ',fname))))
+
+  (put 'stesla-define-erc-key 'lisp-indent-function 2)
+</pre>

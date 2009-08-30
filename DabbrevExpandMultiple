@@ -1,0 +1,6 @@
+Lisp:dabbrev-expand-multiple.el
+
+<pre>
+(require 'dabbrev-expand-multiple)
+(global-set-key "\M-/" 'dabbrev-expand-multiple)
+</pre>

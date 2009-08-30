@@ -1,0 +1,68 @@
+== Description ==
+
+[[Profiles]] manages user-defined sets of generic properties such as user name
+or mailing address across various buffers. Profiles are aimed towards
+developers that work on different projects, sometimes under different names,
+different mailing address, and that wish to apply similar settings across
+different files.
+
+[[Profiles]] provides a higher level functionality that [[dirvars.el]], albeit
+less invasive. Where [[dirvars.el]] requires you to create a file in each of
+your project files, profiles try to take adventage of the fact that each
+particular project's setting are probably similar in some way or require
+more than just setting user variables. In any case, [[Profiles|profiles]] can be used
+together with [[dirvars.el]].
+
+For exemple, user Joe is working on project !ProjA and !ProjB. Both projects
+imposes that coding style follows "gnu" standards, but Joe generally prefer
+to work with "elemtel" and this is what he is using for all his other
+projects. He is also using a different mailing address for both projects,
+and wants it to be set automatically for his !ChangeLog. Fortunatly, Joe uses
+[[Profiles|profiles]] and he has configured his "~/.emacs" in this way:
+
+    (require 'profiles)
+    (profile-define "usual" "Joe" "joeuser@usual.com"
+                    'coding-style "elemtel"
+                    ; any property value can be attached!
+                    'prefered-license "GPLv2")
+    (profile-define "proj-a-and-b" "Joe" "joeuser@proj-a-and-b.com"
+                    'coding-style "gnu"
+                    'prefered-license nil)
+    (setq profile-path-alist
+          '(("/path/to/proj/a" . "proj-a-and-b")
+            ("/path/to/proj/b" . "proj-a-and-b")))
+    (profile-set-default "usual")
+
+    ; ...and later in his config file...
+    (add-hook 'c-mode-common-hook
+              '(lambda ()
+                  (c-set-style (profile-current-get 'coding-style))))
+
+    ; ...and a little later too...
+    (add-hook 'change-log-mode-hook
+              '(lambda ()
+                  (setq add-log-full-name
+                        (profile-current-name))
+                  (setq add-log-mailing-address
+                        (profile-current-mailing-address))))
+
+And voila! his name, mailing address and coding style are now
+automatically set for !ProjA and !ProjB to the desired values. This did not
+require Joe to make any amendement to the project themselves. Adding new
+profiles will be easy too.
+
+Saving the profile path in your "~/.emacs" is not such a good idea however.
+Instead you can use the interactive function ##`profile-add-regexp-and-save'##
+that will populate ##`profile-path-alist'## with a new entry. This setting will
+be saved in the file ##`profile-path-alist-file'##.
+
+You can automatically load the settings of this file by adding:
+
+    (profile-load-path-alist)
+
+...in your "~/.emacs". This file is printed in human readable lisp and can
+be edited manually, as necessary.
+
+== Source ==
+
+The full source for [[profiles.el]].

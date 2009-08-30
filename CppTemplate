@@ -1,0 +1,231 @@
+== Where can one be found? ==
+
+Well, you could look at http://www.lysator.liu.se/~davidk/elisp/tempo-examples.html, which is hanging off the author's web page.  OTOH, it's more complete than the example below. OTOH, BruceDurling's code below works, and for me at least, the examples on the page I cite don't work (infinite regress, haven't debugged it).  OTGH, you may wish to use it merely as a starting point, and if you do, please make the result available here via a link.  Thanks! --NickCaruso
+
+== First start ==
+
+How about these as a start (please improve them, they're my first tempo-templates). I think it is also worth looking at ExpandMemberFunctions. - BruceDurling
+
+<pre>
+(setq my-class-name (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))
+(tempo-define-template "c++-body"
+                       '(
+                         "/* " my-class-name " - Implementation. " n>
+                         " *" n>
+                         " * $""Header$" n>
+                         " *" n>
+                         " * $""Log$" n>
+                         " * " n>
+                         " */" n>
+                         "" n>
+                         "" n>
+                         "#pragma comment(exestr, \"@(#)$""Header$\")" n>
+                         "" n>
+                         "" n>
+                         "" n>
+                         "" n>
+                         "" my-class-name "::" my-class-name " ()" n>
+                         "{" n>
+                         n>
+                         "    // Code" n>
+                         "" n>
+                         "}" n>
+                         "" n>
+                         "" n>
+                         "" my-class-name "::~" my-class-name " ()" n>
+                         "{" n>
+                         "    // Code" n>
+                         "    " n>
+                         "}" n>
+                         "" n>
+                         "" n>
+                         "//========================================================" n>
+                         "//  DO NOT REMOVE THESE LINES - MUST COME LAST IN THE FILE" n>
+                         "//========================================================" n>
+                         (indent-region (point-min) (point-max) nil)
+                         (beginning-of-buffer)
+                         
+                         )
+                       )
+
+
+(tempo-define-template "c++-header"
+                       '("/* " my-class-name " - Definition." n>
+                         " * " n>
+                         " * $""Header: $" n>
+                         " *" n>
+                         " * $""Log: $" n>
+                         " *" n>
+                         " */" n>
+                         "" n>
+                         "" n>
+                         "#ifndef " (upcase my-class-name)"_H" n>
+                         "#define " (upcase my-class-name)"_H" n>
+                         ""
+                         ""
+                         "class " my-class-name n>
+                         "{" n>
+                         "    // " n>
+                         "    // *** INTERFACE ***" n>
+                         "    //" n>
+                         "    public:" n>
+                         "        " my-class-name "();" n>
+                         "        virtual ~" my-class-name "() = 0;" n>
+                         "" n>
+                         "    private:" n>
+                         "        " my-class-name "( const " my-class-name " & );" n>
+                         "        " my-class-name "& operator=( const " my-class-name "& );" n>
+                         "" n>
+                         "    // " n>
+                         "    // *** IMPLEMENTATION ***" n>
+                         "    //" n>
+                         "};" n>
+                         "" n>
+                         "" n>
+                         "#endif // "(upcase my-class-name) "_H" n>
+                         "" n>
+                         "" n>
+                         "//========================================================" n>
+                         "//  DO NOT REMOVE THESE LINES - MUST COME LAST IN THE FILE" n>
+                         "//========================================================" n>
+                         (indent-region (point-min) (point-max) nil)
+                         (beginning-of-buffer)
+                         )
+                       )
+</pre>
+
+== Using Skeleton and auto-insert == 
+
+I have worked on skeletons and with auto-insert quite a bit and I can offer them here if someone is interested. But be warned: it quite long. For the moment I'd like to paste a defun I use to create new classes if I don't create them by opening a new file (in which case the appropirate auto-insert template is used). Is there any place around where to put some 30kB of auto-insert's and skeletons for C, C++, Perl, Ruby, SQL and more? -- StefanKamphausen
+
+: I am interested :) Please mail me this at <zedek at gnu-rox.org> -- XavierMaillard
+[new]
+: ftp.myrkraverk.com ? -- MyrkraVerk
+[new] 
+: Yes, Can't you put somewhere accessible for everybody? 
+
+<pre>
+(defun ska-skel-cc-class (name)
+  "Insert a C++ class definition.
+ It creates a matching header file, inserts the class definition and
+ creates the  most important function templates in a named after the
+ class name. This might still be somewhat buggy."
+  (interactive "sclass name: ")
+  (let* ((header-file-name (concat (downcase name) ".hh"))
+		 (header-include-string (upcase (concat name "_HH_INCLUDED")))
+		 (def-file-name    (concat (downcase name) ".cc")))
+
+	;; write header file
+	(set-buffer (get-buffer-create header-file-name))
+	(set-visited-file-name header-file-name)
+	(c++-mode)
+	(turn-on-font-lock)
+	(insert (concat
+			 "// -*- C++ -*-\n"
+			 "// File: " header-file-name "\n//\n"
+			 "// Time-stamp: <>\n"
+			 "// $Id: $\n//\n"
+			 "// Copyright (C) "(substring (current-time-string) -4)
+			 " by " auto-insert-copyright "\n//\n"
+			 "// Author: " (user-full-name) "\n//\n"
+			 "// Description: \n// "
+			 ;; get this point...
+			 "\n\n" 
+			 "# ifndef " header-include-string "\n"
+			 "# define " header-include-string "\n\n"
+			 "# include <iostream>\n\n"
+			 "class " name ";\n\n"
+			 "class " name " {\n"
+			 "public:\n"
+			 name "();" "\n"
+			 name "(const " name "& src);\n"
+			 "~" name "();" "\n"
+			 name "& operator=(const " name "& rv);\n"
+			 "\nprivate:\n"
+			 "void init();\n"
+			 "void reset();\n"
+			 "void init_and_copy(const " name "& src);\n\n"
+			 "protected: \n\n"
+			 "};"
+			 "\n\n# endif"))
+	(beginning-of-buffer)
+	(while (and (not (eobp)) (forward-line))
+	  (indent-according-to-mode))
+	
+	;; create CC file
+	(set-buffer (get-buffer-create def-file-name))
+	(set-visited-file-name def-file-name)
+	(switch-to-buffer (current-buffer))
+	(c++-mode)
+	(turn-on-font-lock)
+	(insert (concat
+			 "// -*- C++ -*-\n"
+			 "// File: " def-file-name "\n//\n"
+			 "// Time-stamp: <>\n"
+			 "// $Id: $\n//\n"
+			 "// Copyright (C) "(substring (current-time-string) -4)
+			 " by " auto-insert-copyright "\n//\n"
+			 "// Author: " (user-full-name) "\n//\n"
+			 "// Description: \n// "
+			 "\n# include \"" header-file-name "\"\n\n"
+			 name "::\n" name "() {\ninit();\n}\n\n"
+			 name "::\n" name "(const " name "& src) {\ninit_and_copy(src);\n}\n\n"
+			 name "::\n~" name "() {\nreset();\n}\n\n"
+			 "void\n" name "::\ninit() {\n\n}\n\n"
+			 "void\n" name "::\nreset() {\n\n}\n\n"
+			 "void\n" name "::\ninit_and_copy(const " name "& src) {\n\n}\n\n"
+			 name "&\n" name "::\noperator=(const " name "& src) {\n\n}\n\n"
+			 ))
+	(beginning-of-buffer)
+	(while (and (not (eobp)) (forward-line))
+	  (indent-according-to-mode))
+	(beginning-of-buffer)
+	(search-forward "Description:")
+	)
+)
+
+</pre>
+
+----
+== Accessor/Mutator definition ==
+
+I use the following template for quick insertion of get/set methods (a necessarry evil sometimes). Ideally the member variable would magically be put i the private section but I haven't worked out how to do that with tempo. -- BarneyDalton
+
+<pre>
+(defvar c++-tempo-tags nil
+  "Tempo tags for C++ mode")
+
+(add-hook 'c++-mode-hook
+          '(lambda ()
+             (local-set-key [f11] 'tempo-complete-tag)
+             (tempo-use-tag-list 'c++-tempo-tags)
+             ))
+
+(tempo-define-template "c++-getset"
+		       '((p "type: " type 'noinsert)
+			 (p "variable: " var 'noinsert)
+			 (tempo-save-named 'virtual (if (y-or-n-p  "virtual?") "virtual " ""))
+			 (tempo-save-named 'm_var (concat "m_" (tempo-lookup-named 'var)))
+			 (tempo-save-named 'fnBase (upcase-initials (tempo-lookup-named 'var)))
+			 (s virtual) (s type) " Get" (s fnBase) "() const {return "(s m_var) ";}" > n
+			 (s virtual) "void Set" (s fnBase) "(" (s type) " " (s var) ") {" (s m_var) " = " (s var) ";}" > n
+			 (s type) " " (s m_var) ";" > n
+			 )
+		       "getset"
+		       "Insert get set methods"
+		       'c++-tempo-tags)
+</pre>
+
+== Complete template file ==
+
+I found it hard to find a complete file merging the various hints about using tempo and abbrev for c/c++ templates for basic users like me. Therefore I created my own one and decided to share it.
+You'll find it here: Lisp:tempo-c-cpp.el
+
+Hope it'll help. --SebastienVarrette
+
+----
+See also [[C++]], [[CategoryTemplates]] [[CmodeTemplates]].
+
+----
+CategoryProgramming
+CategoryTemplates

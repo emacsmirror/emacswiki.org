@@ -1,0 +1,235 @@
+: [[image:iciclesimage]]
+
+This page is not part of the regular sequence of '''Icicles''' doc pages, but it can give you an idea of what '''Icicles''' offers, without all of the words.  It shows the screenshots that you can find in context on other '''[[Icicles]]''' pages.
+
+
+|| *Previous:* [[Icicles - Libraries]] || IciclesIndex || *Next:* [[Icicles - Nutshell View]] ||
+
+----
+
+
+[:IciclesMenu]
+=== Icicles Menu-Bar Menu ===
+: [[image:drew-emacs-Icicles-menu-20]]
+
+The '''Icicles''' menu is available whenever you are in ''Icicle'' mode.  See [[Icicles - Nutshell View]].
+
+
+
+[:MinibufMenu]
+=== Minibuf Menu-Bar Menu ===
+: [[image:drew-emacs-Minibuf-menu]]
+
+The '''Minibuf''' menu is available whenever the [[minibuffer]] is active.
+See [[Icicles - Nutshell View]].
+
+
+
+[:CompletionCandidateMenu]
+=== Completion Candidate Menu (`C-mouse-3') ===
+: [[image:drew-emacs-Candidate-menu]]
+
+The '''Completion Candidate''' menu is available using `C-mouse-3' in buffer `*Completions*'. Some of its menu items apply to the clicked candidate; others apply to all candidates.  See [[Icicles - Nutshell View]].
+
+
+[:OptionsAndCustomizeIciclesMenus]
+=== Options Menu: Icicles Submenu and Customize > Icicles Submenu ===
+: [[image:DrewsEmacsIciclesOptionsMenu]]
+
+: [[image:DrewsEmacsIciclesOptionsCustomizeMenu]]
+
+'''Icicles''' augments the standard '''Options''' menu. It adds an '''Icicles''' submenu with items that let you modify specific '''Icicles''' options. It also adds an '''Icicles''' submenu to the '''Customize''' submenu, with operations for customizing anything.  See [[Icicles - Customization and General Tips]].
+
+
+[:CustomizeIciclesKeys]
+=== Customize Buffer for Icicle Mode Keys ===
+: [[image:IciclesCustomizingKeys]]
+
+You can easily customize the ''Icicle'' mode [[key binding]]s for top-level commands, without knowing any EmacsLisp.
+See [[Icicles - Key Bindings#icicle-top-level-key-bindings|Customizing Keys]].
+
+
+
+[:AproposCompletion]
+=== Apropos Completion (Regexp Matching) ===
+
+[[image:IciclesRegexpCompletions]]
+
+Buffer `*Completions*' shows all matches for your input `##M-x ise.*char##'. See [[Icicles - Nutshell View]].
+
+
+[:AproposCompletionCycling]
+=== Apropos Completion Cycling ===
+
+[[image:iciclesscreenshot]]
+
+See [[Icicles - Apropos Completions]] and [[Icicles - Cycling Completions]].
+
+
+
+[:ModeLine]
+=== Mode-Line ===
+
+This screenshot shows highlighting of the `Icy' [[mode line]] lighter that indicates ''Icicle'' mode.  
+
+: [[image:DrewsEmacsIcyModeLine]]
+
+The fact that `Icy' is highlighted at all indicates that [[completion]] is available. The light-green background and the `##+##' indicate [[multi-command]] completion. And the blue box (which appears as an underline and overline) indicates that completion is currently ''strict'': your input must match one of the candidates.
+
+
+
+[:Minibuffer]
+=== Minibuffer ===
+
+[[image:IciclesMinibufRegion1]]
+[[image:IciclesMinibufRegion2]]
+
+These screenshots show the effect of options `icicle-point-position-in-candidate' and `icicle-mark-position-in-candidate' on the placement of the [[cursor]] during candidate [[Icicles - Cycling Completions|cycling]].  
+
+They also show one of the states of the [[Icicles - Nutshell View#CompletionStatusIndicators|completion status indicator]], just to the left of the prompt:
+
+* Presence of the indicator means that you can use [[completion]].
+* The blue box means that completion is ''strict'' (your input must match some candidate).
+* The '''`##+##'''' with the green highlight behind it mean that the current command is a [[Icicles - Multi-Commands | multi-command]].
+
+[[image:DrewsEmacsMinibufLevel1]]
+
+This screenshot shows [[progressive completion]].  See [[Icicles - Customization and General Tips]] and [[Icicles - Nutshell View]].
+
+
+
+[:icicle-occur]
+=== `icicle-occur': Lines in a Buffer that Match a Regexp ===
+
+[[image:IciclesOccurScreenshot]]
+
+See [[Icicles - Search Commands, Overview]].
+
+
+
+
+[:icicle-search]
+=== `icicle-search': Regexp Matches Against Regexp Matches ===
+
+[[image:IciclesSearchScreenshot]]
+
+See [[Icicles - Search Commands, Overview]].
+
+
+
+
+[:RegexpSubgroupsHighlighting]
+=== Highlighting of Regexp Subgroups ===
+
+[[image:IciclesSearchContextLevelsScreenshot]]
+
+
+
+[:icicle-imenu]
+=== `icicle-imenu': Imenu Choices Accessible From the Keyboard ===
+
+[[image:IciclesImenuScreenshot]]
+
+See [[Icicles - Search Commands, Overview]].
+
+
+
+
+[:KeyCompletion]
+=== Key Completion, Different Sort Orders, `..' ===
+
+You can complete keys. You can sort completion candidates in different orders. 
+
+[[image:IciclesKeyCompletionsSortLocalFirst]]
+
+[[image:IciclesKeyCompletionsSortPrefixFirst]]
+
+[[image:IciclesKeyCompletionsSortByCmdName]]
+
+And when below top level in the key hierarchy, you can use candidate '''`##..##'''' to go up one level.
+
+[[image:IciclesKeyCompletionsDotDot]]
+
+
+See [[Icicles - Key Completion]].
+
+
+
+[:FuzzyCompletion]
+=== Fuzzy Prefix Completion ===
+
+You can complete input in a fuzzy way.
+
+[[image:drew-emacs-fuzzy-fo]]
+
+[[image:drew-emacs-fuzzy-fol]]
+
+See [[Icicles - Fuzzy Completion]]
+
+
+
+[:LaCarte]
+=== Menu-Bar Choices Accessible from the Keyboard ===
+
+[[image:lacarte-w-icicles]]
+
+See '''LaCarte'''.
+
+
+
+[:icicle-read-color]
+=== `icicle-read-color' Completion Candidates ===
+
+Sorted by color name (showing proxy color candidates):
+
+[[image:DrewsEmacsColorNameCompletions]]
+
+Sorted by color saturation (purity):
+
+[[image:DrewsEmacsColorSaturationCompletions]]
+
+
+See [[Icicles - Candidates with Text Properties]]
+
+
+
+[:icicle-WYSIWYG-Completions-flag]
+=== Option `icicle-WYSIWYG-Completions-flag' ===
+
+`icicle-WYSIWYG-Completions-flag' = `4':
+[[image:IcicleWYSIWYGCompletionsflagSwatch]]
+
+`icicle-WYSIWYG-Completions-flag' = `t' (two screenshots):
+[[image:IcicleWYSIWYGCompletionsflagWhole]]
+
+[[image:DrewsEmacsFaceNameCompletions]]
+
+
+See:
+
+* [[Icicles - Customization and General Tips#icicle-WYSIWYG-Completions-flag]]
+
+* [[Icicles - Candidates with Text Properties]]
+
+
+
+----
+
+== Screenshots Provided By Users ==
+
+=== icicles-rcodetools ===
+
+[http://eigenclass.org/hiki.rb?rcodetools-screenshots Completing a Ruby method with Help On Candidates feature]
+
+See [[Icicles_-_Help_on_Candidates]]. -- [[rubikitch]]
+
+----
+
+|| *Previous:* [[Icicles - Libraries]] || IciclesIndex || *Next:* [[Icicles - Nutshell View]] ||
+
+DrewsElispLibraries referenced here: Lisp:lacarte.el, Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+

@@ -1,0 +1,43 @@
+tinydebian.el is part of the TinyTools.
+
+== Overview ==
+
+The package was originally developed to be a control interface to 
+[http://www.debian.org/Bugs/ Debian Bug Tracking System]. The package contains two minor modes:
+one for Gnus Summary buffer and one for standard mail modes (message-mode, mail-mode). From
+each interface, complete bug management and manipulation can be done with few keystrokes and
+menu commmands.
+
+Late in 2008, Emacs development team decided to evaluate and install Debian BTS (debbugs)
+[http://emacsbugs.donarmstrong.com/ Emacs BTS].
+
+The  supported Bug tracking systems include:
+
+* Debian BTS
+* Emacs BTS
+* Savannah Site Request trackers (Savannah admin requests)
+* Savannah bug reports (from projects)
+* Sourceforge bugs (from packages)
+
+The interface in integrated to Gnus:
+
+  M-x gnus
+  <... as a Developer, go to your INBOX ...>
+  <at Group buffer, move cursor to Subject indicating "Bug#NNNN">
+
+Select desired management command from menu "Tdeb", or from prefix `C-c - C-h'.
+Alternatively, start composing mail with `C-x m' and see menu "Tbts".
+
+== Planned features ==
+
+* Ubuntu launchpad.net bug tracking management
+
+= Configuration =
+
+Put the following in your .emacs file:
+
+ (setq tinydebian-:load-hook 'tinydebian-install)
+ (require 'tinydebian)
+
+----
+EmacsForDebian | TinyTools

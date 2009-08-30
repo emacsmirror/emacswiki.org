@@ -1,0 +1,2 @@
+[new:DrewAdams:2004-12-24 22:55 UTC]
+We need a clear description of the relation between ''fonts'' (and fontsets) and ''faces''. This is a confusing subject, especially because we have terms like "font-lock" that concern faces, not fonts. -- DrewAdams

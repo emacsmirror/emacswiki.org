@@ -1,0 +1,37 @@
+File modes are the filesystem permission bits for who can read, write or execute a file.
+
+In DiredMode you can set these with <code>M</code> (<code>dired-do-chmod</code>).  TarMode and ArchiveMode have the same <code>M</code> key, in those cases operating on archive members.
+
+In Lisp there are functions <code>file-modes</code> to get the modes and <code>set-file-modes</code> to set them.
+
+== chmod ==
+
+If you're an old-school Unix user and just want to go "chmod 660" etc while editing a file, then you might like the following <code>M-x chmod</code>.
+
+<pre>
+(defun chmod (mode)
+  "Set the mode of the current file, in octal, as per the chmod program.
+If the current file doesn't exist yet the buffer is saved to create it."
+  (interactive "sMode (3 or 4 octal digits): ")
+  (or (string-match "[0-3]?[0-7][0-7][0-7]" mode)
+      (error "Invalid mode"))
+  ;; make sure the file exists
+  (unless (file-exists-p (buffer-file-name))
+    (save-buffer))
+  (set-file-modes (buffer-file-name) (string-to-number mode 8)))
+</pre>
+
+If you want "a+r" etc as accepted by the actual <code>chmod</code> program then you're probably best to just run that.  Lisp:misc-cmds.el has such a command.
+
+But "a+r" and stuff is for whimps.  A real man, or a real woman, or a real furry creature from Alpha Centauri should always use octal!
+
+== Executables ==
+
+You can set the execute bit on a script with <code>M-x executable-set-magic</code>.  It adds or sets the <code>#!</code> interpreter line at the start and sets up to make the file executable when you save it.  You can customize which bits are set using the <code>executable-chmod</code> variable.  The default is 73 (0111 octal) adding executablility for everyone, you could change it to 64 (0100 octal) to do that only for yourself.
+
+ShellMode has <code>C-c :</code> (<code>sh-set-shell</code>) as a shortcut, prompting just for one of common shells (<code>sh</code>, <code>csh</code>, <code>bash</code>, etc).
+
+See also MakingScriptsExecutableOnSave.
+
+----
+CategoryFiles

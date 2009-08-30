@@ -1,0 +1,7 @@
+
+Dale Worley has written a TECO interpreter in elisp.  You can find the
+latest version, v7, here: Lisp:teco.el.  Note that there is a bug when
+it is used with Emacs v22.  Since the prompt string in a minibuffer is
+now returned as a form field, using a non-null 'teco:prompt' value
+causes 'teco:command' to fail to read your command string properly.
+Setting 'teco:prompt' to "" works around it.

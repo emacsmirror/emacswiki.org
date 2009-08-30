@@ -1,0 +1,49 @@
+Emacs jargon predates most user interfaces used today. 次に、初歩的なEmacs用語の対訳表を示します。
+
+||'''一般的な用語'''||'''Emacs用語'''||
+||選択範囲（selection）||領域・リージョン（[[Region]]）||
+||切り取り・カット（cut）||キル（kill）||
+||貼り付け・ペースト（paste）||ヤンク（yank）||
+||ウィンドウ（[[Window]]）||フレーム（[[Frame]]）||
+||ショートカット（shortcut）||キーシーケンス（key sequence）||
+
+Emacs用語では、'''ウィンドウ（window）'''はフレームのペイン、つまりサブフレームのことを指します。
+'''モードライン（ModeLine）'''は、各ウィンドウの下部にある1行文のテキストを指します。
+'''ミニバッファ（MiniBuffer）'''は、コマンドを入力するための特別なバッファです。専用のフレーム、または、これは各フレームの一番下に表示されます。
+(テキスト)'''カーソル（cursor）'''は、テキストの挿入位置となる場所であり、デフォルトでは長方形で表示されます。
+(マウス)'''ポインタ'''は、マウスの位置を示します。デフォルトでは、矢印で表示されます。
+カーソルの位置は、常にイコール'''ポイント'''値となります。たとえば、カーソルがバッファの3文字目にある場合、ポイントの値は3です。
+"ポイント"と"マーク"については、リージョン（テキストの選択）で詳しく説明します。
+
+このページのタイトルをクリックすると、Wiki内のグロッサリが含まれるすべてのページを表示することができます。さらに、EmacsManual（`C-h i'）のGlossaryノードも参照してみてください。
+
+* EmacsJargon -- 基本的なEmacs用語
+* [[Command]] -- コマンドとは、InteractiveFunction のことを指します。`M-x' と `<code>M-:</code>'を使います。
+* [[Key]] -- キーシーケンスによってコマンドが実行できるように、キーシーケンスとコマンドを対応づける
+* [[Chord]] -- a key sequence that you can hold to repeat a command
+* [[Display]] -- GNU Emacsでは、フレームはディスプレイ上に表示される（TTY, X）
+* [[Device]] -- XEmacsでは、フレームはデバイス上に表示される（TTY, X, MS Windows, GTK）
+* [[Frame]] -- Emacsウィンドウはフレーム（Emacs以外の世界では「ウィンドウ」と呼ばれるもの）上に表示される
+* [[Window]] -- バッファはEmacs ウィンドウ（フレームのペイン）に表示される
+** [[ModeLine]] -- モード行は、ウィンドウの下部にあり、バッファのステータスを表示する
+* [[Buffer]] -- バッファとは、編集作業を行う場所を指す
+** [[MajorMode]] -- バッファごとに、対応するメジャーモードが1つある
+** [[MinorMode]] -- 複数のマイナーモードを同時に有効にすることができる
+* MiniBuffer -- ミニバッファとはフレームの下部にある特別なバッファ。コマンドを入力するために使う
+* [[EchoArea]] -- エコーエリアは、画面の下部にあるミニバッファと同一の領域であり、出力を表示するために使われる
+* [[Completion]] -- having Emacs complete input in the minibuffer or text in another buffer
+* [[Point]], [[Mark]], and [[Region]] -- バッファの一部
+** [[Region]] -- ポイントとマークに挟まれた領域。アクティブ/非アクティブの区別がある
+** [[Point]] -- ポイントは、挿入開始位置を指す（Emacs以外の世界では、カーソル位置と呼ばれることが多い）
+** [[Mark]] -- the mark, how does it work and who are its best buddy:
+** [[Narrowing]] -- "narrowing" happens 
+* [[Face]] -- Is it a font?  Is it a color?  No, it is a face!
+* [[Font]]
+* [[Sexp]] -- a sexp is a "symbolic expression" in Lisp
+* [[RequiredFeature]] -- when Lisp code `require's a Lisp library, or '''feature''', the requirement can be '''hard''' or '''soft'''
+* DoWhatIMean -- the meaning of dwim!
+* [[Line]] -- a line of text
+** LineWrap
+* [[Electricity]]
+
+

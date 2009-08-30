@@ -1,0 +1,70 @@
+See also EshellFunctions for more elaborate examples.
+
+== open file ==
+
+I used this in my .emacs so that I can simply open file instead of
+find-file.  This has the added advantage that I can M-x open file when
+I can't remember what C-x C-f does ;P
+
+    (defalias 'open 'find-file)
+    (defalias 'openo 'find-file-other-window)
+
+== Alias 'll' to 'ls -l' ==
+
+Make sure that the positional parameters are included:
+
+    ~ $ alias ll 'ls -l $*'
+
+== Alias 'emacs' to 'find-file' ==
+
+    ~ $ alias emacs 'find-file $1'
+
+Note that without the quotes, the positional parameter will get lost:
+
+    ~ $ alias emacs find-file $1
+    ~ $ alias
+    alias emacs find-file
+
+Note also that $* will not work because `find-file' expects exactly one parameter.
+Using $* instead of $1 will pass a list of parameters to find-file, and find-file will barf:
+
+    ~ $ alias emacs 'find-file $*'
+    ~ $ emacs test.txt
+    Wrong type argument: stringp, ("test.txt")
+
+== Alias 'w3m' to 'w3m-find-file' ==
+
+The same idea is for checking html files. I generate a lot of html 
+documentation using Doxygen and want to see the document without leaving emacs.
+If you have [[emacs-w3m]] and [[w3m]] installed; then you may want to alias 
+w3m to w3m-find-file same as emacs to find-file:
+
+    ~ $ alias w3m 'w3m-find-file $1'
+
+--AntonKulchitsky
+
+== Alias 'clear' to 'recenter 0' ==
+
+    ~ $ alias clear recenter 0
+
+== What about permanent aliases? ==
+
+The trick is that all aliases will be stored automatically, thus you
+do not need to edit anything equivalent to your ##".bash_alias"## manually.
+The variable `eshell-aliases-file' defines the file in which aliases are stored.
+Refer to the comments in the source file ##"em-alias.el"## for details.
+
+== More about permanent aliases ==
+
+You also can define new eshell commands in your .emacs file. There is a simple example.
+To define 'emacs' command as 'find-file' as above you may write:
+
+      (defun eshell/emacs (file)
+          (find-file file))
+
+This way you can define pretty complicated functions 
+using all emacs lisp power. From the other side, it may be just overkill 
+for such simple definitions. See [[EshellFunctions]] for more information about this. --AntonKulchitsky
+
+----
+CategoryEshell

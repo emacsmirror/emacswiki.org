@@ -1,0 +1,64 @@
+== Introduction ==
+I'm a newbie to emacs and am beginning to use it full-time on W32.
+
+One W32 feature is that whenever a file foo.htm is saved (in IE or Firefox) a directory called foo_files is created where associated css, images, javascript etc. files are stored. W32's File Explorer automatically moves and deletes these *_files directories when you perform operations on the htm file.
+
+This is not an emacs feature so much as it is a small band-aid to get emacs to do the same. So far, this was only integrated into the move function in dired, and it's quite kludgey.
+
+Hopefully some guru will suggest a better way to do it.
+
+== Install instruction steps ==
+
+'''Steps (and code)'''
+
+* In emacs, type C-h f dired-do-rename
+* The help buffer will open and say it is a compiled file in dired-aux.elc -- click the hyperlink.
+* The dired-do-rename function is pretty simple. Add the following code just after the ##(interactive "P")## line.
+[new]
+
+    (mapcar (function nsb-dired-mark-assoc-html-dir) 
+	  (mapcar (function dired-make-relative) (dired-get-marked-files)))
+[new]
+* Just above the function dired-do-rename, add the following on its own line.
+
+[new]
+
+    (defun nsb-dired-mark-assoc-html-dir (fname)
+	 "Given html or htm file, mark the corresponding
+	  directory of images and stuff in dired (in Win32
+	  such directories are usually moved along with the htm
+	  file so that relative image/css refs etc are preserved).
+	  This preserves the Win32 behavior (in Win32 a file foo.htm
+	  is accompanied by the foo_files directory). "
+	 (interactive "P")
+	 (let* ((tmp nil)
+		(matchon (subseq fname 0 7))
+		(regexpis (concat matchon ".*_files")))
+	   ;; note if filename is less than 7 chars, matchon will contain
+	   ;; the string .htm or .html and the regexpis value will be incorrect
+	   ;; since windows translates foo.htm to the directory foo_file 
+	    
+	   (dired-mark-files-regexp regexpis)))
+
+* Since this is an elisp buffer, do C-x C-s to save it. From the menu bar choose "Emacs-Lisp", then the "Byte-compile And Load" menu item.
+
+----
+== Conclusion == 
+
+And that's it. Now opening a dired buffer, selecting some htm files with 'm' and then typing 'R' for rename will take a while, but it will select the corresponding directory for renaming (aka moving) too.
+
+It was fun discovering a way to do this, and I hope it's possible to integrate it into all operations on htm files. Emacs rocks!
+
+== Caveats ==
+
+* An arbitrary subseq length of 7 is chosen. This works fine for files like abcdefg.htm but not at all for foo.htm -- what we're really looking for here is a unique subsequence we can use a regexp with. 
+** For example something like ##(matchon (subseq fname 0 (instring fname ".htm")))## should work where ##(instring "012ABC" "ABC")## yields 3.
+
+* It seems somewhat slow (but then my see-later-html directory has thousands of files, no thanks to reddit!).
+
+== Comments ==
+
+This section is for suggestions, comments and improvements. Please add your ##[username]## before your comment so that they'll be threaded. There's got to be a way to make this less kludgey..
+
+[NooBoo]
+If the directory is not visible then it doesn't get selected. Also it selects all directories starting with GoogleGroups, for instance, even though I select only one of those files. This is related to the caveat above.

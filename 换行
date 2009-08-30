@@ -1,0 +1,8 @@
+RafaelSepúlveda写的word?-wrapping.el【换行.el】是和AutoFillMode【自动换行模式】相似的? MinorMode【副编辑模式】。区别是它在插入点到fill?-column【换行的列？】的时候将段落换行【fills the paragraph】，而不是等待一个空白字符后再换行。
+
+另外，如果没有开启auto-fill-mode【自动换行模式】，fill-column会被忽略而使用窗口的宽度【width of the frame】。
+
+* Groups:word-wrapping.el
+* 组：word-wrapping.el 【换行.el】
+
+类别：换行【filling】

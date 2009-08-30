@@ -1,0 +1,12 @@
+See ErcExtraModules first if you use the version of ERC that comes with Emacs 22 and you don't have erc-nicklist.el.
+
+To display channel nicknames in a side buffer, just add the following to your .emacs or ERC configuration file:
+
+    (require 'erc-nicklist)
+
+Then activate the nicklist buffer, using M-x erc-nicklist RET in the channel buffer (you need to do this for each channel buffer if you want a nicklist for each channel).
+
+M-x erc-nicklist-quit closes the nicklist buffer.
+
+----
+[[ERC]], ErcExtraModules

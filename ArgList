@@ -1,0 +1,87 @@
+KaiGrossjohann was asking about programmatically getting at the
+argument list to an EmacsLisp function today in one of the
+EmacsNewsgroups, and it made me curious. Check it out:
+
+    (defun ted-make-list-of-arg-list-symbols (min &optional max)
+      "Make a list of arbitrary arg list symbols."
+      (let ((retval '())
+            (i 0))
+        (while (< i min)
+          (setq retval (nconc (list (intern (format "arg-%d" (+ i 1)))) retval))
+          (setq i (+ i 1)))
+        (cond ((numberp max)
+               (when (/= min max)
+                 (setq retval (nconc (list '&optional) retval)))
+               (while (< i max)
+                 (setq retval (nconc (list (intern (format "arg-%d" (+ i 1)))) retval))
+                 (setq i (+ i 1))))
+              (t
+               (setq retval (nconc (list (intern "arg-n") '&rest) retval))))
+        (nreverse retval)))
+    
+    (defun ted-arg-list (func)
+      "Fetch the arg list of FUNC."
+      (cond ((and (symbolp func) (fboundp func))
+             (ted-arg-list (symbol-function func)))
+            ((byte-code-function-p func)
+             (aref func 0))
+            ((and (listp func) (eq (car func) 'lambda))
+             (nth 1 func))
+            ((subrp func)
+             (let* ((arity-cons (subr-arity func))
+                    (min (car arity-cons))
+                    (max (cdr arity-cons)))
+               (cond ((memq max '(unevalled many))
+                      (ted-make-list-of-arg-list-symbols min))
+                     (t
+                      (ted-make-list-of-arg-list-symbols min max)))))
+            (t (signal 'wrong-type-argument '(functionp func)))))
+
+<code>eldoc-mode</code> also does this.  Have a look at <code>eldoc-function-arglist</code> and <code>eldoc-function-argstring</code> ...
+
+<code>subr-arity</code> returns the minimum and maximum number of args allowed for built-in functions, but cannot be used for non-primitives.
+
+Here's my first bash at <code>function-arity</code>:
+
+    (defun function-arg-types (fn)
+      "Returns the arguments of FN as a 3 element (MANDATORY OPTIONAL REST).
+    MANDATORY and OPTIONAL are lists containing the argument symbols; REST
+    is the symbol which remaining arguments will be assigned to."
+      (or (functionp fn)
+          (error (format "%s is not a function" fn)))
+      (let ((arglist (eldoc-function-arglist fn))
+            (mandatory ())
+            (optional ())
+            rest
+            (append-to 'mandatory))
+        (or (sequencep arglist)
+            (error (format "eldoc-function-arglist failed to retrieve arguments for %s; maybe it's autoloaded or a special form?" fn)))
+        (mapc (lambda (arg)
+                (cond ((eq arg '&optional)
+                       (setq append-to 'optional))
+                      ((eq arg '&rest)
+                       (setq append-to 'rest))
+                      (t
+                       (if (eq append-to 'rest)
+                           (setq rest arg)
+                         (message (format "new arg %s in %s"
+                                          arg append-to))
+                         (set append-to (append (eval append-to) (list arg)))))))
+              arglist)
+        (list mandatory optional rest)))
+
+    (defun function-arity (fn)
+      "Return minimum and maximum number of args allowed for FN.
+    Unlike with `subr-arity', FN does not have to be a built-in function.
+    The returned value is a pair (MIN . MAX).  MIN is the minimum number
+    of args.  MAX is the maximum number or the symbol `many', for a
+    function with `&rest' args."
+      (let* ((arg-types (function-arg-types fn))
+             (mandatory (length (car  arg-types)))
+             (optional  (length (cadr arg-types)))
+             (rest      (caddr arg-types)))
+        (cons mandatory (if rest 'many
+                          (+ mandatory optional)))))
+
+----
+CategoryCode

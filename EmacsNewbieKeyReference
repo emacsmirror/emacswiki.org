@@ -1,0 +1,139 @@
+This is a reference for an EmacsNewbie of commonly used Emacs [[key sequence]]s. See also:
+* EmacsNewbieHelpReference -- The [[key]]s that help you learn Emacs.
+* CategoryReferenceSheet -- More key lists.
+
+
+
+== General ==
+
+* Quit Emacs: `C-x C-c'
+
+== Buffers and Windows ==
+
+* Open a file, existing or new: `C-x C-f' -- then type the file name.
+* Save [[Buffer]]: `C-x C-s'
+* Save buffer as a different file (Save As): `C-x C-w'
+* Save all open buffers: `C-x s'
+* Insert a file into buffer: `C-x i'
+* Kill current buffer and open another file: `C-x C-v'
+* Kill (close) a buffer: `C-x k'
+* Split [[Window]]: `C-x 2' or `C-x 3'
+* Unsplit windows (maximize selected window, within its [[Frame]]): `C-x 1'
+* Select next window: `C-x o'
+* Switch to another buffer: `C-x b'
+* Buffer menu (list of buffers): `C-x C-b' -- save, delete, open rename buffers
+
+== Cursor Motion ==
+
+These commands move the TextCursor and [[Point]]:
+
+* Forward a character: `C-f'
+* Backward a charcter: `C-b'
+* Forward a line: `C-n'
+* Backward a line: `C-p'
+* Go to the beginning of the line: `C-a'
+* Go to the end of the line: `C-e'
+* Forward a word: `M-f'
+* Backward a word: `M-b'
+* Forward a sentence: `M-e'
+* Backward a sentence: `M-a'
+* Go to the beginning of the buffer: ##`M-<'##
+* Go to the end of the buffer: ##`M->'##
+
+== Undoing ==
+
+* undo: C-x u, C-_, C-/, or from the menu: `Edit' -> `Undo'. You've undone all changes when the mode line shows `--' instead of `**'
+* redo: after undo, C-g and then C-x u
+* undo unsaved changes to a buffer: M-x revert-buffer
+
+See also: [[Undo]].
+
+
+== Canceling ==
+
+* cancel current operation: `C-g'
+* if that doesn't happen to work (abort or exit recursive edit): ##`C-]'##,  ##`C-M-c'##
+* or ‘M-x top-level’
+
+See also: CancelingInEmacs.
+
+
+== Whitespace Edits ==
+
+* Indent current line: TAB
+* Shift a block of lines rigidly right or left: C-x TAB
+* Fill (justify) paragraph: `M-q;
+* Add a new line after this one: `RET'
+* Open a new line before this one: `C-o'
+* Remove all but 1 empty line: `C-x C-o'
+* Remove all but 1 space: `M-SPC'
+
+See also: [[Indentation]] and [[Filling]].
+
+
+== Deleting ==
+
+* Delete character backward: `DEL'
+* Delete character forward: `C-d'
+* Delete word backward: `M-DEL'
+* Delete word forward: `M-D'
+* Delete to end of line: `C-k'
+* Delete entire line: `C-S-DEL'
+* Delete to end of sentence: `M-k'
+ 
+== Selecting and Modifying Regions ==
+
+Copy, cut, paste, select all, ...
+
+* Set mark: `C-SPC', `##C-@##', `M-x set-mark-command'
+* Select entire buffer: `C-x h'
+* Select page: `C-x C-p'
+* Exchange TextCursor position ([[Point]]) and [[Mark]]: `C-x C-x'
+* Copy text after setting mark: `C-Insert', `M-w'
+* Cut text after setting mark: `C-w', `S-DEL'
+* Paste ("yank") text: `C-y', `S-Insert'
+* Replace just pasted text with text copied or cut earlier: `M-y'
+
+See also: [[Region]].
+
+== Other Simple Editing ==
+
+* Make word uppercase: `M-u'
+* Make word lowercase: `M-l'
+* Capitalize word (first character): `M-c' 
+* Transpose (swap) adjacent characters: `C-t'
+* Transpose adjacent words: `M-t'
+* Transpose lines: `C-x C-t'
+* Move line 2 lines forward: `C-u 2 C-x C-t'
+* Join previous line: `##M-^##'
+* Join next line: `##C-1 M-^##'
+
+[:RepeatingPreviousCommands]
+== Repeating Previous Commands ==
+
+* Repeat the most recent command: `C-x z', and again with `z'.
+* See the recent commands (displayed in EmacsLisp):  `M-x list-command-history'. Rerun a command by hitting `x' on the line containing a command.
+* RepeatingComplexCommand allows you to choose which previous command as EmacsLisp and even modify it.
+
+== Scrolling ==
+
+* Recenter the screen at the TextCursor: `C-l'
+* Center the screen at the top:  `C-0 C-l' or `C-u 0 C-l'
+* Recenter the screen at the bottom: `C-- C-l' or `C-u - C-l'
+
+== Common User Access (CUA) Keys ==
+
+CUA keys are available with CuaMode, this includes `C-c', `C-x', `C-v' and `C-z' and visible region selection. This mimics the familiar behavior found on in Windows, Mac and Motif. *Note*: If region is not active -- no visible selection -- then `C-x' works as it as it does normally in Emacs (without cua-mode).
+ 
+On the other hand if the region is active you can use C-S-x (or two rapid C-x C-x) instead C-x to do what C-x normally does in Emacs.
+The same goes for the other CUA keys. 
+See cua-mode help for more information.
+
+== VI Keys ==
+
+vi keys are available with ViperMode.
+
+----
+CategoryReferenceSheet
+CategoryHelp
+CategoryKeys

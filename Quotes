@@ -1,0 +1,12 @@
+All stuff quotes...
+
+* TypographicalPunctuationMarks -- having Emacs insert "quotes" that look nice.
+* OpeningQuote -- semiautomatically insert a ##`## when typing a ##'##. This may be useful when writing documentation, such as EmacsLisp doc-strings, but it probably gets in your way in a gazillion other ways.
+* EmacsChannelQuotes -- memorable quotes from #emacs.
+* QuotesMode -- navigating a collection of quotes in the ol' fortune cookie format.
+* BoxQuote -- fancy ways of quoting people using ASCII characters.
+* QuotedLambda -- ##'(lambda () foo)## is useless in EmacsLisp.
+* BackquoteSyntax -- explaining the power of ##`(foo ,(bar))## in EmacsLisp.
+* HtmlQuote -- quoting HTML so that you can incorporate it as readable source into other HTML documents. Works for XML.
+* RandomIdleQuote -- when Emacs is idle, a random quote will appear in your echo area. Eeek!
+* StockQuote -- money makes the world go round!

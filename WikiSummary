@@ -1,0 +1,36 @@
+ wiki-sum.el --- Write a summary of the wiki
+
+The WikiSummary of a page is the first paragraph on the page with at least two sentences.  It's a simple trick, but it seems to work for my pages.  [http://www.geocities.com/kensanata/elisp/wiki-sum.el.txt Download]
+
+WikiSummary can be used together with WikiMode.  Personally, I use it for two things:
+
+* I call M-x wiki-write-summary from time to time to generate the <nowiki>SiteSummary</nowiki> page for me.
+* I generate meta description tags for my pages.  This is more elaborate.
+
+''Generating Meta Desciption Tags''
+
+Creating the meta description must happen when the page is published.  It happens in two stages.  First, we determine the summary of the current page using the function `my-wiki-store-summary' as a markup rule.  It doesn't add any markup: It just stores the page summary in the variable `my-wiki-summary'.  Later, we use the function `my-wiki-add-summary' to insert the summary in the header.
+
+    (load-library "wiki-sum")
+    (defvar my-wiki-summary nil)
+    (defun my-wiki-store-summary ()
+      (if (member (file-name-nondirectory buffer-file-name)
+                  wiki-summary-exclude-pages)
+          (setq my-wiki-summary nil)
+        (setq my-wiki-summary (wiki-summarize))
+        (when my-wiki-summary
+          (while (string-match "\"" my-wiki-summary)
+            (setq my-wiki-summary (replace-match "&quot;" t t my-wiki-summary))))))
+    (defun my-wiki-add-summary ()
+      (goto-char (point-min))
+      (when (and my-wiki-summary
+                 (search-forward "</title>" nil t))
+        (insert "\n"
+                "<meta name=\"description\" content=\""
+                my-wiki-summary "\">")))
+
+Now we need to install these two functions in `wiki-pub-rules'.  See
+SampleWikiModeSetup for an example.
+
+To see how it works, take a look at the source of this page.  You
+should see the meta description tag right after the </title> tag.

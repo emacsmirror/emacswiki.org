@@ -1,0 +1,9 @@
+I'm a second-semester student of the way computer science, former sysadmin, and I have been using Emacs since day 4. (Pretty literally)
+
+I worked my way through the emacs-lisp-intro over the summer and am starting to feel like I kind of know my way around. I still definitely don't though, any advice, critiques, tips are most definitely welcome.
+
+On on the internet I go by [::quodlibetor]: [http://blog.quodlibetor.com my blog] and [http://svn.quodlibetor.com public svn], quodlibetor on aim/yim/msn and @gmail.
+
+= Contributions =
+
+TabInTabular -rebind the TAB key to operate more other programs operate within tables. I created it for the LaTeX tabular environment, so it's probably not very suited to anything else.

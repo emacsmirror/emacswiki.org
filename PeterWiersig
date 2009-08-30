@@ -1,0 +1,218 @@
+---
+Software to sync local wiki files (see EmacsWikiMode) with Palm devices
+
+* wikisync.sh -- shell script that uses pilot-xfer for communicating with the device.  Wiki files are exported as memos in a "Wiki" category on the Palm.  For more info see: http://ignotus.hixsplit.hu/WikiSync.html
+
+---
+I arrived via the TourBusStop and I am on the quest to solve some of my configuration problems here. I use XEmacs
+
+* I need an working mmm-mode/php-mode/psgml-mode/xml-mode configuration so that I can do my work more comfortably.
+** As to PHP, all I know is PhpMode -- but I hear that many people are not happy enough with it... -- AlexSchroeder
+** Mine work great. See below... --JeanPhilippeTheberge
+*** Yeah, the highlighting is great, but the indenting does not work. My idea is to teach php-mode treat Text inside '?>' '<?' as comment and psgml-mode that text inside '<?' '?>' is a comment. I have some difficulties to find the documentation on how to write a new mode or change the old modes.
+
+* And I'd love to hack an music-management-mode so the music archive at work gets in a better shape.
+
+: Welcome to the wiki!  You must be the first person that came here via the bus stop!  -- AlexSchroeder
+
+: Maybe I'm the first that admits it.
+----
+== JeanPhilippeTheberge's mmm/php/psgml/dtd/javascript/(sg|ht|x)ml config file ==
+<pre>
+(require 'psgml)
+
+(setq html-helper-new-buffer-template
+  '(html-helper-htmldtd-version
+    "<html>\n"
+    "  <head>\n"
+    "    <title>" (p "Document Title: " title) "</title>\n"
+    "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n"
+    "	 <meta name=\"generator\" content=\"GNU-Emacs " emacs-version "/PSGML " psgml-version "\">\n"
+    "    <meta name=\"authors\" content=\"Cesart - http://www.cesart.com\">\n"
+    "  </head>\n"
+    "\n"
+    "  <body>\n"
+    p
+    "\n  </body>\n</html>\n"))
+
+(require 'psgml-html)
+
+(setq sgml-auto-activate-dtd nil
+      sgml-insert-missing-element-comment nil
+      sgml-sgml-file-extension "sgml"
+      sgml-dsssl-file-extension "dsl"
+      sgml-declaration "/usr/local/share/sgml/dtd/html/HTML4.dcl"
+      sgml-always-quote-attributes   t
+      sgml-auto-insert-required-elements t
+      sgml-indent-data               t
+      sgml-indent-step               2
+      sgml-minimize-attributes       nil
+      sgml-omittag                   nil
+      sgml-shorttag                  nil )
+
+(add-hook 'sgml-mode-hook (lambda () (setq sgml-auto-activate-dtd nil)))
+      
+ 
+;; load xml-mode 
+(setq auto-mode-alist
+      (append (list (cons "\\.xml\\'" 'xml-mode))
+	      auto-mode-alist))
+
+(autoload 'xml-mode "psgml" nil t)
+(setq sgml-xml-declaration
+      "/public2/linux/lib/sgml/dtd/html/xml.dcl")
+
+
+(setq-default sgml-indent-data t)
+      
+   
+;; Start DTD mode for editing SGML-DTDs
+(autoload 'dtd-mode "tdtd" "Major mode for SGML and XML DTDs.")
+(autoload 'dtd-etags "tdtd"
+"Execute etags on FILESPEC and match on DTD-specific regular expressions."
+t)
+(autoload 'dtd-grep "tdtd" "Grep for PATTERN in files matching FILESPEC." t)
+
+(setq auto-mode-alist
+(append
+(list
+'("\\.dcl$" . dtd-mode)
+'("\\.dec$" . dtd-mode)
+'("\\.dtd$" . dtd-mode)
+'("\\.ele$" . dtd-mode)
+'("\\.ent$" . dtd-mode)
+'("\\.mod$" . dtd-mode))
+auto-mode-alist))
+ 
+
+(setq 
+ sgml-expand-list 
+ (list 
+  (list "%file" 'file nil)                        ; the current file as is
+  (list "%sgml" 'file sgml-sgml-file-extension)   ;   with given extension
+  (list "%tex" 'file "tex")                       ;   dito 
+  (list "%dvi" 'file "dvi")                       ;   dito
+  (list "%pdf" 'file "pdf")                       ;   dito
+  (list "%ps" 'file "ps")                         ;   dito
+  (list "%dsssl" 'file sgml-dsssl-file-extension) ;   dito
+  (list "%dir" 'file nil t)                       ; the directory part  
+  (list "%stylesheet" 'sgml-dsssl-spec)           ; the specified style sheet
+  (list "%backend" 'sgml-jade-backend)            ; the selected backend
+  (list "%catalogs" 'sgml-dsssl-catalogs 'sgml-catalog-files 'sgml-local-catalogs)
+  ; the catalogs listed in sgml-catalog-files and sgml-local-catalogs.
+  )
+ )
+
+;; load dsssl support
+;; (autoload 'sgml-dsssl-make-spec "psgml-dsssl" nil t)
+
+;; PSGML menus for creating new documents
+(setq sgml-custom-dtd
+'(
+  ( "HTML 2.0"
+    "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">")
+  ( "HTML 2.0 Strict"
+    "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0 Strict//EN\">")
+  ( "HTML 2.0 Level 1"
+    "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0 Strict Level 1//EN\">")
+  ( "HTML 3.2 Final"
+    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">")
+  ( "HTML 4"
+    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">")
+  ( "HTML 4 Frameset"
+    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Frameset//EN\">")
+  ( "HTML 4 Transitional"
+    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">")
+  ( "DocBook 4.1"
+   "<!DOCTYPE Book PUBLIC \"-//OASIS//DTD DocBook V4.1//EN\">")
+  ( "XHTML 1.0"
+    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\">")
+  ( "XHTML 1.0 Transitional"
+    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\">")
+  ( "XHTML 1.0 Frameset"
+    "<!DOCTYPE HTML PUBLIC \"//W3C//DTD XHTML 1.0 Frameset//EN\">")
+  )
+)
+
+; (setq sgml-catalog-files 
+;      '("catalog" "C:\\cygwin\\usr\\local\\lib\\sgml\\dtd\\html\\catalog"))
+(setq sgml-catalog-files
+      '("catalog"
+	"/usr/local/share/sgml/dtd/dsssl/catalog"
+	"/usr/local/share/sgml/dtd/html/catalog"
+	"/usr/local/share/sgml/dtd/xhtml/catalog"))
+
+(setq sgml-ecat-files
+      '("catalog"
+	"/usr/local/share/sgml/dtd/dsssl/ecatalog"
+	"/usr/local/share/sgml/dtd/html/ecatalog"
+	"/usr/local/share/sgml/dtd/xhtml/ecatalog"))
+
+; (setq 
+; sgml-ecat-files 
+; (list
+;  (expand-file-name "c:/cygwin/usr/local/lib/sgml/dtd/html/ecatalog")
+;  (expand-file-name "c:/cygwin/usr/local/lib/sgml/dtd/docbook41/ecatalog")
+;  (expand-file-name "c:/cygwin/usr/local/lib/sgml/dtd/xhtml/ecatalog")
+;  ))
+
+
+
+;;************************************************************ 
+;; configure HTML editing
+;;************************************************************ 
+;;
+(require 'php-mode)
+;; 
+;; configure css-mode
+(autoload 'css-mode "css-mode")
+(add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
+(setq cssm-indent-function #'cssm-c-style-indenter)
+(setq cssm-indent-level '2)
+;; 
+;; (add-hook 'php-mode-user-hook 'turn-on-font-lock)
+;; 
+(require 'mmm-mode)
+(setq mmm-global-mode 'maybe
+      mmm-submode-decoration-level 2)
+(if window-system (require 'JP-faces))
+
+;; 
+;; set up an mmm group for fancy html editing
+(mmm-add-group
+ 'fancy-html
+ '(
+   (html-php-tagged
+    :submode php-mode
+    :face mmm-code-submode-face
+    :front "<[?]\\(php\\)?"
+    :back "[?]>")
+   (html-css-attribute
+    :submode css-mode
+    :face mmm-special-submode-face
+    :front "style=\""
+    :back "\"")))
+
+;; What files to invoke the new html-mode for?
+(add-to-list 'auto-mode-alist '("\\.inc\\'" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.phtml\\'" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.php[34]?\\'" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.[sj]?html?\\'" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.jsp\\'" . html-mode))
+
+;; What features should be turned on in this html-mode?
+(setq mmm-mode-ext-classes-alist nil)
+(add-to-list 'mmm-mode-ext-classes-alist '(html-mode nil html-js))
+(add-to-list 'mmm-mode-ext-classes-alist '(html-mode nil embedded-css))
+(add-to-list 'mmm-mode-ext-classes-alist '(html-mode nil fancy-html))
+
+;; Not exactly related to editing HTML: enable editing help with shift-mouse-3 in all sgml files
+(defun go-bind-markup-menu-to-mouse3 ()
+  (define-key sgml-mode-map [(shift-down-mouse-3)] 'sgml-tags-menu))
+
+(add-hook 'sgml-mode-hook 'go-bind-markup-menu-to-mouse3)
+
+</pre>
+
+----
+CategoryHomepage

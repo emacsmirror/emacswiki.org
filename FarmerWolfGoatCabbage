@@ -1,0 +1,74 @@
+Known problem solved in elisp. :)
+
+Here is little description. We have 2 banks (east and west). On the west bank we have farmer, wolf, goat, cabbage and one boat that can hold one or a couple of them, also if wolf stays with goat without farmer then wolf eats goat and if goat stays with cabbage without farmer then goat eats cabbage. Goal: cross a river without losses.
+
+Try to fully understand what is going on!
+
+<pre>
+(defun fs (state) (nth 0 state))
+(defun ws (state) (nth 1 state))
+(defun gs (state) (nth 2 state))
+(defun cs (state) (nth 3 state))
+
+(defun op (els)
+  (cond ((equal els "w") "e")
+        ((equal els "e") "w")))
+
+(defun safe (state)
+  (cond ((and (not (equal (fs state) (gs state)))
+              (or (equal (ws state) (gs state))
+                  (equal (gs state) (cs state)))) nil)
+        (t state)))
+
+(defun make-state (f w g c)
+  (list f w g c))
+
+(defun fw (state)
+  (cond ((equal (fs state) (ws state))
+         (safe (list (op (fs state))
+                     (op (ws state))
+                     (gs state)
+                     (cs state))))
+        (t nil)))
+
+(defun fg (state)
+  (cond ((equal (fs state) (gs state))
+         (safe (list (op (fs state))
+                     (ws state)
+                     (op (gs state))
+                     (cs state))))
+  (t nil)))
+
+(defun fc (state)
+  (cond ((equal (fs state) (cs state))
+         (safe (list (op (fs state))
+                     (ws state)
+                     (gs state)
+                     (op (cs state)))))
+  (t nil)))
+
+(defun ff (state)
+  (safe (list (op (fs state))
+              (ws state) 
+              (gs state)
+              (cs state))))
+
+(defun fpath (firth-s goal-s beenl)
+  (cond ((null firth-s) nil)
+        ((equal firth-s goal-s) (reverse (cons firth-s beenl)))
+        ((not (in firth-s beenl))
+         (or (fpath (ff firth-s) goal-s (cons firth-s beenl))
+             (fpath (fw firth-s) goal-s (cons firth-s beenl))
+             (fpath (fg firth-s) goal-s (cons firth-s beenl))
+             (fpath (fc firth-s) goal-s (cons firth-s beenl))))))
+
+(defun in (elem list)
+  (cond ((null list) nil)
+         ((equal elem (car list)) t)
+         (t (in elem (cdr list)))))
+
+(fpath '("w" "w" "w" "w") '("e" "e" "e" "e") nil)
+</pre>
+
+----
+CategoryHumor 

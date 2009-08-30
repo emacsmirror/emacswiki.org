@@ -1,0 +1,18 @@
+[http://www.emacswiki.org/elisp/enform-mode.el enform-mode.el] provides emacs support for Tandem's Enform Language.  A proprietary language used on Tandem/NSK/Guardian systems.  See TandemNskSupport for other Tandem specific modes.
+
+* Lisp:enform-mode.el
+
+Put the .el file into a directory in your LoadPath and add the following to your ~/.emacs file:
+
+    (autoload 'enform-mode "enform-mode" "A major mode for editing Enform files." t nil)
+
+When you are visiting an Enform file, use 'M-x enform-mode' to activate the mode.
+
+For best performance you should byte compile .el files but it's not required.  
+A CompiledFile usually runs faster.  
+There should be no warnings when compiling this file.  
+
+See TandemNskSupport for a method of automatically recognizing the language of Tandem files since they don't have an extension and coders often can't stick an  -*-enform-*-  comment in line 1.
+
+----
+ProgrammingModes

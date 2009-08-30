@@ -1,0 +1,85 @@
+ElUnit is a unit testing framework for Emacs Lisp code.
+
+Lisp:elunit.el
+
+It has undergone several revisions, and I'm preparing a rewrite for it. I'd like to gather ideas about what the most convenient syntax and features to include would be.
+
+Here's a first shot at some example syntax. I like the idea of working backwards from examples while implementing it.
+
+== Sample ==
+
+<pre>
+;; Meta suite
+
+(defsuite elunit-suite nil ; nil means it's not part of a larger suite. suites can be nested.
+  ;; put something here if needed...
+  ;; :setup-hook (lambda () )
+  :teardown-hook (lambda () (message "done testing")))
+
+(deftest passing-tests elunit-suite
+  ;; optional docstring
+  "passing tests should leave fail counter, open elunit buffer, and display results"
+  (save-buffer-excursion ; execute body and return to the current buffer configuration
+   (load "passing-sample-tests")
+   (elunit "passing-tests")
+   (assert (equal 0 elunit-fail-count))
+   (assert (string= (buffer-name (current-buffer)) "*elunit*"))
+   (assert (search-forward-regexp "0 failures"))))
+
+(deftest failing-tests elunit-suite
+  (save-buffer-excursion
+   (load "failing-sample-tests")
+   (elunit "failing-tests")
+   (assert (equal 4 elunit-fail-count))
+   (assert (string= (buffer-name (current-buffer)) "*elunit*"))
+   (search-forward-regexp "(cl-assertion-failed (equal 5 (+ 2 2)))")
+   (search-forward-regexp "4 failures")))
+</pre>
+
+To see tests for elunit itself, see http://github.com/technomancy/dotfiles/tree/master/.emacs.old/test/elunit-test.el
+
+== Issues ==
+
+*Nesting suites vs explicit suites*: earlier incarnations of ElUnit wrapped tests in a defsuite form so that the suite name did not have to be repeated for each test definition. This may be preferrable as it visually groups the tests, but some have argued against it.
+
+*Storing tests vs immediately executing them*: most unit testing frameworks run the tests when the code is evaled. I think an Elisp framework would be better of storing the tests as closures and executing them with another command.
+
+*Output*: currently just uses with-output-to-temp-buffer. Should have an option to do other stuff with the output; not sure what would be useful. Storing it in variables, maybe?
+
+*Buffer-locality*: should tests and suites be global, or should there just be a list of suites stored in a buffer-local variable?
+
+*save-buffer-excursion*: perhaps this should be implicit in deftest? (Would be like save-excursion, but for buffer configuration.)
+
+== Comments ==
+
+Please add. I'd like to get as much input here as I can so this can be useful to many people.
+
+Thanks. --PhilHagelberg
+
+[new]
+In my own elisp unit tests, I use assert in the code, thus making sure they disappear from the compiled code. Having them in the source code makes sure that I, as a developer, will run them always, whenever I load the file.
+-- AlexSchroeder
+
+[new]
+Alex: that's a great plan for simpler embedded tests. However, what I'm targetting here is tests that require more setup and context. You want to be able to test all the edge cases at once and see immediately a report that all's well or you caused X test failures. I see that wasn't made clear by my example; I will ammend that.
+-- PhilHagelberg
+
+[new]
+There's nothing in it that precludes complex setup for a suite of tests -- just wrap as appropriate and run multiple tests.
+But my style will not do any reporting, that's true.
+Perhaps my elisp projects were never complex enough...
+-- AlexSchroeder
+
+[new]
+The other reason I prefer this approach is that it makes test-driven development possible. If your tests are well-written, they can serve as a kind of API documentation and examples for how your functions should be used. (I've found this very helpful in other languages.) Also, I think there are some tasks associated with test setup that it would be helpful to have functions for, such as save-buffer-excursion. I think it just boils down to different development styles.
+-- PhilHagelberg
+
+[new]
+Here is a nice thing to put in your unit-testing scripts.  I think it's self-explanatory.
+
+  (set (make-local-variable 'elunit-default-suite) "the-suite-defined-in-this-script")
+
+-- JohnFoerch
+
+----
+See also UnitTesting

@@ -1,0 +1,411 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  IciclesIssues || '''[[Icicles]]''' || IciclesIssuesOpen || IciclesIssuesClosed ||
+
+----
+
+== Stale Icicles Issues ==
+
+This page is a record of ''stale'' issues reported by users of library '''<tt>[[icicles.el]]</tt>''' ('''[[Icicles]]'''), including bugs. These are issues that the reporting users did not follow up on -- never heard back from them. Could mean that the problem is not a problem; could mean that they gave up ;-).
+
+These issues were reported long ago, but followup info was lacking. I leave them here in case someone else experiences a similar problem. If you do, please follow up with a new bug report. Thanks.
+
+
+
+See also:
+
+* IciclesIssues -- Information about reporting issues.
+
+* IciclesIssuesOpen -- Issues that are not yet fixed. Describe your problem here.
+
+* IciclesIssuesClosed -- Issues that were resolved. Bugs that were fixed. Explanations of non-bugs. Issues from IciclesIssuesOpen and this page (IciclesIssuesStale) are moved there when they are resolved.
+
+* IciclesDiscussion -- General discussion about the library, feedback, possible uses, and possible enhancements.
+
+
+
+
+
+== How To Use This Page ==
+
+For readability, please separate each issue thread with `----' (horizontal line), and introduce each entry within a thread with `<code>[new]</code>'. 
+
+Better yet, use this to separate threads (puts space before and after the horizontal line):
+
+ <pre>
+
+ </pre>
+ ----
+ <pre>
+
+ </pre>
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+
+
+== (Stale) Issues ==
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+After loading the library (which works) the below error is reported (Symbol's value as variable is void: <!DOCTYPE). Then I cannot turn on icicles (no command icy-mode available)
+
+Loading /home/energieautark/administration/templates/EmacsConfigEtc/lispLibraries/icicles/icicles.el (source)...
+load-with-code-conversion: Symbol's value as variable is void: <!DOCTYPE
+Making completion list... -- [[Thomas]]
+
+[new:DrewAdams:2009-04-12 16:32 UTC]
+I suspect that you somehow downloaded the HTML code for the EmacsWiki page that presents a library, rather than the library (EmacsLisp code) itself. Or perhaps the download was somehow corrupted. There is no ##DOCTYPE## text in any of the '''Icicles''' libraries. Please check the files that you downloaded, to see that they are in fact Lisp code. You can also `grep' for ##DOCTYPE## to ensure that it is not present in any library.
+
+To download a file from its wiki page (e.g. <tt>[[icicles-cmd.el]]</tt>), right-click the ##Download## link and choose ##Save As## from your browser menu (or equivalent, depending on your browser). Alternatively, you can bulk-download all of the files using one of the methods described here: [[Icicles - Libraries#BulkIciclesDownload|Bulk Icicles Download]].
+
+However, it seems weird that things work at all, if you are trying to load an HTML page as Lisp code. ;-) And you say "it works", in general. So I will need to know exactly how it does ''not'' work.
+
+If a corrupted Lisp file is not in fact the problem, then please provide a precise recipe to reproduce the problem, starting with ##emacs -Q## (no init file). If you like, use `M-x icicle-send-bug-report', which will include additional info (your Emacs version etc.). And please make sure you use the latest '''Icicles''' files, since they are what I will use to debug. 
+
+FWIW, the only places in the '''Icicles''' code that a message ##Making completion list...## is displayed are in commands `icicle-dabbrev-completion' and `icicle-bbdb-complete-name'. So if you're seeing that message, then you must somehow be invoking one of those commands. You can try `M-x debug-on-entry icicle-dabbrev-completion' etc. and step through the debugger with `d' and `c', to see what is happening. If you use the debugger, be sure to explicitly load the source files (##*.el##, not ##.elc##), at least <tt>[[icicles-cmd.el]]</tt>, which defines those commands. Thx -- DrewAdams
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+
+<pre>
+
+</pre>
+
+
+this doesn't compile:
+
+ (icicle-define-command icicle-command-abbrev-command
+   "Read command name, then read its arguments and call command.
+ Read input, then call `icicle-execute-extended-command-1' to act on it." ; Doc string
+  icicle-execute-extended-command-1     ; Function to perform the action
+  (format "Command abbreviated%s%s: "   ; `completing-read' arguments
+          (cond ((and icicle-current-input (not (string= "" icicle-current-input)))
+                 (format " `%s'" icicle-current-input))
+                (icicle-candidate-nb
+                 (format " `%s'" (elt icicle-completion-candidates icicle-candidate-nb)))
+                (t ""))
+          (if current-prefix-arg
+              (format " (prefix %d)" (prefix-numeric-value current-prefix-arg))
+            ""))
+  icicle-commands-for-abbrev nil t nil 'extended-command-history nil nil
+  (;; Bindings
+   (use-file-dialog nil)
+   (last-command last-command)
+   (icicle-add-proxy-candidates-flag nil)
+   new-last-cmd)
+  nil nil
+  (setq this-command new-last-cmd)
+  t) 
+
+  error-> icicles-cmd.el:1036:1:Error: Wrong number of arguments:
+  #[(command doc-string function prompt table &optional predicate 
+  require-match initial-input hist def inherit-input-method bindings
+  first-sexp undo-sexp last-sexp) "\306 \307	\3109\205 ...
+
+thanks for this great package -- [[84-73-33-50.dclient.hispeed.ch]]
+
+[new:DrewAdams:2007-12-10 00:25 UTC]
+I suspect you do not have the latest version of <tt>[[icicles-mac.el]]</tt>, or perhaps you did not recompile the other libraries after loading the latest version of <tt>[[icicles-mac.el]]</tt>. That is a library of macros, including `icicle-define-command', so it must be loaded before you byte-compile the libraries that use its macros. I recently added another optional argument to `icicle-define-command', so if the latest <tt>[[icicles-mac.el]]</tt> is not loaded then the byte compiler will complain here (`icicle-command-abbrev-command' is defined using that new optional arg).
+
+Let me know what happens when you try with the latest <tt>[[icicles-mac.el]]</tt>. -- DrewAdams
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new:2006-09-05 00:26 UTC]
+When using Icicles-mode together with nxml-mode for editing
+(docbook-)xml-files, sometimes (not always!) when using
+nxml-element-completion my buffer gets screwed. This happens *only* when
+icicles is active.
+
+What I usually do is partly type some element name, for example 'em' (if I
+want to insert the 'emphasis'-docbook element) then hit C-RET for element
+completion. The minibuffer pops up with possible completions for 'em', in
+this case 'email' and 'emphasis'. Then I hit [next] to select 'emphasis'
+(this is where icicle-functionality comes in) and then RET again to finish
+element completion.
+
+What I would expect to happen is that the element '<emphasis>' gets
+inserted at point. But what happens when Icicles is active is that suddenly
+point is somewhere else in the buffer (usually several lines above where it
+was before calling the minibuffer). That way, the newly created element
+gets inserted at a wrong position in the buffer.
+
+Also, sometimes when using the minibuffer in the way described above, a
+selection becomes active (though there was no selection active before
+hitting C-RET for element-completion) and again the buffer contents get
+screwed when inserting the selected element from the minibuffer.
+
+None of this happens when I switch off Icicles-mode.
+
+Nevertheless, I love icicles-mode and would like to continue using it especially
+in conjunction with nXML-mode.
+
+PS: I'm using Emacs 22 with nXML-mode, all icicles-files are up to date (20060308) -- ClausKlingberg
+
+[new:DrewAdams:2006-03-08 21:33 UTC]
+: Thanks for your bug report, Claus!
+
+: You say "sometimes, not always". Then you say "only when '''Icicles''' is active". Do you mean ''only and always'' when in ''Icicle'' mode, or only and sometimes when in ''Icicle'' mode, or something else again?
+
+: I'm not familiar with nxml, so you'll have to be more specific. Is `C-RET' a nxml binding in the minibuffer? In '''Icicles''', `C-RET' in the minibuffer is something entirely different -- it does not complete your input. If `C-RET' is an nxml binding, then you must be loading nxml after '''Icicles''', and it tramples the '''Icicles''' minibuffer bindings. If both libraries create or modify minibuffer bindings, then you'll have to sort out which ones you want to keep as is and which you want to change. See [[Icicles - Customizing Key Bindings]] for how to change '''Icicles''' bindings.
+
+: In order for me to understand this problem, you are going to have to debug it a bit -- follow through what happens in the debugger. I want to help you (and others) by fixing '''Icicles''' so it plays better with other libraries, but you will need to help me find the problem.
+
+: Try to write more clearly. In your fourth paragraph, for example, at first I think you are talking about an active region in your buffer, but then you speak of the "selected element". I can't follow you.
+
+: It's best to provide an explicit, step-by-step recipe, starting with ##emacs -q##.
+
+: I too love '''Icicles''' and want it to work with nxml. Help me to help you. The first thing to do is sort out the key bindings, so the two libraries don't expect to use the same bindings. Perhaps that will solve the issue by itself. Who knows? 
+
+: If you prefer to correspond by email about this: `M-x customize-group icicles', then click button '''Send Bug Report'''. -- DrewAdams
+
+[new:ClausKlingberg:2007-06-04 10:51 UTC]
+Meanwhile, the issue is still happening, though nxml-mode/nxhtml-mode underwent some serious re-factoring since last year (nxhmlt more than nxml, though). I'm not too optimistic about debugging this successfully (at least my tries failed so far).
+
+The bug only surfaces in distinct situations, like when the completion (minibuffer-)window becomes large enough that re-centering in my xml-buffer has to occur after selecting a completion-text. If there are only a few completion-candidates in the minibuffer and my current editing happened in the center or above of the screen, all is fine: no re-centering necessary, no bug!
+
+But as soon as I'm typing toward the bottom of the xml-buffer and the completion-candidates can't fit completely in one line, then, upon selecting one candidate, the minibuffer gets closed, re-centering appears (like someone hit C-l for me) which displaces the cursor to some position above to where I was typing. And the completion-text gets inserted there, not were I was typing.
+
+It almost seems like one forgot a "save-excursion" which, if I'm not mistaken, should prevent just this. Though I understand it's probably not that easy.
+
+While the debugger window is visible, this kind of re-centering never appears, which is what makes it so hard to trace down.
+
+Not sure if my description is comprehensible at all, perhaps I should create a screencast about it :-}  -- ClausKlingberg
+
+
+
+[new:DrewAdams:2007-06-04 14:17 UTC]
+: I think I understand your description. I'll try to take a look at the code, to see if I notice anything. By "selecting a completion-text", do you mean finally selecting it once and for all, with `RET'? Also, I'll need to know if this is during strict or lax completion (see [[Icicles - Nutshell View#MultiCommands]]). The command used to accept a completion is different in each case.
+
+: Can you try turning on debug for these completion-acceptance commands, to see what happens a bit? It will be a bit of a pain, because the debugger will be opened each time you accept something in the minibuffer, but it will help. Try `M-x debug-on-entry minibuffer-complete-and-exit' and `M-x debug-on-entry exit-minibuffer'. If you don't enter the debugger during your problem, then try M-x debug-on-entry choose-completion-string' instead (or `mouse-choose-completion', if you're choosing with the mouse). To cancel debugging all functions, do `M-x cancel-debug-on-entry RET'. 
+
+: From debugging you should be able to determine where things go wrong: which part of the '''Icicles''' code is causing the problem. Then let me know. 
+
+: Could you also send a file to reproduce the problem, with specific instructions for doing that? Please send it to both me and LennartBorgman. Lennart is the author of NXHTML, and he may be able to help. Thx -- DrewAdams
+
+
+[new:ClausKlingberg:2007-06-11 10:05 UTC]
+Using the ordinary 'debug' command I wasn't able to reproduce the "cursor-jumping" issue (that's what I'm calling this behaviour now). Every time the debug-window pops up, the window-setup is changed and I can't reproduce it. So, I switched to 'edebug' and finally it's possible to watch things happen while debugging.
+
+Playing around with edebug I found a mistake I made in my previous error-description: The cursor in my nxml-buffer, where I initiated tag-completion jumps *before* any interactive selection in the mini-buffer is made, not after selecting anything. Only as a result of this cursor-jumping the selected completion-text gets then inserted at the wrong cursor-position in the xml-buffer after completion (pressing RET) is done. Sorry for the confusion.
+
+So far, I'm still not able to pinpoint the exact location where this happens, but I've drilled it down to hopefully close after "icicle-minibuffer-setup". Icicles then probably calls "rng-complete-qname-function" (for a second time) to collect the completion candidates to display in the minibuffer. And just when it populates the minibuffer, it's window widens and *boom* the cursor-position in the xml-buffer jumps upwards to make room and is never restored.
+
+This is probably not very helpful for you so far, I just wanted you to know that I'm working on it. I still have problems to fully understand program flow, since constructs like "run-hooks(minibuffer-setup-hook)" give me a headache (What methods are called here and at what point is this determined?). I also get confused to which version of "(old-)completing-read" gets called at what time. Anyway, as soon as I find out more, I'll post it here.  -- ClausKlingberg
+
+
+[new:DrewAdams:2007-06-11 23:22 UTC]
+Thanks for plugging away at this, Claus. We'll get it figured out eventually.
+
+FYI, `completing-read', when you are in ''Icicle'' mode, does some stuff and then it calls `old-completing-read', which is the original, vanilla-Emacs version of `completing-read'.
+
+Do mean after `icicle-minibuffer-setup' is finished or after it is entered? I'll assume the former, for now. I had a suspicion that it might be the initialization in `icicle-minibuffer-setup' of `icicle-pre-minibuffer-buffer' (e.g. it picked up the wrong buffer), but that is used only in `icicle-switch-to/from-minibuffer', which is used only when you explicitly hit the `pause' key. You didn't do that, did you?
+
+You didn't add anything to any '''Icicles''' hooks or minibuffer hooks, did you? How about `pre-command-hook' or `post-command-hook'? It's a good idea to know about that sort of thing, before looking further. -- DrewAdams
+
+
+[new:ClausKlingberg:2007-06-12 19:11 UTC]
+Another update: to answer your questions first - the issue appears without (i.e. before) me hitting any key while the minibuffer is active. What I found out is that, actually, it seems like the cursor jumping happens when "minibuffer-completion-help" is called initially to display the possible completion candidates.
+
+Now, nxml-mode adds <code>minibuffer-completion-help</code> to the <code>minibuffer-setup-hook</code> in it's function <code>rng-complete-before-point</code> (in rng-util.el):
+
+<pre>
+[...]
+(defun rng-complete-before-point (start table prompt &optional predicate hist)
+[...]
+	   (setq completion
+		 (let ((saved-minibuffer-setup-hook
+			(default-value 'minibuffer-setup-hook)))
+		   (add-hook 'minibuffer-setup-hook
+			     'minibuffer-completion-help
+			     t)
+		   (unwind-protect
+		       (completing-read prompt
+					table
+					predicate
+					nil
+					orig
+					hist)
+		     (setq-default minibuffer-setup-hook
+				   saved-minibuffer-setup-hook))))
+	   (delete-region start (point))
+	   (insert completion)
+	   completion))))
+[...]
+</pre>
+
+If I just comment out the line with <code>'minibuffer-completion-help</code> being added, the cursor jumping is no longer reproducible!
+
+Sure, that means no completion candidates are displayed in the minibuffer initially, but I can view them by hitting <S-TAB> if I need to (without the issue reappearing). This already comes close to an almost perfect fix for me, I don't feel like losing much.
+
+That doesn't however solve the problems root cause, does it? Or isn't nxml-mode expected to add minibuffer-setup-hooks by itself? Also, the question remains why adding <code>'minibuffer-completion-help</code> by nxml leads to this issue only in conjunction with icicles.
+
+I'm not sure how much deeper I should dig into this. If this report didn't give you any clues on what might be going wrong, perhaps I'll investigate a bit further when time allows. -- ClausKlingberg
+
+[new:DrewAdams:2007-06-12 20:14 UTC]
+Thanks, Claus. Unfortunately, I still don't have a clue. Something is causing the cursor position to change -- no doubt something in `minibuffer-setup-hook', probably something in `icicle-minibuffer-setup'. But I can't see what. Some things you might try, to discover more about what's happening:
+
+* Check what else you have on `minibuffer-setup-hook'.
+
+* Debug `rng-complete-before-point', examining the value of `point' at different locations. Probably `point' will be incorrect at the very beginning, but it's worth checking. Debugging will also show if an error is encountered during `completing-read'.
+
+* Remove the `t' argument from the `add-hook', so the help is run sooner than  `icicle-minibuffer-setup', and see what happens.
+
+I tried adding `minibuffer-completion-help' at the end of `minibuffer-setup-hook' (without using nxhtml), and I didn't see any problem. 
+
+Sorry I don't have a good idea here. Somehow, you need to find where ##(point)## gets changed. You've discovered that the cursor gets moved somewhere in  `rng-complete-before-point', but are the values `start' and `point' correct when `rng-complete-before-point' is entered?
+
+You might try either adding some `message' debugging or using `debug-on-entry' to see if you can figure it out. -- DrewAdams
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+I wanted to remove the binding of ##\C-]## to `icicle-abort-minibuffer-input' in the global keymap, because my understanding of elisp is rather limited and I end up in a debug situation rather often. I didn't see how to do this with the techniques in [[Icicles_-_Customizing_Key_Bindings]], so I just added
+
+    (define-key icicle-mode-map [?\C-\]] nil)
+
+to an `icicle-mode-hook' function. -- ErikPostma
+
+[new:DrewAdams:2006-11-18 16:50 UTC]
+This sounds like a bug of some sort -- you should not end up in the debugger with `icicle-abort-minibuffer'. It's important that `icicle-abort-minibuffer' work correctly; it's generally not a good idea to not use it.
+
+Could you please try without your workaround, and post the debugger (Backtrace) stack. You can either post it here or, better, send it as a bug report: `M-x icicle-send-bug-report'. -- DrewAdams
+
+[new:DrewAdams:2006-11-23 17:02 UTC]
+Any news on this? -- DrewAdams
+
+
+
+<pre>
+
+</pre>
+-----
+<pre>
+
+</pre>
+
+
+[new]
+icicles - Update #: 7298 - from Mon Sep 26 13:57:25 2005 - GNU Emacs 21.3.1 on CCRMA Fedora 3
+
+Using dired for opening files with C-x C-f is a very nice idea but the problem is that as soon as I enter a subdirectory and dired takes control I have no minibuffer messages any longer. But keyboard control and minibuffer messages are important because we develope audio software for blinds and it's very difficult for the speech software to keep track if the TextCursor jumps between the buffers all the time. At the moment the only way is still simply to switch off icicles if I want to enter a subdirectory.
+
+Please do not mis-understand: I do not consider this as a 'bug' but nevertheless the question: do you see a way how to work around this ? The strange thing: in this case icicles seems to be a worsification against the emacs out-of-the-box behavior and one of the reasons to use icicles originally was to use icicles' minibuffer cycling instead the overloaded dired display (with speech software it takes several minutes to find the right directory).
+
+
+but beside all my nagging - thank you for your never ending work on icicles - edgar-rft@web.de - 2005-09-27
+
+P.S.: Nobody expects that you change icicles now to become a speech software interface but please tell me what you think about this.
+
+[new:DrewAdams:2005-09-27 15:56 UTC]
+Again, you will need to give me the ''exact steps you use to reproduce the problem''. I don't know what you mean by "enter a subdirectory", or "dired takes control", and so on. What it the setting of option `icicle-cycle-into-subdirs-flag'?
+
+Just write down exactly what you do, starting with <code>emacs -q</code>, and exactly what symptoms you see (or don't see but expect to see).
+
+I don't see how '''Icicles''' would suppress logging of messages to buffer `*Messages*', but I can see that it might suppress the display of some messages in the echo area (where the minibuffer is). Also, are you speaking of display of messages or echoing of keystrokes? ''I will need more info'', to understand just what the problem is.
+
+If your blind users rely on messages, perhaps you should provide them with an easy way to retrieve them from buffer `*Messages*', in any case. Have you thought of that? Perhaps just displaying `*Messages*' in a separate window would provide some benefit.
+
+BTW, it didn't occur to me that '''Icicles''' might be of special use to blind people. Thanks for the insight. I will keep it in mind for the future. -- DrewAdams
+
+[new]
+Please excuse, this (and the next two) were only a short summary and no way a detailed bug report - I first wanted to know what you think about this - I have to do lots of testing of my own code this week and will give you better and more detailed bug descriptions - edgar
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+icicles - Update #: 7298 - from Mon Sep 26 13:57:25 2005 - GNU Emacs 21.3.1 on CCRMA Fedora 3
+
+Also, if possible, icicles should please load ##cl-macs## in the beginning and not during file display - the speech software always reads to me unneccessary icicles error messages between the file names - or is it dired which loads ##cl-macs## ? - edgar-rft@web.de - 2005-09-27
+
+[new:DrewAdams:2005-09-27 15:50 UTC]
+Please be clearer about the behavior you experience. Just what happens?
+
+When you say that ##cl-macs## is loaded during file display, that would seem to indicate that perhaps the mode of the displayed file requires ##cl-macs##. Have you tried with different kinds of files, and with <code>emacs -q</code>? If you suspect that dired might be loading ##cl-macs##, try using dired before you use '''Icicles''' -- do you get the same behavior?
+
+'''Icicles''' should ''not'' load ##cl-macs## at all, if you use the byte-compiled file <code>icicles.elc</code>. If it does, we want to determine what part of '''Icicles''' is implicated.
+
+If you report exactly the steps you use and the effects you observe, perhaps I can help you figure out what is causing your problem.  As a temporary workaround, if you feel that '''Icicles''' is loading ##cl-macs##, just load ##cl-macs## yourself, before loading <code>icicles.elc</code>. -- DrewAdams
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+[new]
+icicles - Update #: 7298 - from Mon Sep 26 13:57:25 2005 - GNU Emacs 21.3.1 on CCRMA Fedora 3
+
+Another thing: In a 'Completions' buffer, if I click with 'mouse 2' on any completion item I only get an 'Text is read only' message (with the cursor keys and 'Return' it works) - edgar-rft@web.de - 2005-09-27
+
+[new:DrewAdams:2005-09-27 15:37 UTC]
+I cannot reproduce this. Please give me the exact steps you use. And please check using <code>emacs -q</code> (loading '''<tt>[[icicles.el]]</tt>'''). Perhaps another library you use is removing the mouse-2 binding (replacing it by the normal `mouse-yank-at-click' binding)? 
+
+When I try it, either with the cursor in the minibuffer (default) or with the cursor in `*Completions*' (after using <code>[insert]</code>), I get the expected behavior. 
+
+After turning on ''Icicle'' mode, do `C-h v completion-list-mode-map' -- what is the binding for `mouse-2' in this keymap? It should be `mouse-choose-completion'. What happens if you do not use '''Icicles''' at all? Does `mouse-2' work correctly in `*Completions*'? -- DrewAdams
+
+
+
+
+
+
+
+
+----
+
+|| *Previous:*  IciclesIssues || '''[[Icicles]]''' || IciclesIssuesOpen || IciclesIssuesClosed ||
+
+
+CategoryCompletion

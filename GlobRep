@@ -1,0 +1,67 @@
+This utility is even more powerful than the OccurBuffer:
+
+* Run the `grep' function, which in turn calls the grep program (or any other program you want).  This results in a "grep" buffer.
+* Edit the buffer with the search results, and save these changes back to the respective files.
+
+You need these two files:
+
+* http://www.cis.ohio-state.edu/archive/old-archive/packages/global-replace.el.Z
+* http://www.cis.ohio-state.edu/archive/old-archive/packages/query.el.Z
+
+
+The query package seems to have been renamed to querer.el, after several redirections I found:
+http://www.gnufans.net/~deego/emacspub/lisp-mine/querer/querer-0.1.4/querer.el
+
+%%GlobRep%% saved me a lot of real boring refactoring work, so I thougt it would be wise to upload the necessary files into the ElispArea of the emacswiki so they may live forever. Get query.el and globrep.el without further hassle! ClausBrunzema
+
+* Lisp:query.el
+* Lisp:globrep.el
+
+-----
+From the commentary section:
+
+This program can be used to search for and replace strings in multiple files.  The idea is to find, in a set of files, all the lines that contain a string to be changed.  Then, one can edit the result of this search, and the program will take care of the tedious task of splicing the changes back into the original files.
+
+The search operation can be done separately, before calling any command in this file.  The output of the search has be be in a special format and, indeed, there is an emacs command that does that for you; see the description of the grep command (C-h f grep [RET]).
+
+Once you have the list of interesting lines in a "grep" buffer, you can edit it in any way you like, under the following conditions:
+
+* The file names and line numbers are not edited.
+* Lines can be deleted altogether, in which case the program will not attempt to put them back in the original files.
+* A single line can be replaced by multiple lines if carriage returns (^M) are used to delimit the end of a line.  In other words, the program replaces all '\r' by '\n' just before putting the edited lines back in place.
+
+The last step is to call global-replace-lines.  This command will prompt you for every line in the "grep" buffer -- even those that you didn't edit, asking if you want to carry to the original file the change you made on that line.  You will also be offerred to quit or to perform all replacements without confirmation.  Since a large number of files may be involved, the command will also ask you if you want to dispose of a buffer after all processing has been completed on that buffer.
+
+Finally, the command can also present a preformatted "ChangeLog" entry, saving you some time in keeping the ChangeLog file up to date.
+
+If you prefer, there are two commands that can call grep for you, and then proceed to carry out the changes.  global-grep-and-replace will prompt you for original and replacement strings, and for a list of files.  It will then call grep, allow you to inspect and modify the result, and then will preform the actual replacements.  global-replace is similar, but will skip the inspection stage.
+
+== See Also ==
+
+* SearchBuffers
+
+* Lisp:color-grep.el and Lisp:grep-edit.el -- not run on XEmacs. Use this elisp and you can edit grep buffer, apply the changes to the file.
+
+* GrepEd
+
+* Lisp:color-moccur.el
+
+* dmoccur -- [http://www.bookshelf.jp/soft/flash/dmoccur.html demo] 
+
+* Lisp:moccur-edit.el -- [http://www.bookshelf.jp/soft/flash/moccuredit.html demo] With this packege, you can edit moccur buffer and to apply the changes to the file. 
+
+* [[Icicles - Search-And-Replace]] -- Search and replace across multiple files or buffers.
+
+----
+[new:DrewAdams:2004-06-22]
+A ''lot'' of alternatives for more or less the same thing are described on this page. Could people who have used them speak to the relative advantages? ''Which ones are best, for what?'' This would be helpful to folks who have not yet tried the various packages. -- DrewAdams
+
+----
+
+----
+[new:OtherMichael:2008-01-05]
+I find this page confusing. Not to mention the intermingling of Xemacs refs -- is this for GnuEmacs, [[XEmacs]], [[EmacsW32]] or all?
+I tried running global-grep-and-replace (could only get it to work from within a dired buffer) and got (void-function compilation-next-error-locus) which seems to be an Xemacs-only function?
+color me newbie --OtherMichael
+----
+CategorySearchAndReplace CategoryExternalUtilities

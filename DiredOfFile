@@ -1,0 +1,34 @@
+The function defined below, `dired-of-file', will open DiredMode for the currently visited file only.  It is similar to `M-x dired-jump RET', except the listing in Dired is only for the current file, and nothing else.  Included here is a `dired-of-file-other-window'.
+
+{{{
+(defun dired-of-file (&optional file other-window)
+  "Open Dired of FILE for current buffer in OTHER-WINDOW if nil.
+If FILE is non-nil, then open Dired with only the file.
+If FILE is nil and the current buffer has an associated file,
+  then open Dired with only the current file.
+
+See `dired'.  See also `dired-jump'."
+  ;; Based on `browse-url-of-file' that comes with Emacs.
+  (interactive)
+  (if (not (or file
+	       (setq file (buffer-file-name))))
+      (error "Current buffer has no file")
+    (if other-window
+	(dired-other-window file)
+      (dired file))
+    (dired-goto-file file)))
+
+(defun dired-of-file-other-window (&optional file)
+  "Open Dired in other window for FILE or current buffer if nil.
+See `dired-of-file'."
+  (interactive)
+  (dired-of-file file t))
+}}}
+
+Really, you should just use `M-x dired-jump'.
+
+See also DiredTweaks.
+
+----
+CategoryDirectories
+

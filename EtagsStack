@@ -1,0 +1,8 @@
+Examine and navigate backward (and forward for the XEmacs version of etags) through the tags stack.
+
+It seems to work for EmacsTags in [[Emacs]], [[XEmacs]], and my personal favorite: Emacs with a hacked version of XEmacs etags.el (best of both worlds!).
+
+* Lisp:etags-stack.el
+
+----
+CategoryProgrammerUtils

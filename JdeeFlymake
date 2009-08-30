@@ -1,0 +1,39 @@
+----
+
+*NOTE: 7/19/2007* Since [http://sourceforge.net/project/showfiles.php?group_id=128803 Jikes] is not being actively developed to keep up with Java (last version is from 2004, so it doesn't support any of the new features introduced in Java 5) this add-on has also be frozen. 
+
+But fear not; the awesome SurajAcharya has developed an [http://www.emacswiki.org/cgi-bin/emacs/jde-eclipse-compiler-server.el alternative] that provides the same functionality using the Eclipse compiler.
+
+----
+
+This package provides extensions to FlyMake, an "on-the-fly syntax checker for Emacs" created by Pavel Kobiakov.
+
+FlyMake comes with built-in support for Java but relies on Makefiles for calling Jikes (http://www-124.ibm.com/developerworks/oss/jikes/); this module relies instead on JDEE project variables, removing the need to create Makefiles just for the purpose of using Flymake.
+
+This uses jikes which isn't so alive right now. Lisp:jde-eclipse-compiler-server.el is version for `ecj', to use until jikes alive becomes again.
+
+NOTE: jde-flymake.el requires some changes in the current (as of April/2004) official version (0.2) of flymake.el. These changes have been kindly incorporated by Pavel to the 0.3 version, available from CVS at http://flymake.sourceforge.net/.
+
+There is a 0.3 flymake.el in the CVS Emacs 22.x distribution, but it is __not__ compatible with jde-flymake. Please use the version mentioned above.
+
+[[Lisp:jde-flymake.el]]
+
+You may also want to check these extensions to Flymake to make the error/warning information accessible in a more keyboard-friendly way - either through the messages buffer or in a compilation buffer:
+
+[[Lisp:flymake-helper.el]]
+
+----
+JavaDevelopmentEnvironment
+
+----
+
+I tried using jde-eclipse-compiler-server.el but it hangs Emacs and tops out the CPU... it seems to actually 'do the proper thing' when I look at what it does in the code, so it seems the flymake / jde-eclipse interaction is fubar.... anyone else have this?
+
+-- ArjenWiersma
+
+Hi Arjen,
+This is a different package that uses Jikes instead of Eclipse. It is not being further developed since Jikes seems to be dead; you should post your question on the jde-eclipse-compiler-server page or ask SurajAcharya.
+
+Regards,
+-- NascifAbousalhNeto
+

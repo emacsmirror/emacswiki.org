@@ -1,0 +1,9 @@
+When running the non-X version of GNU Emacs in the "windows console", also known as cmd.exe, the meta key doesn't work in some contexts: 
+
+* typing C-M-q does nothing at all (as does, I suspect, any combination of Meta and Control).
+* M-SPC pops up the Windows "System" menu
+* and when I type C-SPC, Emacs only hears SPC
+
+I suspect this is due to shortcomings of the Windows 
+console, as opposed to a problem in Emacs or Cygwin.  Note that there is
+no such problem with the X version.  Standalone rxvt is better, but still not perfect.  The best solution I've found so far is PuTTY.

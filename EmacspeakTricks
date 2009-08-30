@@ -1,0 +1,49 @@
+        Tips And Tricks For And By 
+[http://emacspeak.sf.net Emacspeak ]
+Users 
+
+EmacSpeak comes with a 
+[http://emacspeak.sf.net/tips.html Tips And Tricks]
+ document that could
+benefit from tips and tricks that are discovered and shared by
+the comunity of emacspeak users.
+
+This area is designed to collect such tips and tricks as and when
+they are contributed.
+If you do contribute your own tips and tricks, please  place them
+below the most appropriate  sub-category of this area of this
+wiki, where each sub-category aligns with an appropriate section
+in the [http://emacspeak.sf.net/tips.html Tips And Tricks]
+document. The list below creates a top-level organization for
+this page to match the structure of that document.
+==Categories==
+
+
+* OnlineHelp  :Using Emacs Online Help
+* FilesAndFolders  :Working effectively with files and folders
+* ReadBrowseSkim  :Reading, Browsing And Skimming
+* EmacspeakState  :State Of The Emacspeak Audio Desktop
+* EmacspeakMultimedia  :Multimedia On The Emacspeak Audio desktop
+* AuthoringTools  :Authoring Tools
+* ElectronicMessaging  :Electronic Messaging
+* WebBrowsing  :Web Browsing
+* SystemManagement  :System administration via Emacs
+* EmacspeakUtilities :Emacspeak utilities  and wizards
+* International  :Emacspeak for other languages
+
+==Use Emacs Effectively==
+
+Note that you will get more out of Emacs by being a proficient
+Emacs user.
+Consequently, existence of this subsection of the Wiki is not an
+excuse for Emacspeak users to ignore the other categories in this
+Wiki; you will discover many powerful Emacspeak tricks for
+yourself by browsing the excellent content being put together by
+the larger Emacs community on the rest of this Wiki. Just as
+Emacspeak itself would not exist without the existence of Emacs
+and its large developer community, The Emacspeak Wiki can only
+grow as a result of harvesting the best of the rest of The Emacs
+Wiki.
+
+----
+CategoryAccessibility

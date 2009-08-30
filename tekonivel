@@ -1,0 +1,157 @@
+Hello all.
+
+I do edit EmacsWiki from time to time.  I've got some thoughts about
+it, and about wiki-editing in general, and i'll possibly write about
+some of them at this spot someday in the future.
+
+==Emacs usage==
+
+Yeah, i use Emacs.  GnuEmacs.  I always use a RemoteEmacs from this
+one Digital Server 5305 i have access to.  It's an DEC Alpha running
+Debian GNU.  We've got EmacsForDebian installed there, version 21.2.1
+but after fantasising about downloading, configuring, compiling and
+installing a development Emacs for myself (and other users too) under
+my own home directory for years but not daring to do so, being a mere
+user of the system, i've finally done it.  I decided to grab
+[[MultiTTYSupport]] EmacsFromArch, and it's working fine, but i've
+only recently started using it.
+
+I must admit that i spent a very questionable year running Windows XP
+at home, because i simply couldn't be bothered to set up a real
+computer for myself.  I used a terminal emulator over ssh to that
+Alpha, and ran Emacs on a tty.  Finally things are improving, as i've
+once again set up a Debian GNU box to serve both as my personal
+workstation, and as a server for the household.
+
+When with an X11 server, i've always ran this RemoteEmacs over
+ssh-tunneled X11 from across the town.  At a previous residence it
+became very clear that i sure did want to compress the traffic going
+through the 512/512kbps ADSL-line we had.  At times things got
+''very'' sticky.  Very very so, i sometimes even doubted my own
+sanity.  However i wished to keep to this idea of keeping all my
+things at a remote, internet-accessible machine that gets backups made
+regularly.  Then, no matter where i am, i could step into the same,
+familiar environment by using the computer i'm at as a mere terminal,
+X11 or dumb.  When the lines is not clogged, it was peachy.  At our
+current household we've got a thicker line, but it's in quite heavy
+use too.
+
+Even when working on X11, i often don't use the mouse with Emacs, well
+sometimes for SwitchingBuffers with <code>C-mouse-1</code> or from
+menus, because that way i won't mess up my window setup with
+BufferMenu.  Now that i've began to use the IswitchBuffers, it isn't
+really necessary, as i get enough feedback in the MiniBuffer.
+IswitchBuffers is great, and comes for free (no installation required
+plus no new keys to learn).  If it's laggy day, using the mouse seems
+like a very bad idea.
+
+I've looked into other ways to compress the X11 traffic than
+ssh-compression and have reported about it on a page discussing
+running a RemoteEmacs.  I did encounter the EmacsLbxProblems when
+trying it.  For the short while it worked, it ''did'' seem snappier,
+which would be nice.  Experiences with dxpc are positive.  On the
+client-side dxpc reports compression ratio of about 6.5:1 and 4:1 on
+the server-side.  It's running through the compressed ssh-tunnel.
+Though i don't have real data about the traffic, this acceleration
+most certainly makes a significant difference!  There's some
+automation left to do for me, to get the setup and authorization
+automated robustly.
+
+All in all, this works very well.
+
+===Sometimes on a dumb terminal too===
+
+Sometimes i ran my EmacsOnTerminal, an DEC VT420 we had hooked to a
+GNU box via serial interface.
+
+==Packages i use===
+
+Most important packages for me under Emacs are [[emacs-w3m]], which is
+my primary web-browser.  I've also observed myself often WastingTime
+on the InternetRelayChat, on FreeNode's EmacsChannel, under the
+registered nick '''tekonivel'''.  Though i do babble quite a lot at
+times with an absolutely horrible signal/noise ratio, worry not, i
+will shut my hole if theres a lot of traffic to clutter.
+
+This might raise the MuaWar, but I use [[MH-E]] interface to my MH
+mail-handling system, but often use it directly too, from the shell.
+Yes, i don't use GNUS, tho i have nothing against it.  I read several
+Usenet groups.  I've got a set of groups i read and post to with
+'''trn'''(1), and another set i read with Gnus.
+
+I follow a few RSS feeds with NewsTicker, mostly MeatBall:SlashDot,
+MeatBall:KuroShin.  Why do i do such things, and not something
+useful... i don't know.  I'm basically just a sly bastard, i guess.  I
+don't know who i'm helping being so llame... oh well.
+
+I use the EmacsWikiMode to write ugly little reviews and notes about
+computergames, movies and such.  I kind of hope it will eventually
+grow into a habit of having quite a high output rate to the 'net.
+I've got loads of things to say; not to some person specificly, but in
+general.  I reckon it's called ranting.  We'll see what comes out if
+it.  I intend to move from EmacsWikiMode to EmacsMuse soonish.
+
+PlannerMode is interesting and impressive too from the little i know,
+and now that i have more interest in getting myself organised and
+keeping notes than a couple of years ago, i'll see if i could put the
+PlannerMusePort to some use.
+
+Other modes...?  Well, the basic stuff everybody uses i guess.
+
+==History==
+
+I started using Emacs after years of '''vim'''(1) implementation of
+vi.  I do know my '''ed'''(1), thus also '''sed'''(1) and '''ex'''(1),
+and they're perfectly fine tools.  I'm not here about that, tho.
+Initially i only used Emacs as a framework around the [[w3m]] browser,
+to get a bit familiarized with Emacs.  From there i picked up more
+stuff, and nowadays i've always got my GnuEmacs open, and i spend most
+of my time at it.  I even swapped my trustworthy ircII for
+EmacsIRCClient.
+
+==I try to keep my configuration generic==
+
+I prefer keeping my Emacs initialization files general enough to use
+the same file on any hosts i happen to be on, on any version or
+flavour of Emacs.  Because of my lacking understanding of EmacsLisp,
+this is not the case at the moment.
+
+I've tried to generalize as much of my visual setup as possible too.
+Surely you would not like how it looks, but i do, and not only because
+it's set up in a general, elegant, X11/*nix way.  All the colours,
+fonts and such are set up to my X11 servers resource database from
+cpp-enchanted ResourceFiles via '''xrdb'''(1x).  While at it, i came
+across a ProblemSettingCertainFaceAttributesFromXResources with my
+Emacs 21.2.1, but VivekDasmohapatra (alias [[fledermaus]]) already
+wrote some EmacsLisp to patch it, and also sent a bug-report, so maybe
+the quirk will later go away altogether.
+
+The KDE and Gnome toolkits don't have much respect for the X11
+resources, but i don't use programs utilizing those toolkits much
+anyway.  I prefer the original X11 concepts, and find homogenizing the
+desktop-environment (KDE, Gnome, Windows, Meatball:MacOsx, AmigaOS)
+will make them all very dull.
+
+I've got most of my dotfiles under ConcurrentVersionsSystem so that
+they'll be available to other machines.  I'm planning to go for
+ArchVersionControl, or possibly DaRcs.
+
+I should describe my setup more throughoutly, how i'm running the
+EmacsFromArch ''in-place'', and other code from version control
+systems too.  How my personal EmacsLisp libraries are installed under
+<code>~/share/emacs/site-lisp/</code>.
+
+===My configuration files===
+
+I don't currently have my init-files online, for no specific reason.
+If you'd like to see them, hesitate not to ask on the
+InternetRelayChat for instance.  I'll be happy to share them.  They're
+quite pretty, but propably bad EmacsLisp.  The comments are in
+finnish, but i'll translate them to english for you, it's no problem!
+If you care to take a peek at screenshots my ---let's face it--- very
+pretty X11 desktop, some are available at
+http://kirjakaapeli.lib.hel.fi/~mace/desktop-en.html.
+
+----
+
+CategoryHomepage CategoryRemoteEmacs

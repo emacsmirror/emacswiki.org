@@ -1,0 +1,12 @@
+Eight puzzle  ---  A game of eight puzzle
+
+It is an simple game. I think the game is too easy, but when use image not just the 
+letters or numbers, it may be more interesting.
+
+You can get the source code here:
+
+* Lisp:eight-puzzle.el
+
+I had some [http://learn.tsinghua.edu.cn:8080/2005211356/emacs/8puzzle.zip images]
+ in my homepage, and a simple perl script to split a image to nine pieces(require 
+Image::Magick). Enjoy it!

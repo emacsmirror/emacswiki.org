@@ -1,0 +1,48 @@
+=== Huh? ===
+
+ ;;; Commentary:
+ ;; 
+ ;; Just a small hack I did while playing with GhostScript, trying to
+ ;; create PDF files from PostScript files.
+ ;;
+ ;; It does little more than the ps2pdf script that comes with
+ ;; GhostScript. Some handy functions to create PDF files from Emacs
+ ;; buffers are provided though.
+ ;;
+ ;; If you use Windows you probably don't have GhostScript
+ ;; installed. Get it from here: http://www.cs.wisc.edu/~ghost/. Make
+ ;; sure you get one of the "GPL Ghostscript" versions.
+
+=== Download ===
+
+Lisp:ps2pdf.el
+
+=== Screenshots ===
+
+Example of command `w32-ps2pdf-from-region'.
+
+Emacs region:
+
+http://static.flickr.com/111/304349064_1953836fb0_o.png
+
+Resulting PDF:
+
+http://static.flickr.com/112/304349057_3cfde9e047_o.png
+
+=== Usage ===
+
+On w32:
+
+ M-x w32-ps2pdf-from-region
+
+or
+
+ M-x w32-ps2pdf-from-buffer
+
+On GNU/Linux:
+
+You'll figure out this for yourself...
+
+-- MaDa
+
+See also WThirtyTwoFontifiedRegionToClipboard for similar functionality.

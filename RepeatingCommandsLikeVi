@@ -1,0 +1,20 @@
+As seen in the EmacsFaq:
+
+: '''Is there an equivalent to the `.' (dot) command of vi?'''
+
+: ''(`.' is the redo command in `vi'.  It redoes the last insertion/deletion.)''
+
+: ''As of Emacs 20.3, there is indeed a `repeat' command (`C-x z') that repeats the last command.  If you preface it with a prefix argument, the prefix arg is applied to the command.''
+
+: ''You can also type `<tt>C-x <ESC> <ESC></tt>' (`repeat-complex-command') to reinvoke commands that used the minibuffer to get arguments.  In `repeat-complex-command' you can type `M-p' and `M-n' (and also up-arrow and down-arrow, if your keyboard has these keys) to scan through all the different complex commands you've typed.''
+
+: ''To repeat a set of commands, use keyboard macros.  (See KeyboardMacros)''
+
+: ''If you're really desperate for the `.' command, use VIPER, a `vi' emulation mode which comes with Emacs, and which appears to support it.  (See ViperMode)''
+
+
+See also DotMode and RepeatingCommands.
+
+----
+CategoryCommands
+CategoryEmulation

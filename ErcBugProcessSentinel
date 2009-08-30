@@ -1,0 +1,26 @@
+You need something listening for TCP connections on port 9999 to run this test.  If you have netcat installed, do this: <b><tt>/bin/nc -l -p 9999</tt></b>
+
+<pre>
+(defun foo-sentinel (proc reason)
+  (message ">> foo-sentinel: current-buffer is '%s'" (buffer-name))
+  (if (not (buffer-live-p (process-buffer proc)))
+      (message ">> foo-sentinel: process buffer is dead!")
+    (with-current-buffer (process-buffer proc)
+      (goto-char (point-max))
+      (insert "\n>> foo-sentinel: " reason))))
+
+(defun foo ()
+  (setq foo
+	(open-network-stream "foo" (current-buffer) "localhost" 9999)
+	;;(start-process "foo" (current-buffer) "sleep" "40")
+	)
+  (set-process-sentinel foo 'foo-sentinel)
+  (process-send-string foo "hello world\n"))
+
+
+(defun foo-test ()
+  (switch-to-buffer "yyy")
+  (foo)
+  (sit-for 5)
+  (kill-buffer "yyy"))
+</pre>

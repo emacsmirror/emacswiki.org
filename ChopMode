@@ -1,0 +1,11 @@
+In order to move the TextCursor to a visible line, this mode by LukeGorrie
+allows you to perform a binary search -- the first key moves you half
+a window, the next a quarter window, and so on until at last you move
+by single lines.
+
+* Groups:chop.el
+
+: Please don't take this the wrong way, but why? :)
+
+----
+CategoryModes

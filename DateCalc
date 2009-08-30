@@ -1,0 +1,24 @@
+Several times I have wanted good date handling elisp and found existing alternatives lacking.  My date handling background comes from the two Perl modules [http://search.cpan.org/author/STBEY/Date-Calc-5.3/Calc.pod Date::Calc] and [http://search.cpan.org/author/SBECK/DateManip-5.40/Manip.pod Date::Manip].  The simplicity those two modules allow for date handling is astounding.  That's what I want in elisp.  So, I decided I'd just take on the brute-force task of re-writing them in elsip.  For arbitrary reasons, I started with Date::Calc.  I actually think Date::Manip has better date string parsing code and I'm fairly sure I'll end up porting that code too.  My long term goal is to write an organizer compliant with the iCalendar and iTIP standards (RFC 2445 and RFC 2446).
+
+This code isn't done yet.  It's not even fully tested.  I just wanted to get something "published" to a) prove my earnestness; b) get some feedback on how I'm doing.  I'm doing pretty much a function by function re-write of the Date::Calc code.  At this point it's not really optimized that much for elisp.  I'm also not sure of the best way to do the API.  The Date::Calc code passes each argument in individually.  As in the following perl snippet:
+
+ ($Dd, $Dh, $Dm, $Ds) = Delta_YMD ($year1, $month1, $day1, $year2, $month2, $day2)
+
+What I don't know is if I should implement this as (date-calc-delta-ymd year1 month1 day1 year2 month2 day2) or (date-calc-delta-ymd date1 date2) where date1 is (year month day) and date2 is (year month day).  It makes my implementation simpler to pass in all the values individual (no (let ...) code to dereference all the values) but could make the code more complicated for the caller.  Don't know.  Willing to take opinions on it.
+
+Lisp:date-calc.el
+
+=Changes=
+
+* 03 march 03, version 0.1 - initial release
+
+=Bugs=
+
+I'm sure there are plenty, I haven't fully tested it yet.  If you find a specific function that doesn't work as you think it should, let me know.  I'll do some more testing myself later this week.
+
+=See Also=
+
+I know there are some other packages that are similar to date-calc.  List'm here.
+
+* Lisp:time-date.el has date-to-time that parses a string that represents a date-time and returns a time value
+* parse-time.el has parse-time-string that is actually used by the date-to-time function.

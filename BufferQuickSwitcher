@@ -1,0 +1,41 @@
+BUffers QuIck Switcher -- Buqis in short -- is another way to swich between buffers in Emacs.
+
+When you think about editing as simulatively
+editing mindly separated groups of files, then probably you will find
+buqis usefull. Assume you work under project written in C at time, but
+you hack some elisp files from time to time to have a break, and you
+have w3m buffers to view EmacsWiki's RecentChanges and google the web,
+all that sort of ''editing'' have different editing context i.e. when
+you work under C project you think about .c, .h or info files, when
+you hack elisp files you think about .el files and doesn't care about
+.c and finally when you browsing the web you think about web pages.
+
+= Frames =
+
+You may have Emacs frames for logical separation buffers to
+groups. Frame1 is for C project, frame2 is for elisp hacks and frame3
+is for browsing web, but still it is not a solution. Frame must have
+an adittional info about editing context he is in, we may do this by
+adding say 'editing-context to frame-properties list. So if
+editing-context is placed then someone can use it to performe some
+operations according to its value.
+
+= Buqis =
+
+Buqis uses that editing-context value to switch buffers - very simple
+and handy. You just specify context for frame and buqis will filter
+buffers you might to switch. You can find buqis at Lisp:buqis.el.
+
+= Discussion =
+
+All kind of comments are welcome.
+
+<b>English improvement needed</b>
+
+[new]No, your meaning is clear - DrewAdams.
+[new]
+
+Take a look at FrameConfiguration and FramesAndRegisters. They provide ways to save ''sets'' of frames as separate configurations. That way, you don't need to work in just one frame at a time. For instance, you can have a frame config for C, another for Emacs Lisp...  Take a look too at BookMarks. -- DrewAdams
+
+----
+SwitchingBuffers

@@ -1,0 +1,185 @@
+See SubprocessCompletion for the background to this.
+
+To use this simply bind "spbc-readline-tab" to your TAB key in the relevant modes (eg shell / rlogin etc)
+
+NB, (should probably integrate with the default comint-dynamic-complete at some point)....
+
+Still need to upload this code properly (rather than have it as a page) when it's a bit more refined. But hopefully it could save some else some time if they've been wrestling with the same problem.
+
+
+    ;; This file provides sub-process based completion
+    ;; as-opposed to normal completion which emacs handles itself
+    ;; This can be useful because sometimes the subprocess (eg a remote shell)
+    ;; can provide more accurate completion facilities
+    
+    ;;(make-variable-buffer-local 'spbc-completion-profile)
+    ;;(make-variable-buffer-local 'spbc-completion-subprocess-is-echoing)
+    ;;(make-variable-buffer-local 'spbc-completion-is-inline)
+    ;;(setq-default .... ...)
+    
+    (defun spbc-completion-profile-create (rubOutCmd inlineCompleteCmd outoflineCompleteCmd)
+      `(,rubOutCmd ,inlineCompleteCmd ,outoflineCompleteCmd))
+    
+    ;; Various subprocess completion profiles....
+    (setq spbc-bash-profile (spbc-completion-profile-create "\C-u" "\t" "\M-?"))
+    (setq spbc-csh-profile (spbc-completion-profile-create "\C-u" "\e" "\C-d"))
+    
+    ;; With luck you should only need to change the following three settings
+    (setq spbc-completion-profile spbc-csh-profile)
+    (setq spbc-completion-subprocess-is-echoing t)
+    (setq spbc-completion-is-inline nil) ;; NB - This can only be 't' if spbc-completion-subprocess-is-echoing is 't'...
+    
+    ;; You hopefully shouldn't need to customize anything below this line
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (defvar spbc-most-recent-completion-list nil
+      "stores the most recently received completion list from the subprocess")
+    
+    (defconst spbc-terminator "zxyzzy")
+    
+    ;; The rest of the spbc-completion-profile ADT
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (defun spbc-completion-profile-rub-out-cmd (profile)
+      (car profile))
+    
+    (defun spbc-completion-profile-inline-complete-cmd (profile)
+      (cadr profile))
+    
+    (defun spbc-completion-profile-outofline-complete-cmd (profile)
+      (caddr profile))
+    
+    ;; These are the main completion functions
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (defun spbc-subproc-complete ()
+      (interactive)
+      (if spbc-completion-is-inline (spbc-subproc-complete-inline) (spbc-subproc-complete-outofline)))
+    
+    (defun spbc-subproc-complete-outofline ()
+      (interactive)
+      (let* ((proc (get-buffer-process (current-buffer)))
+    	 (old-filter (process-filter proc))
+    	 (completion-string (spbc-completion-profile-outofline-complete-cmd spbc-completion-profile))
+    	 (rubout-string (spbc-completion-profile-rub-out-cmd spbc-completion-profile))
+    	 (terminator-string (if spbc-completion-subprocess-is-echoing spbc-terminator "")))
+        (unwind-protect
+    	 (progn (set-process-filter proc 'spbc-completion-list-filter)
+    		;; Need to send the command as entered so far, followed by
+    		;; some characters which force the subprocess to list
+    		;; completion possibilities
+    		(setq spbc-completion-last-sent-string (concat (spbc-command-so-far)
+    							       completion-string
+    							       terminator-string))
+    		(comint-send-string nil spbc-completion-last-sent-string)
+    		(setq spbc-waiting-for-more-input t)
+    		(setq spbc-accumulated-input "")
+    		(while spbc-waiting-for-more-input
+    		  ;; redisplay and wait for up to 0.5 secs for input...
+    		  (sit-for 0.5)))
+          (progn
+    	;; unwound-protected
+    	(spbc-send-and-ditch-rubout)
+    	(set-process-filter proc old-filter) ; restore the old filter
+    	(spbc-readline-process-complete); TBA - should use comint-dynamic-complete
+    	))))
+    
+    (defun spbc-subproc-complete-inline ()
+      (interactive)
+      (let* ((proc (get-buffer-process (current-buffer)))
+    	 (old-filter (process-filter proc))
+    	 (completion-string (spbc-completion-profile-inline-complete-cmd spbc-completion-profile))
+    	 (rubout-string (spbc-completion-profile-rub-out-cmd spbc-completion-profile)))
+        (unwind-protect
+    	 (progn (set-process-filter proc 'spbc-input-line-filter)
+    		;; Need to send the command as entered so far, followed by
+    		;; some characters which force the subprocess to do the completion
+    		(comint-send-string nil (concat (spbc-command-so-far) completion-string))
+    		(spbc-local-rubout-command-so-far);; The cmd will be echo'd anyway...
+    		;;(accept-process-output proc 1)
+    
+    		;; At the moment when we type "ls tkt\t" we end up with:
+    		;; "ls tkt^[_kadm_1" on the command line at this stage
+    		;; of the code (with an echoed terminal)
+    		;; So, we need to filter the ^[^H^H and the ^G out....
+    		;; we can do that by changing 'spbc-input-line-filter to do this filtering...
+    		(sit-for 0.5))
+          (progn
+    	;; unwound-protected
+    	(spbc-send-and-ditch-rubout)
+    	(set-process-filter proc old-filter) ; restore the old filter
+    	))))
+    
+    (defun spbc-send-and-ditch-rubout ()
+      (comint-send-string nil rubout-string) ; clear out what we sent from the shell
+      (if spbc-completion-subprocess-is-echoing
+          ;; We don't want the ^U or whatever echoed back to us...
+          (progn
+    	(set-process-filter proc 'spbc-discard-output-filter)
+    	(sit-for 0.5))))
+    
+    (defun spbc-local-rubout-command-so-far ()
+      (interactive)
+      (save-excursion
+        (delete-region (marker-position (process-mark (get-buffer-process (current-buffer)))) (point))))
+    
+    (defun spbc-command-so-far ()
+      (interactive)
+      (buffer-substring-no-properties
+       (marker-position (process-mark (get-buffer-process (current-buffer))))
+       (point)))
+    
+    (defun ends-with (string ending)
+      (let ((bits (split-string string ending)))
+        (and (= (length bits) 2)
+    	 (string= (cadr bits) ""))))
+    
+    ;; filter - just remember the completion possibilities the child process supplies
+    (defun spbc-completion-list-filter (proc string)
+      "This filter takes output from the subprocess and remembers it as a list of possible completions"
+      ;; TBA - need to handle '--More--' etc...
+      ;; NB - If subprocess is echoing back what we've sent then we need to ditch it
+      ;; we do this by ditching the first and last lines of its output
+      ;; NB2 - Also, it's possible for the results to arrive in multiple-chunks from the
+      ;; subprocess. So we need to batch them together here and detect when they've all arrived.
+      ;; For echoing subprocesses we detect the end by matching the terminator string that we sent.
+      ;; Otherwise we just assume that everything arrived in one batch... which is not
+      ;; particularly great... not sure how else to do this though.
+      (setq spbc-accumulated-input (concat spbc-accumulated-input string))
+      (setq spbc-debug-most-recent-recd-string string)
+    
+      (let* ((terminator-found (ends-with spbc-accumulated-input spbc-terminator))
+    	 (received-all-input (if spbc-completion-subprocess-is-echoing
+    				 terminator-found
+    				 t)))
+        (if received-all-input
+    	(progn
+    	  (setq spbc-waiting-for-more-input nil)
+    	  (setq results-string (if spbc-completion-subprocess-is-echoing
+    				   (progn
+    				     ;; The first line will be the completion of the input
+    				     ;; The final line will be the prompt and the input repeated
+    				     ;; so we need to ditch the first and last lines...
+    				     (apply 'concat (cdr (butlast (split-string spbc-accumulated-input
+    										"[\n\r]+")))))
+    				   ;; sub-process not echoing so we don't need to pre-process
+    				   ;; the results....
+    				   results-string))
+    	  (setq spbc-most-recent-completion-list (split-string results-string))))))
+    
+    (defun spbc-input-line-filter (proc string)
+      "This filter takes output from the subprocess and uses it to replace the current input line"
+      (insert (concat (remove-if
+    		   (lambda (x) (member x (string-to-list "\C-h\C-g^[")))
+    		   (string-to-list string))
+    		  nil)))
+    
+    (defun spbc-discard-output-filter (proc string)
+      "This filter takes output from the subprocess ignores it"
+      ())
+    
+    (defun spbc-readline-process-complete ()
+      (let* ((pfn (or (comint-match-partial-filename) "")) ; eg "ehome/e"
+    	 (ignore-this (set-text-properties 0 (length pfn) nil pfn))
+    	 (stub (car (last (split-string pfn "/"))))
+    	 (candidates spbc-most-recent-completion-list))
+        ;; This next line will insert chars at point as appropriate
+        (comint-dynamic-simple-complete stub candidates)))
+    

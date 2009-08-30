@@ -1,0 +1,24 @@
+Stipple is a kind of pixle-toggling using a bitmap.  Gnus uses this,
+for example, to insert a wonderful Gnus into the splash screen.
+
+To illustrate this, the following code fragment creates a [[Face]] with a
+stipple consisting of a 2x2 bitmap.  The top right and the bottom left
+corner are set.  Tiling this bitmap gives a chess-board bitmap.
+
+ (make-face 'foo)
+ (set-face-stipple 'foo (list 2 2 (string 1 2)))
+
+The following the inserts the string foobar into the buffer and adds
+the stipple to the first three characters.  Evaluate this in a buffer
+without font-lock (as font-lock removes all non-font-lock
+TextProperties immediately).
+
+ (let ((str "foobar"))
+   (put-text-property 0 3 'face 'foo str)
+   (insert str))
+
+[new:AdamKerz:2009-05-08 02:27 UTC]
+Apparently stipple is unsupported on Windows[http://lists.gnu.org/archive/html/bug-gnu-emacs/2009-01/msg00428.html]. -- AdamKerz
+
+----
+CategoryFaces

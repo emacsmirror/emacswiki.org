@@ -1,0 +1,8 @@
+Si vous aussi vous avez eu des problèmes avec "é" et ses amis dans un Xterm avec emacs, mettez ça dans votre .emacs :
+
+<pre>
+(cond ((not (eq window-system 'x))
+       (set-keyboard-coding-system 'latin-1)))
+</pre>
+----
+CatégoriePointEmacs

@@ -1,0 +1,105 @@
+LBX is a scheme for minimizing bandwidth consumption over X
+connections. It's very nice if you want to run RemoteEmacs (which see)
+on a system which is not in your local network.
+
+See http://www.paulandlesley.org/faqs/LBX-HOWTO.html for general
+information about LBX.
+
+However, Emacs and LBX don't seem to be able to cooperate properly,
+and the Emacs will fatally freeze.
+http://www.geocrawler.com/archives/3/337/1998/6/0/1846958/ describes
+the problem.  An unverified rumour has it that turning on
+<code>x-synchronize</code> will make this problem not appear.
+
+Other ways for accelerating RemoteEmacs exist too, some based on
+similar, but different systems than LBX (xdpc, nx), some different
+(ssh compression).
+
+Also, you can run Emacs in an Xterm on the remote system.  You lose
+much of the motivation for running X but it's still better than
+"blind" remote access, and LBX (or similar) can be a real lifesaver if
+your X connections keep getting disconnected because of timeouts or
+other network flakiness. (But then you could also look into
+screen(1).)
+
+Hint for LBX with Emacs users: for better performance, turn off the
+menu-bar (use M-` instead), tool-bar and scrollbars (these often need
+updating whenever you switch buffers).  Use ElScreen or Escreen
+instead of creating more than one frame (frame switching is slow as
+well).
+
+=Bugspotters united=
+
+Reports of this problem follow.  Input from new Emacses, especially
+from the CVS would be valuable here... and if anyone has seen anything
+about this on any mailing-list, don't hesitate to add it here.  Also
+getting more input about other X11 servers than XFree86 would tell
+where the issue lies.
+
+==Positives==
+
+These setups are known to encounter the problem.
+
+; Emacs 19.34+X11R6 Xsun and XFree86 3.3.2: Various setups described in
+the original post, see above.
+
+; Emacs 20.7+XFree86 3.3.6: It seems still to be current as of Emacs
+20.7 and XFree86 version 3.3.6. (Debian 2.2 "stable" distribution --
+OK, so that's not terribly state of the art either.)
+
+; Emacs 21.3.50.2+XFree86 4.3: I have been using "GNU Emacs 21.3.50.2
+(i686-pc-linux-gnu) of 2003-06-26" from the Gentoo
+app-editors/emacs-cvs package with lbxproxy (XFree86 4.3) for a while
+now (I update to CVS frequently).  My Emacs binary is built with the
+GTK+2 toolkit.  I've never experienced anything like problem described
+above.  It may well be that this bug is no longer relevant.  --
+MatthewKennedy
+
+; Emacs 21.1: I can confirm that this bug is around as of Emacs 21.1,
+though it's infrequent that I encounter it.  -- JoelHolveck
+
+; Emacs 21.2.1+XFree86 4.2.1+lbxproxy from XFree86 4.1.0: I tried this
+yesterday on a setup with ("GNU Emacs 21.2.1 (alpha-debian-linux-gnu,
+X toolkit, Xaw3d scroll bars) of 2002-03-27 on escher, modified by
+Debian" running over ssh-tunnel to an i686-pc-linux-gnu with XFree86
+4.2.1.  The lbxproxy on the Alpha was from XFree86 4.1.0.  Didn't
+work... what a pity. -- [[tekonivel]]
+
+; Emacs 20.7.2+Xfree86 4.2.1+lbxproxy from XFree86 4.1.0: My "GNU Emacs
+20.7.2 (alpha-debian-linux-gnu, X toolkit) of Fri Apr 5 2002 on lully
+modified by Debian" also froze after some time, possibly because i
+triggered the but with XEmacs connected to the same lbxproxy --
+[[tekonivel]]
+
+==Negatives==
+
+These setups seem to work.
+
+; Emacs 19.34+Exceed: Also from the original post, see above for a
+link.
+
+; XEmacs 21.4+Xfree86 4.2.1+lbxproxy from XFree86 4.1.0: Though X11
+select&paste from "XEmacs 21.4 (patch 6) \"Common Lisp\" [Lucid]
+(alpha-debian-linux, Mule) of Wed Apr 10 2002 on lully" seems to
+trigger errors
+
+    Xlib: unexpected async reply (sequence 0x6ffb)!
+    lbxproxy: reply seq #0x6ffc > internal seq 0x6ffb
+    Xlib: unexpected async reply (sequence 0x6ffd)!
+    invalid SendTagData request: tag 0x91 type 3
+
+: followed by lbxproxy spewing out these
+
+    lbxproxy: reply seq #0x6ffe > internal seq 0x6ffd
+
+: when i kill text on ''this'', different Emacs which is not ran over
+the lbxproxy, the XEmacs hasn't died yet.  The shown sequence numbers
+increments, but the left is always greater by one.
+
+: Triggering the bug with XEmacs possibly froze the GnuEmacs 20
+connected via the same lbxproxy at the same time.  If i select text
+with the mouse in the XEmacs, i get more of those "Xlib: unexpected
+async reply" errors. -- [[tekonivel]]
+
+----
+CategoryRemoteEmacs

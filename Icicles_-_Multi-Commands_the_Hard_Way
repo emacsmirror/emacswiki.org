@@ -1,0 +1,218 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Multi M-x]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Global Filters]] ||
+
+----
+
+== Defining Multi-Commands the Hard Way ==
+
+
+This section is for EmacsLisp programmers.  It gives you a taste
+of what is involved behind the scene when you effortlessly use
+'''`icicle-define-command'''' or '''`icicle-define-file-command'''' to define
+a [[multi-command]].
+
+It can be good to know this, if only for the case where you
+need to define a multi-command that has special behavior not
+provided by `icicle-define-command' and `icicle-define-file-command'  out of the box.  For
+example, if you want the normal, single-choice `RET' behavior to
+be different from the multiple-choice `C-RET' behavior, then you
+might want to roll your own.  Likewise, if you want to define your
+own help on individual candidates, to be invoked when users use
+`C-M-RET' and so on.
+
+To write your own multi-command, you must make the command do
+this:
+
+1. Call `completing-read' or `read-file-name', and perform some
+action on the completed input.
+
+2. Bind one or more of these variables to action functions, which
+each take a [[completion]] candidate as argument:
+
+* '''`icicle-candidate-action-fn'''' -- a function that performs an
+action on a completion candidate -- often the same action as #1.
+
+* '''`icicle-candidates-list-action-fn'''' -- a function that
+performs an action on the ''list'' of all completion candidates.
+
+* '''`icicle-candidate-alt-action-fn'''' -- a function that
+performs an ''alternative'' action on a completion candidate.
+
+* '''`icicle-candidates-list-alt-action-fn'''' -- a function that
+performs an ''alternative'' action on the ''list'' of candidates.
+
+* '''`icicle-candidate-help-fn'''' -- a function that displays
+specialized ''help'' for a completion candidate.  (You can also provide [[mode line]] help and tooltip help for individual candidates.  See [[Icicles - Candidates with Text Properties]])
+
+* '''`icicle-delete-candidate-object'''' -- a function that ''deletes
+an object'' associated with (e.g. named by) a completion candidate.
+
+#1 just lets people use the command normally, to perform the #1
+action on a completion candidate entered with `RET'.  Because of
+#2, people can perform the #2 action(s) on any completion candidates,
+while still continuing to [[Icicles - Cycling Completions|cycle]] or complete candidates.
+`icicle-candidate-action-fn' is often the same as the
+action for #1, but nothing prevents you from using different actions.
+
+When internal [[variable]] `icicle-candidate-action-fn' is not bound,
+the default action is performed: display help on the current
+completion candidate.  When `icicle-candidate-help-fn' is not
+bound, the default help display is used.
+
+Instead of binding `icicle-delete-candidate-object' to a deletion
+action function, you can bind it to a symbol (variable) whose value
+is a list of completion-candidate objects.
+See [[Icicles - More About Multi-Commands]] for more information.
+
+Here is a definition of a simple (not multi-) command that reads a
+font name and then changes the selected [[frame]] to use that font.
+By virtue of calling `completing-read', '''Icicles''' completion and
+cycling are available, using all available font names as the pool
+of candidates.
+
+  (defun change-font ()
+    "Change font of selected frame."
+    (modify-frame-parameters
+     (selected-frame)
+     (list (cons 'font (completing-read
+                        "Font: " (mapcar #'list (x-list-fonts "*"))
+                        nil t)))))
+
+Here's a definition of a multi-command `change-font' that takes
+advantage of an action function when cycling candidates:
+
+  1  (defun change-font ()
+  2    "Change font of current frame."
+  3    (interactive)
+  4   (let* ((orig-frame  (selected-frame))
+  5          (orig-font   (frame-parameter nil 'font))
+  6          (icicle-candidate-action-fn
+  7           ;; Perform the action on a candidate, without leaving
+  8           ;; `completing-read'.  You can do this over and over.
+  9           (lambda (font)
+  10             (modify-frame-parameters orig-frame
+  11                                      (list (cons 'font font))))))
+  12     (condition-case nil
+  13         (modify-frame-parameters
+  14          orig-frame
+  15          (list
+  16           (cons 'font
+  17                 ;; Perform the action on your final choice.
+  18                 (completing-read
+  19                  "Font: "
+  20                  (mapcar #'list (x-list-fonts "*")) nil t))))
+  21       ((quit error)
+  22        (modify-frame-parameters
+  23         orig-frame
+  24         (list (cons 'font orig-font)))))))
+
+As you can see, there is a lot more going on here than in the
+simple-command version.  These are the points to keep in mind,
+when defining a multi-command by hand:
+
+1. Save anything you need to restore, so you can, in effect, undo
+   the action in case of `C-g' (lines 4-5).
+
+2. Bind `icicle-candidate-action-fn' to the action to perform
+   (lines 6-11).
+
+3. Perform the action, using `completing-read' to provide the
+   target candidate (lines 13-20).  Do this in the body of a
+   `condition-case' (lines 12-24).
+
+4. Restore the original context in the error-handling part of the
+   `condition-case' (lines 22-24).  Include `quit' in the
+   error-type list.
+
+The above definition is not quite complete, in fact.  To let
+`icicle-all-candidates' be able to report on failures, the
+`icicle-candidate-action-fn' code should also trap errors and
+return `nil' as a success indicator.
+
+In fact, things can get even hairier (much hairier) still, if the
+function at the core of your command does things like create a new
+frame -- especially on MS Windows, with its click-to-focus window
+manager.  The action of `change-font' doesn't do that, but if it
+did, you would need to redirect the focus back to the minibuffer
+frame, using `select-frame-set-input-focus'.  As an illustration
+of what's involved, here's a definition that would deal with such
+problems.  It also traps `icicle-candidate-action-fn' errors,
+returning `nil' to report success and the error message to report
+failure.
+
+  (defun change-font ()
+    "Change font of current frame."
+    (interactive)
+    (let* ((orig-buff    (current-buffer))
+           (orig-window  (selected-window))
+           (orig-frame   (selected-frame))
+           (orig-font    (frame-parameter nil 'font))
+           (icicle-candidate-action-fn
+            (lambda (candidate)
+              (condition-case action-fn-return
+                  (progn
+                    (modify-frame-parameters
+                     orig-frame (list (cons 'font candidate)))
+                    (select-frame-set-input-focus
+                     (window-frame (minibuffer-window)))
+                    nil) ; Return nil to report success.
+                ;; Return error message to report error.
+                (error (error-message-string action-fn-return))))))
+      (condition-case act-on-choice
+          (modify-frame-parameters
+           orig-frame
+           (list (cons 'font
+                       (completing-read
+                        "Font: " (mapcar #'list (x-list-fonts "*"))
+                        nil t nil nil nil nil))))
+        (quit (switch-to-buffer orig-buff)
+              (modify-frame-parameters
+               orig-frame (list (cons 'font orig-font))))
+        (error (switch-to-buffer orig-buff)
+               (modify-frame-parameters
+                orig-frame (list (cons 'font orig-font)))
+               (error (error-message-string act-on-choice))))))
+
+That's a lot of (error-prone) work!  You obviously don't want to
+be doing that a lot.  Whenever you can, you should use macro
+`icicle-define-command' or `icicle-define-file-command' to define
+your multi-commands.
+
+Take a quick look at the definition of command `icicle-find-file' -- both the simple definition that you would write and its expanded version, that is, the real definition created by macro `icicle-define-file-command':  [[Icicles - icicle-find-file Definition]]. Seeing it once will make you appreciate macros `icicle-define-command' and `icicle-define-file-command'!
+
+
+'''See Also:'''
+
+* [[Icicles - Defining Icicles Commands]] for the easy way to define `change-font'.
+
+* [[Icicles - Tripping]] for information about defining action functions that perform side effects on candidates.
+
+
+
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Multi M-x]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Global Filters]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+
+

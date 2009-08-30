@@ -1,0 +1,20 @@
+I use Emacs as my favourite Text editor since 1998.
+
+My Emacs configuration and some of my Emacs packages can be found at
+http://www.xsteve.at/prg/emacs
+
+I have written a subversion interface for emacs: psvn.el 
+(http://www.xsteve.at/prg/vc_svn/)
+
+Currently I am developing a tla interface for emacs: xtla.el.
+You can find more information here: http://www.xsteve.at/prg/vc_arch/
+
+Recently I started to use debian. There also exists a Wiki at
+http://wiki.debian.net
+
+I like the HippieExpand functionality very much so I just started a page for it.
+
+: Hi and welcome.  I didn't know about a Debian Wiki.  I must go and check it out. -- AlexSchroeder
+
+----
+CategoryHomepage

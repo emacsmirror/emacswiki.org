@@ -1,0 +1,7 @@
+Input history functionality (see MinibufferHistory) is enabled by default. To disable it, use M-x customize-variable RET erc-modules.
+
+The default key bindings to show the previous and next command are M-p and M-n, respectively.  These work even if the TextCursor  is not presently at the input prompt - when pressed, the cursor will be placed on the input line at the end of the text.
+
+
+----
+[[ERC]]

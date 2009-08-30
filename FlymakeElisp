@@ -1,0 +1,45 @@
+You can notice unmatched-parens error by using this extension.
+
+This extension uses <code>(scan-sexps)</code> facility which detects unmatched-parens and unmatched-quote only.
+
+Create following file and locate it to $PATH.
+
+elisplint:
+<pre>
+#!/bin/bash
+:;: '-*-emacs-lisp-*-'
+:; exec emacs -Q --batch --load "$0" "$@"
+(dolist (file command-line-args-left)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (condition-case data
+        (scan-sexps (point-min) (point-max))
+      (scan-error (goto-char (nth 2 data))
+                  (princ (format "%s:%s: error: Unmatched bracket or quote\n"
+                                 file
+                                 (line-number-at-pos)))))))
+</pre>
+
+And test it.
+
+<pre>
+$ chmod +x ~/bin/elisplint
+$ elisplint tmp/invalid.el
+tmp/invalid.el:1: Unmatched bracket or quote
+</pre>
+
+Finally add following code into your <code>.emacs</code>.
+
+<pre>
+(defun flymake-elisp-init ()
+  (let* ((temp-file   (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+         (local-file  (file-relative-name
+                       temp-file
+                       (file-name-directory buffer-file-name))))
+    (list "elisplint" (list local-file))))
+(push '("\\.el$" flymake-elisp-init) flymake-allowed-file-name-masks)
+(add-hook 'emacs-lisp-mode-hook 'flymake-mode)
+</pre>
+
+That's all.

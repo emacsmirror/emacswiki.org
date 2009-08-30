@@ -1,0 +1,27 @@
+When your InitFile has a bug, or when you load external files that cause errors,
+the bug is often hard to find, because the Emacs Lisp reader does not know about line numbers
+and files -- it just knows an error happened, and that's it.
+
+
+You have several options:
+
+# Binary Search -- select half of the file in a region, and M-x eval-region. Depending on whether that
+  causes the error or not, split this half or the other half again, and repeat.
+# Simplified Binary Search -- add (error "No error until here") in the middle of your file.
+  If you get the error "No error until here" when reloading the file, move the expression
+  towards the back of the file, otherwise towards the front of the file.
+# Use a keyboard macro that moves forward one expression (sexp) and evaluates it.
+: Then use the C-u prefix to run it many many times.  Here is how to define the
+  keyboard macro and run it 999 times.
+: 
+:: C-x ( C-M-f C-x C-e C-x ) C-u 999 C-x e
+: 
+# Try the CommandLine switch --debug-init.
+# Shouldn't (setq debug-on-error t) help?
+
+
+----
+Plug: A side-effect of ##dope.el## is to trace the InitFile bug.  Just ##M-x dope-load-file ~/.emacs## (or any other file) and dope will stop right where your InitFile breaks. Dope is an InitFile profiler at http://gnufans.net/~deego/pub/emacspub/lisp-mine/dope/
+-- DeepakGoel 
+----
+CategoryDebug

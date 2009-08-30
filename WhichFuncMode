@@ -1,0 +1,52 @@
+WhichFuncMode (also known as [::WhichFunctionMode]) is a minor mode, that when activated displays the current function name in the mode line. It works under certain major modes (eg like c-mode or perl-mode). 
+To activate it, type
+
+<code>
+M-x which-func-mode RET
+</code>
+
+or enter the following piece of elisp into your `.emacs` file to make it permanent :
+
+<code>
+(which-func-mode 1)
+</code>
+
+
+= Troubleshooting =
+
+WhichFuncMode is based on ImenuMode, so if it doesn't show correct current function name (and mode supports imenu), try
+
+<code>
+M-x imenu RET
+*Rescan* RET
+C-g
+</code>
+
+which does
+
+<pre>
+(progn
+  (imenu--cleanup)
+  (setq imenu--index-alist nil)
+  (imenu-update-menubar))
+</pre>
+
+= which-func on header-line =
+
+To show the function in the HeaderLine instead of the ModeLine,
+
+<pre>
+(load "which-func")
+(which-func-mode)
+
+(delete (assoc 'which-func-mode mode-line-format) mode-line-format)
+(setq which-func-header-line-format
+              '(which-func-mode
+                ("" which-func-format
+                 )))
+(defadvice which-func-ff-hook (after header-line activate)
+  (when which-func-mode
+    (delete (assoc 'which-func-mode mode-line-format) mode-line-format)
+    (setq header-line-format which-func-header-line-format)))
+
+</pre>

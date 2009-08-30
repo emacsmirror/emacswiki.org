@@ -1,0 +1,17 @@
+Pases is a system definition and packaging system for Emacs. It allows systems to be defined (including load paths, compile order, etc.) by package authors, and allows Emacs users to install packages with one command. No more editing .emacs files just to try out an Emacs package. 
+
+http://launchpad.net/pases
+
+== Features ==
+
+* Packages are single files which may be downloaded from http://launchpad.net/pases
+* Install and uninstall packages.
+* Handles auto-loads.
+* Byte-compiles code upon installation.
+* Installs info documentation.
+* Each package is contained in a single directory and can be easily deleted.
+* Imposes no constraints on .el file organization, formatting, or comments. Any Emacs lisp program can be made into a Pases package without restructuring.
+* Packages can execute arbitrary code upon package load.
+
+--
+CategoryCode

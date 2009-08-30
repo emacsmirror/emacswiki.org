@@ -1,0 +1,25 @@
+Users can customize key definitions by using commands such as `global-set-key'
+or by using functions such as `define-key' in their init files. And macro `kbd' helps
+them by letting them use external key descriptions. 
+
+It can sometimes be useful to let users use Customize to update key-binding
+definitions. The `key-sequence' widget added in Emacs 22 is helpful here, but it
+only takes care of the key-sequence part of a binding, not the map part or the
+target command part. Also, defining keys can sometimes mean remapping existing
+commands instead of providing a key sequence to bind, and the `key-sequence'
+widget doesn't apply in that case.
+
+Library <tt>[[wid-edit+.el]]</tt> provides a couple of key-definition widgets as custom types to let users of a
+library use only Customize to customize key bindings, if they want: '''`key-definition'''' and '''`conditional-key-definition''''. 
+
+You can then create a user option for a set of key definitions (or, less likely,
+for a single key binding), where a '''key definition''' includes the ''keymap'', the ''key'' to bind
+(or ''command'' to remap), and the target ''command''.
+
+The `conditional-key-definition' widget has an additional sexp item that is evaluated to
+determine under what conditions to make the binding. '''Icicles''' uses such conditional bindings, for instance, to support different Emacs versions. Library <tt>[[icicles-opt.el]]</tt> provides an example of using more or less the same thing (except that the keymap is implicit).
+
+----
+CategoryCustomize
+CategoryCode
+CategoryKeys

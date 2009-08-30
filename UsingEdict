@@ -1,0 +1,35 @@
+The following piece of code defines a function to look up single characters in the "kanjidic" and words or word-fragments in the "edict" files. You can get compressed versions of these files from [http://www.csse.monash.edu.au/~jwb/japanese.html Jim Breen's Japanese Page].
+
+<pre>
+(defun find-region-translation (start end)
+  "Find the region in the EDICT file."
+  (interactive "r")
+  (let ((str (buffer-substring-no-properties start end))
+	(conf (current-window-configuration)))
+    (if (= (length str) 1)
+	(find-file  "/home/alex/elisp/kdic/kanjidic")
+      (find-file "/usr/share/edict/edict"))
+    (goto-char (point-min))
+    (when (occur str)
+      (set-window-configuration conf)
+      (switch-to-buffer "*Occur*")
+      (local-set-key (kbd "q") 'bury-buffer))))
+</pre>
+
+To bind it to a key such as `C-c j':
+
+<pre>
+(global-set-key (kbd "C-c j") 'find-region-translation)
+</pre>
+
+The encoding used for these two files is EUC-JP. If your
+Emacs does not decode them correctly, add the following
+to your init file:
+
+<pre>
+(add-to-list 'auto-coding-alist '("edict\\'" . euc-jp))
+(add-to-list 'auto-coding-alist '("kanjidic\\'" . euc-jp))
+</pre>
+
+----
+CategoryEducation

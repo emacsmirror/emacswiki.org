@@ -1,0 +1,15 @@
+El4r - EmacsLisp for Ruby - EmacsRuby engine
+
+El4r enables you to write Emacs programs in Ruby as well as in EmacsLisp.
+I call the Ruby language to manipulate Emacs `EmacsRuby'.
+
+El4r and Test::Unit enables you to test EmacsLisp/EmacsRuby programs automatically.
+
+http://www.rubyist.net/~rubikitch/computer/el4r/index.en.html
+
+Gentoo ebuilds are available at: http://darcs.thehatcher.com/vic/erebor-ebuilds/app-emacs/el4r.
+
+Debian packages are available at: http://alysse.dyndns.org/~bdaix/debian/packages/unstable/.
+
+----
+CategoryExtensionLanguage

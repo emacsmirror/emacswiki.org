@@ -1,0 +1,8 @@
+RichardStallman says on [[emacs-devel]]:
+
+: I would like the Rmail changes to use mbox format to be installed
+before the release.  Is anyone testing that yet?
+
+Is anybody here using Rmail and volunteering to test the new Rmail stuff?
+It resides on a /branch/, so just using EmacsCvs is not enough.
+Please let us know on the mailing list.

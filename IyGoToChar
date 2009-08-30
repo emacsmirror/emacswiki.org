@@ -1,0 +1,10 @@
+Go to next CHAR which is similar to "f" in vim.
+
+Wan Ying have posted a function `wy-go-to-char' long time
+ago. According to his post, that function is implmented with the help
+from OliverScholz. Lisp:iy-go-to-char.el is an enhancement, with more
+keybindings while navigating the characters. See the detailed
+documents embeded in the file.
+
+----
+Author: IanYang

@@ -1,0 +1,56 @@
+'''Cette page fait partie de la description de OneOnOneEmacs, par DrewAdams.'''
+
+This page is also available in English: [[Delete Frames Easily - But Not Too Easily]]
+
+*  
+* 
+* 
+   
+   
+= Supprimer des Frames Facilement =
+
+Les commandes Emacs `kill-buffer' (`C-x k') et `delete-window' (`C-x 0') sont pratiques pour se debarrasser d'un buffer ou d'une fenetre. Mais elles n'ont aucun effet sur un [[Frame]].
+
+
+[:RedefinitionDeDeleteWindow]
+== Redefinition de delete-window ==
+
+La commande `delete-window' ne fait que se plaindre si l'on essaie de supprimer la seule fenetre d'un frame -- elle est inutile dans cette situation.
+
+Alors, j'ai redefini la commande `delete-window' pour qu'elle appelle la fonction
+`delete-frame' si la fenetre est la seule du frame.
+
+'''Voir le package :''' Lisp:frame-cmds.el
+
+== Creation d'une Alternative a `kill-buffer' ==
+
+La commande `kill-buffer' substitue un autre buffer dans la fenetre au buffer qu'elle supprime. Pour des fenetres Emacs, ce comportement est peut-etre utile mais pour des frames c'est plutot énervent ! (La commande `kill-buffer-and-window' ne fait pas cette subsitution, mais elle souffre du meme probleme que `delete-window'.)
+
+Redefinir `kill-buffer' serait problematique, pourtant. Si l'on rajoutait un appelle a `delete-window' a sa definition ca supprimerait la fenetre du buffer (ainsi que le frame si l'on adopte ma redefinition de la commande `delete-window'). Mais qq fonctions de base d'Emacs comptent sur cette substitution dans la fenetre du buffer supprime par un autre buffer. De surcroit, on ne veut pas forcement supprimer la fenetre chaque fois qu'on appelle `kill-buffer' dans une fonction Lisp.
+
+Alors, j'ai cree une nouvelle commande a utiliser interactivement a la place de 
+`kill-buffer' : `kill-buffer-and-its-windows'.
+
+Ca a necessite bien sur une substitution de `kill-buffer' par `kill-buffer-and-its-windows' dans qq fonctions standards Emacs. Par exemple :
+
+* Lorsqu'on supprime de multiples buffers dans `buffer-menu' (= `list-buffers'), leur frames sont aussi supprimes, car j'ai modifie `Buffer-menu-execute' pour qu'elle appelle `kill-buffer-and-its-windows'.
+
+* De facon similaire, j'ai modifie la commande du MenuBar '''Files''' -> '''Kill This Buffer''' pour qu'elle utilise `kill-buffer-and-its-windows'.
+
+Ensuite, j'ai appelle la fonction `substitute-key-definition' pour remplacer toute liaison de cles a `delete-window' ou `kill-buffer' par une liaison a la commande orientee frames appropriee. Par exemple:
+
+   (substitute-key-definition 'kill-buffer
+                              'kill-buffer-and-its-windows
+                              global-map)
+
+'''Voir les packages :''' Lisp:misc-cmds.el, Lisp:setup-keys.el
+
+= Ne Pas Supprimer des Frames Trop Facilement =
+
+J'ai modifie la commande `mouse-tear-off-window'
+(<code>[mode-line C-mouse-1]</code>) pour qu'elle ne supprime la fenetre que si elle ''n'est pas la seule'' fenetre du frame. Si la fenetre est seule (ce qui est plutot le cas dans OneOnOneEmacs) alors `mouse-tear-off-window' duplique (clone) le frame et la fenetre.
+
+'''Voir les packages :''' Lisp:mouse+.el, Lisp:setup-keys.el
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay

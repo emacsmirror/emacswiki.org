@@ -1,0 +1,37 @@
+If you don't have AUCTeX, you need a way to get an overview over your LaTeX document.
+Here's some code that will show you the basic structure by using `occur' (see OccurBuffer) to search for all
+sectioning commands.  These are then indented to help understand the basic layout.
+
+<pre>
+(defun latex-show-structure ()
+  "Shows all sectioning commands.
+These are the \\chapter{}, \\section{}, \\subsection{} and the
+\\subsubsection{} command."
+(interactive)
+(occur "\\\\\\(chapter\\|\\(sub\\)*section\\)")
+(pop-to-buffer "*Occur*")
+;; Code adapted from texinfo.el, texinfo-show-structure
+(goto-char (point-max))
+(let ((margin 5)
+      (buffer-read-only nil))
+  (while (re-search-backward "^ *[0-9]*:" nil 0)
+    (re-search-forward ":")
+    (setq margin
+	  (cond
+	   ((looking-at "\\\\chapter") 5)
+	   ((looking-at "\\\\section") 9)
+	   ((looking-at "\\\\subsection") 13)
+	   ((looking-at "\\\\subsubsection") 17)
+	   (t margin)))
+    (indent-to-column margin)
+    (beginning-of-line))))
+</pre>
+
+Alternatively, when editing a latex document, you can run the command M-x imenu-add-menubar-index to give you a quick menu of your document headings.  Very nice, and you can even add it to the RefTeX hooks on load (you *do* use RefTeX and AUCTeX, don't you?):
+
+<pre>
+     (setq reftex-load-hook (quote (imenu-add-menubar-index)))
+     (setq reftex-mode-hook (quote (imenu-add-menubar-index)))
+</pre>
+----
+CategoryTex

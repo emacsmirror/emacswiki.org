@@ -1,0 +1,75 @@
+Here are some things for working with Perl in Emacs.  Click the title heading to search for more pages about [::Perl].
+
+== Development environments ==
+
+* PerlDevelopEnvironment is a bundle of perl-related elisp distributed as a CPAN package called [http://search.cpan.org/dist/Emacs-PDE Emacs::PDE].
+
+* [[Sepia]] is an Elisp package for interactive Perl development. 
+
+* [http://search.cpan.org/dist/Devel-PerlySense/ PerlySense] is a  Perl IDE back-end that integrates with editor front-ends,
+currently Emacs.
+
+== Support packages ==
+
+* PerlNow: perlnow.el is an emacs package that fills in some gaps in emacs perl support.
+It makes heavy use of the template.el package (TemplatesMode).
+
+** PerlTemplates -- alternate approach using the emacs-standard skeleton.el for templating
+
+* [http://www.gentei.org/~yuuji/software/ perlplus.el] -- editing completion for local and global variables and functions
+
+* PerlPodCoding -- coding system from <code>=encoding</code> line
+
+* PerlPodGt -- helpers for <code>C<...></code> POD markup
+
+* PerlPodPreview -- preview formatted POD
+
+* [http://user42.tuxfamily.org/compilation-perl/index.html compilation-perl.el] -- <code>compilation-mode</code> error regexps for <code>podchecker</code>, <code>Test</code> and <code>xsubpp</code>
+
+* [http://user42.tuxfamily.org/perl-quote/index.html perl-quote.el] -- switch strings between double or single quotes
+
+* [http://user42.tuxfamily.org/perl-use-utf8-coding/index.html perl-use-utf8-coding.el] -- coding system from ##use utf8## pragma
+
+* [http://user42.tuxfamily.org/pst-format/index.html pst-format.el] -- decode "Storable" module files for human reading
+
+* Lisp:xs-mode.el -- using CcMode and some font lock on <code>.xs</code> files
+
+* [http://user42.tuxfamily.org/ffap-perl-module/index.html ffap-perl-module.el] -- extend <code>M-x ffap</code> to go to perl module source files
+
+* [http://user42.tuxfamily.org/man-completion/index.html man-completion.el] -- notice perl module name at point for <code>M-x man</code>
+
+* PerlCompletion -- A pure-elisp completion package.
+
+* [http://github.com/jrockway/stylish/tree/master Stylish] -- An interactive mode.
+
+== Related modes ==
+
+* [http://www.shellarchive.co.uk/content/emacs.html] -- A perl compilation mode with syntax highlighting and the usual compilation stuff.
+
+* PodMode -- simple editing of <code>.pod</code> files or POD within code
+
+* YamlMode -- for editing <code>META.yml</code> files (if you do that directly)
+
+== Other topics ==
+
+* CPerlMode is preferable to PerlMode.  It has some set-up oddities, which are dicussed on the CPerlMode page.
+
+* IndentingPerl -- The only other option is TurnAllIndentingOff.
+
+* PerlTidyElisp -- An interactive function that calls perltidy on a buffer or region.
+
+* Some attempts have been made at tight integration of perl and emacs: 
+** PerlMacs -- embedding a perl interpreter (essentially deprecated)
+** EmacsEpl -- interprocess communication
+
+* DateCalc -- date calculations using the perl/C modules Date::Calc and Date::Manip.
+
+* The PerlAdvocacy page exists for discussing perl's merits.
+
+==External Links==
+
+; A discussion of using emacs as a perl IDE:
+http://obsidianrook.com/perlnow/emacs_as_perl_ide.html
+
+; A quick start guide (a "rosetta") for perl programmers interested in elisp:
+http://obsidianrook.com/devnotes/elisp-for-perl-programmers.html

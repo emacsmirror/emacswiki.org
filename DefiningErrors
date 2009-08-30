@@ -1,0 +1,15 @@
+For some bizarre reason, you have to create errors by hand, when it's easy enough to define a deferror like this:
+
+ (defmacro deferror (new-error parent message)
+   "Defines NEW-ERROR as an error of type PARENT with MESSAGE."
+   `(prog1
+        ',new-error
+      (put ',new-error 'error-conditions
+           (cons ',new-error ',(get parent 'error-conditions)))
+      (put ',new-error 'error-message ,message)))
+ (put 'deferror 'lisp-indent-function 'defun)
+
+Use like this:
+
+ (deferror foo error
+   "Foo!")

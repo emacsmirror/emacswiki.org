@@ -1,0 +1,54 @@
+Click on the title to list all pages in the hypermedia category.
+
+Examples:
+
+* CategoryWebBrowser -- Browsing in Emacs, interacting with external web browsers.
+* BrowseURN -- Resolving URNs with Emacs.
+* EevMode -- E-script environment, the ULTIMATE hyperlink and memo system.
+* LangHelp -- Integrated help system in EmacsRuby.
+* BookMarks -- Remember places in files.
+* CascadingStyleSheetMode -- Simple mode for editing CSS style sheets.
+* InfoMode -- `Info', the hypertext documentation system in Emacs, was one of the first online help systems. 
+* [[Synonyms]] -- Browse a hyperlinked thesaurus. Use any comma-separated values (CSV) file as a hyperlinked document, without writing any code.
+* HtmlAccent -- Replaces special char by their html representation.
+* HtmlMode -- Editing HTML with Emacs.
+** HtmlHelperMode -- HTML editing mode with more features.
+* TexDrive -- easily include TeX-formula in HTML pages.
+* [NxhtmlMode nXhtml] -- Editing XHTML files. Includes nxhtml-mode which is based on NxmlMode, but with enhanced completion for XHTML and support for multiple major modes (MuMaMo).
+* AtomBlogger -- Creating/Editting Blogger posts.
+* EmacsMuse --  Emacs Muse is a project-based authoring and publishing environment for Emacs. It simplifies the process of writings documents and publishing them to various output formats.
+* EmacsAtomApi -- Editing blog posts, and even writing them in EmacsMuse.
+* WikiModeDiscussion -- Comparing emacs-wiki.el and wiki.el (which see).
+** WikiMode -- wiki.el, the original mode to edit and navigate files with wiki syntax, and to translate these into static HTML pages.
+** OddmuseMode -- A mode for editing pages in an OddMuse Wiki, including the EmacsWiki.
+** [[Yaoddmuse]] -- Edit or Post OddMuse Wiki pages *asynchronous*, including the EmacsWiki. 
+** PlannerMode (a PIM) -- extending EmacsMuse with day pages, diary, appointments, todo, etc.
+** ConfluenceMode -- A mode for editing pages in a Confluence Wiki.
+** WikiRel -- Find an EmacsWiki page based on the current mode in Emacs
+** [[trac_editor]] -- a simple editor for Trac's Wiki
+* Wikipedia/Mediawiki
+** MediaWikiMode -- mediawiki.el, an emacs mode to edit mediawiki pages.
+** [http://prdownloads.sourceforge.net/zhdotemacs/mediawiki.el?download mediawiki.el] -- Online edit and save wiki files on a mediawiki server.
+** WikipediaAlternative
+** WikipediaMode
+** WikipediaFs
+* MultiLingualHyperTextLibraries
+* SaveAsHtml, HtmlFontify -- Save files in HTML format.
+* HtmlLite -- Construct html pages with sexps.
+* HttpServer
+** EmacsHttpd -- HTTP server embedded in the Emacs.
+** ElServ -- Another HTTP server embedded in Emacs.
+** Simple-Server -- [http://github.com/eschulte/simple-server/tree/master simple-server.el], yet another HTTP server embedded in Emacs.
+** Phase -- [http://synthcode.com/emacs/ phase.el], a development server supporting CGI and embedded Emacs Lisp.
+* WebBot -- Framework for automatic text substitution if you load and save a file.
+* LinkdMode -- A system for recognizing special s-expressions in all kinds of text files, and causing these "lisp hot spots" to become interactive
+* FreexMode -- A personal wiki on steroids - interfaces with a sqlite database to store your metadata, automatically creates hyperlinks to existing pages and provides a sophisticated tagging mechanism
+* FreeMind -- transforming between org-mode and /FreeMind/ mindmapping files.
+* SpartanWiki --- a really spartan personal wiki
+* OrgMode --- can be used as a personal wiki, either in one big file or in many interlinked files. Pages can exported individually to html or published collectively as a website.
+* [[N3Mode]] --- Emacs major mode for Notation 3 RDF
+
+----
+[new] We need to organize this page and clean it up a little. It is
+going to be a real mess. Suggestions on what we could do ? -- XavierMaillard
+

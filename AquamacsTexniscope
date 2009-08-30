@@ -1,0 +1,83 @@
+With some configuration, !TeXniscope can be used as pdf-Viewer in
+Aquamacs Emacs with support for source → preview jumping and reverse.
+
+== Warning
+
+Aquamacs now supports Skim, a free PDF viewer which can automatically refresh the view after your LaTeX file is compiled.  Skim integration is fully automatic.
+
+
+== How To...
+
+In the following, it is assumed that Aquamacs Emacs and !TeXniscope are
+installed in /Applications.
+
+At first, we configure !TeXniscope as pdf-Viewer in AUCTeX.  Type
+
+<code>
+M-x customize-variable RET TeX-output-view-style RET
+</code>
+
+Now the customization buffer should open. Look for the entry <code>^pdf$</code>. Select
+„Value Menu“ at „Choice“ and enter
+<code>.</code>
+and after "Command"
+<code>open -a /Applications/TeXniscope.app %o</code>
+
+Now, we set !TeXniscope to open the source document in Aquamacs on
+Command-E. Open !TeXniscope Preferences and enter the following at
+"Editor command":
+
+<code>/Applications/Aquamacs\ Emacs.app/Contents/MacOS/bin/emacsclient</code>
+
+At Aquamacs, type
+<code>M-x server-start</code>
+
+To automate this, you can add the following to your Preferences.el (.emacs):
+
+<code>(server-start)</code>
+
+For source → preview jumping to pdf files it is necessary to modify
+the file "txs-search.el", which is part of the !TeXniscope application
+bundle
+(/Applications/TeXniscope.app/Contents/Resources/txs-search.el).
+Look for the line that states
+
+<code>(dvi-file (concat (file-name-sans-extension master-file) ".dvi"))</code>
+
+and alter it to
+
+<code>(dvi-file (concat (file-name-sans-extension master-file) ".pdf"))</code>
+so that Aquamacs searches for a PDF file instead of a DVI.
+
+An alternative version of the txs-search.el package that automatically switches from dvi to pdf 
+depending on AucTeX mode is available at: http://jobsluder.net/miscdownloads/txs-search.zip 
+as of Feb. 3, 2007.  Unzip and read instructions at the top of txs-search.el
+
+Add the following lines to your Preferences.el (.emacs):
+
+<code>(load (expand-file-name
+     "/Applications/TeXniscope.app/Contents/Resources/txs-search.el"))</code>
+
+<code>(add-hook 'LaTeX-mode-hook (lambda () (local-set-key "\C-c\C-j"
+     'txs-jump-to-line)))</code>
+
+Note that this changes the key binding C-c C-j, which normally inserts a new
+item in AUCTeX, to jump to the PDF file. Change it to you liking. 
+
+Finally, you need to use a package when compiling LaTeX documents.
+Install "pdfsync.sty" and add <code>\usepackage{pdfsync}</code>
+to the preamble of your LaTeX document.
+If it works, you should see a green dot in the PDF file
+somewhere near the place where the text you click at in your source
+file appears. Unfortunately, it’s not at the exact place.
+
+Jumping back from the pdf to the source should now work as well. You
+can delete the argument
+
+<code>-a/Applications/Emacs.app/Contents/MacOS/bin/Emacs-server-call</code>
+
+(remaining <code>--no-wait +%line "%file"</code>)
+
+at "Editor arguments" in !TeXniscope Preferences, as
+"Emacs-server-call" does not exist in Aquamacs.
+

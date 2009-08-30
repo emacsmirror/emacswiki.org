@@ -1,0 +1,66 @@
+The '''[::menu bar]''' is a set of menus at the top of each Emacs [[frame]]. It is available only when [::MenuBarMode] is on, which it is by default.
+
+See also ToolBar and ScrollBar.
+
+== Disabling the Menu Bar ==
+
+You can disable the menu bar. Even when there is no menu bar, you can access the menu as a popup, using `C-mouse-3'.
+
+To disable the menu bar:
+
+* GnuEmacs: Add ##(menu-bar-mode -1)## to your [[init file]].
+
+* [[XEmacs]]:
+
+** Add ##(set-specifier menubar-visible-p nil)## to your init file, or use ##(set-menubar nil)##. However, this does not work for buffer-local menu bars (and some things might fail when there is no menu bar).
+
+** ActiveMenu -- Displays the menu bar only when the mouse is close to it.
+
+
+== Popup Menu Bar ==
+
+Starting with GnuEmacs 21, you can disable the menu bar but still have it available on a popup menu:
+
+* `<code>(menu-bar-mode -99)</code>' -- disable the menu-bar
+* Use `C-mouse-3' to pop up the entire menu-bar as a popup menu.
+
+For a similar popup functionality for the [[tool bar]], see '''[[ToolBar#Tool-Bar Plus|ToolBarPlus]]'''.
+
+
+
+== Customizing the Menu Bar ==
+
+* In GnuEmacs, you can customize [[face]] `menubar' to change the colors of the menu bar.  
+
+* If you use X Window, you can customize the menu bar using X Resources (works with both GnuEmacs and XEmacs). Example:
+
+    Emacs.pane.menubar.background: darkGrey
+    Emacs.pane.menubar.foreground: black
+    Emacs*menubar.margin: 0
+    Emacs*shadowThickness: 1
+
+
+
+== See Also ==
+
+* EasyMenu -- Defining menu-bar menus (and other menus).
+* ImenuMode -- Buffer-specific menu-bar menus.
+[:MenuBarPlus]
+* MenuBarPlus -- Menu bar enhancements.
+* HelpMenuBarPlus -- Enhancements to '''Help''' menu.
+* DiredPlus -- Enhancements to the menu-bar menus in [[DiredMode]].
+* OneOnOneEmacs -- Use of menu-bar menus in one-buffer-one-frame setup.
+* * SaveAsHtml -- Additions to the '''Info''' menu for saving Info text to HTML.
+* '''File''' menu '''Open File''' item: dialog box for specific systems.
+** <tt>[[w32browser-dlgopen.el]]</tt> -- for Microsoft Windows (see MsShellExecute)
+** MacOSTweaks -- for MacOS
+
+
+
+----
+CategoryDisplay
+CategoryFrames
+CategoryHelp
+CategoryGlossary
+CategoryMenus
+

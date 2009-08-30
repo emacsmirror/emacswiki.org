@@ -1,0 +1,10 @@
+http://www.math.washington.edu/~palmieri/Emacs/Doc/arrows.png
+
+http://www.math.washington.edu/~palmieri/Emacs/latex-symbols.html
+
+Please note that this mode is for XEmacs only, and will not run on GNU Emacs.
+
+Similar functionality (and more) is offered by XSymbolMode, which is available for GNU Emacs. Also AUCTeX offers a menu for easy insertion of mathematical symbols when LaTeX-math-mode is active.
+
+----
+JohnPalmieri, CategoryTex

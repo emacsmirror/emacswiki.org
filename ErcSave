@@ -1,0 +1,8 @@
+Here is one of the simplest commands written for [[ERC]]:
+
+    (defun erc-cmd-SAVE (&rest ignore)
+      "Save your soul!"
+      (erc-send-message "i'm using the ONE TRUE EDITOR!!!"))
+
+----
+CategoryHumor

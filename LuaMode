@@ -1,0 +1,12 @@
+=Support for editing LUA Code=
+
+lua-mode.el with syntax highlighting, auto-indent, interactive lua shell, paren and brace matching, auto-move to function or block begin/end can be found at [http://lua-users.org/files/wiki_insecure/editors/lua-mode.el]
+
+Note the current lua-mode.el is a bit screwed up with regard to usual emacs conventions -- in particular, it gives underscore ("_") word syntax, which can be very disconcerting to an experienced Emacs user...
+
+=See also=
+FlymakeLua -- syntax checking for Lua.
+
+----
+CategoryModes
+ProgrammingModes

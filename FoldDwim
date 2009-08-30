@@ -1,0 +1,17 @@
+fold-dwim.el is a unified user interface for Emacs folding/outlining modes.  It supports folding.el, hideshow.el, outline.el, TeX-fold.el, and nxml-outln.el
+
+From the commentary:
+
+* DWIM stands for "DoWhatIMean", as in the idea that one keystroke can do different things depending on the context. In this package, it means that, if the TextCursor is in a currently hidden folded construction, we want to show it; if it's not, we want to hide whatever fold the cursor is in.
+
+* The goal of this package is to reduce this complexity to three globally-defined keystrokes: one to toggle the state of the fold at point, whatever its type may be, one to hide all folds of all types in the buffer, and one to show all folds.
+
+Get it here:
+
+* http://www.dur.ac.uk/p.j.heslin/Software/Emacs
+
+-- PeterHeslin
+
+----
+CategoryHideStuff 
+CategoryOutline

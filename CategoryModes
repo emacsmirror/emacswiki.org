@@ -1,0 +1,148 @@
+Click on the header to list all mode-specific pages.  These pages
+document modes not documented in the manuals, list example uses, and
+favorite customizations.
+
+The list has gotten rather long, so if you add entries, consider
+adding to one of the subpages.
+
+Subpages:
+
+* ProgrammingModes -- C, Java, Perl, Lisp
+* MarkupModes -- LaTeX, HTML, SGML, XML, BhlMode
+* MultimediaModes -- Music and Images 
+* FrameModes -- Frame configurations, functions, commands; see also CategoryFrames
+
+Other pages (could this please be split in major and minor modes?):
+
+* AbbrevMode
+* AdvancedDeskCalculator -- often known as just "Calc"
+* AnyIniMode -- keyword highlighting for .ini files etc based on a 'source of truth'
+* AptSources -- to edit sources.list in Debian distributions
+* ArtistMode
+* AsciiMode -- ASCII code display
+* AutoCompressionMode
+* AutoEncryption
+* AutoFillMode
+* BabelMode
+* BalloonHelpMode -- Tooltips for XEmacs
+* BbdbMode
+* BhlMode -- convert plain text into HTML, SGML, LaTeX and Texinfo
+* BiblMode
+* BigFont
+* BlankMode -- minor mode to visualize blanks (SPACE, HARD SPACE and TAB)
+* BrowseUrl
+* BugzillaMode -- a mode for editing bugzilla dump files
+* CelsscMode -- a mode for editing celestia catalog files
+* CddbMode -- a mode for CD database files
+* [EmacsWiki:cheezburger Cheezburger] -- mode for viewing I Can Has Cheezburger
+* ChopMode -- interactive binary search for a line within a window
+* ChronometerMode -- a [not so] simple chronometer
+* CmdMode -- mode for w32 cmd files
+* CookMode -- mode for editing cook files (a make replacement)
+* CrontabMode -- mode for editing crontab files
+* CsvMode -- help editing CSV files
+* DfMode -- show space left on devices in the mode line
+* DiaryMode
+* DiredMode
+* EevMode -- lets you to interpret e-scripts(execute shell commands/follow EmacsLisp hyperlinks in a buffer)
+* EdiMode -- mode for editing EDI files
+* EmacsWikiMode
+* FaqMode -- easy FAQ browsing
+* FetchmailMode -- mode for editing fetchmail configuration files
+* FortuneMode -- interface to write fortunes quickly
+* FreexMode -- a personal wiki on steroids
+* FvwmMode -- major mode to edit FVWM configuration files
+* GentooSyntax -- mode for Gentoo specific files, like ebuilds and eclasses
+* GlassesMode -- change the way StudlyCaps/CamelCase is displayed
+* GnuplotMode -- mode to edit gnuplot files
+* GoLispMode -- analyze, cross-reference, and jump around lisp files
+* HamsterMode -- mode for editing hamster scripts
+* HighlineMode -- minor mode to highlight current line in buffer
+* HiLockMode -- hilight arbitrary strings temporarily
+* IbufferMode
+* '''Icicle''' Mode -- [[Icicles]]: MiniBuffer input [[Completion]] and cycling of completion candidates. Lots more.
+* IMDbAddsMode -- Editing and syntax highlighting for IMDb data submissions
+* ImenuMode -- Mode-specific buffer indexes (navigation menus).
+* InfoMode
+* IntelHexMode -- Editing and updating checksums of Intel Hex files.
+* InternetRelayChat modes (various)
+* ItunesMode -- For Windows: http://www.geocities.jp/tmjb2006/itunes/itunes-mode.html
+* JiraMode -- Major mode for use with the Jira bug tracking software.
+* LicenseCopyright -- Insert a license header into the active buffer
+* LineNumbers
+* LojbanMode -- support for lojban language.
+* MailboxMode -- berkeley style aka standard mailbox browsing minor mode
+* MailCrypt -- PGP and GPG support
+* MailMode -- a mode for writing mail/news messages
+* MaximaMode -- modes for interacting with Maxima
+* MiniEdit -- edit minibuffer contents in a buffer
+* MoMode -- view and edit gettext <code>.mo</code> compiled message catalogues
+* MuttMode -- use emacs as editor for mutt
+* MuttRc -- generic mode for mutt configuration files
+* MTraceMode -- keep track of hidden buffer changes
+* OccurMode -- Create a hyperlinked index for the lines in a buffer that match a regexp
+* OutlineMode -- hide blocks of text beneath a heirarchy of headings (see also CategoryTodo)
+* PageMode -- handling ^L pages, select, cut, copy, head renumber
+* [[Pcf2Bdf]] -- viewing <code>pcf</code> font files as <code>bdf</code> source
+* PgpMode -- a PGP minor mode
+* PlannerMode -- A fine personal information manager using WikiMode
+* PmxMode -- a mode for editing pmx files (Music Typesetting)
+* PodMode -- edit Perl <code>.pod</code> files or embedded POD documentation
+* PoMode -- major mode for GNU gettext PO files
+* PortageMode -- search for and install Gentoo packages
+* PostMode -- use emacs as an external editor for mail and news
+* PredictiveMode -- predictive completion minor mode
+* ProcmailMode -- mode for editing procmail configuration files
+* ProjectBufferMode -- generic mode to handle projects
+* RedoMode
+* RefdbMode -- access bibliographic data stored in a SQL database and create bibliographies for markup documents
+* RememMode -- watches and suggests information relevant to what you're reading or writing
+* RpmMode -- mode for the <nowiki>RedHat</nowiki> Package Manager
+* RpmSpecMode -- RPM spec file editing commands
+* RspecMode -- mode for using <nowiki>RSpec</nowiki> (a testing framework for Ruby)
+* RubyTwoMode -- two modes for writers: screenplay.el and fiction.el
+* SendmailMode -- mode for editing Sendmail configuration files -- http://www.keelhaul.demon.co.uk/linux/sendmail-mode.el
+* ShowParenMode
+* ShowWhitespaceMode -- highlight blanks and tabs
+* SlimeMode -- Superior Lisp Interaction Mode for Emacs
+* SieveMode -- a mode for editing sieve scripts
+* SpamassassinMode -- a mode for editing spamassassin configurations files
+* SpreadSheet
+* SqlMode -- see also CategorySql
+* [[Synonyms]] -- major mode for looking up terms in a thesaurus or browsing it
+* SyslogMode -- viewing log file with highlighting and more
+* TableMode -- edit tables in plain text files
+* TempbufMode -- automatically delete unused buffers
+* TemporalLogicOfActionsMode
+* TexinfoMode
+* TjicShell -- enhancement of shell.el, supports multiple shells inside emacs
+* TooltipMode -- Display tooltips in Emacs.
+* TopMode -- run "top" from Emacs
+* UnicodeEncoding -- describes oc-unicode
+* VersionControl -- and various similar implementations
+* WajigMode -- An interface for wajig
+* WhiteSpace -- minor mode to visualize (HARD) SPACE, TAB and NEWLINE
+* WikiMode
+* WikipediaMode
+* WikipediaAlternative -- an alternative (to the previous) mode for Wikipedia
+* WikitextMode -- for editing Wikispaces' articles
+* WoMan -- view man pages without having the "man" program installed
+* WorklogMode
+* WrapMode -- word wrapping like typical word processors 
+* WriteOrDieMode -- Minor mode emulating some of the behaviour from [http://lab.drwicked.com/writeordie.html Dr. Wicked's webapp] of the same name.
+* XResourceGenericMode
+* XSymbolMode
+* YamlMode -- edit YAML <code>.yml</code> files
+* HexlMode -- hex editing and display mode
+* InfoLook, WordHelp, FuncDoc -- find info about a command keyword
+
+
+Other functionality specific to some modes:
+
+* ScreenPlay
+
+See also CategoryCode if you want to write a new major mode, or if
+you are looking for Emacs features that augment the the basic modes
+listed on this page.
+
+

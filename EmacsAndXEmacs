@@ -1,0 +1,216 @@
+== What's in a Name? Emacs, XEmacs, Scheemacs... ==
+
+The EmacsWiki is for info and discussion about ''Emacs'' and ''XEmacs''.  Some people use the terminology of the
+ChurchOfEmacs to refer to these critters collectively -- they call both Emacs and XEmacs "'''[[Emacsen]]'''".  
+
+Some people used to make a point of calling Emacs ''GNU Emacs'' to differentiate it from ''Lucid Emacs'' which has since been renamed XEmacs.  While this is less offensive and incorrect than the term ''FSF Emacs'' (the scope of developers and users far transcends the FSF, the main copyright holder), RichardStallman, Emacs's original author, insists that ''Emacs'' is, after all, the proper term for the version he is still actively maintaining.  Nowadays, most people are speaking about ''Emacs'' and ''XEmacs'', but pretty much nobody is bothered by seeing ''GNU Emacs'' as a way to offset it from ''XEmacs''.
+
+"Emacs" is used in the names of a larger class of programmable editors, with a similar look-and-feel (mostly conspicuous in the keybindings) and a history going back to the original TecoEmacs (mid-1970s) and offshoots such as [[EINE]] and [[ZWEI]].  Emacs, which was created in 1985 and was closely modelled on the earlier [WikiPedia:Gosling_Emacs Gosling Emacs] editor (modeled after TecoEmacs), is simply one of many.  [[XEmacs]], which originated in 1991 as an offshoot of Emacs called LucidEmacs, is another.  Both of these projects have a venerable history and an active developer base.
+
+: RMS refers to his creation as Emacs, as do most maintainers, I think.
+It's likely to cause confusion to use the term generally for Emacs-like
+editors.  E.g., Gosling Emacs didn't have a full extension language
+and so is dubious as "an EMACS" (the term rms used in his memo on TECO EMACS)
+in contrast to Jed, for instance.  -- Dave Love
+
+Sometimes XEmacs has been incorrectly referred to as "GNU XEmacs".  However, XEmacs is not part of the GnuProject, and the XEmacs developers object to this term, so it should not be used. RMS' has stated once that XEmacs is not less GNU than Emacs, but this
+sounds contrived at best.  Leaving off the ''GNU'' as a distinguishing feature is probably the variant likely to annoy the fewest people.
+[Groups:&selm=199608292029.QAA01520@ethanol.gnu.ai.mit.edu]
+
+Note: The X in XEmacs does not mean "X Windows".  As a matter of fact, LucidEmacs was renamed XEmacs not when it got support for X11 but when it got support for ttys.  Both Emacs and XEmacs run on TTY's, under X Windows, and natively under Microsoft Windows.
+
+
+== Usage on Emacs Wiki ==
+
+If you want to link to the Emacs page, use GnuEmacs; to link to the
+[[XEmacs]] page, use <nowiki>[[XEmacs]]</nowiki>.
+
+== Comparison ==
+
+: "innumerable tiny differences.  too many to list."
+:: kensanata, on #emacs
+
+From a user perspective, Emacs and XEmacs are very, very similar,
+except for a big number of small differences that annoy long time
+users of the other flavor.  If you are a newbie, chances are that there
+is no real reason to use one or the other.  The following
+decision making process is suggested for helping you choose:
+
+* Use the one your neighbour or co-worker uses
+* Both feature MultiTTYSupport.
+* Use Emacs if non-ASCII support is important to you (see XEmacsAndNonAsciiCharacters).
+* Use Emacs if you agree with RichardStallman
+* Try both, and use whichever feels better
+* Roll a die
+
+If efficiency is important, use Emacs (-- Anon) unless you happen to use PSGML, in which case it's the reverse! That's because XEmacs uses C implementations of some speed-critical data structures (e.g. syntax tables) whereas GNU Emacs has them in [http://www.soulcast.com/post/show/69541/Just-enough-emacs-for-lisp lisp]. BTW this is the only reason I'm keeping both editors installed. (-- DominiqueQuatravaux).
+: No, Emacs doesn't implement syntax tables in Lisp, in particular.
+The released PSGML is slow setting [[Face]]s while parsing under Emacs
+because Emacs-specific code needs fixing; there is a patch at
+[http://www.loveshack.ukfsn.org/emacs/psgml-1.3.1-debian.diff http://www.loveshack.ukfsn.org/emacs/psgml-1.3.1-debian.diff]  -- Dave Love
+
+: Is there any support for this claim [efficiency generally better under Emacs]? -- AlexSchroeder
+:: Yes, that's why I wrote it.  XEmacs maintainers have said so, for instance,
+but you might not believe them, and want experimental results like I once posted.  You can run XEmacs' bench.el in Emacs (with minor changes) as one
+example.  If you do, ensure you're comparing like with like, e.g. by
+turning off line-number-mode in Emacs.  Either ignore the hanoi result
+or run the (old) version from XEmacs in Emacs.  All but
+a couple of the tests are faster for me in "emacs21" than in "xemacs21-mule" in
+Debian Sarge x86.  -- Dave Love
+
+: I'm not actually going to make any claims.  However, I was a long
+time XEmacs user that switched to Emacs.  I'll discuss my switching
+elsewhere.  The point is that I think XEmacs does have some problems
+with updating the display.  There were some threads about this on the
+xemacs-beta list started by JWZ.  Since running Emacs, I do think
+it's a bit faster or at least more interactive. -- DougAlcorn
+
+: I'm going to claim that xemacs21-gnome is significantly faster at executing elisp. I don't have any hard numbers, but I'll see if I can make some -- ShaeErisson
+
+== Why Choose One over the Other? ==
+
+If you've actually chosen one of the [[Emacsen]] (as opposed to just
+blindly started using one because it happened to be available), list
+your reasoning here.
+
+I switched from XEmacs to Emacs for these reasons:
+
+* TrampMode actually works in Emacs.  I couldn't
+[http://www.xemacs.org/cgi-bin/namazu.cgi?query=tramp&whence=0&lang=en
+get it to work] in XEmacs
+* Most of the people who actually hang out in EmacsChannel use Emacs.
+As such, the code they write is more likely to "just work" in Emacs.
+* Besides tramp, there were some other
+packages[http://www.xemacs.org/Documentation/packageGuide.html#Installing_automatically]
+that worked better in Emacs than XEmacs.
+* However, my opinion is that the built-in help system (apropos and
+friends) has an easier to use interface in XEmacs than Emacs.
+
+:: -- DougAlcorn
+
+My reasons for switch were rather subjective (easier-to-do-in-gnu-emacs), and only half of technical nature. Besides, I used XEmacs for not more than 1.5 month, so it was rather choice than switch:
+* XEmacs took awfully long time (~1 minute) to start InfoMode browser for the first time. It scanned & built some kind of index or something, dunno, and I was too n00b and w/o net connection at all to investigate further at the time.  Emacs started Info in 1s, so I had 59s just for myself ;-)
+* In Emacs, there is ring-bell-function, I can substitute (lambda () ()) for it and get rid of the ever-annoying beep. In XEmacs, I could only manage to inhibit beep for some time (like, no more than 1 beep in 15s). Probably there is a way, but I didn't find it.  There is: (setq visible-bell t)
+* Emacs had that cool, color toolbar with hover effect. I just couldn't resist ;-)
+* And, I had XEmacs 21.3 installed, while Emacs was only at 20.3. So when I learned that there <b>is</b> Emacs 21 in my Debian stable, just disguised under different package name and not selected by default, I was so hyped over that it probably influenced my decision.
+* Last but not least, Emacs has global-font-lock. It helps a lot, I was just tired of adding major modes to list of highlighted ones in XEmacs, and didn't find any better way to do it.
+
+:: -- MaciejKatafiasz
+
+I have been using Emacs and XEmacs for some time now and I finally selected Emacs for my editor of choice because of the following reasons:
+* Emacs has better default configuration.
+* Global-font-lock-mode (couldn't find any way to set syntax-highlighting on as default in XEmacs).
+* I couldn't figure out how to change TextCursor color under XEmacs.
+* syntax-highlighting is many times faster in Emacs than in XEmacs. This was an important thing because I have to work with large source code files.
+* XEmacs felt much heavier than Emacs when working at a remote console.
+* While XEmacs has nicer Tetris and support for images, it didn't add any real value to my work. Emacs feels more practical and it has a game called "Blackbox" :-)
+* Overall performance on everyday editing tasks is better in Emacs.
+
+I'm sure that all issues I had with XEmacs are solvable, but I prefer the simplicity of Emacs. And for some reason, I was able to find answers for my questions easier under Emacs than XEmacs with apropos (C-h a).
+
+:: -- Matti Kärki
+
+I use Emacs:
+* For thanking RMS and the FSF for their valuable work on Free software.
+* For Xemacs says "buffer too big, aborted" after trying to fontifying my phd thesis latex file.
+* For its better color/highlighting in text terminals.
+* For it starts faster.
+* For its better correspondence with the Info manuals.
+
+I use XEmacs:
+* For thanking JWZ for his contributions to Free software (especially for Xkeycaps, I love it!).
+* For its package system, very convenient when I have to leave Debian and use a MS Windows box.
+* For it loads the CL package from the beginning.
+* For it includes a lot of useful packages out of the box (auctex, x-symbol, mic-paren, calc, ...).
+
+In general, I find XEmacs more feature-rich, but more unstable and incoherent.
+Let us see when Emacs will be able to run Guile Scheme Lisp...
+
+:: -- Enrik' Artime
+
+I use XEmacs:
+* for much better apropos-interface
+* (for minibuffer-electric-tilde, but this is no longer a good reason, for the salvific Lisp:minibuf-electric-gnuemacs.el was mined from the Dark Ages!)
+* for ActiveMenu
+* for all the lisp code I have written in the last 6 years for XEmacs
+* because the prompt in load-library has completion
+* because repeated invocations of mark-sexp select further into the buffer.
+* for filladapt-mode
+* ''Although'':
+** I could never get a running top in terminal-mode (this is no longer an issue since I finally found that it was due to MULE detecting some mode and interpreting the escape sequences.  After turning this off term and top work just fine)
+** I could not get emacs-wiki to work (I did it once but didn'f follow that trail to the end, maybe it works now)
+** NxmlMode isn't ported (yet?)
+
+:: -- StefanKamphausen
+
+I still use XEmacs (but I have already put some work into a decent .emacs to benefit from planner, emacs-wiki etc.):
+* for completion in load-library
+* for filladapt-mode
+* for whitespace-mode
+* for winmgr-mode
+* for func-menu (aka fume), because imenu doesn't grok delphi (which I am currently forced to work with)
+* for the nicer scrollbars (although the mythical Gtk-Emacs might help)
+* for my own lisp modules, which I did not port yet
+* and, of course, tetris looks *much* nicer
+
+:: -- ClausBrunzema
+
+I used to use [[XEmacs]], but switched to GnuEmacs.  This is entirely down to the availability of NxmlMode, the best XML environment ever.
+
+:: -- DominicMitchell
+
+I switched from XEmacs to Emacs some time ago and have never looked back.  My reasons are mostly philosophical:
+* Emacs is conceptually cleaner, especially if you write lots of customizations for the way you work
+* I don't like the idea of the fork (a failed attempt at an aggressive take-over of the project) - if people would work together on one version it would be miles better and I would not be wasting my time in this discussion!
+* Emacs is the benchmark by which others are judged - even if others win on a feature here or there, I'd rather stick with the solid underpinnings
+* I also support RMS and the FSF in their endeavours to liberate the personal computer (let's face it - XEmacs would not be here if RMS had not produced Emacs in the way that he did in the first place)
+
+:: -- DaleMellor
+
+I started with Emacs and switched to XEmacs because
+* I thought XEmacs had better MS Windows integration.
+
+But it had not IMO. I switched back from XEmacs to Emacs because
+* XEmacs was much heavier - too slow on my old computer.
+* It seemed to me that Emacs was more stable.
+* I like the FSF philosophy and did not want to contribute under the XEmacs scheme (what will happen with my contributions?).
+* Since I from the beginning was looking for better MS Windows support - and that is not a main goal for FSF - ;-) - I happily wrote a bit of that support myself, see [[EmacsW32]]. May that be one door to GNU/Linux!
+:: -- LennartBorgman
+
+I used XEmacs for many years because at the time I started using it, graphical support was either slow and/or non-functioning in the GNU rendition. With the purchase of my first OS X machine, I found this (rather ironically) to be the exact opposite. These days I can barely tell the difference unless I start getting into hairy macros, and I've rebound most of the default Emacs keys to emulate XEmacs anyways (M-g, etc).
+
+I imagine if I spent more time tinkering with the guts, it would matter more.
+
+:: -- ErikHollensbe
+
+I have spent a substantial period of time using each of XEmacs or Emacs, and have wound up using, and strongly preferring, Emacs.
+
+* I find it easier to track down and make adjustments in Emacs
+  - it feels, as of recent versions, more regular and well refined.
+* I am able to make Emacs look and behave with more finesse
+* The one thing i continue to seriously miss from XEmacs is the
+  ability to use diverse kinds of displays - mixed tty and X
+  frames.  It's much more rare that i need this ability - eg, to
+  remote log into a machine from a tty and use gnuclient to attach
+  to an emacs session that's already running with X displays - but
+  i might do things a litle differently if i could.
+* It's a testimony to the myriad little things i am able to get
+  working more nicely in Emacs that i am willing to forego that big
+  capability. 
+
+:: -- KenManheimer
+
+
+I use GnuEmacs because I started using Emacs before there was even an XEmacs. And I've never bothered to really investigate the differences and/or claimed improvements made by XEmacs.  I wouldn't be surprised if plenty of my crufty ol' JonathanArnoldDotEmacs file doesn't even work with XEmacs, in fact.  And I just believe in the rock solid history of GnuEmacs, that it will continue to follow me from platform to platform, working consistently and without problems, as it has during the last 20+ years.
+
+:: -- JonathanArnold
+
+I switched from GnuEmacs to XEmacs about 5 years ago because XEmacs was less ugly and had a better out-of-the-box experience. At the time it seemed that XEmacs had the technical lead.
+
+I switched from XEmacs back to GnuEmacs about 2 years ago because CPerlMode works better in GnuEmacs and since I'm stuck using MS Windows at work anyway there's no difference in ugliness. Lately it seems that GnuEmacs has the technical lead.
+
+:: -- AdamR
+
+----
+CategoryHistory
+

@@ -1,0 +1,23 @@
+[[es:Lista_de_deseos]]
+Click the above title to find any topic categorized as CategoryWishList.
+
+Here are the wish list pages:
+
+* WishList -- the catch-all page for all things Emacs...
+** [[SummerOfCode2009]] -- Ideas for participation in this project
+* EshellWishList -- EmacsShell stuff
+* EmacsIDEWishList -- gtk2, great IDE features that is good for newbies, great dynamic languages support ...
+
+The EmacsTodo contains wishes that have been blessed by the Emacs developers.
+
+Here is what the Emacs developers are currently working on:
+
+* EmacsCVSFeatures
+* EmacsBzrSwitchover
+
+== Bugs ==
+
+* ErcBugs -- wishlist for Emacs IRC Client (lower-down the page)
+* EmacsBugs
+* XEmacsBugs
+

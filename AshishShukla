@@ -1,0 +1,26 @@
+I'm Ashish Shukla ([::abbe] on IRC), another Emacs user, who fantasizes of a world without non-free software. I maintain a blog at http://wahjava.wordpress.com/ . 
+
+I recently hacked an Emacs blog-posting client named blog.el to post to Wordpress blogs in muse-mode. It is pasted at:
+
+* blog.el -- the blog client for posting to wordpress blogs -- http://paste.lisp.org/display/69993
+* metaweblog.el -- an emacs lisp library to access metaweblog capable blogs -- http://paste.lisp.org/display/69994
+
+Tons of thanks to AlexSchroeder for hosting this EmacsWiki .
+
+There is a bug in blog.el. blog-post-entry calls (kill-buffer) without giving an argument and emacs throws an error. I commented it as it is not required for posting and it worked. I got an error after successful posting and that is due a second kill-buffer. I am using gnu-emacs. I am surprised no one has complained or that it worked for the author. Thanks for your blog.el client. Babu Srinivasan
+
+
+[new]
+Welcome to the wiki and thanks for the kind words. These days I'm happy to think that the Emacs Wiki users write all the new content, so there is little left for me to do. -- Alex
+
+[new]
+
+Hi abbe!
+
+I'm so glad to find out about MetaWeblog API for Emacs :-)
+
+I'd like to be able to publish blog entries written within Emacs in reST markup to MetaWebLog blog sites (powered by Django). Is it possible to achieve it?
+(I used Muse before, but moved to reST due to it being more 'standard' markup for texts I have to share with others.) -- Gour
+
+----
+CategoryHomepage

@@ -1,0 +1,99 @@
+: [[image:iciclesimage]]
+
+
+|| *Previous:* [[Icicles - Background on Input Completion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Traversing Minibuffer Histories]] ||
+
+
+----
+
+== Cycling Completions ==
+
+'''Icicles''' lets you use the `up' and `down' arrow keys to ''cycle'' through the list of candidate [[prefix completion]]s that match whatever input is present in the [[minibuffer]]
+(or ''all'' candidate [[completion]]s, if there is no input in the minibuffer).  In the minibuffer, each candidate replaces your partial input, in turn, when you cycle. The ''prefix'' (root) that was completed is ''underlined'' inside the
+minibuffer completion candidate.
+
+As an alternative to using `down' to cycle forward, you can hit
+`TAB' repeatedly. See [[Icicles - Nutshell View#PrefixAndAproposCompletion|Prefix and Apropos Completion]].
+
+Suppose you use `C-x b' (command `switch-to-buffer').
+You can then use `down' until the right [[buffer]] name appears in the
+minibuffer, then hit `RET'.  Or you can type some text
+that begins one or more of the buffer names, and then use `down' to
+cycle among those names that match that prefix.  If there are many candidates, typing part of the name to narrow the field can
+save time.  
+
+Another example: Suppose you use `C-h v' (`describe-variable') and type `cal'.
+Use `down' to cycle among all [[variable]]s that start with `cal',
+until you find the one you want (then hit `RET').
+
+In other words, the current partial input in the minibuffer
+determines a matching set of default values, and those are the
+values that you can cycle through.  You can at any time erase or
+change the partial input -- the list of matching candidates
+automatically reflects the change. This also means that it's good to have a quick way to clear the
+minibuffer of any input, so '''Icicles''' also provides minibuffer key
+binding '''`M-k'''' to do that.
+
+A visible and audible signal lets you know when you have reached one
+end of the list of completion candidates, but you can of course
+continue to cycle, wrapping around.
+
+If the completion candidates are already displayed in buffer `*Completions*' when you try to cycle among them (because you hit `TAB'), then
+the current candidate is ''highlighted'' in `*Completions*' as you access it in the
+minibuffer with the `up' and `down' arrow keys.  If you change the minibuffer input, then the `*Completions*' list is updated accordingly, to reflect the new set of matching candidates. The root that was completed (the
+minibuffer input) is ''highlighted'' in each candidate of the
+`*Completions*' display -- more precisely, the longest prefix that includes your minibuffer input and is common to all matching candidates is highlighted.  The `*Completions*' window is automatically scrolled as needed, to show the current candidate.
+
+This screenshot shows the highlighting just mentioned:
+
+[[image:iciclesscreenshot]]
+
+What this screenshot does ''not'' show, however, is [[mode line]] help on the current candidate -- because in this case the current candidate, command `isearch-forward-exit-minibuffer', has no [[doc string]]. For other candidates, however, individual help appears in the mode-line. For example, for command `file-cache-minibuffer-complete', the mode-line shows this:
+{{{
+  Complete a filename in the minibuffer using a preloaded cache.
+}}}
+
+([[lacarte-w-icicles|Screenshot]] showing mode-line candidate help.)
+
+Don't become a cycling drone! '''''Input some text to narrow the set of candidates, before cycling''''' among them to choose one. This is a good habit to adopt, generally, in '''Icicles'''.  Most of the power of '''Icicles''' comes in your ability to filter a set of candidates. This is especially true when it comes to [[regexp]] filtering (see [[Icicles - Apropos Completions]]). 
+
+''Cycling'' and ''filtering'' work hand in hand. If 
+the set of candidates is small to begin with, then just cycling might be quick enough -- that is the case if you move among a small set of [[buffer]]s, for instance. But with '''Icicles''' you can profitably use cycling on even a very large set of candidates -- by filtering the set first. The reason this is often not very practical with vanilla Emacs is that filtering by a ''prefix'' only is not that potent -- '''Icicles''' regexp filtering changes this game.
+
+'''''Tip:''''' Whenever you type or delete text in the minibuffer, your partial input is remembered. When you cycle completion candidates, your input is replaced by each candidate, but you can at any time ''refresh the minibuffer'' to retrieve what you last typed. You do this with '''`C-l'''', which is bound in the minibuffer to command `icicle-retrieve-previous-input'. Editing a completion candidate that you have cycled into the minibuffer counts as input. Editing tells '''Icicles''' to remember what is in the minibuffer as your last real input. If you want to replace the candidate and go back to editing the input you had already typed before cycling, then use `C-l' -- don't just delete characters from the candidate.  See [[Icicles - History Enhancements]].
+
+You can change the [[key]]s that are bound to completion-candidate cycling.  And if you prefer to use the same key for cycling both
+apropos matches and prefix matches, then you can customize [[option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-cycling-respects-completion-mode|icicle-cycling-respects-completion-mode]]</tt>''''.  See [[Icicles - Customizing Key Bindings]].
+
+If you are an EmacsLisp programmer, then you can use `completing-read' to define your own [[command]]s,
+enabling them to take advantage of '''Icicles''' completion and cycling.
+The definition of command `icicle-recent-file' is a good model to
+follow.  Emacs has a `recentf-mode' that lets you open recently
+accessed files.  But this mode makes you open a file using a menu
+interface.  Command `icicle-recent-file' lets you use the usual
+`find-file' minibuffer interface, with completion and cycling
+among your recent files.  See [[Icicles - Defining Icicles Commands]] and [[Icicles - Note to Programmers]] for more
+on defining your own commands with `completing-read' and `read-file-name'.
+
+----
+
+|| *Previous:* [[Icicles - Background on Input Completion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Traversing Minibuffer Histories]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryCode
+CategoryProgrammerUtils
+
+
+
+

@@ -1,0 +1,31 @@
+[[zh:沙盒]]
+[[it:Polski]]
+[[se:SandLåda]]
+[[de:SandKasten]]
+[[de:SandKasten]]
+[[es:SandBox]]
+[[fr:SandBox]]
+[[ru:Песочница]]
+
+'''Please leave all text above the first horizontal line intact''', to
+serve as instructions for others.
+
+This page is not to be confused with //sandbox.el// at
+http://panix.com/~tehom/my-code/, which can be used to help check the
+security of new elisp code.
+
+This page is the place to '''try stuff'''. You can also use the
+[http://www.emacswiki.org/cgi-bin/test Test Wiki] for testing.
+If you need your own wiki, try the
+[http://communitywiki.org/odd Oddwiki].
+
+'''Please make all edits here minor:''' check the box below the
+editing field marked "This change is a minor edit."
+
+See HowTo for editing tips. Click "Edit this page" at the
+bottom of any page to examine its source code and see how others have
+done things. Then come back here to experiment. Note that you need not save your edits to see how they look; you can just click '''Preview'''.
+
+----------------------------------------------------
+
+Lisp:test.el

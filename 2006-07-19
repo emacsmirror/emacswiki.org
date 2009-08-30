@@ -1,0 +1,12 @@
+GNU Emacs 22 pretest may start soon---assuming someone can be found to check two remaining files in the EmacsLispReference for factual mistakes (lispref/text.texi and lispref/modes.texi).  This has been the main bottleneck in the Emacs 22 release process.
+
+----
+
+ From: Richard Stallman <rms@gnu.org>
+ To: emacs-devel@gnu.org
+ Date: Tue, 18 Jul 2006 10:59:53 -0400
+ Subject: Pretest can be soon
+
+ If people would please do the requisite checking of a couple
+ more files in the Lisp manual, and if a few of you that I asked
+ to look at certain bugs would do it, we can start pretest.

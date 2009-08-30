@@ -1,0 +1,45 @@
+Lisp:org-annotate-file.el
+
+This is yet another implementation to allow the annotation of a
+file without modification of the file itself. The annotation is in
+org syntax so you can use all of the org features you are used to.
+
+To use you might put the following in your .emacs:
+
+<pre>
+(require 'org-annotate-file)
+(global-set-key (kbd "C-c C-l") 'org-annotate-file)
+</pre>
+
+To change the location of the annotation file:
+
+<pre>
+(setq org-annotate-file-storage-file "~/annotated.org")
+</pre>
+
+Then when you visit any file and hit C-c C-l you will find yourself
+in an org buffer on a headline which links to the file you were
+visiting, e.g:
+
+<pre>
+* ~/org-annotate-file.el
+</pre>
+
+Under here you can put anything you like, save the file
+and next time you hit C-c C-l you will hit those notes again.
+
+To put a subheading with a text search for the current line set
+`org-annotate-file-add-search` to non-nil value. Then when you hit
+C-c C-l (on the above line for example) you will get:
+
+<pre>
+* ~/org-annotate-file.el
+** `org-annotate-file-add-search` to non-nil value. Then whe...
+</pre>
+
+Note that both of the above will be links.
+
+= See also =
+* [[ipa.el]] In place annotations.
+* [[Annotate]] Simple annotation system for files.
+* [http://github.com/dto/radio/tree/master radio.el] Another org based annotation system

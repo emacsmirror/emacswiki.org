@@ -1,0 +1,98 @@
+MeatBall:HumaneInterface argues for dedicated keys.  These facilitate
+habit formation.  Unless you can hack hardware, though, that means using
+the FunctionKeys.
+
+Example:
+
+  (global-set-key (kbd "<f2>") 'hippie-expand); complete
+  (global-set-key (kbd "<f3>") 'comment-region); comment
+  (global-set-key (kbd "<f4>") 'eval-last-sexp); eval
+  (global-set-key (kbd "<f5>") 'set-mark-command); mark
+  (global-set-key (kbd "<f6>") 'kill-ring-save); copy
+  (global-set-key (kbd "<f7>") 'yank); paste
+  (global-set-key (kbd "<f8>") 'kill-region); delete
+  (global-set-key (kbd "<f9>") 'disk); save
+  (global-set-key (kbd "<f10>") 'iswitchb-buffer); switch buffer
+  (global-set-key (kbd "<f11>") 'dired); switch file
+  (global-set-key (kbd "<f12>") 'my-kill); kill buffer
+  (global-set-key (kbd "<print>") 'my-jump)
+
+See also: DiskKey, KillKey, JumpKey, MacroKey
+
+Note how often these keys are "dwim keys" (see DoWhatIMean).
+
+: MeatBall:HumaneInterface certainly has some interesting points. I use
+the FunctionKeys in a similar manner. One thing I've noticed however is
+that the function keys aren't that easy to hit when your hands are on
+the home row - so I find them most useful for major "tasks". My fingers
+know to hit f3 for emacs wiki, f4 for calendar, f5 for gnus, etc. f1
+jumps me to a NotesBuffer, and when hit again, jumps me back to where I
+was before.
+
+: Things like dabbrev-expand (which one might find themselves hitting
+multiple times in a sentence!) are really handy if they're easy to hit -
+I've got capslock bound to that. -- DamienElmes
+
+----
+
+I can imagine how defining your function keys is nothing but personal
+preference; like choosing your favorite color. So, without further
+ado, here's mine:
+
+  (global-set-key [f1] '(lambda () (interactive) (find-file "~/.xemacs/fkeys.el")))
+  (global-set-key [(control f1)] '(lambda () (interactive) (load-file "~/.xemacs/fkeys.el")))
+  (global-set-key [(shift f1)] '(lambda () (interactive) (find-file "~/.xemacs/init.el")))
+  #+ignore(global-set-key [(shift f1)] '(lambda () (interactive) (dired "~/.xemacs/")))
+  (global-set-key [f2] 'eshell)
+  (global-set-key [(control f2)] '(lambda () (interactive) (eshell 1)))
+  (global-set-key [f3] 'w3m)
+  (global-set-key [(control f3)] 'w3m-goto-url-new-session)
+  (global-set-key [(shift f3)] 'dka-w3m-goto-wiki)
+  (global-set-key [f4] 'dka-switch-to-erc)
+  (global-set-key [f5] 'gnus)
+  (global-set-key [(control f5)]
+    '(lambda ()
+       (interactive)
+       (gnus-group-get-new-news)
+       (nnmail-split-history)
+       (setq nnmail-split-history nil)))
+  (global-set-key [(control shift f5)]
+    '(lambda ()
+       (interactive)
+       (let ((buffer (get-buffer "*nnmail split history*")))
+         (delete-windows-on buffer)
+         (bury-buffer buffer))))
+  (global-set-key [f6] 'calendar)
+  (global-set-key [f7] 'todo-show)
+  (global-set-key [f8] 'dka-tnt)
+  (global-set-key [f9] 'compile)
+  (global-set-key [f10] 'gdb-next)
+  (global-set-key [f11] 'gdb-step)
+
+Note that the <code>fkeys.el</code> file is simply the above
+global-set-keys. Also, <code>dka-w3m-goto-wiki</code> is defined over
+on WThreeM. I've not defined <code>dka-switch-to-erc</code> yet. My
+idea is to make it either start up EmacsIRCClient or switch to the
+channel buffer with the oldest unread messages in it. Possibly do it
+the other way around: switch to the most recently read channel buffer
+with new messages in it. I suppose this falls under DoWhatIMean except
+I don't know what I mean ;) I'm particularly proud of the lambda's on
+C-f5 and S-C-f5. Those are pretty handy for seeing what new mail is
+waiting for me without quiting what I'm doing to go check. -- LathI
+
+----
+
+Don't forget that on PC keyboards you have more fun keys to bind:
+PrintScreen, ScrollLock, PauseBreak. On some keyboards you have
+"internet" keys. I have 17 extra "internet" keys, a scroll wheel (like
+the ones you find on mice, but on the keyboard instead), and a jog
+wheel (for volume control).
+
+----
+
+If you find that you run out of dedicated keys (who doesn't?), look no further than this:
+
+http://www.piengineering.com/xkeys.php
+
+----
+CategoryKeys

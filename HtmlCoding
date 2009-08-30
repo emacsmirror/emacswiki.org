@@ -1,0 +1,17 @@
+<code>html-coding.el</code> is a spot of code to select an Emacs
+coding system from the <code><meta></code> tag in a
+<code>.html</code>, <code>.shtml</code> or <code>.htm</code> file.
+
+: http://user42.tuxfamily.org/html-coding/index.html
+
+This is designed for Emacs 21.   Emacs 22 already has this feature, so nothing is done there.
+
+Very likely the heavy duty HTML editing/browsing packages have this or
+something similar.  <code>html-coding.el</code> is designed merely to
+get the right characters when doing a FindFile on a
+saved HTML page, or a page you're editing with plain HtmlMode.
+
+Version 4 and up is implemented by <code>defadvice</code> (see AdvisingFunctions) on <code>set-auto-coding</code>, to let it work with ArchiveMode on files from a zip file etc.
+
+----
+CategoryInternationalization HtmlMode

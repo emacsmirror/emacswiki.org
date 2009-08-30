@@ -1,0 +1,55 @@
+== Paredit Viper Compatibility ==
+Lisp:paredit-viper-compat.el allows paredit and viper to work together.
+
+See the contents of the file for more information, or follow the instructions on this page. Also, see the bottom of the file for information about why paredit and viper weren't working together and how paredit-viper-compat.el fixes it.
+
+PLEASE DO NOT CONTACT THE AUTHOR OF PAREDIT.EL FOR SUPPORT. This code is separate from paredit.el. I am submitting a patch to hopefully see this integrated into paredit, but in the meantime, don't bother him. Questions can be left on this wiki page and I will try to answer them.
+
+Note that this file has just been released, and has had little testing. If you have any problems at all don't hesitate to leave a question on the wiki page.
+
+== Setup ==
+Download the file and put the following in your emacs:
+<pre>
+    (eval-after-load 'paredit
+      '(progn
+         (require 'paredit-viper-compat)
+         (paredit-viper-compat))
+</pre>
+
+== Custom Keybindings ==
+If you want to add custom keybindings, you can use <code>paredit-viper-add-local-keys</code>.
+Usage is as follows:
+<pre>
+(paredit-viper-add-local-keys STATE KEY-ALIST)
+</pre>
+
+Where STATE can be <code>'insert-state, 'vi-state, 'emacs-state, or 'all-states</code>,
+and KEY-ALIST is a list of key . function pairs of the form
+<code>'((key-str . func) (key-str . func) ...)</code>.
+
+For example, to rebind C-w in all viper states (insert, vi, and emacs states):
+<pre>
+(paredit-viper-add-local-keys 'all-states
+                              '(("\C-w" . paredit-backward-kill-word)))
+</pre>
+
+If you want to bind keys for several states, add a paredit-viper-add-local-keys form for each one.
+
+== Complete configuration example ==
+Here is a complete example using user customized keybindings:
+<pre>
+(eval-after-load 'paredit
+  '(progn
+     (require 'paredit-viper-compat)
+     (paredit-viper-compat)
+     (paredit-viper-add-local-keys 'all-states
+                                   '(("\C-w" . paredit-backward-kill-word)
+                                     ;; ... more keys ...
+                                     ))))
+</pre>
+
+== Inclusion with Paredit.el ==
+I hope to see this get into paredit.el proper and am working on a patch. In the mean time I am making it available this way.
+
+== Questions ==
+No questions yet.

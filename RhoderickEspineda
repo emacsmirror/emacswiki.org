@@ -1,0 +1,10 @@
+I am [http://padik.localfilipino.com padik] on EmacsChannel. 
+
+* Lisp:merriam.el
+* Lisp:handbook.el
+* Lisp:qq-mode.el
+
+Hello and welcome to the wiki!  Did the xhtml-mode that comes with Emacs not cut it for you?  I think it isn't loaded by default, so you would have to load html-mode before it becomes available. -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -1,0 +1,84 @@
+I've been using Gnus for less than 24 hours... what qualifies as a
+nifty trick, and what is just common knowledge?
+
+* Group levels?
+* GroupParameters (hit "G p" in the group buffer):
+This is an example of the properties of one of my mailing lists:
+
+    ((expiry-wait . 30) 
+     (expiry-target . "nnml:old.clug")
+     (total-expire . t)
+     (gcc-self . none)
+     (to-address . "CLUG <linux@samba.org>")
+     (posting-style
+      (from "Damien Elmes <clug@repose.cx>")))
+
+Basically says "move all articles older than 30 days into old.clug (from mail.clug), and don't prompt me. Don't add gcc headers for this group because I'll get the response back on the list anyway. Set the to-address so that replies will only go to the list and not to the people who sent them, and change my identity so I can track spam --DamienElmes
+
+----
+AdaptiveScoring demo:
+
+ <antifuchs> (defvar gnus-default-adaptive-score-alist
+ <antifuchs>   '((gnus-unread-mark)
+ <antifuchs>     (gnus-del-mark (subject -1))
+ <antifuchs>     (gnus-read-mark (subject 1))
+ <antifuchs>     (gnus-expirable-mark (from -1) (subject -1))
+ <antifuchs>     (gnus-killed-mark (subject -3))
+ <antifuchs>     (gnus-kill-file-mark)
+ <antifuchs>     (gnus-ancient-mark)
+ <antifuchs>     (gnus-low-score-mark)
+ <antifuchs>     (gnus-catchup-mark (subject -1))))
+
+courtesy AndreasFuchs
+----
+To Add Tab completion to names in the To: field in message,
+
+    (add-hook 'message-mode-hook
+                (function (lambda() 
+                           (local-set-key (kbd "<tab>") 'bbdb-complete-name)
+                         )))
+----
+Kai has written message-x.el (http://www.uni-mainz.de/~beigs005/message-x.el) which does better for tab completion.  Basically, it's smart about whether it's in an appropriate header or if it's in the body.  In my .gnus.el I've added these two lines:
+
+    (require 'message-x)
+    (setq message-x-body-function '(lambda () (interactive) (hippie-expand nil)))
+
+That sets it to use bbdb-complete-name on a field where I might want to do name expansion or to do hippie-expand in the body.  Note that it just uses the <tab> character.  Using this setup it would be hard to actually insert a <tab> in the buffer. --LathI
+
+<code>C-q TAB</code> should do insert a plain tab --ClausBrunzema
+----
+There are some advantages to storing your replies and sent mail in the same group as the original messages. You preserve threads in personal correspondence and you can use ^ to quickly view the parent. This is how to do it in Gnus.
+
+
+    (setq gnus-message-archive-method '(nnml ""))
+
+    (setq gnus-message-archive-group
+            '((lambda (x)
+                (cond
+                 ;; Store personal mail messages in the same group I started out in
+                 ((string-match "mail.*" group) group)
+                 ;; I receive a copy of all messages I send to a list, so there's no need to archive
+                 ((string-match "list.*" group) nil)
+                 ;; Store everything else in misc until I can sort it out
+                 (t "mail.misc")))))
+
+I use nnml for my messages and split all mailing lists off into list.* groups. Add salt and pepper to taste.
+
+This snippet is also useful:
+
+    (add-hook 'message-sent-hook 'gnus-score-followup-thread)
+
+It scores up replies to my replies. =)
+
+-- SachaChua
+
+----
+* gnus pisses me off by downloading 600k or so each time I start it up, AlexSchroeder showed me that M-x gnus-no-server will start up gnus without downloading the active file, and hitting "3 g" in the groups buffer will update the groups without doing the 600k active file thingie - if only this were the default behaviour!
+* If you ''do'' want to make it the default behaviour,
+
+    (setq gnus-read-active-file 'some)
+
+
+See also: EmacsNiftyTricks
+----
+CategoryGnus 

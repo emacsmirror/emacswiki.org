@@ -1,0 +1,46 @@
+'''ILISP''': a generalized (X)Emacs
+interface to an underlying LispLanguage
+system
+
+* http://ilisp.cons.org/
+* http://sourceforge.net/projects/ilisp/
+
+ILISP is a package that is designed to integrate various Lisp implementations
+(mostly Common Lisp systems and various Scheme dialects) within Emacs (or
+XEmacs). 
+
+ILISP runs an inferior Lisp process (in Emacs parlance) and provides a
+specialized set of commands, key bindings, and menus to ease the interaction
+with it. ILISP commands access the underlying Lisp process and provide ways
+to make the editing, compilation and execution of Lisp programs much easier. 
+
+Currently ILISP can handle the connection with the following Common Lisp
+and Scheme implementations: CLiki:CMUCL, CLiki:CLISP by B. Haible and M. Stoll,
+Harlequin <nowiki>LispWorks</nowiki>, Franz Allegro CL, many KCL derivatives (including
+CLiki:GCL), CLiki:SBCL and various [[Scheme]] implementations. 
+
+'''Problem''': If you type a single right paran ')' and hit return, ilisp stops
+responding (e.g. type 42<return> we should see 42 evaluated, but it doesn't).
+How do we get out of this situation once it starts? '''Solution''': Keep hitting backspace to delete everything up to and including the bracket and start again.
+
+== Example of Program Development Using Emacs and ILISP ==
+
+This example can be included in Emacs's start-up file, ".emacs".  Change the
+login name, name of the remote host, and pathname of the Lisp to be invoked.
+Emacs can be programmed for development in other languages besides Lisp, as
+well.
+
+    ;;; This load hook defines a Lisp "dialect" that can be invoked by ILISP
+    ;;; as directed by the user's response to ILISP's "Dialect: " prompt.
+    (add-hook 'ilisp-load-hook
+          '(lambda ()
+             (message "Running ilisp-load-hook")
+             (setq ilisp-load-hook
+                   '(lambda ()
+                     ;; Define a new dialect to run on another machine.
+                     (defdialect
+                      cmulisp-remote
+                      "CMU Common Lisp Remotely Executed."
+                      cmulisp
+                      (setq ilisp-program
+                      "ssh thomas@computer1001 /usr/local/bin/lisp")))))

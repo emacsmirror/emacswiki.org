@@ -1,0 +1,49 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Completion On Demand]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Inserting a Regexp from a Variable or Register]] ||
+
+----
+
+== Moving Between the Minibuffer and Other Buffers ==
+
+Sometimes, when the [[minibuffer]] is active, you might want to move
+the [[cursor]] and focus from the minibuffer back to the original
+[[buffer ]] from which you activated the minibuffer.  When you are in
+''Icicle'' mode, the '''`pause'''' key is bound (by default) to command
+`icicle-switch-to/from-minibuffer', which does that.  This lets
+you start minibuffer input (with or without [[completion]]), and then
+interrupt it to search, edit, and so on, in the original buffer.
+This same command (bound to `pause') then lets you switch back to
+the minibuffer -- it acts as a toggle for the input focus; go back and forth as much as you like.
+
+This can be especially useful when you use '''Icicles''' [[multi-command]]s.  In that case, you often keep the
+minibuffer active for completion while performing multiple
+completion actions.  It can be handy to interrupt this to perform
+some normal editing or search, and then resume multi-command
+actions.
+
+Another use for this feature is to select text in the original
+buffer and then insert it in the minibuffer.
+See also [[Icicles - Inserting Text from Cursor]] for another way to do that.
+
+A somewhat related toggle is available using `C-insert'.
+This lets you switch the focus between the minibuffer and buffer
+`*Completions*'.  See [[Icicles - Completions Display]] for more
+information.
+
+----
+
+
+|| *Previous:*  [[Icicles - Completion On Demand]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Inserting a Regexp from a Variable or Register]] ||
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+
+
+
+

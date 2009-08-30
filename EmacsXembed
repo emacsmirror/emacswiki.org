@@ -1,0 +1,79 @@
+= Emacs and Xembed =
+
+Xembed is an X extension enabling X applications to embed in each other, for instance
+like browser plug-ins.
+
+== embedding emacs in other apps ==
+CVS Emacs supports embedding emacs in other applications, with --parent-id.
+Patch by Timo Savola.
+
+currently I have no good example of how this works with existing apps, but I made a small
+gtk app that creates a gtk_socket, and prints the window id of that socket.
+When the program runs, emacs can be started with the --parent-id flag with the socket id, and 
+emacs shows up in the demo app. Cool!
+
+== embedding apps in emacs windows ==
+The xwidget patch enables embedding of gtk widgets inside emacs buffers.
+
+mplayer could be embeded in emacs, using mplayers -wid flag, emacs and uzbl are other xembed compatible apps.
+
+Currently im investigating if its possible to embed generic gtk widgets in a buffer. Then xembed would be solved as well, because of gtk_socket. This is probably rather difficult, but even more interesting than plain xembed
+support. The interface is currently similar to the image support, ie, one puts a display property with an "xwidget" spec on it, on some text. The interface would be toolkit neutral:
+
+(xwidget :type embed ...) etc, different types for different interesting widgets.
+
+Im now able to have a gtk button move with the text in emacs, just like an image!
+
+[[image:EmacsXembedScreenshot]]
+
+Its very cool!
+
+== getting the patch ==
+
+I've mailed it to emacs-devel.
+See also http://github.com/jave/emacs/tree/xembed
+
+== The interface ==
+
+Heres stuff from my elisp test code:
+
+(insert "xwidgetdemo<<< a button. another button\n")
+(goto-char (point-min))
+(put-text-property (point) (+ 1 (point)) 'display '(xwidget :xwidget-id 1 :type 1 :title "1" :width 40 :height 50))
+
+xwidget-id must be a unique integer. type identifies the widget class, and should be a symbol instead.
+
+Theres no callback interface yet, but I'm thinking it would look like:
+
+... :callback (lambda (xwidget-id message &optional message-params) ...) ...
+
+== Notes and Status ==
+
+This page should probably be split into this page and EmacsXwidgets.
+
+Xwidgets is a concept similar to the Java AWT toolkit, but instead for Elisp.
+The current implementation of Xwidgets targets GTK as the native peer widget set, but
+aims to be toolkit agnostic. I dont aim to make every GTK widget an Xwidget, just a small
+subset suitable to implement certain types of GUI:s currently difficult to do with Emacs,
+for instance slider widgets, embedded applications, etc.
+
+Implementing this patch was kind of straightforward, until it became unexpectedly difficult.
+It's harder to make the widgets go away than putting them on screen.
+
+Currently the patch allows for:
+* inserting xwidgets
+* moving them by inserting text, just like images
+* an emacs event based callback interface
+* one live xwidget window, the other windows shows phantom xwidgets
+
+Current issues:
+* theres a problem with clipping on emacs-window borders
+* xwidgets are not garbed currently, they are just hidden.
+* theres just a fixed array of xwidgets, not a proper list
+
+These issues appear difficult but not unsolveable.
+
+
+
+
+-- JoakimVerona

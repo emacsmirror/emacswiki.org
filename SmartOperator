@@ -1,0 +1,66 @@
+the latest version can be found here:
+http://xwl.appspot.com/ref/smart-operator.el
+
+
+----
+
+[[smart-operator.el]] is a tool to automatically add spaces around operators on input.
+
+For example:
+
+  x=5
+
+will become:
+
+  x = 5 
+
+
+----
+
+I personally found the approach of modifying the local map uncomfortable.  I'd rather have a minor mode instead, so I wrote this additional code:
+
+  (defun smart-operator-self-insert-command (arg)
+    "Insert the entered operator plus surrounding spaces."
+    (interactive "p")
+    (smart-operator-insert (string last-command-char)))
+
+  (defvar smart-operator-mode-map
+    (let ((keymap (make-sparse-keymap)))
+      (define-key keymap "=" 'smart-operator-self-insert-command)
+      (define-key keymap "+" 'smart-operator-self-insert-command)
+      (define-key keymap "-" 'smart-operator-self-insert-command)
+      (define-key keymap "/" 'smart-operator-self-insert-command)
+      (define-key keymap "%" 'smart-operator-self-insert-command)
+      (define-key keymap "&" 'smart-operator-self-insert-command)
+      (define-key keymap "*" 'smart-operator-self-insert-command)
+      (define-key keymap "!" 'smart-operator-self-insert-command)
+      (define-key keymap "|" 'smart-operator-self-insert-command)
+      (define-key keymap "<" 'smart-operator-self-insert-command)
+      (define-key keymap ">" 'smart-operator-self-insert-command)
+      (define-key keymap "," 'smart-operator-self-insert-command)
+      (define-key keymap "." 'smart-operator-self-insert-command)
+      (define-key keymap ":" 'smart-operator-self-insert-command)
+      keymap)
+    "Keymap used my `smart-operator-mode'.")
+
+  (define-minor-mode smart-operator-mode
+    "Insert operators packed with whitespaces smartly."
+    nil " _=_" smart-operator-mode-map)
+
+-- [[nschum]]
+
+fixed function name for 'smart-operator-insert'; BTW remember this all needs a preceeding:
+
+  (require 'smart-operator)
+
+-- ch2048
+
+Nice extension but it is buggy with C/CC comments:
+* "/*" -> "/ *"
+* "*/" -> "*/ "
+* "//" works fine
+It also fails with --:
+* "i++" -> "i ++"
+* "i--" works fine
+
+

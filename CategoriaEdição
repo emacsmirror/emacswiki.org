@@ -1,0 +1,22 @@
+Clique no título para procurar todas as páginas relevantes ao tópico, que lhe ajudaram a editar seu texto.
+Está categoria é para página que não descrevem modos -- estes devem estar em CategoriaModos, e está categoria não é para matéria para novatos -- isso deve estar em CategoriaPontoEmacs.
+
+* ApagandoTypedefs -- adapte seu estilo de código e converta o typedefs para structs plano.
+* ApagandoEspaçosemBranco
+* PalavrasRepetidas -- procura e apaga palavras repetidas.
+* ReverterBuffer -- como recarregar o índice do buffer sem matar e reabrir o arquivo.
+* RunCommandOverLines -- executa um comando para diversas linhas, como o ed  lines (OVerdadeiroCaminho).
+* DosToUnix -- substitua o retorno de carro do dos com um comando Unix.
+* RegAdhoc -- você pode recordar aonde os registos apontam? 
+* RenumerandoLista -- renumere sua lista númerada.
+* FormatandoTexo -- formataçao de texto mágica
+
+Aqui estão listadas algumas páginas com alguns comandos básicos e úteis para editar.
+
+* ComandosdeLinha
+* ComandosdeMarcação
+
+Veja também BelosTruquesdeEmacs que coleta idéias do CanaldoEmacs.
+
+Eu gostaria de começar um projeto para integrar o emacs com JavaSpaces. Veja DavidNovogrodsky para mais detalhes.
+

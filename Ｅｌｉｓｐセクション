@@ -1,0 +1,133 @@
+Here is the japanese page for ElispArea. 英語ページは[EmacsWiki:ElispArea こちら]。
+
+----
+
+[[Ｅｌｉｓｐセクション]] / ElispArea は EmacsLisp で書かれた "Free Software" のページです。
+
+* Lisp:index.html -- アップロードされているリスプのリスト
+* Lisp:changelog.html -- アップロードされているリスプの changelog
+* http://www.emacswiki.org/cgi-bin/upload.pl -- アップロードする場所
+
+Wiki なので、アップロードするのに
+ログインもＦＴＰもパスワードも要りません。そのかわり悪意のあるコード
+を含んだファイルさえもアップロードされる可能性もあります。
+少しでも疑いがある場合、使用しないでください。
+
+安全のため、アップロードされるファイルはバックアップをとっています。
+ただ、二週間を過ぎたものをバックアップファイルとしてみなしています。
+つまり、バックアップファイルは少なくとも二週間前のものになります。
+
+２０ｋよりも大きなファイルは自動的に gzip 形式になります。
+これでダウンロード時間が少なくなるでしょう。
+とはいっても<i>アップロードはプレインテキストで</i>行う必要があります。
+１００ｋよりも大きなプレインテキストはインデックスや changelog には載せません。
+これでサーチエンジンがダウンロードしに来なくなるので、その分帯域を押さえることが
+できるでしょう。
+（たとえば color-theme.el は 500k 以上あります。）
+
+ノート： Ohio ElispArchive は閉鎖になりました。
+
+== 著作権について ==
+
+アップロードは "Free Software" / 「自由なソフトウェア」に限ります。
+（無料という意味のフリーソフトとは異なります。
+[http://ja.wikipedia.org/wiki/%E3%83%95%E3%83%AA%E3%83%BC%E3%82%BD%E3%83%95%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A2 フリーソフトとは？]を参照。）
+そのため、 Free Software かどうかを判別するチェックを行っています。
+
+# ファイルが空ではない。
+# ファイルの先頭が ";;; ''name.el''" で始まる。
+# ファイルの末尾が ";;; ''name.el'' ends here." で終わる。文末のピリオドは省略可能です。ホワイトスペースが終わりに含まれるのはかまいません。
+# 以下の文字列のどれかがファイルに記載されている：
+## ";; This is free software"
+## ";; This file is free software"
+## ";; This program is free software"
+## ";; ''name.el'' is free software"
+## ";; This file is part of GNU Emacs." と ";; GNU Emacs is free software" が併記されている。
+
+== ドキュメントについて ==
+
+ファイルの解説はこの Wiki 上に書いてください。（本人がしなくても、
+誰かが見つけて書いてくれるかもしれません。）
+
+[[Ｅｌｉｓｐセクション]]は下の検索フォームからは検索できないので、
+以下のいづれかの場所に書きます。
+
+* CategoryModes (モードの場合)
+* CategoryDotEmacs (初心者用の便利コマンドなどの場合)
+* CategoryEditing (for small stuff
+designed to delete specific things from buffers and similar small editing jobs)
+
+== Elisp 以外のパッケージについて ==
+
+Free Software なら Savannah を利用できます。:
+
+* http://savannah.gnu.org/
+
+== Emacs 用インターフェース ==
+
+Lisp:wikiarea.el はこのサイトにあるファイルの更新に追随するためのものです。
+
+== コードの断片など ==
+
+ちょっとした関数群や、サンプルコードなどは、Wikiページに直接おいておくことをお勧めします。
+その場合は、<nowiki><pre>　と　</pre></nowiki> タグを使って整形されないようにするのを忘れずにね。
+
+== Netscape, GZip, Windows ==
+
+If you are having problems with gzipped files, see the following page:
+
+* http://www.complang.tuwien.ac.at/alex/netscape.html
+
+If you are still having problems downloading elisp packages from this site, you can download the whole tarball:
+
+* http://www.emacswiki.org/cgi-bin/list-archive.pl
+
+Note the size, however.
+
+See EmacsWiki for links to the source of the upload script.
+
+Cette page est aussi disponible en français: Français:SectionElisp
+
+== Example of Program Development Using Emacs and ILISP ==
+
+To learn about ILISP, possibly good starting places are:
+
+* http://www.cliki.net/ILISP
+
+* http://sourceforge.net/projects/ilisp
+
+The first of those two pages says "ILISP is a Emacs based interface to various lisp-like systems - a pretty essential Development aid."
+
+This example can be included in Emacs's start-up file, ".emacs".  Change the
+login name, name of the remote host, and pathname of the Lisp to be invoked.
+Emacs can be programmed for development in other languages besides Lisp, as
+well.
+
+    ;;; This load hook defines a Lisp "dialect" that can be invoked by ILISP
+    ;;; as directed by the user's response to ILISP's "Dialect: " prompt.
+    (add-hook 'ilisp-load-hook
+          '(lambda ()
+             (message "Running ilisp-load-hook")
+             (setq ilisp-load-hook
+                   '(lambda ()
+                     ;; Define a new dialect to run on another machine.
+                     (defdialect
+                      cmulisp-remote
+                      "CMU Common Lisp Remotely Executed."
+                      cmulisp
+                      (setq ilisp-program
+                      "ssh thomas@computer1001 /usr/local/bin/lisp")))))
+
+== Problems ==
+
+File names are limited to 20 characters, including the .el extension, which prevents me from uploading minibuffer-complete-cycle.el.  -- KevinRodgers
+
+Should be 50 characters now. -- AlexSchroeder
+
+Pasting file content into a browser form has problems with 8-bit characters.  For example, my .el files contain the Latin 1 copyright symbol (decimal 169, octal 251), which was converted to a question mark. -- KevinRodgers
+
+That problem seems to be caused by your browser not handling the clipboard
+correctly.  One way to do this would be to switch to a browser that allows
+an external editor such as Emacs.  Personally I would recommend the text
+browser w3m, for example. -- AlexSchroeder
+

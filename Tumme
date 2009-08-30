@@ -1,0 +1,62 @@
+Tumme extends dired to create an image and image thumbnail viewer.  In Emacs 22 it's called `image-dired'.  Using Tumme you can browse, organize and tag your pictures using familiar dired commands.  It will not create thumbnails until they are needed resulting in fast interactive performance.
+
+Tumme means thumb in Swedish. If you want to know how to pronounce it, download [http://hem.bredband.net/b431453/tumme.ogg this OGG-file].
+
+Tumme comes with GNU Emacs starting with version 22.1 as  `image-dired':
+
+: CVS:image-dired.el
+
+For more background and basic usage, reading the Commentary section in tumme.el is strongly recommended.
+
+== Current version ==
+
+Current version is 0.4.11.
+
+== Features ==
+
+* From thumbnail buffer, mark, unmark and flag files in associated dired buffer.
+* Tracking of movements in thumbnail buffer and mirroring of those movements in dired buffer, and the other way around.
+* From thumbnail buffer, view thumbnail's original image in external viewer or, automatically resized, in an Emacs buffer
+* Rotate thumbnail images.
+* Comment and tag support (writing, reading, marking by tag).
+* Lossless rotation of JPEG files using jpegTRAN.
+* Generation of a simple, static image gallery.
+* Supports browing of all images types that Emacs and ImageMagick supports.
+* Functions to write and extract EXIF comments using [http://www.sno.phy.queensu.ca/~phil/exiftool/ Exiftool].
+* Configurable thumbnail storage (per-directory or in a central location)
+* Because it is based on dired, you can do further file manipulation and image processing by using `dired-do-shell-command'.
+* And, of course, infinitely customizable :)
+
+== Screenshots ==
+
+=== Main interface ===
+
+[[image:TummePic01]]
+
+The picture above shows how tumme displays the original image's file name and tags in the echo area and how the movement in the thumbnail buffer have been mirrored automatically in the associated dired buffer. You can also see an automatically sized (tumme creates one on the fly) version in an extra buffer below the thumbnail buffer.
+
+[[image:TummePic05]]
+
+This image shows how well tumme works with its buffers in different frames.
+
+=== Gallery generation ===
+
+As of version 0.4.5, tumme has a command to generate a simple gallery from your tagged images:
+
+[[image:TummePic02]]
+
+The picture above shows the index page, with links to each tag-page. Navigating to one of the tags, you see a page like this:
+
+[[image:TummePic03]]
+
+Some images has un-linked text under it. That is the image's comment (no one in the screenshot above has one though...). Under the image is also displayed additional tags that this file might have, and you can jump to those tag-pages from here:
+
+[[image:TummePic04]]
+
+That's it. Simple. Works. I guess that it doesn't get more sexy :), at least not as long as it is a static gallery. I plan to add an option to include a CSS-file so that you can customize the look of it. I don't know much about CSS and stuff, but I guess I need to add the class-attribute to each page element. Suggestions on this subject are welcome.
+
+Btw, if my server is up (you can see the URL in the screenshots, I won't place a link to it in pure text because I'm not sure I want much traffic in there), you can test it live.
+
+----
+CategoryDirectories
+MultimediaModes

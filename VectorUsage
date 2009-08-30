@@ -1,0 +1,81 @@
+Usually you should not be trying to modify vectors themselves, only the elements stored in the vector, because vectors are designed for ''random access''.  They are fast.  They are not designed to be searched or sorted.  They are also immutable, so you cannot change them (only the elements).  If you want change them (change their size), you must create a copy instead.
+
+= Sorting/Randomizing/Shuffling =
+
+    (defun shuffle-vector (vector)
+      "Randomly permute the elements of VECTOR (all permutations equally likely)."
+      (let ((i 0)
+    	j
+    	temp
+    	(len (length vector)))
+        (while (< i len)
+          (setq j (+ i (random (- len i))))
+          (setq temp (aref vector i))
+          (aset vector i (aref vector j))
+          (aset vector j temp)
+          (setq i (1+ i))))
+      vector)
+
+Example output:
+
+    [1 5 3 2 4]
+    [3 2 5 1 4]
+    [3 4 1 5 2]
+
+= Searching Vectors for Values =
+
+You can search lists using ''member'' or ''memq'', and you can search alists using ''assoc'' and ''assq''.
+
+Here is how to search a vector for a value:
+
+    (position 'c [a b c])
+    => 2
+
+The ''position'' is a function from the CL package.
+
+Here is how to search a vector ''v'' for a value ''b'' using the loop macro.
+This may be more useful if you need to do things with the elements as you
+search.
+
+    (let ((v [4 5 6 7 8])
+          (b 7))
+      (loop for i from 0 for a across v if (equal a b) return i))
+     => 3
+
+The distinction may also be important if you're trying to avoid loading the CL package (it is always loaded in XEmacs):
+Functions require loading the CL package,
+macros only require loading the CL package at compile-time:
+
+    (eval-when-compile (require 'cl))
+
+= Library Ring+ =
+
+DrewAdams has written library Lisp:ring+.el, which extends standard library <code>ring.el</code> to provides feature for using vectors as cyclic structures ("rings"). See RingPlus. 
+
+This library includes function `ring-convert-sequence-to-ring', which converts any sequence to a ring, which is a vector. A '''sequence''' is any of these:
+
+* list
+* array, which is any of these:
+** string
+** vector
+** char-table (like a vector, but indexed by character codes)
+** bool-vector (like a vector, but with only `t' and `nil' entries)
+
+= A Gotcha! =
+
+Don't try to treat a vector obarray as a normal vector!  The EmacsLisp manual tells you this clearly, but I nevertheless tried to do this (programming idiom pointed out in the discussion of vectors in the same manual):
+
+  (setq my-list (append minibuffer-completion-table nil)) ; Convert vector to list.
+
+'''''Wrong!''''' And it took me while to figure the problem out...
+
+When dealing with obarrays, use `mapatoms' -- always. -- DrewAdams
+
+= See Also =
+
+* LevenshteinDistance - Uses vectors for determining the edit distance between two strings.
+
+For more info on sequences, see the Elisp manual, Info node '''Sequences Arrays Vectors'''.
+
+----
+CategoryCode

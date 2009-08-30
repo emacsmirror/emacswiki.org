@@ -1,0 +1,34 @@
+= How Mac OS X support works in Emacsen =
+
+This page is about internals.  A list of implementations is at EmacsForMacOS.
+
+
+== A short glossary ==
+
+Mac OS X is buzzword-intensive.  Here's a short glossary:
+
+* *Darwin*:  /Darwin/ is to Mac OS X as Linux is to GNU/Linux.  It's the kernel.  Unlike Linux, it uses a microkernel architecture based on CMU's Mach (same as the GNU HURD).  Userland is mostly from FreeBSD.
+
+* *Quartz*:  /Quartz/ is the display engine.  Its role falls somewhere between, say, the XRender extension, and the whole X server.  And of course, like Microsoft Windows, it can't display across the network by itself.
+
+* *Aqua*:  /Aqua/ is the standard for look and feel, sort of like Motif, except that AFAIK there is no implementation of Aqua called "Aqua".  (IBM's Presentation Manager for OS/2 and Microsoft Windows are also (more or less) implementations of Motif-as-human-interface-standard.)
+
+* *Carbon*:  /Carbon/ is the C toolkit implementing high-level GUI and OS functions and providing bindings to the widget set implementing the Aqua look-and-feel.  (IIRC, the widget set itself is implemented in Cocoa.)  It is the toolkit of choice for porting Mac OS N, N < X, and Unix applications to Aqua.  It's a direct descendent of the Macintosh Toolbox.
+
+* *Cocoa*:  /Cocoa/ is the Objective-C toolkit corresponding to Carbon.  Descended from the toolkit for !NeXT, it is the toolkit of choice for writing new applications conforming to the Aqua standard.  It provides a fairly modern object-oriented development environment.
+
+
+== Basics: the event loop ==
+
+The event loop collects events from the OS's GUI subsystem, processes some immediately (eg, those having to do with redisplay when a window is exposed by motion of an obscuring window), and queues of the rest for execution by LISP.
+
+Both XEmacs and GNU Emacs have deep roots in the X window system, and this has had a strong influence on design of the Emacs event loops.  The typical Carbon loop is more similar to X / XT than Cocoa's is, therefore the integration code for Carbon (and W32 for that matter) is more similar to that in the X GUI.  Cocoa's loop integration, though different, is fairly straightforward, but some issues with multiplexing between GUI and TTY interaction and external processes remain to be ironed out.
+
+== Basics: the drawing strategy ==
+
+Emacs (re)display implements a cascade structure in which high-level text display update operations are translated down to piecewise updates in whichever "terminal" (text-based, X windows, etc.) is being used.  In GNU Emacs 21, this system was rewritten by Gerd Moellmann to enhance functionality while increasing the granularity of the operations implemented by each terminal.  The result is that the typical port ends up implementing very low-level functions such as "render these characters at these x-y positions", and "blank this rectangle with background color Z".  This approach, taken by the AndrewChoi / YamamotoMitsuharu Carbon port, makes implementation of new GUIs (somewhat) straightforward and provides interface uniformity across platforms, but can lead to complex, unnatural code, and inability to utilize the strengths of the underlying API.
+
+At least three alternatives have been tried.  In the first, the orignal port of the X-based
+[http://ftp.funet.fi/pub/NeXT/Editors/sources/ GNU Emacs for NeXTstep], the GUI module acted as a TTY device, connecting over a socket and interpreting the text-based formatting commands.  This approach was unable to implement the full richness of the X interface, and the port was abandoned in favor of a more standard approach.  Later on, PittsJarvis, working with [http://homepage.mac.com/pjarvis/xemacs-21.5.9.html XEmacs 21.5.10 for MacOS X], intercepted calls directly from LISP (site of primary control in emacs), avoiding the cascade structure entirely.  This resulted in a solid implementation, but work has unfortunately been suspended following the author passing away in 2004.  Ovidiu Predescu subsequently tried a related approach using [http://www.webweavertech.com/ovidiu/weblog/archives/cat_emacs.html XEmacs for MacOS X], in which all functions outside actual management of the text buffers themselves are handled by the object-oriented Cocoa text system.  This sounded promising, but has not progressed, perhaps because the buffer and GUI management code in (X)Emacs is insufficiently separated.
+
+Finally, the successor to the original !NeXTstep port, currently active in a [http://emacs-app.sf.net Cocoa incarnation], takes an intermediate approach in which stateful object components are used to implement the procedurally-oriented redisplay calls.  This leads to a bit of friction at the boundary, but succeeds to the extent that the code in the Cocoa port is around half the size of the standard ports.

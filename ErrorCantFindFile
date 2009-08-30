@@ -1,0 +1,65 @@
+If you use XEmacs and Auctex under Windows you may run into the problem that 
+firing the command C-c C-c (means press CTRL and c at the same time two times) 
+leads to an error:
+
+        No latex file processing cause the file could not be found ( this i a 
+        missleading error message) 
+
+Here the error message (invoked by C-c C-l)
+
+	Running `LaTeX' on `localText' with ``latex --src-specials 	
+	'\nonstopmode\input{test.tex}'''
+	This is TeX, Version 3.14159 (MiKTeX 2.2)
+	! I can't find file `'.tex'.
+	<to be read again>
+	                   \nonstopmode
+	<*> '\nonstopmode
+	                 \input{localText.tex}'
+	Please type another input file name:
+
+I found a message at groups.google.com that describes the same problem i used to have. The answers there is:
+
+	You are using a shell that does not understand single quotes, 	
+	but your command running LaTeX, as configured into
+	TeX-command-list, uses single instead of double quotes.
+
+The advice given there is:
+	In case I have not been clear enough: try
+	M-x customize-variable RET TeX-command-list RET
+	and do the obvious thing.
+
+But what is the obvious thing? The following is the result of the comand:
+
+	M-x customize-variable RET TeX-command-list RET
+	( M = Meta-Key usually ALT on your Keyboard)
+	( just press ALT and x at the same time  )
+
+Tex Command List: *
+[INS] [DEL] Name: TeX
+       Command: tex \nonstopmode\input %t
+       How: [Value Menu] TeX-run-TeX
+       Prompt: [Toggle]  off (nil)
+       End
+[INS] [DEL] Name: LaTeX
+       Command: %l '\nonstopmode\input{%t}'
+       How: [Value Menu] TeX-run-LaTeX
+       Prompt: [Toggle]  off (nil)
+       End
+
+Just edit 
+       Command: %l '\nonstopmode\input{%t}' 
+to 
+       Command: %l \nonstopmode\input{%t}
+
+and you should be fine. You are probably still running into problems with C-c C-c Acrobat,
+but as soon i figure that out i will post it here. If you know a solution please post it here.
+HTH
+
+Funnily enough I had the same problem but with the opposite solution. That is, the same error message, but when I went into the customize buffer there were no single quotes in the command. So I added them, and the error message went away. - LouisePryor
+
+Well, you could just try not to use a stone-age version of AUCTeX.  XEmacs is notoriously bad at providing up-to-date versions
+of third-party software, and AUCTeX is not any different here.
+
+The problems have been fixed literally years ago, and AUCTeX comes with specific setup instructions and configurations for Windows.
+----
+Back to AUCTeX

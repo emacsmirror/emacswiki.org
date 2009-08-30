@@ -1,0 +1,1210 @@
+This page describes package Lisp:ebnf2ps.tar.gz, by ViniciusJoseLatorre.
+
+''See ##README## file.''
+
+: .:: ''v4.4'' :: ''part of GNU Emacs'' ::.
+: .:: ''depends on PsPrintPackage v5.2.3 (or later)'' ::.
+
+
+== About ebnf2ps ==
+
+This package translates an EBNF to a syntactic chart on <nowiki>PostScript</nowiki>.
+
+To use ##ebnf2ps##, insert in your ~/.emacs:
+
+       (require 'ebnf2ps)
+
+##ebnf2ps## uses PsPrintPackage (version 5.2.3 or later),
+so see ##ps-print## to
+know how to set options like landscape printing, page headings, margins, etc.
+
+; NOTE : ##ps-print## zebra stripes and line number options don't have effect on
+##ebnf2ps##, they behave as it's turned off.
+
+For good performance, be sure to byte-compile ##ebnf2ps.el##, e.g.
+
+   M-x byte-compile-file <give the path to ebnf2ps.el when prompted>
+
+This will generate ebnf2ps.elc, which will be loaded instead of ##ebnf2ps.el##.
+
+##ebnf2ps## was tested with GNU Emacs 20.4.1.
+
+
+== Using ebnf2ps ==
+
+##ebnf2ps## provides the following commands for generating <nowiki>PostScript</nowiki> syntactic
+chart images of Emacs buffers:
+
+   ebnf-print-directory
+   ebnf-print-file
+   ebnf-print-buffer
+   ebnf-print-region
+   ebnf-spool-directory
+   ebnf-spool-file
+   ebnf-spool-buffer
+   ebnf-spool-region
+   ebnf-eps-directory
+   ebnf-eps-file
+   ebnf-eps-buffer
+   ebnf-eps-region
+
+These commands all perform essentially the same function: they generate
+<nowiki>PostScript</nowiki> syntactic chart images suitable for printing on a <nowiki>PostScript</nowiki>
+printer or displaying with GhostScript.  These commands are collectively
+referred to as "`ebnf-' commands".
+
+The word ##print##, ##spool## and ##eps## in
+the command name determines when the
+<nowiki>PostScript</nowiki> image is sent to the printer (or file):
+
+; ##print## : The <nowiki>PostScript</nowiki> image is immediately sent to the printer;
+
+; ##spool## : The <nowiki>PostScript</nowiki> image is saved temporarily in an Emacs buffer.
+: Many images may be spooled locally before printing them.  To
+send the spooled images to the printer, use the command
+`ebnf-despool'.
+
+; ##eps## : The <nowiki>PostScript</nowiki> image is immediately sent to a EPS file.
+
+The spooling mechanism is the same as used by ##ps-print## and was designed for
+printing lots of small files to save paper that would otherwise be wasted on
+banner pages, and to make it easier to find your output at the printer (it's
+easier to pick up one 50-page printout than to find 50 single-page
+printouts).  As ##ebnf2ps## and ##ps-print## use the same Emacs buffer to spool
+images, you can intermix the spooling of ##ebnf2ps## and ##ps-print## images.
+
+##ebnf2ps## use the same hook of ##ps-print## in the
+`kill-emacs-hook' so that you
+won't accidentally quit from Emacs while you have unprinted <nowiki>PostScript</nowiki>
+waiting in the spool buffer.  If you do attempt to exit with spooled
+<nowiki>PostScript</nowiki>, you'll be asked if you want to print it, and if you decline,
+you'll be asked to confirm the exit; this is modeled on the confirmation
+that Emacs uses for modified buffers.
+
+The word ##directory##, ##file##, ##buffer## or ##region## in the command name
+determines how much of the buffer is printed:
+
+; ##directory## : Read files in the directory and print them.
+
+; ##file## : Read file and print it.
+
+; ##buffer## : Print the entire buffer.
+
+; ##region## : Print just the current region.
+
+Two `ebnf-' command examples:
+
+; ##ebnf-print-buffer## : translate and print the entire buffer, and send it
+immediately to the printer.
+
+; ##ebnf-spool-region## : translate and print just the current region, and
+spool the image in Emacs to send to the printer later.
+
+Note that `ebnf-eps-directory', `ebnf-eps-file', `ebnf-eps-buffer' and
+`ebnf-eps-region' never spool the EPS image, so they don't use the ##ps-print##
+spooling mechanism.  See section "Actions in Comments" for an explanation
+about EPS file generation.
+
+
+== Invoking Ebnf2ps ==
+
+To translate and print your buffer, type
+
+   M-x ebnf-print-buffer RET
+
+or substitute one of the other four `ebnf-' commands.  The command will
+generate the <nowiki>PostScript</nowiki> image and print or spool it as specified.  By giving
+the command a prefix argument
+
+   C-u M-x ebnf-print-buffer RET
+
+it will save the <nowiki>PostScript</nowiki> image to a file instead of sending it to the
+printer; you will be prompted for the name of the file to save the image to.
+The prefix argument is ignored by the commands that spool their images, but
+you may save the spooled images to a file by giving a prefix argument to
+`ebnf-despool':
+
+   C-u M-x ebnf-despool RET
+
+When invoked this way, `ebnf-despool' will prompt you for the name of the
+file to save to.
+
+The prefix argument is also ignored by `ebnf-eps-buffer' and
+`ebnf-eps-region'.
+
+Any of the `ebnf-' commands can be bound to keys.  Here are some examples:
+
+   (global-set-key 'f22 'ebnf-print-buffer) ;f22 is prsc
+   (global-set-key '(shift f22) 'ebnf-print-region)
+   (global-set-key '(control f22) 'ebnf-despool)
+
+
+== Invoking Ebnf2ps in Batch ==
+
+It's possible also to run ##ebnf2ps## in batch, this is useful when, for
+example, you have a directory with a lot of files containing the EBNF to be
+translated to <nowiki>PostScript</nowiki>.
+
+To run ##ebnf2ps## in batch type, for example:
+
+   emacs -batch -l setup-ebnf2ps.el -f ebnf-eps-directory
+
+Where ##setup-ebnf2ps.el## should be a file containing:
+
+   ;; set load-path if ebnf2ps isn't installed in your Emacs environment
+   (setq load-path (append (list "/dir/of/ebnf2ps") load-path))
+   (require 'ebnf2ps)
+   ;; insert here your ebnf2ps settings
+   (setq ebnf-terminal-shape 'bevel)
+   ;; etc.
+
+
+== EBNF Syntax ==
+
+BNF (Backus Naur Form) notation is defined like languages, and like languages
+there are rules about name formation and syntax.  In this section it's defined
+a BNF syntax that it's called simply EBNF (Extended BNF).  ##ebnf2ps##
+package also deal with other BNF notation.  Please, see the variable
+`ebnf-syntax' documentation below in this section.
+
+The current EBNF that ##ebnf2ps## accepts has the following
+constructions:
+
+; ##;## : comment (until end of line)
+; ##A## : non-terminal
+; ##"C"## : terminal
+; ##?C?## : special
+; ##$A## : default non-terminal (see text below)
+; ##$"C"## : default terminal (see text below)
+; ##$?C?## : default special (see text below)
+; ##A = B.## : production (A is the header and B the body)
+; ##C D## : sequence (C occurs before D)
+; ##C | D## : alternative (C or D occurs)
+; ##A - B## : exception (A excluding B, B without any non-terminal)
+; ##n * A## : repetition (A repeats at least n (integer) times)
+; ##n * n A## : repetition (A repeats exactly n (integer) times)
+; ##n * m A## : repetition (A repeats at least n (integer) and at most m (integer) times)
+; ##(C)## : group (expression C is grouped together)
+; ##[C]## : optional (C may or not occurs)
+; ##C+## : one or more occurrences of C
+; ##{C}+## : one or more occurrences of C
+; ##{C}*## : zero or more occurrences of C
+; ##{C}## : zero or more occurrences of C
+; ##C / D## : equivalent to: C {D C}*
+; ##{C || D}+## : equivalent to: C {D C}*
+; ##{C || D}*## : equivalent to: [C {D C}*]
+; ##{C || D}## : equivalent to: [C {D C}*]
+
+The EBNF syntax written using the notation above is:
+
+   EBNF = {production}+.
+
+   production = non_terminal "=" body ".".   ;; production
+
+   body = {sequence || "|"}*.                ;; alternative
+
+   sequence = {exception}*.                  ;; sequence
+
+   exception = repeat [ "-" repeat].         ;; exception
+
+   repeat = [ integer "*" [ integer ]] term. ;; repetition
+
+   term = factor
+        | [factor] "+"                       ;; one-or-more
+        | [factor] "/" [factor]              ;; one-or-more
+        .
+
+   factor = [ "$" ] "\"" terminal "\""       ;; terminal
+          | [ "$" ] non_terminal             ;; non-terminal
+          | [ "$" ] "?" special "?"          ;; special
+          | "(" body ")"                     ;; group
+          | "[" body "]"                     ;; zero-or-one
+          | "{" body [ "||" body ] "}+"      ;; one-or-more
+          | "{" body [ "||" body ] "}*"      ;; zero-or-more
+          | "{" body [ "||" body ] "}"       ;; zero-or-more
+          .
+
+   non_terminal = "[!#%&'*-,0-:<>@-Z\\\\^-z~\\240-\\377]+".
+   ;; that is, a valid non_terminal accepts decimal digits, letters (upper
+   ;; and lower), 8-bit accentuated characters,
+   ;; "!", "#", "%", "&", "'", "*", "+", ",", ":",
+   ;; "<", ">", "@", "\", "^", "_", "`" and "~".
+
+   terminal = "\\([^\"\\]\\|\\\\[ -~\\240-\\377]\\)+".
+   ;; that is, a valid terminal accepts any printable character (including
+   ;; 8-bit accentuated characters) except `"', as `"' is used to delimit a
+   ;; terminal.  Also, accepts escaped characters, that is, a character
+   ;; pair starting with `\' followed by a printable character, for
+   ;; example: \", \\. 
+
+   special = "[^?\\000-\\010\\012-\\037\\177-\\237]*".
+   ;; that is, a valid special accepts any printable character (including
+   ;; 8-bit accentuated characters) and tabs except `?', as `?' is used to
+   ;; delimit a special.
+
+   integer = "[0-9]+".
+   ;; that is, an integer is a sequence of one or more decimal digits.
+
+   comment = ";" "[^\\n\\000-\\010\\016-\\037\\177-\\237]*" "\\n".
+   ;; that is, a comment starts with the character `;' and terminates at end
+   ;; of line.  Also, it only accepts printable characters (including 8-bit
+   ;; accentuated characters) and tabs.
+
+Try to use the above EBNF to test ##ebnf2ps##.
+
+The `default' terminal, non-terminal and special is a way to indicate a default
+path in a production.  For example, the production:
+
+   X = [ $A ( B | $C ) | D ].
+
+Indicates that the default meaning for ##"X"## is ##"A C"##
+if ##"X"## is empty.
+
+The terminal name is controlled by `ebnf-terminal-regexp' and
+`ebnf-case-fold-search', so it's possible to match other kind of terminal name
+besides that enclosed by ##`"'##.
+
+Let's see an example:
+
+   (setq ebnf-terminal-regexp "[A-Z][_A-Z]*") ; upper case name
+   (setq ebnf-case-fold-search nil)           ; exact matching
+
+If you have the production:
+
+   Logical = "(" Expression ( OR | AND | "XOR" ) Expression ")".
+
+The names are classified as:
+
+   Logical  Expression			non-terminal
+   "("  OR  AND  "XOR"  ")"		terminal
+
+The line comment is controlled by `ebnf-lex-comment-char'.  The default
+value is ##?\;## (character ##`;'##).
+
+The end of production is controlled by `ebnf-lex-eop-char'.  The default
+value is ##?.## (character ##`.'##).
+
+The variable `ebnf-syntax' specifies which syntax to recognize:
+
+: `ebnf'
+:: ##ebnf2ps## recognizes the syntax described above.
+:: The following variables *ONLY* have effect with this
+setting:
+`ebnf-terminal-regexp', `ebnf-case-fold-search',
+`ebnf-lex-comment-char' and `ebnf-lex-eop-char'.
+
+: `abnf'
+:: ##ebnf2ps## recognizes the syntax described in the URL:
+http://www.ietf.org/rfc/rfc2234.txt
+("Augmented BNF for Syntax Specifications: ABNF").
+
+: `iso-ebnf'
+:: ##ebnf2ps## recognizes the syntax described in the URL:
+http://www.cl.cam.ac.uk/~mgk25/iso-ebnf.html
+("International Standard of the ISO EBNF Notation").
+:: The following variables *ONLY* have effect with this
+setting:
+`ebnf-iso-alternative-p' and `ebnf-iso-normalize-p'.
+
+: `yacc'
+:: ##ebnf2ps## recognizes the Yacc/Bison syntax.
+:: The following variable *ONLY* has effect with this
+setting:
+`ebnf-yac-ignore-error-recovery'.
+
+: `ebnfx'
+:: ##ebnf2ps## recognizes the syntax described in the URL:
+http://www.w3.org/TR/2004/REC-xml-20040204/#sec-notation
+("Extensible Markup Language (XML) 1.0 (Third Edition)").
+
+: `dtd'
+:: ##ebnf2ps## recognizes the syntax described in the URL:
+http://www.w3.org/TR/2004/REC-xml-20040204/
+("Extensible Markup Language (XML) 1.0 (Third Edition)").
+
+Any other value is treated as `ebnf'.
+
+The default value is `ebnf'.
+
+
+== Optimizations ==
+
+The following EBNF optimizations are done:
+
+   [ { A }* ]          ==> { A }*
+   [ { A }+ ]          ==> { A }*
+   [ A ] +             ==> { A }*
+   { A }* +            ==> { A }*
+   { A }+ +            ==> { A }+
+   { A }-              ==> { A }+
+   [ A ]-              ==> A
+   ( A | EMPTY )-      ==> A
+   ( A | B | EMPTY )-  ==> A | B
+   [ A | B ]           ==> A | B | EMPTY
+   n * EMPTY           ==> EMPTY
+   EMPTY +             ==> EMPTY
+   EMPTY / EMPTY       ==> EMPTY
+   EMPTY - A           ==> EMPTY
+
+The following optimizations are done when `ebnf-optimize' is
+non-##nil##:
+
+left recursion:
+
+   1.  A = B | A C.             ==>   A = B {C}*.
+   2.  A = B | A B.             ==>   A = {B}+.
+   3.  A =   | A B.             ==>   A = {B}*.
+   4.  A = B | A C B.           ==>   A = {B || C}+.
+   5.  A = B | D | A C | A E.   ==>   A = ( B | D ) { C | E }*.
+
+optional:
+
+   6.  A = B | .                ==>   A = [B].
+   7.  A =   | B .              ==>   A = [B].
+
+factorization:
+
+   8.  A = B C | B D.           ==>   A = B (C | D).
+   9.  A = C B | D B.           ==>   A = (C | D) B.
+   10. A = B C E | B D E.       ==>   A = B (C | D) E.
+
+The above optimizations are specially useful when `ebnf-syntax' is `yacc'.
+
+
+== Form Feed ==
+
+You may use form feed (##^L \014##) to force a production to start on
+a new page, for example:
+
+[new]
+Example a)
+<pre>
+   A = B | C.
+   ^L
+   X = Y | Z.
+</pre>
+
+[new]
+Example b)
+<pre>
+   A = B ^L | C.
+   X = Y | Z.
+</pre>
+
+[new]
+Example c)
+<pre>
+   A = B ^L^L^L | C.^L
+   ^L
+   X = Y | Z.
+</pre>
+
+[new]
+In all examples above, only the production ##X## will start on a new
+page.
+
+
+== Actions in Comments ==
+
+##ebnf2ps## accepts the following actions in comments:
+
+: ##;^##
+:: same as form feed.  See section "Form Feed" above.
+
+: ##;>##
+:: the next production starts in the same line as the current one.
+:: It is useful when `ebnf-horizontal-orientation' is ##nil##.
+
+: ##;<##
+:: the next production starts in the next line.
+:: It is useful when `ebnf-horizontal-orientation' is non-##nil##.
+
+: ##;[EPS##
+:: open a new EPS file.  The EPS file name has the form:
+::: ##<PREFIX><NAME>.eps##
+:: where ##<PREFIX>## is given by variable `ebnf-eps-prefix' and
+##<NAME>## is the string given by ##;[## action comment, this
+string is mapped to form a valid file name (see documentation for
+`ebnf-eps-buffer' or `ebnf-eps-region').
+:: It has effect only during `ebnf-eps-buffer' or `ebnf-eps-region' execution.
+:: It's an error to try to open an already opened EPS file.
+
+: ##;]EPS##
+:: close an opened EPS file.
+:: It has effect only during `ebnf-eps-buffer' or `ebnf-eps-region' execution.
+:: It's an error to try to close a not opened EPS file.
+
+: ##;Hheader##
+:: generate a header in current EPS file.
+:: The header string can have the following formats:
+::: ##%%## -> prints a ##%## character.
+::: ##%H## -> prints the `ebnf-eps-header' (which see) value.
+::: ##%F## -> prints the `ebnf-eps-footer' (which see) value.
+:: Any other format is ignored, that is, if, for example, it's used
+##%s## then ##%s## characters are stripped out from the
+header.  If header is an empty string, no header is generated until a non-empty
+header is specified or `ebnf-eps-header' has a non-empty string value.
+
+: ##;Ffooter##
+:: generate a footer in current EPS file.  Similar to ##;H## action
+comment.
+
+So if you have:
+
+   (setq ebnf-horizontal-orientation nil)
+
+   A = t.
+   C = x.
+   ;> C and B are drawn in the same line
+   B = y.
+   W = v.
+
+The graphical result is:
+
+   +---+
+   | A |
+   +---+
+
+   +---------+   +-----+
+   |         |   |     |
+   |    C    |   |     |
+   |         |   |  B  |
+   +---------+   |     |
+                 |     |
+                 +-----+
+
+   +-----------+
+   |     W     |
+   +-----------+
+
+Note that if ascending production sort is used, the productions ##A##
+and ##B## will be drawn in the same line instead of ##C## and
+##B##.
+
+If consecutive actions occur, only the last one takes effect, so if you
+have:
+
+   A = X.
+   ;<
+   ^L
+   ;>
+   B = Y.
+
+Only the ##;>## action will take effect, that is, ##A## and
+##B## will be drawn in the same line.
+
+In ISO EBNF the above actions are specified as ##(*^*)##,
+##(*>*)##, ##(*<*)##, ##(*[EPS*)##
+and ##(*]EPS*)##.  The first example above should be written:
+
+   A = t;
+   C = x;
+   (*> C and B are drawn in the same line *)
+   B = y;
+   W = v;
+
+For an example of EPS action when executing `ebnf-eps-buffer' or
+`ebnf-eps-region':
+
+   Z = B0.
+   ;[CC
+   ;[AA
+   A = B1.
+   ;[BB
+   C = B2.
+   ;]AA
+   B = B3.
+   ;]BB
+   ;]CC
+   D = B4.
+   E = B5.
+   ;[CC
+   F = B6.
+   ;]CC
+   G = B7.
+
+The following table summarizes the results:
+
+   EPS FILE NAME    NO SORT    ASCENDING SORT    DESCENDING SORT
+   ebnf--AA.eps     A C        A C               C A
+   ebnf--BB.eps     C B        B C               C B
+   ebnf--CC.eps     A C B F    A B C F           F C B A
+   ebnf--D.eps      D          D                 D
+   ebnf--E.eps      E          E                 E
+   ebnf--G.eps      G          G                 G
+   ebnf--Z.eps      Z          Z                 Z
+
+As you can see if EPS actions is not used, each single production is
+generated per EPS file.  To avoid overriding EPS files, use names in
+##;[## action that
+it's not an existing production name.
+
+In the following case:
+
+   A = B0.
+   ;[AA
+   A = B1.
+   ;[BB
+   A = B2.
+
+The production ##A## is generated in both files
+##ebnf--AA.eps## and ##ebnf--BB.eps##.
+
+
+== Log Messages ==
+
+The buffer ##*Ebnf2ps Log*## is where the ##ebnf2ps## log
+messages are inserted.  These messages are intended to help debugging
+##ebnf2ps##.
+
+The log messages are enabled by `ebnf-log' option (which see).  The default
+value is ##nil##, that is, no log messages are generated.
+
+
+== Utilities ==
+
+Some tools are provided to help you.
+
+; `ebnf-setup' : returns the current setup.
+
+; `ebnf-syntax-directory' : does a syntactic analysis of your EBNF files in the
+given directory.
+
+; `ebnf-syntax-file' : does a syntactic analysis of your EBNF in the given
+file.
+
+; `ebnf-syntax-buffer' : does a syntactic analysis of your EBNF in the current
+buffer.
+
+; `ebnf-syntax-region' : does a syntactic analysis of your EBNF in the current
+region.
+
+; `ebnf-customize' : activates a customization buffer for ##ebnf2ps## options.
+
+`ebnf-syntax-directory', `ebnf-syntax-file', `ebnf-syntax-buffer',
+`ebnf-syntax-region' and `ebnf-customize' can be bound to keys in the same
+way as `ebnf-' commands.
+
+
+== Hooks ==
+
+##ebnf2ps## has the following hook variables:
+
+; `ebnf-hook' : It is evaluated once before any ##ebnf2ps## process.
+
+; `ebnf-production-hook' : It is evaluated on each beginning of production.
+
+; `ebnf-page-hook' : It is evaluated on each beginning of page.
+
+
+== Options ==
+
+Below it's shown a brief description of ##ebnf2ps## options, please, see the
+options declaration in the code for a long documentation.
+
+; `ebnf-horizontal-orientation' : Non-##nil## means productions are drawn horizontally.
+
+; `ebnf-horizontal-max-height' : Non-##nil## means to use maximum production height in horizontal orientation.
+
+; `ebnf-production-horizontal-space' : Specify horizontal space in points between productions.
+
+; `ebnf-production-vertical-space' : Specify vertical space in points between productions.
+
+; `ebnf-justify-sequence' : Specify justification of terms in a sequence inside alternatives.
+
+; `ebnf-terminal-regexp' : Specify how it's a terminal name.
+
+; `ebnf-case-fold-search' : Non-##nil## means ignore case on matching.
+
+; `ebnf-terminal-font' : Specify terminal font.
+
+; `ebnf-terminal-shape' : Specify terminal box shape.
+
+; `ebnf-terminal-shadow' : Non-##nil## means terminal box will have a shadow.
+
+; `ebnf-terminal-border-width' : Specify border width for terminal box.
+
+; `ebnf-terminal-border-color' : Specify border color for terminal box.
+
+; `ebnf-production-name-p' : Non-##nil## means production name will be printed.
+
+; `ebnf-sort-production' : Specify how productions are sorted.
+
+; `ebnf-production-font' : Specify production font.
+
+; `ebnf-non-terminal-font' : Specify non-terminal font.
+
+; `ebnf-non-terminal-shape' : Specify non-terminal box shape.
+
+; `ebnf-non-terminal-shadow' : Non-##nil## means non-terminal box will have a shadow.
+
+; `ebnf-non-terminal-border-width' : Specify border width for non-terminal box.
+
+; `ebnf-non-terminal-border-color' : Specify border color for non-terminal box.
+
+; `ebnf-special-show-delimiter' : Non-##nil## means special delimiter (character `?') is shown.
+
+; `ebnf-special-font' : Specify special font.
+
+; `ebnf-special-shape' : Specify special box shape.
+
+; `ebnf-special-shadow' : Non-##nil## means special box will have a shadow.
+
+; `ebnf-special-border-width' : Specify border width for special box.
+
+; `ebnf-special-border-color' : Specify border color for special box.
+
+; `ebnf-except-font' : Specify except font.
+
+; `ebnf-except-shape' : Specify except box shape.
+
+; `ebnf-except-shadow' : Non-##nil## means except box will have a shadow.
+
+; `ebnf-except-border-width' : Specify border width for except box.
+
+; `ebnf-except-border-color' : Specify border color for except box.
+
+; `ebnf-repeat-font' : Specify repeat font.
+
+; `ebnf-repeat-shape' : Specify repeat box shape.
+
+; `ebnf-repeat-shadow' : Non-##nil## means repeat box will have a shadow.
+
+; `ebnf-repeat-border-width' : Specify border width for repeat box.
+
+; `ebnf-repeat-border-color' : Specify border color for repeat box.
+
+; `ebnf-entry-percentage' : Specify entry height on alternatives.
+
+; `ebnf-arrow-shape' : Specify the arrow shape.
+
+; `ebnf-chart-shape' : Specify chart flow shape.
+
+; `ebnf-color-p' : Non-##nil## means use color.
+
+; `ebnf-line-width' : Specify flow line width.
+
+; `ebnf-line-color' : Specify flow line color.
+
+; `ebnf-arrow-extra-width' : Specify extra width for arrow shape drawing.
+
+; `ebnf-arrow-scale' : Specify the arrow scale.
+
+; `ebnf-user-arrow' : Specify a sexp for user arrow shape (a <nowiki>PostScript</nowiki> code).
+
+; `ebnf-debug-ps' : Non-##nil## means to generate <nowiki>PostScript</nowiki> debug procedures.
+
+; `ebnf-lex-comment-char' : Specify the line comment character.
+
+; `ebnf-lex-eop-char' : Specify the end of production character.
+
+; `ebnf-syntax' : Specify syntax to be recognized.
+
+; `ebnf-iso-alternative-p' : Non-##nil## means use alternative ISO EBNF.
+
+; `ebnf-iso-normalize-p' : Non-##nil## means normalize ISO EBNF syntax names.
+
+; `ebnf-default-width' : Specify additional border width over default terminal, non-terminal or special.
+
+; `ebnf-file-suffix-regexp' : Specify file name suffix that contains EBNF.
+
+; `ebnf-eps-prefix' : Specify EPS prefix file name.
+
+; `ebnf-eps-header-font' : Specify EPS header font.
+
+; `ebnf-eps-header' : Specify EPS header.
+
+; `ebnf-eps-footer-font' : Specify EPS footer font.
+
+; `ebnf-eps-footer' : Specify EPS footer.
+
+; `ebnf-use-float-format' : Non-##nil## means use `%f' float format.
+
+; `ebnf-stop-on-error' : Non-##nil## means signal error and stop. ##Nil## means signal error and continue.
+
+; `ebnf-yac-ignore-error-recovery' : Non-##nil## means ignore error recovery.
+
+; `ebnf-ignore-empty-rule' : Non-##nil## means ignore empty rules.
+
+; `ebnf-optimize' : Non-##nil## means optimize syntactic chart of rules.
+
+; `ebnf-log' : Non-##nil## means generate log messages.
+
+To set the above options you may:
+
+
+[new]
+a. insert the code in your ##~/.emacs##, like:
+
+   (setq ebnf-terminal-shape 'bevel)
+
+This way always keep your default settings when you enter a new Emacs session.
+
+[new]
+b. or use ##set-variable## in your Emacs session, like:
+
+   M-x set-variable RET ebnf-terminal-shape RET bevel RET
+
+This way keep your settings only during the current Emacs session.
+
+[new]
+c. or use customization, for example:
+
+# click on MenuBar ##Help## option,
+# then click on ##Customize##,
+# then click on ##Browse Customization Groups##,
+# expand ##PostScript## group,
+# expand ##Ebnf2ps## group
+# and then customize ##ebnf2ps## options.
+
+Through this way, you may choose if the settings are kept or not when you leave out the current Emacs session.
+
+[new]
+d. or see the option value:
+
+   C-h v ebnf-terminal-shape RET
+
+and click the ##customize## hypertext button.
+
+Through this way, you may choose if the settings are kept or not when you leave out the current Emacs session.
+
+[new]
+e. or invoke:
+
+   M-x ebnf-customize RET
+
+and then customize ##ebnf2ps## options.
+
+Through this way, you may choose if the settings are kept or not when you leave out the current Emacs session.
+
+
+== Styles ==
+
+Sometimes you need to change the EBNF style you are using, for example, change
+the shapes and colors.  These changes may force you to set some variables and
+after use, set back the variables to the old values.
+
+To help to handle this situation, ##ebnf2ps## has the following
+commands to handle styles:
+
+; `ebnf-find-style' : Return style definition if ##NAME## is already
+defined; otherwise, return ##nil##.
+
+; `ebnf-insert-style' : Insert a new style ##NAME## with inheritance
+##INHERITS## and values ##VALUES##.
+
+; `ebnf-delete-style' : Delete style ##NAME##.
+
+; `ebnf-merge-style' : Merge values of style ##NAME## with style
+##VALUES##.
+
+; `ebnf-apply-style' : Set ##STYLE## as the current style.
+
+; `ebnf-reset-style' : Reset current style.
+
+; `ebnf-push-style' : Push the current style and set ##STYLE## as the
+current style.
+
+; `ebnf-pop-style' : Pop a style and set it as the current style.
+
+These commands help to put together a lot of variable settings in a group and
+name this group.  So when you wish to apply these settings it's only needed to
+give the name.
+
+There is also a notion of simple inheritance of style: if you declare that
+style ##A## inherits from style ##B##, all settings of
+##B## are applied first and then the settings of ##A## are
+applied.  This is useful when you wish to modify some aspects of an existing
+style, but at same time wish to keep it unmodified.
+
+See documentation for `ebnf-style-database'.
+
+
+== Layout ==
+
+Below it is the layout of minimum area to draw each element, and it's used
+the following terms:
+
+: ##font height##
+:: is given by:
+:: ##(terminal font height + non-terminal font height) / 2##
+
+: ##entry##
+:: is the vertical position used to know where it should
+be drawn the flow line in the current element.
+
+: ##extra##
+:: is given by `ebnf-arrow-extra-width'.
+
+
+[new]
+* ##SPECIAL##, ##TERMINAL## and ##NON-TERMINAL##
+
+<pre>
+          +==============+...................................
+          |              |      } font height / 2  } entry  }
+          |   XXXXXXXX...|.......                  }        }
+      ====+   XXXXXXXX   +====  } text height ......        } height
+      :   |   XXXXXXXX...|...:...                           }
+      :   |   :      :   |   :  } font height / 2           }
+      :   +==============+...:...............................
+      :   :   :      :   :   :
+      :   :   :      :   :   :..........................
+      :   :   :      :   :      } font height          }
+      :   :   :      :   :.......                      }
+      :   :   :      :          } font height / 2      }
+      :   :   :      :...........                      }
+      :   :   :                 } text width           } width
+      :   :   :..................                      }
+      :   :                     } font height / 2      }
+      :   :......................                      }
+      :                         } font height + extra  }
+      :.................................................
+</pre>
+
+
+[new]
+* ##OPTIONAL##
+
+<pre>
+             +==========+.....................................
+             |          |         }        }                 }
+             |          |         } entry  }                 }
+             |          |         }        }                 }
+      ===+===+          +===+===...        } element height  } height
+      :   \  |          |  /   :           }                 }
+      :    + |          | +    :           }                 }
+      :    | +==========+.|.................                 }
+      :    | :          : |    :           } font height     }
+      :    +==============+...................................
+      :      :          :      :
+      :      :          :      :......................
+      :      :          :         } font height * 2  }
+      :      :          :..........                  }
+      :      :                    } element width    } width
+      :      :.....................                  }
+      :                           } font height * 2  }
+      :...............................................
+</pre>
+
+
+[new]
+* ##ALTERNATIVE##
+
+<pre>
+              +===+...................................
+           +==+ A +==+       } A height     }        }
+           |  +===+..|........              } entry  }
+           +         +       } font height  }        }
+          /   +===+...\.......              }        }
+      ===+====+ B +====+===  } B height .....        } height
+      :   \   +===+.../.......                       }
+      :    +         +    :  } font height           }
+      :    |  +===+..|........                       }
+      :    +==+ C +==+    :  } C height              }
+      :     : +===+...................................
+      :     :       :     :
+      :     :       :     :......................
+      :     :       :        } font height * 2  }
+      :     :       :.........                  }
+      :     :                } max width        } width
+      :     :.................                  }
+      :                      } font height * 2  }
+      :..........................................
+</pre>
+
+: NOTES
+:: 1. An empty alternative has zero of height.
+:: 2. The variable `ebnf-entry-percentage' is used to determine the entry point.
+
+
+[new]
+* ##ZERO OR MORE##
+
+<pre>
+              +===========+...............................
+            +=+ separator +=+        } separator height  }
+           /  +===========+..\........                   }
+          +                   +      }                   }
+          |                   |      } font height       }
+          +                   +      }                   }
+           \  +===========+../........                   } height = entry
+            +=+ element   +=+        } element height    }
+           /: +===========+..\........                   }
+          + :               : +      }                   }
+          + :               : +      } font height       }
+         /  :               :  \     }                   }
+      ==+=======================+==.......................
+      :     :               :     :
+      :     :               :     :.......................
+      :     :               :        } font height * 2   }
+      :     :               :.........                   }
+      :     :                        } max width         } width
+      :     :.........................                   }
+      :                              } font height * 2   }
+      :...................................................
+</pre>
+
+
+[new]
+* ##ONE OR MORE##
+
+<pre>
+           +===========+......................................
+         +=+ separator +=+      } separator height  }        }
+        /  +===========+..\......                   }        }
+       +                   +    }                   } entry  }
+       |                   |    } font height       }        } height
+       +                   +    }                   }        }
+        \  +===========+../......                   }        }
+      ===+=+ element   +=+===   } element height ....        }
+      :  : +===========+......................................
+      :  :               :  :
+      :  :               :  :........................
+      :  :               :      } font height * 2   }
+      :  :               :.......                   }
+      :  :                      } max width         } width
+      :  :.......................                   }
+      :                         } font height * 2   }
+      :..............................................
+</pre>
+
+
+[new]
+* ##PRODUCTION##
+
+<pre>
+      XXXXXX:......................................
+      XXXXXX:           } production font height  }
+      XXXXXX:............                         }
+                        } font height             }
+          +======+.......                         } height = entry
+          |      |      }                         }
+      ====+      +====  } element height          }
+      :   |      |   :  }                         }
+      :   +======+.................................
+      :   :      :   :
+      :   :      :   :......................
+      :   :      :      } font height * 2  }
+      :   :      :.......                  }
+      :   :             } element width    } width
+      :   :..............                  }
+      :                 } font height * 2  }
+      :.....................................
+</pre>
+
+
+[new]
+* ##REPEAT##
+
+<pre>
+          +================+...................................
+          |                |      } font height / 2  } entry  }
+          |        +===+...|.......                  }        }
+      ====+  N *   | X |   +====  } X height .........        } height
+      :   |  :  :  +===+...|...:...                           }
+      :   |  :  :  :   :   |   :  } font height / 2           }
+      :   +================+...:...............................
+      :   :  :  :  :   :   :   :
+      :   :  :  :  :   :   :   :..........................
+      :   :  :  :  :   :   :      } font height          }
+      :   :  :  :  :   :   :.......                      }
+      :   :  :  :  :   :          } font height / 2      }
+      :   :  :  :  :   :...........                      }
+      :   :  :  :  :              } X width              }
+      :   :  :  :  :...............                      }
+      :   :  :  :                 } font height / 2      } width
+      :   :  :  :..................                      }
+      :   :  :                    } text width           }
+      :   :  :.....................                      }
+      :   :                       } font height / 2      }
+      :   :........................                      }
+      :                           } font height + extra  }
+      :...................................................
+</pre>
+
+
+[new]
+* ##EXCEPT##
+
+<pre>
+          +==================+...................................
+          |                  |      } font height / 2  } entry  }
+          |  +===+   +===+...|.......                  }        }
+      ====+  | X | - | y |   +====  } max height .......        } height
+      :   |  +===+   +===+...|...:...                           }
+      :   |  :   :   :   :   |   :  } font height / 2           }
+      :   +==================+...:...............................
+      :   :  :   :   :   :   :   :
+      :   :  :   :   :   :   :   :..........................
+      :   :  :   :   :   :   :      } font height          }
+      :   :  :   :   :   :   :.......                      }
+      :   :  :   :   :   :          } font height / 2      }
+      :   :  :   :   :   :...........                      }
+      :   :  :   :   :              } Y width              }
+      :   :  :   :   :...............                      }
+      :   :  :   :                  } font height          } width
+      :   :  :   :...................                      }
+      :   :  :                      } X width              }
+      :   :  :.......................                      }
+      :   :                         } font height / 2      }
+      :   :..........................                      }
+      :                             } font height + extra  }
+      :.....................................................
+</pre>
+
+: NOTE
+:: If ##Y## element is empty, it's draw nothing at ##Y## place.
+
+
+== Internal Structures ==
+
+##ebnf2ps## has two passes.  The first pass does a lexical and syntactic analysis
+of current buffer and generates an intermediate representation.  The second
+pass uses the intermediate representation to generate the <nowiki>PostScript</nowiki>
+syntactic chart.
+
+The intermediate representation is a list of vectors, the vector element
+represents a syntactic chart element.  Below is a vector representation for
+each syntactic chart element.
+
+   [production   WIDTH-FUN DIM-FUN ENTRY HEIGHT WIDTH NAME   PRODUCTION ACTION]
+   [alternative  WIDTH-FUN DIM-FUN ENTRY HEIGHT WIDTH LIST]
+   [sequence     WIDTH-FUN DIM-FUN ENTRY HEIGHT WIDTH LIST]
+   [terminal     WIDTH-FUN DIM-FUN ENTRY HEIGHT WIDTH NAME    DEFAULT]
+   [non-terminal WIDTH-FUN DIM-FUN ENTRY HEIGHT WIDTH NAME    DEFAULT]
+   [special      WIDTH-FUN DIM-FUN ENTRY HEIGHT WIDTH NAME    DEFAULT]
+   [empty        WIDTH-FUN DIM-FUN ENTRY HEIGHT WIDTH]
+   [optional     WIDTH-FUN DIM-FUN ENTRY HEIGHT WIDTH ELEMENT]
+   [one-or-more  WIDTH-FUN DIM-FUN ENTRY HEIGHT WIDTH ELEMENT SEPARATOR]
+   [zero-or-more WIDTH-FUN DIM-FUN ENTRY HEIGHT WIDTH ELEMENT SEPARATOR]
+   [repeat       WIDTH-FUN DIM-FUN ENTRY HEIGHT WIDTH TIMES   ELEMENT]
+   [except       WIDTH-FUN DIM-FUN ENTRY HEIGHT WIDTH ELEMENT ELEMENT]
+
+The first vector position is a function symbol used to generate <nowiki>PostScript</nowiki>
+for this element.
+
+##WIDTH-FUN## is a function symbol called to adjust the element width.
+
+##DIM-FUN## is a function symbol called to set the element dimensions.
+
+##ENTRY## is the element entry point.
+
+##HEIGHT## and ##WIDTH## are the element height and width, respectively.
+
+##NAME## is a string that it's the element name.
+
+##DEFAULT## is a boolean that indicates if it's a `default' element.
+
+##PRODUCTION## and ##ELEMENT## are vectors that represents sub-elements of current
+one.
+
+##LIST## is a list of vector that represents the list part for alternatives and
+sequences.
+
+##SEPARATOR## is a vector that represents the sub-element used to separate the
+list elements.
+
+##TIMES## is a string representing the number of times that ##ELEMENT## is repeated
+on a repeat construction.
+
+##ACTION## indicates some action that should be done before production is
+generated.  The current actions are:
+
+: ##nil##
+:: no action.
+
+: ##form-feed##
+:: current production starts on a new page.
+
+: ##newline##
+:: current production starts on next line, this is useful
+when `ebnf-horizontal-orientation' is non-##nil##.
+
+: ##keep-line##
+:: current production continues on the current line, this
+is useful when `ebnf-horizontal-orientation' is ##nil##.
+
+
+== Things To Change ==
+
+* Handle situations when syntactic chart is out of paper.
+* Use other alphabet than ASCII.
+* Optimizations...
+
+
+== Acknowledgements ==
+
+Thanks to EliZaretskii for some doc fixes.
+
+Thanks to DrewAdams for suggestions:
+
+* `ebnf-arrow-extra-width', `ebnf-arrow-scale', `ebnf-production-name-p', `ebnf-stop-on-error',
+`ebnf-file-suffix-regexp'and `ebnf-special-show-delimiter' variables.
+
+* `ebnf-delete-style', `ebnf-eps-file' and `ebnf-eps-directory' commands.
+
+* some docs fix.
+
+Thanks to Matthew K. Junker <_junker_@_alum_._mit_._edu_> for the suggestion to deal
+with some Bison features (##%right##, ##%left## and ##%prec## pragmas).
+His suggestion was extended to deal with ##%nonassoc## pragma too.
+
+Thanks to all who emailed comments.
+
+
+== DTD Generation ==
+
+At moment, only the ##<!ELEMENT## generates a syntactic chart.  The
+##<!ATTLIST##, ##<!NOTATION## and ##<!ENTITY## are
+syntacticly checked but they don't generate a syntactic chart.
+
+Besides the syntax above, ebnf-dtd also accepts a `pure' dtd file.  An
+example of a `pure' dtd file is:
+
+   <?xml version="1.0" encoding="UTF-8"?>
+   <!--
+   The main element.
+   -->
+   <!ELEMENT workflow (registers?, trigger-functions?, initial-actions,
+                       steps, splits?, joins?)>
+   <!--
+   An action that can be executed (id must be unique among actions for
+   the enclosing step).
+   Used in: actions
+   -->
+   <!ELEMENT action (restrict-to, validators?, pre-functions?, results,
+                     post-functions?)>
+   <!ATTLIST action
+   	id CDATA #REQUIRED
+   	name CDATA #REQUIRED
+   >
+
+
+== Differences Between ABNF And ebnf2ps ABNF ==
+
+Besides the characters that ABNF accepts, ebnf2ps ABNF accepts also the
+underscore (##_##) for rule name and european 8-bit accentuated
+characters (from ##\240## to ##\377##) for rule name, string
+and comment.
+
+
+== Differences Between EBNFX And ebnf2ps EBNFX ==
+
+Besides the characters that EBNFX accepts, ebnf2ps EBNFX accepts also the
+underscore (##_##) and minus (##-##) for rule name and
+european 8-bit accentuated characters (from ##\240## to
+##\377##) for rule name, string and comment.  Also rule name can start
+with upper case letter.
+
+
+== Differences Between ISO EBNF And ebnf2ps ISO EBNF ==
+
+Besides the characters that ISO EBNF accepts, ebnf2ps ISO EBNF accepts also the
+european 8-bit accentuated characters (from ##\240## to
+##\377##) and underscore (##_##).
+
+
+----
+
+CategoryCode

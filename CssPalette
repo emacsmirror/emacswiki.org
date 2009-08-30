@@ -1,0 +1,12 @@
+Css-palette is a minor mode that lets one define 'palettes' of colours
+inside a block comment of a css file, and 'variables' inside comments
+throughout the css file, so that you can easily insert and update colours over the whole file,
+switching entire colour designs with a few keystrokes, and have a nice
+overview of all colours at the top of your file. It can import and export GIMP .gpl palette files.
+
+The user can define different kinds of `palettes' (as an example, a
+`file palette' declaration is included to have all url()'s variable).
+
+Depends on CssColor and is part of [NxhtmlMode nXhtml] since version 1.75 of that distribution.
+
+See also GplMode for font-locking and simple editing of Gimp Palettes.

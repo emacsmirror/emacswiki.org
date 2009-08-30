@@ -1,0 +1,13 @@
+[:end of line]
+EndOfLine or '''[::line ending]''' characters separate lines in buffers and files. A line ending is also sometimes called a '''[::newline]''', '''[::hard return]''' or '''[::line feed]'''.
+
+Different platforms sometimes use different line endings. For instance, UNIX uses a newline character (`C-j'); MS Windows uses a carriage-return character (`C-m') followed by a newline character.
+
+See also
+WikiPedia:Newline,
+EndOfLineTips
+
+----
+CategoryGlossary
+
+

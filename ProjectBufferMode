@@ -1,0 +1,261 @@
+Lisp:project-buffer-mode.el
+
+
+project-buffer-mode is a generic mode to handle projects.  It provides
+an easy and intuitive way to interact with the multiple projects within one buffer.
+
+Two project implementations already exist for this mode:
+* FsProject  - which creates a project based on the file system
+* SlnMode    - which parses a sln files and create a project representing it
+
+An generic extension is also available:
+* ProjectBufferModePlus
+
+*Key features*:
+* find files based on regular expression
+* four different view modes
+* advanced search in files system
+* notion of master project to launch build/clean/run/debug and update.
+* intuitive key bindings (at least I hope)
+* full save/load of a project including hooks and local variables. 
+* mouse support to expand/collapse a folder or open a file
+
+
+
+== Introduction ==
+
+I always wanted a browse a of a directory of source+makefiles or to be
+able to view the sln files within emacs...
+
+Well, regarding the sln support, I found nada! Not a single script to
+browse the containt of sln files.  Sure you can find ways to link
+emacs with visual studios... mmm... it didn't work out of the box for
+me...
+
+And also regarding the tree of source code + makefile, what I found
+was: speedbar and to be honest: I couldn't do all I wanted with it
+(filter files, mark files, search in files, launch build...) and I'm
+not really keen on having a extra framework.  I wanted something
+intuitive, a view mode you can easily switch to using C-x b.
+
+This is why I started working on this project-buffer-mode.
+
+
+== Description ==
+
+As mentioned above, project-buffer-mode provides a generic way to
+handle multiple projects in a buffer.
+
+A Project is defined by:
+* its name
+* its main file (Makefile, Jam, Scons, VcProj...)
+* a build configuration list (Debug, Release, ...)
+* a platform list (Win32, Win64, Linux...)
+* and obviously a list of files.
+
+
+== Project-buffer-mode main features ==
+
+=== Quick access to the files == 
+
+Opening the current is a simple as pressing <enter> or
+'o' to open it in another window.
+Press 'f' if you want to open all marked files.
+
+Pressing 'v' will enter the file using the view-mode.
+
+
+=== Quick find file using regular expression ===
+
+The project-buffer mode provides an
+very easy and intuitive way to search for a particular files.
+
+By pressing the '/' key; you can enter a regular expression; the
+matching files will then appears in bold.  You can navigate between
+them using 'n' and 'p'.
+
+Note: pressing 'm' or 'u' in front of a matching file will mark (or
+unmark) all the matching files.
+
+To cancel a research, simply press 'q'.
+
+[[image:ProjectBufferFileNameSearch]]
+
+
+=== Marking files ===
+
+Files can be marked/unmarked individually, but you can also easily
+mark all files whose names are matching a regular expression ('/'
+then 'm'). 
+
+Note: using the mark/unmark command in front of a folder of a project
+results in marking each files which belong to this folder or this
+project.
+
+
+=== Four different view-mode ===
+
+Four different view-modes are currently supported:
+* folder-view <default>
+* flat-view
+* folder-hidden-view
+* marked-view
+
+It's possible to switch between them using 'c v'.
+It is also possible to quickly switch using the key '1' to '4'.
+
+The first three modes show the project with their associated files:
+* folder-view shows a tree-view of files.
+* flat-view shows the list of the files prefixed by their folder.
+* folder-hidden-view shows the list of just the file names, next
+to it, it displays the real path for each of them.
+
+[[image:ProjectBufferViewModes]]
+
+The final view mode named marked-view shows only the list of marked
+files, prefixed by their project and folders.
+
+[[image:ProjectBufferMarkedMode]]
+
+=== Advance Search in files System ===
+
+The search in files functionality comes with three different behaviors:
+* Narrow the marked files <default>
+* All files
+* Current project
+
+Before talking about the "Narrow the marked files" behavior which is
+the default one; let's quickly go throught the others two:
+
+- If the search behavior is set to "All files", the search-in-files
+command ('s') will do a search regexp in files for each unmarked files
+(all projects) and mark the ones which contain the regexp.
+
+- If the search behavior is set to "Current Project" the
+search-in-files command will do search regexp in files for each
+unmarked files contained in the current project.  The current project
+being defined by the position of the cursor.  Again, each matching
+files will be marked.
+
+Note: it is possible to have the search-in-files command unmarking the
+files instead by using the prefix argument (C-u).
+
+Finally in case the search behavior is set to "Narrow the marked
+files": if no files are actually marked, it will behave the same way
+as the "All files" behavior.  In case some files are marked, it will
+only perform the "search-regexp in files" on the marked files, unmarking
+the ones which don't contain the regular expression.
+
+This provide an easy way to narrow/refine some research.
+
+The search behavior can be either customized or locally change
+(pressing 'c s')
+
+Note: in case a search-in-files marks or unmarks some files; the view
+mode will automatically be switched to marked-view. This behavior can
+be disabled.
+
+
+=== Master Project / Build Configuration / Platform ===
+
+The master project, build configuration and platform can be easily
+changed using respectively: 'c t' 'c b' 'c p' Using capital letters
+('c T' 'c B' and 'c P') will prompt the user for a new value.
+
+These values allow to take quick actions regarding the master project:
+build/clean/run/debug/update (keys: 'B' 'C' 'R' 'D' 'U')
+
+
+=== Key Bindings Philosophy ===
+
+I tried to follow the common usage for the different keys (such as '/'
+'n' 'm' ...); the rest of the time I tried to keep it intuitive...
+
+The case of the 'c' binding: all the 'c' key-combinaisons are meant to
+'c'hange something: 'c s' = Change Search mode, 'c b' = Change Build
+configuration.
+
+Actions are bind to single capital letter: 'B' to build, 'C' to
+clean...
+
+
+== Raw Mode ==
+
+As it was mentioned earlier, project-buffer-mode is just an abstract
+project manager.  Even if some extensions already exist, you may want
+to be able to handle you own project system.
+
+One of my goal through this project: I wanted to keep the usage as
+simple as possible.
+
+
+=== Note about Save and Load ===
+
+This mode comes with a generic save and load functionality; it's meant
+to save the whole project including its extended settings.
+It will save:
+* each project/file node including their user data attached;
+* the values of the local variables which are registered in
+  `project-buffer-locals-to-save';
+* the local value of hooks variables which are registered in
+  `project-buffer-hooks-to-save'.  
+
+
+=== Sample Code ===
+
+Here is a sample code which shows how to create a new project:
+
+{{{
+(defun test-projbuff()
+
+  (interactive)
+  (let ((buffer (generate-new-buffer "test-project-buffer")))                       ; Creation of a buffer for the project
+    (display-buffer buffer)                                                         ; We want to switch to this buffer right away.
+    (with-current-buffer buffer
+      (cd "~/temp")                                                                 ; It's always better to set the root directory if it's known.
+      (project-buffer-mode)                                                         ; Initialize the project buffer mode
+
+      (project-buffer-insert "test1" 'project "test1/Makefile" "test1")             ; Create an insert a project node called 'test1' (note: it's recommended to have project and node being the same)
+      (project-buffer-insert "src/gfr.cpp" 'file  "~/temp/test1/gfr.cpp" "test1")   ; Add "~/tenp/gfr.cpp" to the project 'test1' it's project path will be: "src/gfr.cpp"
+      (project-buffer-insert "src/abc.cpp" 'file  "~/temp/test1/abc.cpp" "test1")   ; Add "~/tenp/abc.cpp" to the project 'test1' it's project path will be: "src/abc.cpp"
+
+      (project-buffer-insert "test2" 'project "test2/Makefile" "test2")             ; Creation of a second project namded "test2"
+      (project-buffer-insert "header/yyy.h" 'file  "~/temp/test2/zzz.h" "test2")    ; Add some file to this project; note that the project path and the physical file name can be completely different
+      (project-buffer-insert "src/roo.c" 'file  "~/temp/test2/roo.c" "test2")       ;  the file name research will be based on the project-path and not on the physical file name
+      (project-buffer-insert "script.awk" 'file "~/temp/test2/script.awk" "test2")  ;
+)))
+}}}
+
+=== Script Functions ==
+
+List of user functions available to handle your own project:
+* `project-buffer-mode'                     to initialize the project-buffer mode
+* `project-buffer-insert'                   to insert a file or project to the view
+* `project-buffer-delete-file'              to remove a file
+* `project-buffer-delete-folder'            to remove a folder and all its files
+* `project-buffer-delete-project'           to remove a project and all its files
+* `project-buffer-set-project-platforms'    to set the platform configuration for a particular project
+* `project-buffer-set-build-configurations' to set the build configurations for a particular project
+* `project-buffer-raw-save'                 to save a project into a file
+* `project-buffer-raw-load'                 to load a project from a file
+* `project-buffer-set-project-user-data'    to set user data to a project node
+* `project-buffer-get-project-user-data'    to get user data from a project node
+* `project-buffer-set-file-user-data'       to set user data to a file node
+* `project-buffer-get-file-user-data'       to get user data from a file node
+* `project-buffer-get-current-project-name' to get the nane of the current project the cursor is on
+* `project-buffer-get-current-file-data'    to get data about the current file the cursor is on; nil if it's on a folder or a project
+* `project-buffer-exists-p'                 to check if a node exists (file or folder) inside a project
+* `project-buffer-project-exists-p'         to check if a project exists
+* `project-buffer-get-file-path'            to get the path of a file of the project
+* `project-buffer-get-current-node-type'    to get the type of the current node (including folder)
+* `project-buffer-get-current-node-name'    to get the name  of the current node (including folder)
+
+If you need to have some local variables to be saved; register them in
+`project-buffer-locals-to-save'.  The same way, if there is need to
+save extra hooks: register them in `project-buffer-hooks-to-save'.
+
+----
+CategoryProgramming
+CategoryModes
+CategoryProgrammerUtils
+CategoryCode

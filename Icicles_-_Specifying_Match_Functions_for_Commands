@@ -1,0 +1,53 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Global Filters]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Defining Completion for Comint Modes]] ||
+
+----
+
+== Defining Commands that Use Specific Match Functions ==
+
+This section is for EmacsLisp programmers.
+
+By default, '''Icicles''' lets users use [[prefix completion]] (with `TAB') or [[apropos completion]] (with `S-TAB').  They can alternatively use [[fuzzy completion]] with `TAB' or [[scatter-match completion]] with `S-TAB':
+
+* They can use '''`##C-(##'''' during completion to toggle between prefix completion and fuzzy completion.
+
+* They can use '''`##M-(##'''' to cycle among apropos completion and scatter-match completion.  (Actually, they can [[Icicles - Customization and General Tips#icicle-apropos-match-fns-alist|customize]] the match types among which `##M-(##' cycles.)
+
+When you define an '''Icicles''' command, you can specify which string-matching functions the command uses during completion:
+
+* If you want the command to use fuzzy completion for `TAB' by default, then bind `icicle-fuzzy-completion-flag' to non-`nil'.  Users can still use `##C-(##' to toggle fuzzy completion off.
+
+* If you want the command to use a particular string-matching function for `S-TAB' completion by default, then bind variable `icicle-apropos-complete-match-fn' to that function.  Users can still use `##M-(##' to cycle among the other matching functions for `S-TAB'.
+
+You can bind `icicle-apropos-complete-match-fn' to any function that matches strings.  You will probably also want to ensure that it is available for `##M-(##' cycling, by adding it to `icicle-apropos-match-fns-alist' in a `let' binding.  For example, to use matching function `my-match' in `my-cmd', you might do this:
+
+  (defun my-cmd ()
+    "..."
+    (interactive)
+    (let ((icicle-apropos-complete-match-fn  'my-match)
+          (icicle-apropos-match-fns-alist    (cons (cons "mine" 'my-match)
+                                                   icicle-apropos-match-fns-alist)))
+      (do-something (completing-read "Choose: " ...) ...)))
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Global Filters]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Defining Completion for Comint Modes]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

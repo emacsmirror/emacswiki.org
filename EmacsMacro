@@ -1,0 +1,15 @@
+* http://emacro.sourceforge.net/
+
+From the web site:
+
+: The easy .emacs that runs anywhere, and gives that out-of-box experience.
+
+Even if you don't want to install the .emacs framework which the project provides, you can learn a lot from the source files and the comments.  The web site also has useful information.
+
+The Resources[http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/emacro/emacs/doc/resources.html?rev=HEAD&content-type=text/html] page is quite extensive.
+
+The main page also has TIPS and SOLUTIONS which may fit your needs.
+
+----
+CategoryHelp
+CategoryDotEmacs

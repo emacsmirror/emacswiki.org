@@ -1,0 +1,26 @@
+VTags is project that lets [x]emacs 
+use the same (sorted) [[TagsFile]]s that Vim uses. It does not read the file into a 
+buffer but rather does a binary search of the file on disk. Thus it is fast and 
+uses less RAM than `etags' (see EmacsTags). It is quite usable, but does not have all of the features 
+available with either of the current etags.el implementations. Frankly, some of the 
+features of etags.el are pretty obscure and/or don't make sense in the context of 
+vim-style tags files. 
+See https://savannah.gnu.org/projects/vtags.
+
+By using Vim [[TagsFile]]s, VTags provides the following Vim feature: When a tag has
+multiple entries in the tag file, Vim makes a list of the files the 
+tag appears in -- then you can choose one by selecting a number.  You can thus search trees where there are multiple files that implement the same functions
+for porting reasons.  
+
+These libraries also let you choose among multiple tags for the same name:
+
+* [[Icicles - Tags Enhancements]]
+* EtagsSelect
+
+
+----
+CategoryProgrammerUtils
+
+
+
+

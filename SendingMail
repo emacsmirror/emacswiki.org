@@ -1,0 +1,99 @@
+Mail is sent using SMTP (<b>S</b>imple <b>M</b>ail <b>T</b>ransfer
+<b>P</b>rotocol).  
+If you are on a Unix machine, you will probably have a daemon running on your
+machine, which accepts mail on the default SMTP port.  This usually
+works without problems.
+
+On a typical desktop machine, however, there is no local SMTP daemon running,
+or it is not correctly configured.  You can talk to the SMTP server of your
+ISP, however.  This page describes how to do this using [::SmtpMail].
+
+== Configuration ==
+
+On my Windows NT machine, for example, this is my setup:
+
+ (setq smtpmail-default-smtp-server "mail.bsiag.com"
+       smtpmail-local-domain "bsiag.com")
+ (load-library "smtpmail")
+
+Furthermore, you need to tell Emacs to use `smtpmail-send-it' whenever
+you want to send mail.
+
+If you are using MailMode (the default), add this:
+
+ (setq send-mail-function 'smtpmail-send-it)
+
+If you are using MessageMode (part of Gnus, see CategoryGnus), add this:
+
+ (setq message-send-mail-function 'smtpmail-send-it)
+
+== Examples ==
+
+Here is another setup example:
+
+ (setq smtpmail-default-smtp-server "smtpserver") ; needs to be specified before the (require)
+ (require 'smtpmail)
+ (setq send-mail-function 'smtpmail-send-it)
+ (setq message-send-mail-function 'smtpmail-send-it)
+ (setq user-full-name "Joe")
+ (setq smtpmail-local-domain "gmx.de")
+ (setq user-mail-address (concat "Joe.R.User@" smtpmail-local-domain))
+
+The manual for smtpmail.el can be found at http://josefsson.org/smtpmail.html.
+
+== Emulators (eg. for Windows) ==
+
+Those using CYGWIN might want to try the sSMTP Sendmail emulator, like this:
+
+ (setq message-send-mail-function 'message-send-mail-with-sendmail)
+ (if (equal system-type 'windows-nt)
+    (setq sendmail-program "c:/cygwin/usr/sbin/ssmtp.exe"))
+
+See also [[GnusMSMTP]]
+
+== Authentification ==
+
+Note that older versions of this library (eg. Emacs 20) do not
+allow authentification.  You cannot provide usernames and passwords.
+Therefore there are lots of ways people try to stop abuse:
+
+# If the server doesn't like your IP address it might answer "Relaying
+  denied" and refuse to send your mail
+# If the server wants to fake it, they might ask you to fetch mail
+  before trying to send any.  The reason is that when you are
+  GettingMail, you will need a username and a password.
+
+Later versions of this library support the variable `smtpmail-auth-credentials'.
+See SmtpAuth.
+
+== Mail queueing ==
+
+Sometimes, it can be useful to just queue the mails and send them later all at once (dialup users, etc...),
+then just add:
+
+<pre>
+(setq smtpmail-queue-mail t)
+</pre>
+
+When your network connection is ready, just do 
+
+<pre>
+M-x smtpmail-send-queued-mail RET
+</pre>
+
+== No Address Rewriting ==
+
+If your smtp server is a non-address-rewriting MTA (like the qmail default), and
+if you'd like your domain name to be added automatically to the addresses, see
+SendMailAddressRewrite.
+
+== Managing Multiple SMTP Accounts ==
+
+Unfortunately, there doesn't exist a built-in feature to set the will be used SMTP server by looking at the "From:" line of the current post. But you can easily implement yours via mail hooks. See MultipleSMTPAccounts.
+
+If you have more than one email address and have to send them using different SMTP servers, then you might want to take a look at esmtpmail.el a fork from smtpmail.el
+
+See also: WritingMail
+----
+CategoryMail
+WThirtyTwoSendMAPI

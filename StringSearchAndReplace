@@ -1,0 +1,40 @@
+String search and replace in EmacsLisp can be done in a variety of ways and variations, each can be multiplied again through the use of [[RegularExpression]]s.
+
+The EmacsLispManual has an example of search and replace in the buffer using `re-search-forward' and `replace-match' that is an easily recognizable idiom:
+
+{{{
+     (while (re-search-forward "foo[ \t]+bar" nil t)
+       (replace-match "foobar"))
+}}}
+
+Sometimes, search and replace needs to be done on a string rather than in a buffer.
+
+; Note: Whether workin in a buffer is better or worse compared to working with strings is something that depends on the exact circumstances. If in doubt, use the EmacsLispProfiler (`elp') to figure out which approach is more efficient. As a rule of thumb, use a buffer (`with-temp-buffer') if you're working on large strings. The reason is that strings are immutable so every operation taking a string and returning a new string will in fact return a copy of the string.
+
+{{{
+(defun string-search-and-replace (search replace string)
+  "Replace all instances of SEARCH with REPLACE in STRING."
+  (replace-regexp-in-string (regexp-quote search) replace string t t))
+}}}
+
+Before Emacs 21, the canonical code to search and replace all instances found in a string was less recognizable.
+
+{{{
+(defun string-search-and-replace (search replace string)
+  "Replace all instances of SEARCH with REPLACE in STRING."
+  (let ((quoted-search (regexp-quote search))
+	(start 0))
+    (while (string-match quoted-search string start)
+      (setq string (replace-match replace nil t string))
+      (setq start (+ (match-end 0) (- (length replace)
+				      (length search)))))
+    string))
+}}}
+
+The above idiom still appears in various places in EmacsLisp libraries with a variety of mutations.
+
+See also ElispCookbook.
+
+----
+CategoryCode
+CategorySearchAndReplace

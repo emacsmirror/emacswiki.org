@@ -1,0 +1,115 @@
+'''This page is part of the description of OneOnOneEmacs, by DrewAdams.'''
+
+Cette page est aussi disponible en franglais ;-) : Français:[[Tailler des Frames Automatiquement]]
+
+*  
+*  
+*  
+
+One advantage a [[Frame]] has over an Emacs [[Window]] is that the frame can
+be made to fit the buffer it displays. With windows, this wouldn't
+make much sense, since multiple windows tiled in the same direction
+(in the same frame) have the same width or height. (You can vary the
+height or width of ''all'' windows tiled in the same direction, but
+even that is not very natural.)
+
+This is not only possible for frames, it is also very useful. It means
+that most buffers need ''never be displayed with wrap-around or
+truncated text''. And a frame need ''never be larger than what is
+needed'' to display its buffer.
+
+== Command `fit-frame' ==
+
+Command `fit-frame' "shrink-wraps" a frame to fit its displayed buffers or just its selected buffer -- always within the limits imposed by the maximum-size user options (see below). Its behavior depends on the prefix argument, if any, that you use:
+
+*  No prefix arg means to use ''all of the buffers'' displayed in the frame to compute its size.
+
+* A plain prefix arg (just `C-u') means to use only the ''selected buffer'' in the frame to compute the frame size. The resulting frame size would fit that buffer if it were the only one shown.
+
+* A non-negative numeric prefix arg (not plain `C-u') means that you will
+be ''prompted'' for the new frame width and height.
+
+* A negative prefix arg means to use the current value of
+`fill-column', plus `fit-frame-fill-column-margin', for the new frame
+width. The frame height is not changed.
+
+'''Goldilocks And The 3 Frames --''' Here are some screenshots:
+* Frame that is too wide and too short:
+: [[image:DrewsEmacsShrinkWide]]
+* Frame that is too narrow and too tall:
+: [[image:DrewsEmacsShrinkNarrow]]
+* Frame that fits just right -- the result of command `fit-frame':
+: [[image:DrewsEmacsShrinkFit]]
+
+The resulting size is
+determined automatically by `fit-frame', but there are user variables that give you control over this calculation. Alternatively, with a non-negative numeric prefix argument, `fit-frame' prompts you for an absolute width and height. A negative prefix argument uses the value of `fill-column'
+for the width.
+
+[:AutoFitFrames]
+== Automatically Fitting All Frames ==
+
+Because I found this so useful, I decided to apply shrink-wrapping ''automatically, by default, to all frames''. To do this, the first step was just to use `fit-frame' as a hook function,
+whenever a frame is ''created'':
+
+  (add-hook 'after-make-frame-functions 'fit-frame)
+
+This takes care of fitting normal, user-created frames at their
+creation, but what about when a different buffer is displayed in an
+existing frame? Other changes I made (see below) modified Emacs
+behavior to use frames generally, instead of Emacs windows. To get
+Emacs to fit all frames whenever appropriate, I redefined a few
+important functions so that they called `fit-frame' at the appropriate time.
+
+Each of these functions was changed to fit the frame if the
+buffer's window is the only one in it:
+* `pop-to-buffer'
+* `display-buffer'
+* `switch-to-buffer'
+* `Info-find-node'
+* `special-display-popup-frame'
+* `occur'
+
+I also added function `fit-frame-if-one-window' to `temp-buffer-show-hook'. This hook (undocumented in Emacs 20) is used by a few standard Emacs functions; for example,
+`pp-eval-expression'. (Function `fit-frame-if-one-window' calls `fit-frame' if the frame has only one window.)
+
+
+== User Variables for Frame Fitting ==
+
+Having done this, I created various user variables to turn automatic frame fitting on/off. 
+
+In a few cases, I used these variables to inhibit inappropriate frame fitting in standard Emacs functions. For example, in function `compile-internal', which performs a `make' or `grep' operation and displays the results of the process, I temporarily reset option
+'''`fit-frame-inhibit-fitting-flag'''' to inhibit premature
+fitting of the output buffer frame by `display-buffer'.
+
+  (let ((fit-frame-inhibit-fitting-flag t)) (display-buffer outbuf))
+
+Another useful user option for frame-fitting is '''`fit-frame-skip-header-lines-alist''''. It takes care of modes, such as InfoMode and DiredMode, that have headers that are sometimes much wider than the rest of the buffer. You use this option to tell `fit-frame' to ignore header lines when calculating the buffer width. The result is a better fit: a narrower frame with less empty space at the right -- the long header lines are wrapped.
+
+The remaining user options for frame-fitting are described in the doc string of command `fit-frame'. Widths are in characters; heights are in lines.
+
+* '''`fit-frame-empty-width'''', '''`fit-frame-empty-height'''' -- Width and height of new empty frames.
+
+* '''`fit-frame-empty-special-display-width'''', '''`fit-frame-empty-special-display-height'''' -- Same thing, but for special-display frames.
+
+* '''`fit-frame-min-width'''', '''`fit-frame-min-height'''' -- Minimum width and height for frames. The actual minimum is at least this and `window-min-width'.
+
+* '''`fit-frame-max-width-percent'''', '''`fit-frame-max-height-percent'''' -- Maximum percent of the width of your display to use for a frame. These are used only if `fit-frame-max-width' and `fit-frame-max-height' are `nil' (the default).  By default, the maximum frame width is 94 percent of your display width, and the maximum frame height is 82 percent of your display width.
+
+* '''`fit-frame-max-width'''', '''`fit-frame-max-height'''' -- Maximum width and height for frames. Leave these set to `nil' unless you want to override the automatic calculation of the maximum size based on your display size.
+
+* '''`fit-frame-fill-column-margin'''' -- When you use a negative prefix arg with `fit-frame', the frame width is this plus `fill-column'. Depending on the average word length of the language used in the selected window,
+you may need different values for this.  This is buffer-local.
+
+
+'''See Libraries:'''
+* Lisp:fit-frame.el and Lisp:autofit-frame.el provide the frame-fitting functionality ("shrink-wrapped" frames). Lisp:fit-frame.el also has commands, in Windows, for maximizing and restoring a frame. 
+* Lisp:frame-cmds.el has commands for ''incrementally'' resizing a frame (by pressing arrow keys and `C-M-').
+* Lisp:zoom-frm.el has commands for zooming a frame in and out.
+* Lisp:doremi-frm.el has commands for incrementally resizing a frame with the arrow keys or mouse wheel.
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay
+
+
+
+

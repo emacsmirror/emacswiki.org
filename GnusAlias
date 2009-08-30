@@ -1,0 +1,21 @@
+gnus-alias provides a simple mechanism to switch Identities when using message-mode.  An Identity is one or more of the following elements:
+
+* From - sets the From header (i.e. the sender)
+* Organization - sets the Organization header (a common, optional header)
+* Extra headers - a list of arbitrary header to set (e.g. X-Archive: no)
+* Body - adds text to the body of the message (just above the signature)
+* Signature - adds a signature to the message
+
+All of this is also provided by the standard `gnus-posting-styles'.  Whereas PostingStyles let you set these up initially, though, gnus-alias lets you change them on the fly easily, too (in this regard gnus-alias is much like GnusPers, upon which it is based).  With a simple command (`gnus-alias-select-identity') you can select & replace one Identity with another.
+
+There are other significant differences between gnus-alias and PostingStyles, too.  gnus-alias has a much simpler interface/API for selecting an initial Identity automatically.  PostingStyles is much more flexible (especially in that you can build up an "Identity" piece by piece), but with that flexibility can come some complexity.
+
+Other advantages to using gnus-alias:
+
+* the ability to switch Identities in a message buffer
+* can access original message to help determine Identity of the followup/reply message
+* can act on a forwarded message as if it were a message being replied to
+* can start a new message with a given Identity pre-selected (coming soon)
+
+
+Latest version can always be found at: http://www.northbound-train.com/emacs.html

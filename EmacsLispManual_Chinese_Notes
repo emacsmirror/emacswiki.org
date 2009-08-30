@@ -1,0 +1,5316 @@
+以下是我阅读 Emacs Lisp Reference Manual 的中文笔记, 方便英文不好的中国用户.
+我没有校验, 可能有错误, 我建议还是阅读英文版本的, 更加准确一点.
+手册现在还不完整, 有空我会补充完整的. Enjoy!
+
+你可以从 [http://www.emacswiki.org/emacs/download/EmacsLispManual_Chinese_Notes_Archive 这里] 下载 OrgMode 文件.
+
+==Emacs Lisp Reference Manual==
+===介绍 (Introduction)===
+====历史====
+{{{
+            Emacs的灵感主要来源于MacLisp和Common Lisp, 许多Common Lisp的特性被忽略和简单化, 以减小Emacs的内存消耗.
+            大部份的Common Lisp模拟可以从 'cl' 库中可得到.
+            Emacs不受Scheme的任何影响.
+}}}
+====nil 和 t====
+{{{
+            在Lisp中符号 'nil' 有三种意思:
+            1> 一个名字为 'nil' 的符号
+            2> 逻辑 '假'
+            3> 空列表 '()
+            正常如果要表示空列表, 用 '() 表示, 表示逻辑 '假' 用nil表示.
+            
+            在Emacs Lisp中 'nil' 和 't' 都是对自己求值的符号, 不需要在程序中引用它们作为常量.
+            任何尝试改变它们值都会得到 'setting-constant' 的错误
+}}}
+====求值符号====
+======>=====
+{{{
+                用于产生一个结果(Lisp对象)
+                (car '(1 2))
+                	=> 1
+}}}
+=======>=====
+{{{
+                用于显示展开结果
+                (third '(a b c))
+                	==> (car (cdr (cdr '(a b c))))
+}}}
+============
+{{{
+                用于同样的结果
+                (make-sparse-keymap) == (list 'keymap)
+}}}
+====打印符号====
+=====-|=====
+{{{
+                用于忽略
+}}}
+======>=====
+{{{
+                用于求值
+}}}
+====简单的函数描述====
+=====&optional=====
+{{{
+                如果忽略了可选的参数, 默认设为 'nil'
+}}}
+=====&rest=====
+{{{
+                必须跟随一个参数, 表示有不确定数量的参数.
+                比如:
+                
+                (message-shell-command "1" "2" "3" "4")		=> (1 2 3 4)
+                
+                (defun message-shell-command (cmd &rest arg-list)
+                  "Exectue shell command asynchronously."
+                  (interactive)
+                  (let* ((arg-element nil)
+                	 (arg nil))
+                    (dolist (arg-element arg-list)
+                      (setq arg (concat arg " " arg-element)))
+                    (message (concat cmd arg))))
+}}}
+===Lisp数据类型 (Lisp Data Types)===
+====说明====
+{{{
+            在Emacs Lisp中, 不需要事先声明变量的的数据类型, Lisp会动态决定它是什么类型
+}}}
+====打印表现和读入语法====
+{{{
+            Lisp 表现者 ('prin1') 格式输出唯一的对象格式.
+            Lisp 读入者 ('read') 接收一个并不唯一的的格式化对象
+}}}
+====注释====
+{{{
+            以分号 ; 开头的注释会被 Lisp Reader 丢弃, 它们不会成为LISP系统中可以表现的LISP对象的一部分
+             #@COUNT 会跳过下COUNT个字符
+}}}
+====编程类型====
+=====整型=====
+{{{
+                在32为系统整型的范围是 -268435456 ~ 268435455 (-2^28 to 2^28 - 1),
+                并且Emacs Lisp的算数函数是不执行溢出检查的, 因此在大多数机器上 '(1+268435455)' 等于 -268435456.
+}}}
+=====浮点型=====
+{{{
+                1500的五种表示方法
+                1500.0	15e2	15.0e2	1.5e3	.15e4
+}}}
+=====字符型=====
+{{{
+                     在Emacs Lisp里 字符型和整型没有什么区别, 只是字符型用整型值对应的字符编码表示而已
+}}}
+======基本的字符语法======
+{{{
+                         ?Q => 81     ?q => 113
+                    
+                         ?\a => 7                 ; control-g, `C-g'
+                         ?\b => 8                 ; backspace, <BS>, `C-h'
+                         ?\t => 9                 ; tab, <TAB>, `C-i'
+                         ?\n => 10                ; newline, `C-j'
+                         ?\v => 11                ; vertical tab, `C-k'
+                         ?\f => 12                ; formfeed character, `C-l'
+                         ?\r => 13                ; carriage return, <RET>, `C-m'
+                         ?\e => 27                ; escape character, <ESC>, `C-['
+                         ?\s => 32                ; space character, <SPC>
+                         ?\\ => 92                ; backslash character, `\'
+                         ?\d => 127               ; delete character, <DEL>
+}}}
+======通用转义语法======
+{{{
+                    八进制	(三个八进制数字)
+                    (key-description "\012")	=> 10
+                    十六进制
+                    (key-description "\x41")	=> A
+}}}
+======各种控制键表示语法======
+{{{
+                    \^	表示	'C-'		Control
+                    \M	表示	'M-'		Meta
+                    \s	表示	's-'		Super
+                    \S	表示	'S-'		Shift
+}}}
+=====符号类型=====
+{{{
+                符号名称可以用任意字符串, 以冒号(:)开头的字符被称作关键字符号(keyword symbol), 这些符号自动作为一个
+                常量.
+}}}
+=====序列类型=====
+{{{
+                序列 (sequence) 是一个表现有序集元素的LISP对象.
+                有列表 (lists) 和 数组 (arrays) 两种类型.
+                数组又可以分为: 字符串 (strings), 向量 (vectors) 字符表 (char-tables) 和 布尔向量 (bool-vectors).
+                向量可以容纳任何类型的元素.
+                字符串的元素必须是字符.
+                布尔向量的元素必须是 't' 或 'nil'.
+                字符表和向量类似, 除了它们索引正确的字符编码 (character code).
+}}}
+=====Cons-Cell and List types=====
+{{{
+                C程序员要注意的是, 在Lisp中, 并不区别 持有(holding)一个值 和 指向(pointing to)一个值, 因为指针在Lisp中是隐含的.
+                
+                (cons rose (cons violet buttercup))
+                
+                      ---------------       ----------------       -------------------
+                     | car   | cdr   |     | car    | cdr   |     | car       | cdr   |
+                     | rose  |   o-------->| violet |   o-------->| buttercup |  nil  |
+                     |       |       |     |        |       |     |           |       |
+                      ---------------       ----------------       -------------------
+                
+}}}
+=====关联列表=====
+{{{
+                'Association List' or 'alist' 是一个元素是 'cons-cell' 的特殊构造的列表.
+                
+                Example:
+                      Alist-Name       Key Value
+                      Alist	       CAR CDR
+                (setq example-alist '((one . 1) (two . 2) (three . 3)))
+}}}
+======相关函数======
+=======assoc=======
+{{{
+                        这个函数返回在alist里面第一个相关KEY值的列表.
+                                  (setq trees '((pine . cones) (oak . acorns) (maple . seeds)))
+                                       => ((pine . cones) (oak . acorns) (maple . seeds))
+                                  (assoc 'oak trees)
+                                       => (oak . acorns)
+                                  (cdr (assoc 'oak trees))
+                                       => acorns
+                                  (assoc 'birch trees)
+                                       => nil
+}}}
+=======assq=======
+{{{
+                        和assoc类似, 只是用 'eq' 替代 assoc中的 'equal'
+                                  (setq trees '((pine . cones) (oak . acorns) (maple . seeds)))
+                                       => ((pine . cones) (oak . acorns) (maple . seeds))
+                                  (assq 'pine trees)
+                                       => (pine . cones)
+                        如果KEY值不是一个符号, assq则没有用
+                                  (setq leaves
+                                        '(("simple leaves" . oak)
+                                          ("compound leaves" . horsechestnut)))
+                        
+                                  (assq "simple leaves" leaves)
+                                       => nil
+                                  (assoc "simple leaves" leaves)
+                                       => ("simple leaves" . oak)
+}}}
+=======rassoc=======
+{{{
+                        这个函数返回在alist里第一个相关VALUE值的列表.
+                                  (setq trees '((pine . cones) (oak . acorns) (maple . seeds)))
+                        
+                                  (rassq 'acorns trees)
+                                       => (oak . acorns)
+                                  (rassq 'spores trees)
+                                       => nil
+}}}
+=======rassq=======
+{{{
+                        和assq类似, 只是查找相关VALUE的值
+}}}
+=======assoc-default=======
+{{{
+                        返回alist中匹配KEY值的VALUE值, 如果没有则返回nil
+}}}
+=======copy-alist=======
+{{{
+                        拷贝alist, 并不改变原来的alist
+}}}
+=======assq-delete-all=======
+{{{
+                        删除alist中所有匹配相应KEY值(eq)的元素.
+}}}
+=======rassq-delete-all=======
+{{{
+                        和 assq-delete-all 类似, 只不过是比较VALUE值而已
+}}}
+=====数组类型=====
+{{{
+                访问数组的任意元素所消耗的时间是相等的, 但是访问列表(List)中元素的时间和它在列表中的位置成比例的.
+                比如列表的最后一个元素的访问时间长于第一个元素.
+                
+                数组一旦建立, 其长度也就固定了.
+}}}
+=====字符串类型=====
+{{{
+                字符串在LISP中是常量.
+}}}
+======字符串语法======
+{{{
+                    字符串的读入语法是在双引号(")中的字符串, 可以用 \" 和 \n 表示字符串中的双引号和换行.
+                    如果字符串中有 \ 会忽略当前行的换行.
+                    比如:
+                         "It is useful to include newlines
+                         in documentation strings,
+                         but the newline is \
+                         ignored if escaped."
+                              => "It is useful to include newlines
+                         in documentation strings,
+                         but the newline is ignored if escaped."
+}}}
+======字符串里面的文本属性======
+{{{
+                    语法:
+                     #("Characters" Property-Data...)
+                    比如,
+                    (defun test ()
+                      (interactive)
+                      (message #("foo bar" 0 3 (face italic) 4 7 (face bold))))
+                    输出 foo 是斜体, bar 是粗体
+}}}
+=====向量类型=====
+{{{
+                和数组类型一样, 访问向量里的任意一个元素都消耗相同的时间. 并且会被LISP认为是一个常量.
+                向量在 [ 和 ] 之间表现.
+                他的元素可以是任何对象, 比如
+                     [1 "two" (three)]      ; A vector of three elements.
+                          => [1 "two" (three)]
+}}}
+=====字符表类型=====
+{{{
+                和向量类似, 只是在向量表示法的 [ 前加上 #^.
+                比如,
+                 #^[d]	=> [d]
+}}}
+=====布尔向量类型=====
+{{{
+                和字符表类型 (character-table) 类似, 只不过替换 #^ 为 #&.
+                     (make-bool-vector 3 t)
+                          => #&3"^G"
+                     (make-bool-vector 3 nil)
+                          => #&3"^@"
+}}}
+=====哈希表类型=====
+{{{
+                哈希表(Hash-Table)是一种相当快速的查找表, 哈希表类型类似于关联表('Association List'),  但是要快速的
+                多.
+}}}
+=====函数类型=====
+{{{
+                在Lisp中, 不像大多数语言, 函数也可以是一个LISP对象, 一个没有编译的LISP函数是一个演算表达式(Lambda Expression).
+                在LISP中, 一个演算表达式可以像函数那样被调用而不须要名字, 所以LISP中可以调用一个匿名函数(anonymous function).
+                LISP函数的名字只是表达正确函数的符号的符号而已.
+                当然函数也可以在运行时再调用.
+}}}
+======内联函数======
+{{{
+                    如果要把普通的函数定义转换成内联函数(Inlien Function), 只要把 defun 替换为 defsubst 即可,
+                    内联函数和普通函数没有什么区别, 只是当你编译一个函数时, 函数的定义会展开编码进他被调用的位置,
+}}}
+=======内联函数的优点=======
+{{{
+                        外在的调用运行的更快.
+}}}
+=======内联函数的缺点=======
+========它减小了灵活性, 如果你改变了函数的定义, 调用内联函数仍然只会调用老的定义知道你重新编译函数.========
+========整加了编译代码的文件大小和内存的占用量.========
+========不能很好的调试, 跟踪, 和警告.========
+{{{
+                            虽然当函数很小时, 内联可以时其运行的最快, 但是你最好不要将函数内联, 除非速度真的很重要.
+}}}
+=====宏类型=====
+{{{
+                一个LISP宏(Lisp Macro)是一个扩展LISP语言的用户定义的结构.
+                LISP宏和键盘宏(keyboard macros)是两个完全不同的事物, 如果没有明确的指示, "macro"表示LISP宏.
+                
+                宏不像函数那样对参数执行表达式. 它们只是在构造一个包括这些参数的表达式.
+                
+                Emacs Lisp里的Macro实际上是Code Generator，和C里面的文本替换完全不同，即Emacs Lisp Macro是一段可以执行的Lisp程序，其执行结果并非是一般的值，而是另一段可以执
+                行的Lisp程序。所以，一个宏调用实际上包含两段Emacs Lisp程序的执行过程，首先调用宏，生成一段新的Lisp程序，再来执行这段新生成的代码。第一个阶段就是所谓的宏替换
+                ，Byte Compilation则只做第一阶段，而不去执行新生成的代码。
+}}}
+======简单的定义======
+{{{
+                         (defmacro inc (var)
+                            (list 'setq var (list '1+ var)))
+                    执行C语言中的 ++ 操作
+}}}
+======展开一个宏调用======
+{{{
+                    宏的调用和函数的类似, 只不过有些
+}}}
+=======不同:=======
+========宏的参数在传给宏定义时是不对其进行求值的.========
+========宏的返回的不是一个值, 而是一个交互的求值表达式, 也就是宏的'展开'. LISP解释器对宏展开的表达式进行求值.========
+=======相关函数=======
+========(macroexpand form &optional environment)========
+{{{
+                            这个函数展开FORM, 如果结果是一个宏, 则继续展开直到结果不是宏.
+                            这个函数不展开字表达式, 即递归展开.
+}}}
+========(macroexpand-all form &optional enviroment)========
+{{{
+                            这个函数类似于FORM, 只是可以递归展开.
+}}}
+======宏与字节编译======
+{{{
+                    宏必须定义在第一个调用它的位置前面
+}}}
+======引用======
+=======单引号 ' 在宏的定义中可以引用一个列表(list), 而不执行, 比如=======
+{{{
+                        `(a list of '(+ 2 3) elements)
+                        =>	(a list of (quote (+ 2 3)) elements)
+                        
+                        `(a list of (+ 2 3) elements)
+                        =>	(a list of (+ 2 3) elements)
+}}}
+=======逗号 , 可以指出一个值不是常量, 比如=======
+{{{
+                              (list 'a 'list 'of (+ 2 3) 'elements)
+                                   => (a list of 5 elements)
+                              `(a list of ,(+ 2 3) elements)
+                                   => (a list of 5 elements)
+}}}
+======宏实用的普遍问题======
+=======错误的时间 (Wrong Time)=======
+{{{
+                        比如定义了一个宏:
+                             (defmacro my-set-buffer-multibyte (arg)
+                               (if (fboundp 'set-buffer-multibyte)
+                                   (set-buffer-multibyte arg)))
+                        这个宏解释时工作良好, 但是编译时却失败了. 因为 (set-buffer-multibyte arg) 这句在编译时执行了.
+                        正确的应该是:
+                             (defmacro my-set-buffer-multibyte (arg)
+                               (if (fboundp 'set-buffer-multibyte)
+                                   `(set-buffer-multibyte ,arg)))
+}}}
+=====原始函数类型=====
+{{{
+                原始函数 (Primitive Function Type) 是C语言编写并可被LISP调用的函数, 原始函数也可以叫做 'subrs' 或者 'built-in' 函数, 'subrs'来源于'subroutine'.
+                原始函数不执行是'特殊表'(special form)的参数.
+                
+                当调用一个函数时是不用关心它是否是原始函数.
+                
+                     (symbol-function 'car)		;; 访问函数的定义
+                
+                          => #<subr car>
+                     (subrp (symbol-function 'car))	;; 函数是否是原始函数
+                          => t
+}}}
+======特殊表的排列======
+{{{
+                    `and'
+                    `catch'
+                    `cond'
+                    `condition-case'
+                    `defconst'
+                    `defmacro'
+                    `defun'
+                    `defvar'
+                    `function'
+                    `if'
+                    `interactive'
+                    `let'
+                    `let*'
+                    `or'
+                    `prog1'
+                    `prog2'
+                    `progn'
+                    `quote'
+                    `save-current-buffer'
+                    `save-excursion'
+                    `save-restriction'
+                    `save-window-excursion'
+                    `setq'
+                    `setq-default'
+                    `track-mouse'
+                    `unwind-protect'
+                    `while'
+                    `with-output-to-temp-buffer'
+}}}
+=====字节码函数类型=====
+{{{
+                字节码函数类型(Byte-Code Function Type)对象非常像一个向量, 但是无论如何, 求值程序向函数调用一样处理这个特殊的数据类型.
+                字节码函数对象的读入语法和向量很像, 只是在 [ 前面加上 # 即可.
+                 #[byte-code function]	=> #[byte-code function]
+}}}
+=====自动加载类型=====
+{{{
+                自动加载类型(Autoload Type)可以使一个函数, 宏 或者 按键图在LISP中已知, 但是推迟加载定义他的文件.
+                首先正常调用函数并读入相应的文件并安装真正的定义和相关代码, 然后一直运行真正的定义, 如果他已经被加载了.
+                
+                
+                语法是:
+                (autoload FUNCTION FILENAME &optional DOC-STRING interactive type)
+                FUNCTION	是函数名
+                FILENAME	是定义函数的文件
+                DOC-STRING	是说明文档
+                interactive	为 t 时, 可以作为一个交互函数被调用
+                type		为 nil 时, 代表一个函数
+                		为 'macro' 时, 代表一个宏
+                		为 'keymap' 时, 代表一个按键图
+                
+                如果 FUNCTION 是一个有效的函数定义并且不是一个自动加载类型(autoload type), 'autoload'什么也不做, 并返回 nil.
+                如果 FUNCTION 是一个无效的函数或者作为一个已经存在的自动加载类型, 'autoload'重新定义.
+                
+                'autoload' 用于子进程的延后定义.
+                
+                使用自动加载可以使Emacs启动得更快一些，因为库没有被立即加载；但是在第一次执行函数时，在加载对应的文件时需要稍等一下。
+                
+                那些使用得较少的函数通常使用自动加载。loaddefs.el库包含了数百个自动加载函数，从bookmark-set到
+                wordstar-mode。当然，如果有可能经常需要使用一些'罕见'的函数，可以在.emacs文件中使用load语句加载它。
+}}}
+====编辑类型====
+=====缓存类型=====
+{{{
+                缓存(buffer)是一个承载可以编辑的文本的LISP对象.
+                大多数buffer承载着磁盘文件的内容.
+}}}
+======间接缓存======
+{{{
+                    间接缓存(indirect buffers)和一个叫做'基本缓存'(base buffer)共享内容.
+                    间接缓存和它的基本缓存完全分开的. 他们有不同的名字, etc.
+                    如果你保存间接缓存, 你实际上是保存基本缓存.
+                    
+                    关闭一个间接缓存对基本缓存没有影响, 但是关闭基本缓存会影响间接缓存
+}}}
+=======有关函数=======
+========make-indirect-buffer base-buffer name &optional clone========
+{{{
+                            创建和返回一个基于'BASE-BUFFER'叫做'NAME'的间接缓存, 有一个克隆选项用于完全复制基本缓存的状态.
+                            如果已经有一个存在的缓存叫做'BASE-BUFFER', 返回错误信号.
+                            
+                            如果'BASE-BUFFER'是一个间接缓存, 它的基本缓存会被调用.
+}}}
+========clone-indirect-buffer newname display-flag &optional norecord========
+{{{
+                            创建和返回一个新的间接缓存, 共享一个基本缓存.
+}}}
+========buffer-base-buffer &optional buffer========
+{{{
+                            返回当前缓存的基本缓存.
+}}}
+=====标记类型=====
+{{{
+                标记类型(Marker Type)指示具体缓存的位置, 因此标记类型由两部份组成.
+                标记没有读入语法, 他们作为一个哈希符号(Hash Notation)打印出来:
+                     (point-marker)
+                          => #<marker at 10779 in objects.texi>
+}}}
+=====窗口类型=====
+{{{
+                窗口类型(Window Type)用于描述用户用于显示一个缓存的终端屏幕的一部分.
+                每一个窗口都有一个相关联的缓存显示在窗口里面.
+                与之对比的是一个缓存可以在一个窗口, 没有窗口, 或者几个窗口.
+                虽然可能有很多窗口同时存在, 但是任何时间只有一个窗口被指定为选择窗口 (Select Window), 并接收用户的命令.
+                通常选择的窗口显示当前缓存, 但是这个不是必需的(通过一些命令, Emacs可以操作其他窗口的缓存).
+                窗口归类与框架(Frames), 每一个窗口都只属于一个框架.
+                窗口没有读入语法, 他们作为一个哈希字符(Hash Notation)打印出来, 窗口数字和显示的缓存名字, 窗口数字用于识别窗口的.
+                     (selected-window)
+                          => #<window 1 on objects.texi>
+}}}
+=====框架类型=====
+{{{
+                框架类型(Frame Type)是一个包含一个或者多个窗口的屏幕区域.
+                框架没有读入语法, 他们作为一个哈希字符(Hash Notation)打印出来, 给定一个框架的标题和核心地址.
+}}}
+=====窗口配置类型=====
+{{{
+                窗口配置类型(Window Configuration Type) 是一个存储框架中窗口位置, 大小和内容信息的对象.
+                使你以后可以重建一个相同的窗口排列.
+}}}
+=====框架配置类型=====
+{{{
+                框架配置类型(Frame Configuration Type) 是一个存储所有框架的位置, 大小和窗口内容信息的对象.
+}}}
+=====进程类型=====
+{{{
+                进程类型(Process Type)是一个指定Emacs进程创建子进程(subprocess)的LISP对象, 以扩充Emacs的能力.
+                Emacs子进程可以向子进程发送或者接收信息.
+}}}
+=====流类型=====
+{{{
+                流类型(Stream Type)是一个用于输入/输出的信息承载对象.
+}}}
+=====按键图类型=====
+{{{
+                按键图类型(Keymap Type)控制着用户的输入命令的执行.
+}}}
+=====覆盖类型=====
+{{{
+                覆盖类型(Overlay Type)是一个应用缓存一部分的特殊属性.
+}}}
+====环对象的读入语法 (Read syntax for Circurlar Objects)====
+{{{
+             '#N=' 在一个对象的前面标记为后面的引用. 随后可以用 '#N#' 去引用相同的对象在其他地方.
+                 (prog1 nil
+                   (setq x '(#1=(a) b #1#)))
+                 (eq (nth 0 x) (nth 2 x))
+                      => t
+                 (setq x '((a) b (a)))
+                 (eq (nth 0 x) (nth 2 x))
+                      => nil
+}}}
+====类型谓词====
+{{{
+            Emacs Lisp解释器在函数调用时并不对实际参数(actual arguments)进行类型检查.
+            因为Lisp并不像其他程序语言那样对函数参数进行数据类型声明.
+            这就是为什么函数要对参数进行类型检查.
+            
+            当函数检查出实际参数的类型错误时会发出 'wrong-type-argument' 的错误.
+            如果你的程序要处理不同类型的参数, 你必需显示的进行类型检查.
+            大部分对对象的类型进行检查都通过一个 '类型谓语' (type predicate)的函数进行.
+            类型谓语函数检查一个参数的类型, 如果参数属于适当的类型, 返回 t, 否则返回 nil.
+            类型谓语函数的语法大多数是: 类型谓语名字(type predicates' names) 后跟一个 'p'.
+            
+                 (defun add-on (x)
+                   (cond ((symbolp x)
+                          ;; If X is a symbol, put it on LIST.
+                          (setq list (cons x list)))
+                         ((listp x)
+                          ;; If X is a list, add its elements to LIST.
+                          (setq list (append x list)))
+                         (t
+                          ;; We handle only symbols and lists.
+                          (error "Invalid argument %s in add-on" x))))
+            
+            如果要检查对象属于哪种类型, 调用 'type-of' 函数,
+                      (type-of 1)
+                           => integer
+                      (type-of 'nil)
+                           => symbol
+                      (type-of '())    ; `()' is `nil'.
+                           => symbol
+                      (type-of '(x))
+                           => cons
+}}}
+=====类型谓语函数列表=====
+{{{
+                `atom'
+                `arrayp'
+                `bool-vector-p'
+                `bufferp'
+                `byte-code-function-p'
+                `case-table-p'
+                `char-or-string-p'
+                `char-table-p'
+                `commandp'
+                `consp'
+                `display-table-p'
+                `floatp'
+                `frame-configuration-p'
+                `frame-live-p'
+                `framep'
+                `functionp'
+                `hash-table-p'
+                `integer-or-marker-p'
+                `integerp'
+                `keymapp'
+                `keywordp'
+                `listp'
+                `markerp'
+                `wholenump'
+                `nlistp'
+                `numberp'
+                `number-or-marker-p'
+                `overlayp'
+                `processp'
+                `sequencep'
+                `stringp'
+                `subrp'
+                `symbolp'
+                `syntax-table-p'
+                `user-variable-p'
+                `vectorp'
+                `window-configuration-p'
+                `window-live-p'
+                `windowp'
+                `booleanp'
+                `string-or-null-p'
+}}}
+===数字 (Numbers)===
+{{{
+        数字分为整数和浮点数.
+        -3, 0, 7, 13
+        -4.5, 0.0, 2.71828, 1.5e2
+}}}
+====整数====
+{{{
+            # 号后面 各种符号表示用不同的进制表示:
+                 #b101100 => 44             ;; 二进制
+                 #o54 => 44                 ;; 八进制
+                 #x2c => 44                 ;; 十六进制
+                #24r1k => 44               ;; 二十四进制 (0 ~ m) 表示, 所以在Emacs中可以用 '基数r数字' 的形式表
+            示 二进制到三十六进制 (2 ~ 36). 所以 24r1k 表示二十四进制的 1k.
+}}}
+=====有关变量=====
+======most-positive-fixnum      返回Emacs能处理的最大整数======
+======most-negative-fixnum      返回Emacs能处理的最小整数======
+====浮点数====
+{{{
+            1500.0, 15e2, 15.0e2, 1.5e3, 和 .15e4 都可以用来表示一个浮点数 1500.。
+            遵循 IEEE 标准，elisp 也有一个特殊类型的值称为 NaN (not-a-number)。你
+            可以用 =(/ 0.0 0.0)= 产生这个数。
+            
+            如果参数中有浮点数, 整数自动会转换成浮点数进行计算, 比如 (/ 5 6.0) 的值才会是 5/6。
+}}}
+====数字的类型谓词====
+=====相关函数=====
+======floatp                    是否是浮点数======
+======integerp                  是否是整数======
+======numberp                   是否是数字======
+======wholenump                 是否是非负数======
+======natnump                   wholenump 的同义函数======
+======zerop                     是否是零======
+====数字的比较====
+{{{
+            数字间的比较应该用符号 '='(值之间的比较) 而不是 'eq'(表示对象间的比较).
+}}}
+=====相关函数=====
+=======                         表示如果对象在数值上相等, 返回 t, 其他返回 nil======
+======eql                       如果两个对象是同一个LISP对象, 返回 t, 其他返回 nil======
+======/=                        数值不等于======
+======<                         数值小于======
+======<=                        数值小于等于======
+======>                         数值大于======
+======>=                        数值大于等于======
+======max                       返回参数中最大的数======
+======min                       返回参数中最小的数======
+======abs                       取绝对值======
+====数字间的转换====
+=====相关的函数=====
+======float                             转换数字为浮点数======
+======truncate                          转换成靠近 0 的整数, 舍去小数点后面的数字======
+======floor                             转换成最接近的不比本身大的整数======
+======ceiling                           转换成最接近的不比本身小的整数======
+======round                             四舍五入后的整数，换句话说和它的差绝对值最小的整数======
+====算术操作====
+=====相关函数=====
+======1+                        表示 ++ 的操作======
+{{{
+                              (1+ foo)
+                                   => 5
+}}}
+======1-                        表示 -- 的操作======
+======+                         加法======
+{{{
+                              (+)
+                                   => 0
+                              (+ 1)
+                                   => 1
+                              (+ 1 2 3 4)
+                                   => 10
+}}}
+======-                         减法======
+{{{
+                              (- 10 1 2 3 4)
+                                   => 0
+                              (- 10)
+                                   => -10
+                              (-)
+                                   => 0
+}}}
+======*                         乘法======
+{{{
+                              (*)
+                                   => 1
+                              (* 1)
+                                   => 1
+                              (* 1 2 3 4)
+                                   => 24
+}}}
+======/                         除法======
+{{{
+                              (/ 6 2)
+                                   => 3
+                              (/ 5 2)
+                                   => 2
+                              (/ 5.0 2)
+                                   => 2.5
+                              (/ 5 2.0)
+                                   => 2.5
+                              (/ 5.0 2.0)
+                                   => 2.5
+                              (/ 25 3 2)
+                                   => 4
+                              (/ -17 6)
+                                   => -2   (could in theory be -3 on some machines)
+}}}
+======%                         取模, 区分符号======
+{{{
+                              (% 9 4)
+                                   => 1
+                              (% -9 4)
+                                   => -1
+                              (% 9 -4)
+                                   => 1
+                              (% -9 -4)
+                                   => -1
+}}}
+======mod                       取模, 不区分符号======
+{{{
+                              (mod 9 4)
+                                   => 1
+                              (mod -9 4)
+                                   => 3
+                              (mod 9 -4)
+                                   => -3
+                              (mod -9 -4)
+                                   => -1
+                              (mod 5.5 2.5)
+                                   => .5
+}}}
+====舍入操作====
+=====相关函数=====
+======ftruncate                          转换浮点数成靠近 0 的整数, 舍去小数点后面的数字======
+======ffloor                             转换浮点数成最接近的不比本身大的整数======
+======fceiling                           转换浮点数成最接近的不比本身小的整数======
+======fround                             四舍五入浮点数后的整数，换句话说和它的差绝对值最小的整数======
+====位操作====
+{{{
+            位操作相对于 数字二进制的比特位.
+            在 Emacs Lisp 中 位操作只应用于 整数
+}}}
+=====相关函数=====
+======lsh integer1 count                逻辑位移 (Logical shift)======
+{{{
+                    如果 count 为正数, 向左位移
+                    如果 count 为负数, 向右位移
+                              (lsh 5 1)
+                                   => 10
+                              ;; Decimal 5 becomes decimal 10.
+                              00000101 => 00001010
+                    
+                              (lsh 7 1)
+                                   => 14
+                              ;; Decimal 7 becomes decimal 14.
+                              00000111 => 00001110
+                    
+                              (lsh 3 2)
+                                   => 12
+                              ;; Decimal 3 becomes decimal 12.
+                              00000011 => 00001100
+                    
+                              (lsh 6 -1)
+                                   => 3
+                              ;; Decimal 6 becomes decimal 3.
+                              00000110 => 00000011
+                    
+                              (lsh 5 -1)
+                                   => 2
+                              ;; Decimal 5 becomes decimal 2.
+                              00000101 => 00000010
+}}}
+======ash integer1 count                算术位移 (Arithmetic shift)======
+{{{
+                    ash 和 lsh 的结果一样, 除了 integer1 和 count 都为负数时,
+                    ash 为在向右位移时保持符号为, 而 lsh 则用 0 填充, 例如:
+                    
+                              (ash -6 -1) => -3
+                              ;; Decimal -6 becomes decimal -3.
+                              1 1111  1111 1111  1111 1111  1111 1010
+                                   =>
+                              1 1111  1111 1111  1111 1111  1111 1101
+                    
+                              (lsh -6 -1) => 268435453
+                              ;; Decimal -6 becomes decimal 268,435,453.
+                              1 1111  1111 1111  1111 1111  1111 1010
+                                   =>
+                              0 1111  1111 1111  1111 1111  1111 1101
+}}}
+======logand                            逻辑与======
+{{{
+                    如果传入 两个 参数, 进行 比特位的 与 操作
+                    如果传输 一个 参数, 则直接返回这个数
+                    如果不传输任何参数, 则返回 -1 (因为 -1 的表示法相对与 logand 是唯一的)
+                    
+                                                 ;               29-bit binary values
+                    
+                              (logand 14 13)     ; 14  =  0 0000  0000 0000  0000 0000  0000 1110
+                                                 ; 13  =  0 0000  0000 0000  0000 0000  0000 1101
+                                   => 12         ; 12  =  0 0000  0000 0000  0000 0000  0000 1100
+                    
+                              (logand 14 13 4)   ; 14  =  0 0000  0000 0000  0000 0000  0000 1110
+                                                 ; 13  =  0 0000  0000 0000  0000 0000  0000 1101
+                                                 ;  4  =  0 0000  0000 0000  0000 0000  0000 0100
+                                   => 4          ;  4  =  0 0000  0000 0000  0000 0000  0000 0100
+                    
+                              (logand)
+                                   => -1         ; -1  =  1 1111  1111 1111  1111 1111  1111 1111
+}}}
+======logior                            逻辑或======
+{{{
+                                                 ;               29-bit binary values
+                    
+                              (logior 12 5)      ; 12  =  0 0000  0000 0000  0000 0000  0000 1100
+                                                 ;  5  =  0 0000  0000 0000  0000 0000  0000 0101
+                                   => 13         ; 13  =  0 0000  0000 0000  0000 0000  0000 1101
+                    
+                              (logior 12 5 7)    ; 12  =  0 0000  0000 0000  0000 0000  0000 1100
+                                                 ;  5  =  0 0000  0000 0000  0000 0000  0000 0101
+                                                 ;  7  =  0 0000  0000 0000  0000 0000  0000 0111
+                                   => 15         ; 15  =  0 0000  0000 0000  0000 0000  0000 1111
+                              (logior)
+                                   => 0          ; 0  =  0 0000  0000 0000  0000 0000  0000 0000
+}}}
+======logxor                            逻辑异或======
+{{{
+                                                 ;               29-bit binary values
+                    
+                              (logxor 12 5)      ; 12  =  0 0000  0000 0000  0000 0000  0000 1100
+                                                 ;  5  =  0 0000  0000 0000  0000 0000  0000 0101
+                                   => 9          ;  9  =  0 0000  0000 0000  0000 0000  0000 1001
+                    
+                              (logxor 12 5 7)    ; 12  =  0 0000  0000 0000  0000 0000  0000 1100
+                                                 ;  5  =  0 0000  0000 0000  0000 0000  0000 0101
+                                                 ;  7  =  0 0000  0000 0000  0000 0000  0000 0111
+                                   => 14         ; 14  =  0 0000  0000 0000  0000 0000  0000 1110
+}}}
+======lognot                            逻辑否======
+{{{
+                              (lognot 5)
+                                   => -6
+                              ;;  5  =  0 0000  0000 0000  0000 0000  0000 0101
+                              ;; becomes
+                              ;; -6  =  1 1111  1111 1111  1111 1111  1111 1010
+}}}
+====标准的数学函数====
+=====sin        正弦=====
+=====cos        余弦=====
+=====tan        正切=====
+=====asin       反正弦=====
+=====acos       反余弦=====
+=====atan       反正切=====
+=====exp arg    常数 E 的 arg 次幂=====
+=====expt x y   基数 x 的 y 次幂=====
+=====log arg    基数为 E 的 Log 函数=====
+=====log10 arg  基数为 10 的 Log 函数=====
+=====sqrt arg   arg 的平方根=====
+====随机数====
+{{{
+            确定的计算机程序无法生成真正的随机数, 只能生成'伪随机数'.
+            '伪随机数' 可以满足大多数情况.
+            
+            在Emacs里, '伪随机数'是用 '种子' 生成的.
+            所以如果给定一个 '种子', 随机函数总是生成相同的随机数字序列.
+            Emacs启动的时候总是用同一个 '种子', 所以Emacs启动后生成的随机数序列也是一样的.
+            比如, 第一次调用 (random) 总是生成 -1457731, 第二次总生成 -7692030. 当然平常如果调用次数不同, 则随机数也不一样.
+            
+            但是可以用 (random t) 函数, 它可以根据当前的时间和Emacs的PID生成一个新的随机数种子.
+}}}
+=====相关函数=====
+======random &optional limit======
+{{{
+                    如果有 limit 参数, 则会在 [0, n) 的作用域生成随机数.
+}}}
+===字符串和字符 (Strings and Characters)===
+{{{
+        在Emacs Lisp 中字符串是一个包含有序字符的数组.
+}}}
+====字符串和字符基础 (String and Character Basics)====
+{{{
+            字符串真正包含的是整数, 因为字符是一个整数.
+            
+            字符串是一个数组, 因此你可以用通用的数组和序列函数操作字符串.
+            
+            字符串有两种文本表示法: 单字节(unibyte)和多字节(multibyte).
+            
+            字符串可以通过 'match-string' 和 'replace-match' 这两个函数来进行正则表达式分解和修改字符串.
+}}}
+====字符串谓词 (The Predicates for Strings)====
+=====stringp                    对象是否是字符串=====
+=====string-or-null-p           对象是否是字符串或nil=====
+=====char-or-string-p           对象是否是字符串或字符=====
+====创建字符串 (Creating Strings)====
+=====有关函数=====
+======make-string count character======
+{{{
+                              (make-string 5 ?x)
+                                   => "xxxxx"
+                              (make-string 0 ?x)
+                                   => ""
+}}}
+======string &rest characters======
+{{{
+                              (string ?a ?b ?c)
+                                   => "abc"
+}}}
+======substring string start &optional end======
+{{{
+                    这个函数返回一个新的字符串, 从 start 开始一直到 end 的前面一个字符结束, 以 0 为索引计数.
+                    
+                              (substring "abcdefg" 0 3)
+                                   => "abc"
+                    
+                    如果是负数, 从后面开始计算
+                              (substring "abcdefg" -3 -1)
+                                   => "ef"
+                    
+                    下面的函数可以用 copy-sequence 替换.
+                              (substring "abcdefg" 0)
+                                   => "abcdefg"
+                    
+                    string 可以是一个向量.
+                              (substring [a b (c) "d"] 1 3)
+                                   => [b (c)]
+                    
+                    这个函数和 buffer-substring 类似, 不同的是 substring 是从 0 开始索引计数的, buffer-substring 是从 1 开始索引计数的.
+                    
+                    如果字符串有文本属性, 属性可以拷贝进新的字符串.
+}}}
+====修改字符串 (Modifying Strings)====
+=====aset STRING IDX CHAR=====
+{{{
+                存储 CHAR 在 STRING 的 IDX 索引处, IDX 从 0 开始计数
+}}}
+=====store-substring string idx obj=====
+{{{
+                存储 obj 在 string 的 idx 处
+}}}
+=====clear-string string=====
+{{{
+                清除 string 的内容, 并改变 string 的长度
+}}}
+====比较字符和字符串 (Comparison of Characters and Strings)====
+=====char-equal character1 character2=====
+
+====转换字符串 (String Conversion)====
+=====char-to-string character=====
+{{{
+                这个函数返回一个新的字符串包括一个字符, 这个函数荒废中, 应为 `string' 更加通用
+}}}
+=====string-to-char string=====
+{{{
+                这个函数返回字符串中的第一个字符, 如果字符窗为空或值为零或第一个字符为 null, 返回 0.
+}}}
+=====number-to-string number=====
+{{{
+                这个函数返回一个描述数字的字符窗. 如果数字为负, 字符窗必须以 - 开头.
+                
+                int-to-string 函数已经荒废了.
+}}}
+=====string-to-number string &optional base=====
+{{{
+                如果基数 base 不为空 (non-nil), 其值必须在 2 ~ 16 (高括 16) 之间的值.
+                默认为 10.
+                如果为浮点数, 基数为 10. 没有提供其他进制.
+                
+                分析字符窗时将跳过开头的空格或 TAB .
+                如果不是正确的格式, 返回 0.
+}}}
+=====concat=====
+{{{
+                转换一个向量 (vector) 或 一个列表 (list) 为一个字符窗
+}}}
+=====vconcat=====
+{{{
+                转换一个字符串为一个向量.
+}}}
+=====append=====
+{{{
+                转换一个字符串到一个列表.
+}}}
+====格式化字符窗 (Formatting String)====
+{{{
+            message 和 error 提供同样的格式化表示方法, 他们唯一不同的就是怎样用结果.
+}}}
+=====format string &rest object=====
+{{{
+                格式字符串以特定形式
+}}}
+=====格式符=====
+======%s======
+{{{
+                    用对象描述替换, 但是不引用对象 (princ)
+}}}
+======%S======
+{{{
+                    用对象描述替换, 但引用对象 (prin1)
+}}}
+======%o======
+{{{
+                    用八进制数字替换.
+}}}
+======%d======
+{{{
+                    用十进制数字替换.
+}}}
+======%x or %X======
+{{{
+                    用十六进制数字替换.
+}}}
+======%c======
+{{{
+                    用值对应的字符替换.
+}}}
+======%e======
+{{{
+                    用指数形式的浮点数替换.
+}}}
+======%f======
+{{{
+                    用小数点形式的浮点数替换.
+}}}
+======%g======
+{{{
+                    用指数或小数点形式中较短的浮点数替换.
+}}}
+======%%======
+{{{
+                    表示符号 %
+}}}
+=====格式修饰符=====
+======%+======
+{{{
+                    右对齐
+}}}
+======%-======
+{{{
+                    左对齐
+}}}
+======%#======
+{{{
+                    备用格式.
+                    %o 以 0 开始
+                    %x 以 0x 开始
+                    %X 以 0X 开始
+}}}
+====大小写转换 (Case Conversion)====
+=====downcase string-or-char=====
+{{{
+                转换字符或字符串为小写
+}}}
+=====upcase string-or-char=====
+{{{
+                转换字符或字符串为大写
+}}}
+=====capitalize string-or-char=====
+{{{
+                转换字符或字符串为首字母大写, 其余字符为小写.
+}}}
+=====upcase-initials string-or-char=====
+{{{
+                转换字符或字符串为首字母答谢, 其余字符不变.
+}}}
+===列表 (Lists)===
+====Cons-Cells====
+{{{
+            Lisp 中的 列表不是一种原始的数据类型, 它是基于 "cons-cell" 类型建立起来的.
+            一个 "cons-cell" 的数据类型表现为一个有序对.
+            一个是 CAR 容纳一个任意的LISP类型, 一个是 CDR 链接一个列表.
+            每一个列表中的 CDR 都涉及到接下来的 cons-cell 类型.
+            
+            最后一个列表的 CDR 为 nil, 这样的列表叫做 "真列表".
+            如果最后一个列表的 CDR 既不是 nil 又不是另外的 "cons-cell" 类型, 这样的列表叫做 "点列表".
+            如果最后一个列表的 CDR 指向列表中前面 "cons-cell" 中的一个, 这样的列表叫做 "循环列表".
+            
+            通用目的, 我们不关心一个列表是 "真列表", "循环列表" 还是 "点列表". 如果一个程序没有涉及到列表的最后
+            一个 cons-cell, 这是不需要关心的.
+            
+            不管怎样, 有些函数可以正常操作 "真列表", 并在操作 "点列表" 时发出错误信号.
+            当操作 "循环列表" 时, 大多数函数尝试发现一个无限循环的终点.
+}}}
+====列表相关的谓词 (List-related Predicates)====
+=====consp object=====
+{{{
+                如果当前对象是 cons-cell 这个函数返回 t, 否则返回 nil, 即使它已经是列表了.
+}}}
+=====atom object=====
+{{{
+                如果当前对象是一个原子时返回 t, 其他返回 nil.
+                除了 cons-cell 其他的所有对象都是 atoms.x
+                符号 nil 是唯一一个既是 atom 又是 list 的LISP对象.
+}}}
+=====listp object=====
+{{{
+                如果一个对象是列表返回 t, 其他返回 nil.
+}}}
+=====nlistp object=====
+{{{
+                这个函数的作用和 listp 相反.
+}}}
+=====null object=====
+{{{
+                如果一个对象为 nil 返回 t, 其他返回 nil.
+                这个函数等同于 not, 但是为了清晰表达, 当表示一个列表时用 null, 表示其值时用 not.
+}}}
+====列表元素 (List Elements)====
+=====car cons-cell=====
+{{{
+                这个函数返回 cons-cell 的 car, 如果 cons-cell 是 nil, 返回 nil.
+                如果参数既不是 cons-cell 也 不是 nil, 发出一个错误.
+}}}
+=====cdr cons-cell=====
+{{{
+                这个函数返回 cons-cell 的 cdr, 如果 cons-cell 是 nil, 返回 nil.
+                如果参数既不是 cons-cell 也 不是 nil, 发出一个错误.
+}}}
+=====car-safe object=====
+{{{
+                这个函数返回 cons-cell 的 car, 或者返回 nil (错误或者其他数据类型).
+                和函数 car 的区别在于当错误的数据类型时不发出错误.
+}}}
+=====cdr-safe object=====
+{{{
+                这个函数返回 cons-cell 的 cdr, 或者返回 nil (错误或者其他数据类型).
+                和函数 cdr 的区别在于当错误的数据类型时不发出错误.
+}}}
+=====pop listname=====
+{{{
+                这个宏得到列表的 car, 并把 car 从当前列表中删除.
+}}}
+=====nth n list=====
+{{{
+                这个函数返回列表的第 N 个元素, (从 0 开始计数, 如果列表的长度小于等于 N, 返回 nil).
+}}}
+=====nthcdr n list=====
+{{{
+                函数返回列表的第 N 个CDR, (从 0 开始计数, 如果 N 为 0 或者 负数, 返回真个列表)
+}}}
+=====last list &optional n=====
+{{{
+                这个函数返回列表的最后一个元素, 如果列表为 nil 返回 ni.
+                如果选项 N 非空, 则最后 N 个元素将返回.
+                如果 N 大于列表的长度, 返回整个列表.
+}}}
+=====safe-lengh list=====
+{{{
+                这个函数返回列表的长度, 当作用于循环列表时不抛出错误.
+                如果列表为 nil 返回 nil.
+                如果列表为循环列表时返回上限值.
+}}}
+=====caar cons-cell=====
+{{{
+                和 `(car (car CONS-CELL)) 的作用相同.
+}}}
+=====cadr cons-cell=====
+{{{
+                和 `(car (cdr CONS-CELL)) 的作用相同.
+}}}
+=====cdar cons-cell=====
+{{{
+                和 `(cdr (car CONS-CELL)) 的作用相同.
+}}}
+=====cddr cons-cell=====
+{{{
+                和 `(cdr (cdr CONS-CELL)) 的作用相同.
+}}}
+=====butlast x &optional n=====
+{{{
+                这个函数返回一个列表, 列表的最后一个或N个元素被删除.
+                原列表并不会受到损害.
+}}}
+=====nbutlast x &optional n=====
+{{{
+                这个函数和 butlast 相识, 但是和 butlast 不同的是这个函数要修改原列表.
+}}}
+====构建列表 (Building Lists)====
+=====cons object1 object2=====
+{{{
+                这个函数是最基本的构建一个新列表结构的函数.
+                它创建一个新的 cons cell, 使 object1 为 car, object2 为 cdr.
+                参数 object1 和 object2 可以为任意的LISP对象, 但是通常 object2 是一个列表.
+                
+                `cons' 通常用于添加一个单独的元素到一个列表的最前面:
+                
+                (setq new-list (cons new-element original-list))
+}}}
+=====list &rest objects=====
+{{{
+                这个函数用 OBJECTS 最为元素构建一个列表.
+                列表总是以 nil 终止.
+                
+                          (list 1 2 3 4 5)
+                               => (1 2 3 4 5)
+                          (list 1 2 '(3 4 5) 'foo)
+                               => (1 2 (3 4 5) foo)
+                          (list)
+                               => nil
+                
+}}}
+=====make-list length object=====
+{{{
+                这个函数构建一个长度为 LENGTH 的列表, 列表中的每一个元素都为 OBJECT.
+                
+                          (make-list 3 'pigs)
+                               => (pigs pigs pigs)
+                          (make-list 0 'pigs)
+                               => nil
+                          (setq l (make-list 3 '(a b))
+                               => ((a b) (a b) (a b))
+                          (eq (car l) (cadr l))
+                               => t
+                
+}}}
+=====append &rest sequence=====
+{{{
+                这个函数返回一个包含所有 SEQUENCE 的列表.
+                这些序列可以时列表, 向量, 布尔向量, 或字符串, 但是通常最后一个序列是列表.
+                除了最后一个序列, 所有序列的都拷贝进新建列表的.
+                最后一个列表成为新建列表的 CDR.
+}}}
+=====reverse list=====
+{{{
+                这个函数返回一个原列表相反排序的新列表.
+                原列表没有修改.
+                          (setq x '(1 2 3 4))
+                               => (1 2 3 4)
+                          (reverse x)
+                               => (4 3 2 1)
+                          x
+                               => (1 2 3 4)
+}}}
+=====copy-tree tree &optional vecp=====
+{{{
+                这个函数返回树的一个拷贝, 如果选项 vecp 为非空, 拷贝向量.
+}}}
+=====number-sequence from &optional to separation=====
+{{{
+                这个函数返回一个列表, 列表的元素是数字从 FROM 开始到 TO, 间隔为 SEPARATION.
+                如果 SEPARATION 是 0 并且 TO 是 nil 或 等于 FROM, 发出一个错误, 因为这回造成一个无限序列.
+                
+                          (number-sequence 4 9)
+                               => (4 5 6 7 8 9)
+                          (number-sequence 9 4 -1)
+                               => (9 8 7 6 5 4)
+                          (number-sequence 9 4 -2)
+                               => (9 7 5)
+                          (number-sequence 8)
+                               => (8)
+                          (number-sequence 8 5)
+                               => nil
+                          (number-sequence 5 8 -1)
+                               => nil
+                          (number-sequence 1.5 6 2)
+                               => (1.5 3.5 5.5)
+}}}
+=====脚注=====
+{{{
+                这里没有一个确切的方法添加一个元素到列表的最后面.
+                可以通过
+                `(append LISTNAME (list NEWELT))
+                创建一个在末尾包含新元素的新列表.
+                原列表没有修改.
+                
+                可以通过
+                `(nconc LISTNAME (list NEWELT))
+                创建一个修改过的列表.
+}}}
+====列表变量 (List Variables)====
+=====push newelt listname=====
+{{{
+                这个宏添加 元素 NEWELT 到 列表 LISTNAME.
+                等价于:
+                `(setq LISTNAME (cons NEWELT LISTNAME))
+                
+                          (setq l '(a b))
+                               => (a b)
+                          (push 'c l)
+                               => (c a b)
+                          l
+                               => (c a b)
+                
+}}}
+=====add-to-list symbol element &optional append compare-fn=====
+{{{
+                这个函数添加元素ELEMENT到列表SYMBOL(如果ELEMENT还没有存在于SYMBOL中), 并返回刷新后的列表.
+                这个函数添加元素ELEMENT到列表SYMBOL的开头, 如果选项 APPEND 为非空, 添加到结尾.
+                如果比较函数 COMPARE-FN 为非空, 用 COMPARE-FN 比较, 否则用 equal 函数比较.
+                
+                     (setq foo '(a b))
+                          => (a b)
+                
+                     (add-to-list 'foo 'c)     ;; Add `c'.
+                          => (c a b)
+                
+                     (add-to-list 'foo 'b)     ;; No effect.
+                          => (c a b)
+                
+                     foo                       ;; `foo' was changed.
+                          => (c a b)
+                
+                这个函数等价于:
+                
+                (or (member VALUE VAR)
+                    (setq VAR (cons VALUE VAR)))
+}}}
+=====add-to-ordered-list symbol element &optional order=====
+{{{
+                如果元素ELEMENT不存在于列表SYMBOL中, 这个函数添加元素ELEMENT到列表SYMBOL.
+                并按 ORDER 的顺序排列元素 ELEMENT 在列表 SYMBOL 中的位置, 如果 ORDER 的顺序为 nil, 用 eq 排序.
+                
+                     (setq foo '())
+                          => nil
+                
+                     (add-to-ordered-list 'foo 'a 1)     ;; Add `a'.
+                          => (a)
+                
+                     (add-to-ordered-list 'foo 'c 3)     ;; Add `c'.
+                          => (a c)
+                
+                     (add-to-ordered-list 'foo 'b 2)     ;; Add `b'.
+                          => (a b c)
+                
+                     (add-to-ordered-list 'foo 'b 4)     ;; Move `b'.
+                          => (a c b)
+                
+                     (add-to-ordered-list 'foo 'd)       ;; Append `d'.
+                          => (a c b d)
+                
+                     (add-to-ordered-list 'foo 'e)       ;; Add `e'.
+                          => (a c b e d)
+                
+                     foo                       ;; `foo' was changed.
+                          => (a c b e d)
+                
+}}}
+====修改列表 (Modifying Lists)====
+=====修改=====
+======setcar cons object======
+{{{
+                    这个函数存储OBJECT作为一个CONS新的CAR, 并替换CONS原来的CAR.
+                              (setq x '(1 2))
+                                   => (1 2)
+                              (setcar x 4)
+                                   => 4
+                              x
+                                   => (4 2)
+                    
+                    如果CONS是多个列表的共同部分, 这个函数改变每一个列表相同部分的CAR.
+                         ;; Create two lists that are partly shared.
+                         (setq x1 '(a b c))
+                              => (a b c)
+                         (setq x2 (cons 'z (cdr x1)))
+                              => (z b c)
+                    
+                         ;; Replace the CAR of a shared link.
+                         (setcar (cdr x1) 'foo)
+                              => foo
+                         x1                           ; Both lists are changed.
+                              => (a foo c)
+                         x2
+                              => (z foo c)
+                    
+                         ;; Replace the CAR of a link that is not shared.
+                         (setcar x1 'baz)
+                              => baz
+                         x1                           ; Only one list is changed.
+                              => (baz foo c)
+                         x2
+                              => (z foo c)
+                    
+                    示意图:
+                    
+                         x1:
+                          --------------       --------------       --------------
+                         | car   | cdr  |     | car   | cdr  |     | car   | cdr  |
+                         |   a   |   o------->|   b   |   o------->|   c   |  nil |
+                         |       |      |  -->|       |      |     |       |      |
+                          --------------  |    --------------       --------------
+                                          |
+                         x2:              |
+                          --------------  |
+                         | car   | cdr  | |
+                         |   z   |   o----
+                         |       |      |
+                          --------------
+}}}
+======setcdr cons object======
+{{{
+                    这个函数设置CONS的CDR为OBJECT, 并替换原来的CDR.
+                         (setq x '(1 2 3))
+                              => (1 2 3)
+                         (setcdr x '(4))
+                              => (4)
+                         x
+                              => (1 4)
+                    
+                    可以用这个函数删除中间的元素:
+                         (setq x1 '(a b c))
+                              => (a b c)
+                         (setcdr x1 (cdr (cdr x1)))
+                              => (c)
+                         x1
+                              => (a c)
+                    
+                       Here is the result in box notation:
+                    
+                                            --------------------
+                                           |                    |
+                          --------------   |   --------------   |    --------------
+                         | car   | cdr  |  |  | car   | cdr  |   -->| car   | cdr  |
+                         |   a   |   o-----   |   b   |   o-------->|   c   |  nil |
+                         |       |      |     |       |      |      |       |      |
+                          --------------       --------------        --------------
+                    
+                    可以插入元素:
+                         (setq x1 '(a b c))
+                              => (a b c)
+                         (setcdr x1 (cons 'd (cdr x1)))
+                              => (d b c)
+                         x1
+                              => (a d b c)
+                    
+                       Here is this result in box notation:
+                    
+                          --------------        -------------       -------------
+                         | car  | cdr   |      | car  | cdr  |     | car  | cdr  |
+                         |   a  |   o   |   -->|   b  |   o------->|   c  |  nil |
+                         |      |   |   |  |   |      |      |     |      |      |
+                          --------- | --   |    -------------       -------------
+                                    |      |
+                              -----         --------
+                             |                      |
+                             |    ---------------   |
+                             |   | car   | cdr   |  |
+                              -->|   d   |   o------
+                                 |       |       |
+                                  ---------------
+}}}
+=====重新排列 (Rearrangement)=====
+======nconc &rest lists======
+{{{
+                    这个函数返回一个包含所有列表中元素的列表.
+                    不像 `append' 那样拷贝列表, 他修改每一个列表的最后一个CDR, 使之指向接下来的列表, 最后一个列表不改变.
+                    
+                              (setq x '(1 2 3))
+                                   => (1 2 3)
+                              (nconc x '(4 5))
+                                   => (1 2 3 4 5)
+                              x
+                                   => (1 2 3 4 5)
+}}}
+======nreverse list======
+{{{
+                    这个函数逆向排序列表, 不像 `reverse', `nreverse' 修改它的列表.
+                    
+                              (setq x '(a b c))
+                                   => (a b c)
+                              x
+                                   => (a b c)
+                              (nreverse x)
+                                   => (c b a)
+                              ;; The cons cell that was first is now last.
+                              x
+                                   => (a)
+                    
+                              Original list head:                       Reversed list:
+                               -------------        -------------        ------------
+                              | car  | cdr  |      | car  | cdr  |      | car | cdr  |
+                              |   a  |  nil |<--   |   b  |   o  |<--   |   c |   o  |
+                              |      |      |   |  |      |   |  |   |  |     |   |  |
+                               -------------    |   --------- | -    |   -------- | -
+                                                |             |      |            |
+                                                 -------------        ------------
+}}}
+======sort list predicate======
+{{{
+                    这个函数用谓词函数排列列表中的元素, 并返回排序后的列表.
+                    这个谓词函数必须满足 "反对称的" (A大于B, 但是B不一定小于A) 和 "链接性的" (A大于B, B大于C, 那么A一定
+                    大于C).
+                    
+                              (setq nums '(1 3 2 6 5 4 0))
+                                   => (1 3 2 6 5 4 0)
+                              (sort nums '<)
+                                   => (0 1 2 3 4 5 6)
+                              nums
+                                   => (1 2 3 4 5 6)
+                    
+                    注意 nums 已经不包含 0, 不要假想原来的变量保存整个列表. 所以通常用下面的方法表示:
+                    
+                    (setq nums (sort nums '<))
+}}}
+====集合和列表 (Sets and Lists)====
+=====memq object list=====
+{{{
+                这个函数测试对象OBJECT是否是列表LIST的一部分, 如果是, 返回第一个遇到的对象OBJECT, 否则返回nil.
+                字母 "q" 表示用 `eq' 去比较列表的元素.
+}}}
+=====delq object list=====
+{{{
+                这个函数删除列表中所有匹配的OBJECT对象.
+}}}
+=====remq object list=====
+{{{
+                这个函数和 `delq' 相似, 但是 `remq' 拷贝一个结果列表, 而不像 `delq' 那样要修改原列表.
+}}}
+=====memql object list=====
+{{{
+                这个函数测试对象OBJECT是否在列表LIST中, 用 `eql' 比较.
+                如果存在, 返回一个以第一个出现的OBJECT为开头的列表.
+                
+                          (memql 1.2 '(1.1 1.2 1.3))  ; `1.2' and `1.2' are `eql'.      eql 判断是否是相同的LISP对象
+                               => (1.2 1.3)
+                          (memq 1.2 '(1.1 1.2 1.3))  ; `1.2' and `1.2' are not `eq'.
+                               => nil
+}}}
+=====member object list=====
+{{{
+                这个函数和 memq 类似, 但是使用 `equal' 进行比较的.
+}}}
+=====delete object sequence=====
+{{{
+                这个函数和 delq 类似, 但是使用 `equal' 进行比较的.
+}}}
+=====remove object sequence=====
+{{{
+                这个函数和 delete 类似, 但是他不修改原序列, 而是返回一个拷贝的序列.
+}}}
+=====member-ignore-case object list=====
+{{{
+                这个函数和 memeber 类似, 但是如果对象是字符串时, 忽略大小写进行比较.
+}}}
+=====delete-dups list=====
+{{{
+                这个函数删除列表中重复的对象,  用 `equal' 进行比较.
+}}}
+====赋值列表 (Association Lists)====
+=====assoc key alist=====
+{{{
+                这个函数返回第一个匹配 KEY 的 VALUE 值, 否则返回 nil.
+                用 `equal' 比较.
+                
+                          (setq trees '((pine . cones) (oak . acorns) (maple . seeds)))
+                               => ((pine . cones) (oak . acorns) (maple . seeds))
+                          (assoc 'oak trees)
+                               => (oak . acorns)
+                          (cdr (assoc 'oak trees))
+                               => acorns
+                          (assoc 'birch trees)
+                               => nil
+}}}
+=====rassoc value alist=====
+{{{
+                这个函数返回第一个匹配 VALUE 的 KEY 值, 否则返回 nil.
+                这个函数与 assoc 相反.
+}}}
+=====assq key alist=====
+{{{
+                这个函数与 assoc 类似, 但是用 `eq' 来比较, 而不是用 `equal' 比较.
+}}}
+=====rassq value alist=====
+{{{
+                这个函数与 rassoc 类似, 但是用 `eq' 来比较, 而不是用 `equal' 比较.
+}}}
+=====assoc-default key alist &optional test default=====
+{{{
+                这个函数和 assoc 类似, 但是用 TEST 函数替换 `equal' 进行比较.
+}}}
+=====copy-alist alist=====
+{{{
+                这个函数返回一个 alist 的拷贝.
+}}}
+=====assq-delete-all key alist=====
+{{{
+                这个函数删除所有赋值列表中匹配 KEY 的值.
+                          (setq alist '((foo 1) (bar 2) (foo 3) (lose 4)))
+                               => ((foo 1) (bar 2) (foo 3) (lose 4))
+                          (assq-delete-all 'foo alist)
+                               => ((bar 2) (lose 4))
+                          alist
+                               => ((foo 1) (bar 2) (lose 4))
+}}}
+=====rassq-delete-all value alist=====
+{{{
+                这个函数和 assq-delete-all 类似, 但是比较的值是 value.
+}}}
+====环 (Rings)====
+{{{
+            环是一个固定大小的数据结构, 支持 插入, 删除, 翻转, 引用 和 遍历.
+}}}
+=====make-ring size=====
+{{{
+                这个函数返回一个容量为 SIZE 的环.
+}}}
+=====ring-p object=====
+{{{
+                如果对象OBJECT是一个环, 返回 t, 否则, 返回 nil.
+}}}
+=====ring-size ring=====
+{{{
+                返回环的最大容量.
+}}}
+=====ring-length ring=====
+{{{
+                这个函数返回当前环包括对象的数量.
+                这个数不会超过环的容量
+}}}
+=====ring-elements ring=====
+{{{
+                返回包括环中对象的列表.
+}}}
+=====ring-copy ring=====
+{{{
+                返回一个环的拷贝.
+}}}
+=====ring-ref ring index=====
+{{{
+                这个函数返回环RING中在索引INDEX处的对象.
+                索引的值可以为负值或大于环的长度.
+                如果环为空, 返回 nil.
+}}}
+=====ring-insert ring object=====
+{{{
+                插入OBJECT到环中, 并使其为最新的元素.
+                如果环已经满了, 删除最老的元素.
+}}}
+=====ring-remove ring &optional index=====
+{{{
+                当索引INDEX为 nil, 移除最老的元素.
+                否则删除索引处的元素.
+                并返回删除的元素.
+                如果环为空的, 发出错误.
+}}}
+=====ring-insert-at-beginning ring object=====
+{{{
+                插入对象OBJECT到环的最前面 (视为最老的元素).
+                返回值无意义.
+                如果环已经满了, 移除最新的元素.
+}}}
+===序列, 数组, 向量 (Sequences Arrays Vectors)===
+{{{
+        一个序列包括两个LISP对象, 列表 和 数组. 从另一方面讲, 任何列表都是序列, 任何数组也是序列.
+        它们的共同点就是它们都是许多元素的有序序列.
+        
+        数组是一个单一的原始数据, 所有的元素都可以以常数时间访问, 但是它们的长度是不能改变的.
+        字符串, 向量, 字符表, 布尔向量是数组的四种类型.
+        
+        但是列表不是一个单一的原始对象. 它是 CONS CELL.
+        所以要找第 N 项元素, 需要遍历 N 个 CONS CELL, 所以访问越后面的元素需要越长的时间.
+        但是它可以灵活的添加和删除元素.
+        
+        下面是它们的关系表:
+        
+                       _____________________________________________
+                      |                                             |
+                      |          Sequence                           |
+                      |  ______   ________________________________  |
+                      | |      | |                                | |
+                      | | List | |             Array              | |
+                      | |      | |    ________       ________     | |
+                      | |______| |   |        |     |        |    | |
+                      |          |   | Vector |     | String |    | |
+                      |          |   |________|     |________|    | |
+                      |          |  ____________   _____________  | |
+                      |          | |            | |             | | |
+                      |          | | Char-table | | Bool-vector | | |
+                      |          | |____________| |_____________| | |
+                      |          |________________________________| |
+                      |_____________________________________________|
+        
+}}}
+====序列函数 (Sequence Functions)====
+=====sequencep object=====
+{{{
+                如果一个对象是 列表, 向量, 字符串, 布尔向量 或则 字符表, 返回 t. 否则返回 nil.
+}}}
+=====length sequence=====
+{{{
+                这个函数返回序列中元素的个数.
+                
+                如果序列是一个点列表, 产生一个 `wrong-type-argument' 的错误.
+                如果序列是一个循环列表, 引起一个无限循环.
+                如果序列是一个字符表, 返回值永远是是一个大于最大Emacs字符代码的值.
+                
+                          (length '(1 2 3))
+                              => 3
+                          (length ())
+                              => 0
+                          (length "foobar")
+                              => 6
+                          (length [1 2 3])
+                              => 3
+                          (length (make-bool-vector 5 nil))
+                              => 5
+}}}
+=====elt sequence index=====
+{{{
+                这个函数返回序列中在索引 INDEX 处的元素, 索引从 0 到 (序列长度 - 1).
+                如果序列是列表, 索引超出范围时和函数 `nth' 的行为一样 (返回 nil).
+                否则返回一个 `args-out-of-range' 的错误.
+                
+                          (elt [1 2 3 4] 2)
+                               => 3
+                          (elt '(1 2 3 4) 2)
+                               => 3
+                          ;; We use `string' to show clearly which character `elt' returns.
+                          (string (elt "1234" 2))
+                               => "3"
+                          (elt [1 2 3 4] 4)
+                               error--> Args out of range: [1 2 3 4], 4
+                          (elt [1 2 3 4] -1)
+                               error--> Args out of range: [1 2 3 4], -1
+}}}
+=====copy-sequence sequence=====
+{{{
+                返回一个序列的一个拷贝.
+                
+                拷贝里面有和原序列相同的对象.
+                如果一个序列是一个文本属性的字符串, 拷贝不会和原树形列表共享, 虽然属性的实际值是共享的.
+                
+                这个函数不能工作于 点列表,
+                如果拷贝一个循环列表可能会引起一个无限循环.
+                
+                          (setq bar '(1 2))
+                               => (1 2)
+                          (setq x (vector 'foo bar))
+                               => [foo (1 2)]
+                          (setq y (copy-sequence x))
+                               => [foo (1 2)]
+                
+                          (eq x y)
+                               => nil
+                          (equal x y)
+                               => t
+                          (eq (elt x 1) (elt y 1))
+                               => t
+                
+                          ;; Replacing an element of one sequence.
+                          (aset x 0 'quux)
+                          x => [quux (1 2)]
+                          y => [foo (1 2)]
+                
+                          ;; Modifying the inside of a shared element.
+                          (setcar (aref x 1) 69)
+                          x => [quux (69 2)]
+                          y => [foo (69 2)]
+                
+}}}
+====数组函数 (Array Functions)====
+=====arrayp object=====
+{{{
+                如果对象是数组, 返回 t.
+}}}
+=====aref array index=====
+{{{
+                这个函数返回数组 ARRAY 中索引 INDEX 处的元素.
+}}}
+=====aset array index object=====
+{{{
+                这个函数设置数组 ARRAY 索引 INDEX 为 OBJECT 对象, 并返回对象 OBJECT.
+}}}
+=====fillarray array object=====
+{{{
+                这个函数用对象OBJECT填充数组. 并返回数组.
+                
+                          (setq a [a b c d e f g])
+                               => [a b c d e f g]
+                          (fillarray a 0)
+                               => [0 0 0 0 0 0 0]
+                          a
+                               => [0 0 0 0 0 0 0]
+                          (setq s "When in the course")
+                               => "When in the course"
+                          (fillarray s ?-)
+                               => "------------------"
+}}}
+======如果数组是 ARRAY, 并且对象不是字符, 返回 `wrong-type-argument' 错误.======
+====向量 (Vectors)====
+{{{
+            向量是通用目的的数组, 它的元素可以包含任何LISP对象. (而字符串只能包含 字符)
+            向量用方括号打印, 所以有元素 `a', `b' 和 `c' 的向量为 [a b c]
+            
+            向量执行后是一个相同的向量.
+            
+                 (setq avector [1 two '(three) "four" [five]])
+                      => [1 two (quote (three)) "four" [five]]
+                 (eval avector)
+                      => [1 two (quote (three)) "four" [five]]
+                 (eq avector (eval avector))
+                      => t
+            
+}}}
+====向量函数 (Functions for Vectors)====
+=====vectorp object=====
+{{{
+                如果对象是向量, 返回 t.
+}}}
+=====vector &rest objects=====
+{{{
+                这个函数创建一个包括对象 objects 的向量.
+                
+                          (vector 'foo 23 [bar baz] "rats")
+                               => [foo 23 [bar baz] "rats"]
+                          (vector)
+                               => []
+}}}
+=====make-vector length object=====
+{{{
+                这个函数返回一个长度为 LENGTH, 且每个对象为 OBJECT 的向量.
+}}}
+=====vconcat &rest sequences=====
+{{{
+                这个函数返回一个包含有所有序列元素的向量, 如果没有序列给出, 返回一个空向量.
+                这个值和任何已存在的向量不 `eq'
+                
+                          (setq a (vconcat '(A B C) '(D E F)))
+                               => [A B C D E F]
+                          (eq a (vconcat a))
+                               => nil
+                          (vconcat)
+                               => []
+                          (vconcat [A B C] "aa" '(foo (6 7)))
+                               => [A B C 97 97 foo (6 7)]
+                
+}}}
+=====append &rest vectors=====
+{{{
+                这个函数返回一个具有相同元素的列表.
+                
+                     (setq avector [1 two (quote (three)) "four" [five]])
+                          => [1 two (quote (three)) "four" [five]]
+                     (append avector nil)
+                          => (1 two (quote (three)) "four" [five])
+}}}
+====字符表 (Char-table)====
+=====make-char-table subtype &optional init=====
+{{{
+                这个函数新建一个字符表, 子类为 subtype, 每个元素初始化为 INIT.
+}}}
+=====char-table-p object=====
+{{{
+                如果对象是字符表, 返回 t.
+}}}
+=====char-table-subtype char-table=====
+{{{
+                这个函数返回字符表的图表符号.
+}}}
+=====char-table-parent char-table=====
+{{{
+                这个函数返回字符表的父字符表.
+}}}
+=====set-char-table-parent char-table new-parent=====
+{{{
+                设置字符表的新的父字符表部分.
+}}}
+=====char-table-extra-slot char-table n=====
+{{{
+                这个函数返回字符表扩展位置N处的内容.
+}}}
+=====set-char-table-extra-slot char-table n value=====
+{{{
+                这个函数设置字符表扩展位置N处的值.
+}}}
+=====char-table-range char-table range=====
+{{{
+                这个函数返回字符表特定范围的值.
+}}}
+=====set-char-table-range char-table range value=====
+{{{
+                这个函数设置字符表特定范围的值.
+}}}
+=====map-char-table function char-table=====
+{{{
+                应用函数 FUNCTION 到字符表 CHAR-TABLE 的每一个元素.
+}}}
+====布尔向量 (Bool-vectors)====
+=====make-bool-vector length initial=====
+{{{
+                这个函数返回一个长途为 LENGTH, 初始值为 INITIAL 的布尔向量.
+}}}
+=====bool-vector-p object=====
+===哈希表 (Hash Tables)===
+{{{
+        哈希表是个快速的查找表, 有点像赋值列表(关键字对应相应的值).
+}}}
+====和赋值列表的不同点====
+=====查找大型哈希表非常快, 查找时间不受表元素数量的影响, 但是对于小型表(小于10), 赋值列表可能要快一点, 因为哈希表多少有点常量值的开销.=====
+=====对应的哈希表没有特殊的顺序.=====
+=====没有方法使两个哈希表共享结构, 但是两个赋值列表可以有共同的tail.=====
+====创建哈希表 (Creating Hash)====
+=====make-hash-table &rest keyword-args=====
+{{{
+                这个函数创建一个新的哈希表对应特殊的参数.
+}}}
+======关键字======
+=======:test TEST=======
+========eql========
+========eq========
+========equal========
+=======:weakness WEAK=======
+========nil========
+========key========
+========value========
+========key-or-value========
+========key-and-value========
+=======:size SIZE=======
+=======:rehash-size REHASH-SIZE=======
+=======:rehash-threshold THRESHOLD=======
+====哈希表访问 (Hash Access)====
+{{{
+            任意的LISP对象都可以作为 KEY 和 VALUE 值.
+}}}
+=====gethash key table &optional default=====
+{{{
+                取得哈希表中对应KEY的值VALUE, 如果没有对应的KEY, 返回 DEFAULT.
+}}}
+=====puthash key value table=====
+{{{
+                这个函数插入一个KEY值关联VALUE值, 如果哈希表中已经存在KEY值, 用VALUE值替换旧的值.
+}}}
+=====remhash key table=====
+{{{
+                这个函数从哈希表中移除KEY和对应的VALUE值, 如果没有对应的KEY值, 什么也不做.
+                在 COMMON LISP 中, 如果成功移除后返回 non-nil, 失败返回 nil.
+                在 elisp 中, 总是返回 nil.
+}}}
+=====clrhash table=====
+{{{
+                这个函数把哈希表清空.
+                
+                在 COMMON LISP 中, `clrhash' 返回空的哈希表.
+                在 ELISP 中, 返回 nil.
+}}}
+=====maphash function table=====
+{{{
+                这个函数用函数处理哈希表中的每一个元素对, 并返回 nil.
+}}}
+====定义哈希表 (Defining Hash)====
+{{{
+            哈希表的概念, 一个大型的数组有很多插槽, 每一个插槽可以持有一个赋值对.
+}}}
+=====define-hash-table-test name test-fn hash-fn=====
+{{{
+                这个函数定一个一个新的哈希表测试, 名字为 NAME.
+                
+                TEST-FN 用来比较KEY值,
+                HASH-FN 用来比较 "hash code" 的值.
+}}}
+=====sxhash obj=====
+{{{
+                这个函数用来返回LISP对象 OBJ 的 hash code.
+                这个值是一个对象的反射值, 整数.
+                
+                如果两个对象 OBJ1 和 OBJ2 相等, (sxhash OBJ1) 和 (sxhash OBJ2) 是相同的整数.
+                
+                如果两个对象不相等, 返回的整数值通常不相等.
+                但是也不是总是不相等, 如果你足够幸运, 你可以遭遇两个不同的对象有相同的 sxhash 值.
+                
+                     (defun case-fold-string= (a b)
+                       (compare-strings a nil nil b nil nil t))
+                     (defun case-fold-string-hash (a)
+                       (sxhash (upcase a)))
+                
+                     (define-hash-table-test 'case-fold
+                       'case-fold-string= 'case-fold-string-hash)
+                
+                     (make-hash-table :test 'case-fold)
+}}}
+====其他的哈希表函数 (Other Hash)====
+=====hash-table-p table=====
+{{{
+                如果对象是哈希表, 返回 t.
+}}}
+=====copy-hash-table table=====
+{{{
+                这个函数创建并返回哈希表的拷贝, 只有哈希表本身被拷贝, KEY和VALUE共享.
+}}}
+=====hash-table-count table=====
+{{{
+                这个函数返回哈希表的实际数量.
+}}}
+=====hash-table-test table=====
+{{{
+                这个函数返回哈希表的 TEST 值.
+}}}
+=====hash-table-weakness table=====
+{{{
+                这个函数返回哈希表的 WEAK 值.
+}}}
+=====hash-table-rehash-size table=====
+{{{
+                这个函数返回哈希表的 REHASH SIZE 值.
+}}}
+=====hash-table-rehash-threshold table=====
+{{{
+                这个函数返回哈希表的 REHASH THRESHOLD 值.
+}}}
+=====hash-table-size table=====
+{{{
+                这个函数返回哈希表的 SIZE 值.
+}}}
+===符号 (Symbols)===
+{{{
+        符号是一个具有唯一名字的对象.
+        可以通过 symbolp 函数判定一个对象是否是符号
+}}}
+====符号成分 (Symbol Components)====
+{{{
+            每个符号都有四个成分(或单元), 每一个成分引用其他对象
+}}}
+=====可打印名字=====
+{{{
+                "可打印名字单元" 保存着符号读取和打印的字符串.
+                
+                "打印名字单元" 总是保存着一个字符串, 而且不可以修改.
+                其他单元针对不同的LISP对象进行个别设置.
+                
+                通过函数 `symbol-name' 可以取得
+}}}
+=====值=====
+{{{
+                "值单元" 保存这符号作为一个变量时的值
+                
+                当一个符号被用作LISP表达式执行时, 会取其值.
+                任何LISP对象都有一个合法的值.
+                
+                一些符号的值是不能改变的, 'nil' 't' 和以 ':' 开头的符号(这种是关键字)
+                
+                通过函数 `symbol-value' 可以取得.
+}}}
+=====函数=====
+{{{
+                "函数单元" 保存着符号的函数定义.
+                因为每个符号都有分开的值和函数单元, 所以变量名字和函数名字不会冲突.
+                
+                通过函数 `symbol-function' 可以取得.
+}}}
+=====属性列表=====
+{{{
+                "属性列表单元" 保存这符号的属性列表.
+                
+                通过函数 `symbol-plist' 可以取得.
+}}}
+====定义 (Definitions)====
+{{{
+            可以通过 `defvar' `defconst' 定义符号为全局变量.
+            通过 `defcustom' 定义一个用户选项
+            
+            通过 `defun' `defsubst' `defalias' 定义一个函数
+            
+            通过 `defmacro' 定义一个宏.
+}}}
+====创建符号 (Creating Symbols)====
+=====symbol-name symbol=====
+{{{
+                这个函数返回符号的名字.
+                
+                          (symbol-name 'foo)
+                               => "foo"
+}}}
+=====make-symbol name=====
+{{{
+                这个函数返回一个新分配的符号, 名字为 NAME (必须为字符串).
+                
+                他的值和函数定义为空, 属性列表为空.
+}}}
+=====intern name &optional obarray=====
+{{{
+                这个函数返回名字为 NAME 的符号.
+                如果在对象数组中没有这个符号, `intern' 创建一个新的, 加入对象数组中, 并返回.
+                
+                如果对象数组 OBARRAY 为空, 全局变量 `obarray' 会被使用.
+                
+                          (setq sym (intern "foo"))
+                               => foo
+                          (eq sym 'foo)
+                               => t
+                
+                          (setq sym1 (intern "foo" other-obarray))
+                               => foo
+                          (eq sym1 'foo)
+                               => nil
+}}}
+=====intern-soft name &optional obarray=====
+{{{
+                这个函数返回名字为 NAME 的符号, 如果对象数组中没有发现, 返回 nil.
+                如果选项 OBARRAY 为空, 使用全局变量 `obarray'.
+                参数 NAME 可以为符号, 所以可以是特定函数的名字.
+                
+                          (intern-soft "frazzle")        ; No such symbol exists.
+                               => nil
+                          (make-symbol "frazzle")        ; Create an uninterned one.
+                               => frazzle
+                          (intern-soft "frazzle")        ; That one cannot be found.
+                               => nil
+                          (setq sym (intern "frazzle"))  ; Create an interned one.
+                               => frazzle
+                          (intern-soft "frazzle")        ; That one can be found!
+                               => frazzle
+                          (eq sym 'frazzle)              ; And it is the same one.
+                               => t
+}}}
+=====obarray=====
+{{{
+                这个变量是 `intern' 和 `read' 使用的标准对象数组.
+}}}
+=====mapatoms function &optional obarray=====
+{{{
+                这个函数对对象数组 OBARRAY 中的每一个元素调用函数 FUNCTION, 并返回 nil.
+                如果选项 OBARRAY 忽略, 使用全局变量 `obarray'.
+                
+                          (setq count 0)
+                               => 0
+                          (defun count-syms (s)
+                            (setq count (1+ count)))
+                               => count-syms
+                          (mapatoms 'count-syms)
+                               => nil
+                          count
+                               => 1871
+}}}
+=====unintern symbol &optional obarray=====
+{{{
+                这个函数从对象数组中删除符号 SYMBOL, 如果符号 SYMBOL 不存在于对象数组中, 什么也不做.
+                如果选项 OBARRAY 为空, 使用当前的对象数组.
+                
+                如果你提供一个字符串, `unintern' 会删除符号名为这个字符串的符号, 如果没有, 什么也不做.
+                
+                如果 `unintern' 删除一个符号, 返回 t. 否则, 返回 nil.
+}}}
+====属性列表 (Property Lists)====
+{{{
+            属性列表的元素通常是成对的LISP对象(名字和值).
+}}}
+=====属性列表和赋值列表 (Plists and Alists)=====
+{{{
+                赋值列表非常类似属性列表, 相对于赋值列表的元素不必是有意义的, 属性列表的名字必须清楚的.
+                
+                属性列表好于赋值列表的是处理不同变量和函数的信息.
+                通常处理赋值列表需要检索整个赋值列表, 会很慢.
+                
+                但是属性列表把这些信息分类后, 就会很快.
+                
+                不论如何, 赋值列表有它自己的有点.
+                赋值列表添加一个元素快于更新一个属性.
+                因为很多属性符号在一个属性列表里, 所以很有可能冲突.
+}}}
+====符号属性列表 (Symbol Plists)====
+=====symbol-plist symbol=====
+{{{
+                这个函数返回符号的符号属性列表.
+}}}
+=====setplist symbol plist=====
+{{{
+                这个函数设置符号的属性列表为 PLIST. 并返回这个属性列表.
+                
+                          (setplist 'foo '(a 1 b (2 3) c nil))
+                               => (a 1 b (2 3) c nil)
+                          (symbol-plist 'foo)
+                               => (a 1 b (2 3) c nil)
+                
+}}}
+=====get symbol property=====
+{{{
+                这个函数从 SYMBOL 的属性列表中返回名字为 SYMBOL 的属性的值.
+                如果没有这样的属性, 返回 nil.
+                因此, 在没有属性和属性值为 nil 是没有区别的.
+}}}
+=====put symbol property value=====
+{{{
+                这个函数把值 VALUE 附加到符号 SYMBOL 属性列表中的属性 PROPERTY.
+                
+                          (put 'fly 'verb 'transitive)
+                               =>'transitive
+                          (put 'fly 'noun '(a buzzing little bug))
+                               => (a buzzing little bug)
+                          (get 'fly 'verb)
+                               => transitive
+                          (symbol-plist 'fly)
+                               => (verb transitive noun (a buzzing little bug))
+}}}
+====其他的属性列表 (Other Plists)====
+=====plist-get plist property=====
+{{{
+                这个函数返回属性列表PLIST中的PROPERTY属性.
+                
+                          (plist-get '(foo 4) 'foo)
+                               => 4
+                          (plist-get '(foo 4 bad) 'foo)
+                               => 4
+                          (plist-get '(foo 4 bad) 'bad)
+                               => `nil'
+                
+                如果属性没有在属性列表中发现, 返回 nil.
+                
+                          (plist-get '(foo 4 bad) 'bar)
+                               => nil
+}}}
+=====plist-put plist property value=====
+{{{
+                这个函数把值 VALUE 附加到属性列表 PLIST 的 PROPERTY 上.
+                
+                          (setq my-plist '(bar t foo 4))
+                               => (bar t foo 4)
+                          (setq my-plist (plist-put my-plist 'foo 69))
+                               => (bar t foo 69)
+                          (setq my-plist (plist-put my-plist 'quux '(a)))
+                               => (bar t foo 69 quux (a))
+                
+}}}
+=====lax-plist-get plist property=====
+{{{
+                这个函数类似于 `plist-get', 但是用 `equal' 替代 `eq'.
+}}}
+=====lax-plist-put plist property value=====
+{{{
+                这个函数类似于 `plist-put', 但是用 `equal' 替代 `eq'.
+}}}
+=====plist-member plist property=====
+{{{
+                如果属性列表 PLIST 包含属性 PROPERTY, 返回 non-nil.
+                和 `plist-get' 不同的是, 这个函数可以让你区别一个没有的属性和一个属性值为 nil 的属性.
+                这个值实际是属性列表 PLIST `car' 为属性 PROPERTY 的剩余部分(tail).
+}}}
+===执行 (Evaluation)===
+====介绍执行 (Intro Eval)====
+{{{
+            读取和执行是分开的阶段.
+            
+            执行一个 FORM 会创建一个新的绑定变量的新环境用来递归执行.
+            这些环境是临时的, 它们会在FORM执行完毕后消失.
+}}}
+====表格 (Forms)====
+{{{
+            一个被设计为执行的 LISP 对象叫做 "表格".
+            Emacs 执行一个表格依赖于他的数据类型.
+            Emacs 有三种不同的执行表格: 符号, 列表, 所有其他类型.
+}}}
+=====自执行表格 (Self-Evaluating Forms)=====
+{{{
+                自执行表格是那些不是列表或符号的表格.
+                自执行表格执行的结果是它们自己, 相同的对象.
+                
+                数字 25 执行过后仍然是 25.
+                字符窗 "foo" 执行过后仍然是 "foo".
+                同样的向量执行过后仍然是向量自己, 并不执行向量的元素.
+                
+                     '123               ; A number, shown without evaluation.
+                          => 123
+                     123                ; Evaluated as usual--result is the same.
+                          => 123
+                     (eval '123)        ; Evaluated "by hand"--result is the same.
+                          => 123
+                     (eval (eval '123)) ; Evaluating twice changes nothing.
+                          => 123
+}}}
+=====符号表格 (Symbol Forms)=====
+{{{
+                当一个符号被执行, 它被视为变量.
+                结果是变量的值.
+                如果没有值, 产生一个错误.
+}}}
+=====分类列表 (Classifying Lists)=====
+{{{
+                一个非空的列表表格都是依照他的第一个元素(函数调用, 宏调用, 一个特殊表格.. 等等).
+}}}
+=====间接函数 (Function Indirection)=====
+{{{
+                如果一个列表的第一个元素是一个函数单元, 用他的内容进行替代原符号.
+                如果内容是另一个符号, 这样的处理, 叫"间接符号函数", 直到内容不是符号为止.
+                
+}}}
+======indirect-function function &optional noerror======
+{{{
+                    如果函数是一个符号, 查找函数的函数的定义.
+                    如果函数不是一个符号, 返回函数本身.
+                    
+                              (defun indirect-function (function)
+                                (if (symbolp function)
+                                    (indirect-function (symbol-function function))
+                                  function))
+                    
+}}}
+=====特殊的表格 (Special Forms)=====
+{{{
+                特殊的表格是那些不执行的原始函数.
+                
+                `and'
+                `catch'
+                `cond'
+                `condition-case'
+                `defconst'
+                `defmacro'
+                `defun'
+                `defvar'
+                `function'
+                `if'
+                `interactive'
+                `let'
+                `let*'
+                `or'
+                `prog1'
+                `prog2'
+                `progn'
+                `quote'
+                `save-current-buffer'
+                `save-excursion'
+                `save-restriction'
+                `save-window-excursion'
+                `setq'
+                `setq-default'
+                `track-mouse'
+                `unwind-protect'
+                `while'
+                `with-output-to-temp-buffer'
+                
+}}}
+====执行 (Eval)====
+=====eval form=====
+{{{
+                这个函数执行一个表格, 并返回结果.
+                
+                `eval' 递归调用的限制是 `max-lisp-eval-depth'
+}}}
+=====eval-region start end &optional stream read-function=====
+{{{
+                这个函数执行 buffer 从 Start 到 End 的区域.
+}}}
+=====eval-buffer &optional buffer-or-name stream filename=====
+{{{
+                这个函数执行当前 buffer.
+}}}
+===控制结构 (Control Structures)===
+{{{
+        你可以用宏定义你自己的控制结构.
+}}}
+====顺序的 (Sequencing)====
+=====progn forms...=====
+{{{
+                这个特殊的表格执行所有表格 FORMS, 按自然顺序.
+                并返回最后表格的结果.
+}}}
+=====prog1 form1 forms...=====
+{{{
+                这个特殊的表格执行所有表格, 按自软顺序.
+                返回 FORM1 的结果.
+}}}
+=====prog2 form1 form2 forms...=====
+{{{
+                这个特殊的函数和 `prog1' 类似, 但是返回 FORM2 的结果.
+}}}
+====条件的 (Conditions)====
+=====if condition then-form else-forms...=====
+=====when condition then-forms...=====
+=====unless conditin forms...=====
+=====cond clause...=====
+====结合的 (Combining Conditions)====
+=====not condition=====
+=====and conditions...=====
+=====or confitions...=====
+====循环的 (Iteration)====
+=====while condition forms...=====
+=====dolist (var list) body...=====
+=====dotimes (var count) body...=====
+====跳出 (Nonlocal Exits)====
+=====捕获和抛出 (Catch and Throw)=====
+======catch tag body...======
+======throw tag value======
+=====错误 (Errors)=====
+======发出一个错误 (Signaling Errors)======
+=======error format-string &rest args=======
+=======signal error-symbol data=======
+{{{
+                        
+                                  (signal 'wrong-number-of-arguments '(x y))
+                                       error--> Wrong number of arguments: x, y
+                        
+                                  (signal 'no-such-error '("My unknown error condition"))
+                                       error--> peculiar error: "My unknown error condition"
+}}}
+======处理错误 (Handing Errors)======
+=======condition-case var protected-form  handlers...=======
+{{{
+                        这个特殊的表格保护执行 PROTECTED-FORM, 如果出现错误, 绑定变量 VAR, 并用 HANLDERS 进行处理.
+                        如果没有出现错误, 什么也不做.
+                        
+                        如果有多层 `condition-case', 最里面的一个可处理的进行处理.
+}}}
+=======error-message-string error-description=======
+{{{
+                        这个函数返回给定错误描述的错误消息.
+}}}
+=======ignore-errors body...=======
+{{{
+                        这个宏执行 BODY, 并忽略任何执行时的错误.
+                        如果没有产生错误, 返回最后一个表格的值, 否则返回 nil.
+}}}
+=====清理 (Cleanups)=====
+======unwind-protect body-form cleanup-forms...======
+===变量 (Variables)===
+====全局变量 (Global Variables)====
+{{{
+            全局变量在一次只能有一个值.
+            这个值保存直到你赋予一个新的值.
+}}}
+====常数变量 (Constant Variables)====
+{{{
+            在 Emacs Lisp 里, 一些符号执行得它们自己.
+            包括 `nil' `t' 和 所有以 `:' 开始的符号.
+            
+            任何试图设定值都会得到 `setting-constant' 错误
+}}}
+=====keywordp object=====
+{{{
+                如果一个对象的名字是以 `:' 开头的, 返回 t.
+                否则返回 nil.
+}}}
+====局部变量 (Local Variables)====
+=====let (bindings...) forms...=====
+=====let* (bindings...) forms...=====
+{{{
+                这个特殊的表格和 `let' 类似, 但是要先计算变量的值
+}}}
+=====max-specpdl-size=====
+{{{
+                这个变量定义局部变量绑定的总数上限.
+}}}
+====空的变量 (Void Variables)====
+{{{
+            如果你没有给一个符号赋值, 这个符号的全局值为 "空".
+            如果你尝试执行 "空变量", 会得到 `void-variable' 错误.
+            
+            注意 `nil' 不同于 "空变量".
+            符号 `nil' 是一个有值的LISP对象.
+            "空变量" 没有任何值.
+}}}
+=====makunbound symbol=====
+{{{
+                这个函数令符号为 SYMBOL 的变量绑定 "空".
+                
+                          (makunbound 'x)      ; Make the global value of `x' void.
+                               => x
+                          x
+                          error--> Symbol's value as variable is void: x
+                
+}}}
+=====boundp variable=====
+{{{
+                如果变量不为空, 返回 t, 否则返回 nil.
+                
+                     (boundp 'abracadabra)          ; Starts out void.
+                               => nil
+                          (let ((abracadabra 5))         ; Locally bind it.
+                            (boundp 'abracadabra))
+                               => t
+                          (boundp 'abracadabra)          ; Still globally void.
+                               => nil
+                          (setq abracadabra 5)           ; Make it globally nonvoid.
+                               => 5
+                          (boundp 'abracadabra)
+                               => t
+}}}
+====定义变量 (Defining Variables)====
+=====defvar symbol [value [doc-string]]=====
+=====defconst symbol value [doc-string]=====
+=====user-variable-p variable=====
+{{{
+                如果一个变量是用户选项, 返回 t.
+                否则返回 nil.
+}}}
+====访问变量 (Accessing Variables)====
+=====symbol-value symbol=====
+{{{
+                这个函数返回符号的值.
+}}}
+====设置变量 (Setting Variables)====
+=====setq [symbol form]...=====
+=====set symbol value=====
+{{{
+                `set' 比 `setq' 更原始, 在 elisp 中很少用 `set' 函数.
+}}}
+====变量范围 (Variable Scoping)====
+=====范围 (Scope)=====
+{{{
+                Emacs Lisp 的局部变量绑定用 "模糊范围" (动态范围).
+                这意味着程序中任何位置的任何函数都可以访问一个变量的绑定.
+                
+                     (defun binder (x)   ; `x' is bound in `binder'.
+                        (foo 5))         ; `foo' is some other function.
+                
+                     (defun user ()      ; `x' is used "free" in `user'.
+                       (list x))
+                
+                Emacs Lisp 使用动态范围只是 简单的词汇范围会很慢.
+                Emacs Lisp 使用动态范围只是因为动态范围简单.
+}}}
+=====区域 (Extent)=====
+{{{
+                "区域" 指程序有效执行变量的时间.
+                
+                COMMON LISP 和 Scheme 有 "模糊区域" 的实现, Emacs Lisp 里没有这样的实现.
+                
+                     (defun make-add (n)
+                         (function (lambda (m) (+ n m))))  ; Return a function.
+                          => make-add
+                     (fset 'add2 (make-add 2))  ; Define function `add2'
+                                                ;   with `(make-add 2)'.
+                          => (lambda (m) (+ n m))
+                     (add2 4)                   ; Try to add 2 to 4.
+                     error--> Symbol's value as variable is void: n
+                
+}}}
+=====实现范围 (Impl of Scope)=====
+{{{
+                "动态范围" 的实现技术是 "深绑定", 原理很简单:
+                每一个函数维护一个堆栈用于变量绑定, 但是关键在于这个函数里面调用的函数可以访问当前函数的堆栈, 所以这
+                有称 "模糊范围".
+                
+                变量的范围的实现是 "浅绑定".
+                
+}}}
+=====使用范围 (Using Scope)=====
+{{{
+                在一个函数里绑定一个变量, 然后在另外一个中访问是一种强大的技术.
+                但是如果无约束的使用, 可以使程序难以理解.
+}}}
+====缓存局部变量 (Buffer-Local Variables)====
+{{{
+            在 Emacs 里, 还支持额外的, 独特的类型的变量绑定, 比如 "缓存局部" 绑定只应用于一个缓存.
+            
+            不同的缓存里有不同的值是一个重要的自定义方法.
+}}}
+=====介绍缓存局部 (Intro to Buffer-Local)=====
+{{{
+                一个 "缓存局部变量" 是联系特殊的缓存的局部绑定.
+                这个绑定只在当前的缓存有效.
+                
+                一个变量的平常的绑定没有和任何特殊的缓存联系, 叫做 "默认绑定".
+                在大多数情况, 这个是全局绑定.
+                
+                变量的默认绑定是在所有缓存中共享的, 缓存没有它们自己的变量绑定.
+                
+                通常使用缓存局部绑定的是主模式改变变量以控制命令的行为.
+                
+                通常用 `make-local-variable' 对变量进行缓存进行局部绑定.
+                这样只是当前缓存起作用, 所有其他缓存(包括还没有创建的)都会继续共享默认的值, 直到它们都明确地给出它们自己的缓存局部绑定.
+                
+                一个更强大的操作是调用 `make-variable-buffer-local' 自动缓存绑定.
+                变量会自动设置为当前缓存局部的, 如果它还没有设置为局部的.
+                
+                缓存局部绑定分为 "Buffer-Local" "Frame-Local" "Terminal-Local", 任何缓存变量不能同时为两种缓存的局部
+                绑定.
+}}}
+=====创建缓存局部 (Creating Buffer-Local)=====
+======make-local-variable variable======
+{{{
+                    这个函数对变量 VARIABLE 进行当前缓存的缓存局部绑定.
+                    其他缓存不影响.
+                    
+                    缓存局部变量开始的值是改变量当前的值.
+                    
+                              ;; In buffer `b1':
+                              (setq foo 5)                ; Affects all buffers.
+                                   => 5
+                              (make-local-variable 'foo)  ; Now it is local in `b1'.
+                                   => foo
+                              foo                         ; That did not change
+                                   => 5                   ;   the value.
+                              (setq foo 6)                ; Change the value
+                                   => 6                   ;   in `b1'.
+                              foo
+                                   => 6
+                    
+                              ;; In buffer `b2', the value hasn't changed.
+                              (save-excursion
+                                (set-buffer "b2")
+                                foo)
+                                   => 5
+                    
+}}}
+======make-variable-buffer-local variable======
+{{{
+                    这个函数标记变量 VARIABLE 为 "自动缓存局部" 变量.
+                    所以任何后来的缓存都会设其为 "缓存局部的".
+                    
+                    使用 `make-variable-buffer-local' 最佳时机是存在两个不同的缓存同时共享相同的绑定.
+                    但是这个变量要求不同缓存里变量的值是不同的.
+}}}
+======local-variable-p variable &optional buffer======
+{{{
+                    如果变量 VARIABLE 是缓存 BUFFER (默认为当前缓存) 的局部变量, 返回 t, 否则返回 nil.
+}}}
+======local-variable-if-set-p variable &optional buffer======
+{{{
+                    如果变量在缓存 BUFFER (默认为当前缓存) 即将变成 "缓存局部的", 返回 t, 否则返回 nil.
+}}}
+======buffer-local-value variable buffer======
+{{{
+                    这个函数返回在缓存 BUFFER 中变量 VARIABLE 的 "缓存局部" 的值.
+                    如果变量还没有 "缓存局部的", 返回变量默认的值.
+}}}
+======buffer-local-values &optional buffer======
+{{{
+                    这个函数返回一个包含 "缓存局部变量" 和 其值组成的列表.
+}}}
+======kill-local-variable variable======
+{{{
+                    这个函数删除变量 VARIABLE 的 "缓存局部" 绑定.
+}}}
+======kill-all-local-variables======
+{{{
+                    这个函数删除当前缓存的所有 "缓存局部" 绑定的变量.
+                    
+                    每一个主要模式开始的时候都会调用这个函数以切换到 Fundamental 模式并擦去上一个主要模式留下来的影响.
+}}}
+======change-major-mode-hook======
+{{{
+                    这个函数会在 `kill-all-local-variables' 函数之前进行执行.
+                    以给改变主要模式做一些必要的工作.
+}}}
+=====默认的值 (Default Value)=====
+======default-value symbol======
+{{{
+                    这个函数返回符号 SYMBOL 的默认的值.
+}}}
+======default-boundp symbol======
+{{{
+                    这个函数告诉你符号 SYMBOL 的默认值是否为空.
+}}}
+======setq-default [symbol form]...======
+{{{
+                    这个函数给符号 SYMBOL 一个默认的值.
+                    
+                    如果符号还不是 "缓存局部" 绑定的, 它不会自动标记他为自动 "缓存局部" 的.
+                    设置的默认值不一定和当前 Buffer 的值一样.
+}}}
+======set-default symbol value======
+{{{
+                    这个函数和 `setq-default' 类似.
+                    
+                              (set-default (car '(a b c)) 23)
+                                   => 23
+                              (default-value 'a)
+                                   => 23
+}}}
+====文件局部变量 (File Local Variables)====
+=====enable-local-variables=====
+{{{
+                这个变量控制着是否处理文件局部变量.
+                
+                `t`     设置安全变量, 确认不安全的变量
+                `:safe` 仅仅设置安全变量, 不需要确认
+                `:all`  设置所有变量, 不需要确认
+                `nil`   不设置任何变量
+}}}
+=====hack-local-variables &optional mode-only=====
+{{{
+                这个函数分析, 并适当的绑定执行当前缓存的局部变量.
+}}}
+=====file-local-variables-alist=====
+{{{
+                这个变量保存着文件局部变量的列表.
+}}}
+=====before-hack-local-variables-hook=====
+{{{
+                这个钩子在 `hack-local-variables' 前进行执行.
+}}}
+=====hack-local-variables-hook=====
+{{{
+                这个狗仔在 `hack-local-variables' 后进行执行.
+}}}
+=====safe-local-variable-values=====
+{{{
+                这个变量提供另一种标记一些变量为安全的方法.
+}}}
+=====safe-local-variable-p sym val=====
+{{{
+                如果给定符号 SYMBOL 特定的值 VALUE 是安全的化, 返回 non-nil.
+}}}
+=====risky-local-variable-p sym=====
+{{{
+                如果一个变量是危险变量, 返回 non-nil.
+}}}
+=====ignored-local-variables=====
+{{{
+                忽略局部变量
+}}}
+=====enable-local-eval=====
+{{{
+                这个变量控制着 `Eval' 处理局部变量.
+                `t'             无条件的
+                `nil'           忽略
+                `maybe'         默认值
+}}}
+=====safe-local-eval-forms=====
+{{{
+                这个控制着 `Eval' 的安全执行.
+}}}
+====框架局部变量 (Frame-Local Variables)====
+{{{
+            Emacs 支持 "框架局部" 绑定.
+            不可以把已经 "缓存局部" 绑定的变量进行 "框架局部" 绑定.
+}}}
+=====make-variable-frame-local=====
+{{{
+                定义变量的 "框架局部" 绑定.
+}}}
+====变量别名 (Variables Aliases)====
+{{{
+            有时候使两个变量同步, 总是有相同的值是非常有用的.
+            改变其中的任何一个都可以改变另外一个.
+            
+            比如为了程序的兼容性, 总是使旧的名字作为新的名字的别名.
+}}}
+=====defvaralias new-alias base-variable &optional docstring=====
+{{{
+                这个函数定义 NEW-ALIAS 为 BASE-VARIABLE 的别名, 并返回 BASE-VARIABLE.
+}}}
+=====make-obsolete-variable obsolete-name current-name &optional when=====
+{{{
+                这个函数使字节编译器警告变量 OBSOLETE-NAME 荒废.
+                如果 CURRENT-NAME 是一个符号, 警告 CURRENT-NAME 会替换 OBSOLETE-NAME.
+                如果 CURRENT-NAME 是一个字符串, CURRENT-NAME作为一个消息并警告没有替换的变量.
+                
+                WHEN 用字符窗提示荒废的时间.
+}}}
+=====define-obsolete-variable-alias obsolete-name current-name &optional when=====
+{{{
+                这个红标记 OBSOLETE-NAME 荒废并作为 CURRENT-NAME 的别名, 它等同于:
+                
+                          (defvaralias OBSOLETE-NAME CURRENT-NAME DOCSTRING)
+                          (make-obsolete-variable OBSOLETE-NAME CURRENT-NAME WHEN)
+}}}
+=====indirect-variable variable=====
+{{{
+                这个函数返回 VARIABLE 中别名链中的最后一个.
+                
+                     (defvaralias 'foo 'bar)
+                     (indirect-variable 'foo)
+                          => bar
+                     (indirect-variable 'bar)
+                          => bar
+                     (setq bar 2)
+                     bar
+                          => 2
+                     foo
+                          => 2
+                     (setq foo 0)
+                     bar
+                          => 0
+                     foo
+                          => 0
+}}}
+===函数 (Functions)===
+====什么是函数 (What Is A Function)====
+=====functionp object=====
+{{{
+                如果一个对象是函数, 返回 t, 否则返回 nil.
+}}}
+=====subrp object=====
+{{{
+                如果一个函数是 内建函数, 返回 t, 否则返回 nil.
+}}}
+=====byte-code-function-p object=====
+{{{
+                如果一个函数是 字节码函数, 返回 t, 否则返回 nil.
+}}}
+=====subr-arity subr=====
+{{{
+                这个函数返回一个 "值对" (MIN . MAX),
+                MIN代表参数的最小数目, MAX代表参数的最大数目.
+}}}
+====Lambda 表达式 (Lambda Expressions)====
+=====Lambda 组件 (Lambda Components)=====
+{{{
+                     (lambda (ARG-VARIABLES...)
+                       [DOCUMENTATION-STRING]
+                       [INTERACTIVE-DECLARATION]
+                       BODY-FORMS...)
+                
+                第一个参数永远是 `lambda'.
+                第二个参数是符号列表, 用于 lambda 的局部绑定.
+                第三个参数是文档.
+                第四个参数是交互命令.
+                第五个参数是执行主体.
+}}}
+=====简单的 lambda=====
+{{{
+                lambda 中的 第一个括号里面的符号表示局部绑定.
+                相当于 `let' 的局部变量绑定.
+                用于在 lambda 执行体中进行局部计算.
+                
+                一个简单的定义:
+                (lambda (a b c) (+ a b c))
+                
+                然后我们可以把 lambda 表达式作为其他表达式的CAR:
+                
+                     ((lambda (a b c) (+ a b c))
+                      1 2 3)
+                
+                `a' 绑定 1, `b' 绑定 2, `c' 绑定 3.
+                并执行得到结果 6.
+                
+                同样参数也可以是其他函数调用的结果:
+                
+                     ((lambda (a b c) (+ a b c))
+                      1 (* 2 3) (- 5 4))
+                
+                现在已经不长把 lambda 表达式当作一个表格的 CAR.
+                为了得到同样的结果, 你可以用 `let' 绑定局部变量到给定的值.
+                `let' 使用更加清晰和简单.
+                `lambda' 表达式不存储函数定义, 或作为参数传给别的函数.
+                
+                无论如何, lambda 表达式在lisp的旧时代非常有用.
+                现在 `let' 来替代它.
+}}}
+====函数名字 (Function Names)====
+{{{
+            函数的定义只是为了好使用它.
+            函数不需要保持一个唯一的名字, 但是为了方便, 最好还是作一个唯一的名字, 但这不是必要的.
+            你可以用 `fset' 设定一个符号关联到某个定义.
+            
+            函数的名字和变量的名字不冲突.
+            可以起相同名字的函数和变量, 因为有不同的属性对函数和变量进行区分.
+            当执行相同的名字时, 如果它是函数就像函数那样执行, 如果它是变量就像变量那样执行.
+}}}
+====定义函数 (Definition Functions)====
+=====defun name argument-list body-form=====
+{{{
+                这个函数用于函数的定义.
+                注意, 不要无意的重定义一个已存在函数.
+                因为重定义一个函数是没哟任何提醒的.
+}}}
+=====defalias name definition &optional docstring=====
+{{{
+                定义一个函数的别名.
+                
+                你不可以用 `defalias' 和 `defun' 创建一个新的 "原始函数", 但是你可以更改它们的定义.
+                但是更改 "原始函数" 的行为非常危险.
+                
+                有些 "原始函数" 是用 C 编码, 这样的 "原始函数" 即使更改了函数的定义也没有用.
+                
+}}}
+====函数调用 (Calling Functions)====
+=====funcall function &rest arguments=====
+{{{
+                `funcall' 调用函数 FUNCTION 和 参数 ARGUMENTS, 并返回函数 FUNCTION 的返回值.
+                
+                参数 FUNCTION 必须是一个LISP函数或则一个"原始函数".
+                特殊的 FORMS 和 宏 都是不允许的. 因为给出 "未展开的" 的参数表达式是无意义的.
+                
+                          (setq f 'list)
+                               => list
+                          (funcall f 'x 'y 'z)
+                               => (x y z)
+                          (funcall f 'x 'y '(z))
+                               => (x y (z))
+                          (funcall 'and t nil)
+                          error--> Invalid function: #<subr and>
+                
+}}}
+=====apply function &rest arguments=====
+{{{
+                `apply' 调用函数 FUNCTION 和 参数 ARGUMENTS.
+                和 `funcall' 不同的是 参数 ARGUMENTS 的最后一项必须是一个列表.
+                这样 `apply' 可以把函数应用到 列表 的每一个元素.
+                
+                `apply' 返回函数 FUNCTION 的结果.
+                
+                
+                          (setq f 'list)
+                               => list
+                          (apply f 'x 'y 'z)
+                          error--> Wrong type argument: listp, z
+                          (apply '+ 1 2 '(3 4))
+                               => 10
+                          (apply '+ '(1 2 3 4))
+                               => 10
+                
+                          (apply 'append '((a b c) nil (x y z) nil))
+                               => (a b c x y z)
+}}}
+=====apply-partially func &rest args=====
+{{{
+                这个函数和 `apply' 类似,
+                但是它可以允许参数列表 ARGS 提高的的参数个数小于函数 FUNC 需要的的个数.
+                比如 函数 FUNC 需要 M 个, 参数列表 ARGS 提供 N 个 (N < M).
+                剩下的 (M - N) 个函数会在函数调用时动态加上:
+                
+                
+                          (defalias '1+ (apply-partially '+ 1)
+                            "Increment argument by one.")
+                          (1+ 10)
+                               => 11
+                
+                `10' 就是在函数 `+' 调用时, 动态加上的.
+}}}
+=====identity arg=====
+{{{
+                这个函数返回 ARG 且没有副作用.
+                
+                (mapcar 'identity "foo")
+                => (102 111 111)
+}}}
+=====ignore &rest args=====
+{{{
+                这个函数忽略任何参数, 并返回 `nil'.
+                
+                常用于函数定义中 (&rest ignore),
+                虽然接受很多参数, 单数全部忽略它们.
+}}}
+====应用函数 (Mapping Functions)====
+=====mapcar function sequence=====
+{{{
+                函数 `mapcar' 应用函数 FUNCTION 于序列 SEQUENCE 的每一个元素, 并返回一个包含结果的列表.
+                
+                序列 SEQUENCE 可以是任何类型的序列, 除了 char-table.
+                (因为 `char-table' 是一个稀疏的数组, 详细的看 `map-char-table')
+                          (mapcar 'car '((a b) (c d) (e f)))
+                               => (a c e)
+                          (mapcar '1+ [1 2 3])
+                               => (2 3 4)
+                          (mapcar 'char-to-string "abc")
+                               => ("a" "b" "c")
+                
+                          ;; Call each function in `my-hooks'.
+                          (mapcar 'funcall my-hooks)
+                
+                          (defun mapcar* (function &rest args)
+                            "Apply FUNCTION to successive cars of all ARGS.
+                          Return the list of results."
+                            ;; If no list is exhausted,
+                            (if (not (memq nil args))
+                                ;; apply function to CARs.
+                                (cons (apply function (mapcar 'car args))
+                                      (apply 'mapcar* function
+                                             ;; Recurse for rest of elements.
+                                             (mapcar 'cdr args)))))
+                
+                          (mapcar* 'cons '(a b c) '(1 2 3 4))
+                               => ((a . 1) (b . 2) (c . 3))
+}}}
+=====mapc function sequence=====
+{{{
+                `mapc' 和 函数 `mapcar' 类似, 但是他没有副作用.
+                `mapc' 总是返回序列 SEQUENCE
+}}}
+=====mapconcat function sequence separator=====
+{{{
+                `mapconcat' 应用函数  FUNCTION 到序列 SEQUENCE 的每一个元素, 并作为字符串返回并链接.
+                分隔符 SEPARATOR 在最终链接的字符串值分割每个元素的字符串.
+                
+                          (mapconcat 'symbol-name
+                                     '(The cat in the hat)
+                                     " ")
+                               => "The cat in the hat"
+                
+                          (mapconcat (function (lambda (x) (format "%c" (1+ x))))
+                                     "HAL-8000"
+                                     "")
+                               => "IBM.9111"
+                
+}}}
+====匿名函数 (Anonymous Functions)====
+{{{
+            有时候需要匿名的函数进行表示:
+            
+                 (setq silly (append '(lambda (x)) (list (list '+ (* 3 4) 'x))))
+                 => (lambda (x) (+ 12 x))
+            
+                 (funcall silly 1)
+                 => 13
+            
+            这不同于 (silly 1), 因为没有一个名字为 silly 的函数被定义.
+            
+                 (defun double-property (symbol prop)
+                   (change-property symbol prop
+                                    (function (lambda (x) (* 2 x)))))
+            
+            这里使用 `function' 和 `quote' 功能类似, 只不过是告诉编译器后面引用的是一个函数.
+            对于上边的表达式, 其实不需要 `function', 因为 `lambda' 暗指是一个函数.
+            也可以用符号 #' 表示和 `function' 相同的功能:
+            
+                 #'(lambda (x) (* x x))
+            
+            is equivalent to
+            
+                 (function (lambda (x) (* x x)))
+            
+}}}
+=====function function-object=====
+{{{
+                这个表返回函数对象 FUNCTION-OBJECT, 但是不执行它.
+}}}
+====函数单元 (Function Cells)====
+=====symbol-function symbol=====
+{{{
+                返回符号的函数单元的函数对象 (函数的定义实体).
+                如果符号的函数单元是空的 (void), `void-function' 错误会被发出.
+                `symbol-function' 并不检查返回对象是否是一个有效的函数.
+                
+                          (defun bar (n) (+ n 2))
+                               => bar
+                          (symbol-function 'bar)
+                               => (lambda (n) (+ n 2))
+                          (fset 'baz 'bar)
+                               => bar
+                          (symbol-function 'baz)
+                               => bar
+                这里的 `void' 不是 Lisp 对象 `nil' 或 符号 `void', 只是没有包含任何对象而已, 空的.
+}}}
+=====fboundp symbol=====
+{{{
+                如果符号 SYMBOL 的函数单元含有一个函数对象, 返回 `t', 否则返回 `nil'.
+                这个函数并不检查函数对象的有效性.
+}}}
+=====fmakunbound symbol=====
+{{{
+                这个函数使符号 SYMBOL 的函数单元为空的.
+                (变量的用函数 `makunbound' 设定)
+                          (defun foo (x) x)
+                               => foo
+                          (foo 1)
+                               =>1
+                          (fmakunbound 'foo)
+                               => foo
+                          (foo 1)
+                          error--> Symbol's function definition is void: foo
+}}}
+=====fset symbol definition=====
+{{{
+                这个函数存储函数定义到符号 SYMBOL 的函数单元里.
+                
+                这里有三种情况使用这个函数:
+                
+                 * 拷贝一个符号的函数定义到另外一个
+                 * 给一个符号的函数定义(不能用`defun')
+                 * 构建一个备用函数.
+                
+                          ;; Save `foo''s definition in `old-foo'.
+                          (fset 'old-foo (symbol-function 'foo))
+                
+                          ;; Make the symbol `car' the function definition of `xfirst'.
+                          ;; (Most likely, `defalias' would be better than `fset' here.)
+                          (fset 'xfirst 'car)
+                               => car
+                          (xfirst '(1 2 3))
+                               => 1
+                          (symbol-function 'xfirst)
+                               => car
+                          (symbol-function (symbol-function 'xfirst))
+                               => #<subr car>
+                
+                          ;; Define a named keyboard macro.
+                          (fset 'kill-two-lines "\^u2\^k")
+                               => "\^u2\^k"
+                
+                          ;; Here is a function that alters other functions.
+                          (defun copy-function-definition (new old)
+                            "Define NEW with the same function definition as OLD."
+                            (fset new (symbol-function old)))
+}}}
+====荒废函数 (Obsolete Functions)====
+=====make-obsolete obsolete-name current-name &optional when=====
+{{{
+                这个函数使 OBJSOLETE-NAME 在字节编译器编译时警告荒废.
+                如果 CURRENT-NAME 是一个符号, 用 CURRENT-NAME 函数替代 OBJSOLETE-NAME.
+                如果 CURRENT-NAME 是一个字符串, 显示消息.
+                选项  WHEN 提示荒废的时间. (比如版本号)
+}}}
+=====define-obsolete-function-alias obsolete-name current-name &optional when docstring=====
+{{{
+                这个函数等同于:
+                
+                         (defalias OBSOLETE-NAME CURRENT-NAME DOCSTRING)
+                         (make-obsolete OBSOLETE-NAME CURRENT-NAME WHEN)
+}}}
+====内联函数 (Inline Function)====
+{{{
+            如果你想定义一个 "内联函数", 只需要替换 `defun' 为 `defsubst'.
+            这样当你编译一个内联函数时, 编译器会 硬编码 (open-coded) 到调用处.
+            
+            这样的好处, 就是运行的更快.
+            
+            但是也有缺点, 因为 硬编码 (open-coded), 除非你重新编译, 否则旧的函数定义仍然会存在.
+            
+            还有一个缺点就是增加文件的大小和内存的使用量.
+            
+            使用内联函数很难进行调试.
+            
+            除非你对速度很在意, 并且函数会很小. 不要使用内联函数.
+}}}
+====声明函数 (Declaring Functions)====
+=====declare-function function file &optional arglist fileonly=====
+{{{
+                这个宏告诉字节编译器假定函数 FUNCION 已经定义 在文件 FILE, 并跟随 参数列表 ARGLIST
+                选项 FILEONLY `non-nil' 表示只检查定义函数的文件存在与否.
+                
+                有时候, 函数定义在一个外部包(没有包含在Emacs内), 你可以在文件名前面加上一个 `ext:' 前缀.
+                这样, 如果文件存在就会检查, 其他跳过并不产生错误.
+}}}
+====函数安全 (Function Safety)====
+=====unsafep form &optional unsafep-vars=====
+{{{
+                如果 FROM 是安全的, 返回 `nil', 否则返回 't'.
+}}}
+===宏 (Macros)===
+{{{
+        宏可以使你定义一个新的看哦功能值结构和其他的语言部分.
+        
+        一个宏的定义非常像函数, 但是它是展开其他将要计算值的表达式, 而不是像函数计算值.
+        
+        宏之所以可以作这些, 是因为它们不求值的操作参数, 而不是像函数一样要计算参数的值.
+}}}
+====简单的宏 (Simple Macro)====
+{{{
+                 (defmacro inc (var)
+                    (list 'setq var (list '1+ var)))
+            
+            当 (inc x) 被调用时, 变量 VAR 作为一个符号 'x', 而不是一个值 'x'.
+            宏的主体构建了表达式 (setq x (1+ x)), 所以当宏返回这个表达式时,
+            解释器就会执行它. 递增 `x'.
+}}}
+====展开 (Expansion)====
+{{{
+            调用宏就像调用函数一样, 但是有两点不同:
+            
+            1. 宏的参数在传给宏定义之前是不会执行的, 而函数会在传递时对参数进行执行.
+            
+            2. 宏主题返回的不是像调用函数那样返回执行的值, 而是展开宏, 然后LISP解释器会迅速的执行宏返回的展开.
+            
+}}}
+=====macroexpand from &optional environment=====
+{{{
+                这个函数展开 FROM, 如果 FROM 是一个宏调用, 展开他, 知道没有宏调用存在为止.
+                如果 FROM 不是宏调用, 直接返回本身.
+                
+                注意, `macroexpand' 不展开 FROM 里面的子表达式.
+                即使这个调用是他们自身, `macroexpand' 都不调用它们.
+                
+                函数 `macroexpand' 同样也不展开 "内联函数" (inline functions).
+                
+                如果 ENVIRONMENT 提供, 它会屏蔽当前的宏定义.
+                字节编译会用到这部分.
+                
+                          (defmacro inc (var)
+                              (list 'setq var (list '1+ var)))
+                               => inc
+                
+                          (macroexpand '(inc r))
+                               => (setq r (1+ r))
+                
+                          (defmacro inc2 (var1 var2)
+                              (list 'progn (list 'inc var1) (list 'inc var2)))
+                               => inc2
+                
+                          (macroexpand '(inc2 r s))
+                               => (progn (inc r) (inc s))  ; `inc' not expanded here.
+}}}
+=====macroexpand-all from &optional environment=====
+{{{
+                `macroexpand-all' 像 `macroexpand' 那样展开宏, 但是他会展开 FROM 里面的所有宏.
+                不仅仅是最上面的.
+                
+                如果没有宏可以展开了, 他返回的值 `eq' FROM.
+                
+                          (macroexpand-all '(inc2 r s))
+                               => (progn (setq r (1+ r)) (setq s (1+ s)))
+}}}
+====定义宏 (Definition Macros)====
+=====defmacro name argument-list body-form...=====
+{{{
+                `defmacro' 定义一个名字为 name 的宏.
+                
+                这个名字的 CAR 是一个函数 (lambda 表达式), 宏对象储存在 name 的 CDR.
+                
+                ARGUMENT-LIST 是参数列表, 像函数一样.
+                宏可以有文档字符串, 但是他会忽略任何的 `interactive' 声明, 因为宏不能交互式的调用.
+}}}
+=====declare SPECS...=====
+{{{
+                `declare' 用在宏的定义中指出两个不同的信息.
+                
+                `(debug EDEBUG-FORM-SPEC)'
+                        怎样通过宏调用 Edebug
+                `(indent INDENT-SPEC)'
+                        调用宏时怎样缩进.
+                
+}}}
+====反引用 (Backquote)====
+{{{
+            我们可以用 ' 引用一个对象并不执行.
+            
+            我们还可以用 反引用 ` 引用一个列表, 但是只是选择性的执行列表的元素.
+            
+                 `(a list of (+ 2 3) elements)
+                      => (a list of (+ 2 3) elements)
+                 '(a list of (+ 2 3) elements)
+                      => (a list of (+ 2 3) elements)
+            
+            特殊的标记 `,' 用在反引用里只是执行那些非常量的值.
+            反引用 ` 执行以 `,' 开头的参数并把它们的值放入列表结构.
+            
+            特殊标记 `,' 可以应用于深层次的列表:
+            
+                 (defmacro t-becomes-nil (variable)
+                   `(if (eq ,variable t)
+                        (setq ,variable nil)))
+            
+                 (t-becomes-nil foo)
+                      == (if (eq foo t) (setq foo nil))
+            
+            特殊标记 `,@' 可以把执行后的值并入列表:
+            
+                 (setq some-list '(2 3))
+                      => (2 3)
+                 (cons 1 (append some-list '(4) some-list))
+                      => (1 2 3 4 2 3)
+                 `(1 ,@some-list 4 ,@some-list)
+                      => (1 2 3 4 2 3)
+            
+                 (setq list '(hack foo bar))
+                      => (hack foo bar)
+                 (cons 'use
+                   (cons 'the
+                     (cons 'words (append (cdr list) '(as elements)))))
+                      => (use the words foo bar as elements)
+                 `(use the words ,@(cdr list) as elements)
+                      => (use the words foo bar as elements)
+}}}
+====用宏的问题 (Problems With Macros)====
+=====错误的时机 (Wrong Time)=====
+{{{
+                     (defmacro my-set-buffer-multibyte (arg)
+                       (if (fboundp 'set-buffer-multibyte)
+                           (set-buffer-multibyte arg)))
+                
+                上面的函数解释成功, 却编译失败. 因为当编译时 set-buffer-multibyte 后面的 arg 什么都没有做.
+                正确的应该是这样的:
+                
+                     (defmacro my-set-buffer-multibyte (arg)
+                       (if (fboundp 'set-buffer-multibyte)
+                           `(set-buffer-multibyte ,arg)))
+}}}
+=====参数执行 (Argument Evaluation)=====
+=====局部变量 (Local Vars)=====
+=====在展开中执行 (Eval During Expansion)=====
+=====重复展开 (Repeated Expansion)=====
+====缩进宏 (Indenting Macros)====
+===自定义 (Customization)===
+{{{
+        用户选项用于自定义
+}}}
+====普通的关键字 (Common Keywords)====
+=====:tag LABEL=====
+{{{
+                关键字 `:tag' 用标签 LABEL 作为一个字符串显示.
+}}}
+=====:group GROUP=====
+{{{
+                定义组
+}}}
+=====:link LINK-DATA=====
+{{{
+                定义链接.
+                
+                有几种类型:
+}}}
+======(custom-manual INFO-NODE)======
+{{{
+                    INFO-NODE 例子: "(emacs)Top"
+}}}
+======(info-line INFO-NODE)======
+{{{
+                    和 `custom-manual' 类似, 只是加上 Info 节点名字.
+}}}
+======(url-link URL)======
+{{{
+                    链接
+}}}
+======(emacs-commentary-link LIBRARY)======
+{{{
+                    链接到库的注释段.
+                    LIBRARY 是库的名字.
+}}}
+======(emacs-library-link LIBRARY)======
+{{{
+                    链接到库文件
+}}}
+======(file-link FILE)======
+{{{
+                    链接到文件.
+}}}
+======(function-link FUNCTION)======
+{{{
+                    链接到函数的文档.
+}}}
+======(varialbe-link VARIALBE)======
+{{{
+                    链接到变量的文档.
+}}}
+======(custom-group-link GROUP)======
+{{{
+                    链接到另一个自定义组
+}}}
+=====:load FILE=====
+{{{
+                在显示自定义项前先加载某个文件
+}}}
+=====:require FEATURE=====
+{{{
+                在保存自定义后, 执行 (require 'FEATURE), 之所以要这样是为了让自定义生效.
+}}}
+=====:version VERSION=====
+{{{
+                指出Emacs版本
+}}}
+=====:package-version '(PACKAGE . VERSION)'=====
+{{{
+                包的版本.
+}}}
+=====customize-package-emacs-version-alist=====
+{{{
+                这个赋值列表提供一个包和Emacs版本相关的图.
+                
+                          (add-to-list 'customize-package-emacs-version-alist
+                                       '(MH-E ("6.0" . "22.1") ("6.1" . "22.1") ("7.0" . "22.1")
+                                              ("7.1" . "22.1") ("7.2" . "22.1") ("7.3" . "22.1")
+                                              ("7.4" . "22.1") ("8.0" . "22.1")))
+}}}
+====组定义 (Group Definition)====
+=====defgroup group member doc [keyword value]=====
+{{{
+                这个宏 定义一个组和其成员.
+                成员一般为 `nil'.
+                可以为这样的形式: (NAME WIDGET), NAME为一个符号名字, 有用的 WIDGET 有:
+                `custom-variable' `custom-face' `custom-group'
+                
+                当你新介绍了一个新的组进入 Emacs.
+                还可以用 :version 在 defgroup 表示Emacs版本.
+}}}
+====变量定义 (Varialbe Definitions)====
+=====defcustom option standard doc [keyword value]...=====
+{{{
+                这个宏定义用户自定义的选项变量.
+                
+                每一个 `defcustom' 都应该至少指定一个 `:group'
+                `:set' 关键字可以在定义时做特殊的动作.
+                
+                `defcustom' 接受下面的几个关键字:
+}}}
+======:type TYPE======
+{{{
+                    定义这个选项的合法数据类型.
+}}}
+======:options VALUE-LIST======
+{{{
+                    指定这个选项合法值的列表.
+                    当前适用于下面几种类型: `hook' `plist' `alist'
+}}}
+======:set SETFUNCTION======
+{{{
+                    设置函数
+}}}
+======:get GETFUNCTION======
+{{{
+                    提取当前选项的值.
+}}}
+======:initialize FUNCTION======
+{{{
+                    初始化选项的值.
+                    
+                    这里有几个预定义的函数初始化
+}}}
+=======custom-initialize-set=======
+{{{
+                        用 `:set' 函数初始化值, 但是如果值已经为非空时, 不重新初始化值.
+}}}
+=======custom-initialize-default=======
+{{{
+                        和 `custom-initialize-set' 类似, 只是用 `set-default' 替换 `set' 进行初始值设置.
+}}}
+=======custom-initialize-reset=======
+{{{
+                        用 `:set' 进行初始化, 如果变量的值已经是非空的, 用 `:set' (`:get' 的来的值) 重新设置这个值.
+                        这个是默认的"初始化"函数.
+}}}
+=======custom-initialize-changed=======
+{{{
+                        如果已经设置过, 用 `:set' 初始化, 否则用 `:set-default'.
+}}}
+=======custom-initialize-safe-set=======
+=======custom-initialize-safe-default=======
+{{{
+                        这些函数和 *-set 类似, 只是它们要捕捉错误.
+                        当一个错误出现时, 用 `set-default' 设置变量为 `nil', 并抛出没有错误.
+}}}
+======:risky VALUE======
+{{{
+                    设置变量的 `risky-local-varialbe' 属性给值 VALUE.
+}}}
+======:safe FUNCTION======
+{{{
+                    设置变量的 `safe-local-variable' 属性给函数  FUNCTION
+}}}
+======:set-after VARIABLES======
+{{{
+                    在保存自定义时, 在设置当前选项时保证先设置变量 VARIABLE.
+}}}
+======:require======
+{{{
+                    关键字保证必要的包会被加载.
+                    
+                         (defcustom save-place nil
+                           "Non-nil means automatically save place in each file..."
+                           :type 'boolean
+                           :require 'saveplace
+                           :group 'save-place)
+                    
+}}}
+=====custom-add-frequent-value symbol value=====
+{{{
+                如果自定义项目的类型是 `hook' 和 `alist'.
+                可以用这个函数添加符号 SYMBOL 的有效的值列表.
+                
+                     (custom-add-frequent-value 'emacs-lisp-mode-hook
+                        'my-lisp-mode-initialization)
+}}}
+=====custom-reevaluate-setting symbol=====
+{{{
+                这个函数重新计算用户自定义变量的标准值.
+}}}
+====自定义类型 (Customization Types)====
+=====简单类型 (Simple Types)=====
+======sexp======
+{{{
+                    任何可以打印和读入的LISP对象
+}}}
+======integer======
+{{{
+                    整数
+}}}
+======number======
+{{{
+                    浮点数或整数
+}}}
+======float======
+{{{
+                    浮点数
+}}}
+======string======
+{{{
+                    字符串
+}}}
+======regexp======
+{{{
+                    正则表达式
+}}}
+======character======
+{{{
+                    字符代码
+}}}
+======file======
+{{{
+                    文件名称
+}}}
+======(file :must-match t)======
+{{{
+                    一个存在的文件名
+}}}
+======directory======
+{{{
+                    一个目录名称
+}}}
+======hook======
+{{{
+                    必须是一些函数
+}}}
+======alist======
+{{{
+                    必须是 cons-cells
+}}}
+======plist======
+{{{
+                    类似 `alist', 但是它的信息存储类似 "属性列表":
+                    (KEY VALUE KEY VALUE KEY VALUE ...)
+}}}
+======symbol======
+{{{
+                    符号
+}}}
+======function======
+{{{
+                    函数
+}}}
+======varialbe======
+{{{
+                    变量
+}}}
+======face======
+{{{
+                    外观
+}}}
+======boolean======
+{{{
+                    布尔值
+}}}
+======coding-system======
+{{{
+                    编码系统
+}}}
+======color======
+{{{
+                    颜色
+}}}
+=====合成类型 (Composite Types)=====
+=====链接到列表 (Splicing Into Lists)=====
+=====类型关键字 (Type Keywords)=====
+======:value VALUE======
+{{{
+                    值
+}}}
+======:format FORMAT-STRING======
+{{{
+                    格式化字符
+}}}
+=======%[BUTTON%]=======
+{{{
+                        按钮的标签
+}}}
+=======%{SAMPLE%}=======
+{{{
+                        颜色的特殊外观
+}}}
+=======%v=======
+{{{
+                        替代项目的值
+}}}
+=======%d=======
+{{{
+                        替代项目的文档
+}}}
+=======%h=======
+{{{
+                        类似 `%d', 但是如果文档字符串多于一行, 加上嗯激活的区域控制.
+}}}
+=======%t=======
+{{{
+                        替代标签
+}}}
+=======%%=======
+{{{
+                        %
+}}}
+======:action ACTION======
+{{{
+                    处理用户点击按钮的动作
+}}}
+======:button-face FACE======
+{{{
+                    按钮的外观
+}}}
+======:button-prefix PREFIX======
+======:button-suffix SUFFIX======
+{{{
+                    这些前缀或后缀添加到按钮的前面或后面
+}}}
+======:tag TAG======
+{{{
+                    标签的值
+}}}
+======:doc DOC======
+{{{
+                    文档
+}}}
+======:help-echo MOTION-DOC======
+{{{
+                    在 `echo' 显示文档, 当你 `widget-forward' 或 `widget-backward'
+}}}
+======:match FUNCITON======
+{{{
+                    决定值是否匹配某种类型
+}}}
+======:validate FUNCTION======
+{{{
+                    指出有效的输入
+}}}
+=====定义新类型 (Defining New Types)=====
+{{{
+                     (define-widget 'binary-tree-of-string 'lazy
+                       "A binary tree made of cons-cells and strings."
+                       :offset 4
+                       :tag "Node"
+                       :type '(choice (string :tag "Leaf" :value "")
+                                      (cons :tag "Interior"
+                                            :value ("" . "")
+                                            binary-tree-of-string
+                                            binary-tree-of-string)))
+                
+                     (defcustom foo-bar ""
+                       "Sample variable holding a binary tree of strings."
+                       :type 'binary-tree-of-string)
+                
+}}}
+===加载 (Loading)===
+====怎样加载程序 (How Programs Do Loading)====
+{{{
+            Elisp 有几种方法加载.
+            `autoload' 创建一个函数定义的占位符, 尝试在加载文件得到特定函数的真正定义.
+            `require' 当一个文件还没有加载时加载.
+            
+            最后, 所有的加载方法调用 `load' 函数.
+}}}
+=====load filename &optional missing-ok nomessage nosuffix must-suffix=====
+{{{
+                这个函数查找和打开文件, 并执行里面的所有form, 然后关闭文件.
+                
+                这个函数会先搜索 `.elc' 文件, 然后是 `.el' 文件, 最后才是文件名本身.
+                如果"自动解压模式"打开, 这个函数在搜索其他文件名前"优先搜索"压缩版本.
+                压缩版本的扩展名定义在变量 `jka-compr-load-suffixes' 中, 默认为 `(".gz")'
+                
+                如果选项 NOSUFFIX 是 non-`nil', 不搜索 `.elc' 和 `.el' 文件.
+                所以你要指出精确的文件名, 如果"自动解药模式"打开, 仍搜索要所版本.
+                
+                如果选项 MUST-SUFFIX 是 non-`nil', 文件名必须以`.el' 或 `.elc' 
+                结尾.
+                
+                这个函数会在变量中搜索所有版本的文件, 并加载第一个匹配的.
+                
+                如果你得到 `foo.elc' is older than `foo.el' 的警告,
+                你应该重新编译 `foo.el'
+                
+                加载时会显示
+                `Loaidng foo...' 和 `Loading foo...done'
+                除非选项 NOMESSAGE 是 non-`nil'
+                
+                一个没有处理的错误会终止文件加载.
+                同时, 任何 `autoload' 加载的函数定义也会失效.
+                
+                如果 `load' 不能发现需要加载的文件, 会产生一个 `file-error' 错误 
+                (with `Cannot open load file FILENAE'), 除非选项 MISSING-OK 是 non-`nil'
+                并返回 `nil'
+                
+                如果函数 `load' 加载成功后返回 t.
+                
+}}}
+=====load-file filename=====
+{{{
+                这个函数加载文件, 并不从 `load-path' 中搜索,
+                如果"自动解压模式"打开, 尝试搜索压缩版本.
+}}}
+=====load-library library=====
+{{{
+                这个函数等于 `load' 函数, 但是他可以读入 `load' 函数可以使用的备用阐述.
+                如果可以读入 `foo' `foo.el' `foo.elc' `foo.el.gz'
+}}}
+=====load-in-progress=====
+{{{
+                如果Emacs处于加载中, 这个变量为 non-`nil'.
+                否则为 nil.
+}}}
+=====load-read-function=====
+{{{
+                这个变量保存着 `load' 和 `eval-region' 使用的读入函数,
+                默认为 nil, 为 `read' 函数.
+}}}
+====加载后缀 (Load suffixes)====
+=====load-suffixes=====
+{{{
+                这个列表保存着"编译"和"源代码"的后缀.
+}}}
+=====load-file-rep-suffixes=====
+{{{
+                这个列表指示为相同文件的后缀, '("" ".gz").
+                `load' 函数会用这个列表优先匹配文件名.
+}}}
+=====get-load-suffixes=====
+{{{
+                这个函数返回 `load' 函数可能尝试的所有后缀.
+}}}
+====库搜索 (Library Search)====
+=====load-path=====
+{{{
+                `load-path' 选项保存 `load' 函数搜索文件的目录列表.
+                元素必须为一个目录名称.
+                
+                `load-path' 的值从环境变量 `EMACSLOADPATH' 中初始化.
+                否则在 Emacs 创建时定义在 `emacs/src/epaths.h' 文件中.
+                然后展开目录的子目录.
+                
+}}}
+=====locate-library library &optional nosuffix path interactive-call=====
+{{{
+                这个命令从给定的LIBRARY查找特定文件.
+}}}
+====自动加载 (Autoload)====
+=====autoload function filename &optional docstring interative type=====
+====重复加载 (Repeated Loading)====
+{{{
+            你可以重新编写和重新安装一个函数定义.
+            如果你不编译文件的新的版本, emacs 只会加载编译过的版本, 也就是旧的版本.
+            这时 emacs 会提醒你 `source is newer', 以重新编译新版本的源文件.
+}}}
+====部分 (Features)====
+=====provide feature &optional subfeatures=====
+{{{
+                这个函数宣告 FEATURE 现在已经加载, 或已经加载到当前Emacs会议.
+}}}
+=====require feature &optional filename noerror=====
+{{{
+                这个函数检查 FEATURE 是否已经加载,
+                如果已经加载什么也不做.
+                如果没有, 用函数 `load' 加载 FEATURE.
+                如果 filename 为 nil, 这尝试 `.el' 或 `.elc'
+                如果 NOERROR 为 non-nil, 如果加载文件失败返回 nil.
+                正常返回 FEATURE.
+                如果加载文件但是,没有 `provide', 发出错误: 
+                `Required feature FEATURE was not provided'
+}}}
+=====featurep feature &optional subfeature=====
+{{{
+                如果 FEATURE 已经加载 (provide), 返回 t.
+                如果 SUBFEATURE 为 non-nil, 只有当"子部分"加载才返回 t.
+}}}
+=====features=====
+{{{
+                这个变量保存当前会议已经加载的"部分".
+}}}
+====哪里定义 (Where Defined)====
+=====symbol-fine symbol &optional type=====
+{{{
+                这个函数查找符号的定义文件
+                如果选项 TYPE 为 nil, 任何类型的定义都可以接受.
+                如果 TYPE 为 `defun' `defvar' 或 `defface', 
+                只有那样类型的定义会返回.
+                
+                如果有 autoload 文件, 会返回相关的文件.
+}}}
+=====load-history=====
+{{{
+                这个变量包含函数和变量的定义.
+}}}
+====卸载 (Unloading)====
+=====unload-feature feature &optional force=====
+{{{
+                这个函数卸载所有 FEATURE 中的定义. 包括 hook
+                如果有 `FEATURE-unload-function', `unload-feature'会执行在
+                `FEATURE-unload-funtion' 中的定义.
+                
+                通常 `unload-feature' 拒绝卸载一个库, 当有其他库依赖他的时候.
+                如果选项 `FORCE' 为 non-nil, 以来会被忽略并强制卸载.
+                
+                `unload-feature' 函数是基于 `load-history'
+}}}
+=====unload-feature-special-hooks=====
+{{{
+                这个变量保存这在卸载某个库之前必须要扫描的 hook, 并移除在库中的函数定义.
+}}}
+====加载的钩子 (Hooks for Loading)====
+=====eval-after-load library form=====
+{{{
+                在加载 FEATURE 以后执行 FORM
+                
+                通常, 设计良好的库, 不应该用这个函数
+}}}
+=====after-load-alist=====
+{{{
+                这个变量保存着`eval-after-load'创建的赋值列表.
+}}}
+===字节编译 (Byte Compilation)===
+{{{
+        Elisp 有一个编译器转换 elisp 编写的函数为"字节码", 以更加有效的执行.
+        编译器替换 elisp 函数定义为"字节码", 当 "字节码" 被调用时, 用
+        "字节码解释器" 执行"字节码".
+        
+        由于"字节编译"的代码被 "字节码解释器"执行, 而不在硬件上直接执行.
+        "字节码" 可以在机器间完全转换而不需要重新编译.
+        
+        编译器总是以"多字节"的方式读取文件, 即使 `--unibyte', 
+        除非你进行特别的指定.
+        
+        如果你不想编译器编译文件, 加上 
+        
+        ;; -*-no-byte-compile: t; -*-
+        
+        在文件头部.
+}}}
+====字节码加速 (Speed of Byte-Code)====
+{{{
+            "字节码"编译的函数要慢于 C 语言编写的,
+            但是要快于 Lisp 编写的.
+                 (defun silly-loop (n)
+                   "Return time before and after N iterations of a loop."
+                   (let ((t1 (current-time-string)))
+                     (while (> (setq n (1- n))
+                               0))
+                     (list t1 (current-time-string))))
+                 => silly-loop
+            
+                 (silly-loop 100000)
+                 => ("Fri Mar 18 17:25:57 1994"
+                     "Fri Mar 18 17:26:28 1994")  ; 31 seconds
+            
+                 (byte-compile 'silly-loop)
+                 => [Compiled code not shown]
+            
+                 (silly-loop 100000)
+                 => ("Fri Mar 18 17:26:52 1994"
+                     "Fri Mar 18 17:26:58 1994")  ; 6 seconds
+}}}
+====编译函数 (Compilation Functions)====
+=====byte-compile symbol=====
+{{{
+                这个函数编译符号 SYMBOL 的定义, 函数的定义必须是函数的实际代码.
+                如果SYMBOL的定义是一个"字节码"函数对象, `byte-compile' 什么也做并返回 `nil'
+                没有必要重复编译相同的定义.
+                
+                如果 SYMBOL 是一个 `lambda' 表达式, 他返回相应的编译代码, 但是并不存储它们.
+}}}
+=====compile-defun &optional arg=====
+{{{
+                这个函数编译当前位置的 defun, 并执行结果.
+                如果 defun 是一个函数定义, 安装函数定义的编译版本.
+                
+                `compile-defun' 在"回显区"显示执行结果.
+                如果选项 non-nil, 会插入执行结果.
+}}}
+=====byte-compile-file filename &optional load=====
+{{{
+                这个函数编译一个文件, 如果有函数或宏定义, 写入一个定义的编译版本.
+                否则 form 会批量结合, 所有注释会丢弃.
+                
+                如果没有错误, 返回 t, 否则返回 `nil'.
+                
+                如果选项 LOAD 是 non-nil, 这个命令会在编译结束后加载文件.
+}}}
+=====byte-recompile-directory directory &optional flag force=====
+{{{
+                这个命令重新编译目录中的每个需要重新编译的 `.el' 文件.
+                只有 `.el' 文件有对应的 `.elc' 文件, 并比 `.el' 文件旧时才需要重新编译.
+                
+                当一个 `.el' 文件没有相对应的 `.elc' 文件.
+                如果选项 FLAG 为 nil, 忽略这些文件.
+                如果为 0, 编译它们.
+                否则, 提示用户.
+                
+                如果选项 FORCE 是 non-nil, 重新编译每一个有 `.elc' 对应的 `.el' 文件.
+}}}
+=====batch-byte-compile &optional noforce=====
+{{{
+                这个函数在命令行运行 `byte-compile-file', 
+                如果选项 NOFOCE 是 non-nil, 这个函数不会重新编译已经有最新 `.elc' 的 `.el' 文件
+}}}
+=====byte-code code-string data-vector max-stack=====
+{{{
+                这个函数解释"字节码", 不要使用这个函数, 只有编译器知道怎样生成正确的信息.
+}}}
+====文档和编译 (Docs and Compilation)====
+=====byte-compile-dynamic-docstrings=====
+{{{
+                如果这个变量为 non-nil, "字节编译器" 生成动态文档的编译文件.
+}}}
+====动态加载 (Dynamic Loading)====
+=====byte-compile-dynamic=====
+{{{
+                如果这个变量为 non-nil, "字节编译器"生成动态函数加载的编译文件
+}}}
+=====fetch-bytecode function=====
+{{{
+                这个函数间接的加载"字节码"函数.
+}}}
+====加载时执行 (Eval During Compile)====
+=====eval-and-compile body...=====
+{{{
+                执行并编译
+}}}
+=====eval-when-compile body...=====
+{{{
+                在编译时间执行, 而不是编译程序加载的时候.
+}}}
+====编译器错误 (Compiler Errors)====
+{{{
+            你可以用 (if (fboundp 'FUNC) ...(FUNC ...)...) 压制编译器关于函数的警告
+            用 (if (boundp 'VARIABLE)...VARIABLE....) 压制编译器关于变量的定义
+}}}
+=====with-no-warnings body...=====
+{{{
+                这个执行 BODY 而不显示任何警告.
+                
+                其实要真正的屏蔽任何警告, 需要设置变量 `byte-compile-warnings'
+                可以用 (let (byte-compile-warnings) BODY...) 的方法屏蔽任何警告
+}}}
+====字节码对象 (Byte-Code Objects)====
+=====make-byte-code &rest elements=====
+{{{
+                这个函数会构建并返回"字节码"函数对象.
+}}}
+====反汇编 (Disassembly)====
+=====disassemble object &optional buffer-or-name=====
+{{{
+                这个命令显示对象的反汇编代码.
+                     (defun factorial (integer)
+                       "Compute factorial of an integer."
+                       (if (= 1 integer) 1
+                         (* integer (factorial (1- integer)))))
+                          => factorial
+                
+                     (factorial 4)
+                          => 24
+                
+                     (disassemble 'factorial)
+                          -| byte-code for factorial:
+                      doc: Compute factorial of an integer.
+                      args: (integer)
+                
+                     0   constant 1              ; Push 1 onto stack.
+                
+                     1   varref   integer        ; Get value of `integer'
+                                                 ;   from the environment
+                                                 ;   and push the value
+                                                 ;   onto the stack.
+                
+                     2   eqlsign                 ; Pop top two values off stack,
+                                                 ;   compare them,
+                                                 ;   and push result onto stack.
+                
+                     3   goto-if-nil 10          ; Pop and test top of stack;
+                                                 ;   if `nil', go to 10,
+                                                 ;   else continue.
+                
+                     6   constant 1              ; Push 1 onto top of stack.
+                
+                     7   goto     17             ; Go to 17 (in this case, 1 will be
+                                                 ;   returned by the function).
+                
+                     10  constant *              ; Push symbol `*' onto stack.
+                
+                     11  varref   integer        ; Push value of `integer' onto stack.
+                
+                     12  constant factorial      ; Push `factorial' onto stack.
+                
+                     13  varref   integer        ; Push value of `integer' onto stack.
+                
+                     14  sub1                    ; Pop `integer', decrement value,
+                                                 ;   push new value onto stack.
+                
+                                                 ; Stack now contains:
+                                                 ;   - decremented value of `integer'
+                                                 ;   - `factorial'
+                                                 ;   - value of `integer'
+                                                 ;   - `*'
+                
+                     15  call     1              ; Call function `factorial' using
+                                                 ;   the first (i.e., the top) element
+                                                 ;   of the stack as the argument;
+                                                 ;   push returned value onto stack.
+                
+                                                 ; Stack now contains:
+                                                 ;   - result of recursive
+                                                 ;        call to `factorial'
+                                                 ;   - value of `integer'
+                                                 ;   - `*'
+                
+                     16  call     2              ; Using the first two
+                                                 ;   (i.e., the top two)
+                                                 ;   elements of the stack
+                                                 ;   as arguments,
+                                                 ;   call the function `*',
+                                                 ;   pushing the result onto the stack.
+                
+                     17  return                  ; Return the top element
+                                                 ;   of the stack.
+                          => nil
+                
+                   The `silly-loop' function is somewhat more complex:
+                
+                     (defun silly-loop (n)
+                       "Return time before and after N iterations of a loop."
+                       (let ((t1 (current-time-string)))
+                         (while (> (setq n (1- n))
+                                   0))
+                         (list t1 (current-time-string))))
+                          => silly-loop
+                
+                     (disassemble 'silly-loop)
+                          -| byte-code for silly-loop:
+                      doc: Return time before and after N iterations of a loop.
+                      args: (n)
+                
+                     0   constant current-time-string  ; Push
+                                                       ;   `current-time-string'
+                                                       ;   onto top of stack.
+                
+                     1   call     0              ; Call `current-time-string'
+                                                 ;    with no argument,
+                                                 ;    pushing result onto stack.
+                
+                     2   varbind  t1             ; Pop stack and bind `t1'
+                                                 ;   to popped value.
+                
+                     3   varref   n              ; Get value of `n' from
+                                                 ;   the environment and push
+                                                 ;   the value onto the stack.
+                
+                     4   sub1                    ; Subtract 1 from top of stack.
+                
+                     5   dup                     ; Duplicate the top of the stack;
+                                                 ;   i.e., copy the top of
+                                                 ;   the stack and push the
+                                                 ;   copy onto the stack.
+                
+                     6   varset   n              ; Pop the top of the stack,
+                                                 ;   and bind `n' to the value.
+                
+                                                 ; In effect, the sequence `dup varset'
+                                                 ;   copies the top of the stack
+                                                 ;   into the value of `n'
+                                                 ;   without popping it.
+                
+                     7   constant 0              ; Push 0 onto stack.
+                
+                     8   gtr                     ; Pop top two values off stack,
+                                                 ;   test if N is greater than 0
+                                                 ;   and push result onto stack.
+                
+                     9   goto-if-nil-else-pop 17 ; Goto 17 if `n' <= 0
+                                                 ;   (this exits the while loop).
+                                                 ;   else pop top of stack
+                                                 ;   and continue
+                
+                     12  constant nil            ; Push `nil' onto stack
+                                                 ;   (this is the body of the loop).
+                
+                     13  discard                 ; Discard result of the body
+                                                 ;   of the loop (a while loop
+                                                 ;   is always evaluated for
+                                                 ;   its side effects).
+                
+                     14  goto     3              ; Jump back to beginning
+                                                 ;   of while loop.
+                
+                     17  discard                 ; Discard result of while loop
+                                                 ;   by popping top of stack.
+                                                 ;   This result is the value `nil' that
+                                                 ;   was not popped by the goto at 9.
+                
+                     18  varref   t1             ; Push value of `t1' onto stack.
+                
+                     19  constant current-time-string  ; Push
+                                                       ;   `current-time-string'
+                                                       ;   onto top of stack.
+                
+                     20  call     0              ; Call `current-time-string' again.
+                
+                     21  list2                   ; Pop top two elements off stack,
+                                                 ;   create a list of them,
+                                                 ;   and push list onto stack.
+                
+                     22  unbind   1              ; Unbind `t1' in local environment.
+                
+                     23  return                  ; Return value of the top of stack.
+                
+                          => nil
+                
+}}}
+===函数建议 (Advising Functions)===
+===调试 (Debugging Lisp Programs)===
+====这里有三种方法调查 Emacs Lisp 程序====
+=====如果问题出现在你运行程序时.=====
+{{{
+                你可以用LISP调试器调查当程序执行时发生了什么. Emacs还提供了源代码级别的调试器 Edebug
+}}}
+=====如果程序是异步的, LISP不能读取程序.=====
+{{{
+                你可以用Emacs工具编辑LISP以局部化问题
+}}}
+=====如果问题出现在你编译程序时.=====
+{{{
+                你可以用编译器进行检查
+}}}
+====调试器 (Debugger)====
+=====错误调试 (Error Debugging)=====
+======debug-on-error======
+{{{
+                    这个选项决定调试器是否要在错误发生或没有处理时调用
+}}}
+======debug-ignored-errors======
+{{{
+                    这个变量指出特定的不掉用调试器的错误
+}}}
+======eval-expression-debug-on-error======
+{{{
+                    如果这个选项是 non-nil, 会在执行命令 `eval-expression' 设置 `debug-on-error' 为 t.
+}}}
+======debug-on-signal======
+{{{
+                    如果这个选项为 non-nil, 即使错误被 `condition-case' 捕捉, 也会调用调试器.
+                    默认是不掉用的.
+                    如果选项 `debug-on-error' 为 nil, 这个选项没有效果.
+}}}
+=====无限循环 (Infinite Loops)=====
+======debug-on-quit======
+{{{
+                    如果这个选项为 non-nil, 可以在执行命令 `C-g' 是调用调试器, 
+                    这样就可以发现无限循环的信息以解决问题
+}}}
+=====函数调试 (Function Debugging)=====
+======debug-on-entry function-name======
+{{{
+                    这个命令在函数进入时调用调试器
+}}}
+======cancel-debug-on-entry &optional function-name======
+{{{
+                    这个函数撤消 `debug-on-entry'
+}}}
+=====外在的调试 (Explicit Debug)=====
+{{{
+                你可以在源代码中加入 `(debu)' 进行调试.
+}}}
+=====调试器命令 (Debugger Commands)=====
+======`c'======
+{{{
+                    退出调试器并继续执行
+}}}
+======`d'======
+{{{
+                    继续执行
+}}}
+======`b'======
+{{{
+                    标记当前框架
+}}}
+======`u'======
+{{{
+                    当当前框架已经退出, 不要进入调试器
+}}}
+======`j'======
+{{{
+                    类似 `b' 标记当前框架, 并继续像命令 `c' 一样执行.
+}}}
+======`e'======
+{{{
+                    从 minibuffer 读取一个LISP表达式并执行它.
+}}}
+======`R'======
+{{{
+                    类似 `e', 但是保存结果到 buffer `*Debugger-record*'
+}}}
+======`q'======
+{{{
+                    退出
+}}}
+======`r'======
+{{{
+                    从调试器返回值
+}}}
+======`l'======
+{{{
+                    显示当调试器中调用的函数列表.
+}}}
+=====调用调试器 (Invoking the Debugger)=====
+======debug &rest debugger-args======
+{{{
+                    这个函数用来进入调试器
+}}}
+=====调试器内部 (Internals of Debugger)=====
+======debugger======
+{{{
+                    这个变量的值是调用调试器的函数名字
+}}}
+======backtrace======
+{{{
+                    这个命令打印当前激活函数的调用"轨迹".
+}}}
+======debug-on-next-call======
+{{{
+                    如果这个变量是 non-nil. 在执行下一个 `eval' `apply' 或 `funcall' 
+                    之前调用调试器
+}}}
+======backtrace-debug level flag======
+{{{
+                    这个函数设置 `debug-on-exit' 标志, 这个函数只能被调试器使用
+}}}
+======command-debug-status======
+{{{
+                    这个变量记录调试转改.
+}}}
+======backtrace-frame frame-number======
+{{{
+                    返回当前执行点的函数和参数.
+}}}
+====Elisp 调试器 (Edebug)====
+=====插入指令 (Instrumenting)=====
+{{{
+                如果你要使用 edebug 调试Lisp代码, 你必须首先"插入指令"到代码.
+                指令代码加入代码以在适当的地方调用调试器.
+                
+                `edebug-all-defs' 可以切换所有定义的状态.
+                `edebug-all-forms' 可以切换所有定义的 form 以调用调试器.
+                `edebug-eval-top-level-form' 可以切换 `edebug-all-defs' 
+                和 `edebug-all-forms'.
+}}}
+=====edebug 执行模式 (Edebug Execution Modes)=====
+{{{
+                Edebug 支持几种执行模式.
+}}}
+======`S'======
+{{{
+                    停止, 并等待其他 Edebug 命令
+}}}
+======`<SPC>'======
+{{{
+                    在下一个点停止
+}}}
+======`n'======
+{{{
+                    在表达式后面的下一个点停止
+}}}
+======`t'======
+{{{
+                    在每一个点暂停(默认为1秒)
+}}}
+======`T'======
+{{{
+                    更新显示每一个停止点, 但是不执行暂停.
+}}}
+======`g'======
+{{{
+                    跳到下一个"断点"
+}}}
+======`G'======
+{{{
+                    忽略"断点"
+}}}
+======`c'======
+{{{
+                    在每一个"断点"暂停(默认为1秒)
+}}}
+======`C'======
+{{{
+                    移动到每一个"断点", 但是不暂停.
+}}}
+======edebug-sit-for-seconds======
+{{{
+                    在两个执行步骤间的延迟. 默认为 1 秒
+}}}
+===读取和打印 (Read and Print)===
+====介绍流 (Streams Intro)====
+{{{
+            "读取" 一个LISP对象意味着从文本分析一个LISP表达式并产生一个相应的LISP对象.
+            "打印" 意味着用转换一个LISP对象为他"可打印的表示法".
+            
+            "读取" 和 "打印" 或多或少的是相反的动作.
+            这里有几种情况例外:
+}}}
+====="打印" 可以产生不能被读入的文本.=====
+{{{
+                比如, 缓存, 窗口, 框架, 子进程 和 标记可以用 `#' 开头的文本打印.
+                但是你不能读入这些文本, 如果你尝试读入, 你会得到错误.
+}}}
+=====一个对象可以有多种文本的表示法.=====
+{{{
+                比如, `1' 和 `01' 表示相同的整数.
+                `(a b)' 和  `(a . (b))' 表示相同的列表.
+}}}
+=====在注释里面的文本不需要=====
+====输入流 (Input Streams)====
+{{{
+            下面是输入流的可能类型
+            BUFFER
+            MAKER
+            STRING
+            FUNCTION
+            `t'
+            `nil'
+            SYMBOL
+}}}
+=====get-file-char=====
+{{{
+                这个函数用作内部读入文件输入流用, 比如函数 `load'.
+                不要使用这个函数.
+}}}
+====输入函数 (Input Functions)====
+=====read &optional stream=====
+{{{
+                这个函数读取从流 STREAM 中读取文本的LISP表达式.
+}}}
+=====read-from-string &optional start end=====
+{{{
+                这个函数从字符串 STRING 中读入文本的LISP表达式, 
+                并返回 cons cell, car 为 表达式, cdr 为字符串中剩下的字符数量.
+                
+                选项 START, END 指定字符串中的开始和结束的位置.
+}}}
+=====standard-input=====
+{{{
+                这个变量只是默认的输入流, 默认为 `t', 意味着 minibuffer
+}}}
+====输出流 (Output Streams)====
+{{{
+            下面是输出流的可能的类型:
+            
+            BUFFER
+            MARKER
+            FUNCTION
+            `t'
+            `nil'
+            SYMBOL
+}}}
+====输出函数 (Output Functions)====
+=====Print object &optional stream=====
+{{{
+                函数打印对象的描述到流, 在对象的前面和后面加上一个换行符.
+                (progn (print 'The\ cat\ in)
+                                 (print "the hat")
+                                 (print " came back"))
+                
+                -|
+                -| The\ cat\ in
+                -|
+                -| "the hat"
+                -|
+                -| " came back"
+                
+}}}
+=====prin1 object &optional stream=====
+{{{
+                函数打印对象的描述到流, 但是不像 print 那样加上换行符
+                
+                (progn (prin1 'The\ cat\ in)
+                                 (prin1 "the hat")
+                                 (prin1 " came back"))
+                
+                -| The\ cat\ in"the hat"" came back"
+                
+}}}
+=====princ object &optional stream=====
+{{{
+                函数答应对象的描述到流, 但是它不插入引用字符和双引号包围字符窗内容, 以增加可读性.
+                
+                (progn
+                            (princ 'The\ cat)
+                            (princ " in the \"hat\""))
+                               -| The cat in the "hat"
+}}}
+=====terpri=====
+{{{
+                这个函数打印一个换行符到流
+}}}
+=====write-char character &optional stream=====
+{{{
+                这个函数输出字符到流并返回字符.
+}}}
+=====prin1-to-string object &optional noescape=====
+{{{
+                这个函数返回一个包括 `prin1' 输出的字符串
+                
+                如果 noescape 参数为 non-nil, 用引号引用输出.
+}}}
+=====with-output-to-string body...=====
+{{{
+                这个宏用 'standard-oupput' 输出.
+}}}
+====输入流变量 (Output Variables)====
+=====standard-output=====
+{{{
+                这个变量指示输出流, 默认 `t', 代表回显区
+}}}
+=====print-quoted=====
+{{{
+                如果这个值为 non-`nil', 表示打印"引用"form使用简短的阅读语法.
+                比如, `(quote foo)' => `'foo'
+                `(function foo)' => `#'foo'
+}}}
+=====print-escape-newlines=====
+{{{
+                如果这个值为 non-`nil', 显示字符串中的换行符为 \n, 进纸为 \t
+                而不是打印为实际的换行符或进纸.
+}}}
+=====print-escape-nonascii=====
+{{{
+                如果这个值为 non-`nil', 无条件显示字符串中的 单字节 non-ASCII 字符为
+                反斜杠序列
+}}}
+=====print-escape-multibyte=====
+{{{
+                如果这个值为 non-`nil', 无条件显示字符串中的 多字节 non-ASCII 字符为
+                反斜杠序列
+}}}
+=====print-length=====
+{{{
+                这个值表示打印 列表, 向量 或 布尔向量 的最长的元素数量.
+                如果超过这个值用省略号表示, `nil' 表示无限制.
+}}}
+=====print-level=====
+{{{
+                这个值表示最大的括号或中括号的嵌套深度.
+                `nil' 为无限制.
+}}}
+=====eval-expression-print-length=====
+=====eval-expression-print-level=====
+{{{
+                这些是针对 执行表达式的 `print-length' 和 `print-level' 的值.
+}}}
+=====print-circle=====
+{{{
+                如果这个值为 non-`nil', 可以允许探测循环和共享结构.
+}}}
+=====print-gensym=====
+{{{
+                如果这个值为 non-`nil', 可以运新探测 uninterned 的符号.
+                并用 `#:' 前缀表示.
+}}}
+=====print-continuous-numbering=====
+{{{
+                这个值表示连续的数字.
+                `#N=' 用作标签,  `#M#' 用作引用.
+}}}
+=====print-number-table=====
+{{{
+                这个变量保存实现 `print-circle' 的内部使用的向量.
+}}}
+=====float-output-format=====
+{{{
+                这个变量指示怎样表示浮点数.
+                默认为 `nil', 表示使用最短的输出表示并不要丢失信息.
+}}}
+===迷你缓存 (Minibuffers)===
+====介绍迷你缓存 (Intro to Minibuffers)====
+{{{
+            迷你缓存用来作为命令输入.
+            默认为一行, 但是可以根据输入内容来调整高度.
+            迷你缓存也支持递归命令, 你可以递归的使用迷你缓存.
+            如果Emacs处于batch模式, 替换迷你缓存为标准输入
+}}}
+====从迷你缓存输入文本 (Text from Minibuffers)====
+=====read-from-minibuffer prompt-string &optional initial-contents keymap read hist default inherit-input-method=====
+{{{
+                这个函数是最常用的从迷你缓存读入.
+}}}
+=====read-string prompt &optional initial history default inherit-input-method=====
+{{{
+                这个函数从迷你缓存读入字符串并返回.
+}}}
+=====read-regexp prompt &optional default-value=====
+{{{
+                这个函数从迷你缓存读入正则表达式并返回.
+}}}
+=====minibuffer-allow-text-properties=====
+{{{
+                如果这个值为 `nil' `read-from-minibuffer' 
+                函数会剥去所有从minibuffer输入的文本属性并返回.
+                其他从迷你缓存读入的函数无条件的忽略这个值
+}}}
+=====minibuffer-local-map=====
+{{{
+                这个是迷你缓存的局部按键图.
+}}}
+=====read-no-blanks-input prompt &optional initial inherit-input-method=====
+{{{
+                这个函数从迷你缓存中读入字符串, 但是不允许空格字符作为输入的一部分.
+}}}
+=====minibuffer-local-ns-map=====
+{{{
+                这个是用作函数 `read-no-blanks-input' 的局部按键图.
+}}}
+====怎样读入LISP对象或表达式 (Object from Minibuffer)====
+=====read-minibuffer prompt &optional initial=====
+{{{
+                这个函数从迷你缓存读入一个LISP对象, 并返回(不执行它).
+}}}
+=====eval-minibuffer prompt &optional initial=====
+{{{
+                这个函数从迷你缓存读入LISP表达式, 执行并返回结果.
+}}}
+=====edit-and-eval-command prompt form=====
+{{{
+                这个函数从迷你缓存读入一个LISP表达式, 并执行他.
+                和函数 `eval-minibuffer' 不同的是选项 FORM 不是可选的.
+}}}
+====迷你缓存历史记录 (Minibuffer History)====
+=====add-to-history history-var newelt &optional maxelt keep-all=====
+{{{
+                这个函数添加一个新的选项NEWELT到历史记录, (前提是不为空字符串).
+}}}
+=====history-add-new-input=====
+{{{
+                如果这个值为 nil, 从迷你缓存读入的标准函数不会自动添加新的元素到历史列表里面.
+}}}
+=====history-length=====
+{{{
+                这个值指出历史列表最大的长度.
+                如果历史列表的长度超过这个值, 会删除最老的元素.
+                如果这个值为 `t', 表示没有显示.
+}}}
+=====history-delete-duplicates=====
+{{{
+                如果这个值为 `t', 那意味着添加元素时, 所有以前重复的元素都会被删除.
+}}}
+=====minibuffer-history=====
+{{{
+                默认的迷你缓存的历史记录.
+}}}
+=====query-replace-history=====
+{{{
+                `query-replace' 函数输入的历史记录
+}}}
+=====file-name-history=====
+{{{
+                文件名的历史记录
+}}}
+=====buffer-name-history=====
+{{{
+                缓存名参数的历史记录
+}}}
+=====regexp-history=====
+{{{
+                正则表达式的历史记录
+}}}
+=====extended-command-history=====
+{{{
+                扩展命令的历史记录
+}}}
+=====shell-command-history=====
+{{{
+                Shell 命令的历史记录
+}}}
+=====read-expression-history=====
+{{{
+                LISP表达式执行的历史记录
+}}}
+====迷你缓存的初始内容 (Initial Input)====
+{{{
+            许多函数的初始化参数用于初始化迷你缓存的.
+}}}
+====补全 (Completion)====
+=====基本补全 (Basic Completion)=====
+======try-completion string collection &optional predicate======
+{{{
+                    这个函数尝试返回COLLECTION着匹配STRING的最大的公有字符串.
+                    COLLETION 必须是 字符串或符号的列表, 赋值列表, 队列, 哈希列表 或
+                    一个实现字符窗虚拟集的函数.
+                    
+                    如果没有匹配的, 返回 nil.
+                    如果只有一个匹配, 返回 t.
+                    否则返回所有匹配项的最大公有字符串.
+                    
+                              (try-completion
+                               "foo"
+                               '(("foobar1" 1) ("barfoo" 2) ("foobaz" 3) ("foobar2" 4)))
+                                   => "fooba"
+                    
+                              (try-completion "foo" '(("barfoo" 2) ("foo" 3)))
+                                   => t
+                              (defun test (s)
+                                (> (length (car s)) 6))
+                                   => test
+                              (try-completion
+                               "foo"
+                               '(("foobar1" 1) ("barfoo" 2) ("foobaz" 3) ("foobar2" 4))
+                               'test)
+                                   => "foobar"
+}}}
+======all-completions string collection &optional predicate nose======
+{{{
+                    这个函数返回COLLECTION中所有匹配STRING元素的列表.
+                    
+                              (defun test (s)
+                                (> (length (car s)) 6))
+                                   => test
+                    
+                              (all-completions
+                               "foo"
+                               '(("foobar1" 1) ("barfoo" 2) ("foobaz" 3) ("foobar2" 4))
+                               'test)
+                                   => ("foobar1" "foobar2")
+}}}
+======test-completion string collection &optional predicate======
+{{{
+                    如果 STRING 匹配 COLLECTION, 放那会 non-nil.
+}}}
+======completion-ignore-case======
+{{{
+                    如果这个值为 non-nil. Emacs 会忽略补全的大小写匹配.
+}}}
+======completion-regexp-list======
+{{{
+                    这个列表保存着正则表达式.
+                    补全函数只会考虑匹配这个列表中所有表达式, 
+                    用 `case-fold-search' 检测是否忽略大小写.
+}}}
+======lazy-completion-table var fun======
+{{{
+                    这个宏提供初始补全元素的变量.
+                    
+                    (defvar foo (lazy-completion-table foo make-my-alist))
+}}}
+=====迷你缓存补全 (Minibuffer Completing)=====
+======completing-read prompt collection &optional predicate require-match initial hist default inherit-input-method======
+{{{
+                    这个函数读入用户的输入, 并返回匹配 COLLECTION 的字符串.
+}}}
+=====迷你缓存补全命令 (Completion Commads)=====
+======minibuffer-completion-table======
+{{{
+                    这个变量的值是用于迷你缓存补全集合
+}}}
+======minibuffer-completion-predicate======
+{{{
+                    这个值是用于迷你缓存补全的谓词.
+}}}
+======minibuffer-completion-confirm======
+{{{
+                    这个值决定 Emacs 是否需要在退出迷你缓存时询问补全.
+}}}
+======minibuffer-complete-word======
+{{{
+                    这个命令补全迷你缓存的单词, 即使只有一个补全项.
+                    如果第一个字符不是单词要素, 不进行补全
+}}}
+======minibuffer-complete======
+{{{
+                    这个函数尽量补全迷你缓存的内容.
+}}}
+======minibuffer-complete-and-exit======
+{{{
+                    这个函数补全迷你缓存的内容, 如果选项 `minibuffer-completion-confirm' 为 nil.
+                    直接退出迷你缓存.
+}}}
+======minibuffer-completion-help======
+{{{
+                    这个函数创建用户补全迷你缓存内容的帮助信息,  并用缓存 *Completions* 显示出来.
+}}}
+======display-completion-list completions &optional common-substring======
+{{{
+                    这个函数显示补全 COMPLETIONS 到 `standard-output', 通常是一个缓存
+                    
+                    (with-output-to-temp-buffer "*Completions*"
+                                (display-completion-list
+                                  (all-completions (buffer-string) my-alist)
+                                  (buffer-string)))
+}}}
+======completion-auto-help======
+{{{
+                    如果这个选项为 non-nil, 自动显示可能的补全 
+}}}
+======minibuffer-local-completion-map======
+{{{
+                    用于迷你缓存补全的局部按键图
+                        `?'
+                              `minibuffer-completion-help'
+                    
+                        <SPC>
+                              `minibuffer-complete-word'
+                    
+                        <TAB>
+                              `minibuffer-complete'
+}}}
+======minibuffer-local-must-match-map======
+{{{
+                    用于迷你缓存必须补全的局部按键图.
+                        `?'
+                              `minibuffer-completion-help'
+                    
+                        <SPC>
+                              `minibuffer-complete-word'
+                    
+                        <TAB>
+                              `minibuffer-complete'
+                    
+                        `C-j'
+                              `minibuffer-complete-and-exit'
+                    
+                        <RET>
+                              `minibuffer-complete-and-exit'
+}}}
+======minibuffer-local-filename-completion-map======
+{{{
+                    用于迷你缓存读入文件名的局部按键图
+}}}
+======minibuffer-local-filename-must-match-map======
+{{{
+                    用于迷你缓存读入文件名必须匹配的局部按键图
+}}}
+=====高级补全 (High-level Completion)=====
+======read-buffer prompt &optional default existing======
+{{{
+                    读入缓存的名字并用字符串返回.
+}}}
+======read-buffer-function======
+{{{
+                    这个变量指定读入缓存名字的函数.
+}}}
+======read-command prompt &optional default======
+{{{
+                    读入命令并用字符串返回.
+}}}
+======read-variable prompt &optional default======
+{{{
+                    读入变量并用字符串返回.
+}}}
+======read-color &optional prompt convert allow-empty display======
+{{{
+                    这个命令读入指定颜色的字符串, 颜色名称或RGB十六进制值 (#RRGGBBB).
+}}}
+=====读入文件名 (Reading File Names)=====
+======read-file-name prompt &optional directory default existing initial predicate======
+{{{
+                    读入文件名
+}}}
+======read-file-name-function======
+{{{
+                    读入文件名的函数
+}}}
+======read-file-name-completion-ignore-case======
+{{{
+                    如果这个值为 non-nil, 忽略读入文件名时补全的大小写.
+}}}
+======read-directory-name prompt &optional directory default exisint initial======
+{{{
+                    读入目录名
+}}}
+======insert-default-directory======
+{{{
+                    如果这个选项为 non-nil, 当使用函数 `read-file-name', 会插入默认的目录用于补全.
+}}}
+======read-shell-command prompt &optional initial-contents hist &rest args======
+{{{
+                    这个函数用于从迷你缓存读入一个shell命令.
+}}}
+======minibuffer-local-shell-command-map======
+{{{
+                    用于 `read-shell-command' 补全时的局部按键图
+}}}
+=====编程补全 (Programming Completion)=====
+======completion-table-dynamic function======
+{{{
+                    这个函数用于写一个函数提供编程所需的动态补全.
+}}}
+====Yes or No (Yes-or-No Queries)====
+=====y-or-n-p prompt=====
+{{{
+                这个函数问用户要一个问题, 并在回显区确认输入.
+                如果用户输入 `y' 或 空格, 返回 `t'.
+                如果用户输入 `n' 或 DEL键, 然会 `nil'.
+}}}
+=====y-or-n-p-with-timeout prompt second default-value=====
+{{{
+                这个函数和 `y-or-n-p' 相似, 除了有一个时间限制.
+                如果超过一定时间, 停止等待并返回默认值 DEFAULT-VALUE.
+}}}
+=====yes-or-no-p prompt=====
+{{{
+                这个函数和 `y-or-n-p' 类似, 但是要显示回答 `yes' 或 `no'. 
+}}}
+====询问多重问题 (Multiple Queries)====
+=====map-y-or-n-p prompter actor list &optional help action-alist no-cursor-in-echo-area=====
+{{{
+                这个函数用于询问用户一系列问题.
+}}}
+====读取密码 (Reading a Password)====
+=====read-passwd prompt &optional confirm default=====
+{{{
+                这个函数用来读入密码, PROMPT 是显示提示的字符串
+                如果选项 CONFIRM 为 non-nil, 要用户输入两次以确认.
+                如果选项 DEFAULT 为 non-nil, 这个函数会在用户输入为空时返回 DEFAULT 的值,
+                否则会返回空字符串.
+}}}
+====迷你缓存命令 (Minibuffer Commands)====
+=====exit-minibuffer=====
+{{{
+                退出迷你缓存.
+}}}
+=====self-insert-and-exit=====
+{{{
+                当插入最后一个字符时退出迷你缓存.
+}}}
+=====previous-history-element n=====
+{{{
+                上一个历史记录
+}}}
+=====Next-history-element n=====
+{{{
+                下一个历史记录
+}}}
+=====previous-matching-history-element n=====
+{{{
+                上一个匹配的历史记录
+}}}
+=====next-matching-history-element=====
+{{{
+                下一个匹配的历史记录
+}}}
+====迷你缓存内容 (Minibuffer Contents)====
+=====minibuffer-prompt=====
+{{{
+                这个函数返回当前激活的迷你缓存的提示字符串.
+                返回 nil 如果没有迷你缓存激活
+}}}
+=====minibuffer-prompt-end=====
+{{{
+                这个函数返回迷你缓存提示的末尾位置.
+                否则他返回最小的有效缓存位置.
+}}}
+=====minibuffer-prompt-width=====
+{{{
+                这个函数返回迷你缓存当前的提示的显示宽度, 只有当当前缓存为迷你缓存时才有效.
+                否则返回 0
+}}}
+=====minibuffer-contents=====
+{{{
+                这个函数返回迷你缓存中的可编辑的内容(除了提示字符串外).
+                这个函数只有当当前缓存是迷你缓存时才有效.
+                否则返回当前缓存的内容.
+}}}
+=====minibuffer-contents-no-properties=====
+{{{
+                这个函数和 `minibuffer-contents' 类似, 除了不返回文本的属性.
+}}}
+=====minibuffer-completion-contents=====
+{{{
+                这个函数和 `minibuffer-contents' 类似, 除了他只返回光标之前的内容.
+}}}
+=====delete-minibuffer-contents=====
+{{{
+                这个函数擦除迷你缓存中可编辑的内容(除了提示字符串外), 只有当当前缓存是迷你缓存时才有效.
+                否则擦出当前缓存.
+}}}
+====迷你缓存窗口 (Minibuffer Windows)====
+=====active-minibuffer-window=====
+{{{
+                这个函数返回激活的迷你缓存的窗口, 如果迷你缓存没有激活, 返回 nil.
+}}}
+=====minibuffer-window &optional frame=====
+{{{
+                这个函数返回特定FRAME中的迷你缓存的窗口, 如果选项FRAME为 nil, 为当前FRAME
+}}}
+=====set-minibuffer-window window=====
+{{{
+                这个函数指定窗口WINDOW为迷你缓存使用的窗口
+}}}
+=====window-minibuffer-p &optional window=====
+{{{
+                如果窗口WINDOW为迷你缓存的窗口, 返回 non-nil
+                如果选项WIDNOW为 nil, 使用当前选中的窗口.
+}}}
+=====minibuffer-window-active-p window=====
+{{{
+                如果窗口WIDNOW为激活的迷你缓存的窗口时, 返回 non-nil.
+}}}
+====递归的迷你缓存 (Recursive Minibuffers)====
+=====minibuffer-depth=====
+{{{
+                这个函数返回当前激活的迷你缓存的深度.
+                如果迷你缓存没有激活, 返回零.
+}}}
+=====enable-recursive-minibuffers=====
+{{{
+                如果这个选项为 non-nil, 你可以嵌套地在迷你缓存中执行命令.
+}}}
+====迷你缓存其他相关的 (Minibuffer Miscellany)====
+=====minibufferp=====
+{{{
+                如果当前缓存是迷你缓存, 返回 non-nil
+}}}
+=====minibuffer-setup-hook=====
+{{{
+                迷你缓存进入后运行的钩子
+}}}
+=====minibuffer-exit-hook=====
+{{{
+                迷你缓存退出后运行的钩子
+}}}
+=====minibuffer-help-form=====
+{{{
+                这个变量的值用于在迷你缓存中重新绑定 `help-form'
+}}}
+=====minibuffer-scroll-window=====
+{{{
+                这个变量保存一个窗口对象, 当函数 `scroll-other-window' 
+                在迷你缓存中调用时会滚动这个窗口
+}}}
+=====minibuffer-selected-window=====
+{{{
+                这个函数返回迷你缓存进入时的窗口
+}}}
+=====max-mini-window-height=====
+{{{
+                这个选项指定迷你缓存缩放时最大的高度.
+                如果是浮点数, 指的是FRAME高度的百分比
+                如果是整数, 指的是多少行.
+}}}
+=====minibuffer-message string=====
+{{{
+                这个函数临时的在迷你缓存显示STRING
+}}}
+===命令循环 (Command Loop)===
+{{{
+        当你运行Emacs, 已经进入 "编辑器命令循环". ;)
+}}}
+====命令预览 (Command Overview)====
+{{{
+            命令循环的第一件事就是读入按键序列, 转换一系列事件为命令.
+            你可以用函数 `read-key-sequence' 作同样的事情, 
+            你也可以用更加低级的函数 `read-event' 读入事件.
+            函数 `discard-input' 丢弃输入.
+            
+}}}
+=====pre-command-hook=====
+{{{
+                运行一个命令前的钩子.
+}}}
+=====post-command-hook=====
+{{{
+                运行一个命令后的钩子.
+}}}
+=====this-command=====
+{{{
+                这个变量记录当前运行的命令
+}}}
+=====last-command=====
+{{{
+                这个变量记录前一个命令
+}}}
+=====Notes=====
+{{{
+                如果在执行 `pre-command-hook' 或 `post-command-hook' 里的命令时
+                有一个错误出现, 会清空 `pre-command-hook' 或 `post-command-hook'
+                变量为 nil, 以防止无限寻婚错误.
+}}}
+====定义命令 (Definition Commands)====
+=====`interative' 的通用规则 (Using Interactive)=====
+======interactive arg-descriptor======
+{{{
+                    用于指定交互式函数的关键字.
+}}}
+======interactive-form function======
+{{{
+                    这个函数返回函数FUNCTION 的交互式表格.
+                    
+                    比如 
+                    (defun test (str)
+                      "Just for test"
+                      (interactive "sTest: ")
+                      (message str)
+                      )
+                    
+                    (interactive-form 'test) 返回
+                    
+                    (interactive "sTest: ")
+                    
+}}}
+=====Interactive 参数 (Interative Codes)=====
+======*======
+{{{
+                    '*' 如果当前缓存是只读的, 发出一个错误
+}}}
+======@======
+{{{
+                    鼠标事件
+}}}
+======^======
+{{{
+                    如果按键通过 Shift 按键调用, 临时设定标志并激活区域选择
+}}}
+======a======
+{{{
+                    函数名称
+}}}
+======b======
+{{{
+                    已存在的缓存
+}}}
+======B======
+{{{
+                    一个缓存的名字, 不需要是存在的
+}}}
+======c======
+{{{
+                    一个字符
+}}}
+======C======
+{{{
+                    一个命令名称
+}}}
+======d======
+{{{
+                    光标处的位置
+}}}
+======D======
+{{{
+                    目录名称
+}}}
+======e======
+{{{
+                    调用该命令第一个或下一个鼠标事件
+}}}
+======f======
+{{{
+                    已存在的文件名
+}}}
+======F======
+{{{
+                    文件名, 不需要是存在的
+}}}
+======G======
+{{{
+                    文件名, 不需要是存在的.
+                    如果是文件名返回.
+                    如果是目录名, 返回目录名并不带最后的 /
+}}}
+======i======
+{{{
+                    不相关的参数, 总是设置为 nil
+}}}
+======k======
+{{{
+                    按键序列
+}}}
+======K======
+{{{
+                    按键序列, 但是按键序列的最后一个输入事件会被忽略
+}}}
+======m======
+{{{
+                    标记的位置
+}}}
+======M======
+{{{
+                    任意文本, 在迷你缓存使用当前缓存的输入法, 并返回字符串
+}}}
+======n======
+{{{
+                    数字, 如果输入的不是数字, 必须重新输入一次
+}}}
+======N======
+{{{
+                    前缀参数数值, 如果没有前缀输入, 和 `n' 是一样的效果
+}}}
+======p======
+{{{
+                    前最参数的数值
+}}}
+======P======
+{{{
+                    未修改的前最参数
+}}}
+======r======
+{{{
+                    当前光标处和标记的位置, 作为两个输入参数
+}}}
+======s======
+{{{
+                    任意文本
+}}}
+======S======
+{{{
+                    内在的符号名称
+}}}
+======U======
+{{{
+                    如果有按键序列, 和 k 一样, 否则返回 nil
+}}}
+======v======
+{{{
+                    变量
+}}}
+======x======
+{{{
+                    LISP对象
+}}}
+======X======
+{{{
+                    LISP对象的值
+}}}
+======z======
+{{{
+                    编码系统名称, 如果用户输入为空格, 参数的值为 nil
+}}}
+======Z======
+{{{
+                    编码系统名称, 但只有当有前缀时.
+                    如果没有前缀, 返回 nil
+}}}
+====交互式调用 (Interactive Call)====
+=====commandp object &optional for-call-interactively=====
+{{{
+                如果对象OBJECT是命令, 返回 t.
+                
+                如果 FOR-CALL-INTERACTIVELY 为 non-nil 时, 
+                commandp 只有当OBJECT为交互式命令时才返回 t
+}}}
+=====call-interactively command &optional record-flag keys=====
+{{{
+                call-interactively 调用交互式命令 COMMAND
+                
+                如果 RECORD-FLAG 为 non-nil, 强制加入列表 command-history, 
+                默认只有当命令从迷你缓存中读入参数时才加入列表 command-history
+                
+}}}
+=====command-execute command &optional record-flag keys special=====
+{{{
+                这个命令执行 COMMAND
+}}}
+=====execute-extended-command prefix-argument=====
+{{{
+                execute-extended-command 用 `completing-read' 从迷你缓存读入命令
+                并用 `command-execute' 执行
+                
+                如果命令询问前缀, 他接受 PREFIX-ARGUMENT 的值
+}}}
+====区别命令和交互式命令 (Distinguish Interactive)====
+=====called-interactively-p=====
+{{{
+                如果一个函数可以交互式调用的话, 返回 t
+}}}
+=====interactive-p=====
+{{{
+                如果一个命令可以交互式调用, 并且不是键盘宏, 且Emacs没有运行在 batch 模式时
+                返回 t
+}}}
+====命令====
+===按键映射 (Keymaps)===
+====按键序列 (Key Sequences)====
+
+===Misc===
+====对Lisp中的对象概念的诠释====
+{{{
+            这里的“所有的东西都是对象”，不是面向对象的意义。这里是从“任何东西都是关联链表”的角度来说。
+}}}
+====try/catch====
+{{{
+            We've already discussed catch/throw, an exception-like facility for normal control flow transfers.
+            
+            Emacs has a different facility for real error conditions, called the "conditions" system. Going through the full system is out of scope for our primer, but
+            I'll cover how to catch all exceptions and how to ignore (squelch) them.
+            
+            Here's an example of a universal try/catch using the condition-case construct, with a Java equivalent:
+            
+            ┌─────────────────────────────┬─────────────────────────┐
+            │         Emacs Lisp          │          Java           │
+            ├─────────────────────────────┼─────────────────────────┤
+            │ (condition-case nil         │ try {                   │
+            │     (progn                  │   doSomething();        │
+            │       (do-something)        │   doSomethingElse();    │
+            │       (do-something-else))  │ } catch (Throwable t) { │
+            │   (error                    │   print("uh-oh");       │
+            │    (message "oh no!")       │   doRecoveryStuff();    │
+            │    (do-recovery-stuff)))    │ }                       │
+            └─────────────────────────────┴─────────────────────────┘
+            
+            If you want an empty catch block (just squelch the error), you can use ignore-errors:
+            
+            (ignore-errors
+              (do-something)
+              (do-something-else))
+            
+            It's sometimes a good idea to slap an ignore-errors around bits of elisp code in your startup file that may not always work, so you can still at least start
+            your Emacs up if the code is failing.
+            
+            The condition-case nil means "Don't assign the error to a named variable." Elisp lets you catch different kinds of errors and examine the error data. You
+            can read the Emacs manual or Info pages to learn more about how to do that.
+            
+            The progn is necessary if you have multiple expressions (in C/Java, statements) to evaluate in the condition-case body.
+            
+            condition-case will not catch values thrown by throw – the two systems are independent.
+            
+}}}
+====try/finally====
+{{{
+            
+            Emacs has a "finally"-like facility called unwind-protect.
+            
+            ┌─────────────────────────────┬────────────────────────┐
+            │         Emacs Lisp          │          Java          │
+            ├─────────────────────────────┼────────────────────────┤
+            │ (unwind-protect             │ try {                  │
+            │     (progn                  │   doSomething();       │
+            │       (do-something)        │   doSomethingElse();   │
+            │       (do-something-else))  │ } finally {            │
+            │   (first-finally-expr)      │   firstFinallyExpr();  │
+            │   (second-finally-expr))    │   secondFinallyExpr(); │
+            │                             │ }                      │
+            └─────────────────────────────┴────────────────────────┘
+            
+            Like condition-case, unwind-protect takes a single body-form followed by one or more cleanup forms, so you need to use progn if you have more than one
+            expression in the body.
+            
+}}}
+====try/catch/finally====
+{{{
+            
+            If you make the condition-case (which is basically try/catch) the body-form of an unwind-protect (which is basically try/finally), you get the effect of try
+            /catch/finally:
+            
+            (unwind-protect                 ; finally
+                (condition-case nil         ; try
+                    (progn                  ; {
+                      (do-something)        ;   body-1
+                      (do-something-else))  ;   body-2 }
+                  (error                    ; catch
+                   (message "oh no!")       ; { catch 1
+                   (poop-pants)))           ;   catch 2 }
+              (first-finally-expr)          ; { finally 1
+              (second-finally-expr))        ;   finally 2 }
+            
+}}}
+====break/continue====
+{{{
+            
+            Lisp has a facility for upward control-flow transfers called catch/throw. It's very similar to Java or C++ exception handling, albeit possibly somewhat
+            lighter-weight.
+            
+            To do a break from inside a loop in elisp, you put a (catch 'break ...) outside the loop, and a (throw 'break value) wherever you want to break inside the
+            loop, like so:
+            ┌──────────────────────────────────┬────────────────────┐
+            │            Emacs Lisp            │        Java        │
+            ├──────────────────────────────────┼────────────────────┤
+            │                                  │ var x = total = 0; │
+            │ (setq x 0 total 0)               │ while (true) {     │
+            │ (catch 'break                    │   total += x;      │
+            │   (while t                       │   if (x++ > 10) {  │
+            │     (incf total x)               │     break;         │
+            │     (if (> (incf x) 10)          │   }                │
+            │         (throw 'break total))))  │ }                  │
+            └──────────────────────────────────┴────────────────────┘
+            
+            The symbol 'break is arbitrary, but is probably a nice choice for your readers. If you have nested loops, you might consider 'break-outer and 'break-inner
+            in your catch expressions.
+            
+            You can (throw 'break nil) if you don't care about the "return value" for the while-loop.
+            
+            To continue a loop, put a catch expression just inside the loop, at the top. For instance, to sum the numbers from 1 to 99 that are not evenly divisible by
+            5 (artificially lame example demonstrating use of continue):
+            ┌─────────────────────────────────┬─────────────────────┐
+            │           Emacs Lisp            │        Java         │
+            ├─────────────────────────────────┼─────────────────────┤
+            │ (setq x 0 total 0)              │ var x = total = 0;  │
+            │ (while (< x 100)                │ while (x < 100) {   │
+            │   (catch 'continue              │   x++;              │
+            │     (incf x)                    │   if (x % 5 == 0) { │
+            │     (if (zerop (% x 5))         │     continue;       │
+            │         (throw 'continue nil))  │   }                 │
+            │     (incf total x)))            │   total += x;       │
+            │                                 │ }                   │
+            └─────────────────────────────────┴─────────────────────┘
+            
+            We can combine these examples to show using a break and continue in the same loop:
+            ┌───────────────────────────────────┬─────────────────────┐
+            │            Emacs Lisp             │     JavaScript      │
+            ├───────────────────────────────────┼─────────────────────┤
+            │ (setq x 0 total 0)                │ var x = total = 0;  │
+            │ (catch 'break                     │ while (true) {      │
+            │   (while t                        │   x++;              │
+            │     (catch 'continue              │   if (x >= 100) {   │
+            │       (incf x)                    │     break;          │
+            │       (if (>= x 100)              │   }                 │
+            │           (throw 'break nil))     │   if (x % 5 == 0) { │
+            │       (if (zerop (% x 5))         │     continue;       │
+            │           (throw 'continue nil))  │   }                 │
+            │       (incf total x))))           │   total += x;       │
+            │                                   │ }                   │
+            └───────────────────────────────────┴─────────────────────┘
+            
+            All the loops above compute the value 4000 in the variable total. There are better ways to compute this result, but I needed something simple to illustrate
+            break and continue.
+            
+            The catch/throw mechanism can be used across function boundaries, just like exceptions. It's not intended for true exceptions or error conditions – Emacs
+            has another mechanism for that, discussed in the try/catch section below. You should get comfortable using catch/throw for normal jumps and control transfer
+            in your Elisp code.
+            
+}}}
+====Sequence Type====
+{{{
+                           _____________________________________________
+                          |                                             |
+                          |          Sequence                           |
+                          |  ______   ________________________________  |
+                          | |      | |                                | |
+                          | | List | |             Array              | |
+                          | |      | |    ________       ________     | |
+                          | |______| |   |        |     |        |    | |
+                          |          |   | Vector |     | String |    | |
+                          |          |   |________|     |________|    | |
+                          |          |  ____________   _____________  | |
+                          |          | |            | |             | | |
+                          |          | | Char-table | | Bool-vector | | |
+                          |          | |____________| |_____________| | |
+                          |          |________________________________| |
+                          |_____________________________________________|
+}}}

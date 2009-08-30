@@ -1,0 +1,13 @@
+PerlMacs is an attempt by JohnTobey to integrate Perl into
+Emacs as an extension / scripting language.
+
+* http://john-edwin-tobey.org/perlmacs/
+
+The original approach was to link the Perl interpreter into Emacs
+itself, although it seems as that was not particularly liked
+by FSF officials. Anyway, the author works on a pipe based
+system now -- EmacsEpl.
+
+----
+CategoryExtensionLanguage
+

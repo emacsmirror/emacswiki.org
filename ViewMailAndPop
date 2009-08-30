@@ -1,0 +1,35 @@
+To read mail with VM from a POP spool, an entry specifying the
+maildrop is needed in <code>vm-spool-files</code>. This can be
+configured using, for example:
+
+    (add-to-list 'vm-spool-files
+                 '("~/mail/POP-INBOX"
+                   "pop:HOST:PORT:AUTH:USER:PASSWORD"
+                   "~/mail/POP-INBOX.CRASH"))
+
+where PORT is normally 110. To use POP over SSL, use, instead:
+
+    (add-to-list 'vm-spool-files
+                 '("~/mail/POP-INBOX"
+                   "pop-ssl:HOST:PORT:AUTH:USER:PASSWORD"
+                   "~/mail/POP-INBOX.CRASH"))
+
+where PORT is normally 995. In both cases, if PASSWORD is given as *,
+it will be prompted for the first time that mail is retrieved.
+
+AUTH will normally be "pass".  See the docstring of vm-spool-files for
+the other acceptable values and their meanings.
+
+By default, messages are removed from the POP server after retrieving
+them. This is controlled by the variable
+<code>vm-pop-expunge-after-retrieving</code>, but per-maildrop
+settings can be made in <code>vm-pop-auto-expunge-alist</code>.
+
+Other variables controlling POP behaviour include:
+
+    vm-pop-bytes-per-session
+    vm-pop-max-message-size
+    vm-pop-messages-per-session
+
+----
+CategoryViewMail

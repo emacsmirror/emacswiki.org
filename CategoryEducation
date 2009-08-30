@@ -1,0 +1,26 @@
+This category focuses on Emacs's uses in education.
+
+Click the title heading to search for all pages in this category.
+
+== Learning ==
+
+* Dictionary lookup packages (many of them) can be found under CategoryInterface.
+* ELIP - EMACS Learning Instruction Program, based on the supermemo interval learning system, requires EmacsDataBase EDB. http://www.gnuvola.org/software/elip/
+* EtxtMode -- a mode that extends ViewMode for easier reading and bookmarking of e-texts, like those found on Project Gutenberg
+* FlashCard -- type complete answers, use five simulated decks of cards to practice
+** FlashMaker -- create flashcard decks from existing dictionaries
+* KanjiDictionary (kdic.el) -- practice your kanji
+* !RDictCc -- is an english-german (and vice versa) dictionary written in Ruby. It includes an emacs module which integrates it into emacs. Get it from apps section at the author's [http://www.tsdh.de homepage].
+* SpanishTest -- a small script for learning spanish vocabulary and verb conjugations
+* Speedreading -- Teach yourself to read faster http://www.bobnewell.net/elisp.html
+* ThesauriAndSynonyms -- Finding roughly equivalent words in natural languages.  Lists applications to other related information and tasks.
+* VerbisteEl -- Conjugate/deconjugate French verbs using the verbiste program
+* VocabTest -- a vocabulary tester
+* voctest - Emacs-based program for vocabulary testing. It uses a dictionary file containing colon-separated translations and presents a flash card-like interface. It is small but quite useful if you need to memorize something. http://belikoff.net/software/voctest.el, see [http://belikoff.net/images/voctest.png screenshot]
+
+== Teaching ==
+
+* GradeMode -- tool for computing student grades by JayBelanger.
+* Gradebook mode ([[gradebook.el]]) -- http://lists.gnu.org/archive/html/gnu-emacs-sources/2006-12/msg00029.html
+
+See also SpreadSheet.

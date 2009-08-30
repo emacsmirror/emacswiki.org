@@ -1,0 +1,29 @@
+When you are installing a new copy of Gnus (eg. in your /usr/local/ tree), you will have two copies of Gnus: The one that came with Emacs, and the new one.  This may cause problems, since you need to make sure that the right one is being loaded.
+
+Files are loaded in order of the directories in the `load-path' variable.  The first thing to check is therefore the value of `load-path'.  If your .emacs file has statements that add new directories to your `load-path', check them to see wether they are correct.
+
+Here is my example:
+
+    (add-to-list 'load-path "~/elisp")
+    (add-to-list 'load-path "~/elisp/bbdb/lisp")
+    (add-to-list 'load-path "~/elisp/tnt")
+    (add-to-list 'load-path "~/elisp/gnus/lisp")
+    (add-to-list 'load-path "~/elisp/gnus/contrib")
+
+Next, check whether any "shadowing" takes place.  "Shadowing" happens when there are two files with the same name in different directories of your load path.  In this case, you want the new copy of Gnus to shadow the old copy of Gnus.
+
+'''M-x locate-library'''
+
+Use the `locate-library' command to find which file is being loaded.  This is rather tedious, however.  Especially since you might not know all the files involved.
+
+'''M-x list-load-path-shadows'''
+
+This lists all the shadowed files.  Don't be confused by the output.  Mine lists 77 items.  Most of them are local Gnus files (in ~/elisp/gnus/lisp/) shadowing the global Gnus files (in /usr/local/share/emacs/20.7/lisp/gnus/).  The problem is this: If you installed a local copy of something which exists globally, you need to find the corresponding shadowing.  If you installed Gnus and it doesn't shadow the original Gnus, then you are obviously still using the original Gnus -- Emacs doesn't find the new one.
+
+You can do two things, then:
+
+* Delete the original files or rename the relevant directory.  This might be difficult to do when you are not root.  This will make errors in your setup very obvious.
+* Add the correct directory (directories) to the front of your load-path.  Do this in your .emacs file (or in the site-start.el file if you are installing new packages for every user on your system).
+
+----
+CategoryHelp

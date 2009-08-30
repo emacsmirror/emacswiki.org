@@ -1,0 +1,43 @@
+; `M-x flush-lines':
+Very nice command to get rid of garbage lines, lines with debug code etc., that match a certain REGEXP.
+
+; `M-x keep-lines':
+The opposite of flush-lines -- decide with a regexp wich lines to keep. Dangerous! :)
+
+; `M-x occur':
+See OccurBuffer.
+
+; `M-x sort-lines':
+See [[Sorting]].
+
+MoveByVisibleLineCommands - commands to move by visible instead of logical lines (those differs when lines are wrapped)
+
+See BackToIndentationOrBeginning for a way to go to the beginning of the first word on the line; a command helpful to those who miss the ##Home## key.
+
+See GotoLine for jumping to a line number.
+
+Some more advanced commands:
+
+ (defun pg-kill-this-line (n)
+   "Kill the line point is on.
+  With prefix arg, kill this many lines starting at the line point is on."
+   (interactive "p")
+   (kill-region (line-beginning-position)
+	        (progn (forward-line n) (point))))
+
+ (defun pg-duplicate-this-line (n)
+   "Duplicates the line point is on.  
+ With prefix arg, duplicate current line this many times."
+   (interactive "p")
+   (save-excursion 
+     (copy-region-as-kill (line-beginning-position) 
+      			 (progn (forward-line 1) (point)))
+      (while (< 0 n)
+       (yank)
+       (setq n (1- n)))))
+
+See also MoveLine.
+
+----
+CategoryCommands
+CategoryEditing

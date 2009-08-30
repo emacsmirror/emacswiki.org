@@ -1,0 +1,21 @@
+Widen an active window.
+
+* Lisp:widen-window.el (0.1.1)
+* [[http://coderepos.org/share/browser/lang/elisp/widen-window-mode/trunk/widen-window.el svn head on coderepos]]
+
+== Features ==
+
+* Widening an active window 
+
+== Demo ==
+
+http://jp.youtube.com/watch?v=cE8GZNFiM90
+
+== Configuration ==
+
+ (require 'widen-window)
+ (global-widen-window-mode t)
+
+----
+WindowResize
+CategoryWindows

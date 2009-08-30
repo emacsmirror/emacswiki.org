@@ -1,0 +1,33 @@
+Here is a very curious way in which you can set up signatures generated with Emacs Lisp every time.  I use both <tt>C-x m</tt> (<code>mail</code>) and <code>gnus-summary-reply</code> et al.
+
+My signature is my name and nicks, then the output of "fortune", then output from the Emacs <code>spook</code> function.
+
+In addition, <code>mail</code> seems to obey my customized setting of <code>user-mail-address</code>, but Gnus seems to ignore it.  I also want all messages I write saved to a file, which <code>mail</code> fixes up automatically, but Gnus doesn't.  So I fix this by adding a From line to my mail headers every time I open a new Gnus outgoing message.
+
+    (defconst fortune-program "fortune"
+      "Name of executable local `fortune' program.")
+
+    (setq mail-signature
+          '(progn
+             (insert "\n\n--\nStephen Compall or s11 or sirian\n\n")
+             (call-process fortune-program nil t)
+             (spook))
+
+According to the GNU EmacsManual, setting <code>mail-signature</code> to an expression means that <code>mail</code> will evaluate it at the end of the buffer every time you start a message.  That takes care of <code>mail</code>.  But Gnus doesn't obey <code>mail-signature</code>, <strong>and</strong> I've got the From address problem to take care of, so I add this hook:
+
+    (defun s11-from-fcc-sig ()
+      "Add From, FCC, and signature to current buffer."
+      (save-excursion
+        (goto-char (point-min))
+        (forward-line)                  ;sets at beginning
+        (insert "From: " user-full-name " <" user-mail-address ">
+    FCC: " mail-archive-file-name "
+    ")
+        (goto-char (point-max))
+        (eval mail-signature)))
+
+    (add-hook 'gnus-message-setup-hook 's11-from-fcc-sig)
+
+Wasn't that fun?  Of course, if you only want the spook output, you can just add <code>spook</code> as a hook to both <code>mail-setup-hook</code> and <code>gnus-message-setup-hook</code>.
+
+StephenCompall

@@ -1,0 +1,25 @@
+I don't do a lot of writing on the web so this will be brief....
+
+ - I don't have a blog
+ - I'm learning emacs because it plays nice with lisp
+ - My nick on #emacs is cddr
+ - I also like Python but like other mere mortals am stuck programming Java for a living
+ - I live in the best wee city in the world (Glasgow)
+ - As my elisp foo improves, I'll snippets below for your editing pleasure
+ 
+
+This takes each word in region, and surrounds it with quotes.  Useful for building
+lists of strings.
+
+
+      (defun quote-words-region (start end)
+        (interactive "r")
+        (save-excursion
+        (goto-char (min start end))
+        (while (< (point) end)
+          (re-search-forward "\\w+" nil t)
+          (replace-match "\"\\&\""))))
+
+
+----
+CategoryHomepage

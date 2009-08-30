@@ -1,0 +1,42 @@
+Remote read-eval-print-loop to access and modify Mozilla and Firefox apps from the inside.  Comes with a minor mode for Emacs integration.
+
+* MozRepl: http://wiki.github.com/bard/mozrepl
+* Movie: http://hyperstruct.net/files/mozrepl.swf
+* Emacs Integration: http://wiki.github.com/bard/mozrepl/emacs-integration
+** NOTE: instructions link to 2.0 Beta 8 (from Dec 2006) version of javascript.el; we're up to at least  2.2.1 as of Dec, 2008
+* Main project: http://hyperstruct.net/projects/mozlab
+
+
+== MozRepl Tricks: Automatically Refresh Browser After Saving HTML/CSS files ==
+
+This snippet triggers a browser refresh every time an .html or .css file is saved in emacs. It uses the emacs MozRepl integration linked to above.
+
+Notes: There is a one-second delay before refreshing the browser. That is set in the: setTimeout(BrowserReload(), "1000"... line. You can change it; it is specified in milliseconds - 1000=1s. 
+
+Also, if you have multiple tabs/windows open it might initially pick the wrong window to refresh - just create a new tab, load the page there and it should start refreshing that tab instead.
+
+<pre>
+(defun auto-reload-firefox-on-after-save-hook ()         
+          (add-hook 'after-save-hook
+                       '(lambda ()
+                          (interactive)
+                          (comint-send-string (inferior-moz-process)
+                                              "setTimeout(BrowserReload(), \"1000\");"))
+                       'append 'local)) ; buffer-local
+
+;; Example - you may want to add hooks for your own modes.
+;; I also add this to python-mode when doing django development.
+(add-hook 'html-mode-hook 'auto-reload-firefox-on-after-save-hook)
+(add-hook 'css-mode-hook 'auto-reload-firefox-on-after-save-hook)
+</pre>
+
+[new]
+Nice, but if you are going to experiment with this it might be good to use a named function in the hook instead of a lambda.
+That way you can change it and you can also delete it from the hook if you want to.
+
+== See Also ==
+
+JavaScriptMode
+
+----
+CategoryProgramming

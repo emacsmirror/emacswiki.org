@@ -1,0 +1,21 @@
+I've found that a article on Microsoft's coming editing environment that is called "Emacs.net" inside of microsoft. 
+
+They seem to have a plan to create a fully-customizable text editor on top of .net environment not elisp.
+
+http://www.douglasp.com/blog/2007/12/27/EmacsNet.aspx
+
+[new]
+
+Wrong. You were probably misled by a confusing reddit post (I read that too)
+See this follow-up:
+
+http://www.eweek.com/c/a/Application-Development/Microsoft-Preps-New-Modeling-Language/
+
+- hsuh
+
+[new]
+All I know is that I see a job offering for people to work on something called Emacs.Net. I find it hard to believe that this relates to a new modelling language, but what do I know...
+"Intellipad will serve as a text editor for the D language and will further support the development of applications and other content [...] being designed to be both customizable and suitable for scripting. The technology also is known inside Microsoft as "Emacs.Net," as homage to the Emacs text editor made popular in the Unix environment."
+
+I think I'll stick with Emacs. :)
+-- AlexSchroeder

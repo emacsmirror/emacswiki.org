@@ -1,0 +1,9 @@
+Active Server Pages (aka. [::ASP]) contain a mix of HTML and Visual Basic.
+Therefore, use one of the following to edit ASP:
+
+* HtmlHelperMode + VisualBasicMode.
+
+* [NxhtmlMode nXhtml], which includes asp-nxhtml-mumamo-mode and asp-html-mumamo-mode.
+
+----
+CategoryModes

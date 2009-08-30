@@ -1,0 +1,9 @@
+<code>perl-pod-coding.el</code> is a little spot of code to get an Emacs CodingSystem from an <code>=encoding</code> line in [PerlLanguage Perl] POD documentation files or documentation embedded in code.  Get it from
+
+: http://user42.tuxfamily.org/perl-pod-coding/index.html
+
+Whether you actually want to use <code>=encoding</code> is another matter, since the plain <code>pod2man</code> doesn't support it until perl 5.10.  The [http://perldoc.perl.org/perlpodspec.html POD spec] allows a UTF-8 BOM marker at the start of the file, and Emacs 22 recognises that on its own, so that might be the way to go.  But <code>perl-pod-coding</code> can help with files like <code>Nihongo.pod</code> from the [http://search.cpan.org/dist/Jcode/ Jcode] package which is in EUC-JP.
+
+----
+CategoryInternationalization
+PerlLanguage

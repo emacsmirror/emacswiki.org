@@ -1,0 +1,175 @@
+I use Emacs for all the text editing I do: LaTeX (I use AUCTeX), lisp, matlab, c, email (via mutt)...
+
+In a bored moment, I decided to go on a first forray into lisp and write PredictiveMode: a predictive completion mode for Emacs. It's available at [http://www.dr-qubit.org my web-site].
+
+In fact, writing the predictive mode package was my first encounter with a functional programming language of any kind, and it was such a pleasant experience that I'm tempted to do more of my non-Emacs programming in functional languages in the future.
+
+Happy Emacs-ing!
+
+
+
+== Emacs Lisp packages I maintain ===
+
+Some of these have pages on the Wiki, and all are available from the [http://www.dr-qubit.org/emacs.php emacs page] on my [http://www.dr-qubit.org web-site].
+
+* PredictiveMode
+
+* AutoOverlays
+
+* CompletionUI
+
+* DictionaryTrees
+
+* TernarySearchTrees (obsolete - use Tries instead)
+
+* [[Tries]]
+
+* [[AVLtrees]]
+
+* TaggedNFA
+
+* [[Heaps]]
+
+* [[Queues]]
+
+* ShowPointMode
+
+
+
+== Humour ==
+
+TheIciclesWampeter
+
+
+
+== Discussion ===
+
+[new]
+
+By the way, if anyone knows how to contact the Emacs Lisp Library (Elib) maintainers then please let me know! Some of the lisp libraries I wrote for predictive mode just define basic data structures, and they really belong in Elib. But I never got a reply when I emailed them at elib-maintainers@lysator.liu.se. -- TobyCubitt
+
+[new]
+
+Welcome to the wiki.  Predictive mode looks really useful!  I am
+trying it out, but 
+
+[1] it errors when doing (require 'dict-english).  I did
+install dictionary.el and elib.
+
+[2] It defmacros a (capitalized-p).  Can that be changed to follow namespace?
+
+thanks
+  -- DeepakGoel
+
+[new]
+
+Glad you think it might be useful!
+
+[1] Did you also install the dictionaries? If not, it's probably my fault: I didn't point out on the PredictiveMode wiki page that you need the dictionary package from http://www.dr-qubit.org/predictive/dictionaries.tar.gz as well as the predictive package. I'll rectify that right away.
+
+[2] Good point. I wish elisp provided proper namespaces! Is there a capitalized-p macro defined elsewhere that it conflits with? I couldn't find one, which is why I wrote my own. If there's one already, I'll modify predictive mode so it uses that instead of defining its own. If there isn't one, the real answer would be to move it from the predictive package to one of the general utility packages, since the macro isn't specifially to do with predictive mode.
+
+-- TobyCubitt
+
+[new: bojohan:2006-05-04 00:29 UTC]
+Btw, `capitalizedp' should be a function, not a macro.
+
+[new]
+Sure, I too wish elisp provided namespaces. I am unaware of another capitalized-p. But I still wish you changed the one in predictive mode to predictive-capitalized-p. IMO, It is just a  bad practice to defun non-namespaced macros.  Imagine, some day, someone loaded another mode, which also defunned a capitalized-p (for the same reason: the author needed one, just like you did).  And suppose that one was different from yours.  (Say, one may consider IVAN as capital, and another may consider Ivan as capital).  Then, unaware of this conflict, the user starts using that package, and his predictive mode stops working properly.   As an emacs user for some time now, I feel very uncomfortable loading packages that don't follow namespace. OF course, "classic" packages like elib, gnus and (even Emacs) itself often violate namespace at some places, (I wish gnus and elib didn't) OTOH, since they are so well known, one can be quite sure that they will, therefore, be delegated the authority on that symbol-name's use in any conflict, and so conflicts would be avoided, but I strive to keep "new" packages from doing so..    
+
+Enjoyed your physics page.  I puzzled over "Interpretation/What constitutes observation" for years, until I finally settled on "Everett, or some derivative thereof" and moved on..  I believe the main fault lies with the textbooks which teach: "The wave function instantly collapses when an observation takes place", a phrase which stupidly, implicitly imparts a special role to conscious living beings, which puzzles students, which then spawns careers in "QM Interpretation" (which can arguably be useful), but also the occasional physicist who really believes that consciousness plays a special role.. Sure, there are some who believe that the question isn't settled, but that doesn't mean that textbooks have to present the weirdest possible interpretation -- DeepakGoel
+
+[new]
+
+I enjoyed the pages as well. And I am sure conciousness plays a special role, but I will be very puzzled if someone is actually able to prove/measure it. - LennartBorgman
+
+[new]
+Reminds me of my mom showing me a book claiming similarities between far-eastern thought and quantum-mechanics that largely relied on what I call "word magic" -- as if similar words used in the description are a sign of a true relationship.  Oh well...  -- AlexSchroeder
+
+[new]
+Of course, I completely agree about properly namespacing macros (I should have made that clearer), even if I wish there was a better solution. I just forgot to properly namespace the capitalised-p macro when I originally wrote it. It's fixed in version 0.2, along with another improperly namespaced macro from dict.el. I hope I've caught them all now, but if you spot any more then do let me know!
+
+There are lots of other major bug-fixes in version 0.2, mostly to do with dictionaries. And I've added dictionary auto-saving which is important when using the auto-learn features. (Unfortunately, it means dictionaries from 0.1 are incompatible with 0.2, so have to be re-generated. But I doubt that many people have rolled their own dictionaries yet anyway.)
+
+As for quantum mechanics, until there's a falsifiable (see K. Popper) way to test different interpretations of QM, all debate about interpretations is philosophy, not science. Which doesn't mean it isn't an interesting debate, just one that will never have a scientific answer. What I love about quantum information theory is that it's exploring very fundamental questions about QM, but ones that can be answered scientifically. But the Emacs wiki probably isn't the place to get too deeply into quantum info... ;-)  -- TobyCubitt
+
+
+[new]
+Thanks for the changes/fixes to predictive mode, I will try it out again. 
+Re: QM: the basic QM postulate (textbooks) as well as the everyday QM prescription says "The wv randomly collapses to one of the eigenvectors upon an *observation*".  In light of that, I don't agree at all that the question of what constitutes an observation is not science, or is merely a matter of symantics or philosophy.  The hidden variable interpretation was certainly falsifiable [ref: Bell inequalities and all the experiments that verified the same, thus outlawing that interpr.].  Anyways, as you said, the wiki is not the right place ...  Kensanata, enjoyed your comment. -- Deepak.
+
+[new]
+Then again, if this is not the place, where else would the three of us enjoy a casual conversation on QM?  :)  That's what personal pages are for on a wiki -- to socialize, hehe. -- Alex.
+
+[new]
+It's a long time since the last QM post here, but I never got round to replying to Deepak, so here goes. Of course, hidden variables was testable. I wasn't really thinking of that as an interpretation, but I suppose you're right that it is. I was thinking more of Bohm's pilot waves, or many-worlds, etc. They all make identical predictions for the outcomes of measurements. Indeed, they all describe exactly the same mathematical theory (well, almost...), they just interpret it differently. Which means there is no way to distinguish between them experimentally. I think we just meant slightly different things when we talked about "interpretations".
+
+As for what constitutes an "observation", you're right that it can be investigated. And theoretical and experimental investigations of quantum measurement and decoherence (closely connected to measurement) are being done, and are very interesting. But I'm sure consciousness plays no special role whatsoever ;-)  -- Toby
+----
+[new]
+"well, almost" being the key, IMO.   The mathematical equivalences are proven under assumptions of "for all practical purposes", and are not strict.   The alternative interpretations have profoundly different fundamental axioms and the only reason you cannot distinguish between them experimentally at the present time is that it is difficult, in practice, to make observations about entangled  brains or entangled branes, including keeping straight what that observation is doing to your own brain.    There is a difference between "not falsifiable" and "not falsifiable FAPP".  This [http://en.wikipedia.org/wiki/Interpretations_of_Quantum_Mechanics#Summary_of_common_interpretations_of_QM wikipedia article], for example, qualifies its assertion of indistinguishability with "At the moment".   I have seen attempts and thought-experiment papers from time to time that try to distinguish between these theories experimentally.  It is clear even in principle that there is a profound difference between two interpretations where, for example, one regards the wavefunction as a physical object, and the other regards it as a mathematical construction encoding the observer's lack of knowledge. In particular, I continue to harbor a lot of contempt :-) for (all forms of) the Copenhagen interpretation, which is still taught in textbooks, and which, to me, is no different from the "Consiousness  causes collapse" interpretation, and which leaves the student confused because its axiomatization process is broken in that it leaves "Observation" undefined, yet the mechanics depend on whether an observation is taking place or not; this would be understandable if the wavefunction were merely a mathematical object encoding our lack of knowledge, but even a simple thought experiment involving successive collapses makes it clear that the wavefunction and its phase are physical entities.  The series of remarkable results in the Decoherence industry indeed show that the wavefunction, as it evolves, naturally exhibits "effective collapses" along naturally selected preferred bases, further providing a death blow to the arbitrary axiom of "observation-induced collapse to one of the eigenvectors of 'observables'" in the Copenhagen interpretation. -- deego
+
+[new]
+Hi, I just found this interesting discussion. Deego, can you explain your last statement about effective collapses? Maybe give a reference or two? The topic that comes to my mind are continuous measurement experiments and quantum feedback control. However, I do not see where these results conflict with the Copenhagen interpretation. All the experiments I know of are described by a Master equation formalism propagating system's density matrix which undergoes collapses ''conditional'' to the observed data. 
+
+An example: you continuously monitor a laser-driven atom in a cavity and observe the light coming out. Once you see a photon on your detector, you know that your atom has been projected onto the corresponding ground state. This knowledge is reflected in applying a projection operator to the density matrix at the time of observation. When not seeing a photon, the system evolves with the coherent part of the Master equation. My point: all state-of-the-art experiments are very well described by encoding your ignorance in a density matrix which then propagates under a quantum stochastic Master equation including the quantum noise acting on the system.
+
+What are your problems with the Copenhagen interpretation? With which of these statements do you disagree?
+
+* I can prepare a quantum mechanical state by measuring an observable, e.g. a spin-component.
+* I interpret the modulus squared of the wave function as the probability distribution of observing a result, e.g. the impact point of a particle leaving a double slit. -- SebastianBlatt
+----
+[new]
+
+Sebastian, I  don't disagree with any of the 2 statements, of course, both your statements (1) and (2) are found to be consistent with observations.  To an Everettian, (1), even if not literally true, is still effectively true. In (1), you meant that you create a pure state upon observation.
+
+But, to me, your statement (1) can't be taken to be a part of the axiom system.  If it is an axiom, then it imparts special status to you, and still does not define an observation. Also, to you, Cats don't observe, I don't observe, only you do.  To you, particles, cats and I can get entangled but you can't, why? Why does every person have a different reality? 
+
+If (1) is a result, then you are hiding physics as well as your own special status in (1) and this needs to be answered: 
+
+*Q1* How *did you* create a pure state when you observe something? Don't you need to define the term 'observation' for that? There are several  ways of answering that question, which one of these do you subscribe to? ---  
+
+(a) You created a pure state because there is something special about your brain, this is already ridiculous, so I will leave it at that. 
+
+(a1) Define what an observation is... what is it?  
+
+(a2) appeal to observation as being nothing but effective macroscopic effects.. this is not much different from decoherence. Moreover, in this case, (1) does not have to be part of the axiom system at all, as we shall see later, and you have basically become an Everettian  
+
+and the final way to answer Q1 is: 
+
+(b) You created that pure state because the wavefunction was nothing but a math object encoding your lack of knowledge, so of course, it became pure once you measured.  This interpretition (b) is not consistent  with (2) because it conflicts with, for example, the self-interference result of a particle going through a double slit.  Prior to going through the slit, the particle can, in this picture, be viewed to be in one of various pure states, with different probabilities. Progressing that picture forward using the rules of probabilities does not reproduce an interference pattern (you can't impose your own interference rules, the rules of probability are what they are).  (Another way of looking at it is that the math-probability picture (b) essentially leads to hidden variable theories, which we know don't hold true.) 
+
+From your comments above, you subscribe to (b):  The  wavefunction is a math object encoding our lack of knowledge. A proper  treatment of this leads to hidden variable theories, which we know now, don't pass  muster. *In this picture, a Schrodinger equation that tells you how the probability density evolves can only be a derivative of a more fundamental equation that tells you how each reality evolves.  When you carry this picture to its logical conclusion, you can't even explain the double slit result.*
+
+Bohr's sweep-under-rug answer to Q1 is that it is illegal to ask for the status of the world except for when *you* observe it, and Einstein, of course, believed that the moon and the world exists even when you are not looking at it.
+
+Moreover, to me, Bohr's answer again implies a Descartesian special status to me, and simply denies the existence of the world unless *I* measure it. To me, the beauty of Everett/relative state/decoherence results is that they simply do away with your axiom (1). They show how axiom (2) alone leads to what axiom 1 would have postulated; moreover, this also avoids the problems with axiom (1).  
+
+Regarding your other question on how (2) alone effectively leads to collapse:  It has been shown (ref: Decoherence, Everett's thesis, Relative state) that at a macroscopic level, the evolution of the schrodinger equation naturally leads to cross-terms in certain bases going to zero.  So, at the macroscopic level, the system/universe looks like a classical mixture of 'decohered' pure states, with no quantum mixing terms: a (mostly) diagonal matrix in some basis.  These natural bases are what we call observables.  The act of a large object like you interacting with, say, a spin particle, leads to the interference terms between two states quickly washing out. The  two states corresonding to the diagonal terms are: spin up (and you observing so), and spin down (and you observing so), with the result that you think that you get a definitive answer for spin. You call that an observable. You have gotten entangled with the particle, but nearly classically, in that the matrix is mostly diagonal. Moreover, the measures of the 2 states come out to be squares of their norms (Hartle), thus leading to the probibility density picture. 
+
+Another advantage of (2) is that the evolution is always local at all times.
+ 
+Moreover, this difference is not just semantic, As I have mentioned before, there are testable differences, if not yet practical; to take just one example, a small nondiagonal term (Everett) is not the same as an absolutely zero nondiagonal term (Copenhagen), and this could have interesting consequences when you observe and get entangled with a particle.  -- deego
+    
+[new]
+Whew, you are reading quite a bit into my short comments above. They were mainly meant to figure out what you meant with your previous comment, since it sounded a lot like: "I don't understand the Copenhagen interpretation, but I heard that it's nonsense anyway." Sorry for that, you obviously know what you are talking about. :-)
+
+I agree with you that the Everett picture is appealing because it gets rid of the observation axiom (arguably, any axiom is arbitrary by definition). I am also not giving myself or my brain any special role here. I would subscribe to the "Everettian" view that my measurement is actually an elaborate imposition of boundary conditions. I.e. I know the output state of a polarizer because the sum of all interactions between the polarizer and the incoming wave is projection onto a certain pure state. You are also certainly correct in your statement that the wave function does not represent my personal ignorance; I was trying to say that that's what the density matrix is for. You are right that considering the wave function in that way leads to problems describing experimental results.
+
+However, I object to your statement that the Copenhagen interpretation is useless and should not be taught in textbooks anymore. My point was that its application and extension to the density matrix allows description of any quantum mechanical effect observed to date. The '''much''' more complicated Everett theory does not change the current results at all. That is why I think that replacing all of that with a pretty simple axiom is useful.
+
+However, if you can predict an experiment where the simple measurement axiom leads to false predictions, I will be happy to apply a more complex theory. In the mean time I am happy with tracing over the rest of the universe. ;-) -- SebastianBlatt
+
+[new]
+Sure, I am all for textbooks teaching the null interpretation (the 'shut up and calculate' interpretation), as long as they make it clear that axiom (1) is a "working axiom", and not even complete/well-defined, or at least give a passing mention to  the fact that other interpretations exist .. else we'll see grad. students who actually believe that the differences in quantum theories are just people quibbling over semantics ("not science"). :) -- deego
+
+
+[new]
+High time I responded to this! Firstly, I'm not a grad student (any more), I'm a post-doc :) Secondly, from my (admittedly non-scientific) sampling of people in the research community, the majority view can quite accurately be summarized as "it's not science". I accept that if different interpretations predict different experimental outcomes, even in principle, then choosing between them becomes science rather than philosophy (I'm a good Popperian, after all!), although until the experiment is performed there's no way to scientifically decide which to go for. But no one in their right mind believes the Copenhagen interpretation these days (if it even merits the term - as you say, it's more of a "sweep it under the carpet" statement than an interpretation), and I'm not sure how other interpretations differ mathematically. For example, Bohmian mechanics is, as far as I know, a reformulation of standard QM. If an interpretation predicts different experimental outcomes to standard QM, even if only in principle, then I'd prefer to call it a different theory, rather than a different interpretation, since that's what it strictly is. Admittedly, there's a problem in comparing to "standard QM", given that the measurement postulate and the Schroedinger equation fundamentally contradict each other...
+
+You seem to imply that the measurement postulate can be derived from the Schroedinger equation. I don't think this is strictly true. As far as I know, no one has yet succeeded in doing this rigorously without making some extra, non-trivial assumptions, although some attempts have come close (see Zurek's papers, for example; there's also a good discussion of this at the end of Preskill's lecture notes on quantum information theory). As for hidden-variable models, they pose no problem at all! Bohmian mechanics is a hidden-variable model, yet is mathematically equivalent to standard QM. The problem is with <em>local</em> hidden-variable models, as I'm sure you well know. But I don't see why this rules out interpreting a quantum state as an encoding of our knowledge. It just tells us that the rules we should follow in updating our state of knowledge are the rules of quantum mechanics, rather than the rules of classical probabilities. Plenty of smart people believe a quantum states encodes the state of our information about a system. The two camps are roughly: (1) the density matrix represents a real, physical state, or (2) the density matrix represents your state of knowledge about a system. And there are a number of researchers who would strongly advocate (2). Personally, I sit on the fence, since I'm not convinced the question is well-defined. But it's interesting to note that people in camp (1) tend to conclude that only pure states exist, mixed states arising from looking at parts of larger systems, and this leads inexorably to Many-Worlds. I suspect people with a physics background tend to fall more naturally into this camp. On the other hand, people in camp (2) conclude that pure states don't really exist, since it is unreasonable to assign perfect certainty to any state of knowledge, and they tend to dislike Many-Worlds as carrying way too much philosophical baggage. I suspect people with an information theory or computer science background tend to fall more naturally into this camp.
+
+Personally, I don't believe any interpretation (I don't believe QM is the last word in fundamental physical theories), but if you force me to choose one, I'd go for the "church of the higher Hilbert space" (i.e. Many-Worlds). It seems more reasonable and tidier to keep the unitary evolution postulate than the troublesome measurement postulate. Of course, except on Sundays, in practise I follow the "shut up and calculate" interpretation :) --TobyCubitt
+
+----
+CategoryHomepage

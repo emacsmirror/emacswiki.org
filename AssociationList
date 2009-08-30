@@ -1,0 +1,28 @@
+The ElispManual does a stand-up job of introducing some of the primitive functions for operating with association lists.  More significant tasks can be accomplished with the `alist' library that comes with [[APEL]].
+
+* CVS:apel/alist.el
+
+To use the library in your code you must require it with:
+
+   (require 'alist)
+
+To change or add a key-value pair, use `set-alist'.
+
+    (setq test-alist '((a . 0) (b . 1)))
+    ==> ((a . 0) (b . 1))
+    
+    (set-alist 'test-alist 'a 9)
+    ==> ((a . 9) (b . 1))
+    
+    (set-alist 'test-alist 'c 3)
+    ==> ((c . 3) (a . 9) (b . 1))
+
+To delete a key-value pair, use `remove-alist'.
+
+    (remove-alist 'test-alist 'a)
+    ==> ((c . 3) (b . 1))
+
+See also AlistVsPlist.
+
+----
+CategoryCode

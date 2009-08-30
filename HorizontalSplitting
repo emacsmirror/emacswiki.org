@@ -1,0 +1,41 @@
+I prefer having two windows side-by-side in my Emacs, as opposed to two windows, one vertically above each other. No problem, I just use C-x 3 all the time instead of C-x 2. However, Emacs insists that I use vertically positioned windows for its popup windows: for example, when you only have a single window open and you use C-x C-b, or describe-function, or something similar. Here's how I (with help from bpalmer and bojohan on EmacsChannel) managed to persuade emacs to use horizontally positioned windows instead:
+
+     (defun split-horizontally-not-vertically ()
+       "If there's only one window (excluding any possibly active minibuffer), then
+     split the current window horizontally."
+       (interactive)
+       (if (= (length (window-list nil 'dont-include-minibuffer-even-if-active)) 1)
+           (split-window-horizontally)))
+     (add-hook 'temp-buffer-setup-hook 'split-horizontally-not-vertically)
+
+This works pretty well.
+
+-- DavidHouse
+
+Here is my (PeterJones) small adaption of the above function:
+
+    (defun split-horizontally-for-temp-buffers ()
+      "Split the window horizontally for temp buffers."
+      (when (one-window-p t) 
+        (split-window-horizontally)))
+
+    (add-hook 'temp-buffer-setup-hook 'split-horizontally-for-temp-buffers)
+
+I really enjoy the idea of horizontal splitting by default.
+I improved function a bit - now it correctly handles situation when we are in minibuffer
+and trying to get list of completions:
+
+     (defun split-horizontally-for-temp-buffers ()
+       "Split the window horizontally for temp buffers."
+       (when (and (one-window-p t)
+     	     (not (active-minibuffer-window)))
+         (split-window-horizontally)))    
+
+-- KonstantinAntipin     
+
+[new]
+Does somebody knows how to use the same strategy - horizontal splitting - when
+opening files or buffers with C-x4b or C-x4f?
+
+----------
+CategoryWindows

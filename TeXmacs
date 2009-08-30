@@ -1,0 +1,51 @@
+http://www.texmacs.org/Images/gleeson_head.jpg
+
+
+
+=== Description ===
+
+GNU TeXmacs is a free scientific text editor, which was both inspired
+by TeX and GNU Emacs. The editor allows you to write structured documents
+via a wysiwyg (what-you-see-is-what-you-get) and user friendly interface.
+New styles may be created by the user. The program implements high-quality
+typesetting algorithms and TeX fonts, which help you to produce
+professionally looking documents. [http://www.texmacs.org/]
+
+TeXmacs is also used as an interface for computer algebra systems.
+
+It uses Guile/Scheme as extension language.
+
+=== Relation with Emacs ===
+
+One of the fundamental ideas behind TeXmacs is that we wanted
+a WYSIWYG editor for structured documents with the same
+customizability as Emacs. Just like the native format of
+an Emacs document is basically a string, the native format
+of a TeXmacs document is a tree. This is particularly powerful
+in relation to Lisp-like extension languages (we chose
+Guile Scheme, because this is a standard extension language
+for the GNU Project and Gnome), which are particularly suited
+for tree manipulations.
+
+There are exist many plugins for !TeXmacs, among others for
+Maxima computer algebra system and R software environment for 
+statistical computing.
+
+=== Wiki ===
+There used to be also a [http://web.archive.org/web/20051107175054/alqua.com/tmresources/FrontPage TeXmacs wiki]
+where you could find more help, but now it is only available in the Internet Archive.
+
+=== Similar projects ===
+
+Below there is a list of similar projects, WYSIWYG editors for
+structured documents with export to TeX or LaTeX.
+* [http://opera.inrialpes.fr/Thot.en.html Thot] structured document editor. X-Window GUI. Last changes: 1997.
+* [http://www.lyx.org/ LyX] is WYSIWYM editor using LaTeX engine. 
+* [http://www.ctan.org/tex-archive/help/Catalogue/entries/microimp.html MicroIMP]: an intuitive WYSIWYG document preparation system,
+based on LaTeX. Free, not open-source. Windows only.
+* [http://www.mackichan.com/index.html?products/swp.html~mainFrame Scientific WorkPlace] and [http://www.mackichan.com/index.html?products/sw.html~mainFrame Scientific Word] is a mathematical word processor combining professional typesetting based on the TeX system (save to LaTeX) with a powerful symbolic algebra using MuPAD engine (Scientific WorkPlace only). Proprietary. Windows or MacOS.
+
+
+
+----
+CategoryTex CategoryXML CategoryExtensionLanguage

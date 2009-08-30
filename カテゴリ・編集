@@ -1,0 +1,47 @@
+このカテゴリページでは、モードについて説明するためのページではありません。モードについては、[[CategoryModes]]を参照してください。
+
+* DeleteSelectionMode -- テキストを選択した状態で文字を入力すると、選択範囲がその文字で置き換えられるようにする（さらに、バックスペースで削除できるようになる）
+* DeletingSyntax -- 単語単位でキルするための方法の1つ
+* DeletingWhitespace
+* DoubledWords -- 重複する単語を検索して削除する
+* RevertBuffer -- 「キルして再オープン」することなく、バッファの内容を更新する方法
+* RunCommandOverLines -- 複数行に対してコマンドを実行する。edのように（[[TheTruePath]]）
+* DosToUnix -- DosのキャリッジリターンをUNIXの改行文字に置換する
+* RegAdhoc -- レジスタに登録したポイントがどこにあるのか思い出させてくれるツール
+* BetterRegisters -- レジスタとマクロを強化する
+* UnifyKillringAndRegister -- レジスタを使いやすくする
+* MousePlus -- MB2を押している間、ヤンク位置を強調表示して、正しい場所にヤンクできるようにする
+* カーソルを見やすく
+** ChangingCursorDynamically -- コンテキストに応じて、カーソルの種類と色を変更する
+** CrosshairHighlighting -- 現在の行と列をハイライト表示する。
+** HighlightCurrentLine
+** HighlightCurrentColumn
+* カラムを見やすく/長い行を検索する
+** RulerMode -- 列（カラム）に、ルーラー、タブストップなどを表示するマイナーモード
+** PopupRuler -- ポイントのすぐ上に一時的にカラムルーラーを表示する
+** ColumnMarker -- 半永続的なカラムマーカーを表示する
+** HighlightCurrentColumn
+** FindLongLines -- 一定以上に長い行を検索するためのコマンド
+* LRU-yank -- キルリングをLRU（Least Recently Used）形式で扱うようにする。[[Lisp:LRU-yank.el]]
+* RenumberList -- 数字付きリストの番号を付け直す
+* NumberLines -- ソースコードに行番号を付ける。[[Latex]]を扱うとき便利
+* FormattingText -- 自動的にテキストフォーマットを指定する
+* CommandLogMode -- Emacsを編集している様子を記録して、他人に見せることができる
+* PointStack -- 作業を中断したときのポイント位置を記録して、そこに戻る
+* RotateText -- あらかじめ用語リストを登録しておき、バッファ内でその単語をリスト内の別の単語に簡単に置換する。置換候補はローテート表示される。
+* IncrementNumber -- 数字をインクリメントする。[[キーボードマクロ]]/[[KeyboardMacros]]を使うとき、役立つ場合がある
+* ColumnizeWords -- 単語や引用符で囲まれた文字列のリストを、列（カラム）に見えるようフォーマットする
+* SwappingText -- 領域やテキストを入れ換える関数
+* InsertingTodaysDate -- 手紙やソースコードに今日の日付を挿入する
+* ParEdit -- Structured editing of s-expressions (parentheses)
+* [[Multiverse]]--- manage multiple versions of buffers in an Emacs session
+
+次に紹介するのは、編集時に役立つ基本的なコマンドを取り扱ったページです。
+
+* LineCommands
+* MarkCommands
+
+[[Emacsのコツ]]/[[EmacsNiftyTricks]]も見てみてください。
+
+I would like to start a project to integrate Emacs with JavaSpaces. See DavidNovogrodsky for more details.
+

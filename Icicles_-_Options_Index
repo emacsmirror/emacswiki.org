@@ -1,0 +1,425 @@
+: [[image:iciclesimage]]
+
+|| '''[[Icicles]]''' || [[IciclesIndex]] || [[Icicles - Command Index]] ||
+----
+
+This is the index for '''[[Icicles]]''' user options and [[Face]]s. All option and face names start with `icicle-'.
+
+'''Note:''' There are many ''more'' options and faces than those listed here. The ''main page'' that discusses '''Icicles''' user options and faces is this: '''[[Icicles - Customization and General Tips]]'''.  That main page is cross-referenced in this index as "''main''". In each case, ''main'' takes you to the right place on that page, which explains the option or face in question. User options related to files and directories are described on page '''[[Icicles - File-Name Completion Tips]]''', not on page [[Icicles - Customization and General Tips]].
+
+
+Options: [[#A]] | [[#B]] | [[#C]] | [[#D]] | [[#E]] | [[#F]] | [[#G]] | [[#H]] | [[#I]] | [[#K]] | [[#L]] | [[#M]] | [[#N]] | [[#O]] | [[#P]] | [[#Q]] | [[#R]] | [[#S]] | [[#T]] | [[#U]] | [[#V]] | [[#W]] | [[#X]] | [[#Y]] | [[#Z]]
+
+
+[:faces]
+== Icicles Faces ==
+
+Most of these faces are defined in library `<tt>[[icicles-face.el]]</tt>'.
+
+* '''`icicle-candidate-part'''' -- Face used to highlight one or more parts of a
+candidate (typically a multi-completion), in buffer `*Completions*' -- ''[[Icicles - Customization and General Tips#icicle-candidate-part|main]]''
+
+* '''`icicle-common-match-highlight-Completions'''' -- Face used to highlight the expanded common substring in `*Completions*' -- [[Icicles - Expanded-Common-Match Completion]], ''[[Icicles - Customization and General Tips#icicle-common-match-highlight-Completions|main]]''
+
+* '''`icicle-complete-input'''' -- Face used to highlight input when it is complete -- [[Icicles - Multi M-x]], ''[[Icicles - Customization and General Tips#icicle-complete-input|main]]''
+
+* '''`icicle-completion'''' -- Face used to indicate completion -- ''[[Icicles - Customization and General Tips#icicle-completion|main]]''
+
+* '''`icicle-Completions-instruction-1'''', '''`icicle-Completions-instruction-2'''' -- Faces used for help (instructions) at the top of buffer `*Completions*' --  ''[[Icicles - Customization and General Tips#icicle-Completions-instruction-1|main]]''
+
+* '''`icicle-current-candidate-highlight'''' -- Face used to highlight the current
+completion candidate in buffer `*Completions*' -- ''[[Icicles - Customization and General Tips#icicle-current-candidate-highlight|main]]''
+
+* '''`icicle-historical-candidate'''' -- Face used to highlight previously used completion candidates in buffer `*Completions*' -- [[Icicles - History Enhancements]], ''[[Icicles - Customization and General Tips#icicle-historical-candidate|main]]''
+
+* '''`icicle-input-completion-fail'''', '''`icicle-input-completion-fail-lax'''' -- Faces for highlighting failed part of input during strict and lax completion, respectively -- [[Icicles - Icompletion]], ''[[Icicles - Customization and General Tips#icicle-input-completion-fail|main]]''
+
+* '''`icicle-match-highlight-Completions'''' -- Face used to highlight root that was completed, in buffer `*Completions*' -- [[Icicles - Expanded-Common-Match Completion]],  ''[[Icicles - Customization and General Tips#icicle-match-highlight-Completions|main]]''
+
+* '''`icicle-match-highlight-minibuffer'''' -- Face used to highlight root that was completed, in minibuffer --  ''[[Icicles - Customization and General Tips#icicle-match-highlight-minibuffer|main]]''
+
+* '''`icicle-mode-line-help'''' -- Face used to highlight help in the [[mode line]] -- ''[[Icicles - Customization and General Tips#icicle-mode-line-help|main]]''
+
+* '''`icicle-multi-comand-completion'''' -- Face used to indicate multi-command completion -- ''[[Icicles - Customization and General Tips#icicle-multi-comand-completion|main]]''
+
+* '''`icicle-mustmatch-completion'''' -- Face used to indicate strict minibuffer completion (input must match) -- ''[[Icicles - Customization and General Tips#icicle-mustmatch-completion|main]]''
+
+* '''`icicle-proxy-candidate'''' -- Face used to highlight proxy (placeholder) candidates, in buffer `*Completions*' -- [[Icicles - Candidates with Text Properties#icicle-special-candidate]], ''[[Icicles - Customization and General Tips#icicle-proxy-candidate|main]]''
+
+* '''`icicle-saved-candidate'''' -- Face used to highlight saved candidates in `*Completions*' -- [[Icicles - Candidate Sets]], ''[[Icicles - Customization and General Tips#icicle-saved-candidate|main]]''
+
+* '''`icicle-search-context-level-1'''' through '''`icicle-search-context-level-8'''' -- Faces used to highlight different levels (subgroup matches) of your search context -- [[Icicles - Search Commands, Overview]], ''[[Icicles - Customization and General Tips#icicle-search-context-level-1|main]]''
+
+* '''`icicle-search-current-input'''' -- Face used to highlight what your current input matches, when searching -- [[Icicles - Search Commands, Overview]], ''[[Icicles - Customization and General Tips#icicle-search-current-input|main]]''
+
+* '''`icicle-search-main-regexp-current'''' -- Face used to highlight current match of your original regexp, when searching --  [[Icicles - Multi M-x]], [[Icicles - Search Commands, Overview]], ''[[Icicles - Customization and General Tips#icicle-search-main-regexp-current|main]]''
+
+* '''`icicle-search-main-regexp-others'''' -- Face used to highlight other matches of your original regexp, when searching --  [[Icicles - Multi M-x]], [[Icicles - Search Commands, Overview]],  ''[[Icicles - Customization and General Tips#icicle-search-main-regexp-others|main]]''
+
+* '''`icicle-special-candidate'''' -- Face used to highlight special candidates (typically, candidates that match `icicle-special-candidate-regexp'), in buffer `*Completions*' -- [[Icicles - Key Completion]], [[Icicles - Programming Multi-Completions]], [[Icicles - Candidates with Text Properties#icicle-special-candidate]], ''[[Icicles - Customization and General Tips#icicle-special-candidate|main]]''
+
+* '''`icicle-whitespace-highlight'''' -- Face used to highlight initial whitespace in minibuffer input --  ''[[Icicles - Customization and General Tips#icicle-whitespace-highlight|main]]''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[:user options]
+== Icicles User Options ==
+
+Most of these options are defined in library `<tt>[[icicles-opt.el]]</tt>'.
+
+[:A]
+[:B]
+==== A, B ====
+
+* '''`icicle-act-before-cycle-flag'''' -- Whether keys such as `C-next' act first on the current candidate before cycling to the next (or previous) -- [[Icicles - More About Multi-Commands]], ''[[Icicles - Customization and General Tips#icicle-act-before-cycle-flag|main]]''
+
+* '''`icicle-add-buffer-name-flag'''' -- Whether to tack on the name of the associated buffer to completion candidates, in `*Completions*' -- [[Icicles - Search Commands, Overview]], [[Icicles - Multiple Regions]], ''[[Icicles - Customization and General Tips#icicle-add-buffer-name-flag|main]]''
+
+* '''`icicle-add-proxy-candidates-flag'''' -- Whether to to include proxy candidates -- [[Icicles - Completions Display]], ''[[Icicles - Customization and General Tips#icicle-add-proxy-candidates-flag|main]]''
+
+* '''`icicle-alternative-sort-function'''' -- Alternative for `icicle-sort-function'.  Swap using `##C-M-,##' -- [[Icicles - History Enhancements]], ''[[Icicles - Customization and General Tips#icicle-alternative-sort-function|main]]''
+
+* '''`icicle-anything-transform-candidates-flag'''' -- Whether `icicle-anything' transforms completion candidates -- [[Icicles - Object-Action Interaction]], ''[[Icicles - Customization and General Tips#icicle-anything-transform-candidates-flag|main]]''
+
+* '''`icicle-apropos-complete-no-display-keys'''' -- Key sequences to use for `icicle-apropos-complete-no-display' -- [[Icicles - Large Candidate Sets]], [[Icicles - Key Bindings]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-apropos-complete-no-display-keys|main]]''
+
+* '''`icicle-apropos-complete-keys'''' -- Key sequences to use for `icicle-apropos-complete' -- [[Icicles - Nutshell View]], [[Icicles - Apropos Completions]], [[Icicles - Key Completion]], [[Icicles - Key Bindings]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|main]]''
+
+* '''`icicle-apropos-cycle-next-action-keys'''' -- Keys for apropos completion to cycle next and perform action -- ''[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-action-keys|main]]''
+
+* '''`icicle-apropos-cycle-next-alt-action-keys'''' -- Keys for apropos completion to cycle next and perform alternative action -- ''[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-alt-action-keys|main]]''
+
+* '''`icicle-apropos-cycle-next-help-keys'''' -- Keys for apropos completion to cycle next and show candidate help -- ''[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-help-keys|main]]''
+
+* '''`icicle-apropos-cycle-next-keys'''' -- Key sequences to cycle to the next apropos-completion candidate -- [[Icicles - Key Bindings]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-keys|main]]''
+
+* '''`icicle-apropos-cycle-previous-action-keys'''' -- Keys for apropos completion to cycle previous and perform action -- ''[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-action-keys|main]]''
+
+* '''`icicle-apropos-cycle-previous-alt-action-keys'''' -- Keys for apropos completion to cycle previous and perform alternative action -- ''[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-alt-action-keys|main]]''
+
+* '''`icicle-apropos-cycle-previous-help-keys'''' -- Keys for apropos completion to cycle previous and show candidate help -- ''[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-help-keys|main]]''
+
+* '''`icicle-apropos-cycle-previous-keys'''' -- Key sequences to cycle to the previous apropos-completion candidate -- [[Icicles - Key Bindings]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|main]]''
+
+* '''`icicle-apropos-match-fns-alist'''' -- Alist of string-matching functions used by `S-TAB' -- [[Icicles - Fuzzy Completion#icicle-apropos-match-fns-alist|Icicles - Fuzzy Completion]], ''[[Icicles - Customization and General Tips#icicle-apropos-match-fns-alist|main]]''
+
+* '''`icicle-bookmark-name-length-max'''' -- Maximum number of buffer characters used to name a bookmark -- ''[[Icicles - Customization and General Tips#icicle-bookmark-name-length-max|main]]''
+
+* '''`icicle-buffer-configs'''' -- List of option configurations available for `icicle-buffer-config' --  [[Icicles - Key Bindings]], [[Icicles - Defining Icicles Commands]], ''[[Icicles - Customization and General Tips#icicle-buffer-configs|main]]''
+
+* '''`icicle-buffer-extras'''' -- Additional buffer-name candidates always present -- [[Icicles - Global Filters]], ''[[Icicles - Customization and General Tips#icicle-buffer-extras|main]]''
+
+* '''`icicle-buffer-ignore-space-prefix-flag'''' -- Whether to override `icicle-ignore-space-prefix-flag' for `icicle-buffer*' --  ''[[Icicles - Customization and General Tips#icicle-buffer-ignore-space-prefix-flag|main]]''
+
+* '''`icicle-buffer-match-regexp'''' -- Regexp that buffer-name completion candidates must match -- [[Icicles - Global Filters]], ''[[Icicles - Customization and General Tips#icicle-buffer-match-regexp|main]]''
+
+* '''`icicle-buffer-no-match-regexp'''' -- Regexp that buffer-name completion candidates must not match -- [[Icicles - Global Filters]], ''[[Icicles - Customization and General Tips#icicle-buffer-no-match-regexp|main]]''
+
+* '''`icicle-buffer-predicate'''' -- Predicate that buffer-name completion candidates must satisfy -- [[Icicles - Global Filters]], ''[[Icicles - Customization and General Tips#icicle-buffer-predicate|main]]''
+
+* '''`icicle-buffer-require-match-flag'''' -- Whether completion of a buffer name requires a match or can tolerate a new buffer name -- [[Icicles - S-RET]], ''[[Icicles - Customization and General Tips#icicle-buffer-require-match-flag|main]]''
+
+* '''`icicle-buffer-sort'''' -- Version of `icicle-sort-function' for buffer-name completion -- [[Icicles - Global Filters]], ''[[Icicles - Customization and General Tips#icicle-buffer-sort|main]]''
+
+
+
+[:C]
+==== C ====
+
+* '''`icicle-candidate-width-factor'''' -- Controls how many
+columns of candidates are displayed in `*Completions*' -- [[Icicles - Completions Display]], ''[[Icicles - Customization and General Tips#icicle-candidate-width-factor|main]]''
+
+* '''`icicle-change-region-background-flag'''' -- Whether the region background color should be changed during input -- ''[[Icicles - Customization and General Tips#icicle-change-region-background-flag|main]]''
+
+* '''`icicle-change-sort-order-completion-flag'''' -- Whether to cycle among sort orders with each `##C-,##' or use '''Icicles''' completion to choose a sort order -- [[Icicles - Sorting Candidates]], ''[[Icicles - Customization and General Tips#icicle-change-sort-order-completion-flag|main]]''
+
+* '''`icicle-C-l-uses-completion-flag'''' -- Whether `C-l' cycles or lets you use completion -- [[Icicles - History Enhancements]], [[Icicles - Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-C-l-uses-completion-flag|main]]''
+
+
+* '''`icicle-color-themes'''' -- List of color themes to cycle through when you use command `icicle-color-theme' --  ''[[Icicles - Customization and General Tips#icicle-color-themes|main]]''
+
+* '''`icicle-comint-dynamic-complete-replacements'''' -- List of function replacements for `comint-dynamic-complete-functions' -- [[Icicles - Defining Completion for Comint Modes#icicle-comint-dynamic-complete-replacements|Icicles - Defining Completion for Comint Modes]], ''[[Icicles - Customization and General Tips#icicle-comint-dynamic-complete-replacements|main]]''
+
+* '''`icicle-command-abbrev-alist'''' -- Alist of command abbreviations -- [[Icicles - Multi M-x#icicle-command-abbrev|Icicles Multi M-x]], ''[[Icicles - Customization and General Tips#icicle-command-abbrev-alist|main]]''
+
+* '''`icicle-command-abbrev-match-all-parts-flag'''' -- Whether `icicle-command-abbrev' matches all command-name parts -- [[Icicles - Multi M-x#icicle-command-abbrev|Icicles Multi M-x]], ''[[Icicles - Customization and General Tips#icicle-command-abbrev-match-all-parts-flag|main]]''
+
+* '''`icicle-command-abbrev-priority-flag'''' -- Whether commands take precedence over abbreviations for `C-x SPC' -- [[Icicles - Multi M-x#icicle-command-abbrev|Icicles Multi M-x]], ''[[Icicles - Customization and General Tips#icicle-command-abbrev-priority-flag|main]]''
+
+
+* '''`icicle-complete-keys-self-insert-flag'''' -- Whether keys that are bound to `self-insert-command' are candidates for key completion. The default value, `nil', means they are not. -- [[Icicles - Key Completion]], ''[[Icicles - Customization and General Tips#icicle-complete-keys-self-insert-flag|main]]''
+
+* '''`##icicle-completing-read+insert-keys##'''' -- Keys to use for `##icicle-completing-read+insert##' -- [[Icicles - Completion On Demand]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-completing-read-insert-keys|main]]''
+
+* '''`icicle-completion-history-max-length'''' -- Max number of completion inputs to save, for `C-l' -- [[Icicles - History Enhancements]], [[Icicles - Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-completion-history-max-length|main]]''
+
+* '''`icicle-Completions-display-min-input-chars'''' -- The minimum number of input characters that allow buffer `*Completions*' to remain displayed --  ''[[Icicles - Customization and General Tips#icicle-Completions-display-min-input-chars|main]]''
+
+* '''`icicle-Completions-frame-at-right-flag'''' -- Whether a standalone `*Completions*' frame should be positioned at the right edge of your display during mult-commands -- [[Icicles - Help on Candidates]], ''[[Icicles - Customization and General Tips#icicle-Completions-frame-at-right-flag|main]]''
+
+* '''`icicle-Completions-window-max-height'''' -- Maximum height of `*Completions*' window -- [[Icicles - Completions Display]], ''[[Icicles - Customization and General Tips#icicle-Completions-window-max-height|main]]''
+
+* '''`icicle-customize-save-flag'''' -- Whether '''Icicles''' saves the updated value of `icicle-command-abbrev-alist' when you quit Emacs -- ''[[Icicles - Customization and General Tips#icicle-customize-save-flag|main]]''
+
+* '''`icicle-customize-save-variable-function'''' -- ''[[Icicles - Customization and General Tips#icicle-customize-save-variable-function|main]]''
+
+* '''`icicle-cycle-into-subdirs-flag'''' -- Whether cycling of file-name completion candidates explores subdirectories -- [[Icicles - File-Name Completion Tips]]
+
+* '''`icicle-cycling-respects-completion-mode-flag'''' -- Whether `TAB' and `S-TAB' change the behavior of cycling keys, so they are modal -- [[Icicles - Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-cycling-respects-completion-mode-flag|main]]''
+
+
+
+[:D]
+[:E]
+[:F]
+[:G]
+[:H]
+==== D, E, F, G, H ====
+
+* '''`icicle-default-thing-insertion'''' -- Controls behavior of successive `##M-.##' to insert buffer text in the minibuffer -- [[Icicles - Inserting Text from Cursor]], ''[[Icicles - Customization and General Tips#icicle-default-thing-insertion|main]]''
+
+* '''`icicle-default-value'''' -- Controls how to treat the default value when reading input -- [[Icicles - Inserting Text from Cursor]], ''[[Icicles - Customization and General Tips#icicle-default-value|main]]''
+
+* '''`icicle-define-alias-commands-flag'''' -- Whether to define some top-level commands whose names don't start with `icicle-' -- [[Icicles - Object-Action Interaction]], ''[[Icicles - Customization and General Tips#icicle-define-alias-commands-flag|main]]''
+
+* '''`icicle-deletion-action-flag'''' -- Whether `S-delete' is enabled during completion -- ''[[Icicles - Customization and General Tips#icicle-deletion-action-flag|main]]''
+
+
+* '''`icicle-expand-input-to-common-match-flag'''' -- Whether `S-TAB' expands minibuffer input to the expanded common match among all completion candidates. Toggle with `##C-|##'. -- [[Icicles - Expanded-Common-Match Completion]], ''[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|main]]''
+
+* '''`icicle-filesets-as-saved-completion-sets-flag'''' -- Whether you can use emacs [[fileset]]s to save candidates persistently -- [[Icicles - Persistent Completions#Filesets|Save Candidates in a Fileset]], ''[[Icicles - Customization and General Tips#icicle-filesets-as-saved-completion-sets-flag|main]]''
+
+* '''`icicle-fuzzy-completion-flag'''' -- Whether `TAB' uses fuzzy matching for prefix completion -- [[Icicles - Fuzzy Completion]], ''[[Icicles - Customization and General Tips#icicle-fuzzy-completion-flag|main]]''
+
+* '''`icicle-guess-commands-in-path'''' -- Whether to include all commands from search path as completion candidates -- [[Icicles - Shell-Command Enhancements]], [[Icicles - Dired Enhancements#CompleteShellCommands|Shell Commands In Dired]], [[Icicles - Global Filters]], ''[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|main]]''
+
+* '''`icicle-help-in-mode-line-flag'''' -- Whether to show help on individual candidates in `*Completions*' [[mode line]] -- [[Icicles - Completions Display]], [[Icicles - Help on Candidates]], ''[[Icicles - Customization and General Tips#icicle-help-in-mode-line-flag|main]]''
+
+
+* '''`icicle-hide-common-match-in-Completions-flag'''' -- Whether to hide the common match portion in `*Completions*'. Toggle with `##C-M.##'. -- [[Icicles - Completions Display]], [[Icicles - File-Name Completion Tips]], ''[[Icicles - Customization and General Tips#icicle-hide-common-match-in-Completions-flag|main]]''
+
+* '''`icicle-highlight-historical-candidates-flag'''' -- Whether to highlight completion candidates that have been used previously, in `*Completions*'.  Toggle with `C-pause'. -- [[Icicles - History Enhancements]], ''[[Icicles - Customization and General Tips#icicle-historical-candidate|main]]''
+
+* '''`icicle-highlight-input-completion-failure'''' -- Whether and when to highlight the part of your minibuffer input that does not match any completion candidates -- [[Icicles - Icompletion#HighlightNonmatch|Highlight Nonmatch]], ''[[Icicles - Customization and General Tips#icicle-highlight-input-completion-failure|main]]''
+
+* '''`icicle-highlight-input-completion-failure-delay'''' -- Delay before highlighting the part of your minibuffer input that does not match any completion candidates -- [[Icicles - Icompletion#HighlightNonmatch|Highlight Nonmatch]], ''[[Icicles - Customization and General Tips#icicle-highlight-input-completion-failure-delay|main]]''
+
+* '''`icicle-highlight-input-completion-failure-threshold'''' -- More candidates means do not highlight non-completing part of input -- [[Icicles - Icompletion#HighlightNonmatch|Highlight Nonmatch]], ''[[Icicles - Customization and General Tips#icicle-highlight-input-completion-failure-threshold|main]]''
+
+* '''`icicle-highlight-input-initial-whitespace-flag'''' -- Whether to highlight  whitespace that starts your minibuffer input --  ''[[Icicles - Customization and General Tips#icicle-highlight-input-initial-whitespace-flag|main]]''
+
+* '''`icicle-highlight-lighter-flag'''' -- Whether to highlight `Icy' mode-line lighter during completion -- [[Icicles - Nutshell View#CompletionStatusIndicators|Completion Status Indicators]], ''[[Icicles - Customization and General Tips#icicle-highlight-lighter-flag|main]]''
+
+
+
+[:I]
+==== I ====
+
+* '''`icicle-ignore-space-prefix-flag'''' -- Whether to ignore completion candidates that start with a space.  Toggle with `##C-c `##'. --  ''[[Icicles - Customization and General Tips#icicle-ignore-space-prefix-flag|main]]''
+
+* '''`icicle-incremental-completion-delay'''' -- Number of seconds to wait before updating `*Completions*' incrementally -- [[Icicles - Icompletion]], ''[[Icicles - Customization and General Tips#icicle-incremental-completion-delay|main]]''
+
+* '''`icicle-incremental-completion-flag'''' -- Whether to update `*Completions* incrementally, as you type.  Toggle with `<tt>C-#</tt>'. -- [[Icicles - Icompletion]], [[Icicles - Note to Programmers]], ''[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|main]]''
+
+* '''`icicle-incremental-completion-threshold'''' -- Minimum number of completion candidates before `icicle-incremental-completion-delay' is used -- [[Icicles - Icompletion]], ''[[Icicles - Customization and General Tips#icicle-incremental-completion-threshold|main]]''
+
+* '''`icicle-inhibit-ding-flag'''' -- Whether to use an audible bell for signals (e.g. errors) -- ''[[Icicles - Customization and General Tips#icicle-inhibit-ding-flag|main]]''
+
+* '''`icicle-input-string'''' -- String to insert in minibuffer when you use `##C-=##' -- [[Icicles - Inserting a Regexp from a Variable or Register]], ''[[Icicles - Customization and General Tips#icicle-input-string|main]]''
+
+* '''`icicle-inter-candidates-min-spaces'''' -- Minumum number of spaces between candidates displayed in `*Completions*' -- ''[[Icicles - Customization and General Tips#icicle-inter-candidates-min-spaces|main]]''
+
+* '''`icicle-isearch-complete-keys'''' -- Key sequences to use for `icicle-isearch-complete' -- [[Icicles - Isearch Enhancements]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|main]]''
+
+
+
+[:J]
+[:K]
+[:L]
+[:M]
+==== J, K, L, M ====
+
+* '''`icicle-key-complete-keys'''' -- Key sequences to use for `icicle-complete-key' -- [[Icicles - Nutshell View]], [[Icicles - Key Completion]], [[Icicles - Key Bindings]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-key-complete-keys|main]]''
+
+* '''`##icicle-key-descriptions-use-<>-flag##'''', '''`icicle-key-descriptions-use-angle-brackets-flag'''' -- Whether key descriptions should use angle brackets (e.g. ##<S-tab>##) in '''Icicles''' -- [[Icicles - Key Completion]], ''[[Icicles - Customization and General Tips#icicle-key-descriptions-use-angle-brackets-flag|main]]''
+
+* '''`icicle-keymaps-for-key-completion'''' -- List of keymaps in which to bind `S-TAB' to `icicle-complete-keys' -- [[Icicles - Key Completion]], ''[[Icicles - Customization and General Tips#icicle-keymaps-for-key-completion|main]]''
+
+* '''`icicle-kmacro-ring-max'''' -- '''Icicles''' version of `kmacro-ring-max' -- ''[[Icicles - Customization and General Tips#icicle-kmacro-ring-max|main]]''
+
+* '''`icicle-list-end-string'''' -- String appended to the end of a completion candidate that is composed of multiple strings -- [[Icicles - Multi-Completions]], [[Icicles - Programming Multi-Completions]], ''[[Icicles - Customization and General Tips#icicle-list-end-string|main]]''
+
+* '''`icicle-list-join-string'''' -- String joining (pairwise) the strings of a multiple-string completion candidate -- [[Icicles - Multi-Completions]], [[Icicles - Programming Multi-Completions]], ''[[Icicles - Customization and General Tips#icicle-list-join-string|main]]''
+
+* '''`icicle-list-nth-parts-join-string'''' -- String joining completion-candidate parts that were split by `icicle-list-use-nth-parts' -- [[Icicles - Multi-Completions]], [[Icicles - Programming Multi-Completions]], ''[[Icicles - Customization and General Tips#icicle-list-nth-parts-join-string|main]]''
+
+* '''`icicle-mark-position-in-candidate'''' -- Position of mark when you cycle through completion candidates --  ''[[Icicles - Customization and General Tips#icicle-mark-position-in-candidate|main]]''
+
+* '''`icicle-minibuffer-setup-hook'''' -- Functions run at the end of minibuffer setup for ''Icicle'' mode --  ''[[Icicles - Customization and General Tips#icicle-minibuffer-setup-hook|main]]''
+
+* '''`icicle-modal-cycle-down-keys'''', '''`icicle-modal-cycle-down-action-keys'''', '''`icicle-modal-cycle-down-alt-action-keys'''', '''`icicle-modal-cycle-up-keys'''', '''`icicle-modal-cycle-up-action-keys'''', '''`icicle-modal-cycle-up-alt-action-keys''''    -- Key sequences used for modal cycling among completion candidates, when `icicle-cycling-respects-completion-mode-flag' is non-`nil' -- [[Icicles - Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|main]]''
+
+* '''`icicle-mode-hook'''' -- Normal hook for `icicle-mode', containing functions that are run after entering and exiting ''Icicle'' mode -- [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-mode-hook|main]]''
+
+
+
+
+[:N]
+[:O]
+[:P]
+[:Q]
+[:R]
+==== N, O, P, Q, R ====
+
+* '''`icicle-point-position-in-candidate'''' -- Position of point when you cycle through completion candidates --  ''[[Icicles - Customization and General Tips#icicle-point-position-in-candidate|main]]''
+
+* '''`icicle-pp-eval-expression-print-length'''', '''`icicle-pp-eval-expression-print-level'''' -- Length and level for printing the Lisp [[sexp]] value in `M-:' (`icicle-pp-eval-expression') -- ''[[Icicles - Customization and General Tips#icicle-pp-eval-expression-print-length|main]]''
+
+* '''`icicle-prefix-complete-keys'''' -- Key sequences to use for `icicle-prefix-complete' -- [[Icicles - Key Bindings]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-prefix-complete-keys|main]]''
+
+* '''`icicle-prefix-complete-no-display-keys'''' -- Key sequences to use for `icicle-prefix-complete-no-display' -- [[Icicles - Large Candidate Sets]], [[Icicles - Key Bindings]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-prefix-complete-no-display-keys|main]]''
+
+* '''`icicle-prefix-cycle-next-action-keys'''' -- Keys for prefix completion to cycle next and perform action -- ''[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-action-keys|main]]''
+
+* '''`icicle-prefix-cycle-next-alt-action-keys'''' -- Keys for prefix completion to cycle next and perform alternative action -- ''[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-alt-action-keys|main]]''
+
+* '''`icicle-prefix-cycle-next-help-keys'''' -- Keys for prefix completion to cycle next and show candidate help -- ''[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-help-keys|main]]''
+
+* '''`icicle-prefix-cycle-next-keys'''' -- Key sequences to cycle to the next prefix-completion candidate -- [[Icicles - Key Bindings]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-keys|main]]''
+
+* '''`icicle-prefix-cycle-previous-action-keys'''' -- Keys for prefix completion to cycle next and perform action -- ''[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-action-keys|main]]''
+
+* '''`icicle-prefix-cycle-previous-alt-action-keys'''' -- Keys for prefix completion to cycle next and perform alternative action -- ''[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-alt-action-keys|main]]''
+
+* '''`icicle-prefix-cycle-previous-help-keys'''' -- Keys for prefix completion to cycle next and show candidate help -- ''[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-help-keys|main]]''
+
+* '''`icicle-prefix-cycle-previous-keys'''' -- Key sequences to cycle to the previous prefix-completion candidate -- [[Icicles - Key Bindings]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-keys|main]]''
+
+* '''`icicle-previous-candidate-keys'''' -- Key sequences to use for `icicle-move-to-previous-completion' --  [[Icicles - Key Completion]], [[Icicles - Key Bindings]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-previous-candidate-keys|main]]''
+
+* '''`icicle-quote-shell-file-name-flag'''' -- Whether to quote file names read as shell commands -- ''[[Icicles - Customization and General Tips#icicle-quote-shell-file-name-flag|main]]''
+
+* '''`##icicle-read+insert-file-name-keys##'''' -- Keys to use for `##icicle-read+insert-file-name##' -- [[Icicles - Completion On Demand]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-read-insert-file-name-keys|main]]''
+
+* '''`icicle-redefine-standard-commands-flag'''' -- Whether ''Icicle'' mode redefines some standard Emacs commands -- [[Icicles - Standard Commands Redefined]], [[Icicles - Completion in Other Buffers]], ''[[Icicles - Customization and General Tips#icicle-redefine-standard-commands-flag|main]]''
+
+* '''`icicle-regexp-quote-flag'''' -- Whether special characters in regexps are automatically escaped.  Toggle with `##C-`##'. -- [[Icicles - Special Characters in Input Patterns]], ''[[Icicles - Customization and General Tips#icicle-regexp-quote-flag|main]]''
+
+* '''`icicle-regexp-search-ring-max'''' -- '''Icicles''' version of `regexp-search-ring-max' --  ''[[Icicles - Customization and General Tips#icicle-regexp-search-ring-max|main]]''
+
+* '''`icicle-region-alist'''' -- List of saved regions -- [[Icicles - Multiple Regions]], ''[[Icicles - Customization and General Tips#icicle-region-alist|main]]''
+
+* '''`icicle-region-auto-open-files-flag'''' -- Whether commands that use `icicle-region-alist' automatically open its files -- [[Icicles - Multiple Regions]], ''[[Icicles - Customization and General Tips#icicle-region-auto-open-files-flag|main]]''
+
+* '''`icicle-region-background'''' -- Background color to use for region during minibuffer cycling --  ''[[Icicles - Customization and General Tips#icicle-region-background|main]]''
+
+* '''`icicle-regions-name-length-max'''' -- Maximum number of characters used to name a region (in `icicle-region-alist') --  [[Icicles - Multiple Regions]], ''[[Icicles - Customization and General Tips#icicle-regions-name-length-max|main]]''
+
+* '''`icicle-require-match-flag'''' -- Controls ##REQUIRE-MATCH## arg to `completing-read' and `read-file-name' --  [[Icicles - S-RET]], ''[[Icicles - Customization and General Tips#icicle-require-match-flag|main]]''
+
+
+
+
+[:S]
+==== S ====
+
+* '''`icicle-saved-completion-sets'''' -- Completion sets available for `icicle-candidate-set-retrieve' -- [[Icicles - Persistent Completions]], ''[[Icicles - Customization and General Tips#icicle-saved-completion-sets|main]]''
+
+* '''`icicle-search-cleanup-flag'''' -- Whether to remove highlighting after a search --  [[Icicles - Search Commands, Overview]], ''[[Icicles - Customization and General Tips#icicle-search-cleanup-flag|main]]''
+
+* '''`icicle-search-context-match-predicate'''' -- Predicate that search contexts must match -- [[Icicles - Search Commands, Overview]], 
+''[[Icicles - Customization and General Tips#icicle-search-context-match-predicate|main]]''
+
+* '''`icicle-search-from-isearch-keys'''' -- Key sequences to use to start `icicle-search' from Isearch -- [[Icicles - Isearch Enhancements]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-search-from-isearch-keys|main]]''
+
+* '''`icicle-search-highlight-all-current-flag'''' -- Whether to highlight the current input match in each main search hit.  Toggle with `##C-^##'. -- [[Icicles - Search Commands, Overview]], ''[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|main]]''
+
+* '''`icicle-search-highlight-context-levels-flag'''' -- Whether to highlight context levels (regexp subgroup matches), within the search context -- [[Icicles - Search Commands, Overview]], ''[[Icicles - Customization and General Tips#highlight-context-levels-flag|main]]''
+
+* '''`icicle-search-highlight-threshold'''' -- Maximum number of main matches for `icicle-search' to highlight at once -- [[Icicles - Search Commands, Overview]], ''[[Icicles - Customization and General Tips#icicle-search-highlight-threshold|main]]''
+
+* '''`icicle-search-hook'''' -- List of hook functions run by `icicle-search' -- [[Icicles - Search Commands, Overview]],  ''[[Icicles - Customization and General Tips#icicle-search-hook|main]]''
+
+* '''`icicle-search-replace-common-match-flag'''' -- Whether replacement during searching replaces what your input matches exactly or the common match among all search hits. Toggle with `##C-M-|##'. -- [[Icicles - Search-And-Replace]], ''[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|main]]''
+
+* '''`icicle-search-replace-literally-flag'''' -- Whether to treat replacement text literally during search-and-replace.  Toggle with `##M-`##'. -- [[Icicles - Search-And-Replace]], ''[[Icicles - Customization and General Tips#icicle-search-replace-literally-flag|main]]''
+
+* '''`icicle-search-replace-whole-candidate-flag'''' -- Controls whether an entire search context or the part that matches your current input is replaced, during '''Icicles''' search-and-replace.  Toggle with `##C-,##'.-- [[Icicles - Search-And-Replace]], ''[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|main]]''
+
+* '''`icicle-search-ring-max'''' -- '''Icicles''' version of `search-ring-max' --  ''[[Icicles - Customization and General Tips#icicle-search-ring-max|main]]''
+
+* '''`icicle-search-whole-word-flag'''' -- Whether '''Icicles''' search looks for a whole word. Toggle during searching, using `M-q'. -- [[Icicles - Search Commands, Overview]], [[Icicles - Search-And-Replace]], [[Icicles - Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-search-whole-word-flag|main]]''
+
+* '''`icicle-shell-command-candidates-cache'''' -- Cache for shell command candidates -- [[Icicles - Shell-Command Enhancements]], ''[[Icicles - Customization and General Tips#icicle-shell-command-candidates-cache|main]]''
+
+* '''`icicle-show-Completions-help-flag'''' -- Whether to display help lines at the top of buffer `*Completions*' --  ''[[Icicles - Customization and General Tips#icicle-show-Completions-help-flag|main]]''
+
+* '''`icicle-show-Completions-initially-flag'''' -- Whether to show buffer `*Completions*' even without user input -- ''[[Icicles - Customization and General Tips#icicle-show-Completions-initially-flag|main]]''
+
+* '''`icicle-sort-function'''' -- The current function for sorting completion candidates.  Toggle with `##C-,##'. -- [[Icicles - Sorting Candidates]], [[Icicles - File-Name Completion Tips]], [[Icicles - Note to Programmers]], ''[[Icicles - Customization and General Tips#icicle-sort-function|main]]''
+
+* '''`icicle-sort-functions-alist'''' -- Alist of sort functions.  Use `icicle-define-sort-command' instead of customizing this. -- [[Icicles - Sorting Candidates]], ''[[Icicles - Customization and General Tips#icicle-sort-functions-alist|main]]''
+
+* '''`icicle-special-candidate-regexp'''' -- Regexp string that determines which candidates should be highlighted with face `icicle-special-candidate' in `*Completions*' -- [[Icicles - Candidates with Text Properties#icicle-special-candidate]], ''[[Icicles - Customization and General Tips#icicle-special-candidate-regexp|main]]''
+
+
+
+[:T]
+[:U]
+[:V]
+[:W]
+[:X]
+[:Y]
+[:Z]
+==== T, U, V, W, X, Y, Z ====
+
+* '''`icicle-TAB-shows-candidates-flag'''' -- Whether `TAB' always shows completion candidates, rather than first completing to the longest common prefix -- ''[[Icicles - Customization and General Tips#icicle-TAB-shows-candidates-flag|main]]''
+
+* '''`icicle-test-for-remote-files-flag'''' -- Whether '''Icicles tests''' for remote file name during completion -- [[Icicles - Icompletion#HighlightNonmatch]], ''[[Icicles - Customization and General Tips#icicle-test-for-remote-files-flag|main]]''
+
+* '''`icicle-thing-at-point-functions'''' -- Functions that return a string at or near the cursor when you use `##M-.##' -- [[Icicles - Inserting Text from Cursor]], ''[[Icicles - Customization and General Tips#icicle-thing-at-point-functions|main]]''
+
+* '''`icicle-top-level-key-bindings'''' -- Top-level '''Icicles''' commands and their ''Icicle''-mode bindings -- [[Icicles - S-RET]], [[Icicles - Completion in Other Buffers]], [[Icicles - Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|main]]''
+
+* '''`icicle-top-level-when-sole-completion-flag'''' -- Whether to return to top level if there is only one matching completion -- [[Icicles - S-RET]], [[Icicles - Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|main]]''
+
+* '''`icicle-touche-pas-aux-menus-flag'''' -- Whether to add items to other menu-bar menus besides '''Minibuf''' and '''Icicles''' -- [[Icicles - Key Bindings]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-touche-pas-aux-menus-flag|main]]''
+
+* '''`icicle-transform-function'''' -- Function used to transform the list of completion candidates.  Toggle with `##C-$##'.  (You probably do '''''not''''' want to customize this.) --  ''[[Icicles - Customization and General Tips#icicle-transform-function|main]]''
+
+* '''`icicle-unpropertize-completion-result-flag'''' -- ''[[Icicles - Customization and General Tips#icicle-unpropertize-completion-result-flag|main]]''
+
+* '''`icicle-update-input-hook'''' -- Functions run when minibuffer input is updated (typing or deleting) --  ''[[Icicles - Customization and General Tips#icicle-update-input-hook|main]]''
+
+* '''`##icicle-use-~-for-home-dir-flag##'''' -- Whether to abbreviate your home directory by `##~##'.  Toggle with `##M-~##'. -- ''[[Icicles - File-Name Completion Tips#icicle-use-tilde-for-home-dir-flag|main]]''
+
+* '''`icicle-use-C-for-actions-flag'''' -- Whether you need to use modifier `C-' for mult-command actions -- ''[[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|main]]''
+
+* '''`icicle-use-candidates-only-once-flag'''' -- Whether acting on a completion candidate should remove it from the set of available candidates. [[Icicles - Multi-Commands]], ''[[Icicles - Customization and General Tips#icicle-use-candidates-only-once-flag|main]]''
+
+* '''`icicle-word-completion-keys'''' -- Key sequences to use for minibuffer word completion -- [[Icicles - Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-word-completion-keys|main]]''
+
+* '''`icicle-WYSIWYG-Completions-flag'''' -- Whether face and color names use their own faces and colors in `*Completions*' -- [[Icicles - Candidates with Text Properties]], ''[[Icicles - Customization and General Tips#icicle-WYSIWYG-Completions-flag|main]]''
+
+* '''`icicle-yank-function'''' -- Yank function, called by `icicle-yank-insert' --[[Icicles - Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-yank-function|main]]''
+
+
+
+----
+Options: [[#A]] | [[#B]] | [[#C]] | [[#D]] | [[#E]] | [[#F]] | [[#G]] | [[#H]] | [[#I]] | [[#K]] | [[#L]] | [[#M]] | [[#N]] | [[#O]] | [[#P]] | [[#Q]] | [[#R]] | [[#S]] | [[#T]] | [[#U]] | [[#V]] | [[#W]] | [[#X]] | [[#Y]] | [[#Z]]
+----
+
+|| '''[[Icicles]]''' || [[IciclesIndex]] || [[Icicles - Command Index]] ||
+
+

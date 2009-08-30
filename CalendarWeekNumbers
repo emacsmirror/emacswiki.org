@@ -1,0 +1,105 @@
+CalendarMode loosely supports the ISO week standard.
+
+[new]
+I couldn't find a way to display the calendar week numbers - is there one?
+And does this possibilty recognize the different counting ways for 
+the week numbers (see WikiPedia:Week)
+- greetings -- Schusch (2007-05-25)
+
+[new]
+The command `pc' prints things like "Day 2 of week 23 of 2007".  So the logic is in there.  Unfortunately, there is no option to turn on the display of week numbers.  It's probably hackable.
+
+[new]
+There is a hack to display week numbers in the calendar. (See [http://groups.google.com/group/gnu.emacs.sources/msg/4cf127982f70d379].) However, EdwardReingold has stated many times [http://groups.google.com/group/gnu.emacs.help/msg/1ca8598c315b7ec1] [http://groups.google.com/group/gnu.emacs.help/msg/183bd861ad342958] [http://groups.google.com/group/gnu.emacs.sources/msg/d7454ed05a464987], that it's not recommended because it can break things.
+[new]
+Well, I just wanted to mention, that the week numbers are not extraneous, as Reingold stated, in some business you need them every day (maybe emacs is too complex today to add a usefull enhancement?); and thanks for the 'pc' - that's not what I wanted but better than nothing (well and I need a working emacs installation and I am not an expert at this, so I don't dare to install the hack or the patch) -- Schusch (2007-06-21)
+[new]
+Here's a patch to Emacs 22 (2008-12-07) that provides the following view of the calendar.
+{{{
+           May 2007                June 2007                July 2007      
+     Su Mo Tu We Th Fr Sa     Su Mo Tu We Th Fr Sa     Su Mo Tu We Th Fr Sa 
+ W18        1  2  3  4  5 W22                 1  2 W27  1  2  3  4  5  6  7 
+ W19  6  7  8  9 10 11 12 W23  3  4  5  6  7  8  9 W28  8  9 10 11 12 13 14 
+ W20 13 14 15 16 17 18 19 W24 10 11 12 13 14 15 16 W29 15 16 17 18 19 20 21 
+ W21 20 21 22 23 24 25 26 W25 17 18 19 20 21 22 23 W30 22 23 24 25 26 27 28 
+ W22 27 28 29 30 31       W26 24 25 26 27 28 29 30 W31 29 30 31 
+}}}
+The use of "W52" at the beginning of the week may be easier to read than the format of calendar-hack.el.
+
+It has only been tested for the US-English settings of `M-x calendar' using the assumption that Sunday is the first day of the week.  Testing is also less than thorough.  Its accuracy in producing week numbers for calendar months has only been reviewed back to 2004.  Whether it affects negatively other features and functions of Emacs's Calendar/Diary are also unknown.  Use at your own risk.
+
+The patch:
+{{{
+--- lisp/calendar/cal-iso.el
++++ lisp/calendar/cal-iso.el
+@@ -131,6 +131,13 @@
+                        (calendar-absolute-from-iso date)))
+   (or noecho (calendar-print-iso-date)))
+ 
++(defun calendar-iso-week-string (&optional date)
++  "String of ISO week number of Gregorian DATE."
++  (format "W%02d "
++	  (extract-calendar-month
++	   (calendar-iso-from-absolute
++	    (calendar-absolute-from-gregorian date)))))
++
+ (defun diary-iso-date ()
+   "ISO calendar equivalent of date diary entry."
+   (format "ISO date: %s" (calendar-iso-date-string date)))
+
+
+--- lisp/calendar/calendar.el
++++ lisp/calendar/calendar.el
+@@ -1810,6 +1810,10 @@
+ (autoload 'calendar-iso-date-string "cal-iso"
+   "String of ISO date of Gregorian date.")
+ 
++(autoload 'calendar-iso-from-absolute "cal-iso")
++
++(autoload 'calendar-iso-week-string "cal-iso")
++
+ (autoload 'calendar-goto-islamic-date "cal-islam"
+   "Move cursor to Islamic date."
+   t)
+@@ -2141,8 +2145,15 @@
+              (truncate-string-to-width string 2)
+            (substring string 0 2)))
+        " "))
++   (setq indent (- indent 4))
+    (calendar-insert-indented "" 0 t);; Force onto following line
+-   (calendar-insert-indented "" indent);; Go to proper spot
++   (calendar-insert-indented ;; Go to proper spot
++    (calendar-iso-week-string ;; Insert ISO week number.
++     (list
++      month
++      (if (and (= 0 blank-days) (= 0 calendar-week-start-day))
++	  2 ;; Use 2nd day if 1st day of calendar month is Sunday.
++	1) year)) indent)
+    ;; Add blank days before the first of the month
+    (calendar-for-loop i from 1 to blank-days do (insert "   "))
+    ;; Put in the days of the month
+@@ -2155,7 +2166,10 @@
+       (and (zerop (mod (+ i blank-days) 7))
+            (/= i last)
+            (calendar-insert-indented "" 0 t)    ;; Force onto following line
+-           (calendar-insert-indented "" indent)))));; Go to proper spot
++           (calendar-insert-indented            ;; Go to proper spot
++            (calendar-iso-week-string ;; Insert ISO week number.
++             (list month (+ 2 i) year))
++            indent)))))
+ 
+ (defun calendar-insert-indented (string indent &optional newline)
+   "Insert STRING at column INDENT.
+}}}
+[new]
+I like the use of the "W52" at the beginning of the week, it would be great to have this view in one of the next emacs versions -- Schusch (2007-06-21)
+
+[new]
+Has this code been introduced into core CVS ?
+
+[new]
+As of 2008-04-28, I have no knowledge that this has been accepted.  Looking at CVS:calendar/cal-iso.el and CVS:calendar/calendar.el it wouldn't appear so.  It hasn't been formally submitted, either.  I predict the patch would need some cleaning up to be accepted.  -- AaronHawley
+
+----
+CategoryCalendar
+

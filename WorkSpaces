@@ -1,0 +1,9 @@
+This is a proposal of workspace implementation for emacs, based on registers.
+Use the generic installation instructions on the LoadPath page to install this package.
+
+To use it, use `M-x workspace-goto'  followed by a number between 1 and 9.
+
+Lisp:workspaces.el
+
+----
+CategoryDisplay

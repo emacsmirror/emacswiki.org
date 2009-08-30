@@ -1,0 +1,124 @@
+== History and Motivation ==
+* Once there was an OS which could use HTML-pages (inkl. Java-Script) as a background.  Good idea, bad method, wrong scripting language.
+* The author of this little thing had been running ''top'' in a transparent terminal window w/o any window borders for years.
+* The same author uses XEmacs and disliked the idea of having an almost unconfigured yet useful tool such as the GnuEmacs lying around unused.
+* During the past years it wasn't possible for the author to get a terminal running in XEmacs which displayed ''top'', but in GnuEmacs everything went just fine.
+
+== Sawfish ==
+Yet another lisp scriptable program (YALISP ?), so there should be the possibility to do something cool with it.  Actually in this case little lisp is involved but the control of window settings depending on their name comes in handy:
+
+Code from 
+
+    ~/.sawfish/custom
+
+and a little formatted
+
+    (custom-set-typed-variable
+     (quote match-window-profile)
+     (quote ((((WM_NAME . "^hidden$"))
+              (depth . -16)
+              (focus-mode . click)
+              (frame-type . none)
+              (ignored . #t)
+              (sticky . #t)
+              (sticky-viewport . #t)
+              (cycle-skip . #t)
+              (window-list-skip . #t)
+              (ignore-stacking-requests . #t))))
+     (quote match-window) (quote sawfish.wm.ext.match-window))
+
+in addition to that, put into your
+
+    ~/.sawfishrc
+
+somewhere close to the (point-max):
+
+    (system "rxvt -T hidden +sb -tr -fg \"#ffff9e\" -bg \"#336577\" -fn 6x10 -geometry  212x75+0+0 -e emacs -nw -f 'root-portal'&")
+
+== Emacs Lisp Code ==
+Now for the EmacsLisp stuff.  The .emacs might contain much more customization, but for the coolest root-portal we need the following defun:
+
+    (defun root-portal ()
+       (interactive)
+       ;; frame settings
+       (menu-bar-mode -1)
+       (tool-bar-mode -1)
+       (xterm-mouse-mode 1)
+       ;; prepare
+       (delete-other-windows)
+       ;; need to start this first for calendar buffer to end up lowest
+       (calendar)
+       (split-window-horizontally)
+       ;; build window configuration
+       (other-window 2)
+       (split-window)
+       (set-window-text-height nil 25)
+       (split-window-horizontally)
+       (other-window 1)
+       ;; terminal window width
+       (enlarge-window-horizontally
+        (- 80 (window-width)))
+       (other-window 4)
+       ;; now start programms
+       (other-window 1)
+       (ansi-term "/bin/bash" "top")
+       ;(term-exec (current-buffer) "top" "top" nil nil)
+       (insert "top")
+       (term-send-input)
+       (other-window 1)
+       (emacs-wiki-find-file "WelcomePage")
+       (other-window 1)
+       (eshell)
+       (other-window 2)
+       (calculator)
+       ;; turn off undo for terminal, to avoid memory exhaust
+       (with-current-buffer "*top*" (setq buffer-undo-list t))
+       ;; hook settings...
+       (add-hook 'kill-emacs-hook
+             (lambda ()
+               (save-buffer (get-buffer "freenotes"))
+               (save-buffer (get-buffer "WelcomePage"))
+               (emacs-wiki-publish)
+               (eshell-save-some-history)
+               (set-buffer (get-buffer "*top*"))
+               (term-quit-subjob))))
+
+== Remarks ==
+This is just a humble start, the portal could contain much more things like
+* AppointmentMode
+* ToDo
+* PlannerMode
+* RSSFeeds
+* ...?
+
+And the EmacsLisp code is certainly not the nicest way to do it.  Especially the hard coded window sizes that depend on the font-size and the terminal window to have a certain size are bad.
+
+Ah, yes, the author mentioned above would be StefanKamphausen
+
+== Screenshot ==
+
+The screenshot provided is of an older version (without calc) and was edited with gimp.  The editing was just removing a picture of my daughter from it (I don't want to see pictures of her in the 'net).  You can see the traces of the editing in the lower left corner.
+
+[[image:EmacsAsDesktopBackgroundScreenShot.jpg]]
+
+[new]
+
+Nice idea.  A screenshot would be nice.
+
+Best Regards,
+
+Victor R.
+
+[new]
+Thanks for the idea. I tried to implement this idea without xterm. I launched Emacs in this 'hidden' window:
+
+    (system "emacs -T 'hidden' -g 125x65 -f root-portal &")
+
+The screenshot is [http://www.linux.org.ru/gallery/bigzlQUVE.png here].
+
+Some more customization would be useful to make the setup usable. E.g., the standard function show-desktop minimizes all windows, including this 'hidden' one. It's not difficult to write a new function, though, which would minimizes all windows except for this one, and bind it to a key. I was not impressed deeply enough to continue with this :).
+
+Dmitri Minaev.
+
+----
+EmacsNiftyTricks

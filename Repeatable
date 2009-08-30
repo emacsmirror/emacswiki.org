@@ -1,0 +1,13 @@
+repeatable.el helps with RepeatingCommands by being able to advise commands that are bound
+to sequences with multiple keys by automatically repeating the command when the
+last key stroke is successively hit.
+
+An example should make this clear: after advising kmacro-end-and-call-macro
+(bound to `C-x e'), you can call this command repeatedly -- the first
+time with `C-x e' and with only `e' subsequently. After you press another
+key, things are back to normal.
+
+Get it here: http://furius.ca/pubcode/
+
+----
+CategoryCommands

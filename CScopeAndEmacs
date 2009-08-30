@@ -1,0 +1,109 @@
+== cscope ==
+
+Cscope http://cscope.sf.net is a program that generates index tables from
+C and [[C++]] source files.  It is also a client program that knows how to use the
+generated index tables to answer questions such as where is a symbol defined,
+where is a symbol referenced, etc.  
+
+It works fine with GNU Emacs 21.2 under Debian GNU/Linux as well as
+under Windows XP (and probably other Windows OS'es) if cscope is
+compiled using Cygwin http://www.cygwin.com provided GNU tools, i.e.,
+typical "./configure; make; make install" steps work fine.
+
+[new]
+It does not compile using MSYS on MS Windows.
+
+[new]
+<b>More on <code>cscope</code> and Windows:</b> for versions up to 1.54, binaries compiled with DJGPP are provided (e.g., [http://downloads.sourceforge.net/cscope/csc154b.zip csc154b.zip]). <code>xcscope.el</code> is not included and is obtained separately by downloading the source. Update the global <code>PATH</code> variable with the location of <code>cscope.exe</code>, put <code>xcscope.el</code> in the <code>site-lisp</code> directory, and add the following lines to <code>.emacs</code>:
+
+ (require 'xcscope)
+ (setq cscope-do-not-update-database t)
+
+By default, <code>xcscope.el</code> does automatic indexing by use of a Bash script (<code>cscope-indexer</code>). As Windows lacks Bash support, automatic indexing is here disabled (although the [http://www.mingw.org/wiki/msys MSYS] project does include a <code>sh.exe</code> executable which can run such scripts). To index manually and recursively, in the uppermost directory run
+
+ cscope -bR
+
+The <code>-b</code> flag tells <code>cscope</code> to just build the database and then exit. Otherwise, <code>cscope</code> is terminated by <code>Ctrl-D</code>.
+
+This /seems/ to work adequately with GNU Emacs 22.1.
+
+[new]
+a possibly handy hack:
+
+ (defun my-find-tag(&optional prefix)
+  "union of `find-tag' alternatives. decides upon major-mode"
+  (interactive "P")
+  (if (and (boundp 'cscope-minor-mode)
+           cscope-minor-mode)
+      (progn
+        (ring-insert find-tag-marker-ring (point-marker))
+        (call-interactively
+         (if prefix
+             'cscope-find-this-symbol
+           'cscope-find-global-definition-no-prompting
+           )))
+    (call-interactively 'find-tag)))
+
+ (substitute-key-definition 'find-tag 'my-find-tag  global-map)
+
+== cscope.el ==
+
+Bill Carpenter's cscope.el mode is available from this wiki: 
+
+Lisp:cscope.el
+
+== xcscope.el ==
+
+Darryl Okahata's xcscope.el comes with the cscope package.
+
+I don't know cscope.el, but I discovered xcscope.el recently -- and this is really practical! Don't use M-x grep anymore!
+
+mmc:  I have this problem with *xcscope.el*: When i invoke a long time lasting search, and go into minibuffer (think M-x), when cscope finishes its job, xcsope will present the found file inside the minibuffer.
+ I have made this fix: 
+
+  (defun cscope-process-sentinel (process event)
+    (let*   (.....)
+    ;; Don't present the new buffer (file) inside minibuffer!
+    (if (minibuffer-window-active-p old-buffer-window)
+        (setq old-buffer-window 
+              (next-window old-buffer-window)))
+    ....
+
+GP: I unsuccessfully tried modifying xcscope.el so that it uses the "cscope -b -q -k" options, I want the -q option on my large code base, so that symbol search becomes quicker. Does anyone have suggestion on how I should make xcscope.el work with the "-q" option?
+
+Just touch the file cscope.po.out and cscope.in.out after finishing index. It works for me. 
+And try google bscope, you will find a new cscope interface faster than xscope.
+-- highfly22 at gmail dot com
+
+[new]
+Thank Darryl for bringing us such an amazing tool. However, despite much convenience it provides there are still some guys, including me :-), asking for certain new feature now and then on news groups: going back and forth the search history.
+
+I think the primary benifit of this feature is to give us a clue how we gotten into current position. I used to ask myself "how I get into function?"  since the code I'm reading has really deep call stacks and I can't keep them all in my mind. The other benifit is that, for large projects, cscope-ing sometimes could be time-consuming.
+
+I hacked the code for that feature (http://sourceforge.net/tracker/index.php?func=detail&aid=1839942&group_id=4664&atid=304664). Your comments are appreciated.
+
+USAGE: For basic usage refer to original comments. To view previous search result, call cscope-history-backward ('C-c s v' or just 'v' in cscope buffer) or cscope-history-forward ('V').
+
+Latest changes are:
+Change behavior of history ring to (which i think is) a more reasonable flavor.
+Change/Add key-bindings
+Add function cscope-history-clear
+Fix bug of can't call history related functions except in cscope buffer.
+
+== cscope-fu ==
+
+There is another cscope.el out there.
+To get it, visit this MercurialMode repository: http://hg.serpentine.com/cscope-fu.
+(To get the latest version of ''cscope.el'', click on the '''manifest'''-link, then the
+''cscope.el'' filename and finally '''raw''' to download the file.)
+
+== CEDET ==
+
+The CEDET (CollectionOfEmacsDevelopmentEnvironmentTools) suite can use cscope as a backend for several tasks.  These include:
+* EDE Locate - Find files in a project, such as header files.
+* SemanticBovinator symref - Find symbol references
+* Semantic Database backend - Find tags by name in your project.
+
+
+----
+CategoryProgrammerUtils

@@ -1,0 +1,36 @@
+Getting Emacs to show international characters in console.
+
+In GNU/Linux this is done with the consolechars command.  The font
+files themselves are stored in:
+
+* /usr/lib/kbd/consolefonts  -- PS2 Linux
+* /lib/kbd/consolefonts -- RedHat
+* /usr/share/consolefonts -- Gentoo, Debian
+* /usr/share/kbd/consolefonts -- Slackware
+
+To display the Latin 1 character set, 'consolechars
+--font=lat1-sun16' can be used.  This was the font file I first
+noticed and does the thing nicely for me.
+
+''Please note:'' If emacs is set on a different language environment,
+it may not show the correct characters.  For example, having emacs in
+a Latin-9 language environment, I could not see Latin-1 characters, even though I was using the correct console font.  This can happen if your locale setup is broken.  Type `locale' in a shell and verify that the coding system listed is the one your console supports.  Sometimes this is difficult to avoid.  If you use X all the time, your default settings might very well be wrong for the console.  The point to remember is that Emacs cannot detect the coding system of the console.  You have to do that yourself.
+For the current example, you could do any of the following:
+
+* M-x set-terminal-coding-system RET Latin1 RET -- you may have to set set-keyboard-coding-system, too
+* M-x set-language-environment RET Latin1 RET -- this also sets other variables
+
+See LanguageEnvironment for more info.
+
+One thing to keep in mind is that consolechars only changes the font
+of the current virtual terminal so if you're already running emacs,
+you'll need to suspend it with C-z while changing fonts.
+
+And to prove that you really never need to leave emacs; if you're
+running emacs through ssh you'll need to access the shell on the host
+running the terminal.  To suspend ssh, you can type ~^Z on the start
+of a line, cat all by itself is a nice way to make that easy.
+
+----
+CategoryDisplay
+CategoryInternationalization

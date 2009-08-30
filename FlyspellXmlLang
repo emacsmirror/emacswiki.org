@@ -1,0 +1,15 @@
+From the commentary:
+
+
+Flyspell is an Emacs package that highlights misspelled words as
+you type; for XML documents, this package will switch the current
+language dictionary used by flyspell to match the language specified
+by the xml:lang attribute of the current element.  The
+ispell dictionary currently in force is shown in the modeline.
+
+http://www.dur.ac.uk/p.j.heslin/Software/Emacs
+
+-- PeterHeslin
+
+----
+FlySpell

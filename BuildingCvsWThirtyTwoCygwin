@@ -1,0 +1,12 @@
+Hooray! After I don't know how long, it finally works.  (Perhaps it was because this time I read nt/INSTALL)
+
+2 March 2007
+
+Commands used:
+
+ * cd nt
+ * ./configure.bat
+ * c:/msys/1.0/bin/make bootstrap
+ * c:/msys/1.0/bin/make info install
+
+Worked fine.  I got the msys thingy from http://prdownloads.sf.net/mingw/MSYS-1.0.10.exe?download

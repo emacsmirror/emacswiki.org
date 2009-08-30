@@ -1,0 +1,9 @@
+highlight-parentheses is a minor mode to highlight parentheses surrounding point.  It is available [http://nschum.de/src/emacs/highlight-parentheses/ here] and via [[ELPA]].  -- [[nschum]]
+
+* http://nschum.de/src/emacs/highlight-parentheses/
+* http://nschum.de/src/emacs/highlight-parentheses/highlight-parentheses.el
+
+http://nschum.de/src/emacs/highlight-parentheses/highlight-parentheses.png
+
+----
+CategoryFaces CategoryModes ParenthesesAppearance

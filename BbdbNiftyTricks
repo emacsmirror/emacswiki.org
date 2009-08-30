@@ -1,0 +1,13 @@
+In the spirit of EmacsNiftyTricks and GnusNiftyTricks, we bring you more tricks for another application that runs in the Emacs OS
+
+* M-x bbdb-show-duplicates - great for finding duplicate data in your bbdb, and "R" lets you merge records
+* integrate BBDB and Gnus 
+ (bbdb-initialize 'gnus 'message 'sc)
+ (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+ (require 'message-x)
+** hit colon to automatically add a message author to your bbdb
+** autocompletion of email addresses in the To: field in Gnus drafts
+I don't actually know what other features bbdb-gnus has. Any contributors?
+* Use [[Icicles]] completion with BBDB: [[Icicles - Completion in Other Buffers | Icicles - BBDB Completion]]
+----
+CategoryBbdb

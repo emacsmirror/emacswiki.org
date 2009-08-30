@@ -1,0 +1,29 @@
+== Emacs Interface to APT (Debian package management) ==
+
+Package to interface Emacs with APT.  See the code Lisp:apt-utils.el.
+
+Start things off using e.g.:
+
+    M-x apt-utils-show-package RET emacs21 RET
+
+Other packages (dependencies, conflicts etc.) can be navigated using
+<code>`apt-utils-{next,previous}-package'</code>, `apt-utils-choose-package-link' or
+`apt-utils-follow-link'.
+
+Return to the previous package with
+`apt-utils-view-previous-package'.
+
+<code>ChangeLog</code> and
+<code>README</code> files for the current package can easily be accessed with,
+for example, `apt-utils-view-changelog'.
+
+For normal (i.e., not virtual) packages, the information can be toggled between
+`package' and `showpkg' displays using `apt-utils-toggle-package-info'; the
+latter is useful for the "Reverse Depends".
+
+View the key bindings with `describe-mode' (bound to <code>?</code> by
+default).
+
+
+----
+CategoryExternalUtilities

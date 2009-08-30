@@ -1,0 +1,36 @@
+Alist refers to an AssociationList, plist refers to a PropertyList.
+
+An alist associates keys with values.  This is done using a list of cons cells:
+
+ ((key1 . value1)
+  (key2 . value2)
+  (key3 . value3))
+
+A plist does the same thing, but instead of using cons cells, the key and value pairs appear in the same list, one after another:
+
+ (key1 value1
+  key2 value2
+  key3 value3)
+
+In an alist, you can "overwrite" associations by adding a new cons cell to the front that associates a new value to an existing key:
+
+ ((key3 . value4)
+  (key1 . value1)
+  (key2 . value2)
+  (key3 . value3))
+
+In a plist each key will be distinct, since the routines `put' and `plist-put' search and destroy existing key-value pairs.  The order of the key-value pairs does not matter.  The distinct quality can make them slower than an alist.
+
+    (let ((pl '()))
+      (setq pl (plist-put pl 'a 1))
+      (setq pl (plist-put pl 'a 2))
+      pl)
+    ==> (a 2)
+
+
+Usually alists are used as very simple and data structures.  They are easy to use but inefficient.  If you are running into performance issues, use hash tables instead.
+
+Plists are used when attaching information to symbols.  The doc strings of variables and functions, for example, are just a key-value association in the property list of the symbol in question.
+
+----
+CategoryCode

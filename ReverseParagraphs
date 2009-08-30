@@ -1,0 +1,70 @@
+`C-u M-x sort-lines' will reverse the lines in a region.
+If you have a bullet list like the following, however, this won't work:
+
+{{{
+* foo is bar
+  and bar is expensive.
+
+* foo is quux
+  and quux is useful.
+}}}
+
+`C-u M-x sort-paragraphs' will reverse the paragraphs.
+
+Expected result:
+
+{{{
+* foo is quux
+  and quux is useful.
+
+* foo is bar
+  and bar is expensive.
+}}}
+
+Code:
+
+{{{
+(defun reverse-paragraphs (beg end)
+  "Reverse the order of paragraphs in a region.
+From a program takes two point or marker arguments, BEG and END."
+  (interactive "r")
+  (when (> beg end)
+    (let (mid) (setq mid end end beg beg mid)))
+  (save-excursion
+    ;; the last paragraph might be missing a trailing newline
+    (goto-char end)
+    (setq end (point-marker))
+    ;; the real work.
+    (goto-char beg)
+    (let (paragraphs fix-newline)
+      (while (< beg end)
+	;; skip to the beginning of the next paragraph instead of
+	;; remaining on the position separating the two paragraphs
+	(when (= 0 (forward-paragraph 1))
+	  (goto-char (1+ (match-end 0))))
+	(when (> (point) end)
+	  (goto-char end))
+	(setq paragraphs (cons (buffer-substring beg (point))
+			       paragraphs))
+	(delete-region beg (point)))
+      ;; if all but the last paragraph end with two newlines, add a
+      ;; newline to the last paragraph
+      (when (and (null (delete 2 (mapcar (lambda (s)
+					   (when (string-match "\n+$" s -2)
+					     (length (match-string 0 s))))
+					 (cdr paragraphs))))
+		 (when (string-match "\n+$" (car paragraphs) -2)
+		   (= 1 (length (match-string 0 (car paragraphs))))))
+	(setq fix-newline t)
+	(setcar paragraphs (concat (car paragraphs) "\n")))
+      ;; insert paragraphs
+      (dolist (par paragraphs)
+	(insert par))
+      (when fix-newline
+	(delete-char -1)))))
+}}}
+
+See [[Sorting]].
+
+----
+CategoryEditing

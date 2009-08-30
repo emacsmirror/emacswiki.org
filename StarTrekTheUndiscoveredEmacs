@@ -1,0 +1,275 @@
+                                Star Trek vi: The Undiscovered Emacs
+                                                                 ***
+
+                                                                ACT I
+Scene 1
+
+On the bridge of U.S.S. Excelsior, seated in the captain's chair,
+Sulu is drinking a cup of tea.  The science-officer stands next to
+him, conferring, handing him a datacount. Sulu muses over the
+contents, "According to this, we've completed our exploration of the
+entire section."
+
+"Fifty-four editors and their anomalies. Our sensing and analytic
+equipment worked really well."
+
+"Time we were heading home. Three years is..."
+
+The ship starts to tremble.  Sulu's tea cup is shaking in its
+saucer...Sulu and the crew look at each other as the shaking
+increases. The teacup smashes while the science-officer leaps to his
+station, "I have an energy wave from 240 degrees, mark six port...."
+
+"Visual!", Sulu commands.
+
+An enormous gaseous wave, a subspace shock front appears on the main
+display.  "SHIELDS!"
+
+Meteors and asteroids smash past; burning chunks fly by at warp
+speeds. Excelsior rolls, throwing everyone off balance. The ship has
+been knocked about and everyone on the bridge is holding on or
+sliding around. She settles and one by one, her crew resume their
+stations. Captain Sulu requests a damage report.
+
+"Seem to be in one piece, Captain. We're re-starting Emacs, this is
+going to take a moment..."
+
+Sulu then looks to his science officer, "Don't tell me that was any
+meteor shower."
+
+"Negative. The subspace shock wave originated at bearing six-six-six,
+Mark five-one, the location of...Praxis. A Klingon moon. Barren of
+indigenous life forms."
+
+"But essential as a resource. Praxis is where they store the complete
+source to their primary editor-- vi."
+
+Thinks for a moment, then, "Send to Klingon High Command: `This is
+Excelsior, a Foundation Starship traveling through Beta Quadrant. We
+have monitored a large explosion in your sector. Do you require
+assistance?'"
+
+The science officer waits for Emacs to finish loading the ship's
+.emacs configuration file and display the start-up screen. When he
+finally looks up from his console, he says, "Sir, I cannot confirm
+the existence of Praxis."
+
+Sulu goes over to the Science Console and looks at the
+screen. Nothing there.
+
+"Magnify."
+
+The Science officer types "M-x magnify RET" and a barren moon with
+three-quarters of its mass blown away drifts lifelessly in a black
+void.
+
+"Praxis?"
+
+"What's left of it."
+
+"Do we report this, Sir?"
+"Are you kidding? Send to Gnufleet Command..."
+
+                                                                ***
+
+Scene 2
+
+Captain Kirk and his crew, in a Gnufleet briefing room, "What are we
+doing here?"
+
+A door opens and a Gnufleet Aide De Camp, austere and impressive
+enters and gavels the meeting to order, "This briefing is
+classified. There will be no recording devices. Ladies and Gentlemen,
+the Commander in Chief."
+
+All rise as the Gnufleet Commander in Chief enters, with a briefcase
+and pulls materials from it, "As you were... I'll make this as simple
+as possible. The Klingon Empire has roughly 50 years of life left to
+it. For full details, I am turning the briefing over to our special
+United Foundation of Editors' Envoy..."
+
+He makes a sign and another door opens. Spock walks to the
+podium. Kirk and company are astounded.
+
+Spock begins, "Good morning. Two months ago a Foundation starship
+
+monitored an explosion on the Klingon moon Praxis. We believe it was
+caused by insufficent safety precautions. The moon's decimation means
+an almost eighty percent loss of their CVS repository holding the
+source code and backups of their editor. Without the source, no new
+features will be added and soon their editor will become
+obsolete. The Klingon economy does not have the resources with which
+to combat this catastrophe. Last month, at the behest of the, Vulcan
+Ambassador, I opened a dialogue with Gorkon, Chancellor of the
+Klingon high council. He proposes to commence negotiations at once."
+
+"Negotiations for what?" asked Admiral Donald.
+
+"An end to seventy years of unremitting hostility, which the Klingons
+can no longer afford. They want to switch over from vi to the
+Foundation's editor: Emacs".
+
+Audible mutterings..."Is the war finally over?"
+
+Spock continues, "If the Klingons sue for peace, we could use their
+developers to improve Emacs, thus allowing the Foundation to
+undertake additional software projects."
+
+Kirk simply eyes Spock briefly, then speaks "Sir, I'm no diplomat,
+but the Klingons have never been trustworthy. This is a terrible...a
+terrifying idea!"
+
+The Admiral whispers to the Commander in Chief who then turns to
+Kirk, "You once lost an important file in the days you used to use vi,
+didn't you Captain?"
+
+"Yes, sir."
+
+"I'm sorry Kirk, but Commander Spock has persuaded the Foundation
+that this situation is too promising to ignore."
+
+Spock explains, "It is imperative that we act now, to support the
+Gorkon Initiative, lest more conservative elements persuade his
+empire that it would be better to switch to XEmacs."
+
+"Captian Kirk, you are to be our first olive branch.", the Commander
+in Chief proposes.
+
+Kirk, "Me?"
+
+"We have volunteered to rendezvous with the Klingon ship that's
+bringing Chancellor Gorkon here, and escort him safely through
+Foundation space." says Spock.
+Kirk is too startled to speak.
+
+"As it happens, Kirk, the Chancellor specifically requested you and
+your officers."
+
+"Why, in RMS's name?"
+
+He is met with silence; all rise as the Commander in Chief and his
+aides file out followed by the rest of the crew.
+
+The room is empty except for Spock, still at the podium and Kirk
+sitting alone in the auditorium. He is curious, betrayed and Spock
+knows it.
+
+"WE volunteered?", Kirk asks increduously.
+
+Spock replies, "There's an old Vulcan proverb: `M-x apropos is your
+friend.'"
+
+"How could you vouch for me? That's...arrogant presumption."
+
+"I was asked by my father to open negotiations with the Klingon high
+council on behalf of the Foundation. Under the circumstances, I was
+inclined to agree."
+
+Kirk stands, and walks out of the room.
+
+                                                                 ***
+Scene 3
+
+Kirk is in his quarters aboard the U.S.S Enterprise, unpacking his
+bags as he dictates, hanging up his uniforms, his shaving tackle
+going next to the sink, etc., "Captain's log, Stardate 8679.259. They
+say you can't teach an old dog new tricks, and maybe they're
+right. It seems to me our mission to escort the Chancellor of the
+Klingon High Council to a peace summit is problematic at best. I have
+never trusted Klingons and their editor, and never will. I have never
+been able to forgive them for the loss of my file. Spock says this
+could be an historic moment, and I'd like to believe him, but how on
+earth can history get past people like me?"
+
+A delicate cough; Kirk realizes he's not alone. He swivels to face
+Lieutenant Valeris standing in the bulkhead doorway.
+
+"Sorry...."
+
+"Come on, Lieutenant, you could knock!"
+"We're almost at the rendezvous, I thought you'd want to know."
+
+"Right."
+                                                                 ***
+
+Scene 4
+
+On the bridge of the U.S.S. Enterprise, the cruise is proceeding
+evenly as Kirk arives out of one turbo-lift. Spock and the Lieutenant
+emerge from another.
+
+"Uhura, hailing frequencies. Hard starboard, bring us alongside."
+
+"Channel open, Captain."
+
+"This is the Starship Enterprise, Captain James T. Kirk, Commanding."
+
+Gorkon comes up on the main visual display.
+
+"This is Kronos one. I am Chancellor Gorkon."
+
+"Would you and your party care to dine this evening aboard the
+Enterprise with my officers as guests of the United Foundation of
+Editors?"
+
+"We'd be delighted to accept your gracious invitation."
+
+"We'll make arrangements to have you beamed aboard at 1930 hours."
+
+                                                                 ***
+
+Scene 5
+
+In the officers mess on the Enterprise, a window irises open
+revealing the stars gliding by. A hand pours deep blue Romulan ale
+into Gorkon's crystal goblet; dinner well underway. Principals from
+both parties are at the table; stewards keep food and drink in
+motion.
+
+Gorkon asks Scotty, "Is Emacs easy to use?"
+
+"Aye, it is even capable of emulating vi; this makes the transition
+to Emacs a wee bit easier. Of the three emulators, viper is the most
+faithful."
+
+Gorkon nods.
+
+Azetbur, the Chancellor's daughter asks, "Commander Spock, mindful of
+all your work behind the scenes, and despite the cordiality at this
+mess, I do not sense an acceptance of our people throughout your
+ship."
+
+"They're naturally wary, ma'am.  We've been at war a long time."
+
+Uhura asks, "How do both sides overcome engrained prejudice?"
+
+Chekov says, "Perhaps with a few small steps at a time. Like this
+one."
+
+McCoy adds, "And perhaps with a large step or two. Like a peace
+treaty."
+
+Gorkon toasts, "I give you a toast: `The undiscovered Emacs'; the
+future."
+
+All drink Romulan ale, echoing `the undiscovered Emacs'. The Klingons
+eat with their fingers, scorning utensils.
+
+                                                                 ***
+End of ACT I
+
+In Act II, the Enterprise is accused of launching a denial-of-service
+attack on the Chancellor's Bird of Prey; Kirk and McCoy are
+imprisoned in the penal of Rura Penthe where they are forced to use
+the pico editor.  After years of depending on Emacs, can they survive
+this torture?!
+
+In the final act, can the Enterprise and her crew prevent the peace
+summit from being disrupted when they discover that the Klingons have
+a Emacs emulator for vi?
+ 
+Stay tuned...
+
+
+----
+CategoryHumor

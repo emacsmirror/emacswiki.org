@@ -1,0 +1,23 @@
+refdb-mode is a minor mode which provides access to <nowiki>RefDB</nowiki>, a reference database and bibliography tool for markup languages. It has specific support for markup text authoring major modes such as PsgmlMode, NxmlMode, AUCTeX, and MuseMode, but can be used from just about any other mode as well. refdb-mode is available as a tarball from the <nowiki>RefDB</nowiki> home page.
+
+External links:
+* [http://refdb.sourceforge.net/ RefDB home page]
+* [http://refdb.sourceforge.net/elisp/index.html refdb-mode user manual]
+
+== RefDB basics ==
+
+<nowiki>RefDB</nowiki> is a client-server application which uses a SQL database (MySQL, <nowiki>PostgreSQL</nowiki>, or <nowiki>SQLite</nowiki>) to store bibliographic data. Data entry and retrieval is usually done via command-line clients or web interfaces. <nowiki>RefDB</nowiki> creates formatted bibliographies for DocBook (SGML and XML), TEI (XML), and LaTeX documents based on citations found in the text. <nowiki>RefDB</nowiki> also provides shell scripts and Makefile generators to make the bibliography generation and document transformation as simple as typing e.g. "make pdf".
+
+== refdb-mode features ==
+
+refdb-mode is a front-end for <nowiki>RefDB</nowiki> which integrates access to your bibliographic data into the authoring process. You can use several simple query commands to retrieve references by author, title, periodical, keyword, ID, or citation key, or you can run complex queries using <nowiki>RefDB</nowiki>'s query language. You can even mark arbitrary words or phrases in any of your buffers and look them up in the database. Retrieved references are displayed in a separate buffer. You can place point into one of the matching references, or mark several references, and create a citation in the kill ring, ready to be yanked into your document. Citations are formatted to match one of the supported document types (DocBook, TEI, LaTeX, Muse). You can also go the other way round and place point into an existing citation to look up the reference(s) in the database.
+
+When all citations are in place, you can use several commands to transform the document and to view the results.
+
+refdb-mode is also useful outside one of the mentioned authoring major modes. You can enter the citation key as plain text into any kind of text, e.g. in PlannerMode, or even in a comment of a source code file, and use this to look up the cited reference.
+
+refdb-mode also supports adding and editing bibliographic data using suitable modes. XML data can be edited using NxmlMode, whereas refdb-mode ships ris-mode to edit the tagged plain text RIS bibliographic format. If suitable converters are installed on your system, you can also use several functions to interconvert bibliographic data between formats.
+
+refdb-mode uses tab-completion extensively to simplify data entry and queries. Tab completion works with author names, keywords, and periodical names.
+
+Finally there is also a complete administrative interface to manage your <nowiki>RefDB</nowiki> installation, databases, and user permissions.

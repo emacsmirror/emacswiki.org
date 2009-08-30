@@ -1,0 +1,20 @@
+''GNU Emacs'' comprends un manuel appelé EmacsManual, une introduction au Lisp d'Emacs EmacsLispIntro, et un manuel de référence au Lisp d'Emacs EmacsLispReference.  Jusqu'à la version 21 de ''GNU Emacs'', les deux derniers manuels doivent être téléchargés à partir d'un miroir de ''ftp'' de ''GNU''. Les versions ultérieures de ''GNU Emacs'' incluront chacun des trois manuels.
+
+''XEmacs'' comporte un manuel utilisateur de ''XEmacs'', un manuel de référence de ''Lisp'' d<nowiki>'</nowiki>''XEmacs'', une introduction à ''XEmacs'' (« bien débuter avec ''XEmacs'' »), une introduction au ''Elisp'' (« programmation en ''Lisp'' d<nowiki>'</nowiki>''Emacs'', une introduction »), et un manuel sur les fondements (internals) d<nowiki>'</nowiki>''XEmacs'', tous distribués avec le logiciel ''Xemacs''.
+
+Le manuel de référence de Lisp d'Emacs est aussi connu sous le nom de manuel d<nowiki>'</nowiki>''elisp'' ou manuel ''lispref''.
+
+Le meilleur moyen d'apprendre à utiliser ''Emacs'' est de se servir de l'aide intégrée au logiciel. Vous pouvez faire appel à cette aide en déroulant simplement la rubrique ''Help'' de la barre de menu ou en tapant au clavier <tt>C-h i</tt>. Vous disposez de plus de toute la documentation du système d'information ''info''. Si votre ''Emacs'' n'est pas accompagné du manuel de référence du ''Lisp'' d<nowiki>'</nowiki>''Emacs'', vous devrez le télécharger. Tous les manuels sont disponibles en ligne dans divers formats.
+
+Pour ''GNU Emacs'':
+* http://www.gnu.org/manual/manual.html
+* http://www.gnu.org/software/emacs/elisp-manual/
+* disponible aux éditions ''GnuPress''.
+
+Le manuel de référence du ''Lisp'' d<nowiki>'</nowiki>''XEmacs'', de même que tous les autres manuels, sont disponibles aux adresses électroniques:
+* http://www.xemacs.org/Documentation/
+* http://www.dk.xemacs.org/Documentation/CategoryDocumentation
+
+
+----
+CatégorieDocumentation

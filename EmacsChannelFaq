@@ -1,0 +1,301 @@
+This page collects some answers to questions asked on #emacs -- the EmacsChannel.
+
+== Installation ==
+
+Either get CVS GNU Emacs (a.k.a. Emacs 22) or XEmacs 21.  For new users, the differences between XEmacs and GNU Emacs are negligible.  Except where explicitly stated, this article applies equally to both.
+
+To install CVS GNU Emacs on
+
+* Windows, see CategoryWThirtyTwo.
+* OS X, download the CarbonEmacs package.
+* Debian (Sid), run the command “apt-get install emacs-snapshot-gtk”
+* Ubuntu (Dapper, Edgy and Feisty), ensure the “universe” group is enabled in the package manager, then as for Debian/Sid.
+* Ubuntu (Breezy), ensure that the “breezy-backports universe” group is enabled in the package manager, then as for Debian/Sid.
+
+To install XEmacs 21 on
+
+* Debian or Ubuntu, run the command “apt-get install xemacs21-gnome-mule”
+* anything else, see http://www.xemacs.org/Download/index.html
+
+If you work on embedded systems (e.g. routers) that don't have a few dozen megabytes needed for GNU Emacs or XEmacs, check out QEmacs, Zile and [http://www.xs4all.nl/~hanb/software/mg/ mg].
+
+
+=== Getting Started ===
+
+Emacs has a built-in tutorial that covers the most basic commands,
+such as moving around within a buffer.  Please take a few minutes to
+go through it, if you haven't already.  You can access the tutorial by
+holding Control, pressing h, releasing Control, and pressing t.
+
+Please also familiarize yourself with the following commands.  You can
+answer many basic questions without help using these.
+
+|| *Keybinding*                     || *Description*                     ||
+|| C-h t                            || Start the tutorial.               ||
+|| C-h i m emacs RET                || Read the EmacsManual.             ||
+|| C-h m, C-h b                     || Describe the current major mode.  ||
+|| M-x customize group RET foo RET  || Configure handling of .foo files. ||
+|| C-h c, C-h k                     || What does this key do?            ||
+|| C-h f                            || What does this function do?       ||
+|| C-h v                            || What does this variable do?       ||
+|| C-h a                            || Search for commands by regexp.    ||
+|| M-x customize apropos            || Search for options by regexp.     ||
+|| M-:                              || Prompt for expression.            ||
+|| M-x load-file RET ~/.emacs RET   || Reload .emacs without restarting. ||
+
+
+=== How can I disable the splash screen? ===
+
+    (setq inhibit-startup-message t)
+
+== Fonts ==
+
+=== How do I change Emacs' default font? ===
+
+There are a number of ways to change Emacs' font.  The easiest is to start
+Emacs with the -fn option:
+
+        emacs -fn fixed
+
+Where “fixed” is your favourite font.  X11 users can use the xlsfonts, xfontsel
+and xfd programs to examine different fonts.
+
+A small selection of fonts can be chosen from a menu by holding shift and
+pressing the left mouse button in the main text area.  You can also set the
+default font using M-x customize face RET default RET.  You can set the current
+frame's font using M-x set default font RET.
+
+X11 users can also use X resources by adding a line of the form
+
+        Emacs.Font: fixed
+
+to their .Xdefaults file, and running 
+
+        xrdb -merge ~/.Xdefaults
+
+each time they start X.
+
+Recommended fonts are Terminus, Schumacher Clean and GNU Unifont.
+
+Windows users check ChangeFontsPermanentlyOnWindows.
+
+=== I get empty boxes instead of characters in Emacs.  Why? ===
+
+By default, Emacs uses a font called “default”.  This *should* be a
+system-wide alias for some sensible default font.  Ubuntu,
+particularly, has no such alias.  Consequently, Emacs displays a boxes
+instead of characters.
+
+You can fix this by changing the font Emacs uses (see previous
+question), or by using antialiased fonts (see next question).
+Possibly you can also fix this by adding a default alias to the font
+subsystem; I don't know how to do that.
+
+=== How do I use an antialiased font in Emacs? ===
+
+Emacs supports antialiased fonts in the Carbon and W32 UIs; Emacs does *not*
+support antialiased fonts under X11. You can get around this by running Emacs
+in a terminal emulator that supports antialiasing:
+
+        xterm -fa Monospace -e emacs -nw
+        urxvt -fn xft:Monospace -e emacs -nw
+        gnome-terminal -x emacs -nw
+        konsole -e emacs -nw
+        xfce4-terminal -e emacs\ -nw
+
+Alternatively XftGnuEmacs, a branch of CVS Emacs, supports antialiased fonts. 
+The main branch of XEmacs 21.5 also supports Xft at this time. 
+
+2007/01: Ubuntu users, see http://g33k.wordpress.com/2006/11/06/gnu-emacs-with-xft-goodness/
+and http://peadrop.com/blog/2007/01/06/pretty-emacs/
+
+2009/03: In Ubuntu using the 'emacs-snapshot-gtk' or 'emacs-snapshot' package gives nice fonts, which renders the two above links unnecessary.
+
+== Colour ==
+
+=== How do I enable syntax highlighting? ===
+
+Old versions of Emacs have syntax highlighting off by default.  To enable it,
+do M-x customize option RET global font lock mode RET.
+
+Further, under the gui or X-based window, find where it says Options at the top and 
+within this menu select and depress the "Syntax Highlighting (Global Font Lock mode)" 
+option. Finally, look further down under this same Options menu and select "Save Options".
+
+=== How do I change the background/foreground colour? ===
+
+The fastest way to change the foreground and background is to start emacs
+thusly:
+
+        emacs -fg white -bg black
+
+Where ‘white’ and ‘black’ are your favourite colours.  You can also set the
+default colours using M-x customize face RET default RET.
+
+X11 users can use X resources to set the default colours by adding lines of
+the form
+
+        Emacs*background: black
+        Emacs*foreground: white
+
+to their .Xdefaults file, and running 
+
+        xrdb -merge ~/.Xdefaults
+
+each time they start X.
+
+== Editing ==
+
+=== Why doesn't my Backspace key work? ===
+
+See http://www.ibb.net/~anne/keyboard.html for the full story.
+
+=== Why doesn't my TAB key work? ===
+
+In many modes the TAB key does not insert a literal tab character, but
+instead indents the current line. If the current line is already
+indented correctly, pressing TAB will have no effect. To insert a
+literal tab, type C-q TAB or C-q C-i. Please note that TabsAreEvil. If
+you disagree with what Emacs thinks is correct indentation, you can
+customize it, see e.g. [[IndentingC]]
+
+You may also be interested in the following (where N is an integer):
+
+    C-u N C-x TAB
+    C-u N C-M-\
+    C-a C-x r t C-u N SPC RET
+
+=== Why doesn't my Meta (Alt) key work in Xterm? ===
+
+You probably need to set the metaSendsEscape resource to "true".
+Follow the instructions given in the section "How do I change Emacs'
+default font?", substituting "XTerm*metaSendsEscape: true" where it
+says "Emacs.Font: fixed".  Then restart Xterm.
+
+=== How do I cut and paste between Emacs and other X programs? ===
+
+Do M-: window-system RET.  If emacs prints `x', this fix should work.  Do M-x customize option RET x select enable clipboard RET.  To find out why this is necessary, see http://www.jwz.org/doc/x-cut-and-paste.html
+
+=== How do I show cursor's position in the modeline? ===
+
+M-x customize option RET line number mode RET and M-x customize option RET
+column number mode RET.
+
+=== How do I make line wrapping DWIM? ===
+
+By default, Emacs wraps long lines at the last character (whereas e.g. notepad
+wraps at the last word) *unless* you have split the screen.
+
+* To turn wrapping *off* in the current buffer, do M-x toggle truncate lines RET.
+* To turn wrapping *on* in *all* split windows, do M-x customize option RET truncate partial width windows RET.
+* There is a package called LongLines to emulate Notepad-style wrapping.  It sucks.
+* The M-q key will wrap the current paragraph.
+* Use M-x auto fill mode RET to wrap the current paragraph automatically whenever you press SPC.
+
+=== What are these ^M characters at the end of my text file? ===
+
+Most likely, you are editing a DOS file and the DOS line-endings are being displayed by emacs.  You should
+run the dos2unix command before editing the file, or upgrade to a more recent version of emacs.
+
+=== How do I insert a tab or a newline in a regexp interactively ? ===
+
+You can't use \n or \t when entering a regexp interactively (when
+using C-M% - query-replace-regexp for instance). Simply type <TAB> or
+C-i to enter a tab (instead of \t) or C-q C-j to enter a newline (C-q
+quote C-j newline, instead of \n)
+
+Note that <code>C-o</code> in regexp replacement string inserts a newline without moving the cursor. So <code>C-o C-f</code> has the same effect
+as <code>C-q C-j</code>. This trick does not work with incremental search
+commands.
+ 
+
+== Shells ==
+
+=== How do I execute a shell command? ===
+
+To execute a single shell command, use one of the following:
+
+|| M-!         || Execute a shell command.                                          ||
+|| M-1 M-!     || Execute a shell command and paste stdout.                         ||
+|| M-|         || Execute a shell command with selection as stdin.                  ||
+|| M-1 M-|     || Execute a shell command with selection as stdin and paste stdout. ||
+|| M-x compile || Like M-!, but highlights compiler messages.                       ||
+
+To get an interactive shell, use one of the following:
+
+|| M-x shell || Start an interactive shell. ||
+|| M-x eshell || A hybrid of M-x shell and M-x ielm. ||
+|| M-x term, M-x ansi term || Start an interactive terminal. ||
+
+To get an interactive REPL (a.k.a. listener), use M-x run foo RET or M-x comint run
+RET foo RET, where ‘foo’ is your favourite programming language.
+
+=== How do I fix ANSI colour escapes in M-x shell? ===
+
+Use M-x ansi color for comint mode on RET if you see output like this:
+
+        ^[[0m^[[01;34mfoo^[[0m
+
+== C, C++ and Java ==
+
+=== How do I change the indentation style? ===
+
+M-x customize option RET c default style RET.
+
+=== How do I change the number of spaces per indent? ===
+
+M-x customize option RET c basic offset RET.
+
+== Vi ==
+
+*Viper!*
+
+=== How do I get line numbers on the left? ===
+
+Use the LineNumbers package.  Note that uses a selected region the way vi uses
+line numbers, so this is not very useful.
+
+=== How do I repeat the previous command? ===
+
+The C-x z key is similar to vi's . command.
+
+=== How do I join the current line to the previous line? ===
+
+Try M-^ and M-SPC.
+
+== Windows ==
+
+=== Where is my .emacs file? ===
+
+==== Emacs ====
+
+Just do C-x C-f ~/.emacs RET in Emacs.  Emacs will find it, or create
+it if it doesn't already exist.  You can prove this by adding
+
+        (insert "It worked!")
+
+to the bottom of the file, saving (C-x C-s), and restarting Emacs.  If
+the file is being loaded, “It worked!” will be printed in the
+*scratch* buffer.
+
+==== XEmacs ====
+
+XEmacs by default uses a different configuration file
+~/.xemacs/init.el (and ~/.xemacs/custom.el); a ~/.emacs is generally
+provided for compatibility.  You can follow the instructions above
+with the changed file names; e.g., C-x C-f ~/.xemacs/init.el RET
+
+== ELisp ==
+
+=== What is ELisp? ===
+
+ELisp is Emacs Lisp, a dialect of Lisp that Emacs uses.  It is a powerful language
+which you can use to add extra functionality to emacs.
+
+=== Do I need to learn ELisp? ===
+
+If you would like to expand your knowledge of programming, or add powerful code to emacs, it is a good idea.  But
+that is really up to you.
+
+----
+CategoryHelp

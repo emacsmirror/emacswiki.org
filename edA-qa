@@ -1,0 +1,16 @@
+I'm just here adding information/setup notes as I find I need them.  Emacs has lots of great stuff in it, but it can be very frustrating for users of more IDE driven editors.
+
+=== My changes to get emacs feeling right: ===
+
+(Now I'm using XEmacs-mule, so there are some changes in syntax, but I'll try to update this page.)
+I was used to using UltraEdit on Windows. Emacs was the only editor I found on Linux that could do ASCII and UTF-8 while supporting various line ending types.
+
+* Return and auto-indent always, see ForceReturnIndent
+* Undo/Redo to work with backspace, see RedoMode
+* Simple auto-indent/tab in SGML mode, see IndentingXml
+* Custom file extensions to work in XML mode, see HtmlMode (note I use sgml-mode, not html-mode)
+
+You can always contact me at edA-qa@disemia.com
+
+----
+CategoryHomepage

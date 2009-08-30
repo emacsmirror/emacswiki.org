@@ -1,0 +1,17 @@
+cua-lite is a new CUA emulator package for Emacs.  There are three things that make this package different from the others already out there:
+
+# it is a quasi-minor mode, meaning that it can be turned on & off easily (though only globally; hence the "quasi-")
+# it is easily extendable
+# it does NOT attempt to override the existing use of <Ctrl><X> and <Ctrl><C> (use CuaMode for that)
+
+In addition, it was designed to encourage people (individually as well as site admins) to make the package available for use without actually loading it.
+
+The latest version can be found at: http://www.northbound-train.com/emacs.html
+
+See the source for details on the various ways to install & load the package.  At its simplest, put this file on your LoadPath and add the following to your ~/.emacs startup file:
+
+    (require 'cua-lite)
+    (cua-lite 1)
+
+----
+CategoryRegion, JosephLCasadonteJr

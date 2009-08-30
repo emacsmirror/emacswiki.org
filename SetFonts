@@ -1,0 +1,132 @@
+== Inspecting and Changing Fonts ==
+
+* Use `<code>S-down-mouse-1</code>' to see the font and fontset menu. Emacs starts
+with the startup fontset.
+
+* Use `<code>M-x describe-font</code>' to see the requested font and actual font being used.
+
+* See GoodFonts for some recommendations, see FontSets for how to set various fonts at the same time (one per coding system).
+
+* Use command `doremi-font' in DoReMi to change the default font of a [[frame]] by cycling among the available fonts -- just stop when you get to the font you want. 
+
+* Use command `icicle-font' in '''[[Icicles]]''' to do the same thing (cycle among fonts) -- but with the added benefit of [[completion]], including [[regexp]] matching.
+
+* ChangeFontsPermanentlyOnWindows
+
+
+
+
+[:ChangingFontSize]
+== Changing Font Size ==
+
+You can resize the default font of a frame, or you can resize (text-scale) the text in a buffer.
+
+
+[:ZoomFrame]
+=== Frame Font Resizing ===
+
+You can use any of the following to increase or decrease the font size for the current [[frame]], effectively resizing it incrementally -- ''zooming'' the text in or out:
+
+* '''`zoom-in'''', '''`zoom-out'''' (in <tt>[[zoom-frm.el]]</tt>) -- Use the mouse wheel, like you do in a Web browser, or use mouse clicks (or bind to keyboard [[key]]s).  You can use these same commands to zoom a buffer (see [[#ZoomBuffer|below]]): `C-u' toggles [[option]] `zoom-frame/buffer', which determines the behavior.
+* '''`zoom-frm-unzoom'''' (in <tt>[[zoom-frm.el]]</tt>) -- Undo any frame zooming from `zoom-in' and `zoom-out'.
+* '''`toggle-zoom-frame'''' (in <tt>[[zoom-frm.el]]</tt>) -- Alternately zoom a frame and unzoom it.
+* '''`doremi-frame-font-size'''' (in <tt>[[doremi-frm.el]]</tt>) -- Change frame font size incrementally using the arrow keys or the mouse wheel.
+* '''`enlarge-font'''' (in <tt>[[frame-cmds.el]]</tt>) -- Change font size by a given increment (prefix arg).
+* CycleFontSizes -- Cycle a sequence of font sizes.
+
+
+
+[:ZoomBuffer]
+=== Buffer Text Resizing ===
+
+Starting with GnuEmacs 23, you can zoom the text in the current [[buffer]], in all frames displaying it:
+
+* Vanilla Emacs: You can use `##C-x C-+##' and `C-x C--' to increase or decrease the buffer text size (`##C-+##' or `C--' to repeat). `S-mouse-1' pops up a menu where you can choose these same actions.
+
+* '''`zoom-in'''', '''`zoom-out'''' (in <tt>[[zoom-frm.el]]</tt>) -- Use the mouse wheel, like you do in a Web browser, or use mouse clicks. You can use these same commands to zoom a frame (see [[#ZoomFrame|above]]): `C-u' toggles the buffer/frame behavior.
+
+* '''`doremi-buffer-font-size'''' (in <tt>[[doremi-frm.el]]</tt>) -- Change buffer font size incrementally using the arrow keys or the mouse wheel.
+
+* <tt>[[face-remap+.el]]</tt> -- For ''all'' of the above, let buffer font resizing also zoom the [[window]] size accordingly (horizontally, vertically, or both). That way, you can take advantage of the space freed up by resizing (text-scaling) to a smaller font.
+
+
+
+== Installing Fonts ==
+
+Use xfontsel under X to visually preview all available fonts and get the correct font filter pattern.
+
+Either set them in your InitFile:
+
+  (set-face-font 'menu "-jmk-neep alt-medium-r-*-*-20-*-*-*-c-*-iso8859-1")
+  (set-face-font 'default "-jmk-neep alt-medium-r-*-*-20-*-*-*-c-*-iso8859-1")
+
+Or set them in your ~/.Xresources or ~/.Xdefaults file (depending on your setup):
+
+  *.font: -jmk-neep alt-medium-r-*-*-20-*-*-*-c-*-iso8859-1
+  Emacs.pane.menubar.font: -jmk-neep alt-medium-r-*-*-20-*-*-*-c-*-iso8859-1
+
+Actually, you may want to specify FontSets instead of a single font, if you are interested in displaying various fonts at the same time
+
+Debian users: if your emacs startup fonts look ugly, that might be because you've installed the gsfonts-x11 package. gsfonts-x11 gives X the ability to display Ghostscript fonts, and they are poorly rendered on screen. To fix this, read the document that comes with gsfonts-x11, or [http://www.linuxtopia.org/online_books/linux_system_administration/debian_linux_guides/debian_linux_reference_guide/ch-tune.en_036.html Section 9.4.13 of the Debian Reference, "TrueType fonts in X"].
+
+[new]
+As an emacs newbie, I feel this section quite incomplete. For most people, Installing a font means two things : 
+* first downloading the font from the net and copy it in the proper place,
+* then select it be it from a dialog from the editor or as a line to add in a config file.
+
+The section covers only the second point. I am quite willing to agree that emacs does thing differently for a bunch of reason, but please give me some light.
+(Even to tell it is some sort of X dependency, which I suspect but that doesn't tell me what to do). 
+
+Note that arrived here after a search on "font" which, I think, seems quite a reasonable thing to do to install a new font. I didn't see a newbie-specific page.
+-- LionelB
+
+[new]
+For downloading fonts and installing them, there's nothing Emacs-specific. Emacs uses your system's fonts. If you're using Emacs with X11, then use the X11 font installation technique (xset fp etc.). If you're using Emacs with X11/Xft, then use the Xft font installation technique (.fonts.conf). If you're using Emacs with MS Windows, then use the MS Windows font installation technique (Control Panel / Fonts). If you're using Emacs with Mac, then use the Mac font installation technique (Font Book / Add Fonts).
+
+== Testing if fonts are available? ==
+
+Is it possible to test if a given font is available without an error or other side-effects? I just wrote:
+
+    (defun font-existsp (font)
+      (if (string-equal (describe-font font)
+                        "No matching font being used")
+          nil
+          t))
+
+but it has the side-effect of opening a description in *Help* if the font exists. I'm trying to set my init files to try a series of fonts and use the first available one. (I'm using Emacs 22.1.2 on OpenBSD, fwiw.) -ScottVokes
+
+ I figured out a simpler way:
+  (defun font-existsp (font)
+    (if (null (x-list-fonts font))
+        nil t))
+
+== True type fonts? ==
+
+[new]
+I'd like to use <nowiki>TrueType</nowiki> Fonts in Emacs in various places, but Emacs handles them badly. Can someone tell me why TTF fonts are so much trouble in Emacs, and if there's some way I could get emacs to play nicely with them anyway? --ShaeErisson
+[new]
+For TTF support, see XftGnuEmacs --TimotheeBesset
+
+[new]
+: See DisplayEngineForArabic, perhaps the part about the bounding boxes for the ASCII characters being used helps? -- AlexSchroeder
+
+[new:DrewAdams:2007-04-25 21:28 UTC]
+: I use <nowiki>TrueType</nowiki> fonts with Emacs on MS Windows with no problem. In fact, you even get anti-aliasing. However, I think there appears to be a problem with Emacs 21 -- they work fine in Emacs 20 and 22, at least. -- DrewAdams
+
+== CarbonEmacs ==
+
+Customize the default face (##M-x customize-face RET default RET##).
+
+Alternatively, follow the following procedure:
+
+# M-x mac-font-panel-mode and pick the font you want.
+# M-x describe-font and copy the font name (e.g. "-apple-inconsolata-medium-r-normal--13-130-72-72-m-130-iso10646-1")
+# Add the following to your ##.emacs## file:
+
+    (set-default-font
+     "-apple-inconsolata-medium-r-normal--13-130-72-72-m-130-iso10646-1")
+
+----
+CategoryDisplay
+CategoryFrames
+CategoryInternationalization

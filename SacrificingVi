@@ -1,0 +1,16 @@
+Original posting by JeanPhilippeTheberge, modified by AndreasFuchs:
+
+    (defun religious-sacrifice ()
+      (interactive)
+      (mapc (lambda (x) 
+	     (shell-command (concat "rm " x))
+	     (message "All hail emacs!!!"))
+	    (cdr    
+	     (split-string
+	      (shell-command-to-string "whereis vi")))))
+
+For the original postings, see Groups:religious+sacrifice+jean+philippe+theberge.
+
+----
+CategoryHumor
+

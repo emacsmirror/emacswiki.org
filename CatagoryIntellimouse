@@ -1,0 +1,13 @@
+The Microsoft Intellimouse driver does not appear to pass the right clicks through to emacs and will interfere with your middle button clicking. The best way to solve this problem is to uninstall the Intellimouse driver software from windows.
+
+[new]
+Update: this does not seem to be true anymore.  I'm using an Intellimouse with emacs 21 and 22 on Windows with no trouble at all and no weird customizations.  All buttons work, including clicking the wheel for middle, and dragging the wheel for scrolling.  The side buttons give <mouse-4> and <mouse-5> which are unbound by default.
+
+[new:DrewAdams:2006-09-19 22:02 UTC]
+I too have no problem. The driver I use is <nowiki>IntelliPoint</nowiki>; the mouse is an <nowiki>IntelliMouse</nowiki>. BTW, I find `mouse-4' and `mouse-5' handy as `Info-history-back' and `Info-history-forward', respectively. This is similar to their use in common browsers to move forward and backward in the history. Lisp:info+.el makes these bindings. 
+
+Should we delete this page, or does someone still have such a problem? -- DrewAdams
+
+[new:thundt:2008-07-09 17:14 UTC]
+Works fine for me, didn't have to do anything to make it happen.  Middle-mouse drag to scroll doesn't work (instead it pastes) but I figure that's a setting somewhere.  The computer I'm on has an Intellimouse Optical w/o any special driver, a touchpad %%[%%it's a Dell laptop%%]%%, and a Wacom tablet.  So I'm happy they are all playing together as well as they are %%:-)%%.  (%%WinXP%%, Emacs 22.1.1.)  -- thundt  7/8/08 
+

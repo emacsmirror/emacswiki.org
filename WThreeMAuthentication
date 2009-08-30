@@ -1,0 +1,20 @@
+WThreeM has a problem when you don't get the username/password right for http authentication.  It basically ends up in la-la land.  If you try to C-g at the username/password prompt it ends up in la-la-land.
+
+Hers's some code I wrote that will allow w3m.el to "forget" authentication info so that you can try to authenticate again with a different username/password:
+
+<pre>
+(defun w3m-erase-authinfo-root (root)
+  (setq w3m-process-authinfo-alist
+        (assq-delete-all 
+         nil (mapcar 
+              (lambda (elem) (if (not (equal root (car elem))) elem)) 
+              w3m-process-authinfo-alist))))
+
+(defun w3m-forget-authinfo ()
+  (interactive)
+  (let* ((roots (mapcar
+                 (lambda (elem) (list (car elem) (car elem)))
+                 w3m-process-authinfo-alist))
+         (root (completing-read "URL: " roots nil t)))
+    (w3m-erase-authinfo-root root)))
+</pre>

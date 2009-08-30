@@ -1,0 +1,42 @@
+You can upload an image to a page, replacing the text on that page.  A page can contain only text or an image.  You can inline these images on other pages, of course.
+
+Alternatively, just use sites such as [http://www.flickr.com Flickr] to store your images.
+
+== Standalone Images ===
+
+Here are the steps to create an image and link to it. The image appears on a Web page by itself.
+
+# Edit a page that you want to link to the image page.
+# Create a link to a page named after the image by typing its name, eg. ''Here is a screenshot: !MyScreenShotPage''
+# Click '''Save''' to render the page.  A question-mark link will appear after the image-page name in the preview: ''Here is a screenshot: !MyScreenShotPage'''?'''''
+# Open the question-mark link in another browser window.
+# Click on _Replace this text with a file_ at the bottom of the page.  (!MyScreenShotPage, in this example.)
+# Click '''Browse''' and choose the image file you want to upload to the Web page.
+# Click '''Save''' to upload the image and save it on the new page.
+
+NOTE: Avoid Internet Explorer for the uploading (see EmacsWikiProblems).
+
+== Inline Images ===
+
+Here are the steps to make an image appear ''in line'', together with text and other images on the same Web page.
+
+# Follow the steps above, placing a link to the image page where you want the image to appear in line.
+# Change the link to this form: ''<nowiki>[[image:MyScreenShotPage]]</nowiki>''.
+
+The image page still exists, but the link to it ''does not appear''. Instead, the image is displayed in place of the link.
+
+== Limits on the Number of Inlined Images ==
+
+Note that this wiki is protected by a SurgeProtector: You are only allowed 10 hits in 20 seconds.  If you inline images stored on wiki pages, then every image counts as another hit.  Assume a visitor does nothing for 20 seconds, and then visits a page with 10 inlined images.  With the 10 hits allowed in 20 seconds, you will be able to load the page itself, and 9 inlined images.  The last image will not load.  You can try it yourself by reloading this page more than 10 times: You'll get an error: '''Too many connections from xxx'''!
+
+== External Images ==
+
+The limit on inlined images does not apply if you inline images from ''external sources'' using an ordinary URL.
+
+Example:
+
+    http://www.emacswiki.org/pics/oddmuse-logo.png
+
+Result:
+
+http://www.emacswiki.org/pics/oddmuse-logo.png

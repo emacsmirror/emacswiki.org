@@ -1,0 +1,122 @@
+Highlighting matched text is enabled by default. To disable it use M-x customize-variable RET erc-modules.
+
+ERC Highlighting primitives can be found in the module 'erc-match. 
+
+The default result for the following highlighting rules is that nicks
+and keywords will be highlighted with the appropriate face.  You can
+customize the nicks and keywords, and the faces used with `M-x
+customize-group RET erc-faces RET'.  See ErcFaces for the faces.
+
+You can also switch the default result to highlighting the entire
+message.  Check the appropriate highlight-type variables.  Use `M-x
+customize-apropos RET erc-.*-highlight-type RET' for example.
+
+== Your nickname ==
+
+All instances of your nickname in messages are highlighted by default.  You
+can change the behavior of how these messages are highlighted by setting
+`erc-current-nick-highlight-type'.  When this variable is set to ##nil##, nickname
+highlighting is disabled.  Other possible values are ##'nick## (the nick of the
+user who mentioned your nick), ##'keyword## (all occurrences of your nick in the
+message, the default), and ##'nick-or-keyword## (works like ##'nick## for almost all
+messages except for some server messages, where it behaves like ##'keyword##) or
+##'all## (the whole message).
+
+If you're known to others by a few names or change nicks regularly,
+you'll probably want to set them as keywords, since ERC only looks for a
+match of the current nickname as set on the server when a message is received.
+
+== Pals ==
+
+You can highlight certain nicks.  These will be called your "pals".
+
+    (setq erc-pals '("henrik" "johnw" "delYsid" "rw" "aaronl" "danl" "davidmccabe" "deego"))
+
+You can also use the interactive commands erc-add-pal and
+erc-delete-pal, or use the ErcMenu to interactively add pals.
+
+== Fools ==
+
+You can also highlight fools -- people you want to ignore.  These will
+be called "fools".  By default, the messages by these people will be hidden.  They still show up in the logs, but not in the buffer.
+
+    (setq erc-fools '("lamer" "dude"))
+
+Note that messages directed at fools will also be treated the same
+way.
+
+If you want to highlight the fools using the appropriate face (dim gray
+or similar), instead of removing their messages, then you must remove
+the function `erc-hide-fools' from `erc-text-matched-hook'.
+
+    (remove-hook 'erc-text-matched-hook 'erc-hide-fools)
+
+You can also use the interactive commands erc-add-fool and
+erc-delete-fool, or use the ErcMenu to interactively add fools.  This
+is handy if a newbie is annoying you.  These will not get saved, so
+in your next session, they get a second chance.
+
+See also: ErcIgnoring.
+
+=== Be very strict about fools ===
+
+By default, ERC considers messages directed at fools as foolish.
+This is determined by checking wether it matches "^FOOL: " or ", FOOL.$".
+If you want to consider messages that contain the name of a fool as foolish,
+replace the default function with this:
+
+    (defun erc-match-directed-at-fool-p (msg)
+      "Check wether MSG is directed at a fool."
+      (with-syntax-table erc-button-syntax-table
+        (erc-list-match (mapcar (lambda (fool)
+                                  (concat "\\b" fool "\\b"))
+                                erc-fools)
+                        msg)))
+
+== Hosts ==
+
+You can also highlight nicks from certain hosts.
+
+    (setq erc-dangerous-hosts '("freesurf.ch"))
+
+== Keywords ==
+
+You can also highlight keywords.
+
+In this example, "color-theme" and "erc" will be propertized with
+`erc-keyword-face'.
+
+    (setq erc-keywords '("\\bcolor-theme\\b" "\\berc\\b"))
+
+Use something like the following if you'd like to have more than one keyword
+face:
+
+    (setq erc-keywords '(("\\bcolor-theme\\b" erc-keyword-face)
+                         ("\\berc\\b" erc-keyword-erc-face)))
+
+    (defface erc-keyword-erc-face '((t (:foreground "Orchid")))
+      "ERC face to highlight occurances of the word erc"
+      :group 'erc-faces)
+
+== Logging matches ==
+
+The default is to log keyword matches when you're /away to the buffer called
+"ERC Keywords".  You can log matches for any other type of match, as well.
+See the variable `erc-log-matches-types-alist'.
+
+For example, if you'd also like to have all the messages addressed to your
+nickname copied to a buffer called "ERC Messages Addressed To You", add the
+following to your configuration file:
+
+    (setq erc-log-matches-types-alist
+          '((keyword . "ERC Keywords")
+            (current-nick . "ERC Messages Addressed To You")))
+
+Change the variable `erc-log-matches-flag' to t if you want to log messages
+all the time, not just when you're set away.  Setting it to nil will disable
+matched message logging.
+
+Note that these logs are not saved like the logs described in ErcLogging.
+
+----
+[[ERC]]

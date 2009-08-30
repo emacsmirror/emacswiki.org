@@ -1,0 +1,130 @@
+== Where to find the FAQs (frequently asked questions)==
+
+They are included with Gnus. Use <code>C-h i m gnus RET</code> to see Gnus' info page.
+You can also see the list of questions on-line in [http://gnus.org/manual/gnus_toc.html Gnus manual] (look for section 10.9 or so).
+If you download the CVS version ([[GnusCvs]]), the FAQs are in the file gnus-faq.texi.
+
+== Some Newbie Questions of a long-time VM user ==
+Many, many pieces of documentation are living in the web concerning Gnus.  Funny, though, that they always seem to show the same thing.  Currently I'm not so sure, whether I am just plain stupid, or the questions that I've got are too far from the real world.  So I won't open a new wiki page for the moment and instead collect them here.
+
+* After importing all my old mail using the "G f INBOX, M P b, B r nnml"-method described so often, how do I make my mail groups show up? Gnus seems to know about all those mail.*-directories that were created using a fancy split when I hit the j key, but L does nothing.  
+** F (gnus-group-find-new-groups)
+*** Uhm, no?  It does nothing for me, sorry.  Does that function look for new nnml-directories as groups or just on a news-server?
+** ^ (gnus-group-enter-server-mode) will list available groups.
+
+* Do I have to really subscribe all the groups that I want to read, or is there some magic, so that any group created automatically by fance-splitting will be displayed.  The fancy I do is along:
+
+ (setq nnmail-split-fancy
+      '(|
+        (from ".*agood@friendofmine.de" "mail.private.thegoodfriend")
+        (subject "[SPAM]" "mail.spam")
+        (to ".*my@privateaddress\\.de" "mail.private.misc")
+        (to "me@mycompany\\.de"
+            (from ".* <?\\(.*\\)@mycompany.de" "mail.office.\\1"))
+        ("mail.inbox")
+        ))
+
+* Is there any way to geht the groups buffer showing together with the summary and message buffer, like so:
+
+ +------------------------------------+
+ |  groups     | summary              |
+ |    buffer   |      buffer          |
+ +------------------------------------+
+ |  message display                   |
+ |  very large: want to see           |
+ |     it all ....                    |
+ +------------------------------------+
+
+** This is in section 8.5 of the manual (that's (info "(gnus)window layout")), page 234 of the .pdf (slaughter you a forest, forasmuch as to print TFM).
+C-h v gnus-buffer-configuration shows the arbitrarily recursive nature of window configurations for Gnus.
+When I grow up and flex my potent Lispology, I think this would be a splendid opportunity for some macro-fu,
+so that mortals could define a simple table of measurements and let the code manage itself.  -- ChristopherSmith
+
+** You could try this, and change some of the numbers:
+
+    (gnus-add-configuration
+     '(article
+       (vertical 1.0
+    	       (horizontal 8
+    			 (group 20)
+    			 (summary 1.0 point) )
+    	       (horizontal 1.0
+    			 (article 1.0)))))
+
+
+* What is the supposed way to just read mail and no news at all?
+  Currently I have
+
+  (setq gnus-select-method '(nnml ""))
+
+: and no secondary-select-method at all, but I feel it's not right.
+
+* Who is this stupid asking all this basic stuff anyone knows anyway?  -- StefanKamphausen (thankful for any pointers ;-) )
+
+
+== LDAP support? ==
+[new]
+I'm pondering the benefits of using Gnus for my mailer (and newsreader) over my current MUA. Is it possible to read and write to an existing addressbook using LDAP? I have read a little about EUCD, but I cant seem to find any good documentation about this. What I need is to have my mail and addressbook accessable via IMAP and LDAP, and BBDB seems to use its own format. Perhaps its even possible to use LDAP as a backend to BBDB? --HenrikHolmboe
+
+[new]
+: I don't think such code exists.  But look for ldap.el in the WikifiedEmacsLispList...  Perhaps that helps?
+
+[new]
+:: ldap.el seems to be an alternative to EUCD, which relies on the binary ldapsearch. I will have to check this out. --HenrikHolmboe
+
+[new]
+
+: I am using EUDC with a MS LDAP server for email address completion. I have come accross a number of problems but now have it working:
+
+* Suumary: ldap.el (that I have on Gentoo linux shipped with emacs-21.4, not the ldap.el on the WikifiedEmacsLispList...)  does not work natively, there are problems with it and changes in the way ldapsearch works since ldap.el was originally written
+* ldapsearch can wrap long lines so I use a wrapper script that gets rid of them called myldapsearch:
+<pre> 
+#!/bin/sh
+ldapsearch $* | perl -p0e 's/\n //g'
+</pre>
+* I had to change the regexp and the command args to ldapsearch (actually myldapsearch wrapper)
+<pre>
+diff -u /usr/share/emacs/21.4/lisp/net/ldap.el emacs/ldap.el
+--- /usr/share/emacs/21.4/lisp/net/ldap.el      2006-04-05 15:20:28.000000000 +0100
++++ emacs/ldap.el       2006-06-01 11:44:29.000000000 +0100
+@@ -568,7 +568,8 @@
+                           buf
+                           nil    
+                           ,@arglist
+-                          "-t"         ; Write values to temp files
++                          "-tt"                ; Write values to temp files
++                          "-LL"
+                           ,@ldap-ldapsearch-args
+                           ,@filter))
+       (insert "\n")
+@@ -584,7 +585,7 @@
+                                               (end-of-line)
+                                               (point))))
+          (forward-line 1)
+-         (while (looking-at "^\\(\\w*\\)[=:\t ]+\\(<[\t ]*file://\\)?\\(.*\\)$")
++         (while (looking-at "^\\(\\w*\\)[=:\t ]+\\(<[\t ]*file://\\)\\(.*\\)$")
+            (setq name (match-string 1)
+                  value (match-string 3))
+            (save-excursion
+</pre>
+* Then setting the following gets it working for me (although I guess it might depend on how your site allocates names, mine uses "mail" "givenName" "name"):
+<pre>
+(setq eudc-inline-expansion-format '("%s %s <%s>" givenName name email))
+(setq eudc-inline-query-format '((name)
+                                (givenName)
+                                (givenName name)))
+(setq ldap-ldapsearch-prog "myldapsearch")
+</pre>
+* Then in a mail program (I use mail started from vm) typing an incomplete name and M-x eudc-expand-inline (cast to your favourite keystroke) does the trick
+
+* I guess I should write this up as a separate page describing the set
+up in full....I found it quite an effort to see how to get ldap and
+eudc working.  -- MartinReed
+
+
+----
+
+See also: GnusBugsAndWorkarounds
+
+----
+CategoryGnus

@@ -1,0 +1,22 @@
+The emacswiki.org domain had some DNS problems, and may still be unavailable.
+The problem is this: The primary nameserver is ns1.thinkmo.de, and when you
+query it, everything seems fine:
+
+    dig @ns1.thinkmo.de emacswiki.org
+
+The secondary nameserver is ns6.gandi.net, and when you query it,
+it returns the root servers.  So ''something'' is definitely wrong, but I
+don't know what it is.
+
+    dig @ns6.gandi.net emacswiki.org 
+
+This secondary nameserver is offered by my registrar, gandi.net.
+I'm not sure what I should do now...  I'm currently hoping that this will just
+fix itself...
+
+
+So, that was that !! I thought it was on my side ;) -- zeDek
+
+My guess is that ns1.thinkmo.de doesn't allow AXFR requests from ns6.gandi.net, so the periodic synchronisation cannot happen. Talk to the thinkmo.de admins about this, and  other problems [http://www.dnsreport.com/tools/dnsreport.ch?domain=emacswiki.org] with the DNS setup -- DanielNeri
+
+Thanks for the feedback!  I will be off-line until 2003-03-06, however, so I cannot do anything until then...  :( -- AlexSchroeder

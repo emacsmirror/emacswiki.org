@@ -1,0 +1,14 @@
+A major mode for editing abc music files.  Includes some abc2midi
+features.
+
+    (add-to-list 'auto-mode-alist '("\\.abc\\'"  . abc-mode))
+    (add-to-list 'auto-mode-alist '("\\.abp\\'"  . abc-mode))
+    (autoload 'abc-mode "abc-mode" "abc music files" t)
+    (add-to-list 'auto-insert-alist '(abc-mode . abc-skeleton))
+
+Source:
+[[abc-mode.el]]
+
+----
+CategoryModes
+MultimediaModes

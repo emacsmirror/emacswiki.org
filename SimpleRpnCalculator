@@ -1,0 +1,16 @@
+JoakimHove wrote a small calculator using reverse polish notation
+(RPN).  The SimpleCalculator uses normal algebraic notation, only the
+AdvancedDeskCalculator uses RPN.  Joakim's calculator fills this gap.
+
+In your ~/.emacs:
+
+    (autoload 'mcalc "mcalc" "Small RPN calculator." t)
+
+Use M-x mcalc to start the calculator.  Then use RPN:
+
+    5 RET 4 RET * ==> 20
+
+* http://www.ii.uib.no/~hove/lisp/mcalc.el
+
+----
+CategoryCalculators

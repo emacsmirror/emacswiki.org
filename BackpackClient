@@ -1,0 +1,21 @@
+[http://www.backpackit.com/ Backpack] is a web-based personal productivity tool from [http://37signals.com/ 37signals].
+
+[http://edward.oconnor.cx/elisp/backpack.el backpack.el] is an implementation of the [http://www.backpackit.com/api/ Backpack API].
+
+Eventaully, it'll even have an interface. For now, courage.
+
+=== Example usage ===
+
+Here's how I quickly add things to my Emacs to-do list in ERC, with /todo:
+
+ (defun erc-cmd-TODO (todo)
+   "Add TODO to my Emacs to-do list that I keep on Backpack."
+   (interactive "sAdd to your Emacs TODO: ")
+   (backpack-api/page/items/add 19187
+    (format "%s: %s" (erc-default-target) (erc-trim-string todo)))
+   (message "Added `%s' to Backpack." todo))
+ (put 'erc-cmd-TODO 'do-not-parse-args t)
+
+=== Compatibility ===
+
+In my effort to exert the least possible effort to get this working, I started with my 21.4.1 GNU Emacs and downloaded libraries from the Emacs CVS tree to solve errors as needed. It seems to be working so far, after I installed the CVS versions of xml.el and url-http.el. (JohnSullivan)

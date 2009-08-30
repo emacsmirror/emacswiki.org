@@ -1,0 +1,145 @@
+http://83.143.46.10/emacs/ide-skel/ideskel.png
+
+Ide-skel is a skeleton (or framework) of IDE for Emacs users.  Like
+Eclipse, it can be used as is with some predefined plugins on board,
+but is designed to extend by Emacs Lisp programmers to suite their
+own needs.  Emacs 22 only, tested under Linux only.
+
+[[image:IdeSkelSpeedbar]]
+
+= Installation
+
+Add Lisp:ide-skel.el and [http://emhacks.cvs.sourceforge.net/*checkout*/emhacks/emhacks/tabbar.el tabbar.el] to load path.
+
+In .emacs:
+
+  (require 'tabbar)
+  (require 'ide-skel)
+
+  ;; optional, but useful - see Emacs Manual
+  (partial-completion-mode)
+  (icomplete-mode)
+
+  ;; for convenience
+  (global-set-key [f4] 'ide-skel-proj-find-files-by-regexp)
+  (global-set-key [f5] 'ide-skel-proj-grep-files-by-regexp)
+  (global-set-key [f10] 'ide-skel-toggle-left-view-window)
+  (global-set-key [f11] 'ide-skel-toggle-bottom-view-window)
+  (global-set-key [f12] 'ide-skel-toggle-right-view-window)
+  (global-set-key [C-next] 'tabbar-backward)
+  (global-set-key [C-prior]  'tabbar-forward)
+
+= Side view windows =
+
+Left and right view windows are "speedbars" - they are embedded
+inside main Emacs frame and can be open/closed independently.  Right
+view window summarizes information related to the current editor
+buffer - it can present content of such buffer in another way
+(eg. Imenu tree), or show an extra panel for buffer major mode
+operations (see SqlPlus plugin example).  Left view window
+contains buffers such like buffer list (yet another way for
+switching buffers), filesystem/project browser for easy navigation,
+or Info documentation browser, or... whatever you wish.
+
+Side view windows are special - they cannot take focus and we can
+operate on it only with mouse (!).  Some window operations like
+delete-other-windows (C-x 1) are slighty modified to treat side view
+windows specially.
+
+= Bottom view window =
+
+Let auxiliary buffers (%%*shell%%*, %%*Messages%%*, %%*Help%%*, %%*Compilation%%*
+and another buffers with '*' in name) pop up/show in bottom window.  
+BUT, if you want, you can open any buffer in any window
+(except side windows) as usual - that's only nice heuristic, not
+pressure.
+
+Bottom view window remembers last selected buffer within it, so if
+you close this window and open later, it will show you buffer which
+you expect.
+
+= Tabbars =
+
+Ide-skel uses (great) [http://emhacks.cvs.sourceforge.net/*checkout*/emhacks/emhacks/tabbar.el tabbar.el] package with some modifications:
+
+* there is no division into major mode groups (like in Eclipse),
+
+* side view windows, bottom view window and editor windows have
+  different tabsets,
+
+* you can scroll tabs with mouse wheel,
+
+* the Home button in window left corner acts as window menu (you
+can add your items to it in your plugin),
+
+* mouse-3 click on tab kills its buffer
+
+= Project =
+
+Here, /project/ means a directory tree checked out from CVS or SVN.
+One project can contain source files of many types.  When we edit
+any project file, Emacs can easily find the project root directory
+simply by looking at filesystem.
+
+So, we can execute many commands (grep, find, replace) on all
+project source files or on all project source files of the same type
+as file edited now (see Project menu).  Ide-skel package also
+automatically configures partial-completion-mode for project edited
+now.
+
+There is no need to configure options for concrete projects (and that's
+great advantage in my opinion).
+
+= Plugins =
+
+See source file for instructions how to create your own plugins.
+
+== SqlPlus ==
+
+The only currently known external plugin for ide-skel is SqlPlus.
+
+Lisp:ide-skel.el
+
+If you find this package useful, send me a postcard to address:
+
+  Peter Karpiuk
+  Scott Tiger S.A.
+  ul. Kolektorska 15
+  01-692 Warsaw
+  Poland
+
+:)
+
+[new:UweKoloska:2008-07-24 01:14 UTC]
+Thank you Peter -- this is awesome!
+
+I have found two errors and can provide a patch for one of them ;-)
+
+*Filenames with a dot at the end are ignored from the fileview.*  I have found this, while searching for a function to switch the listing of hidden files off.  In the course of writing this little addition I found the error.  To switch display of hidden files on or off I have introduced a new variable but now I'm unsure how to best make it available in the GUI. It should be in the window menu, but I don't know how to implement it proper.  But nevertheless, here comes the patch for the function `ide-skel-dir-tree-list'
+
+<pre>
+  + (defvar ide-skel-dir-show-hidden t)
+   
+    (defun ide-skel-dir-tree-list (dir)
+      "Return the content of the directory DIR.
+    Return the list of components found, with sub-directories at the
+    beginning of the list."
+      (let (files dirs)
+        (dolist (entry (directory-files dir 'full))
+  -       (unless (string-equal (substring entry -1) ".")
+  +       (setq fname (file-name-nondirectory entry))
+  +       (unless (or (string-equal fname ".")
+  +  		  (string-equal fname "..")
+  +		  (and (not ide-skel-dir-show-hidden)
+  +		       (string-equal (substring fname 0 1) ".")))
+            (if (file-directory-p entry)
+                (push entry dirs)
+              (push entry files))))
+        (nreverse (nconc files dirs))))
+</pre>
+
+The second error is (at least for me) a bit harder to fix: *ide-skel cannot handle splitted windows.*  If you split the editor window vertically and the bottom window is not visible the function `ide-skel-toggle-bottom-view-window' closes all editor windows except one and only then opens the bottom window (with the height of the last closed editor window). Nearly the same happens with a splitted bottom window (as the right and left window can't get the focus and thus cannot be controlled by key commands like <code>C-x-2</code>): The toggle command just closes one of them.  And if the bottom window is splitted horizontally, the toggle creates a new bottom window ...
+
+A <code>C-x-0</code> or <code>C-x-1</code> always close the bottom window(s) if any of the side windows is open.
+----
+CategoryProgrammerUtils

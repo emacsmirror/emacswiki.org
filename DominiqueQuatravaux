@@ -1,0 +1,16 @@
+Je suis un utilisateur d'Emacs et XEmacs depuis 1994. J'ai longtemps utilisé ces deux éditeurs en même temps, en particulier pour les situations où le moteur d'Emacs était vraiment trop lent (exemple : édition de fichiers XML). Aujourd'hui avec l'avènment de NxmlMode ce n'est plus nécessaire, et j'utilise uniquement Emacs 22.1; toutefois j'ai gardé des habitudes d'XEmacs comme par exemple Lisp:minibuf-electric-gnuemacs.el.
+
+Sur ce Wiki je maintiens les fichiers suivants :
+
+* Lisp:.emacs-DominiqueQuatravaux.el, mon `.emacs' en français !
+* Lisp:minibuf-electric-gnuemacs.el, décrit dans [[CategoryKeys#CoolBindings]]
+* Lisp:prev-next-buffer.el, décrit dans [[SwitchingBuffers#BufferCycling]]
+* Lisp:color-theme-domq.el, mes goûts et mes couleurs (fonctionne avec [[ColorTheme]])
+
+Je maintiens également les projets suivants pour le compte de mon employeur:
+
+* [http://code.google.com/p/elisp-cache/ elisp-cache.el], une extension pour cacher les fichiers ##.el## sur un disque réseau lent et/ou parfois inaccessible (par ex. pour un portable). Il peut aussi byte-compiler ces ##.el## à la volée.
+
+----
+
+CategoriePagePerso

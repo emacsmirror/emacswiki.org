@@ -1,0 +1,44 @@
+* Lisp:move-and.el
+
+== Main description ==
+
+In a recent blog, one of the five hated things about emacs was
+the difficulty of the key bindings for various deleting and
+killing commands. This was contrasted with the ease of deleting
+in vi where prepending a motion-key with `d' does the deleting. I
+have always disliked the difficulty of deleting as opposed to
+killing since I do not like to clutter up the kill-ring with
+things I do not want. So I have written some functions which
+generically combine motion-keys with region commands to obtain
+what we want. Thus prepending a motion-key with `M-d' results in
+the deletion of the text over which we move via the motion-key,
+prepending a motion-key with `M-k' results in the killing of the
+text and prepending a motion-key with `M-c' results in the
+copying of the text. In addition we have a function that takes a
+motion-key and a key for some region command and executes the region
+command on the text passed over by the motion.
+
+In move-and.el the assigning of keys to the functions is commented out so you should either uncomment these assignments or else set up your own bindings in your .emacs after loading move-and.el.
+
+In all the cases the numeric argument (which can be absent) you
+may wish to pass to the motion command is given by a digit
+argument before `M-d' and the others. Thus to delete the previous
+two words one would type `M-2db' (hold the meta key down
+throughout) but to kill the next three sentences we type `M-3ke'
+whilst `M-cC-M-f' copies the next s-expression and moves to its
+end.
+
+== Enhancements ==
+
+We add some other deletion, killing and copying commands very
+easily. Thus `M-d x' where `x' is any self-inserting character deletes
+backwards to the nearest previous occurrence of `x', `M-k x' does the
+same but kills rather than deletes and `M-c x' copies
+instead. Further, `M-d X' where `X' is uppercase deletes forward, `M-k X' 
+kills forward and `M-c X' copies whilst moving forward. These also
+take prefix arguments.
+
+There is also a generic function `move-and-act' which takes a prefix argument 
+and two key sequences as input. The first key sequence calls a motion command 
+and the second should call a region command and applies the region command to 
+the text passed over by the motion command; thus `M-2rf C-x C-u' will upcase the next two words

@@ -1,0 +1,24 @@
+[new:AlexSchroeder:2008-04-28 14:30 UTC]
+SteveYegge [http://steve-yegge.blogspot.com/2008/04/xemacs-is-dead-long-live-xemacs.html writes about XEmacs being dead], saying that users should switch over, dev teams merge, and that Emacs should focus on the new competition: Firefox.
+
+As a long-time [[Gnus]] user who has switched over to GMail, as an avid Emacs user who uses Firefox to compose Wiki articles within the crappy Firefox Textarea practically every day, I must confess he seems to have a point. I really wanted to love w3m and Emacs. But Firefox was just too good a browser. And as soon as Firefox becomes as easy to extend as Emacs, people will switch.
+
+These days my number one reason to start an Emacs session is [[IRC]].
+
+Anyway. Food for thought.
+
+[new]
+I am editing this page within emacs, with the help of the 
+<b>It's All Text!</b> [https://addons.mozilla.org/en-US/firefox/addon/4125] extension of firefox . This extension adds a small button at the right bottom
+of text boxes in html pages. Clicking on the button opens the text in an
+external editor. You can specify <code>emacs</code> as the default, or better <code>emacsclient</code>
+if you want to edit text in an already running emacs session.
+
+I have configured <b>It's All Text!</b> to execute the following short script:
+
+  /usr/bin/emacsclient "$@" || /usr/bin/emacs --display :0 "$@"
+
+which works better for my config than the simpler
+<code>emacsclient --alternate-editor="emacs"</code>.
+
+Cheers

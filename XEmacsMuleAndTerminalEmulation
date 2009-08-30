@@ -1,0 +1,28 @@
+== Problem ==
+
+Some users might experience problems when running any visual commands in the built in terminal emulation in XEmacs.
+
+Try it out:
+
+ M-x term
+ /bin/bash RET
+ top RET
+
+Do you get an almost normal top-display or is it crippled.  If the latter you probably have an XEmacs with MULE.  MULE has a way of trying to be helpful (which actually helps in making the difference between windows and unix line endings transparent) which gets in the way here.  It autodetects the encoding of the buffer and makes a false guess which leads to the interpretion of some escape chars. 
+
+== Solution ==
+Just tell it to treat this buffer ''as is'':
+
+ (defun bug-evil-term-process-coding-system ()
+   "Fix a term bug; the `process-coding-system' should always be `binary'."
+   (set-buffer-process-coding-system 'binary 'binary))
+
+ (add-hook 'term-exec-hook 'bug-evil-term-process-coding-system)
+
+Now the visual commands the the colored output of <code>ls</code> or a colored prompt won't confuse XEmacs anymore.
+
+== New Problems ==
+OK, it works almost well.  Some problems are still there:
+
+* Currently (at least on my setup) line which are displayed in reverse (attribute A_STANDOUT when you're programming wich <code>ncurses</code>) won't be displayed at all.
+* Cursor arrows can kill the visual command (at least with my own cdargs program, don't know why) -- StefanKamphausen

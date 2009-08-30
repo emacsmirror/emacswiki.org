@@ -1,0 +1,10 @@
+Pulse sobre la cabecera de esta página para recibir un listado de todas las páginas relacionadas con paréntesis en este wiki. En la jerga-Emacs, los paréntesis son llamados con frecuencia "parens".
+
+* DepuraciónDeParéntesis -- encontrando errores de "paréntesis desbalanceados" en los archivos
+* CoincidenciaDeParéntesis, ModoParenSet -- cómo convertir dos caracteres en paréntesis coincidentes
+* ModoShowParen -- mostrar paréntesis coincidentes
+* CoincidirParéntesis -- saltar entre paréntesis coincidentes
+* ModoUnParen -- hacerlos invisibles
+* CaraDeParen, DimParéntesis -- usar una cara especial para ellos
+
+Vea `skeleton-pair-insert-maybe' para un ejemplo de qué tan útil puede resultar el manejo de paréntesis en Emacs.

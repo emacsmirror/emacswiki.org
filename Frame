@@ -1,0 +1,33 @@
+'''Frames''' are only called frames in Emacs; outside Emacs, frames are called "[[Window]]s". (But not all of the properties of Emacs frames pertain to non-Emacs "windows" such as your Web browser window or an application dialog box.)
+
+A [::frame] is rectangular, with four frame '''borders'''. A frame usually has a '''title bar''' with a frame title (name). A frame usually has a '''MenuBar''', just under the title bar. Depending on your version of Emacs, a frame may also have a '''ToolBar''' with buttons. 
+
+Here is a screenshot showing a frame with three [[Window]]s:
+
+[[image:DrewsEmacsWindowCallouts]]
+
+The frame space under the menu-bar is tiled into panes called, in Emacs-speak, '''[[Window]]s'''. Sorry about the confusion :).
+
+A frame can be in one of these states:
+* '''visible''' - this really means user-accessible
+* '''invisible''' - you cannot access it
+
+A ''visible'' frame can be in one of these states:
+
+* '''raised''' - you can see it and manipulate it
+* '''iconified''' (minimized) - you see only a small icon representing the frame
+
+A ''raised'' frame can be maximized, occupying the full screen, or not.
+
+You can resize a frame, drag it around, iconify it, raise (uniconify) it if it is iconified, rename it, or delete it.
+
+Some common frame commands:
+
+  C-x 5 o -- other frame
+  C-x 5 0 -- delete frame
+  C-x 5 1 -- delete other frame
+  C-x 5 2 -- make frame
+  C-x C-z -- Iconify Frame
+
+----
+CategoryGlossary CategoryFrames

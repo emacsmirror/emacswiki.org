@@ -1,0 +1,21 @@
+Zum Verwalten von Zitaten und Referenzen (<code>\cite{}</code> und <code>\ref{}</code>) bietet sich das RefTex Paket an. Es wird mittels
+
+    (turn-on-reftex)
+
+in der <code>.emacs</code> (<code>~/.xemacs/init.el</code>, ...) aktiviert und die wichtigsten Tastenkombis sind einerseits 
+
+  C-c )
+
+für einen Querverweis und
+  C-c ]
+
+für ein Zitat aus einer Literaturdatenbank. Diese muß RefTex bekannt sein, was man leicht durch Setzen der Variablen <code>reftex-default-bibliography</code> (am einfachsten im Customize Menu:
+ customize -> emacs -> wp -> TeX -> RefTex -> Citation Support) auf die entsprechende .bib-Datei erledigt.
+
+Beim Zitieren fragt RefTex nach einem Suchmuster für die Datenbank und bietet alle gefundenen Einträge in einem neuen Buffer zum Anwählen mittels Cursortasten an. Es gibt in diesem Buffer auch noch weitere Navigationsmöglichkeiten, die man sich mittels Beschreibung des RefTex-Modes beschaffe. Bei dem Erstellen von Querverweisen ist RefTex ziemlich intelligent: Wenn man hinter dem Wort "Gleichung" <code>C-c )</code> drückt, weiß es, dass es um eine Gleichung geht und bietet folgerichtig nur alle Gleichungen zur Auswahl geht. Dabei gilt es noch einiges zu beachten: lässt man kein Leerzeichen nach Gleichung, erstellt RefTex ein (vor Umbruch) geschütztes Leerzeichen (~), lässt man eines, bleibt alles so. Sinnvollerweise sollte man alle seine Gleichung mit <code>\label{eq:...}</code> bezeichnen (ich bin nicht sicher, ob das notwendig ist, kann es mir aber gut vorstellen). 
+
+Entsprechend bezeichnet man Abbildungen mit <code>\label{fig:...}</code> usw... Kann RefTex nicht erkennen, worum es sich bei dem Querverweis handelt, wird zunächst danach gefragt. Die gefundenen Label stammen natürlich aus allen zum Dokument gehörenden Files....
+
+Die erkannten Stichworte werden meines Wissens sogar sprachabhängig gesetzt (bei <code>\usepackage{german}</code> wird also "Gleichung" erkannt, sonst "equation").
+
+Unter http://www.sopos.org/olli/latex+emacs.pdf findet sich eine ausführlichere deutschsprachige Anleitung, die weitere Fähigkeiten von RefTex zusammen mit AucTeX erläutert (PDF-Format).

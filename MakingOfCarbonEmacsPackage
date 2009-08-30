@@ -1,0 +1,83 @@
+This article describes how to build CarbonEmacsPackage by yourself.
+
+
+== System Requirements ==
+
+* Mac OS X 10.5.2
+* XCode
+* relatively "new" TeX distribution in your PATH
+** AUCTeX requires dvipng 1.6 or later, tex, gs etc.
+
+* Make sure to check your environment variables.  When LANG is set to something (other than English or C), the makeinfo command partially translate info pages.
+
+== Obtaining the source codes ==
+
+For the release versions, visit http://macwiki.sourceforge.jp/emacs/source/ .
+
+Also, the latest source codes are managed by subversion.
+
+ $ svn checkout http://svn.sourceforge.jp/svnroot/macwiki/zenitani/CarbonEmacs
+
+
+== Directory layout ==
+
+ $ ls
+
+ GPL
+ Makefile
+ Resources
+ non-GPL
+
+== Building an Intel (or PowerPC) build ==
+
+Try 'make' in the following way.
+First, expand the source code and apply various patches to the source tree.
+
+ $ make patch
+
+Next, try compile. It may take long time.
+
+ $ make compile
+
+Prepare a disk image file and then install emacs into it.
+If you fail something, unmount the "Emacs" voulme.
+
+ $ make dmg
+ $ make install
+
+Compile the various elisp libraries and install them into the "Emacs" disk.
+If you like, you can edit the "pkg:" section in the Makefile.
+
+ $ make pkg
+
+Now Emacs.app is in the "Emacs" volume.
+You can copy it to your application folder, if you want.
+
+To make the "Emacs" volume fancy, try
+
+ $ make icon
+
+Compress the disk image file and unmount the "Emacs" volume.
+
+ $ make done
+
+Now you will see a new disk image file, whose filename is
+CarbonEmacs-powerpc-($date).dmg or CarbonEmacs-i386-($date).dmg.
+
+== Making Universal Binary Package ==
+
+(document forthcoming)
+
+== Redistributing your own package ==
+
+Redistributing your own package is welcome.
+Before compiling, you should edit "VERSION" section in the Makefile, the readme file (<nowiki>Resources/ReadMe.txt</nowiki>)
+and the contact URLs in carbon-emacs-package.el file.
+Of course I am very happy if you feedback your enhancements to [http://groups.google.com/group/carbon-emacs?hl=en Carbon Emacs User Group]
+.
+
+
+___________________________________________________________________
+
+
+CarbonEmacsPackage

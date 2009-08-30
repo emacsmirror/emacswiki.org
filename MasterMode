@@ -1,0 +1,38 @@
+ master.el --- make a buffer the master over another buffer
+
+This minor mode allows you to remote-control one buffer from another buffer.
+
+Use M-x master-mode in the first buffer, then call M-x
+master-set-slave and specify the second buffer.  Now you can scroll
+the second buffer using `C-c C-p' and `C-c C-n'.
+
+This can be usefull within Emacs if you are writing a SQL statement in
+a SQL buffer and send it over to the SQLi buffer.  Instead of
+switching windows and scrolling the SQLi buffer, you can now scroll
+the SQLi buffer from the SQL buffer: SQL buffer is the master of the
+SQLi buffer.
+
+This is the way to install Master mode in conjunction with SqlMode:
+
+
+     (autoload 'master-mode "master" "Master mode minor mode." t)
+     (add-hook 'sql-mode-hook
+                (function (lambda ()
+                            (master-mode t)
+                            (master-set-slave sql-buffer))))
+     (add-hook 'sql-set-sqli-hook
+                (function (lambda ()
+                            (master-set-slave sql-buffer))))
+
+
+You can get it here:
+
+* Lisp:master.el
+
+
+see also:
+
+ScrollAllMode
+
+----
+CategoryCode

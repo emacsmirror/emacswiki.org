@@ -1,0 +1,62 @@
+This page is about Emacs '''[::fileset]s'''. Filesets are available in Emacs 21 and later -- see the Emacs manual, node Filesets: Manual:Filesets.
+
+
+== Filesets ==
+
+A '''fileset''' is a persistent specification of a set of files. All filesets together form the value of user option '''`filesets-data''''. A single fileset is a list of the fileset name (a string), the fileset specification, and optional indications that modify the fileset behavior.
+
+At its simplest, a single fileset spec is an explicit list of file names headed by the keyword `:files'. For example: ##(:files "dired+.el" "c:/my/dir/buff-menu+.el")##. You can use both relative and absolute file names. Thus, you might have a `fileset-data' value such as this, which includes a single fileset named "set1": ##(("set1" (:files "dired+.el" "c:/my/dir/buff-menu+.el")))##.
+
+You can use other keywords, besides ##:files##. The other types of fileset are ##:tree##, ##:pattern##, and ##:ingroup## (oh, there is also ##:file## for a single file). The types are mutually exclusive: if you use more than one, the first type in the order just mentioned takes precedence.
+
+Check the doc for more information -- I'll just mention type ##:tree## and ##:pattern## here briefly. In addition, you can use other keywords to modify the specification and behavior of a fileset -- again, see the doc.
+
+A fileset of type ##:tree## uses an intensive, rather than an extensive, specification of the files in the set. You provide a base directory name and a [[regexp]] pattern to be matched against files under the directory. Example: ##("set2" (:tree "~/my/dir" "^ici.+\\.el$"))## includes all files under ##"~/my/dir## that start with ##ici## and have suffix ##el##. Keyword ##:pattern## is like ##:tree##, but it specifies only files in the given directory, not also files in its subdirectories.
+
+To use filesets, you need to require the filesets library (see [[#FilesetsLibrary|next]]), and then you need to evaluate the [[sexp]] ##(filesets-init)##. That will make available a '''Filesets''' menu (see [[#FilesetsLibrary|next]] for placing that menu). To create and modify filesets, you typically use [[Customize]]: `M-x customize-option filesets-data'.
+
+[:FilesetsLibrary]
+== Filesets Library ==
+
+The version of the filesets library, ##filesets.el##, included in Emacs  (1.8.4) is a bit iffy. You can obtain a more recent version (2.2) from the author's Web page: http://members.a1.net/t.link/CompEmacsFilesets.html.
+
+The [[InfoMode|Info]] doc for filesets, Manual:Filesets, is quite poor, unfortunately. Better is the doc at http://members.a1.net/t.link/CompEmacsFilesetsDoc.html.
+
+I (DrewAdams) have had trouble trying to use the more recent version with GnuEmacs, especially wrt byte-compiling. For now, I just use the version included with Emacs (1.8.4).
+
+Regardless of which version you use, there is a bug in the definition of `filesets-get-filelist'. I've made a bug fix available as library <tt>[[filesets+.el]]</tt>. That library will load ##filesets.el## for you, so all you have to do is load ##filesets##'''''##+##'''''##.el##. In addition, I recommend that you customize the following two options, to put the
+'''Filesets''' menu on the '''File''' menu just before item '''Open
+File...''' (otherwise, it appears as a separate [[menu bar|menu-bar]] menu):
+
+* `filesets-menu-path'   -- value should be ##("file")##
+* `filesets-menu-before' -- value should be ##"Open File..."##
+
+I reported the bug and fix to Emacs development on 2008-09-13 [http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=976], so hopefully it will be corrected in Emacs 23. ;-)
+
+
+== Icicles and Filesets ==
+
+If you use [[Icicles]], you can retrieve the files in a fileset as completion candidates or open [[DiredMode|Dired]] on (only) them. This gives you Icicles file-name completion for fileset files. You can also combine filesets of different kinds and combine filesets with other files to form a persistent Icicles set that you can later use for completion.  For example, this could be a saved Icicles set that combines a ##:tree## fileset with an explicit ##:files## fileset and with two additional files:
+
+<pre>
+((:fileset "set1" (:tree "~/my/dir" "^ici.+\\.el$"))
+ (:fileset "set2" (:files "dired+.el" "c:/my/dir/buff-menu+.el"))
+ "c:/some/other/dir/foobar.el"
+ "c:/somewhere/else/toto.el")
+</pre>
+
+When you retrieve that during file-name completion, all of the file names specified become completion candidates (which you can filter with your input, and so on).
+
+Do not use library <tt>[[filesets+.el]]</tt> with Icicles. Icicles already includes the same bug fix.
+
+
+== Dired and Filesets ==
+
+DiredPlus (library <tt>[[dired+.el]]</tt>), like Icicles, lets you open [[DiredMode|Dired]] on the files in a fileset (and no others). Choose '''Dired Fileset...''' in the '''Dir''' [[menu bar|menu-bar]] menu.
+
+
+
+----
+
+CategoryFiles CategoryDirectories
+Lisp:filesets+.el

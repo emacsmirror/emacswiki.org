@@ -1,0 +1,44 @@
+Czech and Polish typography rules (and probably in other Slavonic languages) requires avoiding one letter prepositions at line endings.  So they should be connected with the following words by nonbreakable space (space which cannot be converted into line break).  In TeX and LaTeX nonbreakable space is created using `~' (tilde) instead of whitespace character; in SGML (e.g. HTML) text <code>&nbsp;</code> is used. Unicode defines a "[http://en.wikipedia.org/wiki/Hard_space hard space]" at U+00A0; to insert it, type `‘C-x 8 SPC'.
+
+The rule that some words should be not left at line endings depends on the number of characters in line; for on-line HTML documents this rule usually should not be invoked.  See for example chapter about leaving words at line endings in [http://www.typografia.ogme.pl/r3_dzielenie.htm Typography Primer] (in Polish).
+
+Non-breakable space (`~' in !LaTeX) is sometimes referred as /hard space/, but that name should refer to fixed width non-breakable space (`\ ' in !LaTeX).
+
+
+= Adding non-breakable spaces to existing document =
+
+To check the /existing/ text and suggest adding of missing tildes (nonbreakable spaces) on some places one could use [http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/lisp/textmodes/tildify.el?rev=HEAD&content-type=text/plain tildify.el] from GnuEmacs (link to GNU Emacs CVS HEAD version).  The default variable settings in this package are suited for Czech, but they work quite well for Polish also.  The package ignores the environments in which there is no need for nonbreakable spaces (e.g. verbatim and math in !LaTeX, <nowiki><pre></nowiki> in HTML, or comments).  Works both for TeX modes and SGML derivatives.  The name comes from the character (command) used for non-breakable space in !LaTeX.
+
+Or you can use `<code>tex-hard-spaces</code>' function from Lisp:sierotki.el which is just simple query-replace-regexp (only for !TeX and !LaTeX).
+
+
+= On-the-fly insertion of non-breakable spaces =
+
+To insert non-breakable spaces on the fly one can use !TeX Magic Space mode from Lisp:sierotki.el -- the name of package stems from the name of the Polish name for the one letter prepositions at line endings, /sierotki/ (which roughly translates as /orphans/).  To use this package, put the following line in your .emacs:
+
+    (require 'sierotki)
+
+If you do not want to load this package before it is necessary, you can make use of the `autoload' feature, e.g. adding to your .emacs the following lines
+
+    (autoload 'tex-magic-space-mode "sierotki"
+              "TeX Magic Space minor mode" t)
+    (define-key mode-specific-map " " 'tex-magic-space-mode)
+
+If you want to have the !TeX Magic Space mode turned on in known !TeX modes put the following line in your .emacs after <code>(require 'sierotki)</code>
+
+    (turn-on-tex-magic-space-in-tex-modes)
+
+/This package is not finished./
+
+== sierotki.el Name ==
+The name /sierotki/ (which is Polish diminutive for 'orphans') refers colloquially to the hanging conjunctive, i.e. single letter word (usually conjunctive or preposition) at the end of the line.  But the name /orphan/ in typesetting refers to word or the last line of a paragraph appearing at the top of a page, with the rest of the paragraph appearing on the preceding page; TeX refers to it as /club/ (in <code>\clubpenalty</code>).
+
+== sierotki.el Suggestions, Discussion and Issues ==
+(Here is the place for sierotki.el discussion and ideas for new features. Bug reports are preferred to be send via email to maintainer.)
+
+= Elisp packages =
+* [http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/lisp/textmodes/tildify.el?rev=HEAD&content-type=text/plain tildify.el] (GNU Emacs CVS at Savannah)
+* Lisp:sierotki.el ([http://github.com/jnareb/sierotki.el jnareb/sierotki.el github repository])
+
+----
+CategoryTex

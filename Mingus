@@ -1,0 +1,67 @@
+Mingus was born on Sunday 2006-06-25.
+
+Current version: 0.29, or: "New Now Know How". For older versions, see below.
+
+Mingus interfaces mpd (the Music Player Daemon) in emacs.
+
+Mingus needs [https://svn.musicpd.org/libmpdee/trunk/libmpdee.el libmpdee], and
+[http://www.musicpd.org/ mpd] if run locally. Prior to release 0.25 mingus needed
+[http://www.musicpd.org/mpc.shtml mpc]. In theory (and maybe not that alone -- untried),
+this means mingus can play on win32 systems now too in addition to normal systems.
+
+Version 0.24 (She's Just Miss Popular Hybrid) hinged on two legs, i.e. mpc and
+libmpdee.
+
+Mingus provides extensive playlist editing, through marking and
+regions.
+
+Mingus provides a point-of-insertion for inserting new songs.
+
+Mingus provides regexp search on filenames in mpd database.
+
+Mingus is willing to handle streams and podcasts, possibly coming from
+emacs-w3m buffers, such handling including client-side `presets'.
+
+Mingus can even wake you up.
+
+Mingus needs emacs22 ...not anymore: emacs21 suffices.
+
+ M-x mingus 
+
+should git mingus in your soul;
+
+if it does not do so,
+
+ M-x mingus-help 
+
+should help.
+
+If mingus stays home, i.e. the daemon mpd is run from the same computer as the client,
+mingus-stays-home.el (below) provides integration with dired, id3-tagging support for
+ogg, flac and mp3, an experimental cd-burning tool (mingus-burns) (supported formats:
+ogg, mp3, flac, wav), and more, both as an exercise for the reader and to come. 
+
+This extra functionality begs for more dependencies; for that, see the notes in the file
+Lisp:mingus-stays-home.el
+
+[new:NielsGiesen:2009-07-06 19:11 UTC] I just realized with updating for 0.28 that Mingus can use tramp to browse files remotely. So I made <code>`mingus-mpd-root'</code> customizable, and you can use stuff like <code>/ssh:username@host:/var/lib/mpd/music/</code>. When I get to it, I will lift the code (mainly the dired-related functions) from mingus-stays-home to mingus.el.
+[new:NielsGiesen:2009-07-06 19:11 UTC]
+
+[new:NielsGiesen:2009-07-15 18:27 UTC]Code is lifted in version 0.29. Even tested using tramp on a win32 machine.
+[new:NielsGiesen:2009-07-15 18:27 UTC]
+
+* Lisp:mingus.el
+
+* Lisp:mingus-stays-home.el
+
+* [http://niels.kicks-ass.org/index.php/emacs/mingus/ My homepage] includes ChangeLog,
+  older versions, a ToDo-list, a screenshot and further blabla. Subsequent versions will
+  also be put there, as well as on this wiki.
+
+* [http://bugs.gentoo.org/show_bug.cgi?id=147381 Mingus ebuild of version 0.20] (for
+  Gentoo GNU/Linux) (note that this is older than the current version)
+
+See also [http://mpd.wikia.com/wiki/Client:Mpc.el mpc.el] for another interface to mpd.
+
+-----
+CategoryExternalUtilities

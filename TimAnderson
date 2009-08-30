@@ -1,0 +1,310 @@
+Uses GNU Emacs, CVS version with multi-tty patch.
+
+
+<pre>
+;; .emacs
+;; T. Anderson
+;; current reworking started oct 15, in the TLP mall
+
+;; seems sensible for this to be the first line..
+(add-to-list 'load-path "~/.emacs.d/")
+
+;; when opening a file, go to the beginning on ~ or /
+(load-file "~/.emacs.d/minibuf-electric-gnuemacs.el")
+
+;;--------------------------------------------------------------------------------
+;; Emacs Session http://emacs-session.sourceforge.net
+(require 'session)
+(add-hook 'after-init-hook 'session-initialize)
+
+;;--------------------------------------------------------------------------------
+;; all things CEDET, JDEE, ECB, ELIB related...
+;; 
+
+(load-file "~/.emacs.d/cedet/common/cedet.el")
+(semantic-load-enable-code-helpers)
+(setq semantic-load-turn-useful-things-on t)
+
+(add-to-list 'load-path "~/.emacs.d/ecb")
+(require 'ecb-autoloads)
+
+(add-to-list 'load-path "~/.emacs.d/elib")
+(add-to-list 'load-path "~/.emacs.d/jde/lisp")
+(require 'jde)
+(setq auto-mode-alist (cons '("\\.java'" . jde-mode)
+                            auto-mode-alist))
+;;(require 'jde-jalopy)
+
+;;--------------------------------------------------------------------------------
+;; auctex
+(add-to-list 'load-path "~/.emacs.d/auctex")
+(require 'tex-site)
+
+;;--------------------------------------------------------------------------------
+;; nxml
+(add-to-list 'load-path "~/.emacs.d/nxml")
+(load-file "~/.emacs.d/nxml/rng-auto.el")
+(require 'nxml-mode)
+
+;;--------------------------------------------------------------------------------
+;; planner, by sacha chua
+(add-to-list 'load-path "~/.emacs.d/emacs-wiki")
+(add-to-list 'load-path "~/.emacs.d/planner")
+(add-to-list 'load-path "~/.emacs.d/remember")
+
+(require 'planner)
+(require 'remember-planner)
+
+
+;;--------------------------------------------------------------------------------
+;; play music with emms
+
+(add-to-list 'load-path "~/.emacs.d/emms")
+(require 'emms)
+(require 'emms-player-simple)
+(require 'emms-source-file)
+(setq emms-player-list '(emms-player-mpg321
+			 emms-player-ogg123)
+      emms-source-list '((emms-source-directory-tree "~/storage/music/")))
+
+
+
+;;--------------------------------------------------------------------------------
+;; ERC
+(add-to-list 'load-path "~/.emacs.d/erc-4.0")
+(require 'erc)
+
+
+;;--------------------------------------------------------------------------------
+;; compilation mode - my ms-sql extension (using sqsh)
+(autoload 'mode-compile "mode-compile"
+  "Command to compile current buffer file based on the major mode" t)
+(global-set-key "\C-cc" 'mode-compile)
+(autoload 'mode-compile-kill "mode-compile"
+  "Command to kill a compilation launched by `mode-compile'" t)
+(global-set-key "\C-ck" 'mode-compile-kill)
+
+
+
+;;--------------------------------------------------------------------------------
+;; subversion
+(require 'psvn)
+
+
+(require 'newsticker)
+
+(global-set-key (kbd "<f3>") 'comment-region)
+(global-set-key (kbd "<f4>") 'uncomment-region)
+
+
+;;--------------------------------------------------------------------------------
+;; some various settings
+(icomplete-mode)
+(require 'generic-x)
+(setq truncate-lines t)
+
+;convert a buffer from dos ^M end of lines to unix end of lines
+(defun dos2unix ()
+  (interactive)
+  (goto-char (point-min))
+  (while (search-forward "\r" nil t) 
+    (replace-match "")))
+
+(defun upcase-all-selects ()
+  (while (search-forward "select" nil t)
+    (replace-match "SELECT")))
+
+
+;;C-x m to send mail using message-mode when you're not in Gnus
+(setq mail-user-agent 'message-user-agent)
+
+;; the elusive completion function - dabbrev-expand
+(define-key global-map [(control tab)] 'dabbrev-expand)
+
+(defun google (what)
+  "Use google to search for WHAT."
+  (interactive "sSearch: ")
+  (w3m-browse-url (concat "http://www.google.com/search?q="
+                          (w3m-url-encode-string what))))
+;; get rid of yes-or-no questions - y or n is enough
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(setq column-number-mode t)
+(display-battery-mode)
+(display-time-mode)
+
+(server-start)
+;; (add-to-list 'load-path "~/.emacs.d/mwe-screen-server")
+;; (autoload 'gnuserv-start "gnuserv-compat"
+;;   "Allow this Emacs process to be a server for client processes."
+;;   t)
+;; (require 'mw-screen-server)
+;; (mw-screen-server-install)
+;; (gnuserv-start)
+
+
+
+(iswitchb-mode)
+(setq-default indent-tabs-mode nil)
+
+;;--------------------------------------------------------------------------------
+;; ignore this when we are in -nw
+(cond
+ ((eq window-system 'x)
+  (require 'color-theme)
+;;(require 'my-colours)
+  ;;(color-theme-oldtkalight)
+  (set-frame-height (selected-frame) 56)
+  (set-frame-width (selected-frame) 120)
+  )
+)
+
+
+(setq default-truncate-lines t)
+(defun point-of-beginning-of-bottom-line ()
+  (save-excursion
+    (move-to-window-line -1)
+    (point)))
+
+(defun point-of-beginning-of-line ()
+  (save-excursion
+    (beginning-of-line)
+    (point)))
+
+(defun next-one-line () (interactive)
+  (if (= (point-of-beginning-of-bottom-line) (point-of-beginning-of-line))
+      (progn (scroll-up 1)
+             (next-line 1))
+    (next-line 1)))
+
+(defun point-of-beginning-of-top-line ()
+  (save-excursion
+    (move-to-window-line 0)
+    (point)))
+
+(defun previous-one-line () (interactive)
+  (if (= (point-of-beginning-of-top-line) (point-of-beginning-of-line))
+      (progn (scroll-down 1)
+             (previous-line 1))
+    (previous-line 1)))
+
+(global-set-key (kbd "<down>") 'next-one-line)
+(global-set-key (kbd "<up>") 'previous-one-line)
+
+
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(Info-additional-directory-list (quote ("/usr/local/info" "/home/tim/emacs-cvs/info")))
+ '(auto-compression-mode t nil (jka-compr))
+ '(backup-directory-alist (quote (("" . "/home/tim/.emacs.d/auto-save-list/"))))
+ '(blink-cursor-mode nil nil (frame))
+ '(blink-matching-paren-on-screen nil)
+ '(browse-url-browser-function (quote browse-url-mozilla))
+ '(browse-url-mozilla-program "firefox")
+ '(browse-url-netscape-program "firefox")
+ '(bsh-jar "/home/tim/.emacs.d/jde/java/lib/bsh.jar")
+ '(c-default-style (quote ((java-mode . "java") (other . "linux"))))
+ '(c-old-style-variable-behavior nil t)
+ '(calendar-abbrev-length 3 t)
+ '(calendar-latitude 40.0)
+ '(calendar-longitude 75.0)
+ '(case-fold-search t)
+ '(column-number-mode t)
+ '(cua-mode nil)
+ '(current-language-environment "English")
+ '(ecb-compilation-buffer-names (quote (("*Calculator*") ("*vc*") ("*vc-diff*") ("*Apropos*") ("*Occur*") ("*shell*") ("\\*[cC]ompilation.*\\*" . t) ("\\*i?grep.*\\*" . t) ("*JDEE Compile Server*") ("*Help*") ("*Completions*" . t) ("*Backtrace*") ("*Compile-log*") ("*bsh*") ("*Messages*"))))
+ '(ecb-compile-window-height 12)
+ '(ecb-compile-window-width (quote edit-window))
+ '(ecb-directories-menu-user-extension-function nil)
+ '(ecb-eshell-auto-activate t)
+ '(ecb-history-menu-user-extension-function nil)
+ '(ecb-layout-name "left8")
+ '(ecb-methods-menu-user-extension-function nil)
+ '(ecb-new-ecb-frame t)
+ '(ecb-options-version "2.31")
+ '(ecb-prescan-directories-for-emptyness t)
+ '(ecb-primary-secondary-mouse-buttons (quote mouse-1--C-mouse-1))
+ '(ecb-source-file-regexps (quote ((".*" ("\\(^\\(\\.\\|#\\)\\|\\(~$\\|\\.\\(elc\\|obj\\|o\\|class\\|lib\\|dll\\|a\\|so\\|cache\\|data\\)$\\)\\)") ("^\\.\\(emacs\\|gnus\\)$")))))
+ '(ecb-source-path (quote (("/" #("/" 0 1 (help-echo tree-buffer-help-echo-fn mouse-face highlight))) "/home/tim/src" "/home/tim/workdir/assignments/trunk/5")))
+ '(ecb-sources-menu-user-extension-function nil)
+ '(ecb-sources-perform-read-only-check t)
+ '(ecb-tip-of-the-day nil)
+ '(ecb-vc-enable-support t)
+ '(ecb-windows-width 0.2)
+ '(face-default-stipple "gray3" t)
+ '(facemenu-unlisted-faces (quote (holiday-face calendar-today-face diary-face modeline region secondary-selection highlight scratch-face "^font-lock-" "^gnus-" "^message-" "^ediff-" "^term-" "^vc-" "^widget-" "^custom-" "^vm-")))
+ '(font-lock-verbose nil)
+ '(fringe-mode 0 nil (fringe))
+ '(global-font-lock-mode t nil (font-core))
+ '(global-semantic-decoration-mode nil nil (semantic-decorate-mode))
+ '(global-semantic-show-unmatched-syntax-mode t nil (semantic-util-modes))
+ '(global-semantic-stickyfunc-mode nil nil (semantic-util-modes))
+ '(image-file-name-extensions (quote ("png" "jpeg" "jpg" "gif" "tiff" "tif" "xbm" "xpm" "pbm" "pgm" "ppm" "pnm" "JPG" "JPEG")))
+ '(jde-compile-option-source (quote ("1.4")))
+ '(jde-compiler (quote ("javac server" "")))
+ '(jde-jalopy-option-path "/home/tim/downloads/jalopy")
+ '(jde-java-environment-variables (quote ("" "")))
+ '(jde-java-font-lock-api-file "/home/tim/.emacs.d/jde/lisp/jde-java-font-lock.api")
+ '(jde-jdk-registry (quote (("1.4.2.08" . "/opt/sun-jdk-1.4.2.08"))))
+ '(jde-junit-tester-name-tag (cons "prefix" "Test"))
+ '(menu-bar-mode t nil (menu-bar))
+ '(mouse-avoidance-mode (quote jump) nil (avoid))
+ '(newsticker-display-interval 15.3)
+ '(newsticker-keep-obsolete-items nil)
+ '(newsticker-scroll-smoothly nil)
+ '(newsticker-sort-method (quote sort-by-time))
+ '(newsticker-url-list (quote (("BBC News" "http://www.bbc.co.uk/syndication/feeds/news/ukfs_news/front_page/rss091.xml" nil nil nil) ("The Inquirer" "http://www.theinquirer.net/inquirer.rss" nil nil nil) ("emacs help" "http://rss.gmane.org/gmane.emacs.help" nil nil nil))))
+ '(newsticker-url-list-defaults (quote (("Emacs Wiki" "http://www.emacswiki.org/cgi-bin/wiki.pl?action=rss" nil 3600) ("LWN (Linux Weekly News)" "http://lwn.net/headlines/rss") ("Quote of the day" "http://www.quotationspage.com/data/qotd.rss" "07:00" 86400) ("The Register" "http://www.theregister.co.uk/tonys/slashdot.rdf") ("slashdot" "http://slashdot.org/index.rss" nil 3600) ("Wired News" "http://www.wired.com/news_drop/netcenter/netcenter.rdf"))))
+ '(newsticker-use-full-width nil)
+ '(planner-default-task-priority "B")
+ '(planner-renumber-tasks-automatically t)
+ '(planner-tasks-file-behavior (quote (quote close)))
+ '(save-place t nil (saveplace))
+ '(scroll-bar-mode (quote right))
+ '(semantic-decoration-styles (quote (("semantic-decoration-on-protected-members") ("semantic-decoration-on-private-members") ("semantic-tag-boundary" . t))))
+ '(show-paren-mode t nil (paren))
+ '(sql-product (quote ms))
+ '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
+ '(thumbs-setroot-command "neverxloadimage -onroot -fullscreen *")
+ '(tool-bar-mode nil nil (tool-bar))
+ '(transient-mark-mode t))
+
+;; put the colour customisations in the colour theme instead..
+;; (custom-set-faces
+;;   ;; custom-set-faces was added by Custom.
+;;   ;; If you edit it by hand, you could mess it up, so be careful.
+;;   ;; Your init file should contain only one such instance.
+;;   ;; If there is more than one, they won't work right.
+;;  '(font-latex-sedate-face ((t (:foreground "Brown"))) t)
+;;  '(info-node ((t (:foreground "magenta4" :family "helv"))))
+;;  '(jde-java-font-lock-modifier-face ((t (:foreground "Orchid4"))))
+;;  '(newsticker-feed-face ((t (:foreground "black" :slant normal :weight bold :height 1.5 :family "verdana"))))
+;;  '(newsticker-new-item-face ((t (:foreground "darkblue" :weight bold :family "verdana"))))
+;;  '(nxml-comment-content-face ((t (:background "grey" :slant italic))))
+;;  '(planner-completed-task-face ((t (:foreground "gray1" :strike-through t))))
+;;  '(planner-medium-priority-task-face ((t (:foreground "brown")))))
+
+
+
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(custom-face-tag-face ((t (:weight bold :family "verdana"))))
+ '(emacs-wiki-header-2 ((t (:weight bold :height 1.3 :family "tahoma"))))
+ '(fixed-pitch ((t nil)))
+ '(font-latex-title-1-face ((t (:inherit font-latex-title-2-face :height 1.0))))
+ '(font-latex-title-2-face ((t (:inherit font-latex-title-3-face :height 1.0))))
+ '(font-lock-doc-face ((t nil)))
+ '(variable-pitch ((t (:height 1.0 :family "verdana")))))
+
+</pre>
+
+
+---- 
+CategoryHomepage

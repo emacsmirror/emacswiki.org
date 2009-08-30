@@ -1,0 +1,20 @@
+<code>lyric-mode</code> is for editing <code>.lrc</code> files.  It is mostly like <code>fundamental-mode</code> (rather than <code>text-mode</code>, because you probably don't want line-wrapping etc in verse), but it can start an <code>ogg123</code> process and parse the timing information that comes back from it, letting you insert synchronization tags by pressing one key as you listen to the song being played.  There are facilities for reviewing and adjusting the tags, too.
+
+Use <code>C-c C-p</code> to start playing from the beginning.
+
+Use the variable `lyric-mode-slowdown' to set the speed.
+
+<code>C-c C-s</code> stops playing,
+and <code>C-c C-r</code> resumes.
+
+<code>C-c C-g</code> starts playing at the tag nearest above point.
+
+When not playing, the space and return keys insert space and
+newline; when playing, they insert a tag and move to the next
+line, respectively, letting you move rapidly through a
+ready-typed text to add a tag to each line.
+
+While on a tag, you can adjust its time by `lyric-tag-delta' using
+the less-than and greater-than keys.
+
+Lisp:lyric-mode.el

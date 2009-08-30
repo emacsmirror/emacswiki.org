@@ -1,0 +1,103 @@
+Enable the display of time in the modeline -- add the following to your ~/.emacs:
+
+    (display-time-mode 1)
+
+display-time-format is the variable to control the format, and 
+display-time-string-forms for the more complex requirements (such as
+InternetTime).
+
+----
+== Controling the Format of the Displayed Time ==
+You can control the format of the displayed time by configuring these variables (see their respective documentation with `C-h v <variable-name> RET'):
+
+display-time-day-and-date
+display-time-24hr-format
+display-time-format
+
+Note that the former two have no effect, if `display-time-format' is non-nil.
+
+== More Control ==
+
+If you want even more control, you can alternatively configure the variable `display-time-string-forms'.  This variable hold a list whose elements are either strings or Lisp expressions that should return a string, when evaluated. When Emacs updates the time in the modeline, it concatenates the resulting strings and displayes them. Within that list you may use symbols like `24-hours' or `minutes' to refer to the current time. See the documentation of `display-time-string-forms' for details. 
+
+== Example: another face for the current time ==
+
+My mode-line often tends to be a little bit cluttered, so I found my self searching for the current time.  I found this to be annoying. Now I use the code below in my .emacs to make the time stand a little bit out, by putting the face `egoge-display-time' on it.
+
+ (defface egoge-display-time
+   '((((type x w32 mac))
+      ;; #060525 is the background colour of my default face.
+      (:foreground "#060525" :inherit bold))
+     (((type tty))
+      (:foreground "blue")))
+   "Face used to display the time in the mode line.")
+
+ ;; This causes the current time in the mode line to be displayed in
+ ;; `egoge-display-time-face' to make it stand out visually.
+ (setq display-time-string-forms
+       '((propertize (concat " " 24-hours ":" minutes " ")
+ 		    'face 'egoge-display-time)))
+
+== Biff functionality ==
+Draw little red mail icon in the modeline near clock:
+
+ ;; display-time-mode mail notification
+ (defface display-time-mail-face '((t (:background "red")))
+     "If display-time-use-mail-icon is non-nil, its background colour is that
+      of this face. Should be distinct from mode-line. Note that this does not seem
+      to affect display-time-mail-string as claimed.")
+ (setq
+  display-time-mail-file "/var/mail/username"
+  display-time-use-mail-icon t
+  display-time-mail-face 'display-time-mail-face)
+ (display-time-mode t)
+
+I use F5 button to open mail reader. To hide mail icon immediately, this binding runs display-time-update.
+
+ (global-set-key (kbd "<f5>") (lambda ()
+                               (interactive)
+                               (delete-other-windows)
+                               (mh-rmail)
+                               (display-time-update)))
+
+== Mail Notification ==
+
+I use fetchmail to retrieve mail to a local mail spool and then use
+nnmail-split-fancy to filter to groups.  It's always annoyed me that
+my modeline would show new mail even if it's something that would
+ultimately be junk.  So, here's a display-time-mail-function that will
+retrieve the new mail and then return t or nil if there is "important"
+new mail.  This really all depends on group levels to work nicely.
+
+ (setq gnus-important-group-level 1)
+ (defun gnus-new-important-mail (&optional level)
+  "Return t there is any new mail/news in groups at or below
+  level LEVEL (defaults to gnus-important-group-level)."
+  (or level (setq level gnus-important-group-level))
+  (let ((newmail nil))
+    (save-window-excursion
+      (if (and (file-exists-p display-time-mail-file)
+               (> (nth 7 (file-attributes display-time-mail-file)) 0))
+          (gnus-group-get-new-news level))
+      (switch-to-buffer gnus-group-buffer)
+      (gnus-group-list-groups level)
+      (let ((groups (gnus-group-listed-groups)) group)
+        (while (setq group (pop groups))
+          (unless newmail
+            (gnus-group-goto-group group)
+            (setq newmail (> (gnus-group-group-unread) 0)))))
+      (gnus-group-list-groups gnus-level-subscribed))
+    newmail))
+ (setq display-time-mail-function 'gnus-new-important-mail)
+
+I feel like I need to make some warnings here.  There are several
+assumptions you should know about.  First, it assumes that only nnml
+groups are at or below LEVEL.  The reason for this is that other
+groups (like nnrss) are very expensive to gnus-group-get-new-news.
+Also, it's assuming that "important" mail is mail in groups at or
+below LEVEL.  Let me know what you think
+
+ -- DougAlcorn
+
+----
+CategoryModes | CategoryMailAddons

@@ -1,0 +1,12 @@
+Download: Lisp:mail-cmple-addr.el
+
+=== Configuration ===
+
+Put mail-cmple-addr.el in your load-path and add the following line to the .emacs file:
+
+ (require 'mail-cmple-addr)
+
+Now you can define adresses and domains with the variables <code>mail-address-table</code> and <code>mail-domain-table</code>.
+To use completion call the command <code>mail-complete-address</code> on a header which have been defined in <code>mail-enabled-header</code>. The best solution is to bind this command to a key like TAB.
+----
+CategoryMailAddons

@@ -1,0 +1,30 @@
+I think [[register]]s are not easy to use.
+I HATE register commands' key binding.
+
+These commands enable us to store [[region]] into registers easily.
+
+Typing M-w M-w does `copy-to-register'.
+Typing C-w C-w kills region and store it into a register.
+
+<pre>
+;;;; [2006/02/10] kill-ring / register
+(defun kill-ring-save-x (s e)
+  (interactive "r")
+  (if (eq last-command 'kill-ring-save-x)
+      (call-interactively 'copy-to-register)
+    (call-interactively 'kill-ring-save)))
+
+(define-key esc-map "w" 'kill-ring-save-x)
+
+;;;; [2006/02/25] kill-region / register
+(defun kill-region-x (s e)
+ (interactive "r")
+  (if (eq last-command 'kill-region)    ;kill-region-x ? 
+      (call-interactively 'my-kill-ring-to-register)
+    (call-interactively 'kill-region)))
+(defun my-kill-ring-to-register (register)
+  (interactive "cCopy to register: ")
+  (set-register register (car kill-ring)))
+
+(define-key global-map "\C-w" 'kill-region-x)
+</pre>

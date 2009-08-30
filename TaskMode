@@ -1,0 +1,10 @@
+TaskMode is a window configuration manager by MatthieuLemerre.
+
+It provides some features such as switching to tasks when switching to buffers (useful for instance if you use EmacsIRCClient and use C-c C-SPC to switch to it) and using rules to automatically put your buffers in the right tasks. It also come with a (not complete) texinfo documentation.
+
+It is still quite young so many improvements will come in the future, such as better frame support.
+
+You can get it on http://racin.free.fr
+
+----
+CategoryWindows

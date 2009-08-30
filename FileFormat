@@ -1,0 +1,32 @@
+File formats are a general mechanism for turning file contents into another form for editing or viewing in a buffer.  The file is "decoded" on read, and "encoded" on write.  See [[Manual:file format conversion]].
+
+The builtin formats include,
+
+* EnrichedMode -- <nowiki>RFC 1896</nowiki> markup as faces and colours
+
+Here's some things adding new file formats,
+
+* MoMode -- decode/encode Gettext .mo files
+* TtyFormat -- ANSI escapes and backspace overstrikes as faces (decode only)
+
+Here's some things using file formats to help the way they view or save, without quite being actual full formats,
+
+* LongLines -- writing soft newlines as spaces
+* [[Pcf2Bdf]] -- view <code>pcf</code> font file as <code>bdf</code> source
+* TcdFormat -- decoding xtide <code>tcd</code> tide constituent database files
+* TsvMode -- hiding some settings saved in the document
+
+== Mechanism ==
+
+EnrichedMode is a good example.  It turns markup like <nowiki><bold></nowiki> into actual bold TextProperties in the buffer so you edit WYSIWYG style, yet still write RFC 1896 markup to the file.
+
+Or "<code>TeX</code>" format converts [[TeX]] accented character sequences like {\"a} in the file into actual characters like ä for editing.  This is very good if you've got a lot of accents in a TeX document.  <code>html</code> format does the same sort of thing with HTML/SGML character entities like <code>&auml;</code>.
+
+A format can be automatically recognised from a pattern at the start of the file.  <nowiki>EnrichedMode</nowiki> for instance looks for "<code>Content-Type: text/enriched</code>".  Other formats must be explicitly converted with <code>M-x format-decode-buffer</code> (after which the save automatically re-encodes).
+
+Have a look at the <code>format-alist</code> variable for all the formats (per Manual:format-alist).  The ones like the <code>TeX</code> helper that are not automatically enabled are likely to be well-kept secrets until you nose around.
+
+WYSIWYG word processing (or just viewing) is the most obvious application, but all sorts of munching of text or binaries into presentable form ought to be possible.  If you're thinking of hooking <code>after-insert-file-functions</code> or <code>write-contents-functions</code> to crunch buffer contents, consider whether the format mechanism can do it more easily (and cooperate better with remote-file accessors and whatnot).
+
+----
+CategoryFiles

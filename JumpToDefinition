@@ -1,0 +1,45 @@
+Many IDEs offer a menu entry "Jump to definition" for symbols.  This page discusses how to do that in Emacs.
+
+== ImenuMode ==
+
+ImenuMode scans the buffer using RegularExpressions specific to the buffer's mode.
+You can then jump to any match using the resulting menu.
+Typically this is used to scan source code for definitions of functions, etc.
+
+== SemanticDB ==
+
+For buffers scanned by SemanticBovinator, I use the following code to jump to the definition of the symbol at point:
+
+  (defun find-definition (arg)
+    "Jump to the definition of the symbol, type or function at point.
+  With prefix arg, find in other window."
+    (interactive "P")
+    (let* ((tag (or (semantic-idle-summary-current-symbol-info-context)
+                    (semantic-idle-summary-current-symbol-info-brutish)
+                    (error "No known tag at point")))
+           (pos (or (semantic-tag-start tag)
+                    (error "Tag definition not found")))
+           (file (semantic-tag-file-name tag)))
+      (if file
+          (if arg (find-file-other-window file) (find-file file))
+        (if arg (switch-to-buffer-other-window (current-buffer))))
+      (push-mark)
+      (goto-char pos)
+      (end-of-line)))
+
+-- [[nschum]]
+
+How does this differ from the keys defined already by semantic? Is it that 
+fall back to a brutish search if no local definition is found?
+
+-- [[JoakimVerona]]
+
+Which semantic commands do you mean?  <code>semantic-complete-jump</code>...?  The difference is that this doesn't prompt for a name, but instead detects the symbol from the context, which has the advantage that there are no ambiguities.  If there any other ways of doing this (the way VisualStudio and Eclipse do), I'd like to know about it ...
+
+-- [[nschum]]
+
+See also `my-jump-to-function' on my person-page, which uses ido completion with either semantic or imenu.
+
+-- SeanO
+
+Semantic now contains <code>semantic-ia-fast-jump</code> in CVS, which also does this.  -- [[nschum]]

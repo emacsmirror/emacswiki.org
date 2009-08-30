@@ -1,0 +1,71 @@
+The creation of this page is motivated by my experience trying to use semantic and ecb for developement. Maybe it's my own lack of perseverance, but I haven't found practical and to the point documentation on how to use ECB features, so I decided I might at least start a page to list the problems I've encountered.
+
+There are other pages on this Wiki that have tried to do similar things, such as WhatAreTheNeedsOfProgrammers and HowSemanticFulfillsThoseNeeds which in themselves reflect how little ECB/semantic features may be documented, or simply hint that they are missing the point. The WhatAreTheNeedsOfProgrammers page does a good job at listing practical needs for programmers, but there is not much showing how semantic and ECB can provide practical solutions.
+
+I'm always available if you want to talk about this pages directly. see TimotheeBesset.
+
+----
+
+HOWTO: Show some information about a function name / variable name, or just the current context in general
+
+''M-x semantic-analyze-current-context''
+
+What's it useful to? Will give you a listing of the function and variables that are in scope, the current function you are in, the type of the variable, or the prototype of the function your TextCursor is on.
+
+From there a common task is to jump to the declaration of the variable, of the function. Or to it's implementation. This is mentioned in WhatAreTheNeedsOfProgrammers, but I haven't found any documentation on how to practically do this, so atm I just grep for it.
+
+[new]
+The command ''semantic-analyze-current-context'' is a debug tool for the core utility that analyzes context.  You can use either
+''semantic-idle-summary-mode'' for help in idle time, or use ''semantic-ia-show-summary'' bound to a key to ask for help when  you need it.
+
+-EricLudlam
+[new]
+
+----
+
+HOWTO: jump to the declaration or a tag, to it's definition, list references to it?
+
+say I have the line ''sw = soundSystem->!AllocSoundWorld( rw );'' in my code, and I want to quickly jump to the declaration of ''!AllocSoundWorld''. In VisualStudio, I can right click on the function name, and I get prompted with 'Go to declaration / Go to definition' in the context menu. I have found no equivalents yet.
+
+Looking at the list ecb functions ( ''C-h a ecb'' ), I see a number of potential commands that could do the task. Trying ''ecb-analyze-jump-to-tag'' doesn't do anything. I would be expecting at least an error message in ''%%*Messages*%%''.
+
+As for jumping to declaration or listing references, I haven't found anything that looks remotely close to doing that.
+
+What about ''etags''? But isn't cedet/semantic/ecb supposed to supersede ''etags'' functionality? Apart from the fact that I've never been able to make practical use of etags in the past, can I be expected to have to care for two indexation systems, each generating and maintaining their own databases?
+
+''Conclusion'': It appears from discussions on the ECB mailing list that those features are not available with semantic/ECB at this point. The alternatives would be etags and [http://harmonia.cs.berkeley.edu/harmonia/index.html Harmonia].
+
+[new]
+I think the ECB command you mention is meant to be used from an ECB methods buffer.  The senator minor mode which comes with semantic has two jump functions.  ''C-c . j'' will jump to tags only on the current buffer.  ''C-c . J'' will jump anywhere in the current project (with various caveats.)  The completion prompts for these also have a few fancy features to help distinguish between multiple identical names.
+
+-EricLudlam
+
+[new]
+On my site those keybindings begin with ''C-c ,''...
+
+Also see JumpToDefinition for a discussion on how to do this. -- [[nschum]] 
+
+----
+
+''TODO'': smart completion
+
+----
+
+''TODO'': try to get the [http://ecb.sourceforge.net/docs/Semantic-analyser.html#Semantic%20analyser Semantic Analyzer addon interactor] working? This interactor window is not shown in the default layout. You have to switch to a specific layout or create your own with it.
+
+----
+
+''TODO'': how to put ECB in its own window (like Speedbar). So you do not have problems with the space left for your editing
+
+A 'hack' for doing this sort of thing is to add a couple of ecb-activate and ecb-deactivate hooks. This basically resizes the frame appropriately when ecb is activated.
+<pre>
+(add-hook 'ecb-deactivate-hook
+	  (lambda () (modify-all-frames-parameters '((width . 80)))))
+;; resize the ECB window to be default (order matters here)
+(add-hook 'ecb-activate-hook (lambda () (ecb-redraw-layout)))
+(add-hook 'ecb-activate-hook
+	  (lambda () (modify-all-frames-parameters '((width . 120)))))
+</pre>
+
+----
+CategoryProgramming

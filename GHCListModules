@@ -1,0 +1,7 @@
+Lisp:ghc-modules.el
+== what's this? ==
+Executing this script dumps ghc module names in the emacs lisp readable form by using ghc-pkg. It can be used as candidates list for various completion facilities.
+
+== usage ==
+# in your shell, run this script($emacs -batch -l this-file >dist-file)
+# read the duped list in emacs. ie. (with-temp-buffer (insert-file dist-file-path) (read (current-buffer)))

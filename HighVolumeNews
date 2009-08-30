@@ -1,0 +1,84 @@
+== Using Adaptive Scoring ==
+
+Start by using AdaptiveScoring in such a way as to mark all threads as
+read which you either killed or caught up.
+
+Here is how:
+
+ (setq gnus-default-adaptive-score-alist
+       '((gnus-dormant-mark (subject 100)) 
+         (gnus-ticked-mark (subject 30)) 
+         (gnus-read-mark (subject 30)) 
+         (gnus-del-mark (subject -150)) 
+         (gnus-catchup-mark (subject -150)) 
+         (gnus-killed-mark (subject -1000)) 
+         (gnus-expirable-mark (subject -1000))))
+
+The exact weights are some kind of magic, but the main point is that
+you want to score down anything which you didn't like.  If you don't
+like threads, either kill them or don't read them (catchup).  If you
+do read a posting, then the subject will get a small positive score.
+
+You can still score up your favorite authors.  The default score they
+will get in their normal SCORE files is 1000.  The ADAPTIVE score
+files will score down killed subjects by 1000.  Therefore all the
+noise is marked as read while your favorite authors will continue to
+show up (with low scores).
+
+== Helping Out: Score Questions Up, Answers Down ==
+
+Here's a trick to help you help others:
+
+# Score all articles up.
+# Score articles with references down.
+
+In order to not disturb any other scoring going on, use very small
+scores.  Here are my sample rules from my ScoreFile:
+
+ (("from"
+   ...)
+  ("subject"
+   ("." 1 nil r)
+   ...)
+  ("references"
+   ("." -1 nil r)
+   ...)
+  ("message-id"
+   ...))
+
+Use `V C' in the Summary Buffer to enter these rules interactively.
+
+ Subject:
+
+  Match: .
+  Score: [Value Menu] 1
+  Expire: [Value Menu] off
+  Type: [Value Menu] Regexp
+
+ References:
+
+  Match: .
+  Score: [Value Menu] -1
+  Expire: [Value Menu] off
+  Type: [Value Menu] Regexp
+
+You can achieve a similar effect by scoring all articles up one,
+and scoring all articles with a subject matching the substring
+"Re:" down one again.  Thus, all articles with no "Re:" in the
+subject end up with a score of +1.
+
+ Subjects (yes, the first entry matches the empty string -- I think
+that makes more sense than matching the regexp "."):
+
+  Match: 
+  Score: [Value Menu] 1
+  Expire: [Value Menu] off
+  Type: [Value Menu] Substring (fixed case)
+
+  Match: Re:
+  Score: [Value Menu] -1
+  Expire: [Value Menu] off
+  Type: [Value Menu] Substring (fixed case)
+
+----
+CategoryGnus

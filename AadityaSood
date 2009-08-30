@@ -1,0 +1,28 @@
+Hi
+
+I use Emacs. I'm [http://member.fsf.org FSF member] #1541, joined on 2003-08-25.
+
+I have a blog at http://sood.net.in/journal.  I'm aadis on the EmacsChannel.
+
+I've been using Emacs for some years now but I '''really''' started using it 3-4 months ago. Now I've customized it a bit ([http://emacswiki.org emacswiki] has been a great help, along with #emacs). Now I even read my mail using Gnus, which is awesome :-)
+
+Other things I use are Planner and wiki mode (ofocurse the file editing too, and a bit of dired now and then).
+
+===Nifty stuff I found===
+
+* My Emacs config is published on [http://sood.net.in/journal/index.php/archives/2007/12/10/emacs-config my site]! 
+
+* For ignoring case while completing files in minibuffer (very useful!) set read-file-name-completion-ignore-case to t
+
+----
+
+I go by the handle of [::aadis] [previously [::lostgnu]] on irc
+
+: Welcome to the Wiki!  If you hang out on #emacs, you should add
+yourself to EmacsChannelPeople. -- AlexSchroeder
+
+:: Did so. Thanx. -- AadityaSood
+
+----
+
+CategoryHomepage

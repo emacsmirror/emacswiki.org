@@ -1,0 +1,63 @@
+Sepia is an interactive environment for perl development, 
+which follows the general philosophy providing tools similar to the ones available to emacs lisp 
+programmers.  Rather than 
+follow the typical IDE approach of displaying multiple panes 
+information about the code, it is centered around the "M-x sepia-repl" command-line shell. 
+The mode of operation is that you ask it for information, and then it tells you 
+(rather than continual re-calculating information to display that the user might 
+not actually care about).
+
+One of the things that Sepia works well for out-of-the-box is as an environment for testing snippets 
+of perl code interactively: unlike the perl debugger (also commonly used for this purpose) 
+it can easily handle multi-line code, and it continually echoes the values of any expressions 
+without using an explicit command (such as "x" in the debugger).
+
+Sepia has a number of other IDE-like features for code navigation and introspection which 
+unfortunately do not seem to be as easily accessible (or at least, not as well documented -- see below). 
+
+==Links==
+
+* [http://search.cpan.org/dist/Sepia/ Sepia on CPAN]
+* [http://cpansearch.perl.org/src/SEANO/Sepia-0.97/Sepia.html Sepia documentation]
+
+==Problems==
+
+(1) 
+
+Myself, I can't quite see how one is intended to use Sepia to examine code under development. 
+How do you point it at your files?  
+
+I'm not alone in this problem.  For example, in this talk, there's the odd assertion that 
+Sepia is only good for examining the core perl modules (warning: slides implemented using flash):
+
+* [http://www.slideshare.net/ldami/emacs-a-performant-ide-for-perl-1819917 Emacs: a Performant IDE for Perl]
+
+-- Doom
+
+--
+
+I don't understand the "core perl modules" complaint, either.  As for pointing it at your files, you need to evaluate the code you want to look at, either by typing "use Module" at the REPL prompt, or by running `sepia-load-file' ("C-c C-l") from your Perl file.
+
+-- SeanO
+
+(2)
+
+Some features are known to be flaky (e.g. next line in the debugger), and are works in progress.
+
+-- SeanO
+
+(3)
+
+Some rarely used or unused features may be broken.  If you find one, please submit a bug report, and I will try to fix it.
+
+-- SeanO
+
+== External links == 
+
+Further discussion: 
+  [http://groups.google.com/group/emacs-perl-intersection/browse_thread/thread/e30ad25d3fc1d60c]
+  [http://groups.google.com/group/emacs-perl-intersection/browse_thread/thread/12e437e3494c8251]
+
+Some hints:
+  [http://www.perlmonks.org/?node_id=603831]
+

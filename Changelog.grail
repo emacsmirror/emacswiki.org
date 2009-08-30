@@ -1,0 +1,87 @@
+;;; Grail Changelog
+
+0.1.3 Stable Release
+-------------------
+modified grail.el
+
+* re-order the loading of the user's files so that command.el
+  and keys.el come last. By loading these files last they
+  can take advantage of definitions from the previous files.
+
+0.1.2 Stable Release
+-------------------
+modified grail.el
+
+* bump the version to 0.1.2, an update to the stable branch.
+
+* handle customization persistence correctly. When Emacs makes
+  changes to the user's settings it writes these changes to
+  user-init-file and custom-file.
+
+  By default these point to .emacs which means that they are
+  appended to grail.el which is not a good idea. When the
+  user updates grail the changes will be lost.
+
+  Fix this issue by pointing user-init-file and custom-file
+  at grail-settings-file which defaults to customize-settings.el
+  in USER_ELISP.
+
+[grail-dup-error-to-scratch]
+  * pass a format string to message so that format specifiers in
+    error messages don't bomb the function.
+
+0.1.1 Stable Release
+-------------------
+
+modified: grail.el
+
+update:
+
+* bump the version to 0.1.1, an update to the stable branch.
+* add support for a windows.el platform file.
+* save the load-path in grail-platform-load-path after the platform
+  files are loaded to record any changes by the user in the platform
+  files.
+
+[grail-extend-load-path]
+
+prefer the new variable grail-platform-load-path when re-generating
+load-path
+
+0.1.0 Stable Release
+--------------------
+
+[file scope] grail.el
+
+bump the version to 0.1.0 creating a stable branch so that I can backport fixes
+from the development trunk.
+
+fixes
+
+Fix important bugs in grail generally and ELPA.
+
+grail.el
+
+[file scope]
+  * run grail-elisp-root through grail-sanitize-path eliminating the load time-bombs.
+
+grail-fn.el
+
+Currently the setup function for ELPA assumes that (grail-install-elpa)
+has initialized ELPA.
+
+This makes the ELPA integration very fragile. There is more than one
+way to install package.el, and in layering (load-elpa-when-installed)
+would assume only that package.el has been downloaded to the
+right place.
+
+[load-elpa-when-installed]
+   * move the creation of the ELPA installation directory to load-elpa-when-installed.
+   * return t when ELPA is activated, nil otherwise.
+   * trap errors from ELPA which can abort, especially from the annoying double separator
+     issue.
+   * sanitize the path for ELPA or it aborts from the load sensitivity to double
+     separators.
+
+[grail-install-elpa]
+   * move the creation of the ELPA installation directory to load-elpa-when-installed.

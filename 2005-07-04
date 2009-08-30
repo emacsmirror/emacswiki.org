@@ -1,0 +1,74 @@
+== How To Add Category to News Page? ==
+
+[new:DrewAdams:2005-07-05 00:11 UTC]
+Why does the News page have CategoryHumor -- or is that just an artifact contained in a particular News article? The category should be CategoryEmacsWikiSite. -- DrewAdams
+
+[new]
+I think that's just a particular article appearing on News.  You can edit the News page itself and check. -- Alex
+
+[new]
+I added the category at the bottom of [[News]]. I didn't realize I could add something below the <journal> pull. Thanks. -- DrewAdams
+
+== Side Bar? ==
+
+[new:AlexSchroeder:2005-07-04 10:16 UTC]
+Anybody interested in a *sidebar* for this wiki?
+I would like to add a sidebar that can be edited by users.
+We could move all or most of the links on the first line into the sidebar.
+
+If you want to see an example, check out the Test Wiki:
+
+http://www.emacswiki.org/cgi-bin/test
+
+[new:DrewAdams:2005-07-04 14:45 UTC]
+I vote against. Screen real estate is too scarce. Users can scroll to get to the header/footer links. -- DrewAdams
+[new]
+While I also value screen estate, I find that it is sometimes "cumbersome" (OK, I *am* lazy) to scroll up or down just to reach that Edit or RecentChanges link. I think it is worth a try. Also, Drew, a shrinking-frames-guy like you shouldn't have any problems using a smaller font, should you? :) -- MaDa
+[new]
+One benefit would be that we can reduce or remove the links at the top and at the bottom, so while we loose some space, we also gain some.  Now, if we use a traditional sidebar, it will be rather short and the column of space below it is "wasted".  But we can change that using CSS.  Instead of reserving an entire column, we could just "float" it to the right, and reclaim that space for the rest of the page.
+
+Here's some primitive ASCII art to illustrate it:
+
+  xxxxx ,,
+  ..... ,,
+  ..... ,,
+  ..... ,,
+  .....
+  ........
+  ........
+  ........
+  ........
+  ........
+  ........
+
+Now, if that is the only argument, I'd say let us not do it -- or let us design some CSS that lays it out for us just like that.  See the default CSS with sidebar theme on the [[CSS]] page for an example.
+
+The real benefit, I would hope, is that users can /edit/ the sidebar and build the kind of navigation they want -- just like the SiteMap!
+
+-- AlexSchroeder
+
+[new: ChristopherSmith:2005-07-04 15:45 UTC]
+Is there anyone using the wiki in a text-browser, and would this disadvantage them?
+
+--ChristopherSmith
+
+[new]
+The sidebar div would appear before the content div.  It could however grow to considerable size since it is user-editable. -- Alex
+
+[new:DrewAdams:2005-07-05 00:17 UTC]
+FYI -- We discussed the sidebar six months ago. See SiteMapDiscussion for that thread. -- DrewAdams
+
+[new]
+My SideBar is my UserName page.  That the site's designer, programmer and editor-in-chief wants a sidebar should make it clear that the feature would be used only by the most repeated and advanced users of the site.  Editors using sidebars could have the social consequence of prolonging the navigation hurdles experienced by the site's first-time visitors.  If the issue is over landscape or scrolling then I think the issue can be resolved with CSS and HTML.  Besides, I think we should sit and wait on the navigation and organizational improvements that have been made to the site in the last weeks before making more changes.  -- AaronHawley
+
+[new:DrewAdams:2005-07-05 16:11 UTC]
+Wrt Mathias's comment on scrolling -- With limited screen area, I use a browser window limited in width also -- about 7 inches (say, 18 cm). With a sidebar, it's true that I wouldn't have to scroll to page top or bottom to get to the links, but I would have to scroll left or right to get to them. What's more, they all fit on just a line or two in the header and footer, but in a sidebar they would take up far more real estate, because text flows horizontally. That is, to display the same amount of text in the same font, you would lose more area, because you can't just have a sidebar that is only as wide as the header is tall (~1 cm) - it would need to be several cm wide to be practical. 
+
+Perhaps I misunderstood. If by a sidebar you mean what I see at [[CSS]], then I have no problem with that (and it's optional) -- the info is still at the top, but it is at the top right. I thought you meant something to the right of the page text, reducing the space for the page text. -- DrewAdams
+
+[new]
+On the other hand, if we got an accelerator key for RecentChanges and maybe the other links too, I would use that instead, knudge knudge, Alex... :) -- MaDa
+
+----
+
+CategoryEmacsWikiSite

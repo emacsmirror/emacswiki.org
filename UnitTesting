@@ -1,0 +1,103 @@
+Unit tests are supplementary programs and/or source code that you
+create that will automatically test the functionality and correctness
+of your code modules. They are a way of formalizing the assumptions
+you have about the behavior of your code. You can then validate your
+code and code changes at any time, and know exactly when a code change
+breaks existing code. This page discusses unit testing EmacsLisp scripts and programs.
+
+== Manually testing (without a framework) ==
+
+Where do you put your unit tests? In EmacsLisp, you can sprinkle your
+code with tests. Here is an example:
+
+ (defvar my-unit-testing nil)
+ (eval-when-compile
+  (setq my-unit-testing t))
+
+Thus, when your code is being compiled, the test variable is set to t.
+When a user loads a compiled .elc file, the my-unit-testing variable will
+remain set to nil.
+
+Then define your functions, and add tests right after the defun:
+
+ (defun my--get-category (char)
+   "Return category for CHAR."
+   (let ((categories my--categories)
+	 (set (char-category-set char))
+	 result)
+     (while (and (not result) categories)
+       (let ((category (symbol-value (car categories))))
+	 (if (aref set category)
+	     (setq result category)
+	   (setq categories (cdr categories)))))
+     result))
+
+ (when my-unit-testing
+   (assert (eq my--category-l (my--get-category ?a)))
+   (assert (eq my--category-r (my--get-category ?A))))
+
+assert is a defmacro from emacs-lisp/cl-macs.el. You can load it by (require 'cl)
+
+Thus, the tests will still be compiled into your .elc files, and
+my-unit-testing will be evaluated a lot while you load the file, but
+since no other code gets executed, loading the .elc files is still
+much faster than the .el files -- all the tests are skipped. Still,
+the .elc will contain the unit test code.
+
+Instead of using a variable, you can wrap all tests in a macro, of
+course. The simplest solution is to do away with the my-unit-testing
+variable and wrap all tests in an `eval-when-compile' macro. This will
+save a bit of time while loading the compiled files, because the .elc
+will no longer contain the unit test code.
+
+== Automated testing frameworks ==
+
+Unit test frameworks exist for Emacs Lisp. Frameworks are good for making unit test writing and execution easier. 
+
+(pure Emacs Lisp) [TomBreton Tom Breton]'s framework is regress.el, a "Regression test harness for Emacs Lisp code". The last developed version is from 1999. It is mentioned in WikifiedEmacsLispList, and currently resides at http://panix.com/~tehom/my-code/regress.el . In this framework, test comparisions can be done by equal (default) and user defined test conditions.
+
+(pure Emacs Lisp) A recent attempt is technomancy's ElUnit. The output of this framework mimics Ruby's Test::Unit, and test writing also requires typing (assert ...). Tests are divided up into suites for logical grouping and sharing setup hooks.
+
+(pure Emacs Lisp) ElkTest is a framework with a test-running front-end.
+
+(pure Emacs Lisp) Less simplistic: ErtTestLibrary
+
+(pure Emacs Lisp) EmacsLispExpectations is the simplest framework modeled after [http://expectations.rubyforge.org expectations in Ruby]. Lisp:el-expectations.el It works with EmacsLispMock. 
+                  
+(Extension language) You can leverage Ruby's Test::Unit framework by
+using the Emacs extension language EmacsRuby, when you install
+EmacsLispForRuby (El4r). You can write unit tests in EmacsRuby, while
+the code is in EmacsLisp. In other words, you can treat the EmacsLisp code as a black box and feed it inputs and check the outputs using EmacsRuby. 
+
+(pure Emacs Lisp) With [http://www.wanglianghome.org/svn/test/test.el test.el], it is easy to develop test cases, easy to run, and test report is friendly.  Here is a [http://www.wanglianghome.org/images/test.png screenshot].
+
+(pure Emacs Lisp) [[ETest]] a DSL for testing. Works beautifully with mock.el.
+
+= Unit Test Reporting =
+
+A "test-infected" MarkTriggs has created a EmacsLisp library that will report the pass/fail status of your unit tests (in any language) called Lisp:unit-test.el. You need to define a function that runs your unit tests and returns non-nil if they pass. Depending on the output, it will display green or red "light" graphic icon (xpm) on the Emacs window mode line.
+
+[new]
+That there is so much interest in this looks great, but could please someone start making a comparision of the different approaches? What does they support? How easy are they to use? Could more simple packages be built upon more general packages? Etc.
+
+One question: do any of these packages support TAP (the [http://testanything.org/wiki/index.php/Main_Page Test Anything Protocol])? 
+I don't see a single reference to it. 
+
+= Mock / Stub Frameworks =
+
+[new]
+Does anybody know any mock or stub frameworks in Emacs Lisp?
+Because many Emacs Lisp functions have side-effects, a mock / stub framework is essential to unittest in Emacs Lisp. -- [[rubikitch]]
+
+[new]
+I inteded to create mock.el, but I didn't yet...
+[[Matsuyama]]
+
+* EmacsLispMock - DSL based mock/stub framework.
+
+----
+CategoryCode
+
+
+
+

@@ -1,0 +1,18 @@
+Docbook-xml mode is an early implementation of a Major Mode for Docbook XML written by FrancisLitterio.
+
+[http://sourceforge.net/projects/docbookxml Docbookxml project page] - Located at Sourceforge and characteristically inactive.
+
+[http://cvs.sourceforge.net/viewcvs.py/docbookxml/docbook-xml-mode.el?rev=HEAD docbook-xml-mode.el] - Latest version in web CVS.
+
+==Related==
+
+[http://nwalsh.com/emacs/docbookide/ DocbookIDE] -- Major mode for editing Docbook SGML/XML.  Has been VaporWare since 2000.
+
+[new]
+It's worth taking a look into PsgmlMode.
+
+[new]
+And why not NxmlMode which comes with Docbook support?
+
+----
+CategoryXML

@@ -1,0 +1,21 @@
+: Aquellos que no pueden recordar la historia están condenados a repetirla.
+: -- [http://www.iupui.edu/~santedit/ George Santayana], ''Life of Reason'', Reason in Common Sense, Scribner's, 1905, página 284.
+
+'''Emacs''' hizo su aparición en el Laboratorio de Inteligencia Artificial en MIT. A comienzos de 1974, el hacker de planta RichardStallman le añadió la capacidad de edición-por-display a TECO, el editor de texto que poseía el ITS del Laboratorio de IA (IncompatibleTimeSharingSystem). "Edición-por-display" quería decir que la apariencia de la pantalla era actualizada a medida que se ingresaban nuevos comandos; en contraste con el comportamiento de <code>ed</code>.
+
+Rápidamente, los usuarios del Laboratorio de IA acumularon un conjunto de macros personalizadas, programas TECO que podían ser lanzados desde el modo de edición-por-display. En 1976, Stallman escribió el primer Emacs ("<nowiki>Editor MACroS</nowiki>"), el cual organizó las macros en un conjunto de comandos sencillo y añadió facilidades para extensibilidad y auto-documentación. Pronto se convirtió en el editor estándar del ITS.
+
+Varios editores tipo-Emacs fueron escritos en los siguientes años, como el EINE (EINE Is Not EMACS) y ZWEI (ZWEI Was EINE Initially), escritos por Daniel Weinreb y Mike <nowiki>McMahon</nowiki>.
+
+En 1978, Bernard Greenberg escribió MulticsEmacs en el Laboratorio de Sistemas de Información de Cambridge, Honeywell. El editor fue escrito en MacLisp, un dialecto del lenguaje de programación LISP. Las extensiones creadas por usuarios estaban escritas también en Lisp. La decisión de usar Lisp ofreció mayor extensibilidad que antes, y ha sido seguida por la mayor parte de emacsen subsecuentes.
+
+Gosling Emacs, el primer emacs que corrió sobre Unix, fue escrito por JamesGosling en 1981. Fue escrito en C, con MockLisp como lenguaje de extensión.
+
+Cerca de 1984, Stallman tuvo que abandonar todo el código en el que él y algunos amigos habían trabajado desde 1974, ya que cierta compañía reclamó la autoría de algo que habían contribuido más o menos por 1980. En 1984, Stallman comenzó a escribir una nueva implementación de emacs, GnuEmacs, esta vez protegida por la GPL, el cual se convirtió en el primer programa del naciente proyecto GNU. GNU Emacs fue escrito en C y usaba Emacs Lisp para efectos de extensibilidad. La primera versión ampliamente distribuida de GNU Emacs fue la 15.34, la cual apareció en 1985. Al igual que Gosling Emacs, GNU Emacs corría sobre Unix, pero tenía más características y un lenguaje de extensión más avanzado. Rápidamente reemplazó a Gosling Emacs como el editor Emacs ''de facto'' en Unix.
+
+A comienzos de 1991, LucidEmacs fue desarrollado por JamieZawinski y otras personas en Lucid Inc., basados en una temprana versión alfa de GNU Emacs 19. Las bases de código de ambos proyecto divergieron prontamente, y los grupos de desarrollo separados abandonaron la idea de converger los proyectos en un solo programa. Lucid Emacs ha sido renombrado como XEmacs desde aquel entonces.
+
+JamieZawinski tiene también un gráfico de línea de tiempo en ArteAscii en su sitio web: http://www.jwz.org/doc/emacs-timeline.html
+
+----
+CategoríaHistoria

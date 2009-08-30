@@ -1,0 +1,236 @@
+<pre>;; ,----[ /usr/share/emacs/site-lisp/site-start.el ]
+;; |
+;; |  Jean-Baptiste Bourgoin
+;; |  licence : GPL
+;; |  1st version : 2008
+;; |  actual version : 2008
+;; |
+;; `----------------
+
+
+;;;;;;;;;;;;;;;
+;; INTERFACE ;;
+;;;;;;;;;;;;;;;
+
+;;; surligner la région marquée
+(transient-mark-mode 0)
+
+;;; Afficher la 'parenthèse correspondante'
+(require 'paren)
+(show-paren-mode)
+
+;;; alerte visuelle
+(setq visible-bell t)
+
+;;; Codage des caractères
+;; utf-8 par défaut
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-language-environment 'french)
+(prefer-coding-system 'utf-8)
+(global-set-key (kbd "C-x C-m i") 'set-input-method)
+
+
+;;; ansi-color
+(require 'ansi-color)
+(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+                                        ;(ansi-color-for-comint-mode-on)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+;;; activer la roulette
+(mouse-wheel-mode t)
+
+;;; numéro de colonne :
+(column-number-mode t)
+
+;;; afficher l'heure
+(display-time)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Indentation, complétion etc. ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; activation
+(setq-default abbrev-mode t)
+
+;; hippie expand sur M-RET
+(define-key global-map (read-kbd-macro "M-/") 'hippie-expand) ; essayer M-RET
+
+;;; Auto-indentation
+(add-hook 'python-mode-hook 
+	  '(lambda ()
+	     (local-set-key (kbd "RET") 'newline-and-indent)))
+
+;;; complétion
+;; complétion automatique
+(global-set-key (quote [S-tab]) (quote dabbrev-expand))
+;; complétion qui ignore la casse :
+(setq completion-ignore-case t)
+
+;;; icicles
+;; S-TAB : complétion de icicle
+;; M-* (après un S-TAB) : faire une recherche complémentaire
+;; C-~ : Tout sauf ce que l'on a entré
+;; C-M-RET : aide sur le candidat
+;; activation de icicles
+(if window-system
+    (progn
+      (require 'icicles)
+      (icicle-mode 1)
+      ;; iswitchb style :
+      (setq 
+       icicle-buffer-require-match-flag 'partial-match-ok
+       icicle-init-value-flag 'nil
+       icicle-default-thing-insertion 'alternatives
+       icicle-reminder-prompt-flag 0)
+      ;; icomplete+
+      (eval-after-load "icomplete" '(progn (require 'icomplete+)))
+      ))
+
+
+;;;;;;;;;;;;
+;; OUTILS ;;
+;;;;;;;;;;;;
+
+;;; WOMAN
+(setq woman-use-own-frame nil)
+
+;;; tramp
+;; méthode par défaut
+(setq tramp-default-method "ssh")
+
+;;; eshell
+;; eshell prompt
+;; saute une ligne entre le chemin et le prompt :
+(setq eshell-prompt-function
+      (lambda ()
+        (concat (eshell/pwd) "\n" (if (= (user-uid) 0) " # " " $ "))))
+;; charger de nouvelles fonctions
+(require 'eshell_clear)
+(require 'eshell_bmk)
+;; sauver l'historique à la fermeture
+(setq eshell-save-history-on-exit t)
+;; gestion des couleurs
+(add-hook 'eshell-preoutput-filter-functions
+          'ansi-color-apply)
+
+;;; dired
+;; extensions
+(require 'dired-x)
+(require 'dired+)
+(require 'run-assoc)
+;; dired-sort-map.el
+;; press s then s, x, t or n to sort by Size, eXtension, Time or Name
+(require 'dired-sort-map)
+;; toujours réutiliser le buffer courant :
+(toggle-dired-find-file-reuse-dir 1)
+;; permet de copier un fichier d'un buffer dired vers
+;; un autre buffer dired
+(setq dired-dwim-target t)
+
+;; (dé)compression automatique des fichiers lus et écrits
+(auto-compression-mode t)
+
+;;;;;;;;;;;
+;; Modes ;;
+;;;;;;;;;;;
+
+;;; indenter automatiquement le code collé :
+(defadvice yank (after indent-region activate)
+  (if (member major-mode '(emacs-lisp-mode scheme-mode lisp-mode
+                                           c-mode c++-mode objc-mode
+                                           latex-mode plain-tex-mode
+                                           python-mode))
+      (indent-region (region-beginning) (region-end) nil)))
+(defadvice yank-pop (after indent-region activate)
+  (if (member major-mode '(emacs-lisp-mode scheme-mode lisp-mode
+                                           c-mode c++-mode objc-mode
+                                           latex-mode plain-tex-mode
+                                           python-mode))
+      (indent-region (region-beginning) (region-end) nil)))
+
+;;; la commande kill supprime automatiquement les espaces d'indentations si besoin
+(defadvice kill-line (before check-position activate)
+  (if (member major-mode '(emacs-lisp-mode scheme-mode lisp-mode
+                                           c-mode c++-mode objc-mode
+                                           latex-mode plain-tex-mode
+                                           python-mode))
+      (if (and (eolp) (not (bolp)))
+          (progn (forward-char 1)
+                 (just-one-space 0)
+                 (backward-char 1)))))
+
+;;; smart-snippet
+(require 'smart-snippet)
+(setq save-abbrevs nil)
+;; chargement des snippets
+(require 'html-snippets)
+(add-hook 'python-mode-hook 
+	  '(lambda ()
+	     (load "/usr/share/emacs/site-lisp/python-snippets.el")))
+(require 'sgml-snippets)
+
+;;; LISP
+(setq colon-double-space t)
+
+;;; Emacs-lisp
+;; Auto-indentation
+(add-hook 'emacs-lisp-mode-hook 
+	  '(lambda ()
+	     (local-set-key (kbd "RET") 'newline-and-indent)))
+
+;; quack
+(require 'quack)
+(setq auto-mode-alist
+      (append '(("\\.scm$" . bee-mode)
+                ("\\.sch$" . bee-mode)
+                ("\\.scme$" . bee-mode)
+                ("\\.bgl$" . bee-mode)
+                ("\\.bee$" . bee-mode))
+              auto-mode-alist))
+
+;;; tex
+;; mode par défault
+(setq TeX-mode t)
+;; configuration des visualiseurs
+(setq TeX-output-view-style (quote (
+                                    ("^pdf$" "." "evince %o")
+                                    ("^ps$" "." "evince %o")
+                                    ("^dvi$" "." "evince %o")
+                                    )))
+
+
+;;; C
+;; mode d'indentation (k&r, gnu etc.)
+(setq c-mode-hook '(lambda () 
+                     (c-set-style "k&r")
+                     (c-toggle-auto-hungry-state 1))
+      comment-multi-line t)
+
+;;; Perl
+(add-to-list 'auto-mode-alist '("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
+;;; cperl-mode is preferred to perl-mode                                        
+;;; "Brevity is the soul of wit" <foo at acm.org>                               
+(defalias 'perl-mode 'cperl-mode)
+
+;;; Python
+;; recettes foresight reconnue comme fichier python
+(setq auto-mode-alist
+      (append '(("\\.recipe$" . python-mode))
+              auto-mode-alist))
+;; Auto-indentation
+(add-hook 'python-mode-hook 
+	  '(lambda ()
+	     (local-set-key (kbd "RET") 'newline-and-indent)))
+
+
+;;; sawfish mode
+(autoload 'sawfish-mode "sawfish" "sawfish-mode" t)
+(setq auto-mode-alist (cons '("\\.sawfishrc$"  . sawfish-mode) auto-mode-alist)
+      auto-mode-alist (cons '("\\.jl$"         . sawfish-mode) auto-mode-alist)
+      auto-mode-alist (cons '("\\.sawfish/rc$" . sawfish-mode) auto-mode-alist))
+</pre>

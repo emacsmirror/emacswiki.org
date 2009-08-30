@@ -1,0 +1,10 @@
+This mode is for editing /etc/apt/sources.list, the APT (Advanced
+Package Tool) configuration file found on Debian systems starting with
+Debian 2.0 (AKA slink). This mode font-locks the buffer, and adds commands to
+modify existing and add new source lines.
+
+* http://www.gnufans.net/~deego/emacspub/site-lisp/apt-sources.el
+* http://www.debian.org
+
+----
+EmacsForDebian | CategoryModes

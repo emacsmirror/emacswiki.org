@@ -1,0 +1,100 @@
+Discuss ideas for new features for VM, their feasibility, and code to make them work.
+
+== W3M support for inline HTML ==
+
+:: Here is what I came up with for inline HTML support via W3M.  This code still supports w3, and should be expandable to support other renderers.  It overrides the function, vm-mime-display-internal-text/html, and deprecates the variable vm-mime-use-w3-for-text/html.  With this code in place, you can add "text/html" to your vm-auto-displayed-mime-content-types list to make html messages have their content auto-inlined.
+
+  ;;;
+  ;;; Inline HTML Rendering
+  ;;; 
+  (autoload 'w3m-region "w3m" "Render region using w3m")
+  
+  (defvar vm-mime-renderer-for-text/html 'w3m)
+  
+  
+  (defun vm-mime-display-internal-text/html-with-w3m (start end)
+    (save-restriction
+      (narrow-to-region start end)
+      (let ((w3m-safe-url-regexp "\\`cid:")
+            w3m-force-redisplay)
+        (goto-char (point-max))
+        (insert-before-markers "z")
+        (w3m-region (point-min) (1- (point-max)))
+        (goto-char (point-max))
+        (delete-char -1))
+  
+      (when (and (boundp 'w3m-minor-mode-map) w3m-minor-mode-map)
+      (add-text-properties (point-min) (point-max)
+                           (list 'keymap w3m-minor-mode-map)))))
+  
+  (defun vm-mime-display-internal-text/html-with-w3 (start end)
+    ;; w3-region apparently deletes all the text in the
+    ;; region and then insert new text.  This makes the
+    ;; end == start.  The fix is to move the end marker
+    ;; forward with a placeholder character so that when
+    ;; w3-region delete all the text, end will still be
+    ;; ahead of the insertion point and so will be moved
+    ;; forward when the new text is inserted.  We'll
+    ;; delete the placeholder afterward.
+    (goto-char end)
+    (insert-before-markers "z")
+    (w3-region start (1- end))
+    (goto-char end)
+    (delete-char -1))
+  
+  (eval-after-load "vm-mime"
+    '(defun vm-mime-display-internal-text/html (layout)
+      (let ((render-func
+             (cond ((eq vm-mime-renderer-for-text/html 'w3m)
+                    'vm-mime-display-internal-text/html-with-w3m)
+                   ((eq vm-mime-renderer-for-text/html 'w3)
+                    'vm-mime-display-internal-text/html-with-w3)
+                   (t
+                    (vm-set-mm-layout-display-error
+                     layout
+                     (concat "Inline HTML display failed: function "
+                             (symbol-name vm-mime-inline-render-function-for-text/html)
+                             " not found.  Please bind a valid function to vm-mime-inline-render-function-for-text/html."))
+                    (message "%s" (vm-mm-layout-display-error layout))
+                    nil))))
+        (if (fboundp render-func)
+            (condition-case error-data
+                (let ((buffer-read-only nil)
+                      (start (point))
+                      (charset (or (vm-mime-get-parameter layout "charset")
+                                   "us-ascii"))
+                      end buffer-size)
+                  (message "Inlining text/html, be patient...")
+                  (vm-mime-insert-mime-body layout)
+                  (setq end (point-marker))
+                  (vm-mime-transfer-decode-region layout start end)
+                  (vm-mime-charset-decode-region charset start end)
+  
+                  (funcall render-func start end)
+  
+                  ;; remove read-only text properties
+                  (let ((inhibit-read-only t))
+                    (remove-text-properties start end '(read-only nil)))
+                  (goto-char end)
+                  (message "Inlining text/html... done")
+                  t )
+              (error (vm-set-mm-layout-display-error
+                      layout
+                      (format "Inline HTML display failed: %s"
+                              (prin1-to-string error-data)))
+                     (message "%s" (vm-mm-layout-display-error layout))
+                     (sleep-for 2)
+                     nil ))))))
+    
+
+== icons for vm that are standard size for gnu emacs ==
+
+wouldn't it be nice if the vm icons were the standard size of toolbar icons in gnu emacs.  the current icons have the wrong size, and this creates problems with undesired frame resizing as one uses vm and leaves vm mode, and well as with copying and pasting with the mouse.
+
+== Support for spam filtering ==
+
+Something like a spam virtual folder, and some key to mark a mail as being spam (a la Thunderbird)
+I guess a workaround has to be found using procmail but this limits the interest of the POP and IMAP spool files.
+
+----
+CategoryViewMail

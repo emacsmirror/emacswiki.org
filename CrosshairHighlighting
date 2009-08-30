@@ -1,0 +1,32 @@
+This page is about library Lisp:crosshairs.el, which combines the features of libraries Lisp:col-highlight.el (HighlightCurrentColumn) and Lisp:hl-line+.el (HighlightCurrentLine). This highlights the current line and the current column at the same time, letting you easily locate the TextCursor.
+
+Here's a screenshot, to show the effect:
+
+[[image:CrosshairHighlightingImage]]
+
+Library <tt>[[crosshairs.el]]</tt> provides these commands:
+
+* `toggle-crosshairs-when-idle' -- Highlight the current line and column whenever Emacs is idle more than a certain number of seconds.
+
+* `crosshairs-mode' -- Continually highlight the current line and column, tracking the cursor as it moves. If you bind this to a key, you can also use it to briefly show the current line and column, by hitting the key twice.
+
+* `flash-crosshairs' -- Highlight the current line and column for a few seconds. Another way to show the current line and column temporarily. You can show each for different lengths of time: line and column.
+
+
+'''See Also:'''
+
+* HighlightCurrentLine  for ways to highlight the current line.
+* HighlightCurrentColumn for ways to highlight the current column.
+* ChangingCursorDynamically for a way to change the cursor type when Emacs is idle, making it more visible.
+* Lisp:hl-needed.el is despite its name rather similar to crosshairs. Please see the file for details.
+
+
+
+
+----
+
+CategoryDisplay
+CategoryEditing
+CategoryAccessibility
+CategoryFaces
+HighlightTemporarily

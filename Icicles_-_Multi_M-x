@@ -1,0 +1,227 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Key Completion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Choose All Candidates]] ||
+
+----
+
+== Icicles Multi `M-x' ==
+
+How about a [[multi-command]] replacement for `M-x'?   Instead of executing a single [[command]], it would execute any number of commands. This page describes two such multi-commands, '''`icicle-execute-extended-command'''' and '''`icicle-command-abbrev'''', which by default are bound in ''Icicle'' mode to '''`M-x'''' and '''`C-x SPC'''', respectively.  
+
+'''See Also:''' [[Icicles - Defining Multi M-x]]
+
+
+----
+
+
+
+[:icicle-execute-extended-command]
+=== Multi `M-x': `icicle-execute-extended-command' ===
+
+When you use `M-x' in vanilla Emacs, you are actually executing the standard
+Emacs command `execute-extended-command'.  That command prompts
+you for the name of another command, which you input.  It uses
+`completing-read' to do this, which is why you can take advantage
+of '''Icicles''' features when you use `M-x'.  Nothing new here.
+
+Command '''`icicle-execute-extended-command'''' is simply a multi-command version of `execute-extended-command'. It does the same thing, except that it also lets you execute multiple commands, one by one, using `C-RET' (or `C-next' and so on), without ever exiting the [[minibuffer]]. 
+
+With the default value of [[option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''', `M-x' is bound to
+`icicle-execute-extended-command' whenever you are in ''Icicle'' mode.
+If you never use it as a multi-command, you won't notice any
+difference from `execute-extended-command'.
+
+
+
+[:MultiM-xExamples]
+==== Examples of Using Multi `M-x' ====
+
+'''Example:''' Repeat a command multiple times.  Yes, `C-x z'
+does this already (and better) -- this is just an illustration.  `M-x forward-ch TAB' completes to
+`forward-char'.  Then, use `C-RET' to execute that command.
+Repeat as many times as you want.  Use a [[prefix argument]] if you like.
+
+To switch to another command 
+in the same `M-x' invocation: Erase
+the minibuffer (`M-k'), complete the second command, then
+use `C-RET'.  As long as you haven't yet used `RET',
+`S-RET', `C-g' (or, say, `##C-]##'), you remain within the same
+invocation of `M-x'.
+
+What about executing a command that, itself, reads an input
+argument?  That's OK. And if that command reads its input with
+[[completion]], then you can use `C-RET' on the completion
+candidates for that input.
+
+'''Example:''' `M-x describe-fa TAB C-RET' gives you the prompt for
+command `describe-face'.  
+
+1. Type `##ici S-TAB##' to see the available '''Icicles''' [[face]]s.  
+
+2. Hit `next' until face `icicle-complete-input' is highlighted. 
+ 
+3. Hit `C-RET' to display its documentation:
+
+     Face: icicle-complete-input (sample) (customize this face)
+     Documentation: *Face used to highlight input when it is complete.
+     Defined in `icicles-face.el'.
+
+              Family: unspecified
+               Width: unspecified
+              Height: unspecified
+              Weight: unspecified
+               Slant: unspecified
+          Foreground: DarkGreen
+          Background: unspecified
+           Underline: unspecified
+            Overline: unspecified
+      Strike-through: unspecified
+                 Box: unspecified
+             Inverse: unspecified
+             Stipple: unspecified
+     Font or fontset: unspecified
+             Inherit: unspecified
+
+4. Type `C-next' a few
+times to see the doc of other '''Icicles''' faces.  
+
+5. Use `M-k' to erase the minibuffer, then type `##search S-TAB##'
+to see faces about searching.  
+
+6. Cycle through them with
+`next', then use `C-RET' on `icicle-search-main-regexp-current' to show its
+documentation.  
+
+7. Use `C-next' to do the same for face
+`icicle-search-main-regexp-others'.  
+
+8. Use `RET' to finish with command `describe-face' -- but ''you're still in the same invocation of'' `M-x'.  
+
+9. Change the input to `describe-coding-system' and play
+again, this time with coding-system names...
+
+Remember, if you get confused or lost: `##C-]##' (`abort-recursive-edit') or `##M-x
+top-level##' should always straighten you out.
+
+
+
+
+[:describe-variable]
+[:describe-function]
+==== What About describe-variable and describe-function? ====
+
+Sadly, if you try the last example with `describe-variable' or `describe-function', you might be in for a surprise. In Emacs 20, they both work fine. In later Emacs versions, `describe-variable' gives you the message "You did not specify a variable", and `describe-function' displays a `*Help*' buffer that says that each function you choose is really a [[keyboard macro]]!
+
+Why? It's a bit complex, but worth hearing about if you want to understand multi `M-x' better.
+
+When you choose a command that reads an argument in the minibuffer and you then hit a multi-command key such as `C-RET' to choose an argument, '''Icicles''' tries to apply the command you chose to the argument you chose. However, completion candidates are always ''strings'', and the command you chose might expect something other than a string. That is the case for `describe-variable', for instance. The case of `describe-function' is special: it interprets a string argument blindly as a keyboard macro sequence.
+
+'''Icicles''' is smart enough to pick up a `wrong-type-argument' error, if the command you choose barfs on a string argument. In that case, '''Icicles''' converts the string to a [[symbol]] (or a number) and tries again, using the symbol (or the number). 
+
+And that's why `describe-variable' works in Emacs 20 but not in later versions: In Emacs 20, `describe-variable' (sanely) raises a type error if you pass it a string, and '''Icicles''' is able to save the day by then passing it the corresponding symbol. In later versions of Emacs, however, instead of raising an error with the message "You did not specify a variable", `describe-variable' just displays the message -- no error, so there is no way for '''Icicles''' to recuperate.
+
+I've reported this design misfeature to the Emacs developers, and I hope it will be fixed in a future Emacs version. Until then, at least you know... The more general lesson is this: '''Icicles''' can turn every command into a multi-command, but multi-command actions won't work for every command.
+
+
+
+
+[:EveryCommandAMultiCommand]
+==== Multi `M-x' Turns Every Command into a Multi-Command ====
+
+Most of the time, of course, you do not execute commands successively by name; instead, you use [[key binding]]s. The point here is that even if you have a binding for a command, '''Icicles''' `M-x' lets you ''use '''any''' command as a multi-command'', which can sometimes be advantageous. 
+
+For example, '''Icicles''' defines and binds a real multi-command to `C-x 0' in ''Icicle'' mode, which lets you delete any number of [[window]]s. But, even without such a multi-command, you can get a similar effect by using `M-x delete-windows-on'. In this way, you can turn ordinary Emacs commands that use completion into multi-commands.
+
+The other point is that you can move from one command to another within the same execution of `M-x'. This is a different feature from being able to use any command that uses completion as a multi-command. Both features have their uses.
+
+
+
+
+----
+[:icicle-command-abbrev]
+=== Multi `M-x' with Abbreviations: `icicle-command-abbrev' ===
+
+The second multi-command that you can use in place of
+`execute-extended-command' is '''`icicle-command-abbrev'''', bound in
+''Icicle mode'' to '''`C-x SPC''''.  It is similar to `M-x'
+(`icicle-execute-extended-command'), with the added twist that it
+lets you input command ''abbreviations'', as well as commands.
+
+Emacs [[partial completion]] and some other libraries provide ways for
+you to enter command abbreviations instead of command names at the
+command prompt (`M-x').  ExecAbbrevCmd by TassiloHorn is an example.  
+
+So just what is a command '''abbreviation'''?  Hyphens ('''`-'''') in command names
+divide them into parts.  For example, `find-file' has two parts:
+`find' and `file'.  Each character of a command abbreviation
+corresponds to one part of each of the commands that match the
+abbreviation.  For example, abbreviation `ff' matches commands
+`find-file' and `focus-frame', and abbreviation `fg' matches
+`find-grep'.
+
+If user option '''`<tt>[[Icicles - Customization and General Tips#icicle-command-abbrev-match-all-parts-flag|icicle-command-abbrev-match-all-parts-flag]]</tt>'''' is
+`nil', then an abbreviation need not match all parts of a command
+name; it need match only a prefix.  For example, `nil' means that
+abbreviation `ff' also matches `find-file-other-window' and `fg'
+also matches `find-grep-dired'.
+
+In '''Icicles''', you can
+input both abbreviations and commands at the same prompt, and you
+can take advantage of the multi-command feature to execute
+multiple commands. You can thus treat command abbreviations just like commands.  If
+an abbreviation matches a single command name, then that command
+is invoked immediately.  If it matches more than one, then you can
+use completion to choose one.
+
+One or more, that is -- multi-command completion is available for
+both abbreviations and commands.  That is, you can invoke any
+number of them within the same use of `C-x SPC'.  
+
+What happens if your input matches a command name but it is also
+an abbreviation for other command names?  By default, command
+names take precedence: if your input matches a command name then
+that command is invoked.  So, for example, by default the command
+`cd' takes precedence over `cd' as an abbreviation for commands
+such as `compile-defun' and `cancel-debug-on-entry'.  If you
+instead want abbreviations to take precedence over command names,
+then set option '''`<tt>[[Icicles - Customization and General Tips#icicle-command-abbrev-priority-flag|icicle-command-abbrev-priority-flag]]</tt>'''' to `t'.
+
+Abbreviations are completed against the (persistent) [[list]] of abbreviations you
+have used in the past.  That list is also directly customizable as
+option '''`<tt>[[Icicles - Customization and General Tips#icicle-command-abbrev-alist|icicle-command-abbrev-alist]]</tt>''''.
+
+Besides completing against past abbreviations, you can enter new
+abbreviations (the completion is thus [[lax]]).  When you exit Emacs,
+your abbreviations list is updated and saved, along with the
+number of times you've used each abbreviation.  The latter
+information is used to sort your abbreviations for completion, so
+that those used most frequently are available first.
+
+'''See Also:''' [[Icicles - Fuzzy Completion]], which is in some ways similar, but is not limited to inputting commands.
+
+----
+
+
+|| *Previous:*  [[Icicles - Key Completion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Choose All Candidates]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+
+
+

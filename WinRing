@@ -1,0 +1,37 @@
+winring.el by BarryWarsaw allows you to switch between named window configurations ("mail", "irc", "gnus" etc.) with the C-x 7 prefix command.
+There is a ring of window configurations for every frame.
+
+To use, make sure this file is on your `load-path' and put the
+following in your ~/.emacs file:
+
+    (require 'winring)
+    (winring-initialize)
+
+You can get it from here:
+
+* http://www.python.org/emacs/winring/winring.el
+
+Barry comments upon other existing similar packages in the commentary of the file:
+
+* `escreen' by Noah Friedman (EmacsScreen).  A much more ambitious package
+  that does Emacs window session management.  Very cool, but I
+  wanted something more lightweight.
+* `wconfig' by Bob Weiner as part of Hyperbole.  I think wconfig
+  is similar in spirit to winring; it seems to have also have
+  named window configurations, but not frame-specific window
+  rings.
+* `winner' by Ivar Rummelhoff (WinnerMode).  This package comes with Emacs
+  20, and appears to differ from winring by providing undo/redo
+  semantics to window configuration changes.  winner is a minor
+  mode and does seem to support frame-specific window rings.
+* `window-xemacs' by the XEmacs Development Team.  It appears
+  that this package, which is specific to XEmacs (and perhaps
+  just XEmacs 20) implements stacks of window configurations
+  which are frame independent.
+
+----
+
+'''See Also:''' FrameConfiguration for info on switching between frame configurations (window-manager "windows").
+
+----
+CategoryWindows

@@ -1,0 +1,153 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Fuzzy Completion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Customization and General Tips]] ||
+
+----
+
+== Completion in Other Buffers ==
+
+In addition to input [[completion]], you can use '''Icicles''' to complete
+words and [[symbol]]s in other [[buffer]]s, besides the [[minibuffer]].
+'''Icicles''' enhances this completion in these ways:
+
+# ''Lisp symbol'' completion via `ESC-TAB' (`lisp-complete-symbol').
+
+# Word completion using the ''dynamic abbreviation'' of standard
+Emacs library `<code>dabbrev.el</code>', via `##C-M-/##'.
+
+# Mailing information completion for BBDB (Insidious Big Brother Database).
+
+# Word completion using the words and phrases in a ''thesaurus'', via
+`##C-c /##' (requires library <tt>[[synonyms.el]]</tt> -- see [[Synonyms]]).
+
+# `TAB' completion of the following in ShellMode and [[EmacsSpeaksStatistics|ESS]] modes (and other, similar interpreters):
+## Commands
+## Previous inputs -- commands plus their arguments
+## File names
+## Environment variables
+
+Whenever multiple completion candidates are available, you can use '''Icicles'''
+completion, with all of its features: [[Icicles - Cycling Completions|cycling]] of candidates (`TAB', `down', or `next'), [[apropos completion|apropos]]
+([[regexp]]) completion (`S-TAB'), [[progressive completion]] (`M-SPC'), help on individual candidates (`C-M-RET'), and so on.
+
+
+
+[:DynamicAbbreviation]
+=== Dynamic Abbreviation ===
+
+Library ##dabbrev.el## lets you type a few characters
+in a buffer and then prefix-complete them (in the same buffer) to a full word or symbol name.
+The completion candidates come from words or symbol names in
+buffers that you are editing.  This functionality is called
+"'''dynamic abbreviation'''", though that is not
+a very good term for it (words are ''completed'', not abbreviated,
+dynamically).
+
+In Emacs, there are two ways to "dynamically abbreviate" text:
+
+* `M-/' (command `dabbrev-expand') completes to a candidate word.
+Repeating it replaces the completion with a different one -- that is, it ''cycles candidates'' in the text buffer (not in the
+minibuffer).
+
+* `M-C-/' (command `dabbrev-completion') completes to the common 
+prefix of all matching completion candidates.  Repeating it displays
+buffer `*Completions*' for you to choose a candidate.  However,
+in this case, there is ''no way to cycle'' among the candidates.
+
+If there are many candidate completions, then cycling among them
+with `M-/' can be tedious.  You can use `M-C-/' to complete to a
+common prefix, thus narrowing the set of candidates, but then you
+lose the ability to cycle among them.
+
+If [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-redefine-standard-commands-flag|icicle-redefine-standard-commands-flag]]</tt>'''' is non-`nil'
+(which is the case by default), then '''Icicles''' redefines command `dabbrev-completion' (it does not change
+`dabbrev-expand') so that it uses '''Icicles''' completion when there are multiple completions.  You can use any '''Icicles''' features, such
+as apropos completion and candidate cycling.   In addition, you can even complete an ''empty'' prefix, starting from scratch with apropos completion.
+
+
+[:BbdbCompletion]
+=== BBDB Completion ===
+
+Library ##bbdb.el##, available at http://bbdb.sourceforge.net/, is a
+rolodex-like database program for GNU Emacs -- see BbdbMode.
+
+If user option '''`<tt>[[Icicles - Customization and General Tips#icicle-redefine-standard-commands-flag|icicle-redefine-standard-commands-flag]]</tt>'''' is non-`nil'
+(which is the case by default), then '''Icicles''' redefines command
+`bbdb-complete-name' so that it uses '''Icicles''' completion when there
+are multiple completions.  You can use any '''Icicles''' features, such
+as apropos completion and candidate cycling.  For this feature to
+take effect, you must load BBDB before you load '''Icicles'''.
+
+
+[:ThesaurusCompletion]
+=== Thesaurus Completion ===
+
+Library '''<tt>[[synonyms.el]]</tt>''' provides various features for defining a
+thesaurus and looking up words and phrases in it.  Command
+'''`icicle-complete-thesaurus-entry'''' takes advantage of these
+features.  You can use it to complete a word in a text buffer to
+any word or phrase in the thesaurus.  With the default value of
+option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''', this is bound to '''`##C-c /##'''' in ''Icicle'' mode.
+
+'''''Tip:''''' You can use `icicle-complete-thesaurus-entry' to quickly check the ''spelling'' of a word. If it is correctly spelled, then it appears as a complete completion (is highlighted as such in the minibuffer).
+
+Another '''Icicles''' command that uses the thesaurus is
+'''`icicle-insert-thesaurus-entry''''.  It lets you use '''Icicles'''
+completion, cycling, and so on to insert thesaurus words and
+phrases in any buffer.  It does not complete the word at point. It is a [[multi-command]], so
+you can, within a single call to it, insert any number of
+thesaurus entries, in succession.  If you wanted to, you could write an entire
+book using a single call to `icicle-insert-thesaurus-entry'!
+
+Both commands, `icicle-complete-thesaurus-entry' and
+`icicle-insert-thesaurus-entry', require that you first load
+library <tt>[[synonyms.el]]</tt>. 
+
+See '''[[Synonyms]]''' for more information on the features of library <tt>[[synonyms.el]]</tt>.
+
+
+[:ShellCommandCompletion]
+=== Completion in Comint Modes ===
+
+`TAB' in a shell or similar buffer provides '''Icicles''' completion for command names, file names, and environment variables that are known to the
+shell (or other interpreter). Starting with Emacs 23, '''Icicles''' completion is available also when you use '''`##M-!##'''' (`shell-command') or '''`##M-|##'''' (`shell-command-on-region').
+
+In a shell or similar buffer you can also complete input using your previous inputs as the set of candidates. Just type something at the prompt, hit '''`##C-c `##'''', and pick one or more previous inputs to execute again (this uses `icicle-search', so it is a [[multi-command]]).  You need not re-execute the exact same shell command; you can edit your previous input before hitting `RET' to enter the command.
+
+These features are available for ComintMode and several modes
+that inherit from it, including ShellMode, Shell Script mode (ShMode),
+various ESS modes (EmacsSpeaksStatistics), InferiorEmacsLispMode (IELM), GrandUnifiedDebugger (GUD) mode, TclMode, RloginMode, and NS Lookup mode.
+
+'''See Also:'''
+
+* [[Icicles - Shell-Command Enhancements]] for more information
+about '''Icicles''' enhancements for Comint mode and related modes
+
+* [[Icicles - Other Search Commands]] for information about other
+'''Icicles''' search enhancements for Comint mode and related modes
+
+* [[Icicles - Defining Completion for Comint Modes]] for
+information about how you can add '''Icicles''' completion to other
+modes that inherit from Comint mode
+
+----
+
+
+|| *Previous:*  [[Icicles - Fuzzy Completion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Customization and General Tips]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el, Lisp:synonyms.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategorySpelling
+CategoryModes
+CategoryProgrammerUtils
+CategoryCode
+CategoryBbdb
+
+
+
+

@@ -1,0 +1,35 @@
+Current Open Lisp Question: How can I create a list of lists on the fly? I'm trying to create something like the following: ('("foo" "bar" "baz") '("qoz" "quux" "quip") '("flop" "flip" "flobble")). append and cons don't seem to do what I want. Any ideas?
+
+: You could use <code>LIST</code>.  Though I don't think you want the quotes
+where you have them.  To achieve <code>(("foo" "bar" "baz") ("qoz"
+"quux"))</code>, you could do:
+
+    (list (list "foo" "bar" "baz") (list "qoz" "quux"))
+
+: If this is too long, you can use
+
+    '(("foo" "bar" "baz") ("qoz" "quux"))
+
+: Beware that creating so-called literal lists, is often a bad idea if you
+subsequently modify them.
+
+: See also BackquoteSyntax, ListModification, and DestructiveOperations
+
+Currently I am trying to figure out Gnus. At the moment I'm trying to figure out how to create a LocalArchiveOfNnimap and figure out how to set my UserName next to my edits.
+
+I am a ChurchOfEmacs Evangelist, Python Hacker, Java Programmer,
+Wiki:WikiGnome, Shell Script Hacker. I struggle with C++. I'm learning Lisp (slowly). I'm also MovingFromVmToGnus.
+
+I first came across GnuEmacs when I was doing my MSc:IP at the University of York (http://www.york.ac.uk). I got fed up with Microsoft Word ruining all of my headings in my long documents so I learned LaTeX and GnuEmacs so that it would never happen again. That was how I got into GnuEmacs and GNU/Linux.
+
+Recently I have become a complete PlannerMode junkie. It even got me to learn Gnus. Now all I have to do is migrate all of my VM mail to Gnus and I will be a happy boy.
+
+I like Corrupting Large Organisations from the inside by getting them
+to buy into OpenSource and eventually FreeSoftware.
+
+I thought that I would include my .emacs.el here not because it is good, but because it is bad and other people might have tips. ;)
+
+BruceDurlingDotEmacs
+
+----
+CategoryHomepage

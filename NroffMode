@@ -1,0 +1,63 @@
+<code>nroff-mode</code> is the Emacs major mode for editing nroff / troff / [http://www.gnu.org/software/groff/groff.html groff] documents, including man pages.
+
+Here's some addons for <code>nroff-mode</code>
+
+* [[http://user42.tuxfamily.org/nroff-filladapt/index.html nroff-filladapt.el]] -- setup nroff comment prefixes in FillAdapt
+
+===Electric Nroff mode===
+
+This is a minor mode that you can turn on or off with
+`M-x electric-nroff-mode.  When the mode is on, each time you use <RET> to end a line that contains an nroff command that opens a kind of grouping, the matching nroff command to close that grouping is automatically inserted on the following line.  For example, if you are at the beginning of a line and type `. ( b RET>',
+this inserts the matching command `.)b' on a new line following point.
+
+===With Outline mode===
+
+If you use Outline minor mode with Nroff mode, OutlineMode, heading lines are lines of the form `.H' followed by a number (the header level).
+
+-- 9 August 2003, JoachimNilsson
+
+===Updating manpage date stamps automatically===
+
+I'm using the following code in my init file, along with {{{header2.el}}} as described in AutomaticFileHeaders:
+
+{{{
+(defun update-last-modified-date-nroff ()
+  (replace-match (format-time-string "%Y-%m-%d" nil t) nil t nil 1))
+
+(add-hook 'nroff-mode-hook
+          (lambda ()
+            (require 'header2)
+            (make-local-variable 'file-header-update-alist)
+            (register-file-header-action
+             "^\\.TH[ \t]+[^\" \t]+[ \\t]+[^\" \t]+[ \t]+\\([-0-9]*\\)"
+             'update-last-modified-date-nroff)
+            (add-hook 'write-file-hooks 'auto-update-file-header nil t) ))
+}}}
+
+It handles .TH lines like the following:
+
+{{{
+.TH VM86 2 2009-04-29 "Linux" "Linux Programmer's Manual"
+}}}
+
+-- 2009-04-29, SamuelBronson
+
+===Viewing Nroff files in Emacs===
+
+To preview a man page file with ManMode you can save to disk and use the usual <code>-l</code> option
+
+    M-x man
+    -l myfilename.1
+
+Or similarly with WomanMode
+
+    M-x woman-find-file
+    myfilename.1
+
+Or <code>man-preview.el</code> runs <code>man</code> straight out of the buffer, good for editing or TarMode browsing
+
+: http://user42.tuxfamily.org/man-preview/index.html
+
+----
+CategoryModes
+MarkupModes

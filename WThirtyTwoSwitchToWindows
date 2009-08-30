@@ -1,0 +1,12 @@
+sww.el is a utility that allows to switch to a window by name.
+You can also send some keystrokes to the new selected window.
+You can find the emacs lisp source at: http://www.xsteve.at/prg/emacs/
+
+[new]
+From looking at the source code, I think you are speaking here of window-manager "windows". In the context of Emacs, you should specify this, if that's the case. Unfortunately, the word "windows" means at least three things in the context of Emacs:
+* Emacs windows -- see WindowsDefined.
+* Window-manager windows. Those within Emacs are called "[[Frame]]s".
+* MS Windows
+[new]
+
+To put it short: You can switch to Window-manager windows on MS Windows from an editing session in an emacs window ;-)

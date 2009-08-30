@@ -1,0 +1,26 @@
+If you don't want to see [[rcirc]] buffers while you're using `iswitchb-buffer' (-> IswitchBuffers),
+consider ignoring them and use `C-n' to toggle betweeen showing and hiding them.
+
+Here's a very simple solution:
+
+    (add-to-list 'iswitchb-buffer-ignore "@")
+
+If you don't like it, reset `iswitchb-buffer-ignore' to the default value:
+
+    (setq iswitchb-buffer-ignore '("^ "))
+
+A more involved solution that should ignore all target and process buffers rcirc knows about:
+
+    (add-to-list 'iswitchb-buffer-ignore
+		 (lambda (name)
+		   (catch 'rcirc
+		     (mapc (lambda (process)
+			     (when (string= name (buffer-name (process-buffer process)))
+			       (throw 'rcirc t))
+			     (mapc (lambda (buffer)
+				     (when (string= name (buffer-name buffer))
+				       (throw 'rcirc t)))
+				   (with-rcirc-process-buffer process
+				     (mapcar 'cdr rcirc-buffer-alist))))
+			   (rcirc-process-list))
+		     nil)))

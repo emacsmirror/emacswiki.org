@@ -1,0 +1,40 @@
+I'm just another hacker, working mostly in C++, and now Java. I'm learning elisp so I can hack emacs. [[bug.el]] is my first module, but it's a life saver. It's safer than simply building an emacs macro to execute ant, since on a project with multiple branches, you can't always guarantee which project version you will accidentally compile when a macro fires off! And it's easier than returning to your project root folder to find the build.xml manually, since, if you are like me, you eventually end up with tens of buffers, and navigating between them can be very painful...
+
+I suppose die hards can still use the console... but just try jump to the first error message. I dare ya!
+----
+For the <tt>bug-is-root</tt> function, I think you could simply use <tt>file-name-absolute-p</tt>, rather than grovelling the file name yourself.
+----
+I don't think that's quite what I want. <tt>file-name-absolute-p</tt> will tell me if my pathway is absolute, but not whether I am at the root. For example, both <tt>(file-name-absolute-p "/usr/local/bin")</tt> and <tt>(file-name-absolute-p "/")</tt> return true. Unfortunately, (pwd) returns "Directory /" and not simply "/". That's why I had to split and tokenize the output. I admit, it <i>is</i> a bit of a hack. :( --Jason
+----
+Added [[slurp.el]]. A handly tool to slurp up files from a hierarchy.
+----
+Added [[fetch.el]]. A tool to search for and open Java classfiles from within a package hierarchy. It's similar to the hyperlink feature found in Eclipse. 
+: Welcome to the wiki. Might I point you to the [[JavaDevelopmentEnvironment]], which already contains the functionality of your fetch.el (and much more)? ---ole
+----
+Thanks! I'm already aware of that, but it seems a bit too... heavy, for my tastes. Besides, since I'm new to Lisp (end ELisp) I need useful projects to play with. :)
+----
+hi, just noticed your fetch.el.  There is already another file called fetch.el (authored by me). -- deego
+----
+I did not see your fetch in the list. :( Where is it? --Jason
+: hi Jason, it is here: http://gnufans.net/~deego/emacspub/lisp-mine/fetch/, i see that it's been around since 2002, i must have posted it to gnu.emacs.sources around that time too.  Don't know if anyone but me uses it though.  I do use it everyday :) -- deego
+----
+Cool! Two fetches that do completely different things.  If you decide to post your sources here, then we can make [[fetch.el]] an index page that links to both our libraries. Share the Internet, I say. :).
+
+: I am not sure this is a matter of "sharing the internet".  Btw, the earlier fetch.el is also mentioned on this page: WikifiedEmacsLispList.  Conflicting filenames lead to all sort of problems.  It is not only a namespace conflict problem, but more severe than that. Problems from filename reference confusion, to (require 'fetch), to both filenames defining the function 'fetch, thus overwriting the functions if one loads one after another.  I guess I will end up renaming mine.  In the last 10 years of participating in the emacs community, I have always seen people avoid pre-existing names when choosing filenames, and if pre-existing names are brought to their attention, quickly rename the files. :) -- [[deego]]
+
+----
+I must be dense... Are you asking me to rename my program? When I posted originally there was no module called fetch in the elisp listing so I figured the name was fair game. If you want to post your fetch in lieue of mine, then feel free. I won't stop you.
+
+: I moved my source to fetch2 and made [[fetch.el]] an index page with a link to both your module and mine.
+
+----
+
+I have taken the liberty to delete fetch2 and added it's content to [[fetch.el]] again. The other library by this name does not to appear to be available at them moment anyways. However I have added a not about the other fetch.el to the header anyway. And while I was at it, I also improved the header to follow the conventions. I have also added a not that I adapted the file, but feel free (I would welcome it!) that note.
+
+The main reason that I did this is however that I am currently trying to remove all foo.el files from the wiki that do not actually contain any emacs lisp code.
+
+Hope that doesn't cause any bad feelings [[JonasBernoulli]]
+
+
+----
+CategoryHomepage

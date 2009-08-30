@@ -1,0 +1,127 @@
+ sql.el --- specialized comint.el for SQL interpreters
+
+This page is home of SQL mode for Emacs and XEmacs.  SQL mode is part
+of both Emacs and XEmacs.  You can get the latest versions here.
+
+The interactive SQL mode is based on ComintMode.  The following
+interpreters are supported:
+
+* psql by '''<nowiki>PostgreSQL</nowiki>'''
+* mysql by '''<nowiki>MySQL</nowiki>'''
+* solsql by '''Solid'''
+* SQL*Plus by '''Oracle'''
+* dbaccess by '''Informix'''
+* isql by '''<nowiki>SyBase</nowiki>'''
+* sql by '''Ingres'''
+* osql by '''MS SQL Server'''
+* isql by '''Interbase'''
+* db2 by '''DB2''' (IBM)
+* inl by '''RELEX'''
+
+Type M-x sql-help RET to read the online help.
+The latest version is available from Emacs CVS:
+
+* CVS:progmodes/sql.el
+
+The current maintainer of sql.el is MichaelMauger.
+
+Starting with version 21.4-a, sql.el is included in the regular sources of Emacs.  The CVS version linked above depends on functions
+that haven't made it out of CVS, so don't use the latest version if you're not running a bleeding edge Emacs from CVS.
+
+If those with pre-22.1 versions of Emacs can identify changes needed to run on older releases, send them to MichaelMauger for consideration.  However, the emphasis is on improving future versions of Emacs.
+
+For those who really want to be on the bleeding edge, try Lisp:sql.el.  MichaelMauger uploads the latest changes which fully flesh out the multi-product functionality.  This has not been posted to CVS to be part of Emacs 22.1 because it is not release quality yet.  
+
+Please send him feedback on the sql-send-* functions and behavior on databases other than Oracle.  If this functionality proves to be stable, it will be released to CVS post-22.1.  MichaelMauger uses local modules with the core to implement data dictionary browsing, and name completion.  The plan is to cleanup and release that code, at least here on the wiki, once the core sql.el has been complete.
+
+==  Prompt for "as sysdba" or "as sysoper" ==
+
+TomPopovich modified sql-mode.el so users are able to specify as-sysdba prompt so you can log in as "as sysdba"  or "as sysoper".  Code changes
+were [http://lists.gnu.org/archive/html/help-gnu-emacs/2008-04/msg00094.html posted] to [[help-gnu-emacs]] on 4/3/08.
+ 
+== Related Pages ==
+
+* PlsqlMode -- support for writing PL/SQL code. This was inspired by the old and sadly unsupported Oracle PL/SQL mode.
+* ImenuMode -- has an example for SQL and PL/SQL support
+* SqlIndent (sql-indent.el) -- indentation of SQL statements
+* SqlTransform (sql-transform.el) -- transform select statements into update statements and more
+* MasterMode (master-mode.el) -- remote control one buffer from another
+* ComintPatched (comint.el) -- retrieve multi-line commands from the history of SQL statements
+* SqlSendHistory -- store SQL statements you sent from the SQL to the SQLi buffer in your history
+* SqlPlusNukeLineNo -- get rid of the junk line numbers SQL*Plus emits
+* SqlPlus -- Facilitates interaction with Oracle via SQL*Plus
+* SqlComplete -- experimental completion for columns and tables
+* SqlSwitchBuffer -- switch-to-buffer instead of pop-to-buffer
+* SqlRenameBuffer -- renaming the buffer
+* SqlReplace -- replace bind variables before sending a statement
+* SqlWithPlaceholders -- process SQL statements with placeholders embodied within them
+
+== Miscellaneous Settings ==
+
+If you don't like window splittings related to the *SQL* buffer, try
+the following (and read the docs -- EmacsManual, InfoMode node
+"Forcing Display in the Same Window"):
+
+    (add-to-list 'same-window-buffer-names "*SQL*")
+
+If you only work on one database, you might prefer not to confirm the
+default user, password, database, etc. settings.  In that case, load
+sql.el, and disable sql-get-login in your ~/.emacs:
+
+    (require 'sql)
+    (defalias 'sql-get-login 'ignore)
+
+To interact with the interpreter from a window already in SQL mode, execute the following:
+
+    M-x sql-set-sqli-buffer RET *SQL* RET
+
+Want to save you history between sessions?  Consider adding this hook to your [[.emacs]].  It saves the history in a separate file for each SQL "product".  You'll need to run `##M-x make-directory RET ~/.emacs.d/sql/ RET##'
+
+  (defun my-sql-save-history-hook ()
+    (let ((lval 'sql-input-ring-file-name)
+          (rval 'sql-product))
+      (if (symbol-value rval)
+          (let ((filename 
+                 (concat "~/.emacs.d/sql/"
+                         (symbol-name (symbol-value rval))
+                         "-history.sql")))
+            (set (make-local-variable lval) filename))
+        (error
+         (format "SQL history will not be saved because %s is nil"
+                 (symbol-name rval))))))
+  (add-hook 'sql-interactive-mode-hook 'my-sql-save-history-hook)
+
+== Emacs 19 ==
+
+If you are using GNU Emacs 19.34, you will need two additional things:
+
+* http://www.mit.edu/afs/athena.mit.edu/project/ptest/emacs/emacs-20.5/lisp/emacs-lisp/
+* http://www.dina.kvl.dk/~abraham/custom/
+
+Once you completed installation, type M-x load-library RET sql RET to load sql.el.  Then, type M-x sql-help RET to read the online help.
+
+== Other SQL modes ==
+
+* RobRiepel's mode based on a mode by LynnSlater with support for SQL*Plus by Oracle and isql by Sybase: http://www.stanford.edu/people/riepel/SQL-mode.html
+* KarelSprenger's mode based on a mode by JimLange with support for SQL*Plus by Oracle and exhaustive highlighting: http://paddington.ic.uva.nl/public/sql-modes.zip
+* Peter D. Pezaris' huge mode with extensive XEmacs support: http://www.dwwc.com/sql-mode/ (doesn't work, use this: http://www.pezaris.com/sql-mode/)
+[RR] Warning - there have not been any updates since v0.922 and this doesn't work on the recent XEmacs (uses obsolete functions). I can only imagine that it is not under active development.
+
+* Oracle's PL/SQL pls-mode. It used to be on the Oracle web site.  Contact the author: DmitryNizhegorodov <mailto:Dmitry.Nizhegorodov@oracle.com> or get a download from his site: Geocities:dmitrynizh/
+Older sql-modes such as the one by JimLange can be found in the ElispArchive.
+
+* Oracle 10g Documentation: http://www.oracle-10g.de/oracle_10g_documentation
+
+* oracle-wiki: http://www.orawiki.com/ and http://www.oracle-doku.de/oracle-wiki
+
+There is a useful tutorial style article on using sql-mode (targeted at DB2 but 
+more broadly applicable) by RoyMathew at 
+http://www-106.ibm.com/developerworks/db2/library/techarticle/0206mathew/0206mathew.html
+Also check out the Oracle FAQ at http://www.orafaq.com/
+
+If you're trying to use MS SQL Server in sql-mode, and the Microsoft command-line query processors osql and isql are not available to you, try jisql, a free, Java-based "workalike" provided by the clever (and generous) folks at Xigole Systems, Inc. http://www.xigole.com/software/jisql.jsp. Apache license.
+
+----
+CategoryModes
+CategorySql
+

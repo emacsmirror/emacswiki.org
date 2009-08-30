@@ -1,0 +1,47 @@
+The code for a copy of `insert-date' is shown below.  You can bind it to a key as follows:
+
+    (global-set-key (kbd "C-c d") 'insert-date)
+
+Usage:
+
+* `C-c d': 13.04.2004
+* `C-u C-c d': 2004-04-13
+* `C-u C-u C-c d': Dienstag, 13. April 2004
+
+Code:
+
+  (defun insert-date (prefix)
+    "Insert the current date. With prefix-argument, use ISO format. With
+   two prefix arguments, write out the day and month name."
+    (interactive "P")
+    (let ((format (cond
+                   ((not prefix) "%d.%m.%Y")
+                   ((equal prefix '(4)) "%Y-%m-%d")
+                   ((equal prefix '(16)) "%A, %d. %B %Y")))
+          (system-time-locale "de_DE"))
+      (insert (format-time-string format))))
+
+This is a piece of code from JorgenSchaefersEmacsConfig - it's very
+specifically tailored for my needs. E.g. it explicitly sets a german
+locale for the third variant, since I usually don't want german stuff,
+except in this special case.
+
+This command prompts the user for a date format:
+
+  (defun insert-date (format)
+    "Wrapper around format-time-string." 
+    (interactive "MFormat: ")
+    (insert (format-time-string format)))
+
+This command will insert the standard date format:
+
+  (defun insert-standard-date ()
+    "Inserts standard date time string." 
+    (interactive)
+    (insert (format-time-string "%c")))
+
+
+See InsertingAndUpdatingDates for other ways to insert dates in buffers and files.
+
+----
+CategoryDotEmacs CategoryCalendar CategoryEditing

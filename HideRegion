@@ -1,0 +1,26 @@
+ ;;; Commentary:
+
+ ;; The function `hide-region-hide' hides the region. You can hide many
+ ;; different regions and they will be "marked" by two configurable
+ ;; strings (so that you know where the hidden text is).
+
+ ;; The hidden regions is pushed on a kind of hide-region "ring".
+
+ ;; The function `hide-region-unhide' "unhides" one region, starting
+ ;; with the last one you hid.
+
+ ;; The best is to try it out.
+
+Get the code here: Lisp:hide-region.el
+
+'''See Also:'''
+
+* HighLight -- Hide/show regions, arbitrary text, text with a given set of faces. Use regexps, a highlighter pen, region.
+
+* MarkerPens -- Invisible pen which hides the region (sounds similar to this but doesn't mark the invisible text with a configurable string).
+
+* HideLines -- Hide lines.
+
+----
+CategoryHideStuff
+CategoryRegion

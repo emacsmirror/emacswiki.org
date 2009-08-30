@@ -1,0 +1,38 @@
+Home page: http://angg.twu.net/
+
+See also: [http://angg.twu.net/emacs.html my Emacs page] (esp. its [http://angg.twu.net/emacs.html#short-emacs-tutorial short Emacs tutorial])
+
+[::edrx] on IRC (channels: #emacs and #eev)
+
+E-mail: eduardoochs at gmail.com
+
+Author of EevMode (eev.el); the current version is at:
+
+* http://angg.twu.net/eev-current/README.html (start by this)
+* http://angg.twu.net/eev-current/INSTALL.html
+* http://angg.twu.net/eev-current/NEWS.html
+* http://angg.twu.net/eev-current/eev.el.html
+* http://angg.twu.net/eev-current/eev-insert.el.html
+* http://angg.twu.net/eev-current/eev-langs.el.html
+* http://angg.twu.net/eev-current/
+* http://angg.twu.net/eev-current.tar.gz (download this)
+
+And here are two screenshots (with explanations scribbled on):
+
+http://angg.twu.net/eev-current/doc/shot-f3-thumb.jpg
+[http://angg.twu.net/eev-current/doc/shot-f3.png sending commands to a shell]
+
+http://angg.twu.net/eev-current/doc/shot-f9-thumb.jpg
+[http://angg.twu.net/eev-current/doc/shot-f9.png controlling two external processes]
+
+And [http://angg.twu.net/eev-current/anim/channels.html here] is an animation in [http://gplflash.sourceforge.net/ Flash] (made with [http://www.unixuser.org/~euske/vnc2swf/ vnc2swf]) showing Emacs creating two xterms and sending commands to them.
+
+2005jan01: a new "official" version - [http://angg.twu.net/eev-0.95.0.tar.gz 0.95.0] - has just been released. It has *lots* of changes since the previous versions. But it's probably better to download the [http://angg.twu.net/eev-0.95.0.tar.gz tarball of the current version] instead.
+
+Older links:
+
+* http://www.gnu.org/brave-gnu-world/issue-13.en.html
+* http://angg.twu.net/eev-manifesto.html
+
+----
+CategoryHomepage

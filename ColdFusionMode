@@ -1,0 +1,31 @@
+From http://lists.gnu.org/archive/html/help-gnu-emacs/2003-05/msg00271.html:
+-------------
+<pre>
+Re: what do fellow emacsen use for editing cold fusion?
+From: 	Norbert Caud�ran
+Subject: 	Re: what do fellow emacsen use for editing cold fusion?
+Date: 	Wed, 7 May 2003 12:49:19 +0200
+
+I use a modified version of html-helper-mode.el (cfml-helper-mode.el) and a
+small module to browse
+homesite help (help-url.el which is copied/inspired from JDE). You could use
+the doc hosted by your dev server.
+Those two modules are quick and dirty hacks...I have to say that I often use
+homesite too, but taht's bad (tm) !
+
+Hope this helps,
+
+Norbert
+
+in my dot emacs I have :
+(setq cfml-helper-verbose '())
+(autoload 'cfml-helper-mode "cfml-helper-mode" "Yay Cold Fusion" t)
+(setq auto-mode-alist (cons '("\\.cfm$" . cfml-helper-mode)
+auto-mode-alist))
+</pre>
+------------------------------
+Below are the files included in the mail message. I have done my best to fix line break problems introduced in the mail archive, but some may remain. --DanLipsitt
+
+Lisp:cfml-helper-mode.el
+
+Lisp:help-url.el

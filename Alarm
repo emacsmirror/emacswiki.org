@@ -1,0 +1,8 @@
+Alarm is mode that poup window to show alarm message.
+
+You can get it from [[alarm.el]].
+
+------
+
+Also check out ToDoChiKu, which provides the same functionality, but for libnotify, growl (mac) and snarl (win).
+

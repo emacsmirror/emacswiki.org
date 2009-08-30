@@ -1,0 +1,13 @@
+このカテゴリは Emacs のドキュメントに関するものです。そのほかのカテゴリについては、カテゴリ・ヘルプを参照してください。
+
+書籍紹介は、[[BooksAboutEmacs]]を見てください。 Emacs入門には、[[Emacsビギナー]]/[[EmacsNewbie]]があります。
+
+Emacs には、チュートリアルがついています。チュートリアルを起動するには、C-h tを実行するか、Help メニューをたどってください。チュートリアルでは、編集の方法を少しずつ学びながら、Emacsをエディタとして使うための基本的な操作を知ることができます。詳しくは[[EmacsTutorial]]を参照してください。
+
+Emacs には、詳細なマニュアルもついています。GNU/Unix OSのシェルウィンドウで[[EmacsManual]]を利用するには、info コマンドを入力します。Emacs上では、M-x info RET (メタキー、たとえばESCを押してxを入力し、その後に"info"を入力して、最後にリターンキーを押す）またはC-h i（[Ctrl]＋[h]の後に[i]を押す）と入力します。
+
+Emacsの機能を拡張したいときは、[[EmacsLisp]]（略称: Elisp ）を使います。 [[EmacsLispイントロ]]/[[EmacsLispIntro]] を読めば、Emacs Lisp プログラミングの基礎はわかるはずです。Emacs Lisp の総合的なリファレンスマニュアルについては、[[EmacsLispReference]]を参照してください。
+
+Emacs には、[[ReferenceCards]]もついています。 しかし、Emacs は よく言われるように"自己言及型（[[SelfDocumenting]]）” エディタです。リファレンス カードは便利には違いありませんが、このエディタの複雑な機能について知りたいときは、大抵の場合、InfoModeを参照した方がよいでしょう。
+
+Emacs 上の特定のライブラリについての情報が知りたいときは、[[FinderCommentary]] を参照してください。

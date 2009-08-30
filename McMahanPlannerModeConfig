@@ -1,0 +1,289 @@
+;;; Chris McMahan's Planner/Muse configuration file.
+;;; Works in conjunction with the .emacs and .amecs-config files
+
+(require 'planner)
+
+;;;============================================================
+;;; muse code
+;;;============================================================
+(require 'muse-mode)
+
+; load the publishing styles
+(require 'muse-html)
+(require 'muse-latex)
+(require 'muse-texinfo)
+(require 'muse-docbook)
+(require 'muse-protocols)
+(require 'planner-publish)
+
+(unless (assoc "cm-html" muse-publishing-styles)
+  (muse-derive-style "cm-html" "planner-html"
+		     :maintainer "Chris McMahan"
+		     :author "Chris McMahan"))
+(unless (assoc "cm-public" muse-publishing-styles)
+  (muse-derive-style "cm-public" "planner-html"
+		     :maintainer "Chris McMahan"
+		     :author "Chris McMahan"))
+(unless (assoc "cm-xhtml" muse-publishing-styles)
+  (muse-derive-style "cm-xhtml" "planner-xhtml"
+		     :maintainer "Chris McMahan"
+		     :author "Chris McMahan"))
+
+;;; To get instant feedback on style sheets, copy your desired sheet
+;;; to planner.css and modify that. Reloading the page in browser will
+;;; then reflect the changes without the need to republish the wiki
+;;; put an e between the hr and f in the planner.css. Couldn't publish
+;;; to emacs wiki with those tags
+(setq muse-xhtml-style-sheet "<link rel=\"stylesheet\" type=\"text/css\" hrf=\"css/planner.css\">")
+
+;;; define the projects
+(setq muse-project-alist
+      '(
+        ("WikiPlanner"
+	 ("~/notebook/Plans"
+	  :default "TaskPool"
+	  :force-publish ("WikiIndex")
+	  :major-mode planner-mode
+	  :visit-link planner-visit-link)
+	 (:base "cm-html"
+	  :path "~/notebook/html"))))
+
+;;; recurses through all of the subdirectories. Does not publish the
+;;; links to files in subdirectories correctly, however
+;(setq muse-project-alist
+;      `(("WikiPlanner"
+;         (,@(muse-project-alist-dirs 
+;             (concat HOME_DIR "/notebook/Plans"))
+;	  :force-publish ("WikiIndex")
+;	  :major-mode planner-mode
+;	  :visit-link planner-visit-link
+;          :default "TaskPool")
+;
+;         ,@(muse-project-alist-styles
+;            (concat HOME_DIR "/notebook/Plans")  ;; base dir
+;            (concat HOME_DIR "/notebook/html") ;; output dir
+;            "cm-html"))))
+
+;;;============================================================
+;;; planner code
+;;;============================================================
+(add-hook 'planner-mode-hook 'turn-on-auto-fill)
+
+;; set the style sheets, header and footer for publishing
+;;; put an e between the hr and f in the planner.css. Couldn't publish
+;;; to emacs wiki with those tags
+(setq planner-html-style-sheet "<link rel=\"stylesheet\" type=\"text/css\" hrf=\"css/planner.css\">")
+(setq planner-html-header (concat HOME_DIR "/notebook/html/css/header.html"))
+(setq planner-html-footer (concat HOME_DIR "/notebook/html/css/footer.html"))
+
+(planner-option-customized 'planner-directory (concat HOME_DIR "/notebook/plans"))
+;(planner-option-customized 'planner-publishing-directory (concat HOME_DIR "/notebook/html"))
+
+;;; modify the planner template to incorporate the different day sections
+(setq planner-day-page-template "* Tasks\n\n\n* Diary\n\n\n* Notes\n\n\n* Journal")
+(setq planner-plan-page-template "* Tasks\n\n\n* Notes\n\n\n* Journal")
+
+;; set to nil to use the string defined above in the
+;; planner-day-page-template instead
+(setq planner-diary-create-section-flag nil)
+
+;; Carry incomplete tasks forward to the next day.
+;; Scan the previous n days for unfinished tasks
+(setq planner-carry-tasks-forward 7)
+
+;; (t) to number the tasks within each section. To set up sections, just
+;; insert a line between the tasks
+(setq planner-use-task-numbers t)
+
+;; on saving notes and tasks, renumber the tasks automatically
+(setq planner-renumber-tasks-automatically t)
+(setq planner-renumber-notes-automatically nil)
+
+(eval-after-load "planner"
+  '(progn
+     (define-key planner-mode-map "\C-c\C-a"
+       'planner-index)))
+
+;;;=============================================
+;;; publishing
+;;;=============================================
+(setq planner-publish-dates-first-p t)
+
+;;;=============================================
+;;; put a calendar in the published pages
+;;;=============================================
+;(require 'planner-calendar)
+
+;;;=============================================
+;;; remember
+;;; If you think of something, rather than searching for the right
+;;; project/day page, just type M-x remember. A buffer will pop up
+;;; allowing you to jot your thoughts, then insert them into whatever
+;;; page you specify, with a link to today's page!
+(require 'remember)
+(require 'remember-planner)
+(setq remember-handler-functions '(remember-planner-append))
+(setq remember-annotation-functions planner-annotation-functions)
+
+;;; copy the entire note to the daily page, not just the header (t)
+(setq remember-planner-copy-on-xref-flag t)
+
+;;; if called with a prefix, create another remember buffer.
+;;; From: Jim Ottaway <j.ottaway@lse.ac.uk>
+;;; To: planner-el-discuss@gna.org
+;;; Subject: Re: [Planner-el-discuss] proposition: multiple remember buffers
+(defun remember (&optional new)
+  "Remember an arbitrary piece of data.
+With a prefix, create a new remember buffer."
+  (interactive "P")
+  (window-configuration-to-register remember-register)
+  (let* ((initial (and transient-mark-mode
+                       mark-active
+                       (prog1
+                           (buffer-substring (point) (mark))
+                         (deactivate-mark))))
+         (annotation
+          (if remember-run-all-annotation-functions-flag
+              (mapconcat 'identity
+                         (delq nil (mapcar 'funcall remember-annotation-functions))
+                         "\n")
+            (run-hook-with-args-until-success
+             'remember-annotation-functions)))
+         (buf (if new
+                  (generate-new-buffer remember-buffer)
+                (get-buffer-create remember-buffer))))
+    (run-hooks 'remember-before-remember-hook)
+    (switch-to-buffer-other-window buf)
+    (remember-mode)
+    (when (= (point-max) (point-min))
+      (when initial (insert initial))
+      (setq remember-annotation annotation)
+      (when remember-initial-contents (insert remember-initial-contents))
+      (when (and (stringp annotation)
+                 (not (equal annotation "")))
+        (insert "\n\n" annotation))
+      (setq remember-initial-contents nil)
+      (goto-char (point-min)))
+    (message "Use C-c C-c to remember the data.")))
+
+
+
+;;;=============================================
+;; This module recognizes entries of the form
+;; DIARY: ....
+;; and puts them in your ~/.diary (or remember-diary-file) together
+;; with an annotation. Planner-style dates (yyyy.mm.dd) are converted
+;; to yyyy-mm-dd so that diary can understand them.
+(require 'remember-diary)
+
+;; This should be before other entries that may return t
+(add-to-list 'remember-handler-functions 'remember-diary-extract-entries)
+
+;;;=============================================
+;;; planner-vm integration
+;; Annotations are of the form
+;; [[vm://path/to/inbox/messageID][alternate text]]
+(require 'planner-vm)
+
+;;; typing 'remember' from a mail message (or summary) will generate
+;;; the appropriate link to that message. It's a good idea to have the
+;;; message saved into a folder where it will stay for a while, rather
+;;; than saving from the mbox.
+(add-to-list 'remember-handler-functions 'planner-vm-annotation-from-mail)
+(add-hook 'planner-annotation-functions 'planner-vm-annotation-from-mail)
+(setq remember-annotation-functions planner-annotation-functions)
+
+;;;=============================================
+;;; incorporate calendar and diary entries into daily plans
+(require 'planner-diary)
+(setq planner-diary-file diary-file)
+(setq planner-diary-cal-desk-file planner-diary-file)
+
+(setq planner-diary-string "* Diary")
+(setq planner-diary-cal-desk-string planner-diary-string)
+
+;; set one or the other to t. To use the cal desk feature, it has to
+;; be enabled in your .emacs-config as well. See the comments under
+;; the calendar/diary section of that file for details.
+(setq planner-diary-use-diary t)
+(setq planner-diary-use-cal-desk nil)
+
+(planner-insinuate-calendar)
+(planner-diary-insinuate)
+
+;;;=============================================
+;; incorporate bbdb. Use the format
+;; [[bbdb://searchstring][displayed text]] for each link.
+;; Calls bbdb with the searchstring
+(require 'planner-bbdb)
+
+;(require 'remember-bbdb)
+;(add-to-list 'remember-handler-functions 'remember-bbdb-store-in-mailbox)
+
+;;;=============================================
+;;; refresh the planner project
+(planner-update-wiki-project)
+
+;;;=============================================
+;;; get a formatted list of tasks between two dates
+;;; call planner-tasks-overview
+(require 'planner-tasks-overview)
+
+;;;=============================================
+;;; add a - in front of each diary entry to make it a list entry on
+;;; publishing
+;;; From: Sacha Chua <sacha@free.net.ph>
+;;; To: emacs-wiki-discuss@nongnu.org
+;;; Date: Tue, 07 Jun 2005 09:50:04 +0800
+(defadvice planner-diary-update-section (before edgar activate)
+ "Make TEXT a list."
+ (setq text
+       (with-temp-buffer
+	 (insert text)
+	 (goto-char (point-min))
+	 (while (not (eobp))
+	   (unless (looking-at "^\\s-*$")
+	     (insert " - "))
+	   (forward-line))
+	 (buffer-string))))
+
+;;;=============================================
+;;; When called with a prefix argument, grep is used to search for a
+;;; keyword:
+;;; From: Stefan Reichör <stefan@xsteve.at>
+;;; To: emacs-wiki-discuss@nongnu.org
+(defun xsteve-open-wiki-page (arg)
+  "Either open a wiki page via ido, or grep for a string in the wiki pages."
+  (interactive "P")
+  (let* ((default-directory "~/notebook/plans")
+         (grep-cmd (format "cd %s && grep -n -i --directories=skip" default-directory))
+         (file-glob "*"))
+    (if arg
+        (grep (concat grep-cmd " -e \"" (read-string (format "Search %s for regexp: " default-directory)) "\" " file-glob))
+      (ido-find-file))))
+(global-set-key [(meta f12)] 'xsteve-open-wiki-page)
+
+;;;=============================================
+;;; When saving a planner page, update current note and save all
+;;; planner buffers
+(defun jmk-planner-save-buffers ()
+   "Update a note if we are on a note.  Run planner-save-buffers."
+   (interactive)
+   (save-excursion
+     (save-window-excursion
+       (planner-update-note)
+       (planner-save-buffers))))
+(define-key planner-mode-map [?\C-x ?\C-s] 'jmk-planner-save-buffers)
+
+;;;======================================================================
+;;; allout
+;;; folding mode works well with notes in planner
+;;; C-c C-n goes from one note to the next one.
+;;; C-c C-p goes to the previous,
+;;; C-c C-h hides the note,
+;;; C-c C-s shows it
+(require 'allout)
+(allout-init 'activate)
+
+
+

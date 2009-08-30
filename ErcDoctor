@@ -1,0 +1,81 @@
+This picks the last message somebody said in the channel buffer and
+runs doctor on it, when you type the /DOCTOR command.
+
+Features:
+
+* Determine the sender of the last message and prepend their name and a colon to the output of doctor.  Only do this if we're not in a query buffer.
+
+* When the last user typed something in like: "random_user: I think you need to get more sleep at night instead of coding elisp", try to strip away the "random_user:" part before sending the text to doctor.
+
+* Strip unnecessary punctuation from the end of the input message.
+
+* Keep a separate buffer for each patient of the doctor.
+
+[new:DrewAdams:2005-01-12 16:27 UTC]
+Kind of reminds me -- back in the 80s, I wrote a command that made `doctor' communicate with Zippy (`yow'!). I won't say who was consulting whom, but it was quite enlightening either way you looked at it. :D. -- DrewAdams
+* `M-x psychoanalyze-pinhead' is part of the standard `yow' package, and has been for a long time. -- EraEriksson
+[new]
+
+<pre>
+(autoload 'doctor-doc "doctor")
+(autoload 'make-doctor-variables "doctor")
+
+(defvar erc-doctor-id "{Emacs doctor} ")
+
+(defun erc-cmd-DOCTOR (&optional last-sender &rest ignore)
+  "Get the last message in the channel and doctor it."
+  (let ((limit (- (point) 1000))
+        (pos (point))
+        doctor-buffer
+        last-message
+        text)
+    ;; Make sure limit is not negative
+    (when (< limit 0) (setq limit 0))
+    ;; Search backwards for text from someone
+    (while (and pos (not (let ((data (get-text-property pos 'erc-parsed)))
+                           (and data
+                                (string= (aref data 3) "PRIVMSG")
+                                (or (not last-sender)
+                                    (string= (car (split-string (aref data 2) "!"))
+                                             last-sender))))))
+      (setq pos (previous-single-property-change
+                 pos 'erc-parsed nil limit))
+      (when (= pos limit)
+        (error "No appropriate previous message to doctor")))
+    (when pos
+      (setq last-sender (car (split-string
+                              (aref (get-text-property
+                                     pos 'erc-parsed) 2) "!"))
+            doctor-buffer (concat "*ERC Doctor: " last-sender "*")
+            last-message (split-string
+                          ;; Remove punctuation from end of sentence
+                          (replace-regexp-in-string
+                           "[ .?!;,/]+$" ""
+                           (aref (get-text-property pos
+                                                    'erc-parsed) 5)))
+            text (mapcar (lambda (s)
+                           (intern (downcase s)))
+                         ;; Remove salutation if it exists
+                         (if (string-match
+                              (concat "^" erc-valid-nick-regexp
+                                      "[:,]*$\\|[:,]+$")
+                              (car last-message))
+                             (cdr last-message)
+                           last-message))))
+    (erc-send-message
+     (concat erc-doctor-id
+             ;; Only display sender if not in a query buffer
+             (if (not (erc-query-buffer-p))
+                 (concat last-sender ": "))
+             (save-excursion
+               (if (get-buffer doctor-buffer)
+                   (set-buffer doctor-buffer)
+                 (set-buffer (get-buffer-create doctor-buffer))
+                 (make-doctor-variables))
+               (erase-buffer)
+               (doctor-doc text)
+               (buffer-string))))))
+</pre>
+
+----
+[[ERC]]

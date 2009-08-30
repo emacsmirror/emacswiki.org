@@ -1,0 +1,34 @@
+Eoops (Emacs Object-Oriented Programming System) implements a Smalltalk-80-like language in GNU EmacsLisp (Lewis 90).
+
+Eoops is a simple but efficient compiler for a class-based, single inheritance, object-oriented language that uses explicit message passing for both method invocation and state access.
+
+Eoops supplies macros to create new classes, instantiate them, and send messages to instances. Eoops defines, not a complete programming language, but rather an object-oriented extension to a base language, here EmacsLisp. Thus, a programmer uses Eoops to specify classes and instances, but uses the base language to specify control and environment.
+
+* http://anny.kinjo-u.ac.jp/~houser/eoops/Welcome.html
+
+The authors of Eoops are:
+
+* [http://anny.kinjo-u.ac.jp/~houser/e/ Chris Houser] (houser@kinjo-u.ac.jp)
+* Scott D. Kalter (mithral@brandx.com)
+
+See Lisp:eoops.el.
+
+[new]
+
+For an object oriented language extension based on generic methods instead of message passing also have a look at EmacsLispObjects.
+
+[new]
+== Smalltalk In Emacs ==
+
+Anyone else thinks that Smalltalk support in Emacs would be great? Emacs has windows & frames, so it would make a great Smalltalk environment!
+I made a fake Smalltalk Browser in Emacs (and took a screenshot of it, see below): I can't think of anything else since...
+
+[[image:SmalltalkBrowserInEmacs]]
+
+Note: don't take this too seriously, I know it probably won't happen. But I need to share this dream I have!
+-- SebastienRoccaSerra
+
+It look a bit like ObjectOrientedBrowser
+-- Fredrik
+----
+CategoryExtensionLanguage

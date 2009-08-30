@@ -1,0 +1,78 @@
+Um .emacs criado a partir do 'customize':
+
+   (custom-set-variables
+    ;; custom-set-variables was added by Custom -- don't edit or cut/paste it!
+    ;; Your init file should contain only one such instance.
+    '(auto-compression-mode t nil (jka-compr))
+    '(case-fold-search t)
+    '(desktop-enable t nil (desktop))
+    '(make-backup-files t)
+    '(version-control t)
+    '(backup-directory-alist (quote ((".*" . "~/.emacs_backups"))))
+    '(kept-new-versions 3)
+    '(kept-old-versions 1)
+    '(delete-old-versions t)
+    '(delete-selection-mode t nil (delsel))
+    '(global-font-lock-mode t nil (font-lock))
+    '(ispell-local-dictionary "brasileiro")
+    '(iswitchb-mode t nil (iswitchb))
+    '(mouse-avoidance-mode (quote animate) nil (avoid))
+    '(mouse-wheel-mode t nil (mwheel))
+    '(save-place t nil (saveplace))
+    '(scroll-bar-mode (quote right))
+    '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
+    '(transient-mark-mode t))
+   (custom-set-faces
+    ;; custom-set-faces was added by Custom -- don't edit or cut/paste it!
+    ;; Your init file should contain only one such instance.
+    )
+
+=== Descrição ===
+
+Você pode usar 'C-h v' para obter ajuda sobre as variáveis a seguir.
+
+; auto-compression-mode: Permite trabalhar com arquivos gz e bz2 de
+ forma transparente.
+; case-fold-search: Ignora o 'caso' (maiúsculas/minúsculas) nas buscas.
+; desktop-enable: Reabre os mesmos arquivos que estavam abertos na
+ última vez em que o Emacs foi fechado. <b>É necessário emitir o
+ comando 'desktop-save' ao menos uma vez</b>.
+; backup: Por omissão, o Emacs salva uma cópia backup do arquivo no
+ mesmo diretório deste com acréscimo de ~. As opções a seguir
+ modificam essa forma de trabalhar:
+;; make-backup-files: Instrui a fazer backups.
+;; backup-directory-alist: (REGEXP . DIRECTORY) Arquivos que combinem
+ com a expressão regular dada terão seus backups salvos no diretório
+ correspondente. Neste caso, todos os arquivos serão salvos em
+ ~/.emacs_backups.
+;; version-control: Numera os arquivos de backup.
+;; kept-new-versions: Quantidade de versões novas a serem
+ mantidas. Neste caso, as três últimas versões.
+;; kept-old-versions: Quantidade de versões antigas a serem
+ mantidas. Neste caso, a primeira versão do arquivo estará sempre presente.
+;; delete-old-versions: Instrui a deletar versões antigas. 
+; delete-selection-mode: Substitui ou deleta a região selecionada
+ quando pressionamos DEL ou digitamos outro texto.
+; transient-mark-mode: Certifica que as regiões ativas serão realçadas
+ quando ativas.
+; global-font-lock-mode: Liga o realce de sintaxe.
+; ispell-local-dictionary: Qual dicionário selecionar (deve ser um ítem
+ da lista ispell-dictionary-alist).
+; iswitchb-mode: Uma forma alternativa de mudar de buffer com 'C-x
+ b'. Consulte 'M-x describe-function RET iswitchb' para mais detalhes.
+; mouse-avoidance-mode: Afasta o ponteiro do mouse do cursor do texto
+ (é engraçadinho).
+; mouse-wheel-mode: Ativa suporte à rodinha do mouse.
+; save-place: Retorna ao ponto onde você estava da última vez em que
+ editou o arquivo.
+; scroll-bar-mode: Coloca a barra de rolagem do lado direito do frame.
+; turn-on-auto-fill: Liga a quebra automática de linhas (são gravadas
+ no arquivo) quando em modo texto.
+
+Como você pôde ver, com alguma calma e leitura dos textos de ajuda do
+'customize' é possível adaptar bastante coisa.
+
+Boa sorte! --DeDaLu
+
+----
+CategoriaPontoEmacs

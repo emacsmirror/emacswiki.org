@@ -1,0 +1,241 @@
+<pre>
+;; forcer's ~/.gnus.el file
+;; -*- emacs-lisp -*-
+
+;; Set nnmail-expiry-wait-function
+(load-file "~/.gnus.d/expiry.el")
+;; Set nnmail-split-fancy
+(load-file "~/.gnus.d/lists.el")
+;; Set gnus-posting-styles
+(load-file "~/.gnus.d/posting-styles.el")
+
+;;; Coding systems
+(setq mm-coding-system-priorities
+      '(mule-utf-8 iso-latin-1 iso-latin-9))
+
+;;; Crypt-foo
+;; (this would include pgg, if i wouldn't use the defaults)
+(setq gnus-message-replysign t
+      gnus-message-replyencrypt t
+      mm-verify-option 'always
+      mm-decrypt-option 'always)
+
+;; Buttonize the different parts, please
+(setq gnus-buttonized-mime-types '("multipart/encrypted" "multipart/signed"))
+
+;; But keep buttons for multiple parts
+(setq gnus-inhibit-mime-unbuttonizing t)
+
+;;; Key bindings
+
+(define-key message-minibuffer-local-map [(tab)] 'bbdb-complete-name)
+
+(add-hook 'gnus-summary-mode-hook
+          (lambda ()
+            (define-key gnus-summary-mode-map
+              [?U] 'gnus-summary-put-mark-as-unread)
+            (define-key gnus-summary-mode-map
+              [?s] 'gnus-summary-move-to-spambox)))
+(add-hook 'message-mode-hook
+          (lambda ()
+            (define-key message-mode-map
+              (kbd "C-c C-u") 'fc-kill-to-beginning-of-line)))
+
+(defun gnus-summary-move-to-spambox ()
+  "Move this article to the spambox."
+  (interactive)
+  (save-excursion
+    (gnus-summary-mark-as-expirable 1))
+  (gnus-summary-move-article 1 "nnml:spambox")
+  (forward-line 1))
+
+(add-hook 'gnus-group-mode-hook 'fc-dont-show-whitespace)
+(add-hook 'gnus-summary-mode-hook 'fc-dont-show-whitespace)
+(add-hook 'gnus-article-mode-hook 'fc-dont-show-whitespace)
+
+(defun fc-dont-show-whitespace ()
+  "Set `show-trailing-whitespace' to nil."
+  (setq show-trailing-whitespace nil))
+
+;;; Main config
+
+(setq gnus-select-method '(nntp "news"))
+(setq gnus-secondary-select-methods
+      '((nnml ""
+              (nnml-directory "~/Mail/Lists")
+              (nnml-active-file "~/Mail/Lists/active")
+              (nnml-get-new-mail t))))
+(setq gnus-message-archive-method
+      '(nnfolder "archive"
+		 (nnfolder-directory    "~/Mail/archive")
+		 (nnfolder-active-file  "~/Mail/archive/active")
+		 (nnfolder-get-new-mail nil)))
+(setq gnus-message-archive-group
+      '((if (message-news-p)
+	    "misc-news"
+	  (concat "mail." (format-time-string "%Y")))))
+
+(setq mail-sources '((file)))
+
+(add-hook 'message-header-setup-hook 'fc-fix-AW-subject)
+(defun fc-fix-AW-subject ()
+  (while (re-search-forward "^Subject: Re: \\(AW: \\)*" nil t)
+    (replace-match "Subject: Re: ")))
+
+(add-to-list 'mm-discouraged-alternatives "text/html")
+(add-to-list 'mm-discouraged-alternatives "image/")
+
+;; Defeat Gnus' use of the Sender: header. I know what I am doing with
+;; my From: header.
+(add-to-list 'message-syntax-checks '(sender . disabled))
+
+(setq nnmail-split-methods 'nnmail-split-fancy
+      nnmail-split-header-length-limit 4096
+      nnmail-use-long-file-names t
+      nnmail-crosspost nil)
+(setq gnus-add-to-list t
+      gnus-interactive-exit nil
+      gnus-save-newsrc-file nil
+      gnus-use-scoring t
+      ;; This is bogus when you q from a summary buffer: The *Group*
+      ;; buffer appears in another window.
+      ;; gnus-use-full-window nil
+      gnus-summary-default-score 0
+      gnus-summary-expunge-below -256
+      gnus-summary-make-false-roots 'dummy
+      gnus-score-expiry-days nil
+      gnus-home-score-file "~/Mail/gnus.SCORE"
+      gnus-agent-directory "~/Mail/agent/"
+      gnus-directory "~/Mail/News/"
+      gnus-article-save-directory "~/Mail/News"
+      gnus-cache-directory "~/Mail/News/cache"
+      gnus-cache-active-file "~/Mail/News/cache/active"
+      gnus-kill-files-direcotry "~/Mail/News"
+      nndraft-directory "~/Mail/drafts/"
+      gnus-default-article-saver 'gnus-summary-save-in-mail
+      gnus-save-killed-list nil
+      gnus-auto-expirable-newsgroups "^[^.]*$\\|mail"
+      gnus-ignored-mime-types '("text/x-vcard")
+      gnus-ignored-from-addresses "forcer\\|jorgen"
+      gnus-show-all-headers nil
+      gnus-treat-capitalize-sentences nil
+      gnus-treat-display-picons nil
+      gnus-treat-display-smileys nil
+      gnus-treat-display-x-face t
+      gnus-treat-emphasize nil
+      gnus-treat-fill-long-lines nil    ; 50000
+      gnus-treat-hide-signature nil
+      gnus-treat-overstrike nil
+      gnus-treat-play-sounds nil
+      gnus-treat-strip-banner nil
+      gnus-treat-strip-cr t
+      gnus-treat-strip-leading-blank-lines nil
+      gnus-treat-strip-multiple-blank-lines nil
+      gnus-treat-strip-pem nil
+      gnus-treat-strip-pgp nil
+      gnus-treat-strip-trailing-blank-lines nil
+      gnus-treat-translate nil)
+(setq gnus-visible-headers
+      '("^From:" "^Subject:" "^To:" "^Cc:" "^Resent-To:" "^Message-ID:"
+        "^Date:" "^Newsgroups:" "^Organization:" "Followup-To:"
+        "Reply-To:" "^X-Newsreader:" "^X-Mailer:"
+        "^X-Spam-Level:"))
+(setq gnus-sorted-header-list gnus-visible-headers)
+(setq gnus-extra-headers '(Newsgroups))
+(setq message-generate-headers-first t
+      message-insert-canlock nil
+      message-wash-forwarded-subjects t
+      message-make-forward-subject-function 'message-forward-subject-fwd
+      message-use-mail-followup-to 'use
+      message-subscribed-address-functions '(gnus-find-subscribed-addresses))
+;; (setq spam-directory "~/Mail/spam"
+;;       spam-mark-ham-unread-before-move-from-spam-group t
+;;       spam-use-bogofilter-headers t
+;;       spam-split-group "nnml:spambox"
+;;       spam-junk-mailgroups '("nnml:spambox")
+;;       gnus-spam-process-newsgroups
+;;       '(("mail.*"
+;;          (gnus-group-ham-exit-processor-bogofilter))
+;;         ("spambox"
+;;          (gnus-group-spam-exit-processor-bogofilter)))
+;;       gnus-spam-newsgroup-contents '(("spambox"
+;;                                       gnus-group-spam-classification-spam))
+;;       spam-mark-only-unseen-as-spam t
+;;       gnus-ham-process-destinations '(("spambox" "nnml:mail.misc"))
+;;       gnus-spam-process-destinations '(("mail.*" "nnml:spambox"))
+;;       gnus-parameter-ham-marks-alist '((".*"
+;;                                         ((gnus-del-mark
+;;                                           gnus-read-mark
+;;                                           gnus-killed-mark
+;;                                           gnus-kill-file-mark
+;;                                           gnus-low-score-mark
+;;                                           gnus-expirable-mark)))))
+(setq mail-source-delete-incoming t)
+
+;; gnus-ifile config
+; (require 'ifile-gnus)
+; (setq ifile-classification-mode 'spam-filter-only)
+; (setq ifile-spam-groups '("spambox" "nnml:spambox"))
+; (setq ifile-primary-spam-group "spambox")
+; 
+; (defun gnus-article-classify ()
+;   (interactive)
+;   (let ((ifile-article-buffer (get-buffer "*Article*")))
+;     (ifile-recommend)))
+
+(eval-after-load "gnus-art"
+  '(define-key gnus-mime-button-map (kbd "a") 'fc-gnus-darcs-apply-part))
+
+(defun fc-gnus-darcs-apply-part (repo)
+  "Apply the MIME part under point to a Darcs repository."
+  (interactive "DApply to Darcs repository: ")
+  (gnus-article-check-buffer)
+  (let ((data (get-text-property (point)
+                                 'gnus-data)))
+    (when data
+      (mm-with-unibyte-buffer
+        (mm-insert-part data)
+        (fc-send-region-to-command (point-min)
+                                   (point-max)
+                                   "darcs" "apply"
+                                   (format "--repodir=%s"
+                                           (expand-file-name repo))
+                                   "-a")))))
+
+(defun fc-send-region-to-command (beg end command &rest args)
+  "Call COMMAND with ARGS, and display output in a special buffer."
+  (let* ((coding-system-for-write 'binary)
+         (buf (with-current-buffer
+                  (get-buffer-create "*Shell Command Output*")
+                (setq buffer-read-only nil)
+                (erase-buffer)
+                (current-buffer)))
+         (exit-status (apply 'call-process-region
+                             beg end
+                             command
+                             nil buf nil
+                             args)))
+    (with-current-buffer buf
+      (setq mode-line-process
+            (cond ((null exit-status)
+                   " - Error")
+                  ((stringp exit-status)
+                   (format " - Signal [%s]" exit-status))
+                  ((not (equal 0 exit-status))
+                   (format " - Exit [%d]" exit-status)))))
+    (if (with-current-buffer buf (> (point-max)
+                                    (point-min)))
+        ;; There's some output, display it
+        (display-message-or-buffer buf)
+      ;; No output; error?
+      (cond ((null exit-status)
+             (message "(Command failed with error)"))
+            ((equal 0 exit-status)
+             (message "(Command succeeded with no output)"))
+            ((stringp exit-status)
+             (message "(Command killed by signal %s)"
+                      exit-status))
+            (t
+             (message "(Command failed with code %d and no output)"
+                      exit-status output))))))
+</pre>

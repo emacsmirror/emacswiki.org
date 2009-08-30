@@ -1,0 +1,121 @@
+* (apt-get) Install emacs-intl-fonts and all the packages it suggests.
+
+*  Ensure that bdf-directory-list knows about these fonts: 
+    (add-to-list 'bdf-directory-list 
+	     "/usr/share/emacs/fonts/bdf")
+
+
+
+* Restart X, or else, type xset fp rehash.
+
+* Restart emacs (in windowed mode).
+
+* In a buffer of choice, type C-x RET C-\ devanagari-itrans.  This
+  sets your input method.  Later, type C-\ to toggle between hindi and
+  english.
+
+* Type away the phonetic roman equivalents of the Hindi words, and
+  they will appear in hindi.
+
+* When in the hindi-input mode, typing any special characters like %
+  or ', etc., make emacs go into an infinite self-insert loop --
+  pressa bunch of C-g's to get rid of that.
+
+* To convert a piece of hindi text into its phonetic roman equivalent
+  or vice versa, use M-x devanagari-(encode/decode)-itrans-region.  As
+  you will soon find out, that conversion is not perfect and has minor
+  bugs.
+
+* When you reload a file in which you had typed some hindi, the
+  characters are disjoint and not formed into words.  To convert them
+  back, this works for me: M-x indian-to-devanagari-region, followed
+  by M-x devanagari-compose-region.
+
+* See many other useful functions in your emacs' devan-utils.el and
+  devanagari.el.
+
+
+
+
+== Printing your buffer == 
+
+* Install intlfonts from here: http://directory.fsf.org/localization/intlfonts.html : Download file, uncompress it, type ./configure followed by 'make install' -- this will send them to their default directory: /use/local/share/emacs/fonts/
+
+
+
+* Add this to your .gnomerc, or .xsessionrc, as appropriate: 
+**  xset +fp /usr/local/share/emacs/fonts
+**  xset fp rehash
+** Also eval the above 2 lines for the current session. 
+
+* Note that intlfonts here and emacs-intl-fonts above seem to have
+  things not in common, so probably best to use both.
+
+  
+* Instead of the above step, You could also modify your XF86config-4
+   manually to frob the font path there, but note that if you go this
+   route, this file will stop getting auto-updated from then on when
+   you upgrade your debian xserver-xfree86 package.
+
+
+* Next,     add this to InitFile and restart emacs:
+ (setq ps-multibyte-buffer 'bdf-font-except-latin)
+
+* Your default value for bdf-directory-list already contains the above font-path, but if you installed the fonts elsewhere, ensure that bdf-directory-list knows about that path.
+
+
+* Now, the only problem remaining is that the printout is not as
+  pretty as the typed in text: In the printout, The letters comprising
+  a word aren't joined together, which takes away from the beauty of typed hindi.
+
+
+With many thanks to [[fledermaus]] and tintin on #emacs. 
+
+See also PrintingBdfFonts
+
+== CVS Emacs ===
+
+CVSEmacs with the CDAC fonts can render devanagiri characters. The CDAC fonts are given below. Both Xorg (6.9.0.dfsg.1-4) as well as XFree86 (4.2) support the fonts.
+
+Try having these for cvs emacs seems to help half way.(works perfectly in xfree86. xorg needs a bug fix)
+
+[new]
+It seems to work in Xorg now. Version 6.9.0.dfsg.1-4.
+
+[new]
+The cdac fonts which can be found here: 
+* http://www.m17n.org/emacs-indian/cdacfonts.tar.gz 
+
+Get the fonts and then use the makefile to extract the pcf and bdf fonts. You might need to use <code>mkfontdir</code> to create a fonts.dir. Add the directory to xorg.conf (or the font server config).
+
+<pre>
+
+(load-library "quail/indian")
+(set-fontset-font "fontset-standard" 
+		  (cons (decode-char 'ucs ?\x0900) (decode-char 'ucs ?\x097F))
+		  "-freetype-untitled-medium-r-normal--33-240-100-100-p-163-iso10646.indian-1")
+(set-fontset-font "fontset-standard"
+		  (cons (indian-glyph-char 0 'devanagari) (indian-glyph-char 255 'devanagari))
+		  "-freetype-dv ttsuresh-medium-r-normal-33-240-100-100-p-119-devanagari-cdac")
+(toggle-input-method)
+</pre>
+
+[new]
+It does not seem to be necessary to mess with quail. You can create a new fontset. I prefer doing this in Xresources. So, the fontset will look like: (only the last two are important for Hindi)
+<pre>
+Emacs.Fontset-0:-xos4-terminus-*-r-normal-*-*-*-*-*-*-*-iso10646-1, \
+  chinese-gb2312:-*-fangsong ti-medium-r-normal--*-*-*-*-*-*-gb2312.1980-*, \
+  unicode-mono:-gnu-unifont-medium-r-normal--16-160-75-75-c-80-iso10646-1, \
+  unicode-wide:-gnu-unifont-medium-r-normal--16-160-75-75-c-80-iso10646-1, \
+  mule-unicode-0100-24ff:-freetype-*-*-*-*-*-*-*-*-*-*-*-devanagari-cdac, \
+  indian-glyph:-freetype-*-*-*-*-*-*-*-*-*-*-*-devanagari-cdac
+</pre>
+
+* C-u C-x = on a Hindi character in the HELLO file yields <code>mule-unicode-0100-24ff</code> but adding <code>indian-glyph</code> can't hurt.
+
+== CVS Emacs (emacs-23) ===
+
+If you install m17n-lib 1.5 or above [www.m17n.org] along with lohit devanagari font, emacs can
+display hindi very well [[image:emacs-gnus-hindi]]
+-----
+CategoryInternationalization

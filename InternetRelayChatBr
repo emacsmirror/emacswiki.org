@@ -1,0 +1,71 @@
+Há vários canais de IRC dedicados ao Emacs.  Aqui está uma lista de canais conhecidos:
+
+* #emacs-br @ [http://www.freenode.net irc.freenode.net] (veja CanaldoEmacs)
+* #emacs @ [http://www.freenode.net irc.freenode.net] (veja CanaldoEmacs)
+* #gnus @ [http://www.freenode.net irc.freenode.net] 
+* #mygnus @ irc.my.gnus.org (veja MyGnus)
+
+Relacionado:
+
+* #wiki @ [http://www.freenode.net irc.freenode.net]
+* MeatBall:InternetRelayChat
+
+== Clientes ==
+
+Existe alguns clientes IRC para Emacs:
+
+* EmacsIRCClient aka ERC.
+* IrChat
+* LieceIrcClient
+* ZenIRC
+
+== Ajuda para Novatos ==
+
+* http://www.irc.org/
+* http://www.irchelp.org/
+
+== Documentação para desenvolvedores ==
+
+* RFC 1459 - Protocolo do IRC (Original)
+* RFC 2810 - Arquitetura do IRC (Atualizada)
+* RFC 2811 - Gerenciando Canais
+* RFC 2812 - Protocolo de Cliente IRC
+* RFC 2813 - Protocolo do Servidor
+
+== Recomendações de clientes de IRC para Emacs ==
+
+Eu uso ERC. -- AlexSchroeder
+
+Eu também uso ERC(EmacsIRCClient):
+
+Alguns comentários sobre clientes que eu testei:
+
+Se você estiver procurando por um cliente que faça "a maneira do Emacs", ZenIRC e ERC são definitivamente para você.  
+ERC tem algumas características extra sobre ZenIRC como a cor de tela assim como a possibilidade para separar o buffer de cada canal.  Teste ambos e compare-os você mesmo.
+
+-- MarioLang
+
+Eu também! Eu uso ERC!! --ShaeErisson
+
+Eu amo ERC. Cara, Ele é rox -- GirishB
+
+Eu usei ZenIRC por muito tempo, depois descobri o ERC. ZenIRC teve algumas características que faltam no ERC (e falta ainda, de algum modo).  Agora, ERC está sendo o melhor cliente IRC que eu conheço e eu uso quase diariamente. --AndreasFuchs
+
+
+== Emacs e IRC ==
+
+    <Khmar> Eu não penso que o RMS alguma vez imaginou que as 
+    pessoas jogariam um cliente de IRC em seu editor.
+    <delYsid> há 4 ou 5 para emacs atualmente.
+    <delYsid> liece, riece, zenirc, erc e um que eu esqueci
+    <delYsid> você soube que Ben (um dos autores de Zenirc) 
+    escreveu as specs do ctcp?
+    <resolve> o cliente irc para gurus reais! m-x
+      make-network-connection :_)
+    <resolve> delYsid: não. legal!
+    <delYsid> 1992
+    <delYsid> assim um cliente de IRC para emacs realmente foi
+    envolvido ativamente nos tempos adiantados do projeto do IRC
+
+----
+CategoriaClientesDeChat CategoriaAjuda

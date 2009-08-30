@@ -1,0 +1,10 @@
+Lisp:show-point-mode.el
+
+A simple minor mode to display the value of point in the mode line. It is displayed in brackets, adjacent to the line and/or column number if those are being displayed.
+
+I find this useful when debugging elisp code that uses buffer positions, markers and overlays.
+
+--TobyCubitt
+
+----
+CategoryDisplay

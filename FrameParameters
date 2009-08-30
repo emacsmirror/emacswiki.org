@@ -1,0 +1,69 @@
+[[Frame]] parameters control frame appearance and behavior.
+
+Some frame parameters control frame colors.  Here is a quick and dirty example for GNU Emacs:
+
+ (add-to-list 'default-frame-alist '(foreground-color . "white"))
+ (add-to-list 'default-frame-alist '(background-color . "black"))
+ (add-to-list 'default-frame-alist '(cursor-color . "coral"))
+
+See the EmacsLisp manual for the names of interesting frame parameters.  See HowtoChangeFrameColors for
+other ways to change the frame colors. 
+
+== Local Frame Settings ==
+
+Depending on your version of Emacs, variables and faces can be local to a frame in Emacs.
+
+Use `make-variable-frame-local' to make a variable frame-local. This essentially creates a frame parameter for the variable. XEmacs does not have frame-local variables.
+
+[[Faces]] can be local to a frame in both Emacs and XEmacs.
+
+== Frame's "auto-raising" ==
+
+When you use emacs in window system(not in terminal) and are doing something that generate echoed messages in minibuffer(for example, byte compiling many lisp files...), you cannot set foreground another application in front of emacs. This is sometimes good 'cause we can easily see somethings going on within emacs visually, but sometimes bad 'cause we cannot do any work using another application whiling emacs is doing them. 
+
+For making emacs not to be raised automatically, you should see the 'minibuffer-auto-raise' variable. With the nil value of this, emacs will not raise even if there is any minibuffer message newly printed out. 
+I did
+
+(setq minibuffer-auto-raise nil)
+
+in my .emacs, and while the SemanticBovinator is working his own job in idle state of emacs, i can work other jobs with another application rather than emacs. ;)
+
+see Elisp manual 29.11 Raising and Lowering Frames. 
+
+== Emacs vs XEmacs Issues ==
+
+Emacs uses alists for frame parameters, XEmacs uses plists.  See AlistVsPlist.  Even though there is some hacking involved in providing backward compatibility, XEmacs users would customize the relevant faces, anyway.  XEmacs users would use the plist to change things not related to faces:
+
+ (setq default-frame-plist '(width 80 height 55))
+
+Here is a possible explanation by one of the XEmacs developpers:
+
+ From: HrvojeNiksic
+ Subject: Re: Default full screen
+ Newsgroups: comp.emacs,comp.emacs.xemacs
+ Date: 04 Jun 2001 20:29:29 +0200
+
+
+ It was probably considered that plists were more "modern" or something
+ like that.  The documentation also mentions that it is more usual to
+ modify plists in-place, whether it is normally not done with alists.
+ I don't know if that's actually the case.  Then there is the symmetry
+ with symbol and extent properties which are stored in plists.
+ 
+ The point is, the interface was changing anyway, so the developers at
+ the time probably considered it worthy to make the change.
+ 
+ [ . . . ]
+ 
+ XEmacs internals can recognize both types of usage.  If you're
+ consistent in setting default-frame-alist or default-frame-plist,
+ either should work.
+ 
+ [ . . . ]
+ 
+ That's the best I can give.  As I said, I wasn't around in 19.12 times
+ when these changes were made.
+
+----
+CategoryCustomize
+CategoryFrames

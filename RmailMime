@@ -1,0 +1,150 @@
+There are three packages out there to handle attachments for [[Rmail]]: [http://www.cinti.net/~rmoody/rmime/ rmime.el], rmail-mime.el and [http://rulnick.com/etach/details.html etach.el].  rmail-mime requires [[SEMI]] and [[APEL]] and some other library.
+
+Note that Rmail MIME and RMIME support only *reading* attachments, but Etach allows both reading (detaching) and composing (attaching) MIME messages.
+
+== Rmail MIME ==
+
+A mirror of the RMAIL MIME package is available from m17n.org:
+
+* http://www.m17n.org/rmail-mime/ (DEAD LINK TOO)
+
+== RMIME ==
+
+=== Get it ===
+
+http://www.cinti.net/~rmoody/rmime/ (DEAD LINK TOO)
+
+Note that rmime.el requires some external programs to work.  Most people will
+require *mmencode* which handles base64 encoding, and *metamail* which uses
+you mailcap file to decide which application will handle a particular attachment.
+
+Here is a local copy of rmime.el as of 1996:
+
+Lisp:rmime.el
+
+=== Setup ===
+
+<pre>
+(add-hook 'rmail-show-message-hook 'rmime-format)
+(add-hook 'rmail-edit-mode-hook    'rmime-cancel)
+(autoload 'rmime-format "rmime")
+</pre>
+
+=== Displaying HTML Inline ==
+
+The code example below uses the text browser [[w3m]] to render HTML.
+
+<pre>
+(defun rmime-text/html (content type encoding disposition description)
+  "Handle HTML inline using w3m."
+  (rmime-decode-content "w3m" '("-T" "text/html") content)
+  nil); displays perfectly
+(put 'rmime-text/html 'rmime-unwise t)	; So multipart/alternative avoids this choice
+</pre>
+
+=== Displaying Images Inline ==
+
+I had big plans including generalizing this for all images,
+automatic scaling of images using !ImageMagick, etc.
+At the moment (January 2006) Emacs still has a lot of problems with
+many big images.  Emacs crashes when I use the following code on mails
+with multiple files.  I no longer use it.
+
+<pre>
+(defun rmime-image/jpeg (content type encoding disposition description)
+  "Handle images inline."
+  (unless (string= encoding "base64")
+    (error "Only handling base64 for the moment"))
+  (message "Decoding %s..." type)
+  (insert-image
+   (with-temp-buffer
+     (set-buffer-multibyte nil)
+     (rmime-insert-content t encoding content)
+     (create-image (buffer-string) 'jpeg))
+   type)
+  (message "Decoding %s...done" type))
+</pre>
+
+=== Mac OSX ==
+
+!DarwinPorts doesn't have metamail, so you're on your own, here.
+You need to call the *open* command.  The default behaviour from
+other programs seems to be to save the file on the Desktop and open
+it.
+
+This code redefines `rmail-action', therefore make sure it only gets
+evaluated after rmime.el is loaded:
+
+<pre>
+(eval-after-load "rmime"
+  '(defun rmime-action (content type encoding)
+     (let ((filename (expand-file-name
+		      (or (and (string-match "name=\"\\(.*?\\)\"" type)
+			       (match-string 1 type))
+			  (error "No filename found"))
+		      "~/Desktop")))
+       (while (file-exists-p filename)
+	 (let* ((f (file-name-sans-extension filename))
+		(i 1))
+	   (when (string-match "-\\([0-9]+\\)$" f)
+	     (setq i (1+ (string-to-number (match-string 1 f)))
+		   f (substring f 0 (match-beginning 0))))
+	   (setq filename (concat f "-" (number-to-string i) "."
+				  (file-name-extension filename)))))
+       (message "Decoding %s..." filename)
+       (with-temp-buffer
+	 (set-buffer-multibyte nil)
+	 (rmime-insert-content t encoding content)
+	 (write-region (point-min) (point-max) filename))
+       (message "Opening %s..." filename)
+       (prog1
+	   (call-process "open" nil 0 nil filename)
+	 (message "Opening %s..." filename)))))
+</pre>
+
+== Etach ==
+
+Note that etach is able to read and to send attachements. Also note that, by default, etach.el does not need any external tool. Thus you can use it on GNU/Linux, Microsoft Windows or MacOSX.
+
+=== Get it ===
+
+Etach.el is available at http://rulnick.com/etach/details.html
+
+=== Setup ===
+
+Set it up like that for a basic usage :
+
+<pre>
+(when (require 'etach)
+  (eval-after-load 'rmail
+    '(progn
+       (require 'etach)
+       (define-key rmail-mode-map "F" 'mime-forward)
+       (define-key rmail-mode-map "K" 'kill-label-detached)
+       (define-key rmail-mode-map "D" 'detach)))
+  
+  (eval-after-load 'rmail-summary
+    '(progn
+       (define-key rmail-summary-mode-map "F" 'mime-forward)
+       (define-key rmail-summary-mode-map "K" 'kill-label-detached)
+       (define-key rmail-summary-mode-map "D" 'detach)))
+
+(setq etach-prompt-me-for-file-names t)
+(setq etach-clean-decoded-plain-text t)
+(setq etach-fill-decoded-plain-text t)
+</pre>
+
+With this, you will be able to detach just by pressing on the D key.
+
+=== Report spam to abuse ===
+
+If for any good reason (which is often bad), you want to report spam practice to abuse, use C-u M-x mime-forward RET.
+
+Your buffer will be filled with a default spam complaint, headers in place (notably To:) and the original message will be attached. Just edit To: as you wish and send it as usual.
+
+== Plans ==
+
+AlexSchroeder and HenrikEnberg are working on some code by AlexanderPohoyda...
+
+----
+CategoryMail

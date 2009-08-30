@@ -1,0 +1,19 @@
+I just saw an IRC log on NoThreading. There's a text formatting rule on this wiki that should handle IRC transcripts, that should make the table layout unnecessary.  If you paste from an Emacs [[IRC]] client, it should "just work".
+
+<pre>
+11:25 <kensanata> yow
+12:14 <dut> Hello!
+12:26 <DasSheep> yawn
+</pre>
+
+Turns to:
+
+11:25 <kensanata> yow
+12:14 <dut> Hello!
+12:26 <DasSheep> yawn
+
+Well, to be honest, there are some minor glitches, such as notices:
+
+12:21 *** dut QUIT "Lost terminal"
+
+-- AlexSchroeder

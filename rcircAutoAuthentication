@@ -1,0 +1,32 @@
+If you want [[rcirc]] to auto-authenticate, set the variable `rcirc-authinfo'.
+
+`rcirc-authinfo' should contain one or more lists containing:
+; SERVER-REGEXP: a regular expression string to match server(s)
+; METHOD: a symbol from the set (nickserv chanserv bitlbee)
+; NICK: the user's nickname as string
+; CHANNEL: a channel as string when method is `chanserv', otherwise absent
+; PASSWORD: the user's password as string
+
+example:
+
+ (setq rcirc-authinfo '(("freenode" nickserv "bob" "p455w0rd")
+                        ("freenode" chanserv "bob" "#bobland" "passwd99")
+                        ("bitlbee" bitlbee "robert" "sekrit")))
+
+or put the following in ~/.rcirc-authinfo:
+
+ (("freenode" nickserv "bob" "p455w0rd")
+  ("freenode" chanserv "bob" "#bobland" "passwd99")
+  ("bitlbee" bitlbee "robert" "sekrit"))
+
+and it will be loaded for you when you run rcirc.
+
+Note that if you have BitlBee running locally, you need an entry using "localhost" instead of "bitlbee":
+
+ ((...)
+  ("localhost" "kensanata" bitlbee "mu!"))
+
+auto-authentication can be disabled by setting `rcirc-auto-authenticate-flag' to nil.
+
+----
+CategoryChatClient [[rcirc]]

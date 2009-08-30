@@ -1,0 +1,29 @@
+Who should use or needs this mode?
+
+* This mode is for editing data additions for the Internet Movie Database (IMDb). It's for people who submit such additions regularly and don't use the IMDb's online additions system.
+
+* Please note that IMDb has disabled the e-mail additions interface effective Jan 1st, 2004, for other than long-time, regular submitters. If you are not a long-time, regular submitter to IMDb, you probably cannot use the e-mail additions interface anymore and thus this mode will probably be of no use for you.
+
+Features:
+
+* Provides easy help (description, formal syntax, example, on-line guide and e-mail address) for every IMDb submission keyword
+* Can use locally saved on-line guides instead of connecting to the IMDb WWW server
+* Syntax highlighting (font-lock)
+* Provides menu with most important commands
+* Creates new submission templates with the keywords you choose inserted
+* Creates sub-templates for keywords
+* Has beginner mode which makes using templates even more easier
+* Auto-creates a mail buffer for your data additions to IMDb
+* Provides insertion of comment, correct and namecorrect keywords
+* Provides copying any data field from the next/previous line
+* Provides moving to next/previous IMDb submission keyword
+* Provides swapping any name from non-comma to comma form
+* Provides auto-insertion, increasing or decreasing of roman numerals, e.g. (II), for indexed names
+
+
+You can get it here:
+
+* http://home.snafu.de/ohei/FTP/imdb-adds-mode.el.gz
+
+----
+CategoryModes

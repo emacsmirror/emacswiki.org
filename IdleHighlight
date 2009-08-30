@@ -1,0 +1,3 @@
+M-x idle-highlight sets an idle timer that highlights all occurences in the buffer of the word under the point.
+
+Canonical URL: http://github.com/technomancy/dotfiles/tree/master/.emacs.d/idle-highlight.el

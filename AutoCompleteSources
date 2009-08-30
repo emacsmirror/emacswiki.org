@@ -1,0 +1,161 @@
+This page contains contributed sources for [[AutoComplete]].
+
+Lisp:auto-complete-extension.el contains some sources by AndyStewart.
+
+Lisp:ac-lilypond.el is my (finally working) contribution to LilyPond-mode sources. Redsonya
+
+== Python ==
+
+Completion for python using [[http://code.google.com/p/pysmell/|PySmell]].
+
+<pre>
+(defvar ac-source-pysmell
+  '((candidates
+     . (lambda ()
+         (require 'pysmell)
+         (pysmell-get-all-completions))))
+  "Source for PySmell")
+
+(add-hook 'python-mode-hook
+          '(lambda ()             
+             (set (make-local-variable 'ac-sources) (append ac-sources '(ac-source-pysmell)))))
+</pre>
+
+-- [[TiagoCamargo]]
+
+[new]
+Here's an [[http://www.enigmacurry.com/2009/01/21/autocompleteel-python-code-completion-in-emacs|alternative Python source]] I wrote using Rope.
+
+-- [[EnigmaCurry]]
+
+
+== DynamicAbbreviations ==
+
+Lisp:ac-dabbrev.el (0.0.4)
+
+== Semantic Autocompletion ==
+
+This should get you started:
+
+{{{
+(defun ac-semantic-construct-candidates (tags)
+   "Construct candidates from the list inside of tags."
+   (apply 'append
+		  (mapcar (lambda (tag)
+					(if (listp tag)
+						(let ((type (semantic-tag-type tag))
+							  (class (semantic-tag-class tag))
+							  (name (semantic-tag-name tag)))
+						   (if (or (and (stringp type)
+										(string= type "class"))
+								   (eq class 'function)
+								   (eq class 'variable))
+							   (list (list name type class))))))
+				  tags)))
+
+
+(defvar ac-source-semantic-analysis nil)
+(setq ac-source-semantic
+  `((sigil . "b")
+    (init . (lambda () (setq ac-source-semantic-analysis
+                             (condition-case nil
+                                             (ac-semantic-construct-candidates (semantic-fetch-tags))))))
+    (candidates . (lambda ()
+                    (if ac-source-semantic-analysis
+                        (all-completions ac-target (mapcar 'car ac-source-semantic-analysis)))))))
+}}}
+--JonathanArkell
+== Org Mode ==
+It's a "snarf and barf" of the org-complete code, but it does the trick.  Hopefully I will be able to provide a better version soon.
+
+{{{
+(defvar ac-org-candidates nil)
+(defvar ac-org-pattern nil)
+(defun ac-org-construct-candidates ()
+  "Pabbrev source for org."
+  (let* ((end (point))
+	 (beg1 (save-excursion
+		(skip-chars-backward (org-re "[:alnum:]_@"))
+		(point)))
+	 (beg (save-excursion
+	       (skip-chars-backward "a-zA-Z0-9_:$")
+	       (point)))
+	 (confirm (lambda (x) (stringp (car x))))
+	 (searchhead (equal (char-before beg) ?*))
+	 (struct
+	  (when (and (member (char-before beg1) '(?. ?<))
+		     (setq a (assoc (buffer-substring beg1 (point))
+				    org-structure-template-alist)))
+		(org-complete-expand-structure-template (1- beg1) a)
+		(throw 'exit t)))
+	 (tag (and (equal (char-before beg1) ?:)
+		   (equal (char-after (point-at-bol)) ?*)))
+	 (prop (and (equal (char-before beg1) ?:)
+		    (not (equal (char-after (point-at-bol)) ?*))))
+	 (texp (equal (char-before beg) ?\\))
+	 (link (equal (char-before beg) ?\[))
+	 (opt (equal (buffer-substring (max (point-at-bol) (- beg 2))
+				       beg)
+		     "#+"))
+	 (startup (string-match "^#\\+STARTUP:.*"
+				(buffer-substring (point-at-bol) (point))))
+	 (completion-ignore-case opt)
+	 (type nil)
+	 (tbl nil)
+	 (table (cond
+		 (opt
+		  (setq type :opt)
+		  (require 'org-exp)
+		  (append
+		   (mapcar
+		    (lambda (x)
+		      (string-match "^#\\+\\(\\([A-Z_]+:?\\).*\\)" x)
+		      (cons (match-string 2 x) (match-string 1 x)))
+		    (org-split-string (org-get-current-options) "\n"))
+		   (mapcar 'list org-additional-option-like-keywords)))
+		 (startup
+		  (setq type :startup)
+		  org-startup-options)
+		 (link (append org-link-abbrev-alist-local
+			       org-link-abbrev-alist))
+		 (texp
+		  (setq type :tex)
+		  org-html-entities)
+		 ((string-match "\\`\\*+[ \t]+\\'"
+				(buffer-substring (point-at-bol) beg))
+		  (setq type :todo)
+		  (mapcar 'list org-todo-keywords-1))
+		 (searchhead
+		  (setq type :searchhead)
+		  (save-excursion
+		   (goto-char (point-min))
+		   (while (re-search-forward org-todo-line-regexp nil t)
+			  (push (list
+				 (org-make-org-heading-search-string
+				  (match-string 3) t))
+				tbl)))
+		  tbl)
+		 (tag (setq type :tag beg beg1)
+		      (or org-tag-alist (org-get-buffer-tags)))
+		 (prop (setq type :prop beg beg1)
+		       (mapcar 'list (org-buffer-property-keys nil t t)))
+		 (t (progn
+		     (call-interactively org-completion-fallback-command)
+		     (throw 'exit nil))))))
+    (setq ac-org-pattern (buffer-substring-no-properties beg end))
+    table))
+
+(defvar ac-source-org nil)
+(setq ac-source-org
+      `((sigil . "o")
+	(init . (lambda () (setq ac-org-candidates
+				 (condition-case nil
+						 (ac-org-construct-candidates)))))
+	(candidates . (lambda ()
+			(all-completions ac-target ac-org-candidates)))))
+
+
+}}}
+--JonathanArkell
+
+

@@ -1,0 +1,54 @@
+This category is for Emacs [[key]] reference sheet examples.
+Feel free to copy an existing sheet and make adjustments.
+Be sure to link to it from here.
+
+
+== Short Lists ==
+
+These list are intentionally short -- maybe 50 keys or less.
+Ideally, they would fit nicely on a mug.  :)
+
+* EmacsNewbieHelpReference – Help keys: keys that help you learn Emacs.
+* [[http://www.rgrjr.com/emacs/emacs_cheat.html Cheat Sheet by Bob Rogers]] -- Summary of common Emacs key patterns, to remember and understand better.
+* [[Reference Sheet by Alex Schroeder]]
+* [[Reference Sheet by Chris Smith]]
+
+== Longer Lists ==
+
+* EmacsNewbieKeyReference -- Slightly longer list, aimed especially at EmacsNewbie.
+* ReferenceCards -- Lists of standard GnuEmacs keys in printable form (TeX/%%PostScript%%/PDF).
+* [[http://www.cb1.com/~john/computing/emacs/beyond-tutorial.html Reference Sheet by John Sturdy]] -- Concise summary of keys, [[command]]s, terminology, [[regexp]] syntax….
+
+* [[Reference Sheet by Aaron Hawley]] -- Longer list of keys. 
+* ReferenceSheetHelpUtils -- Started as a set of utilities extending [[Reference Sheet by Aaron Hawley]]. Has since become an animal unto itself.
+* [[V_E_R_A]] -- V.E.R.A. -- Virtual Entity of Relevant Acronyms
+
+== See Also ==
+
+* [[http://www.rgrjr.com/emacs/tutorial.html Outline]] of things to learn, and [[http://www.rgrjr.com/emacs/ Emacs tips]].
+
+* KeatsMode -- How to insert and edit cheat sheets with Emacs.
+
+
+== Discussion ==
+
+[new]
+I looked at Alex's idea, find it useful and tried to marry it with a self documenting editor named Emacs. 
+I gave the married couple the name ##key-cat.el##.
+Even though the marriage is not yet stable you can visit the couple at
+http://bazaar.launchpad.net/~nxhtml/nxhtml/main/files/head%3A/util/.
+They are awaiting at least one baby which they speak about as ##:groups##.
+-- LennartBorgman
+
+[new]
+It looks very neat! -- AlexSchroeder
+
+[new]
+I added an example for those who do not want to try key-cat.el themselves:
+http://ourcomments.org/Emacs/nXhtml/tut/key-cat1.html
+
+There are several things to tweak there, of course.
+The important thing is just that it allows for easy viewing and printing of reference cards.
+If someone want to improve it it would be great!
+----
+CategoryHelp

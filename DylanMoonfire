@@ -1,0 +1,17 @@
+Well, I've been using Emacs for long enough that I think most commands should be chained together. I started somewhere in the 80's when my father introduced me to it and the joys of cc-mode. I've been using it since for just about everything.
+
+At the moment, my major efforts on Emacs is CSharpMode.
+
+* http://mfgames.com/linux/csharp-mode
+* http://cinki.mfgames.com/ (bugs and issues with it)
+* http://forum.mfgames.com/index.php/board,14.0.html (forum)
+
+I also have a blog at http://moonfire.us/blog/ which I update randomly about my various projects, writings (I'm also a novelist), and rants.
+
+[new]
+Welcome to the wiki! I'm trying to imagine the "joys of cc-mode" but will leave it at that...  ;) -- AlexSchroeder
+
+[new]
+Please apply patch from end of CSharpMode that fix TAB indent, highlight and other for .el file after loading csharp-mode (your tracker is unavailable for me at this moment).
+----
+CategoryHomepage

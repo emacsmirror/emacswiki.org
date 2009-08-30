@@ -1,0 +1,8 @@
+The guidelines for writing ERC modules are these:
+
+# Follow established coding conventions (indentation, parenthesis placement, copyright lines, author, GPL paragraphs, ending with a provide statement, first and last line comments)
+# The URL line should point to a page on this wiki named like the module (or similar)
+# Use define-erc-module to define the minor mode, as well as the enabling and disabling functions.
+
+----
+[[ERC]]

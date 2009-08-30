@@ -1,0 +1,66 @@
+InputMethods - general input method information
+
+These instructions are written with Emacs 22, apparently out of the box. You might need LEIM for Emacs 21.
+Type: M-x set-input-method and pick one of
+
+* [[WritingKorean#koreanHangul|korean-hangul]]
+** new [[hangul.el|korean-hangul]] input method
+* korean-hangul3
+* korean-hanja
+* korean-hanja-jis
+* korean-hanja3
+* korean-symbol
+
+[:koreanHangul]
+
+= korean-hangul =
+
+With the input method activated, you will be able to compose characters from the symbols on the [http://content.answers.com/main/content/wp/en/1/1c/Keyboard_Layout_Hangul.png Hangul keyboard]. For a us-ascii keyboard example, type these characters:
+
+* g - ㅎ
+* k - ㅏ
+* s - ㄴ
+* r - ㄱ (this completes the first character and starts the next)
+* m - ㅡ
+* f - ㄹ
+* \C-space - to finish inputing the last character
+
+You should see "한글", which is how you write "Hangul" in, you guessed it, 한글.
+
+This example came from [http://www.learnkoreanlanguage.com/learn-hangul.html learnkoreanlanguage.com]. You will probably need to set your browser's character encoding to EUC-KR to see this page as the server reports "iso-8859-1".
+
+
+= using korean-hangul3 as default input method =
+
+If you use korean-hangul3 instead of korean-hangul as your default korean input method, you might have to 
+
+   (setq default-korean-keyboard "3")
+
+or
+
+   (setq default-input-method "korean-hangul3")
+
+
+= Another packages for correct Korean input =
+
+
+* [[hangul.el]] - by sylphong(see [http://kldp.org/node/91578 kldp.org page(Korean)])
+* hanja-util.el
+
+Because Korean characaters are composition of its vowels and non-vowels, there can be huge number of combinations. Due to this, in some coding system, we cannot write such charaters '헿' but '헤ㅎ'. 
+
+And sometimes, in Korean input mode, we cannot input [, ], {,  or } symbols 
+with default emacs mule. 
+
+It supports not only emacs' traditional "3 beolsik 390(3벌식390)" in more correct way, but also support "3 beolsik final(3벌식최종)". 
+
+Install it under your lisp path, and do
+
+   (require 'hangul)
+   (set-input-method "korean-hangul390") ;; for 3 beolsik 390...
+   ;;(set-input-method "korean-hangul3f") ;; if you want 3 beolsik final...
+
+  
+
+--
+CategoryInternationalization

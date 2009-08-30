@@ -1,0 +1,13 @@
+Marcus Geiger (aka. [::bwolf]) is an emacs user who switches back and forth between programming languages and text editors. His main interrest is functional programming, and Scheme was his first step into it (years ago R4RS). Currently he focuses on CommonLisp as well as Haskell. He studied computer science in munich germany.
+
+He exclusively uses *nix and prefers absolutely BSDUnix. His working environment consists among some ppc based machines, also of x86 machines and one sparc based machine.
+
+The current emacs version he uses is ##GNU Emacs 22.0.50.1 (powerpc-apple-darwin8.6.0) of 2006-05-15##
+
+== Emacs wishlist ==
+
+* lexical scoping
+* faster bytecode
+
+----
+CategoryHomepage

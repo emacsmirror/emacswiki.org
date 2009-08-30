@@ -1,0 +1,802 @@
+TRAMP [:TRAMP] (Transparent Remote Access, Multiple Protocols) is a package for editing remote files, similar to AngeFtp or efs. Whereas the others use FTP to connect to the remote host and to transfer the files, TRAMP uses a remote shell connection (rlogin, telnet, ssh). It can transfer the files using rcp or a similar program, or it can encode the file contents (using uuencode or base64) and transfer them right through the shell connection.
+
+Tramp was formerly called RCP or rcp.el.
+
+It allows you transparent access to files on remote access.  "Transparent" means that usually the user doesn't have to worry about anything.  All that changes is the filename convention to indicate that the file resides on a remote system.
+
+If Tramp isn't fast enough for you, try shfs at http://shfs.sourceforge.net/
+
+If Tramp still isn't fast enough for you (or if you don't use linux), try http://linux.com/feature/54498
+
+== Obtaining TRAMP ==
+
+You can get it from here:
+
+* http://savannah.gnu.org/projects/tramp
+
+Or from recent Emacs CVS HEAD.  TrampMode will be a part of Emacs starting with version 22.1.
+
+Tramp Documentation:
+
+* http://www.gnu.org/software/tramp/
+
+== Quick-start tramp configuration ==
+
+    (setq tramp-default-method "ssh")
+
+For GNU Emacs
+
+    C-x C-f /remotehost:filename  RET (or /method:user@remotehost:filename)
+
+For [S]XEmacs use the syntax
+
+    C-x C-f /[method/user@remotehost]/filename
+
+Also,
+
+{{{
+<fsbot> [5] emacs syntax: /<user>@<host>:/path/to/file or
+	/<protocol>:<user>@<host>:/path/to/file,
+<fsbot> [6] xemacs syntax: /[<protocol>/<user>@<host>]/path/to/file or
+	/<user>@<host>]/path/to/file,
+<fsbot> [7] /su::/etc/hosts to edit /etc/hosts as root,
+<fsbot> [8] note double : when using su to be root
+}}}
+
+== Troubleshooting ==
+
+''' SELinux issues'''
+
+If you do something like this 
+
+  C-x C-f /sudo::/etc/sysconfig/iptables
+
+with a default install of Tramp (well the one bundled with Emacs23) and have 
+SELinux enabled then Tramp will overwrite the SELinux context with "user_u:object_r:tmp_t"
+from whatever it was.  In the case of iptables having a system context it will prevent your
+firewall from restarting!
+
+This is likely to be due to intermediate tmp files (guessing here) with the Tramp/sudo interaction.  Not sure how one might configure around this.
+
+
+''' Tramp hangs '''
+
+If you're wondering why tramp just hangs then check that ssh hasn't
+just suddenly died.  This may be due to pppd, routers or whatever.  In
+any case neither ssh on the client nor sshd on the server notice that
+the connection has disappeared.  When the next command is sent,
+however, ssh notices that the line has been dropped and exits.  And
+now you have a problem - however, just hitting C-g and then attempting the save/get/whatever operation again should just work (until the next time ssh is dropped).
+
+Another thing that can cause tramp to hang (I saw this with Solaris at the remote end) is using
+an ancient /bin/sh as the remote shell. Switching to bash fixed it. 
+
+
+I had a hang when I saw "Sending the Perl `mime-encode' implementations."  Setting my default method to "scp" fixed it (though now it's slower).
+
+If Tramp hangs with Solaris at the local end, try using "scpx" as your default tramp method. Also check that the hostname you are invoking Tramp with, matches what is in the ##~/.ssh/known_hosts## file; e.g. if the known_hosts file specifies the host with an IP, use an IP in the Tramp invocation.
+
+If you're using SVN or DARCS (or likely other things) with VC, see below for problem descriptions.
+
+''' Tramp hangs #2 '''
+
+If you are a victim of the following:
+
+{{{
+tramp: Waiting for remote host to process data...
+}}}
+
+It could be a problem with sending large chunks to the remote host.
+Please type ##C-h v tramp-chunksize RET## and follow the instructions
+shown there.
+
+You could also ##(setq tramp-chunksize 500)## to see if that helps.
+
+''' Tramp hangs #3 '''
+
+If you use zsh and Tramp hangs every time you try to connect, try placing this in your .zshrc:
+
+{{{
+[ $TERM = "dumb" ] && unsetopt zle && PS1='$ '
+}}}
+
+Alternatively, I had success using the following in my .zshrc:
+
+{{{
+unsetopt prompt_cr
+}}}
+
+I've noticed that preexec and precmd call also be noxious if they do fancy stuff.
+I've ended up with:
+
+{{{
+if [ "$TERM" = "dumb" ]
+then
+  unsetopt zle
+  unsetopt prompt_cr
+  unsetopt prompt_subst
+  unfunction precmd
+  unfunction preexec
+  PS1='$ '
+fi
+}}}
+
+== Tips and tricks ==
+
+'''Using su to edit stuff as root'''
+
+C-x C-f /su:&#58;/etc/hosts RET
+
+Please note the double :
+
+----
+
+'''Using Tramp to open files sudo'd to root'''
+
+One lazy afternoon, one "sudo vi foo" too many (or rather "udo vi foo", while my term was blocked because of the stupid ^S handling), I came up with this and was, subsequently, happy:
+
+It may be worth knowing that the sudo method and tail.el doesn't get along. At least on [[bkhl]]'s machine, opening stuff with /sudo: wont work if tail.el is loaded.
+
+{{{
+(defvar find-file-root-prefix (if (featurep 'xemacs) "/[sudo/root@localhost]" "/sudo:root@localhost:" )
+  "*The filename prefix used to open a file with `find-file-root'.")
+
+(defvar find-file-root-history nil
+  "History list for files found using `find-file-root'.")
+
+(defvar find-file-root-hook nil
+  "Normal hook for functions to run after finding a \"root\" file.")
+
+(defun find-file-root ()
+  "*Open a file as the root user.
+   Prepends `find-file-root-prefix' to the selected file name so that it
+   maybe accessed via the corresponding tramp method."
+
+  (interactive)
+  (require 'tramp)
+  (let* ( ;; We bind the variable `file-name-history' locally so we can
+   	 ;; use a separate history list for "root" files.
+   	 (file-name-history find-file-root-history)
+   	 (name (or buffer-file-name default-directory))
+   	 (tramp (and (tramp-tramp-file-p name)
+   		     (tramp-dissect-file-name name)))
+   	 path dir file)
+
+    ;; If called from a "root" file, we need to fix up the path.
+    (when tramp
+      (setq path (tramp-file-name-path tramp)
+   	    dir (file-name-directory path)))
+
+    (when (setq file (read-file-name "Find file (UID = 0): " dir path))
+      (find-file (concat find-file-root-prefix file))
+      ;; If this all succeeded save our new history list.
+      (setq find-file-root-history file-name-history)
+      ;; allow some user customization
+      (run-hooks 'find-file-root-hook))))
+
+(global-set-key [(control x) (control r)] 'find-file-root)
+}}}
+This rebinds C-x C-r. I don't have any use for find-file-read-only, so I guess that's the closest to C-x C-f you can come, QWERTY-keymap-wise. (-; --AndreasFuchs
+[new]
+You'll be pleased to note that it's good Dvorak-wise too :D --ErikBourget
+
+[new]
+Great stuff Andreas!  I edited the above suggestion to improve the
+handling of history list and added a "find-file-root-hook".  The
+latter is very useful for doing some system file specific things. For
+example, the following can help to discourage careless editing of
+system files:
+
+{{{
+(defface find-file-root-header-face
+  '((t (:foreground "white" :background "red3")))
+  "*Face use to display header-lines for files opened as root.")
+
+(defun find-file-root-header-warning ()
+  "*Display a warning in header line of the current buffer.
+   This function is suitable to add to `find-file-root-hook'."
+  (let* ((warning "WARNING: EDITING FILE AS ROOT!")
+   	 (space (+ 6 (- (window-width) (length warning))))
+   	 (bracket (make-string (/ space 2) ?-))
+   	 (warning (concat bracket warning bracket)))
+    (setq header-line-format
+   	  (propertize  warning 'face 'find-file-root-header-face))))
+
+(add-hook 'find-file-root-hook 'find-file-root-header-warning)
+}}}
+
+-- KahlilHodgson
+
+[new:rubikitch:2007-08-21 16:55 UTC]
+{{{
+(defun find-file-hook-root-header-warning ()
+  (when (and buffer-file-name (string-match "root@localhost" buffer-file-name))
+    (find-file-root-header-warning)))
+(add-hook 'find-file-hook 'find-file-hook-root-header-warning)
+}}}
+
+Using find-file-hook is better, I think. -- [[rubikitch]]
+
+[new]
+The code above depends on function ##tramp-file-name-path##, which appears to me not to be defined anywhere in the current release of TRAMP (2.1.13) nor in any of four random earlier releases I downloaded and checked. No luck on google (some usages, no definition), koders or krugle either.
+
+-- PhilHudson
+
+[new]
+And the following can help us maintain a record of any changes we make
+to system files:
+
+{{{
+(defvar find-file-root-log "~/system/root-log"
+  "*ChangeLog in which to log changes to system files.")
+
+(defun find-file-root-log-do-it()
+  "Add an entry for the current buffer to `find-file-root-log'."
+  (let ((add-log-mailing-address "root@localhost")
+   	(add-log-full-name "")
+   	(add-log-file-name-function 'identity)
+   	(add-log-buffer-file-name-function
+   	 (lambda () ;; strip tramp prefix
+   	   (tramp-file-name-path
+   	    (tramp-dissect-file-name
+   	     (or buffer-file-name default-directory)))
+   	   )))
+    (add-change-log-entry nil find-file-root-log 'other-window)))
+
+(defun find-file-root-log-on-save ()
+  "*Prompt for a log entry in `find-file-root-log' after saving a root file.
+   This function is suitable to add to `find-file-root-hook'."
+  (add-hook 'after-save-hook 'find-file-root-log-do-it 'append 'local))
+
+(add-hook 'find-file-root-hook 'find-file-root-log-on-save)
+}}}
+
+Or we may just have some personal preferences:
+
+{{{
+(defun my-find-file-root-hook ()
+  "Some personal preferences."
+  ;; Turn auto save off and simplify backups (my version of tramp
+  ;; barfs unless I do this:-)
+  (setq buffer-auto-save-file-name nil)
+  (set (make-local-variable 'backup-by-copying) nil)
+  (set (make-local-variable 'backup-directory-alist) '(("."))))
+
+(add-hook 'find-file-root-hook 'my-find-file-root-hook)
+}}}
+
+-- KahlilHodgson
+
+[new]
+I often view or edit file remotely and extended the above procedure to handle files already open with tramp. The code is a bit ugly but it is working. It is meant to replace toggle-read-only function. I have only tested it on Emacs.
+
+{{{
+(defun really-toggle-read-only (&optional force)
+  "Change whether this buffer is visiting its file read-only by really
+trying to acquire the rights with sudo (and tramp)"
+  (interactive "P")
+  (let* ((currentfilename buffer-file-name)
+	 (newfilename
+          ;; We first check that the buffer is linked to a file
+          (if (not currentfilename)
+              ;; If not, we just toggle the read-only mark
+              nil
+            ;; What is the current state
+            (if buffer-read-only
+                ;; The buffer is read-only, we should acquire rights to edit it
+                (if (and (not force) (file-writable-p currentfilename))
+                    ;; The file is writable, we don't need to acquire rights
+                    nil
+                  (if (buffer-modified-p)
+                      (error "Buffer is read-only and has been modified. Don't know what to do.")
+                    ;; To acquire rights, we need to use sudo
+                    ;; Do we have a tramp file name ?
+                    (if (eq (string-match tramp-file-name-regexp currentfilename) 0)
+                        ;; Yes, we add sudo to it
+                        (let* ((v (tramp-dissect-file-name currentfilename))
+                               (l (tramp-file-name-localname v)))
+                          (if (or (string= "sudo" 
+                                           (let ((m (tramp-file-name-method v)))
+                                             (if (not (stringp m))
+                                                 (car (last (append m nil)))
+                                               m)))
+                                  (eq (string-match "^sudo::" l) 0))
+                              (error "This file is already opened with sudo")
+                            ;; We add sudo
+                            (let ((toarray (lambda (a) (if (and (not (stringp a)) (arrayp a))
+                                                           a (vector a)))))
+                              (tramp-make-tramp-file-name
+                               "multi"
+                               (vconcat (apply toarray (list (tramp-file-name-method v))) ["sudo"])
+                               (vconcat (apply toarray (list (tramp-file-name-user v))) ["root"])
+                               (vconcat (apply toarray (list (tramp-file-name-host v))) ["localhost"])
+                               l))))
+                      ;; It is not a tramp file-name
+                      (tramp-make-tramp-file-name
+                       nil "sudo" nil "" currentfilename))))
+              ;; The buffer is not read-only, we must drop rights
+              (if (buffer-modified-p)
+                  (error "Buffer is modified, save it first first.")
+                (if (eq (string-match tramp-file-name-regexp currentfilename) 0)
+                    ;; We should remove sudo
+                    (let* ((v (tramp-dissect-file-name currentfilename))
+                           (l (tramp-file-name-localname v))
+                           (m (tramp-file-name-method v)))
+                      ;; Two cases, either sudo is in local file name part or in the methods
+                      (if (eq (string-match "^sudo::" l) 0)
+                          ;; Necessary, we have a multi (otherwise, sudo would not have been
+                          ;; in the localname)
+                          ;; Do we have more than one method left ?
+                          (if (> (length m) 1)
+                              ;; Yes, still multi
+                              (tramp-make-tramp-file-name
+                               "multi"
+                               m
+                               (tramp-file-name-user v)
+                               (tramp-file-name-host v)
+                               (progn (string-match "^sudo::\\(.*\\)$" l)
+                                      (match-string 1 l)))
+                            ;; We don't need multi anymore
+                            (tramp-make-tramp-file-name
+                             nil
+                             (car (append m nil))
+                             (car (append (tramp-file-name-user v) nil))
+                             (car (append (tramp-file-name-host v) nil))
+                             (progn (string-match "^sudo::\\(.*\\)$" l)
+                                    (match-string 1 l))))
+                        ;; sudo should be in the methods
+                        (if (and (stringp m) (string= m "sudo"))
+                            l
+                          (if (and (not (stringp m)) (string= (car (last (append m nil))) "sudo"))
+                              ;; Do we still need multi ?
+                              (if (> (length m) 2)
+                                  (tramp-make-tramp-file-name
+                                   "multi"
+                                   (apply 'vector (butlast (append 
+                                                            m nil)))
+                                   (apply 'vector (butlast (append 
+                                                            (tramp-file-name-user v) nil)))
+                                   (apply 'vector (butlast (append 
+                                                            (tramp-file-name-host v) nil)))
+                                   l)
+                                (tramp-make-tramp-file-name
+                                 nil
+                                 (car (append m nil))
+                                 (car (append (tramp-file-name-user v) nil))
+                                 (car (append (tramp-file-name-host v) nil))
+                                 l))
+                            ;; No sudo found
+                            nil))))
+                  ;; This is not a tramp file
+                  nil))))))
+    (if newfilename
+        (find-alternate-file newfilename)
+      (toggle-read-only))))
+}}}
+
+There are some bugs: for example, you need to always use the former user@host (and not just host). This is because tramp-make-tramp-file-name with multi as the first paremeter does not accept nil as one of the member of the user vector.
+
+ -- VincentBernat
+
+[new]
+I use [InteractivelyDoThings ido], it's very handy. So I always open the file use ido-find-file and then open it with TRAMP:
+
+{{{
+(defun find-alternative-file-with-sudo ()
+  (interactive)
+  (when buffer-file-name
+    (find-alternate-file
+     (concat "/sudo:root@localhost:"
+	     buffer-file-name))))
+(global-set-key (kbd "C-x C-r") 'find-alternative-file-with-sudo)
+}}}
+----
+
+'''Tramp on NTEmacs with cygwin ssh'''
+
+To get this to work, here are some of the things I noticed, 
+* You have to create your keys and stuff and after putting them into memory, run NTEmacs from the cygwin shell. 
+
+* You have to use sshx as the tramp-default-method otherwise it complains about a terminal or something. 
+
+[new]
+With putty, this finally seems to work. 
+
+* First, use the puttygen to generate your keys (Apparently, the authentication agent called paegant needs them with some kind of comments and stuff). 
+
+* Start paegant which is the authentication agent with the putty suite and load the keys.
+
+* Then connect using the pscp method. This seems to work.
+
+-- NoufalIbrahim
+
+[new:WeyHan:Thu May 22 18:20:19 UTC 2008]
+vbscript way to launch emacs from a shortcut (don't need to be in cygwin prompt or putty) and still work:
+
+# Make sure that the login script in your cygwin home (.bashrc or .bash_profile) sets up the ssh-agent env. Example: I have a batch script that I use to load keychain and the keys upon login and in my .bashrc, I source the file ~/.keychain/<host>-sh to setup the env.
+
+# Create a emacs.vbs with your **FAVORITE** editor. Paste the following line in the file (change the files location as necessary):
+##WScript.CreateObject("WScript.Shell").Run "c:\cygwin\bin\bash -l -c /usr/local/emacs/22.2/bin/emacs", 0, false##
+
+# Place the file on your desktop, start menu, quick menu, or whatever place convenient.
+
+# Click or double click (depending on where you place it) on emacs.vbs to launch emacs.
+
+# tramp away!
+
+One fair warning is that it may not work with every env. I have an office notebook that won’t work with the above method. However, that is because it also won’t work even if I start emacs from cygwin command prompt. It must be that particular cygwin installation that is causing the problem. YMMV -- WeyHan
+
+[new:DrewAdams:2004-12-25 18:58 UTC]
+Could both recipes be made clearer? What is meant by "you have to create your keys and stuff" and "put them in memory"? What is puttygen and how to use it? How to start paegant and load keys? -- DrewAdams
+
+[new]
+: Creating keys refers to generating them. It's done on Cygwin using ssh-keygen (IIRC) and with puTTY using PuTTYgen.
+: Putting them into memory is when you enter your passphrase once and it stores it in memory. An agent runs (ssh-agent on cygwin and Pageant with puTTY) which applications can contact to get the passphrase. This is necessary so that you don't have to enter your passphrase when tramp tries to connect.
+
+[new:DrewAdams:2004-12-25 18:58 UTC]
+I tried using the nqmacs build (21.3.50, from 2004/07/26) on Windows XP, which apparently uses Tramp, not ange-ftp, by default. I wasn't successful connecting to Linux with Tramp. Advice on what to check (at both ends: Linux and Windows)? I tried with `tramp-default-method' as "ssh" and as "sshx". I tried starting Emacs from a Cygwin shell also. -- DrewAdams
+
+[new]
+: The first thing would be to make sure that you can connect without a password prompt from a shell. That would mean that your authentication agent and keyrings are setup fine. After that, it's just a matter of getting Emacs to use a command line program to fetch the file which is not a problem. 
+
+[new]
+The following commands, from the cygwin shell, have worked for me with ntemacs-21.2, winXP-SP2, tramp-2.1.3:
+
+  $ eval `ssh-agent`
+  $ ssh-add
+  $ (/cygdrive/c/emacs-21.2/bin/emacs &)
+
+[new]
+The most common problem with ntemacs and cygwins openssh is the following:
+"Pseudo-terminal will not be allocated because stdin is not a terminal."
+This is solved by adding:
+
+{{{
+(setq tramp-default-method "ssh")
+
+(nconc (cadr (assq 'tramp-login-args (assoc "ssh" tramp-methods)))
+       '(("bash" "-i")))
+(setcdr (assq 'tramp-remote-sh (assoc "ssh" tramp-methods))
+	'("bash -i"))
+}}}
+
+-- Kvasi
+
+The above also helped me solve that /bin/sh doesn't expand tilde (~) correctly in Solaris. Either set it to bash like above (which might or might not be installed), or ksh. -- HenrikHolmboe
+
+[new]
+Getting tramp to work on windows 2000 was a pain!  So, I wrote a tutorial. Hope it helps.
+
+http://www.jeremyenglish.org/docs/tramp_ntmacs.pdf
+----
+'''Tramp on emacs, ssh and cygwin/X'''
+
+Tramp-mode can be made to operate within the cygwin/X environment as an alternative to NTEmacs. In this approach, emacs is installed as a cygwin package and can be run in the cmd bash shell, rxvt, or under X-windows. In order for tramp-mode to function, the following should be added to your .emacs file:
+
+{{{
+;; tramp support
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/")
+(require 'tramp)
+(setq tramp-default-method "sshx")
+}}}
+
+This was tested on Windows XP using:
+
+{{{
+GNU Emacs 21.2.1 (i686-pc-cygwin, X toolkit) of 2004-03-23 on cm-test
+CYGWIN_NT-5.1 diogenes 1.5.19(0.150/4/2) 2006-01-20 13:28 i686 Cygwin
+}}}
+
+This approach works with or without ssh-agent / keychain. It also works using the stock cygwin.bat, with [http://www.soe.ucsc.edu/~you/notes/cygwin-install.html#mozTocId306872 "tty and binmode"] cygwin.bat, with [http://www.soe.ucsc.edu/~you/notes/cygwin-install.html#mozTocId333576 rxvt], or under X-windows.
+
+--CarsonReynolds
+----
+'''Problem with a "plink -telnet" method on nqmacs (to AIX)''' 
+
+I'm trying to use tramp on a W$ box to connect to an AIX machine
+("porco") via telnet because I can't install ssh on porco, and I'm
+having to use "plink -telnet" because the default telnet client is
+broken - both "telnet" and "plink -telnet" work when I run them in DOS
+or 4NT windows, but "telnet" exits immediately when invoked inside a
+"M-x shell" buffer...
+
+This is a log from an M-x shell buffer, with hostnames and usernames
+changed to protect me from sysadmin paranoia:
+
+    [c:\edrx\edrx]plink -telnet porco
+    
+    telnet (porco)
+    
+    AIX Version 4
+    (C) Copyrights by IBM and by others 1982, 1996.
+    login: aixuser
+    aixuser's Password: 
+    *****************************************************************************
+    *                                                                           *
+    *  Welcome to AIX Version 4.3!                                              *
+    *                                                                           *
+    *  Please see the README file in /usr/lpp/bos for information pertinent to  *
+    *  this release of the AIX Operating System.                                *
+    *                                                                           *
+    *****************************************************************************
+    Last unsuccessful login: Mon Dec 12 19:12:33 GRNLNDST 2005 on /dev/pts/2 from bla.bla.net.br
+    Last login: Tue Dec 13 15:56:18 GRNLNDST 2005 on /dev/pts/36 from 10.0.0.22
+    
+    Sending nohup output to nohup.out.
+    $ echo $SHELL
+    /bin/ksh
+    $ /us1/ston/pro/edrx/usrc/bash-3.0/bash
+    bash-3.00$ 
+}}}
+
+Shouldn't the code below work? Am I missing something obvious?  
+
+{{{
+(require 'tramp)
+(setq tramp-verbose 10)
+(setq tramp-default-method "plinkt")
+(setq tramp-debug-buffer t)
+(add-to-alist 'tramp-methods
+              '("plinkt"
+                (tramp-connection-function tramp-open-connection-telnet)
+                (tramp-login-program "plink")
+                (tramp-copy-program nil)
+                ;; (tramp-remote-sh "/bin/sh")
+                (tramp-remote-sh "/us1/ston/pro/edrx/usrc/bash-3.0/bash")
+                (tramp-login-args ("-telnet"))
+                (tramp-copy-args nil)
+                (tramp-copy-keep-date-arg nil)
+                (tramp-password-end-of-line "xy")))
+    
+(find-file "/aixuser@porco:/us1/")
+}}}
+
+The output in the buffer *tramp/plink aixuser@porco* is terribly
+brief: just
+
+    FATAL ERROR: Network error: Connection refused
+    
+    Process *tramp/plink aixuser@porco* exited abnormally with code 1
+
+Any hints on how to debug that? Thanks, cheers, EduardoOchs (2005-12-13)
+
+[new]
+By the way, I'm using nqmacs ("GNU Emacs 22.0.50.1
+(i386-mingw-nt5.0.2195) of 2005-06-26") on Windows 2000...
+[new]
+I get the plinkt work with 23.0.94.1 on windows XP. My configuration is almost the same as yours except: 1, (tramp-login-args (("-telnet") ("%h"))); 2, I didn't configure tramp-password-end-of-line. -- lgfang
+----
+'''How do you set up TrampMode to make multi-hop methods less painful to work with?'''  Say I can ssh to node 'secret' only from 'remote', I'd use:
+
+    /multi:ssh:foo@remote:ssh:bar@secret:~/.emacs
+
+Can I set TrampMode up so that a method like:
+
+    /secret:~/.emacs
+
+would access the same file in the same manner?  I.e., can I set it up to use an abbreviated path?  -- Dirk
+
+[new]
+Multis don't work in the current version.  Use proxies: http://www.gnu.org/software/tramp/#index-multi_002dhop-100
+
+
+---- 
+'''How do you do a three-step multi?'''  or '''Why doesn't multi work?'''
+
+   /multi:ssh:me@localhost:ssh:other@localhost:   # gets me to dired on other
+   /multi:ssh:me@foo:ssh:me@bar:sudo:me@localhost:  # edits  
+
+Multi-hops seems like an obsolete format.  The current documentation (May 2005) says stuff about proxies.
+
+First set up a proxy triplet:
+
+; host + user > proxy
+(add-to-list 'tramp-default-proxies-alist
+                  '("\\`.*\\.firewalled\\.site\\.edu\\'"
+                    nil
+                    "/ssh:proxy\\.firewalled\\.site\\.edu:"))
+
+Then use as normal:
+
+ C-x C-f /hidden.firewalled.site.edu:
+
+[new]
+I am also interested in being able to use prefixes/abbrebiations as Dirk asked. So I raise this question again in order to let this page pop up in RecentChanges, so that smart people will notice it ;-)  -- Jurijs Oniscuks
+
+[new]
+One way of doing this would be to define your own function to add to `FILE-NAME-HANDLER-ALIST', to be invoked instead of tramp:
+
+something like:
+
+{{{
+(defvar my-tramp-abbrevs '(("secret" . "some-long-method")
+                           ("host2" . "some-other-method")))
+
+(defun my-file-name-handler (filename &rest rest)
+  (setq filename 
+        (catch 'done
+          (loop for (abbrev . name) in my-tramp-abbrevs
+                if (string= abbrev (something-to-extract-filename))
+                (throw 'done (substitute-abbrev-with-full-name)))
+          (throw 'done filename)))
+  (let ((file-name-handler-alist (cdr file-name-handler-alist)))
+    (find-file filename)))
+}}}
+
+This is rather rough, and most probably needs some serious testing, since it's done without recourse to an Emacs installation.
+
+Basically, you add your own handler to the front of file-name-handler-alist, then, check the filename to see if it matches one of the abbreviations you've defined.  If yes, the abbreviation is substituted.  Then, we reinvoke find-file, and let the other file-name-handlers kick in.  -- LawrenceMitchell
+
+[new]
+By the way, it might be worth asking on the tramp list to see if anyone else has a fully-fledged, and working, abbreviation scheme.
+
+[new]
+I just use AbbrevMode.  It works well for me.  -- JoelHolveck
+
+[new]
+Here's a method proposed by bojohan on #emacs, that involves using environment variables:
+
+  (setenv "SECRET" "/ssh:user@secret.tld:")
+
+Then you only need to load:
+
+  /$SECRET/path/to/file
+
+-- MichelValdrighi
+
+[new]
+I find using a [[bookmark]] works quite well: just open a frequently accessed file/directory using tramp and type C-x r m. Then you can give it as short a name as you like. See BookMarks for more details. --EmorySmith
+
+----
+'''Editing files via sudo doesnt work with vc-svn.el.'''
+ 
+I get this in *Subversion Output*:
+
+  svn: '/sudo:root@localhost:/home/elements' is not a working copy
+
+
+In *Messages*:
+
+  apply: Error running Subversion to check status of `shadow'
+
+And in my .emacs I have:
+
+  (add-to-list 'vc-handled-backends 'SVN)
+
+--HenrikHolmboe
+
+[new]
+If you don't need to use vc-svn at all - i use psvn (http://www.xsteve.at/prg/vc_svn/) exclusively - here's a quick fix to effectively disable vc-svn entirely so that you can edit files with tramp/sudo.
+
+Find the function `vc-svn-registered' in vc-svn.el (should be around line 112) and replace it with the following:
+
+{{{
+;; hack to disable vc-svn
+(defun vc-svn-registered (file) nil)
+}}}
+
+--EmorySmith
+
+[new]
+I use this in my .emacs to disable vc-svn on files accessed with tramp:
+{{{
+(defadvice vc-svn-registered (around my-vc-svn-registered-tramp activate)
+  "Don't try to use SVN on files accessed via TRAMP."
+  (if (and (fboundp 'tramp-tramp-file-p)
+           (tramp-tramp-file-p (ad-get-arg 0)))
+      nil
+    ad-do-it))
+}}}
+
+--MartinKuehl
+
+[new]
+'''Editing files not under DARCS version control via TRAMP doesn't work when using Jorgen Schäfer's vc-darcs.el v1.3 or earlier''', please upgrade to 1.4. See VcDarcs
+
+----
+'''I want to completely turn off backups for Tramp.'''
+
+[new]
+I guess the simplest way would be a hook, but I can't figure out what the name of the Tramp hook is. tramp-mode-hook doesn't seem to work -- [[bkhl]]
+
+try here: http://www.gnu.org/software/tramp/#Auto_002dsave-and-Backup --EmorySmith
+
+----
+
+'''Helpful variables you can set for debugging:'''
+
+{{{
+(require 'tramp)
+(setq tramp-debug-buffer t)
+(setq tramp-verbose 10)
+}}}
+
+-- CarsonReynolds (adopted from PhilSuh)
+
+----
+
+'''Connecting to a different port:'''
+
+Use the self-described "kludgy" hostname (see documentation for tramp-open-connection-rsh function): ##C-x C-f /ssh:test@host#2222:/tmp##
+
+-- BradRobelForrest
+
+The kludge does not work with plink (at least with plink v.0.60 and tramp coming with emacs 22.2.1), since tramp uses the hard-coded argument -p to specify the port, while plink wants -P (upper case). Need to introduce a customizable variable to this end.
+
+-- MstislavElagin
+
+-----
+'''Using CVS on the remote server:'''
+
+If you are using editing files remotely on CVS, and that CVS server is itself a remote machine requiring passphrase via ssh, try this trick. Add "-A" to your argument list for ssh.  "-A" will forward your SSH keys to the remote machine (say remotemachine1), which can then use those keys for the authentication to the remote CVS server (say remotemachine2).  Check this from the command line first: 
+
+ $ ssh -A remotemachine1
+ $ cd <to-working-checkout-using-remotemachine2-as-repository>
+ $ cvs log file
+
+If this is working, you should not be prompted for a passphrase.  (You will need to ensure your SSH key on your local machine is also on the remote CVS server remotemachine2).
+
+To setup TRAMP to use these options: use "M-x customize-option tramp-methods", then insert a "-A" in "ssh" in the "tramp-login-args" just before "-e" and "none".   
+
+A simpler solution if you don't mind all of your SSH commands forwarding the SSH keys (this has security implications, so be careful), is to add:
+
+ ForwardAgent yes
+
+in your ##~/.ssh/config## file.
+
+(Tested with Emacs from CVS 22.0.50 and Tramp 2.0.47).
+
+----
+'''Using sftp or psftp without ssh'''
+
+Because tramp uses plink to login with all putty variants, and ssh to login with all openssh variants, its not possible to use psftp or sftp connection using Tramp.  There's not a way to override the tramp-login-program aspect of the alist tramp-methods.  Unfortunately, nothing's changed since 2004.[http://lists.gnu.org/archive/html/tramp-devel/2004-03/msg00046.html][http://lists.gnu.org/archive/html/tramp-devel/2004-03/msg00047.html]  Tramp can only do SFTP over SSH, and AngeFtp doesn't currently support SFTP, and with no plans to handle it, since Tramp supports SFTP over SSH.
+
+This is problematic with hosting accounts where access is only via sftp... other protocals (such as ssh) are disabled.
+
+----
+'''Using tramp with archive-mode'''
+Does anyone have a working configuration that combines tramp and archive-mode?
+I can open the remote archive but when I try to open a file within the archive I get:
+
+ byte-code: Opening output file: no such file or directory, c:/archive.tmp4324x-f/arc-mode.4324xFU
+
+This is using the following config:
+
+ ; tramp
+ ;(setq archive-tmpdir "/temp")
+ (setq temporary-file-directory "/")
+ ;(prefer-coding-system 'utf-8-unix)
+ ;(add-untranslated-filesystem "/sshx:")
+ (add-to-list 'load-path "~/src/emacs/tramp-2.1.14/lisp/")
+ ;(setq vc-handled-backends nil)
+ (require 'tramp)
+ (setq tramp-default-method "scpwrapper")
+ ; for tramp 2.2.14:
+ (add-to-list 'tramp-methods
+              '("scpwrapper"
+                (tramp-login-program "ssh")
+                (tramp-login-args
+                 (("%h")
+                  ("-l" "%u")
+                  ("-p" "%p")
+                  ("-q")
+                  ("-e" "none" "-t" "-t" "/bin/sh")))
+                (tramp-remote-sh "/bin/sh")
+                (tramp-copy-program "scpwrapper")
+                (tramp-copy-args
+                 (("-p" "%k")))
+                (tramp-copy-keep-date t)
+                (tramp-password-end-of-line nil)
+                (tramp-gw-args
+                 (("-o" "GlobalKnownHostsFile=/dev/null")
+                  ("-o" "UserKnownHostsFile=/dev/null")
+                  ("-o" "StrictHostKeyChecking=no")))
+                (tramp-default-port 22)))
+ 
+scpwrapper is just a script that converts arguments of the form ##"c:/"## to ##"/cygdrive/c"##.
+
+----
+CategoryExternalUtilities
+CategoryFiles
+CategoryRemoteEmacs
+

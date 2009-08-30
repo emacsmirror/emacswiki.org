@@ -1,0 +1,19 @@
+Registers are useful tools when writing KeyboardMacros.
+Notice how you can store numbers in registers, insert them again, and increment them in the register.
+
+See the Node /Keeping Numbers in Registers/ in the EmacsManual.
+
+Example session:
+
+; `C-u 1000 C-x r n x': Store 1000 in register x
+; `##C-x (##': Start a keyboard macro
+; `C-x r i x': Insert the number in register x into the buffer
+; `##C-x r + x##': Increment the number by one
+; `##<end> <newline>##: Do something else
+; `##C-x )##': End keyboard macro definition
+
+Now run `C-u 50 C-x e' to run the macro 50 times.
+
+See IncrementNumber, ReplaceRegexp, ReplaceCount or RenumberList for alternative that don't involve registers.
+----
+CategoryEditing

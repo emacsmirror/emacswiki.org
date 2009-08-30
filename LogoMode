@@ -1,0 +1,7 @@
+LogoMode is included in the tarball for BerkeleyLogo under the subdirectory ##emacs##.  It recognizes the syntax of Logo, implements its own AbbrevMode for syntax completion, and can send commands to a Logo interpreter buffer using ComintMode producing results in the buffer or in X11 frame spawned by UCB Logo.
+
+Following the tutorial Logo file, ##tutorial.lg## is helpful for getting started with the mode's operations.
+
+----
+CategoryModes
+CategoryProgramming

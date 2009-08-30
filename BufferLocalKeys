@@ -1,0 +1,33 @@
+For buffer-local keys, you cannot use local-set-key, unless you want
+to modify the keymap of the entire major-mode in question:
+local-set-key is local to a major-mode, not to a buffer.
+
+For buffer-local modifications, use this instead:
+
+    (use-local-map (copy-keymap foo-mode-map))
+    (local-set-key "d" 'some-function)
+
+
+---
+
+I frequently want to set buffer-local keys, and I have written the
+following function to do that. Comments welcome!
+
+    (defun buffer-local-set-key (key func)
+      (interactive "KSet key on this buffer: \naCommand: ")
+      (let ((name (format "%s-magic" (buffer-name))))
+        (eval
+         `(define-minor-mode ,(intern name)
+            "Automagically built minor mode to define buffer-local keys."))
+        (let* ((mapname (format "%s-map" name))
+               (map (intern mapname)))
+          (unless (boundp (intern mapname))
+            (set map (make-sparse-keymap)))
+          (eval
+           `(define-key ,map ,key func)))
+        (funcall (intern name) t)))
+
+TiagoSaboga
+
+----
+CategoryKeys

@@ -1,0 +1,9 @@
+ZenICB -- ftp://ftp.hungry.com/pub/hungry/fn/
+current release: 1.31
+
+ZenICB is an Emacs client for the Internet Citizen's Band (see http://www.icb.net/).
+
+It'll work on all version of Emacs from 18.59 all the way up to 20.7, and also on the XEmacs releases.
+If you have any problems with it, please send mail to fn-zenicb@hungry.com (or do M-x zenicb-bug RET).
+   
+Currently maintained by FariedNawaz.

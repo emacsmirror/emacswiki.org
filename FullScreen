@@ -1,0 +1,113 @@
+[[zh:全屏模式]]
+== Emacs Frame Properties ==
+
+    (defun fullscreen (&optional f)
+      (interactive)
+      (set-frame-parameter f 'fullscreen
+                           (if (frame-parameter f 'fullscreen) nil 'fullboth)))
+
+    (global-set-key [f11] 'fullscreen)
+
+    (add-hook 'after-make-frame-functions 'fullscreen)
+
+
+== Send X Messages to the Window Manager ==
+
+     (defun fullscreen ()
+       (interactive)
+       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+	    		 '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+
+== External program: wmctrl == 
+
+If you want to bind F11 to toggle full-screen, here is what you need:
+
+* install wmctrl (sudo apt-get install wmctrl)
+
+* edit your .emacs and add:
+
+    (defun switch-full-screen ()
+      (interactive)
+      (shell-command "wmctrl -r :ACTIVE: -btoggle,fullscreen"))
+
+    (global-set-key [f11] 'switch-full-screen)
+
+That does the trick, 
+and now you are GNOME HIG compliant :)
+
+== External program: devilspie ===
+
+http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
+
+    ;;
+    ;; ~/.devilspie/emacs.ds
+    ;;
+    (if (or (contains (window_class) "emacs") (contains (window_class) "Emacs"))
+        (undecorate fullscreen))
+
+== Gnome Keyboard Shortcuts==
+
+If you use GNOME you can assign a Keyboard Shortcut to toggle Full Screen or not. Just go to 
+
+System => Preferences => Keyboard Shortcuts
+
+And bind the option "Toggle fullscreen mode" to a key which can be used when using Emacs to toggle full screen or not.
+
+The disadvantage of this is that if you bind F11 so that emacs matches other programs, then the window manager handles the resize/de-chroming and the application does not get a chance to modify it's appearance. For example, many applications remove their menu and button bars when in fullscreen mode.
+
+== Fullscreen on MS Windows ==
+
+If you're using MS Windows, and want to use "real fullscreen", i.e, getting rid of the top titlebar and all, see
+w32-fullscreen at the site for [http://www.martyn.se/code/emacs/darkroom-mode/ darkroom-mode]
+
+== Fullscreen on OS X ==
+
+The function at the top of the page should work with CarbonEmacs and Aquamacs but fullscreen functionality has not made it into Emacs-23 as of early 2009.
+
+The following line can be added to your .emacs
+{{{
+(set-frame-parameter nil 'fullscreen 'fullboth)
+}}}
+
+== Toggle fullscreen - linux and windows ==
+
+{{{
+(defvar my-fullscreen-p t "Check if fullscreen is on or off")
+
+(defun my-non-fullscreen ()
+  (interactive)
+  (if (fboundp 'w32-send-sys-command)
+	  ;; WM_SYSCOMMAND restore #xf120
+	  (w32-send-sys-command 61728)
+	(progn (set-frame-parameter nil 'width 82)
+		   (set-frame-parameter nil 'fullscreen 'fullheight))))
+
+(defun my-fullscreen ()
+  (interactive)
+  (if (fboundp 'w32-send-sys-command)
+	  ;; WM_SYSCOMMAND maximaze #xf030
+	  (w32-send-sys-command 61488)
+	(set-frame-parameter nil 'fullscreen 'fullboth)))
+
+(defun my-toggle-fullscreen ()
+  (interactive)
+  (setq my-fullscreen-p (not my-fullscreen-p))
+  (if my-fullscreen-p
+	  (my-non-fullscreen)
+	(my-fullscreen)))
+}}}
+
+== Q&A ==
+
+** Under Fvwm 2.5.23 I get a little band of background at the bottom
+   of the screen --- any solution for that?  I have yet to try it with
+   another WM.
+
+** The solution is to add Style "*" <nowiki>ResizeHintOverride</nowiki> to your config
+** This also occurs under Fluxbox 1.0; the current git repository
+fixes this problem
+** Not a problem under KDE 3.5.7
+** Echo area cannot be displayed after fullscreen call,for windows, maybe ”(w32-send-sys-command 61488)“ should be used to maximize emacs window
+
+==See also==
+See also [[Fullscreen]].

@@ -1,0 +1,95 @@
+'''Right now, you will often see "no diff" where there should in fact be a diff.'''
+
+Just click on the _history_ links, or on the _show other revisions_ links and
+pick the diff you want to see.
+
+As soon as a page has had two major edits starting today, the system should work again.
+Thus, this problem will disappear eventually.
+
+=== Why? ===
+
+The latest revision of the wiki changes the way the default diff works.
+
+Assume the following changes to a page.  At the bottom of the edit page, you can check "This change is a minor edit."  Minor edits are not shown on RecentChanges by default.  You need to click on _Include minor changes_ for them to be visible.
+
+# *one*, major (the *old* major revision)
+# *two*, minor
+# *three*, major (the *last* major revision)
+# *four*, minor (the *current* revision)
+
+By default, !RecentChanges will show the edit resulting in revision *three*,
+and it will offer you a _diff_ link.  This is the diff=1 link that was changed.
+
+/Previously,/ diff=1 compared the *current* revision with the *last* major revision,
+ie. it compared *three* to *four*.  This had the
+unfortunate side-effect that the diff you saw sometimes did not match the summary line.
+If you looked at !RecentChanges, you'd see the last major edit, *three*.  If you looked
+at the diff, you got the diff between *three* and *four*.
+
+/Currently,/ diff=1 compares the *last* major revision with the major revision before it,
+the *old* major revision.
+You can think of diff=1 as ignoring all minor revisions.
+Therefore, in a world without minor revisions, it should show the difference between *one* and *three*.
+Ignoring minor revisions, diff=1 compares the *current* revision to the *old* revision.
+
+diff=2 is much simpler in this regard. It will compare the current revision with revision three, the previous revision.  It was not changed.
+
+[new:DrewAdams:2005-05-03 16:21 UTC]
+Sorry, I don't understand. What are "diff=1" and "diff=2", from a user point of view? What exactly is the change in behavior for a user? When I view the current revision (minor, in this case) and ask to see "(diff)" what do I get, diff=1 or diff=2? To me, it's logical to see the difference between the revision I'm looking at (current revision, in this case minor) and the previous revision (in this case major). -- DrewAdams
+
+[new:AlexSchroeder:2005-05-03 21:46 UTC]
+diff=1 shows the diff to the last major revision, diff=2 shows the diff to the last revision, minor or major.
+Looking at the example above, where we have a page history with a major change for the creation of "one", a minor change to "two", a major change to "three", and another minor change to "four".  The current revision is "four".  If diff=1 will show you "the diff to the last major revision" -- what do you expect?
+
+# The last major revision is the highest revision that was marked as "major" -- in this case you will get the diff from "three" to "four", eventhough that change was a minor one.  This is how it used to work.  I thought it was confusing.
+
+# Alternatively, diff=1 will ignore all minor revisions.  In this case, we're only looking at two candidates: "one" and "three".  We already ruled out "three" above, therefore "the diff to the last major revision" must be the diff between "one" and the current revision. 
+
+[new:DrewAdams:2005-05-04 15:21 UTC]
+Perhaps I still don't understand you. Are "diff=1" and "diff=2" just expressions you are using to try to explain the difference between the new behavior and the old, or is it possible for users to specify one or the other: diff1 or diff2?
+
+When you are looking at a particular revision (page), and you click "'''(diff)'''", you expect, I think, to see the difference between the revision you are looking at and the previous revision -- regardless of whether the previous revision is major or minor. There is nothing on the page you are viewing that says whether the current (or the previous) revision is major or minor, and that info is apparently what is used to determine which diff is done (4 vs 3 or 3 vs 1). When you click "'''(diff)'''", if it doesn't always show the difference between the current and previous revisions, then how will you know which diff you are in fact seeing? "'''View other revisions'''" will let you compare any two revisions. The ''default'' comparison should always do the same thing -- it should always compare the current with the previous revision, IMO. Otherwise, you will have no way of knowing just what is being compared.
+
+But perhaps I still don't understand you....
+
+[new]
+If you look at RecentChanges, you'll note that the default shows only major edits.  If you want to include other changes to the same page, or minor edits, you have to follow one of the links.
+
+Thus if there are the following changes to the page "foo":
+
+# major change: creation of the page
+# major change: addition of A
+# minor change: addition of B
+# major change: addition of C
+# minor change: addition of D
+# minor change: addition of E
+
+Now what will you see on RecentChagnes by default?  You'll see "addition of C" because only major changes are shown.
+
+What will you expect when you click on the diff link?  The diff link will contain "diff=1" in the URL.
+Previously, clicking on that URL would have shown the addition of D and E (the diff to the last major edit).
+This doesn't make sense if the change is described as "addition of C" in RecentChanges.
+
+Now, you will see the addition of B, C, D, and E.
+
+So when will a diff link contain a "diff=2" in the URL?  In Recentchanges, follow the link to include minor changes.  Now you'll get diff=2 links.  And that makes sense, because RecentChanges for the above example page will say "addition of E" and diff=2 will show you the addition of E.
+
+[new:DrewAdams:2005-05-05 00:23 UTC]
+I guess I misunderstood you from the beginning. Apparently you are speaking only about the "'''(diff)'''" link on the RecentChanges page -- is that right? If so, I have no opinion about that.
+
+I thought you were saying that you were changing the way the link "'''(diff)'''" worked on all pages. My arguments and questions applied to that scenario. For the average page, I think that "'''(diff)'''" should show the difference between the current state of the page and the previous state, regardless of whether each of those states represents a major or a minor change.
+
+[new:AlexSchroeder:2005-05-05 16:31 UTC]
+Yes, I am talking about the diff links on RecentChanges.  The diff links at the bottom of every page are also affected, however.  They all use diff=1 (and always have).  Do you really want to change that?  It might make sense, because the "last edited by" info is determined by the last edit, minor or major.  So diff=2 might be more appropriate.
+
+[new:DrewAdams:2005-05-05 19:03 UTC]
+: The diff link at the bottom of each page should show the difference between the current and previous versions of that page, regardless of whether either is major or minor. If that's what you're calling diff=2 (I think it is), then yes, I think that makes more sense.
+: The notion of major vs minor versions of a page makes sense, it seems to me, only in the context of RecentChanges.
+: Also, perhaps it would be good to flag the version types (major or minor) on the View Other Revisions page, next to the radio boxes.
+
+[new:AlexSchroeder:2005-05-06 12:29 UTC]
+Yeah, I agree with you.  I changed the default for the page footer to be diff=2 in CVS.  Should appear on the site soon.  I'm not sure whether minor and major revisions need more visibility on the history pages.  After all, it makes no differences on this particular page.  Here, all revisions are listed, and the default diff is the current version vs. the current version -1, ignoring matters change importance.
+
+[new:DrewAdams:2005-05-06 19:02 UTC]
+: Thanks, Alex. -- Drew
+[new]

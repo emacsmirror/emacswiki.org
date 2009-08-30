@@ -1,0 +1,50 @@
+Defining an alias works as follows:
+
+    ERC> /alias foo privmsg kensanata yow!
+
+Now you can use the new command FOO to trigger the stored command:
+
+    ERC> /foo
+
+And here is the code:
+
+    (defun erc-cmd-ALIAS (command &rest words)
+      (fset (intern (concat "erc-cmd-" (upcase command)))
+            (list 'lambda '(&rest ignore)
+                  (list 'erc-send-command (mapconcat 'identity words " ")))))
+
+Another use would be "templates".  By defining the following
+template, you can use /foo to save you some typing:
+
+    ERC> /template foo don't do this!
+    ERC> /foo
+    ERC> don't do this!
+
+And here is the code:
+
+    (defun erc-cmd-TEMPLATE (command &rest words)
+      (fset (intern (concat "erc-cmd-" (upcase command)))
+            `(lambda ()
+	       (run-with-idle-timer 0 nil
+				    (lambda (&rest ignore)
+				      (insert ,(mapconcat 'identity words " ")))))))
+
+It is also easy to implement new ERC aliases entirely in Emacs Lisp.
+For example, here's a /WII alias, which can save you a lot of typing if
+you find yourself often typing /WHOIS with two arguments (i.e. to see
+idle information about a connected IRC user):
+
+    (defun erc-cmd-WII (nick &rest ignore)
+      (erc-send-command (mapconcat #'identity (list "WHOIS" nick nick) " ")))
+
+Now you can type the short form:
+
+    /WII nickname
+
+instead of the longer form:
+
+    /WHOIS nickname nickname
+
+
+----
+[[ERC]]

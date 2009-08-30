@@ -1,0 +1,44 @@
+DrewAdams has written library Lisp:def-face-const.el, which provides a macro, `define-face-const' for defining faces and constant variables (via `defconst') having the faces as values, given the face foreground and/or background names (strings).
+
+[new:DrewAdams:2005-12-31 02:40 UTC]
+'''Note:''' Library def-face-const.el is largely obsolete now. Just use `defface'. -- DrewAdams
+[new]
+
+Arguments to macro `define-face-const':
+
+* ''FOREGROUND'' is either nil or a string naming the new face's foreground color.
+* ''BACKGROUND'' is either nil or a string naming the new face's background color.
+
+''FOREGROUND'' (or ''BACKGROUND'') nil means do ''not'' set the foreground (or the ''BACKGROUND'').  If both are nil, the new variable's value is nil.
+The value of the new variable (new face or nil) is returned.
+
+Only colors (strings) satisfying `x-color-defined-p' are accepted. <code>Black</code> is used in place of any unacceptable foreground color name. <code>White</code> is used in place of any unacceptable background color name.
+
+The name of the new constant variable is as follows:
+* If both ''FOREGROUND'' and ''BACKGROUND'' are strings: ''FOREGROUND''<code>-on-</code>''BACKGROUND''<code>-face</code>
+* If only ''FOREGROUND'' is a string: ''FOREGROUND''<code>-foreground-face</code>
+* If only ''BACKGROUND'' is a string: ''BACKGROUND''<code>-background-face</code>
+
+Examples of use: 
+
+ (define-face-const \"Blue\" \"Thistle\") => (defconst 'blue-on-thistle-face)
+       where (face-foreground 'blue-on-thistle-face) = \"Blue\"
+             (face-background 'blue-on-thistle-face) = \"Thistle\"
+
+ (define-face-const \"Blue\" nil) => (defconst 'blue-foreground-face)
+       where (face-foreground 'blue-foreground-face) = \"Blue\"
+
+ (define-face-const nil \"Thistle\") => (defconst 'thistle-background-face)
+       where (face-background 'thistle-background-face) = \"Thistle\"
+
+If color ZZZZZZ is undefined:
+
+ (define-face-const \"Blue\" \"ZZZZZZ\") => (defconst 'blue-on-white-face)
+       where (face-foreground 'blue-on-white-face) = \"Blue\"
+             (face-background 'blue-on-white-face) = \"White\"
+
+ (define-face-const \"ZZZZZZ\" \"Pink\") => (defconst 'black-on-pink-face)
+       where (face-foreground 'black-on-pink-face) = \"Black\"
+             (face-background 'black-on-pink-face) = \"Pink\"
+----
+CategoryFaces CategoryCode

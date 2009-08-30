@@ -1,0 +1,10 @@
+This mode highlights all characters that cross the 80 character line limit.  It is available at at http://nschum.de/src/emacs/highlight-80+/.
+
+
+http://nschum.de/src/emacs/highlight-80+/highlight-80+.png
+
+
+Emacs 23 has this feature integrated into WhitespaceMode.
+Add lines or lines-tail to whitespace-style, and customize whitespace-line-column. -- [[nschum]]
+----
+CategoryModes

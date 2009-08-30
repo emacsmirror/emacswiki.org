@@ -1,0 +1,30 @@
+== Headline Readability ==
+
+Here is a patch to improve headline readability.
+
+Screenshot: [http://dev.ariel-networks.com/Members/matsuyama/images/w3m-old.png/image Before]
+
+Screenshot: [http://dev.ariel-networks.com/Members/matsuyama/images/w3m-new.png/image After]
+
+=== Applying patch ===
+
+Download two patch [http://dev.ariel-networks.com/Members/matsuyama/stuff/w3m-el-patch/download w3m-el.patch] [http://dev.ariel-networks.com/Members/matsuyama/stuff/w3m-head-patch/download w3m-head.patch] and [http://sourceforge.net/project/showfiles.php?group_id=39518&package_id=31682&release_id=512477 w3m-0.5.2] sourcecode, then apply patch like:
+
+<pre>
+% cd ~/tmp
+% tar xf w3m-0.5.2.tar.gz
+% cd ~/src/w3m-0.5.2
+% patch -p1 < w3m-head.patch
+% ./configure --prefix=$HOME
+% make && make install
+% cd ~/.emacs.d # cd to a directory w3m.el is placed in.
+% patch -p0 < w3m.el
+</pre>
+
+Now you can customize headline faces by <code>M-x customize-face RET w3m-h1 RET</code>.
+
+Please check <code>w3m-command</code> is correct if it doesn't work.
+
+-----
+
+[[WThreeM]]

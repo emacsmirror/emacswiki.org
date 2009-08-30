@@ -1,0 +1,116 @@
+To change the ispell dictionary depending on the group you're in,
+use something like (eval (setq ispell-local-dictionary "english")) in your
+GroupParameters.
+
+Example:
+
+   (setq gnus-posting-styles
+      '(("mail.*"
+	 (eval (setq ispell-local-dictionary "swiss")))
+	("mail.emacs.*"
+	 (eval (setq ispell-local-dictionary "american")))
+
+This will use "swiss" for all groups starting with "mail" and it will use "american" for all groups starting with "mail.emacs" -- obviously order is important.  ;)
+
+== Alternative ==
+
+Well as my December 31 was boring I tried something and here is what I am currently using:
+
+   (setq gnus-parameters
+      '(("ml.emacs.ding" 
+         (add-hook 'message-mode-hook 
+                   '(lambda ()
+                      (set (make-local-variable 'ispell-local-dictionary)   
+                            "american"))))))
+
+I know this is ugly but it works. Note that I am currently writting a "native" flyspell/ispell integration for Gnus (it will use a dictionary group parameter ). This is under test currently and I will post it into Ding mailing list before the end of the week if I am satisfied.
+
+Happy new year ;) -- zeDek
+
+Ok as I had time, I finished something, here is the result. First copy this into your gnus configuration file:
+
+   (gnus-define-group-parameter
+    dictionary
+    :function-document
+    "Return the dictionary used for the current group (if any)."
+    :variable-document
+    "Alist of regexps (to match group names) and default dictionary to use when composing a new message."
+    :parameter-type '(string :tag "Dictionary")
+    :parameter-document "\
+     The default dictionary to use in the group.")
+    
+    (defun gnus-setup-dictionary (group)
+    "Decide wich dictionary to use for group `group`."
+    (let ((group (or group ""))
+         dictionary)
+
+     (setq dictionary (gnus-parameter-dictionary group))
+     (message "Dictionary used: %s" dictionary)
+
+     (when dictionary
+       (set (make-local-variable 'ispell-local-dictionary) dictionary))
+     ))
+
+   (add-hook 'gnus-message-setup-hook
+           (lambda ()
+             (gnus-setup-dictionary 
+              (if (boundp 'gnus-newsgroup-name)
+                  gnus-newsgroup-name ""))))
+
+When done, you will be able to set a dictionary per group using the GroupParameters 'dictionary' as below:
+
+   (setq gnus-parameters 
+      '(("list\\..*april.*" 
+         (dictionary . "francais"))
+         ("mail\\..*"
+         (dictionary . "american"))))
+
+   (setq gnus-parameter-dictionary-alist
+      '(("ml.emacs.ding" . "swiss")))
+
+Voila.
+It has been tested under GNU/Linux with Emacs CVS and Gnus CVS and worked fine  for me.
+I will submit this to the Gnus developers and tell them to enhance a little bit the function. -- zeDek
+
+== Fast switch of dictionaries ==
+If you write in two language and have always to switch between them
+when you write different message you may find this function useful :
+
+ (setq-default ispell-dictionary "english")
+ (defun my-switch-dictionarry()
+  (interactive)
+  (let* ((dic (if (boundp 'ispell-local-dictionary) ispell-local-dictionary ispell-dictionary))
+		 (change (if (string= dic "francais") "english" "francais")))
+	(set (make-local-variable 'ispell-local-dictionary) change)
+	(message "Dictionary switched to %s" change)
+	))
+ (global-set-key '[(f8)]		'my-switch-dictionarry)
+
+This one switch between french and english dictionaries, customize it the way you want.
+
+== Flyspell ==
+
+Assume you have some mailing lists or newsgroups in German and some in English.  You use FlySpell.  Now, if the default language is English, then you'll have to switch the dictionary everytime you post in German (using `C-$' which is hard to type on German keyboards).
+
+Here is how to code it up.  You cannot use `gnus-parameters' and `gnus-newsgroup-variables' -- which is what I tried to do at first -- because you need to set the variable in the ''Article'' buffer, not in the summary buffer.  So instead of relying on Gnus magic, I use the old-fashioned mode hook.
+
+For your convenience, you can add new items to the alist `my-dictionaries' easily.  Writing a defcustom would be trivial, so drop a note if you need it.
+
+    ;; Flyspell and other group parameters
+    (add-hook 'message-mode-hook 'my-dictionary)
+    
+    (defvar my-dictionaries
+      '(("mail.openlaw" . "swiss"))
+      "Alist of newsgroup names and dictionaries to use.")
+    
+    (defun my-dictionary ()
+      "Determine what dictionary to use based on the current message."
+      (let ((dictionary (catch 'dictionary
+			  (dolist (item my-dictionaries)
+			    (when (string-match (car item) gnus-newsgroup-name)
+			      (throw 'dictionary (cdr item)))))))
+	(when dictionary
+	  (set (make-local-variable 'ispell-local-dictionary) dictionary))))
+
+----
+CategoryGnus | CategorySpelling

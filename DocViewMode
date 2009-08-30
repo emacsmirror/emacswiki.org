@@ -1,0 +1,15 @@
+DocViewMode is another file mode viewer like DviViewMode which adds
+support for PDF and PS files written by TassiloHorn.  It's official
+part of [[Emacs]] 23.
+
+Conversion is done with ghostscript and various other tools.  It even
+supports regexp search in documents.
+
+To get it it's best to install Emacs 23 (the current CVS HEAD).
+
+You can get a snapshot of doc-view.el at [[doc-view.el]].
+
+The homepage of DocViewMode is http://www.tsdh.de/cgi-bin/wiki.pl/doc-view.el.
+
+----
+MultimediaModes

@@ -1,0 +1,34 @@
+'''Midnight mode''' is a package by SamSteingold that comes with Emacs for running configured actions at every "midnight".
+
+By default, the `midnight-hook' is configured to just run the CleanBufferList command.
+
+Run `M-x customize-group RET midnight RET' to configure and easily turn on Midnight mode.
+
+Many people choose to configure Midnight mode entirely in their InitFile.  That is how it will be explained below, since some EmacsLisp bits are needed even with CustomMode.
+
+To use Midnight mode, it needs to be included with `require'.
+
+    (require 'midnight)
+
+It also needs to be enabled with the function `midnight-delay-set' which also defines "midnight".
+
+    (midnight-delay-set 'midnight-delay "4:30am")
+
+Some people use the number of seconds after midnight:
+
+    (midnight-delay-set 'midnight-delay 16200) ;; (eq (* 4.5 60 60) "4:30am")
+
+To add other actions to be run at midnight, add to the hook `midnight-hook'.
+
+    (add-hook 'midnight-hook (lambda
+			       (with-current-buffer "*cvs*"
+				 (call-interactively 'cvs-update))))
+    (add-hook 'midnight-hook 'calendar)
+
+You can disable midnight mode with `cancel-timer'.
+
+    (cancel-timer 'midnight-timer)
+
+----
+CategoryCalendar
+CategoryCommands

@@ -1,0 +1,7 @@
+I have this in my (custom-set-variables ...):
+
+  '(package-get-site-release-download-sites '(("Adrian's CVS Packages local to D5DC120J" nil "~/el/xemacs-packages")
+   ("XEmacs CVS Packages local to D5DC120J" nil "c:\\Hacking\\cvs.xemacs.org\\XEmacs\\xemacs-packages")
+   ("Adrian's Packages" nil "\\\\augustiner\\AichnerAd\\el\\Packages"))
+ )
+

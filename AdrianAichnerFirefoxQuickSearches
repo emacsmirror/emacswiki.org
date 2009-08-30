@@ -1,0 +1,35 @@
+Just import into your Firefox with Bookmarks->Manage Bookmarks...->File->Import... -- AdrianAichner
+
+ <!DOCTYPE NETSCAPE-Bookmark-file-1>
+ <!-- This is an automatically generated file.
+      It will be read and overwritten.
+      DO NOT EDIT! -->
+ <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+ <TITLE>Bookmarks</TITLE>
+ <H1>Bookmarks</H1>
+
+ <DL><p>
+     <DT><H3 LAST_MODIFIED="1086550481" ID="rdf:#$uB4Hg">Adrian's Quick Searches</H3>
+ <DD>Handy searches that can be performed in the addressbar
+     <DL><p>
+         <DT><A HREF="http://gmane.org/find.php?list=%s" ADD_DATE="1086550481" LAST_VISIT="1086550801" LAST_MODIFIED="1086553394" SHORTCUTURL="gmane" LAST_CHARSET="ISO-8859-1" ID="rdf:#$Tl3Tv3">Gmane Lists Quicksearch</A>
+ <DD>Type &quot;gmane &lt;word&gt;&quot; in the addressbar to perform a gmane list look-up
+         <DT><A HREF="http://www.xemacs.org/cgi-bin/namazu.cgi?query=%s&max=20&result=normal&sort=score" ADD_DATE="1084643919" LAST_VISIT="1086553471" LAST_MODIFIED="1086553426" SHORTCUTURL="xemacs" ICON="http://www.xemacs.org/favicon.ico" LAST_CHARSET="ISO-8859-1" ID="rdf:#$cSsqj">XEmacs Website Full-Text Search Engine</A>
+ <DD>Type &quot;xemacs &lt;word&gt;&quot; in the addressbar to perform a xemacs look-up
+         <DT><A HREF=" http://www.emacswiki.org/cgi-bin/wiki?search=%s" ADD_DATE="1084619838" LAST_MODIFIED="1086553445" SHORTCUTURL="emacs" ID="rdf:#$gQsqj">Emacs Wiki Quicksearch</A>
+ <DD>Type &quot;emacs &lt;word&gt;&quot; in the addressbar to perform a emacswiki look-up (per http://www.emacswiki.org/cgi-bin/wiki.pl/AlexSchroeder)
+         <DT><A HREF="http://devedge.netscape.com/viewsource/2002/bookmarks/" LAST_VISIT="1086550528" ICON="http://devedge.netscape.com/favicon.ico" LAST_CHARSET="ISO-8859-1" ID="rdf:#$vB4Hg">Using Firefox Quick Searches</A>
+ <DD>Learn how to create and use Firefox custom keywords and quick searches
+         <DT><A HREF="http://www.google.com/search?&q=%s" LAST_VISIT="1084619776" SHORTCUTURL="google" ICON="http://www.google.com/favicon.ico" LAST_CHARSET="UTF-8" ID="rdf:#$wB4Hg">Google Quicksearch</A>
+ <DD>Type &quot;google &lt;search term&gt;&quot; in the addressbar to perform a Google search
+         <DT><A HREF="http://www.google.com/search?q=%s&btnI=I'm+Feeling+Lucky" SHORTCUTURL="goto" ID="rdf:#$xB4Hg">I'm Feeling Lucky Quicksearch</A>
+ <DD>Type &quot;goto &lt;term&gt;&quot; in the addressbar to visit Google's top listing for that term
+         <DT><A HREF="http://dictionary.reference.com/search?q=%s" LAST_VISIT="1086553058" SHORTCUTURL="dict" ICON="http://dictionary.reference.com/favicon.ico" LAST_CHARSET="ISO-8859-1" ID="rdf:#$yB4Hg">Dictionary.com Quicksearch</A>
+ <DD>Type &quot;dict &lt;word&gt;&quot; in the addressbar to perform a dictionary look-up
+         <DT><A HREF="http://dict.leo.org/?search=%s&searchLoc=0&relink=on&spellToler=standard&sectHdr=on&tableBorder=1&cmpType=relaxed&lang=en" ADD_DATE="1084714923" LAST_VISIT="1086550519" LAST_MODIFIED="1086553366" SHORTCUTURL="leo" ICON="http://dict.leo.org/favicon.ico" LAST_CHARSET="ISO-8859-1" ID="rdf:#$l0DUx2">Leo English German Quicksearch</A>
+ <DD>Type &quot;leo &lt;word&gt;&quot; in the addressbar to perform a english/german look-up
+         <DT><A HREF="http://www.google.com/search?&q=stocks:%s" LAST_VISIT="1086550518" SHORTCUTURL="quot" ICON="http://www.google.com/favicon.ico" LAST_CHARSET="UTF-8" ID="rdf:#$zB4Hg">Stock Symbol Quicksearch</A>
+ <DD>Type &quot;quot &lt;symbol&gt;&quot; in the addressbar to perform a stock symbol look-up
+     </DL><p>
+ </DL><p>
+

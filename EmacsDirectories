@@ -1,0 +1,22 @@
+Here's an elaborate example.
+
+* Assume the source is in <tt>/home/me/temp</tt>.
+* You want Emacs to be built in <tt>/home/me/emacs</tt>.
+* You are using a cross-compiler, however, and you want Emacs to <i>run</i> in <tt>/mnt/card/emacs</tt> on another machine.
+
+Here's how to proceed:
+
+<pre>
+ cd /home/me/temp
+ ./configure --prefix=/mnt/card/emacs
+ make
+ make install prefix=/home/me/emacs
+</pre>
+
+Finally, tar the files in <tt>/home/me/emacs</tt> and untar them in <tt>/mnt/card/emacs</tt> on the other machine.
+
+----
+CategoryBuilding
+CategoryPorts
+
+

@@ -1,0 +1,26 @@
+Une '''expression ''Lambda''''' est une fonction anonyme.
+
+Ce que l'on rencontre souvent sont des fonctions nommées comme la fonction suivante:
+
+    (defun insert-current-date ()
+      (interactive)
+      (insert (format-time-string "%Y-%m-%d")))
+
+C'est une fonction interactive (FonctionInteractive), c'est-à-dire une commande que vous pourrez appeler par l'intermédiaire de <code>M-x </code>.
+
+À certaines occasions, vous n'aurez besoin d'une fonction qu'une seule fois. Cela peut arriver quand   on utilise <code>mapcar</code> ou <code>mapc</code>;
+
+Dans l'exemple suivant l'expression ''Lambda'' est une fonction inconnue qui prend un seul paramètre et qui renvoie une autre chaîne de caractères, le résultat de la concaténation.
+
+    (setq bdf-directory-list
+          (mapcar (lambda (d)
+                    (concat "/usr/local/src/intlfonts-1.2/" d))
+                  '("Asian" "Chinese" "Ethiopic" "European" "Japanese" "Misc"
+                    "Chinese.X" "Japanese.X" "Korean.X" "European.BIG"
+                    "Japanese.BIG")))
+
+Cette fonction est appelée pour chaque chaîne de caractères de la liste.
+Donner un nom à cette fonction et le garder en mémoire ne semble pas très utile. Elle ne sert que dans une petite partie du programme.
+C'est la raison pour laquelle, elle est anonyme et sera par la suite mangée par le ramasse-miette du ''Lisp'' (puisqu'il n'y a aucun moyen de s'y référer une fois le programme exécuté.
+----
+CatégorieCode

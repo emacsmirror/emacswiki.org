@@ -1,0 +1,44 @@
+wsh-repl is a Windows Scripting Host REPL.  Right now it is very alpha quality software.
+
+Right now it offers VERY simple functionality, giving you a console into the windows scripting host from Emacs.  However, this can be used to script windows actions from within Emacs.
+
+It lives as 2 separate files, the first is the comint interaction mode wsh-repl.el, and the second is a simple Javascript (JSript) file to actually handle REPL interaction.
+
+The Emacs Lisp Library is here: Lisp:wsh-repl.el
+
+The Javascript Library is here: http://bunny.jonnay.net/sites/bunny.jonnay.net/files/wsh-repl.js.txt  (you will need to rename the file when you save it)
+
+[new]
+With version 0.2 there have been some new changes:
+* Wrapped the REPL inside of a try/catch
+* Multiline Mode
+* Object Inspector
+* File Inclusion.
+
+The JScript REPL was built to be extensible.  It all runs inside of a REPL object that has the following properties:
+* version - version of the REPL
+* executing - boolean, whether or not the REPL should continue to execute
+* prompt - the REPL prompt 
+* multiLine - boolean, whether or not the REPL is in multi-line mode, use the functin useMultiLineMode to enable multiline.
+* start - function called when the REPL starts up
+* showMOTD - function called to display the welcome message
+* getPrompt - function called to get the prompt string
+* useMultiLineMode - function to turn multiline mode on.
+* include - load an external file, and evaluate it.
+* exec - the actual Read Eval Print Loop function
+* inspect - display a javascript object.
+* displayError - display an exception object
+* info - show information about the REPL.
+* stop / quit / exit - function to stop the REPL 
+
+So if you wanted to change the prompt to "I am genie" you could set the prompt parameter, or re-write the getPrompt function.
+
+  REPL.prompt = "I AM GENIE! >";
+
+or
+
+  REPL.getPrompt = function() { return "I AM GENIE!" };
+
+
+
+

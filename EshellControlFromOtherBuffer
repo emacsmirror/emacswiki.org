@@ -1,0 +1,35 @@
+Inspired by `eev', I made this. The command below makes it possible to send commands to eshell from another buffer. Bind the some key to this command and you can then easily send the current line for execution in eshell.
+
+<pre>
+(defun my-eshell-execute-current-line ()
+  "Insert text of current line in eshell and execute."
+  (interactive)
+  (require 'eshell)
+  (let ((command (buffer-substring
+                  (save-excursion
+                    (beginning-of-line)
+                    (point))
+                  (save-excursion
+                    (end-of-line)
+                    (point)))))
+    (let ((buf (current-buffer)))
+      (unless (get-buffer eshell-buffer-name)
+        (eshell))
+      (display-buffer eshell-buffer-name t)
+      (switch-to-buffer-other-window eshell-buffer-name)
+      (end-of-buffer)
+      (eshell-kill-input)
+      (insert command)
+      (eshell-send-input)
+      (end-of-buffer)
+      (switch-to-buffer-other-window buf))))
+
+(global-set-key [f8] 'my-eshell-execute-current-line)
+
+</pre>
+
+And yes, I know about the history in eshell. But that's my problem; I always end up losing by eshell history and bash history files and when I need that cool command I used a year ago I can never find it. Hence this hack which allows me to keep all my eshell commands in a simple text file that I keep a controlled backup of.
+
+-- MaDa
+----
+CategoryEshell

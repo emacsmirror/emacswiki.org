@@ -1,0 +1,103 @@
+[ Please keep the material in this page relevant to Emacs.  Discussion
+of the merits of said layout is better off at Wiki:DvorakKeyboard. ]
+
+== Useful Emacs key bindings in combination with a Dvorak layout ==
+
+One of the first problems an experienced Emacs user finds when converting
+from a QWERTY to a Dvorak layout is the fact that many commonly used
+key-combos involving <code>C-x</code> such as <code>C-x C-f</code>,
+<code>C-x C-s</code> or <code>C-x C-w</code> are no longer easy to type.
+This is because in the Dvorak layout <code>x</code> and these other keys
+belong to different hands.
+
+One possible solution to this problem is to give yourself /another/
+<code>C-x</code> in the right-hand side, where the keys <code>f</code>,
+<code>s</code>, <code>w</code> and <code>r</code> are.  A good
+candidate for this is <code>C-z</code>, which doesn't get used that
+much these days and is available at <code>C-x C-z</code> anyway:
+
+   (global-set-key (kbd "C-z") ctl-x-map)
+
+Another, more subtle, problem is that <code>C-p</code> and <code>C-n</code>
+are now on different sides of the keyboard, making fast cursor positioning
+difficult.  If you are willing to have the `help' keymap on <code>C-x
+C-h</code> (or to use the additional binding on <code>F1</code>)
+you can bind <code>C-h</code> to <code>previous-line</code>:
+
+   (global-set-key (kbd "C-x C-h") help-map)
+   (global-set-key (kbd "C-h") 'previous-line)
+
+This also has the charm that all four basic cursor movement bindings
+are on the right hand now, with <code>previous-line</code> and
+<code>next-line</code> on the home row.
+
+Also the following bindings are convenient in combination with a Dvorak
+layout:
+
+    (global-set-key [?\C-.] 'execute-extended-command)
+    (global-set-key [?\C-,] (lookup-key global-map [?\C-x]))
+    (global-set-key [?\C-'] 'hippie-expand)
+
+
+[new]
+I personally like these:
+
+    (global-set-key (kbd "C-h") 'backward-kill-word)
+    (global-set-key (kbd "C-t") 'previous-line)
+
+but that might be just because I never got in the habit of using transpose.  -- NoahTye
+
+== The classic Dvorak layout and Emacs ==
+
+The classic Dvorak layout has the numeric keys arranged as follows:
+
+    7  5  3  1  9  0  2  4  6  8
+
+Using this layout gives the Emacs user numeric arguments (accessible
+through <code>C-</code>''number'') of similar values and range on
+''both'' hands.  Contrast this with the simplified Dvorak layout where
+all lower numeric arguments are on the left hand and the higher ones on
+the right hand.
+
+== Comments from Dvorak users ==
+
+I started using Emacs the same week I switched to Dvorak, several
+years ago now. They really do seem to fit perfectly together and I
+always kinda secretly wondered if the emacs keybindings were made with
+Dvorak in mind. The only thing I've remapped was <code>C-h</code> to
+"delete", so I can have it right between <code>C-d</code> and <code>C-t</code>.
+
+Well, in a way they were made with "alternate layouts" in mind, because
+it uses mnemonics rather than positions (e.g. <code>hjkl</code>-cursors)
+for its bindings, but it seems to work *better* with Dvorak than with
+qwerty. <code>C-a</code> and <code>C-e</code> gets to be on the same
+line, <code>C-x</code> right in the middle of the keyboard where it's
+supposed to be, and so on.
+
+[new]
+I highly recommend that anyone using the Dvorak keyboard go to this
+page: MovingTheCtrlKey.
+
+Once that's done and you've gotten used to it, the <code>C-x</code>
+thing is no problem anymore and Dvorak feels like the most natural
+layout for Emacs.  I swear it just seems like the keys were meant for
+this layout.
+
+== Making C-x easier to hit ==
+C-x is the by far the most common key I use so it has to be comfortable.
+
+Firstly, I suggest you remap Ctrl to Caps Lock via xmodmap or your desktop environment. This puts it right up alongside the home row. Perfect! C-x is still a stretch though. The logical choice is to put C-x under your index finger on the home row. Ctrl-u currently occupies that position. Since it's used less commonly, lets swap them.
+
+There are plenty of bad examples around on how to swap keys in Emacs. The best way is as described in the Emacs FAQ 10.11.
+
+    (keyboard-translate ?\C-x ?\C-u)
+    (keyboard-translate ?\C-u ?\C-x)
+
+This does a low-level translation of the keys before mapping them to commands. That way it won't mess things up like re-mapping the keys can.
+
+[new]
+Beware that as soon as you evaluate the first expression, C-x does not work anymore, and you can't issue C-x C-e to evaluate the second expression; therefore you'd better evaluate them with eval-region. 
+
+----
+CategoryKeys
+

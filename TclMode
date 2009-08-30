@@ -1,0 +1,81 @@
+Both Emacs and XEmacs support Tcl.
+
+There is a Tcl Wiki: http://wiki.tcl.tk/
+
+
+== Icicles Enhancements to Tcl Mode ==
+
+You can use [[Icicles]] [[completion]] in Tcl mode. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
+
+
+
+==How do I use XEmacs' tcl.el mode with GNU Emacs?==
+
+The tcl-mode.el that comes with GNU Emacs doesn't do a very good job of indenting continued lines.  tcl.el in XEmacs does a much better job when I load it into GNU Emacs in place of tcl-mode.el, except the syntax high-lighting no longer works properly.  I have GNU Emacs set up so that font-lock-mode is enabled in all buffers; nevertheless when I edit with tcl.el, there's no highlighting.  If I explicitly turn on font-lock-mode in the buffer, the comments get highlighted, but nothing else. -- WillDuquette
+
+Brrr!  I don't know whether that is your only problem.  This solution assumes it is.  You are on your own after that.
+
+Put the following code into your InitFile.  This will set `tcl-font-lock-keywords' to the value it has in the Emacs copy.  Then, it will add a little lambda expression to the `tcl-mode-hook'.  This lambda expression will set `font-lock-defaults' to the value it has in the Emacs copy.
+
+The reason the plain XEmacs doesn't work is that the XEmacs copy sets the `font-lock-keywords' variable, while Emacs requires the `font-lock-defaults' variable to be set.  The value of `font-lock-defaults' is used by Font Lock mode to set the variables `font-lock-keywords', `font-lock-keywords-only', `font-lock-keywords-case-fold-search', `font-lock-syntax-table' and `font-lock-beginning-of-syntax-function', respectively.  (This last sentence is from the `font-lock-defaults' doc string.)  That is the reason that `font-lock-keywords' allways turned out to be nil:  Eventhough the XEmacs Tcl mode set it, it got overwritten by the Emacs Font Lock code.
+
+{{{
+ (setq tcl-font-lock-keywords
+   (eval-when-compile
+     (list
+      ;;
+      ;; Function name declarations.
+      '("\\<\\(itcl_class\\|class\\|method\\|proc\\|body\\)\\>[ \t]*\\(\\sw+\\)?"
+	(1 font-lock-keyword-face) (2 font-lock-function-name-face nil t))
+      ;;
+      ;; Keywords.
+ ;(make-regexp '("if" "then" "else" "elseif" "for" "foreach" "break"
+ ;	       "continue" "while" "eval" "case" "in" "switch" "default"
+ ;	       "exit" "error" "proc" "return" "uplevel" "constructor"
+ ;	       "destructor" "itcl_class" "loop" "for_array_keys"
+ ;	       "for_recursive_glob" "for_file"))
+      (concat "\\<\\("
+	      "break\\|c\\(ase\\|on\\(structor\\|tinue\\)\\)\\|de\\(fault\\|structor\\)"
+	      "\\|e\\(lse\\(\\|if\\)\\|rror\\|val\\|xit\\)"
+	      "\\|for\\(\\|_\\(array_keys\\|file\\|recursive_glob\\)"
+	      "\\|each\\)\\|i\\([fn]\\|tcl_class\\)\\|loop"
+	      "\\|namespace e\\(val\\|xport\\)"
+	      "\\|p\\(ackage \\(provide\\|require\\)\\|roc\\)"
+	      "\\|return\\|switch\\|then\\|uplevel\\|while"
+	      "\\)\\>")
+      ;;
+      ;; Types.
+ ;   (make-regexp '("global" "upvar" "variable" "inherit" "public"
+ ;		   "private" "protected" "common"))
+      (cons (concat "\\<\\("
+		    "common\\|global\\|inherit\\|p\\(r\\(ivate\\|otected\\)\\|ublic\\)"
+		    "\\|upvar\\|variable"
+		    "\\)\\>")
+	    'font-lock-type-face))))
+
+ (add-hook 'tcl-mode-hook 
+  (lambda ()
+   (set (make-local-variable 'font-lock-defaults)
+    '(tcl-font-lock-keywords nil nil ((?_ . "w") (?: . "w"))))))
+}}}
+
+----
+
+: The above snippet of code has to go *after* you enable tcl.el, i.e., after:
+
+{{{
+    (autoload 'tcl-mode "tcl" "Tcl mode." t)
+}}}
+
+: Otherwise, it doesn't seem to work. -- WillDuquette
+
+Hm, that would be weird, because the autoload doesn't actually load the tcl.el file.  Loading the tcl.el file will not overwrite the `tcl-font-lock-keywords' variable.  The important stuff goes on to the `tcl-mode-hook', which is also not overwritten.  I can't see how the order of things could possibly make a difference.  You /will/ of course need the autoload expression somewhere in your InitFile in order to avoid loading the original Emacs copy.  But I think the order should not matter. Curious. -- AlexSchroeder
+
+---
+
+Starting with Emacs 21, Emacs now uses tcl.el.  So, if there is still a problem here, report it to the Emacs maintainers.  I believe the old tcl-mode.el has since been deleted.  -- TomTromey
+
+----
+CategoryModes
+CategoryProgramming
+

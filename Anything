@@ -1,0 +1,113 @@
+= anything.el =
+
+##anything.el## is a great application framework written by TamasPatrovics. It provides a totally new Emacs experience. While normal Emacs way is specifying action then selecting candidates, the ##anything## way is narrowing and selecting candidates then executing action for selected candidates. It is something like "über-extensible spotlight for emacs" or "!QuickSilver for emacs". The current maintainer of ##anything.el## is [[rubikitch]].
+
+Started with ##M-x anything## all things matching a given pattern will be shown in a special buffer named ##*anything*##.
+
+Initially all candidates are displayed. Then they are narrowed by a given query. A candidate can be selected with C-p/C-n/C-v/M-v (or up/down/pgup/pgdown). Hitting RET invokes the default action for that type, hitting TAB lists all possible actions.
+
+[[image:AnythingScreenshotAllCandidates]]
+
+[[image:AnythingScreenshotNarrowingCandidates]]
+
+What's queried is given by a list of sources, namely ##anything-sources##, such as buffers, file names, bookmarks, and so on. It means that multiple Emacs commands are integrated in one command. You do not have to remember commands corresponding to actions, ##anything## does the right thing.
+
+You can get ##anything.el## at [[anything.el]].
+
+= anything-config.el =
+
+##anything.el## only contains the basic framework and some example sources. ##anything-config.el## is intended to provide a rich set of additional sources and types that can be used by users to adapt ##anything.el## to their needs.
+
+TassiloHorn, JasonMcBrayer, [[rubikitch]] and ThierryVolpiatto maintain and extend ##anything-config.el## and the best source for getting the most current version is to clone his ##git## repository. Everybody can push to it as a mob user.
+
+    git clone git://repo.or.cz/anything-config.git
+
+If you have enhancements please drop one of them a mail and they will pull your changes in. You can also submit patches, see the manual page of ##git format-patch##.
+
+If you have any cool feature, write to AnythingSources page, push to mob repository, or mail me, i will apply it. :) -- [[rubikitch]]
+
+##anything-config.el## can also be downloaded from [[anything-config.el]].
+
+You will find many sources in AnythingSources page.
+
+You can extend Anything by AnythingPlugins.
+
+(It would be good to explain what a config, a source, and a
+plugin are.  Are they different things?)
+
+: I'll do that. -- [[rubikitch]]
+:: See Glossary. Sorry for my poor English. -- [[rubikitch]]
+
+There are a lot of goodies in RubikitchAnythingConfiguration, the current maintainer's configuration. Feel free to copy and paste!
+
+See also Lisp:init-anything-thierry.el 
+
+AndyStewart has added some cool extensions : Lisp:anything-extension.el
+
+= Glossary =
+; Source : Anything searches objects from various information, such as buffers, recentf, bookmark, and so on. The information source is simply called `source'. You can easily define sources.
+; Attribute : A `source' is a list of `attributes', Their names are pre-defined; such as name, candidates, and type.
+; Plugin : Anything can be extended via `plugin'. For example, search method in anything itself is single regexp search, but with Lisp:anything-match-plugin.el anything supports multiple regexp search. User-defined `attributes' are also `plugin'.
+; Config : Lisp:anything-config.el contains various pre-defined `sources' and `plugins'.
+
+= Install = 
+You can use Lisp:auto-install.el install [[Anything]] packages with following:
+# M-x auto-install-batch RET
+# Input "anything"
+
+(How to install Lisp:auto-install.el, see AutoInstall)
+                
+== Snarf Anything (and pals) with wget ==
+
+An alternate approach to the auto-install above (overkill IMHO) is this simple wget script: WgetSnarfAnything which will pull the required anything packages, related Anything Maintainers user configs, as well as most of the Anything extension packages. --[[mon_key]]
+
+= Getting Started =
+
+Download Lisp:anything.el and Lisp:anything-config.el to your emacs lisp directory.
+Add the following to your .emacs:
+
+(require 'anything-config)
+
+Enter emacs and run ##M-x anything-for-file##. It is preconfigured ##anything## to open files.
+
+If you like it and feel the power of anything, set ##anything-sources## for your taste by copying and pasting bits and pieces from other people's anything-config files.
+You may wish to bind 'anything to a easy-to-type key.
+
+----
+= Contents =
+
+* AnythingSources -- souces not to be included in anything-config.el yet
+* AnythingApplications -- applications using Anything framework
+* AnythingPlugins -- add some features to Anything
+* AnythingIntegrations -- integrations with other modes
+* AnythingTips -- tips to use Anything
+* AnythingProposals -- proposals for anything.el and anything-config.el
+* AnythingIssues -- bug reports
+* AnythingOldDiscussion -- discussion archive
+
+----
+
+CategoryAccessibility
+CategoryBbdb
+CategoryBufferSwitching
+CategoryCalculators
+CategoryCode
+CategoryCommands 
+CategoryCompletion
+CategoryDirectories
+CategoryDocumentation
+CategoryEditing
+CategoryExternalUtilities
+CategoryFaces
+CategoryFiles
+CategoryGnus
+CategoryHelp
+CategoryInterface
+CategoryMenus
+CategoryModes
+CategoryProgrammerUtils
+CategoryRegexp
+CategorySearchAndReplace
+CategoryShell
+CategoryWebBrowser
+

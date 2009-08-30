@@ -1,0 +1,62 @@
+== Emacs, XEmacs and related packages in Gentoo GNU/Linux ==
+
+[http://www.gentoo.org Gentoo] is a distribution of GNU/Linux.  Gentoo includes packages for GNU Emacs, CVS GNU Emacs and XEmacs.
+
+[http://www.gentoo.org/proj/en/lisp/emacs/ Gentoo Emacs/Elisp project]
+
+List of [http://packages.gentoo.org/category/app-emacs?full_cat GNU Emacs packages]
+
+List of [http://packages.gentoo.org/category/app-xemacs?full_cat XEmacs packages]
+
+Other Emacs Lisp files are available indirectly from non-Emacs Lisp packages which support the "emacs" USE flag.
+
+
+== Notes ==
+
+* GNU Emacs
+
+Gentoo's USE flag system includes a flag for emacs (called "emacs").  This means that for packages which have an Emacs Lisp module (eg. xcscope.el is distributed with cscope), the Emacs Lisp will be automatically compiled and integrated into the filesystem if you have "emacs" in your USE flag set in /etc/make.conf.  Thus the above list is not a complete list all possible Emacs Lisp modules supported in Gentoo.
+
+Each GNU Emacs Lisp package includes a reasonable configuration which is designed to suit most users needs.  You can get the Gentoo configuration by including 
+
+   (require 'site-gentoo)
+
+in your InitFile.  This is especially handy if you're on a multi-user system, as you're no longer subjected to the system administrator's preferences for Emacs Lisp add-on packages.  If you omit the above load call from your InitFile, you will have a plain vanilla Emacs.  If you'd like a bit of both worlds, you can include any number of specific Gentoo load calls: eg. 
+
+  (load "/usr/share/emacs/site-lisp/site-gentoo.d/50slime-cvs-gentoo.el")
+  (load "/usr/share/emacs/site-lisp/site-gentoo.d/50xcscope-gentoo.el")
+
+* CVS GNU Emacs
+
+Gentoo has a CVS GNU Emacs package which integrates seamlessly into your filesystem.  Obviously, it cannot be supported by either Gentoo or upstream -- it is there for your convenience only.
+
+* General Notes
+
+Each package responds to several other USE flags governing everything from choice  of supporting applications (ispell/aspell, MTA, etc.), GUI toolkit to be used (or not used) when building the software (GTK+, Xaw3d, Motif, etc.), support for types of images (PNG, TIFF, JPEG, GIF, XPM are all optional) and internationalization options (use NLS, LEIM etc.).
+
+== Maintainers on EmacsWiki ==
+
+MatthewKennedy, UlrichMüller, ChristianFaulhammer ...
+
+== Problems ==
+
+(best reported to [http://bugs.gentoo.org Gentoo Bugzilla])
+
+== Comments ==
+
+I'd like to have a package for emacs which can give the full control over portage system, currently there is only [http://www.emacswiki.org/cgi-bin/wiki/portage.el portage.el] package here. It looks good, but not exactly what I need... the package I'm interesting should search for a package for given regexp and/or using completion, and give full information. basically it should be wrapper to "emerge -s" or [http://eix.sourceforge.net eix]. eix is preferred since it is much faster, output info is more complete and search options are more flexible. in output by clicking on flag or by M-x "some cursor-over-flag command" it should be possible:
+* to go to package homepage from url
+* to get description of USE flags meaning used by this package, information if they set up and where (in /etc/make.conf, in /etc/portage/package.use etc). this feature is currently implemented by "euse -i" from [http://www.gentoo.org/proj/en/portage/tools/index.xml gentoolkit] gentoo package.
+* to find which packages also use this flag, currently implemented by "equery hasuse" from [http://www.gentoo.org/proj/en/portage/tools/index.xml gentoolkit] gentoo package.
+* to find on which package found package depends, currently implemented by "equery depends" from [http://www.gentoo.org/proj/en/portage/tools/index.xml gentoolkit] gentoo package. this command should output the similar card, so you can go further in your investigation.
+* and of course install/uninstall package, here the  [http://www.emacswiki.org/cgi-bin/wiki/portage.el portage.el] package can be used.
+You see there are plenty tools for different operations, but using them separately is bit inconvenient and time consuming, it is worthwhile to integrate them into one package. Unfortunately, my current elisp knowledge is poor (I'm going to improve it :-), maybe somebody else is interested in such package?
+
+[new] Lisp:anything-config.el provide sources to browse gentoo package and do differents actions on it.
+You have of course to install Anything on your emacs.
+
+-- ThierryVolpiatto
+----
+See also: EmacsForDebian
+----
+CategoryPorts

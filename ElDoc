@@ -1,0 +1,319 @@
+A very simple but effective thing, eldoc-mode is a MinorMode which shows you the argument
+list of the function call you are currently writing in the echo area. Very handy. By NoahFriedman.  Part of Emacs.
+
+ElDoc works for EmacsLisp and certain other language modes that implement support for ElDoc.  These include
+
+* CEldocMode -- for C, by grepping cpp
+* CPerlMode -- for Perl
+* EshellElDoc -- for Eshell
+* EukleidesMode -- for Eukleides plane geometry language
+* PythonMode (the <tt>python.el</tt> one) -- but only in Emacs 22, or using an
+Emacs 21 [http://www.loveshack.ukfsn.org/emacs/eldoc.el back-port]
+* SemanticBovinator -- tools using that system
+* TaclMode -- Tandem/NSK/Guardian
+* TalMode -- Tandem/NSK/Guardian
+
+ElDoc runs each element of the function arglist through a filter function stored in the <tt>eldoc-argument-case</tt> variable, which defaults to <tt>upcase</tt>. This is why the
+arguments are capitalized by default. [This only applies for
+Emacs Lisp unless a custom eldoc-documentation-function
+explicitly uses it.]
+But wouldn't it be cool if these arguments were
+highlighted in <tt>font-lock-variable-name-face</tt>? Just do something like this:
+
+ (defun ted-frob-eldoc-argument-list (string)
+   "Upcase and fontify STRING for use with `eldoc-mode'."
+   (propertize (upcase string)
+               'face 'font-lock-variable-name-face))
+ (setq eldoc-argument-case 'ted-frob-eldoc-argument-list)
+
+
+(You need Emacs 21 or later for function `propertize'. For Emacs 20, use `put-text-property' instead.)
+
+
+== How to implement support ==
+
+Your mode need only supply 1 function to support eldoc-mode which you tell ElDoc about like this.
+
+[You should use introspection where the language system
+supports it. See the Emacs 22 Python mode for an example (or
+Haskell mode and Erlang mode with Distel, for which Eldoc
+was generalized).]
+
+    (set (make-local-variable 'eldoc-documentation-function)
+         'tal-eldoc-function)
+
+The function you point to need not be complex.
+
+  (defun tal-eldoc-function ()
+    "Returns a doc string appropriate for the current context, or nil."
+    (symbol-value (intern-soft (upcase (thing-at-point 'symbol))
+                               tal-eldoc-obarray)))
+
+For the above, doc strings are stored in an obarray created like this.
+
+  (setq tal-eldoc-obarray (make-vector 41 0))
+  ...
+  ;; Most of these set commands are actually stored in a file
+  ;; and loaded for quick access to library function help
+  (set (intern "STEPMOM" tal-eldoc-obarray)
+       "PROC STEPMOM (CRTPID)")
+  (set (intern "STOP" tal-eldoc-obarray)
+       "PROC STOP (CRTPID, STOPBACKUP, PERROR, COMPLCODE, TERMINFO, SSID, LENGTH, TEXT)")
+  (set (intern "STRING_UPSHIFT_" tal-eldoc-obarray)
+       "INT PROC STRING_UPSHIFT_ (IN_STRING:LENGTH^A, OUT_STRING:LENGTH^B)")
+  (set (intern "SUSPENDPROCESS" tal-eldoc-obarray)
+       "PROC SUSPENDPROCESS (CRTPID)")
+  ...
+  ;; help for current module functions are created dynamically
+  ;; by a fairly simple function.
+
+You can look at TalMode to see one method of creating and maintaining such doc strings.  
+
+
+== Highlighting Eldoc Arguments in EmacsLisp ==
+
+<pre>
+(defun eldoc-get-arg-index ()
+  (save-excursion
+    (let ((fn (eldoc-fnsym-in-current-sexp))
+          (i 0))
+      (unless (memq (char-syntax (char-before)) '(32 39)) ; ? , ?'
+        (condition-case err
+            (backward-sexp)             ;for safety
+          (error 1)))
+      (condition-case err
+          (while (not (equal fn (eldoc-current-symbol)))
+            (setq i (1+ i))
+            (backward-sexp))
+        (error 1))
+      (max 0 i))))
+
+(defun eldoc-highlight-nth-arg (doc n)
+  (cond ((null doc) "")
+        ((<= n 0) doc)
+        (t
+         (let ((i 0))
+           (mapconcat
+            (lambda (arg)
+              (if (member arg '("&optional" "&rest"))
+                  arg
+                (prog2
+                    (if (= i n)
+                        (put-text-property 0 (length arg) 'face 'underline arg))
+                    arg
+                  (setq i (1+ i)))))
+            (split-string doc) " ")))))
+
+(defadvice eldoc-get-fnsym-args-string (around highlight activate)
+  ""
+  (setq ad-return-value (eldoc-highlight-nth-arg ad-do-it
+                         (eldoc-get-arg-index))))
+
+</pre>
+
+I roughly implemented. -- [[rubikitch]]
+
+[new]
+EmacsFromCVS now contains something like that. -- [[nschum]]
+
+== Highlighting Eldoc Arguments in tal-mode ==
+Here's an example of highlighting the param in a function help string corresponding to the param near to point.  
+: This would be better using a string-indexed hash table
+rather than an obarray.
+
+    loc := dnumout( output_buf, counter, 10, cntr_width, no_flags );
+                                              ^
+
+With point near cntr_width the help string looks like this.
+
+: <tt>INT PROC DNUMOUT (BUFFER, DNUMBER, BASE, '''WIDTH''', FLAGS)</tt>
+
+All the comments make the function look bigger than it is.
+
+  (defun tal-eldoc-function ()
+  "Returns a documentation string appropriate for the current context or nil."
+  (let ((begin (point))
+        (count -1)
+        (word))
+    ;; if thing-at-point has a doc string, return it, we're done.
+    (if (and (setq word (thing-at-point 'symbol))
+             (setq word (symbol-value (intern-soft (upcase word)
+                                                   tal-eldoc-obarray))))
+        word
+      ;; Otherwise see if we're within (parens) and if so, count the
+      ;; number of commas between point and the open paren.
+      (save-excursion
+        (when (and (condition-case ()
+                       (or (backward-up-list) t)
+                     (error nil))
+                   (eq ?\( (char-after))) 
+          (skip-syntax-backward "-")
+          (if (setq word (thing-at-point 'symbol))
+              (while (progn (setq count (1+ count))
+                            (search-forward "," begin t))))))
+      ;; if the word prior to the open paren has a doc string use it.
+      (when (and word
+                 (setq word (copy-sequence
+                             (symbol-value 
+                              (intern-soft (upcase word)
+                                           tal-eldoc-obarray)))))
+        ;; if the doc string has an open paren, highlight the word (if
+        ;; any) that follows the same number of comma's counted above.
+        (when (and (> count -1)
+                   (string-match
+                    "(" word
+                    ;; this tries to skip parens from int(32) type
+                    ;; proc/subproc declarations.
+                    (string-match ")\\s-\\(sub\\)?proc\\b" word)))
+          (while (and (> count 0)
+                      (string-match "," word (match-end 0))
+                      (setq count (1- count))))
+          (when (= count 0)
+            (if (string-match "\\w+\\(:\\w+\\)?" word (match-end 0))
+                ;; found something needing to be made bold
+                (put-text-property (match-beginning 0) (match-end 0)
+                                   'face 'bold word))))
+        word))))
+
+== Add docstring to ElDoc output ==
+
+I like to get a little documentation as well, so I add the first line of the doc string to ElDoc's output
+ 
+  (defadvice eldoc-get-fnsym-args-string (after add-dacstring (sym)
+                                                activate compile)
+    "Add a doc string to ElDoc's modeline information."
+    (let ((doc (eldoc-docstring-first-line
+                (cdr (help-split-fundoc (documentation sym t) sym)))))
+      (when (and doc (not (equal doc "")))
+        (setq ad-return-value
+              (concat ad-return-value
+                      (if (> (+ (length ad-return-value) (length doc) 4)
+                             (frame-width)) "\n" "    ")
+                      doc))))
+    ad-return-value)
+
+-- [[nschum]]
+
+Good idea! I found it a bit hard to quickly scan to the docstring with
+so much information in the minibuffer area, so I tried to fix that by
+using different faces and changing the formatting a bit. I came up
+with this variation, which produces output like:
+
+  format (STRING &rest OBJECTS): Format a string out of a format-string
+                                 and arguments.
+
+with the docstring fontified using font-lock-doc-face (the same one
+used for docstrings in emacs-lisp-mode).
+
+Not quite finished: the code shrinking the string to fit on one line
+is a dumb copy-paste from eldoc-docstring-format-sym-doc. So if your
+minibuffer is not as wide as mine this may not work very well.
+
+  (defadvice eldoc-highlight-function-argument
+    (around my-formatting (sym args index) compile activate preactivate)
+    "Replace original to apply my style of formatting."
+    ;; HACK: intercept the call to eldoc-docstring-format-sym-doc at the
+    ;; end of the adviced function. This is obviously brittle, but the
+    ;; alternative approach of copy/pasting the original also has
+    ;; downsides...
+    (flet ((eldoc-docstring-format-sym-doc
+            (sym doc face)
+            (let* ((function-name (propertize (symbol-name sym)
+                                              'face face))
+                   (spec (format "%s (%s)" function-name doc))
+                   (docstring (or (eldoc-docstring-first-line
+                                   (documentation sym t))
+                                  "Undocumented."))
+                   (docstring (propertize docstring
+                                          'face 'font-lock-doc-face))
+                   ;; TODO: currently it strips from the start of spec by
+                   ;; character instead of whole arguments at a time.
+                   (fulldoc (format "%s: %s" spec docstring))
+                   (ea-width (1- (window-width (minibuffer-window)))))
+              (cond ((or (<= (length fulldoc) ea-width)
+                         (eq eldoc-echo-area-use-multiline-p t)
+                         (and eldoc-echo-area-use-multiline-p
+                              (> (length docstring) ea-width)))
+                     fulldoc)
+                    ((> (length docstring) ea-width)
+                     (substring docstring 0 ea-width))
+                    ((>= (- (length fulldoc) (length spec)) ea-width)
+                     docstring)
+                    (t
+                     ;; Show the end of the partial symbol name, rather
+                     ;; than the beginning, since the former is more likely
+                     ;; to be unique given package namespace conventions.
+                     (setq spec (substring spec (- (length fulldoc) ea-width)))
+                     (format "%s: %s" spec docstring))))))
+      ad-do-it))
+
+== Show argument list only after SPC ==
+
+A hack to make Eldoc show the argument list in the echo area only after you type SPC. (Like in SlimeMode.)
+
+<pre>
+(setq eldoc-documentation-function
+      (lambda ()
+        (when (eql last-command-char 32)
+          (let (eldoc-documentation-function)
+            (eldoc-print-current-symbol-info)))))
+</pre>
+
+[:ContextHelp]
+== Context elisp help in the *Help* buffer ==
+RichardRiley
+
+Update : 23 Oct 2008 - Added lisp-interaction-mode to the context help modes
+
+The default eldoc output for functions is a little lacking for new programmers. I wrote this to provide
+context help on the function or variable under the cursor. You can toggle it on or off - change key
+binding to suit...
+
+<pre>
+
+(defun rgr/toggle-context-help()
+  "Turn on or off the context help.
+Note that if ON and you hide the help buffer then you need to
+manually reshow it. A double toggle will make it reappear"
+  (interactive)
+  (with-current-buffer (help-buffer)
+    (unless (local-variable-p 'context-help)
+      (set (make-local-variable 'context-help) t))
+      (if (setq context-help (not context-help))
+	  (progn
+	    (if (not (get-buffer-window (help-buffer)))
+	        (display-buffer (help-buffer)))))
+    (message "Context help %s" (if context-help "ON" "OFF"))))
+
+(defun rgr/context-help()
+  "Display function or variable at point in *Help* buffer if visible.
+Default behaviour can be turned off by setting the buffer local
+context-help to false"
+  (interactive)
+  
+  (let(( rgr-symbol (symbol-at-point))) ; symbol-at-point http://www.emacswiki.org/cgi-bin/wiki/thingatpt%2B.el
+    (with-current-buffer (help-buffer)
+     (unless (local-variable-p 'context-help)
+       (set (make-local-variable 'context-help) t))
+     (if (and context-help (get-buffer-window (help-buffer))
+         rgr-symbol)
+       (if (fboundp  rgr-symbol)
+           (describe-function rgr-symbol) 
+	 (if (boundp  rgr-symbol) (describe-variable rgr-symbol)))))))
+
+(defadvice eldoc-print-current-symbol-info
+  (around eldoc-show-c-tag activate)
+  (cond 
+	((eq major-mode 'emacs-lisp-mode)(rgr/context-help) ad-do-it)
+	((eq major-mode 'lisp-interaction-mode)(rgr/context-help) ad-do-it)
+	((eq major-mode 'apropos-mode)(rgr/context-help) ad-do-it)
+	(t ad-do-it)))
+
+(global-set-key (kbd "C-c h") 'rgr/toggle-context-help)
+
+</pre>
+
+
+----
+CategoryModes
+CategoryProgrammerUtils

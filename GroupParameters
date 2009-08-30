@@ -1,0 +1,43 @@
+Group Parameters store information per group or topic (see TopicMode).
+You can edit them via `G p' or better via `G c', or you can set them
+yourself in your init file.
+
+For beginners, I suggest to use `G c' to specify group parameters.
+These are stored in your ~/.newsrc.eld file, together with lots of other information.
+In order to keep group parameters with the rest of your Gnus configuration, I suggest
+you put them into your ~/.gnus file.
+
+Here are the variables to set:
+
+; gnus-parameters: Specify groups, and all the group parameters you want.
+; gnus-parameter-to-address-alist: An alist of groups and to-address values for closed mailing lists.  This is the to-address parameter.
+; gnus-parameter-to-list-alist: An alist of groups and to-list values for open mailing lists.  This is the to-list parameter.
+; gnus-auto-expirable-newsgroups: A regexp for all the groups where read articles are automatically marked as expirable.  This is the auto-expire parameter.
+; gnus-total-expirable-newsgroups: A regexp for all the groups where all articles are automatically marked as expirable, wether read or not (this group work just like a newsgroup, then).  This is the total-expire parameter.
+
+You can read about the effects of each parameter in the Gnus manual
+node "Group Parameters".
+
+Here is a simple example for setting up mailing lists:
+
+    (setq gnus-parameter-to-list-alist
+          '(("mail.emacs.bbdb" . "bbdb-info@lists.sourceforge.net")
+            ("mail.emacs.bidi" . "emacs-bidi@gnu.org")
+            ("mail.emacs.devel" . "emacs-devel@gnu.org")))
+
+And here is how to specify which mailing lists should act just like
+newsgroups -- articles just expire, whether I read them or not.
+
+    (setq gnus-total-expirable-newsgroups
+          (regexp-opt '("mail.emacs.devel"
+                        "mail.emacs.sent"
+                        "mail.news.sent"
+                        "mail.xemacs.design"
+                        "mail.frieden.jetzt"
+                        "mail.spam.duplicates"
+                        "mail.spam.filtered"
+                        "mail.baeckeranlage")))
+
+----
+CategoryGnus
+

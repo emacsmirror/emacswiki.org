@@ -1,0 +1,15 @@
+== Intro ==
+[[image:SmexScreenshotImage]]
+
+Smex is a ##M-x## enhancement for Emacs. Built on top of [InteractivelyDoThings IDO], it provides a convenient interface to your recently and most frequently used commands. And to all the other commands, too.
+
+Extras: Limit commands to those relevant to the active major mode. Show frequently used commands that have no key bindings.
+
+== Download ==
+http://github.com/nonsequitur/smex/blob/master/smex.el?raw=true
+
+== Documentation ==
+http://github.com/nonsequitur/smex/
+
+== Discussion ==
+/Wicked cool./ Is it inspired by this [http://www.vimeo.com/1013263 video]? :)

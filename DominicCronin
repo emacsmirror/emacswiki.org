@@ -1,0 +1,13 @@
+Dominic Cronin
+
+I mostly work with Windows, mostly in Visual Basic. I use a fair amount of XML, and wanted to try out James Clarke's NxmlMode. Unfortunately this only works on Emacs 21+ so as the binaries aren't available I have to do some compiling. 
+
+Update - tei-Emacs is available as a Windows installer, so my troubles are over ... for now.
+
+I've downloaded it and I'll be trying out NxmlMode from now on. I've put a link on the NxmlMode page.
+
+Anyway - now you can get binaries for 21 without Tei-Emacs too. I still haven't given Nxml as much attention as I want to. In the meantime, I'm using Emacs more than ever, especially as I work more with my Linux system. My usual configuration is to sit at my Windows machine, running Cygwin, and then SSH over to the Linux box. Although X forwarding should allow me to use the Cygwin X-Server and run Emacs locally, in practice it's much faster to work with a text-based emacs in the shell. That somehow feels closer to the "real" emacs experience too. 
+
+I recently started using the hack from http://c2.com/cgi/wiki?BetterCygwinTerminal to use rxvt for these shells, but I now have a problem with Emacs. When I use emacs in the shell, I get the left hand column at the right hand end of the window. The lines begin with the second character. Weird huh?
+----
+CategoryHomepage

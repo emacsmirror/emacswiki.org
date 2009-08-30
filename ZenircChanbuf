@@ -1,0 +1,17 @@
+This code allows you to have one buffer per channel in ZenIRC.
+I use it together with MTraceMode to make it possible to follow the activity going on in the different buffers.  -- MicheleBini
+
+Download:
+
+* Lisp:zenirc-chanbuf.el
+
+Usage -- Put the following in your .emacs to enable zenirc-chanbuf and have it autoloaded with zenirc.
+
+    (eval-after-load "zenirc"
+       '(progn
+           (load "/path/to/zenirc-chanbuf.el")
+           (add-hook 'zenirc-mode-hook  'zenirc-chanbuf-minor-mode)))
+
+----
+
+ZenIRC

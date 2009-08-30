@@ -1,0 +1,31 @@
+The code on this page allows you to use anchors with WikiMode.  To make an anchor, put "#Anchor" at the beginning of the line you want to link to.  To link to an anchor, use the <nowiki>PageName#Anchor</nowiki> link pattern.
+
+Examples:
+
+<pre>
+    Anchor                  Resulting HTML         
+    <nowiki>-----------------------------------------------------</nowiki>
+    #NAME                   <a name="NAME">
+    PAGE#NAME               <a href="PAGE#NAME">PAGE</a>
+</pre>
+
+Here are the necessary rules to it.  Customize wiki-pub-rules and add these rules ''after wiki-replace-links''.
+
+The rule for the #ANCHOR:
+
+<pre>
+    Regexp:      ^#\(\sw+\)
+    Replacement: <a name="\1">
+</pre>
+
+The rule for <nowiki>PageName#Anchor</nowiki> references:
+
+<pre>
+    Regexp:      <a href="\(\(\|.\)*\)\.html">\(\(\|.\)*\)</a>#\(\sw+\)
+    Replacement: <a href="\1.html#\5">\3</a>
+</pre>
+
+Note how the second rule just rearranges the HTML links produced by wiki-replace-links.
+
+If you want more elaborate control over the output, you will have to combine this with the WikiLink code.  But then again, if you might be better off with an other wiki mode.  See WikiModeDiscussion.
+

@@ -1,0 +1,121 @@
+Folding mode is a MinorMode that uses a special string to find the regions to hide: 
+<nowiki>{{{ and }}}</nowiki>.
+The variable fold-mode-marks-alist defines the strings for each MajorMode separately.
+
+So when you want to structure your code you do something like this (e.g. for emacs lisp code):
+
+ ;;{{{ LaTeX mode stuff
+ (add-hook 'TeX-mode-hook
+                   '(lambda ()
+                          (LaTeX-math-mode)
+                          (turn-on-reftex)))
+ ;;}}}
+
+Usually you have a menu at hand which will let you enter, show, hide, etc regions on your right mouse button.  When there is no other context menu defined a right mouse click will toggle the visibility of a region.
+
+Michael Grasso suggested ##`C-u 2 C-x $'## (##`C-x $'## to clear), see Groups:folding&selm=199312202324.AA16992@macchi.lochard.com.au
+
+
+See also HideShow.
+
+== Init File Code ==
+To enable the folding-mode add the following to your init-file:
+
+  (load "folding" 'nomessage 'noerror)
+  (folding-mode-add-find-file-hook)
+
+then every file you open will be searched for folding marks.
+
+== Caveats ==
+Always make sure that you have a closing fold mark for every opening mark! Otherwise the opening of files might be difficult.  Using M-x occur to search for opening and closing marks is a good idea for this.
+
+To set own folding marks for a given mode, study the following example.
+
+  (folding-add-to-marks-list 'php-mode                "//{"  "//}"  nil t)
+  (folding-add-to-marks-list 'prolog-mode             "%{{{" "%}}}" nil t)
+  (folding-add-to-marks-list 'html-mode               "<!-- {{{ " "<!-- }}} -->" " -->" nil t)
+
+Note: In plain text mode the symbol for open fold is "{{{ " (that is, with a space at the end).
+
+== Download ==
+
+The latest code is maintained by JariAalto. Report bugs to [http://savannah.nongnu.org/projects/emacs-tiny-tools Savannah bug tracker].
+Up till 1999 the code was available at ftp directory of AndersLindgren. 
+
+* [http://git.savannah.gnu.org/cgit/emacs-tiny-tools.git/tree/lisp/other/folding.el?h=devel folding.el] HEAD devel revision at Savannah tiny-tools project
+* [http://cvs.xemacs.org/viewcvs.cgi/*checkout*/XEmacs/packages/xemacs-packages/text-modes/folding.el?rev=HEAD&content-type=text/plain folding.el] (HEAD revision) from [[XEmacs]], 2006-11-18 site: http://www.xemacs.org.
+* Lisp:folding.el (RCS revision 1.13, 2003-02-05, probably from !RedHat)
+* Lisp:fold.el is a prototype fold-mode that uses EmacsOverlays originally authored by MarcusBreiing.
+
+[new]
+Both 2.107 and the older 2.99 appear to work perfectly with my GNU Emacs CVS. -- TimAnderson
+[new]
+The folding.el (version: 2.117+) from the XEmacs CVS does not appear to be working on my GNU Emacs 22.0.55.1 -- RudiGrinberg
+[new]
+I found folding-mode is not compatiable with GNU Emacs 22.0.50.1. The newlines of file save with folding-mode often replace with ^M and this will lead to many problems for some files, such as elisp. fold.el works in my emacs. I recommend use it in GNU Emacs. Download: http://uuid.com/~marcus/computing/fold-mode.html. I add some command in Lisp:fold.el
+-- Ye_Wenbin
+[new]
+folding.el (version 2006.1118), folding-2.107.el, and folding-2.99 all work on plain text in GNU Emacs (GNU Emacs 22.1.50.1 (powerpc-apple-darwin8.11.0, Carbon Version 1.6.0) of 2008-01-17 on cf-ppc-macosx.usr.sourceforge.jp).  However all have unpleasant interaction with narrowing and widening in LaTeX.
+
+== Folding Mode for C Code ==
+
+Folding mode is based on comments, and it uses the folding-top-mark & 
+folding-bottom-mark to distinguish which region should be folded. 
+While editing C programs, folding-mode use '/* {{{ ' and '/* }}}' as 
+the top and bottom mark.  And it is easy for you to use the interactive function fold-fold-region to fold a region marked by Emacs set-mark. If you want a many level folded file, you have to do nothing but to fold a region in a folded region like this:
+
+     /* {{{ This is the parent level */
+     main()
+     {
+        /* {{{ This is the first child level (var initialized)*/
+        int i,j,k;
+        float l,m,n;
+        char a,b,c;
+        /* }}} child level ended */
+
+        /* {{{ Here is the second child level (function) */
+ 
+        /* {{{ grand-son level (function used to get character) */
+        char getChar()
+        {
+            ...
+        }
+        /* }}} grand-son level ended */
+   
+        int getInt()
+        {
+            ...
+        }
+        
+        float getFloat()
+        {
+            ...
+        }
+        /* }}} second child level ended */
+ 
+        /* and so on */
+         ...
+        /* }}} */
+    }       
+
+After folding this buffer in Emacs, it looks like that:
+
+  /* {{{ This is the parent level ...
+
+When you use "C-f >" to enter this level, you will see:
+
+  /* {{{ This is the first child level ...
+  /* {{{ Here is the second child level ...
+  /* {{{ and so on ...
+ 
+
+'''Note:''' Actually, <code>hs-minor-mode</code> which comes with Emacs CVS (as of May 25th 2003) <b>does</b> work like this, hiding only the first containing block. I guess it also works correctly with "older" Emacs 21.2 and 21.3.
+
+
+== Other examples ==
+
+If you want to see how you can use FoldingMode to organize your file you might consider Lisp:eukleides.el and Lisp:moikrug.el as examples.
+
+----
+CategoryHideStuff 
+CategoryOutline

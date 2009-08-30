@@ -1,0 +1,15 @@
+When defining control and shifted keys using brackets
+does not work.  Examples:
+
+    (global-set-key [S-C-<f2>] 'find-file) 
+    (global-set-key [C-<f2>] 'find-file) 
+
+This fails to bind the key.
+
+Using an alternate description using `kbd' works:
+
+    (global-set-key (kbd "S-C-<f2>") 'find-file)
+
+----
+CategoryKeys
+ThaddeusOlczyk

@@ -1,0 +1,65 @@
+= On Screen Display Of Org-Mode Appointments =
+
+RichardRiley
+
+This code shows how to implement an onscreen display of Org-Mode appointments at the configured warning time. It requires gnome-osd package but it would be fairly trivial to use other desktop environment equivalents I think.
+
+Another option is to use ToDoChiKu, which should work cross-platform.
+
+[http://www.emacswiki.org/emacs-en/OrgMode-OSD-scr1 Screenshot]
+
+The first code is the interface to the OSD layer:
+
+<pre>
+
+(defun rgr/xml-escape (s)
+  (setq s (replace-regexp-in-string "'" "&apos;" 
+  (replace-regexp-in-string "\"" "&quot;"
+  (replace-regexp-in-string "&" "&amp;" 
+  (replace-regexp-in-string "<" "&lt;"
+  (replace-regexp-in-string ">" "&gt;" s)))))))
+
+(when window-system
+  (defun rgr/osd-display (id msg &optional delay vattrib hattrib font) 
+    "Display a message msg using OSD. Currently requires gnome-osd-client"
+    (unless vattrib (setq vattrib "top"))
+    (unless hattrib (setq hattrib "right"))
+    (unless delay (setq delay 5000))
+    (unless font (setq font "Arial 12"))
+    (save-window-excursion
+      (shell-command
+       (format
+	"gnome-osd-client -f \"<message id='%s' osd_fake_translucent_bg='off' osd_font='%s' animations='on' hide_timeout='%d' osd_vposition='%s' osd_halignment='%s'>%s</message>\""    
+	id
+	font
+	delay
+	vattrib
+	hattrib
+	(rgr/xml-escape msg)
+	)))))
+</pre>
+
+In debian, for example, you would install the gnome-osd package like this:
+
+<pre>
+sudo apt-get install gnome-osd
+</pre>
+
+Then we need to set up org-mode to use a new display function for informing the user about upcoming appointments:
+
+<pre>
+(when window-system
+
+  (setq appt-display-format 'window)
+  
+  (defun org-osd-display (min-to-app new-time msg)
+    (rgr/osd-display msg msg -1 "center" "center" "Verdana 20"))
+  
+  (setq appt-disp-window-function (function org-osd-display))
+  
+  ;; Run once, activate and schedule refresh
+  (run-at-time nil 3600 'org-agenda-to-appt)
+  (appt-activate t))
+</pre>
+
+I did try the window manager neutral OSD equivalent but it simply did not work well enough but if anyone does get it to work then please update here accordingly.

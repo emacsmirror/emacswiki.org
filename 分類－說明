@@ -1,0 +1,47 @@
+English: CategoryGlossary
+
+CategoryGlossary 是不是翻译成“术语表”更合适一些？
+
+Here is an introductory translation to/from Emacs-speak:
+
+||'''通用术语'''||'''Emacs术语'''||'''中文意思'''||
+||selection||region||选定区域||
+||cut||kill||剪切||
+||paste||yank||粘贴||
+||window||frame||窗口||
+||shortcut||key-sequence||快捷键||
+
+In Emacs terms, a '''window''' is a frame pane, that is, a subframe.
+The '''ModeLine''' is the text at the bottom border of a window. The
+'''MiniBuffer''' is the special buffer for entering commands; it
+appears either in a separate frame or at the
+bottom of each frame.  The '''TextCursor''' is the place where you insert typed text; it is rectangular, by default.  The '''MousePointer''' shows
+the mouse position; it is an arrow, by default.  The position of the cursor at any time is called the '''[[Point]]''' value. For example, if the cursor is on the third character in a buffer, then point = 3. The terms "[[Point]]"
+and "[[Mark]]" are discussed more in the section "[[Region]]".
+
+在Emacs术语中，一个窗口（window）指的是一个框格（frame pane），即一个子框（subframe）。模式行（mode－line）是指每个窗口底部边界的文字信息。迷你缓冲区（minibuffer）是用来输入命令的一个特殊的缓冲区。它有可能在每个框架（frame）的底部，也有可能自己独占一个框架。（字符）光标是插入你所键入的字符的地方，默认设置是矩形的。（鼠标）指标（pointer）表示鼠标的位置，默认为箭头状。某一时刻光标的位置称为点值（point value）。例如， 若光标位于缓冲区的第三个字符，则点值＝3。术语“点值”和“标记”将会在“区域（选择）”部分做更详细的讨论。
+
+Emacs jargon precedes most user intefaces used today. Click the title of this page to find all Wiki pages acting as entries in a glossary.
+
+Emacs的“行话”比大多数现在用的用户界面起源都早。点击本页的标题查找所有“用作术语表(glossary)”的维基页面。
+
+* [[Display]] -- frames are shown on displays (tty, X)
+* [[Frame]]框架 -- Emacs windows are shown in frames (called "windows" outside of Emacs) Emacs窗口显示在框架（frame）中。框架在别的地方通常被称为窗口（windows）。不要把Emacs中的窗口与通常所说的窗口搞混了
+* [[Window]]窗口 -- buffers are shown in Emacs windows (frame panes) Emacs窗口（框架上的窗格）用于显示缓冲区（buffers）
+** [[ModeLine]]模式行 -- at the bottom of a window, it describes the buffer status 每个窗口的底部都有一个模式行，它用来描述缓冲区的状态
+* [[Buffer]]缓冲区 -- editing happens in buffers 我们在缓冲区中编辑文本
+** [[MajorMode]]主模式 -- there is one major mode per buffer 每个缓冲区有一个主模式
+** [[MinorMode]]子模式 -- several minor modes can be active at the same time 多个子模式可以同时处于激活状态
+* MiniBuffer 迷你缓冲区 -- special buffer at the bottom of a frame, which you use to enter commands 位于框架底部的一个特殊的缓冲区。你用它来输入命令
+* EchoArea 回显区 -- occupying the same space with MiniBuffer, useful output appears at the bottom of the screen与迷你缓冲区重叠，用来显示有用的输出信息
+* [[Point]], [[Mark]], and [[Region]] -- parts of a buffer
+** [[Region]]区域 -- the area between point and mark, sometimes active, sometimes not 点和标记间的区域。有时处于激活状态，有时则没
+** [[Point]]点 -- the point is where inserts happen (often called "cursor position" when talking to non-Emacs people)点是指插入字符的地方（非Emacs人士称之为“光标位置”）
+** [[Mark]]标记 -- the mark, how does it work and who are its best buddy:标记如何工作以及谁是它最好的伙伴：
+** [[Narrowing]] -- "narrowing" happens 
+* [[Line]]行 -- the lines we love and hate, how to manipulate and work with them 让我们又爱又恨，如何操作它们
+* [[Electricity]]
+* [[Face]]外观 -- Is it a font?  Is it a color?  No, it is a face!指的是字体还是颜色？都不是，我们说的是外观
+* [[Sexp]] -- a sexp is a "symbolic expression" in Lisp
+* [[Command]] -- what is M-x, M-:, and what is the difference between a command and a functionM-x、M-:是什么，命令和函数之间的区别
+* DoWhatIMean -- dwim 的意思!

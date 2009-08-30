@@ -1,0 +1,26 @@
+I think M-backspace should delete, rather than kill.  Here code for .emacs to accomplish that.
+
+<pre>
+(defun delete-word (arg)
+  "Delete characters forward until encountering the end of a word.
+With argument, do this that many times."
+  (interactive "p")
+  (delete-region (point) (progn (forward-word arg) (point))))
+
+(defun backward-delete-word (arg)
+  "Delete characters backward until encountering the end of a word.
+With argument, do this that many times."
+  (interactive "p")
+  (delete-word (- arg)))
+
+(global-set-key (read-kbd-macro "<M-DEL>") 'backward-delete-word)
+</pre>
+
+If you use CUA mode, you might want to register these functions as movements, so that shift-<key> works properly:
+
+<pre>
+(dolist (cmd
+ '(delete-word backward-delete-word))
+  (put cmd 'CUA 'move)
+)
+</pre>

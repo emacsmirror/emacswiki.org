@@ -1,0 +1,55 @@
+Une fonction ''Lisp'' devient une commande lorsque son corps contient, dans sa partie supérieure,  une instruction de la forme <code>(interactive...)</code>. Voyez l'article DéfinitionCommandes. Cette instruction particulière ne fait rien lorsqu'elle est exécutée, mais sa présence dans la définition de la fonction indique qu'un appel interactif est possible. Son paramètre permet de contrôler l'entrée des données à fournir à la fonction pour un appel interactif.
+
+    (defun bonjour ()
+      "Bonjour tout le monde et vous pouvez le dire avec la commande M-x bonjour."
+      (interactive)
+      (message "Bonjour tout le monde!"))
+
+Exemple avec un paramètre:
+
+    (defun bonjour (quelquun)
+      "Dites bonjour à quelqu'un avec la commande M-x bonjour."
+      (interactive "sÀ qui voulez-vous dire bonjour ? ")
+      (message "Bonjour %s!" quelquun))
+
+Pour avoir une liste complète des paramètres possibles d<nowiki>'</nowiki>''interactive'', tapez sur la clavier  `C-h f interactive'.
+
+Pour rendre une fonction à deux paramètres interactive, vous devez donner à ''interactive'' une chaîne de caractères comme paramètre qui contient le premier texte d'interrogation séparé du suivant par un code indiquant une nouvelle ligne.
+
+    (defun bonjour-multiple (quelquun n)
+      "Dites bonjour N fois à quelqu'un avec la commande M-x bonjour-multiple."
+      (interactive "sÀ qui voulez-vous dire bonjour ? \nnCombien de fois ? ")
+      (dotimes (i n)
+        (insert (format "bonjour %s!\n" quelquun))))
+
+Voyez aussi ParamètreUniversel.
+
+Lorsque vous voulez lier un programme à une touche du clavier, vous pouvez utiliser ''lambda'' pour créer une fonction anonyme; mais cela n'est pas suffisant vous devez la rendre interactive:
+
+    (global-set-key (kbd "C-c t")
+                    (lambda ()
+                      (interactive)
+                      (set-default 'truncate-partial-width-windows
+                                   (not truncate-partial-width-windows))
+                      (message "truncate-partial-width-windows: %S"
+                               truncate-partial-width-windows)))
+
+Si vous utilisez souvent cette possibilité, vous aurez tout intérêt à créer une macro comme celle-ci:
+
+    (defmacro aif (&rest forms)
+      "Create an anonymous interactive function.
+    Mainly for use when binding a key to a non-interactive function."
+      `(lambda () (interactive) ,@forms))
+
+Alors
+
+    (global-set-key (kbd "C-c t")
+                    (aif (set-default 'truncate-partial-width-windows
+                                      (not truncate-partial-width-windows))
+                         (message "truncate-partial-width-windows: %S"
+                                  truncate-partial-width-windows)))
+
+Voir aussi ExpressionLambda.
+
+----
+CatégorieCode

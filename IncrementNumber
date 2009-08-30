@@ -1,0 +1,98 @@
+KeyboardMacros are a useful tool for daily editing.
+Sometimes, when generating lots of data using CopyAndPaste (KillingAndYanking),
+you might have the need to increment numbers.
+
+If you are careful, you can use NumbersInRegisters.  But some might find
+the following defun interesting enough:
+
+    (defun increment-number-at-point ()
+      (interactive)
+      (skip-chars-backward "0123456789")
+      (or (looking-at "[0123456789]+")
+          (error "No number at point"))
+      (replace-match (number-to-string (1+ (string-to-number (match-string 0))))))
+
+Suggested keybinding:
+
+    (global-set-key (kbd "C-c +") 'increment-number-at-point)
+
+----
+
+Another version that allows C-u prefixes to set the increment (negative numbers also work), maintains field sizes, i.e. 0034 -> 0035 instead of 35, and will roll negative increments around: 0000 -> 9999:
+
+<pre>
+(defun my-increment-number-decimal (&optional arg)
+  "Increment the number forward from point by 'arg'."
+  (interactive "p*")
+  (save-excursion
+    (save-match-data
+      (let (inc-by field-width answer)
+        (setq inc-by (if arg arg 1))
+        (skip-chars-backward "0123456789")
+        (when (re-search-forward "[0-9]+" nil t)
+          (setq field-width (- (match-end 0) (match-beginning 0)))
+          (setq answer (+ (string-to-number (match-string 0) 10) inc-by))
+          (when (< answer 0)
+            (setq answer (+ (expt 10 field-width) answer)))
+          (replace-match (format (concat "%0" (int-to-string field-width) "d")
+                                 answer)))))))
+</pre>
+
+And you always need hex:
+
+<pre>
+(defun my-increment-number-hexadecimal (&optional arg)
+  "Increment the number forward from point by 'arg'."
+  (interactive "p*")
+  (save-excursion
+    (save-match-data
+      (let (inc-by field-width answer hex-format)
+        (setq inc-by (if arg arg 1))
+        (skip-chars-backward "0123456789abcdefABCDEF")
+        (when (re-search-forward "[0-9a-fA-F]+" nil t)
+          (setq field-width (- (match-end 0) (match-beginning 0)))
+          (setq answer (+ (string-to-number (match-string 0) 16) inc-by))
+          (when (< answer 0)
+            (setq answer (+ (expt 16 field-width) answer)))
+          (if (equal (match-string 0) (upcase (match-string 0)))
+              (setq hex-format "X")
+            (setq hex-format "x"))
+          (replace-match (format (concat "%0" (int-to-string field-width)
+                                         hex-format)
+                                 answer)))))))
+</pre>
+
+And sometimes even binary:
+
+<pre>
+(defun my-format-bin (val width)
+  "Convert a number to a binary string."
+  (let (result)
+    (while (> width 0)
+      (if (equal (mod val 2) 1)
+          (setq result (concat "1" result))
+        (setq result (concat "0" result)))
+      (setq val (/ val 2))
+      (setq width (1- width)))
+    result))
+
+(defun my-increment-number-binary (&optional arg)
+  "Increment the number forward from point by 'arg'."
+  (interactive "p*")
+  (save-excursion
+    (save-match-data
+      (let (inc-by field-width answer)
+        (setq inc-by (if arg arg 1))
+        (skip-chars-backward "01")
+        (when (re-search-forward "[0-1]+" nil t)
+          (setq field-width (- (match-end 0) (match-beginning 0)))
+          (setq answer (+ (string-to-number (match-string 0) 2) inc-by))
+          (when (< answer 0)
+            (setq answer (+ (expt 2 field-width) answer)))
+          (replace-match (my-format-bin answer field-width)))))))
+</pre>
+
+See ReplaceRegexp, ReplaceCount, RenumberList and MacroMath for other ways to deal with automatic incrementation.
+
+----
+CategoryEditing

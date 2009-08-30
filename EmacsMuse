@@ -1,0 +1,328 @@
+== Executive summary ==
+
+Emacs Muse is an authoring and publishing environment for Emacs.  It
+simplifies the process of writing documents and publishing them to
+various output formats (HTML, PDF, DocBook, LaTeX, and more).
+
+The Emacs Muse is similar to EmacsWikiMode, especially its markup.
+A comparison of the two is available on this page.
+
+== What is it? ==
+
+Emacs Muse is an authoring and publishing environment for Emacs.  It
+simplifies the process of writing documents and publishing them to
+various output formats.
+
+Muse consists of two main parts: an enhanced text-mode for authoring
+documents and navigating within Muse projects, and a set of publishing
+styles for generating different kinds of output.
+
+What makes Muse distinct from other text-publishing systems is a modular
+environment, with a rather simple core, in which "styles" are derived
+from to create new styles.  Much of Muse's overall functionality is
+optional.  For example, you can use the publisher without the
+major-mode, or the mode without doing any publishing; or if you don't
+load the Texinfo or LaTeX modules, those styles won't be available.
+
+The Muse codebase is a departure from emacs-wiki.el version 2.44. The
+code has been restructured and rewritten, especially its publishing
+functions.  The focus in this revision is on the authoring and
+publishing aspects, and the "wikiness" has been removed as a default
+behavior (available in the optional muse-wiki module).  CamelCase
+words are no longer special by default.
+
+One of the principal aims in the development of Muse is to make it very
+easy to produce good-looking, standards-compliant documents.
+
+== Documentation ==
+
+The Muse manual is available on-line in several forms.
+
+* PDF: http://mwolson.org/static/doc/muse.pdf
+* HTML (single file): http://mwolson.org/static/doc/muse.html
+* HTML (multiple files): http://mwolson.org/static/doc/muse/
+
+There is also a Quick Start guide, which is available at
+
+* http://mwolson.org/projects/MuseQuickStart.html
+
+== Getting Muse ==
+
+* http://mwolson.org/projects/EmacsMuse.html -- The current maintainer's Muse page.
+
+* http://mwolson.org/static/dist/muse-latest.tar.gz -- Latest development tarball.
+
+* Releases may be downloaded at http://download.gna.org/muse-el/.
+
+Muse is hacked on and maintained using git.
+
+If you would like to track the latest development changes, or
+contribute code to Muse, check out the MuseDevelopment page for
+instructions.
+
+== Projects based on Muse ==
+
+# PlannerMode
+# MuseContacts
+# EmacsAtomApi
+# ToMuse
+# EpmMode
+
+== Contributors ==
+
+* http://johnwiegley.com/emacs.html -- Homepage of the original author.
+
+See the <code>AUTHORS</code> file included with Muse for a complete listing of contributors to Muse.
+
+== Getting help ==
+
+To report a bug or suggest a change, check out the
+[http://gna.org/projects/muse-el Muse bug-tracker interface].
+All bugs that are sent to this tracker will also appear on our mailing
+list.
+
+There are several mailing lists for Muse.
+
+; muse-el-announce@gna.org: This is a low-traffic list for Muse announcements.
+
+: '''URL:''' http://mail.gna.org/listinfo/muse-el-announce/
+
+: '''Gmane:''' <code>gmane.emacs.muse.announce</code>
+
+; muse-el-discuss@gna.org: Discussion, bugfixes, suggestions, tips, and the like for Muse. This mailing list also includes the content of the Announcements list.
+
+: '''URL:''' http://mail.gna.org/listinfo/muse-el-discuss/
+
+: '''Gmane:''' <code>gmane.emacs.muse.general</code>
+
+; muse-el-logs@gna.org: Log messages for changes committed to Muse.
+
+: '''URL:''' http://mail.gna.org/listinfo/muse-el-logs/
+
+: '''Gmane:''' <code>gmane.emacs.muse.scm</code>
+
+; muse-el-internationalization@gna.org: Discussion of translation of the Muse website and documentation into many languages.
+
+: '''URL:''' http://mail.gna.org/listinfo/muse-el-internationalization/
+
+: '''Gmane:''' <code>gmane.emacs.muse.internationalization</code>
+
+; muse-el-commits@gna.org: Generated bug reports for Emacs Muse.  If you use our bug-tracker at https://gna.org/bugs/?group=muse-el, the bug reports will be sent to this list automatically.
+
+: '''URL:''' http://mail.gna.org/listinfo/muse-el-commits/
+
+: '''Gmane:''' <code>gmane.emacs.muse.cvs</code>
+
+The [http://gmane.org Gmane] website allows you to access the mailing
+lists in a variety of useful forms, such as: RSS feed, a blog-style
+interface, and a news feed for a newsreader.
+
+Please consult
+http://mwolson.org/projects/ReportingEmacsLispBugs.html before
+filing a bug report.
+
+There is an IRC channel devoted to discussion of Muse (as well as
+EmacsWikiMode and perhaps PlannerMode) at <code>#muse</code> on
+<code>irc.freenode.net</code>.  The current maintainer (MichaelOlson)
+occasionally hangs out there.
+
+== Status ==
+
+The initial stable version of Muse has been released.  Nested list support and context-aware escaping of specials have been added to it, as of the 3.03  release.  The 3.10 release also includes an EmacsWikiMode migration guide in the etc/ directory.
+
+PlannerMode has been ported to Muse.  See PlannerMusePort for history.
+
+== Why use Muse? ==
+
+The big question is: Why shouldn't I just use EmacsWikiMode for
+publishing my stuff?
+
+* Muse can handle different output formats.
+* Muse is easier to hack on than EmacsWikiMode; its code is laid out much more nicely.
+* It is easy to derive your own special publishing style from an existing one.
+* A much improved journaling mode exists in Muse that can output to RSS 1.0 (RDF) or RSS 2.0.
+
+== Miscellanea ==
+
+=== What's missing in Muse that exists in emacs-wiki? ===
+
+* emacs-wiki-menu.el, and emacs-wiki-macros.el
+
+=== Customizing Latex output ===
+
+Jim Ottaway has written a latex style that allows you to specify latex options
+using the muse directives. So you can do things like 
+
+ #latex-class-option +draft
+
+ Location: http://www.users.zetnet.co.uk/jeho/archives/2005
+ Archive name: jeho@jeho.org--2005
+ Branch: muse-stuff--jeho--1.0
+
+=== Don't use the ".muse" extension; automatically select muse-mode depending on file contents ===
+
+I do not like using ".muse" as file extension; after all, muse files are text files.  But opening all ".txt" files in muse-mode is also undesirable.  The following lines in my .emacs automatically open muse-mode if:
+
+* the file starts with "#title"
+
+, or,
+
+* the file extension is ".txt" and there is a section header on one of the first 4 lines (it starts with "* ")
+
+<pre>
+(add-to-list 'auto-mode-alist 
+           '("#title " . muse-mode))
+
+(add-hook 'text-mode-hook
+          (lambda ()
+            (unless (eq major-mode 'muse-mode)
+              (when (equal (file-name-extension buffer-file-truename) "txt")
+                (save-excursion
+                  (goto-line 5)
+                  (if (re-search-backward "\* [A-Z][a-z]+.*" 1 t)
+                      (muse-mode)))))))
+</pre>
+-- FelipeCsaszar
+
+I had multiple problems with the code above:
+1st: According to the manual, auto-mode-alist controls "the correspondence between file names and major modes", so the first expression doesn't work as intended. I modified the 2nd expression to do all the work.
+2nd:  it prevented me of running text-mode on an unsaved buffer - 
+(progn
+	(interactive)
+	(switch-to-buffer "my-new-buffer")
+	(text-mode)) - 
+would fail. This was preventing me of running remember mode.
+Below are my modifications on  FelipeCsaszar's code.
+<pre>
+;; muse-mode on *.txt files, if a #title or sect. header is on top 4 lines
+(add-hook 'text-mode-hook
+          (lambda ()
+            (unless (or (eq major-mode 'muse-mode)
+			(not (stringp buffer-file-truename)))
+              (when (equal (file-name-extension buffer-file-truename) "txt")
+                (save-excursion
+                  (goto-line 5)
+                  (if (re-search-backward "\* [A-Z][a-z]+.*\\|#title " 1 t)
+                      (muse-mode)))))))
+</pre>
+
+-- RuiAlmeida
+
+=== Customize the Markup Rules ===
+
+*Do NOT modify existing upstream source files*
+* muse-publish.el regexps for markup rules.
+* muse-color.el markup font faces in Emacs
+
+/I prefer markup rules like LDP WikiText, which is designed for authoring before converted to DocBook/
+
+[new:MichaelOlson:2005-05-30 05:28 UTC]
+
+It would be nice to have a Muse add-on that can handle MoinMoin-style
+rules.  Here is a transcript from a discussion that I had with
+JohnWiegley concerning this issue.
+
+[new]
+
+<pre>
+<johnw> now, you could make muse-moin.el, however
+<johnw> and have it change muse-publish-markup-regexps, rule 1600
+<johnw> and then you'd have what you want, and all styles would honor it
+<mwolson> that would be cool
+<johnw> the muse core allows for complete customization
+</pre>
+
+[new:XavierMaillard:2008-10-25 05:27 UTC]
+What about having a more sophisticated way to customize the markup ? I
+mean, we could have different markup used inside a muse-project or
+even for each file in a muse-project. I opened a bug in the
+bugtracker. I am still waiting for answers and support to start
+hacking something.
+
+[new]
+
+There's a [http://moinmoin.wikiwikiweb.de/EmacsForMoinMoin moinmoin-mode] on MoinMoinWiki. The add-on can make use of the code.
+
+=== More Muse Tips ===
+
+Can get enough of Muse?  Find yourself spending more and more time with it?  Well now you can make your life even more Muse-centric by evaluating code (M-C-x). Thus referencing files within Muse becomes easy:
+
+<pre>
+  (find-file "~/.emacs")
+</pre>
+
+...also works great with Tramp:
+
+<pre>
+  (find-file "/you@example.com:~/.emacs")
+</pre>
+
+Or use Muse to launch your favorite file-browser!  Add this function in your dot-emacs:
+
+<pre>
+    (defun browse-dir (dir-as-string)
+        (start-process-shell-command 
+         "browse" 
+         "*scratch*" 
+         (concat "/usr/bin/nautilus --no-desktop " dir-as-string)))
+</pre>
+
+...then evaluate within Muse:
+
+<code>
+  (browse-dir "~/project/foo/src")
+</code>
+
+== Bugs & Wishlist ==
+
+See [http://gna.org/bugs/?group=muse-el the bug-tracking interface].
+Wishlist items are those with a severity of 1.
+
+== Questions and Answers ==
+
+'''Q:''' Could you provide a step by step guide about how to generate
+a project of pages?
+
+'''A:''' Check out the "Creating and Managing Muse Projects" part of the Muse manual;
+hopefully that will be of use to you.  The <code>examples</code> directory in the
+Muse tarball might also be worth looking at.
+
+'''Q:''' Could you show how to set up muse to render mathematical formulae?
+
+'''A:''' Muse now comes with muse-latex2png.el.
+Check out its header for directions.
+
+== Who uses Muse? ==
+
+* MichaelOlson : http://mwolson.org/
+* ChrisLowis : http://www.chrislowis.co.uk/
+* [[Gunnar Wrobel]] : http://www.gunnarwrobel.de/
+* DavidSmith : http://www.bosabosa.org/
+* JohnSullivan : http://www.wjsullivan.net/
+* [[Exal|Exal de Jesus Garcia Carrillo]] : http://exal.0x2.org
+* XinShi : http://www.xshi.org/web-1.0/
+* JulienBarnier : http://dev.nozav.org/, http://perso.ens-lsh.fr/jbarnier
+* [[Aycan iRiCAN]] : http://people.core.gen.tr/~aycan.irican/
+* JodyKlymak: http://web.uvic.ca/~jklymak/
+* DavideAngelocola: http://dfa.slackware.it
+* ChrisMcMahan
+* JuneTateGans : http://www.theonelab.com/
+* DavidEsposito : [http://greens.org/~ringo0 Here's a demo of how I use it]
+* Marcus Brinkmann : http://www.marcus-brinkmann.de/
+* TheronTlax : http://timbral.net
+* KamenNedev : http://www.emitmedia.org
+* RomanLagunov : http://dotemacs.ru 
+* FabriceNiessen : http://www.mygooglest.com/fni/
+* [[Ye_Wenbin]]: http://learn.tsinghua.edu.cn:8080/2005211356/emacs/index.html
+* AlexOtt: http://xtalk.msk.su/~ott/en/
+* MathiasKegelmann
+* Wolfgang Steuerle: http://www.steuerle.net
+* David Cross: http://www.davidcross.us
+* Glyn Millington: http://www.millingtons.eclipse.co.uk/glyn
+* [[NurullahAkkaya]]: http://nakkaya.com
+* SewerynKokot: http://www.skokot.po.opole.pl
+* AlexScherbanov actively uses muse with PlannerMode
+----
+MarkupModes
+
+Keywords: muse.el

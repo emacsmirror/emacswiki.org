@@ -1,0 +1,30 @@
+To find and remove accidentally doubled doubled words I find this function useful.  The regexp used in this function will not work in Emacs-versions less than 21.
+
+    (defun query-remove-doubled-words (&optional force)
+  "Find all doubled words longer than 3 letters and ask to remove them.
+    With optional arg FORCE remove them without asking."
+  (interactive "P")
+  (save-excursion
+    (beginning-of-buffer)
+    (let ((case-fold-search t) 
+	  (del-counter 0))
+      (while (re-search-forward
+	      "\\(\\<\\w\\{3,\\}\\>\\)[ \t\n]*\\(\\1\\)\\b" nil t)
+	(replace-highlight (match-beginning 2) (match-end 2))
+	(unwind-protect
+	    (when (or force (y-or-n-p "Remove this doubled word? "))
+	      (delete-region (match-beginning 2) (match-end 2))
+	      (canonically-space-region (match-beginning 0) (match-end 0))
+	      (setq del-counter (1+ del-counter)))
+	  (replace-dehighlight)))
+      (if (> del-counter 0)
+	  (message "Removed %d doubled %s." del-counter
+		   (if (< del-counter 1) "words" "word"))
+	(message "No doubled words found or removed.")))))
+
+Note that FlySpell already has this feature.
+
+A simpler version of this command is introduced as[http://www.gnu.org/software/emacs/emacs-lisp-intro/html_mono/emacs-lisp-intro.html#the-the the-the function in the Emacs Lisp Introduction].
+
+----
+CategoryEditing

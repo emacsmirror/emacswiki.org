@@ -1,0 +1,9 @@
+Like NumberedWindows, [http://nschum.de/src/emacs/window-numbering-mode/ window-numbering.el] assigns numbers to windows for quick access (like Firefox does for tabs).  Unlike NumberedWindows, it has hooks to influence the numbering of special windows.
+
+http://nschum.de/src/emacs/window-numbering-mode/window-numbering.png
+
+See also: NumberedWindows
+
+CategoryWindows
+
+

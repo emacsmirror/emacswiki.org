@@ -1,0 +1,128 @@
+[new]
+How about moving these to the newer ElispCookbook? -- AaronHawley
+
+
+== Filter a lists of strings using a regular expression ==
+
+This function works only on lists of strings.  
+Some functions such as directory-files already allow you to filter the result according to a regular expression, which is why you don't often need this function.
+
+    (defun regexp-filter (regexp list)
+      "Filter LIST of strings with REGEXP."
+      (let (new)
+	(dolist (string list)
+	  (when (string-match regexp string)
+	    (setq new (cons string new))))
+	(nreverse new)))
+
+Examples:
+
+    (regexp-filter "ne" '("one" "two" "three" "four" "five"
+                          "six" "seven" "eight" "nine" "ten"))
+    => ("one" "nine")
+    (regexp-filter "en" '("one" "two" "three" "four" "five"
+                          "six" "seven" "eight" "nine" "ten"))
+    => ("seven" "ten")
+
+== General filter ==
+
+You can generalize the filter above and rewrite the regexp-filter using
+the general filter.
+
+    (defun filter (predicate list)
+      "Filter LIST using PREDICATE.
+    PREDICATE is called for every item in LIST.  All items for which
+    PREDICATE returns non-nil are returned in a list."
+      (let (new)
+	(dolist (item list)
+	  (when (funcall predicate item)
+	    (setq new (cons item new))))
+	(nreverse new)))
+    
+    (defun regexp-filter (regexp list)
+      "Filter LIST of strings by including all items matching REGEXP."
+      (filter (lambda (str) (string-match regexp str)) list))
+    
+    (defun regexp-not-filter (regexp list)
+      "Filter LIST of strings by including all items matching REGEXP."
+      (filter (lambda (str) (not (string-match regexp str))) list))
+
+Examples:
+
+    (regexp-filter "ne" '("one" "two" "three" "four" "five"
+			  "six" "seven" "eight" "nine" "ten"))
+    => ("one" "nine")
+    (regexp-not-filter "en" '("one" "two" "three" "four" "five"
+			      "six" "seven" "eight" "nine" "ten"))
+    => ("one" "two" "three" "four" "five" "six" "eight" "nine")
+
+=== Comments ===
+The <tt>filter</tt> function above, like any operation taking a predicate as parameter, should be written as a macro because Emacs uses DynamicScoping.
+
+    (defmacro map-delq-nil (predicate list)
+      "Filter LIST using PREDICATE.
+    PREDICATE is called for every item in LIST.  All items for which
+    PREDICATE returns non-nil are returned in a list."
+      `(delq nil (mapcar ,predicate ,list)))
+
+    (def-edebug-spec map-delq-nil (function-form form))
+
+== Exchanging two elements in a list ==
+
+    (defun exchange-list-elements (a b list)
+      "Exchange elements number A and B in LIST.
+    The elements are numbered starting with 0.
+    Return a copy of the list with the elements exchanged."
+      (let* ((l1 (copy-sequence list))
+	     (l2 (cdr (nthcdr a l1)))
+	     (l3 (cdr (nthcdr b l1))))
+	(setcdr (nthcdr (1- b) l1) nil); limit length of l2
+	(setcdr (nthcdr (1- a) l1) nil); limit length of l1
+	(nconc l1 (list (nth b list))
+	       l2 (list (nth a list))
+	       l3)))
+
+Example:
+
+    (exchange-list-elements 3 5 '(a b c d e f g h))
+    => (a b c f e d g h)
+
+== XWEM's functions for list operations ==
+
+    (defun xwem-insert-after (list aft-el el)
+      "Insert EL after AFT-EL in LIST."
+      (push el (cdr (member aft-el list)))
+      list)
+   
+    (defun xwem-insert-before (list bef-el el)
+      "Insert EL before BEF-EL in LIST."
+      (nreverse (xwem-insert-after (nreverse list) bef-el el)))
+ 
+    (defun xwem-list-set-element (list old-el new-el)
+      "Set OLD-EL to NEW-EL in LIST."
+      (setcar (member old-el list) new-el)
+      list)
+    
+    (defun xwem-list-exchange-els (list el1 el2)
+      "Exchange places of EL1 and EL2 in LIST."
+      (when (or (null (member el1 list))
+    		(null (member el2 list)))
+    	(error "el1 or el2 is not in list."))
+    
+      (xwem-list-set-element list el1 'this-fake-name1-should-not-be-in-list)
+      (xwem-list-set-element list el2 el1)
+      (xwem-list-set-element list 'this-fake-name1-should-not-be-in-list el2))
+
+Example:
+
+    (xwem-insert-after '(1 2 4) 2 5)
+    => (1 2 5 4)
+    (xwem-insert-before '(1 2 3) 1 0)
+    => (0 1 2 3)
+    (xwem-list-set-element '(1 3 3) 3 2)
+    => (1 2 3)
+    (xwem-list-exchange-els '(1 3 2) 2 3)
+    => (1 2 3)
+
+-----
+CategoryCode

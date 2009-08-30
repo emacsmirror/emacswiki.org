@@ -1,0 +1,47 @@
+piyo is my Internet nick (also [http://piyokun.googlepages.com piyokun]). Clifford Caoile is my real name. My only contribution to Gnu Emacs is a [http://www2.odn.ne.jp/piyokun/emacs/ fan web page (stale as of 2002)].
+
+= Introduction =
+I've been using Gnu Emacs in one form or another for more than 14 years. I like it! I am mainly a [[Meadow]] user, on Windows XP, because it works well with Japanese and MS-IME. I also use console-mode GNU Emacs on Debian and Gentoo. I like hanging out on irc://irc.freenode.org/emacs.
+
+Hopefully I can contribute my experience to these pages!
+
+= Contributions =
+
+Sizable contributions to this wiki (either created or modified):
+
+* DebuggingParentheses - code
+* GnuScreen
+* [[Meadow]] - created
+* [[PuTTY]] - code
+* [[RevertBuffer]] - code
+* MsWindowsRegistry - created
+* WThreeMSearch - code.
+* UnitTesting
+* [[Git]] - how to use emacs-specifics on Windows
+
+[http://www.emacswiki.org/cgi-bin/wiki?action=rc&all=1&showedit=1&from=1&rcuseronly=piyo All contributions to the Wiki]
+
+Packages:
+
+* none
+
+Web pages:
+
+* [http://www2.odn.ne.jp/piyokun/emacs/ Emacs! No! Meadow!]
+
+= Comments =
+
+(originally in my intro) Right now (2004/07/10) I'm having a problem with using it on Windows XP with Japanese, either the gnudoit or emacs itself cannot 
+handle Japanese characters in the path. Ugh. 
+: Welcome to the wiki!  I had Japanese working on NT Emacs for quite a while (right now I don't have access to
+a Windows machine anymore).  I wrote about the stuff I did on this wiki...  Now I just have to find it again...  :)
+The important part was to use BDF fonts, not a real Japanese font that comes with Windows.
+→ FontSetsForNTEmacs.  You probably already know about input-methods, so WritingJapanese is nothing new.
+When you write Japanese, and all you get is empty boxes, but you installed the fonts, then you need to switch
+the fontset.  Use shift+mouse-1 and choose the fontset that includes the new fonts.  In the example from the
+FontSetsForNTEmacs page, I /think/ it is called "bdf" but I'm not sure.  :)   Good luck!  -- AlexSchroeder
+
+: Thanks the information. However the problem is with the file name encoding (like when using UNC "\\" notation), not the display. In any case, this 2 year problem is still not resolved totally to my satisfaction, but I work around it by copying the file to the local drive and editing it there. I also use [[Meadow]] 3.x (Emacs 22.0.50) in (set-language-environment "Japanese") and it's working well on Japanese Windows XP. --piyo
+
+----
+CategoryHomepage

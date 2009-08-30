@@ -1,0 +1,119 @@
+Newer emacsen have the ability to use authentication when SendingMail.
+
+EmacsCvs already has the following patch applied:
+
+* http://josefsson.org/emacs-rfc2554.html
+
+The above patch is for SmtpMail, a mail transfer agent implementation written in EmacsLisp.
+
+== Configuration ==
+
+Here's how you would configure it:
+
+    (setq send-mail-function 'smtpmail-send-it) ; if you use `mail'
+    (setq message-send-mail-function 'smtpmail-send-it) ; if you use message/Gnus
+    (setq smtpmail-default-smtp-server "YOUR SMTP HOST") ; set before loading library
+    (setq smtpmail-local-domain "YOUR DOMAIN NAME")
+    (setq smtpmail-sendto-domain "YOUR DOMAIN NAME")
+    (setq smtpmail-debug-info t) ; only to debug problems
+    (setq smtpmail-auth-credentials  ; or use ~/.authinfo
+          '(("YOUR SMTP HOST" 25 "username" "password")))
+    (setq smtpmail-starttls-credentials
+          '(("YOUR SMTP HOST" 25 "~/.my_smtp_tls.key" "~/.my_smtp_tls.cert")))
+
+Where 25 is the value of `smtpmail-smtp-service'; it can be an
+integer or a string, just as long as they match (eq).
+
+The key/certificate strings in smtpmail-starttls-credentials are optional, only use them if you intend to do certificate-based authentication (i.e., if you won't supply a username/password).
+
+Here's a typical example:
+
+    (require 'smtpmail)
+    (setq smtpmail-smtp-server "mail.epfarms.org"
+          send-mail-function 'smtpmail-send-it
+          smtpmail-auth-credentials "~/.netrc")
+
+=== Extra configuration may be necessary ===
+
+Note that if you don't have a TLS handler (starttls or gnutls) installed, smtpmail will silently use a plain channel, which often means you won't be able to authenticate (depending on your SMTP server's configuration).  I'll see if I can put a fix in Emacs CVS but this will affect older versions for a while. -- tzz 2008-10-29
+
+For some reason I found I needed to set the GNU TLS parameters explicitly, because the connection didn't work without them.  It seems that gnustls-cli should be used as a default if nothing is set, but that didn't work for me.   Adding these lines in my .gnus.el file before the above parameters as a workaround made it work. -- AlexLan 2006-12-02
+
+    (setq starttls-use-gnutls t)
+    (setq starttls-gnutls-program "gnutls-cli")
+    (setq starttls-extra-arguments nil)
+
+== Using a File ==
+
+The variable `smtpmail-auth-credentials' is set to a filename by default: "~/.authinfo".
+This is a file in netrc(5)
+format, or list of four-element lists that contain, in order,
+`servername' (a string), `port' (an integer), `user' (a string) and
+`password' (a string, or nil to query the user when needed).  If you
+need to enter a `realm' too, add it to the user string, so that it
+looks like `user@realm'.
+
+Netrc files have entries that look as follows:
+
+    machine mail.example.com login alex password tu5894j30fufg9rw
+
+Note that ordinarily you could have each of these tokens on a separate
+line.  Emacs' netrc.el library only parses it correctly if all tokens
+belonging to a machine are on the same line, however.
+
+== Other Mail Transfer Agent ==
+
+If you use sendmail or exim (a mail transfer agent outside of Emacs),
+then you have to change your sendmail or exim config.
+There is nothing you can do on the Lisp layer.
+How do you know this applies?
+If message-send-mail-function's value is sendmail-send-it, then you are using
+a sendmail-compatible mail transfer agent outside of Emacs.
+Check man <nowiki>sendmail(8)</nowiki>.
+
+On a Debian system, read /usr/share/doc/exim4-base/README.SMTP-AUTH, for example.
+
+== Patch ==
+
+The following patch adds support to lisp/smtpmail.el for the PLAIN authentication method (implemented 
+in some smtp servers). That patch is available on CVS Emacs - JoseEMarchesi
+
+<pre>
+--- smtpmail.el	4 Jul 2005 17:46:22 -0000	1.75
++++ smtpmail.el	16 Jul 2005 01:01:47 -0000
+@@ -207,7 +207,7 @@
+(defvar smtpmail-queue-index (concat smtpmail-queue-dir
+ 				     smtpmail-queue-index-file))
+ 
+-(defconst smtpmail-auth-supported '(cram-md5 login)
++(defconst smtpmail-auth-supported '(cram-md5 login plain)
+   "List of supported SMTP AUTH mechanisms.")
+ 
+ ;;;
+@@ -559,6 +559,22 @@
+ 		(not (integerp (car ret)))
+ 		(>= (car ret) 400))
+ 	    (throw 'done nil)))
++       ((eq mech 'plain)
++	(smtpmail-send-command process "AUTH PLAIN")
++	(if (or (null (car (setq ret (smtpmail-read-response process))))
++		(not (integerp (car ret)))
++		(not (equal (car ret) 334)))
++	    (throw 'done nil))
++	(smtpmail-send-command process (base64-encode-string 
++					(concat "\0" 
++						(smtpmail-cred-user cred)
++						"\0"
++						(smtpmail-cred-passwd cred))))
++	(if (or (null (car (setq ret (smtpmail-read-response process))))
++		(not (integerp (car ret)))
++		(not (equal (car ret) 235)))
++	    (throw 'done nil)))
++
+        (t
+         (error "Mechanism %s not implemented" mech)))
+       ;; Remember the password.
+</pre>
+
+----
+CategoryMail

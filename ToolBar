@@ -1,0 +1,96 @@
+GnuEmacs and [[XEmacs]] each have a [::ToolBarMode] that provides buttons -- like most other '''[::tool bar]s'''. You can display or hide it using command `tool-bar-mode'.
+
+To disable the toolbar completely, turn off `tool-bar-mode'. Add the following to your InitFile, for GnuEmacs:
+
+    (tool-bar-mode -1)
+
+or this, for [[XEmacs]]:
+
+    (set-specifier default-toolbar-visible-p nil)
+    (set-specifier bottom-toolbar-visible-p nil)
+    (set-specifier left-toolbar-visible-p nil)
+    (set-specifier right-toolbar-visible-p nil)
+    (set-specifier top-toolbar-visible-p nil)
+
+Alternatively, you can add the following line to your ~/.Xresources or
+~/.Xdefaults file:
+
+    Emacs*toolBar: 0
+
+X resources take effect before the first Emacs [[Frame]] is created, therefore
+you won't see the strange "resizing while loading" effect when using X resources.
+Using EmacsLisp, on the other hand, is portable.
+
+[:Tool-Bar Plus]
+== Pop-Up Tool Bar: tool-bar+.el ==
+
+(This applies to GNU Emacs 21 and later.)
+
+Tool-bar mode shows or hides the tool bar on ''all frames'', which wastes real estate. That's one reason lots of people just turn it off. 
+
+DrewAdams has written library Lisp:tool-bar+.el, which:
+
+* Adds a minor mode, `tool-bar-here-mode', which is the same as `tool-bar-mode', except that it affects ''only the current frame''.  This saves real estate on frames other than the ones with the tool-bar.
+
+* Adds a "button" named '''Buttons''' to the far right of the MenuBar whenever the tool-bar is not visible (that is, whenever both `tool-bar-here-mode' and `tool-bar-mode' are turned off). You can click '''Buttons''' to ''pop up the tool-bar'' on the current frame just long enough for one command: after you click a tool-bar button, the tool-bar
+disappears again. The '''Buttons''' button is absent whenever the tool-bar is visible, and vice versa.
+
+The idea is to _conserve frame real estate_ but still have quick access to the tool-bar: No reason to have a tool-bar on each frame. No reason to have a tool-bar visible all the time; just pop it up when you need it.
+
+Here's the pop-up tool-bar effect:
+
+[[image:DrewsEmacsToolbarA]]
+
+[[image:DrewsEmacsToolbarB]]
+
+[[image:DrewsEmacsToolbarC]]
+
+[[image:DrewsEmacsToolbarE]]
+
+What to do to be able to use this library:
+
+* Interactively:
+
+** `<code>M-x load-library tool-bar+</code>'
+** `M-x tool-bar-pop-up-mode' (or `M-x tool-bar-here-mode' for a ''non'' pop-up tool-bar on this frame only)
+
+* In your InitFile:
+
+      (require 'tool-bar+)
+      (tool-bar-pop-up-mode 1)
+
+'''Tip:''' For a similar pop-up behavior for the ''MenuBar'', you can hide the menu-bar using `<code>(menu-bar-mode -99)</code>' and then use `C-mouse-3' to access the menu-bar menus in a popup menu. (This is not available for Emacs 20.)
+
+See also
+MenuBar,
+ScrollBar.
+
+
+----
+
+[new]
+Hi, this works for me on Emacs 21.4a but not on Emacs 22.1. On the latter, the tool-bar doesn't appear when I press '''Buttons'''. I'm not sure what the problem is. Can you confirm that it works on Emacs 22.1? Thanks! -- Christopher.
+
+[new:DrewAdams:2007-08-04 20:27 UTC]
+Yes, I confirm that it works in Emacs 22.1. I just tried it with ##emacs -Q## on Windows. I checked both `tool-bar-popup-mode' and `tool-bar-here-mode'. Why don't you describe the problem you're having, starting with ##emacs -Q##. Also mention what platform you're on etc. -- DrewAdams
+
+[new]
+Sorry for not being so informative earlier! This is Emacs 22.1 on GNU/Linux (Slackware 11.0), self-compiled [./configure --without-sound --with-x-toolkit=gtk]. I get the same behavior when using ##emacs -q##. The '''Buttons''' button appears, I press it, it stays pressed (highlighted), but the toolbar doesn't appear. A very short thin stub is visible just below the left side of the '''Buttons''' button, but that's all, hence the macro seems to try to make the toolbar appear, but for some reason it doesn't succeed. It's too bad, because this would be a neat feature (as I can tell on Emacs 21.4a, also on Linux, though on a different machine). Thanks in any case for all of your contributions (dired+.el is wonderful). -- Christopher
+
+[new:DrewAdams:2007-08-05 22:10 UTC]
+Thanks for the added info. Unfortunately, I cannot try to reproduce the problem, since I don't have the same platform. Perhaps someone else can try to debug this, or perhaps you could give it a try yourself. The code is short and pretty simple; it is command `show-tool-bar-for-one-command' that is run when you click '''Button''' -- try `M-x debug-on-entry show-tool-bar-for-one-command'. Debugging might become a bit confusing, however, because the debugger itself could interfere and `read-event' might get thrown off, but you might be able to get some more info about what is going wrong. An alternative is to include `message' calls that print info at various points of the execution.  
+
+You should be able to see a bit what is happening -- for instance, whether `tool-bar-here-mode' gets run and whether `read-event' ever gets executed.
+
+It sounds as if the tool bar is being displayed partially (well, something seems to get displayed). You might also try changing the code a bit to see what happens.  Actually, the first thing to try is `tool-bar-here-mode', which is used by `tool-bar-pop-up-mode' to show the tool bar. If that doesn't work on its own, then we can look more closely at that (e.g. use `debug-on-entry' on it).
+
+Sorry I can't help more with this directly. -- DrewAdams
+
+
+
+
+
+----
+CategoryDisplay
+CategoryDotEmacs
+

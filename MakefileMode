@@ -1,0 +1,8 @@
+A major mode for editing Makefiles. Part of GNU Emacs and XEmacs.
+
+Here are things extending <code>makefile-mode</code>,
+
+* [http://user42.tuxfamily.org/make-mode-fillindent/index.html make-mode-fillindent.el] &mdash; paragraph filling for indented comments
+
+----
+CategoryModes

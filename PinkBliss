@@ -1,0 +1,32 @@
+[[image/right:http://www.emacswiki.org/pics/static/Pink_Bliss_Screenshot.png|Pink Bliss|Pink Bliss With Pony]]
+Get it here:
+
+* Lisp:pink-bliss.el
+* [[pink-gnu.xpm]] (image required for the tool-bar based on [http://www.gnu.org/graphics/heckert_gnu.html Heckert’s bold gnu head])
+
+The current version of the code no longer requires ColorTheme.
+Conversely, it no longer integrates nicely with Emacs' own Custom code.
+The benefit is that it is simpler to hack, now.
+
+The current version also requires an _image_!
+It switches on the toolbar, removes all the icons, adds a kitten, and binds
+a very simple defun to the button:
+If the current buffer is modified, a click will save the buffer.
+If the current buffer has been saved, a click will open a new file.
+
+== Comments ==
+
+[new:DrewAdams:2005-07-12 19:33 UTC]
+: '''''Sign me up!''''' -- Zippy
+
+[new]
+: Gha ! :) Really nice :)
+
+[new]
+I just heard that the Hello Kitty! color theme was implemented and after having seen it I think it is just as I had imagined it (though I think the region hilight would look better if it was pure white).
+
+My next challenge is a color theme called Eye Cancer. :)
+--LuisFernandes
+
+----
+ColorTheme

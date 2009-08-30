@@ -1,0 +1,112 @@
+== Summary of Goal ==
+
+Keeping GUI apps alive after exiting emacs.
+
+== Example ==
+
+In Linux, emacs sends a SIGHUP (http://en.wikipedia.org/wiki/SIGHUP)
+to all processes before exiting.
+When starting a GUI app from emacs on a Linux system, the app will
+terminated once the emacs process is exited or once the associated buffer is killed.
+
+For instance, assuming no instance of xmms has been started,
+then the following snippet will create an instance of xmms
+which will be killed 2 seconds later:
+
+  (progn
+     (shell-command "xmms &" "*xmms*")
+     (sleep-for 2)
+     (kill-buffer "*xmms*"))
+
+== Motivation ==
+
+Killing all subprocesses can be a nuisance.
+For instance, `browse-url' can easily create an instance of a browser.
+With a tabbed browser like firefox, make useful webpages can be loaded
+but, if the emacs parent process exits, then the child firefox browser
+will terminate. All the webpages will then be lost.
+
+== One (Kludgey) Solution ==
+
+The following function will start a persistent process:
+
+  (defun startup-persistent-process (process)
+    (save-window-excursion
+      (let ((startup-buffer (generate-new-buffer-name
+                             "*persistent process buffer*")))
+        (shell startup-buffer)
+        (ansi-color-for-comint-mode-off)
+        (insfmt "%s &" process)
+        (comint-send-input)
+        (insert "exit")
+        (comint-send-input)
+        (while (eq 'run (process-status (get-buffer startup-buffer))))
+        (ansi-color-for-comint-mode-on)
+        (kill-buffer startup-buffer))))
+
+For example, the following can be executed and the xmms process
+will persist even if emacs is exited:
+
+  (startup-persistent-process "xmms")
+
+(Note that `startup-persistent-process' has a 1-2 second pause
+until the "run" `process-status' changes.)
+
+== Extending Example to Get Persistent Web Browser ==
+
+To get `browse-url' to create a persistent browser such as firefox,
+the following code can be used:
+
+  (setq browse-url-browser-function 'my-browser)
+  (defun my-browser (url &optional new-window)
+    (if (string= (sshfmt "firefox -remote \"ping()\"")
+                 "Error: No running window found\n")
+        (startup-persistent-process (format "firefox \"%s\"" url))
+      (browse-url-mozilla url new-window)))
+
+So, executing this command:
+
+   (my-browser "emacswiki.org")
+
+and, then, this command:
+
+   (my-browser "gnu.org")
+
+will load one webpage and, then, overwrite with another webpage (unless, as described in BrowseUrl, new-tab or new-window is used).
+
+== Open Question ==
+
+Is there a cleaner approach for persistent processes,
+especially for web browsers?
+
+[new]
+Yes--call 
+
+  "nohup firefox &" 
+
+as the command, instead of 
+
+  "firefox &"
+
+just as you would in the shell. 
+[new]
+
+== W32 Specific ==
+Try the EmacsLisp function `w32-shell-execute'
+
+Type C-h w32-shell-execute RET
+
+:: w32-shell-execute is a built-in function in `C source code'.
+:: (w32-shell-execute ''operation'' ''document'' &optional ''parameters'' ''show-flag'')
+
+Which is a wrapper over:
+http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/shell/reference/functions/shellexecute.asp
+
+Note if ''operation'' is "open", and ''document'' is an executable, then you may also send in ''parameters''.
+
+Also:
+: MsShellExecute WThirtyTwoFileAssociations WThirtyTwoShellExecute
+
+
+----
+CategoryProcesses

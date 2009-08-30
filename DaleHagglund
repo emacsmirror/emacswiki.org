@@ -1,0 +1,27 @@
+Hi.  As you might have guessed, my name is Dale Hagglund, and I use Emacs.  I started using GoslingEmacs sometime in 1985 or so, and moved over to GnuEmacs around 1987.
+
+: Hello and welcome!  I feel young again, since I only started using
+Emacs in 1996 or so.  :)  -- AlexSchroeder
+
+: Err, thanks, I guess...  I think the earliest GnuEmacs version I used was 17 something-or-other.  -- DaleHagglund
+
+Anyway, here are two bits of emacs lisp that I wrote to replace a couple of GoslingEmacs bindings I found I couldn't live without.  They bind commands to scroll up and down by a single line to C-z and M-z respectively.
+
+ (defun rdh::scroll-down-one-line (&optional arg)
+   "Scroll text of current window down ARG lines; or 1 line if no ARG."
+   (interactive "P")
+   (scroll-down (if arg (prefix-numeric-value arg) 1)))
+ 
+ (defun rdh::scroll-up-one-line (&optional arg)
+   "Scroll text of current window up ARG lines; or 1 line if no ARG."
+   (interactive "P")
+   (scroll-up (if arg (prefix-numeric-value arg) 1)))
+ 
+ (global-set-key [(meta ?z)]    'rdh::scroll-down-one-line)
+ (global-set-key [(control ?z)] 'rdh::scroll-up-one-line)
+
+If you give a prefix argument, they scroll by that many lines.  So C-u C-z scrolls up four lines.  This does override the default C-z binding, but I find that so uniformly useless that I never miss it.
+
+
+----
+CategoryHomepage

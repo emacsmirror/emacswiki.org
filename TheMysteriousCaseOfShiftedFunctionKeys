@@ -1,0 +1,86 @@
+If you bind functions to function keys on your keyboard (you have to do something with those keys, right?) you may have noticed that shifted function keys don't appear to be registered. For example, if you bind F1 to find-file (try putting this in your .emacs)
+
+  (global-set-key [(f1)] 'find-file)
+
+then you might want to check that the key has been correctly registered. So you would do the following key combinations (<f1> means press the f1 key)
+
+  C-h k <f1>
+
+and you would get back
+
+<pre>
+  f1 runs the command find-file
+    which is an interactive compiled Lisp function in `files'.
+  (find-file FILENAME &optional WILDCARDS)
+
+  Edit file FILENAME.
+  Switch to a buffer visiting file FILENAME,
+  creating one if none already exists.
+  Interactively, or if WILDCARDS is non-nil in a call from Lisp,
+  expand wildcards (if any) and visit multiple files.
+</pre>
+
+Now you might think that you can test to see whether the shifted F1 key is bound, so you would press
+
+  C-h k S-<f1>
+
+<i>If</i> Shift-F1 is not bound, then Emacs will simply give you this:
+
+<pre>
+  f1 runs the command find-file
+    which is an interactive compiled Lisp function in `files'.
+  (find-file FILENAME &optional WILDCARDS)
+  ...
+</pre>
+
+<b>What??!!!!</b> I hear you cry.
+
+[new]
+FWIW, here's the response you get in Emacs 22:
+<pre>
+  <f1> (translated from <S-f1>) runs the command find-file
+</pre>
+[new]
+Okay - there is a good reason for this. No, honest! Don't leave now!! 
+
+Emacs is set up so that the keys, particularly all the control-, meta-, alt- keybindings keep working if you inadvertantly leave the shift-lock key on. So it assumes that you were looking for the unshifted one if this is the only keybinding defined on that key. Hence it sees the shifted function key, checks to see if the shifted function key has been bound to a function and if it doesn't find a keybinding, checks to see if there is anything bound to the unshifted key. If it finds a binding, it gives you that one instead of the one you asked for. This can look as though Emacs didn't see the shift key (or at least that is what I thought at first).
+
+You can indeed bind functions to the shifted function keys. Try this for an example:
+
+    (global-set-key [(shift f1)] 'info)
+
+and now C-h k S-F1 should give you
+
+<pre>
+S-f1 runs the command info
+   which is an interactive autoloaded Lisp function in `info'.
+
+Enter Info, the documentation browser.
+Optional argument FILE specifies the file to examine;
+the default is the top-level directory of Info.
+</pre>
+
+Many thanks to Kai Grossjohann for his help in deciphering this riddle.
+
+
+== Problems with X ==
+First, sorry for not finding such a nice title for this section as would fit the title of the page ... :-)
+
+If you can't seem to use shifted function keys even with the code above it may be due to X explicitly hiding them.
+you sometimes come across an X-configuration where the command xmodmap -pke shows line similar to this:
+
+ keycode  76 = F10 XF86_Switch_VT_10
+
+In this case Shift-F10 won't work because it is set up to switch to the text console number 10.  If this is the case for all the F-keys you won't be able to use them in Emacs.
+
+The solution is to have an .Xmodmap with 
+
+ keycode  76 = F10
+
+instead.
+-----
+When one question is answered another is created.
+See TheMysteryOfTheControlShiftedLetterInBrackets.
+
+----
+CategoryKeys

@@ -1,0 +1,43 @@
+CsvMode, [::csv-mode], is a package by FrancisJWright for editing comma separated value files (##.csv##).  Download ##csv-mode.el## from
+
+* http://centaur.maths.qmul.ac.uk/Emacs/ or Lisp:csv-mode.el
+
+The commands include sorting numerically or alphabetically on a particular field, cutting and pasting columns of fields, padding to align fields, or removing padding.
+
+The default format used is a comma separator (##,##) and double quotes (##""##) for field quoting.  This can be customized, for instance with a different separator for European locales (where a comma is a decimal point).
+
+See also,
+
+* SpreadSheet -- some of the spreadsheets can also read CSV
+* [[Synonyms]] -- initially supports thesaurus data, but can create interactive relations and hypertext interfaces to self-referential CSV data.
+
+
+== Patch: Align multibyte characters ==
+This patch enables to align multibyte characters. -- [[Sugawara]]
+
+    --- csv-mode.el~	2007-11-20 17:11:08.296875000 +0900
+    +++ csv-mode.el	2007-11-21 18:46:36.510411700 +0900
+    @@ -1006,7 +1006,7 @@
+     		(setq beg (point))	; beginning of current field
+     		(while (not (eolp))
+     		  (csv-end-of-field)
+    -		  (setq x (- (point) beg)) ; field width
+    +		  (setq x (string-width (buffer-substring beg (point)))) ; field width
+     		  (if w
+     		      (if (> x (car w)) (setcar w x))
+     		    (setq w (list x)
+    @@ -1026,7 +1026,7 @@
+     		  (let ((left-padding 0) (right-padding 0) overlay)
+     		    (csv-end-of-field)
+     		    (set-marker end (point)) ; end of current field
+    -		    (setq x (- (point) beg) ; field width
+    +		    (setq x (string-width (buffer-substring beg (point))) ; field width
+     			  x (- (car w) x)) ; required padding
+     
+     		    ;; beg = beginning of current field
+
+
+
+----
+CategoryFinancial
+CategoryModes

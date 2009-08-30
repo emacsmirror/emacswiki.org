@@ -1,0 +1,13 @@
+These instructions are written with Emacs 21 in mind and assume you have installed LEIM with Emacs (see the installation instructions).  See the Input Methods node of the EmacsManual.  Emacs should also work correctly with appropriate XIM input methods under X.
+
+Type: <CODE>M-x set-input-method japanese</CODE> or just use <CODE>C-\</CODE> if you are in the Japanese language environment.  Use <CODE>C-h C-\</CODE> for guidance.
+
+Behold, kanji&#65306; &#28450;&#23383;..!
+
+I produced that text in Emacs. Then, I wrote "kanji: XX" (X are the
+two kanji) to a buffer. I saved the buffer with shift_jis encoding. I
+opened the file with Mozilla. I copy and pasted within Mozilla to the
+Wiki edit box.
+
+----
+CategoryInternationalization

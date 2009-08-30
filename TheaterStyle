@@ -1,0 +1,29 @@
+The following code will allow you to create a [[Frame]] without MiniBuffer, ToolBar and MenuBar and run a command within it. For [[XEmacs]], use this:
+
+    (defun run-theater (command)
+      "Open an Emacs frame with nothing other than the executed command."
+      (interactive "CEnter command: ")
+      (select-frame (new-frame '(top 400 left 600 width 72 
+                                 height 20 default-toolbar-visible-p nil 
+                                 menubar-visible-p nil has-modeline-p nil 
+                                 minibuffer none)))  
+      (call-interactively command))
+
+In GnuEmacs, the FrameParameters are an alist instead of a plist, so you need to use this instead:
+
+    (defun run-theater (command)
+      "Open an Emacs frame with nothing other than the executed command."
+      (interactive "CEnter command: ")
+      (select-frame (new-frame '((width . 72) (height . 20)
+                                 (menu-bar-lines . 0)
+                                 (minibuffer . nil)
+                                 (toolbar . nil))))
+      (setq-default mode-line-format nil)
+      (call-interactively command))
+
+You should modify top, left, width and height to make it right for you.  --GirishB
+
+ActiveMenu and [[ToolBar#ToolBarPlus|ToolBarPlus]] might be of interest to you.  The former shows the MenuBar only when the mouse is close to it. The latter shows the ToolBar only after you click the menu-bar, and only while you click a tool-bar button.
+----
+CategoryDisplay
+CategoryFrames

@@ -1,0 +1,12 @@
+This package lets you solve go problems interactively. The go problems are from http://www.goproblems.com
+
+Download:
+
+* http://www.emmett.ca/~sabetts/goproblem-0.0.1.tgz
+
+This package needs go-board file, but it does not include this file. Any ideas? -- jmjeong
+
+: The missing file seems to be part of IrcGo. -- AndreasSeltenreich
+
+----
+CategoryGames

@@ -1,0 +1,8 @@
+imapua is an emacs imap client NicFerrier wrote using the [[Gnus]] imap library.
+
+Here is the [[imapua.el]] elisp file.
+
+
+
+--------
+CategoryMail

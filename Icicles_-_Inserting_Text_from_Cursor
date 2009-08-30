@@ -1,0 +1,183 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Nutshell View]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Background on Input Completion]] ||
+
+----
+
+= Inserting Text Found Near the Cursor =
+
+Most of '''Icicles''' is about completing text that you type in the [[minibuffer]] against
+some set of possible [[completion]] candidates.  This particular feature is
+not.  It is related only in the sense that it is also about
+inputting text that is already available elsewhere. If you want to get quickly into the heart of what '''Icicles''' is mainly about, then you can ''skip this page'' and come back later.
+
+Some Emacs commands provide, as the ''default value'' for minibuffer
+input, a word or other text at the [[cursor]] position (aka "[[point]]").  You
+can insert this default value in the minibuffer with `M-n'.
+'''Icicles''' [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-default-value|icicle-default-value]]</tt>'''' can be used to
+automatically insert the default value into the minibuffer as an
+initial value, if you prefer that optional behavior (I do; many people do not).
+
+Sometimes you would like to use the text at the cursor, but the command
+asking for input does not let you retrieve that text as the
+default value.  For example, if the text at point is a file name,
+you might like to use it with `C-x C-f' to open that file.  Or, if
+the text is a URL, you might want to visit it using a Web browser.
+
+Some Emacs libraries, such as FindFileAtPoint (`##ffap.el##'), have as their specific purpose
+to help you do this.  "Ffap" stands for `find-file-at-point', the
+main command in that library.  It tries to interpret the text at
+point and "do the right thing" with it: visit a file, open a URL
+in a Web browser, and so on.
+
+If you like, you can use library `##ffap.el##' with '''Icicles'''.  All
+'''Icicles''' features are then available during file-name and URL
+completion.  And if you like `##ffap.el##', you might also like to try
+my extension library <tt>[[ffap-.el]]</tt>. However, if you use ffap with
+'''Icicles''', you might not want to use the ffap [[key binding]]s,
+preferring the '''Icicles''' bindings or the standard Emacs bindings for
+keys such as `C-x C-f'.  (In that case, do not call function
+`ffap-bindings'.)
+
+'''Icicles''' provides a couple of simple ways to take advantage of `ffap-guesser', which is
+the ffap function that guesses which string at the cursor position
+you want to grab, without sacrificing any key bindings to ffap. One way is to use '''`##M-.##'''' (command `icicle-insert-string-at-point') at any
+time in the minibuffer.  It grabs text at or near the cursor and
+yanks it into the minibuffer.  By default, the text it grabs is
+whatever `ffap-guesser' guesses.
+
+Another way is to use one of the [[Icicles - Completions Display#ProxyCandidates|proxy completion candidates]] `##*point file name*##' or `##*mouse-2 file name*##' whenever Emacs asks you to input a file name (provided option
+`icicle-add-proxy-candidates-flag' is non-`nil' -- toggle with
+`##C-M-_##').  The former picks up the file name at [[point]], just like `##M-.##'. The latter lets you click a file name anywhere with `mouse-2' to pick up the name.
+
+Using `##M-.##' or a proxy candidate on demand, instead of binding keys to ffap commands,
+lets you control which [[buffer]] text you use as minibuffer input and
+how that text should be interpreted (file name, URL, and so on).
+By default, `##M-.##' uses `ffap-guesser', but you can change this by
+customizing [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-thing-at-point-functions|icicle-thing-at-point-functions]]</tt>''''.
+
+Actually, `##M-.##' acts <u>differently if you **u**se it successively</u>.
+Successive uses of `##M-.##' grab and insert either '''1''') alternative
+bits of text (different text "things") or '''2''') successive bits of
+text.  The default behavior is #1, but you can change this choice
+by customizing option '''`<tt>[[Icicles - Customization and General Tips#icicle-default-thing-insertion|icicle-default-thing-insertion]]</tt>'''' (setting it
+to `more-of-the-same', instead of `alternatives').
+
+As an example of grabbing successive bits of text (#2), suppose
+that the cursor is at the beginning of the word "'''use'''" in the
+previous paragraph.  Then, during minibuffer input, suppose that
+you use `##M-. M-. M-.##'.  Each time you hit `##M-.##', another word is
+inserted in the minibuffer:
+
+  use
+  use it
+  use it successively
+  ...
+
+The rest of this section is a bit technical, so you might want to
+''skip it'' if you are reading the '''Icicles''' doc for the first time.  It
+details the behavior and definitions of options
+`<tt>[[Icicles - Customization and General Tips#icicle-default-thing-insertion|icicle-default-thing-insertion]]</tt>' and
+`<tt>[[Icicles - Customization and General Tips#icicle-thing-at-point-functions|icicle-thing-at-point-functions]]</tt>', and how to temporarily override
+those settings interactively.
+
+Option `<tt>[[Icicles - Customization and General Tips#icicle-thing-at-point-functions|icicle-thing-at-point-functions]]</tt>' controls which text at or
+near the cursor `##M-.##' inserts into the minibuffer.  It is a [[cons cell]], that is, an ordered pair:
+
+* The ''[[car]]'' (first part) is a list of
+functions that ''grab different kinds of strings'' at or near [[point]] (#1, above). Any number of
+functions can be used.  They are used in sequence by `##M-.##'.
+By default, there are four functions, which alternately grab:
+
+## whatever `ffap-guesser' returns (e.g. file name at point)
+
+## the [[symbol]] or
+file name at point 
+
+## the word at point 
+
+## the URL at point 
+
+* The ''[[cdr]]'' (second part) is a function that
+advances point one text thing (#2, above).  Each time command `##M-.##' is used
+successively, this is called to ''grab more things'' of text (of the
+same kind).  The default function grabs successive ''words''.
+
+If either the car or cdr is empty, then the other alone determines
+the behavior of `##M-.##'.  Otherwise, option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-default-thing-insertion|icicle-default-thing-insertion]]</tt>'''' determines whether the car or the cdr
+is used by `##M-.##'.
+
+For example, if the value of `icicle-default-thing-insertion' is
+'''`alternatives'''' (the default value), then repeated use of `##M-.##'  inserts
+a different kind of thing at point: ffap guess, file name, word,
+or URL.  If you set `icicle-default-thing-insertion' to
+'''`more-of-the-same'''', then repeated use of `##M-.##' inserts successive
+words into the minibuffer, as shown in the example above.
+
+You need not make a final choice once and for all between
+`alternatives' and `more-of-the-same'.  You can also make an
+interactive choice by using a [[prefix argument]] (`C-u') at any time
+to override the value of `icicle-default-thing-insertion'.  If you
+use plain `C-u', then `##M-.##' inserts alternative strings.  If you
+use a [[numeric prefix argument]] ''N'' (not just plain `C-u'), then it is
+the same as using `##M-.##' ''N'' times with `more-of-the-same' as the
+value of `icicle-default-thing-insertion'.
+
+And, if the numeric argument is
+''negative'', then text is grabbed to the ''left'' of the cursor
+instead of to the right. In the example above, if you used `##M-- M-. M-. M-.##', then the successive insertions in the example above would be as follows:
+
+  differently
+  differently if
+  differently if you
+  ...
+
+If you used `##M--3 M-.##', then you would immediately insert `##differently if you##'.
+
+In the case of `alternatives', there are four possibilities,
+by default.  The first function in the list is `ffap-guesser'.  The
+second function grabs text that has
+the syntax of an EmacsLisp ''[[symbol]]'' name, which in practice can
+also be a ''file'' name or a ''URL'' -- it can include characters such as '''##-##''', '''##/##''', '''##+##''', '''##.##''', '''##:##''', '''##@##''', and '''##_##'''. The third function grabs a
+''word'', which includes letters, '''##'##''' and '''##-##'''.  The fourth function grabs a
+''URL'', adding prefix "##http://##" if needed.  These are the functions
+used by default, but you can add to them or replace them.  
+
+If you
+use my library '''<tt>[[thingatpt+.el]]</tt>''', then the [[cursor]] need not be
+exactly on the text for the second and third alternatives -- the [[symbol]]  or word ''nearest'' the cursor is grabbed.
+
+'''See Also:'''
+
+* [[Icicles - Inserting a Regexp from a Variable or Register]] for information on inserting text saved in a [[variable]] or register.
+
+* [[Icicles - Moving Between the Minibuffer and Other Buffers]] for
+another way to insert [[buffer]] text in the [[minibuffer]].
+
+
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Nutshell View]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Background on Input Completion]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:ffap-.el, Lisp:icicles.el, Lisp:thingatpt+.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryModes
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

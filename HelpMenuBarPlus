@@ -1,0 +1,86 @@
+Library '''MenuBarPlus''', <tt>[[menu-bar+.el]]</tt>, provides better [[menu bar]] access to Emacs help, including some new help commands. This page describes these enhancements to the '''Help''' menu-bar menu. 
+
+The `'''Help'''' menu has been enhanced as follows:
+* Added submenu `'''Whoops!?'''', with these items:
+** _Cancel Current Action_  (`keyboard-quit')
+** _Back to Top Level_ (`top-level')
+** _What Did I Do?!_ (`view-lossage')
+
+:: [[image:drew-emacs-help-whoops]]
+
+* Added these items to `'''Help'''' menu:
+** _Help On Help_ (`help-for-help')
+** _Show Help Buffer_ -- Raise a [[Frame]] showing buffer <code>*Help*</code>, without selecting it (`show-*Help*-buffer').
+** _Save Help Buffer_ -- (`save-*Help*-buffer') Emacs 20 only -- see HelpPlus.
+
+* Added submenu `'''Apropos'''', with these items:
+** _Commands..._ (`apropos-command')
+** _User Options..._ -- Show user variables that match a regular expression (`apropos-user-options').
+** _All Variables..._ (`apropos-variable')
+** _Variable Values..._ (`apropos-value')
+** _Symbols..._ (`apropos')
+** _Symbol Descriptions..._ (`apropos-documentation')
+** _Tags..._ (`tags-apropos')
+
+:: [[image:drew-emacs-help-apropos]]
+
+* Added submenu `'''Describe'''', with these items:
+** _Command..._ (`describe-command')
+** _Function..._ (`describe-function')
+** _Option..._ (`describe-option')
+** _Option of Type..._ (`desribe-option-of-type')
+** _Variable..._ (`describe-variable')
+** _Face..._ (`describe-face')
+** _Key..._ (`describe-key')
+** _Keymap..._ (`describe-keymap') -- see HelpPlus
+** _File..._ (`describe-file') -- see <tt>[[misc-cmds.el]]</tt>
+** _Input Method..._ (`describe-input-method')
+** _Coding System..._ (`describe-coding-system')
+** _This..._ (`help-on-click/key') -- see HelpPlus
+** _Current Modes_ (`describe-mode')
+** _Current Key Bindings_ (`describe-bindings')
+** _Current Syntax_ (`describe-syntax')
+** _Current Display Table_ (`describe-current-display-table')
+** _Current Coding Systems_ (`describe-current-coding-system-briefly')
+** _Menu Bar_ -- Explain the menu bar, in general terms (`describe-menubar').
+
+:: [[image:drew-emacs-help-describe]]
+
+* Added submenu `'''Learn More'''', with these (sub)submenus and items:
+** `'''Emacs'''':
+*** _Manual - Info_ Access the EmacsManual in InfoMode (`emacs-info')
+*** _Manual Command Description..._ (`Info-goto-emacs-command-node')
+*** _Manual Key Description..._ (`Info-goto-emacs-key-command-node')
+*** _Manual Index..._ (`emacs-index-search')
+*** _Manual Glossary_ (`search-emacs-glossary')
+*** _Tutorial_ (`help-with-tutorial')
+*** _FAQ_ (`view-emacs-FAQ')
+*** _What's New_ (`view-emacs-news')
+
+::: [[image:drew-emacs-help-learn-emacs]]
+
+** `'''Emacs Lisp'''':
+*** _Intro to Elisp_ 
+*** _Manual_ -- Access the EmacsLispReference in InfoMode (`emacs-lisp-info')
+*** _Manual Index..._
+*** _Locate Library..._ (`locate-library')
+*** _Locate Libraries by Keyword_ (`finder-by-keyword')
+*** _What's New_ (`view-emacs-lisp-news') -- Emacs 20 only
+
+::: [[image:drew-emacs-help-learn-lisp]]
+
+** _Last Accessed Info Manual_ (`info')
+** _All Info Manuals_ -- Access all online manuals via "Info" (`dir-info').
+** _Unix Man Page..._ (`manual-entry')
+
+* Added this item to `'''Options''' submenu:
+** _Show, Edit All Options_ (`edit-options') -- Emacs 20 only
+
+
+
+'''See Also:''' HelpPlus -- extensions to standard help libraries
+
+
+----
+
+CategoryHelp

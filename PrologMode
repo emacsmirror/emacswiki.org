@@ -1,0 +1,13 @@
+== Prolog Modes ==
+
+One can of course use the stock Prolog mode that comes with Emacs (and which is in my opinion rather limited).  One better option is also available, see http://turing.ubishops.ca/home/bruda/emacs-prolog/.  This version has all the features one would expect, including syntax highlighting, auto indent, and full interaction with an inferior Prolog process.  The mode supports in principle any Prolog system, though it is primarily maintained with SWI Prolog in mind. It also has some special tweaks for GNU Prolog (starting from version 1.4) and SICStus Prolog, and explicitly supports Prolog's close relatives Eclipse and Mercury.
+
+== Issues ==
+
+If I select "Consult" file, buffer or region, Emacs opens a new buffer within the current frame.  However, I prefer to have the prolog session running in a different frame.  I would like to setup (or alter) the mode so that it does not open a new buffer if I already have a prolog buffer in a different frame.  How can I do this?  --PinkerTon.
+
+[new:DrewAdams:2006-01-21 15:12 UTC]
+:I haven't tried Prolog mode (but used to use Prolog a lot), but if you want buffers to open in their own frames and frames to be reused as you describe, set `pop-up-frames' to `t'. Otherwise, there might be some particular setting for Prolog mode. Try `C-h m' when in the mode. Try also `M-x apropos RET prolog'. -- DrewAdams
+
+----
+ProgrammingModes

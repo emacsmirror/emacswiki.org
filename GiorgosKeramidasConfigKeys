@@ -1,0 +1,89 @@
+= Customizing Global Key Bindings =
+
+One of the most wonderful aspects of Emacs, and one that most new users to Emacs will notice very early, is that all key bindings are customizable.  If you find yourself typing a certain command very often, it is very easy to bind it to a key or a sequence of keys.  Then you can cave a lot of typing by using your own custom keys to invoke arbitrarily complex sequences of commands.
+
+To make most of the customizable key bindings of Emacs you may have to learn a bit of EmacsLisp, but you don't have to read the full EmacsLispReference manual.  It is actually quite easy to pick up most of the details by looking at the EmacsLisp code other people use to set up their own key bindings.
+
+
+= My Local Key Bindings =
+
+My laptop’s current setup installs a few custom key bindings when Emacs starts.  The key bindings options are stored in a file called ##keramida-autoload.el## in my ##~/elisp## directory, so the first step of finding the key bindings is to add a bit of EmacsLisp code in my ##.emacs## file to point at the right `##load-path##’ and then `##require##’ the module that enables them:
+
+    (add-to-list 'load-path "~/elisp")  ;Make sure Emacs can find modules in ~/elisp
+    (require 'keramida-keys)            ;Load my own key bindings
+
+The ##keramida-keys## feature is provided by the file ##keramida-keys.el, which contains the following EmacsLisp code:
+
+    ;;; keramida-keys.el --- My keybindings for GNU Emacs
+
+    ;;; Searching:
+    ;;
+    ;; Use `incremental search' by default.  Note that this may be a tiny
+    ;; bit slower for remotely connected sessions, but for my laptop's
+    ;; local Emacs sessions the delay should be quite small. 
+    (global-set-key "\C-s" 'isearch-forward-regexp)
+    (global-set-key "\C-r" 'isearch-backward-regexp)
+
+    ;;; Backspace and DEL:
+
+    ;; DEL seems to send a [deletechar] event in screen(1) sessions.
+    (global-set-key [deletechar] 'delete-char)
+
+    ;; M-Backspace sends "M-C-h" in terminal sessions.  Make sure it does
+    ;; something `predictable' regardless of the terminal type, but only
+    ;; install a custom key binding for terminal/frameless Emacs instances.
+    (when (not (display-graphic-p))
+      (global-set-key (kbd "C-M-h") 'backward-kill-word))
+
+    ;;; Moving around:
+
+    ;; The `goto-line' command is already bound to `M-g g' and `M-g M-g',
+    ;; but I find them harder to type.
+    (global-set-key "\C-c," 'goto-line)
+
+    ;; Terminal-only sessions of Emacs or sessions running inside screen(1)
+    ;; can use the following key bindings too.  Depending on the current value
+    ;; of the `TERM' environment variable and whether we are running inside
+    ;; screen, the keyboard `Home' and `End' keys may return slightly different
+    ;; key values.  This is an attempt to match all the ones I've seen.
+    (global-set-key [home]   'beginning-of-line)
+    (global-set-key [find]   'beginning-of-line)
+    (global-set-key [end]    'end-of-line)
+    (global-set-key [select] 'end-of-line)
+
+    ;;; Buffer display options:
+
+    ;; Truncating of long lines is turned off by default, but I may want to
+    ;; quickly toggle it back on with C-c t.
+    (setq truncate-lines nil)
+    (global-set-key "\C-ct" 'toggle-truncate-lines)
+
+    ;; A key-binding and its support function for quickly toggling the
+    ;; display of trailing EOL whitespace.
+    (defun toggle-trailing-whitespace-display ()
+      "Toggle the display of trailing whitespace.
+    This is just a quick hack to toggle the value of the buffer-local
+    variable `show-trailing-whitespace'."
+      (interactive)
+      (save-excursion
+        (setq show-trailing-whitespace
+              (not show-trailing-whitespace))
+        (force-window-update (current-buffer)))
+      (message (concat "Display of EOL spaces "
+                       (if show-trailing-whitespace
+                           "enabled" "disabled"))))
+
+    (global-set-key "\C-ce" 'toggle-trailing-whitespace-display)
+
+    (provide 'keramida-keys)
+
+    ;;; keramida-keys.el ends here
+
+
+= More Configuration Files =
+
+For other parts of my current Emacs setup, please see [[GiorgosKeramidas#InitFiles]].
+
+
+----
+CategoryHomepage

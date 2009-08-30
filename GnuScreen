@@ -1,0 +1,138 @@
+[http://www.gnu.org/software/screen/ GNU Screen] is a terminal multiplexing utility that has the following concrete advantages:
+* Resumeable terminal sessions for the life of the remote computer. VNC (Virtual Network Computing) works like this.
+* Multiple virtual TTYs, somewhat similar to Linux Alt-F1, Alt-F2... keystrokes but more powerful.
+* Split-screen
+* Scrollback saved on the server side.
+* Copy and paste
+* Modeline with frivolous uptime, load, date/time, and screen name!
+
+However, text-mode junkie Emacs enthusiasts who would also be GNU screen lovers, may find the biggest stumbling block to the path of enlightenment is the out of the box setting for the Command Key.
+
+== Redefining the Command key ==
+
+Emacs uses `C-a' for `beginning-of-line'. It is also the command key for GNU Screen, which causes a problem of "muscle memory impedence matching."
+
+=== Suggestions for Command key Redefinition ===
+[new]
+**.screenrc**
+
+    #
+    ## Control-^ (usually Control-Shift-6) is traditional and the only key not used by emacs
+    escape ^^^^
+    #
+    ## do not trash BackSpace, usually DEL
+    bindkey -k kb
+    bindkey -d -k kb
+    #
+    ## do not trash Delete, usually ESC [ 3 ~
+    bindkey -k kD
+    bindkey -d -k kD
+
+[new]
+Put the following (for example) into your .screenrc
+to use `C-\' as the command key:
+
+    escape ^\\\
+
+Or C-z:
+
+    escape ^Zz
+
+I really like rebinding it to C-o, this way you can flip between split screens quickly C-o C-i (BasKok):
+
+    escape ^Oo
+
+I use C-] (Anonymous):
+
+    escape ^]^]
+
+I ([[piyo]]) use C-T because it doesn't collide with anything else other than M-x transpose-char and your favorite shell's transpose-char (often used bindkey setting). C-z is too risky because it's a Unix (suspend-emacs) and Windows (undo) vital key. Though they are all great unique keystrokes, C-] and C-\ and C-o are two-handed and too far away. I suppose C-o is good because it replaces the useless M-x open-line. But still I assert C-T's dominance (haha). Make sure to bind C-T C-T to self-insert a C-T, so you don't lose your transpostion-ness muscle memory. Here's a .screenrc excerpt sample:
+
+  # Define a sane GNU screen command entry character
+  # first letter defines the screen command key.
+  # second letter defines the literal insert key.
+  escape "^T^T"
+
+
+Is there anyway to use C-; ?? I've tried a million combinations including RTFM but can't seem to get it working ([[nimms]])
+
+== Common Usage ==
+
+Best feature is detach/reattach, e.g.,
+
+    $ screen -D -R
+
+disconnects your old terminal session and
+reconnects the same session at your new location.
+Especially great when bad network connections
+randomly disconnect you, no problem,
+seamlessly picks up where you were.
+
+Next best feature is sharing, e.g.,
+
+[new]
+**.screenrc**
+
+    #
+    ## console sharing
+    multiuser on
+    acladd mypal
+[new]
+
+    $ screen -x mypal/
+
+be sure you trust 'em to spy on your screen and type on your keyboard.
+
+== Bugs ==
+
+Version 4.x seems fine, a bug in prior versions fails to enable sending mouse events,
+workaround by
+
+    $ ps -auxwww | grep [s]creen
+    ... pty/0 ... screen ...
+    $ echo -e '\e[?1000h' > /dev/pty/0-or-whatever-tty-screen-is-sending-to
+
+which you'd do at each login - easier to upgrade.
+
+Experimental screen-bce with MacOSX Terminal gets crazy blinking underlined text instead of colors,
+works fine with MacOSX iTerm.  No news yet with MS-Windows PuTTY.
+
+I'm not sure if this is truly a bug, but it is a frustration to which I haven't found a solution.  I've found that when pasting text from a Word document or other windows source into emacs -nw running in SecureCRT, that characters such as ' and - and bullet characters can have negative interactions with text mode and/or filladapt mode such that instead of getting all of your pasted text, it gets chopped up as though the punctuation and special characters are being interpreted as cursor movement or line deletes, or the like.   I can't say the root cause with any certainty, but I have found that dropping out of screen and running emacs -nw from a plainer terminal seems to not have the problem.
+
+== Running Screen Under AnsiTerm ==
+
+If you get the message ##Cannot find terminfo entry for 'eterm-color'.## try copying the ##eterm## entry: ##cp /usr/share/terminfo/e/eterm /usr/share/terminfo/e/eterm-color##
+
+If the remote server is SunOS, we might need to put the following
+
+##TERMINFO=${HOME}/.terminfo##
+
+##export TERMINFO##
+
+in the remote server's ##.bashrc## file.
+
+== 256 Colours under Gnu Screen ==
+
+
+To make emacs use 256 colours under Gnu Screen, try putting the following line into your .screenrc:
+
+    term xterm-256color
+
+You might also have to install ncurses-term. On debian systems you can just do:
+
+    sudo aptitude install ncurses-term
+
+In debian, this stops colour bash prompts from working. The fix to that is to edit .bashrc, find the line below
+
+    # set a fancy prompt (non-color, unless we know we "want" color)
+
+and change the case statement to include screen-256color
+
+    case "$TERM" in
+    xterm-color|screen|xterm-256color)
+
+See [http://push.cx/2008/256-color-xterms-in-ubuntu here] and [http://www.enigmacurry.com/2009/01/20/256-colors-on-the-linux-terminal/ here] for more details.
+
+
+----
+CategoryRelated

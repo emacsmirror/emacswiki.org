@@ -1,0 +1,2293 @@
+: [[image:iciclesimage]]
+
+[new:DrewAdams:2009-07-30 06:30 UTC]
+''THIS PAGE IS VERY '''OUT OF DATE'''''. Use [[Icicles]] instead.
+[new]
+
+
+This is a single HTML page version of the doc at '''[[Icicles]]''' that you can use for ''printing''. However, this page represents a very '''''out-of-date''''' version of that information, so it is in many ways incomplete and inaccurate. For an up-to-date, accurate, and complete description of '''Icicles''' on a single page, see the `Commentary' in file '''<tt>[[icicles.el]]</tt>'''; it contains the same information as '''[[Icicles]]'''.
+
+This page describes library '''<tt>[[icicles.el]]</tt>''' and its related libraries, which provides extensions to `completing-read', `read-file-name', and `M-x': '''''minibuffer input completion and cycling'''''.   
+
+ 
+
+'''See Also:'''
+
+* '''IciclesDiscussion''' for discussion, feedback, possible uses, and possible enhancements.
+
+** IciclesForXEmacs for discussion of porting library '''Icicles''' to XEmacs.
+
+
+* '''IciclesIssues''' for reporting bugs. 
+
+* '''IciclesMenu''' for a way to execute ''menu'' commands from the keyboard, with ''completion''. Here is a taste of IciclesMenu: 
+
+::: '''<code>ESC M-x</code>'''
+
+::: <code>Menu command:</code>
+::: <code>Menu command:</code> '''<code>T [TAB]</code>'''
+::: <code>Menu command: Tools > </code>
+::: <code>Menu command: Tools > </code>'''<code>Compa [TAB]</code>'''
+::: <code>Menu command: Tools > Compare (Ediff) > </code>'''<code>Two F [TAB]</code>'''
+::: <code>Menu command: Tools > Compare (Ediff) > Two Files... </code>'''<code>[RET]</code>'''
+
+= Nutshell View =
+
+Load library '''<tt>[[icicles.el]]</tt>''' and turn on ''Icicle'' mode (command `icicle-mode').
+You're good to go.  Here's a sample of what you get:
+
+  M-x tool [next]
+
+That is, hit the <code>[next]</code> key, which is often labeled '''Page Down'''.
+
+: <code>  M-x ediff-toggle-use-</code>'''<code>tool</code>'''<code>bar [next]</code>
+: <code>  M-x scroll-bar-</code>'''<code>tool</code>'''<code>kit-scroll [next]</code>
+: <code>  M-x </code>'''<code>tool</code>'''<code>-bar-mode [next]</code>
+: <code>  M-x </code>'''<code>tool</code>'''<code>tip-mode [next]</code>
+: <code>  M-x ediff-toggle-use-</code>'''<code>tool</code>'''<code>bar</code> -- Back to the beginning
+
+Keys <code>[next]</code> and <code>[prior]</code> ('''Page Up''') cycle among all of the commands that contain (match) the minibuffer input -- `tool', in this case. Just hit `RET' (Return) when you get to the command you want.
+
+You can use a ''regular expression'' to narrow the field of matching inputs:
+
+  M-x ise.+char [next]
+  M-x isearch-*-char [next]
+  M-x isearch-delete-char [next]
+  ...
+
+You can display all of the matches for the current minibuffer input, in the `*Completions*' buffer, with `S-TAB' (Shift TAB). So, for instance, `S-TAB' with <code>M-x ise.+char</code> in the minibuffer displays all commands whose names contain `ise' followed (somewhere) by `char'.
+
+You can get normal, prefix completion, instead of this ''apropos completion'', by using the <code>[up]</code> and <code>[down]</code> arrow keys and `TAB' instead of <code>[next]</code>, <code>[prior]</code> and `S-TAB'.
+
+All of this works not only for the input of commands, with `M-x', but for the input of nearly anything. For instance, you can use `C-x b' (`switch-to-buffer') and cycle among buffer names. Or use `C-h v' (`describe-variable') and cycle among variable names.
+
+Whenever you're in ''Icicle'' mode, you see "'''Icy'''" in the mode-line.
+
+For more (and there is a lot more), see below.
+
+
+= Background on Input Completion =
+
+When you are prompted in the minibuffer to enter something, you
+are sometimes presented with a ''default value''.  This might be
+automatically inserted after the prompt, initially.  If not, you
+can retrieve the default value yourself, using `M-n' (Emacs 21 or
+later).
+
+Often, there is more than one reasonable default value that might
+make sense.  Depending on what you're being asked to enter, these
+''candidate default values'' might be command names, buffer names,
+existing file names, variable names, and so on.
+
+For most Emacs functions that prompt you and ask for input, the
+person who wrote the function decided on the reasonable ''set of
+default values'', and passed these to an ''input-completing'' function such as `'''<code>completing-read</code>'''' or `'''<code>read-file-name</code>'''',
+which prompts you and reads your input.  The programmer also decided whether
+you will be '''''required''''' to pick one of the default values or will be
+free to enter something else.  The programmer might also have told
+the input-completing function to require your input to pass some special test (''predicate'').
+
+So, how do you get access to those default values, in order to choose
+one?  You hit certain keys to ''complete'' the current
+contents of the minibuffer (excluding the prompt).  This current, partial
+input is considered as a ''prefix'' of one of the default values, and it is completed in the minibuffer to the entire default value.
+
+Keys `TAB',
+`RET' (Return), and `SPC' (Space) perform different degrees of this
+"'''prefix completion'''".  If you type a prefix of one of the default
+values, you can complete the value this way in the minibuffer, and then enter it,
+with `RET'.
+
+But if your partial input matches the prefix of more than one
+default value, then completion pops up the list of ''all matching
+completions'' for you to choose from (in buffer `*Completions*').  You
+choose a candidate by clicking it with `mouse-2' or placing the
+cursor on it and hitting `RET'.  
+
+Because this is the way you
+access the default values supplied to an input-completing function, I call
+those values "'''prefix-completion candidates'''".  If there is no
+partial input yet, then the entire list of default values supplied to
+the input-completing function appears in the popup `*Completions*' buffer.  See
+the EmacsManual (`C-h i') for more on this general mechanism of prefix completion (called simply "completion" there).
+
+Calls to `completing-read' and `read-file-name' are not the only places where
+its functionality is used.  When you use `M-x' (command
+`execute-extended-command') completion is also available.
+
+
+
+= Icicles Improves Input Completion: (1) Cycling Completions =
+
+Library '''<tt>[[icicles.el]]</tt>''' lets you also use the <code>[up]</code> and <code>[down]</code> arrow keys, (or
+`C-p' and `C-n') to ''cycle through the list'' of candidate prefix
+completions that match whatever input is present in the minibuffer
+(or all candidate default values, if there is no current input). Each candidate replaces the partial input in the the minibuffer, in turn. The ''prefix'' (root) that was completed is ''underlined'' in the
+minibuffer completion candidate. 
+
+Suppose you do `C-x b' (`switch-to-buffer' command).
+You can use `C-n' until the right buffer name appears in the
+minibuffer, then hit `RET'.  Or you can type some text
+that begins one or more of the buffer names, and then use `C-n' to
+cycle among those names that match that prefix.  If there are many candidates, typing part of the name to narrow the field can
+save time.
+
+Or, suppose you do `C-h v' (`describe-variable') and type `cal'.
+Use `C-n' to cycle among all variables that start with `cal',
+until you find the one you want (then hit `RET').
+
+In other words, the current partial input in the minibuffer
+determines a matching set of default values, and those are the
+values that you can cycle through.  You can at any time erase or
+change the partial input -- the list of matching candidates
+automatically reflects the change.
+
+This also means that it's good to have a quick way to clear the
+minibuffer of any input, so library '''<tt>[[icicles.el]]</tt>''' also provides key
+bindings <code>[M-S-backspace]</code> and <code>[M-S-delete]</code> (Meta + Shift +
+Backspace or Delete) to do that.  (I also use <code>[C-M-backspace]</code>
+(Control + Meta + Backspace), which I have bound globally to
+`backward-kill-sexp'.  It is not bound in '''<tt>[[icicles.el]]</tt>''', however.)
+
+A visible and audible signal lets you know when you have reached one
+end of the list of completion candidates, but you can of course
+continue to cycle.
+
+
+If the completion candidates are already displayed in buffer `*Completions*' when you try to cycle among them (because you hit `TAB'), then
+the current candidate is ''highlighted'' in `*Completions*' as you access it in the
+minibuffer with the <code>[up]</code> and <code>[down]</code> arrow keys.  If you change the minibuffer input, then the `*Completions*' list is updated accordingly, to reflect the new set of matching candidates. The ''root'' that was completed (the
+minibuffer input) is ''highlighted'' in each candidate of the
+`*Completions*' display.  The `*Completions*' window is automatically scrolled as needed, to show the current candidate.
+
+You can use `completing-read' to define your own commands,
+enabling them to take advantage of '''Icicles''' completion and cycling.
+The definition of command `icicle-recent-file' is a good model to
+follow.  Emacs has a `recentf-mode' that lets you open recently
+accessed files.  But this mode makes you open a file using a menu
+interface.  Command `icicle-recent-file' lets you use the usual
+`find-file' minibuffer interface, with completion and cycling
+among your recent files.  See [[#NoteToProgrammers]], below, for more
+on defining your own commands with `completing-read'.
+
+
+= Traversing Minibuffer Histories =
+
+Perhaps you are already used to accessing past inputs using the <code>[down]</code> and <code>[up]</code>
+arrow keys, `C-n' and `C-p', `M-n' and `M-p', or <code>[next]</code> and <code>[prior]</code>.  If not, try it.
+You can go backward and forward in the minibuffer histories (there
+are different history lists for different kinds of input).  You
+can't really cycle them, but when you get to one end you can
+reverse the direction of traversal.
+
+Anyway, the input-cycling behavior that '''Icicles''' offers is in ''addition'' to this
+traversal of histories.  Since there are, by default, several extra 
+pairs of keys used for history traversal, rebinding some of
+them to use for '''Icicles''' completion is no real loss.  
+
+By default, library '''<tt>[[icicles.el]]</tt>'''
+rebinds all of the key sequences that you normally use for
+commands `next-line' and `previous-line',  so that
+they perform prefix-completion cycling in the minibuffer.  In
+vanilla Emacs, this means keys <code>[down]</code>, <code>[up]</code>, `C-n', and `C-p'.
+
+'''Icicles''' also rebinds <code>[next]</code> and <code>[prior]</code> for apropos-completion
+cycling (see below).  You still have `M-n' and `M-p' available to
+access past inputs (history).  And the rebindings are only for
+minibuffer input; ''global bindings are not affected''.
+
+You can at any time switch back and forth between input-history
+traversal (`M-n', `M-p') and prefix completion (`C-n', `C-p' or
+<code>[down]</code>, <code>[up]</code>).
+
+'''See Also:''' [[#AproposHistory]], below, for new ways to use the standard history lists with '''Icicles'''. 
+
+= Icicles Improves Input Completion: (2) Apropos Completions =
+
+There is a second way that you can use '''Icicles''' to complete the
+partial input in the minibuffer.  Instead of considering the
+string of input characters to be the ''prefix'' of various complete
+names, you can look for names that ''match'' that string ''anywhere''.
+
+This is similar in effect to using command `apropos' to find
+"'''apropos completions'''" of a string (except it also works for file and
+buffer names), so that's the term I use for this.  The more correct
+characterization of this is that of the previous paragraph,
+however: ''names that match the given string''.
+
+Just as with prefix completion, '''Icicles''' lets you cycle among the
+apropos candidates.  To do this, you use keys <code>[next]</code> and <code>[prior]</code>
+(or `C-v' and `M-v'). The ''root'' that was completed is ''underlined''
+in the minibuffer completion candidate.
+
+For example, suppose you use `M-x' to enter a command.  You don't
+remember the exact command name, but it has something to do with
+lines, so you do `M-x line', then hit <code>[next]</code> repeatedly until you
+see the right "<code>line</code>" command -- `transpose-lines', perhaps.  Prefix
+completion cannot find this command, because "<code>line</code>" is not a
+prefix of "<code>transpose-lines</code>".
+
+Because `M-x' expects a command name, only command names are
+inserted into the minibuffer as the apropos-completion candidates
+for `M-x'.  Likewise, in other contexts, where names of other
+kinds of object are expected, apropos completion inserts only
+names of objects of the appropriate type.  Prefix completion works
+the same way.
+
+For example, using <code>[next]</code>  and <code>[prior]</code>  with `C-x b at' lets you
+cycle through all buffers (such as `*scratch*') that have "<code>at</code>" in
+their name -- only buffer names appear as candidates.
+
+Another example: Suppose you are in Info, reading the EmacsLispReference, and you want to go to an InfoMode node (manual section) that discusses regular expressions (regexps). You could search through the Table of Contents, or you could search through the Index or index topics (`i'), or you could search through the manual text from the beginning (`s'). ''Or'', you could type `g' to use command `Info-goto-node', type the word `regexp' in the minibuffer, and then use <code>[next]</code> or <code>[prior]</code> to cycle among all Info nodes with `regexp' in their name.
+
+Apropos completion uses a '''''regular expression''''' (regexp) as its input string.
+You can type `<code>M-x \bes</code>', for instance, to find commands with "<code>es</code>"
+at the start of a word within the command name -- it will find
+`eshell-test' and `color-theme-blue-eshell', but not
+`count-lines':  "<code>es</code>" does not start a word in `count-lines'. Similarly, for file names, buffer names, and so on.
+
+
+Prefix completion is actually a special case of apropos
+completion, where the regexp starts with "<code>^</code>".  (That is not how it
+is implemented, however.)
+
+What if you want to see the list of all completion candidates that match the minibuffer input? Instead of cycling candidates blindly, just hit `S-TAB' (Shift TAB) at any time to display the matching candidates in pop-up buffer `*Completions*'. 
+
+Everything said above about the `*Completions*' buffer for prefix
+completion is also true for apropos completion.  It is updated to
+reflect that set of candidates, and the current completion is
+highlighted. The root that was completed is highlighted in each
+candidate (first occurrence only).  Root highlighting is more important in the case of
+apropos completion, because the match position is different in
+different candidates. In the case of
+apropos completion, the root is not the input string, taken
+literally, but the part of a candidate that the input matches. See [[# Completions Display]], below, for additional ways to use the minibuffer with `*Completions*'.
+
+Regexp matching is perhaps the most powerful feature of Icicles.
+Enjoy!  You can at any time switch back and forth between prefix
+completion (<code>[down]</code>, <code>[up]</code>), apropos completion (<code>[next]</code>, <code>[prior]</code>),
+and history traversal (`M-n', `M-p').
+
+Here is a screenshot showing some of the features: 
+
+* Apropos completion in the minibuffer.
+* The root that is completed, `char', is underlined in the minibuffer and highlighted (in dark magenta) in buffer `*Completions*'.
+* The current completion candidate is highlighted (in cyan) in buffer `*Completions*'.
+* Icompletion lets you know how many other candidates there are (especially useful when buffer `*Completions*' is not displayed -- see '''IcompleteMode''' and library '''<tt>[[icomplete+.el]]</tt>'''.
+
+: [[image:iciclesscreenshot]]
+
+
+
+[:SpecialCharacters]
+= What About Special-Character Conflicts? =
+
+Regular-expression syntax treats some characters specially, but
+some of these special characters have another special meaning in
+Emacs when used with file-name inputs.  What about the conflict
+between interpreting characters such as `<code>$</code>', `<code>\</code>', `<code>.</code>', `<code>?</code>', and
+`<code>*</code>' as 1) ''regexp'' special characters and 2) special characters for
+''file-name'' input?  For example, when inputting a file name, should
+`<code>*</code>' be treated as a regexp multiple-occurrences operator or a
+file-name wildcard?
+
+In Emacs file-name input:
+
+* `<code>$</code>' can be used to prefix ''environment variables''.
+
+* `<code>*</code>' and `<code>?</code>' can be used as ''wildcards'', effectively inputting multiple file names at once.
+
+* `<code>.</code>' and `<code>..</code>' can be used to navigate a ''directory hierarchy''.
+
+* `<code>\</code>' is a ''directory separator'', like `<code>/</code>', on MS Windows, at least.
+
+'''Icicles''' handles the conflict by interpreting such characters as
+''regexp special characters only during input completion and cycling''
+-- and then only if you do not escape them (with `<code>\</code>').  If present
+in the input when you finally accept it (using `RET'), they take
+on their normal Emacs meanings for file-name input:
+environment-variable prefix, wildcard, directory abbreviation, or
+directory separator.
+
+That is, whenever there is a potential conflict of interpretation,
+the regexp meaning is used for ''completion and cycling'', and the
+standard interpretation for file-name input is used for ''accepting''
+the input.  So, for example, to get the wildcard interpretation of
+`<code>*</code>', just forego regexp completion and cycling.  And vice versa:
+forego the wildcard interpretation to use regexp completion and
+cycling.
+
+'''Note:''' Because `<code>?</code>' is useful in regexp syntax, the standard Emacs minibuffer binding of `<code>?</code>', which just displays the completion-candidates list, is not used in '''Icicles'''.  In '''Icicles''', `<code>?</code>' self-inserts in the minibuffer, like any other printable character.  (Use `TAB' or `S-TAB' to display the list.)  In standard Emacs, you must quote `<code>?</code>' or copy-and-paste it, to insert it in the minibuffer for use as a file-name wildcard.
+
+The interpretation conflict for `<code>\</code>' (on MS Windows) is not really
+a problem, anyway.  Although you cannot use a backslash (`<code>\</code>') as a
+directory separator during completion and cycling, you can always
+use a slash (`<code>/</code>') instead -- even on MS Windows.  Just break with
+MS-Windows syntax, and get in the habit of using `<code>/</code>' ''as the
+directory-separator character''.
+
+Even if you use only slash, not backslash, as a directory
+separator when inputting, however, it's possible that you could
+run into some trouble (on MS Windows) -- you might (knowingly or
+not) use `<code>\</code>' as a directory separator in the ''values of environment
+variables'' that you use as part of file-name input.  Because the
+expanded input is treated as a regexp by apropos completion, you
+should use only prefix completion with input that includes
+environment variables, if their expansions include backslashes.
+
+The interpretation conflict for `<code>$</code>' is also not a real problem.
+You can get the effect of both interpretations of `<code>$</code>' at the same
+time, because '''Icicles''' recognizes that `<code>$</code>' at the end of input
+cannot be an environment-variable prefix.  This means, for
+example, that you can use a pattern such as `<code>$HOME.*t$</code>' to match
+the files in your home directory whose names end in `t'.
+
+'''Tip:''' Because slash (`<code>/</code>') is about the only non-word syntax character that is likely to appear in file-name completions, you can usually ''use'' `<code>\W$</code>' ''to match only directories'' (by matching the `<code>/</code>' at the end of their names).
+
+
+= Alternative Libraries: Other Methods of Choosing Default Values =
+
+There are other libraries that give you alternative ways to pick a
+candidate default value.  There are, for instance, many libraries
+that provide ways to switch buffers (see SwitchingBuffers).  Some of these present candidates in
+the minibuffer and choose one as soon as you type enough of its
+name to select it unambiguously -- without your
+needing to confirm your choice (with `RET', for example).  Library
+`<code>ido.el</code>' is an example of such a library (see InteractivelyDoThings).  Choosing without
+confirming can be very quick, but I prefer to confirm a choice.  In any case, you can also use '''Icicles''' to choose without
+confirming, if you wish -- see [[#MultiCommands]]. See also [[#CompleteAndExit]] for how to obtain the complete-and-exits behavior of
+library `##iswitchb.el##'.
+
+
+The main reason I prefer '''Icicles''' is because of its generality.
+You use the same input, cycling, and completion method for
+everything.  There is no need to be familiar with one method for
+switching buffers, another method for choosing a command, another
+for choosing a variable, and so on.  Library `<code>ido.el</code>' is quite
+general too, but perhaps a little less so.
+
+Also,  I like to
+be able to ''edit'' the value in the minibuffer.   For
+instance, in a situation where you are not required to enter one
+of the default values (e.g. no `REQUIRE-MATCH' argument to
+`completing-read'), you can use completion to retrieve a default
+value that is similar to what you want to enter, then edit it and
+hit `RET' to submit the actual value you want.  Library `<code>ido.el</code>'
+does have an "edit" command or mode, but I find '''Icicles''' better for
+letting me edit input.
+
+Icicles has many additional features that are not available in
+other libraries (see below), but its main advantage is its
+generality: you use the ''same user interface for input of any kind''.
+
+'''See also:''' KillingBuffers for an illustration of this, and some musings on special vs general solutions.
+
+
+
+[:CompleteAndExit]
+= Exiting the Minibuffer Without Confirmation: `S-RET' =
+
+Normally, if you exit the minibuffer with input that only
+partially matches a completion candidate, the value you input is
+exactly what you typed.  That is, exiting does not automatically
+complete your input -- what you type is what you input.  This is
+desirable most of the time, because it lets you input a value that
+does not correspond to any of the completion candidates.  This is
+how, for instance, you can use `C-x C-f' to open a new file or
+`C-x b' to create a new buffer.
+
+However, some people prefer to limit input to the available
+completion candidates.  This can be handy in the case of switching
+to a buffer, for instance.  If you have a buffer named
+`##new-ideas.txt##', you might like to be able to type only `new'
+followed by `RET', and not have to first complete the input text.
+This is the behavior of libraries `##ido.el##' and `##iswitchb.el##'.
+
+It is the command you use that decides whether `RET' first
+completes your input before exiting the minibuffer.  This is done
+in the command definition by providing a non-`nil' `REQUIRE-MATCH'
+argument to function `completing-read', which prompts you and
+reads your input, possibly completing it.
+
+If you use standard Emacs command `switch-to-buffer', `RET' does
+not behave this way; it simply accepts your input, `new', and
+creates a new buffer with that name.  By default, command
+`icicle-buffer' behaves the same way.  However, you can obtain the
+complete-and-exit behavior with `icicle-buffer' by setting option
+`icicle-buffer-require-match-flag' to `partial-match-ok'.  This
+value overrides the `REQUIRE-MATCH' argument to `completing-read',
+in effect forcing it to `t'.
+
+Whenever completion ''requires'' a match against one of the
+completion candidates (typically, an existing file or buffer
+name), you can complete and exit the minibuffer all at once, with
+only partial input in the minibuffer, by using `RET'.  But what
+about ''apropos'' completion?  Simply use `S-RET' instead of `RET': `RET' is
+standard in Emacs and uses prefix completion; `S-RET' is specific
+to Icicles and uses apropos completion.  For example, you can type
+`idea' followed by `S-RET' to switch to buffer `##new-ideas.txt##'.
+
+
+
+
+
+[: Completions Display]
+= Icicles Improves Input Completion: (3) *Completions* =
+
+'''Icicles''' also adds a few enhancements to the `*Completions*'
+display, for convenience.  The following apply whenever buffer
+`*Completions*' is displayed:
+
+* When you cycle completions in the minibuffer, the current
+candidate is highlighted in `*Completions*'.
+
+* You can use the <code>[insert]</code> key to move back and forth between the  minibuffer and `*Completions*'.  In each direction, the current
+candidate is tracked in the destination buffer.  For example,
+if the candidate in the minibuffer is `foobar', after you hit
+<code>[insert]</code> the cursor is on `foobar' in `*Completions*'.  In the
+other direction, if the cursor is on `foobar' in `*Completions*',
+after you hit <code>[insert]</code> the current input in the minibuffer is
+`foobar'.
+
+* In buffer `*Completions*', you can use the arrow keys to navigate
+among the candidate completions.  The current candidate (under
+the cursor) is highlighted.
+
+* `*Completions*' can also serve as ''apropos icompletion help'' -- see [[#AproposIcompletion]], below.
+
+* You can choose ''multiple'' candidates during completion, by
+clicking them with `mouse-2' while holding the Control key
+pressed.  See [[#MultiCommands]], below.
+
+
+= Icicles Improves Input Completion: (4) Icompletion =
+
+Emacs incremental completion, or icompletion (see '''IcompleteMode'''), provided by standard library `<code>icomplete.el</code>',
+displays matching prefix completions in the minibuffer.  This
+display is updated ''incrementally'' as you type characters. In spite of the name, 
+icompletion does not, in fact, provide completion; it provides completion
+''help'', letting you know what (prefix) completions are available.
+
+Library '''<tt>[[icomplete+.el]]</tt>''' enhances `<code>icomplete.el</code>' in various ways.
+One of these ways is to complement '''Icicles''' by displaying the
+''number'' of other prefix-completion candidates when cycling.  This
+number is displayed whenever you change direction when cycling.
+For example:
+
+    M-x forward-line   [Matched]  (13 more)
+
+(Reminder: There is no icompletion for file-name completion -- see standard library 
+`<code>icomplete.el</code>'.)
+
+[:AproposIcompletion]
+= Icicles Improves Input Completion: (5) Apropos Icompletion =
+
+Icompletion in the minibuffer is for ''prefix'' completion, not
+''apropos'' (regexp) completion.  However, '''Icicles''' can, as an option,
+display apropos completions in buffer `*Completions*', and update
+this display incrementally, as you type.  That is, icompletion is
+available for regexp matching also, but the completions are
+shown in buffer `*Completions*', not in the minibuffer.  With both
+this feature and `icomplete-mode' turned on, you get incremental
+help for both apropos and prefix completions at the same time.
+
+This feature is controlled by user option
+`icicle-incremental-completion-flag' (`t', by default).
+
+A `nil' value turns off icompletion; a non-`nil' value
+turns it on.  If the value is `t', then buffer `*Completions*' is
+updated incrementally only if it is already displayed -- for
+example, if you have typed `S-TAB'.  If the value is neither `nil'
+nor `t', then buffer `*Completions*' is automatically displayed to
+show apropos completions whenever you type any input.
+
+
+[:HelpOnCandidates]
+= Icicles Improves Input Completion: (6) Help on Candidates =
+
+While you are cycling among completion candidates, you can
+simultaneously ''display help on each candidate'' or any given
+candidate.  To show help on each candidate as you cycle, press and
+hold the Control key while using the vertical arrow keys (for prefix
+completion) or the Page Up/Down keys (for apropos completion).  To
+show help on any individual candidate, just navigate to it
+(cycling or using completion), and hit `C-RET'  -- or
+press Control and click it with `mouse-2' (`C-mouse-2') in buffer
+`*Completions*'.
+
+For example, if you use `<code>C-next</code>' (apropos completion) to cycle
+among commands to execute with `M-x', the documentation for each
+command is displayed in the `*Help*' buffer as the candidate appears
+in the minibuffer.  As another example, if you cycle among buffers
+with `<code>C-[down]</code>' (prefix completion) for `C-x b', the major and
+minor modes of each candidate buffer are described in buffer
+`*Help*' as the buffer name appears in the minibuffer.
+
+You can use this functionality as a kind of expanded `apropos'
+function.  As an example, type `C-h v out', then type `S-TAB' to
+display all variables that match "<code>out</code>" (in buffer `*Completions*').
+Then use `<code>C-next</code>' to cycle among those variables, displaying
+their documentation in the `*Help*' buffer as they appear one by one
+in the minibuffer.  Or click individual variable names with
+`C-mouse-2', to display their documentation.  The standard `apropos' commands show only the
+first doc-string line; '''Icicles''' shows the complete doc string.
+
+This can be handy, for instance, when you are unsure which of
+several similarly named candidates to choose.  Seeing a
+candidate's documentation along with its name can help you decide.
+
+This also works with menu items, if you load library
+'''<tt>[[icicles-menu.el]]</tt>''' as well as '''<tt>[[icicles.el]]</tt>''' (see '''IciclesMenu''').  As you cycle among
+matching menu items, the corresponding command documentation is
+displayed in `*Help*'.
+
+For more information about the types of candidates and their
+associated documentation, see the documentation for command `icicle-help-on-candidate'.
+This command is bound to `<code>C-[help]</code>', `<code>C-[f1]</code>', and `C-RET' (by default).
+
+If you use one-buffer-per-frame (`pop-up-frames' non-`nil'), then displaying `*Help*' in one
+frame can interfere with viewing `*Completions*' in another.  For
+that reason, the `*Completions*' frame is raised to the front.
+Also, if user option `icicle-Completions-frame-at-right-flag' is
+non-`nil', then the `*Completions*' frame is moved to the right, out
+of the way, when you access `*Help*'.
+
+
+'''Note:''' There are also '''Icicles''' replacements for the usual `apropos'
+commands.  They act the same, but they also let you see the list
+of regexp matches incrementally (as with all '''Icicles''' commands),
+using `S-TAB'.  If you also use my library '''<tt>[[apropos-fn+var.el]]</tt>''',
+then these '''Icicles''' commands take advantage of the apropos
+enhancements in that library.  The '''Icicles''' apropos commands
+are: `icicle-apropos', `icicle-apropos-command',
+`icicle-apropos-function', `icicle-apropos-option', 
+`icicle-apropos-variable', and `icicle-apropos-zippy'.
+
+
+
+
+[:MultiCommands]
+= Icicles Improves Input Completion: (7) Multi-Commands =
+
+Certain '''Icicles''' commands let you make ''multiple input choices'' in a
+''single command'' execution.  In effect, you can choose multiple
+items from a set of choices, using buffer `*Completions*' as a
+multiple-choice "menu".  (It's not necessary to display
+`*Completions*', however.)
+
+I call such multiple-choice commands '''multi-commands'''.  When a
+multi-command prompts you for input, instead of making a single
+choice and pressing `RET' to confirm it, you can ''choose any number''
+of completion candidates, using `C-RET' (or `C-mouse-2') for each.  You can thus act
+on multiple candidates, or even multiple times on the same
+candidate, during the same execution of the command.
+
+For example, command `icicle-delete-file' lets you delete any
+files that match your minibuffer input -- all in the same command
+execution.  If you type no input, then all files in the current
+directory match, and you can delete any number of them.  If you
+type `<code>~$</code>' and hit `S-TAB' (`apropos-complete'), then all files
+that end in `<code>~</code>' match, and you can delete any number of them.
+Similarly, command `icicle-buffer-other-window' lets you display
+any number of buffers, and so on.
+
+You make multiple choices this way by cycling through the
+candidate completions, as usual, and hitting `C-RET' whenever you
+want to choose (act on) the current cycle candidate.  Or, just
+press and hold Control while clicking each candidate with
+`mouse-2'.
+
+This is the same thing that you do to access help on a candidate (see
+[[#HelpOnCandidates]]).  A '''multi-command''' is just any command that has a
+special action defined for use with `C-RET' on the current cycle
+candidate.  If no such special action is defined, then help on the
+candidate is displayed -- ''displaying help is just the default
+action'', used when no other action is defined.
+
+Similarly, you can use `<code>C-next</code>', `<code>C-prior</code>', `<code>C-[down]</code>', and
+`<code>C-[up]</code>' to both choose (that is, act on) the current candidate
+and move forward or backward to the next successive candidate.
+You can thus just hold down the Control key while cycling, to act
+on each candidate in turn, if you want.
+
+Instead of, or in addition to, cycling, you can use completion to
+get to a particular candidate you want.  No matter how a candidate
+is made current, you can choose the current candidate (perform the
+action on it) using `C-RET', `C-mouse-2', `<code>C-next</code>', and so on.
+
+As always, hitting `RET' (or `S-RET') ends the command.  For most
+multi-commands, hitting `RET' performs the same action as `C-RET',
+but it is possible to have a command that acts differently for
+`RET' and `C-RET'.  That is the case, for instance, when help is
+displayed via `C-RET'.
+
+You can use `C-g' to exit a multi-command at any time, without
+making a final choice using `RET'.  If the actions performed by a
+multi-command are easily reversible, `C-g' will often restore
+things to the way they were before performing the actions.
+
+If you are an Emacs-Lisp programmer and you want to write your own
+multi-command, just make the command do this:
+
+: '''1.''' Call `completing-read' or `read-file-name', and perform some action on the completed
+input.
+
+: '''2.''' Bind `icicle-candidate-action-fn' to a function that performs
+an action on a completion candidate -- possibly the same action.
+
+'''#1''' just lets people use the command normally, to perform the '''#1''' action on a completion
+candidate entered with `RET'. Because of '''#2''', people can perform the '''#2''' action on any completion
+candidates, while still ''continuing to cycle or
+complete'' candidates.  Typically, the
+actions for '''#1''' and '''#2''' are the same, but nothing prevents you from
+using different actions.
+
+When internal variable `icicle-candidate-action-fn' is not bound,
+the ''default'' action is performed: display ''help'' on the current candidate.
+
+See [[#DefiningCommands]], below, for an easy way to define
+your own multi-commands.  It introduces simple-to-use
+macros that take implement both '''#1''' and '''#2''' for you. 
+
+: '''Note:''' As a user, you can also cycle among elements of a set,
+performing actions, if you use my libraries '''<tt>[[doremi.el]]</tt>''', '''<tt>[[doremi-cmd.el]]</tt>''', and '''<tt>[[doremi-frm.el]]</tt>'''.  Like '''Icicles''', '''DoReMi''' lets you see the effect of a choice immediately, whenever you make changes.  Each library has its own advantages and special uses. Advantages of '''Icicles''' include:
+
+**  ''completion'' to candidate values
+**  restoration after making changes, letting you ''preview'' changes without actually applying them
+
+: The latter assumes that action commands have been defined
+with proper restoration clauses -- see [[#DefiningCommands]], below.
+
+
+
+[:AllCandidates]
+= Icicles Improves Input Completion: (8) Choose All Candidates =
+
+Section [[#MultiCommands]], above, describes how you can use `C-RET' to choose
+(act on) multiple completion candidates, individually.  If you
+hold down the Control key while you cycle through the candidates,
+you can run through each of them, one by one.  Command
+`icicle-all-candidates-action', which is bound to `<code>C-!</code>' in the
+minibuffer, is just a shorthand way of doing that: ''act on '''all'''
+candidates that match the current input''.
+
+All multi-commands let you use `<code>C-!</code>' in this way.  Whenever a
+command defines a special action for `C-RET' to perform on the
+current completion candidate, you can use `<code>C-!</code>' to perform it on
+all candidates at once.
+
+Perhaps you already use `<code>% m</code>' (command `dired-mark-files-regexp')
+in '''Dired''' to mark all files that match a given regular expression,
+and then operate on all of the marked files in some way.  When you
+execute a multi-command, `<code>C-!</code>' lets you do something similar.  It
+applies `icicle-candidate-action-fn' to each completion that
+matches (apropos or prefix) the current input in the minibuffer.
+
+Most top-level '''Icicles''' commands are multi-commands.  Command
+`icicle-delete-file' is an example.  Instead of entering a file
+name at the prompt (e.g. using completion or cycling), you can
+type a regular expression, use `S-TAB' to see all matching files,
+and then use `<code>C-!</code>' to delete all of them at once.
+
+You get the idea: Use the minibuffer to determine a ''set'' of objects
+by pattern matching, and then ''act on all elements of the set''.
+
+If you are an Emacs-Lisp programmer, you can define your own
+multi-commands.  Section [[#DefiningCommands]], below,
+explains how to do that.  You define a function that acts on a
+single object, and then use that function in a multi-command to
+act on either a single object or multiple objects.  There are lots
+of possible applications.
+
+As a illustration of what is involved, here is the definition of a
+command similar to `icicle-delete-file':
+
+  (defun delete-one-or-more-files ()
+    "Delete one or more files that match the current input."
+    (interactive)
+    (let* ((icicle-candidate-action-fn
+            'my-delete-file-or-directory)  ; Action #2
+           (the-file
+            (condition-case fail
+                (completing-read
+                 "Delete file: "
+                 (mapcar #'list
+                         (directory-files default-directory))
+                 nil t)
+              (error (error-message-string fail)))))
+      (when the-file
+        (icicle-delete-file-or-directory the-file))))  ; Action #1
+
+
+Here, the function that acts on a single object (file) is
+`my-delete-file-or-directory'.  It is called on the result of
+`completing-read' (action '''#1'''), and it is also bound to
+`icicle-candidate-action-fn' (action '''#2'''), so that it will be
+applied to the current candidate via `C-RET'.
+
+As illustrated by this definition, the logic of a multi-command
+implementation is a bit complex.  There is, fortunately, an easier
+way to define such a command, as explained in section [[#DefiningCommands]], below.
+
+Command `icicle-all-candidates-action' reports on the objects that were
+''not'' acted upon successfully (in buffer `*Help*').  For this
+reporting, the function bound to `icicle-candidate-action-fn' (e.g. `my-delete-file-or-directory', above) should return `nil' for
+"success" and non-`nil' (for example, an error message) for "failure",
+whatever "success" and "failure" might mean in the context of use.
+
+[:CandidateSets]
+= Icicles Improves Input Completion: (9) Candidate Sets =
+
+Whereas `C-RET' acts on individual objects, `C-!' acts on an entire
+set of objects at once, via their ''names'': the ''set of all current completion
+candidates''.  There are additional '''Icicles''' commands that act, not
+on individual completion candidates, but on one or more sets of
+completion candidates.
+
+The basic idea is that you can perform set operations using the
+current set of completion candidates, changing it into a different
+set.  The available set-operation commands are these:
+
+* `icicle-candidate-set-save', bound to `<code>C-></code>'.  '''''Save''''' the current
+set of completion candidates, for use in a subsequent set
+operation (see below).
+
+* `icicle-candidate-set-retrieve', bound to `<code>C-<</code>'.  '''''Retrieve''''' the saved set of completion candidates, making it the current set.
+
+* `icicle-candidate-set-swap', bound to `<code>C-%</code>'.  '''''Swap''''' the saved and current sets of completion candidates.
+
+* `icicle-candidate-set-define', bound to `<code>C-:</code>'.  '''''Define''''' the
+current set of completion candidates by ''evaluating an input
+sexpr''.  The sexpr must evaluate to a list of strings, such as is
+returned by `all-completions'.  You can use this to substitute
+''any list of strings'', and then operate on them as completions,
+using any '''Icicles''' functionalities.  Keep in mind, however, that
+the completions must be of the proper type for the context in
+which they are used.  For example, if you are executing a
+command, they must be command names.
+
+* `icicle-candidate-set-complement', bound to `<code>C-~</code>'.  '''''Complement'''''
+the current set of candidates: replace the current candidate set
+with its set complement.  This means all possible completions of
+the appropriate type that do '''''not''''' match the current input.
+
+* `icicle-candidate-set-union', bound to `<code>C-+</code>'.  Replace the
+current candidate set by its '''''union''''' with the saved set of
+candidates.
+
+* `icicle-candidate-set-difference', bound to `<code>C--</code>'.  Replace the
+current candidate set by its '''''set difference''''' with the saved set
+of candidates.  That is, the saved candidates are subtracted
+from the current candidates, and the result becomes the current
+candidate set.   To obtain the opposite set difference,
+subtracting the current candidates from the saved candidates,
+just use `icicle-candidate-set-swap' followed by
+`icicle-candidate-set-difference'.
+
+* `icicle-candidate-set-intersection', bound to `<code>C-*</code>'.  Replace
+the current candidate set by its '''''intersection''''' with the saved
+set of candidates. 
+
+You can operate on or choose from all input values in the set
+resulting from any of these set operations.  For example, you can
+use `<code>C-~</code>' to see the list of objects that do not match the current
+input, to cycle among those objects, or to operate on any or all
+of them.  Use `<code>C-~</code>' at any time to switch to the complement of the
+current set of candidates.
+
+'''Example:''' To cycle through all files whose names do ''not'' end in `el', you can do the following:
+
+: '''1.''' Use `C-f' to read a file name.
+
+: '''2.''' Type `<code>el$</code>'.
+
+: '''3.''' Use `S-TAB' to show the matching files.
+
+: '''4.''' Use `<code>C-~</code>' to flip to the complement: files not ending in `<code>el</code>'.
+
+: '''5.''' Use <code>[next]</code> or <code>[prior]</code> to cycle among the new set of candidates.
+
+A minibuffer message briefly confirms each of the set operations.
+
+When buffer `*Completions*' is displayed, the union, difference, and
+intersection commands scroll the buffer when repeated, just like
+`TAB' and `S-TAB' do.  Repeating `icicle-candidate-set-complement'
+complements the complement, of course, giving the original set.
+
+Once you have established a set of completion candidates using any
+of the candidate-set commands, you can cycle among the candidates
+of that set using either prefix or apropos cycling (that is,
+<code>[next]</code>/<code>[prior]</code> or <code>[down]</code>/<code>[up]</code>).  However, switching from prefix to
+apropos cycling (or completion), or vice versa, establishes a
+new completion set of the appropriate type, as usual.  Switching completion type signifies
+that you are finished with the specially defined completion set,
+and you want to redefine it using apropos or prefix cycling or
+completion.
+
+'''Note:''' Prefix ''icompletion''  (`<code>icomplete.el</code>' or '''<tt>[[icomplete+.el]]</tt>''') does ''not'' take the candidate set resulting from
+a set operation into account: it always displays the normal
+set of prefix completions in the minibuffer.
+
+For other examples of using set operations, see also:
+
+* [[#AproposHistory]] 
+* [[#IciclesSearch]]
+
+
+
+[:DefiningCommands]
+= Defining Icicles Commands =
+
+This section is for Emacs-Lisp programmers.
+
+Defining a command that uses '''Icicles''' completion and cycling is
+simple: just call `completing-read' or `read-file-name' to read
+input, then act on that input.  Here, for instance, is a simple
+command that reads a font name and then changes the selected frame
+to use that font.  Completion and cycling are available, using all
+available font names as the pool of candidates.
+
+  (defun change-font ()
+    "Change font of selected frame."
+    (modify-frame-parameters
+     (selected-frame)
+     (list (cons 'font (completing-read
+                        "Font: " (mapcar #'list (x-list-fonts "*"))
+                        nil t)))))
+
+Nothing could be simpler - just use `completing-read'!
+
+However, what if you want to define a ''multi-command'' (see [[#MultiCommands]]) -- that is, a
+command that takes advantage of an action function when cycling
+candidates, as described in [[#MultiCommands]] and [[#AllCandidates]], above?  In that case, things get much trickier.
+
+Here's a definition of command `change-font' that takes advantage
+of an action function when cycling candidates:
+
+   1 (defun change-font ()
+   2   "Change font of current frame."
+   3   (interactive)
+   4  (let* ((orig-frame (selected-frame))
+   5         (orig-font (frame-parameter nil 'font))
+   6         (icicle-candidate-action-fn
+   7          ;; Perform the action on a candidate, without leaving
+   8          ;; `completing-read'.  You can do this over and over.
+   9          (lambda (font)
+  10             (modify-frame-parameters orig-frame
+  11                                      (list (cons 'font font))))))
+  12     (condition-case nil
+  13         (modify-frame-parameters
+  14          orig-frame
+  15          (list
+  16           (cons 'font
+  17                 ;; Perform the action on your final choice.
+  18                 (completing-read "Font: "
+  19                                  (mapcar #'list (x-list-fonts "*"))
+  20                                  nil t))))
+  21       ((quit error)
+  22        (modify-frame-parameters
+  23         orig-frame
+  24         (list (cons 'font orig-font)))))))
+
+As you can see, there is a lot more going on here than in the
+previous version.  These are the points to keep in mind, when
+defining such a command:
+
+# Save anything you need to restore, so you can, in effect, undo
+the action in case of `C-g' (lines 4-5).
+
+# Bind `icicle-candidate-action-fn' to the action to perform
+(line 3).
+
+# Perform the action, using `completing-read' to provide the
+target candidate (lines 13-20).  Do this in the body of a
+`condition-case' (lines 12-24).
+
+# Restore the original context in the error-handling part of the
+`condition-case' (lines 22-24).  Include `quit' in the
+ error-type list.
+
+The above definition is not quite complete.  To let
+`icicle-all-candidates' be able to report on failures, the
+`icicle-candidate-action-fn' code should also trap errors and
+return `nil' as an error indicator.
+
+In fact, things can get even hairier (much hairier) still, if the
+function at the core of your command does things like create a new
+frame -- especially on MS Windows, with its click-to-focus window
+manager.  The action of `change-font' doesn't do that, but if it
+did, you would need to ''redirect the focus'' back to the minibuffer
+frame, using `select-frame-set-input-focus'.  As an illustration
+of what's involved, here's a definition that would deal with such
+problems.  It also traps `icicle-candidate-action-fn' errors,
+returning `nil' to report success and the error message to report
+failure.
+
+  (defun change-font ()
+    "Change font of current frame."
+    (interactive)
+    (let* ((orig-buff (current-buffer))
+           (orig-window (selected-window))
+           (orig-frame (selected-frame))
+           (orig-font (frame-parameter nil 'font))
+           (icicle-candidate-action-fn
+            (lambda (candidate)
+              (condition-case action-fn-return
+                  (progn
+                    (modify-frame-parameters
+                     orig-frame (list (cons 'font candidate)))
+                    (select-frame-set-input-focus
+                     (window-frame (minibuffer-window)))
+                    nil) ; Return nil to report success.
+                ;; Return error message to report error.
+                (error (error-message-string action-fn-return))))))
+      (condition-case act-on-choice
+          (modify-frame-parameters
+           orig-frame
+           (list (cons 'font
+                       (completing-read
+                        "Font: " (mapcar #'list (x-list-fonts "*"))
+                        nil t nil nil nil nil))))
+        (quit (switch-to-buffer orig-buff)
+              (modify-frame-parameters
+               orig-frame (list (cons 'font orig-font))))
+        (error (switch-to-buffer orig-buff)
+               (modify-frame-parameters
+                orig-frame (list (cons 'font orig-font)))
+               (error (error-message-string act-on-choice))))))
+
+That's a lot of (error-prone) work!  You obviously don't want to
+be doing that a lot.  Fortunately, help is on the way: macro
+`icicle-define-command'.  Here is how it could be used to define
+`change-font'.  The resulting generated code is similar to the mess shown above.
+
+   1 (icicle-define-command
+   2  change-font "Change font of current frame."
+   3  (lambda (font)
+   4    (modify-frame-parameters orig-frame
+   5                             (list (cons 'font font))))
+   6  "Font: " (mapcar #'list (x-list-fonts "*"))
+   7  nil t nil nil nil nil
+   8  ((orig-frame (selected-frame))
+   9   (orig-font (frame-parameter nil 'font)))
+  10  nil
+  11  (modify-frame-parameters orig-frame
+  12                           (list (cons 'font orig-font)))
+  13  nil)
+
+That might not look very readable, but it is straightforward to
+use `icicle-define-command'.  The arguments to it are as follows:
+
+* Command name    (line 2)
+* Doc string      (line 2)
+* Action function (lines 3-5)
+* Args passed to `completing-read' (lines 6-7)
+* Additional bindings (lines 8-9)
+* Additional initialization code (line 10)
+* "Undo" code to run in case of error or quit (lines 11-12)
+* Additional code to run at the end (line 13)
+
+The following bindings are pre-included -- you can refer to them in
+the command body:
+
+* `orig-buff'   is bound to `<code>(current-buffer)</code>'
+* `orig-window' is bound to `<code>(selected-window)</code>'
+
+Before running any "undo" code that you supply, the original
+buffer is restored, in case of error or user quit.
+
+Most of the arguments to `icicle-define-command' are optional.  In
+this case, optional arguments were provided to save (lines 8-9)
+and then restore (lines 11-12) the original font and frame.
+
+If the action function that you use to define a multi-command acts
+on a ''file name'' or a ''directory name'', then you will want to use
+`icicle-define-file-command', instead of `icicle-define-command'.
+It defines commands that use `read-file-name', rather than
+`completing-read', to read their input.  As an example of its use,
+here is the definition of `icicle-find-file':
+
+  (icicle-define-file-command
+   icicle-find-file "Visit a file or directory."
+   find-file "File or directory: ")
+
+The arguments to `icicle-define-file-command' are the same as
+those to `icicle-define-command', except for arguments that are
+passed to `read-file-name' instead of `completing-read'.
+
+Several top-level '''Icicles''' commands have been defined in library '''<tt>[[icicles.el]]</tt>''' using
+`icicle-define-command' and `icicle-define-file-command'.  You can use their definitions as models.
+
+* `icicle-bookmark'    -- Jump to a bookmark
+* `icicle-buffer'      -- Switch to another buffer
+* `icicle-clear-option' -- Set the value of a binary option to `nil'
+* `icicle-color-theme' -- Change color theme
+* `icicle-delete-file' -- Delete a file or directory
+* `icicle-doc'         -- Display the doc of a function or variable
+* `icicle-execute-extended-command' -- A multi-command version of `M-x'
+* `icicle-find-file'   -- Open a file or directory
+* `icicle-font'        -- Change the frame font
+* `icicle-frame-bg'    -- Change the frame background color
+* `icicle-frame-fg'    -- Change the frame foreground color
+* `icicle-fundoc'      -- Display the doc of a function
+* `icicle-recent-file' -- Open a recently used file
+* `icicle-set-option-to-t' -- Set the value of a binary option to `t'
+* `icicle-toggle-option' -- Toggle the value of a binary option
+* `icicle-vardoc'      -- Display the doc of a variable
+
+
+'''See also:''' 
+
+* '''[[Synonyms]]''', where library Lisp:synonyms.el uses macro
+`icicle-define-file-command' to define command `synonyms'.  This
+command lets you use '''Icicles''' completion on input regexps when you
+search a thesaurus.
+
+
+[:GlobalFilters]
+= Icicles Improves Input Completion: (10) Global Filters =
+
+Which completion candidates get displayed?  To review:
+
+'''1.''' The domain of discourse, that is, all possible candidates, is
+determined by the arguments to `completing-read',
+`read-file-name', or `M-x'.
+
+'''2.''' You type something in the minibuffer.  This narrows the
+possible candidates to those that match your input.  Matching
+can be prefix-matching or apropos-matching.
+
+Wouldn't it sometimes be useful to filter '''#1''' in a global way,
+before filtering it with your input ('''#2''')?  Functions `completing-read' and
+`read-file-name' take a predicate argument, so that can be used
+for global filtering.  However, those functions are usually called
+from some command, and it would also be useful to give end users,
+not just programmers, some way to globally filter candidates.
+
+For example, if you have a command, like `icicle-buffer', that
+reads a buffer name and displays the buffer, some users might
+always be interested only in buffers that are associated with
+files.  They don't want to see possible candidates like
+`*scratch*' and `*Messages*'.  What they need is a way to apply a
+global predicate that limits candidates to file-buffer names -- but
+they don't have access to the call to `completing-read' that is
+inside the command definition.
+
+For this reason, some global filtering variables are provided by '''Icicles''':
+
+  `icicle-must-match-regexp', `icicle-must-not-match-regexp',
+  `icicle-must-pass-predicate', `icicle-extra-candidates'.
+
+The first and second of these are ''regexps'' that candidates ''must
+match'' and ''must not match'', respectively, in order for them to be
+displayed.  The third is a ''predicate'' that candidates must satisfy.
+The fourth is a list of ''extra candidates'' to display.  Any of the
+filters can be `nil', in which case it has no effect.
+
+Variable `icicle-extra-candidates' is not really a "filter".  It
+does not ''restrict'' the set of possible candidates -- rather, it
+''extends'' that set.
+
+These global variables are ''internal'' variables -- they are not meant
+to be customized.  If you are not an Emacs-Lisp programmer, you
+will ''not'' use these variables, but some commands that you use might
+provide corresponding global-filter ''user options''.  '''Icicles'''
+provides user options for command `icicle-buffer', for example:
+
+*  `icicle-buffer-match-regexp'    -- Regexp that buffers must match
+*  `icicle-buffer-no-match-regexp' -- Regexp buffers must ''not'' match
+*  `icicle-buffer-predicate'       -- Predicate buffer must satisfy
+*  `icicle-buffer-extras'          -- Extra buffers to display
+
+You might, for instance, customize `icicle-buffer-no-match-regexp'
+to not display file-buffers whose names end in `<code>.elc</code>', and
+customize `icicle-buffer-predicate' to show only buffers that are
+associated with files.  The former would use a value of <code>"\\.elc$"</code>,
+and the latter would use a value such as this:
+
+   (lambda (bufname) (buffer-file-name (get-buffer bufname)))."
+
+If you, as a programmer, write a command, and you want to expose
+global filters to users of the command, you should:
+
+'''1.''' Create corresponding user options that can be customized.
+
+'''2.''' Bind the user options to the corresponding filtering variables.
+
+If you use `icicle-define-command' or `icicle-define-file-command'
+to define a command (recommended), then you can simply pass the
+filter-variable bindings as part of the `BINDINGS' argument.
+
+For example, here is the core definition of `icicle-buffer':
+
+ (icicle-define-command
+  icicle-buffer                          ; Command name
+  "Switch to a different buffer."        ; Doc string
+  switch-to-buffer                       ; Action function
+  "Switch to buffer: "                   ; completing-read args
+  (mapcar (lambda (buf) (list (buffer-name buf)))
+          (buffer-list))
+  nil nil (buffer-name (if (fboundp 'another-buffer)
+                           (another-buffer nil t)
+                         (other-buffer (current-buffer))))
+  nil nil nil
+  ;; Filter bindings
+  ((icicle-must-match-regexp icicle-buffer-match-regexp)
+   (icicle-must-not-match-regexp icicle-buffer-no-match-regexp)
+   (icicle-must-pass-predicate icicle-buffer-predicate)
+   (icicle-extra-candidates icicle-buffer-extras)
+   (icicle-sort-function icicle-buffer-sort)))
+
+
+
+
+
+
+[:AproposHistory]
+= Icicles Improves Input Completion: (11) History Enhancements =
+
+One obvious advantage '''Icicles''' provides for working with minibuffer
+histories is display of the previous inputs that match your
+current input.  In vanilla Emacs, the history lists are never
+shown as such; you can access previous inputs only one at a time,
+in order (with `M-p').  This sounds like a minor advantage, but it
+is actually quite helpful in practice.  Among other things, it
+means you can work with long history lists in a practical way.
+
+In addition, whenever you display candidate completions in buffer
+`*Completions*', those that you have used previously are highlighted
+slightly, so you can more easily recognize them.  This is another,
+minor way in which '''Icicles''' helps you with minibuffer histories.
+
+There are two more important ways in which '''Icicles''' enhances use of
+minibuffer histories.
+
+'''1.''' Command `icicle-history' (`M-h' in the minibuffer) matches the
+current input against the minibuffer history.
+
+'''2.''' Command `icicle-keep-only-past-inputs' (`M-pause' in the
+minibuffer) restricts the current explicit set of completion
+candidates to those that you have already used previously.  In
+other words, it keeps only those candidates that are
+highlighted.  To use `M-pause', you must first have used `TAB'
+or `S-TAB' to establish an explicit candidate set.
+
+Both `M-h' and `M-pause' can be used toward the same end.  They
+both work for all input types.  They both use the appropriate
+history list for the current command.  They both provide apropos
+completion and cycling for the minibuffer history (as well as
+prefix completion, of course).  Use them as another way to search
+through a history list or complete to one of its elements.
+
+For example, If you use `C-x C-f' to find a file, and then use
+`M-h' or `M-pause', the completion candidates will be the names of
+files that you have previously accessed (file names you have input
+in the minibuffer), and which match the current minibuffer input.
+
+`M-h' lets you complete your input against the minibuffer input
+history.  `M-pause' lets you restrict the current explicit set of
+completion candidates to those that are also in the minibuffer
+history.
+
+They provide similar functionality in different ways.  The
+difference is that `M-pause' takes the current set of matching
+candidates into account.  It is a completion-candidates ''set''
+operation, similar to those described in [[#CandidateSets]], above.
+
+This means, in particular, that with `M-pause' you can first
+perform set operations on the set of candidates, and then use that
+result to restrict the history search.  For example, you can first
+complement the candidate set using `##C-~##', then use `M-pause' to
+restrict those candidates to matches in the history list.  In this
+way, you avoid including matches from the original match set when
+searching the history.
+
+For example: `##C-x C-f foo.*\.c$##' defines the candidate set as all
+files whose names start with `foo' and have extension `c'.  `##C-~##'
+then defines the candidate set as all files whose names are ''not''
+like that.  `M-pause' then restricts those file-name candidates to
+names that you have used before.
+
+A consequence of this difference is that using `TAB' or `S-TAB'
+after `M-pause' abandons use of the minibuffer history and starts
+a new set of completion candidates.  It simply completes the
+current input in the context of the current command; `TAB' and
+`S-TAB' have nothing to do with the minibuffer history in this
+case.  Using `TAB' or `S-TAB' after `M-h', however, re-completes
+your input against the current history list.
+
+Also, file-name and directory-name completion works differently in
+these two commands.  By default, the current directory is (as
+always) inserted into the minibuffer by commands such as
+`find-file', so either `M-h' or `M-pause' after `C-x C-f' will
+match previously input file names from the current directory.
+
+However, in the case of `M-h', the entire minibuffer input is
+matched against the history list, which is a list of absolute file
+names.  `M-pause' works only with the current candidate set,
+which, if you have already used `TAB' or `S-TAB' in the current
+directory, is a set of relative file names in that directory.
+
+This difference has a consequence for apropos (regexp) completion
+with `M-h'.  It means that to match a file name using a substring
+you must, in the minibuffer, either not specify a directory (erase
+it) or explicitly use `##.*##' before the file-name substring.
+
+For example, with `M-h', `/foo/bar/lph' will not apropos-match the
+previously input file name `##/foo/bar/alphabet-soup.el##'; you should
+use either `##/foo/bar/.*lph##' or `lph' (no directory).
+
+In the case of `M-pause', however, the input is matched against
+the history list as restricted by the existing completion list.
+And, since apropos file-name completion uses only the relative
+file name, without the directory name, as a regexp, the candidate
+list that is restricted has already matched the input regexp.  The
+action of `M-pause' is simply to filter the list of candidates,
+keeping those that are in the history list.  This means that, with
+`M-pause', the input `/foo/bar/lph' will match against the
+previously input file name `##/foo/bar/alphabet-soup.el##'.
+
+If this all sounds confusing, just give it a try; it is much
+harder to describe than it is to experience.
+
+
+
+
+[:IciclesSearch]
+= Icicles Improves Input Completion: (12) Search Enhancements =
+
+There are two, unrelated enhancements that '''Icicles''' provides for
+searching:
+
+* An extension to incremental search that lets you use '''Icicles'''
+completion against previous search strings.
+
+* A top-level command, `icicle-search', that provides an entirely
+new and different (wierd?!) way for you to search.
+
+'''1. Isearch completion'''
+
+When you search incrementally (`C-s'), Emacs (21 or later) lets
+you complete your input to a string you have looked for
+previously.  In ''Icicle'' mode, this feature is enhanced so that you
+can use all of the completion behavior provided by '''Icicles'''.
+
+In vanilla Emacs, you use `M-TAB' to complete against the search
+ring.  In '''Icicles''', you use `S-TAB' (`icicle-isearch-complete') to
+do this -- that's what '''Icicles''' users are in the habit of using for
+(apropos) completion.  They are also in the habit of using `TAB',
+for prefix completion, but `TAB' is a useful character to include
+in search strings.
+
+When you use `S-TAB' while searching, Isearch exits momentarily,
+giving way to '''Icicles''' completion in the minibuffer (Isearch
+actually uses the echo area, not the minibuffer).  You can then
+use either `S-TAB' or `TAB' to complete your search string.  After
+you finish completing (e.g. by hitting `RET'), Isearch resumes
+with the new, completed search string.  It's pretty seamless, and
+easier to try than to describe.
+
+''One reminder:'' Using `S-TAB' vs `TAB' for completion against
+previous search strings has nothing to do with ''regexp vs
+non-regexp'' searching.  You can of course use either kind of
+searching before or after having used either kind of completion.
+Isearch uses different search rings for regexp and non-regexp
+searching.  The kind of search in progress (regexp or not) at the
+moment when you call for completion determines which search ring
+provides the candidates for completion.
+
+
+'''2. Command `icicle-search''''
+
+The idea behind `icicle-search' is this:
+Regular expressions are powerful for searching, but they can also
+be cumbersome sometimes.  Why not use one simple regexp to set up
+a set of candidates and then use a ''second simple regexp to filter''
+those candidates?
+
+That's how it works.  You enter a regexp, then use `S-TAB' to see
+all matches for the regexp in the region (or in the whole buffer,
+if there is no active region).  The matches appear as completion
+candidates in buffer `*Completions*'.  As usual, you can complete to
+a candidate, or cycle among candidates to choose one.
+
+More usefully, you can type a different regexp in the minibuffer,
+and use the various apropos-completion commands to narrow the list
+of candidates.  Instead of trying to come up with a head-numbing
+regexp expression, it's often easy to get the same result with two
+easy regexps!
+
+'''''Most useful of all:''''' You can use the various candidate-action
+commands to show the occurrence of each match in the original
+buffer you are searching.  You can, for instance, use `C-RET' to
+show the occurrence of the current candidate.  Or, you can use `C-mouse-2', 
+`C-prior', `C-next', `C-up', and `C-down'.  For more information
+on these, see [[#MultiCommands]] and [[#AllCandidates]], above.
+
+The initial regexp you use can be anything -- it need ''not'' match a
+single, complete ''line'' of text.  It is used over and over in the
+region you search, to partition it into matching strings.
+
+`icicle-search' will never replace incremental search -- either
+regexp or literal string search, but in some cases it can be quite
+handy.  Think of it as another tool to add to your search-tool
+belt, along with `grep', `occur', and the others.  It does take a
+little getting used to, I admit.  Remember, in particular, that
+the ''original regexp you input cannot be changed'', without
+re-executing `icicle-search'.
+
+And remember too that `C-l' is your friend, to clear the
+minibuffer during cycling, retrieving your last real input.  Use
+it to modify your second regexp on the fly -- the one that filters
+the original candidate list.  ''Have fun!''
+
+Oh -- And don't forget that you can do things like take the
+''complement'' of your fine-tuning regexp matches, within the context
+of your coarse-tuning matches (see [[#CandidateSets]], above).  For example, use `<code>^.*defun.*$</code>' as the main regexp, to find all lines containing
+`defun'.  Then type `icicle' to match only the lines with "defun"
+that also contain `icicle'.  Then complement (`<code>C-~</code>') that set, to
+see the lines that contain `defun' but not `icicle'.
+
+And you can then ''save''
+that set of matches, and then ''subtract'' it from another set of
+matches in a ''different search''...  You get the idea.
+
+When performing set operations combined with `icicle-search', keep
+in mind that the saved set does not include any ''position''
+information -- it is only a set of matching ''strings''.  So, in
+particular, a set-union operation (`<code>C-+</code>') is not useful with
+`icicle-search' (adding a saved set of strings without positions
+is useless).  Still, you can do things like match lines that
+contain `defun' followed somewhere by `<code>()</code>', and then subtract the
+(saved) set of lines in the same region that contain `icicle'.
+Try it in this buffer, using regexps `<code>.*icicle.*$</code>' and
+`<code>^*.defun.*().*$</code>'.
+
+One more reminder: When you save a set of completion candidates
+(`<code>C-></code>'), make sure you actually ''have'' a set of candidates to save!
+It is not enough to just enter a regexp at the `icicle-search'
+prompt.  You must also use some '''Icicles''' command, such as `TAB',
+`S-TAB', <code>[next]</code>, <code>[down]</code>, etc. to tell '''Icicles''' how to create the
+candidate set -- how to match the regexp.
+
+
+[:IciclesCompilationSearch]
+= Icicles Improves Input Completion: (13) Compile/Grep Search =
+
+In a compilation-results buffer, such as `*grep*', command
+`icicle-compilation-search' can be useful for searching among the
+result set (hits).  It is the same function as `icicle-search',
+except that it calls `compile-goto-error' as the
+completion-candidate action function.  That is, you can use `C-RET', `C-mouse-2', 
+`C-prior', `C-next', `C-up', and `C-down' to display the target
+corresponding to each line in the compilation buffer that matches
+a regexp.  As for `icicle-search', you can further narrow the
+match candidates by typing a second regexp to search for among the
+first matches.
+
+Altogether, using this with `grep' gives you two or three levels
+of regexp searching: 1) the `grep' regexp, 2) the major
+`icicle-search' regexp, and optionally 3) a refining
+`icicle-search' regexp.
+
+'''Note:''' If you use a non-`nil' value for `pop-up-frames' on MS
+Windows, you will likely run into the Emacs bug described in [[#NoteOnPopUpFrames]], below: When
+cycling, if the target buffers do not already exist, they will be
+opened in new frames, and this will take the focus away from the
+compilation-results buffer.  You will need to reselect the
+compilation-results buffer manually.  Once the new frames have
+been created, there is no problem cycling among the hits.
+
+
+[:MultiCompletions]
+= Icicles Improves Input Completion: (14) Multi-Completions =
+
+Function `completing-read' takes a `TABLE' argument that represents
+the set of possible completions to be matched.  `TABLE' can take
+several forms, one of which is an alist of items, where each item
+has the form <code>(COMPLETION . VALUE)</code>, where `COMPLETION' is a string.
+
+'''Icicles''' extends `COMPLETION', here, accepting not only a string, but
+a ''list of strings'' -- so we can speak of a '''multi-completion''', that
+is, a completion that is composed of multiple parts.
+
+The multiple parts are joined together by placing the string
+`icicle-list-join-string' between them, pairwise.  By default,
+this separator is a ''newline''.  When completing, users can use a
+regexp input that takes this separator into account by matching
+it, thus, in effect, matching against the multiple parts. A single
+regexp is still used, but you can think of it as using multiple
+regexps to match the multiple completions.
+
+As a simple example, command `icicle-vardoc' uses `COMPLETION'
+candidates that are each a list of two strings: a variable name
+and its doc string.  When you use `icicle-vardoc', you can thus
+match a regexp against the overall completion that is composed of
+these two strings joined together by a newline.  You can think,
+however, in terms of matching against each string separately and
+also matching the newline that joins them.
+
+For example, you can use this input with `S-TAB' to match all
+variables with `toggle' somewhere in their documentation:
+
+  .*
+  toggle
+
+That is, `<code>.*</code>' followed by a newline, followed by `toggle'.  You
+use `C-q C-j' to input the newline, as usual.  Actually, in this
+case, just a newline followed by `toggle' will act the same way.
+
+Similarly, you can use this input to match all variables with
+`dired' somewhere in their name and `list' somewhere in their
+documentation:
+
+  dired.*
+  list
+
+That is, `<code>dired.*</code>' followed by a newline, followed by `list'.
+
+(You can use commands `icicle-vardoc', `icicle-fundoc', and
+`icicle-doc' to search the ''names'' and ''documentation'' of variables,
+functions, or both.  These are all multi-commands (see [[#MultiCommands]]), so you can use
+`C-next' to display the documentation of each match, in turn.)
+
+As an Emacs-Lisp programmer, you can define other '''Icicles''' commands
+that use multi-completions.  Depending on your needs, you can of
+course bind `icicle-list-join-string' to a different separator.
+
+Note that there is (only) a superficial similarity between '''Icicles'''
+multi-completion and the functionality provided by function
+`completing-read-multiple' of standard library `<code>crm.el</code>'.  The
+latter lets you complete multiple strings in the minibuffer, one at a time.  It involves ordinary Emacs prefix
+completion, and it uses the same set of completion candidates for
+each of the strings in the input.
+
+By contrast, '''Icicles''' multi-completion completes each part of your
+input against a ''different'' set of completion candidates.  For
+example, when you use `icicle-vardoc', it completes the
+variable-name part of your input against the names of defined
+variables, and the variable-description part against the doc
+strings of defined variables.  `completing-read-multiple' lets you
+complete several different variable names at the same minibuffer
+prompt, but they each complete against the same set of variable
+names.
+
+
+
+[:DynamicAbbreviation]
+= Icicles Improves Input Completion: (15) Completion in Other Buffer =
+
+In addition to input completion, you can use '''Icicles''' to complete
+words and symbols in other buffers besides the minibuffer.
+'''Icicles''' enhances:
+
+1) Lisp symbol completion via `ESC-TAB' (`lisp-complete-symbol')
+
+2) word completion using the dynamic abbreviation of standard
+   Emacs library `<code>dabbrev.el</code>'
+
+Because these enhancements use '''Icicles''' completion, you must use
+`RET' (or `S-RET') to confirm completion.  This is one difference
+in completion behavior that you will notice.  The other difference
+is that you have all '''Icicles''' features available to you: apropos
+(regexp) completion, cycling of candidates, and so on.
+
+Library `<code>dabbrev.el</code>' lets you type a few characters
+in a buffer and then prefix-complete them (in the same buffer) to a full word or symbol name.
+The completion candidates come from words or symbol names in
+buffers that you are editing.  This functionality is called
+"'''dynamic abbreviation'''", though that is not
+a very good term for it (words are ''completed'', not abbreviated,
+dynamically).
+
+In Emacs, there are two ways to "dynamically abbreviate" text:
+
+* `M-/' (command `dabbrev-expand') completes to a candidate word.
+Repeating it replaces the completion with a different one -- that is, it ''cycles candidates'' in the text buffer (not in the
+minibuffer).
+
+* `M-C-/' (command `dabbrev-completion') completes to the common
+root of all completion candidates.  Repeating it displays
+buffer `*Completions*' for you to choose a candidate.  However,
+in this case, there is ''no way to cycle'' among the candidates.
+
+If there are many candidate completions, then cycling among them
+with `M-/' can be tedious.  You can use `M-C-/' to complete to a
+common root, thus narrowing the set of candidates, but then you
+lose the ability to cycle among them.
+
+If user option `icicle-redefine-standard-commands-flag' is non-`nil'
+(default value), then '''Icicles''' redefines `dabbrev-completion' (it does not change
+`dabbrev-expand') so that it uses '''Icicles''' completion when you
+repeat `M-C-/'.  (Before repeating `M-C-/', the common root is
+completed as usual.)  You can then use any '''Icicles''' features, such
+as apropos completion and candidate cycling.
+
+
+
+
+
+
+[:InsertTextAtCursor]
+= Inserting Text Found Near the Cursor =
+
+Some Emacs commands provide, as the default value for minibuffer
+input, a word or other text at the cursor position (point).  You
+can insert this default value in the minibuffer with `M-n'.
+'''Icicles''' option `icicle-init-value-flag' can be used to
+automatically insert the default value into the minibuffer as an
+initial value.
+
+Sometimes you would like to use the text at point, but the command
+asking for input does not let you retrieve that text as the
+default value.  For example, if the text at point is a file name,
+you might like to use it with `C-x f' to open that file.  Or, if
+the text is a URL, you might want to visit it using a Web browser.
+
+Some libraries, such as FindFileAtPoint (`##ffap.el##'), have as their specific purpose
+to let you do this.  "Ffap" stands for `find-file-at-point', the
+main command in the library.  It tries to interpret the text at
+point and "do the right thing" with it: visit a file, open a URL
+in a Web browser, and so on.
+
+If you like, you can use library `##ffap.el##' with '''Icicles'''.  All
+'''Icicles''' features are then available during file-name and URL
+completion.  And if you like `##ffap.el##', you might also like to try
+my extension library Lisp:ffap-.el.
+
+However, I personally don't like some of the ffap behavior.  I
+like to control which buffer text I use as minibuffer input and how
+that text should be interpreted (file name, URL, and so on).
+
+'''Icicles''' provides a simpler way to do this: Just use `##M-.##' when in
+the minibuffer.  It grabs text at or near the cursor and yanks
+it into the minibuffer.   Successive uses of `M-.' grab and insert
+either alternative bits of text (different text "things") or
+successive bits of text.
+
+Option `icicle-thing-at-point-functions' controls which text at or
+near the cursor `##M-.##' inserts into the minibuffer.  It is a cons
+cell.
+
+The car of `icicle-thing-at-point-functions' is a list of
+functions that grab different kinds of strings at or near point.
+By default, there are three functions, which grab 1) the symbol or
+file name, 2) the word, 3) the URL at point.  Any number of
+functions can be used.  They are used in sequence by `##M-.##'.
+
+The cdr of `icicle-thing-at-point-functions' is a function that
+advances point one text thing.  Each time command `##M-.##' is used
+successively, this is called to grab more things of text (of the
+same kind).  By default, successive words are grabbed.
+
+If either the car or cdr is empty, then the other alone determines
+the behavior of `##M-.##'.  Otherwise, option
+`icicle-default-thing-insertion' determines whether the car or cdr
+is used by `icicle-insert-string-at-point'.
+
+For example, if you set `icicle-default-thing-insertion' to
+`more-of-the-same', then repeated use of `##M-.##' inserts successive
+words into the minibuffer.  If you set
+`icicle-default-thing-insertion' to `alternatives', then repeated
+use of `##M-.##' inserts a different kind of thing at point: file
+name, word, URL.
+
+You can use `##C-u M-.##' at any time to temporarily override the
+value of `icicle-default-thing-insertion'.  If you use a numeric
+prefix argument ''N'' (not just plain `C-u'), then it is the same as
+using `##M-.##' ''N'' times with `more-of-the-same' as the value of
+`icicle-default-thing-insertion'.  If the numeric argument is
+''negative'', however, then text is grabbed to the ''left'' of the cursor,
+instead of to the right.
+
+In the case of `alternatives', there are only three possibilities,
+by default.  The first function in the list grabs text that has
+the syntax of an Emacs-Lisp ''symbol'' name, which in practice can
+also be a ''file'' name or a ''URL'' -- it can include characters such as '''##-##''', '''##/##''', '''##+##''', '''##.##''', '''##:##''', '''##@##''', and '''##_##'''. The second function in the list grabs a
+''word'', which includes letters, '''##'##''' and '''##-##'''.  The third function grabs a
+''URL'', adding prefix "##http://##" if needed.  These are the functions
+used by default, but you can add to them or replace them.  If you
+use my library '''<tt>[[thingatpt+.el]]</tt>''', then the cursor need not be
+exactly on the text -- the ''nearest'' symbol or word is grabbed.
+
+
+
+
+
+= Icicles Redefines Some Standard Commands =
+
+If user option `icicle-redefine-standard-commands-flag' is
+non-`nil', then '''Icicles''' automatically redefines a few standard Emacs
+commands when you are in ''Icicle'' mode, enhancing them to use '''Icicles''' completion:
+
+* `customize-apropos'
+* `customize-apropos-faces'
+* `customize-apropos-groups'
+* `customize-apropos-options'
+* `dabbrev-completion'
+* `lisp-complete-symbol'
+* `repeat-complex-command'
+
+When you exit ''Icicle'' mode, the pre-'''Icicles''' definitions are
+restored.
+
+
+[:GeneralTips]
+= Customization and General Tips =
+
+'''Icicles''' works especially well with '''Delete Selection''' mode, which I
+use and recommend.  (Likewise, for PC selection mode, which uses
+Delete Selection mode.)  In ''Delete Selection'' mode, whenever the region
+(selection) is active (highlighted), you can simply type to
+replace text in the region, or hit `DEL' (Backspace) or `C-d'
+(Delete) to delete the
+region.
+
+However, library '''<tt>[[delsel.el]]</tt>''', which provides ''Delete Selection''
+mode, binds keys in minibuffer maps that are also bound by
+'''Icicles'''.  For this reason, if you use both '''Icicles''' and ''Delete
+Selection'' mode, you must turn on ''Icicle'' mode ''after'' you turn on
+''Delete Selection'' mode.  If you forget to do this, you will notice
+that `C-g' does not abort minibuffer input.  The remedy is simply
+to turn ''Icicle'' mode off, then on again.
+
+There are several '''Icicles''' user options, and you can also
+use various standard user options, including Icomplete options,
+that control various aspects of completion.
+
+
+* '''''Case sensitivity:''''' Standard user options `completion-ignore-case'
+and `read-file-name-completion-ignore-case' (for Emacs 21 and
+later) control whether completion distinguishes uppercase and
+lowercase letters.
+
+* User options `icicle-point-position-in-candidate',
+`icicle-mark-position-in-candidate', and
+`icicle-change-region-background-flag', and face
+`icicle-region-background', are all used to ''define the region'' (the
+selected text) when ''cycling'' completion candidates.  The region is
+active, so you can easily delete it or replace it.
+
+* User option '''`icicle-point-position-in-candidate'''' defines the minibuffer
+''cursor'' position (point) while cycling candidate completions.  By default,
+the cursor is placed at the end of the root being completed.  You
+can instead place it at the root beginning or at the beginning or
+end of the complete minibuffer input.  For file-name input, the
+beginning of minibuffer input starts after the directory name (which is
+inserted automatically).
+
+* Similarly, user option '''`icicle-mark-position-in-candidate'''' defines the
+position of the ''mark''; by default, it is at the end of the input.
+Together, these two options control the size and placement of the
+region in a flexible way.  You can make the region include all of
+the input, only the root, from beginning to root, or from root to
+end.  You can put the cursor at either end of the region.  You can
+get rid of the region altogether, by making point and mark
+coincide (at any of the possible positions).
+
+* Because the region background color is often quite different from the
+frame background color (in order to have it stand out), it can be a bit
+hard to read the completion candidates when the region is
+highlighted during input cycling.  If user option
+'''`icicle-change-region-background-flag'''' is non-`nil', however, then
+the ''region background'' is changed to a color that differs only
+slightly from the frame background, making it easier to read the
+completion candidates.  The actual background color used is the value of 
+`icicle-region-background', which you can customize.  If you make
+this color the same as the frame background, then the region
+background is, in effect, invisible.
+
+* The default value of `icicle-change-region-background-flag' is
+determined by the current value of `delete-selection-mode', that
+is, whether or not ''Delete Selection'' mode is enabled, when '''<tt>[[icicles.el]]</tt>''' is loaded.  For this
+reason, if you use ''Delete Selection'' mode and you want the region
+background to change in the minibuffer, you should either turn on
+''Delete Selection'' mode ''before'' loading '''<tt>[[icicles.el]]</tt>''' or explicitly
+customize `icicle-change-region-background-flag' to non-`nil'.
+
+* User option '''`icicle-init-value-flag'''' controls the treatment of a
+default value for minibuffer input.  This includes not only
+functions that read input with completion (`completing-read',
+`read-file-name'), but also other input-reading functions:
+`read-from-minibuffer' and `read-string'. Non-`nil' means to automatically insert the
+''default'' value into the minibuffer as an ''initial'' value.  Standard
+Emacs behavior is for the default value ''not'' to be inserted.  I prefer to have
+it inserted, as I often use the default value (perhaps editing
+it).  The option is `nil'
+by default only because people are not used to the (better)
+behavior of `insert'.  I recommend that you try `insert' for a
+while, before giving up on it. If you leave this as `nil', remember that you can always
+insert the default value manually with `M-n'.
+
+* The particular non-`nil' value of `icicle-init-value-flag' controls
+whether or not the initial value is ''preselected'', and, if
+preselected, where to leave the ''cursor'': at the beginning or end
+of the value.  Preselecting the value can be useful in ''Delete
+Selection'' mode or PC Selection mode, because it makes it easy to
+replace that value by typing characters, or delete it by hitting
+`DEL' (Backspace) or `C-d' (Delete).  However, ''all'' of the
+initial input is ''lost'' if you type or hit `C-d' or `DEL', which
+is inconvenient if you want to edit it only slightly.
+
+* User option `icicle-thing-at-point-functions' is a list of
+functions that grab text at or near the cursor and insert it in
+the minibuffer.  The functions are used in order, when you use
+`##M-.##' repeatedly.  You thus use `##M-.##' to cycle to the string of
+text that you want.
+
+
+
+* Faces '''`icicle-root-highlight-minibuffer'''' and
+'''`icicle-root-highlight-Completions'''' are used to ''highlight the
+root'' being completed, in the minibuffer and in buffer `*Completions*',
+respectively.  Face '''`icicle-complete-input'''' is used to highlight minibuffer input when it is complete.  You can customize these, as well as the other '''Icicles''' faces.
+
+* User option '''`icicle-incremental-completion-flag'''' controls whether
+or not ''apropos icompletion'' is available as you type.  For more
+information, see [[#AproposIcompletion]], above.
+
+* User option '''`icicle-show-Completions-initially-flag'''' controls
+whether or not buffer `*Completions*' is shown initially, without your
+needing to hit `TAB' or `S-TAB' to show it.  The default value is `nil',
+meaning that `*Completions*' is not shown until you hit `TAB' or `S-TAB'.  More typical than setting this option to non-`nil' globally is to ''bind'' it to non-`nil' in Lisp code, to display `*Completions*' as a ''menu''. For example, pass a non-`nil' binding to `icicle-define-command', to create a command that displays a multiple-choice menu.
+
+* User option '''`icicle-Completions-frame-at-right-flag'''' controls
+whether `icicle-candidate-action' moves the frame showing buffer
+`*Completions*' to the right, out of the way of other frames.
+This can be useful if you use one-buffer-per-frame (non-`nil'
+`pop-up-frames').  In that case, I recommend that you also try my
+library '''<tt>[[oneonone.el]]</tt>'''.  See [[#NoteOnPopUpFrames]], below, for more advice about
+non-`nil' `pop-up-frames'.
+
+
+* User option '''`icicle-sort-function'''' controls the ''order of
+completion candidates'' during cycling and in buffer `*Completions*'.
+If `nil', then no sorting is done.  If non-`nil', then the value must be a
+string-comparison function -- the function is passed to the
+standard function `sort' to do the sorting.  The default value for `icicle-sort-function' is `string-lessp',
+which sorts alphabetically.  You can toggle
+sorting at any time, using command `icicle-toggle-sorting'.  If
+you are an Emacs-Lisp programmer and you write new commands using
+Icicles functionalities, you can bind this variable temporarily to
+any sort function you need.
+
+* User option '''`icicle-completion-nospace-flag'''' can be used to
+control ignoring of completion candidates that start with a space
+unless the input to be completed also starts with a space.  The
+effect is similar to that of the `NOSPACE' argument to
+`all-completions'.
+
+* User option '''`icicle-redefine-standard-commands-flag'''' controls
+whether '''Icicles''' redefines some standard commands, enhancing them
+to use '''Icicles''' completion.  A non-`nil' value causes redefinition.
+
+* User options '''`icicle-buffer-match-regexp'''',
+'''`icicle-buffer-no-match-regexp'''', '''`icicle-buffer-predicate'''', and
+`icicle-buffer-extras' determine the behavior of commands
+`icicle-buffer' and `icicle-buffer-other-window'.  They determine the set of ''buffer-name''
+candidates initially available for completion.  The first three
+restrict this set to names that satisfy the properties they
+specify.  Option '''`icicle-buffer-extras'''' lets you add additional
+buffer names to the set of candidates, after restriction by the
+other options.  Since these are user options, they provide an
+''additional'', more ''static'' way to filter the set of candidates.
+Typing input (e.g. a regexp) then dynamically filters the result
+of applying the filter options.
+
+* User option '''`icicle-buffer-sort'''' is a predicate used to sort
+buffer-name candidates in commands `icicle-buffer' and `icicle-buffer-other-window'.  One possible
+value is `<code>icicle-buffer-sort-*...*-last</code>', which sorts names of
+internal buffers, which begin with `*', after other buffer
+names.
+
+* User option '''`icicle-buffer-configs'''' is a list of named
+configurations of options `icicle-buffer-match-regexp',
+`icicle-buffer-no-match-regexp', `icicle-buffer-predicate',
+`icicle-buffer-extras', and `icicle-buffer-sort'.  You use
+''command'' `icicle-buffer-config' to choose one of the
+configurations to be current.  You can use commands `icicle-add-buffer-config' and `icicle-remove-buffer-config' to add and remove configurations from the list.  ''Example:'' A configuration such
+as the following, named "Files and Scratch", defines
+`icicle-buffer-predicate' to display only file buffers, and it
+defines `icicle-buffer-extras' to include the extra buffer
+`*scratch*':
+
+         ("Files and Scratch" nil nil
+          (lambda (bufname) (buffer-file-name (get-buffer bufname)))
+          ("*scratch*") icicle-sort-function)
+
+:: The idea of buffer-option configurations was borrowed from library
+`<code>bs.el</code>', by Olaf Sylvester <code><olaf@geekware.de></code>.
+
+* User options '''`icicle-require-match-flag'''' and
+'''`icicle-buffer-require-match-flag'''' let you override the value of
+the `REQUIRE-MATCH' argument provided to `completing-read' or
+`read-file-name'.  They are mainly provided for use (binding) in
+`icicle-define-command' and `icicle-define-file-command', but
+you may also use them globally, if you wish. A typical use is made in the definition of command
+`icicle-buffer': `icicle-buffer-require-match-flag' is used to
+bind `icicle-require-match-flag', so that you can, for example,
+match only existing buffers and be able to match on partial
+input without explicitly completing (hitting `TAB' or `S-TAB').
+Simply set the option to `partial-match-ok' to get this
+behavior.  To apropos-complete and exit the minibuffer, use
+`S-RET' instead of `RET'.  See [[#CompleteAndExit]], above, for more information.
+
+* User option '''`icicle-list-join-string'''' is described in [[#Multi-Completions]],
+above.  It is the separator string that joins together the parts
+of multi-completions.
+
+* User options '''`icicle-regexp-search-ring-max'''' and
+'''`icicle-search-ring-max'''' act as `regexp-search-ring-max' and
+`search-ring-max', respectively, when you are in ''Icicle'' mode.
+(When you exit ''Icicle'' mode, `regexp-search-ring-max' and
+`search-ring-max' are restored.)  The reason for having these
+options is that with '''Icicles''' you will likely want to use a much
+longer search history.  By default, these are as large as
+possible (virtually unlimited).
+
+:: '''Suggestion:''' If you use library `##savehist.el##' (recommended),
+customize `savehist-additional-variables' to include variables
+`search-ring' and `regexp-search-ring', so that your search
+histories will be saved between Emacs sessions.
+
+:: '''Note:''' You can clear (empty) a given search history with command
+'''`icicle-clear-option''''.  For example, to clear the
+regular-expression search history, do this: `##C-u M-x icicle-clear-option RET regexp-search-ring RET##' (the `C-u' is needed because this variable is not a user option). If you use my library <tt>[[misc-cmds.el]]</tt>, you can clear search
+histories easier, using commands `clear-search-history',
+`clear-regexp-search-history', and `clear-search-histories'.
+
+* Non-`nil' user option `icicle-inhibit-reminder-prompt-flag'
+inhibits the addition of a reminder about '''Icicles''' bindings to
+the minibuffer prompt.  If `nil' (the default value), then a
+reminder such as "'''##(<S-tab>, TAB: list, C-h: help)##'''" is added to
+the prompt.  If you are already used to using '''Icicles''', you might
+want to set this option to `t' to save some space in the
+minibuffer.
+
+
+
+
+
+= File-Name and Directory-Name Completion Tips =
+
+* Function `icicle-sort-dirs-last' is
+provided a possible value for user option `icicle-sort-function'.  It treats
+file and directory names specially, sorting directory names ''after''
+file names; otherwise, it is the same as `string-lessp'.  (You can
+of course reach directory names ''before'', instead of after, file
+names, by using <code>[up]</code> and <code>[prior]</code> instead of <code>[down]</code> and <code>[next]</code>.)
+
+
+* User option `icicle-cycle-into-subdirs-flag' controls whether or
+not minibuffer-input cycling ''explores subdirectories''.  By default,
+it is `nil', meaning that cycling does not descend into
+subdirectories. 
+
+** non-`nil' -- When this option is non-`nil', you might want to use a
+function such as `icicle-sort-dirs-last' for option
+`icicle-sort-function', to prevent cycling depth first
+into the subdirectories.
+
+** `nil' -- When this option is `nil', you can still choose to cycle
+into a given directory (which is why `nil' is the default
+value).  When cycling reaches a candidate directory that
+you want to cycle through, just: '''1)''' move the cursor
+(e.g. `C-e'), '''2)''' hit `TAB' or `S-TAB' to "complete" the
+candidate, and then '''3)''' use any of the cycle keys, such as
+<code>[up]</code>, to cycle within the candidate directory.
+Although the candidate directory was already completed by
+cycling, moving the cursor and explicitly "completing" it
+tells '''Icicles''' that you want to treat the candidate in the
+minibuffer as real input, just as if you had typed it, not
+merely as a cycling candidate.
+
+* You can use `<code>..</code>' during completion to access a parent directory,
+and you can use `<code>/</code>' and `<code>~/</code>' to shadow input to the left.  There
+is currently no special treatment of MS Windows drive letters
+(e.g. `<code>C:</code>') -- I use CygWin on Windows.
+
+* Standard user option `completion-ignored-extensions' controls
+which file names are ignored for completion and completion
+cycling.  You can toggle this ignoring at any time, with
+`icicle-toggle-ignored-extensions', bound to `<code>C-.</code>' in the
+minibuffer.
+
+* Remember that you can use a ''regular expression'' to apropos-complete file names.  This is a powerful feature.  Do
+not confuse its use with the ability to use ''shell wildcards'' to
+access multiple files at once.  For example, if you use `<code>C-x 4 f
+*.el RET</code>', then all files with suffix `el' will be opened.
+Regexp matching is used only for apropos (not prefix) completion and cycling.  See [[#SpecialCharacters]], above.
+
+* You can use `<code>$</code>' for both environment variables and as a regexp
+special character.  For example, you can use a pattern such as
+`<code>$HOME.*t$</code>' to match the files in your home directory (`<code>$HOME</code>') whose names end in `t'.
+
+* You can use the idiom `'''##\W$##'''' as input to match only ''directories'',
+when a command asks for a file or directory name.  The `<code>\W</code>' says
+to match any ''non word''-syntax character.  The `<code>$</code>' says to match
+this at the ''end'' of the name.  This works because directory names appear as completion candidates with a trailing slash (`<code>/</code>'), and
+slash (`<code>/</code>') is about the only non word-syntax character that is
+likely to appear in file-name completions.
+
+* Only the file name itself, not the directory portion, is used
+for matching.  The behavior is thus the same whether or not the
+directory is present in the minibuffer. If you prefer, you can
+delete the directory first, using `M-S-backspace' (the
+`default-directory' is used, by default).
+This means, in particular, that you can use apropos completion
+to match a ''substring'', without needing to prefix the substring
+with `'''##.*##''''  in the minibuffer.  For example, to match file
+`##favorite-foo-file.bar##' in directory `##/some/path/to/my/##', you need
+not use `##/some/path/to/my/##'''##.*foo##''''; it is sufficient to use either '''`foo'''' or 
+`##/some/path/to/my/##'''##foo##''''.
+
+* You can use library `##ffap.el##', if you like, with '''Icicles''', to
+pick up the file, directory, or URL name under the cursor.  All
+'''Icicles''' features are available during file-name and URL
+completion.  If you like `##ffap.el##', you might also like to try
+my extension library Lisp:ffap-.el. See [[#InsertTextAtCursor]].
+
+
+
+See also [[#GeneralTips]], above, for
+general tips about using '''Icicles'''.  Many of those tips apply also
+to file-name and directory-name completion.
+
+
+[:KeyBindings]
+= Key Bindings =
+
+'''''Icicles does not change any of your global key bindings.'''''
+
+There is an exception: '''Icicles''' adds a few menu items to a couple
+of your menu-bar menus.  These are enabled only when you are in
+''Icicle'' mode.  Other than that, '''Icicles''' binds keys in its own
+''Icicle''-mode keymap, and it binds keys in minibuffer-local keymaps.
+
+In ''Icicle'' mode, various '''Icicles''' commands are added to menu-bar
+menus.  File commands are added to the '''File''' menu, and so on.
+Those that don't belong naturally to any existing menu-bar menu
+are added to a new '''Icicles''' menu.  Whatever the menu they appear
+in, '''Icicles''' menu items are enabled only when ''Icicle'' mode is active.  Those that are in a menu other
+than the '''Icicles''' menu have '''[Icy]''' prefixed to their name.
+
+In addition to menu-bar bindings, the following key bindings are made for the minibuffer
+completion keymaps.  They are in effect whenever you are using
+the minibuffer for input with completion (e.g. `completing-read', `read-file-name', `M-x').
+
+* Keys bound globally to `next-line' and `previous-line' are
+bound to `icicle-next-prefix-candidate' and
+`icicle-previous-prefix-candidate'.  Those are the
+commands that cycle candidate ''prefix'' completions.  By
+default, this means keys <code>[down]</code>, <code>[up]</code>, `C-n', and `C-p'.
+
+* Keys bound globally to `scroll-up' and `scroll-down' are
+bound to `icicle-next-apropos-candidate' and
+`icicle-previous-apropos-candidate'.  Those are the commands
+that cycle candidate ''apropos'' completions.  By default, this
+means keys <code>[next]</code>, <code>[prior]</code>, `C-v', and
+`M-v'.
+
+* Keys bound globally to `help-command' (`C-h', `f1') are bound to
+`icicle-completion-help': Pop up a `*Help*' buffer with
+information on using completion.
+
+* Keys bound globally to `self-insert-command' are bound to
+`icicle-self-insert', which also inserts the character, but
+which then provides apropos icompletion (if
+`icicle-incremental-completion-flag' is non-`nil').  See [[#AproposIcompletion]], above.
+
+
+* <code>[insert]</code> -- `icicle-switch-to-Completions-buf': Move cursor to the
+current candidate in buffer `*Completions*'.
+
+* `TAB' -- `icicle-prefix-complete': Complete current input in minibuffer, as a prefix.  If there is more than one prefix-completion candidate,
+display them in buffer `*Completions*', highlighting the
+common prefix. This replaces `minibuffer-complete'.
+
+* `M-SPC' -- `icicle-prefix-word-complete': Complete current input
+in minibuffer, as a prefix, a single word at a time.
+This replaces `minibuffer-complete-word'.    In fact,
+it is the value of `icicle-word-completion-key' that
+is bound to this command; `M-SPC' is the default
+value of this user option.
+
+* `SPC' -- `icicle-self-insert' (see above): Insert a space.
+
+* <code>[S-tab]</code> -- `icicle-apropos-complete': Like `TAB', but use apropos-completion.
+
+
+
+The following minibuffer binding is made to clear minibuffer
+input.  It has no special relation to completion or completion
+cycling, except that it is handy for editing and removing
+completions (e.g. default or initial values) in the minibuffer:
+
+* <code>[M-S-backspace]</code> and <code>[M-S-delete]</code> -- `icicle-erase-minibuffer'
+
+The following minibuffer binding can be used to get rid of a
+completion inserted during cycling, and retrieve the last real
+input:
+
+* `C-l' -- `icicle-retrieve-last-input'
+
+`C-l' also has another use: You can use it to retrieve your last
+input in case you never actually entered that input (via `RET').
+For example, suppose that you used `C-h v RET hook' to examine
+various hook variables, and you did this using`C-next' to display
+their documentation.  If you finished the command by just typing
+`C-g', then your input (`hook') was never really entered, so it is
+not available via the minibuffer history (`M-p').  You can
+retrieve it with `C-l', to use it again, in your next command.
+
+You of course have the standard access to the minibuffer history,
+via `M-p', `M-n', `M-r', and `M-s'.  In addition to these, the
+following minibuffer bindings let you use ''apropos completion'' on
+the current minibuffer history list.  For explanation, see [[#AproposHistory]].
+
+* `M-h' -- `icicle-history'
+* `M-pause' -- `icicle-use-historical-candidates'
+
+
+The following minibuffer bindings let you act on candidate
+completions.  For explanation, see [[#MultiCommands]] and [[#AllCandidates]], above.
+
+* `C-RET' -- `icicle-candidate-action': current candidate
+* `<code>C-!</code>' -- `icicle-all-candidates-action': all candidates
+* <code>[C-up]</code>    -- `icicle-previous-prefix-candidate-action'
+* <code>[C-down]</code>  -- `icicle-next-prefix-candidate-action'
+* <code>[C-prior]</code> -- `icicle-previous-apropos-candidate-action'
+* <code>[C-next]</code>  -- `icicle-next-apropos-candidate-action'
+* `C-mouse-2' -- `icicle-mouse-candidate-action': clicked candidate
+
+
+(The binding for `icicle-mouse-candidate-action' is actually in
+the `*Completions*' buffer.)
+
+The following minibuffer bindings let you perform set operations
+on sets of completion candidates.  For explanation, see [[#CandidateSets]], above.
+
+* `<code>C-~</code>' -- `icicle-candidate-set-complement'
+* `<code>C--</code>' -- `icicle-candidate-set-difference'
+* `<code>C-+</code>' -- `icicle-candidate-set-union'
+* `<code>C-*</code>' -- `icicle-candidate-set-intersection'
+* `<code>C-></code>' -- `icicle-candidate-set-save': save current set
+* `<code>C-<</code>' -- `icicle-candidate-set-retrieve': retrieve saved set
+* `<code>C-%</code>' -- `icicle-candidate-set-swap': swap saved and current
+* `<code>C-:</code>' -- `icicle-candidate-set-define': define current (Lisp)
+
+The following minibuffer bindings let you toggle '''Icicles''' options.
+
+* `<code>C-,</code>' -- `icicle-toggle-sorting'
+* `<code>C-.</code>' -- `icicle-toggle-ignored-extensions': file extensions
+
+The following bindings are made for `completion-list-mode', that
+is, for buffer `*Completions*', which shows the list of candidate
+completions:
+
+* <code>[left]</code>, <code>[right]</code> -- Navigate backward & forward among candidates.
+
+* <code>[up]</code>, <code>[down]</code>    -- Navigate up & down among candidates.
+
+* <code>[insert]</code>        -- `icicle-switch-to-minibuffer': Move
+cursor to the minibuffer, with the current `*Completions*' candidate
+as input.
+
+*  `C-g', `q'      -- `icicle-abort-minibuffer-input'.
+*  `C-mouse-2'     -- `icicle-mouse-candidate-action'
+
+If you are used to using <code>[down]</code>, <code>[up]</code>, `C-n', and `C-p' for the
+minibuffer history, you can restore those bindings and bind the
+corresponding '''Icicles''' commands to different keys.  See the definition of function
+`icicle-rebind-completion-maps' for the relevant code.
+
+Other, suggested key bindings -- put this in your <code>~/.emacs</code> file:
+
+  ;; Search - use `C-c C-s' or some other key
+  (global-set-key "\C-c\C-s" 'icicle-search)
+  (define-key compilation-minor-mode-map "\C-c\C-s"
+              'icicle-compilation-search)
+
+  ;; Replacements for `switch-to-buffer(-other-window)'.
+  (define-key ctl-x-map   "b" 'icicle-buffer) 
+  (define-key ctl-x-4-map "b" 'icicle-buffer-other-window) 
+
+  ;; Replacements for `find-file(-other-window)'.
+  (define-key ctl-x-map   "\C-f" 'icicle-find-file)
+  (define-key ctl-x-4-map "f"    'icicle-find-file-other-window)
+
+  ;; Multi-command version of `M-x':
+  (global-set-key "\M-x" 'icicle-execute-extended-command)
+
+
+
+
+
+
+[:NoteToProgrammers]
+= Note to Programmers =
+
+'''1.''' Function `icicle-next-candidate' is a general framework for
+letting users cycle completions of partial input strings.  I
+use it to define the cycling behavior for both prefix and
+apropos completions.  You can use it to easily define other,
+''application-specific'' input matching/completion/cycling
+behavior.  Just supply it with a function that takes the
+current partial user input (a string) and returns a list of
+candidate completions, however those might be defined.
+
+
+'''2.''' Use an input-completion read function, such as
+ `completing-read' or `read-file-name', when you read input!  There is almost
+never a reason ''not'' to use an input-completion function when reading user
+input -- especially considering that you need not always provide
+a `REQUIRE-MATCH' argument.  
+
+Try also to find an appropriate `PREDICATE' argument, and a good
+set of default values to pass to `completing-read' as its `TABLE'
+argument.  Too often, I think, we use an overly general `TABLE'
+argument, such as the `obarray', and we don't provide a (good)
+`PREDICATE'.  Using an input-completion function with an
+appropriate candidate completion list and predicate can help
+users considerably.  I'm as guilty of `TABLE' and `PREDICATE'
+laziness as anyone, by the way.
+
+Another of my libraries that can help programmers provide
+default values is '''<tt>[[thingatpt+.el]]</tt>'''.  It provides functions for
+picking up symbols, sexps, numbers, words, and other sorts of
+thing near the text cursor (`point').
+
+
+
+= La Petite Histoire =
+
+'''1. <code>elect-mbuf.el</code>'''
+
+Library '''<tt>[[icicles.el]]</tt>''' started out life as library `<code>elect-mbuf.el</code>', by Hans Koomen.
+
+  Original posting:
+  From koomen@cs.rochester.edu Mon Jun 19 19:27:58 1989
+  To: info-gnu-emacs@prep.ai.mit.edu
+  Cc: Hans <Koomen@cs.rochester.edu>
+  Subject: elect-mbuf.el
+  Date: Tue, 13 Jun 89 15:17:07 -0400
+
+'''2. Minor enhancements'''
+
+I hacked and enhanced the library in various relatively minor ways
+over the years, maintaining it as `<code>elect-mbuf.el</code>'. I did not change the main functionality of the library during this
+period: it always cycled the ''complete'' list of (prefix) completion
+candidates passed to `completing-read'; it did not update the
+candidate list based on the current minibuffer contents.
+
+So, for instance, if you had `M-x for' in the minibuffer, `C-n'
+would cycle among ''all'' Emacs commands, not just those that start
+with "<code>for</code>".  I used the library this way for fifteen years without
+thinking much about this behavior or the code behind it.
+
+'''3. Use the current input'''
+
+In July 2005, LennartBorgman gave `<code>elect-mbuf.el</code>' a quick try,
+and intuitively expected to see behavior along the lines that you
+see now for prefix completion:
+
+* `C-n' should cycle completions '''''relative to the current input''''',
+not ''all'' completions supplied to `completing-read'.
+
+* If buffer `*Completions*' is displayed, `C-n' should highlight
+the current candidate there.
+
+Good idea Lennart.  So I
+implemented that behavior, and renamed the library '''Icicles''' (for,
+I suppose, "'''<u>i</u>'''nput '''_cycles_'''" or some such -- or because it's ''cool'').
+
+'''4. Apropos completion'''
+
+The code changes I made to implement '''#3''' (completion cycling
+relative to current input) made me realize that other completion
+matchings could be implemented in a similar way.  Prefix
+completion (the completion provided by Emacs) is handy, but it is
+also sometimes a bit limited.  The idea of '''''apropos completion'''''
+occurred to me, and I implemented that as well.
+
+'''5. File names and more'''
+
+I extended the library quite a bit more, in terms of
+convenience (highlighting, treatment of buffer `*Completions*',..., but
+also in terms of functionality.  In particular, it now treats file
+names too.  And, because Emacs 21 and later versions use
+`read-file-name' for `find-file' and so on, Icicles now treats
+`read-file-name' the same as `completing-read'.
+
+'''6. Delete Selection mode'''
+
+On another suggestion from LennartBorgman, I made '''Icicles''' take advantage of ''Delete
+Selection'' mode.  And I finally implemented it as a minor mode.
+
+'''7, 8, 9,... On Beyond Zebra'''
+
+One thing has led to another, and I've just kept adding features.  Feature creep, I guess.  But the more I play with '''Icicles''', the more I imagine new ways it might be made more useful.
+
+[:NoteOnPopUpFrames]
+= Note on Non-Nil `pop-up-frames' on MS Windows =
+
+If you use `pop-up-frames' = `t', like I do, you might have noticed
+that Emacs completion does not play well with using separate
+frames for each buffer.  In particular, it does not play well with
+having a separate frame for buffer `*Completions*'.  When you try to
+complete input using `TAB', a new frame is created for buffer
+`*Completions*', and, at least on MS Windows, it is ''selected, '''taking
+the input focus away''' from the original frame's minibuffer!''
+
+This means that, once the `*Completions*' buffer has been displayed
+in a separate frame, you cannot, for instance, cycle completion
+candidates, without first reselecting the original frame
+manually.  You cannot even use normal completion -- you cannot add
+text in the minibuffer, or delete text there, because the
+minibuffer in the original frame no longer has the input focus.
+''Bummer.''
+
+In general, Emacs does not play too well
+with one-buffer-per-frame (`pop-up-frames' = `t'), and this is a
+good example of that general problem.  See '''OneOnOneEmacs''' for a discussion of this.  I reported this Emacs bug. It should be corrected in Emacs 22.x.
+
+I don't have this problem of loss of frame input focus in my own setup, even though I use
+`pop-up-frames' = `t', because I use my library '''<tt>[[oneonone.el]]</tt>'''.  (Try
+it!)  If you need a solution while waiting for Emacs 22, you can
+try doing something similar to what I do in <tt>[[oneonone.el]]</tt>:
+
+
+'''1.''' Use dedicated frames for both `*Completions*' and the minibuffer.
+
+'''2.''' Display buffer `*Completions*' using a special-display function that
+explicitly ''redirects the input focus'' from the `*Completions*' frame
+back to the minibuffer frame.
+
+See '''[[Help and Completions Frames]]''' for more information on this. -- DrewAdams
+
+= Discussion, Feedback, Bugs - see IciclesDiscussion =
+
+See '''IciclesDiscussion''' for discussion, feedback, and reporting bugs. Thanks.
+
+----
+DrewsElispLibraries referenced here: 
+
+Lisp:apropos-fn+var.el, Lisp:delsel.el, Lisp:doremi.el, Lisp:doremi-cmd.el, Lisp:doremi-frm.el, Lisp:icicles.el, Lisp:icicles-menu.el, Lisp:icomplete+.el, Lisp:misc-cmds.el, Lisp:oneonone.el, Lisp:thingatpt+.el
+
+----
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryRegion
+CategoryModes
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+

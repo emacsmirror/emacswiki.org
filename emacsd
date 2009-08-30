@@ -1,0 +1,104 @@
+I wrap the emacs daemon to a standard init script for use in /etc/init.d/. It will start emacs server at startup and kill emacs at shutdown or reboot. Now when linux starts, it hangs at step "(emacs)", I don't know why. 
+
+== The emacsd Init Script ==
+You can get it at EmacsdInitScript.
+
+The script will start the emacs server using uid 1000, which usually is the first non-root user on the system. But I can't guarantee this uid exists in every system. Suggestions are welcome.
+
+In the script, basically I use the following command to start and kill emacs. You can test them on your system before you download or install anything.
+=== start emacs ===
+    sudo -u#1000 emacs --daemon
+
+=== kill emacs ===
+    sudo -u#1000 emacsclient --eval (kill-emacs)
+
+I have seen some people remove all kill-emacs-hook before kill-emacs. I don't think that's right, because I have emms, savehist, save-place hooks there. With only (kill-emacs), the script works well if all clients are disconnected before system shutdown. If you still have emacsclient connected to the server, you will get prompt at your emacsclient asking whether you want to disconnect and kill emacs. I assume you close all emacsclients before shutdown or reboot, or the process may get killed instead of exit normally.
+
+If someone can remove only the hook funtion which check whether there is still client connections, that will be good. I don't know how to do it.
+
+== Install the script ==
+
+First get [[EmacsdInitScript]] to a temp dir, then do the following as root:
+
+(alternatively you can checkout InstallEmacsd script which does the same thing)
+
+# cp emacsd /etc/init.d/
+# chmod 755 /etc/init.d/emacsd
+# update-rc.d emacsd defaults
+
+== Set Related Varibales ==
+
+=== In ~/.emacs ===
+<pre>
+Because the --daemon option starts the server before reading your init file. If you have (server-start) in your ~/.emacs, please change it to:
+
+;; only start emacs server when it's not started, I hate warnings.
+(setq server-socket-file "/tmp/emacs1000/server")
+(unless (file-exists-p server-socket-file)
+  (server-start))
+
+So emacs won't try to start the server again.
+
+This function may be useful if you are always in a client. I bind it to C-c q. So I don't need to use C-x # or C-x 5 0 any more.
+
+(defun exit-emacs-client ()
+  "consistent exit emacsclient.
+   if not in emacs client, echo a message in minibuffer, don't exit emacs.
+   if in server mode
+      and editing file, do C-x # server-edit
+      else do C-x 5 0 delete-frame"
+  (interactive)
+  (if server-buffer-clients
+      (server-edit)
+    (delete-frame)))
+
+(global-set-key (kbd "C-c q") 'exit-emacs-client)
+
+</pre>
+
+=== In .bashrc ===
+<pre>
+# -nw is a new option in v23, means "no window", use terminal.
+export EDITOR="emacsclient --alternate-editor=vim -nw"
+export VISUAL="emacsclient --alternate-editor=vim"
+export ALTERNATE_EDITOR="emacs -Q"
+# set default pager
+if [ "$TERM" == "dumb" ]
+then
+        export PAGER=""
+else
+        export PAGER=less
+fi
+
+#optionally
+man()
+{
+	if [ "$TERM" == "dumb" ]
+	then
+		#inside emacs shell
+		#How to call a lisp function inside emacs *shell*
+		#Also check/learn how to run lisp function in eshell
+		echo "I want to run (man \"$1\") here, but don't know how."
+	else
+		#normal terminal
+		if [ -e /tmp/emacs1000/server ]
+		then
+			emacsclient -nw -e "(man \"$1\")"
+		else
+			man $*
+		fi
+	fi
+}
+alias em='emacsclient'
+alias emc='emacsclient -c &'
+</pre>
+
+=== In .muttrc ===
+If you are using mutt, then
+
+<pre>
+set editor="emacsclient -nw"
+</pre>
+
+== Questions ==
+

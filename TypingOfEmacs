@@ -1,0 +1,68 @@
+ typing.el --- The Typing Of Emacs
+
+You can get the source code here:
+
+* Lisp:typing.el
+
+A game for fast typers!  A game for Emacs!
+
+This is a game inspired by The Typing Of The Dead on the Dreamcast.
+That game itself is a parody of The House Of The Dead.  In the latter,
+players use a light gun to shoot zombies and other undead.  In the
+former, players have to *type* the names of the undead in order to
+shoot them.  The Typing Of Emacs is the parody of the parody, since
+there are no undead (except possibly for the user staring at Emacs).
+
+In order to play, choose any buffer containing a lot of text and type
+M-x typing-of-emacs RET to start the game.  Traditionally used files
+are the source code of the package, the Emacs NEWS file, and
+/usr/dict/words.
+
+== Installation ==
+
+In order to install, put the file somewhere on your `load-path' and
+add the following to your ~/.emacs file:
+
+ (autoload 'typing-of-emacs "typing" "The Typing Of Emacs, a game." t)
+
+== Sample Session ==
+
+Here is a sample session of the game, played with the source code
+itself:
+
+ T h e   T y p i n g   O f   E m a c s . . .
+
+ LEVEL 1: 3 SECONDS PER WORD!  YOU HAVE 3 LIVES LEFT.
+ elt - Wow!
+ any - Hit!
+ but - Go ahead!
+ own - You can do it!
+ nil - That's it!
+ Done - done? - Desist! - 2 LIVES LEFT!
+ such - You can do it!
+ sort - Hit!
+ made - Amazing!
+ used - OK!
+ which - yes!
+ words - Hit!
+ write - Excellent.
+ parse - Wow!
+ takes - Wow!
+ format - Hit!
+ Upcase - Updcase? - Nooooo! - 1 LIVES LEFT!
+ random - YES!
+ giving - gibuing? - Shame on you! - 0 LIVES LEFT!
+ You have reached 180 characters per minute in 26 seconds by typing 18 words.
+
+Hall Of Fame
+
+  1. Alex Schroeder   243 cpm    108 sec     59 words  2000-06-16 01:24
+  2. Alex Schroeder   201 cpm     48 sec     37 words  2000-06-16 01:45
+  3. Alex Schroeder   210 cpm     41 sec     32 words  2000-06-16 01:47
+  4. Alex Schroeder   206 cpm     41 sec     27 words  2000-06-16 21:46
+  5. Alex Schroeder   192 cpm     39 sec     25 words  2000-06-20 00:12
+  6. Alex Schroeder   180 cpm     26 sec     18 words  2000-08-06 13:41
+  7. ...
+
+----
+CategoryGames

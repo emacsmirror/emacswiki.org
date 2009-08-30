@@ -1,0 +1,37 @@
+portrait:http://siege-engine.com/bios/scrap-023.jpg
+
+My Current Emacs Projects
+* CEDET: http://cedet.sourceforge.net
+* MATLAB: http://matlab-emacs.sourceforge.net, MatlabMode
+
+Older Emacs Projects
+* GNU Talk: http://gnutalk.sourceforge.net
+* [http://cedet.sourceforge.net/cparse.shtml cparse] - a precursor to CEDET/semantic
+* [http://cedet.sourceforge.net/ftp/X-0.3a.tar.gz X wire protocol], XlibInterface - Why?  Why not!
+* [http://cedet.sourceforge.net/ftp/hangman.el-0.1.gz hangman]
+* [http://cedet.cvs.sourceforge.net/cedet/cedet/quickpeek/ Quick peek - eldoc wannabe for C]
+
+Non-Emacs projects
+* Catapults: http://www.siege-engine.com
+* Matlab: [http://www.mathworks.com/matlabcentral/fileexchange/loadAuthor.do?objectId=803709&objectType=author M programs]
+
+Unreleased Emacs projects
+* Web site builder: [http://www.siege-engine.com/SiteTech.shtml Vague Description] also on http://www.sewshoppe.com
+* DND: Character sheet generator, D20 rtf manual source parser (Ugh!)
+* Template manager: [http://cedet.cvs.sourceforge.net/cedet/cedet/srecode/ CVS root]
+* Various work-specific tool integrations (Raython or The MathWorks)
+* major modes: idl (obsoleted), clisp+shell (obsoleted), xdefaults, abacus, configure.in, 
+* misc: curly brace commentor, filestack (associative movement), vc-add-log-entries, simple-cite
+
+My Emacs Stats (as of March 2007)
+* First Emacs Revision I used: 18.54
+* First post to gnu.emacs.sources: [http://groups.google.com/group/gnu.emacs.sources/browse_thread/thread/cff864fdb67f2352/8d67a6981a8acd51?&hl=en#8d67a6981a8acd51 Emacs Talk]
+* .emacs stats: 1205 lines, 3927 words
+* released lisp file stats (CEDET and GNU Talk): 302 files, 124397 lines, 4.868Meg total
+* Contributions in GNU Emacs:
+** speedbar.el (including dframe.el, ezimage.el, sb-image.el, icons, and patches to info.el, gud.el)
+** checkdoc
+** rmail patch (autofolder)
+** Emacs C src patch (fvwm2 window manager support)
+----
+CategoryHomepage

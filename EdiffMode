@@ -1,0 +1,278 @@
+[[de:EDiffDeutsch]][::Ediff] makes patching easier:
+
+* Never read that diff output again!
+* Apply patch interactively!
+* Merge with ease!
+
+This package provides a convenient way of simultaneous browsing through
+the differences between a pair (or a triple) of files or buffers.  The
+files being compared, file-A, file-B, and file-C (if applicable) are
+shown in separate windows (side by side, one above the other or in
+separate frames) and the differences are highlighted as you step
+through them.  You can also copy difference regions from one buffer to
+another (and recover old differences if you change your mind).
+
+Ediff also supports merging operations on files and buffers, including
+merging using ancestor versions.  Both comparison and merging operations can
+be performed on directories, i.e. by pairwise comparison of files in those
+directories.
+
+In addition Ediff can apply a patch to a file and then let you step
+through both files, the patched and the original one, simultaneously,
+difference-by-difference.  You can even apply a patch right out of a
+mail buffer, i.e. patches received by mail don't even have to be saved.
+Since Ediff lets you copy differences between buffers, you can, in
+effect, apply patches selectively (i.e. you can copy a difference
+region from file_orig to file, thereby undoing any particular patch that
+you don't like).
+
+= Ignoring Whitespace and Case Sensitivity =
+
+You can ignore whitespace or case sensitivity in two ways:
+
+* Interactively, on the fly:
+
+** Whitespace sensitivity -- Toggle with '''`<code>##</code>'''' (`ediff-toggle-skip-similar').
+** Case sensitivity -- Toggle with '''`<code>#c</code>'''' (`ediff-toggle-ignore-case'). This assumes that you've loaded library Lisp:ediff+.el and that you are using `##diff(1)##' as `ediff-diff-program'. (Toggling case-sensitivity is available in vanilla GNU Emacs 22, so Lisp:ediff+.el is mainly useful for older Emacs versions.)
+
+* Persistently: Customize option `ediff-diff-options'. This assumes that you are using `##diff(1)##' as `ediff-diff-program'.
+
+** Whitespace sensitivity -- Include `-w' in `ediff-diff-options'.
+** Case sensitivity -- Include `-i' in `ediff-diff-options'.
+
+
+
+= From The Command Line =
+
+[[bojohan]] wrote on [[gnu.emacs.help]]:
+
+    (defun command-line-diff (switch)
+      (let ((file1 (pop command-line-args-left))
+            (file2 (pop command-line-args-left)))
+        (ediff file1 file2)))
+    
+    (add-to-list 'command-switch-alist '("diff" . command-line-diff))
+    
+    ;; Usage: emacs -diff file1 file2
+
+[new]
+That version is nice, but it opens a new Emacs for every diff. 
+If you do not want that then there were other suggestions on the list that instead uses GnuClient.
+
+= Configuration =
+
+By default ediff spawns a new frame to display files to be compared or
+merged. But I found it is less usable than use selected-frame to
+operate on. Also it splits window vertically to display files and I found
+it hard to perceive provided information in such way. Horizontal split
+is more attractive for me.
+
+To make ediff operate on selected-frame add next:
+
+    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+To make ediff to be horizontally split use:
+
+    (setq ediff-split-window-function 'split-window-horizontally)
+
+''Note that you can also split the window depending on the frame width:
+
+    (setq ediff-split-window-function (lambda (&optional arg)
+                                        (if (> (frame-width) 150)
+                                            (split-window-horizontally arg)
+                                          (split-window-vertically arg))))
+
+''This will split the window horizontally if the frame is wider than 150 chars
+and vertically otherwise.  --EmilioLopes
+
+I also found that ediff has numerous hooks over its functions
+and I try to make ediff a little handy over window
+operations. What I want is a window-configuration restore after ediff
+exits, so I will have window layout just as before ediff, also I want
+easily to restore ediff window layout after I break it (for example
+switch to other buffer in one of diffed window). So we get:
+
+    ;; Some custom configuration to ediff
+    (defvar my-ediff-bwin-config nil "Window configuration before ediff.")
+    (defcustom my-ediff-bwin-reg ?b
+      "*Register to be set up to hold `my-ediff-bwin-config'
+    configuration.")
+    
+    (defvar my-ediff-awin-config nil "Window configuration after ediff.")
+    (defcustom my-ediff-awin-reg ?e
+      "*Register to be used to hold `my-ediff-awin-config' window
+    configuration.")
+    
+    (defun my-ediff-bsh ()
+      "Function to be called before any buffers or window setup for
+    ediff."
+      (setq my-ediff-bwin-config (current-window-configuration))
+      (when (characterp my-ediff-bwin-reg)
+    	(set-register my-ediff-bwin-reg
+    		      (list my-ediff-bwin-config (point-marker)))))
+     
+    (defun my-ediff-ash ()
+      "Function to be called after buffers and window setup for ediff."
+      (setq my-ediff-awin-config (current-window-configuration))
+      (when (characterp my-ediff-awin-reg)
+    	(set-register my-ediff-awin-reg
+    		      (list my-ediff-awin-config (point-marker)))))
+    
+    (defun my-ediff-qh ()
+      "Function to be called when ediff quits."
+      (when my-ediff-bwin-config
+    	(set-window-configuration my-ediff-bwin-config)))
+    
+    (add-hook 'ediff-before-setup-hook 'my-ediff-bsh)
+    (add-hook 'ediff-after-setup-windows-hook 'my-ediff-ash 'append)
+    (add-hook 'ediff-quit-hook 'my-ediff-qh)
+
+This kind of configuration will do the following. WindowConfiguration before any ediff operations will be saved to a [[register]] defined in <code>my-ediff-bwin-reg</code> and window configuration after ediff complete on window layout will be saved to <code>my-ediff-awin-reg</code>, so in ediff  mode you may restore the old window configuration by jumping to <code>my-ediff-bwin-reg</code> and jump back to ediff window configuration by jumping to <code>my-ediff-awin-reg</code> (see WindowConfiguration). After ediff quits, the old (before ediff) window configuration will be restored.
+
+[new]
+I changed the characterp to symbolp in gnu emacs and this approach works great, except that the control frame sticks around...
+
+[new]
+The problem is with the order of the functions in `ediff-quit-hook'.  I fixed the above by telling `add-hook' to /append/ to `ediff-quit-hook'.  See the documentation of `ediff-quit-hook' in the Ediff InfoMode manual.
+
+If you just want to save the window configuration, try the code bellow:
+
+   (add-hook 'ediff-load-hook
+             (lambda ()
+
+               (add-hook 'ediff-before-setup-hook
+                         (lambda ()
+                           (setq ediff-saved-window-configuration (current-window-configuration))))
+    
+               (let ((restore-window-configuration
+                      (lambda ()
+                        (set-window-configuration ediff-saved-window-configuration))))
+                 (add-hook 'ediff-quit-hook restore-window-configuration 'append)
+                 (add-hook 'ediff-suspend-hook restore-window-configuration 'append))))
+
+--EmilioLopes
+
+= Discussion =
+
+EdiffMode is also can be used with pcl-cvs (see ConcurrentVersionsSystem) to use it type <code>d e</code> on some selected file. Original file will be fetched from cvs and then ediff applies to it - very useful. --ZajcevEvgeny
+
+Another way to get you original window configuration back after running ediff is to use WinnerMode.  --BryanMurdock
+
+I came up with a simple configuration that seems to work OK for me with XEmacs. (I'm hedging a little because I haven't been using this for very long.) It creates a new frame for an ediff session and closes it when done:
+
+    (load-library "ediff")
+    (add-hook 'ediff-before-setup-hook 'new-frame)
+    (add-hook 'ediff-quit-hook 'delete-frame)
+    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+    (setq ediff-split-window-function 'split-window-vertically)
+
+--DanMuller
+
+[new]
+EMacro's e-common.el http://emacro.sourceforge.net/ provides code for side-by-side ediff comparisons. It checks if you are running in a GUI windowing system, then expands the width of Emacs or XEmacs to 160 columns or the smaller width of the desktop, checks if ECB is running, then restores everything back, when you quit.
+In spite of this, the code is pretty small.
+
+[new]
+
+My .emacs has the concept of project roots. If I'm refering to another src tree I just select a secondary root and then if I want to compare to he other source tree I use a custom ediff invocation:
+
+<pre>
+
+;; Define a current-project-root
+;
+; In most cases I open emacs at the top of a src tree. Searches and compiles
+; can then use this as a starting point
+;
+; change with (setq current-project-root (chomp (shell-command-to-string "pwd")))
+(defvar current-project-root
+  (concat (chomp (shell-command-to-string "pwd")))
+  "Describes the current project root dir (top of src tree)")
+
+(defun set-project-root ()
+  "Set a primary project root"
+  (interactive)
+  (setq current-project-root
+        (read-file-name "Project Root:")))
+
+;; secondary-project-root
+;
+; Sometimes your working with two source trees. The secondary tree is
+; tracked and useful for bringing up ediff's and the like
+;
+
+(defvar secondary-project-root
+  ()
+  "Describes a secondary project root (say for quick ediff)")
+
+(defun set-secondary-root ()
+  "Set a secondary project root"
+  (interactive)
+  (setq secondary-project-root
+        (read-file-name "Secondary Project Root:")))
+
+;; my-ediff-secondary
+;
+; See if we can find the equivilent file in a secondary project root
+; and bring up ediff on it.
+
+(defun my-ediff-secondary ()
+  "Load the secondary equivilent file of this buffer and ediff it"
+  (interactive)
+  (message (concat "buffer name is " (buffer-file-name)))
+  (let
+      (
+       (primary-buffer (buffer-file-name))
+       (secondary-buffer (replace-regexp-in-string
+                          current-project-root secondary-project-root
+                          (buffer-file-name))))
+    ; sanity
+    (if (file-exists-p secondary-buffer)
+        (ediff-files secondary-buffer primary-buffer)
+      (message (concat "Couldn't find secondary buffer: "
+                       secondary-buffer)))))
+</pre>
+
+--AlexBennee
+
+[new]
+
+Here is how to make ediff-directories use Tramp to test the equality of remote files.  This takes care of those annoying "*remote file*" messages.  If anybody reads this who maintains ediff, please look into supporting Tramp.  This code is just a quick hack.
+
+
+<pre>
+(defun ediff-listable-file (file-name)
+  (let ((handler (find-file-name-handler file-name 'file-local-copy)))
+    (or (null handler) (eq handler 'dired-handler-fn) (eq handler 'tramp-file-name-handler))))
+
+(defun ediff-same-file-contents (f1 f2)
+  "Return t if files F1 and F2 have identical contents."
+  (if (and (not (file-directory-p f1))
+           (not (file-directory-p f2)))
+      (let ((res
+	     (apply 'call-process ediff-cmp-program nil nil nil
+		    (append ediff-cmp-options
+                            (list (if (tramp-tramp-file-p f1)
+                                      (tramp-handle-file-local-copy f1)
+                                      f1)
+                                  (if (tramp-tramp-file-p f2)
+                                      (tramp-handle-file-local-copy f2)
+                                      f2))))))
+	(and (numberp res) (eq res 0)))))
+</pre>
+
+--JohnFoerch
+
+[new]
+
+Don’t compare big files (> 10M) by ediff-files (or ediff) procedure or you will receive “Errors in diff output” message. Open both files in separate buffers and use ediff-buffers instead. I’ve also found out that when I compare binary files I also get “Errors in diff output” message. To solve it open both files in separate buffers, and then change the mode to hexl-mode. Now you can use ediff-buffers to compare files.
+
+--MateuszKopij
+
+----
+
+See EdiffOnWThirtyTwo
+
+See also DiffMode and EmergeDiff
+
+----
+CategoryProgrammerUtils

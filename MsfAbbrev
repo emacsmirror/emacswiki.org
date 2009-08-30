@@ -1,0 +1,39 @@
+This package allows you to place your abbrevs into your filesystem,
+in a special directory tree.
+
+* http://www.bloomington.in.us/~brutt/msf-abbrev.html
+
+See the [http://www.bloomington.in.us/~brutt/msf-abbrev-demo.gif animated GIF demo] on the homepage.
+
+version 1.0beta series (original version developed by Benjamin Rutt): http://www.bloomington.in.us/~brutt/msf-abbrev.el
+
+version 0.99a (fork developed by Victor Hugo Borja): Lisp:msf-abbrev.el
+
+[new]
+I made some modification to the 0.99a version of msf-abbrev.el. The new feature added include:
+# Do not scan directory every time `msf-abbrev-mode' is invoked but
+when new changes happen in mode-abbrev's directory.
+If `msf-abbrev-always-rescan' is set to t, the new changes will be
+added automatically when entering msf-abbrev-mode again. You
+can still force a refresh by using msf-abbrev-scan-mode command though.
+# Dump all abbreviations to an elisp file with new command
+`msf-abbrev-generate-init-file'. This allows faster loadings.
+# Add support for mode alias in .emacs, for example: 
+<pre>
+ (setq msf-abbrev-mode-alias '((c++-mode . c-mode))
+</pre>
+
+-- [[Ye_Wenbin]]
+
+[new]
+
+AnythingSources defines anything-c-source-msf-abbrev, an [[Anything]] interface to insert, edit or delete abbreviations. -- JulienBarnier
+
+
+What are the differences between version 0.99a and 1.0beta3? Why to patch the older version 0.99a and not the upstream version?  
+
+Answer:  Victor Hugo Borja forked it when msf-abbrev.el was at rev 0.98a.  To avoid confusion, Benjamin Rutt released the 1.0beta series to avoid ambiguity.  In summary, when you fork something, it's best to give it a new name, not just a new revision number.
+
+----
+CategoryTemplates CategoryCode
+

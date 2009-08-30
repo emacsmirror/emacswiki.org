@@ -1,0 +1,50 @@
+When Emacs reads a file, it determines the encoding, reads the file, decodes it into an internal representation, and stores the coding-system used in a variable to be used when saving the file.  When saving, the buffer is encoded using the stored coding-system and written to the file again.
+
+You can change the encoding to use for the file when saving using `C-x C-m f'.  You can also force this immediately by using ##‘C-x C-m c <encoding> RET C-x C-w RET’##.  You can force Emacs to read a file in a specific encoding with `C-x RET c C-x C-f'.
+
+For characters covered by ISO 8859, you can interconvert most encodings in Emacs 21.3, courtesy of the code in ucs-tables.el. -- fx
+
+Maybe some more explanation is needed, here.  In an Emacs running in a Latin-1 locale, create a buffer containing the letter ##‘ö’##.
+Save.  The modeline indicates Latin-1 via the `1'.  Now save using `C-x C-m c latin-2 RET C-x C-w RET'.
+The modeline indicates Latin-2 via the `2'.  Kill the buffer, reopen it.  It displays correctly, but the modeline indicates Latin-1 again.
+When and why did Emacs do the change from Latin-2 back to Latin-1?  Does Locale take precedence over `C-x C-m c'?
+
+: If, in a Latin-1 environment, you visit a non-ASCII file that doesn't contain bytes in the range #x80 to #x9f, it is decoded as Latin-1 unless its encoding is specified explicitly somehow.  The character `ö' has the same code point in Latin-1 and Latin-2, which is why it `displays correctly'. See <tt>M-x list-charset-chars</tt> and <tt>C-u C-x =</tt>.
+
+== Partial Recoding ==
+
+Sometimes you need to recode parts of a buffer.  Here is an example:
+You are using Gnus to read mail, and somebody sends you a Word document.
+You use the AntiWord trick to automatically insert the output of antiword into
+your buffer.
+Normally, a Gnus "*Article*" buffer has the coding system <tt>undecided</tt>.
+The antiword output might be inserted using the wrong coding system.
+On my system, I might end up with something like this:
+
+    Mit freundschaftlichen GrÃ¼ssen und den besten WÃ¼nschen fÃ¼r 2004,
+    Aikido Dojo ZÃ¼rich
+
+But what I want is this:
+
+    Mit freundschaftlichen Grüssen und den besten Wünschen für 2004,
+    Aikido Dojo Zürich
+
+It seems that the process output was decoded as Latin-1 instead of UTF-8.
+I want to recode it! To that effect, use ##M-x recode-region##. The command ##recode-region## is part of MULE as of Emacs 22.1; here is a surrogate for older Emacsen:
+
+    (defun recode-region (start end &optional coding-system)
+      "Replace the region with a recoded text."
+      (interactive "r\n\zCoding System (utf-8): ")
+      (setq coding-system (or coding-system 'utf-8))
+      (let ((buffer-read-only nil)
+	    (text (buffer-substring start end)))
+        (delete-region start end)
+        (insert (decode-coding-string (string-make-unibyte text) coding-system))))
+
+Now I can mark the attachment in the buffer and use M-x recode-region to
+recode it as UTF-8.  The important part is that I need to convert the
+old text into "unibyte" representation.  Without it, I will get the
+bytes used for the emacs-mule coding-system encoded as UTF-8.  
+
+----
+CategoryInternationalization

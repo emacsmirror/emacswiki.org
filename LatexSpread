@@ -1,0 +1,23 @@
+== latex-spread ==
+
+A simple Emacs SpreadSheet mode for TeX/LaTeX Documents.
+
+* http://clip.dia.fi.upm.es/Software/#latex-spread
+
+By Manuel Hermenegildo (started 23-10-95), based on spread.el mode by
+Benjamin C. Pierce, with suggestions from various people.
+
+This package provides a simple spreadsheet minor mode for TeX/LaTeX
+documents.  It allows including formulas in LaTeX files and using
+emacs to evaluate them.
+
+Current version (0.9#4 of 2001/10/7):
+
+* [http://clip.dia.fi.upm.es/Software/latex-spread.el latex-spread.el source]
+* [http://clip.dia.fi.upm.es/Software/test.tex test.tex (example LaTeX file)]
+
+
+----
+CategoryCalculators
+CategoryFinancial
+CategoryModes

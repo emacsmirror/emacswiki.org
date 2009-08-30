@@ -1,0 +1,21 @@
+The tinyprocmail.el is part of the TinyTools.
+
+== Install ==
+
+Put the following in your ~/.emacs InitFile:
+
+ (autoload 'tinyprocmail-mode "tinyprocmail" "" t)
+ (autoload 'aput "assoc")
+
+ ;; Treat ~/.procmailrc and all pm-*.rc files as Procmail files
+ (aput 'auto-mode-alist
+      "\\.procmailrc\\|pm-.*\\.rc$"
+      'turn-on-tinyprocmail-mode)
+
+== Documentation ==
+
+You may want to check out JariAalto<code>'</code>s excellent procmail tips page 
+at http://pm-doc.sourceforge.net/pm-tips.html
+
+----
+CategoryMailAddons | CategoryModes | TinyTools

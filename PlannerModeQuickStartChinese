@@ -1,0 +1,352 @@
+== Planner 快速入门 ==
+
+学完本教程后，你将能够使用 PlannerMode 及相关的模块来跟踪你的任务
+、时间表和笔记，并享受 Emacs 的便利，呵呵。（ PlannerModeCommentary 也推荐阅读）
+
+== 取得安装文件 ==
+
+你至少需要 PlannerMode 和 EmacsMuse 这两个扩展。
+RememberMode 也可以与 PlannerMode 协同工作，用来记加有时间戳的笔记。
+
+Planner.el 在 Debian 系统中的安装包叫 planner-el。同样，EmacsMuse 相应的包叫做 muse-el，RememberNode 的包叫做 remember-el。
+
+将所有这些文件安装到你系统中的某地，例如 ~/elisp.
+
+有多种获得 Planner 和 Muse 的方法，取决于你是想要最新的稳定版本还是正在开发中的版本。
+
+=== 取得稳定的发行版（当前并不推荐） ===
+
+**提示**：Planner 的一个 bug 使其不能在 Emacs 22 中使用。这个 bug 在
+最新的 Planner 开发版中得到了修正，也会在下一个 Planner 发行版中被修正。
+在 Planner 的新版发布以前，强烈推荐使用 Planner 的开发版本以及 Muse 的3.11
+或更新的版本。
+
+用 tarballs 工具：
+
+<pre>
+wget http://download.gna.org/planner-el/planner-3.41.tar.gz
+tar -xzf planner-3.41.tar.gz
+mv planner-3.41 planner
+wget http://download.gna.org/muse-el/muse-3.11.tar.gz
+tar -xzf muse-3.11.tar.gz
+mv muse-3.11 muse
+wget http://download.gna.org/remember-el/remember-1.9.tar.gz
+tar -xzf remember-1.9.tar.gz
+mv remember-1.9 remember
+</pre>
+
+用 zip 文件：
+
+<pre>
+wget http://download.gna.org/planner-el/planner-3.41.zip
+unzip planner-3.41.zip
+mv planner-3.41 planner
+wget http://download.gna.org/muse-el/muse-3.11.zip
+unzip muse-3.11.zip
+mv muse-3.11 muse
+wget http://download.gna.org/remember-el/remember-1.9.zip
+unzip remember-1.9.zip
+mv remember-1.9 remember
+</pre>
+
+=== 获取最新的开发快照 ===
+
+**提示**：Muse 现在更多的使用 git 进行维护而非 GNU Arch。
+
+使用 Arch 和 git：
+
+<pre>
+cd ~/elisp
+tla register-archive -f http://arch.gna.org/planner-el/archive-2006/
+tla get mwolson@gnu.org--2006-planner-el/planner-el--devel--0 planner
+git clone git://repo.or.cz/muse-el.git muse
+# or if you are behind a restrictive firewall, do the following instead:
+# git clone http://repo.or.cz/r/muse-el.git muse
+tla register-archive -f http://arch.gna.org/remember-el/archive
+tla get remember-el@arch.gna.org/remember--main--0 remember
+</pre>
+
+<pre>
+cd ~/elisp
+wget http://mwolson.org/static/dist/planner-latest.tar.gz
+tar -xzf planner-latest.tar.gz
+wget http://mwolson.org/static/dist/muse-latest.tar.gz
+tar -xzf muse-latest.tar.gz
+wget http://mwolson.org/static/dist/remember-latest.tar.gz
+tar -xzf remember-latest.tar.gz
+</pre>
+
+使用下载好的 zip 文件：
+
+<pre>
+cd ~/elisp
+wget http://mwolson.org/static/dist/planner-latest.zip
+unzip planner-latest.zip
+wget http://mwolson.org/static/dist/muse-latest.zip
+unzip muse-latest.zip
+wget http://mwolson.org/static/dist/remember-latest.zip
+tar -xzf remember-latest.zip
+</pre>
+
+
+== 配置 Planner ==
+
+将这些文件添加到你的 load-path 中。修改这些路径以适合实际情况。
+
+     (add-to-list 'load-path "~/elisp/muse/lisp")
+     (add-to-list 'load-path "~/elisp/planner")
+     (add-to-list 'load-path "~/elisp/remember")
+
+创建你的计划目录：
+
+     mkdir ~/plans
+
+配置项目：
+
+     (setq planner-project "WikiPlanner")
+     (setq muse-project-alist
+           '(("WikiPlanner"
+             ("~/plans"   ;; Or wherever you want your planner files to be
+             :default "index"
+             :major-mode planner-mode
+	     :visit-link planner-visit-link))))
+     (require 'planner)
+
+键入 M-x plan，开始计划吧！
+
+== 计划你的每日工作 ==
+
+在一个 Planner wiki 中有两种类型的页面：
+
+      每日页面：  显示当天的任务、时间表和笔记。
+	  计划页面：  在单独的页面中管理相关的任务和笔记。
+
+用 '''M-x plan RET''' 启动 Planner。
+（在 OSX 系统中，Aqua emacs 用 ENTER 代替 RET 键。）
+
+这会打开最近的有未完成任务的每日页面，或者必要的话，创建一个新的每日页面。
+
+=== 任务 ==
+
+==== 创建任务 ==
+
+首先让我们创建一个被标记的任务
+
+    加入[[https://mail.gna.org/listinfo/planner-el-discuss][邮件列表]]
+
+
+在任何地方（包括这个页面，如果你正在用 w3m 进行浏览且加载了 planner-w3m 的话，呵呵），
+键入 '''M-x planner-create-task-from-buffer''' 来创建一个新的任务。填上任务的描述，
+然后可以用如下几种方式选择日期：
+
+
+* 键入1至31的数字将任务置于当月的这一天；
+* 用 RET 表示接受默认的日期（今天）；
+* 用 mouse-1 选择一个日期；
+* 键入 +n 将这个任务安排在n天以后（n是一个整数）；
+* 键入 +fri 将这个任务安排在下个星期五（或者 +mon, +tue, +wed, +thu, +fri, +sat, +sun，如此类推）；
+* 键入 +2fri 表示下下个星期五。
+* 键入 '''nil''' 表示无日期的任务。
+
+至于现在，可以用 RET 表示今天。
+
+接下来，你将需要指定一个计划页面。计划页面将相关的任务和笔记收集在一起，
+给你一个当前已完成事情的概览。你可以接受默认的 <nowiki>TaskPool</nowiki> 页面，
+建立你的新的计划页，或者用 '''nil''' 表示这个任务不与任何计划页面相关。
+现在，键入 RET 接受默认的 <nowiki>TaskPool</nowiki> 页面。
+
+你已经创建了你的第一个任务。通过 '''M-x planner-goto-today''' 进入今天的每日页面。
+你将会如下形式的一行文字：
+
+    #B  _ 加入邮件列表 (TaskPool)
+
+如果你使用 w3m 从本页中创建了任务，页面上会有一些额外的注释：
+
+    #B  _ 加入邮件列表 : <nowiki>http://www.emacswiki.org/cgi-bin/wiki/PlannerModeQuickStart</nowiki> (TaskPool)
+
+'''mailing list''', '''!TaskPool''' 和 
+'''<nowiki>http://www.emacswiki.org/cgi-bin/wiki/PlannerModeQuickStart</nowiki>'''
+都是超链接。你可以用 TAB 和 S-TAB 在它们之间移动，用 RET 打开链接。
+
+下面用 '''M-x planner-create-task-from-buffer''' 创建更多些的任务。
+为了方便，planner-mode 的页面被绑定为 '''C-c C-t'''。
+例如，创建如下这些任务：
+
+* '''写出我当前的工作方式及我想要的工作方式'''，三天之内完成 (+3)；
+* '''学习给一个任务设定时间'''，一个无日期的任务 ("nil")，放置在 <nowiki>TaskPool</nowiki> 页面；
+* '''浏览 PlannerMode 的手册'''，今天（输入'.'或者接受默认）；
+
+: 提示: 我将 planner-create-task-from-buffer 绑定在 "F9 t" 键上，这样我就可以
+  随时方便地调用它了。可以用如下 elisp 片断实现：
+
+    (global-set-key (kbd "<f9> t") 'planner-create-task-from-buffer)
+
+用如下步骤访问 !TaskPool：
+
+* 用 TAB 或者光标找到它的链接，并用 RET 访问；
+* 用 find-file：'''C-x C-f !TaskPool RET'''，或者
+* 用 muse-find-file：'''C-c C-f !TaskPool RET'''。
+
+你可以看到被安排在不同日期的任务的概览。
+很多个人信息管理软件将所有的数据储存在一个文件中，并用神秘的方式呈现不同的视图。
+Planner 并不是这样，而是使用纯文本的文件。数据有副本，并通过内置的函数保持更新。
+这使数据简单化并容易改动，因为你看到的（几乎）就是你得到的。另一方面，你将习惯于
+或者总是编辑两份文件，或者使用内置的函数来编辑和更新这些文件。如果你并不想使用
+相互关联的任务，你可以将 Planner 配置成只用计划页面或每日页面。
+
+<nowiki>TaskPool</nowiki> 页面将列出你方才创建的任务。移动到那个名叫
+'''学习给一个任务设定时间'''的任务上，键入'''C-c C-c''' (planner-copy-or-move-task) 
+以给这个任务设定时间。键入 RET 以接受默认设置（今天）。
+进入相应的链接或者调用 '''M-x planner-goto''' （快捷键 C-c C-j C-d，或者使用菜单栏），
+移动到每日页面，你将看到刚刚创建的任务。你也可以用'''C-c C-c''' (planner-copy-or-move-task) 
+把任务的时间修改成更早或更晚的日期。
+
+好了，这个任务已经完成了。把这个任务标记成已完成，可以键入 '''C-c C-x''' 
+(planner-task-done)。你也可以手动修改任务的状态（将 _ 改成 X）如果你
+能记得调用 M-x planner-update-task 以更新关联的页面。更新依赖于
+相同的任务名称，所以不要手动修改。
+
+任务命令的快速总结：
+
+* 创建任务：'''C-c C-t''' (planner-create-task-from-buffer)，或者手动输入一个任务（需要调用 '''M-x planner-update-task'''，如果这个任务是链接的）
+* 标记任务已完成：'''C-c C-x''' (planner-task-done)，或者编辑任务并且调用 '''M-x planner-update-task'''
+* 编辑任务描述：'''M-x planner-edit-task-description'''
+* 删除任务：'''M-x planner-delete-task'''
+* 重新给任务安排顺序：'''M-p (planner-raise-task''' 和 '''M-n (planner-lower-task'''，或者编辑任务并且调用 '''M-x planner-update-task'''，使用常规的 kill 和 yank 之类的编辑命令。
+* 改变任务优先级 (#A > #B >#C)： 
+  '''C-M-p (planner-raise-task-category)''' 和 '''C-M-n (planner-lower-task-category)''', 或者编辑任务并且调用 '''M-x planner-update-task'''
+* 改变任务所属的计划页面：'''M-x planner-replan-task'''，或者在一个计划页面里调用 '''C-c C-c (planner-copy-or-move-task)'''
+
+这些命令将会在以后详细地解释，但如果你知道了如何创建任务并标记已完成，
+你已经可以将 Planner 当作一个基本的 TODO 管理工具来用了。当然，Planner 
+还有远多于此的功能呢！
+
+==== 管理任务 ====
+
+默认情况下，新创建的任务具有中等的优先级 (#B)。你可以通过手动修改任务并调用 
+'''M-x planner-update-task''' 的方式得到一个高优先级 (#A) 或者低优先级 (#C) 
+的任务。或者你也可以使用 '''C-M-p''' (planner-raise-task-category) 和
+'''C-M-n''' (planner-lower-task-category) 来修改任务和更新关联的页面。
+
+你也可以创建其它的任务并更改它们的优先级，简单的修改表示优先级的字母就可以了。
+#A 的任务是最重要的，#B 是中等的优先级，#C 表示低优先级。高优先级的任务列表时
+排在低优先级任务的前面，已完成的任务列在末尾。
+
+你可以将任务分组，只需要在不同组的任务中间插入一个空行。PlannerMode 会自动地
+维护你的分组，并将组内的任务单独排序。
+
+要提示你自己按照一定的顺序来完成任务，简单地按照你想要的顺序编辑那些行就可以。
+可以使用常规的编辑命令，比如 kill, yank 以及 transpose-line 来对任务重新排序，
+或者使用 '''M-p (planner-raise-task)''' 和 'M-n (planner-lower-task)'''来
+重新安排任务。
+
+用 C-x C-s 保存你的任务，就想你保存其它任何文件一样，Emacs 在退出时也会提醒你保存。
+
+==== 将任务标记为已完成 ==
+
+未完成的任务用下划线 _ 表示。已完成的任务用大写 X 表示。
+这是一个未完成的高优先级任务的例子：
+
+    #A  _ 写一份教程
+
+这是一个已完成的高优先级任务的例子：
+
+    #A  X 写一份教程
+
+将任务标记成已完成，输入 '''C-c C-x''' 当光标在任务的那一行时。你也可以
+通过手动编辑修改任务的状态并调用 M-x planner-update-task。
+
+==== 重新安排任务的时间 ==
+
+将任务重新安排到一个不同的日期，键入 '''C-c C-c''' (planner-copy-or-move-task) 
+并选择一个新的日期。例如 '''C-c C-c +7 RET''' 将任务安排到当前页面的7天以后。
+
+==== 重新安排多个任务的时间 ==
+
+你可以标记一个区域并键入 '''M-x planner-copy-or-move-region''' 将所有被选定的任务
+安排到一个不同的日期。
+
+==== 删除任务 ==
+
+调用 '''M-x planner-delete-task''' 来删除一个任务并更新关联的页面。
+
+==== 将未完成的任务延期 ==
+
+默认地，(plan) 页面显示前三天的未完成任务。改变变量 '''planner-carry-tasks-forward'''
+以定义其它行为。
+
+=== 时间表 ==
+
+这里的格式可以非常自由。我一般用这种格式保存条目：
+
+    hh:mm | hh:mm | 事件
+    hh:mm | hh:mm | 事件
+    hh:mm | hh:mm | 事件
+
+这里 hh:mm 是24时制。你可以在这一栏填入任何东西，或者将它从 '''planner-day-page-template''' 里彻底删除。
+
+=== 笔记 ==
+
+这一栏里可以填入任何东西。remember-planner.el 添加的笔记看上去像这样：
+
+    .#1 标题
+	内容
+
+并且以二级标题 (H2) 标出。
+
+==== 用 Planner 和 Remember 自动记笔记  ===
+
+PlannerMode 可以轻松地与 RememberMode 结合。在你的启动配置中包含如下内容：
+
+  (require 'remember-planner)
+  (setq remember-handler-functions '(remember-planner-append))
+  (setq remember-annotation-functions planner-annotation-functions)
+
+你可以轻松地创建语境敏感的笔记。'''C-x C-n (remember)''' 将打开一个
+专用的 buffer 让你记笔记，如果 PlannerMode 将这个 buffer 识别成有语境的，
+它笔记的末尾将会有一个超链接。给笔记一个标题，输入你的信息，将会得到类似这样的
+笔记。
+
+  给 emacs wiki 的示例笔记。
+  File I was looking at was
+  [[/Users/jklymak/emacs-common/planner-config.el]] 
+  when I made this note.
+
+写完笔记以后，键入 '''C-c C-c''' 将会提示选择这条笔记所在的 Wiki 页面（支持自动完成）。
+选择 !ComputerStuff，!ComputerStuff 页面上会给出一条类似这样的笔记
+
+  .#1 给 emacs wiki 的示例笔记 08:52 (2004.07.01#1)
+ 
+  File I was looking at was 
+  [[/Users/jklymak/emacs-common/planner-config.el]] 
+  when I made this note.
+
+在每日页面2004.07.01上
+
+  .#1 给 emacs wiki 的示例笔记 08:52 (ComputerStuff#1)
+
+  File I was looking at was 
+  [[/Users/jklymak/emacs-common/planner-config.el]] 
+  when I made this note.
+
+=== 计划项目 ===
+
+!TaskPool 是默认的计划页面，新创建的任务默认会放在这里。你可以创建其它的成组的计划页面，或者将相互关联的一组任务置于一个项目中。
+
+你的 planner 中所有的页面都带有 !WikiName 形式的链接， <nowiki>[[destination]], or [[destination][description]].</nowiki> 将链接到其它存在的计划页面。
+
+通过将以下的文本加入你的 .elisp 文件中，你可以在计划页面中启用 !WikiName 形式的链接：
+
+   (require 'muse-wiki)    ;;; Allow wiki-links
+   (setq muse-wiki-allow-nonexistent-wikiword t) 
+
+== 进阶材料 ==
+
+通过 https://mail.gna.org/listinfo/planner-el-discuss 的申请表加入我们在 planner-el-discuss@gna.org 的邮件列表，可以
+提出问题，报告臭虫，也可以与其它人交换 emacs-wiki, planner, remember 以及相关的库的使用经验。
+
+----
+
+PlannerMode
+
+翻译自 PlannerModeQuickStart

@@ -1,0 +1,15 @@
+What are some new and cool features available in the spooky CVS tree?
+
+* [[Js2Mode]]
+* GVFS support in TrampMode
+* [[GDB-MI]]
+
+The easiest way to find new stuff is to read [http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/etc/NEWS?rev=HEAD&content-type=text/plain the Emacs NEWS file in CVS]
+
+The major forks are typically visible by visiting the CVS log file for CVS:version.el
+
+See also
+EmacsDevelopmentSources.
+
+----
+CategoryWishList

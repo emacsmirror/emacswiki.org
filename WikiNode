@@ -1,0 +1,32 @@
+This is the Emacs Wiki *Wiki Node*. A Wiki Node is a standard page that shows how a wiki relates to other communities on the Web. It is part of the Wiki Nodes Project, which aims to create a fabric among wikis allowing users to traverse the Web via topically related links. Wiki Nodes should list "Key Points of Interest" and "Neighbours" -- Wiki Nodes on related wikis.
+
+EmacsWiki is dedicated to EmacsAndXEmacs content.  See the MissionStatement for more.
+
+See also: [http://wikiindex.com/WikiNode WikiIndex] -- The registry of all wikis.  This is the place to add new wikis, with a brief description.
+
+== Key Points of Interest ==
+
+* ComparativeEmacsology -- Resolving incompatibilities between EmacsAndXEmacs.
+* CategoryCode -- Learning how to code, something between the EmacsLispIntro and the EmacsLispReference.
+* CategoryProgrammerUtils -- Using Emacs productively.
+* CategoryModes -- Pointers to interesting modes.
+* SiteMap -- List of all categories on this wiki.
+* EmacsChannel -- chat with us using InternetRelayChat (IRC).
+
+== Neighbors ==
+
+* [http://www.cliki.net/WikiNode CLiki] -- The CommonLisp wiki has links to packages and implementations.
+* [http://lisp.tech.coop/WikiNode Hyper-Cliki] -- a wiki for Lisp programmers.
+* [http://vim.wikia.com/wiki/WikiNode VimWiki] -- Vim ([http://www.vi-improved.org/ Vi IMproved]) is the ''other'' editor, and also has a wiki.
+* [http://www.texteditors.org/cgi-bin/wiki.pl?WikiNode TextEditors] -- Editors of all kinds are on topic on this wiki.
+* [http://sawfish.wikia.com/wiki/WikiNode Sawfish Wiki] -- A window manager configurable in an EmacsLisp-like language called /rep/.
+* [http://community.schemewiki.org/?wiki-node Community-Scheme-Wiki] -- the [[Scheme]] wiki.
+* [http://www.scsh.net/cgi-bin/wiki.cgi?WikiNode Scsh Wiki] -- the Scheme Shell
+* [http://wiki.services.openoffice.org/wiki/WikiNode OpenOffice Wiki]
+
+== Delegations ==
+
+We have so-called NearLink""s to the following Wiki communities.  If a page doesn't exist here but it does exist on one of the following Wikis you will be directed there.
+
+* [http://www.emacswiki.org/cgi-bin/community/WikiNode CommunityWiki] -- Online communities and Wikis.
+* [http://www.usemod.com/cgi-bin/mb.pl?WikiNode MeatballWiki] -- A meta community.

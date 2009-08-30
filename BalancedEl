@@ -1,0 +1,26 @@
+http://www.cs.indiana.edu/chezscheme/emacs/balanced.el
+
+Provides a modifier to major modes such that ``parenthesis''-type characters usually stay balanced.
+Changes a number of key bindings in the current major mode:
+
+  * ``open parenthesis''-type keys (the exact keys depend on the major
+    mode) insert both opening and closing characters, and ``close
+    parenthesis''-type keys simply move to the nearest closing
+    character (not necessarily matching the key typed).  
+  * Meta-``open'' and ``close'' are rebound to simply insert the
+    corresponding character.
+  * ``delete-left''-type keys skip over ``close parenthesis''-type
+    characters and only delete them when they can delete a matching
+    ``open parenthesis''-type character (a delete can be forced by
+    giving the ``delete-left''-type key an argument -- i.e. with
+    ctrl-u or something).
+
+If the ``open parenthesis''-type keys are given a numeric argument,
+they will wrap their open and close around that many items.  For
+example, in lisp modes, if the point is at -!- in:  
+
+      (if (null? x) -!-(printf 3) hi)
+
+then ``Esc 2 ('' will result in
+
+      (if (null? x) (-!-(printf 3) hi))

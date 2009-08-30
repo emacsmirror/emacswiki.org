@@ -1,0 +1,18 @@
+flex and bison files are apparently supported by cc-mode.
+
+(DEAD LINK as of Sept 2004) There is a flex-mode.el to be found here: http://www.eecs.tulane.edu/www/Beuscher/emacs/elisp.html#flex-mode.el
+
+(note: this file is available at archive.org, just type the address and press the wayback machine button)
+
+I have a copy, but I'm not sure about uploading it.  There is no licence statement.
+
+That is very unfortunate, because then we cannot distribute it.  Does it have an email address or something?  The upload script will only accept free software, too.
+
+The link works now, so I guess this is no longer needed.
+* Actually the link above works, but the important one which is in that page and points to the .el file does not as of 2005-04-05.
+
+See also BisonMode.
+
+----
+CategoryModes
+ProgrammingModes

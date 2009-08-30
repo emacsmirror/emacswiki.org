@@ -1,0 +1,30 @@
+Assume you want to redefine a key.  You can use defadvice to advise
+the function.  This might be complicated, though.  Perhaps you are
+better off writing a little redefinition only.
+
+Here, for example, we don't want Emacs to ask us whether we are sure
+that we want to kill the buffer when it has been modified.
+
+First, define a new kill-buffer function which binds the variable
+buffer-modified-p to nil temporarily.
+
+ (defun volatile-kill-buffer ()
+   "Kill current buffer unconditionally."
+   (interactive)
+   (let ((buffer-modified-p nil))
+     (kill-buffer (current-buffer))))
+
+And bind this to the same key as the original kill-buffer:
+
+ (global-set-key (kbd "C-x k") 'volatile-kill-buffer)
+
+Another way to change how Emacs behaves is much more sweeping.  Emacs
+knows two ways of asking yes-or-no questions: y-or-n-p lets you just
+hit <code>y</code>, yes-or-no-p requires you to type <code>yes
+RET</code>.  You cand just replace the definition of yes-or-no-p with 
+y-or-n-p.  Note that this changes *all* instances of yes-or-no-p!  (See YesOrNoP for more.)
+
+ (defalias 'yes-or-no-p 'y-or-n-p)
+
+----
+CategoryKeys CategoryDotEmacs

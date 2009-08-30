@@ -1,0 +1,28 @@
+The spelling module integrates FlySpell with ERC for on-the-fly spell checking.
+It enables `flyspell-mode' in every ERC buffer and makes sure that only lines you type are checked.
+
+To use, enable `erc-spelling-mode':
+
+    (erc-spelling-mode 1)
+
+
+The module has a feature that allows for channel-specific
+dictionaries using the `erc-spelling-dictionaries' alist:
+
+    (setq erc-spelling-dictionaries '(("irc.tu-ilmenau.de" "german-new8")
+                                      ("#starwars" "american")))
+
+This will make sure that the ##german-new8## dictionary is active on all
+buffers of irc.tu-ilmenau.de, except for in channel #starwars, which will retain
+the default ##american## dictionary. If you don't need different
+dictionaries for channels but can live with the default one, you don't
+have to worry about this.
+
+[new]
+In the above, when selecting the dictionary, I had to append the port to which I connect on the server string.
+For exemple:
+
+    (setq erc-spelling-dictionaries '(("irc.tu-ilmenau.de:6667" "german-new8")
+                                      ("#starwars" "american")))
+----
+[[ERC]]

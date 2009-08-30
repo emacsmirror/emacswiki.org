@@ -1,0 +1,30 @@
+This code is offered by StefanKamphausen. It puts the line and column numbers at the beginning of the ModeLine, so they are visible even when the TextCursor is inside a function with a long name.
+
+    (setq default-modeline-format
+        (list
+          ""   
+          (cons modeline-modified-extent 'modeline-modified)
+          (list 'line-number-mode "(%l,")
+          (list 'column-number-mode "%c) ")
+          (cons modeline-buffer-id-extent 'modeline-buffer-identification)
+          "  "
+          'global-mode-string
+          "   %[("
+          (cons modeline-minor-mode-extent
+                (list "" 'mode-name 'minor-mode-alist))
+          (cons modeline-narrowed-extent "%n")
+          'modeline-process
+          ")%]---"
+          (cons -3 "%p")
+          "-%-"))
+
+But there are some issues here:
+* In an earlier version I removed the "XEmacs:" string from it (which is hidden inside modeline-buffer-identification) but then the automatic display of function names (or chapters ...) done by fume (function-menu) won't work anymore because it relies on that string
+* Since I use this modeline format the toggling of the read-only status of a buffer doesn't always work correctly but I use it very rarely so it doesn't disturb me. And I can always use M-x toggle-read-only.
+
+-- StefanKamphausen
+
+----
+
+CategoryDisplay
+CategoryEditing

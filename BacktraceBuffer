@@ -1,0 +1,54 @@
+The *Backtrace* buffer is an Elisp Debugger (DebuggerMode).  This page
+shows you how to work with it.
+
+= Quitting =
+
+The most important command in debugger-mode is `q' to quit.  You might
+have to switch to the *Backtrace* buffer, first.
+
+If you kill the *Backtrace* window without quitting (`q'), you continue to be in a ''recursive edit''. The MajorMode indicated in the ModeLine is enclosed in square brackets:
+
+    --11:**-F1  *scratch*      [(Lisp Interaction)]--L8--All---------------------
+
+In order to ''leave'' a recursive edit, do `C-]' (<code>abort-recursive-edit</code>) or `ESC-ESC-ESC' (<code>keyboard-escape-quit</code>).
+
+= Example =
+
+Use M-x set-variable to set the variable debug-on-quit to t.  Then
+evaluate the following piece of code, and then hit C-g to quit.
+
+    (let ((n 0))
+      (while t
+        (setq n (+ n 1))))
+
+This will pop up the *Backtrace* buffer and start the Debugger.
+Here's what it will look like (more or less, depending on when you hit
+C-g to interrupt Emacs:
+
+    Debugger entered--Lisp error: (quit)
+      (while t (setq n (+ n 1)))
+      (let ((n 0)) (while t (setq n ...)))
+      eval((let ((n 0)) (while t (setq n ...))))
+      eval-last-sexp-1(nil)
+      eval-last-sexp(nil)
+      call-interactively(eval-last-sexp)
+
+The first line tells you what caused Emacs to enter DebuggerMode, and
+the second line tells you what Emacs will do next.  The following
+lines tell you how Emacs got there.  The last line tells you what
+started all of this.  Note how I obviously called `eval-last-sexp' to
+start the computation.
+
+== Evaluation ==
+
+To evaluate an expression in the example above, use `e'.  In my case,
+for example, I checked the value of the variable n.  It was 1093196.
+
+== Stepping, Continuing ==
+
+To step through code one step at a time, use `d'.
+
+To continue the computation, use `c'. 
+
+----
+CategoryDebug

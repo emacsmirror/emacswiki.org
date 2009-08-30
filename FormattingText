@@ -1,0 +1,87 @@
+Here is a function to *boldify* words:
+
+    (defun my-bold-word ()
+      (interactive)
+      (save-excursion
+        (forward-word 1)
+        (insert "*")
+        (backward-word 1)
+        (insert "*")))
+
+Though it does not *toggle* :/
+
+Here you are: --mina86
+
+ (defun surrounded-by-p (char)
+   "Returns t if word is surrounded by given char."
+   (save-excursion
+     (and (forward-word -1)
+          (equal char (char-before))
+          (forward-word 1)
+          (equal char (char-after)))))
+ 
+ (defun surround-word (char &optional force)
+   "Surrounds word with given character.  If force is nil and word
+ is already surrounded by given character remoevs them."
+   (save-excursion
+     (if (not (surrounded-by-p char))
+         (progn
+           (forward-word 1)
+           (insert char)
+           (forward-word -1)
+           (insert char)
+           t)
+       (forward-word 1)
+       (delete-char 1)
+       (forward-word -1)
+       (delete-char -1)
+       nil)))
+ 
+ (defun my-bold-word (&optional force)
+   (interactive "p")
+   (surround-word ?* force))
+ 
+ (defun my-italic-word (&optional force)
+   (interactive "p")
+   (surround-word ?/ force))
+ 
+ (defun my-underline-word (&optional force)
+   (interactive "p")
+   (surround-word ?_ force))
+
+
+----
+
+Underlining text by asking for a character, by [[Patrick Gundlach]]:
+
+ (defun pg-uline (ulinechar)
+   "Underline the current or the previous line with ULINECHAR"
+   (interactive "cUnderline with:")
+   (if (looking-at "^$")
+       (next-line -1))
+   (end-of-line)  
+   (let ((linelen (current-column)))
+     (insert "\n")
+     (while (> linelen 0)
+       (setq linelen (1- linelen))
+       (insert ulinechar)))
+   (insert "\n"))
+
+Here's a version that underlines with "-" by default, and with "=" if prefixed with the UniversalArgument:
+
+ (defun my-uline (arg)
+   "Underline the current or the previous line with \"-\".
+  Prefixed with \\[universal-argument] will underline with \"=\"."
+   (interactive "P") 
+   (let ((ulinechar (if (null arg) ?- ?=)))
+     (if (looking-at "^$")
+	 (next-line -1))
+     (end-of-line)  
+     (let ((linelen (current-column)))
+       (insert "\n")
+       (insert-char ulinechar linelen)
+       (insert "\n"))))
+
+----
+CategoryEditing
+CategoryFaces

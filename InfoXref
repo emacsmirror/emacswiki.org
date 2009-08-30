@@ -1,0 +1,22 @@
+<code>info-xref.el</code> checks external cross references in info
+files, by having Emacs attempt to visit the nodes specified.
+
+<code>makeinfo</code> checks references internal to a document
+when it processes a <code>.texi</code> file, but not external references, so it's it rather easy for mistakes to creep in or node name changes to go unnoticed.
+
+This package is included in Emacs 22 and it works in GnuEmacs 21, too.
+
+: CVS:info-xref.el
+
+<code>M-x info-xref-check</code> checks one file.  When invoked from
+an InfoMode or [[Texinfo]] buffer, the current or corresponding <code>.info</code> file
+is the default at the prompt.  See comments in
+<code>info-xref.el</code> for more commands.
+
+The results of checking are shown in a buffer.  The format is a bit
+rough, but there's not normally many problems, and correcting them is
+a manual process anyway, a case of finding the right spot in the
+original .texi and finding or deciding what node it ought to point to.
+
+----
+[[Texinfo]]

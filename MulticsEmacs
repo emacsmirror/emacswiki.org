@@ -1,0 +1,10 @@
+Multics Emacs was the first to have Lisp as an extension language.  It was written in MacLisp.
+
+Sources here: http://web.mit.edu/afs/net/dev/reference/multics/ldd/unb/source/
+
+Looks like BarryMargolin made lots of changes to Multics Emacs.
+
+For more information, see Greenberg's paper, [http://www.multicians.org/mepap.html "Multics Emacs: The History, Design and Implementation"].
+
+----
+CategoryHistory EmacsImplementations

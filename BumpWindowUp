@@ -1,0 +1,18 @@
+Quite probably XEmacs only.  If you're annoyed by emacs getting put so the minibuffer is hidden under the taskbar, this makes sure your emacs window stays near the top part of the screen when it's mapped.  Put this in your ~/.xemacs/init.el file.  Tweak the numbers as you prefer.
+<pre>
+;; xemacs on NT has a tendency to put the window into annoying places,
+;; putting the minibuffer under the taskbar for example.  The
+;; following will keep frames away from the bottom area.
+
+(defun my-bump-frame-up (frame)
+  (let* ((wincfg (cadr (assoc frame (current-frame-configuration))))
+	(winleft (plist-get wincfg 'left))
+	(wintop (plist-get wincfg 'top)))
+    (when (> wintop 75)
+      (set-frame-position frame winleft (- wintop 30)))))
+
+(add-hook 'create-frame-hook 'my-bump-frame-up)
+</pre>
+
+----
+CategoryDisplay

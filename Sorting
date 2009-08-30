@@ -1,0 +1,24 @@
+Emacs can sort.  It can sort lines, paragraphs, pages.  It can sort by fields, columns or even RegularExpression.  It is not as specific as the unix ##sort(1)## command.
+
+; `M-x sort-lines': Sort lines in the region.
+; `C-x h M-x sort-lines': Sort all lines in the buffer.
+; `C-u M-x sort-lines': Sort lines in the region in reverse order.
+; `M-x sort-numeric-fields': Sort lines in the region numerically.
+; `M-x sort-numeric-fields M-x reverse-region': Sort lines numerically in reverse.
+; `M-x sort-paragraphs': Sort by paragraph in region.
+; `C-u M-x sort-paragraphs': Sort paragraphs in reverse.
+; `M-x sort-pages': Sort by page in region.
+; `C-u M-x sort-pages': Sort pages in reverse.
+; `C-u 2 M-x sort-field': Sort lines by second field in region, where fields are separated by any whitespace.
+; `C-u 2 M-x sort-field M-x reverse-region': Sort lines by second field in reverse.
+; `M-x sort-columns': Sort the lines the region "covers" using the columns between region beginning and end.
+; `C-u M-x sort-columns': Sort lines the region "covers" in reverse using the columns in the region.
+
+[new]
+Give useful examples, maybe?
+----
+
+See the "Sorting" section in the EmacsManual, for details.
+
+----
+CategoryEditing

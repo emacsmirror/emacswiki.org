@@ -1,0 +1,44 @@
+If you are writing a new major mode, you might face the same problems as DaveFootitt:
+
+{{{
+From: DaveFootitt
+Subject: Font locking a new mode
+Newsgroups: gnu.emacs.help
+Date: 23 Jul 2001 15:31:04 +0100
+}}}
+
+I'm trying to font lock a new mode.  The problem is it doesn't
+automatically do it, but will do if I call
+`font-lock-fontify-buffer'.
+
+{{{
+From: EliZaretskii
+Date: Mon, 23 Jul 2001 20:29:38 +0200
+}}}
+
+Look in the file font-lock.el, where global-font-lock is defined and
+documented.  The comments there tell that font-lock uses a not-so-clean
+trick to know what modes support font-lock and which don't.  You need to
+make your mode compliant with what font-lock expects to find.
+
+----
+
+Yuck -- gross hack . . .  The code in Emacs 20.7 says:
+
+<pre>
+ ;; Gross hack warning: Delicate readers should avert eyes now.
+</pre>
+
+What happens is this:
+
+When a major mode is entered, it should run <code>kill-all-local-variables</code>. That will call `change-major-mode-hook'.
+Font-lock will install <code>font-lock-change-major-mode</code> on <code>change-major-mode-hook</code>.
+`font-lock-change-major-mode' will add `turn-on-font-lock-if-enabled' to `post-command-hook'.
+This is gross.  It is also the reason why sometimes (very seldom) a buffer will only start to fontify after you do something in the buffer.  Now, having stuff on `post-command-hook' slows Emacs down.  That's why the first call to `turn-on-font-lock-if-enabled' will remove itself from `post-command-hook' again.
+
+----
+* [http://two-wugs.net/emacs/mode-tutorial.html Tutorial by Scott Andrew Borton for creating a new mode with fontification]
+
+(this link is unfortunately dead as far as I can tell.  However, [http://web.archive.org/web/20070702002238/http://two-wugs.net/emacs/mode-tutorial.html the WaybackMachine] has it. --CharlesSebold)
+----
+CategoryFaces CategoryCode

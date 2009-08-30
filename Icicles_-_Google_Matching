@@ -1,0 +1,78 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Candidate Sets]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - File-Name Input]] ||
+
+----
+
+== How To Do Google-Style Matching With Icicles ==
+
+This section presents nothing new -- but you might not want to skip it. It points out something that you might not have picked up yet. You've learned about '''Icicles''' [[regexp]] matching and candidate [[Icicles - Candidate Sets|candidate set operations]], but it can be worthwhile to compare how '''Icicles''' matches inputs against [[completion]] candidates with how [http://www.google.com Google] matches search strings against Web pages. 
+
+'''Summary:''' You can do pretty much the same things, but the way you accomplish them is different.
+
+=== Domain of Discourse ===
+
+In [http://www.google.com/advanced_search?hl=en Google search], the domain of discourse, that is, the possible set of search hits, is the set of Web pages. There are also search fields that limit the domain of discourse by file type, page number, update date, page position, freedom of use, and even morality ("Safe Search").
+
+In '''Icicles''' (Emacs), the domain of discourse changes automatically, depending on the current context. For [[command]]-name input, it is the set of all named commands; for [[variable]]-name input, it is the set of variable names; and so on.
+
+=== Global Filtering ===
+
+In Google, you can limit searching to specific Web sites, or exclude certain Web sites from searching. 
+
+In '''Icicles''', you can add extra completion candidates, using variable `icicle-extra-candidates', and you can filter out (other) candidates globally, using filter variables `icicle-must-match-regexp', `icicle-must-not-match-regexp', and `icicle-must-pass-predicate'. These are internal '''Icicles'''
+variables.  Normally, you do not change them directly; instead, a command can use them to limit or extend the effective domain of discourse. See [[Icicles - Global Filters]].
+
+Variable `icicle-must-pass-predicate' applies to the textual
+candidates that are displayed in [[buffer]] `*Completions*'.  You can
+also apply a predicate to the full [[alist]]-entry candidates that are
+supplied to `completing-read' or `read-file-name'.  As a
+programmer, you can of course do that when your code calls these
+functions.  As an '''Icicles''' user, you can use `##M-&##' to define and
+apply predicates to such alist-entry candidates on the fly, while completing.
+See [[Icicles - Search Commands, Overview]].
+
+
+=== Word Matching and String Matching ===
+
+Google matches words, by default, but you can specify an "exact phrase" to get literal string matching. 
+
+By default, '''Icicles''' ([[apropos completion|apropos]]-)matches [[regexp]]s, but you can use '''`##\b##'''' in a regexp to perform word matching, and you can use '''`##C-`##'''' (`icicle-toggle-regexp-quote') to perform exact (literal) matching. See [[Icicles - Special Characters in Input Patterns]].
+
+=== AND Matching and OR Matching ===
+
+Google has search fields for AND matching ("with '''all''' of the words") and OR matching ("with '''at least one''' of the words"). 
+
+In '''Icicles''', you can use [[progressive completion]] to perform AND matching: use '''`##M-*##'''' to introduce each term to match. Alternatively, you can use '''`##C-*##'''' (`icicle-candidate-set-intersection'). You can use '''`##C-+##'''' (`icicle-candidate-set-union') to perform OR matching.  Note that, by definition, unordered
+AND matching is not possible using a single regexp.  See [[Icicles - Progressive Completion]] and [[Icicles - Candidate Sets]].
+
+=== NOT Matching ===
+
+Google has a search field for terms that must not occur in search hits: "'''without''' the words".
+
+In '''Icicles''', you can use '''`##C-~##'''' (`icicle-candidate-set-complement') to exclude matching completion candidates. You can combine this with progressive completion, to exclude any number of terms: `##toto C-~ M-* titi C-~ M-* foobar##' excludes all candidates matching ##toto##, ##titi##, or ##foobar##. Use this process-of-eliminiation technique to progressively pare down the set of possible candidates.  Note
+that such generalized complementing (as opposed to complementing a
+character set) is not possible using a single regexp -- you cannot
+use a regular expression to say "Show me everything that does
+''not'' match this".  See [[Icicles - Nutshell View#ChippingAway|Chipping Away the Non-Elephant]], [[Icicles - Candidate Sets]], and [[Icicles - Progressive Completion]].
+
+
+----
+
+|| *Previous:*  [[Icicles - Candidate Sets]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - File-Name Input]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el, Lisp:icomplete+.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

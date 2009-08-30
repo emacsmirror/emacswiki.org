@@ -1,0 +1,45 @@
+Lisp:columnize.el defines interactive autoloaded functions to
+turn a list of words or quoted phrases into a neatly columnized list.
+
+For example:
+<pre>
+     here is a list of various length 
+     words that I want columnized
+
+     here        is          a           list        of
+     various     length      words       that        I
+     want        columnized
+</pre>
+Two functions are provided.
+* columnize-text was used above.  The list to be columnized can be any region so it need not be all on the same line.  
+
+* columnize-strings is a trivial wrapper for columnize-text that does the same thing for a list of quoted strings.
+
+A practical example of using columnize strings might be something like this.  I selected the quoted strings then did M-x columnize-strings <ret> 
+
+<pre>
+(defvar enform-keywords-statements
+  '( "AT END"  "AT  START" "CLOSE" "DECLARE" "DELINK" "DICTIONARY"     
+     "EXIT" "FIND" "FOOTING" "LINK" "LIST" "OPEN" "PARAM" "SET"            
+     "SUBFOOTING" "SUBTITLE" "TITLE" )
+  "List of ENFORM statement keywords.
+Used to create the `font-lock-keywords' table.")
+</pre>
+And got this
+<pre>
+(defvar enform-keywords-statements
+  '( "AT END"      "AT  START"   "CLOSE"       "DECLARE"     "DELINK"      
+     "DICTIONARY"  "EXIT"        "FIND"        "FOOTING"     "LINK"        
+     "LIST"        "OPEN"        "PARAM"       "SET"         "SUBFOOTING"  
+     "SUBTITLE"    "TITLE"        )
+  "List of ENFORM statement keywords.
+Used to create the `font-lock-keywords' table.")
+
+</pre>
+
+I initially wrote this for quickly fixing up text copied from CSV files when documenting projects but found it handy in other cases like beautifying lists of keywords in major modes I maintain
+
+------
+See also AlignColumn and AlignCommands.
+------
+CategoryEditing  CategoryRegion  CategoryAlignment

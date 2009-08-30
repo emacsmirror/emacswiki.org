@@ -1,0 +1,18 @@
+    ;;; Luke Gorrie <luke at bluetail.com>                                          
+    (defun activate-peril-sensitive-sunglasses ()
+      "With apologies to Zaphod Beeblebrox."
+      (interactive)
+      (mapc (lambda (face)
+              (set-face-foreground face "black")
+              (set-face-background face "black"))                                   
+            (face-list)))
+
+How easy it is to misread page titles. I give you, (drumroll...), !PerlSensitiveSunglasses!:
+
+    (add-hook 'cperl-mode-hook 'activate-peril-sensitive-sunglasses)
+
+; )
+
+----
+CategoryHumor
+CategoryFaces

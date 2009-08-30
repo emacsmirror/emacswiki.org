@@ -1,0 +1,26 @@
+There seem to be a few problems with people deleting pages recently. How do I roll back a page? I guess we need to make rollback as simple as deletion is (and since that may be abused too, rolling forward, too) --DamienElmes
+
+[new]
+Nevermind, I found it in the "history" link. That'll teach me to post after I've just woken up.
+
+[new:DrewAdams:2006-08-22 07:15 UTC]
+It seems that the Rollback link is making it easier for vandals to cause trouble. Perhaps it isn't such a good idea? -- DrewAdams
+
+[new]
+Yeah. I've been wondering. The log files seem to indicate broken bots: The robot info is ignored, so basically these are misbehaving spiders. Search engines, perhaps, or email harversting bots. The three or four I've seen are all hosted in China. And they basically click on all the rollback links. At least that is what happened on Community Wiki, based on log files. The alternative is requiring people to be editors/administrators... Another option would be to change the requests from GET to POST, in other worlds to change it from a _rollback_ link to a rollback button. None of these should be necessary. :( -- AlexSchroeder
+
+[new]
+Or maybe ask for a password at rollback? The password could be on the same page that asks for the password. That would prevent the spiders from doing rollback I think. -- LennartBorgman
+
+[new]
+I am currently requiring a username for rollbacks, and unlike the edit page, I am _not_ offering a field to enter it on the rollback page (unlike the edit page, which does have a username field).
+It seems to be working pretty well.-- AlexSchroeder
+
+[new:DrewAdams:2006-08-27 15:33 UTC]
+Maybe I don't understand, but I just now had to roll back another page (Lisp:jswat.el), and I just clicked the Rollback link -- I was not asked for my user name. -- DrewAdams
+
+[new]
+I think that's the point, the rollback link appears only if you have a cookie with a username, this way robots don't see the link, while we (user with a username) just have to click. -- PierreGaston
+
+[new:DrewAdams:2006-08-28 06:03 UTC]
+Ah, I see. Thx. Makes sense. -- DrewAdams

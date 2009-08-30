@@ -1,0 +1,24 @@
+    <gbvb> kensanata: It makes so much more sense..
+    <kensanata> gbvb: "it was hard to write, it should be hard to read"!!
+
+Start by loading the symbolic regular expression engine:
+
+    (require 'sregex)
+
+You can also load it interactively, of course: M-x load-library RET sregex RET.  From the help for the function `sregexq' some examples:
+
+    (sregexq (or "Bob" "Robert"))  =>  "Bob\\|Robert"
+
+    (sregexq "M*A*S*H")  =>  "M\\*A\\*S\\*H"
+
+    (sregexq (opt (or "Bob" "Robert")))  =>  "\\(Bob\\|Robert\\)?"
+
+    (sregexq (group (or "Go" "Run"))
+             ", Spot, "
+             (backref 1))             =>  "\\(Go\\|Run\\), Spot, \\1"
+
+See also [[rx]] and the rx.el commentary.
+
+----
+CategoryCode
+CategoryRegexp

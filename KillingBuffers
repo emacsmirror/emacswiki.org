@@ -1,0 +1,209 @@
+This page is about functions that delete, or "kill" buffers. The standard function to kill a buffer is `kill-buffer'. This page goes beyond `kill-buffer'.
+
+: '''Note:''' "killing" a buffer has nothing to do with "killing" text. After you "kill" (aka "cut") text, you can "yank" (aka "paste") it back again. After you kill a buffer, it is gone forever.
+
+[:kill-buffer-and-its-windows]
+== Kill Buffer and Delete Its Windows ==
+
+DrewAdams has written command `kill-buffer-and-its-windows', available in library Lisp:misc-cmds.el, which kills the buffer and ''deletes all of its windows''.  The default buffer to kill is `current-buffer'. The argument to the command may be either a buffer or its name (a string).
+
+This command is especially useful as a replacement for command `kill-buffer' when using Emacs ''[[Frame]]s'' -- see OneOnOneEmacs. Used with other frame-oriented functions, it also deletes the frame if the buffer is alone in the frame.
+
+Motivation:
+
+* Command `kill-buffer' displays a different buffer in the window,
+in place of one you've killed. With frames this is more annoying than useful.
+* Command `kill-buffer-and-window' just complains if you try to delete the sole window in a frame. 
+
+''Note:'' You can use `substitute-key-definition' to replace all
+key bindings for `kill-buffer' with bindings to `kill-buffer-and-its-windows':
+
+   (substitute-key-definition 'kill-buffer 'kill-buffer-and-its-windows global-map)
+
+== Kill Other Buffers ==
+
+Here is a simple function that kills all buffers, except the current one.
+
+    (defun kill-other-buffers ()
+      "Kill all other buffers."
+      (interactive)
+      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+
+== Kill All Dired Buffers ==
+
+[:SimpleCommand]
+=== Simple, One-Off Command ===
+
+Here is a simple, one-off command to kill all dired buffers:
+
+    (defun kill-all-dired-buffers()
+      "Kill all dired buffers."
+      (interactive)
+      (save-excursion
+        (let((count 0))
+          (dolist(buffer (buffer-list))
+            (set-buffer buffer)
+            (when (equal major-mode 'dired-mode)
+              (setq count (1+ count))
+              (kill-buffer buffer)))
+          (message "Killed %i dired buffer(s)." count ))))
+
+To use this for BSBufferSelection, consider the following keybinding:
+
+    (define-key bs-mode-map (kbd "D D") 'kill-all-dired-buffers)
+
+See also: KillKey
+
+[:UsingIbufferMode]
+=== Using IbufferMode ===
+
+Killing all Dired buffers is easy with IbufferMode: simply type 
+<tt>C-x C-b * / D yes RET</tt>.
+
+=== Using Icicles ===
+
+Here's one way to kill Dired buffers using [[Icicles]]. 
+
+# Define a command that kills one (or more) Dired buffers. 
+# Call it.  Use [[Completion]] or cycling to choose a Dired buffer to kill. Or use `<code>C-!</code>' to kill them all.
+
+Here's how to define a command that lets you do that. You need:
+
+* the name of the new command -- `kill-dired-buffer'
+* its doc string -- <code>Kill one or more Dired buffers</code>
+* a function to kill a buffer by name -- `kill-buffer'
+* the arguments to `completing-read' to read a Dired buffer name:
+
+** a prompt: <code>Kill Dired buffer: </code>
+** an alist of buffer names -- map (`list' o `buffer-name') over the buffer list
+** a predicate to determine if a buffer is a Dired buffer -- check its mode
+
+  (icicle-define-command
+   kill-dired-buffer                      ; Command name
+   "Kill one or more Dired buffers"       ; Doc string
+   kill-buffer                            ; Function to perform the action
+   "Kill Dired buffer: "                  ; Prompt
+   (mapcar (lambda (buf) (list (buffer-name buf))) (buffer-list)) ; Completions
+   (lambda (bufcons) (save-excursion      ; Predicate: Dired mode?
+                       (set-buffer (car bufcons))
+                       (equal major-mode 'dired-mode)))
+   t)                                     ; Existing buffers only
+
+
+==== Moral Of The Story? ====
+
+How does the [[Icicles]] version compare with the other methods described above?
+
+* It's about as simple and straightforward as the hand-coded [[#SimpleCommand]] version.
+
+* It doesn't rely upon any built-in functionality for managing buffers, as in [[#UsingIbufferMode]].
+
+* You can use the same command to kill selected Dired buffers (in the same command execution) or all of them at once.  Of course, if all you ever want to do is kill all of them, then hitting `<code>C-!</code>' is an extra step that just gets in the way.
+
+* The ''same technique'' can be used to define any command that operates on one or more objects.
+
+* The ''same user interface'' is available for any command -- it's just input completion, with the added possibility of acting on all possible completion candidates (`<code>C-!</code>'). There is no special UI for users to learn. There are a few things to learn (e.g. `<code>C-!</code>'), but they are not particular to one kind of object (buffers) or action (deleting). 
+
+There is a place for specialized user interfaces, and a place for a more common, uniform UI. If IbufferMode (just as an example) is especially well designed to manage buffers, then why not learn its interface and use it?  On the other hand, if the same interface can be used for operations of all kinds on all kinds of objects, and if those operations are simple enough to perform, then less learning is needed.
+
+For instance, to give you an idea of how "simple" it is to learn the `<tt>* / D</tt>' incantation shown above (in [[#UsingIbufferMode]]), here are a few of the bindings for IbufferMode (about 1/4 of those listed in the `ibuffer-mode' doc string). These are just the keys for ''marking'' buffers. The second part of the incantation, `D', is listed in a separate section, on keys for ''operating'' on marked buffers. The [[KeySequence]]s follow a logical pattern, but there is still a lot to learn.
+
+      'm' - Mark the buffer at point.
+      't' - Unmark all currently marked buffers, and mark all unmarked buffers.
+      'u' - Unmark the buffer at point.
+      'DEL' - Unmark the buffer at point, and move to the previous line.
+      '* *' - Unmark all marked buffers.
+      '* M' - Mark buffers by major mode.
+      '* u' - Mark all "unsaved" buffers.
+              This means that the buffer is modified, and has an associated file.
+      '* m' - Mark all modified buffers,
+              regardless of whether or not they have an associated file.
+      '* s' - Mark all buffers whose name begins and
+              ends with '*'.
+      '* e' - Mark all buffers which have
+              an associated file, but that file doesn't currently exist.
+      '* r' - Mark all read-only buffers.
+      '* /' - Mark buffers in `dired' mode.
+      '* h' - Mark buffers in `help-mode', `apropos-mode', etc.
+      '.' - Mark buffers older than `ibuffer-old-time'.
+      'd' - Mark the buffer at point for deletion.
+      '% n' - Mark buffers by their name, using a regexp.
+      '% m' - Mark buffers by their major mode, using a regexp.
+      '% f' - Mark buffers by their filename, using a regexp.
+
+The aim in pointing this out is not to trash IbufferMode -- not at all. It's just to ponder the notion of simplicity of use.
+
+At some point, of course, there is a trade-off:
+
+* Creating specialized tools for everything can lead to carrying around a giant, complex toolkit -- the "swiss-army-knife" syndrome.
+
+* Trying to shoe-horn everything into the same general mold can lead to the "if-all-you-have-is-a-hammer-then-everything-looks-like-a-nail" syndrome.
+
+
+The question for the second approach is, "How flexible and general is the mold?" A hammer is a good, general tool -- the key is to recognize when a hammer is no longer appropriate for the task at hand. -- DrewAdams
+
+== Replacement for kill-this-buffer ==
+
+Here's a function that you can use instead of kill-this-buffer, but which prevents some buffers to be killed by mistake :
+
+    ;; you can modify that list, to fit your needs
+    (setq not-to-kill-buffer-list '("*scratch*" "#emacs" "*Messages*" "irc.freenode.net:6667"))
+    (defun kill-buffer-but-not-some ()
+      (interactive)
+      (if (member (buffer-name (current-buffer)) not-to-kill-buffer-list)
+          (bury-buffer)
+        (kill-buffer (current-buffer))))
+
+== Use IswitchBuffers to kill buffers ==
+
+When you enter IswitchBuffers, press C-k to kill selected buffer.
+I always use this method to kill certain buffers. -- Anonymous
+
+== Protecting buffers ==
+
+To protect buffers from being killed, see ProtectingBuffers.
+
+== Auto clear up your huge buffer list every 2 hours ==
+
+There is a MidnightMode to clear unused buffers at midnight. I find that I need a more aggressive clear up. Here is what I use to auto kill buffers not active for more than 15 minutes every 2 hours.
+
+    ;; midnight mode
+
+    (require 'midnight)
+
+    ;;kill buffers if they were last disabled more than this seconds ago
+    (setq clean-buffer-list-delay-special 900)
+
+    (defvar clean-buffer-list-timer nil
+      "Stores clean-buffer-list timer if there is one. You can disable clean-buffer-list by (cancel-timer clean-buffer-list-timer).")
+
+    ;; run clean-buffer-list every 2 hours
+    (setq clean-buffer-list-timer (run-at-time t 7200 'clean-buffer-list))
+
+    ;; kill everything, clean-buffer-list is very intelligent at not killing
+    ;; unsaved buffer.
+    (setq clean-buffer-list-kill-regexps
+	  '("^.*$"))
+
+    ;; keep these buffer untouched
+    ;; prevent append multiple times
+    (defvar clean-buffer-list-kill-never-buffer-names-init
+      clean-buffer-list-kill-never-buffer-names
+      "Init value for clean-buffer-list-kill-never-buffer-names")
+    (setq clean-buffer-list-kill-never-buffer-names
+	  (append
+	   '("*Messages*" "*cmd*" "*scratch*" "*w3m*" "*w3m-cache*" "*Inferior Octave*")
+	   clean-buffer-list-kill-never-buffer-names-init))
+
+    ;; prevent append multiple times
+    (defvar clean-buffer-list-kill-never-regexps-init
+      clean-buffer-list-kill-never-regexps
+      "Init value for clean-buffer-list-kill-never-regexps")
+    ;; append to *-init instead of itself
+    (setq clean-buffer-list-kill-never-regexps
+	  (append '("^\\*EMMS Playlist\\*.*$")
+		  clean-buffer-list-kill-never-regexps-init))
+
+
+----
+CategoryCommands OneOnOneEmacs CategoryBufferSwitching

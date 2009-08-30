@@ -1,0 +1,29 @@
+On the newsgroup comp.lang.scheme, off-topic discussion has broached the age-old battle between ViAndEmacs.
+A proponent of a "Java IDE" stood up and there was an attempt to update an old joke, "Emacs: Eight Megabytes and Constantly Swapping".
+
+:: I thought it was ''Eighty'' Megabytes and Constantly Swapping ;-)
+
+Ulrich Hobelmann responds in message [http://groups.google.com/groups?selm=3f6j6oF66r9qU1@individual.net 3f6j6oF66r9qU1@individual.net]:
+
+ Matthias Buelow wrote:
+ > Bradd Szonye wrote:
+ >> Joe Marshall wrote: 
+ >>> Hmm.  My emacs is currently at 42 megabytes (I've been debugging and
+ >>> one of my trace buffers has more than 3MB ).  But even at 42 Mb,
+ >>> that's less than 10% of my available free memory.  I'm not even close
+ >>> to swapping.
+ >>
+ >>
+ >> OK, so the old joke needs an update to account for modern software bloat!
+ > 
+ > 
+ > I recommend one of the new Java IDEs... they make emacs look like 
+ > /bin/ed in comparison. 
+ 
+ And not only in RAM consumption and slowness, but also in user 
+ interface complexity and screen space usage!
+ 
+ Hooray for progress!
+
+----
+CategoryHumor

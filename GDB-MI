@@ -1,0 +1,184 @@
+[http://users.snap.net.nz/~nickrob/#GDBMI gdb-mi] is a package by Nick
+Roberts which makes Emacs use GDB/MI interface to talk with the GNU
+Debugger. <code>gdb-mi</code> is currently in Emacs trunk, replacing 
+the old <code>gdb-ui</code> package in GNU Emacs.
+
+= GSoC 2009 =
+
+«[http://socghop.appspot.com/student_project/show/google/gsoc2009/karlberry/t124022551883
+Emacs GDB/MI migration]» is one of two Emacs-related projects which were
+[http://socghop.appspot.com/org/home/google/gsoc2009/karlberry accepted] for 
+[EmacsWiki:id=SummerOfCode2009 Google Summer of Code 2009] program.
+
+The goal of this project is to migrate the GDB graphical interface in
+Emacs to completely use GDB's Machine Interface (GDB/MI). This will
+make GDB support in Emacs more robust and will allow using of GDB 
+features available only with MI.
+
+The development is carried out by //Dmitry Dzhus// under mentorship of
+//Nick Roberts//.
+
+See this package stats at [https://www.ohloh.net/p/emacs-gdb-mi Ohloh]!
+
+= What's new? =
+
+This section provides an overview of new user-visible features
+implemented during Google Summer of Code. This draft serves as a base 
+for updated section of the Emacs manual (see «GDB Graphical Interface»).
+
+Note that the development version of *GDB 7.0* is needed for this
+package to work (<code>-thread-info</code> command, non-stop debugging
+support).
+
+=== Stateless debugging ===
+
+With MI, the notion of «current thread» is not so important as it
+provides means to query information for any thread without actually
+selecting it. This means that much more current thread selection logic
+may be implemented in the frontend without relying on the internal
+state of the debugger.
+
+It's now possible to observe information for several threads
+simultaneously (in addition to buffers which show information for
+currently selected thread). Select threads buffer by clicking
+«Threads» button or using <code>gdb-display-threads-buffer</code>
+command. Now you can ask Emacs to show information for thread under
+point using these keybindings, either using the current frame or creating a new one:
+
+; d: gdb-display-disassembly-for-thread
+; f: gdb-display-stack-for-thread
+; l: gdb-display-locals-for-thread
+; r: gdb-display-registers-for-thread
+
+; D: gdb-frame-disassembly-for-thread
+; F: gdb-frame-stack-for-thread
+; L: gdb-frame-locals-for-thread
+; R: gdb-frame-registers-for-thread
+
+(Typing <code>C-h m</code> in threads list buffer will also give you this list.)
+
+When you create a buffer showing information about some specific
+thread, it becomes «bound» to that thread and keeps showing actual
+information while you debug your program.
+
+=== Non-stop debugging ===
+
+; All-stop debugging: When one thread stops (hitting a breakpoint or
+  recieving a signal), all threads stop.
+
+; Non-stop debugging: When one thread stops, the rest continue
+  running.
+
+Non-stop debugging is much less intrusive.
+
+To activate non-stop mode, set <code>gdb-non-stop-setting</code>
+customization variables to <code>t</code>. Note that changing this
+while debugging a program has no effect.
+
+By default, when a thread stops in non-stop mode, Emacs automatically
+switches to that thread.
+
+It may be undesirable to let Emacs switch current thread when you
+already have some other stopped thread selected. Set
+<code>gdb-switch-when-another-stopped</code> to <code>nil</code> to
+prevent this.
+
+Emacs can decide whether or not to switch to stopped thread depending
+on the reason which caused the stop. Customize
+<code>gdb-switch-reasons</code> to select stop reasons which make
+Emacs switch thread.
+
+<code>gdb-stopped-hooks</code> hook variable allows you to execute
+your functions whenever some thread stops. For example:
+
+{{{
+(defun my-gdb-stopped-hook (record)
+  (with-current-buffer (get-buffer-create "*debug-stop-log*")
+    (insert
+     (format "%s stopped in %s (%s)\n"
+             (gdb-get-field record 'thread-id)
+             (gdb-get-field record 'frame 'func)
+             (gdb-get-field record 'reason)))))
+
+(add-to-list 'gdb-stopped-hooks #'my-gdb-stopped-hook)
+}}}
+
+In non-stop mode, you can switch between different modes for GUD
+execution control commands.
+
+; Non-stop/A: When <code>gdb-gud-control-all-threads</code> is
+  <code>t</code> (that's default), interruption & continuation
+  commands apply to //all// threads, so you can halt or continue all
+  your threads with one command (<code>gud-stop-subjob</code> and
+  <code>gud-cont</code>, respectively). Go button is shown on the
+  toolbar when at least one thread is stopped, whereas Stop button is
+  shown when at least one thread is running.
+
+; Non-stop/T: Nil <code>gdb-gud-control-all-threads</code> value means
+  that only current thread is stopped/continued. Go/Stop buttons on
+  the GUD toolbar are shown depending on the state of current thread.
+
+Stepping commands always apply to current thread.
+
+=== Fine thread control ===
+
+In non-stop mode, you can interrupt/continue your threads without
+selecting them. Hitting <code>i</code> in threads list buffer
+interrupts thread under point, <code>c</code> continues it,
+<code>s</code> steps through. More commands may be added in the
+future.
+
+Note that when you interrupt a thread, it stops with «Signal received»
+reason. If that reason is included in your
+<code>gdb-switch-reasons</code> (it is by default), Emacs will switch
+to that thread.
+
+Given that you can create bound buffers for any thread, this allows
+you to observe state of many threads in the same time.
+
+See the annotated
+[http://www.flickr.com/photos/nothingpersonal/3733686206/ screenshot]
+showing how Emacs works with non-stop GDB:
+
+http://farm3.static.flickr.com/2606/3733686206_a84a8b398c.jpg
+
+You can customize what fields are included in stack frames list and
+threads list by changing options in <code>gdb-buffers</code>
+customization group.
+
+== Development plan ==
+
+The following has been done for <code>gdb-mi.el</code> during Summer of Code 2009.
+
+Implemented buffers for:
+
+# Threads
+
+# Disassembly
+
+# Program memory sections
+
+Major goals:
+
+# Made it possible watch information for several threads simultaneously
+
+# Added non-stop debugging support
+
+Internals (you don't want to read this):
+
+# Got closer to MVC (<code>gdb-buf-publisher</code> provides a cleaner way to ask buffers to update; we maintain <code>gdb-breakpoints-list</code> and <code>gdb-threads-list</code>; we're still tied to «one buffer — one handler» model)
+
+# Most of code now uses JSON parser instead of regular expressions to parse MI responses.
+
+# Handle all MI async records
+
+== Related public discussions ==
+
+* «[http://thread.gmane.org/gmane.comp.gdb.devel/25753 GDB frontends, MI-speak and object notation]» @ gdb: Working with MI responses in an object-like manner. Redundancies in GDB/MI output syntax.
+* «[http://thread.gmane.org/gmane.emacs.devel/111635 fadr]» @ emacs-devel: Why <code>fadr.el</code> is a bad idea 
+** «[http://groups.google.com/group/comp.lang.lisp/browse_frm/thread/5c6247038a229755/4ddce0bdb7be088b What makes different things lispy or unlispy?]» @ c.l.l: Related discussion.
+* «[http://thread.gmane.org/gmane.comp.gdb.devel/26025 Learn function name by its address]» @ gdb: <code>-symbol-info-symbol</code> and unimplemented MI commands.
+* «[http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=3794 Error in json from gdb-ui]» @ emacs-bugs: Broken output in <code>-break-list</code> causes JSON parser to suffer *fixed*. RET behaviour in GUD buffer *fixed*. GDB <code>shell</code> command and GUD buffer *fixed*. Killing GDB buffer does not send <code>detach</code> command. <code>while/if</code> misbehaving. Completion.
+* «[http://thread.gmane.org/gmane.emacs.help/66312 Problems with gdb and program files in another directory than current working directory]» @ emacs-help: <code>No source file named .</code> problem *fixed*.
+* «[http://thread.gmane.org/gmane.emacs.help/66357 gdb in Emacs 23]» @ emacs-help: RET behavour (second report).
+* «[http://article.gmane.org/gmane.emacs.help/66465 M-x gdb doesn't work anymore with Emacs 23.1.50.1]» @ emacs-help: <code>No source file named .</code> (second report). Shell aliases are ignored when running GDB under Emacs

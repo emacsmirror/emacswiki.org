@@ -1,0 +1,36 @@
+Commonly referred to as TEI-Emacs.  An excellent GNU-Emacs 21.3 installation choice for all Windows users, indeed, for any potential Emacs user, on Windows or Unix, perhaps the best choice to ensure a more or less complete SGML/XML authoring system for processing XHTML, Docbook or Text Encoding Initiative markedup texts, and much more, complete with standard XML validating tools, bundled with extensive Emacs-specific and XML-related tutorials  and documentation.  Professionally produced to exacting academic standards by the Text Encoding Initiative, an academic consortium (Oxford; Virgina; Brown; Bergen, Norway, etc.) devoted to semantic markup of humanities texts (variorium and critical editions, concordances, multilingual dictionairies, etc.), founded in 1987.  About TEI: http://www.tei-c.org/  
+
+About TEI-Emacs: http://www.tei-c.org/Software/tei-emacs/
+
+My experience and evaluation: This is simply the best packaging of Emacs for Windows I've seen, period, bar none, and the only one of three or four I've attempted to use that allows one to get any significantly enhanced learning or work done, completely offline, *immediately*  after clicking the last default of its simple install dialog.  Uninstall option included.     
+
+Now at version 3 (20 May 2003, last updated 30 September 2003 with later DocBook DTD/XSL and TEI XSLT stylesheets), this was produced by Text Encoding Initiative heavyweights(and Emacs mavens) [[LouBurnard]] and [[SebastianRahtz]], both of Oxford University Computer Services, and [[ChristianWittern]], of the University of Kyoto.  
+
+Default Emacs XML editing mode is SGML/XML genius [[JamesClark]]'s *incrementally validating*   nxml mode, making it highly competitive with proprietary XML editors, with easy switch back to venerable (but non-validating) Emacs psgml mode with one keychord: your choice. (My take: If you are new to XML, start learning with this distribution and concentrate on RelaxNG and leave the legacy stuff there for when you need it and the future standards fights to the experts. A lot of very bright and extremely experienced SGML veterans and XML documentation standard setters, including DocBook's [[NormWalsh]], give me confidence that my time is well spent in learning this rapidly emerging standard: http://www.relaxng.org/ )
+
+Particularly recommended for the Emacs-overwhelmed Windows user, interested in learning and using XML or not, this is also a good 'distro' for one who simply wants an Emacs that lets them get to work on Windows immediately, and who doesn't mind the wait or bulk for a lot of files they may not need  -- yet.  I'd like to stress this point.  I've wasted a *lot* of time on other "smaller and faster" downloads of Emacs for Windows. I guess they just weren't actively used  by so many demanding users on so many different platforms.  I'd happily exchange that lost time (and pulled-out hair) for a  longer download.  
+
+Installation Notes: 55 MB download for WIndows; 29 MB for Unix (assumes you have a working copy of GNU Emacs version 21.3 or later).  TEI-Emacs works fine on very modest hardware and an ancient Windows 95. Emacs runs fine even with Allegro Common Lisp running.  Default installs under C:\Program Files\TEI Emacs with two Start->Program menu options: TEI-Emacs and Uninstall.  Spaces in pathnames haven't caused me any problems so far, but next time I'd try installing it with no spaces in pathnames, say, C:\emacs just to practice good POSIX habits.      
+
+I installed TEI-Emacs quite easily and successfully a while back, accepting all the install dialog defaults, with a 56 KB dialup connection, onto a 100 Mhz Pentium 1 running Windows 95, with all of 32 MB RAM and a 2 GB hard drive. (Watch your assumptions.)  It took a few hours, but it saves many.  Tip to financially and/or technologically challenged: Mozilla Firefox can pick up a broken download right where it left off, so I'd download that first, were I to do it again today. (You should get off IE anyway as soon as possible.  And Windows.  I will be soon, just as soon as I feel at home in Emacs, my new operating system.) -- [[PaulWilson]]
+
+= Comments =
+
+[new:DrewAdams:2004-12-25 18:37 UTC]
+Thanks very much for this info, Paul. 
+
+I just want to add one slightly sour note. Although Relax NG is promising, and there are plenty of complaints we all can make about XML Schema, XML Schema is still the schema system (type-definition and validation system) of choice for '''''data-centered''''' XML processing. It is, I believe, the only schema system widely supported by relational databases, and its type system is the basis for XQuery, the new, evolving XML query-language standard. Emacs users who deal with XML for ''document-centric'' applications might not care that much about using XML Schema, but users who deal primarily with data-centric applications will care about it.
+
+I'm not an expert on XML or XML tools, so don't get me wrong on this. And I welcome an Emacs that lets me deal well with XML. Still hoping to find the nirvana of XML Emacs... -- DrewAdams
+[new]
+: This is a wiki-page about a distribution of Emacs made by the "Text Encoding Initiative", who are of course the ultimate in "document-centric" people.  The TEI has strongly endorsed Relax NG, which has the advantage of clarity and readability, and they don't seem to mind that it isn't a reimplemetation of SQL. -- PeterHeslin
+[new:DrewAdams:2004-12-25 18:37 UTC]
+:: OK. Thanks for clarifying that TEI Emacs is for document-centric XML, and is not trying to be a general XML editing and validating mode. Nothing wrong with that -- such tools are always welcome. -- DrewAdams
+[new]
+::: Don't confuse TEI Emacs, which is an Emacs distribution that happens to be put together by document-centric people, but which Paul apparently has found even more generally useful than for editing TEI documents, with the xml-mode it uses, NxmlMode, which *is* in fact a "general XML editing and validating mode", but one which happens to validate against Relax NG rather than W3C Schema.  There are tools which will convert RNG to XML Schema (trang) and from most W3C Schemas to RNG (rngconv). -- PeterHeslin
+[new:DrewAdams:2004-12-25 18:41 UTC]
+BTW -- There are more and more ''document''-centric XML users that have converted from using DTDs with XML or SGML to using XML Schema with XML, because of XML Schema's more powerful type system and the existence of solid tools (including XML-aware databases). This includes some of the largest publishing houses (e.g. Elsevier, which publishes nearly ''all'' of the world's scientific journals: http://www.reed-elsevier.com/). IOW, XML Schema is not only the schema system of choice for data-centric applications; it is increasingly being used also for ''document''-centric apps. Personally, I like Relax NG; but it's good to keep in mind the importance of developing standards and available tools. -- DrewAdams
+
+----
+
+XmlMode MarkupModes CategoryXML

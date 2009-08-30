@@ -1,0 +1,83 @@
+:  « Parfois j'ai l'impression que nous perfectionnons de plus en plus ''emacs'' parce que nous ne savons plus quoi faire avec ''emacs'' une fois que c'est terminé. »
+
+:: -- AlexSchroeder sur InternetRelayChat 
+
+Cliquez sur l'en-tête pour rechercher tous les articles en rapport avec l'écriture de programmes  en  Lisp. Ces articles contiennent des informations destinées à ceux qui voudront créer de nouveaux modes d'Emacs de plus ou moins grande importance. Vous pourrez y trouver des explications sur les modèles d'EmacsLisp, des précisions sur les conventions de programmation, des références et de la documentation sur des dispositifs existants. La suite de l'article n'est autre qu'une présentation succincte d' EmacsLisp ;  vous trouverez des articles plus approfondis en effectuant une recherche par l'intermédiaire des liens de l'en-tête.
+
+Avant que vous vous plongiez dans le Lisp d'Emacs, nous vous suggérons de vous faire une idée des limitations d'emacs Lisp dans EmacsLispLimitations. 
+
+« Alors que je voulais utiliser le Lisp d'Emacs pour mes besoins de programmation, je découvris à nouveau un vieux truisme: certains langages sont mieux appropriés à certaines tâches. » --   de JohnWiegley.
+
+==  Apprendre à programmer en Lisp d'Emacs ==
+
+* RéférenceEmacsLisp -- manuel de référence du langage de programmation Lisp d'Emacs,
+* IntroLispEmacs -- introduction au Lisp d'Emacs,
+* EvaluationExpressions – éléments de base permettant d'obtenir la valeur d'une variable,
+* FonctionInteractive -- comment écrire une fonction qui peut être appelée par M-x ou attachée à des touches du clavier,
+** ParamètreUniversel -- comment écrire une fonction qui détermine si le préfixe C-u était présent lors de l'appel,
+** ParamètreRégion -- comment écrire une fonction qui a pour paramètre la région,
+* ExpressionLambda -- fonctions anonymes,
+* EvaluationSélective – utilisation de la contre-apostrophe (accent grave).
+
+== Programmation en Lisp d'Emacs, informations générales ==
+
+* CompatibilitéElisp – écrire des programmes qui s'exécutent sur différentes versions d'Emacs et de Xemacs,
+* QuotedLambda -- il est inutile de coter une expressions lambda pour empêcher son évaluation,
+* VariableDefinition, BufferLocalVariable -- comment définir des variables, 
+* ListStructure -- une liste est faite de ''cons''  d'éléments, 
+* ListModification -- pour les débutants en Lisp:  ''nconc'', ''append'', ''cons'', et autres,
+** DestructiveOperations -- pour les débutants en Lisp:  quelques exemples utilisant ''sort'' et expliquant l'utilisation de ''copy-sequence'',
+** ListModificationCl -- pour les programmeurs en Lisp: utilisation des fonctions de la bibliothèque  CL pour modifier les listes,
+** ListModificationLibrary -- pour les programmeurs en Lisp: d'autres fonctions pour travailler avec les listes, 
+** IntList -- exemples de base montrant comment créer récursivement des listes de nombres entiers,
+* AvoidConsing – vielle recommandation qui n'est plus appropriée,
+* SubdirsToList -- ajout récursif des sous-répertoires à une liste,
+* VectorUsage -- recherche des vecteurs,
+* VectorModificationLibrary -- pour les programmeurs en Lisp: davantage de fonctions pour modifier des vecteurs,
+* NotANumber – ''not-a-number'' qui signifie « n'est pas un nombre » est un nombre! Comment avoir sa valeur,
+* DefadviceOrHooks -- parfois un paquet peut ne pas être adapté à des besoins particuliers au moyen de paramètres et de crochets; dans ces situations ''defadvice'' doit être employé, 
+* UnitTesting -- comment tester un programme,
+* WhenToUseIf -- quelle structure conditionnelle employer (''cond'', ''if'', ''when'',  ''unless'', ''and'', ''or'', ''case''),  
+* CheckDocFrançais – à utiliser avant de publier, si vous ne voulez pas que des « gourous » du Lisp d'Emacs  vous harcèlent,
+* StringModification -- vous ne pouvez pas en général modifier des chaînes de caractères; mais  vous pouvez retourner des copies modifiées,
+* NonLocalExit – exemples d'utilisation de ''error'' et ''catch''/''throw''.
+
+== Bibliothèques d'aide à la programmation en Lisp d'Emacs == 
+Réinventer la roue est possible, mais c'est fastidieux.
+* EasyMenu – créer des menus compatibles Emacs/XEmacs,  
+* CommonLispForEmacs -- comment utiliser CommonLisp pour programmer Emacs,
+* SemanticBovinator -- un analyseur lexical et syntaxique flex/bison écrit enEmacsLisp.  
+* XmlParser -- pour écrire des programmes qui lisent et modifient des fichiers XML. Des références  à DOM, et à XPATH, etc.
+* ElispParser -- un petit analyseur syntaxique écrit en Lisp d'Emacs, 
+* DoReMi -- la macro  ''define-doremi'' et la commande ''doremi'' s'emploient pour définir les commandes qui permettent d'utiliser les touches de déplacement du curseur et/ou la molette de la souris pour modifier pas à pas certaines choses, ou parcourir des choses de façon circulaire,
+* DefineFaceConstant – la macro ''define-face-const'' permet de définir des plans et des variables constantes (''defconst'') ayant comme valeurs les plans, en donnant les noms de premier plan et/ou du fond  (chaînes de caractères),
+* ThingAtPoint -- fonctions qui renvoient différentes entités Lisp qui sont sous le du curseur ou proche du curseur. Par exemple, l'une d'entre elles retourne le nom du symbole Lisp le plus proche du curseur,
+* LaterDo -- appeler des fonctions plus tard, pour simuler une sorte d'enfilade (''thread''),
+* LuiMode -- une interface utilisateur ligne par ligne,
+* EmacsScripts – exécutez des scriptes à partir de l'interpréteur de commandes d'Emacs,
+* HttpServer -- Emacs comme un serveur Web.
+
+== Écrire un nouveau mode ==
+Voyez  CreateNewMajorMode
+
+== Informations sur des objets ou dispositifs du Lisp d'Emacs ==
+
+* InvisibleText -- en utilisant TextProperties, EmacsOverlays ou XEmacsExtents 
+* LineInformation -- ''eolp'' et ''line-end-position'',
+* MouseEvent -- où se trouvait la souris lorsqu'elle était cliquetée,
+* WindowHeight – taille d'une fenêtre,
+* EasyFontLock -- comment colorer seulement une ligne à la fois, 
+* MultilineFontLock -- comment colorer plusieurs lignes.
+
+== Quelques concepts == 
+
+* DoReMi – la commande ''doremi'' s'emploie pour définir d'autres commandes permettant  d'utiliser les touches de déplacement du curseur et/ou la molette de la souris pour modifier pas à pas certaines choses, ou parcourir des choses de façon circulaire, 
+* FakeClosures -- comment programmer une fermeture en Lisp d'Emacs.
+
+== À propos du Lisp d'Emacs ==
+* CategoryExtensionLanguage – extensions d'Emacs aux langages les plus courants, et implémentations d'Emacs dans d'autres langages,
+* DynamicBindingVsLexicalBinding – les avantages et inconvénients de l'édition de liens dynamiques et une manière de simuler une édition de liens lexicologiques,
+* EmacsLispLimitations -- les limitations courantes d'EmacsLisp et des raisons de ne pas l'employer pour tout,
+* LangPollResults -- des résultats préliminaires de votes sur le langage sur canal #emacs,
+* WhyDoesElispSuck -- pourquoi les gens disent qu'EmacsLisp est un mauvais langage,  déprécié, qui ne représente pas le choix idéal pour l'avenir, ou < votre remarque ici >,
+* RationalElispPackaging -- système de réalisation de paquets pour le logiciel Lisp d'Emacs.

@@ -1,0 +1,18 @@
+A major mode for GNU Emacs to handle assembly language source files
+
+From the project homepage
+
+* The name `gas-mode' is somewhat misleading; gas-mode is not more specific to the GNU gas assembler as is the current asm-mode, i.e. not at all. For users of asm-mode, a switch to gas-mode should be rather painless, at least if your comment character is at its standard value, the semicolon (;). I'm still lacking reports about how it works for other comment lead-in characters. There are so many assembler syntaxes around, I can't test them all under real world conditions.
+
+
+* gas-mode is a new mode, written from scratch, since asm-mode turned out to be not too useful for my needs. It handles the usual features like highlighting and proper comment handling as you'd expect. Some of its special features include: 
+
+** code rearrangement ("beautifying"): The fill-paragraph command, when issued on a code line, will rearrange all fields (columns) in the code block around point which are out of position, adjusting their locations to fit the (customizable) predefined field start columns best.
+** comment filling: fill-paragraph, when issued within a comment, will recognize the current paragraph and adopt to the comment style when the result needs comment lines to be inserted or removed.
+** symbol highlighting: when point rests on a symbol which is also defined or referenced elsewhere in the same buffer, it gets highlighted and you can move forward and backward between its definitions and the references with forward-sexp and backward-sexp. This is different from a simple string search in that only those places are considered where the symbol gets actually used by your code. For local labels, gas-mode resolves which references are associated with which location and only highlights and jumps between those that fit, even if they're overlapping. Highlight colors differ for different types of references. Foreground color changes if none or more than one definition is available in the current buffer as long as point is on such a symbol.
+** If you'd like to move C style declarations of assembly language functions from a .h file which has to be maintained separately into the .S file near the function and let make do the rest, have a look at the start of gas-mode.el (look for 'C pass-through'). If you're targeting a mixed C/Assembler language environment where you get disastrous results when your assembler file isn't in sync with its .h definitions, or maybe you're already using some kind of embedding C definitions into your asm files for later extraction - it's just about proper syntax and symbol highlighting, but chances are you'll like it.
+
+Get gas-mode.el from http://www.hczim.de/software/gas-mode.html
+----
+CategoryModes
+ProgrammingModes

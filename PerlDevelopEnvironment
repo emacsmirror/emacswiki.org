@@ -1,0 +1,74 @@
+=Introduction=
+
+Emacs::PDE is a collection of Emacs Lisp extensions to facilitate Perl programming. CPerl Mode has provided an excellent environment for coding; Emacs::PDE provides other common tools such as creating files using templates, smart compiling, perldoc, perltidy, debugger, tags tree view and so on. PDE also provides an easy configuration for Perl programing, and a tutorial for novices to start using Emacs.
+
+=Download=
+
+Emacs::PDE is available from [http://search.cpan.org/search?query=Emacs-PDE&mode=all CPAN]. You can install it using the CPAN shell (untested) or download the compress file to a local directory and install as described in the following section.
+
+=Installation=
+
+Installing Emacs::PDE is quit easy. When you download the archive of the Emacs::PDE distribution, uncompress the archive to a folder, for example, ~/elisp/pde, then put this into your ~/.emacs:
+
+<pre>
+     (add-to-list 'load-path "~/elisp/pde/lisp")
+     (load "pde-load")
+</pre>
+
+That is all what you need to do for a typical installation.
+
+You can also use a Perl style installation:
+
+<pre>
+     ./Build.PL
+     ./Build test
+     ./Build
+     ./Build install
+</pre>
+
+Note that test before build, so perl can test whether you have Emacs in your PATH. The default place to install lisp files is "$ENV{HOME}/.emacs.d/pde". You can use option --elispdir to tell Perl where to put the lisp files. Note that if you use this install option, you should add ##~/elisp/pde## to `load-path'. Use the following in your .emacs:
+
+<pre>
+     (add-to-list 'load-path "~/elisp/pde")
+     (load "pde-load")
+</pre>
+
+----
+[new]
+Should this not be ~/.emacs.d/pde? -- AlexSchroeder
+[new]
+Because I see many libraries wrote this path in their installation instruction, I thought it is a convention. In fact, I also prefer put all things related to emacs to ~/.emacs.d. The default place to install PDE is ~/.emacs.d/pde when install by cpan.
+
+=Features=
+The minimal enable features after load `pde-load' are:
+* make perl script associate with cperl-mode not perl-mode
+* setup new indent style "PDE"
+* turn on abbrev mode
+* search document with M-x `perldoc' or using M-x `perldoc-tree'
+* show imenu with M-x `imenu-tree'
+* auto chmod when saving perl script
+* create new file with template
+* call perltidy when editing
+* start interactive perl shell using M-x `inf-perl'
+* improved perldb using M-x `perldb-ui'
+* smart compile and run command using M-x `compile-dwim-compile' and `compile-dwim-run'.
+* find perl module in cperl-mode using M-x `ffap'
+* enable show brief info of buildin function under point in minibuffer
+
+The extra features toggle by pde-extra-setting including:
+* turn on ido-mode and using ido completion read imenu tag
+* automatic update imenu-tree and make tree always visible
+* complete read ingore case
+* turn on partial-completion-mode, and you can find perl module using M-x `find-file' by add prefix char '<'.
+* multiple compilation buffers
+* useful global key bindings
+* show perldoc-tree and imenu-tree with tabbar
+* set tags-table-list, hippie-expand-try-functions-list, comint-completion-addsuffix to make the command handy
+* some fixup to cperl-mode
+* Debug regexp using interface of re-builder.
+
+=Document=
+The manual of Emacs::PDE is in lisp/doc/pde.info. There is a tutorial for novice: <nowiki>lisp/doc/QuickStart.html</nowiki> in chinese and <nowiki>lisp/doc/QuickStartEn.html</nowiki> in english.
+
+=Bugs=
+If you found some bugs, or you got some problems or ideas, please do let me known. 

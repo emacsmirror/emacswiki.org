@@ -1,0 +1,11 @@
+In Emacs you can give frames a background color, but you can not do that with windows or buffers.
+There has been some discussions on Emacs devel on changing this, but so far no one has had the time to do it.
+(Volunteers are welcome! This requires some C coding skills.)
+
+I wrote a little library to work around this.
+It uses a simple hack to put background colors in buffers.
+
+Lisp:buffer-bg.el
+
+----
+CategoryFaces

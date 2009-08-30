@@ -1,0 +1,14 @@
+[[Info]] is 
+
+# a program for reading manuals such as the EmacsManual as hypertext documents,
+# the name of a computer file format for hypertext manuals, and 
+# an Emacs mode for reading Info files (See InfoMode).
+
+The recommended way to create Info files is to author documentation using [[Texinfo]].
+
+See also [[InfoHistory]].
+
+----
+CategoryDocumentation
+CategoryGlossary
+CategoryHelp

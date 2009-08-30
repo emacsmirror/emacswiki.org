@@ -1,0 +1,23 @@
+Known in #emacs as [::pll], also occasionally found awake on #ledger and/or the plannerMuse related mailing lists.
+
+Currently uses emacs for:
+
+ - daily planning with planner
+ - documentation with muse
+ - IRC with erc
+ - email with gnus
+ - web surfing with w3m.el
+ - tracking finances with ledger and ledger.el
+ - mucking with databases using sql-(postgresql|mysql) modes
+ - occasionally hacking CL with SLIME in the hopes I might learn lisp
+ - and of course, misc. editing of stuff.
+
+I blame SachaChua for starting me down this road.  Until about 2.5 years ago, I was quite content with just using emacs to edit the occassional text file.  Sacha got me addicted to planner, and my life has been an inward spiral of emacs-consolidation ever since...
+
+My favorite set of commands are those beginning with: C-x r 
+
+[new]
+Welcome to the wiki. I fear we will not be able to help you break out of that vicious circle... :) -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -1,0 +1,24 @@
+BabelMode provides an Emacs interface to different translation
+services available on the Internet. You give it a word or paragraph
+to translate and select the source and destination languages, and
+it connects to the translation server, retrieves the data, and
+presents it in a special *babel* buffer. Currently the following
+backends are available:
+
+* the Babelfish service at babelfish.yahoo.com                              
+* the Google service at translate.google.com                                
+* the Apertium FOSS MT service, see http://apertium.org
+* the Transparent Language motor at FreeTranslation.com    
+
+BabelMode requires, the (X)Emacs web browser. It is written originally by EricMarsden and is now maintained by Jürgen Hötzel. the file can be download here :
+
+http://github.com/juergenhoetzel/babel/tree/STABLE
+
+----
+I added a backend for the Swedish Lexin serivce, and uploaded this new
+Babel mode to emacswik. --- JoakimVerona
+
+Lisp:babel.el
+
+----
+CategoryModes

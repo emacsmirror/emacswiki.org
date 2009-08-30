@@ -1,0 +1,19 @@
+== Frame-Local Buffers Support for Emacs-w3m ==
+
+With this mode switched on, W3M buffers are associated with the [[Frame]] on which
+they were created.  See the code Lisp:w3m-fb.el.
+
+Only tabs for the current frame's W3M buffers are shown (with
+<code>non-nil</code> <code>w3m-use-tab</code>); other affected commands are
+`w3m-next-buffer', `w3m-previous-buffer', `w3m-select-buffer' and `w3m-quit'.
+
+Switch the mode on programmatically with:
+
+    (w3m-fb-mode 1)
+
+or toggle interactively with <code>M-x w3m-fb-mode RET</code>.
+
+
+----
+CategoryModes,
+CategoryFrames

@@ -1,0 +1,13 @@
+Here's what I use to manually shuffle playlists:
+
+    (defun my-randomize-buffer ()
+      (interactive)
+      (let ((lines (split-string (buffer-string) "\n")))
+        (erase-buffer)
+        (insert (mapconcat 'identity
+                           (sort* lines (lambda (&rest ignore) (> (random 2) 0)))
+                           "\n")
+                "\n")))
+
+----
+CategoryCode

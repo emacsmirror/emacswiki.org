@@ -1,0 +1,24 @@
+
+== Monitor Lists of Files or Command Output ==
+
+Package to keep track of a list of specified files or the output of specified
+commands.  See the code Lisp:analog.el.
+
+The principal variable to modify is `analog-entry-list', which should be set to
+a list of entries. This can be modified with:
+
+    M-x customize-variable RET analog-entry-list RET
+
+Each element of `analog-entry-list' is a list where the <code>car</code> is a
+file (or command) and the <code>cdr</code> is an association list of
+properties.
+
+By default, entries are files, but commands can also be specified.  Each entry
+can have a list of attributes describing whether the head or the tail of the
+output is wanted, how many lines should be kept, a list of regexps to keep or
+flush etc.  Entries can be collected into named groups.
+
+
+----
+CategoryFiles,
+CategoryCommands

@@ -1,0 +1,65 @@
+[http://www.darcs.net/ Darcs] (David's Advanced Revision Control
+System) is yet another DVC (Distributed Version Control) system featuring
+both decentralization and ease of learning and use.
+
+Darcs's author is David Roundy and it is written in Haskell.  It is
+GPLed and is known to work on GNU/linux, !MacOS X, !FreeBSD, and
+Microsoft Windows (both natively or through Cygwin) platforms.  It is
+patch-based, using an interesting theory of patches which contributes
+to some of its still unique (but influential)
+[http://darcs.net/manual/node2.html features], although these don't
+all map well onto support in Emacs.  It is often considered the
+easiest DVCS to use, even for non-experts.
+
+==Project information==
+
+Home page: http://www.darcs.net
+
+Manual: http://darcs.net/manual/darcs.html
+
+Wiki: http://wiki.darcs.net/DarcsWiki
+
+Emacs modes for DARCS (largely a circular reference which should be
+rationalized):  http://wiki.darcs.net/DarcsWiki/CategoryEmacs
+
+[http://wiki.darcs.net/DarcsWiki/Binaries Downloads]
+
+You can contact Darcs people on #darcs at irc://irc.freenode.net (if the
+channel is too quiet, try at #emacs at irc://irc.freenode.net).
+
+==Darcs modes==
+
+=== VC-based ===
+
+There are two VC implementations for Darcs available at
+* http://www.pps.jussieu.fr/~jch/software/repos/vc-darcs/ and
+* http://www.loveshack.ukfsn.org/emacs/vc-darcs.el.
+
+They seem to differ particularly in how they treat "revisions" for VC.
+The raison d'être of the latter is copyright assignment to the FSF, so
+it is the one to contribute to if you want to try to get support into
+Emacs.
+
+VC intrinsically still doesn't seem to support systems like Darcs
+properly (and changes to generalize it have been rejected).
+
+=== Not VC-based ===
+
+* [http://chneukirchen.org/repos/darcsum darcsum] is a vaguely
+  PCL-CVS-like interface which allows you to select individual hunks
+  to record, for instance.  See
+  [http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsDarcs.html],
+  for example.
+
+* [http://chumsley.org/download/xdarcs.el xdarcs] is "inspired by
+  ... darcsum.el".
+
+* There is some support for Darcs in [DistributedVersionControl
+  DVC], but Darcs doesn't seem to be supported properly yet.
+
+* [http://fresh.homeunix.net/~luke/repos/darcs-mode/ darcs.el] is old
+  code that doesn't seem to add anything significant over darcsum
+  and/or VC.
+
+----
+CategoryVersionControl

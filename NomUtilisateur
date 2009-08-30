@@ -1,0 +1,40 @@
+== Si vous voulez simplement lire ==
+
+Si vous comptez seulement lire le contenu de ce site: Bienvenue!
+
+== Si vous voulez modifier les pages ==
+
+Si vous pensez que vous allez ajouter de l'information ou modifier
+les pages existantes, vous pouvez le faire sans plus de complications.
+
+Si vous voulez configurer un '''nom d'utilisateur''' qui vous est propre.
+C'est entièrement votre choix.
+
+Sur la page de modification, vous trouverez un champ où vous
+pouvez indiquer un nom d'utilisateur. Ce nom d'utilisateur doit être
+en <nowiki>CasseChameau</nowiki> -- casse mélangée, pas d'espace. 
+Utilisez simplement votre prénom et votre nom collés l'un à l'autre,
+exemple AlexSchroeder. Voir CategoryHomepage (en) pour plus d'exemples.
+
+Le nom d'utilisateur sera utilisé pour étiqueter les modifications
+que vous faites sur les ModificationsRécentes.
+Notez que même si vous avez un nom d'utilisateur, votre IP ou nom d'hôte
+sera enregistré -- et visible pour les autres. Votre nom d'utilisateur
+n'est pas sécurisé. N'importe qui peut utiliser le même nom que vous.
+Nous croyons en MeatBall:SoftSecurity (en).
+
+Les cookies sont spécifiques à la machine et au navigateur que vous utilisez, ainsi le cookie sera perdu dès que vous utiliserez un autre navigateur ou une autre machine pour vous connecter.
+
+== Problèmes avec les Cookies ==
+
+Il semble que certaines personnes perdent leur cookies. 
+Cela ''marche chez moi''. Donc pour le moment, je suppose que 
+le problème provient du navigateur utilisé. Si vous avez ce problème,
+s'il vous plaît indiquez les versions de navigateur et d'OS ci-dessous.
+Peut-être que nous pouvons le limiter. D'autres idées de solutions sont les
+bienvenue. ;)
+
+* Galeon in Debian testing
+
+----
+This page is also available in english English:UserName

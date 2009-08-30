@@ -1,0 +1,12 @@
+Maybe this is obsolete because of UTF-8 em dashes?  Originally by KragenJavierSitaker.
+
+    (defun insert-em-dash ()
+      "Insert a TeX-style em-dash '---' with appropriate spaces around it."
+      (interactive)
+      ;; ensure we have a space before the em dash
+      (if (not (looking-back " "))
+          (if (looking-at " ") (forward-char 1) (insert " ")))
+      (insert "---")
+      ;; ensure we have a space after the em dash
+      (if (looking-at " ") (forward-char 1) (insert " ")))
+    (global-set-key [(meta _)] 'insert-em-dash)

@@ -1,0 +1,25 @@
+== Programming support for PL/SQL code ==
+
+PL/SQL mode is an extension of SqlMode that provides supports writing
+PL/SQL code.  It uses SqlMode to provide keyword fontification,
+symbol-tables, and interaction with the database.  In addition to
+fixing some bugs, this mode also provides the following:
+
+* A Fast and sophisticated indentation function `plsql-indent' (normally bound to TAB) which can help to present (and maintain) complex code in a readable form.
+
+* Imenu support which allows you to jump to specific modules using either the "Contents" menu or speedbar.
+
+* Align support which allows you to automatically "beautify" code as you write by aligning certain constructs e.g. `align-current' will align all =, :=, and => tokens in the current paragraph.  XEmacs users may have to get a copy of the align package to use this feature.
+
+The lastest version is available here:
+
+* Lisp:plsql.el
+
+-- KahlilHodgson
+
+I just started using this, looks pretty nice. The indent only sort of works though, but at least it's better than sqldeveloper's.
+
+-- TimotheeBesset
+
+----
+CategorySql

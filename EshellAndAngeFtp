@@ -1,0 +1,20 @@
+You can use the EmacsShell on a remote directory, too!  Just use the
+common AngeFtp syntax when using <tt>cd</tt>.  The following example
+shows just how clever Eshell is.  It will even try to execute the
+command remote!
+
+<pre>
+~ $ cd /a0013621@emacswiki.org:/html/cgi-bin
+/a0013621@emacswiki.org:/html/cgi-bin $ fetchmail
+zsh: command not found: rsh
+/a0013621@emacswiki.org:/html/cgi-bin $ ls
+archive.pl        emacs_logo.png   list-archive.pl
+upload.pl         wiki.pl          lisp-archive.pl
+/a0013621@emacswiki.org:/html/cgi-bin $ cd
+~ $ fetchmail 
+fetchmail: No mail for alex at fencepost.gnu.org
+fetchmail: No mail for admin at emacswiki.org
+</pre>
+
+----
+CategoryRemoteEmacs CategoryEshell

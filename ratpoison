@@ -1,0 +1,5 @@
+ratpoison is a window manager for X11 which acts like GNU Screen.  If you've ever wished you could control your X windows with Emacs, this is worth looking into.  It has a single "attention" key, similar to C-x or C-c in Emacs, from which all WM functionality is invoked.  Everything runs full-screen at first, but you can divide the screen into panes.  Try to imagine what it would be like if your X windows worked like Emacs windows ("C-x 4 2", "C-x 4 3", "C-x o", "C-x b") and you'll have a good idea how ratpoison works.
+
+If you aren't put off by this concept yet, visit the ratpoison homepage at http://www.nongnu.org/ratpoison/ or the ratpoison wiki at http://ratpoison.antidesktop.net/cgi-bin/wiki.
+
+You may also be interested in XWindowEmacsManager.

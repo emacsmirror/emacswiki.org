@@ -1,0 +1,12 @@
+[[en:CreateNewPages]]
+See WikiOrganization for some info on how the pages are organised amongst each other.
+
+Voici une methode a suivre pour BienFaire les choses:
+
+* Identifiez la categorie la plus appropriee depuis le PlanDuSite.
+* Editez la page de la categorie choisie en y ajoutant un lien vers la nouvelle page. Voir NamingNewPages.
+* Suivez le lien vers la nouvelle page pour y faire vos editions.
+* Ajoutez un lien "de retour" vers la page de la categorie et sauvegardez le tout.
+
+Une autre methode consiste a passer un nom de page inconnue dans l'URL comme ceci (exemple):
+ http://www.emacswiki.org/cgi-bin/wiki?UnExempleDePageInconnue

@@ -1,0 +1,78 @@
+The motivation of this is converting code over to the coding style
+required for the Linux kernel.  There are some sub-system maintainers
+that won't accept typedefs in their code.  Thus, this function whacks
+them.
+
+Both
+
+      typedef struct FOO_ {
+        ...
+      } FOO, *PFOO;
+
+and
+
+      typedef struct
+      {
+        ...
+      } FOO, *PFOO;
+
+would be converted to:
+
+      struct foo {
+        ...
+      };
+
+and all occurances of "FOO" in the same buffer are converted to
+"struct foo".  Note that the "PFOO" is totally whacked because
+typedefs to pointers of structures are completely verboten.  This
+defun also works on typedefs of enums as well.
+
+    (defun whack-typedefs ()
+      "Convert typedefs to structs."
+      (interactive)
+      (let ((typedefs-buffer (or (get-buffer "typedefs.h")
+                                 (find-file-noselect "typedefs.h")))
+            name typedefs)
+        (save-excursion
+          (goto-char (point-min))
+          (while (re-search-forward "^typedef \\(struct\\|enum\\) ?\\(\\(?:\\w\\|\\s_\\)+\\)?[ \t\n]*{" nil t)
+            (setq keyword (match-string 1))
+            (setq name (match-string 2))
+            (if name
+                (progn ;must be of the format "typedef struct foo_ {\n ... \n} foo;"
+                  (when (equal (substring name -1) "_")
+                    (setq name (substring name 0 -1)))
+                  (replace-match (concat keyword " " (downcase name) " {") t nil)
+                  (goto-char (- (point) 1))
+                  (forward-sexp)
+                  (kill-line)
+                  (insert ";"))
+                                        ; must be of the format "typedef struct\n{ ... }\nfoo;
+              (goto-char (- (point) 1))
+              (forward-sexp)
+              (when (re-search-forward "\\(\\(?:\\w\\|\\s_\\)+\\);" nil t)
+                (setq name (match-string 1))
+                (kill-entire-line)
+                (goto-char (- (point) 1))
+                (insert ";")
+                (backward-sexp)
+                (delete-indentation)
+                (insert (concat " " (downcase name)))))
+            (when name
+              (save-excursion
+                (goto-char (point-min))
+                (while (re-search-forward (concat "\\([^_]\\)" name "\\([^_]\\)") nil t)
+                  (replace-match
+                   (concat (match-string 1)
+                           (when (and keyword (equal keyword "struct"))
+                             (concat "struct "))
+                           (downcase name) (match-string 2)) t nil)))
+              (with-current-buffer typedefs-buffer
+                (insert (concat "typedef "
+                                (when (and keyword (equal keyword "struct"))
+                                  (concat "struct "))
+                                (downcase name) " " name "\n")))
+              (setq name nil))))))
+
+----
+CategoryEditing

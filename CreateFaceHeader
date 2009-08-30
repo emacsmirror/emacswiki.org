@@ -1,0 +1,37 @@
+Information about the Face header: http://quimby.gnus.org/circus/face/
+
+A function to create a [[Face]] header:
+
+ (defun insert-face-header (file)
+   "Insert a Face header at point."
+   (interactive "*fPNG File: ")
+   (let ((coding-system-for-read 'binary)
+         (coding-system-for-write 'binary)
+         default-enable-multibyte-characters
+         face)
+     (with-temp-buffer
+       (insert-file-contents file)
+       (goto-char (point-min))
+       (or (looking-at "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a")
+           (error "%s does't look like a PNG file"
+                  (file-name-nondirectory file)))
+       (base64-encode-region (point-min) (point-max) t)
+       (setq face (buffer-string)))
+     (beginning-of-line)
+     (insert "Face: " face "\n")
+     (forward-line -1)
+     (while (and (= 77 (move-to-column 77))
+                 (not (eolp)))
+       (insert "\n "))
+     (forward-line 1)))
+
+If you want to create a face PNG from shell, you'll need something like this  (change the ppmquant till you get the right size):
+
+ apt-get install netpbm libjpeg-progs / libjpeg-progs-mmx
+
+ djpeg foo.jpg | ppmnorm | pnmscale -width 48 -height 48 | ppmquant 7 | pnmtopng > foo-face.png
+
+Note: Gnus has the function <code>gnus-face-from-file</code>, you should use that instead.
+
+----
+CategoryMailAddons | CategoryGnus

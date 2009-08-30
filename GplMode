@@ -1,0 +1,8 @@
+GplMode provides font-locking and has functions to edit the values of colors (hue, saturation value, red, green and blue vals) in-place in a simple, intuitive, and lightweight fashion for .gpl color palette files used in programs such as the GIMP.
+
+The methods and keybindings used are roughly the same as in CssColor, on which it depends. 
+
+==Download==
+
+You can download it as part of [NxhtmlMode nXhtml].
+

@@ -1,0 +1,23 @@
+procmaillog.el read your procmail log file as a gnus group.
+
+First you need procmaillog.el. You can grab it here: Lisp:procmaillog.el
+
+The next step is to set up your .procmailrc. procmaillog.el needs spaces between the procmail log records. So just put this in your .procmailrc:
+
+ LOGFILE=$HOME/.procmaillog
+ LOG="
+ "
+
+Now you have to set up your Emacs configuration file. Put simple this in it: (Don't forget to put procmaillog.el in your <code>load-path</code>.)
+
+ (require 'procmaillog)
+
+If your LOGFILE different configure the variable <code>procmaillog-file</code>. E.g. in your configuration file:
+
+ (setq procmaillog-file "~/my.procmail.log")
+
+After the next Gnus start create a doc group with <tt>G f</tt> and choose your procmail log file.
+Enter the group and enjoy your structured procmail log file. 
+(Note: The headers <em>X-Procmail-Folder</em> and <em>X-Procmail-Number</em> should be visible, i.e. put them into gnus-visible-headers.)
+----
+CategoryGnus

@@ -1,0 +1,46 @@
+`M-x enriched-mode' is just like text mode.  With one crucial
+difference: When you add [[Face]]s to the text, this information gets
+saved as RFC 1896 <code>text/enriched</code> format markup (with an Emacs-specific <code>Content-Type</code> tag at the start).
+
+Read about enriched mode in the Emacs manual, at [[Manual:Enriched mode]] (<code>C-h i m emacs RET m Formatted Text RET</code>).
+
+== Example ==
+
+Use `M-g b' to add the bold face to some text, such that it
+looks like this:
+
+: This is *bold*.  This is not.
+
+Then use `M-x enriched-mode' and save.  If you reload your file, the
+bold text will still be bold.  If you use `M-x find-file-literally',
+however, you can see how Emacs saved the face information:
+
+ Content-Type: text/enriched
+ Text-Width: 70
+ 
+ This is <bold>bold</bold>.  This is not.
+
+== Development ==
+
+: ''In the future, we plan to implement other formatting features as well.''
+::: Stallman et al, ''GNU Emacs Manual''.  Fourteenth edition.  2002.
+
+EnrichedMode is an initial attempt to provide the Emacs text editor with WordProcessing
+capabilities.  The early system has generic formatting features and will later 
+be able to input and output numerous enriched file formats.
+
+In September 2004, there was a post on the emacs-devel about
+[http://lists.gnu.org/archive/html/emacs-devel/2004-09/msg00114.html enriched-mode and switching major modes]
+which evolved into a discussion on the future of EnrichedMode.
+
+=== Problems ===
+
+This doesn't seem to work on XEmacs. Does anybody know how to find  
+literally in XEmacs?
+
+When I try to print enriched buffers (either from GNU Emacs or from
+XEmacs) the background color (as in highlighting) is lost. All other faces information seems to 
+be preserved. Any ideas?  
+
+----
+CategoryModes

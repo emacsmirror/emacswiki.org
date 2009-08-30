@@ -1,0 +1,25 @@
+DynamicScoping is the opposite of to LexicalScoping.
+
+DynamicScoping is what you get in C with global variables: if you change them, it will affect any further reference to this variable: the value of a variable is the result of ist last affectation in execution time.
+By contrast, with LexicalScoping the value of a variable is the result of its last affectation in code, or in compilation time.
+
+For instance:
+
+    (setq var 'foo)
+
+    (defun func () var)
+
+    (let ((var 'bar))
+       (func))
+
+When evaluating the last sexp, you would get <tt>bar</tt> with DynamicScoping and <tt>foo</tt> with LexicalScoping.
+
+DynamicScoping enables you to write code such as:
+
+    (let ((case-fold-search t))
+       (function))
+
+See DynamicBindingVsLexicalBinding
+
+----
+CategoryGlossary

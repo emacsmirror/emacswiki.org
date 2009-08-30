@@ -1,0 +1,59 @@
+Lisp, Scheme and other similar languages have well established
+indentation rules.  Don't change them.  This page allows you to create
+indentation rules for new macros of your own, that is all.
+
+The way it works is by setting a property of the symbol you want to
+provide indentation for.  Here are some examples from lisp-mode.el
+itself:
+
+    (put 'lambda 'lisp-indent-function 'defun)
+    (put 'while 'lisp-indent-function 1)
+    (put 'if 'lisp-indent-function 2)
+
+Indentation is defined in multiples of 2, you can change this (this is
+not recommended) by setting `lisp-body-indent'.
+
+    (setq lisp-body-indent 4)
+
+Here is what the result looks like depending on where the first form
+actually is.
+
+    (lambda (foo)
+      "foo"
+      "bar")
+
+    (while (foo)
+      "foo"
+      "bar")
+
+    (if (foo)
+	"foo"
+      "bar")
+
+
+    (lambda
+      (foo)
+      "foo"
+      "bar")
+
+    (while
+	(foo)
+      "foo"
+      "bar")
+
+    (if 
+	(foo)
+	"foo"
+      "bar")
+
+QuackPackage provides indentation settings for many popular Scheme forms not defined by SchemeMode.
+
+The Emacs default indentation for some forms such as `if' is likely to make CommonLisp hackers unhappy.  Emacs also provides a `common-lisp-indent-function', but it's not enabled by default.
+
+ (add-hook 'lisp-mode-hook
+	   (lambda ()
+	     (set (make-local-variable 'lisp-indent-function)
+		  'common-lisp-indent-function)))
+
+----
+CategoryIndentation

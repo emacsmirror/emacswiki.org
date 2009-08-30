@@ -1,0 +1,8 @@
+Scheme-lookup is a modified version of <code>hyperspec.el</code> (see CommonLispHyperspec), seeded with symbols from R5RS, finalized SRFIs and the manuals of several [[Scheme]] systems.  
+It allows to simply put the TextCursor over a symbol and hit M-x scheme-lookup to jump to the relevant documentation.
+
+To get scheme-lookup do
+
+  darcs get http://twb.ath.cx/~twb/canon/scheme-lookup/
+
+then follow the instructions at the top of scheme-lookup.el.  It should all be pretty self-explanatory.

@@ -1,0 +1,32 @@
+The Emacs reflector is an sfreflect ''[sic]'' and sflwl ''[sic]'' server
+for speak-freely conferencing. Join in and have a real live talk
+while chatting on InternetRelayChat.
+
+Point your sfmike at fzidpc73.tu-graz.ac.at:4047
+
+Here is a example script which makes the thing a bit easier for Unix users:
+
+ #!/bin/bash
+
+ SPEAKFREE_LWL_TELL=fzidpc73.tu-graz.ac.at
+ SPEAKFREE_ID="Firstname Lastname:email@address:(area) phone-number:City Provence/st\ate"
+ SPEAKFREE_CNAME=your.host.name
+ export SPEAKFREE_LWL_TELL
+ export SPEAKFREE_ID
+ export SPEAKFREE_CNAME
+
+ sfspeaker -p4074 &
+ sfspeaker &
+ sfmike fzidpc73.tu-graz.ac.at:4074
+ killall sfspeaker
+
+Speak-freely can be installed using
+ apt-get install speak-freely
+on debian systems.
+
+It is available for Windows too.  http://www.speakfreely.org/
+
+MarioLang
+
+----
+EmacSpeak

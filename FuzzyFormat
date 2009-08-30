@@ -1,0 +1,9 @@
+This minor mode take a neutral stance in the war of tabs indent and spaces indent...
+
+[[fuzzy-format.el]]
+
+Features:
+* Fuzzy check indent format  (tabs or spaces) of current buffer. and set indent-tabs-mode and format code automatically.
+* Auto identation.
+* Auto format (tabify, untabify, delete-trailing-whitespace).
+

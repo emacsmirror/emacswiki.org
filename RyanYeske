@@ -1,0 +1,17 @@
+I use Emacs every day of my life.
+
+I am a co-author of NethackMode.
+
+More recently (late 2004) I wrote [[rcirc]], a small (but getting bigger) irc client.
+
+I want everyone to just get along.
+
+: Hello and welcome!  Nethack mode seems very very cool.  I didn't try
+it yet because I did not want to patch Nethack myself.  I'm still
+waiting for the patched Nethack to appear in Debian testing... --
+AlexSchroeder
+
+: is cd nethack-3.4.3 && patch -p1 <../nethack_el-0.9.5/enh-343.patch too much for ya? :) --sabetts
+
+----
+CategoryHomepage

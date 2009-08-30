@@ -1,0 +1,36 @@
+Here's a DedicatedKeys approach to keyboard macros. Bind some key to <tt>ted-macro-dwim</tt>; this is the key that you use to start recording, to stop recording, and also to execute. You might want to bind some other key to <tt>ted-macro-clear</tt> if you do this. I'm currently using <tt>F8</tt> and <tt>M-F8</tt> for these. Perhaps <tt>C-F8</tt> or <tt>S-F8</tt> could be bound to <tt>name-last-kbd-macro</tt>.
+
+ (defun ted-macro-dwim (arg)
+   "DWIM keyboard macro recording and executing."
+   (interactive "P")
+   (if defining-kbd-macro
+       (if arg
+           (end-kbd-macro arg)
+         (end-kbd-macro))
+     (if last-kbd-macro
+         (call-last-kbd-macro arg)
+       (start-kbd-macro arg))))
+
+ (defun ted-macro-clear ()
+   "Clear out the last keyboard macro."
+   (interactive)
+   (setq last-kbd-macro nil)
+   (message "Last keyboard macro cleared."))
+
+
+This is not actually quite ideal of what I'd call "dwim". Better to use one key to start/end a macro and another dedicated key that always execute the last macro.
+
+ (defun start-or-end-macro (arg)
+  (interactive "P")
+  (if defining-kbd-macro
+      (if arg
+          (end-kbd-macro arg)
+          (end-kbd-macro))
+      (start-kbd-macro arg)))
+
+ (global-set-key '[f2] 'call-last-kbd-macro) 
+ (global-set-key '[(control f2)] 'start-or-end-macro)
+
+
+----
+CategoryKeys

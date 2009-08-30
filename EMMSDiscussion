@@ -1,0 +1,32 @@
+= EMMS Discussion =
+== Developers flame the computer for not doing already what they want ==
+
+=== Big Code Change: Track Sources for EMMS ===
+(thx to kanaldrache for the idea)
+
+* emms is very file-centric
+* CDs, radio etc. made it apparent that we need more types of sources
+* the different types of sources can be implemented akin to players
+** emms-source-file, a very simple source that will just use the file
+** emms-source-directory, a source that will query a directory
+** emms-source-directories, a source that will query the directories in a custom var
+** emms-source-find, a source that finds a file according to a regexp
+** emms-source-radio, a source that will return the available radio programs
+** emms-source-cd, a source that returns the tracks on the CD
+* emms-source-list, a list of emms sources: (name . function)
+* emms-play-from-source that let's you enter the name ("directory", "radio", "cd" etc.)
+* emms-play-file: emms-play-from-source, emms-source-file, filename
+* emms-play-all: emms-play-from-source, emms-source-directories
+
+* we need to store the results of the sources somehow, they're more than plain filenames
+* since source results have both a "type" (cd track, radio channel, file) and a name (23, 408.1, /foo/bar.ogg), we basically have two options:
+** a) Store the two informations in a single string, maybe similar to ange-ftp/tramp:
+*** "/cd:23" "/radio:408.1" "/foo/bar.ogg"
+*** advantage: The current player interface doesn't have to be changed
+*** disadvantage: It's not "clean", the file-centricity is apparent
+** b) Store the two informations in a data structure other then a string:
+*** (cd . "23") (radio . "408.1") (file . "/foo/bar.ogg")
+*** advantage: very clean
+*** disadvantage: requires a a rewrite of great parts of emms, the interface becomes more complicated.
+
+'''NOTES''': There can be more than one CD player in a computer

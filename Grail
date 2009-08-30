@@ -1,0 +1,202 @@
+Grail loads an .emacs configuration that has been broken up into several files. This allows a user's configuration
+to DTRT [Do the Right Thing] when used in different modes such as batch, or GUI. The user also benefits from
+an easier to maintain configuration
+
+Grail is grew out of a tidyconfig like need to re-organize after a .emacs bankrupcy. It has grown
+beyond organization alone into a comprehensive management of load-path, porting configurations between linux & Darwin,
+and partial/incremental loading to configure for batch, interactive, gui, and daemon modes.
+
+All these features are implemented by putting configuration bits into the files that Grail looks for,
+the rest is handled by Grail itself.
+
+Examples of the files grail looks for:
+
+* elisp.el    : your library of non-interactive functions. (for elisp coders)
+* commands.el : interactive commands you have created.
+* gui.el      : configuration that applies to emacs with a GUI
+* user.el     : general configuration of the builtin Emacs features and applications.
+
+Grail can also load "group modules", defined by grail as a elisp file in a special "groups" directory
+that loads, configures, and installs if necessary one or more packages into a cohesive set of
+related features.
+
+This capability gives the Emacs configuration a "self-repair" capability when moving a configuration
+to a new machine. Much of the code for this has been completed, but has not yet been documented
+pending implementing integration with ELPA.
+
+For a closer look at grail the README.grail file is the best place to start, and if you are an
+Elisp programmer, a brief look through grail.el, a relatively short file, will introduce you to Grail.
+
+[[README.grail]] ([Download:README.grail download])
+
+Enjoy Grail, and feel free to give feedback, with the contact information provided on [[codermattie]].
+
+== Status: 0.1.3 Released: 2009-4-10 ==
+
+This release compatible with 0.0.3 unless you use the groups feature. The grail-activate-with-recovery
+form and installer definition has changed.
+
+[[Changelog.grail]] ([Download:Changelog.grail download])
+
+it works reliably for me on Gentoo,Debian, and darwin. Adventurous users and elisp hackers (patches) are
+welcome. The 0.1.x branch is a stable branch, the changes are fixes and updates to reflect expected behavior
+only.
+
+== features: ==
+
+* Support for emacs --daemon mode. the user's file gui.el is loaded after the first graphical frame
+  is created so that the basic graphical definitions of Emacs are available when the configuration
+  is loaded.
+* Comprehensive management of load-path for both downloaded packages and user Elisp.
+* Errors in grail or the user's configuration are trapped and reported so that Emacs
+  always starts clean, though the configuration is degraded until the problems are resolved.
+* The user's Emacs configuration is loaded properly in all the ways Emacs is started:
+    emacs --daemon, 
+    emacs --batch, 
+    GUI,
+    and TTY modes
+* ELPA installer
+
+== The Future ==
+
+Version 0.2.0 is in development. It will finalize the groups feature, and add support
+for installing via Subversion,cvs,and bzr.
+
+The core code for it is already completed, and it should be released by the end of April 2009.
+
+== Updates: ==
+
+Samuel Bronson restored this diagram of the USER_ELISP structure. It is useful, and also helped
+me spot that README.grail was not escaped from markup. I have fixed README.grail and tried to
+improve the diagram a bit too.
+
+Samuel Bronson reworked the page with some EmacsWiki chops and it looks much better ! Thank
+you Mr. Bronson.
+
+The question regarding custom-file is now answered. handling user-init-file and custom-file
+is supported in 0.1.3
+
+== Download ==
+
+* Lisp:grail.el        ([Download:grail.el download])
+* Lisp:grail-fn.el     ([Download:grail-fn.el download])
+* Lisp:grail-groups.el ([Download:grail-groups.el download])
+
+== Verifying the source files: ==
+
+The source files can be verified with GnuPG after downloading.My key information is on
+my page [[codermattie]]
+
+Detached Signature for grail.el
+<pre>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
+
+iEYEABECAAYFAkngC20ACgkQdfRchrkBInliYACginqE6W1RobX0PmDwkg0iszOg
+8zsAoI7SeT7iY6wUsdwWzwV+zoXFwyba
+=XfuU
+-----END PGP SIGNATURE-----
+</pre>
+
+Detached Signature for grail-fn.el
+<pre>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
+
+iEYEABECAAYFAkngC20ACgkQdfRchrkBInmTNACg7DvHaBFscYlv/yPph15ASZSu
+ZbMAniqRs9s0bfKqaB5Hd0T9wFTGbpyj
+=62j9
+-----END PGP SIGNATURE-----
+</pre>
+
+Detached Signature for grail-groups.el
+<pre>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
+
+iEYEABECAAYFAkngEXcACgkQdfRchrkBInmNDwCeKKxU3P20F2PrYzrj8qbhgbyc
+KJUAoOnxTkB4URRvUlmSqjUt1Hk+BcE9
+=9C04
+-----END PGP SIGNATURE-----
+</pre>
+
+== A diagram of USER_ELISP ==
+
+This is a simple diagram of what the USER_ELISP directory looks like
+when all of the Grail recognized files and directories are in place.
+
+When a directory has a (++) next to it Grail will add any
+sub-directories beneath that directory, as well as the directory
+itself to load-path.
+
+The diagram also shows which modes load the special files.  As you can
+see only elisp.el, and gui.el are truly special in that they are
+loaded differently from the others.
+
+The files like commands.el, and keys.el are opportunities to organize,
+they are not required.
+
+display.el and gui.el are delayed in --daemon mode. display.el is
+loaded before the first frame (TTY/GUI) is created, and gui.el after
+the first GUI frame is created.
+
+This delay insures that the GUI is actually loaded before the user's
+customizations are loaded.
+
+<pre>
+|-- grail-fn.el               ;; grail files
+|-- grail-groups.el
+|-- grail.el
+|
+|-- darwin.el      ;; platform specific files, loaded only on Darwin or Gnu/Linux.
+|-- linux.el
+|
+|-- elisp.el       |BATCH,all| ;; A library of Elisp functions loaded in both batch and interactive mode.
+|
+|-- user.el        |TTY,GUI|   ;; user configuration of Emacs. All the stuff built into Emacs Tramp,VC,Ediff,...
+|-- interface.el   |TTY,GUI|   ;; general interface issues (in mine turning off the menu bar etc...)
+|
+|-- commands.el    |TTY,GUI|   ;; The user's collection of commands.
+|-- keys.el        |TTY,GUI|   ;; The user's key bindings.
+|
+|      *** delayed for daemon mode ***
+|-- display.el     |TTY,GUI|   ;; Configuration for a TTY or graphical frame.
+|-- gui.el         |GUI|       ;; Configuration for a graphical frame.
+|      *** delayed for daemon mode ***
+|
+|-- customize-settings.el   |TTY,GUI| ;; Settings written by customize and Emacs.
+
+|-- dist
+|   |-- elisp (++)
+|   |   `**Downloaded Elisp** ;; download Elisp files, and packages with directories are found here.
+|   `-- elpa                  ;; ELPA maintained packages are installed here.
+|
+|-- local
+|   |-- elisp (++)            ;; the user's Elisp is searched for in local/elisp.
+|   |   `**your Elisp**
+|   |-- emacs                 ;; modified copies of files distributed with Emacs.
+|   `-- groups                ;; group configuration modules are found here.
+</pre>
+
+== Q&A ==
+
+Q: What should I set `custom-file' to, i.e., where should I store my customizations?
+
+A: the new release grail-0.1.3 now handles customizations.
+
+   It looks in the variable "grail-settings-file" which points to 
+   USER_ELISP/customize-settings.el by default.
+
+   It will change both "user-init-file" and "custom-file" to point at your
+   "grail-settings-file" when grail starts.
+
+   If you have used Grail and customize before 0.1.3 it has likely
+   written customize settings to grail.el itself which is not fatal,
+   but not good.
+
+   To upgrade to grail-0.1.3 you need to edit grail.el, or whatever
+   other files have these customize settings, and migrate them to
+   customize-settings.el
+
+   I will ponder a migration tool if I can come up with something safe ...
+completed

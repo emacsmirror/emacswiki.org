@@ -1,0 +1,18 @@
+I've started using Emacs only two weeks ago, then opened a blog on wordpress a few days later ...all of this led to some hacking of WebloggerMode :)
+
+So here it is, with support for categories, a bug fix for the date format and changes of my taste on publishing. Note that only tested for my version of Wordpress, so it may just screw yours ... but that's just life.
+
+I would glady take comments there http://jwickers.wordpress.com/2007/09/20/webloggerel-enhanced/ .
+
+[new:DrewAdams:2007-09-21 19:16 UTC]
+
+[[News]] pages such as this one are typically read only when they are first created and perhaps a short time afterward. If you want people to learn about your site and work with Emacs, you might want to create a normal (non-News) page here, say WebLoggerel. -- DrewAdams
+
+[new]
+I believe package announcements are welcomed on [[News]]. -- AaronHawley
+
+[new:DrewAdams:2007-09-21 20:01 UTC]
+No one suggested anything to the contrary. The point was to let the OP know that a non-[[News]] page might be found and read more often by others in the future; i.e., go beyond just an announcement. That's also why I made a page suggestion: WebLoggerel -- I didn't realize there was already a WebloggerMode page. I've linked to the OP site there. -- DrewAdams
+
+[new]
+I guess I read that you were suggesting that this was "non-News".  My bad. -- AaronHawley

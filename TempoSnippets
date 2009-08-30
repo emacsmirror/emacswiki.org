@@ -1,0 +1,180 @@
+[http://nschum.de/src/emacs/tempo-snippets/ tempo-snippets] is a snippet.el-like interface for tempo templates.    It requires EmacsFromCVS.
+
+http://nschum.de/src/emacs/tempo-snippets/tempo-snippets.png
+
+A [http://nschum.de/src/emacs/tempo-snippets/screencast/ screencast demo] is available. ([http://nschum.de/src/emacs/tempo-snippets/screencast/screencast.swf direct link])
+
+----
+
+Use tempo-define-snippet instead of tempo-define-template.  The arguments can remain the same.  Insertion works like for any tempo-template with tempo-template-your-template-name.
+
+When adding lisp forms in your templates that use tempo-lookup-named, make sure they don't have side-effects, because they will be evaluated every time the variables change.
+
+You can navigate between input forms with tempo-snippets-next-field and tempo-snippets-previous-field.  When the point is on an input field, those commands are bound to M-n and M-p by default.  You can use tempo-snippets-keymap to bind keys for input fields.
+
+If you want to add a snippet to your abbrev table, you can do M-x tempo-snippets-add-mode-abbrev or M-x tempo-snippets-add-global-abbrev.
+
+Snippets are defined with regular TempoMode syntax:
+
+  (tempo-define-snippet "c-for-it"
+    '(> "for (" (p "Type: " type) "::iterator " (p "Iterator: " it) " = "
+        (p "Container: " container) ".begin();" n>
+        (s it) " != " (s container) ".end(); ++" (s it) ") {" > n> r n "}" >)
+    "fori"
+    "Insert a C++ for loop iterating over an STL container."
+    nil)
+
+Basic forms are also allowed:
+
+  (tempo-define-snippet "java-get-set"
+    '("private " (p "Type: " type) " _" (p "Name: " var) ";\n\n"
+      > "public " (s type) " get" (upcase-initials (tempo-lookup-named 'var))
+      "() {\n"
+      > "return _" (s var)  ";\n" "}" > n n
+      > "public set" (upcase-initials (tempo-lookup-named 'var))
+      "(" (s type) " value) {\n"
+      > "_" (s var) " = value;\n" "}" > n))
+
+----
+[new]
+When I use ''tempo-complete-tag'' on a snippet  I get the regular tempo prompt. Is it possible to use tempo-snippets together with ''tempo-complete-tag''? 
+
+I'm using EmacsCVS 22.1.50.9 of 2007-08-07. Is this new enough?
+--- jcc
+
+[new]
+You'll need at least the version from 2007-08-14 or there will be glitches.
+I've also added <code>tempo-snippets-complete-tag</code>, which should do what you want.
+-- [[nschum]]
+
+[new]
+Hi. I tried the new ''tempo-snippets-complete-tags'' and works very well. I didn't notice any problem in my emacs version but I updated to 2007-08-27 just in case.
+
+Thanks!
+-- jcc
+
+[new]
+Really nice extension, I like it ! I wrote this little extension that locally binds <tab>, <backtab> and RET to cycle between sources and validate the template (deleting the [[overlay]]s). It's not that clean since overlay-local keybindings do work only if character *after* position is still in overlay, which is not the case when you instantiate a template variable. So I came up with a rather ugly workaround... Anyway, may be of use for some people.
+(also note that it only makes sense because I want to use those specific keys, and like to mess with advices... if one is comfortable with dedicated keys, it's all simple :)).
+
+  (defvar tempo-snippets-source-map (make-sparse-keymap))
+  (define-key tempo-snippets-source-map (kbd "<tab>") 'tempo-snippets-next-field)
+  (define-key tempo-snippets-source-map (kbd "<backtab>") 'tempo-snippets-previous-field)
+  (define-key tempo-snippets-source-map (kbd "C-m") 'tempo-snippets-clear-latest)
+  
+  (defadvice tempo-snippets-finish-source (before clear-post-overlay (o) act)
+    (delete-overlay (overlay-get o 'tempo-snippets-post)))
+  
+  (defadvice tempo-snippets-insert-source (after install-custom-map act)
+    (let ((overlay (car tempo-snippets-sources)))
+      (overlay-put overlay 'keymap tempo-snippets-source-map)
+      (overlay-put overlay 'tempo-snippets-post (point))))
+  
+  (defadvice tempo-snippets-insert-template (after install-post-map act)
+    (dolist (s tempo-snippets-sources)
+      (let ((pos (overlay-get s 'tempo-snippets-post)))
+        (when (integerp pos)
+          (let ((o (make-overlay pos (1+ pos))))
+            (overlay-put o 'keymap tempo-snippets-source-map)
+            (overlay-put s 'tempo-snippets-post o)))))
+    ad-return-value)
+
+-- YannHodique
+[new]
+Thank you for the extension but for some reason no substitution occurs. I'm using Aquamacs 22 (nightbuild as of 22nd Nov), and even though temp-complete-tag works, when i try the above java example and type  class no substitution occurs. Does anyone know why? My Preferences.el:
+
+  (require 'tempo)
+    (require 'tempo-snippets)
+    (setq tempo-interactive t)
+    (tempo-define-snippet "java-class"
+      '("class " (p "Class: " class) " {\n\n"
+	> "public " (s class) "(" p ") {\n" > p n
+	"}" > n n "}" > n))
+
+Thanks, Saptarshi
+
+[new]
+Does it work with regular tempo templates?  Does M-x tempo-template-java-class work?
+In order to type class and have the snippet work automatically, you'll need to define an AbbrevMode.
+-- [[nschum]]
+
+----
+
+[new]
+Is it ok I used your functions in tempo-x.el? I rewrite them to implement another interface as tempo template.
+
+-- [[Ye_Wenbin]]
+
+[new]
+The code is [[GPL]], so copying is certainly allowed, as long as the appropriate copyright notices are kept.
+-- [[nschum]]
+[new]
+
+----
+
+Hello, I discovered a small annoyance with the snippets. If you put a `Prompt' at the end of a line, you will not be able to add more than 1 character to the field (assuming you are typing normally, not yanking.)
+
+Since I use `ellemtel' coding style, I happen to have a lot of prompts located at the end of line, like in the following tempo:
+
+   class [Name]
+   {
+   public:
+      Name ()
+      {}
+   };
+
+In the above example, I will not be able to put more than one character in the prompt "Name". So I propose the following fix. In tempo-snippet.el:292, Replace:
+
+   (defun tempo-snippets-update (ov after-p beg end &optional r)
+     "Called when a snippet input field is modified."
+     (when (and after-p (>= beg (overlay-start ov)) (<= beg (overlay-end ov)))
+       ;; grow overlay
+       (move-overlay ov (overlay-start ov) (max end (overlay-end ov)))
+       (tempo-snippets-propagate-source ov)
+       (when (= (overlay-end ov) (overlay-start ov))
+         (if (> r 1)
+
+by:
+
+   (defun tempo-snippets-update (ov after-p beg end &optional r)
+     "Called when a snippet input field is modified."
+     ;; If we are at eol, the `insert-behind-hooks' are only called once, because
+     ;; once you have inserted a character, point is not `behind' the overlay
+     ;; anymore.
+     (if (and (null after-p) (= (point) (line-end-position)))
+         (move-overlay ov (overlay-start ov) (1+ (overlay-end ov))))
+     (when (and after-p (>= beg (overlay-start ov)) (<= beg (overlay-end ov)))
+       ;; grow overlay, but need to be careful if we are at eol.
+       (if (= (point) (line-end-position))
+           (move-overlay ov (overlay-start ov) end)
+         (move-overlay ov (overlay-start ov) (max end (overlay-end ov))))
+       (tempo-snippets-propagate-source ov)
+       (when (= (overlay-end ov) (overlay-start ov))
+         (if (> r 1)
+
+I hope this helps :) Do not hesitate to improve this, I think it looks a little hack-ish. But it works for me at least.
+
+-- Sylvain
+
+[new]
+I think this might be a workaround for the [http://lists.gnu.org/archive/html/emacs-devel/2007-08/msg00303.html Emacs 22.1 bug].  It should not be needed with Emacs 22.2.  If it's a complete workaround for the issue, I'll incorporate it.  22.1 users, please post feedback.
+
+--[[nschum]]
+
+[new]
+It seems you're right. With 22.2.1 the bug disappeared. So the patch is useful only for 22.1 users.
+
+-- Sylvain
+
+----
+
+Would it be possible for someone to explain what this mode is supposed to actually do?  I am a long-time tempo user, but have never used snippets, so I'm boggled.  The documentation here just says how you define snippets, and says that you do it the same way you define a tempo-template.  So what is a tempo-snippet as opposed to a tempo-template?
+
+-- RobertGoldman
+
+Robert, according to the the tempo-define-snippet doc-string:
+"The resulting template will prompt for input right in the buffer instead of the minibuffer."
+
+--mds
+----
+CategoryTemplates

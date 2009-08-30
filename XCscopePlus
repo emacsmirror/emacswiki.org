@@ -1,0 +1,17 @@
+Lisp:xcscope+.el
+
+== Introduction ==
+
+CScope is a developer module for browsing source code, finding symbols...
+ can be found here: http://cscope.sourceforge.net/
+
+This file is an extension of xcscope.el
+
+== What does this file provide ==
+
+By default CScope will do an update of the database for each research. However
+if you're working on a big project, an update can take times...
+On the other hand you don't want to disable the update all the times.
+
+This files provide function for easy mapping. Those function will temporary
+disable the update for the current research.

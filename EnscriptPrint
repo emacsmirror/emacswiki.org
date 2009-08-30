@@ -1,0 +1,117 @@
+If you live in Emacs you would probably like to print things in pretty
+fonts once in a while.  PsPrint is great for that, with a big
+limitation: limited font choices.  Most people have tons of fonts in
+.ttf and other formats, not just the seven that Postscript printers
+typically offer.  With this package that forms an interface to GNU
+Enscript, you can print in many pretty fonts, and highlight text for
+programming languages.
+
+== Code ==
+* Lisp:enscript.el
+
+I started this library as an interface to Enscript because I like
+printing in different fonts for different purposes: sometimes I'm in a
+Palatino mood, and sometimes I want something wicked like Comic Sans.
+I need fixed width fonts for printing source code, but I find Courier
+hard to read.  Please submit patches and help me improve this package
+--- I get a lot of mileage out of it, and I hope you will too.  Todo
+items are in the source file marked with "TODO".  
+
+== Instructions ==
+
+You will need:
+* Enscript
+* Emacs (otherwise why would you use an Emacs lisp package?)
+
+Collect all the .ttf fonts on your system into a local ~/.fonts
+directory.  I suggest something like
+
+<code>
+shell> cp `find / -name "*.ttf" -print0` ~/.fonts
+</code>
+
+Convert these ttf files to pfb, pfa and afm files using:
+* ttf2pt1 (available at http://sourceforge.net/projects/ttf2pt1/)
+* ttf2afm
+
+Create a font.map file for the current directory:
+
+<code>
+shell> mkafmmap *.afm
+</code>
+
+Edit your .enscriptrc to include /your/home/directory/.fonts in your
+AFMPath:
+
+<code>
+AFMPath: /home/emacs-lover/.fonts:/usr/share/enscript/afm
+</code>
+
+Check out the enscript FAQ
+[http://www.codento.com/people/mtr/genscript/FAQ.html] for any
+additional tips.
+
+== Features ==
+
+* Completion of programming language names for highlighting
+* Completion of font names
+* Underlay text customized for the user (default is user-full-name),
+  with customizable font
+
+=== Functions ===
+
+The package defines the following user functions:
+* font-print-buffer -- prints a buffer with a specified font
+* font-print-region -- prints the region with a specified font
+* lang-print-buffer -- prints a buffer highlighted for a programming
+language
+* lang-print-region -- prints a region highlighted for a programming
+language
+* M-x customize-group RET enscript RET
+
+=== Suggestion ===
+
+I customize enscript-after-hook with the following function:
+
+<pre>
+(lambda nil
+  (when preview-file
+    (shell-command (concat "gv "
+                           (expand-file-name preview-file) "&"))))
+</pre>
+
+This hook launches an immediate previewer (gv).
+
+=== Limitations ===
+
+* The two completion variables (fonts, languages) are based on the
+  available fonts on my machine.  It would be better to have these
+  built dynamically during compilation or at run-time, depending on
+  the configuration (available fonts, defined programming highlighting
+  styles)
+* Use EmacsFromCVS, and this should be downgraded to ensure
+  compatibility with Emacs22
+
+== Discussion ==
+
+Sounds interesting. I copied all of my TTF fonts to a test directory, to play with it. But then I found that I'm missing some of the pieces needed. I have Cygwin, but it apparently is missing these things:
+
+* ##ttf2pt1## (but it does have ##ttf2afm##)
+* ##mkafmmap##
+
+Cygwin does have ##enscript##, and the Enscript FAQ says that ##mkafmmap## comes with the Enscript distribution, so I don't quite understand why there is no ##mkafmmap##.
+
+Any ideas, anyone? Thx -- DrewAdams
+
+[new]
+I tried this as well with cygwin, found mkafmmap no problems hashed as /usr/bin/mkafmmap. Also found mkafmmap using package search: http://cygwin.com/cgi-bin2/package-grep.cgi?grep=mkafmmap
+
+I get a little further, when converting a font to afm: 
+<pre>
+$ mkafmmap DejaVuSansMono.afm
+file=font.map
+DejaVuSansMono.afm...
+AFM Error: skipping key "DejaVu"
+</pre>
+Seems to work for some other True Type Font though, I tried with LucidaTypewriterRegular.ttf and had no problems. -- DavidBoon
+

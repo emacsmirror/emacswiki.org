@@ -1,0 +1,6 @@
+This module is enabled by default.  To disable it use M-x customize-variable RET erc-modules.
+
+With this module enabled, all lines inserted into the buffer will be made read-only.
+
+----
+[[ERC]]

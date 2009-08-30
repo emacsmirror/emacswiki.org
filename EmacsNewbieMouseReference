@@ -1,0 +1,43 @@
+Mouse usage in Emacs by default is different than it is in other applications, and it can be confusing for an EmacsNewbie.
+
+You can use the mouse as usual: 
+
+* Press and hold `mouse-1' (left mouse button) and
+drag to define the selection ("region").
+
+* Click `mouse-2' (center mouse button, or left and right buttons together, if you have no center button) to
+paste. 
+
+* Click `mouse-3' (right mouse button) to extend the selection or pop up a context-appropriate menu, depending on the current buffer.  
+
+
+Check the EmacsManual to learn about additional
+available mouse actions. In particular:
+
+* Click `mouse-3' twice in the same spot to cut ("kill") the selection.
+
+* A ''secondary'' selection is available by pressing and holding the Meta key (`M-') during mouse actions. For example, `M-' while dragging creates and extends the secondary selection; `M-mouse-2' (that is, click `mouse-2' with Meta pressed) to paste the secondary selection.
+
+See KeySequence and [[Region]] for more about mouse actions.
+
+== Regions and Selection ==
+
+The TextCursor (not the MousePointer) defines the position of
+'''[[Point]]''', which is one end of the '''[[Region]]'''. The other end is the
+'''[[Mark]]'''. The mark is invisible; point is indicated by the cursor. 
+
+You can set point by clicking `mouse-1' or using
+the arrow keys. You can set the mark in any of these ways:
+
+* `C-SPC' (point stays where it was)
+* dragging the point with `mouse-1' (old point becomes the mark)
+* clicking `mouse-3' (becomes the point; old point becomes the mark)
+
+If you define the region without using the mouse, it may be
+invisible; you can make it visible via `C-x C-x', which also swaps
+the point and the mark.
+
+----
+CategoryHelp
+CategoryMouse
+CategoryRegion

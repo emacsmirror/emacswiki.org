@@ -1,0 +1,173 @@
+== Bazaar for Emacs Developers ==
+
+This is a quick-start guide to using [http://bazaar-vcs.org Bazaar] for Emacs development.  It assumes familiarity with the old CVS ways.
+
+=== What Version of Bazaar to Use ===
+
+As Emacs needs some of the improvements provided by 1.17 release, it
+is higly recommended to use GNU Bazaar 1.17 or higher to develop
+Emacs.
+
+[:RegularContributors]
+=== How Regular Contributors Should Use Bazaar ===
+
+This section describes how to set things up if you plan on making repeated contributions to Emacs (whether or not you're one of the Emacs maintainers).  It's based on [http://bazaar-vcs.org/Scenarios/RepeatedContributions this scenario].
+
+If you find the terminology in this section confusing, read [http://bazaar-vcs.org/BzrForCVSUsers Bazaar for CVS Users] and come back.
+
+Overview of life with Bazaar:
+
+# Create a bzr repository locally.  It will hold all your branches.
+# Create your first local branch: a mirror of the project trunk.
+# Create a local development branch, based off your local trunk mirror.
+# (Maybe create a task branch for some specific bugfix.)
+# Do your work on one of your non-mirror local branches, committing locally as you go.
+# From time to time, pull upstream newness into your mirror branch (this is like <tt>cvs update</tt>), and then merge the newness into your dev/task branches from there (also sort of like <tt>cvs update</tt>).
+# When your local changes are ready, then either
+## push them up to the master branch (if you're a maintainer and have the necessary access rights --- this is analogous to committing in CVS), /or/
+## package up your changes and submit them as a "bundle" to the project mailing list (analogous to posting a patch).
+# Receive feedback.
+# Maybe make some more commits locally, in response to the feedback
+# Push again (or submit a new bundle).
+# Lather, rinse, repeat until the change is accepted.
+# If you did all this on a local task branch, you can remove it now.  The change history will live upstream.
+
+Now let's look at the specific bzr commands.  
+
+We'll assume Emacs's master trunk lives at http://bzr.savannah.gnu.org/sources/emacs/trunk.  (If it ends up somewhere else, please update this doc.)
+
+First, initialize a repository in which to store all your branches:
+
+      bzr init-repo --2a emacs/
+
+(The ##--2a## is because we need the most modern, technically best format, even though for compatibility reasons Bazaar may not use it as the default yet.)
+
+Create a branch that will just be a mirror of the mainline.  You'll never make any changes to this branch; its job is just to reflect the upstream master:
+
+      cd emacs/
+      bzr branch http://bzr.savannah.gnu.org/sources/emacs/trunk/ trunk/
+
+Next, safeguard that mirror --- this is what makes it a mirror --- so that you don't accidentally commit any local changes on it.  (All your work will be done in other branches, which we'll create in a moment).  To safeguard, we "bind" the local branch to the upstream master:
+
+      cd trunk/
+      echo "public_branch = http://bzr.savannah.gnu.org/sources/emacs/trunk" >> .bzr/branch/config
+      bzr bind http://bzr.savannah.gnu.org/sources/emacs/trunk/
+      cd ..
+
+Now create a generic development branch where you can actually do your work.  It will be based on the local trunk mirror we just created (another way to say it is that the task branch will be "branched from" the mirror):
+
+      bzr branch trunk/ dev/
+
+These branches are lightweight --- it doesn't cost much to create them, as they're all sharing storage in the repository.  The one we just created is for quick, one-off work: for example, you spot a typo in the README file and want to fix it.
+
+But for larger tasks, such as a complicated bug fix that might require multiple commits and rounds of feedback, you might want to create a "task branch", to keep its changes separate from other things you might have going on:
+
+      bzr branch trunk/ SOME-TASKNAME/
+
+...where "TASKNAME" could be, e.g., the bug tracker ticket number of the bug you're trying to fix, or just a short, descriptive name for the task.
+
+At this point, you're ready to do work.  These examples will use the ##SOME-TASKNAME## branch, but they could just as easily use <tt>dev<tt>.
+
+      cd SOME-TASKNAME/
+      ...(edit source files until you reach a good stopping point)...
+      bzr commit -F log-message.txt
+      cd ..
+
+You can also do ``bzr commit -m "blah blah blah"``, if your log message is short enough to fit on one line.  Remember, these commits are local: they just go to the task branch.  They don't affect the upstream master branch, and they don't even affect your local trunk mirror.  No one else sees them until later, when you send them upstream.
+
+(Note: we'll continue to keep a versioned ChangeLog file.  See [http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00334.html this mail] for more.)
+
+If the task isn't done yet, keep working:
+
+      cd SOME-TASKNAME/
+      ...(edit yet more source files, until you reach a stopping point)...
+      bzr commit -F another-log-message.txt
+      cd ..
+
+etc.  You can commit any time you reach a good checkpoint.  
+
+From time to time you should refresh the local trunk mirror, by
+pulling in changes from upstream:
+
+      cd trunk/
+      bzr pull
+      cd ..
+
+Because the trunk mirror is bound to upstream, and never has any local
+changes, you don't have to commit what you just pulled --- all that upstream newness is now fully incorporated into your mirror.
+
+And after refreshing the mirror, you'll want to get those changes into your task branch, by merging them:
+
+      cd SOME-TASKNAME/
+      bzr merge
+      bzr commit -m "Merge from mainline."
+
+The reason you use "##merge##" instead of "##pull##" in the task branch is that your task branch has local changes -- it has diverged (a bit) from the upstream master, and so any changes from upstream have to be merged with your changes.  A "pull", on the other hand, assumes that the destination is pristine, that is, that there are no local changes, and will error if it finds any.
+
+Once your bugfix is ready, you'll want to send it upstream.
+
+If you're one of the Emacs maintainers, then you can just push it directly to the upstream master:
+
+      bzr push %%bzr+ssh://bzr.savannah.gnu.org/sources/emacs/trunk/%%
+
+That pushes all pending changes to the destination branch ("pending" meaning changes the destination branch doesn't already have).  After you do that, you might want to go pull the changes down into your mirror, though if you don't do it now, you'll just get them sometime later.
+
+If you don't have push access to the mainline, then create a "bundle", that is, a file containing your change, in a special "merge directive" format that bzr understands but that also contains a human-readable diff:
+
+      bzr send -o myfix-TASKNAME.txt
+
+Send a mail to the Emacs Devel list describing the change; attach ''myfix-TASKNAME.txt'' to that mail (please use MIME type ##text/plain##).
+
+If the reviewers ask for further tweaks, just make more commits in the task branch...
+
+      ...(edit yet more source files, until you reach a stopping point)...
+      bzr commit -F another-log-message.txt
+
+...and send a new bundle:
+
+      bzr send -o myfix-TASKNAME-v2.txt
+
+Lather, rinse, repeat... until the changes are incorporated into the upstream.  At that point, you can delete your task branch...
+
+      cd ..
+      rm -rf SOME-TASKNAME/
+
+...and update your mirror to receive your own changes:
+
+      cd trunk/
+      bzr pull
+      cd ..
+
+When you decide to work on the next bugfix, create a new task branch:
+
+      bzr branch trunk/ NEW_TASKNAME/
+
+...and you know what to do from here.
+
+[:PatchContributors]
+=== How One-Time Patch Contributors Should Use Bazaar ===
+
+If you just want to contribute a quick fix to Emacs, and don't anticipate making repeated contributions, then follow the instructions in this section (which is based on [http://bazaar-vcs.org/Scenarios/OneOffContribution this scenario]).  
+
+However, if you think you might make more than one contribution, or even if you're not sure, then consider setting things up as described in the instructions for [[#RegularContributors]].  It's a little bit more overhead that way, but once it's done, you'll be able to make zero, one, or many contributions with equal ease.
+
+TODO: TBD
+
+[:BleedingEdgeBuilds]
+=== How To Follow Bleeding-Edge Emacs ===
+
+If you just want to run bleeding-edge code (perhaps so you can report bugs against the latest development sources), and are not planning to make code changes to Emacs, then just follow the instructions for [[#PatchContributors]] but don't make any commits and don't send any patches :-).
+
+[:PackageMerging]
+=== Merging Upstream Packages (e.g., Gnus) Into Emacs With Bazaar ===
+
+TODO: TBD (but frankly, this should be easy, as it fits perfectly with the DVCS/Bazaar model anyway)
+
+[:Releases]
+=== Doing Emacs Releases With Bazaar ===
+
+TODO: TBD
+
+=== Other Resources ===
+
+* [http://doc.bazaar-vcs.org/bzr.dev/en/user-guide/index.html Bzr Users Guide]

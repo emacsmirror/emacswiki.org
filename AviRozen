@@ -1,0 +1,27 @@
+I'm Avi Rozen, I use Emacs.
+
+Actually, I've been using various versions of both Emacs and XEmacs on every computer and OS I happened to work on since 1988 (except for my old [http://www.atarimuseum.com/computers/8BITS/XL/800xl/800xl.htm Atari 800XL]). I use Emacs for writing (and hacking) code in various programming and scripting languages (C/C++, TeX/LaTeX, Scheme, EmacsLisp, Python, AWK, Bash, Tcsh, Matlab, Assembly, HTML, VBScript, PostScript, to name a few). I use Emacs for running inferior processes such as GDB, Matlab, TeX and more. I use Emacs for editing binary files with HexlMode. I use Emacs for performing file system operations with DiredMode. I use Emacs to manage my to-do list with PlannerMode.
+
+Oh, almost forgot - I also edit text with Emacs.
+
+Over the years, as I find myself running Emacs on other people's machines, I've come to realize that it's best to be familiar with the default Emacs key bindings and default behavior, because I can't rely on my personal customizations to be available. Emacs 22 is more than functional out of the box, with no customizations at all. Give it a try.
+
+I wrote a few light-weight Emacs extensions, mostly for my own use:
+
+* [http://osdir.com/ml/window-managers.ion.general/2006-09/msg00014.html ionflux.el] - integrates Emacs with the Ion3 windows manager. I no longer use Ion3.
+* [https://github.com/ZungBang/emacs-grep-a-lot/tree grep-a-lot] - manage multiple GrepMode buffers, either as a stack or a ring
+* [http://github.com/ZungBang/emacs-grep-o-matic/tree grep-o-matic] - use a single key combination to launch a search for the text under the cursor or marked region, in the currently open files, current buffer's directory or the whole current source code repository
+* [https://github.com/ZungBang/emacs-repository-root/tree repository-root] - deduce the repository root directory for a given file or directory
+
+I'm also known online as [::ZungBang] (or Zung!) - pronounced "tsoong bang", a nick I took on during my days as a [http://www.telefragged.com/zungbang Quake hacker].
+
+I run a [http://machine-cycle.blogspot.com blog] that documents the pain and glory involved in running [http://www.debian.org Debian GNU/Linux] on my home computer. 
+
+You can contact me using mailto:zungbang+emacswiki@gmail.com.
+
+[new:DrewAdams:2008-12-20 20:39 UTC]
+Welcome to the wiki! -- DrewAdams
+
+
+----
+CategoryHomepage

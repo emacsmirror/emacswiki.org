@@ -1,0 +1,137 @@
+: ''So far the wiki looks good, but it seems to have
+two types of documents: "how to use C-n, C-p" and
+arcane gobbledygook.'' (i.e., gibberish, not understandable)
+:: -- Chalain (DavidBrady), on #emacs
+
+The EmacsWiki collects, apart from fun and jokes,
+* EmacsLisp (a.k.a. "elisp") code;
+* questions and answers related to elisp code and style;
+* introductions to elisp packages and links to their source, or the source itself;
+* complete manuals or documentation fragments;
+* comments on Emacs and XEmacs features, differences and history;
+* pointers to ports, clones and Emacs look-alikes, as well as
+* references to other Emacs-related information on the web.
+
+You can use this wiki to document "common knowledge", like rarities in Emacs that only a few people know about, or problems that constantly come up that have no easy solutions documented anywhere. You can even use this wiki to maintain a manual for some elisp code of yours.
+
+This wiki is a MultilingualWiki.
+
+Contributions to this site will remain here for a long time.
+See footer of this page for our licensing terms.
+
+Contributors to this page: AlexSchroeder, JohnWiegley, DeepakGoel, DanielBrockman
+
+See also: MissionRant.
+
+== What RMS would not like to see ==
+
+''This is an e-mail RichardStallman sent AlexSchroeder while discussing the EmacsWiki. RMS's mail was sent 2003-08-31 and is quoted here with permission so that we can discuss it.''
+
+'''Mail by RMS, quoting Alex:'''
+
+: Removing the pointer to the software will not remove the software
+itself, so we're actually just inviting the next person who comes
+along to add the info again.
+
+That's true, but it isn't a big problem, as explained below:
+
+: I'll have to start discussing with every
+newcomer who adds the info why I am removing it again.
+
+If you put a statement in the front page, saying "Our policy is not to
+identify non-free programs, since doing so could lead more people to
+use them, and we would thus be contributing to their success" then it
+will be easy to explain. Just send the person a copy of that text,
+saying, "This is stated in the front page."
+
+: Yes. But compare not saying anything to saying what we think is
+right: There is software X, and it does Y, and we don't like it
+because it is non-free.
+
+Definitely the site should say that non-free software is bad, but one
+can do this without mentioning any specific non-free program. In
+fact, that makes it more powerful.
+
+: I don't think mentioning the software and commenting on it being
+non-free can be considered promotion.
+
+While this kind of statement makes it clear you don't think the
+non-free program is a good thing, readers who encounter the mention
+the non-free program might still go and use it anyway. A reader for
+whom freedom is not a priority might ignore the site's negative
+opinion, follow the link, and become a customer for the program.
+If you don't mention the specific program, this can't happen.
+
+: To state that non-free programs are a part of the problem that free
+software (and Emacs) are designed to correct would be a good thing.
+
+I just felt that part was obvious.
+For most of the users, from being obvious, it is unheard-of. Most
+users in our community have never even heard the idea that non-free
+software is ethically bad. They have only heard of the open source
+movement and its values; they think our goal is simply to make
+software "better" (technically).
+So this statement is important. To make it as visible as possible,
+I'd suggest putting it on the home page.
+
+'''End of Mail'''
+
+== Community Reaction ==
+In response to the proposal to only identify free software, many raise the issue of free speech.  They consider it ironic to censor any mentions of non-free software in the name of software freedom.  Others responded by pointing to WikiSpam and other forms of advertising that are deleted consistently from the Wiki without second thought or discussion.
+
+One person rejected the suggestion of censorship on a community-run Wiki, a Wiki they consider to have no obligation to mention non-free software, just as the personal Web page of someone who supports free software is not obligated to mention non-free software.  This comment reinforces the motivation for agreeing as a community upon a "mission statement" for the Wiki, a community Web site.  A few people also note that proprietary software companies don't have any obligation to mention free software on their Web sites, nor would a policy on this Web site limit their free exercise of speech.
+
+Concerning using free or non-free software, some people are satisfied in certain circumstances with non-free software, citing that they can be "useful tools for someone's job"; therefore, non-free software should be listed.  Coincidentally, the same person suggests that such listings should include a "clear warning that the software is not free" and free alternatives should be listed alongside mentions of non-free packages on the Wiki.
+
+Some Emacs hackers are hesistant about "ethical" arguments, "Ethics is a moving target; the more expensive a sophist you employ, the more flexible your interpretation of 'ethics'."  Someone countered saying, "As with all free packages, ethics associated with GNU Emacs are the best part of the editor, much more important than technical goodness."
+
+One person notes that their preference in software, including Emacs, is not motivated at all by its status as free software or by its moral philosophy, but by technical reasons alone.  This person also identified, "I personally do not care about mission statements and policies -- I tend to disagree with them whenever they [are] made and with whomever makes them."
+
+Proponents of technical superiority also argue that proprietary software should be mentioned so that it can be bested by the free software community.  However, one such proponent sarcastically notes, that after "using proprietary software, it will take a lot for users to switch to some other software, free or not."  Well-known segments of the free software community are on-record as being unoccupied with technical prowess, but only with software freedom.  However, the GNU project is similarly well-known for requesting replacements to proprietary software at the GNU Task List[http://www.gnu.org/prep/tasks.html].  This activity is similarly taken up on this Wiki, see WishList.
+
+Others instead took a position focused on strategy, "getting there from here", noting that even the Free Software Foundation has used strategy at times.  The FSF used non-free software to BootStrap many aspects of the GNU operating system and offers a soft-Copyleft license, the GNU Lesser General Public License, for certain types of works.  An argument by analogy that uses the FSF loses its potency when the organization's acting president, RichardStallman, judges that such a strategy is no longer necessary and argues instead that it is now a poor strategy, and pointedly advises against using such a strategy for the Wiki (see above).
+
+Some Wiki members advocate a focused strategy of pointing to non-free software as a method to recruit, foster community inclusion, build trust and spread the free software ethos to existing users of non-free packages.  Examples of this on the Wiki include CategoryWThirtyTwo, MatlabMode.
+
+Critics of non-free software argue against any such strategy.  They believe non-free programs are not deserving of a link or description, because their existence should be obvious information.  Mentioning non-free software in order to motivate the development of free alternatives was accused of being detached from the reality of users who become dependent on proprietary software (see above).  One such person also noticed the issue of not mentioning non-free software could be framed over relevance (OnOrOffTopic), rather than censorship, by asking the ironic question, "There's not much help for Vim users here, is there?"  Critics of non-free software want the Wiki to emphasise Emacs and free software, through advertising and documenting free alternatives only.
+
+A compromised proposal included allowing the mention of non-free packages only to "describe what the non-free package does and what package they should use instead" or give directions on what Emacs can already do as an alternative.  These mentions would allow people to find such information when searching the Web and accomplish some of the recruitment goals mentioned above.  This "bait-and-switch" strategy would attract users of proprietary software to the Wiki by mentioning the proprietary package only to have free software alternatives listed instead.  There is no guarantee such a method would work.  This strategy could be both ineffective for recruitment and instead provide motivation to allow proprietary software on the Wiki with no guaranteed promotion of free software ideals.
+
+One person mentions that the "gospel" of the [[GPL]] and the free software movement should not fear mentions of "lesser", proprietary software.  Unfortunately, the free software movement has never argued the inevitable adoption of free software by all or it being technical superior.  Instead, the movement cites threats against free software, including software patents, Digital Restrictions Management (DRM), and aspects of the United States DMCA.
+
+The greatest difficulty of any policy on non-free software for the EmacsWiki will not be avoiding the mention of Emacs modes that are distributed as proprietary, nor removing the mention of free modes written to only support proprietary packages.  The difficulty will be handling the information on porting Emacs to proprietary software environments like Windows, Mac OS X, and any proprietary Unixes.  Browsing the FSF and GNU project Web sites, they mention such platforms, but don't document the ports.
+
+== Proprietary software mentioned on EmacsWiki ==
+
+The following proprietary software packages, or Emacs modes dedicated to a such a package, have their own page on EmacsWiki:
+
+* AutoLisp
+* Lisp:bk.el
+* ClearCase
+* ColdFusionDeluxeMode
+* DevStudio
+* [[DDLMode]]
+* ErcWinamp
+* Lisp:itunes.el
+* MatlabMode
+* MuPAD
+* PerforceSCM
+* SlickEdit
+* StarTeam
+* TaclMode
+* TalMode
+* TextMate
+* VisualSourceSafe
+* XreFactory
+
+These parts of EmacsWiki discuss running Emacs on non-free systems:
+
+* CategoryWThirtyTwo 
+* CategoryPorts
+
+== Discussion ==
+
+
+
+----
+CategoryEmacsWikiSite

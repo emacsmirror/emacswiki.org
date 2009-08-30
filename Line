@@ -1,0 +1,15 @@
+Without a qualifier, '''[::line]''' usually means ''text'' line.
+
+1. A '''text line''' (line of text) in a buffer is the longest sequence of contiguous characters, excluding the '''newline''' character (ASCII control character Control-J).  In other words, the '''lines''' in a buffer are separated by newline characters.
+
+Note that this definition of lines is independent of whether or not actual newline characters are present in the ''file'' that a buffer visits -- what is important is what is present in the ''[[Buffer]]''.  In LongLines mode, for instance, newlines are inserted (as  so-called "soft returns") automatically at appropriate intervals for viewing and editing purposes; they are then removed when you save the buffer to a file. Those temporary newlines nevertheless partition the buffer into text lines, as described above.
+
+Note also that, in some contexts, the newline character following a line is considered to be part of the line itself (its last character), but this is not really accurate terminology.
+
+2. A '''window line''' or '''screen line''' is text that appears on the same line visually. A text line that is too long for the [[Window]] is sometimes wrapped to one or more additional window lines. The additional lines are known as '''continuation lines'''.
+
+* LineCommands -- Commands affecting or using lines.
+* LineWrap -- Line-wrapping gives different interpretations of a line.
+
+----
+CategoryGlossary

@@ -1,0 +1,25 @@
+A SpreadSheet mode by DanielSpeyer:
+
+* http://esheet.sourceforge.net
+
+Selected strengths of Esheet from the web page:
+                  
+* Powerful formulas -- nearly as strong as Lisp, which is also available
+* Extensibility -- just define new formula commands as new elisp function.
+* General cell-reference support -- refer to cells by relative or absolute location, or combinations thereof
+
+The example sheet has formulas as follows:
+
+    +sum(range(1,y+0,x+-1,y+0))/sum(range(1,y+-1,x+-1,y+-1))
+    =(/ (sum (range 1 y (- x 1) y)) (sum (range 1 1 (- x 1) 1)))
+    +mean(range(x+0,y+-2,x+0,y+-1))
+
+A note on ComparativeEmacsology, also from the web page:  Esheet runs
+under both Emacs and XEmacs. The XEmacs support is older, more
+reliable, and has a few added features (e.g. mouse support), but both
+work for most purposes.
+
+----
+CategoryCalculators
+CategoryFinancial
+CategoryModes

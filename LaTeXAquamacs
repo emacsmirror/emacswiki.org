@@ -1,0 +1,47 @@
+=Writing LaTeX with Aquamacs=
+
+Use M-x latex-mode (normally Option-x latex-mode in Aquamacs) to edit LaTeX files. Use C-c C-c latex to compile.
+
+Aquamacs is in PDF mode by default.
+
+
+==Setting up PDFView==
+
+PDFView is a free, open-source PDF Previewer that will automatically show you a refreshed preview of the document after it has been compiled. It integrates nicely with Aquamacs.
+
+The following line for ~/Library/Preferences/Aquamacs Emacs/Preferences.el will cause AUCTeX (latex-mode) to use PDFView for PDF files, and TEXniscope to view DVI files:
+
+ (setq TeX-output-view-style (quote (("^pdf$" "." "open -a PDFView.app %o") ("^dvi$" "^xdvi$" "open-x11 %(o?)xdvi %dS %d") ("^dvi$" "^TeXniscope$" "open -a TeXniscope.app %o") ("^pdf$" "." "open %o") ("^html?$" "." "open %o"))))
+
+In PDFView, use the following configuration in Preferences -> LaTeX:
+
+ Preset: Emacs
+ Command: "/Applications/Aquamacs Emacs.app/Contents/MacOS/bin/emacsclient"
+ Arguments: --no-wait +%line "%file"
+
+
+==Using TeXniScope==
+
+See AquamacsTexniscope.
+
+
+==Problems when compiling Latex documents==
+
+*Problem:* When I compile a Latex document from Auctex mode, the typesetting process hangs, and the Latex process buffer displays the following kind of error message:
+
+<pre>
+! I can't find file `" -interaction=nonstopmode"'.
+<to be read again>
+                   \let
+<*> " -interaction=nonstopmode\input
+                                    {FG.tex}"
+Please type another input file name: 
+</pre>
+
+*Solution:* At some point, the Auctex package in the Aquamacs distribution got updated from version 11.83 to 11.84. Apparently, [mailto:archive.com/auctex@gnu.org/msg02182.html this broke something with Latex in non-interactive mode].  As the linked article describes, you can fix the problem as follows:
+
+# open the Latex/Customize Auctex/Browse Options menu in Aquamacs
+# click on "Go to group" in "Tex command"
+# open the item "Tex expand list"
+# replace the entry for "%(mode)" by <code>(lambda nil (if TeX-interactive-mode "" "\\nonstopmode"))</code>
+# save the options buffer

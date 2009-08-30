@@ -1,0 +1,193 @@
+Customizing both emacsen is a pain.  If you take care when writing
+your InitFile, then it will work in both of them.  Naturally,
+compiling the file will produce incompatible byte code, so don't do
+that.
+
+Recently, [[XEmacs]] offers to migrate your ##.emacs## file to a ##.xemacs##
+file.  If you do that, however, a lot of code will be duplicated,
+unless you load the common stuff from both ##.emacs## and ##.xemacs## again.
+Thus it depends on what you find easier to maintain.
+
+Many people suggest you take care writing one .emacs.  Here is how it
+might work:
+
+Use <code>(featurep 'xemacs)</code> to conditionalize code when the
+<em>interface</em> or the notation has changed.  This is rarely
+needed.
+
+  (if (featurep 'xemacs)
+      (blabla for xemacs)
+    (blibli for emacs))
+
+You can also use the <code>window-system</code> variable, but that was
+never intended as a user level variable, so try to avoid it:
+
+    (when (eq window-system 'x)
+      (color-theme-robin-hood))
+
+This is better written using <code>display-color-cells</code>:
+
+    (when (> (display-color-cells) 16)
+       (color-theme-robin-hood))
+
+Other things to test:
+
+; <code>(emacs-version, emacs-major-version, emacs-minor-version)</code>: the version of Emacs (string / numbers).  This is generally to be avoided.
+; <code>(system-name)</code>: hostname of the current machine
+; <code>(system-type)</code>: type of operating system you are using
+; <code>(getenv "TERM")</code>: the terminal used when Emacs was started
+
+----
+
+If all you need is a certain function, it's better to test if that
+specific function is avalible, using fboundp:
+
+    (if (fboundp 'auto-compression-mode)
+        (auto-compression-mode 1))
+
+A useful function to achieve the same thing is this one (based on a
+function from AaronL's InitFile):
+
+    (defun call-if-fbound (function &rest args)
+      "Call FUNCTION with optional ARGS, only if it is fbound.
+    Return t if it is fbound and called without error, and nil otherwise."
+      (when (fboundp function)
+        (apply function args)
+        t))
+
+Since it returns <code>t</code> if and only if the function did exist,
+you can use it quite nicely like this:
+
+    (or (call-if-fbound 'iswitchb-mode 1)
+        (call-if-fbound 'iswitchb-default-keybindings)) ; the old way
+
+When setting variables that only exist in some version of Emacs,
+don't be afraid to always set them: they will just be ignored in the
+versions where they don't exist.
+
+= The custom command =
+
+Using <code>custom</code> in both emacsen is confusing.  I suggest you
+only use custom in one of them, eg. Emacs, and disable the saving of
+customizations in the other (to prevent it from mangling your
+hand-crafted InitFile).  Here is how:
+
+ ;; When using XEmacs, disable all customizations
+ (when (featurep 'xemacs)
+   (load-library "cus-edit")
+   (mapc (lambda (s)
+	   (when (and (functionp s)
+		      (string-match "^custom" (symbol-name s)))
+	     (fset s (lambda (&rest ignore)
+		       (error "The saving of customizations was undefined")))))
+	 '(custom-save-all
+	   customize-save-customized
+	   customize-save-variable)))
+
+Another strategy for dealing with custom is to have different values
+of `custom-file' depending on the Emacsen. Something like this should
+do:
+
+ (setq custom-file
+       (expand-file-name (concat "~/."
+                                 (if (featurep 'xemacs)
+                                     "x"
+                                   "")
+                                 "emacs-custom.el")))
+ (load custom-file t)
+
+StephenTurnbull said that XEmacs will load custom-file during startup
+anyway.  It seems that loading custom-file is only necessary for
+Emacs.  In fact, Emacs 21.3.50 (HEAD from CVS) will load custom-file
+during startup if it isn't manually loaded already.
+
+Yet another strategy is to use various shell scripts and environment
+variables.  Perhaps the simplest thing to do is to always call emacs
+from a script (or "batch file" on windows): have the script set some
+environment variable, and then have your InitFile test that variable
+using the function `getvar'.
+
+Example: On windows you could have one shortcut called "Cygwinized
+Emacs" call a batch file similar to this one:
+
+    @echo off
+    rem Set vars for Emacs
+    set PLATFORM=cygwin
+    set HOME=t:\tlroche
+
+    rem Use bash to start X
+    cd /d D:\bin\cygwin\1.3.13-1\bin
+    bash --login -c "startx"
+    rem emacs gets called by my .xinitrc
+
+    rem unset vars
+    set HOME=
+    set PLATFORM=
+
+And for NT Emacs, use a batch file similar to this one:
+
+    @echo off
+    set PLATFORM=native
+    F:\tlroche\emacs-21.1\bin\runemacs.exe
+    set PLATFORM=
+
+Then, in your InitFile, do a test like
+
+    (defvar platform (getenv "PLATFORM"))
+    (when (string-match "native" platform)
+      ; do what you need to do, e.g. setq load-path
+    )
+    (when (string-match "cygwin" platform)
+      ...
+    )
+
+= Discussion =
+
+There was a bug in XEmacs 21.4.6 which ignored my custom-file setting
+and erased my custom-set-variables statement in my InitFile.  The bug
+only manifests itself when this is the first time you start XEmacs,
+have not migrated your InitFile, and have an error in your InitFile.
+I had an error in my InitFile because it had changed so much and I use
+XEmacs only seldomly.  Thus did the bug strike: Because of the error
+in my InitFile, my customizations where not loaded, `custom-file' was not
+set, and then XEmacs saved the "does not want to migrate .emacs"
+setting as a customization and thus replaced the customizations that
+where in place.
+
+: Hmm. I guess I would respond by asking, why use
+<code>custom-set-variables</code> in your InitFile if ##custom-file## /= ##.emacs##? Not
+that there's any excuse for the bug, but still. I don't get it.
+
+That was just a trick to prevent me from ever saving customizations in
+XEmacs.  If I ever did that, the settings should be saved into another
+file.  When running Emacs, `custom-file' was not changed and thus
+defaulted to ##.emacs##.
+
+= Three init.el files =
+
+I swiped this idea from somewhere - sorry for not keeping track of who
+gave it to me.  I have three subdirectories: ##~/.gemacs##, ##~/.xemacs##, and
+##~/emacs-common## There is an ##init.el## file in each.  My ##.emacs## looks
+like:
+
+
+    ;;; XEmacs backwards compatibility file
+    (if (string-match "XEmacs" emacs-version)
+        (setq thesub ".xemacs")
+      (setq thesub ".gemacs"))
+
+    (setq user-init-file
+          (expand-file-name "init.el"
+                            (expand-file-name thesub "~")))
+    (setq custom-file
+          (expand-file-name "custom.el"
+	    		    (expand-file-name thesub "~")))
+
+    (load-file user-init-file)
+    (load-file custom-file)
+    (my-color-theme)
+
+-- JodyKlymak
+
+----
+ComparativeEmacsology CategoryCustomize

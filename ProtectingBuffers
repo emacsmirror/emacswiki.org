@@ -1,0 +1,37 @@
+==Protecting Buffers in XEmacs==
+
+To protect important buffers from accidental killing, use the following forms in [[XEmacs]]:
+
+    (setq permanent-buffers-alist 
+          '(("*scratch*" (lisp-interaction-mode))))
+    (permanent-buffers-mode t)
+
+==Protecting Buffers in GNU Emacs==
+
+For GNU Emacs you can use protbuf.el [http://www.splode.com/~friedman/software/emacs-lisp/src/protbuf.el] by NoahFriedman like so:
+
+    (require 'protbuf)
+    (protect-buffer-from-kill-mode nil (get-buffer "*scratch*"))
+
+For another way to auto-protect buffers with certain names, see ProtBufByName, an add-on for ProtBuf.
+
+===Killing Protected Buffers===
+
+In case you need a function to kill a buffer protected by protbuf.el, here is one:
+
+{{{
+(defun kill-protected-buffer (&optional buffer-or-name)
+  "Kill a buffer, overriding the protection granted by protbuf.el"
+  (interactive (list (get-buffer (read-buffer "Kill buffer: " (current-buffer) 'existing))))
+  (message "Killing buffer %s, overriding protections." 
+           (buffer-name buffer-or-name))
+  (protect-buffer-from-kill-mode nil buffer-or-name)
+  ;; Also disable by-name protection
+  (let ((protect-buffer-names) (protect-buffer-matches)
+        (protect-process-buffer-names) (protect-process-buffer-matches))
+    (kill-buffer buffer-or-name)))
+}}}
+
+This function also works with protbuf-by-name.el.
+----
+CategoryBufferSwitching

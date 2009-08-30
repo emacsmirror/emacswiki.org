@@ -1,0 +1,238 @@
+== Começar a utilizar o Planner ==
+
+No final deste tutorial vais poder usar o ModoPlanner e os módulos que
+lhe estão relacionados para manteres o historico das tuas tarefas,
+horários e notas, tudo com as vantagens do Emacs. =)
+
+(Esta página é uma tradução do PlannerModeQuickStart.)
+
+Sumário:
+
+# Obter os ficheiros
+# Planear o teu dia
+## Tarefas
+## Horário
+## Notas
+# Wiki
+# Organizar projectos
+# Material avançado
+
+== Obter os ficheiros ==
+
+Podes obter o arquivo mais recente em
+* http://sacha.free.net.ph/notebook/emacs/sacha-stable.tar.gz or
+* http://sacha.free.net.ph/notebook/emacs/sacha-dev.tar.gz
+
+Podes obter ficheiros individuais em
+* http://sacha.free.net.ph/notebook/emacs/stable or
+* http://sacha.free.net.ph/notebook/emacs/dev
+
+Material necessário: Se estás a começar, obtém o planner.el e
+emacs-wiki.el . O planner.el depende do emacs-wiki.el para publicar e
+para as marcas. À medida que começares a dominar o planner, obtém os
+outros módulos. =)
+
+Se tens o sistema de controlo de versões arch, podes executar os
+seguintes comandos para obter a última versão estável.
+
+   tla register-archive sacha@free.net.ph--main \
+                        http://sacha.free.net.ph/notebook/arch
+
+   tla get sacha@free.net.ph--main/emacs-wiki--stable--1.0 emacs-wiki
+   tla get sacha@free.net.ph--main/planner--stable--1.0 emacs-wiki
+   tla get sacha@free.net.ph--main/remember--stable--1.0 emacs-wiki
+
+Podes utilizar estes comandos para obter versão de desenvolvimento.
+
+   tla register-archive sacha@free.net.ph--main \
+                        http://sacha.free.net.ph/notebook/arch
+
+   tla get sacha@free.net.ph--main/emacs-wiki--dev--1.0 emacs-wiki
+   tla get sacha@free.net.ph--main/planner--dev--1.0 emacs-wiki
+   tla get sacha@free.net.ph--main/remember--dev--1.0 emacs-wiki
+
+O planner.el está disponível como planner-el nos sistemas Debian.
+
+Por favor, envia-me um e-mail para sacha@free.net.ph se precisares de
+ajuda a obter os ficheiros. =)
+
+== Planear o teu dia ==
+
+Existem dois tipos de páginas num wiki Planner.
+
+   Páginas de diário:     Mostra tarefas, horário e notas para um dia
+   Páginas de plano:      Organiza tarefas e notas relativas em notas
+
+Vamos começar por usar páginas de diário. Primeiro, cria uma directoria
+para o planner. Por omissão, ela é ~/Plans .
+
+    mkdir ~/Plans
+
+Depois coloca isto no teu .emacs e faz a sua avaliação.
+
+    (add-to-list 'load-path "/directoria/com/emacs-wiki")
+    (add-to-list 'load-path "/directoria/com/planner")
+    (require 'planner)
+    (plan)
+
+
+Isto irá mostrar a página de diário mais recente com tarefas que não
+foram terminadas ou cria uma nova página de diário se for
+necessário. Por omissão, as páginas do planner são guardadas em ~/Plans
+(planner-directory) e as páginas HTML publicadas são guardadas em
+~/WebWiki (planner-publishing-directory).
+
+=== Tarefas ==
+
+==== Criar tarefas ==
+
+Na página de diário, faz C-c C-t (planner-create-task-from-buffer) para
+criar uma nova tarefa. Introduz uma pequena descrição e escolhe uma
+data:
+* escrevendo 1-31 para colocar a tarefa nesse dia do mês,
+* seleccionado a data com mouse-1 ou
+* escrevendo +n (em que n é um inteiro) para agendar a tarefa para daqui
+a n dias.
+
+Criaste a tua primeiro tarefa.
+
+: Dica: Eu associei planner-create-task-from-buffer ao F9 t para que eu
+        possa chamá-la a partir de qualquer lado. Podes fazer isso com o
+        seguinte fragmento de elisp: (global-set-key (kbd "<f9> r")
+        (remember-to-planner)
+
+Podes criar outras tarefas e alterar a sua prioridade através da simples
+edição da linha e substituindo a letra que mostra a prioridade. Tarefas
+# A são tarefas importantes, #B são de prioridade média e #C de baixa
+prioridade. Sempre que gravares o ficheiro ou chamares M-x
+planner-renumber-tasks, as tarefas são numeradas de acordo com a sua
+prioridade e pela sua ordem. Tarefas de mais alta prioridade são
+listadas antes das tarefas de baixa prioridade, e as tarefas que foram
+finalizadas são listadas no fundo.
+
+Podes organizar as tarefas em grupos colocando um linha em branco entre
+grupos de tarefas. O ModoPlanner vai manter o grupo automaticamente e
+vai apenas ordenar as tarefas do mesmo grupo.
+
+Para te lembrares de executar as tarefas por determinada ordem basta
+editares as linhas de modo a que elas tenham a ordem que quiseres.
+
+Podes guardar as tuas tarefas com C-x C-s do mesmo modo que guardas
+qualquer outro ficheiro, ou o emacs vai-te perguntar se as queres quando
+saires.
+
+==== Marcar as tarefas como finalizadas ==
+
+As tarefas que ainda não foram termindas são marcadas com um _
+(underscore). As tarefas finalizadas são marcadas com um X (X
+maiúsculo). Este é um exemplo de um tarefa de alta prioridade que não
+foi terminada.
+
+    #A1 _ Escrever um tutorial
+
+Este é um exemplo de uma tarefa de alta prioridade que foi terminada.
+
+    #A1 X Escrever um tutorial
+
+Podes editar directamente o estado ou fazer C-c C-x enquanto o cursor
+estiver na linha da tarefa.
+
+
+==== Rescalonar tarefas ==
+
+Para agendar uma tarefa para um dia diferente, faz C-c C-c
+(planner-copy-or-move-task) e selecciona uma nova data.
+
+==== Rescalonar muitas tarefas ==
+
+Podes marcar uma região e fazer M-x planner-copy-or-move-region para
+rescalonar todas as tarefas seleccionadas para uma data diferente.
+
+==== Alterar a ordem das tarefas ====
+
+Podes alterar a ordem das tarefas numa página de plano usando M-n e P-p
+para as mover para cima e para baixo.
+
+==== Apagar tarefas ==
+
+Apaga a linha que contém a tarefa ou chama M-x planner-delete-task .
+
+==== Carrying Over Unfinished Tasks ==
+
+Fazer (plan) traz-te de volta para o dia mais recente com tarefas por
+finalizar. Se quiseres que (plan) te leve sempre para a página de hoje,
+terminando automaticamente tarefas que não foram finalizadas adiciona
+
+    (setq planner-carry-tasks-forward t)
+
+ao teu .emacs.
+
+=== Horário ==
+
+Tem um formato bastante livre. Normalmente tenho tarefas com o formato
+
+    hh:mm | hh:mm | actividade
+    hh:mm | hh:mm | actividade
+    hh:mm | hh:mm | actividade
+
+em que hh:mm é a hora (1h-24h). Podes colocar qualquer coisa nesta
+secção.
+
+==== NOTAS ==
+
+Podes colocar qualquer coisa nesta secção. As notas adicionadas pelo
+remember-planner.el têm o seguinte aspecto:
+
+    .#1 Cabeçalho
+    Corpo
+
+e aparecem com o nível H3. Se quiseres tomar notas convenientemente, vê
+remember-planner.el (vê Obter os ficheiros).
+
+== Wiki ==
+
+Todas as páginas no teu wiki podem conter links com o formato !NomeWiki,
+<nowiki>[[destino]], ou [[destino][descrição]].</nowiki>
+
+Vê os comentários do emacs-wiki.el para mais detalhes (particularmente
+acerca dos anchors).
+
+== Organizar projectos ==
+
+(ainda precisa de muita escrita)
+
+Cria uma página AprenderPlanner dentro do teu wiki. Nesta página, cria
+uma tarefa chamada "Organizar tarefas em páginas de projecto." Agenda-a
+para hoje. A AprenderPlanner deve ter agora o seguinte aspecto:
+
+    * Tasks
+
+    #A0 _ Organizar tarefas em páginas de projecto. (yyyy.mm.dd)
+
+    * Notes
+
+Se seleccionares a data, ela vai levar-te a uma página diária associada.
+
+    * Tasks
+
+    #A0 _ Organizar tarefas em páginas de projecto. (AprenderPlanner)
+
+    * Schedule
+
+    * Notes
+
+Tenta rescalonar a tarefa para outra data. A AprenderPlanner é
+actualizada automaticamente.
+
+== Tópicos Avançados ==
+
+Subscreve a nossa lista de mail em emacs-wiki-discuss@nongnu.org através
+do formulário em http://mail.nongnu.org/mailman/listinfo/emacs-wiki-discuss
+e faz perguntas, reporta problemas ou conta histórias acerca de como
+usas o emacs-wiki, planner, remember e bibliotecas relacionadas! =)
+
+Por exemplo, eu mantenho o meu blog em http://sacha.free.net.ph/ com a
+ajuda de emacs-wiki planner remember remember-planner remember-bbdb
+planner-rss planner-gnus planner-experimental planner-id planner-w3m
+planner-bbdb. A minha configuração pode ser encontrada em
+http://sacha.free.net.ph/notebook/emacs/.

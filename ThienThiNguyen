@@ -1,0 +1,28 @@
+Also known as [::ttn].
+
+Some EmacsLisp is under dir:
+* http://www.gnuvola.org/software/
+
+I use Emacs due to the kindness of David Asher of DEC HLO2 (Hudson, MA, USA)
+in thwarting my innocent/imminent investment in EDT with the simple and direct
+advice: "Don't do that! Here, use Emacs!".  Thanks David.
+
+At the time, it was Emacs 18 under VMS.  Prominent concerns, now solved, were
+the backspace/delete mystery, flow control (C-s / C-q) over remote DECNET
+and w/ "strange" (not DEC-designed or VMS-sanctioned :-) terminals, and the
+proper care and feeding of KEPTEDITOR.COM.
+
+Over the years, Emacs has taught me many things, mostly by allowing me to
+confront my assumptions about my abilities at the programming craft in an
+interactive and non-threatening way.  I like making my mistakes in Emacs,
+because a M-x rename-buffer is enough to keep them around for months at a
+time, for reflection.
+
+Sometimes I feel inspired to write doggerel about Emacs and Emacs-related
+topics, but that cannot be blamed on Emacs.  Poetry is mostly harmless, while
+(bad) programs are anybody's guess.  Perhaps, some thoughts should avoid being
+codified, lest the energy spent forging the cage kills the bird, silencing its
+song.
+
+----
+CategoryHomepage

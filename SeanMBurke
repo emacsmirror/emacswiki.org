@@ -1,0 +1,16 @@
+I'm mostly a [http://interglacial.com/~sburke Perl programmer and writer], but I have also been using emacs for... /a while/.  I managed to get a, well, passable grasp on programming elisp; and I think it's a, well, passable Lisp dialect.
+
+If you want to communicate with me, don't do it here!  Do it through email: sburke@cpan.org
+
+Passing thoughts:
+
+* Programmers of Lisp in general, or Elisp specifically, should really really read ''[[http://www.google.com/search?q=Evolution+of+Lisp Evolution of Lisp]]''.  I think of it as "the book they never wanted you to read".
+
+* I use Emacs.  I never got into XEmacs.
+
+* I wish for better Unicode support.
+
+* A long time ago, someone said to me: "Emacs isn't an ''editor,'' it's an ''OS!"''  As the years roll on, I think that they're on to something there.  I'll settle on saying that Emacs lives in the (tastefully) gray area inbetween.  And that's good!  Because the extremes are ed(1), and a Commodore 64 emulator.
+
+----
+CategoryHomepage

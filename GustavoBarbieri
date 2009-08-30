@@ -1,0 +1,364 @@
+portrait:http://www.gustavobarbieri.com.br/rosto-small.jpg
+
+I'm a computer, open source, free software, technology lover always looking for something new and interesting to learn.
+
+As you might guess, I use Emacs to edit all of my text documents, from LaTeX to C to Python.
+
+== Contact ==
+* **Mail, Jabber, GTalk:** barbieri-at-gmail.com
+* **ICQ:** 17249123
+* **WWW:** http://www.gustavobarbieri.com.br/
+* **Blog:** http://blog.gustavobarbieri.com.br/
+* **rss:** http://blog.gustavobarbieri.com.br/atom.xml
+
+== EmacsWiki Contributions ==
+* GObjectClassHelpers
+* [[E17CModeStyle]] - C-style to match raster's style (like joe default mode).
+* EdjeMode - Mode to edit Edje (.edc) files.
+
+== Messages ==
+
+[new]
+Bem-vindo ao wiki! :) Nos faltam mais páginas em Português; sempre espero que novos utilizadores não se limitem à escrever em Inglês... Somos um wiki multilingual. Ao menos eu desejo que seja assim, ahaha. -- AlexSchroeder
+
+== dot-Emacs ==
+http://www.gustavobarbieri.com.br/dot-emacs
+
+<pre>
+(custom-set-variables
+  ;; custom-set-variables was added by Custom -- don't edit or cut/paste it!
+  ;; Your init file should contain only one such instance.
+ '(auto-compression-mode t nil (jka-compr))
+ '(c-default-style (quote ((c-mode . "cc-mode") (java-mode . "java") (other . "gnu"))))
+ '(case-fold-search t)
+ '(column-number-mode t)
+ '(current-language-environment "UTF-8")
+ '(default-input-method "rfc1345")
+ '(global-font-lock-mode t nil (font-lock))
+ '(indent-tabs-mode nil)
+ '(menu-bar-mode nil)
+ '(mouse-wheel-mode t nil (mwheel))
+ '(save-place t nil (saveplace))
+ '(scroll-bar-mode nil)
+ '(semanticdb-default-system-save-directory "/home/gustavo/.semantic.db" t)
+ '(show-paren-mode t nil (paren))
+ '(show-trailing-whitespace t)
+ '(tool-bar-mode nil nil (tool-bar))
+ '(transient-mark-mode t)
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom -- don't edit or cut/paste it!
+  ;; Your init file should contain only one such instance.
+ '(default ((t (:stipple nil :background "#000000" :foreground "#d9d9d9" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :family "adobe-courier"))))
+ '(diff-added-face ((t (:inherit diff-changed-face :foreground "#00ff00"))))
+ '(diff-changed-face ((t (:foreground "#ffff00"))))
+ '(diff-file-header-face ((t (:background "grey20" :foreground "wheat" :weight bold))))
+ '(diff-function-face ((t (:inherit diff-context-face :foreground "#00ffff"))))
+ '(diff-header-face ((((class color) (background dark)) (:background "grey20" :foreground "grey75"))))
+ '(diff-hunk-header-face ((t (:inherit diff-header-face :foreground "#ff00ff"))))
+ '(diff-removed-face ((t (:inherit diff-changed-face :foreground "#ff0000"))))
+ '(modeline ((t (:background "grey34" :foreground "wheat" :box (:line-width -1 :style released-button)))))
+ '(semantic-highlight-edits-face ((((class color) (background dark)) (:background "#222200")))))
+
+(defun re-read-current-file ()
+  (interactive)
+  (find-file buffer-file-truename))
+
+(global-set-key "\M-g" 'goto-line)
+(global-set-key [f1] 'manual-entry)
+(global-set-key [f2] 'save-buffer)
+(global-set-key [f4] 'find-file)
+(global-set-key [f5] 'compile)
+(global-set-key [f6] 'c-mode-visit-complement-file)
+(global-set-key [f7] 're-read-current-file)
+(global-set-key [f8] 'gobject-class-generate)
+(global-set-key [(shift f1)] 'cscope-find-this-symbol)
+(global-set-key [(shift f2)] 'cscope-find-global-definition)
+(global-set-key [(shift f3)] 'cscope-find-functions-calling-this-function)
+(global-set-key [(shift f4)] 'cscope-find-egrep-pattern)
+(global-set-key [(shift f5)] 'cscope-find-this-file)
+(global-set-key [(shift f6)] 'cscope-find-this-text-string)
+(global-set-key [(shift f7)] 'cscope-find-files-including-file)
+(global-set-key [(shift f9)] 'cscope-prev-symbol)
+(global-set-key [(shift f10)] 'cscope-next-symbol)
+(global-set-key [(shift f11)] 'cscope-prev-file)
+(global-set-key [(shift f12)] 'cscope-next-file)
+(global-set-key [(shift prior)] 'previous-multiframe-window)
+(global-set-key [(shift next)] 'next-multiframe-window)
+
+(global-set-key [(control tab)] 'bs-cycle-next)
+(global-set-key [(control prior)] 'previous-multiframe-window)
+(global-set-key [(control next)] 'next-multiframe-window)
+
+
+(defun c-mode-visit-complement-file ()
+  "If in file.c, visit file.h.
+If in file.h, visit file.c"
+  (interactive)
+  (defun c-mode-visit-complement-file-get-name (filename)
+    (if (string-match "[.]c$" filename)
+	(let ((name filename))
+	  (string-match "[.]c$" name)
+	  (replace-match ".h" nil t name))
+
+      (if (string-match "[.]h$" filename)
+	(let ((name filename))
+	  (string-match "[.]h$" name)
+	  (replace-match ".c" nil t name)))
+      )
+    )
+
+  (if buffer-file-truename
+      (let ((name (c-mode-visit-complement-file-get-name buffer-file-truename)))
+	(if name (find-file name)))
+    )
+  )
+
+(defun string-join (list separator)
+  "Takes a list of string and joins them using delimiter."
+  (mapconcat (lambda (x) x) list separator))
+
+(defun string-concat (list)
+  "Takes a list of strings and joins them."
+  (mapconcat (lambda (x) x) list ""))
+
+(defun ask-value-non-empty (prompt)
+  "Ask a question in minibuffer and ensure it's not empty string."
+  (let ((x (read-string prompt)))
+    (if (string= "" x)
+	(ask-value-non-empty prompt)
+      x)))
+
+(defun gobject-class-header (class_name parent_class_name)
+  "Generate the header definition for a GObject derived class.
+
+It takes 2 parameters:
+   CLASS_NAME: class name, like 'gtk_button' or 'gtk_tree_view'. First
+      element before the underscore character (_) will be used as name
+      space. Example: 'gtk_button' is the 'button' class in 'gtk' name
+      space.
+   PARENT_CLASS_NAME: parent class name, like 'g_object'. First element
+      before the underscore character (_) will be used as name space.
+      Example: 'g_object' is the 'object' class in 'g' namespace.
+"
+  (interactive "sClass name (ie: gtk_tree_view): \nsParent class name (default: g_object): ")
+
+  (defun right-fill (len string)
+    "Takes a string and fill it to take at least len characters"
+    (setq missing (- len (length string)))
+    (if	(> missing 0)
+	(concat string (make-string missing ?\  ))
+      string))
+  (defun macro-line-cnt (&rest sequences)
+    (concat (right-fill 72 (string-concat sequences)) "\\\n"))
+  (defun macro-line-end (&rest sequences)
+    (concat (string-concat sequences) "\n"))
+
+
+  (let* ((parent_class_name (if (string= "" parent_class_name)
+				"g_object"
+			      (downcase parent_class_name)))
+	 (class_name        (downcase (if (string= "" class_name)
+					  (ask-value-non-empty
+					   "You must provide class name (ie: gtk_tree_view): ")
+					class_name)))
+	 (pieces-class_name  (split-string (downcase class_name) "_"))
+	 (pieces-parent_class_name (split-string parent_class_name "_"))
+	 (namespace       (car-safe pieces-class_name))
+	 (name            (string-join (cdr-safe pieces-class_name) "_"))
+	 (ParentClassName (mapconcat 'capitalize pieces-parent_class_name ""))
+	 (NAMESPACE       (upcase namespace))
+	 (NAME            (upcase name))
+	 (NameSpace       (capitalize namespace))
+	 (Name            (mapconcat 'capitalize (cdr-safe pieces-class_name) ""))
+	 (ClassName       (concat NameSpace Name))
+	 )
+
+    (insert
+     (concat
+      "\n"
+      "G_BEGIN_DECLS\n"
+      "\n"
+      (macro-line-cnt "#define " NAMESPACE "_TYPE_" NAME)
+      (macro-line-end "   (" namespace "_" name "_get_type())")
+      (macro-line-cnt "#define " NAMESPACE "_" NAME "(obj)")
+      (macro-line-cnt "   (G_TYPE_CHECK_INSTANCE_CAST ((obj),")
+      (macro-line-cnt "                                " NAMESPACE "_TYPE_" NAME ",")
+      (macro-line-end "                                " ClassName "))")
+      (macro-line-cnt "#define " NAMESPACE "_" NAME "_CLASS(klass)")
+      (macro-line-cnt "   (G_TYPE_CHECK_CLASS_CAST ((klass),")
+      (macro-line-cnt "                             " NAMESPACE "_TYPE_" NAME ",")
+      (macro-line-end "                             " ClassName "Class))")
+      (macro-line-cnt "#define IS_" NAMESPACE "_" NAME "(obj)")
+      (macro-line-cnt "   (G_TYPE_CHECK_INSTANCE_TYPE ((obj),")
+      (macro-line-end "                                " NAMESPACE "_TYPE_" NAME "))")
+      (macro-line-cnt "#define IS_" NAMESPACE "_" NAME "_CLASS(klass)")
+      (macro-line-cnt "   (G_TYPE_CHECK_CLASS_TYPE ((klass),")
+      (macro-line-end "                             " NAMESPACE "_TYPE_" NAME "))")
+      (macro-line-cnt "#define " NAMESPACE "_" NAME "_GET_CLASS(obj)")
+      (macro-line-cnt "   (G_TYPE_INSTANCE_GET_CLASS ((obj),")
+      (macro-line-cnt "                               " NAMESPACE "_TYPE_" NAME ",")
+      (macro-line-end "                               " ClassName "Class))")
+      "\n"
+      "typedef struct _" ClassName "      " ClassName ";\n"
+      "typedef struct _" ClassName "Class " ClassName "Class;\n"
+      "\n"
+      "struct _" ClassName "Class\n"
+      "{\n"
+      "    " ParentClassName "Class parent_class;\n"
+      "};\n"
+      "\n"
+      "struct _" ClassName "\n"
+      "{\n"
+      "    " ParentClassName " parent;\n"
+      "};\n"
+      "\n"
+      "GType " namespace "_" name "_get_type (void) G_GNUC_CONST;\n"
+      "\n"
+      "G_END_DECLS\n"
+      "\n"
+      )
+     )
+    )
+  )
+
+(defun gobject-class-code (class_name parent_class_name)
+  "Generate the code implementation for a GObject derived class.
+
+It takes 2 parameters:
+   CLASS_NAME: class name, like 'gtk_button' or 'gtk_tree_view'. First
+      element before the underscore character (_) will be used as name
+      space. Example: 'gtk_button' is the 'button' class in 'gtk' name
+      space.
+   PARENT_CLASS_NAME: parent class name, like 'g_object'. First element
+      before the underscore character (_) will be used as name space.
+      Example: 'g_object' is the 'object' class in 'g' namespace.
+"
+  (interactive "sClass name (ie: gtk_tree_view): \nsParent class name (default: g_object): ")
+
+  (let* ((parent_class_name (if (string= "" parent_class_name)
+				"g_object"
+			      (downcase parent_class_name)))
+	 (class_name        (downcase (if (string= "" class_name)
+					  (ask-value-non-empty
+					   "You must provide class name (ie: gtk_tree_view): ")
+					class_name)))
+	 (pieces-class_name  (split-string (downcase class_name) "_"))
+	 (pieces-parent_class_name (split-string parent_class_name "_"))
+	 (namespace       (car-safe pieces-class_name))
+	 (name            (string-join (cdr-safe pieces-class_name) "_"))
+	 (ParentClassName (mapconcat 'capitalize pieces-parent_class_name ""))
+	 (NameSpace       (capitalize namespace))
+	 (Name            (mapconcat 'capitalize (cdr-safe pieces-class_name) ""))
+	 (ClassName       (concat NameSpace Name))
+	 (class_name      (concat namespace "_" name))
+         (PARENT_NAMESPACE (upcase (car-safe pieces-parent_class_name)))
+         (PARENT_NAME      (mapconcat 'upcase (cdr-safe pieces-parent_class_name) "_"))
+	 )
+
+    (insert
+     (concat
+      "\n"
+      "static void " class_name "_dispose (GObject *object);\n"
+      "static void " class_name "_finalize (GObject *object);\n"
+      "\n"
+      "G_DEFINE_TYPE (" ClassName ", " class_name ", " PARENT_NAMESPACE "_TYPE_" PARENT_NAME ");\n"
+      "\n"
+      "static void\n"
+      class_name "_class_init (" ClassName "Class *klass)\n"
+      "{\n"
+      "    GObjectClass *gobject_class = (GObjectClass *)klass;\n"
+      "\n"
+      "    gobject_class->dispose = " class_name "_dispose;\n"
+      "    gobject_class->finalize = " class_name "_finalize;\n"
+      "}\n"
+      "\n"
+      "static void\n"
+      class_name "_init (" ClassName " *self)\n"
+      "{\n"
+      "}\n"
+      "\n"
+      "static void\n"
+      class_name "_dispose (GObject *object)\n"
+      "{\n"
+      "    " ClassName " *self = (" ClassName " *)object;\n"
+      "\n"
+      "    G_OBJECT_CLASS (" class_name "_parent_class)->dispose (object);\n"
+      "}\n"
+      "\n"
+      "static void\n"
+      class_name "_finalize (GObject *object)\n"
+      "{\n"
+      "    " ClassName " *self = (" ClassName " *)object;\n"
+      "\n"
+      "    g_signal_handlers_destroy (object);\n"
+      "    G_OBJECT_CLASS (" class_name "_parent_class)->finalize (object);\n"
+      "}\n"
+      "\n"
+      )
+     )
+    )
+  )
+
+(defun gobject-class-generate (class_name parent_class_name)
+  "Generate header (.h) and code (.c) files for a GObject derived class.
+
+It takes 2 parameters:
+   CLASS_NAME: class name, like 'gtk_button' or 'gtk_tree_view'. First
+      element before the underscore character (_) will be used as name
+      space. Example: 'gtk_button' is the 'button' class in 'gtk' name
+      space.
+   PARENT_CLASS_NAME: parent class name, like 'g_object'. First element
+      before the underscore character (_) will be used as name space.
+      Example: 'g_object' is the 'object' class in 'g' namespace.
+"
+  (interactive "sClass name (ie: gtk_tree_view): \nsParent class name (default: g_object): ")
+
+  (let* ((parent_class_name (if (string= "" parent_class_name)
+				"g_object"
+			      (downcase parent_class_name)))
+	 (class_name        (downcase (if (string= "" class_name)
+					  (ask-value-non-empty
+					   "You must provide class name (ie: gtk_tree_view): ")
+					class_name)))
+	 (pieces-class_name  (split-string (downcase class_name) "_"))
+	 (pieces-parent_class_name (split-string parent_class_name "_"))
+	 (base_file_name (string-join pieces-class_name "-"))
+	 (file_header (concat base_file_name ".h"))
+	 (file_code   (concat base_file_name ".c"))
+	 (DEFINE_NAME (concat (upcase class_name) "_H"))
+	 (parent_include (if (string= "g_object" parent_class_name)
+			     "glib-object.h"
+			   (if (string-match "^gtk_" parent_class_name)
+			       "gtk/gtk.h"
+			     (concat (string-join pieces-parent_class_name "-") ".h")
+			     )
+			   ))
+	 )
+
+    (delete-other-windows)
+    (split-window-vertically)
+
+    (find-file file_header)
+    (insert
+     (concat
+      "#ifndef __" DEFINE_NAME "__\n"
+      "#define __" DEFINE_NAME "__\n"
+      "\n"
+      "#include <" parent_include ">\n"
+      "\n"))
+    (gobject-class-header class_name parent_class_name)
+    (insert "#endif /* __" DEFINE_NAME "__ */\n")
+
+    (other-window 1)
+
+    (find-file file_code)
+    (insert
+     (concat
+      "#include \"" file_header "\"\n"
+      "\n"))
+    (gobject-class-code class_name parent_class_name)
+    )
+  )
+
+</pre>

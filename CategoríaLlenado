@@ -1,0 +1,20 @@
+Pulse sobre el título de esta página para obtener una lista de páginas relevantes al tópico. "Llenado" es el término utilizado para describir el ajuste de líneas en el mundo de Emacs. Por lo general, Emacs no diferencia entre retornos de carro "duros" y "suaves".
+
+Existen varias formas de reconstuir parágrafos:
+
+* LlenarParágrafo -- <code>M-q</code> o <code>M-x fill-paragraph</code>
+* ModoAutoLlenado -- permitir que Emacs separe la línea actual en la que está escribiendo tan pronto la última palabra alcance el límite de la derecha.
+* ModoRelleno -- llena el parágrafo luego de cada inserción en el búfer
+* AjusteDeLíneas -- llena el parágrafo cuando el cursor alcanza la columna de llenado
+
+Una vez la línea finaliza, lo hace con un `\n' (Unix), un retorno de carro `\r' (Mac) o ambos (Dos).  Esta convención de FinDeLínea es parte de la internacionalización.
+
+* LíneasLargas -- cuando un archivo de texto es cargado, Emacs inserta retornos duros y suaves en la medida apropiada, y remueve todos los retornos suaves cuando guarda los cambios
+* EncontrarLíneasLargas -- encontrar y trabajar con líneas largas
+* DesajustarLínea -- tomar un parágrafo y convertirlo en una sola línea larga
+
+Otros temas relacionados:
+
+* FillAdapt
+* LlenadoEnComentarios
+* DeshacerLlenado

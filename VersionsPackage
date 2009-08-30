@@ -1,0 +1,66 @@
+This page describes package Lisp:versions.el, by ViniciusJoseLatorre.
+
+: .:: ''v1.4'' :: ''part of GNU Emacs (inside ##emacs/lisp/subr.el##)'' ::.
+
+
+== About versions ==
+
+This package provides routines to compare string version and to convert
+string version into an integer list.
+
+Lisp:versions.el was tested with GNU Emacs 22.0.50.1.
+
+I don't know if it is still compatible with XEmacs.
+
+It provides the following functions:
+
+; ##version-to-list## : convert a version string into an integer list.
+
+; ##version-list-<## : return ##t## if integer list L1 is lesser than L2.
+
+; ##version-list-=## : return ##t## if integer list L1 is equal to L2.
+
+; ##version-list-<=## : return ##t## if integer list L1 is lesser than or equal to L2.
+
+; ##version=## : return ##t## if version V1 is equal to V2.
+
+; ##version<## : return ##t## if version V1 is less than V2.
+
+; ##version<=## : return ##t## if version V1 is less than or equal to V2.
+
+
+== Usage ==
+
+To use ##versions##, insert in your Emacs Lisp code:
+
+   (require 'versions)
+
+So, you can compare versions in Emacs Lisp code like:
+
+   (and (version< other-version "6.6pre4")
+        (error "`my-pack' requires `other' package v6.6pre4 or later"))
+
+
+== Acknowledgments ==
+
+Thanks to EliZaretskii for extending valid syntax for
+version string in `version-regexp-alist'.
+
+Thanks to KimStorm for:
+* fixing `version-list-not-zero'.
+* allowing space as separator before non-numeric part, e.g. ##"1.0 alpha"## in `version-regexp-alist'.
+* interpreting ##".X.Y"## version as ##"0.X.Y"## version in `version-to-list'.
+
+
+Thanks to SebastienKirche for fixing typos and testing.
+
+
+== See Also ==
+
+* [[Multiverse]]
+
+
+----
+
+CategoryCode,
+CategoryProgrammerUtils

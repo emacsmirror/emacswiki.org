@@ -1,0 +1,222 @@
+== Prerequisites ==
+
+You will need to install git.
+
+There is a Debian package called <code>git-core</code> that you can
+install if you use Debian or Ubuntu.  If you are using Windows, then
+visit http://code.google.com/p/msysgit/.  Mac OS X users may
+wish to install <code>git-core</code> using
+[http://www.macports.org/ MacPorts].  Otherwise, visit
+http://git.or.cz and download the latest source.
+
+== Shared project repo  ==
+
+If you are a developer that is part of the planner-el project at
+http://repo.or.cz, you will want to do the following.
+
+<pre>
+git clone ssh://repo.or.cz/srv/git/planner-el.git planner
+</pre>
+
+If you wish to join the Planner development effort, then contact
+john AT wjsullivan.net in order to start the copyright assignment
+process, and register with http://repo.or.cz (being sure to indicate
+your ssh public key).
+
+If you do not have developer access but wish to track the latest
+development changes, do one of the following instead.  If you are
+behind a restrictive firewall, use the second method; otherwise, use
+the first method.
+
+First:
+
+<pre>
+git clone git://repo.or.cz/planner-el.git planner
+</pre>
+
+Second:
+
+<pre>
+git clone http://repo.or.cz/r/planner-el.git planner
+</pre>
+
+== Picking a branch ==
+
+To see a list of the available branches, run the following command in
+the checked out copy of Planner.
+
+<pre>
+git branch -r
+</pre>
+
+Here is a description of the available branches.
+
+|| <code>HEAD</code> || The branch you are currently on ||
+|| <code>master</code> || Main development branch ||
+
+If you want to browse the available branches via the web, visit
+http://repo.or.cz/w/planner-el.git.
+
+The default branch that you get when cloning the Planner project is
+<code>master</code>.
+
+To see which branch you are currently on, do:
+
+<pre>
+git branch
+</pre>
+
+To check out a branch, do the following.  This changes the contents of
+the current directory to match that branch, rather than creating a new
+directory.
+
+<pre>
+git checkout [branch name]
+</pre>
+
+For the shared branch, this would be the following.
+
+<pre>
+git checkout master
+</pre>
+
+== Using the archive ==
+
+=== Keeping up-to-date ===
+
+To keep up-to-date on the latest Planner happenings, run git's
+<code>pull</code> command from the directory that contains your copy
+of Planner.
+
+<pre>
+git pull origin
+</pre>
+
+The name <code>origin</code> refers to the place from which you
+originally checked out the Planner project.
+
+This will update Planner, taking care to preserve any changes that you
+have checked in to your local copy.
+
+=== Telling git your name ===
+
+If you have made some changes that you would like to commit to the
+Planner project, first you will need to provide a name and email address.
+This information is used in the change log for each change you commit.
+To do this, edit the <code>.gitconfig</code> file in your home
+directory to include the following contents.
+
+<pre>
+[user]
+        name = Your Name Goes Here
+        email = you@yourdomain.example.com
+</pre>
+
+Now you are ready to make the change log, and then commit.  Read on
+for the change log instructions before doing the commit.
+
+=== Committing changes ===
+
+If you wish to commit just a few files that you have changed, instead
+of all the files that you have changed, then do the following.
+
+<pre>
+git add changed-file-1
+git add changed-file-2
+git commit
+</pre>
+
+If you instead wish to commit all changes in one go, then do:
+
+<pre>
+git commit -a
+</pre>
+
+In both cases, git will open an editor that you can use to make a log
+message.  Add a brief one-line description of your changes at the top
+of the file.
+
+The rest of the file (keeping a blank line after the very first line)
+is for describing your changes in detail.  If you want, you can either
+leave this blank or just copy the relevant part of your ChangeLog
+entry here.  The information you use here will appear in the
+[https://mail.gna.org/listinfo/planner-el-logs/ planner-el-logs mailing list]
+when you are done.
+
+Make sure that you have described your changes in the ChangeLog file
+before committing, or at minimum, use ChangeLog-style syntax in your
+log entries (or something similar to it).
+
+Here is one example of an acceptable commit log.
+
+<pre>
+Fix note searching, closes #8973 and #7622.
+      
+* planner.el (planner-search-notes-internal): Don't include the
+  title line of any following note in either the search or the
+  matched text.
+</pre>
+
+=== Giving changes back ===
+
+If you have changes that you have committed to Planner, they are only local
+to your copy of Planner so far.  If you want to share them, you must either
+push them back to the shared repo, or email them to the planner-el-discuss
+AT gna.org mailing list.
+
+If you have developer access to the shared archive, you can push
+changes back by doing:
+
+<pre>
+git push origin
+</pre>
+
+If you do not yet have developer access, read on.
+
+You may send your changes via email by doing:
+
+<pre>
+git format-patch -M origin
+</pre>
+
+and then sending the generated patch files to the planner-el-discuss
+mailing list.  Be sure to describe your changes and include a sample
+ChangeLog entry for them.  Be sure that the patch is the body of the
+message, and not an attachment.  Any comments that you wish to make,
+but don't want to appear in the commit log, should be placed between
+the "<code>---</code>" and the diffstat.
+
+If you want to send the resulting patches from the commandline, rather
+than opening up an email client, you can do the following, where
+PATCH-FILE is the file that <code>git format-patch</code> made,
+replacing "<code>__AT__</code>" with "<code>@</code>".
+
+<pre>
+git send-email --to planner-el-discuss__AT__gna.org PATCH-FILE
+</pre>
+
+== Becoming a Planner Developer ==
+
+If you want commit access to the shared Planner repository, then register
+an account at http://repo.or.cz (be sure to add an SSH key), and
+contact the current maintainer at john AT wjsullivan.net.  It would be
+best to send some patches to the planner-el-discuss AT gna.org
+mailing list first, so that we know that you know what you are doing.
+
+== Emacs modes, Tutorials, and Documentation ==
+
+DVC (see DistributedVersionControl) is a highly-recommended Emacs
+add-on that allows you to see changes that you have made, log
+messages, and (eventually) merging changes easily between branches.
+
+Alternatively, the development version of Emacs should include some
+regular VC bindings for git, so that you can use the same key-bindings
+that you would use for CVS.
+
+git's documentation may be browsed at [http://git.or.cz/ the git website].
+There has been a significant effort since March 2007 to make the
+documentation more thorough and easy to read.  Several tutorials are
+there, as well as a User's Manual.
+
+----
+PlannerMode

@@ -1,0 +1,107 @@
+This is a subpage of CategoryModes.  It lists modes for programming languages or programming environments.
+
+* ActionScriptMode
+* AdaMode
+* AdmbMode -- AD Model Builder
+* AnsysMode
+* AntlrMode
+* AutoconfMode -- for autoconf configure scripts
+* [[Asm86Mode]] -- Asm86 Mode is an Emacs major mode that helps the often-tedious task of coding assembly for the Asm86 assembler.
+* AutoLispMode
+* AxcessMode -- also Netlinx
+* BefungeMode -- interpreter for the esoteric Befunge language
+* BisonMode
+* CamlMode -- ObjectiveCaml
+* CPerlMode -- improved PerlMode
+* CcMode -- C, C++ (cpp), Objective C, Java, etc.
+* CEldocMode -- display the arguments of C functions while programming
+* CgMode -- Cg, nvidia language for graphics cards
+* ChillMode -- CHILL (CCITT High Level Language) Mode for XEmacs
+* ChillModePackage -- CHILL (CCITT High Level Language) Mode for Emacs
+* CheetahMode  -- Cheetah Templates Mode.
+* ClojureMode -- [http://clojure.codestuffs.com/ clojure-mode] for [http://clojure.org Clojure].
+* CobolMode
+* CSharpMode -- C#
+* CudaMode  -- Cuda, the successor to GPGPU from NVIDIA. 
+* [[DMode]] -- D language editing mode.
+* [[D4Mode]] -- Alphora Dataphor&rsquo;s D4 relational data language.
+* [[DDLMode]] -- Data Definition Language Mode
+* DelphiMode -- for Borland Delphi's Object Pascal syntax
+* DevelockMode -- highlight faulty formatted source
+* DevKitEmacs -- simplified interface to DevkitPro, for devloping 
+* DosMode -- Dos scripts (batch files)
+* DosScripts -- Dos scripts (batch files)
+* DoxyMacs -- Doxygen
+* ECMAScriptMode -- similar to JavaScriptMode
+* ElDoc -- documentation for EmacsLisp
+* ElseMode -- minor mode with code templates for various languages
+* EmacsCodeBrowser (ECB)
+* EmacsLispMode
+* EnformMode -- Major mode for Tandem Enform files.
+* FlashActionscript -- Flash Actionscript specific programming
+* FlexMode
+* [[Forth-mode]] -- for Forth, typically included with gforth
+* FortranMode -- for fixed-format Fortran
+* [[F90Mode]] -- for free-format Fortran
+* FuelMode -- FUEL - Factor's Ultimate Emacs Library an emacs major mode for writing Factor code.
+* GasMode -- A major mode for GNU Emacs to handle assembly language source files
+* GaucheScheme -- using Gauche from Emacs
+* GdbMode -- gdb user interface
+* GdlMode
+* GimpMode -- Script-fu programming for the GIMP GNU Image Manipulation Program.
+* GnomeWizard -- Gwizard
+* GoLispMode -- navigate lisp files as hypertext
+* GroovyMode
+* HaskellMode 
+* IdlMode, IdlWaveMode
+* ILispMode -- CommonLisp / [[Scheme]]
+* JasminMode -- Jasmin Java bytecode assembler
+* JavaCCMode -- Java Compiler Compiler mode
+* JavaDevelopmentEnvironment (JDE)
+* JavaMode -- Based on CcMode and comes with Emacs.
+* JavaScriptMode
+* JspMode
+* LispInteractionMode
+* LogoMode -- Edit BerkeleyLogo source code and send instructions to to an interpreter.
+* LuaMode
+* MatlabMode
+* MaudeMode
+* MuPACS -- MuPAD editing mode
+* OccamMode -- for editing occam sourcecode
+* PascalMode -- see also DelphiMode
+* [[PDDLMode]] -- Planning Domain Definition Language
+* PerlMode -- see CPerlMode instead!
+* PhpMode
+* PlsqlMode
+* PrologMode
+* PythonMode
+* QuackMode -- alternative for PLT Scheme's <nowiki>DrScheme</nowiki>
+* R-Mode -- mode for R language, a part of EssMode
+* RubyMode
+* SawFishMode
+* SchemeMode
+* [[Scheme48Mode]]
+* ShMode -- Unix shell scripts (including bash, csh, etc)
+* SkillMode
+* SlimeMode -- for Lisp code
+* [[SMLMode]] -- an Emacs mode for editing Standard Meta-Language.
+* TclMode -- Tcl/Tk
+* TaclMode -- Tandem Advanced Command Language
+* TalMode -- Tandem Application Language
+* TuaregMode -- ObjectiveCaml
+* TypoScriptMode -- !TypoScript mode for Emacs.
+* UniBASICMode -- IBM Uni-Verse BASIC Language
+* VisualBasicMode (yes!)
+* XbaseMode
+* XTalkMode
+* VcgMode
+* VertexShaderMode
+* VhdlMode
+* WhitespaceMode -- for those of you sick enough :)
+* WmlMode -- Wesnoth Markup Language
+
+For discussion of programming modes that can be used for Guile, please see GuileIde and contribute your solutions and wishes.
+
+----
+CategoryModes
+CategoryProgramming

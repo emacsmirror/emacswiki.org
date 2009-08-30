@@ -1,0 +1,15 @@
+* http://www.antisleep.com/elisp/gse-locate.el
+
+gse-locate.el is a fairly simple package that provides a front-end to the "locate" command.  You enter a pattern that gets passed to locate; the results show up in a buffer, where you can press enter to visit a file or "X" to execute that file if you're on Windows.  When only one file matches, it is visited immediately without the intermediate screens.
+
+(I also wrote a [http://www.antisleep.com/software/loc locate/updatedb equivalent for Cygwin], for you Windows people.) -- ScottEvans
+
+'''See also:''' LocateFilesAnywhere for other front ends to `locate' command and alternatives to it.
+
+[new]
+How does gse-locate.el differ from locate.el? -JoeE
+
+[new]
+I didn't even know locate.el existed!  I've not used Emacs in a long time.  Or maybe I did know but it didn't suit me for some reason... I wrote my first cut of gse-locate quite a while ago and can't remember the details surrounding it.
+
+Anyway, after a quick glance at locate.el, it looks like it's based a little more around dired commands, while mine is more or less just "look up files and visit them".  I guess it's pretty easy to try both and see if one meets a need that the other misses...  -ScottEvans

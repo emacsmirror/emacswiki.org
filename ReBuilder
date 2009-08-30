@@ -1,0 +1,111 @@
+This is a nice interactive tool for building regular expressions in emacs.  From the commentary:
+
+<pre>
+;; When I have to come up with regular expressions that are more
+;; complex than simple string matchers, especially if they contain sub
+;; expressions, I find myself spending quite some time in the
+;; `development cycle'.  `re-builder' aims to shorten this time span so
+;; I can get on with the more interesting bits.
+
+;; With it you can have immediate visual feedback about how well the
+;; regexp behaves to your expectations on the intended data.
+</pre>
+
+Now that re-builder is included in GNU Emacs 21, you can download it from CVS here:
+
+* http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/lisp/emacs-lisp/re-builder.el
+
+Why is lisp-re.el included in Emacs? it's required by re-builder.
+
+----
+
+re-builder highlights both the matched expressions and the expressions to be saved into registers.
+
+----
+
+re-builder is also available as easily installable XEmacs Package.
+
+I just managed to add perl regexp support to re-builder, of which
+there will be a re-builder XEmacs pre-release package soon. -- AdrianAichner
+
+* http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/re-builder/re-builder.el?rev=1.5&content-type=text/vnd.viewcvs-markup
+
+In GnuEmacs 21.4, it needs slightly modifications.
+
+<pre>
+--- /home/u/downloads/re-builder.el	2006-03-09 23:38:14.000000000 +0900
++++ /home/u/emacs/lisp/re-builder.el	2006-03-09 23:19:17.000000000 +0900
+@@ -873,13 +873,16 @@
+ 			    (if (reb-target-binding case-fold-search) "i" "")
+ 			    ;; use extended perl regexp syntax?
+ 			    "x")
+-			   (buffer-string reb-target-buffer)))
+-		  (call-process "perl"
+-				(list (get-buffer " *reb-perl-program*"))
+-				match-buffer))
++			   (with-current-buffer reb-target-buffer (buffer-string))))
++                  (let ((tmpfile "/tmp/.reb"))
++                    (write-region 1 (point-max) tmpfile nil 'nodisp)
++                    (call-process "perl"
++                                  tmpfile
++                                  ;;(list (get-buffer " *reb-perl-program*"))
++                                  match-buffer)))
+ 		(with-current-buffer reb-target-buffer
+ 		  (setq reb-perl-match-vector
+-			(read (buffer-string match-buffer)))))
++			(read (with-current-buffer match-buffer (buffer-string ))))))
+ 	    (kill-buffer program-buffer)
+ 	    (kill-buffer match-buffer))))
+     (let* ((vector (reb-target-binding reb-perl-match-vector))
+@@ -911,7 +914,7 @@
+ 		    nil))
+ 	    ;; index to end of subexp 0 (end of whole match):
+ 	    1))))))
+-   (t (re-search-forward regexp limit noerror count buffer))))
++   (t (re-search-forward regexp limit noerror count ))))
+ 
+ (defun reb-re-search-backward (regexp &optional limit noerror count buffer)
+   (cond
+@@ -944,7 +947,7 @@
+ 		    nil))
+ 	    ;; index to end of subexp 0 (end of whole match):
+ 	    1))))))
+-   (t (re-search-backward regexp limit noerror count buffer))))
++   (t (re-search-backward regexp limit noerror count ))))
+ 
+ (provide 're-builder)
+</pre> 
+
+----
+
+[new]
+Is there a way to have regexp-replace behave somewhat like re-builder? That is, giving me visual feedback as to what I am matching.
+
+[new]
+: Does using the same pattern in an isearch-forward-regexp work well enough?
+
+[new]
+:: Thanks -- now if there were a ireplace-forward-regexp... Hmmm... shouldn't be too hard to code.
+
+[new]
+: Lisp:re-builder+.el provides reb+regexp-replace that is 'regexp-replace like re-builder interface'. -- [[k1LoW]]
+
+----
+[new]
+Is there a way to get C-w to yank an expression usable, say, in query-replace-regexp? As it is, it escape-quotes one-level.
+
+[new]
+: In the %%*Re-builder*%% buffer press `C-c TAB' and use 'Select Syntax: *string*' . Then you can C-w the regex.
+
+[new]
+The expression in the kill-ring (copied with C-c C-w) looks like "\"example" (to match the text "example). What query-replace-regexp needs is plain \"example, i.e. without the double quotes. This is the same for read and string syntax mode. Am I doing something wrong or is this how it works?
+
+[new]
+: But why are you using RE-Builder for preparing `query-replace-regexp'?  RE-Builder seems more suited for Emacs Lisp programming.  Are your searches so complex that you prefer not to build them with just `C-M-s'?
+
+[new]
+:: RE-Builder is just so much nicer for more complex stuff. I want to do code refactoring/reformatting with regular expressions, e.g. '#define MY_DEFINE_1 1' into 'case MY_DEFINE_1:'. In RE-Builder I can interactively come up with '\(#define \)\([A-Z_0-9]+\)\( [0-9]+\)' and see, for example, the subgrouping happen right in the code. All I am looking for now is an easy way to get it into the kill-ring for use with `query-replace-regex'. Yes, I can enter the above regex in 'string syntax' mode and select and copy it to the kill ring manually, but I am just wondering if there is a native keybinding that does that (and what would be a reason NOT to have that, e.g. a better way of doing what I want to do ;) ). 
+
+----
+CategoryRegexp
+CategoryProgrammerUtils

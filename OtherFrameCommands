@@ -1,0 +1,23 @@
+You don't want to type C-x 5 2 (wait) M-x command anymore?
+
+Use this:
+
+ (defun run-command-other-frame (command)
+   "Run COMMAND in a new frame."
+   (interactive "CC-x 5 M-x ")
+   (select-frame (new-frame))
+   (call-interactively command))
+ (global-set-key "\C-x5\M-x" 'run-command-other-frame)
+
+You can now use "C-x 5 M-x command-name RET" to run a command in a new frame. Whee!
+
+Also, you can now define commands like:
+
+ (defun buffer-menu-other-frame ()
+   (interactive)
+   (run-command-other-frame 'buffer-menu))
+
+Have fun! See DefiningCommands for more fun with command syntax.
+
+----
+CategoryFrames CategoryDisplay

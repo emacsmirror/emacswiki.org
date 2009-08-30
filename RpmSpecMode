@@ -1,0 +1,109 @@
+rpm-spec-mode.el is a mode for creating RPM spec files.
+
+Download:  http://www.tihlde.org/~stigb/rpm-spec-mode.el
+
+rpm-spec-mode.el is bundled with [[XEmacs]] and by default into the emacs package of [http://fedoraproject.org Fedora] and rpm package of [http://www.mandriva.com/ Mandriva-Linux]
+
+== Configuration ==
+
+Put this in your .emacs file to enable autoloading of rpm-spec-mode, and auto-recognition of ".spec" files:
+
+ (autoload 'rpm-spec-mode "rpm-spec-mode.el" "RPM spec mode." t)
+ (setq auto-mode-alist (append '(("\\.spec" . rpm-spec-mode))
+ 			       auto-mode-alist))
+
+== Customization ==
+=== Make it FFAP aware ====
+
+This is how to make FindFileAtPoint (<code>ffap</code>) aware of rpm patches in spec-mode. 
+
+ (require 'ffap)
+ (defun my-rpm-ffap (name)
+  (ffap-locate-file name '("" ".gz" ".bz2") 
+               '("./" "../SOURCES")))              
+ (add-to-list 'ffap-alist 
+          '(rpm-spec-mode . my-rpm-ffap))
+
+To use it make ffap binded to a key (if you don't have already one):
+
+ (global-set-key (read-kbd-macro "C-x f") 'find-file-at-point)
+
+go to a Patch: package.patch.bz2 and press C-x f to find the patch file from <code>../SOURCES/</code>
+
+=== Insert Patch ===
+This function insert a patch incrementally into the spec mode completing with the patches available in <code>../SOURCES/</code>
+
+ (defun my-rpm-insert-patch ()
+  (interactive)
+  (goto-char (point-min))
+  (let* ((file 
+     (completing-read 
+      "Patch: "
+      (mapcar (function (lambda (rule) (list rule)))
+            (directory-files "../SOURCES/" nil "^\\([_-0-9a-zA-Z]+\\).*\\.patch.*"))) )
+       (max (search-forward-regexp rpm-section-regexp))
+       (count 0)
+       )
+   (goto-char (point-min))
+   (while (search-forward-regexp "^Patch?\\([0-9]+\\)?" max t) 
+     (if (> (string-to-int (match-string 1)) count)
+        (setq count (string-to-int (match-string 1)))
+      )
+     )
+   (if (eq count 0) (while (search-forward-regexp "^Source?\\([0-9]+\\)?" max t)()))   
+   (setq count (1+ count))
+   (end-of-line)
+   (insert (format "\n%s%d%s%s" "Patch" count ": " file))
+   (goto-char (point-min))
+   (if (search-forward-regexp "^%patch?\\([0-9]+\\)?" nil t)
+      (progn
+        (beginning-of-line)
+        (while (search-forward-regexp "^%patch?\\([0-9]+\\)?" nil t) ())
+        )
+     (search-forward-regexp "^%setup" nil t))
+   (end-of-line)
+   (insert (format "\n%s%d%s" "%patch" count " -p1 "))
+   (let ((name (rpm-spec-field-value "name" nil))
+        (version (rpm-spec-field-value "version" nil))
+        (string)
+        )
+     (cond ((string-match 
+           (concat "^" (regexp-quote (format "%s-%s-" name version))
+                 "\\([^.]*\\)\\(\\.patch\\.bz2\\)") file)
+          (setq string (format "%s%s" "-b ." 
+                          (substring file (match-beginning 1) (match-end 1)))))
+         ((string-match 
+           (concat "^" (regexp-quote (format "%s-" name version))
+                 ".*[0-9]+-" "\\([^.]*\\)\\(\\.patch\\.bz2\\)") file)
+          (setq string 
+               (format "%s%s" "-b ." 
+                     (substring file (match-beginning 1) (match-end 1)))))
+         )
+     (if string
+        (insert string))
+     )))
+
+bind this function into your rpm-spec-mode hook or if you don't understand what does it mean use this code :
+
+ (defun my-rpm-spec-mode-hook ()
+     (local-set-key '[(control c)(control p)] 'my-rpm-insert-patch)
+ )
+ (add-hook 'rpm-spec-mode-hook 'my-rpm-spec-mode-hook)
+
+pressing C-c C-p will do the magic
+
+=== Automatic  ChangeLog ===
+
+This is a function that automatically add a generated <nowiki>ChangeLog</nowiki>. Customize it the way you want.
+
+ (defun my-rpm-changelog-increment-version ()
+  (interactive)
+  (goto-char (point-min))
+  (let* ((max (search-forward-regexp rpm-section-regexp))
+       (version (rpm-spec-field-value "Version" max)))
+   (rpm-add-change-log-entry (concat "Upgrade version to " version))
+   )
+  )
+
+----
+CategoryModes

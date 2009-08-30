@@ -1,0 +1,48 @@
+Some information about me in no particular order.
+
+I am located in Graz, Austria.
+
+I am a Linux fan/user since 1997 and use Emacs since 1998. With every day passing by, I learn more and more about this wonderful environment.
+
+I use Emacs at home and at work for nearly everything I do, except shell interaction.
+
+I work as a UNIX system administrator at the technical university Graz.
+[http://www.zid.tugraz.at/lang/ Here] is my official work-home-page :).
+
+[http://delysid.org delYsid.org] is my personal homepage.
+
+I am a blind Linux user mostly using a braille display. For reading
+long texts such as books or HOWTOS I often use EmacSpeak.
+
+You can find me on #emacs on irc.freenode.net as [::delYsid]
+
+== Things I wished Emacs could do ==
+
+* RepetitionDetection -- A way of automatically detect sequences suitable for keyboard macros.
+
+== How I use(d) Emacs ==
+
+I once used Emacs as my shell. That's quite simple and funny, just put it into your /etc/passwd file, or in the database used by your nameservice switch.
+After a while, I learned about screen, which is a very nice tool for Emacs console use. I configured /usr/bin/screen
+as my login shell, and set
+defshell -/bin/bash
+in ~/.screenrc. That gives you a screen login shell using bash for the newly created windows.
+(Note: these days I do the same thing with zsh as default shell, bash is just not powerful enough.)
+But what does that mean? The fun part is that you can detach from a screen session without terminating the open programs in it. Simply use C-a d to detach from your session.
+This basically logs you out, but if you login later, all programs run like they were left before. If you add a line like
+screen -t Emacs 0 /usr/bin/emacs
+to your ~/.screenrc 
+you even get an Emacs session automatically launched in Window 0 everytime a screen session is newly created.
+Note, to terminate such a screen session, logout from all windows; if no window remains, the session is closed.
+
+== Emacspeak fun ==
+
+I always liked to play with computer interfaces. One of my ideas got implemented at home recently.
+I use a [http://www.kinesis-ergo.com/savant_20key.htm Savant 20-key programmable keypad] from Kinesis.
+This keypad is fully programmable. I programmed the most necessary keybindings to be able to use Emacs, Emacspeak screen review features and Emacs/W3 navigation.
+Then I connected this mini-keypad to one of my unused machines, configured it to use ViaVoice as software speech synthesizer, gave it a soundcard of course, and connected it to some speakers.
+Now I have a screen-less surf-station in my living-room, needing no space, and nearly feeling like a remote control.
+If I settle for a useful keypad configuration, I'll post a description of the macros.
+
+----
+CategoryHomepage

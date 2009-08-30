@@ -1,0 +1,82 @@
+<pre>
+(defun selective-pair-insert (&optional nth)
+  "Insert a pair of strings according to the `selective-pair-alist'
+   variable and place cursor between them.
+
+   `selective-pair-alist' must be either a function (with no arguments), 
+    the symbol of an alist variable or the alist itself.
+   
+   When called successively this function replaces the last inserted 
+   pair with the following in the value produced by selective-pair-alist.
+
+   If optional argument NTH is non-nil it must be the numeric index
+   of the element to force insertion of. If no NTH element is found the
+   first one is used.
+   
+   If the resulting value of selective-pair-alist is nil or an alist which
+   first element is nil selective-pair-fallback is used.
+
+   ej. 
+
+   ;; Define matching pairs alist
+   (setq my-quote-pairs 
+         \'((\"\'\" \"\'\")  (\"\\\"\" \"\\\"\") (\"\`\" \"\'\")))
+
+   ;; Map a key to call the selective-pair-insert function
+   ;; In practice you may want to map this function only in 
+   ;; some programming major-modes.
+   ;; 
+   ;; Remember you can always insert a raw character with C-q<chr>
+
+   (global-set-key (kbd \"\'\") \'(lambda nil 
+                               (interactive)
+                               (let ((selective-pair-alist \'my-quote-pairs))
+                                  (call-interactively \'selective-pair-insert))))
+
+  (setq my-paren-pairs 
+       \'((\"{\" \"}\")  (\"\[\" \"\]\") (\"(\" \")\")))
+  (defun paren-alist-func nil
+     (cond ((equal major-mode 'lisp-interaction-mode) 
+                (append (reverse my-paren-pairs) \'((\"(lambda \" \")\"))))
+           ((equal major-mode 'java-mode) my-paren-pairs)
+           (t nil)))
+  (global-set-key (kbd \"[\") \'(lambda nil
+                                (interactive)
+                                (let ((selective-pair-alist 'paren-alist-func)
+                                      (selective-fallback 'skeleton-pair-insert-maybe))
+                                  (call-interactively \'selective-pair-insert)))))
+                                 
+   "
+  (interactive "P")
+  (setq selective-pair-alist (cond ((functionp selective-pair-alist) 
+                                    (funcall selective-pair-alist))
+                                   ((symbolp selective-pair-alist) 
+                                    (symbol-value selective-pair-alist))
+                                   (t selective-pair-alist))
+        nth (if (or (null nth) (integerp nth)) nth 0)) 
+  (let (next (default (or (nth (or nth 0) selective-pair-alist)
+                          (first selective-pair-alist))))
+    (or (unless nth
+          (save-match-data 
+            (let (elt close-mdata (tail selective-pair-alist))
+              (while (and tail (setq elt (car tail)))
+                (when (and (looking-at (regexp-quote (cadr elt)))
+                           (setq close-mdata (match-data))
+                           (looking-back (regexp-quote (car elt))))
+                  (save-excursion 
+                    (setq next (or (cadr tail) default))
+                    (replace-match (car next))
+                    (set-match-data close-mdata)
+                    (replace-match (cadr next))
+                    (setq tail nil)))
+                (setq tail (cdr tail)))
+              next)))
+        (when default
+          (insert (car default)) 
+          (save-excursion (insert (cadr default))) default)
+        (call-interactively (cond ((fboundp 'selective-pair-fallback)
+                                   'selective-pair-fallback)
+                                  ((boundp 'selective-pair-fallback)
+                                   (symbol-value 'selective-pair-fallback))
+                                  (t 'self-insert-command))))))
+</pre>

@@ -1,0 +1,49 @@
+In a response to the question "Why emacs?" on news:comp.emacs, Brian wrote:
+
+I first ran into an implementation of Emacs on a MULTICS system in
+1982.  Initially, I was intimidated by it because I did not really
+understand how to use it.  Any time I run into that kind of scenario,
+I an intrigued by it.
+
+I joined Digital Equipment Corporation (DEC) in 1985 and again I was
+presented with the opportunity to learn more about Emacs.  This time,
+I found more than one implementation of Emacs.  I found a VAX/VMS
+implementation of Emacs that was based on a variant of the Carnegie
+Mellon University version of Emacs that later became known as Gosling
+Emacs.
+
+Not too long after that, I was introduced to an Emacs variant called
+Elle that ran on VAX ULTRIX systems.  Soon after that, I found GNU
+Emacs.
+
+It was when I started using GNU Emacs that I found online resources
+where I could learn more.
+
+I used it at first because it was there and because I was
+inquisitive.  I found that I could emulate other editors with Emacs,
+which was a plus, because I could use it before I really understood it
+well.  I found Vi emulations available and also emulations of two
+editors that were common at DEC in those days: EDT and WPS.  I started
+to use those emulations, and soon Emacs became my every day editor.
+Meanwhile, I endeavored to learn how to use it correctly and also how
+to define my own key bindings.  Once I did that, I was home free, this
+became my every day editor.  I could run it on proprietary systems,
+such as VMS and UNIX systems, and later, I found I could run it on
+other systems, too.
+
+These days, getting started with Emacs is a lot easier; documentation
+is better, and so are the tools that are available.  Emacs is
+worthwhile because it can handle just about any development need I
+have, including reading and writing news.  I'm using Gnus, a mail and
+news reader that's integrated into Emacs to respond to your inquiry.
+
+There is plenty of information out there about Emacs.  If you want
+descriptive details, look for that information online, Google can find
+it for you and others have already suggested some places where you can
+find it.  I assumed that you were looking for opinions, background,
+and reasons why people chose to use Emacs.  Personally, I chose it at
+first because it was there, I continued to use it because it could
+handle any editing task I could throw at it.
+
+----
+CategoryHomepage

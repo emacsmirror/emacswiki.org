@@ -1,0 +1,10 @@
+I use emacs as development environment and hence I want to get from emacs as much as possible. But sometimes emacs can't provide some needful feature. So, I want to help other developers to make their life easier with emacs.
+
+[http://eac.sourceforge.net EAC] - Emacs auto-complete project, that can help developers with intellectual dynamic code auto-completing. If you want to help us and join to this project, just mail me. (my e-mail address can be found on eac main page.).
+
+[new]
+Welcome to the wiki! People ask a lot about intellisense-like functionality on the EmacsChannel. Personally, I just stick to `dabbrev-expand'. :) -- AlexSchroeder
+
+Welcome! Did you have a look at Cedet? CollectionOfEmacsDevelopmentEnvironmentTools --- JoakimVerona
+----
+CategoryHomepage

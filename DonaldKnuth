@@ -1,0 +1,32 @@
+Yes, he is said to use Emacs.  You can even find a library or two on
+his home page:
+ 
+* http://www-cs-faculty.stanford.edu/~knuth/programs.html
+
+Notably there is this emacs lisp package: 
+* http://www-cs-faculty.stanford.edu/~knuth/programs/color-mode.el
+
+It lets the user highlight lines with different colors, which are 
+persistant across file-saves and re-loads (a line in color "a" 
+is saved with a leading Control-A, the saved file begins with the 
+line "Color-Mode", which kicks you back into color-mode when it's 
+re-loaded).
+
+= Emacs quotes =
+
+: "Some parts of me like mathematics, and some parts of me like
+  emacs hacking."
+  -- [http://www.ams.org/notices/200203/fea-knuth.pdf All Questions Answered (pdf)]
+
+: "I use the Emacs editor very heavily"
+
+: "So now I don't read electronic mail, but I do use it occasionally. Say
+  I'm taking a trip to Israel and I've got to make last minute
+  arrangements. When I visit another university or research center for a
+  few days, I have to send email from there. I've learned how to use the
+  email facilities in Emacs, but I don't want to get good at it."
+  -- http://tex.loria.fr/litte/knuth-interview
+
+
+----
+CategoryHomepage

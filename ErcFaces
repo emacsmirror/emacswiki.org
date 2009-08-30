@@ -1,0 +1,74 @@
+== Customizable text properties in ERC ==
+
+You can change these by doing M-x customize-group and typing erc-faces at the prompt.  Note that many ColorTheme's already have ''some'' of these set.
+
+You can also change the individual faces like this: (set-face-foreground 'erc-notice-face "dimgrey")
+use "set-face-background" to set the background colour.
+
+
+; '''erc-default-face''' :channel text, any other default text
+: default ''nothing set''
+
+; '''erc-direct-msg-face''' :private messages, notices
+: default ''foreground - indianred''
+
+; '''erc-input-face''' :the commands and text you typed
+: default ''foreground - brown''
+
+; '''erc-bold-face''' ''bold'' :self-explanatory
+: default ''bold''
+
+; '''erc-inverse-face''' :self-explanatory
+: default ''foreground - white, background - black''
+
+; '''erc-underline-face''' :self-explanatory
+: default ''underline''
+
+; '''erc-prompt-face''' :the input prompt text
+: default ''bold, foreground - black, background - lightblue2''
+
+; '''erc-notice-face''' :server notices (join and leave messages; for notices from other users use `erc-direct-msg-face')
+: default ''bold, foreground - slateblue''
+
+; '''erc-action-face''' :actions in channels, queries and ctcp action
+: default ''bold''
+
+; '''erc-error-face''' :server and ERC error messages
+: default ''foreground - white, background - red''
+
+; '''erc-timestamp-face''' :the timestamp in front of all lines of text when `erc-timestamp-format' is set
+: default ''bold, foreground - green''
+
+; '''erc-nick-default-face''' :nicknames in channels
+: default ''bold''
+
+; '''erc-nick-msg-face''' :nicknames in messages and private notices
+: default ''bold, foreground - indianred''
+
+
+; The following faces are also available with erc-match is loaded (see ErcHighlighting for more details):
+
+; '''erc-pal-face''' :just the nickname or nickname and text of pals you have set in `erc-pals'
+: default ''bold, foreground - magenta''
+
+; '''erc-fool-face''' :just the nickname or nickname and text of fools you have set in `erc-fools'
+: default ''foreground - dim gray''
+
+; '''erc-dangerous-host-face''' :just the nickname or nickname and text of text sent from those in your `erc-dangerous-hosts'
+: default ''foreground - red''
+
+; '''erc-keyword-face''' :matches to keywords you have set with `erc-keywords'
+: default ''bold, foreground - pale green''
+
+; '''erc-current-nick-face''' :occurrences of your current nickname
+: default ''bold, foreground - dark turquoise''
+
+=== Interpreted colors ===
+You can also customize the colors you see when users add \C-C followed by a number between 0 and 15 to the lines that they send (see ErcControlCharacters) by setting these faces:
+
+'''fg:erc-color-face0''' - '''fg:erc-color-face15'''
+
+'''bg:erc-color-face0''' - '''bg:erc-color-face15'''
+
+----
+[[ERC]]

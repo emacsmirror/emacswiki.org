@@ -1,0 +1,10 @@
+<code>archive-mode</code> (<code>arc-mode.el</code>) is the Emacs builtin mode for viewing and editing the contents of archive files like <code>.arc</code>, <code>.zip</code>, <code>.lzh</code>, <code>.zoo</code>, etc.  See [[Manual:arc]] for the basics.
+
+Note that <code>.tar</code> files are handled by TarMode, which is slightly different.
+
+New archive types can be added to <code>archive-mode</code> without too much trouble.  The builtin modes usually look at the file directly to get the contents, but run an external program to make changes.  Have a look at for instance
+
+* [[http://user42.tuxfamily.org/arc-lzh-exe/index.html arc-lzh-exe.el]] -- adds support for lzh self-extracting executables (viewing only)
+
+----
+CategoryFiles

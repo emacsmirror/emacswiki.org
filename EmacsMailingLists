@@ -1,0 +1,54 @@
+Obviously a lot of mailing lists have been founded to discuss Emacsen.
+The official GnuEmacs lists are hosted at the GNU nurtury Savannah.
+See the [http://savannah.gnu.org/mail/?group=emacs Emacs project page
+there] for a complete list.  The primary [[XEmacs]] lists are hosted
+by http://xemacs.org, as listed on http://xemacs.org/Lists/index.html.
+
+The various Emacs programs might have their own lists too.  Check the
+homepages of these proggies, and if EmacsWiki has an entry.  Many of
+them live on Savannah or SourceForge.  Don't worry too much about
+posting to a generic list though, the ever-helpful people there will
+redirect you to a more specific list if they considered necessary.
+
+= A directory of the lists =
+
+== Lists to seek help from ==
+
+; [::help-emacs-windows], mailto:help-emacs-windows@gnu.org: Emacs on Windows help
+; [::help-gnu-emacs], mailto:help-gnu-emacs@gnu.org: Emacs help (also one of the EmacsNewsgroups)
+
+== Lists for development ==
+
+; [::emacs-devel], mailto:emacs-devel@gnu.org: Emacs development [http://lists.gnu.org/archive/html/emacs-devel/ Archive]
+; [::xemacs-beta], mailto:xemacs-beta@xemacs.org: XEmacs development
+; [::xemacs-patches], mailto:xemacs-patches@xemacs.org: XEmacs patches
+; [::bug-gnu-emacs], mailto:bug-gnu-emacs@gnu.org: Emacs bugs and feature requests, use M-x report-emacs-bug on Emacs to send stuff to the list (also one of the EmacsNewsgroups)
+; [::emacs-pretest-bug], mailto:emacs-pretest-bug@gnu.org: Emacs bugs for a pretest release.  As of 2008-08, merged with [[emacs-devel]].  [http://lists.gnu.org/archive/html/emacs-pretest-bug/ Archive] still exists.
+
+== National and regional lists ==
+
+; mailto:emacs-br@yahoogroups.com: The Brazilian Emacs users mailing list [http://groups.yahoo.com/group/emacs-br/ Subscribe or Archive]
+
+== Other Lists ==
+
+; [::gnu-emacs-sources], mailto:gnu-emacs-source@gnu.org: Emacs source code posts only. [http://lists.gnu.org/mailman/listinfo/gnu-emacs-sources List information]
+(also one of the EmacsNewsgroups).
+; [::debian-emacsen], mailto:debian-emacsen@lists.debian.org: Support and developer discussion on Emacs related packages for Debian GNU/Linux. [http://lists.debian.org/debian-emacsen/ List information]
+; [::macosx-emacs], mailto:macosx-emacs@email.esm.psu.edu: Support for Emacs on Mac OS X, in particular AquamacsEmacs. [http://www.esm.psu.edu/mac-tex/main.shtml List information], [http://news.gmane.org/gmane.emacs.macintosh.osx Archive]
+
+= Mailing lists via news =
+
+Some of the EmacsNewsgroups are bidirectionally gatewayed as
+mailinglists, and vice versa.  Generally it is better if you subscribe
+to newsgroups instead of mailing lists, because then the load is
+spread amongst many newsservers instead of one mailing list host.
+
+Quite a lot of EmacsMailingLists are available as EmacsNewsgroups too,
+throught one gateway or an another.  One such gateway is
+[http://gmane.org Gmane], where their hierarchy
+<code>gmane.emacs</code> contains most of the Emacs-related lists
+available there.
+
+----
+
+CategoryHelp

@@ -1,0 +1,1861 @@
+;;; -*- emacs-lisp -*-
+;;; $Id: emacs.rc,v 2.17 2007/03/30 18:25:06 mstorti Exp $
+
+(setenv "LANG" "C")
+;;;;================================================================
+;;; This has to be before entering any buffer
+;;; otherwise use `setq-default'
+(message "setting require-final-newline to 't...")
+(setq-default require-final-newline t)
+(message "done.")
+
+(setq-default indent-tabs-mode nil)
+
+;;;;================================================================
+;;;;======== WHO AND WHERE WE ARE ? ================================
+;;;;================================================================
+(defun mstorti() 
+  (interactive)
+  (or 
+   (and (boundp 'mstorti-flag) mstorti-flag)
+   (string= (user-real-login-name) "mstorti")))
+(defun root() 
+  (interactive)
+  (string= (user-real-login-name) "root"))
+(defun spider() 
+  (interactive)
+  (string= (getenv "HOSTNAME") "spider"))
+(defun host-itc() 
+  (string= (getenv "HOSTNAME") "ITC-CC-02"))
+(defun geronimo() 
+  (interactive)
+  (string= (getenv "HOSTNAME") "node1.beowulf.gtm"))
+(defun minerva() 
+  (interactive)
+  (string= (getenv "HOSTNAME") "minerva"))
+(defun aquiles() 
+  (interactive)
+  (string= (getenv "HOSTNAME") "aquiles"))
+(defun in-host(host) 
+  (string= (getenv "HOSTNAME") host))
+;;;;================================================================
+(abbrev-mode 1) (root)
+;;; Append CONFIG dir to Emacs load path
+(setq load-path 
+      (let ((home (cond ((and
+			  (or (spider) (host-itc) (aquiles) (in-host "prandtl"))
+			  (mstorti))
+			 (getenv "HOME"))
+			(t "/u/mstorti"))))
+	(append (list (concat home "/CONFIG") (concat home "/EMACS"))
+		load-path)))
+
+;;; Allow long log file
+(setq message-log-max 5000)
+;; Configure make
+(setq compile-command "make -C $HOME/PETSC/petscfem/")
+;;
+;; Para poner quotes/backquotes alrededor de un string.
+;;
+(defalias 'single-quote-balanced (read-kbd-macro
+ " C-q ` ESC C-s [ SPC C-q TAB C-q LFD ] RET <left> ' "))
+;;(global-set-key "\C-`" 'single-quote-balanced) 
+;;(global-set-key [?\C-`] 'single-quote-balanced) 
+;
+(defalias 'single-quote-balanced-pos2 (read-kbd-macro
+  (concat "<left> C-SPC ESC C-r [ SPC C-q LFD C-q "
+	  "TAB ] RET <right> ` C-x C-x <right> '")))
+;;
+(defun single-quote-balanced-pos3() 
+  (interactive)
+;;  (message "word: \"%s\"" (thing-at-point 'word))
+  (save-excursion
+    (forward-word -1)
+    (insert "`")
+    (forward-word +1)
+    (insert "'")))
+;;
+(defun single-quote-balanced-pos() 
+  (interactive)
+  (let ((white-space-re "\\(\\s-\\|\n\\)")
+	(end-pos))
+    (save-excursion
+      (cond ((re-search-forward white-space-re nil t)
+	     (forward-char -1))
+	    (t (goto-char (point-max))))
+      (insert "'")
+      (setq end-pos (point))
+      (forward-char -1)
+      (cond ((re-search-backward white-space-re nil t)
+	     (forward-char +1))
+	    (t (goto-char (point-min))))
+      (insert "`"))
+    (goto-char end-pos)
+    (forward-char +1)))
+;;
+;;
+(fset 'fix-list
+   [?\C-  end ?\M-x ?u ?n ?t ?a ?b ?i ?f ?y return ?\M-x 
+      
+?\M-p ?\M-p return ?\M-p ?\M-p ?\M-p ?\M-n ?\C-k ?[ ?^ ?  ?] ?@ ?[ ?^ ?  ?\\ ?n ?] return ?< ?\\ ?1 delete ?& ?> return])
+;;
+;;
+(setq w3-default-homepage "http://minerva.unl.edu.ar/~mstorti/pack_send.cgi")
+(setq url-automatic-caching t)
+(setq w3-keep-old-buffers nil)
+;;
+;; Para arreglar un poco los colores
+;;
+; (cond ((geronimo)
+;        (set-face-background 'region "dimgray")
+;        (set-face-background 'highlight "ForestGreen")
+;        (set-face-background 'secondary-selection "SteelBlue")))
+;;
+;;
+;;
+(setq next-line-add-newlines nil) ; para que no apendice lineas
+;;
+(defun my-diary ()
+  (interactive)
+  (local-set-key "\C-ck" 'diary-ok))
+;;
+(setq enable-local-eval t)
+;;
+(setq mouse-yank-at-point t)
+; (setq page-delimiter "^.--")
+;(setq special-display-buffer-names
+;           '("*Completions*"))
+;;
+;;
+
+(setq mh-new-draft-cleaned-headers "^Date:\\|^Received:\\|^Message-Id:\\|^Sender:\\|^Errors-To:\\|^Delivery-Date:\\|^Return-Path:")
+(defun my-mhlmh()
+  (interactive)
+  (auto-fill-mode 1)
+  (abbrev-mode 1)
+  (setq comment-start "> ")
+  (setq version-control 'never)
+  (local-set-key "\C-cw" 'mh-snip)
+  (local-set-key (kbd "C-c C-a") 'mh-insert-alias)
+  (local-set-key "\C-c\C-s" 'mh-insert-signature)
+)
+(defun mh-snip()
+  (interactive)
+  (kill-region (min (point) (mark)) (max (point) (mark)))
+  (beginning-'of-line)
+  (insert ".\n................ < MANY LINES SNIPPED HERE > ...............\n.\n")
+)
+;
+(defun space-snip()
+  (interactive)
+  (kill-region (min (point) (mark)) (max (point) (mark)))
+  (beginning-of-line)
+  (insert "> ................. < LINES SNIPPED HERE TO SAVE SPACE > ..............\n")
+)
+(add-hook 'text-mode-hook
+	  '(lambda () 
+	     (auto-fill-mode 1)
+	     (local-set-key "\C-cP" 'spread)
+	     (local-set-key (kbd "<f12>")  'crypt-rotate-buffer)))
+;;================================================================
+(defun rh-80() 
+  (or (string= (getenv "HOSTNAME") "spider")
+      (string= (getenv "HOSTNAME") "minerva")))
+
+;; before, it seemed that the Hyper-key worked differently
+;; in RH 8.0 and 7.x so that I had this function
+; (defun hyper-key-fix (char)
+;   (read-kbd-macro 
+;    (cond ((rh-80) (concat "H-s-" char))
+; 	 (t (concat "H-" char)))))
+
+;; Now I use this
+;(defun hyper-key(char) (read-kbd-macro (concat "H-s-" char)))
+
+;; Now I made some changes to .Xmodmap and it seems that works
+;; with H-<char> or H-s-<char>. 
+;; When connected with Putty from a Windows machine, then
+;; windows key is not available, soo I use "C-c M-<char>"
+;; This doesn't work sometimess
+;; (setq is-win-putty-connection
+;;       (let ((con (getenv "SSH_CONNECTION")))
+;; 	(and (string= (getenv "TERM") "vt100") 
+;; 	     con
+;; 	     (not (string-match "^172" con)))))
+;; 
+(setq dont-use-special-keys
+      (let ((env-val (getenv "DONT_USE_SPECIAL_KEYS")))
+	(cond ((not env-val) nil)
+	      ((string=  env-val "0") nil)
+	      (t t))))
+
+(global-set-key (cond (dont-use-special-keys (kbd "C-c '"))
+ 		      (t [?\C-'])) 'single-quote-balanced-pos)
+
+;;
+(cond (dont-use-special-keys
+       (defun hyper-key(char) 
+	 (read-kbd-macro (concat "C-c ESC " char))))
+      ((or (spider) (minerva) (in-host "prandtl"))
+       (defun hyper-key(char) (read-kbd-macro (concat "s-" char))))
+      ((or (geronimo) (aquiles))
+       (defun hyper-key(char) (read-kbd-macro (concat "H-s-" char))))
+;; Elsewhere
+      (t
+       (defun hyper-key(char) (read-kbd-macro (concat "H-" char)))))
+
+;;================================================================
+;; Comint mode stuff
+(require 'comint)
+(setq comint-input-ring-size 256)
+(defun my-comint-cd-saved-dir(s)
+  "In a shell, cd to last saved dir with `my-copy-current-dir'."
+  (interactive "P")
+  (comint-next-prompt 1)
+  (end-of-line)
+  (cond ((not s) 
+         (comint-kill-input)
+         (insert "cd " last-current-dir))
+        (t
+         (insert last-current-dir))))
+;;
+(defun history-copy-line()
+  "Copy current history line to shell command line"
+  (interactive)
+  (let ((line (substring (thing-at-point 'line) 7)))
+    (comint-next-prompt 1)
+    (end-of-line)
+    (comint-kill-input)
+    (comint-delete-output)
+    (insert line)
+    (delete-char -1)))
+;;
+(add-hook 'shell-mode-hook
+	  '(lambda () 
+	     (local-set-key "\C-cs" 'send-invisible)
+	     (local-set-key (hyper-key "p")
+			    'comint-previous-matching-input-from-input)
+	     (local-set-key "\C-cc" 'comint-truncate-buffer)
+	     (local-set-key (hyper-key "r") 'rotate-dir-stack)
+	     (local-set-key (hyper-key "b") 'rotate-dir-stack-back)
+	     (local-set-key (read-kbd-macro "C-c t") 'my-comint-cd-saved-dir)
+	     (local-set-key (read-kbd-macro "C-c f") 'history-copy-line)
+	     (local-set-key (kbd "C-c r") 'rename-uniquely-with-prefix)
+	     (setq comint-prompt-regexp 
+		   "^\\((gdb) \\|[^#$%>\n]*[#$%>] *\\)")))
+;;================================================================
+(add-hook 'mh-letter-mode-hook 'my-mhlmh)
+;;
+;; Can't load cleanly hyperbole...
+;;
+;(defun my-mh-inc-mode-hook())
+;(setq mh-inc-folder-hook rmail-mode-hook)
+;(setq mh-show-hook rmail-mode-hook)
+;(add-hook 'mh-inc-folder-hook '(lambda () (message "hola")))
+(setq mh-inc-folder-hook '((lambda ())))
+;(add-hook 'mail-setup-hook 'mail-abbrevs-setup)
+;;
+;;
+(add-hook 'fortran-mode-hook '(lambda () 
+      (abbrev-mode 1)
+;      (local-set-key "\C-cc" 'fortran-insert-comment)
+      (set-variable 'comment-start "c->  ")
+       ))
+(make-local-variable 'outline-regexp)
+(add-hook 'outline-mode-hook '(lambda () (hide-sublevels 1)))
+;;
+;; Para que se vean los caracteres europeos
+;;
+(standard-display-european 1)
+;;
+;; Para dired
+;;
+(setq dired-listing-switches 
+      (cond ((host-itc) "-l")
+	    (t "-lh")))
+;; Este no andaba
+;(setq find-ls-option "-exec ls -lho {} \\;")
+;; Este anda bien
+(setq find-ls-option '("-exec ls -lhd {} \\;" . "-lhd"))
+(setq delete-old-versions t)
+;; (if (not (host-itc))
+;;     (setq dired-move-to-filename-regexp
+;; 	  (concat ".*[0-9kKmMG] "   ;; The last character of the size of the file
+;; 		  ;; I add here k or M for the -h switch
+;; 		  "\\(\\(\\([A-Za-z]\\|[^\0-\177]\\)\\([A-Za-z]\\|[^\0-\177]\\)+[.]?,? * "
+;; 		  "[ 0-3][0-9][.]?\\|[ 0-3][0-9][.]? \\([A-Za-z]\\|"
+;; 		  "[^\0-\177]\\)\\([A-Za-z]\\|[^\0-\177]\\)+[.]?,? *\\) "
+;; 		  "\\([ 0-2][0-9]:[0-5][0-9]\\| ?[0-9][0-9][0-9][0-9]\\|"
+;; 		  "[0-9][0-9][0-9][0-9] \\)\\|[ 0-1][0-9][^\0-\177] [ 0-3][0-9][.]?[^\0-\177] "
+;; 		  "\\( [ 0-2][0-9]:[0-5][0-9]\\|[0-9][0-9][0-9][0-9][^\0-\177]\\)\\) ")))
+;;;================================================================
+;;;======== ALLOWS COPYING DIRECTORIES ============================
+;;;================================================================
+(setq last-current-dir "~/")
+(setq last-current-file diary-file)
+(defun my-copy-current-dir2 ()
+  "Copies default directory of current buffer to 
+global variable \"last-current-dir\""
+  (interactive)
+  (setq last-current-dir (cond ((buffer-file-name) buffer-file-name)
+			       (t default-directory)))
+  (message (concat "Path: \"" last-current-dir "\" yanked.")))
+;; (defun my-copy-current-dir ()
+;;   "Copies default directory of current buffer to 
+;; global variable \"last-current-dir\""
+;;   (interactive)
+;; ;  (message "buffer-file-name: %s" buffer-file-name)
+;;   (cond (buffer-file-name
+;; 	 (setq last-current-dir 				
+;; 	       (file-name-directory buffer-file-name))
+;; 	 (setq last-current-file buffer-file-name)
+;; 	 (message (concat "Path: \"" last-current-dir "\" yanked.")))))
+
+(defun my-copy-current-dir ()
+  "Copies default directory of current buffer to 
+global variable \"last-current-dir\""
+  (interactive)
+;  (message "buffer-file-name: %s" buffer-file-name)
+  (setq last-current-dir default-directory)
+  (message (concat "Path: \"" last-current-dir "\" yanked."))
+  (cond (buffer-file-name
+	 (setq last-current-file buffer-file-name))))
+;; (defun my-copy-current-dir ()
+;;   "Copies default directory of current buffer to 
+;; global variable \"last-current-dir\""
+;;   (interactive)
+;;   (cond (buffer-file-name
+;; 	 (setq last-current-dir 				
+;; 	       (file-name-directory buffer-file-name))
+;; 	 (setq last-current-file buffer-file-name)
+;; 	 (message (concat "Path: \"" last-current-dir "\" yanked.")))))
+(global-set-key (hyper-key "c") 'my-copy-current-dir)
+;;
+(defun my-yank-current-dir (arg)
+  "Yanks \"last-current-dir\" in this position"
+  (interactive "P")
+  (insert (cond (arg last-current-file)
+		(t last-current-dir))))
+(global-set-key (hyper-key "g") 'my-yank-current-dir)
+;;;================================================================
+;;
+;; para rmail y sendmail
+;;
+(setq mail-self-blind t)
+(setq rmail-file-name "~/CORREO/RMAIL")
+(setq rmail-delete-after-output t)
+;;
+;; para mh-rmail
+;;
+(defun rmail()
+  (interactive)
+  (message "Tenes que usar mh-rmail"))
+;(global-set-key "\C-xm" 'mh-smail)
+(global-set-key "\C-xm" 'gnus-group-mail)
+;(cond ((not (string= (getenv "HOSTNAME") "spider")) (make-frame)))
+(defun fiddle-quoted-printable ()
+  (interactive)
+  (require 'mh-comp)
+  (if (or (string-equal (mh-get-header-field "content-transfer-encoding:")
+			"quoted-printable")
+          (string-equal (mh-get-header-field "content-transfer-encoding:")
+			"QUOTED-PRINTABLE"))
+      (let ((modified (buffer-modified-p)))
+        (progn
+          ;; hexl doesn't `provide', grrr!
+          (or (fboundp 'hexl-hex-string-to-integer)
+              (load "hexl")
+              )
+          (mh-goto-header-end 1)
+          (while (re-search-forward "=\\([0-9a-fA-F][0-9a-fA-F]\\)" nil t)
+            (replace-match (char-to-string
+                            (hexl-hex-string-to-integer
+                             (buffer-substring
+                              (match-beginning 1) (match-end 1))))))
+          (goto-char (point-min-marker))
+          (mh-goto-header-end 1)
+          (while (re-search-forward "=$" nil t)
+            (forward-char -1) 
+	    (delete-char 2)
+	    )
+          (set-buffer-modified-p modified))))
+          (mh-goto-header-field "Date:")
+          (recenter 0)
+  )
+;
+(add-hook 'mh-show-mode-hook 'fiddle-quoted-printable)
+(provide 'mh-qp)
+;(fset 'mail-comment
+;   [4194336 down 23 25 24 111 25 up 62 32 down 1 24 111])
+;;
+;; Para remandar mail
+;;
+(fset 're-send
+   "\C-a\C-k\C-k\C-k\C-k\C-k\C-k\C-[OB\C-k\C-k\C-k\C-k\C-k\C-k\C-@\C-[OB\C-[
+OB\C-w\C-[OA\C-y\C-[<")
+(defun mail-line-comment()
+   (interactive)
+   (beginning-of-line)
+   (let ((beg (point)))
+   (forward-line 1) 
+   (copy-region-as-kill beg (point))
+   (other-window 1)
+   (insert "> ")
+   (yank))
+   (other-window 1)
+   )
+(global-set-key "\C-t" 'mail-line-comment)
+;; 
+;; Enabling commands
+;;
+(put 'upcase-region    'disabled nil)
+(put 'downcase-region  'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+;;
+;; Setting some key-bindings
+;;
+(global-set-key "\C-x " 'set-mark-command)
+(global-set-key [kp-f8] 'call-last-kbd-macro)
+(global-set-key [f8] 'call-last-kbd-macro)
+(global-set-key [kp-f1] 'overwrite-mode)
+(global-set-key [f1]    'overwrite-mode)
+(global-set-key "\C-xvo" 'fortran-split-line)
+(global-set-key "\C-xvw" 'overwrite-mode)
+(global-set-key "\M-k" 'delete-backward-char)
+(global-set-key (hyper-key "q") 'query-replace-identifier)
+(global-set-key "\C-cC" 'comment-region)
+(global-set-key "\C-cb" 'bury-buffer)
+(defun rename-uniquely-aux(&optional arg)
+  (interactive "P")
+  (cond (arg (rename-uniquely-with-prefix))
+	(t (toggle-read-only))))
+(global-set-key "\C-cr" 'rename-uniquely-aux)
+;;
+;; Setting some variables
+;;
+(setq fortran-continuation-string "*")
+(setq version-control t)
+(setq kept-old-versions 0)
+(setq kept-new-versions 5)
+(line-number-mode 10000)
+(display-time)
+;;
+;; Abbrev mode
+;;
+;(abbrev-mode 1)
+;(setq abbrev-mode t)
+(cond ((mstorti)
+       (read-abbrev-file "~/.abbrev_defs" t)))
+;;
+;; Para diary
+;;
+(setq current-pos-regexp "^ *[^ ][^ ][^ ] Current line ===========")
+(defun goto-current-pos()
+  (interactive)
+  (forward-line 1)
+  (beginning-of-line)
+  (goto-char (+ (point) 1))
+  (if (not (re-search-forward current-pos-regexp
+			      (point-max-marker) t))
+      (progn
+	(goto-char (point-min-marker))
+	(re-search-forward current-pos-regexp
+			   (point-max-marker) t)))
+  (recenter -1)
+  (forward-line -1)
+  (beginning-of-line))
+;;;
+(global-set-key (hyper-key "o") 'goto-current-pos)
+(cond ((mstorti) (add-hook 'diary-hook 'appt-make-list)
+       (add-hook 'diary-display-hook 'fancy-diary-display)
+       (add-hook 'list-diary-entries-hook 'sort-diary-entries)
+       (setq diary-file "~/CONFIG/diary")
+       (setq view-diary-entries-initially 1)
+       (setq today-visible-calendar-hook 'calendar-star-date)))
+
+;;;================================================================
+;;; FERIADOS
+(load-library "arholidays.el")
+
+;;;================================================================
+(global-set-key ";" 'self-insert-command)
+;;; Para ver TeX
+(add-hook 'latex-mode-hook 'my-tex-mode-hook)
+(make-local-variable 'latex-occur-section-regexp)
+(defun latex-occur-section()
+  (interactive)
+  (occur latex-occur-section-regexp)
+  (other-window 1)
+  (end-of-buffer))
+
+(defun my-tex-mode-hook()
+    (interactive)
+    (abbrev-mode 1)
+    (setq comment-start "%")
+    (make-local-variable 'comment-start)
+    (setq comment-string "%%")
+    (local-set-key (hyper-key "o") 'goto-current-pos)
+    (local-set-key "\C-c\C-n" 'tex-search-next-section)
+    (local-set-key "\C-ci" 'tex-acute-i)
+    (local-set-key "\C-co" 'latex-occur-section)
+    (local-set-key "\C-c\C-b" 'tex-bibtex-file)
+    (local-set-key "\C-cf" 'flyspell-mode)
+    (setq indent-tabs-mode nil)
+    (local-set-key (hyper-key "i") 'make-index-entry)
+    (local-set-key (hyper-key "v") 'make-index-entry-from-variable)
+;    (font-lock-mode)
+    (setq tex-command "make_latex")
+    (setq local-abbrev-table latex-mode-abbrev-table)
+    (setq latex-occur-section-regexp 
+	  "^\\\\\\(chapter\\|section\\|subsection\\|subsubsection\\|paragraph\\)")
+    )
+;;
+(setq tex-run-command "bash ~/bin/mtex *")
+;;(setq tex-dvi-print-command "dvips -t letter -o \"| unix2dos -s | lpr\" " )
+(setq tex-dvi-print-command "~/bin/mydvips *")
+(setq tex-dvi-view-command 
+  "xdvi -density 5 -s 3 -expert -sidemargin 4cm \
+       -topmargin 0.5cm -copy -nopostscript -geometry 829x741 *")
+;(setq tex-alt-dvi-print-command
+;      '(format "%s" (read-string "Use printer: " "~/bin/mydvips -o -pp ")))
+
+(setq tex-alt-dvi-print-command
+      '(format "%s" (read-string "Use printer: " "~/bin/mydvips -o -c 1")))
+(make-variable-buffer-local 'tex-main-file)
+;; No more used (emacs hangs)
+;(setq ispell-use-ptys-p nil)
+;;;
+;;; para Octave
+
+(load-library "my-octave.el")
+;; Allow composing keys with <f5>
+(load-library "specchar.el")
+;; Utility functions
+(load-library "msutils.el")
+;;
+
+(defun copy-char-from-last-dabbrev()
+   (interactive)
+   (exchange-point-and-mark)
+   (let ((beg (point)))
+      (forward-char 1)
+      (copy-region-as-kill beg (point))
+      )
+   (let ((beg (point)))
+     (exchange-point-and-mark)
+     (yank)
+     (exchange-point-and-mark)
+     (goto-char beg)
+     )
+   (exchange-point-and-mark))
+
+;;
+;;  Para que ande el Athena-delete
+;;
+(defun dired-flag-backup-files-for-delete (&optional unflag-p)
+  "Flag all backup files (names ending with `~') for deletion.
+With prefix argument, unflag these files."
+  (interactive "P")
+  (let ((dired-marker-char (if unflag-p ?\040 ?*)))
+    (dired-mark-if
+     ;; It is less than general to check for ~ here,
+     ;; but it's the only way this runs fast enough.
+     (and (save-excursion (end-of-line)
+			  (or
+			   (eq (preceding-char) ?~)
+			   ;; Handle executables in case of -F option.
+			   ;; We need not worry about the other kinds
+			   ;; of markings that -F makes, since they won't
+			   ;; appear on real backup files.
+			   (if (eq (preceding-char) ?*)
+			       (progn
+				 (forward-char -1)
+				 (eq (preceding-char) ?~)))))
+	  (not (looking-at dired-re-dir))
+	  (let ((fn (dired-get-filename t t)))
+	    (if fn (backup-file-name-p fn))))
+     "backup file")))
+;;
+;;(defun dired-do-flagged-athena-delete()
+;;      (interactive)
+;;      (dired-do-shell-command "delete"))
+(add-hook 'dired-mode-hook '(lambda () 
+       (local-set-key [?~] 'dired-flag-backup-files-for-delete)))
+(add-hook 'dired-mode-hook 'turn-on-font-lock)
+;;(add-hook 'diary-hook '(lambda () 
+;;   (local-set-key "\C-n" 'diary-next-day)
+;;   (local-set-key "\C-p" 'diary-previous-day)
+;;    ))
+(setq auto-mode-alist (cons '("\\.mail$" . message-mode) auto-mode-alist))
+;;
+;; para Majordomo
+;;
+(defun approve()
+   (interactive)
+   (shell-command-on-region (point-min-marker) 
+                   (point-max-marker) "approve"))
+;;
+;; para leer bien cuando viene con esa basura =ED etc...
+;;
+(defun sacar-basura()
+   (interactive)
+   (shell-command-on-region (point-min-marker) 
+                   (point-max-marker) "sed -f ~/CORREO/toascii.sed"))
+;; para Perl
+(cond ((not (geronimo))
+       (setq auto-mode-alist 
+	     (cons '("\\.pl$" . perl-mode) auto-mode-alist))))
+;;
+;;================================================================
+;; para RCS
+;;
+;,(setq vc-make-backup-files t)
+;;================================================================
+;; para Git
+(add-to-list 'vc-handled-backends 'GIT)
+;;================================================================
+;;
+;;Para SuperCite
+;;
+(autoload 'sc-cite-original     "supercite" "Supercite 3.1" t)
+(autoload 'sc-submit-bug-report "supercite" "Supercite 3.1" t)
+(add-hook 'mail-citation-hook 'sc-cite-original)
+(setq sc-preferred-header-style 2)
+(setq sc-citation-leader "")
+(setq sc-nested-citation-p t)
+(setq sc-auto-fill-region-p nil)
+;;
+(defun sc-my-header-on-said ()
+  "\"On <date>, <from> said:\" unless:
+1. the \"from\" field cannot be found, in which case nothing is inserted;
+2. the \"date\" field is missing in which case only the from part is printed."
+  (let ((sc-mumble "")
+	(whofrom (sc-whofrom)))
+    (if whofrom
+	(insert sc-reference-tag-string
+		(sc-hdr "On " (sc-mail-field "date") ", \n")
+		 sc-reference-tag-string 
+		 "     " whofrom " said:\n"))))
+;;
+(defun sc-header-on-said-spanish ()
+  "Same as \"sc-header-on-said\" but in spanish"
+  (let ((sc-mumble "")
+	(whofrom (sc-whofrom)))
+    (if whofrom
+	(insert sc-reference-tag-string
+		(sc-hdr "El dia " (sc-mail-field "date") ", ")
+		whofrom " escribio:\n"))))
+;;
+(defun sc-header-who-date ()
+  "Simple header for Supercite"
+  (let ((sc-mumble "")
+	(whofrom (sc-whofrom)))
+    (if whofrom
+	(insert sc-reference-tag-string
+		(sc-mail-field "date") whofrom " \n"))))
+(add-hook 'sc-load-hook
+     '(lambda () (setq sc-electric-references-p t)))
+(add-hook 'sc-load-hook 
+     '(lambda () (setq sc-rewrite-header-list 
+             (cons '(sc-header-on-said-spanish) sc-rewrite-header-list))))
+(add-hook 'sc-load-hook 
+     '(lambda () (setq sc-rewrite-header-list 
+             (cons '(sc-header-who-date) sc-rewrite-header-list))))
+(add-hook 'sc-load-hook 
+     '(lambda () (setq sc-rewrite-header-list 
+             (cons '(sc-my-header-on-said) sc-rewrite-header-list))))
+;; Para que borre toda la linea si esta al comienzo
+(setq kill-whole-line t)
+(setq auto-mode-alist (cons '("\\.txt$" . text-mode) auto-mode-alist))
+;;
+;;Para etalk
+(autoload 'etalk "etalk" "Invocar etalk: Emacs version of talk" t)
+;;
+(defun macro()
+   (interactive)
+   (find-file "~/ADMINISTRACION/macro")
+   (goto-current-pos)
+   (toggle-read-only 1)
+   (local-set-key "e" 'eval-macro))
+(defun dia()
+   (interactive)
+   (find-file diary-file)
+   (goto-current-pos)
+   (recenter))
+(global-set-key (hyper-key "d") 'dia)
+;;
+;;
+(defun trunc()
+     (interactive)
+     (setq truncate-lines t))
+(defun no-trunc()
+     (interactive)
+     (setq truncate-lines nil))
+;;
+;; genera una referencia \nanew para referencias bibliograficas.
+(defalias 'make-nanew (read-kbd-macro
+"ESC C-s \\ .[A-z DEL Z][a-z] 2*<left> ESC d C-y C-a RET <up> [ \\
+ nanew(rf, C-y ,)] C-a"))
+(defalias 'make-index-entry 
+  (read-kbd-macro "M-w C-a RET <up> \\ index{ C-y }"))
+(defalias 'make-index-entry-from-variable 
+  (read-kbd-macro "M-w C-a RET <up> \\ index{ C-y @ \\ verb + C-y + }"))
+;; Pone comentario en TeX
+(fset 'tex-comment-line
+   "%\C-[OB\C-a")
+(defun fix-list()
+  (interactive)
+  (untabify (point-min-marker) (point-max-marker))
+  (goto-char (point-min-marker))
+  (replace-regexp "[^ ]*@[^ \n]*" "<\\&>" nil)
+  )
+(defalias 'fix-list (read-kbd-macro
+"C-x SPC  ESC >  M-x untabify RET M-x query-replace-regexp RET [^ SPC ]@[^ SPC \\n] RET <\\&> RET"))
+;;
+;; Formateo con right-justify
+;;
+(defun fill-paragraph-and-right-justify ()
+   (interactive)
+   (fill-paragraph 1))
+;;
+;;; ================================================================
+;;;   ISPELL stuff
+;;; ================================================================
+;; Para completar las palabras desde el diccionario
+(set-language-environment "Latin-1")
+(setq ispell-program-name "aspell")
+(require 'ispell)
+(global-set-key "\C-\M-i" 'ispell-complete-word)
+(setq ispell-dictionary-alist 
+      (cons 
+       '("espanol" "[A-ZÁÉÍÑÓÚÜa-záéíñóúü]" "[^A-ZÁÉÍÑÓÚÜa-záéíñóúü]" "[-]" nil
+	("-B" "-d" "es.multi")
+	"~tex" iso-8859-1)
+       ispell-dictionary-alist))
+;;
+;;
+(global-set-key "\C-cQ" 'fill-paragraph-and-right-justify)
+;;;================================================================
+;; ;; Original keys: (COMO MACRO)
+;; C-SPC			;; set-mark-command
+;; <down>			;; next-line
+;; C-x C-x			;; exchange-point-and-mark
+;; M-\			;; delete-horizontal-space
+;; M-q			;; fill-paragraph
+;; C-x C-x			;; exchange-point-and-mark
+;; macro que hace `fill-paragraph' en cada linea y avanza al siguiente. 
+(defalias 'format-line-paragraph-macro
+  (read-kbd-macro
+   "C-SPC <down> C-x C-x M-\\ M-q C-x C-x"))
+(defun format-line-paragraph()
+  (interactive)
+  (let ((mark0 (point-marker))
+	(mark1 nil)
+	(mark2 nil))
+    (beginning-of-line)
+    (forward-char 1)
+    (cond ((char-equal (char-after (point)) ?\ )
+	   (just-one-space)))
+    (beginning-of-line)
+    (next-line 1)
+    (insert "\n")
+    (setq mark1 (point-marker))
+    (goto-char mark0)
+    (fill-paragraph t)
+    (goto-char mark1)
+    (forward-char -1)
+    (setq mark1 (point-marker))
+    (cond ((re-search-forward "[^ \t\n]")
+	   (forward-char -1)
+	   (setq mark2 (point-marker))
+	   (delete-region mark1 mark2)
+	   (goto-char mark2)
+	   (insert "\n")))))
+(global-set-key "\C-cF" 'format-line-paragraph)
+
+;;;================================================================
+;;
+;; Fill paragraph para tex
+;;
+;(fset 'fill-paragraph-in-tex
+;   "\C-[\C-r(^%|^ *$)\C-m\C-[OB\C-a\C-m\C-[\C-s\C-s\C-a\C-m\C-[OA\C-[OA\C-[q\C-[\C-r\C-r\C-[OB\C-?\C-[\C-s\C-s\C-a\C-?\C-[OA")
+;;
+;;
+;;
+(defun next-working-day(targedate)
+(interactive)
+(let ((adate (calendar-absolute-from-gregorian date))
+      (atargetdate (calendar-absolute-from-gregorian targetdate))
+      (dayname (calendar-day-of-week date))
+      )
+     (or (and (= adate atargetdate)
+              (memq dayname '(1 2 3 4 5))
+          )
+         (and (= adate (+ atargetdate 1))
+              (= dayname 1)
+          )
+         (and (= adate (+ atargetdate 2))
+              (= dayname 1)
+          )
+      )
+))
+;;
+(defalias 'bb 'bury-buffer)
+;;
+;; Para poder trabajar en el archivo Macro
+;;
+(defun eval-macro()
+   (interactive)
+   (end-of-line)
+   (eval-last-sexp nil)
+   (bury-buffer))
+(defun macro-mode()
+   (interactive)
+   (vc-toggle-read-only)
+   (local-set-key "e" 'eval-macro))
+(defun scroll-up-by-line()
+       (interactive)
+       (scroll-up 1)
+       (next-line 1))
+(defun scroll-down-by-line()
+       (interactive)
+       (scroll-up -1)
+       (next-line -1))
+(defun scroll-by-lines()
+       (global-set-key "\C-v" 'scroll-up-by-line)
+       (global-set-key "\M-v" 'scroll-down-by-line))
+(defun scroll-by-screens()
+       (global-set-key "\C-v" 'scroll-up)
+       (global-set-key "\M-v" 'scroll-down))
+(defun named-vc-snapshot()
+    (interactive)
+    (shell-command "date +y%Ym%Md%d-h%Hm%Ms%S" 1))
+(fset 'copf
+      "\C-s$\C-[OD\C-@\C-s\C-s\C-s\C-[w\C-xo\C-y")
+(fset 'cope
+      "\C-s\\nanew\C-m\C-@\C-s)\C-m\C-[w\C-u\C-@\C-u\C-@\C-u\C-@\C-u\C-@(\\naold\C-y)")
+(fset 'texf
+      "\C-r$$\C-@\C-s\C-s\C-s\C-m\C-c\C-r")
+
+;;; Commands added by calc-private-autoloads on Fri Jul 19 20:53:13 1996.
+(autoload 'calc-dispatch	   "calc" "Calculator Options" t)
+(autoload 'full-calc		   "calc" "Full-screen Calculator" t)
+(autoload 'full-calc-keypad	   "calc" "Full-screen X Calculator" t)
+(autoload 'calc-eval		   "calc" "Use Calculator from Lisp")
+(autoload 'defmath		   "calc" nil t t)
+(autoload 'calc			   "calc" "Calculator Mode" t)
+(autoload 'quick-calc		   "calc" "Quick Calculator" t)
+(autoload 'calc-keypad		   "calc" "X windows Calculator" t)
+(autoload 'calc-embedded	   "calc" "Use Calc inside any buffer" t)
+(autoload 'calc-embedded-activate  "calc" "Activate =>'s in buffer" t)
+(autoload 'calc-grab-region	   "calc" "Grab region of Calc data" t)
+(autoload 'calc-grab-rectangle	   "calc" "Grab rectangle of data" t)
+(setq load-path (append load-path (list "/x/usr/lib/calc-2.02d")))
+(global-set-key "\e#" 'calc-dispatch)
+;;; End of Calc autoloads.
+;
+; Para manejar las listas
+;
+(defun rebote()
+   (interactive)
+   (shell-command-on-region (point-min-marker) 
+                   (point-max-marker) "rebote.pl")
+   (rmail-delete-forward))
+(defun my-rmail-mode-hook()
+  (interactive)
+  (local-set-key "R" 'rebote))
+(add-hook 'rmail-mode-hook 'my-rmail-mode-hook)
+;(setq mh-inc-folder-hook rmail-mode-hook)
+;;
+;; Para insertar llamadas de tipo \eqno(\nanew... en TeX
+;;
+(defalias 'put-nanew-ref (read-kbd-macro
+"\\ eqno C-q ( \\ na(new, C-r \\ eqno( \\ na(new C-r RET C-s , RET NUL 3*C-s
+  <left> ESC w C-s ESC p RET <right> C-y ,)) SPC $$ C-r , RET"))
+;;(defun put-nanew-ref(arg)
+;;  (interactive "P")
+;;  (if arg
+;;      (insert "\\eqno(\\na(new,eq,,))$$")
+;;    (put-nanew-ref-kbd)
+;;    )
+;;)
+;;
+;; Para poder renumerar directamente desde Emacs
+;;
+(defun m4ren()
+  (interactive)
+  (let 
+      ((current-line (count-lines 1 (point))))
+     (shell-command-on-region (point-min-marker) 
+			      (point-max-marker) "m4rene" 1)    
+     (goto-line current-line)
+))
+;;
+;; Version Perl del renumerador
+;;
+(defun ren(arg)
+  (interactive "P")
+  (let 
+      ((current-line (count-lines 1 (point))))
+    (if arg
+	(shell-command-on-region (point-min-marker) 
+				 (point-max-marker) "rene.pl -c" 1)
+      (shell-command-on-region (point-min-marker) 
+			       (point-max-marker) "rene.pl " 1)
+      )
+    (goto-line current-line)
+    )
+  )
+;;
+;; Para que mueva a la linea de abajo cada vez que me muevo por
+;; la lista de buffers
+;;
+(defun Buffer-menu-switch-other-window ()
+  "Make the other window select this line's buffer.
+The current window remains selected."
+  (interactive)
+  (display-buffer (Buffer-menu-buffer t))
+  (next-line 1))
+;(defun tab()
+;  (interactive)
+;  (fortran-column-ruler)
+;  )
+;;
+(defun tab()
+  (interactive)
+  (beginning-of-line)
+  (insert "#.......10........20........30........40........50........60........70\n")
+  (insert "#   |    |    |    |    |    |    |    |    |    |    |    |    |    |\n")
+  )
+;;
+;; date command
+;;
+(defun spdate()
+  (interactive)
+  (shell-command "spdate" 1))
+(defun date()
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d %H:%M:%S" (current-time))))
+;;  (insert (current-time-string)))
+;  (shell-command "date -R" 1))
+(defun date2()
+  (interactive)
+  (shell-command "date +\"%Y/%M/%d-%H:%M:%S\"" 1))
+(defun udate()
+  (interactive)
+  (shell-command "date -u" 1))
+;;
+;;Para poder cargar archivos comprimidos
+;;
+(load-library "jka-compr.elc")
+;; Seems that this has to be done only for emacs 21. 
+(cond ((rh-80) (auto-compression-mode)))
+;;
+;; Entering Zmacs/transient-mark mode
+;;
+(transient-mark-mode 1)
+(defalias 'fortran-insert-comment
+  (read-kbd-macro "C-a RET <up> c-- RET c RET c <up> TAB"))
+;;
+;; My Turbo Spread-Sheet
+;;
+(defun spread()
+  (interactive)
+  (let 
+      ((current-line (count-lines 1 (point))))
+     (shell-command-on-region (point-min-marker) 
+;			      (point-max-marker) "spread.pl" 1)    
+			      (point-max-marker) "prepro" 1)    
+     (goto-line current-line)))
+;;
+;; Nuevo mensaje para Sergio
+;;
+(defun newmes()
+  (interactive)
+  (shell-command "newmes.pl" 1)
+  )
+;;
+;; Para imprimir una tabla de contenidos
+;;
+;(defun toc()
+;  (interactive)
+;  (shell-command-on-region (point-min-marker) 
+;			   (point-max-marker) "grep \"(new,sc,\"")    
+;  )
+;;
+;; Para ordenar una lista
+;;
+(defun texsort()
+  (interactive)
+  (shell-command-on-region (point-min-marker) 
+			   (point-max-marker) "texsort" 1)    
+  )
+;;
+;; Para crear la TOC
+;;
+(defun toc()
+  (interactive)
+  (shell-command-on-region (point-min-marker) 
+			   (point-max-marker) "toc.pl" 1)    
+  )
+;;
+;; Para pasar del viejoe estilo \nanew(... a \na(new,...
+;;
+(defun nanew()
+  (interactive)
+  (shell-command-on-region (point-min-marker) 
+			   (point-max-marker) "perl ~/bin/nanew.pl" 1)    
+  )
+;; 
+;; Para que ande bien el "dirs"
+;;
+;(set-variable 'shell-dirstack-query "pwd")
+(set-variable 'shell-dirstack-query "dirs")
+(defun tex-search-next-section()
+  (interactive)
+  (if (re-search-forward "\\\\TT*itle{"
+         (point-max-marker) t) 
+         ()
+         (goto-char (point-min-marker))
+         (re-search-forward "\\\\TT*itle{"
+                     (point-max-marker) t)
+       )
+  (recenter 0)
+)
+;;; ================================================================
+;;;  PERL
+;;; ================================================================
+(add-hook 'perl-mode-hook 
+	  (lambda () 
+            (abbrev-mode)
+            (hs-minor-mode 1)))
+;;
+(server-start)
+;;;
+(add-hook 'mh-folder-mode-hook 
+     '(lambda () (local-set-key "s" 'mh-sort-folder)))
+;;
+;;; ================================================================
+;;;  New version of enclose region
+(load-library "enclose.el")
+;;; ================================================================
+(global-font-lock-mode t)
+(fset 'cont-dyn-abbrev [?  escape ?/])
+;(global-set-key [f5] 'cont-dyn-abbrev)
+(global-set-key "\C-cg" 'goto-line)
+;;
+(add-hook 'comint-output-filter-functions
+	  'comint-strip-ctrl-m)
+;;
+;; (defalias 'diary-ok-macro 
+;;   (read-kbd-macro 
+;;    (concat "C-a ESC C-s [^ SPC ] RET <left> OK SPC C-a "
+;; 	   "C-SPC ESC C-s ^ C-q SPC C-q SPC C-q SPC C-q "
+;; 	   "SPC [^ SPC ] C-s C-a C-w ESC C-r ^ \\ & RET ESC "
+;; 	   "C-s ^ C-q SPC C-q SPC C-q SPC C-q SPC  [^ \\ ( OK \\ ) "
+;; 	   "SPC ] RET C-a C-y")))
+(defun diary-ok()
+  (interactive)
+;  (save-excursion
+  (progn
+    (let ((start nil)
+	  (end nil)
+	  (chunk nil))
+      ;; Search start of chunk
+      (beginning-of-line)
+      (while
+	  (progn 
+	    (let ((line (thing-at-point 'line)))
+	      ;;	      (message "line back: %s" line)
+	      (cond ((string= (substring line 0 6) "      ") 
+		     (forward-line -1) t)
+		    (t nil)))))
+      ;; Goto end of chunk
+      (setq start (point-marker))
+      (forward-line 1)
+      (while
+	  (progn 
+	    (let ((line (thing-at-point 'line)))
+	      ;;	      (message "line for: %s" line)
+	      (cond ((string-match "^ *\n$" line) nil)
+		    ((string= (substring line 0 6) "      ") 
+		     (forward-line 1) t)
+		    (t nil)))))
+      (setq end (point-marker))
+      ;; save text in chunk and erase grom buffer
+      (setq chunk (buffer-substring-no-properties start end))
+      (delete-region start end)
+      ;; search for insertion point (first OK line)
+      (forward-line -1)
+      (while
+	  (progn 
+	    (let ((line (thing-at-point 'line)))
+	      (cond ((string= (substring line 0 7) "    OK ") nil)
+		    ((string= (substring line 0 4) "    ")
+		     (forward-line -1) t)
+		    (t nil)))))
+      (forward-line 1)
+      (while
+	  (progn 
+	    (let ((line (thing-at-point 'line)))
+	      (cond ((< (length line) 6) nil)
+		    ((string= (substring line 0 6) "      ")
+		     (forward-line 1) t)
+		    (t nil)))))
+      (insert "    OK " (substring chunk 4))
+      (goto-char end))))
+;;;================================================================
+(defun calcme()
+  (interactive)
+  (comint-run "calcme")
+  (setq comint-prompt-regexp "> ")
+  )
+(fset 'tex-acute-i  "\\'\\i{}")
+;;
+(defun mupad()
+  (interactive)
+  (comint-run "~/bin/mupad")
+  (setq comint-prompt-regexp ">> "))
+(add-hook 'dired-load-hook
+          (function (lambda ()
+                      (load "dired-x")
+		      (setq dired-x-hands-off-my-keys nil)
+		      (dired-x-bind-find-file))))
+;;
+;;
+(defalias 'initialize-log
+  (read-kbd-macro 
+   "<end> ESC C-r ^ === RET C-x C-x C-w <home> H-s-o <up> C-y"))
+(add-hook 'find-file-hooks 'auto-insert)
+(setq auto-insert-directory "~/EMACS/auto-insert/")
+(load-library "autoinsert")
+(setq dired-guess-shell-alist-user
+      (list (list "\\.tar.gz$" "tar -xzvf" "tar -cvf /dev/fd0")
+	    (list "\\.tgz$" "tar -xzvf"  "tar -cvf /dev/fd0")
+	    (list "\\.gz$" "tar -cvf /dev/fd0")
+	    (list "\\.obj$" "tgif * &" "tgif -print -ps *")
+	    (list "^ls_lr\\.gz$" "zgrep -i" "tgif -print -ps *")
+	    (list "\\.octave$" "reminf")
+	    (list "\\.pdf$" "gv * &" "acroread * &" "xpdf * &")
+	    (list "\\.ps$" "gv * &")
+	    (list "\\.doc$" "~/OpenOffice.org1.0.1/soffice * &")
+	    (list "\\.sxw$" "~/OpenOffice.org1.0.1/soffice * &")
+	    (list "\\.gnumeric$" "gnumeric * &")))
+;;; =============================================
+;;; =============================================
+;; We keep here the original `auto-insert-alist' 
+(setq auto-insert-alist-system auto-insert-alist)
+(setq auto-insert-alist-user
+      '(
+	(("\\.m\\'" . "Octave file") 
+	      nil
+	      (if (string-equal (completing-read "Type: " '(("script")
+							    ("function")
+			      )) "script") 
+		  '(concat "###key " 
+			   (file-name-nondirectory (buffer-file-name)) 
+			   "\n### $I" "d: $\n\n\n")
+		'(concat "## usage: \nfunction [...]= "  
+			 (substring (file-name-nondirectory (buffer-file-name)) 0 -2)
+			 " (...)\n\n"
+			 "  ## $I" "d: $\n\n"
+			 "endfunction")
+		)
+	      )
+	(("\\.tex\\'" . "TeX file") 
+	      .
+	      (lambda () (insert-file-contents 
+			  (concat auto-insert-directory
+				  (completing-read "Type [<TAB> to see options]: " 
+						   '(("generic")
+						     ("report")
+						     ("letter")
+						     ("memo")
+						     ("fax")
+						     ("latex")
+						     )) ".tex")))
+		)
+	(("\\.h\\'" . "C / C++ header") 
+	 . (lambda () 
+	     (let ((header-ident 
+		    (concat "PETSCFEM_"
+			    (upcase (concat
+				     (file-name-nondirectory
+				      (substring buffer-file-name 0
+						 (match-beginning 0)))
+				     "_H")))))
+	       (insert (concat "// -*- mode: c++ -*-\n"
+			       "//__INSERT_LICENSE__\n"
+			       "// $Id" "$\n"
+			       "#ifndef " header-ident "\n"
+			       "#define " header-ident "\n"
+			       "\n\n\n#endif\n"
+			       )))))
+	(("\\.\\([Cc]\\|cc\\|cpp\\)\\'" . "C / C++ program")
+	 nil "//__INSERT_LICENSE__\n// $Id" "$\n")))
+;;
+(setq auto-insert-alist 
+      (append auto-insert-alist-user auto-insert-alist-system))
+(defun locvar()
+  (interactive)
+  (insert "\; Local"
+" Variables: *
+\; mode:lisp *
+\; comment-column:0 *
+\; comment-start: \"\;\;\; \"  *
+\; End: *
+"))
+(add-hook 'makefile-mode-hook
+	  '(lambda () 
+	     (setq indent-tabs-mode t)
+	     (abbrev-mode 1)))
+(defun byte-compile-this-file () 
+  (write-region (point-min) (point-max) buffer-file-name nil 't) 
+  (byte-compile-file buffer-file-name) nil
+  )
+(defun wordnet1()
+  (interactive)
+  (shell-command (concat "/usr/local/wordnet1.6/bin/wn " 
+			 (buffer-substring 
+			  (+ (re-search-backward "[^a-zA-Z]") 1)
+			  (+ (re-search-forward "[^a-zA-Z]" 
+						(point-max-marker) t 2) -1))
+			 " -over")))
+(defun wordnet()
+  (interactive)
+  (shell-command (concat "/usr/local/wordnet1.6/bin/wn " 
+			 (thing-at-point 'word) " -over")))
+(global-set-key "\C-cd" 'wordnet)
+;;
+(global-set-key (hyper-key "f") 'font-lock-fontify-buffer)
+
+(defalias 'mail-comment (read-kbd-macro
+                 "C-a > SPC <down> C-a"))
+(global-set-key [f9] 'mark-this-line)
+
+;;================================================================
+;;====  Notes 
+;;================================================================
+(make-local-variable 'notes-version-file)
+(setq-default notes-version-file nil)
+(defun notes()
+  (interactive)
+  (find-file "~/CONFIG/notas.txt")
+  (goto-current-pos))
+;;
+;; Remove trailing newlines from the string
+;; If optional `add' is true, then add a
+;; unique trailing newline. 
+(defun chomp(s &optional add)
+  (let ((rslt nil)
+        (n (length s)))
+    (while (and (> n 0)
+                (= (elt s (- n 1)) ?\n))
+      (setq n (- n 1)))
+    (setq rslt (substring s 0 n))
+    (cond (add (concat rslt "\n"))
+          (t rslt))))
+;;
+(defun notes-insert-date()
+  (interactive)
+  (insert (concat "%=== "
+		  (current-time-string)
+		  " "
+		  (getenv "USER") "@" (getenv "HOSTNAME")
+		  "\n"
+;;                  (shell-command-to-string "git describe")
+                  ))
+  (notes-insert-time))
+;;
+(defun notes-insert-date-old()
+  (interactive)
+  (insert (concat "%=== "
+		  (current-time-string)
+		  " "
+		  (getenv "USER") "@" (getenv "HOSTNAME")
+		  "  "))
+  (let ((notes-version-file-do
+	 (lambda (file) 
+	   (forward-char (cadr (insert-file-contents file))))))
+    (cond ((and notes-version-file 
+		(file-exists-p notes-version-file))
+	   (funcall notes-version-file-do notes-version-file))
+	  ((file-exists-p "./VERSION")
+	   (funcall notes-version-file-do "./VERSION"))))
+  (insert "\n")
+  (notes-insert-time))
+
+(defun notes-insert-time()
+  (interactive)
+  (insert "%\n%-- "
+          (substring (current-time-string) 11 19)
+          " -- "
+          (chomp (shell-command-to-string "git describe"))
+          " -----\n"))
+;;
+;; Compile mode
+(global-set-key "\C-cc" 'compile)
+(global-set-key "\C-ck" 'kill-compilation)
+(setq compile-command "make -C $HOME/PETSC/petscfem/")
+;;
+;; C++ stuff
+(setq auto-mode-alist (cons '("\\.cpp$" . c++-mode) auto-mode-alist))
+(add-hook 'c++-mode-hook
+	  (function (lambda () 
+                      (hs-minor-mode 1)
+		      (abbrev-mode 1)
+		      (local-set-key "\C-ct" 'c++-insert-trace)
+		      (local-set-key "\C-cc" 'compile)
+		      (local-set-key [f10] 'fastmat2-print)
+		      (set-fill-column 60)
+		      (cond ((string-match "\.cppi$" (buffer-file-name))
+			     (message "detected cppi file")
+			     (font-lock-mode 0))))))
+; (setq font-lock-maximum-size '((c++-mode . 10000) (t . 50000)))
+(setq font-lock-maximum-size '((t . 50000)))
+(setq compile-command "make")
+(defalias 'fastmat2-print-in-gud (read-kbd-macro
+				  ".print(\"\") RET"))
+(add-hook 'gdb-mode-hook
+	  '(lambda () 
+	     (local-set-key [f10] 'fastmat2-print-in-gud)
+	     )
+	  )
+(setq c-macro-preprocessor "bash ~/PETSC/petscfem/tools/pfcpp")
+;; From the EMACS FAQ
+(global-set-key "%" 'match-paren)
+(show-paren-mode)
+;;
+(defun match-paren (arg)
+  "Go to the matching parenthesis if on parenthesis otherwise insert %."
+  (interactive "p")
+  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+	((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+	(t (self-insert-command (or arg 1)))))
+;;
+(defun fastmat2-print()
+  (interactive)
+  (let ((ident (buffer-substring 
+		(+ (re-search-backward "[^0-9a-zA-Z_]") 1)
+		(+ (re-search-forward 
+		    "[^0-9a-zA-Z_]" (point-max-marker) t 2) -1)
+		)))
+    (switch-to-buffer "*gud*")
+    (insert "p " ident ".print(\"\"),1")
+    (comint-send-input)
+    )
+  )
+;;
+(defalias 'c++-insert-trace (read-kbd-macro
+                  "C-a RET <up> TAB TRACE( , __FILE__ , __LINE__) ; <down> C-a"))
+;;
+;; Reemplazar identificadores
+;;
+(setq identifier-syntax '("\\([^a-zA-Z_]\\)" . "\\([^a-zA-Z_0-9]\\)"))
+(setq lisp-identifier-syntax '("\\(\\S_\\)" . "\\(\\S_\\)"))
+;;
+(defun query-replace-identifier()
+  (interactive)
+  (query-replace-regexp 
+   (concat (car identifier-syntax) 
+	   (read-from-minibuffer "replace identifier: ") 
+	   (cdr identifier-syntax)) 
+   (concat "\\1" (read-from-minibuffer "with: ") 
+	   "\\2")))
+;;
+;; Pascal 
+;;
+(add-hook 'pascal-mode-hook '(lambda () (abbrev-mode 1)))
+;;================================================================
+;;
+;; Para comentar en mails
+;;
+(fset 'mark-this-line [?\C-a ?> ?  down ?\C-a])
+;;
+(setq shell-pushd-regexp "\\(ud\\|pushd\\)")
+(setq shell-popd-regexp "\\(od\\|popd\\)")
+;;================================================================
+;;
+;; Para usar Antiword
+;;
+(add-to-list 'auto-mode-alist '("\\.doc\\'" . no-word))
+(defun no-word ()
+  "Run antiword on the entire buffer."
+  (shell-command-on-region (point-min) (point-max) 
+			   "antiword - " (get-buffer-create "*antiword*") t))
+;;================================================================
+;;
+;; Para arreglar el color cuando te queda el texto en video inertido
+;;
+(setq my-face-foreground-color 
+      (cond ;((or (minerva) (spider)) "Wheat")
+	    (t "White")))
+;; (defun fix-color(frame)
+;;  (interactive)
+;;  (set-face-foreground 'default my-face-foreground-color)
+;;  (set-face-background 'default "DarkSlateGrey"))
+; (setq other-host (not (or (spider) (geronimo) (minerva))))
+(setq other-host (not (or (spider) (minerva) (geronimo) (aquiles))))
+(setq my-background-color "white")
+(defun set-color(frame)
+  (cond ((x-display-list)
+	 (select-frame frame)
+	 (set-background-color my-background-color)
+	 (set-face-background 'default my-background-color))))
+(cond ((not (mstorti))
+       (setq my-background-color "papaya whip")))
+(cond ((geronimo)
+       (setq my-background-color "#ffffff")))
+(cond ((aquiles)
+       (setq my-background-color "#dfffdf")))
+(cond ((and (aquiles) (root))
+       (setq my-background-color "#ffffdf")))
+(cond ((in-host "prandtl") 
+       (setq my-background-color "lavender")))
+(cond (other-host
+       (setq my-background-color "#c0e0e0")))
+(cond ((and (not (mstorti)) other-host)
+       (setq my-background-color "lavender")))
+(cond (dont-use-special-keys 
+       (setq my-background-color "white")))
+;;
+;; Prove colors
+;; (progn 
+;;   (setq my-background-color "#ffffdf")
+;;   (set-color (selected-frame)))
+;;
+(setq after-make-frame-functions (cons 'set-color nil))
+;;; Other light colors are: "lavender" "floral white" "mint cream"
+;;; "snow1"
+;;
+(defun my-Info-other-buffer ()
+  "Open this info node in other buffer."
+  (interactive)
+  (rename-uniquely)
+  (Info-set-mode-line)
+  (let ((node (concat "(" Info-current-file ")" Info-current-node)))
+    (set-buffer (get-buffer-create "*info*"))
+;    (message (concat "going to node: " node))
+    (Info-goto-node node)))
+;;
+;;
+(add-hook 'Info-mode-hook
+	  '(lambda () 
+	     (local-set-key "\C-cn" 'my-Info-other-buffer)
+	     ;;
+	     ;; My version so that 
+	     ;;
+	     (defun Info-set-mode-line ()
+	       (setq mode-line-buffer-identification
+		     (concat
+		      "  " (buffer-name) " ("
+		      (if Info-current-file
+			  (file-name-nondirectory Info-current-file)
+			"")
+		      ")"
+		      (or Info-current-node ""))))))
+;;; ================================================================
+(setq put-buffers-list '("adv" "str" "mmv"))
+(defun read-string-vector(prompt)
+  (interactive)
+  (let ((arg-list nil)
+	(prefix "")
+	(aux (lambda ()
+	       (setq prefix 
+		     (read-string 
+		      (cond ((zerop (length arg-list))
+			     (format "%s > " prompt))
+			    (t (format "%s (so far %s) > " prompt arg-list)))))
+	       (cond ((> (length prefix) 0)
+		      (setq arg-list (cons prefix arg-list))
+		      (funcall aux))
+		     (t 
+		      ;; (message (format "arg-list %s\n" (reverse arg-list)))
+		      (reverse arg-list))))))
+    (funcall aux)))
+
+;;; ================================================================
+(defun put-buffers(&optional args)
+  (interactive "P")
+  (cond (args (setq put-buffers-list (read-string-vector "Enter prefix"))))
+  (cond ((zerop (length put-buffers-list))
+	 (error (format "prefix list is empty!! %s" put-buffers-list))))
+  (cond ((> (length put-buffers-list) 5)
+	 (error (format "prefix list too long!! %s" put-buffers-list))))
+  (delete-other-windows)
+  (let ((nlines (- (/ (- (frame-height) 2) (length put-buffers-list)) 1)))
+    (mapcar 
+     (lambda (prefix)
+       (let* ((buffer-name (format "*shell*<%s>" prefix))
+	      (buffer (get-buffer buffer-name)))
+	 (cond ((not buffer)
+		(message (format "making buffer %s" prefix))
+		(shell)
+		(rename-buffer buffer-name)))
+	 (switch-to-buffer buffer-name)
+	 ;; (message (format "displaying buffer %s" buffer-name))
+	 (cond ((> (window-height) (+ nlines 4))
+		(split-window-vertically nlines)))
+	 (comint-show-maximum-output)
+	 (other-window 1))) 
+     put-buffers-list)))
+;;;
+(global-set-key (hyper-key "a") 'put-buffers)
+;;
+(cond ((not (or (spider) (minerva))) 
+       (global-set-key [C-end]  'end-of-buffer)
+       (global-set-key [end]  'end-of-line)
+       (global-set-key [C-home]  'beginning-of-buffer)
+       (global-set-key [home]  'beginning-of-line)))
+(load-library "my-skel.el")
+;;;===========================================================
+;;
+;; for HYPERBOLE
+;;
+(cond 
+ (nil
+  (progn
+    (defvar hyperb:dir "/usr/share/emacs/site-lisp/hyperbole/"
+      "Directory where the Hyperbole executable code is kept.
+It must end with a directory separator character.")
+    (load (expand-file-name "hversion" hyperb:dir))
+    (load (expand-file-name "hyperbole" hyperb:dir))
+    (require 'hsite))))
+;;================================================================
+;;; Rotate shell buffers and other stuff
+(load-library "emacs.el")
+;;;
+;;; Allow yank-pop forward (towards more recent kills)
+(defun yank-forw()
+  (interactive)
+  (yank-pop -1))
+;;
+(global-set-key (hyper-key "y") 'yank-forw)
+;;
+(add-hook 'perldb-mode-hook 
+	  '(lambda () 
+	     (local-set-key (hyper-key "p") 
+			    'comint-previous-matching-input-from-input)))
+;;================================================================
+;;                           PETSCFEM - MODE
+;; ================================================================
+;;
+(let ((petscfem-dir (getenv "PETSCFEM_DIR")))
+  (if petscfem-dir
+      (cond ((rh-80)
+	     (load-file (concat petscfem-dir "/tools/petscfem.el"))
+	     (load-file (concat petscfem-dir "/tools/petscfem-init.el")))
+	    (t 
+	     ;; Right now we can't use petscfem-mode in geronimo
+	     ;; since the version of `easy-mmode' doesn't support
+	     ;; easy-mmode-defsyntax
+	     (setq auto-mode-alist 
+		   (cons (cons "\\.\\(\\|d\\)epl$" 'shell-script-mode) 	    
+			 auto-mode-alist))))))
+;;;================================================================
+;;; SCHEME
+(autoload 'scheme-mode "cmuscheme" "Major mode for Scheme." t)
+(autoload 'run-scheme "cmuscheme" "Switch to interactive Scheme buffer." t)
+ ;;; This is for Quack, but it happens that it gets fooled
+ ;;; by Scheme doc strings
+(setq quack-fontify-threesemi-p
+      (cond ((x-display-list) t)
+	    (t nil)))
+;; (message "quack-fontify-threesemi-p %s" quack-fontify-threesemi-p)
+
+(require 'quack)
+(setq scheme-program-name "guile")
+(setq quack-default-program "guile")
+(setq quack-pltish-keywords-to-fontify 
+      (append '("let-keywords") quack-pltish-keywords-to-fontify))
+
+(setq guile-info-file "(/usr/local/info/guile.info)Procedure Index")
+
+(defun info-goto-guile-proc-index()
+  (interactive)
+  (info guile-info-file))
+
+(add-hook 'scheme-mode-hook 
+	  (lambda()
+;;; (message "running scheme-mode-hook")
+            (hs-minor-mode 1)
+	    (local-set-key (kbd "C-c C-q m") 
+			   'info-goto-guile-proc-index)
+	    (setq comint-get-old-input 
+		  (quote comint-get-old-input-default))
+	    ))
+;	
+;;;================================================================
+;;;    SPREAD
+(setq auto-mode-alist (cons '("\\.sp$"  . spread-mode)
+			    auto-mode-alist))
+(autoload 'spread-mode "spread" "Simple Lisp spread-sheet" t)
+(autoload 'progv "cl")
+;; ================================================================
+;;      Para ver el host en la barra
+;; ================================================================
+(defun host-part(host-name)
+  (let ((start (string-match "\\." host-name)))
+    (cond (start (substring host-name 0 start))
+	  (t host-name))))
+(setq frame-title-user-host (concat "[" (user-real-login-name) "@" 
+				    (host-part (getenv "HOSTNAME")) "]"))
+(setq frame-title-format (list "%b" frame-title-user-host))
+(setq icon-title-format frame-title-format)
+;;;================================================================
+;;; Buffer-menu-mode
+(defun my-desktop-save() 
+  (interactive)
+  (message "Saving desktop in ~")
+  (desktop-save "~"))
+(add-hook 'buffer-menu-mode-hook 
+	  (lambda() (local-set-key "S" 'my-desktop-save)))
+;;;
+(defun my-notes-mode()
+  (interactive)
+  (local-set-key "\C-cD" (quote notes-insert-date)) 
+  (local-set-key "\C-ct" (quote notes-insert-time)) 
+  (setq paragraph-separate "[ \t\f%]*$") 
+  (setq paragraph-start "[ \t\n\f%]") )
+;;;================================================================
+;;; FOR DIARY
+;;; marks a diary entry from one year from (month day year)
+(defun diary-block-year(month day year)
+  (diary-block month day year month day (+ year 1)))
+;;; marks a diary entry for `n' days from (month day year)
+(defun diary-block-n(month day year n)
+  (let ((offset (- (calendar-absolute-from-gregorian date)
+		   (calendar-absolute-from-gregorian (list month day year)))))
+  (and (>= offset 0) (< offset n))))
+;;
+(setq mark-holidays-in-calendar t)
+(setq calendar-holiday-marker 'holiday-face)
+(setq mark-diary-entries-in-calendar t)
+(setq diary-entry-marker ">")
+(cond((minerva)
+      (load-file "/u/mstorti/CONFIG/mailutils.el")))
+;;;================================================================
+;;; COMMON-LISP
+(setq inferior-lisp-program "clisp")
+;;================================================================
+;; Desktop // Esto tiene que estar al final, ya que si no puede cargar
+;; un buffer no procesa mas los comandos. 
+(defun load-desktop()
+  (interactive)
+  (load "desktop")
+  (desktop-load-default)
+  (desktop-read)
+  (setq desktop-globals-to-save 
+	(cons 'compile-history desktop-globals-to-save)))
+;;;================================================================
+;;;================================================================
+;;; Para que use `intec' como servidor de mail
+;;; sacado de http://www.emacswiki.org/cgi-bin/wiki/SendingMail
+(setq smtpmail-default-smtp-server "intec.ceride.gov.ar"
+      smtpmail-local-domain "ceride.gov.ar")
+(load-library "smtpmail")
+(setq message-send-mail-function 'smtpmail-send-it)
+(setq smtpmail-auth-credentials  ; or use ~/.authinfo
+      '(("intec.ceride.gov.ar" 25 "mstorti" "edqmqpGL")))
+
+;;;================================================================
+;;;=============   ORG-MODE   =====================================
+;;;================================================================
+;; These lines only if org-mode is not part of the X/Emacs distribution.
+(autoload 'org-mode "org" "Org mode" t)
+(autoload 'org-diary "org" "Diary entries from Org mode")
+(autoload 'org-agenda "org" "Multi-file agenda from Org mode" t)
+(autoload 'org-store-link "org" "Store a link to the current location" t)
+(autoload 'orgtbl-mode "org" "Org tables as a minor mode" t)
+(autoload 'turn-on-orgtbl "org" "Org tables as a minor mode")
+;;;
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(add-hook 'org-mode-hook 
+	  (lambda ()
+	    (local-set-key (kbd "<H-s-tab>") 'org-shifttab)))
+;; 	  <S-right>	org-shiftright
+;; 	  <S-left>	org-shiftleft
+;; 	  <S-down>	org-shiftdown
+;; 	  <S-up>		org-shiftup
+;; 	  <M-S-down>	org-shiftmetadown
+;; 	  <M-S-up>	org-shiftmetaup
+;; 	  <M-S-right>	org-shiftmetaright
+;; 	  <M-S-left>	org-shiftmetaleft
+;; 	  <M-S-return>	org-insert-todo-heading
+;; 	  <S-return>	org-table-copy-down
+;; 	  <S-iso-lefttab>			org-shifttab
+
+;;;================================================================
+;;;==============  CVS ============================================
+;;;================================================================
+(setq diff-switches "-u")
+(setq vc-cvs-diff-switches diff-switches)
+;;;================================================================
+;;;=========== LONGLINES AND WIKIPEDIA STUFF ======================
+;;;================================================================
+(autoload 'longlines-mode
+  "longlines.el"
+  "Minor mode for automatically wrapping long lines." t)
+(setq longlines-show-hard-newlines t)
+;; 	      (custom-set-variables)
+;; 	      (custom-set-faces
+;; 	       ;; custom-set-faces was added by Custom 
+;; 	       ;; -- don't edit or cut/paste it!
+;; 	       ;; Your init file should contain only one such instance.
+;; 	       '(longlines-visible-face ((t (:foreground "red2")))))
+(autoload 'wikipedia-mode "wikipedia-mode.el"
+  "Major mode for editing documents in Wikipedia markup." t)
+(add-to-list 'auto-mode-alist 
+	     '("\\.wiki\\'" . wikipedia-mode))
+;;;================================================================
+(require 'shell)
+(setq aquiles-ssh-tunnel-process nil)
+(setq aquilesnuevo-ssh-tunnel-process nil)
+(setq proxy-host "200.9.237.240") ; por aquiles
+(setq proxy-host-ptlc "aquiles") ; por aquiles
+;(setq proxy-host "200.9.237.242") ; por astroboy
+;;
+(defun start-ssh-tunnel()
+  (interactive)
+;  (start-ssh-tunnel-host "venus")
+;  (start-ssh-tunnel-host "minerva")
+  (cond ((string= (getenv "PRANDTL_PROFILE") "casa")
+         (start-ssh-tunnel-host "minerva")
+         (start-ssh-tunnel-host "aquiles")
+;;         (start-ssh-tunnel-host "spider")
+;;         (start-ssh-tunnel-host "venus")
+         )
+        ((string= (getenv "PRANDTL_PROFILE") "ptlc")
+         (start-ssh-tunnel-host "aquilesp")
+         (start-ssh-tunnel-host "minervap")))
+;  (start-ssh-tunnel-host "aquilesp")
+)
+
+;; (defun start-process2(&rest args)
+;;   (message "%s\n" args)
+;;   (format  "%s" args))
+
+;;; Table contains: key host proxy port process
+(setq ssh-tunnel-conf-alist
+      `(("aquiles" "localhost" ,proxy-host 8022 nullproc)
+	("minerva" "minerva" ,proxy-host 8023 nullproc)
+	("spider" "192.168.0.2" "192.168.0.2" 8024 nullproc)
+	("minervap" "minerva" ,proxy-host-ptlc 8023 nullproc)
+        ("aquilesp" "localhost" ,proxy-host-ptlc 8022 nullproc)
+	("venus" "venus" ,proxy-host 8024 nullproc)))
+
+(defun start-ssh-tunnel-host(ident)
+  (let ((entry (assoc ident ssh-tunnel-conf-alist)))
+    (cond ((not entry)
+	   (error "can't find entry for host %s" ident)))
+    (let* ((host (nth 1 entry))
+	   (proxy (nth 2 entry))
+	   (port (nth 3 entry))
+	   (buffer-name (format "*ssh-tunnel-%s*" ident))
+	   (buffer (get-buffer buffer-name))
+           (args (list (format "ssh-tunnel-%s" ident) 
+                       (format "*ssh-tunnel-%s*" ident)
+                       "/usr/bin/ssh" "-N" "-L" ; "-e" "none"
+                       (format "%d:%s:22" port host)
+                       proxy)))
+      (cond (buffer (kill-buffer buffer)))
+      (setcar (nthcdr 4 entry) 
+              (cond (t (apply 'start-process args))
+                    (t (message "%s\n" args)))))))
+
+(defun start-ssh-tunnel2()
+  (interactive)
+  (setq aquiles-ssh-tunnel-process
+	(start-process "ssh-tunnel-minerva" "*ssh-tunnel-minerva*" 
+		       "/usr/bin/ssh" "-N" "-L" "8023:minerva:22" 
+	proxy-host))
+)
+
+(defun start-ssh-tunnel-other()
+  (interactive)
+  (while (not 
+	  (zerop (call-process "/usr/bin/ssh" nil "*try*" t 
+			       "-p" "8022" "localhost" "date")))
+    (message "waiting for aquiles tunnel, %s" (current-time-string))
+    (sleep-for 2))
+  (message "launched ok process aquiles-ssh-tunnel-process")
+  
+  (setq aquilesnuevo-ssh-tunnel-process
+	(start-process "ssh-tunnel-aquilesnuevo" "*ssh-tunnel-aquilesnuevo*" 
+		       "/usr/bin/ssh" "-p" "8022" "-N" "-L" 
+		       "8023:aquilesnuevo:22" "localhost"))
+  (while (not (zerop (call-process "/usr/bin/ssh" nil "*try*" t 
+				   "-p" "8023" "localhost" "date")))
+    (message "waiting for aquilesnuevo tunnel, %s" (current-time-string))
+    (sleep-for 1))
+  (message "launched ok process aquilesnuevo-ssh-tunnel-process"))
+(defun check-ssh-tunnel()
+  (interactive)
+  (while (not 
+	  (zerop (call-process "/usr/bin/ssh" nil "*try*" t 
+			       "-p" "8022" "localhost" "date")))
+    (message "waiting for aquiles tunnel, %s" (current-time-string))
+    (sleep-for 1))
+  (message "process aquiles-ssh-tunnel-process ok")
+  (while (not (zerop (call-process "/usr/bin/ssh" nil "*try*" t 
+				   "-p" "8023" "localhost" "date")))
+    (message "waiting for aquilesnuevo tunnel, %s" (current-time-string))
+    (sleep-for 1))
+  (message "process aquilesnuevo-ssh-tunnel-process ok"))
+;;
+(setq auto-mode-alist (cons '("^mozex\\.textarea\\..*\\.txt$" 
+			      . longlines-mode) auto-mode-alist))
+;;;================================================================
+;;; Some util math expressions
+(setq *PI* (* 2.0 (asin 1.0)))
+;;;================================================================
+;;; To customize `grep'
+;;;
+(set-variable 'grep-command "grep -nie ")
+(setq ange-ftp-ftp-program-name "nftp.pl")
+;;;================================================================
+;;;   HIDESHOW
+;; (hs-minor-mode)
+(load-library "hideshow")
+(load-library "hs-modif")
+;;;================================================================
+;;;   HYPER-JUMP
+(require 'hypj)
+;;;================================================================
+;; Site specific initialization
+(cond ((mstorti)
+       (calendar)
+       (mark-diary-entries)
+       (load-desktop)
+       (make-frame)
+       (setq visible-bell t)
+       (cond ((minerva) 
+	      (gnus)
+	      (require 'w3m-load)
+              (dia)))
+       (cond ((in-host "prandtl") 
+              (start-ssh-tunnel)
+              (dia)))
+       (cond ((spider)
+	      (require 'w3m-load)
+	      (start-ssh-tunnel)
+              (dia)))))
+;;;================================================================
+;; Para que agregue un newline al final de todos los archivos
+;;
+(progn 
+  (setq ps-paper-type 'a4)
+  (setq ps-top-margin -30)
+  (setq ps-bottom-margin 130)
+  (setq ps-left-margin 130)
+  (setq ps-right-margin -30))
+;;
+;; Para marcar y copiar desde Emacs (en modo grafico) a una xterm
+;(setq selection-coding-system "raw-text-unix")
+(setq selection-coding-system "iso-8859-1")
+
+(message "setting require-final-newline to 't...")
+(setq-default require-final-newline t)
+(message "done.")

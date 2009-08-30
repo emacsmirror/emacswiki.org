@@ -1,0 +1,47 @@
+BufferMenu has various options to sort the listing of buffers.  According to the EmacsManual.
+
+: ''The buffers are listed in the order that they were current; the buffers that were current most recently come first.''
+
+What the manual fails to mention is that you can change the sorting with `M-x Buffer-menu-sort'.
+
+; `M-2 M-x Buffer-menu-sort': Sort by buffer ''name''.
+; `M-3 M-x Buffer-menu-sort': Sort by buffer ''size'' (ascending).
+; `M-4 M-x Buffer-menu-sort': Sort by buffer ''mode'' name.
+; `M-5 M-x Buffer-menu-sort': Sort by buffer ''file'' name.
+
+To permanently customize the listing order of buffer menu, set `Buffer-menu-sort-column'.  For example, use the following to automatically sort by column Mode.
+
+   (setq Buffer-menu-sort-column 4)
+
+[new]
+You can easily sort on any column, in both directions, if you use BufferMenuPlus. If you instead use the vanilla BufferMenu, you can still sort the list in a couple of ways. -- DrewAdams
+
+=== Sort by Buffer Name ===
+
+If your buffer list becomes too disorganized, you can sort it using this function:
+  
+  (defun sort-buffers ()
+    "Put the buffer list in alphabetical order."
+    (interactive)
+    (dolist (buff (buffer-list-sorted)) (bury-buffer buff))
+    (when (interactive-p) (list-buffers))
+    )
+  
+  (defun buffer-list-sorted ()
+    (sort (buffer-list) 
+  	(function
+  	 (lambda
+  	   (a b) (string<
+  		  (downcase (buffer-name a))
+  		  (downcase (buffer-name b))
+  		  )))))
+
+and bind it with
+
+  (global-set-key "\M-b"    'sort-buffers)
+
+[new]
+An extension like this became obsolete with Emacs 22.
+
+----
+CategoryBufferSwitching

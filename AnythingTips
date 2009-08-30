@@ -1,0 +1,106 @@
+== Configuration by Users ==
+
+RubikitchAnythingConfiguration is my anything configuration. -- [[rubikitch]]
+
+See also Lisp:AnythingConfigThierryVolpiatto.el
+
+AndyStewart has added some cool extensions : Lisp:anything-extension.el
+
+== Tips ==
+
+=== Only existing files in "File Name History" ===
+
+anything.el defines "File Name History" by default, personally, I don't want to see non-existant files (I branch loads) so I just use this to modify the default:
+
+<pre>
+;; have file name history keep out non-existant files
+(let ((source (find-if
+               (lambda (s)
+                 (string= (cdr (assoc 'name s)) "File Name History"))
+               anything-sources)))
+  (setcdr (assoc 'candidates source)
+          (lambda ()
+            (remove-if-not 'file-exists-p file-name-history))))
+</pre>
+
+- [[PhilJackson]]
+
+
+=== Stop frame from repositioning (eg. in Aquamacs fullscreen mode) === 
+When using M-x aquamacs-toogle-full-frame, and then M-x anything, the frame position is shifted some pixels to the left, which hides part of the frame. If you don't want this to happen, simply put
+
+  (setq fit-frame-inhibit-fitting-flag t)
+
+in your .emacs.
+
+=== Show completions in a separate frame ===
+This code creates an extra frame when invoking anything. It's not that sophisticated as I'm just learning elisp. I have configured my window manager to show this frame centered. it would probably be nice if this can be done by emacs. I also tried to set _NET_WM_STATE_SKIP_TASKBAR via x-send-client-message, but it seems it needs to be send from the frame that should be changed (or at least it doesnt work with my wm otherwise)
+<pre>
+(defvar anything-frame nil)
+
+(defun anything-initialize-frame ()
+  (unless (and anything-frame (frame-live-p anything-frame))
+    (setq anything-frame (make-frame '((name . "*Anything*") 
+				       (width . 80) 
+				       (height . 40)))))
+  (select-frame anything-frame)
+
+  (set-window-buffer (frame-selected-window anything-frame) 
+		     (get-buffer-create anything-buffer)))
+
+(defun anything-hide-frame ()
+  (when (and anything-frame (frame-live-p anything-frame))
+    (iconify-frame anything-frame)))
+
+(add-hook 'anything-after-initialize-hook 
+	  'anything-initialize-frame)
+
+(add-hook 'anything-cleanup-hook 
+	  'anything-hide-frame)
+</pre> 
+
+-HannesJanetzek
+
+== Implemented ==
+
+=== Start anything with the symbol at point ===
+
+The following function launches anything with a default search of the symbol at point (using thing-at-point). A "symbol" is an extended word. I attach anything to F11 and anything-at-point to shift-F11.
+
+<pre> 
+(defun anything-at-point ()
+  "Start anything with the symbol at point"
+  (interactive)
+  (anything nil (thing-at-point 'symbol)))
+(global-set-key [\S-f11] 'anything-at-point)
+</pre> 
+
+[new:rubikitch:2009-03-23 19:06 UTC]
+This feature is already implemented in the latest version.
+Bind `anything-at-point' instead of `anything' and execute C-u M-x anything-at-point.
+
+-- [[rubikitch]]
+
+=== Testing Sources ===
+[new:AndyStewart:2009-02-24 13:45 UTC]
+This code have add in Lisp:anything-config.el -- AndyStewart
+
+<code>anything-test-sources</code> inserts <code>setq</code>s for all <code>anything-source-*</code>.
+It will facilitate testing sources. -- [[rubikitch]]
+
+  (defun anything-test-sources ()
+    (interactive)
+    (switch-to-buffer "*scratch*")
+    (goto-char (point-max))
+    (insert "\n")
+    (save-excursion
+      (insert 
+       "(setq anything-sources-old anything-sources)\n"
+       "(setq anything-sources anything-sources-old)\n"
+       (mapconcat (lambda (sym) (format "(setq anything-sources (list %s))" sym))
+                  (apropos-internal "^anything-c-source" #'boundp)
+                  "\n"))))
+
+----
+[[Anything]]
+

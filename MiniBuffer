@@ -1,0 +1,12 @@
+The '''[::minibuffer]''' is a special [[Buffer]] for entering [[Command]]s or input arguments to commands.  It appears either in a separate [[Frame]] or at the bottom of each frame.
+
+In many respects, the minibuffer is a buffer like any other: You can edit the text you are inputting there. Most editing [[KeySequence]]s are available for this.
+
+Everything you enter in the minibuffer (commands, input arguments) is added to a ''MinibufferHistory''. You can retrieve inputs from minibuffer histories to edit and reuse them.
+
+To cancel whatever you're doing in the minibuffer, use `C-g'.
+
+Sometimes, the area where you input commands is used to display informative messages. When this area is used this way, it is called the '''EchoArea''', not the minibuffer.
+
+----
+CategoryGlossary

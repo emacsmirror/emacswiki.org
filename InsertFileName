@@ -1,0 +1,42 @@
+Code to insert a file name using Emacs's file name completion.
+
+  (defun my-insert-file-name (arg filename)
+    "Insert name of file FILENAME into buffer after point.
+  Set mark after the inserted text.
+
+  Prefixed with \\[universal-argument], expand the file name to
+  its fully canocalized path.
+
+  See `expand-file-name'."
+    ;; Based on insert-file in Emacs -- ashawley 2008-09-26
+    (interactive "*P\nfInsert file name: ")
+    (if arg
+	(insert (expand-file-name filename))
+      (insert filename)))
+
+Running
+
+  M-x my-insert-file-name ~/.emacs RET
+
+will insert the file name as it appears in the MiniBuffer.
+
+If you want the full path to the file, you can have it "expanded" with a PrefixArgument.
+
+Running
+
+  C-u M-x my-insert-file-name ~/.emacs RET
+
+will insert
+
+  /home/username/.emacs
+
+into the buffer.
+
+Based on a [http://rlazo.org/blog/entry/2008/sep/13/insert-a-path-into-the-current-buffer/ blog post]  by RodrigoLazo.
+
+----
+See also CompleteFileName, FindFileAtPoint.
+
+----
+CategoryEditing
+CategoryFiles

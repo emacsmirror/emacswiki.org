@@ -1,0 +1,56 @@
+{{{
+;; rcirc-othmar.el -- replace the text of /dim nicks' text with nonsense
+;; rcyeske@gmail.com 20090525
+
+(defvar rcirc-othmar-word-lists
+  '(("wah" "wahh" "wa-wah" "wa" "wahh")
+    ("mi" "mii" "mimi")
+    ("oink")
+    ("uh" "ugh" "uhuh" "huh")
+    ("bork")
+    ("foo" "bar" "baz")
+    ("moo" "mooo")
+    ("ha" "he" "haha" "lol")
+    ("omg" "afaik" "ttyl" "lol" "wtf" "sup" "k")))
+
+(defvar rcirc-othmar-random-last nil)
+
+(defun rcirc-othmar-random (l)
+  ;; (rcirc-othmar-random '("a" "b" "c"))
+  (elt l (random (length l))))
+
+(defun rcirc-othmar-sentence (sentence)
+  ;; (rcirc-othmar-sentence "the thing is the thing")
+  (with-temp-buffer
+    (insert sentence)
+    (rcirc-othmar-region (point-min) (point-max))
+    (buffer-substring (point-min) (point-max))))
+
+(defun rcirc-othmar-region (beg end word-list)
+  (goto-char beg)
+  (let ((endmark (set-marker (make-marker) end)))
+    (while (re-search-forward "\\w+" endmark t)
+      (replace-match (rcirc-othmar-random word-list)))))
+
+(defun rcirc-othmar-markup (sender response)
+  (when (and (or (string= response "PRIVMSG")
+		 (string= response "ACTION"))
+	     (member sender rcirc-dim-nicks))
+    (rcirc-othmar-region (point) (point-max) 
+			 (rcirc-othmar-nick-word-list sender))))
+
+(defun rcirc-othmar-nick-to-number (nick)
+  (apply '+ (string-to-list nick)))
+
+(defun rcirc-othmar-nick-word-list (nick)
+  ;; (rcirc-othmar-nick-word-list "rcy")
+  (elt rcirc-othmar-word-lists
+       (% (rcirc-othmar-nick-to-number nick)
+	  (length rcirc-othmar-word-lists))))
+
+(add-to-list 'rcirc-markup-text-functions 'rcirc-othmar-markup t)
+
+(provide 'rcirc-othmar)
+
+
+}}}

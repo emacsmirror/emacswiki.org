@@ -1,0 +1,50 @@
+Visual line mode is a new mode in Emacs 23 that is on by default.  According to the ##NEWS## file,
+
+    Visual Line mode provides support for editing by visual lines.
+    It turns on word-wrapping in the current buffer, and rebinds C-a, C-e,
+    and C-k to commands that operate by visual lines instead of logical
+    lines.  This is a more reliable replacement for longlines-mode.
+    This can also be turned on using the menu bar, via
+    Options -> Line Wrapping in this Buffer -> Word Wrap
+
+To use the original behavior put the following in your .emacs:
+
+    (setq line-move-visual nil)
+
+This mode will likely deprecate LongLines in a future version of Emacs.
+
+See also LineWrap.
+
+[new]
+I turned it on globally with `(global-visual-line-mode 1)' and it's really useful. But I also use iswitchb which shows the buffer list in multiple lines in the minibuffer if there are lots of open buffers. That's how I like it. The problem is visual line mode wraps lines in the minibuffer too which is not good, because it breaks the nice iswitchb display.
+
+Is there a way to turn it on globally, but disable it in the minibuffer? I tried this, but it didn't seem to do the trick:
+
+
+    (add-hook 'minibuffer-setup-hook (lambda ()
+                                       (visual-line-mode -1)))
+
+-- [[Anonymous]]
+[new]
+You may want to ask [[help-gnu-emacs]].  An conflict between global visual line mode and Iswitchb may be a bug.
+
+Concerning your workaround(?), note that `iswitchb-minibuffer-setup-hook' may be more appropriate, and you may also want to just try setting `line-move-visual' to nil, then setting it back with `minibuffer-exit-hook'.  So something along the lines of.
+
+    (add-hook 'iswitchb-minibuffer-setup-hook
+	      (lambda ()
+		(setq line-move-visual nil)))
+    
+    (add-hook 'minibuffer-exit-hook (lambda ()
+				      (setq line-move-visual t)))
+
+This is just an untested guess on what to also try, so no guarantees that it will work. -- AaronHawley
+
+[new]
+
+Tried your suggestion. Unfortunately, it doesn't help. The problem is the same.
+
+----
+CategoryEditing
+CategoryFilling
+CategoryModes
+

@@ -1,0 +1,49 @@
+Les outils pour le débogage peuvent être trouvés dans CategoryDebug (en).
+
+Si vous recherchez une interface avec un utilitaire externe qui n'est pas
+directement en rapport avec la programmation, allez plutôt 
+ CategoryExternalUtilities (en).
+
+Ceci est une tentative pour regrouper les outils qui aident le programmeur à devenir plus productif lorsqu'il travaille sur des programmes écrits en  C,
+C++, Java, etc.  Cette catégorie avait initialement pour but de regrouper des informations sur les navigateurs de code source.
+
+Cette  page mentionne les outils avec une courte description. Si plus d'informations sont disponibles, cette information devrait être déplacée sur une page qui lui est dédiée.
+ 
+Voir aussi: [[EmacsNiftyTricks#Programming]] (en)
+
+Examiner le code:
+
+* JavaDevelopmentEnvironmentFrançais  -- les outils indispensables pour le programmeur Java
+** TexiDoclet (en) -- génère la documentation Java au format info
+* ObjectOrientedBrowser (en) -- supporte C++, Java, Python, et quelques autres langages
+* EmacsBrowse (en)-- plus simple que ObjectOrientedBrowser (en), mais livré avec Emacs
+* SpeedBar (en) -- fournit une vue alternative de fichiers sources individuels
+* EmacsCodeBrowser (en)-- fournit des vues des répertoires et des fichiers, un peu amélioré par rapport à SpeedBar (en), et dans la même frame.
+* ConnectedGraphEditor (en) (COGRE) -- une bibliothèque de base pour éditer et manipuler des graphes connectés.
+
+Éditer le code source:
+
+* CodeBeautifying (en)-- ré-indente le code et les commentaires.
+* ElDoc (en)-- affiche la liste des arguments des fonctions dans la zone d'écho
+* ExpandMemberFunctions (en)-- étend les fonctions membres à partir d'un fichier d'en-tête C++ dans un fichier source C++
+* RefactoringBrowser (en) -- un navigateur propriétaire pour le refactoring
+* EmergeDiff (en)w -- interface graphique pour "diff"
+
+Rechercher et indexer le code source:
+
+* EmacsTags (en) (etags) -- trouver facilement l'emplacement des identifiants dans les fichiers sources, basé sur un fichier de tag (TagFile (en))
+** BuildTags (en) -- comment créer les fichiers TAGS
+* ExuberantCtags (en) (ctags) -- supporte plus de langages et d'editeurs que EmacsTags
+* CScopeAndEmacs (en) -- recherche rapidement l'endroit où un symbole est défini, où il est appelé etc...
+* IdUtils (en) -- base de données des identifiants dans le code
+
+Divers:
+
+* SmartCompile (en) -- un mode `compile' amélioré
+* ModeCompile (en) -- un autre
+* MajorComint (en) -- associer un processus comint à un mode majeur particulier
+* AsciiTable (en) -- une simple table des caractères ASCII 
+* AsciiMode (en) -- affiche le code ASCII.
+* PrettyLambda (en) -- un moyen pour utiliser le charactère lambda dans un mode pour scheme
+
+This page is also available in english : English:CategoryProgrammerUtils

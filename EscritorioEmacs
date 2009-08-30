@@ -1,0 +1,27 @@
+=Tu emacs personalizado accesible desde cualquier parte mediante ssh=
+
+Lanza "screen -U -A emacs" en una maquina y luego accede a ella con el cliente ssh putty ejecutado screen -r.
+
+Configuracion de putty:
+
+ Window-Translation-Received data assumed to be in which character set=UTF8
+ Connection-Enable compression=v
+
+Algunas aplicaciones del escritorio remoto:
+
+ Mensajeria: Irc y Msnmessenger (Erc conectado a bitlbee)
+
+ Correo: Rmail, ssmtp, fetchmail y procmail.
+
+ Web y RSS: W3m y Newstricker
+
+ Agenda: Diary y calendar
+
+ Calculos: Calc
+
+ Descargas p2p: Mldonkey.el
+
+Ideas para futuras utilidades:
+ 
+Se podria aumentar las funcionalidades mediante bots a los que se les envie peticiones desde msn o irc. De esta manera podemos la informacion desde diferentes protocolos de manera homogenea.
+

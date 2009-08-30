@@ -1,0 +1,6 @@
+The file Lisp:ediff-url.el contains the function ediff-url that compares the content of the current buffer with a web url.
+
+This is also distributed as part of [NxhtmlMode nXhtml] where you find the latest version.
+
+----
+EdiffMode

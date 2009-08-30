@@ -1,0 +1,41 @@
+* BrowseUrl -- Browse URLs in any web browser
+
+== Browse the Web in Emacs ==
+
+* [[w3]] -- the complete web browser written in Emacs Lisp
+* EmacsWebBrowser -- a toy browser that piggybacks onto font-lock
+
+=== Browsers dependent on external programs ===
+
+* [[emacs-w3m]] -- w3m.el, a mode for w3m, an external text browser
+* [http://www.ma.utexas.edu/~jcorneli/a/elisp/nero.el nero.el] -- lynx based
+* Its possible to embedd the webkit based uzbl browser in emacs, see EmacsXembed (very alpha)
+
+== HTTP backends ==
+
+* UrlPackage -- retrieve and post to web pages, also supports many other protocols
+* HttpGet, HttpPost -- retrieve and post to web pages
+
+== Download files ==
+
+* EmacsWget -- emacs-wget, interface wget from emacs
+* DownloadFilesViaHttp -- if you do not have the UrlPackage
+
+== Render HTML ==
+
+* HtmlRendering -- using emacs text properties to render HTML simply
+
+== Bookmarks ==
+
+* WebJump -- programmable hotlist/bookmarks, can prompt for query and option parameters
+* EmacsBmkMgr -- an HTML bookmarks manager
+
+== Other ==
+
+* [[Mozilla]]
+* FireFox
+* [[Conkeror]] -- Emacsify Mozilla and Firefox
+* PrintWithWebBrowser -- preview and print with your web browser
+
+----
+CategoryHypermedia

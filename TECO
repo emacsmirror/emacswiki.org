@@ -1,0 +1,48 @@
+The '''TECO''' editor, developed at MIT and DEC, and its macro system would become the substrate for TecoEmacs.  The acronym TECO stands for "text (formerly "tape") editor and corrector".
+
+There is a teco interpreter written in elisp.  The v7 version is here: Lisp:teco.el. (thanks to - MarkTKennedy)
+See TecoInterpreterInElisp for more details. 
+
+You can find an interpreter for several os there:
+
+* http://almy.us/teco.html
+
+and an online copy of the pocket guide there:
+
+* http://zane.brouhaha.com/~healyzh/teco/TecoPocketGuide.html
+
+=TECO-MODE Discussion===
+
+Would there happen to be a teco-mode somewhere?  I frequently edit 
+scripts written in a teco dialect called delta.
+
+[new]
+I have dcl mode which i use for hacking DCL on VMS. I've also got some other
+remote VMS editing type stuff you might find useful. - TimOCallaghan
+
+[new]
+I'm confused.  I looked at the dcl-mode in CVS Emacs and the example dcl code doesn't look familiar.  I expected it to look, well, like teco.  The following is an example of delta.
+<pre>
+    :g:fix^list$
+    82J
+    :S!$?e hk ^\'
+    1a:?d hk ^\'
+    fu:lnum$ fu:spaces$ fu:save$
+    -1c 81,.x:spaces$
+    b,10x:lnum$
+    10,zx:save$ hk
+    g:spaces$
+    .<0a-32:?e hk ;'
+      -1d iD$ -1c>
+    z:?e
+      iF $ g:lnum$ 0i
+      71,32i zj 2,0I
+      h:x:edit^cmds$
+    '
+    z?e
+      ICANT FIX LINE #$ g:lnum$ ht
+      g:save$ ht
+    '
+    hk
+    fo:lnum$ fo:spaces$ fo:save$
+</pre>

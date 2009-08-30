@@ -1,0 +1,45 @@
+An Emacs buffer must be in exactly one [[major mode]]. It might also be in one or more '''[::minor mode]s''' that provide additional functionality. 
+
+A minor mode is often appropriate for use with more than one major mode. 
+A minor mode sometimes adds functionality that is orthogonal to that provided by the major mode.
+
+For example, font-lock (minor) mode provides syntax-sensitive highlighting; it can be used with most major modes to provide appropriate highlighting -- see EnablingFontLock.
+
+Most minor modes have a command that turns them on and off. For example:
+
+* `delete-selection-mode' -- see DeleteSelectionMode
+* `auto-fill-mode' -- see AutoFillMode
+* `font-lock-mode' -- see EnablingFontLock
+* `line-number-mode' -- see LineNumbers
+
+
+
+== Discussion ==
+
+[new]
+How do I check whether a given minor mode is active?
+
+[new:DrewAdams:2009-02-25 15:08 UTC]
+Test the value of the mode variable. Example: ##(if delete-selection-mode ...)##
+
+[new:rubikitch:2009-02-25 15:15 UTC]
+But some minor modes don't have variable. eg. auto-fill-mode. -- [[rubikitch]]
+
+[new:DrewAdams:2009-02-25 17:45 UTC]
+True. I was going to say "File a bug", but checking the code defining `auto-fill-mode' I see this comment:
+
+<pre>
+(put 'auto-fill-function :minor-mode-function 'auto-fill-mode)
+;; FIXME: turn into a proper minor mode.
+;; Add a global minor mode version of it.
+(defun auto-fill-mode (&optional arg)
+...
+</pre>
+So I guess the answer is: (1) file a bug, (2) volunteer to fix the code. ;-) -- DrewAdams
+
+[new:DrewAdams:2009-02-25 18:03 UTC]
+I filed a bug: [http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=2470|#2470]. -- DrewAdams
+
+----
+CategoryGlossary
+

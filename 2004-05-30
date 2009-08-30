@@ -1,0 +1,19 @@
+Just read [http://www.catb.org/~esr/writings/taoup/html/ch15s08.html Combining Tools with Emacs] in EricRaymond's [http://www.catb.org/~esr/writings/taoup/ The Art of Unix Programming].
+
+: The Emacs-enabled development style trades away some capabilities of advanced IDEs, like graphical views of program structure. But those are frills. What Emacs gives you in return is flexibility and control. You're not limited by the imagination of the IDE designer: you can tweak, customize, and add task-related intelligence using Emacs Lisp. Also, Emacs is better at supporting mixed-language development than conventional IDEs. -- ESR
+
+We should write some more about this.  Starting points are probably
+CategoryExternalUtilities, CollectionOfEmacsDevelopmentEnvironmentTools,
+ProgrammingWithEmacsSetupExamples, CategoryProgrammerUtils, ObjectOrientedBrowserNotes, EmacsCodeBrowser, and others...
+
+-- AlexSchroeder
+
+This is an active interest area.  However, the response may be that, for all you can find emacs extensions to do everything but show up at meetings for you, these extensions are not accepted in the stock distribution.
+
+What is the procedure for that?
+
+--ChristopherSmith
+
+Sometimes extensions are not accepted into main line.  Do you have a particular example in mind?  Since we have everything from Tetris to Gnus as part of Emacs, I can think of very little that it actually ''not'' part of Emacs.
+
+-- AlexSchroeder

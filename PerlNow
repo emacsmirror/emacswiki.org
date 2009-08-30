@@ -1,0 +1,29 @@
+perlnow.el is a package that fills in some of the existing gaps in emacs support for 
+developers working in the [PerlLanguage perl] language:
+
+http://obsidianrook.com/perlnow/
+
+Features of perlnow.el:
+
+* makes heavy use of the template.el package (TemplatesMode) to speed up the initial creation of perl code 
+of various sorts (scripts, proceedural modules, object-oriented modules and automated tests). 
+
+* makes it eaisier to use the compile/next-error features of emacs by supplying default run commands 
+that are more likely to be suitable for perl code.  
+
+* re-uses these buffer-local run commands (which are also user-modifiable on the fly) when running the perl debugger. 
+
+* encourages the creation of test files by automatically applying some naming and location conventions.
+
+Limitations: 
+
+perlnow.el was developed under Gnu Emacs 21.  There have been reports of difficulties with using it under xemacs.
+
+== Related Pages == 
+
+PerlLanguage -- suggestions for perl programmers using emacs.
+
+== User experiences with perlnow.el == 
+
+<I>Please fill-in any comments you might have...</I>
+

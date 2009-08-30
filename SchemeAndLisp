@@ -1,0 +1,61 @@
+: <krystal2> what are the differences between comonlisp, scheme and elisp?
+: * datamatrix sits back to watch
+
+[[forcer]], [[KingNato]], [[Khmar]], [[SuperBiskit]], and others reply:
+
+EmacsLisp has DynamicScoping by default, [[Scheme]] and CommonLisp
+don't. That's probably the biggest difference.
+
+[[SuperBiskit]]:
+If closures and dynamic binding in CL isn't DynamicScoping, I don't know what would be. Or do we have a difference of definition?
+
+Emacs Lisp and Common Lisp think that (eq nil ()), Scheme has seperate
+values for boolean-false and empty-list.
+
+In Emacs Lisp and Common Lisp, functions and variables have two
+different namespaces, while in Scheme they have the same.
+
+[[SuperBiskit]]:
+Strictly speaking, not quite true in CL. ONE symbol may be bound to a function, to a (variable) value, OR TO BOTH.  
+<pre>
+(defun DUALUSE () (format t "DUALUSE as a function~&"))=>DUALUSE
+(defvar DUALUSE 1.618) =>DUALUSE
+(eq DUALUSE DUALUSE) => t
+DUALUSE => 1.618 ; i.e. the variable binding
+(DUALUSE) => DUALUSE as a function ; i.e. the function binding
+"DUALUSE as a function" ;; Printed once by FORMAT, also result of eval
+</pre>
+
+The Emacs Lisp byte-compiler does not eliminate tail calls (a type of
+compiler optimization which allows tail-recursive algorithms to run in
+constant stack space). Common Lisp does not require tail call
+elimination, but many CL implementations will happily perform this
+optimization for you. The Scheme standard requires Scheme
+implementations to eliminate tail calls (which Schemers refer to as
+"proper tail recursion").
+
+: See ConcurrentEmacs for some related discussion.
+
+Common Lisp has a standard module system. Scheme has several
+non-standard ones (usually, implementation-dependent), but the draft
+of R6RS includes one. Emacs Lisp has no
+real module system.
+
+Scheme is much smaller then Common Lisp; Common Lisp has more library
+features, but also a much longer language reference.
+
+Common Lisp has a standard object system (CLOS). Scheme has several
+non-standard ones (some portable). Emacs Lisp has a single non-standard one
+[[EIEIO]]. (A Schemer would consider this to be part of the library,
+btw)
+
+Scheme favors functional programming over imperative programming, but
+doesn't make the latter impossible. CL doesn't really favor one. Emacs Lisp
+makes functional programming difficult to impossible.
+
+Other than that, the differences are mostly syntactic.
+
+----
+CategoryCode
+CategoryHelp
+LispLispLisp

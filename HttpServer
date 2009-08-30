@@ -1,0 +1,17 @@
+httpd.el was originally written by EricMarsden. See EmacsHttpd for the original.
+
+
+JohnWiegley posted version 1.0 as:
+: <em>2003-11-14 (1.0): This customized version of [ftp://ftp.newartisans.com:/pub/emacs/httpd.el httpd.el] is always current, plus whatever other modifications emacs-wiki.el or httpd-serve need.</em>
+
+
+httpd.el is an HTTP server embedded in the Emacs. It supports GET and HEAD requests for static and dynamic content. (supporting POST should be easy by stealing code from CommonGatewayInterface above).
+
+Note the following if you use Emacs version 21.4 or lower: Since Emacs doesn't support server sockets, you need to cheat a little and run it from a service such as tcpserver or inetd. You can get better performance by running a proxy server which forwards requests to a persistent emacs instance using gnuserv; see the commentary for details. Version 0.4, 2001-05-17 under GNU GPL.
+
+----
+
+[http://synthcode.com/emacs/ phase.el] is an HTTP server by AlexShinn under development, with cgi functionality and the ability to parse emacs lisp embedded in html documents.
+
+----
+CommonGatewayInterface EricMarsden EmacsHttpd

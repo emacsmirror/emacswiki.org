@@ -1,0 +1,18 @@
+This mode allows easy running of Debian apt-related software from emacs. For the emacs addicts' eyes only!! :) 
+
+You can find the package at:
+ http://www.netfort.gr.jp/~dancer/software/apt-mode.html
+
+I would like to collect a few ideas to improve this mode to get an real impressing reason for all the users not switched to emacs yet for crossing the lines... And therefor this page:
+
+* What do you like in other frontends like dselect or aptitude?
+
+: Reversed-dependencies, version specific selection and NCB (all from aptitude) -- AnonymousCoward
+
+: I would like to surf through the search-buffer and install and remove interactively packages ... shouldn't be that hard, i will try that now! -- MarioDomgoergen
+
+* What for killer features were you always wishing for?
+
+* Another ideas?
+----
+EmacsForDebian | CategoryModes

@@ -1,0 +1,19 @@
+<code>info-apropos.el</code> provides an <code>M-x info-apropos</code>
+for Emacs, the same as <code>M-x index-apropos</code> in the stand-alone
+info reader.
+
+<code>M-x info-apropos</code> searches for a string in the indexes of
+all info documents installed on the system.  This is good for finding
+references to something when you're not sure what documents might be
+relevant.
+
+The Emacs cvs head (which will be Emacs 22 or whatever) has adopted
+this feature, so <code>info-apropos.el</code> is only needed for Emacs
+21.
+
+Get it from the author JesperHarder at
+
+: http://purl.org/harder/
+
+----
+InfoMode

@@ -1,0 +1,6 @@
+Zmacs is an Emacs for MIT-derived Lisp machines.  Initially it was called [[ZWEI]] and was written in ZetaLisp.  Later, KentPitman ported it to CommonLisp.
+
+A copy of Zmacs' reference manual from the TI Explorer [WikiPedia:Lisp_Machine Lisp machine] is available at http://bitsavers.org/pdf/ti/explorer/2243192-0001A_Zmacs_Jun87.pdf (15MB).
+
+----
+CategoryHistory EmacsImplementations

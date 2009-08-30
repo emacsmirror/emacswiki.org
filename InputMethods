@@ -1,0 +1,64 @@
+Input Methods allow you to enter characters that are not supported by your keyboard.
+
+* 'C-x C-m C-\' or `M-x set-input-method' or switch to a new input method.
+* 'C-h C-\' or `C-h I' to describe the current input method.
+* 'C-\' to toggle the input method on and off
+
+Emacs should also work correctly with appropriate XIM input methods under X.
+
+An obsolete way of entering accented characters is '''iso-accents-mode'''.
+These days, you should use the input-method `latin-1-prefix' instead.
+Both will make accent characters combine with the following characters, so
+that you can type `" u' to achieve `ü', for example.
+
+An even stranger way of entering accented characters is the '''C-x 8 keymap'''.
+See WritingIsoLatinOne.
+
+Another way is to use QuotedInsert with `C-q'.
+
+To activate the input method for a specific mode put the following line in your config file:
+
+   (add-hook 'text-mode-hook 'toggle-input-method)
+
+The input method is then automaticaly activated for files
+which open in text mode.
+
+To activate the input method on a per-buffer basis.
+First put the following lines in the .emacs:
+
+  (set input-activate nil)
+  (add-hook 'find-file-hook
+            (lambda ()(if (eq input-activate t) (toggle-input-method))))
+
+Then put the following line at the beginning of a file:
+
+  -*- input-activate: t -*-
+
+The input method will be activated for this file as soon as it is loaded.
+
+These are some additional input methods that do not come with Emacs:
+* Georgian (a bit different than the one that comes with Emacs): Lisp:georgian.el
+* Armenian: Lisp:armenian.el
+* Neo-Akkadian Cuneiform: Lisp:akkadian.el
+* Glagolitic: Lisp:glagolitic.el
+* Coptic: Lisp:coptic.el
+
+It's convenient for people who speak in korean or japanese or etc... to use only the internal emacs input method ([[mule]]) without scim, nabi, Microsoft IME, etc...
+
+For X Windows, add the following line to your ~/.Xresources file (if not exist, make it)
+
+  Emacs.useXIM: off
+
+For MS Windows, you may need to use DisableImeforEmacs.
+
+[new]
+*Question:*
+Is there a way to synchronize OS keyboard layout (ubuntu in my case) with Emacs input method?
+[new]
+It is not convenient to use different bindings for switching languages inside and outside of Emacs...
+----
+
+'''See Also:''' ChangingCursorDynamically to automatically change the TextCursor color when you are using an input method. This makes it easy to tell if an input method is in use.
+
+------
+CategoryInternationalization

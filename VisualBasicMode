@@ -1,0 +1,52 @@
+visual-basic-mode.el to be found at http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el, which is in the ElispArea (so should the conversation re availability be deleted?)
+See also VbDotNetMode -- TimAnderson
+
+The HtmlHelperMode homepage has a link to a VB mode.  There seems to
+be a newer version out, however.  KevinWhitefoot has extended
+FredWhite's original visual basic mode. The new version also
+understands vbg and vbp files, and automatically loads all associated
+files.
+
+* http://www.tardis.ed.ac.uk/~skx/win/NTEmacsFAQ/NTEmacs-split218.html
+
+[BROKEN LINK: this link now gets re-directed to Steve Kemp's new homepage, no VB mode there - guess I'll have to write my own - *sigh*]
+
+The sources are on the web archive : 
+http://web.archive.org/web/20020616003942/http://www.tardis.ed.ac.uk/~skx/win/NTEmacsFAQ/NTEmacs-split218.html
+
+: Did you ask him? -- AlexSchroeder
+
+: http://www.xemacs.org/Download/elispPackages.html refers to http://ftp.gnu.org/gnu/windows/emacs/docs/ntemacs/contrib/visual-basic-mode.el [BROKEN LINK 2009-02-25]. Is that a good replacement for AFM broken link?  -- AdrianAichner
+
+The gnu.org site currently has no such directory and the xemacs site just points back here.  
+The site http://members.fortunecity.com/kwhitefoot/MySoftware.html and its mirrors seem to be adware bait sites.  
+
+I did find 2 links that, for the moment seem to be intact.  
+http://gnome.dti.ad.jp/.1/unix/editor/xemacs/Attic/patches/visual-basic-mode-20000313/ [BROKEN LINK 2009-02-25] and  http://www.rediris.lkams.kernel.org/pub/gnu/windows/emacs/docs/ntemacs/contrib/ [BROKEN LINK 2009-02-25] -- 2004/06/02 [[Rick Bielawski]]
+(above kernel.org url 404's -- 2004/09/17 [[John Sequeira]])
+
+The NT Emacs FAQ (see OnlineResources) has more info on Emacs and Microsoft.
+
+== changes to make it work on emacs 22 ==
+
+You have to make 2 little changes to make it work on a emacs 22
+running on a tty.
+
+One is a broken regexp, the other is to remove a check for emacs 19.
+Contact me if you want it.
+
+JoakimVerona
+
+== VBScript REPL ==
+
+You can use this mode to edit VBScript, although the keywords are quite
+a bit different.  If you're used to scripting in a REPL environment then
+VbsReplMode might be what you're looking for. -- CharlesSebold
+
+==Old Emacs Things for MS Windows==
+The ftp directory for old things have been moved to
+http://ftp.gnu.org/pub/old-gnu/emacs/windows/docs/ntemacs/contrib/ 
+where you can find for example visual-basic-mode.el
+
+----
+CategoryModes

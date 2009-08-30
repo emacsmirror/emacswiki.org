@@ -1,0 +1,77 @@
+Artist is an Emacs lisp package that allows you to draw lines,
+rectangles, squares, poly-lines, ellipses and circles by using your
+mouse and/or keyboard. The shapes are made up with the ascii
+characters |, -, / and \.
+
+It is part of Emacs and can also be gotten at
+http://www.lysator.liu.se/~tab/artist/.
+
+You will use the mouse for drawing and painting if you are running Emacs in an X-window, like in other graphics programs. 
+
+But you can use artist-mode also, when you are running in a terminal. To see how it works type
+ M-x artist-mode RET
+ C-c C-a p RET
+ RET
+and move the TextCursor around -- you are drawing a poly-line.
+
+Look at the artist-mode documentation (C-h m RET) for full explanation.
+----
+
+[new:BasKok:2007-05-16 20:27 UTC] A screencast says more than a thousand words:
+http://www.cinsk.org/emacs/emacs-artist.html
+-- BasKok
+
+----
+Beta version of xemacs port could be found at Lisp:artist-xmas.el
+
+[new:StefanKamphausen:2004-11-26 10:07 UTC] What exactly is the beta in it?  It seems to work quite well.  One minor issue I noticed is that when you have line numbers turned on via setnu-mode the point where drawing takes place is shifted by the appropriate space to the left of the MousePointer. -- StefanKamphausen
+
+It's beta because it is not checked well. Function artist-mouse-draw-poly still has some problems. I'll try to fix your issue when I have time.
+
+----
+[new]
+= Integration with ido =
+I use [[InteractivelyDoThings]] to change drawing operations and settings:
+
+    ;;; integrate ido with artist-mode
+   (defun artist-ido-select-operation (type)
+     "Use ido to select a drawing operation in artist-mode"
+     (interactive (list (ido-completing-read "Drawing operation: " 
+                                             (list "Pen" "Pen Line" "line" "straight line" "rectangle" 
+                                                   "square" "poly-line" "straight poly-line" "ellipse" 
+                                                   "circle" "text see-thru" "text-overwrite" "spray-can" 
+                                                   "erase char" "erase rectangle" "vaporize line" "vaporize lines" 
+                                                   "cut rectangle" "cut square" "copy rectangle" "copy square" 
+                                                   "paste" "flood-fill"))))
+     (artist-select-operation type))
+
+   (defun artist-ido-select-settings (type)
+     "Use ido to select a setting to change in artist-mode"
+     (interactive (list (ido-completing-read "Setting: " 
+                                             (list "Set Fill" "Set Line" "Set Erase" "Spray-size" "Spray-chars" 
+                                                   "Rubber-banding" "Trimming" "Borders"))))
+     (if (equal type "Spray-size") 
+       (artist-select-operation "spray set size")
+       (call-interactively (artist-fc-get-fn-from-symbol 
+			    (cdr (assoc type '(("Set Fill" . set-fill)
+					       ("Set Line" . set-line)
+					       ("Set Erase" . set-erase)
+					       ("Rubber-banding" . rubber-band)
+					       ("Trimming" . trimming)
+					       ("Borders" . borders)
+					       ("Spray-chars" . spray-chars))))))))
+
+   (add-hook 'artist-mode-init-hook 
+	     (lambda ()
+	       (define-key artist-mode-map (kbd "C-c C-a C-o") 'artist-ido-select-operation)
+	       (define-key artist-mode-map (kbd "C-c C-a C-c") 'artist-ido-select-settings)))
+
+
+
+----
+Note: If using the keyboard to draw, use C-u RET to stop drawing.
+----
+See Also: PictureMode
+----
+CategoryModes
+MultimediaModes

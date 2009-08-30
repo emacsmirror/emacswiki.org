@@ -1,0 +1,79 @@
+Hi ! My name is Marek Buras. My friends call me Cyfron. I live in Poland. Currently studying physics at University of Silesia.
+
+I'm Emacs user. I use GNU Emacs as my every day work environment.  I read mail with GNUs, surf web pages with w3m (sometimes with Mozilla) and chatting with erc (mzkb on #emacs@irc.freenode.net)
+
+I like listening music. Of course GNU Emacs is my favourite media player :) I wrote some functions to control alsaplayer from GNU Emacs. This is what I put to my .emacs:
+
+<pre>
+(defun alsaplayer-enqeue (file)
+  "Enqueue file to alsaplayer playlist."
+  (interactive "FAlsaplayer add file: ")
+  (call-process "alsaplayer" nil nil nil "-e" (expand-file-name file)))
+
+(defun alsaplayer-enqeue-dired ()
+  "Enqueue file to alsaplayer playlist."
+  (interactive)
+  (call-process "alsaplayer" nil nil nil "-e" (dired-get-filename)))
+
+(defun alsaplayer-add-dired-marked-files ()
+  "Add the files marked in a dired buffer"
+  (interactive)
+  (dolist (item (dired-get-marked-files))
+  (call-process "alsaplayer" nil nil nil "-e" item)))
+
+(defun alsaplayer-go ()
+  "Start alsaplayer process with quiet option."
+  (interactive)
+  (start-process "alsaplayer" nil "alsaplayer" "-i" "daemon" "-q" "-x"))
+
+(defun alsaplayer-quit ()
+  "Quit alsaplayer process"
+  (interactive)
+  (start-process "alsaplayer" nil "alsaplayer" "--quit"))
+
+(defun alsaplayer-next ()
+  "Play next track."
+  (interactive)
+  (start-process "alsaplayer" nil "alsaplayer" "--next"))
+
+(defun alsaplayer-prev ()
+  "Play previous track."
+  (interactive)
+  (start-process "alsaplayer" nil "alsaplayer" "--prev"))
+
+(defun alsaplayer-stop ()
+  "Stop playing."
+  (interactive)
+  (start-process "alsaplayer" nil "alsaplayer" "--stop"))
+
+(defun alsaplayer-start ()
+  "Start playing."
+  (interactive)
+  (start-process "alsaplayer" nil "alsaplayer" "--start"))
+
+(defun alsaplayer-pause ()
+  "Alsaplayer play/pause command."
+  (interactive)
+  (start-process "alsaplayer" nil "alsaplayer" "--pause"))
+
+(defun alsaplayer-status ()
+  "Print status of alsaplayer in other window."
+  (interactive)
+  (call-process "alsaplayer" nil "*alsaplayer-status*" nil "--status")
+  (switch-to-buffer "*alsaplayer-status*"))
+</pre>
+
+
+----
+
+Welcome to the wiki!  -- DeepakGoel
+
+I am confused.  The hostname seems to indicate that this page was indeed deleted by Marek Buras, but the username seems to contradict this.  Do
+you have an evil little brother using your computer?  :) -- AlexSchroeder
+
+Thanks for turning this page back. Don't know what was happen. Moreover somebody has changed my homepage at republika pl and probably read my mail... I deleted all shell acounts on my box and blocked sshd. The big investigation has been begun :) -- MarekBuras
+
+Ouch.  :( -- AlexSchroeder
+
+----
+CategoryHomepage 

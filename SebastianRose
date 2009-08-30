@@ -1,0 +1,62 @@
+= .emacs =
+
+OK. Decided to rewrite this page in english (or what ever this will be:). Some comments or messages in my elisp sources might be in german language. Sorry for that.
+
+---------------------------------
+
+= Speedbar in current Frame =
+
+Something I always wanted to have in emacs - the only realy missing thing in the best of all editors. I used <code>ecb</code> for a while but that was too slow and complicated, and had many other drawbacks for me (writing cache files everywhere on my disk, consuming all my memory, slowing down everything - because of endless dependencies). OK - haven't tried that for ages... But at least I saw one thing: displaying speedbar without a separate frame is feasible and I knew one day I will have a tiny little fast and cute speedbar on the right edge of my emacs. So here it comes.
+
+*Nice*: this works in a terminal:
+
+* Screenshot: SrSpeedbarInXterm
+* Lisp:sr-speedbar.el
+
+Thanks to AndyStewart who did most of the recent work actually which made sr-speedbar what it is today. While this started out as a merely 'proof of concept', Andy added genuine usablity to it. sr-speedbar now updateds it's contents as expected and changes with the active windows contents.
+
+[new:AndyStewart:2009-01-29 11:35 UTC]
+I have write detail describe at [[SrSpeedbar]], enjoy! -- AndyStewart
+
+=== Would be nice if... ===
+
+* ...the toggle function could optionaly save the window configuration (<code>save-window-excursion</code>) and focus the speedbar. The current behaviour is to mouse centric (showing speedbar, focusing the last active window again). That way one could <code>M-x sr-speedbar-toggle</code> move point on the item desired in speedbar-window it <code>RET</code>. The item would then be focused in the last active window and the speedbar hidden. Nice on console with big fonts or on small screens. The problem is marginal when using <code>windmove</code>
+
+
+== Splashscreen showing custom key bindings ==
+
+To remember my key-bindings I use a special function to add the binding and description to a table. When my emacs starts it displays a splashscreen showing all the bindings. To review them I may press <code>C-M-k</code> at any time. The screen disappears on any key press or click, just like the emacs splashscreen does (thats where I copied the base of it).
+
+* SebastiansSplashScreenShot (this one is on windows).
+* The Lisp:CodeSplashScreen code. Contains the function <code>sr-set-global-key</code> that records the keys and theire description for me.
+
+-------------------------------
+
+== Add missing HTML-tags ==
+
+Since I use HTML all the time (doxygen, javadoc, HTML itself or Php) I defined a little function (Lisp:SrInsertHtml) to correct missing end tags. It's not working that great though but enough to turn around to work. Sorry for the name of the file but I couldn't paste the function sr-insert-html. For some reason the wiki doesn't like the code (contains HTML-tags) and I couldn't get htmlized code to be displayed correct.
+
+--------------------------------
+
+== ChangeLog uses _MTN/log if exists ==
+
+monotone [http://www.monotone.ca] is my SCMS of choice. monotone uses the file <code>_MTN/log</code> in the projects root as log-message if not empty. Lisp:sr-monotone.el defines <code>mtn-add-change-log-entry<code>. This function searches up the directory tree for <code>_MTN/log</code> and, if existent, offers that file for writing your ChangeLog entry. If the file is not found, use the default (ChangeLog).
+
+This functions still works correct, when following a symlink when changing to the projects working directory (I used <code>~/current</code> as a symlink to the project I'm currently working on). I think a small portion of this is now in <code>monotone.el</code> but I don't use that file. I prefere to keep it simple and use console for commit and the others.
+
+<pre>
+;; press F8 to add a ChangeLog entry:
+(require 'sr-monotone)
+(sr-set-global-key [(f8)]  "F8"  'mtn-add-change-log-entry "mtn-add-change-log-entry")
+</pre>
+
+--------------------------------
+
+
+== Diskussion ==
+
+[new]
+Hallo und willkommen im Wiki! Was Quelldateien anbelangt, empfehle ich diese mit Lisp:sr-monotone.el zu verlinken. Dann macht nämlich der automatische Download Link auch Sinn. Man muss nur darauf achten, dass der Seitentext mit drei Strichpunkten (statt nur zwei wie in Deinem Fall) anfängt. -- AlexSchroeder
+
+----
+CategoryHomepage

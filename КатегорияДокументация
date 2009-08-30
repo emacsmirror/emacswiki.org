@@ -1,0 +1,32 @@
+На данной странице находятся ссылки на документацию и статьи о Emacs на русском языке
+
+=== Документация о Emacs ===
+
+* Перевод руководства GNU Emacs 20.7 находится тут  http://www.linux.org.ru/books/GNU/emacs/emacs_toc.html
+
+* Перевод введения в программирование на Emacs Lisp http://xtalk.msk.su/~ott/ru/emacs/elisp-intro/elisp-intro-ru.html
+
+* Перевод GNU Emacs Refcard -- http://xtalk.msk.su/~ott/ru/emacs/ru-refcard.ps.gz  
+=== Статьи о Emacs ===
+
+* Перевод статьи "Effective Emacs" -- http://dima-exe.ru/the-effective-emacs-translation
+
+* Статья про настройку anti-spam возможностей Gnus находится по адресу http://xtalk.msk.su/~ott/ru/writings/gnus-spam/gnus-spam.html
+
+* Краткое введение в Gnus и возможности Emacs по работе с почтой и новостями можно найти на http://xtalk.msk.su/~ott/ru/writings/altlinux-gnus/index.html
+
+* Рассказ про использование средств обмена сообщениями (ICQ, Jabber, IRC, ...) в Emacs можно прочитать на http://xtalk.msk.su/~ott/ru/writings/emacs-im/emacs-im.ru.html
+
+* Рассказ про использование Emacs с системами контроля версий можно найти на http://xtalk.msk.su/~ott/ru/writings/emacs-vcs/emacs-vcs.ru.html
+
+* Бета-версия рассказа про использование Emacs для работы с TeX и LaTeX и т.п. лежит тут http://xtalk.msk.su/~ott/ru/writings/emacs-tex/emacs-tex.ru.html
+
+* Небольшое введение в GNU Emacs находится тут http://xtalk.msk.su/~ott/ru/writings/altlinux/index.html
+
+* Перевод Emacs Beginner HOWTO -- http://xtalk.msk.su/~ott/ru/linux/howto-rus/Emacs-Beginner-HOWTO.html
+
+* Перевод <nowiki>LinuxDoc+Emacs+Ispell</nowiki> HOWTO -- http://xtalk.msk.su/~ott/ru/linux/howto-rus/LinuxDoc+Emacs+Ispell-HOWTO.html
+
+* Развлекательно-познавательная статья о Emacs -- http://kulchitsky.org/rus/linux/dotemacs.html
+
+* Статья о компиляции, ECB, pcl-cvs (работе с CVS) и привязках клавиш в Emacs -- http://kulchitsky.org/rus/linux/emacs_convenient.html

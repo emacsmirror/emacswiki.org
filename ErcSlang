@@ -1,0 +1,50 @@
+If you're not good at the Internet acronym/slang stuff, here is something that might help.  Feel free to extend this list with appropriate acronyms, but please don't add things such as "asl" or "bbl", as they should be understood by most ERC users already.
+
+    (setq erc-replace-alist
+          (append erc-replace-alist
+                  '(("\\<aamof\\>"     . "As A Matter Of Fact")
+                    ("\\<afaia\\>"     . "As Far As I'm Aware")
+                    ("\\<afaiaa\\>"    . "As Far As I Am Aware")
+                    ("\\<afaic\\>"     . "As Far As I'm Concerned")
+                    ("\\<afaics\\>"    . "As Far As I Can See")
+                    ("\\<afaict\\>"    . "As Far As I Can Tell")
+                    ("\\<afaik\\>"     . "As Far As I Know")
+                    ("\\<afair\\>"     . "As Far As I Recall")
+                    ("\\<afk\\>"       . "Away From Keyboard")
+                    ("\\<aiui\\>"      . "As I Understand It")
+                    ("\\<atm\\>"       . "At The Moment")
+                    ("\\<btw\\>"       . "By The Way")
+                    ("\\<cya\\>"       . "See Ya")
+                    ("\\<dyi\\>"       . "Do It Yourself")
+                    ("\\<fwiw\\>"      . "For What It's Worth")
+                    ("\\<fyi\\>"       . "For Your Information")
+                    ("\\<gtfo\\>"      . "Get The Fuck Out")
+                    ("\\<hth\\>"       . "Hope That Helps")
+                    ("\\<iirc\\>"      . "If I Recall Correctly")
+                    ("\\<imho\\>"      . "In My Humble Opinion")
+                    ("\\<imnsho\\>"    . "In My Not So Humble Opinion")
+                    ("\\<imo\\>"       . "In My Opinion")
+                    ("\\<irl\\>"       . "In Real Life")
+                    ("\\<l[e3]+t\\>"   . "Elite")
+                    ("\\<lol\\>"       . "Laughing Out Loud")
+                    ("\\<n[0eow]+b\\>" . "Newbie")
+                    ("\\<np\\>"        . "No Problem")
+                    ("\\<rot?fl\\>"    . "Rolling On The Floor Laughing")
+                    ("\\<rtfm\\>"      . "Read The Fine Manual")
+                    ("\\<stfu\\>"      . "Shut The Fuck Up")
+                    ("\\<wb\\>"        . "Welcome Back")
+                    ("\\<ymmv\\>"      . "Your Mileage May Vary"))))
+
+[new:DrewAdams:2009-05-31 18:33 UTC]
+# FWIW, these are not limited to ERC usage; they are used generally.
+
+# Google is your friend. Just type in `afaik' or whatever. Much more general, and much quicker than coming here.
+
+-- DrewAdams
+
+[new]
+True, Drew. I rather fancy the idea of automatically expanding premature expressions like "ROFL", though. :)
+
+List extended.
+
+

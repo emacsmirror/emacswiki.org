@@ -1,0 +1,23 @@
+The official MS-Windows port homepage from gnu.org is
+http://www.gnu.org/software/emacs/windows/ntemacs.html .
+Many issues concerning Emacs and MS-Windows are treated there.
+The page has also links to the precompiled binaries for MS-Windows of the current Emacs or earlier versions. 
+
+If you want precompiled binaries for the latest Emacses (version 22.1 is officially released stable; v23 is in early development phase) please see CategoryWThirtyTwo.
+
+(For example there is among several others an unofficial sourceforge project with the latest Win32 builds of emacs at http://ntemacs.sourceforge.net/. As of February 2007 they have 22.X and 23.X builds available.
+Unfortunately they do not always update their dates on the wiki page above.)
+
+== Resources ==
+
+If you want to install Emacs on MS-Windows using a simple installer, you may have a look at the following ressources:
+* [http://emacs-win.sourceforge.net/ emacs-win (portuguese)]
+* [[EmacsW32]]
+
+See CategoryWThirtyTwo for a lot more.
+
+----
+See also
+CategoryPorts
+[http://emacro.sourceforge.net/ EMacro: .emacs configuration system for Emacs]
+

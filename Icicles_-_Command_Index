@@ -1,0 +1,941 @@
+: [[image:iciclesimage]]
+
+|| '''[[Icicles]]''' || [[IciclesIndex]] || [[Icicles - Options Index]] ||
+
+----
+
+This is the command index for '''[[Icicles]]'''. Not all '''Icicles''' commands are listed here, only those those that are mentioned in EmacsWiki pages. The commands listed here are organized into two sections: those that are used mainly at the [[#top level]] and those that are executed mainly when input is being read in the [[#minibuffer]]. Commands written in '''boldface''' and preceded by "(+)" are '''Icicles''' ''multi-commands'' -- see [[Icicles - Multi-Commands]].
+
+Top-level:
+[[#A]] | [[#B]] | [[#C]] | [[#D]] | [[#E]] | [[#F]] | [[#G]] | [[#H]] | [[#I]] | [[#K]] | [[#L]] | [[#M]] | [[#N]] | [[#O]] | [[#P]] | [[#Q]] | [[#R]] | [[#S]] | [[#T]] | [[#U]] | [[#V]] | [[#W]] | [[#X]] | [[#Y]] | [[#Z]]
+
+Minibuffer:
+[[#mA|A]] | [[#mB|B]] | [[#mC|C]] | [[#mD|D]] | [[#mE|E]] | [[#mF|F]] | [[#mG|G]] | [[#mH|H]] | [[#mI|I]] | [[#mK|K]] | [[#mL|L]] | [[#mM|M]] | [[#mN|N]] | [[#mO|O]] | [[#mP|P]] | [[#mQ|Q]] | [[#mR|R]] | [[#mS|S]] | [[#mT|T]] | [[#mU|U]] | [[#mV|V]] | [[#mW|W]] | [[#mX|X]] | [[#mY|Y]] | [[#mZ|Z]]
+
+
+
+[:top level]
+== Top-Level Commands ==
+
+These are the '''Icicles''' commands that are intended to be used mainly at the top level, that is, ''not'' during minibuffer input. Most of these commands are defined in library `<tt>[[icicles-cmd.el]]</tt>'.
+
+
+
+[:A]
+==== A ====
+
+* (+) '''`a'''' -- [[Icicles - Object-Action Interaction#icicle-object-action|Object-Action Interaction]]
+
+* (+) '''`any'''' -- [[Icicles - Anything]]
+
+* (+) '''`icicle-add-buffer-candidate'''' -- [[Icicles - Defining Icicles Commands]]
+
+* (+) '''`icicle-add-buffer-config'''' -- [[Icicles - Customization and General Tips]]
+
+* `icicle-add-entry-to-saved-completion-set' -- [[Icicles - Persistent Completions]]
+
+* `icicle-add-file-to-fileset' -- [[Icicles - Persistent Completions]]
+
+* `icicle-add-region' (`##C-1 C-x C-x##') -- Save current region, adding it to `icicle-region-alist' -- [[Icicles - Multiple Regions]], [[Icicles - Search Commands, Overview]]
+
+* `icicle-add/update-saved-completion-set' -- Add or update an entry in `icicle-saved-completion-sets' -- [[Icicles - Persistent Completions]], ''[[Icicles - Key Bindings#icicle-add-update-saved-completion-set|key binding]]''
+
+* (+) '''`icicle-anything'''' -- [[Icicles - Anything]]
+
+
+[:icicle-apply]
+* (+) '''`icicle-apply'''' -- [[Icicles - Complex Completions]], ''[[Icicles - Key Bindings#icicle-apply|key binding]]''
+
+
+* `icicle-apropos' -- [[Icicles - Help on Candidates]]
+
+* `icicle-apropos-command' -- [[Icicles - Help on Candidates]]
+
+* `icicle-apropos-function' -- [[Icicles - Help on Candidates]]
+
+* `icicle-apropos-option' -- [[Icicles - Help on Candidates]]
+
+* `icicle-apropos-variable' -- [[Icicles - Help on Candidates]]
+
+* `icicle-apropos-zippy' -- [[Icicles - Help on Candidates]]
+
+
+
+
+[:B]
+==== B ====
+
+* `icicle-bbdb-complete-name' -- <tt>[[icicles-cmd.el]]</tt>
+
+* (+) '''`icicle-bookmark'''' -- [[Icicles - Defining Icicles Commands]]
+
+* `icicle-bookmark-cmd' -- Set or jump to bookmark [[Icicles - Customization and General Tips#icicle-bookmark-name-length-max|Icicles - Customization and General Tips]], [[Icicles - Key Bindings#icicle-bookmark-cmd|Icicles - Key Bindings]]
+
+* (+) '''`buffer'''' -- [[Icicles - Object-Action Interaction#icicle-object-action|Object-Action Interaction]]
+
+* (+) '''`icicle-buffer'''', (+) '''`icicle-buffer-other-window'''' (`C-x b', `C-x 4 b')
+** complete-and-exit behavior --  [[Icicles - S-RET]]
+** defining -- [[Icicles - Defining Icicles Commands]], [[Icicles - Global Filters]]
+** global filters used with -- [[Icicles - Global Filters]]
+** options affecting -- [[Icicles - Customization and General Tips]]
+** `S-delete' to kill buffer -- [[Icicles - More About Multi-Commands]]
+
+* (+) '''`icicle-buffer-config'''' -- [[Icicles - Customization and General Tips]]
+
+* (+) '''`icicle-buffer-list'''' -- [[Icicles - Defining Icicles Commands]]
+
+
+
+
+[:C]
+==== C ====
+
+
+[:clear-option]
+* (+) '''`clear-option'''' (`icicle-reset-option-to-nil')
+** defining -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-clear-option|key binding]]''
+** use -- [[Icicles - Customization and General Tips]]
+
+* `customize-apropos', `customize-apropos-faces', `customize-apropos-groups', `customize-apropos-options' -- [[Icicles - Standard Commands Redefined]]
+
+* `icicle-change-alternative-sort-order' -- ''[[Icicles - Key Bindings#icicle-change-alternative-sort-order|key binding]]''
+
+* `icicle-change-sort-order' -- [[Icicles - Sorting Candidates]], ''[[Icicles - Key Bindings#icicle-change-sort-order|key binding]]''
+
+* (+) '''`icicle-clear-history'''', (+) '''`icicle-clear-current-history'''' -- [[Icicles - History Enhancements#ClearHistoryEntries|Clearing History Entries]]
+
+* (+) '''`icicle-color-theme'''' -- [[Icicles - Defining Icicles Commands]]
+
+* (+) '''`icicle-comint-command'''' -- [[Icicles  - Other Search Commands]], [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-comint-command|key binding]]''
+
+* (+) '''`icicle-comint-search'''' (`##C-c `##' in `compilation-minor-mode-map') -- [[Icicles  - Other Search Commands]], ''[[Icicles - Key Bindings#icicle-comint-search|key binding]]''
+
+* (+) '''`icicle-command-abbrev'''' (`C-x SPC') -- [[Icicles - Multi M-x#icicle-command-abbrev|Icicles Multi M-x]], ''[[Icicles - Key Bindings#icicle-command-abbrev|key binding]]''
+
+* (+) '''`icicle-compilation-search'''' (`##C-c `##' in `compilation-minor-mode-map') -- [[Icicles  - Other Search Commands]]
+
+* (+) '''`icicle-complete-keys'''' (`S-TAB') -- [[Icicles - Key Completion]]
+
+* `icicle-complete-thesaurus-entry' (`##C-c /##') -- [[Icicles  - Completion in Other Buffers]], ''[[Icicles - Key Bindings#icicle-complete-thesaurus-entry|key binding]]''
+
+* (+) '''`icicle-completing-yank'''' -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-completing-yank|key binding]]''
+
+* `icicle-customize-apropos-options-of-type' -- [[Icicles - Help on Candidates]]
+
+* (+) '''`icicle-customize-face'''' - [[Icicles - Choose All Candidates]]
+
+* `icicle-customize-icicles-group' -- ''[[Icicles - Key Bindings#icicle-customize-icicles-group|key binding]]''
+
+
+
+
+[:D]
+==== D ====
+
+* `dabbrev-completion' (`##C-M-/##') -- [[Icicles - Completion in Other Buffers]], [[Icicles - Standard Commands Redefined]]
+
+* (+) '''`icicle-delete-file''''
+** defining -- [[Icicles - Defining Icicles Commands]]
+** use -- [[Icicles - Multi-Commands]], [[Icicles - Choose All Candidates]]
+
+* (+) '''`icicle-delete-window'''' (`C-x 0') -- ''[[Icicles - Key Bindings#icicle-delete-window|key binding]]''
+
+* (+) '''`icicle-delete-windows'''' -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-delete-windows|key binding]]''
+
+* `icicle-delete-windows-on' -- ''[[Icicles - Key Bindings#icicle-delete-windows-on|key binding]]''
+
+* `icicle-describe-file' -- [[Icicles - Help on Candidates]]
+
+* (+) '''`icicle-describe-option-of-type'''' (`C-h C-o') -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Completions]], ''[[Icicles - Key Bindings#icicle-describe-option-of-type|key binding]]''
+
+* (+) '''`icicle-directory-list'''' -- [[Icicles - Multiple-Choice Menus]]
+
+* DiredMode '''Icicles''' commands:
+
+** `icicle-dired-chosen-files', `icicle-dired-chosen-files-other-window' (`##C-M-<##' in Dired) -- [[Icicles - Candidate Sets]], [[Icicles - Dired Enhancements]]
+
+** `icicle-dired-project', `icicle-dired-project-other-window' (`##C-{##' in Dired) -- [[Icicles - Dired Enhancements]]
+
+** `icicle-dired-save-marked', `icicle-dired-save-marked-more' (`##C-M->##', `##C->##' in [[DiredMode|Dired]]) -- [[Icicles - Dired Enhancements]]
+
+** `icicle-dired-save-marked-as-project' (`##C-}##' in Dired) -- [[Icicles - Dired Enhancements]]
+
+** `icicle-dired-save-marked-persistently' (`##C-}##' in Dired) -- [[Icicles - Dired Enhancements]]
+
+** `icicle-dired-save-marked-to-variable' (`##C-M-}##' in Dired) -- [[Icicles - Dired Enhancements]]
+
+** `icicle-dired-saved-file-candidates', `icicle-dired-saved-file-candidates-other-window' (`##C-M-<##' in Dired) -- [[Icicles - Candidate Sets]], [[Icicles - Dired Enhancements]]
+
+** (+) '''`icicle-search-dired-marked''''' (`M-s' in Dired) -- [[Icicles - Dired Enhancements]]
+
+
+* (+) '''`icicle-doc''''
+** defining -- [[Icicles - Defining Icicles Commands]]
+** use -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Completions]]
+
+
+
+
+[:E]
+==== E ====
+
+* (+) '''`icicle-exchange-point-and-mark'''' (`C-x C-x') -- prefix arg provides operations on saved regions (in `icicle-region-alist') -- [[Icicles - Multiple Regions]], ''[[Icicles - Key Bindings#icicle-exchange-point-and-mark|key binding]]''
+
+* (+) '''`icicle-execute-extended-command'''' (`M-x') -- [[Icicles - Multi M-x]], ''[[Icicles - Key Bindings#icicle-execute-extended-command|key binding]]''
+
+* (+) '''`icicle-execute-named-keyboard-macro'''' (`C-x M-e') -- [[Icicles - Multi-Commands]], [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-execute-named-keyboard-macro|key binding]]''
+
+
+
+
+[:F]
+==== F ====
+
+* (+) '''`icicle-face-list'''' -- [[Icicles - Multiple-Choice Menus]]
+
+* (+) '''`file'''' -- [[Icicles - Object-Action Interaction#icicle-object-action|Object-Action Interaction]]
+
+* (+) '''`icicle-file'''', (+) '''`icicle-file-other-window'''' (`C-x C-f', `C-x 4 f') -- [[Icicles - File-Name Input]], [[Icicles - Support for Projects]], [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-file|key binding]]''
+
+* (+) '''`icicle-file-list'''' -- [[Icicles - Multiple-Choice Menus]]
+
+* (+) '''`icicle-find-file'''', (+) '''`icicle-find-file-absolute'''', (+) '''`icicle-find-file-other-window'''' (+) '''`icicle-find-file-absolute-other-window'''' 
+** defining -- [[Icicles - Defining Icicles Commands]]
+** use -- [[Icicles - File-Name Input]]
+
+* (+) '''`icicle-find-first-tag'''', (+) '''`icicle-find-first-tag-other-window'''', (+) '''`icicle-find-tag'''' (`##C-x 4 .##', `##M-.##') -- [[Icicles - Tags Enhancements]]
+
+* (+) '''`icicle-font'''' -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-font|key binding]]''
+
+* (+) '''`icicle-frame-bg'''', (+) '''`icicle-frame-fg''''  -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-frame-bg|key binding]]''
+
+* (+) '''`icicle-fundoc''''
+** defining -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-fundoc|key binding]]''
+** use -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Completions]]
+
+
+
+
+[:G]
+[:H]
+[:I]
+==== G, H, I ====
+
+* (+) '''`icicle-goto-global-marker'''', (+) '''`icicle-goto-global-marker-or-pop-global-mark'''' (`C-x C-SPC') -- ''[[Icicles - Key Bindings#icicle-goto-global-marker|key binding]]''
+
+* (+) '''`icicle-goto-marker'''', (+) '''`icicle-goto-marker-or-set-mark-command'''' (`C-- C-SPC') -- ''[[Icicles - Key Bindings#icicle-goto-marker|key binding]]''
+
+* `icicle-grep-saved-file-candidates' -- [[Icicles - Support for Projects#icicle-grep-saved-file-candidates|Grep a Saved File List]]
+
+* (+) '''`icicle-imenu'''' (`##C-c =##') --  [[Icicles - Search Commands, Overview]], [[Icicles - Other Search Commands]]
+
+* (+) '''`icicle-imenu-command'''' --  [[Icicles - Search Commands, Overview]], [[Icicles - Other Search Commands]]
+
+* (+) '''`icicle-imenu-non-interactive-function'''' --  [[Icicles - Search Commands, Overview]], [[Icicles - Other Search Commands]]
+
+* (+) '''`icicle-Info-goto-node'''' (`g' in InfoMode) -- [[Icicles - Info Enhancements]], ''[[Icicles - Key Bindings#icicle-Info-goto-node|key binding]]''
+
+* (+) '''`icicle-Info-index'''' (`i' in InfoMode) -- [[Icicles - Info Enhancements]], ''[[Icicles - Key Bindings#icicle-Info-index|key binding]]''
+
+* (+) '''`icicle-Info-menu'''' (`m' in InfoMode) -- [[Icicles - Info Enhancements]], ''[[Icicles - Key Bindings#icicle-Info-menu|key binding]]''
+
+* `icicle-insert-char' -- [[Icicles - Key Completion]], [[Icicles - Customization and General Tips]]
+
+* `icicle-insert-list-join-string' -- [[Icicles - Multi-Completions]], ''[[Icicles - Key Bindings#icicle-insert-list-join-string|key binding]]''
+
+* (+) '''`icicle-insert-thesaurus-entry'''' -- [[Icicles - Completion in Other Buffers]], [[Icicles - Defining Icicles Commands]], [[Icicles - Note to Programmers]], ''[[Icicles - Key Bindings#icicle-insert-thesaurus-entry|key binding]]''
+
+
+
+
+[:J]
+[:K]
+[:L]
+==== J, K, L ====
+
+* (+) '''`icicle-keyword-list'''' -- [[Icicles - Multiple-Choice Menus]], [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-keyword-list|key binding]]''
+
+* (+) '''`icicle-kill-buffer'''' -- (`C-x k') [[Icicles - Customization and General Tips]], [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-kill-buffer|key binding]]''
+
+* (+) '''`icicle-kmacro'''' (`f5') -- [[Icicles - Multi-Commands]], [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-kmacro|key binding]]''
+
+* `icicle-lisp-complete-symbol' (`M-TAB', that is, `##ESC TAB##') -- [[Icicles - Completion in Other Buffers]], [[Icicles - Standard Commands Redefined]], ''[[Icicles - Key Bindings#icicle-lisp-complete-symbol|key binding]]''
+
+* (+) '''`icicle-locate'''' -- [[IciclesUserDefinedCommands#icicle-locate]]
+
+* (+) '''`icicle-locate-file'''', (+) '''`icicle-locate-file-other-window''''
+** defining -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-locate-file|key binding]]''
+** use -- [[Icicles - File-Name Input]], [[Icicles - File-Name Completion Tips]], [[Icicles - Persistent Completions]], [[Icicles - Large Candidate Sets]]
+
+* `lisp-complete-symbol' (`M-TAB', that is, `##ESC TAB##') -- [[Icicles - Completion in Other Buffers]], [[Icicles - Standard Commands Redefined]], ''[[Icicles - Key Bindings#lisp-complete-symbol|key binding]]''
+
+
+
+[:M]
+==== M ====
+
+* (+) '''`icicle-map'''' -- Alias for `[[#icicle-apply|icicle-apply]]'.
+
+* `icicle-mode' (aka `icy-mode') -- [[Icicles - Nutshell View]], [[Icicles - Defining Icicles Commands]]
+
+
+
+
+[:N]
+[:O]
+==== N, O ====
+
+* `icicle-next-apropos-match-function' -- [[Icicles - Fuzzy Completion]], ''[[Icicles - Key Bindings#icicle-next-apropos-match-function|key binding]]''
+
+* (+) '''`icicle-object-action'''' -- [[Icicles - Object-Action Interaction]]
+
+* (+) '''`icicle-occur'''' (`##C-c '##') -- [[Icicles - Search Commands, Overview]], [[Icicles - Other Search Commands]], ''[[Icicles - Key Bindings#icicle-occur|key binding]]''
+
+* (+) '''`icicle-other-window-or-frame'''' (`C-x o') -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-other-window-or-frame|key binding]]''
+
+
+
+
+
+[:P]
+[:Q]
+[:R]
+==== P, Q, R ====
+
+* (+) '''`icicle-plist'''' -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Completions]], [[Icicles - Programming Multi-Completions]]
+
+* `icicle-pop-tag-mark' (`##M-,##') -- [[Icicles - Tags Enhancements]]
+
+* `icicle-pp-eval-expression' -- [[Icicles - Customization and General Tips#icicle-pp-eval-expression-print-length|Customization]]
+
+* `icicle-read-color' -- [[Icicles - Candidates with Text Properties]]
+
+* `icicle-read-kbd-macro' -- <tt>[[icicles-cmd.el]]</tt>
+
+* (+) '''`icicle-recent-file'''',  (+) '''`icicle-recent-file-other-window''''
+** defining -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-recent-file|key binding]]''
+** use -- [[Icicles - Cycling Completions]], [[Icicles - Customization and General Tips]], [[Icicles - File-Name Input]], [[Icicles - File-Name Completion Tips]]
+
+* `icicle-recompute-shell-command-candidates' -- [[Icicles - Shell-Command Enhancements]]
+
+* `icicle-region-open-all-files' -- [[Icicles - Multiple Regions]], [[Icicles - Customization and General Tips]]
+
+* (+) '''`icicle-remove-all-regions-in-buffer'''' -- [[Icicles - Multiple Regions]]
+
+* (+) '''`icicle-remove-buffer-candidate'''' -- Remove buffer as an always-show completion candidate -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-remove-buffer-candidate|key binding]]''
+
+* (+) '''`icicle-remove-buffer-config'''' -- [[Icicles - Customization and General Tips]], [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-remove-buffer-config|key binding]]''
+
+* `icicle-remove-entry-from-saved-completion-set' -- [[Icicles - Persistent Completions]], ''[[Icicles - Key Bindings#icicle-entry-candidate-from-saved-completion-set|key binding]]''
+
+* (+) '''`icicle-remove-region'''' -- Remove a saved region from `icicle-region-alist' -- [[Icicles - Multiple Regions]]
+
+* (+) '''`icicle-remove-saved-completion-set'''' -- Remove an entry from `icicle-saved-completion-sets' [[Icicles - Persistent Completions]], [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-remove-saved-completion-set|key binding]]''
+
+* (+) '''`icicle-reset-option-to-nil'''' -- see `[[#clear-option|clear-option]]'
+
+* `repeat-complex-command' (`C-x M-ESC', `##C-x M-:##') -- [[Icicles - Standard Commands Redefined]]
+
+
+
+
+[:S]
+==== S ====
+
+* `icicle-save-string-to-variable' - [[Icicles - Inserting a Regexp from a Variable or Register]], ''[[Icicles - Key Bindings#icicle-save-string-to-variable|key binding]]''
+
+* (+) '''`icicle-search'''' (`##C-c `##') -- [[Icicles - Search Commands, Overview]]
+
+** buffer annotation -- [[Icicles - Programming Multi-Completions]]
+** command bindings and option toggles -- ''[[Icicles - Key Bindings#icicle-search|key binding]]''
+** faces and user options -- [[Icicles - Customization and General Tips]]
+** no candidate sorting -- [[Icicles - Sorting Candidates]]
+** overview -- [[Icicles - Search Commands, Overview]]
+** quick tour -- [[Icicles - Nutshell View]]
+** replacing text -- [[Icicles - Search-And-Replace]]
+** search candidate structure -- [[Icicles - Complex Completions]]
+** searching a saved region -- [[Icicles - Multiple Regions]]
+** searching for a saved regexp [[Icicles - Inserting a Regexp from a Variable or Register]]
+** searching Info manuals -- [[Icicles - Info Enhancements]]
+** searching marked files in DiredMode -- [[Icicles - Dired Enhancements]]
+** shell-command completion -- [[Icicles - Completion in Other Buffers]]
+** specialized searching -- [[Icicles - Other Search Commands]]
+** use with `##M-&##' (predicates) -- [[Icicles - Progressive Completion]]
+
+* (+) '''`icicle-search-all-regions'''' -- Search all saved regions (in `icicle-region-alist') -- [[Icicles - Search Commands, Overview]]
+
+* (+) '''`icicle-search-buffer'''' -- [[Icicles - Other Search Commands]], [[Icicles - Customization and General Tips]]
+
+* (+) '''`icicle-search-char-property'''' (`##C-c "##') -- [[Icicles - Search Commands, Overview]], [[Icicles - Search-And-Replace]]
+
+* (+) '''`icicle-search-dired-marked'''' (`M-s' in DiredMode) -- [[Icicles - Dired Enhancements]]
+
+* (+) '''`icicle-search-file'''' -- [[Icicles - Search Commands, Overview]]
+
+* (+) '''`icicle-search-generic'''' (`##C-c `##') -- [[Icicles - Search Commands, Overview]], 
+
+* `icicle-search-highlight-cleanup' -- [[Icicles - Search Commands, Overview]], [[Icicles - Customization and General Tips]]
+
+* (+) '''`icicle-search-keywords'''' (`##C-^##') -- [[Icicles - Search Commands, Overview]], [[Icicles - Other Search Commands]], 
+
+* (+) '''`icicle-search-overlay-property'''' (`##C-c "##') -- [[Icicles - Search Commands, Overview]]
+
+* (+) '''`icicle-search-region'''' -- Search a saved region (in `icicle-region-alist') -- [[Icicles - Search Commands, Overview]]
+, [[Icicles - Multiple Regions]]
+
+* (+) '''`icicle-search-text-property'''' (`##C-c "##') -- [[Icicles - Search Commands, Overview]]
+
+* (+) '''`icicle-search-word'''' (`##C-c $##') -- [[Icicles - Search Commands, Overview]], [[Icicles - Search-And-Replace]]
+
+* (+) '''`icicle-select-frame'''' (`C-x 5 o') -- [[Icicles - Defining Icicles Commands]]
+
+* (+) '''`icicle-select-region'''' (`C-u C-x C-x') -- Select and activate a saved region (in `icicle-region-alist') -- [[Icicles - Multiple Regions]], [[Icicles - Customization and General Tips]], [[Icicles - Programming Multi-Completions]]
+** `S-delete' to delete region from alist -- [[Icicles - More About Multi-Commands]]
+
+* (+) '''`icicle-select-window'''' (`C-x o') -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-select-window|key binding]]''
+
+* `icicle-send-bug-report' -- Send a bug report about an '''Icicles''' problem -- IciclesIssues
+
+* (+) '''`icicle-set-option-to-t'''' -- Set any binary option to `t' -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-set-option-to-t|key binding]]''. See also `[[#clear-option|clear-option]]'.
+
+* `icicle-sort-alphabetical', `icicle-sort-by-abbrev-frequency', `icicle-sort-by-directories-last', `icicle-sort-by-last-file-modification-time', `icicle-sort-by-last-use', `icicle-sort-by-previous-use-alphabetically', `icicle-sort-case-insensitive', `icicle-sort-proxy-candidates-first', `icicle-sort-special-candidates-first', `icicle-sort-turned-OFF' -- [[Icicles - Sorting Candidates]]
+
+
+
+
+[:T]
+==== T ====
+
+* (+) '''`icicle-tags-search'''' -- [[Icicles - Tags Enhancements]]
+
+* `##icicle-toggle-~-for-home-dir##' -- [[Icicles - File-Name Completion Tips]], ''[[Icicles - Key Bindings#icicle-toggle-tilde-for-home-dir|key binding]]''
+
+* `icicle-toggle-alternative-sorting'  -- [[Icicles - Key Completion]], [[Icicles - History Enhancements]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-alternative-sorting|key binding]]''
+
+* `icicle-toggle-angle-brackets'  -- [[Icicles - Key Completion]]
+
+* `icicle-toggle-case-sensitivity'  -- ''[[Icicles - Key Bindings#icicle-toggle-case-sensitivity|key binding]]''
+
+* `icicle-toggle-C-for-actions' -- [[Icicles - More About Multi-Commands#icicle-use-C-for-actions-flag|More about Multi-Commands]], [[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]
+
+* `icicle-toggle-expand-to-common-match' -- [[Icicles - Expanded-Common-Match Completion]], [[Icicles - Search Commands, Overview]], [[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]], ''[[Icicles - Key Bindings#icicle-toggle-expand-to-common-match|key binding]]''
+
+* `icicle-toggle-fuzzy-completion' -- [[Icicles - Fuzzy Completion]], ''[[Icicles - Key Bindings#icicle-toggle-fuzzy-completion|key binding]]''
+
+* `icicle-toggle-hiding-common-match' -- [[Icicles - Completions Display]], [[Icicles - File-Name Completion Tips]], [[Icicles - Customization and General Tips#icicle-hide-common-match-in-Completions-flag|icicle-hide-common-match-in-Completions-flag]], ''[[Icicles - Key Bindings#icicle-toggle-hiding-common-match|key binding]]''
+
+* `icicle-toggle-highlight-all-current'  -- [[Icicles - Search Commands, Overview]], ''[[Icicles - Key Bindings#icicle-toggle-highlight-all-current|key binding]]''
+
+* `icicle-toggle-highlight-historical-candidates' -- ''[[Icicles - Key Bindings#icicle-toggle-highlight-historical-candidates|key binding]]''
+
+* `icicle-toggle-ignored-extensions'  -- [[Icicles - File-Name Completion Tips]], ''[[Icicles - Key Bindings#icicle-toggle-ignored-extensions|key binding]]''
+
+* `icicle-toggle-ignored-space-prefix' -- ''[[Icicles - Key Bindings#icicle-toggle-ignored-space-prefix|key binding]]''
+
+* `icicle-toggle-incremental-completion' -- [[Icicles - Icompletion]], ''[[Icicles - Key Bindings#icicle-toggle-incremental-completion|key binding]]''
+
+* (+) '''`icicle-toggle-option'''' -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-toggle-option|key binding]]''
+
+* `icicle-toggle-proxy-candidates' -- [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-proxy-candidates|key binding]]''
+
+* `icicle-toggle-regexp-quote'  -- [[Icicles - Special Characters in Input Patterns]], ''[[Icicles - Key Bindings#icicle-toggle-regexp-quote|key binding]]''
+
+* `icicle-toggle-remote-file-testing' -- ''[[Icicles - Key Bindings#icicle-toggle-remote-file-testing|key binding]]''
+
+* `icicle-toggle-search-cleanup' -- [[Icicles - Search Commands, Overview]], ''[[Icicles - Key Bindings#icicle-toggle-search-cleanup|key binding]]''
+
+* `icicle-toggle-search-replace-common-match' -- [[Icicles - Search Commands, Overview]], [[Icicles - Search-And-Replace]], [[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]
+
+* `icicle-toggle-search-replace-whole' -- [[Icicles - Search Commands, Overview]], [[Icicles - Search-And-Replace]], [[Icicles - Other Search Commands]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-search-replace-whole|key binding]]''
+
+* `icicle-toggle-search-whole-word' -- [[Icicles - Search Commands, Overview]], [[Icicles - Search-And-Replace]], [[Icicles - Customization and General Tips]]
+
+* `icicle-toggle-sorting'  -- ''[[Icicles - Key Bindings#icicle-toggle-sorting|key binding]]''
+
+* `icicle-toggle-transforming' -- ''[[Icicles - Key Bindings#icicle-toggle-transforming|key binding]]''
+
+* `icicle-toggle-WYSIWYG-Completions' -- [[Icicles - Customization and General Tips#icicle-WYSIWYG-Completions-flag|Customization ]]
+
+* (+) '''`toggle'''' -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-toggle-option|key binding]]''
+
+
+
+
+[:U]
+[:V]
+[:W]
+[:X]
+[:Y]
+[:Z]
+==== U, V, W, X, Y, Z ====
+
+* (+) '''`icicle-where-is'''' -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-where-is|key binding]]''
+
+* (+) '''`icicle-vardoc''''
+** defining -- [[Icicles - Defining Icicles Commands]], [[Icicles - Note to Programmers]]
+** use -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Completions]], [[Icicles - Programming Multi-Completions]], ''[[Icicles - Key Bindings#icicle-vardoc|key binding]]''
+
+* (+) '''`icicle-yank-maybe-completing'''' (`C-y') -- [[Icicles - Customization and General Tips#icicle-yank-maybe-completing|Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-yank-maybe-completing|key binding]]''
+
+* (+) '''`what-which-how'''' -- [[Icicles - Object-Action Interaction]]
+
+* (+) '''`where-is'''' -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-where-is|key binding]]''
+
+
+----
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[:minibuffer]
+== Minibuffer Commands ==
+
+These are the '''Icicles''' commands intended to be run mainly from the minibuffer, during input. Most of these commands are defined in library `<tt>[[icicles-mcmd.el]]</tt>'.
+
+
+
+
+[:mA]
+==== A ====
+
+* `icicle-abort-recursive-edit' (`C-g') -- ''[[Icicles - Key Bindings#icicle-abort-recursive-edit|key binding]]''
+
+* `icicle-add-file-to-fileset' -- [[Icicles - Persistent Completions]]
+
+* `icicle-all-candidates-action' (`##C-!##') -- [[Icicles - Choose All Candidates]], [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-all-candidates-action|key binding]]''
+
+* `icicle-all-candidates-alt-action' (`C-S-insert') -- [[Icicles - Search Commands, Overview]], [[Icicles - Search-And-Replace]]
+
+* `icicle-all-candidates-list-action' (`##M-!##') -- [[Icicles - Choose All Candidates]], ''[[Icicles - Key Bindings#icicle-all-candidates-list-action|key binding]]''
+
+* `icicle-all-candidates-list-alt-action' (`##M-|##') -- [[Icicles - Choose All Candidates]], ''[[Icicles - Key Bindings#icicle-all-candidates-list-action|key binding]]''
+
+* `icicle-apropos-complete' (`S-TAB') -- [[Icicles - Apropos Completions]]
+** apropos help on candidates -- [[Icicles - Help on Candidates]]
+** apropos vs prefix completion -- [[Icicles - Nutshell View]], [[Icicles - Apropos Completions]], [[Icicles - Expanded-Common-Match Completion]]
+** matching multiple regexps -- [[Icicles - Progressive Completion]]
+** object-action paradigm -- [[Icicles - Object-Action Interaction]]
+** setting completion mode for `up'/`down' keys -- [[Icicles - Customization and General Tips#icicle-cycling-respects-completion-mode-flag]]
+** showing completions without `S-TAB' -- [[Icicles - Customization and General Tips#icicle-show-Completions-initially-flag]]
+** `S-TAB' key binding -- [[Icicles - Key Completion]], [[Icicles - Isearch Enhancements]], ''[[Icicles - Key Bindings#icicle-apropos-complete|key binding]]''
+** use with `<tt>C-#</tt>' -- [[Icicles - Icompletion]], [[Icicles - Candidate Sets]], [[Icicles - Persistent Completions]], [[Icicles - Large Candidate Sets]]
+** use with large candidate sets (`C-M-S-TAB') -- [[Icicles - Large Candidate Sets]]
+** use with `M-pause' (history) -- [[Icicles - History Enhancements]]
+** use with Info commands [[Icicles - Info Enhancements]]
+
+* `icicle-apropos-complete-and-exit' (`S-RET') -- [[Icicles - S-RET]]
+
+* `icicle-apropos-complete-and-narrow' (`S-SPC') -- [[Icicles - Progressive Completion]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-apropos-complete-and-narrow|key binding]]''
+
+* `icicle-apropos-complete-no-display' (`S-M-C-TAB') -- [[Icicles - Large Candidate Sets]], ''[[Icicles - Key Bindings#icicle-apropos-complete-no-display|key binding]]''
+
+
+
+
+[:mB]
+[:mC]
+==== B, C ====
+
+* `##icicle-beginning-of-line+##' (`C-a') -- ''[[Icicles - Key Bindings#icicle-beginning-of-line|key binding]]''
+
+* `icicle-candidate-action' (`C-RET') -- [[Icicles - Multi-Commands]]
+** act on all candidates -- [[Icicles - Choose All Candidates]]
+** alternative action, deletion -- [[Icicles - More About Multi-Commands]]
+** different actions for `C-RET' and `RET' -- [[Icicles - Multi-Commands the Hard Way]]
+** overview -- [[Icicles - Multi-Commands]]
+** quick tour -- [[Icicles - Nutshell View]]
+** use with '''Icicles''' search -- [[Icicles - Search Commands, Overview]], [[Icicles - Other Search Commands]]
+** use with `M-x' -- [[Icicles - Multi M-x]]
+
+* `icicle-candidate-alt-action' (`C-S-RET') --  [[Icicles - More About Multi-Commands]], [[Icicles - Search Commands, Overview]], [[Icicles - Search-And-Replace]], ''[[Icicles - Key Bindings#icicle-candidate-alt-action|key binding]]''
+
+* `icicle-candidate-read-fn-invoke' (`M-RET') -- [[Icicles - Object-Action Interaction]], ''[[Icicles - Key Bindings#icicle-candidate-read-fn-invoke|key binding]]''
+
+* `icicle-candidate-set-complement' (`##C-~##') -- [[Icicles - Candidate Sets]], [[Icicles - Google Matching]], ''[[Icicles - Key Bindings#icicle-candidate-set-complement|key binding]]''
+
+* `icicle-candidate-set-define' (`##C-:##') -- [[Icicles - Candidate Sets]], ''[[Icicles - Key Bindings#icicle-candidate-set-define|key binding]]''
+
+* `icicle-candidate-set-difference' (`##C--##') --  [[Icicles - Multi-Commands]], [[Icicles - Candidate Sets]], ''[[Icicles - Key Bindings#icicle-candidate-set-difference|key binding]]''
+
+* `icicle-candidate-set-intersection' (`##C-*##') -- [[Icicles - Candidate Sets]], [[Icicles - Google Matching]], ''[[Icicles - Key Bindings#icicle-candidate-set-intersection|key binding]]''
+
+* `icicle-candidate-set-retrieve' (`##C-M-<##') -- [[Icicles - Candidate Sets]], [[Icicles - Persistent Completions]], ''[[Icicles - Key Bindings#icicle-candidate-set-retrieve|key binding]]''
+
+* `icicle-candidate-set-retrieve-more' (`##C-<##') -- [[Icicles - Candidate Sets]], [[Icicles - Persistent Completions]], ''[[Icicles - Key Bindings#icicle-candidate-set-retrieve-more|key binding]]''
+
+* `icicle-candidate-set-retrieve-persistent' (`##C-{##', `##C-u C-M-<##') -- [[Icicles - Persistent Completions]]
+
+* `icicle-candidate-set-retrieve-from-variable' (`##M-C-{##', `##C-u ##''##N##''## C-M-<##') -- [[Icicles - Candidate Sets]]
+
+* `icicle-candidate-set-save' (`##C-M->##') --  [[Icicles - Candidate Sets]], [[Icicles - Persistent Completions]], ''[[Icicles - Key Bindings#icicle-candidate-set-save|key binding]]''
+
+* `icicle-candidate-set-save-more' (`##C->##') --  [[Icicles - Candidate Sets]], ''[[Icicles - Key Bindings#icicle-candidate-set-save-more|key binding]]''
+
+* `icicle-candidate-set-save-more-selected' (`##C-)##') --  [[Icicles - Candidate Sets]], ''[[Icicles - Key Bindings#icicle-candidate-set-save-more-selected|key binding]]''
+
+* `icicle-candidate-set-save-persistently' (`##C-}##', `##C-u C-M->##') -- [[Icicles - Persistent Completions]]
+
+* `icicle-candidate-set-save-selected' (`##C-M-)##') --  [[Icicles - Candidate Sets]], ''[[Icicles - Key Bindings#icicle-candidate-set-save-selected|key binding]]''
+
+* `icicle-candidate-set-save-to-variable' (`##M-C-}##', `##C-u ##''##N##''## C-M->##') -- [[Icicles - Candidate Sets]]
+
+* `icicle-candidate-set-swap' (`##C-%##')-- [[Icicles - Candidate Sets]], ''[[Icicles - Key Bindings#icicle-candidate-set-swap|key binding]]''
+
+* `icicle-candidate-set-truncate' (`##M-$##')-- [[Icicles - Candidate Sets]]
+
+* `icicle-candidate-set-union' (`##C-+##') -- [[Icicles - Candidate Sets]], [[Icicles - Google Matching]], ''[[Icicles - Key Bindings#icicle-candidate-set-union|key binding]]''
+
+* `icicle-change-alternative-sort-order' (`##M-,##') -- ''[[Icicles - Key Bindings#icicle-change-alternative-sort-order|key binding]]''
+
+* `icicle-change-sort-order' (`##C-,##') -- [[Icicles - Sorting Candidates]], ''[[Icicles - Key Bindings#icicle-change-sort-order|key binding]]''
+
+* (+) '''`icicle-clear-current-history'''' (`M-i') -- [[Icicles - History Enhancements#ClearHistoryEntries|Clearing History Entries]]
+
+* `icicle-completion-help' (`##C-?##') -- [[Icicles - Nutshell View]], [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-completion-help|key binding]]''
+
+* `icicle-Completions-mouse-3-menu' (`mouse-3') -- ''[[Icicles - Key Bindings#icicle-Completions-mouse-3-menu|key binding]]''
+
+
+
+
+
+[:mD]
+[:mE]
+[:mF]
+[:mG]
+[:mH]
+==== D, E, F, G, H ====
+
+* `digit-argument' (`##C-<0-9>##', `##M-<0-9>##', `##C-M-<0-9>##') -- [[Icicles - Standard Commands Redefined]]
+
+* `exit-minibuffer' (`C-m' (`RET'), `##\n##') -- [[Icicles - Standard Commands Redefined]]
+** alternatives -- [[Icicles - Progressive Completion]], [[Icicles - Alternative Libraries]], [[Icicles - S-RET]], [[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag]]
+** compared with `C-RET' -- [[Icicles - Nutshell View]], [[Icicles - Multi-Commands]], [[Icicles - Multi M-x]], [[Icicles - Multi-Commands the Hard Way]], [[Icicles - Note to Programmers]]
+** completion outside minibuffer -- [[Icicles - Completion in Other Buffers]]
+** vanilla Emacs use -- [[Icicles - Background on Input Completion]]
+
+* `icicle-delete-candidate-object' (`S-delete') -- 
+[[Icicles - More About Multi-Commands]]
+
+* `icicle-doremi-candidate-width-factor' -- ''[[Icicles - Key Bindings#icicle-doremi-candidate-width-factor|key binding]]''
+
+* `icicle-doremi-inter-candidates-min-spaces' -- ''[[Icicles - Key Bindings#icicle-doremi-inter-candidates-min-spaces|key binding]]''
+
+* `##icicle-end-of-line+##' (`C-e') -- ''[[Icicles - Key Bindings#icicle-end-of-line|key binding]]''
+
+* `icicle-erase-minibuffer' (`M-S-backspace', `M-S-delete') -- ''[[Icicles - Key Bindings#icicle-erase-minibuffer|key binding]]''
+
+* `icicle-erase-minibuffer-or-history-element' (`M-k') -- ''[[Icicles - Key Bindings#icicle-erase-minibuffer-or-history-element|key binding]]''
+
+* `icicle-help-on-candidate' (`C-M-RET', `C-help', `C-f1') -- [[Icicles - Help on Candidates]], [[Icicles - Defining Multi M-x]], ''[[Icicles - Key Bindings#icicle-help-on-candidate|key binding]]''
+
+* `icicle-help-on-next-apropos-candidate' (``C-M-next') -- [[Icicles - Help on Candidates]], ''[[Icicles - Key Bindings#icicle-help-on-next-apropos-candidate|key binding]]''
+
+* `icicle-help-on-next-prefix-candidate' (``C-M-down') -- ''[[Icicles - Key Bindings#icicle-help-on-next-prefix-candidate|key binding]]''
+
+* `icicle-help-on-previous-apropos-candidate' (``C-M-prior') -- ''[[Icicles - Key Bindings#icicle-help-on-previous-apropos-candidate|key binding]]''
+
+* `icicle-help-on-previous-prefix-candidate' (``C-M-up') -- ''[[Icicles - Key Bindings#icicle-help-on-previous-prefix-candidate|key binding]]''
+
+* `icicle-history' (`M-h') -- [[Icicles - History Enhancements]], ''[[Icicles - Key Bindings#icicle-history|key binding]]''
+
+
+
+
+[:mI]
+==== I ====
+
+* `icicle-insert-completion' (`C-insert') -- ''[[Icicles - Key Bindings#icicle-insert-completion|key binding]]''
+
+* `icicle-insert-history-element' (`M-o') -- [[Icicles - History Enhancements]], ''[[Icicles - Key Bindings#icicle-insert-history-element|key binding]]''
+
+* `icicle-insert-key-description' (`M-q') -- [[Icicles - Key Completion]], ''[[Icicles - Key Bindings#icicle-insert-key-description|key binding]]''
+
+* `icicle-insert-list-join-string' (`C-M-j') -- [[Icicles - Multi-Completions]], ''[[Icicles - Key Bindings#icicle-insert-list-join-string|key binding]]''
+
+* `icicle-insert-newline-in-minibuffer' (`C-j') -- ''[[Icicles - Key Bindings#icicle-insert-newline-in-minibuffer|key binding]]''
+
+* `icicle-insert-string-at-point' (`##M-.##') -- [[Icicles - Inserting Text from Cursor]], ''[[Icicles - Key Bindings#icicle-insert-string-at-point|key binding]]''
+
+* `icicle-insert-string-from-variable' (`##C-=##') -- [[Icicles - Inserting a Regexp from a Variable or Register]], [[Icicles - Search Commands, Overview]], ''[[Icicles - Key Bindings#icicle-insert-string-from-variable|key binding]]''
+
+* `icicle-isearch-complete' (`M-TAB') -- [[Icicles - Isearch Enhancements]], ''[[Icicles - Key Bindings#icicle-isearch-complete|key binding]]''
+
+
+
+
+[:mJ]
+[:mK]
+==== J, K ====
+
+* `icicle-keep-only-past-inputs' (`M-pause') -- [[Icicles - History Enhancements]], ''[[Icicles - Key Bindings#icicle-keep-only-past-inputs|key binding]]''
+
+* `icicle-kill-failed-input' (`C-M-l') -- ''[[Icicles - Key Bindings#icicle-kill-failed-input|key binding]]''
+
+
+
+
+[:mL]
+[:mM]
+==== L, M ====
+
+* `minibuffer-complete-and-exit' (`C-m', `##\n##') -- [[Icicles - Standard Commands Redefined]]
+
+* `mouse-choose-completion' (`mouse-2') -- [[Icicles - Nutshell View]], [[Icicles - Background on Input Completion]], [[Icicles - Completions Display]], [[Icicles - Standard Commands Redefined]], [[Icicles - Multiple-Choice Menus]], ''[[Icicles - Key Bindings#mouse-choose-completion|key binding]]''
+
+* `icicle-mouse-candidate-action' (`C-mouse-2') -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]], [[Icicles - Multiple-Choice Menus]], ''[[Icicles - Key Bindings#icicle-mouse-candidate-action|key binding]]''
+
+* `icicle-mouse-candidate-alt-action' (`C-S-mouse-2') -- 
+[[Icicles - More About Multi-Commands]], [[Icicles - Search-And-Replace]], ''[[Icicles - Key Bindings#icicle-mouse-candidate-alt-action|key binding]]''
+
+* `icicle-mouse-candidate-set-save' (`M-S-mouse-3') -- [[Icicles - Candidate Sets]], ''[[Icicles - Key Bindings#icicle-mouse-candidate-set-save|key binding]]''
+
+* `icicle-mouse-candidate-set-save-more' (`M-mouse-3') -- [[Icicles - Candidate Sets]], ''[[Icicles - Key Bindings#icicle-mouse-candidate-set-save-more|key binding]]''
+
+* `icicle-mouse-candidate-read-fn-invoke' (`M-mouse-2') -- [[Icicles - Object-Action Interaction]], ''[[Icicles - Key Bindings#icicle-mouse-candidate-read-fn-invoke|key binding]]''
+
+* `icicle-mouse-help-on-candidate' (`C-M-mouse-2') -- [[Icicles - Nutshell View]], [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]], [[Icicles - Key Completion]], [[Icicles - Search Commands, Overview]], [[Icicles - Multiple Regions]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-mouse-help-on-candidate|key binding]]''
+
+* `icicle-mouse-remove-candidate' (`S-mouse-2') -- [[Icicles - Nutshell View]], [[Icicles - Search Commands, Overview]], ''[[Icicles - Key Bindings#icicle-mouse-remove-candidate|key binding]]''
+
+* `icicle-mouse-save/unsave-candidate' (`M-S-mouse-2') -- ''[[Icicles - Key Bindings#icicle-mouse-save-candidate|key binding]]''
+
+* `icicle-mouse-save-candidate' (`M-S-mouse-2') -- [[Icicles - Candidate Sets]], ''[[Icicles - Key Bindings#icicle-mouse-save-candidate|key binding]]''
+
+* `icicle-mouse-yank-secondary' (`M-mouse-2') -- ''[[Icicles - Key Bindings#icicle-mouse-yank-secondary|key binding]]''
+
+* `icicle-move-to-next-completion' (`right', `TAB') -- ''[[Icicles - Key Bindings#icicle-move-to-next-completion|key binding]]''
+
+* `icicle-move-to-previous-completion' (`left') -- ''[[Icicles - Key Bindings#icicle-move-to-previous-completion|key binding]]''
+
+* `lisp-complete-symbol' (`M-TAB', that is, `##ESC TAB##') -- [[Icicles - Completion in Other Buffers]], [[Icicles - Standard Commands Redefined]]
+
+
+
+
+[:mN]
+==== N ====
+
+* `icicle-narrow-candidates' (`##M-*##') -- [[Icicles - Progressive Completion]], ''[[Icicles - Key Bindings#icicle-narrow-candidates|key binding]]''
+
+* `icicle-narrow-candidates-with-predicate' (`##M-&##') -- [[Icicles - Progressive Completion]], ''[[Icicles - Key Bindings#icicle-narrow-candidates-with-predicate|key binding]]''
+
+* `icicle-next-apropos-candidate' (`next') -- [[Icicles - Nutshell View]], [[Icicles - Apropos Completions]], [[Icicles - Candidate Sets]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-next-apropos-candidate|key binding]]''
+
+* `icicle-next-apropos-candidate-action' (`C-next') -- [[Icicles - Nutshell View]], [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]], [[Icicles - Search Commands, Overview]],  [[Icicles - Other Search Commands]]
+
+* `icicle-next-apropos-candidate-alt-action' (`C-S-next') -- 
+[[Icicles - More About Multi-Commands]], [[Icicles - Search-And-Replace]], ''[[Icicles - Key Bindings#icicle-next-apropos-candidate-alt-action|key binding]]''
+
+* `icicle-next-apropos-match-function' (`##M-(##') -- [[Icicles - Fuzzy Completion]], ''[[Icicles - Key Bindings#icicle-next-apropos-match-function|key binding]]''
+
+* `icicle-next-candidate-per-mode' (`down') -- Cycle to next candidate, using current completion mode: `icicle-modal-cycle-down-key' in [[Icicles - Traversing Minibuffer Histories]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-next-candidate-per-mode|key binding]]''
+
+* `icicle-next-candidate-per-mode-action' (`C-down') -- Same as `down' plus `C-RET' -- ''[[Icicles - Key Bindings#icicle-next-candidate-per-mode-action|key binding]]''
+
+* `icicle-next-line' (`down') -- ''[[Icicles - Key Bindings#icicle-next-line|key binding]]''
+
+* `icicle-next-prefix-candidate' (`down') -- [[Icicles - Nutshell View]], [[Icicles - Cycling Completions]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Key Bindings#icicle-next-prefix-candidate|key binding]]''
+
+* `icicle-next-prefix-candidate-action' (`C-down') -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]]
+
+* `icicle-next-prefix-candidate-alt-action' (`C-S-down') -- 
+[[Icicles - More About Multi-Commands]], ''[[Icicles - Key Bindings#icicle-next-prefix-candidate-alt-action|key binding]]''
+
+* `negative-argument' (`M--', `C-M--') -- [[Icicles - Standard Commands Redefined]]
+
+
+
+
+[:mO]
+[:mP]
+==== O, P ====
+
+* `icicle-pp-eval-expression-in-minibuffer' (`##M-:##') -- [[Icicles - Customization and General Tips#icicle-pp-eval-expression-print-length|Customization]], 
+''[[Icicles - Key Bindings#icicle-pp-eval-expression|key binding]]''
+
+* `icicle-prefix-complete' (`TAB') -- [[Icicles - Nutshell View]], [[Icicles - Background on Input Completion]], [[Icicles - Expanded-Common-Match Completion]], [[Icicles - Progressive Completion]], [[Icicles - Large Candidate Sets]], [[Icicles - Isearch Enhancements]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-prefix-complete|key binding]]''
+
+* `icicle-prefix-complete-no-display' --  (`M-C-TAB') -- [[Icicles - Large Candidate Sets]], ''[[Icicles - Key Bindings#icicle-prefix-complete-no-display|key binding]]''
+
+* `icicle-prefix-word-complete' (`M-SPC') -- ''[[Icicles - Key Bindings#icicle-prefix-word-complete|key binding]]''
+
+* `icicle-previous-apropos-candidate' (`prior') -- ''[[Icicles - Key Bindings#icicle-previous-apropos-candidate|key binding]]''
+
+* `icicle-previous-apropos-candidate-action' -- (`C-prior')  -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]]
+
+* `icicle-previous-apropos-candidate-alt-action' (`C-S-prior') -- 
+[[Icicles - More About Multi-Commands]], ''[[Icicles - Key Bindings#icicle-previous-apropos-candidate-alt-action|key binding]]''
+
+* `icicle-previous-candidate-per-mode' (`up') -- Cycle to previous candidate, using current completion mode: `icicle-modal-cycle-up-key' in [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-previous-candidate-per-mode|key binding]]''
+
+* `icicle-previous-candidate-per-mode-action' (`C-up') -- Same as `up' plus `C-RET' -- ''[[Icicles - Key Bindings#icicle-previous-candidate-per-mode-action|key binding]]''
+
+* `icicle-previous-line' (`up') -- ''[[Icicles - Key Bindings#icicle-previous-line|key binding]]''
+
+* `icicle-previous-prefix-candidate' (`up') -- [[Icicles - Customizing Key Bindings]], ''[[Icicles - Key Bindings#icicle-previous-prefix-candidate|key binding]]''
+
+* `icicle-previous-prefix-candidate-action'  -- (`C-up')  -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]]
+
+* `icicle-previous-apropos-candidate-alt-action' (`C-S-up') -- 
+[[Icicles - More About Multi-Commands]], ''[[Icicles - Key Bindings#icicle-previous-apropos-candidate-alt-action|key binding]]''
+
+
+
+
+
+[:mQ]
+[:mR]
+==== Q, R ====
+
+* `icicle-regexp-quote-input' (`##C-M-;##') -- [[Icicles - Progressive Completion]], [[Icicles - Special Characters in Input Patterns]]
+
+* `icicle-remove-candidate' (`delete') -- [[Icicles - Nutshell View]], [[Icicles - Progressive Completion]], [[Icicles - More About Multi-Commands]], [[Icicles - Search Commands, Overview]], ''[[Icicles - Key Bindings#icicle-remove-candidate|key binding]]''
+
+* `icicle-remove-Completions-window' (`##C-x 0##') -- [[Icicles - Multi M-x]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-remove-Completions-window|key binding]]''
+
+* `icicle-retrieve-next-input' (`C-S-l') -- '''[[Icicles - History Enhancements]]''', [[Icicles - Nutshell View]], [[Icicles - Cycling Completions]], [[Icicles - Expanded-Common-Match Completion]], [[Icicles - Search Commands, Overview]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-retrieve-next-input|key binding]]''
+
+* `icicle-retrieve-previous-input' (`C-l') -- '''[[Icicles - History Enhancements]]''', [[Icicles - Nutshell View]], [[Icicles - Cycling Completions]], [[Icicles - Expanded-Common-Match Completion]], [[Icicles - Search Commands, Overview]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-retrieve-previous-input|key binding]]''
+
+* `icicle-reverse-sort-order' (`##C-##'''''##N##''''' ##C-,##') -- [[Icicles - Sorting Candidates]]
+
+
+
+
+
+[:mS]
+==== S ====
+
+* `icicle-save-predicate-to-variable' (`##C-M-&##') -- [[Icicles - Progressive Completion]], [[Icicles - Search Commands, Overview]], ''[[Icicles - Key Bindings#icicle-save-predicate-to-variable|key binding]]''
+
+* `icicle-save/unsave-candidate' (`insert') -- [[Icicles - Candidate Sets]], ''[[Icicles - Key Bindings#icicle-save-candidate|key binding]]''
+
+* `icicle-scroll-Completions', `icicle-scroll-Completions-up'  (mouse `wheel-down', mouse `wheel-up', or more than one `TAB' or `S-TAB') -- <tt>[[icicles-mcmd.el]]</tt>
+
+* `icicle-search-define-replacement' (`##M-,##') -- [[Icicles - Search-And-Replace]], ''[[Icicles - Key Bindings#icicle-search-define-replacement|key binding]]'
+
+* `icicle-self-insert' -- insert a character: ''[[Icicles - Key Bindings#icicle-self-insert|key binding]]''
+
+* `icicle-sort-alphabetical', `icicle-sort-by-abbrev-frequency', `icicle-sort-by-directories-last, `icicle-sort-by-last-file-modification-time', `icicle-sort-by-last-use, `icicle-sort-by-previous-use-alphabetically, `icicle-sort-by-2nd-parts-alphabetically', `icicle-sort-case-insensitive, `icicle-sort-proxy-candidates-first', `icicle-sort-special-candidates-first', `icicle-sort-turned-OFF' -- [[Icicles - Sorting Candidates]]
+
+* `icicle-switch-to-Completions-buf' (`C-insert') -- ''[[Icicles - Key Bindings#icicle-switch-to-Completions-buf|key binding]]''
+
+* `icicle-switch-to/from-minibuffer' (`pause') -- [[Icicles - Moving Between the Minibuffer and Other Buffers]], [[Icicles - Completions Display]],''[[Icicles - Key Bindings#icicle-switch-to-from-minibuffer|key binding]]''
+
+* `switch-to-completions' -- [[Icicles - Moving Between the Minibuffer and Other Buffers]], [[Icicles - Completions Display]], [[Icicles - Standard Commands Redefined]], ''[[Icicles - Key Bindings#switch-to-completions|key binding]]''
+
+
+
+
+[:mT]
+==== T ====
+
+* `##icicle-~-for-home-dir##' (`##M-~##') -- [[Icicles - File-Name Completion Tips]], ''[[Icicles - Key Bindings#icicle-tilde-for-home-dir|key binding]]''
+
+* `icicle-toggle-alternative-sorting' (`##C-M-,##') -- [[Icicles - Sorting Candidates]], [[Icicles - Key Completion]], [[Icicles - History Enhancements]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-alternative-sorting|key binding]]''
+
+* `icicle-toggle-angle-brackets' -- [[Icicles - Key Completion]], ''[[Icicles - Key Bindings#icicle-toggle-angle-brackets|key binding]]''
+
+* `icicle-toggle-case-sensitivity' (`C-S-a', that is, `C-A') -- [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-case-sensitivity|key binding]]''
+
+* `icicle-toggle-C-for-actions' (`M-g') -- [[Icicles - More About Multi-Commands#icicle-use-C-for-actions-flag|More about Multi-Commands]], [[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]
+
+* `icicle-toggle-expand-to-common-match' (`##C-|##') -- [[Icicles - Expanded-Common-Match Completion]], [[Icicles - Search Commands, Overview]], [[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]], ''[[Icicles - Key Bindings#icicle-toggle-expand-to-common-match|key binding]]''
+
+* `icicle-toggle-fuzzy-completion' (`##C-(##') -- [[Icicles - Fuzzy Completion]], ''[[Icicles - Key Bindings#icicle-toggle-fuzzy-completion|key binding]]''
+
+* `icicle-toggle-hiding-common-match' (`##C-M-.##') -- [[Icicles - Completions Display]], [[Icicles - File-Name Completion Tips]], [[Icicles - Customization and General Tips#icicle-hide-common-match-in-Completions-flag|icicle-hide-common-match-in-Completions-flag]], ''[[Icicles - Key Bindings#icicle-toggle-hiding-common-match|key binding]]''
+
+* `icicle-toggle-highlight-all-current' (`##C-^##') -- [[Icicles - Search Commands, Overview]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-highlight-all-current|key binding]]''
+
+* `icicle-toggle-highlight-historical-candidates' (`C-pause') -- [[Icicles - History Enhancements]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-highlight-historical-candidates|key binding]]''
+
+* `icicle-toggle-ignored-extensions' (`##C-.##') -- [[Icicles - File-Name Completion Tips]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-ignored-extensions|key binding]]''
+
+* `icicle-toggle-ignored-space-prefix' (`##C-^##') -- [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-ignored-space-prefix|key binding]]''
+
+* `icicle-toggle-incremental-completion' (`<tt>C-#</tt>') -- [[Icicles - Icompletion]], [[Icicles - Persistent Completions]], [[Icicles - Large Candidate Sets]], [[Icicles - Customization and General Tips]], [[Icicles - Note to Programmers]], ''[[Icicles - Key Bindings#icicle-toggle-incremental-completion|key binding]]''
+
+* `icicle-toggle-literal-replacement' (`##C-M-`##') -- [[Icicles - Search-And-Replace]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-literal-replacement|key binding]]''
+
+* `icicle-toggle-proxy-candidates' -- [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-proxy-candidates|key binding]]''
+
+* `icicle-toggle-regexp-quote' (`##C-`##') -- [[Icicles - Special Characters in Input Patterns]], [[Icicles - Google Matching]], [[Icicles - Search-And-Replace]], ''[[Icicles - Key Bindings#icicle-toggle-regexp-quote|key binding]]''
+
+* `icicle-toggle-remote-file-testing' (`##C-^##') -- ''[[Icicles - Key Bindings#icicle-toggle-remote-file-testing|key binding]]''
+
+* `icicle-toggle-search-cleanup' (`##C-.##') -- [[Icicles - Search Commands, Overview]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-search-cleanup|key binding]]''
+
+* `icicle-toggle-search-replace-common-match' (`##C-M-|##') -- [[Icicles - Search Commands, Overview]], [[Icicles - Search-And-Replace]], [[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]
+
+* `icicle-toggle-search-replace-whole' (`##C-,##') -- [[Icicles - Search Commands, Overview]], [[Icicles - Search-And-Replace]], [[Icicles - Other Search Commands]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-search-replace-whole|key binding]]''
+
+* `icicle-toggle-search-whole-word' (`M-q') -- [[Icicles - Search Commands, Overview]], [[Icicles - Search-And-Replace]], [[Icicles - Customization and General Tips]]
+
+* `icicle-toggle-transforming' (`##C-$##') -- [[Icicles - Sorting Candidates]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-toggle-transforming|key binding]]''
+
+* `icicle-toggle-WYSIWYG-Completions' -- [[Icicles - Customization and General Tips#icicle-WYSIWYG-Completions-flag|Customization ]]
+
+
+
+
+
+[:mU]
+[:mV]
+[:mW]
+[:mX]
+[:mY]
+[:mZ]
+==== U, V, W, X, Y, Z ====
+
+* `icicle-widen-candidates' (`##M-+##') -- [[Icicles - Regressive Completion]]
+
+* `universal-argument' (`C-u') -- [[Icicles - Standard Commands Redefined]]
+
+* `yank' (`C-y', `S-insert') -- [[Icicles - Customization and General Tips]], [[Icicles - Standard Commands Redefined]], ''[[Icicles - Key Bindings#yank|key binding]]''
+
+
+* `yank-pop' (`M-y', `M-insert') -- [[Icicles - Standard Commands Redefined]]
+
+
+
+
+----
+Top-level:
+[[#A]] | [[#B]] | [[#C]] | [[#D]] | [[#E]] | [[#F]] | [[#G]] | [[#H]] | [[#I]] | [[#K]] | [[#L]] | [[#M]] | [[#N]] | [[#O]] | [[#P]] | [[#Q]] | [[#R]] | [[#S]] | [[#T]] | [[#U]] | [[#V]] | [[#W]] | [[#X]] | [[#Y]] | [[#Z]]
+
+Minibuffer:
+[[#mA|A]] | [[#mB|B]] | [[#mC|C]] | [[#mD|D]] | [[#mE|E]] | [[#mF|F]] | [[#mG|G]] | [[#mH|H]] | [[#mI|I]] | [[#mK|K]] | [[#mL|L]] | [[#mM|M]] | [[#mN|N]] | [[#mO|O]] | [[#mP|P]] | [[#mQ|Q]] | [[#mR|R]] | [[#mS|S]] | [[#mT|T]] | [[#mU|U]] | [[#mV|V]] | [[#mW|W]] | [[#mX|X]] | [[#mY|Y]] | [[#mZ|Z]]
+
+
+
+
+----
+
+|| '''[[Icicles]]''' || [[IciclesIndex]] || [[Icicles - Options Index]] ||
+
+

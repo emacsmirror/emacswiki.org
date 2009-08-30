@@ -1,0 +1,23 @@
+This is for development of a PlannerMode mobile interface, for uses on devices like the OpenMoko Neo FreeRunner.
+
+The basic idea is to load a separate library, planner-mobile.el, which would make the necessary changes to the interface.
+
+== Tool bar ==
+
+A tool-bar with key icons would go a long way.
+
+* What is an appropriate default tool-bar height and icon size?
+* How many icons do we have room for?
+* What are the key functions that need to be there?
+
+=== Possible icons ===
+  
+* Previous day
+* Next day
+* Mark task done
+* Mark task cancelled
+* Delete task
+* Follow link
+* Create task 
+* Save
+* Jump to date

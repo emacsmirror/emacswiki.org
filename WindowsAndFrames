@@ -1,0 +1,19 @@
+If you do several tasks within Emacs, then it can be confusing for newbies.  The layout of [[window]]s works well if you do only one task (such as reading news using Gnus), or if each task uses one [[buffer]] (then you can switch buffers to switch tasks).
+
+This often not enough, however.  Example: When using Gnus, you might want three windows (summary, article, and BBDB info), when working with SQL you might want two windows (editing a file, and watching the DB output), when chatting on IRC you want all your channels visible.
+
+If all you know is how to switch buffers (C-x C-b), split windows (C-x 2 horizontally, C-x 3 vertically), maximize windows (C-x 1), and delete windows (C-x 0) -- then you will find multiple tasks confusing.
+
+Instead of using the keyboard to move among windows, you can select a window by clicking on it with the mouse, or you can use this library to have Emacs mimic the focus-follows-mouse policy implemented by some window managers and merely move the mouse over the window: http://www.emacswiki.org/elisp/follow-mouse.el
+
+The thing to do is to either create new [[frame]]s (great when using a GUI), or manage window configurations.  Either way you can then switch frames or configurations whenever you switch tasks.  In order to save, restore, and switch these, see WindowConfiguration and FrameConfiguration.
+
+Note that when you are at a terminal, you can still have frames.  Use `C-x 5 o' to cycle through frames (M-x other-frame).
+
+''For a version of Emacs that uses frames instead of windows'', for everything, see OneOnOneEmacs.
+
+----
+CategoryDisplay
+CategoryWindows
+CategoryFrames
+CategoryGlossary

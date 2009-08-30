@@ -1,0 +1,25 @@
+== What it is ==
+A major mode for editing .m-files containing Matlab code. Matlab is proprietary software for numerical maths and data analysis.  Also note that Emacs (21.3 onwards) comes with an alternative built in: octave mode.  Octave is a free software alternative to Matlab. 
+
+== How To Use It ==
+Put into your init-file (~/.emacs, ~/.xemacs/init.el, whatever) 
+
+ (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
+ (add-to-list
+  'auto-mode-alist
+  '("\\.m$" . matlab-mode))
+ (setq matlab-indent-function t)
+ (setq matlab-shell-command "matlab")
+
+== Wiki Pages ==
+* MatlabFunctionTemplate
+
+== Links ==
+* GNU Octave: http://www.octave.org/
+* The Math-Works Website: http://www.mathworks.com/
+* Download matlab.el: http://www.mathworks.com/matlabcentral/fileexchange/loadFile.do?objectId=104&objectType=file
+* SourceForge project for matlab.el (and CVS): http://matlab-emacs.sf.net
+* A how-to by Cristian S. Dima: http://www.andrew.cmu.edu/course/16-720/extras/matlab_in_emacs/
+
+----
+CategoryModes ProgrammingModes

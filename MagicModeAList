@@ -1,0 +1,14 @@
+The variable [::magic-mode-alist] (see [[Manual:magic-mode-alist]]) is an AssociationList that is matched against the buffer contents to guess the right MajorMode function.
+
+Each element looks like (/REGEXP/ . /FUNCTION/) or (/MATCH-FUNCTION/ . /FUNCTION/).
+
+It is one of the methods used by the [EmacsWiki:SetAutoMode set-auto-mode function].
+This tries each element of the alist in turn and uses the first match.
+If RegularExpression /REGEXP/ matches the text in the buffer, or calling /MATCH-FUNCTION/ returns non-nil, then /FUNCTION/ will be called.
+If the selected /FUNCTION/ is nil, then it is not called and the rest of the alist is ignored.
+Before applying the alist, the buffer is [EmacsWiki:Narrowing narrowed] to its first few characters, as determined by the `magic-mode-regexp-match-limit' variable (default 4000).
+
+[new] What's a good value for Perl? -- DenisHowe
+
+----
+CategoryModes

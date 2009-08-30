@@ -1,0 +1,18 @@
+As you know, all the cyrillic InputMethods work in a way that assumes your 
+keyboard is in QWERTY layout. However, if you're using dvorak keyboard layout, 
+you may discover that, for example, cyrillic-jcuken input method can't work
+properly since all the ascii symbols on your keyboard are mapped to appropriate
+cyrillic ones according to the qwerty->jcuken translation rules.
+
+Thus, one of the possible solutions is to define your own input method which
+translate symbols according to dvorak->jcuken rules.
+Now all that your need is to Download:cyrillic-dvorak.el and put the following 
+lines into your ~/.emacs file:
+
+<pre>
+(load-file "~/.emacs.d/cyrillic-dvorak.el")
+(setq default-input-method "cyrillic-dvorak")
+</pre>
+
+----
+CategoryInternationalization

@@ -1,0 +1,64 @@
+When you use the nnml backend, you can split your mail into various
+folders.  SplitMail shows you how to set nnmail-split-methods
+accordingly.
+
+You can have fancy mail splitting, too, however.  In order to do that,
+set nnmail-split-methods to the symbol nnmail-split-fancy (ie. you
+need to quote it), and set the variable nnmail-split-fancy (no
+quoting) to the rules you want to use.
+
+Here is a small example.  First we disable crossposting, and then we
+use the following rules:
+
+* If the Subject matches "color-theme", put the mail into the group mail.emacs.
+* If any header matches the regexp gnus-ignored-from-addresses (this variable matches all my email addresses), then put it into the group mail.misc.
+* If any header matches an email address from an emacswiki.org account, put it into the mail.emacs.wiki group.
+* All remaining mails go into mail.spam.
+* The | specifies that the mail shall not be processed further once one of the rules matches.
+
+ (setq nnmail-crosspost nil
+       nnmail-split-methods 'nnmail-split-fancy
+       nnmail-split-fancy
+       `(| ("Subject" "color-theme" "mail.emacs")
+	   (any ,gnus-ignored-from-addresses "mail.misc")
+	   (any ".*@emacswiki.org" "mail.emacs.wiki")
+	   "mail.spam"))
+
+Note that `any' is an abbreviation.  See the variable
+nnmail-split-abbrev-alist.
+
+== Dynamic Group Names ==
+
+From the manual node "Fancy Mail Splitting":
+
+If you want to have Gnus create groups dynamically based on some
+information in the headers (i.e., do `replace-match'-like substitutions
+in the group names), you can say things like:
+
+     (any "debian-\\b\\(\\w+\\)@lists.debian.org" "mail.debian.\\1")
+
+In this example, messages sent to `debian-foo@lists.debian.org' will be
+filed in `mail.debian.foo'.
+
+Mailing list on debian.org, sourceforge.net and many-many others, includes notification from SVN and CVS, uses '''List-ID''' header (for ex. List-Id: Boost announce-only mailing list <boost-announce.lists.boost.org> ) so it's easy to sort it just by:
+
+     ;; split by header List-Id
+     ("List-Id" ".*<\\(.+\\)>.*" "lists.\\1")
+
+
+If the string contains the element `\&', then the previously matched
+string will be substituted.  Similarly, the elements `\\1' up to `\\9'
+will be substituted with the text matched by the groupings 1 through 9.
+
+: A question to this: when this dynamic method creates a new group, will it be subscribed and displayed automatically?  At least on my system (where I create new groups for new colleagues that send an email to me) it doesn't -- StefanKamphausen
+
+== More ==
+
+For even more advanced setups, see SplitMailUsingBbdb.
+
+If you maintain a blacklist of spammers and want to generate a fancy split rule from it
+see BlacklistSpammers.
+
+----
+CategoryGnus
+

@@ -1,0 +1,60 @@
+Similar to ZapToISearch, this lets you kill or copy from point up to where you are isearch-ing.  ZapToISearch didn't work for me, plus I wanted the region between point and isearch highlighted so you could see what you are going to kill/copy.  And I wanted the copy function.
+
+  (defvar my-isearch-start nil)
+  (defvar my-isearch-end nil)
+  (defvar my-isearch-overlay nil)
+  (defvar my-isearch-face nil)
+  
+  (defface my-kill-region-face
+    '((t (:inherit region)))
+    "Face to highlight region that will be killed"
+    :group 'faces)
+  
+  (defface my-copy-region-face
+    '((t (:inherit region)))
+    "Face to highlight region that will be copied"
+    :group 'faces)
+  
+  (defun my-kill-to-isearch ()
+    "Kill from point to somewhere else using isearch."
+    (interactive)
+    (unwind-protect
+        (save-excursion
+          (setq my-isearch-start (point))
+          (setq my-isearch-face 'my-kill-region-face)
+          (when (isearch-forward)
+            (kill-region my-isearch-start my-isearch-end)))
+      (setq my-isearch-start nil)
+      (when my-isearch-overlay
+        (delete-overlay my-isearch-overlay))))
+  
+  (defun my-copy-to-isearch ()
+    "Copy from point to somewhere else using isearch."
+    (interactive)
+    (unwind-protect
+        (save-excursion
+          (setq my-isearch-start (point))
+          (setq my-isearch-face 'my-copy-region-face)
+          (when (isearch-forward)
+            (copy-region-as-kill my-isearch-start my-isearch-end)))
+      (setq my-isearch-start nil)
+      (when my-isearch-overlay
+        (delete-overlay my-isearch-overlay))))
+  
+  (defadvice isearch-highlight (after my-iseach-add-overlay activate)
+    (when my-isearch-start
+      (setq my-isearch-end (ad-get-arg 0))
+      (if my-isearch-overlay
+          (move-overlay my-isearch-overlay my-isearch-start my-isearch-end (current-buffer))
+        (setq my-isearch-overlay (make-overlay my-isearch-start my-isearch-end)))
+      (overlay-put my-isearch-overlay 'face my-isearch-face)))
+  
+  (defadvice isearch-dehighlight (after my-isearch-remove-overlay activate)
+    (when my-isearch-overlay
+      (delete-overlay my-isearch-overlay)))
+
+[new]
+Couldn't this have been done with having TransientMarkMode turned on and by using `C-r RET C-w' to kill after an isearch? -- AaronHawley
+
+----
+CategoryEditing

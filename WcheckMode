@@ -1,0 +1,29 @@
+Lisp:wcheck-mode.el
+
+== Introduction ==
+
+Wcheck mode is a minor mode for on-the-fly (spell-)checking and marking words or other text elements in Emacs buffer. Wcheck sends parts of buffer's content to an external text-filtering program and, based on its output, decides if some parts of text should be marked.
+
+Wcheck mode can be used with spell-checker programs such as Ispell, Aspell and Enchant. Then the semantics of operation is that the external spelling checker tells which words are misspellings and Wcheck mode marks them as such in Emacs buffer. However, Wcheck mode can also be useful with other kind of external tools. Any tool that can receive text stream from standard input and send text to standard output can be used.
+
+== Features ==
+
+In Wcheck configuration different semantical units are called "languages". Each language can use its own external program, command-line arguments and other settings, such as the regular expressions and syntax table that are used to match words (or other text elements) in Emacs buffer. User can choose which "face" is used to mark text elements in buffer. All settings are per language and user is free to interpret the semantics of text analyzing: it's left open what marked text elements in the buffer actually mean.
+
+== How does it compare to other spell-checkers? ==
+
+The open design makes Wcheck mode quite different from spell-checkers like [[FlySpell]] and [[SpeckMode]]. They are specific tools for spell-checking and are very much tied to Ispell's features and command-line interface. This is good if you want to use Ispell or compatible program for spell-checking natural languages. However, not all human languages can be supported through Ispell and there can also be other kind of text-checking needs. The motivation behind Wcheck mode is to offer more general-purpose interface for external programs. It does not implement all spell-checker features but it works even with user's custom shell/awk/perl scripts or other checkers and text filters. Wcheck mode is also very fast, a true real-time checker.
+
+== Install and configure ==
+
+Put Lisp:wcheck-mode.el file to some directory in your `load-path' and add the following lines to your Emacs initialization file (##~/.emacs##):
+
+    (autoload 'wcheck-mode "wcheck-mode"
+      "Toggle Wcheck mode." t)
+    (autoload 'wcheck-change-language "wcheck-mode"
+      "Switch Wcheck-mode languages." t)
+
+See the documentation of variable `wcheck-language-data' for information on how to configure Wcheck mode. For easy configuration you can use the options in customize group named "wcheck" (##M-x customize-group RET wcheck RET##). Interactive command `wcheck-mode' toggles the mode for the current buffer; command `wcheck-change-language' is used to switch languages.
+
+----
+CategorySpelling

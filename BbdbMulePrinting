@@ -1,0 +1,154 @@
+When you try to print your BBDB using the `P' command, you will find
+that this only works for ASCII text.  As soon as you have non-ASCII
+characters in your bbdb.tex file, you need to fiddle with your TeX
+setup.  This is nigh impossible if you use all sorts of languages in
+your BBDB.  In this case, you will have a working BbdbMule setup for
+display already.  Here is the missing stuff for the print setup.
+
+First, make sure you can use PsPrint for with multibyte buffers.  Test
+it with the HELLO file, because we will use `M-x ps-print-buffer' to
+print the *BBDB* buffer instead of the bbdb-print functions.
+
+First, we need to define a display type to use for printing, since you
+will probably not want to use the default layouts.  Here we add the
+`printable' outline to the alist of layouts.  We allow toggling, so
+now we can use `t' and `* t' to cycle through the one-line, the
+multi-line, and the printable layout.
+
+    (add-to-list 'bbdb-display-layout-alist
+                 '(printable (order net icq aim irc-nick phones
+                                    addresses notes www)
+                             (toggle . t)))
+
+The order element in the alist indicates what fields are displayed,
+and in what order, after the name.  See the doc string for
+`bbdb-display-layout-alist' if you want to know more.
+
+And we want some of the nice features of bbdb-print, too.  In
+particular, we want `bbdb-print-require' and `bbdb-print-net' to have
+an effect:
+
+    (setq bbdb-print-require t
+          bbdb-print-net 'primary)
+
+If you want to read the doc strings of those variables, you need to
+load the `bbdb-print' library (use `M-x load-library').
+
+So now all we need is the function to do it!  This one is hacked
+together using some code from bbdb-print and almost all of
+`bbdb-format-record-layout-multi-line'.
+
+    (defun bbdb-format-record-layout-printable (layout record field-list)
+      "Layout formatting function for the `printable' layout.
+    Takes `bbdb-print-require' and `bbdb-print-net' into account."
+      (let* ((name (bbdb-record-name record));; bind these for bbdb-print-require
+             (company (bbdb-record-company record))
+             (net (bbdb-record-net record))
+             (phone (bbdb-record-phones record))
+             (address (bbdb-record-addresses record))
+             (notes (bbdb-record-raw-notes record)))
+        (when (eval bbdb-print-require)
+          (bbdb-format-record-name-company record)
+          (insert "\n")
+          (let* ((notes (bbdb-record-raw-notes record))
+                 (indent (or (bbdb-display-layout-get-option layout 'indentation) 6))
+                 (fmt (format " %%%ds: " indent))
+                 start field)
+            (if (stringp notes)
+                (setq notes (list (cons 'notes notes))))
+            (while field-list
+              (setq field (car field-list)
+                    start (point))
+              (cond ((eq field 'phones)
+                     (let ((phones (bbdb-record-phones record))
+                           loc phone)
+                       (while phones
+                         (setq phone (car phones)
+                               start (point))
+                         (setq loc (format fmt (bbdb-phone-location phone)))
+                         (insert loc)
+                         (put-text-property start (point) 'bbdb-field
+                                            (list 'phone phone 'field-name))
+                         (setq start (point))
+                         (insert (bbdb-phone-string phone) "\n")
+                         (put-text-property start (point) 'bbdb-field
+                                            (list 'phone phone
+                                                  (bbdb-phone-location phone)))
+                         (setq phones (cdr phones))))
+                     (setq start nil))
+                    ((eq field 'addresses)
+                     (let ((addrs (bbdb-record-addresses record))
+                           loc addr)
+                       (while addrs
+                         (setq addr (car addrs)
+                               start (point))
+                         (setq loc (format fmt (bbdb-address-location addr)))
+                         (insert loc)
+                         (put-text-property start (point) 'bbdb-field
+                                            (list 'address addr 'field-name))
+                         (setq start (point))
+                         (bbdb-format-address addr nil indent)
+                         (put-text-property start (point) 'bbdb-field
+                                            (list 'address addr
+                                                  (bbdb-address-location addr)))
+                         (setq addrs (cdr addrs))))
+                     (setq start nil))
+                    ((eq field 'net)
+                     (let ((net (bbdb-record-net record)))
+                       (setq net (cond ((eq bbdb-print-net 'primary)
+                                        (list (car net)))
+                                       ((eq bbdb-print-net 'all)
+                                        net)
+                                       (t nil)))
+                       (when net
+                         (insert (format fmt "net"))
+                         (put-text-property start (point) 'bbdb-field
+                                            '(net field-name))
+                         (setq start (point))
+                         (insert  (car net) "\n")
+                         (put-text-property start (point) 'bbdb-field '(net)))))
+                    ((eq field 'aka)
+                     (let ((aka (bbdb-record-aka record)))
+                       (when aka
+                         (insert (format fmt "AKA"))
+                         (put-text-property start (point) 'bbdb-field
+                                            '(aka field-name))
+                         (insert (mapconcat (function identity) aka ", ") "\n")
+                         (setq start (point))
+                         (put-text-property start (point) 'bbdb-field '(aka)))))
+                    (t
+                     (let ((note (assoc field notes))
+                           (indent (length (format fmt "")))
+                           p notefun)
+                       (when note
+                         (insert (format fmt field))
+                         (put-text-property start (point) 'bbdb-field
+                                            (list 'property note 'field-name))
+                         (setq start (point))
+                         (setq p (point)
+                               notefun (intern (format "bbdb-format-record-%s" field)))
+                         (if (fboundp notefun)
+                             (insert (funcall notefun (cdr note)))
+                           (insert (cdr note)))
+                         (save-excursion
+                           (save-restriction
+                             (narrow-to-region p (1- (point)))
+                             (goto-char (1+ p))
+                             (while (search-forward "\n" nil t)
+                               (insert (make-string indent ?\ )))))
+                         (insert "\n"))
+                       (put-text-property start (point) 'bbdb-field
+                                          (list 'property note)))))
+              (setq field-list (cdr field-list))))
+          (insert "\n"))))
+
+So now, to print the BBDB entries, call `M-x bbdb' and provide no
+regexp.  That lists all the entries.  Then use `* t' to toggle to the
+printable layout.  Then use `M-x ps-print-buffer' to print the stuff,
+or or `C-u M-x ps-print-buffer' to save it into a <nowiki>PostScript</nowiki> file.
+Remember to set up PsPrint correctly.
+
+----
+CategoryPrinting
+CategoryInternationalization
+CategoryBbdb

@@ -1,0 +1,872 @@
+Add funny quotes from the EmacsChannel here. Please add new quotes at the end.
+
+See other Emacs IRC quotes here: http://qdb.us/?search=emacs or http://bash.org/?search=emacs&sort=0&show=25
+
+Please delimit these with a "%" character on the first column, so that fortune does not complain.
+To make a fortune file from these quotes, use:
+
+<pre>
+lynx -nolist -dump http://www.emacswiki.org/cgi-bin/wiki/EmacsChannelQuotes \
+| awk '/^ *% *$/ && nhr > 0 {print "%"}
+       /^ *% *$/ {nhr++}
+       /^ *_+ *$/ {nhr=0}
+       !/^$/ && !/^ *% *$/ && nhr > 0 {print;}'
+</pre>
+
+<pre>
+%
+-!- hober has joined #emacs
+-!- mode/#emacs [+o hober] by ChanServ
+<@hober> word.
+< forcer> LaTeX.
+< TauPan> quark
+<@hober> :)
+%
+<Lurhas> I'll name a city after you if you change your name to Seattle.
+%
+<vertexcc> ty all. It is good for us noobs to have a place to come and ask a
+    quick quesiton. I appreciate the help:)
+<Lukhas> i'd appreciate some help for my problem too ;)
+<bojohan> sorry, you're not a n00b :P
+<Lukhas> hey ! :)
+%
+<ZwaX> the sourceforce ERC homepage is sponsored by "Buy Viagra Online".  does
+       ERC have side-effects?
+%
+<SynrG> i can hide/show subtrees using the menu, but the keys to do this are hopelessly complicated
+<SynrG> i mean come on ... C-c @ C-s and C-c @ C-d ... who thinks up these? :)
+<SynrG> do "real emacs users" just tolerate this, or do they typically come up with their own easier
+    keymappings when they find they need frequent access to awkwardly keyed commands?
+<cmg> easier keymappings for very frequence stuff
+<Erwin> I have remapped C-c to left-eye-blink
+%
+<kensanata> strangely enough my web access broke down, but irc still works.  the world is amazing.
+<kensanata> i wonder what that means, perhaps the local dns is down.
+*** kensanata (~alex@62.2.236.162) has quit: Read error: 104 (Connection reset by peer)
+%
+<kensanata> grr...  zsh compile fails.
+<kensanata> blind hacking allows make to continue...
+<delYsid> me too :-]
+%
+<shapr> I should finish things more often
+<shapr> like code, not juice cartons
+%
+<rw> danl hire me to work at codefactory ! :D
+<rw> i will move to se, live in your house, eat your food, fart in your living
+     room, use your computer and spend your money !
+%
+<shapr> how do I correctly display two byte fonts?
+<liiwi> you take the first byte and display it
+<liiwi> then you take the other byte and display it
+%
+<stampy> Well, if i used win i would probably use visual basic, i played with
+         it over my friends once, i thought it was neat how i could pop out
+         some crap app in 15 minutes.
+<danl> Yeah, producing crap only takes a squeeze
+%
+<roychri> Can I mix CVS in a glass of water?
+<toby> No, CVS is heavier than water
+%
+<danl> I bet you I'll get my gnus coffee mug before you do!
+%
+<johnw> Gnus is the center of my data-gathering universe
+%
+<johnw> I was just thinking in the shower this morning about how ignorant all
+        of the characters on the show "Friends" are, and how hip that
+        ignorance is made out to be.
+%
+<mega> anyone knows where i may find xemacs for linux?
+<danl> Try www.xemacs.org and be dazzled by my extreme deductive capability.
+%
+*** #emacs topic: If you could get an erection, you would have no need
+    for Emacs.
+*** #emacs: topic set by aaronl, 02:15:58 02/02/02
+%
+<hessian> Viiru: can I show you my .gnus?
+<Viiru-> hessian: Sure.
+<hessian> (setq gnus-select-method '(nntp "news.uswest.net"))
+<hessian> (setq mail-sources
+<hessian>       '((file)
+<hessian>         (pop :server "mail.pdrpip.com"
+<hessian>              :user "pueblito"
+<hessian>              :password "<Ph@t|42")))
+<hessian> (add-to-list 'gnus-secondary-select-methods '(nnml ""))
+<hessian> (setq system-name "purew00t.local.domain")
+<hessian> (setq send-mail-function 'smtpmail-send-it) ; not for Gnus
+<hessian> (setq message-send-mail-function 'smtpmail-send-it) ; for Gnus
+<hessian> (setq smtpmail-smtp-server "mail.pdrpip.com")
+<hessian> (setq smtpmail-local-domain "pdrpip.com")
+<hessian> (setq smtpmail-sendto-domain "pdrpip.com")
+<hessian> (setq smtpmail-debug-info t) ; only to debug problems
+<hessian> sorry for flood
+<Viiru-> Thats not your real password, I hope?
+<hessian> fuck
+%
+<Erwin> I'm using Linux. A library that emacs uses to communicate with Intel hardware.
+%
+<shapr> whoa, my erc mode line is [#h,#e,#l,#p], I think my computer is trying
+        to send me subliminal messages.
+%
+* delYsid has mortage, opportunity and penis in his score file.
+<delYsid> thats pretty effective against spam
+<Luke> aren't you worried about missing opportunities to mortgage your penis?
+%
+<conatic> anyone to show me his .emacs ?
+<shapr> hey dude, that's like looking at my underwear.
+<shapr> happily, both are clean :-)
+%
+<gustavo> ouch :)
+<gustavo> GNU Emacs 19.25.1 of Thu Jul  7 1994 on gecko
+    (i386-unknown-netbsd0.9C)
+%
+<kensanata> i am at fucking work, you moron!  i am wasting my time with you if
+            you want to just insult my intelligence.
+%
+<true_jordan> lol
+<jordan> enough!!
+<jordan[tm]> ;P
+<jordan> I am the real jordan.
+<jordan_> I am a real jordan
+%
+<jordan[tea]> damnit, my eye keeps twitching
+<jordan[tea]> it's like, possessed :P
+%
+<forcer> someone shoul fix the docstrings *8)
+* forcer whistles innocently
+<kensanata> *wild finger pointing*
+* Han ducks
+%
+<kensanata> its 5am on christmas day and we are hacking ERC!?
+%
+<Erwin>  "All power is derived from the barrel of a Gnu."
+<Erwin>                  - Mao Tse Stallman
+%
+<delYsid> cygwin is like cybersex
+<delYsid> It just doesn't feel right :)
+%
+<palomer> how do I undebug all my functions?
+<bpt> palomer: insert bugs into them
+<bpt> palomer: e.g. (car "astring")
+<bpt> (/ 1 0)
+<bpt> (sqrt -3)
+<bpt> etc.
+%
+* delYsid is away: sex
+%
+<delYsid> Mike-69: use tramp and the sudo method
+<Mike-69> delYsid: whats the sintax
+<delYsid> C-h i d m tramp RET *boggle boggle boggle, light bulb*
+%
+[re: shapr was throwing straw men at a troll to watch the flames shoot out ]
+<shapr> I really shouldn't feed the trolls.
+* resolve* it's like feeding pigeons, it only encourages them to come
+  back and they're a pest, but it's fun to watch them consume ;-)
+%
+<Riastradh> If you ever come to #macdev, I advise you not to try arguing
+  with BusError; his skull is as thick as C++ is bloated.
+%
+<shapr> telemarketers rarely call me twice.
+<shapr> I try to keep them on the line and find out about their wife and kids.
+%
+<myrkraverk> hmm, why does emacs call me sarah?
+%
+<elf> every success on #emacs is an excuse to drink beer
+%
+<bpt>  computing consists primarily of reading, writing, and editing
+<myrkraverk> bpt: and lateley of clicking 'next' ;)
+%
+<elf> it should be noted that emacs users do sometimes behave like a
+  bunch of nazis, esp. when we persecute the vi users;)
+%
+<LonEagle> is there a default key bound to compile?
+<franl> LonEagle, not in GNU Emacs. I had to bind it myself.
+<LonEagle> what about XEmacs?
+<Erwin> does it matter?
+<LonEagle> good point
+%
+<Erwin> meh. What did BSD *really* add to the original UNIX?
+<elf`> vi
+%
+<delYsid> Emacs is like a brain, at maximum you can only utilize about 10% of its real power :)
+%
+<delYsid> ?
+<shapr> !
+<resolve> !
+<Riastradh> :
+<shapr> ~
+<delYsid> ^
+<Riastradh> &
+<delYsid> |
+<shapr> ?
+<Riastradh> '
+<delYsid> ¸
+<Riastradh> Á
+<elf> a lot of weird characters hang out on #emacs
+%
+<creepto> im still just learning emacs, lets say i have the screen split four
+          ways two top, two bottom, how do i close one of the bottom windows
+          so that it becomes two top, one bottom?
+<Khmar> C-x 4 0 closes a window
+<Khmar> and the buffer in it.
+*** creepto (~alex@h24-85-144-215.vf.shawcable.net) has left channel #emacs: "Killed buffer"
+<Khmar> wrong buffer :)
+<Khmar> heh heh
+<deego> :)
+*** creepto (~alex@h24-85-144-215.vf.shawcable.net) has joined channel #emacs
+<creepto> yes that works
+%
+<bojohan> windows's security holes are so big you can drive Emacs through them!
+%
+* lg_ was programmed in sperma-to-vagina language :)
+<yesod> This is a nice language, I like programming in it!
+%
+<yesod> , reimplement wheel
+<fsbot> We should reimplement wheel using Python instead of elisp
+%
+<Lukhas> do we say Moldovar or Moldavian ? :)
+<hynek> "Russian" *run&hide* ;)
+%
+<elf> so, for the record (meaning ,,emacschannelquotes ), when i ask "does
+      anyone here use viagra? the answer is supposed to be "yes, if you want
+      it to come up faster than emacs."
+<elf> does anyone here use viagra?
+<mkennedy> emacs is always up
+<Riastradh> Emacs is bigger than vi!
+<Riastradh> Emacs doesn't need no stinking viagra to _get_ big; it already _is_ big!
+%
+<elf> ,poll maritalstatus vote 1
+<TerryP> hehe
+<fsbot> You will be successful in love.
+<TerryP>lol
+<elf> ?!?!
+<TerryP> now we know for certain.. fsbot IS sentient.
+%
+<Riastradh> .seen elf
+<birny> elf was last seen talking in #emacs at 2003-08-02 03:28:20 GMT (4 minutes, 45 seconds ago).
+<damiaan> .seen elf taking a shower
+<birny> I've never seen elf taking a shower before.
+<damiaan> you don't know what you've missed, birny
+%
+<lg_> T3 was pop movie, and there was no reason to have woman as T, she just spoiled cool film
+<Erwin> was there a reason for the terminator to be a man? i don't recall his
+        penis being used as an offensive weapon in any previous movies
+%
+<mtndrew> inconnu: have you tried reading the manual?
+<inconnu> mtndrew: yes I have. I have spent almost a week reading manuals but
+       am getting nowhere. I can get it to read news and pick up and send mail
+       but I need to build on that and thought I might have set it up wrongly
+       to start with
+<mtndrew> I've been using Gnus for a year and I'm still configuring it.
+       That's part of the fun.  I'd say if you can get and send news and mail,
+       then you've done all right for yourself for only a week.
+%
+<elf`> hi bpt
+<elf`> hi fsbot
+<fsbot> hey there
+<bpt> fsbot: fuck yourself
+<fsbot> Please train me on this maneuver.
+<elf`> i see your cable is back, fsbot
+<damiaan> haha
+%
+<utis> I am sometimes afraid that the amount and complexity of the Lisp code
+       reach a critical mass and then -- suddenly your Emacs installation
+       becomes sentient. :)
+%
+<elf> emacs is my wife and perl is my mistress
+%
+<kanaldrache> Coding is better than sex... :)
+<kanaldrache> Think of Linus ... he's more sexy as he
+    codes...
+<kensanata> kanaldrache: your coding skills must be awesome,
+    or your sex must be terrible.  ;)
+<kensanata> kanaldrache: linus also said "i didn't have
+     three children writing linux, you know."
+%
+<yesod> Perl. The only language that looks the same before and after RSA
+        encryption.
+(a quote from rms)
+%
+<Laruiss> this is a great chan ;)
+<kensanata> we're proud of it.
+<Lukhas> indeed, we have the only 2 Danish people connected to
+      internet here :)
+%
+<kensanata> jeez, what is this, #frankenemacs!?
+%
+<kensanata> this is the ERA, Emacsian Republican Army!  Join Now!
+<kensanata> RMS wants YOU!!
+%
+<Peaker> what is the DNA editing mode?
+<kensanata> Peaker: when you get a female emacs and put it into
+      DNA editing mode, you can create little tiny emacsen.
+%
+<Khmar> channel's awfully silent today :)
+<yrk_work> you can almost hear the cursor blinking
+%
+<kensanata> sachac: if you put your .emacs really close to
+      the monitor, i can heal it.
+%
+<shadow_x> fsbot: you're not that clever actually, are you?
+<fsbot> [google]    http://www.emacswiki.org/cgi-bin/emacs-fr.pl/ErcBugs
+%
+<e1f> fsbot: are you alive??
+<fsbot> Highly likely.
+%
+<TerryP> U alt.binaries.pictures.erotica.bestiality.hamster.duct-tape RET
+<TerryP> wooops, wrong buffer.. :P
+%
+<TerryP> , quotes-emacs
+<fsbot> * lg_ was programmed in sperma-to-vagina language :)
+<fsbot> <yesod> This is a nice language, I like programming  in it!
+<yrk> STV in short
+<TerryP> i'd like to read the standard
+<lawrence> it's not something you read
+<TerryP> i haven't quite understood the step from getting an idea to compiling in that language
+<lawrence> :P
+<TerryP> :)
+<e1f`> that's b/c it's an interpreted language
+<yrk> TerryP: it's very hardware dependant
+<TerryP> yrk: so true
+<TerryP> and it's absolutely not pointer-safe, unless you use a wrapper
+<TerryP> :)
+<yrk> it has some of the most beutiful GUIs I've ever seen
+<TerryP> it's very strict about OOP, once you create something in it, it will inherit from you
+<franl> It's also got support for spawning child processes.
+<TerryP> it's hard/impossible to maintain though
+<TerryP> franl: controlling the child-processes is hard though
+<yrk> the deeper the indentation the better
+* lawrence runs away
+<TerryP> it's like python
+<TerryP> it depends on indentation
+<TerryP> also, it features what could be called a python.
+<franl> Thank you.  I'm here all week.  Try the veal.
+%
+<Han> And I assume you know how to compile something ;)
+<forcer> i do quite well ;)
+<Han> that's what they all say.
+%
+<nForbes> hell isn't so bad right?
+<Lukhas> right
+<nForbes> :D
+<Lukhas> hell is the waiting room, then you come here
+%
+<gbvb> delYsid: You can use erc-server-select. seems to connect very
+well..
+<delYsid> gbvb: yeah, I wrote it :)
+<gbvb> delYsid: Doh..
+%
+<deego> what with my fixation on shortening my .emacs loading time..
+<johnw> deego: have you seen pod.el?
+<deego> i wrote it :)
+<johnw> aha!
+%
+<delYsid> Whenever I have to deal with perl modules, I need some really good smoke first.
+<delYsid> otherwise, I cant stand it.
+<delYsid> If people knew... 85% of my erc code was written stoned
+<kensanata> delYsid: let me tell you, i knew you were writing 85% of your changelog entries stoned!
+%
+JEMavenger joined #emacs
+<JEMavenger> WHat is the command to close out of emacs?!?!!?!!!??!?!?!
+<ludwig> JEMavenger: why would you want to get out of emacs?
+<JEMavenger>  ludwig: My computer is burning!!
+<JEMavenger> quick guys
+<dsmith> JEMavenger: C-x C-c
+<JEMavenger> Thank you!!!!!!
+<JEMavenger> I must go get some water now11!!
+JEMavenger left #emacs
+%
+<mingus> i can't believe how much faster eshell's output is compared to
+    gnome-terminal
+<mingus> even running _in_ gnome-terminal
+%
+<mst> I want to *live* inside emacs
+<mst> this is so cool
+<bpalmer> M-x move-furniture-into-emacs RET
+%
+<VetteFrk69> i'm hyper
+<myrkraverk> that's good, can I use you for a mod key?
+%
+<tsoul> is there any way to get rid of the 'root' Gnus topic?
+<ore> echo "Go away now, you fucker!"|mail -s "Leave now or feel my wrath" root@localhost
+%
+<fsbot> [4] fsbot is da coolest!
+<fsbot> [5] thats me.
+<fsbot> [6] i have many fathers but emacs is my mother
+<tekonivel> fsbot: [6] is good
+<fsbot> created.
+%
+<enberg> I choose Emacs over XEmacs because Emacs *feels* more solid.
+<anaran> enberg: for what properties of "solid"?
+<enberg> I dunno, it just feels better, it's not something I can put my finger on
+<enberg> Also, the Emacs camp spend less time griping over what the XEmacs people are doing
+%
+<enberg> And I suppose you read playboy for the articles?
+<kleenex> I only read playboy for the tits.
+<tekonivel> kleenex: and you've a nick to match! (:)
+%
+<andi5> Lukhas: could you do me a favor and write some umlauts in latin1?
+<Riastradh> ü
+<iNoah> hèrè's â whølë bùñçh öf lãtìñ1 fòr ýöùr 8bït þlèâsúré
+%
+<gnup> the japanese have strange taste
+<yrk_work> gnup: "strange taste"? When did you last eat japanese person?
+<gnup> yrk_work: where do *you* live? :)
+<yrk_work> Israel
+<gnup> yrk_work: way down in my list ;)
+<yrk_work> gnup: list of what?
+<kensanata> holiday destinations?
+<gnup> nah, people to taste
+<alephnull> gnup: You lick yourself when you want to taste Indian ok ?
+%
+<bojohan> color-theme-deep-anal
+<paroneayea> @_@
+<paroneayea> that must be very brown.
+%
+<enberg> TerryP lives the inadequate life
+<drewr> how does one measure adequacy?
+<bpalmer> with an adequecy-meter
+<bpalmer> next question!
+%
+<bkhl> forcer, at least you didn't grow a tail or became blue or anything.
+<forcer> bkhl: how do you know?
+<bkhl> forcer, if you did, you wouldn't still be chatting.
+<forcer> why would a tail prevent me from chatting?
+<fledermaus> one normally observes a degree of alarmed panic in the event of
+    sudden limb growth.
+[...]
+* [brick] would like to make an announcement:  i've just written my first
+    defun.  can total madness be far off?
+<bkhl> [brick], nope. Soon you'll be sitting here talking about sudden limb
+    growth.
+%
+<kensanata> 34y relationship?
+<smitty1e> no, life.  known her 5 years.
+<kensanata> oh.  34y non-profit
+<kensanata> ouch!
+<kensanata> that's what i get for using dabbrev-expand...
+<kensanata> not-marriedness...
+<kensanata> :)
+%
+<dynamo> you are practicing foul language ?
+<JackaLX> you never know when it'll come in handy
+<JackaLX> but I have a backup when language fails.... wanna see?
+<myrkraverk> JackaLX: as long as you keep your clothes on
+<JackaLX>      _                         _
+<JackaLX>     |_|                       |_|
+<JackaLX>     | |         /^^^\         | |
+<JackaLX>    _| |_      (| "o" |)      _| |_
+<JackaLX>  _| | | | _    (_---_)    _ | | | |_
+<JackaLX> | | | | |' |    _| |_    | `| | | | |
+<JackaLX> |          |   /     \   |          |
+<JackaLX>  \        /  / /(. .)\ \  \        /
+<JackaLX>    \    /  / /  | . |  \ \  \    /
+<JackaLX>      \  \/ /    ||Y||    \ \/  /
+<JackaLX>       \__/      || ||      \__/
+<JackaLX>                 () ()
+<JackaLX>                 || ||
+<JackaLX>                ooO Ooo
+<myrkraverk> Oh, he *did* remove them
+%
+<Riastradh> That's why I suggest the metric unit system, but based on 12, not 10.
+<e1f`> Riastradh has 12 fingers
+<hydropnic> lol
+<hydropnic> dude you about made me spit out my noodles
+%
+<bojohan>   _,  |Emacs~
+<bojohan>  o_O  |
+<bojohan> ( Â¯ =|
+<bojohan> _| |_ |
+%
+21:09 < myrkraverk> I'm using ERC Version 4.0 $Revision: 1.671 $ with XEmacs 21.5  (beta17)
+                    "chayote" (+CVS-20040321) XEmacs Lucid (mipsel-PlayStation2-linux, built 2004-06-14)!
+%
+<ecraven> ah, if i call calendar with planner my dates will show up like with diary??
+<johnsu01> ecraven: You can have it so that when you browse the calendar
+    dates, it will show your planner pages.
+* myrkraverk likes his dates to show up in clothes, the diary is optional
+%
+<johnw> C++ is a wicked language, no doubt; like the mercurial tongue of a
+        street whore set to charm you by her specious wares...
+<johnw> signed John, Member of C++ committee 1997-2003 :)
+%
+16:31 -!- Lukhas has joined #emacs
+16:32 <@Lukhas> re
+16:33 <@kensanata> mi
+16:33 <@Lukhas> ...
+16:33  * Lukhas gives to kensanata the Worst Daily #Emacs Joke prize
+%
+<e1f> edrx2: "clone" usually means a corrupt copy in medical terms
+<e1f> every copy is a degraded version of the original
+<e1f> hence xemacs is a clone
+%
+<smitty1e> A newbie went to the master and said "I was in #emacs, and they were splitting hairs again".
+<smitty1e> The master pointed to his bald pate.
+%
+<tekonivel> read my lisps: ich bin ein emacser
+----
+Noteworthy: this quote blends George Herbert Walker Bush, a Republican,
+and John F. Kennedy, a Democrat, which normally go together like Metallica
+and the Beatles...
+* http://beatallica.org/
+----
+%
+<p00ya> hangman.el killed emacs :(
+<yrk> how appropriate
+%
+<mathrick> .yow
+<birny> Did I say I was a sardine?  Or a bus???
+<fsbot> Highly likely.
+%
+*** zeus has joined channel #emacs
+<zeus> morning good ppl
+<Lukhas> zeus hi
+<zeus> well good bye I just come to say morning :)
+<kensanata> :)
+<Lukhas> have a nice day :)
+<zeus> thanks
+<zeus> bye all
+*** zeus has quit: "bye"
+%
+<kensanata> olá rw
+<rw> ola kensanata!!! como vao as coisas?
+<kensanata> estou ainda no trabalho... que mais!?
+<dipnlik> kensanata : where are you from?
+<utis> dipnlik: he is from the Portugeese-speaking part of Switzerland.
+%
+<Lukhas> ".JAVA" ??! :)
+<Lukhas> burn in flames, double heretic
+<Erwin> You can't just burn in flames. You need to instantiate a
+        OxygenStream then on top of that a BufferedOxygenConsumer then give
+        that as parameters to a FlameProducerConsumerFactoryQueue.
+%
+<e1f> gosling has an interesting entry on his blog: http://today.java.net/jag/
+<e1f> the helicopter dropping the car
+<chris2> better drop the car than the cdr :)
+%
+<fnord[]> Rip out the psychologist!
+<bojohan> Why do you say rip out the psychologist?
+<fnord[]> because it is bloat
+<bojohan> Is it because it is bloat that you came to me?
+<fnord[]> argh
+<fnord[]> nice one
+<bojohan> Earlier you said it is bloat?
+%
+<bojohan> wasn't that last year?
+<Lukhas> nah, it was almost 2 years ago
+<bojohan> last may, or so
+<Lukhas> let's say 10 monthes
+<Lukhas> i'm pretty sure you were present before that
+[...]
+<bojohan> 1.5 years
+<Lukhas> hmm, let's say 8.5 monthes
+<bojohan> what?
+* Lukhas needs to learn calculus
+[...]
+<Lukhas> 12 + 8 = 20 monthes, not 10
+<TerryP> that's not calculus, that's arithmetics
+<Lukhas> i'm out of service this evening
+<enberg> sounds like you need to go back to 1st grade
+%
+* Lukhas is gonna be famous for the creation of a stabbing fsbot
+<johnsu01> an fstab?
+%
+<TauPan> how do I alias yes-or-no-p to mean y-or-n-p ?
+<enberg> (defalias 'yes-or-no-p 'y-or-n-p)
+<fledermaus> (defalias 'yes-or-no-p 'y-or-n-p)
+<fledermaus> enberg: stop preemptively following me.
+%
+<gijs_>  /msg nickserv link gijs h@rst1kk3
+<Lukhas> ...
+<enberg> yay, free passwords
+%
+<myrkraverk> hmm, shopping for a sex slave isn't easy, it's mostly just literature or something on google ;/
+%
+<fireatme> I have a great idea in emacs. and I have no elisp kills to implemented it. Where should I publish my idea ??
+<fsbot> I'm telling you, you don't want to know.
+%
+bojohan has super psychic powers. Really!
+<emacs-trivia> --- Q: Not documented From `gnus-registry'.
+<sachac> !
+<mathrick> gnus-registry-do-foo
+<bojohan> gnus-registry-initialize
+<emacs-trivia> --- bojohan: CORRECT!
+%
+<mulligan> a 1.4M static linked emacs binary http://wftp.tu-chemnitz.de/pub/linux/dietlinux/42/
+<trogdoraoeu> wow, that's smaller than my .emacs file
+%
+<dagbrown> The iMac is just evidence of how dangerous vi is.
+<dagbrown> Obviously Steve came up with the name by accident after forgetting he was *already* in insert mode.
+%
+<miqorz> poop tastes funny
+%
+<utis> Lukhas: I am German, I totally lack any sense of humour.
+<jemarch> so i am Spanish. I totally lack any sense of humanity
+<loquace> I am french, I totaly never use soap
+<janoli> I am argentinian... i will pay
+<ams> I'm Polish, so I'm god.
+<Lukhas> ams: Can I use you to clean my car ?
+%
+<Han> Which character is this:  ¤
+<jemarch> Han: a space invader
+%
+< drewr> I've got a ton of (require ...) in my .emacs for each .el in
+  ~/elisp.  What's an example of just loading everything in ~/elisp
+  automatically?
+< gnome> drewr: *everything* ?
+<@myrkraverk> gnome: he's unlikely to have a hamburger in his ~/elisp ...
+< drewr> gnome: Perhaps I could have a ~/elisp/active and
+  ~/elisp/inactive or something.  The point is that I know there's a
+  more elegant solution than having 1,800 (require)'s.
+< drewr> myrkraverk: Actually, I've got two cheeseburgers and a shake.
+  (But they compile!)
+%
+<DeeGO> fsbot: kick yourself
+<-- fsbot has kicked DeeGO from #emacs (yourself Kicked by fsbot)
+<fsbot> t
+%
+<isomer> is it cheating to use perl for an obfuscated coding contest?
+%
+*** #xemacs was created on Wednesday 2004/05/05 10:27:26
+<anaran> erbot: you must be lonely lately!                   [2005-05-19T00:12]
+<erbot> I think you is a very bad bot.
+%
+<smitty1e> ah, the emacswiki, what a think of beauty...
+%
+<mauke> is it possible to tell emacs not to switch the cursor to huge
+        blinking block mode?
+<mauke> I just want emacs to leave my cursor alone :(          [18:11]
+...
+<mauke> ok, I "fixed" it by patching emacs                     [18:34]
+<mauke> src/term.c:2334: TS_cursor_visible = tgetstr ("vs", address);
+<mauke> changed "vs" to "ve"
+%
+<afshar> wow, I am getting there, and still haven't had to learn anything.
+%
+<johnw> fledermaus: i went to go comment some code in hindi one day, and then
+    realized i didn't know hindi, and the whole plan fell apart
+%
+<dbrock> control flow is the flow of control, flow control is the
+  control of flow
+<Lukhas> and when you want to mean a flow of flow, do you use flow
+  flow, or the opposite ?
+<twb> Lukhas: yes.
+%
+<e1f> fsbot's memo service is as reliable as the post-office
+<fsbot> msg memorized for delivery
+%
+*** johnsu01 (n=user@fsf/staff/johnsu01) has quit: Read error: 104 (Connection
+	reset by peer)						[21:59]
+*** johnsu01 (n=user@fsf/staff/johnsu01) has joined channel #emacs [22:01]
+<johnsu01> I should probably look to make sure the battery is in the laptop
+           before I pull out the power cord next time.
+%
+<twb> Lost my pencil... :-(
+<twb> Ah, here it is.
+<paroneayea> M-x get-new-pencil
+<twb> C-u M-x get-new-pencil
+<ayrnieu> C-u 10000 M-x get-new-pencil RET M-x ... RET M-x profit
+%
+<paroneayea> good lord
+<paroneayea> how to disable annoying beeps in emacs?
+<paroneayea> ,beep
+* fsbot beeps twice and explodes
+<paroneayea> :|
+<paroneayea> ,beeps
+* fsbot beeps twice and explodes
+<paroneayea> ,no seriously, documentation ON beeps.
+<fsbot>  [Too many DB matches] paroneayea: Why do you say,no seriously documentation on beeps?
+<paroneayea> because you keep exploding, dammit
+%
+<xah> there's Butcher Lesbian...
+<xah> but i swear i've googled Butcher Dykes before
+<fledermaus> You're a very strange person, xah.
+<offby1> fledermaus: you noticed?
+<xah> fledermaus: offby1 i was about to say the same! :)
+<xah> apparantly, fledermaus shares a trait with me. we are slow learners.
+<edrx> I'm imagining the fight of the year
+<edrx> between the butcher lesbian and the vegan lesbian
+<bpalmer`> I bet there's a french arthouse film about that
+%
+<xah> twb: do you have access to a server?
+<twb> xah: what kind of server?
+<xah> my bandwidth is exceeding, i need to offload traffic, or find a new host
+<twb> xah: You want *me* to host your html?!
+<xah> for now, perhaps just off hosting 3 image files
+<xah> if you are willing and able
+<twb> xah: you know I'd do *anything* for you.
+<twb> xah: but my httpd is my desktop.
+<twb> xah: and if I hosted your child porn, the link would be flooded and I would be unable to talk to you.
+<xah> ok ..
+<twb> Also I would probably be arrested.
+<xah> there's no child porn, btw.
+<xah> just want to make that clear in public.
+<twb> That's what they all say >wink< >wink< >nudge< >nude<
+<twb> *>nudge<
+<Blicero_> freudian slip!!
+%
+<xah> little girls and sex is one of my fav topics, along with unix
+%
+<kapputu> I use this command-line program called irc
+<kapputu> how do I switch between rooms?
+<bpalmer> GO NORTH
+%
+<Riastradh> M-x defenestrate-bpalmer RET
+<johnsu01> It's amazing that we all still make M-x jokes.
+<jordanb`> I know.
+<jordanb`> The M-x is so old it's going through menopause.
+<johnsu01> Or maybe it's just amazing that I still think they're funny.
+<johnsu01> It's a hard joke to pull off at a party though.
+[...]
+<bpalmer> jordanb`: what , not bringing up emacs at a party? what sort of party do *you* go to?
+<jordanb`> Not the "bring up emacs" kind, that's for sure.
+[...]
+<johnsu01> People are usually impressed when I make emacs open my beer bottle, though.
+%
+<xah> Help me fight Falun Gong on Wikipedia
+<forcer> Falun gong is a sect which is being hunted down in China.
+<interferon> Xah, would you really do something like that?
+%
+<rcy> forcer is so left, he was never even here
+%
+<bpalmer> Heh. '"Don't underestimate how sneaky mountains can be, when
+  they want. Have YOU ever spotted a mountain that was trying to hide?
+  Didn't think so."'
+<kilimanjaro> Shit, my cover is blown ...
+%
+<Rickdangerous> lisp code is like a poem...
+<e1f> yeah, a poem written by ee cummings                                       
+<dbrock> you know you suck at writing Lisp when your code looks like an ee cummings poem
+%
+<mulligan> if it would make women happy if i enlarge the #emacs window?
+<keramida> mulligan: we should ask mailman.  Rumour has it
+  mailman@gnu.org by now has a penis about the size of a medium-sized
+  peninsula, huge, scary breasts that dwarf many hills, and is sipping
+  a mango-based cocktail somewhere in the Carribean, since he doesn't
+  know what to do with all his money
+%
+<Kurin> Oh great
+<Kurin> I just emailed my buffer list to the president of the company
+<Kurin> Way to go shell-command-on-region
+%
+<xarq> old macdonald, had a lispobject, eieio
+%
+<e1f> silent night                                                          [23:44]                                                               
+<_jpl_> wholly knight
+<e1f> ni ni ni
+<mbishop> nil nil nil
+%
+I didn't learn to read and write, so that I could communicate using a crude system of pictograms -- brx, on GUIs.
+%
+<nunag> were I to show up at sacha's door with a bunch of flowers, chocolate
+  and a bottle of Chambertin declaring my undying love for her, Sacha
+  would consult planner.el and find that it wasn't scheduled
+%
+<fledermaus> vi is a food-blender. emacs is a swiss-army glove.
+<fledermaus> the only similarity is that you can stick your hand in either one.
+%
+<jordanb> I'm beginning to see why ams likes xah so much.
+<ams> jordanb: Both you and xah are on my ignore list...
+%
+<bpalmer`> huh. "Britain and France talked about a "union" in the
+           1950s, even discussing the possibility of the Queen
+           becoming the French head of state, it was reported today."
+<bpalmer`> (
+           http://www.guardian.co.uk/uk_news/story/0,,1990795,00.html
+           )
+<fsbot> Gibble, Gobble, we ACCEPT YOU ---
+%
+<offby1> C:\>
+<dalias> nowadays when i see C:\> it looks like some weird smiley
+<johnsu01> hm, C:\> could be a penguin
+%
+<jordanb> My particular style of doing things mostly involves screaming
+          swear words at whatever I'm working on until it's done.
+[...]
+<isomer> you scream at the kraft dinner while it cooks?
+%
+<bpalmer> C-h a in emacs *is* for losers
+<bpalmer> it's one of the first bindings that should be changed,
+          for everybody
+<dbrock> the first thing I do is change C-h to erase
+<offby1> the first thing I do, let's kill all the lawyers
+<bpalmer> (mapcar 'kill-new (lawyer-list))
+<nome> bpalmer: you need to stream the list of lawyers otherwise
+       you'll run out of memory
+%
+<consolers> (i prefer "victim" to "subject", even when talking grammar)
+%
+<jordanb> I can play my old anti aliasing troll if I can find the tape.
+%
+<jordanb> Using x86 64 is like eating caviar off of a paper plate.
+%
+<rudebot> Let's patent buying something without first going through a bidding  process.
+<fledermaus> offby1: you cloned jordanb and made a bot with it?
+<twb> fledermaus: yes
+<twb> In 200 lines of scheme
+<fledermaus> who knew he was that complex.
+%
+<e1f> the 2 most important things is a programming font is to be able to        
+      differentiate between a 1 and an l and a O and a 0 
+<capitalidea> e1f: I sincerely wish I had the resources and time to inflict     
+              severe physical damage to persons who do not make it possible to  
+              differentiate between 1's, l's, O's, and 0's, as well as I's. I   
+              would rejoice in the tedious details of their agony so devinely   
+              manufactured for their maximum torment that it would shock a      
+              character like ole Mr Hannibal Lector.
+<twb> capitalidea: 1 T0TA11Y agree
+<capitalidea> Bastard. 
+%
+<ltbarcly> jordanb: what do you do that you get to sit here all day?   
+<jordanb> Nothing
+%
+<retroj> how to annoy your coworkers: (setq ring-bell-function 'swap-up-and-down-keys) 
+%
+<codermattie> offby1, thanks for looking at my paste
+%
+<consolers> India now has enough technology to fake a moon landing in a year
+<snogglethorpe> consolers: wouldn't people get suspicious when all the astronauts started singing and dancing?
+%
+<qwrx> if I can find my socks
+<sword> Uh.  You lost your socks at work?
+<qwrx> it happens
+<qwrx> put something down somewhere without concentrating
+<fledermaus> your socks?
+<qwrx> by the printer, it turns out
+<runlevelten> I have a sock off.
+<runlevelten> under my desk, where nobody can see it
+<sword> TMI Day!
+<qwrx> all the best people take their socks off at work, well known fact
+<sword> Citation Please
+<qwrx> definitely not a sign of falling into madness at all
+<Sketch> quick, someone create a wikipedia page on the subject 
+<sword> "Getting Things Done.. Sockless"
+<qwrx> good idea
+<qwrx> publish some self-help type book
+<qwrx> the no-socks system to getting your life on track
+<qwrx> for me that involves going home
+* jlf wonders if socklessness would run afoul of the fragrance-free workplace policy
+<runlevelten> only if you have bad feet
+<runlevelten> It's not madness, I just find I'm able to pick up disturbances in the force with one bare foot.
+* fledermaus edges away from
+<fledermaus> ... everyone.
+%
+<jayeola> sheesh! finally tried xemacs - now i know what frames are for ^_^
+<twb> jayeola: xemacs is not Emacs for X.
+<jayeola> oh?
+<twb> jayeola: xemacs is an Emacs distribution, a very old fork of GNU Emacs.   
+<consolers> Emacs for XXX
+<jayeola> oh yeah, that's the bot, right?
+<twb> jayeola: what bot?
+<jayeola> oh, i (um) thought that you was a bot of some kind 
+* twb fails the turing test... again
+%
+<kensanata> I found that woman does everything that man does, but slower.
+%
+<ieure> I’d love to hear you explain that to a rampaging pack of angry
+        Russians.
+%
+<wraith0x2b> what's the variable holding the modeline format?
+<bojohan> mode-line-format
+<wraith0x2b> thanks
+%
+</pre>

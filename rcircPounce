@@ -1,0 +1,15 @@
+This is an extension to [[rcirc]].
+
+# Use /POUNCE to list the queues.
+# Use /POUNCE NICK to list all messages queued for NICK
+# Use /POUNCE NICK MESSAGE to add message to the queue for NICK
+# Use /UNPOUNCE NICK to delete all messages queued for NICK
+
+Source:
+
+* Lisp:rcirc-pounce.el
+
+To install, put it in your LoadPath and add the following to your InitFile:
+
+    (eval-after-load 'rcirc '(require 'rcirc-pounce))
+

@@ -1,0 +1,7 @@
+ZetaLisp is the Lisp dialect running on the MIT-derived [WikiPedia:Lisp_Machine Lisp machines], including CADR and machines from [http://www.symbolics.com/ Symbolics], [http://en.wikipedia.org/wiki/Lisp_Machines,_Inc. LMI], and [http://www.ti.com/ TI].  Originally it was called Lisp Machine Lisp, and it borrowed heavily from the earlier MacLisp dialect (as did EmacsLisp).
+
+ZetaLisp is the hosting language for several Emacs implementations:
+
+* [[EINE]]
+* [[ZWEI]]
+* [[Zmacs]]

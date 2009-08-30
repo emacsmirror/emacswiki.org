@@ -1,0 +1,4 @@
+MuLVoc is a MUlti-Lingual VOCabulary system, that manages a table of translations of words. It lives at http://mulvoc.sourceforge.net/, and was started by JohnSturdy. Its vocabulary tables are a bit confused at the moment, so don't believe all its translations for now!
+
+In normal use, it pops up tooltips (or uses the minibuffer, or overlays) to display translations of words as you type them. It's intended as a vocabulary learning aid for language enthusiasts, and does not attempt to be a translator!
+

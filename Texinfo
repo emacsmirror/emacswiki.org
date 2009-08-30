@@ -1,0 +1,13 @@
+'''Texinfo''' is the official GNU documentation format.
+
+* http://www.gnu.org/software/texinfo/
+* TexinfoManual - In particular, read the chapter about TexinfoMode.
+* http://www.linuxjournal.com/article/2840
+
+See TexinfoMode for help when working with Texinfo in Emacs.
+
+See also InfoMode, WikiPedia:Texinfo.
+
+----
+CategoryDocumentation
+CategoryTex

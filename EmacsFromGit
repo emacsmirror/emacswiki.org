@@ -1,0 +1,15 @@
+= Get Emacs with Git =
+
+A Git mirror of the Emacs CVS repository is available.
+
+<pre>
+ git clone git://git.sv.gnu.org/emacs.git
+</pre>
+or for those behind a proxy:
+<pre>
+ git clone http://git.sv.gnu.org/r/emacs.git
+</pre>
+
+Beware that this (by design) includes the entire history and therefore weighs about 300MB.
+
+See also [[WikiPedia:Git (software)]].

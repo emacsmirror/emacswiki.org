@@ -1,0 +1,16 @@
+The equivalent of TransientMarkMode under [[XEmacs]] is known as [[Zmacs]] Regions.  This is enabled by default.
+It works just like text selection under all other editors.
+
+If you want the traditional Emacs behavior, use the following init.el code:
+
+  (setq zmacs-regions nil)
+
+This way, the mark (the place you began a selection) is always present once set, and commands that want to
+operate on a region will always work, and will operate between the last mark and the current value of point.
+No highlighting exists to show you what text will be cut.
+
+With the standard Zmacs Regions behavior, you can get similar behavior by using `M-C-z'; this activates and
+displays a highlighted region between wherever you last began a selection and the current value of point.
+
+To get the standard behavior where typing a character deletes the active region, use PendingDeleteMode.
+This will probably be the default behavior under XEmacs 22.

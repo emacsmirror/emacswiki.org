@@ -1,0 +1,59 @@
+This page is about using `##:link##' in Custom definitions (`defgroup', `defface', `defcustom').
+
+Do you write EmacsLisp libraries? Do you include, in the ##Commentary## section, a note about where to download the latest version, or where to find more information (doc) on the library, or where to find other, similar libraries, or...?
+
+There's a great way to make such information available to users, without their needing to open and search through your source library: the `##:link##' keyword for Custom. It lets you provide buttons (really, most of them should be considered links) in `*Customize*' buffers that send the user to a Web page or the ##Commentary## section of a library for more information. 
+
+This functionality is available for group, user option (variable), and [[face]] definitions. If you define a customization group in your library, then it probably makes sense to apply a `##:link##' keyword to only the group, rather than also applying it to each individual face and option. (However, you might have a need to provide different Web-page links for different options or faces.)
+
+Here's an example of using `##:link##' with a group definition:
+
+<pre>
+(defgroup lacarte nil
+  "Execute menu items as commands, with completion."
+  :prefix "lacarte-" :group 'menu
+  :link `(url-link :tag "Send Bug Report"
+          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=
+lacarte.el bug: \
+&body=Describe bug here, starting with `emacs -q'.  \
+Don't forget to mention your Emacs and library versions."))
+  :link '(url-link :tag "Other Libraries by Drew"
+          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "http://www.emacswiki.org/cgi-bin/wiki/lacarte.el")
+  :link '(url-link :tag "Description" "http://www.emacswiki.org/cgi-bin/wiki/LaCarte")
+  :link '(emacs-commentary-link :tag "Commentary" "lacarte.el"))
+</pre>
+
+The `*Customize*' buttons are created in reverse order of the `##:link##'s you provide, so the effect of this code is to add five buttons to the customization buffer for group `lacarte':
+
+<pre>
+/- lacarte group: -------------------------------------------------------\
+      [State]: visible group members are all at standard settings.
+   Execute menu items as commands, with completion.
+   See also [Commentary], [Description], [Download], [Other Libraries by Drew], and [Send Bug Report].
+
+lacarte-convert-menu-item-function: [Hide] [Value Menu] None
+   [State]: this option is unchanged from its standard setting.
+Function to call to convert a menu item. [More]
+
+\- lacarte group end ---------------------------------------------------/
+</pre>
+
+
+The extra buttons perform these actions:
+
+* `Commentary' -- link to the `Commentary' section of library <tt>[[lacarte.el]]</tt>. This a link within Emacs, not a Web link.
+
+* `Description' -- link to Web page http://www.emacswiki.org/cgi-bin/wiki/LaCarte, which presumably provides a description of the library.
+
+* `Download' -- link to the library itself, presumably the latest version
+
+* `##Other Libraries by Drew##' -- link to a collection of libraries.
+
+* `##Send Bug Report##' -- open and email message to be sent as a bug report
+
+You get the idea. The link labels and destinations are up to you. They could be anything (`##Stop the War!##', `##Send Money##', `##Google for Similar##', `##Save Mars##',...)
+
+----
+
+CategoryCustomize CategoryHypermedia

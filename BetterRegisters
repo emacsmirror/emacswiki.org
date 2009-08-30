@@ -1,0 +1,64 @@
+== The better-registers.el package ==
+There can only be one thing in a [[register]] at a single point of time, so why have different keybindings for using whats in a register? 
+
+With Lisp:better-registers.el, a small package by SigurdMeldgaard you can use whatever is in a register by pressing `C-j'.
+
+That is one of
+
+* Jump to another [[buffer]], position or file (stored with `C-r b', `C-r SPC', or `C-r p' respectively)
+* Restore a [[window]] or [[frame]] configuration (saved with `C-r w' or `C-r f')
+* Insert a saved string or [[rectangle]] (saved with: `C-r s' or `C-r r')
+* Insert a number (saved with: `C-u' number `C-r n')
+* Play back a [[keyboard macro]] (first record it with ##`<S-f1>'##...do stuff..., ##`<S-f1>'##. Then store it in register with `C-r m')
+
+With this package you can also save all the registers (except for those containing frame or window-configurations) in a file for using them at later sessions.
+
+== Other nifty tricks for better use of registers ==
+
+Remember you have registers for both capital and non-capital letters.
+
+Numbers in registers together with the command increment-register are nice for use in semi-advanced keyboard-macros.
+
+= Nice register-related stuff for your .emacs =
+
+Here are some simple improvements you can make:
+
+;; Just do this if you want registers to be buffer local.
+
+    (make-variable-buffer-local 'register-alist) ; it's global by default
+
+;; This is used in the function below to make marked points visible
+
+    (defface register-marker-face '((t (:background "grey")))
+      "Used to mark register positions in a buffer."
+      :group 'faces)
+
+This redefines (and therefore overrides) the standard function of the same name.  Highlights points that are 'registered' and floatover help tells what register key the point was mapped to.
+
+    (defun set-register (register value)
+      "Set Emacs register named REGISTER to VALUE.  Returns VALUE.
+    See the documentation of `register-alist' for possible VALUE."
+      (let ((aelt (assq register register-alist))
+            (sovl (intern (concat "point-register-overlay-"
+                                  (single-key-description register))))
+           )
+        (when (not (boundp sovl))
+          (set sovl (make-overlay (point)(point)))
+          (overlay-put (symbol-value sovl) 'face 'register-marker-face)
+          (overlay-put (symbol-value sovl) 'help-echo
+                       (concat "Register: `"
+                               (single-key-description register) "'")))
+        (delete-overlay (symbol-value sovl))
+        (if (markerp value)
+            ;; I'm trying to avoid putting overlay on newline char
+            (if (and (looking-at "$")(not (looking-back "^")))
+                (move-overlay (symbol-value sovl) (1- value) value)
+              (move-overlay (symbol-value sovl) value (1+ value))))
+        (if aelt
+            (setcdr aelt value)
+          (push (cons register value) register-alist))
+        value))
+
+
+----
+CategoryEditing

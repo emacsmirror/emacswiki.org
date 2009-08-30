@@ -1,0 +1,85 @@
+First check out if "gnuplot.el" is part of your (X)Emacs distribution.
+
+(Focus are the information that where hard to find for me)
+
+_Notice:_
+
+a.)
+On MS-WIN32 operating systems the directory delimiter is the backslash,
+but to use it inside a string you have to decorate it, "\" becomes "\\".
+
+b.)
+My gnuplot is vulnerable against whitespaces at the end of a line,
+especially if I want to continue a command in the next line, so
+I looked for a tool that can show different types of whitespaces,
+I found the library `whitespace.el'.
+
+c.)
+Sorry I'm not an elisp expert.
+
+=== Here comes a part of my .xinit.el (I have only XEmacs installed on a MS-WIN32 computer): ===
+
+{{{
+[...]
+;;;; ====  Configure `whitespace.el'  ====
+   (require 'whitespace)
+   
+;;; add `gnuplot-mode' to the list `whitespace-modes'
+  (setq whitespace-modes (cons 'gnuplot-mode whitespace-modes))
+
+;;; Enable whitespace globally
+;; To check (and possibly fix if `whitespace-auto-cleanup' is set) whitespace
+;; problems automatically on new buffers, you can turn
+;; `whitespace-global-mode' on.
+  (setq whitespace-global-mode t)
+  
+;;; Check buffer with `whitespace' every time you open a file:
+;; To enable that add `whitespace-write-file-hook' to the `find-file-hooks':
+;; add this to check for whitespace, if a file is opened (the file had been found):
+   (add-hook 'find-file-hooks 'whitespace-write-file-hook)
+
+;;; Check buffer with `whitespace' before you save the file:
+;; To check (and possibly fix if `whitespace-auto-cleanup' is set) whitespace
+;; problems automatically but only when saving buffers, you can add the
+;; function `whitespace-write-file-hook' to your `write-file-hooks'.
+   (add-hook 'write-file-hooks 'whitespace-write-file-hook)
+
+;;; Configure behaviour of `whitespace':
+;; define which white spaces should be visuable
+  (setq whitespace-style '(trailing newline tab-mark newline-mark))
+
+;; Global variable to check `whitespace' at `end-of-line'
+  (setq whitespace-check-ateol-whitespace t)
+;; leave alone leading whitespace
+  (setq whitespace-check-leading-whitespace nil)
+
+[...]
+
+;;;; ====  Configure Gnuplot-mode  ====
+;; these lines enable the use of gnuplot mode
+  (autoload 'gnuplot-mode "gnuplot" "gnuplot major mode" t)
+  (autoload 'gnuplot-make-buffer "gnuplot" "open a buffer in gnuplot mode" t)
+
+;; this line automatically causes all files with the .gp extension to
+;; be loaded into gnuplot mode
+  (setq auto-mode-alist
+     (append
+        (list
+           '("\\.gp$" . gnuplot-mode)
+           '("\\.plt$" . gnuplot-mode)
+        )
+      auto-mode-alist))
+
+;; if you have the latest win32 version of gnuplot
+(add-hook 'gnuplot-load-hook
+                   '(lambda ()
+                        (setq gnuplot-program
+                              "C:\\Programme\\gnuplot\\bin\\pgnuplot.exe")
+                        (setq gnuplot-gnuplot-buffer "plot.plt") ; name of a new gnuplot file
+                        ; (setq show-trailing-whitespace t)
+                        (setq whitespace-check-buffer-ateol t)
+                    ))
+[...] }}}
+
+
+<i>(Sorry I did not found the way for a linebreak here in the wiki)</i>

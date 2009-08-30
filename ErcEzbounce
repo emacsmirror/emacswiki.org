@@ -1,0 +1,11 @@
+EZBounce (http://druglord.freelsd.org/ezbounce/) requires you to identify yourself via a row of quirky commands (/login nick pass, then /conn or /reattach). This can be done automatically, and ERC does it. When you connect to your bouncer, it identifies you automatically and then presents you with a list of connections you can resume. Of course, you can tell ezbounce to connect to another IRC server, as well.
+
+To use it, put into your config file:
+ (erc-ezb-initialize)
+
+: With what version of either ERC and ezbounce it is supposed to work ? -- XavierMaillard
+
+After that, whenever you connect to an ezbounce proxy, the module's magic power kicks in (-:
+
+----
+[[ERC]]

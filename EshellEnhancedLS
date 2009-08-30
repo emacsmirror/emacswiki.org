@@ -1,0 +1,59 @@
+This makes Eshell's `ls' file names RET-able. Yay!
+
+<pre>
+ (eval-after-load "em-ls"
+    '(progn
+       (defun ted-eshell-ls-find-file-at-point (point)
+         "RET on Eshell's `ls' output to open files."
+         (interactive "d")
+         (find-file (buffer-substring-no-properties
+                     (previous-single-property-change point 'help-echo)
+                     (next-single-property-change point 'help-echo))))
+
+       (defun pat-eshell-ls-find-file-at-mouse-click (event)
+         "Middle click on Eshell's `ls' output to open files.
+ From Patrick Anderson via the wiki."
+         (interactive "e")
+         (ted-eshell-ls-find-file-at-point (posn-point (event-end event))))
+
+       (let ((map (make-sparse-keymap)))
+         (define-key map (kbd "RET")      'ted-eshell-ls-find-file-at-point)
+         (define-key map (kbd "<return>") 'ted-eshell-ls-find-file-at-point)
+         (define-key map (kbd "<mouse-2>") 'pat-eshell-ls-find-file-at-mouse-click)
+         (defvar ted-eshell-ls-keymap map))
+
+       (defadvice eshell-ls-decorated-name (after ted-electrify-ls activate)
+         "Eshell's `ls' now lets you click or RET on file names to open them."
+         (add-text-properties 0 (length ad-return-value)
+                              (list 'help-echo "RET, mouse-2: visit this file"
+                                    'mouse-face 'highlight
+                                    'keymap ted-eshell-ls-keymap)
+                              ad-return-value)
+         ad-return-value)))
+</pre>
+
+At least on my setup (I tried on both Linux and W2k, running emacs 21), the function ted-eshell-ls-find-file does not work if point is before left-most character of file name. This is because the previous-single-property-change catches a point too far in the buffer and we get text we do not want to. The following modified function fixes this, but only for "short-listings" (that is, not ls -l). The solution is kinda ugly but it works:
+
+<pre>
+      (defun ted-eshell-ls-find-file ()
+        (interactive)
+	(let ((fname (buffer-substring-no-properties
+		      (previous-single-property-change (point) 'help-echo)
+		      (next-single-property-change (point) 'help-echo))))
+          ;; Remove any leading whitespace, including newline that might
+          ;; be fetched by buffer-substring-no-properties
+	  (setq fname (replace-regexp-in-string "^[ \t\n]*" "" fname))
+          ;; Same for trailing whitespace and newline
+	  (setq fname (replace-regexp-in-string "[ \t\n]*$" "" fname))
+	  (cond
+	   ((equal "" fname)
+	    (message "No file name found at point"))
+	   (fname
+	    (find-file fname)))))
+</pre>
+
+Now, if someone could fix it for long-listings too and describe how to bind the function to mouse-2 also, I would be one step closer to emacs-nirvana! :) -- MathiasDahl
+
+Here's mouse-2 clickability.  -- PatrickAnderson
+
+OK, I've cleaned up the code a bit. Only one user-visible change: middle-clicking on a file no longer moves point to that filename. I found that this more closely matched the behavior my fingers expect. -- EdwardOConnor

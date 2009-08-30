@@ -1,0 +1,47 @@
+Simple global minor mode for working with a collection of source code files in a directory tree, a "project".
+Lisp:projman.el
+
+== Overview ==
+projman makes it easy to switch between multiple projects and automatically setup your emacs environment correctly for each.
+
+A project is identified by a root directory and a series of project keywords, variables and hook functions that are applied when the project is opened.  Each project can also maintain a list of open buffers, closing them when quiting a project and automatically restoring them when opening a project (similar to desktop-mode).  There are also a series of commands that can be applied to the files of a project.
+
+== Setup ==
+Use ##projman-projects## to define your projects and options. (see doc string for details)
+<pre>
+ (setq projman-projects
+       '(("myproject"
+          :root "c:/_proj/myproject"
+          :ignore-dirs ("tests")
+          :type c
+          :open-hook (lambda () (global-auto-revert-mode 1))
+          :compile-command "devenv.com c:/_proj/myproject/myproject.sln /build Debug"
+           )))
+</pre>
+
+Load the projman.el library and execute projman-mode to start.
+
+== Usage ==
+##projman-switch-project## is used to switch between projects.  This will setup the project environment and optionally restore buffers from the previous session.
+
+Once a project is active there are also a series of commands that can be used (see projman.el for more)
+* ##projman-dired-root##  : open a dired buffer on the project root
+* ##projman-grep##  : run rgrep in root of project
+* ##projman-occur##  : run multi-occur against all open project buffers
+* ##projman-svn-status##  : psvn status in the project root
+* ##projman-create-tags##  : create a tags file for project
+
+A project can also be created on the fly using ##projman-create-project## but it currently only allows a small number of options to be specified interactively.
+
+If ##projman-use-active-file## is non-nil (the default) projman will record the open buffers when a project is closed.  These will then be automatically visited when the project is later opened.  If ##projman-lazy-load-buffers## is non-nil this will be done is a lazy fashion.  See also ##projman-close-buffers-when-close-project## to automatically close the buffers when existing a project.
+
+== Note == 
+Because projman makes use of the find command it will only work on a unix type environment, but windows+cygwin works fine provided that cygwin's find command is used instead of the windows find command.
+
+See ##projman-find-command## for a way to specify the command path if needed.
+
+== Related Libraries ==
+See [[CategoryProgrammerUtils#ProjectSupport|Project Support]]
+
+----
+CategoryProgramming CategoryProgrammerUtils

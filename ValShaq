@@ -1,0 +1,8 @@
+I'm just beginning to convert from (g)Vim to GNU EMACS :-))
+
+If you can help me enhancing cobol-mode, that would be great!
+
+: Hello and welcome!  Moving from gvim to Emacs will be an experience, hehe.  How is it going?  I don't use cobol-mode, but you might try asking on news://gnu.emacs.help for help, or search Google Groups:cobol or something.  And of course, if you have elisp questions, we can help you improve cobol-mode yourself.  ^_^  If you have never used EmacsLisp before, I suggest you start with the EmacsLispIntro, available online, and then use the ElispManual and the EmacsChannel to answer specific questions.  And the wiki, of course.  --  AlexSchroeder
+
+----
+CategoryHomepage

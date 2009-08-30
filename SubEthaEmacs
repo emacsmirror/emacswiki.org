@@ -1,0 +1,50 @@
+SubEthaEmacs is an attempt to reverse engineer the protocol that SubEthaEdit uses, and then port it to ELisp, for use with emacsen.
+
+The protocol itself is described at SubEthaEditProtocol. This page will cover the current status of development of the emacs port.
+
+----
+Development Stages:
+* BEEP protocol.
+** Status: done - for all parts that SEE uses. See (add link to beep.el here)
+* Bencoding/decoding.
+** Status: done - See (add link to bencode.el here)
+* Create local user information.
+** The local user will probably need to customize some variables here, information required by SEEdit includes: username, a uID (16 bytes binary), a hue (background colour used?), a PNG as a bytestring (user icon), email address, AIM (can be left blank I assume). 
+** Store information / defaults as see-user-info, as an alist? (various parts of this need to be sent with various SEEdit commands)
+* Network connection stuff.
+** Open network connection to remote hosts, setup communication via BEEP.
+** Status: partly done.
+* User/Documents clickable buffer.
+** SEEdit displays an extra window containing a list of users that are connected, and under each, tree-like, a list of documents the users have available. Maybe this could be done with the speedbar?
+** SEEmacs will have a clickable buffer containing a tree-like list of documents and users, at the top level, a list of connected users, as nodes, a list of documents each has offered, and a further node level listing the users connected to the given document.
+* Displaying of remote documents.
+** A click on a document name, in the Users and Documents buffer, will cause SEEmacs to request the document from the appropriate peer, and create a new local buffer containing the documents contents. 
+** Each user currently working on the document should be assigned a local colour.
+* Displaying changes to remote documents.
+** Each user working on a document will be assigned a marker, which will point to their current position in the document.
+** Any changes received will cause the marker to be set to the current location of the user's TextCursor (this is sent on every cursor movement - maybe a customizable setting will allow users to ignore just movements?)
+** Changes/deletes etc will be added to the document using the users colour.
+** Add deletes to undo buffer?
+* Changing documents and sending changes.
+** Hooks need to be added to track the local users movement (of point), inside the document, and these encoded to SEEdit and sent to all connected participants.
+** Ditto insertions and deletions.
+* Advertising local documents.
+** The local user needs to be able to decide which of the local buffers/open files will be advertised for collaboration via SEE.
+** Any documents chosen for advertising are sent via the DOCANN (Document Announce) command to connected users.
+** Requests to edit these documents need to be processed, and subsequently these buffers handled as with remote documents.
+* Updating local documents with remote changes.
+** See above.
+
+----
+Current (work in progress) sources: WHERE?
+
+== Discussion ==
+
+[new]
+Have you seen
+[[http://docsynch.sourceforge.net/ DocSynch]]?
+
+Also, the Obby protocol looks promising. It seems to be capable of all that SEE can do, but it's built on an open protocol. It also has an authoritative editor called Gobby that runs on Mac/Win/Linux. http://darcs.0x539.de/
+
+----
+CategoryInterface

@@ -1,0 +1,14 @@
+In a response to the question "Why emacs?" on news:comp.emacs, Barry wrote:
+
+At the time I learned Emacs (about 1980), the only other editors on any of
+the systems I used were line editors (similar to Unix's "ed").  I don't
+think vi had even been invented yet; if it had, it was still very new, and
+there weren't many Unix systems on the MIT campus anyway.  So if you wanted
+a visual editor, Emacs was pretty much the only choice.
+
+It has remained my preferred editor because I've encountered almost no
+editors with as many built-in features.  And since it's extensible, just
+about anything can be added if you need it.
+
+----
+CategoryHomepage

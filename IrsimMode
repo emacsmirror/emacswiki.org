@@ -1,0 +1,34 @@
+[http://opencircuitdesign.com/irsim/ IRSIM] is a switch-level simulator for digital logic circuits. This is an Emacs mode for editing IRSIM netlists. It provides syntax highlighting and an extremely pleasant method if indentation, as well as some minor polish that you should enjoy but not notice.
+
+== Download ==
+
+http://irsim-mode.googlecode.com/files/irsim-mode.el
+
+
+== Installation ==
+
+To install, put <tt>irsim-mode.el</tt> somewhere that emacs will see it
+like your <tt>site-lisp/</tt> sirectory and stick something like this in
+your <tt>.emacs</tt> file:
+
+{{{
+(autoload 'irsim-mode "irsim-mode" nil t)
+(setq auto-mode-alist
+      (cons '("\\.sim$" . irsim-mode) auto-mode-alist))
+}}}
+
+Note that this will override the default behavior for opening
+<tt>.sim</tt> files, which is to go into <tt>simula-mode</tt>. This might be a
+problem if you use both.
+
+This mode is opinionated. It has a very specific idea of how
+IRSIM code ought to be indented, and if you don't like it then
+just set <tt>irsim-use-fancy-indent</tt> to <tt>nil</tt>. I think that the default
+indentation method leads to very pretty files and easy typing,
+but YMMV.
+
+Also, 
+[http://code.google.com/p/irsim-mode/ the project page is here.]
+
+----
+CategoryModes

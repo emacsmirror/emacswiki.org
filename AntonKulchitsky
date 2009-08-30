@@ -1,0 +1,21 @@
+I work with GNU/Emacs since I switched to GNU/Linux and UNICES world (2001). 
+
+I really appreciated Emacs as a style of life with computers. There are some my papers in Russian are available on my web site: http://kulchitsky.org/rus/linux
+
+== About 'MM-' key prefix ==
+
+There is 'C-c' keybinding prefix was left for users. However, I found there are many external modes use that so not so many free keys are available for user actually. Instead of 'C-c' I use 'MM-' key prefix for my own commands. I mean something like 'ESC ESC' prefix or 'ESC M-' prefix. It is really easy to "doubleclick" on ESC by left hand and then type a key by right one. Just try and probably you will like this too.
+
+There are some keybinding I use.
+
+ (global-set-key (kbd "\e\el") 'goto-line)        ;
+ (global-set-key (kbd "\e\eu") 'user-cvs-update)  ;PCL-CVS update start
+ (global-set-key (kbd "\e\ec") 'calendar)         ;calendar
+
+and really many others. Sure, keybinding can depend on mode-hooks. My .emacs is available at http://kulchitsky.org/rus/linux/.emacs.
+
+: Welcome to the Wiki!  Unfortunately Russian part of EmacsWiki is pretty silly :(, feel free to contribute to it! --ZajcevEvgeny
+
+----
+CategoryHomepage
+

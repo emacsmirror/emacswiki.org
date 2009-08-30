@@ -1,0 +1,62 @@
+Emacs Interfaces to Online Utilities.
+
+(Most of theses packages require [[w3]])
+
+* Archie ([http://www.stud.ifi.uio.no/~larsi/other/archie.el archie.el] -- '''''broken link''''') -- query archie servers and parse the results (by LarsMagneIngebrigtsen)
+* Dictionaries
+** Anaya ([http://turingmachine.org/elisp/anaya.el anaya.el] -- '''''broken link''''')  ([http://ftp.sunet.se/pub/gnu/emacs-lisp/incoming/anaya.el anaya.el] '''''working link''''') -- Emacs interface to the Anaya Online Spanish Dictionaries (by DanielMGerman)
+** Dict servers as defined by RFC 2229
+*** DictWeb -- lookup stuff on dict.org by EricMarsden
+*** DictMode -- lookup stuff on dictionaries by TorstenHilbrich
+*** DictEm -- lookup dictionaries with the <code>dict</code> program
+*** Lisp:dict.el -- another using the <code>dict</code> program
+*** Lisp:sdcv.el -- Interface for sdcv (StartDict console version).
+*** AutoCompressionMode -- for viewing a whole <code>.dz</code> dict file
+** DictionaryDotCom -- lookup stuff on dictionary.com with one line of elisp (requires emacs-w3m)
+** [http://www.emacswiki.org/cgi-bin/emacs/google-define Google-Define] -- Find definitions using google.
+** Hachette (Lisp:hachette.el) -- Lookup a word on the Hachette's online french dictionary (by JeanPhilippeTheberge) NB. This is currently broken!
+** LookUp -- unified search interface for several online dictionaries
+** Rdict ([http://lgarc.narod.r_u/xemacs-tips/packages/rdict-0.2.tar.gz rdict-0.2.tar.gz]) -- Emacs interface to the Lingvo online English<->Russian Dictionary.
+* LookUpHTMLDoc -- Look up documentation in HTML form
+* Slashdot ([http://www.tardis.ed.ac.uk/~skx/win/slashdot.el slashdot.el] -- '''''broken link''''') -- View headlines from Slashdot.org (by SteveKemp)
+* Editing remote wikis (see WikiModeDiscussion)
+** OddmuseMode -- Edit pages on this wiki, supercedes WikiRemote and SimpleWikiEditMode
+** [[Yaoddmuse]] -- Edit or post page with Oddmuse wiki page *asynchronous*.
+** WikiRemote -- Edit pages on this and other wikis.
+** EmacsWikiRemoteMode -- Alternative to SimpleWikiEditMode which uses emacs-wiki.el + w3m
+** HttpGet and HttpPost -- used for web services
+** WebDAV clients such as ElDav can sometimes be used to edit wikis, too.
+* WebJump -- Programmable hotlist/bookmarks to many sites (by NeilVanDyke)
+* watson ([http://www.chez.com/emarsden/downloads/watson.el watson.el]) -- experimental meta-search package to submit search requests to several search engines at once (includes ranking mechanisms) by EricMarsden
+* babel ([http://www.chez.com/emarsden/downloads/babel.el babel.el]) -- A interface to several web translation engines also by EricMarsden
+* imdb ([http://www.gbvsoft.com/imdb.el.txt imdb.el]) -- Interface to ([http://us.imdb.com IMDB] ) to search movies by title -- GirishB
+* DeliciousEl -- Interface to ([http://del.icio.us del.icio.us])
+* CorbaImplementation -- CORBA Dynamic Invocation interface using the IIOP protocol.
+* XmlRpc -- call functions on remote systems by sending them some XML
+* saft-to ([http://asf.void.at/emacs/saft-to.el saft-to.el]) -- A simple emacs interface for the Simple Asynchronous File Transfer Protocol.
+* EmacsWeather:
+** RainOrShine -- slurping it from a web site
+** MetarReport -- getting coded reports from airports all over the world
+** EmacsMeteo -- an attempt to a more abstract fetcher of metar data
+* TinyUrl -- Easily convert the url at point to a tinyurl via tinyurl.com. 
+* TextTranslator -- text translation package
+* ArxivReader -- a tool to make slogging through arXiv abstracts more fun.  And makes it easy to grab the article pdfs.
+
+Interfaces to code snippet sites on the Internet
+
+* SnipplrMode -- copy snippets to and from [http://snipplr.com Snipplr]
+* Lisp:openpaste.el -- Commit posts to [http://openpaste.org OpenPastebin]
+* [[Paste2]] -- Paste or get code with [http://paste2.org paste2.org]
+* [[pastebin]] -- paste code snippets (or whole buffers) to [http://pastebin.com pastebin.com]
+* [http://repo.or.cz/w/facebook.el.git facebook.el] -- the beginnings of a Facebook interface
+
+Protocols
+
+* EmacsDaytimeServer -- serve the time over tcp, per <nowiki>RFC 867</nowiki>
+* EmacsEchoServer -- echo tcp streams back to the sender
+
+Tools and Utilities
+
+* HmacShaOne -- Generate HMAC-SHA1 authentication codes
+* OAuthLibrary -- Authentication using OAuth
+

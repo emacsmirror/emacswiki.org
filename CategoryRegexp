@@ -1,0 +1,38 @@
+This category is about regular expressions.  See also CategorySearchAndReplace.
+
+
+= Understanding Regular Expressions =
+
+* RegularExpression -- what are regular expressions, anyway?
+* RegularExpressionHelp -- typical errors and frequently asked questions
+* RegexpReferences -- where to look for more information
+* NonGreedyRegexp -- how to write <code>.*?</code> in old emacsen
+* MultilineRegexp -- how to match multiline stuff
+
+= Using Regular Expressions Interactively =
+
+* '''[[IncrementalSearch#RegexpSearches]]''' -- Using regexps with Isearch -- a good way to ''learn to use'' regexps
+* [[Icicles]] -- Another good way to ''learn to use'' to use regexps -- lots of different uses, including:
+** [[Completion]] and cycling of completion candidates through regexp matching
+** a new kind of incremental search: use multiple simple regexps, instead of struggling with a complex regexp; and regexp subgroups are highlighted individually
+* GrepMode -- `M-x grep' searches files for matches
+* OccurBuffer -- `M-x occur' works on buffers like `M-x grep' does on files
+* SearchBuffers -- Search *all* buffers
+* [[Synonyms]] -- Use regexps to search for synonyms in a thesaurus.
+* SearchAndReplaceDelimitedStrings -- Replace the prefix and suffix of a pattern while leaving the middle alone
+* GrepList -- search a list of strings for a regexp, recursing into sublists
+* OverlappingRegexps -- overlap regular expressions in a replace command
+* RemembranceAgents -- show a list of related documents as you type
+* RecursiveGrep -- various commands that recursively search a file system
+
+
+= Programming with Regular Expressions =
+
+* CaseFoldSearch -- controlling case sensitivity when searching
+* [[Icicles - Defining Icicles Commands]] -- define multiple-choice commands that let users match regexp input against choices
+* NonAsciiRegexps -- catering for non-ASCII characters
+* ReBuilder -- build a regexp string and watch what it matches as you type
+* SymbolicRegexp -- for programmers who want to write readable regular expressions
+* Regex-tool -- similar to ReBuilder, found here ftp://ftp.newartisans.com/pub/regex-tool.el
+* [[rx]] -- macro that generates regexps from sexps
+

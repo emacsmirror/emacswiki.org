@@ -1,0 +1,134 @@
+The setup I (AlexSchroeder) use with WikiMode works in Emacs and XEmacs.
+
+I use text-mode as my default major mode, therefore all wiki pages are in text mode.  In text mode, I want the apostrophe to be considered a word separator.
+
+    (setq default-major-mode 'text-mode)
+    (modify-syntax-entry ?' "." text-mode-syntax-table)
+
+I want to use two spaces after a period.  If I use one space, I want to alert myself to that.  And when I use the magic FIXME string in text files, I want it to stand out.
+
+    (defface extra-whitespace-face
+      '((t (:background "pale green")))
+      "Used in text-mode and friends for exactly one space after a period.")
+    (font-lock-add-keywords
+      'text-mode
+      '(("FIXME[:!]?" 0 'show-paren-mismatch-face)
+        ("\\.\\( \\)\\b" 1 'extra-whitespace-face)))
+
+Now for XEmacs, we need to load easy-mmode.el.  I just use the source file from my Emacs lisp directory.  And we need some time stuff for wiki interlinks, therefore I load these files from my Gnus directory.  You might have them stored in other directories, obviously.
+
+    (when (featurep 'xemacs)
+      (load-file "/usr/local/share/emacs/20.7/lisp/emacs-lisp/easy-mmode.el")
+      (load "~/elisp/gnus/lisp/parse-time.el" t t t)
+      (load "~/elisp/gnus/lisp/time-date.el" t t t))
+
+We are getting to the wiki stuff at last.  Load the mode and switch on font-lock and auto-fill.
+
+    (load-library "wiki")
+    (load-library "wiki-inter")
+    ;; Usually text-mode buffers don't use font-lock!
+    (add-hook 'wiki-mode-on-hook 'turn-on-font-lock)
+    (add-hook 'wiki-mode-on-hook 'turn-on-auto-fill)
+
+In order to navigate and fill bullet lists, I patched my fill.el (thanks to Stefan Monnier).  A marginal improvement.
+
+    (load-library "fill"); Stefan's bugfix included
+    (add-hook 'wiki-mode-on-hook (lambda ()
+                                   (setq paragraph-start "\\*\\|$" 
+                                         paragraph-separate "$")))
+
+I want to use Shift TAB on GNU/Linux running under X to jump to the previous reference.
+
+    (if (not (featurep 'xemacs))
+        (define-key wiki-mode-map '[(shift iso-lefttab)] 'wiki-previous-reference)
+      (define-key wiki-mode-map '[(iso-left-tab)] 'wiki-previous-reference))
+
+And now for the big thing.  The markup.  I added WikiSummary and WikiLanguage functions as well as the quoting of the ampersand (`&').  Other customized variables such as directories, maintainer mail address, and index page I keep to myself.  ^_^
+
+These are the new XHTML 1.0 publishing rules:
+
+    <nowiki>
+    (setq wiki-pub-rules
+     `(my-wiki-store-language
+       my-wiki-store-summary
+       ("&" . "&amp;")
+       ("<" . "&lt;")
+       (">" . "&gt;")
+       ("&#39;&#39;\\(\\(\\|.\\)*\\)&#39;&#39;" . "<strong>\\1</strong>")
+       ("\\`\n*" . "<p>\n"); remove emty lines and add <p> at the beginning
+       ("\n+\\'" . ""); remove emty lines at the end
+       (end-of-buffer . "\n</p>"); add </p> at the end
+       ("\n\n+" . "\n</p>\n<p>\n"); insert </p><p> between all paragraphs
+       ("^\\*[ 	]*" . "</li>\n<li>")
+       ("\n</li>" . "</li>")
+       ("<p></li>\\(\\(\\|.\\|\n\\)+\\)\n</p>" . "<ul>\\1</li>\n</ul>")
+       ("<p>\n\\([ 	]+\\(\\|.\\|\n\\)+\\)</p>" . "<pre>\n\\1</pre>")
+       ("<p>\n:\\(\\(\\|.\\|\n\\)+\\)</p>" . "<blockquote>\n<p>\n \\1</p>\n</blockquote>")
+       ;; ("<p>\n\\'" . "")
+       ,(cons thing-at-point-url-regexp "<a href=\"\\&\">\\&</a>")
+       ("[-a-zA-Z0-9._]+@\\([-a-zA-z0-9_]+\\.\\)+[a-zA-Z0-9]+" . "<a href=\"mailto:''''\\&\">\\&</a>")
+       wiki-replace-links
+       wiki-inter-link-publish
+       (beginning-of-buffer . "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<title><?name></title>\n<link rel=\"contents\" href=\"../index.html\" title=\"Table of Contents\"/>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8559-1\"/>\n<meta http-equiv=\"Content-Style-Type\" content=\"text/css\"/>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../wiki.css\"/>\n</head>\n<body>\n<p>\n<a href=\"SiteMap.html\">SiteMap</a> /\n<a href=\"AllPages.html\">AllPages</a> /\n<a href=\"../index.html\">Out</a>\n</p>\n<h1><a name=\"<?name>\" title=\"<?name>\"><?name></a></h1>\n")
+       ("<\\?name>" . wiki-page-name)
+       (end-of-buffer . "\n<hr></hr>\n<p>\n<a href=\"SiteMap.html\">SiteMap</a> /\n<a href=\"AllPages.html\">AllPages</a> /\n<a href=\"../index.html\">Out</a> /\n<a href=\"mailto:kensanata@''''yahoo.com\">kensanata@yahoo.com</a> /\nLast change: <?date>\n</p>\n</body>\n</html>")
+       ("<\\?date>" . wiki-current-date)
+       my-wiki-add-language
+       my-wiki-add-summary))
+    </nowiki>
+
+This is the old HTML 3.2 markup:
+
+    <nowiki>
+    (setq wiki-pub-rules
+     `(my-wiki-store-language
+       my-wiki-store-summary
+       ("&" . "&amp;")
+       ("<" . "&lt;")
+       (">" . "&gt;")
+       ("&#39;&#39;\\(\\(\\|.\\)*\\)&#39;&#39;" . "<strong>\\1</strong>")
+       ("\\`\n*" . "<p>\n")
+       ("\n\n+" . "\n\n<p>\n")
+       ("^\\*[ 	]*" . "<li>")
+       ("<p>\n<li>\\(\\([^\n]\n?\\)+\\)" . "<p>\n<ul>\n<li>\\1</ul>\n")
+       ("<p>\n\\([ 	]+\\([^\n]\n?\\)+\\)" . "<p>\n<pre>\n\\1</pre>\n")
+       ("<p>\n:\\(\\([^\n]\n?\\)+\\)" . "<blockquote>\n<p>\n\\1</blockquote>\n")
+       ,(cons thing-at-point-url-regexp "<a href=\"\\&\">\\&</a>")
+       ,(cons goto-address-mail-regexp "<a href=\"mailto:\\&\">\\&</a>")
+       wiki-replace-links
+       wiki-inter-link-publish
+       (beginning-of-buffer . "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n<html>\n<head>\n<title><?name></title>\n<link rel=\"contents\" href=\"../index.html\" title=\"Table of Contents\">\n<link rel=\"index\" href=\"../site-index.html\" title=\"Site Index\">\n<meta http-equiv=\"Content-Type\&quot; content=\"text/html; charset=iso-8559-1\">\n<meta http-equiv=\"Content-Style-Type\" content=\"text/css\">\n<link rel=stylesheet type=\"text/css\" href=\"../wiki.css\">\n</head>\n<body>\n<p>\n<a href=\"SiteMap.html\">SiteMap</a> /\n<a href=\"AllPages.html\">AllPages</a> /\n<a href=\"../index.html\">Out</a>\n<h1><a name=\"<?name>\" title=\"<?name>\"><?name></a></h1>\n")
+       ("<\\?name>" . wiki-page-name)
+       (end-of-buffer . "\n<hr>\n<p>\n<a href=\"SiteMap.html\">SiteMap</a> /\n<a href=\"AllPages.html\">AllPages</a> /\n<a href=\"../index.html\">Out</a> /\n<a href=\"mailto:kensanata@yahoo.com\">kensanata@''''yahoo.com</a> /\nLast change: <?date>\n</body>\n</html>")
+       ("<\\?date>" . wiki-current-date)
+       my-wiki-add-language
+       my-wiki-add-summary))
+    </nowiki>
+
+Another variant is to keep wiki-pub-rules defaults, and only change
+selected entries.  Here, for example, I set the end-of-buffer rule
+only:
+
+<pre>
+    (defun href (page &optional link)
+      (setq link (or link page))
+      (concat "<a href=\"" link ".html\">" page "</a>"))
+
+    (defun mailto (address)
+      (concat "<a href=\"mailto:" address "\">" address "</a>"))
+
+    (setcdr (assq 'end-of-buffer wiki-pub-rules)
+            (concat "<hr>\n<p>\n"
+                    (href "SiteMap") " / "
+                    (href "AllPages" "index") " / "
+                    (href "Out" "../index") " / "
+                    (mailto "alex@emacswiki.org") " / "
+                    "Last change: <?date>\n"
+                    "</body>\n"
+                    "</html>"))
+</pre>
+
+If you want to add WikiLanguage support, then all you really need is
+this simple add-to-list:
+
+    (add-to-list 'wiki-pub-rules 'my-wiki-add-language)

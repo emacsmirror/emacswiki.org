@@ -1,0 +1,35 @@
+This is the little corner of EmacsWiki for Doug Alcorn <doug @ lathi.net>.  I'm known as [::Lathi] on the #emacs EmacsChannel.  My official home page is at http://www.lathi.net.  As of 15 March 2003 I use Emacs 21.2.2 (i386-pc-linux-gnu, X toolkit, Xaw3d scroll bars) of 2003-02-12 on raven, modified by Debian.  I "switched" from XEmacs 21.4 (patch 12) "Portable Code" [Lucid] (i386-debian-linux, Mule) of Mon Jan 27 2003 on eeyore.  So far it's going OK.  I like GnuEmacs.  There are still a couple of gotchas I don't like.  Apropos is the biggest one.
+
+[new:DrewAdams:2005-10-04 16:39 UTC]
+: Give [[Icicles]] a try for an alternative to `apropos'. `C-next' and `C-prior' show the doc for each apropos match. `S-TAB' lists all the matches. The targeted objects are all those expected as input. For example, with `C-h v', the objects are variables; with `C-h f', they are functions; with `M-x', they are commands, and so on.
+[new]
+
+I need to update my bugs, todo, and wishes list below now that I'm in GNU Emacs.
+
+I've setup a personal wiki at http://www.lathi.net/.  Yes, my main site is now a wiki.  Feel free to register and edit all you like.  I'm using it as a place to store longer essays and howtos.  I've also got a blog setup at http://blog.lathi.net.  If you're into RSS, both have an feed for updates:
+
+* http://blog.lathi.net/xml/rss/feed.xml
+* http://www.lathi.net/twiki-bin/view/Main/WebRss?contenttype=text/xml&skin=rss
+
+== EmacsWiki Pages I've Worked On ==
+
+* ArchivingMail - some code for archiving mail sent to you rather than just mail you send out.
+* GnusNiftyTricks - how to integrate message-x and hippie expand to get smart completion
+* <nowiki>KinesisKeyboard</nowiki> - I have one and like it.
+* LoanPaymentCalculator - It's quick and easy, but needed to be posted somewhere
+* PostingStyles - An example that I no longer use of multiple personalities for Gnus (without using it's personalities feature)
+* I've also put my two cents in on why I think TabsAreEvil (this is related to NoTabs)
+* With JohnWiegley's help I wrote CalendarWeeklyView
+
+----
+== Blog ==
+
+<rss "http://blog.lathi.net/xml/rss/feed.xml">
+
+----
+
+I have setup a spam trap at mailto:tarpit@lathi.net.  Don't send email to tarpit@lathi.net.
+
+----
+CategoryHomepage
+

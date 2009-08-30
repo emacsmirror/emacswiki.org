@@ -1,0 +1,138 @@
+Emacs comes with sgml-mode, and a derived html-mode.  Both are
+rather simple and offer the insertion of tags based on a list of tag
+names and appropriate skeletons (see SkeletonMode).  The original ##html-mode.el## was written by MarcAndreessen.
+
+Here are some things which enhance <code>html-mode</code>,
+
+* HtmlChangeLog -- Provide support for ChangeLog entries for HTML files.
+* HtmlChooserMode -- choose nxml mode for XHTML, otherwise html mode (or one of the alternatives below)
+* HtmlCoding -- get coding system from <nowiki><meta></nowiki> charset (only needed in Emacs 21)
+* HexColour -- Preview in your buffer what the colour #034fA2 does look like
+* HtmlEndOfLine -- C-e can take you to the end of the text <em>or</em> the end of the tag
+* HtmlQuote -- quote special characters
+* HtmlRedirectPage -- A skeleton for inserting a simple page for redirects in HTML.
+* [http://user42.tuxfamily.org/html-sizes/index.html html-sizes.el] -- update download files sizes shown in your HTML
+* HtmlToc -- show a table of contents buffer for your document
+* IndentingHtml -- indent based on document structure
+* IndentRegionAsOtherMode -- Indent the region with another mode, but then return to the current mode.
+* PredictiveMode -- "Intellisense" for HTML: predictive, context-sensitive completion of HTML tags, attributes, and other entities
+[new]
+** I do not think Predictive Mode can do that. It is not a parser. Maybe it still belongs here because it is quite nice in predicting words when writing text in a HTML page - and it has a built in intellisense type UI. (And you can use it with CompanyMode intellisense style completion too.)
+
+** The modes that does parsing that can be used by completion UI:s are rather nxml-mode (part of Emacs 23 - soon)/nxhtml-mode (part of [NxhtmlMode nXhtml]). If you want intellisense style then go for version 1.88 of nXhtml (which includes CompanyMode to do this).-- LennartBorgman
+
+[new]
+* [[SkeletonMode#XhtmlSkeleton]] -- A skeleton for inserting an XHTML file with the proper encoding attributes.
+
+If you find <code>html-mode</code> too basic, here are some alternatives,
+
+* ColdFusionMode and ColdFusionDeluxeMode -- for that (non-free) web system
+* HtmlHelperMode -- an angry fruit salad mode manually supporting many things (without relying on DTDs)
+* HtmlModeDeluxe -- multi-major modes to combine <nowiki>PsgmlMode</nowiki> with php, javascript, css and many bells and whistles
+* [NxhtmlMode nXhtml] -- a fancy web development environment including nxhtml-mode extending nxml-mode to XHTML, supports multiple major modes, etc
+* PsgmlMode -- a complete SGML editing environment based on DTD
+* XmlMode -- for XML specifics
+* YaHTML -- yet another HTML mode, comes with <nowiki>YaTeX</nowiki>
+
+== CSS and CFM ==
+
+If you want to edit CSS and CFM files using html-mode, add the following to your ~/.emacs file.
+
+ (add-to-list 'auto-mode-alist '("\\.css$" . html-mode))
+ (add-to-list 'auto-mode-alist '("\\.cfm$" . html-mode))
+
+See also: CascadingStyleSheetMode and JavaScriptMode.
+
+== Fill <li> as bullet points ==
+
+The setup below gets [[FillAdapt]] to treat <code><li></code> as a bullet point, like for instance
+
+    <li> Eighty megabytes and
+         constantly swapping.
+
+You can do the same with <code><p></code>, if you write
+<code><p></code> paragraphs that way too.
+
+    (add-hook 'html-mode-hook
+              (lambda ()
+                (require 'filladapt)
+                (set (make-local-variable 'filladapt-token-table)
+                     (append filladapt-token-table
+                             '(("<li>[ \t]" bullet))))))
+
+== No line break after tag (Emacs 21) ==
+
+Emacs 22 has a nobreak predicate to prevent a line break between a tag and its first argument.  This is good for instance to keep an <code><a</code> together with <code>href</code> in <code><a href</code>.  No browser cares where line breaks are, this is just for human readability.  You can get this in Emacs 21 too with the following,
+
+<pre>
+(unless (fboundp 'sgml-fill-nobreak)
+  ;; from the emacs cvs head
+  (defun sgml-fill-nobreak ()
+    ;; Don't break between a tag name and its first argument.
+    (save-excursion
+      (skip-chars-backward " \t")
+      (and (not (zerop (skip-syntax-backward "w_")))
+           (skip-chars-backward "/?!")
+           (eq (char-before) ?<))))
+
+  (add-hook 'sgml-mode-hook
+            (lambda ()
+              (set (make-local-variable 'fill-nobreak-predicate)
+                   'sgml-fill-nobreak))))
+</pre>
+
+== XML customization ==
+
+If you want to use XML mode for all (non-XML) SGML and HTML files add the following hook to your InitFile for `sgml-mode-hook'.
+
+    (add-hook sgml-mode-hook
+        (lambda ()
+          (set (make-local-variable 'sgml-xml-mode) t)))
+
+Or just set `sgml-xml-mode' globally to non-nil.
+
+    (setq sgml-xml-mode t)
+
+If you want to use XML mode only for your HTML files and XML files then add the following hook to your InitFile for `html-mode-hook'.
+
+    (add-hook 'html-mode-hook
+        (lambda ()
+          (set (make-local-variable 'sgml-xml-mode) t)))
+
+== Case convention for tags ==
+
+This matters less and less, but if you want to use uppercase tags -- ##<PARA>## instead of ##<para>## -- then you can set `sgml-transformation-function' globally to `upcase'.
+
+    (setq sgml-transformation-function 'upcase)
+
+Should you want to use uppercase in HTML, but not in XML, you can't set it as a local variable with hooks (as of 2009-07-16).  Instead, you'll have to use the underlying variable that this setting instructs in your hook.  The underlying variable is `skeleton-transformation-function'.
+
+If you want to use uppercase tags in HTML, but not in XML, then add the following hook to your InitFile for `html-mode-hook'.
+
+    (add-hook 'html-mode-hook
+        (lambda ()
+          (unless sgml-xml-mode
+            (set (make-local-variable 'skeleton-transformation-function)
+                 'upcase))))
+
+If you want to use uppercase tags in (non-XML) HTML and (non-XML) SGML, but not in XML, then add the same hook to your InitFile but for `sgml-mode-hook'.
+
+    (add-hook 'sgml-mode-hook
+        (lambda ()
+          (unless sgml-xml-mode
+            (set (make-local-variable 'skeleton-transformation-function)
+                 'upcase))))
+
+If you want to use uppercase tags in (non-XML) SGML, but never in HTML or XML.
+
+    (add-hook 'sgml-mode-hook
+        (lambda ()
+          (unless (or sgml-xml-mode
+                      (eq major-mode 'html-mode))
+            (set (make-local-variable 'skeleton-transformation-function)
+                 'upcase))))
+
+----
+MarkupModes
+CategoryHypermedia
+CategoryModes

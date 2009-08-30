@@ -1,0 +1,86 @@
+ erobot.el --- game with elisp functions trying to survive
+
+You can get the source code here:
+
+* Lisp:erobot.el
+
+This game implements a very basic version of the many robot variants
+out there: Players write little programs (robots) that compete in a
+simulated arena.
+
+This variant of the game is called eRobot because the robots are
+implemented in EmacsLisp for Emacs.  Players compete by writing a
+defun (called a candidate or am erobot).  The last erobot remaining
+wins the game.
+
+Here is a sample candidate:
+
+ (defun erobot-candidate-wanderer ()
+   "A possible candidate for a game of `erobot'.
+ This candidate moves around in random directions."
+   (list 'erobot-move (erobot-random-dir)))
+
+See the `erobot' doc-string for a list of useful functions to use.
+These are the "sensors" of the robot.
+
+The variable `erobot-commands' list the commands the robot may choose to eventually /do/.
+These are the "motors" of the robot.
+You can read the doc-string of every command in the list.
+
+Well, there are only two at the moment, `erobot-move' with a direction (the symbol up, right, down, or left),
+and `erobot-pass'.  ;)
+
+==Installation==
+
+In order to install, put the file somewhere on your
+`load-path' and add the following to your ~/.emacs file:
+
+ (autoload 'erobot "erobot" "Robots for Emacs, a game." t)
+
+Calling erobot will prompt you for two candidates and run a game for
+you.
+
+==Teams==
+
+Instead of fighting one against all, you can also have teams:
+
+ (defalias 'chaser-1 'erobot-candidate-chaser)
+ (defalias 'chaser-2 'erobot-candidate-chaser)
+ (defalias 'chaser-3 'erobot-candidate-chaser)
+ (erobot 'erobot-candidate-wicked-walker '(chaser-1 chaser-2 chaser-3))
+
+Screenshot of the arena after four turns:
+
+ **************
+ *  A         *
+ *            *
+ *D           *
+ *B       C   *
+ **************
+  4
+
+==Tournaments==
+
+You can run the same game as a tournament:
+
+ (erobot-run-tournament 'erobot-best-of-5
+                        'erobot-candidate-wicked-walker
+                        '(chaser-1 chaser-2 chaser-3))
+
+Tournament result:
+
+ TOURNAMENT: BEST-OF-5
+
+ Score  Candidate
+
+     3  chaser-2
+     2  chaser-3
+     1  erobot-candidate-wicked-walker
+     1  chaser-1
+
+ Score  Team
+
+     6  (chaser-1 chaser-2 chaser-3)
+
+----
+CategoryGames

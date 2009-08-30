@@ -1,0 +1,44 @@
+DavidPonce has written library <code>swbuff.el</code>, which lets you cycle among existing buffers in an agreeable fashion. Download it here: http://sourceforge.net/projects/emhacks/.
+
+= Enhancements =
+
+The following enhancements to <code>swbuff.el</code> are also available:
+
+== swbuff-advice ==
+
+<code>swbuff-advice.el</code> -- allows the use of more than one set of regexp filters. You can specify inclusive and additive-exclusive filters, in addition to exclusionary filters. By JosephLCasadonteJr. Download it here: http://www.northbound-train.com/emacs.html#MyPackages.
+
+== swbuff-x ==
+
+Lisp:swbuff-x.el -- By KahlilHodgson. New features:
+
+* Fixes the display timer so that it doesn't interfere with other packages such as speedbar and ispell.
+
+* Maintains buffer list ordering so that only the first and last buffers in a sequence are affected.
+
+* Excludes buffers whose major mode matches `swbuff-exclude-mode-regexp' from the buffer list, but includes any buffers that match `swbuff-include-buffer-regexps' (a couterpoint to `swbuff-exclude-buffer-regexps'). If `swbuff-this-frame-only' is non-nil, then exclude buffers displayed in other visible frames.
+
+* Hook `swbuff-pre-switch-hook' -- for things you may want to do before switching buffers.
+
+* Function `swbuff-kill-this-buffer' -- for selectively cleaning out your buffer list.
+
+* If `swbuff-start-with-current-centered' is non-nil, then buffer list display starts with the current buffer roughly in the middle of the display ordering.  This encourages the use of `swbuff-previous-buffer', to get to buffers which would otherwise appear at the end of the list.
+
+* Variables `swbuff-left' and `swbuff-right' -- alternative to `swbuff-header', `swbuff-trailer' and `swbuff-separator'.  Lets you place brackets around the buffer name.
+
+* Displays buffer name matching `swbuff-special-buffers-re' using `swbuff-special-buffers-face'.
+
+* Variable `swbuff-modeline-format' -- makes the modeline of the status window configurable.
+
+* Setting variable `swbuff-display-intermediate-buffers' to t makes the buffers be displayed while cycling. This is similar to what PcBufsw does.
+
+== swbuff-y ==
+
+Discontinued.
+Instead [NxhtmlMode nXhtml] now contains a version of ControlTABbufferCycling based on [InteractivelyDoThings ido-mode].
+
+= Tips and tricks =
+
+By mistake I used `swbuff-switch-to-previous-buffer' but what I really wanted to use was `swbuff-switch-to-next-buffer'. -- MaDa
+
+CategoryBufferSwitching

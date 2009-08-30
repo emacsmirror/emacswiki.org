@@ -1,0 +1,197 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Defining Icicles Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multiple-Choice Menus]] ||
+
+----
+
+== Defining Icicles Tripping Commands ==
+
+[[Icicles - Tripping]]
+describes the use of '''Icicles''' tripping (aka navigation or browsing)
+[[multi-command]]s.  This page tells you how to define your own
+such commands for custom trips -- it is thus for EmacsLisp
+programmers.
+
+The best way to learn how to do this is to look at how the
+existing tripping commands are defined.  Some of them use macro
+`icicle-define-command'; others do not.  Some use the
+building-block functions `icicle-explore' or `icicle-apply';
+others do not.  Several use `icicle-search' as a building block.
+
+
+
+
+[:icicle-define-command]
+=== Using `icicle-define-command' ===
+
+Those that use `icicle-define-command' take advantage of some
+extraneous way to obtain trip location information from a display
+candidate, which is just a string.  For example, `icicle-bookmark'
+ultimately uses the
+display string to look up location information in a bookmarks
+file.  Those that use `icicle-explore' or `icicle-apply' make use
+of location information stored in the [[alist]] ##COLLECTION## argument to
+`completing-read'.
+
+You can also use `icicle-define-command', `icicle-explore', and `icicle-apply' to define
+multi-commands other than browsing commands -- the action function
+can do anything you like.
+
+
+
+
+[:icicle-explore]
+=== Using `icicle-explore' ===
+
+'''`icicle-explore'''' is a higher-order function that takes as
+arguments the following functions.  
+
+* A function to build a candidates alist (##COLLECTION##) for
+  [[completion]].  It fills `icicle-candidates-alist' with the
+  candidates, each of which is a [[cons]] with a display candidate
+  string as [[car]] and (typically) location information as [[cdr]].  For
+  example, `icicle-find-tag' uses the tag text as display
+  candidate and the standard tag-locating information as the cdr:
+  tag info, file path, and goto function.
+
+* A function that acts on the candidate finally chosen (`RET'),
+  when completion is finished.
+
+* A function to call if the user hits `C-g' during completion.
+
+* A function to call if an error is raised during completion.
+
+* A function to call after completion is finished, to clean things
+  up.
+
+If you also bind `icicle-candidate-action-fn' to a function that
+takes a display candidate (string) as argument and navigates to
+the corresponding location, then `icicle-explore' does everything
+you need for an Icicles trip.  You can use function
+`icicle-get-alist-candidate' to get the location information for a
+given display candidate.
+
+
+
+[:icicle-apply]
+=== Using `icicle-apply' ===
+
+'''`icicle-apply'''' binds `icicle-candidate-action-fn' appropriately
+and calls `icicle-explore'.  It applies its function argument to
+completion candidates the user acts on (using `C-RET' etc.).  It
+applies the function to the full alist entry, that is, the display
+candidate [[car]] plus any additional information in the [[cdr]].  For a
+tripping command, the additional information provides a location
+and the function applied takes you there.
+
+This use of an alist that stores location information in the cdrs
+is what makes `icicle-apply' and `icicle-explore' particularly
+suitable for defining navigation multi-commands.  The '''Icicles'''
+macros `icicle-define-command' and `icicle-define-file-command'
+make no such provision, but with suitable arguments you can use
+them too to define tripping commands.
+
+'''See Also:''' [[MarkCommands#IciclesGoToMarker|Icicles Commands to Go To a Marker]] 
+
+
+
+
+[:icicle-search]
+=== Using `icicle-search' ===
+
+'''`icicle-search'''' is another high-level function for defining
+tripping commands.  Like `icicle-apply', it calls
+`icicle-explore', but it also provides features for searching
+regions, buffers, and files.  It takes as arguments the search
+limits (region), if any, and either a regexp or a function that
+determines the unfiltered search hits.  It does everything else
+needed to define a trip command that uses search hits as
+completion candidates.  Several predefined '''Icicles''' tripping
+commands were defined using `icicle-search'.
+
+
+
+
+
+[:OnFoot]
+
+=== Tripping on Foot ===
+
+You should be able to define any tripping commands you need using
+`icicle-explore', `icicle-apply', or `icicle-search'.
+
+If, however, for some reason you decide to define one at a lower,
+pedestrian level (that is, without using any of those building
+blocks), then bind '''`icicle-whole-candidate-as-text-prop-p'''' to `t' around the call to `completing-read'.  You can then use
+'''`icicle-get-alist-candidate'''' to retrieve the candidate [[cdr]]
+(e.g. location) information from the completion result.
+
+However, if the action or alternate action function that you need
+''modifies'' the existing set of completion candidates on the fly, as
+a side effect, then bind `icicle-whole-candidate-as-text-prop-p'
+to '''`nil'''' ''in the action function''.  Then modify both
+'''`minibuffer-completion-table'''' and '''`icicle-candidates-alist'''' as
+needed to perform the side effect.
+
+'''Icicles''' [[Icicles - Search-And-Replace|search-and-replace]] provides an example of this.  When you
+replace text, the original domain of search-hit candidates (with
+their associated location information) is altered, so that you can
+continue replacing coherently.  (See the code for
+`icicle-search-action' and
+`icicle-search-highlight-and-maybe-replace'.)
+
+Because such side effects can change the meaning of cycling state
+information such as the current candidate number, '''Icicles''' does not
+automatically save such state information before a candidate
+action and then restore it afterward.
+
+For example, search-and-replace removes a search-hit candidate, as
+a side effect, if the replacement text no longer matches your
+input.  In that case, a current candidate number recorded before
+the action would no longer correspond to the same candidate.
+
+For this reason, if your action function does ''not'' perform any such
+side effects on the candidates, and you want to restore the
+cycling state as it was before a candidate action, then you might
+want your ''action function'' to save and then restore the values of
+'''Icicles''' variables such as '''`icicle-candidate-nb'''',
+'''`icicle-last-completion-candidate'''', and
+'''`icicle-completion-candidates''''.
+
+
+
+
+See Also:
+
+* [[Icicles - Tripping]] for information about using '''Icicles''' trip commands
+
+* [[Icicles - Defining Icicles Commands]] for general information about defining multi-commands
+
+* [[Icicles - Programming with Fancy Candidates]] for information about
+`icicle-whole-candidate-as-text-prop-p'
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Defining Icicles Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multiple-Choice Menus]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+
+

@@ -1,0 +1,29 @@
+If you are writing code that will eventually end up in a GNU project
+such as GnuEmacs, then you will have to worry about legal matters: You
+will need to sign a copyright assignment to the FSF.  The FSF then has
+the copyright over your work.  This is different from releasing code
+under the GPL.  You can always release code under the GPL without
+assigning the copyright to the FSF.  The only effect this will have is
+that your code cannot be part of GnuEmacs.  It can be part of XEmacs
+([[XEmacs]]), however.
+
+If you are writing a patch to code that is part of a GNU project such
+as GnuEmacs, then you will have to assign the copyright as well, if
+your patch is "significant".  For the GNU project, any patch spanning
+more than 10 lines is considered "significant".
+
+More Info:
+
+* http://www.gnu.org/prep/maintain.html
+
+The section about Copyright Papers is the one where they talk about the
+"assignment" stuff ("Papierkrieg"):
+
+* http://www.gnu.org/prep/maintain/html_node/Copyright-Papers.html
+
+Training for your lawyer skills:
+
+* http://www.gnu.org/cgi-bin/license-quiz.cgi
+
+----
+CategoryCode

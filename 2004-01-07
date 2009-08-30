@@ -1,0 +1,17 @@
+ChrisGray posted on emacs-devel today using the subject "More antialiasing work":
+
+: Well the winter holidays have come and gone, and I got to do a little
+more hacking on antialiasing fonts for emacs on X.  For those who want
+to follow the development, I have an arch archive located at
+http://www.cs.ubc.ca/~cmg/{archive} .  You might need to register
+Miles Bader's archive as well.  It is at
+http://arch.linuxguru.net/~miles/miles@gnu.org--gnu-2003 .  
+
+: The latest version is much more stable than the patch I had previously
+announced, though not as feature complete.  It is certainly not
+something you would want to give up your regular emacs for.  
+
+: Please let me know what you think.
+
+: Cheers,
+: Chris

@@ -1,0 +1,17 @@
+contact me at (concat (format "%c%s%d%s%s" ?a "brady" (* 2 (- 1 1)) "@" "gmail") ".com") 
+
+I'm the Director of Technology for the studio that makes City of Heroes and City of Villains. I develop almost entirely in emacs, including debugging through emacs using gdb, write up architecture docs, and I even track my tasks using it.
+
+Emacs is by far the most productive environment I have ever used, and part of the reason for this is that I have embraced modifying emacs to do what I want as being part of the emacs user experience. This may sound obvious, but too many people waste time searching for a perfect elisp package to do what they want when what they want is already at their fingertips.
+
+My advice to you is that if you need something, and you can't find it in about ten minutes, that you do it yourself. There is no better way to make Emacs as responsive as possible. This is not hard to do, The capability of emacs is tremendous. Explore and use it.
+
+If you start to write elisp every day, and you start to build a foundation of code that you understand fully, then you will become more agile, over time, and you will be able to do things faster and better than just about anybody.
+
+
+Pardon the hyperbole. Obviously you need to know what tools to use when, and emacs isn't always the right one, but the elisp aspect is a huge component of it, and being afraid to dive in means missing a lot.
+
+I'm pretty bad at making contributions to the community. Usually because I feel that I don't have anything new to contribute. But I hope my approach of posting small, simple, code snippets will be of some value. I've finally decided to post a few things I use all the time. A lot of these snippest have the same functionality already embedded in larger packages, but maybe you need to do something outside of what those packages do and just want some simple elisp as a jimping off point, and maybe my code will fill that role. I hope it does. If you find a bug or think I'm crazy, I'm always glad to hear what you think.
+
+----
+CategoryHomepage

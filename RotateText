@@ -1,0 +1,101 @@
+This page is about commands that rotate a selected buffer string, replacing it in the buffer by cycling through a series of predefined replacements.
+
+When writing graphical code, words need to be changed like "width" to "height", or the word "left" to "right". A "text rotator" in Emacs could make these changes in a single key binding. With the the point in Emacs on the word "width" and then the key sequence for the code rotator command (the original poster had in mind the divide key ##/## on the keypad), it would be replaced with "height".
+
+Various sets of words could be be rotated. If the selected text matches an item in any of the following lists then it replaces it with the next one in the list. (Or if its the last the first):
+
+    (width height)
+    (left top right bottom)
+    (start end)
+    (red orange yellow green blue indigo violet)
+    (xx-small x-small small normal large x-large xx-large)
+    (zero one two)
+     ... easy to define your own sets.
+
+This version of rotate-region builds a giant RegularExpression for finding matches rather than iterating on entries in the data structures.  It is written defensively with error-checking, and rotates text "in the buffer" for the `rotate-region' command.  It has a `rotate-string' procedure.  At the end is a key binding for an `indent-or-rotate' command.
+
+{{{
+(defun rotate-region (beg end)
+  "Rotate all matches in `rotate-text-rotations' between point and mark."
+  (interactive "r")
+  (let ((regexp (rotate-convert-rotations-to-regexp
+		 rotate-text-rotations))
+	(end-mark (copy-marker end)))
+    (save-excursion
+      (goto-char beg)
+      (while (re-search-forward regexp (marker-position end-mark) t)
+	(let* ((found (match-string 0))
+	       (replace (rotate-next found)))
+	  (replace-match replace))))))
+
+(defun rotate-string (string &optional rotations)
+  "Rotate all matches in STRING using associations in ROTATIONS.
+If ROTATIONS are not given it defaults to `rotate-text-rotations'."
+  (let ((regexp (rotate-convert-rotations-to-regexp
+		 (or rotations rotate-text-rotations)))
+	(start 0))
+    (while (string-match regexp string start)
+      (let* ((found (match-string 0 string))
+	     (replace (rotate-next
+		       found
+		       (or rotations rotate-text-rotations))))
+	(setq start (+ (match-end 0)
+		       (- (length replace) (length found))))
+	(setq string (replace-match replace nil t string))))
+    string))
+
+(defun rotate-next (string &optional rotations)
+  "Return the next element after STRING in ROTATIONS."
+  (let ((rots (rotate-get-rotations-for
+	       string
+	       (or rotations rotate-text-rotations))))
+    (if (> (length rots) 1)
+	(error (format "Ambiguous rotation for %s" string))
+      (if (< (length rots) 1)
+	  ;; If we get this far, this should not occur:
+	  (error (format "Unknown rotation for %s" string))
+	(let ((occurs-in-rots (member string (car rots))))
+	  (if (null occurs-in-rots)
+	      ;; If we get this far, this should *never* occur:
+	      (error (format "Unknown rotation for %s" string))
+	  (if (null (cdr occurs-in-rots))
+	      (caar rots)
+	    (cadr occurs-in-rots))))))))
+
+(defun rotate-get-rotations-for (string &optional rotations)
+  "Return the string rotations for STRING in ROTATIONS."
+  (remq nil (mapcar (lambda (rot) (if (member string rot) rot))
+		    (or rotations rotate-text-rotations))))
+
+(defun rotate-convert-rotations-to-regexp (rotations)
+  (regexp-opt (rotate-flatten-list rotations)))
+
+(defun rotate-flatten-list (list-of-lists)
+  "Flatten LIST-OF-LISTS to a single list.
+Example:
+  (rotate-flatten-list '((a b c) (1 ((2 3)))))
+    => (a b c 1 2 3)"
+  (if (null list-of-lists)
+      list-of-lists
+    (if (listp list-of-lists)
+	(append (rotate-flatten-list (car list-of-lists))
+		(rotate-flatten-list (cdr list-of-lists)))
+      (list list-of-lists))))
+
+(defun indent-or-rotate ()
+  "If point is at end of a word, then else indent the line."
+  (interactive)
+  (if (looking-at "\\>")
+      (rotate-region (save-excursion (forward-word -1) (point))
+		     (point))
+    (indent-for-tab-command)))
+
+(local-set-key [tab] 'indent-or-rotate)
+}}}
+
+See also TabCompletion.
+
+----
+CategoryCompletion
+CategoryEditing
+CategoryNaturalLanguage

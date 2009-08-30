@@ -1,0 +1,81 @@
+This page is about moving the cursor to long lines and visualizing long lines.
+
+== Go To Lines Longer than Some Limit ==
+
+There are various ways to go to lines that are longer than some limit. Some of them just count characters to determine line length; others take character width into account as well, so they are useful even with characters of variable width.
+
+=== Fixed Character Width ===
+
+The following techniques do not take character width into account; they are based only on the number of characters. This means that these techniques might not be appropriate for characters of variable width (e.g. `TAB' characters) or for double-width characters such as are typically used for Chinese and Japanese.
+
+* Command `occur' -- Use ##M-x occur RET C-u 81 . RET## to find all lines with more than 80 characters. You can then go to any of these lines using `mouse-2' or `RET' in the `*Occur*' buffer (OccurMode).
+
+[:goto-long-line]
+* Command `goto-long-line' goes to the next line that is at least ##LEN## characters long. Use a prefix arg to provide ##LEN##. Plain `C-u' (no number) uses `fill-column' as ##LEN##. Repeat to visit other such lines. Displays a message about the long line, e.g., ##Line 234: 76 chars##. Command `goto-long-line' is available with library <tt>[[misc-cmds.el]]</tt>.
+
+=== Variable Character Width ===
+
+The following technique takes character width into account.
+
+* Command `my-next-long-line', defined as follows, goes to the next line that is longer than `fill-column'. (It uses function `current-column', to take character width into account.)
+
+  (defun my-next-long-line (arg)
+    "Move to the ARGth next long line greater than `fill-column'."
+    (interactive "p")
+    (or arg (setq arg 1))
+    (let ((opoint (point))
+          (line-length 0))
+      ;; global-variable: fill-column
+      (while (and (<= line-length fill-column)
+                  (zerop (forward-line (if (< arg 0) -1 1))))
+        (setq line-length (save-excursion
+                            (end-of-line)
+                            (current-column))))
+      ;; Stop, end of buffer reached.
+      (if (> line-length fill-column)
+          (if (> arg 1)
+              (my-next-long-line (1- arg))
+            (if (< arg -1)
+                (my-next-long-line (1+ arg))
+              (message (format "Long line of %d columns found"
+                               line-length))))
+        (goto-char opoint)
+        (message "Long line not found"))))
+
+== Go To the Longest Line(s) ==
+
+[:goto-longest-line]
+Command `goto-longest-line', from library <tt>[[misc-cmds.el]]</tt>, goes to the first of the longest lines in the region or the buffer. It does not matter where the line is with respect to the cursor position. If the region is active, then the region is checked; otherwise, the buffer is checked. Interactively, `goto-longest-line' displays a message with the information that it
+returns, which is a list of four elements: ##(LINE LINE-LENGTH OTHER-LINES LINES-CHECKED)##.
+
+* ##LINE## -- the first of the longest lines measured.
+* ##LINE-LENGTH## -- the length of ##LINE##.
+* ##OTHER-LINES## -- a list of other lines checked that are as long as ##LINE##.
+* ##LINES-CHECKED## -- the number of lines measured.
+
+Example messages: 
+
+      Line 234: 76 chars, (459 lines measured)
+      Line 234: 76 chars, Others: {239, 313} (459 lines measured)
+
+If you repeat `goto-longest-line', it goes to the longest line following the current line. This destination is not necessarily the longest line, besides the current line, in the region or buffer; it is the longest line that occurs after the current line.
+
+I bind `goto-longest-line' to `C-x L'.  If you use IsearchPlus (library <tt>[[isearch+.el]]</tt>, then `goto-longest-line' is also bound to `C-end' during Isearch (`C-s C-end'). This has the added advantage that `C-g' puts you back where you started. -- DrewAdams
+
+[:ShowLongLines]
+== Visualizing Long Lines ==
+
+There are several libraries that provide visual aids to let you know when the cursor passes a certain column limit. Usually, the aim is to avoid creating long lines or to point out lines that are longer than the limit.
+
+* ModeLinePosition -- Highlights the column-number indicator in the mode line when the cursor passes a column limit.
+* HighlightCurrentColumn -- Libraries that highlight a given column (on all lines).
+* [http://homepages.cs.ncl.ac.uk/phillip.lord/download/emacs/wide-column.el wide column] -- changes the TextCursor colour (or calls any function you like)
+when the line gets too long.
+* DevelockMode also supports fontification of long lines.  But it doesn't work for every mode.
+* [[Highlight80Plus]] -- highlights the offending line, char or chars
+* lineker.el -- highlights, let you move to long lines, see EightyColumnRule.
+
+----
+CategoryEditing
+CategoryFilling
+EightyColumnRule

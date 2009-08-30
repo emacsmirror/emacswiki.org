@@ -1,0 +1,43 @@
+ (defun robert-filter-buffer (patterns) 
+   "filter unwanted patterns from buffer"
+   (save-excursion
+     (beginning-of-buffer)
+     (dolist (filter patterns)
+       (save-excursion
+ 	(replace-regexp filter "")))))
+ 
+ 
+
+ (defun robert-view-html-as-text (file buffer) 
+   "reduce html to information"
+   (interactive)
+   (let* ((htb "*html-view-tmp*"))
+     (switch-to-buffer buffer)  
+     (kill-buffer buffer)
+     (switch-to-buffer buffer)
+     (insert-file file)
+     (robert-filter-buffer (list
+ 			   "<\\(a\\|b\\|p\\|link\\|img\\|meta\\) .*?>"
+ 			   "<\\(a\\|b\\|p\\|link\\|img\\|meta\\) .*?/>"
+ 			   "</.*?>"
+ 			   "<.>"
+ 			   "<..>"
+ 			   "<...>"
+ 			   "<....>"
+ 			   "<\\(html\\|head\\)>"
+ 			   "\n\n\n"))
+     (dolist (replist (list 
+ 		      (list "&gt;" ">")
+ 		      (list "&lt;" "<")
+ 		      (list "&amp;" "&")
+ 		      (list "&quot;" "\"")
+  		      (list "&apos;" "'")
+ 		      (list "&nbsp;" " ") ))
+       (save-excursion
+ 	(replace-string (first replist) (second replist)))))
+   (view-mode)
+   (local-set-key (kbd "q") (lambda () (interactive) 
+ 			     (kill-buffer (buffer-name))
+ 			     (switch-to-buffer (last-buffer))))
+   (print "press 'qq' to kill this buffer"))
+   

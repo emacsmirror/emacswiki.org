@@ -1,0 +1,18 @@
+When emacs enters idle, a random quote will appear in your echo area. I use this to help me learn new things. At different points in time I have had tips from programming books, syntax notes that I seem to always forget, or new emacs key strokes I want to learn but use very infrequently. You can customize the quotes to anything you would like, maybe you would like a laugh here or there, or maybe memorize some scripture, who knows, but enjoy!
+
+* http://www.emacswiki.org/elisp/random-idle-quote.el
+
+[new]
+: Great idea!  What if we will have some page on EmacsWiki where quotes are collected and people can update them? (just like EmacsUserLocations) and when <code>random-idle-quote.el</code> starts it fetches quotes from EmacsWiki?  And of course it should have customisable variable like <code>`random-idle-quote-offline'</code>. --ZajcevEvgeny
+
+[new:DrewAdams:2004-12-25 18:25 UTC]
+'''`M-x yow'''' '''''!!!!!''''' -- DrewAdams
+
+[new]
+I knew about `M-x yow' and don't care too much to reinvent the wheel, but this being one of my first elisp projects (if you can call it that), I did it from scratch. I guess, I could have simply setup yow on an idle timer but for some reason, I had this in my mind, and it's what came out. I was just happy it worked :) -- JeremyCowgar
+
+[new]
+I do think it's a great idea to have use submitted "hints and tips" that can be used with random-idle-quote, or yow for that matter. It would be a great teaching tool if there were pages like YowEasyEmacsKeys, YowAdvancedEmacsKeys, YowCoolEmacsCommands, etc... -- JeremyCowgar
+
+[new]
+It is very useful indeed, and questions: 1. Can I add new quotes in .emacs rather than go to the .el; 2. How to make some of the quotes to come out more often, for example, the first ten on the top? -- Chaoji Li

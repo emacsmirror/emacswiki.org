@@ -1,0 +1,5 @@
+In free software Wiki news, the [http://www.gnu.org/software/hurd/ GnuHurd] project is updating [http://www.bddebian.com/~wiki/ their Wiki pages] from TWiki to [http://ikiwiki.info/ ikiwiki], with the option of downloading the page database with [[Git]] and submitting the changes to the repository.  Besides having revision control to closely track changes and monitor contributions, working offline seems to be of great desire.
+
+Detailed explanation at [http://www.bddebian.com/~wiki/contributing/wiki/ GnuHurd:How to Contribute to This Wiki].
+
+This Wiki architecture opens up a whole set of new community dynamics, including more edit conflicts and enabling people to contribute large changes to an entire Wiki at once.  It will be interesting to watch (or you could *participate*) and see what technical and personal problems arise from this architecture.  It may also succeed in enabling developers and users to write better documentation.

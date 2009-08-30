@@ -1,0 +1,14 @@
+Htmlfontify, by VivekDasmohapatra, turns an Emacs buffer into display-equivalent html. The author says, "Once I got that far, I just sort of got
+carried away and modified it to be able to html-ise and cross link a
+source tree using etags, etc..."  Get it here: http://users.pepperfish.net/vivek/htmlfontify/
+
+An example of the output from the new version of htmlfontify can be found
+[http://ourcomments.org/Emacs/nXhtml/doc/htmlfontify-example.html here]
+
+Try it online at: http://rtfm.etla.org/cgi-bin/htmlfontify.cgi
+[But don't get the source from rtfm, that's the old emacs21 version]
+
+See also [[Htmlize]] and SaveAsHtml.
+
+----
+CategoryFaces CategoryHypermedia

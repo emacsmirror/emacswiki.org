@@ -1,0 +1,99 @@
+GnuEmacs user since 1996.
+
+Email: gonz808 on hotmail
+
+Blog: [http://ozymandias.dk/cgi-bin/blog.pl The Oz Blog]
+
+
+: Welcome! -- AlexSchroeder
+
+:: Thanks
+
+== Packages ==
+
+* [http://ozymandias.dk/emacs/emacs.html#vj-complete vj-complete] Yet another context sensitive completion framework. Similar to ProgrammableCompletion.
+* [http://ozymandias.dk/emacs/emacs.html#vps vps] A Projects Settings Package. Define a set of files by specifying a list of specific directories and list of file extensions. Features: auto(re)build tags (checks file date). Clever grep support (short filenames). Fast searching for symbols via index (via perls DB_File). Autodetect project by matching buffer-file-name with project definitions. Dired for project directories and more.
+
+== Elisp Snippets ==
+
+=== My version of VIs * and # ===
+
+The following two functions examines the symbol (mode specific "word") under the cursor and finds the next and previous occurence, respectively, of the symbol. Wraparound is supported. Note that they only make sense if bound to keys. For example:
+
+ (global-set-key [C-M-down] 'vjo-forward-current-word-keep-offset)
+ (global-set-key [C-M-up] 'vjo-backward-current-word-keep-offset)
+
+The keep-offset part means that the offset into the symbol is the same after moving the point.
+
+It is kinda like a shortcut for M-b C-s C-w C-s.
+
+The code
+
+ (defun vjo-forward-current-word-keep-offset ()
+  " (Vagn Johansen 1999)"
+  (interactive)
+  (let ((re-curword) (curword) (offset (point)) 
+        (old-case-fold-search case-fold-search) )
+    (setq curword (thing-at-point 'symbol))
+    (setq re-curword (concat "\\<" (thing-at-point 'symbol) "\\>") )
+    (beginning-of-thing 'symbol)
+    (setq offset (- offset (point)))	; offset from start of symbol/word
+    (setq offset (- (length curword) offset)) ; offset from end
+    (forward-char)
+    (setq case-fold-search nil)
+    (if (re-search-forward re-curword nil t)
+	(backward-char offset)
+      ;; else
+      (progn (goto-char (point-min))
+	     (if (re-search-forward re-curword nil t)
+		 (progn (message "Searching from top. %s" (what-line))
+                        (backward-char offset))
+	       ;; else
+	       (message "Searching from top: Not found"))
+	     ))
+    (setq case-fold-search old-case-fold-search)
+    ))
+
+
+ (defun vjo-backward-current-word-keep-offset ()
+  " (Vagn Johansen 2002)"
+  (interactive)
+  (let ((re-curword) (curword) (offset (point)) 
+        (old-case-fold-search case-fold-search) )
+    (setq curword (thing-at-point 'symbol))
+    (setq re-curword (concat "\\<" curword "\\>") )
+    (beginning-of-thing 'symbol)
+    (setq offset (- offset (point)))	; offset from start of symbol/word
+    (forward-char)
+    (setq case-fold-search nil)
+    (if (re-search-backward re-curword nil t)
+	(forward-char offset)
+      ;; else
+      (progn (goto-char (point-max))
+	     (if (re-search-backward re-curword nil t)
+		 (progn (message "Searching from bottom. %s" (what-line))
+                        (forward-char offset))
+	       ;; else
+	       (message "Searching from bottom: Not found"))
+	     ))
+    (setq case-fold-search old-case-fold-search)
+    ))
+
+=== anything.el source for vps ===
+
+ (defvar anything-source-vps-files
+  '((name . "Project Files")
+     (candidates . (lambda ()
+                     (when vps-project-name
+                       (if (not (file-exists-p (vps-filelist-filename)))
+                         (vps-write-filelist))
+                       (start-process "anything-source-vps-files" nil
+                         "grep" "-i" (replace-regexp-in-string "^-" "."  anything-pattern)
+                         (vps-filelist-filename)))))
+     (type . file)
+     (requires-pattern . 4))
+  "Source for retrieving files (cached) vps filelist.")
+
+
+----
+CategoryHomepage

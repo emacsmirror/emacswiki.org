@@ -1,0 +1,40 @@
+My name is Lucas, and I use GNU Emacs.
+
+I'm [::Lukhas] on the EmacsChannel, and can be reached by mail at lucas > rincevent.net (French name of Terry Pratchett's antihero, Rincewind).
+
+== What I use Emacs for ==
+* Coding (C, Python, Haskell, Elisp, Perl ...)
+* IRCing ([[Circe]])
+* Reading Mails / News ([[Gnus]])
+* managing my todo lists (OrgMode)
+* listening to music ([[EMMS]])
+
+== Stuff that I contributed to, or wrote ==
+
+[Lukhas:emacs/elisp/buffer-move.el buffer-move.el] - for lazy people wanting to swap buffers without typing C-x b all the time.
+
+[Lukhas:emacs/elisp/tea.el tea.el] - a simple tea timer with icon display in the modeline. You need to fetch [Lukhas:emacs/elisp/tea.xpm tea.xpm] or [Lukhas:emacs/elisp/tea2.pnm tea2.pnm] to use the "standard ugly icon", or provide your own icon (feel free to send me a better one !).
+
+[Lukhas:emacs/elisp/color-theme-perso.el color-theme-smooth-blue.el] - a custom ColorTheme.
+
+I'm also hosting a EmacsCvs binary for windows, on Lukhas:emacs/win32/ it's built by arete, a EmacsChannel addict.
+
+: May the 05th, new upload.
+
+And, last but not least, [[EMMS]] !
+
+== Config files ==
+
+My [Lukhas:emacs/elisp/dot-emacs.el .emacs]. Comments in French or English, depending on the mood :)
+
+My [Lukhas:emacs/elisp/my-erc-setup.el ERC config file]
+
+My [Lukhas:emacs/elisp/dot-gnus.el .gnus]. Same remark for the comments.
+
+And finally, my [[Circe]] [Lukhas:emacs/elisp/circe-setup.el config]
+
+You can also have a look at Lukhas:emacs/elisp/ , i store my common used .el packages, and some other custom files.
+
+
+----
+CategoryHomepage

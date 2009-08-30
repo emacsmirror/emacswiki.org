@@ -1,0 +1,25 @@
+Click the header above to list all pages related to the Emacs-Wiki ''site'' itself. This category is not about Emacs, but about the site.
+
+* '''EmacsWiki''' -- main page and catch-all for this category: general information about the site and stuff that isn't on the other pages of the category
+* WikiOrganization -- how the Emacs-Wiki site is structured
+* WikiDownload -- download stuff from the site, including all Emacs-Lisp files
+* SiteMap -- main entry point for the wiki: top category of all categories.
+** SiteMapDiscussion - discussion about possible changes to the SiteMap
+* [[Search]] –- search the wiki in different ways (pages only; not EmacsLisp files).
+* ElispArea -- upload and download Emacs lisp source code.
+* HowTo -- how to use the EmacsWiki, especially how to contribute.
+* RecentChanges -- provides several ways to keep up-to-date about changes to EmacsWiki.
+* [[News]] -- chronological journal and Web log about EmacsWiki. Open to all, of course.
+* [[Problems]] -- report or read problems people are having with EmacsWiki.
+* [[Suggestions]] -- Post suggestions about the EmacsWiki.
+* WikiQuestions -- Questions and answers about using the Wiki.
+* EmacsWikiAdministrators - The Wiki's amazing spam fighters.
+* CategoryHomepage -- homepages of contributors to the wiki
+* CategoryHumor -- things some of us find funny
+
+'''NOTE:''' For convenience, some of these links are also available at the top and bottom of '''''each''''' Emacs-Wiki page: SiteMap, RecentChanges, [[Search]], HowTo, [http://www.emacswiki.org/cgi-bin/wiki/EmacsWikiProblems Problems].
+
+Some discussion of this page available at [[2005-04-23]].
+
+----
+CategoryEmacsWikiSite

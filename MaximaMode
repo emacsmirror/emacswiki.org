@@ -1,0 +1,27 @@
+[http://maxima.sourceforge.net/ Maxima] is a system for the manipulation of symbolic and numerical expressions, including differentiation, integration, Taylor series, Laplace transforms, ordinary differential equations, systems of linear equations, polynomials, and sets, lists, vectors, matrices, and tensors. Maxima yields high precision numeric results by using exact fractions, arbitrary precision integers, and variable precision floating point numbers. Maxima can plot functions and data in two and three dimensions.
+
+== Setup ==
+
+First install Maxima: http://maxima.sourceforge.net/
+
+Maxima is bundled with three modes for emacs: maxima, imaxima and emaxima. Imaxima is like plain maxima but outputs pretty answers to buffer with LaTeX support. For imaxima check http://members3.jcom.home.ne.jp/imaxima/Site/System_Requirements.html
+
+Imaxima uses breqn.sty. Get http://members3.jcom.home.ne.jp/imaxima/breqn097a.zip and unzip it to your ~/texmf/tex/latex and run texhash.
+
+Add this to your .emacs:
+
+ (add-to-list 'load-path "/usr/local/share/maxima/5.18.1/emacs/")
+ (autoload 'maxima-mode "maxima" "Maxima mode" t)
+ (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
+ (autoload 'maxima "maxima" "Maxima interaction" t)
+ (autoload 'imath-mode "imath" "Imath mode for math formula input" t)
+ (setq imaxima-use-maxima-mode-flag t)
+
+Then M-x imaxima.
+
+== Screenshot ==
+
+http://maxima.sourceforge.net/i/imaxima.png
+
+
+

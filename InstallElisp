@@ -1,0 +1,14 @@
+Lisp:install-elisp.el automates installation of single-file Emacs Lisp programs.
+
+* M-x install-elisp - Input an URL and install.
+* M-x install-elisp-from-emacswiki - Input an EmacsWiki page name and install.
+* M-x install-elisp-from-gist - Input a gist id and install.
+* M-x dired-install-elisp-from-emacswiki - Upgrade current file in dired from EmacsWiki.
+
+AutoInstall is an enhanced version of InstallElisp. It supports asynchronous downloading and much more. It has InstallElisp compatibility, so users can use install-elisp-* commands with it.
+
+== Dialog: ==
+
+----
+CategoryCode
+

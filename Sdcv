@@ -1,0 +1,122 @@
+==What is Sdcv ?==
+Sdcv is a mode that interface for sdcv ([http://sourceforge.net/projects/stardict/ StartDict] console version).
+
+==Install==
+* Install [http://sourceforge.net/projects/stardict/ StartDict] and sdcv:
+: To use this package, you have to install [http://sourceforge.net/projects/stardict/ StartDict] and sdcv in your system.
+: In Debian, just type:
+:: sudo aptitude install stardict sdcv -y
+: And copy dictionary file to /usr/share/startdict/dic/.
+
+* Install sdcv.el:
+: Put Lisp:showtip.el and Lisp:sdcv.el in your load-path, add
+{{{
+        (require 'sdcv)
+}}}    
+:: in ~/.emacs
+
+: Or use Lisp:auto-install.el install [[Sdcv]] with following:
+## M-x auto-install-batch RET
+## Input "sdcv"
+
+:: (How to install Lisp:auto-install.el, see AutoInstall)
+                   
+* Setup simple dictionary list:
+: Add few dictionary name to `sdcv-dictionary-simple-list' for display simple describe with tooltip,
+{{{
+    (setq sdcv-dictionary-simple-list        ;; a simple dictionary list
+          '(
+            "懒虫简明英汉词典"
+            "懒虫简明汉英词典"
+            "KDic11万英汉词典"
+            ))
+}}}         
+
+* Setup detail dictionary list:
+: Add complete directionay name to `sdcv-dictionary-complete-list' for display detail describe with buffer,
+{{{
+    (setq sdcv-dictionary-complete-list      ;; a complete dictionary list
+          '("KDic11万英汉词典"
+            "懒虫简明英汉词典"
+            "朗道英汉字典5.0"
+            "XDICT英汉辞典"
+            "朗道汉英字典5.0"
+            "XDICT汉英辞典"
+            "懒虫简明汉英词典"
+            "牛津英汉双解美化版"
+            "stardict1.3英汉辞典"
+            "英汉汉英专业词典"
+            "CDICT5英汉辞典"
+            "Jargon"
+            "FOLDOC"
+            "WordNet"
+            ))
+}}}
+
+==Configure Example==
+: Lisp:init-sdcv.el have example file for configure Lisp:sdcv.el.
+
+==Usage==
+* sdcv-search-point 
+: Search word around point and display detail describe with buffer.
+
+* sdcv-search-point+
+: Search word around point and display simple describe with tooltip.
+
+* sdcv-search-input
+: Search input word and display detail describe with buffer.
+
+* sdcv-search-input+
+: Search input word and display simple describe with tooltip.
+
+==Customize==
+All below option can customize by: M-x customize-group RET sdcv RET
+
+* `sdcv-buffer-name'
+: The name of sdcv buffer.
+
+* `sdcv-dictionary-simple-list'
+: The dictionary list for simple describe.
+
+* `sdcv-dictionary-complete-list'
+: The dictionary list for complete describe.
+
+==Tips==
+* If current mark is active, sdcv commands will translate region string, otherwise translate word around point.
+
+==Screenshot==
+[[image:SDCV.png]]
+
+
+[new:reiv:2009-08-23 09:37 UTC]
+When call function `sdcv-search-input', sdcv report "unrecognized option" warning, apply below patch(against v1.5.2) will fix this problem:
+<pre>
+--- sdcv.el	2009-08-23 17:18:34.000000000 +0800
++++ /home/reiv/emacs/site-lisp/sdcv.el	2009-08-23 17:19:04.000000000 +0800
+@@ -356,9 +356,10 @@
+     (setq buffer-read-only nil)
+     (erase-buffer)
+     (let* ((process
+-            (start-process
+-             "sdcv" sdcv-buffer-name "sdcv"
+-             (sdcv-search-witch-dictionary word sdcv-dictionary-complete-list))))
++            (apply 'start-process
++                   (append `("sdcv" ,sdcv-buffer-name "sdcv")
++                           (sdcv-search-args word sdcv-dictionary-complete-list))
++                   )))
+       (set-process-sentinel
+        process
+        (lambda (process signal)
+@@ -367,6 +368,10 @@
+              (sdcv-goto-sdcv))
+            (sdcv-mode-reinit)))))))
+ 
++(defun sdcv-search-args (word dict-list)
++  (append (apply 'append (mapcar (lambda (d) `("-u" ,d)) dict-list))
++          (list "-n" word)))
++
+ (defun sdcv-search-simple (&optional word)
+   "Search WORD simple translate result."
+   (showtip
+</pre>
+[new]

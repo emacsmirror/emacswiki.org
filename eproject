@@ -1,0 +1,59 @@
+*project workspaces for emacs* - [http://tromey.com/elpa/eproject-0.3.tar download]
+
+[[image:eproject-screenshot]]
+
+The project menu, shown over the setup area where it can be
+edited on the fly.
+
+------------------------------
+*Description*
+
+Basically *eproject* manages a list of projects, where a project
+is a list of files and a list of commands and is associated
+with a directory.
+
+If you open a project you get a menu with the files and it will
+load the last viewed one.
+
+You also get a menu for tool commands that can be fired with
+one mouse-click or a keystroke. (can be just "make" but as well
+anything else, typically stuff that you would not want to
+remember when you revisit a project after some months)
+
+Switching projects is easy and fast, two mouse clicks or three
+keystrokes.  You can do something in one project, then switch
+to another, do something there, and then switch back as if
+you'd never left.
+
+eproject has a text menu ("setup area") where you can
+quick search an item (e.g. file) by pressing the first
+letter(s). It works on terminals too.
+
+All lists can be edited on the fly in the setup area.  The
+data itself is stored per project in a file "eproject.cfg".
+The project list is stored in "~/.emacs.d/eproject.lst".
+
+eproject was tested with Emacs 23, it might work with late
+Emacs 22.  To load eproject, add this line to your ~/.emacs:
+
+      (load-file "/path/to/eproject.el")
+
+--- grischka
+
+*Anything Integration*
+
+I have created a pair of sources for integrating [[Anything]] with eproject,
+available here:
+
+[[anything-eproject.el]]
+
+--- DanielHackney
+
+------------------------------
+
+(Note that this eproject is completely unrelated to another eproject, http://wiki.github.com/jrockway/eproject/.  FWIW, I had the name first. :) --- Jonathan Rockway) --- (Yep, same first name but unrelated. :) --- grischka)
+
+----
+
+CategoryProgrammerUtils
+CategoryProgramming

@@ -1,0 +1,41 @@
+NTEmacs is commonly used to denote Emacs compiled as a native w32 application.
+For precompiled versions and instructions on how to build see CategoryWThirtyTwo.
+
+Why use NTEmacs with Cygwin?
+
+Because Cygwin is wonderful ... but the Emacs that comes with it suffers from a few problems:
+* It's kinda slow (although recent Cygwin builds of X seem faster -- 4.3.0-61, e.g.)
+* I can't remember specific details, but I'm pretty sure the Cygwin X server is unreliable
+* Using it under the Win32 console, as opposed to under X, is too painful, since the Meta key doesn't work properly (see CygwinMeta).
+
+So I find myself using venerable NTEmacs, which is a native Win32 app (hence fast) with the Cygwin tools.  Here's most of what I need to get a reasonable approximation of Unix Emacs on NT:
+
+    (let* ((cygwin-root "c:/cygwin")
+           (cygwin-bin (concat cygwin-root "/bin")))
+      (setenv "HOME" (concat cygwin-root "/home/eric"))
+      (setenv "PATH" (concat cygwin-bin ";" (getenv "PATH")))
+      (setq exec-path (cons cygwin-bin exec-path)))
+
+    (setq shell-file-name "bash")
+    (setq explicit-shell-file-name "bash")
+
+You will also need Lisp:cygwin-mount.el if you want Emacs to understand Cygwin paths.
+
+Note that this is substantially the same as the bit of code given in
+the Cygwin FAQ: http://www.cygwin.com/faq/faq_3.html#SEC63
+
+See CustomizingBoth to get fancier.
+
+== Problems ==
+summary: cmd.exe can't deal with cygwin 'links'.
+
+`shell-file-name' defaults to cmdproxy.exe - which simply prepends "/c " to the args and sends that to cmd.exe or command.com (NT, 9x).  But cmd.exe doesn't understand cygwin links, so the call to any such program fails - sometimes silently.  For instance: with my setup, gunzip.exe fails with Emacs reporting "(Shell command succeeded with no output)".
+
+Poking around, I found Cygwin's gunzip.exe is 19 bytes long.  The contents are: "!<symlink>gzip.exe" (with a trailing ^@).
+
+to fix this, either copy gzip.exe to gunzip.exe, or use "bash" as your `shell-file-name'
+
+
+
+----
+CygWin

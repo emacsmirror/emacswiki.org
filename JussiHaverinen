@@ -1,0 +1,149 @@
+I use emacs.  
+
+Right, I need a page to slowly rebuild my .emacs and .gnus, since they were recently lost when I moved.  Also having them on the net, (despite the ugliness, I doubt my click-and-paste will be of interest to anyone) should be useful when I move to another place in the future. 
+
+==IRC== 
+
+I've been lurking on #emacs occasionally, previously with the nick jussih and now with niksunaksu.  
+
+==.emacs==
+
+Note: the following isn't meant to be educational or anything, but rather a backup.  Moving, fragile laptops and messing around with openssi can be deadly.  And this stuff was done today/yesterday. 
+
+<pre>
+(add-to-list 'load-path "/home/jussi/.elisp")
+(global-font-lock-mode)
+(display-time)
+
+(require 'color-theme)
+(color-theme-matrix)
+
+(auto-compression-mode 1)
+
+;; mail outside gnus with c-x m
+(setq mail-user-agent 'message-user-agent)
+
+
+(setq w3m-use-cookies t)
+(setq w3m-cookie-accept-bad-cookies t)
+
+;; delicious for w3m
+(defun ted-delicious-url ()
+  "Bookmark this page with del.icio.us."
+  (interactive)
+  (w3m-goto-url
+   (concat "http://del.icio.us/niksunaksu?"
+	   "url="    (w3m-url-encode-string w3m-current-url)
+	   "&title=" (w3m-url-encode-string w3m-current-title))))
+
+;; moved to "w3m-add-keys"
+;; (eval-after-load "w3m"
+;;   '(define-key w3m-mode-map "a" 'ted-delicious-url))
+
+(require 'w3m-session)
+
+(defun w3m-add-keys ()
+;;  (define-key w3m-mode-map "S" 'w3m-session-save)
+;; (define-key w3m-mode-map "L" 'w3m-session-save)
+  (define-key w3m-mode-map "a" 'ted-delicious-url))
+(add-hook 'w3m-mode-hook 'w3m-add-keys)
+
+
+;; (setq w3m-session-file "~/.emacs.d/w3m-session")
+;; (setq w3m-session-save-always nil)
+;; (setq w3m-session-load-always nil)
+;; (setq w3m-session-show-titles t)
+;; (setq w3m-session-duplicate-tabs 'ask)	;  'never, 'always, 'ask
+
+
+;; browse url, w3m
+(setq browse-url-browser-function 'w3m-browse-url)
+(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
+(global-set-key "\C-xm" 'browse-url-at-point)
+
+;; w3m-dired
+(add-hook 'dired-mode-hook
+	  (lambda ()
+	    (define-key dired-mode-map "\C-xm" 'dired-w3m-find-file)))
+
+(defun dired-w3m-find-file ()
+  (interactive)
+  (require 'w3m)
+  (let ((file (dired-get-filename)))
+    (if (y-or-n-p (format "Open 'w3m' %s " (file-name-nondirectory file)))
+	(w3m-find-file file))))
+
+;; editing text areas in text mode in w3m
+
+
+(eval-after-load "w3m-form"
+  '(progn
+     (define-minor-mode dme:w3m-textarea-mode
+       "Minor mode used when editing w3m textareas."
+       nil " dme:w3m-textarea" w3m-form-input-textarea-keymap)
+
+     (defun dme:w3m-textarea-hook ()
+					; protect the form local variables from being killed by `text-mode'
+       (mapcar (lambda (v)
+                 (if (string-match "^w3m-form-input-textarea.*"
+                                   (symbol-name (car v)))
+                     (put (car v) 'permanent-local t)))
+               (buffer-local-variables))
+       (text-mode)
+       (dme:w3m-textarea-mode))
+
+     (add-hook 'w3m-form-input-textarea-mode-hook 'dme:w3m-textarea-hook)))
+
+;; I just simply use this as my w3m-form-input-textarea-mode-hook:
+
+(defun dka-w3m-textarea-hook()
+  (save-excursion
+    (while (re-search-forward "\r\n" nil t)
+      (replace-match "\n" nil nil))
+    (delete-other-windows)))
+
+
+;; turn on mouse wheel scrolling
+(defun sd-mousewheel-scroll-up (event)
+  "Scroll window under mouse up by five lines."
+  (interactive "e")
+  (let ((current-window (selected-window)))
+    (unwind-protect
+	(progn 
+	  (select-window (posn-window (event-start event)))
+	  (scroll-up 2))
+      (select-window current-window))))
+
+(defun sd-mousewheel-scroll-down (event)
+  "Scroll window under mouse down by five lines."
+  (interactive "e")
+  (let ((current-window (selected-window)))
+    (unwind-protect
+	(progn 
+	  (select-window (posn-window (event-start event)))
+	  (scroll-down 2))
+      (select-window current-window))))
+ 
+(global-set-key (kbd "<mouse-5>") 'sd-mousewheel-scroll-up)
+(global-set-key (kbd "<mouse-4>") 'sd-mousewheel-scroll-down)
+
+;; go to urls in man mode
+(add-hook 'Man-mode-hook 'goto-address)
+
+
+
+
+;; frame restore claims that it has to stay at the end
+
+(setq desktop-enable t)
+(require 'frame-restore)
+
+</pre>
+
+== .gnus ==
+
+Maybe tomorrow.
+
+
+
+CategoryHomepage

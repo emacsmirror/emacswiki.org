@@ -1,0 +1,12 @@
+: ''Ahora el wiki no esta mal, antes parecia contar únicamente con dos tipos de documentos: "cómo usar C-n, C-p" y material antiguo y confuso.''
+:: -- Chalain (DavidBrady), en #emacs
+
+El WikiEmacs recopila código de EmacsLisp (también conocido como "elisp"), preguntas y respuestas relacionadas con el código y el estilo de elisp, introducciones a paquetes de elisp y enlaces a sus fuentes, manuales completos o fragmentos de documentación, comentarios sobre diferentes características de Emacs y XEmacs, diferencias e historia, adaptaciones a otras arquitecturas, chistes, referencias a clones y aplicaciones de apariencia similar a emacs, así como referencias a otros puntos de información sobre emacs en la web.
+
+En este wiki puedes encontrar y compartir conocimientos sobre Emacs: peculiaridades de Emacs de las que solo algunas personas tienen conocimiento, o problemas que surgen constantemente, pero no tienen una solución simple documentada en ninguna parte. Incluso puede usar este wiki para incluir un manual sabre cierto código en lisp que usted haya escrito.
+
+Este wiki es multilingüe (MultilingualWiki).
+
+Las contribuciones a este sitio son permanentes.
+
+Personas que contribuyeron a la creación original de esta página: AlexSchroeder, JohnWiegley, DeepakGoel.

@@ -1,0 +1,120 @@
+A place for haiku of a decidedly Emacs bent.
+
+ my dot emacs grows
+ one day i look inside it
+ singularity
+
+ emacs starts, i wait
+ while the lisp libraries load
+ never close emacs
+
+ the sound of typing
+ it can only mean one thing
+ dot emacs expands
+
+ beyond the dreams of
+ avarice, gnu emacs is
+ a hidden treasure
+
+    -- LuisFernandes
+
+ Oort is so awesome
+ deuglifies Outlook crap
+ `W k' rocks
+ 
+     -- EdwardOConnor
+ 
+ Great clouds overhead
+ Tiny black birds rise and fall
+ Snow covers Emacs
+ 
+     -- AlexSchroeder
+ 
+ hacking on Smyrno
+ "error in process filter"
+ something is b0rken
+ 
+     -- EdwardOConnor
+ 
+ treeless quiet field
+ sudden bud: EmacsWiki
+ now he{ar,re} the birds sing
+ 
+     -- ttn
+ 
+ an emacs user's
+ fingers dance on the keyboard;
+ a nerd pianist
+ 
+     -- ErikBourget
+ 
+ five syllables twice
+ seven (*ELISP*) syllables here
+ bad *EMACS* haiku
+ 
+     -- BrianTempleton
+
+ (defun undos (buf)
+   "DOS newlines are pathetic."
+   (interactive "b")
+   (replace-string "^M" "\n"))
+ 
+     -- TreyBelew
+
+And here is a fine selection by OliverScholz as posted to news:alt.religion.emacs:
+
+                           The file was open.
+                      flying in a sparrow stole
+			    a parenthesis
+
+				 ***
+
+                          The day went away.
+                  The file still puts its weight on
+                         the tired mode-line.
+
+				 ***
+
+                           On a cloudy day
+                   you hear the cons cells whisper:
+                       "We are lost and gone."
+
+				 ***
+
+                         A message, a string
+		     remind me of my sweet love.
+                        Good bye, my buffers.
+                                   
+				 ***
+
+                         Hot night in summer:
+                   Hush, you quibbling characters!
+                         Do not wake her up!
+
+				 ***
+				   
+                         A bright, busy day.
+                     The windows watch a thousand
+                        wild cursors dancing.
+
+				 ***
+
+                        Oh, why don't you are
+                      a lake, a stream, a meadow
+                         this morning, Emacs?
+
+				 ***
+
+                       The friends chat gaily,
+                    I stand up to join their talk.
+                          My save-excursion.
+
+See also:
+
+* Lisp Haiku: http://www.advogato.org/person/crhodes/diary.html?start=34
+* Wiki:ComputerErrorHaiku
+* Wiki:HaiKu
+* WikiPedia:Haiku
+
+----
+CategoryHumor EmacsKoans

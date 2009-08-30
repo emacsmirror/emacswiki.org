@@ -1,0 +1,8 @@
+highlight-symbol is a way to quickly highlight and navigate between symbols.
+
+It will temporarily highlight all occurrences of the current symbol and also allows one-button manual highlighting.  It's available on my [http://nschum.de/src/emacs/highlight-symbol/ website].  -- [[nschum]]
+
+http://nschum.de/src/emacs/highlight-symbol/highlight-symbol.png
+
+----
+CategoryFaces CategoryModes

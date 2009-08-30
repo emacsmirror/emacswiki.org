@@ -1,0 +1,262 @@
+Speedbar is another frame which displays information about the current buffer, allowing you to better navigate your sources.  In a way, it's similar to ImenuMode, but much more powerful.
+
+* http://cedet.sf.net/speedbar.shtml -- see also CollectionOfEmacsDevelopmentEnvironmentTools
+
+Speedbar can use etags, imenu, or the SemanticBovinator to parse C, C++, Java, texinfo, Makefiles, etc. and provides alternate views into each individual files.  For example, for C files, function list and variable lists are provided for quick navigation within files.
+
+Speedbar also supports special displays for buffers, rmail, info, projects, xslt, vhdl, and others which use the speedbar extension API.
+
+To automatically start speedbar from your InitFile, just call the speedbar function with a positive argument like this:
+
+ (speedbar 1)
+
+If you use emacs both on the console and in X a lot, you may want to disable speedbar when you're not in X.  To do that use the following in your InitFile:
+
+ (when window-system          ; start speedbar if we're using a window system
+    (speedbar t))
+
+Something that might annoy you under certain X window managers (WindowMaker, for example) and in Carbon Emacs when speedbar starts is that it's window will appear to have focus but keyboard input goes to the original Emacs window. You can make things look right again by defining this mode hook before starting speedbar:
+
+ (setq speedbar-mode-hook '(lambda ()
+    (interactive)
+    (other-frame 0)))
+
+If this fails, you can call other-frame right after you call speedbar.
+
+Beware: doing this may make your MousePointer jump somewhere you don't expect it to in X.
+
+= Speedbar Without A Separate Frame =
+
+The default behavior of speedbar is to create a second emacs frame, separate from the main editing frame. As with all things emacs, this default behavior can be modified so that no separate frame is created, and the speedbar becomes just another buffer within a single emacs frame. 
+
+The following function will only work with the latest versions of speedbar (I have tested it with the version that comes bundled as part of cedet-1.0beta2a):
+
+  (load-file "~/cedet-1.0beta2a/common/cedet.el")
+
+  (require 'speedbar)
+
+  (defconst my-speedbar-buffer-name "SPEEDBAR")
+  ; (defconst my-speedbar-buffer-name " SPEEDBAR") ; try this if you get "Wrong type argument: stringp, nil"
+
+  (defun my-speedbar-no-separate-frame ()
+    (interactive)
+    (when (not (buffer-live-p speedbar-buffer))
+      (setq speedbar-buffer (get-buffer-create my-speedbar-buffer-name)
+            speedbar-frame (selected-frame)
+            dframe-attached-frame (selected-frame)
+            speedbar-select-frame-method 'attached
+            speedbar-verbosity-level 0
+            speedbar-last-selected-file nil)
+      (set-buffer speedbar-buffer)
+      (speedbar-mode)
+      (speedbar-reconfigure-keymaps)
+      (speedbar-update-contents)
+      (speedbar-set-timer 1)
+      (make-local-hook 'kill-buffer-hook)
+      (add-hook 'kill-buffer-hook
+                (lambda () (when (eq (current-buffer) speedbar-buffer)
+                             (setq speedbar-frame nil
+                                   dframe-attached-frame nil
+                                   speedbar-buffer nil)
+                             (speedbar-set-timer nil)))))
+    (set-window-buffer (selected-window) 
+                       (get-buffer my-speedbar-buffer-name)))
+
+ Hmmm... I can't seem to get this to work... little help?
+
+
+== Speedbar in same frame - displaying files works (emacs 22, 23)==
+
+This is the code from above with little extensions (splitting the window and remember it, modifying the speedbars was of finding files). Everything seems to work as expected for me if speedbar is displaying files. (current version of emacs22 and speedbar as in Debian testing). Thanks for the hints from above :-) I was sitting here writing my own speedbar, which turned out to be a huge pile of work. Toggeling works fine now. Just use sr-speedbar-toggle().
+
+The Code: Lisp:sr-speedbar.el
+
+-- SebastianRose
+
+: ''On Emacs 22.0.50 I get a type error: char-or-string-p, <#buffer SPEEDBAR>. There is no need to (get-buffer) at the end there, just pass the name. Also, the default name is not "SPEEDBAR", but " SPEEDBAR".'' - Cbueno
+
+Also see the comment about EmacsCodeBrowser (ECB) below.
+
+: ''To make speedbar adjusting it's content to current file buffer put this code in sr-speedbar.el after last line. There are ways better then replacing function in original speedbar, and although it work fine for me (GNU Emacs 22.2.1, speedbar v1.0), it probably will not work with other versions of speedbar. May be later I'll post code to do same thing only with hook'' -- [mailto:timur.br/AT/gmail.com Bobrus Timur]
+<pre>
+;; This plain hack probably will not work with versions other than speedbar v 1.0
+(defun speedbar-timer-fn ()
+  "Run whenever Emacs is idle to update the speedbar item."
+  (if (or (not (speedbar-current-frame))
+	  (not (frame-live-p (speedbar-current-frame))))
+      (speedbar-set-timer nil)
+    ;; Save all the match data so that we don't mess up executing fns
+    (save-match-data
+      ;; Only do stuff if the frame is visible, not an icon, and if
+      ;; it is currently flagged to do something.
+      (if (and speedbar-update-flag
+	       (speedbar-current-frame)
+	       (frame-visible-p (speedbar-current-frame))
+	       (not (eq (frame-visible-p (speedbar-current-frame)) 'icon)))
+	  (let ((af (selected-frame)))
+	      (dframe-select-attached-frame speedbar-frame)
+	      ;; make sure we at least choose a window to
+	      ;; get a good directory from
+	      (if (window-minibuffer-p (selected-window))
+		  nil
+		;; Check for special modes
+		(speedbar-maybe-add-localized-support (current-buffer))
+		;; Update for special mode all the time!
+		(if (and speedbar-mode-specific-contents-flag
+			 (consp speedbar-special-mode-expansion-list)
+			 (local-variable-p
+			  'speedbar-special-mode-expansion-list
+			  (current-buffer)))
+		    ;;(eq (get major-mode 'mode-class 'special)))
+		    (progn
+		      (if (<= 2 speedbar-verbosity-level)
+			  (speedbar-message
+			   "Updating speedbar to special mode: %s..."
+			   major-mode))
+		      (speedbar-update-special-contents)
+		      (if (<= 2 speedbar-verbosity-level)
+			  (progn
+			    (speedbar-message
+			     "Updating speedbar to special mode: %s...done"
+			     major-mode)
+			    (speedbar-message nil))))
+
+ 		  ;; Update all the contents if directories change!
+ 		  (unless (and (or (member major-mode speedbar-ignored-modes)
+				   (string-equal "*SPEEDBAR*" (buffer-name))
+				   (not (buffer-file-name)))
+			       ;; Always update for GUD.
+			       (not (string-equal "GUD"
+				     speedbar-initial-expansion-list-name)))
+		    (speedbar-update-localized-contents)))
+		(select-frame af))
+	    ;; Now run stealthy updates of time-consuming items
+	    (speedbar-stealthy-updates)))))
+  (run-hooks 'speedbar-timer-hook))
+</pre>
+
+: Not need above code to refresh content of speedbar buffer, the newest version of Lisp:sr-speedbar.el can do this work perfect.
+::  -- AndyStewart
+
+: Try IdeSkel - there is something like "speedbar" in the same frame, but it is not exactly /this/ speedbar.
+
+--PeterKarpiuk
+
+= Questions =
+
+: ''Question: is there a way to tell speed-bar to expand ALL groups?  -- Badari''
+
+:: Answer: Not by default, but you could easily write that function, like for example:
+
+ (defun speedbar-expand-all-lines ()
+   "Expand all items in the speedbar buffer.
+ But be careful: this opens all the files to parse them."
+   (interactive)
+   (goto-char (point-min))
+   (while (not (eobp))
+          (forward-line)
+          (speedbar-expand-line)))
+
+:: Please note, though, that this may take a while since it has to open all the files and parse them.
+
+:: If you just want to open all items in the current file, you'd have to write a function that 
+
+:: * goes back to the last line that has a "0" at the beginning (instead of point-min above).  These lines determine filenames in the speedbar buffer.
+:: * checks for another line with a "0" at the beginning or end of buffer to stop (instead of just eobp above).
+
+:::Newer versions of speedbar (a part of the CEDET package CollectionOfEmacsDevelopmentEnvironmentTools) bind the "[" and "]" keys to expand/contract all descendants. -- EricLudlam
+
+: ''Question: how difficult should it be to add support for sql, javascript etc? (the languages I use quite alot right now, what a coincidence :)?'' -- MathiasDahl
+
+:: First, about javascript.  If you're editing files that are only javascript, you can just use C++ type syntax along with either etags, imenu, or the SemanticBovinator.  If they are mixed html and javascript it gets more problematic.  You might want to look at MultipleModes, although I'm not sure how to integrate this in with speedbar.
+
+::: I am editing asp-pages (jscript + javascript + html intermixed) and today use java-mode and it works quite well. Will this mix f*k up the way etags, imenu and SemanticBovinator work?
+
+:: About sql, I'm not sure what you mean?  What types of views would you want speedbar to give?  Are you editing files that have lots of stored procedures in them and you would want to list those procedures?  Were you just saying, "I deal with a lot of sql" or did you have something in mind how speedbar could interface with sql?
+
+::: Sorry for being to vague. Yes I edit LARGE files with pl/sql procedures anf functions (up to 5000-6000 rows of code) that are included in our oracle packages. Being able to get a quick list of all methods would be a great thing, using imenu or speedbar.
+
+::: (Hmm, maybe we should take this discussion to the newsgroup, or after I got my answers I'll edit this page and get rid of this little chat.)
+
+:: On javascript: the following two expressions probably do not do everything you want for javascript (the code gets interpreted as c or c++), but at least they do more than nothing:
+
+   (speedbar-add-supported-extension ".js")
+   (add-to-list 'speedbar-fetch-etags-parse-list
+		'("\\.js" . speedbar-parse-c-or-c++tag))
+
+--[[pft]]
+
+SqlMode does have Imenu support; but by default the regular
+expressions don't match PL/SQL stuff.  At work I have code that does
+it.  But then again, I switched to using PlsqlMode for PL/SQL stuff.
+Perhaps it reuses the SqlMode imenu code, I can't remember. --
+AlexSchroeder
+
+----
+I think the EmacsCodeBrowser is the same thing as SpeedBar. Fulfills the same purpose maybe? What do you guys think? --ShaeErisson
+
+EmacsCodeBrowser (ecb) overlaps much of Speedbar, and requires Speedbar and other parts of the CEDET suite to function. In fact, ecb will display Speedbar without a separate frame in one of its supplied configurations. Its built-in directory and class browsers (which you can hide/not use, if you only want Speedbar in your editing frame) are similar in function but different in look/feel from Speedbar's. I've used it on Win32/GNU Emacs successfully. --yary h
+----
+: ''Question: is it possible to control the size and position of the speedbar when it is loaded? For example, I want it to appear at the right side of the screen, maximized vertcally, with a width of 150 pixels.''
+: How about customizing `speedbar-frame-parameters' (Emacs) or `speedbar-frame-plist' (XEmacs) ?
+: You could also look up the lisp variables and functions controlling the speedbar.  M-x describe-variable RET speedbar and press tab to see the rest of the speedbar variables.  M-x describe-functions RET speedbar and press tab to see the rest of the speedbar functions.  You now have enough knowledge to change it around using LISP.
+----
+: ''Question: is it possible to tell the speedbar to go into the buffer mode when it is loaded? I was unable to find the appropriate function...'' --Andrius Kurtinaitis
+
+:: Yes, see the documentation for: speedbar-change-initial-expansion-list -- EricLudlam
+----
+
+[new]
+Is it possible to run SpeedBar in a separate window rather than in a separate frame? I'd like to use SpeedBar in the console. --ShaeErisson
+[new]
+: No. -- AlexSchroeder
+
+[new]
+EmacsCodeBrowser 1.90 can display speedbar in a separate window in console in xemacs, not sure how it works though --ShaeErisson
+----
+
+[new]
+I was wondering if it is at all possible to load the SpeedBar when emacs first loads. I have spent quite a few days looking around for a mod to my InitFile, with no success. Also as I am new to emacs I would love to know good places to find out about emacs. (apart from this site that is :)) -- Luke
+
+[new]
+: Put (speedbar 1) in your InitFile.  As to the references for emacs, this site has become the definitive site for all things emacs and emacs related.  Even after using emacs for years, I'm still learning things from this site on an almost daily basis.  I think AlexSchroeder deserves a lot of credit and praise for bringing this site up so fast. -- LathI
+
+----
+
+[new]
+Is it possible to set speedbar's font size in my InitFile? In my installation SpeedBar shows much larger font than that of the main emacs frame.
+
+[new]
+: You should just add this, so that when you create a new frame (like when you call speedbar), it will have the font here
+<pre>
+        (add-to-list 'default-frame-alist '(font . "-schumacher-clean-medium-r-normal--8-*-*-*-c-50-iso8859-1"))
+</pre>
+: I use it before the <code>(speedbar 1)</code> line so that when the speedbar is created, it uses the font I selected before. 
+: Here's a hint (Charlie Martin): set up the speedbar frame the way you like it, then type
+<pre>
+        (pp (current-frame-configuration))^J
+</pre>
+: in the *scratch* buffer to find out all the frame parameters. --darksonxd
+
+
+----
+: ''Question: is it possible to make the speedarbar hide files and directories beginning with "."?''
+
+----
+: ''Question: can speedbar use some other mode-detection-scheme than filename extensions?''  I do have the habit to name "minor" perl-programs "something.pl" and larger projects without extension.  I desperately need speedbar in the larger projects whereas navigation in smaller scripts is easy without it.
+
+To override the the default behavior that identifies files by extension, you can set the variable 'speedbar-file-regexp' to something like ".*".  I just tried it, and it seems to work ok.  This  variable will be re-set when speedbar loads, or if the supported extension list is customized.
+
+[new] Thanks, it seems to work and I will give it a try.  If I don't come back to this page, it will be a good solution ;-)
+
+Try this tip, from the help text for `speedbar-supported-extension-expressions': "You should use the
+function `speedbar-add-supported-extension' to add a new extension at runtime, or use the configuration dialog to set it in your InitFile." Just now I menued Options > Customize Emacs > Settings Matching Regexp, typed in "speedbar", and got a good listing of options. Adding
+<pre>
+ (speedbar 1)
+ (speedbar-add-supported-extension ".js")
+</pre>
+to my InitFile lets me see my javascript files in the speedbar- note that <code>(speedbar 1)</code> or <code>(speedbar 0)</code> has to come first to load the package. -yary h
+----
+CategoryProgrammerUtils
+
+

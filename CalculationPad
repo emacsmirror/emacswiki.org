@@ -1,0 +1,14 @@
+CPad is a kind of calculator that runs on Emacs buffer. However, it is actually a functional language based on lambda calculus. Another unique feature of CPad is its unit calculating facility.
+
+The package can be obtained at URL: http://akimichi.homeunix.net/~emile/aki/hiki.cgi?CpadElisp.
+English document is available at URL: http://akimichi.homeunix.net/~emile/aki/html/computer/cpad.html.
+
+CPad requires following packages. Make sure that they are all properly installed.
+* cl package
+* eieio package
+* calc package
+
+It still remains beta state, so please be patient with its bugs.
+
+----
+CategoryCalculators

@@ -1,0 +1,302 @@
+This page is also available in English: DrewsElispLibraries.
+La version Anglais de cette page est peut-etre plus a jour: English: DrewsElispLibraries.
+
+Cette page decrit les packages Emacs Lisp ecrits par DrewAdams et qui se trouvent sur EmacsWiki (a http://www.emacswiki.org/elisp). Elle indique les dernieres modifications de la liste des fichiers (packages). Pour des infos sur les modifs aux fichiers individuels, voir les fichiers eux-memes (paragraphe <code>Change log</code>).
+
+Cette page comprend les paragraphes suivants :
+
+* '''[[#PackagesDeDrew]]''' -- decrit les packages
+* '''[[#CommentUtiliserLeCode]]''' decrit comment utiliser les packages
+* '''[[#Discussion]]''' -- commentaires et discussions sur les packages
+----
+
+
+[:PackagesDeDrew]
+== Les Packages ==
+
+Mes packages Emacs Lisp sur EmacsWiki sont presentes ici en trois listes. La premiere contient les packages qui ont ete teste pour Emacs 20 (sur Windows et Unix) ainsi qu'Emacs 21. La deuxieme contient les packages qui marchent uniquement avec Emacs 21. La troisieme contient les packages qui marche avec Emacs 20 mais (probablement) pas avec Emacs 21.
+
+A part la deuxieme liste (Emacs 21), la plupart de mes packages (mais je ne sais pas lesquels !) marchent aussi avec des versions d'Emacs anterieur a Emacs 20. Le package Lisp:sort+.el n'est utile que pour des versions d'Emacs plus anciennes que la version 20 -- il redefini la fonction `sort-reorder-buffer' pour qu'elle preserve les proprietes de texte (text properties).
+
+Il y a aussi une quatrieme liste de packages obsoletes (deprecated). Ces packages sont en generale des anciennes versions de packages, avec noms anciens.
+
+=== Mais Quel Emacs 21 ? ===
+
+Personnellement, je suis toujours entre Emacs 20 et Emacs 21. Apres que tout marchera comme je veux dans Emacs 21, je n'utiliserai qu'Emacs 21 sans doute. Pour mettre a jour mes packages Lisp pour Emacs 21, j'utilise la pseudoversion 21.3.50 (qui va se changer bientot en 22.3.50, sans doute). Ce numero de version indique la version de developpement CVS, en principe. Pourtant, je me passe de faire des builds a partir du code source CVS -- j'ai pris un Emacs executable (ici, je crois : http://prdownloads.sourceforge.net/nqmacs/emacs-21.3.50.1-20040726-w32.zip?download ; cette photo date du 2004/07/26) et je m'en sers. Le numero de version, "21.3.50", n'est pas un numero de version publiee : il indique une version en cours de developpement -- tot ou tard la pseudoversion 21.3.50 deviendra la version publiee 21.4. '''''Oops -- elle deviendra 22.1, il parait (2005/02-08).'''''
+
+Cette pseudoversion 21.3.50 a servi pour moi comme introduction a Emacs 21. Ainsi, je n'ai pas toujours bien apprecie les differences entre ma photo 21.3.50 et les autres versions mineures d'Emacs 21. Lorsque je constate dans un commentaire du code que le package lambda marche avec Emacs 21, ce que je veux dire c'est que ce package marche avec ma photo 21.3.50, qui est en fait la preversion pour la 22.1.
+
+Recemment j'ai obtenu acces a une version (publiee) 21.3 sur Linux, que j'utilise pour qq tests. J'ai donc commence a differentier dans mes packages Lisp entre l'utilisation de la 21.3.50 et l'utilisation d'autres versions 21 anterieures. Ca complique parfois le code, et il y a peut-etre qq endroits ou le test de versions dans le code n'est pas tout a fait correct. Merci de me faire part des anomalies (-> [[#Discussion]]).
+
+Dans le meme package j'ai parfois du code pour Emacs 20, du code pour Emacs 21.3.50 (ma photo), et du code pour les autres versions Emacs 21. Si une fonctionnalite dans un de mes packages ne semble pas bien marcher pour ta version d'Emacs, fais moi signe.
+
+Aussi, chercher les tests de version dans le code :
+
+   (< emacs-major-version 21)
+   (>= emacs-major-version 21)
+   (string-match "21.3.50" emacs-version)
+
+Je ne connais pas de bonne facon pour tester si une version correspond a une photo particuliere, et de toute facon ca ne serait pas utile de comparer a une version en developpement. La pseudoversion 21.3.50 peut correspondre a differentes versions de packages Emacs standards. Donc, ce n'est pas parce que du code marche avec ma photo 21.3.50 qu'il marchera avec une autre photo 21.3.50. Apres la publication de la 22.1 je mettrai a jour mes packages et tout sera plus simple.
+
+On peut essayer de jongler avec les branches de ces tests -- c.a.d. d'essayer les differentes branches pour voir ce que ca donne pour une version d'Emacs donnee. Noter ici (-> [[#Discussion]]) ce qui marche et ce qui ne marche pas. -- Merci.
+
+
+
+=== Quoi de Neuf, Docteur ? ===
+
+Les derniers packages que j'ai ecrit sont les suivants :
+
+* <tt>[[cursor-chg.el]]</tt> -- changer le curseur automatiquement, suivant le contexte -- voir ChangingCursorDynamically (en)
+* Lisp:cus-edit+.el -- des extensions au package standard `cus-edit' pour rendre Customize plus sage -- voir 'ustomizingAndSaving (en)
+* Lisp:diff-mode-.el -- des extensions au package standard `diff-mode' -- voir DiffEnhancements (en)
+* <tt>[[dired-details+.el]]</tt> -- extensions au package Lisp:dired-details.el -- voir [[DiredMode#DiredEnhancements]] (en)
+* Lisp:doremi-frm.el -- ajuster des proprietes de [[Frame]]s de facon incrementale avec les cles fleches ou la roue de la souris -- voir DoReMi (en)
+* <tt>[[ediff+.el]]</tt> -- extensions au package standard `ediff': basculer la sensibilite a la case (majuscule, miniscule) ; (pas necessaire pour le GNU Emacs 22)
+* <tt>[[eyedropper.el]]</tt> -- copier des couleurs n'importe ou
+* <tt>[[facemenu+.el]]</tt> -- extensions au package standard `facemenu' -- voir FaceMenuPlus (en)
+* <tt>[[ffap-.el]]</tt> -- extensions au package standard `ffap'
+* Lisp:grep+.el -- des extensions au package standard `grep' ; voir aussi GrepMode (en)
+* Lisp:help-fns+.el -- des extensions au package standard `help-fns' ; voir aussi HelpPlus
+* Lisp:help-mode+.el -- des extensions au package standard `help-mode'; voir aussi HelpPlus et HelpModePlus (en)
+* Lisp:hexrgb.el -- des fonctions pour manipuler les "noms" de couleurs RGBs (red, green, blue) et pour convertir ces composants RGB en composants HSV (hue, saturation, value) et vice versa
+* Lisp:icicles.el et les packages associes -- [[Completion]] dans le MiniBuffer et recyclage des entrees predefinies (default values) -- voir '''[[Icicles]]''' (en)
+* <tt>[[lacarte.el]]</tt> -- utiliser le clavier, avec de la completion et du cyclage, pour acceder aux menus du MenuBar -- voir LaCarte (en)
+* Lisp:lib-requires.el -- lister les dependences entre packages Emacs Lisp (c'est une extension du package standard `loadhist') -- voir LibraryDependencies (en)
+* <tt>[[palette.el]]</tt> -- examiner des proprietes de couleurs ou choisir une couleur -- voir ColorPalette (en)
+* <tt>[[savehist-20+.el]]</tt> -- une version du package `##savehist.el##' qui marche avec l'Emacs 20, aussi bien qu'avec l'Emacs 21 et l'Emacs 22 -- voir SaveHist.
+* <tt>[[synonyms.el]]</tt> -- chercher des mots et des phrases dans un  thesaurus -- voir [[Synonyms]] (en)
+* <tt>[[thing-cmds.el]]</tt> -- commandes pour selectionner des "choses" pres du point -- voir ThingAtPointCommands (en)
+* Lisp:thumb-frm.el -- frames onglets : un regard "oeil de poisson", une alternative aux frames iconifies ; voir aussi OeilDePoisson
+* Lisp:tool-bar+.el --  des extensions au package standard `toolbar'; voir aussi ToolBar (en)
+* Lisp:zoom-frm.el -- des commands pour "zoomer" (changer la taille de la police de caracteres ainsi que le frame) -- voir aussi Lisp:doremi-frm.el pour des alternatives
+
+A part ca, j'ai fait des modifs mineures a plusieurs packages recemment -- alors, prendre les dernieres versions a http://www.emacswiki.org/elisp.
+
+
+'''''Conseil :''''' La meilleur facon de savoir quels fichiers ont ete charges sur EmacsWiki recemment c'est de consulter la liste de telechargements recents : [http://www.emacswiki.org/elisp/changelog.html Recent uploads].
+
+
+=== Emacs 22 (et Emacs 21 (et 20 (et 19 (et ...)))) ===
+
+* Lisp:apropos+.el -- des extensions au package standard `apropos'
+* Lisp:autofit-frame.el -- ajustage de frames a leurs fenetres (buffers) courantes automatiquement; voir aussi [[Tailler des Frames Automatiquement]]
+* Lisp:autoload+.el -- des extensions au package standard `autoload'
+* Lisp:bookmark+.el -- des extensions au package standard `bookmark'
+* Lisp:browse-kill-ring+.el -- des extensions au package standard `browse-kill-ring'
+* Lisp:buff-menu+.el -- des extensions au package standard `buff-menu'; voir aussi BufferMenuPlus (en)
+* <tt>[[cursor-chg.el]]</tt> -- changer le curseur automatiquement, suivant le contexte -- voir ChangingCursorDynamically (en)
+* Lisp:cus-edit+.el -- des extensions au package standard `cus-edit'
+* Lisp:def-face-const.el -- macro pour definir des [[Face]]s et leurs variables; voir aussi DefineFaceConstant (en) (obsolete -- utiliser `defface' maintenant)
+* Lisp:delsel.el -- ameliorations du package standard `<code>delsel.el</code>' pour mieux jouer avec `<code>completion.el</code>' 
+* Lisp:dired+.el -- des extensions au packages standards `dired', `dired-aux', et `dired-x'; voir aussi DiredPlus (en)
+* <tt>[[dired-details+.el]]</tt> -- extensions au package Lisp:dired-details.el -- voir [[DiredMode#DiredEnhancements]]
+* Lisp:dired-sort-menu+.el -- des extensions au package `dired-sort-menu', ecrit par FrancisJWright
+* Lisp:doremi.el -- utiliser les cles fleches ou la roue de la souris pour faire des modifs incrementales; voir aussi DoReMi (en)
+* Lisp:doremi-cmd.el -- diverses commandes DoReMi (en)
+* Lisp:doremi-frm.el -- ajustage incremental des frames avec les cles fleches ou la roue de la souris 
+* Lisp:doremi-mac.el -- macro pour definir des commandes DoReMi (en)
+* Lisp:faces+.el -- des extensions au package standard `faces'
+* <tt>[[ffap-.el]]</tt> -- extensions au package standard `ffap'
+* Lisp:files+.el -- des extensions au package standard `files'
+* Lisp:fit-frame.el -- ajustage de frames a leurs fenetres (buffers) courantes; voir aussi [[Tailler des Frames Automatiquement]]
+* Lisp:frame-cmds.el -- des commandes (fonctions interactives) pour des frames et des fenetres; voir aussi [[Carrelage de Frames]], [[Iconifier, Desiconifier, et Cacher des Frames]], [[Supprimer des Frames Facilement - Mais Pas Trop]], et FrameModes (en)
+* Lisp:frame-fns.el -- fonctions non interactives pour des frames et des fenetres
+* Lisp:frame+.el -- des extensions au package standard `frame'
+* Lisp:header2.el -- creation et mise a jour d'entetes de fichiers
+* Lisp:hexrgb.el -- manipulation de chaines de chiffres hex qui representent des couleurs (RGB : rouge, vert, bleu)
+* Lisp:highlight.el -- commandes de mise en vedette (highlighting); voir aussi HighlightTemporarily (en)
+* Lisp:icicles.el et les packages associes -- completion dans le minibuffer et recyclage des entrees predefinies (default values) -- voir (en) '''[[Icicles]]'''
+** <tt>[[icicles.el]]</tt> -- package de tete; contient la doc (##Commentary##)
+** <tt>[[icicles-cmd.el]]</tt> -- commandes (fonctions interactives)
+** <tt>[[icicles-face.el]]</tt> -- faces (customizables)
+** <tt>[[icicles-fn.el]]</tt> -- fonctions non-interactives
+** <tt>[[icicles-mac.el]]</tt> -- macros
+** <tt>[[icicles-mode.el]]</tt> -- definition du mode ''Icicle''
+** <tt>[[icicles-opt.el]]</tt> -- options utilisateur (variables customizable)
+** <tt>[[icicles-var.el]]</tt> -- variables internes
+
+* <tt>[[lacarte.el]]</tt> -- utiliser le clavier, avec de la completion et du cyclage, pour acceder aux menus du MenuBar -- voir LaCarte
+* Lisp:icomplete+.el -- des extensions au package standard `icomplete'; voir aussi IcompleteMode (en)
+* Lisp:imenu+.el -- des extensions au package standard `imenu'; voir aussi ImenuMode (en)
+* Lisp:info+.el -- des extensions au package standard `info' -- voir aussi InfoMode (en)
+* Lisp:isearch+.el -- des extensions au package standard `isearch'; voir aussi IncrementalSearch (en)
+* Lisp:lib-requires.el -- lister les dependences entre packages Emacs Lisp (c'est une extension du package standard `loadhist') -- voir aussi LibraryDependencies
+* Lisp:line-num.el -- affichage de numeros de ligne a la marge gauche du buffer
+* Lisp:macros+.el -- des extensions au package standard `macros'
+* Lisp:menu-bar+.el -- des extensions au package standard `menu-bar'; voir aussi MenuBar (en) et HelpMenuBarPlus (en)
+* Lisp:misc-cmds.el -- diverses commandes (fonctions interactives); voir aussi KillingBuffers (en)
+* Lisp:misc-fns.el -- diverses commandes non interactives
+* Lisp:mouse+.el -- des extensions au package standard `mouse'
+* Lisp:novice+.el -- des extensions au package standard `novice'
+* Lisp:oneonone.el -- creation d'une configuration speciale de frames; voir aussi [[Frame Minibuffer Dedie]], [[Frames Speciaux]], et [[Frames Help et Completions]] (en)
+* Lisp:pp+.el -- des extensions au package standard `pp'
+* Lisp:replace+.el -- des extensions au package standard `replace'; voir aussi OccurBuffer (en)
+* Lisp:ring+.el -- des extensions au package standard `ring'; voir aussi RingPlus (en)
+* <tt>[[savehist-20+.el]]</tt> -- une version du package `##savehist.el##' qui marche avec l'Emacs 20, aussi bien qu'avec l'Emacs 21 et l'Emacs 22.
+* Lisp:setnu+.el -- des extensions au package standard `setnu'
+* Lisp:setup.el -- initialisation d'Emacs : affectations de variables, accroches (hooks) etc.
+* Lisp:setup-cygwin.el -- initialisation d'Emacs pour utilisation avec Cygwin
+* Lisp:setup-keys.el -- qq liaisons de cles
+* Lisp:show-wspace.el -- commandes a mettre en vedette les caracteres whitespaces: TABs etc.; voir aussi ShowWhiteSpace (en)
+* Lisp:simple+.el -- des extensions au package standard `simple'
+* Lisp:start.el -- fichier d'initialisation principal pour Emacs : <code>require</code> et <code>autoload</code> d'autres packages
+* Lisp:start-opt.el -- qq customisations a faire a la fin de l'initialisation d'Emacs
+* Lisp:strings.el -- diverses fonctions pour manipuler les chaines de caracteres
+* Lisp:thingatpt+.el -- des extensions au package standard `thingatpt'; voir aussi ThingAtPoint (en)
+* <tt>[[thing-cmds.el]]</tt> -- commandes pour selectionner des "choses" pres du point -- voir ThingAtPointCommands
+* Lisp:thumb-frm.el -- frames onglets : une alternative aux frames iconifies ; voir aussi OeilDePoisson
+* Lisp:w32-browser.el -- lancer le programme Windows qui est associe a un fichier -- commande `w-browser' 
+* Lisp:w32browser-dlgopen.el -- utiliser `w-browser' avec la boite de dialogue Windows Ouvrir ('''Open File''')
+* Lisp:wimpy-del.el -- demander confirmation avant de supprimer une region (selection) d'une certaine taille
+* Lisp:window+.el -- des extensions au package standard `window'
+* Lisp:zoom-frm.el -- des commands pour "zoomer" (changer la taille de la police de caracteres ainsi que le frame) -- voir aussi Lisp:doremi-frm.el pour des alternatives
+
+=== Emacs 22 et Emacs 21 Uniquement (ne marchent pas avec des versions plus anciennes) ===
+
+* Lisp:compile-.el -- des extensions au package standard `compile' ; voir aussi GrepMode (en)
+* Lisp:compile+.el -- des extensions au package standard `compile' ; voir aussi GrepMode (en)
+* Lisp:diff+.el -- des extensions au package standard `diff'
+* Lisp:diff-mode-.el -- des extensions au package standard `diff-mode'
+* Lisp:grep+.el -- des extensions au package standard `grep' ; voir aussi GrepMode (en)
+* Lisp:help+.el -- des extensions au package standard `help'; voir aussi HelpPlus (en) et HelpMenuBarPlus (en)
+* Lisp:help-fns+.el -- des extensions au package standard `help-fns' ; voir aussi HelpPlus
+* Lisp:help-mode+.el -- des extensions au package standard `help-mode' ; voir aussi HelpPlus et HelpModePlus (en)
+* <tt>[[palette.el]]</tt> -- examiner des proprietes de couleurs ou choisir une couleur -- voir ColorPalette
+* Lisp:tool-bar+.el -- des extensions au package standard `tool-bar' ; voir aussi ToolBar (en)
+
+=== Emacs 20 (la plupart n'ont pas encore ete teste avec Emacs 21) ===
+
+* Lisp:compile-20.el -- des extensions au package standard `compile' pour Emacs 20 (et plus ancienne); voir aussi GrepMode (en)
+* Lisp:compile+20.el -- des extensions au package standard `compile' pour Emacs 20 (et plus ancienne); voir aussi GrepMode (en)
+* Lisp:diff+20.el -- des extensions au package standard `diff' pour Emacs 20 (et plus ancienne)
+* Lisp:emacs-init.el -- mon fichier d'initialisation <code>.emacs</code> (<code>_emacs</code>) -- '''''le commentaire explique comment utiliser mes packages'''''
+* Lisp:find-dired-.el -- des extensions au package standard `find-dired'
+* Lisp:find-dired+.el -- des extensions au package standard `find-dired'
+* Lisp:help-macro+.el -- des extensions au package standard `help-macro'
+* Lisp:help+20.el -- des extensions au package standard `help'; voir aussi HelpPlus (en) et HelpMenuBarPlus (en)
+* Lisp:mkhtml.el -- creation de pages HTML avec hyperliens (des extensions au package `<code>htmlize.el</code>'); voir aussi SaveAsHtml (en)
+* Lisp:options+.el -- des extensions au package standard `options'
+* Lisp:outline+.el -- des extensions au package standard `outline'
+* Lisp:timer+.el -- des extensions au package standard `timer'
+* Lisp:unaccent.el -- des fonctions qui manipulent des caracteres accentues
+* Lisp:vc-.el -- des extensions au package standard `vc'
+* Lisp:vc-hooks+.el -- des extensions au package standard `vc-hooks'
+* Lisp:vc+.el -- des extensions au package standard `vc'
+
+=== Packages Obsoletes ===
+
+Les packages suivants sont obsoletes (deprecated). Ils sont neanmoins toujours disponibles sur EmacsWiki. En generale, ils ont ete renommes (pour des raisons diverses, y compris une adherence aux normes GNU). 
+
+
+* Lisp:apropos-plus.el -- remplace par '''Lisp:apropos+.el'''
+* Lisp:autoload-plus.el -- remplace par '''Lisp:autoload+.el'''
+* Lisp:auto-resize-frames.el -- remplace par '''Lisp:autofit-frame.el'''
+* Lisp:bookmark-plus.el -- remplace par '''Lisp:bookmark+.el'''
+* Lisp:browse-kill-ring-plus.el -- remplace par '''Lisp:browse-kill-ring+.el'''
+* Lisp:buff-menu-plus.el -- remplace par '''Lisp:buff-menu+.el'''
+* Lisp:calendar-plus.el -- remplace par '''Lisp:calendar+.el'''
+* Lisp:cc-mode-plus.el -- remplace par '''Lisp:cc-mode+.el'''
+* Lisp:compile-plus.el -- remplace par '''Lisp:compile+.el'''
+* Lisp:compile-plus-twenty.el -- remplace par '''Lisp:compile+20.el'''
+* Lisp:compile-twenty.el -- remplace par '''Lisp:compile-20.el'''
+* Lisp:cus-edit-plus.el -- remplace par '''Lisp:cus-edit+.el'''
+* Lisp:diff-mode-plus.el -- remplace par '''Lisp:diff-mode-.el'''
+* Lisp:diff-plus.el -- remplace par '''Lisp:diff+.el'''
+* Lisp:diff-plus-twenty.el -- remplace par '''Lisp:diff+20.el'''
+* Lisp:dired-plus.el -- remplace par '''Lisp:dired+.el'''
+* Lisp:do-re-mi.el -- remplace par '''Lisp:doremi.el'''
+* Lisp:do-re-mi-cmds.el -- remplace par '''Lisp:doremi-cmd.el'''
+* Lisp:do-re-mi-frames.el -- remplace par '''Lisp:doremi-frm.el'''
+* Lisp:do-re-mi-macro.el -- remplace par '''Lisp:doremi-mac.el'''
+* Lisp:elect-mbuf.el -- remplace par '''Lisp:icicles.el'''
+* Lisp:faces-plus.el -- remplace par '''Lisp:faces+.el'''
+* Lisp:files-plus.el -- remplace par '''Lisp:files+.el'''
+* Lisp:find-dired-plus.el -- remplace par '''Lisp:find-dired+.el'''
+* Lisp:frame-plus.el -- remplace par '''Lisp:frame+.el'''
+* Lisp:grep-.el -- remplace par '''Lisp:grep+.el'''
+* Lisp:help-plus.el -- remplace par '''Lisp:help+.el'''
+* Lisp:help-macro-plus.el -- remplace par '''Lisp:help-macro+.el'''
+* Lisp:help-mode-plus.el -- remplace par '''Lisp:help-mode+.el'''
+* Lisp:hex-rgb.el -- remplace par '''Lisp:hexrgb.el'''
+* Lisp:icomplete-plus.el -- remplace par '''Lisp:icomplete+.el'''
+* Lisp:imenu-plus.el -- remplace par '''Lisp:imenu+.el'''
+* Lisp:info-plus.el -- remplace par '''Lisp:info+.el'''
+* Lisp:isearch-plus.el -- remplace par '''Lisp:isearch+.el'''
+* Lisp:macros-plus.el -- remplace par '''Lisp:macros+.el'''
+* Lisp:menu-bar-plus.el -- remplace par '''Lisp:menu-bar+.el'''
+* Lisp:mouse-plus.el -- remplace par '''Lisp:mouse+.el'''
+* Lisp:novice-plus.el -- remplace par '''Lisp:novice+.el'''
+* Lisp:options-plus.el -- remplace par '''Lisp:options+.el'''
+* Lisp:outline-plus.el -- remplace par '''Lisp:outline+.el'''
+* Lisp:pp-plus.el -- remplace par '''Lisp:pp+.el'''
+* Lisp:rebind-icicle-maps.el -- Appeler `icicle-rebind-completion-maps' dans ~/.emacs
+* Lisp:rebind-mbuf-maps.el -- Appeler `icicle-rebind-completion-maps' dans ~/.emacs
+* Lisp:replace-plus.el -- remplace par '''Lisp:replace+.el'''
+* Lisp:ring-plus.el -- remplace par '''Lisp:ring+.el'''
+* Lisp:resize-frame.el -- remplace par '''Lisp:fit-frame.el'''
+* Lisp:setnu-plus.el -- remplace par '''Lisp:setnu+.el'''
+* Lisp:setup-frames.el -- remplace par '''Lisp:oneonone.el'''
+* Lisp:setup-info.el -- remplace par seulement '''Lisp:info+.el'''
+* Lisp:simple-plus.el -- remplace par '''Lisp:simple+.el'''
+* Lisp:sort-plus.el -- remplace par '''Lisp:sort+.el'''
+* Lisp:shrink-fit.el -- remplace par '''Lisp:fit-frame.el'''
+* Lisp:shrink-fit-all.el -- remplace par '''Lisp:autofit-frame.el'''
+* Lisp:thingatpt-plus.el -- remplace par '''Lisp:thingatpt+.el'''
+* Lisp:timer-plus.el -- remplace par '''Lisp:timer+.el'''
+* Lisp:tool-bar-plus.el -- remplace par '''Lisp:tool-bar+.el'''
+* Lisp:vc-plus.el -- remplace par '''Lisp:vc+.el'''
+* Lisp:vc-hooks-plus.el -- remplace par '''Lisp:vc-hooks+.el'''
+* Lisp:wthreetwo-browser.el -- remplace par '''Lisp:w32-browser.el'''
+* Lisp:w-browser.el -- remplace par '''Lisp:w32-browser.el'''
+* Lisp:wthreetwobrowser-dlgopen.el -- remplace par '''Lisp:w32browser-dlgopen.el'''
+* Lisp:window-plus.el -- remplace par '''Lisp:window+.el'''
+
+[:NomsDesPackages]
+=== Les Noms des Packages ===
+
+Certains de mes packages ont des noms qui empechent leur telechargement a EmacsWiki. Leurs noms ont donc ete modifies pour satisfaire aux restrictions de telechargment. Dans chaque cas, il y a un commentaire au debut du fichier (et un autre commentaire a la fin), pour indiquer le vrai nom. Il faut renommer le fichier correctement pour pouvoir l'utiliser avec d'autres packages qui en font reference.
+
+Dans plusieurs cas, j'ai ecrit une extension a un package GNU standard qui s'appelle, par exemple, <code>foo.el</code>. J'ai nomme mon package <code>foo+.el</code>. Le caractere `<code>+</code>' indique generalement que mon package devrait etre charge ''apres'' le package standard correspondant.
+
+Dans qq cas, j'ai ecrit un package a charger ''avant'' un package standard ; ces packages sont nommes avec le caractere `-', par exemple : <code>foo-.el</code>. 
+----
+
+[:CommentUtiliserLeCode]
+== Comment Utiliser Le Code ==
+
+'''Voir aussi :''' [[#NomsDesPackages]] pour des infos sur la nomenclature des packages.
+
+[:ToutEssayer]
+=== Tout Essayer ! ===
+
+On peut evidemment utiliser differents packages individuellement, mais la meilleur facon d'apprecier mon code Emacs c'est de tout essayer a la fois :
+
+
+: Copier, puis ouvrir Lisp:emacs-init.el dans Emacs et le lire. Le commentaire explique tout. Lire les instructions qui precedent chaque morceau de code.
+
+En particulier : 
+
+
+* Creer un repertoire pour mes packages Emacs Lisp, et l'ajouter au <code>load-path</code> mettant a jour la variable `drews-lisp-dir'.
+
+* Commenter le code qui ajoute le repertoire <code>CONTRIB</code> au `load-path'. Ce repertoire est pour d'autres packages que je n'ai pas ecrit et que je trouve utiles.
+
+* Pour la plupart, il suffit d'ajuster des chemins (paths) locaux, mais pour tout essayer laisser le reste tel quel. En particulier, laisser commentee l'expression `<code>(defvar 1on1-separate-minibuffer-frame-flag nil)</code>'.
+
+* Faire un sauvegarde du fichier d'initialisation (<code>.emacs</code> ou <code>_emacs</code>), puis utiliser Lisp:emacs-init.el comme fichier d'initialisation.
+
+'''''NB :''''' Lisp:emacs-init.el n'est probablement pas tout a fait a jour, mais il suffit pour commencer. Merci de signaler des problemes eventuels que vous rencontrez.
+
+=== Essayer Une Partie Seulement ===
+
+Voir [[#ToutEssayer]], puis commenter ou decommenter des bloques de code dans Lisp:emacs-init.el. C'est la meilleur facon de proceder. Pour un reglage plus fin, modifier les valeurs de qq variables en plus des variables dans Lisp:emacs-init.el. On les trouvera dans les differents packages (voir prochaine).
+----
+
+[:Discussion]
+== Vos Commentaires (Discussion) ==
+
+Ajouter vos commentaires et questions ici.
+
+----
+
+CategoryHomePage CategoriePagePerso

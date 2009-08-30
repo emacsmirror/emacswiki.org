@@ -1,0 +1,16 @@
+An alternative to DiredMode, emulating the venerable Norton Commander.  Quite feature rich and simple to use, with one-letter commands.
+
+Download:
+
+* Lisp:nc.el
+
+Evening Commander mode:
+
+ec.el -- Not as complete as nc.el
+
+* http://levana.de/emacs/
+
+
+----
+CategoryDirectories
+CategoryEmulation

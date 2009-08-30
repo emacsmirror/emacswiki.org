@@ -1,0 +1,40 @@
+Lisp:external-abook.el (ExternalAbook) is an interface to work with
+[http://www.mutt.org/doc/manual/manual-4.html#query Mutt external query]
+tools.
+
+Any address book tools written for Mutt, can therefore be used from
+within Emacs.
+
+The following example will integrate the Mac OS X address book with
+Gnus.
+
+To begin, install [http://gnufoo.org/contacts/ Contacts]. Contacts is
+a program that provides a command line interface to the Mac OS X
+address book.  You can also install Contacts via
+[http://www.macports.org/ MacPorts].
+
+Next, place external-abook.el in your load path, and then:
+
+    (require 'external-abook)
+    (setq external-abook-command "contacts -lf '%%e\t%%n' %s")
+
+    (eval-after-load "message" 
+      '(progn 
+         (add-to-list 'message-mode-hook 
+                      '(lambda ()
+                         (define-key message-mode-map "\C-c\t" 'external-abook-try-expand)))))
+
+Now in message mode, start typing a name, and then C-c TAB will
+complete that name from your address book.
+
+Of course, ExternalAbook doesn't have to be used with Ressbo, any Mutt
+address book tool will work.
+
+
+[new]
+I've found that this contacts command works better:
+
+    (setq external-abook-command "contacts -lSf '%%e\t\"%%n\"' '%s'")
+
+By adding quotes, I avoid an SMTP issue when a contact's name has strange characters in it. The -S is to avoid extra whitespace at the end of the name.
+-- ZacharyPinter

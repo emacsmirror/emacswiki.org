@@ -1,0 +1,25 @@
+PolicySwitch is a WindowConfiguration navigation utility by
+ChristofferSHansen.  It can be downloaded here:
+
+Lisp:policy-switch.el
+
+A "policy" is defined as a list of
+configurations.  PolicySwitch's configurations hold more
+information than Emacs' window-configuration objects (which
+cannot be inspected).  In addition to the window-configuration object,
+the config holds a list of window data (through a call to (winner-win-data)).
+WinnerMode is thus used by PolicySwitch to inspect configurations.
+
+Persistence is achieved in the following way.  A configuration is
+persistent if its internal buffers can be restored through calls
+to either DeskTop (a), a function in
+policy-switch-buffer-mode-handlers (b), or if buffer has a
+buffer-file-name.  Unscriptable objects such as buffer and window
+configuration objects (which is stored internally by PolicySwitch
+for performance reasons) are set to nil when Emacs exits.  That way,
+PolicySwitch knows that a policy needs to be restored when Emacs
+starts.
+
+See also WindowsMode, WinnerMode, EmacsLispScreen
+
+CategoryWindows SessionManagement

@@ -1,0 +1,79 @@
+[new:AlexSchroeder:2008-02-01 10:04 UTC]
+XKCD comic link: [http://xkcd.com/378/ Real Programmers use Emacs]! I knew it.
+
+Totally unrelated: The [Self:action=history;id=SitemapDiscussion Sitemap Discussion spam] is soooo boring. Thanks Drew, Aaron, and Pierre for valiantly stemming the tide.
+
+[new:DrewAdams:2008-02-01 15:03 UTC]
+'Course, there's a prefix arg for `M-x butterfly'... -- DrewAdams
+
+[new:PierreGaston:2008-02-01 15:22 UTC]
+Not that boring ;). I had locked SiteMapDiscussion and move the content
+to SitemapDicussion because of the spam, now they seem spam  this  new page...I wonder what makes it so attractive ...
+
+[new]
+%%SiteMap%%? -- LennartBorgman
+
+[new]
+As the spam volume outnumbers the real discussion by about 1000:1 (rough estimate, haha) -- what about getting rid of the page in the first place? -- Alex
+
+[new]
+Ditto. Why not use irc, forums, or a mailing list instead? -- Tennis
+
+[new]
+I think the reasoning was that we should eat our own dog food if we're going to inflict a wiki on the world. ;)
+
+Other than that, I think it was to document about the Emacs Wiki within the wiki itself, to provide a GuidePost or as one element of our OpenProcess, so to speak.
+-- Alex
+
+[new:DrewAdams:2008-02-01 19:42 UTC]
+I think that page has been useful in the past, even if there is no activity there now because the SiteMap is fairly stable. Since we can't discuss the site map at SiteMap, it's good to have some place for that. We could discuss it (when needed) using News pages (such as this one ;-)), but the thread could get hard to follow, and the page title doesn't indicate the subject in that case.
+
+If the only reason to drop the page is the spam, how about renaming the page? DiscussEntryPoint or something else that is less obvious than "site map". I'm assuming that this is automatic spam, not some teenie bopper with nothing better to do. -- DrewAdams
+
+[new]
+As the new page has already been spammed, I must assume a "teenie bopper", haha.
+-- Alex
+
+[new]
+*Update*: Currently all edits are protected by a question. Once you answer the question correctly, a cookie will remember that you answered the question correctly and you will not be asked again (assuming the same account and the same browser, obviously).
+
+Uses of OddmuseMode or WikiMode will need to add something to their requests! Here's what I'm using:
+
+{{{
+(add-hook 'oddmuse-hook
+	  (lambda ()
+	    (unless (string-match "question" oddmuse-post)
+	      (setq oddmuse-post (concat "question=1;" oddmuse-post)))))
+}}}
+
+-- AlexSchroeder
+
+[new]
+Currently the captcha does not work. -- [[rubikitch]]
+
+[new]
+The captcha worked for me, maybe there is something you do not know ... ;-)
+
+If this simple captcha does not work then I have a suggestion:
+Use something you can only answer if you have Emacs installed.
+
+[new]
+Here's how to test it and make sure you're not an EmacsWikiAdmin and that the question will be asked when you save:
+
+* Self:action=edit;id=SandBox;pwd=;question=
+
+When I try it, it says: "What is the greatest editor out there?" at the bottom between edit area and save button. -- AlexSchroeder
+
+[new:DrewAdams:2008-02-16 18:13 UTC]
+I tried it, and saw the question, entered the editor name, and saved. Worked.
+
+But then I tried again, and saw no question, filled nothing out, and still was able to save. So there appears to be some problem. HTH. -- DrewAdams
+
+[new]
+I think Alex said you only have to answer the question once.
+
+[new:DrewAdams:2008-02-16 23:16 UTC]
+Right. Sorry about that. I should have tried to test first ''without'' answering the question. ;-) Has anyone tested that? -- DrewAdams
+
+[new]
+By following the link above you can reset this flag in your cookie. :) -- Alex

@@ -1,0 +1,45 @@
+If the ChurchOfEmacs is too religious for you, try the secular variant
+-- "Comparative Emacsology".
+
+Comparative Emacsology studies the incompatible differences in Emacs
+variants and how individuals and groups of developers strive to make
+their EmacsLisp code portable.  One prime example for such differences
+is EmacsOverlays vs. XEmacsExtents.  Most authors dealing with any
+non-trivial highlighting will have to write compatibility layers for
+such issues.  Another example is keybindings: there are several
+ways to specify a key, some of them deprecated, some of them "official"
+since they are part of the EmacsManual, and then there are various
+compatibility notations.
+
+Truly a field where big and important problems await study and remedy.
+
+Some of the things we already looked at:
+
+* AddKeywords
+* CompiledFile
+* CustomizingBoth
+* ElispCompatibility
+* EmacsAndXEmacs
+* EnablingFontLock
+* FreeVariable
+* LineInformation
+* MouseEvent
+* SplitString
+* TemporaryFaces
+* TheaterStyle
+* WindowHeight
+* XEmacsExtents
+
+Some notes in table format. If you a lot to add, remove the row from the list and put the issue on a separate page.
+
+|| *Emacs* || *XEmacs* || *Note* ||
+|| bool-vector || bit-vector || -- ||
+|| integers || characters || Emacs uses plain integers: (eq ?A 65) => t ||
+|| derived-mode-p || -- || Use the one in Emacs' subr.el and rename it to fit your package's namespace. ||
+|| char-valid-p || characterp || -- ||
+|| line-number-at-pos || line-number || -- ||
+|| balance-windows || balance-windows || Doesn't balance vertical windows in XEmacs. ||
+
+----
+CategoryHistory
+

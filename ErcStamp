@@ -1,0 +1,130 @@
+Timestamp is enabled by default. To disable it use M-x customize-variable RET erc-modules.
+
+This module adds a timestamp to new lines if at least a minute has past since the last timestamping.
+
+I prefer the timestamps on the left, and on every line:
+
+    (setq erc-timestamp-only-if-changed-flag nil
+          erc-timestamp-format "%H:%M "
+          erc-fill-prefix "      "
+          erc-insert-timestamp-function 'erc-insert-timestamp-left)
+
+I had to use the following snippet to get timestamps on for some reason.. Not really sure why, guess it must work for most users since it hasn't been added to this page, but i'll just put it below, in case people need it. -- TerryPatcher
+
+    (setq erc-hide-timestamps nil)
+
+== Insterting timestamps on both left and right ==
+The following piece of code will always insert timestamp on the left, and
+insert timestamp on the right only if modified. Useful when logging, as you will find the date easily. Comments welcome.
+
+    (setq erc-timestamp-format "[%H:%M] ")
+    (setq erc-timestamp-right-format "[%a %e %b %Y]")
+
+
+    (defun my-erc-timestamp-left-and-right (string)
+      (let* ((last-inserted erc-timestamp-last-inserted)
+             (ct            (current-time))
+             (ts-left       (erc-format-timestamp ct erc-timestamp-format))
+             (ts-right      (erc-format-timestamp ct erc-timestamp-right-format)))
+
+        (erc-insert-timestamp-left ts-left)
+        (let ((erc-timestamp-only-if-changed-flag t))
+          (setq erc-timestamp-last-inserted last-inserted)
+          (erc-insert-timestamp-right ts-right)
+          (setq erc-timestamp-last-inserted ts-right))))
+
+And the following to make the function actually called for timestamping.
+
+    (setq erc-insert-timestamp-function 'my-erc-timestamp-left-and-right)
+
+== Another attempt at log-friendly timestamping ==
+I modified the above `my-erc-timestamp-left-and-right' in a way that makes my logs look more to my liking.  Namely, the changes are:
+
+* Kept track of the last timestamps of each side.
+* Rewrote the erc-insert-timestamp-left as a new function called my-erc-timestamp-insert-left.
+* The new insert-left function puts some extra whitespace around the date, since I like having the date on the left and the time on the right.
+* Each timestamp is only updated if it changes.
+* By making the last timestamp variables buffer-local, we can be sure that a date and time are written after making a separate buffer (like when the /query command is used).  The timestamp will be written on the first irc command received or sent from that buffer.
+* One example function, called my-erc-timestamp-reset, forces a timestamp to be written on the next irc command.
+
+The following customize options might need to be set (or added) to get things to work and look nice:
+<pre>
+ '(erc-auto-query (quote buffer))
+ '(erc-enable-logging (quote erc-log-all-but-server-buffers))
+ '(erc-hide-timestamps nil)
+ '(erc-insert-timestamp-function (quote my-erc-timestamp-left-and-right))
+ '(erc-log-insert-log-on-open nil)
+ '(erc-modules (quote (stamp log)))
+ '(erc-stamp-mode t nil (erc-stamp))
+</pre>
+
+Here is the code I added to my .emacs file in order to accomplish this:
+<pre>
+(make-variable-buffer-local
+ (defvar erc-timestamp-last-left nil))
+(make-variable-buffer-local
+ (defvar erc-timestamp-last-right nil))
+(defun my-erc-timestamp-insert-left (string)
+  "Insert a timestamp on the left if the previous timestamp is
+different from this one.  Put a distinct amount of whitespace around
+the timestamp."
+  (unless (string-equal string erc-timestamp-last-left)
+    (goto-char (point-min))
+    (erc-put-text-property 0 (length string) 'field 'erc-timestamp string)
+    (insert string)
+    (setq erc-timestamp-last-left string)))
+
+(defvar erc-timestamp-format-left "\n[%a %b %e %Y]\n")
+(defvar erc-timestamp-format-right "[%H:%M]")
+(defun my-erc-timestamp-left-and-right (string)
+  "This is another function that can be assigned to
+`erc-insert-timestamp-function'.  If the date is changed, it will
+print a blank line, the date, and another blank line.  If the time is
+changed, it will then print it off to the right."
+  (let* ((ct		(current-time))
+	 (ts-left       (erc-format-timestamp ct erc-timestamp-format-left))
+	 (ts-right      (erc-format-timestamp ct erc-timestamp-format-right)))
+    (my-erc-timestamp-insert-left ts-left)
+    (let ((erc-timestamp-only-if-changed-flag t)
+	  (erc-timestamp-last-inserted erc-timestamp-last-right))
+      (erc-insert-timestamp-right ts-right)
+      (setq erc-timestamp-last-right ts-right))))
+
+(defun my-erc-timestamp-reset ()
+  "Force a timestamp to be written on the next erc command.  This is
+not called by any function in my sample setup, but you could bind it
+to a key in order to force a timestamp to be written upon the next irc
+command."
+  (setq erc-timestamp-last-left nil)
+  (setq erc-timestamp-last-right nil))
+</pre>
+
+
+== Yet another attempt at log-friendly timestamping ==
+
+Ok, this worked for me with significantly fewer lines of code.
+Shows left-aligned hours and minutes on change, and a new line on date change or new conversation.
+
+<pre>
+;; timestamps                                                                                     
+(make-variable-buffer-local
+ (defvar erc-last-datestamp nil))
+
+(defun ks-timestamp (string)
+  (erc-insert-timestamp-left string)
+  (let ((datestamp (erc-format-timestamp (current-time) erc-datestamp-format)))
+    (unless (string= datestamp erc-last-datestamp)
+      (erc-insert-timestamp-left datestamp)
+      (setq erc-last-datestamp datestamp))))
+    
+(setq erc-timestamp-only-if-changed-flag t
+      erc-timestamp-format "%H:%M "
+      erc-datestamp-format " === [%Y-%m-%d %a] ===\n" ; mandatory ascii art                          
+      erc-fill-prefix "      "
+      erc-insert-timestamp-function 'ks-timestamp)
+</pre>
+-- kstroem
+
+
+----
+[[ERC]]

@@ -1,0 +1,418 @@
+;;; eiv.el --- emacs image viewer
+
+;; Copyright (C) 2008, 2009 Thierry Volpiatto
+;; Author:     Thierry Volpiatto 
+;; Maintainer: Thierry Volpiatto 
+;; Keywords: image, picture
+
+;; Created: lun fév  2 11:38:44 2009 (+0100)
+
+;; X-URL: http://mercurial.intuxication.org/hg/emacs-image-viewer
+
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;; 
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;; 
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+
+;;; Commentary: 
+
+;; Dependencies: - traverselisp.el:
+;;                 http://www.emacswiki.org/cgi-bin/emacs/traverselisp.el
+;;               - the ImageMagick package that provide "mogrify":
+;;                 http://www.imagemagick.org/
+
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `eiv-fit-image-to-window'
+;;    Resize image to current window size.
+;;  `eiv-rotate-current-image'
+;;    Rotate current image at 90 degrees.
+;;  `eiv-dec-or-inc-image'
+;;    Resize image to current window size.
+;;  `eiv-diaporama'
+;;    Start a diaporama on tree.
+;;  `eiv-viewer'
+;;    The emacs-image-viewer. Allow to navigate in a Tree of dir and subdir
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+
+;; Changelog:
+;; See <http://mercurial.intuxication.org/hg/emacs-image-viewer>
+
+;;; Code:
+
+;;; Require
+
+(require 'cl)
+(require 'traverselisp)
+
+;;; User variables
+
+(defvar eiv-default-dir "~/Pictures/")
+(defvar eiv-default-save-dir-name "eiv-save")
+(defvar eiv-default-diaporama-delay 2)
+
+;;; Image modification
+
+;;;###autoload
+(defun eiv-fit-image-to-window (&optional arg quiet)
+  "Resize image to current window size.
+With prefix arg don't preserve the aspect ratio."
+  (interactive)
+  (lexical-let ((cur-fname-to-resize
+                 (buffer-file-name (current-buffer)))
+                (noverbose quiet))
+    (let* ((edges (window-inside-pixel-edges))
+           (width (- (nth 2 edges) (nth 0 edges)))
+           (height (- (nth 3 edges) (nth 1 edges)))
+           (asr (when current-prefix-arg t)))
+      (apply #'start-process "resize-image" nil "mogrify"
+             (list "-resize"
+                   (concat (format "%dx%d" width height)
+                           (and asr "!"))
+                   cur-fname-to-resize))
+      (set-process-sentinel (get-process "resize-image")
+                            #'(lambda (process event)
+                                (quit-window t)
+                                (view-file cur-fname-to-resize)
+                                (unless noverbose
+                                  (message "Ok %s on %s %s"
+                                           process
+                                           (file-name-nondirectory
+                                            cur-fname-to-resize)
+                                           event)))))))
+
+;;;###autoload
+(defun eiv-rotate-current-image (&optional num-arg)
+  "Rotate current image at 90 degrees.
+with prefix arg at -90 degrees"
+  (interactive)
+  (let ((fname (buffer-file-name (current-buffer))))
+    (unless num-arg
+      (setq num-arg (if current-prefix-arg
+                        -90
+                        90)))
+    (shell-command (format "mogrify -rotate %s %s" num-arg fname))
+    (quit-window t)
+    (view-file fname)))
+
+;;;###autoload
+(defun eiv-dec-or-inc-image (n &optional quiet)
+  "Resize image to current window size.
+With prefix arg don't preserve the aspect ratio."
+  (interactive)
+  (lexical-let ((cur-fname-to-resize
+                 (buffer-file-name (current-buffer)))
+                (noverbose quiet))
+    (let* ((amount 130)
+           (com-args (if (< n 0)
+                         (format "%d%%^" (* 100 (/ 100.0 amount)))
+                         (format "%d%%^" amount))))
+      (apply #'start-process "resize-image" nil "mogrify"
+             (list "-resize"
+                   com-args
+                   "-gravity"
+                   "center"
+                   cur-fname-to-resize))
+      (set-process-sentinel (get-process "resize-image")
+                            #'(lambda (process event)
+                                (quit-window t)
+                                (view-file cur-fname-to-resize)
+                                (unless noverbose
+                                  (message "Ok %s on %s %s"
+                                           process
+                                           (file-name-nondirectory
+                                            cur-fname-to-resize)
+                                           event)))))))
+
+;;;###autoload
+(defun eiv-tag-image (text &optional quiet)
+  (interactive "sText: ")
+  (lexical-let* ((cur-fname-to-tag (concat (symbol-name (gensym "img")) ".jpg"))
+                 (img (buffer-file-name (current-buffer)))
+                 (def-dir (file-name-directory img))
+                 (noverbose quiet))
+    (let* ((width-buf (eshell-command-result (concat "identify -format %w " img)))
+           (size-buf (concat width-buf "x" "24")))
+      (apply #'start-process "tag-image" nil "convert"
+             (list "-background"
+                   "#0008"
+                   "-fill"
+                   "white"
+                   "-gravity"
+                   "center"
+                   "-size"
+                   size-buf
+                   (format "caption:%s" text)
+                   "+size"
+                   (file-name-nondirectory img)
+                   "+swap"
+                   "-gravity"
+                   "south"
+                   "-composite"
+                   cur-fname-to-tag)))
+    (set-process-sentinel (get-process "tag-image")
+                          #'(lambda (process event)
+                              (quit-window t)
+                              (rename-file (expand-file-name cur-fname-to-tag def-dir)
+                                           (expand-file-name img def-dir) t)
+                              (view-file img)
+                              (unless noverbose
+                                (message "Ok %s on %s %s"
+                                         process
+                                         (file-name-nondirectory
+                                          cur-fname-to-tag)
+                                         event))))))
+
+
+;;; Iterators
+(defmacro iter-list (list-obj)
+  "Return an iterator from list `list-obj'."
+  `(lexical-let ((lis ,list-obj))
+     (lambda ()
+       (let ((elm (car lis)))
+         (setq lis (cdr lis))
+         elm))))
+
+(defun iter-next (iterator)
+  "Return next elm of `iterator'.
+create `iterator' with `tve-list-iterator'."
+  (funcall iterator))
+
+(defmacro sub-iter-next (seq elm)
+  "Create iterator from position of `elm' to end of `seq'."
+  `(lexical-let* ((pos (position ,elm ,seq))
+                  (sub (subseq ,seq (1+ pos)))
+                  (iterator (iter-list sub)))
+     (lambda ()
+       (iter-next iterator))))
+
+(defmacro sub-iter-prec (seq elm)
+  "Create iterator from position of `elm' to beginning of `seq'."
+  `(lexical-let* ((pos (position ,elm ,seq))
+                  (sub (reverse (subseq ,seq 0 pos)))
+                  (iterator (iter-list sub)))
+     (lambda ()
+       (iter-next iterator))))
+
+;;; Image navigation
+
+;;;###autoload
+(defun* eiv-diaporama (tree &optional (delay eiv-default-diaporama-delay) (ext ".jpg"))
+  "Start a diaporama on tree.
+C-u ==> prompt for delay.
+C-u C-u ==> prompt for ext.
+C-u C-u C-u ==> prompt for both."
+  (interactive "DTree: ")
+  (unwind-protect
+       (progn
+         (cond ((equal current-prefix-arg '(4))
+                (setq delay (read-number "Delay: ")))
+               ((equal current-prefix-arg '(16))
+                (setq ext (read-string "Ext: ")))
+               ((equal current-prefix-arg '(64))
+                (setq delay (read-number "Delay: "))
+                (setq ext (read-string "Ext: "))))
+         (traverse-apply-func-on-files
+          tree
+          #'(lambda (x)
+              (view-file x)
+              (sit-for delay)
+              (quit-window t))
+          ext))
+    (clear-image-cache t)))
+
+
+;;;###autoload
+(defun eiv-viewer (tree &optional only)
+  "Allow to navigate in a Tree of dir and subdir of pictures.
+If prefix arg prompt for file ext to use.
+By default use all files.
+On each image, simple manipulations are possible:
+- rotate left and right.
+- resize image to window size.
+- decrease image size
+- increase image size
+
+NOTE: these manipulations are destructives on file
+so when resizing you will be prompt to save image, if you DON'T save
+your initial image will be LOST."
+  (interactive (list (read-directory-name "DTree: ")
+                     (when current-prefix-arg
+                       (read-string "OnlyExt: "))))
+  (let* ((save-dir (concat eiv-default-save-dir-name "/"))
+         (ignore-dirs (cons eiv-default-save-dir-name traverse-ignore-dirs))
+         (flist (traverse-list-files-in-tree tree nil ignore-dirs only))
+         (flist-iterator (iter-list flist))
+         (action)
+         (diapo-run nil)
+         (diapo-speed eiv-default-diaporama-delay)
+         (cur-elm)
+         (flag-move))
+    (flet ((eiv-viewer-goto-next-file ()
+             (clear-image-cache t)
+             (if (eq major-mode 'image-mode)
+                 (quit-window t))
+             (if flag-move ;; direction changed we use a new iterator
+                 (progn
+                   (setq flist-iterator (sub-iter-next flist cur-elm))
+                   (setq fnext-elm (iter-next flist-iterator))
+                   (setq cur-elm fnext-elm)
+                   (if fnext-elm
+                       (view-file fnext-elm)
+                       (throw 'break
+                         (message "Finish! no more images"))))
+                 ;; Use initial iterator unless we change direction
+                 (let ((next-elm (iter-next flist-iterator)))
+                   (setq cur-elm next-elm)
+                   (if next-elm
+                       (view-file next-elm)
+                       (throw 'break
+                         (message "Finish! no more images"))))))
+           (eiv-viewer-goto-prec-file ()
+             (clear-image-cache t)
+             (if (eq major-mode 'image-mode)
+                 (quit-window t))
+             (setq flist-iterator (sub-iter-prec flist cur-elm))
+             (setq bnext-elm (iter-next flist-iterator))
+             (setq cur-elm bnext-elm)
+             (setq flag-move t)
+             (if bnext-elm
+                 (view-file bnext-elm)
+                 (throw 'break
+                   (message "Finish! no more images"))))
+           (eiv-save-file (fn)
+             (unless diapo-run
+               (if (y-or-n-p "Save image?")
+                   (let* ((fname (buffer-file-name
+                                  (current-buffer)))
+                          (tmp-fname (concat
+                                      (symbol-name (gensym "img"))
+                                      (file-name-extension fname t)))
+                          (tmp-dname (concat default-directory
+                                             save-dir)))
+                     (if (not (file-exists-p tmp-dname))
+                         (make-directory tmp-dname)) 
+                     (copy-file fname
+                                (concat tmp-dname tmp-fname))
+                     (funcall fn))
+                   (funcall fn)))))
+      (eiv-viewer-goto-next-file)
+      (catch 'break
+        (while t
+          (catch 'continue
+            (if diapo-run
+                (setq
+                 action
+                 (or (read-event
+                      (propertize
+                       (concat
+                        "(b)ack|"
+                        "(a)stop|"
+                        "(q)uit|"
+                        "(<)slowDown"
+                        "(>)speedUp")
+                       'face '((t (:background "DarkSlateBlue" :foreground "AntiqueWhite"))))
+                      nil
+                      diapo-speed)
+                     '?s))
+                (setq action
+                      (read-event
+                       (propertize
+                        (concat
+                         "(n)ext|"
+                         "(s)tartDiapo|"
+                         "(b)ack|"
+                         "(x)Down|"
+                         "(y)Up|"
+                         "(q)uit|"
+                         "(t)ag)|"
+                         "(l)Rotateleft|"
+                         "(r)otateRight|"
+                         "(f)itToWindow|"
+                         "(d)ecrease|"
+                         "(i)ncrease")
+                        'face '((t (:background "DarkSlateBlue" :foreground "AntiqueWhite")))))))
+            (case action
+              ;; go forward
+              ('?n
+               (setq diapo-run nil)
+               (eiv-viewer-goto-next-file))
+              ('?s
+               (setq diapo-run t)
+               (eiv-viewer-goto-next-file)
+               (throw 'continue nil))
+              ;; stop diaporama
+              ('?a
+               (setq diapo-run nil))
+              ;; slow down diaporama
+              ('?<
+               (incf diapo-speed))
+              ;; speed up diaporama
+              ('?>
+               (unless (<= diapo-speed 2)
+                 (decf diapo-speed)))
+              ;; go backward
+              ('?b
+               (setq diapo-run nil)
+               (eiv-viewer-goto-prec-file))
+              ('?x
+               (unwind-protect
+                    (scroll-down -1)
+                 (throw 'continue nil)))
+              ('?y
+               (unwind-protect
+                    (scroll-down 1)
+                 (throw 'continue nil)))
+              ;; rotate right
+              ('?r
+               (unless diapo-run
+                 (eiv-rotate-current-image)))
+              ;; rotate left
+              ('?l
+               (unless diapo-run
+                 (eiv-rotate-current-image -90)))
+              ;; tag image
+              ('?t
+               (eiv-save-file #'(lambda ()
+                                  (eiv-tag-image (read-string "Text: ") t))))
+              ;; resize to window
+              ('?f
+               (eiv-save-file #'(lambda ()
+                                  (eiv-fit-image-to-window nil t))))
+              ;; reduce size
+              ('?d
+               (eiv-save-file #'(lambda ()
+                                  (eiv-dec-or-inc-image -1 t))))
+              ;; increase size
+              ('?i
+               (eiv-save-file #'(lambda ()
+                                  (eiv-dec-or-inc-image 1 t))))
+              ;; quit
+              ('?q
+               (clear-image-cache t)
+               (quit-window t)
+               (throw 'break nil)))))))))
+
+
+(provide 'eiv)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; eiv.el ends here

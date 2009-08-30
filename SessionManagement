@@ -1,0 +1,20 @@
+"Session Management" is the act of saving what you are doing when you quit
+Emacs (and end your session) and restoring as much as possible and useful
+next time you start Emacs (and want to resume your previous session).
+
+* DeskTop -- saves and restores all open buffers
+* WcyDesktop -- similar to DeskTop, but faster by defering loading file.
+* Desktopaid -- saves and restores frames (http://desktopaid.sourceforge.net/)
+* WindowsMode -- comes with revive.el, which can save and restore window configurations
+* PolicySwitch -- Arranges window configurations in lists called policies.  Can save/restore the configurations.
+* FrameRestorePackage -- save and restore [[Frame]] configurations
+* EmacsSession -- ##session.el## saves global variables, registers, and buffer positions, but doesn't reload visited files like DeskTop does
+* SavePlace -- point goes to the last place where it was when you previously visited the same file
+* SaveHist -- simpler than most of the above: By default, it just saves your MiniBuffer histories.
+
+See also: http://emacs-session.sourceforge.net/related.html
+
+A special program keeps track of [[WThreeMSession]]s.
+
+----
+CategoryPersistence

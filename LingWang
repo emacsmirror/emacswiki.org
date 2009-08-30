@@ -1,0 +1,12 @@
+Hi, all emacers.
+I use Emacs.
+Currently, I have two contributions here: VisibleLines, and Lisp:pycomplete+.el.
+
+[new]
+Welcome to the wiki! :) -- AlexSchroeder
+
+[new:ulm:2009-02-08 23:29 UTC]
+Hi, we had the intention to include [[pycomplete+.el]] with python-mode in Gentoo, but were wondering about its licence. The original pycomplete.el was written by Skip Montanaro and carries his copyright notice [http://python-mode.svn.sourceforge.net/viewvc/python-mode/trunk/python-mode/pycomplete.el?revision=464&view=markup]. pycomplete+.el is clearly based on that code, but has a GPL notice and the original author info was removed, which doesn't look right to me. Care to shed some light on the issue? -- [[ulm]]
+
+----
+CategoryHomepage

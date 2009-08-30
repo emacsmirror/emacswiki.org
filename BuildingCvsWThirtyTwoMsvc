@@ -1,0 +1,4 @@
+Since 21.3 always builds flawlessly with MSVC, I assume that recent CVS also builds.
+
+现在使用VC6编译最近的cvs emacs,不能使用-Ox作为优化选项.
+(To non-Chinese readers: the above line says if you use Visual C++ 6 to compile the most recent cvs emacs, "-Ox" cannot be used as an optimization option.)

@@ -1,0 +1,86 @@
+'''See Also:''' RulerMode, for Emacs 22.
+
+Popup ruler quickly puts a popup ruler right where you need it.  The ruler disappears with any keystroke.  
+
+Useful for determining the positions of stuff like columnized text.  There is a new one below that adds the ability to measure strings etc. anywhere in a line.
+
+ ;; change [f9] to the key you prefer to activate the ruler with.
+ (global-set-key [f9] 'my-column-ruler)
+ 
+  (defun my-column-ruler (width)
+   "Display temp ruler at point."
+   (interactive `(,(+ (window-hscroll)(window-width))))
+   (momentary-string-display
+    (let* ((iterations (/ (1- width) 10))
+           (result1 "|...|....|")
+           (result2 "1   5   10")
+           (inc1 "....|....|")
+           (inc2 "        %d0")
+           (i 1))
+      (while  (<= i iterations)
+        (setq i (1+ i))
+        (setq result1 (concat result1 inc1))
+        (setq result2 (concat result2 (substring (format inc2 i) -10))))
+      (concat (substring result2 0 width) "\n"
+              (substring result1 0 width) "\n"))
+    (line-beginning-position)
+    nil "[space] Clears ruler"))
+
+
+
+[new]
+Nice one, for me it displays a ruler too long, though.  For me (frame-width) gives 120 when the number of the last column is actually 110.  Might be due to linenumbers using setnu or something.  -- StefanKamphausen
+
+
+[new:ZajcevEvgeny:2005-04-13 14:39 UTC]
+Confirming, <code>(interactive `(,(+ (window-hscroll)(window-width) -1)))</code> works better
+
+[new]
+For XEmacs you will need to add this before the above code:
+
+ (defun line-beginning-position ()
+  (save-excursion
+    (beginning-of-line)
+    (point))) 
+
+[new:ZajcevEvgeny:2005-04-13 14:39 UTC]
+Or simple alias it to <code>`point-at-bol'</code>
+[new]
+
+= Cryogenic Popup Ruler =
+
+Because its so much cooler than the other popup ruler.
+Get it here:  Lisp:popup-ruler.el
+
+popup-ruler creates a temporary ruler like one of these depending on the prefix argument used.
+
+    1   5   10        20        30        40        50        60        70
+    |...|....|....|....|....|....|....|....|....|....|....|....|....|....| none
+
+    30        20        10   5   11   5   10        20        30        40
+    |....|....|....|....|....|...||...|....|....|....|....|....|....|....| C-u
+
+    30        20        10   5   1  1   5   10        20        30        40
+    |....|....|....|....|....|...|  |...|....|....|....|....|....|....|....| C-u C-u
+
+popup-ruler-vertical creates a temporary ruler that runs from the top of the window to the bottom or from point in both directions depending on the prefix argument used. 
+
+      none         C-u        C-u C-u
+     |- 1-|       |- 5-|      |- 5-|
+     |-  -|       |-  -|      |-  -|
+     |-  -|       |-  -|      |-  -|
+     |-  -|       |-  -|      |-  -|
+     |- 5-|       |- 1-|      |- 1-|
+     |-  -|       |-  -|      |- 0-|
+     |-  -|       |-  -|      |- 1-|
+     |-  -|       |-  -|      |-  -|
+     |-  -|       |- 5-|      |-  -|
+     |-10-|       |-  -|      |-  -|
+     |-  -|       |-  -|      |- 5-|
+
+
+See also ColumnMarker and [http://www.emacswiki.org/cgi-bin/wiki/CategoryUndo#temporary-invisible-change temporary-invisible-change]
+
+----
+
+CategoryEditing

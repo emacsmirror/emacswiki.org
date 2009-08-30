@@ -1,0 +1,9 @@
+Blogger.el is a obsolete package, replaced by WebloggerMode (weblogger.el).
+
+Blogger.el was a package that enables you to post to weblogs to Blogger.com. It was written by MarkHershberger. The code is available at http://elisp.info/package/blogger/blogger.el
+
+As of 2009 Jan (blogger.el version 1.2), it does not work out of the box. It waits for about 1 min with this message “Contacting host: plant.blogger.com:80” then complains “if: Why? url-http-response-status is nil”.
+
+----
+CategoryJournaling
+

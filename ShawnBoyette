@@ -1,0 +1,30 @@
+I'm a long-time Emacs user who's only recently begun dipping into Emacs/Elisp development. I used GNU Emacs originally, then XEmacs for a couple of years, but since Emacs21 was released, I use Emacs again. I started using CVS builds about a year ago for the Subversion support, and I rebuild at least every week or two. 
+
+I love Unix and the administration thereof -- I once did it professionally. I've also been a mainframe programmer, network security engineer, a construction worker and a bookseller. I am currently a Housewife. I like to pretend that I'm not bad at cooking and photography. I work on weird projects that no one else cares about, mostly involving languages and archives of various sorts :)
+
+I'm known as "mdxi" in #emacs, and in fact pretty much everywhere else on the internet. My homepage is at http://mdxi.collapsar.net/ and contains the requisite blog.
+
+My Emacs code which has pages here on the wiki:
+
+* OcrMode, my first major mode
+
+I'm also responsible for the somewhat flammable essay WhyDoesElispSuck, which was/is intended much more as a prompt for discussion than a defense of elisp (and says so). I am glad it has generated some amount of thoughtful discourse.
+[new]
+: Welcome to the wiki. -- AlexSchroeder
+[new]
+"weird projects ... involving languages and archives..." Hm?  Pray say more?  Computer languages or human languages?  I looked on your home page, but didn't find anything... -- JesseWeinstein
+[new]
+
+To Alex: Thank you.
+
+To Jesse: Well, the only thing that's publically available right now is http://dict.collapsar.net/, where you can find:
+
+* Kdict -- My wife's trilingual EN/JA/ZH concordance sort of thing. I do the software, she does the data (both halves are under active development so please forgive shortcomings)
+* Wroget -- My implementation of an elecronic thesaurus, in the mode of a proper Roget's (not alphabetical).
+* Wdict -- Just another webby dict server interface.
+
+I'm currently working on a markup language and parser named Mint, which I hope won't suck (it's aiming to be somewhere between Textile and TeX on the "power", "flexibility", and "complexity" scales), and a unified home media cataloguing and access doohickey (and I mean all media -- digital and analogue texts, audio, and video) with no official name or even a good description yet. There's more down the road, but they're even more vague (one is best described as a "library metaserver"), and I don't like to traffic in vaporware --ShawnBoyette
+
+
+----
+CategoryHomepage

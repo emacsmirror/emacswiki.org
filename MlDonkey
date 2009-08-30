@@ -1,0 +1,29 @@
+MLDonkey is a peer to peer application for accessing the Edonkey2000
+network as well as a few others like Overnet, <nowiki>FastTrack</nowiki>, Bittorrent, Gnutella and <nowiki>SoulSeek</nowiki>.
+
+Visit the [http://www.nongnu.org/mldonkey/ MLDonkey homepage] or the
+community driven site [http://mldonkey.berlios.de/ MLDonkey World
+homepage] for more information.
+
+mldonkey.el is written in elisp and allows you to monitor your
+downloads and control the MLDonkey core from within your emacs.
+
+The [http://www.physik.fu-berlin.de/~dhansen/mldonkey/index.html
+mldonkey.el homepage] provides the source code as well as some
+documentation.
+
+: The format of MLDonkeys telnet interfaced has changed and mldonkey.el was
+broken for some time.  The new version 0.0.3 fixed this problems.  Other news:
+authentication is supported, comint buffer for the console, improved cpu usage.
+
+: I rewrote lots of stuff so the code should be far more readable now but very
+likely your old configuration won't work anymore.
+
+PeterSalvi: I've created a patch ([[mldonkey-vd.patch.gz]]) for version 0.0.4 to conform to MLDonkey 2.9.2.
+Since the website for mldonkey.el seems to be down, I've taken the liberty to upload it to [[mldonkey-el-0.0.4.tar.gz]].
+
+: Newest version is 0.0.4b ([ftp://ftp.oregonstate.edu/pub/gentoo/distfiles/mldonkey-el-0.0.4b.tar.gz tarball]) and I've ported your patch to it ([http://sources.gentoo.org/viewcvs.py/gentoo-x86/app-emacs/mldonkey/files/mldonkey-0.0.4b-vd.patch mldonkey-0.0.4b-vd.patch]). -- [[ulm]]
+
+----
+CategoryExternalUtilities
+

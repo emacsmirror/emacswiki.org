@@ -1,0 +1,14 @@
+The `*scratch*' buffer is created by Emacs automatically at startup.  Unfortunately, it is automatically saved into files of the form:
+
+  #!scratch!...
+
+and accumulate over time.  I added the following to the end of my .emacs
+to insure that they are not saved at all:
+
+    (with-current-buffer (get-buffer "*scratch*")
+      (auto-save-mode -1))
+
+See also RecreateScratchBuffer for more information on scratch buffer.
+
+----
+CategoryFiles

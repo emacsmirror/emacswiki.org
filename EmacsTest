@@ -1,0 +1,108 @@
+This is a prototype for the Emacs Test. It will eventually be administered via the web with each answer getting a score which will be tallied to give a person's Emacsiness rating.
+
+* I am rms (no need to take the test any further)
+
+* I am jwz
+
+* I use 
+** Emacs                                                                     
+** XEmacs                                                                    
+** vi, vim, elvis                                                            
+** pico, joe, jed, xedit
+
+* Emacs is an editor
+
+* I have used 
+** TecoEmacs
+** Emacs 18.x                                                          
+** Emacs 19.x                                                          
+** Emacs 20.x                                                          
+** Emacs 21.x                                                          
+
+* Emacs is my login shell
+
+* Emacs is my window manager
+
+* I read mail using
+** [[Gnus]]
+** VM
+** [[Rmail]]
+** MH-E
+
+* I chat using
+** [[ERC]]
+** ZenIRC
+** [[rcirc]]
+** [[Circe]]
+** [[TNT]]
+** JabberEl
+
+* Emacs Packages I use 
+** Emacs as my IDE (edit/compile/debug C/Java/Lisp/Perl/Python code)
+** W3/W3m
+** Calendar
+** BBDB
+** Ediff
+** MP3player
+** shell
+** eshell
+** chess
+** HTML-helper
+** calc
+** remote editing of files (angeftp, tramp)
+** dired
+** crypt++
+** !AUCTeX
+
+* My Emacs uptime:
+** more than a month
+** more than a week                                                          
+** less than a week                                                           
+** a few minutes       
+
+* My InitFile is:
+** 0 lines
+** less than 10 lines
+** less than 100 lines
+** more than 100 lines
+** more than 1000 lines
+** available on the web so i have access to it wherever i go
+
+* The contents of my InitFile are:
+** cut and pasted from various places
+** mix of originally written and copied parts
+** originally written by me
+
+* I compile 
+** my own Emacs from sources when it's released
+** the latest Emacs from CVS sources
+** the latest Emacs from CVS sources every night
+** the latest Emacs from CVS sources with some patches of my own
+** the latest Emacs from CVS sources with some patches of my own I haven't checked in yet
+
+* I download and install
+** a precompiled Windows binary (tar.gz)
+** a precompiled Windows binary (self-installing exe)
+** a precompiled GNU/Linux package (rpm, deb, etc.)
+
+* I have written 
+** an EmacsLisp function
+** an EmacsLisp package
+** an EmacsLisp mode that is part of Emacs
+** an EmacsLisp package that is part of Emacs
+
+* I am waiting for Emacs to be re-written in 
+** Guile
+** CommonLisp
+** Perl
+** Java
+** Python
+
+* My InitFile has
+** C-c g bound to goto-line
+** C-2 to set-mark-command
+** (global-font-lock-mode 1)
+** (load-library "flashparen")
+
+* Emacs 19.34 was the best Emacs ever
+* I went from Emacs 19.34 to Emacs 21.x without using Emacs 20

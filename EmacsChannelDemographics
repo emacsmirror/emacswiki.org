@@ -1,0 +1,141 @@
+This page describes the demographics (nationality and occupation) of irc.freenode.net:#emacs.
+
+See also EmacsChannel, EmacsChannelPeople, EmacsUserLocations
+
+Since #emacs is known for discussions of "nearly everything else but
+Emacs", it is useful to know occupations and area of expertise so we
+know where to go for authoritative answers.
+
+This is also an attempt to see if there is a common thread amongst Emacs
+users that hang out on #emacs. So far, the diversity is more obvious
+than the commonality.
+
+Please feel free to add yourself to this list. Your participation is
+purely voluntary.  On your homepage, create a page alias for your nick
+by writing <nowiki>[::nick]</nowiki> somewhere on the page.  Then you
+can link to your nickname from this page using
+<nowiki>[[nick]]</nowiki>.
+
+== Country of residence and Birthyear ==
+
+* Australia: [[resolve]], [[twb]], baird, [[cyflea]]
+* Austria: [[delYsid]], [[antifuchs]], [[oxymor00n]]
+* Bieylorussia (Belarus): mrdeath
+* Brasil: [[rw]] (1981), munky, [[edrx]] (1971), [[dump]] (1979)
+* Canada: [[e1f]] (1991), [[yesod]] (1966), palomer, isomer, xhrl, humasect(1980), [[theCore]] (1987)
+* Chile: zeus (1985), unixOZ
+* China: [[ManateeLazyCat]] (1988)
+* Cosmopolitania: forcer, deego, bpt (1987)
+* Denmark: TerryPatcher (1984), Erwin
+* Emacsia: [[fsbot]], [[birny]]
+* England: [[ChrisMDP]] (1978),[[fledermaus]] (1975)
+* Finland: [[tekonivel]]
+* France: [[Lukhas]] (1982), [[zedek]] (1980), [[Sigma]] (1979)
+* Germany: [[castaway]] (1973), forcer, TauPan, steele, mibur, cmarqu, hroptatyr (1980), hynek, Stoerte (1977), plaisthos, kanaldrache, utis (1972), [[tekai]], [[mulligan]], pfote (1965), [[theorbtwo]] (1980), [[disumu]], [[tsdh]] (1980)
+* Greece: [[keramida]] (1976)
+* Hungary: [[sunwukong]] (1982)
+* Iceland: [[avar]], [[myrkraverk]] (1979), Odin- (1985), rkjaran
+* India: [[Khmar]], [[aadis]] (1981), exeela, esskay, harsha123, [[alephnull]] (1979), naren, shanksn(1974)
+* Italy: giuppi, tr3, [[gherdo]] (1974), matley
+* Israel: [[yrk]]
+* Ireland: [[kiniry]]
+* Latvia: arose (1983)
+* Netherlands: [[credmp]], [[bas]] (1981)
+* Philippines: [[sachac]] (1983; currently in Toronto), [::padik]
+* Portugal: [[njsf]] (1973, currently in the US), [[fsmunoz]] (1977)
+* Romania: [[cmihai]]
+* Russia: lg_, ott, <nowiki>[BoBuk]</nowiki>, az`, [[dut]] (1986)
+* Spain: [[jemarch]] (1980)
+* Sweden: bojohan (1980), lurwas, [[maDa]] (1973), [[phubuh]] (1988), [[shapr]] (1971), [[bkhl]] (1980)
+* Switzerland: [[kensanata]] (1973)
+* Uruguay: [[legumbre]] (1982)
+* USA: Nafai, [[bpalmer]], derekv (1978), davidmccabe, jordanb, franl, fnord, dort, hober (1979), keithr, [[mkennedy]], Mongoose (1977), [[dsmith]] (1959), getoo, [[offby1]], oknowton (1977), drewr (1977), dto (1978), schussat, smitty1e(1969), chandler, [[mwolson]] (1983), [[jfm3]] (1969), [[TTimo]] (1976), strlen (1983 in Belarus), [[johnsu01]] (1976), jessealama (1980), [[Xah_Lee]] (1968), gamename (1962), inkedmn (1978)
+
+* Turkey: fxr, koray, v0|d
+* Wales: [[lawrence]]
+
+== Occupation, Expertise, Interest, Hobbies, Musical Tastes and Instruments, Celebrity Encounters, Language Fluency (programming and spoken) ==
+
+What topics are you confident answering questions in? What things interest you?  We are looking for the common thread in Emacs users.
+
+; [[aadis]]: Works as a developer at a startup for social networking. Java, GNU Emacs and OS X. Learning scheme and lisp: on hold currently. larval C hacker. SF and literature fan. lazy. Met and shaken hands with rms. 
+; [[alephnull]]: perl, shell, C, Debian/GNU. Manga/anime fan. Has met rms, Roger Penrose (shaken hand). Likes classical (Western, Indian) and pop/rock type music. Hacker wannabe. Commie at heart.
+; [[antifuchs]]: computer science student and part-time systems administrator; lisp hacker and hobbyist cynic.
+; [[bkhl]] : student, computer linguistics, literature, music, film, drama, synth, goth, minimalistic, noise, industry, jazz, kraut, folk and a lot more, Swedish, English, Prolog, Scheme
+; baird : uni dropout, non-profit Freenet (APANA) administrator since 1990. Unix/GNU weenie since 1986.
+; [[bas]] (BasKok): Works as a developer at one of world's largest internet companies. Currently learning the language of the gods, and along the way making Emacs more useful everyday.
+; bojohan: student, physics and engineering; bach, elisp, gnus, EmacsManual
+; [[bpalmer]]: student. I am confident in answering in many areas; most of my answers are wrong. I answer more when I'm tired. 
+; [[bpt]]: student; writes mostly in Lisp, Python, Smalltalk; fluent in English, learning Latin and German; hypertext (Wiki, Xanadu, ...); anarchism, queer liberation, libertarian socialism; writing (poetry, short stories); reads omnivorously; listens to rock, punk, metal, classical music, etc.
+; [castaway]: Works as a developer in the statistics department. Good with Perl, SQL, VB(A), some C(++) (tho I find it ick), (re-)learning (e)lisp. Runs SuSE and gentoo linuxen, lives with theorbtwo. Fluent in English and German. Listens to all sorts of stuff. Collects Psions. Hangs out on PerlMonks
+; chandler: Artificial Intelligence <nowiki>PhD</nowiki> student, Common Lisp lover, Emacs-the-concept lover, Emacs-the-implementation and Elisp mild hater. Runs the [[lisppaste]] bot.
+; [[cmihai]]: Senior Platform Expert dealing with SOA on UNIX systems. Fluent in KSH93, AWK, C, SQL, XML, Java, and can speak a little Japanese :-).
+; ChrisMDP: I run my own software development company; can do Java, elisp (a little), Perl, PHP, C, C++, SQL, Linux/Windows sysadmin. I listen to all types of music.
+; [[credmp]]: Senior software engineer, Java, Lisp, Perl, Music: Iron Maiden and other metal ;)
+; [[davidmccabe]]: Student, programmer and musician. Hobbies are hacking, linguistics, beating on drums, beating on whatever objects are around me, libertarianism, online radio, hatching grandiose schemes to rewrite large portions of unix. Play the drums, learning piano. Enjoy variaty of world music, rock and roll, fusion jazz, video game mixes. Languages: Native to English, have studied Latin and Quenya, just embarked on Japanese. Learning and addicted to lisp, fluent in python, comfortable in lots of other things. Avoid C.
+; [[delYsid]]: UNIX Administrator (BOfH), Linux Beowulf Clustering, Debian Developer, Lisp hacker
+; [[disumu]]: Writer/artist, studied animation; learns foreign languages; enjoys cycling, programming, juggling, listening to world radio; plays guitar, harmonica, tin whistle; speaks english, german, dutch, spanish, and other various languages.
+; dort: php, python, java, ldap, sql, debian/GNU, ultimate frisbee
+; [[drewr]]: Fluctuates between Perl and Python depending on the software he's extending (can we just pick one, already?).  Admins GNU/Linux, Solaris, and FreeBSD.  Speaks primarily broken English composed of Seinfeld and Simpsons quotations.  Married.  Started using Emacs in 2001 and still has a dismal grasp of Elisp.  Loves music, film, theology, running, ultimate frisbee.
+; [[dsmith]]: designed the Windows Emacs kitchen sink icon.
+; [[dump]]: System admin, GNU contributor, speaks portuguese (native), english (near native) and a bit of swedish and french. Started to use Emacs in 2000 and I am writing little piece of software in e-lisp! I am good in C, Python and Perl :)
+; [[dut]]: Student, Debian GNU/Linux user, just start using emacs. I like it and i like Python :-)
+; [[e1f]]: trained as an electrical engineer; reads mostly biographies of mathematicians (but hates doing math) history, science and scifi; designed the gnus and emacs logo; listens to music before 1800 and enjoys good movies; met James Gosling; speaks English, Portuguese and a little French, understands Spanish and Italian; played the violin for 10 years, clarinet (3 years) and the classical guitar (5 years); current hobby is photography; switched to OS X in 2005.
+; [[edrx]]: did Maths but planning to become a teacher of Alexander Technique when he grows up. Loves The Stooges, Iggy Pop (up to 1977 only), Hugo Largo, Medicine, Jesus & Mary Chain. Trying to learn the viola. Speaks fluently Lua, Tcl, Icon, Emacs Lisp, and not so fluently a dozen other languages. 
+; fnord: computational cosmology, parallel computation, linux clustering
+; [[forcer]]: An anarchistic discordian computing science student specialicing in semantic language processing, agent-oriented programming and philosophy, Scheme and Emacs Lisp hacker.
+; franl (FranLitterio): (FYI, someone wrote the following about me.  I didn't write this, though some of it is taken from my Web page.) guru; fluent in C++, C, Perl, Java, Lisp, and many other languages (anybody remember Simula or PL/I?). I've done assembly level programming on the Pentium/x86, SPARC, !PowerPC, PA-RISC, MIPS, and Motorola 680x0/880x0 CPUs. I have a great deal of experience using, programming, and administering a variety of UNIX systems (particularly Linux). I'm very familiar with the TCP/IP protocol suite and the World Wide Web. I have an avid interest in cryptography and cryptographic protocols.
+; getoo: Big time n00b... I love emacs.
+; [[hroptatyr]]: student of mathematics; mainly gcl, elisp (mostly for the job), GAP, KASH, Magma, a little scheme, more than a little guile, hates imperative languages; loves unified interfaces; works on the grand unified CAS interface;  loves creation and analyses of crypto systems; started with MicroEmacs 3.54 on Amiga 500 in 1990 ;)
+; hydropnic: protein folding, molecular dynamics
+; inkedmn (BrettKelly): .net/t-sql programmer by day, pythonista and budding (e)lisper by night.  many types of music, mostly aggressive stuff.  been using emacs about a year now and it's wonderful.  Goals include: use emacs as much as possible and stop sucking so bad at lisp.
+; isomer: parsers, compilers, garbage collectors, real-time 3d graphics, biochemist-in-training; flutist
+; [[jemarch]]: software engineer working on real-time critical systems on Deimos Space. GNUdist.
+; JesseAlama: graduate (Ph.D) student in philosophy at Stanford University (history and philosophy of mathematics, automated deduction, mathematical knowledge management); emacs hacking/learning; decent knowledge of Hungarian; Beethoven enthusiast.
+; [[jfm3]]: see [[jfm3]]
+; [[johnsu01]]: Working in nonprofit administration, always learning Emacs Lisp, Scheme, Python, LaTeX and others. Debian user, delicious-el author, Planner contributor, graduate of the Jack Kerouac School. 
+; jordanb: urban philosopher loves discussing the design and planning of cities, esp. Chicago; amateur photographer; famous for his random commentary on all topics; mostly tolerated on #emacs; Lukhas' arch nemesis
+; [[kanaldrache]]: Studies political science, sociology and phylosophy, interested in go and all kind of table games, Cthulhu-Gamemaster, newbie elisp programmer, MpthreePlayer
+; [[kensanata]] (AlexSchroeder): has a Zoology diploma; Perl and EmacsLisp hacker at night; database guru when the sun is up: SQL, Oracle, PL/SQL; Aikido; is interested in wikis, online community, and soft security; listens to Transglobal Underground, Tom Waits, Arabic music and lots more; reads about Ancient History, Politics; cares about human rights.
+; [[keramida] (GiorgosKeramidas): working as a programmer for Bytemobile; Fluent in C, Perl, knows just barely enough Emacs Lisp and Common Lisp.  <nowiki>FreeBSD</nowiki> user. Enjoys Latin and Jazz music.
+; [[Khmar]] (NoufalIbrahim): Works as a hardware tester at Cisco. Avid theoretical computer science and AI buff. Into python, C and these days, a little elisp. Has some experience as a system administrator for a small computer network. Has met Sir Roger Penrose and the GNU who started it all, RMS. 
+; [[kiniry]]: Lecturer (i.e., Assistant Professor to you North Americans) in Computer Science and Informatics at University College Dublin.  I have lived inside of Emacs for 17 years and have contributed to, or lead, dozens of FSF and FLOSS projects including ESC/Java2, IDebug, OBJ3, KindFTP, several Emacs packages, and more.  I know just about every operating system and programming language in common use but use OS X and Java and Eiffel in my daily work.  I perform research in applied formal methods and have started and run several companies in many domains.
+; [[lawrence]]: 4th year undergrad physics, maths specifically dynamics and QM, Can read documentation :), English lit, "Alternative" music, GYBE, !ASMtZ, lots of jazz, plus (mainly post 1800) classical music.  Obscure British comedy shows.  Pretends to understand Java and lisp.
+; [[lg_]] (ZajcevEvgeny): trained as gymnast for 12 years, but now <nowiki>FreeBSD</nowiki> kernel programmer, Linux kernel programmer, OS reseacher, X11 hacker, elisp programmer.
+; [[Lukhas]]: student, general computer science, networks, [[EMMS]], Haskell
+; lurwas: Senior Software Engineer; C/C++ programmer, Java, TCL, SQL, LaTeX, perl(little), elisp(little); Network programming; Game Programming; !OpenGL. Music: Mozart, AC/DC, Opera, Marilyn Mansson, Paradise Lost etc. Jogging and weight training. Computer Games and Console Games (GC,PS2 and X-box). Currently Works for no money. Is trying to be the first one to get an emacs tattoo. Owns emacs.se.
+; [[maDa]]: Oracle, pl/sql, sql, cmd.exe, and a little about many other programming languages (java, javascript, elisp, awk, sed, bash) and computer stuff, juggling, close-up magic, aikido (beginner though, 4 kyu), popular science and stuff
+; mibur: instructor for fitness training
+; mkennedy: Gentoo developer for GNU Emacs and Common Lisp categories. Trained EE, but doing mostly coding (enterprise Java), likes classical, opera and industrial. Leaning ANSI Common Lisp in earnest.
+; Mongoose: I speak a little Japanese, little Spanish, and I know the English well as I learn it of a book.   However my native tongue is C/C++ and Lisp.  I 've worked in Java, ADA, and a lot of lamer ones as well.  I'm the true source of evil in #emacs. 
+; [[mwolson]]: computer science student; making shell scripts, mangling SQL, C hacking; using Debian GNU/Linux, teaching, mathematics; anime, music; played oboe for 6 years, like classical and most kinds of music; no celebrity encounters to speak of; C, bash shell script, SQL, lisp, perl, C++, python, java, VB.net, QBasic, Atari Basic, French (3 years)
+; [[myrkraverk]] (MyrkraVerk): Currently studying mathematics at the Reykjavik University.  Speaks Icelandic, English and some French and some utterances in Japanese, German and Danish; C++, Assembly (MIPS, VPU, (VCL), a little Intel), Scheme, CL, Elisp, some Fortran 77, zsh, Java, HTML, Inform and others not worth mentioning.  Operating Systems: Solaris, Linux, !FreeDOS, eComStation, Haiku, Aros, !OpenVMS, ...; the weirder the better.  Listens mostly to symphonic (epic) metal, such as Epica, After Forever and more.  Current interests: Lisp implementation, Emacs as a concept (see TheCraftOfTextEditing) and its history, BDSM activities and more.
+; [[offby1]]: programmer, Emacs Lisp & Perl fan, obsessive alphabetizer; amateur photographer
+; ott (AlexOtt): Programming (C/OCaml/Scheme/.....), Textprocessing with XML/LaTeX/Emacs etc. Speaking in russian, english & german
+; [::padik]: FreeBSD fanatic; Emacs n00b; Perl wannabe; PHP woRm; Trading cards collector; loves KLD; can tie shoe laces; struggling to memorize the alphabets.
+; pfote: Linux & Debian Lover, Emacs noob, quite good in php, somewhat python, know more about the flight business than most travel agents do
+; [[phubuh]]: Studies (or is supposed to study) science in high school; writes OCaml, Haskell, EmacsLisp, C, and Smalltalk, but knows many other languages; is fluent in English, Swedish; fails miserably in his Spanish classes; and listens to They Might Be Giants, Orbital, Boards of Canada, and Bach. 
+; [[Riastradh]]: Schemer.
+; [[rw]]: Sports (bodybuilding, swimming & surf), music (Blues, Jazz, Rock, Reggae, Funk, Rap, MPB (Popular Brazilian Music), Ska, Classical, instrumentals of China, aborigine, Indonesia and India), Computer Programming (C, C++, Xlib, GTK+, XStep, Ncurses, Java, Pascal, ELisp, Scheme, Python, PL/SQL, Bash, Dialog, Sed, AWK, HTML, XML, Java Script, CSS, PHP, ASP, TeX and LaTeX), Operating System is definitely GNU/Linux, text editor only the true one GNU Emacs, books and finaly girls :)
+; [[sachac]]: technology evangelist whose Emacs configuration is probably about to attain sentience. In a recent demonstration in Toronto, she wowed the audience with some of the crazy things you can do with Emacs. Then they realized that Emacs was talking to her and telling her what to do, which probably gave some of them the shivers. She occasionally uses vim for text editing and Lotus Notes for mail at work, but believes that ~ is where the .emacs is.
+; [[schussat]]: !PhD student in sociology, studying organizations, social movements, and economic organization, still writes a little perl code now and again
+; [[shapr]]: self employed web developer, born in USA living in Sweden, writes Python for money but Haskell for love.
+; shanksn: occasional lurker on #emacs, work on mainframes & unix boxes. learning CLISP. boring guy. ummm..also use gnus
+; [[Sigma]]: !PhD student in computer science, work on formal methods for embedded devices, use Emacs under GNU/Linux, play piano and listen classical, programming languages: C/C++/Lisp/Shell/(La)TeX
+; [[smitty1e]] (ChristopherSmith): contractor in Washington, DC area.  Former squid.  Fairly agnostic about languages and tools.  Play highland bagpipe, and follow the carpenter.
+; Stoerte: trained as clerk, cs student, likes *nix in general, knows some shellscripting, Java (was forced to), plays with ruby; wants to learn Elisp and C someday, speaks English and German. Has (also) no clue about, but is interested in philosophy.
+; [[sunwukong]]: !PhD student in CS, loves oriental and programming languages (Japanese/Chinese/C++/ELisp/etc.) and above all Emacs. Also has some musical background (cello & piano).
+; [http://technomancy.us technomancy]: Ruby hacker, Ubuntu user, emacs all the way. My .emacs file is at [http://technomancy.us/article/emacs]. I wish more people would publish theirs since I enjoy scouring them for good ideas. More details at [http://technomancy.us].
+; [[tekai]]: cs student, does PHP for money, java, C/C++ (novice), javascript, vba (regret it), lisp fan, german , english, finnish (novice)
+; [[TerryP]]: On and off comp-sci student; Kubrick, Scorsese, Aronofsky, Fincher, Burton, Groening, MacFarlane. C (must), C++ (pre-enlightenment), Java (school), C#.NET (work), EmacsLisp (love). Emacsia (rewrite planned), EMMS (resumed work planned) Pink Floyd, Tool, NIN, SOAD, Soulfly, Sepultura, Tom Waits, Bjørn Berge, Johnny Cash, Malk De Koijn. Denmark. Beer (Ren Pilsner, Newcastle Brown Ale, Tuborg, Carlsberg, Urquell). Coffee. Conscientious objector (september04-february05).
+; [[theCore]]: Ubuntu maintainer, computer enthusiast; loves playing with programming languages and discovering new things.
+; [[TTimo]]: programmer. Video games .. making and playing them. Linux ports. Likes: good food, wine and snowboard.
+; ultrasoul: Mathematics undergrad, hurd-hacker wannabe, sysadmin. Likes: Python, elisp, Scheme, combinatorics, Zope, the [[GPL]]. Dislikes: Java, bad math professors, proprietary software. Suggestion: try the Emacs PlannerMode.
+; unixOZ: Programming (C/C++, Java, PHP, SQL, Pascal, Visual Basic, HTML), Music (Led Zeppelin, King Crimson, Grand Funk, Rush), Sports (Rugby, Rugby & Rugby). Editor: GNU Emacs of course||||||| ancestor
+; [[utis]]: student of philosophy (with classical Greek philology and sociology as minor subjects). Classical music of all ages, including contemporary music; with favorite componists being Bach, Mozart, Beethoven, Wagner, Anton Webern, Shostacovitch and Luigi Nono. Highly interested in literature (fan of Goethe). Speaks Elisp (mother tongue), broken Common Lisp, broken SICP-Scheme, and a tiny, tiny little bit of C.
+; xhrl: Threefold degree in Math, Philosophy and English. Knows very little about computers or software; just enough to fudge things. Likes to read in patristics, narrative histories, logic and fly fishing books. Enjoys hiking, walking, fly fishing, playing quakeworld, watching a thought-provoking movie or a manly hockey game. Works as a Math teacher at the Secondary level in Vancouver, British Columbia, Canada.
+; [[yesod]]: PHP programmer, part-time elisp hacker, WFRP gamemaster and unwatchable & obscure B-movies enthusiast!  
+; [[yrk]]: Software Quality Assurance for medical application involving LASER and intense pulsed light, certified Web-Monkey, Aikido (3 kyu), Photography, Electric Guitar and a wannabe hacker
+; [[Xah_Lee]]: Expert in web application development, with Perl, PHP, SQL, Apache, Unix. Also can code in Python and elisp. Master of functional programing. Armchair expert in mathematics and ethology and linguistics. Fav music are of the sort of Bach and Liszt, e.g. Well-Tempered Clavier and Transcendal Etudes, et. al. Player of the piano. Speak and write the two most important natural languages in the name of Chinese and English with fluidity, of the latter beats 99% of native Englishers who have certificates from educational institutions. A troll of Love & Knowledge of the first order. Xah Lee has met Xah Lee since he was born.
+; [[zedek]]: [BOFH] in the national postmail service, C/ASM(MIPS) guru, 3d engine, image/signal processing, X11 hacker. Fluent in Tex, hate windows and live in his GNU Emacs (either from a console or Xterm), *Lisp Fan. Wannabe: go gamer and Hurd Hacker. Has met many GNU members (including our guru). Involved in anti-globalization movement, loves politic and loves reading CS PhD thesis. Wants a day be more than 48hours ;)
+; zeus: C, GTK+, Elisp(learning) and I want to still learning :)... And I love my GNU Emacs

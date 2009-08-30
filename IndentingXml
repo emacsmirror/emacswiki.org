@@ -1,0 +1,37 @@
+The new sgml-mode.el in Emacs (ie. ''not'' PsgmlMode) also does very simple indenting.
+
+Here is a link to the latest copy:
+
+* http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/lisp/textmodes/sgml-mode.el?rev=HEAD
+
+Put it in your LoadPath and load it in your ~/.emacs:
+
+    (require 'sgml-mode)
+
+Take a simple example file:
+
+    <book>
+    <home>test</home>
+    </book>
+
+Put point on the second line and hit `M-x sgml-indent-line'.  The result should be the following:
+
+    <book>
+      <home>test</home>
+    </book>
+
+If you are looking for a familiar IDE tab and auto-indent setup, where TAB always puts a tab, and pressing enter indents to align with the previous line, this is what to put in your ~/.emacs:
+
+  (add-hook 'sgml-mode-hook
+    (function (lambda()
+      (define-key
+         sgml-mode-map
+         (kbd "<tab>")
+         (lambda () (interactive) (insert "\t")))
+      (define-key
+         sgml-mode-map
+         (kbd "RET") 'newline-and-indent)
+  )))
+
+----
+CategoryIndentation

@@ -1,0 +1,24 @@
+You can have Gnus check for new mail every 2 minutes:
+
+    (gnus-demon-add-handler 'gnus-demon-scan-news 2 t) ; this does a call to gnus-group-get-new-news
+    (gnus-demon-init)  ; this is redundant in No Gnus (e.g. Emacs23) since gnus-add-demon-handler does it for you
+
+You don't need to set any other variables nor load more files.
+
+The parameters to gnus-demon-add-handler are:
+* the function to call
+* how many minutes (or the time unit specified in gnus-demon-timestep) pass between attempts to call the function
+* whether Emacs has to be idle in order to call the function. t: it must be idle. A number: it must have been idle for this many minutes (well, gnus-demon-timestep). nil: call it anyway even if it isn't idle
+
+If you want to be notified of new and interesting mail, take a look at Lisp:gnus-notify.el.
+
+----
+
+I'm thinking of adding something like:
+
+    (gnus-demon-add-handler 'gnus-group-save-newsrc 10 t)
+
+Or could it be harmful?
+
+----
+CategoryGnus

@@ -1,0 +1,230 @@
+The FileNameCache is a really nice piece of functionality in Emacs. It provides functionality to quickly find often-needed files without using [[bookmark]]s. From the Commentary:
+
+: ''The file-cache package is an attempt to make it easy to locate files by name, without having to remember exactly where they are located. This is very handy when working with source trees. You can also add frequently used files to the cache to create a hotlist effect. The cache can be used with any interactive command which takes a filename as an argument.
+
+You can start the [::file-cache] by either using `C-TAB' when entering a file name in the MiniBuffer (`C-x C-f C-TAB C-g' works), or loading library <tt>filecache</tt>  (`M-x load-library' or <tt>(require 'filecache)</tt>).
+More information on this feature is available in section '''File Name Cache''' of the EmacsManual: [[Manual:File Name Cache]].
+
+'''See also:'''
+
+* FileSets -- Persistent, named sets of files (i.e. file names) for managing your projects. Part of GnuEmacs starting with release 22.
+* [[Icicles - Persistent Completions]] -- Save or retrieve persistent file sets as file-name [[completion]] candidates. Use with Emacs FileSets or [[Icicles]] saved completion sets (which can include arbitrary combinations of Emacs FileSets of different types).
+* LocateFilesAnywhere
+* RecentFiles
+
+== Add files to the cache ==
+
+Adding files to the file name cache is easy:
+
+; ##`M-x file-cache-add-directory <RET> DIRECTORY <RET>'##: Add each file name in DIRECTORY to the file name cache.
+
+; ##`M-x file-cache-add-directory-using-find <RET> DIRECTORY <RET>'##: Add each file name in DIRECTORY and all of its nested subdirectories to the file name cache.
+
+; ##`M-x file-cache-add-directory-using-locate <RET> DIRECTORY <RET>'##: Add each file name in DIRECTORY and all of its nested subdirectories to the file name cache, using `locate' to find them all.
+
+; ##`M-x file-cache-add-directory-list <RET> VARIABLE <RET>'##: Add each file name in each directory listed in VARIABLE to the file name cache.  VARIABLE should be a Lisp variable such as `load-path' or `exec-path', whose value is a list of directory names.
+
+== Try it out ==
+
+To test this out, add all files in Emacs' lisp directory to the cache. Evaluate the following:
+
+ (file-cache-add-directory "c:/pgm/emacs/lisp/") ;;; Name of your own Emacs-lisp dir, of course
+
+Next, to use it, execute `find-file' as usual:
+
+ Find file: ~/elisp/
+
+And, at the prompt, type a few letters of the file name you want to open:
+
+ Find file: ~/elisp/sim
+
+Next press C-TAB (the default key binding), which will expand to something like this:
+
+ Find file: c:/pgm/emacs/lisp/simple.el
+
+== Automatically add files ==
+
+The suggested way to add files automatically:
+
+      (eval-after-load
+       "filecache"
+       '(progn
+ 	    (message "Loading file cache...")
+ 	    (file-cache-add-directory-using-find "~/projects")
+	    (file-cache-add-directory-list load-path)
+	    (file-cache-add-directory "~/")
+	    (file-cache-add-file-list (list "~/foo/bar" "~/baz/bar"))
+ 	   ))
+
+[:SaveCacheToFile]
+== Save cache to a file ==
+
+For file lists that seldom change, I use this:
+
+<pre>
+(defun file-cache-save-cache-to-file (file)
+  "Save contents of `file-cache-alist' to FILE.
+For later retrieval using `file-cache-read-cache-from-file'"
+  (interactive "FFile: ")
+  (with-temp-file (expand-file-name file)
+    (prin1 file-cache-alist (current-buffer))))
+
+(defun file-cache-read-cache-from-file (file)
+  "Clear `file-cache-alist' and read cache from FILE.
+The file cache can be saved to a file using
+`file-cache-save-cache-to-file'."
+  (interactive "fFile: ")
+  (file-cache-clear-cache)
+  (let ((buf (find-file-noselect file)))
+    (setq file-cache-alist (read buf))
+    (kill-buffer buf)))
+
+</pre>
+
+In my .emacs, I have this:
+
+ (file-cache-read-cache-from-file "~/.file_cache")
+
+`file-cache-clear-cache' is not autoloaded, so for this to work you have to put <tt>(require 'filecache)</tt> in your .emacs -- GregBognar
+
+[new:DrewAdams:2006-04-01 00:21 UTC]
+: Suggestions for `file-cache-save-cache-to-file':
+
+** Use `with-temp-file' instead of creating a buffer and inserting a string.
+** Use `prin1' instead of printing to a string.
+
+: Suggestions for `file-cache-read-cache-from-file': 
+
+** Use `find-file-noselect' instead of `insert-file-contents'.
+** Use `read' on the buffer contents, instead of `read-from-string' -- no need to create a string with the buffer contents. 
+
+: For an example, see functions `icicle-candidate-set-save' and `icicle-retrieve-candidates-from-set' in library Lisp:icicles-cmd.el. -- DrewAdams
+[new]
+Thanks Drew! Very good hints. Much smaller and neater! Me like Lisp! -- MaDa
+
+[new]
+There is a problem with the above version of `file-cache-read-cache-from-file' since `read' is dependant on the point. If one has opened the file cache file and navigated around in it, `read'ing the cache will fail because when opening the file cache file, the point will not be at the beginning of buffer any more. Here is a version that seems to work fine (it makes sure the point is at the beginning of the buffer before `read'ing):
+
+  (defun file-cache-read-cache-from-file (file)
+    "Clear `file-cache-alist' and read cache from FILE.
+  The file cache can be saved to a file using
+  `file-cache-save-cache-to-file'."
+    (interactive "fFile: ")
+    (file-cache-clear-cache)
+    (save-excursion
+      (set-buffer (find-file-noselect file))
+      (beginning-of-buffer)
+      (setq file-cache-alist (read (current-buffer)))))
+
+-- MartinNordholts
+
+== iswitchb-fc: Integrate file-cache with iswitchb ==
+
+http://tao.uab.es/cgi-bin/archzoom.cgi/jao@gnu.org--2004/unix--emacs--0--patch-23/other/iswitchb-fc.el?download
+
+I think iswitchb-fc is awesome!! -- [[Anonymous]]
+
+<pre>
+(defun iswitchb-fc-read-buffer (prompt &optional default existing)
+  (save-window-excursion (buffer-name (iswitchb))))
+(defadvice read-buffer (around iswitchb-fc-read-buffer)
+  (setq ad-return-value (iswitchb-fc-read-buffer prompt)))
+</pre>
+
+[http://lists.gnu.org/archive/html/gnu-emacs-sources/2006-12/msg00034.html patch to integrate find-file] -- [[rubikitch]]
+
+
+== Using iswitchb to open files from file name cache -- take two ==
+
+Filecache rules but I did not like the way it completes the file names. Iswitchb-fc above is a really cool enhancement to filecache but I did not like that it was integrated with C-x b (I guess I *want* to know what files I actually have open). Hence this little hack:
+
+<pre>
+(defun file-cache-iswitchb-file ()
+  "Using iswitchb, interactively open file from file cache'.
+First select a file, matched using iswitchb against the contents
+in `file-cache-alist'. If the file exist in more than one
+directory, select directory. Lastly the file is opened."
+  (interactive)
+  (let* ((file (file-cache-iswitchb-read "File: "
+                                   (mapcar
+                                    (lambda (x)
+                                      (car x))
+                                    file-cache-alist)))
+         (record (assoc file file-cache-alist)))
+    (find-file
+     (concat
+      (if (= (length record) 2)
+          (car (cdr record))
+        (file-cache-iswitchb-read 
+         (format "Find %s in dir: " file) (cdr record))) file))))
+
+(defun file-cache-iswitchb-read (prompt choices)
+  (let ((iswitchb-make-buflist-hook
+	 (lambda ()
+	   (setq iswitchb-temp-buflist choices))))
+    (iswitchb-read-buffer prompt)))
+</pre>
+
+I bound C-c f to it:
+
+<pre>
+(global-set-key "\C-cf" 'file-cache-iswitchb-file)
+</pre>
+
+Happy happy, joy joy!
+
+-- MaDa
+
+Oh man, this is the best enhancement I've seen in years
+
+-- Alex
+
+== Using ido to open files from file name cache==
+
+I prefer ido-mode before iswitchb-mode, so here is take two but using ido:
+
+<pre>
+(defun file-cache-ido-find-file (file)
+  "Using ido, interactively open file from file cache'.
+First select a file, matched using ido-switch-buffer against the contents
+in `file-cache-alist'. If the file exist in more than one
+directory, select directory. Lastly the file is opened."
+  (interactive (list (file-cache-ido-read "File: "
+                                          (mapcar
+                                           (lambda (x)
+                                             (car x))
+                                           file-cache-alist))))
+  (let* ((record (assoc file file-cache-alist)))
+    (find-file
+     (expand-file-name
+      file
+      (if (= (length record) 2)
+          (car (cdr record))
+        (file-cache-ido-read
+         (format "Find %s in dir: " file) (cdr record)))))))
+
+(defun file-cache-ido-read (prompt choices)
+  (let ((ido-make-buffer-list-hook
+	 (lambda ()
+	   (setq ido-temp-list choices))))
+    (ido-read-buffer prompt)))
+</pre>
+
+-- MartinNordholts
+
+
+== Add to file-cache when `kill-buffer' ==
+<pre>
+(defun file-cache-add-this-file ()
+  (and buffer-file-name
+       (file-exists-p buffer-file-name)
+       (file-cache-add-file buffer-file-name)))
+(add-hook 'kill-buffer-hook 'file-cache-add-this-file)
+</pre>
+
+I have used this for more than a year. -- [[rubikitch]]
+
+----
+CategoryCompletion
+CategoryFiles
+

@@ -1,0 +1,12 @@
+Hi all.  Just a random Emacs user.  Nothing to see here, move along...
+
+Hi and welcome!  As to posting patches, the wiki is of course one
+possible way to do this.  Since your patch to decipher.el looks really
+nice, perhaps you should mail it to the maintainer, or post it to
+nntp://gnu.emacs.sources -- or mailto:emacs-devel.gnu.org --
+AlexSchroeder
+
+Thanks for the suggestions Alex!  I've posted to gnu.emacs.sources and mailed the maintainer (although it bounced).  So far no feedback and it doesn't appear to have made it into CVS :(
+
+----
+CategoryHomepage

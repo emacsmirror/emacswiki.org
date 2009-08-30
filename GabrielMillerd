@@ -1,0 +1,61 @@
+I am Gabriel Millerd <gmillerd/at/qualhost/dot/com> ... I really get a lot of use out of emacs.
+
+Currently i use:
+
+emacs-nox on OSX and Linux
+
+* PerlMode (cperl-Mode)
+* AbbrevMode (wish this would obey indenting somehow) (i added this AbbrevModeOpenOffice)
+* FlySpell
+* AutoFillMode
+* FoldingMode
+* nxml-mode
+
+* auto-captialize.el
+* bm.el
+* maybe-open-apostrophe()
+* wget.el
+* tail.el
+
+someday i will get this working better, its sort of unstable for me
+* mmm-mode (html/tt2/css/js)
+
+wish this would work better. its a disaster in cperl-mode looks like 'the matrix' sometime.
+* setnu (line numbering) 
+
+cannot seem to get this to work for <tab>, everything says it should be however when i display my bindings. The document TabKey didnt help.
+
+    (defun indent-or-complete ()                                                                                                        
+      "Complete if point is at end of a word, otherwise indent line."                                                                   
+      (interactive)                                                                                                                     
+      (if (looking-at "\\>")                                                                                                            
+          (dabbrev-expand nil)                                                                                                          
+          (indent-for-tab-command)                                                                                                        
+       ))                                                                                                                              
+    (global-set-key (kbd "<tab>") 'indent-or-complete)  
+    (local-set-key (kbd "<tab>") 'indent-or-complete)  
+
+i use this function quite a bit (nxml/cperl)
+
+    (defun sexup ()                                                                                                                     
+      "make text pretty"                                                                                                                
+      (interactive)                                                                                                                     
+      (save-excursion                                                                                                                   
+        (goto-char (point-min))                                                                                                         
+        (while (re-search-forward "[ \t]+$" nil t)                                                                                      
+          (delete-region (match-beginning 0) (match-end 0)))                                                                            
+        (goto-char (point-min))                                                                                                         
+        (while (re-search-forward "^[ \t]+" nil t)                                                                                      
+          (delete-region (match-beginning 0) (match-end 0)))                                                                            
+        (indent-region (point-min) (point-max) nil)                                                                                     
+        (goto-char (point-min))                                                                                                         
+        (if (search-forward "\t" nil t)                                                                                                 
+            (untabify (1- (point)) (point-max)))                                                                                        
+        (exchange-point-and-mark)                                                                                                       
+        )                                                                                                                               
+      )                                                                                                                                 
+    (global-set-key "\M-i" 'sexup) 
+
+
+----
+CategoryHomepage

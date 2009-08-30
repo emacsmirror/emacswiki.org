@@ -1,0 +1,38 @@
+This page has more ideas on linking for WikiMode.
+
+'''Inline Images'''
+
+Define an appropriate rule for `wiki-pub-rules'.  Here is an example rule:
+
+<pre>
+    Regexp:      \<Inline:\(\(\sw\|[-_.]\)+\)\.\(png\|jpg\)\>
+    Replacement: <a href="pics/\1.\3"><img src="pics/\1.\3" alt="\1.\3"></a>
+</pre>
+
+That would replace
+
+    Inline:somename.png
+
+with
+
+    <a href="pics/somename.png"><img src="pics/somename.png" alt="somename.png"></a>
+
+In effect, it would be replaced with the <img src="..."> tag, marked as a link and using an appropriate alt text, assuming that all pictures reside in the pics subdirectory.
+
+'''Links to other parts of your own site'''
+
+The easiest way to do this is using WikiInter code.  Just add virtual hosts to `wiki-inter-links'.  Here is the complete list of virtual hosts I'm using:
+
+    <nowiki>Interwiki Host: Main
+    URL Fragment: http://www.geocities.com/kensanata/%s.html
+    
+    Interwiki Host: Code
+    URL Fragment: http://www.geocities.com/kensanata/elisp/%s.txt
+    
+    Interwiki Host: Dir
+    URL Fragment: http://www.geocities.com/kensanata/%s/
+    
+    Interwiki Host: Pic
+    URL Fragment: http://www.geocities.com/kensanata/%s</nowiki>
+
+You could have achieved a similar effect using a rule in `wiki-pub-rules'.  Such rules would not affect highlighting, however.

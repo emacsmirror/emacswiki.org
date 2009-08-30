@@ -1,0 +1,74 @@
+[[C++]] mode (CPlusPlusMode, [::CppMode]) is one of the modes provided by the CcMode (CC Mode) package.
+
+== Enabling C++ Mode ==
+
+To switch a buffer to C++ mode, just use <code>M-x c++-mode</code>. The regular emacs mode detection applies, and most common file extensions (eg `cpp', `cxx', etc) will be opened in c++ mode.
+
+By default files ending in .h are treated as c files rather then c++ files. To change this add the following to your .emacs:
+
+<pre>
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+</pre>
+
+Unfortunately many standard c++ header files have no file extension, and so will not typically be identified by emacs as c++ files. The following code is intended to solve this problem.
+
+<pre>
+(require 'cl)
+
+(defun file-in-directory-list-p (file dirlist)
+  "Returns true if the file specified is contained within one of
+the directories in the list. The directories must also exist."
+  (let ((dirs (mapcar 'expand-file-name dirlist))
+        (filedir (expand-file-name (file-name-directory file))))
+    (and
+     (file-directory-p filedir)
+     (member-if (lambda (x) ; Check directory prefix matches
+                  (string-match (substring x 0 (min(length filedir) (length x))) filedir))
+                dirs))))
+
+(defun buffer-standard-include-p ()
+  "Returns true if the current buffer is contained within one of
+the directories in the INCLUDE environment variable."
+  (and (getenv "INCLUDE")
+       (file-in-directory-list-p buffer-file-name (split-string (getenv "INCLUDE") path-separator))))
+
+(add-to-list 'magic-fallback-mode-alist '(buffer-standard-include-p . c++-mode))
+</pre>
+
+== Mode Hooks ==
+
+You can customise how c++ mode looks and feels by adding mode hooks to c++-mode-hook (or c-mode-hook if you want to customise behaviour for all c-mode based modes in one go). For example:
+<pre>
+; style I want to use in c++ mode
+(c-add-style "my-style" 
+	     '("stroustrup"
+	       (indent-tabs-mode . nil)        ; use spaces rather than tabs
+	       (c-basic-offset . 4)            ; indent by four spaces
+	       (c-offsets-alist . ((inline-open . 0)  ; custom indentation rules
+				   (brace-list-open . 0)
+				   (statement-case-open . +)))))
+
+(defun my-c++-mode-hook ()
+  (c-set-style "my-style")        ; use my-style defined above
+  (auto-fill-mode)         
+  (c-toggle-auto-hungry-state 1))
+
+(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+</pre>
+
+You can customise C++ mode key bindings using entries like:
+<pre>
+(define-key c++-mode-map "\C-ct" 'some-function-i-want-to-call)
+</pre>
+
+See the categories below for more information on the multitude things that emacs and C++ mode are capable of.
+
+== Further Information ==
+* CcMode
+* IndentingC
+* AutoInsertHeaderGuards - Insert Header Guards based on the filename, if the file is empty, insert header guards and class definition
+
+----
+CategoryProgramming
+CategoryModes
+ProgrammingModes

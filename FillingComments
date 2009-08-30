@@ -1,0 +1,41 @@
+In source-code one usually doesn't want filling to occur.  On the other
+hand, comments are really more like text than code.  This example shows
+how to set up filling for comments only in c-mode.
+
+ (add-hook 'c-mode-hook
+	   (lambda ()
+	     (auto-fill-mode 1)
+	     (set (make-local-variable 'fill-nobreak-predicate)
+		  (lambda ()
+		    (not (eq (get-text-property (point) 'face)
+			     'font-lock-comment-face))))))
+
+: I'm using GNU EMACS from CVS (2004-08-28) and it seems that this feature is built in. Also AFAIR this feature was built in in 21.3.1  -- mina86
+
+The package [http://www.iro.umontreal.ca/contrib/libit/dist/misc/rebox.el rebox.el] may also help with refilling multi-line comments within 
+a comment "box".  For example, 
+
+<pre>
+  /*---------------------------------------------.
+  | Called by semantic_selection().              |
+  |                                              |
+  | Performs two checks in the following order:  |
+  |                                              |
+  | A) If our time limit has changed between     |
+  | calls to this function, extension of each    |
+  | maxiset by each of its failed SOS clauses is |
+  | attempted.                                   |
+  |                                              |
+  | B) If any maxiset has a new model            |
+  | (witnessing its consistency) each of its     |
+  | failed clauses (all lists) are retested.     |
+  `---------------------------------------------*/
+</pre>
+
+The link to rebox.el above is broken. I found two versions of it, apparently from the same author:
+a [http://pymacs.progiciels-bpi.ca/showfile.html?name=Pymacs/Rebox/rebox.py pymacs version] and an [http://libit.progiciels-bpi.ca/showfile.html?name=dist/misc/rebox.el elisp one]  ( which apparently wasn't updated since 2000)
+
+Maybe [http://www.davep.org/emacs/boxquote.el boxquote.el] might also be used instead of rebox.
+
+----
+CategoryFilling

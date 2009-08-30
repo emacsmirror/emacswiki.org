@@ -1,0 +1,79 @@
+Useful bit of code for the .emacs
+
+Sets the f12 key to the standard emacs "compile" command.
+
+Sets the f10 key to the standard emacs "gdb" command.
+
+Sets control-f12 to find your current compilation buffer.
+
+Sets control-f10 to find your current gdb buffer.
+
+Sets f5 to compile ~/my/pet/program
+
+Sets control-f5 to compile and run ~/my/pet/program/run
+
+Nice thing about the "pet-program" stuff is it renames the buffers so you can have several compiles going at once...
+
+----
+<pre>
+ ; There must be an easier way...
+ (defun find-my-lost-buffer (buffer-name-string list-of-buffers)
+   "Recursive hunt for buffer in list of buffers."
+   (if (null list-of-buffers)
+       'nil
+     (if (string-match buffer-name-string (buffer-name 
+           (car list-of-buffers))) 
+        (car list-of-buffers)
+        (find-my-lost-buffer buffer-name-string 
+          (cdr list-of-buffers)))))
+
+ (defun ask-how (prompt how)
+   "Get from minibuffer how exact command string the user would like to run."
+   (let ((answer (read-from-minibuffer (concat "Run " prompt " like : ") (concat how " "))))
+     (if (null answer)
+       how
+       answer)))
+    
+
+ (defun find-pet-buffer (prompt match how do-this name)
+   "find pet buffer or create it if not found.
+    Looks for a buffer with name matching 'match'. 
+    If it can't find such a buffer, it asks the user for exact
+    command line for command 'do-this', and then does that.
+
+    If name is nil, ignore, else rename buffer to name."
+   (if (null (find-my-lost-buffer match (buffer-list)))
+      (let ((compilation-buffer-name-function (lambda (dummy) name)))
+         (funcall do-this (ask-how prompt how)))
+     (progn
+       (switch-to-buffer (find-my-lost-buffer match (buffer-list)))
+       (end-of-buffer))))
+
+ (defun find-gud ()
+   (interactive)
+   (find-pet-buffer "gdb" "\*gud-" "gdb" 'gdb nil))
+
+ (defun find-compilation ()
+   (interactive)
+   (find-pet-buffer "compile" "\*compilation" "make" 'compile nil))
+
+ (global-set-key [(control f10)] 'find-gud)
+ (global-set-key [(control f12)] 'find-compilation)
+ (global-set-key [f12] 'compile)
+ (global-set-key [f10] 'gdb)
+
+
+ ; Customize this stuff...
+ (defun compile-pet-program ()
+   (interactive)
+   (find-pet-buffer "compile" "pet-program-compile-run" "~/my/pet/program/run" 'compile "pet-program-compile-run"))
+
+ (defun compile-run-pet-program ()
+   (interactive)
+   (find-pet-buffer "compile" "pet-program-compile-run" "make -C  ~/my/pet/program;~/my/pet/program/run" 'compile "pet-program-compile-run"))
+
+ (global-set-key [f5] 'compile-pet-program)
+ (global-set-key [(control f5)] 'compile-run-pet-program)
+</pre>
+----
+CategoryDotEmacs

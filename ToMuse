@@ -1,0 +1,11 @@
+(see also EmacsMuse)
+
+
+The purpose of ToMuse is to convert different formats (docbook, html,
+groff, latex etc) to Muse format.
+
+== Ideas ==
+
+For xml formats I propose a general framework based on the standard
+Emacs distribution xml parser (see Lisp:dbk.el).
+

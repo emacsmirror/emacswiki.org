@@ -1,0 +1,489 @@
+This page is about the libraries DrewAdams has written to enhance the standard Emacs <code>grep</code> command (GrepMode).
+
+Since Emacs <code>grep</code> is implemented very differently in Emacs 22 from prior versions, there are two corresponding sets of enhancement libraries:
+
+'''Emacs 22:''' <tt>[[compile-.el]]</tt>, <tt>[[compile+.el]]</tt>, and <tt>[[grep+.el]]</tt>
+
+'''Emacs 21 or earlier:''' <tt>[[compile-20.el]]</tt> and <tt>[[compile+20.el]]</tt>
+
+
+<code>grep</code> enhancements include:
+
+* Occurrences matching the search (<code>grep</code>) pattern (regular expression) are highlighted in the <code>*grep*</code> buffer. The effect is similar to that of highlighting with the Google toolbar. (This is standard in Emacs 22.)
+* The currently visited target-buffer occurrence matching the search pattern is also highlighted. This helps you see where you are when there are several <code>grep</code> hits in the same buffer.
+* In the <code>*grep*</code> buffer, you can click anywhere on a found line: the entire line is mouse-face active.
+* The mouse-over [[Face]] is `highlight', which is less flashy (important when the entire line is a link).
+* The [[Frame]] of the <code>*grep*</code> buffer is shrink-wrapped to ''fit the output''.
+* Additional key bindings, including creating a new grep buffers and choosing among multiple grep buffers.
+* More user control over highlight faces.
+* Better default value for the string to search for.
+* Better feedback on where you are when you follow a <code>grep</code> hit.
+* Commands to ''remove commented lines'' from `grep' output and toggle their automatic removal. Bound to '''`##;##'''' and '''`M-;'''', respectively. Only single-line comments are removed -- e.g. ##//## commented lines are removed, but multiline ##/*## ... ##*/## comments are not removed.
+
+Here is a screenshot of the <code>*grep*</code> buffer, showing highlighting and full-line mouse-face (underline):
+
+[[image:DrewsEmacsGrepImage]]
+
+
+In addition to the libraries mentioned above, library <tt>[[dired+.el]]</tt> (see '''DiredPlus''') enhances [[DiredMode|Dired]] so that you can easily `grep' the marked files or the next ''N'' files at [[point]].
+
+'''See Also:''' OccurMode
+
+
+
+
+
+
+
+== Discussion ==
+
+[new]
+ Well this is really weird: My emacs has the version 21.3, and looking at http://www.gnu.org/software/emacs/#Development, 
+I discover there's no 22 release. Accordingly, I cannot find a file called "grep.el" in my loadpath. So what 
+development-bleeding-edge-version are you refering to??? -- jv
+
+[new:DrewAdams:2006-03-05 20:55 UTC]
+: Emacs 22 has not yet been released. A development (pretest) version is, however available. The current development version of Emacs is sometimes referred to as "CVS Emacs". It is available here (mentioned in the link you provided): http://cvs.savannah.gnu.org/viewcvs/emacs/emacs/. The Emacs-Lisp source code, including `##grep.el##', is here: http://cvs.savannah.gnu.org/viewcvs/emacs/emacs/lisp/.  -- DrewAdams
+
+----
+
+[new]
+Emacs 22 and "20 and earlier"? Does it mean emacs 21, the latest stable release is not supported?
+
+[new:DrewAdams:2006-09-15 14:41 UTC]
+: Corrected -- <tt>[[compile-20.el]]</tt> and <tt>[[compile+20.el]]</tt> work with Emacs 21 also. I just hadn't tested them with Emacs 21 previously. Thanks. -- DrewAdams
+
+----
+
+[new]
+I tried compile+/-20 and it's nice that it highlights the occurences in the grep buffer. However, I'd also find it useful if it highlighted the occurence of the current match on the appropriate line in the source buffer too.
+
+This highlight would be temporary and it would automatically disappear at the next command (easy to implement with pre-command-hook). 
+
+What do you think? - TamasPatrovics
+
+[new:DrewAdams:2006-09-18 14:19 UTC]
+: It does do that, except that the highlighting is not automatically removed. You must use `##M-- C-x C-y##' to remove it (in a region). A message tells you that. If you don't see this highlighting, then please provide a precise recipe to reproduce the problem, starting with `##emacs -q##'. AFAIK, I was the first to do this kind of highlighting (target buffer), but it will become available in Emacs 22. -- DrewAdams
+
+[new]
+: I debugged a bit and I think it doesn't work, because there is no highlight-regexp-region' function in emacs 21.4. - TamasPatrovics
+
+[new:DrewAdams:2006-09-19 14:08 UTC]
+: Hi Tamas. No bug. </tt>[[compile+20.el]]</tt> requires <tt>[[highlight.el]]</tt> in order to do the highlighting. <tt>[[compile+20.el]]</tt>'s other features still work without <tt>[[highlight.el]]</tt>, so the `require' is a soft require -- in other words, without <tt>[[highlight.el]]</tt>, you get only some of the features. You can see this requirement stated in two places:
+
+## In the file header, it says "##Features that might be required by this library:## ... ##highlight##".
+## The code says this:
+
+      (require 'highlight nil t) ;; (no error if not found): highlight-regexp-region
+
+: This is often the case with my libraries. The list of "##Features that might be required##" shows all of the needed libraries if you want 100% of the functionality (features), and I try to state explicitly, for each `require', just which functions and global variables are used from the `require'ed library.
+
+: So, download <tt>[[highlight.el]]</tt> and you should be OK. HTH -- DrewAdams
+
+[new]
+
+: I did and it worked. Two small issues: if highlight.el is loaded then compile+20 calls function ##current-line## which is undefined. I commented ##current-line## out and the highlight appears, but it cannot be removed because the key combo you mentioned (##C-x C-y##) is unbound. -- TamasPatrovics
+
+[new:DrewAdams:2006-09-20 16:09 UTC]
+: Thx. I fixed the `current-line' problem. (That's why I have lists of soft requires: it's hard to keep track of library dependencies.)
+
+: I don't understand the other problem you mention. The command to remove highlighting is `highlight'. If you have it bound (e.g. to `C-x C-y', as is done by <tt>[[setup-keys.el]]</tt>), then the message says to use `M-- C-x C-y' to remove highlighting (in a region). If you don't have it bound, then the message should instead say to use `M-- M-x highlight'. What does the message say in your case? If you have the highlighting, then you also have the means to remove it -- it's the same command: `highlight'. -- DrewAdams
+
+----
+
+[new]
+This seems a bug: if I grep for something case-insensitively //grep -i abc *// and there are matches then the occurences are not highlighted if they are not in the same case as the search pattern (e.g. Abc will not be highlighted) -- TamasPatrovics
+
+[new:DrewAdams:2006-09-18 14:19 UTC]
+: Correct. Think of this as a missing feature, rather than a bug ;-). In Emacs 22, this is no longer a problem -- see <tt>[[grep+.el]]</tt>. -- DrewAdams
+
+[new]
+I made a patch for compile+20.el to fix this for myself. I know this is not a generic solution, but `-i' works for most greps I think. Anyway, here it is if you’re interested. -- TamasPatrovics
+
+    --- compile+20.el.orig  2006-09-19 12:38:38.687893936 +0200
+    +++ compile+20.el       2006-09-19 16:05:37.094476408 +0200
+    @@ -348,7 +348,22 @@
+        ;; highlighted.
+        (and grep-pattern
+             (list
+    -         (list (concat "\\(" (regexp-quote grep-pattern) "\\)")
+    +         (list (concat "\\(" 
+    +                       (let ((str (regexp-quote grep-pattern)))
+    +                         (if (string-match "-i" grep-command)
+    +                           (mapconcat (lambda (c)
+    +                                        (if (or (and (>= c ?a)
+    +                                                     (<= c ?z))
+    +                                                (and (>= c ?A)
+    +                                                     (<= c ?Z)))
+    +                                            (concat "[" 
+    +                                                    (char-to-string (downcase c))
+    +                                                    (char-to-string (upcase c))
+    +                                                    "]")
+    +                                          (char-to-string c)))
+    +                                      str "")
+    +                           str))
+    +                       "\\)")
+                    1 grep-regexp-face)))
+        ;;
+        ;; Compiler output lines.  Recognize `make[n]:' lines too.
+
+[new:DrewAdams:2006-09-19 21:54 UTC]
+: Good idea. I've incorporated your suggestion, with a few changes, if you don't mind. There is a new option, `grep-case-insensitive-option', for specifying the case-insensitivity option (default value: ##"-i"##). The changes I made 1) do the highlighting even if the option is not part of `grep-command' (i.e. is entered on the fly, interactively), and 2) highlight the target buffer also. Thx for the suggestion. -- DrewAdams
+
+[new]
+: Cool, thanks. BTW, my method of checking for alpha characters (a-zA-Z) is very English-centric. A better solution may be to check for characters with word constituent syntax. -- TamasPatrovics
+
+[new:DrewAdams:2006-09-20 16:09 UTC]
+: Yes, but I don't want to spend more time on this now -- your suggestion is good enough for me (and you, I presume). Emacs 22 is coming out soon, and <tt>[[grep+.el]]</tt> works with that. -- DrewAdams
+
+
+----
+
+[new]
+I am trying to use this with ModeCompile and Cperl version 5.19, but no luck at all
+(It also seems to happen without mode compile using cpers check-syntax call)
+
+I always get an exception in compile.el line 1850 in the while is a looking at, which always ends up with a nil as argument. Trying to fix that, it seems to hang in fontification....
+
+Anyone any idea? I tried in various order:
+
+<pre>
+(require 'compile-20)
+(require 'cperl-mode)
+(require 'compile+20)
+(require 'mode-compile)
+(require 'mode-compile-kill)
+</pre>
+
+Load a perl file, which will not compile, and run ##(mode-compile)##. The following appears in the messages buffer:
+
+<pre>
+mode-compile: Compiling in CPerl mode ... C-c k to kill.
+(No files need saving)
+Parsing error messages...1 found. 72% of buffer seen.
+error in process sentinel: compilation-parse-errors: Wrong type argument: stringp, nil
+error in process sentinel: Wrong type argument: stringp, nil
+</pre>
+
+And the stack trace
+
+<pre>
+Debugger entered--Lisp error: (wrong-type-argument stringp nil)
+ looking-at(nil)
+ compilation-parse-errors(688 nil)
+ funcall(compilation-parse-errors 688 nil)
+ (let ((error-list-pos compilation-error-list)) (funcall compilation-parse-errors-function limit-search (and find-at-least ...)) (setq compilation-old-error-list (nconc compilation-old-error-list compilation-error-list)) (when error-list-pos (setq compilation-error-list error-list-pos)) (let (... ... deactivate-mark ...) (while error-list ... ...)))
+ (progn (let (...) (funcall compilation-parse-errors-function limit-search ...) (setq compilation-old-error-list ...) (when error-list-pos ...) (let ... ...)))
+ (if (< compilation-parsing-end (point-max)) (progn (let ... ... ... ... ...)))
+ (when (< compilation-parsing-end (point-max)) (let (...) (funcall compilation-parse-errors-function limit-search ...) (setq compilation-old-error-list ...) (when error-list-pos ...) (let ... ...)))
+ (if (and compilation-error-list (or ... ...) (or ... ...)) nil (set-buffer-modified-p nil) (when (< compilation-parsing-end ...) (let ... ... ... ... ...)))
+ (unless (and compilation-error-list (or ... ...) (or ... ...)) (set-buffer-modified-p nil) (when (< compilation-parsing-end ...) (let ... ... ... ... ...)))
+ (save-excursion (set-buffer compilation-last-buffer) (when (or ... reparse) (compilation-forget-errors)) (unless (and compilation-error-list ... ...) (set-buffer-modified-p nil) (when ... ...)))
+ compile-reinitialize-errors(nil 688)
+ ad-Orig-compilation-handle-exit(exit 255 "exited abnormally with code 255\n")
+ compilation-handle-exit(exit 255 "exited abnormally with code 255\n")
+ compilation-sentinel(#<process compilation> "exited abnormally with code 255\n")
+</pre>
+
+[new:DrewAdams:2006-11-18 18:14 UTC]
+What version of Emacs are you using? There is no sense in citing a source line number, if we don't know what file (version) to look in.
+
+Try to debug this by using `debug-on-entry' for, say, `compilation-sentinel' (after loading the source code for each of the compilation libraries you use -- e.g. ##compile.el##, <tt>[[compile-20.el]]</tt>, <tt>[[compile+20.el]]</tt>, and the others, but in the proper order). Try to see why the second argument passed to `compilation-parse-errors' is `nil', and what that means. Wrt the load order, try <tt>[[compile-20.el]]</tt>, then ##compile.el##, then try <tt>[[compile+20.el]]</tt>, then your other libraries.
+
+<tt>[[compile+20.el]]</tt> does redefine `compile-reinitialize-errors', which is in your backtrace, but it only does so trivially -- I doubt that that is the problem. 
+
+You need to first figure out which function is causing the problem. 
+
+The fact that one of the libraries you use uses advice will make it harder to debug -- that's a major reason I try not to use advice. Also, if one of the libraries advises a function that is redefined by another (without advice), then you should probably load the advising library last, so it picks up the redefined function. 
+
+It's always problematic when you mix libraries that modify the same function (I'm not sure that is the case here, however). That is the intended advantage of the advice system, that it helps you mix modifications, but the disadvantages outweigh the advantages, in my mind. Even if all modifiers use advice, things can get messy, and with advice things are difficult to debug. -- DrewAdams
+
+[new:Martin:2006-11-18 19:02 UTC]
+
+Thanks for the quick response:
+GNU Emacs 21.3.1 / running under Freebsd, compiled from ports
+
+compile+/- as downloaded this month from this page, cperl-mode 5.19, also from this wiki (or link on this wiki)
+
+just run "emacs -q" and executed only
+:  (require 'compile-20)
+:  (require 'cperl-mode)
+:  (require 'compile+20)
+:  loaded file and meta-x
+:  (cperl-mode)
+:  (cperl-syntax-check)
+
+got the error.
+
+However, I just realised (even so i downloaded only this week), there is a later cperl version, so I will try that, and see about the result.
+
+Also thanks for the tips on debugging, I will see how far I get with them (lisp is still new to me)
+
+--Martin
+
+[new:Martin:]
+
+got cperl-mode 5.22, and tried again (emacs -q ; just the compile+/- and cperl-module loaded), still error.
+
+I have run this watching the debugger (but it did not enlighten me very much)
+
+Checking a file, that produces no errors, the looking-at looks at a lot of regex which come from  compilation-error-regexp-alist (also defined in compile.pl (the original compile)), none of them seem to match, then it looks at nil, and fails
+
+Checking a file, that has errors it will (while looping the patterns) find all "at FFILE line nn" entries, then print "XXX Parsing error messages...%d found. %.0f%% of buffer seen.", it willcontinue with the remaing patterns from the list, and also end up with looking-at(nil)
+
+all is fine, if I only use cperl-mode, without compile+/- (just I cnat't expect the extra highlighting.)
+
+The last 2 values in "this" (which provides the pattern and other info) were:
+
+<pre>
+((\([a-zA-Z][-a-zA-Z._0-9]+: ?\)?\([a-zA-Z]?:?[^:( 	
+]*[^:( 	
+0-9][^:( 	
+]*\)[:(][ 	]*\([0-9]+\)\([) 	]\|:\(\([0-9]+:\)\|[0-9]*[^:0-9]\)\) error 2 3 6) (nil error) (\w\w\w \w\w\w +[0-9]+ [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9]  \(.*\):$ file 1) (.*: Entering directory `\(.*\)'$ enter 1) (.*: Leaving directory `\(.*\)'$ leave 1))
+</pre>
+:  and
+
+<pre>
+((nil error) (\w\w\w \w\w\w +[0-9]+ [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9]  \(.*\):$ file 1) (.*: Entering directory `\(.*\)'$ enter 1) (.*: Leaving directory `\(.*\)'$ leave 1))
+</pre>
+
+
+The 2nd one has a "nil" as pattern and causes the Error. I wasn't able to find were it came from. However the "Enter directory" (according to a grep) nly appears in copile.pl in "(defvar compilation-enter-directory-regexp-alist" (which is referenced in compile+.el)
+
+
+[new:DrewAdams:2006-11-18 22:12 UTC]
+Sorry Martin, but I don't use cperl mode. I hope you or someone else who uses it can find what the problem is.
+
+You will need to find out where the nil value comes from. Variable `this' is initialized with `compilation-regexps'. You will need to follow what the code does in the debugger, to see at what point the nil value is introduced -- for example, is it during the loop or initially, when `compilation-regexps' is filled by `compile-collect-regexps'? Start by seeing what the value is that eventually leads to trouble, then see what goes wrong.
+
+Also, as I mentioned, you should probably load <tt>[[compile-20.el]]</tt>, then ##compile.el##, then <tt>[[compile+20.el]]</tt>, then your other libraries (cperl-mode). I can't tell when ##compile.el## is being loaded in what you're doing, but I'm guessing that cperl loads it. Try ##(require 'compile+20)(require 'cperl-mode)##, not the other way around.
+
+Make yourself a tiny test file that reproduces the error, so debugging is easier. Debug function `cperl-syntax-check' -- that seems to be the problem. Follow the debugger closely, checking the value of `compilation-regexps' and then the value of `this' inside the `while' loop. Is the initial value of `this' reasonable? If so, what happens to it? If not, why not -- is `compile-collect-regexps' the problem?
+
+You can also try selectively re-evaluating the function definitions in ##compile.el##, for functions that ##compile+.el## redefines. I'm thinking, in particular, of `compile-internal'. Looking at the differences, I can't see why the ##compile+.el## redefinition of `compile-internal' would make a difference, but at least try the original definition. Likewise with other functions that ##compile+.el## redefines. You can trying going back to (reloading) ##compile.el##, and then progressively adding the ##compile+.el## stuff, to see what causes the error to reappear.
+
+You might also try asking on the cperl-mode page of the Wiki (add a link); it's possible that another cperl-mode user can help. Good luck. -- DrewAdams
+
+[new:Martin:2006-11-20 00:06 UTC]
+
+Hi Drew, big thanks for all the answers and support.
+
+I got to the point of having it working, even so there is some guesswork left.
+
+I copied below a block of cperl. if I remove this code, all works fine.
+I guess that something set by compile+/- makes cperl think it has an erlier version of emacs,
+and whatever cperl applies then causes the trouble.
+
+Seems simply an incompatibility, so  don't know which module will be easier to adapt....
+
+I will put a remark on the cperl page too. So any one who is getting this, can patch it for them self. Maybe it is anyway easier to adapt cperl to work with compile+/-
+
+
+<pre>
+; start of problem code
+    (cond ((boundp 'compilation-error-regexp-alist-alist);; xemacs 20.x
+         (make-local-variable 'compilation-error-regexp-alist-alist)
+         (set 'compilation-error-regexp-alist-alist
+              (cons (cons 'cperl cperl-compilation-error-regexp-alist)
+                    (symbol-value 'compilation-error-regexp-alist-alist)))
+         (let ((f 'compilation-build-compilation-error-regexp-alist))
+           (funcall f)))
+; I *guess* he next block is were the bad things happen 
+        ((boundp 'compilation-error-regexp-alist);; xmeacs 19.x 
+         (make-local-variable 'compilation-error-regexp-alist)
+         (set 'compilation-error-regexp-alist
+               (cons cperl-compilation-error-regexp-alist
+                     (symbol-value 'compilation-error-regexp-alist)))))
+; end of block
+</pre>
+
+[new:DrewAdams:2006-11-20 02:49 UTC]
+Good work. Yes, that's probably the problem. It looks as if that code is more geared toward XEmacs, and not GnuEmacs. Or, perhaps it works OK with some versions of GnuEmacs but not others.
+
+FWIW, it appears that the possible values of `compilation-error-regexp-alist' change with the Emacs version. Here are the definitions and default values (`C-h v') from Emacs 20/21 and 22:
+
+Emacs 20 & 21:
+<pre>
+Alist that specifies how to match errors in compiler output.
+Each elt has the form (REGEXP FILE-IDX LINE-IDX [COLUMN-IDX FILE-FORMAT...])
+If REGEXP matches, the FILE-IDX'th subexpression gives the file name, and
+the LINE-IDX'th subexpression gives the line number.  If COLUMN-IDX is
+given, the COLUMN-IDX'th subexpression gives the column number on that line.
+If any FILE-FORMAT is given, each is a format string to produce a file name to
+try; %s in the string is replaced by the text matching the FILE-IDX'th
+subexpression.
+(("\\([a-zA-Z][-a-zA-Z._0-9]+: ?\\)?\\([a-zA-Z]?:?[^:( 	\n]*[^:( 	\n0-9][^:( 	\n]*\\)[:(][ 	]*\\([0-9]+\\)\\([) 	]\\|:\\(\\([0-9]+:\\)\\|[0-9]*[^:0-9]\\)\\)" 2 3 6)
+ ...)
+</pre>
+
+Emacs 22:
+<pre>
+Alist that specifies how to match errors in compiler output.
+On GNU and Unix, any string is a valid filename, so these
+matchers must make some common sense assumptions, which catch
+normal cases.  A shorter list will be lighter on resource usage.
+
+Instead of an alist element, you can use a symbol, which is
+looked up in `compilation-error-regexp-alist-alist'.  You can see
+the predefined symbols and their effects in the file
+`etc/compilation.txt' (linked below if you are customizing this).
+
+Each elt has the form (REGEXP FILE [LINE COLUMN TYPE HYPERLINK
+HIGHLIGHT...]).  If REGEXP matches, the FILE'th subexpression
+gives the file name, and the LINE'th subexpression gives the line
+number.  The COLUMN'th subexpression gives the column number on
+that line.
+
+If FILE, LINE or COLUMN are nil or that index didn't match, that
+information is not present on the matched line.  In that case the
+file name is assumed to be the same as the previous one in the
+buffer, line number defaults to 1 and column defaults to
+beginning of line's indentation.
+
+FILE can also have the form (FILE FORMAT...), where the FORMATs
+(e.g. "%s.c") will be applied in turn to the recognized file
+name, until a file of that name is found.  Or FILE can also be a
+function that returns (FILENAME) or (RELATIVE-FILENAME . DIRNAME).
+In the former case, FILENAME may be relative or absolute.
+
+LINE can also be of the form (LINE . END-LINE) meaning a range
+of lines.  COLUMN can also be of the form (COLUMN . END-COLUMN)
+meaning a range of columns starting on LINE and ending on
+END-LINE, if that matched.
+
+TYPE is 2 or nil for a real error or 1 for warning or 0 for info.
+TYPE can also be of the form (WARNING . INFO).  In that case this
+will be equivalent to 1 if the WARNING'th subexpression matched
+or else equivalent to 0 if the INFO'th subexpression matched.
+See `compilation-error-face', `compilation-warning-face',
+`compilation-info-face' and `compilation-skip-threshold'.
+
+What matched the HYPERLINK'th subexpression has `mouse-face' and
+`compilation-message-face' applied.  If this is nil, the text
+matched by the whole REGEXP becomes the hyperlink.
+
+Additional HIGHLIGHTs as described under `font-lock-keywords' can
+be added.
+
+(absoft ada aix ant bash borland caml comma ...)
+</pre>
+
+It does look like this is a cperl-mode issue. -- DrewAdams
+
+
+----
+[new]
+Hello, here is a patch that makes grep use the contents of the active region instead of grepp-default-regexp-fn when in transient-mark-mode:
+
+  --- grep+.el.orig	2007-12-02 12:21:07.000000000 +0100
+  +++ grep+.el	2007-12-02 12:22:38.000000000 +0100
+  @@ -227,8 +227,10 @@
+                 "grep <pattern> <files> :  "
+                 (if current-prefix-arg
+                     default
+  -                (concat grep-command (and grepp-default-regexp-fn
+  -                                          (funcall (grepp-default-regexp-fn))) " "))
+  +                (concat grep-command (if (and transient-mark-mode mark-active)
+  +                                         (buffer-substring (region-beginning) (region-end))
+  +                                       (and grepp-default-regexp-fn
+  +                                          (funcall (grepp-default-regexp-fn)))) " "))
+                 nil nil 'grep-history
+                 (if current-prefix-arg nil default))))))
+   
+-- MartinNordholts
+
+[new:DrewAdams:2007-12-02 17:53 UTC]
+Good idea, Martin. I've applied a similar patch, assuming you agree (if not, just rollback the change).  The code now quotes the region text, as well.
+
+I hesitated a bit about where to make the addition, but finally decided that `grep' itself was the best place, as you suggested. My hesitation was about the possibility that someone might not want this behavior, but I see no good way to provide it as an option (without adding a separate option just for that). If it is part of the default regexp function definition, then someone who wants this but with some other default when the region is not active would need to put this code in his/her function. 
+
+Thx -- DrewAdams
+
+[new]
+Ah yes, good idea to quote that makes more sense. Using single quotes (') causes problems with the MinGW build of grep on Windows though. Quoting with double-quotes (") works better on Windows and I assume on Linux would also be fine, although I have not tested that yet (I'm at work currently). -- MartinNordholts
+
+[new:DrewAdams:2007-12-04 16:40 UTC]
+OK, I changed it to double-quote. Thx -- DrewAdams
+
+[new:MarcGirod:Mon Jan 12 14:17:16 GMTST 2009]
+I am trying to upgrade cperl on Gnu Emacs 21.2.1 as distributed on CygWin.
+The original cperl is 4.23, whereas I download now 5.23.
+Trying to byte-compile it, I got various errors, which drove me to this page.
+I now downloaded compile-20.el and compile+20.el, and byte-compiled the former with numerous complaints.
+The latter won't compile at all. Am I badly misunderstanding something?
+
+<pre>
+  site-lisp> emacs -batch -f batch-byte-compile compile-20.el 
+  While compiling compile-mode-summary in file /usr/share/emacs/21.2/site-lisp/compile-20.el:
+    ** Probable `"' without `\' in doc string of compile-mode-summary
+    ** Misplaced interactive spec: `(interactive)'
+    ** substitute-command-keys called with 3 arguments, but accepts only 1
+    ** reference to free variable quote
+  While compiling toplevel forms in file /usr/share/emacs/21.2/site-lisp/compile-20.el:
+    ** define-key called with 5 arguments, but accepts only 3
+    ** reference to free variable quote
+    ** define-key called with 5 arguments, but accepts only 3
+    ** define-key called with 5 arguments, but accepts only 3
+  ...
+    ** define-key called with 5 arguments, but accepts only 3
+    ** The following functions are not known to be defined:
+      1-window-frames-on, fit-frame
+  Wrote /usr/share/emacs/21.2/site-lisp/compile-20.elc
+  Done
+  site-lisp> emacs -batch -f batch-byte-compile compile+20.el 
+  While compiling toplevel forms in file /usr/share/emacs/21.2/site-lisp/compile+20.el:
+    !! error (("too many arguments"))
+  Done
+</pre>
+
+Thanks -- Marc Girod
+
+
+[new:DrewAdams:2009-01-12 15:39 UTC]
+Sorry for your troubles. Hard to tell what the problem is, since you didn't post any of your code. Libraries <tt>[[compile-20.el]]</tt> and <tt>[[compile+20.el]]</tt> are essentially for convenience. They shouldn't change the actual byte compilation itself. I suggest first trying to byte-compile without them, to discover what your code problems are. Then, if you have time, try again with them, to see if you can find a bug in them. 
+
+IOW, concentrate first on your real need and then, if you have time, try to see if thre is a problem with these libraries.
+
+Wrt the errors reported above: Try looking at each in turn. It's likely that fixing one problem here will remove more than one byte-compiler error.
+
+Also, try byte-compiling interactively (probably won't change anything, but it gives you more control over things), and try first evaling or loading the code. It's likely that the code errors you have affect more than byte compiling. The compiler errors about wrong number of arguments suggest that you are trying to compile code that is designed for a more recent version of Emacs, a version that allows more arguments to various functions. Such code will likely not work in Emacs 21, regardless of byte-compilation (unless the code is conditional for different Emacs versions, so that the offending parts are not used for Emacs 21).
+
+Eval a section of your code at a time, to see what problems you encounter. One way to do that is to use a binary search: first try to eval the whole buffer, then half the buffer, then half of one of the halves, etc. to narrow things down. Or, based on the byte-compiler errors, go directly to the implicated code and try to eval it.
+
+In sum, do the easy tests first. Byte-compiling can help with some errors, but simply evaling can often be a better first start, especially if you have version-dependent errors. 
+
+HTH. If you find a problem introduced by the ##compile(-|+)20.el## code, please report it, either here or by email. Please provide an exact, narrowed-down recipe, so I can try to reproduce it. -- DrewAdams 
+
+[new]
+Thanks for replying. I have no other code than ##cperl-mode.el## and the two ##compile*.el##. I.e. I had problems with the parsing of my own perl code (I had to reinstall Cygwin from scratch after a Windows migration to Vista, and I observed a regression in the way valid perl constructs are parsed), so that I downloaded a newer version of ##cperl-mode.el##, and I tried to byte-compile it, which failed. 
+
+Byte-compiling elisp is a sanity procedure for me more than a optimization: better to find the problems before I really need something else to work. Doing it from the command line usually controls the environment better (doesn't depend on what I have done in my emacs for the past two hours). 
+
+From the doc on this site, I understood that the two ##compile*.el## packages were intended to support compiling code meant for recent emacsen on older ones, such as 21.2 which I have as part of Cygwin. Am I wrong? -- MarcGirod
+
+[new:DrewAdams:2009-01-13 18:20 UTC]
+It is fine to use byte-compilation to sanity-check code. However, if you run into problems, then evaluating ''parts'' of a file can help. (You can also byte-compile parts of a file, but evaluating can give you different information and is often the most helpful.) And doing things interactively similarly gives you more control and generally finer granularity.
+
+It's possible (likely?) that the newer version of ##cperl-mode.el## you downloaded does not work with Emacs 21 (which you are apparently using).
+
+Yes, you are wrong in thinking that <tt>[[compile-20.el]]</tt> and <tt>[[compile+20.el]]</tt> give an older Emacs version support for more recent compiling code. Again, they are essentially for added convenience; they do not change the nature of compilation. They enhance the use of existing ''Emacs'' commands `grep' and `compile'. The former runs UNIX or GNU/Linux `grep' and then lets you access the output from within Emacs. The latter runs, by default, UNIX or GNU/Linux command `##make -k##' and then, similarly, lets you access the compilation messages from within Emacs. Use `C-h f grep' and `C-h f compile' for more information.
+
+Neither of these commands has anything in particular to do with byte compilation. You were confused, I think, by the word "compile".
+
+I believe that your problems have nothing to do with the libraries ##compile-20.el## and ##compile+20.el## , but they have to do with trying to use code (##cperl-mode.el##) that is intended for Emacs 22 or 23 with your Emacs 21 build. Try to resolve your problem without using these two libraries. They will neither help nor hurt wrt your problems, IMO, but you might as well take them out of the loop, to simplify things.
+
+Check the Commentary in your new version of ##cperl-mode.el## to see if it doesn't mention that it is compatible only with Emacs 22 or 23. If not, work with the maintainer of ##cperl-mode.el## to resolve the problem. HTH. -- DrewAdams
+
+[new]
+Thanks again and apologies for my confusion. I solved my problem by downloading cperl-mode.el 6.2 which compiles fine. -- MarcGirod
+
+
+[new:DrewAdams:2009-01-13 21:54 UTC]
+No problem. Glad you found a solution. -- DrewAdams
+
+
+----
+CategoryRegexp CategoryExternalUtilities CategorySearchAndReplace
+Lisp:compile-.el, Lisp:compile+.el, Lisp:grep+.el,
+Lisp:compile-20.el, Lisp:compile+20.el, Lisp:dired+.el, Lisp:highlight.el, Lisp:setup-keys.el
+

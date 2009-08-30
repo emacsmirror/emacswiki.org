@@ -1,0 +1,7 @@
+Just a little thought from a man who does a lot of editing on remote computers. For this, something like TrampMode should work, but I have found some downsides of Tramp, among others, it does not work with Zsh, which is my primary shell (which means that ssh, su and sudo won't work), and it seems like the Tramp included in Emacs-CVS doesn't work together with AngeFtp, effectively disabling FTP too.
+
+Then I tested some KDE application and found that Kio is the way to go. Module based VFS, supports SSH/SCP, FTP, HTTP, IMAP, and much more. Why can't Emacs use this? I found a little solution: I use the EmacsClient ((server-start) in .emacs) and then execute (fish is the ssh/scp plugin for Kio):
+
+    kioexec emacsclient fish://www.host.com/file
+
+-- MagnusHallin (first time on the EmacsWiki)

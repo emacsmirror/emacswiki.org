@@ -1,0 +1,311 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Choose All Candidates]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Google Matching]] ||
+
+----
+
+== Sets of Completion Candidates ==
+
+Whereas `C-RET' (see [[Icicles - Multi-Commands]]) acts 
+on individual objects, `##C-!##' acts on an entire set of objects at once, via their ''names'': the ''set of all current [[completion]] candidates''.  There are additional '''Icicles''' [[command]]s that also act, not on individual completion candidates, but on one or more sets of completion candidates.
+
+One of these is '''`M-*'''', which effectively narrows the set of
+completion candidates by taking the intersection of the candidate
+sets defined by various input [[regexp]]s.  
+
+This page presents some more '''Icicles''' commands that act on sets
+of completion candidates.  The basic idea is that you can perform set operations using the
+current set of completion candidates, changing it into a different
+set.  You can, then, for example, use
+`##C-!##' to act on everything in a custom-defined set.  Or you can
+define a custom set that you want to use often (for example, a
+[[list]] of project files), save it persistently, and then retrieve it
+later to use for completion.
+
+
+
+[:SavingAndRetrieving]
+=== Saving and Retrieving Completion Candidates ===
+
+Set operations such as union and difference act on two sets.  The
+current set of completion candidates is always one of these sets.
+If an operation, such as set complement, acts on a single set,
+then it acts on the current set.
+
+When two sets are involved, the other set is called the "''saved''
+set".  This just means that at some previous time in your sesssion
+you saved some completion candidates as the value of [[variable]]
+'''`icicle-saved-completion-candidates''''.  
+
+In [[buffer]] `*Completions*', candidates that have been saved are
+highlighted using [[face]] `icicle-saved-candidate'.  Here is a screenshot showing this:
+
+[[image:DrewsEmacsSavedCandidates]]
+
+By default, the saved set is not persistent; it is saved only
+until the next save in the same Emacs session overwrites it or
+adds to it.  See [[Icicles - Persistent Completions]]
+for ways to save candidates persistently.
+
+One way you can save candidates is to use
+'''`icicle-candidate-set-save'''', bound to '''`##C-M->##''''.  This saves ''all'' of the current candidates.
+
+; ''Gotcha%%:%%'': If you use [[progressive completion]] and you have not yet typed anything after `##M-*##' or `S-SPC', then there is not yet a set of candidates to save.  If you use `##C-M->##' at that point, you will reset the saved candidates to ''none''.  To define the current candidates, either type something or use `S-TAB'.
+
+Another way to save candidates, besides `##C-M->##', is to ''select'' candidates in
+buffer `*Completions*' using the (active) [[region]], and then use
+'''`icicle-candidate-set-save-selected'''', bound to '''`##C-M-)##''''.  This
+saves any candidates that are at least partially in the region.
+
+Command '''`icicle-mouse-candidate-set-save'''', bound to '''`M-S-mouse-3''''
+in `*Completions*' combines these two: if the region is active, then
+the ''selected'' candidates become the saved set; otherwise, ''all''
+candidates are saved.  This binding makes it easy to save
+candidates using the mouse: select them (e.g. drag or double-click `mouse-1', or click `mouse-1' then `mouse-3'), then use
+`M-S-mouse-3' to save.
+
+You can also use '''`##C-M-)##'''' to '''''un'''''save all candidates: just select no
+candidates before you hit `##C-M-)##', to reset the set of saved
+completions to none.  Think of this as replacing the saved set with the empty set (''no'' candidates).  And you need not use `TAB' or
+`S-TAB' first to use this, since the current set of candidates is
+not used in any way when you reset the saved set.
+
+You can process the [[list]] of saved candidates in any way you like
+using Emacs Lisp.  For example, you can save a list of file names
+that match a regexp, then print the list or process the individual
+files in some way.  Here, for instance, is how to save the set of
+file names that contain either `dir' or `ici':
+
+  C-x C-f \(dir\|ici\) S-TAB C-M-> C-g
+
+You can retrieve a set of saved candidates with command
+'''`icicle-candidate-set-retrieve'''', bound to '''`##C-M-<##''''.  This ''replaces''
+the current set of candidates with those retrieved.  It also acts
+like `##M-*##' by entering a recursive [[minibuffer]], which removes any
+saved-candidates highlighting.  Using `TAB' or `S-TAB' restores
+the highlighting.
+
+
+
+[:SaveOrRetrieveMore]
+=== Saving or Retrieving Additional Candidates ===
+
+You can use '''`##C-<##'''' to retrieve a set of saved candidates and ''add''
+them to the current candidates, instead of replacing those
+candidates.  This way, you can build up the current set of
+candidates by retrieving (combining) several saved sets.
+
+In the other direction, you can save additional candidates, adding them to a set of candidates already saved, in these ways:
+
+* '''`##C->##'''' ('''`icicle-candidate-set-save-more'''') adds all of the current candidates.
+
+* '''`##C-)##'''' ('''`icicle-candidate-set-save-more-selected'''') adds any
+candidates that you have selected using the region in
+`*Completions*'.
+
+* '''`M-mouse-3'''' ('''`icicle-mouse-candidate-set-save-more'''') acts the
+same as `##C-)##' or `##C->##', depending on whether or not the region
+is active in `*Completions*': it adds ''selected'' or ''all'' candidates.
+
+* Extending the region with `mouse-3', and then clicking `mouse-3'
+again in the same place, acts the same as `##C-)##'.  That is, click
+`mouse-1', then click `mouse-3' twice in another location, to
+save all candidates between the `mouse-1' and `mouse-3'
+positions.
+
+* The '''`insert'''' [[key]] ('''`icicle-save/unsave-candidate'''') adds just
+  the current completion candidate (e.g. during [[Icicles - Cycling Completions|cycling]]).  Clicking a candidate in buffer `*Completions*'
+  with '''`M-S-mouse-2'''' ('''`icicle-mouse-save/unsave-candidate'''') does the same thing.  If you do this to a candidate that has already been saved, then it is '''''un'''''saved (no longer saved).
+
+Note that the `insert' key and `M-S-mouse-2' are toggles for a
+given candidate, saving or unsaving it.  In this sense each is its
+own opposite.  In another sense, the opposite operation of saving
+is simply removing a candidate from the current set of candidates.
+You do that using the `delete' key or `S-mouse-2'.
+
+Matching, saving, and retrieving candidates is a powerful way to
+interact with completion.  One important use is to prepare a [[list]]
+of candidates on which to act, and then act on them all at once
+using `##C-!##'.  This is a good way to proceed when you want to
+double-check what to act on, before you actually act.  This is the
+same idea behind marking files in [[DiredMode|Dired]] and then operating on the
+marked files, using `x'.  It corresponds to what is represented in
+some user interfaces by filling out a checklist followed by clicking `OK'.
+
+
+
+[:SaveRetrieveWithVariable]
+=== Different Places for Saving and Retrieving Candidates ===
+
+You can save completion candidates to a different
+variable from `icicle-saved-completion-candidates' by using a
+[[numeric prefix argument]] to command `icicle-candidate-set-save';
+that is, use `##C-u ##'''''##N##'''''## C-M->##'.  Alternatively, use '''`##C-M-}##'''', which is
+bound to command '''`icicle-candidate-set-save-to-variable''''.  You are
+prompted for the name of the variable, and you can use completion
+when inputting it.  During this completion, the only available candidates are
+variables that you have used for saved candidates (but completion
+is [[lax]], so you can type a new variable name). The same
+behavior works also for `##C->##', `##C-M-)##', and `##C-)##'.
+
+To retrieve completion candidates that were previously saved to a
+variable other than `icicle-saved-completion-candidates', so that
+they become the current set of candidates, use `##C-u ##'''''##N##'''''## C-M-<##',
+where '''''##N##''''' is an integer, or '''`##C-M-{##'''' ('''`icicle-candidate-set-retrieve''''
+or '''`icicle-candidate-set-retrieve-from-variable'''').
+
+Using a plain [[prefix argument]] (`C-u' ''without'' a number)
+with `##C-M->##' and `##C-M-<##' saves or retrieves a candidate
+set using a ''cache file'', not a variable.  Alternatively, as a shortcut you can use '''`##C-}##'''' and '''`##C-{##'''' for this. See [[Icicles - Persistent Completions]] and [[Icicles - Support for Projects]].
+
+When you save candidates to a different variable from
+`icicle-saved-completion-candidates', they are not shown in buffer
+`*Completions*' using face `icicle-saved-candidate'.  When you save
+candidates to a cache file, they are also saved to
+`icicle-saved-completion-candidates', so they are shown in
+`*Completions*' using face `icicle-saved-candidate'.
+
+`##C->##' and `##C-<##' accept the same prefix arguments as `##C-M->##' and
+`##C-M-<##' , letting you specify the source or destination (variable,
+cache file) when you save or retrieve additional candidates.
+
+
+
+
+=== Set Operations ===
+
+The other available set-operation commands for use with completion
+candidates, besides saving and retrieving, are these:
+
+* '''`icicle-candidate-set-save'''', bound to '''`##C-M->##''''.  '''''Save''''' the current
+set of completion candidates, for use in a subsequent set
+operation (see below). The saved set is not persistent; it is saved only until the next `##C-M->##' in the same Emacs session. 
+
+* '''`icicle-candidate-set-retrieve'''', bound to '''`##C-M-<##''''.  '''''Retrieve''''' the saved set of completion candidates, making it the current set.
+
+* '''`icicle-candidate-set-swap'''', bound to '''`##C-%##''''.  '''''Swap''''' the saved and current sets of completion candidates.
+
+* '''`icicle-candidate-set-define'''', bound to '''`##C-:##''''.  '''''Define''''' the
+current set of completion candidates by ''evaluating an input
+[[sexp]]''.  The sexp must evaluate to a [[list]] of strings, such as is
+returned by `all-completions'.  You can use this to substitute
+''any list of strings'', and then operate on them as completions,
+using any '''Icicles''' functionalities.  Keep in mind, however, that
+the completions must be of the proper type for the context in
+which they are used.  For example, if you are executing a
+command, they must be [[command]] names.
+
+[:icicle-candidate-set-complement]
+* '''`icicle-candidate-set-complement'''', bound to '''`##C-~##''''.  '''''Complement'''''
+the current set of candidates: replace the current candidate set
+with its set complement.  This means all possible completions of
+the appropriate type that do '''''not''''' match the current input.  You
+can combine this with [[progressive completion]] (`##M-*##') to progressively eliminate candidates that
+match different inputs. This ''process-of-elimination matching'' is a common '''Icicles''' usage idiom. 
+
+* '''`icicle-candidate-set-union'''', bound to '''`##C-+##''''.  Replace the
+current candidate set by its '''''union''''' with the saved set of
+candidates.
+
+* '''`icicle-candidate-set-difference'''', bound to '''`##C--##''''.  Replace the
+current candidate set by its '''''set difference''''' with the saved set
+of candidates.  That is, the saved candidates are subtracted
+from the current candidates, and the result becomes the current
+candidate set.   To obtain the opposite set difference,
+subtracting the current candidates from the saved candidates,
+just use `icicle-candidate-set-swap' followed by
+`icicle-candidate-set-difference'.
+
+* '''`icicle-candidate-set-intersection'''', bound to '''`C-*''''.  Replace
+the current candidate set by its '''''intersection''''' with the saved
+set of candidates.  Unlike the set intersection provided by `M-*',
+`C-*' is, in itself, a one-time operation.  `M-*' can be
+repeated, using the previous intersection as one of the sets to
+be intersected in a new operation.  Both `C-*' and `M-*' use the
+current set of matching candidates as one of the sets being
+intersected.  But `M-*' reads another input regexp to define the
+other set to be intersected, whereas `C-*' uses the saved
+candidates set as the other set.  `M-*' is useful for chaining,
+to achieve progressive approximation.  `C-*' is useful to
+perform an intersection on a set from a previous input reading.
+
+You can operate on or choose from all input values in the set that
+results from any of these set operations.  For example, you can
+use `##C-~##' to see the list of objects that do not match the current
+input, to cycle among those objects, or to operate on any or all
+of them.  Use `##C-~##' at any time to switch to the complement of the
+current set of candidates.
+
+'''Example:''' To cycle through all files whose names do ''not'' end in `el', you can do the following:
+
+: '''1.''' Use `C-f' to read a file name.
+
+: '''2.''' Type `##el$##' to match all file names that end in `el'.
+
+: '''3.''' Use `S-TAB' to show the matching files.
+
+: '''4.''' Use `##C-~##' to flip to the complement: files not ending in `##el##'.
+
+: '''5.''' Use `next' or `prior' to cycle among the new set of candidates.
+
+A minibuffer message briefly confirms each of the set operations.
+
+When buffer `*Completions*' is displayed, the union, difference, and
+intersection commands scroll the buffer when repeated.  Repeating `icicle-candidate-set-complement'
+complements the complement, of course, giving the original set.
+
+Once you have established a set of completion candidates using any
+of the candidate-set commands, you can [[Icicles - Cycling Completions|cycle]] among the candidates
+of that set using either prefix or apropos cycling (that is,
+`next'/`prior' or `down'/`up').  However, switching from prefix to
+apropos cycling (or completion), or vice versa, establishes a
+new completion set of the appropriate type, as usual.  Switching completion type signifies
+that you are finished with the specially defined completion set,
+and you want to redefine it using apropos or prefix cycling or
+completion.
+
+'''Note:''' Prefix icompletion  (##icomplete.el## or '''<tt>[[icomplete+.el]]</tt>''' - see [[Icicles - Icompletion]]) does ''not'' take into account the candidate set resulting from
+a set operation: it always displays the normal
+set of [[prefix completion]]s in the minibuffer.
+
+'''Note:''' You might have noticed that, as a mnemonic device, the keys bound to the
+various set operations use the corresponding ''binary arithmetic'' or
+Boolean operators: `##~##' (unary negation) for complement (not); `##*##'
+(multiplication) for intersection (and); `##+##' (addition) for union
+(or); and `##-##' (subtraction) for difference.  Note too that the `##C--##' and `##C-+##' bindings
+mean that you cannot use these [[key sequence]]s for prefix
+arguments -- you must use `##C-u ##''##N##'' ', or `##M-##''##N##'' ' instead, where ''##N##''
+is a possibly signed integer.
+
+'''See Also:'''
+
+* [[Icicles - Multi-Commands]] for information about `C-RET'.
+* [[Icicles - Choose All Candidates]] for information about `##C-!##'.
+* [[Icicles - Progressive Completion]] for information about `##M-*##'.
+* [[Icicles - File-Name Input]] and [[Icicles - Persistent Completions]] for information about saving completion candidates persistently and retrieving
+them later.
+* [[Icicles - History Enhancements]], [[Icicles - Search Commands, Overview]], and [[Icicles - Google Matching]] for examples of other set operations on input candidates.
+* [[Icicles - Dired Enhancements]] for information about saving and reusing sets of file-name candidates with DiredMode.
+* [[Icicles - Support for Projects]]
+
+
+
+----
+
+|| *Previous:*  [[Icicles - Choose All Candidates]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Google Matching]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el, Lisp:icomplete+.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

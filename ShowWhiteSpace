@@ -1,0 +1,94 @@
+This page is about making particular whitespace more evident.
+
+== Vanilla GNU Emacs ==
+
+Starting with Emacs 21, you can set variable `show-trailing-whitespace' to
+highlight trailing whitespace in face `trailing-whitespace'. To disable showing trailing white space, set the variable to `nil' in your [[init file]]. For CPerl, you can also specify the face to use.  The default face is `underline'.  You can use face `default' for invisible whitespace:
+
+    (setq cperl-invalid-face 'default)
+
+Starting with Emacs 22, library <tt>[[whitespace.el]]</tt> is part of GnuEmacs. It provides various ways to visualize spaces, hard spaces, and TABs. See WhiteSpace. 
+
+
+== blank-mode.el: Replaced by whitespace.el ==
+
+[[blank-mode.el]] (BlankMode) was a precursor to [[whitespace.el]] (WhiteSpace) and has been replaced by it. When <code>blank-mode</code> is on, it looks like this:
+
+[[image:BlankModeOn]]
+ 
+%%BlankMode%% saves and restores the font-lock state when it is turned on and off. So, if %%BlankMode%% is turned on and font-lock is off, %%BlankMode%% also turns on the font-lock to highlight blanks, but font-lock is turned off when %%BlankMode%% is turned off. So turn on font-lock before %%BlankMode%%, if you want font-lock to stay on after %%BlankMode%% is turned off.
+
+== show-wspace.el ==
+
+Library <tt>[[show-wspace.el]]</tt> lets you toggle highlighting of TABs, trailing whitespace, or hard spaces. The following commands are defined:
+
+* `toggle-show-tabs-show-ws' -- Toggle highlighting of TABs, using [[face]] `show-ws-tab'.
+* `toggle-show-hard-spaces-show-ws' -- Toggle highlighting of hard space characters (octal 240, hex A0, decimal 160), using face `show-ws-hard-space'.
+* `toggle-show-trailing-whitespace-show-ws' -- Toggle highlighting of whitespace at line ends, using face `show-ws-trailing-whitespace'.
+
+In addition, you can you can turn on tab highlighting by default by adding
+one or more functions to `font-lock-mode-hook'. For example, this adds TAB highlighting:
+
+     (add-hook 'font-lock-mode-hook 'show-ws-highlight-tabs)
+
+Here is a screenshot showing highlighting of trailing whitespace:
+
+[[image:DrewsEmacsShowWspace]]
+
+
+== Red Space ==
+
+Library <tt>[[redspace.el]]</tt> detects and highlights trailing whitespace.
+
+
+== 80-Column Rule ==
+
+EightyColumnRule provides highlighting of trailing spaces, TABs, and lines past column 80.
+
+== Show Whitespace Minor Mode ==
+
+ShowWhitespaceMode shows whitespace in either of two ways:
+
+* using faces (highlighting)
+* using typographical symbols (pilcrow for return, middle dot for space, guillmet for tab)
+
+
+== Show Tabs in Modes ==
+
+This code uses font-lock to highlight TABs with face `extra-whitespace-face' in `emacs-lisp-mode' and
+in `text-mode'.  You can add an add-hook statement for every other mode
+you want this for. Put the following in your init file:
+
+ (defface extra-whitespace-face
+   '((t (:background "pale green")))
+   "Used for tabs and such.")
+
+ (defvar my-extra-keywords
+   '(("\t" . 'extra-whitespace-face)))
+
+ (add-hook 'emacs-lisp-mode-hook
+	   (lambda () (font-lock-add-keywords nil my-extra-keywords)))
+
+ (add-hook 'text-mode-hook
+	   (lambda () (font-lock-add-keywords nil my-extra-keywords)))
+
+== Show TABs Using a String (^I) ==
+
+To make TAB display as ##^I##, you can do this:
+
+ (standard-display-ascii ?\t "^I")
+
+
+== Show TAB with Wide Cursor ==
+
+Customize `x-stretch-cursor' to non-`nil' to make the cursor as wide as the character it is over.
+
+
+== Get Rid of Tabs ==
+
+If you want to change spaces into TABs or the other way around, use
+`M-x tabify' or `M-x untabify'.  See also NoTabs.
+
+----
+CategoryDotEmacs,
+CategoryFaces

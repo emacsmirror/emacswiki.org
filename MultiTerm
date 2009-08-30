@@ -1,0 +1,141 @@
+: Please send bug report or suggestions to FENG Jiabin (benplusplus at gmail dot com), he's the new maintainer. Thanks! -- AndyStewart 
+
+==What is multi-term.el ?==
+: MultiTerm is a mode based on term.el, for managing multiple terminal buffers in Emacs.
+
+==Why the need for multi-term.el ?==
+: By default, term.el provides a great terminal emulator in Emacs. But I have some troubles with term-mode:
+## term.el just provides commands `term' or `ansi-term' for creating a terminal buffer. There is no special command to create or switch between multiple terminal buffers quickly.
+## By default, the keystrokes of term.el conflict with global-mode keystrokes, which makes it difficult for the user to integrate term.el with Emacs.
+## By default, executing the *NIX command "exit" from term-mode will leave an unused buffer.
+## term.el won't quit running sub-process when you kill terminal buffer forcibly.
+## It doesn't have a dedicated window for a debugging program. 
+
+: And multi-term.el is enhanced with those features.
+
+==Install==
+* Load multi-term.el:
+
+: Put Lisp:multi-term.el in your load-path, then add
+{{{
+        (require 'multi-term)
+}}}
+: in ~/.emacs .
+
+* Setup shell program for use with MultiTerm:
+
+: Add
+{{{
+        (setq multi-term-program "/bin/bash")
+}}}
+: in ~/.emacs .
+: Or any shell program you like. :)
+
+: That's all.
+
+==Note==
+
+* You have to carefully consider which keys you want to pass to your multi-term shell and which you want to use to control Emacs.  Pass over to few and you won't be able to control the program you want.  Pass over the wrong ones and you wont be able to make use of emacs global commands.  
+ There is a simple mechanism to do this.
+* `term-unbind-key-list' is a list of keys which emacs keeps for itself.  By default it contains ("C-z" "C-c" "C-x" "C-h" "C-y" "<ESC>")
+* `term-bind-key-alist' is a list of keys and functions which you can use, for example to use Emacs style cursor movement to the multi-terminal.  The default is long, so I'll let you look it up yourself.
+* How to use "C-x C-c" to terminate an emacs session running in a multi-term.el buffer:
+:: I found that some some people like to run emacs-within-emacs by calling "emacs -nw" inside a multi-term.el (though surely this is just for bragging rights!).   However, by default the prefix keys "C-x" and "C-c" are unbound by multi-term (that is, they are processed by the host Emacs).  But this means that you can't quit your nested emacs session with "C-x C-c".  If if you want to do this, remove "C-x" and "C-c" from option `term-unbind-key-list', and remove "C-c C-c" from the option `term-bind-key-alist'.  
+
+You may have to experiment to get the behavior you want.
+
+==Usage==
+multi-term.el provides the following interactive functions:
+
+* "multi-term" -- Create a new terminal buffer.
+* "multi-term-next" -- Switch to next terminal buffer.
+* "multi-term-prev" -- Switch to previous terminal buffer.
+* "multi-term-dedicated-open" -- Open dedicated terminal buffer.
+* "multi-term-dedicated-close" -- Close dedicated terminal window.
+* "multi-term-dedicated-toggle" -- Toggle dedicated terminal window.
+* "multi-term-dedicated-select" -- Select dedicated terminal window.
+
+==Tips==
+
+* You can type "C-u" before the commands `multi-term' or `multi-term-dedicated-open'.  You will then be prompted for the shell command to use for the your new terminal buffer. 
+
+==Customize==
+All options below can be customized by: M-x RET customize-group RET multi-term RET .
+
+* Shell program:
+
+: "multi-term-program" default is nil, so when create a new terminal buffer, it will try to take the shell path from an environment variable ("SHELL", "ESHELL", and finally default to "/bin/sh").
+If you failed to create a terminal buffer, make sure setup this option with a *valid* shell program.
+
+* Default directory:
+
+: "multi-term-default-dir" default is "~/".  This is only used when the current buffer is not in a real directory.
+
+* The base name of terminal buffer:
+
+: "multi-term-buffer-name" is the base name of terminal buffer, with format *terminal<index>*.
+
+* Control scroll:
+** Show maximum output:
+
+:: "multi-term-scroll-show-maximum-output" if non-nil, show maximum output when the window is scrolled.
+Otherwise, don't show.
+
+** To bottom on output:
+
+:: "multi-term-scroll-to-bottom-on-output" if non-nil or `all', scroll all windows to bottom.
+If `this', scroll only the selected window.
+If `others' scroll only those that are not the selected window.
+
+* Swtich buffer:
+
+: "multi-term-switch-after-close" try to switch to another `multi-term' buffer after closing the current one. If you don't like this feature just set it with nil.
+
+* Keystroke:
+** Unbind keystroke: 
+
+:: The keystroke list to unbind when terminal is created. 
+:: The format is '("KEY-A" "KEY-B" "KEY-C")
+** Bind keystroke: 
+
+:: The keystroke alist to bind when terminal is created. 
+:: The format is '(("KEY-A" . COMMAND-A) ("KEY-B" . COMMAND-B) ("KEY-C" . COMMAND-C))
+
+* Dedicated window:
+** Window height:
+
+:: "multi-term-dedicated-window-height" is the height of the dedicated terminal window.
+
+** Maximum window height:
+
+:: "multi-term-dedicated-max-window-height" is the maximum height limit for the dedicated terminal window.
+
+** Skip dedicated window:
+
+:: "multi-term-dedicated-skip-other-window-p" controls whether to skip dedicated terminal window when using the command `other-window' to cycle through windows.
+This useful when you have complex window layout for programming. Note that you can use the command "multi-term-dedicated-select" to select the dedicated window in any time.
+
+==Related==
+* Color setup of term-mode:
+: Have many people asked "How to setup color of multi-term?", option `term-default-bg-color' and `term-default-fg-color' control foreground color and background color, so just setup like below:
+{{{
+    (custom-set-variables
+     '(term-default-bg-color "#000000")        ;; background color (black)
+     '(term-default-fg-color "#dddd00"))       ;; foreground color (yellow)
+}}}
+
+==Screenshot==
+
+* Multiple terminal buffer in Emacs:
+
+[[image:MultiTermShotPage]]
+
+* Dedicated terminal window for debug program:
+
+[[image:MultiTermDedicatedShotPage]]
+
+==Comment==
+Please write at below if you have any suggestion or bug, or mail to me. Thanks! -- AndyStewart
+
+----
+CategoryShell

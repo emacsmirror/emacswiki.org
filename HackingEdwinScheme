@@ -1,0 +1,55 @@
+EdWin is extended in [[Scheme]], rather than EmacsLisp.  All Edwin extension happens in the environment of the ##(edwin)## package, or a child thereof, making it EdwinScheme.  To interactively visit this environment in the ##*scheme*## buffer, evaluate ##(ve '(edwin))## or ##(ge '(edwin))##.  To load a file into this environment, type `M-x load-file RET filename RET' or evaluate ##(load "filename" (->environment '(edwin)))##.  Also, the file ##~/.edwin## is loaded on start-up into the Edwin environment.
+
+Unlike EmacsLisp, editor commands and variables in EdWin are distrinct from the procedures and variables of the extension language.  Editor commands are defined with the `define-command' form, and editor variables are defined with `define-variable'.  More information on either is available from `C-h f define-command RET' and `C-h f define-variable RET'.
+
+The syntax of the `define-variable' form is:
+
+  (define-variable <name>
+    <documentation>
+    <initial value>
+    <predicate>)
+
+For example,
+
+  (define-variable my-variable
+    "This is a very useful variable.  Its value should be a string or false."
+    "FNORD"
+    string-or-false?)
+
+Here is the syntax of a command:
+
+  (define-command <name>
+    <documentation>
+    <interactive>
+    (lambda (<args>)
+      ...
+      ))
+
+For example,
+
+  (define-command my-command
+    "This is a ``docstring'', like that in Emacs Lisp"
+    () ;; an empty ``interactive specification''
+    (lambda (a)
+      (cons a '(1))))
+
+Editor commands and variables work interactively like commands and variables do in Emacs, including the use of `C-h f', `C-h v', and `M-x my-command RET'.  Since they are distinct from Scheme procedures and variables, using them in programs is slightly different.  To call a command from a program, one must write ##((ref-command name) argument ...)##.  For instance, in EdWin,
+
+  ((ref-command backward-delete-char-untabify) 1)
+
+has the same effect as the following in GNU Emacs:
+
+  (backward-delete-char-untabify 1)
+
+To bind keys interactively, use the `M-x set-key' command.  To bind keys programmatically, use the `define-key' procedure, which takes as arguments: the name of the mode in whose key map to define the key; the key to bind, written as a Scheme character, or a list of Scheme characters, or a Scheme character set; and the name of the command to bind the key to.  For example,
+
+  (define-key 'fundamental #\M-^ 'delete-indenation)
+
+will globally bind the key `M-^' to the command `delete-indentation'.  All modes in EdwinScheme inherit from the fundamental mode of Edwin.
+
+----
+Is there anything equivalent to `backup-directory-alist' in EdWin?
+
+----
+CategoryExtensionLanguage
+EmacsImplementations

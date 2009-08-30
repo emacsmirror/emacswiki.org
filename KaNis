@@ -1,0 +1,35 @@
+I am Ivan [http://kanis.fr Kanis]
+
+I have used emacs around 1997, my girlfriend worked at Amazon and I got her the O'Reilly book. She didn't need it anymore so I used it and have used emacs since. In 2002 I got more proficient with elisp. 
+
+In 2007, I have declared .emacs bankruptcy like [http://www.emacsblog.org/2007/10/07/declaring-emacs-bankruptcy/ Ryan McGeary]. My configuration file grew so large it was unmaintainable. I took the time to split it up in small manageable chunks.
+
+The [http://kanis.fr/hg/lisp/ result] was well worth the time invested. I have packaged all external programs that are not included in emacs 23.1: auctex, bbdb, lookup, org, w3m...
+
+The start up files are in [http://kanis.fr/hg/lisp/emacs.d emacs.d]. I have split files amongst different functionality groups. I compile all elisp files myself. A warning message will help me find my mistakes
+
+[new:AndyStewart:2009-08-14 15:59 UTC]
+Welcome to wiki! :), BTW, your function `ivan-keymap-define` is similar my `lazy-set-key` and `lazy-unset-key`, look LazySetKey and Lisp:lazy-set-key.el . -- AndyStewart
+
+[new]
+I can be found on the following Web 2.0 site
+
+[http://www.volcreole.com/forum/profil-membre-41557.html volcreole]
+[http://commentcava.com/profiles.php?a=view&nick=kanis_2 CommentCaVa]
+[http://http://www.123people.fr/s/ivan+kanis 123people]
+[http://www.chartsinfrance.net/communaute/index.php?/user/43811-kanis/ chartsinfrance]
+[http://www.prx.org/users/82201-kanis prx]
+[http://forum.reggaefrance.com/membre20965.html Reggae France]
+[http://fr.wikipedia.org/wiki/Utilisateur:Kanis Wikipedia]
+[http://forum.dofus.com/en/user/kanis-a.html Dofus]
+
+I use the following Wiki:
+
+[https://wiki.ubuntu.com/Kanis Launchpad]
+[http://en.doc.centreon.com/User:Kanis Centreon]
+[http://kanis.pbworks.com/ Pbworks]
+[http://wiki.archlinux.org/index.php/User:Kanis ArchLinux]
+
+----
+CategoryHomepage
+

@@ -1,0 +1,214 @@
+: [[image:iciclesimage]]
+
+|| '''[[Icicles]]''' || IciclesIndex || IciclesDiscussion || IciclesIssues ||
+
+----
+
+
+== Suggestions that Probably Will Not Be Implemented ==
+
+This page contains some discussion of suggestions that probably will not be implemented. They were originally at IciclesDiscussion.
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+Icicles is very useful when opening recent files again. I only have tiny complaint. Maybe it's only a personal issue, but I post it anyway.
+
+When ##C-x C-f## starts find file the initial input is the current directory. If I want to open a recently opened file again then I type something in and press ##M-h##. In order to do that I have to delete the current input first which is not a big deal, but one more keystroke which I'd like to avoid.
+
+When pressing ##M-h## it's not very likely I want to match a recent file from the current directory (which is the initial input), since I can open any file from the current directory pretty easily anyway. It would make more sense if ##M-h## deleted the initial input (if I didn't type in anything) or didn't take that part into account (if I typed some characters) right after starting the completion, so that I don't have to delete the initial part explicitly before history completion.
+
+In Emacs I always try to optimize for the most common, most probable use cases, so that they can be executed as conveniently as possible. This is such a case. Maybe it's only me, but an unnecessary keystroke for such a common operation bothers me.
+
+What do you think? -- dsl5402B33F.pool.t-online.hu
+
+[new:DrewAdams:2006-04-11 23:34 UTC]
+I'm not convinced. I think the use cases (even the "most probable" ones) are varied. It's not unlikely that someone working in a very large directory with, for example, similarly named files might want to access a file that s?he used previously in that same directory. Just because it is in the same directory doesn't mean that it is easy to find it without recourse to the history -- you might not remember the exact name but would recognize it. Admittedly, previously accessed files in the current directory are highlighted as such (blue), and you can always use `M-pause' to access the subset of matching file names that have been used previously, but I still feel that `M-h' is also useful in the current directory -- I know that I use it. 
+
+And it is generally easier to delete the minibuffer contents (as you say, a single keystroke suffices) than it is to reconstruct the directory in the minibuffer, especially if it is long. Once you are in `M-h', completion is against absolute names (paths included), so there is no way to take advantage of completion to get back the "current" directory (there is no current directory). (It could be arranged to have it copied to the kill-buffer, so you could yank it, but I don't see yanking it as better than deleting it.) 
+
+Of course, if the relative file name is sufficiently unique, you need not be concerned with the directory at all. What you are matching in the case of `M-h' is an absolute file name. In some use cases the directory part will be important (and you can take advantage of regexp matching on directory components); in other use cases the directory part will be irrelevant. One size does not fit all.
+
+Finally, even if the file you want is in a different directory, it's possible (even frequently the case) that it is in a directory near where you are working, in which case it's useful to have the current directory available for editing. If the minibuffer is emptied automatically, before you type anything ''all'' directories and files that you have visited anywhere in your file system are included. 
+That can mean a ''gigantic'' number of files in a wide variety of directories, especially if you use SaveHist (as I do). '''Icicles''' facilitates working with huge sets of completion candidates, so there is no reason (IMO) not to use persistent input histories. It's a different way of working, one which I prefer. I don't want to base the default behavior on an assumption that the set of previously entered file names will be small.
+
+I'm open to other arguments, but so far I'm not convinced. 
+
+BTW, `M-h' and `M-pause' are about ''previously'' used completion candidates (file names or otherwise); they are ''not'', even in the case of file names, about ''recently'' accessed files. If you really want a recently used file, then consider using command ‘icicle-recent-file’ or ‘icicle-recent-file-other-window’. Of course, that requires you to know that you want a recent file before you issue the command -- to choose ‘icicle-recent-file’ instead of `icicle-find-file'. 
+
+As always, I appreciate your feedback. -- DrewAdams
+
+[new]
+
+I'm not sure about this one either and I haven't even implemented it for myself, so this issue can be closed or deleted if you think so.
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+To keep you entertained here's another crazy idea. :)
+
+Suppose I typed ##test## and narrowed down the list of completions to the following items:
+<pre>
+    testcasehandler.c
+    testcasehelper.c
+    testsuite.c
+    testmanager.c
+</pre>
+
+I want to select ##testcasehandler.c##, so I type further: ##.*han## and it is selected. Now, I don't like to type ##.*## (two characters, one with modifier), but it's frequently needed. Could it be done simpler?
+
+What if there were a user option which would enable automatic "gap completion"?
+
+So in the above case I typed simply ##testhan## and the desired item would be selected immediately. When Icicles sees there is no match for this pattern, it would look for the matching part (##test##) of the input and then it would check if there are matches if a gap is assumed between the matching part and the rest of the input.
+
+The algorithm would be tricky, since in theory there could be a gap after any character and I don't know how fast it would be. It should be tested on a prototype.
+
+Anyway, this should be enough for you to decide if it's worth trying and if so then the idea can be developed further. I feel it would be convenient for me as a user, since I wouldn't have to type ##.*## all the time, because Emacs would be clever enough to know what I mean. -- dsl51B673C4.pool.t-online.hu 
+
+[new:DrewAdams:2006-04-12 22:00 UTC]
+Sorry, but this one sounds like a bad idea to me all around -- a real can of worms. `##.*##' is short, has an exact meaning (no ambiguity), and is powerful. It will become part of any '''Icicles''' user's daily vocabulary. Among other things, '''Icicles''' helps people learn how to use regexps -- I don't want to shortcut that syntax. -- DrewAdams
+
+[new]
+In my interpretation the main purpose of a completion package is helping the user to select a specific entry from a number of completions as efficiently as possible. This means using the shortest possible input pattern.
+
+##testhan## is shorter than ##test.*han## and it's even more obvious if there are more components (##srctestdrv## vs. ##src.*test.*drv##).
+
+In my experience regexps more complex than ##.*## are rarely needed. ##.*## covers >90% of the cases and this warrants some kind of shortcut in my opinion.
+
+Regexps could still be used even if this optional feature were allowed.
+
+Anyway, it's up to you, but I still think it would be useful (shorter input to achieve the same effect -> quicker completion) and Icicles would be unique to have this feature compared to other completion packages.
+
+One more thing I forgot: Even with this option turned on, automatic gap completion would only be attempted if the input string didn't contain regexp characters (like in the examples above). This way the full power of regexps still could be harnessed unambigously while also having the convenience of not having type ##.*## all the time for the simple cases. -- dsl51B673C4.pool.t-online.hu
+
+[new:DrewAdams:2006-04-15 23:13 UTC]
+As I said, I won't pursue this idea because I don't think it is a good one either from the standpoint of UI interaction (ambiguous interpretation or not DTRT) or implementation (combinatorial explosion). I think that if you think about it some more you might agree. If not, that's OK too.
+
+However, in pursuing work on `icicle-search' I have implemented a feature that lets you insert the string value of a variable using `C-='. This won't satisfy you (since this default binding is a chord and it requires typing a keystroke), but I just wanted to let you know that you can, if you like, use `##.*##' as the value to insert (saving one keystroke per occurrence). -- DrewAdams
+
+[new]
+Yes, `C-=' is better, but it doesn't satisfy me for the known reasons. :)
+
+As far as the UI is concerned this feature would have to be enabled explicitly, so users who turned it on, knew what to expect.
+
+Regarding the implementation (combinatorial explosion) I think reasonable limits could be imposed on the input pattern which would reduce the number of possibilities considerably.
+
+I know it's a difficult problem, but that's why it's a challenge. Trying something which no one tried before, because they thought it was too hard or unfeasible.
+
+But I respect your decision. It's your package after all, so you get to decide what goes in and what doesn't. And if you think this feature is a bad idea I'm OK with it.  -- dsl51B673C4.pool.t-online.hu
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+As a courtesy I post this idea directly here into the '''Probably Will Not Be Implemented''' section, so that you don't have to move it here. Recently my ideas end up in this section anyway. :)
+
+How about adding an optional alist of ((REGEXP . REPLACEMENT) ...) pairs which could be used to define shorthands for the input pattern. Icicles would perform the given transformations internally on the input before interpreting it as a search string.
+
+For example, if one used the word ##handler## frequently as a search string then he could define a ##("han" . "handler")## shorthand, so he could write ##han.*test## to find completions matching ##handler.*test##.
+
+I'd use it redefine comma as ##.*##, so that I could write ##a,b,c##, instead of ##a.*b.*c##.  -- dsl51B673C4.pool.t-online.hu
+
+[new:DrewAdams:2006-04-19 19:12 UTC]
+Sorry, not interested.
+
+If you use comma as ##.*##, then what will you use for comma? If you want only that, then bind comma in one or more of the minibuffer maps to a command such as this:
+
+ (defun foo () (interactive) (icicle-insert-thing ".*"))
+
+-- DrewAdams
+
+[new]
+
+Yeah, I know I can bind a function to do this. I posted it only in the hope it could be useful for others too. Guess I was right choosing to post to this section in the first place. :)
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+[new]
+During most of 2006 I often felt the urge to say this aloud whenever browsing the [[RecentChanges]]: I suggest renaming this wiki to IciclesWiki :-) -- StefanKamphausen
+
+[new]
+To the original poster: I don't think you're the only one who feels that way. Drew, I'm sure all the effort you're putting into the project is appreciated. And I understand that you just want your project to be more well known, so other people may benefit from it. However, there are now 167 pages on the wiki referencing icicles, and the source alone is spread out over a number of files. I asked a few months ago if you were interested in moving to version control instead, but you said you had no plan to. Why is it that you keep all the files under the lisp section of Emacswiki when development is so active? --DamienElmes
+
+[new]
+I always thought that Icicles was so active that Drew deserved his own Wiki.   Whether Drew wants the benefit of using public version control (or packaging, for that matter) is his choice, but I'd suggest the GnuSavannah people, who, would gladly host his work.  I don't have any ideas on how Drew could get a Wiki, though.
+
+Some IRC client packages use a lot of this Wiki, but I chalk that up to this community being tightly tied to IRC discussion, like EmacsChannel.  And many of the pages on IRC clients that are hosted here are related to tricks and customizations of the package, not to general development.
+
+But yeah, like most people who don't use Icicles, I ignore anything prefixed with "Icicles" on the RecentChanges list (I'm an "all edits" viewer on RecentChanges).  I believe people, including Drew, are welcome to use EmacsWiki as they wish, as long as it stays on topic with Emacs--which Icicles does, of course.
+
+However, I don't think EmacsWiki could host many more projects like Icicles before the noise ratio on RecentChanges makes it useless.  This could be solved by having watchlists (like MediaWiki), but we don't have those in Oddmuse, and neither does the scope of the EmacsWiki project really require such a feature--WikiPedia obviously does require it.
+
+My two bits. -- AaronHawley
+
+[new]
+Whoa! I didn't want to start a discussion whether moving icicles somewher else is desired.  Just wanted to make a (supposedly) funny note. -- StefanKamphausen
+
+[new]
+What about to include icicles into the GNU Emacs distribution? I am not an icicles user, but i guess there is many users in the emacs community. Anyway, i think savannah on nongnu.org would be a good place to host the whole thing. -- JoseEMarchesi 
+
+[new]
+Actually, would it be possible to have a RecentChangesMinusIcicles feed?  I like to follow what's going on, and may even give icicles a spin at some point (ibuffer/ido works for me now), but it's annoying having to wade through all the icicles to get to the other stuff -- SeanO
+
+[new]
+See RecentChangesMinusIcicles. -- [[rubikitch]]
+
+[new]
+I understand anyone can get a SubVersion repository at [http://code.google.com/hosting/ GoogleCode].  If Icicles could be uploaded and maintained in SubVersion, I'm sure people could more easily collaborate and even package and produce releases, or at least offer the ability to download all the files in one command. -- AaronHawley
+
+
+
+
+
+
+
+----
+
+|| '''[[Icicles]]''' || IciclesIndex || IciclesDiscussion || IciclesIssues ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:lacarte.el, Lisp:icicles.el, Lisp:icicles-mode.el, Lisp:icomplete+.el
+
+CategoryCommands
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryRegion
+CategoryModes
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+CategoryPersistence
+CategoryAccessibility
+

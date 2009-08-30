@@ -1,0 +1,31 @@
+You may find that you often want to completely replace one command with another. For example, you may wish to replace list-buffers with electric-buffer-list. This snippet of code abstracts away all the code required to do this, leaving you to customize only a single alist of remappings. Using remappings in this way is more portable than simply rebinding the keys, since the remappings will always work even if the keybindings change.
+
+{{{
+;; To Add more remappings, M-x customize-variable global-remapping-alist.
+
+(defun global-setup-remappings ()
+  (mapc #'(lambda (pair)
+            (define-key global-map
+              (vector 'remap (car pair))
+              (cdr pair)))
+        global-remapping-alist))
+
+(defcustom global-remapping-alist
+  nil
+  "Alist of global command-remappings to do.
+The first element of each pair will be remapped to the second."
+  :type '(alist :key-type symbol :value-type symbol)
+  :set #'(lambda (sym val) (progn (set-default sym val) (global-setup-remappings))))
+
+(global-setup-remappings)
+}}}
+
+Bonus points to anyone who extends this to apply to all maps. Hint: the format of the variable needs to change to something like:
+{{{
+'((global-map
+   (global-command1 . replacement1)
+   (global-command2 . replacement2))
+  (some-mode-map
+   (some-mode-command . some-replacement)
+   (another-mode-command . another-replacement)))
+}}}

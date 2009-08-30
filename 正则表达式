@@ -1,0 +1,25 @@
+简单地说，正则表达式(regular expression, "regexp")是一个用来查找的带有“通配符”的字符串。更详细地说，它是一个“模式”字符串，以试图在被搜索的文本中查找匹配字符串。 
+
+在对于 Emacs 文档系统中，查阅Emacs手册的节点“Regexps”。 如果你不知道什么是正则表达式，你将错过太多的优秀的东西！
+
+    "alex"
+
+一个普通的字符串就是一个最简单的正则表达式，它匹配的字符串就是它字面所示的字符串。前面正则表达式匹配的字符串就是 "alex"本身。
+
+    "alexa?"
+
+在正则表达式中，有一些字符具有特殊的含义。例如，问号(?)表示它前面的表达式可以出现一次或不出现。所以，前面的表达式匹配的字符串有 "alex" 或 "alexa"。
+
+此外，还有更多特殊字符，将在手册中可以查到特殊字符的完事列表。那里还有特殊字符集，组(groups), repetitions, 等。
+
+对于Emacs用户而言，正则表达式在这两个方面特别重要：
+* 立即搜索正则表达式。试用 `C-M-s' (命令 <code>isearch-forward-regexp</code>).
+* Emacs 代码用它们分析文本。 当我们使用Emacs时，已经在不知不觉中使用正则表达式，自始至终在使用着。
+
+学习使用正则表达式的最佳方法是：
+* 读一些关于正则表达式文章 -- see RegexpReferences for references to more information on regexps.
+* 使用 `C-M-s' 做一些搜索练习。 A little regexp searching goes a long way; it saves you lots of "dumb" searching.
+* 读一些使用正则表达式的 Emacs Lisp 代码。让它们启发你自己的函数创作。如果你想操作Emacs Lisp代码(或Java, 或任何其他语言), 首先看看标准Emacs代码操作这些代码。 你半发现它们大量使用到正则表达式。而且，因为正则表达式可能很棘手 , 已有代码中使用的正则表达是一个很好的范例。
+
+----
+[[分类－正则表达式]]

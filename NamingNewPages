@@ -1,0 +1,23 @@
+Use CamelCase for new pages.
+Here's some help for choosing page names:
+
+* If the name is short, such as Sql or Tcl, add "Mode" if you are
+somehow describing an Emacs mode.  Therefore: <nowiki>SqlMode,
+TclMode</nowiki>.
+* For something as big as Gnus, you can expect a lot of sub pages.
+Therefore just make it a category: <nowiki>CategoryGnus</nowiki>.
+* If the page contains your configuration for a specific package, use
+the suffix "Configuration", eg. <nowiki>BbdbConfiguration</nowiki>.
+* If you still can't find a good name, just append "Page".  I haven't
+seen this used on other wikis.  They usually use ugly capitalization
+tricks such as <nowiki>UgLy</nowiki>.  Oh well.
+<nowiki>TrampPage</nowiki> is nice because you can use it to say, "For
+more information, see the <nowiki>TrampPage</nowiki>".
+
+== When should links like [[This]] be used? ==
+
+Links in double square brackets (also known as FreeLink""s) are used for the following:
+
+# single-word pages such as [[Gnus]], acronyms such as [[BBDB]], and other non-words such as [[w3]]
+# page names containing spaces in foreign languages
+# page names in scripts that don't use upper and lower case pages such as [[網站地圖]]

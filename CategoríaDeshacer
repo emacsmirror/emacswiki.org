@@ -1,0 +1,8 @@
+Un pequeño truco.
+
+En GNUEmacs si se pulsa
+C-x u ó C-_ se dehace el último comando. En lugar de repetirlo continuamente, se puede (SIEMPRE después de una primera ejecución de C-x u ó de C-_) pulsar simplemente: C-x z z z z z   con tantas z como veces se quiera proseguir recorriendo la lista de comandos a deshacer.
+
+[new]
+
+Tanto la combinación C-_ como C-/ son combinaciones [[Chord]], es decir, puedes mantenerlas pulsadas para que la acción se repita. Por lo que no hace falta recurrir a C-x z.

@@ -1,0 +1,19 @@
+You can invoke lgrep with the current search in IncrementalSearch term like this:
+
+    (define-key isearch-mode-map [(control shift o)]
+      (lambda () (interactive)
+        (let ((shk-search-string isearch-string))
+          (grep-compute-defaults)
+          (lgrep (if isearch-regexp shk-search-string (regexp-quote shk-search-string))
+                 (format "*.%s" (file-name-extension (buffer-file-name)))
+                 default-directory)
+          (isearch-abort))))
+
+See also
+GrepMode,
+OccurFromIsearch.
+
+----
+CategoryExternalUtilities
+CategoryRegexp
+CategorySearchAndReplace

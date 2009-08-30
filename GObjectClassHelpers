@@ -1,0 +1,21 @@
+If you do write GObject derivated classes often you may know it's a boring and error prone task.
+
+Lisp:gobject-class.el is a set of 3 functions to help you define the header, the code skeleton and to create files following GObject and Gtk naming schemas. All it ask you is 2 parameters: the class name and the parent class name, the last one may be omited and defaults to GObject.
+
+Functions are:
+
+; **gobject-class-header class_name parent_class_name**: generate common used GObject stuff that generally goes in header (.h) files, thins like C-pre-processor macros (like ##G_TYPE_OBJECT##), typedef and struct declarations and define the ##_get_type()## function. These contents are enclosed in ##G_BEGIN_DECLS## and ##G_END_DECLS##.
+; **gobject-class-code class_name parent_class_name**: generate common used GObject implementation code, like the ##G_DEFINE_TYPE## call, and skeleton for ##_class_init()##, ##_init()##, ##_finalize()## and ##dispose()##.
+; **gobject-class-generate class_name parent_class_name**: create the header (.h) and code (.c) files, use above macros to fill these files and also do provide some extra facilities, like includes (.c files) and include-only-once defines (.h files).
+
+Class names are expected to have a namespace like **gtk_button** is really the class *button* in the namespace *gtk*, **g_object** is *object* in *g*.
+
+== Examples ==
+    ;;; create the definitions for GtkButton, which derives from GtkBin
+   (gobject-class-header "gtk_button" "gtk_bin")
+
+    ;;; create the implementation for GtkButton
+    (gobject-class-code "gtk_button" "gtk_bin")
+
+    ;;; create files with header and code: gtk-button.h and gtk-button.c
+    (gobject-class-generate "gtk_button" "gtk_bin")

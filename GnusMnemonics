@@ -1,0 +1,27 @@
+From a signature by RonanWaide:
+
+`F' is group reply. This is because `G' is for sort and `g' is for get new
+mail. And `G' is for sort because `sort' used be called `group', and anyway
+`S' is for save mailbox and `s' is for file message in folder, because `f' is
+group reply and `F' is group reply including original text.
+
+this is really funny - LathI
+-----------------------------
+
+Other mnemonics are a Gnus fortune file available here:
+
+http://www-users.cs.york.ac.uk/~kester/gnus_and_emacs/
+
+Add the gnu_tips.dat and gnus_tips file to a ~/fortune directory.  You can add your own gnus tips to the gnus_tips file (don't forget the % separators!), and create a new gnus_tips.dat file for fortune using the <tt>strfile -r gnus_tips</tt> command.
+
+You can then email gnus newbies from a group to which you have set the posting style thus ('G p' to edit the group parameters):
+<pre>
+(posting-style
+  (signature
+   (concat "kester\n--**--\n\n"
+	   (shell-command-to-string "fortune ~/fortune")))))
+</pre>
+This puts a little gnus 'tip' for your newbie friend as a signature...
+
+----
+CategoryHumor

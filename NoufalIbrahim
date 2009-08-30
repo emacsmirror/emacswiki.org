@@ -1,0 +1,23 @@
+Greetings everyone, 
+
+My name is Noufal Ibrahim and I'm from India. I go on freenode with the nick [::Khmar] and (sometimes) on DALnet with the nicks Ikar, dracowla or GNUisance. 
+I have a personal webpage at http://nibrahim.net.in/  (which also lists my contact information). 
+
+I use Emacs.
+
+I've used Emacs since my final year of college (that was in around 2001) but it was just another editor I used back then since "everyone else" used vim ;)
+
+I work at Cisco systems and I had an overseas assignment for a couple of months in April 2003. I was stuck there with a windows laptop far and away from my own Debian machine so I had to find alternatives for things which I used like gnotes (to keep notes), mutt+procmail+fetchmail (to handle mail) and other stuff. That's when I rediscovered Gnu Emacs. With the help of the fine people on #emacs on freenode and this site, I've been able to get Gnus, emacs-wiki and erc working fine on my Emacs installation and I hardly need to move outside the window.
+
+My work at Cisco requires me to test boxes and very often, I need to generate large configuration files that are loaded up onto the machines. I keep all the projects I'm working on as emacs-wiki pages and keep little elisp snippets there that do this "config generation". Then I "tramp" them over to the box and load them up. It's a wonderful way to do things. I love a programmable editor :)
+
+I'm right now working my way through the emacs-lisp-tutorial and a couple of other docs in the hope that I'll be able to write a nifty package for emacs. 
+
+----
+
+I just wrote my first Emacs major mode. It's a Cisco router configuration file mode and is available at the ElispArea [http://www.emacswiki.org/elisp/cisco-router-mode.el]. It's rather rudimentary and my first attempt at writing a mode so I'd appreciate comments and suggestions. :)
+
+I've renamed the mode, souped it up a little and provided some more features that make it more useful. It's split into two files now and available as a tarball from my site [http://nibrahim.net.in/downloads/ios-config-mode.tar.gz]. 
+
+----
+CategoryHomepage

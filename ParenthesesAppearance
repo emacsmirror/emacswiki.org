@@ -1,0 +1,52 @@
+==Matching==
+
+When editing Lisp code it is often useful to highlight matching
+parentheses eigther when point is on or near a parenthese or when it
+is not even close to one.
+
+The following packages all provide such highlighting but differ in
+functionality.
+
+===ShowParenMode===
+
+[[image:paren-el-screenshot]]
+
+ShowParenMode highlights matching parens before and after point.  The
+library is called paren.el and is part of Emacs.
+
+===ParenSetMode===
+
+This library provides the same functionality as ShowParenMode.  Since
+that is already part of Emacs installing this might just be confusing
+when you turn of one of the modes but forget that another mode
+providing the same functionality is still enabled.
+
+===MicParen===
+
+[[image:mic-paren-el-screenshot]]
+
+MicParen extends the functionality of the two libraries above in
+multiple ways.  Among other things it shows the matching paren in the
+EchoArea if it is outside the visible screen.
+
+==Nesting==
+
+The nesting of sexps can also be made more apparent by highlighting
+the parens around point.
+
+===HighlightParentheses===
+
+[[image:highlight-parentheses-el-screenshot]]
+
+HighlightParentheses highlights the surrounding parens, showing nesting structure.
+
+==General Appearance==
+
+It is also possible to change the appearance of all parens possibly to
+make them less visible.
+
+* UnParenMode -- make them invisible
+* ParenFace, DimParentheses -- use a special face for them
+
+----
+CategoryParentheses

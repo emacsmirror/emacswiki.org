@@ -1,0 +1,35 @@
+Debugger mode is the mode used in the BacktraceBuffer (buffer `*Backtrace*').  
+
+Use `C-h m' there to see descriptions of the important debugger keys, which include `c' (current [[sexp]]) `d' (single step), `e' (eval another sexp that you input), and `q' (quit). (`C-h m' always gives you information on the current mode, whatever it might be.)
+
+* You can use `M-x debug-on-entry' to
+put breakpoints at the start of functions, and `M-x cancel-debug-on-entry' to remove them. 
+
+* You can put ##(debug)## in EmacsLisp code at arbitrary points (and then eval that code) to put breakpoints at those places.
+
+* You can set any of the following variables:
+
+;;; ##debug-on-quit##: Debugger is entered when the user hits `C-g'.  This is useful in debugging infinite loops and long delays.  You can toggle this variable using `M-x toggle-debug-on-quit'.
+
+;;; ##debug-on-error##: Debugger is entered when an uncaught error happens.  This is foiled by condition-case forms that catch errors.  You can toggle this variable using `M-x toggle-debug-on-error'.  Note that some errors are /ignored/ -- you may have to temporarily set `debug-ignored-errors' to `nil' in order to debug such errors.
+
+;;; ##stack-trace-on-error##: An alternative to `debug-on-error'. It shows trace buffers instead of entering the debugger. Example: ##(setq stack-trace-on-error '(buffer-read-only))##
+
+
+== Discussion ==
+
+[new]
+Usually people do not use debugger-mode
+that often, it is just the "quick and dirty" debugger for EmacsLisp.
+The debugger used by "real" programmers is called Edebug -- see
+SourceLevelDebugger for more.  The problem with that is that you need to know
+which functions to instrument before you start.  This is why the old debugger-mode is still used today.  Once you know where the problems are, Edebug is more comfortable. -- [[Anonymous]]
+
+[new:DrewAdams:2008-09-01 15:45 UTC]
+I, for one, disagree. The part about "real" programmers is either cute sarcasm or nonsense, or both, depending on your point of view. I use the "old" debugger all the time. Personally, I've found no particular advantage to Edebug for most contexts. -- DrewAdams, unreal programmer
+
+
+----
+CategoryDebug
+CategoryCode
+CategoryModes

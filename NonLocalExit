@@ -1,0 +1,41 @@
+When you return from a nested expression to an outer level of control,
+this is called a non-local exit.
+
+The simplest non-local exit is the '''error''' function.  Here is an
+example from ErcInfo:
+
+    (defun erc-cmd-INFO (&rest ignore)
+      "Send current info node."
+      (unless (get-buffer "*info*")
+	(error "No *info* buffer"))
+      (...))
+
+The error function returns control to the command-loop in Emacs.
+erc-cmd-INFO is aborted, and all its bindings are undone.
+See BindingDefined.
+
+Another form of non-local exit is the '''throw/catch''' duo.
+Catch defines a point to which you can return control to.
+Throw returns control to the catch matching the tag it throws.
+
+The following code from NumberedWindows
+has a catch which will catch the 'done tag,
+and deeper within we find a corresponding throw which throws the 'done tag.
+The second argument to throw is the value used for the catched throw.
+Thus, if curr-win is eq to selected-win, the entire catch expression evaluates
+to pos.  If the throw is never reached, the catch expression evaluates to
+the last expression evaluated, ie. the whatever the dolist evaluated to
+(in this case, nil).
+
+   (defun selected-window-number ()
+      "Return the position of the selected window in the windows list"
+      (let ((selected-win (selected-window))
+	    (pos 0))
+	(catch 'done
+	  (dolist (curr-win (window-list))
+	    (when (eq curr-win selected-win)
+	      (throw 'done pos))
+	    (setq pos (1+ pos))))))
+
+----
+CategoryCode

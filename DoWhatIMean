@@ -1,0 +1,18 @@
+Some Emacs functions and variables have "<tt>[::dwim]</tt>" in their name somewhere. [::DWIM] stands for "Do What I Mean". Usually these functions try to do the right thing, depending on the context.
+
+For example, consider the DiredMode variable <code>dired-dwim-target</code>. If non-<code>nil</code>, this lets Dired know that you'd like it to guess a default target for commands like copy and move. Say you have your [[Frame]] split into two Dired [[Window]]s; in this case, Dired will assume that you want to copy/move the file from the one into the other. This is cool stuff.
+
+== List of DWIM-like extensions ==
+
+* BackToIndentationOrBeginning goes to the line's first non-whitespace character, or beginning if already there.
+* <tt>[AutoIndentation kill-and-join-forward]</tt> kills and joins lines, removing indentation.
+* AutoPairs inserts paired delimiters (‘##(##’ and '##)##'), depending on the context.
+* SlickCopy makes '##M-w##' and '##C-w##' copy and cut the current line when no text is selected.
+* [TabCompletion TabKey2/Smart Tab] provides word completion or indents the line or region when you hit ##<tab>##.
+* <tt>[TypographicalPunctuationMarks typopunct.el]</tt> provides "smart quotes" and other typographical punctuation marks when you hit '##"##', '##'##' and '##-##'.
+
+----
+See WikiPedia:DWIM.
+
+----
+CategoryGlossary

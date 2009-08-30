@@ -1,0 +1,152 @@
+;;;  start.el
+
+;; Seiji Zenitani's configuration for Emacs 22/23.
+;; I put this file in ~/lib/emacs/ and then byte-compile it.
+;; The *.elc file is loaded from the following .emacs.el:
+;;
+;; ;; load all *.elc files...
+;; (mapcar (lambda (x)(load-file x))(directory-files "~/lib/emacs" t "\\.elc$"))
+
+
+;; basic setup
+(setq inhibit-startup-message t)        ; don't show the startup message
+(setq kill-whole-line t)                ; C-k deletes the end of line
+(setq make-backup-files nil)            ; don't make *~
+(setq auto-save-list-file-prefix nil)   ; don't make ~/.saves-PID-hostname
+(setq auto-save-default nil)            ; disable auto-saving
+(column-number-mode 1)
+
+;; recentf
+(require 'recentf)
+(setq recentf-auto-cleanup 'never)
+(setq recentf-max-saved-items 100)
+(recentf-mode 1)
+
+;; misc stuff
+(setq htmlize-output-type 'font)
+
+;; keys
+(global-set-key "\C-z" 'undo)
+(global-set-key "\C-x\C-b" 'electric-buffer-list)
+(global-set-key "\C-c\C-i" 'indent-region) ; C-u C-c TAB => (un)indent-region
+(global-set-key "\C-c;" 'comment-or-uncomment-region)
+(global-set-key "\C-ck" (lambda ()(interactive)(kill-line 0)))
+(global-set-key "\C-cu" 'untabify)
+
+;; fortran
+(add-hook 'fortran-mode-hook
+          (lambda ()
+            (setq fortran-comment-region "c")  ; comment character
+            (fortran-auto-fill-mode 1)         ; wrap lines in 72 columns
+            ))
+(add-hook 'f90-mode-hook
+          (lambda () (setq f90-comment-region "!") ))
+
+;; ac-mode
+;; ref. http://taiyaki.org/elisp/ac-mode/
+(when (require 'ac-mode "ac-mode" t)
+  (add-hook 'sh-mode-hook 'ac-mode-on)
+  (add-hook 'makefile-mode-hook 'ac-mode-on)
+  (add-hook 'cperl-mode-hook 'ac-mode-on)
+  )
+
+;; cperl-mode
+(when (locate-library "cperl-mode")
+  (add-to-list 'auto-mode-alist '("\\.pl\\'" . cperl-mode))
+  (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
+  (setq cperl-indent-level 4)
+  (setq imenu-max-items 32)
+  (add-hook 'cperl-mode-hook 'imenu-add-menubar-index)
+  )
+
+;; smart-compile
+;; ref. http://homepage.mac.com/zenitani/elisp-j.html#smart-compile
+(when (require 'smart-compile "smart-compile" t)
+  (global-set-key "\C-c\C-c" 'smart-compile)
+  (add-hook 'c-mode-common-hook
+            (lambda ()(local-set-key "\C-c\C-c" 'smart-compile)))
+  (add-hook 'sh-mode-hook
+            (lambda ()(local-set-key "\C-c\C-c" 'smart-compile)))
+  )
+
+;; chmod +x
+;; ref. http://homepage.mac.com/zenitani/elisp-j.html#chmod
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
+
+;; delete file if empty
+;; ref. http://www.bookshelf.jp/cgi-bin/goto.cgi?file=meadow&node=delete%20nocontents
+(add-hook 'after-save-hook 'delete-file-if-no-contents t)
+(defun delete-file-if-no-contents ()
+  (when (and buffer-file-name (= (point-min) (point-max)))
+    (if (y-or-n-p "Delete file and kill buffer? ")
+      (let ((filename buffer-file-name))
+        (delete-file filename)
+        (kill-buffer (current-buffer))
+        (message (concat "Deleted " (file-name-nondirectory filename)))
+        ))))
+
+
+;; --------- Window system ---------
+
+(when window-system
+
+;; default color
+(add-to-list 'default-frame-alist '(cursor-color . "SlateBlue2"))
+(add-to-list 'default-frame-alist '(mouse-color . "SlateBlue2"))
+(add-to-list 'default-frame-alist '(foreground-color . "gray10"))
+(add-to-list 'default-frame-alist '(background-color . "white"))
+(set-face-foreground 'modeline "white")
+(set-face-background 'modeline "SlateBlue2")
+(set-face-background 'region  "LightSteelBlue1")
+
+;; faces
+(set-face-foreground 'font-lock-comment-face "MediumSeaGreen")
+(set-face-foreground 'font-lock-string-face  "purple")
+(set-face-foreground 'font-lock-keyword-face "blue")
+(set-face-foreground 'font-lock-function-name-face "blue")
+(set-face-bold-p 'font-lock-function-name-face t)
+(set-face-foreground 'font-lock-variable-name-face "black")
+(set-face-foreground 'font-lock-type-face "LightSeaGreen")
+(set-face-foreground 'font-lock-builtin-face "purple")
+(set-face-foreground 'font-lock-constant-face "black")
+(set-face-foreground 'font-lock-warning-face "blue")
+(set-face-bold-p 'font-lock-warning-face nil)
+
+;; pc-selection-mode/transient-mark-mode
+(when (>= emacs-major-version 22)
+  (setq pc-select-selection-keys-only t)
+  (pc-selection-mode 1)
+  (set-scroll-bar-mode 'right)
+  )
+
+;; nxhtml
+(when (load "autostart" t)
+  (setq nxhtml-skip-welcome t)
+  )
+
+;; additional menu
+(require 'easymenu)
+(setq my-encoding-map (make-sparse-keymap "Encoding Menu"))
+(easy-menu-define my-encoding-menu my-encoding-map
+  "Encoding Menu."
+ '("Change File Encoding"
+   ["UTF8 - Unix (LF)" (set-buffer-file-coding-system 'utf-8-unix) t]
+   ["UTF8 - Mac (CR)" (set-buffer-file-coding-system 'utf-8-mac) t]
+   ["UTF8 - Win (CR+LF)" (set-buffer-file-coding-system 'utf-8-dos) t]
+   ["--" nil nil]
+   ["Shift JIS - Mac (CR)" (set-buffer-file-coding-system 'sjis-mac) t]
+   ["Shift JIS - Win (CR+LF)" (set-buffer-file-coding-system 'sjis-dos) t]
+   ["--" nil nil]
+   ["EUC - Unix (LF)"  (set-buffer-file-coding-system 'euc-jp-unix) t]
+   ["JIS - Unix (LF)"  (set-buffer-file-coding-system 'junet-unix) t]
+   ))
+(define-key-after menu-bar-file-menu [my-file-separator]
+  '("--" . nil) 'kill-buffer)
+(define-key-after menu-bar-file-menu [my-encoding-menu]
+  (cons "File Encoding" my-encoding-menu) 'my-file-separator)
+
+)
+
+;;; start.el ends here.
+

@@ -1,0 +1,17 @@
+This package lets you play go (igo/babuk/weiqi) over [[IRC]]. It supports the regular 2 player go as well as up to 8 player free for all play. Both a text mode and graphic tile board are available. The protocol is extremely simple. I imagine it would be very little work to make it work with another irc client.
+
+Scoring doesn't work yet and it doesn't keep track of the number of captured stones. You'll have to do that yourself for now.
+
+Download:
+
+* http://www.emmett.ca/~sabetts/irc-go-0.0.9.tgz
+
+To run it, connect to the irc server with [[rcirc]]. In an rcirc buffer, `M-x irc-go-enable RET'. Now it will listen for new games. In the channel buffer you'd like to start a game in: `M-x irc-go-start-game RET'. Your opponent(s) must run: `M-x irc-go-join-game RET' to join the game.
+
+To stop listening for games: `M-x irc-go-disable RET'. Note that while listening for games, irc-go will automatically observe all games played. Until recently anyone could place stones on the board, too. This may become a feature in the next release.
+
+Enjoy.
+
+----
+CategoryChatClient
+CategoryGames

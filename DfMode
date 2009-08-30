@@ -1,0 +1,29 @@
+df-mode.el is a small minor mode that show the space left on devices. It is based on df.el.
+
+Download: Lisp:df-mode.el
+
+== Configuration ==
+
+Put df-mode.el in your <code>load-path</code> and this in your .emacs file:
+
+ (autoload 'df-mode "df-mode" nil t)
+ (df-mode 1)
+
+== Bugfix ==
+
+The currently available version of df-mode.el seems to need this additional custom variable definition.
+
+ (defcustom directory-free-space-program "df"
+   "*Name of your df(1) program."
+   :type 'string
+   :group 'df)
+
+Perhaps it is normally defined elsewhere, but I don't have that code loaded?  (Using Debian's GNU emacs 21.4.1)
+
+== Screenshot ==
+
+http://www.knittig.de/img/dfmode.png
+
+The left number are the size of the current file and the right number are the size of the using device.
+----
+CategoryModes | CategoryExternalUtilities

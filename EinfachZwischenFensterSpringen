@@ -1,0 +1,30 @@
+== Fenster zyklisch durchschalten ==
+
+Wer öfter mal Emacs benutzt, mag vielleicht ganz gerne mehrere Fenster
+mit C-x 2 oder C-x 3 aufmachen. Jetzt kann man immer mit C-x o in das
+nächste Fenster springen. Auf die Dauer nervt das.
+Lange Rede, kurzer Sinn; hier zwei Funktionen, die das Durchspringen der
+Fenster erlauben, wobei die Funktion zu vorwärts springen bereits existiert
+(other-window):
+
+     ;; Fenster rückwärts springen   
+          (defun other-window-backward (n)
+            "Select Nth previous window."
+            (interactive "p")
+            (other-window (- n)))
+
+Jetzt werden noch die Funktionen in der _emacs auf Shift-Cursor[hoch|runter] gelegt:
+
+      (global-set-key [(shift down)] 'other-window)
+
+      (global-set-key [(shift up)] 'other-window-backward)
+
+
+
+Glaubt mir: das ist ''sehr'' nützlich, wenn ihr mehrere Fenster offen habt!
+
+Eine Alternative hierzu ist WindMove.  Damit kann man mittels Shift und den Richtungstasten zum nächsten Fenster in der entsprechenden Richtung wechseln.
+
+Installation:
+
+    (windmove-default-keybindings)

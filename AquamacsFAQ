@@ -1,0 +1,313 @@
+Frequently Asked Questions for AquamacsEmacs
+
+Aquamacs Home page: http://aquamacs.org/
+
+Configuration Tips: CustomizeAquamacs
+
+
+== Problems running LaTeX ==
+
+If pdflatex (or latex, etc.) aren't found when the LaTeX command is executed, then this may be due to an incorrect PATH setting.  (Aquamacs versions 1.3 and older were more lenient in this respect.)
+
+To test this, open Terminal.app from the finder and type "pdflatex".  Does this start the LaTeX interpreter?  If not, then the PATH setting is probably incorrect.
+
+The solution is to install TeXLive 2007 or 2008, or to edit the paths file (in OS X 10.5 Leopard or later).  Find the path to pdflatex using "locate pdflatex" in the shell. Then, in Aquamacs:
+
+  C-x C-f /sudo::/etc/paths RET
+
+add the path (not the full name of the binary - just its directory!) to the list, save.  Then log out and in, and you should be all set!
+
+
+
+== Problems installing Aspell Sepllchecking==
+
+Firstly you can install Cocoaspell, or the "base package aspell". see: http://aquamacs.org/spelling.shtml 
+
+If you want to add more languages go to: ftp://ftp.gnu.org/gnu/aspell/dict/0index.html 
+
+In the base package case, you have to unpack the downloaded dictionaries, open a terminal, cd into the directory of the unpacked files and than install the as follows: 
+
+<pre>
+./configure; make; make install
+</pre>
+
+After that move the compiled files to the following directory, so that Aspell (and Aquamacs Emacs) can find them. *Use this directory for both Cocoaspell and the "base package aspell" versions!*
+
+<pre>
+/usr/local/lib/aspell-0.60
+</pre>
+
+If you have installed Aspell from Fink or MacPorts, the above directory may be in a different location.
+
+To use MacPorts to install aspell and a dictionary you may do the following:
+
+<pre>
+# install aspell
+sudo port install aspell
+# install aspell dictionary for your language
+sudo port install aspell-dict-en
+</pre>
+
+A list of available dictionary modules can be obtained with:
+<pre>
+mdfind aspell-dict
+</pre>
+
+Afterwards, restart Aquamacs.
+
+That should be all you need to do. If you experience problems using Aspell in Aquamacs Emacs, remove your earlier Aspell-settings from your Preferences.el file, and add the following lines: 
+
+<pre>
+(eval-after-load "ispell"
+  (progn
+    (setq ispell-extra-args '("-w" "äöüÄÖÜß")
+          ispell-dictionary "de"
+          ispell-silently-savep t)))
+(setq-default ispell-program-name "aspell")
+(require 'ispell)
+</pre>
+
+<pre>
+And make sure you have the directory where Aspell is installed (usually in /usr/local/bin) set in your path variable.
+either in Preferences.el: 
+(setenv "PATH" (concat "/usr/local/bin" path-separator (getenv "PATH")))
+or in your startup file for the shell (~/.bashrc);
+PATH=$PATH:/usr/local/bin
+</pre>
+
+This has German as the default dictionary; change "de" to your language like "en" or "fr". The 'setq ispell-extra-args '("-w" "äöüÄÖÜß")' is only needed for languages that use accents, you can change that line according to the chosen language. Or remove the entire line if you only use the English language. 
+
+If you still get an error like "no word-lists can be found for the language en_US", then just install the British-English dictionary as described above, from ftp://ftp.gnu.org/gnu/aspell/dict/en 
+
+If you'd like your personal dictionaries in a convenient place, uncomment and edit the following line in 
+
+<pre>
+/usr/local/etc/aspell.conf
+
+#home-dir $HOME/Library/Preferences/aspell
+</pre>
+
+=== Old version of Aspell ===
+After installing CocoAspell I got the following message whenever I tried to use aspell in Aquamacs:
+
+The file "/Library/Application Support/cocoAspell/aspell6-en-6.0-0/en-common.rws" is not in the proper format.
+
+I found out that the reason was that I had an old version of aspell install via fink. Removing that version solved the problem.
+
+
+
+== Inputting {}[] etc. on non-English keyboards, or other keys with the Option modifier ==
+
+If you need to input characters using the Option modifier (such as \ or { on a German keyboard), uncheck the "Option -> Option key is Meta" function in the Options menu. Use "Save Options" to make the setting stick.
+
+To temporarily change the function of the Option key, pressing Command-; is the quicker way to do the same.
+
+This will disable the use of "Option" for the Emacs (Unix) Meta key. To avoid this, you can use one of the emulation variants in the same menu, which will only map often-used key combinations (such as [, ], \, @ etc., depending on the keyboard layout) to their OS X equivalents, but leave the general Option-Meta binding in place.
+
+
+== Change Aquamacs Meta key ==
+
+The default Meta key in the Aquamacs distribution is Option (and also Esc). If this is unusable for you (your fingers are too well trained on other platforms), you can either press Apple-; (Options -> Option Key -> Option Key for Meta) to switch to Esc only, or use the following substitutions in ~/Library/Preferences/Aquamacs Emacs/Preferences.el or your .emacs file:
+
+ (setq mac-option-modifier 'meta) - Sets the option key as Meta (this is default)
+
+ (setq mac-command-modifier 'meta) - Sets the command (Apple) key as Meta
+
+ (setq mac-control-modifier 'meta) - Sets the control key as Meta
+
+ (setq mac-function-modifier 'meta) - Sets the function key as Meta (limitations on non-English keyboards)
+
+Allowed values for these variables are, by the way, 'alt, 'hyper, 'ctrl. If you modify the command-key mapping, the standard Apple shortcuts will cease to work. (These settings work in Aquamacs 0.9.7 or later - with earlier versions, your mileage will vary!)
+
+Some people have reported problems when pasting from other OS X applications if they have set the command key as Meta, because Emacs always uses its internal killring for C-y etc. You may merge the Emacs kill-ring with the clipboard via:
+
+ (setq x-select-enable-clipboard t)
+
+If you want to use the option key to enter special characters (such as £) instead of functioning as Alt of Meta, you can specify this in your ~/.emacs:
+
+(setq mac-option-modifier nil)
+
+This is equivalent to the appropriate menu function (see above).
+
+
+
+== Opening Files In Same Frame ==
+
+If you're coming from Emacs, you may prefer the Emacs-behavior over the Aquamacs default. Uncheck the "Display Buffers in Separate Frames" option in the Options menu and then "Save Options".
+
+In version 1.4 the option has changed its name to "Show Buffers in New Frames".
+
+== Changing the keyboard layout ==
+
+Making a custom keyboard layout (like Danish Dvorak layout) in Aquamacs creates conflicts with the Apple command options given by Aquamacs.  According to unsubstantiated source, the problem might have something to do with Aquamacs being based on Carbon and that the problem would go away when using Cocoa. Try EmacsApp instead.
+
+5 Jun 2007 (TorbenHoffmann): Sorry in advance if this the wrong way to communicate this. I have just installed Aquamacs 1.0 to see if my problem with Aquamacs and my Ukelele made Danish Dvorak layout had been solved. Apple-O and the likes now works as one would expect - good job! However I have noticed an odd thing: if I use "C-x C-f" for saving, the Input changes to the normal Danish layout. Same thing happens with "C-x i": instant switch to the normal Danish layout. The normal Danish layout is the default on my machine since I have to share it with my wife and she is not a Dvorakian ;-) I am not a fluent Mac user so if there is something I should know about keyboard shortcuts that changes the current Input please let me know.
+
+7 February 2008 (W. Ethan Duckworth).  I have Aquamacs 1.2a running on OSX 10.5.1 with a custom Dvorak layout (optimized for LaTeX) and do not have this problem.  "C-x i" calls the insert file command in the minibuffer.  In my International Keyboard menu I do *not* have keyboard shortcuts enabled to switch keyboards.  Instead, I switch keyboards using the pull down menu.     
+ 
+== Changing the current and default font ==
+
+To change the font used to display the current frame, go to the font panel.  You can do this via the menu: Options -> Appearance -> Font for ___-Mode....  Once there, select the font you want.
+
+To make the current frame's font the default for all files of this type, select Options -> Appearance -> Adopt Face and Frame Parameters as Default. Then be sure to save your options with Options -> Save Options.
+
+To set the default font for all buffers, use emacs face customization menu: ##M-x customize-face## and type in ##default##. Then place the cursor in the ##Font Family## input area and type in a new font family name, e.g. ##apple-bitstream vera sans mono##. Click ##Save for Future Sessions## and ##Finish##. 
+
+== A nice mono-spaced (non-proportional) font for Aquamacs ==
+
+Try "Monaco" or [http://www.bitstream.com/font_rendering/products/dev_fonts/vera.html "Vera Sans Mono"].
+Both appear in the font appear - the latter one may need to be installed first. 
+Non-english users can also try [http://dejavu.sourceforge.net/wiki/index.php/Main_Page "DejaVu Sans Mono"] that support wider range of characters  (it has cyrillic, at least).
+
+To install [http://dejavu.sourceforge.net/wiki/index.php/Main_Page "DejaVu Sans Mono"] you need to add the following in your configuration file (use ##M-x describe-fontset## to find the font name):
+ 
+ (set-default-font "-apple-dejavu sans mono-medium-r-normal--0-0-0-0-m-0-mac-roman")
+
+or for Vera Sans Mono:
+
+ (set-default-font "-apple-bitstream vera sans mono-medium-r-normal--12-120-72-72-m-120-iso10646-1")
+
+
+== global-set-key doesn't work ==
+
+Maybe that's because you're trying to overwrite a key that is defined in a global minor mode such as osx-key-mode.
+In that case, you should use the following trick:
+
+<pre>
+(define-key osx-key-mode-map (kbd "A-n") 'my-new-function)
+</pre>
+
+
+== Font problem: fontset-monaco12 is not defined ==
+
+Running Aquamacs right after installing hitting any message generated in the EchoArea by `C-x C-f' or trying to move to the ##*Messages*## buffer, everything fails with the following error in the message window:
+
+  Font `-apple-monaco*-medium-r-normal--12-*-*-*-*-*-fontset-monaco12' is not defined
+
+To fix, trash your Aquamacs preferences at ~/Library/Preferences.el, then restart.
+
+This will only help if your Preferences use the legacy monaco12 fontset.
+
+== Getting the "Focus Follows Mouse" behavior from other Unixes ==
+
+To have the system raise the window when the MousePointer is moved over it (rather than clicking on it), you would ideally use a system-wide utility to get the same behavior in all apps. In Aquamacs alone, you should be able to use [http://www.emacswiki.org/cgi-bin/wiki/follow-mouse.el follow-mouse.el].  Since version 1.6, follow-mouse.el has been improved to allow full focus-follows-mouse capability for Aquamacs; activate with (turn-on-follow-mouse).
+
+
+== Disabling or Enabling the toolbar ==
+
+To hide or show the toolbar, click on the small oval in the top right corner of the titlebar area.  It will stay shown/hidden until Aquamacs exits.  By default, the toolbar is visible when Aquamacs starts.  To save the setting across invocations of Aquamacs, choose "Options -> Appearance -> Adopt Face and Frame Parameters as Frame Default".  Then choose "Options -> Save Options".
+
+
+== tool-bar-mode, fringe-mode or frame parameters (colors, e.g.) from my .emacs don't work ==
+
+If you set tool-bar-mode, fringe-mode or frame parameters in `default-frame-alist' or `initial-frame-alist', such parameters are likely to be overwritten by customizations which are loaded after your .emacs (or Preferences.el). You can either turn off "Frame Appearance Styles" (Options menu) and then "Save Options", or make your choices while in Aquamacs, then select "Frame Appearance Styles" -> "Use Current Style as Default" (or: for Mode). 
+
+
+== Running X11 applications (R, Matlab, etc.) ==
+
+Install Apple X11 (e.g. from the Install DVD). Start X11 and open a terminal (Apple-N). Ensure that the DISPLAY environment variable is set correctly, e.g. by adding the following to your ~/.bash_profile (provided Bash is your default login shell):
+
+ export DISPLAY=localhost:0.0
+
+Restart Aquamacs. You can verify that the environment variable is set by entering
+
+ESC :  (getenv "DISPLAY")  RET
+
+(that is M-:, then the command, then Return).
+
+You can then run R or Matlab or whatever in a shell from within Aquamacs, and graphics are displayed in X11 windows.
+
+Actually, you should not have to quit/restart Aquamacs, you can just to 
+M-x setenv DISPLAY :0.0
+
+*Note*
+
+In OS X 10.5 (Leopard), you shouldn't have to set the display anymore (rather, make sure it's unset): Leopard automatically detects that an X11 aplication is requested, fires up X11 and then the application itself.
+As a check, the DISPLAY environment variable should return nil when requested in Aquamacs as above (on the Terminal command line, it will be probably be set to something in the /tmp directory).
+Some more information at http://homepage.mac.com/sao1/X11/
+ 
+== Opening the *help* dialog in the current frame, rather than a new frame ==
+
+By default Aquamacs opens help dialogs in a new frame (operating system window), rather than the current frame as most other versions of Emacs do.
+
+If you would like the normal Emacs behavior of opening the *help* buffer in the current frame, modify your .emacs file as follows:
+
+If using one-buffer-one-frame-mode (the Aquamacs default):
+
+<pre>
+;; open *help* in current frame for `one-buffer-one-frame-mode'
+(setq obof-other-frame-regexps (remove "\\*Help\\*" obof-other-frame-regexps))
+(add-to-list 'obof-same-frame-regexps "\\*Help\\*")
+(add-to-list 'obof-same-frame-switching-regexps "\\*Help\\*")
+</pre>
+
+If not using one-buffer-one-frame mode, add:
+
+<pre>
+;; open *help* in current frame
+(setq special-display-regexps (remove "[ ]?\\*[hH]elp.*" special-display-regexps))
+</pre>
+
+== Problems running LaTeX in AUCTeX ==
+In Aquamacs 1.0bm an error message similar to 
+
+<pre>
+Running `LaTeX' on `x' with ``%`pdflatex \nonstopmode%' x.tex''
+/bin/sh: -c: line 1: unexpected EOF while looking for matching ``'
+/bin/sh: -c: line 2: syntax error: unexpected end of file
+
+LaTeX exited abnormally with code 2 at Thu Jul 12 08:22:59
+</pre>
+
+is almost certainly due to an old installation of the EC Emacs plugin. Solution is to get rid of it or update to Aquamacs 1.7 (which disabled the plugin).
+
+== Making A Specific Color-Theme Stick ==
+
+# Start Aquamacs
+# M-x color-theme-select
+# Pick the color theme that you want to use.
+# Menu -> Options -> Frame Appearance Styles -> Use Current Style for Text Mode
+# Menu -> Options -> Frame Appearance Styles -> Use Current Style as Default
+# Say yes to the dialog.
+
+You also need to ensure aquamacs-styles-mode is enabled; in your .emacs:
+
+        (custom-set-variables '(aquamacs-styles-mode t))
+
+That should do it.
+
+(To set this programmatically, use the `aquamacs-default-styles' variable.)
+
+== Option to turn off anti-aliasing of fonts? ==
+ 
+The first step should be enabled by default. But if it's not, in <code>~/.emacs</code> or <code>~/Library/Preferences/Aquamacs\ Emacs/Preferences.el</code> write:
+
+        (setq mac-allow-anti-aliasing t)
+
+Note that <code>mac-allow-anti-aliasing</code> is just a very poorly named variable. It switches between Quartz 2D and Quickdraw text rendering.
+
+The next step is important. Use the following terminal command:
+
+        defaults write org.gnu.AquamacsEmacs AppleAntiAliasingThreshold 128
+
+The last number should be bigger than the fonts you use. Now restart Aquamacs. 
+
+== How can I make disappear  the labels under the icons in the toolbar ==
+<pre>
+(setq mac-tool-bar-display-mode 'icons)
+</pre>
+
+== How to use Cocoa-style text auto-completion? ==
+
+In Emacs it's called [http://www.gnu.org/software/emacs/manual/html_node/emacs/Dynamic-Abbrevs.html#Dynamic-Abbrevs Dynamic Abbrev Expansion]. M-/ should do the job.
+
+To make sure the case is preserved in a completion, you probably have to [http://www.delorie.com/gnu/docs/emacs/emacs_357.html set variables] <code>dabbrev-case-fold-search</code> and <code>dabbrev-case-replace</code> to <code>nil</code>.
+
+== Starting Aquamacs from a terminal ==
+
+To launch Aquamacs from a terminal, use the installer function in the Tools menu.  You can then launch Aquamacs using the "aquamacs" command.  Note that this pertains to starting Aquamacs from a "terminal", and not from arbitrary scripts, specifically in batch mode: unlike the "emacs" command, "aquamacs" currently does not process other arguments than filenames.  
+To compile Elisp sources, call /Applications/Aquamacs\ Emacs.app/Contents/MacOS/Aquamacs\ Emacs.
+
+== How to cleanly uninstall Aquamacs? ==
+
+I'd recommend [http://www.freemacsoft.net/AppCleaner/ AppCleaner], just as I would for uninstalling any other application on OS X.

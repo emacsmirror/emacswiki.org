@@ -1,0 +1,56 @@
+ comint.el patch --- multi-line commands in the SQL input history file
+
+If you work with SqlMode on a regular basis, you will want to save your command history between sessions.  Set sql-input-ring-file-name in order to save your command history.
+
+If you enter a multi-line SQL statement in an SQLi buffer, you can retrieve it as a multi-line command from the MinibufferHistory.  Not so when you exit Emacs and restart it at a later date: As you exit SQLi mode the command history is written to a file; when you enter SQLi mode again the history is loaded one command per line.  If you entered multi-line commands, each line of those commands will end up as one command in the input history of your new session.
+
+This patch will be in Emacs 21.  If you are using Emacs 20, you can get it here:
+
+* http://www.geocities.com/kensanata/elisp/comint.el.txt
+
+The patched comint.el is not needed to use sql.el.  The patched comint.el uses a special string to separate commands in the history files.  sql-input-ring-separator's default value is "\n--\n".
+
+Example: The following is a fragment of a history file used by sql-mode with an unpatched comint.el from Emacs 20.  The history file contains two statements:
+
+    select  v.username, v.osname, v.machine, v.program
+    from    sys.v_$session v,
+            scout.db_user_secure u
+    where   v.username = u.login_name;
+    select  person_nr, vorname, name, abteilung
+    from    person
+    where   login_name = 'SCHROEDA';
+
+At the start of the next session, the input history is initialized with a multitude of useless statement fragments:
+
+    * select  v.username, v.osname, v.machine, v.program
+    * from    sys.v_$session v,
+    *         scout.db_user_secure u
+    * where   v.username = u.login_name;
+    * select  person_nr, vorname, name, abteilung
+    * from    person
+    * where   login_name = 'SCHROEDA';
+
+With the comint.el patch, the above history file is saved with the special separator "\n--\n":
+
+    select  v.username, v.osname, v.machine, v.program
+    from    sys.v_$session v,
+            scout.db_user_secure u
+    where   v.username = u.login_name;
+    --
+    select  person_nr, vorname, name, abteilung
+    from    person
+    where   login_name = 'SCHROEDA';
+    --
+
+At the start of the next session with a patched comint.el, the MinibufferHistory is initialized with the following two statements:
+
+    * select  v.username, v.osname, v.machine, v.program
+      from    sys.v_$session v,
+              scout.db_user_secure u
+      where   v.username = u.login_name;
+      
+    * select  person_nr, vorname, name, abteilung
+      from    person
+      where   login_name = 'SCHROEDA';
+
+I provide a complete copy of a patched comint.el here because I'm tired of trying to track the changes to the original in all of the Emacs 20 versions.  The complete copy is easy to install, just copy it into your LoadPath.

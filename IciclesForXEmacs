@@ -1,0 +1,67 @@
+This page is for discussion of the XEmacs ports of '''[[Icicles]]''' libraries.
+
+----
+
+Greg -- 
+
+Occasionally synching (or partially updating) the XEmacs files is all anyone could ask of a maintainer of an external package. That's very helpful.
+
+It would be good to put your name in the files as ##Maintainer##, just for the record, and so that you too can be apprised of bugs in them. As it stands now, it looks as if I am responsible for the files and will update them, whereas I haven't a clue when it comes to XEmacs. The headers even say that the files were last updated by me.
+
+Don't think of it as a responsibility. Even if you never made another update, it would still be good to have you listed as the last updater. Consider using my library <tt>[[header2.el]]</tt>, which will automatically update the header with your login name. I don't know if it works with XEmacs, but it's worth a try. 
+
+Again, thanks for what you've done and for trying '''Icicles'''. Let me know if you have any suggestions (-> IciclesDiscussion). -- DrewAdams
+
+---- 
+
+Drew,
+
+First, I would like to thank you for the great package. I use it for all my [[Completion]] needs (except for buffer switching, here i'm stuck with isearchb/iswithb) and never look back for old completion mechanism. I don't have time to be real maintainer of <tt>[[icicles-xmas.el]]</tt> and <tt>[[icicles-menu-xmas.el]]</tt> but i will try to post updates/syncs when available. Current version of icicles-xmas.el is partial sync of last icicles.el version before split to multiple files. As to changes that could help xemacs port, i think you already done it by supporting earlier emacs versions.  In many cases emacs20/21 code works as is in xemacs.
+
+-- GregChernov
+
+----
+
+Today (2006-03-03), GregChernov updated <tt>[[icicles-xmas.el]]</tt>.
+
+'''''Greg''''' -- 
+
+# ''Thanks!''
+# See text below (2005-11-25).
+# Are you also "BZQ"?
+# Would you like to maintain <tt>[[icicles-xmas.el]]</tt> and <tt>[[icicles-menu-xmas.el]]</tt> -- that is, receive bugs about them and periodically update them?
+# If so, then please add your name as ##Maintainer## in the libraries, and perhaps replace the email address for sending bugs with your email address.
+# It would be good to mention somewhere in the header of the ##*-xmas.el## files which versions of the GNU-Emacs files they correspond to (e.g. <tt>Update #</tt> or date). That would help debugging and maintaining.
+# BTW, the URL in <tt>[[icicles-xmas.el]]</tt> currently points instead to <tt>[[icicles.el]]</tt>.
+# Please let me know what changes to the GNU-Emacs code might facilitate maintenance of the XEmacs ports.
+
+-- DrewAdams
+
+----
+
+
+Today (2005-11-25), bzq-25-79-210.cust.bezeqint.net (what's your name, BTW? I'll call you "BZQ", for now) submitted two libraries, '''Lisp:icicles-xmas.el''' and '''Lisp:icicles-menu-xmas.el''', which are '''[[XEmacs]] ports''' of my GnuEmacs libraries Lisp:icicles.el and Lisp:icicles-menu.el, respectively.
+
+First, I've got to say that this is ''great'' -- it is good to make '''[[Icicles]]''' and '''IciclesMenu''' available for XEmacs too.
+
+It would be ideal if someone integrated the XEmacs ports with the GNU Emacs code, and then someone maintained the integrated versions. I am the logical person to do the latter, as I enhance and make bug fixes to '''Icicles''' from time to time (for GNU Emacs). However, I don't know XEmacs at all, so I would not be able to maintain the XEmacs-specific code in integrated libraries. IOW, that ideal plan won't work.
+
+The next best thing would be for BZQ to:
+
+: 1. maintain the XEmacs port (incorporating updates made to the GNU Emacs port, when appropriate)
+
+: 2. let me know what might facilitate maintenance of the XEmacs ports, so I could make appropriate minor changes to the GNU Emacs code
+
+So, this is a request to BZQ to please do those things. Any maintenance of the XEmacs versions would be up to BZQ.  That is, it would be BZQ's choice whether or not to bother updating the XEmacs versions when the GNU Emacs versions change. The two language versions would likely get out of synch to some degree (they are already, because I submitted some minor bug fixes after the port), but that's OK.
+
+The real point is to have BZQ's name in the `xmas' libraries as `Maintainer', so that XEmacs-specific bugs and suggestions can be reported to BZQ. (BTW, it might be good to rename the `xmas' in the file names to `xemacs', to make it clearer what the libraries are -- although I do appreciate the allusion to icicles at Christmas time ;-).)
+
+I `diff'ed the GNU Emacs and XEmacs versions of each library, thinking that I might be able to make an initial integration, or at least move the GNU Emacs code a little closer toward the XEmacs version. There are, however, many differences, and (not knowing XEmacs) it's not clear to me what the various differences mean.
+
+I did notice that one minor difference was that the XEmacs port had no asterisk (`<code>*</code>') characters in symbol names. I assume that that is a XEmacs requirement. So, I have renamed the `-*Completions*-' symbols in the GNU Emacs libraries accordingly, removing the asterisks. That should at least make `diff'ing the files easier, facilitating maintenance a little bit. So, WRT request #2: please let me know, BZQ, if there are other such minor changes that would help portability. (You can email me at <code>d r e w . a d a m s @ o r a c l e . c o m</code>.)
+
+Again, I think this is great -- thanks to BZQ for this. I regret that I won't be able to help with the XEmacs code, but if BZQ is willing to maintain it we should be able to provide '''Icicles''' to users of both Emacs dialects. -- DrewAdams
+
+----
+
+CategoryPorts ComparativeEmacsology CustomizingBoth CategoryCode CategoryCompletion CategoryMenus 

@@ -1,0 +1,21 @@
+I think the script has a bug that has lead to the loss of pages.
+The suspected hole is plugged (empty pages are no longer saved),
+but it seems that an odd number of pages has been affected:
+
+!AdrianAichnerErcConfiguration
+!ArunRaghavan
+DCC_Chat_mit_ERC
+!EmacsOnPDA
+!JoeCorneli
+jmontrose
+!KevinRodgers
+!LangPoll
+!PortageMode
+譌･譛ｬ隱樒沿 !HowTo
+
+The pages that need restoring from a backup because they are linked from elsewhere are
+JoeCorneli, KevinRodgers, PortageMode, and AdrianAichnerErcConfiguration.
+
+I'm looking through my backups for usable copies of the file.
+If you have any backups yourself [http://www.emacswiki.org/cgi-bin/list-archive] please help.
+-- AlexSchroeder

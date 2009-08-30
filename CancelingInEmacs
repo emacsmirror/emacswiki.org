@@ -1,0 +1,31 @@
+== Canceling an Action ==
+
+You can use `C-g' to cancel any action you have
+started. For some actions, you may need to repeat this. (If even
+this doesn't clear things up entirely, then try `C-]' or `M-x top-level'; that should do the trick.)
+
+'''Example 1:''' You start to enter a command, with `M-x some-command'. Before you enter it (with the <code>RET</code> key), you use `C-g' to cancel what you started.
+
+'''Example 2:''' You enter command `M-x some-command' and it starts to execute. It seems to take a while, and you're not sure what it's doing. You use `C-g' to cancel the command execution.
+
+
+== Mapping ESC to Cancel ==
+Many OperatingSystems and applications map the ESC key to Cancel, so CustomizingEmacs this way can increase EmacsNewbie comfort.
+
+But ESC is mapped as another MetaKey by default, so this could cause trouble if you are already having MetaKeyProblems.
+
+Here is some pseudo-code:
+{{{
+(if (Alt-works-as-meta?) ;; don't map if console has broken Alt key 
+      (progn
+        (global-set-key [escape] 'keyboard-quit) ;; all platforms?
+        (setq w32-quit-key 27) ;; needed in MicroSCOft cages?
+    ))
+}}}
+
+[new]
+Why not call the `keyboard-escape-quit' function? it's even more do-what-i-want oriented. -- SylvainGarden
+
+----
+CategoryCommands
+CategoryHelp

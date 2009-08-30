@@ -1,0 +1,9 @@
+tjic-shell.el
+
+This package enhances shell mode to allow a ring of shell buffers.
+
+One keystroke brings a new shell buffer into existance.  Two other keystrokes cycle through all of the shell buffers.  Shell buffers that have been killed are dealt with cleanly and invisibly: the up/down scrolling through shells does the right thing.
+
+Bug reports and feature requests are encouraged. 
+
+* http://www.emacswiki.org/elisp/tjic-shell.el

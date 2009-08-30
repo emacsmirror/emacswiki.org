@@ -1,0 +1,19 @@
+=Magit=
+
+Magit is an emacs mode for interacting with the [[Git]] version control system. It's written by MariusVollmer, of GNU/Guile fame.
+
+Get it from: http://zagadka.vm.bytemark.co.uk/magit/
+
+[new:RodrigoWanderley:dt jun  30 21:25:37 CEST 2008]
+Had to change magit-escape-for-shell to:
+
+  (defun magit-escape-for-shell (str)
+    (if (or (string= str "git")
+        (string-match "^--" str))
+          str
+        (concat "'" (replace-regexp-in-string "'" "'\\''" str) "'")))
+
+To make it work on windows. -- RodrigoWanderley
+
+----
+CategoryVersionControl

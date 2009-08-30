@@ -1,0 +1,135 @@
+Before getting on to the meat of this page: Please do /not/ add any information of /questionable/ source.  This means that information gleaned from examination of the binary you got from http://codingmonkeys.de is right out, including simply running strings on it.  What's in is information gleaned by any of the methods described in http://samba.org/ftp/tridge/misc/french_cafe.txt -- specifically, anything that only involves running the program, and examining the information it sends across the wire.  While it is my belief that reverse engineering for the purpose of interoperability is a protected right, it's not 100% clear, esp as you go from jurisdiction to jurisdiction.  I figure that if Andrew Tridgel feels OK saying in open court that he did these things against Microsoft, we're probably safe from the presumably less litigious codingmonkeys.
+
+----
+
+The purpose of this page is to describe the SubEthaEdit protocol. This information can then be used to interface other editors with SubEthaEdit, for example, emacs, see SubEthaEmacs.
+
+On to the information you were looking for:
+
+The SubEthaEditProtocol has a fair number of parts.  
+
+You've probably heard that it uses Rendevous (AKA ZeroConf).  While this is true, its use of rendevous isn't interesting; it's only useful when you have multiple users on the same subnet.  In any case, it simply advertises <username>@<computername>._see, with no additional data that I can see.  I have no particular interest in supporting this part of the protocol: sessions will be initiated by giving the hostname or IP and optionally port.  (The default port is 6942, which codingmonkeys says can be remembered because 6*9=42 -- it's a HitchhikersGuideToTheGalxy reference.)
+
+The actual conversations between SEE client and server are done under the BlocksExtensibleExchangeProtocol (RFC 3080 and 3081), which in turn uses XML and MIME.  (Very simple versions of both -- the only MIME header used is Content-Type.)
+
+Messages in channel 0 are fully specified in RFC 3080.  On the other channels, the authors of SEE decided to ignore the recommendation of the RFC authors to use MIME. (Note by a SEE author: we did this for the obvious reason that: a) having our own profiles means that doesn't worry anybody else and b) since we use a lot of very small messages, the redundant MIME headers would just add up and use unnecessary bandwidth).  Instead, the payload consists of a three-letter major command code, mostly followed by a three-letter minor command code, often followed by bencoded data.  Bencoding is the data format used by bittorent; it is specified (very briefly) at http://www.bittorrent.com/protocol.html.  The dialect that SEE uses has a small extension: Strings may have a . (ASCII 0x2e) after the length instead of a ':'.  These dot-strings are used for user-identifiers, and other such things that are not human-readable strings, but rather a bunch of random bytes.  I suspect the correct interpretation is that '.' strings contain binary data without semantics, whereas ':' strings are always utf-8.  (Note that the length for strings of both types is in /bytes/, not logical characters.)
+
+----
+
+As soon as a SEE instance has an open socket, it sends 
+   <nowiki><greeting><profile uri="http://www.codingmonkeys.de/BEEP/SubEthaEditHandshake" /><profile uri="http://www.codingmonkeys.de/BEEP/TCMMMStatus" /><profile uri="http://www.codingmonkeys.de/BEEP/SubEthaEditSession" /></greeting></nowiki>
+
+, advertising support for three profiles: 
+* <nowiki>http://www.codingmonkeys.de/BEEP/SubEthaEditHandshake</nowiki>
+* <nowiki>http://www.codingmonkeys.de/BEEP/TCMMMStatus</nowiki>
+* <nowiki>http://www.codingmonkeys.de/BEEP/SubEthaEditSession</nowiki>
+
+Upon receiving this message from the other end, the client of the connection requests a SEEHandshake channel from the server.
+
+----
+SEEHandshake:
+
+* GRT: This is sent immediately upon initiation of the channel.  Takes a dictionary with the following vals:
+** url => URL of the remote end of the connection -- sometimes has a <nowiki>see://</nowiki> protocol on it, sometimes does not.  Always seems to include the port.
+** uid => UUID of... something.  Undetermined if this is the client install, the user, or what.  Normal hex, dash-separated format, without curly braces.  (As spec'd in, for ex, http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-05.txt.)
+** vers => the version of the protocol in use?  Only known value is '200'.
+
+* ACK: Acknowledges a message from the other end of the connection.  Possibly the simplest payload, it takes no extra data of any sort.  FIXME: what packet is this acking?
+
+...more later.
+
+----
+TCMMMStatus:
+
+A TCMMMStatus channel is created by both sides of the connection.
+
+* USRCHG: User Change (?) - Gives a short description of a user, a dictionary with the following vals:
+** cnt => An integer, presumably some sort of count (of what?)
+** name => A user name.
+** uID => A 16 byte id string unique for the user (presumably).
+
+* STAVIS: Status Visible (?) - Not sure of the purpose of this one, no known content.
+
+* USRREQ: User Request (?) - Only see with an empty list as content, so far, maybe its supposed to be a list of users that the peer should send full information for?
+
+* USRFUL: User Full (?) - A longer user description, including:
+** cnt => An integer, counting something.. ? 
+** hue => As an integer, color of something, probably highlight color of this user's text
+** uID => Users unique ID, same as in USRCHG 
+** name => Users name, same as in USRCHG 
+** mail => Users email address, probably taken from Address Book data
+** PNG => The users icon, as a PNG file (contains the actual picture data as a byte string), probably taken from NetInfo data
+** AIM => Users AIM screenname, probably taken from Address Book data 
+
+* DOCANN: Document Announce (?) - Announces each document that the peer has to offer:
+** name => Name of the document 
+** sID => ID of something
+** hID => Yet another ID of something
+** acc => ??
+
+----
+SubEthaEditSession:
+
+Started by the client (either side?) to join a particular document.
+
+* JONJON: Join request - sent by the client
+** UserNotification => a dictionary containing:
+*** cnt => An integer, counting ?
+*** name => Users name
+*** uID => Users unique ID
+** SessionID => UUID denoting the session, see GRT
+
+* JONACK: Join Acknowledge - Empty acknowledge command
+
+* SESINF: Session Information - Information about the session, from the document owning peer
+** ContentLength => Integer - doc length?
+** Participants => a dictionary containing:
+*** ReadWrite => a list of dictionaries containing:
+**** User => a dictionary containing:
+***** cnt => integer, counter (?)
+***** name => users name
+***** uID => Users unique id
+**** SessionProperties => an empty dictionary ?
+**** User => .. 
+** Contributors => a list of dictionaries of:
+*** cnt
+*** name
+*** uID
+** DocumentSessionInformation => a dictionary containing:
+*** UseTabs => Integer (0/1)
+*** DocumentMode => String "SEEMode.Base"
+*** LineEnding => Integer 1
+*** TabWidth => Integer 4
+*** WrapLines => Integer 1
+*** WrapMode => Integer 1
+
+* USRREQ: User Request - empty list
+
+* SESCON: Session Connection (?) - Original document status ?
+** TextStorage => dictionary containing:
+*** String => String containin document content
+*** Encoding => Integer 30
+** Attributes => dictionary containing:
+*** ChangedByUserID => list of dictionary containing:
+**** val => UUID
+**** loc => Integer 0
+**** len => Integer 1508
+** WrittenByUserID => list of dictionary containing:
+*** val => UUID
+*** loc => Integer
+*** len => Integer
+
+* DOCMSG: Document Message - 
+** op => dictionary containing:
+*** ot => "sel" | "txt" | "nop"
+*** len => Integer (not present with ot => "nop")
+*** uid => User unique id 
+*** loc => Integer (not present with ot => "nop") - cursor location
+*** str => String that was added (only present by ot => "txt")
+** #C => Integer
+** #S => Integer
+
+
+----
+
+CategoryInterface

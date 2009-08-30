@@ -1,0 +1,104 @@
+= smooth-scrolling.el =
+
+http://emacs.wordpress.com/2007/09/10/smooth-scrolling/
+
+= Sniplets =
+
+If you want the text to scroll one line at a time when you move the [[cursor]] past the top or bottom of the window, use the following setting:
+
+   (setq scroll-conservatively 10000)
+
+Unfortunately, the text still jumps sometimes, in a really irritating way.  I haven't been able to work out why or how to stop it.
+
+The scrolling will still be jumpy if Emacs is unable to redisplay text fast enough to keep the scrolling rate up (this typically happens on slow terminals). The view will then be recentered around the cursor.  Recentering also occurs if you move more than one (or the number specified by scroll-step) lines away from the visible portion of the buffer. -- MicheleBini
+
+[new]
+I've discovered that it is possible to get rid of the jumpiness at the cost of slowing scrolling down quite a bit (but I think I prefer it slow-and-smooth):
+
+   (setq scroll-step           1
+         scroll-conservatively 10000)
+
+-- GeoffRichards
+
+[new]
+Using the above combination can cause a display lock-up in some cases.  It is best to leave out `scroll-step' altogether.  This is also what the online help recommends. -- HenrikEnberg
+
+[new]
+I've found a Emacs Lisp sniplet for smooth scrolling:
+http://www.cs.utexas.edu/users/hllu/EmacsSmoothScrolling.html. -- MarkusKnittig
+
+[new]
+The above link no longer exists; however you can see it here:
+http://web.archive.org/web/20061025212623/http://www.cs.utexas.edu/users/hllu/EmacsSmoothScrolling.html.
+
+Also see my solution below, which has a number of advantages over this code:
+* doesn't allow a scroll margin more than 1 line
+* doesn't require truncate-lines to be set
+* doesn't require global rebinding of cursor keys (so also works for C-n/C-p etc.))
+* has enough intelligence to know when it's preferable not to scroll  
+-- AdamSpiers
+
+[new]
+GeoffRichards tip works fine (GNU Emacs 21.3.50 Mac OS X/Carbon). I've missed this a long time. Another thing I've missed is to be able to scroll up (or down) with page-up a number of pages or to the top of the file, and then press the opposite key as many times as the first and get back to exactly the same cursor position. I used this a lot before my Emacs days to take quick glances at code a bit away and it's a good complement to isearch and pop-mark which I use nowadays. How can I do this in Emacs? -- IsakJohnsson
+
+[new]
+: try binding these to <next> and <prior>:
+
+ (defun chb-page-down ()
+   (interactive)
+   (when (featurep 'xemacs) (setq zmacs-region-stays t))
+   (forward-line
+    (- (if (fboundp 'window-displayed-height)      ;XEmacs
+           (window-displayed-height)
+         (window-text-height))                     ;GNUEmacs
+       next-screen-context-lines)))
+
+ (defun chb-page-up ()
+   (interactive)
+   (when (featurep 'xemacs) (setq zmacs-region-stays t))
+   (forward-line
+    (- (- (if (fboundp 'window-displayed-height)   ;XEmacs
+              (window-displayed-height)
+            (window-text-height))                  ;GNUEmacs
+          next-screen-context-lines))))
+
+-- ClausBrunzema
+
+[new]
+Here's a comprehensive solution to the problem of scrolling back to the same place after scrolling up or down -- I highly recommend this package:
+http://www.cs.utah.edu/~eeide/emacs/scroll-in-place.el.gz (but we're getting away from the topic of smooth scrolling). -- PeterHeslin
+
+[new]
+How is this scroll-in-place package better than the built-in `scroll-preserve-screen-position'? Also, I'm surprised no one mentioned `scroll-margin' yet.  Unfortunately it's far from perfect:
+http://www.etc-network.de/blog/mel/emacs/tip-scroll-step.print -- AdamSpiers
+
+[new]
+Also possible: the cursor simply stays vertically in the middle of the frame (except at the beginning of buffer). You can always see what is before and after the cursor and it scrolls smoothly, too.  But it takes getting used to.
+
+ (add-hook 'post-command-hook
+   (lambda ()
+     (recenter '("don't redraw"))))
+
+-- AndreRiemann
+
+[new]
+This post-command-hook suffers from the same problems as scroll-margin - it often scrolls the window when you don't want it to (e.g. when you move the point by left-clicking the mouse).  Here's a near-perfect solution for me:
+http://www.adamspiers.org/elisp/smooth-scrolling.el. -- AdamSpiers
+
+[new]
+I made a little minor mode, where the cursor stays centered in the window. Except when point is moved per mouse click.
+The above mentioned snippet (post-command-hook) is obsolete. The mode could be found here: <tt>[[centered-cursor-mode.el]]</tt>. -- AndreRiemann
+
+[new]
+None of the above seems to do much for jumpy mouse scrolling. I wrote a snippet that rebinds the mouse scroll wheel to a couple of functions that scroll several lines, pausing between each line. Find it here: http://zwell.net/content/emacs.html#scrolling. -- DanZwell
+
+[new:DrewAdams:2009-02-16 01:34 UTC]
+I added local and global highlighting modes that can help focus attention on a "window" of the several lines that surround the cursor -- see [[HighlightCurrentLine#HlSpotlight|HL Spotlight]] and library <tt>[[hl-spotlight.el]]</tt>. By default, these modes also turn on local or global cursor-centering modes, as defined in <tt>[[centered-cursor-mode.el]]</tt>. -- DrewAdams
+
+
+
+
+
+----
+CategoryDisplay
+CategoryMouse

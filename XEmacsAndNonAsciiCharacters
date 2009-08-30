@@ -1,0 +1,14 @@
+According to EmacsAndXEmacs, "Use Emacs if non-ASCII support is important to you."
+
+[new]
+XEmacs works just fine with Unicode etc -- ShaeErisson
+[new]
+Editing Kuhn's example UTF-8-demo document demonstrates some of the issues
+(when you've found out how to get utf-8 support in the first place).  There
+are various problems even for locales like Latin-9 due to missing fundamental
+features and lack of support for others.  Also I understand that Mule isn't
+supported in a stable form under MS Windows.  -- Dave Love
+
+----
+CategoryHistory
+CategoryInternationalization

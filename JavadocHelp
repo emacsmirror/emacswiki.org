@@ -1,0 +1,28 @@
+= Javadoc-Help for Emacs =
+
+Javadoc-Help is an add-on module for Emacs that let you jump to a Javadoc page in the browser.  While editing in Emacs, you can place your cursor on a class name, hit a key (F1) to search through multiple online and local Javadocs, and jump to the Javadoc documentation for the class in the system web browser.
+
+When working on Java projects, it's often needed to look up the Javadoc documentation of a class in JDK, in the third party libraries, or in the current project. Javadoc-Help allows you search through multiple javadocs quickly in Emacs, remote or local, and open up the found class in a browser.
+
+
+Home page: http://javadochelp.sourceforge.net/
+
+Project page: http://sourceforge.net/projects/javadochelp/
+
+
+= Feature Overview =
+
+* Search Java class name in multiple javadocs
+* Support remote online javadoc (URL)
+* Support local directory-based javadoc
+* Interactive javadoc setup and management
+* Search term as class, package, partial name, or regex.
+* Allow selection among multiple matched results
+* Open a class, its package, or the main index javadoc
+
+
+
+.
+----
+CategoryProgrammerUtils
+

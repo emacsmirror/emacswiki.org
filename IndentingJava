@@ -1,0 +1,24 @@
+The most important thing to remember is that Java files use a ''different style''. Therefore, to customize Java indentation, use the ##java-mode-hook##:
+
+    (add-hook 'java-mode-hook (lambda ()
+                                (setq c-basic-offset 3)))
+
+The `c-basic-offset' variable controls the basic "unit" of the indentation engine. When you hit the TAB key, you tell the indentation engine to indent to "the right place". This will insert tabs and spaces as required. Therefore, hitting TAB will usually advance point by 3 when indenting Java source.
+
+When you read other people's Java source, however, tab characters will still be 8 wide.
+
+Here is how to fix it:
+
+    (add-hook 'java-mode-hook (lambda ()
+                                (setq c-basic-offset 3
+                                      tab-width 3
+                                      indent-tabs-mode t)))
+
+This says that hitting TAB should advance point by 3, that tab characters in source files should display 3 wide, and that Emacs should use tab characters when it can. Therefore, the TAB key will insert tab characters, and they will display 3 wide.
+
+If you set 'indent-tabs-mode' to nil, then Emacs will insert 3 spaces instead.
+
+See also IndentingC and SmartTabs for more info.
+
+----
+CategoryIndentation

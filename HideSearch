@@ -1,0 +1,9 @@
+HideSearch is similar to the standard emacs "isearch", but incrementally hides non-matching lines as it searches.
+
+* Lisp:hidesearch.el
+
+See the comments at the top of this file for how to get it working and other tips.
+
+It depends on hide-lines.el, to handle the work of doing the actual hiding.
+
+* Lisp:hide-lines.el

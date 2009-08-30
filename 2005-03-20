@@ -1,0 +1,20 @@
+The server experienced a filesystem crash (XFS).
+Several files were damaged.  I'm trying to restore corrupt files from a backup.
+Goes to show how imported the occasional WikiDownload is.  :)
+Anyway, I locked the site while I work on it.
+
+Time passes...
+
+Done.
+Not all pages had usable backups, however:
+
+EdgarGonçalves
+EmacsOnAIX
+JessRobinson
+JamesMastros
+LispLispLisp
+SubEthaEmacs
+SubEthaEditProtocol
+
+If you have a copy of these files somewhere, please help to recreate them.
+I've tried to recover these pages from older revisions where available.

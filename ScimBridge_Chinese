@@ -1,0 +1,57 @@
+scim-bridge.el 是 GNU Emacs 里面的 SCIM-Bridge 客户端. ([http://www.emacswiki.org/cgi-bin/emacs/ScimBridge EnglishVersion])
+
+scim-bridge.el 可以保存不同缓存里面的输入状态, 这样你可以在 Emacs 里快速的输入中文, 而不用反复的切换全局的输入状态, 非常方便.
+
+==什么是 SCIM?==
+[http://www.scim-im.org/ SCIM] 是一个通用的智能输入法平台 (支持 中文, 日文, 韩文和许多欧洲语言), 可以使用在 POSIX 风格的操作系统, 包括 Linux 和 BSD.
+
+==安装==
+* 安装 SCIM:
+** 在 Debian 里, 步骤非常简单:
+:: sudo aptitude install scim scim-bridge-agent scim-bridge-client-gtk scim-bridge-client-qt4 scim-qtimm -y
+** 你还可以使用下列命令来安装"拼音输入法":
+:: sudo aptitude install scim-pinyin -y
+
+* 安装 scim-bridge.el:
+** 从 [http://www11.atwiki.jp/s-irie/pages/12.html scim-bridge] 里下载最新的压缩包.
+** 让 Emacs 禁用 XIM:
+*** 加入以下的命令到 ~/.Xresources:
+::: Emacs*useXIM: false
+*** 然后执行下列命令生效:
+::: xrdb ~/.Xresources
+** 加入 scim-bridge.el 到 load-path:
+*** 解压 scim-bridge 的压缩包并放在 "~/elisp" 目录下, 然后添加下列命令到 ~/.emacs:
+{{{
+            (add-to-list 'load-path (expand-file-name "~/elisp"))
+}}}    
+** 修改 SCIM 的切换键:
+*** 应为 Ctrl-Space 按键被Emacs默认绑定了， 所以要在 SCIM 图形设置界面里添加其他的按键， 比如 
+Super-Space (其他任意键也可以).
+** 加载并设置 scim-bridge.el:
+*** 加入下列到 ~/.emacs:
+{{{
+            ;; 加载.
+            (require 'scim-bridge-zh-si)
+            ;;; 如果你使用繁体中文, 用 (require 'scim-bridge-zh-tr) 替换.
+            ;; 加载 ~/.emacs 后自动开启 scim-mode.
+            (add-hook 'after-init-hook 'scim-mode-on)
+            ;; 设置输入法切换键
+            (scim-define-common-key (kbd "s-SPC") t)
+            ;; 使用 C-SPC 用作标记命令.
+            (scim-define-common-key (kbd "C-SPC") nil)
+            ;; 使用 C-/ 用作撤销命令.
+            (scim-define-common-key (kbd "C-\\") nil)
+            ;; 设置不同输入状态下光标颜色.
+            (setq scim-cursor-color '("red" "blue" "limegreen"))
+}}}
+
+: 现在按一下  Suepr-Space, 开始输入中文吧。
+
+==自定义==
+* 你可以通过下列方法自定义 scim-bridge.el:
+:: M-x customize-group RET scim-bridge RET
+
+: 我已经把相关的文档翻译成简体中文和繁体中文, enjoy! :)
+
+==截图==
+[[image:ScimBridgeScreenshot]]

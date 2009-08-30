@@ -1,0 +1,26 @@
+A symptom, and a workaround.
+
+I'm using the Win32 version of GNU Emacs 21.2, also known as NTEmacs.
+
+I'm also using Cygwin, and often invoke Cygwin programs from with Emacs.  (For example, I use bash as the inferior shell).
+
+One problem I've noticed recently: I do <tt>M-x man foo RET</tt>, and Emacs signals an error about not being able to find the program <tt>sh</tt>.  This mystifies me; Emacs has no problem finding other programs.
+
+So rather than figure out why it couldn't run <tt>sh</tt>, I discovered that I could persuade it not to try ... by removing the function definition of <tt>start-process</tt>.  Since that's a big change that's likely to break other stuff, I encapsulated the change using <tt>defadvice</tt> like this:
+      (defadvice Man-getpage-in-background (around makunbound-start-process activate)
+        (let ((old-start-process (symbol-function 'start-process)))
+          (unwind-protect
+              (progn
+                (fmakunbound 'start-process)
+                ad-do-it)
+            (fset 'start-process old-start-process))))
+This unbinds <tt>start-process</tt> just long enough to run <tt>Man-getpage-in-background</tt>, then restores the binding -- even if there's an error getting the man page.  Works great!
+
+This looks very ugly!  Check your `exec-path' variable -- is the
+sh.exe file in one of these directories?  If so, and it still does not
+work, paste the data here. -- AlexSchroeder
+
+D'oh!  It <em>was</em> `exec-path'; for some reason I forgot to set it (I'd thought that doing <tt>(setenv "PATH" (concat "c:/cygwin/bin" (getenv "PATH")))</tt> would do it, but it doesn't.  Things sure work better now that I got `exec-path' right ...
+
+----
+CategoryDotEmacs

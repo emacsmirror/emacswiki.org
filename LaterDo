@@ -1,0 +1,33 @@
+later-do.el will help you "fork off" a thread of execution that does
+things while the user can still work with emacs. This is a dog cheap
+trick: We just call a function in a timer. You add a function that
+does a simple task, and adds another function for the next task. So,
+this is a kind of cooperative threading.
+
+Example:
+
+ (defun foo (x)
+   (message "Foo: %s" x)
+   (unless (null x)
+     (later-do 'foo (cdr x))))
+
+ (later-do 'foo '(1 2 3 4 5 6))
+
+This will print
+
+ Foo: (1 2 3 4 5 6)
+ Foo: (2 3 4 5 6)
+ Foo: (3 4 5 6)
+ Foo: (4 5 6)
+ Foo: (5 6)
+ Foo: (6)
+ Foo: nil
+
+in your *Messages* buffer, while you can still work with emacs while
+it does this. In case you haven't noticed: this is a sort-of tail call
+optimization for elisp, too ;)
+
+http://www.emacswiki.org/elisp/later-do.el
+
+----
+CategoryCode

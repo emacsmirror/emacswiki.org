@@ -1,0 +1,34 @@
+This page is about using telnet with Emacs running on MS Windows. There are at least two ways to go: 1) a Windows telnet executable and 2) a Cygwin telnet executable (also for Windows). There are at least two Emacs telnet commands for use with these two executables -- these are both in library Lisp:telnet-contrib.el.
+
+[:WindowsTelnet]
+== Windows Telnet Executable ==
+
+If you are using MS Windows, before you can use telnet-mode from within Emacs (M-x telnet), you need a telnet client other than the one found on the system; the system telnet is a windows app, and cannot be used as a subprocess since it does not use stdio for input and output.
+
+* http://www.gnu.org/software/emacs/windows/faq8.html#telnet
+
+Various telnet variants claim to be suitable, eg. [http://dtelnet.sourceforge.net/ dtelnet].
+
+[new] 
+Most examples pointed to by the GNU entry are now dead links. :(  What do most people here use for telnet under widows?  And "Switch to *nix!" won't work for an answer. ;-)  --Tennis Smith (aka 'gamename')
+
+[:CygwinTelnet]
+== Cygwin Telnet Executable ==
+
+When you use the telnet program that comes from the CygWin project the call (accept-process-output process) in the telnet function defined in telnet.el never returns.  
+
+A workaround is to override or to modify the telnet function with the 
+(accept-process-output) commented out.
+
+see:
+
+* http://www.khngai.com/emacs/cygwin.php
+
+
+== Emacs `telnet' Commands for Windows: `telnet-contrib.el' ==
+
+Library Lisp:telnet-contrib.el has two Emacs telnet commands for MS Windows, which work with the Milavec/Ramati code mentioned above ([[#WindowsTelnet]]) and the Cygwin port mentioned above ([[#CygwinTelnet]]), respectively. I forget where I picked up the Milavec/Ramati code. The commands in Lisp:telnet-contrib.el were written by Zoltan Kemenczy and Ngai Kim Hoong, and they seem to still work fine, with both Emacs 20 and Emacs 22. -- DrewAdams
+
+
+----
+CategoryWThirtyTwo

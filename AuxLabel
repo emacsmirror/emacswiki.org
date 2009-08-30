@@ -1,0 +1,319 @@
+;;; auxlabel.el --- Insert Latex \ref{} and \cite{} using actual numbers
+
+;; Copyright (C) 2007 Timothy M. Toolan
+
+;; Author: Tim Toolan <toolan@ele.uri.edu>
+;; Version: $Id:$
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Commentary:
+
+;; One powerful feature of Latex, is the ability to use labels to
+;; refer to almost anything.  This is great when a new equation is
+;; inserted in the middle of the document, and all equation numbers
+;; and references to those equation are updated automatically.  It is
+;; not so great when one has to remember what the label name is when
+;; referring to an equation or section.  
+;;
+;; RefTex was designed to make this process easier, but still requires
+;; one to find the label.  If one has the typeset version of the
+;; document open in a window right next to emacs while writing, it is
+;; nice to refer to equation 5 as "5", rather than the label
+;; "eq:abcdefg". 
+;;
+;; This library provides functions that allow one to refer to any
+;; equation, figure, section, reference, etc..., as they appear in the
+;; typeset document, then it inserts the corresponding label into the
+;; buffer.
+
+;; Functions related to labels (ie. from the \label{} command) are:
+;;   auxlabel
+;;      Prompt for a number that appears in the document.
+;;      If it corresponds to only one label, insert "\ref{LABELNAME}".
+;;      If there are more than one occurence of this number, like 
+;;      eq. 3, sec. 3, and fig. 3, prompt for which label is desired, 
+;;      then insert "\ref{LABELNAME}" into the buffer.
+;;      This function is bound to the key "M-l".
+;;  
+;;   auxlabel-equation
+;;      Prompt for an equation number that appears in the document.
+;;      The labels for equations must start with "eq:".
+;;      Insert (\ref{LABELNAME}) into the buffer.
+;;      This function is bound to the key "M-n".
+;;
+;;   auxlabel-section
+;;      Prompt for an section number that appears in the document.
+;;      The labels for sections must start with "part:", "cha:", or "sec:".
+;;      Insert \ref{LABELNAME} into the buffer.
+;;
+;;   auxlabel-figure
+;;      Prompt for an figure number that appears in the document.
+;;      The labels for figures must start with "fig:".
+;;      Insert \ref{LABELNAME} into the buffer.
+
+;; Functions related references (ie. from the .bib file) are:
+;;   auxlabel-ref
+;;      Prompt for a number from the list of references.
+;;      Insert "\cite{LABELNAME}" into the buffer, where LABELNAME is 
+;;      the label for the reference as it appears in the .bib file.
+;;      This function is bound to the key "M-c".
+;;
+;;   auxlabel-ref-nocite
+;;      Prompt for a number from the list of references.
+;;      Insert "LABELNAME" into the buffer, where LABELNAME is 
+;;      the label for the reference as it appears in the .bib file.
+;;      This function is bound to the key "M-r".
+
+;; This library is compatible with both reftex and auctex.  It is
+;; intended for people who keep a refreshed document viewer open while
+;; writing the .tex file, and is a natural way to refer to labels
+;; while writing.
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; INSTALLATION
+
+;; This file can be loaded by either putting the line:
+;;   (load-file "~/elisp/auxlabel.el")
+;; in your .emacs file, where the path should be corrected to be the full 
+;; path to wherever this file is stored on the filesystem.
+;; Alternatively, you can put this file somewhere in the emacs
+;; search path (which is the directories in the "load-path" variable)
+;; then place the line:
+;;   (load-library "auxlabel")
+;; in your .emacs file.
+
+;; To bind additional keys (F6 for example) to any of these functions add:
+;;  (define-key global-map [f6]   'auxlabel-equation)
+;;  (define-key global-map [S-f6] 'auxlabel)
+;; to your .emacs file.
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; THE DETAILS
+
+;; There are really two primary functions in this file, one for labels
+;; (ie. \ref{} commands), and one for citations (ie. \cite{})
+;; commands.  The other functions are just wrappers of these functions
+;; to allow key bindings to take advantage of the function arguments.
+
+;; LABELS
+;; The function to deal with labels is "auxlabel".  It is an interactive 
+;; function, which has three arguments, all of which are optional.  
+
+;; The first argument is a label prefix, and by default it is an empty
+;; string.  If it is specified, then "auxlabel" will only match labels
+;; that begin with that prefix.  For example, if equation 3 has label
+;; "eq:abcd", section 3 has label "sec:wxyz", and figure 3 has label
+;; "fig:hijkl", then by default, if we run the command 
+;;   "M-x auxlabel <return> 3 <return>"
+;; we will be prompted in the minibuffer with
+;;   1) eq:abcd  2) sec:wxyz  3) fig:hijkl
+;; and we will have to enter 1, 2, or 3 to choose the appropriate label.
+;; If the first argument is "eq:", as it is defined in the function
+;; auxlabel-equation, then it will only find the label "eq:abcd", and
+;; will just insert that into the file.  Note that this argument can
+;; be a regular expression, such as "\\(part\\|cha\\|sec\\):", which
+;; will match any of the prefixes part:, cha:, or sec:.
+
+;; The second and third arguments are a prefix string and suffix string
+;; respectively, which are concatanated to the label.  By default
+;; the prefix is "\\ref{" and the suffix is "}", which will insert
+;; a label of the form \ref{sec:wxyz} into the file.  For the function
+;; auxlabel-equation, the prefix is "(\\ref{" and the suffix is "})",
+;; which will put parenthesis around it the reference.  It will therefore
+;; insert a label of the form (\ref{eq:abcd}).
+
+;; The functions that are defined for labels consist of auxlabel, 
+;; auxlabel-equation, auxlabel-figure, and auxlabel-section.  It is
+;; straightforward to define additional ones, such as for tables,
+;; by looking at any one of these functions.
+
+;; The auxlabel function works by searching for the \newlabel commands
+;; in the .aux file which corresponds to this .tex file, therefore it
+;; to work properly, it is critical that the .pdf, .dvi, or .ps file
+;; that you are viewing is current, otherwise you may get the incorrect
+;; label.
+
+;; CITATIONS
+;; The function to deal with citations is "auxlabel-ref".  It is an 
+;; interactive function, which has two arguments, both of which are 
+;; optional.  
+
+;; The arguments are a prefix string and suffix string respectively,
+;; which are concatanated to the label, similar to arguments 2 and 3
+;; in the auxlabel function.  By default they are "\\cite{" and "}"
+;; respectively, therefore the the if reference 5 corresponds to the
+;; label re:abcd, then the command
+;;   "M-x auxlabel-ref <return> 5 <return>"
+;; will insert \cite{re:abcd} into the file.
+
+;; The only other function defined for references is auxlabel-ref-nocite,
+;; which will just insert the label, which is useful when there are
+;; multiple references cited in one \cite command, such as
+;; \cite{re:abcd,re:defg,re:hijk}.
+
+;; The auxlabel-ref function works by searching for the \bibcite
+;; commands in the .aux file which corresponds to this .tex file,
+;; therefore it to work properly, it is critical that the .pdf, .dvi,
+;; or .ps file that you are viewing is current, otherwise you may get
+;; the incorrect label.  This means rerunning bibtex every time you add
+;; a new reference.
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; LIMITATIONS
+
+;; These functions currently only work if the document consists of
+;; only one .tex file.
+
+;; If the .aux file is not kept up to date, incorrect labels may be
+;; inserted.  This should not be a problem if there is a key binding
+;; in emacs which can be used to run latex, pdflatex, etc. then refresh
+;; the viewer.
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Code:
+
+;; bind M-l key to auxlabel (M-l was downcase-word)
+(define-key global-map "\M-l" 'auxlabel)
+
+;; bind M-n key to auxlabel-equation (M-n was unused)
+(define-key global-map "\M-n" 'auxlabel-equation)
+
+;; bind M-c key to auxlabel-ref (M-c was capitalize-word)
+(define-key global-map "\M-c" 'auxlabel-ref)
+
+;; bind M-r key to auxlabel-ref-nocite (M-r was move-to-window-line)
+(define-key global-map "\M-r" 'auxlabel-ref-nocite)
+
+(defun auxlabel-equation ()
+  "Insert an equation label beginning with eq: into the current file."
+  (interactive)
+  (auxlabel "eq:" "(\\ref{" "})"))
+
+(defun auxlabel-figure ()
+  "Insert a figure label beginning with fig: into the current file."
+  (interactive)
+  (auxlabel "fig:"))
+
+(defun auxlabel-section ()
+  "Insert a label beginning with part:, cha:, of sec: into the current file."
+  (interactive)
+  (auxlabel "\\(part\\|cha\\|sec\\):"))
+
+(defun auxlabel (&optional label-prefix prefix suffix)
+  "Insert a \\ref command using the value from the current document.
+It searches the .aux file associated with this .tex file, and if there is
+more than one occurence of the desired value, it will prompt the user.
+If LABEL-PREFIX is specified, only match labels that start with this string.
+If PREFIX and SUFFIX are specified, they will precede and follow the label
+that is inserted into .tex file, instead of the default \\ref{}."
+  (interactive)
+  ;; set auxlabel-filename to the current buffer with the .tex
+  ;; extension replaced with a .aux extension
+  (setq auxlabel-filename buffer-file-name)
+  (unless (string= ".tex" (substring (concat "xxxx" auxlabel-filename) -4 nil))
+    (error "Not a .tex file"))
+  (setq auxlabel-filename (concat (substring auxlabel-filename 0 -3) "aux"))
+  (unless (file-readable-p auxlabel-filename) 
+    (error (concat "Can't read '" (concat (substring (buffer-name) 0 -3) "aux")
+                   "'.  Try running latex on this file to generate it")))
+  ;; set prefix string like eq: or sec: which is part of the label
+  (if label-prefix (setq auxlabel-label-prefix label-prefix) 
+    (setq auxlabel-label-prefix ""))    
+  ;; set strings which precede and follow label when inserted into .tex file
+  (if prefix (setq auxlabel-prefix prefix) (setq auxlabel-prefix "\\ref{"))    
+  (if suffix (setq auxlabel-suffix suffix) (setq auxlabel-suffix "}"))    
+  ;; prompt for the label as it appears in the document
+  (setq auxlabel-num (read-string "Label number: "))
+  ;; do a regular expression search for all \newlabel commands in the .aux
+  ;; file which match the requested label number
+  (setq auxlabel-match-list nil)
+  (with-temp-buffer
+    (insert-file-contents-literally auxlabel-filename)
+    (while (re-search-forward 
+            (concat "^\\s-*\\\\newlabel{\\(" (or auxlabel-label-prefix "")
+                    "[^}]*\\)}{{" (regexp-quote auxlabel-num) "}{") nil t)
+      (setq auxlabel-match-list (cons (match-string 1) auxlabel-match-list))))
+  ;; check if there are any matches, and notify the user if there are none
+  (if auxlabel-match-list
+      (if (> (length auxlabel-match-list) 1)
+          ;; there is more than one match
+          (progn 
+            ;; construct prompt string
+            (setq auxlabel-multi-prompt-string nil)
+            (setq i 1)
+            (while (<= i (length auxlabel-match-list))
+              (setq auxlabel-multi-prompt-string 
+                    (concat auxlabel-multi-prompt-string (format "  %d) " i) 
+                            (nth (1- i) auxlabel-match-list))) 
+              (setq i (1+ i)))
+            ;; ask the user which label they want
+            (setq auxlabel-selection
+                  (read-char-exclusive auxlabel-multi-prompt-string))
+            ;; insert the label the user selected
+            (setq i 1)
+            (while (<= i (length auxlabel-match-list))
+              (if (string= (format "%d" i) (string auxlabel-selection))
+                  (insert 
+                   (concat auxlabel-prefix
+                           (nth (1- i) auxlabel-match-list) auxlabel-suffix)))
+              (setq i (1+ i))))
+        ;; there is only one match, so insert that label
+        (insert (concat auxlabel-prefix 
+                        (car auxlabel-match-list) auxlabel-suffix)))
+    (message "Label not found")))
+
+(defun auxlabel-ref-nocite ()
+  "Insert a citation label using the value from the current document."
+  (interactive)
+  (auxlabel-ref "" ""))
+
+(defun auxlabel-ref  (&optional prefix suffix)
+  "Insert a \\cite command using the value from the current document.
+It searches the .aux file associated with this .tex file.
+If PREFIX and SUFFIX are specified, they will precede and follow the label
+that is inserted into .tex file, instead of the default \\cite{}."
+  (interactive)
+  ;; set auxlabel-filename to the current buffer with the .tex
+  ;; extension replaced with a .aux extension
+  (setq auxlabel-filename buffer-file-name)
+  (unless (string= ".tex" (substring (concat "xxxx" auxlabel-filename) -4 nil))
+    (error "Not a .tex file"))
+  (setq auxlabel-filename (concat (substring auxlabel-filename 0 -3) "aux"))
+  (unless (file-readable-p auxlabel-filename) 
+    (error (concat "Can't read '" (concat (substring (buffer-name) 0 -3) "aux")
+                   "'.  Try running latex on this file to generate it")))
+  ;; set strings which precede and follow label when inserted into .tex file
+  (if prefix (setq auxlabel-prefix prefix) (setq auxlabel-prefix "\\cite{"))
+  (if suffix (setq auxlabel-suffix suffix) (setq auxlabel-suffix "}"))
+  ;; prompt for the citation number as it appears in the document
+  (setq auxlabel-num (read-string "Reference number: "))
+  ;; do a regular expression search for the \bibcite command in the .aux
+  ;; file which matches the requested label number
+  (setq auxlabel-match-list nil)
+  (with-temp-buffer
+    (insert-file-contents-literally auxlabel-filename)
+    (when (re-search-forward 
+           (concat "^\\s-*\\\\bibcite{\\([^}]*\\)}{" 
+                   (regexp-quote auxlabel-num) "}") nil t)
+      (setq auxlabel-match-list (match-string 1))))
+  ;; check if there are any matches, and notify the user if there are none
+  (if auxlabel-match-list
+      (insert (concat auxlabel-prefix auxlabel-match-list auxlabel-suffix))
+    (message "Reference not found")))
+
+(provide 'auxlabel)
+
+;;; auxlabel.el ends here

@@ -1,0 +1,32 @@
+If you keep hitting <code>M-q</code> to fill your paragraphs (see FillParagraph), <code>then auto-fill-mode</code> is for you.  It doesn't get rid of <code>M-q</code> altogether (use RefillMode (which replaces ManiacMode) for that), but it is a very good approximation:
+
+Type <code>M-x auto-fill-mode</code> to activate the MinorMode for the current buffer, or put the following in your .emacs to activate it for all text mode buffers:
+
+    (add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+Similarly, if you want to activate it for a particular mode, proceed as follows:
+
+* Determine the MajorMode.  Switch to a buffer with the appropriate mode, and type <code>M-: major-mode RET</code>.  This might return something like <code>change-log-mode</code> or whatever the MajorMode is.
+* Guess the name of the mode hook.  Just append "-hook" and hope for the best.  This gets me <code>change-log-mode-hook</code>.  If you want to verify the existence of such a hook variable, you can try to read its documentation: <code>C-h v change-log-mode-hook RET</code>.  This is not guaranteed to work, however, because hooks need not be defined.  Therefore, just use the guessed name anyway.
+* Add the following to your .emacs file:
+
+    (add-hook 'change-log-mode-hook 'turn-on-auto-fill)
+
+This is what I have in my .emacs file to quickly <b>toggle</b> auto fill mode:
+
+    (global-set-key (kbd "C-c q") 'auto-fill-mode)
+
+To automatically fill comments but not code in ProgrammingModes, something like this can be used.
+
+ (add-hook 'c-mode-common-hook
+ 	   (lambda ()
+	     (auto-fill-mode 1)
+	     (set (make-local-variable 'fill-nobreak-predicate)
+		  (lambda ()
+		    (not (eq (get-text-property (point) 'face)
+			     'font-lock-comment-face))))))
+
+
+
+----
+CategoryFilling | CategoryModes | CategoryDotEmacs

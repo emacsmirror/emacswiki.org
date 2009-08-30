@@ -1,0 +1,34 @@
+Rather than try to commit to maintaining yet another speed bump on
+the Information <nowiki>SuperhighwaM-backspace M-backspaceWWW</nowiki>,
+I'll simply provide a pointer to the web site I already managed to let
+become hopelessly out of date in some parts:
+
+* http://www.iki.fi/era/
+
+There's an Emacs section there somewhere, buried inside the Unix
+stuff. (I'll move it to its own page one day, and then the comment
+you are reading now will also be out of date.)
+
+In the meantime, I put some elisp code of mine up at
+
+* http://porkmail.org/elisp/
+
+I'm involved in too many things, so I will likely appear to have lost
+contact from time to time. Then suddenly perhaps I'll resurface and
+change everything on this Wiki (again <nowiki>:-)</nowiki>
+
+/* era */
+
+== Places I've Contributed ==
+
+I made some changes to the SiteMap and was probably the Evil Reason
+why AlexSchroeder started the SiteMapDiscussion page, where I was also
+active then.
+
+I've added some random links and comments in other places too, but
+those are pretty minor.
+
+I created CategoryRemoteEmacs although I'm afraid it might have been a bad move <nowiki>:-)</nowiki>
+
+----
+CategoryHomepage

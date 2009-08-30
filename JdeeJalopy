@@ -1,0 +1,13 @@
+Provides an interface between the JavaDevelopmentEnvironment and Jalopy (http://jalopy.sourceforge.net/), a "Java source code formatter beautifier pretty printer".
+
+
+1.0.4 has now loglevel INFO as default, which seems to confuse jde-jalopy, use 
+
+   (setq jde-jalopy-option-command-line-args "-lWARN")
+
+for the old behaviour
+
+Lisp:jde-jalopy.el
+
+----
+JavaDevelopmentEnvironment

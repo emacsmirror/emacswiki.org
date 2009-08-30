@@ -1,0 +1,526 @@
+== Getting and Installing CPerl Mode ==
+
+CPerlMode is a more advanced mode for programming [PerlLanguage Perl] than the
+default PerlMode.  To replace the standard perl-mode with cperl-mode in all cases
+you need the following in your ~/.emacs file (or your InitFile):
+
+    ;;; cperl-mode is preferred to perl-mode                                        
+    ;;; "Brevity is the soul of wit" <foo at acm.org>                               
+    (defalias 'perl-mode 'cperl-mode)
+
+Alternatively, use:
+
+    (add-to-list 'auto-mode-alist '("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode))
+    (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
+    (add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
+    (add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
+
+Or the more robust equivalent:
+
+    (mapc
+     (lambda (pair)
+       (if (eq (cdr pair) 'perl-mode)
+           (setcdr pair 'cperl-mode)))
+     (append auto-mode-alist interpreter-mode-alist))
+
+cperl-mode is part of Emacs.  You can get the latest version here:
+
+* http://math.berkeley.edu/~ilya/software/emacs/
+
+The latest version of cperl-mode also ships with Perl itself.
+[http://www.cpan.org/modules/by-module/CPAN/ILYAZ/cperl-mode/ The version on CPAN],
+(5.19 as of 2007-02-27) is out-of-date.
+
+2008-Jan-18: JonathanRockway has updated CPerl mode to handle Perl 5.10: 
+
+Up-to-date code at http://github.com/jrockway/cperl-mode/tree/master (updated Jan-31-2009).  (This tends to border on experimental, so if you have questions, ask me (jrockway) on #emacs.  It now supports MooseX::Declare syntax.)
+
+http://blog.jrock.us/articles/Emacs%20and%20Perl%205.10.pod
+
+2009-May-11: SteffenSchwigon has provided a fork that handles Perl6 syntax quite well, 
+and is also useable for MooseX::Declare based modules. It's located in the Pugs repository: http://www.svn.pugscode.org/util/cperl-mode.el
+
+The version of CPerlMode you have loaded is given by the `cperl-version' variable. Try `M-x describe-variable RET cperl-version' or `C-h v cperl-version' or from the menu: ''Help'' -> ''Describe'' -> ''Describe Variable'', and type in `cperl-version'. 
+
+== Starting CPerl Mode ==
+
+If you have set up `auto-mode-list' (see above) then CPerlMode will start whenever you open a file ending <tt>.pl</tt>, <tt>.pm</tt>, etc. To start CPerlMode manually, or on an empty buffer, type `M-x cperl-mode'. 
+
+== Accessing the CPerl Mode Built-in Documentation ==
+
+CPerlMode comes with documentation built-in and this is a good place to start. To access the documentation use the `describe-mode' function by typing `C-h m' when in CPerlMode. When not in CPerlMode use `M-x describe-function RET cperl-mode' or `C-h f cperl-mode'.
+
+== Accessing Perl Documentation with CPerl Mode ==
+
+In order to use perldoc from Emacs, type `M-x cperl-perldoc', hit Return and type the keyword to look up.
+Recommended!
+
+Furthermore:
+
+If your site has perl5 documentation in info format, you can use
+commands `C-c C-h f' and `C-c C-h F' to access it.  You can get the
+texinfo source from here:
+
+* ftp://ftp.cpan.org/pub/CPAN/doc/manual/texinfo/perl5/
+
+If your site does not have perl5 documentation in info format you can use
+commands `C-c C-h p' or `C-c C-h P' (man page format) or `C-c C-h v' (mini-buffer)
+to access  the man pages.
+
+Some Emacs Lisp coders might have `C-h f' wired into their fingers, however.
+Suggested solution:
+
+{{{
+(add-hook 'cperl-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-h f") 'cperl-perldoc)))
+}}}
+
+[[Lisp:perl-find-library.el]] provides `M-x perldoc', a tab-completing wrapper around `cperl-perldoc'.  The separate standalone PerlDoc package does a similar thing too.
+
+WordHelp lets you get info about a command keyword (not just for perl,
+but also other languages), and so does FuncDoc.
+
+/Note/: Make certain that Man-switches variable is nil (the default). Setting this to "-a" will cause errors. One way to still use "-a" elsewhere but unset the variable for cperl-mode is to add this mode-hook:
+{{{
+(add-hook 'cperl-mode-hook
+          '(lambda ()
+             (make-local-variable 'Man-switches)
+             (setq Man-switches nil)))
+}}}
+
+== Syntax Highlighting (Font-Lock) ==
+
+Perhaps the most obvious (and useful?) feature of CPerlMode is Syntax-Highlighting, i.e. the colouring and formatting of keywords, variables, strings, etc, to improve code readability. Syntax-highlighting is also known as "Font Lock" in the Emacs world.
+
+To turn syntax-highlighting on/off use either the ''Options'' menu (if available) and select ''Syntax Highlighting'', or type `M-x font-lock-mode'  (toggles between on and off). To turn on syntax-highlighting automatically see the entry on [http://www.emacswiki.org/cgi-bin/wiki/EnablingFontLock Enabling Font Lock Mode].
+
+If you're having problems with Font-Lock, first check that you're using version 5 of cperl-mode (see above how to check your version).  Version 4.x
+had many problems with syntax highlighting, especially with apostrophes,
+regular expressions, here-documents, and POD.  Version 5.0 fixes many of
+these problems.
+
+
+
+== Customizing CPerl Mode ==
+
+There are many ways to customize CPerl mode.
+
+First of all, there's a very peculiar feature which many people want
+to disable: trailing whitespace is indicated with an underline (see
+discussion below).  Consider that whitespace is rarely significant in
+perl code, but that underlines often are (e.g. "$_") and with this
+feature an underscore appears every time you hit the space bar, and
+will not disappear until you enter another character.  Adding this
+line to your .emacs works to disable this feature in GnuEmacs 21:
+
+    (setq cperl-invalid-face (quote off)) 
+
+However, in at least GNU Emacs 21.2.1, this has been known to cause
+problems with font-locking, in which case:
+
+    (setq cperl-invalid-face nil) 
+
+is preferable.
+
+
+If you want to expand keywords such as <code>foreach</code>,
+<code>while</code>, etc, add the following to your .emacs:
+
+    (setq cperl-electric-keywords t) ;; expands for keywords such as
+                                     ;; foreach, while, etc...
+
+CPerlMode defaults to keeping all of the bells and whistles to a
+minimum.  In order to turn everything on, use:
+
+    (setq cperl-hairy t) ;; Turns on most of the CPerlMode options
+
+Because `cperl-hairy' turns on just about everything, if you
+want more fine grained control of CPerlMode, you can turn on the
+following switches one by one (or turn them off).
+`cperl-hairy' sets the following variables to `t'.
+
+For a good description of what each of these options does, see the built-in CPerl documentation (see above for how to access the built-in docs):
+
+; `cperl-font-lock': Non-nil (and non-null) means CPerl buffers will use
+<code>font-lock-mode</code>.
+; `cperl-electric-lbrace-space': Non-nil (and non-null) means { after $
+should be preceded by ` '.
+; `cperl-electric-parens': Non-nil (and non-null) means parentheses
+should be electric in CPerl.
+; `cperl-electric-linefeed': If true, LFD should be hairy in CPerl,
+otherwise C-c LFD is hairy.
+; `cperl-electric-keywords': Not-nil (and non-null) means keywords are
+electric in CPerl.
+; `cperl-info-on-command-no-prompt': Not-nil (and non-null) means not to
+prompt on C-h f.
+; `cperl-clobber-lisp-bindings': Not-nil (and non-null) means not
+overwrite C-h f.
+; `cperl-lazy-help-time': Not-nil (and non-null) means to show lazy help
+after given idle time.
+
+To set them individually, put this in your .emacs file (with
+appropriate variable names of course):
+
+    (setq cperl-font-lock t) 	;; to turn it on
+    (setq cperl-font-lock nil) 	;; to turn it off
+
+If you have <code>cperl-hairy</code> enabled but want to turn off
+electric-parens, etc, then set it to the <code>nil</code> symbol like
+this:
+
+    (setq cperl-electric-parens nil)
+
+Also, if you want CPerlMode to automatically add newlines before and
+after braces, colons, and semicolons, use:
+
+    (setq cperl-auto-newline t)
+
+To be able to use the grayed out commands (run etc...) you must
+install ModeCompile.
+
+==Cperl-mode with outline-minor-mode==
+
+outline-minor-mode can hide large chunks of code in your source files.
+It leaves lines like subroutine names, package names, and POD headers visible.
+This can greatly facilitate navigating around large source files.
+See CPerlModeOutlineMode to learn more about how to take advantage of this combo.
+
+==Cperl-mode with ffap==
+
+Here is how you customize FindFileAtPoint to find perl module in the perl path. You may want to adjust the paths to your system :
+
+   (defun my-cperl-ffap-locate(name)
+     "Return cperl module for ffap"
+     (let* ((r (replace-regexp-in-string ":" "/" (file-name-sans-extension name)))
+   		 (e (replace-regexp-in-string "//" "/" r))
+   		 (x (ffap-locate-file e '(".pm" ".pl" ".xs") 
+   			   (append (ffap-all-subdirs-loop "/usr/lib/perl5/site_perl/5.8.5/" -1) 
+   			   (ffap-all-subdirs-loop "/usr/local/lib/perl5/site_perl/5.8.5/" -1)))))
+   	x
+     )
+   )
+   (add-to-list 'ffap-alist  '(cperl-mode . my-cperl-ffap-locate))
+
+
+To avoid the explicit directories above, I use:
+
+   (setq ffap-perl-inc-dirs 
+         (apply 'append 
+	        (mapcar (function ffap-all-subdirs)
+		        (split-string (shell-command-to-string 
+				       "perl -e 'pop @INC; print join(q/ /,@INC);'")))))
+
+and then
+
+   (defun my-cperl-ffap-locate(name)
+     "Return cperl module for ffap"
+     (let* ((r (replace-regexp-in-string ":" "/"       (file-name-sans-extension name)))
+	    (e (replace-regexp-in-string "//" "/" r))
+	    (x (ffap-locate-file e '(".pm" ".pl" ".xs") ffap-perl-inc-dirs)))
+       x
+       )
+     )
+
+Have a look at [Geocities:user42_kevin/ffap-perl-module/index.html ffap-perl-module.el] for a similar thing, for use in all modes and with some module name expanding and contracting.
+
+==Finding Perl modules==
+
+As an alternative to the ffap version above, the following will find a given Perl module, using
+perl's internal lookup to find the module:
+
+    (defun perl-module-path (module-name)
+      (let* ((file-name
+              (concat (replace-regexp-in-string "::" "/" module-name)
+                      ".pm"))
+             (command-line
+              (concat "perl -M'"
+                      module-name
+                      "' -e'print $INC{q{"
+                      file-name
+                      "}}'"))
+             (path (shell-command-to-string command-line))
+             (cant-locate (string-match "^Can't locate " path)))
+        (if cant-locate
+            nil
+          path)))
+
+    (defun find-perl-module (module-name)
+      (interactive "sPerl module name: ")
+      (let ((path (perl-module-path module-name)))
+        (if path
+            (find-file path)
+          (error "Module '%s' not found" module-name))))
+
+[[Lisp:perl-find-library.el]] also provides `M-x perl-find-library', which has the same function, but 
+does tab-completion on its input, and uses perldoc -l to find the library.
+
+==Cperl-mode with ElDoc==
+
+To hook ElDoc into CPerlMode, you can use:
+
+    (defun my-cperl-eldoc-documentation-function ()
+      "Return meaningful doc string for `eldoc-mode'."
+      (car
+       (let ((cperl-message-on-help-error nil))
+         (cperl-get-help))))
+
+    (add-hook 'cperl-mode-hook
+              (lambda ()
+                (set (make-local-variable 'eldoc-documentation-function)
+                     'my-cperl-eldoc-documentation-function)))
+
+=== Discussion of the "trailing whitespace as underscore" behavior ===
+
+What is the purpose of this feature? [To show you when
+you have spurious spaces at the end of an 'EOF' or other 'here-is' document
+terminator ? -- if this is correct, remove these questions and
+rephrase this as a statement]
+
+How does one turn off the underlining of whitespace at the end of a
+line in cperl-mode?
+
+    (setq cperl-invalid-face nil) ;(uherbst)
+
+Yes, that should work.  This also works (GnuEmacs 21):
+
+    (setq cperl-invalid-face (quote off))
+
+I think the following is the proper way to do it, at least in XEmacs
+21.4.19.  First, do M-x customize-option cperl-invalid-face.  You'll
+get a customization buffer.  In the buffer, choose "select face".
+You'll get a "Face:" prompt in the minibuffer.  Enter "default".  Back
+in the customization buffer, choose "Set" then "Save" then "Done".  To
+make the change effective immediately, first do M-x eval-expr
+(cperl-init-faces), then do M-x cperl-mode in each existing CPerl
+buffer.
+
+What's broken: (1) The name "cperl-invalid-face" doesn't reflect its
+meaning, it should be named "cperl-trailing-whitespace-face"
+instead. (2) The face isn't available from the M-x customize-face
+prompt as one would expect, which makes it hard to find.  You have to
+access it from M-x customize-option instead. (3) When you update the
+face in the customization buffer, it doesn't get updated in CPerl
+buffers until you restart XEmacs or manually run M-x eval-expr
+(cperl-init-faces). (4) Maybe the whole feature shouldn't be enabled
+by default, since it causes an underscore to be shown whenever you
+press the space bar, which can greatly annoy some people.
+
+Quoting the info help (C-h v): "Face for highlighting trailing
+whitespace".  By default this face is set to
+<code>'underline</code>. I think you can get rid of it quite easily,
+no? :) I can think at least one way to do it: redefine the face and
+"bind" it to your own face.
+
+Here is how you could do such a thing:
+
+    (defface cperl-my-trailing-spaces-face
+      '((((class color))
+         ;; blah, blah
+         ;; define your tastes (background, foreground)
+         ))
+      "My face for trailing spaces in cperl mode"
+      :group 'cperl-mode) ; Here is the most important part. It says to add
+                          ; this face to the customizable group cperl-mode
+    ;; now you can "bind" this face to cperl-invalid-face
+    (set-default 'cperl-invalid-face 'cperl-my-trailing-spaces-face)
+
+
+I strongly suggest you to search for defface in the EmacsInfo pages
+(C-h f defface).  Note that in my understanding of
+<code>cperl-invalid-face</code> (and after getting into the mode
+code), it seems that <code>cperl-invalid-face</code> is automatically
+set whenever you choose to use font-lock mode capability. So you MUST
+overwrite the face to default it to match your tastes. To make
+disappear the trailing is trivial: just use the
+<code>:background</code> attribute or do not use the syntax highliting
+capabilities of the CPerlMode:
+
+    (setq cperl-font-lock nil)
+
+Also note that I didn't test it so it may crash or damage your
+system. ;-) -- XavierMaillard
+
+It seems worth noting that, at least in XEmacs, you'll have to switch font-lock-mode off and on again to get this to take effect. (I did, at any rate.) -- PhilipHazelden
+
+Another suggestion is to make it convenient to obliterate that whitespace.  This has the added bonus of allowing navigation with M-{ and M-} to work. -- DominicMitchell
+
+  (defun global-trim ()
+    "Trim all trailing whitespace in the current buffer."
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "[ \t]+$" nil t)
+        (replace-match "" t t))))
+
+Emacs 21 and later have the function <code>delete-trailing-whitespace</code> builtin.
+
+----
+
+To make <code>cperl-mode</code> always highlight scalar variables, use:
+
+    (setq cperl-highlight-variables-indiscriminately t)
+
+It's not working with CPerlMode 4.23 as shipped with Emacs though.
+
+----
+
+Is there a way to get it to work consistently with http://perltidy.sf.net?
+
+Yes, a way (but not a single way to do it) from the perltidy documentation itself : 
+
+"For the emacs editor, first mark a region and then pipe it through perltidy. For example, to format an entire file, select it with C-x h and then pipe it with M-1 M-| and then perltidy. The numeric argument, M-1 causes the output from perltidy to replace the marked text. See ``GNU Emacs Manual'' for more information, http://www.gnu.org/manual/emacs-20.3/html_node/emacs_toc.html
+
+If you have difficulty with an editor, try the -st flag, which will force perltidy to send output to standard output. This might be needed, for example, if the editor passes text to perltidy as temporary filename instead of through the standard input. If this works, you might put the -st flag in your .perltidyrc file."
+
+These functions can be used to get quick access to perltidy:
+
+  (defun perltidy-region ()
+    "Run perltidy on the current region."
+    (interactive)
+    (save-excursion
+      (shell-command-on-region (point) (mark) "perltidy -q" nil t)))
+  (defun perltidy-defun ()
+    "Run perltidy on the current defun."
+    (interactive)
+    (save-excursion (mark-defun)
+    (perltidy-region)))
+
+
+== Reformatting parameter lists ==
+
+Reformat parameter lists easily from single line to multiple
+lines and back again. E.g. between this:
+
+    API::Link->new({rel => 'meta:version', href => $uri->as_string, type => 'application/xml'}),
+
+and this:
+
+    API::Link->new({
+        rel => 'meta:version',
+        href => $uri->as_string,
+        type => 'application/xml',
+    }),
+
+The parameters are specified by the enclosing element, with either
+() or {} braces.
+
+The multiline format can also be aligned properly within the
+enclosing braced element, to end up like this:
+
+    API::Link->new({
+        rel  => 'meta:version',
+        href => $uri->as_string,
+        type => 'application/xml',
+    }),
+
+Lisp:jpl-reformat.el
+
+This seems breaks with newer versions of emacs. To repair it you have to define 
+
+  (defun ensure-mark()
+    "Deprecated function that is needed by jpl-reformat"
+    (and (not mark-active) (set-mark-command nil)))
+
+somewhere in your init.el [willert@cpan.org]
+
+== Questions ==
+
+*Note: The wiki is not the place to report bugs.* If you want to report bugs (either in the code or the documentation), use `M-x report-emacs-bug'.
+
+[new]
+'''Question:'''Is there a way to get a menu containing function-names in the file
+being visited and jump to a given function shown in that menu?
+Elaborate tools like ECB and Semantic do this -- but i am not able
+to set those up properly. So looking for a simple way to jump to the
+function i want in the current file...
+[new]Try ImenuMode
+
+[new]Thanks for suggesting ImenuMode. It gave me clues I needed.
+What i needed to do was to add the
+following line
+
+    (add-hook 'cperl-mode-hook 'imenu-add-menubar-index)
+
+in my .emacs file. After that I see 'Index' menu item which
+contains menu items for each of functions defined in the current file.
+
+
+[new]
+'''Question:''' How can I send the Perl code in my buffer to an interpreter?
+[new]Try ModeCompile
+
+
+[new]
+'''Question:''' When use 'switch' in cperl-mode, 'case' is not aligned at the some column. How is this problem fixed?
+
+[new]
+'''Question:''' The cperl-mode gives me the error `Wrong type argument: number-or-marker-p, nil' when I try to tab-indent the first line of a subroutine. Is this the expected behavior?
+
+[new]
+'''Question:''' For years now, despite several new versions of cperl-mode and of emacs, whenever I have begun typing 's/foo/bar/;' in cperl-mode, the font-lock stuff freaks out and either causes undesireable scrolling, or in the extreme case even stops fontifying the buffer.  In the latest version, the error message is "Wrong type argument: number-or-marker-p, nil" and it does kill cperl-mode.  Does anyone have any idea why this is happening?
+
+[new:Martin:2006-11-20 00:17 UTC]
+''Incompatibility Report''
+
+I have found that using emacs 21.3.1, cperl-mode does not work well with comile+/-20 (GrepPlus).
+compile.el (the one included in emacs) will abort after a syntax-check or compilation
+
+For more info and a workaround see the Page for GrepPlus (there are several entries towards the bottom of the Page)
+
+From my understanding, if compile-20.el is loaded, cperl assumes an earlier version of emacs, and some config will be set to broken values.
+
+I don't think that this is a bug in either of the 2 packages.
+But I believe it will be easy to add an additional check into cperl. While I do not know how much work will be involved in changing compile+/-
+
+[new]
+'''Question:'''
+I have found that the font-lock stuff does not like some unquoted single-character keys in hashes such as $hash{m}, while others work fine ($hash{a}).
+As far as i see, the character set triggering these problems is [qsmy]. a workaround is to quote these characters, but still writing $hash{m} is valid perl.
+Is this a known bug?
+
+[new:Martin:2007-02-24 12:29 UTC]
+*Bug* report 5.22
+
+I have tried to find out where to report bugs, but was unable to find a suitable location. neither for cperl, nor emacs.
+If anyone knows please forward the following.
+
+GNU Emacs 21.3.1  (as from freebsd ports)
+with cperl-mode.5.22 electric-parens on
+
+try to enter the following text into a new code.pm file (touch code.pm ; emacs code.pm )
+
+ $a=~s(\?\
+
+at this time, you will have the closing ")" bracket to, your input will look like "$a=~s(\?\)" but the cursor is still in front of the closing ")" bracket.
+
+try to enter either [ or { => both lead to an error
+
+an different error (different msg) cna be produced by typing (again I leave the automated closed bracket away)
+
+$a=~s{
+
+and then enter a [ or { 
+
+[new]
+Please try to contact the author or maintainer for cperl.el (It is Ilya Zakharevich),
+or use `M-x report-emacs-bug'.
+
+[new:irumiha:2008-01-08]
+'''Question'''
+I have a syntax highlighting question. By default cperl-mode colors arrays and hashes differently, even in comments. The same happens in POD sections. 
+An example screenshot of the current behaviour can be found [http://www.rumiha.net/emacs.png here]. That tends to look somewhat ugly (IMHO) and I would like cperl-mode to highlight comments uniformly (i.e. in one color/style). 
+Is this possible? 
+
+[new]
+try to put this into your .emacs and adapt it : 
+
+    (custom-set-faces
+       '(cperl-array-face ((t (:foreground "green" :weight bold))))
+       '(cperl-hash-face ((t (:foreground "Red" :slant italic :weight bold))))
+     )
+
+[new]
+How is customizing the faces going to solve the problem of false highlighting in comments? PS `perl-mode' doesn't have this problem.
+----
+ProgrammingModes CategoryDotEmacs

@@ -1,0 +1,20 @@
+This minor mode toggles the display of parens.  While they are hidden
+away, the buffer is read-only, because currently this code does not
+really add and remove parens -- it just makes them invisible.  That
+would be a nice feature, though.  At the moment, this minor mode is
+mainly useful to show lisp code to non-lisp coders afraid of parens.
+
+* Lisp:unparen.el
+
+See also ParenFace.
+
+For a similar hack changing the string "lambda" to a real lambda, see
+PrettyLambda.
+
+For yet another similar hack that makes the parens less visible, see DimParentheses.
+----
+CategoryParentheses
+CategoryDisplay
+CategoryModes
+CategoryHumor
+ParenthesesAppearance

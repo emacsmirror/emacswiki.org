@@ -1,0 +1,6 @@
+jde-findbugs provides an interface between the JavaDevelopmentEnvironment and Findbugs (see http://findbugs.sourceforge.net/), a development tool that looks for bugs in Java code.
+
+[[Lisp:jde-findbugs.el]]
+
+----
+JavaDevelopmentEnvironment

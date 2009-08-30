@@ -1,0 +1,13 @@
+The [::auto-mode-interpreter-regexp] is a variable used by SetAutoMode that determines the MajorMode based on the first line of the file.
+
+For example, if this is the first line of the file:
+
+  #!/bin/bash
+
+Then the file is as determined to have an associated interpreter, in this case it is the Bourne again shell, [[Bash]], located at ##/bin/bash##.
+
+Emacs then uses the variable `interpreter-mode-alist' to use the assocations of interpreters ("##python##", "##awk##", "##guile##", "##sh##") to modes (`python-mode', `awk-mode', `scheme-mode', `sh-mode').
+
+----
+CategoryDotEmacs
+CategoryModes

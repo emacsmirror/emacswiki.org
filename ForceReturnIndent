@@ -1,0 +1,44 @@
+If all you are really after in Emacs/XEmacs is that all your editing modes support the same newline and indent mode, then this is for you.  This modifies some basic keys so that they will always do as you expected (this code is all for your .emacs or custom.el file).
+
+    ;;A common Return/Enter function
+    (defun my-nl
+  	()
+	(interactive)
+	(newline)
+	(indent-relative-maybe)
+    )
+
+    ;;My Tab always inserts tab - no EXCEPTIONS!!!
+    (defun my-tab
+        ()
+	(interactive)
+	(insert "\t")
+    )
+
+Then to define a function that sets common keys for whatever mode you are in. (Note: Here backspace is defined non-specially, it will backspace one character, whether it is a tab or not -- since I use tabs for indenting this effectively unindents one level for me)
+
+   (defun my-keys
+        ()
+	(local-set-key [(return)] 'my-nl)
+	(local-set-key [(tab)] 'my-tab)
+	(local-set-key [(backspace)] 'backward-delete-char)
+   )
+
+Then some code to add it to some common modes.
+
+   (add-hook 'c-mode-hook 'my-keys)
+   (add-hook 'cc-mode-hook 'my-keys)
+   (add-hook 'c++-mode-hook 'my-keys)
+   (add-hook 'text-mode-hook 'my-keys)
+   (add-hook 'xml-mode-hook 'my-keys)
+
+If the C/C++/CC/Java mode isn't working right for you yet with indents, then the following options can be set.
+
+   (custom-set-variables
+   '(c-syntactic-indentation nil)
+   '(c-backspace-function (quote backward-delete-char))
+   '(c-tab-always-indent nil)
+   '(backward-delete-function (quote backward-delete-char))
+   )
+
+

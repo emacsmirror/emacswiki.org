@@ -1,0 +1,392 @@
+== General Tips ==
+
+* When automatically compiling files, you should set both font-lock-verbose and byte-compile-verbose to nil.  The progress information can increase the compile time ten-fold. -- [[nschum]]
+
+* Don't forget that you can also use `M-x byte-recompile-directory' to update all files in and under a directory. `C-u' means ask about subdirectories; otherwise, they are treated recursively. Keep in mind, however, that this does not compile any source files that were not already compiled. This a bit off-topic -- it is not the same as automatic recompilation, but it's good to keep in mind. (It's all I use, BTW.) -- DrewAdams
+
+* A 0 prefix-arg to byte-recompile-directory will force compilation of all files even if they were not previously compiled.
+
+== Byte Compile on Emacs Startup ==
+
+Use the [http://code.google.com/p/elisp-cache/ elisp-cache] module, by DominiqueQuatravaux.  Instructions are included.
+
+== Byte Compile on Load ==
+[[byte-code-cache.el]] will automatically compile ##.el## files as they're loaded. It keeps the compiled files in ##~/.emacs.d/byte-cache## by default, and will automatically recompile any files that change, even if they're loaded more than once in the same session. Recompiling files manually is a pain, and other Lisp systems don't make you do it. :-)
+
+* Becareful, it seems that [[byte-code-cache.el]] doesn't handle well Windows drive letters when writing .elc files onto .emacs.d directory. I have things like this when using byte-code-cache on GNU Emacs on windows (GNU Emacs 22.2.1 (i386-mingw-nt5.1.2600) of 2008-03-26 on RELEASE) :
+<pre>
+Lisp error: (file-error "Opening output file" "invalid argument" "i:/home/.emacs.d/byte-cache/i:!home!.abbrev_defs.elc")
+</pre>
+This is because of the `:' character... Here is the patch to apply on [[byte-code-cache.el]] to correct the problem on windows :
+<pre>
+--- byte-code-cache.el.old      2008-04-30 14:33:10.000000000 +0200
++++ byte-code-cache.el  2008-04-30 14:39:28.000000000 +0200
+@@ -108,19 +108,62 @@
+         (setq tail tail-cdr))))
+   alist)
+
++;; Code taken from Cedet package (if you don't want this package to
++;; be dependent on cedet
++(defvar cedet-dir-sep-char (if (boundp 'directory-sep-char)
++                              (symbol-value 'directory-sep-char)
++                            ?/)
++  "Character used for directory separation.
++Obsoleted in some versions of Emacs.  Needed in others.")
++
++(defun cedet-directory-name-to-file-name (referencedir)
++  "Convert the REFERENCEDIR (a full path name) into a filename.
++Converts directory seperation characters into ! characters."
++  (let ((file referencedir)
++       dir-sep-string)
++    ;; Expand to full file name
++    (or (file-name-absolute-p file)
++       (setq file (expand-file-name file)))
++    ;; If FILE is a directory, then force it to end in /.
++    (when (file-directory-p file)
++      (setq file (file-name-as-directory file)))
++    ;; Handle Windows Special cases
++    (when (memq system-type '(windows-nt ms-dos))
++      ;; Replace any invalid file-name characters (for the
++      ;; case of backing up remote files).
++      (setq file (expand-file-name (convert-standard-filename file)))
++      (setq dir-sep-string (char-to-string cedet-dir-sep-char))
++      ;; Normalize DOSish file names: convert all slashes to
++      ;; directory-sep-char, downcase the drive letter, if any,
++      ;; and replace the leading "x:" with "/drive_x".
++      (if (eq (aref file 1) ?:)
++         (setq file (concat dir-sep-string
++                            "drive_"
++                            (char-to-string (downcase (aref file 0)))
++                            (if (eq (aref file 2) cedet-dir-sep-char)
++                                ""
++                              dir-sep-string)
++                            (substring file 2)))))
++    ;; Make the name unique by substituting directory
++    ;; separators.  It may not really be worth bothering about
++    ;; doubling `!'s in the original name...
++    (setq file (subst-char-in-string
++               cedet-dir-sep-char ?!
++               (replace-regexp-in-string "!" "!!" file)))
++    file))
++
+ (defun bcc-cache-file-name (file-name)
+   "Transform an absolute file-name into its cache directory entry.
+ The resulting name is always an absolute path to a file ending in
+ .elc"
+
+-  ;; Assumes unix here
+   (concat
+    (file-name-as-directory (expand-file-name bcc-cache-directory))
+-   (subst-char-in-string
+-    ?/ ?!
+-    (file-name-sans-extension
+-     (file-relative-name file-name "/")))
+-   ".elc"))
++   (cedet-directory-name-to-file-name
++    (concat
++     (file-name-sans-extension
++      (file-relative-name file-name "/"))
++     ".elc"))))
+
+ (defun bcc-in-blacklist (string blist)
+   "Return non-NIL iff STRING matches a regexp in BLIST.
+</pre>
+
+== Byte Compile on Buffer Save ==
+
+Automatically byte compile elisp files when they are saved, by MichaelAbrahamShulman.
+
+* [http://web.archive.org/web/20021216070753/http://kurukshetra.cjb.net/elisp/auto-recomp.el auto-recomp.el] (was http://kurukshetra.cjb.net/elisp/auto-recomp.el but that is down)
+
+----
+
+Here is my slightly modified version of the byte compile on buffer save solution. Compared to the one in auto-recomp.el this one tries to be less distracting by pre-splitting the window with a smaller ##*Compile-Log*## buffer, auto-scroll to the last line to quickly show a potential error and then auto-close the ##*Compile-Log*## window. It would be better to have a real error detection with a notification message rather than a dumb auto-scroll. Next time perhaps.  -PierreJeanTurpeau
+
+<pre>
+(defun pj/auto-recompile-file-always ()
+  (when (equal mode-name "Emacs-Lisp")
+    (let ((maximum-compile-log-height 8)
+          (old-window-start (window-start))
+          (old-window-point (window-point)))
+      ;; pre-split for compile log buffer so that it does not modify the layout
+      (set-window-buffer (split-window-vertically (- (window-height) maximum-compile-log-height)) (get-buffer-create "*Compile-Log*"))
+      ;; byte compile the buffer
+      (byte-compile-file buffer-file-name)
+      (let ((buf (get-buffer "*Compile-Log*")))
+        ;; scroll to the end to see if there's an error
+        (set-window-point (get-buffer-window buf) (buffer-size buf))
+        ;; auto close the compile log window and restore original display position
+        (run-at-time 1.0 nil (lambda (buf)
+                               (delete-windows-on buf)
+                               (set-window-point (selected-window) old-window-point)
+                               (set-window-start (selected-window) old-window-start))
+                     buf)))))
+</pre>
+
+== Byte Compile on Buffer Kill ==
+
+And here's the way I do it... I only want to compile when I kill a buffer, not when I save it (which I do obsessively).  -ScottEvans
+
+<pre>
+(defun gse-prompt-to-compile-init-file ()
+  (interactive)
+  (if (and
+       (string-equal buffer-file-name (expand-file-name "~/.xemacs/init.el"))
+       (file-newer-than-file-p "~/.xemacs/init.el" "~/.xemacs/init.elc")
+       (y-or-n-p "byte-compile init.el? "))
+      (byte-compile-file "~/.xemacs/init.el")))
+
+(add-hook 'kill-buffer-hook 'gse-prompt-to-compile-init-file)
+</pre>
+
+----
+
+I like the idea of compile the file when kill the buffer. So I write a more general way to recompile .el file.
+<pre>
+(defvar auto-recompile nil)
+(put 'auto-recompile 'safe-local-variable 'booleanp)
+(defvar auto-recompile-query t
+  "if non-nil, ask user before byte compile.")
+(defun auto-recompile-file-maybe ()
+  (interactive)
+  (when (and buffer-file-name (string-match "\\.el\\(\\.gz\\)?\\'" buffer-file-name))
+    (let ((byte-file (concat buffer-file-name "c")))
+      (if (and
+           (file-exists-p byte-file)
+           (file-newer-than-file-p buffer-file-name byte-file)
+           (or auto-recompile
+               (null auto-recompile-query)
+               (called-interactively-p)
+               (y-or-n-p (format "byte-compile %s" buffer-file-name))))
+          (byte-compile-file buffer-file-name)))))
+(defun auto-recompile-save-hook ()
+  (add-hook 'kill-buffer-hook 'auto-recompile-file-maybe nil t))
+
+(add-hook 'emacs-lisp-mode-hook 'auto-recompile-save-hook)
+</pre>
+
+----
+
+I use the following, rather massive piece of code to automatically compile my ##.emacs## and ##.gnus## files.
+
+ (require 'bytecomp)
+ 
+ (defvar auto-byte-compile-files-list
+   (let ((ghd (or (and (boundp 'gnus-home-directory) gnus-home-directory)
+                  (expand-file-name "~"))))
+     (cond
+      ((string-match "\\.elc$" user-init-file)
+       (list (substring user-init-file 0 -4)
+             (substring user-init-file 0 -1)
+             (concat ghd "/.gnus")
+             (concat ghd "/.gnus.el")))
+      (t
+       (list user-init-file
+             (concat ghd "/.gnus")
+             (concat ghd "/.gnus.el")))))
+   "List of files to auto compile")
+ 
+ (defun auto-byte-compile-file (&optional file match regexp)
+   "file can be
+ - nil in which case value returned by `buffer-file-name' will be used
+   unless it returns nil in which case no action will be taken;
+ - a string which is equivalent to passing list with that string as the
+   only element;
+ - a list of strings representing file names; or
+ - anything else which is equivalent to passing
+   `auto-byte-compile-files-list'.
+ 
+ Entries equal to \".\", \"..\" or ending with \"/.\" or \"/..\"
+ are ignored.  If element is a directory it will be processed
+ recursively but if regexp is nil only files ending with \".el\"
+ will be processed.
+ 
+ match can be
+ - nil which is equivalent to passing `auto-byte-compile-files-list';
+ - a string which is equivalent to passing list with that string as the
+   only element;
+ - a list in which case file have to be in that list to be processed; or
+ - anything else in which case file will be processed regardless of name.
+ 
+ If any element of match is a string ending with a slash ('/') it
+ is treated as directory name (no checking is done if it is really
+ a directory or even if it exists) and file is said to match such
+ entry if it begins with it thus all files in given directory will
+ match.
+ 
+ If called interacivelly without prefix arg will behave as with
+ match equal t.  With prefix arg will behave as with match equal
+ nil.
+ 
+ regexp must be nil which is equivalent with passing a list
+ containing only empty string or a list of regular expressions
+ which file have to match to be processed.
+ 
+ So the default is to auto-compile the current file iff it exists
+ in `auto-byte-compile-files-list'.
+ 
+ Non-string elements in list will be ignored.
+ 
+ Auto-compilation means that file will be byte-compiled iff the
+ compiled version does not exits or is older then the file
+ itself."
+   (interactive (list (read-file-name "Auto byte compile file:" nil nil t)
+                      (not current-prefix-arg)))
+ 
+   (if (not (or file (setq file (buffer-file-name))))
+       0
+     (setq file  (cond ((stringp file)  (list file))
+                       ((listp   file)  file)
+                       (t               auto-byte-compile-files-list))
+           match (mapcar (function (lambda (i) (expand-file-name i)))
+                         (cond ((not match)     auto-byte-compile-files-list)
+                               ((stringp match) (list match))
+                               ((listp match)   match)
+                               (t               nil))))
+ 
+     (let (f (n 0))
+       (while (setq f (car file))
+         (setq file (cdr file) f (expand-file-name f))
+         (cond
+          ((string-match f "\\(^\\|/\\)\\.\\.?$"))
+          ((file-directory-p f)
+           (if regexp
+               (setq file (append (directory-files f t nil t) file))
+             (setq n (+ n (auto-byte-compile-file (directory-files f t nil t)
+                                                  (or match t) '("\\.el$"))))))
+          ((and (file-newer-than-file-p f (byte-compile-dest-file f))
+                (or (not match)
+                    (catch 'found
+                      (dolist (m match)
+                        (if (string= m (if (string-match "/$" m)
+                                           (substring f 0 (length m)) f))
+                            (throw 'found t)))))
+                (or (not regexp)
+                    (catch 'found (dolist (r regexp)
+                                    (if (string-match r f) (throw 'found t)))))
+                (byte-compile-file f)
+                (setq n (1+ n))))))
+       n)))
+ 
+ (defun auto-byte-compile-buffer (&optional match buffer)
+   "Auto compiles file in given buffer (if buffer is nil current
+ buffer is used) providing that major mode of the buffer is
+ lisp-mode or emacs-lisp-mode.  match has the same meaning as in
+ `auto-byte-compile-file'.
+ 
+ If called interacivelly will behave as with match equal t and
+ buffer equal nil unless prefix argument was given in which case
+ match will equal nil."
+   (interactive (list (not current-prefix-arg) nil))
+   (and (buffer-file-name buffer)
+        (memq (if buffer (save-current-buffer (set-buffer buffer)
+                                              major-mode) major-mode)
+                '(lisp-mode emacs-lisp-mode))
+        (auto-byte-compile-file (buffer-file-name buffer) match)))
+ 
+ 
+ (add-hook 'kill-buffer-hook 'auto-byte-compile-buffer)
+ (add-hook 'kill-emacs-hook (function (lambda () (auto-byte-compile-file t))))
+
+When buffer (or emacs) is killed, it byte compiles file if it's on the ##auto-byte-compile-files-list##. By altering that list it can be configured to auto byte compile all files in given directory like directery with user's own elisp files. -- mina86
+
+
+== Auto Compile Specific Files ==
+
+You can also do something like this:
+
+<pre>
+;;* GnusWait! Try to speed up Gnus by using a .Gnus.elc/.gnus
+;;* ================================
+(defun GnusWait! ()
+  "If ~/.Gnus.el exists and is newer than ~/.gnus, recompile it to
+  ~/.Gnus.elc and move the compiled version to ~/.gnus."
+  (cond
+   ((file-newer-than-file-p "~/.Gnus.el" "~/.gnus")
+	(let ((mode-line-format
+	       "*** PLEASE STANDBY: RECOMPILING .Gnus.el **"))
+	  (yow)
+	  (sit-for 1)
+	  (byte-compile-file "~/.Gnus.el")
+	  (message ".gnus recompiled --- reloading ...")
+	  (rename-file "~/.Gnus.elc" "~/.gnus" t))
+	(load "~/.gnus" t t t)
+	;;  (sit-for 2)
+	(message "Gnus.el recompiled")
+	)))
+(GnusWait!)
+</pre>
+
+: So, who originally wrote this, anyway? I've seen it in several .emacs files...
+
+----
+
+I use this code at the end of my .emacs to automatically compile my .emacs if the file .emacs.elc exists and if it's older than the .emacs. Of course this is only useful if you regularly start emacs.
+
+<pre>
+
+;; I always compile my .emacs, saves me about two seconds
+;; startuptime. But that only helps if the .emacs.elc is newer
+;; than the .emacs. So compile .emacs if it's not.
+(when (and user-init-file
+	   (equal (file-name-extension user-init-file) "elc"))
+  (let* ((source (file-name-sans-extension user-init-file))
+	 (alt (concat source ".el")))
+    (setq source (cond ((file-exists-p alt) alt)
+		       ((file-exists-p source) source)
+		       (t nil)))
+    (when source
+      (when (file-newer-than-file-p source user-init-file)
+	(byte-compile-file source)
+	(load-file source)
+	(eval-buffer nil nil)
+        (delete-other-windows) ))))
+
+</pre>
+The only possible problem is that removed functions are not removed until the next start of emacs.
+
+----
+I just wrote the following code for use in some of my .el files making heavy use of (eval-when-compile ...) to auto-compile them on load:
+
+<pre>
+
+(if (and load-file-name
+         (equal (file-name-extension load-file-name) "el"))
+    (progn
+      (byte-compile-file load-file-name)
+      (load-file (concat (file-name-sans-extension load-file-name) ".elc")))
+  (let ((source-file-name (concat (file-name-sans-extension load-file-name) ".el")))
+    (if (file-newer-than-file-p source-file-name load-file-name)
+        (progn
+          (byte-compile-file source-file-name)
+          (load-file load-file-name))
+      (progn
+        ;; Normal file contents
+        ))))
+
+</pre>
+
+I didn't add any error handlers for the case of a full disk or insufficient permissions though.
+
+----
+
+How many ways to skin this cat? Still I tend to edit my dotemacs in a vc repo which is linked to, hence:
+
+<pre>
+;; Auto-compile my .emacs
+;
+; Given that I tend to edit in my vc-repo (to which .emacs links) we
+; straight awaywant to resolve where ~/.emacs resolves to first
+
+(defun autocompile nil
+  "compile itself if ~/.emacs"
+  (interactive)
+  (require 'bytecomp)
+  (let ((dotemacs (expand-file-name "~/.emacs")))
+    (if (string= (buffer-file-name) (file-chase-links dotemacs))
+      (byte-compile-file dotemacs))))
+
+(add-hook 'after-save-hook 'autocompile)
+</pre>
+
+CategoryCode

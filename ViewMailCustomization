@@ -1,0 +1,59 @@
+There are many variables that can be customized to get VM to behave just
+as you would like it to. They are well documented in the file
+<tt>vm-vars.el</tt>.
+
+Here are some of them:
+
+=== vm-always-use-presentation-buffer ===
+
+Setting this to non-nil causes VM to always render messages in a presentation buffer, instead of only using a presentation buffer when necessary.  This can be convenient if you want to programmatically change messages for display, but not risk saving your changes to the mailbox file.  It also eliminates the guess-work of remembering which buffer to switch back to if you are doing other things in emacs while reading mail.  This variable has been in VM since 8.0.0.
+
+=== vm-auto-get-new-mail ===
+
+Setting this to non-nil causes VM to automatically move mail from spool files to a mail folder when the folder is first visited.  (See vm-spool-files.)  If the value is a number, then it specifies how often, in seconds, VM should check for new mail in the spool and asynchronously retrieve it.  The default value is t.
+
+=== vm-confirm-mail-send ===
+
+By default, this is nil. Set to t to get VM to ask for confirmation
+before sending a mail message.
+
+=== vm-confirm-quit ===
+
+Setting this to t makes VM always ask for confirmation before ending a VM visit to a folder.  See the docstring for other possible values.
+
+=== vm-delete-empty-folders ===
+
+Setting this to non-nil makes VM remove zero length folders after saving.
+
+=== vm-folder-file-precious-flag ===
+
+Setting this to non-nil makes VM save folders by first writing to a temporary file, then replacing the folder with that file.
+
+=== vm-included-text-attribution-format ===
+
+By default, this is set to %%"%F wrote:\n"%% some valid values are %d, %h, %m, %w, %y, %z, %F
+
+=== vm-init-file ===
+
+Startup file for VM that is loaded the first time you run VM in an Emacs session.  The default value is "~/.vm".  This is where you may choose to write your vm configuration, though it is actually unnecessary to use this file, as you can do your customizations in .emacs instead, and use hooks or eval-after-load forms for any special forms that have to override parts of vm, like bbdb or rfaddons.
+
+=== vm-mime-default-face-charsets ===
+
+By default, this is set to nil.  Set to t to enable VM to read any text format (including Windows text)
+
+=== vm-mutable-frames ===
+
+By default, this it t. Set to nil if you don't want VM to create a new
+frames when visiting a folder.
+
+=== vm-reply-subject-prefix ===
+
+By default, this is set to nil. Set to "Re: " will start subjects of reply messages with the string.
+
+=== vm-startup-with-summary ===
+
+This variable controls whether VM will display a summary buffer when a folder is visited.
+
+
+----
+CategoryViewMail

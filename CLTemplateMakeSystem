@@ -1,0 +1,72 @@
+== How tu Use ==
+
+ M-x ska-cl-make-system
+
+You will be asked for the system's name and then some magic will find whether the current directory can be used, a directory has to be created or where you wan't to create the system
+
+== The Code ==
+
+<pre>
+(defun ska-cl-make-system (sysname)
+  (interactive "sSystem Name: ")
+  ;; make sure we live in a reasonable directory
+  (let* ((cpath (directory-file-name default-directory))
+         (cwd (file-name-nondirectory cpath)))
+    (unless (string= sysname cwd)
+      (if (y-or-n-p
+           (format "%s is not the current directory. Create it in %s? "
+                   sysname cpath))
+        (progn 
+          (make-directory sysname)
+          (cd sysname))
+        (cd (read-directory-name "Choose system directory: ")))))
+
+  ;; now create files
+  (flet ((create-lisp-file (name content)
+           (with-temp-buffer
+             (let ((author (user-full-name))
+                   (copyright (or (and (boundp 'my-copyright-holder)
+                                       my-copyright-holder)
+                                  (user-full-name)))
+                   (year (substring (current-time-string) -4)))
+               (insert
+                ";;; -*- Mode: LISP; -*-\n"
+                "\n"
+                ";;; Time-stamp: <>\n"
+                ";;; $Id: $\n;;;\n"
+                ";;; Copyright (C) " year " by " copyright "\n;;;\n"
+                ";;; Author: " author "\n;;;\n\n"))
+             (insert content)
+             (unless (file-writable-p name)
+               (error "%s is not writeable" name)) 
+             (when (or (not (file-exists-p name))
+                       (y-or-n-p (concat name " exists. Overwrite? ")))
+               (write-region (point-min) (point-max) name)))))
+    (create-lisp-file (concat sysname ".asd")
+                      (concat "\n(in-package :cl-user)\n\n"
+                              "(defpackage :" sysname ".system\n"
+                              "  (:use :cl :asdf))\n\n"
+                              "(in-package :" sysname ".system)\n\n"
+                              "(defsystem :" sysname "\n"
+                              "  :serial t\n"
+                              "  :components ((:file \"packages\")\n"
+                              "               (:file \"specials\")\n"
+                              "               (:file \"" sysname "\"))\n"
+                              "  :depends-on ())\n"))
+    (create-lisp-file "packages.lisp"
+                      (concat
+                       "(in-package :cl-user)\n\n"
+                       "(defpackage :" sysname "\n"
+                       "  (:use :cl)\n"
+                       "  (:export ))\n\n"))
+    (create-lisp-file "specials.lisp"
+                      (concat "(in-package :" sysname ")\n"))
+    (create-lisp-file (concat sysname ".lisp")
+                      (concat "(in-package :" sysname ")\n")))
+  (find-file (concat sysname ".lisp"))
+  (goto-char (point-max)))
+</pre>
+
+
+----
+CategoryTemplates 

@@ -1,0 +1,50 @@
+ELIM is an elisp instant messenger daemon (using libpurple), with a sexp based control protocol. Developed by fledermaus.
+
+== Obtaining ELIM ==
+
+* The [https://savannah.nongnu.org/projects/elim savannah page]
+* [https://savannah.nongnu.org/files/?group=elim tarballs] (the most recent one is usually what you should get).
+* [http://git.savannah.gnu.org/cgit/elim.git git repo browser]
+
+The README included should tell you everything you need to know to get started with basic IM functionality.
+
+The reference IM client implemented on top of ELIM is Garak, it is included with in the ELIM tarball.
+
+* [[ELIM on Mac OS X]]
+* [[ELIM Configuration]]
+
+== Supported Protocols ==
+
+libpurple (v2.4.3) supports the following protocols officially:
+
+* AIM
+* Bonjour
+* Gadu-Gadu
+* GroupWise
+* ICQ
+* IRC
+* MSN
+* MySpaceIM
+* QQ
+* SILC
+* SIMPLE
+* Sametime
+* XMPP (Jabber, GTalk)
+* Yahoo
+* Zephyr
+
+Others are available as 3rd party plugins: http://developer.pidgin.im/wiki/ThirdPartyPlugins#AdditionalProtocols
+
+== Screen Shots ==
+
+[[image:garak-screenshot-00]]
+
+== Wish list ==
+
+* Replace libpurple with telepathy (pretty please?). ;)
+** There is an ongoing effort to add telepathy as a backend for libpurple, so this would be wasted effort.
+* Make an ELPA package for it. (An ELPA package doesn't really make sense since ELIM is a C program. Distributing the elisp portion by itself is not that helpful. --technomancy)
+* **[DONE]** //Add a screenshot of it to this wiki entry, tasteful eye candy is a good thing.//
+
+----
+CategoryChatClient

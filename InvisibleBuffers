@@ -1,0 +1,7 @@
+[[Buffer]]s whose names start with a space are invisible to many operations. These are generally internal buffers that you don’t want to see. Their names normally don’t appear in the buffer list or as [[Completion]] candidates when you switch buffers using ‘C-x b’.
+
+You can see an invisible buffer if you want to: just type the leading space in the name. Since most commands that read buffer names perform input completion, and the ‘SPC’ key (space bar) sometimes has a special meaning during completion, you might need to use ‘C-q SPC’ to insert a leading space character. For example, to switch to a buffer named `## *Deletions*##’, you would type `##C-x b C-q SPC *Deletions* RET##’.
+
+----
+
+CategoryCompletion

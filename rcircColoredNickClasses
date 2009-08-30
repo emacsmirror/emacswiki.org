@@ -1,0 +1,29 @@
+This code establishes two groups of nicks for [[rcirc]] -- pals and bots.  Pals' nicks are
+green, bots' nicks are red.  Your nick is blue and everyone else's nicks are
+yellow.
+
+<pre>
+;; This code is by Trent Buck <trentbuck@gmail.com>
+;; It is in the Public Domain.
+(setq rcirc-bots '("fsbot" "birny" "lisppaste" "specbot"))
+(setq rcirc-pals '("rcy" "sabetts" "bkhl" "twb"))
+(defface rcirc-pal-nick-face
+  '((((class color) (background dark))  :foreground "PaleGreen")
+    (((class color) (background light)) :foreground "PaleGreen3"))
+  "Face used for nicks in `rcirc-pals' list.")
+(defface rcirc-bot-nick-face
+  '((((class color) (background dark))  :foreground "tomato")
+    (((class color) (background light)) :foreground "tomato3"))
+  "Face used for nicks in `rcirc-bots' list.")
+
+(defadvice rcirc-facify (before rcirc-facify-pals)
+  (when (eq face 'rcirc-other-nick)
+    (when (member string rcirc-pals)
+      (setq face 'rcirc-pal-nick-face))
+    (when (member string rcirc-bots)
+      (setq face 'rcirc-bot-nick-face))))
+(ad-activate 'rcirc-facify)
+</pre>
+
+----
+CategoryChatClient [[rcirc]]

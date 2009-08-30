@@ -1,0 +1,17 @@
+Emacs traz consigo um tutorial. Para acessa-lo use <tt>C-h
+t</tt>.  Esse tutorial lhe guiará passo a passo em uma sessão de edição na qual você irá aprender o uso básico do Emacs como editor.
+
+Emacs também vem com um manual completo. O ManualEmacs pode ser acessado usando o comando <tt>info</tt> em uma janela shell sob Sistemas Operacionais 
+GNU e Unix, ou no Emacs, usando o comando <tt>M-x
+info RET</tt> (este quer dizer <tt>Meta-</tt> ou <tt>ESC x</tt>, a palavra <tt>info</tt>, seguido da tecla <tt>return</tt>), ou teclando <tt>C-h i</tt> (isso é <tt>Control-h</tt> seguido de <tt>i</tt>).
+
+Se você deseja extender o Emacs, você pode fazer isso usando o EmacsLisp, ou Elisp para abreviar. Você pode aprender o básico da programação em Elisp lendo a IntroduçãoaoEmacsLisp. O manual de referência completo de Emacs Lisp está disponível em ReferênciaEmacsLisp.
+
+Emacs vem com um arquivo, refcard.tex (e refcard.ps no formato <nowiki>PostScript</nowiki>), que contém a maioria das teclas de atalho para edição básica. Emacs é conhecido como "O editor AutoDocumentado", embora, assim quando o refcard pode ser útil, deve-se aprender a confiar no <code>info</code> ou <code>C-h i</code> para a maioria das características complicadas desse editor. Se você não tiver acesso ao <nowiki>TeX</nowiki> ou algum tipo de interpretador <nowiki>PostScript</nowiki> como o <nowiki>GhostScript</nowiki>, então pode encontrar uma versão PDF desse documento, o cartão de XEmacs, e a CalculadoraDeEscritórioAvançada em http://refcards.com/ 
+
+Há um e-book chamado TheCraftOfTextEditing por CraigFinseth que descreve como os editores de texto
+trabalham internamente e que usa Emacs para muitos de seus exemplos.
+
+----
+CategoriaAjuda
+

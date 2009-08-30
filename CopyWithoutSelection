@@ -1,0 +1,109 @@
+I use GNU Emacs as well as other programs, such as Microsoft Word, Excel and Lotus Notes. So I used to copy and paste some contents between them.
+
+It's pretty boring to copy and paste a large amount of times.
+Selecting accurately is what is the most time-consuming.
+ So I decided to leverage GNU Emacs to do it for me.
+
+The simplest way to do this is just to copy without selection. Put
+your point at the word, then your word will be copied directly into
+the kill-ring. Same thing happens for lines and paragraphs.
+I have devised a few functions that can be found below.
+
+But first let's see what we can do with some basic shortcuts.
+
+== Selecting words or sexps without moving the cursor ==
+
+You can select word or sexp after point and put it in the kill-ring by typing:
+
+         C-M-SPC M-w
+
+This does not move the cursor. 
+If you want to select the next two words after point, 
+just type <code>C-M-SPC C-M-SPC M-w</code>.
+Killing next word or sexp can be done with <code>C-M-SPC C-w</code>, or better with <code>C-M-k</code>.
+
+=Copy Word=
+
+Put these code into your lisp file and a global key binding into your .emacs file. Then just put your point at the word and  press "**Ctrl-c w**", the word at your point will be copied into the kill-ring. 
+
+     (defun copy-word (&optional arg)
+      "Copy words at point into kill-ring"
+       (interactive "P")
+       (let ((beg (progn (if (looking-back "[a-zA-Z0-9]" 1) (backward-word 1)) (point))) 
+     	(end (progn (forward-word arg) (point))))
+         (copy-region-as-kill beg end))
+     )
+
+
+Key binding
+
+     (global-set-key (kbd "C-c w")         (quote copy-word))
+
+=Copy Line=
+
+Put these code into your lisp file and a global key binding into your .emacs file. Then just put your point at the line and  press "**Ctrl-c l**", the whole line at your point will be copied into the kill-ring. 
+
+     (defun copy-line (&optional arg)
+      "Save current line into Kill-Ring without mark the line "
+       (interactive "P")
+       (let ((beg (line-beginning-position)) 
+     	(end (line-end-position arg)))
+         (copy-region-as-kill beg end))
+     )
+
+Key binding
+
+      (global-set-key (kbd "C-c l")         (quote copy-line))
+
+[new]
+*Tip:* SlickCopy copies the current line when the region is not active. Thus, ##C-a M-w C-y C-y## ... duplicates the current line (similar to vi's '##yyp##'), while ##C-w## deletes it (‘##dd##’). When the region /is/ active, ##M-w## and ##C-w## act as usual. :)
+
+=Copy Paragraph=
+
+Put these code into your lisp file and a global key binding into your .emacs file. Then just put your point at the paragraph and press "**Ctrl-c p**", the whole paragraph at your point will be copied into the kill-ring. 
+      
+     (defun copy-paragraph (&optional arg)
+      "Copy paragraphes at point"
+       (interactive "P")
+       (let ((beg (progn (backward-paragraph 1) (point))) 
+     	(end (progn (forward-paragraph arg) (point))))
+         (copy-region-as-kill beg end))
+     )
+
+
+Key binding
+
+      (global-set-key (kbd "C-c p")         (quote copy-paragraph))
+
+=Copy String=
+
+Put these code into your lisp file and a global key binding into your .emacs file. Then just put your point at the word and  press "**Ctrl-c s**", the text string at your point will be copied into the kill-ring. 
+
+
+      (defun copy-string (&optional arg)
+       "Copy a sequence of string into kill-ring"
+        (interactive)
+        (setq onPoint (point))
+        (let ( 
+     	 ( beg 	(progn (re-search-backward "[\t ]" (line-beginning-position) 3 1) 
+     			  (if (looking-at "[\t ]") (+ (point) 1) (point) ) )
+     		)
+               ( end  (progn  (goto-char onPoint) (re-search-forward "[\t ]" (line-end-position) 3 1)
+     			  (if (looking-back "[\t ]") (- (point) 1) (point) ) )
+     		 ))
+        (copy-region-as-kill beg end)
+      )
+      )
+
+Key binding
+
+      (global-set-key (kbd "C-c s")         (quote copy-string))
+
+That's all. 
+
+----
+==Comment==
+Have you see Lisp:thing-edit.el ?  -- AndyStewart
+
+----
+CategoryRegion  CategoryEditing

@@ -1,0 +1,18 @@
+Library Lisp:dired-isearch.el lets you isearch in DiredMode matching only file names.
+
+Recommended keybindings:
+
+    (define-key dired-mode-map (kbd "C-s") 'dired-isearch-forward)
+    (define-key dired-mode-map (kbd "C-r") 'dired-isearch-backward)
+    (define-key dired-mode-map (kbd "ESC C-s") 'dired-isearch-forward-regexp)
+    (define-key dired-mode-map (kbd "ESC C-r") 'dired-isearch-backward-regexp)
+
+Download: Lisp:dired-isearch.el.
+
+
+[new:DrewAdams:2006-08-20 19:44 UTC]
+Another way to find only file (and directory) names in DiredMode: Hide everything but the file names, using `dired-details-toggle' (in Lisp:dired-details+.el). When the details are hidden, search doesn't find them. -- DrewAdams
+
+----
+CategoryDirectories
+CategorySearchAndReplace

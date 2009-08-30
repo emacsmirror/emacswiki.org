@@ -1,0 +1,30 @@
+This code converts this:
+
+    Plaving the Trowner Chakes
+
+into this:
+
+    Plaving the Trowner Chakes
+    --------------------------
+
+or this:
+
+    Plaving the Trowner Chakes
+    ==========================
+
+Originally written by KragenJavierSitaker.  Is there a simpler way to do this?  Is this code already written somewhere?  I know it doesn't take character width into account, and it should.
+
+    (defun underline-line-with (char)
+      (save-excursion
+        (let ((length (- (point-at-eol) (point-at-bol))))
+          (end-of-line)
+          (insert "\n")
+          (insert (make-string length char)))))
+    (defun underline-line ()
+      (interactive)
+      (underline-line-with ?-))
+    (defun double-underline-line ()
+      (interactive)
+      (underline-line-with ?=))
+    (global-set-key [(control meta _)] 'underline-line)
+    (global-set-key [(control meta =)] 'double-underline-line)

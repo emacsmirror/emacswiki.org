@@ -1,0 +1,19 @@
+When somebody asks you a question, you can look it up in the info manual,
+go back to the channel, and type /INFO.  This will insert a convenient
+elisp command that the other person can evaluate in ERC to go to the
+correct node.
+
+    (defun erc-cmd-INFO (&rest ignore)
+      "Send current info node."
+      (unless (get-buffer "*info*")
+	(error "No *info* buffer"))
+      (let (output)
+	(with-current-buffer "*info*"
+	  (let* ((file (file-name-nondirectory Info-current-file))
+		 (node Info-current-node))
+	    (setq output (format "(info \"(%s)%s\") <-- hit C-x C-e to evaluate"
+				 file node))))
+	(erc-send-message output)))
+
+----
+[[ERC]]

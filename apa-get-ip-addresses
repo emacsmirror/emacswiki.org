@@ -1,0 +1,42 @@
+<pre>
+(defun apa-get-ip-addresses ()
+  "Return list of IP address strings, in order returned by external
+program \"ipconfig /all\"."
+  (interactive)
+  (let*
+      (ip-address)
+    (with-temp-buffer
+      (let
+          ((coding-system-for-read 'raw-text))
+        (goto-char (point-min))
+; 	(start-process
+; 	 "ipconfig" (current-buffer) "ipconfig" "/all")
+	(call-process "ipconfig" nil t nil "/all")
+; 	(set-process-sentinel
+; 	 "ipconfig"
+; 	 (function
+; 	  (lambda (proc str)
+; 	    (message "%S received change: %s\n" proc str))))
+; 	(while (process-live-p (get-process "ipconfig"))
+; 	  (sit-for 0.1))
+        (goto-char (point-min))
+        (while
+            ;; Careful!  ipconfig output may contain <CR><LF> (\r\n)
+            ;; or <LF> (\n) line endings!
+            (search-forward-regexp
+             "\n\\(\\w+\\)[ \t]+adapter[ \t]+\\(.+\\):\n+\\([ \t]+[^\n\t]+\n+\\)+?[ \t]+\\(?:Autoconfiguration[ \t]\\)?IP[ \t]+Address.*:[ \t]*\\([0-9.]+\\)\n"
+             (point-max)
+             'move)
+          (setq ip-address
+                (append
+                 ip-address
+                 (list
+                  (list
+                   ;; adapter name
+                   (buffer-substring (match-beginning 2) (match-end 2))
+                   ;; IP address
+                   (buffer-substring (match-beginning 4) (match-end 4)))))))))
+;    (message "apa-get-ip-addresses: %S" ip-address)
+    (sit-for 1)
+    ip-address))
+</pre>

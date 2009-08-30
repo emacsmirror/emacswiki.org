@@ -1,0 +1,11 @@
+This minor mode enforce key-bind of Emacs.
+
+[[drill-instructor.el]]
+
+Features:
+* He prohibits you from using cursor key. Use C-f,C-b,C-p,C-n!
+* He prohibits you from using backspace key. Use C-h!
+* He prohibits you from using enter key. Use C-m!
+* He prohibits you from using TAB key. Use C-i!
+
+See page in [http://trac.codecheck.in codecheck.in] http://trac.codecheck.in/share/wiki/DrillInstructor

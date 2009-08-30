@@ -1,0 +1,4 @@
+This is a suite of programs for (almost) bi-directional synchronization of Palm OS devices 
+with the BBDB database and the Emacs diary. It also offers memo manipulation (exporting 
+buffers as memos and importing memos into mailboxes).  Please visit 
+http://turing.ubishops.ca/home/bruda/emacs-pilot/ for further details.

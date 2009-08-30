@@ -1,0 +1,114 @@
+You can define your own keymappings in the X Windowing System using
+xmodmap.  Usually your system should read the ~/.Xmodmap file
+automatically, so you can just put things there.  Sometimes the stuff
+also goes into your ~/.xmodmaprc file.
+
+On my system (Debian), I have a ~/.xsession file that contains this:
+
+    ...
+    xmodmap .xmodmaprc
+    x-window-manager
+
+This will read the .xmodmaprc file before starting the window manager.
+(In my case, x-window-manager eventually resolves to wmaker.)
+Basically, the format of the file is very complex.
+You can have .xmodmap highlighted in Emacs with [[XModMapMode]].
+
+We will ignore the symbolic names of keys for the beginning.  All we
+need to know is that every keyboard sends a certain '''keycode''',
+which is then interpreted by X.  X will then produce a symbolic
+representation of the key (and [[modifier key]]s) pressed.
+
+== Switching two simple keys ==
+
+Assume we want to switch the Y and the Z key.
+
+First we need to determine the keycodes of the two keys we want to
+switch.  We use the '''xev''' program to determine those.  Start it,
+then press the two keys, take a look at the (verbose) output:
+
+<pre>
+    KeyPress event, serial 27, synthetic NO, window 0x3400001,
+	root 0x26, subw 0x0, time 4047624180, (170,-12), root:(365,516),
+	state 0x0, '''keycode 52''' (keysym 0x79, y), same_screen YES,
+	XLookupString gives 1 characters:  "y"
+    ...
+    KeyPress event, serial 27, synthetic NO, window 0x3400001,
+	root 0x26, subw 0x0, time 4047625057, (170,-12), root:(365,516),
+	state 0x0, '''keycode 29''' (keysym 0x7a, z), same_screen YES,
+	XLookupString gives 1 characters:  "z"
+    ...
+</pre>
+
+So we add to our file:
+
+    keycode 52 = z Z
+    keycode 29 = y Y
+
+Run xmodmap with the file, and test it with xev.  Should have worked.
+
+`z' and `Z' are the symbolic identifiers used by X, also called
+'''keysyms'''.  The keysyms are listed in /usr/include/X11/keysymdef.h
+or thereabouts.  If you want to use them, do not use the XK_ prefix.
+
+== New Bindings for Mode_switch ==
+
+On most system, there is a Mode_switch key.  It acts like a Shift key.
+Therefore you can assign four meanings to every key:  key, Shift+key,
+Mode_switch+key, and Shift+Mode_switch+key.  Usually the Mode_switch
+key is used on non-US keyboards for a few selected keys only.  It is
+labelled <nowiki>AltGr</nowiki>.
+
+One very simple change to make <nowiki>AltGr+c</nowiki> produce a `ç'
+(if you don't want to type `C-x 8 , c' to produce it):
+
+    ! C cedille
+    keycode 54 = c C ccedilla Ccedilla
+
+Some systems use <nowiki>AltGr+c</nowiki> for the cent sign and
+<nowiki>AltGr</nowiki> C for the copyright sign.
+
+The CapsKey has the Lock attribute which makes it act as a permanent
+shift.  If you want to change that key to something else, you need to
+remove the Lock attribute.  See CapsKey for more.
+
+== Modifiers ==
+
+Modifiers are extras that get interpreted by the applications
+themselves.  X can only translate certain keycodes to certain
+modifiers.  What then happens, however, is up to the Window Manager
+and the Application.
+
+Some people have Ctrl, Alt, Meta and "Win" keys.  X knows the Ctrl,
+Alt, Meta, Hyper and Super modifiers, as well as the corresponding
+keysym.  What people usually want, is to change their Alt, Meta and
+"Win" keys to a new keysym and matching modifier.  See MetaKeyProblems
+for more.
+
+Here is a simple example.  I want one of my Alt keys to have the Meta
+keysym, and to produce the Meta modifier.  My other Alt key should be
+the Mode_switch.  So first I take the Meta modifier away from all
+other keys (Meta is called mod1 by X), then I map the keycodes to the
+keysyms, and I add the modifier to one of them.
+
+    clear mod1
+    keycode 64 = Meta_L
+    keycode 113 = Mode_switch
+    add mod1 = Meta_L
+
+Now the key producing the keycode 64 has keysym Meta_L and the mod1
+modifier.  The key producing the keycode 113 has keysym Mode_switch
+and no modifier.
+
+== Alternatives ==
+
+XKeyCaps is especially handy for producing custom xmodmap
+files. --ShaeErisson
+
+Note that to get it to work in gnome, you need to use .gnomerc (i think) viz. Put something like 'xmodmap .xmodmap' in your ~/.gnomerc.  This .gnomerc stuff seems to be not what the docs for gdm etc. say, but is the only way i could get it to work for gnome.  -- DeepakGoel
+
+----
+See also: xmodmap man page, XModMapMode.
+
+----
+CategoryKeys

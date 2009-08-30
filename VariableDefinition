@@ -1,0 +1,47 @@
+This pages explains when to use defcustom, when to use defvar, when to
+use defconst, and when to start the DocString with an asterisk `*'.
+Variables with DocStrings that start with an asterisk are possible
+candidates for `M-x set-variable'.  Since the user is supposed to type
+the new value into the MiniBuffer, the possible values must be simple
+to type!
+
+Look at BufferLocalVariable for variables that have a different value
+in every buffer (such as `buffer-file-name').
+
+* Variable changed by users interactively
+
+: Use `defvar' or `defcustom'. The DocString should start with `*'.
+If the value is a long list, or a function, or if the variable would
+be set only in init files, then don't start the documentation string
+with `*'.
+
+* Variable changed by users using custom
+
+: Use `defcustom'. Maybe start DocString with `*'. See above for details.
+
+* Variable set in ~/.emacs
+
+: Use `defcustom' or `defvar'. Maybe start DocString with `*'. See above for details.
+
+* Variable not changed by user
+
+: If the variable is only used by code, use `defvar'. Do not start DocString with `*'.
+
+* Variable not changed at all
+
+: Use `defconst'. Do not start DocString with `*'.
+
+* Development
+: From the EmacsManual :
+
+:: C-M-x (eval-defun)  treats `defvar' expressions specially.  Normally, evaluating
+a `defvar' expression does nothing if the variable it defines already
+has a value.  But C-M-x unconditionally resets the variable to the
+initial value specified in the `defvar' expression.  `defcustom'
+expressions are treated similarly.  This special feature is convenient
+for debugging Lisp programs.
+
+See also NonNilValues.
+
+----
+CategoryCode CategoryCustomize

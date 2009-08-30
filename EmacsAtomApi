@@ -1,0 +1,39 @@
+== Introduction ==
+
+A simple interface to weblog servers which present the REST Atom API. 
+
+* http://launchpad.net/atompub.el
+
+== Features ==
+
+Supports editing raw entries with nxml-mode, or EmacsMuse for creating new entries. Since it is not currently possible to transform XHTML into Muse text, it is not currently possible to edit already created entries as Muse entries.
+
+== Compatibility ==
+
+Currently works with [http://blogger.com blogger] and with [http://livedoor.com livedoor].
+
+Supports any authentication present in URL, as well as WSSE authentication.
+
+Should be as international as Emacs. Known to support English and Japanese; author has posted entries in Russian, Hebrew, and Greek, copied from emacs HELLO text.
+
+Works on GNU Emacs 21 & 22(CVS).
+
+== Getting ==
+
+Download it at http://purl.org/net/emacs-atom-api/emacs-atom-api-latest.tar.gz.
+
+== Helping out ==
+
+Read TracGuide for info about filing bug reports, etc.
+
+=== Supplementary packages ===
+
+* [http://www.mwolson.org/static/dist/muse-latest.tar.gz Muse package]
+* [http://purl.org/net/emacs-atom-api/url.tar.gz URL package known to work]
+
+Feedback is highly encouraged.
+
+Oh, and please note that this is even more unstable than the Atom API spec, whose very name changed as the author was writing the elisp.
+
+----
+CategoryHypermedia

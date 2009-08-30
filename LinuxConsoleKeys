@@ -1,0 +1,119 @@
+There is some description of linux keys in LoadKeys and MissingKeys.
+
+What this document describes is how to add keys to the linux console,
+that linux knows nothing about ;) 
+
+If you run the program dumpkeys, it will display your current keyboard
+configuration -- probably in a format that you don't understand. 
+
+I personally configured my keyboard to use the meta keys as meta.
+They look like &lt;&gt; (a diamond) so I changed my entire configuration a
+lot.
+
+I still use A-Fn to switch between VTs so I wanted M-Fn to produce
+something I could use in emacs.
+
+Linux does now know anything about a meta key, but it has eight
+control keys, so I used shiftl to represend meta.
+
+So here is my configuration for F1:
+
+<pre>
+keycode  59 = F1               F1               Console_13       F1              
+	alt	keycode  59 = Console_1       
+	control	alt	keycode  59 = Console_1       
+	shiftl keycode 59 = F41 # Emacs Meta F1
+</pre>
+
+The first line says that key with code 65 (F1) is F1 (the following
+&quot;F1 Console_13 F1&quot; doesn't matter, really).  The next line says that
+A-F1 is VT 1 and the third says that C-A-F1 is VT 1.  On the other
+hand the fourth line says that M-F1 is F41.
+
+My meta keys return codes 124 and 126 (left and right), so I bound
+them to shiftl and used that as meta:
+
+<pre>
+keycode 124 = ShiftL
+keycode 126 = ShiftL
+</pre>
+
+Now, linux configures the Fn keys to be a string, and there is a
+default string for F1 - F20, as so:
+
+<pre>
+string F1 = "\033[[A"
+	:
+	:
+string F20 = "\033[34~"
+</pre>
+
+What I did was to create a string for M-Fn, and bind that to other Fn
+keys, and I started with F41, so I could just add 40 to the F number
+to get meta Fn:
+
+<pre>
+string F41 = "\033[\033[[A"	# Emacs Meta F1
+string F42 = "\033[\033[[B"	# Emacs Meta F2
+string F43 = "\033[\033[[C"	# Emacs Meta F3
+string F44 = "\033[\033[[D"	# Emacs Meta F4
+string F45 = "\033[\033[[E"	# Emacs Meta F5
+string F46 = "\033[\033[17~"	# Emacs Meta F6
+string F47 = "\033[\033[18~"	# Emacs Meta F7
+string F48 = "\033[\033[19~"	# Emacs Meta F8
+string F49 = "\033[\033[20~"	# Emacs Meta F9
+string F50 = "\033[\033[21~"	# Emacs Meta F10
+string F51 = "\033[\033[23~"	# Emacs Meta F11
+string F52 = "\033[\033[24~"	# Emacs Meta F12
+</pre>
+
+These are strings I chose, so you don't have to use the same strings,
+just be careful not to use strings that conflict with anything else.
+
+Emacs can then be configured to treat these strings as a key or
+keybinding, such as M-Fn.
+
+
+==Using Windows Keys As Hyper Key==
+
+An obscure feature of Emacs can be used to get even more keys on
+the console -- I use this to turn the windows keys on my keyboard
+into Hyper and Super  [[modifier key]]s.
+
+Here is the trick:
+
+basically, if you hit C-h c followed by C-x@ha you will see that
+emacs knows that as a key prefix. 
+In fact the above is hyper-a to emacs. similarly, you can prouce
+all the other modifiers as shown in the list below with C-x@ as
+the common prefix:
+
+* a alt
+* c control
+* h hyper
+* m meta
+*s shift
+* S super
+
+In fact the above is part of the raw keyboard translation and is
+meant for use in environments where the keyboard is incapable of
+producing the appropriate modifier bit.
+
+So using all that has been said on this thread so far plus the
+above, you can get *many* more keys on your emacs keyboard!
+
+I'm typing this on an 88 key hackers wireless keyboard, and in
+addition to the windows keys being hyper and super modifiers
+respectively, 
+I also have the following:
+
+* c-: hyper
+* c-' super
+*c-, alt
+     * c-. super
+
+(note that alt above is different and distinct from meta.
+
+
+----
+ConsoleKeys

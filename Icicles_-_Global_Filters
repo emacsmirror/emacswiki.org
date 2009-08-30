@@ -1,0 +1,175 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Multi-Commands the Hard Way]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Specifying Match Functions for Commands]] ||
+
+----
+
+== Global Filters ==
+
+This section is for EmacsLisp programmers.
+
+Which [[completion]] candidates get displayed?  To review:
+
+'''1.''' The domain of discourse, that is, all possible candidates, is
+determined by the arguments to `completing-read',
+`read-file-name', or `M-x'.
+
+'''2.''' A user types something in the [[minibuffer]].  This narrows the
+possible candidates to those that match the input.  Matching
+can be [[prefix completion|prefix-matching]] or [[apropos completion|apropos-matching]].
+
+Wouldn't it sometimes be useful to filter '''#1''' in a global way,
+before filtering it with the user input ('''#2''')?  Functions `completing-read' and
+`read-file-name' take a predicate argument, so that can be used
+for global filtering.  However, those functions are usually called
+from some [[command]], and it would also be useful to give ''end users'',
+not just programmers, some way to globally filter candidates.
+
+For example, if you have a command, such as `icicle-buffer', that
+reads a [[buffer]] name and displays the buffer, some users might
+always be interested only in buffers that are associated with
+files.  They don't want to see possible candidates like
+`*scratch*' and `*Messages*'.  What they need is a way to apply a
+global predicate that limits candidates to file-buffer names -- but
+they don't have access to the call to `completing-read' that is
+inside the command definition.
+
+For this reason, some global filtering [[variable]]s are provided by '''Icicles''':
+
+  `icicle-must-match-regexp', `icicle-must-not-match-regexp',
+  `icicle-must-pass-predicate', `icicle-extra-candidates'.
+
+The first and second of these are ''[[regexp]]s'' that candidates ''must
+match'' and ''must not match'', respectively, in order for them to be
+displayed.  The third is a ''predicate'' that candidates must satisfy.
+The fourth is a list of ''extra candidates'' to display.  Any of the
+filters can be `nil', in which case it has no effect.
+
+Each of these except `icicle-extra-candidates' filters not only completion candidates but also the default values passed to `completing-read' and `read-file-name'.
+
+Variable `icicle-must-match-regexp' is similar to the standard variable
+`completion-regexp-list', except:
+
+* `completion-regexp-list' is a list of regexps, not just one.
+* `icicle-must-match-regexp' is used after filtering using [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-transform-function|icicle-transform-function]]</tt>''''.
+
+Variable `icicle-extra-candidates' is not really a "filter".  It
+does not ''restrict'' the set of possible candidates -- rather, it
+''extends'' that set.  The other filters do not act on the candidates
+in `icicle-extra-candidates' -- they are always added.   Extra
+candidates are displayed in buffer `*Completions*' using face
+`<tt>[[#icicle-extra-candidate]]</tt>'.
+
+Note that an extra candidate need not have anything in common with
+the normal (non-extra) candidates.  In particular, because it is
+provided explicitly, it does not follow the restrictions implied
+by the current candidate-generation method.  For example, when
+option '''`<tt>[[Icicles - Customization and General Tips#icicle-guess-cmds-in-path-flag|icicle-guess-cmds-in-path-flag]]</tt>'''' is non-`nil', the extra
+shell-command candidates provided have no connection with the
+file-name completion that is used to generate the other candidates
+(see [[Icicles - Shell-Command Enhancements]]).
+
+
+Note too that if an extra candidate is already a candidate anyway then it will be present twice in the list of all candidates (that is,
+unless `icicle-transform-function' removes duplicate candidates).
+
+These global variables are ''internal'' variables, even though they
+are defined as user options -- they are not really meant
+to be customized.  If you are not an Emacs-Lisp programmer, you
+will ''not'' use these variables, but some commands that you use might
+provide corresponding global-filter ''user options''.  '''Icicles'''
+provides customizable user options for command `icicle-buffer', for example:
+
+[:icicle-buffer-match-regexp]
+[:icicle-buffer-no-match-regexp]
+[:icicle-buffer-predicate]
+[:icicle-buffer-extras]
+*  '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-match-regexp|icicle-buffer-match-regexp]]</tt>''''    -- Regexp that buffer names must match
+*  '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-no-match-regexp|icicle-buffer-no-match-regexp]]</tt>'''' -- Regexp buffer names must ''not'' match
+*  '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-predicate|icicle-buffer-predicate]]</tt>''''       -- Predicate buffers must satisfy
+*  '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-extras|icicle-buffer-extras]]</tt>''''          -- Extra buffer names to display
+
+You might, for instance, customize `icicle-buffer-no-match-regexp'
+to not display file-buffers whose names end in `<code>.elc</code>', and
+customize `icicle-buffer-predicate' to show only buffers that are
+associated with files.  The former would use a value of <code>"\\.elc$"</code>,
+and the latter would use a value such as this:
+
+   (lambda (bufname) (buffer-file-name (get-buffer bufname)))
+
+Similarly, '''Icicles''' provides user options for filtering and sorting
+file names during completion:
+
+[:icicle-file-match-regexp]
+[:icicle-file-no-match-regexp]
+[:icicle-file-predicate]
+[:icicle-file-extras]
+*  '''`<tt>[[Icicles - Customization and General Tips#icicle-file-match-regexp|icicle-file-match-regexp]]</tt>''' -- Regexp file names must match
+*  '''`<tt>[[Icicles - Customization and General Tips#icicle-file-no-match-regexp|icicle-file-no-match-regexp]]</tt>''' -- Regexp file names must not match
+*  '''`<tt>[[Icicles - Customization and General Tips#icicle-file-predicate|icicle-file-predicate]]</tt>''' -- Predicate files must satisfy
+*  '''`<tt>[[Icicles - Customization and General Tips#icicle-file-extras|icicle-file-extras]]</tt>''' -- Extra file names to display
+
+If you, as a programmer, write a command, and you want to expose
+global filters to users of the command, you should:
+
+'''1.''' Create corresponding user options that can be customized.
+
+'''2.''' Bind the user options to the corresponding filtering variables.
+
+If you use `icicle-define-command' or `icicle-define-file-command'
+to define a command (recommended), then you can simply pass the
+filter-variable bindings as part of the `BINDINGS' argument.
+
+For example, here is the core definition of `icicle-buffer':
+
+ (icicle-define-command
+  icicle-buffer                          ; Command name
+  "Switch to a different buffer."        ; Doc string
+  switch-to-buffer                       ; Action function
+  "Switch to buffer: "                   ; completing-read args
+  (mapcar (lambda (buf) (list (buffer-name buf))) (buffer-list))
+  nil nil nil 'buffer-name-history
+  (icicle-default-buffer-names) nil
+  ;; Filter bindings
+  ((icicle-must-match-regexp icicle-buffer-match-regexp)
+   (icicle-must-not-match-regexp icicle-buffer-no-match-regexp)
+   (icicle-must-pass-predicate icicle-buffer-predicate)
+   (icicle-extra-candidates icicle-buffer-extras)
+   (icicle-sort-function icicle-buffer-sort)))
+
+If you define a command that uses completion, but you don't use
+`icicle-define-command' or `icicle-define-file-command', then you
+can just bind such variables around a call to `completing-read' or
+`read-file-name'.  Command `icicle-complete-keys' presents an
+example of this, binding `icicle-buffer-no-match-regexp'.
+
+Another way that users can apply predicates to completion
+candidates is to use `##M-&##' while completing.  These predicates
+apply to the full [[alist]]-entry candidates that are supplied to
+`completing-read' or `read-file-name', not just to the textual
+candidates that are displayed in buffer `*Completions*'.
+See [[Icicles - Progressive Completion]].
+
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Multi-Commands the Hard Way]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Specifying Match Functions for Commands]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

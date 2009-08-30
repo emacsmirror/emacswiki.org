@@ -1,0 +1,13 @@
+Eshell works fine with Viper in window systems, but on terminals, the two don't quite get along by default.
+It turns out that this is due to some bad interaction between Viper's auto-indenting feature and Eshell's command line input handling.
+Here's my work-around (for your .viper file):
+
+ (add-hook 'eshell-mode-hook
+           (lambda ()
+             (when viper-mode
+               (setq viper-auto-indent nil))))
+
+Unfortunately Viper occasionally reverts to the bad behavior despite this setting.
+Toggling your Viper state to Emacs and back seems to fix this.
+
+I'm still looking for a better work-around.

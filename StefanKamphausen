@@ -1,0 +1,81 @@
+2002-09-20 I am new to this community :-)
+
+After browsing the wiki and finding good stuff around I feel like joining this.
+
+I use GNU Emacs
+
+== What I have done so far ==
+
+; [http://www.skamphausen.de/cgi-bin/ska/XEmacs XEmacs Introduction]: written in the german language. I'd like to see transferred to and maintained at this wiki....
+; [[ActiveMenu]]: written together with ClausBrunzema, gives you one more precious line of code.
+; [http://www.skamphausen.de/cgi-bin/ska/mtorus MTorus]: [[MTorus]]  implements buffer cycling and the maintainance of different groups in which to cycle. This has been taken over and rewritten which makes the history somewhat obscure
+; [[Taskjuggler]]: A (new) major mode for Taskjuggler-files.
+; [http://www.skamphausen.de/cgi-bin/ska/track-scroll TrackScroll]: implements a similar feature like mouse-drag.el for XEmacs
+; [http://www.skamphausen.de/cgi-bin/ska/highlight-context-line highlight-context-line]: was inspired by <nowiki>PostScript</nowiki> display programm gv: highlight the last visible line when scrolling in pagefuls. 
+; [http://www.skamphausen.de/cgi-bin/ska/mouse-focus MouseFocus]: gives kind of a focus-follows-mouse policy for XEmacs-windows
+; [http://www.skamphausen.de/cgi-bin/ska/swiss-move SwissMove]: means moving in smaller getting steps, thus navigating fast and precise in large files.
+; [http://www.skamphausen.de/cgi-bin/ska/linmag-mode linmag-mode]: A major mode for writing articles for the (German) [http://www.linux-magazin.de Linux Magazin]
+
+[new]
+
+Add this to your library <code>swiss-move.el</code> to make it work with GNU Emacs:
+
+  (unless (featurep 'xemacs)
+    (defun line-number (&optional position)
+      (count-lines (point-min) (or position (point)))))
+
+After adding this to my copy, I noticed that you knew about this problem, but perhaps weren't sure how to fix it. Now you can correct this statement on your Web site:
+
+: "This is NOT working in GNU Emacs. The function line-number is not working (at least in my pretty old GNU Emacs)."
+
+Thanks for pointing out.  I'll put that code where it belongs. :-)
+
+I don't know if the 1+ makes any difference here, but the documentation for count-lines says (at least in XEmacs, but I'm pretty sure I've seen these sentences in some (older?) version of GNU Emacs, too):
+
+ NOTE: The expression to return the current line number is not obvious:
+
+  (1+ (count-lines 1 (point-at-bol)))
+
+I makes a difference: the first version doesn't work correctly when point is at bol, the second (documented) version does.  So I'll use something like
+
+ (unless (featurep 'xemacs)
+   (defun line-number (&optional position)
+     (save-excursion
+	(when position (goto-char position))
+	(1+ (count-lines 1 (point-at-bol))))))
+
+which is pretty close to XEmacs' definition of that function w/o narrowing. -- StefanKamphausen
+
+
+[new]
+
+; [http://www.skamphausen.de/cgi-bin/ska/tex-letter texletter.el]:  generates a menu from a directory full of LaTeX (letter) templates
+(this is one of my very early elisp-works and thus quite simple)
+
+== What I have done to this wiki ==
+http://www.emacswiki.org/cgi-bin/wiki?action=rc&all=1&showedit=1&from=1&rcuseronly=StefanKamphausen
+
+== Discussion or Something ==
+Willkommen!  I would love to see content in other languages on the
+wiki.  Adding links to OnlineResources is a first step.  There is also
+a link to a French website on the Gnus category page.  Perhaps we
+should start thinking about adding non-English pages to the wiki or
+host non-English wikis on this server. -- AlexSchroeder
+
+=== Interesting Wiki Pages ===
+Surfing this wiki every day and finding several interesting things w/o the time/possibility/lust/whatever to immediately insert into my xemacs configuration produces the need for a list of interesting wiki pages....
+
+* SimpleWikiEditMode -> editing in Emacs instead of the
+  browser; does this work in XEmacs, too?
+
+: <i>Should</i> work now.  AdrianAichner is using it in XEmacs.  If you
+  have any problems we would be glad if you report them to the mailing
+  list. -- DavidHansen
+
+* CategoryCode -> creating new modes (among others)
+* EmacsNiftyTricks -> treasures there....
+* SessionManagement -> like screen, maybe even saving of window configurations possible
+* KillKey -> offers the show-diff-when-killing-unsaved feature
+
+----
+CategoryHomepage

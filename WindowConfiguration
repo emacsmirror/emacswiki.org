@@ -1,0 +1,15 @@
+A window configuration is the layout of the various [[window]]s in an Emacs
+[[frame]].  Such a window configuration can be stored in a [[register]]
+(see WindowsAndRegisters) and in a history of window configurations, allowing you to undo changes
+or redo changes to the window configuration.
+
+* Saving and restoring window configurations -> WindowsMode, PolicySwitch
+* Switching back and forth between configurations -> WinnerMode
+* Storing them in registers and restoring them from there -> WindowsAndRegisters 
+
+The most basic changes to the window configuration are listed on
+[[Window]].
+
+----
+CategoryWindows
+CategoryGlossary

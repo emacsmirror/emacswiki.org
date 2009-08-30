@@ -1,0 +1,41 @@
+'''This page is part of the description of OneOnOneEmacs, by DrewAdams.  See Library:''' Lisp:oneonone.el
+
+Cette page est aussi disponible en franglais ;-): Français:[[Frames Help et Completions]]
+
+*  
+*  
+*  
+
+The <code>*Help*</code> [[buffer]] is treated specially in several minor
+ways in Emacs. I decided to give it its own [[frame]] style and display
+function. I added this frame definition to
+`special-display-buffer-names'.
+
+Here's a screenshot of the <code>*Help*</code> frame:
+
+[[image:DrewsEmacsHelpImage]]
+
+I did the same thing for the <code>*Completions*</code>
+buffer. Here's a screenshot of the <code>*Completions*</code>frame: 
+
+[[image:DrewsEmacsCompletionsFrameImage]]
+
+
+However, in this case, the display function I use also does
+this:
+
+  (redirect-frame-focus (selected-frame) 1on1-minibuffer-frame)
+
+That makes the <code>*Completions*</code> frame redirect user actions
+to the [[minibuffer]] frame, `1on1-minibuffer-frame', which is the behavior we need for
+<code>*Completions*</code>.
+
+Several [[user option]]s are available for customizing the appearance of these frames. In particular, the `*Completions*' frame is automatically zoomed out, to make its text slightly smaller than normal, and you can customize this zoom amount (using option `1on1-completions-frame-zoom-font-difference').
+
+'''See Also: [[Icicles]]''' for a discussion of the frame-focus problem that this frame redirection solves.
+
+
+
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay

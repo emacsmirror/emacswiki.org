@@ -1,0 +1,7 @@
+= Remove Server Part from mode line =
+
+To remove the server part from the channel identifyer in the mode line, customize
+`erc-mode-line-format' and change <code>"%s"</code> to <code>"%t"</code>.
+
+----
+[[ERC]]

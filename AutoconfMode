@@ -1,0 +1,10 @@
+<code>autoconf-mode</code> is a major mode for editing [http://www.gnu.org/software/autoconf Autoconf] <code>configure.ac</code> files, and macro files such as <code>acinclude.m4</code>.
+
+There are two versions of this mode.  <code>autoconf.el</code> by DaveLove comes with Emacs 21 and 22, and <code>autoconf-mode.el</code> by MartinBuchholz comes with XEmacs 21 and is in the Autoconf sources.  Both are quite simple, and very similar, just offering basic syntax setups (including comment syntax) and FontLockKeywords.  The <code>autoconf.el</code> one has ImenuMode support too.
+
+See also
+
+* ShAutoconf -- an alternative if you've got a lot of shell in your configure
+
+----
+ProgrammingModes

@@ -1,0 +1,26 @@
+<code>fetchmail-mode.el</code> by AlexShinn sets up basic syntax and fontification for editing your [http://fetchmail.berlios.de/ fetchmail] <code>~/.fetchmailrc</code> file.  It's included in the "contrib" section of the fetchmail dist, and also Lisp:fetchmail-mode.el.
+
+Or from the author (a couple of lines smaller),
+
+: http://synthcode.com/emacs/fetchmail-mode.el
+
+=== Configuration ===
+
+Put fetchmail-mode.el in your load-path and add the following line to your .emacs file:
+
+ (require 'fetchmailrc)
+
+or better
+
+ (autoload 'fetchmail-mode "fetchmail-mode.el" "Mode for editing .fetchmailrc files" t)
+
+To use it with the fetchmail configurations file:
+
+ (setq auto-mode-alist
+       (append '(("\\.fetchmailrc$" . fetchmail-mode))
+ 	        auto-mode-alist))
+
+(The <code>auto-mode-alist</code> regexp pattern <code>"\..fetchmailrc$"</code> in the <code>.el</code> file comments is a typo, it's <code>\\.</code> to match a literal dot like "<code>.fetchmailrc</code>".)
+
+----
+CategoryMailAddons | CategoryModes

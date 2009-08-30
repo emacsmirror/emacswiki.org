@@ -1,0 +1,214 @@
+This is general advice for text editing and how they translate to
+emacs. Mainly taken from 
+[http://www.moolenaar.net/habits.html Seven habits of effective text editing],
+[http://steve.yegge.googlepages.com/effective-emacs effective emacs] and
+[http://www.lispcast.com/2007/12/9-tips-for-the-aspiring-emacs-playboy emacs playboy].
+
+== Learn to touch-type ==
+
+This is the most basic, but most useful advice that can be given to a beginner.
+Use your 10 fingers, learn which finger type which key. No peek and hunt.
+The most common typing methods advice to let the fingers rest on homerow and
+stretch, one at a time, to reach other keys. Keys far from the homerow 
+should be avoided as much as possible. This translates to :
+
+ Swap the Caps Lock and control keys
+
+This is system specific. See MovingTheCtrlKey for detail.
+
+ C-h is backspace
+
+This shortcut is available in many apps. This can be done by putting
+in your InitFile  <tt> (keyboard-translate ?\C-h ?\C-?) </tt> .
+See also the variable  <tt> normal-erase-is-backspace-mode </tt> and the
+emacs faq. Use <tt>F1</tt> for the help. 
+
+Awkward shortcuts should be remapped. Which one to remap precisely 
+depends on your keyboard layout. Remap to Key sequences
+of the form <tt>C-c</tt> followed by letters, since these are reserved
+for users. For example, the shortcut <tt>C-M-%</tt> is executed by pressing
+simultaneously four keys on my keyboard, each on a different side of the
+keyboard. Here is how to remap the associated command to <tt>C-c %</tt>.
+
+     (global-set-key (kbd "C-c %") 'query-replace-regexp)
+
+An alias could have been used instead. Put the above line in your InitFile
+in order to call the previous command with <tt>M-x qrr</tt>.
+
+     (defalias 'qrr 'query-replace-regexp)
+
+Along the same lines, avoid using the mouse or the arrow keys. Use shortcuts
+instead.
+
+== Learn the shortcuts ==
+
+Learn them one at a time. 
+Learn them when you need them.
+Make a cheatsheet with your favorite ones.
+Take a few minutes to practice when you learn a new one
+and add it to the sheet. Ask other emacs users which one they use and how.
+
+There is a certain logic to the emacs keybindings. This is a bit
+explained in the emacs tutorial. Command to move around are bound to
+the Control prefix if these moves are character-based. They are bound to
+the Meta prefix if they deal with syntax (e.g. move forward one word).
+Control Meta keys are arcane shortcuts, which deal with move associated to
+regular expressions, parenthesis matching etc.
+The list of keybindings is obtained by typing
+
+     F1 b
+
+Meta shortcuts are as important as Control shortcuts, and easier to
+learn after you grab the symmetry of the layout. So, practice them.
+If backspace (sorry, <tt>delete-backward-char</tt>) 
+has been remapped to <tt>C-h</tt>,
+you may want to bind <tt>backward-kill-word</tt> to <tt>M-h</tt>.
+It's usually faster to kill a mispelled word and retype it instead
+to go back to the typo, deleting one character at a time.
+
+== Customize your own bindings ==
+
+Don't overwrite the default shortcuts even if they seem useless. 
+You may find them pretty useful in the future, after some practice.
+Instead rebind the corresponding commands to <tt>C-c</tt> 
+<i>letters</i> shortcuts. These are reserved to users, you won't be 
+overwriting any preexistent shortcuts. You can see a reminder of
+all commands you already bound to the <tt>C-c</tt> prefix by typing
+
+   C-c C-h
+
+I suggest also to use <tt>M-c</tt> as a prefix to bind additional commands. 
+This executes by default the <tt>capitalize-word</tt> command, 
+which is not too useful, and that can be bound to 
+<tt>M-c c</tt> anyway. This will allow you to keep the symetry between
+the Control and Meta key. Note also that <tt>Meta-Shift</tt> is not used
+by the default shortcuts.
+
+Depending on your keyboard layout, you may wand to rebind the <tt>M-x</tt>
+prefix. Note however that the Meta key is often side by side with 
+the spacebar, and is pressed with the thumb. 
+This is one of the best position for a modifier key. 
+
+Finally, many users want <tt>C-x/C-c/C-v</tt> cut/paste.
+Get them by putting in your InitFile
+
+  (cua-mode t)
+
+You will have to look for another prefix for your own defined shortcuts. 
+<tt>C-i</tt> defaults to TAB, you probably don't need it for that purpose.
+See [http://xahlee.org/emacs/ergonomic_emacs_keybinding.html Xahlee] website
+for a detailled study of the most common keyboard layouts and shortcuts.
+
+== Use the search and replace commands ==
+
+Incremental search (<tt>C-s, C-r</tt>) is often the fastest way to 
+move around your file. Try also <tt>C-M-s</tt> and <tt>C-M-k</tt>.
+These are pretty useful to deal with parenthesis groups.
+
+The <tt>replace-regexp</tt> is a versatile command that can save you
+a lot of tedious work. It is not bound by default. <tt>C-c r</tt>
+seems to be the right shortcut.
+
+ (global-set-key (kbd "C-c r") 'replace-regexp)
+
+For example, to delete trailing whitespaces at
+end of lines, you could use <tt>M-x delete-trailing-whitespace</tt>.
+Or instead use replace-regexp : <tt>C-c c RET SPC+$</tt>. Faster.
+Starting with emacs 22, arbitrary lisp code can be specified to compute
+the replacement string. This makes this command even more powerful.
+See ReplaceRegexp and RegularExpression for many examples.
+
+
+== Automate tasks ==
+
+When you need to repeat a task several times, take a break and 
+try to think how to automate the process. Take a few minutes to
+see if there is not a new shortcut that may help.
+
+Have a look at the wiki. Emacs have many features you may not
+be aware of. Common tasks are listed at the top of this page.
+You will probably have to deal with them at some point.
+The wiki often provides unique information on these topics.
+As an example, you may want to look at the [CategoryAlignment Alignment]
+section, which is not documented in the emacs manual.
+
+Keyboard macros need a bit of practice, but they are very handy,
+once mastered. They are used to record key sequences and 
+play them again as needed. See KeyboardMacros for a tutorial.
+
+
+== Learn a bit of EmacsLisp ==
+
+EmacsLisp is the language that is used to customize emacs.
+The emacs InitFile is written in emacs Lisp. There is no need
+to know a lot of emacs Lisp to be able to tweak the default
+emacs configuration to your own needs.
+
+EmacsLisp is a functional language, which means that you can
+make complete programs just by nesting short functions.
+If you have some practice with an imperative programming language,
+you may be used to the following syntax
+
+  f(x,y)
+
+where f is the name of the function, and x and y his arguments.
+The corresponding syntax in Lisp is 
+
+  (f x y)
+
+For example, type 
+
+ (+ 2 3) C-x C-e
+
+You will get 5 in the minibuffer, which is the expected result.
+If you know some emacs shortcuts, then you know a bunch of functions
+that you can use in a straightforward way. To get the function
+activated by a shortcut, together with its syntax, just
+type <code>F1 k</code>, followed by the shortcut.
+Try e.g.
+
+  F1 k M-<
+
+Now, let us look at a short example.
+The code given below defines a command that remove DOS
+carriage return (code "\r") at end of lines, so as to obtain a unix
+compatible file. Since this effect can be obtained with the use of the
+<tt>replace-regexp</tt> command, you may want to read the documentation 
+of this function for some hints.
+
+ (defun dos2unix ()
+   (interactive)
+   (beginning-of-buffer)
+   (while 
+       (search-forward "\r") 
+     (replace-match "")))
+
+The parentheses () in the first line just indicate that our function
+does not take any argument. They are mandatory.
+The interactive function that follows says that our function is in fact
+a command that can be called by typing
+
+     M-x dos2unix
+
+The next instruction puts the cursor at the beginning of buffer.
+This is the command called by the <tt>M-<</tt> shortcut.
+
+The search-forward command moves cursor to the next carriage return.
+Since it is in a while loop, this is repeated until it fails, that
+is until the last carriage return has been found. Each match is 
+replaced by the empty string, thus removing the carriage return.
+
+This command is far from perfect, yet it works and should show you that
+it's not difficult to write short useful commands in EmacsLisp.
+
+Another example is worked out on SteveYegge's blog
+[http://steve-yegge.blogspot.com/2007/02/my-save-excursion.html save-excursion].
+See also his entry on 
+[http://steve-yegge.blogspot.com/2008/01/emergency-elisp.html emergency lisp] 
+for a short introduction to emacs Lisp.
+
+
+A final remark: you can see the code of any command just by calling help
+on that command and cliking at the end of the first line, on the .el file name.
+You will be presented with the actual code that is executed when the
+command is called. This is a great way to learn EmacsLisp.

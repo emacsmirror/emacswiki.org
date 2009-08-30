@@ -1,0 +1,10 @@
+!CDLaTeX is a minor mode which re-implements many features also found in the AUCTeX !LaTeX mode, written by CarstenDominik.
+
+Here are some of the differences from/additions to !AUCTeX:  Environment insertion is template based, and not hook based. Keyword commands (which are executed by typing a short (2-4 letters) keyword into the buffer, followed by TAB) give very rapid access to the main environment templates and mathematical constructs.  !CDLaTeX knows the difference between text mode and math mode in LaTeX and adapts automatically to that.  !CDLaTeX tries to be
+quick, with very few and easy to remember keys, and intelligent on-the-fly help.
+
+You can download !CDLaTeX at http://remote.science.uva.nl/~dominik/Tools/cdlatex/cdlatex.el.
+
+
+----
+CategoryTex

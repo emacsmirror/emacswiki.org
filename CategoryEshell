@@ -1,0 +1,41 @@
+An entire shell by JohnWiegley written in EmacsLisp.  Great stuff.  And very useful for people on weird operating systems without usable shells.  Also known as [::Eshell].
+
+CategoryShell
+
+Get it from here, if your Emacs does not come with it.  It is part of Emacs 21.
+
+* http://emacswiki.org/johnw/eshell.html
+
+More information about eshell :
+
+* EshellAlias
+* EshellAndAngeFtp -- using eshell on remote hosts
+* EshellBackticks -- commands in `backticks` are executed and their output replaces the commands in backticks
+* EshellBmk -- integration between Eshell and [[bookmark]]s
+* EshellColor -- faces, escape sequences, etc.
+* EshellCompletion
+* EshellControlFromOtherBuffer
+* Eshell and DiredMode -- using [[Eshell]] to read directories for [[dired]]: Customize variable `eshell-ls-use-in-dired'
+* EshellElDoc -- ElDoc functionality for Eshell
+* EshellEnhancedLS -- RET- and mouse-sensitive `ls' for Eshell
+* EshellExtensions
+* EshellFunctions
+* EshellForLoop -- writing <tt>for x in a b c do ...</tt> loops
+* EshellGlobbing -- globbing is the process that expands wildcards such as *.txt
+* EshellHistory and EshellDirectoryHistory
+* EshellIndicator
+* EshellInteractivelyRemove
+* EshellManual -- Texinfo source for a reference manual based on the comments in the source
+* EshellMultipleEshellBuffers -- Makes having multiple eshells open/cycling between them easier
+* EshellNavigation
+* EshellAndPdbTrack -- how to make PdbTrack work with Eshell
+* EshellPrompt -- changing your prompt
+* EshellRedirection -- redirecting to files, to buffers and to the clipboard
+* EshellScreen - make eshell interact with GNU screen
+* EshellScrolling -- make eshell scroll to the bottom of the screen
+* EshellAndTramp -- using eshell with tramp
+* EshellAndViper -- making Eshell and Viper play well together
+* EshellVisualCommands -- starting certain commands in AnsiTerm
+* EshellWishList -- wish list and questions.
+* EshellWThirtyTwo -- snippets that make a w32 user's day brighter
+** EshellLnkFileSupport -- support for Windows shortcut

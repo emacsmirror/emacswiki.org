@@ -1,0 +1,11 @@
+When writing EmacsLisp code, whether it is for your <tt>~/.emacs</tt> or for a separate package, it is generally important to try and make sure it will work on Emacs, XEmacs, and older versions of those as well.
+
+Here are some recommendations to avoid common pitfalls:
+
+* Avoid testing specific versions:  Use things like <tt>fboundp</tt>, <tt>boundp</tt>, <tt>featurep</tt>. In other cases, you can also just try to run the code, and catch a potential error with <tt>condition-case</tt>.  If you need to distinguish between Emacs and XEmacs and none of the above helped, use <tt>(featurep 'xemacs)</tt>.
+* Use EasyMenu to make menus.
+* Use EmacsOverlays rather than XEmacsExtents:  The XEmacs emulation of overlays which you can get with <tt>(require 'overlay)</tt> is much better than any Emacs emulation of extents you could ever write.
+* Use imenu rather than func-menu.
+
+----
+ComparativeEmacsology

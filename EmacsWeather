@@ -1,0 +1,23 @@
+Interfacing to weather services on the net:
+
+* MetarReport
+* RainOrShine
+* EmacsMeteo
+* Lisp:xml-weather.el 
+
+There is also a WThreeM w3m-search-engine-alist on WThreeMSearch for weather.com.
+
+Try this:
+
+ (diary-weather "http://wxp.eas.purdue.edu/foredat.cgi/KSTS")
+
+with [http://sacha.free.net.ph/notebook/emacs/cal-desk-calendar.el cal-desk-calendar.el] (desk calendar style extensions to Calendar/Diary by DaleGulledge)
+
+The [http://www.netcolony.com/technology/janardan/scripts/weather.html weather.el] link from the WikifiedEmacsLispList is no longer available, does anybody know more?
+
+* [http://www.archive.org/web/web.php The Wayback Machine] has [http://web.archive.org/web/20011205115920/http://www.netcolony.com/technology/janardan/scripts/weather.html a version of weather.el] at:
+
+** http://web.archive.org/web/20011205115920/http://www.netcolony.com/technology/janardan/scripts/weather.html
+
+----
+CategoryInterface

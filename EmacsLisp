@@ -1,0 +1,100 @@
+Emacs Lisp (sometimes called elisp) is a variant of MacLisp that much of Emacs is written in, as
+well as being the extension language customizations and extensions are written in.
+
+  <resolve> no time to learn lisp is false economy ;o)
+
+Emacs Lisp is what makes Emacs ExtensibleSoftware. Customizations and
+extensions can be made quickly and portably. Some of the ways that
+Emacs Lisp is used to extend Emacs include hooking custom Emacs Lisp
+functions into events, binding functions to key combinations, and
+creating new editing modes.
+
+Lisp has been rumored to stand for Lots of Insignificant Silly
+Parentheses, but it really means LISt Processor.
+
+See also PlainLispForMath for an explanation of simple arithmetic
+expressions in Lisp.
+
+To read about other kinds of Lisp and how to use them in conjunction
+with Emacs, see CommonLisp and [[Scheme]].
+
+== How to learn Emacs Lisp ==
+
+For Emacs Lisp documentation, see the EmacsLispReference node.  For Emacs Lisp SelfDocumentation, see CodingStyle.
+
+A quick-and-dirty introduction to Emacs Lisp, from DanBarlow: http://web.metacircles.com/scripting%20emacs, comment seems to be broken try http://web.archive.org/web/20060329183555/web.metacircles.com/scripting+emacs
+
+Another intro from the FreeSoftwareFoundation: EmacsLispIntro.
+
+A work-in-progress (perhaps to be perpetually unfinished) tutorial:
+http://www.gnuvola.org/software/elisp-tutorial/index.html
+
+See also [[LearningEmacs]].
+
+== Emacs Lisp features ==
+* [[ListStructure]]: like ((1 . 2) . (3 . 4))
+* [[BackquoteSyntax]]: what does it mean `(foo ,bar baz)
+* [[ListModification]]: operations which inspect and modify lists
+* ...
+
+If you are wondering about all the quoting syntaxes like ?a 'b #c `(,d e) :f (g . h) etc., then see at the symbol glossary in [[CategoryGlossary]].
+
+== Emacs Lisp vs. elisp ==
+
+It seems that "elisp" is not a good name for Emacs Lisp.  When asked,
+RMS said:
+
+ From: RichardStallman
+ Subject: Re: elisp test case question
+ To: guile-devel and other people
+ Date: Sat, 9 Mar 2002 03:48:14 -0700 (MST)
+ 
+ "Elisp" was a trademark in the 80s, for CCA Emacs.
+ I am pretty sure it is long dead.
+ But we can ask a lawyer to check.
+ Eben, can you please check?
+
+Should we prefer "Emacs Lisp" in the EmacsWiki, or is "elisp" ok? -- [[Lars Brinkhoff]]
+
+I looked in the official online database of the US trademarks office ( http://www.uspto.gov/ ) and received no results for "elisp", I personally think it requires less energy than emacslisp. Writing it e-lisp or e.lisp or e/lisp would emphasise that it is an abbreviation. [[Zeth]]
+
+I guess we should use Emacs Lisp.  The EmacsManual doesn't use elisp, either, except when linking to the EmacsLispManual.
+
+[new]
+[http://lists.gnu.org/archive/html/guile-devel/2002-03/msg00081.html Eben Moglen's response]:
+
+ From: Eben Moglen
+ Subject: Re: elisp test case question
+ To: guile-devel and other people
+ Date: Sat, 9 Mar 2002 08:30:13 -0500 (EST)
+
+ "Elisp" is not presently a registered trademark in the US for any
+ software-related line of commerce.  A company called Elispot had marks
+ for laboratory sensing and measurement equipment consisting of the
+ word "Elisp" without graphic, but those marks appear to have been
+ abandoned at the end of 2000.  There is no current record of an
+ "Elisp" mark related to any version of Emacs.
+
+Elisp seems fine.  You aren't trying to sell a product and, as mentioned above by Zeth and Eben's post, there is no trademark registered in the USA for elisp. Even if there were, I highly doubt that informal conversation and notes on a web site (this one) would be enough to be considered infringing use. Then again, [http://ursine.ca/IANAL IANAL] but Eben is. -- MattPerry
+
+== Lisp vs. Pascal ==
+
+From AlanJPerlis' foreword to the Wizard Book (Wiki:StructureAndInterpretationOfComputerPrograms): [http://mydatapages.com/pascal.html Pascal] is for building
+pyramids – imposing, breathtaking, static structures built by armies
+pushing heavy blocks into place. Lisp is for building organisms –
+imposing, breathtaking, dynamic structures built by squads fitting
+fluctuating myriads of simpler organisms into place. The organizing
+principles used are the same in both cases, except for one
+extraordinarily important difference: The discretionary exportable
+functionality entrusted to the individual Lisp programmer is more than
+an order of magnitude greater than that to be found within Pascal
+enterprises. Lisp programs inflate libraries with functions whose
+utility transcends the application that produced them. <i>[...]</i> As
+a result the pyramid must stand unchanged for a millennium; the
+organism must evolve or perish.
+
+SteveYegge in his long rant on different programming languages, ''[http://steve.yegge.googlepages.com/tour-de-babel Tour de Babel]'', tells of the popularity of Emacs and in particular EmacsLisp for software developed and used internally at Amazon.com.
+
+----
+CategoryCode
+CategoryExtensionLanguage

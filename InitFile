@@ -1,0 +1,30 @@
+Your '''[::init file]''' contains personal EmacsLisp code that you want to execute when you start Emacs.
+
+* For GnuEmacs, it is ##~/.emacs## or ##_emacs## or ##~/.emacs.d/init.el##.
+* For [[XEmacs]], it is ##~/.xemacs## or ##~/.xemacs/init.el##.
+
+In [[Emacs]], if you do not know where your InitFile is located or you do not have one and want to create it, then
+just open it for editing in Emacs:
+
+   C-x C-f ~/.emacs RET
+
+If it seems your InitFile is not being read, type `C-h e' to see if there's a chance there was a problem with it loading.
+
+It's often better to break up a lengthy InitFile into a number of Emacs Lisp packages and a small, top-level InitFile that loads your packages, especially if you define commands and other functions. Some of the "init files" available here on EmacsWiki are organized in this way, as a set of packages.
+
+For basic advice on how to install a neat new Emacs Lisp file you just found so that it loads automatically when you start Emacs, see InstallingPackages.
+
+You can also have a separate CustomFile reserved strictly for customizations recorded by [[Customize]].
+
+For more information about init files and custom files (Emacs 22 or later):
+
+: ##C-h r i init-file RET## or ##M-: (info "(emacs) Init File")## 
+: ##M-: (info "(emacs) Saving Customizations")##
+: ##M-: (info "(elisp) Init File")##
+
+
+----
+CategoryHelp
+CategoryDotEmacs
+CategoryGlossary
+

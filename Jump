@@ -1,0 +1,14 @@
+Get it here at Lisp:jump-dls.el  After downloading the file rename it from ##jump-dls.el## to ##jump.el##
+
+== Overview ==
+Provides a command to jump to the source of the symbol at point using a number of possible methods, such as semantic, tags, etc.
+
+##jump-jumpers## defines the list of jump functions and the order they will be tried in. 
+A stack of jump points is maintained so it is possible to make several jumps then progressively jump back to point where each jump was made from.   If ##jump-symbol-at-point## succeeds, you can immediately call it again and the jump will continue with the next untried function.  
+You can also use ##jump-clear-stack## to clear the current jump stack.
+
+== Basic Setup ==
+
+  (require 'jump)
+  (global-set-key [f4] 'jump-symbol-at-point)
+  (global-set-key [(shift f4)] 'jump-back)

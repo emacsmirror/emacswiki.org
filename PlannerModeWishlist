@@ -1,0 +1,114 @@
+Wishlist for PlannerMode
+
+Thinking of a cool feature? Describe it and add your name to the list so that I can get in touch with you just in case I manage to hack something up before you do. Write down your opinions and workarounds too. Progress reports also very much welcome.
+
+=== Screencast ===
+Please produce a Screencast. It's much easier to get started if you see how somebody uses it!
+
+=== Copy-or-move-region to a specific file ===
+
+I would like to link a block of tasks to another project (similar to what planner-copy-or-move-region, but not quite so). I have multiple roles and projects. Each projects has many tasks and each task might be associated with a one or more roles. I plan my daily work based on roles and not on tasks. For example, for the next two hours I am a scholar, so I do all the work related to scholars. The next hour I am a slacker and then for three hour a hacker. 
+
+Right now, I keep a page for each project. But I also want to keep a page for each role. This page should contain all tasks from all projects related to this role. planner-copy-or-move-region copies them into a date-specific file and not in a role specific one.  
+
+[new]
+JohnSullivan: Doesn't planner-multi provide what you need here? Assign all the slacker pages to "slacker" as well as the project, "SitOnCouch". 
+
+=== Import/export ===
+
+[new]
+SachaChua : Ical support, snarfing tasks from e-mail, that sort of thing...
+[new]
+Oy, cool, AlexWhite has hacked together http://permalink.gmane.org/gmane.emacs.wiki.general/1768 : tasks and schedule to ical.
+[new]
+ChrisParsons : There's been some discussion on the mailing list for writing native ICAL importer/exporters. This would help with PDA synchronisation and communication with other people's planners.
+[new]
+JodyKlymak: I've made an iCal importer that uses icalendar.el that is probably too specific to my setup, but works quite well:  http://web.uvic.ca/~jklymak/OsxPlanner.html  I add events to ical via Mail.apps cool events-snarfing engine.  I make a diary file of my iCal calendar, and then I display using planner-diary.  I've been quite pleased with the results so far.
+
+
+=== Hierarchical Planning ===
+(No, I'm not talking about the "Hierarchical Tasks" discussed in the manual, but I don't know what else to call this).
+
+Rather than just day pages, I would like week pages, month pages, quarter pages, year pages, five year pages, and decade pages.  That is, time is divided from the finest level to the coarsest level in steps of 3-5 units.  All of these would function like the day pages, in that you'd have you'd have wiki pages with tasks that link to them, and tasks not completed in one month would be rolled to the next month.  Then at the beginning of each month, you break down the relatively large tasks you see into smaller chunks and assign them to weeks, at the beginning of each week you break down the tasks and assign them to days, etc.
+
+The cute part is going to be that I would like "up-links" and "down-links" among the tasks in the time pages.  So a "day" task would have a link to the Week task it's related to and vice versa.  Then at some point the up-links would have a link to the wiki page from which the tasks entered the heirarchy of time (ie, the wiki page contains a month sized task so there's no quarter sized task for the up-link.  Therefore the up-link would take you to the wiki page.  I haven't thought a whole lot about this so my wishes are not necessarily self-consistent.
+
+Right now I'm doing this, but the task moving and linking is done by hand.  What I want to know is if anyone else is interested and if anyone else has ideas, because I will certainly code this myself eventually, but I wouldn't mind some help.  Or, maybe I can get most of what I want just by changing the day-page regexp, in which case I'd like to hear about that, too.  :-)  Please contact me at novak at ucolick dot org if you are in fact interested.
+
+=== PDA Synchronization ===
+
+* other people interested?
+* LarsChrHausmann : yes indeed. It i'd love to be able to sync issues to my palm's todo. Possible also being able to updated schedule to datebook. 
+* TimOCallaghan : You betcha. Just got me a new phone (nokia communicator) and now i want to wiki-plan on the move. My research thus far has led me to thinking i would need some kind of emacs-wiki-planner-server on the phone to handle making changes, and synching them with some kind of authoratitive/central wiki. An emacs SyncML mangling mode maybe? 
+* DaleSmith :  I'd love to be able to copy my daily page to my palm.  It looks
+like pilot-todo from the pilot-link package might be coerced into doing the job.
+* ChrisWebber :  Yes.. I've switched over to PlannerMode, and now my expensive SharpZaurus is all.. unused.  Currently I'm printing off pieces of paper with my daily page, writing stuff on that, and coming back to add my edits at the end of the day.  Not the most effective method on earth... I'd really like to get back to using my Z and OpenZaurus.  Maybe a good way to link PlannerMode and a PalmPilot, SharpZaurus or any other PDA would be by creating extensions to [http://multisync.sourceforge.net MultiSync].  But I haven't looked into it much.
+* SachaChua : I think the SharpZaurus can run MicroEmacs and EmacsWikiMode, according to [[Emacs_and_EmacsWikiMode_on_PDAs]]
+* NikhilGoel : The MultiSync idea has merits, or if the Ical import/export idea that SachaChua mentions above can be expanded then most of the PDA synch applications can directly use it.
+* Way cool! AlexWhite has hacked together some kind of PDA synchronization. See http://permalink.gmane.org/gmane.emacs.wiki.general/1768 for more details.
+* http://ignotus.hixsplit.hu/WikiSync.html describes how to snychronize EmacsWikiMode pages (and thus PlannerMode pages as well) with Palm memos.
+* ChrisParsons : I've given up on electronics PDAs and I'm now using a Hipster PDA[http://www.hipsterpda.com]. I'd like to work out how to print out nicely formatted task sheets.
+* SachaChua : ChrisParsons' work with SVG and Emacs looks really interesting. Maybe we can figure out how to print today's task list and the next actions from various projects...
+
+=== Multiple Users ===
+
+* ChrisParsons: This is an interesting one: could we add support for multiple users to a planner? I guess version control would manage the editing issues, but we would need multiple sets of day pages - perhaps they would have to exist in their own directories seperate to the plan-pages.
+* SachaChua: Or people could tag their tasks with their names and then do planner-trunking. Hmm. What's our goal for multiple users for Planner? Shared notes are easy to do, I think, and modules like emacs-wiki-journal might be handy.
+* other people interested?
+
+=== Planner Timeclock Summary: Grouping of plan-pages by prefix ===
+
+* ChrisParsons: I'm actively working on this.
+* SachaChua: Now there's an idea! Something like the way planner-trunk groups tasks together? That way, you can see how much time you spend on a group of tasks.
+* other people interested?
+
+=== Common Planning ===
+
+* ChrisWebber: Sorry, don't know what to call it other than that yet.  Projects, like making a comic (like I do) or cleaning a house, may be something you have to assign yourself every once in a while.  The process would probably have the same basic steps every time, like in a comic, writing up the script, doing a concept sketch, drawing outlines, coloring in, drawing word bubbles and words, and publishing.  For someone like me, it is probably useful to break this larger project into smaller parts, spread throughout a few days, so these individual steps should be individual tasks.  But it would be useful if, every time I am ready to undertake a new comic, I could reactivate the project file.
+* SachaChua: Cyclic tasks can be done using planner-cyclic. As for projects with spread-out tasks, you're lucky: JohnSullivan wrote code for something like that recently.
+* JohnSullivan: I did make an effort. The code is at http://journal.wjsullivan.net/61113.html
+* ChrisMcMahan: You might consider thinking of it as a Plan Template that can be applied to any date.
+* other people interested?
+
+=== Manual editing ===
+
+* SachaChua : planner-id.el provides some support for manual editing of existing tasks. Changes are applied to other pages when you save a page containing modified tasks. However, planner-id's {{Tasks:1}} is visually noisy. I've been using planner-edit-task-description, planner-raise-task-category, planner-lower-task-category, and planner-update-task instead, but have yet to get around to writing a planner-edit-task that Does the Right Thing.
+* SachaChua : This would probably be easier if we figured out how to store things once and only once and yet retain all of the reordering/formatting stuff we do...
+* other people interested?
+[new]
+AlexandreScherbanov : Maybe that's better to add id in the beginning of the line, that would be crearer, like this:
+
+          {{Tasks:0025}} #B _ cleaning
+          {{Tasks:0038}} #B _ taking over the world
+
+[new]
+Or more concisely, maybe just the number? and the line up tasks code could determine the number of digits required to line them up:
+
+          --25 #B _ cleaning
+          -222 #B _ taking over the world
+          1339 #B _ request support for renumbering/compacting task items
+
+=== RecordsMode features ===
+
+[new]
+DanielMartins : I still use RecordsMode to keep track of my notes 
+
+The reasons may be: 
+
+# easy to search notes and to concatenate all notes or records from a determined subject 
+# C-c n runs the command records-goto-today and it is easy to enter new or old subjects
+# perhaps lazyness...
+
+
+I dont know if it is possible to bound notes or subjects to Planner files like MyGreatProject but not to diary files like 2005.03.08. In this case, we could simply go to MyGreatProject file and look at all information about the project including all of its tasks.
+
+[new]
+SachaChua: M-x remember makes it easy to write down notes. You can use plan pages for subjects. C-c C-n (planner-create-note) on a plan page will create a new note, although I find it's nice to add it to the day page as well (remember will automatically do that) so that people reading your blog know what you've added.
+
+DanielMartins: It is OK to add a link to the day but I feel more comfortable to get all the text in the in plan page, so I find interesting to change the behaviour of remember to add a simple link to the day page and put the text to the plan page. BTW I changed almost integrally to PlannerMode.
+
+
+=== Other features? ===
+
+* JeremyCowgar: Free/Busy URL publishing?
+* DanielMartins: Project management tools (Gantt charts for instance) maybe some hacking from EtaskMode which is apparently orphan now 

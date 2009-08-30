@@ -1,0 +1,20 @@
+Library Lisp:ring+.el provides additional functionality to that in standard library ##ring.el##.
+
+[new:DrewAdams:2007-11-02 15:56 UTC]
+: <tt>[[ring+.el]]</tt> has been incorporated into standard library ##ring.el## for Emacs 22.2. -- DrewAdams
+[new]
+
+<tt>[[ring+.el]]</tt> includes the following functions:
+
+* `ring-member' -- non-nil if item is a member of the ring (comparison with `equal').
+* `ring-next' -- next item in the ring, after the given item.
+* `ring-previous' -- previous item in the ring, before the given item.
+* `<code>ring-insert+extend</code>' -- like `ring-insert', but if `grow-p' arg is non-nil, then enlarge the ring if it is full.
+* `<code>ring-remove+insert+extend</code>' -- `ring-remove' item from ring, then `ring-insert+extend' it.
+* `ring-convert-sequence-to-ring' -- convert sequence (array, list, vector, string) to a ring
+
+'''See also:''' DoReMi for interesting uses of library Lisp:ring+.el.
+
+----
+
+CategoryCode

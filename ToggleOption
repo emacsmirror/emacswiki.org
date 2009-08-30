@@ -1,0 +1,40 @@
+Here's a command that toggles binary options. You can use completion to choose an option to toggle.
+
+By default, the [[Completion]] candidates are user options that have Custom type `boolean'. However, with a prefix argument, the set of candidates is extended to either all user options or all variables:
+
+* No prefix arg -- `boolean' user option
+* Prefix arg >= 0 -- any user option
+* Prefix arg < 0 -- any variable
+
+The prefix arg is useful because there are many options that have a `nil' or non-`nil' value, but the latter is not necessarily `t'. -- DrewAdams
+
+A similar definition is used in '''[[Icicles]]''' as a multi-command. That is, in '''Icicles''', you can toggle more than one option per command invocation.
+
+<pre>
+(defun toggle (opt)
+  "Toggle option's value.  This makes sense for binary (toggle) options.
+By default, completion candidates are limited to user options that
+have `boolean' custom types.  However, there are many \"binary\" options
+that allow other non-nil values than t.
+
+You can use a prefix argument to change the set of completion
+candidates, as follows:
+
+ - With a non-negative prefix arg, all user options are candidates.
+ - With a negative prefix arg, all variables are candidates."
+  (interactive
+   (list (completing-read
+	  "Toggle value of option: " obarray
+	  (cond ((and current-prefix-arg
+		      (wholenump (prefix-numeric-value current-prefix-arg)))
+		 'user-variable-p)
+		(current-prefix-arg 'boundp)
+		(t (lambda (sym) (eq (get sym 'custom-type) 'boolean))))
+	  t nil 'variable-name-history)))
+  (let ((sym (intern opt)))
+    (set sym (not (eval sym))) (message "`%s' is now %s" opt (eval sym))))
+</pre>
+
+
+----
+CategoryCommands

@@ -1,0 +1,41 @@
+== Happy Birthday Emacs! ==
+
+Misread statements[http://lists.gnu.org/archive/html/bug-gnu-emacs/2005-12/msg00261.html] on the [[bug-gnu-emacs]], mailing list incidentally started a conversation about how old Emacs and GnuEmacs were.
+
+According to RichardStallman, the first release of GNU Emacs was in March 1985. The development of the original Emacs began almost 30 years ago, in 1975, at about this time of year.
+
+
+----
+[new]
+Begs a question: is Emacs the oldest continuously developed application around? -ChristopherSmith
+
+[new]
+Probably not.
+
+# I'm sure there are government (US Internal Revenue Service?) or business (banks?) systems that have been developed longer.
+# Operating systems like Unix are older than Emacs.
+# I'm sure there are even other user applications and maybe editors which have been around longer.
+
+One neat Emacs superlative is that it is "the most ported non-trivial computer program in the world".[WikiPedia:Emacs] -- AaronHawley
+
+== Job Posting ==
+
+This free software job opportunity appeared at [[comp.emacs]], among other places.
+
+{{{
+From: DavidJones <dmjones at dpl.mit.edu>
+Date: 13 Dec 2005 11:35:33 -0500
+Subject: Wanted: GNU Emacs on-site training
+Reply-To: dmj at ams.org
+X-Newsreader: Gnus v5.7/Emacs 20.7
+}}}
+
+The AMS is looking for someone to come to our office in Providence,
+Rhode Island, and teach an introduction to GNU Emacs to a group of
+20-25 production editors who are currently using Eve on VMS.
+
+To apply or get more details, send email to <dmj at ams.org>.
+
+; David M. Jones: Publications Technical Specialist
+: American Mathematical Society
+: http://www.ams.org/

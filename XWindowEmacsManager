@@ -1,0 +1,73 @@
+[[image/smiley:XWEM:logo.png]] <strong>X Window Emacs Manager</strong>
+
+[::XWEM] is window manager written in Emacs lisp. 
+
+It is an attempt to make use of all Emacs power in window managing. The main principle of XWEM is to make window managing like as Emacs manages buffers. It will try to hide real nature of things and represent all kind of data structures in Emacs way, i.e. keyboard grabbing and keypress processing is similar to how Emacs do things, creates keypress event, lookup command from global and local keymaps and execute it, XWEM do the same - Emacs keymaps for XWEM is registred(grabbed) in X server, and when keypress occurs it behaves very much like Emacs. This is the same for XWEM frames and frames windows, one different from Emacs frame window is that XWEM window holds X client window(X application) not buffer as Emacs window.
+
+* Homepage at http://www.nongnu.org/xwem/
+
+* The project's page is hosted at Savannah: http://savannah.nongnu.org/projects/xwem/
+
+* If you would like to take a look at the sources, here is the link to the CVS web interface: http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/xwem/
+
+* Some XWEM users / developers usually hang around on the #XEmacs IRC channel on the Freenode network, feel free to drop by and ask questions!
+
+== Managing ==
+
+I do not know what to do with X clients :), one thing is attach to some XWEM window of some frame and resize it to window size. This is the same behaviour in Ion, matchbox or [[ratpoison]] window managers. One thing I think sould differ for only one X client - Emacs (minibuffer . only) frame, it will be handled in special way to make it always visible and always accessible.
+
+== Decorating ==
+
+As a color undecipherable user I don't want to make managing sensible information displayed in colors, maybe except for bright colors like pure green, red, blue, yellow, magenta or such. I think each window of XWEM frame should have colored borders and hooked to select which color to use for left, right, top and bottom. Also XWEM frame should have something like title, where you can display frame specific information. Also Emacs (minibuffer . only) frame would be used to display momentary information.
+
+If you have some ideas on this task, you are very welcome!
+
+== Keymaps ==
+
+It is nice to have all in Emacs way. Keyboard control done through native Emacs keymaps, so you may use xwem-mode-map to add keys you want to handle.
+
+For example you may do this:
+
+  (define-key xwem-mode-map (kbd "\H-1") '(lambda () (interactive) (xwem-frame-switch-nth 1))) ; switch to first frame(make frame 1 visible)
+  (define-key xwem-mode-map (kbd "\H-cc") 'xwem-client-kill) ; kill currently focused X client
+  (define-key xwem-mode-map (kbd "\H-sh") 'xwem-win-split-horizontal) ; horizontal split of selected window
+  (define-key xwem-mode-map (kbd "\H-sv") 'xwem-win-split-vertical) ; verticall split of selected window
+
+Each of that key sequence will be grabbed from X root window and when such key sequence occurs XWEM lookup it in xwem-mode-map and get command it is a Emacs behaviour which is done internally.
+
+== Frames ==
+
+XWEM frame is X window that hold XWEM windows, like Emacs frame holds it windows.
+
+Frame has properties list, root window(parent of all subwindows in frame) and some private structures.
+
+== Windows ==
+
+Window is element of frame that used to arrange managed X clients in Emacs window way.
+
+Window has properties list, TODO: write me
+
+== Discussion ==
+
+Any comments, wishes and ideas are very very welcome, XWEM is not written yet but base skeleton is already done and I want you to say your words on what you want to be in it. How to represent manager info, how to communicate to user, what we really need from window manager, at last how to do things :) --ZajcevEvgeny
+
+Here is screenshot of runned xwem [XWEM:xwem-screen.png screen1]. What you can notice from this screenshot is biggest area is used by xwem frame 0(frame number is "[0]" title part), frame has a 3D title and 3D window delimeters, root window of frame is splited and top window resized, selected-window is outlined with green and passive windows of selected frame outlined with dashed blue. At the bottom of screen we have emacs minibuffer used by any emacs (minibuffer . nil) frames, and by xwem to display some momentary info(like key presses, X proto errors, etc). Just above minibuffer there is special emacs frame managed specially by xwem, we see that it contains result of `my-rdict-cutbuff0' command which is evoked by xwem stroke, xwem stroke drawn with magenta color. Also as you can see in up-right corner there is gnus info(i.e. result of `gnus-active') which is draws in one of frame-after-title hook. And at last here is [XWEM:xwem-0.0.1.tgz sources]. NOTE: by now xwem only runs on XEmacs which is horrible(GNU Emacs 20 crashes :( ) and it has no documentation yet. Any your wishes, cooperation and help are very very welcome!
+See TODO file in distribution. --ZajcevEvgeny
+
+[new]
+I cannot speak for all of us of course, but in my eyes this seems awesome! Great idea! I have just started to use ION on a regular basis, to see  if it suits me, and right now it seems quite ok. Very minimalistic (I used the default "gnome desktop" in Mandrake 9 before). Being able to switch between applications in the same way I today switch between buffers or windows in emacs sounds great. I don't know if I understand the concept totally though, will emacs itself be used to control the windows or is it a "emacs-like" window manager? -- MathiasDahl
+
+: Hmm, I guess I can answer this myself if I read more closely at the top of this page, "written in Emacs-lisp" is quite clear... :) -- MaDa
+
+Yes it is really possible to control every X11 application within Emacs Lisp and it is great! I am also very impressed with stuff I've done :), but it is not finished(Many things which is hard to write using C is easy with elisp, f.i. do you know any WM written in C which supports strokes?). XWEM project started at savannah [http://savannah.nongnu.org/projects/xwem XWEM] please join! --ZajcevEvgeny
+
+[new]
+Are you aware of the sawfish window manager [http://sawmill.sourceforge.net]?
+It uses rep, a Lisp dialect derived from Emacs Lisp.  Maybe you can use some
+of the ideas or even code?
+
+: Of course I'm awared!  XWEM even uses some sawfish aproaches, but main purpose of XWEM is to use/extend all Emacs power, i.e. use emacs packages that already written, in window managing tasks.  Emacs stuff that already used/extended are comint, edmacro, strokes, iswitchb, worklog, icomplete, gnus, etc --ZajcevEvgeny
+
+
+----
+CategoryRelated

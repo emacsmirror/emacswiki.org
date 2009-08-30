@@ -1,0 +1,20 @@
+[http://nschum.de/src/emacs/fringe-helper/ fringe-helper.el] contains helper functions for [[fringe]] bitmaps.
+
+fringe-helper-define allows you to to define fringe bitmaps using a visual string replesentation.  For example:
+
+  (fringe-helper-define 'test-bitmap '(top repeat)
+    "XX......"
+    "..XX...."
+    "....XX.."
+    "......XX")
+
+It contains a few stock fringe bitmaps and helps taking care of creating and inserting them.
+
+[new]
+This looks extremely useful. Fringes are clearly under-used. Perhaps <tt>[[hideshowvis.el]]</tt> can use it to display <tt>+</tt>/<tt>-</tt> markers on [http://www.emacswiki.org/emacs/HideShow foldable regions] (more easily)?
+
+
+
+----
+CategoryWindows
+CategoryDisplay

@@ -1,0 +1,26 @@
+`gnus-article-address-banner-alist' is a powerful tool for removing the annoying advertisment banners appended to messages by many (usually free, web-based) mail providers.  Because the providers change their banners with some frequency, often to advertise a new product or service, it can be very difficult to privately maintain regular expressions to match the banners.
+
+The aim of this page is to provide a home for a community-maintained value for this variable.
+
+    ; Yahoo - This regular expression should be reasonably stable, and
+    ;         reasonably safe.
+    ("@yahoo\\.com" . "^__________________+\nDo you Yahoo!\\?\n.*\n.*\n")
+
+
+    ; Hotmail - Not very much can be matched, so this could be dangerous.
+    ;           Should be reasonably stable though.
+    ;           The other option is to use a much less stable value, and
+    ;           update it frequently.
+    ("@hotmail\\.com\\|@msn.com" . "^_________________________________________________________________\n.*MSN .*\n.*\n")
+
+
+    ; Netscape - Very unstable value, not much else can be done though.
+    ;            Unless a more stable value can be found, it seems the
+    ;            best way to maintain this is to OR updated regexps with
+    ;            this value.
+    ("@netscape\\.net" . "^__________________________________________________________________\n.*Netscape Network.*\n.*\n.*\n\n.*AOL Instant Messenger.*\n.*\n")
+
+You can also use the variable gnus-article-banner-alist or banner in the PostingStyles. -- MarkusKnittig
+
+----
+CategoryGnus

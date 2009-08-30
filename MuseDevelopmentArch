@@ -1,0 +1,185 @@
+THIS IS OUTDATED INFORMATION.  For the most up-to-date information,
+see MuseDevelopment.
+
+== Prerequisites ==
+
+You will need to install GnuArch.
+
+There is a Debian package called <code>tla</code> (tla is another name
+for GNU Arch) that you can install if you use Debian.
+
+== Maintainer's archive ==
+
+MichaelOlson does development from his own archive, and then merges
+"batches" of changes to the shared archive.
+
+To get read-only access to his Muse archive, do the following.
+
+<pre>
+tla register-archive -f http://mwolson.org/archives/2006
+</pre>
+
+The "name" of the archive is <code>mwolson@gnu.org--2006</code>.  This
+is used later on to describe the various branches of Muse that are
+available.
+
+== Shared archive ==
+
+To check out a copy of EmacsMuse from the shared archive using Arch,
+you will first need to register the archive.  If you are a developer
+that is registered with the
+[https://gna.org/projects/muse-el/ muse-el project on Savannah], you
+will want to do the following, replacing <code>loginname</code> with
+your GNA login name.
+
+<pre>
+tla register-archive -f sftp://loginname@arch.gna.org/upload/muse-el/archive-2006
+</pre>
+
+Note that this will probably not work until you have added your SSH
+key to GNA.
+
+If you do not have developer access but wish to track the latest
+development changes, do the following instead.
+
+<pre>
+tla register-archive -f http://arch.gna.org/muse-el/archive-2006
+</pre>
+
+Now skip to the /Picking a branch/ section, or continue for some
+reference stuff.
+
+For quick reference, the above information is summed below in the form
+of a table.  The <code>mwolson@gnu.org--2006-muse-el</code> part is
+the name of the archive; it is used later on when we check out a
+branch.  Arch determines the name from the metadata that it gets when
+you register the archive.
+
+|| Archive || <code>mwolson@gnu.org--2006-muse-el</code> ||
+|| Developers || <code>sftp://loginname@arch.gna.org/upload/muse-el/archive-2006</code> ||
+|| Users || http://arch.gna.org/muse-el/archive-2006 ||
+
+This sort of notation is used to quickly mention how to get code for Arch projects
+that MichaelOlson hacks on -- it is by no means a standard.
+
+== Picking a branch ==
+
+Now that you've registered the Muse archives, you will want to pick a
+particular branch from the following table (think of a branch as a
+development "topic").  If in doubt, choose the Shared branch.
+
+|| Shared branch || <code>mwolson@gnu.org--2006-muse-el/muse-el--devel--0</code> ||
+|| Maintainer branch || <code>mwolson@gnu.org--2006/muse--main--1.0</code> ||
+|| 3.03 release branch || <code>mwolson@gnu.org--2006/muse--rel--3.03</code> ||
+|| Debian packaging branch || <code>mwolson@gnu.org--2006/muse--debian--0</code> ||
+|| Ubuntu packaging branch || <code>mwolson@gnu.org--2006/muse--ubuntu--0</code> ||
+
+If you want to browse the available branches via the web, visit
+http://archzoom.mwolson.org/.
+
+To check out the branch you've chosen, do the following.
+
+<pre>
+tla get [branch name] muse
+</pre>
+
+For the shared branch, this would be the following.
+
+<pre>
+tla get mwolson@gnu.org--2006-muse-el/muse-el--devel--0 muse
+</pre>
+
+This retrieves the <code>muse-el--devel--0</code> branch from the
+<code>mwolson@gnu.org--2006-muse-el</code> archive, and puts it in the
+<code>muse</code> directory (the last argument to tla) on your
+machine.
+
+== Using the archive ==
+
+To keep up-to-date on the latest Muse happenings, run tla's
+<code>update</code> command from the directory that contains your copy
+of Muse.
+
+<pre>
+tla update
+</pre>
+
+This will update Muse, taking care to preserve your changes.
+
+To remove any changes that you have made to your copy of Muse, use
+tla's <code>undo</code> command.
+
+<pre>
+tla undo
+</pre>
+
+Any changes that you undo can be re-done later by means of tla's
+<code>redo</code> command.
+
+<pre>
+tla redo
+</pre>
+
+If you are a Muse developer and have made some changes that you would
+like to commit to the Muse archive, first you will need to provide a
+name and email address.  This information is used in the change log
+for each change you commit.
+
+<pre>
+tla my-id 'Jane Doe <email@address.org>' 
+</pre>
+
+Now you are ready to make the change log, and then commit.  Read on
+for the change log instructions before doing the commit.
+
+<pre>
+tla make-log
+[edit the generated logfile, which will start with ++log...]
+tla commit
+</pre>
+
+When you open the generated log file, you will notice a
+<code>Summary</code> line and a <code>Keywords</code> line.  Add a
+brief one-line description of your changes immediately after the
+<code>Summary:</code> text.  Ignore, but don't delete, the
+<code>Keywords</code> line.
+
+The rest of the file (keeping a blank line after the
+<code>Keywords</code> line) is for describing your changes in detail.
+If you want, you can either leave this blank or just copy the relevant
+part of your ChangeLog entry here.  The information you use here will
+appear in the [https://mail.gna.org/listinfo/muse-el-logs/
+muse-el-logs mailing list] when you are done.
+
+Make sure that you have described your changes in the ChangeLog file
+before committing.
+
+== Emacs modes, Tutorials, and Documentation ==
+
+If you would like a (highly recommended) Emacs helper mode for GNU Arch, check out
+MichaelOlson's
+[http://mwolson.org/projects/DevelopingWithArch.html Developing With Arch]
+page for both a description of how to use the Elisp software called DVC
+(see DistributedVersionControl),
+as well as a mini-tutorial on getting into a solid development routine
+with Arch.
+
+Alternatively, Emacs 22 should include some regular VC bindings for
+Arch, so that you can use the same key-bindings that you would use for
+CVS.
+
+Mark Triggs has a visual tutorial (includes screenshots) of Xtla and
+Arch at http://dishevelled.net/xtla-tutorial.html.  Xtla is
+now called DVC (the same keystrokes are used, and the same look
+persists).  DVC's website is at http://download.gna.org/dvc/.
+
+Arch's documentation may be browsed to by means of
+[http://www.gnu.org/software/gnu-arch/ the GNU Arch website].  If you
+are expecting it to look and feel like the Darcs or CVS documentation,
+you will probably be disappointed.
+
+Arch has an expansive wiki at http://wiki.gnuarch.org, which may prove
+a useful supplement to the documentation.
+
+----
+EmacsMuse

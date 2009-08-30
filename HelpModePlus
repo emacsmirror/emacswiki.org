@@ -1,0 +1,18 @@
+DrewAdams has written library Lisp:help-mode+.el, which enhances the help that is built into Emacs (version 21 and later). It is an enhancement to standard library ##help-mode.el##.
+
+
+== Links to Libraries in Help ==
+
+Links to libraries are provided whenever library names appear in buffer `*Help*'. After loading <code>help-mode+.el</code>, library names in buffer <code>*Help*</code> have mouse-over links to the corresponding library code. 
+
+For example, `C-h v features' describes the variable `features'; this description lists all of the libraries currently loaded in Emacs. 
+
+* In vanilla Emacs (without  <code>help-mode+.el</code> loaded), the library names are not linked, unless a library (such as `grep') happens to have the same name as an Emacs function or variable, in which case clicking the name displays the function or variable description in buffer <code>*Help*</code>.
+
+* With <code>help-mode+.el</code> loaded, each library name in the `C-h v features' list is linked to the library (code) itself. Click a name to edit/view the library file.
+
+'''See Also:''' HelpPlus
+
+----
+
+CategoryHelp

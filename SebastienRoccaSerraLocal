@@ -1,0 +1,74 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Grep in sources
+
+(defun my-get-source-directory (&optional path)
+  "Returns the part of `path' from the root to 'deliverable' or 'src' included."
+  (if (null path)
+      (setq path default-directory))
+  (let ((roots (list "deliverable" "src" "sources?"))
+        root
+        directory)
+    (while roots
+      (setq root (car roots)
+            roots (cdr roots))
+      (if (string-match (format ".*/%s/" root) path)
+            (setq roots nil
+                  directory (match-string 0 path))))
+    directory))
+
+(require 'grep)
+(grep-compute-defaults)
+
+(defun my-rgrep-in-sources ()
+  "Starts rgrep with deliverable or src as default dir if it is in the current path."
+  (interactive)
+  (let ((directory (my-get-source-directory)))
+    (if (null directory)
+        (call-interactively 'rgrep)
+      (let ((regexp (grep-read-regexp))
+            (files (my-source-file-types)))
+        (rgrep regexp files directory)))))
+
+(defun my-source-file-types ()
+  (or (cdr (assoc "d" grep-files-aliases))
+      "*.lua *.ui *.xml *.cfg *.def *.lvl *.trk *.xslt *.qrc *.cpp *.c *.cxx *.h *.hpp *.hxx"))
+
+(defun my-rgrep-in-sources-dwim ()
+  "If no 'deliverable' or 'src' directory is found, just calls
+  rgrep. Else searches in all data files for the current
+  region (if mark is active), or for word at point. If you have a
+  \"d\" alias for file types, only these file types will be
+  searched."
+  (interactive)
+  (let ((directory (my-get-source-directory)))
+    (if (null directory)
+        (call-interactively 'rgrep)
+      (let ((regexp (or (and mark-active (buffer-substring (region-beginning) (region-end)))
+                        (word-at-point))))
+        (if (null regexp)
+            (message "No region or word at point.")
+          (setq regexp (concat "\\\<" regexp "\\\>"))
+          (let ((files (my-source-file-types)))
+            (if (null files)
+                (message "Wrong file type or wrong grep file alias.")
+              (rgrep regexp files directory))))))))
+
+(defvar my-anything-c-source-file-search
+  '((name . "File Search")
+    (candidates . (lambda ()
+                    (let ((args
+                           (format "'%s' \\( -path \\*/.svn \\) -prune -o -iregex '.*%s.*' -print"
+                                   (or
+                                    (my-get-source-directory anything-default-directory)
+                                    default-directory)
+                                   anything-pattern)))
+                    (start-process-shell-command "file-search-process" nil
+                                   "find" args))))
+    (init . (lambda ()
+              (setq anything-default-directory
+                    default-directory)))
+    (type . file)
+    (requires-pattern . 4)
+    (delayed))
+  "Source for searching matching files in all 'deliverable/',
+  'src/', or './'.")

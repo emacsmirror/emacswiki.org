@@ -1,0 +1,1039 @@
+;;; Sylecn's ~/.emacs file
+
+;;======================================================================
+;; preload
+
+;; my main script direcotry, mostly one file script
+(add-to-list 'load-path "~/.emacs.d/sylecn-scripts")
+
+;; extensions contain user defined functions and customizable variables
+(load "extensions-sylecn")
+
+;;======================================================================
+;; customization
+
+;;--------------------------------------------------
+;; info only
+
+;;{{{ info only
+
+;; don't add .el in (load "foo")
+;; because I want to M-x uu to compile them, emacs will choose elc if
+;; its possible
+
+;; my good prefix and keys
+;; C-c	        default prefix for user
+;; C-;          another prefix for user, add by me:)
+;;              C-; would be a great key for switch windows in X if I have not
+;;              use it as a prefix key.
+;; C-'          hippie-expand
+;; C-h h        hippie-expand
+;;              (yes. you can always stole keys from unused functions. safe.)
+;; M-n          scroll-up-half-screen
+;; C-x c        ??
+;; M-[/]
+
+;; use prefix is really easy, for example
+;; define key C-c w w makes C-c w a prefix.
+;; and define C-c e e makes C-c e a prefix.
+
+;; said to be a nice color theme:
+;; http://www.brockman.se/software/zenburn/
+;; my tested color themes
+;;these themes are ok. in case the default color is not good for some language
+;blue on grey
+;(color-theme-gnome2)
+;blue on black
+;(color-theme-comidia)
+;black on white, I guess this is close to orgin color
+;(color-theme-standard)
+;white on black
+;(color-theme-clarity)
+;white on blue
+;(color-theme-resolve)
+;a little too dark
+;(color-theme-gtk-ide)
+;this is difinitely dark, but seems ok for deep night
+;(color-theme-late-night)
+
+;; you can always get default variable vaule by emacs -Q.
+
+;;}}}
+
+;;--------------------------------------------------
+;; debug/testing only
+
+;;--------------------------------------------------
+;;*absolutely* should be default
+
+;;show matching parentheses
+;; TODO add support on {}
+;;      {} is supported on Shell-script mode
+(show-paren-mode 1)
+
+;;don't swap point and mark when doing M-w
+(global-set-key (kbd "M-w") 'copy-region-as-kill)
+
+;;no backup file
+(setq make-backup-files nil)
+
+;;hide startup message
+(setq inhibit-startup-message t)
+
+;;disable both beeping and visible-bell
+(setq visible-bell nil)
+(setq ring-bell-function 'ignore)
+
+;;don't blink
+(blink-cursor-mode -1)
+
+;;show nothing in *scratch* when started
+(setq initial-scratch-message nil)
+
+;;turn off transient mark mode
+(transient-mark-mode -1)
+
+;;disable menu, toolbar and scrollbar
+;;for X, use ~/.Xdefaults
+;;for console emacs
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+
+(defvar use-session nil 
+  "use session or not.
+If non-nil use session, else use saveplace and savehist.")
+(setq use-session nil)
+(if use-session
+    ;; use session, keeps hist, kill rings, registers, point and mark pos ...
+    (progn
+      (require 'session)
+      (add-hook 'after-init-hook 'session-initialize))
+  (progn
+    ;;when opening file keep point at the pos last closed
+    (require 'saveplace)
+    (setq-default save-place t)
+    ;;keep hist
+    (savehist-mode 1)))
+
+;;ido
+;;ref: http://www.emacswiki.org/emacs/InteractivelyDoThings
+;;ref: Directory /home/sylecn/fromsource/emacs/lisp/ido.el
+(require 'ido)
+(ido-mode 'buffers)
+;;long list makes me nevous
+(setq ido-max-window-height 1)
+
+;;minibuffer size
+;;  default in v23: 25% frame's height
+;;(setq max-mini-window-height 0.25)
+
+;;never yank at mouse position, always at point
+(setq mouse-yank-at-point t)
+
+;;--------------------------------------------------
+;;display related
+
+;;display   (Control L) in another way
+(require 'pp-c-l)
+(pretty-control-l-mode 1)
+;;I just get rid of the ^L, replace it with "".
+(setq pp^L-^L-string "")
+
+;;show time on mode bar
+;;TODO how to customize the Mail and system load display
+;;     or how to make mail notice available and disable system load
+(display-time-mode 1)
+(setq display-time-format "%I:%M%p %b%d %a")
+(setq display-time-use-mail-icon t)
+
+;;cursor style
+;;(setq default-cursor-type 'bar)
+;;(setq cursor-type 'bar)
+
+;; show column number
+;(column-number-mode 1)
+
+;; if you want show line number in each line
+;; see LineNumbers in emacswiki
+;; http://www.emacswiki.org/emacs/LineNumbers
+
+;; Color theme
+;; ref: http://www.nongnu.org/color-theme/
+;; ref: http://www.emacswiki.org/cgi-bin/wiki/ColorTheme
+;;BUG color-theme-select is not working on emacs cvs version
+
+;; only use color-theme when we have 256 colors or more
+;(if (>= (display-color-cells) 256)
+(if nil
+    (progn
+      (add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-goodies-el")
+      
+      (require 'color-theme)
+      ;;keep a list of used color-theme
+      
+      (setq color-theme-history-max-length 50)
+
+      ;;NOTE: you have to run the command *twice* to get it fully effective!
+      ;;      no matter in gtk or in terminal
+      (defun color-theme-set-default-theme ()
+	"set default color theme"
+	(progn
+	  (color-theme-gnome2)
+	  (color-theme-gnome2)))
+
+      (color-theme-set-default-theme)))
+
+;;view images in emacs
+(auto-image-file-mode 1)
+
+;; hl-line-mode extended
+;; ref: http://www.emacswiki.org/emacs/DrewAdams
+;; ref: http://www.emacswiki.org/emacs/hl-line%2b.el
+;; this library has good user-friendly output message when toggle minor modes
+;; and call functions. just run the two line below to see what I mean.
+(require 'hl-line+)
+(toggle-hl-line-when-idle 1)
+(hl-line-when-idle-interval 20)
+;;TODO disable it for info mode, view mode, man mode, Help mode
+
+;;======================================================================
+;;user configs
+;;
+;;all configurations for built-in features in GNU Emacs comes here
+;;you can add new features in
+;;~/.emacs.d/sylecn-scripts/extension-sylecn.el
+;;and customize those in ??
+
+;;--------------------------------------------------
+;; need for keys
+(load "~/.emacs.d/startup-scripts/need-for-keys")
+
+;;--------------------------------------------------
+;; my compiler options
+(load "~/.emacs.d/startup-scripts/compile-extended")
+
+;;--------------------------------------------------
+;; copy paste use clipboard or primary
+(load "~/.emacs.d/startup-scripts/use-clipboard")
+
+;;--------------------------------------------------
+;;choose major mode based on filename pattern
+;;DONE low, find major mode for .muttrc .procmailrc etc
+;;     It's on emacswiki. see email related pages.
+(setq auto-mode-alist
+      (append '(("\\.m$" . octave-mode)
+		("\\.bash.*" . shell-script-mode)
+		("\\.acl2.*" . lisp-mode)
+		("crontab" . conf-mode))
+	      auto-mode-alist))
+
+;;choose major mode based on file contents
+;;magic-mode-alist
+
+;;--------------------------------------------------
+;; my files in myfiles will
+;;   open when emacs starts
+;;   not be closed by clean-buffer-list
+;;   <add future usage here>
+(defvar myfiles '("todo" "low" "done"
+		  "learnlinux" "notes" "bugs" "helps/emacs/kemacs"
+		  "progress" "texts/lwords"
+		  "~/helps/html/my-html-notes" "~/bak/backup.userlist"
+		  "~/html/mysite/contents"
+		  ".emacs"
+		  ".emacs.d/sylecn-scripts/extensions-sylecn.el"
+		  ".emacs.d/startup-scripts/need-for-keys.el")
+  "My important daily files, which will be opened (and protected) when emacs starts.
+By convention, files not start with / are under ~.")
+
+;;--------------------------------------------------
+;; my second most often used files
+(defvar myfilesex
+  '(("~/.mutt/muttrc")
+    (html-notes . "~/helps/html/my-html-notes")
+    ("~/texts/book-list"))
+  "a list of my most often used files. element can be a string or a cons.
+if element is a string, it is the filename with path.
+if element is a cons, the car is a alias for the file, the cdr is the filename with path.")
+
+;;general emacs customization, no mode related content.
+;;ADD-new-user-config-here
+
+;;enable auto update time-stamp
+(add-hook 'before-save-hook 'time-stamp)
+;;default format "%:y-%02m-%02d %02H:%02M:%02S %u"
+(setq time-stamp-format "%:y-%02m-%02d")
+
+;;open manpage in same window
+;;TODO not working. may need restart emacs?
+;(defvar same-window-buffer-names-init same-window-buffer-names)
+(defvar same-window-regexps-init same-window-regexps)
+(setq same-window-regexps
+      (append '("\\*Man.*")
+	      same-window-regexps-init))
+
+;;for xterm
+(xterm-mouse-mode 1)
+
+;;for emacs daemon
+;;if emacs is started as daemon, the path is not the same as current user.
+;;add my bin dir
+(defvar exec-path-init
+  exec-path
+  "Init value for exec-path")
+(setq exec-path
+      (cons "~/bin" exec-path-init))
+
+;;TODO *Shell Command Output* should use View mode by default
+
+;;hippie-expand
+;;TODO write filename-expand and line-expand based on hippie-expand
+;;  according to personal taste.  Also, instead of loading the
+;;  variable with all kinds of try-functions above, it might be an
+;;  idea to use `make-hippie-expand-function' to construct different
+;;  `hippie-expand'-like functions, with different try-lists and bound
+;;  to different keys. It is also possible to make
+;;  `hippie-expand-try-functions-list' a buffer local variable, and
+;;  let it depend on the mode (by setting it in the mode-hooks).
+(setq hippie-expand-try-functions-list
+      '(;try-expand-all-abbrevs
+	try-complete-file-name
+	try-expand-list
+	try-expand-dabbrev-visible
+	try-expand-dabbrev-all-buffers
+	try-expand-dabbrev-from-kill
+	try-complete-lisp-symbol-partially
+	try-complete-lisp-symbol))
+
+;;this is set in Customize section.
+;(setq standard-indent 8)
+
+;; allow minibuffer commands while in the minibuffer
+;(setq enable-recursive-minibuffers nil)
+
+;; default mode
+(setq default-major-mode 'org-mode)
+
+;; open Org-mode file unfold
+;; TODO feature request, keep the file as it was when visited last time
+(setq org-startup-folded "unfold")
+
+;;fill-column, can be changed via C-x f
+;(setq default-fill-column 74)
+
+;;additional chinese input support
+(setq default-input-method "chinese-py")
+
+;;set fonts
+(load "~/.emacs.d/startup-scripts/fonts.el")
+
+;;======================================================================
+;; built-in modes configurations
+
+;;ADD-new-user-config-here
+
+;;--------------------------------------------------
+;; nxml-mode
+
+;;ref: http://sinewalker.wordpress.com/2008/06/26/pretty-printing-xml-with-emacs-nxml-mode/
+(defun bf-pretty-print-xml-region (begin end)
+  "Pretty format XML markup in region. You need to have nxml-mode
+http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
+this.  The function inserts linebreaks to separate tags that have
+nothing but whitespace between them.  It then indents the markup
+by using nxml's indentation rules."
+  (interactive "r")
+  (save-excursion
+      (nxml-mode)
+      (goto-char begin)
+      (while (search-forward-regexp "\>[ \\t]*\<" nil t)
+        (backward-char) (insert "\n"))
+      (indent-region begin end))
+    (message "Ah, much better!"))
+
+;;--------------------------------------------------
+;; mail
+
+;;not needed anymore for cvs version
+(if (equal emacs-major-version 22)
+    (setq sendmail-program "/usr/sbin/sendmail"))
+
+(setq user-full-name "Yuanle Song")
+(setq user-mail-address "ANTISPAM")
+(setq mail-default-directory "~/mail/emacs-compose/")
+;;set a default FCC field
+(setq mail-archive-file-name "~/mail/sent-emacs")
+
+;;TODO for emacs modeline mail indicator
+
+
+;; for mutt
+;; a major mode for use with mutt
+;; ref: http://www.modeemi.cs.tut.fi/drdoom/mutt.el
+;; TODO temperately disabled, try whether default mail mode is enough for me
+;;(require 'mutt)
+
+(add-to-list 'auto-mode-alist '("mutt-[a-z]+-[0-9]+-[0-9]+.*" . mail-mode))
+;; TODO see mail-setup-hook, for sending wesnoth translations
+(add-hook 'mail-mode-hook
+	  '(lambda ()
+	     (auto-fill-mode 1)))
+
+;;--------------------------------------------------
+;; view-mode
+
+;;TODO add hook
+;;enable view-mode when find-file-read-only
+
+;;add vim like key bindings
+;;now with j,k,g,u,d its easy to navigate around
+(add-hook 'view-mode-hook
+	  '(lambda ()
+	     (define-key view-mode-map (kbd "j")
+	       'next-line)
+	     (define-key view-mode-map (kbd "k")
+	       'previous-line)
+	     (define-key view-mode-map (kbd "l")
+	       'forward-char)
+	     (define-key view-mode-map (kbd "h")
+	       'backward-char)
+	     ;;;default key is g, which is also good.
+	     (define-key view-mode-map (kbd "G")
+	       'View-goto-line)
+	     (define-key view-mode-map (kbd "f")
+	       'go-to-char)
+	     ;;;since / is forward search, ? should be backward search
+	     (define-key view-mode-map (kbd "?")
+	       'View-search-regexp-backward)))
+
+;;--------------------------------------------------
+;; emacs-lisp-mode
+(add-hook 'emacs-lisp-mode-hook
+	  '(lambda()
+	     (define-key emacs-lisp-mode-map
+	       (kbd "C-c C-r") 'eval-region)
+	     (define-key emacs-lisp-mode-map
+	       (kbd "C-c C-b") 'eval-buffer)
+	     (define-key emacs-lisp-mode-map
+	       (kbd "C-; C-r") 'eval-buffer)
+	     (define-key emacs-lisp-mode-map
+	       (kbd "C-; C-e") 'eval-last-sexp)))
+
+;;--------------------------------------------------
+;; Info-mode
+(add-hook 'Info-mode-hook
+	  '(lambda ()
+	     (define-key Info-mode-map "/"
+	       'isearch-forward-regexp)))
+
+;;--------------------------------------------------
+;; shell mode
+;; comint mode
+
+;;add correct color char control
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+;; maximum number of lines in shell buffer
+(setq comint-buffer-maximum-size 5000)
+
+;; auto truncate output after each command
+;; will this be a performance issue?
+(add-hook 'comint-output-filter-functions
+	  'comint-truncate-buffer)
+
+;; clear buffer, leave only prompt
+;; this is generated using kbd macro
+;; (fset 'comint-clear-buffer
+;;    "\C-[>\C-b\C-a\C-@\C-[<\C-w\C-e")
+(defun comint-clear-buffer ()
+    (interactive)
+    (goto-char (point-max))
+    (move-beginning-of-line nil)
+    (backward-char)
+    (move-beginning-of-line nil)
+    (delete-region (point-min) (point))
+    (goto-char (point-max)))
+
+;; TODO finished this function, do the same thing as C-l in urxvt
+;; (defun comint-clear-screen ()
+;;   (interactive)
+;;   (recenter-top-bottom 0))
+
+(add-hook 'shell-mode-hook
+	  '(lambda ()
+	     (define-key shell-mode-map (kbd "C-c l")
+	       'comint-clear-buffer)))
+
+;; bind for all comint mode
+(add-hook 'comint-mode-hook
+	  '(lambda ()
+	     (define-key comint-mode-map (kbd "C-c l")
+	       'comint-clear-buffer)))
+
+;;--------------------------------------------------
+;; ansi-term
+
+;; toggle line mode and char mode
+(defun term-toggle-mode ()
+  "Toggle between term-char-mode and term-line-mode."
+  (interactive)
+  (if (term-in-line-mode)
+      (progn 
+        (term-char-mode)
+        (term-send-raw-string "\C-e"))
+    (term-line-mode)))
+
+(add-hook 'term-mode-hook
+	  '(lambda ()
+	     (define-key term-mode-map (kbd "C-c C-j")
+	       'term-toggle-mode)
+	     (define-key term-mode-map (kbd "C-c j")
+	       'term-toggle-mode)))
+
+;;--------------------------------------------------
+;; org-mode
+
+;; A few very annoying bug/config problem.
+;; TODO why paste will make the pasted item fold?
+;;      temp fix:
+;;          If what you are copying is full text expanded,
+;;          don't use org-yank, use yank instead.
+;; TODO why move item will make *all* items fold?
+;; TODO 
+
+;;setup
+(global-set-key (kbd "C-c a") 'org-agenda)
+;I don't use link that much, disabled
+;(global-set-key (kbd "C-c l") 'org-store-link)
+;This has conflict with ido-switch-buffer
+;  and because my org files are just under ~, no strong need for this
+;(global-set-key (kbd "C-c b") 'org-iswitchb)
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+
+;jump to top and add a new empty header
+(fset 'org-add-item-on-top
+   [?\M-< ?\C-s ?* ?  ?$ ?\C-m C-return])
+
+;move current item to bottom
+;don't use C-c C-n/p that won't work when there is sub level headers
+(fset 'org-move-item-to-bottom
+   [?\C-r ?^ ?* ?  ?\C-m ?\C-  ?\C-s ?^ ?* ?  ?\C-s ?\C-m ?\C-a ?\C-w ?\M-> ?\M-x ?y ?a ?n ?k return ?\C-u ?\C-  ?\C-u ?\C-  ?\C-p ?\C-e])
+
+;use C-c [ to add files in org-agenda-files
+(setq org-hide-leading-stars t)
+
+;;remove C-c C-v, conflict with my key settings
+(defun my-org-mode-hook ()
+  (interactive)
+  (set-fill-column 78)
+  (auto-fill-mode 1)
+  (local-unset-key (kbd "C-c C-v"))
+  (local-unset-key (kbd "C-'"))
+  (local-unset-key (kbd "C-c '"))
+  (local-set-key (kbd "C-c l") 'org-add-item-on-top)
+  (local-set-key (kbd "C-c d") 'org-move-item-to-bottom))
+
+(add-hook 'org-mode-hook 'my-org-mode-hook)
+
+;;--------------------------------------------------
+;; shell script mode
+
+(setq-default sh-basic-offset 8)
+
+;;--------------------------------------------------
+;;for c/c++
+
+;;ref: http://www.emacswiki.org/emacs/AutoInsertHeaderGuards
+;; autoinsert C/C++ header
+
+;; change default indentation
+(setq-default c-basic-offset 8)
+
+;;Don't indent code inside "namespace ... { ... }".
+(c-set-offset 'innamespace 0)
+
+;;--------------------------------------------------
+;; emacs-lisp-mode
+
+;;--------------------------------------------------
+;; hs-minor-mode
+
+;(add-hook 'c-mode-common-hook   'hs-minor-mode)
+(add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
+;(add-hook 'java-mode-hook       'hs-minor-mode)
+;(add-hook 'lisp-mode-hook       'hs-minor-mode)
+;(add-hook 'perl-mode-hook       'hs-minor-mode)
+;(add-hook 'sh-mode-hook         'hs-minor-mode)
+
+;;--------------------------------------------------
+;; midnight mode
+;; you can customize midnight-mode with midnight-hook
+
+(require 'midnight)
+;Non-nil means run `midnight-hook' at midnight.
+;(setq midnight-mode nil)
+
+;;kill buffers if they were last disabled more than this seconds ago
+(setq clean-buffer-list-delay-special 900)
+
+(defvar clean-buffer-list-timer nil
+  "Stores clean-buffer-list timer if there is one. You can disable clean-buffer-list by (cancel-timer clean-buffer-list-timer).")
+
+;; run clean-buffer-list every 2 hours
+;; then turn off midnight-mode
+(setq clean-buffer-list-timer (run-at-time t 7200 'clean-buffer-list))
+
+;; kill everything, clean-buffer-list is very intelligent at not killing
+;; unsaved buffer.
+(setq clean-buffer-list-kill-regexps
+      '(".*"))
+
+;; keep these buffer untouched
+;; because "*Man " in buffer-names, I try "*EMMS Playlist*" for
+;; "*EMMS Playlist*<2>" etc.
+(defvar clean-buffer-list-kill-never-buffer-names-init
+  clean-buffer-list-kill-never-buffer-names
+  "Init value for clean-buffer-list-kill-never-buffer-names")
+(setq clean-buffer-list-kill-never-buffer-names
+      (append
+       (append
+	'("*Messages*" "*cmd*" "*scratch*" "*w3m*" "*w3m-cache*" "*Inferior Octave*")
+	(mapcar 'myfiles-buffer-name myfiles))
+       clean-buffer-list-kill-never-buffer-names-init))
+
+;; prevent append multiple times
+(defvar clean-buffer-list-kill-never-regexps-init
+  clean-buffer-list-kill-never-regexps
+  "Init value for clean-buffer-list-kill-never-regexps")
+;; append to *-init instead of itself
+(setq clean-buffer-list-kill-never-regexps
+      (append '("\\*EMMS Playlist\\*.*" ".*irc\\.freenode\\.net.*")
+	      clean-buffer-list-kill-never-regexps-init))
+
+
+;;======================================================================
+;; 3rd party extentions and modes configurations
+
+;;--------------------------------------------------
+;; loading external file
+
+;; protbuf - keep buffer from being killed
+(load "~/.emacs.d/startup-scripts/protbuf")
+
+;; highlight-fixmes-mode - highlight upper case fixme, todo etc
+;now that org-mode becomes default mode, I don't need it.
+(load "~/.emacs.d/startup-scripts/highlight-fixme")
+
+;; slime
+(load "~/.emacs.d/startup-scripts/slime")
+
+;;--------------------------------------------------
+;; config right here (compared to in external el file)
+
+;;3rd party extentions and modes configurations
+;;ADD-new-user-config-here
+
+;;--------------------
+;; wiki
+;; really-simple-wiki-mode
+;; ref: http://www.emacswiki.org/emacs/ReallySimpleWikiMode
+(require 'really-simple-wiki)
+(add-to-list 'auto-mode-alist '("www\\.emacswiki\\.org\\..*\\.txt" . really-simple-wiki-mode))
+
+(defalias 'wiki-mode 'really-simple-wiki-mode)
+
+;;--------------------
+;; highlight *surrounding* parentheses
+(require 'highlight-parentheses)
+(highlight-parentheses-mode 1)
+
+;;--------------------
+;; mit-scheme 6001
+;;(load<-library "xscheme")
+
+;;--------------------
+;; acl2/lisp
+;;TODO acl2-mode is not working
+(add-to-list 'load-path "~/.emacs.d/acl2")
+(autoload 'run-acl2
+  "top-start-inferior-acl2" 
+  "Open communication between acl2 running in shell and prooftree." t)
+
+(defvar *acl2-user-map-interface*
+  '((inferior-acl2-mode-map keys)
+    (shell-mode-map         keys)
+    (acl2-mode-map          keys)
+    (prooftree-mode-map     keys)))
+
+;;--------------------
+;; scons
+;; ref: http://www.scons.org/wiki/IDEIntegration
+
+(setq auto-mode-alist
+      (cons '("SConstruct" . python-mode) auto-mode-alist))
+(setq auto-mode-alist
+      (cons '("SConscript" . python-mode) auto-mode-alist))
+;;it's easier to add a simple Makefile stub to your project to call scons
+;;(defvar compile-command "scons") 
+
+;;--------------------
+;; git
+
+;; git has come its way to cvs version as vc-git but that's not enough.
+;; either check out dvc which is for all distributed vcs or
+;; git.el which is part of git project
+;; finally I decide to stick to git commands directly instead.
+;; that's more nature than git.el and more powerful than vc-git.
+
+;;----------
+;; integration to emacs
+
+;;I use git.el. because currently I don't use any other dvs
+(add-to-list 'load-path "~/fromsource/git/contrib/emacs")
+;;provides git-status
+(require 'git)
+;;git-blame-mode minor mode
+(require 'git-blame)
+
+(defun git-status-current-dir ()
+  "call git-status with current dir. Don't ask."
+  (interactive)
+  (git-status default-directory))
+
+(global-set-key (kbd "C-c v") 'git-status-current-dir)
+
+(defalias 'gs 'git-status)
+
+;;----------
+;; for involking git directly from terminal
+
+(add-hook 'org-mode-hook
+	  '(lambda ()
+	     (if (equal (buffer-file-name) "COMMIT_EDITMSG")
+		 ;; save-place is useless and annoy for COMMIT_EDITMSG buffer
+		 ;; TODO save-place ask save place in Tutorial?
+		   (goto-char (point-min)))) t)
+
+;; TODO give a warning when killing a tracked file, if it is modified and
+;;      not committed.  there is an indicator there already. it should be
+;;      as easy as add a hook function
+
+;;--------------------
+;; emms
+
+(add-to-list 'load-path "~/fromsource/emms/lisp")
+
+;; simple setup
+(require 'emms-setup)
+(emms-standard)
+(emms-default-players)
+;; more than simple
+;(require 'emms-browser)
+;; save playlist and load at emacs start
+(require 'emms-history)
+(emms-history-load)
+
+;; user options
+(setq emms-source-file-default-directory "~/musics/")
+(setq emms-repeat-playlist t)
+;;TODO add lyrics support
+;;not using
+;(setq emms-lyrics-dir "~/musics/lyrics/")
+
+(global-set-key (kbd "C-c e e") 'emms)
+(global-set-key (kbd "C-c e f") 'emms-play-file)
+(global-set-key (kbd "C-c e l") 'emms-play-playlist)
+(global-set-key (kbd "C-c e s") 'emms-start)
+(global-set-key (kbd "C-c e p") 'emms-pause)
+(global-set-key (kbd "C-c e r") 'emms-toggle-repeat-track)
+
+;;--------------------
+;; w3m
+
+;;TODO in-page link jump like C-0 C-l, don't put the line in center of screen.
+
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/w3m")
+(require 'w3m)
+
+;;let default word be the word under/around point
+;;  code borrowed from C-h v
+(defun w3m-dict-cn-search (&optional word)
+  "search word on dict.cn, create w3m buffer if necessary."
+  (interactive
+   (let ((v (word-at-point))
+	 (enable-recursive-minibuffers t)
+	 (completion-ignore-case t)
+	 val)
+     (setq val
+	   (completing-read
+	    (if (stringp v)
+		(format "Search word on dict.cn (default %s): " v)
+	      "Search word on dict.cn: ")
+	    ;;TODO set collection to english words
+	    ;;TODO should allow space in input. for phrases
+	    ;;     space is bind to complete word, you can type C-q SPC to
+	    ;;     input a raw space.
+	    obarray))
+     (list (if (equal val "")
+	       v val))))
+  (w3m-goto-url (concat "http://dict.cn/" word)))
+
+(defun w3m-google-dict-search (&optional word)
+  "search word on google dict cn, create w3m buffer if necessary."
+  (interactive
+   (let ((v (word-at-point))
+	 (enable-recursive-minibuffers t)
+	 (completion-ignore-case t)
+	 val)
+     (setq val
+	   (completing-read
+	    (if (stringp v)
+		(format "Search word on google dict cn (default %s): " v)
+	      "Search word on google dict cn: ")
+	    ;;TODO set collection to english words
+	    obarray))
+     (list (if (equal val "")
+	       v val))))
+  (w3m-goto-url (format "http://www.google.cn/dictionary?langpair=en|zh-CN&q=%s&hl=zh-CN&aq=f" word)))
+
+
+
+;; FIXME  ~/.emacs-w3m not loaded by w3m
+
+;; global keys
+
+(global-set-key (kbd "C-c j") 'w3m-dict-cn-search)
+(global-set-key (kbd "C-c w w") 'w3m-goto-url)
+(global-set-key (kbd "C-c w f") 'w3m-find-file)
+
+;; local keys
+(add-hook 'w3m-mode-hook
+	  '(lambda ()
+	     (define-key w3m-mode-map (kbd "C-j")
+	       'w3m-dict-cn-search)
+	     (define-key w3m-mode-map (kbd "/")
+	       'isearch-forward-regexp)
+	     (define-key w3m-mode-map (kbd "n")
+	       'isearch-repeat-forward)
+	     ;;keep it the same with w3m outside emacs
+	     (define-key w3m-mode-map (kbd "f")
+	       'w3m-view-url-with-external-browser)))
+
+;;--------------------
+;; po-mode
+
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/gettext")
+(require 'po-mode)
+
+;; see po-mode bugs in ~/bugs
+
+(setq auto-mode-alist
+      (cons '("\\.po\\'\\|\\.po\\." . po-mode)
+	    auto-mode-alist))
+
+(autoload 'po-mode
+  "po-mode" "Major mode for translators to edit PO files" t)
+
+;; Turn on and off longlines-mode to wrap when editing a message
+;; and unwrap before putting it back.
+(add-hook 'po-subedit-mode-hook '(lambda () (longlines-mode 1)))
+(add-hook 'po-subedit-exit-hook '(lambda () (longlines-mode 0)))
+
+
+;;BUG there is no po-mode-hook
+;;    maybe it's just because the "autoload", try after loading a po file
+;;all po-mode-map is modified here directly, without using hook
+;; key bindings
+(define-key po-mode-map (kbd "/")
+  'isearch-forward-regexp)
+(define-key po-mode-map (kbd "'")
+  'po-show-percent)
+(define-key po-mode-map (kbd "`")
+  'po-wrap)
+
+;; do po wrap
+;; ref: http://www.emacswiki.org/emacs/PoMode
+;; ref: http://www.gnu.org/software/trans-coord/manual/gnun/html_node/New-Translation.html
+(defun po-wrap ()
+  "Filter current po-mode buffer through `msgcat' tool to wrap all lines."
+  (interactive)
+  (if (eq major-mode 'po-mode)
+      (let ((tmp-file (make-temp-file "po-wrap."))
+	    (tmp-buf (generate-new-buffer "*temp*")))
+	(unwind-protect
+	    (progn
+	      (write-region (point-min) (point-max) tmp-file nil 1)
+	      (if (zerop
+		   (call-process
+		    "msgcat" nil tmp-buf t (shell-quote-argument tmp-file)))
+		  (let ((saved (point))
+			(inhibit-read-only t))
+		    (delete-region (point-min) (point-max))
+		    (insert-buffer tmp-buf)
+		    ;;TODO Warning: `insert-buffer' used from Lisp code
+		    (goto-char (min saved (point-max))))
+		(with-current-buffer tmp-buf
+		  (error (buffer-string)))))
+	  (kill-buffer tmp-buf)
+	  (delete-file tmp-file)))))
+
+;;call msgpercent, show result in minibuffer
+(defun po-show-percent ()
+  (interactive)
+  (if (eq major-mode 'po-mode)
+      (shell-command (format "msgpercent %s" (buffer-file-name)))))
+
+;;--------------------------------------------------
+;; yasnippet
+;;ref: http://code.google.com/p/yasnippet/
+;; If all you need is to use the builtin templates, download the
+;; bundle one. If you want to add your own templates, download the
+;; normal one.
+(require 'yasnippet-bundle)
+
+;;--------------------------------------------------
+;; nXhtml
+;;first time only
+;;(byte-recompile-directory "~/fromsource/nxhtml/" 0 t)
+;;BUG after adding this. I'm having lots of lisp debug info when doing things.
+;(load "~/fromsource/nxhtml/autostart.el")
+
+;;--------------------------------------------------
+;; folding-mode minor
+
+;; ref: http://www.emacswiki.org/emacs/FoldingMode
+;; it's not stable. generally not good for use yet.
+
+;; Always make sure that you have a closing fold mark for every opening
+;; mark! Otherwise the opening of files might be difficult.
+
+;;TODO Warning: reference to free variable `folding-narrow-by-default'
+;(load "folding" 'nomessage)
+
+;;BUG folding-mode bind M-g, thus make M-g not a prefix anymore.
+
+;;--------------------------------------------------
+;; for rcirc
+
+;;TODO don't show online user list when join a channel
+;;TODO don't connect to #rcirc after connection
+(setq rcirc-server-alist
+      '(("irc.freenode.net" :channels
+	 ("#emacs"))))
+
+;; load auth info which is protected in external file
+(load "~/.emacs.d/startup-scripts/rcirc-auth")
+
+;; TODO finish this function, and 
+;; 	rebind C-x k to rcirc-part-channel
+(defun rcirc-part-channel ()
+  "if current buffer is connected to a channel, part that channel.
+if current buffer is not connected, kill the buffer."
+  (interactive)
+  (kill-buffer))
+
+;; TODO remove C-; binding for rcirc mode
+(defun my-rcirc-mode-hook ()
+  (interactive)
+  (progn
+    (flyspell-mode 1)
+    (define-key rcirc-mode-map (kbd "C-c l")
+      'comint-clear-buffer)
+    (define-key rcirc-mode-map (kbd "C-c q")
+      'rcirc-cmd-quit)))
+
+(add-hook 'rcirc-mode-hook 'my-rcirc-mode-hook)
+
+;;ref: rcirc info page
+;;provides /reconnect command, reconnect after laptop suspend or losing network
+(eval-after-load 'rcirc
+       '(defun-rcirc-command reconnect (arg)
+          "Reconnect the server process."
+          (interactive "i")
+          (unless process
+            (error "There's no process for this target"))
+          (let* ((server (car (process-contact process)))
+                 (port (process-contact process :service))
+                 (nick (rcirc-nick process))
+                 channels query-buffers)
+            (dolist (buf (buffer-list))
+              (with-current-buffer buf
+                (when (eq process (rcirc-buffer-process))
+                  (remove-hook 'change-major-mode-hook
+                               'rcirc-change-major-mode-hook)
+                  (if (rcirc-channel-p rcirc-target)
+                      (setq channels (cons rcirc-target channels))
+                    (setq query-buffers (cons buf query-buffers))))))
+            (delete-process process)
+            (rcirc-connect server port nick
+                           rcirc-default-user-name
+                           rcirc-default-user-full-name
+                           channels))))
+
+(rcirc-track-minor-mode 1)
+;; use C-c C-SPC to jump to that buffer
+
+
+;;======================================================
+;; postload
+
+;;------------------------------------------------------
+;;autostart commands
+;;run after everything loaded
+
+;;------------------------------
+;; use emacs server and emacsclient
+;; only start emacs server when it's not started, I hate warnings.
+;(setq server-socket-file (concat server-socket-dir server-name))
+(setq server-socket-file "/tmp/emacs1000/server")
+(unless (file-exists-p server-socket-file)
+  (server-start))
+
+;;------------------------------
+;;open my files in myfiles variable
+(mapc '(lambda (x)
+	 (find-file (myfiles-file-name x))
+	 (protect-buffer-from-kill-mode
+	  1
+	  (get-buffer (myfiles-buffer-name x))))
+      myfiles)
+
+;;------------------------------
+;;start a *cmd* shell
+
+(defun start-shell-in-home-dir (&optional buffer)
+  "Start shell in home dir."
+  (interactive)
+  (let ((old-buffer (buffer-name))
+	(old-default-dir default-directory))
+    (cd "~")
+    (shell buffer)
+    (switch-to-buffer old-buffer)
+    (cd old-default-dir)
+    (shell buffer)
+    (delete-other-windows)))
+
+(start-shell-in-home-dir "*cmd*")
+
+;;protect this buffer
+(protect-buffer-from-kill-mode 1 (get-buffer "*cmd*"))
+
+;;======================================================
+;; for emacs Easy Customize
+;; do *not* add content after this section
+;;======================================================
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(org-agenda-files (quote ("~/notes" "~/low" "~/todo" "~/bugs" "~/progress")))
+ '(standard-indent 8))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(org-todo ((t (:background "khaki" :foreground "black" :weight bold)))))

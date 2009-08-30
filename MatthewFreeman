@@ -1,0 +1,17 @@
+Matthew Freeman's EmacsWiki homepage.
+
+I'm not a computer or programming newbie, but am trying to *really* learn how to use emacs in a productive manner.  I don't have too much in my ~/.emacs file yet, by I am using the PlannerMode to keep track of stuff.  I'm really impressed with SachaChua's work on PlannerMode.  It's inspired me to learn Lisp! (Maybe I can be one of those holier-than-thou lisp guys now...)
+
+
+I'm a solider in the US Army, currently deployed in Iraq.  I have plenty of free time on my hands, so I thought I would give myself 6 months or so of using Emacs exclusively.  I'm looking for ways to sneak Emacs into my daily life.  Any suggestions?
+
+[new]
+I always thought the best way to learn something is to try to help others to use it.  In the search for answering other people's questions, you learn something yourself. Joining the EmacsChannel or one of the EmacsMailingLists comes to mind.  That or take on a huge programming task in Emacs Lisp.  Try getting through the EmacsLispIntro, first.  Then, try improving PlannerMode or something. -- AaronHawley
+
+[new]
+I think I learnt Emacs by writing small things for myself with an eye on publishing them. At the time, it was news:gnu.emacs.sources, I think, and these days it would be the wiki. Small and useful code is easy to write and attracts other users, who will then provide feedback. -- AlexSchroeder
+
+[new]
+For me it was usually the following:  I thought of some feature that'd be cool, hacked it together, then learnt someone else had already done it and was in fact already part of Emacs. :)  At least I got a lot of lisp experience that way ... So after that I started reading a lot of people's .emacs files.  I think that's the best way to learn about the good stuff out there. -- [[nschum]]
+----
+CategoryHomepage

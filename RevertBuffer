@@ -1,0 +1,142 @@
+"Is there a quick way or re-visiting the file in current buffer? This is useful when it was modified by an external program."
+
+GNU Emacs 22.x provides the M-x auto-revert-mode and M-x auto-revert-tail-mode. The latter acts like the often used UNIX command "tail -f file".
+
+== auto-revert-tail-mode just like "tail -f file" ==
+
+How do I make M-x auto-revert-tail-mode scrolling just like "tail -f file"?
+
+Currently at 22.0.50 it uses (goto-char (point-max)) which forces the screen to update like (recenter nil), not (recenter -1).
+
+Here's a patch (not fully tested) to autorevert.el to Emacs 22.0.50 that will make auto-revert-tail-mode do window scrolling with point at the bottom of the screen. (contributed by [[piyo]])
+
+ --- lisp/autorevert.el.org	2006-10-30 22:29:19.001000000 +0900
+ +++ lisp/autorevert.el	2007-01-16 20:52:22.356234800 +0900
+ @@ -436,14 +436,31 @@
+  	  (let ((buffer-read-only buffer-read-only))
+  	    (revert-buffer 'ignore-auto 'dont-ask 'preserve-modes)))
+  	(when buffer-file-name
+ -	  (when eob (goto-char (point-max)))
+  	  (dolist (window eoblist)
+ -	    (set-window-point window (point-max)))))
+ +	    (set-window-point window (point-max))
+ +            ;; force scroll to bottom in this window
+ +            (when eob (auto-revert-scroll-to-bottom window)))))
+        ;; `preserve-modes' avoids changing the (minor) modes.  But we
+        ;; do want to reset the mode for VC, so we do it manually.
+        (when (or revert auto-revert-check-vc-info)
+  	(vc-find-file-hook)))))
+  
+ +(defun auto-revert-scroll-to-bottom (window)
+ +  "Emulates 'tail -f file' behavior on auto-revert-tail-mode,
+ +ie. ensures (recenter -1).
+ +This function copied from erc-goodies.el::erc-scroll-to-bottom.
+ +Some unsightly flickering of the ModeLine, though."
+ +  (if (and window (window-live-p window))
+ +      (let ((resize-mini-windows nil))
+ +        (save-selected-window
+ +          (select-window window)
+ +          (save-restriction
+ +            (widen)
+ +            (save-excursion
+ +              (goto-char (point-max))
+ +              (recenter -1)
+ +              (sit-for 0)))))))
+ +
+  (defun auto-revert-tail-handler ()
+    (let ((size (nth 7 (file-attributes buffer-file-name)))
+  	(modified (buffer-modified-p))
+
+== Continue 2004 discussion: ==
+
+Is there a quick way or re-visiting the file in current buffer? This is useful when it was modified by an external program.
+
+ From: MichaelSlass
+ Subject: Re: revisit-file
+ Newsgroups: comp.emacs
+ Date: Tue, 22 May 2001 20:13:45 GMT
+
+# M-x revert-buffer RET yes RET
+# C-x C-v RET
+# (global-set-key [(control c) r] 'revert-buffer)
+
+The second one is a sleazy trick, calling find-alternate-file - that prompts you for a file name, but fills in the name of the current buffer's filename as a default, so you can hit RET to re-read the file from disk.  Before I knew about find-alternate-file, I wanted something faster for reverting buffers (mainly due to the problem [[XEmacs]] has with hard links; see the WishList).  That's why I bound revert-buffer into the C-c keymap.
+
+
+ From: RaymondZeitler
+ Subject: Re: revisit-file
+ Newsgroups: comp.emacs
+ Date: Thu, 24 May 2001 18:00:49 GMT
+
+In addition to doing this manually, which was explained by other posters, you can tell Emacs to do it automatically by putting this in your .emacs file:
+
+ (global-auto-revert-mode 1)
+
+we have found that an awful lot of our network traffic can be people visiting multiple files across the network and having global-auto-revert-mode on so no longer use it all the time
+ 
+== Revert all buffers that are visiting a file ==
+I wrote a litte function that is usefull (to me) when editing several files that might for any reason change on disk (for me its a cvs commit).  It reverts all buffers that are visiting a file.
+
+    (defun revert-all-buffers()
+      "Refreshs all open buffers from their respective files"
+      (interactive)
+      (let* ((list (buffer-list))
+	      (buffer (car list)))
+        (while buffer
+          (if (string-match "\\*" (buffer-name buffer)) 
+	      (progn
+	        (setq list (cdr list))
+	        (setq buffer (car list)))
+	      (progn
+	        (set-buffer buffer)
+	        (revert-buffer t t t)
+	        (setq list (cdr list))
+	        (setq buffer (car list))))))
+      (message "Refreshing open files"))
+
+--RyanBowman
+
+Nice idea, I prefer this version of revert-all-buffers:
+
+
+ (defun revert-all-buffers ()
+   "Refreshes all open buffers from their respective files"
+   (interactive)
+   (let* ((list (buffer-list))
+          (buffer (car list)))
+     (while buffer
+       (when (buffer-file-name buffer)
+         (progn
+           (set-buffer buffer)
+           (revert-buffer t t t)))
+       (setq list (cdr list))
+       (setq buffer (car list))))
+  (message "Refreshing open files"))
+
+
+== Inform that the modified file was reverted ==
+
+Inform that modified file was reverted in "real time" for win32
+
+    ;; Automatically reload files was modified by external program
+    (global-auto-revert-mode 1)
+    ;; and display "half modal" warning about it
+    (require 'w32-msgbox)
+    (defun inform-revert-modified-file (&optional p1 p2)
+      "bdimych custom function"
+      (let ((revert-buffer-function nil))
+            (revert-buffer p1 p2)
+        (w32-msgbox (buffer-file-name) "Emacs: Modified file automatically reverted" 'vb-ok-only 'vb-information nil t)
+      )
+    )
+    (setq revert-buffer-function 'inform-revert-modified-file)
+
+--bdimych
+
+== Auto revert even after you changed the file in Emacs ==
+If you open a file, turn auto-revert-mode on, and modify it (without saving), then it won't be reverted anymore even if an external program updates it. I'd like to lose my changes automatically and get the latest state of the file. How to do it?
+
+
+----
+CategoryEditing
+

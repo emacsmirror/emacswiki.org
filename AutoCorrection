@@ -1,0 +1,17 @@
+If you want immediate feedback on your spelling, you may try FlySpell.
+If you know your most common mistakes already, however, AutoCorrection
+is better.
+
+Assume your three most common errors are these: "teh" instead of
+"the", "yors" instead of "yours" and "cputer" instead of "computer".
+You can define abbreviations for these.  An abbreviation is a word
+which Emacs will translate into another word, as soons as you type a
+non-word character.  If you type t e h SPC, for example, Emacs will
+translate this into "the " -- which is exactly what you want.
+
+See this Lisp:autocorrection_abbrev_defs for some more common auto correction abbrevs.
+
+Read about AbbrevMode in the EmacsManual.
+
+----
+CategorySpelling

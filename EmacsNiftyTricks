@@ -1,0 +1,269 @@
+: "I've used emacs for many years now, but have never reached its maximum potential." -- Anon
+: "I think this is the motto of every emacs user." -- LathI
+
+Some programmers are enormously productive
+using Emacs. Their hands seem to quickly run over the keyboard accomplishing things in minutes that it takes others
+hours to accomplish. They must
+know many Emacs tricks which allow them to work rapidly.
+If asked, they are hesitant to show their
+tricks.  Understandably so, it would probably take many hours 
+for them to show me all their tricks. 
+
+This web page where describes all
+their little tricks for using Emacs effectively.
+
+Some were mentioned on the EmacsChannel.
+
+See also EmacsCrashTips from the EmacsCrashCourse.
+
+Nifty tricks for Dired are on their own page: '''DiredPower'''.
+
+[:Editing]
+== Editing ==
+
+* MovingTheCtrlKey -- For some, redefining the CapsKey is one of the most important customizations for computer use in general and especially for Emacs.
+* Use KeyboardMacros!  Various KeyboardMacrosTricks are here.
+** A useful adjunct to keyboard macros is the ability to use multiple buffers or windows in a macro. When doing a complex keyboard macro I sometimes lose track of where the point and mark is, or maybe I need to keep track of more locations.   Splitting the [[Frame]] and using one [[Window]] as 'input' and the other as 'output' can often make things a lot simpler. You get a sed-like way of editing the data. -- TrulsArnegaard
+* Delete with tinyeat available from TinyTools.
+* CollaborativeEditing
+* InsertDate
+* InsertAnyDate
+* Remove trailing whitespace with <code>delete-trailing-whitespace</code> in Emacs 21 and later. 
+For those of us using earlier versions, use the PictureModeTrailingWhitespaceTrick.
+* M-x auto-insert-mode -- have your files start up with a user defined template.
+** See also library Lisp:header2.el. -- DrewAdams
+* FillAdapt is a better adaptive fill; it teaches auto-fill-mode about bulleted and numbered lists.
+* Insert the character just above/below the TextCursor with LineCopyChar
+** Emacs 21 comes with vcursor.el which is an extension of LineCopyChar.  It gives you a second cursor, and there are keybindings for copying the character at the second cursor to point, or the word at the second cursor, and so on.  vcursor.el is also good for seeing two locations in the same file at the same time, due to the auto-splitting of windows.  (If the second cursor would move out of view, vcursor.el splits the current window into two and shows the area around point in one of them and the area around the second cursor in the other window.)
+
+* Use [[zap-to-char]].
+
+* M-SPC will remove all except 1 space between characters.  Suppose you have
+'a <blanks> tree' & point is postioned just after the 'a' (or anywhere in the space between the words), hitting M-SPC will make it 'a tree'.   --SivaramN
+
+* A few months ago, I finally wrote code to do incremental numbering of columns.  My life is better for it: http://www.antisleep.com/elisp/gse-number-rect.el -- ScottEvans
+* Use MarkCommands to remember and go back and forth between locations in buffers or across buffers.
+* Use BreadcrumbForEmacs to set a series of breadcrumb bookmarks in the buffers, and jump back to them quickly.  Visiting the bookmarks in the other window is a quick way to browse all the bookmarked locations.
+* When you are inserting from [[register]] with <code>C-x r i</code>, you may use a prefix argument to jump to the end of the inserted text, but if you forget you can use <code>C-x C-x</code>.
+* Use <code>M-m</code> instead of <code>C-a TAB</code> to jump to identation point.
+* Use `reindent-then-newline-and-indent' command. For example if you have long line and you want move part of it to new line, just move point to the place where splist must be done and do <code>M-x reindent-then-newline-and-indent RET</code>
+* Use <code>C-x C-n (`set-goal-column')</code> when doing vertical editing.
+* For <em>really</em> heavy-duty vertical editing, consider PictureMode.  
+** Actually, ArtistMode is an improvement of PictureMode and it's really cool! -- [[gejun]]
+
+=== Searching and Replacing ===
+* When doing isearch, `C-w' adds the word following point to the search buffer.  Very useful. `C-y' adds the rest of the current line to the search buffer. Sometimes useful.
+* Use `isearch' as a navigation mechanism.  Consider modifying Isearch's behavior by using IsearchOtherEnd.
+* Regexps can be limited to a region by using BasicNarrowing or selecting an active region with TransientMarkMode.
+* Set the variable `enable-recursive-minibuffers' non-nil, then you can bring up a complex search and replace that you've just done (either because it didn't work and you want to tweak it and try again, or because you want to another similar one) in the MiniBuffer using the history mechanism, and use search and replace to edit the original search and replace. For example, if you've just replaced "##aabbcc##" with "##zzbbyy##" and now want to replace "##aaddcc##" with "##zzddyy##", you can bring up the original search, and use replace-string to change the "##bb##" strings to "##dd##" in both pattern and replacement.
+* This [http://platypope.org/blog/2007/8/5/a-compendium-of-awesomeness function] adds a useful tool: "search forward for the token at current point".
+* ''Use recursive-edit'' -- When replacing some text with `##M-%##' or `##M-C-%##' you may replace and edit the matches with `C-w' or just edit with `C-r' and leave recursive edit with `C-M-c'. This is useful when you need to replace some text, but in certain places it should differ.
+
+=== Copy, Paste, and Select ===
+* Use the ''secondary'' selection: SecondarySelection.  With it, you can mark some text without moving point.  So if you want to copy a word from elsewhere in the text to point, double-click `M-mouse-1' on the word, then `M-mouse-2' to insert.  Very easy. With library '''<tt>[[second-sel.el]]</tt>''', you can do more: swap primary and secondary, use a ring of secondary selections,...
+* There is also mouse-copy.el (comes with Emacs 21) which is the secondary selection on steroids.  Normally, copy and paste require two steps: mark the region to be copied, then paste with the middle mouse button.  Using mouse-copy.el, you only have to mark the region, the pasting is done automatically.
+* Copy and paste from [[register]]s - `C-x r s R'  and  `C-x r g R' (think: register-set/register-get). This works slightly different in [[XEmacs]].  From the info page ([[XEmacs]])RegText: "'`C-x r s R' stores a copy of the text of the region into the register named R.  `C-x r i R' inserts the text from the register `R' in the buffer."  At least this is true for [[XEmacs]] 21.4.x.
+
+
+== User Interface ==
+* [[Icicles]] -- [[Completion]] and cycling for virtually all minibuffer input. Regexp matching for completion candidates. Perform actions on multiple candidates. Perform set operations on candidate sets. Lots more.
+* Shrink-wrap (resize) frames to fit their selected window: Lisp:fit-frame.el and Lisp:autofit-frame.el. 
+* ColorTheme
+* `M-x line-number-mode' and `column-number-mode' (or ##(column-number-mode 1)## or ##(line-number-mode 1)## in your ##.emacs##)
+* Put ##(menu-bar-mode -1)## in your ##.emacs## to get rid of that useless menu bar.  Or take a look at ActiveMenu for a dynamic solution.
+* Set `next-line-add-newlines' to `t' and stop worrying about whether you are at the end of the file when you do `C-n'.  (Why is there no `right-add-newlines'?)
+* Want line numbers on the left of your buffer? see LineNumbers -- found by AlexSchroeder
+* `M-x transient-mark-mode' in GnuEmacs (and `zmacs-region' in [[XEmacs]]) to make it highlight the active region (and lots of other nifty stuff too!)
+* Make [[XEmacs]]' menus look like Gtk, add these to your ##~/.Xresources##:
+
+    Emacs*Xlw''''''Menu*fontSet: -*-helvetica-medium-r-normal-*-*-120-*-*-*-*-*-*
+    Emacs*Xlw''''''Menu*foreground: black
+    Emacs*Xlw''''''Menu*shadowThickness: 1
+
+* Find which [[face]]s are used at [[point]] -- several ways:
+** `M-x describe-text-properties'
+** `##C-u C-=##'
+** `M-x describe-face' -- The faces applied to the text are listed as the default value for [[completion]]. If you use [[Icicles]], then ‘describe-face’ shows the face-name candidates in buffer ‘*Completions*’ using their own faces – WYSIWYG. ([[Icicles - Customization_and_General_Tips#icicle-WYSIWYG-Completions-flag|Screenshot]])
+** `##M-: (face-at-point)##' (Emacs 23+)
+
+* Keep that minibuffer out from under the taskbar on windows with this [[XEmacs]] trick, BumpWindowUp
+
+* ##mouse-drag.el## -- scroll the buffer by dragging it. For [[XEmacs]] you can use TrackScroll
+* ##(strokes-mode 1)## -- use mouse gestures as key events
+* `M-x mouse-avoidance-mode RET'
+* ##(setq echo-keystrokes 0.1)## -- See what you are typing.
+
+* Running a command in another frame: OtherFrameCommands
+* `M-x webjump' -- Jump directly to predefined websites using `browse-url'.
+
+* SaveHist or EmacsSession: remember MinibufferHistory and other variables between Emacs sessions.  This is so damn cool.
+
+* Store a WindowConfiguration or a FrameConfiguration to a [[register]] with WindowsAndRegisters or FramesAndRegisters.
+
+* Use IdleTimers.
+
+* Use <tt>[[cursor-chg.el]]</tt> to ChangingCursorDynamically.  If you sometimes find yourself inadvertently overwriting some text because you are in overwrite mode but you didn't expect so, this might prove useful.  It changes cursor color and shape to indicate read-only and overwrite modes. And here is another way:
+
+        (setq hcz-set-cursor-color-color "")
+        (setq hcz-set-cursor-color-buffer "")
+        (defun hcz-set-cursor-color-according-to-mode ()
+          "change cursor color according to some minor modes."
+          ;; set-cursor-color is somewhat costly, so we only call it when needed:
+          (let ((color
+                 (if buffer-read-only "black"
+                   (if overwrite-mode "red"
+                     "blue"))))
+            (unless (and
+                     (string= color hcz-set-cursor-color-color)
+                     (string= (buffer-name) hcz-set-cursor-color-buffer))
+              (set-cursor-color (setq hcz-set-cursor-color-color color))
+              (setq hcz-set-cursor-color-buffer (buffer-name)))))
+        (add-hook 'post-command-hook 'hcz-set-cursor-color-according-to-mode)
+
+* Use font-lock-add-keywords to tweak fontification (highlight FIXME comments, add extra keywords, etc.)
+
+== Buffers and Files ==
+
+* SearchFixedSetOfFiles does what its name suggests.
+* BufferMenuPlus, IbufferMode -- enhancements to the standard buffer menu
+* IswitchBuffers -- Incremental picking of buffers, including the middle of names, i.e. entering "scr" can pick the "*scratch*" buffer.
+* [[InteractivelyDoThings]] (ido.el) is part of post-21.3 GNU Emacs and does like IswitchBuffers, but also for files.
+* [[Icicles]] -- Like IswitchBuffers and ##ido.el##, but with more: complete regexp matching of virtually any minibuffer input (files, buffers, commands...). Cycle completion candidates; perform actions on candidates, manipulate sets of candidates...
+* RecentFiles -- A recent-files menu for GNU Emacs -- add ##(recentf-mode 1)## to your DotEmacs. Use [[Icicles]] to get a `find-file', completion+cycling interface to your recent files.
+* EdiffMode is the Emacs diff system; it is handy for viewing and merging differences, and shows word by word differences not just line by line.
+* Register jumping: `C-x r j e' to open DotEmacs, `C-x r j i' to open an `ideas' file:
+
+          (set-register ?e '(file . "~/.emacs"))
+          (set-register ?i '(file . "~/org/ideas.org"))
+
+* Too many open buffers? Try MidnightMode and never kill a buffer manually again.
+* Keep tilde files from showing up everywhere: set `backup-directory-alist'. Try `M-x customize-group backup', turn on `full-path' and `prepend-file-name'. -- DanielLundin 
+* TinyTools. `tiny-buffer' is the best buffer switching. `tinyeat' is great as well -- AaronBrady
+* Open files using `ffap' (FindFileAtPoint).  Use `ffap-alist' to tell Emacs where to find them. -- PiotrMieszkowski
+
+=== Auto modes ===
+* AutoCompressionMode - allows use of compressed files as if they were normal files; put (auto-compression-mode 1) in your emacs to activate.
+* `M-x auto-image-file-mode' -- view images rather than high ASCII
+* TrampMode -- Access remote files with multiple protocols.
+
+=== Outlines and Overviews ===
+* SelectiveDisplay -- a poor-man's OutlineMode.  It hides lines with more than the provided number of spaces in front.  It can help in getting a quick overview of files as long as paragraph lines are further indented than headlines.  This is great for viewing man pages: `C-u 1 M-x set-selective-display' to show only headings, `##M-x <up> RET##' to disable it again.
+* More SelectiveDisplay: `set-selective-display' is `##C-x$##' by default.  You can make it a lot friendlier with a wrapper: -- DaleWiles
+<pre>
+            (global-set-key "\C-x$" 'set-selective-display-dlw)
+            (defun set-selective-display-dlw (&optional level)
+              "Fold text indented more than the cursor.
+            If level is set, set the indent level to level.
+            0 displays the entire buffer."
+              (interactive "P")
+              (set-selective-display (or level (current-column))))
+</pre>
+* `highlight-changes-mode' -- Sometimes Emacs asks me if I want to save my changes in a buffer, and I don't know what I've changed. This won't tell you after the fact, but it will highlight changes made if it's on during the editing process. This is part of GnuEmacs- anybody know if this is available for [[XEmacs]]?  and where to get it?
+* CategorizingInformationManager by [[JuriLinkov]] is a great way to categorize views in Emacs.  It lets you see lists of buffers, or processes, or info docs, or files, and so on.  You can switch between views specific to the type of data you are looking at.  For example, `M-x ee-buffers' brings up a list of buffers.  You can jump between views by encoding, DiredMode style, by directory, by project, etc.  It's awesome!
+
+== External Tools ==
+* `##C-u M-!##' inserts the result of the `shell-command' directly into the buffer, quite handy for stuff like ##uptime##, ##uname##, etc.
+* `##C-u M-|##' replaces the current region with the output of a shell command which gets the region passed as input. Use `##C-x h C-u M-| md5sum RET##' to apply the `md5sum' command to the current buffer
+* Bookmarks in files: `##C-x r m <somekey>##' adds a bookmark, `##C-x r b <somekey>##' visits that bookmark, and `C-x r l' lists bookmarks. See ##bookmark.el## and <tt>[[bookmark+.el]]</tt>. -- DanielLundin
+* `M-x enable-flow-control RET' -- Use when some nasty terminal (NCSA telnet for Macintosh, for instance) won't let you use `C-s' and `C-q'
+
+* Run `save-buffers-kill-emacs' without process-killing query. I bet this is a FAQ. -- [[rubikitch]]
+
+      (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+        "Prevent annoying \"Active processes exist\" query when you quit Emacs."
+        (flet ((process-list ())) ad-do-it))
+
+
+== Mail ==
+
+* Send mail using `message-mode' when you're not in Gnus or if you want your mail archived by Gnus -- just use `C-x m'.
+
+        (setq mail-user-agent 'message-user-agent)
+        (setq mail-user-agent 'gnus-user-agent) 
+
+See also GnusNiftyTricks
+
+== Miscellaneous ==
+* `M-x phases-of-moon' -- Awoooo!
+* EmacsAsDesktopBackground -- The ''real'' active background window
+* `##ESC ESC ESC##' -- Go back to just one window (by deleting all but the selected window).
+* ##(fset 'yes-or-no-p 'y-or-n-p)## --  Make all "##yes or no##" prompts show "##y or n##" instead.  See YesOrNoP.
+* Once a week browse the info file looking for curious corners. A worthwhile one to learn is [[register]]s. 
+* Open up simple.el and check out all nice functions in there. -- MathiasDahl
+* Read EmacsNiftyTricks and drop by the #emacs channel on irc.openprojects.net and chat with the gurus.
+
+* Search Google and Wikipedia with BrowseAproposURL. 
+* [EmacsWiki:EmacsScreen escreen] is handy to either temporarily switch tasks or temporarily open a new buffer.  Gives you a new frame and doesn't mess with anything in the other frame.  The advantage over `C-x 5 2' is that it also doesn't screw up your window layout on your desktop. -- LathI
+* Here's how my Emacs helps me fight procrastination: [http://bach.ipipan.waw.pl/~nathell/blog/fighting-procrastination.html anti-procrastination.el] -- DanielJanus
+
+[:Development]
+[:Programming]
+== Programming ==
+* If you work in languages that use studlyCaps and you don't like them, you can use 'glasses-mode' to separate the words visually without altering the content of the buffer.
+* For studlyCaps, use <code>(c-subword-mode 1)</code> in your mode setup: makes some movement and text commands recognize case-change as a word boundary.
+* Use your FunctionKeys.
+* SkeletonMode -- suggested by MarioLang
+* Use ElectricPair to automatically close pairs of symbols, and bring down the symbols on the upper key row. Move frequently used symbols to easy-to-reach keys.
+* `##M-/##' auto-completes a word.  Good for long variable names.  If it doesn't guess what you're typing right the first time, keep pressing it until it completes correctly. Once you've used this for awhile, you'll probably want to rebind it to the HippieExpand `defun':
+
+      (eval-after-load "dabbrev" '(defalias 'dabbrev-expand 'hippie-expand))
+
+* ''Not-A-Number is a number!'' How can you test for <nowiki>NaN</nowiki>? See NotANumber.
+* ThingAtPoint -- Functions to return various EmacsLisp entities at or near point.
+* [EmacsWiki:SourceLevelDebugger edebug] -- AndreasFuchs
+* [EmacsWiki:ElDoc M-x eldoc-mode] -- [[smoke]]
+* Add count args explicitly to a keybinding:
+
+       (global-set-key [(shift end)]
+          '(lambda () (interactive) (other-window -1)))
+
+* Trouble building a regex? [http://www.emacswiki.org/cgi-bin/emacs/ReBuilder M-x re-builder!]
+* EmacsForDevStudioUsers
+* JavaDevelopmentEnvironment with SemanticBovinator -- jde uses Semantic. Semantic is tightly integrated with `hippie-expand' (`semantic-hippie-expand'), Eldoc (now for any `bovine-mode'), Speedbar (lots of function details), `which-func-mode' (`##classname.funcname##' in modeline), and a few other tools. Wish every language-specific mode supported SemanticBovinator
+* TabCompletion to complete text in a buffer.
+* `M-x flyspell-prog-mode RET' -- `flyspell' for comments and strings.
+* CEldocMode -- on-the-fly function documentation for C programs.
+* Make sure you have a proper psgml and the proper DTD's when writing html. In fact don't write html any more. Write XHTML. Then emacs+psgml+DTD makes you very productive.
+* Learn version control stuff. 
+* Learn EdiffMode.
+* Learn to use `query-replace-regexp' -- see ReplaceRegexp.
+* Use `##M-|##' to feed bits of text to perl or ruby one-liners or scripts. `##C-u M-|##' to replace the text.
+* [[Sorting]] with `M-x sort-lines'. Follow `M-x sort-lines' by `M-x uniquify-buffer' defined at [[uniquify]] --  it removes all but one line in every sequence of repeated lines in the buffer. Or get the same effect with `##C-x h M-| uniq
+RET##', but not all systems have `uniq'.
+* Use EmacsTags
+* Bind `M-g' to `M-x goto-line'.
+* Poor man's tagging: Find all files in a "project" and use `##M-/##'. Emacs searches through all the buffers for the completion. -- ttn
+* Use LXR and run cron jobs every night to tag the entire code base. I wrote:
+** a mod_perl module that take http requests, query the LXR database and and spit back... ''sexps''. 
+** an Emacs package that grabs the symbol at point; sends an http request to mod_perl module; reads the sexps from the server; then depending on the command, it jumps to the function definition, completes a symbol, or shows references to the symbol a la grep. So I have better TAGS than TAGS, symbol completion in C/C++/Java mode and a faster `grep' than `grep'. I could have used the `mysql' client directly but the LXR database doesn't accept remote clients (for security reasons.) -- LinhDang
+
+* `list-matching-lines', `##desktop.el##', and `##bs.el##'.
+* Use `wikiget' and `wikiput-buffer' to edit wiki pages with Emacs bindings. See RyanDavis.
+* Handy bindings:
+** `##C-'##'   -- `other-window' , note keybinding workaround http://www.nongnu.org/emacs-tiny-tools/keybindings/index-body.html#case_study_why_cant_i_assign_key_esc_c
+** `C-c a'  -- `list-matching-lines':  Show all occurrences of a regex in another window, and jump around in the buffer by selecting them. -- DC
+* ##desktop.el## -- Allows for multiple named desktops that you can switch in/out of really easy. -- DC
+* `sql-oracle' -- DC
+
+* Show and edit all lines matching a regex: ftp://ftp.dina.kvl.dk/pub/Staff/Per.Abrahamsen/auctex/all.el -- JonAquino
+* Delete all lines matching a regex: `flush-lines' -- JonAquino
+* `count-matches' -- JonAquino
+* Replace tabs with spaces and vice versa:  `untabify', `tabify' -- JonAquino  But do not use this with unknown (bad written) code because it will also replace inside string literals!
+
+[new:DrewAdams:2009-01-28 21:34 UTC]
+:: `untabify' acts only on the region, so that is typically not a problem. The better guideline is to not use it on a region that contains TABs other than as insignificant whitespace. IOW, it is not a proble of badly written code but of knowing what the code is/does before you act on it. -- DrewAdams
+[new]
+* Make the region lowercase: `downcase-region' -- JonAquino
+* Insert a whitespace rectangle into the region: `C-x r o' -- JonAquino
+* Delete the selected rectangle: `C-x r k' -- JonAquino
+
+== See Also ==
+
+See also Wiki:GreatEmacsFeatures, DayInTheLife
+
+----
+CategoryDotEmacs
+CategoryDocumentation.
+CategoryEditing
+CategoryHelp
+

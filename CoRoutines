@@ -1,0 +1,28 @@
+This package by MichaelAbrahamShulman allows the definition of coroutines in Emacs Lisp.
+
+From the commentary:  A
+coroutine is a function that can return ("yield") a value and still
+retain its execution state so that at the next call it can pick up
+where it left off.
+
+Coroutines are very difficult to implement without the aid of
+first-class continuations or a similar control feature, and this
+imposes certain limits: for example, `yield' is only valid at
+top-level in the coroutine, or inside a specially tweaked macro.
+
+* http://kurukshetra.cjb.net/elisp/coroutine.el
+* http://kurukshetra.cjb.net/elisp/tagbody.el
+
+: these links are broken, and I can't find them anywhere else, so am uploading them here:
+Lisp:coroutine.el
+Lisp:tagbody.el
+
+The following should make edebug grok tagbody/go
+
+    (def-edebug-spec tagbody (&rest [&or symbolp integerp form]))
+    (def-edebug-spec go      (&or symbolp integerp))
+    (def-edebug-spec go*     (form))
+
+
+----
+CategoryCode

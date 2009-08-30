@@ -1,0 +1,24 @@
+`M-x reverse-region' will reverse the lines a region.  To get the word-based reversal use the command:
+
+  (defun reverse-words (beg end)
+    "Reverse the order of words in region."
+    (interactive "r")
+    (apply
+     'insert
+      (reverse
+       (split-string
+        (delete-and-extract-region beg end) "\\b"))))
+
+Example:
+
+  first, second, third - last.
+
+Running `M-x reverse-words' on this sentence with the region starting from the beginning but not including the period:
+
+  last - third, second, first.
+
+This has nothing to do with [[Sorting]] the words alphabetically.  See SortWords.
+
+----
+CategoryEditing
+CategoryRegion

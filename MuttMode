@@ -1,0 +1,22 @@
+Download: http://www.drao-ofr.hia-iha.nrc-cnrc.gc.ca/~rreid/software/mutt/mutt.el
+
+Installation:
+
+Put mutt.el in your load-path and add the following line to the .emacs file:
+
+ (require 'mutt)
+
+[new]
+I'm using Emacs as the editor for Mutt, and I'd like to use Supercite while doing so; however, I have not been able to get Supercite to work in this context. I have this feeling that it shouldn't be too hard... Has anybody succeeded? --DirkJanBinnema
+
+[new]
+: I'm not sure what exactly Supercite is, but if you want mutt to have emacs execute arbitrary lisp code, set editor="emacs %s --eval '(lisp-goes-here)'"; a good lisp-goes-here might be (supercite-mode t)? -- ErikBourget
+
+[new]
+Download link is dead. Anybody has an alternative location of mutt.el?
+
+[new]
+: Maybe http://www.lemis.com/grog/programs/emacs/emacs/mutt.el ? Not sure it's the same file.
+
+----
+CategoryMailAddons | CategoryModes

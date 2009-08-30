@@ -1,0 +1,20 @@
+If you write EmacsLisp in your LaTeX documents, you might want to have
+emacs-lisp-mode active when editing the Lisp, and latex-mode when
+editing the rest of the file.  The solution is to use MultipleModes.
+
+Here is a solution using two-mode-mode, by EdwardOConnor:
+
+<pre>
+    (require 'two-mode-mode)
+    (setq two-mode-rmatch "\\end{elisp"
+          two-mode-lmatch "\\begin{elisp"
+          default-mode '(latex-mode "LaTeX")
+          second-mode '(emacs-lisp-mode "Emacs-Lisp"))
+    (two-mode-mode)
+</pre>
+
+See LiterateEmacsLisp for a complete example of how to do this.
+
+----
+CategoryTex
+CategoryCode

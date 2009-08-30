@@ -1,0 +1,28 @@
+Allows you to paste to http://pastie.caboo.se/ from Emacs.
+
+http://www.emacswiki.org/cgi-bin/wiki/pastie.el
+
+I added the following to my .emacs. It will ask for a confirmation and put the URL in the clipboard (tested with Aquamacs 1.2a (Emacs 22.1.50.1) on OS X)
+
+    (autoload 'pastie-buffer "pastie" "Paste current buffer to pastie" t)
+    (autoload 'pastie-region "pastie" "Paste current region to pastie" t)
+    (autoload 'pastie-get "pastie" "Get snippet from pastie" t)
+     
+    (defadvice pastie-region (around pastie-region-comfort)
+      (if (y-or-n-p "Really send to pastie.caboo.se?")
+          (progn
+            ad-do-it
+            (killring-to-clipboard)
+            (message "Sent to pastie and stored URL in clipboard and kill-ring"))
+        (message "Nothing was sent")
+        ))
+    (ad-activate 'pastie-region)
+
+    (defun killring-to-clipboard ()
+      "Will copy the car of the kill ring into the clipboard"
+      (interactive)
+      (save-excursion
+        (let ((startpos (point)))
+          (insert (car kill-ring))
+          (clipboard-kill-region startpos (point)))))
+

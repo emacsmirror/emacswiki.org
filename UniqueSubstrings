@@ -1,0 +1,90 @@
+If you write code that needs unique abbreviations, here is an example.
+First, the basic implementation.
+
+<pre>
+(defun unique-substrings (strings)
+  "Return a list of unique substrings of STRINGS."
+  (mapcar
+   (lambda (str)
+     (let* ((others (delete str (copy-sequence strings)))
+	    (maxlen (length str))
+	    (i 0)
+	    candidate
+	    done)
+       ;; Start with smallest substring candidate, ie. length 1.
+       ;; Then check all the others and see wether any of them starts
+       ;; with the same substring.  While there is such another
+       ;; element in the list, increase the length of the candidate.
+       (while (not done)
+	 (setq i (1+ i))
+	 (if (> i maxlen)
+	     (setq done t)
+	   (setq candidate (substring str 0 i)
+		 done (not (unique-substring-1 candidate others)))))
+       candidate))
+   strings))
+
+(defun unique-substring-1 (candidate others)
+  "Return non-nil when any string in OTHERS starts with CANDIDATE."
+  (let (result other (maxlen (length candidate)))
+    (while (and others
+		(not result))
+      (setq other (car others)
+	    others (cdr others))
+      (when (and (>= (length other) maxlen)
+		 (string= candidate (substring other 0 maxlen)))
+	(setq result other)))
+    result))
+
+(assert
+ (and (equal (unique-substring-1 "abc" '("ab" "abcd")) "abcd")
+      (not (unique-substring-1 "a" '("xyz" "xab")))
+      (equal (unique-substrings '("abc" "xyz" "xab")) '("a" "xy" "xa"))
+      (equal (unique-substrings '("abc" "abcdefg")) '("abc" "abcd"))))
+</pre>
+
+Here is a way to extend it using minimum length and and a predicate as
+used by [[ERC]].
+
+<pre>
+(defun unique-substrings (strings &optional predicate minlen)
+  "Return a list of unique substrings of STRINGS.
+If PREDICATE is non-nil, it must return true if the string should be
+shortened at all. MINLEN specifies the minimal string length, defaults to 1."
+  (if (or (not (numberp minlen))
+          (< minlen 1))
+      (setq minlen 1))
+  (mapcar
+   (lambda (str)
+     (let* ((others (delete str (copy-sequence strings)))
+            (i minlen)
+            (candidate (substring str 0 i)))
+       (if (and (functionp predicate) (not (funcall predicate str)))
+           str
+         ;; Start with smallest substring candidate, ie. length 1.
+         ;; Then check all the others and see wether any of them starts
+         ;; with the same substring.  While there is such another
+         ;; element in the list, increase the length of the candidate.
+         (while (let* ((l others)
+                       (elem (car l)))
+                  (while (and l
+                              (not (string= candidate
+                                          (substring elem 0 i))))
+                    (setq l (cdr l)
+                          elem (car l)))
+                  l)
+           (setq i (1+ i)
+                 candidate (substring str 0 i)))
+         candidate)))
+   strings))
+
+(unique-substrings '("+linux.de" "#emacs" "kensanata" "#kernelnewbies" "#c++")
+                   (lambda (s)
+                     (and (erc-channel-p s)
+                          (> (length s) 4)))
+                   2)
+=> ("+l" "#e" "kensanata" "#k" "#c++")
+</pre>
+
+----
+CategoryCode

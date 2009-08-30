@@ -1,0 +1,7 @@
+A security bug has caused a ''new release of GNU Emacs'' to just be released. It has been named '''21.4'''. This will confuse a lot of people, because 21.4 was slated to become the next major release, with lots of new features. As a result of the security-bug fix release being named 21.4, the upcoming major release will be named '''22.x''' (22.1, I presume). The new 21.4 release is available at ftp.gnu.org/pub/gnu/emacs/. -- DrewAdams
+
+* [http://lists.gnu.org/archive/html/emacs-devel/2005-02/msg00300.html Discussion of release] - A thread on emacs-devel mailing list.
+* [http://lists.gnu.org/archive/html/emacs-devel/2005-02/msg00387.html Release numbering incremented] - A thread on emacs-devel mailing list installing the release number 22.1 in CVS and using a negative-value revision numbering system. 
+
+
+[new:PierreGaston:2005-02-09 13:39 UTC] I can confirm that it confuses people, I had to tell a colleague twice what really was 21.4 after announcing that it was out  before he gets that it is not the next big release.  

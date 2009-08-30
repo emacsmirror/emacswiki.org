@@ -1,0 +1,106 @@
+Ever had the problem that you are searching for something containing
+both foo and bar?  If you use a RegularExpression for that, the simple
+expressions are either foo.*bar or bar.*foo.  This page presents code that lets you search for "foo, bar" and constructs a regexp that matches
+both combinations.  This is useful when searching for a
+symbol name using apropos, for example.
+
+'''See Also:''' [[Icicles - Search Commands, Overview]]. If you use '''[[Icicles]]''', then you can search for terms such as `foo' and `bar' in any order. What's more, [[Icicles - Progressive Completion]] lets you apply the same technique to any MiniBuffer [[Completion]]: match, for instance, a command name or a buffer name or a file name that contains both `foo' and `bar' in any order.
+
+
+=== First variant - for usage with regular expressions ===
+
+First, we have a function that will eventually call apropos to do the
+real work -- searching for the regexp and displaying the result.  The
+regexp itself is constructed by first parsing the comma separated
+values (CSV) string into a list of strings, and then generating all
+possible permutations of this list of strings.
+
+<pre>
+    (defun my-apropos-keywords (keywords)
+      "Search for KEYWORDS.
+    This uses `apropos'.  All the keywords must match.
+    KEYWORDS can be a comma-separated list."
+      (interactive "sKeywords: (comma-separated) ")
+      (apropos (my-csv-string-to-regexp keywords)))
+
+    (defun my-csv-string-to-regexp (str)
+      "Translate comma separated values into regexp.
+    A,B,C turns into \\(A.*B.*C\\|A.*C.*B\\|B.*A.*C\\|B.*C.*A\\|C.*A.*B\\|C.*B.*A\\)
+      (let* ((l (perms (split-string str ",\\s-*"))))
+	(mapconcat (function (lambda (n)
+	  (mapconcat 'identity n ".*"))) l "\\|")))
+
+    ;; thanks to Christoph Conrad <cc@cli.de>
+    (require 'cl)
+    (defun perms (l)
+      (if (null l)
+	  (list '())
+	(mapcan #'(lambda( a )
+		    (mapcan #'(lambda( p )
+				(list (cons a p)))
+			    (perms (remove* a l :count 1))))
+		l)))
+
+</pre>
+
+=== Another variant of string permutations ===
+
+Here is my take on "string permutations".
+
+First we need a helper function:
+
+<pre>
+(defun list-all-rotated-strings (s)
+  (let ((cnt 0))
+    (mapcar
+     (lambda (x)
+       (setq cnt (1+ cnt))
+       (rotate-string s cnt))
+     s)))
+</pre>
+
+The permutation function:
+
+<pre>
+(defun string-permutations (s)
+  (cond ((null s)
+         nil)
+        ((= (length s) 0)
+         nil)
+        ((= (length s) 1)
+         (list s))
+        ((= (length s) 2)
+         (list-all-rotated-strings s))
+        (t
+         (apply 'append
+                (mapcar 
+                 (lambda (rotn)
+                   (mapcar 
+                    (lambda (perm)
+                      (concat (substring rotn 0 1) perm))
+                    (string-permutations (substring rotn 1))))
+                 (list-all-rotated-strings s))))))
+</pre>
+
+When I first tried to do this, I was totally lost. Then I discivered the rotate-trick. Still I could not get it to work. So I googled for it, and found this excellent page:
+
+http://www.t3x.org/sketchy/vol1/sl15.html
+
+I converted that to Emacs Lisp (my rotate function intact), and it worked:
+
+ (string-permutations "a") => ("a")
+
+ (string-permutations "ab") => ("ba" "ab")
+
+ (string-permutations "abc") => ("bac" "bca" "cba" "cab" "acb" "abc")
+
+ (string-permutations "abcd") => ("bdca" "bdac" "badc" "bacd" "bcad" "bcda" "cadb" "cabd" "cbad" "cbda" "cdba" "cdab" ...)
+
+I probably wouldn't have gotten the permute function to work unless I had found that page, but at least I was on the right track :) (I knew I needed the rotate function and recursion and about the three special cases).
+
+Recursion is fun, but a bit scary... :)
+
+-- MaDa
+
+----
+CategoryCode

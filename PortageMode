@@ -1,0 +1,7 @@
+To use [http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=2 Portage] in EmacsForGentoo, use the following library.
+
+* Lisp:[[portage.el]]
+
+----
+CategoryModes
+

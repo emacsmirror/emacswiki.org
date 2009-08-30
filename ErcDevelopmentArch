@@ -1,0 +1,168 @@
+
+THIS IS OUTDATED INFORMATION.  For the most up-to-date information,
+see ErcDevelopment.
+
+== Prerequisites ==
+
+You will need to install GnuArch.
+
+There is a Debian package called <code>tla</code> (tla is another name
+for GNU Arch) that you can install if you use Debian.
+
+== Shared archives ==
+
+To check out a copy of ERC using Arch, you will first need to register
+the archive.  If you are a developer that is registered with the
+[https://savannah.gnu.org/projects/erc/ ERC project on Savannah], you
+will want to do the following, replacing <code>loginname</code> with
+your Savannah login name.
+
+<pre>
+tla register-archive -f sftp://loginname@arch.sv.gnu.org/archives/erc/erc
+</pre>
+
+Note that this will probably not work until you have added your SSH
+key to Savannah.
+
+If you do not have developer access but wish to track the latest
+development changes, do the following instead.
+
+<pre>
+tla register-archive -f http://arch.sv.gnu.org/archives/erc/erc
+</pre>
+
+Now skip to the /Picking a branch/ section, or continue for some
+reference stuff.
+
+For quick reference, the above information is summed below in the form
+of a table.  The <code>erc@sv.gnu.org</code> part is the name of the
+archive; it is used later on when we check out a branch.  Arch
+determines the name from the metadata that it gets when you register
+the archive.
+
+|| Archive || <code>erc@sv.gnu.org</code> ||
+|| Developers || <code>sftp://loginname@arch.sv.gnu.org/archives/erc/erc</code> ||
+|| Users || http://arch.sv.gnu.org/archives/erc/erc ||
+
+=== Picking a branch ===
+
+Now that you've registered the ERC archive, you will want to pick a
+particular branch from the following table (think of a branch as a
+development "topic").  If in doubt, choose the Main branch.
+
+|| Main branch || erc--main--0 ||
+|| 5.1 release branch (old) || erc--rel--5.1 ||
+|| 5.2 release branch || erc--rel--5.2 ||
+|| Emacs 22 integration branch || erc--emacs--22 ||
+|| Debian packaging branch || erc--debian--0 ||
+|| Ubuntu packaging branch || erc--ubuntu--0 ||
+
+If you want to browse the available branches via the web, visit
+http://archzoom.mwolson.org/cgi-bin/archzoom.cgi/erc@sv.gnu.org/.
+
+To check out the branch you've chosen, do the following.
+
+<pre>
+tla get erc@sv.gnu.org/[branch name] erc
+</pre>
+
+For the main branch, this would be the following.
+
+<pre>
+tla get erc@sv.gnu.org/erc--main--0 erc
+</pre>
+
+This retrieves the <code>erc--main--0</code> branch from the
+<code>erc@sv.gnu.org</code> archive, and puts it in the
+<code>erc</code> directory (the last argument to tla)
+on your machine.
+
+== Using the archive ==
+
+To keep up-to-date on the latest ERC happenings, run tla's
+<code>update</code> command from the directory that contains your copy
+of ERC.
+
+<pre>
+tla update
+</pre>
+
+This will update ERC, taking care to preserve your changes.
+
+To remove any changes that you have made to your copy of ERC, use
+tla's <code>undo</code> command.
+
+<pre>
+tla undo
+</pre>
+
+Any changes that you undo can be re-done later by means of tla's
+<code>redo</code> command.
+
+<pre>
+tla redo
+</pre>
+
+If you are a developer and have made some changes that you would like
+to commit to the ERC archive, first you will need to provide a name
+and email address.  This information is used in the change log for
+each change you commit.
+
+<pre>
+tla my-id 'Jane Doe <email@address.org>' 
+</pre>
+
+Now you are ready to make the change log, and then commit.  Read on
+for the change log instructions before doing the commit.
+
+<pre>
+tla make-log
+[edit the generated logfile, which will start with ++log...]
+tla commit
+</pre>
+
+When you open the generated log file, you will notice a
+<code>Summary</code> line and a <code>Keywords</code> line.  Add a
+brief one-line description of your changes immediately after the
+<code>Summary:</code> text.  Ignore, but don't delete, the
+<code>Keywords</code> line.
+
+The rest of the file (keeping a blank line after the
+<code>Keywords</code> line) is for describing your changes in detail.
+If you want, you can either leave this blank or just copy the relevant
+part of your ChangeLog entry here.  The information you use here will
+appear in the [http://lists.gnu.org/mailman/listinfo/erc-commit
+erc-commit mailing list] when you are done.
+
+Make sure that you have described your changes in the ChangeLog file
+before committing.
+
+== Emacs modes, Tutorials, and Documentation ==
+
+If you would like a (highly recommended) Emacs helper mode for GNU Arch, check out
+MichaelOlson's
+[http://www.mwolson.org/projects/DevelopingWithArch.html Developing With Arch]
+page for both a description of how to use the Elisp software called DVC
+(see DistributedVersionControl),
+as well as a mini-tutorial on getting into a solid development routine
+with Arch.
+
+Alternatively, Emacs 22 should include some regular VC bindings for
+Arch, so that you can use the same key-bindings that you would use for
+CVS.
+
+Mark Triggs has a visual tutorial (includes screenshots) of Xtla and
+Arch at http://dishevelled.net/xtla-tutorial.html.  Xtla is
+now called DVC (the same keystrokes are used, and the same look
+persists).  DVC's website is at http://download.gna.org/dvc/.
+
+Arch's documentation may be browsed to by means of
+[http://www.gnu.org/software/gnu-arch/ the GNU Arch website].  If you
+are expecting it to look and feel like the Darcs or CVS documentation,
+you will probably be disappointed.
+
+Arch has an expansive wiki at http://wiki.gnuarch.org, which may prove
+a useful supplement to the documentation.
+
+----
+[[ERC]]

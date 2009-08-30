@@ -1,0 +1,23 @@
+TexDrive is an emacs minor mode which makes including TeX-style mathematical formulae in HTML-documents easy.
+
+==Example==
+If you want to include the famous Bayes' Theorem, in texdrive-mode you simply type:
+
+  M-x texdrive-insert-formula
+  Formula: $P(A|B) = P(B|A)P(A)\over{P(B|A)P(A) + P(B|\overline{A})P(\overline{A})}$
+  Title: bayes-theorem
+
+The following is inserted:
+
+   <img src="bayes-theorem.png" title="bayes-theorem"
+        class="texdrive-formula" name="$P(A|B) = \frac{P(B|A)P(A)}{P(B|A)P(A) + P(B|\overline{A})P(\overline{A})}$"
+        border="0">
+
+Now, all we need to do is 
+  texdrive-generate-images-from-html
+and bayes-theorem.png will be generated.
+
+==How it works==
+TexDrive scans your HTML-page for ##*<img ...>*##-elements with formulae (as in the example); it extracts the formula, feeds it to !LaTeX and converts the result into a png-file.
+
+More information can be found on the TexDrive project page: http://www.djcbsoftware.nl/code/texdrive

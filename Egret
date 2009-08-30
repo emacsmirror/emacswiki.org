@@ -1,0 +1,27 @@
+Egret is a "framework for computer-supported cooperative work (CSCW) applications [...] implemented by a 15 [thousand lines of code] extension to [[XEmacs]]" that provides CollaborativeEditing. 
+
+* http://csdl.ics.hawaii.edu/Plone/research/egret/   -> ''as of 2008-11-14 the website says 'Software: No longer available.' :-( Maybe there is a different download site somewhere?''
+
+
+[new]
+From the Web site we see that Egret (out of the box) cannot be made to work with a normal GnuEmacs or [[XEmacs]] distro, as it is a patch to the [[XEmacs]] binary:
+
+	...
+        architecture. Egret clients and agents are
+        implemented by a 15 KLOC extension to
+        XEmacs, the X-window Emacs editor. Egret
+        servers are implemented by a 15 KLOC system
+        written in C++. The public distribution
+        includes the Egret client and server
+        software and several example CSCW
+        applications implemented using Egret.
+
+        Egret provides both low and high level
+        storage and communication facilities for
+	...
+
+[new]
+Actually, I interpret the above differently, it seems to say that the clients are 100% elisp, and that the servers are C++. This is supported by the client downloads being distributed as .elc files. --ShaeErisson
+
+----
+CategoryRemoteEmacs

@@ -1,0 +1,48 @@
+The variable <code>load-path</code> lists all the directories where Emacs should look for elisp files.  They are searched in order.  The first file found is used, therefore the order of the directories might be relevant.  
+
+Preference is given to compiled files when both a compiled file and a source file are found.  Therefore, make sure to recompile files after making changes to them -- or don't compile the files at all.
+
+
+== Including subdirectories ==
+
+By default Emacs doesn't include subdirectories of a directory which is added to load-path. But you can do it by issuing a command in startup file:
+
+    (normal-top-level-add-subdirs-to-load-path)
+
+which will add all subdirs of current directory and all subdirectories of those directories recursively.  <strong>Note:</strong> current directory is not necessarily the one where your script is executed at the moment. So you first need to change directory to the required one:
+
+    (progn (cd "~/elisp") (normal-top-level-add-subdirs-to-load-path))
+
+In this example it is assumed that you want to add all subdirs of the ~/elisp directory.
+
+However, this will make your emacs run as if you had started it from ~/elisp,
+which is annoying.  The following code snippet, found at
+http://mail.gnu.org/archive/html/help-gnu-emacs/2003-07/msg00504.html
+avoids this problem:
+
+    (if (fboundp 'normal-top-level-add-subdirs-to-load-path)
+        (let* ((my-lisp-dir "~/elisp/")
+              (default-directory my-lisp-dir))
+           (setq load-path (cons my-lisp-dir load-path))
+           (normal-top-level-add-subdirs-to-load-path)))
+
+If you only want some of the subdirectories added you can use
+
+    (normal-top-level-add-to-load-path
+     '("emms" "erc" "planner" "w3"))
+
+
+== Debugging ==
+
+First, check the value of your <code>load-path</code> by asking for help on the variable:
+ `C-h v load-path RET' 
+should give you the documentation for the variable and its current value.  If your directory is not listed, you must add it (see above).
+
+If your directory <em>is</em> listed, check for ConflictingLibraries.
+
+== Searching for files in your load-path ==
+
+See SearchingLoadPath
+
+----
+CategoryHelp

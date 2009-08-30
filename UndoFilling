@@ -1,0 +1,26 @@
+The simplest thing is to set the fill-column to 9999 or something like that, and then use M-q to fill the paragraph, and M-n to move to the next paragraph.
+
+C-u 9999 C-x f M-q M-n M-q M-n M-q M-n M-q M-n . . .
+
+Or, using keyboard macros:
+
+C-u 9999 C-x f C-x ( M-n M-q C-x ) C-u 99 C-x e
+
+: . . . where 99 is the number of times to do a M-n M-q (it's ok if it does it too many times)
+
+Or, in an elisp function:
+
+ (defun unfill-buffer ()
+   "Undo filling for all paragraphs."
+   (interactive)
+   (goto-char (point-min))
+   (let ((fill-column 99999))
+     (fill-paragraph nil)
+     (while (< (point) (point-max))
+       (forward-paragraph)
+       (fill-paragraph nil))))
+
+See: UnwrapLine
+
+----
+CategoryFilling

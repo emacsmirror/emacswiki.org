@@ -1,0 +1,23 @@
+The Mule-UCS package adds or extends support for UnicodeEncoding in Emacs 20 and 21 and XEmacs 21.  Get it from
+
+: ftp://ftp.m17n.org/pub/mule/Mule-UCS/
+
+Or in [[Debian]] see DebianPackage:mule-ucs.
+
+GNU Emacs 21 has limited support for far Eastern script parts of unicode (eg. Japanese, Chinese, Lao).  Users of those scripts in utf-8 and similar encodings will almost certainly want Mule-UCS.
+
+XEmacs 21 doesn't have utf-8 at all by default, Mule-UCS can add it.
+
+Mule-UCS also offers utf-7 as a coding system, if you need to work with that.
+
+In some version of GNU Emacs after 21.3, utf-translate-cjk-mode provides equivalent,
+and in some ways better, facilities for editing CJK from unicoded files.
+
+Beware that Mule-UCS 0.84 and earlier can corrupt data
+containing characters it can't represent, replacing them all with the
+same character.  In contrast, the GNU Emacs 21 UTF-8 coding system maintains
+unrepresentable characters as the original UTF-8 byte
+sequences.  (Mule-UCS will probably adopt that approach in future.)
+
+----
+CategoryInternationalization

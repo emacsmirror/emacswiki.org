@@ -1,0 +1,21 @@
+Emacs planet is huge. Modes are created everyday or so but there are
+also big hits going into anonymous death.
+
+I propose to list here any mode that users liked and that suddenly
+disapeared (no more maintainer, ...).
+
+The main goal is to have in front of each one the name of a new
+volunteer.
+
+= The list =
+
+* RecordsMode - XavierMaillard is offering maintainership
+* OrganizerMode
+* YourModeGoesHere
+
+== OrganizerMode ==
+
+I tried to get rid of the Buffer-* functions and replaced it by a
+simpler method invoking `read-file-name'. This works but many orther
+functions won't work anymore. Anyway, that will let other start using
+this mode and maybe adopt it :)

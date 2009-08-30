@@ -1,0 +1,22 @@
+So far this doesn't exist, but we wish it did.
+
+I would love to be able to edit [http://www.langdale.com.au/SOX/ XML SOX] and have it saved as XML 1.0.  In the emacs buffer would appear Sox, in the saved file would appear XML.
+
+This is an example of SOX.  Much easier on the eyes and easier to make well formed than XML.  The XML serialization is pretty obvious and not reproduced here.
+----
+<pre>
+html>
+    head>
+        title> My Home Page
+    body>
+        h1> Contact Details
+        p>  I can be contacted at
+            a>  href=mailto:me@myplace.net 
+                this address
+            except when on vacation.
+</pre>
+----
+
+Where would one start making a mode like this?
+----
+CategoryXML

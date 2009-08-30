@@ -1,0 +1,111 @@
+These are templates to use for inserting into files for [PerlLanguage Perl].
+
+== Skeletons ==
+
+This skeleton provides the typical calls to <code>pod2usage</code>, <code>GetOptions</code> and writes basic POD.
+
+ (define-skeleton ska-skel-perl-project
+   "Insert much perl code, preparing a real world project."
+   (nil)
+   "use Getopt::Long;\n"
+   "use Pod::Usage;\n"
+   "####################################################################\n"
+   "##                             OPTIONS\n"
+   "####################################################################\n"
+   "GetOptions("
+   \n "\"help|h!\" => \\my $help,"
+   \n "\"version|v!\" => \\my $version"
+   \n ") or pod2usage("
+   \n "verbose => 0,"
+   \n "exitstatus => 1"
+   \n ");"
+   \n "if ($help) {"
+   \n "pod2usage("
+   \n "verbose => 1,"
+   \n "exitstatus => 0"
+   \n ");"
+   \n "}"
+   \n "if ($version) {"
+   \n "print $Version;"
+   \n "exit 0;"
+   \n "}"
+   \n "####################################################################"
+   \n "##                               MAIN"
+   \n "####################################################################"
+   \n ""
+   \n "####################################################################"
+   \n "##                               SUBS"
+   \n "####################################################################" 
+   \n "__END__\n"
+   "####################################################################\n"
+   "##                             Now Docs...\n"
+   "####################################################################\n"
+   "=head1 NAME"
+   "\n"
+   \n (file-name-nondirectory buffer-file-name) " - DESCRIBE ME"
+   "\n\n"
+   "=head1 SYNOPSIS"
+   "\n"
+   \n (file-name-nondirectory buffer-file-name) " [-h] [-v]" 
+   "\n\n"
+   "=head1 OPTIONS"
+   "\n\n"
+   "=over 1"
+   "\n\n"
+   "=item B<-h|--help>"
+   "\n"
+   \n "Print help message and exit successfully."
+   "\n\n"
+   "=item B<-v|--version>"
+   "\n"
+   \n "Print version information and exit successfully."
+   "\n\n"
+   "=back"
+   "\n\n"
+   "=cut\n"
+   "")
+
+A simple one to insert a subroutine, asking the user for any arguments:
+
+ (define-skeleton ska-skel-perl-sub
+   "Insert a perl subroutine with arguments."
+   "Subroutine name: "
+   "sub " str " {"
+   \n "my (" ("Argument name: " "$" str ", ") -2 ") = @_;"
+   "\n"
+   \n _
+   \n "}" '(progn (indent-according-to-mode) nil)
+   \n)
+
+== Auto-Insert ==
+
+Whenever you enter PerlMode in an empty file, this will create a typical perl setup for you (assuming that auto-insert is active).  It also saves the file, makes it executable and asks whether it's just a short script or will likely become a large project.  In the latter case it will use the skeleton defined above to insert more useful things.
+
+Note that this is just an excerpt of a real live auto-insert-alist and that there should be more modes defined, typically.
+
+ (setq auto-insert-alist
+       '(
+          ((perl-mode . "Perl Program")
+          nil
+          "#! /usr/bin/perl\n#\n"
+          "# File: " (file-name-nondirectory buffer-file-name) "\n"
+          "# Time-stamp: <>\n"
+          "# $Id: $\n#\n"
+          "# Copyright (C) " (substring (current-time-string) -4)
+          " by " auto-insert-copyright "\n#\n"
+          "# Author: "(user-full-name) "\n#\n"
+          (progn (save-buffer)
+                 (shell-command (format "chmod +x %s"
+                                        (buffer-file-name)))
+                 "")
+          "# Description:\n# " _ "\n"
+          "use strict;\n"
+          "use warnings;\n"
+          "use Data::Dumper;\n"
+          (when (yes-or-no-p "Is this a real project (or just a script)? ")
+            (ska-skel-perl-project)
+          ))
+        ;; all the other modes ....
+ ))
+----
+CategoryTemplates

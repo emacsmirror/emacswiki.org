@@ -1,0 +1,3 @@
+kill-ring-search is an elisp package that allows to search the kill ring similarly to C-r in a shell.  It's available on my [http://nschum.de/src/emacs/kill-ring-search/ website].  -- [[nschum]]
+
+http://nschum.de/src/emacs/kill-ring-search/kill-ring-search.png

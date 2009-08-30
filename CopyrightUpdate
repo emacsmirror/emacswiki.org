@@ -1,0 +1,6 @@
+This package comes with Emacs.
+
+M-x copyright inserts a copyright statement, M-x copyright-update updates it by appending the current year to the list of years.
+
+----
+CategoryTemplates

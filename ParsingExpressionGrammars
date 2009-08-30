@@ -1,0 +1,120 @@
+Parsing Expression Grammars (PEG) are a formalism in the spirit of Context Free Grammars (CFG) with some simplifications which makes the implementation of PEGs as top-down parser particularly simple and easy to understand.
+
+== peg.el == 
+
+This file implements a macro `peg-parse' which parses the current buffer according to a PEG. You can get ##peg.el## at [[peg.el]].
+
+== Examples ==
+
+I found it easier to use ##peg-parse-string## on the examples; it just runs ##peg-parse## after copying the string to a temporary buffer.
+
+=== Parsing a filename ===
+
+We're going to parse a filename like ##test.el## using a PEG. To me it feels much easier and robust than using regular expressions, as I commonly did. Evaluating the code below gives us ##(t nil)##, indicating that the expression has been correctly parsed:
+
+<pre>
+(peg-parse-string
+ ((filename ident "." ident)
+  (ident alpha (* alpha))
+  (alpha [a-z]))
+ "test.el")
+</pre>
+
+Now suppose we need the matched values. Our first attempt is just using substring, which has an action embedded to add the matched element to an internal stack:
+
+<pre>
+(peg-parse-string
+ ((filename ident "." ident)
+  (ident (substring ident-1))
+  (ident-1 alpha (* alpha))
+  (alpha [a-z]))
+ "test.el")
+</pre>
+
+This gives us ##(t ("el" "test"))##, which makes the function into something more useful.
+Now, another improvement we might do is to return a Plist instead, so it's easier to use the values:
+
+<pre>
+(peg-parse-string
+ ((filename (and ident "." ident)
+			`(name ext -- (list :filename name :extension ext)))
+  (ident (substring ident-1))
+  (ident-1 alpha (* alpha))
+  (alpha [a-z]))
+ "test.el")
+</pre>
+
+which evaluates to ##(t ((:filename "test" :extension "el")))##. We used an action (the ##`(... -- ..)## notation) to match and transform the values on the Stack.
+
+== Caveats ==
+ 
+=== Prioritized choice == 
+
+I've fallen into this with the following expression:
+
+<pre>
+(peg-parse-string
+ ((direction (substring direction-1))
+  (direction-1 (or "in" "out" "inout")))
+ "inout")
+</pre>
+
+which evaluates to ##(t ("in"))##; not what I had expected. Moving the ##inout## before ##in## solves the problem.
+
+
+==Discussions==
+
+Hi, i read your example but don't understand how to use it as a regex replacement. Could you give a concrete example?
+
+For example, on my website i have things like:
+
+ <hr>
+ <p>Related essays:</p>
+ <ul>
+ <li><a href="someFilePath1">SomeTitleString2</a> someSring1</li>
+ <li><a href="someFilePath2">SomeTitleString2</a> someSring2</li>
+ ...
+ </ul>
+
+Suppose i want to change them to:
+
+ <hr>
+ <p>See also:</p>
+ <p>
+ <a href="someFilePath1">SomeTitleString1</a> someSring1<br>
+ <a href="someFilePath2">SomeTitleString2</a> someSring2<br>
+ ...
+ </p>
+
+How do i do it?
+
+Thanks.
+Xah Lee
+
+
+I added a "replace" operator in version 0.4 to make this task easier.  For example:
+<pre>
+(with-temp-buffer 
+  (save-excursion (insert "abcdef"))
+  (peg-parse (x "a" 
+                (replace "bc" "x")
+                (replace "de" "y")
+                "f"))
+  (buffer-string)) =>  "axyf"
+</pre>
+
+You can use this for your example:
+<pre>
+(peg-parse 
+ (start _ "<hr>" _ title _ ul)
+ (title "<p>" (replace (* (not "</p>") (any)) "See also:") "</p>")
+ (ul (replace "<ul>" "<p>") _ (* li _) (replace "</ul>" "</p>"))
+ (li (replace "<li>" "") (* (not "</li>") (any)) (replace "</li>" "<br>"))
+ (_ (* (or whitespace comment)))
+ (whitespace ["\n\t "])
+ (comment "<-- " (* (not "-->") (any)) "-->"))
+</pre>
+
+Still not very easy to read.  Maybe a regexp based solution would be simpler in this casei.  
+Helmut Eller.
+ 

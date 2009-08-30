@@ -1,0 +1,287 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Multi-Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Tripping]] ||
+
+----
+
+== More about Multi-Commands ==
+
+A '''[[multi-command]]''' is any [[command]] that uses input [[completion]] and lets
+you perform actions on any number of individual completion candidates without
+exiting completion.
+
+The ''default'' action is invoked on the current candidate by `C-RET'
+(`icicle-candidate-action').  There are three other kinds of
+actions on individual candidates:
+
+* ''alternative'' actions, invoked by `C-S-RET'
+* ''deletion'' actions, invoked by `S-delete'
+* ''help'' actions, invoked by `C-M-RET'
+
+A given command can define ''any combination'' of these four kinds of
+actions: none of them, any one of them, any two of them, any three
+of them, or all four kinds.
+
+This page provides information about alternative actions and
+deletion actions. See also:
+* [[Icicles - Help on Candidates]] for
+information about using candidate help.
+* [[Icicles - Multi-Commands the Hard Way]] for information
+about defining a custom candidate-help action for a command.
+
+
+
+[:AlternativeActions]
+=== Alternative Actions ===
+
+Just as you can use `C-RET', `C-mouse-2', `C-next', and so on to
+invoke a command's default action on multiple completion candidates
+individually, so you can use '''`C-S-RET'''' (`icicle-candidate-alt-action'), '''`C-S-mouse-2'''', '''`C-S-next'''',
+and so on to invoke an alternative action that is associated with
+the command.  If the main action of a command `my-find-file' is to
+visit a file, and the alternative action is to print a file, then
+you can use `C-S-RET' to print one or more files on the fly, even as you are completing
+the name of a file to be visited.
+
+Keys '''`##C-|##'''' and '''`##M-|##'''' apply the ''alternative'' action defined for a
+given multi-command to '''''all''''' matching candidates at once, in the same way that
+'''`##C-!##'''' and '''`##M-!##'''' apply the main action defined for it to all candidates.  For example, in '''Icicles''' search (e.g. `##C-c `##'),
+the alternative action (e.g. `C-S-RET') replaces all or part of
+the current search hit, and `##C-|##' does the same for all search
+hits.
+
+It is the particular command that defines its alternative action.
+Some commands define no such action.  Some commands, as their
+alternative action, prompt you to choose (using completion) a
+function to be applied to the current completion candidate.  In
+this case, a single alternative action effectively provides a set
+of possible actions.
+
+To achieve this, such commands use the value of [[user option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-type-actions-alist|icicle-type-actions-alist]]</tt>'''', 
+which associates lists of possible
+functions with specific candidate types.  For example, for
+file-name candidates, you can choose among functions that act on
+file names.
+
+Choosing such a function to apply is itself a multi-command
+operation.  You can thus apply any number of functions to any
+number of candidates.
+
+For example, while you are using `C-x C-f', you can, say, print
+one or more candidate files on the fly, or invoke a shell command
+on selected files, or byte-compile them...  This is a particularly
+handy feature, especially if you customize
+`icicle-type-actions-alist' for your own particular use.
+
+Some such functions you can choose produce no side effect; they
+simply return a value.  But if you use `C-u' before choosing one,
+then the result of applying it is pretty-printed (in the [[echo area]]
+or buffer `##*Pp Eval Output*##').  For example, if you cycle to the
+function candidate `file-attributes' and use `C-u C-RET', then the
+properties of the current candidate file are displayed.  With just
+`C-RET', the list of properties is computed, but not displayed.
+
+''Be aware of this gotcha:'' The alternative action for commands that
+use `icicle-type-actions-alist' prompts for a function.  If you
+want to apply that function to '''''all''''' current completion candidates,
+then you must use '''`##M-|##'''', not `##C-|##', because `##C-|##' prompts you for
+''each'' candidate.  `##M-|##' is designed to do the right thing here: it
+prompts you once for the function to apply, and then applies it to
+each of the current candidates.  And you can filter
+the set of current candidates ([[progressive completion]] and so on),
+or [[Icicles - Candidate Sets#SavingAndRetrieving|retrieve a saved set of candidates]] to operate on.
+
+Note that completion while you choose a function to apply is ''lax''.
+This means that you can really enter any function, including a
+[[lambda expression]] that you invent on the fly.  Of course, the
+function must accept an object of the appropriate type, (but it
+need not actually use that argument).
+
+Using a lambda expression here is a good way to ''curry'' a function
+that requires multiple arguments, so that it adapts to expect just
+a single argument of the appropriate object type.  For example,
+##(lambda (sym-name) (get (intern (sym-name)) 'invisible))##
+transforms function `get', which takes a [[symbol]] and a property as arguments, to
+a function that takes a symbol name and looks up the `invisible'
+property of the symbol.
+
+Option `icicle-type-actions-alist' is predefined with a number of
+candidate types (buffer, color, command, face, file, frame,
+function, option, process, variable, and window) and their
+associated action functions, but you can add new types or modify
+their associated function lists.  Any EmacsLisp functions can be used,
+including lambda expressions.  But each function must accept a
+value of the appropriate type as its ''sole required'' argument
+(additional, optional arguments are OK).
+
+Sometimes, you might want to define your own alternative action
+function for some command.  Do this if you ''always'' want the same
+alternative action, and it is not the predefined one.  To do this,
+just customize option 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-alternative-actions-alist|icicle-alternative-actions-alist]]</tt>''''.  The
+associations defined by this option always override any predefined
+alternative actions for the corresponding commands.
+
+An alternative to using option `icicle-alternative-actions-alist'
+is to define a new command, wrapping an existing command with a
+`let' binding that defines the action you want.  I recommend using
+the option instead, but you might sometimes prefer this approach.
+For example:
+
+  (defun my-icicle-find-file (f)
+    "`icicle-find-file', but with `w32-browser' as the alt action."
+    (interactive
+      (let ((icicle-candidate-alt-action-fn  'w32-browser))
+        (list (read-file-name "File: "))))
+    (icicle-find-file f))
+
+If you are familiar with '''Icicles''' object-action commands (see
+[[Icicles - Object-Action Interaction]]),
+then this idea of choosing an object (completion candidate) and
+then choosing a function to act on it will ring a bell.  And just
+as for the object-action commands, here too '''Icicles''' exploits any
+object-action associations ("sources" and "types") defined by
+library [[Anything]] (<tt>[[anything.el]]</tt>), if you happen to use that, in
+addition to the associations defined by
+`icicle-type-actions-alist'.  And when you do use the '''Icicles'''
+object-action commands, the same behavior is available as for
+alternative actions.
+
+You might have noticed, above, that a type/actions association is
+predefined for type `function'.  Since the actions you can choose
+are themselves functions, you can even use `C-S-RET' on one of
+them, to apply a function-for-functions (e.g. `find-function' or
+`symbol-function') to it.  This is a curiosity, but it can
+sometimes be useful.
+
+
+
+
+
+
+'''See Also:'''
+* [[Icicles - Nutshell View#AlternativeOperations|Perform Alternative Operations on the Fly]]
+* [[Icicles - Object-Action Interaction]]
+* [[Icicles - Search-And-Replace]]
+* [[Icicles - Choose All Candidates]]
+
+
+[:DeletingObjects]
+=== Deleting Objects ===
+
+When it is defined for a particular command, [[minibuffer]] command
+'''`icicle-delete-candidate-object'''', bound to
+'''`S-delete'''' (that's the `delete' key, '''Shift'''ed) deletes the
+object or objects named by the completion candidate on which it operates.  (At least that is the
+default behavior -- if you customize `icicle-deletion-action-flag'
+to nil, then `S-delete' has no effect.)
+
+
+Which
+objects are thus targeted by a given candidate (name) is something that must be defined
+by the particular command.  The [[doc string]] of a command
+should ''always'' indicate the effect of using `S-delete', if a
+deletion action is defined.
+
+As an example of a deletion action, '''Icicles''' command
+`icicle-buffer-other-window', bound to `C-x 4 b', opens [[buffer]]s
+named by the individual candidates you act on, using `C-RET'.
+But it also kills any buffer that you act on, using `S-delete'.  This
+is not the ''alternative'' action for the command (which is bound to
+`C-S-RET'); it is the ''deletion'' action.  Similarly, command
+`icicle-select-region', bound to `C-u C-x C-x', selects [[region]]s,
+but you can also use `S-delete' with it to remove individual
+regions from the list of saved regions, `icicle-region-alist'.
+
+When you use `S-delete' with commands, such as
+`icicle-select-region' (`C-u C-x C-x'), that allow duplicate
+candidate names that represent different candidate objects, it
+deletes only the object associated with the current candidate
+(name).  
+
+Some multi-commands define a deletion action, so that `S-delete'
+works; some do not.  Consult the doc for any given command to see
+if it does.  Whenever it is defined, the meaning of "delete"
+depends on the particular command you use.
+
+`S-delete' deletes only the objects named by the current
+completion candidate.  However, with a prefix argument, it deletes
+'''''ALL''''' objects named by the current set of completion candidates,
+after you confirm that this is really what you want to do.  This
+is a quick way to delete things whenever `S-delete' is available:
+Use input patterns, with [[progressive completion]], [[chip away|chipping away]] ,
+and so on, to define the candidates to delete, then use '''`C-u S-delete'''' and confirm their deletion.  Bye-bye.
+
+Do not confuse the ''un''shifted `delete' key with `S-delete'.
+`delete' does not delete any ''objects''; it just removes a ''completion candidate'' so that you can't complete to it.  `S-delete' deletes an
+object and removes its name as a completion candidate.
+
+If you are an EmacsLisp programmer, then you can define your own
+multi-commands that provide a deletion action via `S-delete'.
+There are two ways to do this.  Both involve binding
+'''`icicle-delete-candidate-object'''':
+
+* Bind it to a deletion function.
+  The function must accept a completion candidate string and perform
+  the deletion.
+
+* Bind it to a [[symbol]] ([[variable]]) whose value is a [[list]] of completion-candidate objects.  The
+entries in the list must be completion candidates for the
+current call to `completing-read', but the list itself need not
+be the ##COLLECTION## argument to `completing-read'.  The list can be
+  an [[alist]], a list of strings, or a list of symbols.  The object that
+  corresponds to the current candidate when `S-delete' is invoked
+  is deleted from the list.  If, in addition, the list variable
+  is a [[user option]], then the updated list value is saved in the
+  user's custom file.
+
+For more information about using this feature in EmacsLisp code,
+see the doc of function '''`icicle-delete-current-candidate-object''''
+(`S-delete') and variable '''`icicle-delete-candidate-object''''.
+
+
+[:icicle-use-C-for-actions-flag]
+=== Option `icicle-use-C-for-actions-flag' ===
+
+In some contexts, you end up using `C-next' more than `next', and
+likewise for the other keys that combine candidate action and
+cycling.  This is especially true for '''Icicles''' multi-commands that
+act like a browser, such as `icicle-search', `icicle-imenu',
+`icicle-find-tag', `icicle-Info-goto-node', and
+`icicle-compilation-search'.  In these cases, you use the action
+keys to navigate among the locations indicated by the completion
+candidates.
+
+If you set user option '''`<tt>[[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]</tt>'''' to `nil',
+then the keys that cycle are swapped with the keys that both cycle
+and act on a candidate.  You can then use `down', `up', `next',
+and `prior' to both cycle and act (e.g. navigate), and `C-down',
+`C-up', `C-next', and `C-prior' to merely cycle, without acting.
+The option has no effect on other keys.
+
+You can toggle `icicle-use-C-for-actions-flag' at any time using
+'''`M-g'''' ('''`icicle-toggle-C-for-actions'''') in the minibuffer.
+
+----
+
+
+|| *Previous:*  [[Icicles - Multi-Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Tripping]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:doremi.el, Lisp:doremi-cmd.el, Lisp:doremi-frm.el, Lisp:icicles.el
+
+
+CategoryMenus
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryDocumentation
+CategoryHelp
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

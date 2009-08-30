@@ -1,0 +1,8 @@
+Wields GnuEmacs +21 -- uses Emacs.  
+
+Hacked up a handful of odd Emacs packages, including QuackPackage, WebJump, JunkbustMode, SigBegone, SpamProd, JasminMode, GiGuile, RfcView, BbdbPalm, GnusHush, PerkyMbf, RevBufs, KbDraw, and Noticeify.
+
+The HTML files for his personal Web site, [http://www.neilvandyke.org/ www.neilvandyke.org], are generated from one huge EmacsLisp file.
+
+----
+CategoryHomepage

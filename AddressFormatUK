@@ -1,0 +1,69 @@
+Here's how I format UK addresses in BbdbMode. Gives results like:
+
+<pre>
+           home: ...
+                 18 Charlie Way
+                 Myhamlet
+                 MYTOWN
+                 A12 1AA
+                 UK
+</pre>
+Code:
+<pre>
+(defun my-bbdb-format-address-uk (addr &optional indent)
+  "Insert formated UK address ADDR in current buffer.
+
+This function is a possible formatting function for
+`bbdb-address-formatting-alist'.
+
+The result looks like this:
+       location: street
+                 street
+                 ...
+                 CITY, 
+                 state 
+                 zip
+                 country"
+
+  (setq indent (or indent 14))
+  (let ((fmt (format " %%%ds: " indent))
+      (indent (+ 3 indent)))
+          (insert (format fmt (bbdb-address-location addr)))
+          (bbdb-format-streets addr indent)
+          (let ((c (bbdb-address-city addr))
+              (s (bbdb-address-state addr))
+              (z (bbdb-address-zip addr))) 
+              (if (> (length c) 0) (progn (indent-to indent) (insert (upcase c) "\n")))
+		  (if (> (length s) 0) (progn (indent-to indent) (insert s "\n")))
+                  (if (> (length z) 0) (progn (indent-to indent) (insert z "\n")))
+              )
+     (let ((str (bbdb-address-country addr)))
+         (if (= 0 (length str)) nil
+         (indent-to indent) (insert str "\n")))))
+</pre>
+
+== Making this work automatically ==
+
+Add this to your .emacs also:
+
+<pre>
+(defun bbdb-address-is-uk (addr)
+    "Return non-nil if the address ADDR is a continental address.
+This is done by comparing the zip code to a UK postcode matching regexp.
+
+This is a possible identifying function for
+`bbdb-address-formatting-alist' and
+`bbdb-address-print-formatting-alist'."
+    (string-match "^\\s *[A-Z][A-Z]?[0-9][0-9]?\\s *[0-9][A-Z][A-Z]?" (bbdb-address-zip addr)))
+
+(setq bbdb-address-formatting-alist '((bbdb-address-is-uk . my-bbdb-format-address-uk) (nil . bbdb-format-address-default)))
+</pre>
+
+Comments to ChrisParsons.
+
+== Wiki Note ==
+
+Should this node be on <nowiki>BBDBAddressFormatUK</nowiki>? Just followed the existing convention.
+
+----
+CategoryBbdb

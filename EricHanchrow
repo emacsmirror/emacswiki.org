@@ -1,0 +1,133 @@
+I'm [::offby1] on #emacs, and many other places.
+
+I use Emacs.
+
+OK, OK, I do more than just use it; I live in it twelve hours a day; they'll take my Emacs when they pry it from my cold dead fingers, etc.
+
+ <johnw> i've laid out in my will that my heirs should continue working on my .emacs
+
+Here, for those of you who were dying to know, are some goodies that I've been using for a while, and which quickly became can't-do-without-em favorites:
+
+* rx.  Which would you rather type --
+<pre>
+  (rx "/*#" (group (or (any alpha) "_")
+                   (or (any alnum) "_")) "#*/")
+</pre>
+or
+<pre>
+  "\\(?:/\\*#\\(\\(?:\\(?:[[:alpha:]]\\)\\|_\\)\\(?:\\(?:[[:alnum:]]\\)\\|_\\)\\)#\\*/\\)"
+</pre>
+* IswitchBuffers
+* [[uniquify]], with the 'forward method.  (uniquify comes with GNU Emacs 21.3)
+* BrowseKillRing
+* IbufferMode (hmm, that's two by ColinWalters)
+* EmacsIRCClient
+* cygwin-mount (http://www.blarg.net/~offby1/cygwin-mount/), although a) I'm the "maintainer" so perhaps I'm not objective, and b) it's not just nice, it's essential ... like Emacs itself ...
+
+Things I've known about for a while, but still find absurdly useful:
+
+* Dynamic abbrevs, specifically dabbrev-expand (M-/).  I use this so much that I keep trying to use it in other programs besides Emacs, and even in Emacs, when I use it I expect it to work *all* the time (because in fact it does find the correct completion most of the time).  I unconsciously assume that Emacs can read my mind.  Maybe it can.
+----
+Here's something that I'm proud of, and haven't seen anywhere else.  I don't know where to put it, so I'm putting it here.
+
+It adjusts the various browse-url-* variables appropriately depending on whether the selected frame is an X frame or a console frame.  It only is useful on Emascen that have MultiTTYSupport.
+<pre>
+(defmacro with-library (symbol &rest body)
+  ;(declare (indent 1))
+  `(condition-case nil
+       (progn
+         (require ',symbol)
+         ,@body)
+
+     (error (message  "I guess we don't have %s available." ',symbol)
+            nil)))
+
+;; when I'm using a console, I always want a text-mode browser, but
+;; when I'm using a GUI, I want a GUI browser.  And when I'm using
+;; multi-tty Emacs, I might have both types of frame at once.
+(make-variable-frame-local 'browse-url-browser-function)
+(make-variable-frame-local 'browse-url-netscape-program)
+(make-variable-frame-local 'browse-url-new-window-p)
+(make-variable-frame-local 'browse-url-lynx-emacs-args)
+(defun fiddle-browser-variables (current-frame)
+  (let ((x-running-locally
+         (and
+          (boundp 'window-system)
+          (eq (assoc-default 'window-system (frame-parameters current-frame)) 'x)
+          (getenv "DISPLAY")
+
+          (let ((display-data (split-string (getenv "DISPLAY") ":")))
+            (if (= 1 (length display-data)) ; e.g. ("0")
+
+                ;; e.g. ("offby1" "0")
+                (setq display-data (cons (car (split-string (system-name) "\\.")) display-data))
+
+              (let* ((display-host (nth 0 display-data))
+                     (display-number (car (read-from-string (nth 1 display-data)))))
+                ;; display numbers >=10 imply we're using SSH from a remote
+                ;; machine
+                (and (< display-number 10)
+                     ;; (string-equal (downcase (car (split-string display-host "\\.")))
+                     ;;                           (downcase (car (split-string (system-name)"\\."))))
+                     )))))))
+    (cond
+     (running-on-windows
+      (modify-frame-parameters
+       current-frame
+       '((browse-url-browser-function . browse-url-default-windows-browser))))
+
+     ((and
+       x-running-locally
+       (= 0 (call-process "bash" nil nil nil "-c" "type -p firefox")))
+
+      (modify-frame-parameters
+       current-frame
+       '((browse-url-netscape-program  . "firefox")
+         (browse-url-browser-function . browse-url-netscape)
+         (browse-url-new-window-p . t))))
+   
+     ((and x-running-locally
+           (file-readable-p "/etc/alternatives/x-www-browser" ;typically
+                                        ;present on Debian systems
+                            ))
+    
+      (modify-frame-parameters
+       current-frame
+       '((browse-url-netscape-program . "/etc/alternatives/x-www-browser")
+         (browse-url-browser-function . browse-url-netscape)
+         (browse-url-new-window-p     . t))))
+   
+     ((with-library w3m
+        (setq browse-url-browser-function 'w3m-browse-url)))
+   
+
+     ((= 0 (call-process "bash" nil nil nil "-c" "type -p lynx"))
+      (modify-frame-parameters
+       current-frame
+       '((browse-url-browser-function . browse-url-lynx-emacs)
+         (browse-url-lynx-emacs-args . ("-show_cursor" "-nocolor")))))
+
+     ((with-library w3
+        (setq w3-user-colors-take-precedence t)
+        (let ((tmp "/home/offby1/.netscape/bookmarks.html"))
+          (if (file-readable-p tmp)
+              (setq w3-default-homepage
+                    (append "file:"
+                            tmp))))
+        (modify-frame-parameters
+         current-frame
+         '((browse-url-browser-function . browse-url-w3))))
+      )
+     (t
+      (setq browse-url-browser-function nil)
+      (message "There appears to be no way to browse web pages on this
+        system."))))
+  t                                     ;since we're used in a hook,
+                                        ;it's probably important to
+                                        ;not return nil.
+  )
+(fiddle-browser-variables (selected-frame))
+(add-hook  'after-make-frame-functions 'fiddle-browser-variables)
+</pre>
+----
+CategoryHomepage

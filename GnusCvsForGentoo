@@ -1,0 +1,9 @@
+Gentoo has a offical Gnus Cvs Package in his Portage Tree.
+
+To install just execute this command:
+
+ ACCEPT_KEYWORDS="~x86" emerge gnus-cvs
+
+Hint: There is also a Emacs CVS Package available.
+----
+CategoryGnus

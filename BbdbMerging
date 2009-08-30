@@ -1,0 +1,18 @@
+== Very similar databases ==
+
+If you have two very similar databases (one on your laptop and one
+on your workstation), then the easiest method is probably ediff.  Use
+M-x ediff to compare the two files.
+
+M-x bbdb-merge-file does this for you.
+
+== Very different databases ==
+
+If you want to merge two very different databases (one from your
+girlfriend, one from yourself), your best bet is to just concatenate
+the two.  Then start the BBDB, and use M-x bbdb-show-duplicates.  For
+every record that appears twice, put point on the second record, and
+use `r' to merge it into the first record.
+
+----
+CategoryBbdb

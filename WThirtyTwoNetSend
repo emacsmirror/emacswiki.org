@@ -1,0 +1,64 @@
+The latest version should always be possible to find on Google Groups:
+
+http://groups.google.com/groups?q=w32-net-send.el&meta=group%3Dgnu.emacs.sources&scoring=d
+
+<pre>
+
+Change history
+
+;;; Changes between 1.0 and 1.1
+
+;; - Changed the defcustom for w32-net-send-recipients so that the
+;; w32-net-send function got smaller.
+
+;;; Changes between 1.1 and 1.2
+
+;; - Added signature option suggested by Niels Skou Olsen
+;;   (nso AT manbw DOT dk)
+;; - Added option to suggest text in the region as the message to send
+
+;;; Changes between 1.2 and 1.2.1
+
+;; - Just added some tips and trix
+
+;;; Changes between 1.2 and 1.2.1
+
+;; - Removed free variable username
+
+;;; Changes between 1.2.1 and 1.3 (by Klaus Berndl <klaus.berndl@sdm.de>)
+
+;; - Now `w32-net-send-dialog' supports the region too
+;; - The option `w32-net-send-recipients' now allows to insert a recipient
+;;   with a display alias (used for completion) and a seperate net-name (which
+;;   is used for the net send command).
+;; - Added a "*" before each defcustom-documentation to be conform
+;;   with the Emacs documentation.
+;; - Added some documentation
+;; - Fixed a bug which prevents `w32-net-send' and `w32-net-send-dialog' from
+;;   working when no region is active (e.g. directly after opening a buffer).
+;; - No region is offered if (mark) and (point) are identical.
+;; - Added some trimming stuff for strings for saver code
+
+;;; Changes between 1.3 and 1.3.1
+
+;; - Added option `w32-net-send-show-recipients' which allows you to
+;;   add the recipients to the message (if you send a message to many
+;;   persons at once you might want that all people should know about
+;;   each other, similar to CC: vs BC: when sending e-mail)
+</pre>
+
+----
+
+This is what I have used for a long time, now. -- AlexSchroeder
+
+ (defun net-message (recipient text)
+   "Send a net message with Emacs.
+ This needs Windows/NT, I think."
+   (interactive "sEmpfaenger: \nsMessage: ")
+   ;; Must have one resulting line of output so it automatically
+   ;; displays the result in the echo area.  Not having ^M's in the
+   ;; output is also nice.
+   (shell-command (format "net send %s %s" recipient text)))
+
+----
+CategoryWThirtyTwo

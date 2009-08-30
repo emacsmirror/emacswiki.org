@@ -1,0 +1,13 @@
+A guy from Debian Developer team offers on his website, a package of daily snapshot of GnusCvs for the impatient.
+
+To enjoy it just add this line to your /etc/apt/sources.list :
+
+    deb http://people.debian.org/~srivasta packages/
+
+
+Then do as usual to update your package database and enjoy !
+
+See also EmacsCvsAndDebian.
+
+----
+CategoryGnus

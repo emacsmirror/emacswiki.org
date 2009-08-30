@@ -1,0 +1,45 @@
+From the Mailcrypt manual:
+
+   Mailcrypt is an Emacs Lisp package which provides a simple but powerful
+   interface to cryptographic functions for mail and news.  With Mailcrypt,
+   encryption becomes a seamlessly integrated part of your mail and news
+   handling environment.
+
+Mailcrypt works with PGP and <nowiki>GnuPG</nowiki>.  It interfaces with most email
+clients for Emacs.  Note that its method of encrypting and signing
+emails may not always be the same as the more common method of MIME
+attachments (used by MUA's such as Mutt), but each can usually read the
+other with some massaging.  Oort Gnus (the CVS bleeding-edge version,
+currently hovering around 5.9) contains support for <nowiki>GnuPG</nowiki> (including
+MIME) directly, but it can also use Mailcrypt.
+
+Get mailcrypt from http://mailcrypt.sourceforge.net
+
+See also: BbdbAndMailCrypt.
+
+----
+Anybody who understands the issues involved with inline ASCII-armored
+PGP versus MIME attachments, please update the above explanation; I
+cannot guarantee that I got it quite right, although I think that is
+enough to answer the first newbie questions as to why somebody else's
+signed or encrypted email to them didn't work seamlessly. -- CharlesSebold
+
+----
+If anybody is using Gnus and MailCrypt with languages other than ASCII: there is a problem. If you encrypt a message and send it, Gnus will look at its contents and decide which charset to specify in the headers of the mail. Since the embedded ASCII-armored content is always pure and naked ASCII, it will choose a charset of "us-ascii" -- which certainly will annoy the reader at the other end if the decrypted message contains characters not covered by ASCII.
+
+A solution would be to hook some code into mc-pre-encryption-hook that looks at the message, chooses an appropriate charset and adds the headers for Gnus. For completeness the same thing the other way round would be nice also: Hook something into mc-post-decryption-hook that decides which charset the message actually uses, adds the headers and makes Gnus redisplay the message. 
+
+----
+Based on MailCrypt there is http://www.emacswiki.org/elisp/mc-gpg-file-mode.el which allows automatic decryption / encryption of files ending with '.gpg' at file open / save. This can e.g. be used to comfortably handle a gpg encrypted file with passwords or such 'secrets'.
+
+----
+Tip for Emacs-only users: In the file mailcrypt.el, there are unconditional
+autoloads for "itimer", part of XEmacs.  These are problematic for code
+running under Emacs that checks (fboundp 'start-timer), such as vhdl-mode.el,
+for example.  I'm not sure what the optimum resolution should be (arguably,
+vhdl-mode.el and ilk should check in some other way), but found that an
+effective workaround is to comment out the autoloads in mailcrypt.el
+entirely.  --ttn
+
+----
+CategoryModes CategoryMailAddons CategoryGnus CategoryCryptography

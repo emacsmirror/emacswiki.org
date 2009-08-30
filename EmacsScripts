@@ -1,0 +1,85 @@
+JohnSwaby presented an idea on the emacs-devel MailingList on how to
+use ":;" as an alternative to "#!" to start Emacs scripts.
+
+
+The shebang ("#!") works for many languages because their comment
+character is a number sign, #, and they require only two arguments to
+run a script.
+
+
+The sesquicolon (":;") works for Emacs because it allows for more than
+two arguments and it is compatible with the Lisp comment character,
+the semicolon.
+
+
+In many versions of Unix, if the first two characters of a script are
+the shebang, then the program specified after the shebang is run with,
+optionally, the one argument that can appear on the shebang line.  The
+program is then passed, as its last argument, the script to be
+interpreted.
+
+
+If the first two characters of the file are not the shebang; but the
+first character is a number sign, #, then the C Shell, csh, will be
+invoked to interpret the script.
+
+
+If neither of the above, then the Bourne Shell, sh, will be invoked as
+the interpreter (keeping in mind that on some systems either the Korn
+Shell, ksh, or the Bourne Again Shell, bash, will stand in for the
+Bourne Shell).
+
+
+Emacs requires more than two arguments to run a script; but the
+sesquicolon allows for this.  Since the first two characters of the
+script are the sesquicolon, :;, the third of the cases described above
+is the one that applies and, hence, sh (or ksh or bash, as the case
+may be) is invoked as the interpreter.
+
+
+The colon is a null command in sh, ksh, or bash, and so does nothing.
+The semicolon is a command delimiter in all three shells.  And, in all
+three shells, the exec command has the same meaning.  Hence,
+
+
+   :;exec emacs -batch -l $0 -f main $*
+
+
+will have Emacs interpreting the current script, with the entry
+function being "main".  [ For the Korn shell, replace "$0" with "$_".]
+
+
+When Emacs loads the script the colon evaluates to itself (the colon
+is a self-evaluating constant in current versions of Emacs) and the
+remainder of the line is ignored as a comment.
+
+
+The remaining arguments, $*, are accessabile by way of the variable
+"command-line-args-left".  Setting this variable to nil or calling the
+function kill-emacs at the exit point of the script will prevent Emacs
+from loading the remaining arguments as files or directories into
+buffers if that is so desired.
+
+
+So, Emacs is already quite fit as an interpreter of scripts.  For
+Emacs use the sesquicolon, for other languages use the shebang.  Emacs
+marches to a different drummer -- all the better.
+
+
+== Older versions of Emacs ==
+
+
+For older versions of Emacs, the colon does not evaluate.  Adding the
+arguments "-eval '(setq : t)'" to the sesquicolon line will take care
+of Emacs's evaluation of the colon.  MariusVollmer suggested something
+else, from "Teach Yourself Scheme in Fixnum Days" by Dorai Sitaram:
+
+
+    ":";exec emacs ...
+
+
+This works, since ":" is the same as : to the shell and is
+self-evaluating in all versions of Emacs.
+
+----
+CategoryCode

@@ -1,0 +1,3 @@
+Why not just use the version that cygwin setup.exe will install? You can get the source there if you are interested in the patches they might have needed. -- MichaelHoffman
+
+<b>Two reasons. 1) You might enjoy living on the bleeding edge, and thus want to build the EmacsFromCVS version.  2) You might want to build the Windows version (CategoryWThirtyTwo).</b>

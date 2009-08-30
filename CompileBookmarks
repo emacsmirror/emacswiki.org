@@ -1,0 +1,19 @@
+This is the place to share configurations
+or modifications about [http://nschum.de/src/emacs/compile-bookmarks/ compile-bookmarks] package.
+
+
+
+== Configuration ==
+
+Add the following to your ##.emacs##:
+
+   (add-to-list 'load-path "/path/to/compile-bookmarks")
+   (require 'compile-bookmarks)
+   (compile-bookmarks-mode 1)
+
+
+
+
+----
+CategoryExternalUtilities,
+CategoryProgrammerUtils

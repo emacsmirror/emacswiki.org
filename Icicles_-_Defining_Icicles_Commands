@@ -1,0 +1,356 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Candidates with Text Properties]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Defining Tripping Commands]] ||
+
+----
+
+== Defining Icicles Commands (Including Multi-Commands) ==
+
+This section is for EmacsLisp programmers.
+
+=== Nothing To It! ===
+
+Defining a [[command]] that uses '''Icicles''' [[completion]] and [[Icicles - Cycling Completions|cycling]] is
+simple: just call `completing-read' or `read-file-name' to read
+input, then act on that input.  
+
+Nothing could be simpler -- just use `completing-read' or `read-file-name'! '''Icicles''' does the rest. This is the most important thing to learn about defining '''Icicles''' commands: ''you don't need to do anything'' except call `completing-read' or `read-file-name' as you would normally anyway. 
+
+Or at least as I ''hope'' you would normally. I fear that many Emacs-Lisp programmers don't take sufficient advantage of `completing-read' when they could, using instead a function such as ''(quel horreur !)'' `read-string' to read user input.
+
+
+=== Multi-Commands Are Easy To Define Too ===
+
+If defining an '''Icicles''' command is trivial, so is defining an
+'''Icicles''' [[multi-command]].  For the same effort it takes to define a
+command that acts on a single input choice, you can have a command
+that acts on any number of input choices.  A multi-command takes
+advantage of one or more ''action functions'' when cycling candidates, as
+described in [[Icicles - Multi-Commands]], [[Icicles - More About Multi-Commands]], and
+[[Icicles - Choose All Candidates]].
+
+In fact, there is no reason '''''not''''' to define your commands as
+multi-commands -- you lose nothing, and you gain a lot.  Whenever
+it is appropriate for a user to possibly want to act on multiple
+objects, define a multi-command that does that.
+
+Macros '''`icicle-define-command'''' and '''`icicle-define-file-command''''
+make it easy to define a multi-command.  Without them, it is sometimes not
+so easy, depending on the complexity of your action functions.  See [[Icicles - Multi-Commands the Hard Way]] for a
+taste of what is involved.  If you read that page first, make
+sure you come back here to see how easy things can be.
+
+Here is how you might define a multi-command to delete one or more
+files or directories:
+
+1. Define the ''multi-command'', `my-delete-file':
+
+  (icicle-define-file-command
+   my-delete-file                  ; Command name
+   "Delete a file or directory."   ; Doc string
+   my-delete-file-or-directory     ; Function to perform the action
+   "Delete file or directory: "    ; `read-file-name' arguments...
+   default-directory nil t)
+
+2. Define the ''action function'' that deletes a ''single'' file:
+
+  (defun my-delete-file-or-directory (file)
+    "Delete file (or directory) FILE."
+    (condition-case i-delete-file
+        (if (eq t (car (file-attributes file)))
+            (delete-directory file)
+          (delete-file file))
+      (error (message (error-message-string i-delete-file))
+             (error (error-message-string i-delete-file)))))
+
+There are two parts to the definition of `my-delete-file':
+
+1. The definition of the command itself, using
+   `icicle-define-file-command'.
+
+2. The definition of an action function,
+   `my-delete-file-or-directory', which deletes a single file (or
+   directory), given its name.
+
+It is #1 that is of interest here, because that is essentially
+what you do to define any multi-command.
+
+The details of #2 are less interesting, even if more complex in
+this case: `my-delete-file-or-directory' checks whether its
+argument is a file or directory, and then tries to delete it. If
+an error occurs, it prints the error message and then returns the
+message, so that the calling command can report on all deletion
+errors.
+
+In #1, the arguments to `icicle-define-file-command' are
+straightforward:
+
+* The name of the [[command]] being defined `my-delete-file'.
+
+* Its [[doc string]].
+
+* The function that actually performs the action on the input file
+  name - `my-delete-file-or-directory'.
+
+* The arguments that you would supply anyway to `read-file-name'
+  to read a single file name.
+
+These are the '''''same''''' things you would need if you were defining a
+simple command to delete a ''single'' file or directory. The only
+differences here are that you:
+
+* Use `icicle-define-file-command' instead of `defun' with an
+  `interactive' spec.
+
+* Separate the action code into a separate function (here,
+  `my-delete-file-or-directory') that acts on a single object
+  (here, a file).
+
+When you use `icicle-define-file-command', the action function is
+called on the result of `read-file-name', and it is also bound to
+`icicle-candidate-action-fn', so that it will be applied to the
+current candidate via `C-RET' or `C-mouse-2'.
+
+Command `icicle-all-candidates-action' (##`C-!'## -- 
+see [[Icicles - Choose All Candidates]]) can report in buffer `*Help*' on the
+objects that it did not act upon successfully.  For this
+reporting to work, the function bound to `icicle-candidate-action-fn'
+(e.g. `my-delete-file-or-directory', above) should return `nil'
+for "success" and non-`nil' (for example, an error message) for
+"failure", whatever "success" and "failure" might mean in the
+particular context of use.  This is not a requirement, except if
+you want to take advantage of such reporting.  For a command that
+deletes files, it is important to let the user know which
+deletions failed when s?he tries to delete all matching
+candidates at once.
+
+If the command you want to define acts on objects other than
+files, then use `icicle-define-command' instead of
+`icicle-define-file-command' -- the only difference is that you
+then supply the arguments for `completing-read' instead of those
+for `read-file-name'.
+
+To let users know that a command is a multi-command, and how to
+use it as such, `icicle-define-command' and
+`icicle-define-file-command' automatically add this explanation to the doc
+string you provide for the multi-command:
+
+
+  Read input, then call `<your action function name>' to act on it.
+
+  Input-candidate completion and cycling are available.  While
+  cycling, these keys with prefix `C-' are active:
+
+  `C-mouse-2, `C-RET' - Act on current completion candidate only
+  `C-down' - Move to next prefix-completion candidate and act
+  `C-up'   - Move to previous prefix-completion candidate and act
+  `C-next' - Move to next apropos-completion candidate and act
+  `C-prior'- Move to previous apropos-completion candidate and act
+  `C-!'    - Act on *all* candidates, successively (careful!)
+
+  When candidate action and cycling are combined (e.g. `C-next'), user
+  option `icicle-act-before-cycle-flag' determines which occurs first.
+
+  With prefix `C-M-' instead of `C-', the same keys (`C-M-mouse-2',
+  `C-M-RET', `C-M-down', and so on) provide help about candidates.
+
+  Use `mouse-2', `RET' or `S-RET' to finally choose a candidate, or
+  `C-g' to quit.
+
+  This is an Icicles command - see `icicle-mode'.
+
+Notice that the doc string of your new multi-command references
+your action function (e.g. `my-delete-file-or-directory').  The
+doc string you provide for the multi-command can thus be a little
+more abstract, leaving any detailed explanation of the action to
+the doc string of your action function.
+
+To provide more flexibility, `icicle-define-command' and
+`icicle-define-file-command' provide some predefined [[key binding]]s and
+allow for additional arguments.
+
+Here is a definition of a multi-command, `change-font', that reads
+a font name and changes the selected [[frame]] to use that font.
+
+   1 (icicle-define-command
+   2  change-font "Change font of current frame."
+   3  (lambda (font)
+   4    (modify-frame-parameters orig-frame
+   5                             (list (cons 'font font))))
+   6  "Font: " (mapcar #'list (x-list-fonts "*"))
+   7  nil t nil nil nil nil
+   8  ((orig-frame  (selected-frame))
+   9   (orig-font   (frame-parameter nil 'font)))
+  10  nil
+  11  (modify-frame-parameters orig-frame
+  12                           (list (cons 'font orig-font)))
+  13  nil)
+
+The arguments to `icicle-define-command' here are as follows:
+
+* Command name    (line 2)
+* Doc string      (line 2)
+* Action function (lines 3-5)
+* Args passed to `completing-read' (lines 6-7)
+* Additional bindings (lines 8-9)
+* Additional initialization code (line 10)
+* "Undo" code to run in case of error or user quit (lines 11-12)
+* Additional code to run at the end (line 13)
+
+The following bindings are predefined -- you can refer to them in
+the command body:
+
+* `orig-buff'   is bound to ##(current-buffer)##
+* `orig-window' is bound to ##(selected-window)##
+
+Before running any "undo" code that you supply, the original
+buffer is restored, in case of error or user quit (`C-g').
+
+Most of the arguments to `icicle-define-command' are optional.  In
+this case, optional arguments were provided to save (lines 8-9)
+and then restore (lines 11-12) the original font and frame.
+
+Several top-level '''Icicles''' commands have been defined using
+`icicle-define-command' and `icicle-define-file-command'.  You can use their definitions as models for your own multi-commands.
+
+* '''`icicle-add-buffer-candidate'''' -- Add buffer to those always shown for completion
+* '''`icicle-add-buffer-config'''' -- Add config to `icicle-buffer-configs'
+* '''`icicle-bookmark''''    -- Jump to a [[bookmark]]
+* '''`icicle-buffer''''      -- Switch to another buffer
+* '''`icicle-buffer-config'''' -- Choose a config of options for `icicle-buffer'
+* '''`icicle-buffer-list''''  -- Choose a [[list]] of buffer names
+* '''`icicle-clear-history'''' -- Clear entries from minibuffer histories
+* '''`icicle-clear-current-history'''' -- Clear current history entries
+* '''`icicle-color-theme'''' -- Change color theme
+* '''`icicle-comint-command'''' -- Reuse a previous command in ComintMode
+* '''`icicle-command-abbrev'''' -- Execute command or command abbreviation
+* '''`icicle-command-abbrev-command'''' -- Execute command from abbreviation
+* '''`icicle-completing-yank'''' -- Yank text using completion
+* '''`icicle-delete-file'''' -- Delete a file or directory
+* '''`icicle-delete-windows'''' -- Delete [[window]]s showing a buffer anywhere
+* '''`icicle-describe-option-of-type'''' -- Describe [[option]] of a given type
+* '''`icicle-directory-list'''' -- Choose a list of directory names
+* '''`icicle-doc''''         -- Display doc of function, [[variable]], or [[face]]
+* '''`icicle-execute-extended-command'''' -- A multi-command version of `M-x'
+* '''`icicle-execute-named-keyboard-macro'''' -- Execute a named [[keyboard macro]]
+* '''`icicle-face-list''''   -- Choose a list of [[face]] names
+* '''`icicle-file-list''''    -- Choose a list of file names
+* '''`icicle-file''''   -- Visit a file or directory
+* '''`icicle-find-file''''   -- Visit a file or directory (relative)
+* '''`icicle-find-file-absolute''''   -- Visit a file (absolute)
+* '''`icicle-find-file-in-tags-table'''' -- Visit a file in a [[TagsFile|tags table]]
+* '''`icicle-find-first-tag'''' -- Visit source-code definition with [[tags|tag]]
+* '''`icicle-font''''        -- Change the [[frame]] font
+* '''`icicle-frame-bg''''    -- Change the frame background color
+* '''`icicle-frame-fg''''    -- Change the frame foreground color
+* '''`icicle-fundoc''''      -- Display the doc of a function
+* '''`icicle-Info-menu''''   -- Go to an [[InfoMode|Info]] menu node
+* '''`icicle-insert-thesaurus-entry'''' -- Insert thesaurus entry
+* '''`icicle-keyword-list'''' -- Choose a list of keywords ([[regexps]])
+* '''`icicle-kill-buffer'''' -- Kill a buffer
+* '''`icicle-kmacro''''      -- Execute a [[keyboard macro]] (Emacs 22+)
+* '''`icicle-locate-file'''' -- Open a file located anywhere
+* '''`icicle-plist''''       -- Choose a [[symbol]] and its [[property list]]
+* '''`icicle-recent-file'''' -- Open a recently used file
+* '''`icicle-remove-all-regions-in-buffer'''' -- Remove all saved [[region]]s for a buffer
+* '''`icicle-remove-buffer-candidate'''' -- Remove buffer from those always shown for completion
+* '''`icicle-remove-buffer-config'''' -- Remove config from `icicle-buffer-configs'
+* '''`icicle-remove-file-from-recentf-list'''' -- Remove files from recent-files list
+* '''`icicle-remove-region'''' -- Remove a region from saved regions list
+* '''`icicle-remove-saved-completion-set'''' -- Remove a [[Icicles - Candidate Sets|set]] from `icicle-saved-completion-sets'
+* '''`icicle-reset-option-to-nil'''' -- Set the value of a binary option to `nil'
+* '''`icicle-search-region'''' -- Search a region in saved regions list
+* '''`icicle-select-frame'''' -- Select frame by name and raise it
+* '''`icicle-select-region'''' -- Select a region from saved regions list
+* '''`icicle-select-window'''' -- Select window by its buffer name
+* '''`icicle-set-option-to-t'''' -- Set the value of a binary option to `t'
+* '''`icicle-toggle-option'''' -- Toggle the value of a binary option
+* '''`icicle-vardoc''''      -- Display the doc of a variable
+* '''`icicle-where-is'''' -- Show key sequences that invoke a command
+
+For simplicity, the descriptions of these commands are singular
+actions (e.g. "kill '''''a''''' buffer"), but each of them can be used to
+act on any number of items any number of times (e.g. kill one or
+more buffers).  I recommend that you follow a similar naming
+convention -- remember that the [[doc string]] will let users know that
+the command can be used on multiple objects.
+
+Macros `icicle-define-command' and `icicle-define-file-command'
+define a multi-command in a simple way.  Sometimes you will need a
+little more flexibility.  In that case, you can use higher-order
+functions `icicle-explore' and `icicle-apply' to define a
+multi-command.  See [[Icicles - Defining Tripping Commands]].
+
+
+
+=== Are Users Dependent on Icicles To Use Multi-Commands? ===
+
+For users to be able to take advantage of the '''Icicles''' features
+that your multi-command provides, they must load '''Icicles'''. You can
+do this for them, by adding ##(require 'icicles nil t)## to your
+code. The last two arguments mean that no error will be raised if
+for some reason '''Icicles''' cannot be found or successfully loaded.
+
+But that brings up another question: What happens to your
+multi-command if '''Icicles''' is not available for a user, or s?he
+doesn't want to load it? No problem -- your multi-command then
+automatically turns into a normal, single-choice command --
+graceful degradation.
+
+Similarly, users can always turn off `icicle-mode' at any time, to
+return to the standard Emacs behavior.
+
+Users will, in any case, need to load '''Icicles''' at compile time, in
+order to byte-compile your library that calls macro
+`icicle-define-command' or `icicle-define-file-command' -- either
+that, or you can duplicate the definitions of the macros in your
+library. To let users load '''Icicles''' at (only) compile time, add
+this to your library that defines multi-commands:
+
+  (eval-when-compile '(require icicles))
+
+'''See also:'''
+
+* '''[[Icicles - Defining Tripping Commands]]''' for how to use
+`icicle-apply' and `icicle-explore' to define browsing commands.
+
+* '''[[Icicles - Multiple-Choice Menus]]'''
+
+* '''[[Icicles - Note to Programmers]]''' for further programming guidelines
+
+* '''[[Icicles - Multi-Commands the Hard Way]]''' for how to define multi-commands the hard way, without `icicle-define-command' and `icicle-define-file-command', if you need to.
+
+* '''[[Synonyms]]''', where library '''<tt>[[synonyms.el]]</tt>''' uses macro
+`icicle-define-command' to define command `synonyms'.  This
+command lets you use '''Icicles''' completion on input regexps when you
+search a thesaurus.
+
+* '''[[ColorPalette]]''', where library '''<tt>[[palette.el]]</tt>''' uses `icicle-define-command' to define command `palette-pick-color-by-name-multi'.  This command lets you use '''Icicles''' completion on input regexps when you choose a palette color by name.
+
+* '''[[HighLight]]''', where library '''<tt>[[highlight.el]]</tt>''' uses `icicle-define-command' to define commands `hlt-choose-faces', `hlt-choose-visible-faces', and `hlt-choose-invisible-faces'.  These commands let you choose a set of faces.
+
+* '''[[Bookmarks#BookmarkPlus|BookmarkPlus]]''', where library '''<tt>[[bookmark+.el]]</tt>''' defines a deletion action function for each of the standard bookmark commands.  This lets you use `S-delete' during completion to delete individual bookmarks.
+
+----
+
+
+|| *Previous:*  [[Icicles - Candidates with Text Properties]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Defining Tripping Commands]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el, Lisp:synonyms.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

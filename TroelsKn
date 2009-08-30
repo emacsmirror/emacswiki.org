@@ -1,0 +1,38 @@
+Just fooling around with Emacs. I'm a die-hard !TextPad user, but recently, I have been looking at other editors. VIM and Emacs seems like the only rational choices, and VIM makes me car-sick.
+
+[new]
+Hi TroelsKn. Welcome to EmacsWiki. I've used !TextPad a fair amount. It is a good text editor -- one of the best I'm aware of. As you will discover if you browse the wiki a bit, Emacs is far ''more'' than a text editor. It's also one of the most interesting things to "just fool around with".
+
+Since you are on MS Windows, the first thing you will want to do is to use the EmacsClient and server. That way, you leave an Emacs server running, and you can just double-click a file name (e.g. in Windows Explorer) to edit it instantly in Emacs -- just as you would for !TextPad. A good place to start is by getting LennartBorgman's [[EmacsW32]]; it includes the server+client as part of the setup, and it has an installation wizard to make things easy for Windows users. -- DrewAdams
+
+[new:TroelsKn:2007-06-05 20:21 UTC]
+Thanks -- I already figured that out, and even managed to stitch together a vbscript, which automagically launches emacs first time, or the client subsequently. I think it's the first thing I ever wrote in vbscript, and hopefully it'll be the last, but it works, and I'm actually a bit proud of it ;)
+
+Now I'm looking for ways to customise how the cursor moves around. Small details, which are so ingrained in how I used !TextPad, that I can't live without it. I'm going to make a list here.
+
+--TroelsKn
+
+== Making Emacs more like TextPad ==
+
+Since I come from a !TextPad background, I'm used to certain behaviours -- especially with regards to how the cursor moves around. I'll list these things up here, and hopefully supply a solution, as I figure it out.
+
+=== Home key ===
+When I'm at a line, which has been indented, and I press <Home>, the cursor moves to the first column, which is not a whitespace. Pressing <Home> again, moves the cursor to column 0. Pressing <Home> a third time, I would expect the cursor to jump back to the first column, which is not a whitespace. I have some kind of idea, how this could be implemented as a hook, but my lisp-fu is rather weak.
+
+BackToIndentationOrBeginning solves this issue.
+
+=== Selections ===
+When I mark a selection, and press the <Right> key, I expect the selection to clear, and the cursor to be placed where the selection ended. Likewise, if I press <Left>, I expect the cursor to be positioned at the beginning of the former selection.
+
+=== Indent ===
+I need to figure out how to make <Tab> indent the currently selected block of code. <Shift> + <Tab> to unindent.
+
+=== Switch buffer ===
+Is there any reason not to map C-tab to next-buffer and C-Shift-tab to previous-buffer?
+I have found TabBar, which make buffers much nicer to work with.
+
+=== Cursor remember column ===
+If I place the cursor at a certain column, type something, and press <Down>, the cursor should jump to the column, which it was at before I started typing.
+
+----
+CategoryHomepage

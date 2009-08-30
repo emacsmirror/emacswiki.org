@@ -1,0 +1,363 @@
+Help!  I can't stop using Emacs.  I use Emacs for too many things to list.  
+
+: Welcome to the wiki! And don't worry, you will recover eventually.  It took me about 13 years, but slowly I'm starting to use other applications again.  ;) -- AlexSchroeder
+
+
+Here are some emacs files that might help someone
+using Emacs in both console mode and in X-windows.  First the common el file used always:
+
+----
+
+<pre>
+;; Emacs Custom Settings ----------------------------------------
+(custom-set-variables
+  ;; custom-set-variables was added by Custom -- don't edit or cut/paste it!
+  ;; Your init file should contain only one such instance.
+ '(abbrev-file-name "~/.emacs.d/abbrev_defs")
+ '(ange-ftp-ftp-program-args (quote ("-i" "-n" "-g" "-v" "-p")))
+ '(ange-ftp-ftp-program-name "ftp")
+ '(ange-ftp-gateway-ftp-program-name "ftp")
+ '(ange-ftp-gateway-setup-term-command "stty -echo nl" t)
+ '(ange-ftp-hash-mark-msgs "[hH]ash mark [^0-9]*\\([0-9]+\\)" t)
+ '(appt-display-diary nil t)
+ '(bookmark-default-file "~/.emacs.d/bookmarks")
+ '(case-fold-search t)
+ '(current-language-environment "ASCII")
+ '(default-major-mode 'text-mode)
+ '(delete-selection-mode nil nil (delsel))
+ '(diary-file "~/.emacs.d/diary" t)
+ '(explicit-csh-args (quote ("-i")))
+ '(explicit-shell-file-name "bash")
+ '(fill-column 72)
+ '(global-font-lock-mode t nil (font-lock))
+ '(font-lock-maximum-decoration t)
+ '(global-set-key [delete] 'delete-char)
+ '(global-set-key [kp-delete] 'delete-char)
+ '(inhibit-startup-message t)
+ '(mail-mode-hook (quote (flyspell-mode)))
+ '(next-line-add-newlines nil)
+ '(pc-select-meta-moves-sexps t)
+ '(pc-selection-mode t nil (pc-select))
+ '(preview-image-type (quote jpeg))
+ '(ps-font-size (quote (6 . 6)))
+ '(ps-header-font-size (quote (8 . 8)))
+ '(ps-header-title-font-size (quote (8 . 8)))
+ '(ps-print-color-p nil)
+ '(ps-print-header-frame nil)
+ '(python-mode-hook (quote (abbrev-mode rharris-load-pymacs)) t)
+ '(require-final-newline t)
+ '(rmail-default-file "~/Mail/DEFAULT")
+ '(rmail-delete-after-output t)
+ '(rmail-dont-reply-to-names "truenolejano@yahoo.com, goosequill@users.sourceforge.net")
+ '(rmail-file-name "~/Mail/RMAIL")
+ '(rmail-secondary-file-directory "~/Mail")
+ '(scroll-bar-mode (quote right))
+ '(show-paren-mode t nil (paren))
+ '(standard-indent 4)
+ '(tab-width 4)
+ '(tex-alt-dvi-print-command "dvips ")
+ '(text-mode-hook (quote (abbrev-mode text-mode-hook-identify)))
+ '(tool-bar-mode nil nil (tool-bar))
+ '(tooltip-mode nil nil (tooltip))
+ '(transient-mark-mode t)
+ '(url-personal-mail-address "truenolejano@yahoo.com")
+ '(visible-bell nil)
+ '(w3m-cookie-accept-bad-cookies t)
+ '(w3m-home-page "file:///home/richard/public_html/user.html")
+ '(w3m-init-file "~/.emacs.d/w3m")
+ '(w3m-tab-width 4)
+ '(w3m-use-cookies t)
+ '(w3m-use-tab-menubar nil)
+ '(w3m-use-toolbar nil))
+
+;;;; Personal Settings --------------------------------------------
+
+;;;  key defs
+(setq skeleton-pair t)
+(define-key global-map "(" 'skeleton-pair-insert-maybe)
+(define-key global-map "[" 'skeleton-pair-insert-maybe)
+(define-key global-map "{" 'skeleton-pair-insert-maybe)
+(define-key global-map "<" 'skeleton-pair-insert-maybe)
+(define-key global-map "\"" 'skeleton-pair-insert-maybe)
+(define-key global-map "\C-x\C-b" 'buffer-menu)
+(define-key global-map "\C-\\" 'backward-kill-word)
+(define-key global-map "\M-1" 'w3m-browse-url)
+(define-key global-map "\M-g" 'goto-line)
+(define-key global-map "\M-j" 'join-line)
+(define-key global-map "\M-o" 'outline-mode)
+(define-key global-map "\M-i" 'browse-url-at-point)
+(define-key global-map "\M-r" 'view-mode)
+(define-key global-map "\M-s" 'tags-search)
+
+;;;  miscellany
+(add-hook 'diary-hook 'appt-make-list)
+; (diary)
+(display-battery)
+(display-time)
+(load "~/.emacs.d/skeletons")
+(load-file "~/.emacs.d/macros")
+(put 'narrow-to-region 'disabled nil)
+(quietly-read-abbrev-file)
+; (server-start)
+(setq appt-message-warning-time 10)
+(setq battery-mode-line-format " [%b%p%%] ")
+(setq compile-command "etags *.py")
+
+;;;; Mail ---------------------------------------------------------
+(add-hook 'mail-citation-hook 'sc-cite-original)
+(setq user-full-name "distant thunder")
+(setq mail-aliases t)
+; 
+; toggle for testing
+(setq user-mail-address "truenolejano@yahoo.com")
+; (setq user-mail-address "richard@localhost")
+; 
+(setq mail-default-reply-to "truenolejano@yahoo.com")
+(setq smtpmail-default-smtp-server "spike.bebop")
+(setq smtpmail-local-domain nil)
+(setq send-mail-function 'smtpmail-send-it)
+(load-library "rmailout")
+(load-library "smtpmail")
+(setq mail-archive-file-name "~/Mail/SentMail")
+(setenv "MAILHOST" "localhost")
+
+;; defuns
+(defun count-words-region (beginning end)
+  "Print number of words in the region."
+  (interactive "r")
+  (message "Counting words in region ... ")
+  
+  (save-excursion
+	(let ((count 0))
+	  (goto-char beginning)
+	  (while (and (< (point) end)
+				  (re-search-forward "\\w+\\W*" end t))
+		(setq count (1+ count)))
+	  (cond ((zerop count)
+			 (message
+			  "The region does NOT have any words."))
+			((= 1 count)
+			 (message
+			  "The region has 1 word."))
+			(t
+			 (message
+			  "The region has %d words." count))))))
+
+(defun rharris-spanish-prefix ()
+  "set input for spanish words"
+  (interactive)
+  (set-input-method 'spanish-prefix)
+)
+
+;;;; Modes --------------------------------------------------------
+;;;  rharris modes
+;;;  screenplay-mode
+(load "/home/richard/work/dev/ruby2shoes/emacs_modes/screenplay")
+(setq auto-mode-alist
+      (cons '("\\.sp" . screenplay-mode) auto-mode-alist))
+
+;;; fiction-mode
+(load "/home/richard/work/dev/ruby2shoes/emacs_modes/fiction")
+(setq auto-mode-alist
+      (cons '("\\.fc" . fiction-mode) auto-mode-alist))
+
+;;;  Python Modes
+;;;  plain python mode
+(setq load-path (cons "/usr/local/share/emacs/python" load-path))
+(setq auto-mode-alist
+      (cons '("\\.py$" . python-mode) auto-mode-alist))
+(setq interpreter-mode-alist
+      (cons '("python" . python-mode) interpreter-mode-alist))
+(autoload 'python-mode "python-mode" "Python editing mode." t)
+;;;  pymacs mode
+(defun rharris-load-pymacs ()
+  "Load the pymacs and brm modes with python-mode-hook"
+  (setq load-path (cons "/usr/local/share/emacs/pymacs" load-path))
+  (autoload 'pymacs-load "pymacs" nil t)
+  (autoload 'pymacs-eval "pymacs" nil t)
+  (autoload 'pymacs-apply "pymacs")
+  (autoload 'pymacs-call "pymacs")
+  ;; your-dir is user dev-dir for pymacs
+  ;(eval-after-load "pymacs"
+  ;  '(add-to-list 'pymacs-load-path "your-dir"))
+  ;;;  bicycle-repairman mode (in pymacs)
+  (pymacs-load "bikeemacs" "brm-")
+  (brm-init))
+  
+;;;  Other Autoloaded Modes
+;;;  etach mode
+(load "/usr/local/share/emacs/etach-1.2.9/etach")
+
+;;;  outline mode
+(setq auto-mode-alist
+	  (cons '("\\.oln" . outline-mode) auto-mode-alist))
+
+;;;  w3m mode
+(setq load-path (cons "/usr/local/share/emacs/w3m" load-path))
+(autoload 'w3m "w3m" "Interface for w3m on Emacs." t)
+(autoload 'w3m-find-file "w3m" "Find a local file using emacs-w3m." t)
+(autoload 'w3m-search "w3m-search" "Search words using emacs-w3m." t)
+(autoload 'w3m-antenna "w3m-antenna" "Report changes of web sites." t)
+
+;;;  Defun-loaded Modes
+;;;  auctex mode
+(defun rharris-load-auctex ()
+  "Load the auctex and preview-latex modes"
+  (interactive)
+  (load "/usr/local/share/emacs/auctex/tex-site")
+  ;; preview-latex mode for auctex
+  (setq load-path (cons "/usr/share/emacs/site-lisp/preview" load-path))
+  (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+  (autoload 'LaTeX-preview-setup "preview"))
+
+;;;  calc mode
+(defun rharris-load-calc ()
+  "Load Calc mode"
+  (interactive)
+  (autoload 'calc-dispatch	   "calc" "Calculator Options" t)
+  (autoload 'full-calc		   "calc" "Full-screen Calculator" t)
+  (autoload 'full-calc-keypad	   "calc" "Full-screen X Calculator" t)
+  (autoload 'calc-eval		   "calc" "Use Calculator from Lisp")
+  (autoload 'defmath		       "calc" nil t t)
+  (autoload 'calc			       "calc" "Calculator Mode" t)
+  (autoload 'quick-calc		   "calc" "Quick Calculator" t)
+  (autoload 'calc-keypad		   "calc" "X windows Calculator" t)
+  (autoload 'calc-embedded	   "calc" "Use Calc inside any buffer" t)
+  (autoload 'calc-embedded-activate  "calc" "Activate =>'s in buffer" t)
+  (autoload 'calc-grab-region	   "calc" "Grab region of Calc data" t)
+  (autoload 'calc-grab-rectangle	   "calc" "Grab rectangle of data" t)
+  (setq load-path (nconc load-path (list "/usr/local/share/emacs/calc-2.02f")))
+  (global-set-key "\e#" 'calc-dispatch))
+
+;;;  remem mode
+(defun rharris-load-remem ()
+  "Load remembrance agent mode"
+  (interactive)
+  (setq load-path (cons "/usr/local/share/emacs/remem" load-path))
+  (load "remem.el")
+  (setq remem-prog-dir "/usr/local/bin")
+  (setq remem-database-dir "/usr/local/share/remem/db")
+  ; scopes take form: (DIRN NUM-LINES UPDATE-TIME QUERY-RANGE) where:
+  ;   DIRN is the subdirectory of remem-database-dir with the desired database 
+  ;   NUM-LINES is the number of lines that you want the scope to show (initially)
+  ;   UPDATE-TIME is the time between scope updates (in seconds)
+  ;   QUERY-RANGE number of words around your cursor that you want the scope to query on
+  (setq remem-scopes-list '(("kjv" 2 10 500)
+							("hdt" 2 10 500)))
+)
+
+(defun rharris-remem-uncas ()
+  "Angel Deep: Uncas's voice"
+  (interactive)
+  (setq remem-scopes-list '(("bard_mov" 2 10 500)
+							("hdt" 2 10 500)
+							("lotm" 2 10 500)))
+)
+
+(defun rharris-remem-alice ()
+  "Angel Deep: Alice's voice"
+  (interactive)
+  (setq remem-scopes-list '(("bard_mnd" 2 10 500)
+							("hdt" 2 10 500)
+							("lotm" 2 10 500)))
+)
+
+(defun rharris-remem-david ()
+  "Angel Deep: David's voice"
+  (interactive)
+  (setq remem-scopes-list '(("kjv" 2 10 500)
+							("hdt" 2 10 500)
+							("lotm" 2 10 500)))
+)
+
+;;;  ses mode
+(defun rharris-load-ses ()
+  "Load the ses spreadsheet mode"
+  (interactive)
+  (add-to-list 'load-path "/usr/local/share/emacs/ses21-020426/")
+  (autoload 'ses-mode "ses.el" "Spreadsheet mode" t)
+  (add-to-list 'auto-mode-alist '("\\.ses$" . ses-mode)))
+
+;;; find file at point mode
+(ffap-bindings)                      ; do default key bindings
+(if (file-executable-p "/usr/local/bin/firefox")
+    (setq browse-url-netscape-program "/usr/local/bin/firefox"))
+(or (eq window-system 'x)
+	(w3m)
+	(setq browse-url-browser-function 'w3m-browse-url))
+
+---
+
+Then the X-windows .emacs:
+
+
+(load "~/.emacs.d/emacs.common")
+
+;; faces 
+(custom-set-faces
+  ;; custom-set-faces was added by Custom -- don't edit or cut/paste it!
+  ;; Your init file should contain only one such instance.
+ '(font-lock-string-face ((((class color) (background light)) (:foreground "green4"))))
+)
+
+;; frame position, color, etc
+(setq default-frame-alist
+      '((top . 32) (left . 32)
+        (cursor-type . box)
+        (cursor-color . "black")
+        (foreground-color . "black")
+        (background-color . "grey95")
+        (width . 96) (height . 48)
+		(font . "-*-courier-medium-r-*-*-12-*-*-*-*-*-*-*")
+))
+
+(setq initial-frame-alist '((top . 16) (left . 128)))
+
+;; initial window
+(find-file "~/.geekland")
+(outline-mode)
+; 
+
+; 
+
+
+---
+
+Then the console version:
+
+
+(load "~/.emacs.d/emacs.common")
+
+(set-terminal-coding-system 'iso-8859-1)
+
+;; font-lock
+(setq default-frame-alist
+      '((cursor-type . box)
+        (cursor-color . "white")
+        (foreground-color . "white")
+        (background-color . "black")
+))
+
+;; faces
+(custom-set-faces
+  ;; custom-set-faces was added by Custom -- don't edit or cut/paste it!
+  ;; Your init file should contain only one such instance.
+ '(region ((t (:background "blue"))))
+ '(show-paren-match-face ((((class color)) (:background "blue"))))
+ '(show-paren-mismatch-face ((((class color)) (:background "red")))))
+
+;; initial window
+(find-file "~/.geekland")
+(outline-mode)
+; 
+
+; 
+
+</pre>
+
+----
+All these live in ~/.emacs.d as emacs.common.el, emacs.X11.el and emacs.noX.el.  I use .profile and a wrapper
+around startx to swap the outer ones and keep the common el compiled for faster loading.
+
+----
+CategoryHomepage

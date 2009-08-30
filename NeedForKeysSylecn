@@ -1,0 +1,172 @@
+;;;global key bindings
+
+;;--------------------------------------------------
+;; need for keys, built-in functions
+
+;;use C-; prefix to replace C-x
+(global-set-key (kbd "C-; b") 'switch-to-buffer)
+(global-set-key (kbd "C-; f") 'find-file)
+(global-set-key (kbd "C-; C-s") 'save-buffer)
+(global-set-key (kbd "C-; s") 'save-some-buffers)
+(global-set-key (kbd "C-; k") 'kill-buffer)
+(global-set-key (kbd "C-; 0") 'delete-window)
+(global-set-key (kbd "C-; 1") 'delete-other-windows)
+(global-set-key (kbd "C-; 2") 'split-window-vertically)
+(global-set-key (kbd "C-; o") 'other-window)
+
+;;other C-; prefix bindings
+(global-set-key (kbd "C-; j") 'switch-to-buffer)
+(global-set-key (kbd "C-; C-;") 'switch-to-buffer)
+;c for command
+(global-set-key (kbd "C-; c") 'shell-command)
+;l for lisp
+(global-set-key (kbd "C-; l") 'eval-expression)
+;;also on M-`
+(global-set-key (kbd "C-; h") 'quit-window)
+;;folding and unfold, z is borrowed from vim
+(global-set-key (kbd "C-; z") 'hs-toggle-hiding)
+;useful when at org-mode when TAB is too busy
+(global-set-key (kbd "C-; i") 'indent-relative)
+
+;;changed default behavior
+(global-unset-key (kbd "C-x C-b"))
+(global-unset-key (kbd "C-h h"))
+
+;(global-set-key (kbd "C-h h") 'hippie-expand)
+(global-set-key (kbd "C-'") 'hippie-expand)
+
+(global-set-key (kbd "C-c l") 'goto-line)
+(global-set-key (kbd "C-c z") 'hs-toggle-hiding)
+
+;;clear C-x C-c binding, or bind it to C-z
+(if (equal emacs-major-version 22)
+    (global-set-key (kbd "C-x C-c") 'suspend-emacs)
+  (global-set-key (kbd "C-x C-c") 'suspend-frame))
+
+;;alias for save-buffers-kill-emacs
+(defalias 'e 'save-buffers-kill-emacs)
+(defalias 'elisp-mode 'emacs-lisp-mode)
+
+;;toggle protect current buffer
+(global-set-key (kbd "C-c p") 'protect-buffer-from-kill-mode)
+
+;;quit window and bury its buffer.
+;;TODO If C-x 0 is possible, do it; else do quit-window
+;;     q command in some mode is not what I want.
+(global-set-key (kbd "M-`") 'quit-window)
+
+;;fill-region
+(global-set-key (kbd "C-M-q") 'fill-region)
+
+;;added after reading http://steve.yegge.googlepages.com/effective-emacs
+;; M-x may not be avalible everywhere
+;;  for example, in term-char-mode, or when there is no Meta key.
+(global-set-key "\C-x\C-m" 'execute-extended-command)
+(global-set-key "\C-c\C-m" 'execute-extended-command)
+
+;; use regexp as default search
+;; after this C-u C-s becomes non-regexp search, very good!
+(global-set-key "\C-s" 'isearch-forward-regexp)
+(global-set-key "\C-r" 'isearch-backward-regexp)
+;; TODO if I can use M-% replace-string and C-u M-% query-replace-regexp
+;;      that will be great. Check how to do that.
+(global-set-key "\M-&" 'query-replace-regexp)
+
+;;auto complete
+;force me to use C-; for hippie-expand
+;(global-set-key (kbd "C-h h") 'hippie-expand)
+;(global-set-key (kbd "M-n") 'hippie-expand)
+
+;;default key is really long
+(global-set-key (kbd "C-c m") 'point-to-register)
+(global-set-key (kbd "C-c n") 'register-to-point)
+;;the mark ring is also useful
+;;C-u C-SPC
+
+;; comment and uncomment
+;; You can also hl the text in transient-mark-mode
+;; then M-; to comment/uncomment region
+(global-set-key (kbd "C-c c") 'comment-region)
+(global-set-key (kbd "C-c x") 'uncomment-region)
+
+;; ispell-word
+(global-set-key (kbd "C-c i") 'ispell-word)
+
+;; toggle view-mode
+(global-set-key "\C-c\C-v" 'view-mode)
+
+;; ffap
+(global-set-key (kbd "C-c g") 'ffap)
+;(global-set-key (kbd "C-x C-g") 'ffap)
+
+;;--------------------------------------------------
+;; need for keys, external library
+(defalias 'thl 'hl-line-toggle-when-idle)
+
+;;--------------------------------------------------
+;; need for keys, user defined functions
+
+(defalias 'uu 'byte-recompile-my-emacs-dir)
+
+(global-set-key (kbd "C-c q") 'exit-emacs-client)
+;(global-set-key (kbd "M-n") 'scroll-up-half-screen)
+(global-set-key "%" 'match-paren)
+(global-set-key (kbd "C-c f") 'go-to-char)
+(global-set-key (kbd "C-c s") 'switch-to-shell-buffer)
+
+;;do *not* remove the following key, it's used at lword-add-word-from-region
+(global-set-key (kbd "M-g l") 'dict-cn-trim-word)
+(global-set-key (kbd "M-g a") 'lword-add-word-from-region)
+(global-set-key (kbd "M-g s") 'search-lword)
+
+;(global-set-key (kbd "<f5>") 'toggle-color-theme)
+
+(defalias 'tuc 'toggle-use-clipboard)
+(defalias 'uc 'toggle-use-clipboard)
+
+(global-set-key (kbd "C-c b") 'swap-recent-buffer)
+(global-set-key (kbd "C-x C-b") 'swap-recent-buffer)
+
+;;replace default M-;
+;(global-set-key "\M-;" 'comment-dwim-line)
+(global-set-key "\M-;" 'comment-line)
+
+(global-set-key (kbd "C-c y y") 'copy-line)
+(global-set-key (kbd "C-c y w") 'copy-symbol)
+(global-set-key (kbd "C-c y s") 'copy-sexp)
+;;I cound have put C-c d prefix to fit the vim command d, but I find C-c k
+;;easier to type. and k is also easy to remember for killing.
+(global-set-key (kbd "C-c k k") 'my-kill-line)
+(global-set-key (kbd "C-c k w") 'kill-symbol)
+(global-set-key (kbd "C-c k s") 'my-kill-sexp)
+
+;;run command like vim "imap"
+;;expand string to function call
+;;currently using
+;;da --> date
+;;em --> email
+;;TODO rewrite imap related code using macro
+;;     write a macro defimap to auto add keybindings for the function in body.
+;;     for example (defimap imap-da (body)) should bind to (concat imap "da")
+;;     key automatically.
+(defvar imap "\C-c'"
+  "This variable contains imap default prefix key.")
+(setq imap "\C-c'")
+(global-set-key (concat imap "da") 'imap-da)
+(global-set-key (concat imap "em") 'imap-em)
+
+(global-set-key (kbd "<mouse-2>") 'yank-from-primary-while-using-clipboard)
+(global-set-key (kbd "<S-insert>") 'yank-from-primary-while-using-clipboard)
+
+;e for external
+(global-set-key (kbd "C-c w e") 'google-search)
+(global-set-key (kbd "C-c w v") 'view-current-file-in-browser)
+
+;customized hippie-expand functions
+(global-set-key (kbd "C-x C-f") 'hippie-expand-filename)
+;;override downcase-region
+;(global-set-key (kbd "C-x C-l") 'hippie-expand-line)
+
+;;C-; prefix for user defined functions
+(global-set-key (kbd "C-; ;") 'swap-recent-buffer)
+

@@ -1,0 +1,7 @@
+cperl-auto-name automatically changes buffer names to the package name of a Perl module instead of just using the filename.
+
+I decided to look for something like this when I was working on two modules in two different namespaces that had the same filename, %%Module1::Database%% and %%Module2::Database%% in this case.  I couldn't find anything similar, so I cobbled this together.  I am sure it could be more rubust but it has been doing the job just fine for a day or so now.
+
+The name doesn't quite make sense anymore, though.  I was originally attaching to the cperl-mode-hook but I couldn't get it to work quite right in that case so I switched to file-find-hook.  
+
+Lisp:cperl-auto-name.el

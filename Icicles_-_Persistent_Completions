@@ -1,0 +1,286 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - File-Name Input]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles -  Large Candidate Sets]] ||
+
+----
+
+== Persistent Sets of Completion Candidates ==
+
+There are two independent reasons that using a persistent set of
+file names can improve performance:
+
+* [[#AvoidRemoteFileCompletion|Avoiding remote file-name completion]].  You can complete your
+  input against remote file names without using Tramp and thus
+  without accessing the remote file system.  (Once you have chosen
+  the file you want, visiting it of course makes a remote access.)
+
+* [[#AvoidGeneratingLargeSet|Avoiding generation of a large completion set]].  Retrieving a
+  list of file names is much, much faster than generating such a
+  list.  So generate once and retrieve often, from a cache.
+
+These are covered in the next two sections.
+
+
+
+
+[:AvoidRemoteFileCompletion]
+== Avoid Remote File-Name Completion ==
+
+When you [[completion|complete]] the name of a remote file, [[TrampMode|Tramp]] accesses the
+remote file system to see which matching files exist.  This takes
+time.  The completion itself is complicated -- it involves parsing
+the remote file name and calling upon various file handlers.  But
+the greatest time spent is in accessing the remote machine.
+
+When you retrieve a (persistently) saved set of file names during
+completion, you are telling Emacs that these are the candidates
+you want to complete against.  You are not ''asking'' Emacs (Tramp) to
+tell you what the possible candidates are; you are ''telling'' it.
+(Obviously you will want to save the completions in a file on the
+local machine, so retrieval itself takes no time.)
+
+After retrieving the saved candidates as the only possible ones,
+you might type some input and complete it (`TAB' or `S-TAB') to
+narrow your choices.  Or you might not bother with completion but
+instead pick one of the candidates using `mouse-2' or by [[Icicles - Cycling Completions|cycling]]
+to it and using `RET'.
+
+You can use either [[relative file-name completion|relative]] or [[absolute file-name completion|absolute]] file-name completion with
+remote file names.  Relative name completion as provided by
+`read-file-name' (via `C-x C-f', for example) always involves
+Tramp (or ange-ftp, prior to Emacs 22).  When using relative name
+completion, you can save time in these ways:
+
+* Turn off [[incremental completion]] (using `C-#'), so that Tramp is
+  used only when you hit `TAB' or `S-TAB', not with each character
+  you type or delete!
+
+* Use `mouse-2', or cycle and use `RET', so that you avoid
+  completion altogether.  Tramp is then used only to access the
+  chosen file.
+
+If you use absolute file-name completion as provided by
+`completing-read' (via `C-u C-x C-f', for example), then you need
+not worry about turning off incremental completion or avoiding
+completion by cycling or using `mouse-2'.  This is because
+completion is entirely local -- `completing-read' has no notion of
+files, let alone remote files.
+
+In addition, if you use absolute file-name completion then you
+need not bother to type the (long) remote file-name prefix to get
+into the right directory for completion.  Again, `completing-read'
+has no notion of files or directories -- it just completes an input
+pattern against string candidates.  Just type a substring or other
+regexp and then hit `S-TAB'.
+
+In general, using absolute file names (`C-u C-x C-f') is the way
+to go when dealing with remote files.  There is no need to forego
+the advantages of '''Icicles''' completion.  On the other hand, if you
+are going to work in a directory on a remote machine for some
+time using files other than those in some saved completion set,
+then you might want to use relative file names (`C-x C-f').
+
+
+
+
+
+
+[:AvoidGeneratingLargeSet]
+== Avoid Generating A Large Completion Set ==
+
+[[Icicles - Candidate Sets]] describes how you
+can save the current set of [[completion]] candidates and reuse it
+later.  This is not a persistent save, however; the candidates are
+simply saved in [[variable]] '''`icicle-saved-completion-candidates'''' for
+the duration of your Emacs session (or until you save candidates
+again).
+
+You can save the current set of completions (whatever it is)
+persistently by supplying a plain [[prefix argument]] (`C-u') when you use
+`##C-M->##' ('''`icicle-candidate-set-save'''') during completion.  Alternatively, you can use
+'''`##C-}##'''', bound to '''`icicle-candidate-set-save-persistently'''', which
+does the same thing.  To retrieve completion candidates that were
+previously saved to a cache file, so that they become the current
+set of candidates, use either `##C-u C-M-<##' or '''`##C-{##''''
+('''`icicle-candidate-set-retrieve'''' or
+'''`icicle-candidate-set-retrieve-persistent'''').
+
+'''Tip:''' Suppose you have already saved a set of candidates, but not
+persistently, and you now want to write this saved set to a
+cache file.  Use `##C-M-<##' followed by `TAB' or `S-TAB',
+followed by `##C-}##'.  That is, retrieve the saved candidates
+and then save the retrieved candidates persistently.  (You
+use `TAB' or `S-TAB' because retrieval opens a recursive
+[[minibuffer]].)
+
+Note that using a [[numeric prefix argument]] (`C-u' with a number)
+with `##C-M->##' and `##C-M-<##' saves or retrieves a completion-candidates
+set using a ''[[variable]]'' that you name, not a cache file.  See [[Icicles - Candidate Sets]].
+
+
+
+[:SavingInCacheFiles]
+== Saving Candidates in Cache Files ==
+
+If you have used the Emacs file-name cache (see FileNameCache and the EmacsManual,
+node '''File Name Cache''': [[Manual:File Name Cache]]), then you have already used a cache file
+of (file-name) completion candidates.  In vanilla Emacs, you use
+`C-TAB' during file-name input to complete to a cached file name.
+In '''Icicles''', you use `##C-{##'.
+
+In '''Icicles''', the cached candidates are not limited to file names, and you can have any number of cache files, to persistently save
+different sets of completion candidates.  Each cache file saves the set of
+candidates that was current when you created (saved) the set.
+
+The fact that a cache file can contain just those candidates that
+were current when you saved it is a considerable advantage when
+combined with '''Icicles''' features for sculpting the current set of
+matching candidates.  As far as I know, '''Icicles''' is the only
+package to offer this feature.  You spend a few moments to
+fine-tune a set of candidates, using, for example, `##M-*##', `##C-~##',
+and `delete', and then save it for later use.  From then on, you
+can match against exactly those candidates anytime you want.
+
+For example, you might have a software project that involves only
+certain directories and perhaps only certain kinds of files in
+those directories are of interest as completion candidates.  Those
+directories and files can even be in disparate locations.  Start
+with [[command]] `icicle-locate-file'.  Then use [[progressive completion]] to match the directories and files you want and [[Icicles - Nutshell View#ChippingAway|chip away]] at those you don't want.  Once you get just the set you need
+for your project, save that set using '''`##C-}##''''.  You can have any
+number of saved sets, for different projects or different purposes
+in the same project.
+
+You name the sets of saved candidates, and these names are associated
+with the cache files in [[user option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-saved-completion-sets|icicle-saved-completion-sets]]</tt>''''.  This is an [[alist]] of entries, each
+of which is of the form ''##(SET-NAME . CACHE-FILE-NAME)##''.  You can
+[[Customize]] this option, or set it in your [[init file]] (##~/.emacs##).
+
+You can use command '''`icicle-add/update-saved-completion-set'''' to
+add a new set to `icicle-saved-completion-sets' or update
+(replace) an existing such set.  You can use command
+'''`icicle-remove-saved-completion-set'''' to remove a saved set.
+
+As an alternative to customizing `icicle-saved-completion-sets' or
+using command `icicle-add/update-saved-completion-set', you can simply try to save a set of completion
+candidates persistently, using `##C-u C-M->##' or `##C-}##'.  You are then
+prompted for the names of the candidate set and cache file to use,
+and the names you enter are automatically entered in option
+`icicle-saved-completion-sets'.  That option is automatically
+saved to your [[custom file]], so the next time you use Emacs you can
+retrieve any saved set of candidates that you like.  When you try to retrieve a persistent set of completion
+candidates, you are similarly prompted for the candidate-set name
+and the cache-file name.
+
+[:icicle-add-entry-to-saved-completion-set]
+[:icicle-remove-entry-from-saved-completion-set]
+In addition to saving the current set of completion candidates to
+a cache file, you can ''add'' individual strings as future completion
+candidates to any cache file, and you can remove candidates from a
+cache file individually.  You do this using commands
+'''`icicle-add-entry-to-saved-completion-set'''' and
+'''`icicle-remove-entry-from-saved-completion-set''''.
+
+Adding an individual candidate is similar to using the Emacs file-name
+cache commands that add file names to the cache, but it adds only
+a single candidate.  For file names, adding a directory name
+effectively provides completion for all of its files as well, so
+there is no need to add each file name as well as the directory
+name.  Alternatively, you can always use `##C-}##' to add all file
+names that match your current input.
+
+
+
+[:Filesets]
+== Filesets and Icicles Saved Completion Sets ==
+
+Starting with release 22, GnuEmacs includes a FileSets feature that lets you create named sets of file names, called '''[[fileset]]s'''. It is a powerful feature, letting you define such sets by intension, using [[regexp]] patterns, as well as by extension, listing file names explicitly. You can easily use a fileset to define a ''project'' of files.
+
+'''Icicles''' lets you use an Emacs fileset any time you can use an '''Icicles''' saved completion set, provided that option '''`<tt>[[Icicles - Customization and General Tips#icicle-filesets-as-saved-completion-sets-flag|icicle-filesets-as-saved-completion-sets-flag]]</tt>'''' is non-`nil'. 
+
+That is, you can retrieve fileset file names as the current set of completion candidates or save the current completion candidates to a fileset. Provided `icicle-filesets-as-saved-completion-sets-flag' is non-`nil', you can always choose a fileset as the set to retrieve. To save to a fileset, use a prefix arg with `##C-}##' or a zero prefix arg with `##C-M->##'. Saving candidates to a fileset gives you an alternative to customizing option `filesets-data'.
+
+Being able to use an Emacs fileset in place of an '''Icicles''' saved set lets you use filesets in additional ways. For example, it lets you open [[DiredMode|Dired]] on only the files in a fileset, for easy manipulation of the member files. Conversely, you can save all of the marked files in a Dired buffer as a fileset. See [[Icicles - Dired Enhancements]].
+
+
+Beyond letting you use a fileset in place of a persistent '''Icicles''' saved completion set, you can ''include'' filesets in such saved '''Icicles''' sets.  That is, you can save one or more filesets of any kind (`##:files##', `##:tree##', etc.) in an '''Icicles''' persistent saved set (cache file).  When you then retrieve such a saved set, all of the file names specified by all of the included filesets become completion candidates.
+
+For example, this could be a saved '''Icicles''' set that combines a `##:tree##' fileset with an explicit `##:files##' fileset and with two additional files:
+
+<pre>
+((:fileset "set1" (:tree "~/my/dir" "^ici.+\\.el$"))
+ (:fileset "set2" (:files "dired+.el" "c:/my/dir/buff-menu+.el"))
+ "c:/some/other/dir/foobar.el"
+ "c:/somewhere/else/toto.el")
+</pre>
+
+This is a great way to put together a project of files from different directory trees.  And even aside from the use of such a saved set for completion, this combining of filesets is something that you cannot do with Emacs filesets alone, as far as I know -- you cannot combine different filesets into super filesets, and a given fileset can specify files in only one way (`##:files##', `##:tree##', etc.). '''Icicles''' gives you a way to associate related filesets and use them together as a single set.
+
+[:icicle-add-file-to-fileset]
+You can use commands '''`icicle-remove-entry-from-saved-completion-set'''' and '''`icicle-add-entry-to-saved-completion-set'''' to remove a fileset from an '''Icicles''' saved set or add a fileset to a saved set. To add, use a prefix arg to tell `icicle-add-entry-to-saved-completion-set' that you are adding a fileset and not a single completion candidate.  To add a single
+file (default: the current buffer's file) to a fileset, use
+command '''`icicle-add-file-to-fileset''''.
+
+'''Note:''' Use the right type of saved candidates (persistent or not) for a given command. It is the particular command that determines whether or not a given type of saved candidate is appropriate. For example, you can save search hits when you use `icicle-search-file' (same as `icicle-search' with a negative prefix arg), and those saved search-hit candidates effectively reference files and positions in those files. And you can later retrieve and reuse such saved candidates to visit the search positions. But those candidates are not merely file names, so they cannot be used with a command such as as `find-file' or `icicle-file' that expects a file name. Conversely, you cannot use a saved set of file names with a command such as `icicle-search-file' that expects `icicle-search' candidates. 
+
+
+[:PeristenceForPerformance]
+== Improving Performance with Persistent Sets ==
+
+[[Icicles - File-Name Input]] tells you
+how you can locate any file in your file system.  If you save the
+set of all file names persistently, you will increase the
+performance of using it -- it is much faster to retrieve the list
+of all file names than it is to generate it.  With 36 GB of files in my file system, my all-file-system cache
+file is 20 MB, and retrieving the file-name completions from it
+takes only a few seconds.  With this feature, '''Icicles''' essentially
+gives you the functionality of the Unix `locate' command, but with
+the addition of real-time [[regexp]] matching.  Here is all you do:
+
+  M-x icicle-locate-file RET
+  C-#        ; Once or twice: turn off incremental completion.
+  C-{        ; Retrieve all file names from your cache file.
+             ; You are prompted for the set name and file name.
+  foo.*bar   ; Regexp to match names with `foo' followed by `bar'.
+  S-TAB      ; Update *Completions* display (because of `C-#').
+
+Of course, once you have retrieved a set of candidates from your
+cache file, you can access them again without re-reading the file.
+When they are retrieved from your cache they are saved in variable
+`icicle-saved-completion-candidates', so the next time you want to
+use them, just retrieve them from this variable with `##C-M-<##'.
+
+'''See also:'''
+
+* [[Icicles - File-Name Input]] for information relative vs absolute file names and about finding files located anywhere in your file system
+
+* [[Icicles - Icompletion]] for information about `<tt>C-#</tt>' (toggle incremental completion)
+* [[Icicles - Candidate Sets]] for information about `##C-M->##' (save current candidates)
+
+* [[Icicles - Large Candidate Sets]] for ways to deal with a large number of candidates
+
+* [[Icicles - Support for Projects]]
+
+* LocateFilesAnywhere for other, '''''non'''''-persistent ways to locate files.
+
+
+----
+
+
+|| *Previous:*  [[Icicles - File-Name Input]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles -  Large Candidate Sets]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

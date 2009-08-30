@@ -1,0 +1,27 @@
+=Info=
+* [http://www.software-ninja.com Blog]
+==Projects
+* StarTeam
+==Code==
+Here is some of the code I use
+===Decompile JAVA from an archive===
+<pre>
+(add-hook
+ 'archive-extract-hooks
+ (lambda () 
+   (cond ((string-match "\312\376\272\276" (buffer-substring-no-properties 1 5)) ;;CAFEBABE
+		   (jdc-buffer)))))
+</pre>
+
+===Dedosify===
+Just a simple command to get rid of ^M at the end of lines
+<pre>
+(defun dedosify () 
+  (interactive)
+  (save-excursion
+	(goto-char (point-min))
+	(while (search-forward "\15" nil t)
+	  (replace-match "" nil t))))
+</pre>
+----
+CategoryHomepage

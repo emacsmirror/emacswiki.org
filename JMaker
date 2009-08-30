@@ -1,0 +1,19 @@
+JMaker is part of the [http://sourceforge.net/projects/emhacks/ EMHACKS] project on Sourceforge.  Get it here:
+
+http://sourceforge.net/projects/emhacks/
+
+JMaker automatically makes a makefile for JavaDevelopmentEnvironment projects.
+
+If you get the error:
+
+    wrong argument: symbolp, #<coding_system library>
+
+
+Reset your EOL format:
+
+    M-x customize-option RET jmaker-end-of-line-format RET
+
+It's Unix by default, but it should really be "Default" by default. ;)
+
+Make sure that your jde-compile-custom-classpath is set for your project.  JMaker will automagically add a "-classpath " to the javac calls
+

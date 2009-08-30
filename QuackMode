@@ -1,0 +1,14 @@
+Quack is an Emacs package written by NeilVanDyke that 
+extends SchemeMode and CmuScheme to provide
+enhanced support for editing and running [[Scheme]] code.
+
+Quack includes special PLT Scheme (MzScheme) support, but also
+supports other [[Scheme]] implementations, such as [[Guile]].
+
+Current feature list and download is available at:
+
+*    http://www.neilvandyke.org/quack/
+
+----
+CategoryModes
+ProgrammingModes

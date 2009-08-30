@@ -1,0 +1,16 @@
+下面是个具体的例子
+
+    * 假设源代码文在 /home/me/temp。
+    * 您想在 /home/me/emacs编译Emacs。
+    * 您使用的是cross-compiler【？】,但您希望在另一台机器上的/mnt/card/emacs运行Emacs。
+
+下面告诉您如何做到：
+
+ cd /home/me/temp
+ ./configure --prefix=/mnt/card/emacs
+ make
+ make install prefix=/home/me/emacs
+
+最后，将 /home/me/emacs的文件用tar归档，然后在另一台机器上的/mnt/card/emacs下展开（untar）。
+
+类别：移植【？】

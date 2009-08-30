@@ -1,0 +1,80 @@
+This is something I wanted a long time from Emacs. This page serves as 
+a brainstorming area and to draw attention toward the idea.
+
+I currently dont know how to implement this, maybe someone has useful idea.
+
+== What is it ==
+
+kbd-macros in Emacs are great. Only problem is that sometimes you dont realize
+what you repeat often and what you could save as kbd-macro. RepetitionDetection
+should automatically detect when you repeat a certain sequence more than
+a configurable number of times and prompt you about that. You should
+be offered to automatically make that sequence a kbd-macro, optionally name it,
+bind it to a key, and maybe even save it into .emacs.
+
+== Options ==
+
+* Min sequence length: Default should be something like 7 or 10. Or higher?
+* Min repetitions before prompt: Default should be something like 3.
+
+== Random ideas ==
+
+The abbrev-mode stuff works as a result of the C code in src/cmds.c's
+internal_self_insert() function explicitly calling Fexpand_abbrev()
+for each character that is inserted (Emacs 21.1).  For this
+RepetitionDetection to work we would need the pattern detection code
+to run on every keystroke, not just the ones which result in a
+character being inserted into a buffer, so we cannot directly use the
+abbrev-mode functionality, although we could conceivably add a call
+into the appropriate (presumably C) code which handles keystrokes.
+
+record_char() in src/keyboard.c looks like the best place to put the
+call to the RepetitionDetection code, since that gets called for all
+keystrokes, not just the ones that insert characters.  There's also a
+vector in keyboard.c, recent_keys, which looks like it might be what
+we want to scan for patterns, although it might be too short if the
+pattern that has been repeated is quite long.
+
+There are problems with using pre-command-hook.  Try typing "C-u 12345
+M->" and you will see that pre-command-hook gets run several times.
+
+== Using command-history ==
+
+I made a start on this a while ago, but didn't complete it. You can pick up the code from http://www.cb1.com/~john/computing/emacs/lisp/startup/predict-future.el if you'd like to
+try completing it. It tries to do for command sequences what dynabrev does for text input.
+
+"Markov chains" is probably the area of theory needed to do this properly.
+
+== Things to Avoid ==
+
+When processing lossage, there are some key events that should probably be ignored for the purposes of repetition detection. Here's an (incomplete) list:
+
+ <help-echo>
+ <mouse-movement>
+
+Contributors: ZwaX, MarioLang, CharlesSebold.
+
+== See also ==
+
+* keyolution.el -- http://groups.google.com/groups?selm=4mn0zozplg.fsf%40gourd.kyb.local
+* RepetitionDetectionPackage -- Trying to find repetitions in the keyboard input
+* DribbleX -- suffix tree-based repetition detection
+* EmacsCommandSuggester -- Potentially decrease your keystroke count by having Emacs tell you about commands to use.
+
+== Discussion ==
+
+I have a need for something simpler than this. I would like to have Emacs record not each key but each command that I execute (save maybe stuff like `self-insert-command' and `newline'). Using this statistic I could decide which commands are worth putting on my function keys, or other "easy" keys like C-<some char> and M-<some char>. I assume this would be quite easy to do but I am not sure where to start looking. I will post back my own findings here if no one beats me to it. 
+-- MaDa
+
+[new:DrewAdams:2007-08-31 16:06 UTC]
+I'd say that if you can't tell what repetition is annoying you, then it isn't annoying you enough! -- DrewAdams
+
+[new]
+Well, I am also lazy... Switching to the .emacs buffer, adding a new key binding (finding a free key that fits) etc makes me pretend that I don't know what commands I use often. I will try Aaron's tip below, maybe the statistics will wake me up... :) -- MaDa
+
+[new]
+CommandLogMode keeps track of what commands you type.  You could pipe its contents to `uniq -c' to generate statistics. -- AaronHawley
+
+----
+
+CategoryKeys

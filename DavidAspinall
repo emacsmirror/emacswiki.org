@@ -1,0 +1,8 @@
+Developer of Proof General (see http://proofgeneral.inf.ed.ac.uk), a generic
+Emacs interface for proof assistants.  Main lesson learned: cross-version
+compatibility for Emacs appliciation developers is a major pain in the neck.
+
+: Welcome to the wiki!  Yes, ComparativeEmacsology is a difficult field of study...  ;) -- AlexSchroeder
+
+----
+CategoryHomepage

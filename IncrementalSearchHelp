@@ -1,0 +1,20 @@
+Here is how to make C-h show help from within IncrementalSearch:
+
+    (define-key isearch-mode-map [(control h)] 'isearch-mode-help)
+
+And if you want to read the help too you can allow scrolling by setting isearch-allow-scroll.
+
+Other than that, use C-h f isearch-mode...
+
+Or `C-h k C-s'...
+
+[new:DrewAdams:2005-12-02 17:57 UTC]
+Library Lisp:isearch+.el makes this binding, but it also redefines `isearch-mode-help' so that it:
+
+* Lists ''all'' of the isearch bindings.
+* ''Ends'' isearch -- it does `isearch-done' and `isearch-clean-overlays'.
+[new]
+
+----
+CategoryHelp
+

@@ -1,0 +1,236 @@
+Delphi, Python, Java programmer, living in Annecy (France)
+
+= Delphi utilies =
+
+Thanks to DelphiMode !
+
+== Highlight compilation errors in compilation mode ==
+
+<pre>
+
+(add-hook 'compilation-mode-hook 
+	  (lambda ()
+	    (setq compilation-error-regexp-alist
+		  (cons '("[\r]?\\(.+\\)(\\([0-9]+\\))" 1 2)
+			compilation-error-regexp-alist))))
+
+</pre>
+
+== Full delphi-mode hook ==
+
+<pre>
+(autoload 'delphi-mode "delphi")
+
+
+(setq auto-mode-alist
+      (cons '("\\.\\(pas\\|dpr\\|dpk\\)$" . delphi-mode) auto-mode-alist))
+(setq delphi-indent-level 2)
+
+
+(setq delphi-unit-sections
+      '(implementation program library package))
+
+
+(defconst delphi-method-types-regexp
+  "\\(procedure\\|function\\|constructor\\|destructor\\)"
+  "Regular expression for delphi method types")
+
+
+(defconst delphi-method-signature-regexp
+  ;;like mymethod(myvar1:varType; myvar2:varType=defaultvalue):TReturnType
+  (concat
+   "\\("      
+   (concat
+    "\\w+"                ;;mymethod
+    "\\((.*)\\)?"         ;;(myvar1:varType; myvar2:varType=defaultvalue)
+    "\\( *: *\\w+\\)?")   ;; : TReturnType
+   "\\)")
+  "Signature of a delphi method")
+
+
+(defconst delphi-class-declaration-regexp
+  ;;like TMyClass = class(TParentClass)
+  "^ *\\(\\w+\\) *= *class"
+  "Class declaration regexp")
+
+
+(defvar delphi-compile-command 
+  "DCC32.EXE /Q /GD"
+  "Command used to invoke delphi compiler")
+
+
+(defvar delphi-winhelp-path
+  "C:/Program Files/Borland/Delphi7/Help/d7.hlp"
+  "Where to find delphi winhelp documentation")
+
+
+(defvar delphi-winhelp-command
+  "C:/WINDOWS/winhlp32 -k"
+  "Command used to invoke windows winhelp viewer")
+
+(defun delphi-help ()
+  "Open delphi winhelp and search for the word under cursor"
+  (interactive )
+  (shell-command 
+   (concat delphi-winhelp-command  " " (find-tag-default) " " delphi-winhelp-path " &")))
+
+
+(defun delphi-set-compile-command ()
+  "Define compile command related to the last delphi project file opened"
+  (or
+   (and 
+    (string-match "\\(dpr$\\)\\|\\(dpk$\\)" (file-name-nondirectory buffer-file-name)) 
+    (set 
+     (make-local-variable 'compile-command)
+     (concat delphi-compile-command " "  (file-name-nondirectory buffer-file-name)))
+    (set 'delphi-project buffer-file-name))
+   (set 
+    (make-local-variable 'compile-command)
+    (concat "cd " 
+	    (replace-regexp-in-string "\/" "\\\\" (file-name-directory delphi-project))
+	    " && " 
+	    delphi-compile-command 
+	    " "  (file-name-nondirectory delphi-project)))))
+
+
+(add-hook 'delphi-mode-hook
+	  'delphi-set-compile-command)
+
+
+(defun delphi-turn-on-imenu ()
+  "Add classes and methods of this delphi unit in Index menu"
+  (setq imenu-sort-function 'imenu--sort-by-name)
+  (setq imenu-generic-expression
+	'(("i"  "\\(procedure\\|function\\|constructor\\|destructor\\) \\(\\w+\\.\\w+\\)" 2)
+          ("p"  "\\(procedure\\|function\\|constructor\\|destructor\\) \\(\\w+\\)\\((\\|;\\|:\\)" 2)
+          ("c" "^ *\\(\\w+\\) = class" 1)))
+  (setq imenu-case-fold-search t)
+  (imenu-add-menubar-index))
+(add-hook 'delphi-mode-hook 'delphi-turn-on-imenu)
+
+
+(defun delphi-go-after-point ()
+  "Move cursor after next . , useful to jump to: function TMyClass.<here>MyMethod;"
+  (interactive)
+  (beginning-of-line-text)
+  (search-forward "."))
+
+
+(defun delphi-go-to-method-definition ()
+  "Move cursor to method definition of current edited method"
+  (interactive)
+  (re-search-backward (concat
+		      delphi-method-types-regexp
+		      " *"
+		      "\\(\\w+\\)\\."
+		      delphi-method-signature-regexp))
+  (let 
+      ((class (match-string 2))
+       (method (match-string 3)))
+       (re-search-backward (concat class " *= *class"))
+       (re-search-forward method)))
+
+
+(defun delphi-go-to-method-implementation ()
+  "Move cursor to method implementation of method on current line"
+  (interactive)
+  (beginning-of-line)
+  (let (methodtype methodname class)
+    (re-search-forward (concat
+			delphi-method-types-regexp
+			" *"
+			delphi-method-signature-regexp))
+    (setq methodtype (match-string 1)
+	  methodname (match-string 2))
+    (re-search-backward delphi-class-declaration-regexp)
+    (setq class (match-string 1))
+    (re-search-forward (concat methodtype " +" class "\\." methodname))))
+
+
+(defun delphi-complete-method ()
+  "Create the method skeleton for method definition under cursor"
+  (interactive)
+  (beginning-of-line)
+  (let (methodtype methodname class)
+    (re-search-forward (concat
+			delphi-method-types-regexp
+			" *"
+			delphi-method-signature-regexp))
+    (setq methodtype (match-string 1)
+	  methoddef (match-string 2))
+    (re-search-backward delphi-class-declaration-regexp)
+    (setq class (match-string 1))
+    (end-of-buffer)
+    (re-search-backward (concat
+			 "\\("
+			 delphi-method-types-regexp
+			 " *"
+			 class
+			 "\\)\\|implementation"))
+    (next-line)
+    (re-search-forward (concat  
+			delphi-method-types-regexp 
+			"\\|\\(initialization\\|finalization\\|end\\.\\)"))
+    (previous-line)
+    (newline 2)
+    (previous-line 2)
+    (insert (concat methodtype " " class "." methoddef ";"))
+    (newline)
+    (insert "begin")
+    (newline 2)
+    (insert "end;")
+    (previous-line)))
+    
+
+;;key binding
+(add-hook 'delphi-mode-hook
+	  '(lambda ()
+	     (define-key delphi-mode-map "\C-ch" 'delphi-help)
+	     (define-key delphi-mode-map "\C-c\C-p" 'delphi-after-point)
+	     (define-key delphi-mode-map "\C-c\C-mi" 'delphi-go-to-method-implementation)
+	     (define-key delphi-mode-map "\C-c\C-md" 'delphi-go-to-method-definition)
+	     (define-key delphi-mode-map "\C-c\C-mc" 'delphi-complete-method)
+	     (define-key delphi-mode-map "\C-c\C-p" 'delphi-go-after-point)))
+
+</pre>
+
+
+= My shortcuts (i'm using an french keyboard) =
+
+<pre>
+(global-set-key (kbd "C-c i") 'imenu)
+(global-set-key (kbd "C-c p") 'windmove-up)
+(global-set-key (kbd "C-c n") 'windmove-down)
+(global-set-key (kbd "C-c b") 'windmove-left)
+(global-set-key (kbd "C-c f") 'windmove-right)
+(global-set-key (kbd "C-c _") 'winner-undo)
+(global-set-key (kbd "C-c r") 'winner-redo)
+(global-set-key (kbd "C-c C-c") 'complete-symbol)
+(global-set-key (kbd "C-c g") 'goto-line)
+(global-set-key (kbd "C-c TAB") 'indent-region)
+(global-set-key (kbd "C-c t") 'toggle-truncate-lines)
+(global-set-key (kbd "C-c c") 'compile)
+(global-set-key (kbd "C-x é") 'split-window-vertically)
+(global-set-key (kbd "C-x \"") 'split-window-horizontally)
+(global-set-key (kbd "C-x à") 'delete-window)
+(global-set-key (kbd "C-x &") 'delete-other-windows)
+(global-set-key (kbd "<f7>") 'enlarge-window)
+(global-set-key (kbd "<f8>") 'shrink-window)
+(global-set-key (kbd "<f9>") 'enlarge-window-horizontally)
+(global-set-key (kbd "<f10>") 'shrink-window-horizontally)
+(global-set-key (kbd "C-x M-b") 'switch-to-buffer-other-window)
+(global-set-key (kbd "C-x M-f") 'find-file-other-window)
+(global-set-key (kbd "C-c e") 'eval-defun)
+(global-set-key (kbd "C-c C-t") 'eval-defun)
+(global-set-key (kbd "<C-tab>") 'other-window)
+(global-unset-key (kbd "C-z"))
+</pre>
+
+[new]
+Bienvenu to the wiki! :) -- AlexSchroeder
+
+[new]
+Thanks Alex -- LaurentLaffont
+
+----
+CategoryHomepage

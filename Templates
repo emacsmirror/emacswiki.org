@@ -1,0 +1,9 @@
+There are two extension packages to create files from a template:
+
+* emacs-template by Christopher Wedler : [http://emacs-template.sourceforge.net/]
+* file-template by Scott Frazer [http://www.emacswiki.org/emacs/file-template.el]
+
+emacs-template is more complete:
+
+* it has some on-line documentation.
+* it comprises some interesing additional functions (such as comment decoration, buffer header update at when saving)

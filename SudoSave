@@ -1,0 +1,52 @@
+== Overview ==
+
+sudo-save.el is a quick package to save files as root on the local box.  If you have 'sudo' installed and you have permission to edit files (and can cache passwords) then Emacs will run chmod on the file before and after you save it.  This comes in handy for a local laptop when tramp and hobo are overkill.  On my machine at least these have characteristics that are undesirable (including IO block).
+
+Lisp:sudo-save.el
+
+Thanks to DryiceLiu for saving this package, as the original url is dead. His mirror:
+* http://dryice.name/computer/emacs/packages/sudo-save.el. 
+
+== To use ==
+
+sudo-save must be loaded **before** opening the file you want to edit via sudo. Place sudo-save.el somewhere in your LoadPath. If you want it ready for use all the time, add <code> (require 'sudo-save) </code> to your <code>.emacs</code>. Else load it up before use with <code> M-x load-library RET sudo-save RET</code>. Open files as usual with <code>C-x C-f</code> and save files as usual with <code>C-x C-s</code>.
+
+It appears that sudo-save only works if sudo already has your password cached or you have <code>NOPASSWD</code> set.
+
+----
+
+There is another sudo wrapper here:
+* http://silentbicycle.com/elisp/sudo.el.gz
+
+It handles password queries from sudo and allows you to find files you could not otherwise open. -- ScottVokes
+
+[new]
+For sudo.el: Integration with standard file save hooks:
+
+<pre>
+(defun sudo-before-save-hook ()
+  (set (make-local-variable 'sudo:file) (buffer-file-name))
+  (when sudo:file
+    (unless(file-writable-p sudo:file)
+      (set (make-local-variable 'sudo:old-owner-uid) (nth 2 (file-attributes sudo:file)))
+      (when (numberp sudo:old-owner-uid)
+	(unless (= (user-uid) sudo:old-owner-uid)
+	  (when (y-or-n-p
+		 (format "File %s is owned by %s, save it with sudo? "
+			 (file-name-nondirectory sudo:file)
+			 (user-login-name sudo:old-owner-uid)))
+	    (sudo-chown-file (int-to-string (user-uid)) (sudo-quoting sudo:file))
+	    (add-hook 'after-save-hook
+		      (lambda ()
+			(sudo-chown-file (int-to-string sudo:old-owner-uid)
+					 (sudo-quoting sudo:file))
+			(if sudo-clear-password-always
+			    (sudo-kill-password-timeout)))
+		      nil   ;; not append
+		      t	    ;; buffer local hook
+		      )))))))
+
+
+(add-hook 'before-save-hook 'sudo-before-save-hook)
+</pre>
+-- FedorZhigaltsov

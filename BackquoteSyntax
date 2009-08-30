@@ -1,0 +1,73 @@
+Often when setting variables or writing macros, you need to quote
+most, but not all of a list.
+
+When this is the case, <code>quote</code> is too "greedy", it quotes
+everything with no optionof unquoting bits.  You can use
+<code>list</code> instead of quote, and then individually quote the
+bits of the list that you don't want evaluated.  So you might write:
+
+    (list 'foo bar 'baz)
+
+To produce a list where <code>foo</code> and <code>baz</code> are
+returned literally, but <code>bar</code> is evaluated.
+
+This is where the backquote "<code>`</code>" comes in.  It quotes all
+of a form, except for those bits which you decide you want
+evaluated.  You can introduce evaluation with a comma
+"<code>,</code>".  So, instead of writing the above form, you might
+write:
+
+    `(foo ,bar baz)
+
+Which produces the same effect.  In fact, the backquote is a
+reader-macro, i.e. it introduces the beginning of a form which gets
+macroexpanded (into the list-like syntax), we can see this with:
+
+    (macroexpand '`("%b - " ,(getenv "USERNAME") "@" ,(getenv "USERDOMAIN")))
+        => (list "%b - " (getenv "USERNAME") "@" (getenv "USERDOMAIN"))
+
+(This from FrameTitle).
+
+Backquotes are also useful when writing macros.  Since, when using
+them, you can write your macro such that it looks very similar to a
+defun.  Compare:
+
+    (defmacro my-macro-1 (arg1 arg2)
+      (list 'setq arg1 (list 'cons arg2 arg1)))
+
+and
+
+    (defmacro my-macro-2 (arg1 arg2)
+      `(setq ,arg1 `,(cons ,arg2 ,arg1)))
+
+Comparing the macroexpansions:
+
+    (macroexpand '(my-macro-1 list 'foo))
+        => (setq list (cons 'foo list))
+
+    (macroexpand '(my-macro-2 list 'foo))
+        => (setq list (cons 'foo list))
+
+Another backquote-specific operator is the comma-at
+"<code>,@</code>", which acts as a "splicing" operator.  This is best
+demonstrated with an example:
+
+    (let ((list '(a b c d)))
+      `(elt1 ,list elt2))
+        => (elt1 (a b c d) elt2)
+
+Compared to:
+
+    (let ((list '(a b c d)))
+      `(elt1 ,@list elt2))
+        => (elt1 a b c d elt2)
+
+This is particularly useful when writing macros with an
+<code>&rest</code> specifier.
+
+Corrections, additions, comments, etc... welcome -- LawrenceMitchell
+
+
+Very informative section, thanks! -- GlauberPrado
+----
+CategoryCode

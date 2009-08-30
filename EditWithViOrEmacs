@@ -1,0 +1,88 @@
+To wean myself off using vi for quick edits, I've aliased "vi" to "eve" in the shell, and set EDITOR to point to "eve" also.  The "eve" program is a re-implementation of emacsclient in Perl; the only difference is that it execs "vi" if there isn't already an emacsserver running.
+
+-PeterHousel-
+[new]
+You know, modern emacsclient binaries have a -a switch, so you could accomplish the same thing with "emacsclient -a /usr/bin/vi $*", then you don't have to launch perl everytime you want to edit a file.
+
+-Rawb-
+[new]
+Yes, but you can't set EDITOR to "emacsclient -a ..." because a lot of software calls execlp($EDITOR, $EDITOR, NULL). I.e. they don't handle arguments.
+
+-- Rui Paulo
+
+[new]
+I believe the suggestion is using this instead of Perl:
+{{{
+  echo -e "#\!/bin/bash\n\nemacsclient -a /usr/bin/vi \$*" > /usr/local/bin/eve
+  EDITOR=eve
+}}}
+
+----
+<pre>
+#!/usr/bin/perl -w
+
+# eve - Edit with VI or Emacs
+# Good as a value for EDITOR or as the target of a 'vi' alias
+# If there is an emacsserver already running then connect to it, otherwise
+# run /usr/bin/vi.
+
+use strict;
+use POSIX;
+use Socket;
+use Sys::Hostname;
+
+socket(EMACS, AF_UNIX, SOCK_STREAM, 0) || die "unix domain socket: $!";
+
+my $server = sprintf "/tmp/esrv%d-%s", &POSIX::geteuid(), hostname;
+
+my ($dev, $ino, $mode, $nlink, $uid, $gid, $rdev, $size, $atime, $mtime,
+    $ctime, $blksize, $blocks) = stat($server);
+
+if(!defined $uid || $uid != &POSIX::geteuid()) {
+    exec "/usr/bin/vi", @ARGV;
+}
+
+if(connect(EMACS, sockaddr_un $server) < 0) {
+    exec "/usr/bin/vi", @ARGV;
+}
+
+my $cwd = &POSIX::getcwd;
+
+foreach (@ARGV) {
+    if(/^\+\d+$/) {
+	print EMACS "$_ ";
+    } elsif(/^\//) {
+	print EMACS &quote_file_name($_), ' ';
+    } else {
+	print EMACS &quote_file_name("$cwd/$_"), ' ';
+    }
+}
+
+printf STDERR "Waiting for Emacs...";
+select(STDERR); $| = 1;
+
+print EMACS "\n";
+select(EMACS); $| = 1;
+
+while(<EMACS>) {
+    printf STDERR $_;
+}
+
+exit 0;
+
+######################################################################## 
+
+sub quote_file_name {
+    my ($filename) = @_;
+
+    $filename =~ s/\&/\&\&/g;
+    $filename =~ s/^-/\&-/g;
+    $filename =~ s/ /\&_/g;
+
+    return $filename;
+}
+</pre>
+
+
+----
+CategoryExternalUtilities

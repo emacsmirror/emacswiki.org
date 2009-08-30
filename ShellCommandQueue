@@ -1,0 +1,13 @@
+From the commentary:
+
+ ;;  This package provides a means to add shell commands to a queue for
+ ;;  "sequentual asynchronous execution".  This means that each command
+ ;;  is run asynchronously from Emacs (so that Emacs is not locked up),
+ ;;  but successive commands are not executed before the previous ones
+ ;;  have finished.
+
+I created this when doing some stream ripping and audio encoding using mplayer from inside Emacs. Emacs does this and that to get the correct values and file names and stuff and then I simply wanted to execute each command in sequence without locking up Emacs. It could have been done with a single shell command separated by `&&' of course but then I felt I did not have the same kind of control...
+
+Get it here: [Lisp:shell-command-queue.el]
+
+-- MaDa

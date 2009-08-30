@@ -1,0 +1,39 @@
+[new]
+I locked the site for obvious reasons....I guess it would be easier to restore the site from backup...I'm afraid I may have added my share to the mess... -- PierreGaston
+
+[new]
+Thanks to all the spam reverters. At the moment the wiki seems to be ok again. The only remaining problem seems to be that ordinary RecentChanges seems to break off after the last change to erc-fill-trouble.png. I think that the large number of rollbacks is triggering a bug in my code.
+
+You can work around this bug by choosing to see all the rollbacks for the time being:
+
+* http://www.emacswiki.org/cgi-bin/emacs?action=rc;rollback=1 – major changes only
+* http://www.emacswiki.org/cgi-bin/emacs?action=rc;showedit=1;rollback=1 -- including minor changes (this is the one I have bookmarked for my own daily use)
+
+I think we'll leave the wiki locked for a while. If you need an admin password, contact one of the EmacsWikiAdministrators.
+
+-- AlexSchroeder
+
+[new]
+I've unlocked the wiki and added the [http://recaptcha.net/ reCAPTCHA] extension.
+Right now the extension is not remembering whether the user answered correctly or not.
+Thus, you will have to answer the question for every single edit.
+Once things calm down, we'll be returning to our ordinary schedule. :)
+
+I'm assuming the current setup is pretty obnoxious for anybody wanting to use non-browser
+clients like OddmuseMode. I'm also not sure how well reCAPTCHA works for the visually impaired.
+Let me know via IM or Email.
+
+-- AlexSchroeder
+
+[new]
+OddmuseMode users will be happy to hear that things should be working again. Let's see how
+much time our racists nemesis is willing to invest. :)
+
+-- AlexSchroeder
+
+[new]
+I also enabled "remembering" of correct captcha answers so hopefully most of you will soon be free of any problematic question answering.
+
+Should the spam start again, we'll close things down again.
+
+-- AlexSchroeder

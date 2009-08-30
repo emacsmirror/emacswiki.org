@@ -1,0 +1,25 @@
+==  Wie man den Bufferinhalt am besten bearbeiten kann ==
+...
+
+== Wie man rekursiv in Verzeichnissen in ausgewählten Dateien Suchen und Ersetzen ausführt ==
+Neulich hatte ich folgendes Problem: 
+
+Im Quellcode einer Java-Applikation wollte ich innerhalb aller .java Dateien einen bestimmten String durch einen anderen
+ersetzen. Wie geht sowas mit Emacs?
+
+* Zuerst muss die Einstellung für die Anzeige des DIRED-Buffers geändert werden. Er muss so umgestellt werden, dass alle Dateien rekursiv angezeigt werden.
+** Mit M-x customize-variable die Variable dired-listing-switches auf die Option -lFR für rekursive Anzeige der Verzeichnisse umschalten.
+** Alternativ kann man mit `i' einzelne Unterverzeichnisse einfügen; gibt es davon aber zuviele, so kann das mühsam werden.
+** Man kann natürlich auch einfach C-u C-x d (dired) benutzen und die Flags auf -alR setzen.
+** Oder man benutzt M-x find-dired, um die Dateien gleich mit -name '*.java' auf Java Quellen einzugrenzen.
+** Die einfachste Methode ist allerdings, im Dired-Buffer <code>C-u s</code> zu drücken und die ls-Option "-R" hinzuzufügen.
+* Mit C-x C-f . das Wurzelverzeichnis aufsuchen, von dem aus die Ersetzung erfolgen soll.
+* Mit M-x dired-mark-files-containing-regexp alle Dateien markieren, die den Suchstring enthalten.
+* Mit M-x dired-do-query-replace werden alle Treffer ersetzt und in offenen Buffern im Emacs gehalten.
+* Jetzt müssen noch alle Buffer gespeichert werden, da sie zur Zeit nur im Emacs vorgehalten werden.
+** Mit C-u C-x s (save-some-buffers) werden alle offenen Buffer gespeichert.
+
+Damit hat man alle Suchstrings ersetzt. Zum Schluss sollte man noch die Flags der Variablen dired-listing-switches wieder zurücksetzen, da sonst der DIRED-Buffer sehr lang werden kann.
+Ich hoffe, es hilft.
+
+Oder man nimmt GlobRep...

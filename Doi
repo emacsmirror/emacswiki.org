@@ -1,0 +1,108 @@
+==What is Doi ?==
+Doi is a mode that *Do* command *Or* *Insert* self, this mode for buffer that mix *read-only* area and *edit* area.
+
+Example, if current cursor at *read-only* area, you can do speical command, if current cursor at *edit* area, it insert character.
+
+It's very handy for some mode, such as custom-mode-map, erc-mode-map.
+
+==Install==
+Put Lisp:doi.el in your load-path, add
+{{{
+    (require 'doi)
+}}}    
+in ~/.emacs
+
+==Usage==
+Below have example about erc-mode-map:
+{{{
+    (define-key erc-mode-map (kbd "SPC") 'doi-scroll-up)
+    (define-key erc-mode-map (kbd "e") 'doi-scroll-down)
+    (define-key erc-mode-map (kbd "k") 'doi-previous-line)
+    (define-key erc-mode-map (kbd "j") 'doi-next-line)
+    (define-key erc-mode-map (kbd "h") 'doi-backward-char)
+    (define-key erc-mode-map (kbd "l") 'doi-forward-char)
+    (define-key erc-mode-map (kbd "J") 'doi-scroll-up-one-line)
+    (define-key erc-mode-map (kbd "K") 'doi-scroll-down-one-line)
+    (define-key erc-mode-map (kbd "H") 'doi-backward-word)
+    (define-key erc-mode-map (kbd "L") 'doi-forward-word)
+    (define-key erc-mode-map (kbd "y") 'doi-sdcv-search-pointer+)
+    (define-key erc-mode-map (kbd "s") 'doi-isearch-forward)
+    (define-key erc-mode-map (kbd "r") 'doi-isearch-backward)
+    (define-key erc-mode-map (kbd "A") 'doi-move-beginning-of-line)
+    (define-key erc-mode-map (kbd "E") 'doi-move-end-of-line)
+    (define-key erc-mode-map (kbd ",") 'doi-end-of-buffer)
+    (define-key erc-mode-map (kbd ".") 'doi-beginning-of-buffer)
+}}}
+Then you can move cursor move *read-only* area, and type SPACE to executive scroll up; if cursor is at *edit* area, you just insert SPACE.
+
+Alike you can setup custom-mode-map similar with above.
+
+==With Minor-mode==
+<pre>
+(defun doi-setup-my-keys (map)
+  (dolist (x '(("b" . doi-scroll-down)
+               (" " . doi-scroll-up)
+               ("j" . doi-next-line)
+               ("k" . doi-previous-line)
+               ("h" . doi-backward-char)
+               ("l" . doi-forward-char)))
+    (define-key map (car x) (cdr x))))
+(setq doi-my-minor-mode-map (make-sparse-keymap))
+(doi-setup-my-keys doi-my-minor-mode-map)
+(define-minor-mode doi-my-minor-mode
+  "minor-mode for `doi'.
+It is defined AFTER `skk'.")
+
+(add-hook 'rcirc-mode-hook
+          (lambda () (doi-my-minor-mode 1)))
+</pre>
+
+I prefer minor-mode. -- [[rubikitch]]
+
+[new:AndyStewart:2009-02-28 13:38 UTC]
+: Hi, I use `doi-key-alist' for binding many mode with doi commands, you can search `doi-key-alist' in Lisp:LazyCatKeystoke.el -- AndyStewart
+
+===With SKK===
+I use SkkMode, minor-mode for Japanese input. doi-my-minor-mode is defined AFTER SkkMode. It needs some hack to use Doi with SkkMode.
+
+<pre>
+(defadvice doi (around skk activate)
+  (if (not skk-mode)
+      ad-do-it
+    (condition-case nil
+        (progn
+          (self-insert-command (or arg 1)) ; write a char
+          (backward-delete-char 1)         ; UNDO
+          (let (doi-my-minor-mode)
+            ;; use skk input
+            (call-interactively (key-binding (char-to-string last-command-event)))))
+      (text-read-only
+       (funcall command)))))
+</pre>
+
+-- [[rubikitch]]
+
+[new:AndyStewart:2009-02-28 13:41 UTC]
+: I have add option `doi-insert-function', you can customize insert function.
+: Below are update version:
+{{{
+    (defun doi-insert-update (arg)
+      "The default insert function for `doi'.
+    ARG is prefix argument."
+      (if (and (require 'completion-ui nil t)
+               (member 'auto-completion-mode minor-mode-list))
+          ;; Do `completion-self-insert' when
+          ;; `auto-completion-mode' turn on.
+          (completion-self-insert)
+        ;; Otherwise do `self-insert-command'.
+        (self-insert-command (or arg 1))    ; write a char
+        (backward-delete-char (or arg 1))   ; UNDO
+        (let (doi-my-minor-mode)
+          ;; use skk input
+          (call-interactively (key-binding (char-to-string last-command-event))))))
+}}}
+
+: Enjoy! :)
+
+-- AndyStewart
+

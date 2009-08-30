@@ -1,0 +1,54 @@
+ERC is an InternetRelayChat (IRC) client.
+
+For more Info on IRC, see the IRC help archive:
+
+* http://www.irchelp.org/
+
+== Getting Started ==
+
+Assuming you downloaded the tarball and extracted the elisp files into
+~/elisp/erc, load ERC by using M-x load-file and typing ~/elisp/erc/erc.el at the prompt.
+Then call M-x erc and answer the questions as follows:
+
+* IRC server: irc.freenode.net
+* IRC port: 6667
+* Nickname: (type a nickname)
+* Password: (none)
+
+Note that ERC will append some punctuation characters to make your
+nickname unique if it isn't.  Thus, usually you need not worry about
+inventing unique nicknames.  On Freenode(irc.freenode.net) people
+can reserve their nicknames; in that case you will see a warning, and
+may be kicked off the network by the owner of the nickname, but let's ignore
+that for the moment.
+
+
+== How It Works ==
+
+The first thing you have to do is join a channel.  Type the following
+command:
+
+ /JOIN #emacs
+
+One of the lines should tell you the nicknames of the other users on the channel.
+Whatever you type now will be seen by everyone else on the channel.
+Type:
+
+ Hi all.  I'm testing ERC!
+
+Commands start with a slash.  Here are the most important ones:
+
+* /JOIN #foo -- join channel #foo
+* /PART -- leave the current channel
+* /QUIT msg -- disconnect and leave message msg for all to see
+
+You can join several channels at a time.  ERC will create a new buffer for each
+channel you join.
+
+
+== Moving on ==
+
+You may now like to read ErcIntroduction
+
+----
+[[ERC]]

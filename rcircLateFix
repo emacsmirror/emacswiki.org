@@ -1,0 +1,20 @@
+Apply corrections like 's/wrong/right' on the (original) wrong word, by using overlays.
+Best explained in the sequence of screenshots below, showing irc chat on a channel:
+
+[[image:rcirc-late-fix-example-1]]
+
+[[image:rcirc-late-fix-example-2]]
+
+[[image:rcirc-late-fix-example-3]]
+
+
+A few fixes suggested by Tassilo Horn are shown on the picture below:
+
+[[image:rcirc-late-fix-update]]
+
+Source:
+
+* Lisp:rcirc-late-fix.el
+
+Save the file to a directory in your LoadPath and add ##(require 'rcirc-late-fix)## to your InitFile.
+

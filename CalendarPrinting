@@ -1,0 +1,28 @@
+=General=
+When typing 't m' on the current month in CalendarMode you will be presented a new buffer named 'calendar.tex' containing a latex representation of the current month.
+
+Typing '\C-c\C-c' will "compile" the file and then you can see it by typing "\C-c\C-c" again.
+
+That's just cool :)
+
+Note that typing 't M' instead of 't m' will change the orientation of the calendar.
+
+You can also print the file with '\C-c\C-p'.
+
+=Printing to A4 pages=
+If you print A4 pages, the calendars are probably too wide for you.  I often print monthly calendars.  The default setup prints them 18cm wide; I want them 17cm wide.  Here's how to do it:
+
+ (add-hook 'cal-tex-hook 'my-calendar-a4)
+
+ (defun my-calendar-a4 ()
+   "Replace all occurences of 18cm with 17cm."
+   (goto-char (point-min))
+   (while (search-forward "18cm" nil t)
+     (replace-match  "17cm")))
+=Printing a Hipster PDA=
+You can generate a [http://en.wikipedia.org/wiki/Hipster_PDA Hipster PDA] style printout with the data from your diary file. Use the following Makefile to generate a PDF. It requires the pdfjam package which you can find at http://www.warwick.ac.uk/go/pdfjam. Also make sure you set cal-tex-diary to true so that diary entries show up in the calendar.
+
+The Makefile is now maintained within the CONTRIB directory of [http://www.orgmode.org org-mode]. The latest version can be fetched from http://repo.or.cz/w/org-mode.git?a=blob;f=CONTRIB/scripts/org2hpda;hb=HEAD
+
+----
+CategoryCalendar

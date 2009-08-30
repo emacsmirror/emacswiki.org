@@ -1,0 +1,24 @@
+The code on this page allows you to use an extended link pattern for WikiMode.  The extended link pattern uses extra square brackets.
+
+Examples: 
+
+<pre>
+    Extended Link           Resulting HTML         
+    -----------------------------------------------------
+    [[LINK]]                <a href="LINK">LINK</a>
+    [[LINK][NAME]]          <a href="LINK">NAME</a>
+</pre>
+
+In order to do this, you must customize wiki-pub-rules.  Add the following rules ''after wiki-replace-links''.
+
+The rule for the [[LINK][NAME]] pattern:
+
+    Regexp:      \[\[<a href="\([^]]+\)">[^]]+</a>\]\[\([^]]+\)\]\]
+    Replacement: <a href="\1">\2</a>
+
+The rule for the [[LINK]] pattern:
+
+    Regexp:      \[\[<a href="\([^]]+\)">[^]]+</a>\]\]
+    Replacement: <a href="\1">\1</a>
+
+Note how both rules just rearrange the HTML links produced by wiki-replace-links.

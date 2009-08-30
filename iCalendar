@@ -1,0 +1,10 @@
+[[iCalendar]] (or '''iCal''') is a calendar format supported by the following modes in Emacs:
+
+* MessageHarmonizedCalendaring (only by using conversion tool)
+* CalendarMode (only by using conversion tool)
+* OrgMode
+
+See WikiPedia:iCalendar
+
+----
+CategoryCalendar

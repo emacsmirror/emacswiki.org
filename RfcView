@@ -1,0 +1,14 @@
+<code>rfcview.el</code> is a groovy mode for viewing [[RFC]] documents, created by NeilVanDyke.  It fontifies headings, and hides the header and footers (which are designed for a line printer), to improve on-screen readability.
+
+Get it from the author at
+
+: http://www.neilvandyke.org/rfcview/
+
+On a [[Debian]] system see DebianPackage:emacs-goodies-el.
+
+There's a significantly enhanced version at
+http://www.loveshack.ukfsn.org/emacs/rfcview.el
+(which was contributed back but hasn't been used).
+
+----
+CategoryModes

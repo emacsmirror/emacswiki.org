@@ -1,0 +1,31 @@
+== Emacs Screenplay Mode ==
+* Emacs Screenplay Mode:  http://www.nongnu.org/screenplay/
+* Savannah Project Page: http://savannah.gnu.org/projects/screenplay/
+
+See ScreenPlay for AlexSchroeder 's Lisp:screenplay.el
+
+See RubyTwoMode for yet another variation.
+
+== Articles On the Wiki ==
+
+ManagingHookVariables
+
+
+== Coming Soon ==
+
+Inditer Minor Mode
+
+----
+* Emacs on my web site:  http://vls.freeshell.org/emacs/emacs.html
+* Email: vls@freeshell.org
+
+<pre>
+If you know what's good for you,
+you won't monkey around with Fred C. Dobbs.
+Humphrey Bogart
+Treasure of the Sierra Madre
+</pre>
+
+Updated: 2005-02-18
+
+----- CategoryHomepage

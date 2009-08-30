@@ -1,0 +1,34 @@
+SSH is a secure networking protocol, that one can use in Emacs (with TrampMode) or apply in their work in Emacs (like when using VersionControl over SSH).
+
+== Questions == 
+
+=== Avoiding retyping passphrases in Emacs ===
+
+[new]
+I run KDE on Gentoo and in my terminal windows I use keychain to make sure I only have to enter my passphrase once.  On the other hand, when I try to do ssh-related things in Emacs I have to constantly re-enter my passphrase.  This is because I start Emacs from the 'dock' or menu.  What I'd like to do is run Emacs 'under' ssh-keychain, so that I don't continuously need to keep entering my passphrase.  I know I could probably modify my .xinitrc to start keychain there, but I'm not sure how well that would work since I start kde from kdm.  Any suggestions on how to do this, aside from just starting emacs from a konsole window?
+
+[new]
+: I run 'ssh-add' from any console, type my password, and from then on I never have to type a password for ssh and scp.  It just works, even when I start Emacs directly from windowmaker.
+
+[new]
+:: That seemed to work for me -- I'll have to see why keychain doesn't do it, since AFAIK, it is supposed to be an easier interface to 'ssh-add'.  Thanks!
+
+[new]
+: Its because keychain is normally started after X and hence the window manager doesn't have the correct environment variables, so when programs are started from it they don't inherit the SSH_AUTH_SOCK and SSH_AUTH_PID variables.  This can be fixed by using [[keychain-environment.el]]
+
+=== SSH with Emacs VersionControl ===
+
+[new]
+Hello i am trying to work with a source from a remote cvs. I want to use vc or  pcl-cvs, the problem is when emacs do the acces via ssh to remote server, emacs open  the buffer *vm* and ask for the password. I don't know what is the next step, i think is related with ssh-askpass. 
+
+[new]
+: ''Run ssh-keygen, and press enter when asked for a passphrase.  Copy .ssh/id_rsa.pub on your local machine to .ssh/authorized_keys on the remote host.  For additional security, you may want to use a passphrase, in which case you should run ssh-agent as part of your startup scripts, and it will prompt for the passphrase once and then store it in memory and answer requests from applications for the key.
+
+[new]
+: ''A particularly convenient way to run ssh-agent is to use "keychain" from  http://www.gentoo.org/proj/en/keychain.xml.  It keeps the agent running after you log off, so you generally only need to start the agent once per boot.
+
+[new]
+: ssh-agent seems not to work in my case (CVS+extssh repository, Emacs 23, Ubuntu GNU/Linux). I ran: ##ssh-agent## before starting Emacs, and Emacs can read ##SSH_AUTH_SOCK## and ##SSH_AGENT_PID## (confirmed through ##env## in eshell). However, ##emacs -Q## asks me the password two times for two consecutive ##C-x v d##. A ##ps## shows the call hierarchy ##emacs→cvs→cvs→ssh→ssh-askpass##. That last process has the expected environment variables (confirmed through ##cat /proc/15228/environ##). So I don't know what is failing here or what else to test. -- [[DanielClemente]]
+
+----
+CategoryExternalUtilities

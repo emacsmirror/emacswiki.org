@@ -1,0 +1,37 @@
+In short local or file variables can be used to set certain aspects of Emacs local to a file. This might be useful for setting the indention level of a C program as well as setting the MajorMode to use for this file. This mechanism is regularly used in multi-document LaTeX projects where AUCTeX stores the information which file is the master document so it can compile the right one when the user invokes the LaTeX command (usually via C-c C-c).
+
+Those variables are located at the end of your file and look like this:
+
+ # Local Variables:
+ # mode: ksh
+ # End:
+
+That is there is a special keyword "Local Variables:" which starts the section and is surrounded by a prefix ("# " in the above example) and a postfix (empty here). The keyword "End:" (with the same post- and prefixes) finishes that section. Obviously the prefix and postfixes are important to comment those lines according to the file-type.
+
+For detailed documentation, see node "File Variables" in the Emacs Info file.
+
+
+== Funny Side Effect ==
+
+If you create a file containing the following lines you won't be able to open it:
+
+ -*- normal -*-
+ 
+ ;; Local variables:
+ ;; enable-local-eval: t
+ ;; hack-local-variables-hook: save-buffers-kill-emacs
+ ;; end:
+
+
+AFAI remember that stems from an effect that in normal-mode the local variables are processed in a special way. Of course one could do severe damage with such a text file and I have a bad feeling towards this. If I am missing something here I'd be happy to learn what. -- StefanKamphausen
+
+Aborting the file open with C-g and then opening it with C-x C-f allows you to open the file (for some reason). Also, you can always open it with find-file-literally. -- fledermaus
+
+== Disabling File Local Variables ==
+
+{{{
+;; Turn off file variables
+;; See: http://www.gnu.org/software/emacs/manual/html_node/emacs/Safe-File-Variables.html#Safe-File-Variables
+(setq enable-local-variables nil
+      enable-local-eval nil)
+}}}

@@ -1,0 +1,37 @@
+I gathered some Chinese stuff:
+
+* Default charset:
+
+    (setq gnus-default-charset 'cn-gb-2312)
+
+* Display Chinese newsgroup name:
+
+    (setq gnus-group-name-charset-group-alist (quote ((".*" . gb2312))))
+
+* Decode your post:
+
+    (setq gnus-group-posting-charset-alist
+          '(("^\\(cn\\)\\.[^,]*\\(,[ 	\n]*\\(cn\\)\\.[^,]*\\)*$" gb2312 (gb2312))
+            (message-this-is-mail nil nil)
+            (message-this-is-news nil t)))
+
+
+* Other Chinese resource
+** Gnus FAQ (Chinese Version): -- http://db.cs.hit.edu.cn/people/WangChunyu/interests/m/em/gnus-faq-cn.html
+
+* gb18030, x-gbk,etc.
+
+    Some mail clients encode Chinese by using gb18030, x-gbk, etc, which are
+    unknown to Emacs at present. But here is a workaround for them, suppose
+    your Emacs support gb2312 charsets:
+
+        ;; A workaround for unsupported charsets
+        (define-coding-system-alias 'gb18030 'gb2312)
+        (define-coding-system-alias 'x-gbk 'gb2312)
+
+    This will make most Chinese readable as long as there are few Chinese
+    characters that are beyond gb2312.
+
+----
+CategoryInternationalization
+CategoryGnus

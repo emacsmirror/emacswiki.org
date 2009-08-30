@@ -1,0 +1,26 @@
+This category is for related software (ie. /not/ Emacs)
+that can be customized to be /like/ Emacs, and
+this category is for interfacing other software with Emacs.
+
+Browsers:
+
+* [[Conkeror]]
+* FireFox
+* [[Mozilla]]
+
+Terminal shell:
+
+* [[Bash]]
+* GnuScreen
+
+Windowing system:
+
+* XWindowEmacsManager
+
+Other:
+
+* OpenOffice can not be configured to use emacs keybindings but you can vote for a change [http://www.openoffice.org/issues/show_bug.cgi?id=4756 here.]
+* Java programmers who use Eclipse (rather than [[JDEE]]) should look at EclipseExtensionsForEmacsExpatriates.
+
+For software inspired by Emacs, see ExtensibleSoftware.
+

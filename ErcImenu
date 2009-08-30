@@ -1,0 +1,20 @@
+erc-imenu.el provides Imenu functionality for erc buffers.
+
+== Activation ==
+
+Put (require 'erc-imenu) in your .emacs file.
+
+== Usage ==
+
+After it is loaded, simply use M-x imenu RET in erc buffers.
+This gives you a index of certain IRC event types. Some examples are:
+
+* joined -- A list of join events of the current buffer (channel).
+* parted -- A list of PART events of the current buffer.
+* topic-change
+* mode-change
+* messages -- All messages. Note that this is useful for finding certain persons messages. You could e.g. type the nick of someone, and hit TAB to get all his messages in that channel.
+* notices
+
+----
+[[ERC]]

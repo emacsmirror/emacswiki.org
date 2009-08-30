@@ -1,0 +1,19 @@
+A wiki is an editable web site.  Anybody can contribute.
+That's it.  :)
+
+Now go back to the HowTo.
+
+If you want to fool around, visit the test wiki:
+
+* http://www.emacswiki.org/cgi-bin/test
+
+You can also use the SandBox.
+
+== Wikis, In General ==
+
+* You can also read more about it on [[Oddmuse:What Is A Wiki]].
+* Community:WhyWikiWorks explains why wikis (hopefully) generate
+interesting content and why there is not much abuse.
+* Oddmuse:SiteMap is the homepage of the wiki engine -- the CGI script
+(in Perl, I am sorry to say) that produces the pages you are reading.
+* See TextFormattingRules for the basic formatting rules you need.

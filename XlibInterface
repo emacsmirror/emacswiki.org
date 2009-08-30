@@ -1,0 +1,13 @@
+Yes, strange things happen.  There is an implementation of X11 lib
+calls for Emacs by EricLudlam.
+
+Get it from here (read through the page, the link to the tarball is
+hidden somewhere within the text):
+
+* http://cedet.sourceforge.net/
+
+See also: PixelDrawing.
+
+----
+CategoryCode
+CategoryDisplay

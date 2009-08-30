@@ -1,0 +1,23 @@
+langhelp: Integrated help system in EmacsRuby
+
+Langhelp creates an index of documents of various programming languages and shell commands.
+Languages enables you to search documents instantly in Emacs.
+If you are a programmer, then you may sometimes wonder, what is the usage of this function?
+If you use Unices, then you may wonder, what is the usage of this command?
+Langhelp answers the question INSTANTLY.
+
+Currently langhelp supports languages and commands below.
+
+  html, svn, bison, cvs, libtool, 
+  latex, ratpoisonrc, gengetopt, wget, lua, 
+  guile, php, texinfo, c++, c, 
+  standards, grep, gdb, diff, octave, 
+  gauche, python, flex, tcl, m4, 
+  sed, screenrc, gzip, perl, emacs-lisp, 
+  ruby, autoconf, hurd, el4r, binutils, 
+  awk, graphviz-dot, makefile, sh, 
+
+Langhelp may be the first tool written in EmacsRuby in the world.
+In other words, langhelp is an practical example of EmacsRuby script.
+
+http://www.rubyist.net/~rubikitch/computer/langhelp/

@@ -1,0 +1,9 @@
+rep-words.el finds places where you have used the same word too many times in a stretch of text--something that some people regard as a stylistic problem in writing.  It uses hilock and allows you to decide how many is too many, and over what size stretch of text to search.  Every time it hits a match it gives you the option to go into a recursive edit or continue, finding the next match  in your file.
+
+I am not a real programmer, so you get what you pay for, or something.  At any rate, i am using it for fine-grained copyediting of my novel and finding it useful.
+
+Lisp:rep-words.el
+
+----
+CategoryEditing
+CategoryWriting

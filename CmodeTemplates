@@ -1,0 +1,204 @@
+== Introduction ==
+
+Using templates really speeds up your work especially when you must type monotonous text frequently.  Some templates are small and are just an opened representation for something (see AbbrevMode).  But SkeletonMode can make more useful templates.  When skeleton is large you may want to enhance speed of movements within just inserted skeleton.  Using push/pop-mark it is possible with some additions to insert-skeleton.
+
+Also it is hard to remember all of your skeletons (particularly true as you get more and more skeletons); below is some code that allows you to use autocompletion for skeleton names.
+
+== Push stack ==
+
+We know that we may jump to mark with C-u C-SPC and we know that we may push mark to marks stack with push-mark - it is enough.
+
+<pre>
+(defvar mc-push-stack nil
+  "Where all internal pushes stored")
+
+(defun mc-push-mark ()
+  "Just push mark at point.
+
+You can jump to it using C-u C-SPC"
+  (interactive)
+  (add-to-list 'mc-push-stack (point)))
+
+(defun mc-rpush-all-marks ()
+  "Real push off all marks stored in mc-push-stack."
+
+  (message (format "Marks set: %d, use C-u C-SPC to jump next."
+                   (length mc-push-stack)))
+
+  (while mc-push-stack
+      (push-mark (car mc-push-stack) t nil (current-buffer))
+      (setq mc-push-stack (cdr mc-push-stack))))
+
+;; Insert skel and push marks if any
+(defun mc-insert-skeleton (skel)
+  "Insert skeleton SKEL and push all marks"
+  (skeleton-insert skel)
+  (mc-rpush-all-marks))
+</pre>
+
+Now if any skeleton that contain calls to mc-push-stack will be inserted with mc-insert-skeleton then we may jump to pushed points with C-u C-SPC.
+
+=== Examples ===
+
+<pre>
+(defvar mc-if-skel
+   '(nil
+     > "if (" _ ") {" \n
+     > '(progn (mc-push-mark) nil) \n
+     > "}" '(progn (indent-according-to-mode) nil) \n
+     > '(progn (mc-push-mark) nil)
+     nil)
+   "*Skeleton for if statament")
+
+(defvar mc-if-else-skel
+   '(nil
+     > "if (" _ ") {" \n
+     > '(progn (mc-push-mark) nil) \n
+     > "} else {" '(progn (indent-according-to-mode) nil) \n
+     > '(progn (mc-push-mark) nil) \n
+     > "}" '(progn (indent-according-to-mode) nil) \n
+     > '(progn (mc-push-mark) nil)
+     nil)
+   "*Skeleton for if-else statament")
+
+(defvar mc-errck-skel
+   '(nil
+     > "err = " _ ";" \n
+     > "if (err < 0) {" '(progn (indent-according-to-mode) nil) \n
+     > '(progn (mc-push-mark) nil) \n
+     > "}" '(progn (indent-according-to-mode) nil) \n
+     > '(progn (mc-push-mark) nil)
+     nil)
+   "*Skeleton for err-check statament")
+</pre>
+
+== Skeletons autocompletion ==
+
+Assume you have list of names for your skeletons like this
+
+<pre>
+(defvar mc-comp-list
+  '(
+    ;; C stataments
+    ("if") ("if-else") ("if-check") ("for")
+    ("errck") ("while") ("switch") ("case")
+    ("default")
+    ;; commonly used stats
+    ("getopt") ("socket") ("malloc")
+    )
+  "Completion list")
+</pre>
+
+some of these names stands for real skeletons, but some of them for interactive functions, then can read some additional information.
+
+<pre>
+(defun mc-insert-stat-complete (stat)
+  "Read keyword from minibuffer and act according to it.
+
+If STAT is bounded variable then act as (mc-insert-skeleton STAT)
+If STAT is function then call it interactively."
+  (interactive
+   (let ((val))
+     (setq val (completing-read (format "C Statament: ")
+				  mc-comp-list nil t))
+     (list val)))
+
+  ;; Actions
+  (let ((csym (intern-soft (format "mc-%s-skel" stat))))
+    (cond ((null csym) (message "Statament `%s' has no action" stat))
+	  ((boundp csym) (mc-insert-skeleton (symbol-value csym))) ; call ins skel-func
+	  ((functionp csym) (call-interactively csym))
+	  (t (message "Statament `%s' has UNKNOWN action" stat)))))
+</pre>
+
+=== Examples ===
+
+Here is examples for case when template name in autocompletion list is interactive function.
+
+<pre>
+;; malloc() stat
+(defun mc-malloc-skel (mal-var)
+  "Insert malloc() statament"
+  (interactive "sMalloc to variable: ")
+  (skeleton-insert
+   '(nil
+     > mal-var " = " _ "malloc(" '(progn (mc-push-mark) nil) ");" \n
+     > (format "if (%s == NULL)" mal-var) '(progn (indent-according-to-mode) nil) \n
+     > '(progn (mc-push-mark) nil) \n
+     nil))
+  (mc-rpush-all-marks))
+
+;; getopt() stat
+(defun mc-getopt-skel (optstr)
+  "Insert getop routine"
+  (interactive "sGetopt string: ")
+
+  (let ((go-chars (string-to-list optstr)))
+    (skeleton-insert
+     '(nil
+       > (format "while ((ch = getopt(argc, argv, \"%s\")) != -1) {" optstr) \n
+       > "switch (ch) {" '(progn (indent-according-to-mode) nil) \n
+       > '(progn 
+	    (let ((cpnt (point)))
+	      (while go-chars
+		   (insert (format "case '%c':\n" (car go-chars)))
+		   (if (eq (cadr go-chars) ?\:)
+		       (progn 
+			 (insert (format "strncpy(%c_string, optarg, CHANGEME_LEN);\n"
+					 (car go-chars)))
+			 (setq go-chars (cddr go-chars)))
+		     (progn
+		       (insert (format "%c_flag = 1;\n" (car go-chars)))
+		       (setq go-chars (cdr go-chars))))
+		   (insert "break;")
+		   (insert "\n"))
+	      
+	      (insert "case '?':\n")
+	      (insert "default:\n")
+	      (insert "usage();\n")
+	      (indent-region cpnt (point) nil))
+	      nil)
+       > "}" '(progn (indent-according-to-mode) nil) \n
+       > "}" '(progn (indent-according-to-mode) nil) \n
+       > "argc -= optind;" '(progn (indent-according-to-mode) nil) \n
+       > "argv += optind;" '(progn (indent-according-to-mode) nil) \n
+       > _))))
+</pre>
+
+=== Examples of keybindings ===
+
+You may define some prefix for using in c-mode like this:
+
+<pre>
+(define-key c-mode-map "\C-cic"
+  (lambda () (interactive) (mc-insert-skeleton mc-if-skel)))
+(define-key c-mode-map "\C-cie"
+  (lambda () (interactive) (mc-insert-skeleton mc-if-else-skel)))
+...
+...
+(define-key c-mode-map "\C-cim" 'mc-malloc-skel)
+(define-key c-mode-map "\C-cig" 'mc-getopt-skel)
+(define-key c-mode-map "\C-cii" 'mc-insert-stat-complete)
+
+;; And I always forget about my keyboard bindings
+(define-key c-mode-map "\C-cih" 'describe-prefix-bindings)
+</pre>
+
+== Discussion ==
+
+Big thank for english improvemnts! I always knows that my english is ugly as my elisp code :)
+
+This is true for [[XEmacs]] that I use, I have no access to GNU Emacs right now. Can you check it for GNU Emacs and change it to be true for both? --ZajcevEvgeny
+
+For GNU Emacs (which is better I think :-p), I got an error ((push-mark (car mc-push-stack) t nil (current-buffer))), it says that push-mark is called with 4 args, and only accepts 0-3. Just remove the 't' and it seems to work fine :)
+[Addendum] : In English, it's a "statement", not a "statament" --Lucas
+
+== Complete template file ==
+
+I found it hard to find a complete file merging the various hints about using tempo and abbrev for c/c++ templates for basic users like me. Therefore I created my own one and decided to share it.
+You'll find it here: Lisp:tempo-c-cpp.el
+
+Hope it'll help. --SebastienVarrette
+
+[new]
+See Also: [[CppTemplate]], [[CategoryTemplates]] 

@@ -1,0 +1,22 @@
+Procura no nó "Customizing Threading" no manual do Gnus. node in the Gnus manual. Aqui ficam alguma alterações comuns.
+
+== Por Assunto ==
+
+Por omissão, os IDs das mensagens e os cabeçalhos de referências são utilizados para threading.  No entanto, várias pessoas utilizam clientes de mail que funcionam mal ou estão mal configurados e que não mantêm as referências.  Se estas pessoas enviam muitas mensagens, as threads nesses grupos vão ficar uma confusão.  Podes, por isso, forçar o Gnus a juntar as threads por assunto.
+
+ (setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
+
+== Comparação Fuzzy ==
+
+Para ignorar espaços e branco, "Re:" e outras coisas enquanto estiver a comparar assuntos, podes utilizar a comparação fuzzy.
+
+ (setq gnus-summary-gather-subject-limit 'fuzzy)
+
+== Adicionar uma mensagem a uma thread já existente ==
+
+O KaiGrossjohann disse na lista de mail ding (a lista de mail para CvsDoGnus) que podemos seleccionar a mensagem que irá ser o pai carregando em `#' sobre ela, seleccionar a mensagem a ser adicionada à thread e carregar em `T ^' sobre ela.
+
+----
+CategoryGnus
+
+ 

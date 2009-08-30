@@ -1,0 +1,276 @@
+This page is about some ways to [[completion|complete]] text in a [[buffer]] (other than the [[minibuffer]]).
+
+
+== TabKey2 ==
+
+Lisp:tabkey2.el is a new little library that tries to generalize the ideas from Smart Tab.
+However, it works a bit differently.
+In most major modes, the first Tab press will indent and following Tab presses will complete.
+Since there are many ways to complete you can also choose which function you want to use
+(major mode specific completion, dynamic abbreviation completion etc).
+By default you do that by pressing F8 (this key binding will probably be changed).
+
+[new]
+I've been having a heck of a time trying to get Tabkey2 to work well with pabbrev and yasnippet.  Has anyone gotten these three packages to work well together?  In particular I have found that trying to enable pabbrev mode, and yasnippet mode, and finally tabkey mode will set things up so that Yasnippet fires first, and then falls back to tabkey2, but in the fallback to tabkey2, it calls tabkey2-first inappropriately, causing an error.
+
+If I write my own pabbrev functions, one to expand or return nil, and the other to return the current expansion, and set the first to be the completion function, and use the second as the activation expressoin on tabkey2, then everything mostly works together.  The final piece of the puzzle is to edit the pabbrev file to not bind tab at all.  At this point it takes 2 tabpresses to get any kind of completion, but I do get completion.  However, I cannot jump between yasnippet fields.  I can't help but wonder if there is a better way, besides hacking and slashing pabbrev.
+
+[new]
+Could you explain to me why you do not just set up things in Tabkey2?
+You can customize tabkey2-completion-functions.
+I am not sure it is possible to do what you want there, but maybe there is something I can change to make it possible.
+
+Note: If you do it this way you do not have to do any key binding on your own.
+Tabkey2 steals the TAB key and tries to call the function you tell it to call.
+
+[:SmartTab]
+== Smart Tab ==
+
+Here's what I use every day:
+* it's minibuffer compliant, so you can set it globally and not worry about what modes need it
+* it calls `indent-region' if mark is active.
+* otherwise it expands if at the end of a symbol, or indents the current line.
+* prefixed by C-u, always smart indent without completing.
+
+It feels very natural (to me at least), tab always do what I mean.
+
+Note the use of "\\_>" instead of "\\>": this allows to tab-expand symbols, according to the major mode. Like "(goto-...", or "BOOST_..." (usefull when coding in Lisp or C).
+
+{{{
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Smart Tab
+
+(defvar smart-tab-using-hippie-expand t
+  "turn this on if you want to use hippie-expand completion.")
+
+(defun smart-tab (prefix)
+  "Needs `transient-mark-mode' to be on. This smart tab is
+  minibuffer compliant: it acts as usual in the minibuffer.
+
+  In all other buffers: if PREFIX is \\[universal-argument], calls
+  `smart-indent'. Else if point is at the end of a symbol,
+  expands it. Else calls `smart-indent'."
+  (interactive "P")
+  (labels ((smart-tab-must-expand (&optional prefix)
+                                  (unless (or (consp prefix)
+                                              mark-active)
+                                    (looking-at "\\_>"))))
+    (cond ((minibufferp)
+           (minibuffer-complete))
+          ((smart-tab-must-expand prefix)
+           (if smart-tab-using-hippie-expand
+               (hippie-expand nil)
+             (dabbrev-expand nil)))
+          ((smart-indent)))))
+
+(defun smart-indent ()
+  "Indents region if mark is active, or current line otherwise."
+  (interactive)
+  (if mark-active
+    (indent-region (region-beginning)
+                   (region-end))
+    (indent-for-tab-command)))
+}}}
+
+Note: to enable tab completion in the `eval-expression` minibuffer, I just bind the tab key to `hippie-expand` in the `read-expression-map`.
+{{{
+(define-key read-expression-map [(tab)] 'hippie-expand)
+(define-key read-expression-map [(shift tab)] 'unexpand)
+}}}
+
+
+Cheers!
+-- SebastienRoccaSerra
+
+[new]
+I love this function and have created a [http://github.com/chrono325/smart-tab/tree/master git repository] for it. This doesn't seem to be a function that is in too much danger of growing large and unwieldy, but there were enough other suggestions by people that a repository might be nice.
+
+-- DanielHackney
+
+[new]
+: This function is /excellent/! I have one small improvement, though: replace ##(minibuffer-complete)## with ##(unless (minibuffer-complete) (dabbrev-expand nil))##.
+
+    (defun smart-tab ()
+      "This smart tab is minibuffer compliant: it acts as usual in
+    the minibuffer. Else, if mark is active, indents region. Else if
+    point is at the end of a symbol, expands it. Else indents the
+    current line."
+      (interactive)
+      (if (minibufferp)
+          (unless (minibuffer-complete)
+            (dabbrev-expand nil))
+        (if mark-active
+            (indent-region (region-beginning)
+                           (region-end))
+          (if (looking-at "\\_>")
+              (dabbrev-expand nil)
+            (indent-for-tab-command)))))
+
+: What this does is that if regular minibuffer completion is unsuccessful, then upon hitting Tab again the other buffers will be searched for completion words. (Also, I've replaced ##hippie-expand## with ##dabbrev-expand##. ##hippie-expand##, while very powerful, is for "advanced" users and needs to be set up to work satisfactorily. ##dabbrev-expand## is Emacs' standard completion and works out of the box.)
+
+: To be able to use ##dabbrev-expand## (or ##hippie-expand##) in the minibuffer regardless of whether ##minibuffer-complete## is successful, one should make a key binding for it. The standard binding is the somewhat cumbersome ##M-/##. I suggest binding it to /Shift-Tab/: ##(global-set-key '[S-tab] 'dabbrev-expand)##.
+
+
+[new]
+:: My take on this problem: add exceptions, so if it's the minibuffer, but we're in eval-expression then do dynamic-abbrev instead of minibuffer-complete:
+
+    (if (and (minibufferp)
+             (not (string-match "^Eval:" (minibuffer-prompt))))
+        (minibuffer-complete)
+    ...
+
+:: --TamasPatrovics
+
+[new]
+: smart-tab is excellent.  If for some strange reason you are stuck with emacs 21, here's a slight modification to smart-tab (the second version above) that will work for you:
+
+   (defun smart-tab ()
+     "This smart tab is minibuffer compliant: it acts as usual in
+       the minibuffer. Else, if mark is active, indents region. Else if
+       point is at the end of a symbol, expands it. Else indents the
+       current line."
+     (interactive)
+     (if (string-match "Minibuf" (buffer-name))
+         (unless (minibuffer-complete)
+           (dabbrev-expand nil))
+       (if mark-active
+           (indent-region (region-beginning)
+                          (region-end))
+         (if (looking-at "\\>")
+             (dabbrev-expand nil)
+           (indent-for-tab-command)))))
+
+: --BryanMurdock
+
+[new]
+: Smart tab seems really nice. I have minor problem thought. It seems that buffer completion with InteractivelyDoThings don't work how it suppose. I does not show all completion candidates after two tabs. Any tips on how the get it working.
+
+: --Petteri
+
+[new]
+: I added a simple mode specific completion feature to smart-tab, that completes according to the current major-mode. It's not as advanced as TabKey2, but IMHO it's simple enough to be useful nevertheless.
+
+{{{
+(defvar smart-tab-completion-functions
+  '((emacs-lisp-mode lisp-complete-symbol)
+    (lisp-mode slime-complete-symbol)
+    (python-mode py-complete)
+    (text-mode dabbrev-completion))
+  "List of major modes in which to use a mode specific completion
+  function.")
+
+(defun get-completion-function()
+  "Get a completion function according to current major mode."
+  (let ((completion-function
+         (second (assq major-mode smart-tab-completion-functions))))
+    (if (null completion-function)
+        'dabbrev-completion
+        completion-function)))
+
+(defun smart-tab (prefix)
+  "Needs `transient-mark-mode' to be on. This smart tab is
+minibuffer compliant: it acts as usual in the minibuffer.
+
+In all other buffers: if PREFIX is \\[universal-argument], calls
+`smart-indent'. Else if point is at the end of a symbol,
+expands it. Else calls `smart-indent'."
+  (interactive "P")
+  (if (minibufferp)
+      (minibuffer-complete)
+    (if (smart-tab-must-expand prefix)
+        (let ((dabbrev-case-fold-search t)
+              (dabbrev-case-replace nil))
+          (funcall (get-completion-function))))
+    (smart-indent)))
+}}}
+
+Seems to be working well enough for my purposes. I hope I didn't screw anything up, if anybody has some style advice, I'd be glad to hear it, I haven't got too much experience with elisp so far.
+
+: -- SebastianB
+
+[new]
+I wanted the mode-specific functionality of Sebastian's code, so I forked the github project and added it in -- http://github.com/genehack/smart-tab/tree/master 
+
+: -- JohnAnderson
+
+
+== Other Solutions ==
+
+    (defun indent-or-complete ()
+      "Complete if point is at end of a word, otherwise indent line."
+      (interactive)
+      (if (looking-at "\\>")
+          (dabbrev-expand nil)
+        (indent-for-tab-command)
+        ))
+
+: and then add something like this for whichever language modes you want it to work for (A global-set-key (kbd "<tab>") screws up the minibuffer):
+
+    (add-hook 'c-mode-common-hook
+              (function (lambda ()
+                          (local-set-key (kbd "<tab>") 'indent-or-complete)
+                          )))
+
+: The following will work as expected -- mina86
+
+ (add-hook 'find-file-hooks (function (lambda ()
+  (local-set-key (kbd "<tab>") 'indent-or-complete))))
+
+: An alternative to this is the following, which 1) ONLY does it when the key is at the end of the line (yay!) and 2) still does the indentation:
+
+    (defun indent-or-complete ()
+      "Complete if point is at end of line, and indent line."
+      (interactive)
+      (if (looking-at "$")
+          (hippie-expand nil))
+      (indent-for-tab-command))
+
+: Or, slight modification of the above to allow you to still use tab (or whichever key you're using) to indent when there's nothing (except maybe whitespace) on the line:
+
+     (defun indent-or-complete ()
+       "Complete if point is at end of line, and indent line."
+       (interactive)
+       (if (and (looking-at "$") (not (looking-back "^\\s-*")))
+           (hippie-expand nil))
+       (indent-for-tab-command)
+       )
+: indent-or-complete with snippet support (used for rails.el)
+
+      (defun indent-or-complete ()
+       "Complete if point is at end of a word, otherwise indent line."
+       (interactive)
+       (if snippet
+           (snippet-next-field)
+        (if (looking-at "\\>")
+        (dabbrev-expand nil)
+        (indent-for-tab-command))))
+
+== Other Discussion ==
+
+: Is it possible to make it search for completions saved in a local file (eg. ~/.emacs-completions) so that when no word/symbol/whatever is found matching the prefix it would search for match there.  For isntance I want to make string "my-email" expand to "mn86/at/o2.pl".  It would be even better if one could define several expansions, eg. "my-email" expands to "mn86/at/o2.pl" then to "mina86/at/staszicw.aw.pl" when TAB is pressed 2nd time. -- mina86
+:: If anyone is interested I've posted code which does what I wanted in RotateText. It's called ##indent-or-rotate-or-complete##. -- mina86
+:: I would think that rotate is overkill for something like "my-email". I'd suggest ExpandMode or AbbrevMode instead. -- RyanDavis
+
+: What would be the best way to let Emacs use a mode-specific expand function with smart-tab? I'd like to use py-complete when in python-mode, ruby-complete when in ruby-mode and dabbrev-expand as a default.
+I'm guessing that this should be possible by defining a variable that contains the indenting function and is used by smart-tab then binding this variable to the correct indenting function in the mode hooks, but since I'm a (e)Lisp newbie, I would really appreciate if one of you guys could help me out. Thanks!
+
+:: In *TabKey2* the option tabkey2-completion-functions is used for that. If you have other suggestions for mode-specific expand functions then those used by /TabKey2/ please tell me.
+
+::: Thanks, that helped me a lot. I think TabKey2 is a little too much for me and it lacks the "indent-region by tab key (if mark is active)" feature that I like so much in smart-tab, otherwise it seems to be great. However, a friend of mine wrote some simple elisp functions that solve the problem for me. He's coming over later and I'll ask him to post them here.
+
+:: I am glad it helped, but what do you mean with that Tabkey2 is too much? Yes, it is big, but that should mostly be a (small burden) to Emacs ;-). The indent-region thing is something that comes by default with Emacs 23 (not yet released) and I have therefor not included it in Takey2. (You can get code for it in ourcomments-util.el that are part of [NxhtmlMode nXhtml].)
+
+::: Don't get me wrong, I think TabKey2 is great, I'd just rather not deal with manually switching completion functions if Emacs can "guess" the correct completion function by the means of a simple alist. Also, apart from not providing mode specific completion (so far) smart-tab.el provides everything I really need and it's pretty readable and hackable for elisp simpletons like me. :) (Unfortunately I've just switched to Emacs 22 less than a year ago, so I don't think I will be upgrading to GNU Emacs 23 too soon. However, I will definitely keep an eye on TabKey2, it does look very promising.)
+
+----
+See Also:
+* DynamicAbbreviations
+* HippieExpand
+* [[Icicles - Completion in Other Buffers]]
+* PredictiveAbbreviation and PredictiveMode
+* TmcCompletion
+* MagpieExpansion
+
+----
+
+CategoryCompletion

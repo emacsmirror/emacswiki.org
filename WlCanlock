@@ -1,0 +1,19 @@
+To insert a Cancel-Lock in your news postings put the following in your .wl file (needs canlock.el):
+
+ ;; Cancel-Lock
+ (setq canlock-password "<yourpassword>")
+ (autoload 'canlock-insert-header "canlock")
+ (autoload 'wl-summary-canlock-verify "canlock")
+ (setq canlock-sha1-function-for-verify 'canlock-sha1-with-ssleay)
+ (add-hook 'wl-news-send-pre-hook
+           'canlock-insert-header t)
+ (setq canlock-ignore-errors t)
+----
+What the heck is a "Cancel-Lock"?
+
+[new]
+
+Google?
+
+----
+WanderLust | CategoryMail

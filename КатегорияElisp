@@ -1,0 +1,9 @@
+Основным языком разработки программ для Emacs является Emacs Lisp.
+
+Руководства:
+* [http://www.gnu.org/software/emacs/emacs-lisp-intro/ An Introduction to Programming in Emacs Lisp] (доступно из Emacs: <code>C-h i m Emacs Lisp Intro RET</code>) — введение в основы Emacs Lisp
+* [http://www.gnu.org/software/emacs/manual/elisp.html GNU Emacs Lisp Reference Manual] (доступно из Emacs: <code>C-h i m elisp RET</code>) — полный справочник
+
+Заметки:
+* [http://sphinx.net.ru/blog/entry/semantic-wizardry/ Использование API Semantic в Emacs для обработки исходных текстов]
+* [http://xahlee.org/emacs/elisp.html (Emacs Lisp Tutorial (by Example))] — несколько статей от Xah Lee

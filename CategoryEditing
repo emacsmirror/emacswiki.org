@@ -1,0 +1,66 @@
+Click the heading to list pages in this category.
+This category is about editing, not modes.  See CategoryModes, instead.
+
+* [[kill|Killing]], [[yank|yanking]], copying and deleting:
+** CopyWithoutSelection -- simply copy current [[line]], current word and current paragraph to the [[kill ring]] without selecting each line, word or paragraph
+** DeleteSelectionMode -- type to replace the current selection (or backspace to delete it)
+** DeletingSyntax -- an alternative to killing by words
+** DeleteKillAndCopy -- take any motion command and prepend it with a suitable key to delete, kill or copy the text passed over
+** DeletingWhitespace -- delete extra whitespace
+** LRU-yank -- manipulate the [[kill ring]] in Least Recently Used fashion. Lisp:LRU-yank.el
+** MousePlus -- highlight the [[yank]] position while you press `mouse-2', so you hit the right spot
+** WholeLineOrRegion -- operate on current [[line]] if [[region]] is undefined
+** ZapToChar -- Delete the characters from [[point]] to a character you specify.
+** KillOrCopyToIsearch -- [[kill|Kill]] or copy from [[point]] up to where you are Isearching 
+** Motion/kill do-what-I-mean -- [[cursor]] movement and [[kill|killing]] [[DWIM]] functions.  Lisp:motion-and-kill-dwim.el
+* [[register|Registers]]:
+** RegAdhoc -- automatically add [[register]]s and show their destinations
+** BetterRegisters -- [[register]] enhancements, [[keyboard macro]]s
+** UnifyKillringAndRegister -- make [[register]]s easy to use
+* [[cursor|Cursor]] indication
+** ChangingCursorDynamically -- change cursor type and color, depending on context
+** CrosshairHighlighting – highlight the current [[line]] and column; track cursor or show cross hairs momentarily.
+** HighlightCurrentLine -- highlight the line of the cursor
+** HighlightCurrentColumn -- highlight the column of the cursor
+* Column indication and finding long [[line]]s:
+** ModeLine, ModeLinePosition -- current-column in [[mode line]]; highlight when too large
+** RulerMode -- a [[minor mode]] showing a ruler with columns, tab stops and more
+** PopupRuler -- temporarily displays a column ruler just above point
+** ColumnMarker -- displays semi-permanent column markers
+** HighlightCurrentColumn -- highlight the column of the cursor
+** FindLongLines -- commands to find long lines
+* Numbering:
+** RenumberList -- renumber your numbered lists
+** ReplaceRegexp -- renumber lists using regular expressions, emacs >= 22
+** ReplaceCount -- renumber lists using regular expressions, emacs < 22
+** IncrementNumber -- sometimes useful while using [[keyboard macro]]s
+** NumberLines -- put [[line]] numbers in source code -- useful with LaTeX
+** LineNumbers -- display [[line]] numbers (without changing the text)
+* Text tricks:
+** FormattingText -- automagically format text
+** RotateText -- rotate a buffer string, replacing it by each of a series of predefined replacements, in turn.
+** SwappingText -- swap regions of text
+** AlignCommands -- align text with respect to spaces, assignments or [[regexp]]
+** ColumnizeWords -- format a list of words or quoted strings into columns
+** DoubledWords -- find and delete doubled words
+** DuplicateLines -- find and delete duplicate lines
+** ReverseWords -- Reverse the order of words in the [[region]].  Words can be on the same line.  Does not sort.
+** InsertingTodaysDate -- insert today's date in letters or source code
+** InsertFileName -- have Emacs help insert file name into the [[buffer]]
+** ParEdit -- structured editing of s-expressions (parentheses)
+** RotateWordCapitalization -- rotate the capitalization of the current word
+** SimplerWordCapitalization -- make `upcase-word' (M-u), `downcase-word' (M-l), and `capitalize-word' (M-c) work on [[region]]s too.
+** [[Multiverse]] -- manage multiple versions of [[buffer]]s in an Emacs session
+* [[line|Lines]]:
+** LineCommands
+** RunCommandOverLines -- execute a command for several lines, like in `ed' (TheTruePath)
+** EndOfLineTips -- How to convert between different system line ending characters.
+* Jumping around, and seeing where you've been
+** MarkCommands -- Use of [[mark]] and [[point]] to jump around
+** PointStack -- Go back to where you were when you were interrupted.
+** PointUndo -- Undo point motion that results from all commands.
+** BookMarks -- Jump to places you have recorded (persistently or not).
+** VisibleBookmarks -- VisualStudio-like bookmarks for quick in-buffer navigation
+** BreadcrumbForEmacs -- Leave breadcrumb bookmarks in the buffers, and jump back to them quickly.
+
+See also EmacsNiftyTricks.

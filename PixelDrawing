@@ -1,0 +1,76 @@
+See also: XlibInterface.
+
+It's not very useful to do this, completely ignoring redisplay.  Also note that
+input needs to be blocked around Xlib calls.  You _could_ sensibly place
+dynamically-created graphics in buffers by consing up PBM data.  -- fx
+
+(XPM is an even better fit.  See below.  --ttn)
+
+ From: ScottLanning
+ Subject: emacs pixel drawing
+ Newsgroups: gnu.emacs.sources
+ Date: 15 Dec 2001 00:12:25 -0500
+
+For fun, I made a function to draw pixels onto a window.
+Try this DEFUN in xfns.c:
+
+<pre>
+DEFUN ("x-draw-point", Fx_draw_point, Sx_draw_point, 2, 3, 0,
+  "Draw a pixel at window coordinates X, Y.\n\
+WINDOW nil means use the selected window.")
+  (x, y, window)
+     Lisp_Object x, y, window;
+{
+  unsigned int xu = XFASTINT (x), yu = XFASTINT (y);
+  struct window *w;
+  struct frame *f;
+  Display *dpy;
+  Window win;
+  GC gc;
+
+  if (WINDOWP (window))
+    w = XWINDOW (window);
+  else
+    w = XWINDOW (selected_window);
+
+  f = XFRAME (WINDOW_FRAME (w));
+  dpy = FRAME_X_DISPLAY (f);
+  win = FRAME_X_WINDOW (f);
+  gc = f->output_data.x->normal_gc;    
+
+  XDrawPoint (dpy, win, gc,
+	      WINDOW_TO_FRAME_PIXEL_X (w, xu),
+	      WINDOW_TO_FRAME_PIXEL_Y (w, yu));
+
+  return Qnil;
+}
+</pre>
+
+Here's sample elisp to evaluate:
+
+<pre>
+(let ((x 0) y (width 500) (height 300))
+  (while (< x width)
+    (setq y (+ (/ height 2)
+	       (floor (* height (sin (* pi (/ (float x) width)))))))
+    (x-draw-point x y)
+    (setq x (1+ x))))
+</pre>
+
+Wheee... :)
+
+== XPM Generation ==
+
+XPM data is text-based, and thus easily created using Emacs.  For example,
+[http://www.gnuvola.org/software/personal-elisp/dist/lisp/diversions/fulminate-gnugo-xpms.el fulminate-gnugo-xpms.el]
+uses
+[http://www.gnuvola.org/software/personal-elisp/dist/lisp/diversions/artist-subpixel.el artist-subpixel.el]
+and
+[http://www.gnuvola.org/software/personal-elisp/dist/lisp/editing/xpm-fulmination.el xpm-fulmination.el]
+to create images on the fly for display in an Emacs buffer in [[GoMode]].
+Some screenshots are
+[http://www.gnuvola.org/software/j/gnugo/screenshots/ here].
+
+----
+CategoryPorts
+CategoryDisplay

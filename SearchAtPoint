@@ -1,0 +1,272 @@
+Vim has the mighty `*' and `#' keys that do an IncrementalSearch for the label under the TextCursor.
+
+So let's say your cursor is in the middle of "anotherVeryLongIdentifier" (like after the first letter "I").
+
+In Emacs using C++-Mode (See CPlusPlusMode) and using CamelCase you would need `M-b M-b M-b M-b C-s C-W C-W C-W C-W C-s' or slightly better `M-b M-b M-b M-b M-@ C-s M-y C-s' instead of Vim's `*'.
+
+Here are some ways of implementing Vim's `*' and `#' in Emacs.
+
+== Do it with HighlightSymbol ==
+
+This is a nifty way I found to extend HighlightSymbol to provide this functionality:
+
+
+  ;; highlight symbol at point and jump to next automatically
+  (load-library "highlight-symbol")
+
+  (defun hl-symbol-and-jump ()
+    (interactive)
+    (let ((symbol (highlight-symbol-get-symbol)))
+      (unless symbol (error "No symbol at point"))
+      (unless hi-lock-mode (hi-lock-mode 1))
+      (if (member symbol highlight-symbol-list)
+          (highlight-symbol-next)
+        (highlight-symbol-at-point)
+        (highlight-symbol-next))))
+  (defun hl-symbol-cleanup ()
+    (interactive)
+    (mapc 'hi-lock-unface-buffer highlight-symbol-list)
+    (setq highlight-symbol-list ()))
+
+  (global-set-key (kbd "C-x *") 'hl-symbol-and-jump)
+  (global-set-key (kbd "C-*") 'hl-symbol-cleanup)
+
+[new]
+This shouldn't be necessary.  Just set ''highlight-symbol-on-navigation-p'' and 
+
+  (global-set-key (kbd "C-x *") 'hl-symbol-next)
+  (global-set-key (kbd "C-*") 'hl-symbol-prev)
+
+-- [[nschum]]
+
+
+== Coding entire commands ==
+
+Mimicking this feature of Vim in Emacs can be done in a little EmacsLisp code.
+
+  (require 'etags) ;; provides `find-tag-default' in Emacs 21.
+  
+  (defun isearch-yank-regexp (regexp)
+    "Pull REGEXP into search regexp." 
+    (let ((isearch-regexp nil)) ;; Dynamic binding of global.
+      (isearch-yank-string regexp))
+    (isearch-search-and-update))
+  
+  (defun isearch-yank-symbol (&optional partialp)
+    "Put symbol at current point into search string.
+  
+  If PARTIALP is non-nil, find all partial matches."
+    (interactive "P")
+    (let* ((sym (find-tag-default))
+	   ;; Use call of `re-search-forward' by `find-tag-default' to
+	   ;; retrieve the end point of the symbol.
+	   (sym-end (match-end 0))
+	   (sym-start (- sym-end (length sym))))
+      (if (null sym)
+	  (message "No symbol at point")
+	(goto-char sym-start)
+	;; For consistent behavior, restart Isearch from starting point
+	;; (or end point if using `isearch-backward') of symbol.
+	(isearch-search)
+	(if partialp
+	    (isearch-yank-string sym)
+	  (isearch-yank-regexp
+	   (concat "\\_<" (regexp-quote sym) "\\_>"))))))
+  
+  (defun isearch-current-symbol (&optional partialp)
+    "Incremental search forward with symbol under point.
+  
+  Prefixed with \\[universal-argument] will find all partial
+  matches."
+    (interactive "P")
+    (let ((start (point)))
+      (isearch-forward-regexp nil 1)
+      (isearch-yank-symbol partialp)))
+  
+  (defun isearch-backward-current-symbol (&optional partialp)
+    "Incremental search backward with symbol under point.
+  
+  Prefixed with \\[universal-argument] will find all partial
+  matches."
+    (interactive "P")
+    (let ((start (point)))
+      (isearch-backward-regexp nil 1)
+      (isearch-yank-symbol partialp)))
+  
+  (global-set-key [f3] 'isearch-current-symbol)
+  (global-set-key [(control f3)] 'isearch-backward-current-symbol)
+  
+  ;; Subsequent hitting of the keys will increment to the next
+  ;; match--duplicating `C-s' and `C-r', respectively.
+  (define-key isearch-mode-map [f3] 'isearch-repeat-forward)
+  (define-key isearch-mode-map [(control f3)] 'isearch-repeat-backward)
+
+Thanks to JuriLinkov.  The implementation above is from someone who had never used the Vim feature before following only a description of the command written by a Vim user.
+
+== Another implementation of isearch-forward-at-point ==
+
+Seen on http://platypope.org/blog/2007/8/5/a-compendium-of-awesomeness:
+
+    ;; I-search with initial contents
+    (defvar isearch-initial-string nil)
+
+    (defun isearch-set-initial-string ()
+      (remove-hook 'isearch-mode-hook 'isearch-set-initial-string)
+      (setq isearch-string isearch-initial-string)
+      (isearch-search-and-update))
+
+    (defun isearch-forward-at-point (&optional regexp-p no-recursive-edit)
+      "Interactive search forward for the symbol at point."
+      (interactive "P\np")
+      (if regexp-p (isearch-forward regexp-p no-recursive-edit)
+        (let* ((end (progn (skip-syntax-forward "w_") (point)))
+               (begin (progn (skip-syntax-backward "w_") (point))))
+          (if (eq begin end)
+              (isearch-forward regexp-p no-recursive-edit)
+            (setq isearch-initial-string (buffer-substring begin end))
+            (add-hook 'isearch-mode-hook 'isearch-set-initial-string)
+            (isearch-forward regexp-p no-recursive-edit)))))
+
+== Extending Isearch with isearch-yank-symbol ==
+
+A similar result more in the spirit of Emacs would just extend Isearch's facilities to yank items from the cursor position in the buffer.  For instance, Isearch has a binding for yanking s-expressions from the buffer.  However, an s-expression is a broader definition than the symbol of a common imperative programming language.  The yank needs to be only generic enough for identifiers ("symbols").  `C-M-w' is an obvious binding in Isearch for this "symbol yank".
+
+  (require 'etags)
+
+  (defun isearch-yank-regexp (regexp)
+    "Pull REGEXP into search regexp." 
+    (let ((isearch-regexp nil)) ;; Dynamic binding of global.
+      (isearch-yank-string regexp))
+    (if (not isearch-regexp)
+	(isearch-toggle-regexp))
+    (isearch-search-and-update))
+
+  (defun isearch-yank-symbol ()
+    "Put symbol at current point into search string."
+    (interactive)
+    (let ((sym (find-tag-default)))
+      (if (null sym)
+	  (message "No symbol at point")
+	(isearch-yank-regexp
+	 (concat "\\_<" (regexp-quote sym) "\\_>")))))
+
+  (define-key isearch-mode-map "\C-\M-w" 'isearch-yank-symbol)
+
+The command `C-s C-M-w C-s' defined here will search for the entire symbol at the current point.  This shorter implementation than the one above of `isearch-yank-symbol' always uses "word" searches and does not alternatively offer "partial" searches.  A generally useful feature for Isearch's extensibility would allow one to search by yanking the entire thing at a point (see ThingAtPoint) and not only something ''starting'' at point.
+
+== Another take on isearch-yank-symbol using ThingAtPoint ==
+
+Based on JimBlandy's <code>isearch-regexp-whole-symbol</code> (see below)
+here is a simpler implementation of <code>isearch-yank-symbol</code> which
+also works smoother than the ones above:
+{{{
+(defun isearch-yank-symbol ()
+  "*Put symbol at current point into search string."
+  (interactive)
+  (let ((sym (symbol-at-point)))
+    (if sym
+        (progn
+          (setq isearch-regexp t
+                isearch-string (concat "\\_<" (regexp-quote (symbol-name sym)) "\\_>")
+                isearch-message (mapconcat 'isearch-text-char-description isearch-string "")
+                isearch-yank-flag t))
+      (ding)))
+  (isearch-search-and-update))
+}}}
+
+== Using ThingAtPoint and the Existing C-s C-w ==
+
+Maybe you only want Vim's `g*' and `g#', (search for "word" under point, as opposed to "\<word\>").
+If so, you can simply use `isearch-yank-word-or-char' (called by `C-w' in `isearch-mode') and move at the beginning of word at point on first call:
+{{{
+;;;
+;; Move to beginning of word before yanking word in isearch-mode.
+;; Make C-s C-w and C-r C-w act like Vim's g* and g#, keeping Emacs'
+;; C-s C-w [C-w] [C-w]... behaviour.
+
+(require 'thingatpt)
+
+(defun my-isearch-yank-word-or-char-from-beginning ()
+  "Move to beginning of word before yanking word in isearch-mode."
+  (interactive)
+  ;; Making this work after a search string is entered by user
+  ;; is too hard to do, so work only when search string is empty.
+  (if (= 0 (length isearch-string))
+      (beginning-of-thing 'word))
+  (isearch-yank-word-or-char)
+  ;; Revert to 'isearch-yank-word-or-char for subsequent calls
+  (substitute-key-definition 'my-isearch-yank-word-or-char-from-beginning 
+			     'isearch-yank-word-or-char
+			     isearch-mode-map))
+
+(add-hook 'isearch-mode-hook
+ (lambda ()
+   "Activate my customized Isearch word yank command."
+   (substitute-key-definition 'isearch-yank-word-or-char 
+			      'my-isearch-yank-word-or-char-from-beginning
+			      isearch-mode-map)))
+}}} 
+
+== Alternative: search for the current regexp as a whole symbol ==
+
+The  following approach was  implemented by JimBlandy (See
+http://www.red-bean.com/pipermail/arcana/2007-February/000011.html):
+{{{
+(defun isearch-regexp-whole-symbol ()
+  "Search for the current regexp as a whole symbol.
+You must be in a regexp incremental search for this to work."
+  (interactive)
+  (if isearch-regexp
+      (unless (string-match "^\\\\_<.*\\\\_>" isearch-string)
+        (setq isearch-string (concat "\\_<" isearch-string "\\_>")
+              isearch-message (mapconcat 'isearch-text-char-description
+                                         isearch-string "")
+              ;; Don't move cursor in reverse search.
+              isearch-yank-flag t))
+    (ding))
+  (isearch-search-and-update))
+
+(define-key isearch-mode-map "\M-e" 'isearch-regexp-whole-symbol)
+}}}
+
+== Another variation that is very vim-like ==
+
+This is meant to closely simulate what Vim does ... match entire words, jump to the first match immediately, etc.
+
+{{{
+(defun my-isearch-word-at-point ()
+  (interactive)
+  (call-interactively 'isearch-forward-regexp))
+
+(defun my-isearch-yank-word-hook ()
+  (when (equal this-command 'my-isearch-word-at-point)
+    (let ((string (concat "\\<"
+                          (buffer-substring-no-properties
+                           (progn (skip-syntax-backward "w_") (point))
+                           (progn (skip-syntax-forward "w_") (point)))
+                          "\\>")))
+      (if (and isearch-case-fold-search
+               (eq 'not-yanks search-upper-case))
+          (setq string (downcase string)))
+      (setq isearch-string string
+            isearch-message
+            (concat isearch-message
+                    (mapconcat 'isearch-text-char-description
+                               string ""))
+            isearch-yank-flag t)
+      (isearch-search-and-update))))
+
+(add-hook 'isearch-mode-hook 'my-isearch-yank-word-hook)
+}}}
+== See also ==
+
+* LazySearch --- A New search mode for fast highlight and jump various object around point.
+* MacChan ---  Contains implementation that started this page.
+* VagnJohansen --- It is time for a me-too entry.  `vjo-forward-current-word-keep-offset' and 
+`vjo-backward-current-word-keep-offset' implement Vim's `*' and `#'.
+* ThingAtPoint
+* ViKeys
+
+----
+CategoryEmulation
+CategoryKeys

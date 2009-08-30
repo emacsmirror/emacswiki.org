@@ -1,0 +1,198 @@
+以下是 “Programming In Emacs Lisp: An introduction” 的笔记. 你可以从 [http://www.emacswiki.org/emacs/download/ProgrammingInEmacsLisp_Chinese_Notes_Archive 这里] 下载 OrgMode 文件.
+
+==Emacs Lisp 编程入门==
+===原子===
+====定义====
+{{{
+            	 LISP中不可以再被分称更小的部份, 一个列表可以拆分成不同的部分
+}}}
+====例子====
+=====数字, 单个字符=====
+=====串 (String)=====
+{{{
+                	双引号中的文本, 不论是句子或者是段落, 都是一个原子, 这种原子被称作串(String)
+}}}
+===列表===
+====定义====
+{{{
+            	 从技术上说, Lisp中的一个列表三种可能的组成方式:
+            		 括号和括号中的原子
+            		 括号和括号中的其他列表
+            		 括号和括号中的其他列表和原子
+}}}
+====例子====
+=====空列表=====
+{{{
+                	 空列表 () 同时看作既是一个原子, 也是一个列表
+}}}
+====语法====
+=====列表中的空格=====
+{{{
+                	列表中的空格的数量无关紧要, 从LISP语言的角度来说, 多余的空格和换行符只不过为了使人们易于阅读而设计的.
+                	当Lisp读取表达式时, 它剔除所有多余的空格(但是原子间至少需要一个空格以使原子分割开来)
+}}}
+===单引号 '===
+{{{
+        	在列表前面的引号, 被称作一个引用(quto), 它搞告诉LISP不要对这个列表作任何操作, 而仅仅使按其原样.
+        	如果列表是变量, 则返回变量的值
+        	如果列表是函数, 则返回函数返回的值
+}}}
+===Lisp解释器===
+====工作原理====
+=====基本=====
+{{{
+                	 首先, 它查看一下在列表前面是否有单引号, 如果有, 解释器就为我们给出这个列表.
+                	 如果没有引号, 解释器就查看列表的第一个元素, 并判断它是否是一个函数的定义. 如果确实是一个函数, 这解释器执行函数定义中的指令.
+                	 否则打印一个错误消息
+}}}
+=====更复杂一点=====
+======LISP解释器可以对一个符号求值======
+{{{
+                    	只要这个符号前没有引号也没有括号包围它, LISP解释器将试图像变量一样来确定符号的值
+}}}
+======因为一些函数异常并且以异常的方式运行======
+{{{
+                    	这些异常的函数通常叫做 特殊表 (speical form) 他们用于特殊的工作
+}}}
+======嵌套解释======
+{{{
+                    	如果LISP解释器正在寻找的函数不是一个特殊表, 而是列表的一部分, 这LISP解释器首先查看这个列表中是否有另一个列表,
+                    	如果有一个内部列表, LISP解释器首先解释将如果处理内部列表, 而且以嵌套的方式, 首先处理最内层的列表,
+                        然后返回结果给上一层的列表使用
+}}}
+===字节编译===
+{{{
+        	LISP解释器可以解释两种类型的输入数据:
+        		人可以读懂的源代码 (.el作为扩展名)
+        		机器可以读懂的编译代码 (.elc作为扩展名), 速度更快
+}}}
+===谓词===
+====bufferp====
+{{{
+            告诉我们是否得到一个缓冲区本身(而不是缓冲区的名字), 例如:
+            (if (not (bufferp buffer))
+                (setq buffer (get-buffer buffer)))
+                如果buffer不是缓冲区本身, get-buffer函数通过缓冲区名字 buffer 来获得这个实际的缓冲区.
+}}}
+===特殊表===
+====defun====
+=====书写格式=====
+{{{
+                	(defun function-name (argument-list)
+                		"document..."	; Optional, 可选的
+                		(interactive)	; Optional, 可选的
+                		function-body)
+}}}
+=====interactive函数的参数代码=====
+======代码---------------提示用户输入--------------------------======
+======b			显存buffer的名称======
+======B			可能不存在的buffer的名称======
+======e			事件 (鼠标动作或 function key press)======
+======f			显存文件的名称======
+======F			可能不存在的文件名称======
+======n			数字 (整数)======
+======N			数字, unless command is invoked with a prefix argument, in which case use the prefix argument and skip this prompt======
+======r			传递point和mark两个参数(选中区域), 小的数字在前. 这是唯一一个传递两个参数的字符代码.======
+======D			目录======
+======c			字符======
+======s			字符串======
+======S			符号======
+======p			这个参量告诉Emacs将你正在键入的C-u加入一个数字解释为一个命令, 用来将这个数字作为参量传给函数, 例如:======
+{{{
+                    (defun my-multiplate (number)
+                       (interactive "p")
+                       (message "The result is %d " (* 7 number)))
+                    键入 C-u 7 M-x my-multiplate 可以将 7 传给 my-multiplate函数, 并在minibuffer显示 49 这个结果
+}}}
+======\n		对于有两个或者更多参量的函数, 可以用 \n 分隔交互式中的字符串, 例如:======
+{{{
+                         (defun replace-string (from to)
+                           (interactive "sReplace string: \nsReplace string %s with: ")
+                           ...)
+}}}
+======\r		将使Emacs将位置(point)和标记(mark)的值传给函数, 例如======
+{{{
+                    	 (defun name-of-function (buffer start end)
+                    		 "documentation..."
+                    		 (interactive "BAppend to buffer: \nr")
+                    		 body-of-function...)
+                    	 这个函数将使Emacs将位置和标记值传给函数并提示缓冲区的名字.
+                    	 位置对应 start , 标记对应 end
+}}}
+======*			如果当前缓冲区是只读缓冲区, 但是当前的函数又要写入缓冲区, 一条消息会打印在minibuffer中, 并警告.======
+{{{
+                    *这个控制符无需后面接一个换行符来分割不同的参量, 例如
+                    	(defun write-buffer (buffer)
+                    		(interactive "*bWrite buffer: ")
+                    		function-body...)
+}}}
+=====文档=====
+{{{
+                当文档中出现列表 (some-symbol) 时, 前面加上 \ 告诉LISP解释器将这个表达式作为文档打印出来, 而不作为一
+                个符号表达式对它求值: \(some-symbol)
+}}}
+====let====
+=====书写格式=====
+{{{
+                	(let ((variable value)
+                	      (variable value)
+                	      variable			;如果有这样的未初始化变量, 将自动地绑定到 nil 这个初始值上.
+                	      ...)
+                	      body...)
+}}}
+====if====
+=====书写格式=====
+{{{
+                	(if true-or-false-test
+                		(action-to-carry-out-if-the-test-returns-true)
+                	    (action-to-carry-out-if-the-test-returns-false)
+                	)
+}}}
+====save-excursion====
+=====这个特殊表的主要目的是保存并恢复当前位置(point)和标记(mark)的值. 使用户避免位置(point)和标记(mark)的不必要移动.=====
+====save-restrictin====
+=====变窄=====
+{{{
+                变窄可以是缓冲的其余部分不可见, widen命令撤销变窄开启.
+}}}
+=====说明=====
+{{{
+                save-restriction可以用来跟踪变窄开启的部分, 当lisp解释器遇到save-restriction特殊表时, 他执行这个表达式中的代码, 如果当前缓冲区变窄开启,
+                save-restriction特殊表就在所有代码执行完之后回复变窄开启.
+                
+                如果你同时使用save-excurstion 和 save-restriction(并且是一个紧接着另一个使用时), 应当在外层使用save-excursion, 如果采用了相反的词序,
+                就会在调用save-excursion之后无法记录缓冲区开启的标记.
+}}}
+====defvar====
+{{{
+            初始化变量
+            (defvar variable-name variable-value "variable describe")
+            
+            与setq有两点不同:
+}}}
+=====它只对无值的变量赋值, 如果一个变量已经有一个值, defvar就不会覆盖已经存在的值.=====
+=====defvar特殊表有一个文档字符串=====
+===Lisp中的真与假===
+====在Lisp中, nil有三个意思:====
+=====一个空列表, 等同于空列表 ()=====
+=====表示 假, 并在真假测试中为 假 的返回值, 真的返回值为 nil=====
+=====可以表示符号 "nil"=====
+====在Lisp中, 只要不是 nil 的值都为真====
+===正则表达式===
+====换行表示比较特殊====
+{{{
+            [
+            ]*
+            [ 和 ] 之间是一个换行符
+}}}
+===一些函数的区别===
+====apropos 与 command-aprops====
+{{{
+            command-aprops 只查找作为命令的函数
+            aprops 则列出与一个正则表达式匹配的所有符号, 包括非交互函数
+}}}
+====progn 与 prog1====
+{{{
+            prog1 函数和 progn函数类似, 不同之处在于prog1函数依次对它的参量求值并将其第一个参量的值作为整个表达
+            式的值返回 (progn函数将它最后一个参量的之作为这个表达式的值返回)
+}}}

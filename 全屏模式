@@ -1,0 +1,45 @@
+note：这篇文章的题目应该改为“全屏显示”而不是全屏模式，因为后者像一个mode似的。容易误会。请知道怎么改的朋友帮忙。
+
+下面代码在gnu/linux下通过，只针对gnu emacs。
+
+== 按f11就进入全屏显示
+
+将下面文字加到.emacs后，从下次启动emacs开始，按f11就进入全屏显示。全屏显示的好处是干扰少，所有注意力都在你写的文本上。
+
+ ;;按f11让Emacs进入全屏显示
+ ;;参考： http://www.emacswiki.org/cgi-bin/wiki/FullScreen
+   
+  (defun fullscreen ()
+      (interactive)
+      (set-frame-parameter nil 'fullscreen
+                           (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
+
+== 如果临时连菜单和工具栏都不想显示，可以通过 options - show/hide 勾选相关选项。
+
+options - show/hide 中有很多可以选择。如果你想保留当前的选择，那就在 options 中 save options 就好了。
+
+== 如果总是不想显示菜单和工具栏，可以在.emacs中再加两行代码。
+
+方法一、在图形界面中选择 options-show/hide 然后再save options应该可以。
+
+方法二、将下面代码加到.emacs中。
+
+ ;; 如果总是不显示工具栏，将下面代码加到.emacs中
+ ;; 参考： http://www.emacswiki.org/emacs/ToolBar
+ ;; 注意：在menu-bar不显示的情况下，按ctrl+鼠标右键还是能调出菜单选项的 
+    
+ (tool-bar-mode -1)
+
+ ;; 如果总是不显示菜单，将下面代码加到.emacs中
+ ;;参考： http://www.emacswiki.org/emacs/MenuBar
+ 
+ (menu-bar-mode -1)
+
+
+
+== 当菜单栏隐藏起来的时候，按ctrl+鼠标右键总是能调出菜单选项
+
+当菜单栏没有隐藏的时候，按ctrl+鼠标右键总*不能*调出菜单选项。我感觉这是个bug，虽然有人会说菜单栏都在上面了你干嘛还要那么按。
+
+
+

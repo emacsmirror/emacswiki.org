@@ -1,0 +1,76 @@
+This page explains how to use portraits in discussions on this wiki.
+
+Short summary:
+
+# Choose an image of your face somewhere on the web.  We prefer portrait size 48x48.
+# Use this image URL on your homepage: Put <code>portrait: <url></code> on a line somewhere on your page. -- ''Note:'' This must be the URL of the image itself, not the URL of a Web page where the image might be displayed. In particular, if you upload the image to EmacsWiki, this will not be the URL of the EmacsWiki page containing the image. Use your browser (command "View Image" or "Copy Image Location") to copy the image URL.
+# When you save your homepage, you should now see your portrait.
+# When you use <code>[new:AlexSchroeder:2004-12-23 20:09 UTC]</code> on a page somewhere, it will automatically be expanded to <code>[new:<username>:<date>]</code> and it will show your portrait.
+# This only works if your username is also the name of your homepage.
+
+== [new] ==
+
+When you are using ThreadMode instead of DocumentMode, ie. appending personal statements to a discussion instead of writing pages that could be part of a manual, then you should introduce your statements with <code>[new]</code>.
+This changes the background color of your statements.
+
+Example:
+
+    [new]
+    Like this.
+
+Result:
+
+[new]
+Like this.
+
+== [new:page:popup] ==
+
+If you use <code>[new:page:popup]</code>, then /page/ will be searched for a line starting with <code>portrait:</code> and an URL.  If such an URL is found, it is inlined as an image.
+/popup/ will be used as a tooltip for your image.
+
+Definition example:
+
+    portrait:http://www.emacswiki.org/alex/pics/alex-furious.jpg
+    Note how text flows around the image.
+
+Result:
+
+portrait:http://www.emacswiki.org/alex/pics/alex-furious.jpg
+Note how text flows around the image.
+
+----
+
+Usage example:
+
+    [new:UsingPortraits:Yadda yadda!]
+    Let your mouse pointer hover over the image!
+
+Result:
+
+[new:UsingPortraits:Yadda yadda!]
+Let your mouse pointer hover over the image!
+
+== [new:page:2004-12-23 20:09 UTC] and [new:AlexSchroeder:2004-12-23 20:09 UTC] ==
+
+If you don't specify a page or popup text, this will be expanded to 
+##[new:<username>:<date>]## when saving the page.
+
+If you have a portrait defined on your homepage, and the name of your homepage is the same as your username, then
+the portrait will be inlined as an image.
+A timestamp  will be used as a popup on the image.
+
+Example:
+
+    [new:AaronHawley:2009-03-31 20:04 UTC]
+    More eye-candy!  :)
+
+Result:
+[new:AlexSchroeder:2004-12-23 20:09 UTC]
+More eye-candy!  :)
+
+== Discussion ==
+
+[new:AlexSchroeder:2005-01-10 17:30 UTC]
+I'd prefer it if we didn't use weird icons, avatars, screenshots, or anything like that.
+I want to enable us to add a human touch to the wiki.
+We have enough symbolic overload on the web.

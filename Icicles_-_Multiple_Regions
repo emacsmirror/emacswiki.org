@@ -1,0 +1,123 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Other Search Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Tags Enhancements]] ||
+
+----
+
+== Multiple Regions ==
+
+'''Icicles''' lets you define multiple [[region]]s, which you can then act
+on individually or together.  The regions can be in any [[buffer]]s: any number of regions in any number of buffers.
+
+The multiple '''Icicles''' regions are saved persistently in [[user option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-region-alist|icicle-region-alist]]</tt>''''.  You can customize this option directly, but it
+is usually easier and less error-prone to define the [[list]] of regions incrementally,
+using [[command]] '''`icicle-add-region''''(`##C-##''##N##'' ##C-x C-x##', for ''##N##'' = ##0##,##1##,##2##,...), which adds the current Emacs
+region to `icicle-region-alist'.  You can remove one or more regions
+from `icicle-region-alist', using command '''`icicle-remove-region'''' or by customizing the option.  You can remove all regions in a given
+buffer, using command '''`icicle-remove-all-regions-in-buffer''''.
+
+You can use [[multi-command]] '''`icicle-select-region'''' (`##C-u C-x C-x##) to choose any region in `icicle-region-alist', navigate to it, and activate it.  You can use this as a
+kind of bookmark mechanism, retrieving saved regions later for
+operations in different Emacs sessions.  Unlike Emacs
+[[bookmark]]s, '''Icicles''' regions are not limited
+to being in ''file'' buffers -- any buffer can be used.
+
+You can also think of '''Icicles''' region definition and selection as a
+kind of ''tagging'' mechanism.  You can assign any identifying tag to a region, and you can assign the same tag to multiple regions, whether they are in the same buffer or in different buffers. You can also assign multiple tags to the same region, but in that case there will be multiple entries for that region in `icicle-region-alist': each entry corresponds to a single tag and a single region.
+The default tag proposed when you add a region to `icicle-region-alist' is the first '''`icicle-regions-name-length-max''''
+characters of the region itself.
+
+The tag text is not added to your buffers.  It is recorded,
+together with the region limits, the buffer name, and the buffer's
+associated file name, in variable `icicle-region-alist'.
+Each region is defined by its recorded limits.  Its tag is used
+only to identify it as a [[completion]] candidate.  This means that if
+a region tag was defined as the text at the beginning of the
+region (the default tag value), and you have changed the region's
+buffer (inserting or deleting text) since that definition, then
+the tag might no longer correspond exactly to the current region prefix.
+
+For commands such as `icicle-select-region' that use `icicle-region-alist',
+there is generally little sense in using regions as completion
+candidates if they are in buffers that no longer exist and are not associated with files.  For this
+reason, such regions are filtered out for completion.  They remain
+recorded in `icicle-region-alist', however, and if a non-existent
+buffer is re-created, then it will once again be available as a
+completion candidate.
+
+Buffers associated with files are an important special case: the
+files can be opened, re-creating the buffers, and then the regions
+can be accessed.  For this reason, buffers associated with files
+are always made available as completion candidates.  When you
+choose such a candidate, the file is automatically visited,
+provided it is readable.
+
+In addition to this automatic opening of individual files on
+demand, you can at any time open all of the (readable) files
+listed in `icicle-region-alist', using command
+'''`icicle-region-open-all-files''''.  And, if user option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-region-auto-open-files-flag|icicle-region-auto-open-files-flag]]</tt>'''' is non-`nil', then all files
+listed in `icicle-region-alist' are visited automatically, as soon
+as you invoke any '''Icicles''' command that uses that [[alist]].
+
+In ''Icicle'' mode, '''`C-x C-x'''' is bound to command
+'''`icicle-exchange-point-and-mark''''.  With no [[prefix argument]], this
+is the same as `exchange-point-and-mark': it swaps the position
+of the [[cursor]] ([[point]]) and the [[mark]] and activates the region.  With a
+[[numeric prefix argument]], this is the same as `icicle-add-region':
+it adds the current region to `icicle-region-alist'.  With a plain
+`C-u' prefix argument, this is the same as `icicle-select-region'.
+
+You can search any region in `icicle-region-alist' using command
+'''`icicle-search-region''''.  Because this is a multi-command, you can
+search any number of the regions, one at a time. You can also search through ''all'' of the regions at once, using a
+special feature of command `icicle-search' ('''`##C-c `##'''').  Provide a
+numeric prefix argument to `icicle-search' (e.g. `##C-9 C-c `##'), and the regions in
+`icicle-region-alist' become the search space.
+
+Commands `icicle-remove-region', `icicle-search-region', and
+`icicle-select-region' are multi-commands.  You can act on
+any number of regions using `C-RET' and so on.  [[mode line|Mode-line]] help during
+[[Icicles - Cycling Completions|cycling]], and on-demand [[Icicles - Help on Candidates|candidate help]] (`C-M-RET' and so on), both
+display information about a candidate region (length,
+positions...).
+
+(Command `icicle-remove-all-regions-in-buffer' is also a multi-command, but
+its completion candidates are buffers, not regions.)
+
+For commands `icicle-select-region' and `icicle-search-region', if
+user option '''`<tt>[[Icicles - Customization and General Tips#icicle-add-buffer-name-flag|icicle-add-buffer-name-flag]]</tt>'''' is non-`nil' (the default value), then each region-name candidate is annotated with the name of the region's buffer, highlighted, to help orient you. The buffer name is actually part of the ([[multi-completion]]) candidate, so you can match against it.
+
+
+'''See Also:'''
+
+* [[Icicles - Search Commands, Overview]] for more information about command `icicle-search'
+
+* [[Icicles - Support for Projects]]
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Other Search Commands]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Tags Enhancements]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryModes
+CategoryProgrammerUtils
+CategoryCode
+CategorySearchAndReplace
+CategoryShell
+CategoryRegion
+
+
+
+

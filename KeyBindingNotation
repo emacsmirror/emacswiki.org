@@ -1,0 +1,38 @@
+There are a gazillion ways to write keys.  My favorite notation tries
+to be as close to the output of <code>C-h k</code> as possible.  It uses the
+`kbd' function to parse a string describing the key.
+
+    (local-set-key (kbd "C-c C-t") 'sgml-tag)
+
+The only catch is keys with symbolic names.  These keys need to come
+in angle brackets:
+
+    (global-set-key (kbd "<f3>") 'comment-dwim)
+
+I think that older versions of Emacs did not show the angle brackets
+in their <code>C-h k</code> output.
+
+So what you need to do is use <code>C-h k</code> to see what Emacs thinks the key is called, and paste and copy that into your <code>kbd</code> string.  Done.
+
+To make things even simpler, one can define a macro like the one bellow:
+
+   (defmacro global-defkey (key def)
+     "*Bind KEY globally to DEF.
+   KEY should be a string in the format used for saving keyboard
+   macros (cf. `insert-kbd-macro')."
+     `(global-set-key (read-kbd-macro ,key) ,def))
+
+Now you can simply write:
+
+   (global-defkey "<f3>" 'comment-dwim)
+
+Just remember MissingKeys and ShiftedKeys if you are having trouble
+identifying the keys you want to assign.
+
+For the remaining gazillion-1 ways to write keys, consult the
+KeybindingGuide.
+
+See MouseBindingNotation for how to program mouse buttons.
+
+----
+CategoryKeys

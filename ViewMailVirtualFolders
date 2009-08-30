@@ -1,0 +1,31 @@
+Virtual folders contain messages from one or more real folders (see ViewMailFolders) with various filters applied to select which messages to include.
+
+You can create simple virtual folders based on the current folder using the command <code>vm-create-virtual-folder</code>. For example:
+
+    M-x vm-create-virtual-folder RET
+    Create virtual folder of messages: author RET
+    Create virtual folder of messages with author matching: someone@somewhere RET
+
+and you should now be in a virtual folder of messages sent by someone@somewhere.
+
+Or, to get a folder of messages that you haven't replied to:
+
+    M-x vm-create-virtual-folder RET
+    Create virtual folder of messages: unreplied RET
+
+There are many selectors, in addition to <code>author</code> and <code>unreplied</code>, that you can choose from.
+
+More complex examples of virtual folders can be specified using the variable <code>vm-virtual-folder-alist</code>. With this, virtual folders can be based on more than one real folder and multiple selector can be combined using logical operators. The above selectors can be combined and written as:
+
+    (setq vm-virtual-folder-alist
+          '(("Unreplied (someone)"
+             (("INBOX")
+              (and (unreplied)
+                   (author "someone@somewhere"))))))
+
+where <code>"Unreplied (someone)"</code> is the name of the virtual folder, <code>("INBOX")</code> is the list of real folders to look in, and the rest is the selector.
+
+Virtual folders specified in <code>vm-virtual-folder-alist</code> can be visited with <code>vm-visit-virtual-folder</code>.
+
+----
+CategoryViewMail

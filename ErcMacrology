@@ -1,0 +1,220 @@
+I've recently browsed through Paul Graham's ''On Lisp'' again.  (See CommonLisp.)  The book is really great, and inspired me to look at macros we could use for erc.el. (In fact, erc-once-with-server-event was inspired by OnLisp IIRC)
+
+The plan is to write a macro for defining the different server message type handlers. This includes stuff like JOIN, PART, QUIT, but also numeric messages like 004 or 221.
+
+The following is what I currently have, and I'd like to get feedback from you about it.  What do you think, is it ugly?  Does it help?  Does it make things more complicated then need be?  What could be done better/differently? 
+
+Please comment here or on IRC, my primary mailmachine died this weekend, so don't send me mail, it may take a bit till I'm fully online again.
+
+<pre>
+ ;; Little helper stuff
+
+ (defun mkstr (&rest args)
+   (with-output-to-string
+     (mapc #'princ args)))
+
+ (defun symb (&rest args)
+   (intern (apply #'mkstr args)))
+
+ (define-modify-macro concat! (rest) concat)
+
+ (defmacro aif (test then &optional else)
+   "Anaphoric if, bind `it' to the result of TEST."
+   `(let ((it ,test))
+      (if it ,then ,else)))
+
+ (defun find-%chars (string &optional chars)
+   "Return a list of %-escape chars used in STRING."
+   (if (string-match "%[a-zA-Z]" string)
+       (find-%chars (substring string (1+ (match-beginning 0)))
+                   (cons (aref string (1+ (match-beginning 0))) chars))
+     chars))
+
+ (defun erc-message-arglist (mappings string)
+   "Return the rest of the arglist for `erc-display-message'.
+ This function is only used at compile time."
+   (let (res)
+     (dolist (char (sort (find-%chars string) #'>) res)
+       (aif (member (symb "%" (string char)) mappings)
+           (setq res (append (list char (nth 1 it)) res))
+         (error (format "%%%c is not defined as Mapping" char))))))
+
+ (defun erc-message-arglist-doc (mappings string)
+   "Not finished yet, will be used to generate docstrings."
+   (let ((args (erc-message-arglist mappings string))
+        (res ""))
+     (while args
+       (concat! res (mkstr "%" (string (car args)) ": " (nth 1 args) "\n"))
+       (setq args (cddr args)))
+     res))
+
+ (defun erc-event-name (name)
+   (cond
+    ((symbolp name) (symbol-name name))
+    ((integerp name)
+     (setq name (number-to-string name))
+     (cond ((< (length name) 2)
+           (setq name (concat "00" name))))
+     name)))
+
+ (defmacro* erc-defhandler (name docstring
+                                (&key sender channel who text mode buffer bufs
+                                      result bind)
+                                (mappings default &rest alternatives)
+                                &rest form)
+   "Define the default handler for server event NAME.
+ NAME should either be a integer or a symbol.
+ DOCSTRING is the docstring to be used for the default handler function.
+ :sender NUM: Bind sspec to (aref parsed NUM) then
+               bind sender to the result of
+                (erc-parse-user sspec)
+               and bind nick, login and host to successive elements of sender.
+  :text NUM: Bind text to the result of
+            (erc-trim-string (aref-parsed NUM))
+  :channel | :who NUM: Bind varname to (aref parsed NUM).
+  :buffer SYM: If SYM is channel, bind buffer to the result of
+                (erc-get-buffer channel proc)
+  :bufs SYM: If SYM is nick, bind bufs to the result of
+              (erc-buffer-list-with-nick nick proc)
+  :bind BINDFORM: Additional bindings for the initial let*.
+  :result EXP: Put EXP as the last expression from the handler
+ MAPPING: A list of the form (%c channel %n nick) which defined the mapping
+  between %-escape chars and variables.
+ DEFAULT: Either a STRING which is used to set default catalog entry or
+  the form (STRING PRED HIGHLIGHT-TYPE TARGET-BUFFER (BEFORE...) (AFTER...))
+ ALTERNATIVE: A list of the form
+  (SUFFIX STRING PRED HIGHLIGHT-TYPE TARGET-BUFFER (BEFORE...) (AFTER...))
+  where SUFFIX is a symbol which will be used to append to the catalog name.
+ FORM: Code executed in handler before the predicates in DEFAULT and
+ ALTERNATIVE."
+   (let* ((hname (erc-event-name name))
+          (sym (intern (if (integerp name)
+                          (concat "s" hname)
+                        hname)))
+         (hook (symb "erc-server-" hname "-hook"))
+         (fun (symb "erc-server-" hname))
+         (init-bindings (when sender
+                          `((sspec (aref parsed ,sender))
+                            (sender (erc-parse-user sspec))
+                            (nick (nth 0 sender))
+                            (login (nth 1 sender))
+                            (host (nth 2 sender)))))
+         (bodyform ; The body for the handler function
+          (if (listp default)
+              (append
+               form
+               (list
+                `(cond
+                  ,@(when alternatives
+                      (mapcar (lambda (elt)
+                                `(,(nth 2 elt)
+                                  ,@(nth 5 elt)
+                                  (erc-display-message
+                                   parsed ,(nth 3 elt) ,(nth 4 elt)
+                                   ',(symb sym "-" (nth 0 elt))
+                                   ,@(erc-message-arglist
+                                      mappings (nth 1 elt)))
+                                  ,@(nthcdr 6 elt)))
+                              alternatives))
+                  (,(nth 1 default)
+                   ,@(nth 4 default)
+                   (erc-display-message
+                    parsed ,(nth 2 default) ,(nth 3 default)
+                    ',sym ,@(erc-message-arglist
+                             mappings (nth 0 default)))
+                   ,@(nth 5 default)))))
+            form)))
+     (when who
+       (push
+        `(who (aref parsed ,who))
+        init-bindings))
+     (when channel
+       (push
+        `(channel (aref parsed ,channel))
+        init-bindings))
+     (when text
+       (push
+        `(text (erc-trim-string (aref parsed ,text)))
+        init-bindings))
+     (when mode
+       (push
+        `(mode (mapconcat 'identity (delete* nil (subseq parsed ,mode)) " "))
+        init-bindings))
+     (cond ((eq buffer 'channel)
+           (if channel
+               (add-to-list
+                'init-bindings
+                `(buffer (erc-get-buffer channel proc)) t)
+             (error ":channel is not used")))
+          (t nil))
+     (cond ((eq bufs 'nick)
+           (if sender
+               (add-to-list
+                'init-bindings
+                `(bufs (erc-buffer-list-with-nick nick proc)) t)
+             (error ":sender is not used")))
+          (t nil))
+     `(progn
+        ,(cond ((stringp default)
+                `(erc-define-catalog-entry 'english ,sym ,default))
+               ((listp default)
+                `(progn
+                   (erc-define-catalog-entry
+                    'english (quote ,sym) ,(nth 0 default))
+                   ,@(when alternatives
+                       (mapcar (lambda (elt)
+                                 `(erc-define-catalog-entry
+                                   'english
+                                   ',(symb sym "-" (nth 0 elt))
+                                   ,(nth 1 elt)))
+                               alternatives)))))
+        (defun ,fun (proc parsed)
+         ,docstring
+         (let* (,@init-bindings
+                ,@bind)
+           ,@bodyform
+           ,result))
+        ,(if (boundp (quote hook))
+            `(add-hook (quote ,hook) (quote ,fun))
+          `(defcustom ,hook (,fun)
+             ,(if hookdoc hookdoc "")
+             :group 'erc-server-hooks
+             :type 'hook)))))
+
+
+
+ (put 'erc-defhandler 'lisp-indent-function 1)
+
+ ;; Two examples ported from v1.293
+
+ (erc-defhandler INVITE
+   "Handle invitation messages."
+   (:sender 1 :who 2 :channel 3)
+   ((%c channel %h host %n nick %u login)
+    ("%n (%u@%h) invites you to channel %c"
+     (erc-current-nick-p who)
+     'notice 'active))
+   (setq invitation channel))
+
+ (erc-defhandler KICK
+   "Handle kick messages received from the server."
+   (:sender 1 :channel 2 :who 3 :text 4
+    :buffer channel)
+   ((%c channel %h host %k who %n nick %r text %u login)
+    ("%n (%u@%h) has kicked %k off channel %c: %r"
+     t
+     'notice buffer)
+    (you "You have been kicked off channel %c by %n (%u@%h): %r"
+     (erc-current-nick-p who)
+     'notice buffer
+     nil
+     ((erc-delete-default-channel channel buffer)
+      (erc-update-mode-line buffer)))
+    (by-you "You have kicked %k off channel %c: %r"
+     (erc-current-nick-p nick)
+     'notice buffer))
+   (erc-remove-channel-member buffer who)
+   (erc-update-channel-info-buffer channel))
+</pre>
+----
+[[ERC]] MarioLang

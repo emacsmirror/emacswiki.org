@@ -1,0 +1,16 @@
+Don't you have a good rule for naming Emacs [[register]]s? Do you
+easily forget where the registers point in the [[buffer]]?
+##regadhoc.el## provides the following:
+
+* Add registers automatically: You can skip the process to
+consider a name.
+* Show which line a register points to in the [[minibuffer]]
+when you want to jump: You can see and select it in the
+minibuffer. Use SPC to jump to the latest register.
+
+See 
+
+* http://www003.upp.so-net.ne.jp/quasi/red/regadhoc.el
+
+----
+CategoryEditing

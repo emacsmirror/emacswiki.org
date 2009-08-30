@@ -1,0 +1,69 @@
+When working with multiple windows it can be annoying if they get out of order. With this function it's easy to fix that. This is a slight rewrite of an original written by ThomasBellman.
+
+ (defun transpose-windows (arg)
+   "Transpose the buffers shown in two windows."
+   (interactive "p")
+   (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
+     (while (/= arg 0)
+       (let ((this-win (window-buffer))
+             (next-win (window-buffer (funcall selector))))
+         (set-window-buffer (selected-window) next-win)
+         (set-window-buffer (funcall selector) this-win)
+         (select-window (funcall selector)))
+       (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
+
+ (define-key ctl-x-4-map (kbd "t") 'transpose-windows)
+
+And because diversity is a good thing, here is Stephen Gildea's
+version of the same:
+
+ (defun swap-window-positions ()         ; Stephen Gildea
+   "*Swap the positions of this window and the next one."
+   (interactive)
+   (let ((other-window (next-window (selected-window) 'no-minibuf)))
+     (let ((other-window-buffer (window-buffer other-window))
+           (other-window-hscroll (window-hscroll other-window))
+           (other-window-point (window-point other-window))
+           (other-window-start (window-start other-window)))
+       (set-window-buffer other-window (current-buffer))
+       (set-window-hscroll other-window (window-hscroll (selected-window)))
+       (set-window-point other-window (point))
+       (set-window-start other-window (window-start (selected-window)))
+       (set-window-buffer (selected-window) other-window-buffer)
+       (set-window-hscroll (selected-window) other-window-hscroll)
+       (set-window-point (selected-window) other-window-point)
+       (set-window-start (selected-window) other-window-start))
+     (select-window other-window)))
+
+ChrisWebber provides a similar function, but this one allows you to select which two you want to swap (perhaps if you have 3 or more windows open)
+
+ (setq swapping-buffer nil)
+ (setq swapping-window nil)
+
+ (defun swap-buffers-in-windows ()
+   "Swap buffers between two windows"
+   (interactive)
+   (if (and swapping-window
+            swapping-buffer)
+       (let ((this-buffer (current-buffer))
+             (this-window (selected-window)))
+         (if (and (window-live-p swapping-window)
+                  (buffer-live-p swapping-buffer))
+             (progn (switch-to-buffer swapping-buffer)
+                    (select-window swapping-window)
+                    (switch-to-buffer this-buffer)
+                    (select-window this-window)
+                    (message "Swapped buffers."))
+           (message "Old buffer/window killed.  Aborting."))
+         (setq swapping-buffer nil)
+         (setq swapping-window nil))
+     (progn
+       (setq swapping-buffer (current-buffer))
+       (setq swapping-window (selected-window))
+       (message "Buffer and window marked for swapping."))))
+
+ (global-set-key (kbd "C-c p") 'swap-buffers-in-windows)
+
+
+----
+CategoryWindows

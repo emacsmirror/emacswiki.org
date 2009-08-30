@@ -1,0 +1,18 @@
+jde-usages is a plugin for the JavaDevelopmentEnvironment that uses the ASM bytecode library to provide usage (eg: find all the callers of a method) and other useful information about your Java classes. 
+
+This plugin is based on the ideas in jde-xref.el that is distributed with JDEE and makes the following advancements :
+* Initial setup is much faster. See here for details on what happens during the setup stage.
+* The usage information jde-usages provides is up to date as the class files and jars in the classpath.
+* Java turns out to be better suited and much faster for low-level stuff like byte-code parsing and uncompressing jar files.
+* No extra configuration is required. jde-usages examines all the classes in jde-global-classpath and therefore doesn't require a separate classpath of generated files or a prefix list.
+
+jde-usages also uses the information it gathers to provide some useful functions:
+
+* <i>jde-usages-display-subs-and-implementers</i> displays all the subclasses (or sub-interfaces and implementing classes) of any class (or interface) in tree form.
+* <i>jde-usages-display-subs-implementing-method</i> displays all the locations where the current method is overridden (or implemented if current method is that of an interface).
+* <i>jde-open-class-source-with-completion</i> Provides class-name completion on top of jde-open-class-source.
+
+http://jde-usages.sourceforge.net/
+
+----
+JavaDevelopmentEnvironment

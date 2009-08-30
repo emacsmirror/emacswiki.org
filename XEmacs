@@ -1,0 +1,17 @@
+'''XEmacs''' is a ~decade-old fork from [[GnuEmacs]]. See [http://www.xemacs.org/ http://www.xemacs.org/] for more details; there's also an active newsgroup at [news:comp.emacs.xemacs comp.emacs.xemacs]. 
+
+
+Around 1994, [http://www.sun.com/ Sun Microsystems] and [http://www.dreamsongs.com/NewFiles/PatternsOfSoftware.pdf Lucid Inc.] decided to cooperate on a version of Emacs, distinct from that maintained by the [http://www.fsf.org/ Free Software Foundation]. Lucid Inc. had been writing a version they called "Lucid Emacs"; Sun had been sponsoring something called "Epoch," another version of Emacs.
+
+'''XEmacs''' was chosen for the merged project to avoid explicitly favoring either company. There hasn't been a good reason to change the name since then, especially since no other formal body has taken over the project. 
+
+Lucid's Emacs had forked quite publicly from the FreeSoftwareFoundation's Emacs a year before this. This fork has persisted as the EmacsSchism. 
+
+The '''X''' in '''XEmacs''' occasionally confuses people. It doesn't mean that the program can't be run in a terminal, nor that GnuEmacs can't take advantage of [http://www.x.org/ X11].  '''XEmacs''' can be used in TTYs and under X11---occasionally at the same time, using GnuClient---without problems. GnuEmacs can be run under X11 and under TTYs, though not at the same time (but see MultiTTYSupport). 
+
+See also: BuildingXEmacs XEmacsBugs EmacsSchism  
+
+----
+CategoryPorts
+CategoryHistory
+EmacsImplementations

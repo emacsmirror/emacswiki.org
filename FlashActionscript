@@ -1,0 +1,10 @@
+Stuff for Actionscript programming.
+
+* ActionScriptMode - obviously
+* FlymakeActionscriptThree - Flymake(syntax and type checking) mode for AS3
+* EmacsFlexDebugger - Using fdb (Flex Debugger) under emacs.
+* FcshCompileSupport - Using compile with the flex compiler shell without fcsh being restarted each time.
+
+
+----
+CategoryProgramming

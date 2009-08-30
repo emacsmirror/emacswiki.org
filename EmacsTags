@@ -1,0 +1,148 @@
+This page is about '''[::tags]''', a facility for recording names and their definitions and later looking up the definitions.
+
+== Use `etags' Program To Build a Tags File ==
+
+You use the command-line program [::etags] to generate a [[tags file]], which records where names of different kinds of entities are defined (not where they are referenced, however). Names that are indexed for quick lookup this way are called '''[[tag]]s'''.  See 
+BuildTags for instructions on how to do this. 
+
+[new]
+For some reason, in my copy of XEmacs that came with Redhat 8, I need to run `ootags' rather than `etags' for things to work correctly. If I use etags or ctags, XEmacs will read the file but won't have all the function names in the completion table -- MikeHearn
+
+
+== Use `M-.' (`find-tag') To Look Up Definitions ==
+
+Once you have a [[tags file]], you can follow tags (of functions, variables, macros, whatever) to their definitions. These are the basic commands:
+
+* `##M-.##' (`find-tag') -- find a tag, that is, use the Tags file to look up a definition
+* `##M-*##' (`pop-tag-mark') -- jump back
+* `tags-search' -- [[regexp]]-search through the source files indexed by a tags file (a bit like `grep')
+* `tags-query-replace' -- query-replace through the source files indexed by a tags file
+* `##M-,##’ (`tags-loop-continue’) -- resume  `tags-search'  or `tags-query-replace' starting at [[point]] in a source file
+* `tags-apropos’ -- list all tags in a tags file that match a regexp
+* `list-tags' -- list all tags defined in a source file
+
+See the Emacs manual, node '''Tags''' for more information.
+
+
+
+== Choosing Among Multiple Tags for the Same Name ==
+
+A [[tags file]] can have multiple definitions, hence multiple tags, for the same name. The different definitions for the name can be in the same source file or in different source files. And you can have multiple tags files. This means that when you ask to follow a name to its definition there can be some ambiguity.
+
+It's good to have a way to navigate among different definitions of the same name in such a way that you can tell where each source definition is located before you go to it. The following libraries all help you choose from among multiple tags for the same name in multiple files:
+
+* [[Icicles - Tags Enhancements]]
+* EtagsSelect
+* [[VTags]]
+* Lisp:anything-etags.el is [[Anything]] interface to select candidates.
+** See also AnythingApplications
+
+
+
+== Icicles Helps You Work with Tags ==
+
+You can use use '''[[Icicles]]''' [[Icicles - Multi-Commands|multi-commands]] '''‘icicle-search-tag’''' and '''`icicle-find-tag'''' to do all of what you normally do with a combination of commands `find-tag’, `tags-loop-continue’ (`##M-,##’), `tags-apropos’, `tags-query-replace', `list-tags', and more.  Each of these is a general ''tags browser''.  Being multi-commands, you can visit any number of tags, in any order, in a single command invocation. You see a list of all tags that match your (reexp) input, and those choices are dynamically updated when you change your minibuffer input. See [[Icicles - Tags Enhancements]].
+
+
+In addition, you can use '''Icicles''' multi-command `icicle-imenu' as an alternative to using tags.  Like tags, it lets you navigate among definitions in multiple files -- and also multiple saved regions and non-file buffers.  Like ImenuMode, you need not build a tags file.
+
+Since `icicle-imenu' locates definitions using Imenu regexps, you can only navigate among definitions in buffers that you are visiting. This is both an advantage and a disadvantage: you can narrow the search to certain files, but you must know which files to search. And if you want to search all files, then you must open them all (e.g. by matching a project regexp). See [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]].
+
+
+
+
+== Finding Tags Files ==
+
+[new]
+See EtagsTable
+
+[new]
+Vim has a nice feature where you can indicate that you would like the editor to 
+search up the directory tree from the current working directory for a file named 
+"tags". These two functions provide that for vtags, searching up the filesystem from
+the <code>buffer-file-name</code> of the current buffer.
+
+<pre>
+(defun jds-find-tags-file ()
+  "recursively searches each parent directory for a file named `tags' and returns the
+path to that file or nil if a tags file is not found. Returns nil if the buffer is
+not visiting a file"
+  (labels
+      ((find-tags-file-r (path)
+         (let* ((parent (file-name-directory path))
+                (possible-tags-file (concat parent "tags")))
+           (cond
+             ((file-exists-p possible-tags-file) (throw 'found-it possible-tags-file))
+             ((string= "/tags" possible-tags-file) (error "no tags file found"))
+             (t (find-tags-file-r (directory-file-name parent)))))))
+
+    (if (buffer-file-name)
+        (catch 'found-it 
+          (find-tags-file-r (buffer-file-name)))
+        (error "buffer is not visiting a file"))))
+
+(defun jds-set-tags-file-path ()
+  "calls `jds-find-tags-file' to recursively search up the directory tree to find
+a file named `tags'. If found, calls `vtags-set-tags-file' with that path as an argument
+otherwise raises an error."
+  (interactive)
+  (vtags-set-tagfile (jds-find-tags-file)))
+</pre>
+
+
+[new]
+two possible improvements:
+# make the name of the tags file a parameter to the <code>jds-set-tags-file-path</code> function
+# make the end-condition of matching "/tags" work with Win32 filesystems.
+
+-- JonathanSimms
+
+== Revisit Tags Chronologically ==
+
+You can use EtagsStack to see the history of which tags you have visited (using, for example, `##M-.##') and retrace your visits chronologically.
+
+== Use Tags to Complete Symbols ==
+
+You can use `M-x complete-tag' to get simple
+(ie context free) symbol name [[Completion]]. This works like other types of
+completion in emacs, if there are multiple possibilities a window will be opened showing them all. 
+
+[new]
+Does anybody know where the 'tag-complete-symbol' went? -- AlexSchroeder
+
+[new]
+No idea, but try tags-complete-tag in etags.el. It does pretty much the same thing. It's not documented which is criminal for such an insanely useful thing. -- Anonymous
+
+[new]
+`complete-tag' is bound to `M-TAB' by default but because some
+window managers use this to switch between windows, I tend to use `M-RET' instead. Which tool do you use for context symbol completion? For example, I just want to see the functions accessible from [[point]]. -- JérômeRadix
+
+[new]
+Semantic in CEDET has a feature that might fit your needs: "Smart Completion
+Completes symbols actually available in a given context. Some tools call this intellisense." -- Martin Muggli
+
+== Use incron (Inotify cron) to generate tags automatically  ==
+
+An article document here how to use [http://inotify.aiken.cz/?section=incron&page=about&lang=en incron] to generate the tags automatically when a file changed. You can read it here :
+
+http://blog.chmouel.com/2009/07/03/update-emacsvim-tags-with-inotify/
+
+== XEmacs vs GNU Emacs Versions of etags.el ==
+
+##etags.el## is the Emacs library that defines commands for working with tags. XEmacs and GnuEmacs each have an ##etags.el## file, and they are quite different. This divergence has been a source of
+frustration on my part over the years.  In early 1990's I started
+using the XEmacs version of etags.el and grew very fond of it's
+configurability especially with regards to specifying which TAGS file
+to use based on regexp of file names, major modes, etc.  It seems like
+to me that etags.el in GNU/Emacs lacks such configurability. Hence, I
+still use etags.el, lifted from Lucid emacs, that I hacked up to work
+with Emacs many years ago. Again, if someone knowledgable with Emacs
+etags.el can correct me, I would appreciate it. -- Anonymous
+
+See EtagsTable
+
+
+----
+CategoryProgrammerUtils
+CategoryCompletion
+

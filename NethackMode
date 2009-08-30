@@ -1,0 +1,14 @@
+== Emacs Major Mode for Playing Nethack ==
+
+Nethack-el is a major mode for playing nethack. it communicates with a nethack sub-process.
+
+* http://www.nongnu.org/nethack-el
+
+Features include customizable keys, hooks on game events, customizable colors, run-time switching between text and glyphs, and all the beauty that comes with emacs.
+
+Nethack-el also requires a patched version of nethack. The patch comes with the nethack-el package and adds an additional window port to nethack. This 'lisp' port is a serialization of the nethack window port interface and can be used for more than just a lisp port. In the CVS version you can also play over the internet.
+
+
+
+----
+CategoryGames

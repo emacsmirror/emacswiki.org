@@ -1,0 +1,62 @@
+This is a feature that I've missed in many text editors. -- JukkaM
+
+<pre>
+     (defun line-copy-char (&optional b)
+      "Copy a character exactly below/above the point
+       to the current point of the cursor (default is above)."
+       (interactive "p")
+         (let (p col s)
+           (setq p (point))
+           (setq col (current-column))
+           (forward-line (if b -1 1))
+           (move-to-column col)
+           (setq s (buffer-substring (point) (+ (point) 1)))
+           (goto-char p)
+           (insert s)))
+</pre>
+: and the keybindings to go with it
+<pre>
+     (define-key global-map [f12] 'line-copy-char)
+     (define-key global-map [(shift f12)] '(lambda ()(interactive)(line-copy-char nil)))
+</pre>
+
+This seems to be a rather esoteric function.  Maybe I'm missing its utility?  How do you get in a situation where you need to use this?  -- ErikBourget
+: I'm wondering the same thing. -- EdwardOConnor
+
+:: I have needed this a couple of times. I solved it back then by doing a keyboard macro. I cannot remember exactly what I wanted it for, but I know it was very handy back then. -- MathiasDahl
+
+It is similar to `<up> <C-k> <C-y> <down> <C-y>', perhaps. -- AlexSchroeder
+
+There is a package called vcursor which might be what you want. You
+can set a "virtual cursor" to somewhere in a buffer, then copy
+characters, words, and lines from the virtual cursor position to
+point. -- MattHodges  
+
+VcursorPackage is in GNU Emacs since version 21.2.
+
+This functionality is similar to that found in MS Excel, and many other Windows-based applications that deal with tabular data.  It's typically bound to C-'.  -- EricHanchrow
+
+Vim has C-y and C-e for copying a character from above and below, respectively. -- DanielBrockman
+
+There `copy-from-above-command' in misc.el, which copies ARG characters from above. If used without prefix, copy entire string. So M-1 M-x copy-from-above-command RET will copy 1 character from above. --ZajcevEvgeny
+
+Here is another play on the same theme:
+<pre>
+(defun copy-to-char (arg char)
+  "Copy all characters from the previous line beginning with the
+character currently above the cursor up to the first occurrence
+of CHAR."
+  (interactive "p\ncCopy to char: ")
+  (let ((text))
+    (save-excursion
+      (previous-line 1)
+      (let ((oldpoint (point)))
+        (search-forward (char-to-string char))
+        (setq text (buffer-substring oldpoint (point)))))
+    (insert text)))
+</pre>
+This is extremely useful when editing "tabular data" like include statements in C and many other programming constructs.  For example, if the cursor is below the following line
+<pre>
+#include <stdio.h>
+</pre>
+copy-to-char allows you to easily copy everything up to and including the "less than" character, without having to count the number of characters to be copied.

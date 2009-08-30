@@ -1,0 +1,64 @@
+This pages has links to reference material and will eventually explain
+the BiDi machinery in the works for Emacs and XEmacs.
+
+== Current Status ==
+
+Neither Emacs 21 nor XEmacs 21 do bidi well at the moment.  "bidi" refers
+to the input and output of bidirectional text.  This is important when
+right-to-left scripts such as Arabic and Hebrew are mixed with
+left-to-right scripts such as European langauges.
+
+There is a branch of Emacs 21 available for Arabic and Hebrew by the
+National Institute of Advanced Industrial Science and Technology
+(AIST)!  It is based on the GNU Emacs-21.3.50 branch and available from here:
+
+* http://www.m17n.org/emacs-bidi/index.html
+
+It is possible to actually get BiDi work done under XEmacs 21.5; see
+
+* http://mid.gmane.org/18303.36755.595764.653413@parhasard.net
+
+Requires a terminal emulator with support for bidi, for example PuTTY or mlterm(1). This is not a particularly satisfactory solution. 
+
+Poor-mans-bidi-mode takes a different - in-the-mean-time - approach: it  
+an external program such as fribidi or bidiv to display the bidified text 
+in a different buffer, relocating point by context, so that you know where you are; see
+
+* Lisp:poor-mans-bidi.el
+== Bidi Hacking: Getting Started ==
+
+These links are recommended reading.
+
+"Unified and Extensible Mechanism for Multilingual Text Processing" by
+KenichiHanda, MikikoNishikimi, SatoruTomura, and NaotoTakahashi,
+available in various translations, explains the MULE basics:
+
+* http://tsukuba.m17n.org/mule/pricai96/index.html
+
+You can find more information on the Unicode homepage:
+
+* http://www.unicode.org/
+
+The most important Technical Report in this context is Report #9, also
+known as <i>Unicode Standard Annex #9</i>, or UAX#9, subtitled <i>The
+Bidirectional Algorithm</i>.
+
+* http://www.unicode.org/unicode/reports/tr9/
+
+The bidi algorithm needs to know the bidi types for all categories.
+These can be extracted from one of the data files available from
+Unicode.  See the <nowiki>UnicodeData.txt</nowiki> file at the
+following location for the bidi types, see the
+<nowiki>BidiMirroring.txt</nowiki> file for the mirroring of glyphs.
+
+* ftp://ftp.unicode.org/Public/UNIDATA/
+
+== Emacs Related Features ==
+
+These are discussed on the emacs-bidi mailing list.  See
+EmacsMailingLists.
+
+* DisplayEngineForBiDi
+* DisplayEngineForArabic
+* BiDiAlgorithm for Emacs
+* BiDiTables for Emacs

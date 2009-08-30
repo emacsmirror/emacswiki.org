@@ -1,0 +1,17 @@
+rk-todo is not a major/minor mode but a very simple function to sort paragraphs according to their first words.  One can use the first word to denote something (priority, importance, urgency etc), and =RK-TODO-SORT= will sort accordingly.
+
+You can limit the sortings effect via separators to a specific region, so it's possible to have a "todo section" in any file.
+
+I wrote this because I did not want to use any todo modes but wanted to have todos in my EmacsWikiMode wiki files.
+
+For more information see http://ignotus.hixsplit.hu/rk-todo.html
+or grab the elisp file form http://ignotus.hixsplit.hu/stuff/rk-todo.el
+
+== Discussion ==
+
+I failed to work it on GnuEmacs 21.4 on debian.
+ 
+  Debugger entered--Lisp error: (wrong-number-of-arguments #[(reverse nextrecfun endrecfun &optional startkeyfun endkeyfun)
+----
+CategoryTodo
+

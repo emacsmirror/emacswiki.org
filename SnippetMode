@@ -1,0 +1,77 @@
+==What snippet is==
+
+[http://www.kazmier.com/computer/snippet.el snippet.el] is a templating system by
+Pete Kazmier similar to the one reported to be found in the proprietary OSX
+editor TextMate.  A snippet is defined as a string that has special
+instructions inside.
+
+==Explanation==
+All instructions begin with a dollar sign ($). 
+
+; <code>$${default}</code>: Creates a field that one can leave as is, or change. One can
+(BACK)TAB through fields
+
+: If there are multiple occurrences of the same default value, all of these will change
+: along. This comes in handy when such a default value is a variable in the code that
+: you want to write.
+
+; <code>$></code>: Calls `indent-according-to-mode' at that point.
+
+; <code>$.</code>: Specifies endpoint of snippet, i.e. where you end up when there are no more fields.
+ 
+==Examples==
+Here's an example snippet for a typical for-loop in JavaScript to see the instructions
+in action:
+
+    "$>for (var $${i}=$${0},$${len}=$${i}.length;$${i}<$${len};++$${i}){\n$>$.\n}$>"
+
+which expands to:
+
+    for (var i=0,len=i.length;i<len;++i){
+        .  
+    }
+
+The dot in the body will not show, but indicates the endpoint of the snippet.
+
+Here's an example of a setup of snippet for javascript-mode:
+
+    (require 'snippet)
+
+    (define-abbrev-table 'javascript-mode-abbrev-table ())
+
+    (snippet-with-abbrev-table
+     'javascript-mode-abbrev-table
+     ("for" .  "$>for (var $${i}=$${0},$${len}=$${i}.length;$${i}<$${len};++$${i}){\n$>$.\n}$>")
+     ("forin" . "$>for (var $${i} in $${var}){\n$>$$;\n}$.$>")
+     ("if"  .  "$>if ($${cond}){$>\n$>$.;\n}$>")
+     ("ifel" . "$>if ($${cond}){$>\n$>$$;\n} else {$>\n$>$$;\n}$.$>")
+     ("wh"  .  "$>while ($${i}){\n$>$.\n}$>")
+     ("whinc" . "$>while ($${i}<$${10}){\n$>$.\n$>$${i}++;\n}$>")
+     ("trn" . "$${if}?$${then}:$${else}")
+     ("var" . "var $${variable} = $${value};")
+     ("fun" . "$>function $${name}($${args}){\n$>$.\n}$>")
+     ("lambda" . "$>function ($${args}){\n$>$.\n}$>")
+     ("df" . "document.forms['$${formname}']")
+     ("cl" . "console.log('$${message}');")) ;Firebug logging 
+
+    (add-hook 'javascript-mode-hook
+              (lambda ()
+                (abbrev-mode 1)
+                ;; This line is not in the documentation of snippet.el, but seems to be
+                ;; essential for various modes (not for python-mode though, which serves as
+                ;; the example mode in said documentation)
+                (setq local-abbrev-table javascript-mode-abbrev-table)))
+
+==Download==
+
+You can find snippet.el at [http://www.kazmier.com/computer/snippet.el snippet.el]
+
+
+== Small bug with Hippie Expand ==
+[new]
+This is great! However, I have a small problem: when trying to expand an underlined expression with hippie-expand, the text disapears. dabbrev-expand works fine though... Any idea ?
+-- SebastienRoccaSerra
+
+[new]
+Yes, it's really great! It behaves a bit funny wrt indentation, though. If I insert the snippet "{$>\n$>$.\n}$>" in a C mode buffer, the last brace is indented incorrectly. If I let the $. out of the snippet, it works as expected. Does anyone know why?
+-- JonasOster

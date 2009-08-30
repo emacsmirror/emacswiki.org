@@ -1,0 +1,277 @@
+== Overview ==
+
+allout.el is part of GnuEmacs (and XEmacs, in the edit-utils package).
+Allout outline mode always runs as a minor mode.
+
+Allout outline mode provides extensive outline formatting and
+manipulation beyond standard emacs outline mode.  It provides
+for structured editing of outlines, as well as navigation and
+exposure.  It also provides for syntax-sensitive text like
+programming languages.  (For an example, see the allout code
+itself, which is organized in an allout outline framework.)
+
+In addition to outline navigation and exposure, allout includes:
+
+* topic-oriented creation, promotion, demotion, cut/paste across depths and locations, etc.
+* pgp symmetric and key-pair topic encryption, so any outline can include any combination of encrypted and plain-text topics (as of Emacs 22)
+* configurable, per-file initial exposure settings
+* incremental search with dynamic exposure and reconcealment of hidden text
+* automatic topic-number maintenance of numbered ('#' bullet) topics
+* hot-spot operation, for single-keystroke maneuvering and exposure control.  (See the outline-mode docstring.)
+
+and many other features.
+
+The most recent version of allout, plus ancillary stuff, is available at the author's site:
+
+http://myriadicity.net/Sundry/EmacsAllout
+
+== Quick Start ==
+
+For a detailed overview of Allout features, keystrokes, and
+configuration, please read the docstring for allout-mode:
+     
+     C-h f allout-mode RET
+
+The "Terminology" section is especially helpful for understanding how
+the package works with your files.
+
+To try it out, visit "allout.el" itself. Then hit
+   
+   M-x allout-hide-bodies
+
+and you'll get an indented outline view of the source code, which
+happens to be organized in allout-format! Then use <code>C-c [SPC]
+C-s</code> to Show a topic, and <code>C-c [SPC] C-h</code> to Hide it.
+
+Alternately, if you put the TextCursor on one of the topic bullets, then
+unmodified ascii keys will have the effect of their 'C-c' control-c modified
+keybindings - 'n' to go to the next topic, 'p' for previous, 'i' to show
+children, 'h' to hide them, etc.  Someone spelled out a bunch of the keys,
+below.
+
+''Note: You might have to execute <code>M-x allout-mode</code> to turn on
+the keybindings.''
+
+----
+
+This is the documented way of setting it up:
+
+    (require 'allout)
+    (outline-init t)
+
+''I found I had to use (allout-init t) instead'' -- DamienElmes
+
+''(allout-init t) on Gnu Emacs 21.3 gave me an <u>Symbol's function definition is void: allout-init</u> error but (outline-init t) seems to work there'' -- BrentGoodrick
+
+''It depends on the allout version you're using.  Version 2.2 uses allout-init, whereas GNU Emacs 21.4.1 ships with allout version 1.29 which uses outline-init'' -- AdamSpiers
+
+To quickly try it out:
+# eval the above two lines of code
+# visit allout.el
+# use C-c C-a C-c C-a (that's twice) to position your cursor over the first "hot-spot"
+# now the following keys are active (without C-c prefix):
+
+    b outline-backward-current-level
+    f outline-forward-current-level
+    h outline-hide-current-subtree
+    i outline-show-children
+    n outline-next-visible-heading
+    o outline-show-current-entry
+    p outline-previous-visible-heading
+    s outline-show-current-subtree
+    u outline-up-current-level
+
+Those are the commonly used keys - any C-c modified allout keybinding should
+work without the C-c in allout-mode, when the cursor is over a bullet.
+----
+
+== Fontifying your headers ==
+
+By default, allout mode does not fontify the buffer. To get Font Lock to work
+put the following into your .emacs (adapted from the standard outline mode):
+
+<pre>
+(defvar rf-allout-font-lock-keywords
+  '(;;
+    ;; Highlight headings according to the level.
+    (eval . (list (concat "^\\(" outline-regexp "\\).+")
+		0 '(or (cdr (assq (outline-depth)
+				  '((1 . font-lock-function-name-face)
+				    (2 . font-lock-variable-name-face)
+				    (3 . font-lock-keyword-face)
+				    (4 . font-lock-builtin-face)
+				    (5 . font-lock-comment-face)
+				    (6 . font-lock-constant-face)
+				    (7 . font-lock-type-face)
+				    (8 . font-lock-string-face))))
+		       font-lock-warning-face)
+		nil t)))
+  "Additional expressions to highlight in Outline mode.")
+
+;; add font-lock to allout mode
+(defun rf-allout-font-lock-hook ()
+  (set (make-local-variable 'font-lock-defaults)
+       '(rf-allout-font-lock-keywords t nil nil outline-back-to-current-heading)))
+
+(add-hook 'outline-mode-hook 'rf-allout-font-lock-hook)
+</pre>
+
+With emacs 21.3.50.3 and allout version 1.45 I (Friedel) have to replace <tt>allout-regexp</tt>, <tt>allout-depth</tt>, <tt>allout-back-to-current-heading</tt> and <tt>allout-mode-hook</tt> for their <tt>outline-</tt>prefixed counterparts to get the above lisp-snippet to work.
+----
+
+I (Gallagher) was unable to get the above code working with Xemacs 21.4.13 with the allout.el that comes with edit-utils 2.22, I think because that version of allout doesn't expose its regexps directly. But the following code will highlight headers, even if it doesn't change colors based on outline depth. It only works if you have set outline-stylish-prefixes to nil (i.e., the "*" or ".  *" style header prefixes):
+
+<code>
+(defun my-outline-highlight () 
+  (interactive) 
+  (setq font-lock-keywords (list '("^\\(\\* \\|\\(\\. *\\* \\)\\)\\(.*\\)$" 3 font-lock-keyword-face))))
+
+(add-hook 'outline-mode-hook 'my-outline-highlight)
+(add-hook 'outline-mode-hook 'font-lock-mode)
+</code>
+
+
+----
+
+I modified the above code to be a bit better-behaved, and got basic
+outline header fontification to work on CvsEmacs. I'm trying to hack
+this further so that it obeys mode-specific and file-specific format
+settings. --DavidOtoole
+
+<pre>
+(defun dto/allout-highlight-headings ()
+  (interactive)
+  (font-lock-add-keywords nil '(("^\\(\\* \\|\\(\\. *\\* \\)\\)\\(.*\\)$" 3 font-lock-keyword-face t))))
+  
+(add-hook 'allout-mode-hook 'dto/allout-highlight-headings)
+</pre>
+
+---- 
+
+Is it possible to show only the last child? If I have:
+<pre>
+* A
+.* a
+   a stuff
+.* b
+   b stuff
+.* c
+   c stuff
+</pre>
+I know how to get:
+<pre>
+* A
+.* a
+.* b
+.* c
+   c stuff
+</pre>
+but I want to see:
+<pre>
+* A
+.* c
+   c stuff
+</pre>
+
+''Sort of.  Allout aims for exposure coherence, so in the steady state, all sibling topics are exposed or hidden as a group.  However, during incremental search it /will/ show just what you're asking, if you collapse topic A and do an incremental search for ##c stuff##.  The siblings will be exposed if you end the search there, or the A topic will be recollapsed if you abort the search or continue it past that point. KenManheimer
+----
+Is it possible to reconcile allout with auto-indent modes (i.e. c-mode, php-mode, etc)?
+I got allout mode to auto-start in c-mode and "work" with c style comments with the following:
+<pre>
+(make-local-variable 'allout-primary-bullet)
+(make-local-variable 'comment-start)
+(defun my-c-mode-allout-hook()
+  (setq allout-primary-bullet "\/\/\/_*")
+  (setq comment-start "\/")
+  (allout-mode)
+)
+(add-hook 'c-mode-hook 'my-c-mode-allout-hook)
+</pre>
+
+This works wonderfully if I just want to give a top-level header to each function,
+but making sub-trees in a function body fails because c-mode auto-indents, but
+allout doesn't allow leading whitespace before topic headers.
+
+<pre>
+The solution I would like to see is:
+
+extend allout-mode to ignore whitespace before topic headers.  I.e., 
+      ///_*
+is treated as being the same as
+///_*
+</pre>
+
+There could be an option made called "allow-leading-whitespace-in-header".  Setting it non-nil would enable the specified behavior, and could be automatically set if the buffer is source code, similar to how the following from allout.el sets a variable if the buffer is text (i.e. not source code):
+<code>
+(defcustom allout-reindent-bodies (if allout-use-hanging-indents
+				    'text)
+</code>
+
+----
+XEmacs 21.4 (patch 15) includes allout.el as well TerrenceBrannon
+
+Yes, it's in the edit-utils package. -- AdrianAichner
+
+XEmacs 21.4 (p. 18) includes allout.el but in version 1.1; site xemacs.org says to activate allout by <code>(require 'outline "allout")</code> and then to fontify using <code>rf-allout-font-lock-keywords</code> above.  All that works fine.  OTOH, version 2.2 of allout.el from [http://myriadicity.net/Sundry/EmacsAllout MyriadCity] uses <code>local-variable-p</code> without the (supposedly optional) second argument, and so is in a form XEmacs can't use.  Am I missing something obvious, is there an easy fix if I want to use allout 2.2 in XEmacs? --DannyQuah 2006.08.28 1717h GMT
+
+----
+Trying in XEmacs 21.4 (p. 13)  Received *wrong-type-argument stringp error*; has anyone seen this?
+
+    ##
+    ;; repro: (1) eval this bootstrap code to init allout
+    (progn
+    (require 'allout)
+     (allout-init t) 
+    
+    (substitute-key-definition 'end-of-line 'move-end-of-line global-map)
+    
+    (substitute-key-definition 'beginning-of-line 'move-beginning-of-line global-map)
+    )
+    
+    ;;  then (2) load in allout.el file  then (3) do the M-x allout-hide-bodies
+    ;;  which generates this stack dump:
+    ;;
+    
+    Debugger entered--Lisp error: (wrong-type-argument stringp nil)
+      ad-Orig-re-search-forward(nil nil 0 nil nil)
+      re-search-forward(nil nil 0)
+      (if (re-search-forward allout-line-boundary-regexp nil 0) (progn (allout-prefix-data) (and ... ...) (goto-char allout-recent-prefix-beginning)))
+      (when (re-search-forward allout-line-boundary-regexp nil 0) (allout-prefix-data) (and (allout-do-doublecheck) (allout-aberrant-container-p)) (goto-char allout-recent-prefix-beginning))
+      allout-next-heading()
+      (if (allout-next-heading) (goto-char (1- allout-recent-prefix-beginning)))
+      allout-pre-next-prefix()
+      allout-end-of-entry()
+      (allout-flag-region (point) (allout-end-of-entry) t)
+      (while (not (eobp)) (end-of-line) (allout-flag-region (point) (allout-end-of-entry) t) (if (not ...) (forward-char ...)))
+      (let ((inhibit-field-text-motion t)) (while (not ...) (end-of-line) (allout-flag-region ... ... t) (if ... ...)))
+      (save-restriction (narrow-to-region start end) (goto-char (point-min)) (let (...) (while ... ... ... ...)))
+      (save-excursion (save-restriction (narrow-to-region start end) (goto-char ...) (let ... ...)))
+      allout-hide-region-body(1 291869)
+      (lambda nil "Hide all of buffer except headings." (interactive) (allout-hide-region-body (point-min) (point-max)))()
+      call-interactively(allout-hide-bodies)
+      command-execute(allout-hide-bodies t)
+    ##
+    
+ --TomPopovich 2007.01.17
+
+== Encryption support ==
+
+As of Emacs 22, Emacs' alternative, comprehensive outline mode, Allout, provides for easy gpg encryption/decryption of topics.  Major features:
+
+* Topic-based encryption has the major advantage over whole-file encryption in that you can intersperse encrypted and plain text to your hearts content.  
+
+* Symmetric and public-key cipher modes are supported
+
+* file-write and -checkpoint hooks auto-encrypt topics that have been left unencrypted during saves (except the one you're currently editing), to avoid accidental exposure on the file system of plain text versions of topics intended for encryption.
+
+* conveniences like user-provided key hinting, key caching, and key reuse verification help prevent accidents where symmetric keys are forgotten or misspelled.
+
+Allout encryption requires installation of gpg on your system, but otherwise depends only on packages that come with Emacs 22.
+
+(Allout non-encryption functionality is not disrupted by the absence of gpg, and has extensive outline editing features as well as navigation features, including topic-oriented promotion, demotion, cut and paste, incremental search with dynamic exposure and re-concealment, automatic topic numbering, "hot-spot" navigation for easy outline browsing, TeX formatting, and much much more.)
+
+See AutoEncryption.
+----
+Is there a way to export an outlined content to HTML? Like in ORG mode, or better htmlize.el but with HTML headers and maybe contents on top of the page?
+----
+CategoryOutline KenManheimer

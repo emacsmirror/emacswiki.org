@@ -1,0 +1,20 @@
+Try this:
+
+C-x h C-M-<nowiki>\</nowiki>
+
+ 
+    C-x h runs the command mark-whole-buffer
+    M-C-\ runs the command indent-region
+
+You can also insert something like:
+
+    (defun indent-buffer ()
+      (interactive)
+      (save-excursion
+        (indent-region (point-min) (point-max) nil)))
+    (global-set-key [f12] 'indent-buffer)
+
+If you want to rewrap comments afterwards, see CodeBeautifying.
+
+----
+CategoryIndentation

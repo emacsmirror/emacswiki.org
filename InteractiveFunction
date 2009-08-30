@@ -1,0 +1,39 @@
+A Lisp function becomes a [[Command]] when its body contains, at top
+level, a form that calls the special form `<code>(interactive...)</code>'.   This special form does nothing when executed, but
+its presence in the function definition indicates that interactive calling is
+permitted.  Its argument controls the reading of the function arguments in an
+interactive call.
+
+Here is a simple example an InteractiveFunction for DisplayingMessages:
+
+    (defun hello ()
+      "Hello World and you can call it via M-x hello."
+      (interactive)
+      (message "Hello World!"))
+
+
+; `M-x hello': Calls interactively hello.
+; `C-h f hello': Displays the DocString for hello.
+
+Example with an argument:
+
+    (defun hello (someone)
+      "Say hello to SOMEONE via M-x hello."
+      (interactive "sWho do you want to say hello to? ")
+      (message "Hello %s!" someone))
+
+For a complete list of arguments to `interactive', see `C-h f interactive' or the "Defining Commands" section of the EmacsLispManual (`C-h i m elisp RET m Defining SPC Commands RET').
+
+To use two arguments, separate the prompt text from the next type indicator character with a newline.
+
+    (defun multiple-hello (someone num)
+      "Say hello to SOMEONE via M-x hello, for NUM times."
+      (interactive "sWho do you want to say hello to? \nnHow many times? ")
+      (dotimes (i num)
+        (insert (format "Hello %s!\n" someone))))
+
+See also UniversalArgument, InteractiveKeybinding, LambdaExpression.
+
+----
+CategoryCode
+CategoryGlossary

@@ -1,0 +1,15 @@
+Gwizard is a set of Elisp functions to aid GTK+/Gnome/Bonobo
+programmers written by DirkJanBinnema.
+
+* http://www.djcbsoftware.nl/projecten/emacs/gwizard-0.0.1.tar.gz
+
+The package contains gwizard.el, the documentation and sample code.
+There's also an article about the Bonobo support online:
+
+* http://www.djcbsoftware.nl/projecten/bonobo-gwizard/
+
+It shows how some elisp makes programming Bonobo components quite easy.
+
+Note, however, that it's for the Gnome 1.x environment.
+----
+CategoryProgrammerUtils

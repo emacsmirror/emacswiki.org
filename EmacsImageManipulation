@@ -1,0 +1,31 @@
+== Emacs Image Manipulation Package ==
+
+This package allows interactive image manipulation from within Emacs.
+See the code Lisp:eimp.el.
+
+It uses the mogrify utility from ImageMagick to do the
+actual transformations.
+
+Switch the minor mode on programmatically with:
+
+    (eimp-mode 1)
+
+or toggle interactively with <code>M-x eimp-mode RET</code>.
+
+Switch the minor mode on for all image-mode buffers with:
+
+    (autoload 'eimp-mode "eimp" "Emacs Image Manipulation Package." t)
+    (add-hook 'image-mode-hook 'eimp-mode)
+
+== Questions ==
+
+: ''Question: is it possible to save an eimp-edited image, and if so, how?'' - [[pft]]
+
+: ''Answer: The eimp-edited image can be saved with C-xC-s.''
+
+: ''Question: I cannot save eimp-edited result. What was saved is the original image. - [[DoveYoung]]
+
+: ''Non-answer: Well, it worked for me.  I tried it again:  I just resized and image in eimp, saved it, and then the on-disk image was also resized.  I'm using GNU/Linux, could it be an operating system issue?''
+----
+MultimediaModes,
+CategoryExternalUtilities

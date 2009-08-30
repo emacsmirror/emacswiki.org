@@ -1,0 +1,10 @@
+See page in [http://trac.codecheck.in codecheck.in] http://trac.codecheck.in/share/wiki/CakeOnEmacs
+
+This package is minor-mode for editing [http://cakephp.org/ CakePHP] code in Emacs.
+
+Features:
+* Powerful switching (line to file, file to file) function.
+* Work with [[Anything]].
+
+Screencast:
+* [http://vimeo.com/4292642?pg=embed&sec= CakePHP Minor Mode Screencast (CakePHP on Emacs)]

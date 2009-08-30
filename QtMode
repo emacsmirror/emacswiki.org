@@ -1,0 +1,156 @@
+This page is dedicated to writing Qt programs in emacs
+
+Qt extends the syntax of C++ with the extra keywords "slots", "signals", and "more".  These are used together with the standard keywords "public", "protected", and "private".
+
+CC Mode has supported these extensions since version 5.30 (released in 2003).  GNU Emacs 22 (but not 21) contains a recent enough CC Mode.  If you are using GNU Emacs 21.x (or older) or XEmacs, you are recommended to download and install the most recent version of CC Mode from <http://cc-mode.sourceforge.net/release.php>.
+
+Recently (some time before May 2008), Qt acquired alternative spellings for these keywords, "Q_SLOTS" and "Q_SIGNALS".  A patch for these has just been written and posted to the CC Mode mailing list; it is currently (2008-05-21) undergoing testing, and will hopefully soon be posted here too.  
+
+The rest of the suggestions on this page apply only if you are using CC Mode 29 (or earlier) and don't want to upgrade.  M-x c-version is your friend.
+
+Here is a simple fix to add to your .emacs:
+
+<pre>
+(c-add-style "qt-gnu" '("gnu" 
+                        (c-access-key .
+"\\<\\(signals\\|public\\|protected\\|private\\|public slots\\|protected slots\\|private slots\\):")
+                         (c-basic-offset . 4)))
+</pre>
+
+And here is a slightly more complicated stuff:
+
+A long time ago (in the 1.x series) Arndt Gulbrandsen put some macros
+on some ftp server. Over time -- not using them for quite a while --
+they evolved into the following.  Not perfect, but a nice start. Let
+me know if you improve things:
+
+<pre>
+ ;; syntax-highlighting for Qt
+ ;; (based on work by Arndt Gulbrandsen, Troll Tech)
+ (defun jk/c-mode-common-hook ()
+   "Set up c-mode and related modes.
+ 
+ Includes support for Qt code (signal, slots and alikes)."
+ 
+   ;; base-style
+   (c-set-style "stroustrup")
+   ;; set auto cr mode
+   (c-toggle-auto-hungry-state 1)
+ 
+   ;; qt keywords and stuff ...
+   ;; set up indenting correctly for new qt kewords
+   (setq c-protection-key (concat "\\<\\(public\\|public slot\\|protected"
+                                  "\\|protected slot\\|private\\|private slot"
+                                  "\\)\\>")
+         c-C++-access-key (concat "\\<\\(signals\\|public\\|protected\\|private"
+                                  "\\|public slots\\|protected slots\\|private slots"
+                                  "\\)\\>[ \t]*:"))
+   (progn
+     ;; modify the colour of slots to match public, private, etc ...
+     (font-lock-add-keywords 'c++-mode
+                             '(("\\<\\(slots\\|signals\\)\\>" . font-lock-type-face)))
+     ;; make new font for rest of qt keywords
+     (make-face 'qt-keywords-face)
+     (set-face-foreground 'qt-keywords-face "BlueViolet")
+     ;; qt keywords
+     (font-lock-add-keywords 'c++-mode
+                             '(("\\<Q_OBJECT\\>" . 'qt-keywords-face)))
+     (font-lock-add-keywords 'c++-mode
+                             '(("\\<SIGNAL\\|SLOT\\>" . 'qt-keywords-face)))
+     (font-lock-add-keywords 'c++-mode
+                             '(("\\<Q[A-Z][A-Za-z]*" . 'qt-keywords-face)))
+     ))
+ (add-hook 'c-mode-common-hook 'jk/c-mode-common-hook)
+
+
+;; Other things I like are, for example,
+
+ ;; cc-mode
+ (require 'cc-mode)
+ 
+ ;; automatic indent on return in cc-mode
+ (define-key c-mode-base-map [RET] 'newline-and-indent)
+ 
+ ;; Do not check for old-style (K&R) function declarations;
+ ;; this speeds up indenting a lot.
+ (setq c-recognize-knr-p nil)
+ 
+ ;; Switch fromm *.<impl> to *.<head> and vice versa
+ (defun switch-cc-to-h ()
+   (interactive)
+   (when (string-match "^\\(.*\\)\\.\\([^.]*\\)$" buffer-file-name)
+     (let ((name (match-string 1 buffer-file-name))
+ 	  (suffix (match-string 2 buffer-file-name)))
+       (cond ((string-match suffix "c\\|cc\\|C\\|cpp")
+ 	     (cond ((file-exists-p (concat name ".h"))
+ 		    (find-file (concat name ".h"))
+ 		   )
+ 		   ((file-exists-p (concat name ".hh"))
+ 		    (find-file (concat name ".hh"))
+ 		   )
+ 	    ))
+ 	    ((string-match suffix "h\\|hh")
+ 	     (cond ((file-exists-p (concat name ".cc"))
+ 		    (find-file (concat name ".cc"))
+ 		   )
+ 		   ((file-exists-p (concat name ".C"))
+ 		    (find-file (concat name ".C"))
+ 		   )
+ 		   ((file-exists-p (concat name ".cpp"))
+ 		    (find-file (concat name ".cpp"))
+ 		   )
+ 		   ((file-exists-p (concat name ".c"))
+ 		    (find-file (concat name ".c"))
+ 		   )))))))
+
+</pre>
+
+Both of these code snippets appeared recently in the Qt mailing list.
+----
+You may also wish to have a look at klaralv.el available from http://www.kdab.net/?page=products&sub=emacsaddons
+
+It allows you to insert include statements like "#include <qlabel.h>" using a single key press when located on the word QLabel in say "new QLabel( ... )"
+
+(added by blackie@klaralvdalens-datakonsult.se)
+----
+CcMode
+
+----
+old-c.el in the EMacro project has some QT code donated from Jan Borsodi, at http://emacro.sourceforge.net/
+It is being deprecated into the contrib directory, because nobody is actively testing it.
+
+Here is an excerpt of Jan's code, which is still active, and I believe is cleaner than the code at top.
+<pre>
+(when (locate-library cc-mode)
+  (setq c-font-lock-keywords-3
+    (append '("signals" "\\(public\\|protected\\|private\\) slots")
+	    c-font-lock-keywords-3)))
+
+;;For the old-timers:
+;;It appears that c-C-extra-toplevel-kwds doesn't allow regexes.
+;;Unsure how to translate former regexes FILE\\sw+_t and [A-Z]\\sw*[a-z]\\sw*
+;;DEPRECATE: the following no longer works on emacs >v21.3.50
+;;   (defvar c-C++-extra-toplevel-kwds
+;;	  (concat c-C++-extra-toplevel-kwds "\\|signals\\|slots"))
+</pre>
+----
+
+
+ I use the following which fixes indentation and highlighting
+
+  (require 'cc-mode)
+  (setq c-C++-access-key "\\<\\(slots\\|signals\\|private\\|protected\\|public\\)\\>[ \t]*[(slots\\|signals)]*[ \t]*:")
+  (font-lock-add-keywords 'c++-mode '(("\\<\\(Q_OBJECT\\|public slots\\|public signals\\|private slots\\|private signals\\|protected slots\\|protected signals\\)\\>" . font-lock-constant-face)))
+
+----
+
+When I'm writing PyQt code I always find myself looking up the Qt class reference documentation in a web browser. I had become accustomed (but irritated) in click my way to the index each time.  Just now I decided I wanted iswitchb-like filtering on the list of classes, so why not write a little something for Emacs?  I did.  It's a quick-n-dirty hack, but it works well enough.
+
+Here it is:
+http://furius.ca/pubcode/pub/conf/common/elisp/blais/qtdoc.el
+
+
+----
+
+A quick major mode for editing QMake project files, nothing fancy just font-locking of the keywords and comments:
+http://www.tolchz.net/wp-content/uploads/2008/01/qt-pro.el

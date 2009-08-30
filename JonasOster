@@ -1,0 +1,46 @@
+Jonas Öster
+
+Using Emacs since 1996.
+
+<pre>
+;; I map the useless caps lock key to SUPER.  Key chords with
+;; SUPER+right hand key become very comfortable and should be used for
+;; the most often used functions.  This allows me to leave all
+;; standard Emacs keybindings as they are and still define
+;; easy-to-reach chords with a more sensible geometric layout, for
+;; example the following point movement commands:
+(global-set-key [(super i)] 'previous-line) 
+(global-set-key [(super u)] 'next-line)
+(global-set-key [(super shift i)] 'scroll-down)
+(global-set-key [(super shift u)] 'scroll-up)
+(global-set-key [(super j)] 'backward-char)
+(global-set-key [(super k)] 'forward-char)
+(global-set-key [(super shift j)] 'backward-word)
+(global-set-key [(super shift k)] 'forward-word)
+;; Sometimes, it seems reasonable to duplicate standard Emacs CTRL key
+;; bindings with SUPER as the modifier:
+(global-set-key [(super ?\s)] 'set-mark-command)
+(global-set-key [(super a)] 'move-beginning-of-line)
+(global-set-key [(super e)] 'move-end-of-line)
+</pre>
+
+At work, I have to use Windows. [[EmacsW32]] makes life easier. To remap the caps lock key to super (or what is called the "Application" key in Windows terminology) I use the following registry entry:
+
+<pre>
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
+"Scancode Map"=hex:00,00,00,00,00,00,00,00,02,00,00,00,5d,e0,3a,00,00,00,00,00
+</pre>
+
+[new]
+Welcome to the wiki! -- AlexSchroeder
+
+[new]
+I have a [http://www.audhumla.de/jonas/blog/ blog] where I occasionally write about Emacs. -- JonasOster
+
+[new]
+I am [::atjo] on EmacsChannel -- JonasOster
+
+----
+CategoryHomepage

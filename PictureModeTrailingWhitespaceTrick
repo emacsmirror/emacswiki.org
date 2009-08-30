@@ -1,0 +1,6 @@
+To remove trailing whitespace:
+
+: 1. Enter PictureMode -- `<code>M-x picture-mode</code>'
+: 2. Exit picture mode --  `C-c C-c'
+
+: That's it. The only side effect of this is that all trailing whitespace is removed. I discovered this odd (and undocumented?) "feature" by accident about 20 years ago. So, it has been around since about version 18 of GnuEmacs -- perhaps it's even older. -- DrewAdams

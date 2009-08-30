@@ -1,0 +1,536 @@
+== Hello ==
+
+portrait:http://www.emacswiki.org/cgi-bin/wiki/download/vinicius-portrait
+
+Hi, my name is Vinicius José Latorre and you can reach me by email at
+/viniciusjl AT ig.com.br/.
+
+I have been using GNU Emacs since 1992 and I am impressed on what you can do
+with Emacs. I use it as often as possible. :D
+
+My very first contribution for Emacs was some modification in PsPrintPackage
+around 1996.  In 1997, Jacques Duthen was the PsPrintPackage maintainer and, as
+I was always sending patchs, he invited me to become the maintainer.  So, I
+have accepted to work as PsPrintPackage maintainer since 14-july-1997.
+
+On this page you'll find the packages that I've written for Emacs and some
+links which may be useful.
+
+If you are a novice Emacs user, please, see the links:
+
+* [[#A Guided Tour of Emacs]]
+* [[#Being Productive With Emacs]]
+* [[#Emacs Editing Environment]]
+
+All links above are in the [[#Emacs Links]] section.
+
+For some Emacs tips, please, see the [[#Stevey Blog Rants]] link in the
+[[#Emacs Links]] section.
+
+Please, put your doubt, suggestion, improvement, etc. at end of the
+[[#Inbox or Something]] section.
+
+
+[new]
+<pre>
+
+</pre>
+[new]
+== My Emacs Lisp Stuff ==
+
+; ([Self:action=history;id=.emacs-ViniciusJoseLatorre.el history]) Download:.emacs-ViniciusJoseLatorre.el  (EmacsViniciusJoseLatorre) : Minimal Emacs initialization file.
+: .:: ''v1.0'' ::.
+<pre>
+
+</pre>
+; ([Self:action=history;id=ascii.el history])  Download:ascii.el  (AsciiMode) : ASCII code display.
+: .:: ''v2.2.1'' ::.
+<pre>
+
+</pre>
+; ([Self:action=history;id=blank-mode.el history])  Download:blank-mode.el  (BlankMode) : Minor mode to visualize blanks (TAB, (HARD) SPACE and NEWLINE).
+: .:: ''v9.1'' :: ''part of GNU Emacs'' ::.
+: It runs on Emacs 21, 22 and 23.
+: **Note:** //This package was replaced by// WhiteSpace.
+<pre>
+
+</pre>
+; ([Self:action=history;id=chill-modee.el history])  Download:chill-modee.el (ChillModePackage) : Major mode for editing CHILL
+code.
+: It is based on CCITT Z.200/92 recommendation (COM X-R 34-E).
+: .:: ''v3.1'' ::.
+: **Warning:** //This is a very old package.//
+<pre>
+
+</pre>
+; ([Self:action=history;id=delim-col.el history])  Download:delim-col.el  (DelimColPackage) : Prettify all columns in a [[region]] or rectangle.
+: .:: ''v2.1'' :: ''part of GNU Emacs'' ::.
+<pre>
+
+</pre>
+; ([Self:action=history;id=dialog.el history])  Download:dialog.el  ([[Dialog]]) : Dialog box interface using widgets, [[frame]]s and [[window]]s.
+: .:: ''v0.2'' ::.
+<pre>
+
+</pre>
+; ([Self:action=history;id=ebnf2ps.tar.gz history])  Download:ebnf2ps.tar.gz  (EbnfToPsPackage) : Translate an EBNF to a syntactic chart on %%PostScript%%.
+: .:: ''v4.4'' :: ''part of GNU Emacs'' ::.
+: .:: ''depends on PsPrintPackage v5.2.3 (or later)'' ::.
+<pre>
+
+</pre>
+; ([Self:action=history;id=highline.el history])  Download:highline.el  (HighlineMode) : Minor mode to highlight current line in [[buffer]].
+: .:: ''v7.2.1'' ::.
+<pre>
+
+</pre>
+; ([Self:action=history;id=printing.el.gz history])  Download:printing.el.gz  (PrintingPackage) : Printing utilities.
+: .:: ''v6.9.3'' :: ''part of GNU Emacs'' ::.
+: .:: ''depends on PsPrintPackage v6.6.4 (or later)'' :: ''##lpr.el##'' :: ''mule'' :: ''ghostscript'' ::.
+<pre>
+
+</pre>
+; PsPrintPackage : Print text from the [[buffer]] as %%PostScript%%.
+: .:: ''part of GNU Emacs'' ::.
+: .:: ''depends on ##lpr.el##'' :: ''mule'' ::.
+: Please, check the Emacs version:
+:: ([Self:action=history;id=ps-print-23.tar.gz history])  ''[[PsPrintPackage-23|Emacs 23]]'' :: ''v7.3.4'' :: Download:ps-print-23.tar.gz  ([[PsPrintPackage-23]])
+:: ([Self:action=history;id=ps-print-22.tar.gz history])  ''[[PsPrintPackage-22|Emacs 22]]'' :: ''v6.8.2'' :: Download:ps-print-22.tar.gz  ([[PsPrintPackage-22]])
+:: ([Self:action=history;id=ps-print-20-21.tar.gz history])  ''[[PsPrintPackage-20|Emacs 21]]'' :: ''v6.6.10'' :: Download:ps-print-20-21.tar.gz  ([[PsPrintPackage-20]])
+:: ([Self:action=history;id=ps-print-20-21.tar.gz history])  ''[[PsPrintPackage-20|Emacs 20]]'' :: ''v6.6.10'' :: Download:ps-print-20-21.tar.gz  ([[PsPrintPackage-20]])
+:: ([Self:action=history;id=ps-print-19.el history])  ''[[PsPrintPackage-19|Emacs 19]]'' :: ''v3.06.4'' :: Download:ps-print-19.el  ([[PsPrintPackage-19]])
+<pre>
+
+</pre>
+; ([Self:action=history;id=rational.el history])  Download:rational.el  (RationalNumber) : Rational number in factorial-base format.
+: .:: ''v1.1.1'' ::.
+<pre>
+
+</pre>
+; ([Self:action=history;id=spell-number.el history])  Download:spell-number.el  (SpellNumber) : Spell out an integer or currency in words.
+: It is multi-language and multi-country.
+: .:: ''v3.1.1'' ::.
+<pre>
+
+</pre>
+; ([Self:action=history;id=switch-file.el history])  Download:switch-file.el  (SwitchFile) : Switch from one file to another.
+: .:: ''v0.1'' ::.
+<pre>
+
+</pre>
+; ([Self:action=history;id=sys.el history])  Download:sys.el  (SysPackage) : Determine which kind of system Emacs is running.
+: .:: ''v1.0'' ::.
+<pre>
+
+</pre>
+; ([Self:action=history;id=versions.el history])  Download:versions.el  (VersionsPackage) : Version string comparison.
+: .:: ''v1.4'' :: ''part of GNU Emacs (inside ##emacs/lisp/subr.el##)'' ::.
+<pre>
+
+</pre>
+; ([Self:action=history;id=whitespace.el history])  Download:whitespace.el  (WhiteSpace) : Minor mode to visualize blanks (TAB, (HARD) SPACE and NEWLINE).
+: .:: ''v11.2.2'' :: ''part of GNU Emacs'' ::.
+: It runs on Emacs 23.
+: **Note 1:** //The source here in EmacsWiki runs on Emacs 21, 22 and 23.//
+: **Note 2:** //This package replaces// BlankMode.
+<pre>
+
+</pre>
+; ([Self:action=history;id=xray.el history])  Download:xray.el  (XrayPackage) : Display internal object structures in a temporary [[buffer]].
+: .:: ''v3.0'' ::.
+
+
+[new]
+<pre>
+
+</pre>
+[new]
+== Links for ebnf2ps package ==
+
+ABNF :: [http://en.wikipedia.org/wiki/ABNF Augmented BNF for Syntax Specifications: ABNF] :: [http://tools.ietf.org/html/rfc4234 RFC-4234]
+
+ISO EBNF :: [http://www.cl.cam.ac.uk/~mgk25/iso-ebnf.html International Standard of the ISO EBNF Notation] :: [http://www.cl.cam.ac.uk/~mgk25/iso-14977.pdf ISO-14977]
+
+EBNF :: [http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form Extended BNF]
+
+EBNFX :: [http://www.w3.org/TR/2004/REC-xml-20040204/#sec-notation Extensible Markup Language (XML) 1.0 (Third Edition) - Section 6. Notation]
+
+DTD :: [http://www.w3.org/TR/2004/REC-xml-20040204/ Extensible Markup Language (XML) 1.0 (Third Edition)]
+
+WSN :: [http://en.wikipedia.org/wiki/Wirth_Syntax_Notation Wirth Syntax Notation]
+
+BNF :: [http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form Backus Naur Form]
+
+
+[new]
+<pre>
+
+</pre>
+[new]
+== Links for spell-number package ==
+
+ISO 3166 :: [http://archive.dante.net/np/ds/osi/iso-3166.txt Codes from ISO 3166 (Country Codes)] :: [http://en.wikipedia.org/wiki/ISO3166 ISO-3166]
+
+
+[new]
+<pre>
+
+</pre>
+[new]
+== Links for printing package ==
+
+; [http://people.ssh.fi/mtr/genscript/ enscript] : .:: ''GNU/Linux'' :: ''Unix'' :: ''Windows'' ::.
+: Converts ASCII files to %%PostScript%% and spools generated %%PostScript%% output to the specified printer or leaves it to file.
+: ##enscript## can be easily extended to handle different output media and it has many options that can be used to customize printouts.
+<pre>
+
+</pre>
+; [http://www.gnu.org/software/ghostscript/ghostscript.html gs, gv] : .:: ''GNU/Linux'' :: ''Unix'' ::.
+: %%PostScript%% interpreter and previewer.
+<pre>
+
+</pre>
+; [http://www.gnu.org/software/ghostscript/ghostscript.html gswin32, gsview32] : .:: ''Windows'' ::.
+: %%PostScript%% interpreter and previewer.
+<pre>
+
+</pre>
+; [http://www.cs.wisc.edu/~ghost/gsview/gsprint.htm gsprint] : .:: ''Windows'' ::.
+: Ghostscript print to Windows printer.
+: Use ##gsprint## instead of ##ghostscript## to print monochrome %%PostScript%% files in Windows. The ##gsprint## utility is faster than ##ghostscript## to print monochrome %%PostScript%%.
+: The efficiency is similar to print non-monochrome %%PostScript%% file.
+: Also the ##gsprint## utility comes together with [http://www.gnu.org/software/ghostscript/ghostscript.html gsview] distribution.
+<pre>
+
+</pre>
+; [http://www.mesa.nl/pub/mpage/ mpage] : .:: ''GNU/Linux'' :: ''Unix'' ::.
+: %%PostScript%% modifier.
+<pre>
+
+</pre>
+; [http://gershwin.ens.fr/vdaniel/Doc-Locale/Outils-Gnu-Linux/PsUtils/ PSUtils] : .:: ''GNU/Linux'' :: ''Unix'' :: ''Windows'' ::.
+: PSUtils is a collection of useful utilities for manipulating %%PostScript%% documents.
+: Programs included are:
+: ##psnup##
+:: for placing out several logical pages on a single sheet of paper.
+: ##psselect##
+:: for selecting pages from a document.
+: ##pstops##
+:: for general imposition.
+: ##psbook##
+:: for signature generation for booklet printing.
+: ##psresize##
+:: for adjusting page sizes.
+<pre>
+
+</pre>
+; [http://www.cs.wisc.edu/~ghost/redmon/ redmon] : .:: ''Windows'' ::.
+: Redirection port monitor.
+: Transparent %%PostScript%% printing from Windows 95/98 and NT.
+<pre>
+
+</pre>
+; [http://www.foolabs.com/xpdf/home.html xpdf] : .:: ''GNU/Linux'' :: ''Unix'' :: ''Windows'' ::.
+: Xpdf is an open source viewer for Portable Document Format (PDF)
+files. (These are also sometimes also called 'Acrobat' files, from the name of
+Adobe's PDF software.) The Xpdf project also includes a PDF text extractor,
+PDF-to-%%PostScript%% converter, and various other utilities.
+: Xpdf runs under the X Window System on UNIX, VMS, and OS/2. The non-X
+components (pdftops, pdftotext, etc.) also run on W32 systems and should run on
+pretty much any system with a decent C++ compiler.
+: Xpdf is designed to be small and efficient. It can use Type 1, !TrueType, or
+standard X fonts.
+: Xpdf should work on pretty much any system which runs X11 and has Unix-like
+(POSIX) libraries. You'll need ANSI C++ and C compilers to compile it.
+
+
+[new]
+<pre>
+
+</pre>
+[new]
+[:Emacs Links]
+== Emacs Links ==
+
+; [http://www.emacsblog.org/ M-x all-things-emacs] : //All-things-emacs//
+provides a place for both Emacs n00bs and hax0rz to gain a little more out of
+Emacs. Its goals are to:
+** Provide links to recent Emacs happenings.
+** Provide another location beyond the newsgroups, IRC, and wiki for Emacs users to communicate.
+** Provide what few gems of Emacs wisdom we have.
+** Hopefully generate more discussion around Emacs.
+<pre>
+
+</pre>
+; [:A Guided Tour of Emacs][http://www.gnu.org/software/emacs/tour/ A Guided Tour of Emacs - The many
+faces of Emacs] : The GNU Emacs Manual calls Emacs ''the extensible,
+customizable, self-documenting real-time display editor'', but this description
+tells beginners little about what Emacs is capable of. To give you an idea,
+here is a sampling of some of the things you can do with Emacs...
+: It's a good Emacs tutorial.
+<pre>
+
+</pre>
+; [:Being Productive With Emacs]Being Productive With Emacs : by Phil Sung.
+: [http://stuff.mit.edu/iap/emacs/emacs-slides-1.pdf Part 1 (PDF)]
+:: ''"Emacs is the extensible, customizable, selfdocumenting realtime display editor."''
+:: It's a good Emacs tutorial.
+:: (Working quickly in Emacs; modes; macros; useful features; how to learn more.)
+: [http://stuff.mit.edu/iap/emacs/emacs-slides-2.pdf Part 2 (PDF)]
+:: Emacs Lisp for implementation, for customization and for extending Emacs.
+:: (Foundations of Emacs Lisp; keybindings, variables, hooks; the .emacs file;
+defining interactive functions.)
+: [http://stuff.mit.edu/iap/emacs/emacs-slides-3.pdf Part 3 (PDF)]
+:: Extending Emacs.
+:: (Interactive arguments; advice; defining new modes.)
+<pre>
+
+</pre>
+; [:Emacs Editing Environment]IBM Developer Works series on the //Emacs Editing Environment//. : ''Registration required''.
+: [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs1-i.html
+Part 1: Learn the basics of Emacs]
+: [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs2-i.html
+Part 2: Learn the essential modes and editing features of Emacs]
+: [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs3-i.html
+Part 3: Advanced Emacs text operations]
+: [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs4-i.html
+Part 4: Options, registers, and bookmarks]
+: [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs5-i.html
+Part 5: Shape your Emacs view]
+: [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs6-i.html
+Part 6: Customize your Emacs world]
+: [http://www-128.ibm.com/developerworks/edu/au-dw-au-emacs7-i.html
+Part 7: Let Emacs help you out]
+<pre>
+
+</pre>
+; [:Stevey Blog Rants][http://steve-yegge.blogspot.com/2006/06/shiny-and-new-emacs-22.html
+Stevey's Blog Rants: Shiny and New: Emacs 22] : It has good tips about Emacs,
+specially about ##replace-regexp## use.
+<pre>
+
+</pre>
+; [http://steve.yegge.googlepages.com/effective-emacs Stevey's Home Page -
+Effective Emacs] : 10 Specific Ways to Improve Your Productivity With Emacs.
+<pre>
+
+</pre>
+; ElispCookbook : This page contains snippets of code that demonstrate basic
+elisp programming operations in the spirit of the o'reilly cookbook series of
+books.
+<pre>
+
+</pre>
+; EmacsHistory : The beginning was around 1972. :)
+<pre>
+
+</pre>
+; EmacsTheExtensibleCustomizableSelfDocumentingDisplayEditor : //See also// EmacsManual.
+<pre>
+
+</pre>
+; OnlineResources : A lot of information can be found online.
+<pre>
+
+</pre>
+; [http://www.jwz.org/doc/emacs-timeline.html Emacs Timeline] : This isn't intended to be a complete list of everything that has ever called itself Emacs.
+<pre>
+
+</pre>
+; [http://www.gnu.org/software/emacs/elisp-manual/ GNU Emacs Lisp Reference Manual] : It can be seen online or it can be downloaded in several formats.
+<pre>
+
+</pre>
+; [http://derekslager.com/blog/posts/2007/01/emacs-hack-3-compile-emacs-from-cvs-on-windows.ashx Derek Slager: Compile Emacs from CVS on Windows] : It shows step-by-step how to compile and install Emacs on Windows.
+: //See also// CategoryWThirtyTwo.
+<pre>
+
+</pre>
+; [http://www.gnu.org/software/emacs/windows/ntemacs.html GNU Emacs FAQ For Windows] : It has also some links including links to download Emacs binaries for Windows.
+: //See also// CategoryWThirtyTwo.
+<pre>
+
+</pre>
+; [http://ntemacs.sourceforge.net/ Latest Win32 binary builds of Emacs CVS] : This project provides the latest binary builds of the Emacs CVS repository for Win32. It is not an official distribution of Emacs, and neither does it come with any support. Long live Emacs!
+: //See also// CategoryWThirtyTwo.
+<pre>
+
+</pre>
+; [http://www.finseth.com/craft/ The Craft of Text Editing] : It's free available online book about Emacs.
+<pre>
+
+</pre>
+; EmacsIdeas : This is a page where people can put up Emacs ideas.
+<pre>
+
+</pre>
+; [http://www.bloomington.in.us/~brutt/msf-abbrev.html msf-abbrev.el] : A package to manage many mode-specific abbrevs. At least, it started out that way. Now it seems to have evolved into a way to make certain programming tasks as easy as filling out forms. The best way to see how it works is watch the [http://www.bloomington.in.us/~brutt/msf-abbrev-demo.gif demo].
+: //See also// MsfAbbrev.
+<pre>
+
+</pre>
+; [http://anc.ed.ac.uk/~stephen/emacs/ell.html Emacs Lisp list] : It contains links to many Emacs packages.
+: //See also// EmacsLispList and WikifiedEmacsLispList.
+<pre>
+
+</pre>
+; EtaskMode : It is a major mode that supports you in your efforts to define and manage your projects or tasks.
+<pre>
+
+</pre>
+; [http://ecb.sourceforge.net/ ECB] : Emacs Code Browser.
+: //See also// EmacsCodeBrowser and PracticalECB.
+<pre>
+
+</pre>
+; [http://cedet.sourceforge.net/ CEDET] : Collection of Emacs Development Environment Tools.
+: //See also// CollectionOfEmacsDevelopmentEnvironmentTools.
+<pre>
+
+</pre>
+; [http://www.analytics.washington.edu/statcomp/projects/ess ESS] : Emacs Speaks Statistics.
+: //See also// EmacsSpeaksStatistics.
+<pre>
+
+</pre>
+; [http://www.xref.sk/ Xrefactory] : Also known as Xref, X-ref and Xref-Speller. Refactoring Browser for ##Emacs##, ##X####Emacs## and ##jEdit##.
+: //See also// RefactoringBrowser.
+<pre>
+
+</pre>
+; [http://jdee.sunsite.dk/ JDEE] : Java Development Environment for Emacs.
+: //See also// JavaDevelopmentEnvironment.
+<pre>
+
+</pre>
+; [http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Easymacs/ Easymacs] : An easy-to-learn, one-size-fits-all configuration for new users of GNU Emacs.
+: //See also// [[Easymacs]].
+<pre>
+
+</pre>
+; [http://staff.science.uva.nl/~dominik/Tools/org/ ORG] : An Emacs mode for notes and project planning.
+: //See also// OrgMode and Lisp:org.el.
+<pre>
+
+</pre>
+; [http://dto.freeshell.org/notebook/RogueLike.html RLX] : A cross-platform tile-based gaming console for Emacs.
+: //See also// CategoryGames.
+<pre>
+
+</pre>
+; [http://dto.freeshell.org/notebook/CellMode.html Cell-mode] : An experimental platform for interactively developing custom applications within GNU Emacs. Cell-mode embeds arbitrary code, data, and user interface elements into a grid of cells much like a spreadsheet.
+: //See also// CellMode, SimpleEmacsSpreadsheet, SpreadMode and CategoryTables.
+<pre>
+
+</pre>
+; [http://dto.freeshell.org/notebook/EevMode.html EevMode] : In basic usage it allows you to create e-scripts --- plain-text documents that contain commentary, executable emacs lisp "hyperlinks", and specially marked segments of executable shell script code, meant to be triggered one at a time by the user (possibly after some customization.)
+: //See also// EevMode.
+<pre>
+
+</pre>
+; ScrmableSrtnig : Very funny package.
+<pre>
+
+</pre>
+; Lisp:timid.el : Cool package! A little shy. ;)
+
+
+[new]
+<pre>
+
+</pre>
+[new]
+== Emacs Homepages ==
+
+Aurélien Tisné :: <code>http:</code><code>//aurelien.tisne.free.fr/emacs-pages/emacs.html</code>
+
+DavePearson :: http://www.davep.org/emacs/
+
+EricMarsden :: http://purl.org/net/emarsden/home/downloads/
+
+FrancisJWright :: http://centaur.maths.qmul.ac.uk/Emacs/
+
+Jesse Rosenthal ::  http://www.columbia.edu/~jr2075/elisp/
+
+JuriLinkov (''Jurta'') :: http://www.jurta.org/emacs/
+
+MichaelOlson :: http://mwolson.org/projects/
+
+PeterHeslin :: http://www.dur.ac.uk/p.j.heslin/Software/Emacs/
+
+Rob Walker :: http://www.tenfoot.org.uk/emacs/
+
+Robert Widhopf-Fenk :: http://www.robf.de/Hacking/elisp/index.html
+
+SebastienKirche
+
+StefanMonnier :: http://www-perso.iro.umontreal.ca/~monnier/elisp/
+
+StefanReichoer (''XSteve'') :: http://www.xsteve.at/prg/emacs/
+
+TamasPatrovics
+
+//See also// CategoryHomepage.
+
+
+[new]
+<pre>
+
+</pre>
+[new]
+[:Inbox or Something]
+== Inbox or Something ==
+
+[new]
+Nice to see you here and that you are so active :-) -- StefanKamphausen
+
+[new:DrewAdams:2006-09-14 16:19 UTC]
+''Ditto!'' -- DrewAdams
+
+[new]
+Bem vindo, Vinicius!
+ -- NascifAbousalhNeto
+
+[new]
+Mais páginas Portuguesas! :) -- AlexSchroeder
+
+[new]
+Hi, I noticed AsciiMode is duplicating ##ascii package##, and BlankMode likewise ##blank-mode package##.  You might like to merge or zap or redirect or whatever to have just one each.  (I guess the mixed case is sort of usual, but they're your packages obviously.)  -- KevinRyde
+
+[new]
+/Thanks people!/ :D
+
+/Muito obrigado por tudo, pessoal!/ :D
+
+AsciiMode and BlankMode are old pages and it seems that they are part of a discussion about ways for displaying ASCII code and highlighting spaces and tabs. ##ascii package## and ##blank-mode package## are new pages about Lisp:ascii.el and Lisp:blank-mode.el documentation. -- ViniciusJoseLatorre
+
+[new]
+I'm wondering about BlankModeOn -- can I help you with that? I'm not sure what the problem is... 
+http://www.emacswiki.org/cgi-bin/wiki/download/BlankModeOn seems to display ok.
+
+[time passes...]
+
+Argh! There was a config error! You must be the first who has tried to upload images in quite a while.
+I am terribly sorry that you had to waste your time for so long. I think it should be fixed, now.
+-- AlexSchroeder
+
+[new]
+Thanks, it's working like a charm now. ;) -- ViniciusJoseLatorre
+
+[new]
+Hummm, on a second thought, I've just merged AsciiMode and ##ascii package## pages, and BlankMode and ##blank-mode package## pages. -- ViniciusJoseLatorre
+
+----
+[new:DrewAdams:2008-11-07 18:43 UTC]
+Hi Vinicius. Did you really want to replace all occurrences of things like ##buffer## with ##[[buffer]]## on pages such as XrayPackage? Just wondering. Also, be aware that [[point]], for instance, is for the definition of the point, not for the verb "to point". -- DrewAdams
+
+[new]
+Well, I'm not sure, but if some words like ##buffer##, ##point##, ##frame##, ##window##, etc. in XrayPackage page are links, why couldn't all other words be replaced by links? Why some ##buffer## words can be a link and other ##buffer## words are not? -- ViniciusJoseLatorre
+
+[new:DrewAdams:2008-11-07 19:47 UTC]
+No problem -- I just thought you might have made the substitution automatically somehow (global replacement) and might not be aware of it. -- DrewAdams
+
+
+------
+
+CategoryHomepage

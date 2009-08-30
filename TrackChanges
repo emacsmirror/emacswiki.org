@@ -1,0 +1,74 @@
+There are various ways to determine the changes to a file or a buffer in Emacs.  This page collects some of them.
+
+== Seeing Buffer Changes ==
+
+* `M-x highlight-changes-mode': available in GNU Emacs.
+* `M-x diff-backup' (See DiffMode), `M-x ediff-backup' (See EdiffMode).
+
+== Developing interactive highlighting? ==
+
+[new]
+I'd like to be able to see what modifications I've made to a file since I opened it. I'd just type some command and everything I added would be highlighted, and everywhere i removed something there would be some mark (or maybe the deleted text, in red, and read-only). Ideally, the highlight color would vary according to the age of the modification. This could be set permanent as a minor mode. If anybody has ideas about how to start implementing this, I'd be willing to try. -- [[Anonymous]]
+[new]
+How about `M-x diff-buffer-with-file'?  In Emacs from CVS, `diff-buffer-with-file' is an interactive compiled Lisp function in `files'. -- AlexSchroeder
+[new]
+A highlighted mode would be neat, but I'm happy with `vc-mode' (see VersionControl), reading `diff' output (see DiffMode) and creating a `pdiff' <nowiki>PostScript</nowiki> file with highlighting and strikeout that is human readable and I can send to others.  The latter needs some improvements because it's not very accurate with tracking changes, but is worth looking at as a prior work on finding intra-line (word-based) changes. -- AaronHawley
+
+== Highlighting line changes interactively ==
+
+[new]
+Is there a mode or way to highlight which lines have changed since the file was last opened ? I know there is a mode that highlights the changes made to a file, but I find that way too much. Higlighting the left border of the window that corresponds to the changed line would do it for me. -- EdmZ
+
+[new]
+Try the 'diff' command against the BackupFile with `M-x diff-backup'.
+
+== Taming Highlight-Changes-Mode ==
+
+[new]
+Highlight-Changes is a nice feature, but the default configuration for the rotating [[Face]]s is IMO way too colorful and doesn't play well with font lock. My configuration looks like this:
+
+<pre>
+(require 'hilit-chg)
+(make-empty-face 'highlight-changes-saved-face)
+(setq highlight-changes-face-list '(highlight-changes-saved-face))
+
+; Example: activate highlight changes with rotating faces for C programming
+(add-hook 'c-mode-hook
+	  (function (lambda ()
+             (add-hook 'local-write-file-hooks 'highlight-changes-rotate-faces)
+	     (highlight-changes-mode t)
+             (... other stuff for setting up C mode ...)))
+</pre>
+
+This way, the face "highlight-changes-face" will be used to show you unsaved changes, and "highlight-changes-saved-face" for changes which are already saved. "highlight-changes-delete-face" is used for deleted text. To use this together with font lock, do
+
+<pre>
+customize-face RET highlight-changes-face RET
+</pre>
+
+Now unset the foreground color and use a background color instead. If you work with dark backgrounds, I'd recommend something like "midnight blue" or dark greys like "grey10". Do the same for customizing highlight-changes-saved/delete-face, of course with other background colors.
+
+If you still find highlight-changes-mode too distracting while typing, you might be happier with the following:
+
+<pre>
+(defun DE-highlight-changes-rotate-faces ()
+  (let ((toggle (eq highlight-changes-mode 'passive)))
+    (when toggle (highlight-changes-mode t))
+    (highlight-changes-rotate-faces)
+    (when toggle (highlight-changes-mode nil))))
+
+; Example for c-mode-hook:
+(add-hook 'c-mode-hook
+	  (function (lambda ()
+             (add-hook 'local-write-file-hooks 'DE-highlight-changes-rotate-faces)
+	     (highlight-changes-mode t)
+             (highlight-changes-mode nil)
+             (... other stuff for setting up C mode ...)))
+</pre>
+ 
+This way, you can use highlight-changes in "toggle mode": Once the mode is activated, it will keep track of the changes done to the buffer, even when deactivated in between. Therefore, just do your coding, and at any time later call "highlight-changes-mode" (you might want to bind this to a key). You will then immediately see all saved and unsaved changes since you started editing the file. You can activate/deactivate the mode as often as you like. --DavidEngster
+[new]
+Concerning colors, you've just got a case of the AngryFruitSalad.  Well, you don't. HighlightChanges does.  It can be  a global problem in Emacs, as discussed at AngryFruitSalad.
+
+----
+CategoryUndo

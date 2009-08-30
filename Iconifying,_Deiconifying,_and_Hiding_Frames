@@ -1,0 +1,72 @@
+'''This page is part of the description of OneOnOneEmacs, by DrewAdams.'''
+
+Cette page est aussi disponible en franglais ;-): Français:[[Iconifier, Desiconifier, et Cacher des Frames]]
+
+
+
+= Summary =
+
+Library Lisp:frame-cmds.el has commands for iconifying and restoring [[Frame]]s, tiling frames, and more.
+
+* Use `C-M-z' or `C-x C-z' to iconify/hide all frames.
+* Use `C-M-z' in a lone frame to restore all frames.
+* Use `C-mouse-1' in the MiniBuffer to restore all frames.
+* Use `C-mouse-1' in Dired to mark/unmark a file.
+* Use `C-mouse-3' on a mode line to remove a window from a frame.
+* Use `tile-frames-horizontally' and `tile-frames-vertically' to tile frames.
+
+
+= La Petite Histoire =
+
+When things are frame-oriented, you can end up with lots of
+frames. So, I created this command:
+* `iconify-everything' -- Iconify all frames at once.
+
+However, this created an icon for each frame, cluttering up the Unix
+desktop or the Windows task bar (prior to Windows XP). So, I created
+this alternative command:
+
+* `hide-everything' -- Iconify minibuffer-frame; make all
+others invisible.
+
+With this command, only a single icon is created. In Windows prior to XP, the
+effect is similar to that provided by Windows XP. However, in XP, the
+icons are grouped in a single task-bar icon, but they are individually
+available as a popup menu. With `hide-everything', you
+lose access to individual frames.
+
+Because of this lack of individual-frame access from the single icon,
+I created a toggle command: hide all frames or show (raise)
+them again:
+
+* `show-hide' -- In a lone frame, restore the frame configuration that was current when all frames were iconified or hidden.  If
+two or more frames are visible, call `hide-everything' to
+hide them.
+
+In Windows XP, `iconify-everything' might be as useful as
+`show-hide', because you can use the Windows popup menu
+to raise a frame. In Unix, Linux, and other Windows versions,
+`show-hide' is generally more useful, because it uses
+only one icon.
+
+As a variant of `show-hide', I created this mouse command
+(bound to <code>[C-down-mouse-1]</code>) that acts differently,
+depending on where the mouse is clicked.
+
+* `mouse-show-hide-mark-unmark' -- If clicked in the
+minibuffer, call `show-hide'. If clicked in Dired,
+mark/unmark the file or directory clicked. Otherwise, display
+`mouse-buffer-menu' as a popup menu.
+
+Another useful mouse command is this:
+
+* `mouse-iconify/map-frame' (<code>[mode-line
+mouse-3]</code>) -- Iconify frame clicked on, if now mapped (visible).
+Map (raise) it if now iconified.
+
+'''See Libraries:''' Lisp:frame-cmds.el, Lisp:setup-keys.el
+
+'''See Also:''' FisheyeWithThumbs describes using thumbnail frames as an alternative to iconifying.
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay

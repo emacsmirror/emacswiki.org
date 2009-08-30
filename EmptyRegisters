@@ -1,0 +1,6 @@
+Empty Registers provides a handy list of emptied register locations with unfilled contents.
+Additionally, includes some vars which hold char-code representations for some of the harder to grok registers.
+
+The idea for EmptyRegisters was stolen from: Nelson H. F. Beebe's bibtex-regs.el which provided a somewhat similar facility. --mon_key
+
+Lisp:mon-empty-registers.el

@@ -1,0 +1,98 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Standard Commands Redefined]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Programming Multi-Completions]] ||
+
+----
+
+
+== Programming with Fancy Candidates ==
+
+This section is for EmacsLisp programmers.
+
+'''Icicles''' lets you program with several kinds of candidates that are
+not supported by vanilla Emacs.  For lack of a better word, I call
+them all '''[::fancy candidates]'''.  [[multi-completion|Multi-completions]] are fancy
+candidates.  So are ordinary string candidates that have [[text property|text
+properties]] such as `face'.  And there are other kinds of fancy
+candidates.
+
+Because they are not supported by vanilla Emacs, and because
+'''Icicles''' uses Emacs functions such as `all-completions' to perform
+the primitive [[completion]] operations, fancy candidates require some
+extra processing.
+
+All fancy candidates must first be converted to a form that such
+primitives can understand.  During completion, fancy candidates
+must sometimes be displayed specially, for example using
+particular faces.  And after completion, the completion result
+must sometimes be converted back again to retrieve some or all of
+the original candidate information.
+
+This conversion (encoding and decoding) can be costly, especially
+when there are many candidates.  For this reason, it is turned
+off, by default, so it that doesn't represent overhead during
+completion of non-fancy candidates.
+
+In order to use `completing-read' with fancy candidates, you must
+do one of the following in your code:
+
+'''1.''' Propertize at least the first character of the
+   `completing-read' ##PROMPT## argument string with a non-`nil' text
+   property '''`icicle-fancy-candidates''''.  This turns on processing
+   of fancy candidates for the duration of the `completing-read'
+   call.
+
+'''2.''' Bind [[variable]] '''`icicle-fancy-candidates-p'''' to non-`nil'.
+
+'''3.''' Bind variable '''`icicle-whole-candidate-as-text-prop-p'''' to
+   non-`nil'.
+
+You use method '''1''' or '''2''' to handle multi-completion candidates or
+candidates that have text properties or are otherwise to be
+displayed specially.  I ''recommend'' that you generally use text
+property `icicle-fancy-candidates', not variable
+`icicle-fancy-candidates-p'.  The variable is provided so that you
+can widen the scope of this feature beyond a given call to
+`completing-read'.  You will need to do that only rarely.
+
+A use case for variable `icicle-fancy-candidates-p' would be, for
+instance, if your code calls other code that calls
+`completing-read', so you have no direct access to the
+`completing-read' ##PROMPT## argument in order to propertize it.  If
+you nevertheless want to use some fancy candidates, then you can
+bind `icicle-fancy-candidates-p' with the scope you want.
+
+You use method '''3''', `icicle-whole-candidate-as-text-prop-p', when
+you need to save and later retrieve all of the information
+contained in an [[alist]] ##COLLECTION## entry.  Completion returns only a
+string.  If the ##COLLECTION## alist has only one entry with a given
+string as its [[car]], then you can simply use `assoc' to retrieve the
+whole entry.
+
+But if you use an alist that allows entries with different [[cdr]]s
+for the same car, then you need some way to encode an entire alist
+entry in a display string.  When you have this need, set variable
+'''`icicle-candidates-alist'''' to the alist, and bind
+`icicle-whole-candidate-as-text-prop-p' to non-`nil'.
+
+This has the effect of encoding, as a text property on the
+candidate display string, the ''entire'' corresponding original alist
+entry.  You can then use '''`icicle-get-alist-candidate'''' to recover
+that information.
+
+----
+
+|| *Previous:*  [[Icicles - Standard Commands Redefined]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Programming Multi-Completions]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

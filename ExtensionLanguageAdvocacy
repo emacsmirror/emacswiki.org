@@ -1,0 +1,120 @@
+[new]
+razvanm: FWIW vim supports Perl, Python, PLT Scheme, Tcl, Ruby, its own script language and probably others. Emacs should do the same. It should provide a plug-in framework where people can use their favourite language to script Emacs.
+
+[new]
+AlexSchroeder: Some have one namespace, some have several, some have objects, some do not, some have fancy number types, other do not, some have fancy error report systems, others do not.  I think this means that we either don't use fancy features, or implement all the fancy features in the Emacs core.  If I understood this correctly, all these languages for vim just bind stuff available to vim-script, and vim-script doesn't have fancy features.  Therefore, all these powerful extension languages are crippled by vim-script.
+
+[new]
+razvanm: You understood this wrong.
+
+Consider the case where vim is built with Perl support. The entire Perl language is available for you to use inside vim - including the plethora of Perl packages that you can download and install from CPAN. Customizing vim using Perl is as simple as using VIM* packages as you would use any other Perl package.
+
+The *language* is not crippled in any way!
+
+The fact that all these languages can be embedded in vim doesn't mean that they use the same API structure. Each language has it's own interface to vim. This interface is tailored to suit the language's capabilities and semantics. They're all provided the means to read/delete/modify the contents of buffers, set/delete markers, etc. in ways that fit the language.
+
+Rant end.
+
+[new]
+JorgenSchaefer: Yes, but can my Perl extension call this nifty highlighting program written in Python? How do they live with n different APIs? Do all languages allow you the same deal of flexibility that vim script does? Btw, a good read on this is http://www.advogato.org/article/550.html, though its advocacy of the PDB should be taken with a grain of salt...
+
+[new]
+razvanm: Well ... you're moving the target. The discussion is not whether all those languages can/should cooperate with each other, but rather how to build an editor that can be scripted using the user's favourite language.
+
+As we can see from the poll results at this point, preferences diverge, and I don't think that those voting for CL would ever call a Scheme extension and vice-versa :) (just kidding here) 
+
+All those languages can/should have access to all vim's facilities as vim-script. Actually it is up to the author/maintainer of those bindings to decide how tightly they want their favourite language to integrate with vim.
+
+In fact vim-script receives no special treatment other than the fact that it is always available whereas the others can be enabled/disabled at build time. 
+
+[new]
+But Emacs is *built* with elisp.  Elisp to Emacs is more like C to Vim, there is no extra `scripting language' layer.  So the problem (if any) is not we have only one scripting language, but there are no scripting languages at all.
+
+Oh and there is one indeed: PyMacs.
+
+[new] I don't understand that language feature of vim. But judging from the description above: couldn't you just get the same in Emacs by just letting the interpreter run in a sub-process and let Emacs evaluate everything it returns?  This way a Python script would drive Emacs by returning Lisp forms.
+
+Besides, I personally think that there is already too much diversification of code, functionality and API with Emacs Lisp being the sole language. -- OliverScholz
+
+[new] 
+Seems to me that if one were to offer all these languages to extend an editor in (Emacs) it would become a nightmare for the user. Right now, when I download an elisp extension, I don't have to do anything to emacs, just install it (maybe some other elisp dependencies) and it works. If, however, there were 15 different languages to program extensions in, chances are my emacs is not going to have *all* the languages compiled in. Therefore *all* the extensions aren't going to work. Therefore I probably will be limited to what extension languages I have installed (who wants to bloat an great app more with all the plugins?). Furthermore, it will scatter the development efforts to extend emacs. I found a package in X language, but only know Y language and think it would be cool to add Z feature. I'll probably write a duplication of your package in Y language with my Z feature added. Who wants that? I think the real problem (as was with me) is that Lisp looks scary, therefore I can't learn it easily. However, once you read a bit of info, it's not so scary or bad, infact kinda cool. -- JeremyCowgar
+
+[new]
+The idea of having a bunch of different "scripting" languages seems to rest on the idea that all languages are equal. This, of course, is not true. Why dilute emacs with a bunch of half baked languages? People prefer different languages because they are to varying degrees weak. By adding all these "choices" Emacs would be bending to the will of weak programmers who haven't matured enough to recognize their favorite language is lame. Instead just use or create the Best Language Ever. Elisp could be improved and wasting time supporting languages like perl or python that Elisp absolutely crushes is ridiculous. Focus, instead, on fixing Elisp's weaknesses. Weak programmers will be forced to grow up and Strong programmers will get what they deserve. --sabetts
+
+[new]
+Good idea, improve Emacs Lisp ! Would you mind implementing threads, as a start ? :) -- LucasBonnet
+
+[new]
+EmacsLispForRuby is also available.
+
+[new]
+Most of my projects are failures but I kind of like the idea of supporting various languages within Emacs.  Could call the extension "poison".  What would be nice because certain languages are well suited to certain tasks.  For instance, I don't really know how to do prolog type logic programming within Emacs.  Yet, having that ability would certainly be nice.  But a more important fact is that for instance CPAN has a lot of code in it and I doubt anyone would seriously think that you could just practically add that to Emacs.  There is an innate complexity code and value to code reuse.  In fact, I've written some code for exchanging between all my perl stuff and my Emacs stuff.  I'm not nearly a good elisp programmer, though.  Is there some theoretical solution to this?
+
+[new]
+[[Doom]]  A few points: 
+
+* Code re-use is indeed an important principle, and there's a strong appeal to being able to easily use an existing repository of code 
+such as CPAN. 
+
+* Despite the academic attitude that you should want to learn all languages (and the emacs-snob attitude that you should learn to 
+love elisp), people really dislike language-switching.  Adding "support" for other extension languages caters to this impulse (whether it's "excessive laziness" or "intelligent conservation of effort").
+
+* But embracing multiple languages necessarily involves sub-dividing the community.  Even if there's no actual 
+fork in the elisp code-base, there would be splits in the emacs community -- you need to be a perl programmer to further extend 
+an extension written in perl, and conversely most perl-programmer's will have little interest in assisting with work on extensions written in Java. 
+
+* It does not seem likely that there's any technical solution to this conundrum, e.g. the Parrot engine might hypothetically make it eaisier to write multiple-language applications sharing a VM, but it will do little to solve the social sub-divisions resulting from different language preferences. 
+
+So: any group attempting to do emacs extensions in their own favorite language really needs to try to "be reasonable" about what they're doing. 
+For example: make a good-faith effort to find parts of the project that can be implemented in elisp, to contribute back to the wider community. 
+
+[new]
+
+Let's take a look at vims perl interface : 
+
+ VIM::Msg({msg}, {group}?)
+ VIM::SetOption({arg})	Sets a vim option.
+ VIM::Buffers([{bn}...])	With no arguments, returns a list of all the buffers.
+ VIM::Windows([{wn}...])	With no arguments, returns a list of all the windows.
+ VIM::DoCommand({cmd})	Executes Ex command {cmd}.
+ VIM::Eval({expr})	Evaluates {expr} and returns (success, val).
+ Window->SetHeight({height})
+ Window->Cursor({row}?, {col}?)
+ Window->Buffer()
+ Buffer->Name()		Returns the filename for the Buffer.
+ Buffer->Number()	Returns the number of the Buffer.
+ Buffer->Count()		Returns the number of lines in the Buffer.
+ Buffer->Get({lnum}, {lnum}?, ...)
+ Buffer->Delete({lnum}, {lnum}?)
+ Buffer->Append({lnum}, {line}, {line}?, ...)
+ Buffer->Set({lnum}, {line}, {line}?, ...)
+ $main::curwin
+ $main::curbuf
+
+This enables you to echo a message, set a vimoption, execute a vimcommand or evaluate
+a vimexpression. You have access to a window object, which will let
+you modifiy the height of the window, reset the cursor and hand you a buffer object.
+This in turn will let you query it's name and number, the amount of lines in it
+and modify/query it's content on a per line base (Get,Delete,Append,Set).
+Finally you can access the current buffer and window via 2 variables.
+
+Basically, if you don't want to learn/know vimscript, you'll have to stick to
+deleting/appending/replacing lines in a buffer. For everything else you have
+to pass vimscript in form of strings to the editor -- at least you can do so
+in your favorite language.
+
+I don't see anything here, that can't be done with 'emacsclient -e' and
+some dozend lines of perl.
+
+Andreas Politz
+
+
+
+
+
+
+
+
+----
+CategoryExtensionLanguage

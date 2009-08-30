@@ -1,0 +1,16 @@
+大綱模式 (OutlineMode)是 Emacs 預設的大綱模式。可利用 <tt>M-x outline-mode</tt> 進入此一模式。此模式能夠分辦不同的標題層次 (header levels)與本文 (plain text)。預設的標題是以星號作為標記。使用NEWS 檔案作為一個範例 (C-h n):
+
+ * 非常重要
+ ** 較不重要
+ *** 細節
+ 下例是標題之間的本文。 
+
+你可以使用 Headings, Show, 與 Hide 等選單來顯示部分的文字，或是使用下列快捷鍵：
+
+* C-c C-a   show all
+* C-c C-t   show only the headings
+* C-c C-s   show subtree at cursor location
+* C-c C-d   hide subtree at cursor location
+
+----
+CategoryOutline

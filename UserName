@@ -1,0 +1,46 @@
+== If you just want to read ==
+
+If you expect that your visits here will be only for reading, welcome!
+
+== If you want to edit pages ==
+
+You can edit pages without any further ado. You're not required to
+"register" anywhere. If you want, you can set a '''username''' for
+yourself.  It is entirely up to you.  Your username is not "secure."
+Anybody can use the same name as you do.  We believe in
+MeatBall:SoftSecurity.
+
+On the edit page, you will find a field for your username.  The username
+should be a word in
+'''<nowiki>CamelCase</nowiki>''' -- mixed case, no spaces.  Just use
+your first and last name smashed together, eg. AlexSchroeder.  If you
+have a nickname that you often use on [[IRC]] or elsewhere online,
+you can put it on your page using square brackets and two colons like
+this: ##[::kensanata]##. Then you'll be able to link to your page using
+either name -- both AlexSchroeder and [[kensanata]] will work.
+
+The username will be used to tag any edits you make on RecentChanges.
+Note that even if you do have a username, your IP or hostname will be
+logged -- and be visible to others.  If you want to keep it a secret,
+you need to use a network anonymizer like TheOnionRouter (Tor).
+
+Cookies are specific to the machine and browser you are using, thus
+the cookie will be lost as soon as you use another browser or as soon
+as you connect from another machine.
+
+If you don't want to provide a username, use [[Anonymous]].
+
+You might want to add your username to CategoryHomepage.
+
+== Cookie Problems ==
+
+It seems that some people lose their cookies.  It certainly ''works for me''.
+So at the moment I suspect that this is related to the browser being used.
+If you experience this problem, please indicate browser version and OS version
+down below.  Perhaps we can narrow it down.  Other problem solving ideas
+appreciated.  ;)
+
+* Galeon in Debian testing
+
+----
+Cette page est aussi disponible en français: Français:NomUtilisateur

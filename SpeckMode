@@ -1,0 +1,32 @@
+Speck is a minor Emacs mode for on-the-fly spell checking. It differs from the existing modes (ispell, flyspell) in the
+following aspects:
+
+* Speck checks the spelling of a word if and only if the word is
+      actually displayed in an Emacs window.  There are no separate
+      commands to check the spelling of a single word, region, or the
+      entire buffer.
+
+* Speck's operations are triggered by an idle timer.  In practice
+      this means that spelling is checked only when you pause typing.
+
+* You can set up Speck to use different dictionaries for disjoint
+      stretches of text in one and the same buffer.
+
+* Speck preserves dictionary and other settings on a per-buffer
+      basis.  Hence you can check the spelling of several buffers
+      simultaneously, without losing your settings or introducing
+      mutual side-effects.
+
+* Dictionary and other settings can be saved to the file you're
+      visiting and you can resume editing with restored settings.
+
+You can download the Emacs Lisp file here:
+
+Lisp:speck.el
+
+The texinfo documentation can be downloaded on the following page:
+
+[[speck.texi.gz]]
+
+----
+CategorySpelling

@@ -1,0 +1,33 @@
+Generate xml using sexps with [http://www.shellarchive.co.uk/content/emacs.html xmlgen]:
+
+<pre>
+(xmlgen '(p :class "big"))      => "<p class=\"big\" />")
+(xmlgen '(p :class "big" "hi")) => "<p class=\"big\">hi</p>")
+</pre>
+
+<pre>
+(xmlgen '(html
+          (head
+           (title "hello")
+           (meta :something "hi"))
+          (body
+           (h1 "woohhooo")
+           (p "text")
+           (p "more text"))))
+</pre>
+
+produces this (though wrapped):
+
+<pre>
+<html>
+  <head>
+    <title>hello</title>
+    <meta something="hi" />
+  </head>
+  <body>
+    <h1>woohhooo</h1>
+    <p>text</p>
+    <p>more text</p>
+  </body>
+</html>
+</pre>

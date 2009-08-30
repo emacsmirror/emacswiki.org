@@ -1,0 +1,89 @@
+During my project-based DBA consultancy working times, I always find myself struggling to find something in the given SQL schema script. To make things easier, I wrote below helper routines to navigate SQL objects in the source code. They work pretty well for me, I hope they would for you as well.
+
+  (require 'sql)
+  
+  (defvar searched-sql-items nil
+    "Association list of previously searched SQL items.")
+  
+  (defun make-local-searched-sql-items ()
+    "Creates per-buffer SEARCHED-SQL-ITEMS association list."
+    (make-local-variable 'searched-sql-items))
+  
+  (add-hook 'sql-mode-hook 'make-local-searched-sql-items)
+  
+  (defmacro define-sql-search (fn-name fn-spec docstring &rest search-body)
+    "Convenient macro to create SEARCH-SQL-X functions.
+  
+  \(fn (FN-NAME (HASH-KEY PROMPT-STRING SQL-ITEM) DOCSTRING SEARCH-BODY...))"
+    (destructuring-bind (hash-key prompt-string sql-item) fn-spec
+      `(defun ,fn-name (,sql-item)
+         ,docstring
+         (interactive
+          ;; Shadowing SEARCHED-SQL-ITEMS...
+          (let ((searched-sql-items
+                 (and (hash-table-p searched-sql-items)
+                      (gethash ',hash-key searched-sql-items))))
+            (list
+             (completing-read
+              (if searched-sql-items
+                  (format "%s (default: %s): "
+                          ,prompt-string
+                          (first searched-sql-items))
+                (format "%s: " ,prompt-string))
+              searched-sql-items
+              nil                         ; Predicate
+              nil                         ; Require-Match
+              nil                         ; Initial-Input
+              nil                         ; Hist
+              (first searched-sql-items)))))
+         ;; Validate input.
+         (when (string-match "^[ \t]*$" ,sql-item)
+           (error "Invalid SQL identifier!"))
+         ;; Insert specified relation to SEARCHED-SQL-ITEMS.
+         (unless (hash-table-p searched-sql-items)
+           (setq searched-sql-items (make-hash-table)))
+         (setf (gethash ',hash-key searched-sql-items)
+               ;; Move relation to top.
+               (cons ,sql-item (remove ,sql-item (gethash ',hash-key searched-sql-items))))
+         ;; Search relation.
+         ,@search-body)))
+  
+  (defmacro define-sql-search-collection (shortcut-prefix &rest collection)
+    "Shortcut macro to create SQL search functinons via DEFINE-SQL-SEARCH.
+  
+  \(fn (SHORTCUT-PREFIX (IDENTIFIER [KEY] [REGEXP])...))"
+    `(progn
+       ,@(mapcar
+          (lambda (spec)
+            (destructuring-bind (identifier &optional key regexp) spec
+              (let* ((symbol-name (symbol-name identifier))
+                     (fn-name (intern (format "search-sql-%s" symbol-name)))
+                     (prompt-string (format "%s name" (capitalize symbol-name)))
+                     (sql-item (intern (format "%s-name" symbol-name)))
+                     (docstring (format "Search for specified %s in the current buffer."
+                                        (upcase (symbol-name sql-item)))))
+                `(progn
+                   ;; Define related search function.
+                   (define-sql-search ,fn-name (,identifier ,prompt-string ,sql-item)
+                     ,docstring
+                     (search-forward-regexp
+                      (format ,(or regexp
+                                   (format "CREATE %s %%s" (upcase symbol-name)))
+                               ,sql-item)))
+                   ;; Will we need to assign a key binding?
+                   ,(when key
+                      `(define-key sql-mode-map
+                         (kbd ,(format "%s %s" shortcut-prefix key))
+                         ',fn-name))))))
+          collection)))
+  
+  (define-sql-search-collection "C-c s s"
+    (function "f" "CREATE\\( OR REPLACE\\)? FUNCTION %s")
+    (index "i" "CREATE\\( UNIQUE\\)? INDEX %s")
+    (role "o")
+    (rule "u")
+    (table "t")
+    (trigger "r")
+    (view "v"))
+----
+CategorySql

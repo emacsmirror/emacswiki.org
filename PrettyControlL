@@ -1,0 +1,32 @@
+== Pretty Control-L: Library pp-c-l.el ==
+
+This page describes library <tt>[[pp-c-l.el]]</tt>, which displays Control-l (`##^L##') characters in a pretty way.
+
+Control-l is also called the "form feed" character. In many programming languages it is written as `##\f##'. The name "form feed" comes from printers that interpret the character as a page break signal, feeding another form (page). Here's what Wikipedia says about it:
+
+: "The form feed character is sometimes used in plain text files of source code as a delimiter for a page break, or as marker for sections of code. Some editors, in particular emacs, has built-in commands to page up/down on the form feed character. This convention is predominantly used in lisp code, and is also seen in Python source code."
+
+A Control-l character in an Emacs text [[buffer]] (e.g. code) appears normally as `##^L##', if option `ctl-arrow' is non-`nil', or as `##\014##' (octal 14) if that option is `nil'. It serves as a page-break character for many printers, and, by convention, in code it serves to distinguish sections of code. The Emacs commands for navigating among pages (e.g. `forward-page', bound to `##C-x ]##') simply look for Control-l characters. You can also just use `C-s C-q C-l' to search for them. See PageCommands for more.
+
+While Control-l is useful as a section or page separator, `##^L##' or `##\014##' is a bit ugly, and it doesn't really let users know that if they print the text a page break will occur at that position.
+
+In Emacs, you can give any character a different display appearance, by redefining its entry in the current display table. Library <tt>[[pp-c-l.el]]</tt> does this to give Control-l a better appearance. You can easily customize this appearance, without fiddling with the display table yourself.  
+
+This screenshot shows the default appearance:
+
+[[image:PrettyControlLImage]]
+
+Everything between the commented lines corresponds to a single Control-l character. It is (by default) the equivalent of a newline followed by 10 spaces, the text "##Section (Printable Page)##" and 10 more spaces.
+
+You can toggle the pretty display on and off, using minor mode `pretty-control-l-mode'.
+
+See Also: OverlayControlL for an alternative approach, which uses an overlay.
+
+[new:ViniciusJoseLatorre:2007-02-09 23:35:16 GMT]
+Cool! -- ViniciusJoseLatorre
+
+
+
+----
+CategoryDisplay CategoryHideStuff
+Libraries referenced here: Lisp:pp-c-l.el

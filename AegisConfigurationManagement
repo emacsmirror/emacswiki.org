@@ -1,0 +1,6 @@
+[http://aegis.sourceforge.net/ Aegis] is a transaction-based software configuration management system. It provides a framework within which a team of developers may work on many changes to a program independently, and Aegis coordinates integrating these changes back into the master source of the program, with as little disruption as possible.
+
+AegisMode is a GNU Emacs major mode by TimPotter.
+
+----
+CategoryVersionControl

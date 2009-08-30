@@ -1,0 +1,36 @@
+My real name is Nikolaj Schumacher.  I've been an Emacs user since 2004.
+Currently I use GNU Emacs on a !MacBook Pro with a modified Dvorak layout. 
+
+== Packages ==
+I'm a customization junkie.  My collected .emacs is a few hundred kilobytes in size ...
+I've released a lot of it as packages on my [http://nschum.de/src/emacs/ website].
+
+* AsyncEval
+* AutoDictionaryMode
+* CompanyMode
+* CompileBookmarks
+* DocMode
+* EchoPick
+* ElkTest
+* FringeHelper
+* FullAck
+* GuessStyle
+* [[Highlight80Plus]]
+* HighlightParentheses
+* HighlightSymbol
+* IdleRequire
+* KillRingSearch
+* MacroMath
+* PickBackup
+* RecentAddresses
+* TempoSnippets
+* TestCaseMode
+* WindowNumberingMode
+
+
+
+[new]
+Welcome.  I've only started to try your `kill-ring-search' package, but it absolutely rocks!  It's much lighter-weight than `browse-kill-ring' while sparing me the visual grep through repeated "C-y" / "C-_".  -- SeanO
+
+----
+CategoryHomepage

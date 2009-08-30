@@ -1,0 +1,20 @@
+ From: PerAbrahamsen
+ Subject: Re: Lisp programming pop-up menus
+ Newsgroups: gnu.emacs.help
+ Date: 22 Jun 2001 15:41:03 +0200
+
+All text widgets are multiline, however you have to type C-j to add
+new lines, as <RET> is bound to "activate button"...
+
+You just have to rebind <RET> to its original meaning
+inside the field by overwriting the :action attribute.
+
+ (define-widget 'multiline-text 'text
+   "Text field spanning multiple lines."
+   :action (lambda (&rest ignore)  
+            (call-interactively
+             (lookup-key widget-global-map (this-command-keys)))))
+
+ (widget-create 'multiline-text :value "\n\n\n\n")
+
+ (widget-setup)

@@ -1,0 +1,94 @@
+The antiword program can be found here: http://www.winfield.demon.nl/
+
+Emacs Lisp package to run AntiWord in Emacs
+* Lisp:no-word.el (7k)
+It uses the code found on this page. It also provides a function to
+view the conversion in GhostView.
+* If you use a UTF-8 Emacs, you might want to add "(coding-system-for-write 'no-conversion)" to the let* in `no-word'.
+
+Here is how to run the antiword program on every .doc file you open,
+and replace the doc file crud with the antiword output.
+
+    (add-to-list 'auto-mode-alist '("\\.doc\\'" . no-word))
+
+    (defun no-word ()
+      "Run antiword on the entire buffer."
+      (shell-command-on-region (point-min) (point-max) "antiword - " t t))
+
+See also MimeTypesWithGnus to see how to use antiword to view attached
+doc files.
+
+== Alternatives ==
+
+This section lists alternatives to the code snipplet above; once a
+good alternative is found, replace the code above and delete all
+alternatives.
+
+Here is an alternative which asks you for a coding system, and starts
+antiword with the -m option to supply the name of a mapping file.
+
+    (defvar no-word-coding-systems '(("greek-iso-8bit" . "8859-7.txt")
+                                     ("iso-8859-7" . "8859-7.txt")
+                                     ("iso-8859-1" . "8859-1.txt"))
+      "Alist mapping coding system to antiword map file.")
+
+    (defun no-word ()
+      "Run antiword on the entire buffer."
+      (interactive)
+      (let ((map-file (cdr (assoc (completing-read
+                                   "Select coding: (default iso-8859-1) "
+                                   no-word-coding-systems
+                                   nil t nil nil "iso-8859-1")
+                                  no-word-coding-systems)))
+            (modified (buffer-modified-p)))
+        (shell-command-on-region
+         (point-min) (point-max) 
+         (format "antiword -m %s -" map-file)
+         (current-buffer)
+         t)
+        (set-buffer-modified-p modified)))
+
+The upper version doesn't change the coding of the buffer. Therefore
+it doesn't allow to see the document in another coding than your
+current coding unless you first do C-x RET c RET but then you are
+asked twice for the coding.  I put another version which uses the
+no-word-coding-systems variable and displays the document according
+the choosen coding :
+
+    (defun no-word ()
+      "Run antiword on the entire buffer."
+      (interactive)
+      (let* ((no-word-coding (completing-read
+                              "Select coding: (default iso-8859-1) "
+                              no-word-coding-systems
+                              nil t nil nil "iso-8859-1"))
+             (map-file (cdr (assoc no-word-coding no-word-coding-systems)))
+             (coding-system-for-read (intern no-word-coding))
+             (new_name (concat "*" (buffer-name) "*")))
+        (save-window-excursion
+          (shell-command-on-region (point-min) (point-max) (format "antiword -m %s -"  map-file) new_name)  
+          (kill-buffer (current-buffer)))
+        (switch-to-buffer new_name)))
+
+Note that I didn't manage to do the same thing within the same XXX.doc
+buffer. Well, i could have rename the buffer it creates but it doesn't
+bother me too much no to have a buffer named *XXX.doc* since it
+prevents to accidentally overwrite the word document (which somes
+might think it's not a great lost).
+
+Note that you might also want to test wether the file actually
+contains Microsoft stuff.  If so, consider the output of the file
+program:
+
+    ~% file sounds\!041102.doc 
+    sounds!041102.doc: Microsoft Office document data
+
+Therefore in your code:
+
+    (when (string-match "Microsoft "
+           (shell-command-to-string (concat "file " buffer-file-name)))
+      ...
+
+----
+CategoryWThirtyTwo
+CategoryExternalUtilities

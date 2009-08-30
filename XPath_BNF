@@ -1,0 +1,378 @@
+<pre>
+### xpath.bnf --- Grammar for XPATH locations
+
+## Copyright (C) 2001 AlexSchroeder
+
+## Author: David Ponce <dponce@voila.fr>,
+##         Alex Schroeder <alex@gnu.org>
+## Maintainer: Alex Schroeder <alex@gnu.org>
+## Version: 1.0.0
+## Keywords: syntax
+## X-RCS: $Id: xpath.bnf,v 1.9 2001/12/16 23:30:19 alex Exp $
+
+## This file is not part of GNU Emacs.
+
+## This program is free software; you can redistribute it and/or
+## modify it under the terms of the GNU General Public License as
+## published by the Free Software Foundation; either version 2, or (at
+## your option) any later version.
+
+## This program is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+
+## You should have received a copy of the GNU General Public License
+## along with this program; see the file COPYING.  If not, write to
+## the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+## Boston, MA 02111-1307, USA.
+
+### Commentary:
+##
+## The BNF is based on the XPATH specification,
+## http://www.w3.org/TR/xpath.  It was put together by David Ponce
+## <dponce@voila.fr>.  Thanks.
+
+## 
+# --------
+# Settings
+# --------
+%parsermode    lalr ## Generate tables for the LALR parser
+%outputfile    xpath-parser.el
+%parsetable    xpath-tables
+%tokentable    xpath-tokens
+%languagemode  fundamental-mode
+%keywordtable  xpath-keywords
+%setupfunction xpath-default-setup
+
+%token NCNAME ""
+%token QNAME ""
+%token LITERAL ""
+%token NUMBER ""
+%token VARIABLEREFERENCE ""
+
+%token COLON operator ":"
+%token AXISSUF operator "::"
+%token DOTDOT operator ".."
+%token AND "and"
+%token OR "or"
+%token LT operator "<"
+%token GT operator ">"
+%token LE operator "<="
+%token GE operator ">="
+%token NE operator "!="
+%token STAR operator "*"
+%token DIV "div"
+%token MOD "mod"
+%token PLUS operator "+"
+%token MINUS operator "-"
+%token SLASH operator "/"
+%token UNION operator "|"
+%token LPAREN open-paren "("
+%token RPAREN close-paren")"
+%token LBRACK open-paren "["
+%token RBRACK close-paren "]"
+%token AT operator "@"
+%token DOT operator "."
+%token EQ operator "="
+%token COMMA operator ","
+
+%token COMMENT "comment"
+%token TEXT "text"
+%token PROCESSING-INSTRUCTION "processing-instruction"
+%token NODE "node"
+
+%token ANCESTOR "ancestor"
+%token ANCESTOR-OR-SELF "ancestor-or-self"
+%token ATTRIBUTE "attribute"
+%token CHILD "child"
+%token DESCENDANT "descendant"
+%token DESCENDANT-OR-SELF "descendant-or-self"
+%token FOLLOWING "following"
+%token FOLLOWING-SIBLING "following-sibling"
+%token NAMESPACE "namespace"
+%token PARENT "parent"
+%token PRECEDING "preceding"
+%token PRECEDING-SIBLING "preceding-sibling"
+%token SELF "self"
+
+%token POSITION "position"
+%token LAST "last"
+%token COUNT "count"
+%token NAME "name"
+
+TopExpr
+  : LocationPath
+;
+
+# [1]
+LocationPath
+  : RelativeLocationPath
+  | AbsoluteLocationPath
+  ;
+
+
+# [2]
+AbsoluteLocationPath
+  : SLASH
+  | SLASH RelativeLocationPath
+  | AbbreviatedAbsoluteLocationPath
+  ;
+
+
+# [3]
+RelativeLocationPath
+  : Step
+  | RelativeLocationPath SLASH Step
+    (append $1 $3 nil)
+  | AbbreviatedRelativeLocationPath
+  ;
+
+
+# [4]
+Step
+  : Basis predicates
+    (list (append $1 $2))
+  | AbbreviatedStep
+  ;
+
+predicates
+  : EMPTY 
+  | predicates Predicate
+    (append $1 $2)
+  ;
+
+
+# [5]
+Basis
+  : AxisName AXISSUF NodeTest
+    (list $1 $3)
+  | AbbreviatedBasis
+  ;
+
+
+# [6]
+AxisName
+  : ANCESTOR
+    (quote xpath-ancestor-axis)
+  | ANCESTOR-OR-SELF
+    (quote xpath-ancestor-or-self-axis)
+  | ATTRIBUTE
+    (quote xpath-attribute-axis)
+  | CHILD
+    (quote xpath-child-axis)
+  | DESCENDANT
+    (quote xpath-descendant-axis)
+  | DESCENDANT-OR-SELF
+    (quote xpath-descendant-or-self-axis)
+  | FOLLOWING
+    (quote xpath-following-axis)
+  | FOLLOWING-SIBLING
+    (quote xpath-following-sibling-axis)
+  | NAMESPACE
+    (quote xpath-namespace-axis)
+  | PARENT
+    (quote xpath-parent-axis)
+  | PRECEDING
+    (quote xpath-preceding-axis)
+  | PRECEDING-SIBLING
+    (quote xpath-sibling-axis)
+  | SELF
+    (quote xpath-self-axis)
+  ;
+
+# [7]
+NodeTest
+  : NameTest
+    (list 'xpath-name-filter $1)
+  | NodeType LPAREN Arglist RPAREN
+    (list 'xpath-node-type-filter $1)
+  | PROCESSING-INSTRUCTION LPAREN LITERAL RPAREN  
+  ;
+
+# [8]
+Predicate
+  : LBRACK PredicateExpr RBRACK
+    (list $2)
+  ;
+
+
+# [9]
+PredicateExpr
+  : Expr
+  ;
+
+
+# [10]
+AbbreviatedAbsoluteLocationPath
+  : SLASH SLASH RelativeLocationPath
+  ;
+
+
+# [11]
+AbbreviatedRelativeLocationPath
+  : RelativeLocationPath SLASH SLASH Step
+  ;
+
+
+# [12]
+AbbreviatedStep
+  : DOT
+  | DOTDOT
+  ;
+
+
+# [13]
+AbbreviatedBasis
+  : NodeTest
+  | AT NodeTest
+  ;
+
+
+# [14]
+Expr
+  : OrExpr
+  ;
+
+
+# [15]
+PrimaryExpr
+  : VARIABLEREFERENCE
+  | LPAREN Expr RPAREN
+  | LITERAL
+  | NUMBER
+  | FunctionCall
+  ;
+
+
+# [16]
+FunctionCall
+  : FunctionName LPAREN Arglist RPAREN
+    (append (list $1) $3)
+  ;
+
+FunctionName
+  : POSITION
+    (quote xpath-position-function)
+  | LAST
+    (quote xpath-last-function)
+  | COUNT
+    (quote xpath-count-function)
+  | NAME
+    (quote xpath-name-function)
+  ;
+
+Arglist
+  : EMPTY
+  | Arguments
+  ;
+
+Arguments
+  : Argument
+    (list $1)
+  | Arguments COMMA Argument
+    (append $1 (list $3))
+  ;
+
+# [17]
+Argument
+  : Expr
+  ;
+
+
+# [18]
+UnionExpr
+  : PathExpr
+  | UnionExpr UNION PathExpr
+  ;
+
+# [19]
+PathExpr
+  : LocationPath
+    (list 'xpath-resolve-steps 'xpath-context-node (list 'quote $1))
+  | FilterExpr
+  | FilterExpr SLASH RelativeLocationPath
+  | FilterExpr SLASH SLASH RelativeLocationPath
+  ;
+
+
+# [20]
+FilterExpr
+  : PrimaryExpr
+  | FilterExpr Predicate
+  ;
+
+
+# [21]
+OrExpr
+  : AndExpr
+  | OrExpr OR AndExpr
+  ;
+
+
+# [22]
+AndExpr
+  : EqualityExpr
+  | AndExpr AND EqualityExpr
+  ;
+
+
+# [23]
+EqualityExpr
+  : RelationalExpr
+  | EqualityExpr EQ RelationalExpr
+    (list 'xpath-equal $1 $3)
+  | EqualityExpr NE RelationalExpr
+  ;
+
+
+# [24]
+RelationalExpr
+  : AdditiveExpr
+  | RelationalExpr LT AdditiveExpr
+  | RelationalExpr GT AdditiveExpr
+  | RelationalExpr LE  AdditiveExpr
+  | RelationalExpr GE  AdditiveExpr
+  ;
+
+
+# [25]
+AdditiveExpr
+  : MultiplicativeExpr
+  | AdditiveExpr PLUS MultiplicativeExpr
+  | AdditiveExpr MINUS MultiplicativeExpr
+  ;
+
+
+# [26]
+MultiplicativeExpr
+  : UnaryExpr
+  | MultiplicativeExpr STAR UnaryExpr
+  | MultiplicativeExpr DIV  UnaryExpr
+  | MultiplicativeExpr MOD  UnaryExpr
+  ;
+
+
+# [27]
+UnaryExpr
+  : UnionExpr
+  | MINUS UnaryExpr
+  ;
+
+
+# [37]
+NameTest
+  : STAR
+  | NCNAME COLON STAR
+  | QNAME
+  ;
+
+
+# [38]
+NodeType
+  : COMMENT
+  | TEXT
+  | PROCESSING-INSTRUCTION
+  | NODE
+  ;
+</pre>

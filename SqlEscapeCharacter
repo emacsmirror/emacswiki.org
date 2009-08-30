@@ -1,0 +1,11 @@
+With Version 1.6.4 of SqlMode, the backslash character is no longer
+considered an escape character.  In order to revert to the old
+behaviour, use this:
+
+ (require 'sql)
+ (add-hook 'sql-mode-hook
+	   (lambda ()
+	     (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table)))
+
+----
+CategorySql

@@ -1,0 +1,72 @@
+;;; just for highlighting tags in the ecb methods window
+
+%{
+  (define-lex-simple-regex-analyzer
+	semantic-lex-php-simplest-class-def nil
+	"[ \t]*class[ \t]+[a-zA-Z0-9_]+"
+	'class-def
+	)
+  (define-lex-simple-regex-analyzer
+	semantic-lex-php-simplest-funct-def nil
+	"[ \ta-zA-Z0-9_]*function[ \t]+[a-zA-Z0-9_]+"
+	'funct-def
+	)
+  (define-lex-simple-regex-analyzer
+	semantic-lex-php-simplest-notspace nil
+	"[^ \t\n]+"
+	'notspace
+	)
+  (define-lex
+	semantic-lex-php-simplest
+	nil
+	semantic-lex-ignore-comments
+	semantic-lex-php-simplest-class-def
+	semantic-lex-php-simplest-funct-def
+	semantic-lex-whitespace
+	semantic-lex-newline
+	semantic-lex-php-simplest-notspace
+	semantic-lex-default-action
+	)
+  %}
+
+%languagemode php-mode
+%start script
+
+%%
+
+script
+  : lines functions
+	(TYPE-TAG "::" "class" (EXPANDFULL (car $2) functions-t) nil)
+  | lines
+	(TYPE-TAG "::" "class" nil nil)
+  | class-def lines functions
+	(TYPE-TAG (replace-regexp-in-string ".*class[ \t]+" "" $1) "class" (EXPANDFULL (car $3) functions-t) nil)
+  | class-def lines
+	(TYPE-TAG (replace-regexp-in-string ".*class[ \t]+" "" $1) "class" nil nil)
+  ;
+
+anything
+  : notspace anything
+  | whitespace anything
+  | notspace
+  | whitespace
+  ;
+
+line : anything newline | anything | newline ;
+
+lines : line lines | line ;
+
+function : funct-def lines ;
+
+functions
+  : function functions
+	( (cons start end) )
+  | function
+	( (cons start end) )
+  ;
+
+functions-t
+  : funct-def lines
+	(FUNCTION-TAG (replace-regexp-in-string "^[ \t]*" "" $1) nil nil)
+  ;
+

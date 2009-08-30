@@ -1,0 +1,30 @@
+Vim user.
+
+Back up of my .emacs - [[habaDotEmacs]].
+Useful things - [[extraedit.el]]
+
+[new]
+Welcome To the wiki.
+
+Nope, no login no password just fill your name. --PierreGaston
+
+[new]
+Ok. Got it. --MaximKim
+
+
+I wish emacs had _find-in-files_ stuff built in. Grep and findstr can't help here as my emacs lives in Windows environment. And its console knows nothing about unicode.
+
+[new]
+I've noticed that if you use eshell, and issue a ##grep foo *## command, and you don't have a grep binary on your system, it will use ##eshell-poor-mans-grep##. Perhaps you can bind that to a key if you need it? Personally, I just install many command line tools via Cygwin. -- AlexSchroeder
+
+[new]
+The ports of grep etc that comes from /GnuWin32/ works very well most of the time.
+They are included in [[EmacsW32]] -- LennartBorgman
+
+[new]
+Grep in Eshell! Thanks! It can search strings in different encodings. --MaximKim
+
+
+
+----
+CategoryHomepage

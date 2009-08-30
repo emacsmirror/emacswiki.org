@@ -1,0 +1,28 @@
+= Caracteristicas = 
+Listado de las utilidades genericas que ofrece el editor a un programador. En progreso...
+
+== Resaltado de sintaxis ==
+
+== Completado de texto y funciones ==
+
+== Compliacion y errores ==
+
+== Folding ==
+
+== Depuracion ==
+
+== Ejecucion de comandos externos ==
+
+== Control de revisiones y copias de seguridad ==
+
+== Macros, asociacion de teclas y hooks==
+
+== Mucho mas ==
+*CategoryProgramming
+
+
+= Demostraciones =
+Ejemplos donde pueden apreciarse dichas caracteristicas.
+
+*[http://www.youtube.com/watch?v=F5Cc2W6PbL8 Flymake] -- Comprobacion automatica de sintaxis.
+*[http://www.linuxjournal.com/article/2821 Emacs for programmers]

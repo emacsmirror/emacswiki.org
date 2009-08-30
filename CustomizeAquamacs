@@ -1,0 +1,577 @@
+Aquamacs Home page: http://aquamacs.org/
+
+Frequently Asked Questions: AquamacsFAQ  (check this first!)
+
+
+== Growl Support in Aquamacs==
+
+Aside from ToDoChiKu, there seems to be very little information available on getting [http://growl.info/ Growl] to work with [[ERC]]
+Here is one way of enabling Growl notifications in Aquamacs 1.7 on OS X.
+
+<pre>
+;; Growl support
+;; Requires growlnotify, source for which is included in the Growl disk image
+;; Note that the growlnotify --image option is not reliable on OSX 10.5
+;; see http://forums.cocoaforge.com/viewtopic.php?f=6&t=17526&p=114069
+
+;; Wrapper for growlnotify
+(defun growl-chat (title message &optional sticky)
+  (interactive "sTitle: \nsGrowl: ")
+  (shell-command 
+   (format "/usr/local/bin/growlnotify %s -m '%s' --appIcon 'Aquamacs Emacs' %s" title message (if sticky "--sticky" ""))))
+
+;; Sticky notifications
+(defun growl-chat-sticky (title message)
+  (interactive "sTitle: \nsGrowl: ")
+  (growl-chat title message t))
+
+;; ERC notifications
+;; Growl nicknames and highlight words when they are mentioned in IRC.
+;; Nickname notifications are sticky
+(add-hook 'erc-text-matched-hook
+          (lambda (match-type nickuserhost message)
+            (when (and 
+                   (boundp 'nick)
+                   (not (string= nick "ChanServ"))
+                   (not (string= nick "services."))) 
+              (cond
+               ((eq match-type 'current-nick)
+                (growl-chat-sticky (format "%s said %s" nick (erc-current-nick)) message))
+               ((eq match-type 'keyword)
+                (growl-chat (format "%s mentioned a Keyword" nick) message))))))
+</pre>
+
+== WriteRoom-like fullscreen editing mode ==
+
+As of version 1.4, Aquamacs includes a fullscreen mode which fills the screen concealing the dock, the menubar, and other applications. This is great for writing without distractions. With a few lines of lisp, you can define a function which uses this feature to reproduce the large font, black background style of WriteRoom, the free application which first popularized this feature:
+
+ (defun writeroom ()
+  "Switches to a WriteRoom-like fullscreen style"
+  (interactive)	
+  (when (featurep 'aquamacs)
+					; switch to Garamond 36pt
+    (set-frame-font "-apple-garamond-medium-r-normal--36-360-72-72-m-360-iso10646-1")
+					; switch to white on black
+    (color-theme-initialize)
+    (color-theme-clarity)
+					; switch to fullscreen mode
+    (aquamacs-toggle-full-frame)))
+
+== Iconify from Aquamacs' fullscreen-mode ==
+I get the error message "Cannot notify window manager of iconification" when pressing C-z in the new fullscreen mode, so I made my own that first checks for fullscreen mode and if so, exits (I guess this is a bug):
+
+ (defun iconify-or-deiconify-frame-fullscreen-even ()
+   (interactive)
+   (if (eq (cdr (assq 'visibility (frame-parameters))) t)
+     (progn
+       (if (frame-parameter nil 'fullscreen) 
+	   (aquamacs-toggle-full-frame))     
+ ;       (switch-to-buffer "*scratch*") 
+       (iconify-frame))
+     (make-frame-visible))) 
+ (define-key global-map "\C-z" #'iconify-or-deiconify-frame-fullscreen-even)
+
+Uncomment the seventh line if you want to protect your buffer from input when iconified. I use this since if you iconify an Aquamacs frame, it'll still let you type in the open buffer; I always switch to *scratch* to make sure none of my important stuff is changed (this also lets you type things without anyone seeing what you're typing, if you have a use for that...)
+
+Actually, I also have this line in there, after (iconify-frame): 
+
+       (do-applescript ; hide Aquamacs
+	"tell application \"System Events\"\nset visible of process \"Aquamacs\" to false\nend tell")
+
+since I otherwise would have this constant routine of M-x aq TAB t TAB RET, C-xb aslkdfj RET, C-z, Command-H.
+
+== German keyboards and AUCTeX ==
+
+Due to a bug in 0.9.9c, the C-c ` key command can't be entered with German keyboards. As a work-around, add the following to your InitFile or ##Preferences.el##:
+
+ (global-set-key (kbd "\C-c \C-@") 'TeX-next-error)
+ (global-set-key (kbd "\C-c ø") 'TeX-next-error)
+
+
+== Frame transparency ==
+
+In Aquamacs 1.0:
+
+To make a frame transparent, use the frame parameter 'alpha' with an argument from about 30 (very transparent) to 100 (fully visible). For example:
+
+ (modify-frame-parameters (selected-frame) '((alpha . 75)))
+
+
+To make a frame fully visible:
+
+ (modify-frame-parameters (selected-frame) '((alpha . 100)))
+
+In Aquamacs 1.3:
+
+I could not get the above to work in my Preferences.el after a bit of googling this worked for me:
+
+ (add-to-list 'default-frame-alist '(alpha . (80 70))) 
+
+In this case the first number is for the active window and the second for the inactive window.
+
+
+The code below lets for easy and comfortable handle the current frame transparency (works in Aquamacs and Carbon Emacs).
+<pre>
+(defun transparency-set-initial-value ()
+  "Set initial value of alpha parameter for the current frame"
+  (interactive)
+  (if (equal (frame-parameter nil 'alpha) nil)
+      (set-frame-parameter nil 'alpha 100)))
+
+(defun transparency-set-value (numb)
+  "Set level of transparency for the current frame"
+  (interactive "nEnter transparency level in range 0-100: ")
+  (if (> numb 100)
+      (message "Error! The maximum value for transparency is 100!")
+    (if (< numb 0)
+	(message "Error! The minimum value for transparency is 0!")
+      (set-frame-parameter nil 'alpha numb))))
+
+(defun transparency-increase ()
+  "Increase level of transparency for the current frame"
+  (interactive)
+  (transparency-set-initial-value)
+   (if (> (frame-parameter nil 'alpha) 0)
+       (set-frame-parameter nil 'alpha (+ (frame-parameter nil 'alpha) -2))
+     (message "This is a minimum value of transparency!")))
+
+(defun transparency-decrease ()
+  "Decrease level of transparency for the current frame"
+  (interactive)
+  (transparency-set-initial-value)
+  (if (< (frame-parameter nil 'alpha) 100)
+      (set-frame-parameter nil 'alpha (+ (frame-parameter nil 'alpha) +2))
+    (message "This is a minimum value of transparency!")))
+
+;; sample keybinding for transparency manipulation
+(global-set-key (kbd "C-?") 'transparency-set-value)
+;; the two below let for smooth transparency control
+(global-set-key (kbd "C->") 'transparency-increase)
+(global-set-key (kbd "C-<") 'transparency-decrease)
+</pre>
+
+To Make New Frames Transparent
+
+Put this snippet in a config file to set Aquamacs' transparency, as well as the transparency of frames created with C-x 5 2
+
+<pre>
+(setq transparency-level 85)
+(set-frame-parameter nil 'alpha transparency-level)
+(add-hook 'after-make-frame-functions (lambda (selected-frame) (set-frame-parameter selected-frame 'alpha transparency-level)))
+</pre>
+
+== Restoring classic emacs selection mode == 
+
+To provide more common selection behavior, Aquamacs uses cua-mode (not pending-delete-mode or pc-selection-mode). To restore the classic Emacs behavior set in your startup files:
+ 
+ (cua-mode 0)
+ 
+[new]
+Note that, if you'd like to disable <code>cua-mode</code> and enable <code>transient-mark-mode</code> in Aquamacs, the above <code>(cua-mode 0)</code> must execute *before* you enable <code>transient-mark-mode</code>, e.g.:
+
+ (cua-mode 0)
+ (transient-mark-mode 1)
+
+== Working the Mouse - mouse button functions in Aquamacs==
+
+Because Macs usually have mice with one or maybe two buttons, Aquamacs emulates the emacs-specfic mouse buttons as follows:
+
+* mouse button (left) is mouse-1: use to set the point or select text.
+* command-click (left) is mouse-2: use to yank from the kill-ring (or follow certain links)
+* mouse button (right) or control-click (left) is mouse-3: use for a context menu
+
+Usually, the right mouse button or control-click will bring up some sort of context menu, just like in other applications.
+There are some other functions:
+
+* Option-drag (left): use to draw up a secondary selection (which is not overwritten by typing). You will be able to copy the selected text with Shift-Command-C.
+
+* Shift-click (left): extend selection (as known from other apps) 
+
+
+== Help, I want my Emacs mouse functions back! ==
+
+If you're a seasoned Emacs user, chances are that you want to use mouse clicks together with some modifier keys such as Control. You may have a five-button mouse that produces all the mouse clicks necessary for successful Emacs magic. In that case, try the following setting:
+
+ (setq mac-emulate-three-button-mouse nil)
+
+Note that mouse functions will differ from is described in the Aquamacs documentation.
+
+
+
+
+== Replacing your /usr/bin/emacs with Aquamacs == 
+(from version 0.9.5) 
+
+To be able to launch files in Aquamacs from the command line, create the following script in your favorite script storage place, for example as /usr/local/bin/e
+I use the file name "e" so I can still call up the OS X standard terminal-based Emacs with 'emacs'.
+
+<pre>
+#!/usr/bin/perl
+
+$pid = 0;
+
+open I, "ps -axww -U $ENV{'USER'} |";
+ 
+while (<I>)
+{
+     if (/Aquamacs Emacs/ && !/grep/)
+     {
+ 	 if (/^\s*([0-9]+)\s/)
+ 	 {
+ 	     $pid = $1;
+ 	 }
+     }
+}
+ 
+close I;
+$args = "";
+for my $f (@ARGV)
+{
+    if (! -e $f)
+    {
+         system("touch \"$f\"");
+    }
+    $args .= "\"$f\" ";
+}
+ 
+# there is still an issue:
+# if the sudo emacs is still open, it will 
+# call 'open' and open the files in the wrong
+# emacs process.
+ 
+if ($pid) 
+{
+    system("open -a /Applications/Aquamacs\\ Emacs.app $args");
+} 
+else
+{
+    system("/Applications/Aquamacs\\ Emacs.app/Contents/MacOS/Aquamacs\\ Emacs $args &");
+}
+
+exit;
+</pre>
+
+Make sure to change the permissions:
+
+ chmod u+x /path/to/script/e
+
+If you save it somewhere besides /usr/local/bin (or some other directory in your PATH), modify .bashrc (or modify as appropriate for your preferred shell):
+
+ alias e='/path/to/script/e '
+
+That space at the end is important.
+This script will work on paths with spaces, and you may call "sudo emacs" (probably not with the alias solution). Please feel free to improve upon it.
+
+
+Some users have not had good luck with this Perl script. An alternative is create an alias in your shell's *rc file. For example, in .bash_profile or .tcshrc
+
+ alias aquamacs 'open /Applications/Aquamacs\ Emacs.app/'
+
+This solution won't support opening Emacs via "sudo".
+This alias can either open Aquamacs:
+
+>aquamacs
+
+or open Aquamacs with a file:
+
+>aquamacs script.pl
+
+A better alternative on the above is
+ 
+ alias aquamacs 'open -a /Applications/Aquamacs\ Emacs.app/'
+
+This allows emacs to open files which have a file-association to a different application.
+
+When a file doesn't already exist, `aquamacs file.txt` will fail since open says "File does not exist" rather than passing the filename as an argument to Aquamacs.
+Put the following function in ~/.bashrc; then `amacs file.txt` will behave more like its command-line emacs cousin (which only creates the files when they are saved).
+
+ function amacs
+ {
+     # Create the files as needed -- not as good as raw emacs, but acceptable
+     for f in "$@"
+     do
+ 	test -e $f || touch $f
+     done
+     open -a /Applications/Aquamacs\ Emacs.app "$@"
+ }
+
+
+
+== Opening Files In Same Frame, but keep Apple-N functionality the same ==
+
+If you're coming from Emacs, you may prefer the Emacs-behavior over the Aquamacs default. Uncheck the "Open Buffers in Separate Frames" option in the Options menu and then "Save Options".
+Alternatively, add this to your emacs preferences file:
+
+<pre>
+(one-buffer-one-frame-mode 0)
+</pre>
+
+Some people might want Aquamacs to use the classic Emacs-behavior most of the time, but would still like to have the option to spawn new frames. This command will spawn a new frame:
+
+<pre>
+(defun my-new-frame-with-new-scratch ()
+  (interactive)
+  (let ((one-buffer-one-frame t))
+    (new-frame-with-new-scratch)))
+</pre>
+
+It can be added to an customization file, preferably:
+<pre>
+~/Library/Preferences/Aquamacs Emacs/Preferences.el
+</pre>
+
+To bind this command to the Apple-n key, use 
+
+<pre>
+(define-key osx-key-mode-map (kbd "A-n") 'my-new-frame-with-new-scratch)
+</pre>
+
+
+You can do a similar thing to close frames with the Apple-w key:
+
+<pre>
+(one-buffer-one-frame-mode 0)
+(defun my-close-current-window-asktosave ()
+  (interactive)
+  (let ((one-buffer-one-frame t))
+    (close-current-window-asktosave)))
+(define-key osx-key-mode-map (kbd "A-w") 'my-close-current-window-asktosave)
+</pre>
+
+Aquamacs 1.5 has made this the default behavior.  To get the old
+behavior back and make Apple-w close the current buffer, not the whole
+window, do:
+
+<pre>
+(define-key osx-key-mode-map (kbd "A-w") 'kill-this-buffer)
+</pre>
+
+
+== Set Aquamacs Icon ==
+
+
+Some users have complained about the new icon. If you prefer the standard FSF icon or something else, you can simply click on another application whose icon you'd like to copy in Finder and hit Apple-I. In the window that pops up, click the icon and copy it to the clipboard with Apple-C. 
+
+Then, you do the same with Aquamacs Emacs.app, except that you just paste the copied icon with Apple-V over the old one. Voila!
+
+By the way: The Aquamacs Icon was created by Massimiliano Gubinelli. It is freely available (http://www.ing.unipi.it/~d9615/homepage/mac.html). (It is not stolen from GNOME, as one user has alledged.)
+
+== Change the indentation width in xml-mode ==
+
+DavidReitter: This doesn't really belong here - should we move it somewhere else?
+
+In Aquamacs' default xml-mode the indentation width can be changed per buffer basis by doing the following:
+
+ M-x set-variable RET sgml-basic-offset RET 4
+
+To permanently save the changes, put the following lines in ~/Library/Preferences/Aquamacs Emacs/Preferences.el:
+
+ (defun sgml-mode-indent-setup ()
+   (setq sgml-basic-offset 4))
+ (add-hook 'sgml-mode-hook 'sgml-mode-indent-setup)
+
+The standard nxml-mode (http://www.thaiopensource.com/nxml-mode/) can be set up to load automatically for XML files with indentation width of 4 spaces by using:
+
+ (defun nxml-mode-indent-setup ()
+   (setq nxml-child-indent 4))
+ (add-hook 'nxml-mode-hook 'nxml-mode-indent-setup)
+
+ (unless (featurep 'xemacs)
+   (provide 'emacs))
+ (when (and (featurep 'emacs) (load "~/nxml-mode/rng-auto.el" t))
+   (defalias 'html-mode 'nxml-mode)
+   (defalias 'xml-mode 'nxml-mode))
+
+== Use "Open" command in Dired Mode ==
+
+Mac OS X offers "open" command using which you can open every file by default associated application. That is typing in "open foo.pdf" in terminals will make Preview.app open foo.pdf. Add following lines to your InitFile or ##~/Library/Preferences/Aquamacs Emacs/Preferences.el## will let you bind "open" command to "o", the key:
+
+ (define-key dired-mode-map "o" 'dired-open-mac)
+ (defun dired-open-mac ()
+    (interactive)
+    (let ((file-name (dired-get-file-for-visit)))
+      (if (file-exists-p file-name)
+          (shell-command (concat "open '" file-name "'" nil )))))
+
+-- Wen Zhang (http://zhangw.com)
+
+Invoking the shell here is deemed to be 'resource-hungry'.  Using <code>call-process</code> instead allows for a somewhat simpler function:
+ 
+    (defun dired-open-mac ()
+       (interactive)
+       (let ((file-name (dired-get-file-for-visit)))
+         (if (file-exists-p file-name)
+             (call-process "/usr/bin/open" nil 0 nil file-name))))
+
+-- José Figueroa-O'Farrill (with help from the OS X Emacs list)
+
+
+
+== Adding a different Python mode ==
+
+Aquamacs comes with a working python mode. If you'd like to get a different version, download a copy of python-mode from https://launchpad.net/python-mode/ (formerly at http://sourceforge.net/projects/python-mode), untar it and:
+
+ sudo mkdir /Library/Application\ Support/Emacs
+ sudo mkdir /Library/Application\ Support/Emacs/site-lisp
+ sudo cp python-mode.el /Library/Application\ Support/Emacs/site-lisp/
+
+ Alternatively in your home folder:
+ mkdir ~/Library/Application\ Support/Emacs
+ mkdir ~/Library/Application\ Support/Emacs/site-lisp
+ cp python-mode.el ~/Library/Application\ Support/Emacs/site-lisp/
+
+
+Add the following lines to ~/Library/Preferences/Aquamacs Emacs/Preferences.el or your InitFile:
+
+ (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
+ (setq interpreter-mode-alist (cons '("python" . python-mode) interpreter-mode-alist))
+ (autoload 'python-mode "python-mode" "Python editing mode." t)
+
+And you'll be set for Python editing.
+
+== Changing Aquamacs Frame Properties (Size, Color) ==
+  
+Modify aquamacs-mode-specific-default-themes. You will have to change the entry for the particular mode you wish to edit. If you would like to modify general settings, change default-frame-alist (and special-display-frame-alist) with the frame parameters you want, just like on any standard Emacs.  (Note that mode-specific theme parameters will override the default-frame-alist settings. You can just de-select "Frame Appearance Themes" in the Option menu in order to turn off mode-specific themes alltogether.)
+
+To change the initial frame, you can modify initial-frame-alist as follows.
+Create a file ~/Library/Preferences/Aquamacs Emacs/Preferences.el (if necessary) and insert the following customizations:
+
+ (setq initial-frame-alist '((background-color . "green") (left . 50)  ))
+
+This will set the background color to green, and position the frame 50 pixels from the left border of the screen.
+You can use any standard emacs frame customizations you like. 
+
+=== Preventing Aquamacs from changing those properties when opening additional windows ===
+
+In a similiar way you can change the properties of additionally opened windows.
+
+ (setq default-frame-alist '((background-color . "white") (left . 0) (width . 141) (height . 44)))
+
+which is about full screen with a 1024x768 screen.
+
+It can happen that new windows are smaller nevertheless. This might be the result of an Aquamacs feature called smart frame positioning. It ensures that new windows aren't covered by the dock etc. If that results in windows you consider too small, you can add
+ 
+ (smart-frame-positioning-mode nil)
+
+to your ##Preferences.el## or InitFile.
+
+
+== Previewing TeX/LaTeX output in TeXniscope ==
+
+Check out AquamacsTexniscope.
+
+
+== Using Mutt with Aquamacs ==
+
+Checkout [http://www.hollenback.net/index.php/MuttOnMacOs this description].
+
+
+== Identifying Aquamacs ==
+
+The following method works and will be supported in the future:
+
+ (when (boundp 'aquamacs-version)
+
+   ... Aquamacs specific code ...
+ )
+
+-- DavidReitter
+
+In my InitFile, I use
+
+ (defvar aquamacs-p (string-match "Aquamacs" (version)))
+
+The value of aquamacs-p will be nil if this is not Aquamacs.
+
+-- JimMenard
+
+[new]
+Just test for the <code>aquamacs</code> feature, e.g.:
+
+ (when (featurep 'aquamacs)
+   ...)
+
+== Filename completion using the space key ==
+
+The default filename completion key is TAB in Emacs 22.
+To have the space key also complete, add this line
+
+ (define-key minibuffer-local-filename-completion-map
+  " " 'minibuffer-complete-word)
+
+== Customizing Aquamacs for use with Mutt ==
+
+I use the mutt mail program running in the mac terminal.  I just finally converted to using Aquamacs as my editor in mutt.  Along the way I had to deal with a number of small glitches which I detail on [http://www.hollenback.net/index.php/MuttOnMacOs my website].
+
+These notes aren't all directly related to Aquamacs but a number of them are relevant even if you don't use mutt on the mac.  In particular I provide a solution to the issue of Aquamacs emacsclient frames displaying behind terminal windows (thanks to the mailing list for that answer).
+
+-- PhilHollenback
+
+== Using Viper with Aquamacs ==
+
+For some reason, two frames (not one) will be created at launch time if you use Viper in Aquamacs. To avoid this, place a call to <code>raise-frame</code> before you enable Viper in your InitFile, e.g.:
+
+ (when (featurep 'aquamacs)
+   (raise-frame))
+ (setq viper-mode t)
+ (add-hook 'emacs-startup-hook 'viper-mode)
+ 
+
+= To be moved to a more relevant page =
+
+== flyspell trick: flyspell-check-previous-highlighted-word ==
+
+Flyspell has a surprisingly underutilized function called flyspell-check-previous-highlighted-word . Imagine that you're typing a long sentence and, oops, flyspell gives you the red-line for misspelling a word, but you don't want to interupt your thought to fix it right now. Most people would mouse over to the misspell once they've finished the sentence. How MS Word! Instead, call flyspell-check-previous-highlighted-word , and a list of suggestions will appear on the top of the screen, pick one, and then continue right from where you left off. I have mine bound to "C-c j" in my InitFile:
+
+(global-set-key (kbd "C-c j") 'flyspell-check-previous-highlighted-word)
+
+--jonshea
+
+== Using Aquamacs with mozex so that you can edit the contents of textareas in Firefox ==
+
+http://marc.abramowitz.info/archives/2006/03/11/aquamacs-and-mozex/
+
+--msabramo
+
+
+== Customization packages and Aquamacs plugins ==
+Customization packages should install themselves (or installed by the user) into
+
+ /Library/Application Support/Emacs 
+ /Library/Application Support/Aquamacs Emacs
+ ~/Library/Application Support/Emacs 
+ ~/Library/Application Support/Aquamacs Emacs
+
+Upon start, Aquamacs (from version 0.9.4) automatically loads all files named <tt>site-start.el</tt> (or <tt>site-start.elc</tt>) residing in any of the aforementioned paths or their subdirectories. If you want to distribute a plugin that gets installed automatically, just install a subfolder into the user's <tt>~/Library/Application Support/Aquamacs</tt> Emacs directory (or the system-wide equivalent) and have a <tt>site-start.el</tt> file in that subfolder which loads up your package. That way, the user doesn't need to add a <tt>(require 'yourplugin)</tt> to his Preferences file. 
+Make sure that you don't change things irreversibly. Better offer a mode that can be turned on. 
+ 
+
+= German Logitech Keyboards =
+
+Here my hack for German Logitech Keyboards. This should be configurable in user preferences, but you can also add this to your Preferences.el:
+
+ (att-to-list 'emulate-mac-keyboard-mode-maps
+  `(german . (("\M-q" . "@")
+	       ("\M--" . "\\")
+	       ("\M-8" . "[")
+	       ("\M-9" . "]")
+	       ("\M-`" . "|")
+	       ("\M-7" . "{")
+	       ("\M-0" . "}")
+	       ("\M-]" . "~")
+	       ("\M-e" . ,emmkm--euro) ;; euro symbol
+	       )
+
+
+= Turning off version check =
+
+Short version:
+
+    (setq aquamacs-version-check-url nil)
+
+Long version:
+
+If you'd like to turn off the regular online check that Aquamacs does in order to see if there is a new version available, enter M-x aquamacs-check-version-information RET and follow instructions.
+Version checking allows the Aquamacs project to collect some statistical data, because the check - like any internet transaction - leaves a trace on the server.  
+
+You can get documentation about the information sent back to the Aquamacs server using M-x aquamacs-check-version-information RET, and it is easy to disable the version check. This check isn’t done upon every startup, but, more precisely, every three days. We don’t keep any information relating to the user’s documents, or information that would allow for the identification of a specific user (beyond the IP address, which is necessarily logged due to the server access). The kind of information we generate is transparently shared [http://braeburn.aquamacs.org/stats/ here].   There are two primary purposes for this “market research”: I want to make sure that Aquamacs actually gets used (otherwise I would spend my time on other pursuits), and I want to see whether there are some default settings that are changed by a large number of people. I rather use empirical data than complaints coming in on the mailing list, which are biased towards those who are unhappy and/or specifically vocal.  DavidReitter

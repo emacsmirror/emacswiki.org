@@ -1,0 +1,52 @@
+
+See
+http://www.xemacs.org/Documentation/packages/html/patcher.html
+for documentation of the patcher xemacs-package.
+
+ (custom-set-variables
+   ...
+  '(patcher-default-change-logs-appearance 'packed)
+  '(patcher-default-change-logs-updating 'automatic)
+  '(patcher-default-committed-notice "COMMIT")
+  '(patcher-default-diff-command "cvs -f -z3 -q diff -u -w -N %f")
+  '(patcher-default-gnus-group "xemacs-patches@xemacs.org")
+  '(patcher-default-log-message-items '(subject change-logs)
+ )
+  '(patcher-default-mail-method 'gnus)
+  '(patcher-default-subject "%n: ")
+  '(patcher-default-subject-committed-prefix "[C]")
+  '(patcher-keep-source-files nil)
+  '(patcher-mail-method 'message)
+  '(patcher-projects '(("erc" "c:\\Hacking\\cvs.sourceforge.net\\lisp\\erc\\" :change-logs-updating automatic :change-logs-appearance verbatim :to-address "erc-help@lists.sf.net")
+   ("cvs2cl" "c:\\Hacking\\cvs.read-bean.com\\cvs2cl\\" :to-address "bug-cvs2cl@red-bean.com")
+   ("emacs" "c:\\Hacking\\subversions.gnu.org\\emacs" :to-address "bug-gnu-emacs@gnu.org")
+   ("xemacs-builds" "c:\\Hacking\\cvs.xemacs.org\\XEmacs\\xemacs-builds" :to-address "XEmacs Patches <xemacs-patches@xemacs.org>")
+   ("xemacs-21.2" "c:\\Hacking\\cvs.xemacs.org\\XEmacs\\xemacs-21.2\\" :inheritance
+    ("xemacs-21.5"))
+   ("build" "c:\\Hacking\\cvs.xemacs.org\\XEmacs\\packages\\xemacs-packages\\build" :inheritance
+    ("xemacs-21.5"))
+   ("xemacs-21.1" "c:\\Hacking\\cvs.xemacs.org\\XEmacs\\xemacs-21.1\\" :inheritance
+    ("xemacs-21.5"))
+   ("SF-CVSROOT" "c:\\Hacking\\Sourceforge\\CVSROOT" :inheritance
+    ("xemacsweb"))
+   ("r21-4-6-windows" "c:\\Hacking\\cvs.xemacs.org\\XEmacs\\r21-4-6-windows" :inheritance
+    ("xemacs-21.5"))
+   ("xemacs-21.4" "c:\\Hacking\\cvs.xemacs.org\\XEmacs\\xemacs-21.4" :inheritance
+    ("xemacs-21.5"))
+   ("ben-mule-21-5" "c:\\Hacking\\cvs.xemacs.org\\XEmacs\\xemacs-ben-mule-21-5\\" :inheritance
+    ("xemacs-21.5"))
+   ("xemacs-21.5" "c:\\Hacking\\cvs.xemacs.org\\XEmacs\\xemacs-21.5" :to-address "XEmacs Patches <xemacs-patches@xemacs.org>" :gnus-group "nnml:xemacs-patches")
+   ("alexandria" "c:\\Hacking\\Sourceforge\\alexandria\\" :inheritance nil)
+   ("packages" "c:\\Hacking\\cvs.xemacs.org\\XEmacs\\packages" :inheritance
+    ("xemacs-21.5"))
+   ("ccvs" "c:\\Hacking\\cvs.cvshome.org\\ccvs\\" :inheritance nil :to-address "bug-cvs@gnu.org")
+   ("XEmacs-CVSROOT" "c:\\Hacking\\cvs.xemacs.org\\XEmacs\\CVSROOT\\" :to-address "XEmacs Patches <xemacs-patches@xemacs.org>")
+   ("xemacsweb" "c:\\Hacking\\cvs.xemacs.org\\XEmacs\\xemacsweb\\" :inheritance
+    ("XEmacs-CVSROOT"))
+   ("linklint" "C:\\DOCUME~1\\AICHNE~1\\LOCALS~1\\Temp\\linklint-2.3.5" :diff-command "diff -u -r ../linklint-2.3.5.orig ." :to-address "bugs@linklint.org")
+   ("texi2html" "c:\\Hacking\\cvs.cvshome.org\\texi2html" :to-address "dev@texi2html.cvshome.org")
+   ("iverilog" "c:\\Hacking\\icarus.com\\verilog" :to-address "Icarus Verilog Bug Managenemt <ivl-bugs@icarus.com>")
+   ("gnus" "c:\\Hacking\\cvs.gnus.org\\gnus\\" :to-address "bugs@gnus.org")
+   ("http-emacs" "c:\\Hacking\\savannah.nongnu.org\\http-emacs\\" :to-address "http-emacs-dev@nongnu.org" :change-logs-updating nil :commit-command "cvs -f -d anaran@savannah.nongnu.org:/cvsroot/http-emacs commit -F %s %f"))
+ )
+   ...)

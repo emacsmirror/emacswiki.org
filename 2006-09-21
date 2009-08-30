@@ -1,0 +1,16 @@
+I'm generating the three most used RSS feeds and serving them as files, updated once every two hours.
+The old links Self:action=rss, Self:action=rss;showedit=1, Self:action=rss;full=1, and Self:action=rss;full=1;diff=1 should continue to work -- they're rewritten internally to read those files instead of invoking the script.
+
+I'm also going to cache uploaded images.
+
+Let me know if anything seems to be wrong.
+
+I'll have to start working on this this Fast CGI integration. I'm actually not really convinced that this will solve the IO problems we're having on the server, but it's easier to work on this than start thinking about moving the wiki to another web hosting service. ;)
+
+-- AlexSchroeder
+
+[new]
+Actually it seems that there were problems with the rewrite rules.
+Hopefully I fixed the last propblem today (2006-10-05).
+I hope not many people were inconvenienced by it.
+-- Alex

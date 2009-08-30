@@ -1,0 +1,17 @@
+CoffeeMode allows Emacs users to submit a BREW request to an RFC2324-compliant coffee device (Hyper Text Coffee Pot Control Protocol, or HTCPCP).
+
+It prompts the user for the different additives, then issues a HTCPCP BREW request to the coffee device.
+
+You can probably guess how CoffeeMode came about ...yadda yadda everything but make coffee ...yadda yadda ...
+
+CoffeeMode requires a special BREW-capable version of Emacs/[[w3]] to be installed. 1999-09-29, under GNU GPL.
+
+Available as part of the Debian package emacs-goodies-el.
+
+Code by EricMarsden and the file can be download here:
+
+http://www.chez.com/emarsden/downloads/coffee.el
+
+
+----
+CategoryExternalUtilities

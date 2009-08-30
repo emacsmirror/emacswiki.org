@@ -1,0 +1,31 @@
+[[image:http://farm4.static.flickr.com/3171/2296244385_d4104e9846.jpg]]
+
+
+'''emacs-shellfm''' is a tiny package designed to provide Emacs interface to [http://nex.scrapping.cc/shell-fm/ Shell-FM] console player.
+
+= Obtaining emacs-shellfm =
+Latest source code for emacs-shellfm is in [[MercurialMode|Mercurial]] repository at http://sphinx.net.ru/hg/emacs-shellfm/ so you may get a recent version with the following command:
+<pre>
+hg clone http://sphinx.net.ru/hg/emacs-shellfm/
+</pre>
+
+You may also download a [http://sphinx.net.ru/hg/emacs-shellfm/archive/tip.tar.gz snapshot tarball].
+
+See also project page on [https://www.ohloh.net/p/emacs-shellfm Ohloh].
+
+= Features overview =
+
+emacs-shellfm supports nearly all features Shell-FM has:
+
+* Listening to global tag radio, group radio, personal playlist and recommendations, as well as «Similar to artist» radio and fans of artist currently being played
+* Recommending current track, artist or album to your friends (with names completion)
+* Tagging of current track, artist or album (with tag completion)
+* Loving/unloving, skipping, pausing playback, banning current track/artist, querying for track info etc.
+
+= Documentation =
+
+Installation notes and usage tips are in [http://sphinx.net.ru/hg/emacs-shellfm/raw-file/tip/README README] file (an [[OrgMode]] one actually) in emacs-shellfm source.
+
+= Requirements =
+
+Emacs-shellfm needs Shell-FM version 0.5 or later (because it needs <code>-b</code> option [http://github.com/jkramer/shell-fm/commit/b5f81f73a316c90e3e9070a5e0cf10815baeab48 added] in January 2008).

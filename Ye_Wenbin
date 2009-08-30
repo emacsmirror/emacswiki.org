@@ -1,0 +1,121 @@
+Hi, I'm Ye Wenbin. (叶文彬) I like Emacs, because it makes me creative. I never
+spent so much time on something like Emacs, except Perl, another
+magical language. I started to use Emacs in 2004. Now, I used it
+every day.
+
+I write some elisp. Maybe you have never heart of it. I hope that more and more people will like my elisp. And I have a dream that someday Emacs will be distributed with my code.
+
+A list of my elisp:
+* [[Eim]]   -- Another input method for Emacs, especially for Chinese characters
+* PerlDevelopEnvironment
+* Lisp:tempo-x.el -- More elements for tempo
+* Lisp:perltidy.el --- use perltidy to tidy perl code
+* Lisp:perlcritic.el --- Call perlcritic
+* Lisp:perldb-ui.el -- User Interface for perl debugger
+* Lisp:template-simple.el -- Expand text template
+* Lisp:windata.el -- Persist window configuration
+* Lisp:compile-dwim.el -- Guess compile command 
+* Lisp:dot-emacs-helper.el -- Some helper functions for .emacs
+* Lisp:widget-demo.el -- Some recipes for creating widgets
+* Lisp:gob.el   -- A code generator for GObject
+* Lisp:showtip.el -- Show tooltip near the cursor
+* Lisp:mule-menu.el -- Multiple language support for menu bar
+* Lisp:chinese-menu.el -- Chinese Simple language menu
+* Lisp:english-menu.el -- English menu. A template for other language.
+* Lisp:help-dwim.el  --  Show many type of help in one command.
+* Lisp:help-dwim-perldoc.el -- Use woman to show perldoc.
+* Lisp:help-dwim-perlapi.el  --  A simple example of help-dwim
+* Lisp:chinese-chess.el -- Play chinese chess game.
+* Lisp:chinese-chess-pvc.el -- A computer player for chinese chess.
+* TreeMode -- A mode to manage tree-widget
+* Lisp:glade-mode.el -- A mode to view glade interface using tree-widget
+* Lisp:clibpc.el  -- partial complete for c libraries
+* Lisp:gtk-perl.el -- A minor mode to help write gtk-perl code
+* Lisp:acd.el -- A major mode to edit emboss acd files.
+* Lisp:emboss.el -- A library help to browse and write emboss applications
+* [[Bibus]] -- A reference manager like the same program write in python
+* [[mysql]] -- A front end for mysql
+* TsvMode -- A mode to view and edit tables like files. 
+* Lisp:incr.el   -- Increase anything you want
+* Lisp:rss.el -- Create and update RSS(version 2.0)
+* Lisp:fenc.el  --- Improve CJK coding system dectect
+* [[Hexl+]]  -- Hex dump with multiple encoding support
+* Lisp:prand.el -- Pesudo-random number generator
+* Lisp:encrypt.el -- Encrypt using coding system
+* Lisp:sql-completion.el -- Completion in <code>*SQL*</code> for mysql
+* Lisp:shell-completion.el -- More completion in shell
+* Lisp:cgi+.el -- Run cgi inside emacs
+* Lisp:scroll-mode-line-mode.el -- Make mode line scrollable
+* Lisp:keep-end.el  -- Keep point in certain buffers always at the end
+* Lisp:emoticons.el -- Replace text with emoticons
+* Lisp:inf-perl.el  -- Comint for perl
+* Lisp:xs-mode.el -- Major mode for perl XS file
+* Lisp:list-processes+.el -- Some functions for list processing
+* Lisp:hanconvert.el -- Convert between traditional Chinese characters and Simple Chinese characters
+* Lisp:hannum.el  --- Convert between numeric values and their Chinese string equivalents
+* Lisp:eight-puzzle.el  -- A simple 8puzzle game
+* Lisp:type-test.el -- Test how fast you type
+
+I provide an extension Lisp:dot-emacs-help.el to manage my .emacs.
+It will be very easy to modify or search a piece of configuration. I upload my configuration 
+to YwbEmacsConf. You maybe have to rename the file with extension `.tar.gz' to uncompress
+it correctly after download the file, 
+
+Please let me known if you have any comments about or problems with my code. 
+My homepage: http://learn.tsinghua.edu.cn:8080/2005211356/website/index.html
+My blog: http://wenbinhome.blogspot.com/.
+You may get or update code from there.
+
+My favorite programming language is Perl. I wish that someday there will be a wonderful Perl IDE in Emacs; maybe I will create one :)
+
+
+----
+[new]
+I think pcomplete does more completion in shell.
+
+[new]
+I don't known how to set up pcomplete for shell. 
+shell-completion can do this:
+# complete commands after "sudo"
+# complete command options when provided
+# complete commands or command options in an interactive program, such as lftp, mysql, cpan and so on.
+
+----
+[new]
+I like [[incr.el]], but removed all the han stuff. Maybe you could use a require without error message and just fail gracefully if I try to increase a Chinese number without [[hannum.el]]? -- AlexSchroeder
+
+[new]
+Sorry. I have fixed it. I removed the (require 'hannum) from eval-when-compile. Now it will work without hannum.el. Thank you!
+
+[new]
+Thanks! For the kind of keyboard macros I often use, `incr-dwim' is much more useful than the macro counter feature that usually forget how to use by the time I need it again. -- AlexSchroeder
+
+----
+
+Very minor coding tip: You can test the value returned by `require'.  So, for instance:
+
+    (require 'dot-emacs-helper nil t)
+    (when (not (featurep 'dot-emacs-helper))
+      (defmacro deh-require-maybe (feature &rest forms)
+        (declare (indent 1))
+        `(progn
+           (require ,feature nil t)
+           (when (featurep ,feature)
+             ,@forms)))
+      ...)
+
+can become just:
+
+    (unless (require 'dot-emacs-helper nil t)
+      (defmacro deh-require-maybe (feature &rest forms)
+        (declare (indent 1))
+        `(when (require ,feature nil t) ,@forms)))
+      ...)
+
+HTH -- DrewAdams
+
+[new]
+Thanks. I update it in the elisp too.
+
+----
+CategoryHomepage

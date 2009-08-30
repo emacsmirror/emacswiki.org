@@ -1,0 +1,23 @@
+When editing a page or running maintenance, the wiki will create locks.
+If it then crashes due to a bug, the lock will be left behind.
+The symptoms are:
+
+# Delays of about five seconds when loading pages
+# An error when trying to save a file claiming that the main lock could not be removed
+
+How to proceed:
+
+# Check how old the lock is.  It /could/ be maintenance taking a few minutes only.
+  You can see the lock directories here: http://www.emacswiki.org/emacs/temp/
+# Check what processes are running.
+  You'll find them here: http://www.emacswiki.org/emacs/pids/
+# Remove the locks:
+  Follow the _Administration_ link at the bottom of the page and click on _Unlock the wiki_.
+  That will take you here: http://www.emacswiki.org/cgi-bin/emacs?action=unlock
+
+[new]
+Couldn't the unlock operation be written as a shell script and cron job?
+I've known of related bugs in PHP Web environments.  The fix was to actually restart the Apache Web server to avoid hiccups related to MySQL connections. It was a hack, but it kept things running until the bug was found. -- AaronHawley 
+[new]
+I'm hope that the crashes will tell us something about the problem; that's why I'd rather know about them.
+-- AlexSchroeder

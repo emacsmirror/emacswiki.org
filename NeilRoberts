@@ -1,0 +1,38 @@
+I am Neil Roberts and am an Emacs user.
+
+I haven't contributed anything except [http://www.busydoingnothing.co.uk/twitter-el/ twitter.el]
+
+Welcome! -- [[rubikitch]]
+
+Got a twitter.el patch for you, Neil.  Pasting it below, as there's no contact or patch-submission information in twitter.el.  --[[KarlFogel]]
+{{{
+[[[
+* twitter/twitter.el (twitter-status-edit-mode, twitter-timeline-view-mode):
+  Run the appropriate mode and mode-change hooks.
+]]]
+
+diff --git a/twitter.el b/twitter.el
+index 7130f90..426691d 100644
+--- a/twitter.el
++++ b/twitter.el
+@@ -773,11 +773,17 @@ character count on the mode line is updated."
+   (make-local-variable 'twitter-reply-status-id)
+   (setq twitter-reply-status-id nil)
+   ;; Update the mode line immediatly
+-  (twitter-status-edit-update-length))
++  (twitter-status-edit-update-length)
++  ;; Run the expected hooks.  This should stay last.
++  (run-mode-hooks 'twitter-status-edit-mode-hook
++                  'after-change-major-mode-hook))
+ 
+ (define-derived-mode twitter-timeline-view-mode fundamental-mode
+   "Twitter Timeline"
+-  "Major mode for viewing timelines from Twitter.")
++  "Major mode for viewing timelines from Twitter."
++  ;; Run the expected hooks.  This should stay last.
++  (run-mode-hooks 'twitter-timeline-view-mode-hook
++                  'after-change-major-mode-hook))
+ 
+ (provide 'twitter)
+
+}}}

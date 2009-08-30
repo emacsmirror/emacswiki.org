@@ -1,0 +1,309 @@
+== Extensions Available ==
+
+=== KevinEsler's clearcase.el ===
+Kevin Esler (esler(at)rational.com) maintains clearcase.el, a frontend to Rational's <nowiki>ClearCase</nowiki>,
+available at: http://members.verizon.net/kevin.a.esler/EmacsClearCase/.
+
+It looks like as if (at least) January 2005, Kevin Esler's clearcase.el has been merged into the XEmacs main branch: http://www.xemacs.org/Releases/2005-01-18.html
+
+You can also get it from
+the XEmacs package directory at ftp://ftp.xemacs.org OR http://ftp.xemacs.org/pub/xemacs/packages/
+* Contains: 
+** clearcase-1.10-pkg.tar.gz  04-Jun-2005 17:12   103k  
+** vc-1.41-pkg.tar.gz         05-Jun-2005 13:23    92k 
+** vc-cc-1.22-pkg.tar.gz      31-Oct-2003 12:59    93k  
+
+
+=== RodWhitby's vc-clearcase.el ===
+
+You can download this at : http://sourceforge.net/project/showfiles.php?group_id=3765 
+
+But the author of this package doesn't recommend to use this package(Even he himself uses Kevin Esler's clearcase.el ( see http://rwhitby.hplx.net/vc-clearcase.html )
+
+=== AlexandruHarsanyi's vc-clearcase.el ===
+
+vc-clearcase.el, a backend to vc.el is available at http://code.google.com/p/vc-clearcase/.  It works only with GNU Emacs.
+
+== Discussion ==
+
+=== Emacs and Dynamic View Issue ===
+
+[new]
+I always "ct setview my-view-name" before run emacs, 'cause don't know find out how to see my dynamic view without this. Then if i need to change dynamic-view then i exit emacs and do "ct setview my-another-view-name" and rerun emacs. Is there any way around this silly process? I tried menu "tools > clearcase > start dynamic view" (which is "vc-clearcase-start-view" command) but no effect. 
+I'm clearcase newbie and using vc-clearcase(v1.95)
+--JoonhwanLee
+
+[new:JoonhwanLee:2007-04-03 15:40 UTC]
+According to the discussion i found[Groups:%22clearcase+in+emacs%22+%2Bview-extended], setting a view while running emacs wouldn't be possible and even confusion. Just "start" a view in the emacs to see that view in view-extended path(normally under /view/{view-tag}/vobs/{vobs-tag} ...) and edit a file within that directory.  Bottom line : We CANNOT set a dynamic-view "dynamically" under emacs. 
+--JoonhwanLee
+
+[new]
+The setview command will start a subshell, and the subshell will have the dynamic view set.  Any process started from that subshell will have that view, but any parent processes will not.   The real bottom line is that you cannot set a dynamic view from any text editor or IDE.  This is not a limitation of emacs + vc-clearcase.
+
+Also, in my experience the setview command is not that useful.  The only use is to get the current view name back using the pwv.  Of course, in emacs you can edit files in different views, so there is no concept of current view at emacs level. ##vc-clearcase.el## tracks the current view of each individual file and you can find it using ##vc-clearcase-what-view-tag##, bound to C-x v t.  If you edit the same file in different views, it might be useful to the ##uniquify.el## library, with the ##uniquify-buffer-name-style## set to ##post-forward##.  When you edit the same file in different views, emacs will append the view name to the buffer name of the file, this is really useful to know which file you are actually editing.
+
+HINT: I usually create a symbolic link in my home directory to the project(s) I'm working on, for example, ##~/v/my-project## is linked to ##/view/{my-view-tag}/vobs/{vob-tag}/path-to-my-project##.  Much easier to access the version controlled files.
+
+--AlexHarsanyi
+
+[new]
+Oh, very good, Alex . Things became clearer. :)
+One more specific question.
+The project I'm working on has makefile that uses a explicit path name "/vobs/something", and for building this project I always have to 'ct setview myviewname-for-something' before running emacs. In your explanation, it seems that i don't have to do that but create symbolic link "/vobs/something" to build and access anything in that specific view contents. Am i following right? 
+
+--JoonhwanLee
+
+[new]
+
+Well, it looks like your makefile contains a hard coded path.  It is a bad idea to have a hard coded path in a Makefile or any script.  I would suggest to change the makefile to use only relative paths, but if you cannot do that, you are stuck with the "setview" command.   You see, the "setview" command will make ##/vobs/something## point to your view in the new shell that "setview" started.  At the same time, a different user can have ##/vobs/something## point to his view in the new shell that his "setview" started.  You cannot do that with symbolic links.  A symbolic link will point to the same destination no matter which user is looking at it.
+
+None of the projects I worked on (and some were pretty large) depended on absolute paths.  You could put the source code tree in any directory and the project would build fine.  I suggested using symbolic links only to save some typing when opening a file name, not to organize your build system.
+
+To summarize: your build system depends on "setview" and the only way to avoid using "setview" is to change your buildsystem.
+
+--AlexHarsanyi
+
+[new]
+
+Yeah, you're absolutely right, Alex. The software developer at our site has been using gvim/vim except me. When I joined this group several weeks ago, it was a little bit surprise(why use vim? ;)). They just float several terminal window and several gvim instances here and there(some of them are in different view than others). You know what? In spite of this particular disaster( :) ), THEY ARE HAPPY. :(   (And, they're living with a pretty lots of shell script for shortening clearcase commands).  With your clearcase extension, i don't need such scripts and can do everything in my emacs except the "setview" issue. 
+
+After reading your last answer, I just was wondering if there is a clearcase command which can run any commands inside in a particular view and finally i found. "ct setview -exec 'do something on the view; do other thing on the view..' my_view_tag" is the one. and now i'm trying to how to use this integrated with emacs. Thanks for your answers so far, and also your package.
+
+--JoonhwanLee
+
+[new]
+
+I use Kevin Esler's clearcase.el with cvs gnu emacs (or 21.3) on ms windows 2000 and have problems with encoding of the comments. We have the check-in comments in the source-files, and if I have a used RETURN in my comment, I get ^M on all lines but the breaked comment line. Is it possible to avoid this? Is the buffer somehow encoded with the wrong buffer-file-coding-system?
+
+--Mats
+
+=== Integrating with ECB ===
+
+[new]
+According to ECB doc, we might be able to use ecb with clearcase vc backend. I'm trying to do this.
+
+As of today(2007-07-04), AlexandruHarsanyi's vc-clearcase.el, vc-clearcase-dir-state func has not been implemented. I'm trying to use vc-clearcase backend within ecb package and need this func. how about using like this.
+<pre>
+(defun vc-clearcase-dir-state (dir)
+  (let ((fdir (expand-file-name dir))
+		pwv )
+	(if (string-match "\\*\\*[ ]*NONE[ ]*\\*\\*"
+				  (shell-command-to-string 
+				   (concat "cd "
+						   fdir
+						   "; cleartool pwv -short -wdview")))
+		nil t)))
+</pre>
+I'm still a newbiew in both elisp and clearcase ... but it seems to me that it's not that hard. 
+
+[new]
+
+First, `vc-clearcase-dir-state' is not needed for vc-directory (`C-x v d') to work.  If it is not provided, vc.el will use `vc-clearcase-state' for every file recursively in a directory.  Unfortunately this is very slow in ClearCase.  It works but it takes minutes for a modest source tree.
+
+Second, Your implementation of `vc-clearcase-dir-state' is incorect.  It only determines if DIR is in a ClearCase view or not, but this is not what it is supposed to do.  A correct implementation will need to examine each file under DIR (recursively), determine its state and set it as the `vc-state' property of that file.  
+
+To fully retrieve the ClearCase state as vc.el requires it, you need two pieces of information: (1) a "cleartool ls" and (2) a "cleartool desc" on the file (see `vc-clearcase-registered' which is the entry point for retrieving the state).  To do this in bulk (so that it is reasonably fast), you need to:
+
+* run a recursive "cleartool ls" as a subprocess, and setup a filter to process the output as it arrives.
+* for each file returned in step 1, run a "cleartool desc" on the transaction queue to get the second piece of information.
+
+Now implementing all this is not exactly trivial and I never used the vc-directory `C-x v d' functionality.  Also, `vc-clearcase-list-checkouts' offers a partial replacement.
+
+I don't use ECB so I don't know why does ECB need to use `vc-clearcase-dir-state'.
+
+--AlexHarsanyi
+
+[new]
+
+I just had a look at the ECB documentation and it looks like what it needs is a function which identifies if a directory is managed by ClearCase or not.  Your original implementation is almost correct except you gave it the wrong name, `vc-clearcase-dir-state' is supposed to do much more than identify if a directory is under ClearCase or not.  
+
+The only problem with your implementation (apart from the name of the function) is that you need to return 'CLEARCASE instead of t if the directory is managed by ClearCase.  I believe this is what ECB needs:
+
+<pre>
+(defun ecb-vc-dir-managed-by-CLEARCASE (dir)
+  (let ((default-directory dir))
+    (unless (string-match 
+             "\\*\\* NONE \\*\\*"
+             (shell-command-to-string "cleartool pwv -wdview -short"))
+      'CLEARCASE)))
+
+(add-to-list 'ecb-vc-supported-backends 'ecb-vc-dir-managed-by-CLEARCASE)
+</pre>
+
+I have tested the above function and it identifies ClearCase directories correctly.  I have not tested it in ECB, since I don't use it.
+
+--AlexHarsanyi.
+
+=== Checking-in multiple files ===
+
+[new] 
+
+Whenever i'm working on multiple files checked out and need to check in them at once, i still using shell command not visiting all buffers and c-x v v to make work brief. But using shell, i collect all pathname of files checked out and this make me feel there must be better way. Is there a better way for this?
+
+--JoonhwanLee
+
+[new]
+
+Unfortunately, there is no way of checking in multiple files.  A partial solution is to use `vc-clearcase-list-checkouts' (bound to C-x v o) -- this will list all the checked out files.   You can type 'f' in that buffer to switch to a file and check it in, than repeat for all the files you want to check in.   In the checkin comment buffer, you can use "M-p" and "M-n" to cycle between previous messages, so at least you don't have to type the message again.
+
+--AlexHarsanyi
+
+[new]
+
+If i'm in the case of checking in all checked out files in my private view, i don't use c-x v v but use shell command(<pre>cleartool ci -c `mylsco`</pre>, where mylsco is a alias for listing all checked out files in my private view by me). But, sometimes, i have to checked in some of checked out files and in this case, i just have to visit every file and c-x v v. 
+After reading above Alex's comment, i thought there could be function who can show checked out files in current view in dired-mode. If so, we could select some of them and do something using M-!. 
+
+maybe.. 
+<pre>
+(defun joon:cc-mylsco-dired (curr-view-tag)
+  "hacked from `find-dired' defun. my lschecout of clearcase objects...and show them in dired mode"
+  (interactive
+   (list
+    (ah-clearcase-read-view-tag
+     "view for mylsco-dired: "
+     ;; get an initial view-tag if possible.
+     (let ((file (buffer-file-name (current-buffer))))
+       (when (and file (vc-clearcase-registered file))
+		 (ah-clearcase-fprop-view-tag (ah-clearcase-file-fprop file)))))))
+  (let* ((dir (concat "/view/" curr-view-tag "/vobs/opal/"))
+		 (dired-buffers dired-buffers)
+		(mylsco-cmd (concat "cleartool lsco -cview -all -short "  dir))
+		(relpath-filter-cmd (concat "sed -e 's/\\/view\\/" curr-view-tag "//p' -e 's/\\/vobs\\/opal\\///p'")))
+    ;; Expand DIR ("" means default-directory), and make sure it has a
+    ;; trailing slash.
+    ;; Check that it's really a directory.
+    (or (file-directory-p dir)
+		(error "non-existing directory: %s" dir))
+    (switch-to-buffer (get-buffer-create (concat "mylsco@" dir)))
+
+    ;; See if there's still a `find' running, and offer to kill
+    ;; it first, if it is.
+    (let ((find (get-buffer-process (current-buffer))))
+      (when find
+		(if (or (not (eq (process-status find) 'run))
+				(yes-or-no-p "A `find' process is running; kill it? "))
+			(condition-case nil
+				(progn
+				  (interrupt-process find)
+				  (sit-for 1)
+				  (delete-process find))
+			  (error nil))
+		  (error "Cannot have two processes in `%s' at once" (buffer-name)))))
+
+    (widen)
+    (kill-all-local-variables)
+    (setq buffer-read-only nil)
+    (erase-buffer)
+	(setq default-directory dir)
+    ;; Start the find process.
+    (shell-command (concat "ls " (cdr find-ls-option) " `"
+						   mylsco-cmd 
+						   "` | "
+						   relpath-filter-cmd
+						   "&")
+				   (current-buffer))
+    ;; The next statement will bomb in classic dired (no optional arg allowed)
+    (dired-mode dir (cdr find-ls-option))
+    (let ((map (make-sparse-keymap)))
+      (set-keymap-parent map (current-local-map))
+      (define-key map "\C-c\C-k" 'kill-find)
+      (use-local-map map))
+    (make-local-variable 'dired-sort-inhibit)
+    (setq dired-sort-inhibit t)
+    (set (make-local-variable 'revert-buffer-function)
+		 `(lambda (ignore-auto noconfirm)
+			(joon:cc-mylsco-dired ,curr-view-tag)))
+    ;; Set subdir-alist so that Tree Dired will work:
+    (if (fboundp 'dired-simple-subdir-alist)
+		;; will work even with nested dired format (dired-nstd.el,v 1.15
+		;; and later)
+		(dired-simple-subdir-alist)
+      ;; else we have an ancient tree dired (or classic dired, where
+      ;; this does no harm)
+      (set (make-local-variable 'dired-subdir-alist)
+		   (list (cons default-directory (point-min-marker)))))
+    (set (make-local-variable 'dired-subdir-switches) find-ls-subdir-switches)
+    (setq buffer-read-only nil)
+    ;; Subdir headlerline must come first because the first marker in
+    ;; subdir-alist points there.
+    (insert "  " dir ":\n")
+    ;; Make second line a ``find'' line in analogy to the ``total'' or
+    ;; ``wildcard'' line.
+    (insert "  " mylsco-cmd "\n")
+    (setq buffer-read-only t)
+    (let ((proc (get-buffer-process (current-buffer))))
+      (set-process-filter proc (function find-dired-filter))
+      (set-process-sentinel proc (function find-dired-sentinel))
+      ;; Initialize the process marker; it is used by the filter.
+      (move-marker (process-mark proc) 1 (current-buffer)))
+    (setq mode-line-process '(":%s"))))
+</pre>
+
+When M-x joon:cc-mylsco-dired while opening any source under clearcase, i can easily see all checked out files in dired mode, and select some of them and <pre>M-! cleartool ci -ptime -c '###bgz#1234 hacked the find-dired' *</pre>. With the tailing '*', all files are checked in 'pseudo-atomically'.  There can be caveat in my above implementation for doing this 'cause i'm just novice in elisp. Maybe we can still go further by adding defun that can do check in like c-x v v way(showing <pre>*vc-log*</pre> buffer to get user's check in comment) for this dired buffer.  
+
+[new]
+
+I just released vc-clearcase version 1.132 yesterday.  Among other things it implements vc-dired more efficiently.  You should now be able to run vc-dired (C-x v d) in a view and get a list of checked out files.  You can mark them and check them in   all at once using 'v v'.  See the "VC Dired Mode" info node in the Emacs manual for how to use it.
+
+Also, if you use UCM, you can check in all files of an activity using `M-x ucm-checkin-activity`.  In the log window, you can see which files will be checked in using `C-c C-f`
+
+--AlexHarsanyi.
+
+=== Patch to prevent generation of .keep files when reverting ===
+
+I propose additional flag to remove *.keep* files when reverting.
+
+-- ThomasLim
+
+<pre>
+--- vc-clearcase.el
++++ vc-clearcase.el
+@@ -2141,6 +2141,11 @@
+   :type 'boolean
+   :group 'vc-clearcase)
+ 
++(defcustom clearcase-keep-on-revert-flag nil
++  "Non-nil means leaving *.keep{.N} when reverting."
++  :type 'boolean
++  :group 'vc-clearcase)
++
+ (defun vc-clearcase-revert (file &optional contents-done)
+   "Cancel a checkout or a hijacking on FILE.
+ CONTENTS-DONE is ignored.  The
+@@ -2151,7 +2156,8 @@
+     (if (clearcase-fprop-hijacked-p fprop)
+ 	(cleartool "update -overwrite -force \"%s\"" file)
+ 	(progn
+-	  (cleartool "uncheckout -keep \"%s\"" file)
++	  (cleartool "uncheckout %s \"%s\""
++		     (if clearcase-keep-on-revert-flag "-keep" "-rm") file)
+ 	  (when (and empty-branch-p clearcase-rmbranch-on-revert-flag)
+ 	    (let ((base (clearcase-fprop-version-base fprop)))
+ 	      (cleartool "rmbranch -force -nc \"%s@@%s\"" file base)
+</pre>
+
+=== clearcase.el breaks when CC configured to use third party diff tool ===
+
+[new]
+When I configure ClearCase to use a third party diffing tool (e.g. Beyond Compare) it breaks support doing diffs in both vc-clearcase.el and clearcase.el. I modified 
+
+<pre>
+C:\Program Files\Rational\ClearCase\lib\mgrs\map
+</pre> 
+
+as described here:
+
+http://www.scootersoftware.com/support.php?c=kb_vcs.php
+
+Is there a way to fix this so that I can have the best of both worlds?
+
+[new]
+
+You could try to use Beyond Compare only for graphical diffs: leave the "compare" line to the original and only modify the "xcompare" line.
+
+Alternatively, in `vc-clearcase.el' you can use the "diff" utility (from cygwin) for diffs.  This is done by setting `clearcase-use-external-diff' to `t'.
+
+-- AlexHarsanyi.
+
+----
+CategoryVersionControl

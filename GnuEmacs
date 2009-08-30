@@ -1,0 +1,48 @@
+12:19 <emacs> hi
+12:21 <kral> wow, emacs itself! :)
+
+GNU Emacs is a text editor for Über-Geeks.
+
+Or: GNU Emacs is the [[extensible]], customizable, SelfDocumenting real-time
+display editor.
+
+* WikiPedia:GNU_Emacs -- extensive overview, with historical description and up-to-date reference links
+* http://www.gnu.org/software/emacs/ -- GNU's own overview
+* http://www.gnu.org/directory/Text_creation_and_manipulation/Editors/emacs.html
+
+GNU stands for "GNU's Not Unix," and it represents the work of the
+FreeSoftwareFoundation (FSF) and its founder RichardStallman.  Part of
+the project to create a Unix that was FreeSoftware included a highly
+functional editor as well as some sort of Lisp system.  While I don't
+think that RMS had planned for Emacs to become the Lisp support for
+the GNU system, in fact it has pretty much been the only Lisp to be
+found in the implementation of the operating system known as GNU/Linux.
+
+See EmacsHistory for its history.
+
+The latest release of GNU Emacs is 22.2.  The GNU Emacs software is
+subject to the GnuGeneralPublicLicense and can always be found at
+GNU's site or other EmacsDistribution places.  The sourcecode in
+development is also available to the public, for study and
+custom building.  See CategoryBuilding.
+
+= FSF Emacs or GNU Emacs? =
+
+   M-x version RET
+
+says
+
+   GNU Emacs 22.1.1 (i686-pc-linux-gnu, GTK+ Version 2.8.20) of 2007-06-04 on cyd
+
+So now you know.
+
+= Emacs vs XEmacs =
+
+EmacsSchism has a summary of what went down those days.
+
+= EmacsLisp or Guile =
+
+See GuileEmacs.
+
+----
+CategoryHistory EmacsImplementations

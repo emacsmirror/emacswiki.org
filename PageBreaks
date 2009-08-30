@@ -1,0 +1,122 @@
+Page breaks are characters (Octal 014, emacs \^L) that force printers
+to break apart documents into multiple pages.  To insert ^L, type C-q
+C-l.
+
+They can also be used for logical separation of source code, and emacs
+has handy functions and keybinding to jump around in them, such as
+<code>forward-page</code> and <code>backward-page</code>.  Some
+functions operate on pages like <code>mark-page</code>, and the
+BasicNarrowing can also be done by pages.
+
+PrettyControlL lets you display page breaks in other ways. 
+
+The rest of this page discusses other ways to display page breaks.
+
+Here is some code to make them display as long horizontal lines rather
+than the ugly "^L". :-)
+
+<pre>
+(defvar page-break-display-table
+  (let ((table (make-display-table)))
+    (aset table ?\^L "-------------------------------------------------------------------------------")
+    table)
+  "Create a display-table that displays page-breaks prettily (kinda. Heh.)")
+
+(defun toggle-page-break-mode ()
+  "Toggle the use of pretty page-break displays for the current buffer."
+  (interactive)
+  (let ((dt (specifier-instance current-display-table
+                                (selected-window))))
+    (set-specifier current-display-table
+                   (if (equal dt page-break-display-table)
+                       nil
+                     page-break-display-table)
+                   (current-buffer))))
+</pre>
+
+This won't work on Emacs as is because speficier-instance is not defined. It should only work for XEmacs users. -- XavierMaillard
+
+Here is one with facification for GNU Emacs.  This version computes the display table at run time, so that the horizontal line is always as wide as the current window.
+
+<pre>
+(defvar page-break-face 'bold)
+(defvar page-break-string-char ?-)
+
+(defun page-break-display-table ()
+  "Create a display-table that displays page-breaks prettily."
+  (let ((table (or (copy-sequence standard-display-table)
+                   (make-display-table))))
+    (aset table ?\^L
+          (let ((face-offset (lsh (face-id page-break-face) 19)))
+            (vconcat (mapcar (lambda (c) (+ face-offset c)) (make-string (1- (window-width))
+                                                                         page-break-string-char)))))
+    table))
+
+(define-minor-mode page-break-mode
+    "Toggle Page Break mode.
+
+In Page Break mode, page breaks (^L characters) are displayed as a
+horizontal line of `page-break-string-char' characters."
+  nil " Pgbrk" nil
+  (setq buffer-display-table (if page-break-mode
+                                 (page-break-display-table)
+                                 nil)))
+
+(defun turn-on-page-break-mode ()
+  (page-break-mode 1))
+
+(defun turn-off-page-break-mode ()
+  (page-break-mode -1))
+</pre>
+
+You can even have a global page-break-mode which computes the length of the line automatically whenever you change of window configurations: -- MatthieuLemerre
+
+<pre>
+(defvar page-break-face 'bold)
+(defvar page-break-string-char ?-)
+
+(defun page-break-display-table (window)
+  "Create a display-table that displays page-breaks prettily."
+  (let ((table (or (copy-sequence (window-display-table window))
+                   (make-display-table))))
+    (aset table ?\^L
+          (let ((face-offset (lsh (face-id page-break-face) 19)))
+            (vconcat (mapcar (lambda (c) (+ face-offset c)) 
+			     (make-string (1- (window-width window))
+					  page-break-string-char)))))
+    table))
+
+
+(defun page-break-mode-hook-function  ()
+  "Function called for updating display table"
+  (mapcar (lambda (window) 
+	    (set-window-display-table window 
+				      (page-break-display-table window)))
+	  (window-list nil 'no-minibuffer)))
+
+(define-minor-mode page-break-mode
+  "Toggle Page Break mode.
+
+In Page Break mode, page breaks (^L characters) are displayed as a
+horizontal line of `page-break-string-char' characters."
+  :global t 
+  :lighter " Pgbrk" 
+  (if page-break-mode
+      (add-hook 'window-configuration-change-hook 
+		'page-break-mode-hook-function )
+    (remove-hook 'window-configuration-change-hook 
+		 'page-break-mode-hook-function)))
+
+(defun turn-on-page-break-mode ()
+  (page-break-mode 1))
+
+(defun turn-off-page-break-mode ()
+  (page-break-mode -1))
+
+(turn-on-page-break-mode)
+</pre>
+
+The TinyTools also contains a PageMode. -- MarkusKnittig
+
+----
+CategoryDisplay

@@ -1,0 +1,126 @@
+: [Mon Sep 4 2006] [21:08:35] <ntc> go use xchat
+
+rcirc is a next generation IRC client. It blends seamlessly with the
+rest of emacs, it's tight, fast, and doesn't light up like a christmas
+tree. rcirc also has sane defaults. There is little or no reason to
+customize it because it does what you want by default (except that many people still do. :))
+
+rcirc is part of GNU Emacs since release 22.0.
+
+==Talking about rcirc==
+
+If you want to chat about rcirc, the place is <tt>#rcirc</tt> on freenode.
+
+==Getting rcirc==
+
+If you are running Emacs 22, you already have it.  Skip this section.
+
+To check out rcirc.el from EmacsFromCVS: CVS:net/rcirc.el.
+
+New versions of rcirc do not work in Emacs 21. You can get the last version of rcirc working in Emacs 21 here: Lisp:rcirc.el.
+
+==Starting rcirc==
+
+In Emacs 22, just type ##M-x irc##.
+
+On Emacs 21 and/or very old rcirc version, you will have to add this to your .emacs:
+
+    (eval-after-load "rcirc"                ; for emacs 21
+      '(if (not (functionp 'irc))
+           (defun irc (x)
+             (interactive "P")
+             (if x
+                 (call-interactively 'rcirc)
+               (rcirc rcirc-server rcirc-port rcirc-nick
+                      (rcirc-startup-channels rcirc-server))))))
+
+then just do as usual.
+
+rcirc comes set up with default values for IRC server and port (irc.freenode.net 6667), nickname (your login name), and channel (#rcirc). You can override these settings in your .emacs file or use C-u M-x rcirc to set these values.
+You also can define a key to start it for you:
+
+    (global-set-key (kbd "C-c I") 'irc)
+
+Please also consider visiting these pages in order to getting started:
+
+; [[rcircExampleSettings]]: examples of stuff you can do to configure rcirc.
+; [[rcircAutoAuthentication]]: How to get automatic authentication with nickserv &c.
+
+==rcirc add-ons and commands==
+
+; [[rcircColoredNicks]]: Color each nick using a separate color and add the ##/color## command
+; [[rcircColoredNickClasses]]: Alternative scheme where nicks can belong to classes such as pals or bots
+; [[rcircColors]]: Handle escape sequences that convey test colors
+; [[rcircRetake]]: Add the ##/retake## command to sind RECOVER and RELEASE messages to !NickServ and to switch your nick using a ##/nick## command.
+; [[rcircReconnect]]: Add the ##/reconnect## command to quit and reconnect immediately for users waking their laptop from sleep after the server has closed the connection
+; [[rcircAutoReconnect]]: Automatically reconnect when disconnected from the IRC server
+; [[rcircPounce]]: Store messages for people and send them when they join one of the channel's you're on
+; [[rcircSmiley]]: Add little :) and :( smileys
+; [[rcircAll]]: Run a command such as /away for all connections 
+; [[rcircNoNamesOnJoin]]: How not to display NAMES list on channel JOIN (ugly hacks inside)
+; [[rcircShowVersion]]: Display rcirc client informations with /sv
+; [[rcircAwayTime]]: Display how long you are/were away from IRC
+; [[rcircBack]]: Cancel your AWAY state with /back (requires [[rcircAwayTime]])
+; [[rcircOpDeop]]: OP commands
+; [[rcircLogging]]: Log conversations to disk
+; [[rcircServerAuth]]: Patch that adds server authentication (PASS).
+; [[rcircAutoAway]]: Go /away after emacs is idle for a period of time.
+; [[rcircSound]]: Play sounds through IRC using CTCP SOUND.
+; [[rcircEncoding]]: Change the encoding per channel
+; [[rcircLateFix]]: Correct original word when 's/wrong/right' messages are seen.
+; [[rcircHelp]]: Implement /help command
+; [[rcircCommandCompletion]]: Let TAB complete commands and nicks
+; [[rcircDimNicks]]: Dim the entire line for nicks in `rcirc-dim-nicks'.
+; [[rcircNotify]]: Libnotify notification popups when someone talks to you
+; [[rcircInvisible]]: How to make yourself invisible (+i); how to advice `rcirc-connect'
+; [[rcircAutoFillColumn]]: Have your rcirc windows dynamically set fill-column instead of always being too long or too short
+; [[rcircNotifyMode]]: maintain an *rcirc-notify* buffer in rcirc-notify-mode (RET to follow notification to buffer of origin, in the same window, for example)
+; [[rcircGroupMode]]: propose an *rcirc-groups* buffer ala gnus *Group*, with refresh and catchup options (and RET to follow), in order to manage notifications in rcirc
+
+==Related stuff that might be of interest==
+
+; [[rcirc for bs-show]]: A configuration for `M-x bs-show' users
+; [[rcirc and iswitchb]]: Hiding IRC buffers from iswitchb
+; [[rcircNickBeep]]: Beep when your nick is mentioned.
+; [[rcircDing]]: Beep when there is activity in a hidden channel.
+; [[osx browse-url-browser-function]]: A browser function for OSX.
+; [[rcircUnambiguousNickCompletion]]: Don't cycle-complete nicks if there is ambiguity
+; [[rcircAlwaysKickBastard]]: Start your session by kicking the evil bastard that's stealing your nick
+; [[rcircPresence]]: Make rcirc tell something else about your presence status (I'm away!)
+; rcirc tracking with [[elscreen]]: when using [[elscreen]] the default "switch-to-buffer" function used by rcirc-track-minor-mode can be changed. To make rcirc switch to the screen where the buffer with the last activity is located simple add to ~/.emacs <code>(setq rcirc-switch-to-buffer-function 'elscreen-find-and-goto-by-buffer)</code>. This has a problem though: automatic switching after some actions (joining a channel, for example) will stop working. One possible solution is:
+{{{
+		(defun rcirc-switch-buffer-or-screen (buffer)
+		  (if (elscreen-find-screen-by-buffer buffer)
+		      (elscreen-find-and-goto-by-buffer buffer)
+		    (switch-to-buffer buffer)))
+		
+		(setq rcirc-switch-to-buffer-function 'rcirc-switch-buffer-or-screen)
+}}}
+; [[rcircThinklight]]: Make irc blink the Thinkpad light twice when someone talks to you.
+; [[rcircDbusNotification]]: use the dbus bindings for notifications
+; [[rcircOthmar]]: replace the text of /dim user's speech with nonsense
+
+/For developers:/
+
+; [[rcircToDocument]]: A todo list for manual maintainers
+
+==Questions & Answers==
+[[VincentFoley]] asks: could anyone describe the differences between rcirc and ERC from an end-user point of view?
+
+AlexSchroeder replies: For beginners, there should be no significant differences. After all, both claim to be easy-to-use IRC clients. The differences begin when customizing or hacking it. Neither of the two has introduced radical changes to the user interface.
+
+WeakishJiang: I have not used ERC. But I found this piece on [[InternetRelayChat|this page]]:
+
+   I used ERC for a while, but I was not very fond of the 20 odd files required in 
+   my elisp directory, so I switched to rcirc and haven’t looked back since. It does
+   everything I need, the (very clean) code is contained in a single file, I’m very happy! 
+   – VincentFoley
+
+Hope it helps.
+
+
+----
+
+How to know whether someone sent you a private message? [[rcircSound]] only solves the in channel directed messages notification problem. There's also a minor mode to see a visual indicator, but it would be better if an audible signal could also be used (e.g. when you are not using Emacs). If there's no such option then it's hardly practical to use. 
+
+CategoryChatClient

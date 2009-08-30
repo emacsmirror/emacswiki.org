@@ -1,0 +1,45 @@
+== Oort Gnus ==
+
+Oort Gnus can use a Face header instead of an X-Face header (see GnusXFace).  The
+Face header uses a mimencoded color PNG file.  For more info, see the
+Gnus page:
+
+* http://quimby.gnus.org/circus/face/
+
+Here are two ways of getting a Face header.  This one will use a JPG
+file, pipe it through tons of utilities, and reduce colors until it is
+small enough.
+
+    (gnus-face-from-file "~/pics/alex-face.jpg")
+
+Note that the utilities needed are listed on the link above, and the corresponding Debian packages are (in sid) : libjpeg-progs and netpbm. The function should return a Face. If not, one utility is missing.
+
+If you have a hand-crafted PNG file, 48x48 and smaller than or equal
+to 726 bytes, use the following:
+
+    (gnus-convert-png-to-face "~/pics/alex.png")
+
+And here is an example of how to use it using PostingStyles:
+
+    (setq gnus-posting-styles
+          `((".*"
+             (address "alex@gnu.org")
+             ("Face"
+    "iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAG1BMVEX///89Pjl6hX25yeD/
+     373gtJdgTEW6a14sduMzR7J4AAAAAXRSTlMAQObYZgAAAeJJREFUeNp1lMGSmzAMhvMKolOaa5wB
+     cg3p5gGy8va8xCZn0658LlPg3Bw6PHZlArbZ2XUOJHz+f1mylM3pk7UJX8t/zf4DUOYAlJJnHuyA
+     ARgCIVagNLCsZA0grMkuBrQQ5/aRAtII7GIA+f4TAM11AWYN4OcMntwPiuh+E2I3Q0GUphNNF3Di
+     /UU2DD29UzxB2rZZpat+8iQKVkmRaV7VtJ988BPYttMaUebrU5XQuP0KsTJrkAoHkEH+DnQzmCVf
+     PJiskL3kbq0goW996zR1DLhWqb0RtBniS5ygK2Jy6/lsCl8M57FU1135V6xTOyi8pDYDfx85mF+o
+     h46DXKj7QQsoBdEflC5DvGRKZl4hsp5fToAfOlytEAPOCn6qAIqiUVJ2DJRTBnAuLGd+69Alj/Ia
+     QG8s6dubcgJVBkVJ9I3rOExBpIgURG9aYuWKJesmKE5Edpjy49B5E81Hbsg+7hDxdxKBM1vNV/Vs
+     ksiqtFxA5cD3V4itarKt5sPK51cDIjouWO4rKZE7y8A9gCM0mVaSo5ir2R68FTc194l7XycCxoNX
+     HF23Z7oSBYkdHILVY4yaPDdJ9Xc7enD0Y2mSHMZxvM/AjxIBg/soZnD2fwrcXrBlhXiAZYweQzje
+     +XP6D3vk9qXUjAFlAAAAAElFTkSuQmCC"))
+            ("gnus.ding"
+             ("Mail-Followup-To" "ding@gnus.org"))
+            ("emacs.sources"
+             ("Followup-To" "gnu.emacs.help"))))
+
+----
+CategoryGnus

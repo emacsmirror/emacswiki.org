@@ -1,0 +1,119 @@
+There is no need to quote a lambda expression because lambda is a macro that expands into ##(function (lambda ...))##.  And ##(function ...)## is more or less equivalent to ##(quote ...)## and that is equivalent to ##'...## -- using function instead of quote just helps the byte compiler a little bit.
+
+Here's an example where quoting is not necessary:
+
+ (add-hook 'c-mode-hook (lambda () (setq c-basic-offset 4)))
+
+Here's how to verify the expansion of a lambda expression.  Note that the result is the same every time.
+
+ (macroexpand '(lambda () (setq c-basic-offset 4)))
+ => (function (lambda nil (setq c-basic-offset 4)))
+
+ (macroexpand (lambda () (setq c-basic-offset 4)))
+    (function (lambda nil (setq c-basic-offset 4)))
+ => (function (lambda nil (setq c-basic-offset 4)))
+
+ (macroexpand #'(lambda () (setq c-basic-offset 4)))
+    (function (lambda nil (setq c-basic-offset 4)))
+ => (function (lambda nil (setq c-basic-offset 4)))
+
+The above expands to the same in XEmacs-21.5-b17+ AdrianAichner
+
+The last one for people from the CommonLisp camp....  :)
+
+However, in byte-compiled code, the following three functions do not all compile the same.
+
+ (byte-compile (defun foo () (setq foo (lambda (x) (+ x 1)))))
+ => #[nil "\301\211^P\207" [foo #[(x) "^HT\207" [x] 1]] 2]
+ 
+ (byte-compile (defun foo () (setq foo '(lambda (x) (+ x 1)))))
+ => #[nil "\301\211^P\207" [foo (lambda (x) (+ x 1))] 2]
+ 
+ (byte-compile (defun foo () (setq foo #'(lambda (x) (+ x 1)))))
+ => #[nil "\301\211^P\207" [foo #[(x) "^HT\207" [x] 1]] 2]
+
+Notice the uncompiled lambda of the second example above!  So the moral of the story seems to be: Use <tt>(lambda ...)</tt> or <tt>#'(lambda ...)</tt> for fastest possible byte-compiled lambda expressions, but avoid <tt>'(lambda ...)</tt>.
+
+Note that in XEmacs 21.5-b17+, the result will look a bit different,
+but the essence is the same: The lambda in the second example is not
+byte-compiled:
+
+ (byte-compile (defun foo () (setq foo (lambda (x) (+ x 1)))))
+ #<compiled-function nil "...(4)" [foo #<compiled-function (x) "...(3)" [x] 1>] 2>
+ 
+ (byte-compile (defun foo () (setq foo '(lambda (x) (+ x 1)))))
+ #<compiled-function nil "...(4)" [foo (lambda (x) (+ x 1))] 2>
+ 
+ (byte-compile (defun foo () (setq foo #'(lambda (x) (+ x 1)))))
+ #<compiled-function nil "...(4)" [foo #<compiled-function (x) "...(3)" [x] 1>] 2>
+
+= Longer Explanation =
+
+Sometimes you do not want to refer to a variable but to a function.  For example in this case:
+
+ (global-set-key (kbd "C-c TAB") 'ispell-complete-word)
+
+This references the symbol ispell-complete-word.  When Emacs receives the `C-c TAB' sequence, it calls the function you provided it.  Essentially,
+it does this:
+
+ (funcall 'ispell-complete-word)
+
+If you didn't put a quote there, then Emacs would try to get the variable value.  But there is no such variable value:
+
+ (global-set-key (kbd "C-c TAB") ispell-complete-word)
+
+This results in an error:
+
+ Symbol's value as variable is void: ispell-complete-word
+
+Use `M-x apropos' to examine it:
+
+ ispell-complete-word
+   Command: Try to complete the word before or under point (see `lookup-words')
+   Plist: event-symbol-element-mask event-symbol-elements modifier-cache autoload
+
+Obviously there is no variable value.
+
+Now let's take a look at lambdas: A lambda is an anonymous function.  It has no name.  Instead of writing a defun to create a function or a command if it starts with `(interactive)', you use the lambda expression directly.
+
+ (defun X () ...)
+
+ (lambda () ...)
+
+You must put the lambda expression where you would otherwise use the name of a function:
+
+ (add-hook 'eshell-mode-hook
+           (lambda ()
+             (local-set-key [up] 'previous-line-nomark)
+             (local-set-key [down] 'next-line-nomark))))
+
+Here you see that I added a lambda expression to the hook.  There was no need to quote it, because I am using the anonymous lambda expression instead of a name.
+
+Instead of:
+
+ (add-hook 'eshell-mode-hook 'X)
+
+I use:
+
+ (add-hook 'eshell-mode-hook (lambda () ...))
+
+The reason this works is because the following work:
+
+ (funcall 'X)
+ (funcall (lambda () ...)
+
+You can try it yourself by evaluating the following:
+
+ (funcall (lambda () (message "Success")))
+
+Summary:
+
+* Just a name refers to the variable.
+* A quoted name refers to the symbol.
+* A lambda expression is a function definition.
+* When you are using a quoted name in elisp in order to refer to a function, you may put a lambda expression instead.  No quoting required.
+
+By the way, a defun is actually nothing other than assigning a lambda expression to the function cell of a symbol!  A symbol has various "cells" -- one for the name of the symbol, one for the value of the variable with that name, one for the function definition (a lambda expression!), and one for the property list.
+
+----
+CategoryCode

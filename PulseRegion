@@ -1,0 +1,14 @@
+Pulse is a set of routines for fancy pulsing of regions of text in Emacs.  For this tool, a "pulse" is for temporary highlighting, but the background color will drift in a smooth fashion from the bright color to the background color.
+If RGB color manipulation is not available, then the region is highlighted only momentarilly.
+
+Pulse is a part of CollectionOfEmacsDevelopmentEnvironmentTools and can be downloaded from CVS:
+
+[http://cedet.cvs.sourceforge.net/*checkout*/cedet/cedet/common/pulse.el pulse.el]
+
+The pulse commentary describes the basic programming functions.
+
+Alternately, you can use the command <code>pulse-enable-integration-advice</code> to enable some simple advice for a wide range of commands, like <code>goto-line</code> and <code>find-tag</code> such that they will pulse the target line after they execute.
+
+----
+HighlightTemporarily
+CategoryFaces

@@ -1,0 +1,13 @@
+AutoExtend is an Emacs extension system.
+
+==Overview==
+* Use AutoInstall (or similar) to install EmacsLisp files.
+* Devise a similar package for the 'c' world ... maybe AutoPlugin ... that will download and install an EmacsPlugin whenever the user requests a feature that is not yet locally available.
+* Related to AutoPlugin could be AutoPatch or AutoFork that allows users to request and hackers to implement patches against the official GNU Emacs and make those alternate builds available as forks when the changes are not accepted into the official mainline.
+* The last layer ... maybe AutoRequest ... is designed to help:
+** Find and use functionality that is already present, but is not sufficiently advertised.  Maybe a hierarchical menu tree constructed through a list of regexps.
+** Request not-yet-implemented functionality from an email list while specifying and optional bounty.  The difficult but probably most important part is making it easy for hundreds of users to add small amounts to that bounty - so hackers can be paid for implementing very popular feature requests.
+*** Of course, those requests may be filled by someone even without a bounty, as they sometimes are now.
+
+----
+MinEmacs

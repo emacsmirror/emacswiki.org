@@ -1,0 +1,61 @@
+I love Emacs and Emacs Lisp.
+
+* FlymakeJavaScript
+* SqlBeautify
+* AutoMark
+* VisibleMark
+* WThreeMReadability
+* AnythingSources
+* JavaScriptMode
+* TranslationTable
+* ThingAtPointOptional
+* AutoComplete
+
+Scripting by Emacs Lisp is very very wonderful. Here is my grep (it's just joke).
+
+<pre>
+#!/usr/bin/emacs --script
+
+(find-file (cadr command-line-args-left))
+(occur (car command-line-args-left))
+(set-buffer "*Occur*")
+(forward-line 1)
+(princ (buffer-substring (point) (point-max)))
+</pre>
+
+----
+
+Welcome on the Wiki !
+
+Hi! -- [[rubikitch]]
+
+Hi, you signed your previous edits as matsuyama (with lower case m). Which one will you use?
+
+I will use upper case one. -- [[Matsuyama]]
+
+----
+
+My source definitions for [[Anything]].
+
+Update: Moved to [[AnythingSources]]
+
+----
+
+[new:DrewAdams:2007-10-13 20:54 UTC]
+Thanks for your [[Anything]] sources. OccurMode and VisibleBookmarks are the handiest for me. I use them with [[Anything#IciclesWithAnything|Icicles with Anything]]. Your Occur source, in particular, encouraged me to make sure that a function works (with [[Icicles]]) as a set of candidates. -- DrewAdams
+
+[new:rubikitch:2008-01-04 05:24 UTC]
+I think your anything-c-source-* should be in [[Anything]] or AnythingSources page, because Anything users cannot find your sources. -- [[rubikitch]]
+
+[new]
+Done! -- [[Matsuyama]]
+
+[new]
+I loooooove anything-c-source-bm!!! Very useful. -- [[rubikitch]]
+
+
+----
+CategoryHomepage
+
+
+

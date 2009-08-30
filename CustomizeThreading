@@ -1,0 +1,30 @@
+Look at the "Customizing Threading" node in the Gnus manual.
+Here are some often requested changes.
+
+== By Subject ==
+
+By default, Message IDs and
+References headers are used for threading.  Other people's clients are
+often broken, however, and don't maintain References.  If these people
+post a lot, threading in those groups will be messy.  You can 
+force Gnus to gather threads by subject instead.
+
+ (setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
+
+== Fuzzy Matching ==
+
+To ignore whitespace, "Re:" and diverse other things when comparing subjects, you can use fuzzy matching.
+
+ (setq gnus-summary-gather-subject-limit 'fuzzy)
+
+== Adding a message to an existing thread ==
+
+KaiGrossjohann said on the ding mailing list (the mailing list for
+GnusCvs) that you can select a message which is to be the parent, hit
+`#' on it, then select the message to be added to that thread, and hit
+`T ^' on that.
+
+----
+CategoryGnus
+
+ 

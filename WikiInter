@@ -1,0 +1,22 @@
+ wiki-inter.el --- interwikis for wiki.el
+
+This extension to WikiMode allows you to use a prefix notation for a
+known number of hosts on the web.  Therefore, instead of having to
+type the entire URL to link to a particular page on one of these
+sites, you can use the shorthand notation HOST:PAGE.
+
+* Lisp:wiki-inter.el
+
+If you want to add another host to the list list of recognized hosts,
+customize `wiki-inter-links'.
+
+Note that in order to publish, `wiki-inter-link-publish' must be on
+`wiki-pub-rules'.  Loading the file puts it there, but if you
+customized the rules or set them manually, you will have to add
+`wiki-inter-link-publish' to `wiki-pub-rules' yourself.  See
+SampleWikiModeSetup for an example.
+
+----
+
+The simplest way to install it is adding (require 'wiki-inter) after
+(require 'wiki).

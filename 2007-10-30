@@ -1,0 +1,53 @@
+Spam Fighting: I'm currently banning any page that contains more than ten links to the same domain (looking at the URL and ignoring path_info, query string, subdomains). Perhaps that helps? :)
+-- AlexSchroeder
+
+[new:DrewAdams:2007-10-30 15:05 UTC]
+Yeah, it's getting to be a pain. (I assume that means a domain outside EmacsWiki. ;-)) -- DrewAdams
+
+[new]
+Yeah, there will either need to be an exception for emacswiki.org, or perhaps this rule will need to be applied to the Wiki source and not the Wiki output?  No, maybe ElispArea does contain 10 emacswiki.org links in the source! -- AaronHawley
+
+[new]
+Hehe. Yes of course it only applies to the "page source" and not to the HTML output. Thus, you can have more than ten internal links and links using the InterMap – but you have no more than ten links to example.org. You can have ten links to example.org and tne links to example.com – ten links in total, but not more than ten per domain.
+
+If you do have lots of explicit links that end up pointing to emacswiki.org, you should use the Self prefix:
+##[http://www.emacswiki.org/cgi-bin/wiki?action=history;id=chill-modee.el history]## -> ##[Self:action=history;id=chill-modee.el history]##.
+
+I was curious and I used the following code on some of the spammed pages:
+
+{{{
+(defun show-domains (buf)
+  "Show domains used in buffer BUF."
+  (interactive "bBuffer: ")
+  (with-current-buffer buf
+    (goto-char (point-min))
+    (let ((table (make-hash-table)))
+    (while (re-search-forward "https?://\\([^/ \t\r\n\f]+\\)" nil t)
+      (let* ((parts (nreverse (split-string (match-string 1) "\\.")))
+	     (domain (intern (concat (nth 1 parts) "." (nth 0 parts)))))
+	(puthash domain (1+ (gethash domain table 0)) table)))
+    (describe-hash 'table))))
+}}}
+
+This uses `describe-hash' from the HashMap page. -- AlexSchroeder
+
+
+[new:DrewAdams:2007-10-31 20:28 UTC]
+Perhaps copy the "how to use Self" stuff to a HowTo page? -- DrewAdams
+
+[new]
+It's at InterLink and TextFormattingRules.
+
+How about adding to the InterMap:
+
+  EmacsWikiScripts /scripts/
+
+And modifying:
+
+  Lisp /elisp/
+
+WikiTodo: Fix existing links to emacswiki.org and make them InterLinks (if they should be):
+
+* EmacsWiki:search=emacswiki.org;old=1
+
+-- AaronHawley

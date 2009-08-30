@@ -1,0 +1,216 @@
+Cette page est aussi disponible en franglais ;-): Français:OeilDePoisson
+----
+
+A '''''fish eye''''' with '''''thumbs'''''? [[image:thumbimg]][[image:thumbimg]][[image:eyeimg]][[image:thumbimg]][[image:thumbimg]]
+
+I must have missed that in my zoology classes. Tell me more...
+
+In Emacs, you have the following choices for [[frame]] "states":
+
+* visible (raised) -- can be of any size; can be maximized to fit your display
+
+* iconified (minimized)
+
+* invisible (in <nowiki>NetherNetherLand</nowiki>) -- don't ask where this is
+
+
+Library <tt>[[thumb-frm.el]]</tt> provides an additional frame "state": ''thumbnail''. In the spectrum from visible to invisible, thumbnail is between visible and iconified.
+
+
+== Screen Shot ==
+
+A picture is worth a thousand words. Well, maybe a thumbnail is worth only 50 words:
+
+[[image:DrewEmacsFisheye]]
+
+
+
+== Thumbnail Frame FAQ ==
+
+; '''''What is a thumbnail frame?''''': It's just a tiny [[frame]], where everything is shrunk: characters, [[scroll bar]], [[minibuffer]] (if present) -- everything -- and it has no [[menu bar]] or [[tool bar]]. It's like a large icon that shows you what is in the frame -- a ''transparent icon''. 
+
+: (Starting with Emacs 21, scroll bars do not shrink along with text; their width remains the same.  If you do not use them in thumbnail frames, and you want to save screen real estate, you can remove them by customizing [[user option]] '''`thumfr-frame-parameters''''.)
+
+; '''''Is it just a picture?''''': No, a thumbnail frame is a fully functioning, active frame. So ''be careful'': you can make changes in it without necessarily seeing what you are doing. (I haven't found a way to make a frame read-only without rendering its buffers read-only everywhere.)
+
+; '''''Can I use <tt>[[thumb-frm.el]]</tt> to view images (e.g. photos) as thumbnails?''''': No, it shrinks only text, not graphics -- a thumbnail of a displayed image just shows a tiny part of the image at full size. To create and view image thumbnails, see ThumbsMode.  
+
+; '''''What _good_ is a thumbnail frame?''''': You can see what is in it, but it doesn't take up much room. It's as easy to thumbify and dethumbify a frame as it is to iconify and deiconify it. Thumbnail frames are stacked (arranged) along an edge of your display for access and reference. They aren't quite as out-of-the-way as icons, and they provide more info and content access than icons.
+
+: You can, for instance, search through or monitor the progress of their buffers. Put a progressive-output buffer (make, grep, shell, communication) in a thumbnail frame to monitor its progress, then blow it up when something interesting happens. Or use a thumbnail when you want a buffer to be current but not in your face -- click to choose a buffer without fanfare.
+
+; '''''What's the "fisheye" stuff all about?''''': A fisheye lens shows you the center of attention close up and everything else (on the periphery) appears very small. This effect is sometimes used in user-interface design to achieve a compromise between showing you what you're focusing on and giving you some idea of its surrounding context.
+
+: Command `thumfr-fisheye' thumbifies all frames except the selected frame, so you can still see them but concentrate on the frame at hand -- the others are there, but out of the way. You can use other fisheye commands to cycle the fisheye among the visible frames. (This is kind of like using `##ALT TAB##' in Windows.)
+
+; '''''Is this really useful, or just a gadget?''''': Yes, it is useful ;-). Try it out and decide for yourself. (Those baby frames are ''cute'', in any case, no?)
+: Actually, at first I didn't think this would be very useful. After using it for a while, however, I realized that I preferred it to iconifying, so I decided to provide it as a general replacement for iconifying. Out of the box, <tt>[[thumb-frm.el]]</tt> now replaces iconifying with thumbifying; if you don't want that behavior, you can easily turn it off.
+
+; '''''How can I get back the original behavior of `iconify-frame'?''''': Set `thumfr-thumbify-dont-iconify-flag' to `nil', or use `ad-deactivate' on `iconify-frame' and `iconify-or-deiconify-frame'.
+
+
+
+== Commands, Keys, and Variables ==
+
+=== Commands ===
+
+* '''`thumfr-thumbify-other-frames'''' (alias '''`thumfr-fisheye'''') -- Turn each frame except the selected frame into a thumbnail. Stack (arrange) the thumbnails along an edge of the display (using `thumfr-stack-thumbnail-frames'). I bind this to `<code>[C-S-mouse-3]</code>' -- just click a frame to make it the fisheye focus.
+
+* '''`thumfr-fisheye-next-frame'''', '''`thumfr-fisheye-previous-frame'''' -- Successively cycle through the visible frames using the fisheye; that is, successively call `thumfr-thumbify-other-frames' on each visible frame. I bind these to `C-M-next' and `C-M-prior'. This is kind of like using `ALT TAB' in Windows: you move the focus to the next frame, and all the others are stacked up as thumbnails.
+
+* '''`thumfr-doremi-thumbnail-frames'''' -- Same effect as `thumfr-fisheye-next-frame' and `thumfr-fisheye-previous-frame', combined: use the arrow keys or mouse wheel to cycle the fisheye lens. I bind this to `C-x t e' ("e" for "eye"). (See DoReMi for related Do Re Mi commands.)
+
+* '''`thumfr-dethumbify-all-frames'''' -- Restore all thumbnails to full size. They return to the same states they were in before they were thumbified.
+
+* '''`thumfr-toggle-thumbnail-frame'''' -- Thumbify or dethumbify an individual frame. I bind this to `<code>[S-mouse-3]</code>' -- just click a frame to shrink or restore it. This command combines the effect of commands `thumfr-thumbify-frame' and `thumfr-dethumbify-frame' (see next).
+
+* '''`thumfr-thumbify-frame'''' -- Thumbify an individual frame.
+
+* '''`thumfr-thumbify-frame-upon-event'''' -- Thumbify a frame when a certain event is associated with it. Bind this to the window-manager "minimize" (iconify) button, to make it thumbify the frame instead -- see [[#KeyBindings]], below.
+
+* '''`thumfr-dethumbify-frame'''' -- Dethumbify an individual frame.
+
+* '''`thumfr-iconify-thumbnail-frames'''' -- Iconify all thumbnail frames (only the thumbnail frames). Gets them out of the way without deleting them -- get them back again with `deiconify-thumbnail-frames'.
+
+* '''`thumfr-deiconify-thumbnail-frames'''' -- Deiconify all thumbnail frames.
+
+* '''`thumfr-stack-thumbnail-frames'''' -- Arrange the thumbnail frames along an edge of the display. Arrange in order (e.g. alphabetically), if `thumfr-sort-function' is non-`nil'. By default, the left edge is used, and frames are arranged from top to bottom ([[option]] '''`thumfr-stack-display-edge'''' controls this).
+
+* '''`thumfr-toggle-sort-thumbnail-frame-stack'''' -- Turn stack sorting on and off.
+
+* '''`iconify-frame'''' -- ''Redefined'' (advised) to thumbify.
+
+* '''`iconify-or-deiconify-frame'''' -- ''Redefined'' (advised) to thumbify or dethumbify. Bound to `C-z', normally.
+
+* '''`thumfr-really-iconify-frame'''' -- Does what `iconify-frame' used to do.
+
+* '''`thumfr-really-iconify-or-deiconify-frame'''' -- Does what `iconify-or-deiconify-frame' used to do.
+
+* '''`raise-frame'''' -- Redefined to also dethumbify. Thanks to this, whenever you access, say, the <code>*Help*</code> frame or a file frame by clicking in Dired, the thumbnail is made full-size. The original `raise-frame' behavior is available as '''`thumfr-only-raise-frame'''' (only useful for thumbnails, since dethumbify has no effect on non-thumbnails).
+
+
+
+
+[:KeyBindings]
+=== Key Bindings ===
+
+By default, standard iconifying bindings such as `C-z' thumbify/dethumbify instead. The following are additional, suggested bindings:
+
+     (global-set-key [S-mouse-3] 'thumfr-toggle-thumbnail-frame)
+     (global-set-key [C-S-mouse-3] 'thumfr-thumbify-other-frames)
+     (global-set-key [(shift control ?z)] 'thumfr-thumbify-other-frames)
+     (global-set-key [(control meta ?z)] 'thumfr-really-iconify-or-deiconify-frame)
+
+     ;; Bind window-manager "minimize" button, so it thumbifies instead.
+     (define-key special-event-map [iconify-frame] 'thumfr-thumbify-frame-upon-event)
+ 
+     ;; Add `doremi-thumbnail-frames' to the Do Re Mi commands - see library `doremi-frm.el'.
+     (defalias 'doremi-prefix (make-sparse-keymap))
+     (defvar doremi-map (symbol-function 'doremi-prefix) "Keymap for Do Re Mi commands.")
+     (define-key global-map "\C-xt"  'doremi-prefix)
+     (define-key global-map "\C-xte" 'thumfr-doremi-thumbnail-frames) ; "Eye"
+
+In addition, I use the following bindings. The first three get rid of everything and then bring it all back as it was. These commands are defined in library <tt>[[frame-cmds.el]]</tt>.
+
+     (global-set-key [(control meta shift ?z)] 'show-hide)
+     (global-set-key [(control ?x) (control ?z)] 'iconify-everything)
+     (global-set-key [C-down-mouse-1] 'mouse-show-hide-mark-unmark)
+     (global-set-key [mode-line mouse-3] 'mouse-iconify/map-frame)
+     (global-set-key [(control ?z)] 'iconify/map-frame)
+
+If you want a key to iconify individual frames, bind `really-iconify-or-deiconify-frame'.
+
+
+
+=== User Options (Variables) ===
+
+These [[option]]s control the behavior and appearance of thumbnail frames:
+
+* '''`thumfr-font-difference'''' -- Change the value of this parameter to change the thumbnail size.
+
+* '''`thumfr-thumbify-dont-iconify-flag'''' -- Set this to `nil' if you do ''not'' want thumbifying to ''replace'' iconifying generally. With this non-`nil' (default value), commands `iconify-frame' and `iconify-or-deiconify-frame' thumbify/dethumbify.
+
+* '''`thumfr-frame-parameters'''' -- Frame parameters of thumbnail frames. This is what removes things like the [[menu bar]] from thumbnail frames (or adds them).
+
+* '''`thumfr-sort-function'''' -- Function to use for sorting the stacked thumbnail frames. If `nil', then no sorting is done. Default value is `thumfr-sort-by-name', which sorts in alphabetical order. Another possible value is `thumfr-sort-by-window-id', which sorts by the `window-id' frame parameter -- that parameter can be used as as a time surrogate in some contexts.
+
+* '''`thumfr-stack-display-edge'''' -- Display edge to stack thumbnail frames along. Default value is `<code>left+down</code>', meaning arrange thumbnail frames
+along the left edge from top to bottom. Any edge (left, right, top, bottom) and any direction (up, down, to-left, to-right) can be specified.
+
+* '''`window-mgr-title-bar-pixel-width'''' -- Width of frame title bar provided by window manager, in pixels. (Emacs cannot determine this, so you must specify it.) Default value is 30.
+
+* '''`thumfr-rename-when-thumbify-flag'''' -- Set this to `nil' if you do ''not'' want thumbifying to also rename the frame to the name of its current buffer (in the selected window).
+
+
+
+== See Also ==
+
+* <tt>[[autofit-frame.el]]</tt> -- Automatically fit each frame to its
+selected window.  Uses <tt>[[fit-frame.el]]</tt>. See [[Shrink-Wrapping Frames]].
+
+* <tt>[[fit-frame.el]]</tt> (See [[Shrink-Wrapping Frames]].)
+** Fit a frame to its selected window.
+** Incrementally resize a frame.
+
+* <tt>[[doremi-frm.el]]</tt> -- Incrementally adjust frame properties
+using arrow keys and/or mouse wheel. See DoReMi.
+
+* <tt>[[frame-cmds.el]]</tt> -- Miscellaneous frame and window commands.
+
+* <tt>[[zoom-frm.el]]</tt> -- Zoom a frame, so that its font becomes
+larger or smaller.
+
+* SetFonts -- Ways to change font size.
+
+
+== Discussion / Feedback ==
+
+Your comments and questions here, please:
+
+{{{
+
+}}}
+----
+{{{
+
+}}}
+
+[new]
+[[NicFerrier]] says: I wish we could have an [[ELPA]] package for this; it's a lot of depends.
+
+[new:DrewAdams:2009-03-28 17:13 UTC]
+Can't have a package for every combination of libraries. ;-) However, there was really no need for me to have hard-required library <tt>[[doremi-frm.el]]</tt>. I've removed that -- it is needed now only when (if) you invoke command `doremi-thumbnail-frames'.
+
+So now there are now only two libraries strictly needed by <tt>[[thumb-frm.el]]</tt>:
+* <tt>[[frame-fns.el]]</tt>
+* <tt>[[frame-cmds.el]]</tt>
+
+If you do want to use command `doremi-thumbnail-frames', then you will also need these libraries:
+
+* <tt>[[hexrgb.el]]</tt>
+* <tt>[[faces+.el]]</tt>
+* <tt>[[ring+.el]]</tt>
+* <tt>[[doremi.el]]</tt>
+* <tt>[[doremi-frm.el]]</tt>
+
+FWIW:
+
+Libraries ##faces+.el## and ##ring+.el## just extend standard libraries ##faces.el## and ##ring.el## a bit, and library ##hexrgb.el## has general-purpose color manipulation functions. All three are used by multiple libraries on the wiki (as are ##frame-fns.el## and ##frame-cmds.el##). Library ##doremi.el## is also a general feature that is used by a dozen or so libraries on the wiki. It is only ##doremi-frm.el## that is a bit specialized.
+
+Thanks for bringing this to my attention. I should have removed that hard dependency long ago. HTH. -- DrewAdams
+
+
+{{{
+
+}}}
+----
+{{{
+
+}}}
+
+
+
+----
+
+OneOnOneEmacs CategoryFrames CategoryDisplay
+

@@ -1,0 +1,10 @@
+igs-go is my relatively ugly hack to play Go over the internet in emacs.
+
+http://www.emmett.ca/~sabetts/igs-go-0.0.2.tgz
+
+You can observe games, play games, list users, challenge users, and list games. There is basic support for chatting but its a bit wonky.
+
+I have made a bunch of improvements since then. but it's currently broken. Drop me a line if you're interested in using it and i'll try to unbreak it...I don't use it anymore.
+
+----
+CategoryGames

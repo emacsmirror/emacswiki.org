@@ -1,0 +1,67 @@
+Eldav: Yet another WebDAV interface for Emacsen
+
+* http://www.gohome.org/eldav/
+
+Add the following line to your .emacs.
+
+    (require 'eldav)
+
+If you want to use proxy server, following setting is also needed.
+
+    (setq eldav-proxy "http://your.proxy.server:8080")
+
+Then you can access WebDAV files by specifying magic file name like:
+
+    :http://your.webdav.server/path/to/file/name
+
+(Add preceding ':' to the WebDAV URL.)
+
+== iCal sync ==
+
+[[jemarch]] offered the following on #emacs:
+
+<source lisp>
+;; openxchange interaction routines
+(require 'eldav)
+
+(defvar openxchange-diary-file "~/emacs/diarylala"
+  "Diary file to syncronize with the openxchange server")
+
+
+(defun openxchange-sync (url-base)
+  "Synchronize with the openxchange server present at URL-BASE"
+
+  (interactive "sopenxchange server url: ")
+  (save-excursion
+
+    (let ((webdav-ical-file (concat url-base "/servlet/webdav.ical")))
+      ;; Putting events
+      (with-temp-buffer
+        (insert (icalendar-export-string openxchange-diary-file))
+        (eldav-put-buffer webdav-ical-file))
+      ;; Delete the diary file
+      (with-temp-file openxchange-diary-file
+        (erase-buffer))
+      ;; Getting events
+      (with-temp-buffer
+        (insert (eldav-get webdav-ical-file))
+        (icalendar-import-buffer openxchange-diary-file t)))))
+</source>
+
+== Editing EmacsWiki ==
+
+Since eldav.el treats all existing files as read-only, you have to
+override the defun `eldav-file-writable-p':
+
+    (load-file "~/elisp/eldav-0.8.1/eldav.el")
+    (defun eldav-file-writable-p (file)
+      t)
+
+Then try `C-x C-f' and edit
+<code>:http://www.emacswiki.org/cgi-bin/wiki/dav/ElDav</code>.
+(Note the colon before the URL!)
+
+At the moment there seems to be no way to transmit username and password.
+
+----
+CategoryInterface

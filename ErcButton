@@ -1,0 +1,69 @@
+Buttonizing is enabled by default (to disable it, use M-x customize-variable RET erc-modules).
+
+ErcButton gives you the ability to "buttonize" text.  Once a piece of
+text is buttonized, you can middle-click it or hit Enter on it to
+trigger the corresponding action.  You can jump to the last button
+with C-c C-w C-b, and to the next button with C-c C-w C-f.
+
+== Buttons ==
+
+When you use erc-button-mode, '''URLs''' will be buttonized.  Clicking
+on them will use BrowseUrl, so you'll probably want to use the browser
+of your choice.  Example:
+
+    (setq browse-url-browser-function 'browse-url-galeon)
+
+'''Nicknames''' are also highlighted.  Basically, you can click on a
+nickname, and choose between the following actions: Msg, Whois, Op,
+Deop, and Kick.  To register more actions, customize
+`erc-nick-popup-alist'. 
+
+Note that this only works if `erc-button-buttonize-nicks' is t. -- zeDek
+
+'''Interlinks''' are URL abbreviations used on Wikis.  Example:
+<nowiki>Emacs:ErcButton</nowiki> is an interlink, and "Emacs:" the
+abbreviation to the wiki URL.
+
+The following interlinks are currently defined:
+
+* <nowiki>Ward, Wiki, WardsWiki, TheWiki</nowiki>
+* <nowiki>EmacsWiki</nowiki>
+
+'''Files''' in this site's ElispArea are linked: <nowiki>Lisp:filename.el</nowiki>
+
+'''Google''' queries are linked: Google:mitre+report+dod.
+
+'''RFCs''' are linked: RFC 822, RFC#822, RFC:822
+
+Elisp '''symbols''' enclosed in a backquote and a quote, e.g. `load-path'.
+
+'''Info nodes''' are linked: Info:"(emacs)Regexps"
+
+'''Internet time''': @500
+
+To add more buttonization cases, customize `erc-button-alist'.
+
+== Typing Interlinks Using Abbrevs ==
+
+Note that using Interlinks is bad for all other users without these
+customizations.  Instead of using buttons for Interlinks on the
+receiving side (which is geeky and clever and shuts other people out),
+consider defining abbrevs on the sending side.  Then Interlinks get
+expanded as you type, and the resulting URL is probably clickable in
+all IRC clients, Emacs or not.
+
+Use M-x edit-abbrevs to enter the following one, after
+"(erc-mode-abbrev-table)":
+
+<pre>
+    "ewiki"   0   "http://www.emacswiki.org/cgi-bin/wiki.pl"
+</pre>
+
+This will allow you to type <nowiki>"ewiki?SandBox"</nowiki> and it
+will expand to the complete URL.
+
+It would be easier to define a global abbrev, however.  See AbbrevMode
+for more.
+
+----
+[[ERC]]

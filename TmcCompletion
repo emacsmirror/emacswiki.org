@@ -1,0 +1,91 @@
+A text completion system written by Jim Salem at Thinking Machines in the 1980s.  
+
+Very simple to use, non-invasive, and extremely useful.  Has been in use for a long time at a wide variety of sites.  To use, just install it in your load-path, byte compile it, and put the following in your .emacs:
+
+    (load-library 'completion)
+    (initialize-completions)
+
+Then to complete, type `M-RET' after at least three chars.  Repeated `M-RET' will cycle through the completions.  Completion will watch what you type and remember it for use when completing.  C-W or delete to remove the last completion.
+
+Download from here: Lisp:completion-11-4.el -- or from http://www.newview.org/salem/completion.
+
+Enjoy!
+
+<pre>
+;;; Advertisement
+;;;---------------
+;;;  Try using this.  If you are like most you will be happy you did.
+;;; 
+;;; What to put in .emacs
+;;;-----------------------
+;;; (load "completion") ;; If it's not part of the standard band.
+;;; (initialize-completions)
+
+;;; Introduction
+;;;---------------
+;;;  
+;;;     After you type a few characters, pressing the "complete" key inserts
+;;; the rest of the word you are likely to type.  
+;;;
+;;; This watches all the words that you type and remembers them.  When 
+;;; typing a new word, pressing "complete" (meta-return) "completes" the
+;;; word by inserting the most recently used word that begins with the 
+;;; same characters.  If you press meta-return repeatedly, it cycles
+;;; through all the words it knows about.
+;;;
+;;;  If you like the completion then just continue typing, it is as if you
+;;; entered the text by hand.  If you want the inserted extra characters 
+;;; to go away, type control-w or delete.  More options are described below.
+;;;
+;;;  The guesses are made in the order of the most recently "used".  Typing
+;;; in a word and then typing a separator character (such as a space) "uses" 
+;;; the word.  So does moving a cursor over the word.  If no words are found, 
+;;; it uses an extended version of the dabbrev style completion.
+;;;
+;;;   You automatically save the completions you use to a file between 
+;;; sessions.  
+;;;
+;;;   Completion enables programmers to enter longer, more descriptive 
+;;; variable names while typing fewer keystrokes than they normally would.
+</pre>
+
+-----
+[new]
+When I compile the latest completion.el version 11.4, I got a lot warings, these function are not defined:
+    note-cdabbrev-entered-afresh, note-cdabbrev-inserted,
+    record-cdabbrev-failed, record-clear-all-completions,
+    note-added-completion, note-completion-deleted,
+    note-separator-character, note-complete-entered-afresh,
+    note-complete-inserted, record-complete-failed,
+    record-cmpl-parse-file, record-save-completions,
+    record-load-completions, record-cmpl-kill-emacs,
+    record-completion-file-loaded
+ 
+Is there other library needed?
+
+I found that `remove' function is redefined, but wasn't used, why? I'm afraid that redefine this function is not a good idea. because many other elisp use this function. This can bring other errors.
+ 
+By the way, I think function and variable name use the same prefix is better. This can help user to remember where is the function or variable. 
+
+----
+[new]
+A bug report:
+<pre>
+Debugger entered--Lisp error: (wrong-type-argument number-or-marker-p nil)
+  apply(debug error (wrong-type-argument number-or-marker-p nil))
+  edebug(error (wrong-type-argument number-or-marker-p nil))
+  1-(nil)
+  (char-after (1- cmpl-symbol-end))
+  (char-syntax (char-after (1- cmpl-symbol-end)))
+  (= (char-syntax (char-after ...)) 119)
+  (cond ((= ... 119) (goto-char cmpl-symbol-end) (forward-word -1) (setq cmpl-symbol-end ...) (goto-char cmpl-saved-point)))
+  (cond ((memq ... ...) (setq cmpl-saved-point ... cmpl-symbol-start ... cmpl-symbol-end ...) (cond ...) (cond ...) (set-syntax-table cmpl-saved-syntax) (if ... ...)) (t (set-syntax-table cmpl-saved-syntax) nil))
+  symbol-under-point()
+  symbol-under-or-before-point()
+  use-completion-under-or-before-point()
+  previous-line()
+  call-interactively(previous-line)
+</pre>
+
+----
+CategoryCompletion

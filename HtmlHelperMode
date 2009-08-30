@@ -1,0 +1,38 @@
+html-helper-mode is maintained by GianUbertoLauri.  It requires tempo.el (which comes with recent Emacs versions, see TempoMode).
+
+It supports JSP (with PaulKinnucan's JDE, see JavaDesktopEnvironment), PHP, and ASP (with VisualBasicMode installed).  Some people like the way this mode handles indentation by default better than PSGML and the built-in HtmlMode (although any of them can be customized to support your kind of indentation; this <em>is</em> Emacs, after all).
+
+Download html-helper-mode from http://www.nongnu.org/baol-hth/ and see the 
+project page http://savannah.nongnu.org/projects/baol-hth
+
+Installation -- add this line in your .emacs:
+
+ (autoload 'html-helper-mode "html-helper-mode" "Yay HTML" t)
+
+To invoke html-helper-mode automatically on .html files, do this:
+
+ (setq auto-mode-alist (cons '("\\.html$" . html-helper-mode)       auto-mode-alist))
+
+To invoke html-helper-mode automatically on .asp files, do this:
+
+ (setq auto-mode-alist (cons '("\\.asp$" . html-helper-mode)        auto-mode-alist))
+
+To invoke html-helper-mode automatically on .phtml files, do this:
+
+ (setq auto-mode-alist (cons '("\\.phtml$" . html-helper-mode)      auto-mode-alist))
+
+Note : with Emacs 22, autoload is useless and you will need to modify similarly magic-mode-alist. Try C-h v auto-mode-alist to learn more.
+
+... or you can disable magic-mode-alist with (setq magic-mode-alist ()) before the autoload line, then auto-mode-alist works -- SewerynKokot.
+
+[mike@theoretic.com] If you get an error about html-tag-face in XEmacs, alter the line (1710) that says
+
+  (set-face-foreground html-tag-face "dodger blue")))
+
+to
+
+  (set-face-foreground 'html-tag-face "dodger blue")))
+
+
+----
+CategoryHypermedia CategoryModes

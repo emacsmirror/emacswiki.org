@@ -1,0 +1,21 @@
+The '''[::Levenshtein distance]''', or '''edit distance''', is the minimum number of single-character edit operations needed to transform one string to another. See [[WikiPedia:Levenshtein distance]].
+
+== Library levenshtein.el ==
+
+Library [[levenshtein.el]] defines function `levenshtein-distance' which returns the Levenshtein distance between two strings. For example:
+
+  (levenshtein-distance "foo" "foo") ;=> 0
+  (levenshtein-distance "foo" "oof") ;=> 2
+  (levenshtein-distance "foo" "food") ;=> 1
+  (levenshtein-distance "foo" "oo") ;=> 1
+
+It is posted to [http://en.wikibooks.org/wiki/Algorithm_implementation/Strings/Levenshtein_distance WikiBooks:Algorithm implementation/Strings/Levenshtein distance]  with the comments removed, and it is also archived on ThisWiki for discussion and improvement.
+
+
+== Levenshtein Distance for Completion ==
+
+In [[Icicles]], you can use the Levenshtein distance to decide whether your input matches [[minibuffer]] [[completion]] candidates.  This provides a kind of fuzzy completion that can compensate for input errors (typos).  See [[Icicles - Fuzzy Completion]].
+
+----
+CategoryCode
+CategoryCompletion

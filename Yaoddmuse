@@ -1,0 +1,456 @@
+Comprehensive Emacs integration with Oddmuse wikis (like Emacswiki)
+which enables fast browsing, authoring and editing of wiki pages from
+within Emacs.  All up/download commands are asynchronous for fast
+transfers.
+
+Yaoddmuse stands for "Yet Another Oddmuse Mode" for Emacs. It is a
+rewrite of the oddmuse.el code with modularity and extensibility in
+mind. 
+
+==Why yaoddmuse.el ?==
+# *The goal* of yaoddmuse mode is to help increase both the amount and
+quality of documentation and code on Emacswiki, by making it easy,
+quick and comfortable to contribute your ideas, edits, elisp fragments
+and libraries---all from within Emacs.  
+# *As with oddmuse*, yaoddmuse lets you use powerful features of Emacs
+(like dired file marking and quick load-edit-update cycles) to *make
+multiple edits easy.*
+# *Asynchronous processing.* The default package for editing oddmuse
+pages, Lisp:oddmuse.el, is great for editing or posting Oddmuse wiki
+pages, but it handles wiki pages with synchronous processes.  This
+means that the user has to wait for Emacs to finish loading or saving
+before he can do anything in emacs.  'yaoddmuse.el' is rewritten
+(using `url-retrieve'), which enables downloading and posting
+asynchronously, so you can do your work and handle wiki pages at the
+same time.  This makes a difference when you are handling big pages or
+multiple pages.
+
+# *Advanced commands.* yaoddmuse.el provides some advanced commands
+for fast posting of wiki pages.
+# *Better syntax highlighting.* yaoddmuse.el enhances the syntax
+highlight features of Lisp:oddmuse.el.
+# *Compatible with Oddmuse.* yaoddmuse.el has all the features of
+Lisp:oddmuse.el.  You won't miss your favorite features of oddmuse.el
+
+==Installation==
+* Put Lisp:yaoddmuse.el in your load-path, and then add the following
+to your ~/.emacs:
+{{{
+    (require 'yaoddmuse)
+}}}
+
+* If your computer is always connected Internet when Emacs starts up,
+: You can add the following to your ~/.emacs.  It updates the list of
+Wiki pages at start up: 
+{{{
+     (yaoddmuse-update-pagename t)
+}}}
+
+: This line is optional, since Yaoddmuse will automatically
+: update its list of Wiki page names when you call yaoddmuse for the
+first time.
+: The advantage of the above setup is that it avoids a *delay* when
+you first call the function.
+
+==Usage==
+* To edit your first EmacsWiki page:
+## M-x yaoddmuse-edit-default RET, input page name you want edit.
+## Yaoddmuse will download the current page content. Then edit page
+using Oddmuse Markup (See TextFormattingRules)
+## Type "C-u C-c C-c" when your edits are complete. 
+## Write your summary for the modifications, typically something like
+"Update".
+: That's all.  Yaoddmuse will view your edited page after a successful
+post.
+
+* To view a wiki page:
+## M-x yaoddmuse-browse-page-default RET
+## Input page name that you want view.
+: If wiki page is image page, it will decode image and view it. (You
+can test image page: YaoddmuseExamplePicture)
+
+* To upload your first package:
+: Want to upload your packages to EmacsWiki fast? Do the following:
+## C-u M-x yaoddmuse-post-library-default RET, 'input library name'
+## Type your summary for this post, typically something like
+"Created".
+: Yaoddmuse will view the page after a successful library post. 
+: Simple, no?
+
+* To upload picture or compress file:
+: Upload picture or compress file directly in Emacs; you don't need the browser
+anymore!
+## C-u M-x yaoddmuse-post-file-default RET
+## Input picture or compress file path
+## Type page name for this post.
+## Write  your summary for the modifications.
+: Yaoddmuse will view page after a successful post.
+: Of course, yaoddmuse-post-file-default can post any type file.
+: [http://www.emacswiki.org/cgi-bin/emacs?action=mimetypes Here] have
+file type that EmacsWiki allowed upload.
+
+* To upload screenshot:
+: It's true, you can screenshot and then upload it. Do the following:
+## C-u M-x yaoddmuse-post-screenshot-default RET
+## Use mouse select region that you want screenshot
+## Input upload page, typically something like
+"YaoddmuseExamplePicture".
+: That's all, Yaoddmuse will view picture page after post successful.
+: Cool? :)
+
+* For more commands, see:
+[http://www.emacswiki.org/emacs-en/Yaoddmuse#toc5 CommandList].
+
+==Command List==
+This is the complete command list which yaoddmuse provides:
+* Edit:
+** yaoddmuse-edit -- Edit wiki page.
+** yaoddmuse-edit-default -- Edit default wiki page.
+** yaoddmuse-follow -- Figure out what page we need to visit.
+* Post:
+** yaoddmuse-post-buffer -- Post a buffer to wiki.
+** yaoddmuse-post-current-buffer -- Post current buffer to wiki
+** yaoddmuse-post-file -- Post a file to wiki.
+** yaoddmuse-post-file-default -- Post a file to default wiki.
+** yaoddmuse-post-library -- Post a library to wiki.
+** yaoddmuse-post-library-default -- Post library to default wiki.
+** yaoddmuse-post-dired -- Post dired marked files to wiki.
+** yaoddmuse-post-dired-default -- Post dired marked files to default
+wiki. 
+** yaoddmuse-post-screenshot -- Post screenshot to wiki.
+** yaoddmuse-post-screenshot-default -- Post screenshot to default
+wiki.
+* View:
+** yaoddmuse-revert -- Reload current wiki page.
+** yaoddmuse-browse-page -- Browse a wiki page.
+** yaoddmuse-browse-page-default -- Brose a default wiki page.
+** yaoddmuse-browse-page-diff -- browse wiki page diff.
+** yaoddmuse-browse-page-default-diff -- browse default wiki page diff.
+** yaoddmuse-browse-current-page -- Browse current wiki page.
+* Navigation:
+** yaoddmuse-navi-next-heading -- Jump to next heading.
+** yaoddmuse-navi-prev-heading -- Jump to previous heading.
+* Update:
+** yaoddmuse-update-pagename -- Update page name.
+* Insert:
+** yaoddmuse-insert-pagename -- Insert wiki page name.
+** yaoddmuse-insert-file-content -- Insert file content.
+* Misc:
+** yaoddmuse-kill-url -- Kill current wiki page url in yank.
+** yaoddmuse-toggle-minor -- Toggle minor mode state.
+** yaoddmuse-redirect -- Redirect page.
+** yaoddmuse-delete -- Delete page.
+** yaoddmuse-toggle-image-status -- Toggle image status.
+** yaoddmuse-save-as -- Save special page content.
+
+==Customize==
+All options below can customized by: M-x RET customize-group RET
+yaoddmuse RET
+
+* "yaoddmuse-directory" 
+: The local directory to store oddmuse pages.  This is created if it
+does not exist.
+
+* "yaoddmuse-assoc-mode" 
+: Whether to associate files in "yaoddmuse-directory' with
+`yaoddmuse-mode".
+: You can set this value with `nil' if you don't want to associate
+these with `yaoddmuse-mode".
+
+* "yaoddmuse-wikis" 
+: Is alist mapping wiki names to URLs.
+: You can add Oddmuse wikis element in the format: ("WikiName"
+"WikiUrl" coding "Captcha").
+: But don't modified default element of `yaoddmuse-wikis', change
+probably causes trouble!
+
+* "yaoddmuse-default-wiki" 
+: The default wiki for the command "yaoddmuse-edit-default".
+
+* "yaoddmuse-username" 
+: User name for posting. Default is the value of "user-full-name".
+
+* "yaoddmuse-password" 
+: Password for posting,
+You only need this if you want to edit locked pages and you have an
+administrator password.
+
+* `yaoddmuse-transform-image' Whether transform image content.
+: If non-nil, will transform image content and view it. Otherwise,
+don't transform image content.
+
+* `yaoddmuse-display-after-get' 
+: Whether display page after get.
+
+* "yaoddmuse-close-after-post" 
+: Whether to close the edit buffer after posting a wiki page.
+
+* "yaoddmuse-post-dired-confirm" 
+: Whether confirmation is needed to post dired-marked files.
+
+* "yaoddmuse-edit-protect" 
+: Some wikis, such as EmacsWiki,
+use a text 'captcha' to protect pages from being edited.
+This option enables a user to post to wiki pages without using the
+captcha.
+So if you edit a wiki (such as EmacsWiki),
+please make sure this option is "non-nil".
+
+* "yaoddmuse-use-always-minor" 
+: When t, set all the minor mode bit to all editions.
+
+* "yaoddmuse-browse-function"
+: You can customize your own advanced function for browsing wiki
+pages.  The default is "browse-url".
+: You can find my customized browse function in
+Lisp:yaoddmuse-extension.el
+
+* `yaoddmuse-notify-function' 
+: The default notify function for get/post message.
+: You can find my customize notify function in
+Lisp:yaoddmuse-extension.el
+
+* "yaoddmuse-highlight-elisp-page"
+: Whether to render `emacs-lisp-mode' syntax highlighting when the
+current page is an elisp file.
+: If you don't like this, change it to `nil'.
+
+* `yaoddmuse-screenshot-program'
+: The default tool program for screenshot.
+
+* `yaoddmuse-screenshot-filename'
+: The default file for save screenshot.
+
+==Tips==
+* Get the page whose name is around point:
+: Command `yaoddmuse-follow' tries to get a valid page link around
+point. If it is found it loads the page for editing, otherwise it
+returns: "No link found at point." 
+: If you type "C-u" before you call this command, it will let you edit
+the page name before loading the page. 
+
+* Reload or switch edit page:
+: When you use command `yaoddmuse-edit' or `yaoddmuse-edit-default',
+it will prefer to switch edit page if already have one exist. 
+: If you want to reload edit page forcibly, just hit "C-u" before
+executing the command.
+
+* Smart display edit page. 
+: Default, edit page buffer *popup* when current major-mode is not
+`yaoddmuse-mode', or use *switch* edit page buffer when current
+major-mode is `yaoddmuse-mode'.
+
+* Revert edited page:
+: The command `yaoddmuse-revert' reverts current edited page, without
+requiring wiki name or page name.
+
+* Browse page after successful post:
+: If you type "C-u" before call post command, yaoddmuse will present
+the page for browsing after a successful post.
+
+* Post buffer to wiki:
+: The command `yaoddmuse-post-buffer' posts a specified buffer to
+wiki.  Alternately, you can use the command
+`yaoddmuse-post-current-buffer' to post the current buffer to wiki.
+
+* Post file to wiki:
+: The command `yaoddmuse-post-file' posts a specified file to a wiki. 
+It's useful for fast posting when you don't want open file.
+
+* Post marked files in dired to wiki:
+: The command `yaoddmuse-post-dired' posts dired-marked files to a
+wiki, this command is useful when you want to update many files to the
+wiki.
+
+* Post library to wiki:
+: Command `yaoddmuse-post-library' and
+`yaoddmuse-post-library-default' will post specified library to a
+wiki.  It finds the local path automatically, if you're feeling lazy. 
+
+* Remember last summary:
+: By default, yaoddmuse remembers the last `summary' string. If you
+want the same summary as the previous time, just hit RET.
+
+* Toggle edit mode:
+: You can use command `yaoddmuse-toggle-minor' to toggle edit mode
+state, if you just do *small* changes, please switch to *minor edits*
+state.
+: By default, Yaoddmuse will notify current edit status at mode-line.
+
+* Pick up file name:
+: By default, when you use command `yaoddmuse-post-library' and
+`yaoddmuse-post-library-default', those commands can pick up file name
+around point, if it's library name you want, just hit RET.  ;)
+
+* Pick up page name:
+: When you use commands `yaoddmuse-browse-page' or
+`yaoddmuse-browse-page-default', it will try to pick-up page name
+around point.
+
+* Encode speical file:
+: If you post speical file, such as picture or compress file, it can
+encode file content before post it.
+
+* Redirect page:
+: You can use command `yaoddmuse-redirect' redirect page. Just input
+page name that you want redirect to. You need input redirect from page
+if current buffer not `yaoddmuse' buffer.
+
+* Delete page:
+: You can use command `yaoddmuse-delete' delete page. Just input page
+name that you want delete.
+
+* Insert special file:
+: You can use command `yaoddmuse-insert-file-content' insert file
+content. This command will try to encode special file content, such
+as, picture or compress file.
+
+* Save page:
+: You can use command `yaoddmuse-save-as' save special page, such as
+picture or compress format, and it will notify you correct suffix to
+save.
+
+* Toggle image view:
+: By default, when got image page, it will decode image and view it.
+You can use command `yaoddmuse-toggle-image-status' to toggle image
+status for view different content.
+
+==Related==
+* Integrate with [[Yasnippet]]:
+:: I recommand you integrate [[Yaoddmuse]] with [[Yasnippet]], then
+you can fast insert Wiki template, see TextFormattingRules for Oddmuse
+Markup.
+::
+[http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate#toc4
+Here] have my yasnippet template code for Yaoddmuse mode.
+
+* Lisp:yaoddmuse-extension.el has some enhanced functions for
+Yaoddmuse.
+** Function `yaoddmuse-browse-page-in-w3m' is an enhanced function to
+replace the default browse function (`browse-url) in
+Lisp:yaoddmuse.el. By default, `browse-url' just opens a *new* buffer.
+`yaoddmuse-browse-page-in-w3m' will search for an *existing* buffer
+containing the page, and update that instead of duplicating the page
+in w3m. It's very useful when you edit a lot of pages in a single
+session. 
+:: Setup like below:
+{{{
+            (setq yaoddmuse-browse-function 'yaoddmuse-browse-page-in-w3m)
+}}}
+** `yaoddmuse-w3m-edit-emacswiki-page' is a lazy function. You can use
+this function to edit the EmacsWiki page displayed in the current w3m
+buffer without entering the page name.
+** Command `yaoddmuse-yasnippet-insert-file' and
+`yaoddmuse-yasnippet-insert-directory' can fast transform
+[[Yasnippet]] template code with EmacsWiki format and insert it. So
+you can update your [[Yasnippet]] template fast, handy to sharing with
+others. :) 
+** Function `yaoddmuse-notify-popup-window' use program `notify-send'
+notify yaoddmuse message. 
+:: Setup like below:
+{{{
+            (setq yaoddmuse-notify-function
+                  'yaoddmuse-notify-popup-window)
+}}}
+* Integration with [[ToDoChiKu]]:
+** The latest version of todochiku integrates with yaoddmuse to provide
+the same notifications as yaoddmuse-notify-popup-window, except it can
+use notify-send, growl, snarl, a tooltip, or even just an emacs message
+to display a notiication.   If you have Todochiku >= 0.7:
+{{{
+       (require 'todochiku)
+       (setq yaoddmuse-notify-function 'yaoddmuse-todochiku)
+}}}
+* Integration with [[Anything]]:
+** Install:
+:: Put Lisp:anything.el and Lisp:anything-config.el in your
+load-path, then add
+{{{
+        (require 'anything)
+}}}
+:: in your ~/.emacs
+** Usage:
+### You can use the command
+`anything-yaoddmuse-emacswiki-edit-or-view' to edit or view an
+EmacsWiki page. If you don't see anything, just wait for Yaoddmuse to
+update the list of page names (for autocomplete) and try again.
+### You can use the command
+`anything-yaoddmuse-emacswiki-post-library' to post a library on
+EmacsWiki. 
+### Or you can integrate this package with [[Anything]], just setup
+like this:
+{{{
+            (setq anything-sources
+                  (list
+                   anything-c-source-yaoddmuse-emacswiki-edit-or-view
+                   anything-c-source-yaoddmuse-emacswiki-post-library
+                   ))
+}}}
+** Tips:
+### When you use [[Anything]] interface, you can type "TAB" to switch
+second-level interface for more command for same candidate.
+
+==Screenshot==
+* Integrate [[Yaoddmuse]] with [[emacs-w3m]] to edit EmacsWiki pages
+in Emacs:
+: [[image:YaoddmuseShotPage]]
+
+* Integrate [[Yaoddmuse]] with [[Anything]] to edit or view EmacsWiki
+pages:
+: [[image:Anything_Yaoddmuse_Eidt_Or_View]]
+
+* Integrate [[Yaoddmuse]] with [[Anything]] to post libraries to
+EmacsWiki:
+: [[image:Anything_Yaoddmuse_Post]]
+
+==Comments and discussions==
+[new:XavierMaillard:2009-01-12 09:06 UTC]
+I do not see why you did not send patches to OddMuse instead of
+"forking". Some ideas could be contributed to OddMuse, that would be
+perfect.
+[new:AndyStewart:2009-01-12 20:14 UTC]
+: If you see source code of oddmuse.el, you will find there have big
+different between oddmuse.el and yaoddmuse.el, because oddmuse.el use
+`url-retrieve-synchronous' to handle wiki page, so it will hang emacs
+when it work, and fix this problem need `url-retrieve' and use unique
+buffer to hande. And those chnage not just a patch to oddmuse.el, need
+rewrite all module for hande *asynchronous* process. And the patch's
+size is bigger than size of oddmuse.el, and will make the code of
+oddmus.el became *dirty*, i need *clear* and *module* code to add new
+feature (like post command). So i rewrite new one.  -- AndyStewart
+[new:AndyStewart:2009-02-11 10:51 UTC]
+Any bug reports or advice are welcome! Please write your idea or bug
+below. I will add or fix it. Or mail to me. :) -- AndyStewart
+
+----
+
+A little note on the 'minor' not appearing on my mode line: I am using
+23.0.91. I start using 'emacs --quick', then I do:
+
+{{{
+(setq default-mode-line-format
+      (append default-mode-line-format
+	      (list "more text")))
+}}}
+
+like you do in yaoddmuse.  This ain't gonna work because
+default-mode-line-format ends with "-%-" which spans as far as it can.
+Maybe this wasn't the case before 23 and nobody else tried yaoddmuse
+on 23?! Without investigating this any furthur I believe you should
+append to global-mode-string instead. It is part of
+default-mode-line-format, just before the "-%-". You might have to
+make it buffer local, I do not know.
+
+[new:AndyStewart:2009-03-31 01:32 UTC]
+: I use 23.0.91.1, i can display edit status on the mode-line, see screenshot YaoddmuseEditStatusScreenshot, i think mode-line-format is right place for update status on the mode-line, because it is buffer-local default. And have another guy send me mail for same problem, unfortunately, i haven't find cause that those code can't work. If someone find solution, please contact me. Thanks! -- AndyStewart
+
+[new] 
+A quick question: Shouldn't ThingAtPoint be required by
+yaoddmuse? Without requiring thingatpt.el the function word-at-point
+on line 1636 results in a void-function error. Thanks! MattLundin
+
+: Yep, yaoddmuse.el need thingatpt.el for get word around current point. -- AndyStewart
+
+----
+CategoryHypermedia
+

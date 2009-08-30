@@ -1,0 +1,48 @@
+Pulsando sobre el título de la página CategoryHomepage puede recibir una lista de todas las páginas web de contribuyentes a este wiki. Algunas personas tienen páginas en este wiki que no escribieron ellos mismos. Algunos lo consideran importante para entender un poco más sobre los mundos Emacs/XEmacs.
+
+Si usted es nuevo a los wikis, esta es la forma de iniciar:
+
+* Edite esta página (vea el enlace al final).
+* Agregue su nombre ''wikificado'' a la lista (mayúsculas mediales, sin espacios, p.ej. AlexSchroeder).
+* Coloque el mismo nombre en el campo nombre de usuario (vea NombreDeUsuario para más información).
+* Guarde sus cambios.
+Siga el enlace a su nueva página web y escriba unas pocas palabras sobre su relación con Emacs y XEmacs. Quizás desee hasta agregar el contenido de sus archivos InitFile y <code>~/.gnus</code>...
+* Agregue la etiqueta de categoría a su página web: Agregue lo siguiente al final de su página:
+
+<pre>
+    ----
+    CategoryHomepage
+</pre>
+
+* Guarde su página web.
+
+== ¿Emacs o XEmacs? ==
+
+Listas de los usuarios de Emacs y XEmacs:
+
+* [http://www.emacswiki.org/cgi-bin/wiki.pl?search=%5Cbuses%3F%5Cs%2Bemacs%5Cb%28.%7C%5Cn%29%2ACategoryHomepage Usuarios de Emacs]
+* [http://www.emacswiki.org/cgi-bin/wiki.pl?search=%5Cbuses%3F%5Cs%2Bxemacs%5Cb%28.%7C%5Cn%29%2ACategoryHomepage Usuarios de XEmacs]
+
+Si usted escribe "I use Emacs" o "I use XEmacs" en su página web, entonces será listado en una de estas dos categorías.
+
+Lista de usuarios con recursos RSS en sus páginas web:
+
+* [http://www.emacswiki.org/cgi-bin/wiki.pl?search=rss%28.%7C%5Cn%29%2ACategoryHomepage&context=0 recursos RSS]
+
+== Lista de Páginas Web ==
+
+Para encontrar la lista completa de contribuyentes a este wiki, visite la página original en Inglés:
+
+* CategoryHomepage
+
+== Discusión ==
+
+El wiki también incluye páginas web para hackers de Emacs y XEmacs famosos. No diferenciamos realmente entre las páginas de contribuyentes del wiki, las de hackers de emacsen, o de personas famosas que guardan relación con la historia emacsen.
+
+Si decide construir su página web, por favor incluya tantos de los siguientes datos como sea posible:
+
+* Su página web por fuera de este sitio
+* Su alias en #emacs
+* La URL a su diario en línea, blog, etc.
+* Dirección de correo electrónico real
+* Qué emacsen usa (esto es, "I use ''foo''", ya sea "emacs" o "xemacs" como se describió anteriormente)

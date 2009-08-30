@@ -1,0 +1,42 @@
+This example would be named ~/.templates/TEMPLATE.html.tpl (see TemplatesMode)
+
+ <!DOCTYPE html PUBLIC
+                "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "DTD/xhtml1-transitional.dtd"   >
+ <html   xmlns   = "http://www.w3.org/1999/xhtml">
+   <head> 
+ 	<meta name="Keywords" 
+ 		  content="(>>>keywords<<<)">
+ 	<meta name="Description" 
+ 		  content="(>>>title<<<)">
+ 	<meta http-equiv="Window-target" 
+ 		  content="_top">
+  	<link rev="made" href="mailto:teledynamics@canada.com"> 
+ 	<link rel="home" href="http://www.teledyn.com/">
+ 	<link rel="toc" href="toc.shtml">
+ 	<link href="/.include/teledyn.css" type="text/css"   
+ rel="stylesheet">
+ 	<title>(>>>title<<<)</title>
+   </head>
+
+ <body class="TCI">
+
+ <h1>(>>>title<<<)</h1>
+
+    (>>>POINT<<<)
+    
+ <hr>
+ <address>
+		&copy;2001 <a href="http://www.teledyn.com/">
+		teledynamics communications</a><br>
+		sauble beach, ontario canada n0h 2g0<BR>
+		<a href="mailto:webmaster@teledyn.com">
+		&lt;webmaster@teledyn.com&gt;</a>
+   (>>>DATE<<<)
+ </address>
+ </body>
+ </html>
+ >>>TEMPLATE-DEFINITION-SECTION<<<
+ ("title" "Document Title: ")
+ ("keywords" "Document Keywords: ")
+

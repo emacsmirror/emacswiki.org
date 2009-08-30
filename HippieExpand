@@ -1,0 +1,156 @@
+!HippieExpand looks at the word before point and tries to expand it in various ways including expanding from a fixed list (like ``expand-abbrev''), expanding from matching text found in a buffer (like ``dabbrev-expand'') or expanding in ways defined by your own functions.  Which of these it tries and in what order is controlled by a configurable list of functions.
+
+[new]
+''But what does it have to do with hippies?''
+
+[new]
+I do not know what it has to do with hippies, maybe it just has to do with the fact that it might seem crazy and try different ways of expanding? Anyway, read the source code or visit the following page to get some background: http://www.xemacs.org/Documentation/packages/html/edit-utils_23.html. Maybe you should ask the author, Anders Holst: http://www.sics.se/~aho/index.shtml
+-- MathiasDahl 2004-08-12 20:49 UTC
+
+== bind hippie expand to a useful key ==
+
+To bind hippie-expand to M-<spc> put the following in your .emacs 
+
+    (global-set-key "\M- " 'hippie-expand)
+
+== Create a hippie-expand function with a given list of strings ==
+    (setq dcsh-command-list '("all_registers"
+                              "check_design" "check_test" "compile" "current_design"
+                              "link" "uniquify"
+                              "report_timing" "report_clocks" "report_constraint"
+                              "get_unix_variable" "set_unix_variable"
+                              "set_max_fanout"
+                              "report_area" "all_clocks" "all_inputs" "all_outputs"))
+    
+    (defun he-dcsh-command-beg ()
+      (let ((p))
+        (save-excursion
+          (backward-word 1)
+          (setq p (point)))
+        p))
+    
+    (defun try-expand-dcsh-command (old)
+      (unless old
+        (he-init-string (he-dcsh-command-beg) (point))
+        (setq he-expand-list (sort
+                              (all-completions he-search-string (mapcar 'list dcsh-command-list))
+                              'string-lessp)))
+      (while (and he-expand-list
+              (he-string-member (car he-expand-list) he-tried-table))
+        (setq he-expand-list (cdr he-expand-list)))
+      (if (null he-expand-list)
+          (progn
+            (when old (he-reset-string))
+            ())
+        (he-substitute-string (car he-expand-list))
+        (setq he-tried-table (cons (car he-expand-list) (cdr he-tried-table)))
+        (setq he-expand-list (cdr he-expand-list))
+        t))
+
+== Create a keybinding with a list of hippie-expand functions ==
+    (global-set-key [(meta f5)] (make-hippie-expand-function
+                               '(try-expand-dcsh-command
+                                 try-expand-dabbrev-visible
+                                 try-expand-dabbrev
+                                 try-expand-dabbrev-all-buffers) t))
+
+[new]
+MicheleBini has also a nice recipe for a hippie-expand function
+
+== Add a new expansion ==
+
+If hippie-expand fails to find any satisfactory expansion, you may want to add a new one by using function ``inverse-add-global-abbrev''.
+The following should probably be the last function in ``hippie-expand-try-functions-list'':
+
+    (defun my-try-add-expansion (old)
+      "Add a new global abbrev"
+      (he-init-string (he-dabbrev-beg) (point))
+      (or (inverse-add-global-abbrev 1)
+	  (he-reset-string)))
+
+-- DenisHowe 2007-09-18
+
+== Expanding Tags ==
+
+Another useful expansion is to expand tags. I use it as a fallback after the dabbrev expansions fail.
+
+<pre>
+(require 'cc-mode)
+
+(defun he-tag-beg ()
+  (let ((p
+         (save-excursion 
+           (backward-word 1)
+           (point))))
+    p))
+
+(defun try-expand-tag (old)
+  (unless  old
+    (he-init-string (he-tag-beg) (point))
+    (setq he-expand-list (sort
+                          (all-completions he-search-string 'tags-complete-tag) 'string-lessp)))
+  (while (and he-expand-list
+              (he-string-member (car he-expand-list) he-tried-table))
+              (setq he-expand-list (cdr he-expand-list)))
+  (if (null he-expand-list)
+      (progn
+        (when old (he-reset-string))
+        ())
+    (he-substitute-string (car he-expand-list))
+    (setq he-expand-list (cdr he-expand-list))
+    t))
+</pre>
+
+== tags-complete-tag ==
+I found that this function is not available in the latest etags.el.
+Here is what I put in my .emacs
+<pre>
+   (defun tags-complete-tag (string predicate what)
+     (save-excursion
+     ;; If we need to ask for the tag table, allow that.
+     (if (eq what t)
+	(all-completions string (tags-completion-table) predicate)
+      (try-completion string (tags-completion-table) predicate))))
+</pre>
+-- Sudheer Koganti
+
+== Substring Expansion ==
+
+When doing lisp programming standard dabbrev is less useful, because Emacs has no namespaces, so in a package symbols begin with the same prefix, therefore the same prefix has to be typed again and again if one wants to complete symbols from the package. As with IswitchBuffers it is much more effective if a unique substring can be typed to get to the desired symbol.
+
+Dabbrev offers nothing in this regard, so I turned to Hippie Expand which I had never used before.
+
+Here's a function based on hippie expand dabbrev expansion which performs substring expansion:
+
+<pre>
+(defun try-my-dabbrev-substring (old)
+  (let ((old-fun (symbol-function 'he-dabbrev-search)))
+    (fset 'he-dabbrev-search (symbol-function 'my-dabbrev-substring-search))
+    (unwind-protect
+        (try-expand-dabbrev old)
+      (fset 'he-dabbrev-search old-fun))))
+
+
+(defun my-dabbrev-substring-search (pattern &optional reverse limit)
+  (let ((result ())
+	(regpat (cond ((not hippie-expand-dabbrev-as-symbol)
+		       (concat (regexp-quote pattern) "\\sw+"))
+		      ((eq (char-syntax (aref pattern 0)) ?_)
+		       (concat (regexp-quote pattern) "\\(\\sw\\|\\s_\\)+"))
+		      (t
+		       (concat (regexp-quote pattern)
+			       "\\(\\sw\\|\\s_\\)+")))))
+    (while (and (not result)
+		(if reverse
+		     (re-search-backward regpat limit t)
+		     (re-search-forward regpat limit t)))
+      (setq result (buffer-substring-no-properties (save-excursion
+                                                     (goto-char (match-beginning 0))
+                                                     (skip-syntax-backward "w_")
+                                                     (point))
+						   (match-end 0)))
+      (if (he-string-member result he-tried-table t)
+	  (setq result nil)))     ; ignore if bad prefix or already in table
+    result))
+
+</pre>

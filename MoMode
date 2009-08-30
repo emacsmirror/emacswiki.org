@@ -1,0 +1,17 @@
+<code>mo-mode.el</code> is a spot of code for decoding and viewing [[Gettext]] <code>.mo</code> and <code>.gmo</code> compiled message catalogues, using <code>msgunfmt</code>.  Get it from
+
+: http://user42.tuxfamily.org/mo-mode/index.html
+
+The main use is for browsing installed message files, if you don't have the <code>.po</code> source handy.  Editing and rewriting such a file works (except out of TarMode), via the FileFormat mechanism, though editing would be unusual.
+
+== Filename completion (Emacs 21) ==
+
+In a <code>/po</code> directory of a project you normally don't want to visit the <code>.mo</code> files, only the <code>.po</code> ones.  You can set <code>.mo</code> as an ignored extension so such files aren't offered as completions (though you can still type it explicitly of course).
+
+    (add-to-list 'completion-ignored-extensions ".mo")
+    (add-to-list 'completion-ignored-extensions ".gmo")
+
+Emacs 22 has this setup by default.
+
+----
+[[Gettext]] CategoryModes

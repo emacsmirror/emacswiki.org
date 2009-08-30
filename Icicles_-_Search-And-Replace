@@ -1,0 +1,205 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Search Commands, Overview]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Other Search Commands]] ||
+
+----
+
+
+
+== Icicles Search and Replace ==
+
+You can replace the current search match by using any of the [[Icicles - More About Multi-Commands#AlternativeActions|alternative action]] keys: '''`C-S-RET'''', '''`C-S-mouse-2'''' (in
+`*Completions*'), '''`C-S-next'''', '''`C-S-prior'''', '''`C-S-down'''', and '''`C-S-up''''.
+You can use '''`##M-|##'''' (`icicle-all-candidates-list-alt-action') to replace all matches in the search space at once.
+
+At the first use of any of these, you are prompted for the
+replacement pattern; it is used thereafter, or until you use '''`##M-,##'''' (`icicle-search-define-replacement').
+You can use `##M-,##' at any time during searching to change the
+pattern for subsequent replacements.  The replacement pattern
+can be ''anything that is allowed as a replacement by
+`query-replace-regexp'''.  In Emacs 22 or later, this includes EmacsLisp
+[[sexp]] evaluation via '''`##\,##'''' -- see ReplaceRegexp for an explanation of `##\,##'.
+
+Unlike `query-replace', you ''need not visit each'' search match -- you
+can visit and replace selected matches ''in any order''.  Some other differences from standard `query-replace' and `query-replace-regexp':
+
+* Replacing matches of your current input provides a ''contextual''
+replacement feature: replace `foo' by `fu', but only in zones
+that match `##toto.*titi##'.
+
+* '''Icicles''' search navigation (`C-next', etc.) lets you replace individual search hits
+without navigating through each [[search context]] in turn: ''direct
+access''.
+
+* In Icicles search, replace-all (`##M-|##') means replace all matches of your
+current input, throughout the search space, not just all
+matches that follow the [[cursor]].   (Remember too that
+you can activate the region to limit the search space.)
+
+* You can act across ''multiple'' [[buffer]]s, files, or saved [[region]]s -- see
+information about the `icicle-search' [[prefix argument]].
+
+* You can also replace matches within ''character-property'' search contexts -- just use `icicle-search-char-property' ('''`##C-c "##'''') as the search
+command.
+
+[:SearchMatch--definition]
+Search matches are replaced -- but just what is meant by a "'''search
+match'''"?  It can be either an entire [[search context]] or each match of 
+your current [[minibuffer]] within a search context.
+
+''Anytime during search and replace:''
+
+* '''`##M-,##'''' redefines the replacement string.
+
+* '''`##C-`##'''' toggles '''`icicle-toggle-regexp-quote'''' (as always).  This escapes [[regexp]] special characters, so that search is literal.
+
+* '''`M-q'''' toggles '''`icicle-search-whole-word-flag''''.  By default,
+this is `nil', meaning that searching is not for whole words (except for `icicle-search-word', bound to `##C-c $##').
+
+* '''`##C-M-`##'''' toggles '''`icicle-search-replace-literally-flag''''.  By
+default, this is `nil', which means that `\' character sequences
+in replacement text are intrepreted as for
+`query-replace-regexp'.
+
+* '''`##C-,##'''' toggles 
+'''`icicle-search-replace-whole-candidate-flag''''.  By default, this is non-`nil', which means that the
+entire current [[search context]] is replaced, that is, whatever
+matches the context regexp that you entered initially using
+`RET'.  However, you can use `##C-,##' anytime during searching to toggle between
+this default behavior and replacement of whatever your current
+minibuffer input matches.
+
+* '''`##M-;##'''' toggles '''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]</tt>''''.
+Together with other [[option]]s, it controls whether to replace the
+[[Icicles - Expanded-Common-Match Completion|expanded common match]] or just the exact match.  See below.
+
+
+''Remember this:''
+
+* If '''`icicle-search-replace-whole-candidate-flag'''' is non-`nil', then
+  the granularity of replacement is a ''complete [[search context]]''.  In
+  this case, replacement behaves similarly to
+  `query-replace-regexp'.  You can still use minibuffer input to
+  filter the set of search contexts, but replacement is on a
+  whole-context basis.
+
+* If '''`icicle-search-replace-whole-candidate-flag'''' is `nil', then you
+  can replace multiple input matches separately within a search
+  context (using `C-S-RET').  This behavior is unique to '''Icicles'''.
+  You  cannot, however skip over one input match and replace the
+  next one in the same context -- `C-S-RET' always replaces the
+  first available match.
+
+If '''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|icicle-search-replace-whole-candidate-flag]]</tt>''''  is non-`nil', then
+you can use the navigational [[Icicles - More About Multi-Commands#AlternativeActions|alternative action]] keys, `C-S-next',
+`C-S-prior', `C-S-down', and `C-S-up', repeatedly to replace successive
+search contexts.  At the buffer limits, these commands
+wrap around to the other buffer limit (last search context to
+first, and vice versa).
+
+Search traversal using these go-to-next-context-and-replace keys is always by search context, not
+by input match.  This means that you cannot use these keys to
+replace individual input matches within a search context (except
+for the first such match, if '''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|icicle-search-replace-whole-candidate-flag]]</tt>'''' is `nil').
+
+If your input matches multiple parts of a search context, and
+you want to replace these in order, then use '''`C-S-RET'''' repeatedly.
+You can traverse
+all matches of your input in the order they appear in the buffer
+by repeating `C-S-RET' (provided the
+replacement text does not also match your input -- see below).  At
+the buffer limits, repeating `C-S-RET' wraps around too.
+
+`C-S-RET' always replaces the first input match in the current
+search context or, if there are no matches, then the first input
+match in the next context.  This behavior has these important
+consequences:
+
+* If you repeat `C-S-RET' and the previous replacement no longer
+matches your input, then `C-S-RET' moves on to the next input
+match (which is now the first one) and replaces that.  This is
+why you can usually just repeat `C-S-RET' to successively
+replaces matches of your input, including from one context to
+the next.
+
+* If, on the other hand, after replacement the text still matches
+your input, then repeating `C-S-RET' will just replace that
+match.  For example, if you replace the input match `ab' by
+`abcd', then repeating `C-S-RET' produces `__abcd__', then `__abcd__cd',
+then `__abcd__cdcd', ...
+
+* You cannot replace an input match, skip the next match, and then
+replace the following one, all in the same context.  You can,
+however, replace some matches and then skip (e.g. `C-next') to
+the next context.
+
+
+What about replacing ''all'' search hits?  Use '''`##M-|##'''', not `##C-|##'.  (And
+remember that you can activate the [[region]] to limit the
+search-and-replace space.)
+
+''Why not `##C-|##'?''  `##C-|##' just repeats `C-S-RET' on the first of the
+set of candidates, which is updated after each replacement.  The
+`abcd' gotcha example above thus applies here too: If the
+replacement text does not match your input, then there's no
+problem.  Otherwise, the same candidate is operated on repeatedly
+when you use `##C-|##'.  `##M-|##' is designed to instead take a static
+snapshot of the current set of candidates, and then act once on
+each of them.
+
+What your input matches, hence what gets replaced if
+'''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|icicle-search-replace-whole-candidate-flag]]</tt>''''  is `nil', depends on a
+few '''Icicles''' [[option]]s:
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-regexp-quote-flag|icicle-regexp-quote-flag]]</tt>'''' determines whether to use [[regexp]]
+matching or literal matching.
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-all-current-flag|icicle-search-highlight-all-current-flag]]</tt>'''', '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]]</tt>'''', and
+'''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-common-match-flag|icicle-search-replace-common-match-flag]]</tt>'''' together determine
+whether to replace exactly what your input matches in the
+current search hit or the [[Icicles - Expanded-Common-Match Completion|expanded common match]] (ECM) of your
+input among all search hits.  If any of these options is `nil',
+then your exact input match is replaced; otherwise, the ECM is
+replaced.
+
+Finally, the replacement string can be nearly anything that is
+allowed as a replacement by `query-replace-regexp'.  In Emacs 22
+or later, this includes EmacsLisp [[sexp]] evaluation via '''`##\,##'''' and
+constructs such as `##\###' and `##\N##' (back references).  You can also
+use `##\?##', but it is not very useful -- you might as well use `##M-,##'
+instead, to change the replacement text.
+
+'''See Also:''' 
+
+* [[Icicles - Search Commands, Overview]] and the [[doc string]] of `icicle-search' for more information about search-and-replace.
+
+* [[Icicles - Other Search Commands#IciclesCompileOrGrep]] for information about using search-and-replace with `grep' buffers and compilation buffers.
+
+* [[Icicles - Dired Enhancements]] for information about using
+search-and-replace on marked files in DiredMode.
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Search Commands, Overview]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Other Search Commands]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:highlight.el, Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryRegion
+CategoryModes
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+CategorySearchAndReplace
+
+
+
+

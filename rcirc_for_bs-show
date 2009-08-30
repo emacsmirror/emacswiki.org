@@ -1,0 +1,42 @@
+If you use `M-x bs-show' as an alternative for (see BufferSelection),
+you might want to add a configuration for [[rcirc]] buffers.
+
+[[image:rcirc for bs-show screenshot]]
+
+== Code ==
+
+<pre>
+(add-to-list 'bs-configurations
+      '("rcirc" nil nil nil
+        (lambda (buf)
+          (with-current-buffer buf
+            (not (eq major-mode 'rcirc-mode))))
+        rcirc-sort-buffers))
+
+(defun rcirc-sort-name (buf)
+  "Return server process and buffer name as a string."
+  (with-current-buffer buf
+    (downcase (concat (if rcirc-server-buffer
+			  (buffer-name rcirc-server-buffer)
+			" ")
+		      " "
+		      (or rcirc-target "")))))
+
+(defun rcirc-sort-buffers (a b)
+  "Sort buffers A and B using `rcirc-sort-name'."
+  (string< (rcirc-sort-name a)
+	   (rcirc-sort-name b)))
+</pre>
+
+To always use the rcirc configuration in rcirc buffers, add this snippet:
+
+<pre>
+(add-hook 'rcirc-mode-hook
+	  (lambda ()
+	    (define-key rcirc-mode-map (kbd "C-x C-b")
+	      (lambda ()
+		(interactive)
+		(bs--show-with-configuration "rcirc")))))
+</pre>
+----
+CategoryChatClient [[rcirc]]

@@ -1,0 +1,41 @@
+You can use these libraries to highlight text in a buffer:
+
+* HiLock -- highlight phrases or regular expressions
+* HighLight -- highlight and unhighlight the region or regular expressions 
+* MarkerPens -- highlight and unhighlight the region
+* [[Icicles]] -- highlight regexps: `##C-.##' during [[Icicles - Search Commands, Overview|Icicles search]] toggles leaving [[Icicles - Customization and General Tips#icicle-search-cleanup-flag|search highlighting]] on. Highlight multiple-regexp matches in multiple buffers, files,...
+
+== Comparison ==
+
+* %%HiLock%% is part of Emacs, starting with version 21. It is complementary with %%HighLight%%, %%MarkerPens%%, and Icicles search, so it can be used with any of them.
+* %%HighLight%%, %%HiLock%%, and Icicles search can highlight a ''regexp'' (or remove highlighting) throughout a buffer.
+* %%HighLight%% and %%MarkerPens%% can highlight (or unhighlight) the ''region''.
+* %%HighLight%% and Icicles search can highlight a ''regexp'' throughout the ''region''.
+* %%HighLight%% can apply a [[face]] as property `mouse-face', instead of as property `face'. (A mouse face becomes visible only when the [[pointer]] is over it.)
+* %%HiLock%% uses ''text properties'', %%MarkerPens%% and Icicles search use ''overlays'', and %%HighLight%% can use either one (option '''`highlight-use-overlays-flag''''). When overlays are used, copying and pasting buffer text will not also paste the highlighting.
+* %%HiLock%% uses font-lock mode: its highlighting is visible only when `font-lock-mode' is turned on. %%HighLight%%, %%MarkerPens%%, and Icicles search are independent of font-lock mode.
+* %%HighLight%% can replace highlighting in a given face by another face, throughout the region or buffer.
+* %%HighLight%% can unhighlight a given highlighting face (only), throughout the region or buffer.
+* %%HighLight%% and %%MarkerPens%% let you use the mouse as a highlighter (marker pen). %%HighLight%% shows the highlighting as you drag the mouse. For %%MarkerPens%%, you must first define the region (possibly by dragging).
+* %%HighLight%% and %%MarkerPens%% let you combine faces.  That is, you can apply more than one highlighting face to the same text.
+* You can use any number of faces to highlight with %%HighLight%% and %%HiLock%%. %%MarkerPens%% is limited to using 10 faces ("pens"), of which 6 are customizable. 
+* %%HighLight%% lets you navigate among the highlights of a given face.
+* %%HighLight%% lets you highlight new text as you type it, a la facemenu (see also FaceMenuPlus).
+* %%HighLight%% lets you hide and show text according to its faces (conditional text)
+* %%HighLight%% and Icicles search work with Emacs 20, in addition to more recent Emacs versions. %%MarkerPens%% and %%HiLock%% work only with Emacs 21 and later.
+
+
+'''See Also:'''
+* HighlightCurrentLine
+* HighlightCurrentColumn
+* CrosshairHighlighting -- highlight current line and column
+* HighlightSymbol -- highlight the current symbol throughout the buffer
+* HighlightParentheses -- highlight the parentheses surrounding point
+* PulseRegion -- Gently blink the background color around a region of text
+
+----
+CategoryFaces
+CategoryModes
+CategoryRegexp
+CategoryRegion
+CategoryProgramming

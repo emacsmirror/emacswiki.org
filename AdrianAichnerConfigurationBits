@@ -1,0 +1,45 @@
+== Here's what my XEmacs looks like, on a bad day ==
+
+[[erc-fill-trouble.png]]
+
+That problem has been fixed since.
+
+[::My XEmacs Frame Title Format]
+
+    (setq frame-title-format
+          (format
+           "XEmacs%s---%%C---L%%l-C%%c---%%b---PID %d---%s@%s"
+           emacs-program-version (emacs-pid) (user-login-name) (system-name)))
+
+[::My XEmacs Modeline Format]
+
+    (defconst modeline-buffer-identification
+      (list (cons modeline-buffer-id-left-extent (purecopy "%N"))
+	    				; this used to be "XEmacs:"
+            (cons modeline-buffer-id-right-extent (purecopy "%17b")))
+      "Modeline control for identifying the buffer being displayed.
+     Its default value is \"XEmacs: %17b\" (NOT!).  Major modes that edit    things other than ordinary files may change this (e.g. Info, Dired,...)")
+
+    ;;; (defconst modeline-buffer-identification "")
+
+    (setq-default
+     modeline-format
+     (list
+      (purecopy "")
+    ;;;   'modeline-multibyte-status
+    ;;;   (purecopy '(line-number-mode "-L%l-"))
+    ;;;   (purecopy '(column-number-mode "C%c"))
+    ;;;   (cons modeline-modified-extent 'modeline-modified)
+      (cons modeline-modified-extent "-%1*%1+-")
+      (cons modeline-buffer-id-extent 'modeline-buffer-identification)
+      (purecopy " ")
+      'global-mode-string
+      (purecopy " %[(")
+      (cons modeline-minor-mode-extent (list "" 'mode-name 'minor-mode-alist))
+      (cons modeline-narrowed-extent "%n")
+      'modeline-process
+      (purecopy ")%]----")
+      (purecopy '(-3 . "%p"))
+      (purecopy "-%-")))
+
+== Discussion ==

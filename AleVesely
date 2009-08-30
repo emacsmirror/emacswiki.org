@@ -1,0 +1,65 @@
+Italian programmer who has not used Emacs for years. In facts, a programmer's editor should be just a tool to write unadorned text, rather than a shell that drives you mad trying to understand how to configure it properly. In that respect, Emacs is the only editor I ever saw that includes a psychiatric assistant.
+
+==Missing the point==
+I caught Emacs on 27 June 2006, while I was looking for an editor to work with on win32. I had been using Jim Wyllie's PE2 until I was really fed up with writing 8.3 acronyms. I tried Jan Goyvaerts'!EditPad, but then I found it is not able to count line numbers correctly (/form-feeds/ increase the count) and its Author didn't want to fix that. I suddenly realized that RMS's warnings about the risks of using non-free software are obviously true. I had already heard about Emacs, so I went for it. Better late than never.
+
+At a first feeling, it was like driving a truck where a small van would have sufficed. 
+
+[new:DrewAdams:2006-07-09 15:31 UTC]
+: Yes, if I may, I'd suggest that using Emacs is like driving an recreational vehicle (RV). Or, it's like driving a space ship. It's includes an entire life support system, not just the kitchen sink. And "driving" is correct here; with Emacs, you are definitely in control of everything, but, like a space ship, there is a lot that can go on without your direct intervention, unless you just get the urge to fiddle, tinker, and tweak (which all Emacs pilots do get the urge to do). When you ask "''What '''is''' Emacs for?''", the answer is simple: 
+
+:: "To explore strange new worlds, to seek out new life and new civilizations"
+
+: -- DrewAdams
+[new]
+
+
+Let me mention I used !EditPad for a few weeks without bothering to read one line of manual. Emacs' manuals feature a somewhat superior prose, but still I miss the point.
+What /is/ Emacs for?
+
+Consider this sample code:
+<pre>
+static int
+that_helper_function_for_something(that_structure_of_mines *tsom,
+   int further_arg_1, char *another_arg)
+{
+   int rtc;
+   assert(tsom);
+   switch (further_arg_1)
+   {
+      case EXAMINE_THIS_OPTION_FIRST:
+      {
+         char *p = tsom->foo;
+// ...
+      }
+   }
+   return rtc;
+}
+</pre>
+That's all I need to write. I've been writing like that for decades. I use tabs if the editor supports them, otherwise I put three spaces. I'd also like a macro to insert curly braces, because Italian keyboards miss them. On someone else's PC I use !NotePad, w/o auto-indent but with, e.g., ##Alt-123## for ##`{'##. I have a portable utility for converting tabs to/from spaces. And that's it, eh?
+
+Please notice that the function arguments are not aligned. Since they don't fit into a single line, I leave the most important one on the same line with the function name and indent the rest. That is important when implementing OO-like constructs, as it makes it easy to grep the function name using the name of the structure. The other arguments don't have to be aligned. Putting them one per line would allow commenting each one: good practice, but still does not require alignment. On the opposite, curly braces /have/ to be aligned: that's not an ornamental boast, it is a need. Although not syntactically required, indentation is crucial for analyzing variables' scope and control flow, which may make the difference between robust code and undefined behaviour.
+
+Alignment is not the same as indentation. It may improve readability, but it is not really needed: it is usually possible to read code without having to align it. As an Emacs user, I can afford auto-alignment. However, what will happen when a non-Emacs user will have to modify my code? Perhaps, it is wiser to abstain from using fancy tinsels. Let me recall that allowing other people to change the code we write is one of the main goals in the GNU project. The adoption of elaborate coding styles can result in unnecessary difficulties for non-Emacs users, and thus baffle source code widespread.
+
+I don't think we are such fops that we need an impressive piece of software as Emacs for the sole purpose of wearing those elegantly aligned lines of code. That's where I miss the point: what do we need it for, then? I myself delayed real work in order to learn something about Emacs. After two weeks, I have read manuals, crammed crank keychords, joined a mailing list, installed three versions of Emacs and looked forward for more, defined ##my-c-style## (inheriting from "ellemtel"), written a few silly functions such as
+<pre>
+(defun c-insert-curly-braces ()
+  "Insert a pair of curly braces in a C buffer."
+  (interactive)
+  (c-context-line-break)
+  (insert "{")
+  (c-indent-command)
+  (insert "\n}")
+  (c-indent-command)
+  (previous-line 1))
+</pre>
+
+Was it worth? Should newcomers be warned against that?
+
+On X, I'm still using textedit. I will switch to GNU Emacs next time I'll have some serious editing to do there. For sure, installing Emacs and getting it to work with my X settings will result in a considerable overhead. For sure, there will also be some improvements. However, what is the exact amount of improvements required to justify that work?
+
+I understand that some people may enjoy using Emacs on different OS's, as that provides a uniform environment across various platforms. (Not me, I sport an US keyboard on my X server.) In general, I accept that an OS defines its own set of commands and keystrokes, and expect apps specifically coded for that OS to be consistent with it. Is Emacs an OS? If not, what does its fascination consist of? Where does it lead to?
+
+----
+CategoryHomepage

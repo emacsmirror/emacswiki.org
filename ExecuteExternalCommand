@@ -1,0 +1,110 @@
+== Executing External Commands ==
+
+You can execute an external shell command from within emacs using `##M-!##' (`shell-command').
+The output from the shell command is displayed in the [[minibuffer]] or in a separate [[buffer]], depending on the output size.
+
+When used with a prefix argument (`##C-u M-!##') the shell-command output is inserted in the current buffer, at [[point]].
+
+To provide the [[region]] text to the shell command as input, use `##M-|##' (`shell-command-on-region'). If you want the shell to ''replace'' the region text with the output from the shell command, use `##C-u M-|##'. 
+
+If you are programming in an interpreted language, such as Perl, Python, or a shell script, such as BASH, you might want to run your entire program through the interpreter. To do that, use `C-x h' (`mark-whole-buffer'), then use `##M-|##' to send all of the buffer text to the interpreter.
+
+Buffer `##*Shell Command Buffer*##' is displayed briefly whenever you run a shell command.  You can switch to that buffer using `C-x b'.
+
+
+
+== TAB Completion for `M-!' and `M-|' ==
+
+Starting with Emacs 23, `TAB' [[completion]] will be available for `##M-|##' and `##M-|##'. These libraries provide such a feature for earlier Emacs versions:
+
+*  http://namazu.org/~tsuchiya/elisp/shell-command.el
+*  http://www.emacswiki.org/cgi-bin/wiki/shell-completion.el
+
+=== Icicles Completion for `M-!' and `M-|' ===
+
+[[Icicles]] enhances the vanilla `TAB' completion for `##M-!##' and `##M-|##'. Whenever
+there are two or more candidate completions, you can use any '''Icicles'''
+completion features ([[Icicles - Cycling Completions|cycling]], [[progressive completion]], [[apropos completion]], and so on).  See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]].
+
+
+
+== Running a Shell Command Asynchronously ==
+
+You can run a shell command asynchronously by adding an ampersand (##&##) after it, if you have a UNIX or UXIX-like enviornment.
+
+Here is a simple Emacs command that you can use to run several commands asynchronously:
+
+    (defun my-shell-command (command &optional output-buffer) 
+      "Same as shell-command but rename uniquely the buffers for asynch commands.
+Each command that is run spawns a bash shell" 
+      (interactive
+       (list (read-from-minibuffer "Shell command: "
+					   nil nil nil 'shell-command-history)
+		     current-prefix-arg)
+      ;use this list if your using shell-command.el
+      ;(list
+      ;(shell-command-read-minibuffer shell-command-prompt
+      ;				     default-directory
+      ;		     nil nil nil 'shell-command-history)
+      ;	     current-prefix-arg)
+        )
+      (if current-prefix-arg
+          (shell-command command current-prefix-arg)
+        (if (string-match "[ \t]*&[ \t]*\\'" command)
+	 (let* ((command-buffer-name (format "*Async Shell Command: %s*" (substring command 0 (match-beginning 0))))
+	        (command-buffer (get-buffer command-buffer-name)))
+	     (when command-buffer
+	       (set-buffer command-buffer)
+	       (rename-uniquely))
+	     (setq output-buffer command-buffer-name)))
+      (shell-command command output-buffer)))
+
+== Discussion ==
+
+
+Is there no built-in function that simply returns the output of a shell command as a string. I mean, so that, for instance:
+
+    (message (WHATEVER "echo the message"))
+
+Would display the message:
+
+    the message
+
+in the status bar?
+
+Answer:
+
+In XEmacs, use `exec-to-string' and in GNUEmacs, use `shell-command-to-string'. For example:
+
+ (message (exec-to-string "pwd"))
+ ;; or
+ (insert (exec-to-string "ls /etc"))
+
+This executes the command in some kind of shell, and (some) normal shell magic happens:
+
+<pre>
+(shell-command-to-string "echo -test! $x-")
+"-test! -
+"
+</pre>
+
+In this case, command history is not accessed with !, but the shell variable "x" is looked up and replaced with a blank. You can quote each "word" in your command seperately, and run the result, like this:
+
+<pre>
+(defun execvp (&rest args)
+  "Simulate C's execvp() function.
+
+Quote each argument seperately, join with spaces and call shell-command-to-string to run in a shell."
+  (let ((cmd (mapconcat 'shell-quote-argument args " ")))
+    (shell-command-to-string cmd)))
+</pre>
+
+Then, calling (execvp "touch" "'a'" "b" "$x") will create files called 'a', b, and $x in whatever directory you happen to be in.
+
+== See Also == 
+
+* [[ex]] -- Function `ex-defun' defines an Emacs function that does its job by invoking an external interpreted language.
+
+
+----
+CategoryExternalUtilities

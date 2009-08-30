@@ -1,0 +1,46 @@
+==MS Windows Shortcuts==
+
+Unix-like systems have symbolic links (symlinks).
+Microsoft Windows has shortcuts. They are a bit like symlinks, but they are not
+integrated into the operating system.
+Lisp:w32-symlinks.el is an Emacs module making Emacs handle shortcuts as if they
+were real symlinks. It works by utilising the Emacs "File Name Magic" -- files with
+extension ##.lst## are treated as symlinks.
+
+This module is written by Francis J. Wright and modified by Lars Hansen.
+It works with Emacs 21 and 22. If used with Emacs 21, use Lisp:ls-lisp.el -- the
+version that comes with Emacs 21 won't work.
+
+From the Commentary section of w32-symlinks.el:
+
+<pre>
+;;; Commentary:
+
+;; This file is intended to be used with NTEmacs 21, i.e. GNU Emacs 21
+;; compiled as a native Microsoft Windows application and running on
+;; Windows.  It should cause no harm on other platforms and might be
+;; useful when accessing a Windows file system from another OS, but I
+;; have not tested such use.  It provides support for symbolic links
+;; on Microsoft Windows platforms by allowing Emacs to handle Windows
+;; shortcut files transparently as symbolic links in the same way that
+;; Windows itself does, by making .lnk files names "magic".
+
+;; It contains functions to parse Windows .lnk "shortcut" (and also
+;; obsolete Cygwin-style "symlink") files, entirely in Lisp.  It
+;; currently (partly for historic reasons) supports `dired' explicitly
+;; by hooking into the standard ls-lisp library (Emacs 21 or later
+;; versions ONLY), which is preloaded in NTEmacs.  It does this by
+;; redefining the stub function `ls-lisp-parse-symlink'.  It allows
+;; `dired' to follow symbolic links when using either ls-lisp (the
+;; default) or an external Cygwin ls program.  When run on Windows, it
+;; also implements the missing `dired-do-symlink' command to make
+;; symbolic links.
+</pre>
+
+The previous version of the file can be found here: http://centaur.maths.qmw.ac.uk/Emacs/files/w32-symlinks.el
+
+Be sure to check out the other neat stuff (much on w32) on Francis Wright's page:
+
+http://centaur.maths.qmw.ac.uk/Emacs/
+----
+CategoryWThirtyTwo

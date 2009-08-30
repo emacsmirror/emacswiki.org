@@ -1,0 +1,12 @@
+Minor mode for recording and playing back audio samples.
+
+ key             binding
+ ---             -------
+ C-c C-r C-r     erec-record
+ C-c C-r C-p     erec-play
+ C-c C-r C-s     erec-save
+
+Lisp:erec.el
+
+----
+CategoryExternalUtilities

@@ -1,0 +1,24 @@
+Emacs lisp is not multi-threaded.  [http://nschum.de/src/emacs/async-eval/ async-eval.el] explores possibilities to work around this.  It allows forms to be evaluated in a different Emacs process.  This means that the executed code cannot access the current environment, and the code's side effects cannot be used directly.  There is a small overhead from starting a new process.
+
+== Examples ==
+
+  (async-eval
+      (lambda (result) (message "async result: <%s>" result))
+    (let ((sum 0)
+          (i 10000000))
+      (while (> i 0)
+        (setq sum (+ sum i)
+              i (1- i)))
+      sum))
+
+async-eval can take care of exporting function definitions to the new process:
+
+  (defun fib (n)
+    "Intentionally slow fibonacci numbers."
+    (if (< n 2)
+        n
+      (+ (fib (1- n)) (fib (- n 2)))))
+
+  (async-eval-with-export '(fib)
+      (lambda (result) (message "async result: <%s>" result))
+    (fib 30))

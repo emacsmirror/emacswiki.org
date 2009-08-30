@@ -1,0 +1,50 @@
+If you check the key bindings of a shifted key, and the shifted key is
+not bounded to anything, Emacs will silently translate it to the
+unshifted key -- if and only if the unshifted key is undefined.
+
+On my system, both `f5' and `S-f5' are undefined.  (Note that `S-f5' is shift f5, while `s-f5' is super f5!)  Let's check:
+
+* `C-h k f5' ==> "f5 is undefined"
+* `C-h k S-f5' ==> "S-f5 is undefined"
+
+Now let us define f5:
+
+ (global-set-key (kbd "<f5>") 'ignore)
+
+Check again:
+
+* `C-h k f5' ==> "f5 runs the command ignore"
+* `C-h k S-f5' ==> "f5 runs the command ignore"
+
+In this situation it is easy to be confused.  But don't worry, `S-f5'
+is not "unrecognized by Emacs".
+This silent translation is a feature! :)
+
+ (global-set-key (kbd "S-<f5>") 'ding)
+
+Check again:
+
+* `C-h k f5' ==> "f5 runs the command ignore"
+* `C-h k S-f5' ==> "S-f5 runs the command ding"
+
+Mystery solved!
+
+: Whoops, there is another such page, apparently:
+TheMysteriousCaseOfShiftedFunctionKeys.  Sorry for the duplication. --
+AlexSchroeder.
+
+Here's how to bind control-shift-v; first, the naive attempt:
+
+    (global-set-key (kbd "C-V") 'somefunction)
+
+This will bind both uppercase and lowercase C-v.  Here's the shifted version:
+
+    (global-set-key (kbd "C-S-V") 'otherfunction)
+
+In X, some keys get special treatment.  The TAB key, for example, will suddenly report as S-iso-lefttab when shifted:
+
+    (global-set-key (kbd "C-S-<iso-lefttab>") 'samefunction)
+
+----
+CategoryKeys
+

@@ -1,0 +1,32 @@
+I use emacs.
+
+I think keeping part of my .emacs online is a fine idea.
+
+    (global-font-lock-mode t)
+    (setq font-lock-maximum-decoration t)
+    (setq default-major-mode 'text-mode)
+    (add-hook 'outline-mode-hook 'turn-on-auto-fill)
+    ;; Set up the keyboard so the delete key on both the regular keyboard
+    ;; and the keypad delete the character under the cursor and to the right
+    ;; under X, instead of the default, backspace behavior.
+    (global-set-key [delete] 'delete-char)
+    (global-set-key [kp-delete] 'delete-char)
+    ;; Always end a file with a newline
+    (setq require-final-newline t)
+    ;; Stop at the end of the file, not just add lines
+    (setq next-line-add-newlines nil)
+    ;; Enable wheelmouse support by default
+    (require 'mwheel)
+
+    ;; ...
+    ;; and a couple of customizations, because I care so much about them
+    (custom-set-variables
+      ;; custom-set-variables was added by Custom -- don't edit or cut/paste it!
+      ;; Your init file should contain only one such instance.
+     '(blink-cursor nil)
+     '(cursor ((t (:background "blue")))))
+
+I am reluctant to put my email address on a web page, so repunctuate sgelkins*bellsouth,net to send me a message.
+
+----
+CategoryHomepage

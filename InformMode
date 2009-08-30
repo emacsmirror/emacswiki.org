@@ -1,0 +1,39 @@
+http://www.rupert-lane.org/inform-mode
+
+A major mode for emacs used to edit programs written in the [http://www.inform-fiction.org/ Inform programming language].
+
+inform-mode supports the usual program mode functions: automatic indentation, moving over expressions, comment and string filling, font locking, tags-file support, starting compiles and parsing errors. It should work on GNU Emacs (v20/21) or XEmacs (v20/21) on any supported platform.
+
+Version 1.5.8, released 3 September 2002
+
+New features:
+
+: inform-run-project (C-c C-c) runs an interpreter on the z-code file for the current project. This allows you to test games from within the development environment.
+
+: If 'inform-interpreter-command' is a string (eg "frotz") then it will be run as an external program. This program can either be a standalone program like xzip or winfrotz, or it can be a character-based application like frotz or jzip: in the latter case, set 'inform-interpreter-is-graphical' to nil and inform-mode will run it in a terminal window using 'term' mode.
+
+: If 'inform-interpreter-command' is a symbol then inform-mode will call it as an Emacs Lisp function, which is useful if you want to run malyon on it or have a custom function you want to run on the story file. 
+
+See also MalyonMode, WikiPedia:Inform.
+
+== Discussion (move or delete below this line until ----)==
+Other Emacs InteractiveFiction/VirtualReality/MMORPG software
+
+http://www.cling.gu.se/~/cl2david/install_mud.html
+
+#  fpl-moo is an Emacs-based MOO client I wrote. It supports local editting, word wrapping, command-history, highlighted commands, MOO-mail, programmed reactions to output, and lots more. To get it, download one of the following archive files, unpack it, and read the file README.TXT:
+
+    http://world.std.com/~franl/dist/fpl-moo-1.1.19.tar.gz
+    http://world.std.com/~franl/dist/fpl-moo-1.1.19.zip 
+
+
+http://mattcamp.paunix.org/rmoo.html
+
+[[eMUDs]]
+MushMode
+MudMode
+MooMode
+
+----
+CategoryGames
+CategoryModes

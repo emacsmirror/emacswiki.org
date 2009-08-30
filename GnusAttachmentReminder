@@ -1,0 +1,69 @@
+There are several ways to have Gnus remind you to attach a file if it
+appears you have not. The following commands search the message content,
+looking for some words or sentences that may indicate that some attachment
+should be included. Which words exactly is given by a regular expression.
+
+Here is the default regexp used by thunderbird extension AttachmentReminder:
+
+  "attach\\|\Wfiles?\W\\|\Wphoto\\|\Where\s-+is\\|\Where\s-+are\\|\Where\s-+it\s-+is\\|enclose\\|\Wdraft\\|\Wversion"
+
+Try not to send a message without an attachment, first version
+
+  ;; simple regexp used to check the message. Tweak to your own need.
+  (defvar my-message-attachment-regexp "\\([Ww]e send\\|[Ii] send\\|attach\\)")
+  ;; the function that checks the message
+  (defun my-message-check-attachment nil
+    "Check if there is an attachment in the message if I claim it."
+    (save-excursion
+      (message-goto-body)
+      (when (search-forward-regexp my-message-attachment-regexp nil t nil)
+        (message-goto-body)
+        (unless (or (search-forward "<#part" nil t nil)
+  		  (message-y-or-n-p
+     "No attachment. Send the message ?" nil nil))
+  	(error "No message sent")))))
+    ;; check is done just before sending the message
+    (add-hook 'message-send-hook 'my-message-check-attachment)
+
+
+Here is another way to check for forgotten attachments. 
+Taken from <http://ww.telent.net/diary/2003/1/>
+
+  (defun check-attachments-attached () 
+    (interactive) 
+    (save-excursion 
+      (goto-char (point-min)) 
+      (let* ( 
+             ;; Nil when message came from outside (eg calling emacs as editor) 
+             ;; Non-nil marker of end of headers. 
+             (internal-messagep 
+              (re-search-forward 
+               (concat "^" (regexp-quote mail-header-separator) "$") nil t)) 
+             (end-of-headers              ; Start of body. 
+              (copy-marker 
+               (or internal-messagep 
+                   (re-search-forward "^$" nil t) 
+                   (point-min)))) 
+             (limit  
+              (or (re-search-forward "^-- $" nil t)  
+                  (point-max)))               
+             (old-case-fold-search case-fold-search)) 
+        (unwind-protect 
+            (progn 
+              (goto-char end-of-headers) 
+              (when (re-search-forward "attach" limit t) 
+                (goto-char end-of-headers) 
+                ;; the word 'attach' has been used, can we find an 
+                ;; attachment? 
+                (unless  
+                    (or (re-search-forward "^<#/" limit t) 
+                        (y-or-n-p 
+                         "No attachment. Send the message ? " 
+                        ) 
+                       (error "no message sent"))))) 
+          (set-marker end-of-headers nil)))))  
+  (add-hook 'message-send-hook 'check-attachments-attached) 
+
+----
+CategoryGnus
+

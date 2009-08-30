@@ -1,0 +1,49 @@
+
+I'm Mark T. Kennedy, CTO of the Quant division of Diamondback Capital
+Management.
+
+I use Emacs and, in a sense, I use TecoEmacs too.
+
+I've been using Emacs since 1979 and thus started with a TECO-based
+emacs.  I have bound 'teco:command' from Dale Worley's Lisp:teco.el to
+'ESC ESC'!  I'm probably the only living user of teco.el :-).  Thanks,
+Dale!.  (Check TecoInterpreterInElisp for an Emacs v22-specific bug if
+you decide to join me in using it, though).  Sometimes, the terseness
+of TECO is preferrable to the keyboard macro facility.
+
+Unfortunately I lost my TECO-based init after an IBM "Death Star" 75G
+hard disk crash sometime during the 1990's - sigh.  And after doing
+all of that work to switch over to the Ivory loader... :-).
+
+So far, my only contribution to Emacs has been bug reports.  At some
+point, I'll probably upload my .emacs as yet another example.
+
+Most of the code I write (aside from forays into elisp) is in perl.
+I'm a cperl-mode user (thanks, Ilya).
+
+I used to dump my own emacs binary.  But now between the speed of
+commodity desktop hardware and a decent emacsserver/emacsclient
+interface (combined with a bash wrapper for 'emacsclient'), I live the
+simple life of one big fat init.
+
+I've been blessed with a lot of screen real estate at work, and thus
+have a strong interest in session management and configuration.
+I've enjoyed looking at and using some of the work of DrewAdams.
+
+I'm looking forward to the benefits of v23's multi-tty support
+(simultaneous tty %%*and*%% X11 frames) which, when combined with the
+utility program 'screen', will allow for detached emacs servers
+(remember the TOPS20 "detach" command, oh TecoEmacs users?).  How long
+until Google offers a hosted emacsserver interface?  :-)
+
+I'm also looking forward to the beauty of v23's anti-aliased font
+support (pant, pant).
+
+I'm testing fledermaus's wiki.el interface (very nice).
+
+I've been hanging out on #emacs as 'mtkatwork', enjoying the wit and wisdom of many.
+
+I'm still waiting for AlexSchroeder to annoint my newbie page :-).
+
+----
+CategoryHomepage

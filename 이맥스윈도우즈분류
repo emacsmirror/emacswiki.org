@@ -1,0 +1,74 @@
+[[윈도우즈용이맥스]] 에 관한 정보를 찾으시려면 위의 큰 제목을 클릭하세요.
+
+영어로 된 해당 페이지는 [EmacsWiki:CategoryWThirtyTwo 여기]를 클릭하세요
+
+구할 수 있는 곳:
+
+* 공식 지원된 실행파일 http://www.gnu.org/software/emacs/windows/faq2.html#where-precompiled
+* 비공식적이며 지원되지 않는 CVS 실행파일: http://www.crasseux.com/emacs/ (최근 변경일 April 16 2005)
+* 다른 비공식 CVS 실행파일과 선택적으로 다운가능한 Lisp, C 소스 파일 (소스포지 페이지에서 'Files' 항목을 클릭하세요): http://nqmacs.sf.net (최근 변경일 June 26 2005).
+* 직접 컴파일 하시려면 BuildingOnWindowsTableofContents. 을 보세요
+* [[EmacsW32]] 여기에서도 CVS 실행파일을 구할 수 있습니다. 이 것은 인스톨러 형태인데 윈도우에서 좀더 나은 작업을 하기위해서 몇가지 셋업을 합니다. 현재 CVS 2005-05-24 버전입니다. (여기에 가시면 공식 지원되는 인스톨러 형태 바이너리도 구할수 있습니다. - 이 인스톨 형태의 패키지도 아직까지 완전 공식적으로 지원되는건 아닙니다.)
+
+도움말:
+
+* FAQ http://www.gnu.org/software/emacs/windows/ntemacs.html
+* 메일링 리스트 http://mail.gnu.org/archive/html/help-emacs-windows/
+
+설치:
+
+* The free (GNU LGPL) software program [http://www.7-zip.org/ 7-zip] can extract <tt>.tar.gz</tt> files.
+* [[EmacsW32]] -- 윈도우용 이맥스를 위한 인스톨 프로그램과 향상된 것들. '''알림:''' [[EmacsW32]] 키보드 조정, 인쇄 등등의 실행환경 또한 포함하고 있습니다.
+* [[이맥스윈도우즈초기화파일]] -- 윈도우용 .emacs 파일
+
+MS 팁과 트릭:
+
+* MsShellExecute -- 윈도우 탐색기와 변형들: 파일의 확장자로 지정된 윈도우 프로그램 실행
+* WThirtyTwoDiredContextMenu -- 탐색기 단축 메뉴에 표시
+* WThirtyTwoNetSend -- NT 명령어 net send 로 메시지 전송
+* WThirtyTwoSwitchToWindows -- 이름순으로 창 전환
+* MsdnHelp -- 이맥스에서 MSDN 도움말 얻기
+* EdiffOnWThirtyTwo -- 윈도우 환경에서 ediff 사용하기
+* WThirtyTwoFontifiedRegionToClipboard - 잘...
+* WThirtyTwoBrowseNetDrives -- 네트워크 드라이브 탐색
+* WThirtyTwoMsgBox -- 이맥스로 비베 스크립트이용해서 메시지 박스 띄우기
+* WThirtyTwoFindDired -- find-dired 의 심플한 윈도우 버전
+* WThirtyTwoSymlinks -- .lnk 파일 분석
+* VisEmacs - 이맥스를 비주얼 스튜디오 소스 코드 편집기로 쓰기
+* CatagoryIntellimouse -- 이맥스에서 인텔리마우스 사용하는 것에 관한 정보
+* IEViewSource -- 익스플로러 '소스 보기' 에 등록해서 쓰기
+* WThirtyTwoSendMAPI -- MAPI 이용해서 이맥스 <nowiki>*mail*</nowiki> 버퍼에서 편지보내기
+* WThirtyTwoGnuClient -- .txt 파일 이맥스로 열기
+
+MS 프로그램:
+
+* MsOutlook -- 이맥스를 아웃룩 편집기 처럼 쓰기
+* [[XKeymacs]] --  모든 곳에서 이맥스 키바인딩 사용하기
+ 
+MS 쉘:
+* WThirtyTwoShellExecute -- 파일이나 디렉토리에서 사용가능한 '탐색기 행동' 실행(열기, 편집, 인쇄 등등)
+* MsShellExecute -- 추가된 쉘 실행관련 도구
+* ContextMenu -- "Open with Emacs" 윈도우 단축 메뉴에 추가하기
+* MakeSmartShortcuts -- 보이는게 다입니다. 한번 해보세요
+* WThirtyTwoExecPredef -- 이맥스에서 시작메뉴 바로가기 실행
+* WThirtyTwoUtl -- 유틸리티 기능들
+
+인쇄:
+
+* PrintWithWebBrowser
+* PrintFromWindowsExplorer
+* 윈도우에서 인쇄하기, 출처 FAQ: http://www.gnu.org/software/emacs/windows/faq6.html#printing
+
+윈도우용 개발:
+
+* CygWin -- Cygwin 에서 이맥스 사용하기
+* MinGW -- Cygwin 라이브러리 없이 직접 GCC 사용하기
+
+특허권 있는 파일형식 보기:
+
+* UnDoc -- 이맥스로 MS 워드 파일 보기
+* AntiWord -- 안티워드 프로그램 환경만들기
+
+파생된 것들: 다른 윈도용 이맥스류 프로그램
+
+* [http://www.meadowy.org/meadow/ Meadow] -- 일본에서 만든 다국어지원 이맥스입니다.

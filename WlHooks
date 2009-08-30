@@ -1,0 +1,136 @@
+== Wanderlust Hooks ==
+
+The Wanderlust documentation for hooks consists of "(Not yet written)" so here is the output of grep -h -A 1 defvar.*hook /usr/share/emacs-snapshot/site-lisp/wl/*.el | grep hook
+
+{{{
+(defvar bbdb-wl-get-update-record-hook nil)
+(defvar elmo-archive-load-hook nil
+(defvar elmo-nntp-opened-hook nil)
+(defvar elmo-pipe-drained-hook nil "A hook called when the pipe is flushed.")
+(defvar elmo-msg-appended-hook nil
+  "A hook called when message is appended to database.")
+(defvar elmo-msg-deleted-hook nil
+  "A hook called when message is deleted from database.")
+(defvar elmo-nntp-post-pre-hook nil
+  "A hook called just before the nntp posting.")
+(defvar wl-ps-preprint-hook nil)
+(defvar wl-ps-print-hook nil)
+(defvar wl-folder-mode-hook nil
+  "A hook called when wanderlust folder mode is started.
+(defvar wl-summary-toggle-disp-on-hook nil
+  "A hook called when message is toggled.")
+(defvar wl-summary-toggle-disp-off-hook nil
+  "A hook called when message is disappeared.")
+(defvar wl-summary-toggle-disp-folder-on-hook nil
+  "A hook called when folder is toggled.")
+(defvar wl-summary-toggle-disp-folder-off-hook nil
+  "A hook called when folder is disappeared.")
+(defvar wl-summary-toggle-disp-folder-message-resumed-hook nil
+  "A hook called when message window is resumed when folder is toggled.")
+(defvar wl-summary-mode-hook nil
+  "A hook called when summary mode is started.
+(defvar wl-summary-prepared-pre-hook nil
+  "A hook called before the summary buffer has been generated.")
+(defvar wl-summary-prepared-hook nil
+  "A hook called after the summary buffer has been generated.")
+(defvar wl-summary-sync-updated-hook nil
+  "A hook called when update summary buffer.")
+(defvar wl-summary-unread-message-hook nil
+  "A hook called when unread message is displayed.")
+(defvar wl-summary-edit-addresses-hook nil
+  "A hook called when address book is edited.")
+(defvar wl-summary-buffer-message-saved-hook nil
+  "A hook called when msgdb is saved.")
+(defvar wl-summary-buffer-mark-saved-hook nil
+  "A hook called when mark is saved.")
+(defvar wl-init-hook nil
+  "A hook called when initialization is finished.  This hook may contain
+(defvar wl-hook nil
+  "A hook called when Wanderlust is invoked.")
+(defvar wl-draft-reply-hook
+(defvar wl-draft-forward-hook
+(defvar wl-draft-kill-pre-hook nil
+  "A hook called just before the draft buffer is killed.")
+(defvar wl-summary-reply-hook nil
+  "A hook called when `wl-summary-reply' is called.
+(defvar wl-summary-forward-hook nil
+  "A hook called when `wl-summary-forward' is called.
+(defvar wl-summary-resend-hook nil
+  "A hook runs on the resent message buffer before sending process starts.")
+(defvar wl-mail-setup-hook nil
+  "A hook called when Draft is prepared.")
+(defvar wl-draft-reedit-hook '(wl-draft-remove-text-plain-tag)
+  "A hook called when Draft is re-edited.
+(defvar wl-draft-send-hook '(wl-draft-config-exec)
+  "A hook called on the draft editing buffer before sending process starts.")
+(defvar wl-mail-send-pre-hook nil
+  "A hook called just before the mail sending process starts.")
+(defvar wl-news-send-pre-hook nil
+  "A hook called just before the news sending process starts.")
+(defvar wl-message-buffer-created-hook nil
+  "A hook called when Message buffer is prepared.")
+(defvar wl-message-redisplay-hook nil
+  "A hook called when Message is displayed.")
+(defvar wl-message-exit-hook nil
+  "A hook called when quit message.")
+(defvar wl-summary-exit-pre-hook nil
+  "A hook called before exit summary mode.")
+(defvar wl-summary-exit-hook nil
+  "A hook called when exit summary mode.")
+(defvar wl-highlight-headers-hook nil
+  "A hook called when header is highlighted.")
+(defvar wl-highlight-message-hook nil
+  "A hook called when message is highlighted.")
+(defvar wl-save-hook nil
+  "A hook called when save summary and folder status.")
+(defvar wl-exit-hook nil
+  "A hook called when exit wanderlust.")
+(defvar wl-folder-suspend-hook nil
+  "A hook called when suspend wanderlust.")
+(defvar wl-biff-notify-hook '(ding)
+  "A hook called when a biff-notification is invoked.")
+(defvar wl-biff-unnotify-hook nil
+  "A hook called when a biff-notification is removed.")
+(defvar wl-auto-check-folder-pre-hook nil
+  "A hook called before auto check folders.")
+(defvar wl-auto-check-folder-hook nil
+  "A hook called when auto check folders.")
+(defvar wl-folder-check-entity-pre-hook nil
+  "A hook called before check entity.")
+(defvar wl-folder-check-entity-hook nil
+  "A hook called when check entity.")
+(defvar wl-draft-config-exec-hook nil
+  "A hook called when execute header-config on draft.")
+(defvar wl-summary-expire-pre-hook nil
+  "A hook called before expire.")
+(defvar wl-summary-expire-hook nil
+  "A hook called when expired.")
+(defvar wl-summary-archive-pre-hook nil
+  "A hook called before archive.")
+(defvar wl-summary-archive-hook nil
+  "A hook called when archived.")
+(defvar wl-summary-line-inserted-hook nil
+  "A hook called when summary line is inserted.")
+(defvar wl-summary-insert-headers-hook nil
+  "A hook called when insert header for search header.")
+(defvar wl-message-display-internal-hook nil
+  "A hook called when message buffer is created and message is displayed.
+(defvar wl-thread-update-children-number-hook nil
+  "A hook called when children number is updated.")
+(defvar wl-folder-update-access-group-hook nil
+  "A hook called when update access group folder.")
+(defvar wl-draft-cited-hook nil
+  "A hook called after a message is cited.")
+(defvar wl-draft-insert-x-face-field-hook nil
+  "A hook called after a x-face field is inserted.")
+(defvar wl-template-mode-hook nil
+  "A hook called when template mode is started.")
+(defvar wl-score-mode-hook nil
+  "A hook called when score mode is started.")
+(defvar wl-make-plugged-hook nil
+  "A hook called when make plugged alist.")
+(defvar wl-plugged-exit-hook nil
+  "A hook called when exit plugged mode.")
+(defvar wl-plugged-hook nil)
+(defvar wl-unplugged-hook nil)
+}}}

@@ -1,0 +1,169 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Support for Projects]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Object-Action Interaction]] ||
+
+----
+
+== Using Complex Completion Candidates ==
+
+This section could also be called '''Applying a Function
+Interactively''' or '''Mapping over Sets'''.  It
+is about applying a function to members of a set of [[completion]] candidates that ''you select interactively''.  The candidates can represent arbitrarily complex data, and the function is applied to the
+associated data as well, not just to the displayed (string)
+candidate.
+
+You already know that you can [[Icicles - Candidate Sets | manipulate sets of
+candidates]].  The
+elements of those sets are strings; you choose candidate names.
+Sometimes, however, you need to choose among named items that are
+themselves complex, containing more information than just the
+name.  That is the idea behind [[multi-command]] '''`icicle-apply'''', which this
+section introduces.
+
+You (or a command that you use) can obtain the information
+associated with a name after you choose the name.  This is what happens, for instance,
+when you use `find-file'; the command looks up the file associated
+with the file name you choose.  '''Icicles''' [[multi-command]]s such as `icicle-file' perform this lookup both when you act on a candidate during completion (e.g. `C-RET')
+and when you make a final candidate selection (`RET').
+
+Names and their associated information can be available in EmacsLisp in the form of an '''association list''' ([[alist]]), that is, a [[list]]
+whose items are [[cons]]es (cons cells).  An alist is often used to represent a
+function that maps one set of things to another.  The
+conses in the alist represent the tuples (typically pairs) of related
+items.  The [[car]] of each cons is called its '''key'''; the [[cdr]] is
+called its '''value'''.  Different alists have different kinds of keys
+and values.  Typical key types include [[symbol]]s and strings;
+typical value types include symbols, strings, numbers, and lists.
+There are quite a few standard Emacs-Lisp [[variable]]s whose value is
+an alist.  Most are internal variables, but some are [[user option]]s.
+See the EmacsLispReference for more about alists.
+
+The completion mechanism of Emacs function `completing-read' can take
+an alist as input: the keys are the completion-candidate strings that you choose from.  For
+Emacs completion, however, the value (cdr) of each alist key/value entry
+is completely ''ignored''.  '''Icicles''' uses `completing-read', and it
+works the same way.  If a command needs to access the value
+associated with a key (candidate), then it must somehow do so independently
+of completion.
+
+Command `icicle-search' offers an example of this.  The completion
+alist contains key/value pairs whose car (key) is a search-hit string
+that matches your search string and whose cdr (value) is the
+buffer position for the hit.  When you use completion with this
+command, you work only with the keys, but `icicle-search' also keeps
+track of the corresponding buffer positions for you.  The logic
+for doing this is coded into the definition of `icicle-search'.
+
+It is common to want to do something interesting interactively
+with the values also, not just the keys, of a completion alist.  Why
+lose the important value information when you choose a key?  And
+instead of requiring the logic of each command to deal with this
+need individually, why not provide a general mechanism for accessing
+this information -- both by program and interactively?  This is
+what command '''`icicle-apply'''' is for.
+
+To make use of completion alist values, you need to access the cdr
+of a key/value cons (pair).  Different alists are structured
+differently: the cdr can itself be complex (structured -- a cons).  In general, you
+want to access not just the cdr (value) but the key as well, the key/value pair as a whole, to do what you want
+with it -- that is, to apply some function to it.
+
+Emacs-Lisp programmers sometimes map functions over lists to
+obtain a different list.  For example, mapping the function `##1+##'
+over the list ##(3 1 4 1 5 9)## gives the list ##(4 2 5 2 6 10)##.   Or if
+interested only in the side effects, they apply a function
+iteratively over a list without bothering to accumulate the results as a new
+list.  The command `icicle-apply' is inspired by these common practices of mapping and iterating over a list, but it
+applies only to alists. And it lets you choose interactively which
+alist elements to act on, instead of always acting on all elements..
+
+`icicle-apply' lets you apply a function of your choice to any number of key/value entries in an alist.  As user of the command, you choose the entries to act on. The alist is used for completion; you choose among the keys.  The function is applied to the corresponding key/value pairs, however, not to the keys alone.
+
+For example, given the alist `auto-mode-alist' and the function
+`cdr', you can choose to apply `cdr' to selected alist entries.
+This acts as a simple lookup function, because `cdr' just returns
+the value associated with a chosen key.  If you choose, for
+example, the candidate (key) ##\.el\'##, then the (value) result is the
+symbol  `emacs-lisp-mode'.  In this case, the chosen key/value pair
+is ##("\\.el\\'" . emacs-lisp-mode)##.  (A literal backslash must be
+doubled in an Emacs-Lisp string.)
+
+Function `cdr' returns the value, which is `emacs-lisp-mode' here.
+If instead of `cdr' you use the function ##(lambda (x)
+(describe-function (cdr x)))##, then the result of choosing
+candidate ##\.el\'## is to display the help for function
+`emacs-lisp-mode'.  This function first uses `cdr' to obtain the
+value (the mode) and then applies `describe-function' to that
+value.
+
+A typical use of `icicle-apply' is to define your own
+multi-command that you or someone else can use to act on objects
+selected by name.  The definition of command `icicle-goto-marker'
+provides an example.  It uses an alist whose elements are pairs composed of
+a text line (the key) and the marker (the value) in that line.  It
+applies a function that moves to the marker.
+
+If called interactively (as opposed to being used to define
+another command), `icicle-apply' lets you use completion to choose
+not only the objects to act on but also the function to apply to
+them and the alist to choose them from.  See the [[doc string]] of
+`icicle-apply' for more information.
+
+Note that you can type in a [[lambda expression]] when
+prompted for the function.  You can use any function, provided it targets a key/value pair
+(a cons).  This is why you could not simply use `describe-function' itself
+as the function to apply in the example above: `describe-function' expects a symbol argument, not a cons.
+
+So what is `icicle-apply' really for?  Anything you want.  You can
+use it to simply browse an alist or to perform actions on complex things.
+The idea is to let you take advantage of '''Icicles''' features to
+interactively filter and manipulate a set of completion keys, and
+then apply any function you like to them -- not just to the keys,
+but to the keys or their values, or both.
+
+You can use [[apropos completion|apropos]] ([[regexp]]) matching or [[prefix completion|prefix]] matching to filter
+the alist, as always, during completion.  You can use `C-RET' and so on to act on (that is, apply the function to)
+selected key/value pairs that match your current input.
+
+You can also act on ''all'' such pairs, by using `##C-!##' or `##M-!##'.
+'''`##C-!##'''' corresponds to iterating over the items in a list, applying
+a function to each.  '''`##M-!##'''' applies a function not to each chosen
+pair, but to the ''list'' of all chosen pairs -- see [[Icicles - Choose All Candidates]].  By default, the
+completion candidates are not sorted, but you can of course sort
+them in various ways, either [[Icicles - Sorting Candidates|interactively]] or by program.
+
+As an Emacs-Lisp programmer, you can use function `icicle-apply'
+programmatically to let users look things up in alists that you
+construct or to act on selected alist entries in complex ways.
+'''Icicles''' just provides the interactive completion features.
+
+The
+real value of `icicle-apply' comes from what you do with it.  Use it
+with a database of geographical coordinates to look up location
+names provided by users and draw corresponding vicinity maps.  Use
+it with a list of hardware configurations to let users perform
+diagnostic or maintenance operations on selected equipment.  You
+get the idea -- use your imagination.
+
+''Note:'' Although completion alists normally require string-valued
+keys, `icicle-apply' is designed to work with any alist.
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Support for Projects]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Object-Action Interaction]] ||
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryModes
+CategoryProgrammerUtils
+CategoryCode
+CategorySearchAndReplace
+
+

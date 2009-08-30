@@ -1,0 +1,16 @@
+Install user-specific preferences and packages in the paths within the user's home folder (~), system-wide preferences go in <tt>%%/Library/...%%</tt>
+
+Install Aquamacs-specific preferences and packages in <tt>Aquamacs Emacs</tt> paths, others (which should be loaded by other Carbon Emacsen) in <tt>Emacs</tt> paths.
+
+== Preferences (.emacs) ==
+These preferences are loaded, in the given order:
+
+ ~/.emacs  (deprecated -- meaning 'should not be used for new installations, but will continue to be supported' -- in Aquamacs on OS X)
+ /Library/Preferences/Emacs/Preferences.el
+ /Library/Preferences/Aquamacs Emacs/Preferences.el
+ ~/Library/Preferences/Emacs/Preferences.el
+ ~/Library/Preferences/Aquamacs Emacs/Preferences.el
+
+Manual user-specific customizations should go into <tt>~/Library/Preferences/Aquamacs Emacs/Preferences.el</tt> 
+
+*Warning: this is not the page to describe miscellaneous extensions to Aquamacs. Go to CustomizeAquamacs for that.*

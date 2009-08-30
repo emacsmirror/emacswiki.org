@@ -1,0 +1,1765 @@
+The people at MyGnus have started to write a tutorial.
+
+Here's the link to the HTML version:
+
+* http://my.gnus.org/tutorial/
+
+(my.gnus.org seems to be dead 2007-12-03, latest wayback archive: http://web.archive.org/web/20070607231356/http://my.gnus.org/tutorial/)
+
+
+----
+
+Hey, I downloaded the last image of the Gnus Tutorial from the wayback
+machine, and then did a quick and dirty HTML to wiki conversion of it.
+Here is the result:
+
+== Introduction ==
+
+This tutorial introduces Gnus, an interface for reading e-mail and
+Usenet news (and in fact, many other things as well) from within Emacs
+or XEmacs. Gnus offers many features that other news and mail readers do
+not. It is highly customizable and extensible. In other words, it can do
+about anything you want it to.
+
+However, all this can make the process of getting started an uphill
+battle, especially if you are new to Gnus and Emacs. What makes things
+even more difficult is that the Gnus Manual is actually more of a
+technical reference than a user guide, which means that new users often
+have a hard time finding out how to make Gnus behave as desired.
+
+This is why this tutorial was written. Unlike the Gnus Manual, it may be
+used as a step-by-step guide to using Gnus. This means that you are
+supposed to read through it from the first to the last chapter, skipping
+the non-mandatory sections if you are not interested in them.
+
+
+== Getting Started on Unix ==
+
+This chapter describes where you can download a copy of Gnus, and how to
+install it the quickest. Of course, reading this chapter is only
+necessary if you do not have any version of Gnus installed at all, or if
+your version is no longer very recent.
+
+At this point, we presume that either Emacs
+http://www.gnu.org/software/emacs/emacs.html or XEmacs
+http://www.xemacs.org/ is installed on your site.
+
+To check whether Gnus is already installed on your site, fire up Emacs
+and say M-x load-library RET gnus RET. If Emacs says something along the
+lines of, `cannot open load file', Gnus is not yet installed on your
+site. If loading Gnus actually worked, type M-x gnus-version RET and
+have a look at the minibuffer. It should say something like `Gnus
+v5.8.8', if it doesn't, you should consider upgrading to a more recent
+version.
+
+XEmacs users might wish to use the package tool to install the current
+version of Gnus. Choose the menu item Tools/Packages/List and
+Install. You can find information on using the package tool via the menu
+item Tools/Packages/Help.
+
+XEmacs 21.1 and XEmacs 21.2 both come with a Gnus package for Gnus
+5.8. (FIXME: correct XEmacs versions!)
+
+Emacs 21 comes with Gnus 5.9, so you don't have to install anything if
+you use that.
+
+
+=== Getting the most recent Gnus version ===
+
+The main Gnus home page is http://www.gnus.org/. Follow the
+`Distribution' link, then click on the first link of that page. You can
+download the file gnus.tar.gz.
+
+Alternatively, you can use the FTP server, ftp://ftp.gnus.org/, which
+also contains older Gnus versions.
+
+Speaking of older Gnus versions, it might be necessary to make it clear
+how the versions are numbered. Or named, as the case may be. Gnus
+versions which are ready for distribution have numbers. The first
+official Gnus version was 5.0, and now we're up to 5.9. Recently, it
+appears that odd-numbered versions like 5.5, 5.7 and 5.9 are included in
+Emacs and the even-numbered versions have been distributed by Lars
+outside of Emacs. The versions included in Emacs generally have just one
+dot, but the ones put out by Lars have two dots, as in 5.8.8 (which is
+the most recent unbundled version as of this writing, mid-April
+2001). The odd-numbered versions are more or less equal to the last
+patch level of the preceding even version. For example, 5.4.66 is very
+similar to 5.5, 5.6.45 is very similar to 5.7, and 5.8.8 is very similar
+to 5.9.
+
+Gnus 5.7 has been included in Emacs 20.5 through 20.7, and Emacs 21.1
+will contain Gnus 5.9.
+
+The XEmacs team maintains a whole range of elisp packages, Gnus being
+one of them. Providing your XEmacs is relatively recent (versions 21.0
+and beyond), you can easily get the latest stable version of Gnus using
+the XEmacs package tools. See XEmacs Packages (The XEmacs Editor).
+
+FIXME: contributed by Steve Youngs youngs@xemacs.org, the current XEmacs
+package maintainer.
+
+FIXME: should we add a list of contributors?
+
+The very adventurous might try named Gnus versions. Whenever a major
+Gnus version is finished, development starts on a named version. Right
+now, 5.8 (and 5.9) is finished, and development has started on Oort
+Gnus, which will become Gnus 5.10. Before 5.8 came out, it was called
+Pterodactyl Gnus, before 5.6 came out it was called Quassia Gnus, 5.4
+was called Red Gnus, and before that, we had September Gnus and (ding)
+Gnus. (ding) Gnus was when Lars started rewriting the whole
+thing. Before that, there was GNUS 4.x by Masanobu UMEDA. Note the
+capitalization.
+
+So, don't think that pgnus 0.99 is the most recent Gnus version, just
+because it's listed last on ftp://ftp.gnus.org/pub/gnus/!
+
+
+=== Installing Gnus ===
+
+FIXME: We must do Windows instructions, too!
+
+First, you need to decide on a directory where Gnus should be
+installed. You might wish to install it in your home directory, or you
+might wish to install it in a site-wide directory. For site-wide
+installation, a couple of directories have become customary. For
+example, the default Emacs installation is such that the executable
+program is /usr/local/bin/emacs. In this case, there is a directory
+/usr/local/share/emacs/site-lisp which is intended for site-wide Emacs
+Lisp add-ons. So this is the ideal place for Gnus.
+
+Let's say you have downloaded gnus-5.8.8.tar.gz and put it in the /tmp
+directory. To install this, you might do the following:
+
+     cd /usr/local/share/emacs/site-lisp
+
+     gzip -d -c /tmp/gnus-5.8.8.tar.gz | tar xf -
+
+     ./configure
+
+     make
+
+The first step depends on the directory you have chosen for the
+installation, of course. The third step and the last step depend on your
+flavor of Emacs. The above code is for Emacs users, XEmacs users will
+want to look below:
+
+     cd /usr/local/lib/xemacs/site-lisp
+
+     gzip -d -c /tmp/gnus-5.8.8.tar.gz | tar xf -
+
+     ./configure --with-xemacs
+
+     make EMACS=xemacs
+
+FIXME: What about --with-w3?
+
+Now the installation of Gnus is almost finished, you just need to tell
+your Emacs where to find it. This is not very difficult, you just add a
+line like the following to the Emacs init file, ~/.emacs:
+
+     (add-to-list 'load-path
+
+       "/usr/local/share/emacs/site-lisp/gnus-5.8.8/lisp/")
+
+Note that this line must be in ~/.emacs and not in ~/.gnus.el. This is
+because, when Emacs reads ~/.gnus.el, it has already loaded parts of
+Gnus. And if you then change the load-path variable to point to your new
+version, this will result in a mixture of the old the new Gnus in the
+same Emacs. Down this path lies madness.
+
+Also be careful not to include any statement in ~/.emacs that might
+cause Gnus to load. Anything with gnus or message or nnbla (with bla
+equals mbox, ml, mh, tp, imap, ...) in it is suspicious. All these
+things should come after the add-to-list statement.
+
+In order to get the Gnus info pages added to your documentation, also
+augment the INFOPATH environment variable, like
+
+     INFOPATH=$INFOPATH:/usr/local/share/emacs/site-lisp/gnus-5.8.8/texi
+
+     export INFOPATH
+
+The above should go in your shell startup file, such as ~/.profile. We
+use Bourne shell syntax here, if you use a csh variant, you'll know how
+to adjust the syntax.
+
+Now you're ready for takeoff!
+
+
+== Getting Started on MS Windows ==
+
+This chapter is for the MS Windows users. It describes where you can
+download a copy of (X)Emacs and Gnus, and how to install it the
+quickest. Of course, reading this chapter is only necessary if you do
+not have any version of Gnus installed at all, or if your version is no
+longer very recent.
+
+You know that Gnus is only a package of lisp functions interpreted by
+Emacs (don't you?), so the first thing we've got to do is getting a copy
+of either Emacs or XEmacs. Then we'll have to install Gnus. But stop,
+perhaps all this isn't necessary? Perhaps you already have Emacs or
+XEmacs, then we should now have a look if Gnus is working.
+
+To check whether Gnus is already installed on your site, fire up Emacs
+and say M-x load-library RET gnus RET. If Emacs says something along the
+lines of, `cannot open load file', Gnus is not yet installed on your
+site. If loading Gnus actually worked, type M-x gnus-version RET and
+have a look at the minibuffer. It should say something like `Gnus
+v5.8.8', if it doesn't, you should consider upgrading to a more recent
+version.
+
+How to get (X)Emacs: If you don't already have it, now's the time to get
+it.
+
+How to get Gnus: In case the one included with Emacs is too old.
+
+How to install Gnus: It's not too difficult.
+
+
+=== Getting a copy of either Emacs or XEmacs ===
+
+Which Emacs: GNU Emacs or XEmacs, that's the question now.
+
+Installing XEmacs: God save the netinstaller.
+
+Installing GNU Emacs: A bit more hand craft but still not too difficult.
+
+
+=== Getting the most recent Gnus version ===
+
+The main Gnus home page is http://www.gnus.org/. Follow the
+`Distribution' link, then click on the first link of that page. You can
+download the file gnus.tar.gz.
+
+Alternatively, you can use the FTP server, ftp://ftp.gnus.org/, which
+also contains older Gnus versions.
+
+Speaking of older Gnus versions, it might be necessary to make it clear
+how the versions are numbered. Or named, as the case may be. Gnus
+versions which are ready for distribution have numbers. The first
+official Gnus version was 5.0, and now we're up to 5.9. Recently, it
+appears that odd-numbered versions like 5.5, 5.7 and 5.9 are included in
+Emacs and the even-numbered versions have been distributed by Lars
+outside of Emacs. The versions included in Emacs generally have just one
+dot, but the ones put out by Lars have two dots, as in 5.8.8 (which is
+the most recent unbundled version as of this writing, mid-Dezember
+2001). The odd-numbered versions are more or less equal to the last
+patch level of the preceding even version. For example, 5.4.66 is very
+similar to 5.5, 5.6.45 is very similar to 5.7, and 5.8.8 is very similar
+to 5.9.
+
+Gnus 5.7 has been included in Emacs 20.5 through 20.7, and Emacs 21.1
+contains Gnus 5.9.
+
+The XEmacs team maintains a whole range of elisp packages, Gnus being
+one of them. Providing your XEmacs is relatively recent (versions 21.0
+and beyond), you can easily get the latest stable version of Gnus using
+the XEmacs package tools. See XEmacs Packages (The XEmacs Editor).
+
+FIXME: contributed by Steve Youngs youngs@xemacs.org, the current XEmacs
+package maintainer.
+
+FIXME: should we add a list of contributors?
+
+The very adventurous might try named Gnus versions. Whenever a major
+Gnus version is finished, development starts on a named version. Right
+now, 5.8 (and 5.9) is finished, and development has started on Oort
+Gnus, which will become Gnus 5.10 or so. Before 5.8 came out, it was
+called Pterodactyl Gnus, before 5.6 came out it was called Quassia Gnus,
+5.4 was called Red Gnus, and before that, we had September Gnus and
+(ding) Gnus. (ding) Gnus was when Lars started rewriting the whole
+thing. Before that, there was GNUS 4.x by Masanobu UMEDA. Note the
+capitalization.
+
+So, don't think that pgnus 0.99 is the most recent Gnus version, just
+because it's listed last on ftp://ftp.gnus.org/pub/gnus/!
+
+
+=== Installing Gnus ===
+
+After you downloaded Gnus you might have a problem with decompressing
+the tarball. (That's what the Unix people call those .tar.gz files). The
+solution can be found at
+ftp://ftp.gnu.org/gnu/windows/emacs/utilities/i386/djtarnt.exe. Get it
+and uncompress the tarball with it in a directory of your
+choice. (Directories with spaces in it's name or path might cause
+trouble)
+
+Now you've got to compile Gnus. You can use the file make.bat included
+in the archive. Open a DOS prompt change to the directory you
+uncompressed the tarball in and call it via
+
+     make :[X]Emacs-exe-dir: [/copy]
+
+:[X]Emacs-exe-dir: is the directory your emacs.exe respectively xemacs.exe resides in, e.g. G:\Programme\XEmacs\XEmacs-21.4.11\i586-pc-win32\ or G:\Emacs\bin. /copy indicates that the compiled files should be copied to your emacs lisp, info, and etc site directories.
+
+Note: If you have Emacs/w3 you should set the environment variable W3DIR
+to the directory where w3 is installed before calling the make batch
+file. Do it by saying something like set
+W3DIR=C:\Progra~1\XEmacs\xemacs-packages\lisp\w3 at the DOS prompt.
+
+You should most definitely choose the copy option when compiling, but
+there might be situations where this isn't possible (e.g. if you don't
+have write access to the lisp directories). In this case it becomes a
+bit hairy. First of all you must tell Emacs now where to find Gnus. This
+is not very difficult, you just add a line like the following to the
+Emacs init file, (~/.emacs for GNU Emacs or ~/.xemacs/init.el for
+XEmacs)
+
+FIXME: See the Gnus FAQ for "I'm working under Windows and have no idea
+what ~/.gnus means." (Should be explained here, too.)
+
+     (add-to-list 'load-path
+
+                  "c:/directory/where/the/gnus/lisp/files/are")
+
+Note that this line must be in the Emacs init file and not in
+~/.gnus.el. This is because, when Emacs reads ~/.gnus.el, it has already
+loaded parts of Gnus. And if you then change the load-path variable to
+point to your new version, this will result in a mixture of the old the
+new Gnus in the same Emacs. Down this path lies madness.
+
+Also be careful not to include any statement in the Emacs init file that
+might cause Gnus to load. Anything with gnus or message or nnbla (with
+bla equals mbox, ml, mh, tp, imap, ...) in it is suspicious. All these
+things should come after the add-to-list statement.
+
+In order to get the Gnus info pages added to your documentation, you've
+got to set the INFOPATH environment variable. On a Win9x system you can
+do this by saying
+
+     set INFOPATH=C:\Programme\NewGnus\info;
+
+                  C:\Programme\XEmacs\XEmacs-21.4.5\info;
+
+                  C:\Programme\XEmacs\xemacs-packages\info;
+
+in your autoexec.bat. In Win NT, 2K and XP it's done via Start ->
+Settings -> Control Panel -> System -> Advanced -> Environment Variables
+(Note that there must not be a line brake between the items but a space
+between the semicolon and the next one.)
+
+Now you're ready for takeoff!
+
+
+== Fundamental Configuration ==
+
+Before you can actually use Gnus, you'll have to tell it some things
+about you and your environment. This section tells you what Gnus needs
+to know and how to tell it.
+
+The first thing you've got to do is creating a gnus configuration
+file. To do so, start Emacs and say C-x C-f. (This means hold Control,
+hit x, and then f while still holding Control. If you don't know about
+this stuff, work through the Emacs tutorial!) Emacs will prompt for a
+filename, your answer must be ~/.gnus.el.
+
+Now, that we have the famous ~/.gnus.el, we'll only have to fill it.
+
+Now you need to tell Gnus who you are. Do so with the lines
+
+     (setq user-mail-address "you@somewhere.com")
+
+     (setq user-full-name "Your Name")
+
+Now Gnus needs to know where to fetch its messages from. Let's say your
+primary newsserver is foo.bar.com, your second one is your local
+newsserver and the third one is news.gnus.org. Furthermore, you want to
+read Mails from the POP3 server pop.provider.com and use the nnml
+backend for this. (See section mail for further information.)
+
+We tell Gnus all this with
+
+     (setq gnus-select-method '(nntp "foo.bar.com"))
+
+     (add-to-list 'gnus-secondary-select-methods '(nntp "localhost"))
+
+     (add-to-list 'gnus-secondary-select-methods '(nntp
+     "news.gnus.org"))
+
+
+
+     (add-to-list 'gnus-secondary-select-methods '(nnml ""))
+
+     (setq mail-sources '((pop :server "pop.provider.org"
+
+                               :user "you"
+
+                               :password "secret")))
+
+If a newsserver requires authentification, Gnus will prompt you for
+username and password. If you are too lazy for this create a file
+~/.authinfo which should look like this:
+
+     machine foo.bar.com login your_username password your_pass
+
+     machine localhost login foo password bar
+
+If your server offers access to anonymous users Gnus will connect as
+anonymous as well as you specified username and password in
+.authinfo. You will probably then wonder why there are so few groups and
+have no idea what to do now. Don't fear, it's simple. Just say
+
+     machine foo.bar.com login your_username password your_pass force
+     yes
+
+instead of
+
+     machine foo.bar.com login your_username password your_pass
+
+The last thing we must tell Gnus before we can actually use it is where
+and how to send outgoing mails. I suggest to use the smtpmail package
+for this which comes with Emacs.
+
+     (setq send-mail-function 'smtpmail-send-it)
+
+     (setq message-send-mail-function 'smtpmail-send-it)
+
+     (setq smtpmail-default-smtp-server "your.smtp-server.de")
+
+should do the trick unless it requires authentification.
+
+FIXME: What to do if it does require authentification?
+
+
+== Using Gnus ==
+
+Well, you should have set up your basic configuration now, so it's time
+to fire up Gnus. There are several ways to do so, for example you could
+use the menu or the toolbar or just say M-x gnus.
+
+Gnus will now open the servers specified in gnus-select-method and
+gnus-secondary-select-methods, read the group lists and check for new
+mail. When this is done you'll find yourself in the group buffer, where
+surprisingly the groups are listed and all action belonging to groups
+take place.
+
+
+=== The group buffer ===
+
+
+==== Subscribing to groups ====
+
+Gnus does subscribe you to some groups it thinks you should have a look
+at, but most certainly that's not all you want. To subscribe to a group
+you know the name of, say U and enter the name of the group (use the
+tab-completion!). If you want the complete group list say A A or M-d if
+you want the taglines too. To search in the list use C-s (this is the
+command to search in the active buffer, learn it!), u subscribes you to
+the group which is under the cursor. There are more options, see the
+info for this.
+
+
+==== The Topic-Mode ====
+
+If you are subscribed to many groups, you may want to group them into
+categories (For me it's for example misc, Emacs, Mail, Admin,
+Tech). Gnus calls this categories topics and offers a minor-mode for
+this. To enter topic mode hit t. There is a top topic called gnus and
+one more topic called misc under it. To make a new topic under Topic X,
+place the cursor behind the Topic X and say T n.
+
+Now you've only got to place the groups in the proper topics. Say L to
+see all subscribed groups, place the cursor over the group you want to
+move and say T m. Easy, isn't it?
+
+If you want that the topic mode is always active, place the following in
+your ~/.gnus.el:
+
+     (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+
+
+==== More commands in the group buffer ====
+
+You should now know the most important things one can do in the summary
+buffer, so I now only give a rough overview about commands and what they
+do.
+
+key sequence
+
+_action_
+
+_comment_
+
+_RET_
+
+enters the group under the cursor
+
+_g_
+
+check for new news and mail
+
+_q_
+
+quit Gnus
+
+Beware: Never close Emacs without closing Gnus first!
+
+_c_
+
+_catchup_
+
+marks all unread articles in the group as read
+
+_C_
+
+_catchup_
+
+marks all articles in the group as read
+
+_#_
+
+mark a group
+
+use it to do an action on several (marked) groups
+
+_l_
+
+show only groups with unread articles
+
+_L_
+
+show all subscribed groups
+
+_m_
+
+Create a new mail
+
+_a_
+
+Create a new posting
+
+_^_
+
+enter server buffer
+
+You can open and close connections to servers there (timeouts).
+
+
+=== Summary and Article buffer ===
+
+After you entered a group in the group buffer, Gnus will start getting
+the headers for the group. When Gnus has finished with this, you'll find
+yourself in a buffer showing a summary of each article in this group. To
+have a look at an article just place the cursor over it and hit
+<RET>. Scroll down the article with <SPC>, if you are through it one
+more space brings you to the next unread, if you want this earlier hit
+n. To scroll up hit <DEL>.
+
+If you don't like the way the summary is presented, then your taste is
+like mine. I hope I'll find the time to write a node "How to make Gnus
+pretty" sometime, until then have a look in the info, especially the
+variable gnus-summary-line-format may be interesting to you.
+
+Well there's some more stuff you may find interesting to know:
+
+key sequence
+
+_action_
+
+_comment_
+
+_RET_
+
+view the article under the cursor
+
+_n_
+
+next unread article
+
+_p_
+
+previous article
+
+_SPC_
+
+scroll down
+
+moves to next unread when at the bottom of the article
+
+_del_
+
+scroll up
+
+_F_
+
+follow-up to group and cite the article
+
+_f_
+
+follow-up to group without citing the article
+
+_R_
+
+reply by mail and cite the article
+
+_r_
+
+reply by mail without citing the article
+
+_m_
+
+new mail
+
+_a_
+
+new posting
+
+_c_
+
+_Catchup_
+
+C-u / t
+
+Show only young headers
+
+/ t without C-u limits the summary to old headers
+
+T T
+
+toggle threading
+
+C-u g
+
+Display raw article
+
+hit g to return to normal view
+
+_t_
+
+Show all headers
+
+it's a toggle
+
+W w
+
+Wordwrap the current article
+
+W r
+
+Decode ROT13
+
+a toggle
+
+^
+
+fetch parent of article
+
+_L_
+
+create a scorefile-entry based on the current article (low score)
+
+? gives you information what each char means
+
+_I_
+
+like L but high score
+
+
+=== Writing new mail and news ===
+
+After you told Gnus that you want to write a new mail or a new posting
+(a, m, F, f, R, r, you remember?) a new buffer pops up. Most of the
+headers will already be filled, but some you've got to fill by
+hand. Just write the stuff after the blank (e.g. Subject: foo). Write
+the body of the article under the line "--text follows this line--", if
+you want to add headers, just write the stuff over this line
+(e.g. X-Drunk-as-a-lord: yes).
+
+If you want Gnus to add a signature under the posting create a file
+~/.signature in your home directory which includes your signature
+without the "-- ". (Remember: Signatures shouldn't be bigger then 4*80
+characters).
+
+You most certainly want automatic linebreaking, include the following
+lines in your .gnus to achieve this:
+
+     (defun my-message-mode-setup ()
+
+       (setq fill-column 72)
+
+       (turn-on-auto-fill))
+
+     (add-hook 'message-mode-hook 'my-message-mode-setup)
+
+More stuff:
+
+key sequence
+
+_action_
+
+_comment_
+
+C-c C-c
+
+send message
+
+C-c C-d
+
+save message as draft
+
+C-c C-k
+
+kill message
+
+C-c C-m f
+
+attach file
+
+M-x message-caesar-region
+
+encode region using ROT13
+
+M-q
+
+reformat paragraph
+
+
+=== Help! ===
+
+Well, most probably you will find yourself after about 17 seconds of
+using Gnus in a situation where you want to do something and have no
+idea how to do it. Here are some ideas what you can do now:
+
+
+==== RTFM ====
+
+To open the Gnus manual hit C-h i gnus. Then you can either work through
+the menus or search in the node-titles with i or in the fulltext with s.
+
+
+==== The menu-bar ====
+
+Most of the frequently used functions can be found somewhere in the
+menu. Sometimes you'll find them somewhere where you'd least expect them
+so keep your eyes open.
+
+
+==== The help ====
+
+C-h brings you to the help. The help is not more than a line "C-h (Type
+? for further options)". So lets type ?. This brings us to "A B C F I K
+L M N P S T V W C-c C-d C-f C-i C-k C-n C-w; ? for more help" which
+isn't really helpful to, so one more ?. That's better, isn't it?
+Especially the C-h b will help you quite often.
+
+
+==== Ask people ====
+
+When you really don't know what to do, you can ask other Gnus
+users. Most certainly you'll find somebody (somebody is quite often
+called Kai :-) ) who can help you. Proper places for this are
+gnu.emacs.gnus, news.software.readers or gnus.ding if you are running an
+alpha version of Gnus.
+
+
+=== Miscellaneous ===
+
+When Gnus asks you for some kind of input, most probably the
+tab-completition can prevent you from to many keystrokes. Use it!
+
+Always remember that a Gnus-buffer is also a normal Emacs-buffer and
+that all commands Emacs offers you work in Gnus too.
+
+Gnus is not only a newsreader but also the symbol of a special kind of
+user. A user who knows about usenet and the stuff he or she writes
+about, so don't destroy this image of the Gnus users.
+
+
+== Basic terminology and news reading ==
+
+First, let's talk about a few terms which I'm going to use which might
+be unfamiliar to you.
+
+_say_
+
+Quite often in this manual you will find that you are told to `say'
+something. As in:
+
+You can say (setq user-mail-address "some address") if Gnus does not
+supply the right one in outgoing messages.
+
+This means that you are supposed to take the Lisp code given, modify it
+as appropriate for your situation, and insert it into the file
+~/.gnus.el (or sometimes some other file, but that will be made
+explicit). You can find the right file by typing C-x C-f ~/.gnus <RET>
+in Emacs.
+
+_Posting, Article, Message, Mail_
+
+These are all related terms. A news message might also be called a
+posting or an article, whereas a mail message is known as a mail. Since
+Gnus treats both news and mail, the distinction isn't as clear. In the
+following, I'll use the term ``message'' for the generic case and ``news
+message'' and ``mail message'' for the specific cases. But sometimes, I
+might use ``posting'' or ``article'', too, both synonymous with
+``message''.
+
+_Backend_
+
+Gnus can read messages from various sources. On the one hand, there is
+news, and on the other hand, there is mail. News can be read from a news
+server (an NNTP server), or from a so-called spool directory. Mail can
+be read in various formats.
+
+Generally speaking, a backend describes the way Gnus accesses a set of
+messages. For a news server, this is the Network News Transfer Protocol,
+NNTP, and thus there is a backend ``nntp''. For mail stored in the same
+format that the MH message handling system used, there is the backend
+``nnmh''. And so on. See below for a list of backends.
+
+_Server_
+
+Whereas a backend describes the mechanism used by Gnus to access the
+messages, a server is a specific instance of that mechanism. You might
+create a specific server for accessing the host news.frob.org using
+NNTP, say. Or you might create a server for accessing the MH-style
+directory ~/OldMail.
+
+If you are a programmer, think of a backend as the class and of a server
+as an object (instance) of that class. If you are a cook, think of a
+backend as an apple pie recipe (say), and think of a server as an actual
+apple pie. (Yummy!) If you live in a huge city, think of a backend as a
+bus (or tram, or underground) line (the Circle Line comes to mind), and
+think of a server as a specific bus (or tram train, or underground
+train). The one at 8:15 last Monday morning, for example. If you drive a
+car, think of a backend as the model and make and of a server as a
+specific car.
+
+Obviously, there can be two servers using the same backend. (Two
+instances of the same class, two apple pies baked according to the same
+recipe, two busses going the same route, two cars of the same model.)
+
+_(Select) method_
+
+Just another term for server.
+
+Native server
+
+This is the primary server, so to speak. Most people let their news
+server be the native server, hence:
+
+          (setq gnus-select-method '(nntp "news.frob.org"))
+
+
+
+Groups from the native server are also known as native groups.
+
+_Secondary select methods_
+
+This is a list of other servers which one also wishes to use. Many
+people are only going to have two servers, one native (for news) and one
+secondary (for mail). Thus:
+
+          (setq gnus-secondary-select-methods '((nnml "")))
+
+
+
+Note that there is one more pair of parentheses in order to be able to
+mention more than one seconary select method.
+
+Groups from a secondary server are also known as secondary groups.
+
+In order to be able to distinguish native groups from secondary groups,
+each server is identified with a (unique) name and that name is used as
+a prefix for the secondary groups. Thus, you might have a group
+gnu.emacs.help (which is native) and another group nnml:mail.misc (which
+is secondary). A plus character is used if the name of a server is not
+the empty string. For example, given the following in your ~/.gnus.el
+file
+
+          (setq gnus-secondary-select-methods
+
+                '((nnml "work" (nnml-directory "~/Mail.work/"))
+
+                  (nnml "play" (nnml-directory "~/Mail.play/"))))
+
+
+
+you might have the groups nnml+work:boss and nnml+play:so1.
+
+_Group_
+
+Well, if you've read news before, you know about different news
+groups. One of my favorites is gnu.emacs.gnus, and I wish I would read
+alt.fan.pratchett. Since Gnus treats mail in a newsreaderly fashion, it
+is obvious that it uses groups rather than ``folders'' like other mail
+readers do. So with Gnus there are news groups and mail groups, where
+mail groups are known as mail folders to other programs.
+
+Each group belongs to a certain server, and each server uses a certain
+backend.
+
+_Expiry_
+
+News servers offer news groups which contain news postings. New news
+postings come in, so the news postings accumulate, and pretty soon the
+new hard disk is full. This is not good news at all.
+
+Thus, a news server does what is known as expiry: it deletes old
+messages. Of course, on a news server, expiry happens with no regard of
+whether people have already seen the message in question; instead, the
+news server admin chooses expiry times based on available disk space and
+maybe on the normal amount of traffic in a news group.
+
+But mail messages should be under the users' control, so there better be
+no server which deletes messages regardless of users having seen them!
+Instead, Gnus adopts a scheme where users say which messages may be
+deleted, and Gnus takes care of deleting them after a while. (They are
+not deleted immediately in case you made a mistake, or in case you wish
+to refer back to an old article.)
+
+_Article marks_
+
+Gnus distinguishes between a number of article marks, which indicate
+whether they have been looked at, or are considered important, or the
+like. Marks are represented by a character.
+
+If that character is a space, it looks as if the message isn't marked at
+all. These messages are called unmarked, the mark character used is a
+space, and marking a message with space is considered to be the same as
+removing all marks—after all, such messages are unmarked. You can type
+M-u to remove all marks and make an article unmarked.
+
+Articles that are considered important or where you wish to indicate
+that you have to deal with them later can be ticked. The mark character
+used for ticked messages is the exclamation mark, and you can use u or !
+to tick messages. Ticked messages are always shown when you enter a
+group.
+
+There is the dormant mark which is similar to the ticked mark but does
+not imply importance or urgency; thus, dormant messages aren't shown by
+default. The mark character used is the question mark, and you can mark
+messages as dormant using the ? key.
+
+So far, each kind of mark was associated with one character (as was the
+absence of any mark). But articles which you have read are a bit
+different, since lots of different characters are used here. The
+important thing to realize is that these messages are treated in the
+same way by Gnus; the different characters are only used as an
+information for the user.
+
+Articles which are marked as read because you have actually read them
+(the normal case, one would think) are marked with the `R'
+character. (Type <SPC> or g to read a message, or click on it using the
+middle mouse button, <mouse-2>.) You can also mark a message as read
+without actually reading it, this is indicated with the `r' character
+and can be achieved with d or M r.
+
+After exiting a group and then entering it again (some time later), the
+messages that had been marked as read before appear with the `O'
+character.
+
+To reiterate: the difference between `r', `R' and `O' is only an
+information for the user.
+
+_Footnotes_
+
+[1] ``SO'' standing for ``significant other'', i.e. girlfriend or
+boyfriend.
+
+
+== Mail ==
+
+Quite a few people wish to read mail with Gnus but stumble across a few
+issues which make this a bit difficult. This comes from the fact that
+Gnus is really a newsreader, and thus it treats mail in a newsreaderly
+fashion. It is not desirable to change this, because it is a wonderful
+thing and this is what distinguishes Gnus from other mail readers. In
+this little tutorial, I'll try to explain what ``newsreaderly fashion''
+means and how exactly Gnus treats mail.
+
+Specific pieces of behavior can always be changed, but if you desire to
+make Gnus behave like a conventional mail reader, think again. It will
+be an uphill battle. Maybe a different mail reader is for you? But also,
+read on. Maybe you'll find the right behavior in the description below.
+
+This chapter consists of a section which describes how to choose a mail
+backend. This tells Gnus how mail should be stored on the local
+disk. Unless you use an IMAP server, you also want to tell Gnus where to
+get the mail that should be stored on the local disk, and how to send
+your own mail. This is explained in the second section.
+
+A third section talks about auto-expire and total-expire. These two
+features are useful for mail from mailing lists. (Expiry is what Gnus
+has instead of simple deleting of mail.)
+
+A fourth section talks about how to migrate old mail into Gnus.
+
+What is the difference between mail backends and mail sources? Well,
+mail backends tell Gnus how to store messages, whereas mail sources tell
+Gnus where to fetch them. So Gnus fetches mail from the mail sources and
+stores them in the mail backends. Mail sources are specified via the
+mail-sources variable, mail backends are normally specified via the
+gnus-secondary-select-methods variable.
+
+Only the nnimap mail backend is an exception: the IMAP server itself
+receives your mail, so it doesn't need to be fetched anymore.
+
+
+=== Choosing a mail backend ===
+
+The Gnus manual lists quite a few backends. Of these, the news backends
+pose no problem: you use the nntp backend if you access a news server
+and the nnspool backend if you have a local news spool
+directory. (Leafnode users should use nntp so that the leafnode program
+can see what you are doing and choose the groups to download
+accordingly.) But the mail backends are more difficult. There are many
+of them, and it is not obvious which is the best choice. In quite a few
+cases, this is because there is no single best choice; or maybe what's
+the best choice depends on the group or changes over time.
+
+Below, I'll give a list of mail backends. While I say something about
+how messages are stored, I'll try to emphasize what that means for you
+as a user.
+
+Let's try to structure the discussion a bit. We have servers, which
+contain groups, which in turn contain messages. How could we store this
+on disk? After some thought, you'll quickly come up with the following
+alternatives: You could store all messages from a server in one
+file. The second alternative is to store all messages from one group in
+one file, different groups are stored in different files. A third
+alternative is to store each message in one file; in this case, one
+could use a directory per group. A very interesting fourth alternative
+is not to store the messages at all but instead to use the Oracle of
+Delphi (say) to predict what the messages will be; this saves a lot of
+disk space. I won't talk about the fourth alternative in the following.
+
+
+==== Backends with one file per server ====
+
+Many people use just two servers, the native server for news and a
+secondary server for mail. Thus, this alternative would mean that you
+store all your mail in one file. Since Emacs has no fancy mechanisms to
+access parts of files, this means that Gnus loads that file into main
+memory at startup, and all your mails are kept in main memory all the
+time. (Of course, copies are written to disk every now and then, for
+safekeeping!)
+
+I think you can pretty much figure out the consequences on your own,
+now:
+
+Handling large amounts of mail will be a problem. (Emacs has a maximum
+file size of 128 MB.)
+
+Some operations on mails will be fast, since they are in-memory
+operations. (Saving everything to disk will be slow, though.)
+
+Some operations on mails will be slow, since they have to search through
+the whole file.
+
+It is convenient to have all mail stored in one file: you can easily
+transfer it to another computer using FTP, say, or store it on a floppy
+or Zip disk or a tape.
+
+Conclusion: If you don't have a lot of mail to deal with and like the
+convenience of storing it all in one file, one of these backends might
+be for you. However, since Gnus really shines when dealing with lots of
+mails, most Gnus users can be expected to deal with quite a large volume
+of mail. Thus, I don't think many Gnus users choose one of these
+backends.
+
+_nnmbox_
+
+This backend uses the well-known ``mbox'' format for storing mails. In
+this format, a message begins with the five characters From_ (the last
+character is a space) at the beginning of a line, and ends with an empty
+line.
+
+_nnbabyl_
+
+This backend uses the lesser known ``babyl'' format for storing
+mails. This uses delimiters for the beginning and the end of a message
+which are less likely to occur in a message.
+
+FIXME: Are they guaranteed to never occur?
+
+One advantage of a babyl file over an mbox file is that it is possible
+to insert information about a message in the babyl file, without having
+to change the message itself. In an mbox file, the only place to put
+such information is the message header, which is part of the
+message. Thus, adding information about a message to an mbox file means
+that one has to change the message.
+
+I think Gnus doesn't make use of this advantage, though. Gnus stores
+information about messages in an extra file, ~/.newsrc.eld.
+
+FIXME: Can somebody provide me with some more arguments in favor of one
+of the formats?
+
+FIXME: Is it possible to just use an existing babyl file for Gnus, by
+creating a new nnmbox server and pointing it at the file? What about
+mbox?
+
+
+==== Backends with one file per group ====
+
+Storing all messages in a group in one file provides a nice middle
+ground between the one file per server type of backend and the one file
+per message type of backend. Using lots of little files wastes disk
+space; since this approach uses a moderate number of files, less disk
+space is wasted.
+
+FIXME: Which operations are fast using this kind of backend? Which are
+slow?
+
+_nnfolder_
+
+This backend uses the same file format as nnmbox, but uses the one file
+per group approach.
+
+There is no ``nnbabylfolder'' backend which uses babyl format.
+
+
+==== Backends with one file per message ====
+
+If the number of messages grows so large that even the size of a single
+group exceeds the limit which can be handled by the file-per-group
+backends, you need to think about using one of the backends mentioned
+here.
+
+This category also includes nnml, the backend which is fastest if you
+have lots of messages.
+
+_nnmh_
+
+This backend uses the same file format (and directory structure) as MH,
+i.e. a group is a directory, and each message is stored in a file, and
+the file names are numbers.
+
+Since nnml is so similar to nnmh but a lot faster, only unusual
+situations could warrant using this backend. You may want to use nnmh if
+you wish to use Gnus in parallel to your old MH based reader.
+
+Normally, you should not let two programs write the same Gnus directory
+(not even two instances of Gnus!), but if you really must, you may wish
+to use nnmh, since there the probability of things breaking is smaller
+than with the other backends.
+
+_nnml_
+
+This backend is like nnmh but also includes an extra file .overview in
+each directory (group) which contains some headers from each
+message. Thus, where nnmh needs to open every file in a group to examine
+its headers, nnml (normally) needs to only read the .overview file,
+which is a lot faster.
+
+
+==== Other mail backends ====
+
+There is one other mail backend, for keeping messages on an IMAP server.
+
+_nnimap_
+
+This backend transforms Gnus into an IMAP client. The general idea of
+IMAP is to store and manipulate the mails on a server (similar to NNTP
+for news).
+
+nnimap comes with Gnus 5.8, it does not work with earlier Gnus versions.
+
+_nnmaildir_
+
+FIXME: Anyone out there who can give more info?
+
+
+==== Summary ====
+
+If you must talk to an IMAP server, the choice is clear. But if you keep
+mails on your local disk, the choice isn't as clear-cut. I think that
+nnml is generally the best choice unless you have real great disk space
+trouble. Then, you should be thinking about nnfolder.
+
+I'm not sure if there is a situation where nnmbox or nnbabyl is
+desirable.
+
+FIXME: Tell me about it if you know more!
+
+
+==== Hands-on Advice ====
+
+FIXME: Do we want to tell people to use Customize?
+
+All of this information is nice, but how do you actually make use of it?
+Well, you have to put stuff into the ~/.gnus.el file. Here are some
+examples:
+
+The following is the most simple statement. It's what I use. This just
+specifies the backend to use and leaves everything else with the default
+settings.
+
+     (add-to-list 'gnus-secondary-select-methods '(nnml ""))
+
+It is also possible to choose a server name. With the above, you'll get
+groups like nnml:foo, but with the suggestion below, they'll be named
+nnml+x:foo.
+
+     (add-to-list 'gnus-secondary-select-methods '(nnml "x"))
+
+I suggest to go with the first one, it makes for shorter group
+names. Only if you have two servers which use the same backend, then
+you'll have to assign different names to them. Maybe some people want to
+access two nntp servers, for example. But this is hardly relevant for
+mail reading.
+
+And then, you can choose server parameters. Server parameters are some
+settings which you can include with your server. For example, if you use
+the nnmbox backend, then you might wish to specify a different mbox file
+to use (the default is ~/mbox):
+
+     (add-to-list 'gnus-secondary-select-methods
+
+                  '(nnmbox ""
+
+                    (nnmbox-mbox-file "~/MAIL")
+
+                    (nnmbox-active-file "~/Mail.active")))
+
+The other server parameters can be set in a similar way. The Gnus info
+file explains for each backend which server parameters are possible.
+
+Please note one important fact, however: each server wants to own the
+directories and files it writes to, and gets very angry if it finds that
+they are already occupied. Therefore, the nnchoke-frumple-file and the
+nnchoke-gargle-directory parameters are pretty important. For example,
+if you have used Pine before Gnus, then you are going to have a ~/Mail
+directory which is used by Pine. Therefore, you should add the right
+parameters to tell Gnus to stay away from that directory. For example:
+
+     (add-to-list 'gnus-secondary-select-methods
+
+                  '(nnml ""
+
+                    (nnml-directory "~/GnusMail/")
+
+                    (nnml-active-file "~/GnusMail/active")))
+
+The file-per-message and file-per-group types of backends each have a
+parameter nnchoke-directory, the file-per-server type of backend has a
+nnchoke-mbox-file parameter. All these backends have a
+nnchoke-active-file parameter.
+
+Of course, nnimap is an outlier where the above does not apply.
+
+FIXME: Can somebody say something about nnmaildir, please?
+
+
+=== Fetching and sending mail ===
+
+The previous section has explained how Gnus stores mail on your local
+disk (though nnimap is a special case – it handles mail stored on the
+IMAP server). But the question is, how does the mail actually get to
+your local disk in the first place? For many people, the answer is
+POP. POP stands for `Post Office Protocol'; here, a so-called `POP
+server' keeps a mailbox for you and your computer can connect to the
+remote computer using the protocol. And another important question is
+what happens to the mail you send? This section tries to explain both.
+
+Gnus knows about a variable mail-sources which can store several places
+for getting new mail. See Mail Source Specifiers (Gnus), which contains
+a great section about this variable. In this tutorial, suffice it to
+provide a template for POP users, that will deal with the lion's share
+of the cases.
+
+     (setq mail-sources '((pop :server "frumple" :user "jrl")))
+
+Just replace frumple with the name of your POP server and jrl with your
+login name on the POP server. This line goes in the file ~/.gnus.el. As
+spefified above, Gnus will then ask for your password when you fetch
+mail, but it gives you the choice of remembering the password for the
+session. You can also put the password into ~/.gnus.el:
+
+     (setq mail-sources '((pop :server "frumple"
+
+                               :user "jrl"
+
+                               :password "secret")))
+
+Note that this means that your password is stored on your hard disk in
+the clear! If you want to prevent this, you have to type the password
+every time.
+
+You can also have several entries for several servers, you only need to
+be careful with the nesting of the parentheses:
+
+     (setq mail-sources '((pop :server "frumple" :user "jrl")
+
+                          (pop :server "mypop" :user "joe")))
+
+For sending mail, you probably want to contact an SMTP server
+directly. This is easily done with smtpmail.el. Just include the
+following in ~/.gnus.el and replace host names and so on:
+
+     (setq send-mail-function 'smtpmail-send-it) ; not for Gnus
+
+     (setq message-send-mail-function 'smtpmail-send-it) ; for Gnus
+
+     (setq smtpmail-default-smtp-server "YOUR SMTP HOST")
+
+     (setq smtpmail-local-domain "YOUR DOMAIN NAME")
+
+     (setq smtpmail-sendto-domain "YOUR DOMAIN NAME")
+
+     (setq smtpmail-debug-info t) ; only to debug problems
+
+The above was directly snarfed from the beginning of the file. The
+comment there says it better than I ever could.
+
+Of course, Gnus is almost infinitely customizable for sending mail,
+too. Type C-h v message-send-mail-function <RET> for all the gory
+details.
+
+
+=== Auto-expire versus total-expire ===
+
+Every now and then, people ask about auto-expire and total-expire. Since
+both of these features are means to the same end, and since they are
+similar and dissimilar at the same time, great confusion can result in
+the unsuspecting new Gnus user. I'll try to explain how each works and
+which one to use. However, be prepared that there will be no clear
+recommendation: both work well, so for many situations both are
+appropriate. So it is more a matter of taste which one to choose. And I
+can't help you with that!
+
+
+==== What is expiry? ====
+
+Gnus treats mail in a newsreaderly fashion, so it is useful to examine
+the situation for news. Your news server periodically contacts other
+news servers and exchanges messages with the other server. The two news
+servers exchange lists of messages, and messages present in one server
+but not in the other are sent to the other server. This works in both
+directions. Many connections between news servers exist, and this is the
+way how postings travel from you into the world: when you post a
+message, your news server stores it and offers it to the other servers
+in the message list exchanging phase. Since the other servers aren't
+going to have the posting you just wrote, it gets transferred and
+finally can be seen all over the world.
+
+You can quickly see that new messages will be arriving at your news
+server, which stores them on disk. So something has got to happen else
+the disk will fill up real fast. That ``something'' is expiry: the
+oldest messages are deleted to make room for the new ones. Normally, a
+news server can be configured on a per-group basis which messages should
+be deleted. In some groups, messages might be deleted which are older
+than a day, in other groups, messages might be kept for a month.
+
+This means if you go on vacation then come back later to read news, you
+are likely to miss some postings if the expiration time for the groups
+you read is shorter than the time you were on vacation.
+
+_How does that apply to mail?_
+
+Well, mail should stay more under the control of the user than news
+is. When you come back from a vacation, you expect to see all messages
+arrived during that time, not only the recent ones!
+
+Because of this, Gnus offers you the E key. This marks a message as
+expirable. No mail is ever deleted from disk, unless it is
+expirable. Every once in a while (by default, whenever you quit a group
+by hitting q in the Summary buffer), the expiry process is run, which
+goes through all expirable messages (of a group) and expires it if old
+enough. By default, messages older than seven days are ``old
+enough''. Seven days, that is, since it was marked as expirable.
+
+FIXME: Last sentence correct?
+
+``But when I read a message, exit the group, then enter it again, the
+message is gone!''
+
+Right. By default, Gnus hides messages which have already been read. If
+you are the keyboard type, you can hit C-u <RET> or C-u <SPC> to enter
+the group or C-u M-g when in the group to look at the read messages. If
+you are the mousey type, you may wish to use the ``See old articles''
+entry in the ``Group'' menu.
+
+FIXME: How does one code menu entries in TeXinfo?
+
+
+==== Why auto-expire and total-expire? ====
+
+When reading mail, by default Gnus marks as read each message that you
+read. If you want to mark it as expirable, you have to hit E. Many
+people are subscribed to mailing lists and they configure Gnus to put
+mails from a mailing list into their own group. Most messages in such
+groups should be expirable, once read. But hitting E all the gets old
+real quick. Hence, auto-expire and total-expire were invented.
+
+
+==== Auto-expire vs. total-expire ====
+
+Auto-expire and total-expire both aim at the same goal: articles which
+are read should normally be expired, only if one does something special
+should these articles be saved on disk. But what happens when a message
+is being read by you, the user? Well, the message is marked as read
+(with the `R' mark). So, what can be done to make these messages expire?
+Well, two approaches come to mind: one idea is to change the mark that
+is attached to messages that you read, and the other idea is to make the
+`R' articles expirable. These are exactly the things that are done in
+Gnus: auto-expire means to change the mark that is attached to a message
+that is being read, and total-expire means to change the meaning of the
+`R' mark to mean expirable.
+
+A more precise description of auto-expire might be the following: If an
+article is unmarked and then selected for reading,1 it is marked with
+`E', as if the user had hit E.
+
+It is important to realize that auto-expire has no other
+consequences. Selecting a message for reading which wasn't unmarked
+doesn't do anything special, and hitting d on a message also doesn't do
+anything special. (It therefore marks the message as read, not as
+expirable!)
+
+Now, forget about auto-expire, empty your mind and prepare to learn
+about total-expire. Like I said, total-expire changes what it means for
+an article to be marked as read.
+
+A more precise description of total-expire might be the following: When
+the expire process is run (for example, when you leave a group with q),
+all messages marked as read are considered to be expirable, as if they
+had been marked with `E'. Recall that there are several ways to mark a
+message as read: by reading it, by hitting d on it, and in a few other
+ways which I haven't mentioned so far. Recall that, in addition to the
+messages marked with `R', also those marked with `r' or `O' are
+considered to be marked as read.
+
+Can auto-expire and total-expire be used together? Well, in principle
+they can, but that doesn't make sense. Just using total-expire alone
+achieves the same effect.
+
+So, how do auto-expire and total-expire compare? Well, for once thing,
+hitting d on a message means it is expirable if total-expire is on
+(since it is marked as read and all messages marked as read are
+considered expirable when total-expire is on), but it is not expirable
+if auto-expire is on (since it is marked as read and only articles
+marked expirable (`E') are considered to be expirable). If you want to
+mark a message as expirable when total-expire is off, use E.
+
+One way of comparing auto-expire and total-expire is to compare the
+message marks that are available, and what they mean. Since auto-expire
+does not change the meaning of marks, its behavior is the same as in the
+default case. It's only important whether total-expire is on or
+off. Thus, there are only two cases: the default case and the
+total-expire case.
+
+
+===== Article marks with and without total-expire =====
+
+The following are the default article marks and behavior:
+
+_unmarked_
+
+All new messages are unmarked. This means you haven't seen them. They
+are always shown and won't be deleted.
+
+_read_
+
+Messages marked as read are not shown by default but kept on disk till
+hell freezes over. You can show them with C-u M-g from the summary
+buffer, or with C-u <SPC> or with the `Group' menu item `See old
+articles' from the group buffer.
+
+Depending on the setting of gnus-fetch-old-headers, a message marked as
+read might be shown if there is a followup or reply to it.
+
+_dormant_
+
+Dormant messages aren't shown by default but kept on disk till hell
+freezes over. You can show them with / D from the summary buffer. If
+there is a reply or followup to a dormant message, the dormant message
+is also shown.
+
+_ticked_
+
+Ticked messages are always shown and kept on disk till hell freezes
+over.
+
+_expirable_
+
+Expirable messages will be deleted in due time. They are not shown by
+default, but you can make them appear with C-u M-g and so on, similar to
+the read ones.
+
+Please note that the behavior for ticked messages is similar to the
+unread ones, and that the behavior of dormant messages is similar to the
+read ones. Especially the second fact will become important when we look
+_at_
+
+The behavior of the article marks with total-expire:
+
+_unmarked_
+
+Same as in the default case.
+
+_expirable_
+
+Same as in the default case.
+
+_read_
+
+Same as expirable.
+
+_dormant_
+
+Same as in the default case.
+
+_ticked_
+
+Same as in the default case.
+
+As you can see, only the behavior of the read messages is different, and
+you can use the dormant mark if you want to achieve behavior similar to
+the behavior of read messages in the default case.
+
+
+===== Speed issues =====
+
+Total-expire may be slow when expiry happens. Why is that? Well, Gnus
+keeps an explicit list of all expirable messages (the ones marked `E'
+without taking total-expire into account), as well as a list of dormant
+messages, and a list of ticked messages. Normally, when expiration time
+comes, Gnus goes through all articles in the expire list and looks if
+they are old enough to be expired.
+
+However, for read messages the situation is different. Here, Gnus just
+keeps a list of ranges of article numbers to be able to distinguish read
+messages from unmarked ones. The assumption is that a message is to be
+considered marked as read if it falls in one of the ranges and isn't
+mentioned in any of the expirable, dormant or ticked lists.
+
+When total-expire is turned on, Gnus needs to go through all messages in
+the read range in order to look if it's in one of the lists. If the
+message is not in the ticked or dormant list, it is expirable and thus
+Gnus looks to see if it is old enough.
+
+Obviously, going through all the articles in the read ranges takes more
+time than going through just the list of expirable articles.
+
+Something can be done about the speed issue, though. Normally, the
+expiry process is started whenever you leave a group. I suggest that you
+disable this and instead run expiry just once per day, for example while
+you are going for lunch. This means that expiry still takes a long time,
+but you don't see it and thus it doesn't bother you.
+
+Here's how to do that: You disable the expire-on-group-exit thing with
+the following line in your ~/.gnus.el file:
+
+     (remove-hook 'gnus-summary-prepare-exit-hook
+
+                  'gnus-summary-expire-articles)
+
+And before you leave for lunch, you hit C-c C-M-x, or M-x
+gnus-group-expire-all-groups <RET>.
+
+
+===== Functionality =====
+
+Adaptive scoring doesn't work with auto-expire. (But normal scoring
+still works fine.) Adaptive scoring works fine with total-expire.
+
+
+===== A summary =====
+
+Well, it is difficult to sum up the whole discussion. I used to use
+total-expire but have switched to auto-expire a long time ago. I liked
+the fact that I could use one more kind of article mark. I also liked
+the fact that marking a message as read works the same in auto-expirable
+groups and in normal mail groups: you hit E. (With total-expire, you
+normally hit d but must remember to use E for those groups where
+total-expire is off.) And I liked that auto-expire is faster.
+
+On the other hand, adaptive scoring is surely a very useful feature (I'm
+just beginning to use it), so many people might prefer total-expire.
+
+And on a third hand, maybe the key binding issue isn't so important
+after all. You see, in mail groups the d key means `keep this message
+for archival purposes', whereas in many other modes (dired, FIXME:
+others?) it stands for `delete'. I propose to make it mean delete in
+mail groups, too, with the following line in ~/.gnus.el:2
+
+     (define-key gnus-summary-mode-map "d"
+     'gnus-summary-mark-as-expirable)
+
+Marking messages as expirable (rather than read) in news groups does no
+harm, nor does it harm to do so in total-expirable mail groups. The old
+`keep this message' semantics can still be had by marking a message as
+dormant or by using M r (in non-total-expirable groups only).
+
+
+=== Migrating old mail ===
+
+Probably, you've been reading mail in pre-Gnus times, right? And surely
+you wish to carry this over to Gnus. Well, I haven't found a real good
+way to do it, but I can offer a few suggestions for doing it at least
+semi-automatically.
+
+One way of getting at your old mail is to type G f, and to then enter
+the name of your old mail file. This provides read-only access to your
+mails. For some people, this might be sufficient. (With G f, you have
+created an nndoc group.)
+
+Some people might want to have their mails available in their normal
+mail groups hierarchy. That's simple, just create an nndoc group for
+your mail file, then mark all messages in it with M P a, then copy all
+of them over to a normal mail group, with B c.
+
+This is good for people who wish to keep their old arrangement of
+folders, and who have a one-to-one correspondence between old mail files
+and new Gnus groups. But some people might wish to split up their mails
+differently. For them, it might be useful to set up nnmail-split-methods
+correctly and to use B r instead of B c. This goes through all
+process-marked messages and subjects them to the same splitting process
+that newly arriving messages go through. (Whee! What a run-on sentence!)
+
+
+=== Making Gnus behave like other mail readers ===
+
+FIXME: This section is very incomplete! I hope that somebody will
+provide us with settings that might be desirable.
+
+
+==== Don't hide messages that have been read ====
+
+Gnus operates in a newsreaderly fashion and thinks that most of the time
+you don't want to read messages twice. So it hides from you the messages
+that you have read already. It does not, however, delete these messages!
+They are still on disk.
+
+If you want to see old messages, use C-u <RET> to enter a group, or type
+C-u M-g from within the group. If you always want to see old messages
+for a specific group, hit G c (not g c) on it and frob the display
+parameter. If you want to see old messages for several groups, you can
+also set the parameter on a topic. If you want to do it by group name,
+see the variable gnus-parameters (in recent Gnusae only).
+
+But I advise against this, because showing a lot of messages in the
+summary buffer is quite slow in Gnus, and you can tell Gnus to show you
+the interesting ones. For example, I use
+
+     (setq gnus-fetch-old-headers t)
+
+and this means that when a new followup arrives in a thread, I see the
+previous messages from that thread, too. Of course, from time to time, I
+want to look at old messages and use C-u <RET> or C-u M-g, as described
+above.
+
+
+=== Archiving Mail ===
+
+(TODO)
+
+_Footnotes_
+
+[1] Using g, or <mouse-2>, or by moving to it with n or p, or by one of
+the many other methods provided by Gnus.
+
+[2] See the chapter on key bindings; maybe you need a `require'
+statement.
+
+
+== Reading articles ==
+
+Gnus has hundreds of commands and keybindings that allow you to do all
+kinds of fancy things: the Gnus manual explains how to do them in
+depth. I recommend that you explore this stuff in depth.
+
+However, at first (and at second and at third, too) this insane list can
+be daunting, especially for those relatively new to Emacs as well as
+Gnus, so in this section we'll go over the basic stuff that is good (and
+hopefully sufficient) to know to get started, in roughly the order that
+you'll need them. Then you can explore the intricacies as you get more
+comfortable.
+
+Note that this stuff pertains to both news and mail reading, which is
+one of the best things about Gnus: it provides you with a powerful and
+unified set of commands.
+
+
+=== Moving Around ===
+
+(I will discuss just the group and summary buffers, as that should be
+all you're concerned with, most of the time.)
+
+There are many navigation commands: to see a complete and intimidating
+list, see the Gnus manual. Here are the most basic commands that you
+should really learn on day 1, and some hints for memorizing them.
+
+As in many packages and modes in Emacs, the letters n and p are
+associated with next and previous operations in Gnus, respectively. In
+both the group and summary buffers, lots of commands are generated by
+using different modifiers with n and p. The commands are generally
+analogous for the two buffers.
+
+_Key_
+
+Group buffer
+
+Summary buffer
+
+_n_
+
+next group with unread articles
+
+next unread article
+
+_p_
+
+previous group with unread articles
+
+previous unread article
+
+_N_
+
+next group
+
+next article
+
+_P_
+
+previous group
+
+previous article
+
+_C-n_
+
+next line
+
+next line
+
+_C-p_
+
+previous line
+
+previous line
+
+The idea here is that since most of the time you won't care to select
+groups with no unread articles or articles which you have already read,
+you can navigate to and fro just with n and p. But of course, there will
+still be times when you will want to enter such a group (to find some
+useful article that you had read) or select such an article (to read
+that useful article from before), so the capitalized commands are also
+conveniently available.
+
+Note that if you get to the bottom of the summary buffer for a group,
+and you type n or N, you will be taken to the first appropriate article
+in your next group (so that sometimes you will find yourself just
+reading away with one finger of the left hand on the n key, and with
+your right hand around a warm cup of tea.
+
+Also note that, as is typical in Emacs modes, C-n and C-p are not
+overridden: they still take you to the next and previous lines, so you
+can always fall back on this knowledge, since both group buffers and
+summary buffers are line-based (i.e., one group or article per line).
+
+Last but certainly not least, there are the commands (specific to the
+summary buffers) for scrolling an individual article when reading
+it. Switching windows (C-x o) and scrolling (C-v, M-v) is not the way to
+go (I mean, it will work, but BLAH). Much better is to scroll the
+article buffer up and down from the summary buffer with SPC and DEL. In
+fact, you should almost never have to actually enter the article
+buffer. (But if you do, you will find that the key bindings for article
+and summary buffers is virtually the same.)
+
+
+----
+
+CategoryGnus

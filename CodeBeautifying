@@ -1,0 +1,61 @@
+
+* CommentingCode -- Emacs's abilities to handle source code comments.
+* CategoryIndentation -- Information on prettying the indentation of numerous programming languages.
+
+For those of us who have to go edit/maintain text files where the
+original author has no respect for the sacred 80 column rule, I wrote
+this little defun to clean it all up.  Well actually, it's still three
+parts.  First I select the entire buffer with 'C-x h'.  I then run
+<code>untabify-region</code> to convert all tabs into spaces, since
+TabsAreEvil.  Second, I run a <code>query-replace-regexp</code> with
+"\s-\{2,\}" replaced by just " ".  This gets rid of all those annoying
+attempts to make variables line up after the type like this:
+
+    char   c;
+    int    i;
+
+Personally, I think this just wastes horizontal space.  Of course, after
+you destroy all the indentation you need to re-indent it all with your
+style of choice: C-x h C-M \.  Finally run this little defun to fix all
+the comments.  This will re-indent your comments and fill them where
+necessary.  If the comment would fill to a paragraph less than 20
+characters wide, it cuts the comment out and puts it on the previous
+line.  This has only been tested on some of my stuff, so you will
+probably need to manually review what it does.
+
+    (defun dka-fix-comments ()
+      "Move through the entire buffer searching for comments that begin with
+    \"//\" and fill them appropriately.  That means if comments start too
+    close to the end of line (20 less than the fill-column) move the
+    entire comment on a line by itself."
+      (interactive)
+      (save-excursion
+        (beginning-of-buffer)
+        (while (search-forward "//")
+          (lisp-indent-for-comment)
+          ;; when the comment is deemed to be too close to the end of the
+          ;; line, yank it and put it on the previous line before filling
+          (while (< (- fill-column 20) (- (current-column) 3))
+	    (search-backward "//")
+	    (kill-line)
+	    (beginning-of-line)
+	    (yank)
+	    (insert "\n"))
+          ;; now fill the lines that are too long
+          (if (and (not (end-of-line))
+                   (< fill-column (current-column)))
+              (c-fill-paragraph)))))
+
+
+I'll go ahead and acknowlege here that I'm a remedial elisp hacker.
+I'm sure the above could be improved in many ways.  Comments and hacks
+welcomed. --LathI
+
+Ironic, your approach would nuke all the things I do to "beautify" my
+code. :) --ScottEvans
+
+: Remember the golden rule of CodingStyle: 80x24. -- LathI
+
+----
+CategoryIndentation
+CategoryProgramming

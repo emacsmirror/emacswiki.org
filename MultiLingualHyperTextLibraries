@@ -1,0 +1,6 @@
+The MultiLingualHyperTextLibraries (MLHT) are some EmacsLisp
+tools to write documents in more than one language in one file.
+
+Have a look at the [http://mlht.ffii.org/skicu/ homepage] of this project.
+
+Could that be used to write multilingual docstrings?

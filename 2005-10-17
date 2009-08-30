@@ -1,0 +1,3 @@
+I disabled the cronjob that downloaded fsbot data from http://fmysql.tu-graz.ac.at/~fsbot/, since the data is out of date anyway.  http://www.emacswiki.org/fsbot will now redirect to http://users.pepperfish.org/fsbot/.
+
+eg. http://www.emacswiki.org/fsbot/readme -> http://users.pepperfish.org/fsbot/data/readme

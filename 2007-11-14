@@ -1,0 +1,88 @@
+[new:AlexSchroeder:2007-11-14 11:17 UTC]
+Should I switch to Google for searching?
+communitywiki.org does it:
+[http://www.google.com/search?q=site%3Acommunitywiki.org+emacs Search communitywiki.org for emacs].
+I'm not sure this would actually improve search usefulness on this site.
+Right now we're using Search::!FreeText with neither tokenizing, stop lists, nor stemming because I figured it would never work
+on a multilingual site.
+
+[new]
+* +1 on google search of site - TerrenceBrannon
+
+* Maybe we could just choose between the two. A cookie could be used to store the preferred default. -- PeterBarabas
+
+* +1 for another way to search (google yahoo or whatever), I seem to have difficulties to find anything with the current search method -- PierreGaston
+
+* +1 to let someone else do the search. I changed my !QuickSearch to use google a while ago. -- AlokSingh
+
+= Re: Peter Barabas =
+
+Implementing the preference sounds like more work. Also, do you find the current search to be of any use whatsoever? Why would you want to offer it? Personally, I dont think anyone would want to keep it. -- TerrenceBrannon
+
+[new]
+Ok, I didn't know that nobody likes the original search. :-) -- PeterBarabas
+
+[new]
+Well, we could try Google for a while. I don't think I want to offer the current search as an option. I'm with Jef Raskin on this one: If we offer options, then that's because our design is not perfect.
+
+Ok. We're now using a Google Custom Search Engine. Let me know how it goes.
+
+I no longer index this site myself. This means that
+A link like ##http://www.emacswiki.org/cgi-bin/wiki?search=fnord## will invoke the old regular expression based search. The old=1 add-on should not be required.
+
+In order to save some cycles, I did away with something I rarely use: The page title is no longer a search for the pagename. Let me know if you want it back and we'll find a way to link it to Google.
+
+Let's use it for a day or two before we actually update the documentation on this site.
+
+Apparently I can send out invitations to "search engine contributors" -- whatever that means. If you're interested, drop me aline.
+
+-- AlexSchroeder
+
+[new]
+
+Oh,  this is sweet. I did a search for my contribution and only highly relevant results came back:
+http://www.google.com/cse?cx=004774160799092323420%3A6-ff2s0o6yi&q=shell-current-directory&sa=Search
+
+I love it! Toss in another +1 for TerrenceBrannon
+
+[new:DrewAdams:2007-11-14 15:38 UTC]
+Looks good so far. Thanks. -- DrewAdams
+[new]
+
+It is indeed a marked improvement. How does this 'search contribution' work ? -- AlokSingh
+
+[new]
+No idea. :D Maybe this is where you can add keywords and stuff to influence the search results or add URLs and URL patterns to the pool searched. -- AlexSchroeder
+
+[new]
+**2007-11-22**: Titles link to searches again, and do so via Google.
+-- Alex
+
+[new:DrewAdams:2007-11-22 16:05 UTC]
+Wunderbar. Thx -- DrewAdams
+
+[new]
+**2007-11-22**: Custom search is not the solution.
+It is the wiki titles that are the culprit. For example, try this search: http://tinyurl.com/yoa6so - while I expected www.emacswiki.org/cgi-bin/wiki/ChangeFontsPermanentlyOnWindows
+
+Previously I argued about this problem in #emacs, http://paste.pocoo.org/show/17646/
+-- SridharRatna
+
+[new]
+What about putting it in HTML headers as meta keywords?
+Do you suggest a stop-list containing common prefixes like "Mc" and "Mac"?
+This will only work for letters A-Z, because the wiki is encoding agnostic and knows nothing of UTF-8...
+-- AlexSchroeder
+
+[new]
+Maybe put something under the wiki name header, something like
+
+  (Change Fonts Permanently On Windows.)
+
+[new]
+Well, I implemented it for the title element. Basically I'm doing the following:
+
+    s/([[:lower:]])([[:upper:]])/$1 $2/g
+
+We'll see the result in a few weeks, I guess.
+-- AlexSchroeder

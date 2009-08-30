@@ -1,0 +1,48 @@
+"Flyspell enables on-the-fly spell checking in Emacs by the means of a minor mode. It is called Flyspell. This facility is hardly intrusive. It requires no help. Flyspell highlights incorrect words as soon as they are completed or as soon as the TextCursor hits a new word."
+
+Flyspell can be found at http://www-sop.inria.fr/mimosa/Manuel.Serrano/flyspell/flyspell.html
+
+It is also part of Emacs.
+See also FlyspellWithoutColors.
+
+See FlyspellXmlLang to switch to the appropriate language indicated in the XML document and see FlyspellBabel to switch language as indicated by LaTeX Babel commands.
+
+Here is an example to enable it for text-mode, and disable it for log-edit-mode and change-log-mode.  These two are derived from text-mode, and thus enabling flyspell-mode for text-mode also enables it for these two.  An alternative solution would be the writing of a flyspell-mode-predicate such that symbols
+are ignored by flyspell.
+
+    (dolist (hook '(text-mode-hook))
+      (add-hook hook (lambda () (flyspell-mode 1))))
+    (dolist (hook '(change-log-mode-hook log-edit-mode-hook))
+      (add-hook hook (lambda () (flyspell-mode -1))))
+
+The idiom used above makes it very easy to enable and disable flyspell for
+the various major-modes out there: Just add the relevant hook to the list
+where the other hooks already are.
+
+Programmers can use flyspell-prog-mode to enable spell checking only within comments of source code.
+
+[new]
+I highly suggest setting `flyspell-issue-message-flag' to nil, as printing messages for every word (when checking the entire buffer) causes an enormous slowdown.  -- [[nschum]]
+
+[new] 
+I recently started using flyspell and am enjoying its features. Is
+there a way to disable flyspell for certain regexps? For instance, I
+would like to disable flyspell when typing a url. Otherwise, when
+entering a url such as
+http://www.emacswiki.org/cgi-bin/emacs/FlySpell, www, emacswiki, cgi
+and FlySpell are highlighted as errors. Any advice would be greatly
+appreciated. -- MattLundin
+
+[new]
+There is only one way, using flyspell-generic-check-word-predicate which should be a function. In such a function you can use thing at point.
+
+However it is a bit difficult to manage this as this variable may be
+only one function. I have submitted a patch to Emacs devel to take
+care of this.
+
+[new]
+Thanks for pointing me to the flyspell-generic-check-word-predicate
+variable. -- MattLundin
+
+----
+CategoryModes | CategorySpelling

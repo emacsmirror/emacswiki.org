@@ -1,0 +1,14 @@
+It's convenient for people who speak in Korean or Japanese or another language to use only the internal emacs InputMethods ([[mule]]) without scim, nabi, Microsoft IME, etc...
+
+For MS Windows, use DisableImeforEmacs programs described at http://kldp.org/node/104347
+
+'''for [http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl EmacsW32]'''
+* [http://kldp.org/files/DIFE-DisableIMEforEmacsW32-src.zip DIFE-DisableIMEforEmacsW32-src.zip]
+* [http://kldp.org/files/DIFE-DisableIMEforEmacsW32-bin.zip DIFE-DisableIMEforEmacsW32-bin.zip]
+
+'''for [ftp://ftp.gnu.org/gnu/emacs/windows/ Original GNU Emacs 22]'''
+* [http://kldp.org/files/DIFE-DisableIMEforEmacs(TheOriginal)-src.zip DIFE-DisableIMEforEmacs(TheOriginal)-src.zip]
+* [http://kldp.org/files/DIFE-DisableIMEforEmacs(TheOriginal)-bin.zip DIFE-DisableIMEforEmacs(TheOriginal)-bin.zip]
+
+------
+CategoryInternationalization

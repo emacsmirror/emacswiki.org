@@ -1,0 +1,59 @@
+== Einleitung ==
+
+Das <nowiki>AUCTeX</nowiki>-Paket ist ein Modus für den (X)Emacs, der das Erstellen von LaTeX-Dokumenten sehr erleichtert. Es lassen sich fast jeden Tag neue Merkmale entdecken, wenn man einmal damit angefangen hat, über die man sich hie und da schon mal das eine oder andere Loch in den Bauch freuen kann.
+
+
+Aktiviert wird <nowiki>AUCTeX</nowiki> durch die Zeile
+
+    (require 'tex-site)
+
+
+Öffnet man nun eine *.tex-Datei, so finden sich in der Menüleiste des Emacs bereits zwei neue Menüpunkte: <em>Command</em> und <em>LaTeX</em>. Ersteres erlaubt das Ausführen diverser Funktionen, von denen man sicherlich die LaTeX-Funktion am häufigsten benutzen wird. Zunächst jedoch soll der erste Menüpunkt Erwähnung finden: <em>Command on</em>. <nowiki>AUCTeX</nowiki> kann selbstredend komplexe LaTeX-Dokumente, die sich über mehrere Dateien erstrecken, verwalten. Dazu muß <nowiki>AUCTeX</nowiki> nur wissen, welches das Masterdokument ist. Dieses teilt man mit, indem man sich der FileVariablen im Emacs bedient. Einfach folgende Zeilen ans Ende jeder LaTeX-Datei kopieren:
+
+    %%% Local Variables: 
+    %%% mode: latex
+    %%% TeX-master: "diplom"
+    %%% End: 
+       
+
+Dazu noch drei Bemerkungen: Jedes (Leer)Zeichen ist wichtig, insbesondere das Leerzeichen nach jedem Doppelpunkt. Wenn <nowiki>AUCTeX</nowiki> den Master nicht kennt, fragt es gewöhnlich danach und erstellt diese Zeilen selber. Die Datei  <code>diplom.tex</code> ist selber das Masterfile, daher bekommt es ein 
+
+    % Master; 
+
+Nun weiß <nowiki>AUCTeX</nowiki> also in jeder Datei, in der man gerade editiert, welches die Hauptdatei ist, die dem Kommando <code>latex</code> übergeben werden muß. Die meistbenutze Tastenkombination ist nun
+ 
+  C-c C-c
+
+Sie ruft automatisch immer die richtige Funktion auf: erst die Datei abspeichern, falls das noch nicht geschehen ist (<code>latex MASTER</code>), eventuell nochmal <code>latex MASTER</code>, wenn es Fehler gab oder Querverweise noch nicht aufgelöst werden konnten, <code>xdvi MASTER</code> nach einem erfolgreichen LaTeX Lauf, <code>bibtex MASTER</code>, wenn unbekannte Literaturzitate aufgetaucht sind usw... 
+
+Bei einigen wird man zunächst gefragt, ob der Aufruf so stimmt, bei anderen geht es gleich zur Sache (noch ein Hinweis: tief im Cumstomize Menu kann man sich noch eigene Funktionen erstellen... selber suchen! Word Processing...). Um sich die Ausgabe von LaTeX anzusehen, drückt man 
+
+  C-c C-l 
+
+(aber das steht auch unten in der Echoarea vom XEmacs). Mit <code>C-c `</code> (backtick: auf SUN Tastatur ganz oben rechts, auf <nowiki>USLayout</nowiki> PC Tastatur hingegen ganz oben links), kann man auch zu den eventuellen Fehlern direkt hinspringen. Ein LaTeX-Lauf wird also durch die Ratz-Fatz-Kombi
+ 
+  C-c C-c C-c C-l
+ 
+gestartet :).
+
+== Eingabeunterstützung ==
+Im zweiten Menüpunkt <em>LaTeX</em> finden sich jede Menge Funktionen, um LaTeX Umgebungen und Makros einzugeben. Dieser Menüpunkt bietet sich dazu an, als Gedächtnisstütze verwendet zu werden, gibt es doch die Tastaturshortcuts mit an, wie man schneller an die gewünschte Funktion kommt. Zum Beispiel ist <code>C-c C-e</code> der Start einer Abfrage, welche Umgebung (environment) eingesetzt werden soll, wobei es eine Voreinstellung gibt (über Customize setzbar), und die Ergänzung mit TAB funktioniert. Ausprobieren, das erklärt sich von selbst...
+
+== Anführungszeichen ==
+Tippt man ein Anführungszeichen (<nowiki>"</nowiki>), dann wird je nachdem, ob ein Leerzeichen davor steht, der TeX-Code für ein englisches Anfangs-Anführungszeichen (<nowiki>``</nowiki>) oder für ein englisches End-Anführungszeichen (<nowiki>''</nowiki>) erzeugt. Will man tatsächlich ein Quelltext-Anführungszeichen (z.B. für optionale Trennstriche mittels <nowiki>"-</nowiki> mit \usepackage[german]{babel}), muss das Anführungszeichen zweimal getippt werden.
+
+Will man statt der englischen die deutschen Anführungszeichen verwenden (die babel/german-TeX-Makros <nowiki>"`</nowiki> und <nowiki>"'</nowiki>), kann man die folgenden Zeilen verwenden:
+
+ % Local variables:
+ % TeX-open-quote: "\"`"
+ % TeX-close-quote: "\"'"
+ % End:
+
+Nach dem nächsten Laden der Datei wird dann ein eingetipptes Anführungszeichen automatisch in <nowiki>"`</nowiki> bzw. <nowiki>"'</nowiki> umgewandelt.
+
+== Weiterführende Dokumente ==
+* RefTexDeutsch - Intelligente Eingabe und Verwaltung von Verweisen und Zitaten
+* AUCTeXMatheModus - Shortcuts für die mathematischen Zeichen
+
+== Schlussbemerkung ==
+Bei diesem Dokument handelt es sich um eine weiterverarbeitete Version von http://skamphausen.de/xemacs/alteseiten/apps/auctex.html in der Hoffnung, dass die Dokumentation weiterentwickelt wird. -- StefanKamphausen 

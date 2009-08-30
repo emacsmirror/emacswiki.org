@@ -1,0 +1,60 @@
+This page is about standard Emacs library `<code>pcomplete.el</code>' and its related libraries.  See PcompleteExamples for examples of using `<code>pcomplete.el</code>'.
+
+: '''Note:''' The "programm'''''able''''' completion" of library `<code>pcomplete.el</code>' has nothing to do with the "programm'''''ed''''' completion" described in the EmacsLisp manual (Manual:dynamic-completion-table).  The latter is about using a function to perform completion rather than supplying an explicit list of completion candidates.
+
+
+= Bugs =
+
+Within EShell, pcomplete seems to not work for me on XP when sitting at a UNC path such as:
+
+    //evon620c/c$/home/work/HPCMS/HPCMS 6.0/Agent/common/s $ cd ~/dow
+
+pressing TAB here gives the error "Text is read-only".  Anyone verify this?  -- PatrickAnderson
+
+This will be because the standard eshell-prompt-regexp expects there to be only a single $ before your command.  I use ##"^[^#\n]* [#$] "## instead.  Note that you'll need to escape any $ signs in the eshell command line, eg., ##cd //evon620c/c\$/home/##  -- RohanHart
+
+
+= Adding programmable completion using pcomplete =
+
+* <b>Write a setup function and add it to your mode's hook</b>
+
+Example:
+<pre>
+(defun pcomplete-erc-setup () 
+"Setup erc-mode to use pcomplete." 
+(set (make-local-variable 'pcomplete-parse-arguments-function) 
+   'pcomplete-parse-erc-arguments) 
+(set (make-local-variable 'pcomplete-command-completion-function)  
+   'pcomplete/erc-mode/complete-command)
+(set (make-local-variable 'pcomplete-command-name-function) 
+    'pcomplete-erc-command-name)
+(set (make-local-variable 'pcomplete-default-completion-function)
+    (lambda () (pcomplete-here (pcomplete-erc-nicks))))
+(set (make-local-variable 'pcomplete-suffix-list) '(?  ?:)) 
+)                 
+(add-hook 'erc-mode-hook 'pcomplete-erc-setup)                                                                                                                                                         
+</pre>
+
+* <b>Write the functions that you need</b>
+
+** <i>pcomplete-parse-arguments-function</i>
+
+pcomplete-parse-arguments-function has no parameters. It returns a list of arguments for the current command.
+
+** <i>pcomplete-command-name-function</i>
+
+Returns the canonical name of the command. This is used to find the appropriate programmable completion function. For example, if the function returns "MSG" and the major mode is "erc-mode", pcomplete will check pcomplete/erc-mode/MSG and pcomplete/MSG for completions.
+
+** <i>pcomplete-default-completion-function</i>
+
+pcomplete-default-completion-function gets called when you don't have a function for the command currently being completed. Body should be of the form (pcomplete-here (... list of completions ...))
+ 
+** <i>pcomplete-command-completion-function</i>
+
+Body should be of the form (pcomplete-here (... list of completions ...))
+
+----
+Do newer versions of JavaCompletion use pcomplete? The copy from 2004 does not.
+
+----
+CategoryCode CategoryCompletion

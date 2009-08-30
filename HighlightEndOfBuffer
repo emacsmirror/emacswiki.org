@@ -1,0 +1,36 @@
+Use the following in your ~/.emacs file have Emacs display a little
+marker in the left fringe for window area not part of the buffer
+(ie. not filled with empty lines):
+
+    (setq default-indicate-empty-lines t)
+
+Or temporarily use M-x set-variable to set `indicate-empty-lines' to
+t.
+
+----
+
+For Emacs 20:
+
+ From: Samuel Padgett
+ Subject: Re: Highlight end of buffer
+ Newsgroups: gnu.emacs.help
+ Date: Tue, 16 Oct 2001 19:48:38 GMT
+
+ (defun my-mark-eob ()
+   (let ((existing-overlays (overlays-in (point-max) (point-max)))
+	 (eob-mark (make-overlay (point-max) (point-max) nil t t))
+	 (eob-text "~~~"))
+     ;; Delete any previous EOB markers.  Necessary so that they don't
+     ;; accumulate on calls to revert-buffer.
+     (dolist (next-overlay existing-overlays)
+       (if (overlay-get next-overlay 'eob-overlay)
+	   (delete-overlay next-overlay)))
+     ;; Add a new EOB marker.
+     (put-text-property 0 (length eob-text)
+			'face '(foreground-color . "slate gray") eob-text)
+     (overlay-put eob-mark 'eob-overlay t)
+     (overlay-put eob-mark 'after-string eob-text)))
+ (add-hook 'find-file-hooks 'my-mark-eob)
+
+----
+CategoryFaces

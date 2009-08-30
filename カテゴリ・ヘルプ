@@ -1,0 +1,53 @@
+このページでは、'''''Emacs'''''のヘルプに関する項目について説明します。 
+カテゴリ・ドキュメント/CategoryDocumentation も参照してください。
+
+= Emacsヘルプに関する総合情報 =
+
+ EmacsとEmacs用語がよくわかる入門編
+* Emacsビギナー/EmacsNewbie'''''<===== 最初に見てみよう''''' 
+* カテゴリ・用語集/CategoryGlossary --　Emacsにおける用語の定義
+
+ Emacs上で、Emacsヘルプを探すための方法:
+
+* AproposMode --　Emacs内部のコマンドやドキュメント、変数などについて検索する
+* InfoMode -- ''完全な''Emacs ドキュメント: `C-h i'を入力後、''Emacs''をクリック
+* SelfDocumentation --　Emacsのヘルプを探すためのクイックリファレンス
+* [[Langhelp]] --　EmacsRubyによる統合ヘルプシステム
+* EevMode -- さまざまな問題を解決するE-script
+
+インターネット上のEmacs情報について: 
+* OnlineResources --　インターネット上でヘルプを探す方法
+* EmacsChannel --　InternetRelayChat。IRCによる
+* OpenQuestions --　Wikiに投稿されたEmacsに関する質問と回答
+
+Emacsの初期化ファイルに関する情報: 
+* CategoryDotEmacs 
+* EmacsMacro
+
+Emacsライブラリのロードに関するヘルプ
+
+* LoadPath -- 独自の`ロードパス'を追加する方法
+* ConflictingLibraries -- what if you have several Emacs installations, or separate installations of packages on your `load-path'
+
+Emacsのすべての機能について学ぶにはどうすればよいでしょうか？ -- TipOfTheDay を見てください
+
+= Emacsヘルプの強化 =
+
+以下の項目では、Emacsにヘルプを追加するEmacs Lispパッケージについて紹介します。
+
+* HelpPlus -- 標準的なヘルプコマンドを改良した新しいヘルプコマンドと新しいキーバインディング
+* HelpMenuBarPlus -- '''Help''' メニュー（メニューバー）の改善
+* HelpModePlus -- <code>*Help*</code>バッファ内のライブラリ名をクリックすると、ライブラリが表示されるようになる
+* InfoHelp -- Makes symbol names in Info buffer to help links 
+* [[Icicles]] -- すべてのことがらについて、''apropos''形式のヘルプを使えるようにする。[[Icicles - Help on Candidates]]を参照
+* ElectricHelp
+* WordHelp
+* InfoLook --　多くのメジャーモードの関数／変数などについてのinfoドキュメントを検索する
+* GtkLook --　Gtk/Glib/Gnome用のCまたはSchemeの関数／変数についてのドキュメントを検索する
+* CommonLispHyperspec -- lookup CL functions and variables in the spec
+* CommonLispTheLanguage -- lookup CL functions and variables in GuySteele's book EmacsReflector(speak-freely conference server)
+
+----
+Pour les francophones: Cette page est aussi disponible en fran~ais:
+Fran~ais:Cat~gorieAide
+

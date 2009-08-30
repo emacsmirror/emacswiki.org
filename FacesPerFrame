@@ -1,0 +1,5 @@
+In Emacs, [[Face]]s can vary from one [[Frame]] to another.  In XEmacs, faces can vary by [[Buffer]], [[Window]], frame, etc.  In this aspect, XEmacs is more powerful.  ColorTheme supports installation of a theme (basically a long list of face specifications) on a per-frame basis.
+
+----
+CategoryFaces
+CategoryFrames

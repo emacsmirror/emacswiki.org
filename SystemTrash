@@ -1,0 +1,85 @@
+Recent Emacs versions (how recent?) support the use of the function
+`system-move-file-to-trash' to move files to the system's trash can
+rather then deleting them outright. If the function is defined, Emacs
+will use it. However, Emacs does not provide this function --- you
+must write it yourself.
+
+= Using the freedesktop.org trash specification =
+
+== In emacs CVS HEAD (post 23.1) ==
+
+Using the Freedesktop.org trashcan is the default.
+
+== Earlier emacs ==
+
+The following code will configure Emacs to use the freedesktop.org
+trash specification, which is compatible with GNOME and KDE. This
+means that files deleted in Emacs will show up in the GNOME/KDE trash
+folder.
+
+Note that the following code requires the command `gvfs-trash,' included with GNOME. If you do not use GNOME, you can install trash-cli and replace `gvfs-trash' with `trash.'
+
+{{{
+;; Use the system trash, except for temp files and stuff
+(require 'cl)
+
+(setq delete-by-moving-to-trash t)
+
+(defcustom system-trash-exclude-names
+  '()
+  "List of file names of buffers to exclude from system trash."
+  :type '(repeat string)
+  :group 'trash)
+
+(defcustom system-trash-exclude-matches
+  '()
+  "List of regexps or functions matching file names to exclude from system trash."
+  :type '(repeat (choice regexp function))
+  :group 'trash)
+
+(defun call-process-discard-output (program &rest args)
+  "Execute program with args without saving any output.
+In particular, no temp files are created."
+  (eval (append `(call-process ,program nil nil nil) args)))
+
+(defun file-excluded-from-system-trash-p (name)
+  "Returns non-nil if file name is excluded from trash."
+  (let ((name (file-name-nondirectory name)))
+    (or
+     (some (lambda (protected-name)
+             (string= protected-name name))
+           system-trash-exclude-names)
+     (some (lambda (protected-match)
+             (cond
+              ((stringp protected-match) (string-match protected-match name))
+              ((functionp protected-match) (funcall protected-match name))
+              (t nil)))
+           system-trash-exclude-matches))))
+
+(defun trash-or-rm (filename)
+  "Attempt to move a file to the trash. If this fails, simply delete it."
+  (ignore-errors
+    (call-process-discard-output "gvfs-trash" (shell-quote-argument filename)))
+  (when (file-exists-p filename)
+    (call-process-discard-output "rm" "-rf" (shell-quote-argument filename))))
+
+(defun system-move-file-to-trash (filename)
+  (if (file-excluded-from-system-trash-p filename)
+      (call-process-discard-output "rm" "-rf" (shell-quote-argument filename))
+    (trash-or-rm filename)))
+}}}
+
+=== Setup ===
+
+After loading this code, use M-x customize-group trash to specify
+certain files that should skip the system trash. If you do not set
+this, emacs will fill your trash directory with countless backup files
+and other temp files. My trash-exclusion settings are as follows:
+
+{{{
+(setq system-trash-exclude-matches '("#[^/]+#$" "\\.emacs\\.desktop.*"))
+}}}
+
+This setting will prevent Emacs from trashing old desktop lock files (if you use DeskTop Mode) and backup files (with names like `#filename#').
+----
+CategoryDirectories

@@ -1,0 +1,10 @@
+== Display Buffer Time Stamps in the Mode Line ==
+
+This package displays in the mode line a time stamp for the last text change in
+a buffer.  See the code Lisp:buffer-time-stamp.el.
+
+Use <code>M-x buffer-time-stamp-mode RET</code> to toggle.
+
+
+----
+CategoryDisplay

@@ -1,0 +1,8 @@
+The GNU texidoclet is a Java Doclet which allows you to generate Java
+documentation in Info format.  This is especially useful for viewing
+documentation in an Emacs buffer.
+
+http://www.gnu.org/software/classpath/cp-tools/texidoclet.html
+
+----
+CategoryProgrammerUtils

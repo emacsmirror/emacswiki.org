@@ -1,0 +1,20 @@
+xscheme.el can be used to interact with an inferior MIT scheme process (meaning it won't work with Guile or other scheme interpreters). See SchemeMode for alternatives.
+
+Getting started:
+Load xscheme.el:
+  M-x load-library xscheme
+Run the scheme interpreter: M-x start-scheme. If desired, select a buffer that will be interacting with the scheme interpreter. By default, it creates a new buffer called * scheme *.
+
+Edit your file, and press C-x C-e to evaluate the previous expression. If you are loading a previously created file, you may need to use this key combination after every expression in the file, if you are counting on expressions to be defined. If anybody knows how to evaluate the whole buffer, feel free to add this information.
+
+Here is a nice method that you can put into your .emacs rc file to load xscheme in the current buffer with only one command:
+
+    (defun xscheme ()
+      "Loads xscheme and runs a scheme process in the current buffer."
+      (interactive)
+      (load-library "xscheme")
+      (xscheme-start "scheme -emacs"
+                     (buffer-name)
+                     (buffer-name)))
+
+Call it with M-x xscheme.

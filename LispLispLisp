@@ -1,0 +1,52 @@
+This page is about '''Lisp'''. It is about the ''language'' -- its dialects, behavior, properties, benefits, and idiosyncracies. It is '''''not''''' about Lisp tools, modes, programming tips, patterns, cliches, and such. Basic Lisp info (e.g. ListStructure) is OK.
+
+::::::: LISP is worth learning for a different reason -- the profound enlightenment experience you will have when you finally get it. That experience will make you a better programmer for the rest of your days, even if you never actually use LISP itself a lot. (You can get some beginning experience with LISP fairly easily by writing and modifying editing modes for the Emacs text editor.) -- Eric Raymond, ''How to Become a Hacker'' (http://www.catb.org/~esr/faqs/hacker-howto.html)
+
+----
+Here is a general article on Lisp: WikiPedia:Lisp_programming_language.
+
+Here are some of the pages about Lisp on EmacsWiki:
+
+* EmacsLisp
+** EmacsLispIntro
+** EmacsLispReference
+** ElispCompatibility
+** WhyDoesElispSuck
+** EmacsLispLimitations
+** LangPollResults
+* MacLisp
+** MulticsEmacs
+* CommonLisp
+** CommonLispForEmacs
+** EmacsCommonLisp
+** CommonLispEmacs
+* [[Scheme]]
+** SchemeAndLisp
+** MitSlashGnuScheme
+** [[Guile]]
+* ZetaLisp
+** [[EINE]]
+** [[ZWEI]]
+** [[Zmacs]]
+* EuLisp
+* [[Sexp]]
+* ListStructure
+** AvoidConsing
+** ListModification
+** DestructiveOperations
+** BackquoteSyntax
+* LambdaExpression
+** QuotedLambda
+* DynamicBindingVsLexicalBinding
+* LocalFunctions
+* WhenToUseIf
+* NonLocalExit
+* LispHistory
+** JohnMcCarthy
+** GuySteele
+** GeraldSussman
+** RichardStallman
+
+
+----
+CategoryCode

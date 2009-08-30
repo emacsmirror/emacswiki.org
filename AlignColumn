@@ -1,0 +1,22 @@
+You can align columns of text using align.el by MatthiasHelmling.  Get it here:
+
+* Lisp:align.el
+
+Put the file into your LoadPath and add the following code to your ~/.emacs file:
+
+    (autoload 'align-cols "align" "Align text in the region." t)
+
+Then use M-x align-cols to do it.
+
+You might also want to check out ColumnizeWords
+
+There is also a package called align.el provided with the emacs22 distribution, not to be confused with the previously described align.el.
+See AlignCommands for more details.
+
+
+----
+
+''My thanks to Matthias! This is a great tool for lining up columnar sections of code. -- DanMuller''
+
+----
+CategoryFilling CategoryIndentation CategoryAlignment

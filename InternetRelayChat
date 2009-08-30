@@ -1,0 +1,93 @@
+There are various IRC channels dedicated to Emacs around.  Here is a list of the known ones:
+
+* #emacs @ [http://www.freenode.net irc.freenode.net] (see EmacsChannel)
+* #gnus @ [http://www.freenode.net irc.freenode.net] 
+* #mygnus @ irc.my.gnus.org (see MyGnus)
+
+Related:
+
+* #wiki @ [http://www.freenode.net irc.freenode.net]
+* MeatBall:InternetRelayChat
+
+== Clients ==
+
+There are also Emacs based IRC clients:
+
+* [[ERC]]
+* IrChat
+* LieceIrcClient
+* [[rcirc]]
+* RieceIrcClient
+* ZenIRC
+* [[Circe]]
+
+== Help For Newbies ==
+
+* http://www.irc.org/
+* http://www.irchelp.org/
+
+== Documentation For Developers ==
+
+* RFC 1459 - Original IRC Protocol
+* RFC 2810 - Updated IRC Architecture
+* RFC 2811 - Channel Management
+* RFC 2812 - IRC Client Protocol
+* RFC 2813 - Server Protocol
+
+== Emacs IRC Client Recommendations ==
+
+I used ERC and switched to [[rcirc]] in 2005. -- AlexSchroeder
+
+I use ERC (EmacsIRCClient) too:
+
+Some comments about clients I tried:
+
+If you are looking for a client which does it "the Emacs way", ZenIRC
+and ERC are definitely for you. ERC has some extra features over ZenIRC
+like colour display as well as the possibility to display a separate
+info buffer for every channel. Have a look at both and compare them yourself.
+
+Liece (LieceIrcClient) and IrChat both take a somewhat different approach. You
+get an input buffer for commands and a separate buffer
+where the channel/query content go into. Some people like that.
+IrChat is kind of freaky because it supports different cryptographic algorithms
+as well as DCC implemented through an external perl script.
+
+For EmacSpeak users, there are speech enabling extension for
+EmacsIRCClient and ZenIRC. I have also written erc-speak.el which
+allows you to listen to channel content using EmacSpeak. You can grab erc-speak.el
+from the EmacsIRCClient CVS.
+
+-- MarioLang
+
+me too! I use ERC!! --ShaeErisson
+
+I love ERC. Man, It just rocks -- GirishB
+
+ERC is just about the coolest thing ever. -- EdwardOConnor
+
+There was a time when I scoffed at the idea of IRCing in emacs. Since I discovered ERC, that time has passed. :-) -- DamienElmes
+
+I've been using ZenIRC for a long time before I discovered ERC. ZenIRC had some features that I missed in ERC (and still miss, somehow), most of which we ported over. Now, ERC has become the best IRC client I know and I use it nearly daily. -- AndreasFuchs
+
+I used [[ERC]] for a while, but I was not very fond of the 20 odd files required in my elisp directory, so I switched to [[rcirc]] and haven't looked back since.  It does everything I need, the (very clean) code is contained in a single file, I'm very happy! -- VincentFoley
+
+== Emacs and IRC ==
+
+    <Khmar> I don't think RMS ever imagined that people would
+      throw an IRC client into his editor.
+    <delYsid> there are 4 or 5 for emacs actually
+    <delYsid> liece, riece, zenirc, erc and one I forgot
+    <delYsid> did you guys know that Ben (one of the Zenirc
+      authors) wrote the ctcp spec?
+    <resolve> the irc client for real gurus! m-x
+      make-network-connection :_)
+    <resolve> delYsid: nope. cool!
+    <delYsid> 1992
+    <delYsid> so one emacs irc client was actually actively
+      involved in the early irc design times
+
+The original IRC client in elisp was by David Lawrence at RPI in 1989, named [[irc.el]] (oldest extant copy linked).  This code was actively developed through 1996 by various people before finally sinking into obscurity.  It is doubtful that this client still functions on modern IRC networks.
+
+----
+CategoryChatClient CategoryHelp

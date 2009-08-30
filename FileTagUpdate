@@ -1,0 +1,28 @@
+Want to update the MP3 tags of a whole bunch of files?
+`tag.el' is a first step in this direction.
+Use `M-x tag-directory' to specify a directory to edit.
+Emacs will then call /mp3info/ on every file in the directory
+and present it to you in a buffer.
+You can edit all entries and hit `C-c C-c' to save the tags
+for a file, or use `M-x tag-update-all' to save tags for all files.
+
+* Lisp:tag.el
+
+Note that [[EMMS]] also contains a tag editor.
+
+== Bugs ==
+
+I find that it works best with non-ASCII characters when I use `M-x prefer-coding-system RET iso-latin-1 RET'.
+
+: This is probably as the ID3v2 spec specifies either latin-1 or unicode as a coding system.  If a text string begins with a
+: Unicode byte order mark, the string is to be decoded as unicode, otherwise, latin-1 is assumed.  /mp3info/ would probably therefore want to receive
+: an unencoded text (i.e. raw bytes) if it contained unicode characters.  However, I'm not really sure.
+
+I'm regularly confused by ID3v2 (at the front of the file, shown by XMMS and friends) and ID3 (at the end of the file, edited by most of the command line
+tools out there).  Somehow I'm having difficulties changing or deleting that
+ID3v2 tag...
+
+== Comments ==
+
+----
+CategoryModes

@@ -1,0 +1,26 @@
+Here we describe the naming system inside emacs would you describe it as verb-subject?
+
+C-h f kill-TAB shows quite a bit of stuff
+
+As to our own code, use the package prefix, and then subject-verb.
+According to MeatBall:HumaneInterface, subject-verb is better suited
+to how humans approach action.  We often know the subject and change
+our opinion about the verb; the other way around is strange to us.
+Example: You know you want to work on a buffer.  Switch to it?  Bury
+it?  Kill it?  The other way around is unnatural: You want to kill
+something, but was it the word, the buffer, or the process?
+
+Thinking about it, you'll see that currently Emacs is ''not''
+following this strategy.  On the contrary, M-x apropros RET
+\(kill\|remove\|delete\) RET shows many functions with optional
+package prefix, verb, subject.  This is also true for
+\(create\|make\), with some exceptions like buffer-create
+(vs. kill-buffer).
+
+
+''I agree that Emacs does not follow this strategy. I do not know what solutions are available. My only thought is a MeaningfulNames package that provides aliases that do follow the ''Humane Interface'' patterns.''
+
+Isn't this <em>object</em>-verb?
+Subject-verb would be buffer-die rather than buffer-kill.
+----
+CategoryCode

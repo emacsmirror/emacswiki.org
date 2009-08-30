@@ -1,0 +1,338 @@
+;;; This file contains user defined
+;;     functions
+;;     vars
+;;     kbd macros
+;;     faces
+;; which can be used independently.
+
+;; it's mean to be able to share between other users
+;; don't put your customizations here, put them in ~/.emacs
+;; or ~/.emacs.d/startup-scripts/
+
+;;ADD-new-content-here
+
+;;======================================================================
+;;my customized hippie-expand functions
+
+;;complete file name
+;;don't show . and .. dir
+;;TODO
+(defun hippie-expand-filename ()
+  (interactive)
+  nil)
+
+;;complete line
+(defun hippie-expand-line ()
+  (interactive)
+  nil)
+
+;;======================================================================
+;;view current file in browser
+(defun view-current-file-in-browser ()
+  (interactive)
+  (browse-url (format "file://%s%s" (pwd) (buffer-name))))
+
+;;======================================================================
+;;font setting helper functions for Chinese users
+;;the font size of Chinese font should be 5/4 as large as english font
+
+(defvar default-font-size 12
+  "This is the default font size. It is used in `my-set-default-font' and `set-unicode-font'.")
+
+(defun my-set-default-font (fn &optional size)
+  "Set default font to fn. fn is a string containing xft font name.
+This function is made to easy set font just by font name."
+  (interactive "sSet default font name to: ")
+  (unless size
+    (setq size default-font-size))
+  (set-frame-font (format "%s-%d" fn size)))
+
+(defun set-unicode-font-mono (fn &optional size)
+  "Set default unicode font to fn. fn is a string containing xft font name.
+This function is made to easy set font just by font name. font size will be set so that a Chinese character is twice as wide as a English letter."
+  ;;TODO add (was xxx) in promtp
+  (interactive "sSet default unicode font name to: ")
+  (unless size
+    (setq size default-font-size))
+  (let ((font-size-unicode (* 5 (/ size 4.0))))
+    (set-fontset-font t 'unicode (format "%s-%d" fn font-size-unicode))))
+
+(defun set-unicode-font (fn &optional size)
+  "Set default unicode font to fn. fn is a string containing xft font name.
+This function is made to easy set font just by font name. Note that use this function will *not* set Chinese char wide to twice the English char. If you want to do that, use `set-unicode-font-mono'"
+  ;;TODO add (was xxx) in promtp
+  (interactive "sSet default unicode font name to: ")
+  (unless size
+    (setq size default-font-size))
+  (set-fontset-font t 'unicode (format "%s-%d" fn size)))
+
+(defun change-font-size (size)
+  "Change font size. This function will take care of both ascii font and unicode font."
+  (interactive
+   ;;FIXME how to get currently using default font's size?
+   ;; (format "nSet default font size to (was %d): " default-font-size))
+   "nSet (ascii) font size to: ")
+  ;;FIXME how to get currently using default font and unicode font?
+  (my-set-default-font "Bitstream Vera Sans Mono" size)
+  (set-unicode-font "NSimSun" size))
+
+;;======================================================================
+;;google-search using emacs default browser
+
+;;function is not enough, must use macro
+;; (defun run-function-on-word-under-point (&optional function msg word)
+;;   "General function to help you define a function that use word under point as default argument. function should accept one string argument. msg is the prompt message at minibuffer. word will defaults to the word under point."
+;;   (interactive
+;;    (let ((v (word-at-point))
+;; 	 val)
+;;      (setq val
+;; 	    (if (stringp v)
+;; 		(format "%s (default %s): " msg v)
+;; 	      (format "%s: " msg v)))
+;;      (list (if (equal val "")
+;; 	       v val))))
+;;   (w3m-goto-url (concat "http://dict.cn/" word)))
+
+;;TODO if thers is a region, search the region instead
+;;     need to quote space and special chars?
+(defun google-search (word)
+  "Mostly copied from `w3m-dict-cn-search'."
+  (interactive
+   (let ((v (word-at-point))
+	 val)
+     (setq val
+	   (read-from-minibuffer
+	    (if (stringp v)
+		(format "Search on google (default %s): " v)
+	      "Search on google: ")))
+     (list (if (equal val "")
+	       v
+	     val))))
+  (let ((url (format
+	      "http://www.google.com/#hl=en&q=%s" word)))
+    ;;TODO process started in this way will be terminated when emacs exit
+    ;;     I want to start a process like M-! foo &
+    ;;     don't start as sub-process, but a independent process from emacs.
+    (start-process "google-search" nil "firefox" url)))
+
+;;======================================================================
+;; abbrev hook functions
+;;do make abbrev for them. see `define-abbrev' or
+;;info node: Skeletons as Abbrev Expansions
+
+;;insert date and time
+(defun insert-time ()
+  "Insert current time like '07:31:36 PM'. see format-time-string function."
+  (interactive)
+  (insert (format-time-string "%r")))
+
+(defun insert-date ()
+  "Insert today's date like '2009-04-28'."
+  (interactive)
+  (insert (format-time-string "%F")))
+
+(defun insert-datetime ()
+  "Insert date at point.
+With prefix argument, insert date and time."
+  (interactive "P")
+  (insert (format-time-string "%F %r")))
+
+(defalias 'today 'insert-date)
+(defalias 'now 'insert-datetime)
+
+;;insert email
+(defun insert-email-formal ()
+  "insert email address. If you need anti-spam style, use `insert-email-antispam'."
+  (interactive)
+  (insert (format "%s <%s>" user-full-name user-mail-address)))
+
+(defun insert-email-antispam ()
+  "insert email address. If you need formal style, use `insert-email-formal'."
+  (interactive)
+  ;;TODO form an antispam address
+  ;;replace @ by " AT "
+  ;;replace . by " DOT "
+  (insert "your email address will here later..."))
+
+(defalias 'insert-email 'insert-email-formal)
+
+;;======================================================================
+;; copy/kill things under point
+;; vim y/d function simulation
+
+(load "~/.emacs.d/sylecn-scripts/copy-kill-ex-uni.el")
+
+;;copy-line is special, I put it here.
+;; TODO rewrite in lispy style
+;;      how to get identation point of current line?
+;; better than yy function in vim
+(defun copy-line ()
+  "copy line. without indentation spaces."
+  (interactive)
+  (save-excursion
+    (back-to-indentation)
+    ;;prefer don't use set-mark-command, I don't like the "Mark set" message
+    (set-mark-command nil)
+    (copy-region-as-kill
+     (region-beginning) (line-end-position))))
+
+;;======================================================================
+;; comment-line
+;; This may be obsolete now, please use comment-dwim-line.
+(defun comment-line ()
+  "Comment or uncomment current line. If there is highlight region, comment or uncomment that region instead."
+  (interactive)
+  (comment-normalize-vars)
+  (if (not (region-active-p))
+      (comment-or-uncomment-region
+       (line-beginning-position) (line-end-position))
+    (comment-or-uncomment-region (region-beginning) (region-end))))
+
+;;======================================================================
+;; M-; enhancement
+;; Now it can comment current line when not at end of line.
+;;ref: http://www.emacswiki.org/emacs/CommentingCode
+;;Original idea from
+;;http://www.opensubscriber.com/message/emacs-devel@gnu.org/10971693.html
+
+;; There is still one difference between the orginal and this one.
+;; You can't align the in-line comment at end of code now.
+
+(defun comment-dwim-line (&optional arg)
+  "When no region active and not at end of line, comment current line; else call comment-dwim."
+  (interactive "*P")
+  (comment-normalize-vars)
+  (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
+      (comment-or-uncomment-region (line-beginning-position) (line-end-position))
+    (comment-dwim arg)))
+
+;;======================================================================
+(defun swap-recent-buffer ()
+  "do C-x b RET"
+  (interactive)
+  (switch-to-buffer nil))
+
+;;======================================================================
+(defun current-address ()
+  "Run findphone command. Find address or phone numbers in ~/texts/phone"
+  (interactive)
+  (shell-command "findphone current" t))
+
+;;======================================================================
+;; for myfiles
+
+;; test case for these two functions:
+;; (mapcar 'myfiles-full-file-name myfiles)
+;; (mapcar 'myfiles-buffer-name myfiles)
+
+(defun myfiles-file-name (x)
+  "Get full file name with path for a file in `myfiles'."
+  (if (file-name-absolute-p x)
+      x
+    (concat "~/" x)))
+
+(defun myfiles-file-name-nodirectory (x)
+  "Get file name without path for a file in `myfiles'."
+  ;; call functions in std lib
+  (file-name-nondirectory (myfiles-file-name x)))
+
+(defalias 'myfiles-buffer-name 'myfiles-file-name-nodirectory)
+
+;;======================================================================
+(defun wc ()
+  "Run wc command on file in current buffer."
+  (interactive)
+  (shell-command (format "wc %s" (buffer-file-name))))
+
+;;======================================================================
+(defun byte-recompile-my-emacs-dir ()
+  "handy function for easier update my el files"
+  (interactive)
+  (byte-recompile-directory "~/.emacs.d/sylecn-scripts/" 0)
+  (byte-recompile-directory "~/.emacs.d/startup-scripts/" 0))
+
+;;======================================================================
+;; TODO how to do it reliably?
+(defun x-version-running ()
+  "return t if running x version. nil if running terminal version"
+  (interactive)
+  (>= (display-color-cells) 16777216))
+
+;;======================================================================
+(defun exit-emacs-client ()
+  "consistent exit emacsclient.
+   if not in emacs client, echo a message in minibuffer, don't exit emacs.
+   if in server mode
+      and editing file, do C-x # server-edit
+      else do C-x 5 0 delete-frame"
+  (interactive)
+  (if server-buffer-clients
+      (server-edit)
+    (delete-frame)))
+
+;;======================================================================
+;;TODO scroll up half a screen
+(defun scroll-up-half-screen ()
+  (interactive)
+  (scroll-up 10))
+
+;;======================================================================
+;; auto wrap search, like in vim
+;; this could be default
+;; ref: http://stackoverflow.com/questions/285660/automatically-wrapping-i-search/286099
+(defadvice isearch-search (after isearch-no-fail activate)
+  (unless isearch-success
+    (ad-disable-advice 'isearch-search 'after 'isearch-no-fail)
+    (ad-activate 'isearch-search)
+    (isearch-repeat (if isearch-forward 'forward))
+    (ad-enable-advice 'isearch-search 'after 'isearch-no-fail)
+    (ad-activate 'isearch-search)))
+
+;;======================================================================
+;;add the % jump function in vim
+;;ref: http://docs.huihoo.com/homepage/shredderyin/emacs_elisp.html
+;;ref: emacs FAQ info doc "Matching parentheses"
+(defun match-paren (arg)
+  "Go to the matching paren if on a paren; otherwise insert %."
+  (interactive "p")
+  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+        ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+        (t (self-insert-command (or arg 1)))))
+
+;;======================================================================
+;;add the f function in vim
+(defun go-to-char (n char)
+  "Move forward to Nth occurence of CHAR.
+Typing `go-to-char-key' or the same char again will move forwad to the next Nth
+occurence of CHAR."
+  (interactive "p\ncGo to char: ")
+  (search-forward (string char) nil nil n)
+  (while (char-equal (read-char)
+		     char)
+    (search-forward (string char) nil nil n))
+  (setq unread-command-events (list last-input-event)))
+
+;;======================================================================
+(defun switch-to-shell-buffer ()
+  (interactive)
+  (switch-to-buffer "*cmd*"))
+
+;;======================================================================
+(defun lword ()
+  "open the lword file to add new word"
+  (interactive)
+  (find-file "~/texts/lwords"))
+
+(fset 'lword-add-word-from-region
+   "\C-[<\C-u10\C-n\C-@\C-s\C-m\谷歌\C-m\C-a\C-[wq\C-[xlword\C-m\C-[>\C-y\C-[gl\C-x\C-s")
+
+;; format/trim pasted dict.cn word
+;; TODO should not change my kill ring.
+(fset 'dict-cn-trim-word
+   "\C-r^$\C-r\C-r\C-k\C-p\C-cf[\C-b\C-[ \C-cf]\C-k\C-[>\C-m")
+
+(defun search-lword ()
+  "search word in lword, and jump to it in lword buffer."
+  ;TODO
+  nil)
+

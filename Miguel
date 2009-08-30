@@ -1,0 +1,141 @@
+This is my new GnuEmacs wiki page. Nothing to see yet...
+
+: Bemvindo!  :)  Que bom de ver alguem escrever algo em Português...  -- AlexSchroeder
+
+Obrigado !
+
+O meu objectivo por aqui é ir escrevendo/traduzindo alguma coisas em Português... Tanto quanto sei, não existe muita documentação do Emacs nesta lingua.
+
+: Pois é.  O que eu fiz quando comecei neste sítio foi simplesmente pegar no meu ~/.emacs e descrever as varias coisas que utilisei até aí. -- Alex.
+
+Ok,seguindo a sugestão de AlexSchroeder, aqui fica o meu ficheiro ~/.emacs. Este ficheiro vai sendo alterado à medida da necessidade... foi construído com base noutros ficheiros que vou encontrando. Infelizmente, não mantenho a fonte de cada uma das alterações...
+
+    ;; -*-emacs-lisp-*-
+    
+    ;; não mostrar o spash-screen inicial
+    ;;(setq inhibit-startup-message t)
+    
+    ;; endereço de e-mail e nome
+    (setq user-mail-address "maiguel AT netvisao PONTO pt")
+    (setq user-full-name "Miguel")
+    
+    ;; activar a roda do rato
+    (mwheel-install)
+    
+    ;; mostrar a hora na barra de estado
+    (display-time)
+    (setq display-time-24hr-format t)
+    
+    ;; activar o auto-fill
+    (setq-default auto-fill-function 'do-auto-fill)
+
+    ;; desviar o cursor do rato do ponto de escrita
+    (mouse-avoidance-mode 'jump)
+
+    ;; configurar o aspecto (fundo preto com caracteres verdes)
+    (add-to-list 'default-frame-alist '(background-color . "black"))
+    (add-to-list 'default-frame-alist '(foreground-color . "green"))
+    (add-to-list 'default-frame-alist 
+             '(font . "-*-lucidatypewriter-medium-*-*-*-12-*-*-*-*-*-*-*"))
+
+    ;; activar o destaque da sintaxe
+    (global-font-lock-mode t)
+
+    (custom-set-variables
+      '(font-lock-maximum-decoration t) ;; muitas decorações
+      '(column-number-mode t) ;; mostrar número de coluna
+      '(c-default-style "k&r") ;; estilo de indentação C
+      '(frame-title-format "%b - emacs") ;; título da janela
+      '(visible-bell t) ;; desactivar o beep (irritante!)
+      '(default-major-mode 'text-mode) ;; modo por omissão
+      '(fill-column 80) ;; número de colunas
+      '(delete-old-versions t) ;; apagar ficheiros antigos
+      '(printer-name "imp") ;; Impressora
+      '(ps-line-numner 'non-nil) ; Imprimir sempre os numeros das linhas
+    )
+
+    ;; mostrar parêntisis
+    (show-paren-mode t)
+
+    ;; utilizar sempre espaços em vez de tabs
+    (setq-default indent-tabs-mode nil)
+    (setq default-tab-width 8)
+
+    ;; tornar todas as perguntas "yes/no" em y/n
+    (fset 'yes-or-no-p 'y-or-n-p)
+
+    ;; Função para inserir licensa GPL
+    (defun insert-gpl ()
+      "Insert standard GPL header."
+      (interactive)
+      (let ((comment-style 'box)
+        (gpl
+         (concat "
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,
+    USA.
+    "
+    (if (boundp 'user-full-name) (concat "\nWritten and (c) by "
+        user-full-name "\n")
+    "")
+    
+    (if (boundp 'user-mail-address) (concat
+                                     "Contact <"
+                                     user-mail-address
+                                     "> for comment & bug reports\n")
+       "")
+    )))
+
+    (goto-char (point-min))
+    (insert gpl)
+    (comment-region (point-min) (+ (point-min) (length gpl)))))
+
+    ;; bbdb
+    ;; inicialização para o Gnus
+    (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus) 
+
+    (setq bbdb-north-american-phone-numbers-p nil)
+
+    ;; emacs-wiki
+    
+    (load "emacs-wiki")
+    (setq emacs-wiki-directories '("~/docs/personal/Wiki"))
+    (setq emacs-wiki-publishing-directory "~/docs/personal/WebWiki")
+
+    ;; planner
+    
+    (require 'planner)
+    (planner-option-customized 'planner-directory "~/docs/personal/planner")
+    (planner-option-customized 'planner-publishing-directory
+            "~/docs/personal/public_html/plans")
+
+    (planner-insinuate-calendar)
+    (planner-insinuate-gnus)
+    
+    ;; diary
+    
+    (setq diary-file "~/docs/personal/diary" ; Ficheiro do diário
+      calendar-week-start-day 1
+      european-calendar-style t
+      calendar-day-name-array
+      ["Domingo" "Segunda" "Terça" 
+       "Quarta" "Quinta" "Sexta" "Sábado"]
+      calendar-month-name-array
+      ["Janeiro" "Fevereiro" "Março" "Abril"
+       "Maio" "Junho" "Julho" "Agosto" "Setembro"
+       "Outubro" "Novembro" "Dezembro"])
+
+
+----
+CategoryHomepage

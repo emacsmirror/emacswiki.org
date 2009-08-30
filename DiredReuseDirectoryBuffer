@@ -1,0 +1,74 @@
+In Dired, when you choose a directory to visit, it is normally visited in a new buffer -- the Dired buffer you chose it in is not deleted.
+Some people don't like this behavior, because as you navigate around the directory tree you accumulate Dired buffers, one for each directory you visit.  
+
+This page is about being able to reuse the same Dired buffer when you visit a directory, in Dired.  
+
+
+* In Emacs 22, you can use `a' in a Dired buffer, instead of `e', `f', and `RET'. This method does not affect mouse clicks on directory names, however. 
+ 
+* Alternatively you can use this code (mouse clicks is still not affected, but `RET' works):
+
+  (put 'dired-find-alternate-file 'disabled nil)  
+
+* '''Dired+''' -- Library Lisp:dired+.el (see DiredPlus) has command `toggle-dired-find-file-reuse-dir', to give you this functionality.  This changes all key bindings for `dired-find-file' and `diredp-mouse-find-file' to use the same buffer for visited directories. Use `toggle-dired-find-file-reuse-dir' interactively to toggle between the two visit-directory behaviors, or put this in your .emacs to just turn on directory-buffer reuse:
+
+        (toggle-dired-find-file-reuse-dir 1)
+
+:: <tt>[[dired+.el]]</tt> also provides commands `diredp-find-file-reuse-dir-buffer' and `diredp-mouse-find-file-reuse-dir-buffer' that open a directory in the same buffer -- bind them as you like.
+
+* http://www.northbound-train.com/emacs/dired-single.el
+
+Here are two ways to advise `dired-find-file', so it reuses a directory buffer:
+
+* The first
+
+     (eval-after-load "dired"
+      '(progn
+         (defadvice dired-advertised-find-file (around dired-subst-directory activate)
+           "Replace current buffer if file is a directory."
+           (interactive)
+            (let* ((orig (current-buffer))
+                   ;; (filename (dired-get-filename))
+                   (filename (dired-get-filename t t))
+                  (bye-p (file-directory-p filename)))
+             ad-do-it
+             (when (and bye-p (not (string-match "[/\\\\]\\.$" filename)))
+               (kill-buffer orig))))))
+
+* The second
+     
+        ;; Another way of achieving this:
+
+        ;; we want dired not not make always a new buffer if visiting a directory
+        ;; but using only one dired buffer for all directories.
+        (defadvice dired-advertised-find-file (around dired-subst-directory activate)
+          "Replace current buffer if file is a directory."
+          (interactive)
+          (let ((orig (current-buffer))
+                (filename (dired-get-filename)))
+            ad-do-it
+            (when (and (file-directory-p filename)
+                       (not (eq (current-buffer) orig)))
+              (kill-buffer orig))))
+
+Using the methods above will still create a new buffer if you invoke ^ (dired-up-directory). To prevent this:
+
+     (eval-after-load "dired"
+       ;; don't remove `other-window', the caller expects it to be there
+       '(defun dired-up-directory (&optional other-window)
+          "Run Dired on parent directory of current directory."
+          (interactive "P")
+          (let* ((dir (dired-current-directory))
+     	    (orig (current-buffer))
+     	    (up (file-name-directory (directory-file-name dir))))
+            (or (dired-goto-file (directory-file-name dir))
+     	   ;; Only try dired-goto-subdir if buffer has more than one dir.
+     	   (and (cdr dired-subdir-alist)
+     		(dired-goto-subdir up))
+     	   (progn
+     	     (kill-buffer orig)
+     	     (dired up)
+     	     (dired-goto-file dir))))))
+
+----
+CategoryDirectories

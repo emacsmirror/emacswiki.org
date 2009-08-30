@@ -1,0 +1,13 @@
+To get 256 colors for Emacs running inside your xterm (##emacs -nw##), follow these instructions:
+
+# make sure you have the ##ncurses-term## package installed
+# place the following in your ##~/.Xdefaults## file: ##XTerm*termName: xterm-256color##
+# run the following command from your command line: ##xrdb -merge ~/.Xdefaults##
+# open a new ##xterm## and run ##emacs -nw##
+
+To check how many your terminal is supposed to handle, run ##tput colors## on the command line.
+
+More info available from [[twb]]’s [ftp://twb.ath.cx/words/term256.html Terminal Emulator 256 Color Support] page.
+
+----
+CategoryFaces

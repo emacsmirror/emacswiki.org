@@ -1,0 +1,96 @@
+Library '''<tt>[[facemenu+.el]]</tt>''' enhances the following in ways that give you more ''direct manipulation'' of [[face]]s and face properties, such as color:
+
+* the faces list display (buffer `*Faces', from `list-faces-display')
+* the colors list display (buffer `*Colors*', from `list-colors-display')
+* the '''Text Properties''' menu (aka FaceMenu)
+
+You can choose and apply a face to text by pointing to a sample of it. You can click text that has a face, to edit the face. You can point to a color in a palette, to edit a face's foreground or background. And so on. ("Clicking" here means clicking with `mouse-2'.)
+
+
+[:FacesListDisplay]
+== Faces List Display ==
+
+The faces list display is available from `M-x list-faces-display' or item '''Display Faces''' in the '''Text Properties''' menu. It shows a sample of each face, next to the face name, in buffer `*Faces*'. In vanilla Emacs, if you click the face sample, Customize is opened for that face. This is a bit redundant, because clicking the face name shows a description of the face, which also has a link to customize it.
+
+With '''<tt>[[facemenu+.el]]</tt>''', clicking a face sample applies that face to the selected text ([[region]]), or, if the region is not active, or is empty, to newly entered text. In vanilla Emacs, `M-o o' and '''Text Properties > Face > Other...''' apply a face this way, but you must supply a face name (possibly using [[completion]]). 
+
+With '''<tt>[[facemenu+.el]]</tt>''', `M-o o' and '''Text Properties > Face > Other...''' open the faces display for you when you provide a numeric prefix (e.g. `##C-7##'), so you can choose a face by its appearance, not just by its name. This gives you a WYSIWYG, direct-manipulation way to choose and apply any face.  ''You don't need to know the name of a face to use it.''
+
+[[image:FacemenuPlusFaceListScreenshot]]
+
+If you prefer to apply a face by name, you can still do that without opening the faces display -- just don't use a numeric prefix argument when you use `M-o o' or '''Text Properties > Face > Other...'''.
+
+'''Note:''' If you use '''[[Icicles]]''', then you need not use this enhancement, because the list of face names during completion (in buffer `*Completions*') shows each name in the appropriate face.  That is, you already see what you get.  See [[Icicles - Candidates with Text Properties]].
+
+
+[:ColorsListDisplay]
+== Colors List Display ==
+
+The colors list display is available from `M-x list-colors-display' or item '''Display Colors''' in the '''Text Properties''' menu. It shows samples of each named color as a foreground and a background color, and it shows the RGB hex code for the color. In vanilla Emacs, there are no links or active areas in the `*Colors*' buffer that is displayed.
+
+With '''<tt>[[facemenu+.el]]</tt>''', clicking anywhere on a color's line opens the color palette to that color. This lets you see the color in context, and experiment by changing different color components. 
+
+Keep in mind, however, that the values of named colors are constants. By editing the color in the color palette, you are not changing the definition of the named color that the palette originally opened to. For instance, if you click the color "slate blue", then the palette is opened with slate blue as the current color. Changing the current palette color has no effect on the definition of the color named "slate blue". 
+
+
+[:TextPropertiesMenu]
+== Text Properties Menu ==
+
+Th '''Text Properties''' menu is available from the [[menu bar]], '''Edit''' > '''Text Properties''', or as a mouse popup menu via `C-mouse-2' (hold Control while pressing the middle mouse button).
+
+If you load library <tt>[[highlight.el]]</tt> before library <tt>[[facemenu+.el]]</tt>, then a '''Highlight''' submenu is added to the '''Text Properties''' menu. This submenu holds items that correspond to the commands in library HighLight.
+
+Most of the items in the standard '''Text Properties''' menu apply to the current [[region]]. Some, however, apply to the character at the text [[cursor]] position ([[point]]). These include items '''Describe Properties''', '''Display Faces''', '''Display Colors''', and '''Display Fonts'''. Item '''Describe Properties''' lists the text properties of the character at the cursor: faces, fonts, and so on.
+
+When accessing the '''Text Properties''' menu using the mouse, it is more convenient for '''Describe Properties''' to apply to the character under the mouse [[pointer]], so you don't have to first put the text-cursor where you want to check text properties. That is one enhancement provided by '''<tt>[[facemenu+.el]]</tt>''': it uses the cursor position (point) when '''Describe Properties''' is accessed from the [[menu bar]], and the [[pointer]] position when it is accessed via mouse popup menu (`C-mouse-2'). 
+
+This means that you can, for instance, just point the mouse at some text, click `C-mouse-2', and pick '''Describe Properties''' to see its text properties; pick '''Palette -- Edit Face Foreground''' to modify the foreground of the face pointed to using a color palette, and so on.
+
+Again, ''you don't need to know the name of the face'' you want to modify or the color value that you want to change it to -- just point and tweak: ''direct manipulation''.
+
+Here is the '''Text Properties''' menu, as enhanced by libraries <tt>[[facemenu+.el]]</tt> and <tt>[[highlight.el]]</tt>:
+
+: [[image:FacemenuPlusMenuScreenshot]]
+
+Item '''Color Palette''' plus the items in the last five menu panels are added by library '''<tt>[[facemenu+.el]]</tt>'''.  Here are brief descriptions. (The '''Background''' items are analogous to the '''Foreground''' items described here.)
+
+* '''Color Palette''' -- Open a color palette (see '''ColorPalette''')
+* '''Palette -- Edit Face Foreground''' -- Edit the foreground color of the face using the color palette
+* '''Eyedropper -- Copy Foreground (C-u: Palette)''' -- Copy the foreground color. 
+* '''Eyedropper -- Paste to Face Foreground''' -- Paste the last copied color to a face foreground (or background)
+* '''Do Re Mi -- Edit Face Foreground''' -- Edit the foreground color of the face incrementally, using the arrow keys or mouse wheel
+* '''Set Face Foreground RGB''' -- Set the foreground color of the face by specifying its red, blue, and green components as a decimal value
+* '''Set Face Foreground RGB (Hex)''' -- Set the foreground color of the face by specifying its red, blue, and green components as a hexadecimal value
+* '''Restore Last Foreground (Except Do Re Mi)''' -- Restore the foreground color of the last face changed, except for changes effected by Do Re Mi (see next for that)
+* '''Do Re Mi -- Undo Last Edit''' -- Undo the last Do Re Mi face change
+* '''Set Face Attribute''' -- Set any attribute of the face (you are prompted for the attribute)
+* '''Customize Face''' -- Open Customize on the face, to change any face properties or save changes
+
+The most general color-changing menu item is '''Palette -- Edit Face Foreground'''. It lets you specify a color by RGB (red, green, blue) or HSV (hue, saturation, value) components absolutely or relatively (incrementally). If you do not save the color changes you make (`C-s' in the palette), or if you quit (`q') instead of exit (`x') the palette, then no change is made to the face. You can thus use the palette to examine and experiment with colors, without committing to any change. If you do save your face change and exit, you can roll back the change via '''Restore Last Foreground (Except Do Re Mi)''' (or '''Background''').
+
+Menu item '''Do Re Mi -- Edit Face Foreground''' provides a fast and flexible way to change a color incrementally, showing you the effect as the change is effected (WYSIWYG).  If you use a plain prefix argument (`C-u') with '''Do Re Mi -- Edit Face Foreground''', then the last picked color is used as the starting point for incremental change. You can roll back a Do Re Mi face change via '''Do Re Mi -- Undo Last Edit'''.
+
+Items '''Set Face Foreground RGB''' and '''Set Face Foreground RGB (Hex)''' let you set a face foreground color absolutely, using RGB (red, green, blue) values. The '''(Hex)''' version is more precise, with color-component values each ranging from `0000' to `FFFF' (hex). The decimal version (without "(Hex)") uses values from 0 to 255 (decimal). These menu items can be quicker to use than the color palette if you know what color-component values you want.
+
+Item '''Eyedropper -- Copy Foreground (C-u: Palette)''' acts as a graphic ''eye dropper'': it copies the foreground color. The copied color can then be used anywhere you like -- it is saved in variable `eyedrop-picked-foreground'. A typical use is to paste it to another face as its foreground or background -- '''Eyedropper -- Paste to Face...'''.  If you use `C-u', then this opens the color palette with the copied color current.
+
+Items '''Do Re Mi -- Edit Face...''' automatically let Customize know that you've changed the face, so changing a face this way is equivalent to changing it via Customize (using a face name and color name). After you've set the face the way you want it, you can use Customize to save it for future sessions. These items use commands `doremi-face-fg' and `doremi-face-bg' from library '''<tt>[[doremi-frm.el]]</tt>''' -- see '''DoReMi'''.  
+
+Items '''Color Palette''' and '''Palette -- Edit Face...''' use command `palette' from library '''<tt>[[palette.el]]</tt>'''. Command `palette' (item '''Color Palette''') lets you examine color properties or choose colors. You can input colors using recognized color names, RGB components (red, green, blue), or HSV components (hue, saturation, value). You can also use the palette to convert between RGB and HSV. See '''ColorPalette'''. 
+
+The same idea behind DoReMi, ColorPalette, and FaceMenuPlus could be extended to other properties/features that users currently change by name, such as font properties (height, weight, etc.). The idea is to provide for more ''direct manipulation'': You see a face/font/frame-parameter/whatever. You tweak it directly, without having to know its name or the names of its properties and their possible values. You save the change via Customize.
+
+If you are an Emacs-Lisp programmer, there is lots of room for helping Emacs provide for more direct manipulation. One programming tool to use is the high-level function `doremi' -- see '''DoReMi'''.
+
+-- DrewAdams
+
+
+[:FaceMenuAndFontLock]
+== Face Menu and Font Lock ==
+
+Highlighting that you add using the '''Face''' menu is, unfortunately, erased by font lock, sooner or later, when it updates the buffer highlighting. However, if you also load library <tt>[[font-lock+.el]]</tt>, then this is prevented. Library <tt>[[facemenu+.el]]</tt> modifies the face-menu code that applies the highlighting, so that <tt>[[font-lock+.el]]</tt> can recognize the highlighted text and prevent it from being erased during font-locking. See also HighLight, for additional ways to highlight text that are also compatible with <tt>[[font-lock+.el]]</tt>.
+
+----
+DrewsElispLibraries mentioned here: Lisp:facemenu+.el, Lisp:font-lock+.el, Lisp:highlight.el, Lisp:palette.el, Lisp:doremi-frm.el
+
+CategoryDisplay CategoryFaces CategoryFrames CategoryCustomize 

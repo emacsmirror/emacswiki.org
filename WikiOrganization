@@ -1,0 +1,32 @@
+The entire organization of the wiki is hand written.
+We use both a top-down approach (also known as a ForwardIndex)
+and a bottom-up approach (also known as a ReverseIndex).
+
+# The SiteMap links to all category pages.
+# The category pages link to all pages in the category.
+# Every page links to the category pages it belongs to.
+
+When pages have "parent" pages or belong to a certain category explicit backlinks
+are added manually.  Add the
+appropriate parent or category tag by referring to it in the page or place it at the end of the page.  The
+backlinks can be searched for, automatically.  Just click on the
+header to list all other pages linking to your current page.  This is
+just a plain ol' regular search.
+
+This usually looks like the end of a page:
+
+    ----
+    CategoryFoo
+
+The reason this is not all automated is because a) it would require
+the maintenance of a separate link database, and b) in a double linked graph
+there may be potentially a lot of irrelevant pages pointing to the
+current page, so you do not always want to list them.  Thus, the
+manual strategy of adding category tags or parent pages at the end.
+
+See also
+CreateNewPages,
+HowToNavigate.
+
+----
+CategoryEmacsWikiSite

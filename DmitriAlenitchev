@@ -1,0 +1,18 @@
+I use Emacs.
+
+Add this to ~/.emacs for Russian language in DiaryMode and CalendarMode:
+
+ (european-calendar)
+ (setq calendar-week-start-day 0
+       calendar-day-name-array
+       ["Понедельник" "Вторник" "Среда" "Четверг"
+        "Пятница" "Суббота" "Воскресенье"]
+       calendar-month-name-array
+       ["Январь" "Февраль" "Март" "Апрель" "Май" 
+        "Июнь" "Июль" "Август" "Сентябрь"
+        "Октябрь" "Ноябрь" "Декабрь"])
+
+
+
+----
+CategoryHomepage

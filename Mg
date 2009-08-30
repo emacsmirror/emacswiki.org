@@ -1,0 +1,8 @@
+*Mg* is a lightweight public-domain ErsatzEmacs, dating back to 1986. Mg was originally known as *MicroGNUEmacs*, as it strove to adhere more closely to the default behavior of GnuEmacs than other contemporary [[MicroEmacs]]en, but was renamed at the request of RichardStallman.
+
+Modern  versions of mg are maintained as a component of the OpenBSD source tree; the editor is included as standard in OpenBSD "because there shouldn't be any reason to learn more editor types than emacs or vi."
+
+A portable version is available for download at [http://pintday.org/hack/mg/ the maintainer's website].
+
+----
+EmacsImplementations

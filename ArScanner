@@ -1,0 +1,22 @@
+The purpose of this tool for Emacs is to help free software developers to manage author rights and licenses in their source files’ headers.
+
+First the command “arscanner” extracts the copyright holders from each source files’ header, if any and tries also to identify the license. Result is put in a special buffer named “*arscanner*”
+
+Then the Arscanner's buffer helps browse source files. You can directly edit a header file to correct something, or add a header to one or more files. 
+
+The most popular licenses should be recognized :
+
+    * GNU General Public License (GPL) 
+    * GNU Library or "Lesser" General Public License (LGP
+    * Apache License, 2.0
+    * New BSD license 
+    * MIT license 
+    * Mozilla Public License 1.1 (MPL) 
+    * Common Development and Distribution License 
+    * Common Public License 1.0 
+    * Eclipse Public License
+    * CeCILL V2
+    * CeCILL-B
+    * CeCILL-C
+
+Arscanner is a major-mode for emacs. You can find it at https://adullact.net/projects/arscanner/

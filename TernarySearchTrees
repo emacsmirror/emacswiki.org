@@ -1,0 +1,18 @@
+This package is obsolete, and is no longer maintained. Switch to [[Tries]] instead.
+
+A ternary search tree stores data associated with "strings" (not necessarily the string data type; any ordered sequence of elements is also valid). It stores them in such a way that both storage size and data lookup are reasonably space- and time- efficient, respectively. But more importantly, returning all strings with a given prefix in alphabetical or any other sort-order is also time-efficient.
+
+Requires [[Heaps]]. The last and final version (0.7.4, released May 2007) can still be obtained for now from:
+
+* Ternary Search Tree package download: http://www.dr-qubit.org/download.php?file=predictive/tstree-0.7.4.el&counter=tstree.el
+* Web-site: http://www.dr-qubit.org/emacs.php#structures
+
+The following article describes the ternary search tree structure:
+
+* http://www.cs.princeton.edu/~rs/strings/
+
+
+--TobyCubitt
+
+----
+CategoryCode

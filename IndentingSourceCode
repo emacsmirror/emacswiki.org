@@ -1,0 +1,11 @@
+Indenting is what happens when you press the TAB key while editing source code: The lines are indented such as to make your code more legible.  The piece of lisp code that calculates how far the line has to be indented when you hit the TAB key is called the indentation engine.  Usually there is an indentation engine for every major mode (if there is one at all).
+
+Many major modes don't provide indentation at all, eg. SQL mode doesn't indent because it is not clear how SQL statements ought to be indented in the first place.
+
+* IndentingC (IndentingJava and IndentingCPlusPlus both refer to this page)
+* IndentingPerl
+* IndentingText
+* IndentingSourceWithTabs
+
+----
+CategoryIndentation

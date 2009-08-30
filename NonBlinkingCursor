@@ -1,0 +1,29 @@
+== X Window ==
+
+On X Window, the TextCursor will blink in Emacs 21.  Use `blink-cursor-mode' to
+toggle this behaviour.
+
+Or in your ~/.emacs:
+
+ (blink-cursor-mode 0)
+
+== GNU/Linux Console ==
+
+According to EvgenyRoubinchtein, the blinking cursor on the GNU/Linux
+console may be disabled on Emacs 20, by adding
+(send-string-to-terminal "\033[?17;0;16c") to `term-setup-hook'.  This
+results in a nice non-blinking blue block for the cursor.
+
+You can get a similar effect by using the following in ~/.bash_profile
+or any similar startup script:
+
+ if [ $TERM = 'linux' -a $SHELL == '/bin/bash' ] ; then
+     echo -e '\033[?17;0;64c'
+ fi
+
+This does not work with Emacs 21, because Emacs 21 uses ncurses.
+ncurses will reset your cursor.  See CursorOnLinuxConsole for an
+explanation and a workaround.
+
+----
+CategoryDisplay

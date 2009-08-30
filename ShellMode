@@ -1,0 +1,138 @@
+: ''For editing shell scripts, see ShMode.''
+
+Use `M-x shell' to invoke a shell.  The shell is an external program, and shell mode inherits the ability to interact with the program and its basic behaviors from ComintMode.  If you want to use a shell written entirely in elisp use `M-x eshell', see [[Eshell]].
+
+== Icicles Enhancements to Shell Mode ==
+
+You can use [[Icicles]] [[completion]] in Shell mode. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
+
+You can also use `##C-`##' to quickly find, reuse, and edit a previous shell input, matching it in several ways. See [[Icicles - Other Search Commands#IciclesShell|Icicles - Reuse Shell Inputs]].
+
+
+==Removing ^M Characters==
+
+Change the way ComintMode (the basis of ShellMode) treats the input by adding a filter function.  Put this in your ~/.emacs file:
+
+  (add-hook 'comint-output-filter-functions
+            'comint-strip-ctrl-m)
+
+However, recent cygwin-builds of bash (2001-06-06) seem to confuse Emacs.  There is an elegant solution, however:  Tell Emacs that the bash process is returning DOS end-of-line bytes:
+
+ (add-to-list 'process-coding-system-alist
+              '("bash" . (undecided-dos . undecided-unix)))
+ 
+
+This way, bash doesn't get ^M from Emacs, but Emacs removes ^M it gets from bash.  You no longer need to add `comint-strip-ctrl-m' to the filter functions.
+
+== Setting Up a Cygwin Shell ==
+
+For some instructions on how to setup the cygwin shell with emacs, see http://www.khngai.com/emacs/cygwin.php
+
+You need [[cygwin-mount.el]]
+
+ --MarkBucciarelli
+
+==Invoking Multiple Shells, and Defining New Shells==
+
+* UsingMultipleShells
+* Lisp:defshell.el (this does both!)
+
+Here is a a way to define new shell buffers using the usual `shell' command. The point is that  I don't want to bother of the buffer's name. So one press f7 to go to a shell buffer (if needed the command will start a new process), further uses of f7 in this buffer will cycle through the existing shell buffers. If you want a new shell buffer press C-u f7. -- Matthias
+
+ (global-set-key [f7] 'alt-shell-dwim)
+
+ (defun alt-shell-dwim (arg)
+   "Run an inferior shell like `shell'. If an inferior shell as its I/O
+ through the current buffer, then pop the next buffer in `buffer-list'
+ whose name is generated from the string \"*shell*\". When called with
+ an argument, start a new inferior shell whose I/O will go to a buffer
+ named after the string \"*shell*\" using `generate-new-buffer-name'."
+   (interactive "P")
+   (let* ((shell-buffer-list
+ 	  (let (blist)
+	     (dolist (buff (buffer-list) blist)
+	       (when (string-match "^\\*shell\\*" (buffer-name buff))
+	 	(setq blist (cons buff blist))))))
+	  (name (if arg
+	 	   (generate-new-buffer-name "*shell*")
+	 	 (car shell-buffer-list))))
+     (shell name)))
+
+Another implementation of the command above, with the same functionality:
+
+ (defun shell-dwim (&optional create)
+   "Start or switch to an inferior shell process, in a smart way.
+ If a buffer with a running shell process exists, simply switch to
+ that buffer.
+ If a shell buffer exists, but the shell process is not running,
+ restart the shell.
+ If already in an active shell buffer, switch to the next one, if
+ any.
+
+ With prefix argument CREATE always start a new shell."
+   (interactive "P")
+   (let* ((next-shell-buffer
+           (catch 'found
+             (dolist (buffer (reverse (buffer-list)))
+               (when (string-match "^\\*shell\\*" (buffer-name buffer))
+                 (throw 'found buffer)))))
+          (buffer (if create
+                      (generate-new-buffer-name "*shell*")
+                    next-shell-buffer)))
+     (shell buffer)))
+
+Both of these commands fail to cycle through all shell buffers in Gnu Emacs 23.0.91.1. Hitting f7 does not switch buffers after you've cycled through all of them once.  Adding a 
+
+  (not (string= (buffer-name) 
+                (buffer-name buffer)))
+
+check in the when condition makes the problem go away.
+
+==garbage ls output / garbage gcc output==
+
+Take a look at AnsiColor.
+
+==Completions==
+Lisp:shell-completion.el
+
+==Backgrounding a process==
+
+You might find it difficult to background a process that's started, once you're in shell mode.
+
+If you hit `C-z', you end up backgrounding Emacs!
+
+To solve this, just execute
+
+ M-x local-set-key RET C-z self-insert-command
+
+Now `C-z' actually transmits to the shell.
+
+And if you want to background Emacs, just go to a different buffer.
+
+[new]
+`C-q C-z' doesn't work?
+ - No, but C-c C-z should.
+
+== Remote sessions with SSH and completion with Tramp ==
+
+Inside the a ##*shell*## buffer I often SSH to other machines.  It's the nature of one's work.  Anyway, you lose completion.  You can partially get it back by running `M-x cd /$HOSTNAME:$PWD' where $HOSTNAME is the host you've SSH'd to, and $PWD is your current working directory on the machine.  This requires TrampMode.  Unfortunately, completiong for root-relative paths doesn't work, since the root for Tramp doesn't translate to the root of a file system -- ##(not (equal "/host:/" "/"))##.  Really handy otherwise.
+
+**A**. I feel your pain. Doesn't work, would be nice if it did: SubprocessCompletion
+
+[new]
+Any new shell created when the current buffer is visiting a remote file/dir will automatically ssh to the remote default-directory for that file, however if you try this a second time in any other remote file/dir, it hangs. The way around it is to just create a local shell and ssh, but it would be nice to not have to do this.
+
+== Tracking the current working directory of the shell ==
+
+The built-in mechanism for keeping Emacs apprised of the shell's current directory is not very reliable, and can be thrown off by any command which it doesn't recognize as a directory-changing command (i.e., shell aliases).
+
+Here are alternative methods that track the cwd, regardless of what command is being used to set it: ShellDirtrackByPrompt ShellDirtrackByProcfs
+
+== Show the current directory in the mode-line ==
+
+Restore some sanity to your PS1 by putting the full working directory in the mode-line: ModeLineDirtrack
+
+----
+CategoryExternalUtilities
+CategoryShell
+

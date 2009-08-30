@@ -1,0 +1,268 @@
+This is the wiki page of Suraj Acharya.
+
+Emacs user since 1993, but only started to grok elisp in 1997 after learning [[Scheme]] and studying some of ErikHilsdale's code.
+
+Avid user of JavaDevelopmentEnvironment and NxmlMode. Would be lost without InteractivelyDoThings, InteractiveSpell, BalancedEl and JdeeFlymake
+
+Hopes that JavaEmacs will some day be able to run all the emacs modes he needs.
+
+Software I've written:
+* JdeeUsages
+* http://cvs.sourceforge.net/viewcvs.py/cedet/cedet/contrib/semantic-tag-folding.el
+* Lisp:xquery-mode.el
+* Lisp:jde-eclipse-compiler-server.el
+
+----
+Here are a couple of JavaDevelopmentEnvironment mode customizations that I use.
+
+* [[#RelativePathCompletion]] -- enable tab completion for relative paths when customizing jde path variables
+* [[#WildcardsInPaths]] -- allow wildcards in jde-sourcepath jde-global-classpath
+* [[#ReadJdeVarsFromEclipseConfig]] -- Read jde project values from eclipse .classpath config file
+
+
+[:RelativePathCompletion]
+=== Tab completion for relative paths when customizing jde path variables===
+ ;; A path in jde-global-classpath and jde-sourcepath may start with a
+ ;; "./" which indicates that it it relative to the jde project
+ ;; directory. The following advice sets the default directory of the
+ ;; customize buffer for jde-global-classpath and jde-sourcepath to be
+ ;; the jde project directory, this enables correct tab completion
+ ;; while entering relative paths.
+ 
+    (defadvice custom-buffer-create  (after jde-set-default-dir-to-project-dir (options &optional name description) activate)
+      "When customizing jde path variables set the default directory to the jde project file directory. This makes file completion work for relative paths."
+      (when (and (listp options) ;; we want options to look like (list (list symbol 'custom-variable)), see customize-variable
+                 (eq (length options) 1)
+                 (listp (car options))
+                 (eq (length (car options)) 2)
+                 (or (eq 'custom-variable (cadar options)) (eq 'jde-custom-variable (cadar options))))
+        (let ((symbol (caar options)))
+          (if (memq symbol '(jde-global-classpath jde-sourcepath));; or we could use (jde-symbol-p symbol)
+              ;; stolen from jde-project-file: find the project file where this symbol is saved
+              (let* ((project-file-paths (nreverse (jde-find-project-files default-directory))))
+                (when project-file-paths
+                  (when (jde-save-needs-saving-p symbol project-file-paths)
+                    ;; set the current directory to the directory the project file is in, ie the root for relative paths
+                    (setq default-directory (expand-file-name ".." (caar (get symbol 'jde-project)))))))))))
+ 
+ ;; use the TAB key for completion in field widgets, the default is
+ ;; Meta-Tab which is not very usable under windows
+ (require 'wid-edit)
+ (define-key widget-field-keymap "\t" 'widget-complete)
+ 
+ ;; The definition of widget-file-complete in wid-edit.el has a bug. It
+ ;; sometimes replaces relative paths with absolute ones. The following
+ ;; redefinition fixes it.
+ 
+ (defun widget-file-complete ()
+   "Perform completion on file name preceding point."
+   (interactive)
+   (let* ((end (point))
+ 	 (beg (save-excursion
+ 		(skip-chars-backward "^ ")
+ 		(point)))
+ 	 (pattern (buffer-substring beg end))
+ 	 (name-part (file-name-nondirectory pattern))
+ 	 (directory (file-name-directory pattern))
+ 	 (completion (file-name-completion name-part directory)))
+     (cond ((eq completion t))
+ 	  ((null completion)
+ 	   (message "Can't find completion for \"%s\"" pattern)
+ 	   (ding))
+ 	  ((not (string= name-part completion))
+ 	   (delete-region beg end)
+ 	   (insert (concat directory completion)))
+ 	  (t
+ 	   (message "Making completion list...")
+ 	   (with-output-to-temp-buffer "*Completions*"
+ 	     (display-completion-list
+ 	      (sort (file-name-all-completions name-part directory)
+ 		    'string<)))
+ 	   (message "Making completion list...%s" "done")))))
+ 
+[:WildcardsInPaths]
+=== Allow wildcards in jde-sourcepath and jde-global-classpath===
+ (defcustom jde-expand-wildcards-in-paths-p t
+   "Expands entries in the 'jde-global-classpath and 'jde-sourcepath which are wildcards patterns into a list of matching files or directories which are interpolated into classpath or sourcepath list. This expansion is done in the functions 'jde-open-get-path-prefix-list and 'jde-search-src-dirs for 'jde-sourcepath and in 'jde-normalize-paths for 'jde-global-classpath."
+   :group 'jde-project
+   :type 'boolean)
+ 
+ (defun jde-open-get-path-prefix-list () 
+   "Builds all the path prefixes used to search for the full qualified
+ source file. For this method to work `jde-sourcepath' needs to be set."
+   (if jde-sourcepath
+       (append (jde-expand-wildcards-and-normalize jde-sourcepath 'jde-sourcepath))
+     (error (concat "For this method to work the variable "
+                    "jde-sourcepath needs to be set"))))
+ 
+ (defun jde-expand-wildcards-and-normalize (path &optional symbol)
+   "Expand any entries with wildcard patterns in path and interpolate them into the result"
+   (if jde-expand-wildcards-in-paths-p
+       (mapcan 
+        (lambda (path)
+          (let ((exp-paths (file-expand-wildcards path)))
+            (if exp-paths exp-paths (list path))))
+        (jde-normalize-paths path symbol))
+     (jde-normalize-paths path symbol)
+     ))
+ 
+ (defun jde-search-src-dirs (class)
+   "Return the directory containing the source file for a class.
+ CLASS is the fully qualified name of the class."
+   (let ((file (concat
+ 	       (jde-parse-get-unqualified-name class)
+ 	       ".java"))
+ 	(package (jde-parse-get-package-from-name class)))
+     (catch 'found
+       (loop for dir in (jde-expand-wildcards-and-normalize jde-sourcepath) do
+ 	    (progn
+ ;; 	      (setq 
+ ;; 	       dir
+ ;; 	       (jde-normalize-path dir 'jde-sourcepath))
+ 	      (if (file-exists-p (expand-file-name file dir))
+ 		  (throw 'found dir)
+ 		(let* ((pkg-path (subst-char-in-string ?. ?/ package))
+ 		       (pkg-dir (expand-file-name pkg-path dir))
+ 		       (file-path (expand-file-name file pkg-dir)))
+ 		  (if (file-exists-p file-path)
+ 		      (throw 'found pkg-dir)))))))))	  
+ 
+ 
+ (defun jde-expand-classpath (classpath &optional symbol)
+   "If `jde-expand-classpath-p' is nonnil, replaces paths to 
+ directories that match `jde-lib-directory-names' with paths to jar or
+ zip files in those directories, excepting those specified by
+ `jde-lib-excluded-file-names'. This function assumes that the
+ existing paths are already normalized."
+   (if (or jde-expand-classpath-p  jde-expand-wildcards-in-paths-p)
+       (mapcan (lambda (path)
+               (cond 
+                ((and jde-expand-classpath-p (file-exists-p path)
+                      (file-directory-p path)
+                      (let ((dir-name (file-name-nondirectory path)))
+                        (member-if 
+                         (lambda (lib-name)
+                           (string-match lib-name dir-name))
+                         jde-lib-directory-names)))
+                 (append 
+                  (jde-expand-directory
+                   path 
+                   "\\.jar$"
+                   jde-lib-excluded-file-names
+                   symbol)
+                  (jde-expand-directory
+                   path 
+                   "\\.zip$"
+                   jde-lib-excluded-file-names
+                   symbol)))
+                (jde-expand-wildcards-in-paths-p
+                 (let ((exp-paths (file-expand-wildcards path)))
+                   (if exp-paths exp-paths (list path))))
+                (t (list path))))
+ 	classpath)
+     classpath))
+ 
+ (defun jde-db-src-dir-matches-file-p (file)
+   "Return true if one of `jde-sourcepath'
+ matches FILE."
+   (let* (
+          ;; (directory-sep-char ?/)
+ 	 (filename (jde-normalize-path file)))
+     (find-if
+      (lambda (dir-x)
+        (string-match 
+ 	(concat 
+ 	 "^" 
+ 	  dir-x) 
+ 	filename))
+ 	 (jde-expand-wildcards-and-normalize jde-sourcepath))))
+
+
+ (defun jde-find-class-source-file (class)
+   "Find the source file for a specified class.
+ CLASS is the fully qualified name of the class. This function searchs
+ the directories and source file archives (i.e., jar or zip files)
+ specified by `jde-sourcepath' for the source file corresponding to
+ CLASS. If it finds the source file in a directory, it returns the
+ file's path. If it finds the source file in an archive, it returns a
+ buffer containing the contents of the file. If this function does not
+ find the source for the class, it returns nil."
+   (let* ((class (jde-remove-inner-class class))
+          (file (concat
+         	(jde-parse-get-unqualified-name class)
+         	".java"))
+          (package (jde-parse-get-package-from-name class)))
+     (catch 'found
+       (loop for path in (jde-expand-wildcards-and-normalize jde-sourcepath) do
+             (progn
+               (if (and (file-exists-p path)
+         	       (or (string-match "\.jar$" path)
+         		   (string-match "\.zip$" path)))
+         	  (let* ((bufname (concat file " (" (file-name-nondirectory path) ")"))
+         		 (buffer (get-buffer bufname)))
+         	    (if buffer
+         		  (throw 'found buffer)
+         	      (let* ((pkg-path (subst-char-in-string ?. ?/ package))
+         		     (class-file-name (concat  pkg-path "/" file))
+         		     success)
+         	      (setq buffer (get-buffer-create bufname))
+         	      (save-excursion
+         		(set-buffer buffer)
+         		(setq buffer-file-name (expand-file-name (concat path ":" class-file-name)))
+         		(setq buffer-file-truename file)
+         		(let ((exit-status
+         		       (archive-extract-by-stdout path class-file-name archive-zip-extract)))
+         		  (if (and (numberp exit-status) (= exit-status 0))
+         		      (progn
+         			(jde-mode)
+         			(goto-char (point-min))
+         			(setq buffer-undo-list nil)
+         			(setq buffer-saved-size (buffer-size))
+         			(set-buffer-modified-p nil)
+         			(setq buffer-read-only t)
+         			(throw 'found buffer))
+         		  (progn
+         		    (set-buffer-modified-p nil)
+         		    (kill-buffer buffer))))))))
+         	(if (file-exists-p (expand-file-name file path))
+         	    (throw 'found (expand-file-name file path))
+         	  (let* ((pkg-path (subst-char-in-string ?. ?/ package))
+         		 (pkg-dir (expand-file-name pkg-path path))
+         		 (file-path (expand-file-name file pkg-dir)))
+         	    (if (file-exists-p file-path)
+         		(throw 'found file-path)))))))))):ReadJdeVarsFromEclipseConfig]
+[:ReadJdeVarsFromEclipseConfig]
+=== Read jde project values from eclipse .classpath config file===
+ (defun jde-load-project-values-from-eclipse-config-file (cp)
+ "Read jde project values from eclipse .classpath config file"
+   (interactive "s")
+   (setq cp (xml-parse-file cp))
+ 
+   (let (src-path class-path)
+     (walk-classpath-xml (lambda (type path ex) 
+                           (setq path (if (file-name-absolute-p path)
+                                          path
+                                        (concat "./" path)))
+                           (if (not ex)
+                               (cond 
+                                ((equal type "src")
+                                 (setq src-path (cons path src-path)))
+                                ((or (equal type "lib") (equal type "output"))
+                                 (setq class-path (cons path class-path)))
+                                )))
+                         cp)
+     (setq jde-global-classpath class-path)
+     (setq jde-sourcepath src-path)))
+
+ (defun walk-classpath-xml (f e) 
+   (if (listp e)
+       (if  (eq (car e) 'classpathentry)
+           (let ((entry (cadr e)))
+             (funcall f (cdr (assoc 'kind entry)) (cdr (assoc 'path entry)) (assoc 'excluding entry)))
+         (mapc (lambda (x) (walk-classpath-xml f x)) e))))
+ 
+
+
+----
+CategoryHomepage
+        

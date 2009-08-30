@@ -1,0 +1,24 @@
+In Emacs-speak, a '''[::window]''' is a [[frame]] pane, that is, a subframe. What is usually called a "window" outside of Emacs is called a '''[[frame]]''' in Emacs.
+
+A window displays the contents of a single ''[[buffer]]''. A buffer need not be displayed in a window, however.
+
+At the bottom of each window is a ModeLine that describes the current buffer status.
+
+Here is a screenshot showing a frame with three windows:
+
+[[image:DrewsEmacsWindowCallouts]]
+
+Commonly used window commands include these:
+
+    C-x 0 delete the current window
+    C-x 1 maximize the current window
+    C-x 2 split the current window horizontally
+    C-x 3 split the current window vertically
+    C-x ^ make selected window taller
+    C-x } make selected window wider
+
+See also WindowsAndFrames.
+
+----
+CategoryGlossary
+CategoryWindows

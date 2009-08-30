@@ -1,0 +1,169 @@
+A convenient way to keep a journal at work or at home is to create a separate file for each day,
+with each filename bearing the name of that day.  Instead of having to find out what the day's date is
+and then create a file with that name, the code below allows you to do <code>M-x journal</code>
+and emacs will do the rest for you.  Like visiting any other file in emacs, the filename with the directory prepended will
+appear in the minibuffer so you can edit it to something else (perhaps you want to edit a different
+file with pretty much the same name, possibly in the same directory).  But in most cases you will simply hit <tt>Enter</tt> to open the file/buffer.  If the file you specify already
+exists, it will be opened (in the current buffer).  If it doesn't exist, then the file will be
+created.  In short, it's the same functionality as visiting any other buffer/file in emacs.
+
+Copy and paste the code below into a file in your emacs path, giving it a name which ends in 
+<tt>.el</tt> and which is unique to emacs: <tt>~/emacs.d/journal.el</tt> works for me.
+
+Then edit the code to suit your preferences.
+* I create all my journal files in html, so <code>M-x journal</code>
+automatically creates a filename with an <tt>.html</tt> extension.  To use a different
+extension, edit the <code>journal</code> function code, replacing "html" with whatever
+extension you prefer.
+* Before using <code>journal</code>, you'll want to (1) tell emacs to load the <code>journal</code>
+function when it starts up, and (2) specify the directory in which your journal entries will
+be stored.  Pick a suitable directory for your journal files on your system and edit the journal function to replace the one I use, <code>~/personal/diary/</code>.  If the directory you specify
+doesn't already exist, create it.  Then put the following three lines, appropriately edited with your favored directory, into your ~/.emacs:
+<pre>
+               (load "journal")
+               (if (file-directory-p "~/personal/diary/")
+                      (setq-default journal-dir "~/personal/diary/"))
+</pre>
+* The format of the filename created is <tt>YYYY-MM-DD-Day.html</tt> which will look like: <tt>2007-09-04-Tue.html</tt>.  I like this particular format because if I do <code>ls -l</code>  (in UNIX/Linux) on the directory where my journal files are located, the listing of the files is automatically sorted by date.  It's also easier to specify journal files of a particular year (e.g., <code>ls 2005*</code>) or month (e.g., <code>less 2006-06*</code>) or dayname (e.g., <code>grep Montreal *Fri*</code>).  But if you wish, you can change the formatting of the filename by changing the arguments to the 
+<code>format-time-string</code> variable.  Do <code>C-h f format-time-string</code> in emacs to bring
+up the help for this and then edit the line in the <tt>journal</tt> function appropriately.
+
+A couple other handy function are included in the code below: <code>now</code>, <code>today</code>,
+<code>tomorrow</code>, and <code>yesterday</code>.  Once these are loaded into emacs (e.g., after
+starting emacs), you can do <code>M-x now</code> to insert the current time into the current buffer,
+<code>M-x today</code> to insert today's date into the current buffer, and so on.  All four of these
+functions use <code>format-time-string</code> to format the output, so, as with the <code>journal</code>
+function, you can change the strings (text) output by changing the arguments to 
+<code>format-time-string</code> in the relevant functions below.
+
+Enjoy.
+
+CategoryJournaling
+
+----
+
+
+<pre>
+;Since list people have asked for this a couple times, I thought 
+;the code below belongs in a more public place.  So here it is.
+;Free, GPL'd code for whoever.
+;Enjoy,
+;ken fisler
+;
+; To specify the directory in which to put your journal entries,
+; put the following into your ~/.emacs, specifying the directory:
+;(load "journal")
+;(if (file-directory-p "~/personal/diary/")
+;       (setq-default journal-dir "~/personal/diary/")
+;)
+;
+; Because "format-time-string" isn't a builtin function until a later version
+; of emacs, the below won't work with this version (19.22.1).
+;
+; Put this entire file into ".../site-lisp" or somewhere in emacs' path.
+(defun journal (filename)
+  "Open HTML file named after today's date, format YYYY-MM-DD-Day.html,
+in subdirectory named in variable journal-dir, set in ~/.emacs,
+else in $HOME."
+  (interactive
+   (progn
+     (setq default-directory journal-dir)
+     (setq filename (concat (format-time-string "%Y-%m-%d-%a" nil) ".html"))
+     (list (read-file-name
+        "Open journal file: " journal-dir filename nil filename))
+     ))
+  (find-file filename)
+)
+
+
+
+(defun now ()
+  "Insert string for the current time formatted like '2:34 PM'."
+  (interactive)                 ; permit invocation in minibuffer
+  (insert (format-time-string "%-I:%M %p"))
+)
+
+
+(defun today ()
+  "Insert string for today's date nicely formatted in American style,
+e.g. Sunday, September 17, 2000."
+  (interactive)                 ; permit invocation in minibuffer
+  (insert (format-time-string "%A, %B %e, %Y"))
+)
+
+
+;; Get the time exactly 24 hours from now.  This produces three integers,
+;; like the current-time function.  Each integers is 16 bits.  The first and second
+;; together are the count of seconds since Jan 1, 1970.  When the second word
+;; increments above 6535, it resets to zero and carries 1 to the high word.
+;; The third integer is a count of milliseconds (on machines which can produce
+;; this granularity).  The math in the defun below, then, is to accommodate the
+;; way the current-time variable is structured.  That is, the number of seconds
+;; in a day is 86400.  In effect, we add 65536 (= 1 in the high word) + 20864
+;; to the current-time.  However, if 20864 is too big for the low word, if it
+;; would create a sum larger than 65535, then we "add" 2 to the high word and
+;; subtract 44672 from the low word.
+
+(defun tomorrow-time ()
+ "*Provide the date/time 24 hours from the time now in the same format as current-time."
+  (setq
+   now-time (current-time)              ; get the time now
+   hi (car now-time)                    ; save off the high word
+   lo (car (cdr now-time))              ; save off the low word
+   msecs (nth 2 now-time)               ; save off the milliseconds
+   )
+
+  (if (> lo 44671)                      ; If the low word is too big for adding to,
+      (setq hi (+ hi 2)  lo (- lo 44672)) ; carry 2 to the high word and subtract from the low,
+    (setq hi (+ hi 1) lo (+ lo 20864))  ; else, add 86400 seconds (in two parts)
+    )
+  (list hi lo msecs)                    ; regurgitate the new values
+  )
+
+;(tomorrow-time)
+
+(defun tomorrow ()
+  "Insert string for tomorrow's date nicely formatted in American style,
+e.g. Sunday, September 17, 2000."
+  (interactive)                 ; permit invocation in minibuffer
+  (insert (format-time-string "%A, %B %e, %Y" (tomorrow-time)))
+)
+
+
+
+;; Get the time exactly 24 hours ago and in current-time format, i.e.,
+;; three integers.  Each integers is 16 bits.  The first and second
+;; together are the count of seconds since Jan 1, 1970.  When the second word
+;; increments above 6535, it resets to zero and carries 1 to the high word.
+;; The third integer is a count of milliseconds (on machines which can produce
+;; this granularity).  The math in the defun below, then, is to accomodate the
+;; way the current-time variable is structured.  That is, the number of seconds
+;; in a day is 86400.  In effect, we subtract (65536 [= 1 in the high word] + 20864)
+;; from the current-time.  However, if 20864 is too big for the low word, if it
+;; would create a sum less than 0, then we subtract 2 from the high word
+;; and add 44672 to the low word.
+
+(defun yesterday-time ()
+"Provide the date/time 24 hours before the time now in the format of current-time."
+  (setq
+   now-time (current-time)              ; get the time now
+   hi (car now-time)                    ; save off the high word
+   lo (car (cdr now-time))              ; save off the low word
+   msecs (nth 2 now-time)               ; save off the milliseconds
+   )
+
+  (if (< lo 20864)                      ; if the low word is too small for subtracting
+      (setq hi (- hi 2)  lo (+ lo 44672)) ; take 2 from the high word and add to the low
+    (setq hi (- hi 1) lo (- lo 20864))  ; else, add 86400 seconds (in two parts)
+    )
+  (list hi lo msecs)                    ; regurgitate the new values
+  )                                     ; end of yesterday-time
+
+(defun yesterday ()
+  "Insert string for yesterday's date nicely formatted in American style,
+e.g. Sunday, September 17, 2000."
+  (interactive)                 ; permit invocation in minibuffer
+  (insert (format-time-string "%A, %B %e, %Y" (yesterday-time)))
+)
+
+</pre>

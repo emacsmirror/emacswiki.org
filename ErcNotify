@@ -1,0 +1,20 @@
+erc-notify.el is a EmacsIrcClient module that allows you to keep track
+of the online status of certain people.
+
+Notify is not enabled by default. To enable it use <code>M-x
+customize-variable RET erc-modules</code>.
+
+You get a new /-command, <code>/notify</code>. Use it as follows:
+
+/notify by itself lists the users online which are on your
+notification list.  <code>/notify</code> ''nick [nick ...]'' toggles
+that nick. Meaning, if the nick is on the list, it will get removed,
+otherwise it will be added.
+
+The status of the nicks is checked every
+<code>erc-notify-interval</code> seconds, 60 by default.
+
+Note that you can also use variable <code>erc-notify-list</code>.
+
+----
+[[ERC]]

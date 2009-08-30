@@ -1,0 +1,8 @@
+The Emacs Lisp Package Checklist by JariAalto gives recommended conventions for authors of Emacs Lisp packages.
+
+* http://www.nongnu.org/emacs-tiny-tools/packages/
+
+See also the appendix "Tips and Conventions" and the sections "Major Mode Conventions" and "Minor Mode Conventions" in the EmacsLispReference.
+
+----
+CategoryCode

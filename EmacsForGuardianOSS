@@ -1,0 +1,8 @@
+HP has ported the 21.2 version of Emacs dated 2002-03-16 to it's OSS personality of NSK and posted it to ITUG.  To download this port click [https://www.itug.org/secure/ituglib/user/dsp_search.cfm here] and check the [editor] box and then click the [begin search] button at the bottom of the page.
+
+If you are accessing the system with a terminal emulator from a desktop machine it seems a silly thing to run an old version of Emacs and compete with other system users by running the Emacs port.  It makes more sense to run a much newer version of Emacs on your desktop machine and use TrampMode or AngeFtp to access files on the Tandem box.  
+
+See TandemNskSupport for info on major modes and utilities specific to the Tandem/HP Guardian/NSK environment.
+
+----
+CategoryPorts

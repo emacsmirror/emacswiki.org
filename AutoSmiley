@@ -1,0 +1,5 @@
+Lisp:autosmiley.el defines a minor mode that works with smiley.el and jit lock to change smileys into graphics as you type.  It works by putting an overlay over any smileys it finds pointing to the appropriate image.
+
+It was thrown together in about half an hour but it seems to work ok in the inextensive testing it's been given.
+
+--DamyanPepper

@@ -1,0 +1,56 @@
+''Originally posted to OpenQuestions''.
+
+[new] 
+Is there an easy way to do "search near" in Emacs? This should take three arguments, `word1', `word2' and `distance', and should return all occurences of `word2' that occur within distane `distance' from an occurence of `word1'.  It would also be nice if there was a new buffer that should contain a "clickable" and "returnable" list of these occurences like "M-x grep", does. I am trying to convince somebody for the benefits of Emacs over other editors AND (gasp) "word processors" and he put the existence of such a utility as a requirement. So you understand, this is for a sacred purpose :).
+
+[new]
+: you could use M-x occur with a regex like this: \<word1\>\(.\|^Q^J\)\{,n\}\<word2\> 
+: where ^Q^J means you have to insert a quoted newline, and `n' is the number of characters between the two words. -- AnselmHelbig
+ 
+[new]
+:: Thanks a lot for your answer. Two problems with it: by distance I meant "word distance" i.e. how many words are in between. The second is that word2 might preceed word1 and still be within the given distance. 
+:: I don't have much experience with regex, how does one denote the newline character? I tried "\n" and it didn't work. It worked when I replaced "^Q^J" with "\s-" but it took too much time.
+
+[new]
+
+: C-j inserts a newline, but it has to be quoted with C-q, or else
+: emacs will think you're already done entering the regex. `^Q^J' is an
+: alternate way to write that down, used by the rest of the world.
+
+: you have to use `\n' and the like when you're writing lisp code. 
+
+: this might do what you want: <code>\(\<word1\>\(\w+\W*\)\{,n\}\<word2\>\|\<word2\>\(\w+\W*\)\{,n\}\<word1\>\)</code>
+: but i didn't test it yet; and there may be a more elegant way to do it. regexes are famous for being more difficult to read than to write, and they're so damn useful... you should really try to learn some regex-syntax, it's worthwhile. 
+
+[new]
+:: Ok, regex was the magic word! The one you gave doesn't really work but a slight variation of it does, namely 
+
+<pre>
+                     \<word1\>\W\(\w+\W+\)\{,n\}\<word2\>\|\<word2\>\W\(\w+\W+\)\{,n\}\<word1\>
+</pre>
+
+:: regexes seem to be fun! They sort of looked weird to me, but now I think I like them. Thank you so much!
+
+[new]
+
+:: I've written a couple of functions that do this. These are (almost) my first attempts at elisp so please don't laugh too hard. Here they are:
+
+    (defun find-near (word1 word2 num)
+      "Find all occurences of word1 within distance num of word2."
+     (occur (concat "\\<" 
+    		word1 "\\>\\(\\W\\<\\w+\\>\\)\\{," 
+    		(number-to-string num) "\\}\\W+\\<" word2 "\\>\\|\\<"
+    		word2 "\\>\\(\\W+\\<\\w+\\>\\)\\{," 
+    		(number-to-string num) "\\}\\W+\\<" word1 "\\>")))   
+    
+    (defun near-search ()
+      "It finds all occurences of a word within a given distance of an other word."
+      (interactive)
+      (let  ( (word1 (read-string "First word:"))
+    	  (word2 (read-string "Second word:"))
+    	  (num (read-number "Distance:" 1)))
+        (find-near word1 word2 num)))
+
+----
+CategoryRegexp
+SearchAndReplace

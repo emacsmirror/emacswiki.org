@@ -1,0 +1,42 @@
+This modes allow you to edit compressed files. It uncompresses and
+compresses files on the fly, so the user can use compressed files
+transparently. To check it out, use `M-x auto-compression-mode' and
+open a file compressed with gzip (<code>.gz</code>), bzip2 (<code>.bz2</code>) or compress (<code>.Z</code>).
+It's important that you end the filename with one of the above named
+extensions, because that's what Emacs uses to recognize that the file's
+compressed.
+
+Later, consider adding this to your ~/.emacs file:
+
+    (auto-compression-mode 1)
+
+== dz files ==
+<code>.dz</code> files are used by RFC 2229 <code>dictd</code> servers.
+(On a [[Debian]] system such files are under <code>/usr/share/dictd</code>.) 
+They're gzip format, but arranged to allow random access, ie. direct access to chunks in the middle of the file instead of always reading from the start.
+
+Emacs 22 has support for <code>.dz</code> in auto compression mode, so you can visit a <code>.dict.dz</code> and look at the whole thing instead of doing an actual <code>dict</code> search (see CategoryInterface for <code>dict</code> searches).  You can get the same in Emacs 21 with the following.
+
+    (eval-after-load "jka-compr"
+      '(unless (member "\\.dz\\'" (mapcar (lambda (vec) (elt vec 0))
+                                          jka-compr-compression-info-list))
+         (add-to-list 'jka-compr-compression-info-list
+                      ;; this element from emacs 22
+                      ["\\.dz\\'"
+                       nil              nil     nil
+                       "uncompressing"  "gzip"  ("-c" "-q" "-d")
+                       nil t "\037\213"])
+         ;; if already enabled then toggle to get our addition recognised (note
+         ;; no `auto-compression-mode' variable in xemacs 21)
+         (when jka-compr-added-to-file-coding-system-alist
+           (auto-compression-mode 0)
+           (auto-compression-mode 1))))
+
+And <code>.dict</code> files are UTF-8, so
+
+    (modify-coding-system-alist 'file "\\.dict\\'" 'utf-8)
+
+----
+CategoryModes 
+CategoryExternalUtilities
+CategoryInterface

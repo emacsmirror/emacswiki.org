@@ -1,0 +1,33 @@
+From the elisp-file:
+
+timeclock.el --- mode for keeping track of how much you work
+
+This mode is for keeping track of time intervals.  You can use it for whatever purpose you like, but the typical scenario is to keep track of how much time you spend working on certain projects.
+
+timeclock.el is written by JohnWiegley.
+
+timeclock.el is now part of GNU Emacs, BUT:
+The version of timeclock.el that comes with my older revision of Gnu Emacs (GNU Emacs 21.2.1 that comes with Red Hat 7.3) is buggy.  I fixed this by downloading and using the HEAD revision of the file from the CVS repository, until I can upgrade to a more recent release of Gnu Emacs. -- BrentGoodrick
+
+--
+
+Does anyone know where to find documentation for timeclock?  The info page has some documentation: http://www.delorie.com/gnu/docs/emacs/emacs_437.html but not enough to bootstrap timeclock.  If I type M-x timeclock-in, my only project is nil and if I type M-x timeclock-out, the lack of defined reasons ends up throwing an error.
+
+: Did you read the comment in the source-file timeclock.el? You can give a project name during timeclock-in. Works fine for me. -- MartinStemplinger
+
+--
+
+There are some extensions for timeclock.el in Lisp:timeclock-x.el
+
+With timeclock-x (as with timeclock) when you clock-in you will be asked for the name of a project, but then when you clock-out, in addition to being asked for a reason why, you're also given the option of typing in a multi-line comment where you can say a few words about what you were doing.  
+
+Oddly enough neither timeclock nor timeclock-x have (at present) any features to sum up the number of hours you spent on different projects.  I wrote up some code of my own (in perl, with elisp wrappers) to generate a simple summary report: 
+http://obsidianrook.com/codelife/timetrack.html
+
+Note, there are some gotchas with running timeclock-x.el: you may have problems if you haven't created the file: ~/.timeclock/default.log, and you may find that you're better off if you don't try to turn on the modeline features until there are some time periods clocked into that file.  That is to say, don't use this at first:
+::  (timeclock-modeline-display 1) 
+
+Note: The help screen in timeclock-x.el refers to a function "timeclock-generate-timesheet" which is not defined in timeclock.el or timeclock-x.el. I gather that there were plans to release some report generation code (perhaps in a timeclock-report.el?).
+
+----
+CategoryCalendar

@@ -1,0 +1,17 @@
+Lisp:emdroid.el
+
+Android is a mobile platform backed by Google.  It runs on a linux / jvm stack.  See http://code.google.com/android/ for more details. 
+
+Emdroid is Android for Emacs.  Like the Eclipse plugin, EmDroid will be a wrapper around the commandline tools. It is currently being developed by JonathanArkell.
+
+It currently features:
+* Android project creation
+* Launching the emulator
+* Installing apks in a running emulator 
+
+Future plans are:
+* integration with JDE
+* A comint process for the Android Shell
+* Some kind of project system?  
+
+Help developing this is strongly encouraged, from small suggestions to full implementation.

@@ -1,0 +1,136 @@
+== Quick Start ==
+If you just want the latest EMACS from CVS, use this:
+
+ cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/cvsroot/emacs co emacs
+
+==Description==
+
+This page describes how to acquire a development version of GnuEmacs
+from the official CVS source code repository on Savannah.  
+Needless to say, any
+development version is the bleeding edge, the effective word being
+"bleeding".
+
+The Emacs Savannah project page is at the URI:
+
+* http://savannah.gnu.org/projects/Emacs
+
+Of course some sort of a CVS client is required.  Mainly the use of
+the Berliner, Zuhn and Polk command-line CVS client from GNU is
+described here for now.  Of course other CVS programs exists, as do
+interfaces to the GNU CVS.
+
+The way to get the sources from Savannah changed 2005-12-11, see http://savannah.gnu.org/forum/forum.php?forum_id=4168.
+Look at the project page above for specific information about how to get Emacs sources.
+
+== Code ==
+I think it is better to tell where the relevant information is.
+In the files you download from CVS you can find the files INSTALL, INSTALL.CVS and nt\INSTALL (for MS Windows) that describes how to 
+build Emacs.
+You can look at those files in the [http://www.gnu.org/software/emacs/emacs.html#Obtaining Emacs CVS Repository] without checking out
+all the code for Emacs.
+
+The process of building Emacs is well described for *nix style operating systems.
+The description you give below is not entirely cross platform since it does not work for MS Windows.
+I believe it is easy to build on those system and quite a bit more complicated to get started on MS Windows.
+I have therefore written a simple version about that in the documentation for [[EmacsW32]].
+
+{{{
+#! /bin/sh
+## Minimal best-practices cross-platform build from current CVS
+
+## install optional support libraries (especially for fuller image support)
+
+## icons installed separately?
+
+cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/cvsroot/emacs co emacs
+cd emacs
+
+./configure
+make bootstrap
+
+make
+make install
+
+## suggest help URLs or packages
+## code to dump?
+}}}
+
+==Getting the sources from CVS==
+
+Follow the instructions in Emacs project page above to check out the sources.
+
+After the code has been fetched the first time, the command <code>cvs
+update</code> ''modulename'' will check if any of the revisions on the
+repository have changed, and will bring the local copies to match if
+any have.
+
+One can of course check out historical sets too.  This is achieved
+with the '-r' switch to CVS's '''checkout''' alias '''co''' command.
+This could be useful for example if one wishes to get a set of the
+sourcecode considered to be reasonably well-behaved and stable.  The
+following command demonstrates this, and downgrades to the latest
+Emacs 21 pre-release.
+
+    cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/cvsroot/emacs co -rEMACS_21_1_RC emacs
+
+See http://savannah.gnu.org/cvs/?group_id=40 for more details.
+
+== Branches and Tags ==
+
+The following commands, executed in the top-level emacs directory, will extract
+a list of branches in approximately most-to-least recent order:
+
+  cvs status -v > emacs.branches;
+  perl -n \
+    -e '$x && /\S/ &&'                                                       \
+    -e 'do { /(\S+)\s+\(\S+: (\S+)\)/; if( $2 gt $s{$1} ) { $s{$1} = $2} };' \
+    -e '$x = $x ? !/^\s*$/ : /^\s+Existing Tags:\s*$/i;'                     \
+    -e 'END { map {printf(STDOUT "%-14s: %s\n", $s{$_}, $_)} keys( %s ) }'   \
+      emacs.branches |\
+        sort -r | uniq
+
+The top few branches are currently:
+
+  3.94        : emacs-unicode-2-base
+  3.94        : EMACS_PRETEST_22_0_93
+  3.93        : EMACS_PRETEST_22_0_92
+  3.93        : EMACS_PRETEST_22_0_91
+  3.93        : EMACS_PRETEST_22_0_90
+  3.9.8       : gerd_int
+  3.9.6       : gerd_dbe
+  3.9.4       : lexbind
+  3.9.4       : gerd_defvaralias
+  3.9.4       : Boehm-GC
+  3.9.2       : rmail-mbox-branch
+  3.9.2       : fx-branch
+  3.9.2       : emacs-unicode
+  3.9.10      : gerd_big
+  3.9         : fx-branch-base
+  3.9         : emacs-unicode-base
+
+See also EmacsCVSFeatures.
+
+==MS Windows Specific Information==
+On MS Windows without Cygwin the process is a little, little bit different.
+Information about this is available if you follow the links on [[EmacsW32]].
+
+==Alternatives to CVS==
+
+While Emacs is still developed in CVS some mirrors exist that allow you to checkout and hack on Emacs using your favorite version control system. Specific information can be found at EmacsFromBazaar, EmacsFromGit, EmacsFromMercurial, and EmacsFromArch.
+
+Note that [[Bazaar]] is said to be the vcs to be used for Emacs development in the future.
+
+==Router port required by CVS==
+... and don't forget to open the port 2401 on your router, it is required by CVS.
+
+== Distribution-Specific Instructions for GNU/Linux ==
+
+For building on Debian GNU/Linux, see EmacsCvsAndDebian.  For building on Slackware Linux, see [http://slackwiki.org/Emacs_from_CVS SlackWiki].
+
+----
+See also
+EmacsCVSFeatures,
+EmacsDevelopmentSources.
+----
+CategoryBuilding

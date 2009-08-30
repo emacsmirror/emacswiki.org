@@ -1,0 +1,33 @@
+A nice way to use the highline package together with Gnus is to turn
+on the highline mode in the summary buffer. So you always know where you cursor has
+been in the summary buffer (even if you switch to the mail).
+
+Simply get the highline (HighlineMode or Groups:highline.el) package and use
+the following setup:
+
+ (require 'highline)
+ (add-hook 'gnus-summary-mode-hook 'highline-local-mode)
+
+----
+
+Another option is to use hl-line-mode which comes with GNU Emacs 21.
+
+ (add-hook 'gnus-summary-mode-hook 'my-setup-hl-line)
+ (add-hook 'gnus-group-mode-hook 'my-setup-hl-line)
+
+ (defun my-setup-hl-line ()
+  (hl-line-mode 1)
+  (setq cursor-type nil) ; Comment this out, if you want the cursor to
+			 ; stay visible.
+  )
+
+
+----
+
+For aesthetic values, there is also GnusStripes, which puts stripes in
+the mail summary buffer. That is, odd lines are a bit shaded. There is
+a similar effect in thunderbird.
+
+
+----
+CategoryGnus

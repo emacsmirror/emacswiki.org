@@ -1,0 +1,79 @@
+If you really want to know how HTML and HTTP work, or if you are
+debugging some HTTP problems, the following might come handy.  It is
+also good to have if you need to get data from the web, but you don't
+need to render it.  Ideal for web services.
+
+
+
+See also HttpPost, RFC 2616.  Not entirely loosely related is HtmlRendering.
+
+The original code was written by PatrickAnderson for the
+EmacsWebBrowser; it is now heavily modified by AlexSchroeder.
+
+* http://savannah.nongnu.org/projects/http-emacs
+* [[http://cvs.savannah.nongnu.org/viewcvs/*checkout*/http-emacs/http-get.el?root=http-emacs http-get.el]]
+
+== Changes ==
+* 07/05/2003 set the encoding according to http headers
+
+== Questions ==
+
+* ''Which versions of Emacs has this been tried on?'' -- DavidMasterson
+
+I use it on GNU Emacs 21.2.92.1 (i686-pc-linux-gnu, X toolkit, Xaw3d
+scroll bars) of 2003-01-19 on confusibombus (the pretest), and on a
+GNU Emacs 21.1 for Windows at work. -- AlexSchroeder
+
+It appears to not be compatible with XEmacs 21.1 as it tries to set-process-coding-system. -- DavidMasterson
+
+Yes, it uses the coding system unix, but it seems that binary works
+just as well and also exists on XEmacs.  I also improved debugging so
+you can use http-get-debug to disable all filtering and seing the
+command being sent to the server. -- AlexSchroeder
+
+* If we use http 1.1 don't we leave emacs with an open network connection
+for each request we made? -- PierreGaston
+
+** The server (at least my apache 1.3 at home) closes the
+   connection after about 10-15 sec.  You can avoid it by
+   setting the header <tt>Connection: close</tt>
+
+* ''How do you connect through a proxy with proxy authentication ?'' -- JeromeRadix
+
+** What kind of proxy? If it's a MS proxy the response is probably you can't (complex protocol...). Otherwise it might just be adding some more http headers.
+Another response might also perhaps to install a proxy on your pc that authentificate to your enterprise proxy and then use http-get with your local proxy. -- PierreGaston
+----
+A little wrapper for the http-get function that creates a file for the buffer and does http-decode-buffer. Useful for downloading source code.
+
+    (defun http-find-file-sentinel (proc message)
+      (switch-to-buffer (process-buffer proc))
+      (http-decode-buffer)
+      (set-visited-file-name (concat "/tmp/" buffer-name)))
+
+    (defun http-find-file (url)
+      (interactive "sURL: ")
+      (setq splitted-url (split-string url "/"))
+      (setq buffer-name (first (last splitted-url)))
+      (http-get url nil 'http-find-file-sentinel nil buffer-name nil))
+
+----
+[new]
+I need advice about getting a workable simple-wiki setup under winXP. I can't have any buffer filled with the data :( All I know is that the proxy I am currently behind is a MS product (NTLM fucking technology) and that I have to "fake" it using an alternate proxy running locally. I have set the good options to tell simple-wiki to use my own proxy and response get properly back but apart from that nothing is etting back on my emacs buffer. Anyone has any clue on that ? I am really frustrated with this as I have to do all wiki edition under Mozilla and so I am susceptible to be caught by my boss :) So I need it to be done under Emacs (which nobody knows here ;)) -- XavierMaillard
+
+[new]
+: Well try to use something like (http-get-debug "http://whatever.org/" nil 1.1) and (http-get-debug "http://whatever.org/" nil 1.0) to see if you get some responses. What do you mean by response get back properly ? Also can you
+please specify the intermediate proxy you are using? I've take a look at the protocol [http://www.innovation.ch/java/ntlm.html] and there is no chance to implement it without being able to test it. Also we might move this discussion
+to HttpGet or SimpleWikiEditMode page. (I also set up a mailing list on savannah for http-emacs but I'm the only subscriber at this time :-)) -- PierreGaston
+
+[new]
+:: I have finally achieved what I wanted after 2 days of heavy
+RTFM'ing :). You can see the details (not final explanation) on my
+wiki page XavierMaillard. 
+
+
+
+----
+See also: SimpleWikiEditMode, HttpPost
+----
+CategoryHypermedia
+CategoryInterface

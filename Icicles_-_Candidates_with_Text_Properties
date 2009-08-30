@@ -1,0 +1,266 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Programming Multi-Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Defining Icicles Commands]] ||
+
+----
+
+
+== Candidates with Text Properties ==
+
+This section is for EmacsLisp programmers.
+
+[[Icicles - Programming Multi-Completions]] explains how to apply [[text property|text properties]] to specific parts of all [[multi-completion]] candidates in [[buffer]] `*Completions*' at the same time.  This section tells you how to apply text properties to ''specific'' candidates in `*Completions*'.  The candidates need not be multi-completions, but in some cases they can be.
+
+When you use candidates with text properties such as `face' that
+are visible, the display candidates in `*Completions*' show those
+properties.  In addition, the candidate string that the user
+finally chooses can also be propertized.
+
+There are four different methods for providing candidates with text
+properties, in addition to the way presented on page
+[[Icicles - Programming Multi-Completions]]:
+
+'''1.''' Apply [[face]] '''`icicle-special-candidate''''  to all candidates that
+   match a given [[regexp]].
+
+'''2.''' Use a set of text properties as the '''`icicle-special-candidate''''
+   ''property'' of the [[symbol]] that represents the candidate.  The text
+   properties are transferred to the string candidate that is
+   displayed (and returned).
+
+'''3.''' Use a propertized string as the '''`icicle-display-string''''
+   ''property'' of the symbol that represents the candidate.  That
+   string ''replaces'' the candidate that would otherwise have been
+   displayed, completed against, and returned.
+
+'''4.''' ''Start'' with a propertized string in the ##COLLECTION## argument
+   that you pass to `completing-read'.
+
+All four methods use [[fancy candidates]], in the sense that they go
+beyond what vanilla Emacs offers.  For methods '''1--3''', you must turn
+on fancy-candidate handling.  See [[Icicles - Programming with Fancy Candidates]].
+
+But method '''4''' does not require any costly fancy-candidate encoding
+or decoding, because the '''Icicles''' implementation of
+`completing-read' handles propertized string candidates, and they
+are transparent to the Emacs primitive completion operations.
+
+The following sections explain methods '''1--4''' individually.
+
+
+
+[:icicle-special-candidate-regexp]
+== Using Regexp icicle-special-candidate-regexp ==
+
+If you just want several candidates to have face '''`<tt>[[Icicles - Customization and General Tips#icicle-special-candidate|icicle-special-candidate]]</tt>'''' in `*Completions*', you can simply
+define (e.g. bind) [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-special-candidate-regexp|icicle-special-candidate-regexp]]</tt>'''' to a
+regexp that matches those candidates.  The original candidates can
+be strings or symbols.  Unlike the other methods described here,
+this one ''affects only the display in `*Completions*'''; the
+completion return string does not have face
+`icicle-special-candidate'.
+
+The highlighting applies only to the ''part'' of a candidate that
+matches the regexp.  This selectivity is particularly useful when
+dealing with multi-completions.   Function `icicle-read-file-name'
+provides an example: file names that match ##.+/$##, that is,
+directory names, are highlighted as special candidates. Function `icicle-read-color'
+provides another example (using the similar, but internal, variable
+`icicle-proxy-candidate-regexp'): proxy color-name candidates such
+as `##*point foreground*##' and `##`icicle-region-background'##' are
+highlighted, but not their color swatches.
+
+
+
+
+[:icicle-special-candidate]
+== Using Property `icicle-special-candidate' ==
+
+In this approach, you use the desired list of text properties as the value of property '''`icicle-special-candidate'''' for the symbol that represents the candidate. This method affects the candidates
+that are used during completion, as well as the completion return value.
+
+If the candidate is a string, not a symbol, then `intern' it and put the property on the resulting symbol. If you want the effect to be temporary, then set property `icicle-special-candidate' for the candidate to `nil' when completion is finished.
+
+As a shortcut, if you use the value `t' instead of a property list for property `icicle-special-candidate', then face `icicle-special-candidate' will be used as the `face' property of the candidate.  Using a value of `t' is thus equivalent to using a value of ##(face icicle-special-candidate)##. This approach is used, for instance, in the definition of [[command]] `icicle-complete-keys' (`S-TAB').
+
+
+
+
+[:icicle-display-string]
+== Using Property `icicle-display-string' ==
+
+This method is similar to that of using property
+`icicle-special-candidate'.  The use case for both is
+propertizing, in a general way, candidates that are symbols.  Both
+can be useful when you have an obarray as the ##COLLECTION## argument
+for `completing-read'.
+
+In this method the symbol name is not used at all; the candidate
+is entirely ''replaced'' by another string, which is typically
+propertized.
+
+You use a propertized string as the value of property
+'''`icicle-display-string'''' for the candidate symbol.  The propertized
+string is displayed in `*Completions*' and returned as the final
+completion choice.
+
+Note that multi-completion is not available when you use an
+obarray.  Using property `icicle-special-candidate' or
+`icicle-display-string' you can propertize candidates and parts of
+candidates, but you cannot manipulate multi-completion parts and
+there are no join or end strings.
+
+
+
+[:StartWithPropertizedString]
+== Applying Text Properties to a Candidate String ==
+
+This is the most flexible approach, and it is explained in a bit
+more detail.  It can be used with multi-completions, and it
+affects the `*Completions*' display and the completion return
+value.  However, it is limited to using an [[alist]] or list of
+strings, not an obarray, as the ##COLLECTION## argument to
+`completing-read'.
+
+In this approach, you simply apply the text properties to the string(s) that represent the candidate, which you then pass to `completing-read' in its ''##COLLECTION##'' parameter.
+
+As with the other methods, you can use any text properties you like, including these:
+
+* `face' -- to make some completion candidates stand out in particular ways
+* '''`icicle-mode-line-help'''' -- [[Icicles - Help on Candidates|candidate help]] shown in the
+mode-line when the candidate is current, provided option '''`<tt>[[Icicles - Customization and General Tips#icicle-help-in-mode-line-flag|icicle-help-in-mode-line-flag]]</tt>'''' is non-`nil' (only the first
+character of a candidate string is tested for this property)
+* `help-echo' -- candidate help shown in a mouseover tooltip, provided `tooltip-mode' is on
+* `keymap' and `pointer' -- for individualized mouse treatment of candidates
+* `display' -- to include images in candidates
+* `invisible' -- to hide part or all of particular candidates (which are nevertheless available for completion)
+
+As a convenience, you can use function
+'''`icicle-candidate-short-help'''' to apply both
+`icicle-mode-line-help' and `help-echo' text properties to a candidate string.
+
+How does this work? '''Icicles''' redefines the standard Emacs function `display-completion-list' so that it retains text properties. Emacs should do the same, but it doesn't (yet).
+
+[new:DrewAdams:2007-01-24 15:19 UTC]
+: 2007-01-24 -- [[RMS]] has agreed to fix Emacs in this way, so this will become possible in Emacs. -- DrewAdams
+[new]
+
+[:ColorNameCompletions]
+'''Icicles''' command '''`icicle-read-color'''' presents an illustration, using the `face' property.  (It also uses properties
+`icicle-mode-line-help' and `help-echo', to provide RGB and HSV
+information in the mode-line and via tooltip.)
+
+
+In `icicle-read-color', a multi-completion candidate is used, composed of an unpropertized string that names a color and a propertized string that names its RGB (red, green, blue) value.  The RGB string, by default, has a background of the same color -- each completion candidate is thus accompanied by its own color swatch.  
+
+The code that does this is in function `icicle-make-color-candidate', which is used by `icicle-read-color' and other Icicles commands
+that read colors.  Here is a simplified definition:
+
+  (defun icicle-make-color-candidate (color-name)
+    "Return candidate of COLOR-NAME and its hex RGB string.
+  If `icicle-WYSIWYG-Completions-flag' is non-nil, then the hex RGB
+  string has the color as its background text property."
+    (let ((rgb-string  (hexrgb-color-name-to-hex color-name)))
+      (when icicle-WYSIWYG-Completions-flag
+        (put-text-property
+          0 (length rgb-string) 'face
+          (cons 'background-color rgb-string) rgb-string))
+      (list (list color-name rgb-string))))
+
+[:icicle-WYSIWYG-Completions-flag]
+You'll notice that the face property is added only when [[option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-WYSIWYG-Completions-flag|icicle-WYSIWYG-Completions-flag]]</tt>'''' is non-`nil'.  You can toggle
+this option at any time during completion to change the behavior.
+(The new value takes effect for the next act of completion.)
+
+You can match any part of the multi-completion: color name or RGB value. Command `icicle-read-color' defines a set of sort orders that are pertinent to the color candidates. You can use `##C-,##' to sort by color name, RGB value, hue, saturation, value, or amount of red, blue, or green. 
+
+Here is a screenshot showing candidates sorted by color saturation (purity):
+
+[:FaceNameCompletions]
+[[image:DrewsEmacsColorSaturationCompletions]]
+
+And here is a screenshot showing candidates sorted by color name:
+
+[[image:DrewsEmacsColorNameCompletions]]
+
+For this screenshot, I turned on inclusion of ''proxy'' candidates. For `icicle-read-color', the proxies are placeholders for colors; they are not, themselves, color-name-and-RGB pairs. Proxies are highlighted with face '''`<tt>[[Icicles - Customization and General Tips#icicle-proxy-candidate|icicle-proxy-candidate]]</tt>'''' for easier recognition. As always, you can toggle the use of proxy candidates using
+'''`##C-M-_##'''' in the minibuffer.
+
+The proxy candidates for colors include the single-quoted names of [[user option]]s (variables) whose custom type is `color'. So, for example, option `icicle-region-background' appears as proxy color candidate `##'icicle-region-background'##'. Color proxies also include the following:
+
+* '''`##*copied foreground*##''''  -- last copied foreground, if available
+* '''`##*copied background*##''''  -- last copied background, if available
+* '''`##*mouse-2 foreground*##'''' -- foreground where you click `mouse-2'
+* '''`##*mouse-2 background*##'''' -- background where you click `mouse-2'
+* '''`##*point foreground*##''''   -- foreground under the text [[cursor]]
+* '''`##*point background*##''''   -- background under the text cursor
+
+When you choose a proxy color candidate, the color referred to
+is used.  For example, `##*point foreground*##' means to use the
+foreground color at the cursor position ([[point]]), whatever it might
+be.  Choosing a `mouse-2' candidate lets you then click `mouse-2'
+to pick up a color somewhere.  If you use library <tt>[[palette.el]]</tt> or
+<tt>[[eyedropper.el]]</tt>, and you have already copied a color, then you can
+choose `##*copied foreground*##' (or background) to use that color.
+
+
+'''Icicles''' treats reading face names similarly to reading colors, by redefining standard function `read-face-name' when you are in ''Icicle'' mode. In this case, multi-completions are not used. The pertinent function is `icicle-make-face-candidate', which provides a WYSIWYG face sample whenever '''`icicle-WYSIWYG-Completions-flag'''' is non-`nil'.
+
+A string value for `icicle-WYSIWYG-Completions-flag' presents the
+face name accompanied by that string as a separate sample swatch.
+A value of `t' presents the face name itself in the face it names.
+
+  (defun icicle-make-face-candidate (face)
+    "Return a completion candidate for FACE.
+  The value of option `icicle-WYSIWYG-Completions-flag' determines
+  the kind of candidate to use.
+   If nil, then the face name is used (a string).
+
+   If a string, then a multi-completion candidate is used, with the
+   face name followed by a sample swatch using FACE on the string's
+   text.
+
+   If t, then the candidate is the face name itself, propertized
+   with FACE."
+    (if (stringp icicle-WYSIWYG-Completions-flag)
+        (let ((swatch  (copy-sequence
+                        icicle-WYSIWYG-Completions-flag)))
+          (put-text-property
+           0 (length icicle-WYSIWYG-Completions-flag)
+           'face face swatch)
+          (list (list (symbol-name face) swatch)))
+      (let ((face-name  (copy-sequence (symbol-name face))))
+        (when icicle-WYSIWYG-Completions-flag
+          (put-text-property 0 (length face-name)
+                             'face face face-name))
+        (list face-name))))
+
+Here is a screenshot showing some of the face-name candidates:
+
+[[image:DrewsEmacsFaceNameCompletions]]
+
+'''See Also:''' 
+
+* [[Icicles - Programming with Fancy Candidates]]
+
+* [[Icicles - Programming Multi-Completions]]
+
+* [[Icicles - Sorting Candidates]] for information about changing sort orders.
+
+* [[Icicles - Completions Display]] for more about proxy candidates.
+
+----
+
+|| *Previous:*  [[Icicles - Programming Multi-Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Defining Icicles Commands]] ||
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryProgrammerUtils
+CategoryCode
+CategoryFaces
+
+

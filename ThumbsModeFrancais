@@ -1,0 +1,48 @@
+This page is also available in English: ThumbsMode
+----
+
+Emacs peut aussi être votre visioneur d'image 
+
+Le mode Thumbs d'Emacs utilise le programme 'convert' d'<nowiki>ImageMagick</nowiki> [http://www.imagemagick.org/] pour:
+
+* Créer une prévisualisation en mode vignette.
+* Visioner les images dans un buffer.
+* Changer la taille des images (avec les touches '+' et '-')
+* Interfacer le programme  'convert' pour modifier les images (emboss, swirl e.t.c)
+* Changer votre fond d'écran (via le programme Esetroot).
+
+* Version Emacs: Lisp:thumbs.el 
+* Version Xemacs: Lisp:thumbs-xmas.el
+== Installation ==
+
+Ajouter a votre InitFile:
+
+    (autoload 'thumbs-show-all-from-dir "thumbs" "Preview images in a directory." t)
+
+Créer un répertoire pour les vignettes:
+
+    M-x make-directory RET ~/.emacs-thumbs RET
+
+Exécuter thumbs-mode:
+
+    M-x thumbs-show-all-from-dir
+
+== Image ==
+
+[[image:ThumbsModeScreenshot]]
+	  			
+
+Thumbsmode.el est maintenu par AlexSchroeder et JeanPhilippeTheberge
+
+
+== Thumbs.el et MS-Windows ==
+
+Assurez vous d'avoir la plus recente version (Lisp:thumbs.el) et tout devrait fonctionner sans problemes sous windows.
+
+== Voir Aussi ==
+
+Voir OeilDePoisson pour une autre sorte de vignette -- petites ''frames'' Emacs (non pas des images). Comme des icones transparentes. On peut s'en servir pour controller des buffers de sortie, par exemple.
+
+
+
+

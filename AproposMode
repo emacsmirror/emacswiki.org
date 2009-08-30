@@ -1,0 +1,64 @@
+You can use the Emacs apropos feature to obtain information about the Emacs entities that match a [[regular expression]] (regexp) or keywords that you type.
+
+There are several Emacs apropos commands, including the following:
+
+; `apropos': Summary information about matching symbols (e.g. function and variable names), which could have been called `apropos-symbol', as it gives info on all Emacs [[symbol]]s, whether they are used for functions, [[variable]]s, [[face]]s,....
+; `apropos-command' (`C-h a'): Summary information about matching [[command]]s (interactive functions) only. Synonym: `command-apropos'. (The list you're reading is part of what you see when you do `C-h a apropos'.)
+; `apropos-variable': 	Summary information about matching variables that are [[user option]]s.
+; `apropos-documentation':  Summary information about symbols with matching documentation.
+; `apropos-value': Summary information about symbols with matching [[symbol value]]s.
+
+Except for `C-h a' (`apropos-command'), these other apropos commands are not, by default, bound to any [[key sequence]], so you will need to access them using `M-x' -- for example, `##M-x apropos-variable line##' shows information about all variables whose names contain "##line##".
+
+In the summary buffer for apropos, match hits have links that provide more information. To follow a link, click it with `mouse-2', or put the [[cursor]] on it and hit `RET'.
+
+In XEmacs, Help->Commands, Variables, Keys->Apropos... will give you the list of commands, functions, variables and macros that match a regexp.
+
+== Icicles ==
+
+* You can use [[Icicles]] to get information apropos any command, function, variable, and so on. See [[Icicles - Help on Candidates]]. Type `M-x', `C-h f', `C-h v', and so on, followed by a regexp and `S-TAB' to see all matching commands, functions, variables, and so on. You can then use ‘C-M-next’ or ‘C-M-prior’ to cycle through them, showing the doc for each one in turn in the `*Help*' buffer. Or click an individual name with `C-M-mouse-2' to see its doc. Or use `next' or `prior' to navigate to a particular name, and then use `C-M-RET' to see its doc.
+
+*  Icicles replacements for the standard Emacs
+`apropos' commands also let you see
+the list of regexp matches incrementally using `S-TAB'.
+
+* Icicles commands `icicle-doc', `icicle-fundoc', `icicle-vardoc', and `icicle-plist' are similar to `apropos-documentation', but with additional features.  See [[Icicles - Multi-Completions]].
+
+== "Package"/"Namespace" Viewing ==
+
+Sometimes you'll find it useful to see all symbols that belong to a particular "package". The following code assumes that every symbol that belongs to a particular package is prefixed with its name. For example, the function `color-theme-calm-forest` belongs to the `color-theme` package and will appear in the list as `calm-forest`.
+
+The following ELisp code defines a function for doing that. It basically modifies the *Apropos* buffer to hide the package name prefix.
+
+{{{
+(defun package-apropos (package-name)
+  "Shows all meaningful Lisp symbols that are part of a package
+with the name PACKAGE-NAME. When printing them out, removes the
+PACKAGE-NAME prefix.
+
+For example, a search for ``apropos'' will display ``print'',
+``command'', etc. in the *Apropos* buffer.
+
+Returns list of symbols and documentation found."
+  (interactive "sEnter the package name: ")
+  (let ((package (concat package-name "-")))
+    (setq apropos-accumulator (apropos (concat "^" package)))
+    (apropos-print nil nil (concat "Package prefix: " package))
+    (set-buffer "*Apropos*")
+    (toggle-read-only)
+    (search-forward "Package prefix: ")
+    (let ((start (point)))
+      (end-of-line)
+      (put-text-property start (point) 'face apropos-symbol-face))
+    (while (not (null (search-forward package nil t)))
+      ;; hide the package prefix
+      (let ((end (point)))
+	(beginning-of-line)
+	(put-text-property (point) end 'invisible t)
+	(end-of-line)))
+    (toggle-read-only)))
+}}}
+
+----
+CategoryDocumentation
+CategoryHelp

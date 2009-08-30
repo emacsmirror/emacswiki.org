@@ -1,0 +1,20 @@
+I use Emacs both on Linux and Windows. Long ago I even tried the DJGPP port on DOS (anybody out there who remembers it? :-)).
+
+== Emacs packages I use frequently ==
+
+* [[Gnus]] (to read mail and news)
+* OrgMode (to keep track of my todos)
+* JavaDevelopmentEnvironment (for programming)
+
+Welcome on the Wiki ! :)
+
+I remember the DJGPP port.  :) -- AlexSchroeder
+
+: Wasn't that horrible DOS window ? I remember using it as my first Emacs, and later I discovered NTEmacs. -- LucasBonnet
+
+Sure!  But at the time I didn't ''have'' Windows!  :) -- AlexSchroeder
+
+Actually this made me try Linux: Everytime I tried to start Auctex under DOS the machine crashed. So I decided to try a ''real'' operating system :)) -- MartinStemplinger
+
+----
+CategoryHomepage

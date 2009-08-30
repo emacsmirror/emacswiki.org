@@ -1,0 +1,97 @@
+;;; see page http://www.emacswiki.org/emacs/emacsd for discussion and usage
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          emacsd
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start emacsd at boot time
+# Description:       Enable service provided by daemon.
+### END INIT INFO
+
+# Local Settings
+
+PATH=/usr/local/bin:/usr/bin:/bin
+
+# emacs location.
+emacs="emacs"
+emacsclient="emacsclient"
+
+# EE code
+EE_EMACS_NOT_FOUND=1
+EE_INVALID_OPTION=2
+EE_EMACS_FAIL_TO_START=3
+EE_EMACS_FAIL_TO_STOP=4
+
+# Real code begins here
+
+if [ -z `which emacs` ]
+then
+    log_daemon_msg "Error: Emacs not found. emacsd will now exit."
+    exit $EE_EMACS_NOT_FOUND
+fi
+
+# TODO Start emacs as normal user "emacsd" or "daemon"
+#emacs run under this uid
+emacsd_uid="1000"
+socket_file="/tmp/emacs${emacsd_uid}/server"
+
+if [ "$1" = "start" ]
+then
+    #check whether already started
+    if [ -e "$socket_file" ]
+    then
+        echo "Error: emacsd already started."
+        exit $EE_EMACSD_ALREADY_STARTED
+    fi
+
+    echo "Start emacs daemon ..."
+    sudo -u"#"$emacsd_uid $emacs --daemon
+
+    if [ "$?" -eq 0 ]
+    then
+        echo "emacsd is up."
+        exit 0
+    else
+        echo "Error: emacsd failed to start."
+        exit $EE_EMACS_FAIL_TO_START
+    fi
+fi
+
+if [ "$1" = "stop" ]
+then
+    #options="-s $socket_file"
+    options=""
+    lispcode="(kill-emacs)"
+    sudo -u"#"$emacsd_uid $emacsclient $options --eval $lispcode
+
+    if [ "$?" -eq 0 ]
+    then
+        echo "emacsd is down."
+        exit 0
+    else
+        echo "Error: emacsd failed to stop."
+        exit $EE_EMACS_FAIL_TO_STOP
+    fi
+    exit 0
+fi
+
+if [ "$1" = "restart" ] || [ "$1" = "force-reload" ] 
+then
+    if [ -e "$socket_file" ]
+    then
+        $0 stop
+    fi
+    $0 start
+fi
+
+echo "Usage: /etc/init.d/emacsd {start|stop|restart|force-reload}"
+if ! [ -z "$1" ]
+then
+    echo "No such option:" $*
+    exit $EE_INVALID_OPTION
+fi
+
+exit 0

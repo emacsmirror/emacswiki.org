@@ -1,0 +1,35 @@
+To have Gnus automagically archive your mail according to it's date, you can add the following to your .gnus:
+
+  
+  (defun my-fancy-expiry (group)
+    "Returns the folder to expire to, as <group>.Archive.YYYY.MM, where
+  YYYY is the year, and MM is the month (in case it isn't obvious).
+
+  When using nnml, it's not a good idea to have the name <group>.YYYY as
+  this may conflict with the message numbers (now, suppose you have more
+  than 2000 messages in your folder?), that's why there's Archive in
+  between.
+
+  This is currently hardcoded for nnml."
+    (let* ((target (concat "nnml:"  group ".Archive.%Y.%m"))
+  	 (nnmail-fancy-expiry-targets
+  	  `(("from" ".*" ,target))))
+      (nnmail-fancy-expiry-target group)))
+
+  (setq nnmail-expiry-target 'my-fancy-expiry)
+
+
+You can have mail you read automatically marked as expirable by setting gnus-auto-expirable-newsgroups
+to a regexp that matches some mail group names.  If you'd like this matching to be case (in)sensitive, but don't
+want to fool with the global value of case-fold-search, you can do it by advising the function 
+gnus-group-auto-expirable-p.
+
+  (setq my/gnus-auto-expirable-case-fold-search nil)
+
+  (defadvice gnus-group-auto-expirable-p 
+    (around my/gnus-auto-expirable-case-fold-search (name) activate)
+    (let ((case-fold-search my/gnus-auto-expirable-case-fold-search))
+      ad-do-it))
+
+----
+CategoryGnus

@@ -1,0 +1,42 @@
+This mode does automatic refilling, all the time.
+
+Basically, it hits <code>M-q</code> automatically after changes to
+the buffer that might normally trigger auto-filling.
+This prevents you from ever writing anything other
+than perfectly filled paragraphs in your buffers.  If you need to
+write a table or anything else non-filled, you need to disable Refill
+mode temporarily.
+
+Then use <code>M-x refill-mode</code> to toggle it.
+
+Refill mode is often used in conjunction with LongLines.  Sometimes
+you don't want to refill certain paragraphs.  While you edit these,
+make sure you disable refill mode!  Something like the following might
+be useful.  Change the key binding to your taste.
+
+<code>(global-set-key (kbd "C-c q") 'refill-mode)</code>
+
+== Types of Fill ==
+
+Like any good word processor, you can change the justification of your
+paragraphs with the following commands:
+
+<code>M-x set-justification-full   </code>-- Fully justify the paragraphs
+
+<code>M-x set-justification-left   </code>-- Left justify the paragraphs
+
+<code>M-x set-justification-center </code>-- Center the paragraphs
+
+<code>M-x set-justification-right  </code>-- Right justify the paragraphs
+
+<code>M-x set-justification-none   </code>-- Don't justify the paragraphs
+
+
+You can either run these commands on a region and perform that action for the region (Hint: C-x h marks the entire buffer as a region), or you can set justification and start typing.  Emacs tries to be smart -- i.e. if you set-justification-full on a paragraph it'll be justified full and any paragraphs you type after it will be justified full, but it can be tempermental.
+
+== History ==
+
+This was a replacement for ManiacMode by DaveLove.  It is now part of
+Emacs (21.2)
+----
+CategoryFilling

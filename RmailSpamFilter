@@ -1,0 +1,71 @@
+Spam filtering for [[Rmail]] is part of Emacs 22.
+
+* http://www.deas.harvard.edu/climate/eli/Downloads/rmail-spam-filter/ 
+
+== Tips ==
+
+=== Automatically process X-Spam-Flag headers ===
+
+    (setq rsf-definitions-alist
+          '(((from . "") (to . "") (subject . "")
+             (contents . "X-Spam-Flag: YES")
+             (action . output-and-delete))))
+
+=== Spamassassin headers ===
+For Rmail users where spamassassin headers appear on messages already, here
+are hints, tips, pointers about how to filter... 
+
+http://www.cites.uiuc.edu/antispam/overview.html - Personal Spam Policies
+
+                   Tag and    Cautious     Aggressive     No
+                   Deliver                                Quarantine
+             ___________________________________________________
+    Not Spam     | delivered  delivered    delivered      delivered
+    Likely Spam  | delivered  quarantined  quarantined    delivered
+    Certain Spam | delivered  quarantined  deleted        deleted
+    Known Virus  | deleted    deleted      deleted        deleted
+
+http://www.math.uconn.edu/itresources/spam_filter.php - Filtering '''(Broken Link)'''
+
+http://www.math.uconn.edu/ITResources/InternetSetup/spam_filter.php
+
+http://www.spamassasin.org
+
+http://www-math.mit.edu/computer_help/spamassassin.html
+
+http://www.cites.uiuc.edu/email/spamassassin.html '''(Broken Link)'''
+
+http://www.its.caltech.edu/its/services/internetapps/email/spam.shtml '''(Broken Link)'''
+
+See also
+http://wiki.apache.org/spamassassin/RMAIL
+
+== Questions == 
+
+; **Question**: What are the existing sorting commands for RMAIL in EMACS that can be used to sort !SpamAssassin headers already on messages?...
+
+[new]
+Dunno what you mean.
+[new]
+In EMACS there are sorting commands, what's the trick or a kludge for sorting RMAIL messages by any of the SpamAssassin headers?
+
+----
+
+; **Question**: How do you set up a quarantine file for spam that can be checked later for any possible false positives?...
+
+[new]
+Please see rsf-file (which is where spam can be stored). Just put action to output-and-delete to use that feature.
+
+----
+
+; **Question**: How do you set a white list of favorite correspondents?... -- don warner saklad
+
+[new]
+you have rsf-white-list for that.
+
+----
+
+; **Question**: Would there be any way to make it all more clear, step by step what to do and how to do it?... the explanations appear to be a level above the intermediate beginner level looked for here.
+
+----
+CategoryMail

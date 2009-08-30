@@ -1,0 +1,31 @@
+Tried this with gnu emacs on winXP. 
+
+Problem: You get something like
+
+    w:/thomas/fixHtml/:
+    find . -exec ls -ld {} \;
+    find: missing argument to `-exec'
+
+find exited abnormally with code 1
+
+Solution: 
+
+* Download and unzip unixutils. 
+* Put this somewhere in dos PATH. 
+* Change dos PATH so the unzipped dir comes first, so unixy find gets found before dos find. (Note: find still works the way you expect when called from explorer.)
+* Copy sh to the dir with the other unix utils. (For some reason, when unzipped, the sh program gets put in a different dir.)
+* Change shell-file-name to use .sh. 
+
+Find-dired now doesn't produce that error message.
+
+=== With Msys find and customize ===
+A different approach is to customize `find-ls-option'. Change `Find Option' from
+
+    -exec ls -ld {} \;
+
+to
+
+    -exec ls -ld {} ;
+
+
+Due to the way Msys is installed its find comes first in the PATH and Emacs automatically uses the right one.

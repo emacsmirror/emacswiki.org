@@ -1,0 +1,22 @@
+This page discusses possible pitfalls and gotchas.  See also the section "Lossage" in the EmacsManual about "dealing with Emacs trouble".
+
+Emacs key sequences can vary, depending on whether you use an X window system, the console, a terminal emulation, SSH, and so on.
+
+* ScrollLock -- MS Windows users: If your '''Caps Lock''' seems to be having no effect, hit your '''Scroll Lock''' key.
+
+Replace highlighted text with what I type rather than just inserting at point.  Add the following to your ~/.emacs file:
+
+    (delete-selection-mode t)
+
+=== Help versus Backspace keys===
+
+The environment may change how the BackspaceKey, `C-h' or `F1' are interpreted. 
+
+* Try `C-h ?'.
+* If that does not work, try `F1 ?'.
+* If that does not work, try `M-x help-with-tutorial': hit `ESC' (Escape), then
+hit `x', then type `help-with-tutorial', then hit Enter or Return.
+
+
+----
+CategoryHelp

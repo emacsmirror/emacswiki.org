@@ -1,0 +1,265 @@
+We recommend using the latest release of ERC, but if you can't or won't, here's how to set some things up.
+
+== Changed as of version 5.0 ==
+
+=== Menu ===
+
+If you like to have a menu entry in your MenuBar for IRC related
+commands, simply load erc-menu.el in your ~/.emacs:
+
+    (require 'erc-menu)
+
+XEmacs users might also need to add the following in order for the menu to be enabled:
+
+    (add-hook 'erc-mode-hook (lambda () (easy-menu-add erc-menu erc-mode-map)))
+
+=== Mode-line ===
+
+To make the ModeLine match that of Emacs 22, try this.
+
+ (setq erc-mode-line-format
+       (list "-" 'mode-line-mule-info
+	     'mode-line-modified
+	     " " 'target-and/or-server
+	     " " 'status 'away
+	     "   %[(" 'mode-name
+	     'mode-line-process
+	     'minor-mode-alist
+	     "%n" ")%]----"
+	     'global-mode-string "-%-"))
+
+To remove the server part from the channel identifyer in the mode line, customize `erc-mode-line-format'
+ and change <code>'target-and/or-server</code> to just <code>'target</code>.  This will save you some 
+mode-line real-estate.
+
+=== INFO buffers ===
+INFO Buffers collect information on the channels you are on.
+
+They are quite CPU intensive, so they're disabled by default.  If you'd like to use them, set the variable `erc-use-info-buffers'.
+
+If you don't want to see the INFO buffers when using
+`iswitchb-buffer', customize `iswitchb-buffer-ignore' and add the
+":INFO$" regexp.  Or try this:
+
+ (add-to-list 'iswitchb-buffer-ignore ":INFO$")
+
+For `ibuffer', use `ibuffer-never-show-regexps'.
+
+ (add-to-list 'ibuffer-never-show-regexps ":INFO$")
+
+You could also just use erc-iswitchb bound to C-c C-b by default.  Note that this only works from within an ERC buffer.
+
+You can control what buffers pop up when you join channels.  See variables `erc-join-buffer' and `erc-join-info-buffer'.
+
+=== Adding new Nickserv information ===
+
+First, determine the servers you get redirected to, and then choose a
+symbol to name them.  In my case, I noticed that eventhough I
+connected to irc.lugs.ch, I got redirected to domains like pacifica.ch
+and discordia.ch.  Therefore:
+
+    (add-to-list 'erc-networks '("discordia.ch" lugs-ch))
+    (add-to-list 'erc-networks '("pacifica.ch" lugs-ch))
+    (add-to-list 'erc-networks '("brabbel.ch" lugs-ch))
+
+Now find out what the exact message looks like that you are getting.
+Switch on the debug log, and connect to your server.
+
+    (setq erc-log-p t)
+
+This will create a debug buffer named `*ERC-DEBUG: irc.lugs.ch*' or
+similar.  It will contain lots of junk, but amongst other things, the
+raw text used to ask you for your password.  Here is such an extract:
+
+<pre>
+    (#("-NickServ- nick, type /msg NickServ IDENTIFY password.  Otherwise,
+    " 0 1 (rear-sticky t erc-parsed ["NOTICE" "NickServ!services@rubis.ch"
+    "kensanata" "nick, type  /msg NickServ IDENTIFY  password  .
+    Otherwise," nil nil nil nil nil nil nil nil nil nil nil nil nil nil
+    nil nil nil nil nil nil nil nil nil nil nil nil nil nil] face
+    erc-direct-msg-face) 1 9 (rear-sticky t erc-parsed ["NOTICE"
+    "NickServ!services@rubis.ch" "kensanata" "nick, type  /msg NickServ
+    IDENTIFY  password  .  Otherwise," nil nil ni
+</pre>
+
+Therefore, add the following to `erc-nickserv-alist'.
+
+<pre>
+    (add-to-list 'erc-nickserv-alist
+		 '(lugs-ch
+		   "NickServ!services@rubis.ch"
+		   " /msg\\s-NickServ\\s-IDENTIFY\\s- password  "
+		   "NickServ"
+		   "IDENTIFY"
+		   nil))
+</pre>
+
+=== Loading (Customization) ===
+
+Customize the ERC minor modes to add functionality to ERC.
+In order to do that, you must first use M-x load-library to load the modules.
+Once they are loaded, use M-x customize-group to customize the erc group,
+or M-x customize-option to customize the option, if you already know its name.
+You should see a lot more options once you have all the modules loaded.
+If you customize any of the modes, the custom engine
+will remember to load the appropriate module automatically.
+
+Examples:
+
+If you want to activate filling (ErcFilling):
+
+# M-x load-library RET erc-fill RET
+# M-x customize-option RET erc-fill-mode RET
+# Follow the prompts.
+
+If you want to activate buttons (ErcButton):
+
+# M-x load-library RET erc-button RET
+# M-x customize-option RET erc-button-mode RET
+# Follow the prompts.
+
+If you want to hilight friends, keywords, ignore fools (ErcHighlighting):
+
+# M-x load-library RET erc-match RET
+# M-x customize-option RET erc-match-mode RET
+# Follow the prompts.
+
+See ErcStartupFiles for approaches based on writing elisp.
+
+== Gone as of version 4.0 ==
+
+=== Settings ===
+ErcMinibufferInput -- Input text in the minibuffer to emulate other IRC
+Clients which have by convention shown the output of the channel in a window,
+and allowed input via a separate input widget at the bottom of the screen.
+
+=== Modules ===
+Note that the following text was taken from the module pages, so if it's not explained here, it wasn't explained there.  In that case the comments at the top of the erc*.el files might be of some help.
+
+<b>ErcAutoJoin</b>
+: (require 'erc-autojoin)
+: (erc-autojoin-mode 1)
+
+<b>ErcAutoAway</b>
+* To enable this module, do M-x customize-group RET erc or add the following to your .emacs:
+: (require 'erc-autoaway)
+: (erc-autoaway-enable)
+
+<b>ErcButton</b>
+
+* To activate it, use this in your ~/.emacs file:
+: (require 'erc-button)
+: (erc-button-mode 1)
+
+<b>ErcChannelTracking</b>
+
+* Old: Add the following to your ~/.emacs:
+
+** If you have the following code to load ERC:
+:: (require 'erc)
+:: (erc-track-mode 1)
+
+** If you are autoloading ERC instead, add the following:
+:: (eval-after-load "erc"
+::   '(erc-track-mode 1))
+
+* Even older: Use `M-x erc-track-modified-channels-mode RET' to activate it. This interactive function is auto-loaded, so you don't need to (require 'erc-track).
+
+<b>ErcCompletion</b>
+
+Old-style, using hippie-expand, in erc-complete.el
+
+New, using ProgrammableCompletion, in erc-pcomplete.el
+
+''New Style''
+(For Version ERC 2.93 revision 300 onwards (CVS)) --->
+
+To have pcomplete work automatically, try this:
+
+ 
+    (add-hook 'erc-mode-hook
+             '(lambda () 
+                 (require 'erc-pcomplete)
+                 (pcomplete-erc-setup)
+                 (erc-completion-mode 1)))
+
+If you prefer to do things manually for each channel, here's some older advice-->
+
+Load the file erc-pcomplete.el, and customize the variable
+`erc-completion-mode' in order to enable completion.
+
+For older ERCs, In order to add it by hand add this to your ~/.emacs somewhere:
+
+    (require 'erc-pcomplete)
+    (erc-completion-mode) 
+
+''Old Style''
+(require 'erc-complete)
+
+<b>ErcFilling</b>
+* To enable it, add erc-fill to the hooks that modify the display of incoming and outgoing text:
+
+: (require 'erc-fill)
+: (add-hook 'erc-insert-modify-hook 'erc-fill)
+: (add-hook 'erc-send-modify-hook 'erc-fill)
+
+<b>ErcHighlighting</b>
+* Use the following in your ~/.emacs to activate it.
+: (require 'erc-match)
+: (erc-match-mode 1)
+
+<b>ErcHistory</b>
+* Here's an example for your ~/.emacs file:
+: (require 'erc-ring)
+: (erc-ring-mode 1)
+
+* Note that in older versions of ERC, just loading the file was enough.
+(Note that in erc-3.0 I don't find any erc-ring-mode defun...)
+
+<b>ErcLogging</b>
+
+First of all, choose a directory where channel logs will be placed. You need to create this yourself as ERC will not do it for you. Here's an example:
+
+ mkdir -p ~/.irc/logs
+
+Next up, you need to set some variables to tell ERC to log. The minimum you'll need is:
+
+    (require 'erc-log)
+    (setq erc-log-channels t)
+    (setq erc-log-channels-directory "~/.irc/logs/")
+
+Hitting C-c C-l in a channel buffer will save a log.
+
+<b>ErcNetsplit</b>
+* To install and enable it, put the following code in your .emacs (or wherever you keep your ERC-configuration):
+: (require 'erc-netsplit)
+: (erc-netsplit-mode 1)
+
+<b>ErcNickserv</b>
+* If you'd like to enable this functionality, add the following to your
+~/.emacs file.  You'll need the file erc-nickserv.el for this to work.
+: (eval-after-load "erc"
+:   '(require 'erc-nickserv))
+
+<b>ErcNotify</b>
+* Use (require 'erc-notify) in your .emacs or M-x load-library RET erc-notify RET to activate it.
+
+<b>ErcSmileys</b>
+* To enable it, just add this to your ~/.emacs:
+: (erc-smiley-mode 1)
+Or customize the variable `erc-smiley-mode'.
+
+<b>ErcStamp</b>
+* In order to use timestamps, you need to load the module, and activate the global minor mode:
+: (require 'erc-stamp)
+: (erc-timestamp-mode 1)
+
+<b>ErcTruncation</b>
+* To enable truncation, add this to your ~/.emacs:
+: (require 'erc-truncate)
+: ;; change this to what you like.. default is 30,000
+: ;; (setq erc-max-buffer-size 30000)      
+: (setq erc-truncate-buffer-on-save t)
+
+----
+[[ERC]]

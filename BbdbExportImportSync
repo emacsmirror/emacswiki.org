@@ -1,0 +1,27 @@
+The most useful exchange format for address/contact data seems to be vCard (see http://www.imc.org/pdi/).
+
+See BbdbImporters and BbdbExporters for simple import/export utilities.
+This page is for keeping stuff in /sync/.
+
+CategoryBbdb
+
+=Synchronization=
+
+==PalmPilot==
+
+Various people have been writing software to sync their BBDB (BbdbMode) with their Palm.
+
+* SyncBBDB by ThomasDeWeese -- Supports BBDB 2.2 and later. ie. file format 6 (recommended on the mailing list), but has dropped off the net.  The source code can still be found in Debian, however, at http://packages.debian.org/stable/source/syncbbdb
+* http://www.neilvandyke.org/bbdbpalm/ by NeilVanDyke -- BBDBpalm was developed with BBDB 1.51 (outdated!) (It has also been reported to work with BBDB 2.00.02. -- also outdated)
+
+==General==
+
+Be sure to search the [http://www.mail-archive.com/bbdb-info@lists.sourceforge.net/ BBDB Info mailing-list archives] for the latest stuff.
+
+===Time Stamp===
+
+It seems to me that in order to support proper synchronization, BBDB would need to store a full timestamp, not just
+the date as it does now. If you synchronize more than one time in a day, this will become an issue or at least an inconvenience.
+
+Ah, I now found that you can set 'bbdb-time-internal-format' to "%Y-%m-%dT%T%z" to produce full ISO 8601 format. This should be perfect for syncing. See the documentation of 'format-time-string' to find what specifiers you can use. ColinMarquardt
+ 

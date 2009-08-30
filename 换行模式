@@ -1,0 +1,30 @@
+这个模式下总是自动重新换行【refilling】。
+
+基本上，它（相当于）在编辑缓冲区的改变通常要触发auto-filling【自动换行】的时候自动敲击 M-q。这样您在编辑缓冲区写入的永远都是完美换好行的东西。如果您要写表格或其它不换行的东西【non-filled】，您需要临时的禁用【disable】重新换行模式【Refill mode】。
+
+请用 M-x refill-mode来开关【toggle】它。
+
+重新换行模式通常和LongLines【长行？不换行】一起使用。有时您不想对特定段落重新换行。这时，确认您禁用了重新换行模式！下面的东西可能会有用。根据您的喜好改变键绑定。?
+
+(global-set-key (kbd "C-c q") 'refill-mode)
+
+换行的种类
+
+和其它好的字处理软件一样，您可以用以下命令调整段落【justification】：
+
+M-x set-justification-full -- 段落充满【？】
+
+M-x set-justification-center -- 段落居中
+
+M-x set-justification-left -- 段落左对齐
+
+M-x set-justification-right -- 段落右对齐
+
+M-x set-justification-none -- 段落不对齐
+
+您可以用这些命令操作一个区域（提示：C-x h选取整个编辑缓冲区作为一个区域），或设定好段落调整【justification】后开始输入。Emacs会试着智能－－如，您设定一段为段落充满，那么后面您输入的段落也会采用段落充满，但并不是屡试不爽啦。
+
+历史
+这是DaveLove写的ManiacMode【疯狂模式】的替代品。现在是Emacs（?21.2）的一部分了。
+
+类别：换行【filling】

@@ -1,0 +1,39 @@
+Within the blurb at http://www.cons.org/ it says 'remember, you should
+avoid consing at all cost', yet TheLittleSchemer states 'use cons to
+build lists' as the Second Commandment of recursive programming. When
+is using cons inappropriate?
+
+== Consing increases the amount of garbage collection ==
+When you cons, you are allocating storage -- conceptually, two
+pointers which point respectively to the car and the cdr of the
+cons. Once you no longer need this storage (for example, once you
+leave the scope of the function where you used a temporary list), it
+will be automatically reclaimed for future use by the garbage
+collector.  This won't happen immediately, but once the system decides
+it needs to reclaim some space.  This garbage collecting takes time, so
+if you're in a section of code which will be exected very often, it
+can be better to avoid consing new data, and instead reuse storage
+that has already been allocated.  You reuse storage by using
+destructive operations such as setq and setcdr.  Often lisp primitives
+which operate on lists have a destructive version that avoids consing:
+for example reverse has a destructive cousin named nreverse that
+modifies its argument instead of consing up a new list.
+
+Avoiding consing is rarely worth it nowadays.  For one thing,
+computers are so fast that you barely notice the time spent during
+garbage collection (this wasn't the case 30 years ago, when the first
+emacs implementations were around).  Secondly, modern garbage
+collectors are very efficient in reclaiming space from ephemeral
+allocation: they use "generational" techniques where the youngest
+generation of emphemeral data can be reclaimed cheaply.  Emacs's garbage
+collector still uses old mark-and-sweep techniques, so this doesn't
+apply to Emacs Lisp, but it does to more modern Common Lisp and Scheme
+implementations.
+
+By the way, in my opinion you should use <tt>list</tt> to build a
+list, not <tt>cons</tt>. Cons is a constructor for conses, and lists
+just happen to be a special form of conses.  However, some programming
+textbooks don't agree.  -- EricMarsden
+
+----
+CategoryCode, [[EmacsMemoryDebugging]]

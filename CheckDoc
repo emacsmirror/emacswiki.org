@@ -1,0 +1,11 @@
+CheckDoc checks your EmacsLisp code for errors in documentation and style.
+
+Running CheckDoc is a must before posting to gnu.emacs.sources or uploading to the ElispArea.
+
+The homepage is http://cedet.sourceforge.net/checkdoc.shtml
+
+http://cedet.sourceforge.net/checkdoc.jpg
+
+checkdoc.el is part of GNU Emacs since version 21. 
+----
+CategoryCode

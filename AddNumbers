@@ -1,0 +1,53 @@
+'''Add Numbers in a Column'''
+
+This little function kills the [[rectangle]] between [[point]] and [[mark]] and reinserts it.  The rectangle is also inserted into a temporary [[buffer]], where all the numbers are added together.
+
+ (defun calculator-sum-column (start end)
+   "Adds numbers in rectangle."
+   (interactive "r")
+   (save-excursion
+     (kill-rectangle start end)
+     (exchange-point-and-mark)
+     (yank-rectangle)
+     (set-buffer (get-buffer-create "*calc-sum*"))
+     (erase-buffer)
+     (yank-rectangle)
+     (exchange-point-and-mark-nomark)
+     (let ((sum 0))
+       (while (re-search-forward "[0-9]*\\.?[0-9]+" nil t)
+	 (setq sum (+ sum (string-to-number (match-string 0)))))
+       (message "Sum: %f" sum))))
+
+----
+
+The code above used `exchange-point-and-mark-nomark' which is from pc-select-mode.  A user complained:
+
+My Emacsen don't define exchange-point-and-mark-nomark, so I had to do
+
+ (defun exchange-point-and-mark-nomark ()
+   (exchange-point-and-mark nil))
+
+I hope the code is fixed, now.  These -nomark functions should never be used in EmacsLisp source.  When I wrote it, I was still young and just checked the binding of C-x C-x... -- AlexSchroeder
+
+----
+
+My version of emacs (20.1) does not let you put `nil' after `exchange-point-and-mark'.  But if you omit the `nil', then when the function finishes, the rectangle is no longer marked.
+
+To solve this problem, I modified the function somewhat.  Now, instead of [[kill]]ing and [[yank]]ing the rectangle (thus modifying the buffer), I just copy it to a [[register]].  Now, you don't need the nomark function, and you don't need to exchange-point-and-mark at all.
+
+  (defun sum-column (start end)
+    "Adds numbers in a rectangle"
+    (interactive "r")
+    (copy-rectangle-to-register 9 start end)
+    (set-buffer (get-buffer-create "*calc-sum*"))
+    (erase-buffer)
+    (insert-register 9)
+    (let ((sum 0))
+      (while (re-search-forward "[0-9]*\\.?[0-9]+" nil t)
+        (setq sum (+ sum (string-to-number (match-string 0)))))
+      (message "Sum: %f" sum)))
+
+See also RectangleAdd.
+
+----
+CategoryCalculators

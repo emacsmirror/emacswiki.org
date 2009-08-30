@@ -1,0 +1,32 @@
+est pagina en espanol: ModoAbaco
+
+This mode by ValvassoriMoïse simulates an abacus - a traditional piece
+of wooden hardware for simple computations.
+
+* http://valvassori.free.fr/p_unix.php3#abacus
+
+The web page features the following screenshot:
+
+<pre>
++-----------------------------------------+
+|+---------------------------------------+|
+|| o  o  o  o  o  o  o  o  o  o  o  o  o ||
+|| o  o  o  |  o  o  |  |  o  |  o  |  o ||
+|| |  |  |  o  |  |  o  o  |  o  |  o  | ||
+|+---------------------------------------+|
+|| o  o  o  o  |  |  o  o  o  o  o  o  o ||
+|| |  |  |  o  |  |  o  |  o  |  o  o  o ||
+|| |  |  |  o  o  o  o  |  o  |  |  |  o ||
+|| o  o  o  |  o  o  |  o  |  o  |  |  | ||
+|| o  o  o  |  o  o  |  o  |  o  o  o  | ||
+|| o  o  o  o  o  o  o  o  o  o  o  o  o ||
+|| o  o  o  o  o  o  o  o  o  o  o  o  o ||
+|+---------------------------------------+|
+|+-1--1--1--8--0--0--8--6--3--6--2--7--3-+|
++-----------------------------------------+
+Direction: -->
+Action: addition
+</pre>
+
+----
+CategoryCalculators

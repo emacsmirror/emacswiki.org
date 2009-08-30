@@ -1,0 +1,23 @@
+Emacs is a powerful tool for refactoring source code and working with programming language code generally.  It provides a generic and programmable platform for modifying text files with extensions for working with a variety of programming languages.  Here are some packages that make Emacs even more useful for refactoring.
+
+* CollectionOfEmacsDevelopmentEnvironmentTools (CEDET)
+** HowSemanticFulfillsThoseNeeds
+* EmacsCodeBrowser
+* ExpandMemberFunctions
+
+----
+
+How does this relate to [http://en.wikipedia.org/wiki/Refactoring refactoring]?  What does refactoring "browser" even mean?  If someone can add something relevant here, please do.  Otherwise this page should probably be deleted.
+-- [[nschum]]
+[new]
+I agree, there's nothing in the line of Smalltalk's Refactoring Browser or explicitely relating to refactoring in those links...
+Although if there was I'd be very interested. -- SebastienRoccaSerra
+
+[new]
+If someone has an emacs tool that will go through a set of C files and headers, determining which functions and variables are no longer being called please mention it on this page. gcc does this for variables within a function, but not for a set of interrelated files. -- LV
+
+[new]
+I would think that would be either a GCC trick with some shell programming, or a perhaps there's a hack possible with EmacsTags. -- AaronHawley
+
+----
+CategoryProgrammerUtils

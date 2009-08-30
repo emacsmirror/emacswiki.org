@@ -1,0 +1,31 @@
+[[en:Templates]]
+Cette page concerne les paquetages d'emacs qui gèrent au moins
+l'une des fonctions suivantes:
+
+* des patrons (également appelés modèles) ou 
+* de l'insertion automatique de texte prédéfini. 
+
+Par exemple les fonctions qui vous permettent d'insérer des patrons
+de code, comme des en-têtes comportant un copyright, des en-tête
+de HTML ou de DTD, des cachets d'horodatate, des patrons de
+classes Java class, des squelettes de la syntaxe d'une fonction, des
+fichier de scène POV-ray, etc.
+
+== Système de patron génériques  ==
+
+=== Patron pour la création de fichier ===
+
+Il existe deux paquetages d'extension pour créer des fichiers à partir d'un patron:
+
+* emacs-template de Christopher Wedler : [http://emacs-template.sourceforge.net/]
+* file-template de Scott Frazer [http://www.emacswiki.org/emacs/file-template.el]
+
+emacs-template est plus complet:
+* il a une documentation en ligne.
+* il comprend quelques fonctions intéressantes en plus (décoration de commentaire, mis à jour d'en-tête de tampon à la sauvegarde)
+
+=== Patrons pour l'insertion de fragments ===
+
+== Autres ==
+=== Systèmes de patrons spécialisés pour un langage ===
+=== Développement d'abréviation ===

@@ -1,0 +1,51 @@
+The topic of this page is printing ''from Windows Explorer'', using Emacs print functions.
+
+'''For information printing from within Emacs, see PrintingFromEmacs.''' That page includes info on printing Emacs buffers and regions using the Windows Print command (among other methods).
+
+----
+Slightly edited to incorporate a suggestion by RaymondZeitler. --
+AlexSchroeder
+----
+
+
+ From: JasonDufair
+ Subject: HOWTO: Print from windows explorer context menu
+ Newsgroups: gnu.emacs.help
+ Date: Mon, 08 Oct 2001 20:50:50 -0500
+
+After wrestling with this all afternoon, I think I've come up with a
+decent way to print a file from Windows explorer using NTEmacs.  Any
+comments/improvements would be welcome.  The following example
+explains how to print a .txt file:
+
+From Windows Explorer, go to Tools | Folder Options.  Select the File
+Types tab.  Scroll down to the TXT extension and click on the
+"Advanced" button.  Select the "print" action and click on the
+"Edit..." button. On the second line, paste:
+
+c:\emacs\bin\runemacs.exe --eval "(defun batch-print () (setq
+ps-lpr-command \"c:/progra~1/gsview/gsview/gsprint.exe\") (setq
+ps-printer-name t) (find-file (nth 5 command-line-args))
+(ps-print-buffer))" --eval "(batch-print)" "%1" --batch
+
+making sure that all of the above is on the one line.  This command
+requires ghostscript and ghostview if you don't have a <nowiki>PostScript</nowiki>
+printer set up.  If you want the command to prompt you for a printer
+prior to printing, you can use:
+
+c:\emacs\bin\runemacs.exe --eval "(defun batch-print () (setq
+ps-lpr-command \"c:/progra~1/gsview/gsview/gsprint.exe\") (setq
+ps-lpr-switches '(\"-query\")) (setq ps-printer-name t) (find-file
+(nth 5 command-line-args)) (ps-print-buffer))" --eval "(batch-print)"
+"%1" --batch
+
+If you do have a <nowiki>PostScript</nowiki> printer, you can just use:
+
+c:\emacs\bin\runemacs.exe --eval "(defun batch-print () (find-file (nth 5
+command-line-args)) (ps-print-buffer))" --eval "(batch-print)" "%1"
+--batch
+
+
+----
+CategoryPrinting
+CategoryWThirtyTwo WThirtyTwoFileAssociations

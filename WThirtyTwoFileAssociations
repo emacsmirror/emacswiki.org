@@ -1,0 +1,40 @@
+== Changing file associations from command line ==
+
+on NT (4, 2k, xp) there are two commands built into cmd.exe used display and alter file associations.
+
+ASSOC
+: to change file extension associations.
+
+FTYPE 
+: to display or modify file types used in file extension associations.
+
+I don't know how well these work or how complete their changes are.  use the /? switch for more help.
+
+See also EmacsClient.
+
+== Changing File Types in Windows Explorer ==
+
+Instead of the above or editing the registry keys directly you can in Windows Explorer from the menus choose
+
+  Tools - Folder Options
+
+and then the tab "File Types".
+
+== other ramblings ==
+
+: There are _many_ ways and places the verbs are stored.  HKEY_CLASSES_ROOT contains many of them (using various rules), but a few of the other places they may be found (according to my rummaging around) are:
+:: <nowiki>[HKCU|HKLM]\Classes\Applications</nowiki>
+:: <nowiki>[HKCU|HKLM]\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts</nowiki>
+:: <nowiki>[HKCU|HKLM]\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\Folder</nowiki>
+:: <nowiki>[HKCU|HKLM]\Software\Microsoft\Windows\CurrentVersion\Explorer\AppKey</nowiki>
+:: <nowiki>[HKCU|HKLM]\Software\Microsoft\Windows\CurrentVersion\Explorer\Associations</nowiki>
+:: <nowiki>[HKCU|HKLM]\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\ContentTypeHandlers</nowiki>
+::: ... it appears almost everything under ::<nowiki>[HKCU|HKLM]\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer may be playing a role...</nowiki>
+:: <nowiki>[HKCU|HKLM]\Software\Microsoft\Windows\CurrentVersion\Extensions</nowiki>
+:: <nowiki>[HKCU|HKLM]\Software\Microsoft\Windows NT\CurrentVersion\Extensions</nowiki>
+:: they also may appear in .ini files (though not likely)
+
+: <nowiki>Not all of the the right-click entries are 'verbs'.  I think they are called ShellExtensions, and might (i'm probably wrong) be accessible by using IContextMenu()::QueryContextMenu(), IContextMenu()::GetCommandString(), and IContextMenu()::InvokeCommand() [through some COM goo (which i don't understand)].</nowiki>
+
+----
+CategoryWThirtyTwo

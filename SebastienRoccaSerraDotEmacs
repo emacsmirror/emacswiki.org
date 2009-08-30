@@ -1,0 +1,498 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; User Settings
+
+;; Calendar localization
+(setq calendar-day-name-array ["Dimanche" "Lundi" "Mardi" "Mercredi"
+                               "Jeudi" "Vendredi" "Samedi"]
+      calendar-month-name-array ["Janvier" "Février" "Mars" "Avril" "Mai"
+                                 "Juin" "Juillet" "Août" "Septembre"
+                                 "Octobre" "Novembre" "Décembre"])
+
+;; load customizations
+(setq custom-file "~/.emacs.d/custom.el")
+(load-file custom-file)
+
+(defun my-add-dir-and-subdirs-to-load-path (dir-path)
+  (if (fboundp 'normal-top-level-add-subdirs-to-load-path)
+      (let* ((my-lisp-dir dir-path)
+             (default-directory my-lisp-dir))
+        (add-to-list 'load-path my-lisp-dir)
+        (normal-top-level-add-subdirs-to-load-path))))
+
+;; Load site-lisp & subdirs
+(my-add-dir-and-subdirs-to-load-path "C:/cygwin/usr/local/share/emacs/site-lisp")
+(my-add-dir-and-subdirs-to-load-path "~/.emacs.d/skeletons")
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; Useful key bindings
+
+(defun my-kbd (str)
+  "Private kbd, the original one breaks for M-ü."
+  (read-kbd-macro (encode-coding-string str locale-coding-system)))
+
+(define-key global-map (kbd "RET") 'reindent-then-newline-and-indent)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; My map
+
+;; (define-prefix-command 'my-map)
+;; (global-set-key (kbd "C-,") 'my-map)
+(setq my-map mode-specific-map)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Workplace / home special settings
+(load-file "~/.emacs.d/local.el")
+
+;; Key bindings
+(load-file "~/.emacs.d/key-bindings.el")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Programming
+
+;;;
+;; Lisp
+
+; This code is used to start the Lisp in a box Lisp
+(defvar fi::*lispbox-root* "C:/Program Files/LispBox-0.7/")
+(push (format "%sslime-2.0/" fi::*lispbox-root*) load-path)
+(require 'slime)
+(slime-setup)
+(setq slime-multiprocessing t)
+(setq *slime-lisp* "C:/Program Files/acl81-express/allegro-express.exe")
+(setq *slime-port* 4006)
+(defun slime ()
+  (interactive)
+  (shell-command
+   (format "\"%s\" +B +cm -qq -L \"%sstart-slime.lisp\" -- -p %s&"
+	   *slime-lisp* fi::*lispbox-root* *slime-port*))
+  (delete-other-windows)
+  (while (not (ignore-errors (slime-connect "localhost" *slime-port*)))
+    (sleep-for 0.2)))
+
+;;;
+;; ELisp
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(define-abbrev lisp-mode-abbrev-table
+  "hr"
+  ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
+
+;;;
+;; Clojure
+
+(autoload 'clojure-mode "clojure-mode" "Clojure editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
+
+(setq inferior-lisp-program
+                                        ; Path to java implementation
+      (let* ((java-path "java")
+                                        ; Extra command-line options
+                                        ; to java.
+             (java-options "")
+                                        ; Base directory to Clojure.
+                                        ; Change this accordingly.
+             (clojure-path "c:\\Program\\ Files/Clojure/")
+                                        ; The character between
+                                        ; elements of your classpath.
+             (class-path-delimiter ";")
+             (class-path (mapconcat (lambda (s) s)
+                                        ; Add other paths to this list
+                                        ; if you want to have other
+                                        ; things in your classpath.
+                                    (list (concat clojure-path "clojure.jar"))
+                                    class-path-delimiter)))
+        (concat java-path
+                " " java-options
+                " -cp " class-path
+                " clojure.lang.Repl")))
+
+;;;
+;; Shell
+
+(global-set-key [(control c)(control s)] 'my-print-it)
+(defun my-print-it (&optional language-command)
+  (interactive)
+  (let* ((start (or (and mark-active
+                         (region-beginning))
+                    (beginning-of-thing 'line)))
+         (end (or (and mark-active
+                       (region-end))
+                  (end-of-thing 'line)))
+         (command (buffer-substring start end)))
+    (when language-command
+      (setq command
+            (concat language-command " '"
+                    command
+                    "'")))
+    (let ((result (shell-command-to-string command)))
+      (when result
+        (goto-char end)
+        (push-mark)
+        (insert result)
+        (setq deactivate-mark nil)
+        (exchange-point-and-mark)))))
+
+(global-set-key [(control c)(control l)] 'my-print-it-lua)
+(defun my-print-it-lua ()
+  (interactive)
+  (my-print-it "lua -e"))
+
+(global-set-key [(control c)(control p)] 'my-print-it-perl)
+(defun my-print-it-perl ()
+  (interactive)
+  (my-print-it "perl -c"))
+
+(global-set-key [(control c)(control r)] 'my-print-it-ruby)
+(defun my-print-it-ruby ()
+  (interactive)
+  (my-print-it "ruby -rDate -e"))
+
+(global-set-key [(control c)(f)] 'my-filter-through-command)
+(defun my-filter-through-command(start end)
+  (interactive "r")
+  (let ((command (read-from-minibuffer "Command: ")))
+    (shell-command-on-region start end command nil t)))
+
+;;;
+;; Ruby
+
+(autoload 'ruby-mode "ruby-mode" "Ruby editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
+(add-to-list 'magic-mode-alist '("#!.*ruby" . ruby-mode))
+
+;;;
+;; Groovy
+
+(autoload 'groovy-mode "groovy-mode" "Groovy editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.groovy$" . groovy-mode))
+(add-to-list 'magic-mode-alist '("#!.*groovy" . groovy-mode))
+
+;;;
+;; Perl
+
+(defalias 'perl-mode 'cperl-mode)
+
+;;;
+;; Java
+(autoload 'java-mode "cc-mode" "Java editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.java$\\|\\.pde$" . java-mode))
+
+;;;
+;; Jasmin
+(autoload 'jasmin-mode "jasmin-mode" "Jasmin editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.j$" . jasmin-mode))
+
+;;;
+;; Lua
+
+(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+
+(add-hook 'lua-mode-hook
+          '(lambda ()
+             (modify-syntax-entry ?. ".")
+             (set (make-local-variable 'beginning-of-defun-function) 'lua-beginning-of-defun-function)
+             (set (make-local-variable 'end-of-defun-function) 'lua-end-of-defun-function)
+             (require 'my-lua-skeleton)))
+
+(defun lua-beginning-of-defun-function ()
+  "Go to beginning of function."
+  (interactive)
+  (re-search-backward "^function\\_>" nil 'move))
+
+(defun lua-end-of-defun-function ()
+  "Go to beginning of function."
+  (interactive)
+  (re-search-forward "^end\\_>" nil 'move))
+
+(defun lua-browse-traceback()
+  "Allows to browse the lua traceback.
+Call this function with a lua traceback in the clipboard to open a
+compilation window on it.
+If you call it from a file in your project, the displayed path is
+shortened."
+  (interactive)
+  (let ((directory (my-get-game-base-directory)))
+    (set-buffer (get-buffer-create "*traceback*"))
+    (unless (equal "" directory)
+      (setq default-directory directory)))
+  (fundamental-mode)
+  (let ((inhibit-read-only t)
+        (directory-regex (replace-regexp-in-string "/" "\\\\\\\\" default-directory)))
+    (erase-buffer)
+    (yank)
+    (goto-char (point-min))
+    (while (search-forward-regexp
+            "\\[string \"\\(.*\\)\"\\]" nil t)
+      (replace-match "./\\1"))
+    (goto-char (point-min))
+    (while (search-forward-regexp
+            "/" nil t)
+      (replace-match "\\" nil t))
+    (goto-char (point-min))
+    (while (search-forward-regexp
+            directory-regex nil t)
+      (replace-match ".\\" nil t)))
+  (compilation-mode t)
+  (display-buffer (current-buffer)))
+
+
+;;;
+;; Smalltalk
+
+(autoload 'smalltalk-mode "smalltalk-mode" "Smalltalk editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.st$" . smalltalk-mode))
+
+;;;
+;; C / C++
+(setq my-c-style
+      (quote
+       ((indent-tabs-mode           . nil)
+        (c-basic-offset             . 4)
+        (c-comment-only-line-offset . 0)
+        (c-hanging-braces-alist
+         (substatement-open before after))
+        (c-offsets-alist
+         (topmost-intro             . 0)
+         (topmost-intro-cont        . 0)
+         (substatement              . +)
+         (substatement-open         . 0)
+         (case-label                . +)
+         (access-label              . -)
+         (inclass                   . ++)
+         (inline-open               . 0)))))
+
+(c-add-style "my-c-style" my-c-style)
+
+(defun my-c-mode-common-hook ()
+  (define-key c-mode-base-map (kbd "M-o") 'eassist-switch-h-cpp)
+  (define-key c-mode-base-map (kbd "M-m") 'eassist-list-methods)
+  (c-set-style "my-c-style"))
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+;;;
+;; XML
+
+(autoload 'nxml-mode "rng-auto.el" "XML editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.\\(xml\\|xsl\\|rng\\|xhtml\\)\\'" . nxml-mode))
+(add-to-list 'magic-mode-alist '("<\\?xml " . nxml-mode))
+
+(fset 'xml-mode 'nxml-mode)
+
+(unify-8859-on-decoding-mode t)
+
+;; XSLT transformation
+(defun xsl-transform-file ()
+  "Transform the XML in the given buffer"
+  (interactive)
+  (let ((executable '"D:/Prod/games/Tools/Cygwin/Xalan.exe")
+        (file (buffer-file-name (current-buffer)))
+        (new-buffer (get-buffer-create
+                     (format "%s (=>XSLT)" (buffer-name)))))
+    (save-excursion
+      (set-buffer new-buffer)
+      (erase-buffer))
+    (call-process executable
+                  nil  new-buffer nil
+                  "-a" file)
+    (display-buffer new-buffer t)
+    (select-window (get-buffer-window new-buffer))
+    (set-auto-mode)
+    (indent-region (point-min) (point-max))
+    (goto-char (point-min))))
+
+;;;
+;; Php
+(autoload 'php-mode "php-mode" "PHP editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
+(add-to-list 'magic-mode-alist '("<\\?php\\s " . php-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Libraries
+
+(require 'generic)
+(require 'generic-x)
+(require 'uniquify)
+(require 'redo)
+(require 'ido)
+(ido-mode t)
+
+;; Hippie expand
+(setq hippie-expand-try-functions-list
+      '(try-expand-dabbrev
+        try-expand-dabbrev-all-buffers
+        try-expand-dabbrev-from-kill
+        try-complete-file-name-partially
+        try-complete-file-name
+        try-complete-lisp-symbol-partially
+        try-complete-lisp-symbol
+        try-expand-whole-kill
+        bbdb-complete-name))
+
+(define-key lisp-mode-shared-map [(meta /)] 'hippie-expand)
+
+(require 'yasnippet)
+(yas/initialize)
+(yas/load-directory "D:Prod/Tools/Emacs/yasnippet/snippets")
+
+(require 'zenburn)
+(color-theme-zenburn)
+
+;; Text mode
+;;(add-hook 'text-mode-hook '(lambda () (longlines-mode t)))
+
+;; Org Mode
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq remember-annotation-functions '(org-remember-annotation))
+(setq remember-handler-functions '(org-remember-handler))
+(add-hook 'remember-mode-hook 'org-remember-apply-template)
+
+;;;
+;; Remove trailing whitespaces before saving
+(add-hook 'before-save-hook
+          'delete-trailing-whitespace)
+
+;;;
+;; Mail
+
+(require 'bbdb-autoloads)
+(bbdb-initialize 'sendmail)
+
+(add-hook 'mail-mode-hook 'bbdb-insinuate-sendmail)
+;; (add-hook 'mail-mode-hook '(lambda () (longlines-mode t)))
+
+;; get rid of yes-or-no questions - y or n is enough
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Web searches
+
+(defun my-web-search (base-url what)
+  (browse-url (concat base-url
+                      (url-hexify-string (encode-coding-string what 'utf-8)))))
+
+;;;
+;; Google search
+(define-key my-map "g" 'my-google-search)
+(defun my-google-search (what)
+  (interactive "sGoogle search: ")
+  (my-web-search "http://www.google.fr/search?q="
+                 what))
+
+;;;
+;; EmacsWiki search
+(define-key my-map "w" 'my-emacs-wiki-search)
+(defun my-emacs-wiki-search (what)
+  (interactive "sEmacs Wiki search: ")
+  (my-web-search "http://www.emacswiki.org/cgi-bin/wiki?search="
+                 what))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Anything
+(require 'recentf)
+(require 'anything-config)
+
+(defvar anything-c-source-no-exact-match-in-buffers
+  '((name . "No Exact Match")
+    (candidates
+     . (lambda ()
+         (unless (member anything-input (mapcar 'buffer-name (buffer-list)))
+           (list (cons (concat "Create or find "
+                               "'" anything-input "'")
+                       anything-input)))))
+    (action . (("Create Buffer" . switch-to-buffer)
+               ("Find File" . (lambda (file-name)
+                                (ido-file-internal ido-default-file-method nil nil nil nil file-name)))))
+    (requires-pattern . 1)
+    (volatile)))
+
+(defun my-anything-c-buffer-list ()
+  "Skips buffers allready shown in a window"
+  (let ((buffers (remove-if (lambda (name)
+                              (or (equal name anything-buffer)
+                                  (eq ?\  (aref name 0))
+                                  (not (null (get-buffer-window (get-buffer name))))))
+                            (mapcar 'buffer-name (buffer-list)))))
+    (append (rest buffers) (list (first buffers)))))
+
+(defvar my-anything-c-source-buffers
+  '((name . "Buffers")
+    (init . (lambda ()
+              (setq anything-default-directory
+                    default-directory)))
+    (candidates . my-anything-c-buffer-list)
+    (volatile)
+    (type . buffer)))
+
+(defvar f4-anything-recentf-source
+  '((name . "Recentf")
+    (candidates . (lambda ()
+                    (let ((candidates (list)))
+                      (dolist (each recentf-list)
+                        (unless candidates
+                          (setq candidates (list each)))
+                        (add-to-list 'candidates (f4-shortened-path each)))
+                      candidates)))
+    (match anything-c-match-on-file-name anything-c-match-on-directory-name)
+    (type . file)))
+
+(defvar f4-anything-c-source-file-locate
+  '((name . "File Locate")
+    (init . (lambda ()
+              (setq anything-default-directory
+                    default-directory)))
+    (candidates . (lambda ()
+                    (start-process-shell-command "file-locate-process" nil
+                                                 "locate"
+                                                 (format "--basename -i %s"
+                                                         anything-pattern))))
+    (type . file)
+    (requires-pattern . 5)
+    (delayed))
+  "Source for searching matching files in all 'deliverable/',
+  'src/', or './'.")
+
+(setq anything-sources (list my-anything-c-source-buffers
+                             anything-c-source-files-in-current-dir
+                             anything-c-source-recentf
+;;;                              f4-anything-c-source-file-search
+;;;                              f4-anything-c-source-file-locate
+                             anything-c-source-imenu
+                             anything-c-source-no-exact-match-in-buffers))
+
+(setq anything-samewindow t)
+
+;; (when (require 'session nil t)
+;;   (add-hook 'after-init-hook 'session-initialize)
+;;   (add-to-list 'session-globals-exclude 'org-mark-ring))
+
+(defun sort-string-list (string-list)
+  (let ((sorted-list (copy-list string-list)))
+    (sort sorted-list (quote string-lessp))))
+
+(require 'session)
+(add-hook 'after-init-hook 'session-initialize)
+
+(require 'dired+)
+
+;;; This was installed by package-install.el.
+;;; This provides support for the package system and
+;;; interfacing with ELPA, the package archive.
+;;; Move this code earlier if you want to reference
+;;; packages in your .emacs.
+;; (when
+;;     (load
+;;      (expand-file-name "~/.emacs.d/elpa/package.el"))
+;;   (package-initialize))
+
+(put 'dired-find-alternate-file 'disabled nil)
+
+;;;
+;; snippet
+(require 'snippet)
+(define-key snippet-map [(control m)]       'snippet-next-field)
+(define-key snippet-map [(shift control m)] 'snippet-prev-field)
+
+(require 'visible-mark)
+(require 'auto-mark)

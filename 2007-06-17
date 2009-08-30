@@ -1,0 +1,38 @@
+A new version of Emacs was released earlier this month.
+
+What are some new and cool features available in the this new version?
+
+* Gtk 2.0 support: support for building Emacs with the Gtk widget toolkit (version 2.0 or greater) enabled has been added.  This means that Emacs blends in nicely in a GNOME desktop environment, using the currently selected Gtk/GNOME theme for fonts and menus.  (Though the toolbar works with Gtk, it seems that other types of images don't yet.)
+* Much better GDB integration with the new gdba-mode.  All common debugging commands are available in source buffers, so you should never need to type a command directly in the GDB interaction buffer.  gdba-mode also supports displaying expression values in a sidebar.  See GdbMode.
+* Drag-and-drop support on X.
+* Support for GNU/Linux systems on S390 and x86-64 machines, and for Mac OS X, and for Windows using Cygwin.
+* Full support for images, toolbar, and tooltips on MS-Windows, Mac OS 9 and Mac OS X builds.
+* FontLockMode, AutoCompressionMode, File Name Shadow Mode, and mouse wheel support are enabled by default.
+* Double the maximum size of buffers, up to 256M on 32-bit machines.  See EmacsFileSizeLimit.
+* Links can be followed with `mouse-1', in addition to `mouse-2'.
+* Customizable window fringes.  See TheFringe.
+* Many user interface tweaks, including the highlighting of the selected window's mode line and a distinct minibuffer prompt face.
+* AbbrevMode definitions are read automatically at startup.
+* The Kmacro package for managing KeyboardMacros.
+* New modes and packages, including AdvancedDeskCalculator, GrepMode, [[Tramp]], UrlPackage, InteractivelyDoThings, CuaMode, [[ERC]], [[rcirc]], Table, Image-Dired (see [[Tumme]]), SimpleEmacsSpreadsheet, RulerMode, OrgMode, GnusPGG, FlyMake, Password, Printing, Reveal, [[WDired]], t-mouse, [[LongLines]], savehist, ConfMode, PythonMode, DnsMode, etc.
+* [[Leim]], EmacsLispReference Manual, and the EmacsLispIntro included.
+* DumpingEmacs works properly in both console and X.
+* A trivial and superficial change:  'inactive' windows have an inverted modeline color in X.
+* Added support to VersionControl for the backends of SubVersion, MetaCVS and [[Arch]].
+
+The easiest way to find new stuff is to read the NEWS file
+
+* http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/etc/NEWS?rev=EMACS_22_1&content-type=text/plain
+
+See the [http://lists.gnu.org/archive/html/info-gnu-emacs/2007-06/msg00000.html Emacs 22.1 release announcement].
+
+Steve Yegge has written a longish [http://steve-yegge.blogspot.com/2006/06/shiny-and-new-emacs-22.html blog post] on how to use the new features of Emacs 22. Points that are touched upon are:
+
+# CategoryInternationalization
+# CategorySearchAndReplace
+# Managing numbered lists
+# Examples using ReplaceRegexp in a programming context
+# and a starter for EmacsLisp
+
+----
+EmacsDevelopmentSources

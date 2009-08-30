@@ -1,0 +1,24 @@
+Submerge
+
+submerge is a tool for cherry picking with Bzr. given a branch to merge to,
+and a branch to merge from it will generate a log buffer and create an
+overlays interface with these keys:
+
+"p" previous change
+"n" next change
+"m" merge
+"d" diff
+
+It will scan the target branch for previous merges made with submerge and
+mark them as merged so they are skipped over in subsequent merges working
+around the issue of Bzr not tracking cherry picks.
+
+This is a early release for feedback. Contact me if you are interested - [[codermattie]]
+
+== Download ==
+
+* [[record-processor.el]]
+* [[cm-string.el]]
+* [[cm-path.el]]
+* [[bzr-ui.el]]
+* [[submerge.el]]

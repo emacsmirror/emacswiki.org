@@ -1,0 +1,19 @@
+There was a message by [[Lars_Brinkhoff]] on emacs-devel today.  In it he says
+that he has now "implemented 429 of the 978 external symbols in the
+COMMON-LISP package."  He also cites an earlier mail of his where he announced his intentions:
+
+: I'm implementing Common Lisp symbols, packages, streams, readtables, and the CL reader in Emacs Lisp.
+
+There is now an EmacsWiki page about this CommonLispForEmacs effort. -- [[Lars_Brinkhoff]]
+
+There was a reply by M. C. Widerkrantz talking about similar efforts:
+
+* Ingvar Mattson is writing Common Lisp code to be able to parse Emacs Lisp. MC thinks Ingvar and friends are trying to make Portable Hemlock Emacs Lisp compatible.  This reminds me of Sam Goldstein's CLOCC [http://clocc.sourceforge.net/].
+* Another name that was mentioned was Martin "Rydis" Rydström, but MC did not say what he did exactly.
+
+:: I think he might be one of the "friends" mentioned above. -- bojohan
+::: Correct. --rydis
+
+* MC himself is looking for a portable curses-like package for Common Lisp that he could use to build an Emacs frontend and use Ingvar's EmacsLisp package to make it Emacs compatible.  Does anyone else have any similar plans?
+
+:: Try cl-ncurses, as used by sabett's LiCE editor. -- TrentBuck

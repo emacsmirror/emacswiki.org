@@ -1,0 +1,6 @@
+To avoid the "number SPAM" we started receiving and was discussed on [[2006-10-08]], perhaps a rule like \n\d{9,}\n would work on StrangeBannedContent? -- AaronHawley
+
+[new]
+Done. Let's see how it goes. -- AlexSchroeder
+
+[new]

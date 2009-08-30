@@ -1,0 +1,43 @@
+== Vi - Emacs ==
+
+This table does not cover basic commands like character motion
+
+||'''Description'''    ||'''Vi'''     ||'''Emacs'''                ||
+||transpose characters     ||##xp##     ||`C-t'      ||
+||transpose words    ||##dwwp##    ||`M-t'    ||
+||indent    ||##>>##    ||`C-x TAB'    ||
+||search     ||##/##''pat''    ||`C-s'    ||
+||substitute  ||##:%s/##''pat''##/subs##  ||`##M-%##' or `##C-M-%##' ||
+||substitute variables ||##:s/##''pat''##/\1 \2## ||`M-x replace-regexp', then ##\1 \2## ||
+||search word/identifier  ||##/\<##''word''##\>##  ||`C-s M-e C-w'   ||
+||delete lines  ||##:g/##''pat''##/d##    ||`M-x flush-lines'   ||
+||zap-to ||##ct## ||`##M-z##' ||
+||set line numbers    ||##:se nu##    ||see LineNumbers ||
+||show tabs and newlines  ||##:se list##  ||see ShowWhiteSpace   ||
+||change file formats ||##:se ff=unix/dos## ||`C-x RET f' (TAB to choose) ||
+||shell command ||##:!## ''command''  ||`##M-!## ''command'' ' ||
+||matching ##({[##   ||##%## ||`C-M-f/b' ||
+||filename on bottom line ||##%##   ||see code below ||
+||sort lines ||'''''n'''''##!!sort## ||`M-x sort-lines' ||
+||2-way pipe ||'''''n'''''##!!## /cmd/ || `C-u M-| cmd', see also [[ExecuteExternalCommand]] ||
+||search word/identifier under cursor ||##*## ||`C-s C-w', then `C-s' ||
+||repeat last command  ||##.##   ||see [[RepeatingCommandsLikeVi]]||
+
+In vi, % in the ':' line gets substituted by the file name.
+This code does the same. It gets invoked by M-x M-! M-: and maybe others
+<pre>
+(define-key minibuffer-local-map "%"
+  (function
+   (lambda ()
+     (interactive)
+     (insert (file-name-nondirectory 
+	      (buffer-file-name 
+	       (window-buffer (minibuffer-selected-window))))))))
+</pre>
+
+See Also: ViAndEmacs ViKeys
+
+----
+
+CategoryCommands
+CategoryKeys

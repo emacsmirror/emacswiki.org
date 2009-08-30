@@ -1,0 +1,33 @@
+ElDoc will print some information in the echo area for the elisp function point is in.  This is helpful while coding.
+
+Perhaps something like ah-tty (See http://ah-tty.sourceforge.net/) might be done for eshell by combining eshell with eldoc-mode.  It already works if the commands you type look like EmacsLisp.  If you use an open-parenthesis as in the following example, you will get the appropriate help in the echo area:
+
+ c:/Internet/tmp $ (find-file
+
+If you want it to work without the open-parenthesis as well, try this advice.
+You can put it into your ~/.emacs file, too, if you like.
+
+ (defadvice eldoc-fnsym-in-current-sexp (around eldoc-fnsym-in-current-sexp-or-command activate)
+   ad-do-it
+   (if (and (not ad-return-value)
+	    (eq major-mode 'eshell-mode))
+       (save-excursion
+	 (goto-char eshell-last-output-end)
+	 (setq ad-return-value (eldoc-current-symbol)))))
+
+When in eshell, use M-x eldoc-mode to activate it.  Now the following will work as well:
+
+ c:/Internet/tmp $ find-file
+
+Unfortunately, the advice doesn't really parse the command.  Thus, all the eshell magic is not working.  Consider the "eshell/" prefix, for example.  This will work:
+
+ c:/Internet/tmp $ eshell/ls
+
+But this will not:
+
+ c:/Internet/tmp $ ls
+
+Furthermore, the eshell/ls example shows that the argument list is often not really that helpful.
+
+----
+CategoryEshell

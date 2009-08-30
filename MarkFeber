@@ -1,0 +1,27 @@
+I have been using Emacs in one form or another since the late 70's.  In the early days I was often the builder/maintainer of Emacs wherever I happened to be working at the time (in those years there were some black arts involved in getting things to work).  Consequently, I've used a number of different Emacsen over the years [http://www.jwz.org/doc/emacs-timeline.html]. These days, my preferred Emacs is XEmacs.
+
+However, as with many of us, I find myself in Eclipse more and more, but my fingers remain in emacs.
+
+Finally, I've decided to address the anemic (albeit gradually improving) Emacs like behavior in Eclipse.
+
+
+Emacs+: EclipseExtensionsForEmacsExpatriates is an ongoing Eclipse plugin that goes well beyond simple keybinding and attempts to mimic, where practical, the things I miss most from Emacs.
+
+I took the approach of sitting down in front of Eclipse and writing a java program.  As soon as my fingers did something emacsish that wasn't supported by Eclipse, I switched to the plugin project and began developing.  This was, of course, recursive since as soon as I began working on the plugin, my fingers did more uncontrolled emacsing, and so the plugin has grown well beyond my initial intentions, and shows no signs of stopping.
+
+Fortunately, the first few things were minor annoyances:
+
+* /Ctrl-/*T* and /Meta-/*C*, /Meta-/*U* & /Meta-/*L* (without having to first select the region) were easy enough.
+* Soon though, I was into sexpressions and kill-rings and starting to talk about real programming
+
+Time passes and it is in use by a small, but growing, population.  See if it helps you with your Eclipse chores......
+
+
+[new:DrewAdams:2009-05-12 15:38 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+
+----
+CategoryHomepage

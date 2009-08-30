@@ -1,0 +1,22 @@
+first of all the mode setup
+
+ (defun my-mode () "my-mode" (interactive)
+  (kill-all-local-variables)
+  (make-local-variable 'font-lock-defaults)
+  (setq font-lock-defaults  '(my-mode-font-lock-keywords t)))
+
+ (defvar my-mode-font-lock-keywords nil 
+  "Keywords/Regexp for fontlocking of my-mode")
+
+now we define a list with of regexp (Matcher)  [[Face]]
+
+ (setq my-mode-font-lock-keywords
+	  (list
+	   '("^#.*$" 0 'bold) ; make the line beginning with "#" bold
+	   '("\\(foo\\)\\(bar\\)" ; the word foobar in two faces
+		 (1 'font-lock-warning-face)
+		 (2 'font-lock-type-face))))
+
+That's easy, isn't it?
+
+Further to MultilineFontLock.

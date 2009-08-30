@@ -1,0 +1,42 @@
+Here is some info that got posted to news:gnu.emacs.help about Emacs
+running on top of CygWin.  See EmacsNewsgroups and
+Groups:experiences+with+cygwin+emacs.
+
+There is both a version of Emacs for X11, and for the terminal
+(emacs-nox).  They both run on top of the Cygwin library.  For the X11
+version, you need an X server running.
+
+Installation of the Emacs packages installs X11R6 and it takes ca. 100
+MB.  The Cygwin xserver (XWin.exe) runs fine. All works out of the box
+for english keyboards.  For German keyboards you need an xmodmap file
+(see XModMap).
+
+You can get xmodmap files for German keyboards here:
+
+* http://www-usercgi.tu-chemnitz.de/~goal/xfree/#modmap
+
+Startup for emacs -q --no-site-file:
+
+ NT  Emacs:  0 seconds
+ X11 Emacs:  9 seconds
+
+Startup for Emacs with init files:
+
+ NT  Emacs: 22 seconds
+ X11 Emacs: 32 seconds
+
+This includes tons of init files without any problem.  Some things
+needs to be adjusted with the system-type 'cygwin' and 'windows-nt'
+especially for shell handling. So in general it looks like the elisp
+processing is as fast as with NT Emacs. In one personal package for
+example the Cygwin Emacs is faster than NT Emacs:  Reading a 20000
+line file and building a hash table with all the line offsets: Cygwin
+Emacs takes 3 seconds, NT Emacs takes 4 seconds.
+
+One thing that I dislike is the old Athena widget set scrollbar but
+this should really not be a problem.
+
+So my conclusion is that it's stable and works perfect.
+
+----
+CategoryPorts

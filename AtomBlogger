@@ -1,0 +1,31 @@
+atom-blogger is a  small Emacs module to enable the creation and
+editting of blogger.com posts using ATOM.
+The package uses the command-line utility curl to provide http
+services, and relies on nxml-mode (xml-mode if nxml is not
+installed) 
+to help edit posts.
+
+I wrote this package as  a light-weight means for posting
+to blogger.com Atom
+from Emacs.
+
+== Hosting ==
+
+The package is presently
+[http://prdownloads.sourceforge.net/emacspeak/atom-blogger.tar.bz2 part of the EmacSpeak project on SourceForge].
+Note that  the location is incidental, and that the package 
+can be used independent  of EmacSpeak.
+
+[new]
+If someone could load the above tarball to the EmacsWiki's
+download area I'd appreciate it.
+[new]
+Please also make the tarball contain a directory -JoelAdamson
+[new]
+I don't think this is going to happen. I suggest somebody who is interested in this set up a GNU Savannah  or SourceForge account and host it there. -- AlexSchroeder
+
+== See Also ==
+GoogleClient
+
+----
+CategoryHypermedia

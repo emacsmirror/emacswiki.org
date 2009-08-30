@@ -1,0 +1,14 @@
+Si vous voulez obtenir la valeur d'une variable, le moyen le plus simple est de demander de l'aide sur la variable considérée, en utilisant <code>C-h v </code>. Cette commande affichera la chaîne de documentation (ChaîneDoc) de la variable ainsi que sa valeur.
+
+Dans la fenêtre d'édition, placez le curseur juste après un nom de variable de votre programme source, et tapez la commande <code>C-x C-e</code> qui a comme paramètre le préfixe et qui exécute ''eval-last-sexp''.  Une ''sexp'' est une expression ''Lisp'' qui peut être une chaîne de caractères placée entre guillemets, un nom de variable, une expression cotée, un nombre etc. Cette opération affichera la valeur de l'expression dans la barre d'information. Si vous désirez à nouveau voir cette valeur, vous pouvez basculer dans le tampon <nowiki>*</nowiki>Messages<nowiki>*</nowiki> pour y retrouver la sortie précédente.
+
+Vous pouvez également insérer le résultat de l'évaluation dans le tampon à l'aide de la commande  <code>C-u C-x C-e</code> qui admet le préfixe comme paramètre et qui insère la valeur à l'endroit où se trouve le curseur. Cela est parfois utile lorsqu'on a besoin du résultat pour l'étudier, ou quand on veut écrire un quelconque programme utilisant ce résultat.
+
+Enfin vous pouvez profiter du mode InferiorEmacsLispMode qui s'active en tapant au clavier <code>M-x ielm</code>. Cela crée un tampon qui se comporte comme un interpréteur de commande. Les expressions ''Lisp'' que vous taperez seront alors évaluées et le résultat sera affiché dans le tampon.
+
+Pour effectuer une évaluation rapide, mais peu conventionnelle, vous pouvez taper au clavier la commande <code>M-:</code> qui vous permet d'entrer une expression, dans le mini tampon (MiniBuffer), qui est alors évaluée; et le résultat est affiché dans la barre d'information (ou inséré dans le tampon courant, si un paramètre est fourni comme préfixe). Cela sert uniquement quand vous programmez et testez vos programmes; vous pouvez rapidement appeler des fonctions non interactives. Cela évite de les entrer dans un tampon en utilisant <code>C-x C-e</code> et de les effacer après à chaque fois. Comme vous pouvez le voir l'avantage et infime. Et vous ne l'utiliserez guère pour d'autres tâches parce que les affectations de base des variables sont effectuées en utilisant <code>M-x set-variable</code>, et les variables sont examinées en utilisant <code>C-h v</code> comme cela a déjà été expliqué plus haut.
+
+En écrivant des programmes ''elips'', vous pourriez avoir besoin d'utiliser <code>C-M-x</code>(''eval-defun'') qui évalue la fonction dont le nom se trouve à l'endroit du curseur.
+Si le curseur est sur ou immédiatement après la déclaration d'une variable, cette fonction, à la différence d<nowiki>'</nowiki>''eval'' remet la variable à cette valeur.
+----
+CatégorieCode

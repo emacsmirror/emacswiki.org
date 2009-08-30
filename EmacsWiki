@@ -1,0 +1,106 @@
+See WikiModeDiscussion if you are looking for a mode to edit a local wiki.
+
+= This is the Emacs Wiki =
+
+This page has meta information about the Emacs Wiki.  See the SiteMap
+for entry points.
+
+* See the HowTo page for information on editing existing pages or adding new ones.
+* See the MissionStatement for author guidelines.
+* See UserName for information about the usernames used.
+* See the EmacsLogo for information about the logo this site is using.
+* See [[CSS]] for some very simple themes to choose from.
+* See EmacsWikiAppearance for how to create a user cascading style sheet if you don't like the defaults.
+
+= Hosting =
+
+AlexSchroeder started experimenting on thinkmo.de February 2003 and the wiki went
+online March 2003.
+
+The Emacs Wiki is located at 
+http://www.emacswiki.org/, or
+http://purl.org/wiki/emacs/, or 
+http://emacswiki.wikiwikiweb.de/, if
+emacswiki.org is down.  This is a virtual hosting environment,
+therefore you need to use HTTP/1.1 to access the site.
+
+You can reach the provider at 
+http://www.wikiwikiweb.de/ and
+http://www.thinkmo.de/.  If you notice page corruption or other
+problems, however, send mailto:alex@emacswiki.org or
+mailto:alex@gnu.org.  The webmaster of emacswiki.org is also the
+webmaster of all the other virtual hosts.
+
+= Backups =
+
+Help make distributed backups.
+This will help us get the wiki back up and running if it goes down.
+See WikiDownload for more.
+
+= Money =
+
+At the moment AlexSchroeder is paying for the server:
+The people at thinkmo.de are asking for EUR 20 per month which basically
+covers bandwidth.  This wiki and the blogs of my family
+all run on the emacswiki.org domain and it's using about 10G per month.
+I assume that most of the traffic is for the Emacs Wiki.  :)
+
+There will not
+be any ads on emacswiki.org; I hate them myself.  If you like the site
+and want to contribute something, contribute either time or money:
+Write content, fix typos, clean up pages by removing old discussions,
+merging and splitting pages, and linking up and down the page
+hierarchy.  If you do not have time, you can always donate money.
+Show your support by saying on your homepage on this wiki how much you
+donated to charity because of the Emacs Wiki.  That would be
+awesome.
+-- AlexSchroeder
+
+= Administrators =
+
+Anybody willing to share administrator duties on this wiki?
+See EmacsWikiAdministrators.
+
+= Wiki Engine =
+
+This wiki runs Oddmuse; see the [http://www.emacswiki.org/cgi-bin/wiki.pl?action=version version] page.
+
+Using a wiki engine written in Lisp or Scheme would have been more in
+the spirit of Emacs and XEmacs, but Perl is ubiquitous, and
+Oddmuse is just one single Perl script, easy to install.
+
+Please note bugs on the [[Problems]] page.
+
+= Scripts Used =
+
+Current crontab:
+
+<pre>
+07  *  *  *  *  /home/aschroeder/bin/update-changelog
+14  2  *  *  *  /home/aschroeder/bin/getallpages
+54  3  *  *  *  /home/aschroeder/bin/update-ell
+51  4  *  *  *  /home/aschroeder/bin/reindex-wikis
+47  8  *  *  *  /home/aschroeder/bin/archives
+47  6,12 *  *  *  /home/aschroeder/bin/backup
+23  9  *  *  *  /home/aschroeder/bin/emacs-cvs-update
+38 10  *  *  *  /home/aschroeder/bin/emacs-svn-update
+25  3  *  *  0  /home/aschroeder/bin/elisp-archive
+25  3  *  *  0  /home/aschroeder/bin/static emacs
+25  5  *  *  0  /home/aschroeder/bin/static oddmuse
+
+57  1,3,5,7,9,11,13,15,17,19,21,23 * * * /home/aschroeder/bin/emacs-rss
+</pre>
+
+* [http://www.emacswiki.org/scripts/update-changelog update-changelog] -- update the Oddmuse:ChangeLog -- has nothing to do with EmacsWiki
+* [http://www.emacswiki.org/scripts/getallpages getallpages] -- run maintenance for all wikis on this site
+* [http://www.emacswiki.org/scripts/update-ell update-ell] -- update the WikifiedEmacsLispList
+* [http://www.emacswiki.org/scripts/reindex-wikis reindex-wikis] -- update the indexes for alex and oddmuse (not used for EmacsWiki as we now use [[Google Custom Search]])
+* [http://www.emacswiki.org/scripts/archives archives] -- create the tarballs alex.tar.gz and oddmuse.tar.gz -- we no longer do this for EmacsWiki
+* [http://www.emacswiki.org/scripts/backup backup] -- update the [[Rsync repository]]
+* [http://www.emacswiki.org/scripts/emacs-cvs-update emacs-cvs-update] -- update the [[CVS repository]]
+* [http://www.emacswiki.org/scripts/emacs-svn-update emacs-svn-update] -- update the [[SVN repository]]
+* [http://www.emacswiki.org/scripts/elisp-archive elisp-archive] -- create the elisp archive
+* [http://www.emacswiki.org/scripts/static static] -- create the static archives (this should no longer happen for EmacsWiki!)
+
+----
+CategoryEmacsWikiSite

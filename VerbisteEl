@@ -1,0 +1,11 @@
+verbiste.el is a package allowing to use the [http://www3.sympatico.ca/sarrazip/dev/verbiste.html verbiste] program to conjugate/deconjugate French verbs.
+
+It is available as a Git repository :
+
+<code>
+git clone git://gaffer.ptitcanardnoir.org/verbiste-el.git
+</code>
+
+----
+CategoryEducation
+CategoryExternalUtilities

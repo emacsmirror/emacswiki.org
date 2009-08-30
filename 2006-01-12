@@ -1,0 +1,93 @@
+I've tried to make the [http://www.emacswiki.org/css/emacs.css default CSS] a bit lighter.
+-- AlexSchroeder
+
+[new]
+''Help!'' How do we get back to:
+# smaller text -- the size seems 3-4 times as big as before and 3-4 times as big as the text in buttons like Preview
+# text that is accessible to being resized by the user (e.g. via C-mouse wheel in Internet Explorer).
+
+#2 is especially important. The text size should not be hard-wired (for the [http://www.emacswiki.org/css/emacs.css default CSS]). -- DrewAdams
+
+[new]
+Hm...  I can resize text using controll+mousewheel in Firefox on Windows. (I didn't even know about it, thanks!)
+I wonder why.  I changed the size unit from px to pt.  In that sense, it was "fixed" before.  I'm astonished that the unit I picked actually makes a difference in resizing for IE.  :(
+
+As for text size, I like larger fonts.  In the browser windows I use here at work, for example, I have between 80 and 85 characters per line.  I compensate for these overlong lines by providing more line-height.  Using a smaller font would practically require me to use a smaller width for my windows, or would force me to set the body width using CSS.  Either alternative seems bad.
+
+How about a theme.  Try this:
+[http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=2006-01-12;theme=tiny tiny],
+[http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=2006-01-12;theme=small small],
+[http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=2006-01-12;theme=medium
+medium],
+and
+[http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=2006-01-12;theme=normal normal].
+
+I must confess that it looks a lot uglier on IE than on Firefox.  Since I only have IE at work, I can't spend too much time on it.  If anybody feels like proposing specific changes to improve the look on IE, send me some mail.
+
+-- AlexSchroeder
+
+[new:DrewAdams:2006-01-12 19:36 UTC]
+* Please, at least, make the default CSS look reasonable in IE -- one of the most common browsers. (The previously tiny links at the top of the page are now 1 centimeter high in IE.)
+
+* Please choose an implementation that, in addition, makes it possible to resize the text using the mouse in IE.
+
+* Each of the themes you link to above shows the page heading about 2 cm high (the ''date'' alone is about 8 cm wide)! Even when the body text is tiny the headings are not. ''All'' text should change proportionately with the choice of a different theme.
+
+Please reconsider the changes you made, and instead change a ''non''-default CSS to fit your individual needs. Pick a medium size for the default size and an implementation for the default CSS that works well in the most common browsers. 
+
+BTW, some people have no choice in the browser they use, based on their workplace. It's common Web practice (courtesy) to aim for the most common browsers and to not impose text size on users (that is, let them change the size with browser preferences or with the mouse). -- DrewAdams
+
+[new:DrewAdams:2006-01-12 20:38 UTC]
+Thanks for the prompt fix! - DrewAdams
+[new]
+WTF! Yes, sorry for that expression, but what IS this?! I just fired up FireFox, under Mandrake GNU/Linux, and was met with this. Some really strange font that I have never seen before. Can we pleeeease get the old look back? (OK, I might be the only one not liking this and will shutup if that is the case).
+
+(The screenshot showed a bold, jagged, ugly font being used.)
+
+[new]
+The ugly font thingy is due to X11 only having bitmap versions of Lucida Bright, so you get the jaggies. Alexs own wiki does pretty large fonts though, so maybe they can be used.  -- HenrikEnberg
+
+[new]
+I give up.
+
+I'll be using the [http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=2006-01-12;theme=big big theme].
+-- Alex
+
+[new]
+Personally, I liked the new styling. -- EdwardOConnor
+
+[new:DrewAdams:2006-01-13 18:36 UTC]
+I have no problem with the new styling (fonts etc.). My only complaint was the font size and the inability of a user to modify the size with the browser.
+
+BTW -- I don't know if it is related to the CSS change, but I now see '''Inhaltsverzeichnis''' as the TOC header in http://www.emacswiki.org/cgi-bin/wiki/rcircColoredNicks, even though I'm viewing it in English. -- DrewAdams
+
+[new]
+Ah, looks OK now again. Thanks, and sorry for my rant! -- MaDa
+
+[new]
+As for “Inhaltsverzeichnis” and the strings shown when looking at a diff: They reflect the language of the user who did the last edit.  And since my browser is configured to prefer German, I get the German interface, and thus everybody else does, too.  It's a known problem.  If all users edited only pages in their own language, nobody would notice a thing.  Me preferring German and writing all these English pages is the problem.  It never bothered me enough to fix it. -- Alex
+
+[new:DrewAdams:2006-01-13 21:37 UTC]
+: Not a problem. It's the first time I noticed it, so I thought I'd mention it, thinking it might have something to do with the recent CSS change. Thanks for the info, and thanks for putting back the medium-size text. -- DrewAdams
+
+[new:DrewAdams:2006-01-13 21:42 UTC]
+I should mention one more thing I noticed. The headings now differ only in point size. This makes it more difficult to notice the hierarchy -- unless you see two different heading sizes next to each other, it's difficult to just which section level you are in. I think the different horizontal lines provided before helped in this regard.
+
+This is like the problem birders have using size in identifying birds. They learn early on that it's almost a useless indentification aid. -- DrewAdams
+
+[new]
+I've started to use the [EmacsWiki:action=browse;id=2006-01-12;theme=medium medium] theme these days.  It uses 12/14 Lucida Bright and a slightly larger size for headings (14pt).
+I'm liking it, and therefore I increased the font-size of the headings for the default theme, too. -- AlexSchroeder
+
+[new:DrewAdams:2006-01-19 17:08 UTC]
+One more (minor) thing you might consider tweaking a bit: On IE, there is a great deal of vertical whitespace surrounding headings (like 5cm above and below each heading). It would be good to reduce this a little, if possible. -- DrewAdams
+
+[new]
+I noticed that on IE, the font-weight was not inherited as intended.  I therefore changed the settings in the style-sheet so that IE will render the headers in medium weight instead of bold, just like on Firefox.  I find that more vertical whitespace helps to identify new sections, and reduce the visual clutter and nervousness.  I like it. -- AlexSchroeder
+
+[new]
+I think the vertical spacing above second and later headings is disruptive.  Otherwise, it's my only complaint. -- AaronHawley
+
+[new:DrewAdams:2006-01-27 18:12 UTC]
+Thanks, Alex, for reducing the size of `##=##' markup. People need no longer hesitate to use the top-level heading markup (`##=##'), which they might have done before because it translated to an H1 HTML header. -- DrewAdams
+[new]

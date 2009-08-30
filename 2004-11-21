@@ -1,0 +1,46 @@
+IBM Ponder This, November 2004,
+Part 1:
+The numbers 1 to 9999 (decimal base) were written on a paper. Then the paper was partially eaten by worms. It happened that just those parts of paper with digit "0" were eaten. Consequently the numbers 1200 and 3450 appear as 12 and 345 respectively, whilst the number 6078 appears as two separate numbers 6 and 78. What is the sum of the numbers appearing on the worm-eaten paper? [http://domino.research.ibm.com/Comm/wwwr_ponder.nsf/challenges/November2004.html]
+
+<pre>
+(eval
+ (read
+  (concat "(+ "
+          (let (list str)
+            (dotimes (i 10000 'list)
+              (setq list (cons (number-to-string i) list)))
+            (setq str (mapconcat 'identity list " ")
+                  str (replace-regexp-in-string "0" " " str)))
+          ")")))
+
+(with-temp-buffer
+  (dotimes (i 10000)
+    (insert (format "%s " i)))
+  (let ((r 0))
+    (dolist (n (split-string (buffer-substring 1 (point)) "[ 0]"))
+      (setq r (+ r (string-to-int n))))
+    r))
+
+(let ((result 0))
+  (dotimes (i 10000 result)
+    (unless (zerop i)
+      (setq result (apply '+ result
+                          (mapcar 'string-to-number
+                                  (split-string (number-to-string i) "0")))))))
+
+(with-temp-buffer
+  (insert "(+)")
+  (forward-char -1)
+  (dotimes (i 10000)
+    (insert (number-to-string i) " "))
+  (goto-char (point-min))
+  (replace-string "0" " ")
+  (goto-char (point-max))
+  (eval-last-sexp t))
+
+(let ((total 0) n)
+  (dotimes (i 9999)
+    (setq n     (format "%d" (1+ i))
+          n     (mapcar 'string-to-int (split-string n "0+"))
+          total (apply '+ total n))) total)
+</pre>

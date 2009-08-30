@@ -1,0 +1,13 @@
+This package by MattArmstrong implements ProjectSettings as follows: You can stick an .emacs-dirvars file in a directory and all files under that directory will get its settings.  But the .emacs-dirvars file is even more restrictive than a Local Variables section -- you can't set the special mode or eval variables to change the mode or eval code.
+
+Lisp:dirvars.el -- modified version by BenjaminRutt
+
+[new]
+On a [[Debian]] system, dirvars.el is in the DebianPackage:emacs-goodies-el package, but you need version 24.10-1 of that (in Sarge) to get the latest version of dirvars.el (1.2).
+
+[new]
+Possible issue with dirvars.el and Emacs 22.1. I experienced partial fontification of a few buffers. But only sometimes. Binary search debugging of all my setup files (sigh) revealed that font locking was normal when I removed dirvars.el. See also [http://osdir.com/ml/emacs.sources/2006-06/msg00018.html this post with a solution (dir-locals.el)] /Update/: I was using version 1.0 of dirvars. The problem may be fixed in later versions. -- VagnJohansen
+
+----
+CategoryCustomize
+CategoryProgrammerUtils

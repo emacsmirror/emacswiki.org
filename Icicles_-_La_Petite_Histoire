@@ -1,0 +1,98 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Note to Programmers]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - pop-up-frames on MS Windows]] ||
+
+----
+
+
+= La Petite Histoire =
+
+'''1. <code>elect-mbuf.el</code>'''
+
+Library '''<tt>[[icicles.el]]</tt>''' started out life as library `<code>elect-mbuf.el</code>', by Hans Koomen.
+
+  Original posting:
+  From koomen@cs.rochester.edu Mon Jun 19 19:27:58 1989
+  To: info-gnu-emacs@prep.ai.mit.edu
+  Cc: Hans <Koomen@cs.rochester.edu>
+  Subject: elect-mbuf.el
+  Date: Tue, 13 Jun 89 15:17:07 -0400
+
+'''2. Minor enhancements'''
+
+I hacked and enhanced the library in various relatively minor ways
+over the years, maintaining it as `##elect-mbuf.el##'. I did not change the main functionality of the library during this
+period: it always cycled the ''complete'' list of (prefix) [[completion]]
+candidates passed to `completing-read'; it did not update the
+candidate list based on the current [[minibuffer]] contents.
+
+So, for instance, if you had `M-x for' in the minibuffer, `down'
+would cycle among ''all'' Emacs commands, not just those that start
+with "<code>for</code>".  I used the library this way for fifteen years without
+thinking much about this behavior or the code behind it.
+
+'''3. Use the current input'''
+
+In July 2005, LennartBorgman gave `##elect-mbuf.el##' a quick try,
+and intuitively expected to see behavior along the lines that you
+see now for '''Icicles''' [[prefix completion]]:
+
+* `down' should cycle completions '''''relative to the current input''''',
+not ''all'' completions supplied to `completing-read'.
+
+* If [[buffer]] `*Completions*' is displayed, `down' should highlight
+the current candidate there.
+
+Good idea Lennart.  So I
+implemented that behavior, and renamed the library '''Icicles''' (for,
+I suppose, "'''<u>i</u>'''nput '''_cycles_'''" or some such -- or because it's ''cool'' ;-)).
+
+'''4. Apropos completion'''
+
+The code changes I made to implement '''#3''' (completion cycling
+relative to current input) made me realize that other completion
+matchings could be implemented in a similar way.  Prefix
+completion (the completion provided by Emacs) is handy, but it is
+also sometimes a bit limited.  The idea of '''''[[apropos completion]]'''''
+occurred to me, and I implemented that as well.
+
+'''5. File names and more'''
+
+I extended the library quite a bit more, in terms of
+convenience (highlighting, treatment of buffer `*Completions*',..., but
+also in terms of functionality.  In particular, it now treats file
+names too.  And, because Emacs 21 and later versions use
+`read-file-name' for `find-file' and so on, '''Icicles''' now treats
+`read-file-name' the same as `completing-read'.
+
+'''6. Delete Selection mode'''
+
+On another suggestion from LennartBorgman, I made '''Icicles''' take advantage of ''Delete Selection'' mode.  And I implemented it as a minor mode.
+
+'''7, 8, 9,... On Beyond Zebra'''
+
+One thing has led to another, and I've just kept adding features.  Feature creep, I guess.  But the more I play with '''Icicles''', the more I imagine new ways it might be made more useful.
+
+
+
+----
+
+|| *Previous:*  [[Icicles - Note to Programmers]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - pop-up-frames on MS Windows]] ||
+
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryDirectories
+CategoryFiles
+CategoryCode
+
+
+
+

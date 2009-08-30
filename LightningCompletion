@@ -1,0 +1,13 @@
+The author, JohnPalmieri, says:
+: ''Lightning completion is an improvement on whatever completion emacs does already;''
+: ''it incorporates dynamic completion: completion without having to hit the TAB key''
+: ''or anything else. This is very useful when added to commands like find-file or''
+: ''switch-to-buffer or describe-lisp-function.''
+
+Lightning completion is available from http://www.math.washington.edu/~palmieri/Emacs/light.html.
+
+It has not been updated recently (30 September 2005).
+
+UltraTexMode use LightningCompletion.
+----
+CategoryCompletion

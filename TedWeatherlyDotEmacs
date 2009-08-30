@@ -1,0 +1,1606 @@
+;;;
+;;; This is is my dot emacs file.  Maybe you'll find something useful in here.
+;;; 
+;;; -Ted Weatherly
+;;; ted.weatherly <@t> gmail.com
+
+;;;--- VARIABLES ---;;;
+(defconst USINGWINDOWS t)
+(defconst emacs_lisp_path
+  (if USINGWINDOWS
+      "e:/Docs/Programming/Emacs/"
+    "/home/tweather/emacs_lisp/"
+    )
+  )
+(defconst temp_path
+  (if USINGWINDOWS
+      "d:/TedTemp/"
+    "/tmp/"
+    )
+  )
+
+;;;--- DISPLAY PROPERTIES ---;;;
+
+;; Setup basic display properties (bg, fg, font, colors, etc)
+(set-foreground-color "seashell") 
+(set-background-color "black") 
+(set-face-foreground 'modeline "black") 
+(set-face-background 'modeline "cornsilk4")
+
+;(set-face-background 'region "blue")
+(set-cursor-color "Firebrick")
+(if USINGWINDOWS
+    ;(set-default-font "-outline-Courier New-normal-r-normal-normal-12-90-96-96-c-*-iso10646-1")
+    (set-default-font "-outline-Courier New-normal-r-normal-normal-13-97-96-96-c-*-iso10646-1")
+  ;(set-default-font "6x13")
+)
+;(set-frame-height (selected-frame) 25)
+;(set-frame-width (selected-frame) 60)
+
+;; Color coding
+(global-font-lock-mode 1 t) ; Color code whenever possible
+(setq font-lock-maximum-decoration t) ; Use maximum colors
+(custom-set-faces
+ '(font-lock-comment-face ((((class color) (background light)) (:foreground "gray60")))))
+
+;;;--- MODE ADDING/TWEAKING ---;;;
+
+;; Append to the load-path, to ensure modes are found
+(setq load-path (cons (concat emacs_lisp_path "compiled") load-path))
+(setq load-path (append (list (concat emacs_lisp_path "compiled/elib")) load-path))
+(setq load-path (append (list (concat emacs_lisp_path "nxml-mode")) load-path))
+
+;; Create extension<-> mode associations 
+(setq auto-mode-alist (cons '("\\.html$" . html-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.c\\'" . c-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.h\\'" . c-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.H\\'" . c-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.xbm\\'" . c-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.cpp\\'" . c++-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.CPP\\'" . c++-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.el\\'" . emacs-lisp-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.elc\\'" . emacs-lisp-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.make\\'" . makefile-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.conf\\'" . makefile-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.xsl\\'" . xsl-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.log\\'" . auto-revert-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.js\\'" . ecmascript-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.properties\\'" . makefile-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.properties.in\\'" . makefile-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.properties.template\\'" . makefile-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\Makedefs\\'" . makefile-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.css\\'" . css-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.cgi\\'" . perl-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.v3d\\'" . xsl-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.vm\\'" . turn-on-vtl-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.py\\'" . python-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.dbk\\'" . xsl-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.xml\\'" . nxml-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.jsp\\'" . java-mode) auto-mode-alist) )
+(setq auto-mode-alist (cons '("\\.as\\'" . actionscript-mode) auto-mode-alist) )
+
+;; Set text mode as default mode
+(setq default-major-mode 'text-mode)
+(setq text-mode-hook
+      '(lambda nil
+         (setq fill-column 72)
+         (auto-fill-mode 0)))
+
+; Fix indentation
+(defun my-java-indent-setup ()
+  (setq c-basic-offset 4)
+  (c-set-offset (quote substatement-open) (quote 0) nil)
+  ;(c-toggle-auto-hungry-state 1)
+  (define-key java-mode-map "[(return)]" 'reindent-then-newline-and-indent)
+)
+(defun my-cpp-indent-setup ()
+  ;(setq c-basic-offset 2)
+  (c-set-offset (quote substatement-open) (quote 0) nil)
+)
+(add-hook 'java-mode-hook 'my-java-indent-setup)
+(add-hook 'c++-mode-hook  'my-cpp-indent-setup)
+
+;; Hightlight parethesis.
+;(custom-set-variables
+; '(show-paren-mode f nil (paren)))
+;(custom-set-faces)
+
+;; Load necessary modes
+(load "emacs-source.elc")
+(load "rng-auto.el");
+
+;; Autoload additional modes
+(autoload 'css-mode "css-mode")
+(autoload 'xsl-mode "xslide" "Major mode for XSL stylesheets." t)
+(autoload 'global-replace-lines "global-replace"
+          "Put back grepped lines" t)
+(autoload 'global-replace "global-replace"
+          "query-replace across files" t)
+(autoload 'global-grep-and-replace "global-replace"
+          "grep and query-replace across files" t)
+(autoload 'html-helper-mode "html-helper-mode" "Yay HTML" t)
+;(autoload 'sgml-mode "psgml" "Major mode to edit SGML files." t )
+;(autoload 'xml-mode "psgml" "Major Mode for XML" t)
+
+(require 'ecmascript-mode)
+
+;; Recently Opened Files menu
+(require 'recentf)
+(recentf-mode 1)
+
+(require 'string)
+
+(require 'highlight-current-line)
+(highlight-current-line-set-fg-color nil)
+(highlight-current-line-set-bg-color "gray10")
+
+(load "color-mode.elc")
+
+;;;--- SELF-DEFINED FUNCTIONS/COMMMANDS ---;;;
+
+;; Buffer-specific functions
+(defun w32-change-font ()
+  "Pops up a pop-up box to select a font"
+  (interactive)
+  (set-default-font (prin1-to-string (w32-select-font)))
+  )
+
+(defun w32-insert-font ()
+  "Pops up a pop-up box to select a font"
+  (interactive)
+  (insert (prin1-to-string (w32-select-font)))
+  )
+(defun my-tiny-font ()
+  "Displays text in a tiny font"
+  (interactive)
+  (set-default-font "-*-Lucida Console-normal-r-*-*-10-90-96-96-c-*-iso8859-1")
+  (w32-restore-frame)
+  (w32-maximize-frame)
+  )
+(defun my-small-font ()
+  "Displays text in a small font"
+  (interactive)
+  (set-default-font "-*-Lucida Console-normal-r-*-*-12-90-96-96-c-*-iso8859-1")
+  (w32-restore-frame)
+  (w32-maximize-frame)
+  )
+(defun my-medium-font ()
+  "Displays text in a medium font"
+  (interactive)
+  (set-default-font "-*-Lucida Console-normal-r-*-*-13-90-96-96-c-*-iso8859-1")
+  (w32-restore-frame)
+  (w32-maximize-frame)
+  )
+(defun my-big-font ()
+  "Displays text in a big font"
+  (interactive)
+  (set-default-font "-*-Lucida Console-normal-r-*-*-14-90-96-96-c-*-iso8859-1")
+  (w32-restore-frame)
+  (w32-maximize-frame)
+  )
+
+(defun my-revert-buffer ()
+  "Reverts the current buffer w/o prompts"
+  (interactive)
+  (if (buffer-modified-p)
+      (when (y-or-n-p "Buffer has been modified. Are you sure you want to refresh? ")
+        (revert-buffer t t)
+        (message "Buffer refreshed")
+        ) ;end if
+  (revert-buffer t t)
+    (message "Buffer refreshed")
+    ) ;end if
+  )
+
+(defun toggle-trunc ()
+  "Toggles line wrapping on and off"
+  (interactive)
+  (if (eq truncate-lines t)
+      (setq truncate-lines nil)
+    (setq truncate-lines t)
+    )
+  (if (eq truncate-partial-width-windows t)
+      (setq truncate-partial-width-windows nil)
+    (setq truncate-partial-width-windows nil)
+    )
+  (redraw-display)
+  )
+
+(defun my-reverse-other-window ()
+  "Switches to the other windows like cntl+tab in many windows programs"
+  (interactive)
+  (other-window 1)
+  )
+
+;; View positioning functions
+(defun my-centertop ()
+  "Centers the screen with the cursor 3 lines from the top"
+  (interactive)
+  (recenter 3)
+  )
+
+; To scroll and keep cursor centered
+(defun my-scroll-down-center ()
+  "Scrolls down one line and recenters the view"
+  (interactive)
+  (forward-line 1)
+  (recenter)
+)
+(defun my-scroll-up-center ()
+  "Scrolls up one line and recenters the view"
+  (interactive)
+  (forward-line -1)
+  (recenter)
+)
+
+; To scroll and keep cursor centered
+(defun my-page-down-center ()
+  "Pages down one line and recenters the view"
+  (interactive)
+  (s-scroll-up)
+  (recenter)
+)
+(defun my-page-up-center ()
+  "Pages up one line and recenters the view"
+  (interactive)
+  (s-scroll-down)
+  (recenter)
+)
+
+; Electric backspace and delete
+(defun my-electric-backspace ()
+  "Backspaces repeatedly until a non-whitespace character is reached"
+  (interactive)
+  (backward-delete-char-untabify 1)
+  (let ((prevchar (preceding-char)))
+    (while (or (= prevchar 9)
+               (= prevchar 10)
+               (= prevchar 13)
+               (= prevchar 32))
+      (backward-delete-char-untabify 1)
+      (setq prevchar (preceding-char))
+      )
+    )
+  )
+           
+(defun my-electric-delete ()
+  "Backspaces repeatedly until a non-whitespace character is reached"
+  (interactive)
+  (s-delete)
+  (let ((nextchar (following-char)))
+    (while (or (= nextchar 9)
+               (= nextchar 10)
+               (= nextchar 13)
+               (= nextchar 32))
+      (s-delete)
+      (setq nextchar (following-char))
+      )
+    )
+  )
+
+;; Copy and paste functions
+(defun my-outline-region (start end)
+  "Adds the the yank text to the beginning of the marked region and the yank-pop text to the end of the region"
+  (interactive "r")
+  (let ((prev-yank nil)
+        (current-yank nil))
+    (setq prev-yank (car kill-ring-yank-pointer))
+    (setq current-yank (car (cdr kill-ring-yank-pointer)))
+    (goto-char start)
+    (insert current-yank)
+    (goto-char (+ end (length current-yank)))
+    (insert prev-yank)
+    (goto-char (+ end (length current-yank) (length prev-yank)))
+    ) ; end let
+  )
+
+;; Buffer file loading
+(defun my-load-file-in-current-buffer ()
+  " Load the lisp file in the current buffer. Useful for re-evaluation a .emacs file"
+  (interactive)
+  (load-file buffer-file-name)
+  )
+
+;; Frame Sizing & Positioning
+(defun w32-minimize-frame ()
+  (interactive)
+  (w32-send-sys-command ?\xf020)
+  )
+(defun w32-restore-frame ()
+  "Restore a minimized frame"
+   (interactive)
+   (w32-send-sys-command 61728)
+   )
+(defun w32-maximize-frame ()
+  "Maximize the current frame"
+   (interactive)
+   (w32-send-sys-command 61488)
+   )
+(defun my-dock-frame-top-left ()
+  "Unmaximize the window and dock it in the top left portion of the screen"
+  (interactive)
+  (w32-restore-frame)
+  (set-frame-position (selected-frame) 30 0)
+  )
+(defun my-dock-frame-bottom-left ()
+  "Unmaximize the window and dock it in the bottom left portion of the screen"
+  (interactive)
+  (w32-restore-frame)
+  (set-frame-position (selected-frame) 30 -25)
+  )
+(defun my-dock-frame-top-right ()
+  "Unmaximize the window and dock it in the top right portion of the screen"
+  (interactive)
+  (w32-restore-frame)
+  (set-frame-position (selected-frame) -1 0)
+  )
+(defun my-dock-frame-bottom-right ()
+  "Unmaximize the window and dock it in the bottom right portion of the screen"
+  (interactive)
+  (w32-restore-frame)
+  (set-frame-position (selected-frame) -1 -25)
+  )
+
+;; Window sizing
+
+(defun my-enlarge-window ()
+  "Enlarge the vertical size of the current window by 1 line"
+  (interactive)
+  (enlarge-window 1)
+  )
+(defun my-shrink-window ()
+  "Shrink the vertical size of the current window by 1 line"
+  (interactive)
+  (enlarge-window -1)
+  )
+(defun my-enlarge-window-horizontally ()
+  "Enlarge the horizontal size of the current window by 1 line"
+  (interactive)
+  (enlarge-window-horizontally 1)
+  )
+(defun my-shrink-window-horizontally ()
+  "Shrink the horizontal size of the current window by 1 line"
+  (interactive)
+  (enlarge-window-horizontally -1)
+  )
+
+;; Helpful stuff
+
+(defun my-match-braces ()
+  "Finds the match to an open brace '{'"
+  (interactive)
+  (let ((refcount 0)
+        (initpoint (point))
+        (doloop t)
+        (endbracefound nil))
+    (setq doloop (re-search-forward "{\\|}"))
+    (while doloop
+      (if (string-match "{" (match-string 0))
+          (setq refcount (+ refcount 1))
+        (setq refcount (- refcount 1))
+        ) ; if
+      (if (= refcount 0)
+          (progn
+            (setq doloop nil)
+            (setq endbacefound t)
+            )
+        (setq doloop (re-search-forward "{\\|}"))
+        ) ; if
+      ) ; while
+    (if (not endbacefound)
+        (progn
+          (goto-char initpoint)
+          (error "No matching end brace was found")
+          )
+      ) ; if
+    ) ; let
+  )
+
+; Function to run Tidy HTML parser on buffer
+; NOTE: this requires external Tidy program
+(defun tidy-buffer ()
+  "Run Tidy HTML parser on current buffer."
+  (interactive)
+  (if (get-buffer "tidy-errs") (kill-buffer "tidy-errs"))
+  (shell-command-on-region (point-min) (point-max)
+                           "C:/Utilities/HtmlTidy/tidy.exe -f C:/TedTemp/tidy-errs -q -i -wrap 550 -c" t)
+  (find-file-other-window "C:/TedTemp/tidy-errs")
+  (other-window 1)
+  (delete-file "C:/TedTemp/tidy-errs")
+  (message "buffer tidy'ed")
+  )
+
+(defun my-outline-jsp-region-with-brackets (start end)
+  "For all lines in the outlined region, %> is added to the start of the line and <% is added to the end of the line"
+  (interactive "r")
+  (save-excursion
+    (save-match-data
+      (let ((initpoint (point))
+            (addtofront t)
+            )
+        (goto-char start)
+        (beginning-of-line)
+        (if (not (re-search-forward "[^ \\t]" nil t))
+            (error "No jsp text found in region to outline with brackets")
+          ) ; end if
+        (if (< (point) start)
+            (setq addtofront nil)
+          ) ; end if
+        (if addtofront
+            (message (concat "Add to front " (number-to-string (point)) " " (number-to-string start)))
+          (message "Add to back")
+          )
+        (beginning-of-line)
+        (while (< (point) end)
+          (if addtofront
+              (progn
+                (if (not (re-search-forward "[^ 	]" nil t))
+                    (goto-char end)
+                  (progn
+                    ;Insert '<%'
+                    (backward-char)
+                    (insert "%>")
+                    (setq addtofront nil)
+                    (setq end (+ end 2))
+                    ) ; end progn
+                  ) ; end if
+                ) ; end progn
+            (progn
+              (end-of-line)
+              (insert "<%")
+              (end-of-line)
+              (forward-char)
+              (setq addtofront t)
+              (setq end (+ end 2))
+              ) ; end progn
+            ) ; end if
+          ) ; end while
+        ) ; end let
+      ) ; end save-match-data
+    ) ; end save-excursion
+  )
+
+(defun my-backslash-to-forwardslash-in-killring ()
+  "Replaces backslashes with forwardslashes"
+  (interactive)
+  (let ((yanktext nil))
+    (setq yanktext (car kill-ring-yank-pointer))
+    (string-replace-match "\\" yanktext "/" t t)
+    (kill-new yanktext)
+    )
+  )
+
+(defun my-backslash-to-forwardslash-in-region (start end)
+  "Replaces backslashes with forwardslashes"
+  (interactive "r")
+  (save-excursion
+    (save-match-data
+      (beginning-of-buffer)
+      (replace-string "\\" "/" nil start end)
+      )
+    )
+  )
+
+(defun my-split-url ()
+  "Separates the action part of the url from the arguments"
+  (interactive)
+  (save-excursion
+    (save-match-data
+      (beginning-of-buffer)
+      (while (re-search-forward "\\(http://.+\\)\\?" nil t)
+        (replace-match "\\1\n?" nil nil nil)
+        )
+      (beginning-of-buffer)
+      (while (re-search-forward "\\([^&\n]+\\)&" nil t)
+        (replace-match "\\1\n&" nil nil nil)
+        )
+      )
+    )
+  )
+
+(defun my-remove-ctlm ()
+  "Remove ^M (control-M, decimal 13) characters from the file"
+  (interactive)
+  (save-excursion
+    (save-match-data
+      (beginning-of-buffer)       ; start search from the top
+      (while (re-search-forward "\015" nil t)
+        (replace-match "" nil nil nil)
+        )
+      (beginning-of-buffer)       ; finish at top
+      )
+    )
+  )
+
+(defun my-update-file-separators ()
+  "Changes file separators from '\' to '/'"
+  (interactive)
+  (save-excursion
+    (save-match-data
+      (beginning-of-buffer)
+      (replace-string "\\" "/")
+      )
+    )
+  )
+
+(defun my-prettify-html ()
+  "Prettifies the HTML document in the current buffer"
+  (interactive)
+  (save-excursion
+    (save-match-data
+      ; Replace tabs with spaces
+      (beginning-of-buffer)
+      (replace-string "	" "    ") 
+      ; Get rid of extra newlines
+      (beginning-of-buffer)
+      (replace-regexp "\\( \\)*\n\\( \\)*$" "")
+      ; Get rid of indentation
+      (beginning-of-buffer)
+      (replace-regexp "^\\( \\)*" "")
+      ; One tag per line
+      (beginning-of-buffer)
+      (while (re-search-forward "><" nil t)
+        (replace-match ">\n<" nil nil nil)
+        )
+      ; Get rid of extra spacing at the end of lines
+      (beginning-of-buffer)
+      (replace-regexp "\\( \\)*$" "")
+      ; Merge simple link content onto one page
+      (beginning-of-buffer)
+      (replace-regexp "<a \\([^>]*\\)>\n\\(.*\\)\n</a>" "<a \\1>\\2</a>")
+      ; Add line breaks for tables
+      (beginning-of-buffer)
+      (replace-regexp "^<table" "\n<table")
+      (beginning-of-buffer)
+      (replace-regexp "^</table>$" "</table>\n")
+      (beginning-of-buffer)
+      (replace-regexp "</table>\n\n\n<table" "</table>\n\n<table")
+      )
+    )
+  )
+(defun my-upcase-all-tags ()
+  "Upcases all HTML tags in the current file"
+  (interactive)
+  (save-excursion
+    (save-match-data
+      (let ( (status_str "Updating tags ...")
+             )
+        (beginning-of-buffer) ; start search from the top
+        ; I should maybe bound the search later
+        (while (re-search-forward "<\\(/?\\)\\([^!>]+\\)\\( [^>]+\\)?\\(/?\\)>" nil t)
+          (message status_str)
+          (if (string= status_str "Updating tags .....................................")
+              (setq status_str "Updating tags ...")
+            (setq status_str (concat status_str "."))
+            ) ;end if
+          (let ( (start_slash (match-string 1))
+                 (tag_name    (match-string 2))
+                 (attributes  (match-string 3))
+                 (end_slash   (match-string 4))
+                 )
+            (if (not(string-match "xsl:.*" tag_name))
+                (replace-match (concat "<" start_slash (upcase tag_name) attributes end_slash ">
+      ") nil nil nil)
+              ) ;end if
+            ) ;end let
+          ) ;end while
+        (message "Done")
+        ) ;end let
+      ) ;end save-match-data
+    ) ;end save-excursion
+  )
+
+(defun my-upcase-strings-in-file (stringlist)
+  "Upcases the list of strings in the argument"
+  (let ( (string (car stringlist))
+         )
+    (if string
+        (progn
+          (beginning-of-buffer) ; start search from the top
+          (while (search-forward string nil t)
+            (replace-match (upcase string) nil nil nil)
+            )
+          (my-upcase-strings-in-file (cdr stringlist))
+          )
+      )
+    )
+  )
+
+(defun my-remove-strings-in-file (stringlist)
+  "Removes the list of strings in the argument"
+  (let ( (string (car stringlist))
+         )
+    (if string
+        (progn
+          (beginning-of-buffer) ; start search from the top
+          (while (search-forward string nil t)
+            (replace-match "" nil nil nil)
+            )
+          (my-remove-strings-in-file (cdr stringlist))
+          )
+      )
+    )
+  )
+
+(defun my-replace-strings-in-file (stringpairlist)
+  "For each string regex pair in the argument, replaces the first string with the second"
+  (let ( (removestringRegex (car (car stringpairlist)))
+         (addstringRegex    (car (cdr (car stringpairlist))))
+         )
+    (if removestringRegex
+        (if addstringRegex
+            (progn
+              (beginning-of-buffer) ; start search from the top
+              (while (re-search-forward removestringRegex nil t)
+                (replace-match addstringRegex t nil nil)
+                )
+              (my-replace-strings-in-file (cdr stringpairlist))
+              )
+          )
+      )
+    )
+  )
+
+(defun my-replace-tag-find-end (removetagRegex addtagRegex)
+  "Searches and replaces end removetag."
+  ;(message "my-replace-tag-find-end: Entering") ; DEBUG
+  (let ( (removetagname nil)
+         (addtagname nil)
+         (removestarttagRegex nil)
+         (removeendtagRegex nil)
+         (addendtag nil)
+         (depth 0)
+         (continueloop t)
+         (tagregex "<\\([^>
+         ]+\\)[^>]*>")
+         )
+    (if (string-match tagregex removetagRegex)
+        (setq removetagname (match-string 1 removetagRegex)))
+    (if (string-match tagregex addtagRegex)
+        (setq addtagname (match-string 1 addtagRegex)))
+    (if removetagname
+        (progn
+          (setq removestarttagRegex (concat "<" removetagname "\\([^>
+            ]*\\)>")) ; eg.<FONT( face="blah")>(setq removeendtagRegex (concat "</" removetagname ">"))
+          (if addtagname
+              (setq addendtag (concat "</" addtagname ">"))
+            (setq addendtag "") ; Not a tag, replace with nothing
+            )
+          ;(message (concat "removetagname is " removetagname)) ; DEBUG
+          ;(message (concat "addtagname is " addtagname)) ; DEBUG
+          ;(message (concat "removestarttagRegex is " removestarttagRegex)) ; DEBUG
+          ;(message (concat "removeendtagRegex is " removeendtagRegex)) ; DEBUG
+          ;(message (concat "addendtag is " addendtag)) ; DEBUG
+          ;(message (concat "search regex is " removestarttagRegex "\\|" removeendtagRegex)) ; DEBUG
+          ; Search for matching end tag OR start of a new tag
+          (while (and continueloop
+                      (re-search-forward (concat removestarttagRegex "\\|" removeendtagRegex) nil t))
+            (let ((data (match-data)))
+              ;(message (concat "my-replace-tag-find-end: in while loop, match is " (match-string 0))) ; DEBUG
+              ; Match found, determine the type of match
+              (cond
+               ( (string-match removeendtagRegex (match-string 0))
+                 ; Match was an end tag
+                 ; If depth is 0, then this end tag matches the prior special start tag so replace with addendtag and exit
+                 ; Otherwise, decrease depth and continue searching for special end tag
+                 ;(message "-- End tag found") ; DEBUG
+                 (if (= depth 0)
+                     (progn
+                       ;(message "-- End tag is special...") ; DEBUG
+                       (set-match-data data)
+                       (replace-match addendtag nil nil nil)
+                       ;(message "-- replace-match addendtag done") ; DEBUG
+                       (setq continueloop nil)
+                       ) ; end progn
+                   (setq depth (- depth 1))
+                   ) ; end if
+                 )
+               ( (string-match removetagRegex (match-string 0))
+                 ; Start of special tag found within special tag
+                 ; Go back to square one (sort of)
+                 ;(message "-- Start of special tag found within special tag") ; DEBUG
+                 (set-match-data data)
+                 (my-replace-tag-do-replace removetagRegex addtagRegex)
+                 )
+               ( t
+                 ; Non-special start tag found, add depth
+                 ;(message "-- Non-special start tag found, add depth") ; DEBUG
+                 (setq depth (+ depth 1))
+                 )
+               ) ; end cond
+              )
+            ) ; end progn
+          )
+      )
+    )
+  )
+(defun my-replace-tag-do-replace (removetagRegex addtagRegex)
+  ;(message "my-replace-tag-do-replace: Entering") ; DEBUG
+  ; Replace this start tag with the addtag
+  (replace-match addtagRegex nil nil nil)
+  ; Find and replace the matching end tag
+  (my-replace-tag-find-end removetagRegex addtagRegex)
+  )
+(defun my-replace-tag-in-file (tagpair)
+  "Replaces the first regex tag with the second. Takes care of replacing the end tags too."
+  ;(message "my-replace-tag-in-file: Entering") ; DEBUG
+  (let ( (removetagRegex (car tagpair))
+         (addtagRegex    (car (cdr tagpair)))
+         )
+    (if removetagRegex
+        (if addtagRegex
+            (progn
+              (while (re-search-forward removetagRegex nil t)
+                (my-replace-tag-do-replace removetagRegex addtagRegex)
+                )
+              )
+          )
+      )
+    )
+  )
+(defun my-replace-tags-in-file (tagpairlist)
+  "For each tag pair in the argument, replaces the first regex tag with the second. Takes care of replacing the end tags too.
+  
+  (my-replace-tags-in-file REGEXP)"
+  ;(message "my-replace-tags-in-file: Entering") ; DEBUG
+  (let ( (tagpair (car tagpairlist))
+         )
+    (if tagpair
+        (progn
+          (beginning-of-buffer) ; start search from the top
+          (my-replace-tag-in-file tagpair)
+          (my-replace-tags-in-file (cdr tagpairlist))
+          )
+      )
+    )
+  )
+(defun my-insert-string-if-define-in-file (stringslist &optional replaceflag firstreq)
+  "For each list of strings in STRINGSLIST, searchs for first string in current buffer.
+   If string found, and second string not found, inserts second string into buffer
+   after all instances of the third string. Returns a list of warnings that were encountered
+   while performing operations.
+
+   If FIRSTREQ is t, finding the first string is required and a 'cannot_found is thrown with an appropriate error message
+   
+   If REPLACEFLAG iS t, replaces third string with second string instead of inserting after.
+   
+   (my-insert-string-if-define-in-file STRINGSLIST &optional REPLACEFLAG FIRSTREQ)"
+  (let ( (stringlist    (car stringslist))
+         (remaininglist (cdr stringslist))
+         (warningmsg    nil)
+         (warningslist   nil)
+         )
+    (while stringlist
+      (let ( (firststr         (car stringlist))
+             (insertstr        (car (cdr stringlist)))
+             (insert_after_str (car (cdr (cdr stringlist))))
+             )
+        (beginning-of-buffer)
+        (if (search-forward firststr nil t)
+            ;(message (concat "found " firststr)) ; DEBUG
+            ; First string found, check if insertstr already present
+            (progn
+              (beginning-of-buffer)
+              (if (not (search-forward insertstr nil t)) 
+                  ; insertstr not found, add in after insert_after_str string
+                  (while (re-search-forward insert_after_str nil t)
+                    (if replaceflag
+                        (replace-match insertstr t nil nil)
+                      (insert insertstr)
+                      )
+                    )
+                )
+              )
+          ; First string not found
+          (setq warningmsg (concat "Cannot find special tag: " firststr))
+          (if firstreq
+              (throw 'cannot_find warningmsg) ; Throw an error
+            ; else, add a warning message to the list of warnings
+            (setq warningslist (append warningslist (list warningmsg)))
+            )
+          )
+        )
+      (setq stringlist    (car remaininglist))
+      (setq remaininglist (cdr remaininglist))
+      )
+    warningslist
+    )
+  )
+
+(defun my-open-file-from-line ()
+  "Automatically finds the file name in a given line and opens it in a buffer.
+   Useful for opening files from a grep result."
+  (interactive)
+  (let ((filedata (my-get-filename-from-line))
+        (filename nil)
+        (fullFilename nil)
+        (linenum nil)
+        (messageStr nil))
+    (if (stringp filedata) (error (concat "ERROR: " filedata)))
+    (setq filename (car filedata)) (setq filedata (cdr filedata))
+    (setq fullFilename (car filedata)) (setq filedata (cdr filedata))
+    (setq linenum (car filedata))
+    (setq messageStr fullFilename)
+    (find-file fullFilename)
+    (when linenum
+      (goto-line (string-to-number linenum))
+      (setq messageStr (concat messageStr " Line: " linenum))
+      )
+    ;(message messageStr)
+    )
+  )
+
+(defun my-get-filename-from-line ()
+  "Gets the filename from the current line.  If the line number is shown
+   on the line, that is returned too."
+  (save-excursion
+    (save-match-data
+      (let ((startPos nil)
+            (endPos nil)
+            (str nil)
+            (filename nil)
+            (fullFilename nil)
+            (linenum nil)
+            (directory nil)
+            (filedata nil))
+        ;; Get the text on the current line
+        (setq str (my-get-text-for-current-line))
+        ;; Find the filename in the text
+        (cond
+         ;; Match example:
+         ;; ./vcube/src/scripts/v3newapp.xml:341:      Edit TurbineResources.properties in "/>
+         ((string-match "^\\(\\.?[^:]+\\):\\([0-9]+\\):.*$" str)
+          (setq filename (match-string 1 str))
+          (setq linenum (match-string 2 str))
+          )
+         ;; Match example:
+         ;; ./ncaro/Depend.bom:vcube *
+         ((string-match "^\\(\\.?[^:]+\\):.*$" str)
+          (setq filename (match-string 1 str))
+          )
+         ;; Match example:
+         ;; M src/java/com/sendmail/sieve/AntiSpamRule.java
+         ((string-match "^[A-Z] \\([^./].*\\)$" str)
+          (setq filename (match-string 1 str))
+          )
+         ;; Match example:
+         ;; ./java/com/sendmail/gui/vcube/pages/VCubeDefaultPage.java
+         ((string-match "^\\(\\.?.+\\)$" str)
+          (setq filename (match-string 1 str))
+          )
+         )
+        (if (not filename)
+            (setq filedata "Cannot find filename on the current line.")
+          (progn
+            ; Remove any trailing *
+            (if (string= "*" (substring filename -1 nil))
+                (setq filename (substring filename 0 -1))
+              )
+            (setq fullFilename (my-get-full-filename filename))
+            ;; Make sure file exists
+            (if (not (file-exists-p fullFilename))
+                (setq filedata (concat "File '" fullFilename "' does not exist."))
+              (progn
+                ;; Make sure file is readable
+                (if (not (file-readable-p fullFilename))
+                    (setq filedata (concat "File '" fullFilename "' is not readable."))
+                  (setq filedata (list filename fullFilename linenum))
+                  )
+                )
+              )
+            )
+          )
+        filedata
+        )
+      )
+    )
+  )
+
+(defun my-get-text-for-current-line ()
+  "Returns a string of the text in the current line"
+  (save-excursion
+    (save-match-data
+      (let ((startPos nil)
+            (endPos nil)
+            (str nil))
+        ;; Get the text on the current line
+        (beginning-of-line)
+        (setq startPos (point))
+        (end-of-line)
+        (setq endPos (point))
+        (setq str (buffer-substring-no-properties startPos endPos))
+        str
+        )
+      )
+    )
+  )
+
+(defun my-get-full-filename (filename)
+  "Returns the full filename for the input filename.
+   Basically, adds on the pwd if the incoming filename if relative."
+  (let ((directory (pwd)))
+    (if (string-match "Directory \\(.*\\)/" directory)
+        (setq directory (match-string 1 directory))
+      )
+    (cond
+     ((string-match "^\\./\\(.+\\)$" filename)
+      (setq filename (concat directory "/" (match-string 1 filename)))
+      )
+     ((string-match "^\\([^/].*\\)$" filename)
+      (setq filename (concat directory "/" (match-string 1 filename)))
+      )
+    )
+    filename
+   )
+  )
+
+(defun my-blank-tags ()
+  "Clears the value in XML tags"
+  (interactive)
+  (save-excursion
+    (save-match-data
+      (beginning-of-buffer)       ; start search from the top
+      (while (re-search-forward ">.+<" nil t)
+        (replace-match "><" nil nil nil)
+        )
+      )
+    )
+  )
+
+(defun my-prettify-xml ()
+  (interactive)
+  (save-excursion
+    (save-match-data
+      (let ((startSlash1 nil)
+            (xmlTagName1 nil)
+            (endSlash1   nil)
+            (startSlash1 nil)
+            (xmlTagName2 nil)
+            (endSlash2   nil)
+            (indentAmount 0)
+            (indentIncrement 3)
+            (errortxt nil)
+            )
+        ; First, completely flatten the XML, remove all whitespace, newlines, etc
+        (beginning-of-buffer)
+        (replace-regexp ">[\n ]+<" "><")
+        (beginning-of-buffer)
+        (replace-regexp "\\([^>]\\)[\n ]+<" "\\1<")
+        (beginning-of-buffer)
+        (replace-regexp ">[\n ]+\\([^>]\\)" ">\\1")
+        
+        ; Search for a tag
+        (beginning-of-buffer)
+        (while (and (re-search-forward "<\\(/\\)?\\([^!?>][^/>]*\\)\\(/\\)?>" nil t)
+                    (eq errortxt nil))
+          ; Tag found
+          (progn
+            ; Save the tag data and point
+            (setq startSlash1 (match-string 1))
+            (setq xmlTagName1 (match-string 2))
+            (setq endSlash1   (match-string 3))
+            (point-to-register ?9)
+            ;(message (int-to-string indentAmount))
+            (cond ((string= startSlash1 "/")
+                   ; End tag
+                   ; Remove an indent, add newline, reduce indent amount, and indent
+                   (s-beginning-of-line)
+                   (delete-char indentIncrement)
+                   (jump-to-register ?9)
+                   (insert "\n")
+                   (setq indentAmount (- indentAmount indentIncrement))
+                   (insert-char 32 indentAmount)
+                   )
+                  ((string= endSlash1 "/")
+                   ; Complete tag
+                   ; Add newline, indent
+                   (insert "\n")
+                   (insert-char 32 indentAmount)
+                   )
+                  (t
+                   ; Start tag
+                   ; Check whether the next tag is the current tags closing tag
+                   (if (re-search-forward "<\\(/\\)?\\([^!?>][^/>]*\\)\\(/\\)?>" nil t)
+                       (progn
+                         (setq startSlash2 (match-string 1))
+                         (setq xmlTagName2 (match-string 2))
+                         (setq endSlash2   (match-string 3))
+                         (if (string= startSlash2 "/")
+                             (progn
+                               ; End tag found
+                               ;(message (concat " xmlTagName1 is " xmlTagName1
+                               ;                 ",xmlTagName2 is " xmlTagName2))
+                               (if (string= xmlTagName1 xmlTagName2)
+                                   (progn
+                                     ;(message (concat "indentAmount is " indentAmount))
+                                     ; Tags match, add newline from end tag and indent
+                                     (insert "\n")
+                                     (insert-char 32 indentAmount)
+                                     ) ; progn
+                                 (setq errortxt
+                                       (concat ("ERROR: End tag for " xmlTagName2
+                                                " found within tag " xmlTagName1)))
+                                 ) ; if
+                               ) ; progn
+                           (progn
+                             ; Tags don't match, add newline from start tag, increase
+                             ; indent, and indent
+                             (jump-to-register ?9)
+                             (insert "\n")
+                             (setq indentAmount (+ indentAmount indentIncrement))
+                             (insert-char 32 indentAmount)
+                             ) ; progn
+                           ) ; if
+                         ) ; progn
+                     (progn
+                       (setq errortxt "ERROR: Buffer ends on a start tag")
+                       ) ; progn
+                     ) ; if
+                   ) ; t
+                  ) ; cond
+            ) ; progn
+          ) ; while
+        (if errortxt (message errortxt))
+        ) ; let
+      ) ; save-match-data
+    ) ; save-excursion
+  ) ; defun
+
+(defun my-strip-xml ()
+  "Strips XML of all values, remove comments, reduces all tags"
+  (interactive)
+  (save-excursion
+    (save-match-data
+      ; Remove comments
+      (beginning-of-buffer)
+      (while (re-search-forward "<!--\\(\\|.\\)*-->" nil t)
+        (replace-match "" nil nil nil)
+        )
+      ; Clear tag values
+      (beginning-of-buffer)
+      (while (re-search-forward "<\\([^>]+\\)>[^<\n]+<" nil t)
+        (let ((data (match-data)))
+          (if (not (string-match (match-string 1) "sdnversion"))
+              (progn
+                (set-match-data data)
+                (replace-match "<\\1><" nil nil nil)
+                )
+            )
+          )
+        )
+      ; Clear attribute values
+      
+      ; Reduce tags
+      (beginning-of-buffer)
+      (while (re-search-forward "<\\([^>]+\\)\\([^>]*\\)></\\1>" nil t)
+        (replace-match "<\\1\\2/>" nil nil nil)
+        )
+      
+      )
+    )
+  )
+
+(defun my-explore-from-this-directory ()
+  "Opens a windows explorer window from the current directory"
+  (interactive)
+  (let ( (directoryToOpen1 (string-replace-match "/" default-directory "\\" t t)) )
+    (let ( (directoryToOpen2 (string-replace-match "\\\\" directoryToOpen1 "\\\\" t t)) )
+;      (message (concat directoryToOpen1 " AND " directoryToOpen2))
+      (let ( (commandString (concat "explorer \/e," directoryToOpen2))
+             )
+;        (message commandString)
+        (shell-command commandString)
+        )
+      )
+    )
+  )
+
+
+(defun my-copy-buffer-filename ()
+  "Adds the full name of the file in the current buffer to the kill ring"
+  (interactive)
+  (kill-new buffer-file-name)
+  (message buffer-file-name)
+)
+(defun my-copy-buffer-basename ()
+  "Adds the base name of the file in the current buffer to the kill ring"
+  (interactive)
+  (let ((basename nil)
+        )
+    ; Get the base name
+    (if (string-match "\\([^/]+\\)$" buffer-file-name)
+        (progn
+          (setq basename (match-string 1 buffer-file-name))
+          (kill-new basename)
+          (message basename)
+          ) ; end progn
+      (message "ERROR: Could not extract basename.")
+      ) ; end if
+    ) ; end let
+  )
+(defun my-copy-buffer-dirname ()
+  "Adds the full directory name of the file in the current buffer to the kill ring"
+  (interactive)
+  (let ((directory nil))
+    (setq directory (pwd))
+    (if (string-match "Directory \\(.*\\)/" directory)
+        (progn
+          (setq directory (match-string 1 directory))
+          (kill-new directory)
+          (message directory)
+          ) ; end progn
+      (message "ERROR: Could not extract basename.")
+      ) ; end if
+    ) ; end let
+  )
+
+(defun my-copy-xslt-filename ()
+  ""
+  (interactive)
+  (let ((htmlFilename (my-return-html-filename)))
+    (if htmlFilename
+        (kill-new htmlFilename)
+      (message "The file in the current buffer is not a .xsl, .xml, or .html file.")
+      )
+    )
+  )
+
+(defun my-flatten-xml ()
+  "Flattens an XML such that <a><b_1></a> gets converted to a-b_1"
+  (interactive)
+  (my-flatten-xml-helper (read-xml) "")
+  (insert ?\n "done")
+  )
+
+(defun my-flatten-xml-helper (data top_path_str)
+  (insert ?\n "1 entering" ?\n)
+  (let ( (tag_name (car data))
+         (bridge_char "-") )
+    (insert "2 after let" ?\n)
+    (insert "3 tag_name is '" tag_name "'" ?\n)
+    (if (string-equal top_path_str "")
+        (setq bridge_char ""))
+    (insert "4 bridge_char set" ?\n)
+    (insert "5 top_path_str is '" top_path_str "'" ?\n)
+    (if (not (stringp tag_name))
+        (setq tag_name (car data))) ; Tag_name is not an attribute list and not a string...get tag name from attribute list
+    (insert "6 tag_name is '" tag_name "'" ?\n)
+    (if (listp (cdr data))
+        (progn ; Current tag has children
+          (setq data (cdr data))
+          (while data 
+            (insert "looping" ?\n)
+            (my-flatten-xml-helper (car data) (concat top_path_str bridge_char tag_name))
+            (insert "after loop" ?\n)
+            (setq data (cdr data))
+            )
+          )
+      (insert "hello")
+      ;(insert top_path_str bridge_char tag_name ?\n) ; No children for current tag -> insert top_path_str
+      )
+    )
+  )
+
+(defun my-fix-3706 ()
+  (interactive)
+  (beginning-of-buffer)       ; start search from the top
+  (re-search-forward "\\(<a href=\"\\.\\./ProxyServlet\\?action=SdnBasicLink&category=MyNetworkActivityView\">\\)\\s-*<img[^>]+top_mynetwork_b\\.gif[^>]+>")
+  (replace-match "<a href=\"\.\./ProxyServlet\?action=SdnBasicLink&category=MyNetworkActivityQuery\">" nil nil nil 1)
+  (save-buffer)
+  (kill-buffer nil)
+  )
+
+;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*
+(defun my-multifile-update ()
+  "Updates and saves all open buffers with a series of changes. Prints warnings to a separate file."
+  (interactive)
+  (save-excursion
+    (save-match-data
+      (let ((MAX_LOOPS 500)
+            (continue t)
+            (warningslist nil)
+            (warningmsg nil)
+            (errorsfound nil)
+            (outputfilename (concat temp_path "1.txt"))
+            )
+        ; Clear the output file
+        (shell-command (concat "echo '' >" outputfilename))
+        ; Change stuff
+        (while continue
+
+                                        ; Terminate processing if MAX_LOOPS is reached
+          (if (<= MAX_LOOPS 0)
+              (error (concat "error: MAX_LOOPS reached! View " outputfilename " for details"))
+              )
+          (setq MAX_LOOPS (- MAX_LOOPS 1))
+
+          ; Make changes to current buffer
+          (setq result (catch 'cannot_find (my-multifile-update-helper)))
+          
+          (if (stringp result) ; String result ->error message
+              ; Display error and exit
+              (error result)
+            )
+          (setq warningslist result)
+          (if (eq warningslist nil)
+              (progn
+                                        ; Save and kill buffer
+                (save-buffer)
+                                        ; Keep a record of the buffers you have modified
+                (shell-command (concat "echo '  success: " (buffer-name) "' >>" outputfilename))
+                (message "success")
+                (kill-buffer nil)
+                )
+                                        ; Error given
+            (progn
+              (setq errorsfound t)
+                                        ; Iterate over all warnings and write them to the outputfile
+              (while warningslist
+                (setq warningmsg (concat "*warning*: " (buffer-name) " [" (car warningslist) "]"))
+                (shell-command (concat "echo '" warningmsg "' >>" outputfilename))
+                (message warningmsg)
+                (setq warningslist (cdr warningslist))
+                )
+              (kill-buffer nil)
+              )
+            ) ; end if
+          
+                                        ; Terminate processing when scratch buffer is reached
+          (if (string= (buffer-name) "*scratch*")
+              (setq continue nil) ; DEBUG
+            )
+          )
+        (if (eq errorsfound nil)
+            (message (concat "All modifications were successful. View " outputfilename " for details"))
+                                        ; Errors found, prompt to open outputfile and search for *error*
+          (progn
+            (if (y-or-n-p (concat "Errors occurred. Open " outputfilename " to view the error details? "))
+                (progn
+                  (find-file outputfilename)
+                  (search-forward "*error*" nil t)
+                  )
+              )
+                                        ; Clear message buffer
+            (message "")
+            )
+          )
+        )
+      )
+    )
+  )
+
+(defun my-multifile-update-helper ()
+  (let ((result nil)
+        (warningslist nil)
+        (insert_if_define_strings_list '( ("../images/" ; Insert if this string is found in the buffer
+                                           "<xsl:import href=\"globalvar_img_loc.xsl\"/>\n" ; String to insert
+                                           "<xsl:stylesheet[^>]+xmlns:xsl=\"http://www\.w3\.org/1999/XSL/Transform\"[^>]*>\n") ; Insert after this string
+                                          )
+                                       )
+        (replace_if_define_strings_list '( ("../images/" ; Replace if this string is found in the buffer
+                                            "{$IMG_LOC}" ; String to replace in
+                                            "\.\./images/") ; String to replace out
+                                           )
+                                        )
+        )
+    (setq result (catch 'cannot_find (my-insert-string-if-define-in-file insert_if_define_strings_list nil nil))) ; replaceflag->nil, firstreq->nil
+    (if (stringp result) ; String result ->error
+        ; Rethrow and exit
+        (throw 'cannot_find result)
+      )
+    ; Result is a list of warnings, append it to the existing warnings list
+    (setq warningslist (append warningslist result))
+
+    (setq result (catch 'cannot_find (my-insert-string-if-define-in-file replace_if_define_strings_list t nil))) ; replaceflag->t, firstreq->nil
+    (if (stringp result) ; String result ->error
+        ; Rethrow and exit
+        (throw 'cannot_find result)
+      )
+    ; Result is a list of warnings, append it to the existing warnings list
+    (setq warningslist (append warningslist result))
+
+    warningslist ; return warningslist
+    )
+  )
+;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*;*
+
+(defun my-multifile-update-helper-old ()
+  (beginning-of-buffer)
+  (if (search-forward "<!-- SDN_INCLUDE = \"header.txt\" -->" nil t)
+      (progn
+        (replace-match "<xsl:call-template name=\"header\"/>" t t nil)
+        )
+    (throw 'cannot_find "Couldn't find header include")
+    )
+  (beginning-of-buffer)
+  (if (re-search-forward "<xsl:stylesheet[^>]+xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"[^>]*>\n")
+      (progn
+                                        ; Insert import
+        (insert "<xsl:import href=\"header.xsl\"/>\n")
+        )
+                                        ; Couldn't find start
+    (throw 'cannot_find "Couldn't find stylesheet start")
+    )
+  )
+
+(defun my-unearth-buffer ()
+  "Display and activate buffer at the end of the buffer-list."
+  (interactive)
+  (save-excursion
+    (let ((cur-buf (current-buffer)))
+      (my-bury-buffer-get-next)
+      (while (not (eq (other-buffer (current-buffer) t) cur-buf))
+	(my-bury-buffer-get-next)))))
+
+(defun my-bury-buffer-get-next ()
+  "Put BUFFER at the end of the buffer-list, and always display next buffer.
+The normal bury-buffer displays the first buffer that is _not_ on display,
+instead of just displaying the next buffer."
+  (interactive)
+  (let ((next-buffer (other-buffer (current-buffer) t)))
+    (bury-buffer)
+    (switch-to-buffer next-buffer)))
+
+(defun my-kill-register ()
+  "Save the region as if killed in register a, but don't kill it."
+  (interactive)
+  (copy-to-register ?a (mark) (point))
+  )
+
+(defun my-yank-register ()
+  "Insert contents of register a"
+  (interactive)
+  (insert-register ?a t)
+  )
+
+(defun make-named-shell (name &optional directory)
+  "Make a shell called NAME, optionally cd it to DIRECTORY."
+  (interactive "sShell name: 
+DDirectory to start %s in: ")
+  (if (not (get-buffer name))
+      (progn
+        ;(sleep-for 2)
+        (let ((new-shell-buffer (shell)))
+          (rename-buffer name)
+          (if directory
+              (let ((full-dir (expand-file-name directory)))
+                (process-send-string
+                 (get-buffer-process new-shell-buffer)
+                 (format "cd %s\n" full-dir))
+                (cd full-dir)
+                )
+            )
+          )
+        )
+    )
+  (switch-to-buffer (get-buffer name)))
+
+(defun make-shell-for-directory-if-present (directory &optional name)
+  "Make a shell for DIRECTORY, called NAME, if DIRECTORY exists."
+  (if (file-directory-p directory)
+      (make-named-shell (if name
+                            name
+                          (format "-%s-" (file-name-nondirectory directory)))
+                        directory)))
+
+(defun my-goto-shell (shellnum)
+  "Go to shell with the input number. If the shell doesn't exist, create it."
+  (interactive)
+  (let ((shellname (concat "*shell* " (number-to-string shellnum))))
+    (if (= shellnum 4)
+        (make-named-shell shellname "/usr/work/ted")
+      (make-named-shell shellname)
+      )
+    ;; Remember the last shell for my-default-shell
+    (setq current_shell_num shellnum)
+    )
+  )
+
+(defvar current_shell_num 1)
+
+(defun my-default-shell ()
+  ""
+  (interactive)
+  (my-goto-shell current_shell_num)
+  )
+
+;;;--- KEY BINDINGS ---;;;
+(global-set-key [(control return)]   'open-line)
+(global-set-key [(control backspace)] 'my-electric-backspace)
+(global-set-key [(control delete)]    'my-electric-delete)   
+(global-set-key [(control \`)]       'my-kill-register)
+(global-set-key [(control \.)]       'my-shrink-window)
+(global-set-key [(control \;)]       'my-enlarge-window)
+(global-set-key [(control \<)]       'my-shrink-window-horizontally)
+(global-set-key [(control \>)]       'my-enlarge-window-horizontally)
+(global-set-key [(control \0)]       '(lambda () (interactive) (point-to-register ?0)))
+(global-set-key [(control \1)]       '(lambda () (interactive) (point-to-register ?1)))
+(global-set-key [(control \1)]       '(lambda () (interactive) (point-to-register ?1)))
+(global-set-key [(control \2)]       '(lambda () (interactive) (point-to-register ?2)))
+(global-set-key [(control \3)]       '(lambda () (interactive) (point-to-register ?3)))
+(global-set-key [(control \4)]       '(lambda () (interactive) (point-to-register ?4)))
+(global-set-key [(control \5)]       '(lambda () (interactive) (point-to-register ?5)))
+(global-set-key [(control \6)]       '(lambda () (interactive) (point-to-register ?6)))
+(global-set-key [(control \7)]       '(lambda () (interactive) (point-to-register ?7)))
+(global-set-key [(control \8)]       '(lambda () (interactive) (point-to-register ?8)))
+(global-set-key [(control \9)]       '(lambda () (interactive) (point-to-register ?9)))
+(global-set-key [C-kp-0]             '(lambda () (interactive) (point-to-register ?0)))
+(global-set-key [C-kp-1]             '(lambda () (interactive) (point-to-register ?1)))
+(global-set-key [C-kp-2]             '(lambda () (interactive) (point-to-register ?2)))
+(global-set-key [C-kp-3]             '(lambda () (interactive) (point-to-register ?3)))
+(global-set-key [C-kp-4]             '(lambda () (interactive) (point-to-register ?4)))
+(global-set-key [C-kp-5]             '(lambda () (interactive) (point-to-register ?5)))
+(global-set-key [C-kp-6]             '(lambda () (interactive) (point-to-register ?6)))
+(global-set-key [C-kp-7]             '(lambda () (interactive) (point-to-register ?7)))
+(global-set-key [C-kp-8]             '(lambda () (interactive) (point-to-register ?8)))
+(global-set-key [C-kp-9]             '(lambda () (interactive) (point-to-register ?9)))
+(global-set-key [(meta control f1)]    '(lambda () (interactive) (my-goto-shell 1)))
+(global-set-key [(meta control f2)]    '(lambda () (interactive) (my-goto-shell 2)))
+(global-set-key [(meta control f3)]    '(lambda () (interactive) (my-goto-shell 3)))
+(global-set-key [(meta control left)] 'my-unearth-buffer)
+(global-set-key [(meta control right)] 'my-bury-buffer-get-next)
+(global-set-key "\C-b"               'electric-buffer-list)
+(global-set-key "\C-h"               'query-replace)
+(global-set-key "\C-o"               'my-outline-region)
+(global-set-key "\C-p"               'print-buffer)
+(global-set-key "\C-q"               'kill-ring-save)
+(global-set-key "\C-t"               'my-copy-buffer-filename)
+(global-set-key "\C-v"               'yank)
+(global-set-key "\C-z"               'undo)
+(global-set-key "\C-\\"              'my-update-file-separators)
+(global-set-key "\C-xc"              'compile)
+(global-set-key "\C-xe"              'my-explore-from-this-directory)
+(global-set-key "\C-cd"              'delete-rectangle)
+(global-set-key "\C-ch"              'query-replace-regexp)
+(global-set-key "\C-cr"              'search-backward-regexp)
+(global-set-key "\C-cs"              'search-forward-regexp)
+(global-set-key "\C-xa"              'mark-whole-buffer)
+(global-set-key "\C-xf"              'font-lock-fontify-buffer)
+(global-set-key "\C-xh"              'replace-string)
+(global-set-key "\C-xj"              'java-mode)
+(global-set-key "\C-xl"              'goto-line)
+(global-set-key "\C-xz"              'html-helper-mode)
+(global-set-key "\C-xq"              'quoted-insert)
+(global-set-key "\C-xs"              'my-default-shell)
+;(global-set-key "\C-xs"              'shell)
+(global-set-key "\C-xt"              'tidy-buffer)
+(global-set-key "\C-xv"              'view-mode)
+(global-set-key "\C-xx"              'xsl-mode)
+(global-set-key "\C-x\\"             'my-backslash-to-forwardslash-in-region)
+(global-set-key "\C-x\C-a"           'mark-page)
+(global-set-key "\C-x\C-l"           'my-load-file-in-current-buffer)
+(global-set-key "\C-x\C-m"           'my-remove-ctlm)
+(global-set-key "\C-x\C-n"           'my-blank-tags)
+(global-set-key "\C-x\C-p"           'my-prettify-xml)
+(global-set-key "\C-x\C-j"           'my-strip-xml)
+(global-set-key "\C-x\C-k"           'kill-buffer)
+(global-set-key "\C-x\C-h"           'my-prettify-html)
+(global-set-key "\C-x\C-u"           'my-split-url)
+(global-set-key "\C-cf"              'my-open-file-from-line)
+(global-set-key [(meta down)]        'my-scroll-down-center)
+(global-set-key [(meta up)]          'my-scroll-up-center)
+(global-set-key [(meta \0)]          '(lambda () (interactive) (jump-to-register ?0)))
+(global-set-key [(meta \1)]          '(lambda () (interactive) (jump-to-register ?1)))
+(global-set-key [(meta \2)]          '(lambda () (interactive) (jump-to-register ?2)))
+(global-set-key [(meta \3)]          '(lambda () (interactive) (jump-to-register ?3)))
+(global-set-key [(meta \4)]          '(lambda () (interactive) (jump-to-register ?4)))
+(global-set-key [(meta \5)]          '(lambda () (interactive) (jump-to-register ?5)))
+(global-set-key [(meta \6)]          '(lambda () (interactive) (jump-to-register ?6)))
+(global-set-key [(meta \7)]          '(lambda () (interactive) (jump-to-register ?7)))
+(global-set-key [(meta \8)]          '(lambda () (interactive) (jump-to-register ?8)))
+(global-set-key [(meta \9)]          '(lambda () (interactive) (jump-to-register ?9)))
+(global-set-key [M-kp-0]             '(lambda () (interactive) (jump-to-register ?0)))
+(global-set-key [M-kp-1]             '(lambda () (interactive) (jump-to-register ?1)))
+(global-set-key [M-kp-2]             '(lambda () (interactive) (jump-to-register ?2)))
+(global-set-key [M-kp-3]             '(lambda () (interactive) (jump-to-register ?3)))
+(global-set-key [M-kp-4]             '(lambda () (interactive) (jump-to-register ?4)))
+(global-set-key [M-kp-5]             '(lambda () (interactive) (jump-to-register ?5)))
+(global-set-key [M-kp-6]             '(lambda () (interactive) (jump-to-register ?6)))
+(global-set-key [M-kp-7]             '(lambda () (interactive) (jump-to-register ?7)))
+(global-set-key [M-kp-8]             '(lambda () (interactive) (jump-to-register ?8)))
+(global-set-key [M-kp-9]             '(lambda () (interactive) (jump-to-register ?9)))
+(global-set-key "\M-`"               'my-yank-register)
+(global-set-key "\M-t"                'my-copy-buffer-basename)
+(global-set-key "\M-v"               'yank-pop)
+
+(global-set-key [f1]    'help)
+(global-set-key [S-f1]  'man)
+;(global-set-key [f2]    'ediff-buffers)
+(global-set-key [f2]    'my-multifile-update)
+(global-set-key [f3]    'find-name-dired)
+(global-set-key [C-f3]  'find-grep-dired)
+(global-set-key [f4]    'grep-find)
+(global-set-key [C-f4]  'grep)
+
+(global-set-key [f5]    'my-revert-buffer)
+
+;(global-set-key [f9]    'new-frame)
+;(global-set-key [S-f9]  'delete-frame)
+;(global-set-key [f9]    'other-window)
+;(global-set-key [S-f9]  'toggle-trunc)
+;(global-set-key [f10]   'split-window-vertically)
+;(global-set-key [S-f10] 'delete-other-windows)
+;(global-set-key [f11]   'undo)
+(global-set-key [f9]    'w32-minimize-frame)
+(global-set-key [f10]   'w32-restore-frame)
+(global-set-key [f11]   'w32-maximize-frame)
+(global-set-key [f12]   'toggle-trunc)
+
+(global-set-key [C-tab]      'my-reverse-other-window)
+(global-set-key [C-S-kp-tab] 'other-window)
+
+(global-set-key [C-next]  'scroll-other-window)
+(global-set-key [C-prior] 'scroll-other-window-down)
+(global-set-key [C-M-up]   'my-dock-frame-top-left)
+(global-set-key [C-M-down] 'my-dock-frame-bottom-left)
+
+(global-set-key [C-M-home]  'my-dock-frame-top-left)
+(global-set-key [C-M-end]   'my-dock-frame-bottom-left)
+(global-set-key [C-M-prior] 'my-dock-frame-top-right)
+(global-set-key [C-M-next]  'my-dock-frame-bottom-right)
+
+(global-set-key [M-prior] 'my-page-up-center)
+(global-set-key [M-next]  'my-page-down-center)
+
+(global-set-key [C-lwindow] 'ignore)
+
+;;;--- PRINTING FROM EMACS ---;;;
+(setq printer-name "//dvader/Brother HL-1240 series")  ; network printer
+(setq ps-printer-name "//dvader/Brother HL-1240 series")  ; network printer
+
+(makunbound 'vc-master-templates)
+(load-library "vc-hooks")
+(load-library "vc")
+
+;;;--- MISCEALLANEOUS SETTINGS ---;;;
+
+;; Buffer settings
+(setq next-line-add-newlines nil) ; Inhibit adding newlines at eof from arrow key presses
+(setq inhibit-startup-message 1) ; Inhibit startup message
+(custom-set-variables '(scroll-bar-mode (quote left))) ; Scrollbar to the right instead of default left
+
+;; Mode bar settings
+(display-time) ; Display current time on mode line.
+(setq display-time-day-and-date t) ; Show date also.
+(setq column-number-mode 1) ; Show column numbers on mode bar
+
+;; Sound settings
+(setq visible-bell 1) ; Make buffer flash instead of beeps on errors, etc
+
+;; Enabled disabled functionality
+(put 'upcase-region 'disabled nil)
+
+;; Other stuff
+(auto-compression-mode) ; Able to VIEW COMPRESSED (.gz and .z) FILES directly
+(setq w32-quote-process-args t)
+(setq explicit-shell-file-name "D:/Programming/Cygwin/bin/tcsh.exe")
+(setq shell-command-switch "-cf")
+(setq grep-command "D:/Programming/Cygwin/bin/grep -n ")
+(setq frame-title-format "%b") ; Show active buffer as name of window
+(setq icon-title-format "%b") ; Show active buffer as name of icon
+(setq indent-tabs-mode nil) ; Use spaces instead of tabs
+(setq-default indent-tabs-mode nil)
+(setq default-tab-width 4)
+(setq tempo-insert-string-functions 'upcase)
+(setq truncate-partial-width-windows nil)
+(setq auto-revert-interval 2)
+(setq html-helper-never-indent t)
+;(buffer-name)
+
+;; switch highlighting on
+(highlight-current-line-on t)
+
+(setq scroll-step 1)
+
+;(setq debug-on-error t)
+
+;(open-dribble-file "Z:/.dribble")
+;(w32-maximize-frame)
+
+; Speedbar
+;(autoload 'speedbar-frame-mode "speedbar" "Popup a speedbar frame" nil)
+;(autoload 'speedbar-get-focus "speedbar" "Jump to speedbar frame" t)
+;(define-key-after (lookup-key global-map [menu-bar tools])
+;  [speedbar] '("Speedbar" . speedbar-frame-mode) [calendar])
+;(custom-set-variables
+; '(speedbar-use-images t))

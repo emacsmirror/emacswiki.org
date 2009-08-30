@@ -1,0 +1,195 @@
+This page is a reference for all /-type commands that ERC recognizes.
+From within ERC you can type /HELP at the prompt to see a similar list.
+
+Entries are in the format:
+;; COMMAND (ALIASES) :''usage''
+:: description
+
+; AMSG: /AMSG ''message''
+: Send ''message'' to all channels of the current server that you are on.
+
+; APPENDTOPIC (AT): /APPENDTOPIC ''topic''
+: Append ''topic'' to the current channel topic, separated by a space.
+
+; AWAY reason: /AWAY ''reason''
+: Mark the user as being away from current server, using ''reason''.
+
+; BANLIST (BL): /BANLIST
+: Pretty-print the contents of `channel-banlist'.
+
+; CLEAR: /CLEAR
+: Wipe out window contents and give it a fresh start.
+
+; CLEARTOPIC: /CLEARTOPIC ''#channel''
+: Clear the topic for channel ''#channel'' or default channel if #channel is unspecified.
+
+; COUNTRY: /COUNTRY ''code''
+: display country name for the two letters country ''code'' passed as an argument.
+
+; CTCP: /CTCP ''nick command''
+: sends the ctcp command ''command'' to user ''nick''.
+
+; DEOP: /DEOP ''nick1 nick2 nick3'' ... 
+: removes operator privileges from users ''nick1'', ''nick2'', ''nick3'', ... for current channel.
+
+; DESCRIBE: /DESCRIBE ''user action''
+: Pose some ''action'' to a certain ''user''
+
+; GAWAY: /GAWAY ''reason''
+: mark the user as being away from all servers, using ''reason''.
+
+; GQUIT (GQ): /GQUI ''reason''
+: Disconnect from all servers at once with the same quit ''reason''.
+
+; HELP (H): /HELP ''arg''
+: Pop up help information.  With no argument, display an apropos about erc commands.  Otherwise, display help about the function or variable passed as argument ''arg'' if it is bound, or do a apropos search in the erc namespace. "/help HELP" shows you help about help.
+
+; IDLE: /IDLE ''nick''
+: Show the length of time ''nick'' has been idle.
+
+; IGNORE: /IGNORE ''user''
+: Ignore ''user''.  This should be a regexp matching nick!user@host.
+
+; JOIN (J, CHANNEL): /JOIN ''#channel''
+: Join channel ''#channel'' or create it if it doesn't exist.  This command spawns a new buffer which contains this channel's traffic. See also C-c C-j.
+
+; KICK: /KICK #channel nick reason or /KICK nick reason
+: Kick the user "nick" from channel #channel, advertising it with reason.
+
+; LASTLOG: /LASTLOG ''line''
+: Show all lines in the curent buffer matching the regexp ''line''.
+
+; LOAD: /LOAD ''script args''
+: load the script script, with optional arguments ''script args''.  Arguments are set as the local variable `erc-script-args' in the namespace of script.
+
+; ME: /ME ''action''
+: pose action ''action'' to current channel or query buffer
+
+; MASSUNBAN (MUB): /MASSUNBAN
+: Mass unban.
+
+; MODE: /MODE ''line''
+: Change or display the mode value of a channel or user.
+
+; MSG (M): /MSG ''user-or-channel message''
+: send the private message ''message'' to user or channel ''user-or-channel''.
+
+; NAMES (N): /NAMES ''#channel''
+: briefly list the users in channel ''#channel''.
+
+; NICK: /NICK ''nick''
+: set nick to ''nick''.
+
+; NOTICE: /NOTICE ''user-or-channel message''
+: send the notice ''message'' to user or channel ''user-or-channel''.
+
+; OP: /OP ''nick1, nick2, nick3'' ... 
+: set channel mode +o for ''nick1, nick2, nick3'', ... for current channel.
+
+; OPS: /OPS
+: Show the ops in the current channel.
+
+; PART (LEAVE): /PART ''#channel'' ''reason''
+: leave channel ''#channel'' or current channel if #channel is not specified and use ''reason'', or use default reason if none specified. See also C-c C-p.
+
+; PING: /PING ''nick''
+: ping the user named ''nick'' and print elapsed time between ping and return.
+
+; QUERY: /QUERY ''nick''
+: open a query buffer with user ''nick''
+
+; QUIT (Q, BYE, EXIT, SIGNOFF): /QUIT ''reason''
+: disconnect from the current server, advertising it with ''reason'' or default reason if unspecified.
+
+; QUOTE: /QUOTE ''text''
+: Send ''text'' directly to the server.
+
+; SAY: /SAY ''text''
+: Send ''text'' to the current query or channel as a message, not a command.
+
+; SERVER: /SERVER ''server''
+: Connect to ''server'', leaving existing connection intact.
+
+; SET (VARIABLE, VAR): /SET ''variable value''
+: set variable ''variable'' to ''value'', which is a lisp expression that is evaluated.
+
+; SV: /SV
+: says the current ERC and Emacs version into channel.
+
+; SM: /SM
+: says which modules are enabled
+
+; SMV: /SMV
+: says the enabled modules with revision numbers
+
+; TIME (DATE): /TIME
+: Request the current time and date from the current server.
+
+; TOPIC (T): /TOPIC ''#channel topic'' or /TOPIC ''channel-or-topic''
+: set ''topic'' for ''#channel'' or current channel if unspecified.  If topic is not specified, current topic will be displayed instead of modifying it. You can also use C-c C-t to set the topic interactively.
+
+; UNIGNORE: /UNIGNORE ''user''
+: Remove the specified ''user'' from the ignore list.
+
+; WHOAMI: /WHOAMI
+: Do a /WHOIS on your current nickname.
+
+; WHOIS (WI): /WHOIS ''nick''
+: displays various information about user ''nick''.
+
+----
+
+Commands provided by ERC modules, sorted by module:
+
+<b>ErcChess</b>
+; CHESS: /CHESS ''nick''
+: Initiate a chess game via CTCP to ''nick''.  Nick should be the only arg to /chess.
+
+<b>ErcDCC</b>
+; DCC: /DCC ''command'' ''user'' ''args''
+: Initiate a Direct Client to Client connection with ''user''. ''command'' can be one of CLOSE, GET, SEND, LIST, CHAT, etc
+
+; CREQ: /CREQ ''type''
+: Set or get the DCC chat request flag.  Possible values of ''type'' are: ask, auto, ignore.
+
+; SREQ: /SREQ ''type''
+: Set or get the DCC send request flag.  Possible ''types'' are: ask, auto, ignore.
+
+<b>ErcEzbounce</b>
+; EZB: /EZB ''command''
+: Send EZB ''command'' to the EZBouncer verbatim.
+
+<b>ErcMule</b>
+; LANG: /LANG ''language''
+: Display the language name for the language code given by ''language''.
+
+<b>ErcList</b>
+; LIST: /LIST ''channels''
+: Displays a buffer containing a list of ''channels'' on the current server.
+
+<b>ErcNetsplit</b>
+; WHOLEFT (WL): /WHOLEFT
+: Show who's gone after a netsplit.
+
+<b>ErcNotify</b>
+; NOTIFY: /NOTIFY or /NOTIFY ''nick1, nick2, nick3''...
+: With no arguments, list members of `erc-notify-list' who are on this server.  Or, with arguments, add ''nick1, nick2, nick3'' to erc-notify-list.  If you type a nick that is already in the notify list, it will be removed.
+
+<b>ErcPage</b>
+; PAGE: /PAGE ''user'' ''message''
+: Send a CTCP PAGE ''message'' to ''user''.  Note that you will only receive pages if `erc-page-mode' is on.
+
+<b>ErcSound</b>
+; SOUND: /SOUND ''line''
+: Play the sound given in ''line''.
+
+
+----
+
+FIXME: Add more elaborate descriptions and add links.  -- BenjaminDrieu
+
+--------------------
+ERC allows you to add your own commands as well.  As long as you provide a defun with a name like erc-cmd-XXXX, then /XXXX (or /xxxx) will call that command.  You can get a picture of what some of those should look like in erc.el, and on this wiki.  Look at NowPlaying, for example.
+A final t is used to inform the calling function that everything went fine.  If a erc-cmd-XXXX function returns nil, erc reports "Bad syntax" or a similar message.
+--------------------
+[[ERC]]

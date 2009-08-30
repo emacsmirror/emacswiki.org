@@ -1,0 +1,59 @@
+This page can hold a feature comparison between Eclipse (a Java IDE) and JDEE ([[JavaDevelopmentEnvironment]]). See also [[Jdee-Eclipse-integration]] and MarkFeber.
+
+== General discussion ==
+Are there any good reasons to move to Eclipse vs. sticking with Emacs/JDEE ??
+
+''Maybe if you only program in Java and never use any of Emacs's text editing features. Ever used a keyboard macro? If so you won't like Eclipse.''
+
+
+Eclipse only works in GUI mode on some Java platforms. Emacs works on most computers, in GUI or text mode. It also supports most languages, natural and programming, as well as SGML/XML/HTML and TeX.
+You can run familiar Linux-like shell commands, such as sort or grep inside Emacs.
+
+Eclipse is starting to support languages beyond Java. Its plugin architecture is much easier for users: just move the .jar file into its classpath, restart, and follow any prompts or menus.
+
+Emacs plugins or libs have custom readme-type instructions that might take an hour to set up. Emacs libs do not even support versioning, so you cannot tell if you just replaced the newest lib with an older one, except in custom cases.
+
+[new]
+The initial question explicitely asked for reasons that would make you move to Eclipse (excluding the Eclipse gotchas). I find myself in eclipse most of the time now, because the java integration is so great - and i feel horrible :( - the thing is, is jde capable of doing the same things? Does JDEE have all the java refactoring automatisms Eclipse has? (Rename of variables with all references updated, moving methods between classes, etc.) 
+
+== Eclipse's features and JDEE equivalents ==
+TODO: write a list or some table which sums up, for all typical and daily tasks with Eclipse, how to do them in JDEE. (Similar to what was done in the page [[GnusGmail]]).
+
+=== Projects ===
+==== Storing project information ====
+Eclipse uses a file called <code>.project</code> per project to store its name, comments, project tyes („natures“), build commands and some other metadata.
+JDEE uses a <code>prj.el</code> file with different format and features.
+
+TODO: how does JDEE (or Emacs) describe a „project“? Are <code>.project</code> and <code>prj.el</code> equivalent?
+
+If there is a way to convert a <code>.project</code> to a <code>prj.el</code> (convert an Eclipse project to a JDEE project), it can be explained in [[Jdee-Eclipse-integration#ProjectFiles]].
+
+=== Code browsing ===
+==== Open in the current or all projects a class or file whose name you know ====
+|| *Eclipse feature* || *Key in Eclipse* || *How to do it in Emacs* ||
+||Open type || C-S-t || M-x jde-find-class-source ||
+||Open resource || C-S-r || Not sure this applies, there are lots of modes for opening non-java based objects(tags, anything mode, etc ||
+However, jde-find-class-source (from JDE 2.3.5.1) lacks autocompletion and forces you to write the full package name. It seems also to take just the current project into consideration.
+
+And for C-S-r, we should write here a recommendation of one mode and setup which equals or surpasses Eclipse's features.
+
+TODO
+
+==== Go to declaration / Go to implementation ====
+In Eclipse, Ctrl+Click on a method/constant/whatever brings you to where it was declared. It really finds it in your project (and not in others), and finally in the class path and the JRE.
+
+|| *Feature* || *Key in Eclipse* || *How to do it in Emacs* ||
+|| Jump to declaration || Ctrl+Click || C-c C-v C-y (jde-open-class-at-point) ||
+
+Also, with plugin „Implementors“ you can right click and „Go to implentation“. In case there are many, you can choose.
+TODO: how to do the same in JDEE?
+
+=== Code editing ===
+==== Highlight occurrences of current variable („toggle mark occurrences“)====
+In Eclipse, when you click or step in a variable/class/function name, all references to that symbol are automatically highlighted. It doesn't simply search for it literally; instead it marks only the reachable symbols which refer to the *same* variable (for instance, a local variable named „data“ doesn't match a the local variable „data“ in other function). And in JDEE?
+
+Answer: this feature was added to CEDET in April 2009. Activate it with ##(global-semantic-idle-tag-highlight-mode 1)##. It still has some bugs (ex: the highlight disappears if you scroll), but it is useful.
+
+----
+CategoryProgrammerUtils
+CategoryRelated

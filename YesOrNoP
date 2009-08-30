@@ -1,0 +1,31 @@
+`y-or-n-p' Emacs's way of asking a yes-or-no question, usually to get your confirmation for something you requested.
+
+`yes-or-no-p' is Emacs's way of asking an ''important'' yes-or-no question.  You must type a full `yes' or `no' to answer.  See Manual:yes-or-no-p.
+
+The Emacs designers decided which questions are important enough to make you answer with a full word. They based their decisions on years of experience with user problems. You are asked to type a full word not to annoy you but to save you from shooting yourself in the foot.
+
+However, Emacs design decisions need to be relatively conservative, and they need to fit the needs of the average user, as well as the EmacsNewbie. Some people feel that `yes-or-no-p' questions are never important enough to warrant typing two or three characters, and they prefer to substitute `y-or-n-p' for `yes-or-no-p' everywhere to save one or two characters. If you want to do that, put this in your init file (##~/.emacs##):
+
+    (defalias 'yes-or-no-p 'y-or-n-p)
+
+Some specific `yes-or-no-p' questions can be disabled.  For example, RevertBuffer asks before re-reading a file, but you can set user option `revert-without-query' to record files that you want to be able to revert without confirming.
+
+And you can always use `defadvice' (see AdvisingFunctions) to modify a command, inhibiting it from asking yes or no.  But if you do this, be careful that it doesn't also catch lower-level questions. And see also AdviceVsHooks before you decide to advise a function.
+
+    (defadvice WHATEVER (around stfu compile activate)
+      (flet ((yes-or-no-p (&rest args) t)
+             (y-or-n-p (&rest args) t))
+        ad-do-it))
+
+Or you can predefine the answers for yes-or-no-p so you can select them with M-p.
+
+    (mapcar (lambda (elt) (add-to-list 'yes-or-no-p-history elt))
+            '("no" "yes"))
+
+Other possibilities:
+
+* QuickYes -- add shortcuts <code>M-y</code> and <code>M-n</code>
+* LoggingYesOrNoP -- ideas about recording what you answered most often (and thus perhaps don't need to be asked at all)
+
+----
+CategoryKeys

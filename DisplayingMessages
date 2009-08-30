@@ -1,0 +1,35 @@
+For simple examples of displaying messages in Emacs, see InteractiveFunction.
+
+Usually, showing messages should be done only when necessary.  For example, if there is no (obvious) side effect of a command -- like inserting text or changing a region -- then a message may be helpful.  Anything else might be considered pedantic.
+
+Messages are displayed in the EchoArea with the `message' function.  It can handle substitution into the string with arguments by using the same format-string syntax of the `format' function.
+
+    (defun add-1+1 ()
+      "Add 1 plus 1 and show the result."
+      (interactive)
+      (message "1 + 1 = %d" (+ 1 1)))
+
+Here is an example of giving multiple messages in a single command.
+
+    (defun meet-and-greet ()
+      "Greet and then bid salutations."
+      (interactive)
+      (message "Hello")
+      (sit-for 1) ;; One second.
+      (message "Good bye"))
+
+A more sophisticated scenario is when you want a displayed message to continue even after there was input taken from the user from a prompt.  Use the `with-temp-message' syntax around any parts that read from the user then restore the previous message.
+
+    (defun long-yawn ()
+      (interactive)
+      (message "Yawn")
+      (sit-for 1)
+      (with-temp-message "Read from minibuffer"
+        (sit-for 1)
+        (read-from-minibuffer "Type anything: "))
+      ;; Yawn should continue.
+      (sit-for 2)
+      (message "Sorry, I'm tired"))
+
+----
+CategoryCode

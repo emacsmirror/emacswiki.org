@@ -1,0 +1,17 @@
+Instead of InsertingTodaysDate, the following command takes a UniversalArgument that will insert the day `days' from the current date.
+
+  (require 'calendar)
+
+  (defun insdate-insert-any-date (&optional days)
+    (interactive "p*")
+    (insert
+     (calendar-date-string
+      (calendar-gregorian-from-absolute
+       (+ (calendar-absolute-from-gregorian (calendar-current-date))
+	  days)))))
+
+See InsertingAndUpdatingDates for other ways to insert dates in buffers and files.
+
+----
+CategoryCalendar
+CategoryEditing

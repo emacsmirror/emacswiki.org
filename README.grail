@@ -1,0 +1,243 @@
+   ---> Getting started with grail <----
+
+To use Grail the Emacs configuration loader you first need to
+install it, and then migrate your .emacs into the files
+recognized by grail at your own speed to your taste.
+
+   ---> Installing Grail. <----
+
+1. Choose a directory where your Emacs configuration will live. From
+   here on this directory will be referred to as USER_ELISP.
+
+2. copy grail.el, grail-fn.el, and grail-groups.el into USER_ELISP
+
+3. Copy your Emacs configuration to a safe place. This includes
+   .emacs, and the customization settings if you have changed
+   custom-file to a place of your own.
+
+4. Create a link pointing .emacs in your home directory to grail.el
+   in USER_ELISP.
+
+   !Make sure you moved your .emacs configuration out of the way!
+
+   example: ln -s $HOME/system/emacs/grail.el .emacs
+
+5. Set the environment variable USER_ELISP to the directory where
+   Grail and your configuration now live. It must be a *full path*
+
+   example: export USER_ELISP=$HOME/system/emacs/
+   note: a trailing slash is not required.
+
+   If you place your configuration in $HOME/system/emacs as I
+   do you do not need to set USER_ELISP.
+
+***You can now start Emacs now with a bare Grail***
+
+6. move your Emacs configuration into USER_ELISP
+
+   A. your .emacs
+
+   To get Emacs back up and running with your configuration right
+   away you can move your configuration into USER_ELISP/user.el.
+
+   If you already have split your configuration up, you can replace
+   your (load PATH) calls to your files with (load-user-elisp FILE).
+   This function automatically prefixes USER_ELISP to the path, so
+   when your files are in USER_ELISP all you need is the file name.
+   (load-user-elisp) traps any errors that occur when loading the file.
+
+   B. your customize settings.
+
+   Emacs writes customization settings by default to .emacs. It is
+   a good idea to find these customize settings and move them to
+   USER_ELISP/customize-settings.el.
+
+   That is where Grail will point customize changes so that they
+   do not corrupt Grail.
+
+Grail is now installed!
+
+---> Portability <---
+
+I use this package on Gentoo, Debian, and Darwin (OSX 10.5 currently, 10.4 previously).
+It is possible to port it to Win32, but there are functions that will only execute
+properly on Linux/Darwin, or are idiosyncratic to them.
+
+         ---> The USER_ELISP directory structure. <----
+
+Inside USER_ELISP Grail looks for directories and files that are treated specially.
+Any other files and directories are ignored by Grail.
+
+
+$HOME/.emacs.d/            | all of emacs scribbles here by default so I treat
+                           | it like /var, both session files and persistent data
+                           | for emacs packages.
+
+$USER_ELISP                | The directory with Grail and your Emacs configuration.
+                           | Seperating it from .emacs.d/ allows you to put the
+                           | configuration under version control or easily back
+                           | it up to a .zip or tarball.
+
+All of the following paths are relative to user-elisp-root. Other files are
+ignored by grail, and must be called from one of the grail recognized files.
+
+grail.el                   | entry point for emacs startup and stage #1
+                           | of the configuration.
+
+grail-fn.el                | library of functions essential to stage #1, and
+                           | more complex functions for stage #2 (groups & ELPA)
+
+elisp.el                   | Elisp functions that are not interactive commands
+                           | loaded when Emacs is called with --script or --batch.
+
+---> Platform Files <---
+
+linux.el                   | only loaded on Gnu/Linux.
+darwin.el                  | only loaded on darwin.
+windows.el                 | only loaded on windows.
+
+NOTE: you can modify load-path in the platform files, a common useage
+      for adding site-lisp directories to tie into what is installed
+      by package managers. When this is done in a platform file grail
+      will remember those modifications to load-path.
+
+---> Files loaded When Emacs is used interactively <---
+
+with an interface: TTY, or GUI.
+
+customize-settings.el      | Emacs writes options you set with customize
+                           | to the default user initialization file.
+                           | Grail redirects these settings to customize-settings.el
+                           | so that Grail is not corrupted.
+
+user.el                    | User customization of Emacs. Anything can go in here
+                           | though placing GUI related configuration is not
+                           | advised.
+
+commands.el                | user commands loaded in an interactive Emacs only. It is
+                           | not necessary to create this file, it does help keep things
+                           | tidy.
+
+keys.el                    | user key-binding customization, not necessary but tidy.
+
+interface.el               | configure the Emacs interface. Only the configuration
+                           | that is TTY safe should be put here if you use Emacs
+                           | in a TTY, or both.
+
+---> GUI <---
+
+These files are called *once* when the first Emacs frame is created.
+
+display.el                 | This is called when emacs creates a TTY or GUI display.
+
+                           | By comparison interface.el always runs when emacs is
+                           | interactive wether there is a display or not (in daemon
+                           | mode). display.el is loaded only when Emacs creates a
+                           | frame.
+
+                           | If you want to be _really_ tidy this is a good place
+                           | to put colors (faces) and other display only bits.
+
+
+gui.el                     | Only loaded when Emacs is used in a GUI. This file is
+                           | loaded after the frame is created to set configuration
+                           | bits that rely on the basic Emacs GUI definitions and
+                           | initialization.
+
+---> load-path <---
+
+load-path is a list of directories that Emacs searches to find Elisp
+files.  Grail will update the load-path so Emacs can find the files
+you create or install. The scheme that Grail uses allows the user add
+directories to the load-path or replace the Elisp files distributed
+with Emacs.
+
+A text'ish tree below outlines the sub-directories that Grail
+recognizes. When a directory has an asterick "*" any sub-directories
+immediately beneath the directory are added as well.
+
+---> User Elisp Directories <---
+
+All these directories are relative (a sub-directory of)
+USER_ELISP. Indented directories are sub-directories.
+
+local/                            | where all the user's elisp directories live.
+  |                               | *Not added to load-path!
+  |
+  --> elisp/(*)                   | elisp maintained by the user, it does not over-ride anything.
+  |
+  --> emacs/                      | local elisp that modifies or replaces packages/files distributed
+  |                               |  with the mainline.
+  |
+  --> groups/                     | groups combine loading,deploying,and configuring one
+                                  | or more packages into a cohesive configuration for
+                                  | a set of related features.
+
+dist/                             | not added to load path, but downloaded package
+  |                               | archives can be saved here.
+  |
+  --> elisp/(*)                   | elisp maintained and distributed by a Third Party. Things
+  |                               | that you download from emacswiki and other web-sites would
+  |                               | go here. If you can find the package in ELPA that is the
+  |                               | recommended way to install Emacs packages.
+  |
+  --> elpa/                       | elisp maintained by ELPA. This is not added to the load-path
+                                  | directly, ELPA stores files here, and manages load-path for
+                                  | it's packages.
+
+---> Configuring the GUI <---
+
+Grail has some functions for setting faces that are conveinant. If you use the customize
+facility you should not need it. If you want to maintain your colors and other face
+properties on your own you can re-use my function: grail-set-faces if you wish.
+
+grail-set-faces takes a list of faces to be set. Each face has a list of attributes
+to set. The attributes are names, not attribute syntax. :foo would be just foo.
+
+Note that I have put setting faces in display.el so it is loaded after the first frame
+is created, otherwise I have encountered problems with using emacs --daemon. If you
+put display configuration in display.el Grail will load them at the right time.
+
+Here is a peice of my configuration as an example:
+
+(grail-set-faces
+  ;; the default face
+
+  (default
+    (background "grey5")
+    (foreground "grey70")
+    (inverse-video nil)
+    (box nil)
+    (strike-through nil)
+    (overline nil)
+    (underline nil)
+    (slant 'normal)
+    (weight 'normal)
+    (height 125)
+    (width 'normal)
+    (family "DejaVuLisp"))
+
+  ;; comments are set off-tempature to distingiush them better.
+  ;; orange was chosen as a red that wasn't harsh.
+  (font-lock-comment-face (foreground "orange3"))
+
+  ;; language syntax is the darkest shade of blue
+  (font-lock-keyword-face (foreground "DeepSkyBlue4"))
+
+  ;; grammar is the lightest shade of blue
+  (font-lock-builtin-face (foreground "SkyBlue3"))
+
+  ;; this should be for any form of literal value in code medium contrast.
+  (font-lock-string-face  (foreground "grey50"))
+  (font-lock-constant-face (foreground "grey50"))
+
+  ;; decl is dark green
+  (font-lock-type-face (foreground "green4"))
+  (font-lock-function-name-face (foreground "aquamarine4"))
+  (font-lock-variable-name-face (foreground "aquamarine3")) )
+
+---> Grail Groups <---
+
+The groups feature is not documented yet. It is available, but not
+intended for general use until the integration with ELPA has been
+completed.

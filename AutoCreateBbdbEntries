@@ -1,0 +1,60 @@
+This page lists examples of how to automatically add entries to the BBDB.
+
+== Auto-creation of all messages addressed to me ==
+
+This is some code posted to the bbdb mailing list by RonanWaider.  It basically just filters out stuff not addressed directly to a specific set of addresses.  Although he didn't originally mention it, I found that I had to (require 'bbdb-hooks).  This module is a collection of predefined hook functions.  Without further ado:
+
+<pre>
+(setq bbdb/mail-auto-create-p 'bbdb-prune-not-to-me)
+(setq bbdb/news-auto-create-p 'bbdb-prune-not-to-me)
+(defun bbdb-prune-not-to-me ()
+  "defun called when bbdb is trying to automatically create a record.  Filters out
+anything not actually adressed to me then passes control to 'bbdb-ignore-some-messages-hook'.
+Also filters out anything that is precedense 'junk' or 'bulk'  This code is from
+Ronan Waide < waider @ waider . ie >."
+  (let ((case-fold-search t)
+        (done nil)
+        (b (current-buffer))
+        (marker (bbdb-header-start))
+        field regexp fieldval)
+    (set-buffer (marker-buffer marker))
+    (save-excursion
+      ;; Hey ho. The buffer we're in is the mail file, narrowed to the
+      ;; current message.
+      (let (to cc precedence)
+        (goto-char marker)
+        (setq to (bbdb-extract-field-value "To"))
+        (goto-char marker)
+        (setq cc (bbdb-extract-field-value "Cc"))
+        (goto-char marker)
+        (setq precedence (bbdb-extract-field-value "Precedence"))
+        ;; Here's where you put your email information.
+        ;; Basically, you just add all the regexps you want for
+        ;; both the 'to' field and the 'cc' field.
+        (if (and (not (string-match "doug@" (or to "")))
+                 (not (string-match "doug@" (or cc ""))))
+            (progn
+              (message "BBDB unfiling; message to: %s cc: %s"
+                       (or to "noone") (or cc "noone"))
+              ;; Return nil so that the record isn't added.
+              nil)
+
+          (if (string-match "junk" (or precedence ""))
+              (progn
+                (message "precedence set to junk, bbdb ignoring.")
+                nil)
+
+            ;; Otherwise add, subject to filtering
+            (bbdb-ignore-some-messages-hook)))))))
+</pre>
+
+Question: How about using bbdb-user-mail-names instead of hard coding your email addresses? i'm using something like the following to setq bbdb-user-mail-names.
+<pre>
+(regexp-opt 
+       '("josh_robb@somedomain.com" 
+	 "josh_robb@someotherdomain.net"))
+</pre>
+
+
+----
+CategoryBbdb

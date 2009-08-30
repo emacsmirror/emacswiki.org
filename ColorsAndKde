@@ -1,0 +1,33 @@
+I am using KDE.  I found my emacs was colored in a strange way no matter how I changed the background and foreground settings in my .Xdefaults.  I tried all methods I could think of, including deleting my .emacs, changing the font, recustomizing my KDE environment through the KDE control center. But without luck.
+
+For KDE 2.1.2, I found the option called 'Apply fonts and colors to non-KDE apps' in '/Look and Feel/Style' in the control center. Disable it. Then logout and log in. Everything becomes fine.
+
+This is also true for newer KDE versions, I've tested this eg for KDE 3.1. 
+Look at Control Center | Look and Feel | Colors
+(or if you have a german KDE: Erscheinungsbild | Farben)
+
+In KDE 3.2.1, logout is not needed.
+Uncheck "Apply colors to non-KDE applications" in "Control Center / Appearance & Themes / Colors" and start another Emacs.
+
+In KDE 3.5.3 you also need to go to 'GTK Styles and Fonts' | 'GTK Styles' and select 'Use another style' and choose Raleigh.
+In my experience, applying the KDE theme or the Qt theme to GTK apps will cause the funky coloring issue in (at least in cvs-emacs).
+
+Since [http://www.freedesktop.org/Software/gtk-qt gtk-engines-qt-0.7] the strange coloring of emacs' background is gone, if you use "Use my KDE style/fonts in GTK applications" and use an emacs built with GTK widgets. With versions prior to 0.7 the empty emacs background was grey whereas the text-filled background was white.
+
+[new]
+2006-09-22 Jason Cornez: I'm using gentoo with gtk-engines-qt-0.7 and emacs-cvs-23 and I still see the background problem if the gtk theme is set to qt.  All my other gtk apps use the qt theme with no problems.  I did find a workaround that allows me to use one gtk theme with emacs 23 and the qt theme for everything else.
+: 1. Set the gtk theme (using gtk-chtheme, for example) to something that you like and that works with emacs: Clearlooks is what I use.
+: 2. This created ~/.gtkrc-2.0 with that theme set.  Copy the file: <code>cp ~/.gtkrc-2.0 ~/.gtkrc-2.0-emacs23</code>
+: 3. Create a file ~/bin/emacs23 or /usr/local/bin/emacs23
+
+    GTK2_RC_FILES=~/.gtkrc-2.0-emacs23
+    emacs --enable-font-backend --font Monospace-10
+
+: 4. Use emacs23 to launch emacs and now you can reset your gtk theme back to qt for the rest of your apps to use.
+[new]
+----
+
+
+Contributors: YujieWu, ColinWalters, UlrichHerbst, McKayMarston, TassiloHorn
+----
+CategoryFaces

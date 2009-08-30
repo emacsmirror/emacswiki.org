@@ -1,0 +1,11 @@
+The wiki script now has page clusters [http://www.emacswiki.org/cgi-bin/oddmuse/Page_Clusters].  If a page A starts with a link to another page B before anything else, then A will belong to the cluster around B.  I don't think we need this feature on the Emacs Wiki.  This text is just a fair warning if you ever see the keyword "Cluster" in RecentChanges. -- AlexSchroeder
+
+The FSF website [http://www.fsf.org/] says:
+
+: FSF is hiring a Senior GNU/Linux Systems Administrator and Programmer.
+
+The page for the job [http://www.fsf.org/jobs/fsf-sysadmin.html] says, however:
+
+: Applications will be accepted until Friday 3 October 2003.
+
+I hope they found someone :)

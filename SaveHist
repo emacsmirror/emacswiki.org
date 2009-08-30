@@ -1,0 +1,14 @@
+A very simple alternative to more involved SessionManagement solutions. 
+
+By default, Savehist mode saves only your MiniBuffer histories, but you can optionally save other histories as well (see option '''`savehist-additional-variables''''). You can, for instance save your search strings by setting `savehist-additional-variables' to ##(search-ring regexp-search-ring)##.
+
+You can also fine-tune Savehist to save only specific histories, not all minibuffer histories -- see the doc string of option `savehist-save-minibuffer-history'.
+
+Savehist mode is implemented by library savehist.el, which is part of Emacs 22. A version of the library that works Emacs 20 and 21, as well as 22+, is available here: Lisp:savehist-20+.el. 
+
+To activate Savehist mode: ##(savehist-mode 1)##
+
+
+
+----
+CategoryPersistence

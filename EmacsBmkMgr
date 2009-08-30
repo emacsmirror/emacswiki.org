@@ -1,0 +1,41 @@
+/emacs-bmk-mgr/ is a bookmark (in the HTML browser sense) manager for
+emacs. I (JoseAntonioOrtegaRuiz) wrote it because I didn't like
+WThreeM's one, but it can be used with any browser (via
+browse-url-function customisation). 
+
+Although I've been using emacs-bmk-mgr on a daily basis during the last months, it probably has some rough
+edges: please, help me polish it by giving it a try and writing down your comments.
+
+=== Usage ===
+There is no documentation yet, but bmk-mgr is pretty easy to use. Just put the bmk-mgr directory in
+your load path and require 'bmk-mgr. With M-x bmk-mgr-show-bookmarks the bookmarks buffer will pop up. 
+Press ? there for help, and give also a look at the customisation group 'bmk-mgr.
+
+You'll find also sample customisaton for your .emacs
+(and, in particular, integration with WThreeM) in the file dot-emacs.el.
+
+=== Download ===
+If you have darcs installed, you can get the latest source code from my archive:
+
+    % darcs get http://hacks-galore.org/jao/darcs/bmk
+
+Or get [http://hacks-galore.org/jao/darcs/bmk/bmk.tar.gz this tarball]. The archive is also [http://hacks-galore.org/darcs?r=bmk-mgr;a=summary browsable online].
+
+=== To do ===
+* Destroy bookmarks frame on exit when bmk-use-own-frame is t.
+* Improve import/export to other formats, including export to emacswiki.el format.
+* Maybe use tree-widget.el.
+* Documentation.
+
+=== Comments ===
+
+Please, write your comments here. Your feedback is *very* welcome.
+
+bmk-mgr.el (patch-1) doesn't work for me, i'll try to explain why :
+
+When i do M-x bmk-mgr-show-bookmarks, i basically have the same result than doing a (switch-to-buffer nil), i edebug-ed the function, and it appears that bmk-mgr-create-bookmark-buffer sets the tree variable to nil, because ~/.emacs.bookmarks doesn't exist, so bmk-mgr-read-from-file returns nil. What should i put in that file ?
+
+Fixed in patch-2. Thanks for the report.  -- jao
+
+----
+CategoryHypermedia

@@ -1,0 +1,66 @@
+English:CategoryProgrammerUtils|
+Français:CatégorieOutilsDuProgrammeur
+
+Click on the header to list all pages on the wiki with information
+related to programming utils.
+
+Debugging tools are listed in CategoryDebug.
+
+If you are looking for a interface to some external utility not
+directly related to programming, see CategoryExternalUtilities
+instead.
+
+This is an attempt to collect tools that help programmers be more
+productive in dealing with programs written in languages such as C,
+C++, Java, etc.  I started this category initially to collect
+information regarding code browsers.
+
+This page list the utilities together with a short description.  If
+more information is available, it should be moved to its own page.
+
+See also: [[EmacsNiftyTricks#Programming]]
+
+Examine code:
+
+* JavaDevelopmentEnvironment -- Java程序员的百宝箱
+** TexiDoclet -- 生成Info格式的Java文档
+* ObjectOrientedBrowser -- 支持 C++, Java, Python以及其它少数几种语言
+* EmacsBrowse -- 虽然要比ObjectOrientedBrowser简单, 但是集成在Emacs
+* SpeedBar -- provides alternate views into individual source files
+* EmacsCodeBrowser -- provides views of directories and files that go one step beyond what SpeedBar does
+* ConnectedGraphEditor (COGRE) -- a base library for editing and manipulating connected graphs
+* DoxyMacs -- 一个C和C++的文档系统
+* CmodeAddons -- 编码的时候显示C函数的参数
+
+源代码编辑:
+
+* CodeBeautifying -- reindenting code and rewrapping comments.
+* ElDoc -- shows you the argument list of functions in the echo area
+* EdiffMode -- Interactively diffing, merging and patching.
+* EmergeDiff -- graphical interface to "diff"
+* ExpandMemberFunctions -- expand member functions from C++ header files into C++ source files
+* RefactoringBrowser -- a proprietary refactoring browser for Emacs
+
+Searching and indexing of source code:
+
+* EmacsTags (etags) -- easy location of identifiers in source files based on a TagFile
+** BuildTags -- more information on how to create these files
+* ExuberantCtags (ctags) -- supports more languages and editors than etags
+* CScopeAndEmacs -- quickly lookup where a symbol is defined, where it is called, etc.
+* IdUtils -- Database of code identifiers
+
+Misc:
+
+* SmartCompile -- better `compile'
+* ModeCompile -- another better `compile'
+* FlyMake -- run make on the fly, highlight errors/warnings in source buffer
+* MajorComint -- a snippet to associate a particular major mode with a comint subprocess.
+* AsciiTable -- a simple ASCII table command
+* AsciiMode -- 显示ASCII编码.
+* PrettyLambda -- a way to use a lambda character in scheme-mode
+* CollectionOfEmacsDevelopmentEnvironmentTools (CEDET) -- most of
+  these tools have their own pages
+
+Cette page est aussi disponible en français: Français:CatégorieOutilsDuProgrammeur
+
+

@@ -1,0 +1,33 @@
+== My road to Emacs==
+Hi everyone, my name is Vincent Foley-Bourgon, I'm from the beautiful province of Quebec in Canada.  I describe myself as a bi-editorial user: I am as comfortable with Emacs as I am with Vim, I use each when it makes sense.  I use Vim for configuration files, quick edits and complex editing tasks.  Emacs I use for everything else.  I used viper-mode for a long time, but it cause problems with some modes, and on my iBook it prevented me from inputting accented characters (I write in french often), so I took a deep breath, delete the viper-mode section in my .emacs and learned to use Emacs the way RMS meant it.
+
+My road to Emacs is a twisted one.  I think my first exposure to Emacs was when I started with Linux back in 1999.  I had a distribution (can't recall which one) that didn't have pico installed, the only command-line editor I knew how to use at that time.  So I had to choose between Emacs and vi to edit my configuration files.  Since I didn't know squat about vi at this time (it kept beeping at my and not inserting any text), I used Emacs because I knew C-x C-s C-x C-c which was all I needed at the time to get into a GUI environment and use kedit.
+
+After a while though, I figured it would be important to learn a real UNIX editor.  I started with Emacs because of my previous (limited) exposure to it, but I wasn't impressed at the time for a few reasons: the command-line version didn't have colors (it was GNU Emacs 19 or 20), it was slow to load and since I was not a programmer in that time, I couldn't understand the need for Lisp; heck, I didn't even know about Lisp!  So I got started on vi (which was actually vim, but I didn't know that) and I quickly got a grip on things, I really enjoyed the key bindings (still do, a full vim mapping for Emacs would mean heaven to me) and I became quite the expert with it.
+
+When I started programming, I used vim because it indented and colored the languages I used.  However, I kept hearing about how Emacs was more of a programmer's editor than vim, so I gave it another shot, but I was so into vim at that time, with no real incentive to switch, that I couldn't wrap my head around Emacs, so I quickly gave up and kept programming with Vim.  However, I grew annoyed with a few things about vim:
+
+* No shell integration, so I had to either use screen or start a second term
+* No integration with irb, the Ruby interactive prompt, so I had to constantly select text from vim and paste it into irb.  It worked, but it was annoying.
+* There were some problems with indenting of Ruby code.  The guys who worked on the indenting for Ruby did a great job considering how awful vimscript is.
+* Limited configurability: I wanted to have macros to create skeleton code and other tasks and Vim wasn't up to the job.
+
+So I decided to give Emacs a shot again, and this time I was resolved to figure out the mystery behind Emacs.  Added bonus, I could program in Common Lisp at that time, and I really loved the language, so I figured that a Lisp dialect to configure my editor would be totally cool.
+
+I had viper-mode enabled, but sometimes it caused weird bugs.  However, it allowed me to play with Emacs with some more familiar keybindings, so it kept me going.  At one point I nuked viper-mode and I got good with the Emacs keybindings; they're still not my favorite, but it's still better than the bindings in the Windows world ;)  Since I knew Lisp, I quickly jumped into writing my own little Elisp functions to help me get along, my .emacs file grew too, with a lot of shameless stealing from other users (in the O'Reilly Emacs book, this practice is encouraged, so I guess it's not so bad) :)
+
+Today, I use Emacs exclusively for coding (with the notable exception of Smalltalk, which has its own environment), I have tramp set up to edit remote files from the comfort of my nice editor, I got a nice color theme, remapped some keys, added support for many programming languages, etc.  Life is good with Emacs, it's really a nice editor, in spite of a few annoyances.
+
+== Software ==
+I am the author of only one piece of software, and it's not that big, it's a small library for Ruby called [http://shorturl.rubyforge.org ShortURL] which shortens URLs using URL redirection services such as !RubyURL, !TinyURL, !ShitURL (yes, that's a real one...), ln-s, etc.
+
+== Blog ==
+I have a semi-interesting blog at http://gnuvince.net
+
+== Messages ==
+
+[new]
+Welcome to the wiki!  I still remember writing my first mails in a command line editor built into ELM, learning about pico as "much easier to use than vi" and then my slow forays into using Emacs 19 on an AIX.  Those were strange days in the basement of the computing department... -- AlexSchroeder
+
+----
+CategoryHomepage

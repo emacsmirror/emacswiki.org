@@ -1,0 +1,23 @@
+Click the heading to search for all pages related to Emacs commands.  For text-editing commands, see CategoryEditing.  For commands
+related to windows and frames, see CategoryDisplay.  For undoing editing changes caused by commands, see CategoryUndo.
+
+About Emacs commands:
+
+* [[Command]] -- What a command is.  What turns an ordinary Emacs function into a command. `M-x' and `<code>M-:</code>'.
+* CommandLogMode -- demonstrate your Emacs editing skills to other people
+* DisabledCommands -- Hiding certain commands from the user.
+* CancelingInEmacs -- Stopping something you started, not to be confused with undoing.
+
+Defining commands:
+
+* InteractiveFunction - How to make a function an interactive command.
+* DoReMi -- Define commands that change things incrementally.
+* [[Icicles]] -- Define commands that read and match input (simple or regexp), providing input-[[Completion]] and cycling of matching candidates. Define multiple-choice commands and menus easily.
+* See also CategoryCode
+
+Executing commands:
+
+* ExecAbbrevCmd -- Execute emacs commands by giving an abbreviation
+* MinibufferHistory -- Retrieve and re-execute previously executed commands.
+* RepeatingCommands -- Repeating an individual command or a sequence of commands (e.g. keyboard macros).
+** KeyboardMacros -- Record your commands then play them back.

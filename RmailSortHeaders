@@ -1,0 +1,35 @@
+;;; Rmail's nice, but I'd prefer to have the headers shown in a predictable order. The code below does this.
+
+(defvar rmail-sort-headers-headers 
+  '("^Subject:" "^Cc:" "^To:" "^From:" "^Date:")
+  "A list of regexps to match headers to search for, in the order
+that they should appear into the buffer.")
+
+;; Sort the headers in an Rmail buffer into a predictable order
+(defun rmail-sort-headers ()
+  (goto-char (point-min))
+  ;; Set an upper limit for our searches as the end of the headers, and make the
+  ;; buffer non-read-only.
+  (let ((eoh (save-excursion (search-forward "\n\n" (point-max) t) (point)))
+        (inhibit-read-only t))
+    (mapc
+     (lambda (header-re)
+       ;; If we can find this header...
+       (when (re-search-forward header-re eoh t)
+         ;; Grab it...
+         (let* ((beg (point-at-bol))
+                (end (save-excursion 
+                       (re-search-forward "^\\S-" eoh 'move)
+                       (1- (point))))
+                (header (buffer-substring beg end)))
+           ;; Delete it from the buffer...
+           (delete-region beg end)
+           (goto-char (point-min))
+           ;; And insert it at the top.
+           (insert header)))
+       (goto-char (point-min)))
+     ;; The list of header regexps to search for, in reverse order that they
+     ;; should appear into the buffer, as each is inserted before the next.
+     (reverse rmail-sort-headers-headers))))
+
+(add-hook 'rmail-show-message-hook 'rmail-sort-headers)

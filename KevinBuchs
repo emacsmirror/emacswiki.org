@@ -1,0 +1,16 @@
+Just starting to have fun, but I am really lost on understanding Emacs wiki editing.  Where is the "What is this all about" page?
+
+Hello and welcome!  I'd like to improve the site -- especially for newbies.  The most important thing, I guess, is *your* impression at this very moment -- before learning from other people: What did you look for?  Where did you look for it?  As to what to the *plan*: Supposedly you'd look at the first two paragraphs of the SiteMap. There you would find the links to the three introduction pages: EmacsWiki, MissionStatement, HowTo. -- AlexSchroeder
+
+
+Alex - thanks for the pointers.  I have read those pages.  I guess I have the basic understanding of how this website works.  I have an interest in using the tools here for Wiki support to implement my own wiki for personal use.  I have downloaded files related to the emacs wiki mode, but I am overwhelmed with the information contained in these and would like to see a simple overview as to the concepts involved.  I have visited WikiModeDiscussion and WikiMode.  Thanks for any further help you can provide.  -- KevinBuchs
+
+
+Hm, why not try it like this: Download Lisp:wiki.el, install it, create the directory ~/Wiki, create a file in this directory called <nowiki>SiteMap</nowiki>.  This should activate wiki-mode for that file.  Write some text, adding the word <nowiki>KevinBuchs</nowiki> somewhere.  This should be hilighted as a link as you type.  Click it (or type RET at it), and you should be propelled to the new page.  Let me know how it works. -- AlexSchroeder
+
+----
+
+For more help, be sure to visit: MeatBall:TextFormattingRules,  MeatBall:StyleGuide, MeatBall:WhyWikiWorks, and UseMod:UseMod -- Kevin Buchs
+
+----
+CategoryHomepage

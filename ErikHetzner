@@ -1,0 +1,16 @@
+Erik Hetzner <ehetzner (.) gmail.com >
+
+Thanks to all Emacs developers for all the fine software. WanderLust, JabberEl, EmacsIRCClient, & to all my favorite modes (NxmlMode).  
+ 
+My minor contributions: EmacsAtomApi, and [[Pases]] (Packaging system for Emacsen) [http://launchpad.net/pases http://launchpad.net/pases].
+
+[new]
+Hello and welcome! This is the first time I hear about Pases. You should make it more public. Just recently -- [[2008-01-12]] -- we talked about packaging systems and Pases did not come up. -- AlexSchroeder\
+
+[new]
+Hi Alex.
+
+I was waiting to put some finishing touches. I've just done a first release if you are interested in trying it out. I have not previously heard of ELPA. If I had I probably would not have developed Pases. Well, perhaps one or the other is the better system.
+
+----
+CategoryHomepage

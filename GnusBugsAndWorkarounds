@@ -1,0 +1,10 @@
+This page is for noting known [[CategoryGnus|GNUS]] bugs and, when possible, their workarounds. If you add a bug here, be sure to also report it to the Gnus developers.
+
+* Bad attachment if using '''[[Icicles]]''' -- GNUS does not remove text properties when it creates an MML attribute value for an attachment. See:
+** [[Icicles - Customization and General Tips#GnusBug|description and workaround]]
+** [[IciclesIssuesClosed#GnusAttachmentBug|discussion]]
+
+
+
+----
+CategoryGnus

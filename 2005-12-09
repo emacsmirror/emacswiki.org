@@ -1,0 +1,24 @@
+== A Wiki Todo ==
+
+* WikiTodo
+
+[new]
+While snooping around the EmacsWiki looking at lost, old and repetitive pages and other odd things, I came up with a "tag" and WikiName that could be added to pages needing fixing but are more work than a reader is able to give, but not enough work to explain the problem and add "WikiTodo".  It could be used to make the entire Wiki a "todo" item, but it should be used tastefully. 
+
+This idea is based on ideas floated by DrewAdams, LennartBorgman and AlexSchroeder at the [[Suggestions]] page. -- AaronHawley
+
+[new]
+Postscript: We'll want to avoid the [[Search]] from having this page come up as a Todo item. -- AaronHawley
+
+[new]
+Hah, CommunityWiki thought of something similar and called them EditHint""s.  It was a failure.
+They also had CommunityWikiTodo.
+
+CommunityWiki seems so entirely conversational that there is little opportunity editing, and thus the failure of such a feature.  I could be wrong. -- AaronHawley
+
+[new]
+There's certainly a tendency to rather write new stuff instead of reworking what's there.  That's why I don't oppose trying these tags on EmacsWiki, even though I'm sceptical due to my experience on CommunityWiki and MeatballWiki. -- AlexSchroeder
+
+----
+CategoryEmacsWikiSite
+

@@ -1,0 +1,46 @@
+== Builtin Integrations (UNMAINTAINED) ==
+Lisp:anything.el has IncrementalSearch integration and IswitchBuffers integration. These are UNMAINTAINED.
+
+In [[Anything]] session, pressing C-s (if you use IswitchBuffers integration, M-s) starts IncrementalSearch in anything buffer. But it is halfway implementation because C-r is undefined. If you want search refinement, use Lisp:anything-match-plugin.el (in AnythingPlugins) instead.
+
+If you use IswitchBuffers, and executing ##anything-iswitchb-setup##, IswitchBuffers integration is installed. If you execute M-x iswitchb-buffer and type something, then anything buffer is poped up. Use up/down to select candidates. Note that many Emacs-ish key bindings in anything-map are unusable because IswitchBuffers steals them. anything-iswitchb-setup unsets some keys. And [[Anything]] includes regexp (virtually substring) match like IswitchBuffers. You should change to [[Anything]] or use IswitchBuffers separately.
+
+[new:rubikitch:2009-03-10 04:36 UTC]
+I just added ##anything-quit-and-find-file## for IswitchBuffers users. Press C-x C-f in the ##anything## buffer. -- [[rubikitch]]
+
+== Icicles with Anything ==
+
+You can use Anything with [[Icicles]]. You can use command `anything' while in ''Icicle'' mode; it has the same behavior with Icicles as without it.
+
+Icicles also integrates some Anything features within its own [[Completion]] environment, so that you can use Icicles features such as progressive completion at the same time. In particular, you can act on multiple Anything objects in the same command invocation, and you can act on them using multiple Anything actions.
+
+This integration doesn't replace Anything, and it isn't intended to -- some Anything features are not appropriate for Icicles completion, and vice versa. The two are basically complementary. To the extent that they can work advantageously together, they are combined in Icicles command `any': You choose an Anything type, then an Anything object to act on. If you want an action other than the default action, then you choose that too. 
+
+Using command `anything', you match your input against objects of all types, then navigate among those objects to choose one. Using command `any', you first choose the object type (using completion or cycling), so that only objects of that type are candidates. You then choose an object that matches your input (using completion or cycling). Command `any' thus acts as `##any file##', `##any buffer##', `##any command##', `##any Info Pages##', etc., depending on the Anything types you have defined. 
+
+See [[Icicles - Anything]] for more information.
+
+
+== Discussion ==
+
+=== Iswitchb integration ===
+
+Iswitchb+Anything users are well aware some keys don't work in this combination, but they still prefer it, because buffer switching is one of the most frequent operations and iswitchb does not disrupt the screen like Anything does. Splitting the screen for frequent operations is very annoying.
+
+Iswitchb integration should not be deleted from the code, it should be marked (with a comment) as unmaintained instead, so there will be no bugfixes and improvements for it, but current users can keep using it. Keeping it in the source does no harm, and it keeps current users happy. -- TamasPatrovics
+
+[new:rubikitch:2009-02-28 22:33 UTC]
+I tested anything and iswitchb without anything-iswitchb-setup. I can use them SEPARATELY. I do not know the intention of integration. Lately I changed the default anything-map to be Emacs-standard and deferred to unset C-p/C-n (and so on) until evaluating anything-iswitchb-setup, because I think it is bad to be unable to use C-p/C-n to select candidates above and below. Anything newbies (especially AnythingApplications only users) would be confused.
+Anyway I marked iswitchb/isearch integrations as unmaintained. -- [[rubikitch]]
+
+[new]
+
+The intention of the integration is you don't have to define separate keys for frequent operations, so you have a single entry point and from that you can access both feature. For example, you want to switch to a file, but you don't know (and don't care) if it's already opened. You start iswitchb and type a part of the file name. If the file is already opened, you can switch to instantly. If not, then anything pops up and you can open it from the file history. So this feature blurs the distinction between buffer switching and file opening while keeping the iswitchb interface. You can use the less disruptive iswitchb for buffer switching (which is a frequent operation), but you also have instant access to content offered by anything from the same point. It's a matter of taste. -- TamasPatrovics
+
+----
+[[Anything]]
+
+
+
+
+

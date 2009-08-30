@@ -1,0 +1,75 @@
+ ; Adrian Aichner <adrian@xemacs.org>, The XEmacs Project, 2006-05-10.
+ 
+ (defconst fm4np-url
+   "http://fm4.orf.at/trackservicepopup/main"
+   "The URL providing the FM4.ORF.AT trackservice")
+ 
+ (defconst fm4np-track-regexp
+   "^\\s-*\\([0-9]+:[0-9]+\\):\\s-+<b>\\(.+\\)</b>\\s-+|\\s-+<i>\\(.+\\)</i><br>$"
+   "Regexp matching a full fm4np track record")
+ 
+ (defconst fm4np-rich-show-regexp
+   "^\\s-*\\([0-9]+:[0-9]+\\):\\s-+<a href=\"\\([^\"]+\\)\"[^>]+>\\([^<]+\\)</a>"
+   "Regexp matching an fm4np show with URL")
+ 
+ (defconst fm4np-poor-show-regexp
+   "^\\s-*\\([0-9]+:[0-9]+\\):\\s-+\\([^<]+\\)"
+   "Regexp matching an fm4np show without URL")
+ 
+ (defcustom fm4np-debug
+   nil
+   "Debug raw output of `fm4np-url'"
+   :type 'boolean)
+ 
+ ;;;###autoload
+ (defun fm4np ()
+   "Return string of what is currently playing on Austrian radio station FM4."
+   (interactive)
+   (save-excursion
+     (let* ((url fm4np-url)
+ 	   ;; 1 - track-start; 2 - track-name; 3 - track artist
+ 	   (status (url-retrieve url))
+ 	   (cached (car status))
+ 	   (url-working-buffer (cdr status))
+ 	   fm4np)
+       (if fm4np-debug
+ 	  (lwarn 'apa-commands 'warning "output of %s:\n%s" fm4np-url
+ 		 (buffer-string url-working-buffer)))
+       (with-current-buffer url-working-buffer
+ 	(goto-char (point-max))
+ 	(cond
+ 	 ((search-backward-regexp fm4np-track-regexp (point-min) t)
+ 	  (setq fm4np (format "FM4@%s: %s (by %s)"
+ 			      (match-string-no-properties 1)
+ 			      (match-string-no-properties 2)
+ 			      (match-string-no-properties 3))))
+ 	 ((search-backward-regexp fm4np-rich-show-regexp (point-min) t)
+ 	  (setq fm4np (format "FM4@%s: %s (see %s)"
+ 			      (match-string-no-properties 1)
+ 			      (match-string-no-properties 3)
+ 			      (match-string-no-properties 2))))
+ 	 ((search-backward-regexp fm4np-poor-show-regexp (point-min) t)
+ 	  (setq fm4np (format "FM4@%s: %s (see %s)"
+ 			      (match-string-no-properties 1)
+ 			      (match-string-no-properties 2)
+ 			      fm4np-url)))
+ 	 (t
+ 	  (error "%s provides nothing useful:%s"
+ 		 fm4np-url (buffer-string url-working-buffer)))))
+       (if (get-buffer url-working-buffer)
+ 	  (kill-buffer url-working-buffer))
+       fm4np)))
+ 
+ ;; ERC commands can't contain digits!
+ ;; See (defun erc-extract-command-from-line (line)
+ ;; in erc.el.
+ ;;;###autoload
+ (defun erc-cmd-FMFOUR (&optional line)
+   "Say the current FM4 song title to the current ERC channel."
+   (interactive)
+   (erc-send-message (format "%s" (fm4np))))
+ (put 'erc-cmd-FMFOUR 'do-not-parse-args t)
+ (push 'erc-cmd-FMFOUR erc-noncommands-list)
+ 
+----
+[[ERC]], NowPlaying

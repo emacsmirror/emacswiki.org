@@ -1,0 +1,173 @@
+Here's a command for moving to the next/previous new message, rather than the next/previous unread message. Useful for when you're subscribed to a mailing list and want to skip over a bunch of unread messages from a thread that doesn't interest you to get to something that will (might not work if you've significantly messed around with your vm-summary-format).
+
+  (defun vm-next-new (arg)
+    "Move to the next new message, or previous if given a negative
+  prefix argument."
+    (interactive "p")
+    (let ((search-func (if (> arg 0) 're-search-forward 're-search-backward))
+          (limit (if (> arg 0) (point-max) (point-min)))
+          ;; Match stuff, then the message number, then stuff, then the new
+          ;; flag ('N').
+          (re "^[^0-9]\\{0,4\\}\\([0-9]+\\) \\(\\*\\| \\)N"))
+      (if (funcall search-func re limit t)
+          (vm-goto-message (string-to-number (match-string 1)))
+        (message "No more new messages."))))
+
+I have it bound to C-n, and C-p bound to <code>(lambda () (interactive) (vm-next-new -1))</code>. -- DavidHouse
+
+----
+
+I run VM in a separate emacs instance.  Here is code from my .emacs that lets me launch VM with "emacs --vm".  The file "~/jjf-dot-emacs-vm.el" contains the usual code to invoke vm. 
+
+  (defun jjf-handle-my-command-line-arguments ()
+    (when (and (equal argi "--vm")
+               (locate-library "jjf-dot-emacs-vm"))
+      (require 'jjf-dot-emacs-vm))
+      t)
+
+  (setq command-line-functions (cons 'jjf-handle-my-command-line-arguments
+                                     command-line-functions))
+
+
+[new]
+
+Here is another way to have a command line switch for starting VM.  I switched to this method in order to be able to have separate X Resources defined for my Emacs that runs VM.
+
+This goes in .emacs or other startup script:
+
+  (if (and (equal x-resource-name "emacsvm")
+           (locate-library "jjf-dot-emacs-vm"))
+      (require 'jjf-dot-emacs-vm))
+
+And you invoke it with the command:
+
+  emacs --name=emacsvm
+
+Now I can have separate X Resources in my .Xdefaults for my two separate instances of Emacs.
+
+
+[new]
+
+Here is a function to toggle inline display of images.
+
+  (defun jjf-vm-toggle-auto-display-of-images ()
+    "Toggle the auto-display of mime type `image'."
+    (interactive)
+    (if (member "image" vm-auto-displayed-mime-content-types)
+        (progn
+          (setq vm-auto-displayed-mime-content-types
+                (delete "image" vm-auto-displayed-mime-content-types))
+          (message "%s%s" "jjf-vm-toggle-auto-display-of-images removed type "
+                   "`image' from vm-auto-displayed-mime-content-types"))
+        (progn
+          (add-to-list 'vm-auto-displayed-mime-content-types "image")
+          (message "%s%s" "jjf-vm-toggle-auto-display-of-images added type "
+                   "`image' to vm-auto-displayed-mime-content-types")))
+    (when (interactive-p)
+      (vm-discard-cached-data)
+      (vm-preview-current-message)))
+
+
+
+[new]
+
+Display a message when you click its header in the Summary buffer:
+
+  (defun jjf-vm-follow-summary-click (arg)
+    "This function is based on vm-follow-summary-cursor, but its behavior is
+    tailored for binding to mouse-1.  If the TextCursor is on the currently
+    selected message, or at the end of the buffer, do nothing.  Otherwise,
+    select the message that the cursor is on."
+    (interactive "P")
+    (and vm-follow-summary-cursor (eq major-mode 'vm-summary-mode)
+         (let ((point (point))
+  	     message-pointer message-list mp)
+  	 (save-excursion
+  	   (set-buffer vm-mail-buffer)
+  	   (setq message-pointer vm-message-pointer
+  		 message-list vm-message-list))
+  	 (cond ((or (null message-pointer)
+  		    (and (>= point (vm-su-start-of (car message-pointer)))
+  			 (< point (vm-su-end-of (car message-pointer))))
+                      (eobp))
+  		nil )
+  
+  	       (t 
+  		(if (< point (vm-su-start-of (car message-pointer)))
+  		    (setq mp message-list)
+  		  (setq mp (cdr message-pointer) message-pointer nil))
+  		(while (and (not (eq mp message-pointer))
+  			    (>= point (vm-su-end-of (car mp))))
+  		  (setq mp (cdr mp)))
+  		(if (not (eq mp message-pointer))
+  		    (save-excursion
+  		      (set-buffer vm-mail-buffer)
+  		      (vm-record-and-change-message-pointer
+  		       vm-message-pointer mp)
+  		      (vm-preview-current-message)
+  		      ;; return non-nil so the caller will know that
+  		      ;; a new message was selected.
+  		      t )))))))
+  
+  (define-key vm-summary-mode-map (kbd "<mouse-1>")
+  'jjf-vm-follow-summary-click)
+
+
+The only improvement I think I would make to this function is to have it
+display the presentation buffer if that buffer is not currently in a window.
+I still have to figure out how to do that.
+
+[new]
+
+Because VM is not able to encode messages with characters from mixed charsets properly, it chooses iso-2022-jp if it doesn't find a charset that contains all characters of a message. I had this problem with replies when the quoted text contained German umlauts encoded in iso-8859-15, while in my own texts umlauts were encoded in iso-8859-1. This mixture of charsets caused VM to encode the entire message in iso-2022-jp with the effect that the recipients received an illegible mess of escape sequences instead of umlauts. Here is a code that solves the problem (it's only tested for GNU/Emacs). I got it from Piet van Oostrum via help-gnu-emacs@gnu.org:
+
+ (defun vm-sort-coding-systems-predicate (a b)
+   (> (length (memq a vm-coding-system-priorities))
+      (length (memq b vm-coding-system-priorities))))
+ 
+ (setq vm-coding-system-priorities 
+       '(iso-latin-1 iso-latin-9 mule-utf-8 mac-roman)
+ ;      '(iso-latin-1 iso-latin-9 windows-1252 mule-utf-8 mac-roman)
+       mm-coding-system-priorities vm-coding-system-priorities)
+ 
+ ; The next line is for a noautoload vm.elc. Otherwise use "vm-mime".
+ ;(eval-after-load "vm"
+ ; The next line is for an autoload (default) vm.elc. Otherwise use "vm".
+ (eval-after-load "vm-mime"
+ '(defun vm-determine-proper-charset (beg end)
+   (save-excursion
+     (save-restriction
+       (narrow-to-region beg end)
+       (catch 'done
+ 	(goto-char (point-min))
+ 	(if (or vm-xemacs-mule-p 
+ 		(and vm-fsfemacs-mule-p enable-multibyte-characters))
+ 	    (let ((charsets (delq 'compound-text (find-coding-systems-region
+ 					  (point-min) (point-max)))))
+ 	      (cond ((equal charsets '(undecided))
+ 		     "us-ascii")
+ 		    (t
+ 		     (setq charsets 
+ 			   (sort charsets 'vm-sort-coding-systems-predicate))
+ 		     (while charsets
+ 		       (let ((cs (coding-system-get (pop charsets) 'mime-charset)))
+ 			 (if cs
+ 			     (throw 'done (symbol-name cs))))))))
+ 	  (and (re-search-forward "[^\000-\177]" nil t)
+ 	       (throw 'done (or vm-mime-8bit-composition-charset
+ 				"iso-8859-1")))
+ 	  (throw 'done vm-mime-7bit-composition-charset)))))))
+ 
+ ; This is only necessary for incoming mail in utf-7 or from Windows
+ (require 'utf-7)
+ (eval-after-load "vm"
+   '(setq vm-mime-mule-charset-to-coding-alist 
+       (cons (quote ("utf-7" utf-7)) 
+ 	    ;code below is to accept mail from those morons that send 
+ 	    ; latin1 or windows-1252 characters without a charset declaration
+ 	    ; (or with charset=ascii)
+ 	    (cons (quote ("us-ascii" windows-1252)) 
+ 		  (cons (quote ("iso-8859-1" windows-1252)) 
+ 			vm-mime-mule-charset-to-coding-alist)))))
+
+Another way to solve this problem is to install Widhopf-Frenk's version of VM which is available at: http://www.robf.de/Hacking/elisp. This works also on XEmacs.

@@ -1,0 +1,16 @@
+Inversion is a tool for testing version numbers on Emacs Lisp packages, and can be found as a part of the CollectionOfEmacsDevelopmentEnvironmentTools.
+
+The latest version of Inversion can be downloaded from CVS:
+
+[http://cedet.cvs.sourceforge.net/*checkout*/cedet/cedet/common/inversion.el inversion.el]
+
+You can use inversion to load in a lisp package, as such:
+
+<code>(inversion-require 'packagesym "1.0")</code>
+
+If you have a package that breaks backward compatibility, you can specify an incompatible version number so that others using inversion can safely specify older versions that they require, for example:
+
+<code>(defvar mypackage-incompatible-version "0.1alpha1")</code>
+
+If you own a package, you can use inversion to put revision numbers in your output files (such as with EmacsLispObjects save files) to flush incompatible changes.
+

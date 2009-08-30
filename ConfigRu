@@ -1,0 +1,6 @@
+This is the config file currently used for the Russian interface.
+If you would like to propose changes, edit this page to add them,
+and send mailto:alex@emacswiki.org to let me know about them.
+See [[Config]] for the default configuration.
+
+<include text "http://www.emacswiki.org/emacs/config-ru">

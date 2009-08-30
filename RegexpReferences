@@ -1,0 +1,15 @@
+This page is about other sources of information on regular expressions.
+
+= Books =
+Absolutely the best book on regular expressions (regexps) is Jeffrey E. F. Friedl's O'Reilly-published book, ''Mastering Regular Expressions'', ([http://regex.info/ official errata page]) ([http://www.oreilly.com/catalog/regex/index.html official homepage first edition] January 1997 I.S.B.N. 1565922573, [http://www.oreilly.com/catalog/regex2/index.html official homepage second edition] I.S.B.N. 0596002890). It is mostly about regular expressions in general, but includes chapters on specific tools. 
+
+The [http://www.oreilly.com/catalog/regex/toc.html first edition] had a Chapter 6 with quite a lot on GNU Emacs specific information, including differences between Emacs regexps and those in other tools. The [http://www.oreilly.com/catalog/regex2/toc.html  second edition] gives an example of an elisp function featuring a call to ##re-search-forward##, mentions /syntax classes/ like ##\Sw##, and considers GNU Emacs 21.2.1 in tools comparison tables, all scattered at relevant places in the text. (The 2nd edition devotes specific chapters to Perl, Java, and .NET, that  have been /particularly active/ on regular expressions during 2002.)
+
+= Web Sites =
+* [[WikiPedia:Regular expressions]]
+* http://www.opengroup.org/onlinepubs/007904975/basedefs/xbd_chap09.html -- The Open Group base specification
+* http://www.greenend.org.uk/rjk/2002/06/regexp.html -- Regexp syntax summary
+* http://www.regular-expressions.info/tutorial.html -- A fairly thorough and easy to understand tutorial.
+
+----
+CategoryRegexp

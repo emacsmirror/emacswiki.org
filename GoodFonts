@@ -1,0 +1,218 @@
+Please post a small screenshot for the setup that you recommend.
+It's pain in the rear to hunt down the font, install it and see for yourself whether you like it.
+
+== Recommendations ==
+
+After searching high and low for a font to use in Emacs, I finally found http://www.proggyfonts.com and http://www.tobias-jung.de/seekingprofont which both contain a good number of free monospace fonts that remain perfectly readable at extremely small sizes. --TimAnderson
+
+Not so much a recommendation but I have just installed Dina.  It has the
+virtue of including italic and bold italic variants.  I have not yet
+decided whether I will stick with it.  --JohnYates
+http://www.donationcoder.com/Software/Jibz/Dina/index.html
+http://forums.gentoo.org/viewtopic-t-533782-highlight-dina.html
+http://ahri.net/static/dina.pcfs.tar.bz2
+
+[new]
+The proggy fonts are nice and I used them for more than a year.  But I use Emacs for a lot more than programming alone.  I also write and read prose in form of e-mail and (La)TeX documents and much of it in languages other than English.  I found it annoying that *all* of the many proggy fonts fail to provide all of the Latin-1 glyphs I need (áâãäéêíïóôõöúüçß).
+
+Fonts with a "geometric" <code>a</code> like Monaco are unacceptable IMHO because the <code>a</code> can, at a glance, be confused with an <code>o</code>.  The Neep font at 14 pt is not crispy enough to me.  So the choice was between Andale and Terminus.  I have used both before, and although they don't look as pretty as the proggy fonts at small sizes, they have all the glyphs I need and as a bonus the Euro currency symbol.  I decided in favor of the Terminus.  It's a *very* crispy font.  I use it at either 14 pts and <code>(setq-default line-spacing 0)</code> or 12 pts and <code>line-spacing</code> 2 with a 15" laptop LCD monitor
+
+The table bellow summarizes the amount of text you get in Emacs in single-window mode with the fonts I've tested:
+
+   Font/Size(PxlSz)      Lines   Columns
+   -------------------------------------
+   Andale 80             62      143
+   Neep 120              57      167
+   Neep 140              50      125
+   Neep 200              37      100
+   Proggy Clean 80       57      143
+   Proggy Small 80       75      143
+   Proggy Square 80      68      148
+   Proggy Tiny 80        75      167
+   Terminus 120          62      167
+   Terminus 140          53      125
+   
+ --EmilioLopes.
+[new]
+
+What fonts to use depends on your monitor size and the screen
+resolution, and of course on personal taste.  Here are some
+recommendations by users for specific situations.  See also SetFonts.
+
+== For 1024x600, 8.9" ==
+
+* (set-face-font 'default "fixed") and (scroll-bar-mode -1) gave me an Emacs window that is 80 characters wide and that takes up exactly half the screen, perfect for a netbook running a tiling window manager. (DanielMoerner)
+
+== For 1280x768, 10.6" ==
+
+* 20-point Lucida Console full-screens to 80x28, and is quite nice and readable. (EdwardOConnor)
+
+== For 1024x768, 14" (iBook) ==
+
+* Monaco, the default used by the CarbonEmacsPackage (AlexSchroeder, [http://www.emacswiki.org/alex/pics/pink-bliss.png screenshot])
+
+== For 1024x768, 15" (LCD) ==
+
+* -jmk-neep alt-medium-r-*-*-20-*-*-*-c-*-iso8859-1 (AlexSchroeder, [http://www.emacswiki.org/alex/pics/root-2003-11-01.png screenshot]) -- '''neep''' might require <code>(setq x-use-underline-position-properties nil)</code>. Gives 37 lines and 100 columns.
+: Debian's xfonts-jmk package fixes the underline position bug as of 3.0-17.
+
+* -*-terminus-medium-r-*-*-*-140-75-75-*-*-iso8859-15 -- gives 53 lines and 125 columns, or even
+
+* -*-terminus-medium-r-*-*-*-120-75-75-*-*-iso8859-15 -- with <code>(setq line-spacing 2)</code> for 62 lines and 167 columns. --EmilioLopes
+
+* -raster-Fixedsys-normal-r-normal-normal-12-90-96-96-c-*-*-* (MacChan)
+
+* 9-point fixedsys windows xp
+
+: http://static.flickr.com/72/165054405_0296134b44_o.jpg
+
+== For 1024x768, 17" (CRT) ==
+
+* -xos4-terminus-medium-r-normal--20-200-72-72-c-100-iso10646-1 (JorgenSchaefer)
+
+== For 1280x1024, 17" (LCD) ==
+
+* -*-Monaco-normal-r-*-*-17-102-120-120-c-*-iso8859-1 (MacChan)
+
+* 10-point Monaco Windows XP with ClearType enable 
+
+: http://photos21.flickr.com/34135728_376c2837ba_o_d.png
+
+
+== For 1024x768, 19" ==
+
+* 7x14 (AlexSchroeder)
+* -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-2 (JakubNarebski)
+
+== 1280x1024 or 1600x1200, 19" ==
+
+* -*-'''''Lucida Console-normal'''''-r-*-*-14-112-96-96-c-*-iso8859-1 -- on Windows (DrewAdams)
+[[image:DrewEmacsFontEg]]
+
+* -outline-Bitstream Vera Sans Mono-normal-r-normal-normal-12-90-96-96-c-*-iso8859-1 (WalterHiggins)
+http://static.flickr.com/112/252293241_63415bf385_o.gif?type=.png
+
+* -dec-terminal-medium-r-normal-*-*-140-*-*-c-*-iso8859-1 (ErikBourget)
+* -xos4-terminus-medium-r-normal--14-140-*-*-*-*-*-* (JeremyCowgar)
+
+== 1280x800, 13" ==
+
+* [http://www.levien.com/type/myfonts/inconsolata.html Inconsolata] (set-face-attribute 'default nil :family "Inconsolata" :height 140) (AmitPatel)
+
+: http://lh5.ggpht.com/_kV9ZnGnZL7M/Sol67UA6LlI/AAAAAAAABB0/9b1jkiM2XBU/s800/Inconsolata%20on%20Mac.png
+
+* [http://www.ms-studio.com/FontSales/anonymouspro.html Anonymous Pro]: (set-face-attribute 'default nil :family "Anonymous Pro" :height 140) (AmitPatel)
+
+: http://lh6.ggpht.com/_kV9ZnGnZL7M/Sol718cBLnI/AAAAAAAABB4/C5WO42ZSIPU/s800/Anonymous%20Pro%20on%20Mac.png
+
+== For 1600x1200, 19" ==
+
+* -jmk-neep alt-medium-r-*-*-20-*-*-*-c-*-iso8859-1 (AlexSchroeder) -- '''neep''' might require (setq x-use-underline-position-properties nil)
+: Debian's xfonts-jmk package fixes the underline position bug as of 3.0-17.
+
+== For 1600x1200, 15" (LCD) ==
+
+* neep-alt-24 -- Most XFree86 distributions come with Lucida Typewriter as a fixed-width font.  It's about the best I've found.  I know a lot of others use it as well.  The size depends on your monitor.  I typically use 12pt. -- LathI
+
+* -*-lucidatypewriter-medium-*-*-*-12-*-*-*-*-*-*-* -- In addition, if you want the italic shape, which isn't available in the free lucidatypewriter, try the iso8859-1 encoding of GNU Intlfonts (Where is this font? Is it the same as misc-fixed?) or the misc-fixed font (which is part of the standard XFree86 4.1 distro).  If you only have occasional italics, it's reasonable to mix the faces, e.g. with an extra X resource as follows.  -- fx
+
+* Emacs.italic.attributeFont:  -*-fixed-medium-o-*-*-*-120-*-*-*-*-*-* -- The lucydatypewriter font is missing some more unicode characters than the fixed fonts.  If you want to use lucidatypewriter but display unicode characters like math symbols or line drawing characters with the fixed font you can do this with FontSets.
+
+: The following lines are from my ~/.Xresources 
+
+       Emacs*Fontset-0: -b&h-lucidatypewriter-medium-r-normal-*-*-120-*-*-m-*-fontset-normal,\
+       mule-unicode-2500-33ff:-misc-fixed-medium-r-normal-*-13-*-*-*-*-*-iso10646-1,\
+       mule-unicode-e000-ffff:-misc-fixed-medium-r-normal-*-13-*-*-*-*-*-iso10646-1,\
+       mule-unicode-0100-24ff:-misc-fixed-medium-r-normal-*-13-*-*-*-*-*-iso10646-1
+       Emacs*font: fontset-normal
+
+: Actually my first emacs frame starts with a completely wrong font but it works for all the other frames.
+
+[new]
+
+: I used lucidatypewriter for years and years, but finally got fed up with Ohs and Zeroes looking like each other. I now use:
+
+       -bitstream-bitstream vera sans mono-medium-r-*-*-*-120-*-*-*-*-*-*
+
+: Which is the tiniest bit larger than I'd like it to be, but every character is unmistakable, and it looks a lot like ol' lucidatypewriter ([http://deneb.collapsar.net/~mdxi/cruft/bvsm.png sample]). (ShawnBoyette)
+
+[new]
+:: http://www.lowing.org/fonts/ has a good overview of monospaced fonts for coding (AadityaSood)
+
+[new]
+I often need better Unicode coverage than provided by most monospaced fonts, like Proggy. The priorities are Cyrillic and Greek fonts. Terminus and Monaco are not bad, but they have a decorative spirit. My favorite font is GNU intlfonts, aka ETL. It has no bold or italic versions for non-Latin alphabets, but otherwise looks quite well. Here are some samples:
+
+[[image:DmFontETLSixteen]]
+
+[[image:DmFontETLEighteen]]
+
+The CVS Emacs (23.0.60.6) (see XftGnuEmacs) has some problems with fonts because of the wrong "preferred charset" recognition, so I tried some TTF fonts, which I generally avoid. !DejaVu Mono-12 was very good:
+
+[[image:DmFontDejaVuTwelve]]
+
+!RedHat Liberation Mono is another acceptable option. There are two versions of this font. The first edition lacks the dotted 0, so be careful to download the right version (available [https://bugzilla.redhat.com/show_bug.cgi?id=427791 here]).
+
+(DmitriMinaev)
+
+Update @2008-04-01: This is Liberation Mono 12. Note a somewhat better hinting:
+
+[[image:DmFontLiberationTwelve]]
+
+If you need a better Unicode coverage, GNU Unifont might work.  However, it only gives you regular (i.e. no bold / italics).
+
+== Test ==
+
+Evaluate the following code in your ##*scratch*## buffer:
+
+{{{
+(dolist (font-family (font-family-list))
+  (let ((str font-family))
+    (insert (propertize (concat "The quick brown fox jumps over the lazy dog ("
+     str ")") 'face `((:family ,font-family))))
+    (newline)))
+}}}
+
+== Discussion ==
+
+[new]
+It would be really nice to have a "fonts for beginners"
+page, pointed to from this page.  Such a page would have an
+executive summary -- basically a brief and useful reference
+card -- of the following:
+
+        - most important basic information
+                - for people who NEED BIG FONTS NOW
+                - for people who NEED SMALL FONTS NOW
+                - some people can't use emacs until this is
+                  fixed!
+        - a pointer to the above from the main emacs wiki page
+        - how to set the default font
+        - how to choose a font
+                - in emacs
+                - in linux, windows, and mac
+                - considerations (basic, terse)
+                        - 0O oa 1l|! for programming
+                        - monospace for programming
+                        - antialiasing, resizability, lcd/crt
+        - how to choose font properties (bold, etc.) and colors
+                - whether there are any xemacs vs. emacs issues
+        - how to identify a font problem and fix it
+                - wrong color, blinking, fuzzy, small, large
+                - what face is below point?
+                - how to set a face
+        - a pointer to this page for suggesting nice fonts
+
+I am not the person to write this, however.
+-- gambarimasu
+
+[new]
+Heard on #emacs after a discussion about font issues:
+
+{{{
+<goron> should think it shouldn't be too hard to configure an editor...
+<kensanata> depends on your definition of "editor" i guess...
+<kensanata> we're known to have strange misconceptions in that regard.
+}}}
+
+----
+CategoryDisplay CategoryFaces

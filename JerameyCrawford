@@ -1,0 +1,80 @@
+I use Emacs. After some hand and arm pain, I started to use Vim full-time from Nov-2005 to Mar-2006, but the ultimate result of that experiment has been to teach me how to use Emacs more effectively by using ESC as Meta. I highly recommend that you try mapping Esc onto the CapsLock key sometime. (I'll admit it: I still use vi for quick edits of config files.)
+
+----
+
+For recent versions of OpenBSD, people who wish to use <tt>(display-battery)</tt> can paste the following bit of elisp into your .emacs file (hacked from what JoelHolveck uses in his .emacs):
+
+ (defun battery-openbsd-proc-apm ()
+   (let* ((apm-output (shell-command-to-string "apm"))
+ 	 (ac-line-status (and (string-match
+ 			       "^A/C adapter state: \\(.*\\)$" apm-output)
+ 			      (match-string 1 apm-output)))
+ 	 (battery-status-verbose (and (string-match
+ 				       "^Battery state: \\(.*\\)$" apm-output)
+ 				      (match-string 1 apm-output)))
+ 	 (battery-life-percentage (and (string-match
+ 					"^Battery remaining: \\(.*\\) percent$"
+ 					apm-output)
+ 				       (match-string 1 apm-output)))
+ 	 (battery-life-time (and (string-match
+ 				  "^Battery life estimate: \\(.*\\) minutes$"
+ 				  apm-output)
+ 				 (match-string 1 apm-output)))
+ 	 (battery-status-terse (cond
+ 				((string-equal ac-line-status
+ 					       "connected") "+")
+ 				((string-equal battery-status-verbose
+ 					       "high") "")
+ 				((string-equal battery-status-verbose 
+ 					       "low") "-")
+ 				((string-equal battery-status-verbose
+ 					       "critical") "!")
+ 				(t "?")))
+ 	 (retval ()))
+     (when ac-line-status
+       (setq retval (cons (cons ?L ac-line-status) retval)))
+     (when battery-status-verbose
+       (setq retval (cons (cons ?B battery-status-verbose) retval)))
+     (when battery-life-time
+       (setq retval (cons (cons ?t battery-life-time) retval)))
+     (when battery-life-percentage
+       (setq retval (cons (cons ?p battery-life-percentage) retval)))
+     (when battery-status-terse
+       (setq retval (cons (cons ?b battery-status-terse) retval)))
+     retval))
+ (setq battery-status-function 'battery-openbsd-proc-apm
+       battery-echo-area-format "Power %L, battery %B (%p%% charged, remaining time %t)"
+       battery-mode-line-format " [%b%p%%] ")
+ (display-battery)
+
+Please suggest corrections or improvements. It worked on my IBM Thinkpad X40 with OpenBSD 3.5 and GNU Emacs 21.3. I no longer have that machine.
+----
+There was a crappy version of battery-macosx-proc-ioreg here, but someone else came up with a better one, so that is here instead.
+
+The anonymous person says, <i>"Here's a version in elisp that also copes with the fact that the "Flags" is weird unless it's on battery."</i>
+
+ (defun battery-macosx-proc-ioreg ()
+   (save-window-excursion
+     (with-temp-buffer
+       (shell-command "ioreg -p IODeviceTree -n battery -w 0" (current-buffer))
+       (goto-char (point-min))
+       (let ((status "?")
+            (pct "?")
+            (terse ""))
+        (when (re-search-forward
+               "\"IOBatteryInfo\" = ({\"Capacity\"=\\([0-9]+\\),\"Amperage\"=\\([0-9]+\\),\"Current\"=\\([0-9]+\\),\"Voltage\"=\\([0-9]+\\),\"Flags\"=\\([0-9]+\\)}" nil t)
+          (let* ((capacity (car (read-from-string (match-string 1))))
+                 (amps     (car (read-from-string (match-string 2))))
+                 (current  (car (read-from-string (match-string 3))))
+                 (volts    (car (read-from-string (match-string 4))))
+                 (flags    (car (read-from-string (match-string 5)))))
+            (if (= flags 4)
+                (setq status "battery" terse "-")
+                (setq status "A/C"
+                      terse (if (> current (* 0.99 capacity)) "" "+")))
+            (setq pct (format "%.1f" (/ (* 100.0 current) capacity)))))
+        `((?p . ,pct) (?L . ,status) (?b . ,terse))))))
+
+I also no longer have an Apple notebook, so I can't test this code anymore.
+----
+CategoryHomepage

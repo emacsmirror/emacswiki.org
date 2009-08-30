@@ -1,0 +1,9 @@
+Ricette by ThienThiNguyen is Italian for recipes -- cooking
+instructions.  It is a very simple text-mode derivative.  As such, it
+is a fine illustration of a DerivedMode.  And it is an interesting
+read because all the elisp, comments, and documentation are in Italian.
+
+* Lisp:ricette-mode.el
+
+----
+CategoryModes

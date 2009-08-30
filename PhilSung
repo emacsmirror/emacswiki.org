@@ -1,0 +1,15 @@
+I have used Emacs since 2004.
+
+Personal home page: http://web.psung.name/
+
+Mainly I use Emacs to store notes with OrgMode; manage files with Dired and [[WDired]]; and edit Python, HTML, CSS, C, C++, Java, and Matlab/Octave code.
+
+I wrote the [http://www.gnu.org/s/emacs/tour/ Guided Tour of Emacs].
+
+I contributed to [http://code.google.com/p/google-gtags/ Google GTags], an Emacs extension which provides TAGS functionality by querying a remote server (useful for large monolithic codebases).
+
+[new]
+Welcome to the wiki! :) -- AlexSchroeder
+
+----
+CategoryHomepage

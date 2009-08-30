@@ -1,0 +1,20 @@
+Grabbing a copy of the [[Rsync repository]], I was able to determine what pages on EmacsWiki mention CategoryHomepage, but aren't listed on CategoryHomepage.  This is something I had done in the past, but here's a concise Bash shell script that does the job.
+
+    find ./emacs/page -type f -name '*.pg' -execdir bash -c 'grep -iqFe CategoryHomepage "$0" \
+     && ! grep -qFe CategoryEmacsWikiSite "$0" \
+     && echo "$0"' {} \; \
+      | while read userpage; do \
+          username="$(basename "${userpage}" .pg)"; \
+          grep -qFe "${username}" ./emacs/page/C/CategoryHomepage.pg \
+            || grep -qFe "$(echo "${username}" | tr _ ' ')" \
+                         ./emacs/page/C/CategoryHomepage.pg \
+            || echo "${username}"; \
+        done
+
+Today, the result was over 150 pages.  Some pages mention CategoryHomepage, but are not actually UserName pages -- for example, consider SiteMap.  I went through and grabbed the obvious UserName''''''s, and added them to CategoryHomepage.  Please review [EmacsWiki:diff=2;id=CategoryHomepage;diffrevision=656;revision=657 revision 657] to make sure there aren't any false positives -- pages that aren't actually UserName pages.
+
+I've also added some Emacs Lisp code to maintain the alpha-order of the entries on the page.  It is located at AlphabetizeHomepageList.
+
+Congratulations on EmacsWiki having over 800 users on the wiki!  Who's going to be user 1000?  What should they win as a prize? -- AaronHawley
+
+

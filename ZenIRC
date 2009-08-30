@@ -1,0 +1,17 @@
+An InternetRelayChat (IRC) client for Emacs.
+
+NoahFriedman has a website for ZenIRC:
+* http://www.zenirc.org/
+
+JohnWiegley has a modified version of ZenIRC available for download.  It fixes several bugs dealing with multiple-frame usage, and it adds some enhancements.
+
+* http://www.gci-net.com/users/j/johnw/EmacsResources.html
+
+SimonJosefsson has patches to make ZenIRC support FontLock
+
+* http://josefsson.org/zenirc-font-lock.html
+
+Yow!
+
+----
+InternetRelayChat CategoryModes CategoryChatClient

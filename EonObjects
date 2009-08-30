@@ -1,0 +1,12 @@
+Eon is a prototype-based object-oriented programming system for Emacs
+Lisp. I want to make it easy to write efficient, interactive,
+object-oriented applications for Emacs, and provide a rich user
+interface construction kit for Emacs Lisp applications (whether
+object-oriented or not.)
+
+You can download the latest stuff from the following
+page:
+
+http://dto.mamalala.org/notebook/eon.html
+
+CategoryCode

@@ -1,0 +1,51 @@
+<b>Keyword highlighting for .ini files etc based on a 'source of truth'</b>
+
+* Highlighting of valid section & param names
+* Define numerous styles of file
+* Each style can define its own valid section & param names
+* Fully customizable
+
+Get any-ini-mode.el here: Lisp:any-ini-mode.el.
+
+=== Quick overview: ===
+
+An .ini file is this context is any file that has a structure of
+parameter settings, possibly broken into sections.
+
+eg.
+
+    [USER]
+    editor = vi
+    group = supers
+    home = ~/home
+
+    [BACKUP]
+    path = ~/home/backup
+    always = TRUE
+
+or maybe ...
+
+    NAME : user1
+    GROUP : supers
+    BACKUP : LOCAL
+
+    <BACKUP>
+    PATH : ~/home/backup
+    ALWAYS : TRUE
+
+If you often edit particular types of these files and you would like
+to use intelligent keyword (section and param name) highlighting, then
+any-ini-mode is (IMHO) the answer.
+
+To enable highlighting of the valid keywords in a particular type of
+file (say myapp.conf), you centrally store a 'canonical' file for the
+type (containing all the valid section and param names) and set up an
+any-ini 'style' that uses the canonical file.
+
+Now name the style for the relevant filename (myapp.conf), and that's it.
+
+When any myapp.conf file is opened in future, the correct style will
+be automatically applied and the valid keywords highlighted.
+
+----
+CategoryModes

@@ -1,0 +1,28 @@
+AutoDownload wants to help GNU Emacs be a more instantly extended environment by offering "on demand" access to every EmacsLisp package ever written.
+
+AutoDownload is as lightweight as AutoLoad until you use that feature.  Then it will download -> install -> eval from the thousands of EmacsLisp packages stored in the EmacsLispList, here at EmacsWiki, or just out in the wild on many private servers.
+
+
+''This could be hurt these small, private servers if too many people are requesting packages simultaneously, so AutoDownload should attempt to retrieve from some P2P networks such as BitTorrent first, then a Savannah project mirroring all such packages, then a SourceForge and a berliOS, and if all of those fail, then finally the private servers.''
+
+{{{
+;;; Pseudocode
+;; Only .el files over HTTP for now
+(defmacro autodownload URL file
+ (if (not (file-exists-p file))
+   (http-get URL file))
+ (autoload file fn))
+}}}
+
+==Other Ideas==
+
+See also [[ELPA]] and InstallElisp and the "Installers" section at [[CategoryCode#Installers]].
+
+[new]
+We could distribute FFI plugins as source code compiled by the AutoDownloaded '''FFI Framework''' which would really just be gcc or maybe something even lighter like http://Bellard.org/tcc  ...:::I wonder how hard it would be to write a c compiler in EmacsLisp:::...
+
+[new]
+I've done something along the same lines, but more complex, in UsePackage.  It lets you give a description of where and how to get the package, and how you want it configured, then does something like autoload but triggering installation as needed.  It has the advantage of only downloading the file when you use the function, rather than (as the pseudocode above) when you do the autodownload definition.
+
+----
+CategoryCode

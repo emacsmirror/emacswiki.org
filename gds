@@ -1,0 +1,28 @@
+From the Commentary:
+
+ ;; gds.el provides a couple of commands to interface Google Desktop
+ ;; Search (GDS) from Emacs.
+ ;;
+ ;; gds.el should work on all operating systems where GDS exist.
+ ;; Currently it seems only to exist officially in Microsoft Windows
+ ;; and Mac OSX but there is supposedly some sort of beta for GNU/Linux
+ ;; as well.
+ ;;
+ ;; Basically all it does is to build a URL with the search, send it to
+ ;; GDS and do different fun things with the result.  The commands
+ ;; currently implemented are `gds', `gds-iswitchb-open-file' and
+ ;; `gds-dired'.
+ ;;
+ ;; It is easy to use, just customize `gds-search-url' and get going! I
+ ;; recommend starting with the `gds' command.
+
+Download it here: Lisp:gds.el
+
+=== Screenshot ===
+
+Screenshot of the `gds' command. The other two looks more or less as what they integrate with, i.e. iswitchb and Dired...
+
+[[image:GDSScreenshot]]
+
+----
+LocateFilesAnywhere

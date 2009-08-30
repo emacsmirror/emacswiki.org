@@ -1,0 +1,11 @@
+Org-Blog, written by DavidOtoole, offers experimental blogging support for
+OrgMode using OrgPublish to upload the files.
+
+Download it at http://dto.freeshell.org/e/org-blog.el.  You also need the
+[http://dto.freeshell.org/e/org-publish.el org-publish.el] file. Unfortunately both links are dead.
+
+----
+These were still available from the internet archive, I uploaded them here: Lisp:org-blog.el, Lisp:org-publish.el. AnselmHelbig
+
+----
+OrgBlogging OrgMode

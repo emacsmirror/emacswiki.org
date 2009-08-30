@@ -1,0 +1,8 @@
+Usually on Freenode #Emacs as ayrnieu.
+
+=== My published Emacs code: ===
+
+* AyrChinaUtil - functions to yield the (possibly multiple)
+  pinyin readings of Chinese characters.  Unpolished.
+  Also, encoded in compound-text , so you'll need Emacs
+  to read it.

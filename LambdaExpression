@@ -1,0 +1,34 @@
+A '''[::lambda expression]''' is an anonymous function.
+
+Here is what you will often find -- a named function:
+
+    (defun insert-current-date ()
+      (interactive)
+      (insert (format-time-string "%Y-%m-%d")))
+
+This is an InteractiveFunction -- a command.  You can call it via `M-x'.
+
+On some occasions you will need a function just once, however.  For
+example while using `mapcar' or `mapc'.  In the following example, the
+lambda expression is a nameless function that takes one parameter, and
+it returns another string -- the result of the concatenation.
+
+    (setq bdf-directory-list
+          (mapcar (lambda (d)
+                    (concat "/usr/local/src/intlfonts-1.2/" d))
+                  '("Asian" "Chinese" "Ethiopic" "European" "Japanese" "Misc"
+                    "Chinese.X" "Japanese.X" "Korean.X" "European.BIG"
+                    "Japanese.BIG")))
+
+This function is called for every string in the list.  Giving this
+function a name, and keeping it around, makes no sense.  It is only
+useful in this little piece of code.  That's why it is anonymous, and
+will be garbage collected soon after (since there is no way to refer
+to it, once the code has run).
+
+It is important to mention that EmacsLisp does not support true lexical 
+closures like Common Lisp or Scheme. See DynamicBindingVsLexicalBinding.
+
+----
+CategoryCode
+CategoryGlossary

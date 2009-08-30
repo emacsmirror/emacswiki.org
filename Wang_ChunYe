@@ -1,0 +1,22 @@
+Hi, my name is Wang Chun Ye (王纯业). here is list of my packages
+
+* Lisp:wcy-swbuff.el, use C-Tab to switch buffer, like MS-Win.
+* Lisp:wcy-desktop.el(WcyDesktop), a light weight but faster version of DeskTop
+* Lisp:wcy-display-line-number.el. yes, another display line number mode. you can find setnu.el or others. I wrote it because I think this one is faster.
+* Lisp:wcy-compose.el, this is library to support partially applying, function composition, or closure.  here is an example.
+<pre>
+(remove-if-not  ($ string-match "ba") '("foo" "bar" "baz"))
+;; get the string whose length is larger than 10
+(remove-if-not (\. ($ (wlflip >) 10) length) '("hello" "very long string"))
+</pre>
+
+[new:DrewAdams:2009-04-21 06:22 UTC]
+Welcome to the wiki! -- DrewAdams
+
+
+
+
+
+
+----
+CategoryHomepage

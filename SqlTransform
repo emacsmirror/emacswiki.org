@@ -1,0 +1,12 @@
+ sql-transform.el --- transform SQL statements
+
+I often write SQL statements for application dialogs using SqlMode.  Usually, I need a select statement, an insert statement, an update statement, and a delete statement for every dialog box.  The following elisp code allows me to write a simple select statement and generate inserts and updates from it.
+
+Note that this code still needs improvements; I'm interested in any feedback.  Points that need improvement: handling of missing information, better identification of start and end of SQL statements.
+
+You can get it here:
+
+* http://www.geocities.com/kensanata/elisp/sql-transform.el.txt
+
+----
+CategorySql

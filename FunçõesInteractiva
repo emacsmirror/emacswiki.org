@@ -1,0 +1,55 @@
+Uma função Lisp torna-se um comando quando o seu corpo contém no topo uma chamada à forma especial `interactive'.  Vê ComandosDefinidos.  Esta forma não faz nada quando é executada mas a sua presença indica que são permitidas chamadas interactivas.  O seu argumento controla a leitura de argumentos para uma chamada interactiva.
+
+    (defun ola ()
+      "Olá Mundo e podes chamar-me com M-x ola."
+      (interactive)
+      (message "Olá Mundo!"))
+
+Um exemplo com um argumento:
+
+    (defun ola (alguem)
+      "Diz olá a ALGUÉM com M-x ola."
+      (interactive "sA quem é que queres dizer olá? ")
+      (message "Olá %s!" alguem))
+
+Para uma lista completa dos argumentos que podem ser usados com o `interactive', vê `C-h f interactive'.
+
+Para utilizar dois argumentos, separa os dois indicadores de tipo no texto da pergunta com uma nova linha.
+
+    (defun multiplos-olas (alguem num)
+      "Diz olá a ALGUÉM com M-x multiplos-olas, durante NUM vezes."
+      (interactive "sA quem é que queres dizer olá? \nnQuantas vezes? ")
+      (dotimes (i num)
+        (insert (format "Olá %s!\n" alguem))))
+
+Vê também ArgumentoUniversal.
+
+Por vezes, queres atribuir uma tecla a código.  Podes usar um lambda para criar uma função anónima; mas isso não é suficiente.  Tens também de a tornar interactiva:
+
+    (global-set-key (kbd "C-c t")
+                    (lambda ()
+                      (interactive)
+                      (set-default 'truncate-partial-width-windows
+                                   (not truncate-partial-width-windows))
+                      (message "truncate-partial-width-windows: %S"
+                               truncate-partial-width-windows)))
+
+Se utilizas isto frequentemente, uma macro poderá ser útil:
+
+    (defmacro aif (&rest forms)
+      "Cria uma função anónima interactiva
+    Para utilizar principalmente quando se quer atribuir uma tecla a uma função não-interactiva."
+      `(lambda () (interactive) ,@forms))
+
+Depois:
+
+    (global-set-key (kbd "C-c t")
+                    (aif (set-default 'truncate-partial-width-windows
+                                      (not truncate-partial-width-windows))
+                         (message "truncate-partial-width-windows: %S"
+                                  truncate-partial-width-windows)))
+
+Vê também ExpressãoLambda.
+
+----
+CategoriaCódigo

@@ -1,0 +1,23 @@
+The OO-Browser is a language-independent object oriented browser for Emacs and XEmacs, developed principally by BobWeiner.  It has been around for many years, but only recently has been moved to Sourceforge site.  It supports C++, Java, Python, and a few other languages.  For example, it can quickly locate classes, class members, classes that implement a particular virtual function.
+
+* http://www.sf.net/projects/oo-browser/ (last release was 4.08 on January 2003).
+
+OO-browser will create a paned layout consisting of several narrow listing windows above a full-width viewing/editing window.  Make sure point is in a listing window for most of these commands.
+
+# Press `h' or `H' to peruse key and mouse bindings
+# `C-u s' to list your system classes; `C-u t' to list all known classes
+# Press `f' or `shift-mouse3-click' in a listing window to expand into the next one. `x' to exit one level.
+# `e' or `mouse1-click' in a listing window to edit a class or method
+# `shift-mouse2-click' on an import statement to jump to that module
+# `M-g' or `C-u M-d' in a listing window for some graphical views. Click the boxes to navigate.
+# `1' to maximize your code window; `C-c C-o' to return to (or start) the oo-browser; `q' to suspend it.
+# `C-c C-r' to rebuild the window layout
+
+[new]
+My biggest problem with oo-browser is that it doesn't understand
+anything about `modules'. That is, when I'm using it on a Python
+project, it crams *all* the classes in the project into a single
+namespace, and too bad if you have collisions. -- ChrisArmstrong
+
+----
+CategoryProgrammerUtils

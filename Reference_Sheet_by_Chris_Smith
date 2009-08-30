@@ -1,0 +1,41 @@
+This reference sheet tries to complement AlexSchroeder's, mostly being stock commands, but adding one possible .emacs customization, under Outlines.
+
+||||         *Help*                ||
+||C-x C-f ||Find file (“Open”)    ||
+||C-h t   ||Tutorial              ||
+||C-h f   ||Help on a function    ||
+||C-h a   ||Help apropos a string ||
+||C-h m   ||Help on loaded modes  ||
+||C-h v   ||Help on [[variable]]      ||
+||||        *Outlines*             ||
+||M-x      ||load outline-mode    ||
+||C-c C-d  ||Hide subtree         ||
+||C-c C-s  ||Show subtree         ||
+||||(add-to-list    'auto-mode-alist '("\\.out$" . outline-mode))||
+||||        *Dired*                ||
+||m        ||Mark                ||
+||u        ||Unmark              ||
+||+        ||Create directory    ||
+||i        ||Insert this subdirectory  ||
+||||        '''[[bookmark|Bookmarks]]'''            ||
+||C-x r m  ||Bookmark a position ||
+||C-x r b  ||Go to a bookmark    ||
+||||        *Rectangles*           ||
+||C-x r k  ||Kill rectangle       ||
+||C-x r y  ||Yank rectangle       ||
+||C-x r o  ||Open rectangle       ||
+||C-x r t  ||Prepend string to marked lines ||
+||M-x align-regexp ||Vertically sculpt text ||
+||||        '''[[register|Registers]]'''                      ||
+||C-x r r  ||Copy text to a register        ||
+||C-x r i  ||Insert contents of a register  ||
+
+
+For Alex's refernce sheet I thought that 
+||C-x C-k        ||Kill a [[buffer]]||
+||C-x h          ||Select whole buffer||
+||C-x 0          ||Close current [[window]]||
+might be worth adding, if there is room
+
+----
+CategoryReferenceSheet

@@ -1,0 +1,21 @@
+StarTeam is a proprietary version management suite originally developed by Starbase and currently distributed by Borland.  It is not FreeSoftware.
+
+MatthewSmith wrote a VC-like interface called starteam.el which is hosted on Source''''''Forge at http://sf.net/projects/starteam-el/
+
+[new]
+starteam.el hasn't worked for me out of the box with EMACS version 22.1.50.1. Here's my tiny fix ;)
+
+    (defun starteam-get-login-info ()                                                                                    
+      "Get the login information for the starteam server.                                                                
+                                                                                                                     
+    Returns a string in the form:                                                                                        
+                                                                                                                     
+          USER:PASSWORD@HOST_MACHINE:PORT"                                                                               
+      (concat (starteam-get-user) ":"                                                                                    
+              (starteam-get-password) "@"                                                                                
+              starteam-host ":" (number-to-string starteam-port))) ; was starteam-host ":" starteam-port))                                                       
+
+--YakovZaytsev
+  
+----
+CategoryVersionControl

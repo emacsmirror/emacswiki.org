@@ -1,0 +1,60 @@
+[http://www.lisp.se/emacs-cl/ Emacs Common Lisp] is an implementation of CommonLisp written in EmacsLisp.  That means you can run CommonLisp programs in Emacs, and you can write Emacs extensions (including interactive functions) in CommonLisp.  At this stage, most of ANSI Common Lisp is implemented, but CLOS and pretty printing are missing.  For more information, see the [http://www.nocrew.org/cgi-bin/cvsweb/cvsweb.cgi/emacs-cl/README?rev=1.27 README] file.
+
+Go to http://mailman.nocrew.org/cgi-bin/mailman/listinfo/emacs-cl for a mailing list for discussion about Emacs Common Lisp.
+
+There hasn't been a release yet, but the software can be accessed from CVS
+or from a CVS snapshot.  Browse the CVS repository here: http://www.nocrew.org/cgi-bin/cvsweb/cvsweb.cgi/emacs-cl/
+
+Instructions for accessing CVS: http://www.nocrew.org/software-cvs.html
+
+Daily CVS snapshots can be found here: ftp://ftp.nocrew.org/pub/cvs-snapshot/
+
+See also CommonLispForEmacs.
+
+----
+
+Writing an interactive Emacs command in CommonLisp mini-HOWTO:
+
+Load Emacs Common Lisp, start the interactive mode with "M-x emacs-cl", and enter this function at the prompt:
+
+    (defun el:|my-fun| (str)
+      "My interactive function."
+      (declare (interactive "sWhat, you say? "))
+      (el:|message| "Good news, every one: %s" str))
+
+The "el:" prefix refers to symbols in the EMACS-LISP package.  Those
+symbol names are quoted to make them lower case.
+
+Now, try it with "M-x my-fun".
+----
+But ... why?!
+
+[new]
+
+Exactly!  I mean, not, why CommonLisp, but
+why not write EmacsLisp in CommonLisp instead?  Maybe
+developing in stages:
+# EL interpreter interpreting old EL code.
+# EL compiler compiling old EL code to CL.  CL interpreting.
+# Compile the translated code with someone's CL compiler
+    so it loads as a binary.
+# Hand-optimized CL code.
+# Maybe re-organize some conventions to work more naturally
+    with CL (changing EL compiler to translate into these).
+
+That way, Emacs could be interpreted or compiled by anyone's
+CommonLisp, & Emacs macros would be more immediately
+workable by CL programmers, EL section of manual would be
+less important.
+
+I'm neither an EmacsLisp nor CommonLisp user or fan, just
+curious why.
+[new]
+From <http://www.gnu.org/gnu/rms-lisp.html>:
+
+: We're willing to extend it some now, but we don't want to extend it to the level of common Lisp. I implemented Common Lisp once on the Lisp machine, and I'm not all that happy with it. One thing I don't like terribly much is keyword arguments. They don't seem quite Lispy to me; I'll do it sometimes but I minimize the times when I do that.
+
+
+----
+CategoryCode
+CategoryExtensionLanguage

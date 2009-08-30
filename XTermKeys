@@ -1,0 +1,7 @@
+First, get yourself an up-to-date xterm from:
+
+* http://dickey.his.com/xterm/xterm.html
+
+Unlike earlier versions of xterm, and unlike current versions of rxvt and friends, Dickey's xterm sends unique escape sequences for all combinations of modifier + function key.  
+
+To take full advantage of this in emacs, see xterm-extras.el, linked from my Wiki homepage ([[PeterHeslin]]).  The comments in xterm-extras.el also suggest some X resource settings that can be used to allow you to bind other useful keys (such as Shift-Enter, which is used by cua-mode).

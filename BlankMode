@@ -1,0 +1,483 @@
+This page describes package Lisp:blank-mode.el, by ViniciusJoseLatorre.
+
+: .:: ''v9.1'' :: ''part of GNU Emacs'' ::.
+
+: It runs on Emacs 21, 22 and 23.
+
+: **Note:** //This package was replaced by// WhiteSpace.
+
+
+== Screenshot ==
+
+The screenshots below show when BlankMode is turned on using
+the default setting.
+
+* /Light background/
+: 
+:: [[image:BlankModeOn]]
+
+* /Dark background/
+: 
+:: [[image:BlankModeOnDark]]
+
+
+== About blank-mode ==
+
+This package is a minor mode to visualize blanks (TAB, (HARD) SPACE and NEWLINE).
+
+BlankMode uses two ways to visualize blanks: [[Face]]s and display table.
+
+* [[Face]]s are used to highlight the background with a color. BlankMode uses
+font-lock to highlight blank characters.
+
+* Display table changes the way a character is displayed, that is,
+it provides a visual mark for characters,
+for example, at the end of line (##?\xB6##),
+at SPACEs (##?\xB7##) and at TABs (##?\xBB##).
+
+The `blank-style' and `blank-chars' variables are used to select which way
+should be used to visualize blanks.
+
+Note that when BlankMode is turned on, BlankMode saves the font-lock
+state, that is, if font-lock is on or off.  And BlankMode restores the
+font-lock state when it is turned off.  So, if BlankMode is turned on and
+font-lock is off, BlankMode also turns on the font-lock to highlight
+blanks, but the font-lock will be turned off when BlankMode is turned off.
+Thus, turn on font-lock before BlankMode is on, if you want that font-lock
+continues on after BlankMode is turned off.
+
+When BlankMode is on, it takes care of highlighting some special
+characters over the default mechanism of `nobreak-char-display'
+(which see) and `show-trailing-whitespace' (which see).
+
+There are two ways of using BlankMode: local and global.
+
+* Local BlankMode affects only the current buffer.
+
+* Global BlankMode affects all current and future buffers.  That
+is, if you turn on global BlankMode and then create a new
+buffer, the new buffer will also have BlankMode on.  The
+`blank-global-modes' variable controls which major-mode will be
+automagically turned on.
+
+You can mix the local and global usage without any conflict.  But
+local BlankMode has priority over global BlankMode.  BlankMode
+is active in a buffer if you have enabled it in that buffer or if
+you have enabled it globally.
+
+When global and local BlankMode are on:
+
+* if local BlankMode is turned off, BlankMode is turned off
+for the current buffer only.
+
+* if global BlankMode is turned off, BlankMode continues on
+only in the buffers in which local BlankMode is on.
+
+To use BlankMode, insert in your ##~/.emacs##:
+
+   (require 'blank-mode)
+
+Or autoload at least one of the commands`blank-mode',
+`blank-toggle-options', `global-blank-mode' or
+`global-blank-toggle-options'.  For example:
+
+   (autoload 'blank-mode           "blank-mode" "Toggle blank visualization."        t)
+   (autoload 'blank-toggle-options "blank-mode" "Toggle local `blank-mode' options." t)
+
+BlankMode was inspired by:
+
+: ##whitespace.el## -- Rajesh Vaidheeswarran <_rv_@_gnu_._org_>
+:: Warn about and clean bogus whitespaces in the file
+:: (inspired the idea to warn and clean some blanks)
+
+: ##show-whitespace-mode.el## --  Aurélien Tisné <_aurelien_._tisne_@_free_._fr_>
+:: Simple mode to highlight whitespaces
+:: (inspired the idea to use font-lock)
+
+: ##whitespace-mode.el## -- LawrenceMitchell
+:: Major mode for editing Whitespace
+:: (inspired the idea to use display table)
+
+: ##visws.el## -- MilesBader
+:: Make whitespace visible
+:: (handle display table, his code was modified, but the main
+idea was kept)
+
+For good performance, be sure to byte-compile BlankMode, e.g.
+
+   M-x byte-compile-file <give the path to blank-mode.el when prompted>
+
+This will generate blank-mode.elc, which will be loaded instead of
+Lisp:blank-mode.el.
+
+BlankMode was tested with GNU Emacs 22 and 23.
+
+
+== Using blank-mode ==
+
+There is no problem if you mix local and global minor mode usage.
+
+<u>LOCAL BlankMode</u>:
+: To toggle BlankMode options locally, type:
+:: ##M-x blank-toggle-options RET##
+
+[new]
+: To activate BlankMode locally, type:
+:: ##C-u 1 M-x blank-mode RET##
+[new]
+
+: To deactivate BlankMode locally, type:
+:: ##C-u 0 M-x blank-mode RET##
+
+[new]
+: To toggle BlankMode locally, type:
+:: ##M-x blank-mode RET##
+[new]
+
+
+<u>GLOBAL BlankMode</u>:
+: To toggle BlankMode options globally, type:
+:: ##M-x global-blank-toggle-options RET##
+
+[new]
+: To activate BlankMode globally, type:
+:: ##C-u 1 M-x global-blank-mode RET##
+[new]
+
+: To deactivate BlankMode globally, type:
+:: ##C-u 0 M-x global-blank-mode RET##
+
+[new]
+: To toggle BlankMode globally, type:
+:: ##M-x global-blank-mode RET##
+[new]
+
+
+You can also bind `blank-mode', `global-blank-mode',
+`blank-toggle-options' and `global-blank-toggle-options' to some
+key, like:
+
+   (global-set-key "\C-c_b" 'blank-mode)
+   (global-set-key "\C-c_t" 'blank-toggle-options)
+   (global-set-key "\C-c=b" 'global-blank-mode)
+   (global-set-key "\C-c=t" 'global-blank-toggle-options)
+
+There are also the following useful commands:
+
+; `blank-cleanup' : Cleanup some blank problems in all buffer or at region.
+
+; `blank-cleanup-region' : Cleanup some blank problems at region.
+
+The problems, which are cleaned up, are:
+
+: 1. empty lines at beginning of buffer.
+: 2. empty lines at end of buffer.
+:: If `blank-chars' has `empty' as an element, remove all empty
+lines at beginning and/or end of buffer.
+
+: 3. 8 or more SPACEs at beginning of line.
+:: If `blank-chars' has `indentation' as an element, replace 8 or
+more SPACEs at beginning of line by TABs.
+
+: 4. SPACEs before TAB.
+:: If `blank-chars' has `space-before-tab' as an element, replace
+SPACEs by TABs.
+
+: 5. SPACEs or TABs at end of line.
+:: If `blank-chars' has `trailing' as an element, remove all
+SPACEs or TABs at end of line."
+
+: 6. 8 or more SPACEs after TAB.
+:: If `blank-chars' has `space-after-tab' as an element, replace
+SPACEs by TABs.
+
+
+== Hooks ==
+
+BlankMode has the following hook variables:
+
+; `blank-mode-hook' : It is evaluated always when BlankMode is turned on.
+
+; `global-blank-mode-hook' : It is evaluated always when BlankMode is turned on globally.
+
+; `blank-load-hook' : It is evaluated after BlankMode package is loaded.
+
+
+== Options ==
+
+Below it's shown a brief description of BlankMode options, please, see the
+options declaration in the code for a long documentation.
+
+; `blank-style' : Specify the visualization style.
+
+; `blank-chars' : Specify which kind of blank is visualized.
+
+; `blank-space' : [[Face]] used to visualize SPACE.
+
+; `blank-hspace' : [[Face]] used to visualize HARD SPACE.
+
+; `blank-tab' : [[Face]] used to visualize TAB.
+
+; `blank-newline' : [[Face]] used to visualize NEWLINE char mapping.
+
+; `blank-trailing' : [[Face]] used to visualize trailing blanks.
+
+; `blank-line' : [[Face]] used to visualize "long" lines.
+
+; `blank-space-before-tab' : [[Face]] used to visualize SPACEs before TAB.
+
+; `blank-indentation' : [[Face]] used to visualize 8 or more SPACEs at beginning of line.
+
+; `blank-empty' : [[Face]] used to visualize empty lines at beginning and/or end of buffer.
+
+; `blank-space-after-tab' : [[Face]] used to visualize 8 or more SPACEs after TAB.
+
+; `blank-space-regexp' : Specify SPACE characters regexp.
+
+; `blank-hspace-regexp' : Specify HARD SPACE characters regexp.
+
+; `blank-tab-regexp' : Specify TAB characters regexp.
+
+; `blank-trailing-regexp' : Specify trailing characters regexp.
+
+; `blank-space-before-tab-regexp' : Specify SPACEs before TAB regexp.
+
+; `blank-indentation-regexp' : Specify regexp for 8 or more SPACEs at beginning of line.
+
+; `blank-empty-at-bob-regexp' : Specify regexp for empty lines at beginning of buffer.
+
+; `blank-empty-at-eob-regexp' : Specify regexp for empty lines at end of buffer.
+
+; `blank-space-after-tab-regexp' : Specify regexp for 8 or more SPACEs after TAB.
+
+; `blank-line-column' : Specify column beyond which the line is highlighted.
+
+; `blank-display-mappings' : Specify an alist of mappings for displaying characters.
+
+; `blank-global-modes' : Modes for which global BlankMode is automagically turned on.
+
+To set the above options you may:
+
+
+[new]
+a. insert the code in your ##~/.emacs##, like:
+
+   (setq blank-space 'underline)
+
+This way always keep your default settings when you enter a new Emacs session.
+[new]
+
+b. or use `set-variable' in your Emacs session, like:
+
+   M-x set-variable RET blank-space RET underline RET
+
+This way keep your settings only during the current Emacs session.
+
+[new]
+c. or use customization, for example:
+
+In Emacs 21 or lower:
+# click on MenuBar ##Help## option,
+# then click on ##Customize##,
+# then click on ##Browse Customization Groups##,
+# expand ##Data## group,
+# expand ##Blank## group
+# and then customize BlankMode options.
+
+In Emacs 22 or higher:
+# click on MenuBar ##Options## option,
+# then click on ##Customize Emacs##,
+# then click on ##Browse Customization Groups##,
+# expand ##Data## group,
+# expand ##Blank## group
+# and then customize BlankMode options.
+
+Through this way, you may choose if the settings are kept or not when you leave out the current Emacs session.
+[new]
+
+d. or see the option value:
+
+   C-h v blank-space RET
+
+and click the ##customize## hypertext button.
+
+Through this way, you may choose if the settings are kept or not when you leave out the current Emacs session.
+
+
+== Acknowledgements ==
+
+Thanks to [[nschum]] for the idea about highlight "long"
+lines tail. See EightyColumnRule.
+
+Thanks to JuriLinkov for suggesting:
+* `define-minor-mode'.
+* `global-blank-*' name for global commands.
+
+Thanks to Robert J. Chassell <_bob_@_gnu_._org_> for doc fix and testing.
+
+Thanks to DrewAdams for toggle commands suggestion.
+
+Thanks to Antti Kaihola <_antti_._kaihola_@_linux-aktivaattori_._org_> for helping
+to fix `find-file-hooks' reference.
+
+Thanks to Andreas Roehler <_andreas_._roehler_@_easy-emacs_._de_> for indicating
+defface byte-compilation warnings.
+
+Thanks to TimOCallaghan for the idea about highlight "long" lines. See EightyColumnRule.
+
+Thanks to Yanghui Bian <_yanghuibian_@_gmail_._com_> for indicating a new newline character mapping.
+
+Thanks to Pete Forman <_pete_._forman_@_westgeo_._com_> for indicating
+##whitespace-mode## on XEmacs.
+
+Thanks to:
+
+: Rajesh Vaidheeswarran <_rv_@_gnu_._org_> -- ##whitespace.el##
+: Aurélien Tisné <_aurelien_._tisne_@_free_._fr_> -- ##show-whitespace-mode.el## (ShowWhitespaceMode)
+: LawrenceMitchell -- ##whitespace-mode.el## (WhitespaceMode)
+: MilesBader -- ##visws.el## (Emacs 21)
+
+And to all people who contributed with them.
+
+
+== TAB & Display Table ==
+
+When BlankMode is on and a ##TAB## occupies exactly one column, it
+will display the character ##?\xBB## at that column followed by a ##TAB##
+which goes to the next ##TAB## column.  This is due the way the Emacs display
+engine works.
+
+The situation above is illustrated by the following images:
+
+: [[image:BlankModeOffTab]] [[image:BlankModeOnTab]]
+
+There are the following possibilities to deal with the situation above:
+
+* Insert in your ##~/.emacs## file:
+
+        (setq blank-display-mappings
+          '((?\    [?\xB7]     [?.])		; space
+            (?\xA0 [?\xA4]     [?_])		; hard space
+            (?\n   [?\xB6 ?\n] [?$ ?\n])	; end-of-line
+            ))
+
+: The setting above doesn't have any ##TAB## mapping.
+
+* Comment the ##TAB## mapping line in the ##blank-mode.el## file:
+
+        (defcustom blank-display-mappings
+          '((?\    [?\xB7]     [?.])		; space
+            (?\xA0 [?\xA4]     [?_])		; hard space
+            (?\n   [?\xB6 ?\n] [?$ ?\n])	; end-of-line
+            ;; WARNING: the mapping below has a problem.
+            ;; When a TAB occupies exactly one column, it will display the character
+            ;; ?\xBB at that column followed by a TAB which goes to the next TAB
+            ;; column.
+            ;; If this is a problem for you, please, comment the line below.
+            ;;(?\t   [?\xBB ?\t] [?\\ ?\t])	; tab
+            )
+            ......
+
+* Set ##blank-style## variable to ##color##:
+
+        (setq blank-style '(color))
+
+: That is, don't use display table.
+
+* Just live with it. :)
+
+
+== See Also ==
+
+* WhiteSpace
+* ShowWhiteSpace
+* ShowWhitespaceMode
+* WhitespaceMode
+* EightyColumnRule
+* [[Easymacs]]
+
+
+----
+
+== Inbox ==
+
+[new]
+I have a question about this mode running under XEmacs, in case anyone has solved it:
+* When I turn BlankMode on, only the visible part of the buffer is highlighted. Is this normal?
+
+Thanks, -- BillBarnard
+
+[new]
+just use whitespace-mode (WhitespaceMode) on XEmacs -- ClausBrunzema
+
+[new]
+Use whitespace-visual-mode for recent releases of the text-modes
+([http://www.xemacs.org/Develop/packages.html#text-modes sources]) XEmacs package
+([http://www.xemacs.org/Documentation/packageGuide.html Quickstart Package Guide]) -- AdrianAichner
+
+
+'''See also:''' ShowWhiteSpace for several other ways to do what blank-mode does.
+
+[new:ViniciusJoseLatorre:]
+Well, BlankMode does not run on XEmacs.
+It is welcome any help from anyone who knows XEmacs.
+-- ViniciusJoseLatorre
+
+[new]
+The :stipple face attribute can do some cool things
+
+    (defface blank-tab
+      `((t (:stipple
+            ;; 88 = 8 * (frame-char-width)
+            ;; 18 =     (frame-char-height)
+            (88 18 ,
+                (string
+                 0 0 0 0 0 0 0 0 0 0 0
+                 0 0 0 0 0 0 0 0 0 0 0
+                 0 0 0 0 0 0 0 0 0 0 0
+                 0 0 0 0 0 0 0 0 0 0 0
+                 0 0 0 0 0 0 0 0 0 0 0
+                 0 0 0 0 0 0 0 0 0 0 0
+                 #b01000000    0    0    0    0    0    0    0    0    0    0
+                 #b10000000    0    0    0    0    0    0    0    0    0    0
+                 #b11111100 #x01 #x01 #x08 #x40 #x00 #x02 #x10 #x80 #x00 #x04
+                 #b10000000    0    0    0    0    0    0    0    0    0    0
+                 #b01000000    0    0    0    0    0    0    0    0    0    0
+                 0 0 0 0 0 0 0 0 0 0 0
+                 0 0 0 0 0 0 0 0 0 0 0
+                 0 0 0 0 0 0 0 0 0 0 0
+                 0 0 0 0 0 0 0 0 0 0 0
+                 0 0 0 0 0 0 0 0 0 0 0
+                 0 0 0 0 0 0 0 0 0 0 0
+                 0 0 0 0 0 0 0 0 0 0 0))
+            :foreground "cyan4")))
+      "")
+
+[[image:bojohan-stippled-tab]]
+
+-- [[bojohan]]
+
+[new:ViniciusJoseLatorre:]
+Cool!  It doesn't have the ##TAB## problem which display table has. :-)
+
+But ##:stipple## depends on your current ##(frame-char-width)## and ##(frame-char-height)##. :-(
+: From my Emacs session:
+:: ##(frame-char-width)## = 6
+:: ##(frame-char-height)## = 13
+: -- ViniciusJoseLatorre
+
+[new]
+I have been successfully using blank-mode.el and whitespace.el for a while now on Windows-based GNU Emacs, including 22.3.  I appreciate it very much.  Thank you!
+
+I just tried using blank-mode.el on x86-64 Fedora 9-based GNU Emacs 22.3.  It behaves as if it is not loaded at all, except that BL and/or bl appears in the modeline, depending on whether I have it in global-blank-mode and/or blank-mode.  AFAIK, I have it installed and configured and loaded via .emacs the same way as I have successfully used on my Windows-based GNU Emacs 22.3.  (I am having a different problem with whitespace.el that I have described over on that wikipage.)  -- Dan'l Miller
+
+[new:ViniciusJoseLatorre:2009-07-19 00:21 UTC]
+: Well, I answered in the WhiteSpace page. -- ViniciusJoseLatorre
+
+
+----
+
+CategoryCode,
+CategoryModes,
+CategoryFaces
+

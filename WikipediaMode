@@ -1,0 +1,43 @@
+wikipedia-mode.el is a simple MajorMode for editing Wikipedia articles
+(http://en.wikipedia.org/). It provides syntax highlighting for Wikipedia's
+wiki markup.
+
+* Download: http://www.emacswiki.org/elisp/wikipedia-mode.el
+
+See [WikiPedia:Wikipedia:Text_editor_support general text editor support for wikipedia] and this [WikiPedia:Wikipedia:Wikipedia-mode.el wikipedia page about  Wikipedia-mode]
+
+You should also download LongLines to get Emacs to handle soft word wrapping, which is the standard for Wikipedia, unless you use Emacs 23 in which case it's already included.
+
+See also: WikipediaAlternative, TexMathPreview
+
+----
+CategoryModes CategoryHypermedia
+
+----
+
+I don't comment on this forum often, so please forgive if I am not abiding by decorum... and also, inform me if I am not.
+
+I updated the code in this mode to make longlines an option. I use truncate-long-lines in simple in all my modes, and am used to it, and prefer to use that.
+
+Below are my edits:
+{{{
+
+(defgroup wikipedia nil
+  "A mode to wikipedia-draft information."
+  :group 'data)
+
+(defcustom wikipedia-use-longlines t
+  "If non-nil, remove multiple SQL*Plus prompts after starting."
+  :type 'boolean
+  :group 'wikipedia)
+
+(defun wikipedia-turn-on-longlines ()	;Version:1.58
+  "Turn on longlines-mode if it is defined."
+  (if (and (functionp 'longlines-mode) wikipedia-use-longlines)
+      (longlines-mode 1)))
+(add-hook 'wikipedia-mode-hook 'wikipedia-turn-on-longlines)
+(set (make-local-variable 'auto-fill-inhibit-regexp) "^[ *#:|;]")
+
+}}}
+
+-- StewartBryson

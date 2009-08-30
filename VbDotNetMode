@@ -1,0 +1,5 @@
+It seems that I am the only Emacs user unlucky enough to be working on a VB project.  Well, VB.NET actually. That's not quite so evil.  I'm gradually adding support for VB.NET syntax to the aging visual-basic-mode.  Most VB.NET code should be parsed correctly now.  I don't know if it will still work with old VBA code, but this doesn't really matter as the name has changed to vbnet-mode.
+Offers of help will be gratefully accepted, I can be reached at timseal at gmail dot com.
+
+The code is at Lisp:vbnet-mode.el
+ I will put comments in to make the changes more obvious soon.  

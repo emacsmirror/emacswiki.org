@@ -1,0 +1,51 @@
+== Installing Emacs 22 on Debian Etch ==
+
+Installing Emacs 22 on Debian Etch doesn't need to be a painful experience.  While installing from source is perfectly doable, some people will want to use the Debian packaging system.  Emacs 22 is now in Sid but it didn't make it yet to Etch backports.  For those running i386, there are binaries in an alternate backports repository (http://hype.sourceforge.jp/f/dists/etch/backports/).  For those running other architectures, rebuilding the .debs is required.  
+
+This is a straight forward procedure.  Start by adding a new source to /etc/apt/sources.list:
+
+  deb-src http://hype.sourceforge.jp/f etch backports
+
+
+Then, as root, install the dev environment needed to build the .debs:
+
+  apt-get update
+  apt-get install build-essential fakeroot
+  apt-get build-dep emacs22
+
+
+Now, as a regular user, build the .debs:
+
+  mkdir /tmp/build
+  cd /tmp/build
+  fakeroot apt-get source -b emacs22-common
+   
+
+As root, install you new packages:
+
+  dpkg -i "emacs22-gtk_22.1+1-1~edh.0_amd64.deb" \ 
+          "emacs22-bin-common_22.1+1-1~edh.0_amd64.deb" \ 
+          "emacs22-common_22.1+1-1~edh.0_all.deb"
+
+That's it, you now have Emacs 22 on Debian Etch.
+
+
+----
+== Comments: ==
+
+=== GPG public key unavailable ==
+After aptitude update, the error output is
+
+ W: GPG error: http://hype.sourceforge.jp etch 
+ Release: The following signatures couldn't be verified 
+ because the public key is not available: NO_PUBKEY 29EF9657A7F20B7E   --WeakishJiang
+
+[new]
+
+: You have to install the public key for the repository first (as root) [http://hype.sourceforge.jp/f/]:
+
+:: <code>wget -O - http://hype.sourceforge.jp/f/A7F20B7E.gpg | apt-key add -</code>
+
+=== edge AucTeX depends on emacs21 still ===
+Have installed emacs22 from above backport site.  Selecting auctex in aptitude depends still on emacs21 package and tries to additionally install the whole old stuff.  Can I avoid that?  If not for hard drive space reasons I fear interferences with two emacs installations. --doreen
+: I encountered the same problem. After wasting a lot of time I finally gave up and did a dist-upgrade to Debian lenny. Not sure whether this helps you but it solved the problems in my case. --mw

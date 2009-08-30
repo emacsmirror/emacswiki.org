@@ -1,0 +1,13 @@
+== Periodic Table for Emacs ==
+
+Package to display a periodic table in Emacs.  See the code Lisp:eperiodic.el.
+
+The data were mostly derived from the GPeriodic package, available from
+<http://gperiodic.seul.org/>.
+
+Thanks are due to Kyle R. Burton <_mortis_@_voicenet_._com_> for making
+available the raw data needed for this package.
+
+
+----
+CategoryEducation

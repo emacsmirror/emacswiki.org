@@ -1,0 +1,138 @@
+After a server has been connected to and it has sent its welcome
+''message of the day'', or ''MOTD'', ERC takes the first file it finds
+from the `erc-startup-file-list' and loads it.  The default value is
+##'("~/.emacs.d/.ercrc.el" "~/.emacs.d/.ercrc" "~/.ercrc.el" "~/.ercrc" ".ercrc.el" ".ercrc")##.  Files
+ending in ".el" are loaded as lisp files, the other files are executed
+as IRC scripts.  Only one of these files -- the first one which is
+readable -- will be used.
+
+Note that the init file is only loaded once when you begin an erc
+process.  It will not get loaded again if you become disconnected and
+are automatically reconnected to the server.
+
+== Byte Compiled Init Files ==
+
+As ERC uses the `load' function to eval its initialisation file,
+loading time can be decreased by byte-compiling the ERC init file.  As
+Emacs first tries to load byte compiled versions (.elc) before source
+versions (.el), any byte compiled startup file needs to be
+byte-compiled again for every modification.  To byte-compile an
+Emacs-Lisp file, simple use something like ##M-x byte-compile-file
+.ercrc.el##.  Don't worry about this though, it's not very
+important.  And ERC init files tend to be quite small too.
+
+You also might want to check out AutoRecompile.
+
+== Nice startup tricks ==
+
+=== Menu ===
+
+This will add an ERC item to the Tools menu.  It uses EasyMenu.
+
+    (require 'easymenu)
+    (easy-menu-add-item  nil '("tools")
+      ["IRC with ERC" erc t])
+
+=== Connecting ===
+
+Here's what I do. Can be used non-interactively. --DamienElmes
+
+    (defmacro de-erc-connect (command server port nick)
+      "Create interactive command `command', for connecting to an IRC server. The
+      command uses interactive mode if passed an argument."
+      (fset command
+             `(lambda (arg)
+               (interactive "p")
+               (if (not (= 1 arg))
+                   (call-interactively 'erc)
+                 (erc :server ,server :port ,port :nick ,nick)))))
+
+    (autoload 'erc "erc" "" t)
+    (de-erc-connect erc-opn "jordan.openprojects.net" 6666 "resolve")
+    (de-erc-connect erc-aust "pacific.austnet.org" 6666 "resolve")
+
+Call it with something like ##M-x erc-opn##, ##C-u M-x erc-opn## to get prompted.
+
+
+
+AndreasFuchs took that one and modified it a bit, so it can now be used with a dircproxy (and also ezb over SSL) bouncer:
+
+ (defmacro asf-erc-bouncer-connect (command server port nick ssl pass)
+   "Create interactive command `command', for connecting to an IRC server. The
+   command uses interactive mode if passed an argument."
+   (fset command
+         `(lambda (arg)
+           (interactive "p")
+	   (if (not (= 1 arg))
+	       (call-interactively 'erc)
+	     (let ((erc-connect-function ',(if ssl
+					       'erc-open-ssl-stream
+					     'open-network-stream)))
+ 	       (erc :server ,server :port ,port :nick ,nick :password ,pass))))))
+
+ (asf-erc-bouncer-connect erc-opn "frost.feig.at" 57002 "antifuchs" nil "pass1")
+ (asf-erc-bouncer-connect erc-ircnet "frost.feig.at" 57001 "antifuchs" nil "pass1")
+ (asf-erc-bouncer-connect erc-ifs "joplin.ifs.tuwien.ac.at" 6667 "antifuchs" nil nil)
+
+ ;; ssl connection:
+ (asf-erc-bouncer-connect erc-ifs "joplin.ifs.tuwien.ac.at" 6667 "antifuchs" t nil)
+
+To start up ERC with just one command, use this function:
+
+ ;; fires up a new frame and opens your servers in there. You will need
+ ;; to modify it to suit your needs.
+ (defun my-irc ()
+   "Start to waste time on IRC with ERC."
+   (interactive)
+   (select-frame (make-frame '((name . "Emacs IRC")
+ 			      (minibuffer . t))))
+   (call-interactively 'erc-ircnet)
+   (sit-for 1)
+   (call-interactively 'erc-opn)
+   (sit-for 1)
+   (call-interactively 'erc-ifs))
+
+=== Autojoin ===
+The following code shouldn't be necessary anymore, see the ErcAutoJoin module.
+
+DavidSpreen: Well, other versions don't work on netsplit-forced reconnects
+so I adapted his solution and added it to the `erc-after-connect' hook:
+
+    (defun myerc-join-channels (&rest channels)
+      (mapc 'erc-join-channel channels))
+
+    (defun myerc-autojoin-channels (server nick)
+     (cond
+      ((member erc-session-server '("irc.tu-ilmenau.de"
+                                    "irc.uni-erlangen.de"))
+        (myerc-join-channels "#kiel"
+                             "+linux.de"
+                             "#debian.de"))
+       ((string= erc-session-server "irc.debian.org")
+        (myerc-join-channels "#emacs" 
+                             "#debian-devel"))))
+
+    (add-hook 'erc-after-connect 'myerc-autojoin-channels)
+
+Riastradh says: This would be nicer as a macro:
+
+  (defmacro erc-autojoin (&rest args)
+    `(add-hook 'erc-after-connect
+       '(lambda (server nick)
+          (cond
+           ,@(mapcar (lambda (servers+channels)
+                       (let ((servers (car servers+channels))
+                             (channels (cdr servers+channels)))
+                         `((member erc-session-server ',servers)
+                           (mapc 'erc-join-channel ',channels))))
+                     args)))))
+
+And then that code above would be more concisely written as:
+
+  (erc-autojoin
+    (("irc.tu-ilmenau.de" "irc.uni-erlangen.de")
+     "#kiel" "+linux.de" "#debian.de"))
+    (("irc.debian.org") "#debian-devel"))
+
+----
+[[ERC]]

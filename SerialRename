@@ -1,0 +1,34 @@
+This little code provide a way to rename file sequentially and safely.
+
+To sort the files correctly, you have to set start to 101 if you have a set of files
+bigger than 100.
+
+This code is part of Lisp:thumb-page.el
+
+<pre>
+;;rename all files of rep matching ext sequentially
+ 
+(defun tv-serial-rename (dir ext name start)
+  "Rename sequentially a set of file with the extension ext 
+in a repertory dir with the name name + the startnumber start"
+  (interactive "fDir: \nsExt(no dot): \nsName: \nnStart: ")
+  (find-file dir)
+  (let (ls-dir
+	new-ls-dir
+	n
+	c)
+  (setq ls-dir (file-expand-wildcards (format "*.%s" ext) t))
+  (setq new-ls-dir nil)
+  (setq n 0)
+  (while (< n (length ls-dir))
+    (if (< start 10)
+	(push (concat dir name (format "0%s" start) "." ext) new-ls-dir)
+      (push (concat dir name (format "%s" start) "." ext) new-ls-dir))
+    (setq start (+ start 1))
+    (setq n (+ n 1)))
+  (setq ls-dir (reverse ls-dir))
+  (setq c 0)
+  (dolist (i ls-dir)
+    (rename-file i (nth c new-ls-dir))
+    (setq c (+ c 1)))))
+</pre>

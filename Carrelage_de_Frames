@@ -1,0 +1,19 @@
+'''Cette page fait partie de la description de OneOnOneEmacs, par DrewAdams.'''
+
+This page is also available in English: [[Frame Tiling Commands]]
+
+* 
+* 
+* 
+
+J'ai cree deux commandes pour carreler les [[Frame]]s visibles horizontalement et verticalement : `tile-frames-horizontally' et
+`tile-frames-vertically'. Je les utilise surtout juste avant d'utiliser des commandes ediff pour comparer ou fusionner des buffers.
+
+Voici un capture d'ecran qui montre la comparaison avec `ediff' de deux buffers. Les deux frames ont ete carreles horizontalement :
+
+[[image:DrewsEmacsTileSS]]
+
+'''Voir le package :''' Lisp:frame-cmds.el
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay

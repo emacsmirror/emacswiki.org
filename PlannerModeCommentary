@@ -1,0 +1,95 @@
+[[de:HfqeUYVukgVWbS]]
+I'm considering deleting this page. The essay is printed in full in the manual, and is being updated there. I don't see the need to have it here, and needing to keep it up-to-date in more than one location is inconvenient. Overall, the Planner documentation on the wiki is scattered, and removing this page is a step toward correcting that. Does anyone object? ---JohnSullivan
+
+
+JohnWiegley wrote some comments on using PlannerMode to plan your life.
+[http://sacha.free.net.ph/notebook/emacs/emacs-wiki/stable/planner/PLANNER-README]
+
+Discuss? =)
+
+== John's Comments ==
+
+Commentary by John Wiegley (johnw AT gnu DOT org)
+
+What is planning? It can be a nebulous thing to define. In its essence, however, it is very simple: it's how we achieve our dreams.
+
+Our days are filled with time, and hence with actions, whether they be of a mental or physical sort. But there are two kinds of action: reactive and creative. Reactive action is a response to the environment, a reaction to stimulus. Had we enough instincts to ensure survival, we could live according to this kind of action alone. It is a mode of behavior we share with every living species.
+
+The opposite to reactivity is creativity, when we decide upon a course of action that is a wholly a product of personal choice. We then make decisions as to the steps needed to make this wish a reality. This is planning. Planning is essentially a creative endeavor at every step.
+
+First, create the idea, what you want to achieve. Very short-term ideas do not need much more than thinking about how to do it. But long-term ideas require planning, since the mind cannot contain all of the details.
+
+Second, decide how the idea maps into the circumstances you find yourself in. Some environments will assist your plan, others hinder it. But step by step, identify every barrier to the realization of your idea, and devise a countermeasure to overcome it. Once you've mapped things out from beginning to end, accounting for unknowables as best you can, you now have your plan.
+
+Third is to break the stages of the plan into parts that are not overwhelming in their complexity. It is at during this phase that a plan is turned into task items, each to be accomplished within the span of one day's time. If a task requires several days, break it up further. The smaller it is, the less your mind will recoil from attempting it.
+
+Fourth is to monitor your progress, identifying problems and correcting for them as you go. Some plans start out unachievable, and remain that way indefinitely, due to a simple lack of observation. If nothing is working for you, change it. Otherwise, your plan is merely a well-crafted wish.
+
+Fifth is just to do the work, and be patient. All good plans take a great deal of time, and cannot happen immediately. The groundwork must be laid for each step, or else it will rest on an unsecure foundation. If you follow your plan doggedly, applying some time to it each day or week, it will happen. Remember the story of the tortoise and the hare. I've even written a short essay on the necessity of gradual accomplishment, which can be found at http://johnwiegley.com/advancing.the.process.html .
+
+How can this software help? Computers are ideal for manipulating information, since they allow you to change things without erasing or rewriting. And since all plans change quite a bit during their implementation, a planning program can be very helpful.
+
+Start by adding the following to your .emacs file:
+
+  (load "planner")
+
+Now, conceive your idea. I can't believe there's nothing you want from life. More peace, time to enjoy the world, an end to war? Everyone wants something. Search deeply, and you will find countless unhoped wishes lurking therein. Choose one for now, and think on it for a while.
+
+Then open a file (using C-x C-f) within the directory named by ‘planner-directory’. Emacs will automatically recognize this file as a planner file. Name the file after your plan, such as "BetterHealth".
+
+Choose an idea you really want to accomplish. Struggle to differentiate between the things you want because others want them, and the things you want for yourself. It takes quite an effort, and may require a long time before you notice the difference. Many people want to be more healthy to be more attractive, which is an externally driven goal. Unless you really want to accomplish what you envision, the odds are you will fail. Only our own wishes and dreams possess enough personal energy to see themselves to fruition. What happens to many of us is simply that we never become conscious of these dreams: what we love, what we desire most. When I talk to friends, so much of what I hear is things they want because they feel they should want them. There's just not enough energy there to pursue a good plan, because nearly all of it is negative energy.
+
+Do you know what you really want? Don't worry, many people don't. It's not a question anyone really wants us to pursue, because often we don't want what others do; it doesn't contribute to the social welfare, and all that nonsense. Somehow we always forget that what's good for the social welfare now, was someone else's crazy dream a hundred years ago. The human aversion to fundamental change is always one's greatest enemy, so don't waste any time getting bitter about it.
+
+For the sake of argument I assume you really do want to be healthier, because you've fallen in love with the ideal of purity, or you understand the connection between your physical self and the world around you, and how this can open up your spirit to desiring more. I assume. :)
+
+So you're in a Wiki file called BetterHealth. Start typing. Type anything related to your idea: what you think about it, your ideas on it, and especially what the end will look like. If you can't visualize the end, you can't plan, since planning is about drawing a line between now and then.
+
+When you've typed enough to gain a vision of your goal, start drafting what the possible intermediate steps might be. Then stop, get up, walk around, enjoy life, and come back to it. Taking a long time at the beginning is not a bad idea at all, as long as it's not forever.
+
+As you chew on your idea, it will begin to become more and more concrete. You'll have ideas about the smallest pieces, and ideas about the biggest pieces. Keep going until it starts to take shape before you, and you can see yourself in your mind's eye moving from the present into the future. Write down this progression, and the sorts of things you might encounter along the way.
+
+As you continue, you'll naturally discover discrete phases, or "milestones" as managers love to call them. These are very important, because they let you know you're making progress. I recommend having a big party with friends every time you achieve a milestone. A typical plan might have between three and ten.
+
+Between the milestones are the bigger pieces of your plan. Name these pieces using MixedCase words, and you'll notice that Emacs colors and underlines them for you. Like, FindGoodGym. Hit return on this highlighted word, and you'll find yourself in another, blank file. In this file, start drafting your sub-plan, just as you did with the larger plan. You should find it easier now, since the scope is smaller.
+
+As you break down further, you'll notice simple little things that need to get done. These are your tasks. Every plan is a succession of tasks. The difference from reactivity is that each task is part of the larger plan. This is what it means to be systematic: that everything you do helps further your plan. If you have tasks in your day that contribute to no plan, they are reactive. Of course, life is full of these, but don't let them take up more than 20% of your day. If you allow yourself to be dominated by reactive tasks, you'll regret it at the end of your life. I don't know this personally, but I do know that striving for one's dreams – and seeing them come to fruition – is the greatest joy a man can possess. It is the essence of freedom, of living, of creation. Reactivity is the opposite of this, and serves only to drain our energy and slacken our spirits.
+
+Now that you've thought of a simple task, type C-c C-t. This will ask for a brief description of the task, and when you plan to do it. If you hit RETURN at the question 'When', it assumes you mean today. The Planner will also pop up a three-month calendar at this question, so you can see where your free days are. Make sure you set the variable ‘mark-diary-entries-in-calendar’ to t in your .emacs file. This way, you can see which days your appointments fall on. (Read about the Emacs Calendar and Diary in the EmacsManual).
+
+  (setq mark-diary-entries-in-calendar t)
+
+Once your task is in there, go back to your plan and keep generating more tasks. Generate them all! Fully describe – as tasks – everything necessary to bring your sub-plan to completion. Don't create tasks for the other sub-plans. You may have good idea of what they'll look like, but don't bother rendering them into tasks just yet. Things will change too much between now and then, for that to be a good use of your time.
+
+Is your sub-plan now rendered into all of the tasks necessary to reach your first milestone? Great! That is the purpose of planner.el. The rest is really up to you. If you find that you keep putting things off, and never do them, that's the surest sign you're planning for someone else's dream, and not your own.
+
+Here are some of the things planner.el can do, to help you manage and track your tasks:
+
+At the beginning of every day, type M-x plan. This will jump you to the top of the most recent task list before today. If you skipped a bunch of days, you'll have to open up those files on your own.
+
+Probably some of the tasks that day won't be finished – that's OK. Learning to properly estimate time is a magical, mystical art that few have mastered. Put your cursor on those undone tasks, and type C-c C-c. This will move them into today's task page. You can jump to today's task page at any time by typing C-c C-n (from a Wiki or planning page). I heartily recommend binding C-c n, to jump you to this page from anywhere:
+
+  (define-key mode-specific-map [?n] 'planner-goto-today)
+
+As you look at your task sheet each day, the first thing to do is to "clock in" to one of them. This isn't necessary, and is only helpful if you're around your computer a lot. But by typing C-c C-i (assuming you have my timeclock.el on your load-path), it will log the time you spend working on your sub-plan. This is helpful for viewing your progress. Type C-c C-o to clock out.
+
+C-c C-u and C-c C-d will move a task up and down in priority. The priority scheme has two components: a letter A through C, and a number from 1 onwards. 'A' tasks mean they must be done that day, or else your plan is compromised and you will have to replan. 'B' means they should be done that day, to further the plan, otherwise things will be delayed. 'C' means you can put off the task if you need to, although ultimately it will have to be done.
+
+For reactive tasks, the letters mean something different: 'A' means you must do it today, or somebody will roast your chestnuts over an open fire. 'B' means you should do it today, or else someone will be practicing patience at the day's end. 'C' means no one will notice if you don't do it.
+
+Again, reactive tasks are ENEMIES OF PLANNING. Really, until you see them that way, circumstances will push you around and steal your life away. We have only so many years to use, and everyone is greedy to take them. It's insidious, almost invisible. A healthy dislike of reactivity will do wonders for organizing your affairs according to their true priority.
+
+The last word that needs to be said concerns "roles". Every person stands in several positions in his life: husband, employee, manager, etc. These roles will tend to generate tasks not associated with any immediate plan, but necessary to maintain the health and functioning of the role. My suggestion is to keep this the smallest possible number, and fulfill those that remain well. How you decide to apportion your time between pursuing grand designs, and fostering deep relationships, is a personal matter. If you choose well, each will feed the other.
+
+I mention this to point that reactivity is something not exclusively associated with tasks that have no master plan, because being a father, for example, is something that rarely proceeds according to orderly plans. But the role of father itself is its own plan, whose goal is "to be the best one can", and whose component tasks are spending time on whatever comes up. It is, in a sense, an implicit plan. But reactive tasks follow no plan at all; they are parasites of time that suck the spirit away, whereas properly chose roles actually help fulfill one's own inner needs. At least, this is what I believe. 
+
+== Commentary ==
+
+"Then open a file (using C-x C-f) within the directory named by ‘planner-directory’. Emacs will automatically recognize this file as a planner file." This doesn't seem to work. I think it may refer to planner running on EmacsWikiMode, before PlannerMusePort -- JohnSturdy.
+
+[new] You are correct that this article was written when PlannerMode used EmacsWikiMode. planner-directory is no longer used, but the same idea still applies. The important setting now is the directory associated with the planner project in muse-project-alist.  -- JohnSullivan
+
+
+----
+
+PlannerMode

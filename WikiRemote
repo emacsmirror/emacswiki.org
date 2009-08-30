@@ -1,0 +1,253 @@
+ wiki-remote.el --- edit pages on a remote wiki
+
+This package has been '''abandoned''' by AlexSchroeder.  If you want
+to take over, feel free to do so (and fix this comment).
+AlexSchroeder went on to develop the SimpleWikiEditMode which replaces
+WikiRemote and no longer depends on url.el.
+
+This package allows you to load and save pages from a remote wiki
+using w3 functionality.  Just call `wiki-remote-get' and enter page
+name and wiki name.  In order to save, hit C-c C-c.
+
+Get the source:
+
+* Lisp:wiki-remote.el
+
+wiki-remote.el requires [[w3]] or [[w3m]]. 
+
+: I have w3m but not w3.  I can't get wiki-remote.el to work - it does a
+ 
+      (require 'w3)
+: and makes calls to url-retrieve, which has no function definition in my Emacs. -- ZwaX
+
+Currently three wiki engines are supported, Usemod, Zwiki and CLiki. For phpwiki see the needed functions below.
+
+If you want to follow links, you need a wiki mode to edit the file
+itself -- either WikiMode or EmacsWikiMode.  See WikiModeDiscussion.
+The default is plain text mode, which is good enough to edit the page.
+
+There is a customizable option that allows you to choose which
+function to call once wiki-remote.el has downloaded the remote page.
+The new buffer will be in wiki-remote-mode, a minor mode that has just
+one keybinding: C-c C-c.  That will save the page back to the server.
+
+Usemod detects editing conflicts by adding hidden fields to the form,
+so this data has to be stored in buffer local variables.  Zwiki
+detects editing conflicts using timestamps, I think.  When I tested
+this 2001-05-25, however, I saw no such timestamps while editing zwiki
+pages.  Who knows, maybe this has been rendered obsolete?
+
+Anyway, this thing is <b>useful for looong pages</b> -- because
+Netscape 4.74 for GNU/Linux (the one I am using) will crash when you are
+editing very long pages (20k and more).  Emacs to the rescue!  Get the
+page using wiki-remote.el, edit, save, and continue browsing using
+your favorite browser...
+
+== Setting your Username ==
+
+If you are using `wiki-remote-get' to edit a page, you can save your
+edits using `C-c C-c'.  All operations will use `url-retrieve' which
+is part of the [[w3]] package.
+
+Surf to the emacswiki using w3 and set your Preferences as usual.
+Note that you must delete the password.  When I tried it, the default
+value of "*" caused an error when I saved my changes.  Once you do
+that, the cookie will be created.  Don't forget to save the cookie!
+Use `M-: (url-cookie-write-file)' to do that.
+
+== Emacs Bugs ==
+
+It seems that after using Emacs for some time, open-network-stream
+starts to be buggy -- you might run into situations where you cannot
+open new connections.
+
+== w3m-mode ==
+
+Yes, if you have [[emacs-w3m]], you can use it as well.  Here is from a
+mail, slightly edited.
+
+ From: KahlilHodgson
+ Subject: wiki-remote.el
+ To: AlexSchroeder
+ Date: Fri, 27 Sep 2002 08:58:29 +1000
+
+Here's some code that makes wiki-remote.el work if you have emacs-w3m
+installed INSTEAD of w3.
+
+    (unless (condition-case nil
+                (require 'w3)
+              (error nil))
+      (require 'w3m)
+
+      (defvar url-request-method nil)
+      (defvar url-request-data nil)
+      (defvar url-inhibit-mime-parsing nil)
+      (defalias 'url-hexify-string 'w3m-url-encode-string)
+
+      (defun url-retrieve (url)
+        "Return a buffer containing the HTML contents of URL using w3m."
+        (let ((w3m-async-exec nil)) ;; wait for output
+          (set-buffer (get-buffer-create " *wiki-edit*")) ;; invisible
+          (erase-buffer) ;; flush previous edit
+          (w3m-retrieve url nil 'no-cache url-request-data)
+          ;; want the cdr of the return value to a buffer object
+          `(t . ,(current-buffer))))
+      )
+
+== phpwiki support ==
+
+    ;; PhpWiki 1.3 support by ReiniUrban <rurban@x-ray.at>
+    
+    (defun phpwiki-get-page (page url)
+      "Return a buffer with the plain text contents of PAGE at URL."
+      (let* ((data (phpwiki-get-data page url))
+    	 (text (cdr (assq 'text data)))
+    	 (buf (get-buffer-create page)))
+        (set-buffer buf)
+        (erase-buffer)
+        (insert text)
+        ;(setq phpwiki-data data)
+        buf))
+    
+    (defun phpwiki-get-data (page url)
+      "Extract the textarea content from the page."
+      (message "Reading %s at %s" page url)
+      (save-excursion
+        (let ((buf (cdr (url-retrieve (concat url "?action=viewsource&pagename=" 
+    					  (url-hexify-string page))))))
+          (when (null buf)
+    	(error "Could not retrieve %s" url))
+          (when wiki-remote-debug
+    	(switch-to-buffer-other-window buf))
+          (set-buffer buf)
+          (goto-char (point-min))
+          (let ((text 
+    	     (if (search-forward-regexp "<textarea class=\"wikiedit\"\nname=\"content\"")
+    		 (let ((start (search-forward-regexp ">"))
+    		       end)
+    		   (search-forward "</textarea>")
+    		   (setq end (copy-marker (match-beginning 0)))
+    		   (mapcar (lambda (pair)
+    			     (wiki-remote-massage (car pair) (cdr pair) start end))
+    			   '(("&gt;" . ">")
+    			     ("&lt;" . "<")
+    			     ("&quot;" . "\"")
+    			     ("&amp;" . "&")
+    			     ("^M" . "")))
+    		   (buffer-substring start end)))))
+    	`((text . ,text)
+    	  (title . ,page))))))
+
+    
+    (defun phpwiki-put-page (page url content)
+      "Save buffer to wiki at URL with new CONTENT."
+      (interactive)
+      (unless (buffer-modified-p)
+        (error "No changes need to be saved"))
+      (let ((url-request-method "POST")
+    	(url-request-data
+    	 (concat
+    	  "edit[save]=Save&edit[summary]=" (url-hexify-string (read-from-minibuffer "Summary: " ""))
+    	  "&action=edit&pagename=" (url-hexify-string page)
+    	  "&edit[content]=" (url-hexify-string content)))
+    	;:(url-inhibit-mime-parsing t) ; ??
+    	(request (concat url (url-hexify-string page) "?action=edit")))
+        (message "Saving...")
+        (let ((buf (cdr (url-retrieve request))))
+          (message "Verifying...")
+          (when wiki-remote-debug
+    	(switch-to-buffer-other-window buf))
+          (when (not (phpwiki-verify-page buf page))
+    	(error "Error saving page")))))
+
+    
+    (defun phpwiki-verify-page (buf page)
+      "Verify that buffer BUF actually contains Saved: PAGE.
+    This should catch all errors caused by the wiki engine
+    that do not result in a HTTP error."
+      (save-excursion
+        (set-buffer buf)
+        (goto-char (point-min))
+        (and (search-forward "<!-- Page title -->" nil t)
+    	 ;; Strip out localized "<h1>Saved: " message
+    	 ;; An unsuccessful save has <h1><a h r e f="HomePage?action=BackLinks"
+    	 (search-forward (concat "<a "href" "=\"" page "\" class=\"wiki\">" 
+    				 page 
+    				 "</a></h1>\n<!-- End top -->") nil t))))
+
+== Discussion ==
+
+=== Protocol ===
+
+BayleShanks has written a WikiGateway -- code that does HTML munging for various wikis
+out there.  Maybe it would be interesting to bundle his WikiGateway with our WikiRemote.
+We could offload the technical wiki details and concentrate on the Emacs interface.
+-- AlexSchroeder
+
+Speaking of a protocol, you guys might be interested in an XmlRpcToWiki interface.  See:
+
+* MeatBall:XmlRpcToWiki
+* JspWiki's WikiRPCInterface - http://www.ecyrd.com/JSPWiki/Wiki.jsp?page=WikiRPCInterface
+* My experiments - http://www.decafbad.com/twiki/bin/view/Main/WikiWikiApi
+* For MoinMoin wikis, there is a separate mode, [http://twistedmatrix.com/users/carmstro.twistd/static/moin/wiki/cgi-bin/moin.cgi/MoinMode#preview MoinMode]. It requires the twisted framework.
+
+So far I've implemented a semi-current version of the API as an add-on script to TWiki, Usemod, and MoinMoin.  No need to convince the engine authors, but on the other hand, the engine authors won't necessarily be helping me stay current. -- LesOrchard
+
+Perhaps my implementation of XmlRpc for Emacs could be useful in writing a mode for editing the EmacsWiki.  -- DanielLundin
+
+: Yea, this seems like the best thing to do.  I'm having a hard time convincing any of the wiki modes to follow links using wiki-remote-get-page. -- LathI
+
+=== Reasons for Not Using It ===
+
+I've switched to the text-browser w3m, and defined GnuClient as my editor for text-areas.  Now I can use Emacs to edit text-areas while still using a fast text browser.  And it is bettern that using w3m within Emacs using [[emacs-w3m]], because it doesn't allow you to edit forms (at unless you use w3m-mode from CVS). -- AlexSchroeder
+
+Yes, this works well.  However, it's not an ideal solution.  First, I don't consider w3m an ideal browser.  Second, there's not a good Wiki:WikiEngine agnostic mode for displaying/editing the wiki pages in.  I will say having an emacs buffer in fundamental mode is better than a mozilla edit box.  Maybe if I got W3mMode working better I would be happy with this. As above, I still feel we need a mode that can read the text formatting rules from the server and then highlight the buffer accordingly.  -- LathI
+
+I wrote SimpleWikiMode for just that. -- AlexSchroeder
+
+Another way to proceed is to use Mozilla and [https://addons.mozilla.org/extensions/moreinfo.php?id=394 ViewSourceWith] or
+[http://mozex.mozdev.org/ mozex] (not maintened any more) that allows to span your editor of
+choice to edit a textarea. -- VincentBernat
+
+==== Editing Wikis from Opera ====
+
+If you're using Opera, you can set up a command to open the cached
+page in Emacs (that's easy, something like `Execute program,
+"gnuclient", "%s"' would do), edit the textarea (see below for a
+narrowing hack), save the page, get back to Opera and use the command
+`Reload display' (not binded to anything by default). Your textarea
+will update to what you saved in front of your eyes! (in fact, I'm
+using this setup right now)
+
+Now, if someone could help make this hack less ugly... (it was quickly
+cannibalised from `cfml-helper-mode.el')
+
+
+    (defun guti-search-start-textarea ()
+      (end-of-buffer)
+      (search-backward-regexp "<textarea[^<]+>"))
+    
+    (defun guti-search-end-textarea ()
+      (search-forward "</textarea>"))
+    
+    (defun guti-narrow-to-textarea ()
+      "Narrows to an textarea"
+      (interactive)
+      (guti-search-start-textarea)
+      (let ((beg (point)))
+        (guti-search-end-textarea)
+        (narrow-to-region beg (point)))
+      (goto-char 0))
+    
+    (defun guti-twiki-textarea-edit ()
+      "Edits a twiki textarea"
+      (interactive)
+      (guti-narrow-to-textarea)
+      (dos2unix))
+
+Function `guti-narrow-to-textarea' is supposed to be called from
+`gnuclient -f', but currently it only works for me when doing it
+explicitly in the minibuffer. -- CristianGutierrez
+
+----
+CategoryModes CategoryInterface

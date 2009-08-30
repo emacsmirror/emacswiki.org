@@ -1,0 +1,230 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - S-RET]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Icompletion]] ||
+
+----
+
+== Display of Buffer *Completions* ==
+
+'''Icicles''' adds a few enhancements to the `*Completions*'
+display, for convenience.  The following apply whenever [[buffer]]
+`*Completions*' is displayed.
+
+=== Cycling Candidates ===
+
+In buffer `*Completions*', you can use the ''arrow keys'' (`up', `down', `left', `right') to navigate
+among the candidate completions.  The current candidate (under
+the cursor) is highlighted.
+
+=== Current Candidate ===
+
+When you cycle completion candidates in the [[minibuffer]]:
+* The current candidate is highlighted in `*Completions*'.
+* Help on the current candidate (typically, the first line of a [[doc string]]) is displayed in the [[mode line]], provided [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-help-in-mode-line-flag|icicle-help-in-mode-line-flag]]</tt>'''' is non-`nil'.
+
+=== Number of Available Candidates ===
+The total number of completion candidates is displayed in the
+[[mode line]] of buffer `*Completions*'.
+
+=== Switch to *Completions* and Back to Minibuffer ===
+
+You can use '''`C-insert'''' to move back and forth between the minibuffer and `*Completions*'.  In each direction, the current
+candidate is tracked in the destination buffer.  For example,
+if the candidate in the minibuffer is `foobar', after you hit
+`C-insert' the [[cursor]] is on `foobar' in `*Completions*'.  In the
+other direction, if the cursor is on `foobar' in `*Completions*',
+after you hit `C-insert' the current input in the minibuffer is
+`foobar'.
+
+=== *Completions* as Apropos Icompletion ===
+
+`*Completions*' can also serve as apropos icompletion help -- see [[Icicles - Icompletion]].
+
+=== Choose Multiple Candidates ===
+
+You can choose multiple candidates during completion, by
+clicking them with `mouse-2' while holding the Control key
+pressed.  See [[Icicles - Multi-Commands]].
+
+=== *Completions* Window Resized to Fit ===
+
+'''Icicles''' dynamically resizes the `*Completions*' [[window]] vertically, to fit
+the current set of completion candidates.  The window is not
+resized, however, if buffer `*Completions*' appears in its own
+[[frame]].  (It is also not resized in Emacs releases prior to 21.)  You can control this automatic resizing generally or on a
+per-[[command]] basis:
+
+[:icicle-Completions-window-max-height]
+* User option '''`<tt>[[Icicles - Customization and General Tips#icicle-Completions-window-max-height|icicle-Completions-window-max-height]]</tt>'''' is the
+maximum number of [[line]]s to show in the `*Completions*' window.
+
+* You can override the behavior of option
+`icicle-Completions-window-max-height' for any given command,
+by setting ''property'' `icicle-Completions-window-max-height' on
+the command [[symbol]] to a different maximum window height
+value.  This property value is predefined for commands, such
+as `icicle-buffer' and `icicle-file', that do not involve
+the content of the current buffer during completion.  A large
+value is used for these commands, so that nearly all of the
+frame real estate is given to the `*Completions*' window.
+
+For example, you can use the following code to set the maximum `*Completions*' height
+for command `foo' to 100 and turn off per-command control
+of the height for command `bar'. If you use such code, evaluate it after you load '''Icicles'''.
+
+    (put 'foo 'icicle-Completions-window-max-height 100)
+    (put 'bar 'icicle-Completions-window-max-height nil)
+
+
+[:icicle-Completions-text-scale-decrease]
+[:text-scale-resize-window']
+[:1on1-completions-frame-zoom-font-difference]
+
+=== Smaller Text in *Completions* ===
+Starting with Emacs 23, if you also use '''DoReMi''' library <tt>[[doremi-frm.el]]</tt>, then you can use '''`##C-x -##'''' in the minibuffer to
+zoom the `*Completions*' buffer text, shrinking or enlarging it
+incrementally using '''`##-##'''' or '''`##=##'''', respectively (`##=##' is typically
+on the same keyboard key as `##+##', but it needs no Shift).
+
+Also starting with Emacs 23 (whether or not you use
+##doremi-frm.el##), you can specify an initial text-scale amount
+for the `*Completions*' text, by customizing option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-Completions-text-scale-decrease|icicle-Completions-text-scale-decrease]]</tt>''''.  This controls the
+default appearance.
+
+You typically use these features to make the `*Completions*' text
+smaller and thus save screen real estate -- show more candidates
+in less space.  However, Emacs 23 text-scaling does ''not'' by
+itself let you recuperate the saved window space -- it shrinks
+the text, but it does not shrink the window accordingly.  For
+that, you also need library <tt>[[face-remap+.el]]</tt> and its option
+'''`text-scale-resize-window'''', which lets you resize the window or
+not, horizontally, vertically, or in both directions.
+
+(For example, you might set `split-width-threshold' to a small
+number, so `*Completions*' appears on the side rather than above
+or below other windows, and in that case you might want to
+resize it only horizontally.)
+
+If you use library <tt>[[oneonone.el]]</tt> with a standalone
+`*Completions*' [[frame]], then see option
+'''`1on1-completions-frame-zoom-font-difference''''.
+
+
+[:icicle-candidate-width-factor]
+[:icicle-inter-candidates-min-spaces]
+=== Change *Completions* Spacing and Columns On the Fly ===
+'''Icicles''' varies the number of columns used to display completion candidates, for a better fit.  You can tweak this with options '''`<tt>[[Icicles - Customization and General Tips#icicle-candidate-width-factor|icicle-candidate-width-factor]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-inter-candidates-min-spaces|icicle-inter-candidates-min-spaces]]</tt>''''.
+
+If you use '''DoReMi''' (library <tt>[[doremi.el]]</tt>), then you can
+modify these options incrementally during completion, seeing
+the effect as they change.  Use '''`C-x w'''' or '''`##C-x |##'''' from the
+minibuffer, then use the arrow keys or the mouse wheel to
+increment and decrement the current value.  WYSIWYG.
+
+Why is this important enough to merit changing it dynamically,
+instead of just customizing the options once and for all?
+Because different sets of candidates have different candidate
+lengths and distributions of those lengths.  Play with it a bit
+and you will see.  One size does ''not'' fit all in an ideal way.
+
+=== Hide Common-Match Portion of Candidates ===
+You can use '''`##C-x .##'''' (`icicle-toggle-hiding-common-match') in the
+minibuffer at any time during [[completion]] to toggle hiding of the
+matched portions of the candidates in `*Completions*'.  This
+portion is replaced by ellipsis, '''`##...##''''.  (In Emacs 20, it is
+replaced by nothing.)
+
+This can be useful when you don't care about the text that matches or when that text is particularly long.  For example, if
+you use `icicle-find-file-absolute' (`C-u C-x C-f') and the
+completion candidates are absolute file names that share a
+common directory, it can be convenient to hide the directory
+portion that is common to all candidates.
+
+=== Scroll *Completions* ===
+You can scroll `*Completions*' down using `C-v', and up using
+`M-v'.  You can use '''`C-u'''' at any time to reverse the scroll
+directions.  In Emacs 22 or later, you can also use the mouse
+wheel to scroll `*Completions*'.
+
+
+[:ProxyCandidates]
+=== Proxy Candidates ===
+In some cases, '''Icicles''' adds one or more additional, '''proxy''' completion candidates.  These are placeholders for real candidates.  If you choose a proxy candidate, then the real candidate that is referred to is used.  Typical proxy candidates include a reference to a name under the cursor, a reference to whatever you then click `mouse-2' on, and a reference to a name that is the value of a [[variable]].
+
+The inclusion of proxy candidates is controlled by user option '''`<tt>[[Icicles - Customization and General Tips#icicle-add-proxy-candidates-flag|icicle-add-proxy-candidates-flag]]</tt>''''.  You can toggle this inclusion at any time during completion, using '''`##C-M-_##''''.    For
+performance reasons, you must re-invoke some commands after toggling the flag on, to make the proxy candidates available.  Examples:
+
+* When you read a file name with completion, the proxy candidates include the following (reading a [[face]] name is similar):
+
+** '''`##*mouse-2 file name*##'''' -- proxy for a file name that you click with `mouse-2'.  
+
+** '''`##*point file name*##'''' -- proxy for the file name at [[point]] (if available).
+
+** Single-quoted names of file-name variables -- proxy for the variable value.
+
+* When a command reads input using `icicle-read-number' or
+`icicle-read-string-completing', the proxy candidates are all
+variables whose values are numbers or strings, respectively.
+You can choose such a proxy candidate to use its value.  (All
+candidates are proxy candidates for these functions.)
+
+* When you use command `icicle-read-color', the proxy candidates include the following:
+
+** '''`##*point foreground*##'''' -- proxy for the foreground color at the cursor position (point).
+
+** '''`##*mouse-2 foreground*##'''' -- proxy for the foreground color where you then click `mouse-2'.
+
+** '''`##*copied foreground*##'''' -- proxy for a previously copied foreground color, the value of variable `eyedrop-picked-foreground'.
+
+** Background versions of the first three: `##*copied background*##' etc.
+
+** Single-quoted names of color-valued variables -- proxy for the variable value.
+
+'''See Also:''' [[Icicles - Candidate Sets#SaveRetrieveWithVariable|Variable Value as Input]]  for
+information about using `##C-M-{##' in the minibuffer to retrieve the
+value of any variable as minibuffer input.
+
+----
+
+There are lots of '''Icicles''' features that enhance the display and behavior of `*Completions*' in some way. Read on...
+
+Here is a screenshot of buffer `*Completions*' (shown in its own frame): 
+
+: [[image:iciclesscreenshot]]
+
+(Mode-line help is not shown in this screenshot, which is older than that help feature.)
+
+'''See Also:'''
+
+* [[Icicles - Moving Between the Minibuffer and Other Buffers]] for information on the `pause' key, which is somewhat related to using `C-insert'.
+
+* [[Icicles - Candidates with Text Properties]] and [[Icicles - Programming Multi-Completions]] for information about using text
+properties in *Completions*.  These sections are for Emacs-Lisp
+programmers.
+
+
+
+
+----
+
+
+
+|| *Previous:*  [[Icicles - S-RET]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Icompletion]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

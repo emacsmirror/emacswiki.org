@@ -1,0 +1,7 @@
+Lisp:py-indent.el is a package to allow the use of C-like braces with Python (embedded in comments, so the code can still be run).  You can use it to protect code from such whitespace damage as might occur in email or Web posting, or to make it easier to structurally modify it (but see also `indent-rigidly' for that).
+
+It can add annotations to correctly-indented Python code for protective redundancy or before adjusting control structures, and can later use them to reconstruct or modify the file's indentation properly.  It can also remove them cleanly, so they can be used temporarily with shared code even under version control.  The user is free to add and remove annotations (there are no invisible text properties or internal pointers that can be broken).
+
+----
+
+IndentingPython

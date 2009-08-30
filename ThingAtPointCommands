@@ -1,0 +1,47 @@
+This page describes library <tt>[[thing-cmds.el]]</tt>, by DrewAdams. This library provides commands to select various Lisp objects and text entities that are at or near [[point]] ([[cursor]] position).
+
+The following commands are defined by the library, and are described below: '''`cycle-thing-region'''', '''`mark-thing'''', and '''`thing-region''''. 
+
+[[Completion]] and completion-candidate cycling are available for the following types of thing, but you can use any other thing types as well: words, symbols, sexps, lists, lines, sentences, paragraphs, pages, defuns, numbers, and `thing-at-point' "forms". User option '''`thing-types'''' determines the types available for completion and cycling.
+
+
+[:mark-thing]
+== `mark-thing' ==
+
+Command ''`mark-thing''' marks, that is selects, successive things, starting at [[point]].  Point is moved to the beginning of the enclosing thing (or to the end, if you use a negative [[prefix argument]]). [[mark|Mark]] is put at the same place that command `forward-'''thing'' would put it using the same prefix argument.
+
+If the [[region]] is not active, you are prompted for the type of thing to use -- completion is available. The default type for completion is the first element in [[user option]] `thing-types' (which, by default, is `word').
+
+If the region is active, you are not prompted, and the last-used type of thing is used again. On consecutive uses of `mark-thing', the region is active, so you are not prompted, and the region is extended to successive things of the same type. 
+
+This is true even if the region is empty -- as long as it is active, it is extended using the last-used type of thing, without any prompting. You can thus just hit `C-SPC' to set mark and activate an empty region, then use `mark-thing' to select successive things of the last type used.
+
+Suggested [[key binding]]: `C-M-SPC', which replaces `mark-sexp'.
+
+
+[:cycle-thing-region]
+== `cycle-thing-region' ==
+
+Command '''`cycle-thing-region'''' selects a single thing near the cursor.  You are not prompted for the type of thing. Instead, successive uses of the command select a different type of thing. The first type of thing selected is determined by the first element in option `thing-types' (which, by default, is `word').
+
+In TransientMarkMode, you can follow this with `mark-thing' to select successive things
+of the same type, but to do that you must first use `C-x C-x' (`exchange-point-and-mark'): Using the bindings recommended below, this becomes `##M-@ C-x C-x C-M-SPC##'.  This command has an alias: `select-thing-near-point'. 
+
+Suggested key binding: `##M-@##', which replaces `mark-word'.
+
+
+[:thing-region]
+== `thing-region' ==
+
+Like `cycle-thing-region', command '''`thing-region'''' selects a single thing near the cursor.
+Unlike `cycle-thing-region', you are prompted for the type of thing -- completion is available.
+The cursor is placed at the end of the region.  You can return it to
+the original location by using `C-u C-SPC' (once or twice, depending on the thing type).
+
+
+----
+
+DrewsElispLibraries referenced here: Lisp:thing-cmds.el
+
+CategoryCode
+CategoryRegion

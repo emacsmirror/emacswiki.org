@@ -1,0 +1,36 @@
+You can read man pages using <code>M-x man</code> (if you have man installed) or using <code>M-x woman</code> (if you don't).  See [[Manual:manual page]] for basic information.
+
+<code>M-x man</code> can prepare man pages in the
+background using the external man program, so it might be a bit nicer
+to use when reading long man pages, or when the system is very slow.
+On the other hand, the man page will pop up seconds later, and some
+find that disturbing, too.  See WomanMode for the elisp-only
+alternative.
+
+The man program will use the <code>MANWIDTH</code> or <code>COLUMNS</code> environment variables
+to determine how wide man pages are.  Emacs sets the <code>COLUMNS</code>
+environment variable to the frame width, if neither is set.
+
+    (setenv "MANWIDTH" "72")
+
+= Completion =
+
+There's no page name completion with <code>M-x man</code>, but [http://user42.tuxfamily.org/man-completion/index.html man-completion.el] or [[Iman]] are possibilities.  <code>man-completion.el</code> can notice a [[Perl]] module name at point for the default.
+
+You can also try the following to press the completion from WoMan into service (getting filenames instead of page names as such, so possibly with subtle differences in pages found)
+
+    (defadvice man (before my-woman-prompt activate)
+      (interactive (progn
+                     (require 'woman)
+                     (list (woman-file-name nil)))))
+
+----
+See also:
+
+* [[Iman]] -- Completion for InfoManuals and ManPages when running InfoMode and ManMode.
+* SystemApropos -- running the <code>apropos</code> command to search for man pages
+
+* NroffMode -- editing manpage source (including previewing it)
+
+----
+CategoryExternalUtilities

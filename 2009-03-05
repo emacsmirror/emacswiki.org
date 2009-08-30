@@ -1,0 +1,76 @@
+[new]
+Does anybody browse Emacs Wiki on a small screen device such as a mobile phone? -- AlexSchroeder
+
+[new]
+What do the User Agent strings in the server log say? -- anon
+
+[new]
+aschroeder@thinkmo:~/logs$ [http://emacswiki.org/scripts/user-agent-grouping user-agent-grouping] < access.log | head -n 40
+
+{{{
+                       Mozilla       7204    31%
+                       Firefox       6592    28%
+                          MSIE       1821     7%
+                        Safari       1514     6%
+                      Netscape       1321     5%
+                        msnbot        542     2%
+            Feedfetcher-Google        524     2%
+                  msnbot-media        514     2%
+                         Opera        450     1%
+                 Python-urllib        356     1%
+                          Wget        342     1%
+                     Emacs-w3m        243     1%
+                   libwww-perl        175     0%
+                           URL        104     0%
+                  Apple-PubSub         79     0%
+                           w3m         79     0%
+                             -         76     0%
+                         Yahoo         56     0%
+                  Baiduspider+         54     0%
+                  SimilarPages         53     0%
+                   NetNewsWire         52     0%
+                       testing         43     0%
+                     rss2email         43     0%
+                     Bloglines         42     0%
+                      librabot         31     0%
+                        RSSOwl         31     0%
+                        Planet         28     0%
+                       AideRSS         27     0%
+                        Hatena         27     0%
+                      livedoor         24     0%
+                        DoCoMo         24     0%
+                          Java         24     0%
+              changelog-to-rss         21     0%
+                   Zhuaxia.com         20     0%
+                     CFNetwork         19     0%
+                     Akregator         18     0%
+                       Liferea         17     0%
+           UniversalFeedParser         17     0%
+                       rss-bot         16     0%
+                          Gnus         14     0%
+}}}
+
+Not sure how good the munging is I do -- perhaps iPhone users will show up as Safari? I'm also not sure how many mobile users rely on Google Reader, Bloglines, and other aggregators. Then again, presentation for such services is not something I have to worry about. -- Alex
+
+[new]
+I read the rss feed thru googlereader on the iphone.
+
+[new]
+
+According this google hit by Matt Cutts the iPhone has the iPhone string in user agent:  
+
+Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) !AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3
+
+http://www.mattcutts.com/blog/iphone-user-agent/
+
+[new]
+Ah, cool. In that case:
+
+{{{
+aschroeder@thinkmo:~/logs$ grep 'GET /emacs.*iPhone' access.log | wc -l
+9
+aschroeder@thinkmo:~/logs$ grep 'GET /emacs.*Mozilla' access.log | wc -l
+2103
+}}}
+
+I don't think we need to do anything fancy. I wonder whether adding ##<meta name="viewport" content="width=480" />## unconditionally will confuse any other mobile devices. -- Alex

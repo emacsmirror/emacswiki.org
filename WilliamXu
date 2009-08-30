@@ -1,0 +1,115 @@
+Hi, i'm William Xu(AKA xwl on #emacs), from Beijing, China. I
+began to use Emacs since 2003, and can not live without it ever
+since. I love it!
+
+I have a homepage -
+http://xwl.appspot.com.  You can contact me via
+william.xwl@gmail.com.
+
+
+
+== Some Extensions ==
+
+[Note: latest version for the following extensions could be found at my homepage and hopefully, also at gnu.emacs.sources.]
+
+* [http://xwl.appspot.com/ref/ga.tar.gz ga.tar.gz] - Generic apt alike interfaces for various package management tools, such as apt-get, pkgsrc, fink, etc. 
+* [http://xwl.appspot.com/ref/finkinfo-mode.el finkinfo-mode.el] - Major mode for editing fink info files.
+* [http://xwl.appspot.com/ref/buffer-action.el buffer-action.el] - Based on ideas from SmartCompile, but is a rewritten & extended version.
+* [http://xwl.appspot.com/ref/smart-operator.el smart-operator.el] - Automatically insert whitespaces before and after
+operators. e.g., type "=", get " = "; type "+=", get " += ". Handy for writing C-style sources.
+* [http://xwl.appspot.com/ref/wordnet.el wordnet.el] - A simple interface to wordnet dictionary.
+* [http://xwl.appspot.com/ref/less.el less.el] - View files using less keys, like j, k, f, b, g, G, etc.
+* WajigMode - a wrapper around ‘wajig’, deb package manager for Emacsers.
+* [http://xwl.appspot.com/ref/cal-china-x.el cal-china-x.el] - Localizes calendar display for chinese users.
+* DiredIsearch - Do isearch in Dired but match only at file names
+* [http://xwl.appspot.com/ref/easy-todo.el easy-todo.el]  - Manage your todos in an extremely easy way.
+
+== Emacs Tips ==
+
+=== Revert buffer with tramp sudo without losing changes already made ===
+
+I often find myself editing some system config files owned by
+root, and then desperately realize that I have no permission to
+write.  With this function, now I can revert current buffer as
+root(with sudo) without losing my early modifications!
+
+Note: for this function to work on a remote machine as well, i.e., login as root@remote_host, you need to config tramp-default-proxies-alist properly, for example:
+
+    (add-to-list 'tramp-default-proxies-alist
+                 '("remote_hostname" "\\`root\\'" "/ssh:%h:"))
+
+
+    (defun xwl-revert-buffer-with-sudo ()
+      "Revert buffer using tramp sudo.
+    This will also reserve changes already made by a non-root user."
+      (interactive)
+      (let ((f (buffer-file-name)))
+        (when f
+          (let ((content (when (buffer-modified-p)
+                           (widen)
+                           (buffer-string))))
+            (if (file-writable-p f)
+                (revert-buffer)
+              (kill-buffer (current-buffer))
+              (if (file-remote-p f)
+                  (find-file
+                   (replace-regexp-in-string "^\\/[^:]+:" "/sudo:" f))
+                (find-file (concat "/sudo::" f)))
+              (when content
+                (let ((buffer-read-only nil))
+                  (erase-buffer)
+                  (insert content))))))))
+
+=== Use "symbol link file" for attached files in Gnus mail ===
+
+Instead of making copies.  This could save you some space.
+
+    (setq gnus-gcc-externalize-attachments 'all)
+
+=== Apply xterm color scheme to dired ===
+
+So different types of file will be colored like in xterm.  See Lisp:XwlXtermDired.
+
+=== Config file drag-n-drop behaviour ===
+
+As an example:
+
+    (defadvice find-file-noselect (around config-drag-n-drop activate)
+      "配置文件 drag-n-drop 行为。"
+      (let ((file (ad-get-arg 0)))
+
+        ;; 添加音乐、视频文件至 EMMS
+        (when (string-match (emms-player-get emms-player-mplayer 'regex) file)
+          (emms-add-file file)
+          (unless emms-player-playing-p
+            (with-current-emms-playlist
+              (goto-char (point-max))
+              (forward-line -1)
+              (emms-playlist-mode-play-smart)))
+          (error (format "File `%s' opened in EMMS" file)))
+
+        ;; 粘贴邮件附件
+        (save-excursion
+          (goto-char (point-max))           ; for handling mmm-mode
+          (when (eq major-mode 'message-mode)
+            (insert
+             (format
+              "<#part type=\"%s\" filename=\"%s\" disposition=attachment>
+    <#/part>"
+              (mm-default-file-encoding file)
+              file))
+            (error (format "File `%s' attached" file))))
+
+        ad-do-it))
+
+== Wish Lists ==
+
+* Scheme Emacs - Scheme is so elegant!
+
+Will here be my little web home for Emacs ? :-)
+
+[new]
+Welcome to the wiki! -- AlexSchroeder
+
+----
+CategoryHomepage

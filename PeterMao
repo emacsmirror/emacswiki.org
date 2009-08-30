@@ -1,0 +1,10 @@
+I'm a staff scientist at Caltech, working on the focal plane of [http://www.nustar.caltech.edu/ NuSTAR], a hard x-ray telescope, set to be launched in 2011.  Before !NuSTAR, I worked on [http://megasims.ess.ucla.edu MegaSIMS], a mass spectrometer for the [http://genesismission.jpl.nasa.gov/ Genesis Mission], at UCLA.
+
+I started using emacs as an undergrad in 1990 or 1991.  I get sucked in deeper every year.  So I guess this means that "I use Emacs."
+
+== Contributions ==
+* Lisp:look-mode.el (LookMode)
+* Lisp:arxiv-reader.el (ArxivReader)
+
+----
+CategoryHomepage

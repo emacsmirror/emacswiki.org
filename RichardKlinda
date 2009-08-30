@@ -1,0 +1,73 @@
+Yet another Emacs user (TM) here (actually I use XEmacs).
+
+My home page is at http://ignotus.hixsplit.hu/, email address is ignotus foo hixsplit bar hu (foo is at and bar is dot).
+
+If you find yourself checking out new and changed EmacsWiki pages six times a day for new ideas, you may want to do it from Gnus. ;-)  news://linuxforum.hu:9898 tracks the RecentChanges page (every ~4 hours) and posts complete page diffs and new wiki pages to the prime-intellect.web.emacswiki-org group.
+
+It's still experimental, the first ~hundred articles or so are test junk in the group I didn't care to delete, sorry for that, so far it seems to work just right.
+
+If you don't need the actual page diffs and just want to be noticed when pages change, take a look at GnusRss!
+
+UPDATE: 2004. october 12. I've finally got around to fix things, so the emacswiki one-way gateway works again, I've just started it (after a uh, maybe 6 month pause?) and meanwhile the emacswiki HTML layout may have changed, so if you use the server and notice that anything is missing/broken please drop me a mail (or post into that group).
+
+----
+
+(I was implying that there was no other way to follow the changes of EmacsWiki from Gnus.)
+
+: Actually, you can read the RSS feed in Gnus, too; see GnusRss. -- AlexSchroeder
+
+: I stand corrected.  BTW I'm just lazy to click on the links to see the changes, I like having the diff (or the full text if it's a new page) right there in the article so I can take a look at everything without too much effort. :-)  First I thought using Gnus scoring on the body may have interesting uses but besides scoring up UserName''s of people I care about, I have not found any yet. -- RichardKlinda
+
+: I, for one, think your EmacsWiki newsfeed is great.  However, the server has been down on several occasions recently. -- [[Lars Brinkhoff]]
+
+:: Thanks Lars, the service will be up because I miss it too. :)
+
+----
+
+If you're looking for EmacsIRCClient goodies check out my ERC config:  http://ignotus.hixsplit.hu/erc-init.el (more comments on this at the second part of this page).
+
+I just dumped some text here, I will make it prettier later (editing a wiki page in Galeon is more PITA than I thought before), sorry for my "enrish", I'll really proofread it later for grammatical / typo mistakes.
+
+I usually hang out on #emacs@freenode IRC channel as 'ignotus'.
+
+What I really love about Emacs is that problems can be solved in quick and dirty ways and still, those quick and dirty ('prototype') solutions most of the time prove good enough for daily use.  Therefore I love writing Emacs code to try out new concepts and ideas about interacting with computer software in general.
+
+For example, do you find yourself having 8-15 tabs in 2-3 windows of Mozilla/Galeon/Opera?  Do you think that a web browser should remember where you left reading a particular web page (or even web site), or from where did you come to a website (it can be a link seen on IRC, or email from a friend, maybe the monthly CRYPTOGRAM newsletter etc)?
+
+The basic problem is that browsers in our time are best for what I call 'searching-for-information' type browsing.  Some particular ones with tabs, smartnicks, smarturls etc like Opera and Galeon are perfect for the job of skimming through heaps of webpages and finding the interesting ones, the ones that are worth reading.  When you have these pages you are in the 'you know what you want to read' type of browsing.  But browsers suck for this type of work (when you actually have to process information), because they force you to deal with information (read the page and close the tab or put the link in your bookmark, todo list, "research" session whatever) in that moment, if you're not ready to read them NOW.
+
+I address these issues in my emacs-w3m customizations (which I'll release when I find time to do so), till look at this picture: [http://ignotus.linuxforum.hu/rk-w3m.png]
+
+As you can see I have literally hundreds of web pages loaded into my Emacs (it takes ~50 minutes in the morning ;-)), they are presented via ibuffer in a very clean manner, pages that are linked by an another page are gathered together exactly like Gnus builds trees from threads.  If I do a research on a subject and come up with 13 'worth of reading' links (via Galeon) I can make Emacs "know" that these links are belong to a specific "subject", so they're sorted together.  You might noticed on the picture the [/. nl] part, that is the "source" of the url, where did I load that particular URL from (like from an ERC or Gnus buffer) and is recorded automagically with all the information that is possible to gather (like in a ERC buffer the nick and channel, in a Gnus buffer the subject of the message, sender etc).  Emacs periodically saves the point position in all of those buffers, so I can stop reading a web page and its "bookmark" will show me where I left when I return to that page 4 weeks later (that is the {49%} on the picture, the @77% is the current point position).  I like to do that with online books etc.  The point is that I don't have to deal with pages instantly any more, for example (as seen on the picture) when I get the slashdot and self-made Google News newsletter in the morning I just pick the interesting URLs and maybe read those pages days/weeks later or just delete them...
+
+My erc-init.el is an example of trying out unusual things about software, it has the following features (detailed description is in the elisp file):
+
+* fetching Faces from BBDB's irc-face header and inserting them into buffers, picture: [http://ignotus.hixsplit.hu/stuff/yay.jpg]
+
+* compressing messages like
+<pre>
+   <One-Line-Wonder> hey
+   <One-Line-Wonder> ignotus !!
+   <One-Line-Wonder> how
+   <One-Line-Wonder> are u
+   <One-Line-Wonder> man
+   <One-Line-Wonder> are you
+   <One-Line-Wonder> here????
+   <One-Line-Wonder> ignotus!!
+</pre>
+
+becomes:
+
+<pre> 
+   <One-Line-Wonder> hey ## ignotus !! ## how ## 
+                     are u ## man ## are you
+                     ## here???? ## ignotus!!
+</pre>
+
+* showing how many times your nick was mentioned in erc-track-mode.   For example if you have [#emacs:33,#awk:5] and your nick was mentioned thrice on #emacs and once on #awk you'll have instead: [#emacs33c,#awk:5a];
+
+* "enhanced" erc-track:  currently erc-track only "tracks" a buffer when it has no window, with my customization it tracks buffer s that are on other Emacs frames too.  M-SPC will even change viewports for you if neccessary to bring in a ERC buffer (for Sawfish users);
+
+* A new nick insertion mechanism, when you only have to press one key periodically to cycle through nicks (nicks are sorted via how many lines the talked);
+
+* When an ERC buffer with activity is not visible (it's on another frame or has got no window) the cursor line will move up one line.  That way when you change to that ERC buffer later you know where you should continue reading (the cursor will stay on the first line you have not read).  Pressing spaces will scroll down till you reach the prompt.

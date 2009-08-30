@@ -1,0 +1,271 @@
+== Overview ==
+
+Imenu (pronounced "eye menu") matches regexp patterns against the text in the current buffer, typically a source-code buffer. The matches are generally definitions (of functions, variables, etc.), but they could in principle match anything. Imenu then lets you jump to the match occurrences in the buffer.
+
+In this, Imenu resembles OccurMode. However, for Imenu, the patterns are predefined for the current buffer mode, whereas, for Occur, you enter a pattern interactively. The other significant difference is that Imenu gives you access to match occurrences via a menu or MiniBuffer [[Completion]].
+
+The Imenu patterns for a given buffer constitute the local value of variable '''`imenu-generic-expression''''. That is, the patterns are defined for a given mode, giving you a mode-specific buffer index for quickly accessing definitions. The value of `imenu-generic-expression' is essentially a list of regexps that match source-code definitions (of functions, variables, etc.).
+
+
+== Imenu from a Menu ==
+
+One way to use Imenu is as a menubar menu. To automatically add Imenu to the menu bar for a mode, do something like this:
+
+ (add-hook 'c-mode-hook 'imenu-add-menubar-index)
+
+`font-lock-mode-hook' is run immediately after entering every major mode. You can make use of this to add an Imenu index to the menu bar in /any/ mode that supports it:
+
+ (defun try-to-add-imenu ()
+   (condition-case nil (imenu-add-menubar-index) (error nil)))
+ (add-hook 'font-lock-mode-hook 'try-to-add-imenu)
+
+== Imenu from the Keyboard, with Completion ==
+
+It can often be quicker to access Imenu from the keyboard, using completion:
+
+ M-x imenu
+
+Why? Because you don't have to read down a long list of menu items, many of which look similar. Just type a prefix of the defined name, and let completion do the work for you.
+
+You can bind Imenu to any KeySequence. Here's how to bind it to `S-mouse-3':
+
+ (if (featurep 'xemacs)
+     (global-set-key [(shift button3)] 'imenu) ; XEmacs
+   (global-set-key [S-mouse-3] 'imenu)) ; GNU Emacs
+
+'''Icicles''' can make this even handier, by letting you complete any part of a defined name (or its definition), not just a prefix -- see [[#ImenuBrowser]], below. Just type enough of a name to identify it uniquely, and voila!
+
+
+== Grouping and Truncating of Menu Items ==
+
+If there are too many menu entries in the current buffer, then Imenu splits them
+into submenus.  These submenus are labeled `##From: ...##' -- see [[#ImenuScreenshot]], below.  Each contains
+only a limited number of menu items.  You can change how many menu items can be
+listed in each submenu by customizing `imenu-max-items'. 
+
+Long menu items are truncated to `imenu-max-item-length' characters.
+Depending on the size of your display, you might want to customize this
+variable.
+
+
+== Sorting ==
+
+You can control the order of Imenu menu items by customizing `imenu-sort-function'.  For alphabetical order, use `imenu--sort-by-name' as the value.
+
+[:ImenuBrowser]
+== Imenu Browser ==
+
+'''[[Icicles]]''' command '''`icicle-imenu'''' turns any Imenu-supported buffer into an Imenu ''browser''.  Use it to navigate among the various Imenu entries in a buffer (usually mode-specific definitions of things like functions and variables). No need for a separate window like SpeedBar. See [[Icicles - Search Commands, Overview]].
+
+Here's a screenshot of using `icicle-imenu' to find function definitions (Imenu submenu '''Functions''') that match the regexp `kill':
+
+[[image:IciclesImenuScreenshot]]
+
+So much for navigating by cycling among defined terms. Most of the time, however, you just want to go directly to a definition; you aren't interested in browsing among multiple definitions. Since `icicle-imenu' is an '''Icicles''' command, you can also use completion against any parts of a definition (just type a regexp, such as a substring). 
+
+This is quite handy. While you can use completion with the vanilla Emacs command `imenu', it is only prefix completion. With `icicle-imenu', you can type any part of a defined term -- in fact, any part of the line that defines it, and go to the definition in the buffer immediately. 
+
+What's more, using `icicle-imenu', you can also combine ''semantic'' search with the purely syntactic search of Imenu. In Emacs-Lisp mode, if you supply a prefix argument to `icicle-imenu', you can selectively find only commands or only non-interactive functions.
+
+== Imenu+ == 
+
+Library Lisp:imenu+.el (Imenu+), by DrewAdams, extends standard library ##imenu.el##.  Among the improvements are: 
+
+* Redefines standard functions `imenu-update-menubar' and `imenu--mouse-menu' so that submenus are sorted before splitting.
+* Adds new commands:
+** `imenu-add-defs-to-menubar' -- Add '''Defs''' imenu to MenuBar for current local keymap.
+** `toggle-imenu-sort' -- Toggle sorting in <code>imenu</code>.
+* Adds mode-specific '''Defs''' imenus for Lisp mode and Emacs-Lisp mode, including faces, user options, other variables, functions, macros, key bindings etc.
+
+:: Here is a screen shot showing the '''Defs''' menu in Emacs-Lisp mode:
+
+[:ImenuScreenshot]
+:: [[image:DrewEmacsImenuImage]]
+
+== Defining an Imenu Menu for a Mode ==
+
+Here is a simple example of an imenu-generic-expression for the mail-mode:
+
+<pre>
+  (setq mail-imenu-generic-expression
+      '(("Subject"  "^Subject: *\\(.*\\)" 1)
+        ("Cc"     "^C[Cc]: *\\(.*\\)" 1)
+        ("To"     "^To: *\\(.*\\)" 1)
+        ("From"  "^From: *\\(.*\\)" 1)))
+</pre>
+
+Then you can hook it to the mail-mode with:
+
+<pre>
+  (add-hook 'mail-mode-hook 
+        (lambda ()
+           (setq imenu-generic-expression mail-imenu-generic-expression)))
+</pre>
+
+
+
+Here's a complex example for PL/SQL (for SqlMode):
+
+ (setq sql-imenu-generic-expression
+       '(("Comments" "^-- \\(.+\\)" 1)
+	 ("Function Definitions" "^\\s-*\\(function\\|procedure\\)[ \n\t]+\\([a-z0-9_]+\\)\
+ [ \n\t]*([a-z0-9 _,\n\t]*)[ \n\t]*\\(return[ \n\t]+[a-z0-9_]+[ \n\t]+\\)?[ai]s\\b" 2)
+	 ("Function Prototypes" "^\\s-*\\(function\\|procedure\\)[ \n\t]+\\([a-z0-9_]+\\)\
+ [ \n\t]*([a-z0-9 _,\n\t]*)[ \n\t]*\\(return[ \n\t]+[a-z0-9_]+[ \n\t]*\\)?;" 2)
+	 ("Indexes" "^\\s-*create\\s-+index\\s-+\\(\\w+\\)" 1)
+	 ("Tables" "^\\s-*create\\s-+table\\s-+\\(\\w+\\)" 1)))
+
+[new]
+: Hmm, sorry but his does not work here. I'm using emacs 21.1 and execute the above. imenu just points at me, telling me that "imenu--make-index-alist: No items suitable for an index found in this buffer" -- MathiasDahl
+
+[new]
+: Aaah! Likely there is no (setq imenu-generic-expression sql-imenu-generic-expression) statement in your major mode.  Use a hook like the example later.
+: Note: imenu-generic-expression is automatically buffer local so make-local-variable is not really needed.
+: You can make your imenu expression customizable too. As I do in TalMode.
+<pre>
+(defcustom tal-imenu-expression-alist
+  '(("Sections"  "^\\?SECTION +\\(\\w+\\b\\)"          1)
+    ("Pages"     "^\\?PAGE +\"\\(.+?\\)\""             1)
+    ("SubProcs"  "^\\w*\\s-*subproc\\s-+\\(\\w+\\)\\b" 1)
+    ("procs"     "^\\(?:\\w+\\(?:\\s-*(\\w+)\\)?\\s-+\\)?proc\\s-+\\(\\w+\\)\\b" 1)
+  )
+  "Alist of regular expressions for the imode index.  Each element has
+the form (submenu-name regexp index).  Where submenu-name is the name of
+the submenu under which items matching regexp are placed. When
+submenu-name is nil the matching entries appear in the root imenu list.
+Regexp index indicates which regext text group defines the text entry.
+When the index is 0 the entire text that matches regexp appears."
+  :type '(repeat (list (choice :tag "Submenu Name" string (const nil))
+                       regexp (integer :tag "Regexp index")))
+  :group 'tal
+)
+</pre>
+
+[new]
+In these examples, the major mode supports a buffer local copy of the "real" variable, `imenu-generic-expression'.  If your mode doesn't do it, you will have to rely on a hook.  Here is an example for a fictive foo-mode.  Note that we still require a foo-mode-hook.  Without a hook, things would be really messy (but not impossible).
+
+ (add-hook 'foo-mode-hook
+           (lambda ()
+              (set (make-local-variable imenu-generic-expression)
+                   '(("Comments" "^\\s-*#" 1)
+                     ...))))
+
+That way, setting `imenu-generic-expression' will only change for the buffer the hook runs in -- the foo-mode buffer.
+
+== Using Selection Buffer ==
+
+I do not like completion I/F.
+I prefer using selection buffer. -- Anonymous
+
+<pre>
+(define-derived-mode imenu-selection-mode fundamental-mode "imenu"
+  "Major mode for imenu selection."
+  (suppress-keymap imenu-selection-mode-map)
+  (define-key imenu-selection-mode-map "j" 'next-line)
+  (define-key imenu-selection-mode-map "k" 'previous-line)
+  (define-key imenu-selection-mode-map "l" 'imenu-selection-select)
+  (define-key imenu-selection-mode-map "\C-m" 'imenu-selection-select)
+  (define-key imenu-selection-mode-map "h" 'kill-this-buffer)
+  )
+(defvar imenu--selection-buffer " *imenu-select*")
+(defvar imenu--target-buffer nil)
+(defun imenu-make-selection-buffer (&optional index-alist)
+  (interactive)
+  (require 'which-func)
+  (setq index-alist (if index-alist index-alist (imenu--make-index-alist)))
+  (let ((cur (which-function)))
+    (when (listp cur)
+      (setq cur (car cur)))
+    (setq imenu--target-buffer (current-buffer))
+    (switch-to-buffer imenu--selection-buffer)
+    (buffer-disable-undo)
+    (erase-buffer)
+    (dolist (x index-alist)
+      (insert (car x) "\n"))
+    (if cur (search-backward (concat cur "\n") nil t))
+    (imenu-selection-mode)))
+
+(defun imenu-selection-select ()
+  (interactive)
+  (let ((sel (substring (thing-at-point 'line) 0 -1)))
+    (bury-buffer)
+    (switch-to-buffer imenu--target-buffer)
+    (imenu sel)))
+
+</pre>
+
+== Using Ido ==
+
+Use the following to use imenu with ido completion instead of the default one.
+
+  (defun ido-goto-symbol ()
+    "Will update the imenu index and then use ido to select a symbol to navigate to"
+    (interactive)
+    (imenu--make-index-alist)
+    (let ((name-and-pos '())
+          (symbol-names '()))
+      (flet ((addsymbols (symbol-list)
+                         (when (listp symbol-list)
+                           (dolist (symbol symbol-list)
+                             (let ((name nil) (position nil))
+                               (cond
+                                ((and (listp symbol) (imenu--subalist-p symbol))
+                                 (addsymbols symbol))
+   
+                                ((listp symbol)
+                                 (setq name (car symbol))
+                                 (setq position (cdr symbol)))
+   
+                                ((stringp symbol)
+                                 (setq name symbol)
+                                 (setq position (get-text-property 1 'org-imenu-marker symbol))))
+   
+                               (unless (or (null position) (null name))
+                                 (add-to-list 'symbol-names name)
+                                 (add-to-list 'name-and-pos (cons name position))))))))
+        (addsymbols imenu--index-alist))
+      (let* ((selected-symbol (ido-completing-read "Symbol? " symbol-names))
+             (position (cdr (assoc selected-symbol name-and-pos))))
+        (goto-char position))))
+ 
+-- shjk
+
+== Discussion ==
+
+=== Can I make Imenu index the whole buffer even if using FoldingMode and all folds are folded? ===
+-- mina86
+
+[new]
+Maybe this (I don't use folding):
+
+    (defadvice imenu (around unfold-it compile activate)
+      (save-restriction
+        (widen)
+        ad-do-it))
+
+[new]
+=== Error if minibuffer-prompt-properties includes "Inviolable" ===
+
+Do this:
+
+    (setq minibuffer-prompt-properties '(point-entered minibuffer-avoid-prompt)
+          imenu-always-use-completion-buffer-p)
+
+(or customize m-p-p and set *Inviolable*)
+# Go to a buffer that supports imenu
+# Do <code>M-x imenu</code>
+# Don't hit TAB
+# Immediately try to select a completion from the completions buffer
+
+In Gnu Emacs 21.4.1, I get an "Args out of range" error.
+It's fixed in GNU Emacs in CVS.
+
+Now can anybody tell me why I set my minibuffer prompt to be inviolable? :-)
+
+-- DenisHowe 2007-03-08
+
+----
+CategoryCode
+CategoryMenus
+CategoryModes
+CategoryProgrammerUtils

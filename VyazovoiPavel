@@ -1,0 +1,42 @@
+portrait:http://lh6.ggpht.com/_QofkUlYOD5s/SbTCKwgy8PI/AAAAAAAAB3Q/f_2nx-eEihA/ava.jpg
+
+== About ==
+Hi, my name is Pavel Vyazovoi and I from Russia. I use Emacs.
+My irc nickname is similar to my surname - [::vyazovoi]
+
+== Hints ==
+* Non-interactive version of jabber-read-account, [http://blog.vyazovoi.info/2009/02/jabber-read-account.html read in russian]
+
+== Elisp ==
+* [http://sites.google.com/a/vyazovoi.info/main/articles/twitpic.el?attredirects=0 twitpic.el]
+
+== Some emacs input methods ==
+* russian-typewriter fixed - [http://vyazovoi.info/files/typewriter-fixed.el typewriter-fixed.el]
+* my own dvorak - [http://vyazovoi.info/files/myowndvorak.el myowndvorak.el]
+
+[http://vyazovoi.info/2008/08/31/ispravlyaemsozdaem-metody-vvoda-v-emacs-typewriter-i-dvorak-programmer/ Description] in russian.
+
+== Contacts ==
+You can contact me via:
+* vyazovoi@gmail.com (mail)
+* vyazovoi@googlemail.com (jabber)
+* vyazovoi on freenode.net irc network
+
+== Packages, that i use in Emacs: ==
+* [[Gnus]] - for imap, pop3 and nntp
+* [[OrgMode]] + [[RememberMode]] - for planning my time and storing some info
+* [[EmacsIrcClient]]
+* [[JabberEl]] - feature-rich jabber client
+* [[emacs-w3m]]
+* And some other modes and packages
+
+== Publishing ==
+I writing some tricks about emacs in my blog at http://vyazovoi.info (Russian)
+
+== Init files ==
+Later I publish my emacs init files.
+
+This page was created with Oddmuse.
+----
+CategoryHomepage
+

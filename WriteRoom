@@ -1,0 +1,120 @@
+WriteRoom or !DarkRoom is a simple FullScreen distraction-free workspace [http://stevenpoole.net/blog/goodbye-cruel-word/ that some writers like].  The code below might make Emacs work similarly
+by getting rid of all the distractions.
+
+== Full Screen ==
+
+Requirements: wmctrl shell command.
+
+Modified from FullScreen:
+
+ (defun switch-full-screen (&optional ii)
+   (interactive "p")
+  (if (> ii 0)
+      (shell-command "wmctrl -r :ACTIVE: -badd,fullscreen"))
+  (if (< ii 0)
+      (shell-command "wmctrl -r :ACTIVE: -bremove,fullscreen"))
+  (if (equal ii 0)
+      (shell-command "wmctrl -r :ACTIVE: -btoggle,fullscreen")))
+
+== Dark Room ==
+
+Requirements: color-themes.el is used for the green on black retro theme.
+
+Set the mode (from the thread http://ubuntuforums.org/showthread.php?p=1235260 ):
+	  	  
+  (defun darkroom-mode ()
+	"Make things simple-looking by removing decoration 
+	 and choosing a simple theme."
+        (interactive)
+        (switch-full-screen 1)     ;; requires above function 
+	(color-theme-retro-green)  ;; requires color-theme
+        (setq left-margin 10)
+        (menu-bar-mode -1)
+        (tool-bar-mode -1)
+        (scroll-bar-mode -1)
+        (set-face-foreground 'mode-line "gray15")
+        (set-face-background 'mode-line "black")
+        (auto-fill-mode 1))
+
+Cancel the mode
+
+ (defun darkroom-mode-reset ()
+   (interactive)
+   (switch-full-screen -1)
+   (color-theme-subtle-hacker) ;; Choose your favorite theme
+   (menu-bar-mode 1)
+   (tool-bar-mode 1)
+   (scroll-bar-mode 1)
+   (set-left-margin 0))
+	  
+
+One feature of WriteRoom that this does not have a live WordCount on the statusbar.  See WordCount's reference to word-count.el for this feature.  
+
+== In a Frame ==
+
+The following code maximizes the new frame on Windows and uses the fullscreen frame parameter for other systems.
+The new frame has no scroll bar, no tool bar, no menu bar, no minibuffer (it uses the minibuffer of your old
+frame), no fringe, and some internal border.
+
+It opens your NOTES file and gets rid of the modeline. Unfortunately I have not found a ways of doing this for all buffers in a frame. Instead, it only works for the current buffer -- the NOTES file. All other buffers in this frame will get their modeline back.
+
+This tries to create a fullscreen frame, and sends the magic code on Windows to maximize.
+
+{{{
+(defun write-room ()
+  "Make a frame without any bling."
+  (interactive)
+  ;; to restore:
+  ;; (setq mode-line-format (default-value 'mode-line-format))
+  (let ((frame (make-frame '((minibuffer . nil)
+			     (vertical-scroll-bars . nil)
+			     (left-fringe . 0); no fringe
+			     (right-fringe . 0)
+			     (background-mode . dark)
+			     (background-color . "black")
+			     (foreground-color . "green")
+			     (cursor-color . "green")
+			     (border-width . 0)
+			     (border-color . "black"); should be unnecessary
+			     (internal-border-width . 64); whitespace!
+			     (cursor-type . box)
+			     (menu-bar-lines . 0)
+			     (tool-bar-lines . 0)
+			     (mode-line-format . nil); dream on... has no effect
+			     (fullscreen . t); does not work on all systems
+			     (unsplittable . t)))))
+    (select-frame frame)
+    (find-file "~/NOTES")
+    (setq mode-line-format nil); is buffer local unfortunately
+    ;; maximize window if fullscreen above had no effect
+    (when (fboundp 'w32-send-sys-command)
+      (w32-send-sys-command 61488 frame))))
+}}}
+
+[new]
+
+To get rid of the ModeLine in all buffers, try this:
+
+    (setq-default mode-line-format nil)
+
+-- WilliamXu
+
+== In MS Windows ==
+See [http://bitbucket.org/phromo/darkroom-mode/ darkroom-mode] for a slightly more advanced version with multi-monitor support, etc.
+
+== Using in Aquamacs ==
+
+I used WriteRoom with the Firefox "It's all text!" add-in for wiki-editing, but I have now switched over to Aquamacs. I have it running fullscreen with Shift-CMD-A, and I've changed the default colors to a black background. But there are still some artifacts around the screen. Even without any buttons, the toolbar is still visible. The command pane at the bottom is also there. Would it be possible to have some sort just-the-text-ma'am mode, which could be a black fullscreen with either no-command pane (unless used) or one that auto-hides? I am a professional writer and the fewer distractions the better. -- DG
+
+== Talk ==
+
+This looks very nice. Reminds me of the [http://www.baara.com/q10/ Q10] editor for Windows, which even features typewriter sounds. :)
+
+== Related ==
+
+* TheaterStyle
+* FullScreen
+
+----
+CategoryWriting
+

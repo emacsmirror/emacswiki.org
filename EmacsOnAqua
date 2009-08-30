@@ -1,0 +1,17 @@
+Emacs on Aqua (http://emacs-on-aqua.sf.net) provides a good Mac-like user experience for Emacs out of any of the EmacsForMacOS ports, without hiding or limiting any of its power.
+
+It's currently (2006/05/31) the only native version of GNU Emacs for OS X based on a version of GNU Emacs /released by the GNU Project/.  All others are based on current EmacsFromCVS, which displays varying bugs depending on when checkout was made, many of which only surface during prolonged use.
+
+However, Emacs-on-Aqua's benefits come at a price right now.  It is based on GNU Emacs 20.7, which came out waaay back in 2000.  This means, in "Antinews" terms:
+
+* You don't get the fringe or the MS Windows-style toolbar
+* Proportional fonts are no longer displayed properly
+* Images are no longer displayed, since there are other programs that can do that
+* Some elisp packages don't work anymore
+
+The last is usually the main concern.  Even though for most packages you can retrieve a slightly older version that will work under emacs-20, you have to give up recent features or bug fixes to do so, and conflicts can result if you try to maintain an emacs-21 installation concurrently.
+
+Furthermore, Emacs-on-Aqua still has some known issues of its own, including no fontset support (instead you get the OS X font panel though), and absence of menu toggle items.
+
+Whether these disadvantages are worth the improved user experience and stability depends on individual taste and usage.
+AquamacsEmacs offers a suitable alternative: it's EmacsFromCVS based, but offers good Mac integration through extensive Mac adaptation of the Emacs code. Aquamacs will run all elisp packages. Another alternative is EmacsApp, based on the more modern, but also less stable Unicode emacs code base (may be released as Emacs 23).

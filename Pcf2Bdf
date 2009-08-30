@@ -1,0 +1,8 @@
+<code>pcf2bdf.el</code> converts a binary <code>.pcf</code> font file to BDF source using the [http://www.tsg.ne.jp/GANA/S/pcf2bdf/ pcf2bdf] program.
+
+: http://user42.tuxfamily.org/pcf2bdf/index.html
+
+It works using the FileFormat mechanism and even supports saving back through the standard X <code>bdftopcf</code> program, though doing so would be pretty unusual.  The intention really is to make the textual parts or glyph sizes etc in a <code>.pcf</code> easily viewable when you don't have its bdf source handy.
+
+----
+CategoryModes

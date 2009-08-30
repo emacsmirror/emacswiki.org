@@ -1,0 +1,35 @@
+Enlightenment Foundation Libraries and Enlightenment DR17 (e17) have a variation of "gnu" c-style, with:
+
+    (c-add-style "e17"
+     '("gnu"
+       (indent-tabs-mode . t)
+       (tab-width . 8)
+       (c-offsets-alist .
+        ((defun-block-intro . 3)
+         (statement-block-intro . 3)
+         (case-label . 1)
+         (statement-case-intro . 3)
+    ))))
+
+You can hook it into c-mode so it's automatically lodaded for files within "/evas/src/" or "/cvs/e17" using:
+
+    (defun evas-c-mode-hooks ()
+     (let ((path (buffer-file-name)))
+     (cond
+      ((string-match "/evas/src/" path) (c-set-style "e17"))
+      ((string-match "/cvs/e17" path) (c-set-style "e17"))
+    )))
+    (add-hook 'c-mode-common-hook 'evas-c-mode-hooks)
+
+
+To apply "e17" c-style to files in /evas/src/ and /cvs/e17
+
+  (defun evas-c-mode-hooks ()
+   (let ((path (buffer-file-name)))
+     (cond
+      ((string-match "/evas/src/" path) (c-set-style "e17"))
+      ((string-match "/cvs/e17" path) (c-set-style "e17"))
+      )
+     )
+   )
+  (add-hook 'c-mode-common-hook 'evas-c-mode-hooks)

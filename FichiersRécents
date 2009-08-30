@@ -1,0 +1,36 @@
+Recentf est un mode mineur qui construit une liste des fichiers
+récemment ouverts. Cette Liste est sauvegardée automatiquement entre
+chaque utilisation d'Emacs. Vous pouvez accéder à cette liste via un menu.
+
+Ce mode fait partie de GNU Emacs 21. Vous pouvez aussi l'obtenir ici:
+* http://perso.wanadoo.fr/david.ponce/downloads/recentf-1.23.zip
+
+Pour l'installer ajoutez au .emacs:
+
+    (require 'recentf)
+    (recentf-mode 1)
+
+Voici une commande bien pratique écrite par Jerome B. postée pour la 
+première fois sur http://www.emacsfr.org/:
+
+    (defun recentf-open-files-compl ()
+      (interactive)
+      (let* ((all-files recentf-list)
+        (tocpl (mapcar (function 
+           (lambda (x) (cons (file-name-nondirectory x) x))) all-files))
+        (prompt (append '("File name: ") tocpl))
+        (fname (completing-read (car prompt) (cdr prompt) nil nil)))
+        (find-file (cdr (assoc-ignore-representation fname tocpl))))) 
+
+Je l'ai personnellement associé à C-x C-r (find-file-read-only) qui sert
+normallement à ouvrir les fichiers en lecture seule et que je n'utilise
+que rarement:
+
+    (global-set-key "\C-x\C-r" 'recentf-open-files-compl)
+
+Je l'utilise maintenant plus souvent que find-file.
+
+This page is also available in english : English:RecentFiles
+
+----
+CategoryCommands (en) CatégoriePointEmacs

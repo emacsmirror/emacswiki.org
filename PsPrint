@@ -1,0 +1,41 @@
+Use <code>M-x ps-print-buffer</code> or <code>M-x ps-print-region</code> to print to a <nowiki>PostScript</nowiki> printer.
+
+Here is a setup to print two pages on an A4 paper:
+
+    ;; 2 column landscape size 7 prints column 0-78, lines 1 to 70
+    (setq ps-paper-type 'a4
+	  ps-font-size 7.0
+	  ps-print-header nil
+	  ps-landscape-mode t
+	  ps-number-of-columns 2)
+
+Here is how to add a network printer when using Emacs on Windows:
+
+    (setq ps-lpr-command "print"
+	  ps-printer-name "//FS_BSI1/HL-1270"
+	  printer-name "//FS_BSI1/HL-1270")
+
+If you want to print international characters, and you printer does not have the necessary InternationalFonts, you might get the GNU intlfonts package and try PrintingBdfFonts.
+
+Now you can use `M-x ps-print-buffer', `M-x ps-print-buffer-with-faces',
+`M-x ps-print-region', and `M-x ps-print-region-with-faces'.  Use the <code>C-u</code>
+prefix to save the <nowiki>PostScript</nowiki>  code into a file instead of printing it.
+
+Note that "print" ps-lpr-command does not work in XEmacs.  Try generic-print-buffer instead. See the [http://www.rustyspigot.com/software/ps-print-for-emacs/ ps print manual] for more information.
+
+[new:DrewAdams:2004-12-25 18:23 UTC]
+'''See Also:''' library <code>printing.el</code> at PrintingPackage. This library uses library <code>ps-print.el</code> (PsPrintPackage). It provides a user-friendly interface (e.g. menus) with a great deal of flexibility. -- DrewAdams
+[new]
+
+= "Batch" Printing With Faces =
+
+It seems that (ps-print-buffer-with-faces) requires X11, so using it in --batch mode to pretty print multiple files results in no decoration (like (ps-print-buffer)).  Here's a way to print multiple files "with-faces" in unix shell:
+
+  <command that produces files you want to print, e.g. find> | xargs --max-args 1 -i emacs --file {} --no-desktop --eval '(ps-print-buffer-with-faces)' --eval '(kill-emacs)'
+
+
+----
+CategoryPrinting
+CategoryInternationalization,
+CategoryExternalUtilities,
+CategoryWThirtyTwo

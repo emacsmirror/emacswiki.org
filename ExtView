@@ -1,0 +1,11 @@
+With ExtView you can use Emacs as a file manager and open files matching predefined patterns with external viewers.
+
+Lisp:extview.el
+
+
+== This package is orphaned ==
+
+I don't have time to work on this package, so feel free to fork it or improve it or anything. I certainly can't answer support requests or add new features, so it's up for grabs. -- TamasPatrovics
+
+----
+See also CategoryExternalUtilities

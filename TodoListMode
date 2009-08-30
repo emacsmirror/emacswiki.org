@@ -1,0 +1,33 @@
+TodoListMode, by [http://www.lamberta.org/ William Lamberta], provides color highlighting for a numbered todo list file.
+
+It uses some regexp's to determine the font face of a line, so it's easy to jump in and define more numbers and different colors.
+
+* [http://cloud.github.com/downloads/biilly/todo-list-mode/todo-list-mode.el todo-list-mode.el]
+* [http://www.lamberta.org/blog/todo-list-mode/ Screenshot and release information]
+
+To include this mode automaticaly, add to your .emacs
+{{{
+(add-to-list 'load-path "~/emacs/lisp/")    ;my lisp dir
+(autoload 'todo-list-mode "todo-list-mode") ;load when needed
+ 
+;a simple function that opens the file and switches to todo-list-mode.
+(defun open-todo-list ()
+  (interactive)
+  (find-file "~/notes/TODO") ;path to my todo list
+  (todo-list-mode))
+ 
+;then bind to control-f12 so i can call it with one keystroke
+;this works well for me because i also bind calendar to f12
+(global-set-key [C-f12] 'open-todo-list)
+}}}
+
+[new:]
+There is a simpler way to open *always* the same file: registers.
+
+Here is how I would have done it:
+
+ (set-register ?o '(file . "~/notes/TODO"))
+
+With that, pressing C-x r j o RET would just open your file (you need
+to add a file header to make it "todo-list-mode" aware)
+

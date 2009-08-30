@@ -1,0 +1,74 @@
+If you're using EmacsForMacOS and compiled from source, you might be interested in using aspell to check your spelling.
+OSX has neither `ispell' nor `aspell'. [http://people.ict.usc.edu/~leuski/cocoaspell/ cocoAspell] is a port of `aspell' and can therefore be used by Emacs' InteractiveSpell and FlySpell.
+
+*Note:* If you use CarbonEmacsPackage or AquamacsEmacs, chances are you already have a fully integrated aspell! Ignore this page.
+
+CategorySpelling
+
+== Setup ==
+
+Add the following to your InitFile:
+
+    (setq ispell-program-name "aspell")
+
+The default value is "ispell" which is not what you want. Your aspell has been installed in ##/usr/local/bin## – this directory should be in your ExecPath. If it isn't, you might have to add it:
+
+    (add-to-list 'exec-path "/usr/local/bin")
+
+Since cocoAspell doesn't install the languages in the standard directory and instead uses one directory per language, you need to set `ispell-dictionary-alist' appropriately. You can find more about this variable on the InteractiveSpell page.
+
+{{{
+(setq ispell-dictionary-alist
+      '((nil
+	 "[A-Za-z]" "[^A-Za-z]" "[']" nil
+	 ("-B" "-d" "english" "--dict-dir"
+	  "/Library/Application Support/cocoAspell/aspell6-en-6.0-0")
+	 nil iso-8859-1)))
+}}}
+
+---
+
+I found that I had to use AlexSchroeder 's config (-swiss) to get aspell to work:
+
+{{{
+(setq ispell-program-name "aspell"
+      ispell-dictionary "english"
+      ispell-dictionary-alist
+      (let ((default '("[A-Za-z]" "[^A-Za-z]" "[']" nil
+                       ("-B" "-d" "english" "--dict-dir"
+                        "/Library/Application Support/cocoAspell/aspell6-en-6.0-0")
+                       nil iso-8859-1)))
+        `((nil ,@default)
+          ("english" ,@default))))
+}}}
+
+Without both of the "english" entries, I kept getting errors about not being able to find wordlists. -- RyanDavis
+
+== Other Languages ==
+
+The following is the setup if you have English and German installed and want to use the Swiss dictionary.
+`nil' is the default language.
+Remember you need to get the appropriate dictionary from a [http://www.gnu.org/order/ftp.html GNU FTP mirror] (-> aspell -> dict) and unpack it into ##/Library/Application Support/cocoAspell##. In the example below I used
+##aspell6-de-20030222-1.tar.bz2## from ##ftp://ftp.gnu.org/gnu/aspell/dict/0index.html##.
+
+
+{{{
+(setq ispell-program-name "aspell"
+      ispell-dictionary-alist
+      '((nil
+	 "[A-Za-z]" "[^A-Za-z]" "[']" nil
+	 ("-B" "-d" "english" "--dict-dir"
+	  "/Library/Application Support/cocoAspell/aspell6-en-6.0-0")
+	 nil iso-8859-1)
+	("swiss" "[a-zA-Z\304\326\334\344\366\337\374]"
+	 "[^a-zA-Z\304\326\334\344\366\337\374]" "[']" t
+	 ("-C" "-d" "swiss" "--dict-dir"
+	  "/Library/Application Support/cocoAspell/aspell6-de-20030222-1")
+	 "~latin1" iso-8859-1)))
+}}}
+
+Now you can use `M-x ispell-change-dictionary' to switch between "default" (English) and "swiss".
+
+== Previous Versions ==
+
+It seems that previous versions installed the binary as ##/Library/PreferencePanes/Spelling.prefPane/Contents/MacOS/cocoAspell##.

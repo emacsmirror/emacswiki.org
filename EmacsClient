@@ -1,0 +1,686 @@
+== What is EmacsClient? ==
+
+EmacsClient allows one to open a file for editing in an already running Emacs.  Because it doesn't start a new Emacs instance at each invocation, you can setup EmacsClient as the default editor, e.g. in the environment variable EDITOR or VISUAL.  EmacsClient is part of and works only in conjunction with GNU Emacs.  The program GnuClient provides the corresponding functionality for XEmacs, but also works with GnuEmacs.
+
+Since the release of GnuEmacs 22.1 both EmacsClient and GnuClient also work on "Windows"
+and offer similar functionality, e.g. execute arbitrary EmacsLisp code from the command line.
+
+== How to start to use EmacsClient ==
+
+#  start emacs with the emacsserver running (this can be done by adding (server-start) to your InitFile, or by typing ##M-x server-start## from within emacs)
+# use emacsclient where you'd normally use emacs (as your editor in pine, as the value of the EDITOR environmental variable, etc).
+
+= Starting Emacs automatically =
+
+The tips for doing this are platform specific.
+
+=== GNU/Linux and other that has bash etc ===
+==== Starting Emacs automatically on *nixes with a shell script ====
+
+To have emacsclient start a full Emacs process if it can't connect to
+one, simply set ALTERNATE_EDITOR.  In your .bash_profile (or similar):
+
+<pre>
+    export ALTERNATE_EDITOR=emacs EDITOR=emacsclient VISUAL=emacsclient
+</pre>
+
+Alternatively, the following script can be used to open Emacs in the background if not already present, giving more consistent behaviour:
+
+<pre>
+tempuid=`id -u`
+temphost=`hostname`
+if [ ! -e "/tmp/esrv$tempuid-$temphost" ]
+then
+    emacs &
+    while [ ! -e "/tmp/esrv$tempuid-$temphost" ] ; do sleep 1 ; done
+fi
+emacsclient "$@"
+</pre>
+
+Note that the above script is not perfect. It assumes that emacs will sucessfully load, and that the InitFile will start the server. Also on my system using some cvs version of 22.0, the socket to look for is "/tmp/emacs$tempuid/server".
+
+'''Best Solution:''' The same basic functionality is available in etc/emacs.bash of Emacs, which defines a new command named ''edit'', and should be sourced from .bashrc with a line like ''"source /usr/share/emacs/21.4/etc/emacs.bash"''. 
+
+''edit'' can then be used as the value of EDITOR. If no windowing system is found, no attempt to use emacsclient is made, however if a suspended emacs session is available, it will be re-used, otherwise a new emacs session is used. Future versions might try emacsclient even without a windowing system before testing for a suspended emacs.
+
+[new:CarlGroner:2008-12-29 20:27 UTC]
+The current cvs version of [http://cvs.savannah.gnu.org/viewvc/emacs/etc/emacs.bash?root=emacs&view=markup emacs.bash] notes that this method is now obsolete, and the -a (alternate editor) option to emacsclient should be used instead if available. 
+
+[new:sylecn:2009-05-14]
+For current cvs version, I have write a [[EmacsdInitScript]] to put in /etc/init.d/emacsd for autostart emacs daemon on startup and kill emacs on shutdown.
+
+
+=== Microsoft Windows (in Emacs often called w32) ===
+==== Starting Emacs automatically from a context menu on w32 ====
+(A trivial version of this, not using %%EmacsClient%%, is at [MsWindowsGlobalContextMenu MsWindowsGlobalContextMenu].)
+
+Save the current VBscript (shiver) in emacs/bin folder, as ''launch-emacs-client.vbs'':
+<pre>
+Set objShell = WScript.CreateObject("WScript.Shell")
+Set fso = CreateObject("Scripting.FileSystemObject")
+
+If WScript.Arguments.Count = 1 Then
+
+  strComputer = "."
+
+  Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+
+  Set colItems = objWMIService.ExecQuery("Select * From Win32_Process")
+
+  Dim isRunning
+  isRunning = False
+
+  For Each objItem in colItems
+    If InStr(objItem.CommandLine, "emacs.exe") Then
+      isRunning = True
+    End If
+  Next
+
+  If isRunning Then
+    objShell.Run(fso.GetParentFolderName(WScript.ScriptFullName) & "/emacsclientw.exe -n """ & WScript.Arguments(0) & """")
+  Else
+    objShell.Run(fso.GetParentFolderName(WScript.ScriptFullName) & "/runemacs.exe """ & WScript.Arguments(0) & """")
+  End If
+
+Else
+  objShell.Run(fso.GetParentFolderName(WScript.ScriptFullName) & "/runemacs.exe")
+End If
+</pre>
+
+Add the following keys to the registry:
+<pre>
+[HKEY_CLASSES_ROOT\*\shell]
+
+[HKEY_CLASSES_ROOT\*\shell\openwemacs]
+@="Edit with Emacs"
+
+[HKEY_CLASSES_ROOT\*\shell\openwemacs\command]
+@="Wscript.exe C:\\Program Files\\emacs\\bin\\launch-emacs-client.vbs \"%1\""
+</pre>
+
+You'll have to adjust the path in the last key, to your installed directory.
+
+Remember to put (server-start) in your InitFile.
+
+If anybody knows, how to get an icon into the contextmenu, please append the information here -- I gave up googling it.
+
+--TroelsKn
+
+[new]
+I encountered "permission denied" problems when using the value for the 'command' registry key as described above. I have no idea what the underlying cause was, but I discovered that using %L instead of \"%1\" appeared to solve the problem; so my value was:
+
+   Wscript.exe C:\\[PATH TO EMACS]\\bin\\launch-emacs-client.vbs %L
+
+--Dave Hancock
+
+[new]
+I found that I ran into problems when using the VBScript that TroelsKn posted. I encountered errors when trying to edit files found in folders with spaces (i.e. <code> "c:\My Documents\mytest.txt"</code>). This VBScript should work better:
+<pre>
+Set objShell = WScript.CreateObject("WScript.Shell")
+Set fso = CreateObject("Scripting.FileSystemObject")
+
+If WScript.Arguments.Count = 1 Then
+
+  strComputer = "."
+
+  Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+
+  Set colItems = objWMIService.ExecQuery("Select * From Win32_Process")
+
+  Dim isRunning
+  isRunning = False
+
+  For Each objItem in colItems
+    If InStr(objItem.CommandLine, "emacs.exe") Then
+      isRunning = True
+    End If
+  Next
+
+  If isRunning Then
+    objShell.Run("""" & fso.GetParentFolderName(WScript.ScriptFullName) & "\emacsclientw.exe"" -n " & """" & WScript.Arguments(0) & """")
+  Else
+    objShell.Run("""" & fso.GetParentFolderName(WScript.ScriptFullName) & "\runemacs.exe"" " & """" & WScript.Arguments(0) & """")
+  End If
+
+Else
+  objShell.Run("""" & fso.GetParentFolderName(WScript.ScriptFullName) & "\runemacs.exe"" ")
+End If
+</pre>
+
+-- Shane
+
+[new]
+I only know how to get icons to show up in Windows Explorer, by defining file "meta types", e.g., %%"EmacsFile"%%, and then hanging the file associations (e.g., ".foo") off of those:
+<pre>
+REGEDIT4
+#-----
+# Set up the handler and icon
+#-----
+[HKEY_CLASSES_ROOT\EmacsFile]
+@="Emacs File"
+"Content Type"="text/plain"
+
+[HKEY_CLASSES_ROOT\EmacsFile\shell]
+[HKEY_CLASSES_ROOT\EmacsFile\shell\open]
+# This gets displayed in context menu
+@="Open in Emacs"
+
+[HKEY_CLASSES_ROOT\EmacsFile\shell\open\command]
+@="C:\\Program Files\\Emacs\\bin\\runemacs.exe \"%1\""
+
+[HKEY_CLASSES_ROOT\EmacsFile\DefaultIcon]
+@="C:\\Program Files\\Emacs\\etc\\icons\\emacs.ico,0"
+# Alternate
+# @="C:\\Program Files\\Emacs\\bin\\runemacs.exe,0"
+
+#-----
+# Associate file types w/ Emacs
+#-----
+[HKEY_CLASSES_ROOT\.foo]
+@="EmacsFile"
+"Content Type"="text/plain"</pre>
+</pre>
+Note that this does not do the context menus; it sets the icons in Windows Explorer!  (Only takes effect after you restart your desktop Explorer instance, e.g., after rebooting or manually killing off all 'explorer.exe' instances in Task Manager and rerunning it.  This reloads the registry cache.)
+
+Hopefully this brings us a step closer.
+--[[thundt]]
+
+
+==== "Open with Emacs" on Windows with Emacs 22 ====
+
+The following opens the selected file in a running instance of Emacs, starting Emacs if necessary.
+
+This is similar to TroelsKn method above but leverages the newly integrated EmacsClient (emacsclientw.exe) in Emacs 22 to obviate the use of the .vbs file:
+
+1. Add the registry key as described above, i.e. 
+  
+  [HKEY_CLASSES_ROOT\*\shell\openwemacs\command]
+
+2. Set the value of command to the following, adjusting the path as necessary:
+
+  C:\emacs-22\emacs\bin\emacsclientw.exe -n "%1"
+
+--EdwardGarson
+
+[new]
+With this setup on my pc the shell window just blinks momentarily and disappears. Is there any way to keep it on screen to see what the problem is? (Emacs sever is running, and the path to emacsclientw.exe looks fine)
+
+[new]
+As far as I know the vbs-script from TroelsKn is still useful because EmacsClient does not start a new Emacs if it is not running. At least for me the changes above only worked if Emacs was already started. 
+--MartinStemplinger 
+
+[new]
+The -a option of emacsclient, or the environment variable ALTERNATE_EDITOR can be used to specify runemacs.exe as an alternate editor when emacsclient fails to find a server.
+
+Using a utility like NirCmd (http://www.nirsoft.net/utils/nircmd.html) to supress the command window for emacsclient, it makes for a much smoother experience.  As emacsclientw pops a dialog on initial run.
+
+==== Associate files with no extension with Emacs 22 ====
+
+Emacs is a handy editor for various files without an extension, such as "README" or "ChangeLog". To have these files opened in Emacs upon double click in Explorer, add the following registry entries (adjust the path were Emacs resides):
+
+<pre>
+[HKEY_CLASSES_ROOT\.]
+
+[HKEY_CLASSES_ROOT\.\shell]
+
+[HKEY_CLASSES_ROOT\.\shell\open]
+
+[HKEY_CLASSES_ROOT\.\shell\open\command]
+(Standard) "C:\Program Files\Emacs\bin\emacsclientw.exe" -n "%1"
+</pre>
+
+==== VBS for context menu or hot key ====
+Bind this script to the registry key as above to edit files from the context menu, starting emacs as required. Run the script with no argument and it will open a new emacs or make the already running emacs the top window. I put a shortcut to the script on my desktop and attach a hot key so emacs is just a keystroke away and I never have more than one running.
+
+<pre>
+'*******************************************************************************
+'  Start emacs if it's not running & open file if script called with argument
+'*******************************************************************************
+For Each process In GetObject("winmgmts:\\.\root\cimv2"). _
+                    ExecQuery("Select * From Win32_Process")
+    If process.name = "emacs.exe" Then
+        ' connect to emacs & open file or make emacs the top window
+        ' replace -f arg with your server file location
+        run path("emacsclientw.exe") & " -f c:\.emacs.d\server\server -n " & _
+            fileOr("-e (raise-frame)")
+        WScript.Quit
+    End If
+Next
+run path("runemacs.exe") & " " & fileOr(Null)  ' start new emacs
+
+Sub run(cmd)  ' run the cmd
+    WScript.CreateObject("WScript.Shell").Run(cmd)
+End Sub
+
+Function path(exe)  ' return full, quoted path to executable
+    scriptDir = CreateObject("Scripting.FileSystemObject"). _
+                GetParentFolderName(WScript.ScriptFullName)
+    path = """" & scriptDir & "\" & exe & """"
+End Function
+
+Function fileOr(default)  ' return script arg (filename) or default
+    If WScript.Arguments.Count = 1 Then
+        fileOr =  """" & WScript.Arguments(0) & """"
+    Else
+        fileOr = default
+    End If
+End Function
+</pre>
+
+-- John Dell'Aquila
+
+==== Opening via Send To ====
+
+You can open a file in Emacs via Windows Send To by placing a shortcut to emacsclientw.exe in <code>C:\Documents and Settings\yourName\SendTo</code>. Then, when you right-click on a file and select Send To select emacsclientw. This will open the file in the running version of Emacs; if Emacs isn't running it will fail, but you can use methods described elsewhere in this Wiki for starting the server automatically. The simplest way I found is to simply add <code>(server-start)</code> to your emacs init file, then configure Windows to automatically start Emacs when you log in and leave Emacs running until you log off.
+
+- Glen Cordrey
+
+= Using the patched version of EmacsW32 to start Emacs automatically =
+
+The patched version of Emacs + [[EmacsW32]] may start Emacs automatically and opens the given file name.
+Note that in this case you do not have to add server-start to .emacs.
+The patched version of Emacs client does this for you.
+(Actually I believe the same code can be used on other platforms than w32, but so far I do not think anyone has tested this.)
+
+The installation of Emacs + [[EmacsW32]] also does some file associations etc,
+but see also WThirtyTwoFileAssociations.
+
+
+
+= Opening a New Emacs Frame on the Current Terminal =
+
+GnuEmacs cannot currently handle different terminal devices
+at the same time, so emacsclient is not able to open a new [[Frame]]
+on the terminal that it is invoked from. Fortunately this is issue is
+being resolved, see MultiTTYSupport.
+
+= Opening Server Files Always in a New Frame =
+
+To open the files designated by emacsclient in their own frame, you can use the following hook as a Server Switch Hook which can be setup in customize-group <RET> Server <RET>, or in your InitFile, as such:
+
+    (add-hook 'server-switch-hook
+              (lambda nil
+                (let ((server-buf (current-buffer)))
+                  (bury-buffer)
+                  (switch-to-buffer-other-frame server-buf))))
+
+If you're setting this up via M-x customize, you'll of course want to drop the  (add-hook) call.
+
+You might also want to close the frame when you're done with it. To do this, setup a Server Done Hook in the same section to call delete-frame.
+
+    (add-hook 'server-done-hook 'delete-frame)
+
+I also like emacs to cleanup stuff when I finish the emacsclient, so I add another hook to kill the buffer when finished. This also takes care of weird buffer switching behaviors when closing client buffers.
+
+    (add-hook 'server-done-hook (lambda nil (kill-buffer nil)))
+
+The whole thing is actually in my ##.emacs-custom## file:
+
+  (custom-set-variables
+   '(server-done-hook (quote ((lambda nil (kill-buffer nil)) delete-frame)))
+   '(server-switch-hook (quote ((lambda nil (let (server-buf) (setq server-buf (current-buffer)) (bury-buffer)      (switch-to-buffer-other-frame server-buf))))))
+   )
+
+--TheAnarcat
+
+You can also use `server-kill-new-buffers' instead of calling `kill-buffer' in
+your `server-done-hook', e.g.
+
+    (custom-set-variables '(server-kill-new-buffers t))
+    (add-hook 'server-done-hook (lambda () (delete-frame)))
+
+--RyanBarrett
+
+= Setting Up emacsclient to Run Emacs Only on X11 =
+
+I've found it very useful to set my $EDITOR to emacsclient, and let it judge wether or not to start emacs, based on the $DISPLAY variable, which is often an indication of running on a faster machine for me. So I've wrote the following script, and installed it as /usr/bin/emacsclient.vim.
+
+<pre>
+#! /bin/sh
+
+files="$@"
+files=${files:-/dev/zero}
+
+if [ -z "$DISPLAY" ]; then
+  exec emacsclient.emacs21 -a vim "$files"
+else
+  exec emacsclient.emacs21 -a emacs "$files"
+fi
+</pre>
+
+Note that I avoided calling directly emacsclient, which might be an alternative that points to emacsclient.vim, which would lead to an horrible recursion.
+
+To complete the setup on Debian, I've installed this script as an alternative to the editor command:
+
+<pre>
+update-alternatives --install /usr/bin/editor editor /usr/bin/emacsclient.vim 50
+</pre>
+
+Now I can choose emacsclient.vim as my editor using:
+
+<pre>
+update-alternatives --config editor
+</pre>
+
+--TheAnarcat
+
+= Emulating GnuClient in Silently Reloading the changed Buffer in EmacsClient =
+
+Add the following to your InitFile:
+
+    (defadvice server-visit-files (around save-buffers last activate)
+      "Try to emulate gnuclient behavior with emacsclient.
+    Works only for visiting one buffer at a time."
+      (let* ((filen (car (car (ad-get-arg 0))))
+             (buf (get-file-buffer filen))
+             (this-buf-modified-p nil))
+        ;;; the following is copied from server-visit-files, with
+        ;;; a modification for the `verify-visited-file-modtime' test
+        (if (and buf (set-buffer buf))
+            (if (file-exists-p filen)
+                ;;; if the file has changed on disk, reload it
+                ;;; using `find-file-noselect'
+                (if (not (verify-visited-file-modtime buf))
+                    (progn
+                      (find-file-noselect filen)
+                      ;;; if user answered `no', reset modtime anyway
+                      ;;; so that server-visit-files doesn't realize the
+                      ;;; difference:
+                      (set-visited-file-modtime)))
+              ;;; if file exists no longer, we let server-visit-files
+              ;;; deal with that
+              t)
+          (setq buf (find-file-noselect filen)))
+        (setq this-buf-modified-p (buffer-modified-p buf))
+        (set-buffer buf)
+        (set-buffer-modified-p nil)
+        ad-do-it
+        (set-buffer-modified-p this-buf-modified-p)))
+
+From http://docs.kde.org/en/HEAD/kdegraphics/kdvi/inverse-search-editor.html
+
+= Using EmacsClient with screen =
+
+I use screen all the time, and always wanted to get it to autoswitch back and forth between shell and emacs window.
+I now figured out how, and here is what I do:
+
+In ~/.screenrc I have:
+
+ screen -t Emacs 1 /usr/bin/emacs
+
+In ~/bin/emacs I have the following:
+
+ #!/bin/sh
+ echo $WINDOW >~/tmp/emacsclient-caller
+ screen -r -X select 1
+ emacsclient "$1"
+
+And in my InitFile I have:
+
+    (add-hook 'after-init-hook 'server-start)
+    (add-hook 'server-done-hook
+              (lambda ()
+                (shell-command
+                 "screen -r -X select `cat ~/tmp/emacsclient-caller`")))
+
+Now I only need to set my EDITOR environment variable
+to ~/bin/emacs.
+
+--MarioLang
+
+With MultiTTYSupport emacs branch, simply calling emacsclient -t would be enough and would not require such a hack :) Plus it is really *damn fast* ;)
+
+--XavierMaillard
+
+I've made a screenserver.el that takes this an extra step, allowing you to move to the correct screen window no matter where you run the emacs server.
+
+* http://web.archive.org/web/xor.orodu.net/configs/emacs.d/screenserver.el
+
+--BenJansens
+
+I wanted a do-it-all script, that would:
+
+* run emacsclient, or start emacs in server mode if there wasn't already one.
+
+* return to the right "screen caller window" upon C-x #, even in the case of multiple emacsclients running at the same time.
+
+* just close the buffer without returning to the calling screen window is the buffer is exited using C-x k
+
+* just run a regular emacs if used through sudo.
+
+* be usable as my general EDITOR, which means being smart about whether or not to background itself: if I'm in my shell in a screen session,
+    I want it to detach itself automatically,  but not in all other cases since it'd break break mutt, svn, and other apps that explicitely wait on EDITOR
+    to return. This "smart auto-backgrounding" feature can be disabled easily if the user wants to.
+
+All you need is to drop and chmod u+x the following shell script somewhere in your PATH:
+
+* http://people.debian.org/~seb/emacs-screen.sh
+
+add this snippet to your .emacs:
+
+  ;; emacsclient/server hook
+  (defvar server-seb-mode-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map "\C-xk"
+	'(lambda ()
+	   (interactive)
+	   (shell-command (concat "touch " "/tmp/blah"))
+	   (server-edit)))
+      map))
+  (define-minor-mode server-seb-mode "Server")
+  (add-hook 'server-visit-hook 'server-seb-mode)
+
+and then add the following into one of your shell startup files:
+<pre>
+  export EDITOR=emacs-screen.sh
+</pre>
+if you're used to typing 'emacs', maybe also alias it:
+<pre>
+  alias emacs=emacs-screen.sh
+</pre>
+
+--SebastienDelafond
+
+= Using EmacsClient with Dtach =
+
+=== What is dtach ? ===
+
+dtach (Emulate GNU screen's detach feature.)
+
+dtach is a tiny program that emulates the detach feature of GNU screen, 
+allowing you to run a program in an environment that is protected from 
+the controlling terminal and attach to it later.
+
+Visit the dtach homepage project at http://dtach.sourceforge.net
+
+=== Using it ===
+
+The cool thing with dtach is that you do not have anything to setup,
+just run something like:
+
+ dtach -A /tmp/emacs emacs
+
+that's all !
+
+When you want to detach from a running session, just press C-\. To
+reattach, run your dtach command again. Very simple and very handy.
+
+= NEW ! Detaching without 3rd party tool =
+
+A major addition has been done in the EmacsCVS trunk lately.
+This addition allows a user to start emacs as a daemon !
+
+To start the daemon, just do:
+
+ emacs --daemon
+
+This will launch an emacs daemon and detach itself.
+
+When you want to attach to it, either issue:
+
+ emacsclient -t
+
+or
+
+ emacsclient -c
+
+Tadah !
+
+To detach again, just use the usual key binding.
+
+Enjoy.
+
+= Using emacsclient to make a new frame of a remote Emacs 22 on a local display =
+
+ssh remote_host -f emacsclient --eval '"(make-frame-on-display \"$DISPLAY\")"'
+
+= Edit in a new frame or in the current frame =
+
+Open a new frame from you shell by adding to your .bashrc or .zshrc
+
+   new-frame() {
+      emacsclient -e "(new-frame)"
+   }
+
+Edit a file in a new frame by adding to your .bashrc or .zshrc
+
+   edit() {
+       local FILE=$1
+
+       if [[ -z $FILE ]]; then
+          echo "Missing filename"
+          return
+       fi
+
+       if [ $FILE[0] != "/" -o $FILE[0] = "~" ]
+       then
+           FILE="$PWD/$FILE"
+       fi
+
+       if [[ -z $2 ]]; then
+          emacsclient -n $FILE
+       else
+          emacsclient -e "(find-file-other-frame \"$FILE\")"
+       fi
+   }
+
+   edit_new_frame() {
+      edit $1 "yes"
+   }
+
+[:WMFocus]
+= Automatically managing window manager focus =
+
+If you want your window manager to automatically focus the emacs frame
+when emacsclient is invoked, then once editing is done, refocus back
+to the original window from which emacsclient was invoked, here's how:
+
+First you need wmctrl installed, and a helper script called
+<code>current-winid</code>:
+
+<pre>
+#!/bin/sh
+
+# Only ttys have $WINDOWID set correctly? Firefox doesn't, anyway.
+
+if ! which wmctrl >/dev/null 2>&1; then
+  me=`basename $0`
+  echo "$me: wmctrl not found; aborting." >&2
+  exit 1
+fi
+
+# Note that the exit in END is what determines the final exit status,
+# even though the previous exit initiates the exit.
+wmctrl -a :ACTIVE: -v 2>&1 \
+  | awk 'BEGIN { exit_status = 1 }
+         /^Using window:/ { print $3; exit_status = 0; exit } 
+         END { exit exit_status }' \
+|| exit 1
+</pre>
+
+Then all you need is an emacsclient wrapper script (e.g. call it
+<code>switch-to-emacsclient</code>):
+
+<pre>
+#!/bin/sh
+
+# Save the current winid so we know what to switch back to from emacs.
+client_winid=`current-winid`
+
+# Switch to emacs and wait for editing to be completed.
+wmctrl -xa emacs
+emacsclient -a fe "$@"
+
+# Switch back to window from which emacsclient was invoked.
+wmctrl -ia $client_winid
+</pre>
+
+The really nice thing about this is that it supports multiple emacsclients running at once, and it doesn't matter which order you complete editing of the emacsclient buffers.
+
+= Saveplace and Emacs server: remembering last point position in files opened with emacsclient(w) =
+
+If you use the package saveplace.el (http://www.emacswiki.org/cgi-bin/wiki/SavePlace) to remember the last position a file was visited at, you may have noticed that opening files with emacsclient(w) the cursor always goes at the beginning of buffer, that is, it looks like emacsclient (or better, emacs server) does not care about save-place being active. I suppose this is a bug. A temporary workaround to this is to set
+
+<pre>
+    (setq server-visit-hook (quote (save-place-find-file-hook)))
+</pre>
+
+in your .emacs file (or set this option through the customization buffer).
+
+I suppose you must have
+
+<pre>
+    (require 'saveplace)
+</pre>
+
+in your .emacs file as well in order not to receive error messages.
+
+I also suppose a similar solution works for gnuclient(w), which has apparently similar problems.
+
+-PGLPM
+
+= Making C-x k end an emacsclient session =
+
+If your fingers are wired to using C-x k to kill off buffers (and you dont like having to type C-x #) then try this :
+
+  (add-hook 'server-switch-hook 
+            (lambda ()
+              (when (current-local-map)
+                (use-local-map (copy-keymap (current-local-map))))
+              (local-set-key (kbd "C-x k") 'server-edit)))
+
+= Making C-c C-c end a gnuclient session =
+
+This is similar to the C-x k binding above, but uses C-c C-c -- which makes it similar to using gnus -- and is, of course, for the other protocol.
+
+ (add-hook 'gnuserv-visit-hook '(lambda ()
+				  (local-set-key [(control c) (control c)]
+						 (lambda ()
+						   (interactive)
+						   (save-buffer)
+						   (gnuserv-edit)))))
+
+
+== Emacs client return values ==
+
+I wanted to use emacsclient as my editor to svn in Windows, but when I used emacsclientw.exe or emacsclient.exe, the return value when I was done editing was always 1, which made svn to reject my edit. How it is with emacsclient and return values? Is my copy just broken?
+
+== Emacsclient vs. gnuclient ==
+
+Is emacs-server protocol compatible with gnuclient or are they totally different implementations? I would like to use an utility in Windows designed for gnuclient (visemacs), but it only supports gnuclient at the moment. I would like to know, how big effor it would be to patch it to support emacs client protocol. All pointers to relevant documentation is gladly accepted too!  
+
+== remote realtime collaborative editing in Windows ==
+
+Is this possible? 
+I read how to do it in linux here: http://blog.lathi.net/articles/2007/10/09/remote-pair-programming
+
+== multiple emacs clients ==
+
+If a first instance of emacs is started (and it starts its server), then a remote login is performed and a second instance started, the new instance will starts its own server and mask or kill the original one. An attempt to use emacsclient at the initial login will then start a client window at the remote login. In case that sounds an unlikely scenario, I achieved it by 1) starting an X11 session with emacs in one window, 2) working on a machine in another room, including an ssh to the first machine and another emacs session, 3) returning to the first machine where I attempted to respond to a Usenet post. The edit appeared in emacs on the second machine.
+
+Is there some way to allow the servers started in different ttys to distinguish themselves from each other ?
+
+
+
+----
+CategoryExternalUtilities

@@ -1,0 +1,69 @@
+La SectionElisp contient des logiciels libres écrits en EmacsLisp (en).
+
+* http://www.emacswiki.org/elisp/index.html -- liste tous les fichiers par ordre alphabétique
+* http://www.emacswiki.org/elisp/changelog.html -- liste tous les fichiers par date de modification
+* http://www.emacswiki.org/cgi-bin/upload-fr.pl -- Transférer de nouveaux fichiers
+
+Pas besoin ni d'authentification, ni de ftp, ni de mot de passe.
+C'est aussi simple que le wiki lui-même. Cela signifie aussi que
+n'importe qui peut placer du code dangereux dans ces fichiers elisp.
+Si vous doutez, ne les utilisez pas.
+
+Comme sécurité, le transfert de fichier peut générer un fichier de
+sauvegarde. Un fichier peut être  utiliser comme sauvegarde
+s'il est daté de plus de deux semaines.
+Cela permet de s'assurer qu'il existe une sauvegarde pour au moins deux
+semaines.
+
+Les fichier de plus de 20k seront gzipés automatiquement. Cela 
+économisera du temps de téléchargement plus tard. Cependant vous devez
+quand même <i>transférer les fichiers à destination du serveur</i>
+sous forme de fichier texte. Les fichiers texte de plus de 100k ne seront
+pas présent dans l'index et dans le journal des modifiactions. 
+Cela permettera peut être d'économiser de la bande passante puisque les
+moteurs de recherche ne trouveront plus de liens vers ces fichiers (comme
+par exemple color-theme.el qui dépasse les 500k)
+
+Notez que la Ohio ElispArchive (en) est fermée.
+
+== Documentation ==
+
+Merci de decrire les fichiers que vous ajoutez a ce wiki -- si vous ne le
+faites pas, personne ne trouvera vos fichiers. La SectionElisp n'est pas
+prise en compte lors de la recherche via la boîte Recherche au bas de
+cette page.
+
+De telles descriptions peuvent être ajoutées a des pages existantes ou a des pages nouvelles.
+
+== Publier des packages qui ne sont pas en elisp où des archives tar ==
+
+Vous pouvez stocker des logiciels libres sur Savannah:
+
+* http://savannah.gnu.org/
+
+== Interface Emacs ==
+
+Allez voir Lisp:wikiarea.el si vous désirez un moyen pour utiliser Emacs lui-même pour être au courant des modificatons des différents fichiers présents ici.
+
+== Extraits de Code ==
+
+Pour un petit ensemble de fonctions, ou un exemple de code, je recommande
+de simplement les placer directement sur la page wiki.
+Si vous faites cela, assurer vous de placer les tags <nowiki><pre> et </pre></nowiki> pour empêcher le formatage du code.
+
+== Netscape, GZip, Windows ==
+
+Si vous avez des problèmes avec les fichier gzipés, allez voir la page:
+
+* http://www.complang.tuwien.ac.at/alex/netscape.html (en)
+
+Si vous avez encore des problèmes lors du téléchargement des packages elisp à partir de ce site, vous pouvez télécharger l'archive tar complète:
+
+* http://www.emacswiki.org/cgi-bin/list-archive.pl
+
+Cependant, faites attention à la taille.
+
+----
+Voir EmacsWiki (en) pour des liens vers le source du script de transfert (upload)
+
+This page is also available in [English:ElispArea english]

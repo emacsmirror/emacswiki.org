@@ -1,0 +1,40 @@
+also known as [::legumbre] (formerly leo___) on #emacs
+ 
+I use emacs. A lot. I use it for mail (gnus), IM (ERC+bitlbee), gtd (OrgMode) and pretty much everything else.
+I use it to write C, Obj-C, java, elisp and ocasionally some vhdl and (ew!) php.
+
+In case you're wondering, these are some things I can't live without
+
+* dabbrev-expand and its more promiscuous cousin hippie-expand
+* EmacsTags for source code navigation
+* tramp's multihop feature for remote file editing
+* dired and all the dired-do-rename-regexp goodness
+* re-builder for testing your regexes interactively
+* [[uniquify]] with reverse style and pipe separator (yeah, yeah... i know)
+
+----
+
+Other useful and not so well known features:
+* file-name-shadow-mode
+* savehist-mode
+
+[new]
+It's been nearly a month since I added the following lines to my .emacs:
+
+   (global-unset-key [right])
+   (global-unset-key [left])
+   (global-unset-key [down])
+   (global-unset-key [up])
+
+Unbinding the arrows forced me to adopt C-n, C-p, M-n, M-p and to become better acquainted with 
+sexps navigation functions. Not only did this increase my productivity when using emacs, but also in the command line.
+
+I encourage you to try it out, it can be a bit frustrating at first, but it's definitely worth it.
+
+[new]
+Welcome to the wiki! -- AlexSchroeder
+[new]
+Thanks Alex! -- LeonardoEtcheverry
+
+----
+CategoryHomepage

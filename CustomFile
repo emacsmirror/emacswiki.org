@@ -1,0 +1,7 @@
+The name of your CustomFile is the value of variable `custom-file'. If the variable is `nil', then [[Customize]] writes customizations to your InitFile.
+
+Regardless of where Customize customizations are written, you should not edit them by hand.
+
+----
+CategoryCustomize
+CategoryDotEmacs

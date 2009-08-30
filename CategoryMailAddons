@@ -1,0 +1,145 @@
+Here you can find something about mail and also news related addons for Emacs.
+
+Mail clients for Emacsen were list in CategoryMail.
+
+Cite Tools:
+
+* [[cite]] -- a small engine engine
+* MuCite -- a powerful citation tool which supports inital quoting (also in cooperation with the BigBrotherDataBase)
+* SuperCite --  an emacs mode for fancy citations of email and Usenet messages
+* TrivialCite -- citing and filling mails from other users
+* [[xcite]] -- http://www.gentei.org/~yuuji/software/xcite.el (Japanese) from HiroseYuuji
+* CitationConfigurationExamples -- example configurations of attribution lines, quoting chars and other citation related stuff
+
+Signature Tools:
+
+* AdvRandomSig -- advanced random signature inserter
+* [[c-sig]] -- an emacs lisp application to insert signatures wisely
+* DmsSig -- multiple automatically selected signatures
+* [[Fortune]] -- use fortune to insert signatures
+* MailSignature -- Lisp:mail-signature.el
+* MailSignatureQuotes -- http://nwalsh.com/emacs/xmlquotes/mail-signature-quotes.el
+* SigAdapt -- http://www-spi.lip6.fr/~queinnec/Miscellaneous/sigadapt.el
+* SigBegone -- http://www.neilvandyke.org/sigbegone/sigbegone.el
+* SigQuote -- http://bmrc.berkeley.edu/~trey/emacs/sig-quote.html
+* SmartSig -- http://www.davep.org/emacs/smartsig.el
+* RandomSig -- insert randomly choosen signatures into mails
+
+Biff Tools (notification of new mail):
+
+* BiffEl -- http://www.gentei.org/~yuuji/software/biff.el (Japanese) from HiroseYuuji
+* [[alert]] -- http://gnufans.net/~deego/emacspub/lisp-mine/alert/dev/alert.el
+* ByrdBiff -- Lisp:byrd-biff.el
+* DisplayTime -- also has biff-functionality
+* EmacsBiff -- flagging new mail on the modeline
+* PopBiff -- Lisp:popbiff.el
+** Lisp:popbiff2.el provides the setup to integrate mail notification for remote mail boxes with recent Emacs versions.  (Why were those changes net merged with the original popbiff?)
+
+Address Books and Tools:
+
+* BigBrotherDataBase -- See CategoryBbdb
+* LbdbInterface -- http://www.davep.org/emacs/lbdb.el
+* LovelySisterDataBase -- a rolodex-like database program for SEMI based MUA
+* MailRc -- Lisp:mailrc.el
+* MuttAliases -- lookup/insert mutt mail aliases
+* BlackBook -- http://fly.srk.fer.hr/~hniksic/emacs/blackbook.el
+* [[EUDC]] -- An Emacs client for directory servers (LDAP, PH).
+* ExternalAbook -- Use external address books (such as the Mac OS X address book)
+* [[Synonyms]] lets you search and browse any comma-separated values (CSV) file as a hyperlinked "thesaurus". This could as well be a list of contacts or any other CSV data. For example, export your Outlook (or Fire Fox) Contacts as a CSV file, then use Emacs to browse and search them!
+
+Mail/News Modes:
+
+* MailMode -- a mode for writing mail/news messages
+* MessageMode -- another mode for writing mail/news messages, handles attachments
+* MuttMode -- use emacs as editor for mutt
+* PostMode -- use emacs as an external editor for mail and news
+
+Improvements for the Mail/News Modes:
+
+* AutoHeader -- ftp://ftp.pasta.cs.uit.no/pub/users/espensk/elisp/auto-header.el
+* [[Chastise]] -- http://www.ftp.funet.fi/index/gnu/elisp-archive/misc/chastise.el.Z
+* FileInMail -- http://www-spi.lip6.fr/~queinnec/Miscellaneous/fileinmail.el
+* FmailUtils, random mail frobnication utilities -- 
+http://www.splode.com/~friedman/software/emacs-lisp/src/fmailutils.el
+* HeaderAction -- http://www.coling.uni-freiburg.de/~schauer/de/resources/emacs/header-action.el.gz
+* MailCmpleAddr -- complete mail address or expand mail alias interactively
+* MailField -- a small util to move between mail fields
+* MailReorderHeaders, sort mail headers -- http://www.splode.com/~friedman/software/emacs-lisp/src/order-head.el (required FmailUtils)
+* MairixSearch -- A package using mairix to index and search mails
+
+Other Useful Modes:
+
+* FetchmailMode -- mode for editing fetchmail configuration files
+* FortuneMode -- interface to write fortunes quickly
+* MailboxMode -- berkeley style aka standard mailbox browsing minor mode
+* MailNotify -- Popup notify window when you get new mail.
+* MuttRc -- generic mode for mutt configuration files
+* [[muttrc-mode.el]] - another mode for mutt confuguration files
+* ProcmailMode -- mode for editing procmail configuration files
+* SpamassassinMode --  a mode for editing spamassassin configurations files
+
+MIME for Emacs:
+
+* MetaMail, a Metamail interface for Emacs -- http://www.mit.edu/afs/sipb/contrib/emacs/elisp/metamail.el
+* MimeCompose -- http://ftp.xemacs.org/Attic/elisp/mime-compose.el
+* [[SEMI]] -- http://www.kanji.zinbun.kyoto-u.ac.jp/~tomo/elisp/SEMI/index.html.ja.iso-2022-jp
+* SpookMime -- http://www.splode.com/users/friedman/software/emacs-lisp/src/spookmime.el
+* tm -- MIME solution for Rmail, [[Gnus]], VM, [[MH-E]] and other mailer
+* RmailMime -- MIME for Rmail http://www.emacswiki.org/cgi-bin/wiki/RmailMime
+
+Encryption for Mails:
+
+* [[Gpg]] -- Part of Gnus (in contrib)
+* MailCrypt -- a powerful package to encrypt mail and news
+* XPgpSig -- http://www.jpl.org/ftp/pub/elisp/x-pgp-sig-1.3.5.2.tar.gz
+
+Viewing & Composing HTML Mails:
+
+* [[w3]]
+* HtmlToText
+* MailMarkup -- http://www.newartisans.com/johnw/Emacs/mail-markup.el
+* NsBrowse -- http://www.splode.com/users/friedman/software/emacs-lisp/src/ns-browse.el
+* TextTwoHtml -- http://savannah.nongnu.org/cgi-bin/viewcvs/*checkout*/emhacks/emhacks/elisp/text-to-html.el?rev=HEAD&content-type=text/plain
+* [[emacs-w3m]]
+
+Spam Fighting Utils:
+
+* SpamFilter -- http://www.geocities.co.jp/SiliconValley-PaloAlto/7043/spamfilter/spamfilter.el.txt
+* SpamProbe -- http://www.davep.org/emacs/spamprobe.el
+* SpamProd -- http://www.neilvandyke.org/spamprod/spamprod.el
+* SpamStat
+* [[UCE]] -- http://www.internet2.edu/~shalunov/uce/uce.el
+
+X-Face and Face utils:
+
+* CreateFaceHeader -- a function to insert a face header at point
+* SelectXFace -- http://www.jpl.org/ftp/pub/elisp/select-xface-0.15.tar.gz
+* [[XFace]] -- a package for displaying X-Face header in many EmacsMuas
+* XFaceMagic -- Lisp:x-face-magic.el
+* XFaceMini -- Lisp:x-face-mini.el
+
+Fun:
+
+* [[BinHex]] -- Decode hex code
+* [[Geek]] -- http://www.splode.com/~friedman/software/emacs-lisp/src/geek.el
+* [[Morse]] -- Encode and decode morse
+* MsgCodes -- Lisp:msgcodes.el
+* RotThirteenEl -- Encode and decode rot13
+* SillyMail -- http://www.splode.com/~friedman/software/emacs-lisp/src/silly-mail.el
+
+Other Stuff:
+
+* AnonRemail -- http://wuarchive.wustl.edu/languages/elisp/interfaces/anon-remail.el.Z
+* [[email]] -- easy archiving of outgoing mails
+* MailFind -- http://www.brownale.demon.co.uk/mail-find.el
+* MozMail -- http://my.gnus.org/filestore/download/287
+* QueueMail -- Lisp:queue-mail.el
+* TinyMail -- some mail add-ons
+* vcard -- http://www.splode.com/users/friedman/software/emacs-lisp/src/vcard.el
+
+Other modes which are useful but not mail related:
+
+* Boxes -- http://boxes.thomasjensen.com/docs/boxes.el
+* BoxQuote -- http://www.davep.org/emacs/boxquote.el
+* FootnoteMode -- insert footnotes in mail and news
+

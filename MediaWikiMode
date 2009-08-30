@@ -1,0 +1,35 @@
+Lisp:mediawiki.el
+
+I took the mediawiki mode from [http://meta.wikimedia.org/w/index.php?title=Mediawiki.el&oldid=1296149 an old copy on wikipedia.org] and refactored the code to use internal Emacs url-http libraries.  I also added customization and a site alist so that you can easily toggle between different mediawiki sites. Finally, I added a page ring so that by using M-p and M-n in any mediawiki.el buffer, you can go forwards and backwards.
+
+Usage:
+
+* Add Lisp:mediawiki.el to your path.
+* M-x load-library RET mediawiki RET
+* M-x customize-variable RET mediawiki-site-alist RET
+* Set up the information for any sites.  If you don't wish to store your password, you can leave it blank and you'll be prompted.
+* C-x C-s
+* M-x mediawiki-site RET {your site name} RET
+* You should now be editting the default page.  If you didn't specify one, you are now logged in.
+* M-x mediawiki-open RET Main Page RET # for example
+
+Keybindings in a mediawiki mode
+
+* C-x C-s -- save this page
+* C-c C-c -- save this page and bury the buffer
+* C-return -- open the page under point for editing
+* TAB -- go to the next wiki link
+* M-n -- next page in the page ring
+* M-p -- previous page in the page ring
+* M-g -- reload the current page
+
+Please send any bug reports to me [mailto:mhershberger@intrahealth.org via email].
+
+(I plan on committing those changes that allow for an easier http post back to emacs, but I'd like to shake out any bugs here, first.)
+
+TODO:
+
+* Optionally use org-mode formatting for editing and translate that to mw
+* Perform MW searches using the API
+
+CategoryModes CategoryHypermedia

@@ -1,0 +1,10 @@
+<code>tty-format.el</code> adds [[FileFormat]]s for ANSI SGR escape sequences and backspace overstriking.  Get it from
+
+: http://user42.tuxfamily.org/tty-format/index.html
+
+ANSI is converted to TextProperties using AnsiColor.  <nowiki>AnsiColor</nowiki> can already make such conversions, but as EmacsOverlays.  Text properties make it possible to copy the faces into another formatted document like EnrichedMode.
+
+Both ANSI and backspacing are tty oriented, and you'd like to think by now in their death throws, but are still sometimes found in text files.  The aim of <code>tty-format.el</code> is just to make such files viewable.
+
+----
+FileFormat

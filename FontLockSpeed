@@ -1,0 +1,95 @@
+I use both folding and font-lock.
+
+Having a C++ file with >7000 lines and many folds, fontifying the buffer takes a lot of time (10-20 sec).  Opening a fold takes long as well.
+
+The problem is with font-lock, since without it, there's almost no delay.
+
+What can I do?  Both fast-lock and lazy-lock don't improve the situation.
+
+    (global-font-lock-mode t)
+    (setq font-lock-maximum-decoration t
+	  font-lock-maximum-size nil)
+    (setq font-lock-support-mode 'fast-lock-mode ; lazy-lock-mode
+          fast-lock-cache-directories '("~/.emacs-flc"))
+
+Thanks -- Dirk
+
+Try profiling the font-lock and its support mode packages to try and see
+where the bottle-neck is.  Doing <code>M-x elp-instrument-package RET 
+font-lock RET</code> and similarly for fast-lock and lazy-lock.  Will give
+you some idea where Emacs is spending most of its time.
+
+After you've run with font-lock for a bit, do <code>M-x elp-results
+RET</code> to check the length of time each function takes to be called.
+
+Also, have you looked at jit-lock, it's new in Emacs 21, and, I believe,
+improves slightly over lazy-lock-mode.
+
+Additionally, it seems like you haven't customised the various lazy-lock
+variables to try and make it work more efficiently.  As an example, a snippet
+from my .emacs:
+
+<pre>
+(cond (emacs-20-p
+       ;; do lazy locking, it's quicker
+       (setq font-lock-support-mode 'lazy-lock-mode)
+       ;; more font-locking, variables for `lazy-lock-mode'
+       ;; wait 10 secs before font-locking stuff
+       (setq lazy-lock-defer-time 10
+	     ;; don't font lock as I type
+	     lazy-lock-defer-on-the-fly t
+	     ;; If I'm not doing stuff, start fontifying 
+             ;; the rest of the buffer
+	     lazy-lock-stealth-time 30))
+      (emacs-21-p
+       ;; emacs 21 has jit-lock which is better
+       (setq font-lock-support-mode 'jit-lock-mode)
+       (setq jit-lock-stealth-time 16
+	     jit-lock-defer-contextually t
+	     jit-lock-stealth-nice 0.5)
+       (setq-default font-lock-multiline t)))
+</pre>
+
+Hope that helps a bit. -- LawrenceMitchell
+
+These are the top lines of what <code>M-x elp-results RET</code> gives me:
+
+<pre>
+Function Name                                                Call Count      Elapsed Time  Average Time
+===========================================================  ==========  ============  ============
+font-lock-after-change-function                              20          83.458816     4.1729408
+font-lock-fontify-region                                     20          83.450108     4.1725054
+font-lock-default-fontify-region                             20          83.449750000  4.1724875000
+font-lock-fontify-keywords-region                            20          81.431005     4.07155025
+font-lock-fontify-syntactically-region                       20          1.9719430000  0.0985971500
+font-lock-match-c++-style-declaration-item-and-skip-to-next  6923        1.2429410000  0.0001795379
+font-lock-mode                                               1           0.242115      0.242115
+...
+</pre>
+
+It seems that can't change it.  Or?  -- Dirk
+
+It would appear not.  A few things you might try are:
+
+* Reducing the amount of font-locking.  I notice you have 
+<code>font-lock-maximum-decoration</code> set to <code>t</code>.
+If you set it to a lower level, the regexp matcher in font-lock won't have
+to parse as many levels, and so <code>font-lock-fontify-keywords</code>
+won't take as long.
+
+* Turning off font-locking for large buffers.  This is far from ideal, but
+if you find that font-lock makes editing large buffers unusually slow,
+it may be the only option.
+
+* Have you checked ways to customise the font-locking engine (lazy-lock,
+etc...)?  You might be able to get font-lock only to start fontifying 
+buffers when Emacs is idling.
+
+If you still have problems, it might be worth posting to gnu.emacs.help
+where there might be more font-lock wizards around to help.
+
+----
+Thanks, I've set font-lock-maximum-decoration to a lower value, and if flies now!  Thanks again. -- Dirk
+
+----
+CategoryFaces

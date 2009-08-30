@@ -1,0 +1,40 @@
+== Tips and Tricks in this Aquamacs Sub-Wiki ==
+
+* AquamacsFAQ lists solutions to frequently asked questions. 
+
+* CustomizeAquamacs helps you to do special customizations in Aquamacs.
+
+* LaTeXAquamacs contains information on how to edit LaTeX documents.
+
+* PrintingInAquamacs explains how to print.
+
+* PreferencesInAquamacs explains where Aquamacs finds user-supplied preference files (.emacs) and customization packages.
+
+* BuildingAquamacs helps you to build Aquamacs.
+
+* AquamacsCompatibilityPhilosophy is the place to ask questions and seek answers about compatibility with other emacsen.
+
+== Suggestions and ideas ==
+
+* AquamacsWishList contains well-thought-out and not-so-well-thought-out ideas for making Aquamacs behave even more Mac-like
+
+
+== What's Aquamacs? ==
+
+Aquamacs (http://aquamacs.org) is an Aqua-native build of the powerful Emacs text editor. By "Aqua-native," we mean more than just the fact that this version of Emacs runs as a standard OS X application.  Aquamacs features extensive customization that enables it to conform better with Apple's standard Human Interface Guidelines (HIG) than standard versions of the editor do.
+
+Aquamacs offers a set of nice-looking, antialiased fonts. It displays every file buffer in its own tab, or, if you prefer, a Mac window (frame).  Aquamacs offers you a range of key bindings that you're used to from other applications on the Mac, such as Command-W to close a window, or Command-S to save the file. All these come in addition to all the shortcuts known on Emacs. 
+
+You can use specific fonts and colors for specific major modes, e.g., always edit LaTeX manuscripts in a proportional font.  Unlike other Emacs 22 variants, Aquamacs supports soft word wrapping for easy resizing of text windows and exchange of text with other programs.  Aquamacs manages its frames prudently, has a full-screen mode and allows users to access buffers, frames, recent files, major modes and more with the menus.
+
+----
+
+Aquamacs comes with a nice manual (easy to access via the Apple Help system), and we provide the GNU EmacsManual via the same Help system.
+
+Aquamacs is a cutting-edge Emacs based on  GNU Emacs (stable branch, version 22.x), patched to contain better Mac-like features and augmented with numerous EmacsLisp-based customization packages.  It comes in binary form so it's dead-easy to install and upgrade, and of course it's tested for compatibility Aquamacs provides an integrated development environment and support, among many common formalisms, Java, Ruby, XML (nXML), HTML, LaTeX (AUCTeX), R and SPlus (ESS) editing without further installation or configuration.  
+
+Aquamacs is maintained by DavidReitter. A number of people have contributed.
+
+----
+CategoryPorts
+EmacsForMacOS

@@ -1,0 +1,10 @@
+[http://edward.oconnor.cx/elisp/osx-plist.el osx-plist.el] is an Emacs lisp parser for MacOSX's plist files.
+
+If you'd like Emacs to update its environment based on the contents of ~/.MacOSX/environment.plist, install this library and add the following to your .emacs file:
+
+ (require 'osx-plist)
+ (osx-plist-update-environment)
+
+Share and Enjoy!
+
+-- EdwardOConnor

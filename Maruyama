@@ -1,0 +1,98 @@
+== Maruyama 丸山 ==
+I'm a japanese user who want to add japanese pages to this site.
+
+----
+= Tips for Japanization =
+* See MultilingualWiki.
+* How does www.emacswiki.org work?
+** Perl package `Oddmuse' [http://www.emacswiki.org/cgi-bin/oddmuse.pl?Translations] are used.
+** With `Oddmuse',Cgi-code [http://www.emacswiki.org/scripts/wiki wiki] is working.
+** For japanese [http://www.emacswiki.org/scripts/emacs-jp emacs-jp] is working now, because Alex had it all set up.
+** The difference from [http://www.emacswiki.org/scripts/wiki wiki] is...
+*** [http://www.emacswiki.org/emacs/config-jp config-jp] is used as `ConfigFile' which determins the strings such as サイトマップ or Holidays with including [http://www.emacswiki.org/emacs/config config].
+*** added the code: "do '[http://www.emacswiki.org/scripts/japanese-utf8.pl japanese-utf8.pl]'"; japanese-utf8.pl is defining the strings in detail like a error message. But, now (2003-10-23) these strings are not Japanized and this is included in the project `Oddmuse'. (CVS commiting is needed.) 
+Then, we should send e-mail to Alex@...
+* Names such as Category for Multilingualization
+** For Chinese (nization), 分類－說明 and someting like this are prepared.
+And I think the sentence is cool:
+English:EmacsNewbie | Français:NouvelUtilisateurEmacs in [[Emacs初學者]].
+** For Spanish, CategoríaAyuda.
+** For Japanese, what is good? 分類 is also Japanese. 
+But there is a good solution with using KATAKANA. カテゴリ or カテゴリー.
+----
+= Log for Japanization =
+== 2003-10-21 ==
+In oder to do, I follow MultilingualWiki.
+
+# Translate the name of the links on the goto bar at the top (SiteMap,
+  RecentChanges, ElispArea, HowTo, [[News]])
+
+: [[サイトマップ]], [[更新履歴]], [[Ｅｌｉｓｐセクション]], [[利用手引]],[[ニュース]]
+
+: I will put these on the server tonight. -- Alex.
+
+:: Thanks! -- Maruyama.
+
+* I think "Howto" is Howto in Japanese.
+But, try to translate.
+
+: Perhaps just write it in double-width Romanji?  Or Katakana...  I don't know.  :)
+
+:: 利用手引 means Manual. ハウツー for Katakana of HowTo was used and is not used by youngstars. ＨｏｗＴｏ is a good solution, but I think this is also
+used by other Asian languages, maybe.
+
+# Translate the default text for new pages ("Describe the new page here.")
+
+: Cut and paste making. But there is some questions ...
+
+* How to make ResentChanges automatically?
+
+: This will work automatically once I have it all set up. -- Alex.
+
+:: Now it works.
+
+* How to manage the comments on ElispArea?
+
+: Just write whatever you think your Japanese readers will require.  There is no need to really "translate" everything, specially not every comment and question.  -- Alex.
+
+== 2003-10-22 ==
+# Translate the default text for new pages ("Describe the new page here.")
+
+: Over "Cut and Paste", I added few japanese. I ended it.
+
+# Translate the strings in the user inteface on the Oddmuse page [http://www.emacswiki.org/cgi-bin/oddmuse.pl?Translations]
+
+'''Q''': I want to know the difference between wiki.pl and emacs-jp.pl.
+Now emacs-jp.pl is completely same as wiki.pl?
+How can i get the infomation about current emacs-jp.pl?
+
+'''A''': If you want to look at the Perl code, take a look at
+http://www.emacswiki.org/scripts/ -- there you will find all the
+files in the cgi-bin directory of this server.  Some of these
+are linked to the same file without .pl extension.  In you case you
+want to compare
+[http://www.emacswiki.org/scripts/wiki wiki] with
+[http://www.emacswiki.org/scripts/emacs-jp emacs-jp].
+You will see that emacs-jp uses the
+[http://www.emacswiki.org/emacs/config-jp config-jp] file
+in addition to the
+[http://www.emacswiki.org/emacs/config config] file.
+(When viewing the files, you might have to switch the character
+encoding to UTF-8 manually in your browser.)
+You will also see that 
+[http://www.emacswiki.org/scripts/japanese-utf8.pl japanese-utf8.pl]
+is currently an empty file.  (I have uploaded an empty translation file
+to CVS.)
+
+: Thanks. I understood. -- Maruyama
+
+
+: http://www.emacswiki.org/cgi-bin/oddmuse.pl?action=edit;id=Japanese
+
+: And i think default emacs-jp.pl, i mean emacs-jp.pl without translations, 
+is enough for japanese users.
+
+# Send your translations to the host: mailto:alex@emacswiki.org
+
+----
+CategoryHomepage

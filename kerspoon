@@ -1,0 +1,73 @@
+== Start == 
+
+I've been using emacs for a while now, really didn't like the default values at all. I did try to re-make everything the way I wanted but that caused too many problems each time I wanted to use a new mode. Instead I have used then forked the emacs starter kit on git hub. [http://github.com/technomancy/emacs-starter-kit/tree/master] [http://github.com/kerspoon/emacs-starter-kit]. My blog is here: [http://kerspoon.blogspot.com/]. 
+
+== emacs ==
+
+{{{
+(defun set-keys ()
+  "set-keys"
+
+  (unbind-all)
+
+  ;;; vim like movement
+  (global-set-key [(`)]         'qmove-mode)
+
+  ;;; standard keys
+  (global-set-key (kbd "C-k")   'new-empty-buffer)     ; Open New File
+  (global-set-key (kbd "C-t")   'find-file)            ; Open
+  (global-set-key (kbd "C-w")   'close-current-buffer) ; Close
+  (global-set-key (kbd "C-r")   'save-buffer)          ; Save
+  (global-set-key (kbd "C-;")   'print-buffer)         ; Print
+  (global-set-key (kbd "C-a")   'mark-whole-buffer)    ; Select All
+
+  ;;; other keys
+  (global-set-key (kbd "M-o")           'isearch-forward)
+  (global-set-key (kbd "M-O")           'isearch-backward)
+  (global-set-key (kbd "M-`")           'execute-extended-command)
+  (global-set-key (kbd "<backspace>")   'backward-delete-char)
+  (global-set-key (kbd "M-<backspace>") 'delete-char)
+  (global-set-key (kbd "<delete>")      'delete-char)
+  (global-set-key (kbd "C-c C-c")       'quick-calc)
+  (setq yas/trigger-key (kbd "M-n"))
+
+  ;;; movement keys
+  (global-set-key (kbd "M-w") 'previous-line)
+  (global-set-key (kbd "M-a") 'backward-char)
+  (global-set-key (kbd "M-r") 'next-line)
+  (global-set-key (kbd "M-s") 'forward-char)
+
+  (global-set-key (kbd "M-q") 'move-beginning-of-line)
+  (global-set-key (kbd "M-f") 'move-end-of-line)
+
+  (global-set-key (kbd "M-t") 'scroll-up)
+  (global-set-key (kbd "M-T") 'scroll-down)
+  (global-set-key (kbd "M-p") 'recenter)
+
+  ;;; Undo , Cut , Copy , Paste
+  (global-set-key (kbd "M-x") 'kill-rectangle)
+  (global-set-key (kbd "M-c") 'copy-rectangle)
+  (global-set-key (kbd "M-v") 'yank-rectangle)
+
+  ;;; Hide/Show Comment
+  (global-set-key [f1]  'hs-hide-block)
+  (global-set-key [f2]  'hs-show-block)
+  (global-set-key [f3]  'comment-region)
+  (global-set-key [f4]  'uncomment-region)
+
+  ;;; Changing Buffers
+  (global-set-key [f5]  'ibuffer) 
+  (global-set-key [f6]  'recentf-open-files)
+  (global-set-key [f7]  'dired) 
+  (global-set-key [f8]  'shell)  
+
+  ;;; C++ and other
+  (global-set-key [f9]  'toggle-source-header)
+  (global-set-key [f10] 'compile)
+
+  ;;; Extended function key stuff
+  (global-set-key [C-f1]  'hs-hide-all)
+  (global-set-key [C-f2]  'hs-show-all)
+
+)
+}}}

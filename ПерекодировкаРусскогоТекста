@@ -1,0 +1,55 @@
+;;;
+;; rus<->lat перекодировка
+;; К сожалению не помню автора :( 
+;; Иногда начинаешь набирать текст, забыв переключить регистр - очень обидно
+;; M^x rus<->lat и M^x lat<->rus поможет этому горю
+;; 
+(require 'cl) 
+(defvar usr:*en/ru-table*  '((?q . ?й) (?w . ?ц) (?e . ?у) (?r . ?к)
+                            (?t . ?е) (?y . ?н) (?u . ?г) (?i . ?ш)
+                            (?o . ?щ) (?p . ?з) (?\[ . ?х) (?\] . ?ъ)
+                            (?a . ?ф) (?s . ?ы) (?d . ?в) (?f . ?а)
+                            (?g . ?п) (?h . ?р) (?j . ?о) (?k . ?л)
+                            (?l . ?д) (?\; . ?ж) (?' . ?э) (?z . ?я)
+                            (?x . ?ч) (?c . ?с) (?v . ?м) (?b . ?и)
+                            (?n . ?т) (?m . ?ь) (?, . ?б) (?. . ?ю)
+                            (?Q . ?Й) (?W . ?Ц) (?E . ?У) (?R . ?К)
+                            (?T . ?Е) (?Y . ?Н) (?U . ?Г) (?I . ?Ш)
+                            (?O . ?Щ) (?P . ?З) (?{ . ?Х) (?} . ?Ъ)
+                            (?A . ?Ф) (?S . ?Ы) (?D . ?В) (?F . ?А)
+                            (?G . ?П) (?H . ?Р) (?J . ?О) (?K . ?Л)
+                            (?L . ?Д) (?: . ?Ж) (?\" . ?Э) (?Z . ?Я)
+                            (?X . ?Ч) (?C . ?С) (?V . ?М) (?B. ?И)
+                            (?N . ?Т) (?M . ?Ь) (?< . ?Б) (?> . ?Ю)
+                            (?`. ?ё) (?~ . ?Ё) (?@ . ?\") (?# . ?\')
+                            (?$ . ?*) (?% . ?:) (?^ . ?,) (?& . ?.)
+                            (?* . ?\;)))
+
+(defun lat<->rus (beg end &optional arg)
+  "Recode region that contains russain text typed in english into russian. With 
+ARG given recode region in the other direction."
+  (interactive "*r\nP")
+  (save-excursion
+    (goto-char beg)
+    (do () ((>= (point) end))
+        (let* ((en-char (char-after (point)))
+               (ru-char (if arg
+                            (car (rassoc en-char usr:*en/ru-table*))
+                          (cdr (assoc en-char usr:*en/ru-table*)))))
+          (delete-char 1)
+          (insert (if ru-char ru-char en-char))))))
+
+(defun rus<->lat (beg end &optional arg)
+  "Recode region that contains russain text typed in russian into enflish. With 
+ARG given recode region in the other direction."
+  (interactive "*r\nP")
+  (save-excursion
+    (goto-char beg)
+    (do () ((>= (point) end))
+    (let* ((en-char (char-after (point)))
+           (ru-char (if arg
+                       (cdr (assoc en-char usr:*en/ru-table*))
+                       (car (rassoc en-char usr:*en/ru-table*)))))
+          (delete-char 1)
+          (insert (if ru-char ru-char en-char))))))
+

@@ -1,0 +1,185 @@
+There're certain things about emacs that annoy me to no ends.
+
+Yet no other editors come close to emacs as far as feature set / extensibility is concern.
+
+My top 10 bug list (mainly certain things that other editors designed well)
+
+1. What's up with C-f C-b C-n C-p ?? 
+
+The character movements are the most used commands.
+
+These should be bound easily accessed keys.
+
+vi has it right. 
+
+(fixed. I mapped those to M-hjkl so I'm happy now)
+
+2. I delete whole lines all the time. C-a C-k C-k is no where as convenient as Vd (vim) or C-e (ultraedit)
+(fixed. see [[SlickCopy]]
+
+3. windows manipulation commands are also used all the time. I hate C-x o and friends
+
+ (global-set-key (kbd "<kp-add>") 'other-window)
+ (global-set-key (kbd "<kp-subtract>") 'delete-window)
+ (global-set-key (kbd "<kp-multiply>") 'delete-other-windows)
+ (global-set-key (kbd "<kp-divide>") 'split-window-vertically)
+ (global-set-key (kbd "<kp-decimal>") 'swbuff-switch-to-next-buffer)
+
+not ideal, since i have to move my hands to the keypad. But I ran out of short keys to bind.
+
+4. why Etags always ask me whether I want to visit the tag table? Of course I do.
+
+And I just want to jump to the function refered by the word at point
+
+(fixed, but I need to clean up the hack before I post it here)
+
+5. isearch-forward sucks compared to vim's * key
+
+for example, to search |global-set-key where my cursor is at |
+
+I have to type C-s C-w C-w C-w , whereas in vim just * gets the job done.
+
+vim's * works even the cursor is in the middle globa|l-set-key
+
+emacs's isearch SUCKS.
+
+I'm going to fix this soon.
+
+6. I want ultraedit's bookmarks feature. Pushing marks without any visual clues is not helpful.
+
+7. Ultraedit's column mode kicks major ass. Need that in emacs
+
+8. to be continued
+
+
+
+===MacChan's Initial Implementation of SearchAtPoint ===
+
+Here's my foolish attempt to implement SearchAtPoint.
+
+It even emulate vim's behavior to continue searching from the TOP if it hits 
+the bottom and doesn't find any match.
+
+It's working as expected and I'm happy.
+One more reason I don't have to miss vim ;-)
+
+----
+
+ ;;
+ ;; Emulate vim's * and # keys. 
+ ;;
+ ;; Much better than emacs's default M-b... / M-f... + C-s C-w ... C-s
+ ;;
+ ;; This is my second version. 
+ ;;
+ ;; Please send comments to emailmac (at) gmail com
+ ;;
+ 
+ (require 'custom)
+ 
+ (defvar sap-word '() 
+   "last searched regex")		
+ 
+ (defvar sap-forward t 
+   "last search direction")
+ 
+ (defvar sap-overlay '()
+   "last highlighted word")
+ 
+ (defvar sap-start-point '() 
+   "save the point where we start searching so that we can return later")		
+ 
+ (defface sap-face
+   '((((type tty pc) (class color))
+      (:background "magenta4" :foreground "cyan1"))
+     (((class color) (background light))
+      (:background "magenta4" :foreground "lightskyblue1"))
+     (((class color) (background dark))
+      (:background "palevioletred2" :foreground "brown4"))
+     (t (:inverse-video t)))
+   "Face for highlighting search-at-point matches."
+   :group 'sap-faces)
+ 
+ (defvar sap-face 'sap-face)
+ 
+ (defun search-at-point-highlight (search-forward)  
+   "Highlight the current searched word. 
+ If search-forward is t, the cursor is currently at the end of the searched word."
+   (save-excursion	
+ 	;; sap-word is a regex that looks like \<word\>
+ 	;; so length - 4 is the length of word
+ 	(let (pt1 pt2 (sap-width (- (length sap-word) 4)))
+ 	  (setq pt1 (point))
+ 	  (if search-forward
+ 		  (backward-char sap-width)
+ 		(forward-char sap-width))
+ 	  (setq pt2 (point))			   		
+ 	  (if sap-overlay (delete-overlay sap-overlay))
+ 	  (setq sap-overlay (make-overlay 1 1))
+ 	  (overlay-put sap-overlay 'face sap-face)
+ 	  (overlay-put sap-overlay 'modification-hooks (list 'delete-this-overlay))
+ 	  (move-overlay sap-overlay pt1 pt2))))
+ 
+ (defun search-at-point-continue ()
+   "Repeat the last search with the same target and direction."
+   (interactive)
+   (unless sap-word 
+ 	(setq sap-word (concat "\\<" (find-tag-default) "\\>")))
+   (if sap-forward
+ 	  (let ((count (if (looking-at "\\<") 2 1)))
+ 		(unless (re-search-forward sap-word nil t count)
+ 		  (goto-char (point-min))
+ 		  (re-search-forward sap-word nil t)
+ 		  ;; hey, I even steal vim's status message, sue me!
+ 		  (message "search hit BOTTOM, continuing at TOP")))
+ 	(let ((count (if (looking-at "\\>") 2 1)))
+ 	  (unless (re-search-backward sap-word nil t count)
+ 		(goto-char (point-max))
+ 		(re-search-backward sap-word nil t)
+ 		(message "search hit TOP, continuing at BOTTOM"))))
+   (search-at-point-highlight sap-forward))
+ 
+ (defun search-at-point (backward)
+   "Similar to vim's * key. Search the word under the cursor."
+   (interactive "P")
+   (setq sap-start-point (point)
+ 		sap-word (concat "\\<" (find-tag-default) "\\>")
+ 		sap-forward (not backward))
+   (search-at-point-continue))
+ 
+ (defun search-at-point-backward ()
+   "Similar to vim's # key. Search the word under the cursor backward."
+   (interactive) 
+   (search-at-point t))
+ 
+ (defun search-at-point-return ()
+   "return to the point where we started the search"
+   (interactive)
+   (if sap-start-point (goto-char sap-start-point)))
+ 
+ ;; Meta F3 will search the word under the cursor (like vim's *)
+ ;; Ctrl F3 will search backward (like vim's #)
+ ;; F3 will repeat the last search (like vim's n)
+ ;; Shift F3 will return to where we started the search (behave like isearch's Ctrl-G)
+ 
+ (global-set-key [f3] 'search-at-point-continue)
+ (global-set-key [(meta f3)] 'search-at-point)
+ (global-set-key [(control f3)] 'search-at-point-backward)
+ (global-set-key [(shift f3)] 'search-at-point-return)
+
+
+[new]
+Another night spent happy hacking! It wasn't as daunting as I thought to hack SearchAtPoint -- MacChan
+
+== Talk ==
+SlickCopy is excellent. I reworked the article a little and added some references around the wiki. Hope you don't mind. :)
+
+Regarding !UltraEdit's column mode, have a look at [CuaMode Cua-mode]. You can load it without changing the default Emacs keys like this:
+
+    (cua-mode t)
+    (setq cua-enable-cua-keys nil)
+
+Then press ##C-RET## and see what happens!
+
+----
+CategoryHomepage

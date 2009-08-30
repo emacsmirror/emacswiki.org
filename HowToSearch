@@ -1,0 +1,15 @@
+Use the search text box at the top of every page to search the wiki.  This will use a [http://www.google.com/coop/cse/ Google Custom Search Engine] to search the wiki for you.
+
+To search for an exact phrase, enclose it in double-quotes -- example: ##"bottom of every page"##.
+
+You can also use Perl regular expressions on the [[Search]] page.  However, this is _much_ slower.
+
+== Other Ways of Finding Pages ==
+
+* [EmacsWiki:action=index All Pages] including page count, and all pages as [EmacsWiki:action=index;raw=1 plain text]
+* [http://www.emacswiki.org/cgi-bin/wiki?action=random Random Page] is a good place to start reading and improving the site.
+* FirefoxQuickSearch tells you how to set up Firefox to search the wiki.
+
+----
+HowTo
+[[Search]]

@@ -1,0 +1,195 @@
+My steps in installing Emacs on windoze PC, using gcc and
+<b>cygwin</b>.  See BuildingEmacsWithVisualStudio for another option.
+
+The instructions that come with Emacs are very educational and good,
+this document just adds some more details (and some of these will soon
+be added to nt/INSTALL itself).  Hopefully this will be useful to a
+newbie like me.  If this does not work for you, ask questions at the
+bottom of this page, in the Problems section.
+
+This worked for me on windows 2000, but should be fine for any version
+after 95.
+
+== ssh ==
+You need a ssh to access the cvs repository. 
+
+Either the cygwin package or putty (http://www.chiark.greenend.org.uk/~sgtatham/putty/). Then set the environment variable CVS_RSH to either ssh (if you use cygwin) or plink (if you use putty) before you access the cvs repository.
+
+== tar ==
+
+Get djtarnt.exe from
+ftp://ftp.gnu.org/gnu/windows/emacs/utilities/i386/, and place it in,
+say C:\bin\
+
+== source ==
+
+Download emacs-<version>.tar.gz and place it in C:\src\emacs.  DO NOT
+unpack it via winzip.  Go to a DOS prompt and type:
+
+    cd \src\emacs
+    \bin\djtarnt -x ./emacs-<version>.tar.gz
+
+Now you see the emacs/ directory in there.  Read the docs
+there:
+
+* read emacs/INSTALL has the steps for windows (do not confuse with msdos!)
+* read emacs/nt/INSTALL which is what you really need
+
+== cygwin without gcc ==
+
+Install Cygwin, say, by clicking the "install now" link from
+http://sources.redhat.com/cygwin/.  Do not forget to click on nano
+among the editors -- nano will be a good and exremely friendly editor
+till Emacs has been successfully installed.  Unless you need it, do
+not choose the gcc option in cygwin, since we shall install gcc
+separately below through migw.
+
+== mingw ==
+
+Go to http://www.mingw.org/ and download mingw into c:\src\mingw\.  Go
+to a cygwin prompt.
+
+    cd cygdrive/c/src/mingw
+    /cygdrive/c/bin/djtarnt.exe -x ./MinGW-1.1.tar.gz.
+    cd /cygdrive/c/src
+    mv ./mingw /cygdrive/c/mingw
+
+You could also do all this from a dos-prompt, perhaps like this:
+
+    cd c:\src\mingw
+    c:\bin\djtarnt  -x MinGW-1.1.tar.gz.
+    cd c:\src
+    mv mingw C:\mingw
+
+The next step is to make c:\mingw/bin the VERY FIRST path for cygwin.
+(Before attempting your edit, DO NOT forget to "cp profile
+profile.old" in case you screw up.)
+
+You need a decent editor for this (not NOTEPAD or MSWORD). Did you
+install nano earlier?  Then, in a cygwin prompt, do a 'nano
+/etc/profile' and change the first line to:
+
+    PATH='/cygdrive/c/mingw/bin:/usr/local/bin:/usr/bin:/bin:$PATH'
+
+This adds the mingw path.  Type C-x to save your change.
+
+Just to check, start a fresh cygwin session and type: 'which make'.
+You should see: /cygdrive/c/mingw/bin/make.  If you see something else
+as the path for make, esp. if you see cygwin's gcc, something is
+wrong.  You cannot use Cygwin's gcc to install Emacs!
+
+In my MinGW installation, it's not called make, so if you're having trouble, also try 'which mingw32-make' -- DominicCronin
+
+== gmake or make ==
+
+I like to call my GNU make as gmake (to distinguish it from imposters)
+-- if you want this as well, go to c:/mingw/bin and copy make.exe to
+gmake.exe.  The rest of these instructions assume a gmake.
+
+== installing ==  
+
+Start a cygwin prompt and: 
+
+  $ cd /cygdrive/c/src/emacs/emacs-<version>/nt
+  $ ./configure.bat
+  $ gmake
+  $ gmake install INSTALL_DIR=C:/emacs
+
+IMPORTANT: Note that if you have tried installing Emacs once, and are
+trying to install it again, do not forget to run 'gmake distclean'!
+That will ensure that configure.bat detects any new changes you may
+have made to the system, such as installing gcc etc.
+
+== desktop ==
+
+Finally, you may wish to place some Emacs-icons on desktop.  Note that
+it seems there are at least 3 different executables (minor differences
+in the way Emacs starts).  The one that worked best for me: Go to
+start->programs->GNU Emacs->Emacs -- right click on that, copy, and
+then 'paste shortcut' on the desktop.
+
+== source from cvs ==
+
+If you have gotten your Emacs source file checked out from a CVS,
+these instructions will most likely fail when doing make -- they will
+complain that cl.elc could not be found.  For CVS, you have to do
+an extra 'make bootstrap' step:
+
+  $ cd /cygdrive/c/src/emacs/emacs-<version>/nt
+  $ ./configure.bat
+  $ gmake bootstrap
+  $ gmake
+  $ gmake install INSTALL_DIR=C:/emacs
+
+== Problems ==
+
+EricHanchrow ran into this -- the build of 21.3 appeared to go fine (using MingW 3.1.0-1), but while loading my .emacs it died like unto this:
+<pre>
+C:\cygwin\usr\local\src\emacs-21.3\bin>gdb emacs
+GNU gdb 5.2.1
+Copyright 2002 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i686-pc-mingw32"...
+(gdb) run
+Starting program: C:\cygwin\usr\local\src\emacs-21.3\bin/emacs.exe
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x77fa144c in ?? ()
+(gdb) bt
+# 0  0x77fa144c in ?? ()
+# 1  0x0101e19e in funcall_lambda (fun=1100477376, nargs=0, arg_vector=0x82ec18) at eval.c:2851
+# 2  0x0101dc8c in Ffuncall (nargs=1, args=0x82ec14) at eval.c:2716
+# 3  0x010e9283 in Fbyte_code (bytestr=832046452, vector=1099398016, maxdepth=3) at bytecode.c:716
+# 4  0x0101d00d in Feval (form=1368918980) at eval.c:2019
+# 5  0x010536f2 in readevalloop (readcharfun=291760468, stream=0x7803a6f0, sourcename=823710536, evalfun=0x101cc00 <Feval>, printflag=0, unibyte=291613700, readfun=291613700) at lread.c:1259
+# 6  0x010528f7 in Fload (file=823710536, noerror=291613700, nomessage=291613748, nosuffix=291613700, must_suffix=291613748) at lread.c:832
+# 7  0x01062da5 in Frequire (feature=292229124, filename=291613700, noerror=291613700) at fns.c:3090
+# 8  0x0101d00d in Feval (form=1368916692) at eval.c:2019
+# 9  0x0101aa00 in Fprogn (args=1368916700) at eval.c:431
+# 10 0x0101d210 in Feval (form=1368916708) at eval.c:1960
+# 11 0x0101bbec in Fcondition_case (args=1368916900) at eval.c:1211
+# 12 0x0101d210 in Feval (form=1368916908) at eval.c:1960
+# 13 0x0101ce69 in Feval (form=1368910404) at eval.c:2069
+# 14 0x010536f2 in readevalloop (readcharfun=1099496448, stream=0x0, sourcename=824045192, evalfun=0x101cc00 <Feval>, printflag=0, unibyte=291613700, readfun=291613700) at lread.c:1259
+# 15 0x010539ad in Feval_buffer (buffer=1099496448, printflag=291613700, filename=824045192, unibyte=291613700, do_allow_print=291613748) at lread.c:1317
+# 16 0x0101de32 in Ffuncall (nargs=6, args=0x82f3f0) at eval.c:2675
+# 17 0x010e9283 in Fbyte_code (bytestr=823526860, vector=1091962520, maxdepth=7) at bytecode.c:716
+# 18 0x0101e19e in funcall_lambda (fun=1091962248, nargs=4, arg_vector=0x82f524) at eval.c:2851
+# 19 0x0101dc8c in Ffuncall (nargs=5, args=0x82f520) at eval.c:2716
+# 20 0x0101da0e in call4 (fn=292029996, arg1=830966484, arg2=824045192, arg3=291613748, arg4=291613748) at eval.c:2521
+# 21 0x01052bf4 in Fload (file=824045192, noerror=291613748, nomessage=291613748, nosuffix=291613700, must_suffix=291613700) at lread.c:785
+# 22 0x0101de32 in Ffuncall (nargs=4, args=0x82f6f0) at eval.c:2675
+# 23 0x010e9283 in Fbyte_code (bytestr=824044796, vector=1092480424, maxdepth=5) at bytecode.c:716
+# 24 0x0101e19e in funcall_lambda (fun=1092480228, nargs=0, arg_vector=0x82f824) at eval.c:2851
+# 25 0x0101dc8c in Ffuncall (nargs=1, args=0x82f820) at eval.c:2716
+# 26 0x010e9283 in Fbyte_code (bytestr=824049136, vector=1092484624, maxdepth=1) at bytecode.c:716
+# 27 0x0101d00d in Feval (form=1360920032) at eval.c:2019
+# 28 0x0101bbec in Fcondition_case (args=1367125412) at eval.c:1211
+# 29 0x010e9efa in Fbyte_code (bytestr=824045564, vector=1092482276, maxdepth=5) at bytecode.c:898
+# 30 0x0101e19e in funcall_lambda (fun=1092480996, nargs=0, arg_vector=0x82fb64) at eval.c:2851
+# 31 0x0101dc8c in Ffuncall (nargs=1, args=0x82fb60) at eval.c:2716
+# 32 0x010e9283 in Fbyte_code (bytestr=824041556, vector=1092477156, maxdepth=5) at bytecode.c:716
+# 33 0x0101e19e in funcall_lambda (fun=1092476988, nargs=0, arg_vector=0x82fc1c) at eval.c:2851
+# 34 0x0101e05c in apply_lambda (fun=1092476988, args=291613700, eval_flag=1) at eval.c:2770
+# 35 0x0101ce42 in Feval (form=1367101868) at eval.c:2071
+# 36 0x010064e3 in top_level_2 () at keyboard.c:1254
+# 37 0x0101bced in internal_condition_case (bfun=0x10064d0 <top_level_2>, handlers=291735820, hfun=0x10061b0 <cmd_error>) at eval.c:1267
+# 38 0x01006590 in top_level_1 () at keyboard.c:1262
+# 39 0x0101b839 in internal_catch (tag=291688148, func=0x1006560 <top_level_1>, arg=291613700) at eval.c:1030
+# 40 0x01006449 in command_loop () at keyboard.c:1223
+# 41 0x01005f62 in recursive_edit_1 () at keyboard.c:950
+# 42 0x0100608b in Frecursive_edit () at keyboard.c:1006
+# 43 0x01002d88 in main (argc=1, argv=0x9f24e8, envp=0x9f2a38) at emacs.c:1547
+# 44 0x0100122d in __mingw_CRTStartup ()
+# 45 0x01001258 in mainCRTStartup ()
+# 46 0x7c5987e7 in _libuser32_a_iname ()
+(gdb) The program is running.  Exit anyway? (y or n) y
+</pre>
+
+== recent (6 Jan 2004) CVS Emacs ==
+Hooray!  It worked, once I realized that I need to use <tt>mingw32-make</tt>.  (Earlier I'd used Cygwin `make', which caused the build to fail with `Cannot open load file: encoded-kb').
+----
+CategoryBuilding

@@ -1,0 +1,8 @@
+Lispy is a simple chat client for simple chat servers called <Mtp> Chat. 
+
+There is no use of complex protocols, so Lispy is basically a telnet client.
+MtpWiki has a page dedicated to Lispy there : http://mtpforge.melting-pot.org/projects/lispy
+You can also find informations about the servers there : http://mtpforge.melting-pot.org/wiki/MtpChatServers
+Those servers were created for the needs of a small group of people, therefore they are really not widely used.
+
+ErBot can now be used in conjunction with Lispy through the `erbot-lispy` extension provided with ErBot

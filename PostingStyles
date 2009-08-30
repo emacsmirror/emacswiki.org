@@ -1,0 +1,53 @@
+Posting styles are using in Gnus to set various headers of outgoing messages (mail and news) depending on which group you are in.  Read the Gnus manual for more.
+
+Here is an example.
+
+* The ".*" entry holds my default signature.
+* The ""de.rec.spiele.rpg.misc" entry holds an alternate signature.
+* The "emacs" entry has an alternate signature and calls a function for more.  The function `vfaq-entry' returns a string.  [http://www.messengers-of-messiah.org/~csebold/emacs/emacsvfaq.el]
+* The "emacs.sources" entry changes the Followup-To header.
+* The "atlantis" header changes name and email address.
+* The "mail.foo" entry has a very long signature.
+* The "mail.foo.bar" entry adds a Reply-To header for the mailing list, and it adds a Cc header unless there already is one.  This is a hack.  It assumes that the variable `header' will have a value when replying (therefore a new Cc header is not needed).  When sending a new message, the variable `header' is undefined and therefore the custom header is added.
+
+ (setq gnus-posting-styles
+       '((".*"
+	  (signature <nowiki>"http://www.geocities.com/kensanata/\nCoffee should be black as hell, strong as death and sweet as love.\n\t-- Turkish proverb"</nowiki>))
+	 ("de.rec.spiele.rpg.misc" 
+	  (signature <nowiki>"drsrm0.02 t0 ss12 d0 SfDSA Rwo A0 Dr1w1 T*on W3,4 a5 xsmr1 E7 Vr GzP,Fsp,o,h\nhttp://www.geocities.com/kensanata/rpg.html"</nowiki>))
+	 ("emacs"
+	  (signature (concat <nowiki>"http://www.geocities.com/kensanata/emacs.html\n\""</nowiki>
+			     (vfaq-entry) "\"")))
+	 ("emacs.sources"
+	  ("Followup-To" "gnu.emacs.help"))
+	 ("atlantis$"
+	  (signature <nowiki>"http://www.geocities.com/kensanata/juenger.html\nhttp://home.pages.de/~GA/"</nowiki>)
+	  (name "Kensanata")
+	  (address "kensanata@yahoo.com"))
+	 ("mail.foo"
+	  (signature "Foo, Inc.
+ Some Street and Number, Zip Code and City
+ Phone Number for the Internet Challenged
+ <nowiki>http://www.foo.com/</nowiki>"))
+	 ("mail.foo.bar"
+	  ("Reply-To" "bar@foo.com")
+	  ("Cc" (unless (condition-case nil 
+			    (symbol-value 'header)
+			  ('void-variable nil)) "bar@foo.com")))))
+
+----
+Here's something I just did with posting-styles.  Here at work we use the MDaemon mail server.  It is configured to allow relaying iff you use a valid "From:" address (note that IP address is not taken into account at all).  So, I have to set my "From:" address to be my work address.  However, I don't always want to use my work address.  So, I'm able to use posting-styles to handle conditional setting of "Reply-To:".  This basically says to default to using my own mail address if the 'm' key is hit from the *Group* buffer.  If I'm replying to an article, then use whatever was in the "To:" field of the article.  Also, if I'm sending a message from within my work account (always nnml backend), use my work address.  It's much simpler in elisp than english. --LathI
+
+<pre>
+(setq gnus-posting-styles
+      '((""
+         ("Reply-To" (save-excursion
+                       (or (and (get-buffer gnus-article-buffer)
+		                (set-buffer gnus-article-buffer)
+		                (message-fetch-field "To"))
+		            "mailbox@home"))))
+        ("nnml.*"
+          ("Reply-To" "mailbox@work"))))
+</pre>
+----
+CategoryGnus

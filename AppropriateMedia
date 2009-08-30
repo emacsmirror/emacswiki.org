@@ -1,0 +1,22 @@
+See MeatBall:AppropriateMedia for some discussion.  As far as this
+wiki goes, I think the following holds true:
+
+* Documentation which is not part of the EmacsManual should
+go to the wiki.
+* Bugs in the Emacs/XEmacs manuals should be reported to the
+maintainers.
+* Examples, typical usage, customizations, and code snipplets should
+go to the wiki.
+* Bug reports and bug fixes to packages should be reported to the
+appropriate maintainers.
+* Discussions, questions, etc. usually go to the EmacsNewsgroups.  I'd
+like to see more know-how collected on the wiki, but at the moment I
+think that a lot of the good content comes from USENET postings which
+get copied and summarized on the wiki.
+* Often new content will prompt us to share more of our know-how, or
+prompt us to ask questions about the stuff posted on the wiki.  This
+should stay on the wiki.
+
+I hope that doesn't discourage people from adding new content.  I hope
+that it shows more or less where our place is in the Emacs Information
+Infrastructure.

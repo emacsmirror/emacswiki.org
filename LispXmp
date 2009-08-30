@@ -1,0 +1,22 @@
+==What is LispXmp ?==
+LispXmp is mode like Ruby's [http://eigenclass.org/hiki/xmpfilter xmpfilter].
+
+==Why the need for LispXmp ?==
+Annotating lisp value is the most easily viewable format to explain the usage of functions. It is also useful for debugging.
+
+==Install==
+Put Lisp:lispxmp.el in your load-path, add
+{{{
+    (require 'lispxmp)
+}}}    
+in ~/.emacs
+
+==Usage==
+M-x lispxmp produces annotated code.
+
+[[image:LispXmpScreenShotBefore]]
+
+produces
+
+[[image:LispXmpScreenShotAfter]]
+==Discussion==

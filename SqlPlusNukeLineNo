@@ -1,0 +1,53 @@
+SQL*Plus has an interesting feature: Whenever you type a line of input, SQL*Plus adds a line number to the beginning of the next line.  This line number is not part of the SQL command; it just allows you to refer to and edit specific lines in your SQL command.  SQL*Plus acts like the standard text editor.  SQL*Plus is on the TheTruePath.
+
+This may make SQL*Plus error reporting less comprehensible when using SqlMode.  Here is an example of the line number junk:
+
+    ...
+      2    3    4       from v$parameter p, all_tables u
+              *
+    ERROR at line 2:
+    ORA-00942: table or view does not exist
+
+This only happens if you enter multi-line SQL statements by using C-j instead of RET between lines (ie. using sql-accumulate-and-indent instead of comint-send-input).  If you enter SQL statements one at a time, you'll be fine.
+
+The following elisp function must be added to comint-preoutput-filter-functions in order to strip the line numbers junk from the output:
+
+    (defun eat-sqlplus-junk (str)
+      "Eat the line numbers SQL*Plus returns.
+    Put this on `comint-preoutput-filter-functions' if you are
+    running SQL*Plus.
+
+    If the line numbers are not eaten, you get stuff like this:
+    ...
+      2    3    4       from v$parameter p, all_tables u
+              *
+    ERROR at line 2:
+    ORA-00942: table or view does not exist
+
+    The mismatch is very annoying."
+      (interactive "s")
+      (while (string-match " [ 1-9][0-9]  " str)
+        (setq str (replace-match "" nil nil str)))
+      str)
+
+Test it by evaluating the following expression:
+
+    (string= "     from" (eat-sqlplus-junk "  2    3    4       from"))
+
+Install it by adding the following expression to your .emacs; it will check wether the iSQL mode you have just started is indeed running SQL*Plus, and if it is, it will add eat-sqlplus-junk to comint-preoutput-filter-functions.
+
+    (defun install-eat-sqlplus-junk ()
+      "Install `comint-preoutput-filter-functions' if appropriate.
+    Add this function to `sql-interactive-mode-hook' in your .emacs:
+    \(add-hook 'sql-mode-hook 'install-eat-sqlplus-junk)"
+      (if (string= (car (process-command (get-buffer-process sql-buffer)))
+                   sql-oracle-program)
+          (add-to-list 'comint-preoutput-filter-functions
+                       'eat-sqlplus-junk)))
+
+    (add-hook 'sql-interactive-mode-hook 'install-eat-sqlplus-junk)
+
+
+
+----
+CategorySql

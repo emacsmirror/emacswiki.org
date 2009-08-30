@@ -1,0 +1,17 @@
+'''FontLockMode''' (or [::FontLock]) highlights ("fontifies") the syntax of programming languages and other files with specific syntaxes.  For this reason, it is also referred to as [::SyntaxHighlighting].  This visual recognition in the file makes it easier to understand a file, and provides visual cues where syntax errors exist.  Highlighting occurs as the programmer inputs their code.
+
+FontLockMode has nothing to do with configuring your favorite font for use in Emacs.  Permanently adding color and other font setting to documents in Emacs is done with EnrichedMode.
+
+The syntactic fontification rules for a programming language or other file format is typically provided by the [[MajorMode]].  See ProgrammingModes.
+
+See EnablingFontLock to learn how to turn on FontLockMode.
+
+Users can AddKeywords to define new highlighting rules.
+
+To add font-lock rules to a MajorMode, see FontLockForNewModes.
+
+See CustomizingFaces to change the font [[Face]] settings used by font-lock.
+
+----
+CategoryFaces
+CategoryModes

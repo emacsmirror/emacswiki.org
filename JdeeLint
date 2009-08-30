@@ -1,0 +1,11 @@
+jde-lint provides an interface between the JavaDevelopmentEnvironment and Lint4j.
+
+Lint4j stands for "Lint for Java", and is "a static Java source code analyzer that detects locking and threading issues, performance and scalability problems, and checks complex contracts such as Java serialization by performing type, data flow, and lock graph analysis." It can be downloaded from http://www.jutils.com/.
+
+[[Download:jde-lint.el]]
+
+[new]
+http://pmd.sourceforge.net/ is a nice, xml configurable static analyzer with Emacs plugin
+
+----
+JavaDevelopmentEnvironment

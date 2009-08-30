@@ -1,0 +1,7 @@
+ElGyach is a YahooChat client that benefits from the many features Emacs has.
+
+* http://www.nongnu.org/elgyach
+
+ElGyach is feeling a bit ill lately.  It has not been ported to the latest YahooChat protocol completely, and its own Emacs <-> C sub-process protocol is mismatched.  Needs some work.  -- MatthewKennedy
+----
+CategoryChatClient

@@ -1,0 +1,11 @@
+Information about integration of VoIP ([http://en.wikipedia.org/wiki/Voice_over_IP Voice over IP]) tools in Emacs.
+
+== Send SMS from Emacs ==
+[[YoniRabkinKatzenell]] put here some code to connect to a provider. [http://yrk.nfshost.com/repos/diamondsms/diamondsms.el diamondsms.el]. More proveiders could be added if they have SMS APIs.
+
+== Syntax highlighting for Asterisk AEL files ==
+See [http://www.voip-info.org/storage/users/142/38142/images/1381/ael-mode.el ael-mode.el]
+
+== Call to a VoIP number from Emacs ==
+TODO.
+Some integration with a program (ex: ohphone) could be done.

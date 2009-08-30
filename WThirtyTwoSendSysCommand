@@ -1,0 +1,34 @@
+= WThirtyTwoSendSysCommand =
+
+One way that you can interact with Windows is to send it commands via `w32-send-sys-command'.  These can be bound to a key with an anonymous function or a named function.  Examples of both are given.
+
+== Anonymous Functions ==
+
+ (global-set-key [(f4)] (function (lambda () "Maximize frame" (interactive) (w32-send-sys-command 61488))))
+
+== Named Functions ==
+
+ (defun my-maximize-frame ()
+  "Maximize frame"
+  (interactive)
+  (w32-send-sys-command 61488))
+ 
+ (global-set-key [(f4)] 'my-maximize-frame)
+
+= w32-send-sys-command Codes =
+* 61440 - resize the window via keyboard
+* 61456 - move window via keyboard
+* 61472 - minimize current frame
+* 61488 - maximize current frame
+* 61504 - next window (not very practical)
+* 61520 - previous window (not very practical)
+* 61536 - close the window (/this will quit the application/)
+* 61552 - vertical scroll -- doesn't seem to do anything for me
+* 61568 - horizontal scroll -- doesn't seem to do anything for me
+* 61584 - mouse menu(?) -- doesn't seem to do anything for me
+* 61696 - activate menubar (will not de-activate it, though)
+* 61712 - arrange(?) -- doesn't seem to do anything for me
+* 61728 - restore current frame
+* 61744 - simulate pressing Windows Start button
+* 61760 - activate screensaver
+* 61776 - hotkey(?) -- doesn't seem to do anything for me

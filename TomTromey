@@ -1,0 +1,126 @@
+I've been an Emacs user since 1991 or so, when Brian Fox (of bash fame) caught me using vi and csh, and told me that I ought to switch to Emacs and bash.  I've never looked back.
+
+I've used various versions of Emacs over the years: Emacs 18 was my first, then I used Epoch, Lucid Emacs, XEmacs.  These days, I use Emacs.
+
+I wrote a few random hacks that made their way into Emacs.  I (re-)wrote Tcl mode, and I added regular expression support to etags.
+
+I'm back to hacking on Emacs after a long hiatus.  Recently I've been working on notification area support and [http://tromey.com/elpa/ a packaging system].
+
+My blog is at http://tromey.com/blog/.  There's an RSS feed for just Emacs-related things if that is all you are interested in hearing about.
+
+== My Emacs Wish List ==
+
+Here's my Emacs wish-list.  Parts of it are more like my personal to-do list.
+
+* ELPA
+** Package more stuff...
+*** ECB
+*** JDE
+*** DVC
+*** CEDET/Semantic
+*** BBDB + VM
+*** mew + semi + lsdb?
+*** jabber.el
+*** elpoint?
+*** RLX?  (when it is working...)
+*** auctex?
+*** EmacsSpeaksStatistics
+*** ... your package here
+** Split off package install code and try again to get it into Emacs.  Enhance it to auto-extract the list of built-in packages from the Emacs sources at build time
+
+* Emacs should let you make and manipulate notification area icons.  I wrote status.el to do this (and hooked it into calendar, ERC, and EMMS) -- but this needs a hacked zenity, and really this should be built in to Emacs.  (I wrote a big patch to implement this properly in Emacs; it was rejected.)
+
+** Maybe add status.el code to interface with compilation somehow.  Should only notify user if compilation buffer is not visible.
+** Perhaps other background tasks?
+** Replace Gnome mail notification applet with Emacs code?
+** Could rewrite the zenity hack in Python, then put all the Python code directly into the .el file.
+
+* It should be possible to embed another X application into a buffer.  This would be handy for things like gnuplot mode.
+
+* ERC
+** ERC could use a buffer-menu-like mode.  But maybe ibuffer can do this -- need to look.
+** ERC could use a C-x C-o binding to delete all the "server gunk" between the current input location and the last non-server-line.  That is, delete all the messages about people entering and leaving the channel, leaving just the conversation.
+** ERC reconnect seems a little weird.  When the VPN goes down it only seems to retry once, whereas x-chat will retry until it works.  Also it has trouble associating servers with entries in the alist, and on occasion on reconnect it willl forget that a buffer is a channel on some server, and will make a new buffer.  Investigate.  (The VPN thing seems to be the known res_init bug in Emacs.  The other thing, I don't know yet.  I think if I have a buffer like #gcc&lt;2> and I have to reconnect, ERC will make a new #gcc&lt;3> rather than reuse the existing one.  Doesn't seem to happen unless I have multiple channels with the same name on different servers.)
+
+* GNUS
+** Setting up multiple mail accounts (especially outgoing mail) in gnus was ridiculously hard.  Should have a wizard or something.
+** gnus could use a wizard for subscribing to mailing lists.  It could auto-create a new group and perhaps even auto-reply to the confirmation email.
+** gnus uses w3m to display HTML content.  it should also modify the w3m URL click callback to use browse-url instead of w3m -- I want clicks in these buffers to use my preferred browser, not always w3m.  (I sent a patch for this but AFAICT it was rejected.)
+
+* Emacs should have a keyring.  I've got keyring.el kicking around; it adds an Emacs-specific keyring and also has some code to interface to the Gnome keyring.  However, for this to really work it requires patching all the elisp code that uses passwords.
+
+* Try out a mode-line hack to show point's position in buffer by changing the background of the correct percentage of the mode line.  See :propertize for mode-line-format.
+
+* Eclipse can display error icons in the right fringe which do not scroll -- so you can see a mini-overview of the entire file all the time.  Emacs could use a fringe like this.
+
+* Anything in Emacs that is doing "backgroundable" work and that causes a noticeable pause should be rewritten to use a process filter instead.  The code could temporarily install a new watch cursor and a new keymap that doesn't allow normal operation of the buffer.  Candidates:
+
+** Gnus.  In particular "g" should work in the background.
+** When the update is done, pcvs can pause for an extended period while preparing the buffer.  Worse, there's no indication of what is happening
+** psvn (which should probably be included in Emacs) also has problems with large updates
+** Lately I've been looking into multi-threading.  This is quite complicated:
+*** Most globals inside the Emacs C code must be moved into a per-thread struct (I did this using some ad hoc refactoring scripts)
+*** The GC must be updated a bit
+*** The implementation of binding to symbols must be changed
+*** Likewise for buffer-local variables
+*** Redisplay has to be constrained to run in a single thread
+*** I/O needs some thought.  My current thinking is that only the first thread can accept keyboard or mouse input but that other threads might be able to read from processes
+
+* tar-mode and arc-mode should be rewritten as magic file name handlers.  Then these modes could simply be replaced by dired.  Also this would allow ELPA to simply not unpack package archives it downloads.
+
+* Emacs as IDE:
+** Been trying Semantic -- cool stuff but hard to figure out what to actually **do** with it.  Needs a nice tutorial, maybe some more directly useful built-in applications.
+** TAGS files should be contextual per project.
+** Projects should have a way to specify skeletons for new files (we did this for Classpath in Eclipse with great results).
+** Emacs could use something Mylar-like.  Project could specify bugzilla URL, user could specify searches to automatically display, etc.
+** Should be simple to save gud commands (history, pwd, args) automatically, say like Insight
+** Closing a project should kill associated buffers.  Perhaps re-opening could restore.
+** TAGS file should auto-update when I save a file.  I sent a patch once... but could extract just the "-u" bits and use an inotify-wrapper instead of Emacs code.
+** ibuffer should have a way to easily set it up to make a filter based on project root directories
+** desktop.el should know about projects and save things like compile-history, tags files, gdb commands, per-project.
+** It would be super cool if someone attached Eclipse's incremental java compiler to Emacs
+** Jim Blandy's "jp-clean-patch" should be in Emacs (currently in ELPA)
+** Compilation mode should keep count of errors and report them in the header line.  And, errors should be annotated in the fringe of the buffers in which they occur.
+
+* Random performance thoughts.  I tried oprofiling but got bad data :-(.  Fixing this is the first thing.
+** The interpreter looks very simple.  Could at least use -funswitch-loops, or rewrite using GCC's computed goto extension (this provided a 7% speedup in libgcj -- but maybe the Emacs interpreter is not as heavily used).  (I tried this around 2007-12-30, and it didn't help much -- less than 1% on an interpreter-bound program.)
+** Lexical scoping might provide some performance boost if it was used everywhere possible
+** Could JIT compile the bytecode; various JIT libraries are available.  Or could AOT compile it by translating to C and using GCC.  Perhaps overkill.
+
+[new:JohanBockgård:Viral Licensing]
+Something like that has been tried. http://www.mundell.ukfsn.org/native/
+[new]
+
+** Cool!  Of course without profiling I don't know if it helps.  And I think lexical scope is part of the solution... what ever happened to that branch?  Will it ever be merged?
+** Could cache function lookup if flet is rarely used.  (This doesn't show up in profiles, so I doubt it is worthwhile.)
+** Looked into an incremental GC.  AREF and ASET macros, among others, are inconsistently used; for a write barrier not involving the MMU this would have to be fixed.
+*** I did write a huge patch to regularize most of these uses, and to add setter macros for all other lisp object fields.  The result is quite ugly, and the patch, while enormous, is still incomplete -- there are places in Emacs that take the address of a field and pass it around, which is a no-no for a software write barrier.  It isn't clear that finishing this is worthwhile.
+** Could precompile regexps and have regexp objects available to elisp.  (In my one profile run, regexp matching was item #13, and regexp compilation was not visible.  But, due to regexp caching, this might not have been the best test.)  A nice advantage of first-class regexp objects is that you can support multiple different regexp syntaxes.
+
+* "q" in view-mode often iconifies the frame.  I never want this, in fact I always want "q" to just be bury-buffer.  Can view-mode do this, or do I need to make a key binding?  (I sent a bug report.  RMS replied saying that no-one is expert in view-mode's quit code right now.  That stuff is wacky...)
+
+[new:DrewAdams:2007-07-09 16:02 UTC]
+: I couldn't agree more that the view-mode quit code is a mess. This started with Emacs22, AFAICT. In my case, I never want the frame iconified, and I usually don't want the buffer buried either: I want the buffer killed (which in my case will also delete the window or frame as appropriate) or I want just `quit-window'. The current view-mode quit code is a jungle of possibilities, none of which seem to work well for me. It was simple before. Helas, on n'arrete pas le progres... 
+
+: I asked for a user option to configure this (although it would be better for view-mode not to try to be so sophisticated, in the first place), but that was rejected. I at least set `view-remove-frame-by-deleting' to `t', but that doesn't help with the new problems introduced in Emacs22. I also complained about the plethora of similar names for commands to leave view-mode: `View-exit', `View-quit', `View-quit-all', `View-leave', `View-kill-and-leave'. That alone should be a signal that there is a design problem. Look at `RETURN-TO' in the doc string of `view-mode-exit' if you want to see how crazy this stuff is. -- DrewAdams
+[new]
+
+* PCVS
+** Maybe it could use cvs-utils for a performance boost
+** It could use a way to revert a file
+** If vc-dired wasn't so slow perhaps I could just use it instead.  ESR is working on this.
+
+* svn support
+** psvn should be in Emacs.  Or magically replaced by vc-dired
+** psvn sorting is too slow for me to use it with GCC.  Reported it, haven't tried the ideas from the maintainer's response
+** vc-svn should automatically run "svn resolved" when needed.  Perhaps when I save after editing a conflicted file.  Reported this as a bug.
+
+* VC
+** Most needed stuff is already in 23
+** Support for mercurial queues would be nice.  This can probably be grafted onto vc-hg without too much trouble.
+** vc-quilt would be nice.  The existing quilt code (not bundled) is really bad.
+
+----
+
+CategoryHomePage
+

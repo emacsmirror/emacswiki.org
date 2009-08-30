@@ -1,0 +1,41 @@
+This function (downloadable at [[Lisp:eval-to-texi.el]]) receives a lisp form, evaluates it, and returns a [[Texinfo]] @lisp environment.
+
+For example, evaluating (car '(a b c)) it generates:
+
+ @lisp
+ (car '(a b c))
+       @result{} a
+ @end lisp 
+
+the function also manages error cases. Evaluating (car a'(a b c)) it generates:
+
+ @lisp
+ (car a'(a b c))
+       @error{} Wrong number of arguments: #<subr car>, 2
+ @end lisp
+
+and macro expansion:
+
+ (defmacro inc (var)
+        (list 'setq var (list '1+ var)))
+
+ @lisp
+ (inc v)
+      @expansion{} (setq v (1+ v))
+      @result{} 1
+ @end lisp
+
+and, finally, output side-effects:
+
+ @lisp
+ (prin1 "lala")
+       @print{} "lala"
+       @result{} "lala"
+ @end lisp
+
+
+I think this function is useful for people writing [[Texinfo]] files with lisp content. 
+
+
+----
+CategoryTex

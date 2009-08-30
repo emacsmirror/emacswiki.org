@@ -1,0 +1,57 @@
+<pre>
+;;; A template for ASDF system files:
+
+(push `(("\\.asd\\'" . "ASDF Skeleton") 
+	"System Name: "
+	"
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (unless (find-package :" str ".system)
+    (defpackage :" str ".system
+      (:use :common-lisp :asdf))))
+
+
+(in-package :" str ".system)
+
+(defsystem :" str " 
+  :description " ?\" (read-string "Description: ") ?\"" 
+  :author \"" (user-full-name) " <" user-mail-address ">\" 
+  :licence \"" (read-string "License: ") "\" 
+  :version \"" (read-string "Version: ") "\" 
+  :components (()) 
+  :depends-on ())") 
+  auto-insert-alist) 
+
+</pre>
+
+== How do you use this ? ==
+It should work automatically if 
+
+* you have auto-insert enabled:
+
+ (add-hook 'find-file-hooks 
+          '(lambda ()
+             (auto-insert)))
+
+* and you open an empty file ending in ".asd"
+
+It will ask you about
+
+* The name of your package,
+* a short description,
+* license you put this package under,
+* and the version number of you newly created package.
+
+== Modifications ==
+One might want to use TAB completion for the license and default values for the version numnber:
+
+Just change two lines:
+
+  :licence \"" (completing-read "License: " '(("GPL" 1)
+                               ("BSD" 2))) "\" 
+  :version \"" (completing-read "Version: " nil nil nil "0.1") "\" 
+
+And fill in the missing licenses.  Of course this makes it impossible to use a license with spaces in the name that's not on the list.  You can always change it later.
+
+One could also change the skeleton to not read the system name as a string but with a default of the name of the current directory.  This is left as an exercise to the reader or next editor ;-)
+----
+CategoryTemplates CategoryCode

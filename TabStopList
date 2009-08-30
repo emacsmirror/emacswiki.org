@@ -1,0 +1,66 @@
+The variable `tab-stop-list' holds a list of all the tab stops to use,
+when `indent-relative' does not find an appropriate tab stop.  It is
+the fallback used most often.
+
+Some people use `tab-to-tab-stop' as their indentation function.  Then
+`tab-stop-list' is the only variable used.  You can do that as well:
+
+    (define-key text-mode-map (kbd "<tab>") 'tab-to-tab-stop)
+
+The default tab stops are 8 spaces appart:
+
+    (8 16 24 32 40 48 56 64 72 80 88 96 104 112 120)
+
+Using a little piece of elisp or some manual editing, you can change
+this:
+
+    (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60
+                          64 68 72 76 80 84 88 92 96 100 104 108 112
+                          116 120))
+
+Here is the little fragment I used:
+
+    (let ((i 4))
+      (while (< i 124)
+        (insert (number-to-string i) " ")
+        (setq i (+ 4 i))))
+
+Or even this:
+
+    (setq tab-stop-list (let ((stops '(8)))
+                          (while (< (car stops) 120)
+                            (setq stops (cons (+ 8 (car stops)) stops)))
+                          (nreverse stops)))
+
+Or perhaps:
+
+    (setq tab-stop-list (loop for i from 4 to 120 by 4 collect i))
+
+The last only if you have used the CommonLisp package.
+
+== Beware confusion with the variable `tab-width' ==
+
+Note that this is not the same as the variable `tab-width'.  That
+variable only controls how much space a tab character occupies in the
+buffer.  The default value is 8.  This fits nicely with the default
+value of `tab-stop-list'.
+
+Now, if you read source code written with an editor that inserts tab,
+but you want it ''look'' as if it was indented using a tab-width of 2,
+the use the following:
+
+    (setq tab-width 2)
+
+Note that if you hit the TAB key, this does not necessarily mean that
+point will advance by 2!  What happens when you hit the TAB key is
+entirely dependent upon the function bound to it.
+
+If the TAB key is bound to `indent-relative', then -- as explained
+above -- the variable `tab-stop-list' may be used as a fallback.  And
+then point will probably advance by 8, not by 2!  You could either set
+`tab-stop-list' accordingly, but probably that just means you have the
+wrong function bound to the TAB key.  Most programming modes provide
+much better indentation.
+
+----
+CategoryIndentation

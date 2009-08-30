@@ -1,0 +1,446 @@
+: [[image:iciclesimage]]
+
+|| '''[[Icicles]]''' || [[Icicles - Command Index]] || [[Icicles - Options Index]] ||
+
+----
+
+This is a general conceptual index for '''[[Icicles]]'''.  For user options, see [[Icicles - Options Index]].  For commands, see [[Icicles - Command Index]].
+
+==== Symbols ====
+
+* `##$##' -- [[Icicles - Special Characters in Input Patterns]]
+* `##*##' -- [[Icicles - Special Characters in Input Patterns]]
+* `##?##' -- [[Icicles - Special Characters in Input Patterns]], [[Icicles - Key Bindings]]
+* `##.##' -- [[Icicles - Special Characters in Input Patterns]]
+* `##..##' -- [[Icicles - Special Characters in Input Patterns]], [[Icicles - File-Name Completion Tips]]
+* `##\##' -- [[Icicles - Special Characters in Input Patterns]]
+* `##/##' -- [[Icicles - File-Name Completion Tips]]
+* `##~/##' -- [[Icicles - File-Name Completion Tips]]
+* `##C-!##' -- [[Icicles - Choose All Candidates]]
+* `##C-<##' -- [[Icicles - Candidate Sets]]
+* `##C->##' -- [[Icicles - Candidate Sets]]
+* `##C-{##' -- [[Icicles - File-Name Input]]
+* `##C-}##' -- [[Icicles - File-Name Input]]
+* `##C-%##' -- [[Icicles - Candidate Sets]]
+* `##C-:##' -- [[Icicles - Candidate Sets]]
+* `##C-~##' -- [[Icicles - Candidate Sets]]
+* `##C--##' -- [[Icicles - Candidate Sets]]
+* `##C-+##' -- [[Icicles - Candidate Sets]]
+* `##C-*##' -- [[Icicles - Candidate Sets]]
+* `##C-^##' -- [[Icicles - Customization and General Tips]]
+* `<tt>C-#</tt>' -- [[Icicles - Customization and General Tips]]
+* `##C-(##" -- [[Icicles - Fuzzy Completion]], [[Icicles - Customization and General Tips]]
+* `##C-,##' -- [[Icicles - Customization and General Tips]]
+* `##C-.##' -- [[Icicles - File-Name Completion Tips]]
+* `##C-M-/##' -- [[Icicles - Completion in Other Buffers]]
+* `##C-M-<##' -- [[Icicles - Candidate Sets]]
+* `##C-M->##' -- [[Icicles - Candidate Sets]]
+* `##C-M-{##' -- [[Icicles - Candidate Sets]]
+* `##C-M-}##' -- [[Icicles - Candidate Sets]]
+* `##C-M-,##' -- [[Icicles - Sorting Candidates]], [[Icicles - Key Completion]], [[Icicles - History Enhancements]], [[Icicles - Customization and General Tips]], [[Icicles - Key Bindings]]
+* `##^G^J##' separator for multi-completion -- [[Icicles - Multi-Completions]]
+* `M-*' -- [[Icicles - Progressive Completion]], [[Icicles - Key Bindings]]
+* `##M-/##' -- [[Icicles - Completion in Other Buffers]]
+* `##M-.##' -- [[Icicles - Inserting Text from Cursor]]
+* `##M-,##' -- [[Icicles - Sorting Candidates]], [[Icicles - Key Bindings]]
+* `M-SPC' -- [[Icicles - Key Bindings]]
+* `S-C-M-TAB' -- [[Icicles - Large Candidate Sets]]
+* `SPC' -- [[Icicles - Key Bindings]]
+* `S-RET' -- [[Icicles - S-RET]]
+* `S-SPC' -- [[Icicles - Progressive Completion]], [[Icicles - Key Bindings]]
+* `S-TAB'
+** apropos completion -- [[Icicles - Apropos Completions]]
+** navigation in `*Completions*' -- [[Icicles - Key Bindings]]
+** search string, Isearch to '''Icicles search''' -- [[Icicles - Search Enhancements#IciclesSearchFromIsearch]]
+
+* `##\W$##' -- [[Icicles - Special Characters in Input Patterns]], [[Icicles - File-Name Completion Tips]]
+
+
+==== A ====
+
+* abbreviation, command -- [[Icicles - Multi M-x#icicle-command-abbrev|Icicles Multi M-x]]
+* all candidates, choosing together -- [[Icicles - Choose All Candidates]]
+* all matching completions, showing -- [[Icicles - Apropos Completions]]
+* alternative sorting of completion candidates -- [[Icicles - Sorting Candidates]], [[Icicles - Customization and General Tips]]
+* apropos
+** '''Icicles''' apropos commands -- [[Icicles - Help on Candidates]]
+** using Emacs help commands -- [[Icicles - Help on Candidates]]
+* apropos completion -- [[Icicles - Apropos Completions]]
+* apropos icompletion (incremental completion) -- [[Icicles - Icompletion]]
+
+
+==== B ====
+
+* Boolean operations on candidate sets -- [[Icicles - Candidate Sets]]
+* buffer configurations -- [[Icicles - Customization and General Tips]]
+* buffer-text completion -- [[Icicles - Completion in Other Buffers]]
+* bugs -- IciclesIssues
+
+
+==== C ====
+
+* `##C-!##' -- [[Icicles - Choose All Candidates]]
+* `##C-<##' -- [[Icicles - Candidate Sets]]
+* `##C->##' -- [[Icicles - Candidate Sets]], [[Icicles - Search Commands, Overview]]
+* `##C-{##' -- [[Icicles - File-Name Input]]
+* `##C-}##' -- [[Icicles - File-Name Input]]
+* `##C-%##' -- [[Icicles - Candidate Sets]]
+* `##C-:##' -- [[Icicles - Candidate Sets]]
+* `##C-~##' -- [[Icicles - Candidate Sets]]
+* `##C--##' -- [[Icicles - Candidate Sets]]
+* `##C-+##' -- [[Icicles - Candidate Sets]]
+* `##C-*##' -- [[Icicles - Candidate Sets]]
+* `##C-^##' -- [[Icicles - Customization and General Tips]]
+* `<tt>C-#</tt>' -- [[Icicles - Customization and General Tips]]
+* `##C-(##" -- [[Icicles - Fuzzy Completion]], [[Icicles - Customization and General Tips]]
+* `##C-,##' -- [[Icicles - Customization and General Tips]]
+* `##C-c `##' -- [[Icicles - Other Search Commands]], [[Icicles - Key Bindings#IcicleModeBindings]]
+* `##C-c TAB##' -- [[Icicles - Other Search Commands]], [[Icicles - Key Bindings#IcicleModeBindings]]
+* `C-down' -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]]
+* `C-f1' -- [[Icicles - Help on Candidates]]
+* `C-g'
+** aborting input -- [[Icicles - Multi-Commands]]
+** `##^G^J##' separator for multi-completion -- [[Icicles - Multi-Completions]]
+* `C-h' -- [[Icicles - Key Bindings]]
+* `C-help' -- [[Icicles - Help on Candidates]]
+* `C-l' -- [[Icicles - Cycling Completions]], [[Icicles - Key Bindings]]
+* `##C-M-/##' -- [[Icicles - Completion in Other Buffers]]
+* `##C-M-<##' -- [[Icicles - Candidate Sets]]
+* `##C-M->##' -- [[Icicles - Candidate Sets]]
+* `##C-M-{##' -- [[Icicles - Candidate Sets]]
+* `##C-M-}##' -- [[Icicles - Candidate Sets]]
+* `C-M-down' -- [[Icicles - Help on Candidates]]
+* `C-M-mouse-2' -- [[Icicles - Help on Candidates]]
+* `C-M-next' -- [[Icicles - Help on Candidates]]
+* `C-M-prior' -- [[Icicles - Help on Candidates]]
+* `C-M-RET' -- [[Icicles - Help on Candidates]]
+* `C-M-TAB' -- [[Icicles - Large Candidate Sets]]
+* `C-M-up' -- [[Icicles - Help on Candidates]]
+* `C-mouse-2' -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]]
+* `C-mouse-3' in buffer `*Completions*' -- [[Icicles - Key Bindings]]
+* `C-next' -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]]
+* `C-o' -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]]
+* `C-prior' -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]]
+* `C-RET' -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]]
+* `C-up' -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]]
+* `C-x C-x' -- [[Icicles - Multiple Regions]], [[Icicles - Key Bindings]]
+* `C-y' -- [[Icicles - Key Bindings]]
+
+* `icicle-candidate-action-fn', `icicle-candidate-alternative-action-fn' -- bind to provide candidate action or alternative action -- [[Icicles - More About Multi-Commands]], [[Icicles - Multi-Commands the Hard Way]]
+
+
+* `icicle-candidate-help-fn' -- bind to provide customized candidate help -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands the Hard Way]]
+* cascaded completion -- see progressive completion
+* case-sensitivity -- [[Icicles - Customization and General Tips]]
+* comint mode enhancements -- [[Icicles - Search Commands, Overview]]
+* commands, abbreviation -- [[Icicles - Multi M-x#icicle-command-abbrev|Icicles Multi M-x]]
+
+* commands, '''Icicles'''
+** defining -- [[Icicles - Defining Icicles Commands]], 
+[[Icicles - Multiple-Choice Menus]], 
+[[Icicles - Multi-Commands the Hard Way]]
+** top-level -- [[Icicles - Defining Icicles Commands]]
+
+* common-match completion, expanded (longest) -- [[Icicles - Expanded-Common-Match Completion]] 
+
+
+* complement of set of completion candidates -- [[Icicles - Candidate Sets]]
+* `*Completions*' buffer display -- [[Icicles - Completions Display]]
+** displaying initially -- [[Icicles - Customization and General Tips]]
+* complex completions -- [[Icicles - Complex Completions]]
+
+* confirmation of input -- [[Icicles - Alternative Libraries]], [[Icicles - S-RET]]
+
+* cursor, inserting text at -- [[Icicles - Inserting Text from Cursor]]
+* customizing -- [[Icicles - Customization and General Tips]], [[Icicles - Customizing Key Bindings]]
+* cycling completion candidates -- [[Icicles - Cycling Completions]]
+
+==== D ====
+
+* default value and initial value -- [[Icicles - Customization and General Tips]]
+
+* defining Icicles commands -- [[Icicles - Defining Icicles Commands]], 
+[[Icicles - Multiple-Choice Menus]], 
+[[Icicles - Multi-Commands the Hard Way]]
+
+* `icicle-delete-candidate-object' -- bind to provide candidate deletion action -- [[Icicles - More About Multi-Commands]], [[Icicles - Multi-Commands the Hard Way]]
+* delete-selection mode -- [[Icicles - Customization and General Tips]]
+* <tt>[[delsel.el]]</tt> library -- [[Icicles - Customization and General Tips]]
+* dictionary-lookup completion -- [[Icicles - Completion in Other Buffers]]
+* difference of completion-candidate sets -- [[Icicles - Candidate Sets]]
+* Dired on a set of files matching a regexp -- [[Icicles - Candidate Sets]]
+* discussion of '''Icicles''' - IciclesDiscussion
+* DoReMi libraries -- [[Icicles - Multi-Commands]]
+* `down' key -- [[Icicles - Cycling Completions]]
+* dynamic abbreviation -- [[Icicles - Completion in Other Buffers]]
+
+==== E ====
+
+* Emacs-Lisp programming -- [[Icicles - Note to Programmers]]
+* erasing completion in minibuffer -- [[Icicles - Cycling Completions]]
+
+* `ESC-TAB' -- [[Icicles - Completion in Other Buffers]]
+* expand regexp input to common match -- [[Icicles - Expanded-Common-Match Completion]] 
+
+* expanded-common-match completion -- [[Icicles - Expanded-Common-Match Completion]] 
+
+
+
+
+==== F ====
+
+* `f1' -- [[Icicles - Key Bindings]]
+* file and directory name completion -- [[Icicles - File-Name Completion Tips]]
+* filtering minibuffer input -- [[Icicles - Cycling Completions]]
+** global filters -- [[Icicles - Global Filters]]
+* finding file at point -- [[Icicles - Inserting Text from Cursor]]
+* ##ffap.el## library -- [[Icicles - Inserting Text from Cursor]], [[Icicles - File-Name Completion Tips]]
+* functions, applying to completion candidates -- [[Icicles - Complex Completions]]
+* future of '''Icicles''' - IciclesDiscussion
+* fuzzy completion -- [[Icicles - Fuzzy Completion]]
+
+
+
+==== G ====
+
+* `##^G^J##' separator for multi-completion -- [[Icicles - Multi-Completions]]
+* globbing -- [[Icicles - Special Characters in Input Patterns]]
+* `grep'
+** '''Icicles''' search enhancement for -- [[Icicles - Other Search Commands]]
+** progressive-completion analogy -- [[Icicles - Progressive Completion]]
+
+
+==== H ====
+
+* help
+** on completion -- [[Icicles - Key Bindings]]
+** on individual completion candidates -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands the Hard Way]]
+
+* highlighting 
+** in `*Completions*' buffer -- [[Icicles - Apropos Completions]]
+
+* history, minuffer -- [[Icicles - History Enhancements]]
+** standard Emacs [[Icicles - Traversing Minibuffer Histories]]
+* history, search -- [[Icicles - Customization and General Tips]], [[Icicles - Isearch Enhancements]]
+
+
+
+==== I ====
+
+* icompletion (incremental completion) -- [[Icicles - Icompletion]]
+** screenshot: remaining completions indication -- [[Icicles - Completions Display]]
+* ##ido.el## library -- [[Icicles - Alternative Libraries]], [[Icicles - S-RET]]
+* Imenu, browsing -- [[Icicles - Search Commands, Overview]]
+* incremental completion -- see icompletion
+* Info, searching with `icicle-search' -- [[Icicles - Info Enhancements]]
+* initial value and default value -- [[Icicles - Customization and General Tips]]
+
+* `insert' key -- [[Icicles - Completions Display]]
+* inserting text found at cursor -- [[Icicles - Inserting Text from Cursor]]
+
+* installing '''Icicles''' -- [[Icicles - Libraries]], [[Icicles - Nutshell View]]
+
+* intersection of completion-candidate sets -- [[Icicles - Candidate Sets]], [[Icicles - Progressive Completion]]
+
+* ##iswitchb.el## library -- [[Icicles - Alternative Libraries]], [[Icicles - S-RET]]
+
+==== J ====
+
+==== K ====
+
+* key bindings -- [[Icicles - Key Bindings]], [[Icicles - Customizing Key Bindings]]
+
+* keyword search -- [[Icicles - Help on Candidates]], [[Icicles - Progressive Completion]]
+
+==== L ====
+
+* `left' key -- [[Icicles - Key Bindings]]
+* libraries, '''Icicles''' -- [[Icicles - Libraries]]
+* Lisp programming -- [[Icicles - Note to Programmers]]
+* Lisp-symbol completion -- [[Icicles - Completion in Other Buffers]]
+* locating files anywhere -- [[Icicles - File-Name Input]]
+* longest-common-match completion -- [[Icicles - Expanded-Common-Match Completion]] 
+
+
+==== M ====
+
+* `##M-*##' -- [[Icicles - Progressive Completion]]
+* `##M-/##' -- [[Icicles - Completion in Other Buffers]]
+* `##M-.##' -- [[Icicles - Inserting Text from Cursor]]
+* `##M-C-/##' -- [[Icicles - Completion in Other Buffers]]
+* `##M-C-{##' -- [[Icicles - Candidate Sets]]
+* `##M-C-}##' -- [[Icicles - Candidate Sets]]
+* `M-C-down' -- [[Icicles - Help on Candidates]]
+* `M-C-mouse-2' -- [[Icicles - Help on Candidates]]
+* `M-C-next' -- [[Icicles - Help on Candidates]]
+* `M-C-prior' -- [[Icicles - Help on Candidates]]
+* `M-C-RET' -- [[Icicles - Help on Candidates]]
+* `M-C-TAB' -- [[Icicles - Large Candidate Sets]]
+* `M-C-up' -- [[Icicles - Help on Candidates]]
+* `M-h' -- [[Icicles - History Enhancements]]
+* `M-pause' -- [[Icicles - History Enhancements]]
+* `M-q' -- [[Icicles - Key Bindings]]
+* `M-S-backspace' -- [[Icicles - Key Bindings]]
+* `M-S-delete' -- [[Icicles - Key Bindings]]
+* `M-SPC' -- [[Icicles - Key Bindings]]
+* `M-TAB' -- [[Icicles - Isearch Enhancements]]
+* mapping functions over sets interactively -- [[Icicles - Complex Completions]]
+
+* menus
+** completion of menu items -- LaCarte
+** defining multiple-choice menus -- [[Icicles - Defining Icicles Commands]], 
+[[Icicles - Multiple-Choice Menus]], 
+[[Icicles - Multi-Commands the Hard Way]]
+** help on menu items -- [[Icicles - Help on Candidates]]
+** modification of standard menus -- [[Icicles - Customization and General Tips]]
+** context popup menu in buffer `*Completions*' -- [[Icicles - Key Bindings]]
+
+* `C-mouse-2' -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]]
+* `C-mouse-3' in buffer `*Completions*' -- [[Icicles - Key Bindings]]
+
+* multi-commands -- [[Icicles - Multi-Commands]], 
+[[Icicles - Defining Icicles Commands]], 
+[[Icicles - Multiple-Choice Menus]], 
+[[Icicles - Multi-Commands the Hard Way]]* multi-completions -- [[Icicles - Multi-Completions]]
+* multiple-choice commands and menus -- see multi-commands
+
+
+==== N ====
+
+* `next' key -- [[Icicles - Apropos Completions]]
+
+
+==== O ====
+
+* `occur', '''Icicles''' enhancement for -- [[Icicles - Search Commands, Overview]]
+* options -- [[Icicles - Customization and General Tips]]
+* overview -- [[Icicles - Nutshell View]], [[Icicles]]
+
+==== P ====
+
+* '''Page Down''', '''Page Up''' keys -- [[Icicles - Apropos Completions]]
+* parallel completion -- [[Icicles - Multi-Completions]]
+* persistent completion sets -- [[Icicles - Persistent Completions]]
+* piecewise completion -- see progressive completion
+* point, inserting text at -- [[Icicles - Inserting Text from Cursor]]
+* pop-up frames problem on Microsoft Windows -- [[Icicles - pop-up-frames on MS Windows]]
+* preferences -- [[Icicles - Customization and General Tips]]
+* prefix completion, introduction -- [[Icicles - Background on Input Completion]]
+* `prior' key -- [[Icicles - Apropos Completions]]
+* programming Emacs-Lisp with '''Icicles''' -- [[Icicles - Note to Programmers]]
+* progressive completion -- [[Icicles - Progressive Completion]]
+* prompt -- [[Icicles - Customization and General Tips]]
+* proxy candidates -- [[Icicles - Completions Display]], [[Icicles - Candidates with Text Properties]]
+
+
+
+==== Q ====
+
+* query-replacing text -- [[Icicles - Search-And-Replace]]
+
+
+==== R ====
+
+* recent files, accessing -- [[Icicles - Cycling Completions]]
+* refreshing the minibuffer -- [[Icicles - Cycling Completions]]
+* regexp (regular-expression) matching and completion -- [[Icicles - Apropos Completions]]
+** special characters -- [[Icicles - Special Characters in Input Patterns]]
+
+* regexp text replacement -- [[Icicles - Search-And-Replace]]
+* remapping commands -- [[Icicles - Customizing Key Bindings]]
+* replacing text -- [[Icicles - Search-And-Replace]]
+* requiring a match -- [[Icicles - S-RET]], [[Icicles - Customization and General Tips]]
+* `right' key -- [[Icicles - Key Bindings]]
+
+
+
+
+* retrieving minibuffer input -- [[Icicles - Cycling Completions]]
+* retrieving the set of completion candidates -- [[Icicles - Candidate Sets]]
+
+==== S ====
+
+* `S-C-M-TAB' -- [[Icicles - Large Candidate Sets]]
+* `SPC' -- [[Icicles - Key Bindings]]
+* `S-RET' -- [[Icicles - S-RET]]
+* `S-SPC' -- [[Icicles - Progressive Completion]], [[Icicles - Key Bindings]]
+* `S-TAB'
+** apropos completion -- [[Icicles - Apropos Completions]]
+** key completion -- [[Icicles - Key Completion]]
+** navigation in `*Completions*' -- [[Icicles - Key Bindings]]
+** search string, Isearch to '''Icicles search''' -- [[Icicles - Search Enhancements#IciclesSearchFromIsearch]]
+
+* SaveHist and library <tt>[[savehist-20+.el]]</tt> -- [[Icicles - Customization and General Tips]]
+* saving the set of completion candidates -- [[Icicles - Candidate Sets]]
+* searching with '''Icicles'''
+** '''Icicles''' search -- [[Icicles - Search Commands, Overview]]
+** IncrementalSearch -- [[Icicles - Search Enhancements]]
+** Info, searching with `icicle-search' -- [[Icicles - Info Enhancements]]
+** other '''Icicles''' searches: `grep', Imenu,... -- [[Icicles - Other Search Commands]]
+** search history -- [[Icicles - Customization and General Tips]]
+
+* screenshots -- [[Icicles - Screenshots]]
+* sequential completion -- see progressive completion
+* sets of completion candidates -- [[Icicles - Candidate Sets]]
+** all, act on -- [[Icicles - Choose All Candidates]]
+** filter to previous inputs -- [[Icicles - History Enhancements]]
+** intersection via progressive completion -- [[Icicles - Progressive Completion]]
+** persistent -- [[Icicles - Persistent Completions]]
+
+* settings -- [[Icicles - Customization and General Tips]]
+* shell mode enhancements -- [[Icicles - Search Commands, Overview]]
+* sorting of completion candidates -- [[Icicles - Sorting Candidates]], [[Icicles - Customization and General Tips]]
+** file and directory names -- [[Icicles - File-Name Completion Tips]]
+
+* space sensitivity -- [[Icicles - Customization and General Tips]],  [[Icicles - Key Bindings]]
+* `SPC' -- [[Icicles - Key Bindings]]
+* special characters -- [[Icicles - Special Characters in Input Patterns]]
+* spell-checking -- [[Icicles - Completion in Other Buffers]]
+* swap completion-candidate sets -- [[Icicles - Candidate Sets]]
+* substring match, longest, expand regexp input to -- [[Icicles - Customization and General Tips]], [[Icicles - Special Characters in Input Patterns]], [[Icicles - Expanded-Common-Match Completion]]
+* suggestions IciclesDiscussion
+* symbol completion -- [[Icicles - Completion in Other Buffers]]
+* synonym completion -- [[Icicles - Completion in Other Buffers]]
+
+==== T ====
+
+* `TAB' -- [[Icicles - Key Bindings]]
+* tags -- [[Icicles - Tags Enhancements]], [[Icicles - Other Search Commands#IciclesImenu|Imenu vs Tags]]
+* telnet mode enhancements -- [[Icicles - Search Commands, Overview]]
+* text completion in a buffer -- [[Icicles - Completion in Other Buffers]]
+* thesaurus-lookup completion -- [[Icicles - Completion in Other Buffers]]
+* thing at point -- [[Icicles - Inserting Text from Cursor]]
+* toggling options -- [[Icicles - Customization and General Tips]], [[Icicles - Key Bindings]]
+* top-level '''Icicles''' commands -- [[Icicles - Defining Icicles Commands]]
+
+
+==== U ====
+
+* union of completion-candidate sets  -- [[Icicles - Candidate Sets]]
+* `up' key -- [[Icicles - Cycling Completions]]
+* user options -- [[Icicles - Customization and General Tips]]
+
+==== V ====
+
+==== W ====
+
+* `##\W$##' -- [[Icicles - Special Characters in Input Patterns]], [[Icicles - File-Name Completion Tips]]
+* Windows, Microsoft, pop-up frames problem -- [[Icicles - pop-up-frames on MS Windows]]
+
+==== X ====
+
+* `C-x C-x' -- [[Icicles - Multiple Regions]], [[Icicles - Key Bindings]]
+* XEmacs -- IciclesForXEmacs
+
+==== Y ====
+
+* yanking text at point -- [[Icicles - Inserting Text from Cursor]]
+* yanking with completion and cycling -- [[Icicles - Key Bindings]]
+
+==== Z ====
+
+----
+
+|| '''[[Icicles]]''' || [[Icicles - Command Index]] || [[Icicles - Options Index]] ||
+
+

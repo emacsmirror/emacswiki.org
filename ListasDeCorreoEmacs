@@ -1,0 +1,15 @@
+Algunos de los GruposDeNoticiasEmacs se encuentran disponibles también como listas de correo. Por lo general es mejor si se suscribe a los grupos de noticias en lugar de las listas de correo, ya que la carga se distribuye entre varios servidores de noticias en lugar de un solo host de alguna lista de correo.
+
+; mailto:emacs-bidi@gnu.org: Discusión sobre bidi -- texto bidireccional, como el Hebreo y el Arábico
+; mailto:bug-gnu-emacs@gnu.org: Fallos sobre Emacs y peticiones de características nuevas, use <code>M-x report-emacs-bug</code> en Emacs para enviar información a la lista (también uno de los GruposDeNoticiasEmacs)
+; mailto:emacs-devel@gnu.org: Desarrollo de Emacs [http://mail.gnu.org/pipermail/emacs-devel/ Archivo]
+; mailto:xemacs-beta@xemacs.org: Desarrollo de XEmacs
+; mailto:xemacs-patches@xemacs.org: Parches de XEmacs
+; mailto:help-gnu-emacs@gnu.org: Ayuda sobre Emacs (también uno de los GruposDeNoticiasEmacs)
+; mailto:help-emacs-windows@gnu.org: Ayuda sobre Emacs en windows
+; mailto:emacs-br@yahoogroups.com: La lista de correo de usuarios Brasileños de Emacs [http://groups.yahoo.com/group/emacs-br/ Suscripción y Archivo]
+
+Existen varias otras listas de correo que puede encontrar visitando la página del Proyecto Emacs en savannah (para esto, busque bajo el término `Emacs' en http://savannah.gnu.org) --- si tiene cierta experiencia aceptable con Emacs, por favor considere suscribirse a las listas de correo de desarrollo, pruebas, etc. y ofrecer su colaboración.
+
+----
+CategoríaAyuda

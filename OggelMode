@@ -1,0 +1,52 @@
+= Introduction =
+
+A week ago i started working at a Cd-Ripper and Ogg-Encoder Interface
+for emacs. The last few days it got usable, so i think oggel.el will
+be uploaded at the end of the week.
+
+There seems no good tool in Emacs (except eshell :) to encode a cd
+or single tracks to the great ogg-vorbis format.  Although there
+are similar tool for mp3s like Monk or 'The Idiot Jukebox' i
+decided to write my own major mode for that task as i find it
+pretty hard to work through their code and understand it (as both
+are very complex and not just ripping tools) and i always wanted
+to program my own mode and learn from that.  Because of that you
+will find a lot of little (or greater :) bugs and nasty code
+here.  Feel free to work through the code and change everything you
+want, send me a patch or a bugreport.
+To install the code put oggel.el simply in your load-path and write that
+piece of code in you .emacs:
+
+ (add-hook 'cdi-mode-hook (lambda ()(require 'oggel)(oggel)))
+
+Now you just type M-x cdi and gets to the tracklistbuffer *cdi*.  You can
+mark you favourite tracks with "m" and press "C" to start encoding.  If you
+don't mark any track oggel will encode the whole cd for you! Yeah!
+The files will be produced with the file name format
+artist-album-tracknumber-songtitle.ogg unless you change
+oggel-filename-list.  The standard options should work well on all
+normal machine configurations (machines like mine).
+
+Oggel is clever about Compilations-CDs, so it tries to figure out who is 
+the real artist of the track. In this state that's somehow buggy, as i have
+only two Compilations at home to test it. To stop oggel behaving in that way, 
+set `oggel-various-artists' to t.  NOTE: Setting `oggel-various-artists' is 
+broken in v0.5. 
+
+Oggel bases heavily on the great mode cdi.el from Matt Hodges (CdInterface) for
+playing the tracks or produce the tracklist.  In the beginning i just used
+cdi.el to save time from programming a interafce to freedb, but as MattHodges
+has implemented a track-display, i removed all displaying stuff from oggel.  
+
+Oggel aims to become as customizable and functional as grip or jack!
+
+You can get it them from Lisp:oggel.el and Lisp:cdi.el.gz
+
+
+= Things to do =
+
+* While hearing a cd you should be able to mark tracks and save your selection for later encoding. Should be very easy: Gets status and if playing put track only on oggel-rip-list but not start encoding. After last track ask for starting or saving list.
+* Oggel should create m3u-files
+* A lot more customize stuff is needed and hardcoded things have to go! (like filename-creation) I think about a similiar mechanism like in cdi to support different encoders, so that changing encoders would be really easy and you don't have to remember the different switches.
+
+This list gets longer and longer every day as i haven't so much time in the moment for oggel, sorry for that! I will try to squeaze as much time as possible in the next few days, it's very embarrassing to put something not yet really done code on the net and then stop working... :(   

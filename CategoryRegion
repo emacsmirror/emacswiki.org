@@ -1,0 +1,35 @@
+The following category is concerned with regions and the different operations performed with them in Emacs.
+
+Click on the heading above to list '''all''' pages related to ''regions''.
+
+* [[Region]] -- The [[region]], [[point]], and [[mark]]. The [[active region]] is essentially what some other programs call the "selection".
+* DefaultKillingAndYanking -- The default Emacs behavior for copying, killing (cutting), and yanking (pasting).
+* CopyAndPaste -- Alternatives to DefaultKillingAndYanking for copying, killing, and yanking.
+* TransientMarkMode -- Highlights the region whenever it is active (you can activate it using `C-x C-x').
+* DeleteSelectionMode -- Replaces the region with what you type. Backspace (DEL) deletes the region.
+* PcSelectionMode -- Treats the region like MS Windows and Motif.
+* CuaMode -- Use key bindings compatible with the Common User Access (CUA) system
+* BasicNarrowing -- Isolates the region, so you can limit operations to region text.  See also [[Narrowing]].
+* SelectiveUndo -- Undoes stuff in the region only.
+* HideRegion -- Hiding and showing multiple regions.
+* [[Icicles - Multiple Regions]] -- Persistent, multiple regions, possibly in multiple buffers. Select a region, search a region,...
+* ApplyFunctionOnMultipleRegions -- Applies a function to several regions at the same time.
+* TextMarker -- Highlights text like a text marker, optionally annotates. Uses XRefMode.
+* MarkLines -- Keyboard emulation of triple-click line selection. (Incompatible with CUAMode.)
+* RectangleCommands -- Operate on the column of text between point and mark.
+** RectangleMark -- Highlights rectangular areas instead of a continuous stretches of text.
+** RectangleAdd -- Adds the numbers in a rectangle.
+* CopyWithoutSelection -- Simply copy current line, current word and current paragraph to the kill-ring without select to each line, each word or each paragraph 
+* CopyingWholeLines -- Different ways of copying an entire line to the kill-ring.
+* IndirectBuffers -- Edit a region of text in a different mode (see indirect-region by MarioLang)
+* SecondarySelection -- Yes, Virginia, there is a ''second'' selection.  It's like the region, but is less ephemeral. Learn to use it.
+* MousePlus -- Highlight the yank position while you press `mouse-2', so you hit the right spot.
+* ModeLinePosition -- Shows the size of the region in the mode-line, whenever the mark is active in TransientMarkMode.
+* AnchoredTranspose -- Transposes a phrase around an anchor phrase. In other words it swaps 2 regions.
+* SwapRegions -- Also about swapping two regions.
+* SwapMode -- A mode for swapping regions and rectangles by NaokiNakamura.
+* EevMode -- `M-x eev' saves region to a temporary script. Later we can execute it.
+* ChangingCursorDynamically -- Make the TextCursor more visible when Emacs is idle (not directly related to the region, but helps you find it)
+* [[Subedit]] -- Edit part of a buffer in a new buffer
+
+

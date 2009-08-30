@@ -1,0 +1,14 @@
+In hide-ifdef-mode, code within #ifdef constructs that the C preprocessor
+would eliminate may be hidden from view.
+
+Activate it using `M-x hide-ifdef-mode'.
+
+The hidden code is marked by ellipses (...).  Be
+cautious when editing near ellipses, since the hidden text is
+still in the buffer, and you can move the point into it and modify
+text unawares.
+You can make your buffer read-only while hide-ifdef-hiding by setting
+`hide-ifdef-read-only' to a non-nil value.
+
+----
+CategoryHideStuff

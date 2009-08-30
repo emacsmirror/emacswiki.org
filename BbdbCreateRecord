@@ -1,0 +1,58 @@
+Last tested on Gnu Emacs 22.2.1 using bbdb 2.35.
+
+<pre>
+(defun my-bbdb-create-record ()
+  "Prompt for and return a completely new BBDB record.
+Doesn't insert it in to the database or update the hashtables, but does
+ensure that there will not be name collisions."
+  (interactive)
+  (bbdb-records)                        ; make sure database is loaded
+  (if bbdb-readonly-p
+      (error "The Insidious Big Brother Database is read-only."))
+  (let (firstname lastname net info notes addr)
+    (bbdb-error-retry
+     (progn
+       (let ((names (bbdb-divide-name (bbdb-read-string "Name: "))))
+	 (setq firstname (car names)
+	       lastname (nth 1 names)))
+       (when (string= firstname "")
+	 (setq firstname nil))
+       (when (string= lastname "")
+	 (setq lastname nil))))
+    (setq net (bbdb-split (bbdb-read-string "Mail Adressen: ") ","))
+    (let ((street (bbdb-read-string "Strasse: "))
+	  zip city
+	  (it (split-string (bbdb-read-string "PLZ und Stadt: "))))
+      (when (string= street "")
+	(setq street nil))
+      (when (and (stringp (car it))
+		 (string-match "^[0-9]+$" (car it)))
+	(setq zip (concat "CH-" (car it))
+	      it (cdr it)))
+      (when it
+	(setq city (mapconcat 'identity it " ")))
+      (when city
+	(setq addr (make-vector bbdb-address-length nil))
+	(bbdb-address-set-location addr "Home")
+	(bbdb-address-set-streets addr (list street))
+	(bbdb-address-set-zip addr zip)
+	(bbdb-address-set-city addr city)
+	(bbdb-address-set-state addr "")
+	(bbdb-address-set-country addr "Schweiz")))
+    (setq notes (bbdb-read-string "Weitere Info: "))
+    (when (string= notes "")
+      (setq notes nil))
+    (when (y-or-n-p "Info mail? ")
+      (if notes
+	  (setq notes `((notes . ,notes)
+			(mail-alias . "info-mail")))
+	(setq notes '(mail-alias . "info-mail"))))
+    (bbdb-create (vector (or firstname nil)
+			 (or lastname nil)
+			 nil nil nil
+			 (when addr (list addr))
+			 net notes
+			 (make-vector bbdb-cache-length nil)))))
+
+(define-key bbdb-mode-map "c" 'my-bbdb-create-record)
+</pre>

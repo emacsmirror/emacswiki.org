@@ -1,0 +1,9 @@
+Download: http://www.davep.org/emacs/mutt-alias.el
+
+=== Configuration ===
+
+Put mutt-alias.el in your load-path and add the following to your .emacs file:
+
+ (require' mutt-alias)
+----
+CategoryMailAddons

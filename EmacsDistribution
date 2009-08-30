@@ -1,0 +1,17 @@
+GNU Emacs can be downloaded from the GNU web site; please check their list of mirrors:
+
+* http://www.gnu.org/order/ftp.html
+
+NTEmacs can also be found on these sites (under "windows/emacs" subdirectory).
+
+XEmacs is available from the XEmacs web site; please use a mirror if possible:
+
+* http://www.xemacs.org/Download/index.html
+
+SXEmacs is available from the SXEmacs website and ftp site.
+
+* http://www.sxemacs.org/download.html
+* ftp://ftp.sxemacs.org/pub/sxemacs/
+
+----
+CategoryPorts

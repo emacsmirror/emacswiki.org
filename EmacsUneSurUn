@@ -1,0 +1,118 @@
+This page is also available in English: OneOnOneEmacs
+
+
+=== Resume === 
+
+Presentation d'un projet pour rendre Emacs plus "oriente [[Frame]]s". Discussion du probleme et invitation a des propositions de solution. Description d'une implementation.
+
+= Probleme : Emacs Favorise les Fenetres par Rapport aux Frames =
+
+Il y a des decennies (plusiers versions majeures), Emacs a introduit les '''frames''', ce qui correspondent aux fenetres d'un gestionnaire de fenetres. Un frame est carrele en une ou plusiurs vitres -- on appelle ces vitres '''fenetres''' dans le jargon d'Emacs. Voir FrameModes (en), [[Frame]] (en), et [[Window]] (en) pour plus d'infos sur la relation entre les frames et les fenetres Emacs.
+
+Cette terminologie peu commune s'explique par le fait qu'Emacs est plus vieux que les gestionnaires de fenetres. A l'origine, Emacs a ete concu pour des terminaux teletypes (tty), sans graphiques, sans fenetres, sans souris, et sans polices de caracteres.
+
+Les fenetres Emacs ont ete ''concues'' pour cet environnement -- et elles le convenaient parfaitement. Elles existent toujours aujourd'hui a la meme forme qu'au depart dans les annees 1980s. On pourrait voir cette continuite comme testament a leur utilite continuelle. Ou bien on pourrait dire que de nouvelles fonctionnalites comme la souris et les frames ont ete ajoutees a Emacs pour repondre a des besoins specifiques, tandis que les fenetres Emacs representent un ''vestige'' qui est utilise faute de mieux.
+
+Je (DrewAdamsFrançais) penche vers ce point de vue, mais je reconnais que la fonctionnalite specifique des fenetres Emacs peut etre parfois utile meme dans un contexte de gestionnaire de fenetres. Autrement dit, c'est parfois interessant d'utiliser plus d'une fenetre Emacs par frame.
+
+La plupart des utilisateurs diraient sans doute que les fenetres Emacs sont ''indispensables'', et ils ont raison, mais je dirait que c'est uniquement parce que les frames n'ont pas recu la consideration qu'ils meritent : une bonne partie d'Emacs ''favorise toujours les fenetres Emacs, non pas les frames'', et cette favoritisme est systematique.
+
+Cette favoritisme se manifeste comme suivant :
+
+* Emacs affiche des fenetres au lieu des frames pour des buffers qui sont relativement temporaires tel que <code>*Help*</code> et <code>*Completions*</code>. Et il supprime automatiquement certaines de ces fenetres lorsqu'on en a plus besoin. Tres utile.
+
+* Sans de simple moyens pour supprimer des frames (par ex. pour les buffers temporaires), ils proliferent. Et comment iconifier beaucoup de frames d'un seul coup ? Une multitude de frames ouverts '''<code>=</code>''' un merdier.
+
+* Les combinaisons de cles liees aux commandes frames sont, par defaut, plus compliquees : `C-x 5 f' pour editer un fichier, `C-x 5 0' pour supprimer un frame etc. Les liaisons de cles sont faciles a modifier, bien sur, mais d'autres considerations soutient l'utilisation de combinaisons simples (`C-x f', `C-x 0')  pour les fenetres Emacs, pas pour les frames. Tant qu'on doit utiliser des fenetres la plupart du temps, il faut des liaisons de cles courtes pour les commandes fenetres.
+
+Il y a en fait plusieurs fonctions Emacs, dont certaines sont des primitives, qui manipulent des fenetres et qui ne sont pas adaptees aux frames.
+
+= But : Orienter Emacs Plus Vers les Frames = 
+
+Etant donne cet etat des choses, y a-t-il un sens a essayer d'utiliser Emacs d'une facon "orientee frames" ? A mon avis, ca vaut le coup d'essayer d'adapter Emacs un peu, de lui sevrer de sa dependence aux fenetres Emacs.
+
+Alors, des l'apparition des premiers frames, j'ai commence a customiser mon Emacs, pour profiter des fenetres (frames) du gestionnaire de fenetres...
+
+Premierement, bien sur, j'ai mis `pop-up-frames' a une valeur non `nil', pour que la command `display-buffer' utilise un nouveau frame chaque fois. C'est alors que j'ai commence a connaitre les differentes facons dont Emacs favorise les fenetres. Petit a petit, j'ai essaye de surmonter ces obstacles, et j'ai plutot reussi.
+
+Mais ca m'interesserait d'entendre d'autres avis sur la question et de voir d'autres solutions et de meilleurs facons pour ''rendre Emacs plus oriente frames''. Qu'est-ce ca pourrait vouloir dire ? Quelles sont les meilleurs implementations ?
+
+Appelons ce projet ou ce but "'''Emacs sans Vitres'''" ou peut-etre "'''Emacs Une Sur Un'''". Le principe est ''une fenetre par frame'' : lorsqu'un buffer est affiche dans une fenetre, cette fenetre serait seule dans son frame (par defaut). L'idee n'est pas tant de se debarasser des operations fenetres que de rendre l'utilisation de frames (a la places de fenetres) plus naturelle pour la plupart des operations.
+
+= Comment J'ai Aborde le Probleme =
+
+Je decris ici comment j'ai aborde le probleme. Plus bas (voir [[#PackagesEmacsUneSurUn]]), je decris les packages individuels de mon implementation d'Emacs Une Sur Un. Vos ameliorations et des approches alternatives sont le bienvenu.
+
+En resume, j'ai fait ceci :
+
+* <code>(setq pop-up-frames t)</code>
+* Redefinition de qq fonctions Emacs de base pour mieux traiter les frames.
+* Creation de qq nouvelles fonctions Emacs pour utiliser des frames.
+
+Voici qq descriptions, avec captures d'ecran, des fonctionnalites principales que j'ai implemente.
+
+
+* '''[[Tailler des Frames Automatiquement]] --''' Ajustage de frames a leurs fenetres (buffers) courantes automatiquement.
+* '''[[Carrelage de Frames]] --''' Carrelage de l'ecran en frames, horizontalement ou verticalement.
+* '''[[Frame Minibuffer Dedie]] --''' Un frame dedie au MiniBuffer. La couleur du fond change pour indiquer l'etat actuel (recherche, entree de donnees ou de commande).
+* '''[[Frames Speciaux]] --''' Frames particuliers pour les buffers dits "speciaux" (<code>*grep*</code>, <code>*Occur*</code>, <code>*Messages*</code> etc.).
+* '''[[Frames Help et Completions]] --''' Frames particuliers pour les buffers <code>*Help*</code> et <code>*Completions*</code>. Redirection du buffer <code>*Completions*</code> vers le frame du minibuffer.
+* '''[[Supprimer des Frames Facilement - Mais Pas Trop]] --''' Redefinition des commandes `delete-window', `kill-buffer', et `mouse-tear-off-window' pour qu'elles jouent bien avec des frames.
+* '''[[Iconifier, Desiconifier, et Cacher des Frames]] --''' Commandes pour montrer ou cacher des frames.
+* '''OeilDePoisson --''' Des frames "onglets" : un regard "oeil de poisson" et une alternative aux frames iconifies.
+
+En plus de ces modifications principales, j'ai modifie d'autres fonctions Emacs de base pour profiter des frames :
+
+
+* `dired-simultaneous-find-file' : Redefinition pour utiliser un frame au lieu d'une fenetre si `pop-up-frames' n'est pas `nil'.
+
+* Differentes fonctions pour le buffer <code>*Help*</code>, telles que `locate-library', rendent le frame <code>*Help*</code> invisible lorsqu'on n'en a plus besoin.
+
+* `menu-bar-select-buffer' : Appelle de `switch-to-buffer-other-frame' a la place de
+`switch-to-buffer'.
+
+* `switch-to-completions' : La fenetre du buffer <code>*Completions*</code> est selectionnee meme si elle est dans un autre frame.
+
+* `count-windows' : Utilisation de l'argument facultatif `minibuf' seulement si le frame actuel a un minibuffer.
+
+
+'''Voir les packages :''' Lisp:dired+.el, Lisp:help+.el, Lisp:menu-bar+.el, Lisp:simple+.el, Lisp:window+.el
+
+[:PackagesEmacsUneSurUn]
+== Les Packages EmacsUneSurUn de Drew ==
+
+Voir PackagesElispDeDrew pour la description de quels packages marchent avec quelles versions d'Emacs.
+
+Chaque package a du code `require' qui montre les autres packages dont il a besoin. Dans la plupart des cas ces `require's sont "soft" : si le package manque il n'y a pas d'erreur.
+
+Voici les packages qui constituent (mon implementation de) Emacs Une-Sur-Un :
+
+* Lisp:autofit-frame.el -- tailler automatiquement chaque frame qui a une seule fenetre pour l'adapter a sa fenetre (buffer); voir aussi '''[[Tailler des Frames Automatiquement]]'''
+* Lisp:buff-menu+.el -- des extensions au package standard `buff-menu'; voir aussi '''BufferMenuPlus''' (en)
+* Lisp:compile-.el, Lisp:compile+.el et Lisp:grep+.el -- des extensions au packages standards `compile' et `grep'; voir aussi '''GrepMode''' (en)
+* Lisp:dired+.el -- des extensions au packages standards `dired', `dired-aux', et `dired-x'; voir aussi '''DiredPlus''' (en)
+* Lisp:fit-frame.el -- tailler un frame pour l'adapter a sa fenetre (buffer); voir aussi '''[[Tailler des Frames Automatiquement]]'''
+* Lisp:frame-cmds.el -- des commandes (fonctions interactives) pour frames et fenetres; voir aussi '''[[Carrelage de Frames]]''', '''[[Iconifier, Desiconifier, et Cacher des Frames]]''', '''[[Supprimer des Frames Facilement - Mais Pas Trop]]''', et '''FrameModes''' (en)
+* Lisp:frame-fns.el -- des fonctions non interactives pour frames et fenetres
+* Lisp:frame+.el -- des extensions au package standard `frame'
+* Lisp:help+.el -- des extensions au package standard `help'; voir aussi '''HelpPlus''' (en)
+* Lisp:info+.el -- des extensions au package standard `info'; voir aussi '''InfoMode''' (en)
+* Lisp:menu-bar+.el -- des extensions au package standard `menu-bar'; voir aussi '''MenuBar''' et '''HelpMenuBarPlus''' (en)
+* Lisp:mouse+.el -- des extensions au package standard `mouse'
+* Lisp:oneonone.el -- definir une configuration speciale multi-frame; voir aussi '''[[Frame Minibuffer Dedie]]''', '''[[Frames Speciaux]]''', et '''[[Frames Help et Completions]]'''
+* Lisp:setup-keys.el -- qq liaisons de cles
+* Lisp:simple+.el -- des extensions au package standard `simple'
+* Lisp:thumb-frm.el -- utiliser des petits frames ("thumbnail frames") a la place des icones
+* Lisp:window+.el -- des extensions au package standard `window'
+
+Tout les packages que j'ai publie a EmacsWiki sont decrits a la page '''PackagesElispDeDrew'''. Si l'on les met dans un repertoire cible par la variable `drews-lisp-dir', et qu'on l'utilise Lisp:emacs-init.el tel quel, on vit Emacs de la meme facon que moi plus ou moins.
+
+= Commentaires =
+
+Ajouter vos commentaires ou vos questions ici. Pour des commentaires en anglais, voir OneOnOneEmacs (en).
+
+----
+
+----
+
+OneOnOneEmacs CategoryFrames CategoryModes FrameModes CategoryDisplay CategoryHistory CategoryDotEmacs CategoryWish

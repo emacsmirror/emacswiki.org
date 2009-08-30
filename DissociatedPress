@@ -1,0 +1,29 @@
+Disscociated Press is a semi-randomizing algorithm that takes your buffer, runs it through a\
+blender, and displays the result.
+
+
+This "feature" can be reached through the command
+ M-x dissociated-press
+to run it with default settings. (C-h C-x dissociated-press has more information.)
+
+This always has comical results. For example, I can put my literature homework into the\
+Dissociated Press-
+
+ Section III. UNDERSTANDING FIGURATIVE LANGUAGE
+ ...
+
+a perfectly sensible section of homework, and it spits out something like
+
+ Section III: UNDERSe!
+
+ 4.    "He wout
+ what I had mistook for profanity i'm really say."
+             --Song Of Myself, getting madder and mis
+
+ 5. "He mississississippi river."
+
+
+M-x Dissociated-press works far better with longer\
+inputs, of course.
+
+UP to CategoryGames

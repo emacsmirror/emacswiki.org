@@ -1,0 +1,12 @@
+<nowiki>DictEm</nowiki> is an RFC 2229 dict client for Emacs.  Get it from the author at
+
+: http://www.mova.org/~cheusov/pub/dictem/
+
+On a [[Debian]] system see DebianPackage:dictem.  And read more at freshmeat
+
+: http://freshmeat.net/projects/dictem
+
+The package uses the command-line <code>dict</code> program (http://sourceforge.net/projects/dict).
+
+----
+CategoryInterface

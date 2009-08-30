@@ -1,0 +1,84 @@
+unicode-helper-mode is a minor mode which adds some functions to work
+with Unicode character names. Specifically, it allows to find out
+which unicode name the character at point has, and to enter unicode
+characters by name or codepoint number.
+
+* Download:unicode-helper-mode.el
+
+It gets the information it needs from the Unidata file -- a text file
+containing code-points and names of characters.  You'll have to tell
+unicode-helper-mode where to find this file by setting
+`unicode-helper-data-txt'.
+
+    (setq unicode-helper-data-txt "~/Documents/Unicode/UnicodeData.txt")
+
+You can get the file from unicode.org:
+http://www.unicode.org/Public/UNIDATA/UnicodeData.txt.
+It's /big/ (966 kbytes).
+
+On Debian, perl-modules provides UnicodeData.txt.
+
+  (unless (and (boundp 'describe-char-unicodedata-file) describe-char-unicodedata-file)
+    (setq describe-char-unicodedata-file
+          (car (file-expand-wildcards
+                "/usr/share/perl/*/unicore/UnicodeData.txt"))))
+
+== Some tips ==
+
+* It works right in Emacs23 but getting the code-at-point not.
+* I use this code to setup my keymap, I think is better:
+
+ ;;; For hexcodes use #xNNNN
+ (setq emilio-unicode-alist 
+      '((">>"    187)
+	("<<"    171)
+	("not"   172)
+	("alp"   945)
+	("bet"   946)
+	("eps"   949)
+	("lam"   955)
+	("ro"    961)
+	("sig"   963)
+	("->"   8594)
+	("comp" 9675)
+	("dot"  8901)
+	("qed"  8718)
+	("eq"   8801)
+	("con"  8776)
+	("in"   8712)
+	("and"  8743)
+	("or"   8744)
+	("all"  8704)
+	("ex"   8707)
+	("del"  8710)
+	("nab"  8711)
+	("dash" 8870)
+	("mods" 8871)
+	("top"  8868)
+	("bot"  8869)
+	("``"   8220)
+	("''"   8221)
+	(",,"   8222)
+	("..."  8230)
+	("---"  8212)))
+      
+ (defun emilio-set-unicode ()
+  "Set my unicode keys based on emilio-unicode-alist"
+  (let ((setup (mapcar 'emilio-unicode-key emilio-unicode-alist)))
+    (mapcar 'eval setup)))
+
+ ;;; Uses evil lexical scoping :)
+ (defun emilio-unicode-key (list)
+  "Setups map to insert unicode chars"
+  (lexical-let 
+      ((key (read-kbd-macro (pop list)))
+       (mc  (pop list)))
+    (define-key map key
+      (lambda () (interactive) (unicode-helper-do-insert-codepoint mc)))))
+
+ (setq unicode-helper-mode-prefix-map
+      (let ((map (make-sparse-keymap)))
+	(emilio-set-unicode)
+	map))
+
+ (require 'unicode-helper)

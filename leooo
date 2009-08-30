@@ -1,0 +1,30 @@
+i'm leo aka leooo. i love emacs and use it on windows xp and mac os x. it is my primary file manager, search-replace tool and - text editor. ;-)
+
+what do i like about emacs? its unified interface on different platforms (short cuts) and its very broad features of text cut and paste. (e.g. you can copy a filename and use it easily with a search-replace task.)
+
+what's on my WishList? a nicer platform-integrated look (e.g. icons in dired) and asynchronous actions (every longer elisp task locks up the whole emacs!)
+
+Welcome to the wiki!  I hope you don't mind when I delete your category page; I think CategoryCode or CategoryDirectories is better for LsLisp. -- AlexSchroeder
+
+[new]
+thanks alex! yep, wasn't sure were to link my page from... i just start using this wiki, in fact wikis in general.
+
+[new]
+Welcome to wikis in general, then!  :) -- Alex
+
+[new]
+btw: where does conversational stuff like _this_ add-on usually go? (it's a little bit odd to have it on a user (home) page, isn't it?)
+
+[new]
+It goes on homepages.  :)  Well, if we're talking about new categories, then maybe SiteMapDiscussion would be the place, but we have very discussion pages.  But that is just a community expectation.  If we wanted a more chat-like site, we could.  I think the reason it doesn't happen is that a lot of us hang out on the EmacsChannel.  Therefore we do the chatting on #emacs and have no need for it here.  ;) -- Alex.
+
+[new]
+another question: when do we _sign_ with our name and when do we not? more signing of content could be helpful to get back to the author of an idea.
+
+[new]
+That's true.  There's no "rule" here.  Here's what I do, however: When I present an individual solution that may not be what the users wants, or when I present different alternatives, I write something like "AlexSchroeder suggests the following approach..."  In these cases I put my name in the text.  When I comment on something (ie. we're having a conversation), then I also sign my comments.  I expect the discussion to be removed eventually, however.
+
+Note that you can get back to authors by looking at the history of a page.  By the way: You chose a name that doesn't automatically link (leo), so in order to have it linked, you need two extra square brackets to do it: [[leooo]]. -- Alex
+
+----
+CategoryHomepage

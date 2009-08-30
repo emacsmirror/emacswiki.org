@@ -1,0 +1,104 @@
+This page provides a way to format SQL in Emacs.
+
+== Backend ==
+SqlBeautify uses blancoSqlFormatter as a backend.
+
+First, download blancoSqlFormatter from http://sourceforge.jp/projects/blancofw/files/?release_id=27764#27764 and install it as following:
+
+<pre>
+% mkdir ~/opt
+% unzip balcoSqlFormatter-0.1.0.src.zip -d ~/opt
+</pre>
+
+Second, write Java client program.
+
+~/opt/blancoSqlFormatter/SqlBeautify.java:
+<pre>
+import java.io.InputStream;
+
+import blanco.commons.sql.format.BlancoSqlFormatter;
+import blanco.commons.sql.format.BlancoSqlRule;
+
+public class SqlBeautify {
+    public static void main(String[] args) throws Exception {
+        InputStream is = System.in;
+        StringBuilder sb = new StringBuilder();
+        byte[] buffer = new byte[4096];
+        int read;
+        while ((read = is.read(buffer)) != -1) {
+            sb.append(new String(buffer, 0, read));
+        }
+        System.out.println(new BlancoSqlFormatter(new BlancoSqlRule()).format(sb.toString()));
+    }
+}
+</pre>
+
+And then compile it:
+
+<pre>
+% cd ~/opt/blancoSqlFormatter
+% CLASSPATH=$CLASSPATH:blancosqlformatter-0.1.0.jar javac SqlBeautify.java
+</pre>
+
+Now, we can use it like:
+
+<pre>
+% echo "SELECT name,value FROM v\$sysstat WHERE name IN ('db block gets','consistent gets', 'physical reads');" | java SqlBeautify
+SELECT
+        name
+        ,VALUE
+    FROM
+        v$sysstat
+    WHERE
+        name IN (
+            'db block gets'
+            ,'consistent gets'
+            ,'physical reads'
+        )
+;
+</pre>
+
+Finally, we should write a shell script wrapper.
+
+~/bin/sqlbeautify:
+<pre>
+#!/bin/sh
+
+BSF_HOME=$HOME/opt/blancoSqlFormatter
+BSF_LIB=$BSF_HOME/blancosqlformatter-0.1.0.jar
+
+env CLASSPATH=$CLASSPATH:$BSF_HOME:$BSF_LIB java SqlBeautify
+</pre>
+
+<pre>
+% chmod +x ~/bin/sqlbeautify
+% echo 'select * from dual;' | sqlbeautify
+SELECT                                                       
+        *
+    FROM
+        dual
+;
+</pre>
+
+== Emacs Frontend ==
+
+Write following definitions to .emacs:
+
+<pre>
+(defun sql-beautify-region (beg end)
+  "Beautify SQL in region between beg and END."
+  (interactive "r")
+  (save-excursion
+    (shell-command-on-region beg end "sqlbeautify" nil t)))
+
+(defun sql-beautify-buffer ()
+ "Beautify SQL in buffer."
+ (interactive)
+ (sql-beautify-region (point-min) (point-max)))
+</pre>
+
+And you can format SQL with <code>M-x sql-beautify-region</code> or <code>M-x sql-beautify-buffer</code>.
+
+----
+
+CategorySql

@@ -1,0 +1,22 @@
+A 'nonextensible imitation' of a supposed implementation of an Emacs; by authoritative definition in RichardStallman's 1981 publication, 'EMACS: the extensible, customizable self-documenting display editor', such a product is a contradiction in terms, a literal absurdity. 
+
+: "Many other editors imitate the EMACS command set and display updating philosophy without providing extensibility. Despite that deficiency, and despite the greatly reduced set of features that results from it, these can be useful editors, though not as useful as an extensible one. For a computer with a small address space or lacking virtual memory, this is probably the best that can be done.
+
+: "The proliferation of such superficial facsimiles of EMACS has an unfortunate confusing effect: their users, knowing that they are using an imitation of EMACS, and never having seen EMACS itself, are led to believe that they are enjoying all the advantages of EMACS. Since any real-time display editor is a tremendous improvement over what they probably had before, they believe this readily. To prevent such confusion, we urge everyone to refer to a nonextensible imitation of EMACS as an 'Ersatz EMACS'. "
+
+-- Richard M. Stallman.  ''EmacsTheExtensibleCustomizableSelfDocumentingDisplayEditor''.  MIT AI Memo 519a, 26 March 1981.
+
+Example:
+
+: This shar file contains the source to a microemacs-derived text editor
+that I have been personally hacking on for over a decade.  [...]
+The title "Ersatz" comes from the category Richard Stallman uses in
+MIT AI Memo 519a to describe those editors that are a surface-deep
+imitation (key bindings) of "real" ITS Emacs. [http://hunter.apana.org.au/~cjb/Code/ersatz.tar.gz]
+
+Common Ersatz Emacsen today include MicroEmacs, GNU [[Zile]], and [[Mg]]; they enjoy use as lightweight editors (akin to vi) that provide familiar Emacs functionality in low-overhead situations (such as limited environments or system recovery) where a full Emacs may be unavailable.
+
+----
+CategoryGlossary
+CategoryHistory
+CategoryHumor

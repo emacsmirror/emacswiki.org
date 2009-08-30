@@ -1,0 +1,767 @@
+John Connors ([::johnfredcee]): who left VisualStudio after Version 6 when it got even more horribly slow and embarked on a long text editor quest that eventually lead him to Emacs.
+
+He has to interact more than he wishes with Visual Studio on a day to day basis and is working hard on bringing Emacs and the anti-Emacs (no, it's not vi) closer together.
+
+I have posted my .emacs here for further reference. There ought to be a emacs package to do this automatically. dotmacs-to-wiki.el, anybody?
+
+[new]
+I guess you could just use OddmuseMode to save your ##.emacs## buffer to a wiki page; it would have to be a separate page, however. JohnFredCeeDotEmacs, for example. -- AlexSchroeder
+
+----
+CategoryHomepage
+
+<pre>
+
+
+;; WELCOME TO MY .EMACS ----------------------------------------
+
+(fset 'yes-or-no-p 'y-or-n-p)           ;replace y-e-s by y
+
+(setq w32-pass-lwindow-to-system nil
+      w32-pass-rwindow-to-system nil)
+
+(setq w32-lwindow-modifier 'super)  ; lwindow acts as super
+(setq w32-rwindow-modifier 'super)  ; rwindow acts as hyper
+(setq w32-apps-modifier 'hyper)
+
+(require 'icomplete)
+(require 'hippie-exp)
+(require 'color-theme)
+(require 'ffap)
+(require 'etags-select)
+
+(setq color-theme-is-global nil)
+
+(defun random-color-theme ()
+  (interactive)
+  (random t)
+  (funcall (car (nth (random (length color-themes)) color-themes))))
+
+(random-color-theme)
+(setq frame-title-format "Emacs: %b (%m)")
+(setq visible-bell 't)
+
+(transient-mark-mode)
+(icomplete-mode 99)
+(partial-completion-mode 1)
+
+(setenv "CVSROOT" ":pserver:jconnors@jupiter:/cvsroot")
+
+;;(server-start)
+
+;; read in stuff that has changed..
+(global-auto-revert-mode)
+
+;; -- INDENTATION --------------------------------------------------------------------
+
+(defun indent-buffer()
+  "Indent the whole buffer from point-min to point-max using
+   the command indent-region"
+  (interactive)
+  (indent-region 0 (point-max) nil))
+
+;; -- POINT STACK -----------------------------------------------------------------------
+
+(defvar point-stack nil)
+
+(defun point-stack-push ()
+  "Push current location and buffer info onto stack."
+  (interactive)
+  (message "Location marked.")
+  (setq point-stack (cons (list (current-buffer) (point)) point-stack)))
+
+(defun point-stack-pop ()
+  "Pop a location off the stack and move to buffer"
+  (interactive)
+  (if (null point-stack)
+      (message "Stack is empty.")
+    (switch-to-buffer (caar point-stack))
+    (goto-char (cadar point-stack))
+    (setq point-stack (cdr point-stack))))
+
+
+;; -- CUSTOM BEHAVIOUR ----------------------------------------
+
+(defun goto-match-paren (arg)
+  "Go to the matching parenthesis if on parenthesis, otherwise insert %.
+vi style of % jumping to matching brace."
+  (interactive "p")
+  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+        ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+        (t (self-insert-command (or arg 1)))))
+
+(defun zap-upto-char (arg char)
+  "Kill up to but not including ARG'th occurrence of CHAR.
+Case is ignored if `case-fold-search' is non-nil in the current buffer.
+Goes backward if ARG is negative; error if CHAR not found."
+  (interactive "p\ncZap upto char: ")
+  (if (char-table-p translation-table-for-input)
+      (setq char (or (aref translation-table-for-input char) char)))
+  (kill-region (point) 
+			   (progn
+				 (search-forward (char-to-string char) nil nil arg)
+				 (if (minusp arg)
+					 (forward-char 1)
+				   (backward-char 1))
+	;			 (goto-char (if (> arg 0) (1- (point)) (1+ (point))))
+				 (point))))
+
+(defun copy-upto-char (arg char)
+  "Copy region as Kill up and including ARG'th occurrence of CHAR.
+Case is ignored if `case-fold-search' is non-nil in the current buffer.
+Goes backward if ARG is negative; error if CHAR not found."
+  (interactive "p\ncCopy upto char: ")
+  (if (char-table-p translation-table-for-input)
+      (setq char (or (aref translation-table-for-input char) char)))
+  (copy-region-as-kill (point) 
+			   (progn
+				 (if (minusp arg)
+					 (forward-char 1)
+				   (backward-char 1))
+				 (search-forward (char-to-string char) nil nil arg)
+				 (point))))
+
+
+(defun kill-syntax-forward ()
+  "Kill characters with syntax at point."
+  (interactive)
+  (kill-region (point)
+               (progn (skip-syntax-forward (string (char-syntax (char-after))))
+                      (point))))
+
+(defun kill-syntax-backward ()
+  "Kill characters with syntax at point."
+  (interactive)
+  (kill-region (point)
+               (progn (skip-syntax-backward (string (char-syntax (char-before))))
+                      (point))))
+
+
+;; -- KEYBINDINGS ----------------------------------------
+
+(windmove-default-keybindings 'super)
+(ffap-bindings)
+
+(global-set-key [(f3)] 'search-forward)
+(global-set-key [(control f3)] 'search-backward)
+(global-set-key [(meta f3)] 'search-forward-regexp)
+(global-set-key [(control meta f3)] 'search-backward-regexp)
+
+;; unbind keys that piss me off
+(global-unset-key [(control z)])
+
+(global-set-key [(f4)] 'replace-string)
+(global-set-key [(shift f4)] 'query-replace)
+(global-set-key [(meta f4)] 'replace-regexp)
+(global-set-key [(shift meta f4)] 'query-replace-regexp)
+
+(global-set-key [(super s)] 'shell)
+(global-set-key [(super //)] 'switch-cc-to-h)
+(global-set-key [(meta kp-add)] 'enlarge-window)
+(global-set-key [(meta kp-subtract)] 'shrink-window)
+
+(global-set-key [(super b)] 'bookmark-bmenu-list)
+
+(global-set-key [(f12)] 'bs-show)
+(global-set-key [(shift f12)] 'buffer-menu)
+
+(global-set-key [(super k)] 'kill-syntax-forward)
+(global-set-key [(super K)] 'kill-syntax-backward)
+
+(global-set-key [(meta z)] 'zap-upto-char)
+(global-set-key [(meta Z)] 'copy-upto-char)
+
+
+(global-set-key [(super .)] 'point-stack-push)
+(global-set-key [(super ,)] 'point-stack-pop)
+(global-set-key [(meta .)] 'etags-select-find-tag-at-point)
+(global-set-key [(meta ,)] 'pop-tag-mark)
+(global-set-key [(meta \?)] 'tags-loop-continue)
+
+;; -- ENVIRONMENT -----------------------------------------------------------------------
+
+(defun glfw ()
+  (interactive)
+  (setenv "PATH"
+		  (concat "D:\\Experiments\\glfw"
+				  path-separator (getenv "PATH"))))
+
+(defun gnuwin32 ()
+  (interactive)
+  (setenv "PATH"
+		  (concat "C:\\Program Files (x86)\\Emacs\\EmacsW32\\gnuwin32\\bin"
+				  path-separator (getenv "PATH"))))
+
+(defun mingw ()
+  (interactive)
+  (setenv "INCLUDE" (concat "D:\\mingw\\include" path-separator 
+							"D:\\mingw\\include\\ddk" path-separator 
+							"D:\\mingw\\include\\c++" path-separator 
+							"D:\\mingw\\include\\GL"))
+  (setenv "LIB" (concat "D:\\mingw\\lib" path-separator "D:\\mingw\\lib\\gcc" path-separator "D:\\mingw\\lib\\debug"))
+  (setenv "PATH" (concat "D:\\mingw\\bin" path-separator "D::\\mingw32\\bin" path-separator (getenv "PATH"))))
+
+(defun cygwin ()
+  (interactive)
+  (setenv "PATH" (concat "D:\\cygwin\\bin" path-separator (getenv "PATH"))))
+
+
+;; -- INTEGRATED HELP -----------------------------------------------------------------------
+
+(require 'url)
+
+(defun search-site-url (site keyword)
+  (concat "http://www.google.com/" 
+		  (format "search?q=%s+site:%s"
+				  (url-hexify-string keyword)
+				  (url-hexify-string site))))
+
+(defun wxhelp ()
+   "Open a window showing the wxWidgets documentation for the word under the point"
+   (interactive)   
+   (browse-url (search-site-url  "www.wxwidgets.org/manuals/stable" (thing-at-point 'symbol))))
+
+
+   
+(defun show-msdn-topic ()
+  "Open a window showing the MSDN documentation for the word under the point"
+  (interactive)
+  (message (concat "Looking up " (current-word)))
+  (start-process "MSDN lookup" nil   
+		 "C:\\Program Files (x86)\\Emacs\\EmacsW32\\bin\\h2viewer.exe"
+		 "/appID" "emacs"
+		 "/helpcol" "MS.MSDN.v80"
+		 "/index"  (current-word)))
+
+(defun show-oi-topic ()
+  (interactive)
+  (message (concat "Looking up " (current-word)))
+  (start-process "OI Lookup"  nil 
+				  "C:/WINDOWS/keyhh.exe" "-#klink" (format "'%s'" (thing-at-point 'symbol)) 
+				  "d:/OpenInventor/6.1/VC8/Win32/OIV6.1/doc/ReferenceManual/RefManual.chm"))
+				  
+;; -- C++ ------------------------------------------------------------------------------
+
+(require 'cc-mode)
+
+(defun he-tag-beg ()
+  (let ((p
+		 (save-excursion 
+		   (backward-word 1)
+		   (point))))
+	p))
+
+(defun try-expand-tag (old)
+  (unless  old
+	(he-init-string (he-tag-beg) (point))
+	(setq he-expand-list (sort
+						  (all-completions he-search-string 'tags-complete-tag) 'string-lessp)))
+  (while (and he-expand-list
+			  (he-string-member (car he-expand-list) he-tried-table))
+			  (setq he-expand-list (cdr he-expand-list)))
+  (if (null he-expand-list)
+	  (progn
+		(when old (he-reset-string))
+		())
+	(he-substitute-string (car he-expand-list))
+	(setq he-expand-list (cdr he-expand-list))
+	t))
+			  
+			  
+  
+(global-set-key "\C-h\C-m" 'show-msdn-topic)
+(global-set-key "\C-h\C-w" 'wxhelp)
+(global-set-key "\C-h\C-o" 'show-oi-topic)
+
+(defconst ffa-c-style
+  ;; Always indent c/c++ sources, never insert tabs
+  '((c-tab-always-indent        . t)
+    ;; Offset for line only comments
+    (c-basic-offset . 4)
+    (c-comment-only-line-offset . 0)
+    ;; Controls the insertion of newlines before and after braces.
+    (c-hanging-braces-alist     . ((substatement-open after)
+                                   (brace-list-open)))
+    ;; Controls the insertion of newlines before and after certain colons.
+    (c-hanging-colons-alist     . ((member-init-intro before)
+                                   (inher-intro)
+                                   (case-label after)
+                                   (label after)
+                                   (access-label after)))
+    ;; List of various C/C++/ObjC constructs to "clean up".
+    (c-cleanup-list             . (scope-operator
+                                   empty-defun-braces
+                                   defun-close-semi))
+    ;; Association list of syntactic element symbols and indentation offsets.
+    (c-offsets-alist            . ((arglist-close . c-lineup-arglist)
+                                   (substatement-open . 0)
+                                   (case-label        . +)
+                                   (block-open        . 0)
+                                   (access-label      . -)
+                                   (label              . 0)
+                                   (knr-argdecl-intro . -)))
+;;                                   (c-echo-syntactic-information-p . t)
+	)
+  "FFa C/C++ Programming Style")
+
+(c-add-style "ffa" ffa-c-style)
+
+(add-hook 'c-mode-common-hook 
+      (lambda ()
+		;; Do not check for old-style (K&R) function declarations;
+		;; this speeds up indenting a lot.
+		(c-set-style "ffa")
+		(setq c-recognize-knr-p nil)	
+		(setq c-basic-offset 4)
+		(local-set-key [(control c) t] 'switch-cc-to-h)
+		(local-set-key [(meta /)] (make-hippie-expand-function 
+								   '(try-expand-tag
+									 try-expand-dabbrev-visible
+									 try-expand-dabbrev-from-kill 
+									 try-expand-dabbrev-all-buffers 
+									 try-complete-file-name-partially 
+									 try-complete-file-name)))))
+
+
+(add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.inl$" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.xrc$" . xml-mode))
+(add-to-list 'auto-mode-alist '("SConscript" . python-mode))
+(add-to-list 'auto-mode-alist '("SConstruct" . python-mode))
+
+(defun mark-c-scope-beg ()
+  "Marks the c-scope (region between {}) enclosing the point. 
+   Naive, as will be confused by { } within strings"
+  (let 
+	  ((scope-depth 1))
+	(while (not (= scope-depth 0))
+	  (search-backward-regexp "}\\|{")
+	  (if (string= (char-to-string (char-before)) "}")
+		  (setq scope-depth (1+ scope-depth))
+			(setq scope-depth (1- scope-depth)))))
+  (point))
+
+(defun mark-c-scope-end ()
+  "Marks the c-scope (region between {}) enclosing the point. 
+   Naive, as will be confused by { } within strings"
+  (let 
+	  ((scope-depth 1))
+	(while (not (= scope-depth 0))
+	  (search-forward-regexp "}\\|{")
+	  (if (string= (char-to-string (char-before)) "}")
+		  (setq scope-depth (1- scope-depth))
+			(setq scope-depth (1_ scope-depth)))))
+  (point))
+
+(defun kill-c-scope ()
+  (interactive)
+  (let
+	  ((inital-point (point)))
+	(save-excursion 
+	  (let
+		((beg (mark-c-scope-beg)))
+		(goto-char inital-point)
+		(let ((end (mark-c-scope-end))))))))
+
+  	
+
+(defun c-wx-lineup-topmost-intro-cont (langelem)
+  (save-excursion
+    (beginning-of-line)
+    (if (re-search-forward "EVT_" (line-end-position) t)
+		'c-basic-offset
+      (c-lineup-topmost-intro-cont langelem))))
+
+(add-to-list 'c++-font-lock-extra-types
+	      "\bwx[A-Z][a-z][a-zA-Z]*?\b" "\bSo[A-Z][a-z][a-zA-Z]*?\b")
+
+(add-hook 'c++-mode-hook 
+	 (lambda ()
+		(c-set-style "ffa")
+;; automatic indent on return in cc-mode
+		(local-set-key "\r" 'newline-and-indent)
+		(local-set-key [(super k)] 'kill-c-scope)
+		(local-set-key [f7] 'build-sviplus)
+		(local-set-key [(control f7)] 'vc-compile)
+		(setq c-recognize-knr-p nil)	
+		(setq c-basic-offset 4)
+		(c-set-offset 'topmost-intro-cont 'c-wx-lineup-topmost-intro-cont)))
+
+ ;; cc-mode
+ (require 'cc-mode)
+
+ ;; Switch fromm *.<impl> to *.<head> and vice versa
+(defun switch-cc-to-h ()
+  (interactive)
+  (when (string-match "^\\(.*\\)\\.\\([^.]*\\)$" buffer-file-name)
+    (let ((name (match-string 1 buffer-file-name))
+		  (suffix (match-string 2 buffer-file-name)))
+      (cond ((string-match suffix "c\\|cc\\|C\\|cpp")
+			 (cond ((file-exists-p (concat name ".h"))
+					(find-file (concat name ".h")))
+				   ((file-exists-p (concat name ".hh"))
+					(find-file (concat name ".hh")))))
+			((string-match suffix "h\\|hh")
+			 (cond ((file-exists-p (concat name ".cc"))
+					(find-file (concat name ".cc")))
+				   ((file-exists-p (concat name ".inl"))
+					(find-file (concat name ".inl")))
+					((file-exists-p (concat name ".C"))
+					 (find-file (concat name ".C")))
+					((file-exists-p (concat name ".cpp"))
+					 (find-file (concat name ".cpp")))
+					((file-exists-p (concat name ".c"))
+					 (find-file (concat name ".c")))))))))
+
+				
+
+
+
+;; I hate semantic, but like ecb, so just give me the minumum
+(load-file "c:/Program Files (x86)/Emacs/Emacs/lisp/cedet/common/cedet.el")
+(semantic-load-enable-minimum-features)
+
+;; but I love ecb
+(add-to-list 'load-path "c:/Program Files (x86)/Emacs/emacs/lisp/ecb")
+(require 'ecb)
+
+(defun scratch-lisp-file ()
+  "Insert a template (with DEFPACKAGE and IN-PACKAGE forms) into
+  the current buffer."
+  (interactive)
+  (goto-char 0)
+  (let* ((file (file-name-nondirectory (buffer-file-name)))
+         (package (file-name-sans-extension file)))
+    (insert ";;;; " file "\n")
+    (insert "\n(defpackage #:" package "\n  (:use #:cl))\n\n")
+    (insert "(in-package #:" package ")\n\n")))
+
+(defun insert-header-guard (buffer-name)
+  (let* ((split-name (split-string  buffer-name "[-_.]"))
+		 (guard-def 
+		  (concat "H_" 
+				  (mapconcat (lambda (x) (upcase x)) 
+				       split-name  "_"))))
+    (save-excursion
+      (progn
+	(goto-char 0)
+	(insert "#if !defined(")
+	(insert guard-def)
+	(insert ")\n")
+	(insert "#define ")
+	(insert guard-def)
+	(insert "\n\n\n")
+	(insert "#endif\n\n")))))
+
+
+(defun make-guard ()
+  (interactive)
+  (let ((header-name 
+		 (file-name-nondirectory
+		  (file-name-sans-extension
+		   (buffer-file-name (current-buffer))))))
+    (if (string= (downcase
+				  (file-name-extension
+				  (buffer-file-name
+				   (current-buffer)))) "h")
+		(insert-header-guard header-name))))
+
+;; to do -- make this customizable? 
+(defvar *svi-pro-dir* "ffa_dev_ict")
+(defvar *svi-pro-branch* "BRANCH_DEV_ICT_PHASE_1")
+(defvar *svi-pro-branch-history* '("BRANCH_DEV_ICT_PHASE_1"))
+
+(defun svi-pro-root (suffix)
+  (let ((result (concat "D:/" *svi-pro-dir*)))
+	(when suffix
+	  (setq result (concat result "/" suffix)))
+	result))
+
+(setq ffap-c-path (list (concat (svi-pro-root "SVIPro") (svi-pro-root "cimages3d"))))
+
+(defun update-svi-pro ()
+  (cd (svi-pro-root))
+  (shell-command "cvs update -dP"))
+
+(defun switch-svi-pro-branch ()
+  (interactive)
+  (setq *svi-pro-dir* (read-directory-name "Directory? " "D:/"))
+  (setq *svi-pro-branch* (completing-read "Branch? " nil nil nil *svi-pro-branch-history*))
+  (setq ffap-c-path (list (concat (svi-pro-root "SVIPro") (svi-pro-root "cimages3d"))))
+  (add-to-list '*svi-pro-branch-history* *svi-pro-branch*))
+
+
+;; Tagging
+(defun tag-svi-pro ()
+  (interactive)
+	(shell-command
+	 (concat 
+	  "find "  
+	  (svi-pro-root "SVIPRO") 
+	  " -name \"*.h\" -o -name \"*.cpp\" | ectags --verbose -e -o "
+	  (svi-pro-root "SVIPRO/TAGS") 
+	  " --language-force=c++  --c++-kinds=cfnstunedm --extra=+q --options=d:/Experiments/ectags.cnf -L -&")))
+
+(defun tag-cimages3d ()
+  (interactive)
+	(shell-command
+	 (concat 
+	  "find "  
+	  (svi-pro-root "cimages3d")
+	  " -name \"*.inl\" -name \"*.h\" -o -name \"*.cpp\" | ectags --verbose -e -o "
+	  (svi-pro-root "cimages3d/TAGS") 
+	  " --language-force=c++  --c++-kinds=cfnstunedm --extra=+q --options=d:/Experiments/ectags.cnf -L -&")))
+
+
+(defun tag-wxwidgets ()
+  (interactive)
+  (shell-command 
+   "find d:/wxWidgets-2.8.0-rc1/include -name \"*.h\" | ectags --verbose -e  --language-force=c++ --extra=+q --c++-kinds=cepdpstvm  --options=d:/Experiments/ectags.cnf -o d:/wxWidgets-2.8.0-rc1/TAGS -L -&"))
+ 
+(defun tag-open-inventor ()
+  (interactive)
+  (shell-command 
+   "find D:/OpenInventor/6.1/VC8/Win32/OIV6.1/include -name \"*.h\" | ectags --verbose -e --extra=+q --language-force=c++ --c++-kinds=cepdpstvm --options=d:/Experiments/ectags.cnf -o d:/OpenInventor/TAGS -L -&"))
+
+(defun vc-x86-env ()
+  (interactive)
+  (setenv "VSINSTALLDIR" "C:\\Program Files (x86)\\Microsoft Visual Studio 8")
+  (setenv "VCINSTALLDIR" "C:\\Program Files (x86)\\Microsoft Visual Studio 8\\VC")
+  (setenv "FrameworkDir" "C:\\WINDOWS\\Microsoft.NET\\Framework")
+  (setenv "FrameworkVersion" "v2.0.50727")
+  (setenv "FrameworkSDKDir" "C:\\Program Files (x86)\\Microsoft Visual Studio 8\\SDK\\v2.0")
+  (setenv "CommonDevEnvDir" "C:\\Program Files (x86)\\Microsoft Visual Studio 8\\Common7")
+  (setenv "DevEnvDir" 
+	  (concat (getenv "CommonDevEnvDir") "\\IDE")) ;; "C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\\Common7\\IDE")
+  (setenv "PATH" 
+	  (concat (getenv "DevEnvDir") ;;"C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\\Common7\\IDE"
+		  path-separator
+		   (concat (getenv "VCINSTALLDIR") "\\BIN") ;;"C:\\Program\ Files (x86)\\Microsoft\ Visual\ Studio 8\\VC\\BIN"
+		   path-separator
+		   (concat (getenv "CommonDevEnvDir") "\\Tools") ;;  "C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\\Common7\\Tools"
+		   path-separator
+		   (concat (getenv "CommonDevEnvDir") "\\Tools\\bin") ;;   "C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\\Common7\\Tools\\bin"
+		   path-separator
+		   (concat (getenv "VCINSTALLDIR") "\\PlatformSDK\\bin") ;;  "C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\\VC\\PlatformSDK\\bin"
+		   path-separator
+		   (concat (getenv "FrameworkSDKDir") "\\bin") ;; "C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\\SDK\\v2.0\\bin"
+		   path-separator
+		   (concat (getenv "FrameworkDir") "\\" (getenv "FrameworkVersion")) ;;  "C:\\WINDOWS\\Microsoft.NET\\Framework\\v2.0.50727"
+		   path-separator
+		   (concat (getenv "VCINSTALLDIR") "\\VCPackages") ;;  "C:\\Program\ Files\ (x86)\\Microsoft\ Visual\ Studio\ 8\VC\VCPackages"
+		   path-separator
+		   (getenv "PATH")))
+  (setenv "INCLUDE"
+	  (concat 
+	   (concat (getenv "VCINSTALLDIR") "\\ATLMFC\\INCLUDE")
+	   path-separator
+	   (concat (getenv "VCINSTALLDIR") "\\INCLUDE")
+	   path-separator
+	   (concat (getenv "VCINSTALLDIR") "\\PlatformSDK\\include")
+	   path-separator
+	   (concat (getenv "VSINSTALLDIR") "\\SDK\\v2.0\\include")
+	   path-separator 
+	   (getenv "INCLUDE")))
+  (setenv "LIB" (concat 
+		 (concat (getenv "VCINSTALLDIR") "\\ATLMFC\\LIB")
+		 path-separator
+		 (concat (getenv "VCINSTALLDIR") "\\LIB")
+		 path-separator
+		 (concat (getenv "VCINSTALLDIR") "\\PlatformSDK\\lib")
+		 path-separator
+		 (concat (getenv "VSINSTALLDIR") "\\SDK\\v2.0\lib")
+		 path-separator 
+		 (getenv "LIB")))
+  (setenv  "LIBPATH" 
+	   (concat
+	    (concat (getenv "FrameworkDir") "\\" (getenv "FrameworkVersion")) ;;  "C:\\WINDOWS\\Microsoft.NET\\Framework\\v2.0.50727"
+	    path-separator
+	    (concat (getenv "VCINSTALLDIR") "\\ATLMFC\\LIB"))))
+
+
+(defun build-cimages3d ()
+  (interactive)
+  (cd (svi-pro-root))
+  (shell-command "devenv  cimages3d\\3dlibs\\3dlibs.sln /Build \"Debug|Win32\"&"))
+
+(defun build-segy ()
+  (interactive)
+  (cd  (svi-pro-root))
+  (shell-command "devenv  SEGY\\SEGY.sln /Build \"Debug|Win32\"&"))
+
+(defun build-svipro ()
+  (interactive)
+  (cd (svi-pro-root))
+  (shell-command "devenv  SVIPRo\\SVIPro.sln /Build \"Debug|Win32\"&"))
+
+(defun build-sviplus ()
+  (interactive)
+  (cd (svi-pro-root "SVIPro"))
+  (compile "devenv  SVIPlus\\SVIPlus.sln /Build \"Debug|Win32\"" t))
+
+
+(defun rebuild-sviplus ()
+  (interactive)
+  (cd (svi-pro-root "SVIPro"))
+  (compile "devenv  SVIPlus\\SVIPlus.sln /ReBuild \"Debug|Win32\"" t))
+
+
+(defun vc-compile ()
+  (interactive)
+  (when (string-match "^\\(.*\\)\\.\\([^.]*\\)$" buffer-file-name)
+    (let ((name (match-string 1 buffer-file-name))
+		  (suffix (match-string 2 buffer-file-name)))
+      (cond ((string-match suffix "c\\|cc\\|C\\|cpp")
+			 (message (format  "Compiling %s" (buffer-file-name (current-buffer))))
+			 (let ((file-to-compile (buffer-file-name (current-buffer))))
+			   (compile 
+				(concat
+				 "python D:\\Experiments\\vs_go.py dte_compile_file " file-to-compile))))
+			((string-match suffix "h\\|hh")
+			 (switch-cc-to-h)
+			  (compile
+			   (concat 
+				"python D:\\Experiments\\vs_go.py dte_compile_file " (buffer-file-name (current-buffer)))))))))
+
+
+(global-set-key [(super c)] 'vc-compile)
+
+;; unit testing 
+
+;; needs to ask for root dir, config
+(defun run-attrib-test ()
+  (interactive)
+  (cd "d:/ffa_dev_HEAD/cimages3d/3dlibs/vc8/x64/debug/")
+  (let ((attrib-test
+		 (completing-read "Test: " 
+					 '(  ("arclength") ("arclength2D") ("complex") ("hilbert") ("fthilbert") ("pca") ("surfacein") ("fastrank") ("terrace") 	
+						 ("phaseshift") ("statistics") ("voxelvalue")  
+						 ("faultattribsmooth") ("bitreverse") ("fftblock") ("fftloader") ("fftwriter") 
+						 ("rad2fft") ("radix2fft") ("twiddlefactor") ("windowfns") ("spectralpower") ("spectralstats") 
+						 ("vifreqdecomp2d") ("fftcomparison") ("gabor") ("ips") ("faultin") ("averagespectrum" ) 
+						 ( "jfc" ))
+					 nil t "radix2fft")))
+  (shell-command (concat "d:/ffa_dev/cimages3d/3dlibs/vc8/x64/debug/3dattribtest.exe " attrib-test "&") (generate-new-buffer "*test*"))))
+
+
+(defun flatten (x)
+  (mapcar (lambda (x) (if (consp x) (flatten x) x)) (if (consp x) x (list x))))
+
+(defun all-included-files ()
+  (interactive)
+  (let
+	   ((include-path (parse-colon-path (getenv "INCLUDE"))))
+	 (flatten (mapcar (lambda (x) (directory-files x t "[.]+h$" nil)) include-path))))
+
+(defun find-included-file (fname)
+  (interactive "fFile to find? :")
+  (find-if 
+   (lambda (x) (string= (file-name-nondirectory x) fname))
+   (all-included-files)))
+
+(defun edit-ffa-resource ()
+  (interactive)
+  (let ((fname
+		 (if (equal (downcase (file-name-extension buffer-file-name)) "xrc")
+			 buffer-file-name
+		   (read-file-name "Resource file? "))))
+	(shell-command (concat "python d://XRCed-0.1.7-0//xrced.py " fname))))
+
+;; -- COMMON LISP ------------------------------------------------------------------------------
+
+(add-to-list 'load-path "D:/Experiments/slime")
+
+(defun lwp-start ()
+  (interactive)
+  (shell-command "d:/Experiments/lwp-start.vbs&"))
+
+(require 'slime)
+(slime-setup)
+
+(add-hook 'sime-mode-hook
+		  (lambda ()
+			(local-set-key [(meta /)] 'slime-complete-symbol)))
+
+(global-set-key [f8] 'slime-selector)
+
+
+;; -- BACKUP POLICY --------------------------------------------------------------------
+
+(setq
+   backup-by-copying t      ; don't clobber symlinks
+   backup-directory-alist
+    '(("." . "d:/backups"))    ; don't litter my fs tree
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)      ; use versioned backups
+
+
+
+
+;; -- Blogging -------------------------------------------------------------------------
+
+;; -- Fun ------------------------------------------------------------------------------	       
+
+(require 'malyon)
+(require 'mudel)
+
+;; -- END ------------------------------------------------------------------------------	       
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(Info-additional-directory-list (quote ("D:\\\\mingw\\\\info")))
+ '(atom-api:author "John Connors")
+ '(browse-url-browser-function (quote browse-url-firefox))
+ '(browse-url-firefox-new-window-is-tab t)
+ '(browse-url-firefox-program "D:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe")
+ '(c-basic-offset 4)
+ '(c-default-style (quote ((c-mode . "ffa") (c++-mode . "ffa") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
+ '(c-doc-comment-style (quote ((c-mode . autodoc) (c++-mode . autodoc) (java-mode . javadoc) (pike-mode . autodoc))))
+ '(comint-password-prompt-regexp "\\(\\([Oo]ld \\|[Nn]ew \\|'s \\|login \\|Kerberos \\|UNIX \\| SMB \\|^\\)[Pp]assword\\( (again)\\)?\\|pass phrase\\|\\(Enter\\|Repeat\\|Bad\\) passphrase\\)\\(?:, try again\\)?\\(?: for [^:]+\\)?:\\s *\\'")
+ '(cygwin-mount-cygwin-bin-directory "c://cygwin//bin//")
+ '(cygwin-mount-table t)
+ '(ecb-options-version "2.33beta1")
+ '(ecb-source-path (quote (("d:/ffa_dev_ict" "ICT") ("c:/Documents and Settings/jconnors/Application Data" "home") (#("d:/Experiments" 0 14 (\.\.\. nil)) "Experiments") ("d:/wxWidgets-2.8.0-rc1" "wxWidgets") ("d:/OpenInventor" "OIV"))))
+ '(global-semantic-idle-completions-mode nil nil (semantic-idle))
+ '(grep-command "grep -n ")
+ '(grep-find-command nil)
+ '(grep-find-template "find \"<D>\" <X> -type f <F> -print0 | xargs -0 grep <C> -n <R> ")
+ '(grep-highlight-matches nil)
+ '(grep-template "grep <C> -n <R> <F>")
+ '(grep-use-null-device nil)
+ '(ps-paper-type "a4")
+ '(rcirc-default-nick "ZabaQ")
+ '(rcirc-default-user-full-name "John Connors")
+ '(save-place t nil (saveplace))
+ '(scroll-conservatively 1)
+ '(scroll-step 1)
+ '(semantic-default-c-path (quote ("d\\wxWidgets-2.8.0-rc1\\contrib\\include" "D:\\OpenInventor\\6.1\\VC8\\Win32\\OIV6.1\\include" "d:\\wxWidgets-2.8.0-rc1\\include" "d:\\ffa_dev\\SEGY" "d:\\ffa_dev\\cimages3d")))
+ '(senator-minor-mode-hook nil)
+ '(speedbar-use-images nil)
+ '(tab-width 4)
+ '(tags-table-list (quote ("d:/ffa_dev_ict/SVIPro/TAGS" "d:/ffa_dev_ict/cimages3d/TAGS")))
+ '(tool-bar-mode nil)
+ '(transient-mark-mode t)
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify))
+ '(w32shell-cygwin-bin "D:\\cygwin\\bin")
+ '(w32shell-msys-bin "D:\\Msys\\bin\\")
+ '(W32shell-shell (quote cmd)))
+
+
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(default ((t (:stipple nil :background "black" :foreground "#00ff00" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 72 :width normal :family "droid sans mono")))))
+
+
+
+
+</pre>
+
+

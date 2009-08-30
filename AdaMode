@@ -1,0 +1,15 @@
+A MajorMode for editing [WikiPedia:Ada_%28programming_language%29 Ada] programs comes with Emacs.
+
+Project page:
+
+* http://stephe-leake.org/emacs/ada-mode/emacs-ada-mode.html
+
+The current [::ada-mode] maintainer is StephenLeake,[http://stephe-leake.org/] who maintains the code in GNU Emacs and periodically publishes updated versions on the project page.
+
+See also Lisp:ada-gpr.el by RolfEbert, a major mode for editing GNAT project files (.gpr).
+
+ElseMode comes with templates for writing Ada source code.
+
+----
+CategoryModes
+ProgrammingModes

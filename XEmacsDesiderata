@@ -1,0 +1,76 @@
+= XEmacs Desiderata by Stephen Turnbull =
+
+This isn't a release plan, and may never become one.  But then again, it may.  [[XEmacs]] releases being what they are, a firm statement one way or the other is unlikely to be of much benefit.  Ambiguity, however, can.
+
+*About the wikilink and title:* I don't know what's right, but I sure do have strong opinions.  I think it's best if this kind of page has one lead editor ... for this one, moi.  :-P  I hope the wikilink and title encourage competing pages with similar naming so they're easy to find.  And add a link in the /Better Ideas/ section below.
+
+*About the structure of this page:*  It's already getting too long.  I plan to prioritize in each section, and move all but the "hot half-dozen" (or so) into pages named something like !XEmacsDesiderataOtherFeatures, and so on.  The fontconfig bullet under /Features/ is about as long as I'm willing to admit, and it will probably be reduced to one or two sentences and a wikilink in the near future.  (Cf. the /megapatch/ bullet under /Process improvements/.)  Feel free to add stuff you're interested in (that will draw my attention better than a page somewhere else), but it would be nice if you'd respect this structure.  And of course if you want to make a federal case of something, you probably want to make a page elsewhere, because I may very well tuck it out of sight in some //Other*// category.
+
+Of course, it's a wiki and this is not my wiki home page, so you're not constrained.  But I think that's a good plan, and hope you will agree. ;-)
+
+Here are some things I would like to see in the next release of XEmacs (which will be version 22), in no particular order.
+
+== Features ==
+
+* Xft for !OpenType/!TrueType fonts with anti-aliasing.  A classic example of a NotReadyForPrimeTimeFeature.  Wasn't then, isn't now.  Sure is beautiful, though!
+
+* fontconfig as the way to describe fonts internally.  Think about it: with the dominance of !TrueType, we're really all talking about basically the same fonts, whether we call it ##-adobe-courier-medium-r-normal--17-120-100-100-m-100-iso8859-1##, ##Courier-12##, or ##Courier:12:Western##.  And ##fontconfig##'s internal structure ##FcPattern## doesn't care; it can store the parsed version of any of these without losing information, while it's easy enough to generate any of them from the information in a ##FcPattern##.  Generating names complying with each convention should be fast, and parsing needn't be horribly slow.  So let's unify the internal representation of a font specification, do all frobbing on that, and parse and convert to platform specs on-the-fly.  Using any of the platform formats would lose information compared to ##FcPattern##, so let's use the latter.
+
+* A sane UI for face configuration.  Customize is not it.  Use of ##fontconfig## as the standard way to describe fonts should make this easier to develop.  We also need to deal with Mule, thousands of characters and so on.
+
+* Unicode as the internal coded character set.  Yes, this will cause some visual pain to Asian ideograph users.  However, most documents are monolingual, used by monolingual users.  Just make sure the right culture's fonts are used, and you win.  (Not as easy to do as to write, but should be possible.)
+
+* Packages in source distribution, with a single Make target to install them.
+
+* Modularization of several existing add-ons (Berkeley db, Wnn, maybe even some of the image and sound libraries).
+
+* SVG (scalable vector graphics) support.
+
+* NetPBM (portable pixmap) support; mostly for GNU Emacs compatibility, but I wonder if we couldn't also use some of the routines for things like generating 3d shadows and the like.
+
+* Invert the structure of installed packages, so that each package contains its own ##etc##, ##lisp## and bin subdirectories (what to do about Info files is unclear, though).  (The current structure has a single ##lisp## directory with subdirectories for each package.  This is a historical relic---GNU Emacs still uses it, too---of the old days when source for packages was simply a convenience for XEmacs maintainers; there were no external maintainers then.)
+
+* Uniform control of text appearance (both buffers and GUI labels) via faces.  (Currently there is no menubar face and the other GUI contraptions don't have proper inheritance.)
+
+* A ##mode## specifier locale (the current "fix up all relevant buffers /ex post/" approach is unintelligible to ordinary mortals).
+
+== Implementation details ==
+
+* Fix the configure.ac to have sane option naming.  (Malcolm Purvis has submitted a patch to alias ##--with-FOO## to ##--enable-FOO##.  I fear that this opens us up to being screwed by Autoconf 2.60, but it /is/ the RightThang[tm].)
+
+* Implement Custom themes properly, possibly as a port from GNU Emacs.
+
+* Reimplement Customize on top of specifiers, which do everything that Customize can do.
+
+* Redisplay refactoring.
+
+* XKB support.
+
+== Process improvements ==
+
+* Reorganize the mailing lists for coherence and to reduce spam.
+
+* Issue tracking system.  Personally, I'm not a big fan of Bugzilla; I like email interfaces and I like editing in XEmacs.  Uploading a file or cutting and pasting doesn't really satisfy me.  Not to mention that it's written in Perl, which I really detest working with after the simplicity of LISP and the explicity of Python.  So I favor something like Roundup (not coincidentally, written in Python).  Personal biases aside, at present the XEmacs workflow is email-centric, and I think the risk that an ITS which isn't designed from the ground up for working with an email-centric workflow would become a blackhole for bug reports is high.  We had a web-based BTS in 2000 (JitterBug, by the folks who brought you Samba and rsync), but it was a pain to work with (especially since the 'net was slower and less reliable then), and AFAIK we never did fix any bugs based on reports there.  In this day and age, an acceptable issue tracker must have a convenient Web interface, though.  Roundup seems to fit the bill.
+Bugzilla, of course, has its supporters.  But I just registered for the DarwinPorts Bugzilla, and it is a pain.  I think it really needs a dedicated minder.
+RT has its backers.  It seems to be pretty good.
+Some people like Trac, but the home page puts me off.  I want an issue tracker, not a wiki, but the home page focuses on the wiki features.  I can see how it might be a good idea, but I'd rather have them explain it to me.  (Note: I do plan to go back, it's quite likely that I just had trouble wrapping my head around a new concept....)
+
+[new]
+Hi Stephen. Have you ever heard of [http://panoramicfeedback.com/opensource BugEverywhere]? It is a bug tracking over a distributed SCM (namely Arch or Bazaar-NG) -- Jérôme Marant
+[new]
+
+* Improved main repository.  I've long been of the opinion that we need to move on from CVS, but the main candidates were Bitkeeper (too risky---several of us have participated directly in VC development) and Subversion (can a "better CVS" possibly be "good enough"?)  Bitkeeper has gone on to rule itself out through Larry !McVoy's tantrum (sorry, Larry, I still respect you, but that was a serious mistake).  Subversion, on the other hand, has won a lot of fans, and at worst a conversion would be low risk but buy us only a little better service.
+
+* Reduce [[the megapatch problem]].  Ben Wing is famous for submitting huge patches that affect half the files in XEmacs, causing conflicts on updates in everybody else's workspaces, but it's more than that.  We need distributed advanced revision control systems that deal with conflicts in an intelligent way.  Neither CVS nor Subversion does (not yet, and not soon).  On the other hand, the "advanced systems" don't really seem ready yet.  I'm hoping that a combination of CVS or Subversion as the central repository plus Arch, Darcs, whatever handling branches will help.
+
+== There is no rule #4 ==
+
+And there is no schedule, either.  Not yet, and it may not be my job, anyway.  ;-)
+
+== C'mon, there must be better ideas! ==
+
+But there aren't any yet! :-P
+
+----------
+
+Back to StephenTurnbull's home page.

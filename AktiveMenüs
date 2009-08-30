@@ -1,0 +1,9 @@
+Einer meiner Wünsche für meinen XEmacs war es, die typischen GUI Elemente wie Menubar und Scrollbar so zu gestalten, dass sie erst dann erscheinen (und Platz beanspruchen), wenn man sie braucht. Aus dieser Idee und meiner ersten holprigen Implementation einer rudimentären Funktionalität hat Claus Brunzema ein Päckchen geschnürt.
+
+Ihr findet die Version 1.2.0 auf: http://www.sourcefiles.org/Editors/Emacs/active-menu.el
+
+Die kanonische Adresse von active-menu ist: http://www.skamphausen.de/cgi-bin/ska/active-menu.el
+
+Die dort verfügbare Version 2.0.0 enthält zwei verschiedene Backends (Timer- bzw. Mouse-Ereignis-gesteuert) und funktioniert auch größtenteils unter Gnu Emacs.  Allerdings habe ich aufgehört, das zu entwickeln, weil es einfach zu viele subtile Unterschiede zwischen GnuEmacs und XEmacs gibt.  Zudem verwende ich es nicht mehr (die Zeiten ändern sich und die Monitore werden größer ;-) --StefanKamphausen 
+----
+KategorieAnzeige

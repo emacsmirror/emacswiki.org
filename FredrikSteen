@@ -1,0 +1,144 @@
+Well my name is Fredrik Steen, a spirited Free Software programmer, half
+net-addicted coffee drinking SKA listening Jeepaholic and a Unix geek on his
+journey to his Unix guru-ism. pheew...
+
+I live in Emacs almost every day. Programming (mostly in Python), reading and
+writing mail/news, writing documentation and alot of other stuff which makes
+emacs such a good "editor".
+
+I'm engaged in Debian GNU/Linux as Developer (finger stone@db.debian.org) and
+KUF (Karlstads Unixförening) a local non-profit organization promoting the use
+of Unix-like operating systems like *BSD and Linux.
+
+EmacsWiki has been very valuable resource configuring and setting up emacs, thanks
+goes out to all the contributors and I hope that I can make a contribution in time.
+
+ * I use emacs
+ * I use gnus
+
+== Links ===
+; Location: Karlstad, Sweden
+; My homepage: http://www.stone.nu/
+; I write occasionally in my blog (Swedish): http://blog.stone.nu/
+
+== cut n' paste dot emacs ==
+
+<pre>
+
+;;; -*-Emacs-Lisp-*-
+;; ===========================================================================
+;; Copyright (C) 2005 Fredrik Steen <fredrik stone.nu> Author: Fredrik Steen
+;; Version: $Id: .emacs-mini,v 1.2 2005/06/29 19:16:29 stone Exp $
+;; This is my .emacs file which i use as default on remote hosts, servers
+;; etc and where I'm unsure what is installed.
+;; Thanks to Mark Triggs <mst@dishevelled.net> for ideas and snippets.
+;;  Designed for GNU emacs
+;; ============================================================================
+
+;; if extension is not there just fail silient, you never know which extensions 
+;; that are installed on some hosts.
+(defun r-try (&rest args)
+  "fail silently if some aren't available"
+  (mapc (lambda (e)
+          (condition-case err
+              (cond
+               ((stringp e) (load-library e))
+               ((symbolp e) (require e)))
+            (file-error
+             (message "Extension: %s not available" e)))) args))
+
+
+(defun s-context-kill (arg)
+  "Kill buffer, Take gnus in account."
+  (interactive "p")
+  (when (and (buffer-modified-p)
+             (not (string-match "\\*.*\\*" (buffer-name)))
+             (= 1 arg))
+    (error "Buffer has unsaved changes, won't kill"))
+  (if (and (boundp 'gnuserv-minor-mode)
+             gnuserv-minor-mode)
+      (gnuserv-edit)
+    (set-buffer-modified-p nil)
+    (kill-buffer (current-buffer))))
+
+
+;;disable menu-bar
+(menu-bar-mode nil)
+
+;;disable too-bar
+(tool-bar-mode -1)
+
+;; I like pretty colors
+(global-font-lock-mode t)
+(setq font-lock-maximum-decoration t)
+
+;;set text mode as default mode
+(setq default-major-mode 'text-mode)
+;;Better fill handling
+(r-try 'filladapt)
+
+;;always auto-fill in text mode.
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+;; column limit for auto-fill mode
+(setq-default fill-column 79)
+
+;; highlight the region
+(setq transient-mark-mode t)
+
+;; don't create the ~ files
+(setq make-backup-files nil)
+
+;; No tabs! Use spaces instead.
+(setq-default indent-tabs-mode nil)
+(setq default-tab-width 4)
+
+;; mouse wheel is nice
+(mwheel-install)
+
+;; make scripts executable
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
+
+;; file types to buffer modes list
+(setq auto-mode-alist (append '(
+				("\\.pl$"    . perl-mode)
+				("\\.sh$"    . sh-mode)
+				("\\.cgi$"   . perl-mode)
+				( "\\.Z$" . uncompress-while-visiting)
+				( "\\.z$" . uncompress-while-visiting)
+				( "\\.gz$" . uncompress-while-visiting)
+				( "\\.tar$" . tar-mode)
+				( "\\.mocha$" . java-mode)
+				( "\\.jsp$" . html-mode)
+				( "\\.inc$" . html-mode)
+				( "\\.jad$" . java-mode)
+                ( "\\.py$" . python-mode)
+				( "\\.js$" . javascript-mode)
+				) auto-mode-alist))
+
+; Spelling!
+(r-try 'ispell)
+(setq ispell-process-directory (expand-file-name "~/"))
+(setq ispell-program-name "aspell")
+(setq ispell-dictionary "svenska")
+
+; Make all "yes or no" prompts show "y or n" instead
+(fset 'yes-or-no-p 'y-or-n-p)
+
+; Some functions which I think is handy
+(global-set-key (kbd "M-g") 'goto-line)
+(global-set-key (kbd "C-x k") 's-context-kill)
+(global-set-key (kbd "C-o") 'other-window)
+
+
+(global-set-key [(control tab)] 'bury-buffer)
+(global-set-key [(control meta tab)] (lambda ()
+                                       (interactive)
+                                       (bury-buffer -1)))
+
+
+</pre>
+
+----
+CategoryHomepage

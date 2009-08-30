@@ -1,0 +1,307 @@
+Pendiente: acabar de traducir, organizar en subcategorías, actualizar para Emacs 22 (algunas configuraciones ya vienen por defecto).
+
+=Usar keybindings de emacs en gnome=
+
+ gconftool-2 --set /desktop/gnome/interface/gtk_key_theme Emacs --type string
+
+Para desactivarlo, cambiar --set por --unset.
+
+=Highlight interactivo=
+
+ M-x hi-lock-mode          Activa el modo menor
+ C-x w h                   Añade una nueva expresión para resaltar
+ C-x w l                   Añade una nueva expresión para resaltar (resalta la linea completa)
+ C-x w r                   Elimina una expresión de resaltado
+ C-x w b                   Inserta un comentario los pares expresión/resaltado en el buffer actual
+
+para activarlo para todos los buffers pon en tu InitFile:
+
+ (global-hi-lock-mode 1)
+
+=Añadir entrada a un ChangeLog=
+
+ C-x 4 a                   Crea una entrada para la fecha, archivo y funcion actual en un ChangeLog
+
+
+=Folding=
+
+ M-1 C-x $                  Fold
+ C-x $                      Unfold
+
+=Screen con emacs=
+
+ escape ^Zz                Redefine C-a por C-z
+
+=Generar expresiones regulares=
+
+
+ (regexp-opt '("caca" "baca" "cana" "cosa" "sosa" "bono"))
+
+=Lineas numeradas a la izquierda=
+
+Pendiente... por ahora tenemos este modo
+
+[[Lisp:line-num.el]]
+
+=Editando wikis con emacs=
+
+Abrir el formulario de edición con el modo w3m y cargar algún modo de
+edición de wikis.
+ C-c C-c   	      	   Guarda los cambios realizados 
+
+=Autocompletado de nombres de funciones=
+
+ C-u M-TAB
+
+Requiere tener instalado el Info de la librería estándar del lenguaje en cuestión. Por ejemplo para c en Debian el paquete es glibc-doc-reference.
+
+=Aplicar comando unix a una selección=
+
+ C-u M-| comando           Remplaza selección por la salida de comando
+
+=Descargar librerías=
+
+Liberar memoria ocupada por librerías que ya no son necesarias
+
+ (unload-feature 'modulo t) ; El tercer parámetro ignora dependencias. Usar con cuidado.
+ (garbage-collect) ; Recolector de basura
+
+=Caracteres especiales en terminales=
+
+Escribir y visualizarlos
+
+ (set-terminal-coding-system 'utf-8)                                                                                    
+ (set-keyboard-coding-system 'utf-8)                                                                                    
+ (prefer-coding-system 'utf-8)    
+
+ C-x 8 comodin caracter    escribir acentos o e
+ C-x 8 C-h                 lista de comodines 
+
+
+=Autenticación automática=
+
+Realizar conexiones sin necesidad de escribir la contraseña.
+
+ ssh-keygen -t rsa
+
+Genera las claves pública y privada que permiten abrir sesiones sin requerir contraseñas.
+Hay que copiar .ssh/id_rsa.pub al servidor remoto en .ssh/authorized_keys acordándose de restringir los permisos de este archivo.
+
+=Sincronización remota de archivos=
+
+Mantener múltiples copias de un archivo en varias maquinas.
+
+ rsync [opciones] origen destino
+
+
+=Calculadora (Calc)=
+
+Realizar cálculos algebraicos.
+
+ C-X * c                   La muestra
+
+ C-x * ??                  Ayuda rápida
+
+ ' operación RET           Realiza una operación algebraica
+
+ C-x * x                   La oculta
+
+
+=Macros de teclado=
+
+
+Grabar una secuencia de combinaciones de teclas para ser reproducidas por un simple comando.
+
+ C-x ( keystrokes C-x )    Crear una macro
+
+ C-x e                     Ejecutar la ultima creada
+
+ C-u 8 C-x e               Repetir la macro 8 veces
+
+ C-x C-k n                 Asociarle un keystroke
+
+ M-x apply-macro-to-region-lines
+
+
+=Bookmarks=
+
+
+Nos permiten ir de manera inmediata a un lugar en un fichero o buffer
+
+ C-x r m                   Crea un bookmark en la actual posición del cursor
+ C-x r b                   Ir a un bookmark
+ M-x bookmark-rename       Renombra un bookmark
+ M-x bookmark-delete       Borra un bookmark
+ M-x bookmark-save         Salva los bookmarks
+
+
+=Modo abreviado=
+
+
+Definir abreviaturas de texto para reducir el número de caracteres a escribir.
+
+ M-x abbrev-mode
+
+ abreviatura C-x a g texto
+
+Expandir texto ya insertado en los buffers
+
+ M-/                       Autocompleta lo ultimo insertado. Se puede repetir el comando y expander otra ocurrencia. Recomendable redefinir el keystroke a M-TAB mediate M-X global-set-key M-TAB
+
+ C-M-/                     Lista las alternativas a expandir.
+
+
+=Etiquetas=
+
+Go direct to any function in your program in one command. Tags remembers which file it is in.
+
+etags inputfiles...        Crea una tabla de etiquetas.
+
+ M-.			   Busca la primera definicion de una etiqueta.
+
+ M-x tags-search           Busca una expresion regular en los archivos de etiquetas.
+
+ M-,                       Find next definition of previous tag, next occurrence of specified regular expression.
+
+
+=Autocompletado de nombres de funciones=
+
+ C-u M-TAB
+
+Requiere tener instalado el "Info" de la librería estándar del lenguaje en cuestión. Por ejemplo para C en Debian el paquete es glibc-doc-reference.
+
+Aplicar comando unix a una selección
+
+ C-u M-| comando           Remplaza selección por la salida del comando
+
+
+=Compilar emacs cvs=
+
+ sudo apt-get install stow
+ cvs -d:pserver:anonymous@cvs.sv.gnu.org:/sources/emacs co emacs
+ ./configure --without-carbon --with-x --prefix=/usr/local/stow/emacs
+ make bootstrap
+ make
+ sudo make install
+ cd /usr/local/stow/
+ sudo stow emacs
+
+=Atajos de teclado=
+
+ C-x 8 C-h  compose character
+
+=Tipo y tamaño de fuente=
+
+ emacs .Xdefaults
+ Emacs*font: lucidasanstypewriter-12**
+
+o alternativamente:
+
+ M-x customize-face Enter
+
+=Formatear código fuente=
+
+ TAB     Para formatear una sola linea
+ C-M-\   Para formatear un bloque de código previamente seleccionado
+
+
+¿Cómo activo el resaltado de sintaxis?
+
+ M-x global-font-lock-mode
+
+¿Cómo puedo cambiar las opciones?
+
+Para navegar por todas las opciones de Emacs:
+
+ M-x customize
+
+Para buscar opciones por su nombre:
+
+ M-x customize-apropos
+
+También pueden editarse mediante el propio menú del emacs guardando posteriormente los cambios realizados. ¿Cómo puedo utilizar sólo la sintaxis highlight de un modo, por ejemplo, C desde el modo fundamental?
+
+ M-x c-mode
+ Aunque eso te entra en el modo C completamente, no sólo en el resaltado de sintaxis.
+
+¿Cómo puedo desactivar los pitidos?
+
+Se debe agregar en el archivo InitFile la siguiente línea
+
+ (setq visible-bell t)
+
+¿Cómo puedo usar el scroll con la rueda del ratón?
+
+Se debe agregar en el archivo InitFile la siguiente línea
+
+ (mwheel-install) 
+
+¿Cómo ocultar la barra de utilidades?
+
+Se debe agregar en el archivo InitFile la siguiente línea
+
+ (tool-bar-mode nil)
+
+¿Cómo puedo activar de forma permanente el resaltado en Emacs?
+
+ (global-font-lock-mode t)
+
+¿Cómo puedo asociar las teclas F11 y F22 para avanzar o retroceder entre buffers?
+
+ (global-set-key (quote [f11]) (quote bs-cycle-previous))
+ (global-set-key (quote [f12]) (quote bs-cycle-next))
+
+¿Cómo evitar el mensaje inicial de emacs?
+
+ (setq inhibit-startup-message t)
+
+¿Cómo puedo simplificar el mensaje de confirmación yes/no por y/n?
+
+ (fset 'yes-or-no-p 'y-or-n-p)
+
+¿Cómo mostrar el número de columna en la barra inferior?
+
+ (column-number-mode 't)
+
+¿Cómo compilar desde emacs?
+
+La primera vez
+
+ M-x compile comando
+
+El resto de veces
+
+ M-x recompile
+
+¿Cómo avanzar o retroceder en los errores de compilación?
+
+ M-x next-error
+ M-x previous-error
+
+next-error está asociado por defecto a C-x ` (desgraciadamente el carácter ` en el teclado español requiere la pulsación de espacio después de este acento, pero siempre se puede asociar a otra tecla)
+
+¿Cómo grabar macros en emacs?
+
+ C-x ( start-kdb-macro
+ ¡Estamos grabando!
+ C-x ) end-kbd-macro
+
+start-kdb-macro comienza la grabación de nuestra macro, dónde se graba lo que escribimos y los comandos ejecutados. end-kbd-macro, finaliza la grabación de nuestro macro.
+
+ C-x e call-last-kbd-macro 
+
+call-last-kbd-macro ejecuta el último macro grabado en la sesión actual.
+
+¿Cómo puedo guardar mis macros para sesiones posteriores?
+
+ M-x name-last-kbd-macro
+
+name-last-kbd-macro pide en el minibuffer como argumento el nombre que le queremos asignar al último macro grabado, luego podremos ejecutarlo como todo comando con la cominación M-x nombre-elegido
+
+ M-x global-set-key
+
+Nos preguntará por una secuencia de teclas y luego por el nombre del comando al cual queremos asociarla. ¡Tenemos todo listo! Ahora a guardarla Editamos nuestro archivo InitFile de nuestro directorio home y nos dirigimos a la última línea, luego:
+
+ M-x insert-kbd-macro
+
+insert-kbd-macro se encargará de generar e insertar en el fichero el código lisp del nuestro macro incluso la definición de nombre elegida y las teclas que le hemos asociado. Los macros ya estarán disponibles para siguientes sesiones.

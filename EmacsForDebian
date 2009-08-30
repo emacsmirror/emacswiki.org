@@ -1,0 +1,151 @@
+== Emacs, Xemacs and related packages in debian ==
+
+* emacs-intl-fonts
+
+* gnus: note that if you use emacs21 (which already comes with gnus5.9.0), then <b>installing or removing the gnus in woody (5.8.8) will (as it should) have no effect on your emacs</b>.
+
+* erc
+
+* Debian package `emacs-goodies-el': Miscellaneous add-ons for Emacs at https://alioth.debian.org/projects/pkg-goodies-el
+
+* Debian package called gnuserv has gnuserv ported from XEmacs to GNU Emacs.
+
+* Debian emacs documentation is (as of 2008-08-18) in package `emacs22-common-non-dfsg` if C-h i isn't working for you.
+
+* Emacs22OnDebianEtch
+
+=== Debian related emacs libraries === 
+
+* http://www.netfort.gr.jp/~dancer/software/devscripts-el.html.en "Debian Developer's emacs utilities"
+* apt-cache.el
+* AptMode -- easy running of Debian apt-related software from Emacs.
+* TinyDebian -- the TinyTools contains also a package with some utilities for Debian users;
+  especially controlling [http://www.debian.org/Bugs/ Debian BTS] via mail interface.
+* AptUpgrade -- major mode for selecting packages to upgrade.
+
+* Debian package `debian-el': Emacs helpers specific to Debian users.  Contains:
+
+** AptSources - major mode for editing Debian sources.list files;
+** apt-utils - interface to APT (Debian package management);
+** debian-bug - an Emacs command to submit a bug report;
+** deb-view - view contents of Debian package, similarly to tar-mode;
+** gnus-BTS - provides buttons for bug numbers seen in Gnus messages.
+
+
+* dpkg-dev-el
+** debian-changelog-mode.el: a helper mode for Debian changelogs;
+** debian-control-mode.el: a helper mode for debian/control files.
+
+* dpkg
+** install-info: a Perl executable that installs InfoMode manuals
+*** Usage:
+
+    install-info --section '[Dd]esired Section Name' 'New Section' --description='Manual Title' manual
+
+*** Example for file sicp.info:
+
+    install-info --section '[Bb]ooks' Textbooks --description='Structure and Interpretation of Computer Programs' sicp
+
+* WajigMode --- a wrapper around `wajig', package manager for Emacsers.
+
+----
+== Problems ==
+
+
+Several packages in Debian break emacs.  Debian's emacs policy (while understandable) is such that installing one bad debian package on your machine can spoil the entire emacs (because every package gets to write to emacs startup files).  Bug reports against all known bugs should be (and have been) filed, but in the meanwhile, it is important to keep a list of these packages and bugs, because it can take hours to track the offending package. See the avoiding issues with site wide init files below.
+
+
+
+
+* (Install emacs21-el for source files) M-x find-function should now work on your emacs. 
+However, as of now, for several emacs packages that you install, ##M-x find-function## still won't work because .el and .elc's reside in different locations, the former's location being not in your load-path.  To remedy, frob your InitFile and add the ##.el## source paths.
+
+
+** Be careful. If you recursively add the location of .el's to your load-path, and if you have a package like gnus-5.8.8 installed, you would end up mixing gnus 5.9.0 and 5.8.8. 
+
+
+** How about:
+
+    (when (boundp 'debian-emacs-flavor)
+      (setq find-function-source-path
+            (mapcar (lambda (path)
+                      (if (string-match
+                              (concat "/"
+                                      (symbol-name debian-emacs-flavor)
+                                      "/site-lisp/")
+                                        path)
+                          (replace-match "/emacs/site-lisp/" nil t path)
+                        path))
+                    load-path)))
+
+*** The above form is fine but not enough: functions like TeX-doc still don't work with find-function.  These are functions that are not autoloaded.  Eventually, (find-library-name (symbol-file 'function 'defun)) will be evaled.  (symbol-file ...) yield absolute path, and find-library-name will fail.  Basename will be OK.  Can we patch find-library-name so that it strip its parameter to (file-name-nondirectory ...)?  I am not sure.  But I think redefine describe-simplify-lib-file-name maybe be safe.  I redefine describe-simplify-lib-file-name as following.
+
+                (defun describe-simplify-lib-file-name (file)
+                  "If file is on load-path, simplify it to basename."
+                  (if file
+                      (let ((libname (file-name-nondirectory file))
+                            (dirname (file-name-directory file)))
+                        (when dirname
+                            (setq dirname (substring dirname 0 -1)))
+                        (if (member dirname load-path)
+                            (if (string-match "[.]elc\\'" libname)
+                                (substring libname 0 -1)
+                              libname)
+                          file))))
+
+*** After modifying the function and setting find-function-source-path, a click on the link on the help page that describe-function gives will led to the source.
+
+
+* M-x list-load-path-shadows will still show hundreds of false results---one for each elisp file in emacs21 and for those packages that remember to add the location of .el's to the load-path.  This is because .el and .elc files are in separate locations. If you carried out the above step to modify your load-path for the remaining packages, expect even more false results.  The number of shadows was 900ish for ShaeErisson
+
+* '''ilisp''' (emacs21) uses C-c <letter> bindings --- installing ilisp changes the emacs' default lisp-mode-map to define C-c <letter> keys there. 
+** BTW, As I understand it, ilisp developers' stance is that this bug need not be fixed, since users can customize their InitFile to override this. I am not sure this would work in debian, since ilisp already installs its modifications to lisp-mode-map (via ##site-start.el##) before the InitFile is even read.  But even if it does work, this still means that each user on a machine on which ilisp is installed has to customize his InitFile just to get emacs working right.  
+
+* (woody) '''mmm-mode''' makes emacs21 load up with 'cl loaded.
+
+* '''html-helper-mode''' (emacs21) uses C-c <letter> bindings -- <i> Upstream does not consider this a bug, so my bug-report was closed after langishing for many months.  This is typical of what has happened for many other packages. Debian won't change its current emacs policy, saying that the proper place to file bugs is against the individual packages,  while the individual packages respond in the negative to bugreports, if at all. </i>
+
+* '''remem''' (emacs21) uses C-c <letter> bindings
+
+* Installing '''maxima''' defines in your emacs, N new functions with about N namespaces, N being pretty large. 
+
+* Similar for '''apel'''.  
+
+* (woody) '''octave2.1-emacsen''' binds C-c <letter> keybindings in the local octave-mode map.  Note that this problem is fixed in the sid version of the package.  Also fixed in the octave-mod.el which is included in emacs21.3 onwards (which is in CVS right now). 
+
+* Installing '''crypt++el''' (tried in woody) loads CryptPlusPlus in emacs'
+  site-file, which has the side-effect (see crypt++.el) of ignoring all
+  your write-file-hooks, like (time-stamp) etc.
+
+* merely installing '''hyperlatex''' (i tried the one in woody) makes emacs hog the C-c h key. 
+
+* the packaged MuleUCS used to load lots of stuff by default, greatly slowing down startup, but now you enable it if you want it
+
+* Less severe:   These packages  also often end up slowing down the loading of your InitFile, because they end up `require'-ing some of their files in the site-init.  This is precisely what causes the above problems too.  Debian's official policy is that the site-init should only be used to do minor stuff like frobbing auto-mode-alist and defining autoloads.  Enforcing of this policy would not only make your emacs load faster, but solve all or most of the above problems.
+ 
+----
+
+<b> When a debian package installed by your sysad writes a C-c <letter> binding to emacs' startup files,  your emacs may error at startup if your InitFile happens to use the offending keycombo as a prefix key, even if you, the user doesn't intend to use the package. This happens to me almost always since I heavily use C-c <letter> <letter> ... in my InitFile .</b>
+
+MatthewKennedy mulls a flexible policy for gentoo, which will accomodate those who want an "out-of-the-box"  solution, as well those who want an emacs "unspoiled" by packages, at  http://dev.gentoo.org/~mkennedy/emacs/site-gentoo.el-rfc.txt <b>Update:</b> Gentoo has since implemented this scheme as described in EmacsForGentoo
+
+----
+
+=== Avoiding Issues with Site Wide Init Files: === 
+
+The init files of the External packages should not, by default (or through an option), be loaded at startup, unless the user (or the administrator) declares  (require 'external-packages-inits) or requires packages or their init files individually.
+
+Most debian packages that contain add on el files that would be installed site wide actually already do this.
+
+If a specific package installs itself site wide, and you later decide that this is not what you want, you can always remove the offending file from /etc/emacs/site-start.d/  This change is sancrosant, and a Debian package will not later reinstall this file. (If it does, please file an RC bug using reportbug with Severity: serious)
+
+=== Bugreports ===
+
+There are multiple maintainers involved in supporting the many emacs related packages in Debian. If there is a problem with dealing with specific bugs, please list the bug reports below.
+
+
+
+----
+See also: EmacsCvsAndDebian
+----
+CategoryPorts

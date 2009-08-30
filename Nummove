@@ -1,0 +1,8 @@
+Nummove is a graphical "game of fifteen"
+
+http://users.student.lth.se/f03kr/shot.png
+
+[http://users.student.lth.se/f03kr/nummove.tar.gz Download]
+
+== Comments ==
+Please change the definition of nummove-path-to-images from "setq" to "defvar", so that the image path can be overridden by the user.

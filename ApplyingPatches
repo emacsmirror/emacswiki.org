@@ -1,0 +1,15 @@
+There aren't many powerfully useful documents introducing patches to an EmacsNewbie.  Its more often a required trade of software package maintainers and developers.  However, the skill can be as useful to every day users ("the emacsen laity").
+
+The ##patch## command is well documented, however, but mostly for an audience of those who already understand and use patches.
+
+* [http://www.gnu.org/software/diffutils/manual/html_node/Merging-with-patch.html Patch section of the Diffutils manual]
+
+And also DiffMode and [[Ediff]] are well documented for Emacs.
+
+* [http://www.gnu.org/software/emacs/manual/html_node/emacs/Diff-Mode.html Diff Mode section of the Emacs Manual]
+* [http://www.gnu.org/software/emacs/manual/html_node/ediff/ Emerge manual]
+ 
+See also InstallingPackages
+
+----
+CategoryPatches

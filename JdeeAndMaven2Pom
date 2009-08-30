@@ -1,0 +1,70 @@
+== Parse Maven 2 POMs ==
+
+[http://maven.apache.org Apache Maven] is gaining in popularity as a build and project management tool, especially with the advent of Maven 2 with its concepts of parent projects, transitive dependencies and multi-module builds.
+
+There already exists a library to use Maven 1 POMs with JDEE (JdeeAndMavenPom), but this doesn't work very well with Maven 2 POMs, and not at all when you add parent POMs into the mix.
+
+[new]
+This library has been superseded by jde-mvn.  See [http://www.bitbucket.org/espenhw/jde-mvn/ the project site] for details.  --espenhw
+----
+
+Lisp:pom-parser.el fixes these issues (and probably adds a host of new ones).  Stick it somewhere in your load-path, and your prj.el can now look something like this:
+
+ (require 'pom-parser)
+ (jde-project-file-version "1.0")
+ (with-pom ()
+   (pom-set-jde-variables :include-dependency-sources t))
+
+This will set `jde-project-name', `jde-global-classpath', `jde-compile-option-directory', `jde-compile-option-source', `jde-compile-option-target', `jde-compile-option-encoding',
+`jde-sourcepath' and `jde-built-class-path' to sensible values based on your POM, which will be found by searching upwards in the directory hierarchy (similar to how JDEE finds your prj.el).
+
+You can also extract other values from the POM using `pom-get-property' and `pom-plugin-configuration-property' if necessary.
+
+=== How is it done? ===
+
+pom-parser.el works by calling out to Maven to compute the "effective POM", by merging the actual POM with its parents, including the default "super POM".  This file is then parsed using the xml package, and information is extracted.  pom-parser.el also calls on Maven to compute the build classpath, thus gaining exactly the same dependency handling as compiling using Maven.
+
+The results of the call to Maven are cached, with a check to invalidate the cache if the POM is updated.
+
+When you update your POM you should reload your prj.el (and possibly call `jde-wiz-update-class-list' to update the list used to resolve class names.
+
+[new]
+: I ran into an issue with pom-parser and maven with parsing the classpath, I documented the problem here: http://evadnoob.wordpress.com/2008/03/15/pom-parser/
+
+espenhw: This is fixed in SVN now. 
+----
+
+[new]
+I found that there's a little delay when first loading a new java class, even with the latest trunk version of pom-parser.  I changed my jde project file to use run-with-idle-timer:
+<pre>
+    (run-with-idle-timer 2.0 nil
+                     (lambda ()
+                       (require 'pom-parser)
+                       (message "parsing pom...")
+                       (with-pom ()
+                         (pom-set-jde-variables *pom-node*))))
+</pre>
+
+espenhw: The delay is because the code runs Maven; however, the delay should only happen once per POM.
+
+----
+
+[new]
+I've found that the latest version of the maven help plugin (2.1) breaks the xml parsing because the generated temp file has inconsistent newlines.  I filed a bug for the maven plugin, but who knows how long that will take to fix.  anyway, i added the following code to the beginning of the pom-parse-pom-file function to clean the file before parsing it.
+
+<pre>
+  (save-excursion
+    (condition-case nil
+        (let ((pom-file-buf (find-file-noselect pom-file t t)))
+          (with-current-buffer pom-file-buf
+            (goto-char (point-min))
+            (while (re-search-forward "\r\n" nil t)
+              (replace-match "\n" t t))
+            (basic-save-buffer))
+          (kill-buffer pom-file-buf))
+      (error nil)))
+</pre>
+
+----
+CategoryProgrammerUtils
+JavaDevelopmentEnvironment

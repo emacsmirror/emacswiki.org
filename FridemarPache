@@ -1,0 +1,41 @@
+MeatBall:FridemarPache
+
+Hi Fridemar, and welcome to the Emacs Wiki. -- AlexSchroeder
+
+Looking for Wikimode+XEmacs I found this page. As I'm new to X/Emacs
+and I want a powerful local Wiki on my PC (with Internetbrowser). I
+consider to delve into the holy grail of X/Emacs (possibly for the
+rest of my life ;-).  I need some encouragement to make the
+transition. As I need a local Wiki very urgently to work with, I'm a
+bit anxious to get *prematurely* involved into a deep study of X/Emacs
+how to install the wiki-mode. Which stable binary for W98 do you
+recommend? Where can I download the complete newest wiki-module?  Is
+the installation well supported (such that we can use it straight from
+the shoulder, even if we aren't familiar with the built-in programming
+language yet.)  Has the community a helpful hand for a newcomer, who
+is humble enough, to show his anxiety. -- FridemarPache
+
+If all you need is a local wiki, consider downloading some Windows
+software.  I know that at work one of my colleagues found a standalone
+executable which acts as a standalone wiki web server.  That was quite
+some time ago.  Good luck in hunting it down. -- AlexSchroeder
+
+Thank you for your light-speed answer. I'm glad that you are not angry 
+with me, having plunged into the first best page I found. Thank you for
+relocating and answering. Yes I had a clone of a Perl Wiki, running under my
+local host. But that's not my problem. I want an extensible wiki, imbedded
+in a rich environment and that is Emacs or XEmacs.
+I found your contribution:
+http://www.geocities.com/kensanata/elisp/wiki.el.txt would you recommend Emacs20 or XEmacs21 as binary for now.
+Lisp is a very nice looking language. I consider to learn it as soon as
+time allows. My question is focussed on " Could I start with it, without
+getting lost in the manuals, when incorporating your Wiki-mode module".  Fridemar
+
+Emacs is a big thing if all you want is a local wiki.  If you want a rich environment, Emacs is certainly a possible answer -- for certain definitions of "rich".  If you want to extend Emacs and wiki mode using Lisp, then it is a good environment.  I suggest you start with either XEmacs or Emacs, and stick to it for a while.  Personally, I use Emacs 21.1 on Linux and Emacs 20.7 on Windows. -- as
+
+The need for a X/Emacs like environment stems from ideas round about
+MeatBall:WikiWeaving, where I left a backlink to this page.
+Thank you.  Fridemar
+
+----
+CategoryHomepage

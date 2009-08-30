@@ -1,0 +1,63 @@
+Unicad is short for __Uni__versal __C__harset __A__uto __D__etector. It is an Emacs-Lisp port of Mozilla Universal Charset Detector.
+
+Unicad project is hosted on Google Code: [http://code.google.com/p/unicad/ http://code.google.com/p/unicad/].
+
+Lisp:unicad.el
+
+== What can Unicad do?==
+
+Unicad helps Emacs to guess the correct coding system when opening a
+file. 
+
+== What languages and coding systems does Unicad support? ==
+
+* Chinese Simplified  (gb18030, gbk, gb2312, hz-gb-2312, iso-2022-cn)
+* Chinese Triditional (big5, gb18030, gbk, euc-tw)
+* Japanese (sjis, euc-jp, iso-2022-jp)
+* Korean (euc-kr, iso-2022-kr)
+* Unicode (utf-16le, utf-16be with/without signature)
+* Greek (iso-8859-7, windows-1253)
+* Russian (iso-8859-5, windows-1251, koi8-r, ibm855)
+* Bulgarian (iso-8859-5, windows-1251)
+* Western European (latin-1)
+* Central European (latin-2)
+
+[new]//Will there be support for iso-8859-9 (latin-5, Turkish) encoding?//
+
+I haven't considered Turkish. I would put it to TODO list. But I think latin-1, latin-2 and latin-5 are too similar to distinguish. It'll be very hard. I hope someone can help. -- Qichen
+
+== Who should use Unicad? ==
+
+# *Emacs Users*. Unicad is an Emacs extension that written in Elisp. It is designed and works for Emacs.
+# *Multilanguage* Users. If you are English only speakers, then there is no need to install Unicad on Emacs. Otherwise, if you need to read and edit files in multiple language and use different coding systems, Unicad will definitely help you in recognizing coding systems.
+# Anyone who is tired of struggling with *garbled* text. Normal Text Editors are not so intelligent to choose correct coding system among various and complicated charsets. I suggest you try the most powerful text editor ever in the world - Emacs and Unicad. 
+
+== How to use Unicad? ==
+
+[http://code.google.com/p/unicad/downloads/list Download] the latest unicad.el, copy it to your Emacs load path (e.g. site-lisp directory), and add the following line to your ~/.emacs:
+
+    (require 'unicad)
+
+You may byte compile this file to speed up the charset detecting process.
+
+== What's the difference between Unicad and Mozilla Universal Charset Detector? ==
+
+* optimized for detecting shorter text files.
+* add support for Central European Languages, that use iso-8859-2 coding system.
+* add support for Traditional Chinese that uses gbk coding system.
+* add support for single byte only katakana that uses sjis coding system.
+* ability of detecting utf-16le and utf-16be without signature. 
+
+== What's the benefit of Unicad over Emacs Mule? ==
+
+Emacs already comes with a heuristic to determine the encoding of files opened.
+This heuristic is influenced by the list of preferred coding systems, which in
+turn is determined by the locale (and users calling `prefer-coding-system' in their
+init file).
+
+Unicad offers ...
+
+* ?
+
+----
+CategoryInternationalization

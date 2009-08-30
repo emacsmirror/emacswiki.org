@@ -1,0 +1,47 @@
+<pre>
+#!/bin/sh
+
+set -e
+
+INDEXPAGE="JorgenSchaefer"
+EMACSCONFIG="JorgenSchaefersEmacsConfig"
+GNUSCONFIG="JorgenSchaefersGnusConfig"
+DOTEMACS="$HOME/.emacs"
+DOTGNUS="$HOME/.gnus.el"
+TMPFILE=$(mktemp -t update-config.XXXXXX)
+
+trap "rm $TMPFILE" EXIT
+
+wget -q -O "$TMPFILE" "http://www.emacswiki.org/cgi-bin/wiki.pl?action=browse;id=$INDEXPAGE;raw=1" \
+|| (echo "Could not retrieve indexpage." ; exit 1)
+
+wiki_emacs_date=$(sed -ne "s/^\\* $EMACSCONFIG (\\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\\))/\\1/p" "$TMPFILE")
+wiki_gnus_date=$(sed -ne "s/^\\* $GNUSCONFIG (\\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\\))/\\1/p" "$TMPFILE")
+local_emacs_date=$(date -r "$DOTEMACS" +%Y-%m-%d)
+local_gnus_date=$(date -r "$DOTGNUS" +%Y-%m-%d)
+
+if [ "$wiki_emacs_date" "<" "$local_emacs_date" ]
+then
+    (echo "<pre>" ; cat "$DOTEMACS" ; echo "</pre>") \
+    | wikiput -s "Update ($local_emacs_date)" \
+      "http://www.emacswiki.org/cgi-bin/wiki.pl?$EMACSCONFIG"
+    update_index=1
+fi
+
+if [ "$wiki_gnus_date" "<" "$local_gnus_date" ]
+then
+    (echo "<pre>" ; cat "$DOTGNUS" ; echo "</pre>") \
+    | wikiput -s "Update ($local_gnus_date)" \
+      "http://www.emacswiki.org/cgi-bin/wiki.pl?$GNUSCONFIG"
+    update_index=1
+fi
+
+if [ "$update_index" ]
+then
+    cat "$TMPFILE" \
+    | sed \
+      -e "s/^\\* $EMACSCONFIG ([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])/* $EMACSCONFIG ($local_emacs_date)/" \
+      -e "s/^\\* $GNUSCONFIG ([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])/* $GNUSCONFIG ($local_gnus_date)/" \
+    | wikiput -s "Update config files" "http://www.emacswiki.org/cgi-bin/wiki.pl?$INDEXPAGE"
+fi
+</pre>

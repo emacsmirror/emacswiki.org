@@ -1,0 +1,9 @@
+In eshell, you can redirect to virtual files:
+
+ echo hello > /dev/clip
+
+The virtual targets are stored in eshell-virtual-targets.
+
+----
+CategoryEshell
+

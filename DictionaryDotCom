@@ -1,0 +1,11 @@
+Lookup dictionary with one line of elisp (requires WThreeM).
+
+    (global-set-key (kbd "C-c d")
+       (lambda ()
+       (interactive)
+       (w3m-goto-url
+           (format "http://dictionary.reference.com/browse/%s"
+           (read-string "Search word: " (current-word))))))
+
+----
+CategoryInterface

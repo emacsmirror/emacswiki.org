@@ -1,0 +1,17 @@
+To read flowed formated messages in Wanderlust put the following in your .wl file (you need flow-fill.el which included in the current emacs release):
+
+ ;; Reading f=f
+ (autoload 'fill-flowed "flow-fill")
+ (add-hook 'mime-display-text/plain-hook
+ 	  (lambda ()
+ 	    (when (string= "flowed"
+ 			   (cdr (assoc "format"
+ 				       (mime-content-type-parameters
+ 					(mime-entity-content-type entity)))))
+ 	      (fill-flowed))))
+
+If you want to write flowed formated messages:
+
+ (mime-edit-insert-tag "text" "plain" "; format=flowed")
+----
+WanderLust | CategoryMail

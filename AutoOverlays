@@ -1,0 +1,14 @@
+The Automatic Overlays package allows you to define [[overlay]]s that are created (and updated and destroyed) automatically when text in a [[buffer]] matches a [[regular expression]]. Various classes of automatic overlay are provided, to make it easy to define matches for different text regions: words, lines, regions enclosed by start and end tags, or regions enclosed by delimiters. You can also define your own custom classes.
+
+The overlays are updated just before any buffer modification. The built-in overlay classes update only as much as is necessary to ensure that overlays covering the [[point]] are consistent. Therefore the overlays at the point are guaranteed to be correct before  any buffer modification takes place there, but updating the overlays takes very little time and causes no noticeable delay. (See also PredictiveMode.)
+
+The latest version 0.10.3 (released February 2009) can be obtained from:
+
+* Automatic Overlays package download: http://www.dr-qubit.org/download.php?file=predictive/auto-overlays.tar.gz
+* Online manual: http://www.dr-qubit.org/predictive/auto-overlay-manual/html/index.php
+* Web-site: http://www.dr-qubit.org/emacs.php#overlay
+
+--TobyCubitt
+
+----
+CategoryCode

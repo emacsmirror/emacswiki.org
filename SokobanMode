@@ -1,0 +1,21 @@
+XEmacs has sokoban.el.  It works for Emacs as well.
+
+On my Debian system, the XEmacs elisp files are gzipped, and the
+sokoban data file is somewhere in the XEmacs tree.  Here's how I
+install it in my ~/.emacs file:
+
+ (auto-compression-mode 1)
+ (setq sokoban-level-file "/usr/share/xemacs21/packages/etc/sokoban.levels")
+ (autoload 'sokoban "/usr/share/xemacs21/packages/lisp/games/sokoban.el.gz" nil t)
+
+----
+
+== GNU Emacs Sokoban ==
+
+There is a small sokoban by Sascha Wilde, written specifically for the GNU Emacs
+
+* http://www.sha-bang.de/content/15_emacs/emacs-sokoban-0.14.1.tar.gz
+
+If features color via fontification, system wide highscore and 50 levels.  New levels can be added very easily as they are plain text files.
+
+CategoryGames

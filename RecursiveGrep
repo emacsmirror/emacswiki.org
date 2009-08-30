@@ -1,0 +1,70 @@
+'''find-grep-dired'''
+
+M-x find-grep-dired will run
+  find . -exec grep -s ARG {} \; -ls
+
+which is the composite command that recursive greps.
+
+Personally, I have the following in my .emacs:
+
+ (defvar grep-and-find-map (make-sparse-keymap))
+ (define-key global-map "\C-xf" grep-and-find-map)
+ (define-key global-map "\C-xfg" 'find-grep-dired)
+ (define-key global-map "\C-xff" 'find-name-dired)
+ (define-key global-map "\C-xfl" (lambda (dir pattern) 
+        (interactive "DFind-name locate-style (directory): 
+                     \nsFind-name locate-style (filename wildcard): ")
+        (find-dired dir (concat "-name '*" pattern "*'"))))
+ (define-key global-map "\C-xg" 'grep)
+
+See also DiredFindInLisp for `M-x find-grep-dired-lisp'.
+
+'''rgrep'''
+
+ From: PietVanOostrum
+ Subject: Re: Recursive grep for ntemacs.
+ Newsgroups: comp.emacs,comp.os.ms-windows.programmer.win32
+ Date: 30 May 2001 10:41:08 +0200
+
+There is a GNU rgrep that greps through a directory structure. It has a Windows port and I use it all the time from within emacs with an adapted grep function.
+
+'''findstr on Windows NT'''
+
+ From: Sunil <sid@ieee.org>
+ Subject: Re: Recursive grep for ntemacs.
+ Newsgroups: comp.emacs,comp.os.ms-windows.programmer.win32
+ Date: 29 May 2001 13:09:40 -0400
+
+This is what I use:
+
+ (defun grep2 ()
+   "Run a grep using the Windows findstr command."
+   (interactive)
+   (let ((grep-command '("findstr /n /s   *.cpp *.c *.h" . 15)))
+     (call-interactively 'grep)))
+
+The standard FINDSTR on NT can do recursive greps....I think this is what MS DevStudio uses anyway....I use it for simple searchs, I don't know how well it supports real regexp's, and such...
+
+'''findstr on Windows NT (cont.)'''
+
+This is even easier:
+  (setq grep-find-command '("findstr /sn   *" . 13))
+Then use grep-find as normal. -- JeffSeifert
+
+'''Use glimpse instead'''
+
+ From: KaiGrossjohann
+ Subject: Re: Recursive grep for ntemacs.
+ Newsgroups: comp.emacs,comp.os.ms-windows.programmer.win32
+ Date: 29 May 2001 18:49:42 +0200
+
+Maybe it works to use Glimpse?  Does that work on NT?  Also, I'm not sure about the speed; since I don't know Codewright, I can't compare.
+
+'''Just use normal grep'''
+
+Recent versions of GNU grep have a -r option that does what rgrep did.
+
+See also FindGrepDiredSearchAndReplace.
+
+----
+CategorySearchAndReplace

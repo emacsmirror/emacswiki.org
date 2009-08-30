@@ -1,0 +1,29 @@
+Emacs has separate keybindings for changing the case of a word and the case of a region.  The following makes upcase (M-u), downcase (M-l), and capitalize (M-c) to be "active region aware."  That is, if there is a maked region, they will act on the region, otherwise they will act on the current word.  This eliminates the need to remember the keybingins to upcase and downcase a region (C-x C-u and C-x C-d respectively) and it also creates the new functionality to capitalize regions.
+
+    (defun region-marked? ()
+      (and transient-mark-mode mark-active))
+     
+    (defun my-upcase ()
+      (interactive)
+      (if (region-marked?) (upcase-region (region-beginning) (region-end)) (upcase-word 1)))
+     
+    (defun my-downcase ()
+      (interactive)
+      (if (region-marked?) (downcase-region (region-beginning) (region-end)) (downcase-word 1)))
+     
+    (defun my-capitalize ()
+      (interactive)
+      (if (region-marked?)
+          (save-excursion
+            (let ((beg (region-beginning))
+                  (end (region-end)))
+              (goto-char beg)
+              (while (< (point) end)
+                (capitalize-word 1))))
+        (capitalize-word 1)))
+     
+    (global-set-key (kbd "M-u")       'my-upcase)
+    (global-set-key (kbd "M-l")       'my-downcase)
+    (global-set-key (kbd "M-c")       'my-capitalize)
+
+--FelipeCsaszar

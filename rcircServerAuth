@@ -1,0 +1,147 @@
+The following patch was created in order to let rcirc authenticate against a server which requires a PASS command before any further command (e.g. a proxy or private irc network).
+
+Please review...
+
+A version of this patch against revision 1.30 of Emacs CVS from 2006-12-11 you will find at http://tinyurl.com/ybcs6u.
+
+{{{
+--- rcirc.el,v 1.287	2006-06-12 22:03:38.000000000 +0200
++++ rcirc.el	2006-06-12 22:03:30.000000000 +0200
+@@ -105,17 +105,19 @@
+ The file consists of a single list, with each element itself a
+ list with a SERVER-REGEXP string, a NICK-REGEXP string, a METHOD
+ and the remaining method specific ARGUMENTS.  The valid METHOD
+-symbols are `nickserv', `chanserv' and `bitlbee'.
++symbols are `nickserv', `chanserv', `bitlbee' and `server'.
+ 
+ The required ARGUMENTS for each METHOD symbol are:
+   `nickserv': PASSWORD
+   `chanserv': CHANNEL PASSWORD
+   `bitlbee': PASSWORD
++  `server': PORT PASSWORD
+ 
+ Example:
+  ((\"freenode\" \"bob\" nickserv \"p455w0rd\")
+   (\"freenode\" \"bob\" chanserv \"#bobland\" \"passwd99\")
+-  (\"bitlbee\" \"robert\" bitlbee \"sekrit\"))")
++  (\"bitlbee\" \"robert\" bitlbee \"sekrit\")
++  (\"private\" \"juck\" server \"secret\"))")
+ 
+ (defvar rcirc-auto-authenticate-flag (file-readable-p rcirc-authinfo-file-name)
+   "*Non-nil means automatically send authentication string to server.
+@@ -257,6 +259,9 @@
+       (make-local-variable 'rcirc-startup-channels)
+       (setq rcirc-startup-channels startup-channels)
+ 
++      ;; send password before NICK command if available
++      (rcirc-authenticate)
++
+       ;; identify
+       (rcirc-send-string process (concat "NICK " nick))
+       (rcirc-send-string process (concat "USER " user-name
+@@ -1598,25 +1603,30 @@
+         (let ((server (car i))
+               (nick (cadr i))
+               (method (caddr i))
+-              (args (cdddr i)))
++              (args (cdddr i))) 
+           (when (and (string-match server rcirc-server)
+                      (string-match nick rcirc-nick))
+             (cond ((equal method 'nickserv)
+                    (rcirc-send-string
+                     rcirc-process
+                     (concat
+-                     "PRIVMSG nickserv :identify " 
+-		     (car args))))
++                     "PRIVMSG nickserv :identify " (car args))))
+                   ((equal method 'chanserv)
+                    (rcirc-send-string
+                     rcirc-process
+                     (concat
+-                     "PRIVMSG chanserv :identify " 
+-		     (car args) " " (cadr args))))
++                     "PRIVMSG chanserv :identify " (car args) " " (cadr args))))
+                   ((equal method 'bitlbee)
+                    (rcirc-send-string
+                     rcirc-process
+                     (concat "PRIVMSG #bitlbee :identify " (car args))))
++                  ((and (= (length i) 5)
++                        (eq method 'server)
++                        (eql (car args) (process-contact rcirc-process :service)))
++                   (message "Sending PASS command to %s" server)
++                   (rcirc-send-string
++                    rcirc-process
++                    (concat "PASS " (cadr args))))
+                   (t
+                    (message "No %S authentication method defined" 
+ 			    method)))))))))
+}}}
+
+This patch was created using the following command: ##diff -u rcirc.el,v\ 1.287 rcirc.el> rcirc-server-auth.diff##
+
+[[avar]]
+
+{{{
+--- /home/avar/src/emacs/lisp/net/rcirc.el      2007-08-24 01:47:24.000000000 +0000
++++ rcirc.el    2007-10-21 00:44:02.000000000 +0000
+@@ -60,6 +60,11 @@
+   :type 'string
+   :group 'rcirc)
+ 
++(defcustom rcirc-default-pass ""
++  "The password to send to the server when connecting, none by default"
++  :type 'string
++  :group 'rcirc)
++
+ (defcustom rcirc-default-port 6667
+   "The default port to connect to."
+   :type 'integer
+@@ -328,11 +333,12 @@
+       (let* ((server (read-string "IRC Server: " rcirc-default-server))
+             (port (read-string "IRC Port: " (number-to-string rcirc-default-port)))
+             (nick (read-string "IRC Nick: " rcirc-default-nick))
++            (pass (read-string "IRC pass: " rcirc-default-pass))
+             (channels (split-string
+                        (read-string "IRC Channels: "
+                                     (mapconcat 'identity (rcirc-startup-channels server) " "))
+                        "[, ]+" t)))
+-       (rcirc-connect server port nick rcirc-default-user-name rcirc-default-user-full-name
++       (rcirc-connect server port nick pass rcirc-default-user-name rcirc-default-user-full-name
+                       channels))
+     ;; make new connection using defaults unless already connected to
+     ;; the default rcirc-server
+@@ -365,7 +371,7 @@
+ (defvar rcirc-process nil)
+ 
+ ;;;###autoload
+-(defun rcirc-connect (&optional server port nick user-name full-name startup-channels)
++(defun rcirc-connect (&optional server port nick pass user-name full-name startup-channels)
+   (save-excursion
+     (message "Connecting to %s..." server)
+     (let* ((inhibit-eol-conversion)
+@@ -376,6 +382,7 @@
+                          rcirc-default-port))
+           (server (or server rcirc-default-server))
+           (nick (or nick rcirc-default-nick))
++          (pass (or pass rcirc-default-pass))
+           (user-name (or user-name rcirc-default-user-name))
+           (full-name (or full-name rcirc-default-user-full-name))
+           (startup-channels startup-channels)
+@@ -413,6 +420,8 @@
+       (setq rcirc-connecting t)
+ 
+       ;; identify
++      (unless (string= pass "")
++        (rcirc-send-string process (concat "PASS " pass)))
+       (rcirc-send-string process (concat "NICK " nick))
+       (rcirc-send-string process (concat "USER " user-name
+                                       " hostname servername :"
+}}}
+
+
+[new]
+Do I understand this correctly: It makes no sense to use the `server' method together with `nickserv'? Because right now that's the way it will work: You can't have both methods, and that surprises me. -- AlexSchroeder
+
+----
+CategoryChatClient
+[[rcirc]]

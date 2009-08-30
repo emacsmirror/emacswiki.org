@@ -1,0 +1,6 @@
+[[en:DeletedPage]]
+Chaque page candidate a la suppression commence forcement par un lien vers DeletedPage. Les pages ne sont pas supprimables directement et immediatement mais apres un delai d'inactivite (aucune edition par exemple) de 21 jours.
+
+Pour faire simple, a chaque fois qu'une page a supprimer est editee, les compteurs sont remis a zero.
+
+Cote technique, c'est un simple script de maintenance ordonnance par une tache cron qui se charge egalement de la suppression definitive des pages remplissant les conditions (lien et delai d'inactivite).

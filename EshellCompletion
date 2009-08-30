@@ -1,0 +1,84 @@
+== Customization ==
+
+Eshell offers you completion of filenames.  If several filenames are
+possible, the most recently modified file will be used first.
+
+This is determined by `eshell-cmpl-compare-entry-function' and
+defaults to `file-newer-than-file-p'.  The idea is that once you start
+working with a certain file, you will want it to appear first in your
+completion list.
+
+Here's some untested code to reverse this order, and to take
+`completion-ignored-extensions' into account.
+
+ (setq eshell-cmpl-compare-entry-function
+       (function
+	(lambda (left right)
+	  (let ((exts completion-ignored-extensions) found)
+	    (while exts
+	      (if (string-match (concat "\\" (car exts) "$") right)
+		  (setq found t exts nil))
+	      (setq exts (cdr exts)))
+	    (if found
+		nil
+	      (file-newer-than-file-p left right))))))
+
+Contributors: KaiGrossjohann, JohnWiegley
+
+== Remote Files ==
+
+If I want to change directory to /scratch, then pressing TAB after typing "cd /sc" leads to TrampMode trying to open a connection. This is because the tramp-completion-file-name-handler entry in file-name-handler-alist leads to:
+
+ (file-name-all-completions "sc" "/") =>
+  ("scpx:" "scp2_old:" "scp1_old:" "scp2:" "scp1:" "scp:" "scratch/")
+
+and pcomplete tries to run file-directory-p on all these entries.
+
+One way to avoid this is to use the following:
+
+ (defadvice pcomplete (around avoid-remote-connections activate)
+   (let ((file-name-handler-alist (copy-alist file-name-handler-alist)))
+     (setq file-name-handler-alist
+           (delete (rassoc 'tramp-completion-file-name-handler
+                           file-name-handler-alist) file-name-handler-alist))
+     ad-do-it))
+
+Note that completion of "cd /su::/" still works because this is
+handled by tramp-file-name-handler.
+
+Perhaps there are better ways of doing this? -- Matt Hodges
+
+== Miscellaneous ==
+
+If I set my own prompt, like this:
+
+ (setq eshell-prompt-function
+       (lambda ()
+         (concat "[" (user-login-name) "@" (system-name) " " (eshell/pwd) "]"
+                 (if (= (user-uid) 0) "# " "$ "))))
+
+completion stops working. When I press tab, I get the message "Text is read-only". Can anyone explain this? -- [[bkhl]]
+
+: This happens because you haven't modified eshell-prompt-regexp accordingly (see the documentation for eshell-prompt-function). This should work:
+
+ (setq eshell-prompt-regexp "^[^#$\n]*[#$] ")
+
+: See EshellFunctions for more examples. -- MattHodges
+
+----
+
+Ok, thanks. I like pcomplete-list better than the completion cycling. I tried this:
+
+ (add-hook 'eshell-mode-hook
+           '(lambda () (define-key eshell-mode-map "\t" 'pcomplete-list)))
+
+but it doesn't work. How should this be done properly? -- [[bkhl]]
+
+: I use:
+
+ (setq eshell-cmpl-cycle-completions nil)
+
+: to avoid completion cycling. -- MattHodges
+
+----
+CategoryEshell

@@ -1,0 +1,164 @@
+==Octave-mode for WIN32==
+
+Here is my init.el part for Xemacs for WIN32:
+
+It is not yet working properly, but I hope others can help:
+
+    ;;;;; ------ Octave-mode ---------------------------------------------
+    ;; a tip from Jason Mobarak, http://cs.unm.edu/~jmob/windows-octave.txt
+    ;; I don't know the reason
+       (setenv "DISPLAY" "127.0.0.1:0.0")
+
+    ;; autolad octave mode for *.m-files
+       (autoload 'octave-mode "octave-mod" nil t)
+       (setq auto-mode-alist
+       (cons '("\\.m$" . octave-mode) auto-mode-alist))
+
+    ;; to turn on the abbrevs, auto-fill and font-lock features automatically  
+       (add-hook 'octave-mode-hook
+         (lambda ()
+         (abbrev-mode 1)
+         (auto-fill-mode 1)
+         (if (eq window-system 'x)
+          (font-lock-mode 1))))
+
+
+    ;; And finally, inferior-octave-mode-hook is run after starting the process 
+    ;; and putting its buffer into Inferior Octave mode. Hence, if you like 
+    ;; the up and down arrow keys to behave in the interaction buffer as in 
+    ;; the shell, and you want this buffer to use nice colors:
+    
+       (add-hook 'inferior-octave-mode-hook
+         (lambda ()
+           (turn-on-font-lock)
+           (define-key inferior-octave-mode-map [up]
+             'comint-previous-input)
+           (define-key inferior-octave-mode-map [down]
+             'comint-next-input))) 
+
+    ;; RET adds a newline and indents it 
+       (add-hook 'octave-mode-hook 
+         '(lambda nil
+           (define-key octave-mode-map "\C-m"
+              'octave-reindent-then-newline-and-indent)
+           (define-key octave-mode-map [(control space)]
+              'octave-complete-symbol) ;; I prefere C-SPC
+           (define-key octave-mode-map [(meta control tab)] 
+              'octave-complete-symbol)))
+
+    ;; run an inferior Octave process in a special Emacs buffer
+       (autoload 'run-octave "octave-inf" nil t)
+
+    ;; if you have the win32 version of octave
+       (add-hook 'inferior-octave-mode-hook
+           '(lambda ()
+               (setq inferior-octave-program
+                   "C:\\Programme\\GNU Octave 2.1.73\\bin\\octave-2.1.73.exe")))
+
+    ;; If `gnuserv' is installed, add the lines
+       (autoload 'octave-help "octave-hlp" nil t)
+       (require 'gnuserv)
+       (gnuserv-start)      
+
+Known problems under WIN32:
+
+Key stroke "M-TAB" (octave-complete-symbol) is not working,
+that is the reason for defining the keystroke [(meta control tab)].
+
+
+Starting octave from within xemacs is not working :-(
+Is there someone who can help?
+
+
+==Location==
+
+Kurt.Hornik says: Octave-mode (octave-mod.el, octave-inf.el
+octave-hlp.el) is part of the GNU emacs distribution, but I don't know
+in which archive-file. I loaded the three files from:
+http://www.koders.com/
+
+Best Regards, stefan@pofahl.de (www.jpberlin.de/st.pofahl/xemacs)
+
+==Completion==
+
+Yasuto.Takenaka says:
+About octave-complete-symbol, add octave-completion-alist of auto-complete-octave.el of the wiki to octave-completion-alist:
+
+    (require 'octave-mod)
+    (load-file "/path/auto-complete-octave.el")
+    (setq octave-completion-alist
+          (nconc octave-keywords octave-completion-alist))
+    ;If you don't use auto-complete.el, comment out lines of auto-complete.el concerned with  "(require …, (defvar…, (add-hook…,(provide… ".
+
+----
+
+Octave has good completion support of its own.  This code takes
+advantage of it in Emacs:
+
+    (defun my-inferior-octave-listening-p ()
+      "True if inferior octave is running and ready to receive input.
+    Required for eldoc and other functions that try to get
+    information from the running Octave, so they don't freeze emacs
+    when Octave is busy doing something else."
+      (and (boundp 'inferior-octave-process)
+           inferior-octave-process
+           (not inferior-octave-receive-in-progress)
+           (eq (process-status inferior-octave-process) 'run)))
+    
+    (defun my-octave-complete-symbol ()
+      "Perform completion on Octave symbol preceding point.
+    Compare that symbol against Octave's reserved words and builtin
+    variables.  This is like the default Octave completer function,
+    except that it also completes on structure fields."
+      (interactive)
+      ;; This code taken from lisp-complete-symbol
+      (let* ((end (point))
+             (beg (save-excursion (backward-sexp 1) (point)))
+             (string (buffer-substring-no-properties beg end))
+             (completion (try-completion string octave-completion-alist)))
+        (if completion
+            (setq completion-list octave-completion-alist)
+            (when (my-inferior-octave-listening-p)
+              (setq completion-list
+                    (save-excursion
+                      (inferior-octave-send-list-and-digest
+                       (list (format "completion_matches(\"%s\");\n" string)))
+                      inferior-octave-output-list))
+              (when completion-list
+                (setq completion
+                      (try-completion string inferior-octave-output-list)))))
+    
+        (cond ((eq completion t))           ; ???
+              ((null completion)
+               (message "Can't find completion for \"%s\"" string))
+              ((not (string= string completion))
+               (delete-region beg end)
+               (goto-char beg)
+               (insert completion))
+              (t
+               (let ((list (all-completions string completion-list))
+                     (conf (current-window-configuration)))
+                 ;; Taken from comint.el
+                 (message "Making completion list...")
+                 (with-output-to-temp-buffer "*Completions*"
+                   (display-completion-list list))
+                 (message "Hit space to flush")
+                 (let (key first)
+                   (if (save-excursion
+                         (set-buffer (get-buffer "*Completions*"))
+                         (setq key (read-key-sequence nil)
+                               first (aref key 0))
+                         (and (consp first) (consp (event-start first))
+                              (eq (window-buffer (posn-window (event-start
+                                                               first)))
+                                  (get-buffer "*Completions*"))
+                              (eq (key-binding key) 'mouse-choose-completion)))
+                       (progn
+                         (mouse-choose-completion first)
+                         (set-window-configuration conf))
+                     (if (eq first ?\ )
+                         (set-window-configuration conf)
+                       (setq unread-command-events
+                             (listify-key-sequence key))))))))))
+
+-- SeanO

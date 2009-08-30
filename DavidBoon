@@ -1,0 +1,597 @@
+I use Emacs, I also keep an emacs blog here: popyankpush.blogspot.com
+
+[http://www.emacswiki.org/cgi-bin/wiki?action=rc&all=1&showedit=1&from=1&rcuseronly=Dmb Contributions]
+
+==Things to love in emacs 22.0.50.1==
+* find-libary, this function is sorely missing, xemacs has had this for a long time, I love it.
+* new faces for ^M 
+* ability to remove, customize fringe
+* much improved scrolling in comint/shell mode
+* improved grep mode, I have changed my simple-find-dired to use grep-find 
+* size-indication-mode in the modeline, nice.
+* fixed issue with striping ^M out of compilation mode, thanks
+* Conf mode that recognizes properties files, very sweet!
+
+==Issues I've encountered with 22.0.50.1==
+* sometimes, especially when using TAB to complete, the m's show up funny.  [[image:FunnyMRendering]]
+
+<i>A guess: By default the `completions-first-difference' face is bold. Try removing the boldness, or find a bold font that Emacs doesn't have problems with.</i>
+:that was it.  I set the face to none bold and it works great, thanks.
+
+* deleting buffers in bs mode used to remove the buffer from the list and kill the buffer.  It appears that kill-buffer is no longer returning a value, so I rewrote bs-delete to this:
+<pre>
+(defun dmb-bs-delete ()
+  "Kill buffer on current line."
+  (interactive)
+  (let ((current (bs--current-buffer))
+	(inhibit-read-only t))
+    ;(unless (kill-buffer current)
+    ;  (error "Buffer was not deleted"))
+    (kill-buffer current)
+    (setq bs-current-list (delq current bs-current-list))
+    (beginning-of-line)
+    (delete-region (point) (save-excursion
+			     (end-of-line)
+			     (if (eobp) (point) (1+ (point)))))
+    (if (eobp)
+	(progn
+	  (backward-delete-char 1)
+	  (beginning-of-line)
+	  (recenter -1)))
+    (bs--set-window-height)))
+(define-key bs-mode-map "d" 'dmb-bs-delete)
+</pre>
+
+
+DrewAdams has a pointer to a nice emacs history page.
+
+See [[#SqlMode]]
+[new]
+Welcome to the wiki! -- AlexSchroeder
+
+==Some mods to find-dired:==
+<pre>
+(require 'grep)
+(require 'font-lock)
+;;this is a hack to force grep-find to load, since it's uses the 
+;; special form of autoload(###).
+(grep-compute-defaults)
+(setq
+ grep-scroll-output t
+ grep-window-height 25
+ grep-hit-face font-lock-comment-face
+ grep-match-face font-lock-string-face)
+
+(add-hook 
+ 'grep-mode-hook 
+ (lambda () 
+   "hook to rename buffer to include find args"
+   (if (string-match "\*grep\*" (buffer-name (current-buffer)))
+       (progn (rename-buffer (format "*grep* [%s]" command-args) 1)))))
+
+(defun simple-grep1 (dir options)
+  "a slightly more improved grep-find"
+  ;;(interactive "Dgrep (directory): \nsgrep (directory): %s (like this): \ns ")
+  (interactive (list (read-directory-name "grep (directory): ")
+                     (read-from-minibuffer "grep (like this): " '("grep -nrH -e  ./*" . 14) nil nil 'grep-history)))
+  (cd dir)
+  ;;run grep like: grep -Hnr --include="*.java" "OfferBroker" c:/khub/ReqRecSearchFilter/java/
+  ;;--exclude=\".#*\" --exclude=\"*\\~\"
+  (setenv "GREP_OPTIONS" "--exclude=.#* --exclude=*\~ --exclude=CVS/*")
+  (grep options))
+
+</pre>
+
+==Dired==
+allow diffing marked dired files using ediff 
+<pre>
+
+(defun dired-ediff-marked-files ()
+  "Run ediff on marked ediff files."
+  (interactive)
+  (set 'marked-files (dired-get-marked-files))
+  (when (= (safe-length marked-files) 2)
+    (ediff-files (nth 0 marked-files) (nth 1 marked-files)))
+  
+  (when (= (safe-length marked-files) 3)
+    (ediff3 (buffer-file-name (nth 0 marked-files))
+            (buffer-file-name (nth 1 marked-files)) 
+            (buffer-file-name (nth 2 marked-files)))))
+
+</pre>
+
+==bs-mode==
+Add a couple of functions that allow operations on files marked in bs-mode.
+<pre>
+(defun bs-diff-marked-buffers ()
+  "Perform diff of files marked in buffer list, requires `bs'"
+  (interactive)
+  (when (= (safe-length bs--marked-buffers) 2)
+    (ediff-buffers (nth 0 bs--marked-buffers) (nth 1 bs--marked-buffers)))
+  
+  (when (= (safe-length bs--marked-buffers) 3)
+    (ediff3 (buffer-file-name (nth 0 bs--marked-buffers))
+            (buffer-file-name (nth 1 bs--marked-buffers)) 
+            (buffer-file-name (nth 2 bs--marked-buffers)))))
+
+
+(defun bs-query-replace-marked-buffers (regexp to-string)
+  "Perform a `query-replace-regexp' marked files, requires `bs'"
+  (interactive (list (read-from-minibuffer "replace regexp: ") 
+                     (read-from-minibuffer "with what: ")))
+  (dolist (buffer bs--marked-buffers)
+    (save-window-excursion
+      (delete-other-windows)
+      (switch-to-buffer buffer)
+      (query-replace-regexp regexp to-string nil (point-min) (point-max)))))
+
+(defun bs-close-marked-buffers ()
+  "close all marked buffers"
+  (interactive)
+  (dolist (buffer bs--marked-buffers)
+    (save-window-excursion
+      (switch-to-buffer buffer)
+      (kill-current-buffer)))
+  (bs--redisplay t))
+(define-key bs-mode-map (kbd "C") 'bs-close-marked-buffers)
+
+</pre>
+
+==Highlight current line mode==
+I found during some operations it's nice to have the current line highlighted, especially when using tags-search, dired-do-query-replace.
+
+<pre>
+;;; highlight-current-line.el--- routines for highlighting the current line in modes.
+
+;; Author: David M. Boon <davidmboon@hotmail.com>
+;; Created: 02/07/2005
+;; Version: $Revision: $
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to
+;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+;;; Commentary:
+;; to install put this file in your load-path, then add:
+;;    (require 'highlight-current-line) 
+;; to your .emacs.  Once available, invoke M-x toggle-highlight-current-line
+
+;;; Change History 
+;; 02/07/2005 created
+
+
+(defface dmb-current-line-face
+  '((((class color) (background light))
+     (:background "alice blue")) ;;gray93
+    (((class color) (background dark))
+     (:background "alice blue"))
+    (((class grayscale monochrome)
+      (background light))
+     (:background "black"))
+    (((class grayscale monochrome)
+      (background dark))
+     (:background "white")))
+  "face to use for current line")
+
+(defvar dmb-current-line-highlighting-on nil
+  "variable holds state of current line highlighting mode, 
+use `toggle-highlight-current-line")
+
+(defvar dmb-current-line-overlay nil
+  "overlay for current line")
+
+(defvar dmb-highlight-current-line-modes 
+  (list "Emacs-Lisp" "JDE" "nXML" "Python" "Dired by name") 
+  "a list of mode names to apply the current line highlighting mode")
+
+(defun highlight-current-line () 
+  "using an overlay, change color of current line"
+  ;;(princ (format "%s %s" dmb-highlight-current-line-modes mode-name)) 
+  (if dmb-current-line-highlighting-on
+      (when (member mode-name dmb-highlight-current-line-modes)
+      (setq dmb-current-line-overlay 
+              ;(make-overlay (point-at-bol) (point-at-eol)))
+            (make-overlay (point-at-bol) (1+ (line-end-position))))
+            
+        (overlay-put dmb-current-line-overlay 'face 'dmb-current-line-face)
+        (add-hook 'pre-command-hook 'unhighlight-current-line nil t))))
+
+
+(defun unhighlight-current-line ()
+  "remove overlay and change color of current line to default"
+  (delete-overlay dmb-current-line-overlay)
+  (setq dmb-current-line-overlay nil))
+
+(defun toggle-highlight-current-line ()
+  "turn on or off current line highlighting"
+  (interactive)
+  (if dmb-current-line-highlighting-on 
+      (setq dmb-current-line-highlighting-on nil)
+    (setq dmb-current-line-highlighting-on t))
+
+  (if dmb-current-line-highlighting-on
+      (add-hook 'post-command-hook 'highlight-current-line)
+    (remove-hook 'post-command-hook 'highlight-current-line))
+
+  (if dmb-current-line-highlighting-on 
+      (princ "highlight-current-line is on")
+    (princ "highligh-current-line is off")))
+
+
+(provide 'highlight-current-line)
+</pre>
+
+[new:MathiasDahl:2005-04-09 00:34 UTC]
+Have you tested hl-line-mode? It comes with Emacs.
+[new]
+You know that's funny, I knew that was going to happen...the good part about writing your own modules is that you learn a lot.  But the hl-line mode looks pretty nice, better because it highlights the entire line, and it's a true minor mode.  Mine has the advantage of having a mode list...
+
+==simply creating a TAGS file==
+I use this function to make my [[tags file]] by hand when I know I want the TAGS file to be refreshed.
+
+<pre>
+(defun make-tags-file (path)
+  "simple function to create TAGS file"
+  (interactive (list (read-file-name "path: ")))
+
+  (if (not (file-directory-p path))
+      (error "Start path specified is not an existing directory"))
+  
+  (set 'dmb-tags-args (read-from-minibuffer "find/tags args: " "find \"%s\" -name \"*.java\" -print | etags --output=%sTAGS - &"))
+  (set 'dmb-tags-args (format dmb-tags-args path path)) 
+  (princ (format "running %s" dmb-tags-args))
+  (shell-command dmb-tags-args))
+
+</pre>
+
+
+==cleanup after ediff ==
+[:CleanupEdiff]
+I borrowed this originally from EdiffMode but then found a couple of problems.  First, the version I wanted to use didn't work on Gnu Emacs, then I found that the control frame and other ediff remnants were lingering.  I modified the quit hook to run ediff-cleanup-mess after restoring the original window configuration.  Note that the double <tt>ediff-cleanup-mess</tt> calls are not a mistake.
+
+<pre>
+(defvar my-ediff-bwin-config nil "Window configuration before ediff.")
+(defcustom my-ediff-bwin-reg ?b
+  "*Register to be set up to hold `my-ediff-bwin-config'
+    configuration.")
+
+(defun my-ediff-bsh ()
+  "Function to be called before any buffers or window setup for
+    ediff."
+  (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess)
+  (window-configuration-to-register my-ediff-bwin-reg))
+
+(defun my-ediff-aswh ()
+"setup hook used to remove the `ediff-cleanup-mess' function.  It causes errors."
+  (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess))
+
+(defun my-ediff-qh ()
+  "Function to be called when ediff quits."
+  (remove-hook 'ediff-quit-hook 'ediff-cleanup-mess)
+  (ediff-cleanup-mess)
+  (jump-to-register my-ediff-bwin-reg))
+
+(add-hook 'ediff-before-setup-hook 'my-ediff-bsh)
+(add-hook 'ediff-after-setup-windows-hook 'my-ediff-aswh);
+(add-hook 'ediff-quit-hook 'my-ediff-qh)
+
+</pre>
+
+==cycle buffer by mode, simple==
+I wrote this function in order to cycle through buffers of certain modes.  I know there are other packages that exist to do similar things but I wanted to do this myself to learn.
+
+<pre>
+(defun cycle-buffer-by-mode (p-mode)
+  "Cycle buffers by mode name"
+  (interactive)
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (when (buffer-live-p buffer)
+        (if (string-match p-mode mode-name) ;(regexp-quote p-mode)
+            (setq switch2buffer buffer)))))
+  (when (boundp 'switch2buffer)
+    (switch-to-buffer switch2buffer)))
+</pre> 
+
+And I have bound this to my F9 key
+<pre>
+(global-set-key [f9]             '(lambda () (interactive) (cycle-buffer-by-mode "Shell$")))
+</pre>
+
+==Sql Mode==
+[:SqlMode]
+renames sql buffers to something useful.  Also makes sure that the sql buffer appears in a new full buffer, rather than split the screen.
+<pre>
+(require 'sql)
+(defun my-sql-mode-hook () 
+  "sql mode hook that renames *SQL* buffer to reflect connection string"
+  (define-key sql-mode-map [delete] 'delete-char)
+  (setq 
+   comint-scroll-to-bottom-on-input 'this
+   new-buffer-name (concat "*sql* [" (downcase sql-user) "@" (downcase sql-database) "]"))
+  (rename-buffer new-buffer-name))
+;(add-hook 'sql-mode-hook 'my-sql-mode-hook)
+(add-hook 'sql-interactive-mode-hook 'my-sql-mode-hook)
+(add-to-list 'same-window-regexps "^\\*sql\\*.*")
+</pre>
+
+
+These functions will allow you to call select-oracle-schema and use completion from the minibuffer for schemas defined in known-shemas-alist.
+<pre>
+(require 'sql)
+
+
+(defvar known-schemas-alist nil 
+  "an alist of property lists for schema info")
+(setq 
+ known-schemas-alist
+ '(("schema1@sid1"
+    :username "schema1"
+    :password "*****"
+    :database "sid1")
+   ("schema2@sid1"
+    :username "schema2"
+    :password "*****"
+    :database "sid1")
+   ("schema3@sid1"
+    :username "schema3"
+    :password "*****"
+    :database "sid1")
+   ("schemaA@sid1"
+    :username "schemaA"
+    :password "*****"
+    :database "sid1")))
+
+(add-to-list 'known-schemas-alist 
+             '("schemaB@sid1dpisis"
+              :username "schemaB"
+              :password "*****"
+              :database "sid1"))
+
+(defun sql-oracle-any-schema (schema)
+  "given one of the names in `known-schemas-alist' launch sql or 
+switch to buffer if it already exists."
+  (setq 
+   sql-database (plist-get (cdr (assoc schema known-schemas-alist)) :database)
+   sql-user (plist-get (cdr (assoc schema known-schemas-alist)) :username)
+   sql-password (plist-get (cdr (assoc schema known-schemas-alist)) :password))
+  (setq tmp-buffer-name (concat "*sql* [" sql-user "@" sql-database "]"))
+  (if (get-buffer tmp-buffer-name)
+      (pop-to-buffer tmp-buffer-name)
+    (sql-product-interactive 'oracle9i)))
+
+(defun select-oracle-schema ()
+  "prompt for schema, use completion to show options.
+Press SPACE for options, TAB to complete."
+  (interactive)
+  (setq chosen 
+        (completing-read "select schema: " known-schemas-alist nil t nil))
+  (message (format "%s type %s" chosen (type-of chosen )))
+  (sql-oracle-any-schema chosen))
+
+(defalias 'oracle 'select-oracle-schema)
+
+;;
+;; sql-mode
+;;
+(setenv "SQLPATH" (concat "~/sql" ";" (getenv "SQLPATH")))
+(require 'sql)
+(defun my-sql-mode-hook () 
+  "sql mode hook that renames *SQL* buffer to reflect connection string"
+  (message "entering sql mode")
+  (define-key sql-mode-map [delete] 'delete-char)
+  (setq 
+   comint-scroll-to-bottom-on-input 'this
+   new-buffer-name (concat "*sql* [" (downcase sql-user) "@" (downcase sql-database) "]"))
+  (rename-buffer new-buffer-name t)
+  (setq tab-width 8)
+  (sql-set-product 'oracle))
+;(add-hook 'sql-mode-hook 'my-sql-mode-hook)
+(add-hook 'sql-interactive-mode-hook 'my-sql-mode-hook)
+(add-to-list 'same-window-regexps "^\\*sql\\*.*")
+
+
+;;(sql-add-product-keywords 'oracle
+;;  '(("VARCHAR2" . font-lock-type-face)))
+
+</pre>
+
+
+
+== decompile a class from a jar file==
+This hook will automatically decompile a class file when you open it from jar file.
+<pre>
+;;
+;; archive extract hook
+;;
+(defun archive-decompile-class-hook ()
+  "a hook to automatically decompile classfiles from jar files"
+  ;;(princ (format "my-archive-extract-hook() %s %s %s" (current-buffer) buffer-file-name (string-match "\.class$" buffer-file-name)))
+  (if (string-match "\.class$" buffer-file-name)
+      (jdc-buffer)))
+(add-hook 'archive-extract-hooks 'archive-decompile-class-hook)
+</pre>
+
+
+==make code statement==
+in the vein of toads feature make-code-statement applies string like decoration to a sql statement.
+
+<pre>
+;; (defcustom alist-of-unmake-patterns 
+;;   '(("^ *\\+ *?\"" . "")
+;;     ("\" ?\\+" . "")
+;;     ("^ *?\"" . "")
+;;     ("\";$" . "")
+;;     ("\"$" . "")
+;;     ("\" ?\\+$" . "")
+;;     ("\\\\n" . "")
+;;     )
+;;   "regexps and replacements for unmaking a sql statement"
+;;   :type 'alist
+;;   :group 'code-statement)
+
+;; (defcustom alist-of-make-patterns
+;;   '(("^\\(.*\\)$" .  "+ \"\\1\"")
+;;           )
+;;   "regexps and their corresponding replacements"
+;;   :group 'code-statement
+;;   :group 'code-statement)
+  
+(defconst is-debug-enabled nil)
+
+(setq alist-of-unmake-patterns 
+  '(("^ *\\+ *?\"" . "")
+    ("\" ?\\+" . "")
+    ("^ *?\"" . "")
+    ("\";$" . "")
+    ("\"$" . "")
+    ("\" ?\\+$" . "")
+    ("\\\\n" . "")
+    ))
+
+(setq alist-of-make-patterns
+  '(("^\\(.*\\)$" .  "+ \"\\1\"")
+          ))
+  
+(setq alist-of-line-break-patterns
+        (list "AND" "FROM"))
+ 
+(defun debug(msg)
+  ""
+  (if is-debug-enabled
+      (princ msg)))
+
+(defun make-code-statement() 
+ "operate on region, add java string formatting"
+  (interactive)
+  
+ (if (not (and mark-active))
+      (error "region not selected"))
+  
+  (setq begin (copy-marker (region-beginning)))  
+  (setq limit (copy-marker (region-end)))  
+  (goto-char begin)
+
+
+  (debug (format "\n%s\n" alist-of-make-patterns ))
+
+  (dolist (p alist-of-make-patterns)
+    (goto-char begin)
+    (debug (format "cdr: %s  car: %s" (car p) (cdr p)))
+    (while (re-search-forward (car p) limit t)
+      (replace-match (cdr p))))
+  (indent-region begin limit)
+  (deactivate-mark))
+
+
+(defun unmake-code-statement() 
+  "operate on region, remove java string formatting"
+  (interactive)
+   
+  (if (not (and mark-active))
+      (error "region not selected"))
+
+  (debug (format "begin: %s end: %s" (region-beginning) (region-end)))
+
+  (setq begin (copy-marker (region-beginning)))  
+  (setq limit (copy-marker (region-end)))  
+  (goto-char (region-beginning))
+
+ 
+  (debug (format "\n%s\n" alist-of-unmake-patterns ))
+
+  (dolist (p alist-of-unmake-patterns)
+    (goto-char begin)
+    (debug (format "cdr: %s  car: %s" (car p) (cdr p)))
+    (while (re-search-forward (car p) limit t)
+      (debug (format "  match: %s " (match-beginning 0)) )
+      (replace-match (cdr p)))
+    (debug "\n"))
+  (deactivate-mark))
+
+
+(defun normalize-select-statement()
+  "perform some indentation and line breaking on a unformatted sql string"
+  (interactive)
+  (if (not (and mark-active))
+      (error "region not selected"))
+
+  (setq begin (copy-marker (region-beginning)))  
+  (setq limit (copy-marker (region-end)))  
+
+  (goto-char (region-beginning))
+
+  (while (re-search-forward "\n" limit t)
+      (debug (format "  match: %s " (match-beginning 0)) )
+      (replace-match ""))
+
+  (goto-char (region-beginning))
+
+  (while (re-search-forward "\," limit t)
+      (debug (format "  match: %s " (match-beginning 0)) )
+      (replace-match ",\n"))
+ )
+
+
+(provide 'code-statement)
+
+</pre>
+==JDE, 'Lisp nesting exceeds max-lisp-eval-depth'==
+I found that with the latest version of emacs from cvs 22.0.50.1 and JDEE/JDE 2.3.5 I get an error when searching for project files.   This problem is referenced here: http://article.gmane.org/gmane.emacs.jdee/4579  
+
+I did a bit of poking and found this function jde-root-dir-p, there's a one line change that can be made that makes the problem go away:
+
+in jde-2.3.5/lisp/jde.el, function jde-root-dir-p
+<pre>
+  ;;(string= (substring parent -3) "/.."))) ; for paths like d:/prj/src
+  (string= (file-name-nondirectory dir) "")))
+</pre>
+
+
+==remember files when opening via tags==
+when I open a file with M-. or find tag, I would like it if that file shows up in my mini-buffer history as if I had typed the file in directly.   this hook will do that.
+
+<pre>
+(defun my-find-tag-hook()
+  "remember files I open with `find-tag'"
+  ;;(message (format "you are here %s" (buffer-file-name (current-buffer))))
+  (add-to-list 'file-name-history (buffer-file-name (current-buffer))))
+
+(add-hook 
+ 'find-tag-hook 'my-find-tag-hook)
+
+</pre>
+
+==autoloads==
+This is probably obvious to a lot of peoople, but previously I used (require 'blah) for loading modes, but my emacs took a long time to startup.  Mainly attributable to "jde" and cedet I think.  I recently revamped my startup to use autloads and "eval-after-load".  I've now reduced my startup time to about 2.5 seconds, pretty good. 
+
+==svn diff with url==
+I think it's not possible with psvn.el nor vc-svn.el to diff to a remote repository version, so i whipped this up.  The history isn't quite working right, but I'll fix that later.  Also want the temp buffer to use the correct major mode based on content/extension.  I was using with-temp-buffer, I may switch back to that
+<pre>
+(defvar svn-diff-with-list nil
+  "recently used paths/revisions.")
+
+(defun svn-diff-with (path)
+  "compare working copy against another svn url"
+  (interactive (list (ido-completing-read "svn url: " svn-diff-with-list nil nil buffer-file-name '(svn-diff-with-list . 0) nil )))
+  (let ((buf (get-buffer-create path)))
+    (vc-do-command buf 0 vc-svn-program-name nil "cat" path)
+    (let ((xyz-major-mode major-mode))
+      (with-current-buffer buf
+        (funcall xyz-major-mode)))
+    (ediff-buffers (current-buffer) buf)))
+
+</pre>
+
+----
+CategoryHomepage

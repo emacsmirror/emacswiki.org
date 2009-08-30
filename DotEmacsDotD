@@ -1,0 +1,29 @@
+What is the purpose of the [::.emacs.d] directory?
+
+The directory ##~/.emacs.d/## is a standard location for your own configuration files, your own developments, or external third-party modes.  It is not shipped by the operating system distributor--e.g. Debian, Suse, etc--which means it will not be overwritten by a re-installation. 
+
+[new]
+(The above doesn't seem to make sense, grammatically. It's not clear what it's trying to say. For example:
+
+What does the "but is not shipped ... distributor" refer to? .emacs.d? or Your own config files and developments? Or external modes? Or what?
+
+Why the reference to Debian? Is it an example of a distro that doesn't ... well, doesn't what? See first question?
+
+Exactly what is in contrast with "what configurations are allowed ..."? Is this referring back again to "your own configuration files..." and saying that .emacs.d is the place to put your local config changes *unless* they should really be put in your .emacs.
+
+Thanks in advance for clearing this up. I just want to know what the .emacs.d directory is for! :-) )
+
+
+-------Note from DavidStorrs:  Above paragraph rewritten to hopefully clarify it.
+[new]
+
+
+
+
+
+For Emacs 22: "If the init file ##~/.emacs## does not exist, Emacs will try
+##~/.emacs.d/init.el## or ##~/.emacs.d/init.elc##.  You can also put the shell
+init file ##.emacs_SHELL## under ##~/.emacs.d##."
+
+----
+CategoryDotEmacs

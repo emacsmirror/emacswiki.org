@@ -1,0 +1,191 @@
+This is Anupam's personal page.
+
+== Some of the packages I use ==
+
+# [[OrgMode]] - A fantastic PIM/Notes taking application which is really useful for implementing GTD.
+# [[Gnus]] - The Emacs Usenet reader
+# [[Eshell]] - The Emacs Shell
+# [[Icicles]] - A completion package. Tons of functionality
+# [[DictEm]] - A dictionary package
+
+----
+
+== Tips and Tricks for Emacs on OS X ==
+
+These tips and tricks have been tested on plain-vanilla [[CarbonEmacs]] version 22.1 on OS X. YMMV on other versions.
+
+In addition to the tips below, tons of other OS X tips can be found at:
+
+* [[MacOSTweaks]]
+* [[EmacsForMacOS]]
+* [[CarbonEmacsPackage]]
+
+=== Use Spotlight within Emacs ===
+
+Emacs comes with a `locate' command that uses the <code>locate</code> system command to find files within your system. On OS X, it is easier to use Spotlight, which is trivial to enable in Emacs.
+
+In your <code>.emacs</code> file, add the following code:
+
+<pre>
+(setq locate-command "mdfind")
+</pre>
+
+Now try:
+<code>M-x locate </code><i>enter your search here</i>
+
+Your search results will be populated in a new Window.
+
+=== Emulate a three button Mouse on a single button Mac Mouse/trackpad ===
+
+Traditionally, mice on Macs have had just one button (including the iBook/Powerbook trackpads) - even through Mac OS (including OS X) can accept 2 or 3 button input without any problems.
+
+If you want to emulate a three button mouse in Emacs on OS X, a simple customization option will do the trick.
+
+Invoke:
+
+<code>M-x customize-group</code> and enter <code>mac</code>.  Navigate to the "Mac Emulate Three Button Mouse" and select option 2 or option 3. Voila!
+
+=== Use the Capslock as a Control key ===
+
+This is an absolute must, unless you like contorting your fingers and risk RSI. It is also an easy thing to do on OS X.
+
+You need to bring up the System preferences --> Keyboard & Mouse
+
+and then click the "Modifier Keys" to remap the Capslock to Control.
+
+This is available on OS X 10.4 and later versions.
+
+=== Use M-` for switching Frames ===
+
+The standard key-binding for moving to the other frame (`other-frame') is <tt>C-x 5 o</tt>. That's quite a few key-strokes, and also does not match with the standard OS X key-mapping for switching windows, which is <tt>Command-`</tt>. On OS X, the <code>Command</code> key maps to <code>Meta</code>.
+
+However, this is easy to fix. Put the following code-fragment into your <code>.emacs</code> file:
+
+<pre>
+(define-key icicle-mode-map [?\M-`] nil) # Only needed if you use Icicles
+(global-set-key [?\M-`] 'other-frame) # This sets the key binding
+</pre>
+
+Note that by default <code>M-`</code> invokes `tmm-menubar' which can also be accessed via <code>[f10]</code>.  Also, you do not need the first line (to undefine the key binding in [[Icicles]] if you do not use that package.
+
+=== Use emacsclient from the command line ===
+
+Emacs is a great editor, but has one setback - it is *slow* to startup if you have loads of packages to load.  On my G4 iBook, it takes around 45 seconds before Emacs becomes usable (OK - I use *lots* of packages).
+
+However, Emacs is not meant to be restarted every so often.  The canonical usage is to start Emacs once, start the server mode (see [[EmacsClient]]) and then use the emacsclient from the command line to invoke the editor instance when needed.
+
+On my system, I have aliased the `emacsclient' binary to be `ec', which is much simpler to type.
+
+I.e., in my  `.bashrc', I have
+
+<code>alias ec emacsclient</code>
+
+
+I have also defined <code>$EDITOR</code> to use `emacsclient' when possible, and `vi' otherwise. However, instead of directly assigning to the <code>$EDITOR</code> environment variable, I have a small shell-script to define the default editor I want to use. This script is then assigned to the <code>$EDITOR</code> variable.
+
+The code for the default-editor shell-script (named `default-editor') is:
+
+<pre>
+#!/bin/bash
+# Set up a default editor for the shell
+# Use Emacs if already open, and vi in other cases (including fallback)
+
+EMACS_EDITOR=`which emacsclient`
+
+if [ -x "$EMACS_EDITOR" ]; then
+    $EMACS_EDITOR -a vi "$@"
+else
+    vi "$@"                     # Never fails!
+fi
+</pre>
+
+And then, in the <code>.bashrc</code> file, I have:
+
+<pre>
+if [ -x $HOME/bin/default_editor ]; then
+    export EDITOR=$HOME/bin/default_editor
+else
+    export EDITOR=`which vi`
+fi
+</pre>
+
+BTW, the code above assumes that you use [http://www.gnu.org/software/bash/ bash] as the primary shell in your terminal.  You can however trivially modify the scripts above for your specific shell.
+
+----
+
+== My Code ==
+
+=== A Small function to set the PATH variable from within Emacs ===
+
+Very useful for OS X, where the default path is set by plists.
+
+<pre>
+;;; Define a function to setup additional path
+(defun my-add-path (path-element)
+"Add the specified path element to the Emacs PATH"
+   (interactive "DEnter directory to be added to path: ")
+       (if (file-directory-p path-element)
+          (setenv "PATH"
+            (concat (expand-file-name path-element)
+              path-separator (getenv "PATH")))))
+</pre>
+
+and use it as:
+
+<pre>
+;;; Set localized PATH for OS X
+(if (fboundp 'my-add-path)
+    (let ((my-paths (list
+                     "/opt/local/bin"
+                     "/usr/local/bin"
+                     "/usr/local/sbin"
+                     "/usr/local/mysql/bin"
+                     "~/bin")))
+      (dolist (path-to-add my-paths (getenv "PATH"))
+        (my-add-path path-to-add))))
+</pre>
+
+=== Downloading Icicles packages from within Emacs ===
+
+[[Icicles]] has quite a few files ([[Icicles - Libraries]]) that form the package, and LeWang has provided a shell script at [[get-icicles.sh]] to conveniently download all the required files. However, on Windows, unless you have Cygwin (http://www.cygwin.com/), it is difficult to run this script.
+
+The [[ELPA]] package system by [[TomTromey]] provides an elegant mechanism to download packages from within Emacs itself, using the [[UrlPackage]]. The code below allows you to use a similar mechanism to download Icicles.
+
+To use, please select the code snippet below and paste it in the <code>*scratch*</code>  buffer, move your cursor to the last closing parenthesis, and hit C-x C-e
+
+The download may take some time - be patient!
+
+<pre>
+;; Evaluate this code in a scratch buffer to download all Icicles files.
+(let ((buffer
+       (url-retrieve-synchronously
+        "http://www.emacswiki.org/cgi-bin/emacs/download/download-icicles.el")))
+  (save-excursion
+    (set-buffer buffer)
+    (goto-char (point-min))
+    (re-search-forward "^$" nil 'move)
+    (eval-region (point) (point-max))
+    (kill-buffer (current-buffer))))
+;; ---------------------------------^
+;; Place your cursor                HERE and hit C-x C-e
+</pre>
+
+
+The actual lisp file which downloads rest of Icicles is at: [[download-icicles.el]]
+
+=== An alternate mechanism to download Icicles ===
+
+After discussions with DrewAdams, I created an alternate mechanism to download Icicles from within Emacs. You need to perform the following steps:
+
+# Download [[icicles-install.el]] to a convenient directory (e.g. <code>~/elisp</code>)
+# Add the following line in your <code>.emacs</code> file: <code>(load "~/<dirname>/icicles-install")</code> (//Note: Adjust the directory name for your local download directory.//)
+# You need not restart Emacs. At end of the sexp listed above, enter <code>C-x C-e</code> to load the  file.
+# //Optional Step:// You may want to customize the download directory (it defaults to <code>~/icicles</code>) by running `customize-variable' on the `icicle-download-dir' variable
+# Run the command `icicle-download-wizard' from the mini-buffer. I.e., run <code>M-x icicle-download-wizard</code>
+
+This will run a prompt-based wizard which will guide you through the download and optional byte-compile steps.
+
+== My Wiki Contributions ==
+
+* [http://www.emacswiki.org/cgi-bin/wiki?action=rc&all=1&showedit=1&from=1&rcuseronly=AnupamSengupta All Contributions]
+* [http://www.emacswiki.org/cgi-bin/wiki?action=rc;rcuseronly=AnupamSengupta This week's contributions]

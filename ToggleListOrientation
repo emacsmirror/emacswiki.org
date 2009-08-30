@@ -1,0 +1,103 @@
+Originally by KragenJavierSitaker.
+
+    ;;; Toggling of argument lists between horizontal and vertical.
+    ;; For example, turn this: memset(bigstring, '\xe3', bigstringsize-1);
+    ;; into this: memset(bigstring,
+    ;;                   '\xe3',
+    ;;                   bigstringsize-1);
+    ;; or vice versa.
+
+    ;; This was really useful at Airwave back in 2004, but I never
+    ;; understood how it worked.  I miss it, so I reimplemented it, which
+    ;; took me a couple of hours.  The idea is that when you're writing
+    ;; out an argument list becomes too long to write on one line, you
+    ;; have a single key to put each item on its own line; and that same
+    ;; key does the inverse operation, if the argument list is already on
+    ;; multiple lines.
+
+    ;; Works on things other than argument lists, too, like {}-enclosed
+    ;; blocks of statements, or list and dict displays in Python.
+
+    ;; Bugs:
+    ;; 
+    ;; - doesn't escape from comments the way it escapes from strings
+    ;; - doesn't drop the trailing separator when doing
+    ;;   vertical-to-horizontal
+    ;; - doesn't add a trailing separator when going
+    ;;   horizontal-to-vertical
+    ;; - removes trailing whitespace going horizontal-to-vertical, even
+    ;;   before a close delimiter, even if there's leading whitespace
+    ;;   after the open delimiter
+    ;; - doesn't understand comments-to-the-end-of-the-line and how they
+    ;;   screw up the transformation
+    ;; - always puts the first argument on the same line as the open
+    ;;   delimiter; it would be better to have a third format in which
+    ;;   that first item indented on the next line instead.
+    ;; - the functions should probably get a package prefix on their names
+
+    (defun inside-string-p ()
+      "Returns true if we're inside a string."
+      (cadddr (syntax-ppss)))
+
+    (defun backward-up-list-escaping-strings ()
+      "Like backward-up-list, but works if we're inside a string."
+      ;; probably should take comments into account too
+      (while (inside-string-p) (backward-char))
+      (backward-up-list))
+
+    (defun start-of-list ()
+      "Go to inside the start of the currently enclosing list --- e.g. arg list."
+      (interactive)
+      (backward-up-list-escaping-strings)
+      (down-list))
+
+
+    (defun end-of-list-p ()
+      "Can we move no further forward without going up a list?"
+      (looking-at "\\(\\s.\\|\n\\|\\s-\\)*\\s)"))
+
+    (defun horizontal-to-vertical-list ()
+      "Turn a horizontal argument list into a vertical argument list.
+    This is written so that it only breaks at commas and semicolons; 
+    too bad for Lisps."
+      (interactive)
+      (save-excursion
+        (start-of-list)
+        (while (not (end-of-list-p))
+          (while (not (or (end-of-list-p) (looking-at "\\s-*[;,]"))) ; skip over arg
+            (forward-sexp))
+          (while (looking-at "\\s-*[;,]") (forward-char)) ; skip over comma
+          ;; now delete whitespace after comma
+          (while (and (not (looking-at "\n")) (looking-at "\\s-")) (delete-char 1))
+          (when (not (end-of-list-p)) ; insert newline if needed and indent
+            (if (looking-at "\n") (forward-char) (insert "\n"))
+            (indent-for-tab-command)))
+        (if (current-list-horizontal-p) 
+            (message "Couldn't find any commas or semicolons.  Are you editing Lisp?"))))
+
+    (defun vertical-to-horizontal-list ()
+      (interactive)
+      (save-excursion
+        (backward-up-list-escaping-strings)
+        (forward-list)
+        (backward-char)
+        (while (not (current-list-horizontal-p))
+          (save-excursion (delete-indentation)))))
+
+    (defun current-list-horizontal-p ()
+      "Returns nil unless the list around point is all on one line."
+      (save-excursion
+        (backward-up-list-escaping-strings)
+        (let ((start (point)))
+          (forward-list)
+          (= 1 (count-lines start (point))))))
+
+
+    (defun toggle-list-orientation ()
+      "Turn a horizontal list into a vertical one, or vice versa."
+      (interactive)
+      (if (current-list-horizontal-p)
+          (horizontal-to-vertical-list)
+        (vertical-to-horizontal-list)))
+
+    (global-set-key [f7] 'toggle-list-orientation)

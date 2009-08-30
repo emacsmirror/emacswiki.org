@@ -1,0 +1,12 @@
+[::escreen]
+by NoahFriedman is modeled after
+[http://www.gnu.org/software/screen/ GNU screen].  It allows you to switch between numbered screens with the C-\ prefix command.
+
+* http://www.splode.com/~friedman/software/emacs-lisp/src/escreen.el
+
+DanDebertin recommends ElScreen instead.
+BarryWarsaw wrote WinRing instead, a very light implementation of this.
+
+----
+CategoryEmulation
+CategoryWindows

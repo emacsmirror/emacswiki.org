@@ -1,0 +1,148 @@
+Emacs has several commands to delete whitespace.
+
+== Just one space ==
+
+To make sure two words are separated by ''just one space'', use `M-SPC' (`just-one-space').
+
+
+== Join two words ==
+
+To ''join two words'' (or any non-space characters) together by deleting all whitespace between them, use any of the following:
+
+* `##M-\##' (`delete-horizontal-space')
+
+* This command:
+
+        (defun kill-whitespace ()
+          "Kill the whitespace between two non-whitespace characters"
+          (interactive "*")
+          (save-excursion
+            (save-restriction
+              (save-match-data
+                (progn
+                  (re-search-backward "[^ \t\r\n]" nil t)
+                  (re-search-forward "[ \t\r\n]+" nil t)
+                  (replace-match "" nil nil))))))
+
+
+== Remove trailing whitespace ==
+
+To ''remove trailing whitespace'' from the entire buffer, use any of the following:
+
+* `M-x delete-trailing-whitespace' (GnuEmacs version 21 or later). You can put this in `before-save-hook' to ensure that your files have no trailing whitespace:
+
+        (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+* PictureModeTrailingWhitespaceTrick. Simple and quick. Works in all GnuEmacs versions.
+
+* `M-x nuke-trailing-whitespace'
+
+[new]
+: *Note:* I've had some corruption problems with `nuke-trailing-whitespace' and Unicode files. In addition to the trailing newlines getting deleted, a few non-whitespace characters get deleted too. I've done a quick fix by replacing the `delete-region' with `delete-blank-lines'.
+[new]
+
+* <tt>[http://www.splode.com/~friedman/software/emacs-lisp/src/whitespace.el whitespace.el]</tt>. -- GregFenton
+
+* This commmand (e.g. bind to `C-x C-h'):
+
+        (defun my-delete-leading-whitespace (start end)
+          "Delete whitespace at the beginning of each line in region."
+          (interactive "*r")
+          (save-excursion
+            (if (not (bolp)) (forward-line 1))
+            (delete-whitespace-rectangle (point) end nil)))
+
+
+== Show trailing whitespace ==
+
+To ''show'' (highlight) trailing whitespace, see ShowWhiteSpace. There are several ways, depending on what you want and what Emacs version you have.
+
+
+== Remove whitespace at the end of the document ==
+
+To remove whitespace at the ''end of a document'', use any of the following:
+
+* `C-x C-o' (`delete-blank-lines') at the end of the buffer (`##M->##').
+
+: However, be aware that if `require-final-newline' is non-`nil', then a (single) newline will be added automatically at the end of the file. (The particular non-`nil' value determines when it is added -- see `C-h v require-final-newline'.)
+
+* This code:
+
+    (defun goto-start-of-last-line ()
+      "Moves the point to the start of the line line in the buffer"
+      (goto-line (+ (count-lines (point-min) (point-max)) 1))
+      (beginning-of-line))
+
+    (defun last-line-blank ()
+      "Returns T if the last line in the buffer is blank, return nil otherwise"
+      (save-excursion
+        (goto-start-of-last-line)
+        (= (point) (point-max))))
+
+    (defun delete-trailing-blank-lines ()
+      "Deletes all blank lines at the end of the file.  These must be
+    truely blank and contain no whitespace."
+      (interactive)
+      (save-excursion
+        (while (last-line-blank)
+          (progn
+            (goto-start-of-last-line)
+            (delete-region (- (point) 1) (point-max))))))
+
+
+== Delete extra blank lines between paragraphs ==
+
+`C-x C-o' (`delete-blank-lines') also deletes any extra blank lines between two paragraphs, leaving just one blank line.
+
+
+== Prevent adding newlines at end of buffer ==
+
+To ''prevent adding newlines'' when you move the [[cursor]] forward at the end of the buffer, customize `next-line-add-newlines' to `nil'.
+
+
+== Indent/unindent a block of lines ==
+
+To ''indent'' (or ''unindent'') a block of lines together rigidly (adding or removing whitespace at the line beginning):
+## Select all the lines to indent
+## Ensure the TextCursor is at the beginning of the last line to indent.
+## <code>C-u NUM C-x TAB</code> to indent <code>NUM</code> columns. A negative <code>NUM</code> (e.g., <code>C-- 4 C-x TAB</code>) un-indents, removing a rectangle of whitespace
+
+
+== Delete adjacent whitespace ==
+
+To delete whitespace from ''point to next word'':
+
+    (defun whack-whitespace (arg)
+      "Delete all white space from point to the next word.  With prefix ARG
+    delete across newlines as well.  The only danger in this is that you
+    don't have to actually be at the end of a word to make it work.  It
+    skips over to the next whitespace and then whacks it all to the next
+    word."
+      (interactive "P")
+      (let ((regexp (if arg "[ \t\n]+" "[ \t]+")))
+        (re-search-forward regexp nil t)
+        (replace-match "" nil nil)))
+
+[new]
+To delete ''adjacent whitespace'' forward:
+
+    (defun delete-horizontal-space-forward () ; adapted from `delete-horizontal-space'
+      "*Delete all spaces and tabs after point."
+      (interactive "*")
+      (delete-region (point) (progn (skip-chars-forward " \t") (point))))
+
+Backward:
+
+    (defun backward-delete-char-hungry (arg &optional killp)
+      "*Delete characters backward in \"hungry\" mode.
+    See the documentation of `backward-delete-char-untabify' and
+    `backward-delete-char-untabify-method' for details."
+      (interactive "*p\nP")
+      (let ((backward-delete-char-untabify-method 'hungry))
+        (backward-delete-char-untabify arg killp)))
+
+[new]
+What is the difference between those two functions and the built-in <code>backward-delete-char-untabify-method</code> and <code>delete-horizontal-space</code>? -- c-7e5ae353.131-1-64736c10.cust.bredbandsbolaget.se
+
+----
+CategoryEditing

@@ -1,0 +1,359 @@
+I want to understand [[Icicles]] completely to imagine interesting hacks.
+I want test cases for Icicles.
+Picture is worth a thousand words. -- [[rubikitch]]
+
+
+= Test Cases for User Options =
+Evaluate these sexps one by one.
+<pre>
+;; Initialization
+(setq cands 
+      '(("aaa") ("aab") ("aabb") ("aac") ("AAC") ("acb") ("acc") ("baa") 
+        ("bax") ("bac") (" with-space") (" with-space2") ("randy") ("rat") 
+        ("aaron") ("x.+ba"))
+      multi-cands 
+      '((("describe-function"
+          "Display the full documentation of FUNCTION (a symbol)."
+          "1"))
+        (("describe-variable"
+          "Display the full documentation of VARIABLE (a symbol)."
+          "2")))
+      prompt "=>"
+      key "\C-x\C-z")
+
+;; normal
+(completing-read prompt cands)
+
+;; icicle-show-Completions-initially-flag
+(let (( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+;; icicle-sort-function, icicle-alternative-sort-function
+(let (( icicle-show-Completions-initially-flag t)
+      ( icicle-sort-function 'icicle-historical-alphabetic-p)
+      ( icicle-alternative-sort-function 'string-lessp))
+  (completing-read prompt cands))
+
+(let (( icicle-show-Completions-initially-flag t)
+      ( icicle-sort-function 'string-lessp)
+      ( icicle-alternative-sort-function 'icicle-historical-alphabetic-p))
+  (completing-read prompt cands))
+
+;; icicle-completing-prompt-prefix
+(let (( icicle-completing-prompt-prefix ""))
+  (completing-read prompt cands))
+
+;; icicle-Completions-display-min-input-chars
+(let (( icicle-Completions-display-min-input-chars 1))
+  (completing-read prompt cands))
+
+;; icicle-expand-input-to-common-match-flag
+(let (( icicle-expand-input-to-common-match-flag t)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+(let (( icicle-expand-input-to-common-match-flag nil)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+;; icicle-highlight-input-initial-whitespace-flag
+(let (( icicle-highlight-input-initial-whitespace-flag t)
+      ( icicle-expand-input-to-common-match-flag nil)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil nil " "))
+
+(let (( icicle-highlight-input-initial-whitespace-flag nil)
+      ( icicle-expand-input-to-common-match-flag nil)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil nil " "))
+
+;; icicle-ignore-space-prefix-flag
+(let (( icicle-ignore-space-prefix-flag t)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+(let (( icicle-ignore-space-prefix-flag nil)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+;; icicle-incremental-completion-flag
+(let (( icicle-incremental-completion-flag nil)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+;; icicle-incremental-completion-delay, icicle-incremental-completion-threshold
+
+(let (( icicle-incremental-completion-flag t)
+      ( icicle-incremental-completion-threshold 2)
+      ( icicle-incremental-completion-delay 0)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+(let (( icicle-incremental-completion-flag t)
+      ( icicle-incremental-completion-threshold 2)
+      ( icicle-incremental-completion-delay 1)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+;; files
+(shell-command 
+  "cd /tmp; mkdir -p aa/1 aa/2/3; \
+   touch aa/hoge aa/1/hoge aa/2/fuga aa/2/3/fuga aa/2/3/ooo")
+
+(read-file-name prompt "/tmp/aa/")
+
+(let (( icicle-cycle-into-subdirs-flag t))
+  (read-file-name prompt "/tmp/aa/"))
+
+(shell-command "rm -r /tmp/aa")
+
+;; M-. test (icicle-default-thing-insertion) 
+(global-set-key key (lambda ()
+                      (interactive)
+                      (let (( icicle-default-thing-insertion 'alternatives))
+                        (completing-read prompt cands))))
+
+(global-set-key key (lambda ()
+                      (interactive)
+                      (let (( icicle-default-thing-insertion 'more-of-the-same))
+                        (completing-read prompt cands))))
+
+;; icicle-init-value-flag
+;; Press M-n in minibuffer
+(let (( icicle-init-value-flag nil)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil nil nil nil "aa"))
+
+(let (( icicle-init-value-flag 'insert)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil nil nil nil "aa"))
+
+(let (( icicle-init-value-flag 'preselect-start)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil nil nil nil "aa"))
+
+(let (( icicle-init-value-flag 'preselect-end)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil nil nil nil "aa"))
+
+(let (( icicle-init-value-flag nil)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil nil "b"))
+
+(let (( icicle-init-value-flag nil)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil nil "bbb" nil "aaa"))
+
+(let (( icicle-init-value-flag 'insert)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil nil "bbb" nil "aaa"))
+
+(let (( icicle-init-value-flag 'preselect-end)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil nil "bbb" nil "aaa"))
+
+(let (( icicle-init-value-flag 'preselect-start)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil nil "bbb" nil "aaa"))
+
+;; icicle-input-string
+;; Press C-= in minibuffer
+(let (( icicle-input-string "aaaa")
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+;; icicle-key-descriptions-use-<>-flag
+;; Press M-q INSERT
+(let (( icicle-key-descriptions-use-<>-flag nil))
+  (completing-read prompt cands))
+
+(let (( icicle-key-descriptions-use-<>-flag t))
+  (completing-read prompt cands))
+
+;; icicle-list-join-string, icicle-list-end-string
+(let (( icicle-list-join-string " = ")
+      ( icicle-list-end-string "!")
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt '((("aaa" "AAA") )(("aaab" "AAA")))))
+
+;; icicle-mark-position-in-candidate
+;; cycle and press C-x C-x
+(let (( icicle-mark-position-in-candidate 'input-start)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+(let (( icicle-mark-position-in-candidate 'input-end)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+(let (( icicle-mark-position-in-candidate 'root-start)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+(let (( icicle-mark-position-in-candidate 'root-end)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+;; icicle-point-position-in-candidate
+;; cycle candidates
+(let (( icicle-point-position-in-candidate 'input-start)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+(let (( icicle-point-position-in-candidate 'input-end)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+(let (( icicle-point-position-in-candidate 'root-start)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+(let (( icicle-point-position-in-candidate 'root-end)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+;; icicle-modal-cycle-down-key, icicle-modal-cycle-up-key
+(let (( icicle-cycling-respects-completion-mode-flag t)
+      ( icicle-modal-cycle-up-key [up])
+      ( icicle-modal-cycle-up-key [down])
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+;; icicle-regexp-quote-flag
+;; Press `.+ S-Tab'
+(let (( icicle-regexp-quote-flag nil)
+      ( icicle-expand-input-to-common-match-flag nil)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil nil))
+
+(let (( icicle-regexp-quote-flag t)
+      ( icicle-expand-input-to-common-match-flag nil)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+;; icicle-reminder-prompt-flag
+(let (( icicle-reminder-prompt-flag nil))
+  (completing-read prompt cands))
+
+(let (( icicle-reminder-prompt-flag t))
+  (completing-read prompt cands))
+
+;; icicle-require-match-flag
+(let (( icicle-require-match-flag nil)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil t))
+
+(let (( icicle-require-match-flag 'no-match-required)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil t))
+
+(let (( icicle-require-match-flag 'partial-match-ok)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil t))
+
+(let (( icicle-require-match-flag 'full-match-required)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands nil t))
+
+;; icicle-show-Completions-help-flag
+(let (( icicle-show-Completions-help-flag t)
+      ( icicle-initial-value "describe-"))
+  (call-interactively 'describe-function))
+
+(let (( icicle-show-Completions-help-flag nil)
+      ( icicle-initial-value "describe-"))
+  (call-interactively 'describe-function))
+
+;; icicle-special-candidate-regexp
+(let (( icicle-special-candidate-regexp "^a.+")
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt cands))
+
+;; icicle-TAB-shows-candidates-flag
+;; Press TAB
+(let (( icicle-TAB-shows-candidates-flag t))
+  (completing-read prompt cands nil nil "b"))
+
+(let (( icicle-TAB-shows-candidates-flag nil))
+  (completing-read prompt cands nil nil "b"))
+
+;; icicle-transform-function, icicle-remove-duplicates
+(let (( icicle-transform-function nil)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt '("aaa" "aaa" "bbb")))
+
+(let (( icicle-transform-function 'icicle-remove-duplicates)
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt '("aaa" "aaa" "bbb")))
+
+;; icicle-initial-value
+(let (( icicle-initial-value "aa"))
+  (completing-read prompt cands))
+
+;; icicle-list-join-string, icicle-list-end-string
+(let (( icicle-list-join-string ", ")
+      ( icicle-list-end-string "!")
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt multi-cands))
+
+;; icicle-list-use-nth-parts, icicle-list-nth-parts-join-string
+(let (( icicle-list-use-nth-parts '(1)) ; first
+      ( icicle-list-join-string ", ")
+      ( icicle-list-end-string "!")
+      ( icicle-list-nth-parts-join-string " | ")
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt multi-cands))
+
+(let (( icicle-list-use-nth-parts '(2)) ; second
+      ( icicle-list-join-string ", ")
+      ( icicle-list-end-string "!")
+      ( icicle-list-nth-parts-join-string " | ")
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt multi-cands))
+
+(let (( icicle-list-use-nth-parts '(2 1))
+      ( icicle-list-join-string ", ")
+      ( icicle-list-end-string "!")
+      ( icicle-list-nth-parts-join-string " | ")
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt multi-cands))
+
+(let (( icicle-list-use-nth-parts '(1 99))
+      ( icicle-list-join-string ", ")
+      ( icicle-list-end-string "!")
+      ( icicle-list-nth-parts-join-string " | ")
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt multi-cands))
+
+(let (( icicle-list-use-nth-parts '(2 1 2))
+      ( icicle-list-join-string ", ")
+      ( icicle-list-end-string "!")
+      ( icicle-list-nth-parts-join-string " | ")
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt multi-cands))
+
+;; icicle-candidate-properties-alist,
+;; icicle-list-use-nth-parts,
+;; icicle-list-nth-parts-join-string
+(let ((icicle-candidate-properties-alist
+       '((3 (face icicle-whitespace-highlight))
+         (2 (face underline))
+         (1 (invisible t) t)))
+      ( icicle-list-use-nth-parts '(3 2))
+      ( icicle-list-join-string ", ")
+      ( icicle-list-end-string "!")
+      ( icicle-list-nth-parts-join-string " | ")
+      ( icicle-show-Completions-initially-flag t))
+  (completing-read prompt multi-cands))
+
+</pre>
+
+----
+
+How to save. PLEASE DO NOT REMOVE OR REFORMAT THIS CODE! IT MUST BE A SINGLE LINE.
+I put my stuff into EmacsWiki by `C-x C-e'. -- [[rubikitch]]
+
+<pre>
+;; (let ((oddmuse-wiki "EmacsWiki") (oddmuse-page-name "IciclesTestCases")) (oddmuse-post "added more test cases"))
+;; original file (find-memofile "icicles-testcases.el")
+</pre>

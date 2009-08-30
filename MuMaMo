@@ -1,0 +1,67 @@
+[new]
+*Color help wanted!*
+Can someone who uses %%MuMaMo%%/nXhtml with dark background please suggest good colors for the chunk [[overlay]]s?
+
+== How to get MuMaMo ==
+To get %%MuMaMo%% you have to get [NxhtmlMode nXhtml].
+
+mumamo requires Emacs 22 or later.
+
+Note: *The recommended and supported way to use mumamo is by loading nXhtml.*
+
+----
+= Overview =
+
+mumamo is a library for cooperation of multiple major modes in a buffer.
+mumamo divides the buffer into chunks, each with its own major mode.
+
+A description of how mumamo-mode works with this is here:
+
+* http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html#php
+
+
+In Emacs you normally have only one major mode per buffer.
+However especially in web development it is common that a file consists of chunks that corresponds to
+different major modes in emacs.
+
+For example a valid XHTML file may have chunks that are javascript or css.
+And a php file often consists of parts that are XHTML and other parts that are php code.
+mumamo can find those chunks and help Emacs to handle different major modes for each chunk.
+
+mumamo defines what I call "multi major modes" which you call just as major modes to setup the buffer
+(ie find the chunks and assign major modes to them).
+Those multi major modes normally have names
+like /html-mumamo/, /eruby-html-mumamo/, /django-html-mumamo/, /smarty-html-mumamo/ etc.
+
+If you want to edit for example php files then you can use html-mumamo or nxhtml-mumamo (which is a bit more powerful).
+
+In the out of the box cases above (with main major mode nxhtml-mode) you just load nXhtml (which in turns loads mumamo), open your file and do
+
+  M-x nxhtml-mumamo
+
+nxtml-mumamo-turn on is one of those "multi major modes" I mentioned above.
+(You can of course also add nxhtml-mumamo to auto-mode-alist and in fact it is already added to this in nXhtml.)
+
+----
+== Comments and Questions ==
+
+Please do not put any bug reports, suggestions or question here.
+Instead use launchpad, see [NxhtmlMode nXhtml].
+
+----
+== History ==
+The work with %%MuMaMo%% was partly sparkled with my desire for something that could handle
+multiple major modes with NxmlMode or its derivatives (like nxhtml-mode, part of [NxhtmlMode nXhtml]) as the main major mode.
+%%MuMaMo%% can do that - with what I think acceptible price that fontification is instead handled by html-mode.
+(Actually this may look better in many peoples opinion since it uses the same color scheme as the submodes then.)
+
+Another objective was to make it work out of the box for the most interesting combinations.
+I have tried to add the most common ones, like html-mode or nxhtml-mode (with submodes CssMode, JavaScriptMode, PhpMode etc), but more suggestions are welcome.
+Some %%OpenLaszlo%%, %%Django%%, JSP and Ruby support is now included. I have however not yet got any feedback on the use of them.
+
+In the first version of mumamo there was a minor mode mumamo-mode, but that has now disappeared (it disappeared in nXhtml version 1.10).
+Instead there are now multi major modes, like nxhtml-mumamo.
+This was an idea that I got from RMS and that has hopefull made mumamo much easier to use.
+
+----
+See also MultipleModes [NxhtmlMode nXhtml]

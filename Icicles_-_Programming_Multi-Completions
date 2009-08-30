@@ -1,0 +1,205 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Programming with Fancy Candidates]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Candidates with Text Properties]] ||
+
+----
+
+
+= Programming Icicles Multi-Completions =
+
+This section is for EmacsLisp programmers.
+
+[[multi-completion|Multi-completions]] are [[completion]] candidates that are composed of
+parts separated by `icicle-list-join-string' and terminated by
+`icicle-list-end-string'.  See [[Icicles - Multi-Completions]]
+for information on how users interact with multi-completions.
+
+Multi-completions are  examples of [[fancy candidates]].
+See [[Icicles - Programming with Fancy Candidates]].
+
+You can define your own '''Icicles''' [[command]]s that use
+multi-completions.  You can bind `icicle-list-join-string' or
+`icicle-list-end-string' to any strings you like, depending on
+your needs.  See [[Icicles - Key Completion]] for an example
+where `icicle-list-join-string' is bound to '''##"  =  "##''' and
+`icicle-list-end-string' is '''##""##'''.  This section describes two
+additional [[variable]]s that you can bind to affect the appearance
+and behavior of multi-completions.
+
+
+
+[:icicle-list-use-nth-parts]
+== Variable icicle-list-use-nth-parts ==
+
+Variable '''`icicle-list-use-nth-parts'''' affects the [[minibuffer]]
+behavior of multi-completions.  If you bind this to a [[list]] of
+whole numbers, then multi-completion candidates are transformed using those numbers as indexes.  During completion
+and [[Icicles - Cycling Completions|cycling]], whenever a sole candidate matches the user input, if
+that candidate is a multi-completion, then it is transformed by
+extracting and possibly reordering its parts according to
+`icicle-list-use-nth-parts'.
+
+The actual candidate to match is still the original candidate; the
+transformation takes place after matching, for final insertion in
+the minibuffer.  This means that you must use this feature only
+with ''[[Icicles - S-RET|lax]]'' (permissive) completion, since strict completion requires an exact
+match against the original completion candidate, and the
+transformed candidate will normally not match the original.
+
+Variable `icicle-list-use-nth-parts' works as follows.  The
+matching candidate is split at each `icicle-list-join-string' into
+its component parts.  The indexes in `icicle-list-use-nth-parts'
+are then used to extract parts, in the same order as the indexes
+appear.  The extracted parts are joined back together in an order
+that you specify, separated by the value of [[user option]]
+'''`<tt>[[Icicles - Customization and General Tips#icicle-list-nth-parts-join-string|icicle-list-nth-parts-join-string]]</tt>''''.  An index greater than the
+number of parts means to use the last part.
+
+''For example:'' If the value of `icicle-list-use-nth-parts' is ##(1)##,
+then only the first part of the multi-completion is used as the
+completion candidate.  If the value is ##(2 1)##, then the resulting
+candidate is the second part followed by the first part, the two
+parts being joined by `icicle-list-nth-parts-join-string'.  If the
+value is ##(1 99)## and the multi-completion has fewer than 99 parts,
+then the first and last parts are used.  If the value is ##(2 1 2)##,
+then the resulting candidate is composed of the second part
+followed by the first part followed by the second part again.
+
+Thus, you can use a given part any number of times.  You can also
+mix multi-completions and single-string completions, and you can
+mix multi-completions composed of different numbers of strings.
+For example, a set of completions might be:
+
+ ((("cmd1" "description of cmd1"))
+  (("cmd2" "description of cmd" "more"))
+  (("cmd3")))
+
+If you use multi-completions with `icicle-list-use-nth-parts' in
+your own commands, please make sure that their [[doc string]]s let
+users know what to expect, and remind them of the behavior of
+option `icicle-list-nth-parts-join-string'.  Let them know, in
+particular, that:
+
+* They can match any part of a candidate as it is displayed in [[buffer]]
+  `*Completions*'.
+
+* The candidate choice they make will in fact have the form that
+  you define in your command.
+
+* They can control how the parts are joined, using option
+  `icicle-list-nth-parts-join-string'.
+
+
+
+[:icicle-candidate-properties-alist]
+== Variable icicle-candidate-properties-alist ==
+
+Whereas variable `icicle-list-nth-parts-join-string' affects the
+appearance of multi-completions in the minibuffer, variable
+'''`icicle-candidate-properties-alist'''' affects their appearance in
+buffer `*Completions*'.  You use it to apply text properties to
+individual parts of a multi-completion, where the parts are
+defined in the same way as for `icicle-list-use-nth-parts'. 
+
+This feature affects ''all'' candidates the same way.  See also [[Icicles - Candidates with Text Properties]] for how to apply text properties to individual candidates (which need not be multi-completions).
+
+The value of `icicle-candidate-properties-alist' is an [[alist]] whose
+entries have either of these forms:
+
+* ##(NTH PROPERTIES)## 
+* ##(NTH PROPERTIES JOIN-TOO)##
+
+''##NTH##'' is the number of the target multi-completion part.
+
+''##PROPERTIES##'' is a list of text properties to apply to the ##NTH## part.
+
+''##JOIN-TOO##'' is optional.  If it is present and non-`nil', then the text
+properties are also applied to the join string that follows the
+target part.
+
+You can use any text properties, including `invisible', `keymap',
+`display', and properties that you define yourself and that have
+meaning to only your code.
+
+As an example of its use, commands `icicle-fundoc', `icicle-vardoc', `icicle-doc', and `icicle-plist' bind `icicle-candidate-properties-alist' to ##((1 (face 'icicle-special-candidate)))##, so that the first part of each multi-completion candidate is highlighted using [[face]] '''`<tt>[[Icicles - Customization and General Tips#icicle-special-candidate|icicle-special-candidate]]</tt>''''.
+
+Here is another example value of `icicle-candidate-properties-alist':
+
+ ((3 (face 'underline))
+  (2 (invisible t) t))
+
+The first entry underlines the third multi-completion part.  The
+second entry makes both the second part and the join string that
+follows it invisible.
+
+One use of making a completion part invisible is so that you can
+sort candidates using it, and let users match input against it,
+but not have it appear explicitly.
+
+Recall that `completing-read' displays only the [[car]] of each
+element present in its ''##COLLECTION##'' (alist) argument.  For example, if
+you pass `completing-read' an alist such as ##(("foo" . 2) ("bar"
+. 3))##, then only `foo' and `bar' are displayed as candidates.
+However, the ''##PREDICATE##'' argument to `completing-read' applies to
+the entire alist element, and your command that calls
+`completing-read' might well use the chosen candidate (e.g. `foo')
+to look up the entire element (e.g. ##("foo" . 2)##) for further
+processing.  Several '''Icicles''' commands, including `icicle-search'
+and `icicle-select-region', do that.
+
+However, sometimes you might want the user to be able to match
+against the additional information (e.g. ##2## and ##3##), and you might
+want to use it to sort candidates.  In that case, you can use the
+alist ##(("foo 2") ("bar 3"))##.  In cases where the additional
+information can be distracting, you can use multi-completion with
+`icicle-candidate-properties-alist' to hide it: Pass the alist
+##((("foo "2")) (("bar" 3")))## and use ##((2 (invisible t)))## for
+`icicle-candidate-properties-alist'.
+
+Keep in mind that hiding completion parts can be confusing to
+users.  Do so with care, and ''let your users know what to expect''.
+Inform them that there are invisible parts that are nevertheless
+taken into account for input matching and candidate sorting.  When
+you hide parts, you will often want to omit them from the
+minibuffer as well, using `icicle-list-use-nth-parts', to avoid
+confusion.
+
+Consider also the position of a hidden part: In some cases you
+might want to place it first among the multi-completion parts, but
+in many cases you will want to place it last, to minimize
+interference with [[prefix completion]] matching.
+
+Similar considerations apply to other text properties, such as
+`display' and `keymap', that change the appearance or behavior of
+a completion candidate.
+
+
+== What You See Is Not What You Get ==
+
+While on the subject of confusing users, let me point out a general drawback that is common to both `icicle-list-use-nth-parts' and `icicle-candidate-properties-alist': '''''not''''' ''WYSIWYG''. Keep this in mind if you decide to take advantage of these variables. Users see one thing, choose it, and they get something different as a result. That promotes confusion that you will need to weigh against the possible benefits.
+
+Users are confused, because what they choose is not exactly what they get. What's more, a user's completion choice is not reflected in the input history, leading to further confusion. For example, '''Icicles''' highlighting of previously used inputs in buffer `*Completions*' does not apply to such a candidate, even though it was previously entered using `RET'. It is the transformed candidate that was entered, not the candidate as it was proposed for choosing, so when that candidate is proposed again, it is not recognized as having been previously chosen.
+
+The bottom line here is this: variables `icicle-list-use-nth-parts' and `icicle-candidate-properties-alist' are useful in certain contexts, but be aware of the downside: confusing your users.
+
+
+'''See Also:'''
+
+* [[Icicles - Multi-Completions]]
+* [[Icicles - Programming with Fancy Candidates]]
+* [[Icicles - Candidates with Text Properties]] 
+
+|| *Previous:*  [[Icicles - Programming with Fancy Candidates]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Candidates with Text Properties]] ||
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryProgrammerUtils
+CategoryCode
+CategoryFaces
+
+
+
+

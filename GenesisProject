@@ -1,0 +1,51 @@
+<pre>
+From: Stefan Kamphausen <skampi@gmx.net>
+Subject: Re: Emacs key bindings through the ages
+Newsgroups: gnu.emacs.help
+To: help-gnu-emacs@gnu.org
+Date: Thu, 15 Nov 2007 11:49:45 +0100
+Organization: Church of Emacs
+
+File: genesis.org
+
+----------------------------------------------------------------------
+-*- mode: org -*-
+
+  GENESIS - THE WORLD PROJECT
+
+* Environment
+** TODO Create Heavens And Earth
+   SCHEDULED: <0000-00-01 Mon>
+** TODO Make Light
+   SCHEDULED: <0000-00-01 Mon>
+** TODO Make The Sky
+   SCHEDULED: <0000-00-02 Tue>
+** TODO Make Some Land
+   SCHEDULED: <0000-00-03 Wed>
+** TODO Make The Sun And The Moon
+   SCHEDULED: <0000-00-04 Thu>
+** TODO Make The Stars
+   SCHEDULED: <0000-00-04 Thu>
+
+* Life
+** TODO Make The Plants
+   SCHEDULED: <0000-00-03 Wed>
+** TODO Make Sea Creatures
+   SCHEDULED: <0000-00-05 Fri>
+** TODO Make Birds
+   SCHEDULED: <0000-00-05 Fri>
+** TODO Make Land Creatures
+   SCHEDULED: <0000-00-06 Sat>
+** TODO Make Humans
+   SCHEDULED: <0000-00-06 Sat>
+
+* Private
+** TODO Take A Rest
+   SCHEDULED: <0000-00-07 Sun>
+
+* Notes:
+  - The filing of plants is blurry
+  - Everything's so important, so it should be capitalized.
+</pre>
+
+[new] Please consider this a draft.  If important things are missing, feel free to add them here.  If anyone feels inclined to provide a two-way gateway between oddmuse and org I'd be very please ;-) -- StefanKamphausen

@@ -1,0 +1,73 @@
+GnusMairix
+
+== About Mairix ==
+
+Though I use Gnus, I also like tools which do one thing and one thing
+only. Mairix is a tool for indexing and searching words in locally
+stored mail. It was written by Richard Curnow and is licensed under
+the [[GPL]]. For more information visit
+
+http://www.rpcurnow.force9.co.uk/mairix/index.html
+
+Though mairix might not be as flexible as other search tools like
+swish++ or namazu (see also: IndexMail), it has the prime advantage
+of being incredibly fast. From my experience, it can easily search
+through headers and message bodies of thousands and thousands of mails
+in well under a second. Building the database necessary for searching
+might take a minute or two, but only has to be done once
+fully. Afterwards, the updates are done incrementally and therefore
+are really fast, too. Additionally, Mairix is very easy to set up.
+
+For maximum speed though, Mairix should be used with mails stored in
+Maildir or MH format (this includes the Gnus nnml back end), although
+it also works with mbox. Mairix presents the search results by
+populating a "virtual" maildir/MH folder with symlinks which point to
+the "real" message files (if mbox is used, copies are made).
+
+== Requirements for using nnmairix ==
+
+Mairix searches *local* mail - that means, mairix absolutely must have direct
+access to your mail folders. If your mail resides on another server (e.g. an IMAP
+server) and you happen to have shell access, nnmairix supports running mairix
+remotely, e.g. via ssh.
+
+Additionally, nnmairix only supports the following Gnus back ends: *nnml*, *nnmaildir*, and *nnimap*. 
+*You must use one of these back ends for using nnmairix*. Other back ends, like nnmbox, nnfolder or nnmh, won't work.
+
+
+== Features
+
+Main features of nnmairix:
+
+* Query mairix with a search term and display results in a group.
+* Easy generation of search queries using the minibuffer or graphical widgets.
+* Generate search queries based on the currently displayed mail.
+* Create permanent nnmairix groups bound to certain mairix searches ("smart" groups).
+* Jump to article in the original group.
+* Update the mairix database.
+
+== Setting up nnmairix.el ==
+
+nnmairix is now part of Gnus and is currently in CVS.
+If you don't want to completely 
+switch to CVS Gnus, you can download the latest revision of nnmairix from CVS:
+
+http://quimby.gnus.org/cgi-bin/cvsweb.cgi/gnus/lisp/nnmairix.el?rev=HEAD
+
+nnmairix should always work with the latest NoGnus release.
+
+Put it in your emacs search path and put
+<code>(require 'nnmairix)</code> into your .gnus (preferrably at the
+beginning). You may also want to byte-compile it.
+
+The documentation is also in CVS. You can checkout the latest TexInfo from
+
+http://quimby.gnus.org/cgi-bin/cvsweb.cgi/gnus/texi/gnus.texi?rev=HEAD
+
+and compile it yourself using <code>makeinfo --force gnus.texi</code>. 
+
+For a quick overview, you can also access the current nnmairix docs at
+
+http://randomsample.de/nnmairix-doc/nnmairix.html
+
+Please note that this is only the nnmairix node and not the complete Gnus documentation, so references to other nodes don't work.

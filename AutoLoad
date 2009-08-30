@@ -1,0 +1,13 @@
+This defines which file to load when a function is called, plus doc-string, plus it indicates whether the function is interactive or not.
+
+Example:
+
+    (autoload 'python-mode "python-mode" "Python Mode." t)
+
+This checks for python-mode.elc or python-mode.el on the LoadPath.
+
+This works well with AutoModeAlist:
+
+    (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+
+The autoload will make sure that the correct source file is loaded when `python-mode' is requested, and the `auto-mode-alist' setting will make sure that `python-mode' is requested when a ##.py## file is loaded.

@@ -1,0 +1,190 @@
+This patch enables anything to display multiline candidates.
+To use multiline candidates, add (multiline) to your source definition like:
+
+<pre>
+  ...
+  (delayed)
+  (requires-pattern . 3)
+  (multiline))
+</pre>
+
+This patch still has some strange behavior. I will fix it soon (TODO).
+
+Here is a screen shot of Kill Ring Source (you can find it at AnythingSources).
+
+[[image:AnythingMultilineImage]]
+
+anything-multiline.patch:
+<pre>
+--- anything.el.orig	2007-11-06 19:03:11.000000000 +0900
++++ anything.el	2007-10-03 21:35:54.000000000 +0900
+@@ -280,7 +280,11 @@
+   If present matches from the source are shown only if the
+   pattern is not empty. Optionally, it can have an integer
+   parameter specifying the required length of input which is
+-  useful in case of sources with lots of candidates.")
++  useful in case of sources with lots of candidates.
++
++- multiline (optional)
++
++  TODO document")
+ 
+ 
+ ;; This value is only provided as an example. Customize it to your own
+@@ -529,6 +533,9 @@
+ (defvar anything-original-source-filter nil
+   "Original value of `anything-source-filter' before Anything was started.")
+ 
++(defvar anything-candidate-separator
++  "--------------------"
++  "Candidates separator of `multiline' source.")
+ 
+ (put 'anything 'timid-completion 'disabled)
+ 
+@@ -603,7 +610,6 @@
+                 source)))
+           anything-sources))
+ 
+-
+ (defun anything-process-source (source)
+   "Display matches from SOURCE according to its settings."
+   (let (matches)
+@@ -653,28 +659,34 @@
+     (when matches
+       (anything-insert-header (assoc-default 'name source))
+ 
+-      (dolist (match matches)
+-        (when (and anything-enable-digit-shortcuts
+-                   (not (eq anything-digit-shortcut-count 9)))
+-          (move-overlay (nth anything-digit-shortcut-count
+-                             anything-digit-overlays)
+-                        (line-beginning-position)
+-                        (line-beginning-position))
+-          (incf anything-digit-shortcut-count))
+-
+-        (anything-insert-match match 'insert)))))
++      (let (tail
++            (multiline (assoc 'multiline source)))
++        (dolist (match matches)
++          (when (and anything-enable-digit-shortcuts
++                     (not (eq anything-digit-shortcut-count 9)))
++            (move-overlay (nth anything-digit-shortcut-count
++                               anything-digit-overlays)
++                          (line-beginning-position)
++                          (line-beginning-position))
++            (incf anything-digit-shortcut-count))
++          
++          (if (and tail multiline)
++              (anything-insert-candidate-separator)
++            (setq tail t))
++          
++          (anything-insert-match match 'insert))))))
+ 
+ 
+ (defun anything-insert-match (match insert-function)
+   "Insert MATCH into the anything buffer. If MATCH is a list then
+ insert the string inteneded to appear on the display and store
+ the real value in a text property."
+-  (if (not (listp match))
+-      (funcall insert-function match)
+-
+-    (funcall insert-function (car match))
+-    (put-text-property (line-beginning-position) (line-end-position) 
+-                       'anything-realvalue (cdr match)))
++  (let ((start (line-beginning-position (point)))
++        (string (if (listp match) (car match) match))
++        (realvalue (if (listp match) (cdr match) match)))
++    (funcall insert-function string)
++    (put-text-property start (line-end-position)
++                       'anything-realvalue realvalue))
+   (funcall insert-function "\n"))
+ 
+ 
+@@ -895,11 +907,29 @@
+       (select-window (get-buffer-window anything-buffer 'visible))
+ 
+       (case unit
+-        (line (forward-line (case direction
+-                              (next 1)
+-                              (previous -1)
+-                              (t (error "Invalid direction.")))))
++        (line (case direction
++                (next (let ((header-pos (anything-get-next-header-pos))
++                            (candidate-pos (anything-get-next-candidate-separator-pos)))
++                        (if (or (and candidate-pos (null header-pos))
++                                (and candidate-pos (< candidate-pos header-pos)))
++                            (goto-char candidate-pos)
++                          (forward-line 1))))
++
++                (previous (progn
++                            (forward-line -1)
++                            (if (anything-pos-candidate-separator-p)
++                                (forward-line -1)
++                              (forward-line 1))
++                            (let ((header-pos (anything-get-previous-header-pos))
++                                  (candidate-pos (anything-get-previous-candidate-separator-pos)))
++                              (if (and candidate-pos (> candidate-pos header-pos))
++                                  (progn
++                                    (goto-char candidate-pos)
++                                    (forward-line 1))
++                                (forward-line -1)))))
+ 
++                (t (error "Invalid direction."))))
++        
+         (page (case direction
+                 (next (condition-case nil
+                           (scroll-up)
+@@ -925,7 +955,8 @@
+ 
+         (t (error "Invalid unit.")))
+ 
+-      (while (anything-pos-header-line-p)
++      (while (or (anything-pos-header-line-p)
++                 (anything-pos-candidate-separator-p))
+         (forward-line (if (and (eq direction 'previous)
+                                (not (eq (line-beginning-position)
+                                         (point-min))))
+@@ -995,12 +1026,27 @@
+   (previous-single-property-change (point) 'anything-header))
+ 
+ 
++(defun anything-get-next-candidate-separator-pos ()
++  "Return the position of the next candidate separator from point."
++  (next-single-property-change (point) 'anything-candidate-separator))
++
++
++(defun anything-get-previous-candidate-separator-pos ()
++  "Return the position of the previous candidate separator from point."
++  (previous-single-property-change (point) 'anything-candidate-separator))
++
++
+ (defun anything-pos-header-line-p ()
+   "Return t if the current line is a header line."
+   (or (get-text-property (line-beginning-position) 'anything-header)
+       (get-text-property (line-beginning-position) 'anything-header-separator)))
+ 
+ 
++(defun anything-pos-candidate-separator-p ()
++  "Return t if the current line is a candidate separator."
++  (get-text-property (line-beginning-position) 'anything-candidate-separator))
++
++
+ (defun anything-get-candidates (source)
+   "Retrieve and return the list of candidates from
+ SOURCE."
+@@ -1143,6 +1189,14 @@
+     (put-text-property start (point) 'face anything-header-face)))
+ 
+ 
++(defun anything-insert-candidate-separator ()
++  "Insert separator of candidates into the anything buffer."
++  (insert anything-candidate-separator)
++  (put-text-property (line-beginning-position)
++                     (line-end-position) 'anything-candidate-separator t)
++  (insert "\n"))
++
++
+ (defun anything-set-source-filter (sources)
+   "Sets the value of `anything-source-filter' and updates the list of results."
+   (setq anything-source-filter sources)
+</pre>

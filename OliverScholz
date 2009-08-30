@@ -1,0 +1,39 @@
+I maintain a blog on emacswiki.org. [http://www.emacswiki.org/cgi-bin/utis]
+I'm [::utis] on the EmacsChannel.
+
+I live in Frankfurt on the Main and study philosophy there (I am going for my master now).  I became only gradually interested into computers and programming, but I am very fond of it now.  I started using Emacs for <nowiki>LaTeX</nowiki> only.  As my interest in customization became more complex, I started to read comp.emacs and gnu.emacs.help. After a while I came to realize that customizing Emacs is actually programming, so I read the "Introduction to Emacs Lisp" by Robert Chassel[http://www.gnu.org/manual/emacs-lisp-intro/html_node/index.html]. This is a really great introduction, because a) it targets non-programmers as an audience, b) when you read it, you realize immediately, how useful the stuff will be for real life tasks. Especially the latter makes it outstanding among other intruductions to programming, which normally bother the newbie with useless examples. After I finished the Elisp-Intro, I became bold and wanted to write a client for a favourite Email game of mine. I asked for help on writing a parser on gnu.emacs.help and the response from several Real Programmers was so helpful that it supported my growing passion for Lisp programming very much.  I have finished "The Structure and Interpretation of Computer Programs" now and started to learn Common Lisp and (a little bit of) C.
+
+Whenever you -- all ye programmers out there! -- think that Emacs were a "programmer's editor", remember this: http://www.gnu.org/software/emacs/emacs-paper.html#SEC29
+
+My main area of interest is how Emacs could become a word processor (the first word processor that doesn't suck for that matter).
+
+I am also a member of the German left winged youth organization Jungdemokraten/Junge Linke. See http://www.jdjl.org (in German). I am also a member of the student's piarlament at the university of Frankfort for the Demokratische Linke, http://www.demokratischelinke.de/ (in German).
+
+Whenever I manage to turn up in IRC, I use the nick "utis". It's a very old nick. Odysseus used it in #cyclops when chatting with Polyphem. (It means "nobody".)
+
+==Wish List==
+
+The WishList is a bit large and contains a lot of things which I don't find important (IMHO, of course) and even a few things which I would <i>not</i> like to see. Here are the things <i>I</i> long for. (I list only features which to implement I am by far not skilled enough.)
+
+===closures===
+
+Ever since I have read SICP I want closures in Emacs Lisp. No, `lexical-let' from the `cl' package is not a real replacement. And the backquote-trick is not the right thing either (code produced by this is not byte-compiled. Moreover, it introduces a constant, not a variable. So you can't do assignments.). I want real, efficient closures.
+
+
+===tail call reduction===
+
+It seems I am thinking more and more in terms of recursion. If I try to write some very complicated function, I often find myself writing a "first version" in a recursive way, promising to myself that I'll "rewrite that function as soon as the package is finished". Now, making a recursive function iterative needs a major rewrite. But even if the first version is not proper tail recursive, it is very often easy to make it so.
+
+For many tasks recursion is the most straightforward approach.
+
+
+===display areas===
+
+The display engine provides no way to treat paragraphs as single units. This makes it hard to implement word processing in Emacs. For example: it is not possible to let a paragraph have different line spacing. There is no clean way to have additional space before and after a paragraph (You could kludge this by adding a newline character and an intangible space which has the appropriate height. But ... oh well ...) Assigning properties (like style information) to a paragraph is hairy, you have to mess around with [[text property|text properties]] and you have to make sure that the extent of this text property matches the beginning and end of the paragraph.
+
+Besides that there is no good way to have two or more paragraphs in a row (aka: a table row). Sure, a package like table.el is a nice hack for this. But it still looks and feels like what it is: a hack to make tables roughly work in an environment that does not really support tables. And some things are really impossible: Imagine paragraphs in a table row with different font heights and different line spacing.
+
+Ah, and yes: hard newlines are also a nuisance.
+
+----
+CategoryHomepage

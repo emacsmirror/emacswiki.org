@@ -1,0 +1,19 @@
+In GnuEmacs, you cannot open frames on other ttys.  You can, however, use the
+same Emacs from different Linux consoles: Use screen(1) to do this.
+This doesn't involve EmacsClient.
+
+* Login, start screen, and within screen, start Emacs.
+* Login on another tty again, start screen -x.  This will show you the
+same Emacs.
+
+Note that "another tty" may also be remote. Just ssh to the account
+where you have your screen session running and start screen -x.
+
+What you cannot do with Emacs is run Emacs in X and on the tty at the
+same time.  This is possible with [[XEmacs]], as are all the features to be added to GnuEmacs as part of the MultiTTYSupport being integrated. 
+
+Note that both of these issues are expected to be solved in a future
+Emacs version. See MultiTTYSupport.
+
+----
+CategoryGlossary CategoryFrames CategoryDisplay

@@ -1,0 +1,23 @@
+* If you use X then you can use `M-x make-frame-on-display' (see [http://www.gnu.org/software/emacs/manual/html_node/emacs/Multiple-Displays.html EmacsManual:Multiple Displays]) for collaborative editing or supporting newbie Emacs users remotely.  See also [Groups:&selm=m37l24d069.fsf@tarski.2y.net Re: two people editing one document].
+* If you have emacs 23, multi-tty works like make-frame-on-display, except that each person needs to connect to your emacs.  (This is somewhat similar to using screen, but each user can resize their terminal without affecting the others.)  You can give each user their own colored "point" with JonathanRockway's [http://github.com/jrockway/elisp/blob?path%5B%5D=_local&path%5B%5D=colorful-points.el&raw=true colorful-points] mode.
+** Anyone have a more detailed description of how to set this up?
+* SubEthaEmacs is a (dead?) attempt to get Emacs to grok [http://www.emacswiki.org/cgi-bin/wiki/SubEthaEditProtocol SubEthaEdit's closed collaborative editing protocol].
+* [http://docsynch.sourceforge.net/ Docsynch] is an open cross-editor collaborative editing protocol that runs over IRC. Plugins exist for JEdit, vim and a few other editors, but only the JEdit version seems to be complete. Development seems stalled. (Last news item was dated 2004.)
+* [http://gobby.0x539.de/trac/ Obby] is another open protocol. Currently there is only one editor that specifically supports it, called [http://gobby.0x539.de/trac/ Gobby], that is a cross-platform GTK editor. An implementation of the protocol is being developed in EmacsLisp, as [http://dev.technomancy.us/ebby ebby]
+* [[Egret]] -- An extension to XEmacs.
+* [http://csdl.ics.hawaii.edu/Tools/Shemacs/ Shemacs] is a tool implementing synchronous multi-user support for the Emacs editor using Egret, a client-server-agent framework for implementation of domain-specific, collaborative, hypertext systems.
+* [http://github.com/technomancy/conspire/tree/master Conspire mode] achieves realtime, collaborative editing using git as a backend.
+* [http://www.gnu.org/software/screen/ GNU Screen] is a terminal multiplexer. Run Emacs in console mode (##emacs -nw##) within ##screen## for multi-user real-time collaborative editing (and much more). Works across *n*x, Mac OS X, even W32 (with Cygwin installed). Check out Bill Clementson's [http://bc.tech.coop/blog/071001.html awesome emacs/screen setup].
+* [[Rudel]] is a collaborative editing extension for GNU Emacs written purely in Emacs Lisp. It is designed to support multiple protocol backends to enable interoperability with other collaborative editors. The most complete backend implements the [http://gobby.0x539.de/trac/ Obby] protocol mentioned above. Using this backend, Emacs can act as an Obby client and as an Obby server (possibly at the same time). Due to a limitation of gnutls-bin, the server does not support encryption.
+* [[Google_Wave_for_Emacs]] -- An ongoing discussion concerning future [http://en.wikipedia.org/wiki/Google_Wave Google Wave] support in Emacs.
+
+----
+LukeGorrie wrote shbuf http://www.bluetail.com/~luke/shbuf/ which formerly required erlang for the server (since emacs didn't have server sockets) but I think it only requires gnumacs now (xemacs doesn't have server sockets) --ShaeErisson
+[new]
+I just found this:
+
+http://verse.blender.org/cms/Overview.573.0.html
+
+Even though it seems aimed at 3D-development, the descriptions seems to suggest that the protocol is general.
+----
+CategoryRemoteEmacs

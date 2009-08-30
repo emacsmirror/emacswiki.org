@@ -1,0 +1,36 @@
+This page describes the use of an overlay to change the appearance of ##^L## (Control-L) characters. See PrettyControlL for an alternative approach that uses the display table instead of an overlay.
+
+AndreRiemann contributed this code. It removes the`##^L##' and adds an [[overlay]], which is underlined. The overlay only shows a whole line (not only under text), if the background color of the overlay differs from the background color of the window. Maybe I later make a minor mode from this with some more options (or someone else). `after-change-major-mode-hook' is maybe not optimal? -- AndreRiemann 
+
+<pre>
+(add-hook
+ 'after-change-major-mode-hook
+ (lambda ()
+   (font-lock-add-keywords nil
+    `((,page-delimiter ;; variable with the regexp (usually "^\f" or "^^L")
+        0
+        (prog1 nil
+          ;; don't display ^L
+          (compose-region (match-beginning 0) (match-end 0) "")
+          ;; make an overlay (like in hl-line)
+          (let ((pdl (make-overlay (line-beginning-position)
+                                   (line-beginning-position 2))))
+            ;; :background has to be different from the background color
+            ;; gray1 here is just a little different from black
+            (overlay-put pdl 'face '(:underline "gray30" :background "gray1"))
+            (overlay-put pdl 'modification-hooks
+                         ;; these arguments are received from modification-hooks
+                         '((lambda (overlay after-p begin end &optional length)
+                             (delete-overlay overlay))))
+            (overlay-put pdl 'insert-in-front-hooks
+                         '((lambda (overlay after-p begin end &optional length)
+                             (delete-overlay overlay)))))) t)))))
+</pre>
+
+[new]
+This is very nice, except for the after-change-major-mode-hook which somehow conflicts with Gnus: the Gnus groups and summary buffers become black-only after this has been applied! --FabriceNiessen
+
+
+----
+CategoryDisplay CategoryHideStuff
+

@@ -1,0 +1,38 @@
+ここは、正規表現（regular expressions）についてのカテゴリです。[[カテゴリ・非表示]]/[[CategoryHideStuff]]と[[カテゴリ・検索と置換]]/[[CategorySearchAndReplace]]も合わせて確認してください。
+
+
+= 正規表現について学ぶ =
+
+* RegularExpression -- 正規表現とは何か
+* RegularExpressionHelp -- よくある間違いとFAQ
+* RegexpReferences -- 正規表現についてより詳しく知りたい人のための情報源
+* NonGreedyRegexp -- 古いEmacsenで、<code>.*?</code>（最短マッチ）を実現するには
+* MultilineRegexp -- 複数行にわたる内容をマッチさせるには
+
+= 正規表現をインタラクティブに使用する =
+
+* '''[[IncrementalSearch#RegexpSearches]]''' -- Isearchで正規表現を使ってみる -- 正規表現の使用方法を学ぶにはよい方法です
+* GrepMode -- 正規表現に一致するファイルを検索する（`M-x grep'）
+* OccurBuffer -- `M-x occur' によってバッファ内を検索する（ファイルに対して`M-x grep'が行うのと同じことをバッファに対して行います）。
+* SearchBuffers -- *すべての* バッファを検索する
+* [[Synonyms]] -- 正規表現を使って、シソーラスからシノニム（異音同義語/類似語）を検索する
+* SearchAndReplaceDelimitedStrings -- パターンの前後の部分のみを置換して、まんなかの部分はそのまま残す方法（「なんたらかんたら」→『なんたらかんたら』にするなど）
+* ReplaceCount -- Lispコードの評価結果を、置換後の文字列とする
+* GrepList -- 文字列のリストを正規表現で検索する。サブリストがある場合は、サブリストの中身も再帰的に検索する
+* OverlappingRegexps -- 置換コマンドにおいて正規表現の前後が重なってしまう場合の対処法
+* RemembranceAgents -- 入力中に、関連するドキュメントのリストを表示する
+* RecursiveGrep -- ファイルシステムを再帰的に検索するいくつかのコマンド
+* [[Icicles]] -- ミニバッファでの入力機能を拡張するライブラリ。これも正規表現を学ぶためにはよい方法となる -- たとえば、次のような多くの機能が含まれています。
+** 正規表現を使った補完や、補完候補のローテーション表示
+** 新たなインクリメンタルサーチ: 単純な正規表現を複数使って、ややこしい正規表現と同様のことを行う
+
+= 正規表現をプログラム内で使用する =
+
+* NonAsciiRegexps -- 非ASCII文字での正規表現について
+* CaseFoldSearch -- 検索時に、大文字小文字の違いを取り扱う方法
+* ReBuilder -- 正規表現の作成を助けるツール。入力時にその正規表現がマッチするものを目で確認できる
+* SymbolicRegexp -- 可読性に優れた正規表現を書きたいプログラマのための情報
+* [[Icicles - Defining Icicles Commands]] -- define multiple-choice commands that let users match regexp input against choices
+
+
+

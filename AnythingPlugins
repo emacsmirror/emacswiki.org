@@ -1,0 +1,21 @@
+== Anything Plugins ==
+Anything can be easily extended by plug-ins.
+
+=== Match Plugin ===
+Lisp:anything-match-plugin.el provides humane match. This plug-in improves [[Anything]] usability much more.
+
+Change anything.el matching algorithm humanely. It gives anything.el search refinement functionality. exact match -> prefix match -> multiple regexp match
+
+A query of multiple regexp match is space-delimited string. Anything displays candidates which matches all the regexps. A regexp with "!" prefix means not matching the regexp. To include spaces to a regexp, prefix "\" before space, it is controlled by `anything-mp-space-regexp' variable.
+
+=== In-Buffer Completion Extension ===
+Lisp:anything-show-completion.el shows selection in buffer for anything completion.
+
+[[image:AnythingShowCompletionScreenshot]]
+
+=== Migemo Extension ===
+Lisp:anything-migemo.el replaces anything `match' functions with [[Migemo]] version. Japanese Emacs users should have it.
+
+
+----
+[[Anything]]

@@ -1,0 +1,12 @@
+The package maude-mode is an Emacs mode that allows editing Maude code, and running the Maude interpreter as a subprocess of Emacs similar to inferior-lisp mode.
+
+Some useful links:
+
+* [http://sourceforge.net/projects/maude-mode/ Package web site]
+* [http://maude.cs.uiuc.edu/ Maude website]
+
+Enjoy.
+
+----
+CategoryModes, ProgrammingModes
+

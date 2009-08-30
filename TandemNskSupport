@@ -1,0 +1,222 @@
+This is the home of [http://en.wikipedia.org/wiki/Tandem_Advanced_Command_Language Guardian/NSK]  support for Emacs.##  ##
+It's FreeSoftware.
+
+If you arrived at this page thru a link or search engine you may not
+know:
+
+Emacs is (arguably? Not really!) the most powerful text editor in the
+world.##  ##See the following for information on this site and Emacs.
+
+* SiteMap,  
+* http://www.gnu.org/software/emacs/
+* http://groups-beta.google.com/group/comp.emacs
+
+If you are looking for ports there is a Guardian OSS port listed under
+CategoryPorts.##  ##This page is for user level stuff.
+
+There is a Wish List at the bottom of this page.  You now might add a wish
+that anyone will ever read it ;-)
+
+*The main things NSK users want that Emacs doesn't supply out-of-the-box.*
+
+# A way to remotely open files residing on an NSK machine from within Emacs.
+
+# Highlighting and imenu support for proprietary languages like TAL, Tacl and DDL.
+
+# A way to automatically recognize the language of files without name.extensions
+  [http://www.emacswiki.org/cgi-bin/wiki/TandemNskSupport#language-recognition SEE BELOW].
+
+If you'd like to help with creation of additional Tandem support
+[http://www.emacswiki.org/cgi-bin/wiki/Rick_Bielawski *PLEASE CONTACT
+ME*].##  ##Help is most welcome because I'm no longer in a position 
+to work on these modes any more although I'll help you if you ask.
+
+==What's available here==
+
+* AngeFtp## ...... ##Emacs will FTP files automatically.##  ##
+  Guardian/NSK host support has been added to this copy of
+  [http://www.emacswiki.org/elisp/ange-ftp.el.gz ange-ftp.el].##  ##
+  [http://www.emacswiki.org/cgi-bin/wiki/TandemNskSupport#ange-ftp
+  See below] for more info.
+
+* TalMode## ...... ##Fully functional programming mode including
+  automatic indenting and popup help for function calls (ElDoc).
+
+* TaclMode## ..... ##Now has all the same features as tal-mode
+  except magic indenting.
+
+* [[DDLMode]]## ..... ##Is quite useable now.##  ##No ElDoc yet.
+
+* EnformMode## ... ##Basic stuff like comments & keywords are
+  now working.##  ##Try it!
+
+* CobolMode ##....##
+  I've posted 2 versions.## ## Both are fairly useable.##  ##
+  One is for ?ANSI style and the other is for ?TANDEM format.
+
+* efs## ........... ##This had Guardian support that was fairly
+  useable although no where near as good as the ange-ftp support
+  above.##  ##I used it under 21.2.##  ##I'm not sure of it's status 
+  lately.
+
+* <nowiki>AciMakeMode</nowiki>## . ##Does not do much but I use
+  it.##  ##Try the standard makefile-mode.##  ##It flags
+  #loc as a comment but otherwise it does pretty good.
+
+* <nowiki>GensimMode</nowiki>## .. ##Only does basic highlighting.
+  ##  ##Email [http://www.emacswiki.org/cgi-bin/wiki/Rick_Bielawski  
+  me] if you have color withdrawls editing Gensim files since it's
+  not posted here.
+
+For the sake of search engine indexing I'll mention that this page is a
+  good source for Emacs support for Tandem, Guardian, NSK
+  proprietary languages such as TAL, pTAL, Scobol, DDL, TGAL, TForm,
+  Enform and TACL.##  ##Support includes syntax highlighting,
+  automatic indentation, symbol identification and all the other features
+  for which Emacs is famous.##  ##Sorry, I never got around to the Tedit
+  emulation.##  ##I really had some grand hopes.
+
+[:ange-ftp]
+===ange-ftp for Guardian NSK===
+
+I started out using EFS because it contained Guardian/NSK support.## ##
+  It had some problems and I planned on trying to fix them but once I
+  discovered that EFS doesn't work at all with Emacs 22.0.50 I shifted
+  focus toward making AngeFtp handle Guardian/NSK.## ## My version of
+  [http://www.emacswiki.org/elisp/ange-ftp.el ange-ftp.el] has 'fully'
+  functional Guardian/NSK support.## ## Since 22.0.50 was not a stable
+  release mine might be out of sync but it should be a nit to re-sync
+  them.
+
+Either version of Ange-ftp *should* work out-of-the-box for the OSS
+  environment but I never tried it.## ## My version just adds extensions
+  to support Guardian NSK.## ## It should not change the behavior of
+  ange-ftp on other hosts, including OSS.## ## My version won't work
+  with 21.4 or prior versions of Emacs.## ## Last I tried, EFS worked on
+  the 21.2 version of Emacs.## ## It's NSK access was quirky but useable.
+
+[:language-recognition]
+===Auto Tandem Language Recognition===
+
+The following is an example of code you can put in your .emacs to
+  recognize language.##  ##This is often necessary since there
+  are no filename extensions on Tandem and many coders don't have the
+  option of putting a -*-tal-*- type comment in line 1.##  ##This
+  doesn't even attempt to recognize all cases but it shows a way you can
+  create recognition for files you access most often.
+
+<pre>
+(defadvice set-auto-mode
+  (after my-determine-language last () activate)
+  "When language is fundamental-mode; ACIMAKE, Cobol, DDL, TACL, & TAL modes are
+   recognized if the standard ACI version line is present.
+   Some other 1st line language indicators are also recognized."
+  (if (eq major-mode 'fundamental-mode)
+      (let ((mode nil))
+        (save-excursion ; don't trash bookmark entrances 
+          (goto-char (point-min))
+          (if (looking-at "\\(\\*\\|!\\|#\\|{\\)\\*\\(SYNC\\|FIX.\\|SEQ.\\)\\.")
+              (progn
+                (goto-char (min (1- (point-max)) (+ (point) 34)))
+                (cond ((looking-at "DDL ")
+                       (setq mode 'ddl-mode))
+                      ((looking-at "TAL ")
+                       (setq mode 'tal-mode))
+                      ((looking-at "COBOL ")
+                       (setq mode 'cobol-mode))
+                      ((looking-at "SCOBOL ")
+                       (setq mode 'cobol-mode))
+                      ((looking-at "TACL ")
+                       (setq mode 'tacl-mode))
+                      ((looking-at "MAKE ")
+                       (setq mode 'makefile-mode))))
+            (if (looking-at (concat "\\(\\?TACL \\|==\\|\\?SECTION +\\"
+                                    "(\\S-+\\s-+\\"
+                                    "(macro\\|routine\\|alias\\|text\\)\\)\\b\\)"))
+                (setq mode 'tacl-mode)
+              (if (looking-at "\\?SECTION +.+,TANDEM\\b")
+                  (setq mode 'ddl-mode)
+                (if (looking-at "\\?ANSI\\b")
+                    (setq mode 'cobol-mode)
+                  (if (looking-at "#[-*#=\n]")
+                      (setq mode 'makefile-mode)
+                    (if (looking-at "[!*] SCHEMA")
+                        (setq mode 'ddl-mode)
+                      )))))))
+        (if mode (funcall mode))))
+)
+</pre>
+
+=== Creating bookmarks for subvols ===
+Since NSK ftp can't return a list of subvols on a volume, you may want a 
+convenient way to generate a bookmark file containing subvols.##  ##Here
+is a TACL macro that creates such a file
+
+<pre>
+?TACL ROUTINE
+
+== EmacsVol <ange-ftp prefix> <subvol-template> <filename>
+==
+== This routine creates a file suitable for use by EMACS as a bookmark file.
+== It creates a bookmark entry for every subvol matching the template you
+== supply.  <filename> is the name of the bookmark file to be created.
+==
+== <ange-ftp prefix> Takes the following form.  Where you supply your USERID
+==                   and the target system's IP-address for use by ange-ftp.
+==
+==                   /ftp:<userid>@<ip-address>:
+==
+== For Example
+== EMACSVOL  /ftp:MY.ID@10.27.140.21: $DATA1.* DATA1BMK
+==
+== NOTE: ALL PARTS OF <ange-ftp prefix> ARE CASE SENSITIVE!
+
+#frame
+  #push :fname :subvol :bookmarks :template :prefix :outfile
+  #if [#argument/value :prefix/word/space/]
+  #if [#argument/value :template/subvoltemplate]
+  #if [#argument/value :outfile/filename/syntax/]
+  
+  #set    :bookmarks ;;;; Emacs Bookmark Format Version 1 ;;;;
+  #append :bookmarks ;;; This file was generated by EmacsVol TACL macro ;;;
+  #append :bookmarks ;;; -*- End Of Bookmark File Format Version Stamp -*-
+  #append :bookmarks (
+  
+  == THE ?* INSURES WE SKIP $VOL.#0000000 TEMP FILES
+  #charins :template ([#charcount :template] - 1) ?
+
+  #set :fname [#filenames/maximum 1/[:template]]
+  [#loop
+    |while| not [#emptyv :fname]
+    |do|
+      #set :subvol [#charget :fname 1 to ([#charfindr :fname 100 .] - 1)]
+      #append :bookmarks ~_ ("[:subvol]"
+      [#if [#match \* [:subvol]]
+        |then| #set :fname /[#charget :subvol 2 for 100]
+        |else| #set :fname [:subvol]
+      ]
+      VCHANGE/QUIET/:fname "$" "$$" {PROBABLY UNNECESSARY BUT BE SAFE}
+      #append :bookmarks ~_   ((filename . "[:prefix][:fname]")
+      #append :bookmarks ~_    (position . 1)))
+      #set :fname [:subvol].ZZZZZZZZ
+      #set :fname [#filenames/previous [:fname],maximum 1/[:template]]
+  ]
+  #append :bookmarks )
+  VCHANGE/QUIET/:bookmarks "~_" " "
+
+  == YOU MAY WANT TO DO THIS DIFFERENTLY, IT'S KIND OF DESTRUCTIVE!
+  [#if [#fileinfo/existence/[:outfile]]
+    |then| purge [:outfile]
+  ]
+  vartofile :bookmarks [:outfile]
+#unframe
+</pre>
+
+==Wish List==
+* True indent support for TACL.
+* Better TAL indent support.
+* Tgal file viewing/printing from Emacs.
+* Tedit Emulation.
+----
+CategoryProgrammerUtils
+CategoryCode

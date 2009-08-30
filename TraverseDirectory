@@ -1,0 +1,113 @@
+ThierryVolpiatto
+
+TraverseDirectory
+
+Lisp:traverselisp.el
+
+This package work like `rgrep', it is able to find [[regexp]] in files
+
+across a tree of directory.
+
+It can also replace founded regexps by what you want.
+
+It provide also some other functions that use walk-directory to work in a directory tree.
+
+Actually:
+
+traverse-build-tags-in-project ==> build a [[tags file]] in directory (find files to tags in all subdirs) 
+
+traverse-cp-or-mv-extfiles-in-dir ==> cp or mv all files with ext in a special dir.
+
+=== Install ===
+
+Put this file in your load-path
+Add to your .emacs:
+
+<pre>
+(require 'traverselisp)
+</pre>
+
+=== My config with version-1.13 ===
+
+<pre>
+(require 'traverselisp)
+(setq traverse-use-avfs t)
+(global-set-key (kbd "<f12> f") 'traverse-deep-rfind)
+(global-set-key (kbd "<f12> u") 'traverse-build-tags-in-project)
+(define-key dired-mode-map (kbd "C-c t") 'traverse-dired-search-regexp-in-anything-at-point)
+(define-key dired-mode-map (kbd "C-c C-z") 'traverse-dired-browse-archive)
+(add-to-list 'traverse-ignore-files ".ledger-cache")
+</pre>
+
+
+=== Usage ===
+
+M-x traverse-deep-rfind
+
+When searching is done and you are in traverse buffer
+
+some actions are provided for navigate and for replacing regexps
+
+Use "C-h m" for more info while in traverse-buffer.
+
+* You can also use traverse from Dired:
+
+M-x traverse-dired-search-regexp-in-anything-at-point
+
+This function work on directory, files, (1)compressed files (avfs)
+
+And marked files. It will find alone the good action to perform.
+
+You will find also specialized functions to run on individual file
+
+archives, directories and marked files but traverse-dired-search-regexp-in-anything-at-point
+
+should always do what you want.
+ 
+M-x traverse-dired-browse-archive
+
+This function use (1)avfs to browse archive tar.gz, bz2 etc.. in dired.
+
+* Other functions:
+
+traverse-cp-or-mv-extfiles-in-dir ==> Move all files with .ext found in all subdirs in Dir.
+
+traverse-build-tags-in-project ==> Create a TAGS file with all file found in project (in subdirs also)
+
+Possibility to give different ext of file separate with a space. ==> .py .el
+
+(1)NOTE: You have to install avfs and enable fuse in your kernel if
+
+you want to browse and search in archives.
+
+Please see the doc of your distrib.
+
+and the doc of avfs
+
+http://sourceforge.net/projects/avf
+
+You can also get the last version of the file with mercurial:
+
+<pre>
+hg clone http://freehg.org/u/thiedlecques/traverselisp/
+</pre>
+
+You can get the old version that work with python as backend here:
+ 
+<pre>
+hg clone http://freehg.org/u/thiedlecques/traversedirectory/
+</pre>
+
+=== Your comments ===
+
+Add your comments here:
+
+=== Bug report ===
+
+Report bugs here:
+
+
+
+
+
+

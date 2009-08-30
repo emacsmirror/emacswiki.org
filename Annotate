@@ -1,0 +1,14 @@
+Simple annotation system for files.
+
+Lisp:annotate.el
+
+[new]
+If control characters appear inside Elisp strings, using octal escapes inside the string might make more sense. -- AlexSchroeder
+[new]
+Thanks, I fixed it. -- TamasPatrovics
+[new]
+Are there plans to support annotations for specific line numbers? Or hyperlinking from the annotation file? If not I suppose I will be working on that sometime. -- pmv
+[new]
+I haven't touched it for 3 years, so there are no plans for improving it. :)
+
+You can take it over if you want. -- TamasPatrovics

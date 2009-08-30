@@ -1,0 +1,23 @@
+Some friendly competition for Lisp:grep-edit.el that allows you to edit results
+from 'grep' and write them back to the files.
+
+This uses highlight-changes-mode to keep track of things, and has some
+custom variables/hooks/functions to allow flexibility I needed.  From the
+commentary:
+
+This package lets you edit the results of a 'grep' by pressing "\C-c\C-e",
+then write the results back to the files by pressing "\C-c\C-s" (or
+aborting by pressing "\C-c\C-e" again).
+
+The variable `grep-ed-save-after-changes' determines if the changes will be
+written back automatically or if you have to do it manually.  The variable
+`grep-ed-unload-new-buffers-after-changes' determines if any new buffers
+created to make changes will be automatically unloaded.
+
+Since files you want to modify could be read-only (e.g. because they are in
+a revision control system), the `grep-ed-make-file-writable-function' and
+`grep-ed-make-file-read-only-function' variables can be pointed to your own
+functions that take one argument FILENAME and, say, check the file out then
+back in. 
+
+* Lisp:grep-ed.el

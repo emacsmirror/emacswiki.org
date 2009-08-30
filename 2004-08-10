@@ -1,0 +1,25 @@
+A few days ago I added the [[Oddmuse:Portraits Support Extension]].
+The most obvious change is that you can use '''<nowiki>[new]</nowiki>'''
+to alternate the background color.
+I think that is easier to read than indenting them with :, ::, or :::, etc.
+
+[new]
+See?
+
+[new]
+I hope it looks ok in text browsers, too.
+
+[new:MathiasDahl:2004-11-19 12:46 UTC]
+
+...and I seem to be the first one to really use the "portrait-part" of the functionality... :)
+
+[new:AlexSchroeder:2004-11-19 16:36 UTC]
+Argh!
+I added some stuff to the default CSS.
+I hope it looks ok, now.
+On Community Wiki I suggested people use image size 48x48 -- ordinary GnusFace size!
+
+[new:MathiasDahl:2004-11-19 17:18 UTC]
+Ah! I set the width to 48 in Gimp but forgot that the height became more. Will fix!
+
+

@@ -1,0 +1,21 @@
+= Contact Me =
+
+Website: http://www.mygooglest.com/fni/
+
+Email: (concat "fni" at "mygooglest.com")
+
+= Emacs =
+
+Customizing Emacs is difficult, but this task is needed... That's why I'm sharing my [http://www.mygooglest.com/fni/dot-emacs.html|Emacs config file], hoping it can help you getting what you want.
+
+My [http://www.mygooglest.com/fni/dot-emacs.html|Emacs init file] is really huge, but very well commented. You should find lots of interesting things in it. It runs on Windows and Unix platforms, and it works well with both GNU Emacs and XEmacs. I keep on updating it quite frequently, so visit that page often!
+
+= Web =
+
+Search the Web with my advanced [http://www.mygooglest.com/|Google Search Tools].
+
+[new]
+Welcome to the wiki! -- AlexSchroeder
+
+----
+CategoryHomepage

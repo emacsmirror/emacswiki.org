@@ -1,0 +1,69 @@
+Some Emacs settings, such as colors, fonts and faces can be set via
+''X resources'', which reside in a hierarchial database (X Resource
+Database, or ''XRDB'') handled by the X11 server.  The usual way to
+set it up is via the '''.Xdefaults''' file.  Here is a sample entry:
+
+ Emacs*Background:		DarkSlateGray
+ Emacs*Foreground:		wheat
+
+There are many more resource names, see the EmacsLispReference for details.
+The resource class ''Emacs'' is common for both GnuEmacs and XEmacs.
+See HowtoChangeFrameColors for other ways to change the frame colors.
+
+Needless to say, a mode exists for editing ResourceFiles, and it's
+called 'xrdb-mode.el'.  See WikifiedEmacsLispList for it.
+
+Emacs faces can be configured by setting resources of the form
+'''Emacs'''.''face''.'''attribute'''''Attrib'',
+f.ex. <code>Emacs.italic.attributeColor: yellow</code>.  At least in
+GnuEmacs 21.2.1 a ProblemSettingCertainFaceAttributesFromXResources
+exists, but elisp patch exists for it.
+
+Changes to your .Xdefaults file have no effect straight away, as it's
+just a file on a disk.  The concents must be merged into the X11
+servers database with '''xrdb'''(1x) program (the xrdb-mode has a
+command for this, the
+<code>xrdb-database-merge-buffer-or-region</code>, bound to <code>C-c
+C-c</code> by default).  The X11 clients usually only receive their
+resources on startup, so you must either restart your Emacs, or
+specifically tell it to update from the resource database with
+EmacsLisp.  One handy way to test resources without the edit/merge
+cycle is the general command-line parameter <code>--xrm</code> which
+is recognized by all well-behaved X11 programs (well, they use one
+dash only).
+
+In addition to the resources from the XRDB (which isn't a resource
+file at all, but is initialized from them) Emacs, again like all
+well-behaved X11 programs, reads an application specific resourcefile
+(often called ''app-defaults'' files) for more resources.  See the
+manual-page '''X'''(7).
+
+The XRDB is usually initialized automatically when your X session
+starts.  Here is some background information:
+
+ From: Luis Fernandes
+ Subject: Re: Emacs does not seem to read my .Xdefaults
+ Newsgroups: gnu.emacs.help
+ Date: 27 Apr 2001 23:37:31 -0400
+ Organization: Ryerson Polytechnic University
+
+If I remember my X11R4 conventions correctly...
+
+If you use xdm to manage your X display then the default system
+start-up script looks for a file called .Xdefaults and ~/.xsession
+for personal customizations (this is just a shell script which runs
+the window manager, clock and emacs; you can explicitly load your X
+resources with xrdb in this file).
+
+If you login via console and start X with startx, then the file
+.Xresources is loaded by the default system start-up script and your
+personal customizations file is called ~/.xinitrc.
+
+NB: you should never run X stuff in your .(bash|csh|z)rc file.
+
+----
+
+Editorial note: maybe loads of this stuff should be put to
+EmacsAndXResources, and this page would be kept on-topic,
+ResourceFiles.  Well, wikis sure got a tendency to start branching,
+which is just nice (:)

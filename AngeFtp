@@ -1,0 +1,201 @@
+AngeFtp allows you to access remote files via ftp -- transparently.  Essentially: "magically".  All you need to do is remember the weird file name syntax:  Instead of <tt>C-x C-f dir/file</tt> you use <tt>C-x C-f /user@host:dir/file</tt> to open the file.
+
+A bigger version is available:  <tt>C-x C-f /protocol:user@host#port:dir/file</tt>  in case of your ftp server does not use a standard port. When `host' doesn't begin with `ftp', emacs may choose other access method by default (depends on variable tramp-default-method-alist), use `ftp' as `protocol' here to tell emacs the expected access method is ftp.
+
+There is also a mini version  <tt>C-x C-f /host:file</tt>
+
+Prerequisites: You must have a command-line ftp client installed that can be used by Emacs in a sub-process.  The ftp client distributed with Windows, for example, is no good. (does it know FTP at all????)
+
+= SSH =
+
+If you cannot use FTP because it is considered a security hazard, you might
+try TrampMode.  TRAMP will work using other clients than just FTP clients.
+
+Note: I've seen tramp.el silent corrupt files, and have heard reports of this 
+from other people too (yes, I've filed a bug report). -- Doom
+
+<b><i>Alternatively...</i></b>
+
+My approach is to use a SSH "tunnel"; do something like:
+
+ssh -f -N -L 21:remote.host:21 you@remote.host
+
+as root (non-privileged ports don't require root access; do something like "...2021:remote.host:21..." as joe user). Either way, you'll be prompted for a password, after which SSH will drop into the background. Now aim AngeFtp at "localhost" and let loose. --BrianBerry
+
+<B><I>Similarly... </I></B>
+
+There's a perl script (written by Russell Standish) that can handle this for you:
+http://cpan.org/authors/id/R/RK/RKS/ange-ftp-over-ssh.1.1-script.pl (it was formerly called 
+"nftp.pl").
+
+In addition to having greater reliability than tramp.el, this is also subjectively faster 
+(it uses a background process). 
+
+[new]
+This script formerly known as nftp works very well, except for two problems:
+* When it logs in to the remote server, it tries to find a home directory using my local user name, not the user name with which I logged in.  This means I have to specify absolute paths every time I use it.
+* About every third directory listing has the error message "stdin is not a tty" in the middle of the listing.  This not only makes the resulting dired buffer useless, but I can't open any of the files or directories in that buffer.  The only way I've found to fix it is to restart Emacs.
+
+Does anyone else have these problems, or a solution to them?
+-- AlexMidgley
+
+= Dumb Hosts =
+
+The FTP servers on some UNIX machines have problems if the 'ls' command is
+used.  ange-ftp is unable to automatically recognize dumb unix hosts.
+Set `ange-ftp-dumb-unix-host-regexp' to a regexp matching dumb hosts.
+
+Here is the one I use:
+
+ (setq ange-ftp-dumb-unix-host-regexp "ftp\\.geocities\\.com")
+
+If you know of more well-known hosts, edit this page and add them to the list:
+
+ (setq ange-ftp-dumb-unix-host-regexp
+       (regexp-opt '("ftp.geocities.com"
+		     "...")))
+= Windows Hosts =
+
+Some Windows hosts have a MSDOS-like directory style by default, the typical signal is autocompletion not working and Ange-Ftp not being able to find any file. A (hackish) workaround I found is:
+
+ (defvar ange-ftp-windows-hosts '("130.113.198.90")
+   "List of hosts running a Windows FTP server"
+   )
+
+ (defun ange-ftp-msdos-dirstyle-off ()
+   "Toggles the dirstyle of the host if listed in the
+   `ange-ftp-windows-hosts' variable. This function is intended to
+   be called from inside the hook `ange-ftp-process-startup-hook'"
+   (if (member host ange-ftp-windows-hosts)
+       (let* ((result (ange-ftp-send-cmd host user '(quote "site dirstyle")))
+ 	     (line (cdr result))
+ 	     (ok (car result))
+ 	     (msdos (string-match "200 .+off" line))
+ 	     )
+ 	(if ok
+ 	    (if msdos
+ 		(ange-ftp-send-cmd host user '(quote "site dirstyle") "Host declared to be running Windows, turning off MSDOS dirstyle")
+ 	      (message "Host declared to be running Windows, and MSDOS dirstyle already off."))
+ 	  (message "Host declared to be running Windows, but didn't accept DIRSTYLE command.")
+ 	  )
+ 	))) 
+ 
+ (add-hook 'ange-ftp-process-startup-hook 'ange-ftp-msdos-dirstyle-off)
+
+A better solution would be including support for Windows hosts in Ange-Ftp (possibly autodetecting it in `ange-ftp-guess-host-type' using the "system" ftp command), and then check for MSDOS listing style being off somewhere else.
+
+I had to invert the `msdos' condition in the above hook, because sending the "site dirstyle" command to check which style is active actually toggles it.  So if the above does not work for you, try changing it to `(if (not msdos) ...'.
+
+= Gateway =
+
+Put the following code in your ~/.emacs file. Modify values according to your network configuration.
+
+    (setq ange-ftp-gateway-host "proxy-server"
+          ange-ftp-smart-gateway-port "21"
+          ange-ftp-local-host-regexp ".*"
+          ange-ftp-smart-gateway t)
+
+Specify ange-ftp-gateway-host as host name of the proxy server, ange-ftp-smart-gateway-port as port number of the proxy server. Set host name regexp you want to access directly, not to access over proxy, to ange-ftp-local-host-regexp.
+
+[new]
+: How can you use an HTTP 1.1 proxy ? -- [[JeromeRadix]]
+
+= Passive Mode =
+
+If you are behind a firewall, perhaps you are having problems using AngeFtp (or indeed any active-mode ftp client).
+http://mail.gnu.org/pipermail/help-gnu-emacs/2001-April/006468.html
+has some ideas for what to try, although some tweaks to the code may be necessary.
+
+If your ftp client supports passive mode, you may be able to use it in this mode via
+the variables ange-ftp-ftp-program-name and ange-ftp-ftp-program-args. For example, on Linux
+if ftp is invoked as "pftp", it automatically uses passive mode. So this works on my system:
+<tt>
+(setq ange-ftp-ftp-program-name "pftp"). 
+</tt>
+This is not as elegant a solution perhaps as it
+forces passive mode at all times, but it is simple.
+
+  ; Tweaked by eraatikidotfi based on code from
+  ; http://mail.gnu.org/pipermail/help-gnu-emacs/2001-April/006468.html:
+  ;; From: Ehud Karni  ehudatunixdotsimonwieseldotcodotil
+  ;; Date: Wed, 18 Apr 2001 19:45:08 +0300
+  ;; Subject: Ange-ftp: passive mode transfers?
+
+  (defvar ange-ftp-hosts-no-pasv '("localhost")
+    "*List of hosts that do not need PASV (e.g. hosts within your firewall).
+  Used by `ange-ftp-set-passive'.")	; rephrased, added "*" // era
+
+  (defun ange-ftp-set-passive ()
+      "Function to send a PASV command to hosts not named in the variable
+  `ange-ft-hosts-no-pasv'. Intended to be called from the hook variable
+  `ange-ftp-process-startup-hook'."	; rephrased significantly // era
+    (if (not (member host ange-ftp-hosts-no-pasv))
+        (ange-ftp-raw-send-cmd proc "passive")))
+
+  (add-hook 'ange-ftp-process-startup-hook 'ange-ftp-set-passive)
+
+There is now a much simpler and less error-prone way to enable passive mode: <tt>M-x customize-option ange-ftp-try-passive-mode</tt> to <tt>t</tt> (from its default value, <tt>nil</tt>).
+
+The "ftp for win32" below seems to be passive by default. (Enter ftp and try <tt>help passive</tt> and <tt>passive</tt>).
+
+= Kerberos FTP =
+
+The MIT Kerberos FTP client outputs some extra messages and uses different login success codes, which take Ange FTP by surprise. Modify these values to make it work:
+
+  (setq ange-ftp-ftp-program-name "kftp"    ; Probably only required for some installations
+        ange-ftp-skip-msgs (concat ange-ftp-skip-msgs
+  				 "\\|^334 Using authentication\\|^GSSAPI"
+  				 "\\|^530-There is a problem with your ftp client"
+  				 "\\|^530 Enable encryption before logging in")
+        ange-ftp-good-msgs (concat ange-ftp-good-msgs "\\|^232 "))
+
+= Ange FTP and EFS =
+
+AngeFtp is part of Emacs.  The FSF is maintaining it now.  The original author, AndyNorman (aka. Ange), went on to write [::EFS].  EFS is a module for XEmacs.
+
+See http://www.xemacs.org/Documentation/packages/html/efs_2.html for EFS Documentation.
+
+: Alex, I was Andy's co-author on EFS. Primarily, EFS is the result of a major
+rewrite that I did on Andy's original code base.  Although EFS is now an XEmacs package, it still works perfectly well under the FSF's Emacs.  In fact it was developed under the FSF's Emacs.  I made up the name EFS; it's not an acronym for anything.  (I suppose that I could say something clever like it stands for ''EFS File System''.)  We needed a new name when the FSF took over maintenance for angeftp and I thought that EFS had a nice ring to it.                                                  -- Sandy Rutherford
+
+= Unusual Host Support =
+
+There is a version of Ange FTP [http://www.emacswiki.org/cgi-bin/wiki/TandemNskSupport here] that supports Tandem/Guardian/NSK systems.
+
+= Win32 =
+
+Under Win32, you need a decent FTP client to enable ange-ftp. Download one at ftp://ftp.gnu.org/old-gnu/emacs/windows/contrib/ftp-for-win32.zip for instance. Then, just configure the <tt>ange-ftp-ftp-program-name</tt> variable to reference this ftp.exe program.
+
+Use customize or add the following to your .emacs:
+
+<tt>(setq ange-ftp-ftp-program-name <nowiki>"c:/programs/ftp.exe"</nowiki>)</tt>
+
+or if you installed the [[EmacsW32]] version, it comes with the gnu ftp client already, simply set 
+
+<tt>(setq ange-ftp-ftp-program-name <nowiki>"C:/Program Files/Emacs/EmacsW32/gnuwin32/bin/ftp.exe"</nowiki>)</tt>
+
+[new]
+: Using the inbuilt Windows ftp client successfully depends I think on the host you're connecting to.  The above mentioned ftp client works for me every time.  -- Giles Roberts
+
+[new]
+: I've been using ange-ftp on my Win 98 SE system using the stock ftp.exe with no problems. -- Jim Kalb
+
+[new]
+: I've used both efs and ange-ftp on W2k and XP Pro systems using the stock ftp.exe. There might only be quirky or unusable versions on older OS or certain OEM setups. -- [[Rick Bielawski]]
+
+[new]
+: I just tried the client you mention (ftp://ftp.gnu.org/old-gnu/emacs/windows/contrib/ftp-for-win32.zip), and for the first time I can rename remote files in Dired. '''''Thanks!''''' I use Emacs 20, and with the FTP client that comes with Emacs when I try to rename files on a Solaris box from Dired, with Emacs running on Windows, I was getting all kinds of errors -- files were renamed with truncated names that contained control characters etc. Why is the version you mention in an "old-gnu" directory? Is there a better, more recent version? -- DrewAdams
+
+[new]
+: When I was using the Windows XP default ftp client, I was experiencing a bug where when I opened a remote larger file (not emmense < 50k), ange-ftp thought it was successfully opening the file, but brought up a blank file.  I switched to the above mentioned ftp client (ftp-for-win32.zip), and now the file opens as it should.  Keywords: large file size ange ftp blank error opening.  -- Matthew Egbert
+
+[new]
+: I have seen the same kind of problem as Matthew using the native ftp client on w2k. With the ftp client in ftp-for-win32.zip it works ok for me.
+-- LennartBorgman
+
+[new]
+: For some time I have been nagged by timeout problems using the ftp program above. I have therefore included a patch with [[EmacsW32]] to take care of this.
+-- LennartBorgman
+
+----
+CategoryHistory CategoryRemoteEmacs

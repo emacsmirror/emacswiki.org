@@ -1,0 +1,112 @@
+<pre>
+From: JesperHarder
+Subject: Re: Statistics package for gnus
+Newsgroups: gnu.emacs.gnus
+Date: Mon, 19 Aug 2002 21:20:27 +0200
+
+[...] To use it, mark the region in the summary buffer you want
+statistics for and execute `M-x stat'.
+
+Here's how the output looks for gnu.emacs.gnus:
+
+Total number of posts: 11147
+Average bytes/post: 1999.809904
+Total number of posters: 1079
+Average posts/poster: 10.330862
+
+1639 Kai Großjohann
+ 385 Simon Josefsson
+ 369 Paul Jarc
+ 251 Karl Kleinpaste
+ 237 those who know me have no need of my name
+ 204 Harry Putnam
+ 193 A. L. Meyers
+ 165 Galen Boyer
+ 159 Brian P Templeton
+ 144 Lars Magne Ingebrigtsen
+ 128 Peter Davis
+ 122 Dan Jacobson
+ 113 Jonadab the Unsightly One
+  93 ShengHuo ZHU
+  93 Josh Huber
+  91 Nevin Kapur
+  80 Reiner Steib
+  80 Jesper Harder
+  79 Frank Schmitt
+  75 Paul Moore
+
+Total number of subjects: 2203
+Average posts/subject: 5.059918
+
+  94 Why do YOU use Gnus?? From a newbie.
+  84 Help me choose GNUS for mail!
+  64 Gnus and procmail
+  48 what if the message-ID generator generates a dirty word?
+  47 gcc archive customisation blues
+  46 Which one shall I choose?
+  46 A problem of massiveness
+  44 (setq gnus-secondary-select-methods '((nnml "private")))
+  43 generic .gnus
+  42 "To:" instead of "From:" in the summary buffer
+  41 emergency - cannot use gnus ;-(
+  41 Tip of the day: Split a quoted line with M-RET
+  40 Using fetchmail with gnus
+  39 mutt vs gnus
+  38 mew + gnus + namazu
+  37 bbdb and searching
+  37 Placement of signature
+  35 Gnus, Postings, and Anti-spam?
+  34 Kai's name in summary buffer
+  33 Proportional font for article buffer
+
+============ cut here ============
+
+(defun stat (beg end)
+  (interactive "r")
+  (let (header from-list subject-list from subject (n 0) (chars 0))
+    (save-excursion
+      (goto-char beg)
+      (while (< (point) end)
+	(setq header (gnus-summary-article-header))
+	(incf n)
+	(incf chars (mail-header-chars header))
+	(setq from (gnus-extract-address-components (mail-header-from header)))
+	(setq from (or (car from) (cadr from)))
+	(if (assoc from from-list)
+	    (incf (cdr (assoc from from-list)))
+	  (push (cons from 1) from-list))
+	(setq subject (gnus-simplify-subject (mail-header-subject header)))
+	(if (assoc subject subject-list)
+	    (incf (cdr (assoc subject subject-list)))
+	  (push (cons subject 1) subject-list))
+	(forward-line)))
+    (setq from-list (sort from-list (lambda (a b) (> (cdr a) (cdr b)))))
+    (setq subject-list (sort subject-list (lambda (a b) (> (cdr a) (cdr b)))))
+    (switch-to-buffer-other-window (get-buffer-create "*stat*"))
+    (insert (format "Total number of posts: %i\n" n))
+    (insert (format "Average bytes/post: %f\n" (/ (float chars) n)))
+    (insert (format "Total number of posters: %i\n" (length from-list)))
+    (insert (format "Average posts/poster: %f\n\n" (stat-mean from-list)))
+    (stat-top from-list 20)
+    (insert (format "\nTotal number of subjects: %i\n" (length subject-list)))
+    (insert (format "Average posts/subject: %f\n\n" (stat-mean subject-list)))    
+    (stat-top subject-list 20)))
+
+(defun stat-mean (alist)
+  (let ((mean 0))
+    (dolist (x alist)
+      (incf mean (cdr x)))
+    (/ (float mean) (length alist))))
+
+(defun stat-top (alist &optional n)
+  (dotimes (i (if (integerp n)
+		  (min n (length alist))
+		(length alist)))
+    (insert (format "%4i %s\n" 
+		    (cdr (nth i alist)) 
+		    (car (nth i alist))))))
+
+</pre>
+
+----
+CategoryGnus

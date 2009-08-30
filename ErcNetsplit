@@ -1,0 +1,25 @@
+Netsplit detection is enabled by default (to disable it, use M-x customize-variable RET erc-modules).
+
+== Detect netsplits and netjoins ==
+
+When an IRC server becomes disconnected from the others in a network,
+a netsplit has occurred.
+At this time it's possible that many users appear to leave all at once.
+This can easily fill channel windows with quit messages when the split happens
+and join messages when the servers are connected again.
+
+ErcNetsplit detects such splits and does not show the quit messages caused by them.
+It keeps track of who left during the split, which you can see by using the
+command /WHOLEFT or its alias /WL.  ErcNetsplit registers a netjoin once somebody who left in the split has returned.  If all users returned,
+the netjoin is considered complete, and the information from this netsplit will
+be removed.
+
+After 10 minutes, the information from an old netsplit is removed from memory,
+since it's possible that users who split may have quit or parted the channel
+during the netsplit, and their new joins would be ignored otherwise.
+
+Two hooks are provided with this module:
+`erc-netsplit-hook' and `erc-netjoin-hook'.
+
+----
+[[ERC]], ErcHooks

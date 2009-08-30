@@ -1,0 +1,67 @@
+== kis mode ==
+
+Voici les premiers éléments concernant un mode kis (kabira) sous emacs.
+Ce mode est composé de plusieurs fichiers :
+* kis-mode.el      paquetage principal pour fournissant la coloration syntaxique, l'indentation du code ...
+* kis-interface.el paquetage permettant l'appel de commandes sur un noeud distant ou local (en fonction du paramétrage).
+* kis-project.el   paquetage contenant une variable (paramétrable) permettant de personnaliser les commandes effectuées sur le noeud.
+
+Note:
+* kis-interface.el et kis-project.el peuvent être utilisés indépendamment de kis-mode.el.
+* kis-project.el contiens principalement une variable permettant de paramétrer les appels de commandes distantes via les fonctions kis-interface-do-project-action et kis-interface-create-frame
+
+== kis-mode.el ==
+
+A Nettoyer avant de le mettre sur le wiki. (Bientôt dès que j'aurais du temps)
+
+== kis-interface.el ==
+
+Voici le lien vers le fichier Lisp:kis-interface.el
+
+Ce paquetage fournit les interfaces permettant l'appel de procédure distantes (via rsh et shell-command, la migration vers tramp est à l'étude)
+
+Il permet d'effectuer les actions courantes pour un développeur sous kabira avec les fonctions interactives suivantes (la commande lancée est paramétrable et est donnée ici à titre d’indication): 
+* kis-interface-start-design-center      : lance "swdc -c start"
+* kis-interface-stop-design-center       : lance "swdc -c stop"
+* kis-interface-forcestop-design-center  : lance "swdc -c forcestop"
+* kis-interface-clobber-design-center    : lance "swdc -c clobber"
+* kis-interface-status-design-center     : lance "swdc -c status"
+* kis-interface-audit (oscfile)          : lance "swbuild -a oscfile"
+* kis-interface-build (oscfile)          : lance "swbuild    oscfile"
+
+Les fonction suivantes utilisent la variable kis-project-action-list définie dans Lisp:kis-project.el
+* kis-interface-do-project-action (action): Lance une commande distantes.
+* kis-interface-create-frame              : Crée une frame et insère des boutons permettant de lancer kis-interface-do-project-action avec toutes les actions possibles.
+
+
+Paramétrage de la Frame générée par kis-interface-create-frame:
+
+Il n'y a pour l'instant que 2 paramètres accessibles pour la frame kis-interface-frame (cf screenshot)
+
+* kis-interface-maximum-number-of-button-per-line: Permet de limiter le nombre de boutons en largeur.
+* kis-interface-button-width: fixe la largeur de chaque bouton et tronque éventuellement le nom des boutons au besoin.
+
+
+
+== kis-project.el ==
+
+Voici le lien vers le fichier Lisp:kis-project.el
+
+Ce paquetage fournit le principal paramétrage de Lisp:kis-interface.el c'est à dire la variable kis-project-action-list.
+== ScreenShot ==
+
+Voici une capture différentes captures d'écran pour la fonction kis-interface-create-frame
+* avec kis-interface-create-frame = 5 
+
+[[image:kis-interface-create-frame-5]]
+
+* avec kis-interface-create-frame = 3 
+
+[[image:kis-interface-create-frame]]
+
+* après avoir cliqué sur le bouton customize ou l'appel de la fonction 
+
+[[image:kis-project-customize]]
+
+----
+* FrédéricFrances

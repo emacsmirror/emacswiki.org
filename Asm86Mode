@@ -1,0 +1,17 @@
+Asm86 Mode is an Emacs major mode that helps the often-tedious task of coding assembly for the Asm86 assembler. Sure, you could do almost everything it does with the space bar and the arrow keys, but do you really want to waste time doing something a trained monkey could do? Asm86 Mode handles the formatting and other chores, so you can focus on designing and debugging the code. Writing concise, accurate comments and documentation still requires programmer effort, of course, but Asm86 Mode can take care of the grunge work. 
+
+Asm86 Mode includes the following features:
+* Highlighting. Asm86 mode can highlight (color) keywords, comments, labels, etc., which makes code much easier to read and edit. 
+
+* Formatting. By far, the most annoying part of assembly is formatting code, which includes indentation, spacing, and lining up inline comments. Asm86 Mode knows how assembly code should be formatted, and is capable of indenting and aligning code and comments with a single key press. 
+
+* Comments. Asm86 Mode distinguishes inline comments, which begin with a single semicolon, from code comments, which begin with two semicolons, from header comments, which begin with three or more semicolons. Although it makes no difference to the assembler, the three types are indented differently. Header comments stay to the very left, code comments align with the assembly code, and inline comments are pushed to the right side of the code. 
+
+* Header Templates. Good documentation is a necessary part of code, and this includes complete function headers that describe functionality, arguments, return value, etc. and file headers that summarize the file contents, revision history, etc. Asm86 Mode can insert templates for these automatically, to save the effort of typing the same lines over and over. 
+
+* ...and more. Additional features, as well as more detailed information on the commands mentioned above, can be found in the Asm86 Mode Commands section.
+
+Available at http://wolverine.caltech.edu/tools/emacs86/
+----
+CategoryModes
+ProgrammingModes

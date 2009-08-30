@@ -1,0 +1,117 @@
+Here are ways to localize CalendarMode to display day names, month names and holidays.
+
+== Bare base ==
+Evaluating the following expression is probably of interest to a lot of people:
+
+ (european-calendar) 
+
+Try the following if european-calendar is not recognized:
+
+ (setq european-calendar-style 't)
+
+== Localized Day and Month Names ==
+=== German ===
+First, we know that the week starts with Monday, and we need German weekday and month
+names.
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Sonntag" "Montag" "Dienstag" "Mittwoch"
+                                   "Donnerstag" "Freitag" "Samstag"]
+          calendar-month-name-array ["Januar" "Februar" "März" "April" "Mai"
+                                     "Juni" "Juli" "August" "September"
+                                     "Oktober" "November" "Dezember"])
+
+=== Russian ===
+
+    (setq calendar-week-start-day 0
+          calendar-day-name-array ["Понедельник" "Вторник" "Среда" "Четверг"
+                                   "Пятница" "Суббота" "Воскресенье"]
+          calendar-month-name-array ["Январь" "Февраль" "Март" "Апрель" "Май" 
+                                     "Июнь" "Июль" "Август" "Сентябрь"
+                                     "Октябрь" "Ноябрь" "Декабрь"])
+
+=== Spanish ===
+Week starts with Monday, use also spanish weekday and month names. Editor specially dislikes Jueves. :)
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Domingo" "Lunes" "Martes" "Miércoles"
+                                   "Jueves" "Viernes" "Sábado"]
+          calendar-month-name-array ["Enero" "Febrero" "Marzo" "Abril" "Mayo"
+                                     "Junio" "Julio" "Agosto" "Septiembre"
+                                     "Octubre" "Noviembre" "Diciembre"])
+
+=== Swedish ===
+See http://bigwalter.net/daniel/elisp/sv-kalender.el
+
+=== Chinese ===
+
+Here is how to display the 'celestial-stem' (天干)
+and the 'terrestrial-branch' (地支) in Chinese:
+
+    (setq chinese-calendar-celestial-stem
+          ["甲" "乙" "丙" "丁" "戊" "己" "庚" "辛" "壬" "癸"]
+          chinese-calendar-terrestrial-branch
+          ["子" "丑" "寅" "卯" "辰" "巳" "午" "未" "申" "酉" "戌" "亥"])
+
+See also Lisp:cal-china-x.el.
+
+=== Italian ===
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Domenica" "Lunedì" "Martedì" "Mercoledì" 
+                                   "Giovedì" "Venerdì" "Sabato"]
+          calendar-month-name-array ["Gennaio" "Febbraio" "Marzo" "Aprile" "Maggio"
+                                     "Giugno" "Luglio" "Agosto" "Settembre" 
+                                     "Ottobre" "Novembre" "Dicembre"])
+=== French ===
+   (setq calendar-week-start-day 1
+          calendar-day-name-array ["Dimanche" "Lundi" "Mardi" "Mercredi"
+                                   "Jeudi" "Vendredi" "Samedi"]
+          calendar-month-name-array ["Janvier" "Février" "Mars" "Avril" "Mai"
+                                     "Juin" "Juillet" "Août" "Septembre"
+                                        "Octobre" "Novembre" "Décembre"])
+
+=== Finnish ===
+   (setq calendar-week-start-day 1
+         calendar-day-name-array
+           ["sunnuntai" "maanantai" "tiistai" "keskiviikko"
+            "torstai" "perjantai" "lauantai"]
+         calendar-month-name-array
+           ["tammikuu" "helmikuu" "maaliskuu" "huhtikuu" "toukokuu" 
+            "kesäkuu" "heinäkuu" "elokuu" "syyskuu"
+            "lokakuu" "marraskuu" "joulukuu"])
+
+=== Hungarian ===
+   (setq calendar-week-start-day 1
+      calendar-day-name-array
+       ["vasárnap" "hétfő" "kedd" "szerda"
+        "csütörtök" "péntek" "szombat"]
+      calendar-month-name-array
+        ["Január" "Február" "Március" "Április" "Május" "Június"
+         "Július" "Augusztus" "Szeptember" "Október" "November" "December"])
+
+
+== Localized and National Holidays ==
+=== Finnish ===
+Lisp:suomalainen-kalenteri.el
+
+=== Japanese ===
+http://www.meadowy.org/meadow/netinstall/export/799/branches/3.00/pkginfo/japanese-holidays/japanese-holidays.el
+
+Here is my calendar configuration. -- [[rubikitch]]
+
+<pre>
+(require 'calendar)
+(setq  number-of-diary-entries 31)
+(define-key calendar-mode-map "f" 'calendar-forward-day)
+(define-key calendar-mode-map "n" 'calendar-forward-day)
+(define-key calendar-mode-map "b" 'calendar-backward-day)
+(setq mark-holidays-in-calendar t)
+;; (install-elisp "http://www.meadowy.org/meadow/netinstall/export/799/branches/3.00/pkginfo/japanese-holidays/japanese-holidays.el")
+(require 'japanese-holidays)
+(setq calendar-holidays
+      (append japanese-holidays local-holidays other-holidays))
+(setq calendar-weekend-marker 'diary)
+(add-hook 'today-visible-calendar-hook 'calendar-mark-weekend)
+(add-hook 'today-invisible-calendar-hook 'calendar-mark-weekend)
+</pre>

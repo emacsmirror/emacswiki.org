@@ -1,0 +1,19 @@
+PeterMilliken wrote ELSE, the Emacs Language Sensitive Editor - a minor mode
+for Emacs.  He claims that using it requires no lisp knowledge (unlike SkeletonMode and TempoMode).
+
+It comes with a 40+ page users manual.
+It allows the generation of textual templates from either abbreviations or
+other mechanisms i.e. does the same job as tempo or skeleton but you don't
+have to understand EmacsLisp to get it working. You don't have to read the code
+either.
+
+You can get it from here:
+
+* http://home.exetel.com.au/peterm/
+
+Douglas Harter has made some additional templates here:
+
+* http://mywebpages.comcast.net/dharter46/
+
+----
+CategoryModes CategoryTemplates

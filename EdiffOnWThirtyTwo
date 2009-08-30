@@ -1,0 +1,84 @@
+EdiffMode is great. It needs a couple of diff-tools to work though. You have at least these options to get them:
+
+* Install CygWin
+* Fetch some nice natively compiled Unix command ports, found here: http://unxutils.sourceforge.net/ (this is really really handy if you do not want the full CygWin package and still miss some of the nice Unix commands). *This is not maintained any more*.
+* You can also diff28b.zip from ftp://ftp.simtel.net/pub/simtelnet/gnu/djgpp/v2gnu/.
+* Use <nowiki>GnuWin32</nowiki> tools that can be found on http://gnuwin32.sourceforge.net/. These seems to be more actively maintained than the <nowiki>UnxUtils</nowiki>. See also the documentation for [[EmacsW32]] where I try to mention positive and negative sides of the different alternatives mentioned here.
+* [[EmacsW32]] comes with gnuwin32 utils (see above) and ediff works right out of the box.
+
+If you use CygWin way all should work nicely after installing CygWin (I think it adds itself to the path, otherwise you have to do that manually).
+
+[new:DrewAdams:2005-12-23 16:25 UTC]
+I use these libraries with CygWin. You might find them useful too.
+
+* Lisp:cygwin-mount.el
+* Lisp:setup-cygwin.el
+
+-- DrewAdams
+[new]
+
+
+If you get the natively compiled tools from Sourceforge or Simtel, put the diff-tools (diff.exe, diff3.exe and cmp.exe) in a directory on your PATH. On Win2000 or <nowiki>WinXP</nowiki>, you can edit the PATH by going to Control Panel-->System-->Advanced-->Environment Variables.
+
+Ediff away!
+
+----
+
+I wanted to use ediff as my diff tool in Perforce, but Perforce requires an executable to call, and "bash my-shell-script-hack.sh" didn't work.  I wrote this short hack, which works for me (compiled with gcc / cygwin) when it and gnuclientw are in my path.
+
+<pre>
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/* 
+ * call-ediff is used to call ediff from Perforce.  
+ * gcc -o call-ediff call-ediff.c && call-ediff y:/Source/find_audio_xmls.sh y:/Source/find_audio_xmls.sh~
+ */
+
+void hackPathSeparator(char *windozePath) {
+    char *c;
+
+    for (c = windozePath; *c; c++) {
+	if ('\\' == *c)
+	    *c = '/';
+    }
+}
+
+int main(int argc, char *argv[], char *envp[]) {
+    char *param1 = argv[1];
+    char *param2 = argv[2];
+
+    /* We get \ part separators from Perforce; hack these to / */
+
+    hackPathSeparator(param1);
+    hackPathSeparator(param2);
+
+    /* hack the arg list (ugh) */
+
+    argv[1] = "-e";
+    /* Sample usage: argv[2] = "(progn (message \"foo\") (raise-frame))"; */
+
+    char *command = (char *)malloc(4096);
+    sprintf(command, "(progn (raise-frame) (ediff \"%s\" \"%s\"))", param1, param2);
+
+    argv[2] = command;
+
+    execvp("gnuclientw.exe", argv);
+    return 0;
+}
+
+</pre>
+
+----
+I've found that if you compile with these arguments you can avoid the console window:
+<tt>
+  gcc -Wl,--subsystem,windows -o call-ediff call-ediff.c
+</tt>
+----
+Ediff example:
+
+[[image:EdiffScreenshot]]
+
+
+CategoryWThirtyTwo

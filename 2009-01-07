@@ -1,0 +1,43 @@
+There is some sophisticated SPAM posted to the Wiki showing up that is falsely attributed to DrewAdams on these pages ComintMode, TclMode, RloginMode, ShellMode, GrandUnifiedDebugger, EmacsSpeaksStatistics.  They all have the following, where `X' is the respective page name. -- AaronHawley
+
+> == Icicles Enhancements to X ==
+>
+> You can use Icicles completion in X. Whenever there are
+> multiple completion candidates, Icicles completion is used (if
+> Icicle minor mode is on). This means you can cycle to choose a
+> candidate, complete using one or more substrings or regexps
+> (progressive completion), and so on. See Icicles - Completion
+> in Comint Modes.
+
+[new:DrewAdams:2009-01-08 17:24 UTC]
+What is your problem, Aaron? Stop playing Wiki Police and trolling, and do something constructive. The only person "falsely attributing" stuff is you.
+
+I added those paragraphs (as you well know). The text is correct and appropriate in each case.
+
+Each of these modes inherits from ComintMode, and [[Icicles]] now enhances completion in each, in mode-specific ways. That support is necessarily made on an individual basis -- it does not happen automatically just by enhancing Comint mode. After I added support for a given mode, I added such a paragraph to the mode page to inform its users. That increased support and its documentation took place over a period of several days. -- DrewAdams
+
+[new]
+What if the pages just said, "You can use [[Icicles]] completion with this mode?"  Then, other completion systems could be added in the sentence?
+
+I don't really believe a universal feature like completion should be mentioned on every mode's page.  It's like suggesting you can use spell-check or search and replace in a mode.   -- AaronHawley
+
+[new:DrewAdams:2009-01-08 19:47 UTC]
+Drop it. This has nothing to do with other completion systems or universal features. And it is not being "mentioned on every mode's page". These specific modes now have specific Icicles support. -- DrewAdams
+
+[new]
+Sigh.  I guess the opportunity for compromise is lost.
+
+I just am curious, why was the increased support for these modes catalogued as MinorEdit''''''s?  Why not advertise them on [EmacsWiki:action=rc;rcuseronly=DrewAdams;days=7;all=1 your recent changes over the last 7 days].
+
+The comment about features being "mentioned on every mode's page" was to show that it wouldn't scale well.  -- AaronHawley 
+
+[new]
+I see no problem in Drew mentioning Icicles enhancements in various places. However, I would have placed these sections at the bottom of each page. And they are, in some of the pages. -- MaDa
+
+[new]
+I'm not suggesting that Icicles doesn't deserve mentioning on the Wiki.
+
+You're right, putting Icicles at the top of the page is a bit off-topic.  That's just part of the problem, though. -- AaronHawley
+
+
+

@@ -1,0 +1,17 @@
+Goto last change in current buffer. Repeat to go to earlier changes.
+Negative arg to go back to more recent changes. With argument 0 (C-u 0)
+you get a description of the change that was done at every changed
+position.
+
+This function uses undo information.
+
+* Lisp:goto-chg.el
+
+Another package that do a similar thing is goto-last-change.el (GotoLastChange) by Kevin Rodgers.
+
+Another package I have not tested is UndoBrowse by DeepakGoel
+
+-- DavidAndersson
+
+----
+CategoryUndo

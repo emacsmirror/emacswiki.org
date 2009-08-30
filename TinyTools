@@ -1,0 +1,95 @@
+== Overview ==
+
+The "Tiny Tools" is JariAalto's large collection of 
+small emacs customizations implemented as one 
+monolithic package:
+
+* http://freshmeat.net/projects/emacs-tiny-tools (The project HUB; never changes)
+* http://savannah.nongnu.org/projects/emacs-tiny-tools (devel site main)
+* http://www.nongnu.org/emacs-tiny-tools (devel site homepage)
+
+== Download and Install ==
+
+''Note:'' As of 2009-2010, please only install from git. The tarballs and install structure is
+ongoing changes.
+
+To download, run these commands from shell:
+
+  mkdir -p ~/emacs.d/packages
+  cd ~/emacs.d/packages
+
+  git clone git://git.savannah.nongnu.org/emacs-tiny-tools.git
+  git checkout --track -b devel origin/devel
+
+  #   from time to time, upgrade to latest
+  git pull
+
+To install, add this to your <code>~/.emacs</code> InitFile:
+
+  (add-to-list 'load-path "~/emacs.d/packages/emacs-tiny-tools/lisp/tiny")
+  (add-to-list 'load-path "~/emacs.d/packages/emacs-tiny-tools/lisp/other")
+
+== Conflicts and Bugs ==
+
+Please report any conflicts or bugs to
+[https://savannah.nongnu.org/bugs/?group=emacs-tiny-tools Savannah's bug tracker].
+Note that Savannah requires registration in order to use its resources.
+
+== Packages included ==
+
+This is only an excerpt:
+
+* MailboxMode -- berkeley style aka standard mailbox browsing minor mode
+* TinyPage -- handling ^L pages, select, cut, copy, head renumber
+* ProcmailMode -- mode for editing procmail configuration files
+* TinyDebian -- the TinyTools contains also a package with some utilities for debian users
+* TinyGnus -- Gnus plug-in. Additional functions. UBE fight 
+* TinyMail -- some mail add-ons
+* TinyPerl -- Accessing Perl documentationa and dealing with POD documentation in general.
+* TinyEat -- Deleting text easily.
+* TinyURL -- Buttonize line for URLs automatically in any buffer.
+  Library calls in programming modes are buttonized too.
+
+[new]
+
+Jari Alto put together many useful ideas. Many still benefit from them. The TinyTools tips here probably do most of the polishing/correcting needed
+TinyTools has been useful to this newbie for many years. I have not even figured it all out, or read all the docs. 
+--- SteveTaylor
+
+== Other ==
+
+=== Installation from tarball ===
+
+Here's a quick synopsis of one way of doing it (tested on GNU/Linux, with Gnu Emacs 21),
+in case you downloaded the snapshot tarball:
+
+  #   or if you prefer traditional: ~/elisp
+
+  install=$HOME/.emacs.d
+  mkdir $install
+
+  #   cd to directory where you unpacked the tarball
+  install -m 644 lisp/tiny/*.el lisp/other/*.el $install/
+
+And in your Emacs InitFile (in case you used another directory):
+
+ (pushnew "~/.emacs.d/" load-path)
+ 
+ ;; Optional
+ ;; (require 'tinypath)
+
+=== Documents ===
+
+Also on the Tiny Tools site, there are a number of documents 
+written by Jari Aalto about emacs programming issues in general. 
+While not perfect, and not always up-to-date, these are
+often informative, interesting reading for the 
+beginning-to-intermediate Emacs Lisp programmer: 
+
+* http://www.nongnu.org/emacs-tiny-tools/resources/
+* http://www.nongnu.org/emacs-tiny-tools/keybindings/
+* http://www.nongnu.org/emacs-tiny-tools/font/
+* http://www.nongnu.org/emacs-tiny-tools/packages/
+ 
+----
+CategoryDotEmacs

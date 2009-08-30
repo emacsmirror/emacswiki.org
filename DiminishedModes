@@ -1,0 +1,9 @@
+diminish.el[http://www.eskimo.com/~seldon/diminish.el] lets you fight modeline clutter by removing or abbreviating minor mode indicators.
+
+    (require 'diminish)
+    (eval-after-load "filladapt" '(diminish 'filladapt-mode))
+
+The `eval-after-load' form lets you diminish modes not loaded at Emacs startup.
+
+----
+CategoryDisplay

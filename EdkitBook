@@ -1,0 +1,119 @@
+The edkit book is a book written by JoseEMarchesi. 
+
+You can download it from http://es.gnu.org/~jemarch/downloads/edkit.pdf
+
+The book discusses many topics on text edition technology.
+
+The book is written in spanish. If there is enough interest, i will manage an english translation.
+
+Table of contents:
+
+  1   Edicion de texto y editores          ´
+  1.1   El proceso de edicion                            ´
+  1.2   El modelo de edicion del usuario                            ´
+      1.2.1 Modelos de la edicion                                   ´
+         1.2.1.1 Array unidimensional de caracteres
+         1.2.1.2 Array bidimensional de caracteres
+         1.2.1.3 Lista de lineas
+         1.2.1.4 Modelos paginados
+         1.2.1.5 Modelos estructurados
+      1.2.2 Interfaz del usuario
+         1.2.2.1 Dispositivos de entrada
+         1.2.2.2 Dispositivos de salida
+         1.2.2.3 El lenguaje de interaccion                                                   
+  1.3 Taxonomia de los editores de texto
+  1.4 Descomposicion conceptual de un editor           
+      1.4.1 El proceso de edicion                                       
+         1.4.1.1 El procesador del lenguaje de comandos
+         1.4.1.2 El componente de edicion
+      1.4.2 El proceso de visualizacion
+  1.5 Descomposicion funcional de un editor
+  1.6 Origen y evolucion de algunos editores
+      1.6.1 Tape/Text Editor and Corrector: TECO
+      1.6.2 QED
+      1.6.3 El editor estandar de Unix: ED                              ´
+      1.6.4 EMACS
+ 
+  2   Codificacion del texto                    ´
+  2.1   Introduccion
+  2.2   Definiciones y conceptos 
+      2.2.1 Repertorios de caracteres
+      2.2.2 Codigos de caracteres
+      2.2.3 Codificaciones de caracteres
+      2.2.4 CCS + CES
+  2.3 La familia ISO-8859 
+  2.4 Paginas de codigos en MS Windows 
+  2.5 ISO 10646, UCS y Unicode
+      2.5.1 ISO 10646: UCS
+      2.5.2 Unicode
+      2.5.3 Codificaciones de UCS/Unicode
+      2.5.4 Codificaciones nativas: UCS-2 y UCS-4
+      2.5.5 Formatos de transformacion
+      2.5.6 UTF-16
+      2.5.7 UTF-8
+  2.6 Aspectos de implementacion 
+      2.6.1 Representaciones internas y externas
+      2.6.2 La libreria C estandar
+  2.7 El caso GNU Emacs
+
+  3   Algoritmica del texto
+  3.1   Introduccion
+  3.2   Notacion y definiciones previas
+  3.3   Busqueda de patrones fijos
+      3.3.1 Fuerza bruta
+      3.3.2 Knuth-Morris-Pratt
+      3.3.3 Boyer-Moore
+      3.3.4 Adecuacion a codificaciones multi-octeto
+
+  4   Buffers de texto
+  4.1   Introduccion
+  4.2   Estructuracion interna 
+      4.2.1 Secuencias editables
+      4.2.2 Vectores
+      4.2.3 Buffer gap
+      4.2.4 Listas enlazadas
+      4.2.5 Lineas en tramos
+      4.2.6 Buffers de tamano fijo 
+      4.2.7 Tablas de piezas 
+      4.2.8 Evaluacion de los metodos
+         4.2.8.1 Comparativa de Finseth
+         4.2.8.2 Comparativa de Crowley
+  4.3 Estructuracion externa
+      4.3.1 Localizaciones
+      4.3.2 Punteros y marcas
+      4.3.3 Tramos 
+      4.3.4 Listas de tramos 
+      4.3.5 Arboles de tramos
+      4.3.6 Grafos de tramos
+      4.3.7 Widening y Narrowing 
+      4.3.8 Vistas
+  4.4 El caso GNU Emacs 
+  
+  5   EDKIT: Editor Kit
+  5.1   Motivacion
+  5.2   Editores cliente
+  5.3   Arquitectura
+  5.4   Funcionalidades
+      5.4.1 Codificacion de caracteres 
+      5.4.2 Buffers
+      5.4.3 Facilidades basicas de busqueda
+      5.4.4 Tablas de caracteres
+  5.5 Interfaz de programacion
+      5.5.1 Interfaz para secuencias de texto
+      5.5.2 Inicializacion y finalizacion
+      5.5.3 Gestion de buffers
+      5.5.4 Gestion de localizaciones
+      5.5.5 Gestion del puntero
+      5.5.6 Gestion de marcas
+      5.5.7 Gestion del contenido del buffer
+      5.5.8 Busqueda de patrones fijos
+      5.5.9 Gestion de tablas de caracteres
+         Obteniendo y almacenando informacion                  ´
+         Creacion y destruccion de tablas 
+         Narrowing 
+         Predicados
+  6   Conclusiones y lineas futuras
+
+[new]
+Very cool!  I will try to read the Spanish version, first.  :)
+-- AlexSchroeder

@@ -1,0 +1,8 @@
+JemPkg is an "amateur packaging system"... more or less... would be better to call it an "emacs home manager" or some other amusing name...
+
+Seriously, JemPkg is a little elisp library that should facilitate the management of your local per-user
+emacs installation. It has support for several versions of the same package, and for several configuration
+schemes (one for the laptop and one for house's computer, for example). 
+
+Details about the usage of the package and the package itself are on its homepage: http://es.gnu.org/~jemarch/homepage/JemPkg.html
+

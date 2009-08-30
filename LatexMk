@@ -1,0 +1,21 @@
+!LatexMk is a Perl script for running LaTeX the correct number of times to resolve cross references, etc; it also runs auxiliary programs (bibtex, makeindex if necessary, and dvips and/or a previewer as requested).  Essentially, it is a  highly  specialized relative  of  the  general make utility.  It has a number of other useful capabilities, for example to start a previewer and then run latex whenever the source files are updated, so that the previewer gives an up-to-date view of the document (so called "preview continuously" mode), updated on '''every page save'''.
+
+<code>latexmk -pvc yourdoc.tex     </code>opens a preview window that continuously reflects changes to the tex source
+
+!LatexMk comes as standard with the popular Windows tex installation (distribution) !MikTeX, but is also available from its homepage http://www.phys.psu.edu/~collins/software/latexmk-jcc/ and also from [http://www.ctan.org CTAN] (see [http://www.tug.org/tex-archive/help/Catalogue/entries/latexmk.html latexmk entry] in CTAN Catalogue) [http://www.tug.org/tex-archive/support/latexmk/ here] (older, obsolete version 2 of the script can be found [http://www.tug.org/tex-archive/obsolete/support/latexmk/ here]). You may have to make some changes to the perl file as detailed in the INSTALL file.
+
+The script runs on both UNIX and MS-WINDOWS (95, ME, XP, etc).
+
+You can incorporate some of the latexmk commands into the AUCTeX `C-c C-c' cycle (run command on current document) and/or Toolbar menu using <code>M-x customize-group auctex</code>. 
+
+'''Compare with:''' [http://www.pps.jussieu.fr/~beffara/soft/rubber/ rubber], [http://www.tug.org/tex-archive/help/Catalogue/entries/latexn.html latexn] csh script, [http://www.tug.org/tex-archive/help/Catalogue/entries/shlatex.html ShLaTeX] bash script,  [http://www.tug.org/tex-archive/help/Catalogue/entries/prv.html prv] Perl script derived from LatexMk v2.0; see also [http://www.tug.org/tex-archive/help/Catalogue/entries/make-latex.html make-latex] and [http://www.tug.org/tex-archive/help/Catalogue/entries/latexmake.html latexmake] Makefile macros/examples and old (2000) [http://www.tug.org/tex-archive/help/Catalogue/entries/autoview.html autoview] EmacsLisp script, supposedly replaced by [http://gnufans.net/~deego/emacspub/lisp-mine/filewatch/ filewatch]. All links here are to CTAN Catalogue entries at [http://www.tug.org/ TUG]. !MikTeX distribution (Windows !TeX implementation) has tool named <code>texify</code>.
+
+
+=== See also ===
+* WhizzyTeX provides also on-the-fly (not only on document save) updated preview window. It works quite well with dealing with errors from incomplete input. Provides a ''minor mode'' for Emacs.
+* PreviewLaTeX which allows you to see previews of math, figures, tables, graphics and other things ''directly in an Emacs 21 buffer'' (going from preview to code easily). You have to regenerate preview at point after changes.
+* XSymbolMode provides some kind of pseudo-WYSIWYG by using real characters and thumbnails for included images and real super-/subscripts.
+* InverseDviSearch explains how to set DVI previewer and Emacs to allow jumping from editor to related place in DVI file and vice versa.
+
+----
+CategoryTex CategoryExternalUtilities

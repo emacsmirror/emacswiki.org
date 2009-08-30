@@ -1,0 +1,19 @@
+The buffer called <code>*Messages*</code> is GnuEmacs's error log,
+where all sorts of useful information is printed, including
+information that appears in the EchoArea (except for keystroke echoes).
+You can adjust the number of messages kept in the buffer with the
+variable <code>message-log-max</code>.
+
+The [[XEmacs]] equivalent of the MessagesBuffer is viewable via `C-h l'.
+
+= Recent Keystrokes =
+
+Use `C-h l' to see the most recent keystrokes (last 100, in
+GnuEmacs). This works for both EmacsAndXEmacs. In XEmacs, both
+keystrokes and messages are logged to the same list.  In GnuEmacs,
+`C-h l' (command `view-lossage') shows only keystrokes and other input
+events, not messages, and buffer <code>*Messages*</code> shows only
+messages, not keystrokes.
+
+----
+CategoryHelp

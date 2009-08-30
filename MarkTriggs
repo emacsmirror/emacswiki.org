@@ -1,0 +1,15 @@
+Well, this is exciting. My name's Mark Triggs and I use emacs.
+
+After a few failed attempts, I finally made the switch from vim to emacs a couple of years ago when I removed vim from my system and symlinked /usr/bin/vim to /usr/bin/emacs. Since then it seems to have gone from being my editor to being my existence, and I'm now using it for mail/news (gnus), irc (erc), my organiser (calendar/diary/emacs-wiki), my terminal (term) and coding. I'm also finding myself using w3m-el more and more often, so maybe that will be next.
+
+If you'd care to harass me on #emacs, my nick will probably be 'mst_'.
+
+My homepage is at http://www.dishevelled.net/ (or http://grapevine.net.au/~striggs/) and contains bits of elisp and
+miscellaneous junk.
+
+Thanks for reading. I hope you're all well.
+
+: Welcome to the Wiki ! -- LucasBonnet
+
+----
+CategoryHomepage

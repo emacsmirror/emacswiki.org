@@ -1,0 +1,30 @@
+The idea and some portion of codes were borrowed from 'Lisp:w32-browser.el'(MsShellExecute)
+which is only for w32 and from 'TrivialMode'.
+
+It is very simple to use:
+
+	(require 'run-assoc)
+	(setq associated-program-alist
+	      '(("gnochm" "\\.chm$")
+		("evince" "\\.pdf$")
+		("mplayer" "\\.mp3$")
+		("evince" "\\.ps$")
+		((lambda (file)
+		   (browse-url (concat "file:///" (expand-file-name file)))) "\\.html?$")))
+
+Then, you can run the associated program or elisp function in dired mode by
+Control-Return on a file or directory or you can run the program
+directly by M-x run-associated-program
+
+Lisp:run-assoc.el
+
+Question : Gnome seems to register file-types with applications -- any suggestions on how to exploit this to automatically open the file in the correct application ? 
+
+Answer : This might not always work, but I just hit ##b## in dired -- it runs ##browse-url-of-dired-file##, which starts a web browser (or connects to an already-running one) and lets _it_ choose the application.
+
+Interesting, thanks !　I also found gnome-open, a command that seems to do what I want. I haven't been able to run it as a background process from within emacs yet, but I will post a solution if I find it. 
+
+: For those who would rather not use GNOME, you can use your mailcap file to define associations and then use run-mailcap (or its aliases) to perform the action. This, I suspect is how ##browse-url -*## does it. It is an easier way to configure things than mucking about in the neutered gnome-control-center, imho.
+
+----
+CategoryExternalUtilities

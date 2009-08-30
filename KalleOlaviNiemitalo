@@ -1,0 +1,5 @@
+Scheme In Emacs: a Scheme-like interpreter implemented in Emacs Lisp. I wrote this for the hack value; it's far too slow for any real use. It has continuations and tail recursion but lacks macros and let.  Early version: [[sie.el]], tarball: [http://web.archive.org/http://stekt.oulu.fi/~tosi/emacs/sie2.tar.gz sie2.tar.gz]
+
+http://stekt.oulu.fi/~tosi/emacs/emacs
+----
+CategoryHomepage

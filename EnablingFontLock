@@ -1,0 +1,37 @@
+To manually turn FontLockMode on or off use either the ''Options'' -> ''Syntax Highlighting'' in the menu, or type `M-x font-lock-mode'.  Both toggle the option when you use them.
+
+To turn on font-lock automatically every time you start Emacs either edit your InitFile (shown below) or turn it on via the menu  with ''Options'' -> ''Save Options''.
+
+Here's what you can put in your InitFile to enable font-lock globally.  It works for both Emacs and XEmacs.
+
+<pre>
+(if (fboundp 'global-font-lock-mode)
+    (global-font-lock-mode 1)        ; GNU Emacs
+  (setq font-lock-auto-fontify t))   ; XEmacs
+</pre>
+
+As to adding your own keywords, see AddKeywords.
+
+----
+[new]
+In SXEmacs, I've found that I need to add the following to my ~/.sxemacs/init.el file in order for newly visited files to have font-lock-mode turned on:
+
+{{{
+(setq font-lock-auto-fontify t)
+(add-hook 'find-file-hooks (lambda () (font-lock-mode 1)))
+}}}
+-- JerameyCrawford
+
+----
+Which files are then highlighted?
+
+[new]
+In an Emacs 21.4.1 with global-font-lock-mode on, it works with LISP, C, HTML, ... but not for instance with .css oder .js.
+Is it because of the Emacs version?
+
+[new]
+For syntax highlighting to work there must be a major mode for it.
+There are major modes for both .css (CssMode) and .js (JavaScriptMode)
+
+----
+CategoryFaces ComparativeEmacsology

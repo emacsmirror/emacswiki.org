@@ -1,0 +1,42 @@
+=== smart-compile.el ===
+
+This small code provides a `M-x smart-compile' command, an alternative to the `M-x compile' command. Like ModeCompile package, it figures out the better compile command, based on filename or its major-mode.
+
+The latest version is available at:
+
+* http://homepage.mac.com/zenitani/comp-e.html
+* http://svn.sourceforge.jp/cgi-bin/viewcvs.cgi/zenitani/elisp/?root=macwiki
+
+----
+
+Both SmartCompile and CompileCommand figure out the right compilation command.
+
+In case of CompileCommand, you have to write 5-6 lines of emacs-lisp code, and then `M-x compile' runs "gcc -O2 -Wall -o foo foo.c". If you want to apply this trick to other language such as java, you have to write further lisp codes for java-mode by yourself.
+
+Such kind of programming is not necessary in SmartCompile. If You add
+
+ ("\\.c$" . "gcc -O2 -Wall -o %n %f") or (c-mode  . "gcc -O2 -Wall -o %n %f")
+
+to the command list (`smart-compile-alist'), `M-x smart-compile' runs "gcc -O2 -Wall -o foo foo.c". Moreover, it can easily applied to other languages. For a java file, just add
+
+ ("\\.java$" . "javac %f"),
+
+and you will obtain "javac foo.java". You can define your compilation commands using the following special keywords.
+
+  %F  absolute pathname            ( /usr/local/bin/netscape.bin )
+  %f  file name without directory  ( netscape.bin )
+  %n  file name without extension  ( netscape )
+  %e  extension of file name       ( bin )
+
+For example, "%n" for "foo.java" is replaced by "foo".
+
+----
+[new] How does smart-compile interact with JDEE? Is compile-command.el better/worse in that respect? What about adding classpath to compile command (javac -d <classpath> )? Can that be done dynamically?
+
+
+=== Related topics ===
+* CompileCommand
+* ModeCompile
+
+----
+CategoryProgrammerUtils

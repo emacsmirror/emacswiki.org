@@ -1,0 +1,21 @@
+== IELM: Inferior Emacs Lisp Mode ==
+
+A nice little mode that acts like an interactive Lisp interpreter.
+It doesn't do all the fancy shell stuff such as redirection -- use the EmacsShell if you need that.  IELM is an alternative to Lisp Interactive mode, which is the mode of buffer `*scratch*'.
+
+Start it using `M-x ielm'.
+
+It's real little [WikiPedia:Read-eval-print_loop read-eval-print loop] (REPL).
+
+== Icicles Enhancements to IELM ==
+
+You can use [[Icicles]] [[completion]] in IELM. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
+
+== Emacs as an `inferior-lisp-program` ==
+
+You can use [http://people.internetconnection.net/2009/06/emacs-as-an-inferior-lisp-program/ emacs itself as an inferior-lisp-program] which means you're still sending lisp forms to an external process.
+
+
+----
+CategoryModes
+

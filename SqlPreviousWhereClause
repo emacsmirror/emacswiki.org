@@ -1,0 +1,22 @@
+Sometimes I am working on one record in a SQL buffer.  I might want to:
+
+    select * from employees            where employee_id = 1;
+
+and then I might want to:
+
+    update employees set name = 'Eric' where employee_id = 1;
+
+But I'm exceedingly lazy; I don't want to type that whole, big where clause again.  So I add this to my .emacs and now I can just type C-c w instead:
+
+    (defun sql-previous-where-clause ()
+      "Insert the previous where clause at point."
+      (interactive)
+      (let* ((previous-line (comint-previous-input-string 0))
+              (case-fold-search nil)
+              (where-index (string-match "where" previous-line)))
+        (if where-index
+          (insert-string (substring previous-line where-index nil)))))
+
+    (add-hook 'sql-mode-hook
+      (function (lambda ()
+                  (local-set-key "\C-cw" 'sql-previous-where-clause))))

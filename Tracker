@@ -1,0 +1,15 @@
+Tracker is a search tool that is available in many GNU/Linux distributions.
+
+You can learn more about tracker here: http://www.gnome.org/projects/tracker/
+
+The tracker integration into emacs can be found here: http://zanfishen.com/stories/emacs-tracker.html
+
+[new]
+[[Anything]] can use tracker as a source, too.  --TassiloHorn
+
+[new]
+And what about the "tagging" feature of tracker?  Has anyone implemented adding/removing tags to/from a file and searching by tag?  If not, any hints on how to do it?  (I don't speak LISP, so I'm afraid I'll have to wait for someone to implement it anyway...)
+--mbork
+
+[new:DrewAdams:2008-02-22 21:25 UTC]
+'''[[Icicles]]''' lets you tag regions in different buffers or files.  You can assign the same tag to multiple regions, whether they are in the same buffer or in different buffers, and you can assign multiple tags to the same region. See [[Icicles - Multiple Regions]]. -- DrewAdams

@@ -1,0 +1,283 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; [19.02.2008 - 18:52]
+;; MaximKim's dotEmacs (habamax at gmail.com)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Functions
+;; Some Line functions
+(require 'cl)
+
+(defun haba-copy-line (arg)
+  "Copy lines to the kill ring"
+  (interactive "p")
+  (kill-ring-save (line-beginning-position)
+                  (line-beginning-position (+ 1 arg)))
+  (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
+
+(defun haba-dup-line ()
+  "Duplicate line under cursor"
+  (interactive)
+  (let ((start-column (current-column)))
+    (save-excursion                     ;save-excursion restores mark
+      (haba-copy-line 1) 
+      (move-to-column 0)
+      (yank))
+    (move-to-column start-column))
+  (message "line is dup'ed"))
+
+(defun haba-kill-line ()
+  "Duplicate line under cursor"
+  (interactive)
+  (save-excursion
+    (move-beginning-of-line nil)
+    (kill-line)))
+
+;; I prefer to comment 1 line without marking it.
+(defun haba-comment-dwim (arg)
+  "Comment or uncomment current line if mark region is not active. 
+Otherwise call well known `comment-dwim'"
+  (interactive "*P")
+  (comment-normalize-vars)
+  (if (and (not mark-active) (save-excursion (beginning-of-line) (not (looking-at "\\s-*$"))))
+      (progn
+        (comment-or-uncomment-region (line-beginning-position) (line-end-position))
+        (next-line))
+      (comment-dwim arg)))
+      
+;; pgup and pgdn as in usual win apps
+(defun sfp-page-down ()
+  (interactive)
+  (setq this-command 'next-line)
+  (next-line
+   (- (window-text-height)
+	  next-screen-context-lines)))
+
+(defun sfp-page-up ()
+  (interactive)
+  (setq this-command 'previous-line)
+  (previous-line
+   (- (window-text-height)
+	  next-screen-context-lines)))
+
+(defun smart-tab ()
+  "This smart tab is minibuffer compliant: it acts as usual in
+    the minibuffer. Else, if mark is active, indents region. Else if
+    point is at the end of a symbol, expands it. Else indents the
+    current line."
+  (interactive)
+  (if (minibufferp)
+      (unless (minibuffer-complete)
+        (dabbrev-expand nil))
+      (if mark-active
+          (indent-region (region-beginning)
+                         (region-end))
+          (if (looking-at "\\_>")
+              (dabbrev-expand nil)
+              (indent-for-tab-command)))))
+
+;; current date and time.
+(defun insert-current-date-time()
+  "Insert the current date and time at point."
+  (interactive "*")
+  (insert (format-time-string "[%d.%m.%Y - %H:%M]"  (current-time))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; setqs
+(setq font-lock-maximum-decoration t)
+;; (setq text-mode-hook 'turn-on-auto-fill)
+(setq default-major-mode 'text-mode)
+(setq blink-cursor-mode nil)
+(setq column-number-mode t)
+(setq display-time-mode t)
+(setq fill-column 80)
+(setq inhibit-splash-screen t)
+(setq kill-whole-line t)
+(setq mouse-yank-at-point t)
+(setq show-paren-mode t)
+(setq speedbar-show-unknown-files t)
+(setq speedbar-use-images t)
+(setq frame-title-format '(buffer-file-name "%f" ("%b")))
+                                        ; (setq frame-title-format "%b - emacs")
+;; C-\ change input method.
+(setq default-input-method 'russian-computer)
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(tooltip ((t (:inherit variable-pitch :background "systeminfowindow" :foreground "systeminfotext" :height 0.8)))))
+
+;; minor modes
+(set-message-beep 'silent)
+(show-paren-mode t)
+(transient-mark-mode t)
+(display-time)
+(windmove-default-keybindings)
+                                        ;(menu-bar-mode -1)                     ; kill menubar
+(tool-bar-mode -1)                      ; kill toolbar
+(scroll-bar-mode -1)                    ; kill scrollbar
+(blink-cursor-mode -1)
+(global-hl-line-mode t)                 ; highlite current line
+(pending-delete-mode t)             ; Replace selection by typed text.
+
+
+;; font
+(set-face-font 'default
+               "-outline-Courier New-normal-r-normal-normal-19-142-96-96-c-*-iso8859-1")
+;; window maximized
+(when (fboundp 'w32-send-sys-command)
+  (w32-send-sys-command #xf030))
+                                        ;(setq default-frame-alist '((top . 1) (left . 1) (width . 114) (height . 44))) ; use --fullscreen
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Calendar settings
+(setq calendar-week-start-day 1)
+(setq calendar-month-name-array [ "Январь" "Февраль" "Март" "Апрель" "Май" "Июнь" "Июль" "Август"
+                                           "Сентябрь" "Октябрь" "Ноябрь" "Декабрь" ])
+(setq calendar-day-name-array [ "Вс" "Пн" "Вт" "Ср" "Чт" "Пт" "Сб" ])
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; I want unicode and cyrillic
+(setq default-buffer-file-coding-system 'utf-8)
+(setq default-file-name-coding-system 'cp1251)
+;; Create Cyrillic-CP1251 Language Environment menu item
+(set-language-info-alist
+ "Cyrillic-CP1251" `((charset cyrillic-iso8859-5)
+                     (coding-system cp1251)
+                     (coding-priority cp1251)
+                     (input-method . "russian-computer")
+                     (features cyril-util)
+                     (unibyte-display . cp1251)
+                     (sample-text . "Russian (Русский)    Здравствуйте!")
+                     (documentation . "Support for Cyrillic CP1251."))
+ '("Cyrillic"))
+(set-language-environment 'Cyrillic-CP1251)
+
+;; Always indent using spaces, never tabs
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+
+;; Just never create backup files at all
+(setq make-backup-files nil)
+
+;; Make all "yes or no" prompts show "y or n" instead.
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; dark background
+;; (set-background-color "black")
+;; (set-foreground-color "light gray")
+;; (set-cursor-color "green yellow")
+;; (set-face-background (quote hl-line) "#FFFACD")
+
+(global-set-key (kbd "C-v") 'backward-char)
+(global-set-key (kbd "M-v") 'backward-word)
+(global-set-key (kbd "M-n") 'sfp-page-down)
+(global-set-key (kbd "M-p") 'sfp-page-up)
+
+
+
+(global-set-key (kbd "M-;") 'haba-comment-dwim)
+(global-set-key (kbd "M-/") 'hippie-expand)
+
+(global-set-key [\C-tab] 'next-buffer)
+(global-set-key [\C-\S-tab] 'previous-buffer)
+(global-set-key "\C-h" 'backward-delete-char-untabify)
+(global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 5)))
+(global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 5)))
+
+;; lines, lines, lines
+(global-unset-key (kbd "C-l"))
+(global-set-key (kbd "C-l C-l")  'haba-dup-line)
+(global-set-key (kbd "C-l C-d")  'haba-kill-line)
+(global-set-key (kbd "C-l C-c")  'haba-copy-line)
+
+(global-set-key (kbd "<tab>") 'smart-tab)
+
+;; make C-. repeat last command
+(global-set-key (kbd "C-.") 'repeat)
+
+;; I want new line to be indented
+(global-set-key (kbd "\r") 'newline-and-indent)
+
+;; Buffer management - very handy.
+(iswitchb-mode 't)
+;; (global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-x C-b") 'bs-show)
+
+;; winner mode - C-c Left returns to previous windows layout.
+;; try it after C-x 1
+(winner-mode 't)
+(global-set-key (kbd "C-=")  'winner-undo)
+
+;; Quick dotemacs opening
+(global-set-key (kbd "C-<f12>") '(lambda () (interactive) (find-file "~/.emacs")))
+
+(global-set-key (kbd "C-c i d") 'insert-current-date-time)
+
+;;; my global abbreviations
+(setq default-abbrev-mode t)
+(define-abbrev global-abbrev-table "habah" "haba_haba_haba")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(put 'upcase-region 'disabled nil)      ; C-x C-u
+(put 'downcase-region 'disabled nil)    ; C-x C-l
+(put 'narrow-to-region 'disabled nil)   ; C-x n n; C-x n w
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; c/cpp indent style
+(add-hook 'c-mode-common-hook (lambda () (c-set-style "cc-mode")))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Org mode
+;; (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+;; (setq org-agenda-files (list "~/org/work.org"))
+;; (setq org-log-done t)
+;; (global-set-key (kbd "C-c a") 'org-agenda)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; libs
+
+;; onefile lisp libraries path
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+
+;;; Slime setup
+(add-to-list 'load-path "~/.emacs.d/slime-2.0/")
+(when (require 'slime nil t)
+  (require 'slime)
+  (setq common-lisp-hyperspec-root "d:/doc/HyperSpec/")
+  (setq inferior-lisp-program "d:/prg/clisp/clisp -K full")
+  (setq lisp-indent-function 'common-lisp-indent-function)
+  (local-set-key (kbd "<f5>") 'slime-eval-buffer)
+  (add-hook 'slime-mode-hook
+            (lambda ()
+              (unless (slime-connected-p)
+                (save-excursion (slime)))))
+  (slime-setup))
+
+;;; htmlize
+(when (require 'htmlize nil t)
+  (require 'htmlize)
+  (setq htmlize-output-type 'inline-css))
+
+;;; ruby-mode
+(add-to-list 'load-path "~/.emacs.d/ruby-mode/")
+(when (require 'ruby-mode nil t)
+  (autoload 'ruby-mode "ruby-mode" "Major mode for editing Ruby code" t)
+  (add-to-list 'auto-mode-alist '("\\.rb\\'" . ruby-mode))
+  (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
+  (add-hook 'ruby-mode-hook (lambda () (local-set-key "\r" 'ruby-reindent-then-newline-and-indent))))
+(when (require 'inf-ruby nil t)
+  (require 'inf-ruby)
+  (autoload 'run-ruby "inf-ruby" "Run an inferior Ruby process")
+  (autoload 'inf-ruby-keys "inf-ruby" "Set local key defs for inf-ruby in ruby-mode")
+  (add-hook 'ruby-mode-hook
+            '(lambda () (inf-ruby-keys))))
+(when (require 'ruby-electric nil t)
+  (require 'ruby-electric)
+  (add-hook 'ruby-mode-hook (lambda () (ruby-electric-mode t))))

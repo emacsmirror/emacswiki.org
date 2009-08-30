@@ -1,0 +1,15 @@
+From the homepage:
+
+: TeX documents look good, even with a bad macro package. LaTeX is the most widely used macro package for TeX, but not the best. Almost 10 years old ConTeXt is a modern, easy to use, macro package to create beautiful hard-copy and on-screen, interactive documents.
+
+The following ConTeXt mode is no longer needed; ConTeXt support is now built in AUCTeX (at least developer version).
+
+* http://www.berenddeboer.net/tex/index.html -- homepage
+* http://www.berenddeboer.net/emacs/context.el -- elisp mode that goes with it
+
+License: ConTeXt is distributed in a more-or-less "do-what-you-like" license, expressly intended to be GPL-compatible and in GPL spirit, as well as compatible with the TeX license, See http://www.pragma-ade.com/general/manuals/mreadme.pdf 
+
+'''See also:''' [http://contextgarden.net/Main_Page ConTeXt wiki]
+
+----
+CategoryTex

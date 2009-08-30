@@ -1,0 +1,11 @@
+: when i read my old code, i find it pleasant when it is either scheme or
+elisp, sort of so-so w/ sh and C, out of sorts w/ perl and python, and
+wretched and tormented w/ C++.  ymmv of course.
+-- ThienThiNguyen on the guile-users list
+[http://mail.gnu.org/pipermail/guile-user/2002-February/002543.html]
+
+Guile, a dialect of [[Scheme]], is the native language of the GNU standard extension language interpreter (http://www.gnu.org/software/guile/).
+
+The GuileEmacs project is to replace EmacsLisp with Guile.
+
+See GuileIde for editing Guile code in Emacs and using Emacs to interact with inferior Guile interpreter processes.

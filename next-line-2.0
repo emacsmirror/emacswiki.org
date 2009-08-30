@@ -1,0 +1,90 @@
+This little bit of elisp written by timthelion makes it so that C-n and C-p keep the point centered, and make it go to the next visible wrapping, when lines are wrapped.
+
+This approach won't work with proportional fonts.  If that bothers you, it's relatively easy to produce an alternative approach using vertical-motion.
+
+<pre>
+(defun current-long-line-column 
+  ( ) 
+  "Returns the actual current-column with wrapped lines" 
+  (- (current-column) (* (window-width) (/ (current-column) (window-width)))))
+
+(defun next-line-wrapped-lines ( )
+  "goes to the next line, but keeps the point in the center"
+  (interactive)
+  (if (or
+       (eq major-mode 'image-mode)
+       (eq major-mode 'w3m-mode)
+       (eq major-mode 'org-mode))
+      (call-interactively 'next-line)
+      (progn
+        (if (> (- (point-at-eol) (point)) (window-width))
+              (forward-char (window-width)) 
+          (progn
+            (let ((column (current-long-line-column)))
+              (if
+                  (>
+                   (+
+                    (-
+                     (point-at-eol)
+                     (point))
+                    (current-long-line-column))
+                   (window-width))
+                  (end-of-line)
+                (progn
+                  (next-line)
+                  (when (> (current-column) (window-width))
+                    (beginning-of-line)
+                    (forward-char column))))
+              (if (> (current-long-line-column) column)
+                  (backward-char (- (current-long-line-column) column))))))))
+  (when (> (line-number-at-pos) (window-height))
+    (if (eq major-mode 'w3m-mode)
+        (recenter)
+        (progn
+          (scroll-up 1)
+          (when
+              (not
+               (eq
+                (- (/ (window-height) 2) 1)
+                (- (line-number-at-pos) (line-number-at-pos (window-start)))))
+            (recenter))))))
+  
+(defun previous-line-wrapped-lines ( )
+  "goes to the next line, but keeps the point in the center"
+  (interactive)
+  (if (or
+       (eq major-mode 'image-mode)
+       (eq major-mode 'w3m-mode)
+       (eq major-mode 'org-mode))
+      (call-interactively 'previous-line)
+    (progn
+      (if (>= (- (point) (point-at-bol)) (window-width))
+      (backward-char (window-width)) 
+    (let ((column (current-long-line-column)))
+      (previous-line)
+      (when (> (- (point-at-eol) (point-at-bol)) (window-width))
+        (end-of-line)
+        (backward-char (if (> (current-long-line-column) column)
+                           (- (current-long-line-column) column)
+                         0)))))))
+  (when (> (line-number-at-pos) (window-height))
+      (if (eq major-mode 'w3m-mode)
+        (recenter)
+        (progn
+          (scroll-down 1)
+          (when
+              (not
+               (eq
+                (- (/ (window-height) 2) 1)
+                (- (line-number-at-pos) (line-number-at-pos (window-start)))))
+            (recenter))))))
+
+(global-set-key (kbd "C-n")
+                'next-line-wrapped-lines)
+
+(global-set-key (kbd "C-p")
+                'previous-line-wrapped-lines)
+</pre>
+
+----
+See also MoveByVisibleLineCommands

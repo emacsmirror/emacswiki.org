@@ -1,0 +1,128 @@
+This page is for questions and answers about the color-theme package. For info on the package, see '''ColorTheme'''.
+
+[new:XavierMaillard:2009-05-16 06:16 UTC] You can ask your question on the newly dedicated section at                                                                                                      https://answers.launchpad.net/color-theme-el This tool will be used to
+build a clean FAQ for color-theme-el. I will try to compile a                                       
+selection of the best questions/answers to be published here. -- XavierMaillard                                                                                          
+
+== Problems with toggling themes ==
+
+I have a function that toggles between two themes, taken from the EmacsWiki's color-theme page:
+
+<pre>
+(defun toggle-themes ()
+      "Switch to/from night color scheme."
+      (interactive)
+      (if (eq (frame-parameter (next-frame) 'background-mode) 'light)
+          (color-theme-gnome2)
+        (color-theme-snapshot)))
+</pre>
+
+(I set the color-theme-snapshot just after initializing `color-theme', and load gnome2 after that)
+
+Now, when Emacs loads, it displays the gnome2 theme properly. Then, when I change to snapshot, everything's fine. The problem is when I change it once again: the comments are blue, but the comment starting tags (// in C++, ;; in Lisp, whatever) are red (as in the snapshot theme). I've tried re-declaring `font-lock-comment-face', but it's not working. Any thoughts?
+
+== How To Undo? ==
+
+After applying a color theme, is there a way to undo that change -- to get back all of the [[Frame]], [[Face]], etc. settings that were in effect before the change? I'm looking for a function that will do this (not "restart Emacs"). -- DrewAdams
+
+== How To Find Out a Theme's Name? ==
+
+Once that random color theme function brings up a theme that I really
+like, how do I find out that theme's name? -- BryanMurdock
+:: Look at `color-theme-history'. It is not maintained automatically.
+Set `color-theme-history-max-length' first. -- AlexSchroeder
+
+== How To Make a Theme Dynamic? ==
+
+Is there a way to make a theme "dynamic"? Specifically, I want to have the font size scale up or down based on the screen resolution of the display (<em>e.g.</em> based on <TT>(cond ((= (x-display-pixel-width) 1280) ... )</TT>. -- GregFenton
+: No. Color themes are not supposed to change font sizes, though, so it should "just work" if you set the font-size of the default font.
+
+== How To Override Pointer Colors? ==
+Is there a way of overriding the MousePointer colors that seem to be set by the color theme?
+: Nevermind, got this myself. (set-mouse-color "white") or similar, using a colored pointer makes running the emacs remotely slower. This helps.
+
+== Problems in NTEmacs? ==
+
+[new]
+I've seen this question posted elsewhere but could find no solutions.  When I use color-theme with NTEmacs.  Under certain themes, the cursor turns black.  I tried using (set-cursor-color "red") which works for like 1/2 seconds.  The cursor promptly returns to black which his annoying because you can't see the character under the cursor.  Anyone figured out that problem? -- FrancoisDenisGonthier
+
+[new:DrewAdams:2007-01-14 00:36 UTC]
+Yes. I reported that bug in May 2006. It has been fixed recently in Emacs 22. See the thread "cursor-color frame parameter cannot equal background-color" in ##emacs-pretest-bug@gnu.org##. This has nothing to do, per se, with color themes, BTW. -- DrewAdams
+
+[new:PeterTury:2007-06-22]
+Recently I faced a quite similar problem with official v22.1 GNU Emacs. Finally I found that modifying cua-enable-cursor-indications to nil (in custom-set-variables in .emacs) solved the problem. I think this could be a bug in color-theme: probably it (=the color themes I tried) doesn't (re)set faces used in cua-mode (assuming cua-mode has its own faces). If this is the case, then I would think it is color-theme's fault.
+
+Another similar problem: using Gnus with `color-theme-subtle-hacker' the Newsgroups, Subject, X-Draft-From, From, etc. texts are unreadable: according to `describe-text-properties' they are fontified with face `message-header-name' whose Foreground should be !DodgerBlue1 what is nicely readable, but I see them in dark green what is unreadable. If I `facemenu-remove-face-props' them, then they become readable...
+
+What could cause this gnus problem? -- Peter Tury
+
+== Problems with GnuEmacs 21.4.1 ==
+
+Everything works fine, if I start with load-library color-theme in the input line. If I try to load from .emacs file I get an error: 
+
+Wrong type argument: keymapp, nil
+
+[...]
+
+setq: Symbol's function definition is void: color-theme-filter
+
+[new]
+Same for me!!! Sob... Emilio Luque
+
+[new]
+The answer is simple, I made a change in the code (pretty small change btw) to make color-theme working with emacs-devel. To switch back this change, just change all occurences of easy-add-menu to have "tools" instead of "Tools". That should do the trick. I have opened a bug report on Gna! (https://gna.org/bugs/?func=detailitem&item_id=5059).
+
+Correction: This should be easy-menu-add, not easy-add-menu. There are two instances in 6.5.5 and changing "Tools" to "tools" makes color-theme work again. (Joachim.)
+
+== XEmacs 21.4.15 and color-themes 6.6.0 ==
+
+6.5.5 is Ok with xemacs 21.4.15, but 6.6.0 has two problems:
+
+# If you request a colour theme in your init.el (for example, '(color-theme-xemacs)') then xemacs returns a "Symbol's function definition is void: color-theme-xemacs" error message when starting up
+# When you try to select a theme using the 'tools -> color themes' menu item xemacs returns a "cannot open load file: /themes/color-theme-example.el" error message.
+
+For (1), if your init.el looks like this:
+
+  (require 'color-theme)
+   (color-theme-xemacs)
+
+Then you need to change it to:
+
+  (require 'color-theme)
+   (color-theme-initialize)
+   (color-theme-xemacs)
+
+For (2), you need to edit color-theme.el. Line 223 is:
+
+    "/themes") t "^color-theme")
+
+Change this to:
+
+    "themes") t "^color-theme")
+
+== questionable Color Theme Is Cumulative doc string ==
+
+Maybe my logic unit is not up yet but this customization entry confuses me:
+
+   Color Theme Is Cumulative: Hide Value Toggle  on (non-nil)
+      State: STANDARD.
+      Determines wether new color themes are installed on top of each other. Hide Rest   
+      If non-nil, installing a color theme will undo all settings made by
+      previous color themes.
+
+The other way arround would make more sense to me. -- Andre Kuehne
+
+== How to turn off color-theme on terminal frame? ==
+
+I use emacs on both X and terminal, color-theme is great on X, but on terminal when there are only 8 colors, some theme makes emacs looks ugly and text becomes unreadable. I'm using emacsclient. How can I disable color-theme on a terminal frame? Any hooks I can use? -- [[sylecn]]
+
+Well, you could put something in your .emacs like:
+<pre>
+(when (not (eq (symbol-value 'window-system) nil))
+  (color-theme-whatever))
+</pre>
+You could also make it an 'if' and use an alternative color scheme on console; some work pretty wel.
+
+
+----
+CategoryFaces

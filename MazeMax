@@ -1,0 +1,26 @@
+ mazemax.el --- labyrinth generation and exploration
+
+Once the elisp code is loaded, type M-x mazemax to generate a random maze (and start exploring it).
+
+This package is not part of Emacs.
+
+Lisp:mazemax.el
+[new]
+Note: as it is, mazemax does not work on XEmacs. To make it work, replace in line 367
+
+  (eq c 32))  
+
+with 
+
+  (eq c ?\ )
+[new]
+Could someone please upload a version that works both in Emacs and XEmacs...
+[new]
+: maybe dirty solution is <code>(eq c (if (string-match "XEmacs" emacs-version) ?\  32))</code> ? --ZajcevEvgeny
+[new]
+Shouldn't (eq c ?\ ) work for Emacs, too?  On my system (eq 32 ?\ ) => t, so I think it should work.  Can somebody report this as a bug?  -- AlexSchroeder
+[new]
+On GNU Emacs ?\  evaluates to 32 itself, probably XEmacs employs a distinct type for characters.  Anyway, I just uploaded a never version of the file, which should solve this problem (though I have tested it just on GNU Emacs yet, and there may be other compatibily problems with the new display code). -- MicheleBini
+
+----
+CategoryGames

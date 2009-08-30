@@ -1,0 +1,9 @@
+Anonymous, [::Anon], or [::anon], is the pseudonym of any number of
+individuals who, rather than provide a UserName, wish not to identify themselves when they edit pages.  Note, that network **IP addresses never remain anonymous** on EmacsWiki. The page history will provide the IP number or hostname as a popup if you let the mouse hover over the username, for example. If you want to keep it a secret, you need to use a network anonymizer like TheOnionRouter (Tor).
+
+Using "Anonymous" as a UserName is a behavior that is not frowned upon, since the WikiEngine doesn't require logins ("SoftSecurity") and all edits should be reviewed regardless of personal credentials.  Users signing their edits as "Anonymous" are still encouraged to start a UserName homepage to introduce themselves as an Emacs user and Wiki editor.
+
+See also LoginsAreEvil.
+
+----
+CategoryHomepage

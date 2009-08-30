@@ -1,0 +1,187 @@
+My .emacs file as of Wed Nov 22 22:11:26 2006
+
+You may also be interested in JesseWeinsteinMyBitsFile , a collection of useful little functions I've written.
+-----
+<pre>
+(let* ((my-lisp-dir (expand-file-name "~/emacs-site-lisp" ))
+	   (default-directory my-lisp-dir))
+      (if (not (member my-lisp-dir load-path)) (progn (setq load-path (cons my-lisp-dir load-path))
+      (normal-top-level-add-subdirs-to-load-path))))
+
+;;Load my little library of functions
+(load-library "mybits")
+;;Load personal information
+(load-library "personalstuff.el")
+
+;; ---- Things to load ----
+(require 'cua-base)
+(recentf-mode t)
+;(ad-activate 'Info-index) ;;Turn on the advice (in mybits) for Info-index
+
+;;povray-mode
+(autoload 'povray-mode "povray.el")
+(setq auto-mode-alist 
+      (cons '("\\.\\(pov\\|inc\\)\\'" . povray-mode) auto-mode-alist))
+(setq povray-renderer "povray")
+
+;;php-mode
+(require 'php-mode)
+(add-hook 'php-mode-user-hook 'turn-on-font-lock)
+;;css-mode
+(autoload 'css-mode "css-mode")
+(add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
+;;Emacs IRC client - ERC
+(autoload 'erc-select "erc" "ERC" t)
+;;python-mode
+(add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
+(add-hook 'python-mode-hook 'elide-head)
+(add-to-list 'interpreter-mode-alist '("python" . python-mode))
+(autoload 'python-mode "python-mode" "Python editing mode." t)
+(autoload 'py-shell "python-mode" "Python shell." t) ;;added by me
+
+;;I want a longer history in python-mode
+(setq comint-input-ring-size 256)
+
+;;iman "man (and info) lookup with completion"
+(autoload 'iman "iman" 
+  "Call the viewers of man pages and GNU Info with completion." t nil) 
+;;completing-help
+(autoload 'completing-help-mode "completing-help" 
+  "Toggle a facility to display information on completions." t nil)
+(autoload 'turn-on-completing-help-mode "completing-help" 
+  "Turn on a facility to display information on completions." t nil)
+(autoload 'turn-off-completing-help-mode "completing-help" 
+  "Turn off a facility to display information of completions." t nil)
+(turn-on-completing-help-mode)
+
+;; ---- Tweaks ----
+;; Make backups go to a backup directory
+  (add-to-list 'backup-directory-alist 
+	       '("." . "/Users/jesse/backups_from_emacs"))
+;; ---- New extensions to recognize ----
+(add-to-list 'auto-mode-alist '("\\.xpi\\'" . archive-mode))
+(add-to-list 'auto-mode-alist '("\\.tar.gz\\'" . archive-mode))
+(add-to-list 'auto-mode-alist '("\\.xul\\'" . sgml-mode))
+(add-to-list 'auto-mode-alist '("\\.rdf\\'" . sgml-mode))
+(add-to-list 'auto-mode-alist '("/_" . sh-mode)) ;;handle zsh completion funcs
+
+;;For Xcode's sake (gnuserv is not normally in the load path...)
+(setq load-path (append '("/usr/share/emacs/21.1/lisp/") load-path)) 
+(autoload 'gnuserv-start "gnuserv-compat" 
+          "Allow this Emacs process to be a server for client processes." t)
+(if (and (boundp 'gnuserv-process) (not gnuserv-process)) (gnuserv-start))
+(setq load-path (cdr load-path))
+
+;;Add u-color-cycle to zone-programs
+(eval-after-load 'zone 
+  '(progn 
+     (load-library "u-color-cycle") 
+     (setq zone-programs (vconcat zone-programs [ u-color-cycle-window ]))))
+
+;;Text mode is happier than Fundamental mode ;-)
+(setq default-major-mode 'text-mode)
+
+;;Fix stupid bug in error-message handling for python errors.
+(load-library "compile.el") 
+;;Ought to work this up into a hook form, but this works for now.  Who needs memory, anyway? ;-) JesseW Mon Nov  7 15:33:46 2005
+(add-to-list 'compilation-error-regexp-alist '("^ *File \"\\([^,\" \n\t]+\\)\", line \\([0-9]+\\)" 1 2))
+
+;; ---- Personal info ----
+(add-hook 'erc-after-connect
+	  '(lambda (SERVER NICK)
+             (cond
+              ((string-match "freenode\\.net" SERVER)
+               (erc-message "PRIVMSG" jesses-freenode-identify-cmd)))))
+
+;; ---- Key bindings ----
+;; Add zsh lookup thingie.
+(add-hook 'sh-set-shell-hook 
+	  `(lambda () 
+	     (cond ((equal 'zsh sh-shell)
+		    (local-set-key [(A i)] 'zsh-lookup-topic)))))
+
+(global-set-key [4194343] 'my-word-count) ;; Command (Apple) key with ' (single quote)
+;; Set date inserter.
+(global-set-key [(A d)] 'insert-standard-date)
+;; Add Mac keybindings
+(define-key cua--cua-keys-keymap [(A x)] 'kill-region)
+(define-key cua--cua-keys-keymap [(A c)] 'copy-region-as-kill)
+(define-key cua--cua-keys-keymap [(A z)] 'undo)
+(define-key cua--cua-keys-keymap [(A v)] 'yank) 
+;; Stop accidental minimization, since it can't be 
+;; reversed from the keyboard  (from EmacsWiki)
+(when window-system
+    (global-unset-key [?\C-x ?\C-z])) ; iconify-or-deiconify-frame (C-x C-z)
+
+;;Since I have enough modifier keys on Mac OS X to do it, make 
+;;[forward|backward]-* commands be consistent.
+(global-set-key [M-right] 'forward-sentence)
+(global-set-key [A-right] 'forward-paragraph)
+(global-set-key [C-M-right] 'forward-sexp)
+(global-set-key [M-left] 'backward-sentence)
+(global-set-key [A-left] 'backward-paragraph)
+(global-set-key [C-M-left] 'backward-sexp)
+;;Standard Mac Key bindings
+(global-set-key [(A w)] 'kill-buffer) ;;Close
+(global-set-key [(A o)] 'find-file) ;;Open
+(global-set-key [(A s)] 'save-buffer) ;;Save
+(global-set-key [(A a)] 'mark-whole-buffer) ;;Select all
+;Some useful replace-* keybindings
+(global-set-key [(A r)] 'replace-regexp)
+(global-set-key [(A M r)] 'replace-query-regexp)
+(global-set-key [(A f)] 'replace-string)
+(global-set-key [(A M f)] 'replace-query)
+
+;; ---- Aliases ----
+;;Why in the name of all that is holy did they not just do this by default?
+(defalias 'hscroll-mode 'toggle-truncate-lines)
+;;Alias query functions so all the replace functions start with "replace"!
+(defalias 'replace-query 'query-replace)
+(defalias 'replace-query-regexp 'query-replace-regexp)
+(defalias 'replace-query-regexp-eval 'query-replace-regexp-eval)
+
+;;An option I don't choose to use
+(setq mac-command-key-is-meta nil)
+
+;;;;Automatically added lines:
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(Info-additional-directory-list (quote ("/sw/share/info" "/sw/info" "/Users/jesse/FreeProjects/zsh_info")))
+ '(c-mode-hook (quote (elide-head)))
+ '(cua-mode t nil (cua-base))
+ '(elide-head-headers-to-hide (quote (("Permission to use, copy, modify, and distribute this software" . "SOFTWARE\\.") ("is free software; you can redistribute it" . "02111-1307, USA\\.") ("The Regents of the University of California\\.  All rights reserved\\." . "SUCH DAMAGE\\.") ("Permission is hereby granted, free of charge" . "authorization from the X Consortium\\."))))
+ '(emacs-lisp-mode-hook (quote (elide-head)))
+ '(erc-away-nickname "JesseW_away")
+ '(erc-nick "JesseW")
+ '(erc-port 6667)
+ '(erc-prompt-for-password nil)
+ '(erc-user-mode nil)
+ '(global-font-lock-mode t nil (font-core))
+ '(ispell-program-name "/Library/PreferencePanes/Spelling.prefPane/Contents/MacOS/cocoAspell")
+ '(iswitchb-mode t nil (iswitchb))
+ '(kill-read-only-ok t)
+ '(menu-bar-mode t nil (menu-bar))
+ '(py-default-interpreter (quote cpython))
+ '(py-jpython-command "/Users/jesse/Applications/jython-21/jython")
+ '(py-python-command "/usr/bin/pythonw2.3")
+ '(text-mode-hook (quote (text-mode-hook-identify)))
+ '(w3-default-homepage "http://www.google.com")
+ '(w3-user-fonts-take-precedence t))
+
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )
+
+
+
+
+(put 'downcase-region 'disabled nil)
+</pre>
+----
+CategoryDotEmacs

@@ -1,0 +1,17 @@
+The Emacs Keybinding Guide by JariAalto will tell you more about
+keybinding than you ever wanted to know.
+
+* http://www.nongnu.org/emacs-tiny-tools/keybindings/
+
+: "<b>Very easy way: just go and use <tt>M-x global-set-key</tt></b>
+
+: ...and hit the keys you want. Then go back and recall that previous command with <tt>C-x ESC ESC</tt> and copy the output you see, and there is the full lisp command which does the binding.
+
+: This will show you <tt>[C-c C-S-f1]</tt> when you bind the key.but when you recall the command it may shrink to <tt>[3 C-S-f1]</tt>, so this method is not completely perfect."
+
+[new]
+I think it tells you more than you wanted to know in terms of mis-information and dubious opinion.  Please see the EmacsLisp manual.  If that doesn't help, make a bug report against it.  If you want examples of doing things portably between Emacs and XEmacs, have a look at Gnus, for instance.  -- Dave Love
+
+----
+CategoryHelp
+CategoryKeys

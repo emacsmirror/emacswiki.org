@@ -1,0 +1,24 @@
+It is sad that EmacsUserLocations give us a shell command to run :-(
+
+Let's do this instead!
+
+<pre>
+ (defun xearth ()
+  (interactive)
+  (http-get "http://www.emacswiki.org/cgi-bin/wiki.pl?action=browse&id=EmacsUserLocations&raw=1" nil nil nil "*markers*")
+  (sit-for 5)
+  (switch-to-buffer "*markers*")
+  (write-file "/tmp/emacswiki.markerfile")
+  (kill-buffer (current-buffer))
+  (shell-command "xearth -markerfile /tmp/emacswiki.markerfile &"))
+</pre>
+or else:
+<pre>(defun xplanet (&optional config)
+  (interactive)
+  (http-get "http://www.emacswiki.org/cgi-bin/wiki.pl?action=browse&id=EmacsUserLocations&raw=1" nil nil nil "*markers*")
+  (sit-for 5)
+  (switch-to-buffer "*markers*")
+  (write-file "~/markers/emacswiki")
+  (kill-buffer (current-buffer))
+  (shell-command (concat "xplanet -config " (or config "emacswiki") " &"))
+</pre>

@@ -1,0 +1,31 @@
+[[en:TranslatingPages]]
+== Langues connues ==
+
+* en -- English
+* de -- Deutsch
+* fr -- Français
+* it -- Italiano
+* es -- Español
+* ru -- Русский
+* zh -- 中文
+* pt -- Português
+* se -- Svenska
+* ja -- 日本語
+* ko -- 한국어
+
+== Comment traduire une page ==
+
+Au bas de chaque page, identifiez le lien _Translate_ et cliquez dessus. Vous allez devoir choisir la langue dans laquelle vous voulez traduire la page ainsi que le nom retenu pour la page traduite.
+
+La page que vous traduirez aura un *lien de traduction* automatiquement ajouté pointant vers la nouvelle page. Vous pouvez également ajouter ces liens manuellement en appliquant la convention ##[[code-iso:nom de page]]##.
+
+Exemple:
+
+Sur la page HowToEdit, vous allez trouver un lien ##[[fr:CommentEditer]]## signifiant que la page [[CommentEditer]] est la traduction française de la page HowToEdit.
+
+== Comment traduire l'interface ==
+
+L'interface du wiki a besoi d'être traduite. Rendez-vous sur Oddmuse::Translations. Chaque langue nécessite l'ensemble de ces fichiers.
+The wiki interface needs translation. Check Oddmuse:Translations. Every language needs one of these files.
+
+De plus, chaque langue doit disposer *des noms des pages importantes* qui apparaissent en haut et en base de toutes les pages. Les plus importants étant la HomePage et les ModificationsRécentes.

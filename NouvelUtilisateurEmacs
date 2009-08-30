@@ -1,0 +1,391 @@
+This page is also available in English: English:EmacsNewbie. 
+
+このページは日本語があります： 日本語:Emacsビギナー
+
+
+
+'''''C'est l'endroit pour démarrer, pour de l'information sur Emacs.'''''
+
+== Historique Emacs ==
+
+Pour une information générale sur Emacs en français, voir [http://fr.wikipedia.org/wiki/GNU_Emacs Emacs] sur Wikipédia. Puis revenez ici pour apprendre ''comment utiliser Emacs !''
+
+[:TutorielEmacs]
+
+== Tutoriel Emacs ==
+
+Emacs est livré avec un tutoriel vraiment facile à utiliser. 
+Il ne prend pas beaucoup de temps à lire, 
+et vous serez plus productif après l'avoir lu. Voici comment accéder au tutoriel :
+
+* Saisissez `C-h t' (appuyez sur Control pendant que vous tapiez `h', puis `t').
+* Si ça ne fonctionne pas, essayez `<code>F1 t</code>'. 
+* Si cela ne fonctionne pas essayez `M-x help-with-tutorial': appuyez sur `ESC' (Echap), puis 
+tapez `x', puis saisissez `help-with-tutorial', puis tapez Entrée.
+
+Non, Emacs n'est pas imprévisible -- mais les séquences-clés que 
+vous utilisez avec lui peuvent varier selon votre environnement : 
+un système X window, une console, un émulateur en mode terminal, 
+ssh, ou autre.  L'environnement peut être modifié selon 
+la manière dont `C-h' ou `F1' sont interprétés. 
+
+Pour lire le tutoriel dans une langue autre que l'anglais, utilisez
+la commande `help-with-tutorial-spec-language' 
+(pressez `Alt' pendant que vous tapiez sur `x', 
+puis saisissez `help-with-tutorial-spec-language'). 
+Actuellement les tutoriels disponibles couvrent : `bg', `cn', `cs', `de', `es', `fr', `it', `ja', `ko', `nl', `pl', `ro', `ru', `sk', `sl', `sv',
+`th', et `zh'.
+
+== Concepts Fondamentaux ==
+
+Cette partie fournit une information générale à propos d'Emacs. Elle présente les concepts fondamentaux et les notations utilisées dans le manuel Emacs. Le manuel lui-même (`C-h i') présente Emacs et son environnement -- ''mis à part'' pour quelques données dans la section '''Emacs-Speak (Jargon)'''.
+
+== Notation ==
+Dans la documentation Emacs :
+: '''C-''' veut dire (appuyez sur) la touche Control
+: '''M-''' veut dire la touche Meta (cle Alt sur la plupart de claviers)
+: '''DEL''' veut dire la touche Backspace (non ''pas'' la touche Delete)
+: '''RET''' veut dire la touche Entrée
+: '''SPC''' veut dire la barre d'espacement
+: '''ESC''' veut dire la touche d'echappement: Escape
+: '''TAB''' veut dire la touche Tab
+
+Une combinaison comme `C-M-' (ou `M-C-') veut dire appuyez en même temps sur  les touches Control et Meta (Alt).
+
+
+== Emacs-Speak (Jargon) ==
+Voilà une traduction vers/à partir du langage Emacs :
+
+||'''Terme Commun'''||'''Terme Emacs'''||
+||sélection||région||
+||couper||tuer (kill en anglais)||
+||coller||tirer un coup sec (yank en anglais)||
+||window||cadre ([[Frame]] en anglais)||
+||raccourci||séquence clés||
+
+
+En termes Emacs : 
+
+* Une '''fenêtre''' ('''[[Window]]''' en anglais) est un carreau d'un cadre (frame), c-à-d. un sous-cadre.
+* La '''ligne mode''' ('''ModeLine''' en anglais) est le texte en bas de chaque fenêtre.
+* Le '''MiniBuffer''' est un tampon spécial pour entrer des commandes ; c'est soit dans un cadre à part, soit en bas de chaque cadre (en dessous du mode-line).
+* Le '''curseur''' (TextCursor) est le point d'insertion de texte ; c'est un rectangle par défaut.
+* Le '''pointeur''' (de la souris -- MousePointer) montre la position de la souris ; c'est une flèche par défaut.
+* La position du curseur est la valeur du '''[[Point]]'''. Par exemple, si le curseur est sur la troisième caractère d'un buffer, alors point = 3.
+* Les boutons de la souris s'appellent '''MB1''', '''MB2''', et '''MB3''' (de gauche à droite normalement). On les appelle aussi '''mouse-1''', '''mouse-2''', et '''mouse-3'''.
+* Un '''raccourci clavier''' ('''key binding''' en anglais) est une relation entre une commande et une séquence de touches. La même commande peut être liée a plus d'une séquence de touches. Une séquence de touches ne s'applique qu'a une seule commande.
+
+'''NB :''' Les commandes des menus et les actions de la souris sont aussi appelés parfois des '''séquences de touches''', par extension. Si Emacs vous demande d'entrer une séquence de touches, vous pouvez aussi choisir une commande de menu ou utiliser (par ex. cliquer) la souris.
+
+'''Voir aussi :''' 
+
+* '''[[Region]]''' pour une explication des termes '''[[Point]]''' et '''[[Mark]]'''.
+
+* CategoryGlossary pour d'autres définitions de termes Emacs.
+
+
+== Exemple Discours Emacs ==
+
+Si vous savez suivre l'exemple, vous comprenez le langage Emacs. Si vous comprenez toutes les actions décrites, vous comprenez vraiment bien la façon d'utiliser Emacs. Bonne chance :D !
+
+# Je sauvegarde le buffer <code>foobar</code> dans son fichier en utilisant la ''séquence de touches'' `C-x C-s', qui est ''liée'' à la commande `save-buffer'.
+# Ayant oublié le ''raccourci'' et le nom complet de la commande `split-window-horizontally', j'utilise la séquence `M-x' (en appuyant sur la touche Alt en tapant <code>x</code>), puis <code>s-p-l-i-t---w-i-n</code>. Ce que je tape apparaît dans le ''minibuffer'': <code>split-win</code>. 
+# Je tape <code>TAB</code>, au minibuffer s'est ajouté <code>split-window</code>, signifiant qu'il existe une commande dont le nom commence par "split-window".
+# Je tape <code>TAB</code> à nouveau, et à côté de la commande s'affiche "<code>[Complete, but not unique]</code>", c'est à dire que "split-window" est le nom complet d'une commande, mais aussi qu'il y a d'autres commandes dont le nom débute par "split-window".
+# Je tape <code>TAB</code> à nouveau. Ce qui ouvre une nouvelle fenêtre dans la même cadre, affichant le buffer <code>*Completions*</code> qui affiche les commandes dont le nom commence par "split-window". Je clique sur le nom recherché : <code>split-window-horizontally</code>, en utilisant ''MB2''. 
+# Le buffer <code>*Completions*</code> (and its window) a disparu et le cadre à été divisé en deux fenêtre, côte à côte -- chacune affichant le buffer <code>foobar</code>. C'est le résultat de l'exécution de la commande <code>split-window-horizontally</code> in the window of buffer <code>foobar</code>.
+# Ensuite, je coupe la fenêtre de gauche en utilisant `split-window-vertically' - ou, plus facilement, son raccourci : la séquence `C-x 2' de ce que je m'en rappelle. A ce point, the frame had three windows, chacune contenant le buffer <code>foobar</code>: Je peux voir son nom dans la ''mode-line'' of each window.
+# Je clique ''MB1'' dans la fenêtre en haut à gauche pour y placer le ''curseur'' -- et y donner le focus --. Puis j'y ouvre le fichier <code>toto</code>, en utilisant la séquence-clé `C-x C-f' (pour la commande `find-file'). Je peux voir, au nom, dans la ModeLine de la fenêtre que son buffer est désormais <code>toto</code>. Je tracte la ModeLine, en utilisant MB1, pour redimensionner buffer <code>toto's</code> window in the frame.
+# Dans le buffer <code>toto</code>, je tracte MB1 sur le texte pour créer une ''région''. J'utilise la ''séquence de touche'' `C-w' pour ''kill'' le texte de la région.
+# Je clique MB1 dans le buffer <code>foobar</code>. Ce qui déplace le curseur où le ''pointeur'' à été cliqué. Ensuite je  ''coupe'' le texte tué (coupé) du buffer <code>toto</code> au ''point'' du buffer <code>foobar</code>.
+
+'''Exercice:''' Répétez les exemples précédents, en termes courants (non-Emacs), en Norvégien.
+
+
+== Annuler (Abandonner) ==
+
+Vous pouvez utiliser `C-g' pour interrompre toute action entamée.
+Pour certaines commandes il peut-être parfois nécessaire de répéter une seconde cette combinaison.
+(If even this doesn't clear things up entirely, then try `C-]' or the command `top-level'; that should do the trick.)
+
+'''Exemple 1:''' Vous commencez à entrer une commande avec `M-x commande-quelconque'. Avant de valider (avec la touche <code>RET</code>), utilisez `C-g' pour abandonner la commande que vous avez commencé.
+
+'''Exemple 2:''' Vous tapez `M-x commande-quelconque' et validez. Celà parait prendre du temps... vous êtes circonspect... Utilisez `C-g' pour interrompre l'exécution.
+
+
+== Aide ==
+
+Essayer `C-h C-h' (`help-for-help') pour accéder à ''toute'' l'aide d'Emacs. Vous pouvez aussi utiliser le menu `Help'. Le manuel d'Emacs est disponible par `Help' > `Info' > `Emacs'.
+
+Parmis les commandes utiles on trouvera : (information disponible via `C-h C-h'):
+* '''C-h k''' (`describe-key') - Décrit la commande que le raccourci/menu/souris désigne: Entrez une séquence; Emacs en donne la signification.
+* '''C-h w''' (`where-is') - Liste les raccourcis/commandes menu/actions souris qui déclenchent une commande donnée. C'est l'inverse de `C-h k'.
+* '''C-h f''' (`describe-function') - Décrit une commande ou autre fonction.
+* '''C-h a''' (`apropos') - Liste tout les commandes dont le nom contient la chaine de caractères. Exemple: `C-h a-file' liste les commandes contenant "file".
+* '''C-h m''' (`describe-mode') - Décrit le(s) mode(s) du buffer actif : décris les séquences importantes disponibles dans le buffer et donne quelques informations supplémentaires spécifiques au buffer.
+* '''C-h i''' (`info') - Lancer Info, le navigateur de documentation: Accès au Manuel Emacs (et autres documentations).
+
+
+== Commandes et Séquences ==
+
+Emacs a des '''commandes''', dont certaines sont liées à des '''séquences de touches''' ou '''séquences''' tout court. Par exemple la commande `forward-char' qui signifie "avance le curseur d'un caractère" est associée à la séquence `C-f'.
+
+Une séquence peut-être une combinaison de touches comme `C-x C-c'. Mais elle n'a pas besoin de se limiter au clavier, la souris et les sélections dans le menu en font parti.
+
+; '''Exemples''':
+La commande `indent-code-rigidly' n'est (par défaut) liée à aucune séquences. La commande `grep' n'est (par défaut) liée à aucune séquences de touches, mais on peut la sélectionner dans le menu '''Tools''' > '''Search Files''' (= ##[menu-bar tools grep]##).
+
+Vous pouvez lancer une commande, quelle soit liée ou pas à une séquence, en la précédant de `M-x'. Exemple: `M-x grep' lance la commande `grep'.
+
+Après avoir tapé `M-x', les commandes entrées précédemment sont disponibles, pour être éditées ou réexécutées, via les séquences `M-p' ('''p'''revious) et `M-n' ('''n'''ext).  Voir aussi `C-x ESC ESC' pour l'édition des commandes complexes.
+
+Vous pouvez attribuer n'importe quelle commande à n'importe quel séquence de touches. C'est la raison pour laquel nous avons dit que la commande `indent-code-rigidly' n'est pas liée ''par défaut''. Vous pouvez également délier n'importe quel séquence de touches.
+
+
+== Entrée ==
+
+Certaines actions nécessitent que vous entriez du texte dans le minibuffer (la où vous tapez les commandes). Un texte par défaut (généralement le texte entourant le curseur), modifiable, peut déjà y être présent.  Si vous le voulez, vous pouvez le supprimer rapidement avec la séquence `M-C-DEL' ou `C-x DEL'.  Utilisez `RET' pour confirmer l'entrée désirée.
+
+Par exemple, la commande `grep' (menu `Tools' > `Search Files', ou simplement `M-x grep') réclame un motif de recherche (généralement une expression régulière) et au moins un nom de fichier dans lequel chercher. Par défaut, cette commande utilise le texte situé autour du curseur comme motif de recherche. Si ce n'est pas ce que vous vouliez chercher, tapez `M-C-DEL' (ou simplement plusieurs fois `DEL's) pour le supprimez du minibuffer, et tapez ensuite le motif et le nom du fichier désiré et confirmez avec `RET'.
+
+
+== Modes Buffer ==
+
+Chaque buffer possède son propre mode d'édition (commandes spécifiques au buffer et raccourcis clavier). Les informations sur le mode du buffer courant sont disponibles depuis le menu `Help' > `Describe' >  `Describe Buffer Modes' ou par la séquence `C-h m'.
+
+'''Remarque :''' Si vous utilisez la bibliothèque Lisp:menu-bar+.el de DrewAdams, les menus spécifiques au buffer sont séparés du menu général : Les menus spécifiques au buffer sont placé sur la gauche du séparateur '''||'''. Les menus sur la droite (`Buffers', `Files', `Tools', `Edit', `Search', `Frames', `Help') sont commun à tous les modes. Un clic sur la barre affiche une explication: "<-- Current mode menus to left.   ||   Common menus to right -->":
+
+[[image:DrewsEmacsMenuBarBar]]
+
+(Si vous chargez également Lisp:doremi-frm.el ou Lisp:doremi-cmd.el, on trouve également un menu '''Do Re Mi''' entre le menu '''Frames''' et '''Help'''.)
+
+
+== Défaire (Revenir à l'état précédent) ==
+
+Vous pouvez défaire toutes vos actions depuis le menu `Edit' > `Undo' (ou avec les raccourcis `C-/' ou `C-_'). On peut répéter cette opération ''autant de fois qu'on le veut''. 
+
+Pour arrêtez de défaire, commencez une autre action.
+Si vous recommencez à défaire, Emacs refait ce que vous veniez de défaire (puisque qu'il défait ce qui a été défait!)
+
+Vous pouvez savoir que vous avez défait toutes les modifications non sauvegardés quand la partie en bas à  gauche de la ligne de mode affiche `--' à la place de `**'. Vous pouvez également défaire toutes les modifications non sauvegardés avec la commande `M-x revert-buffer'.
+
+
+== Souris ==
+
+Vous pouvez utiliser votre souris comme d'habitude : clic gauche et déplacer pour définir une région à sélectionner, un clic sur le boutons du milieu pour copier. En fonction du buffer courant, un clic droit pour étendre la sélection (double clic pour la supprimer) ou pour ouvrir un menu contextuel. Jetez un coup d'œil au manuel Emacs pour découvrir les autres actions disponibles à la souris. En particulier, on peut ajouter une autre région à la sélection en maintenant la touche Meta enfoncé pendant qu'on utilise la souris. Par exemple appuyez et maintenez `M-' quand vous déplacez la souris pour définir une seconde région de sélection; appuyez et maintenez `M-' et cliquez sur le bouton du milieu pour coller la sélection. Cette fonction peut être ''très'' utile pour coller ensemble deux régions séparées etc.
+
+
+== Chercher et Remplacer ==
+
+Vous pouvez utiliser le menu `Search'. Néanmoins, généralement il vaut mieux effectuer une recherche incrémental (plus pratique et plus puissante). Elle est accessible avec les raccourcis `C-s' et `C-r'. Other search options are available, including regular expression (wildcard) searches and searching (`M-x grep') or replacing (`Q' in Dired) in multiple files.
+
+
+== Région (Sélection) ==
+
+Le curseur du texte (pas le pointeur de la souris) définit la position du '''point''' qui est l'extrémité finale de la '''région''' de sélection. L'autre extrémité est la position du '''mark'''. Le mark est invisible; le point est indiqué par le curseur. 
+
+Vous pouvez attribuer la position d'un point avec un clic gauche (MB1) ou en utilisant les touches avec les flèches. Vous pouvez attribuer la position du mark d'une de ces façons :
+* `C-SPC' (le point reste où il était)
+* en déplaçant le point avec MB1 (l'ancien point devient le mark)
+* en cliquant sur MB3 (la nouvelle position devient le point; l'ancien point devient le mark)
+
+Si vous définissez une région sans utiliser la souris, elle peut-être invisible; pour la rendre visible effectuez la séquence `C-x C-x', qui intervertit également le point et le mark.
+
+[:RepeatingPreviousCommands]
+== Répéter les Commandes Précédentes (Et éventuellement les modifier...) : `C-x ESC ESC' ==
+
+''Comment puis-je répéter facilement la commande précédente? Comment puis-je répéter une commande en la modifiant?
+
+La réponse est `C-x ESC ESC' (Control-X, puis Escape, puis Escape). Cette séquence place le code Lisp Emacs de votre dernière commande (ou séquence) dans le minibuffer - tapez simplement 'Entrée' pour exécuter à nouveau la précédente commande. 
+
+''Exemple:''
+* Tapez `C-h f', qui correspond à la commande `describe-function'. Le minibuffer répond ceci : <code>Describe function: (? for help)</code>. 
+* Entrez dans le prompt le nom de la fonction "undo" : <code>Describe function: (? for help) undo</code>. L'aide de la fonction `undo' est affichée.
+* Si vous tapez `C-x ESC ESC' - voici ce qui apparait dans le minibuffer:
+
+        Redo: (describe-function (quote undo))
+
+* C'est l'équivalent en code Lisp Emacs de la dernière commande que vous venez d'exécuter. Pour l'exécuter encore, tapez 'Entrée'. Pour afficher la description d'une autre commande, par exemple `forward-sexp', remplacez "undo" par "forward-sexp", et tapez 'Entrée'.
+
+        Redo: (describe-function (quote forward-sexp))
+
+Cet exemple n'est pas très utile. Mais supposons maintenant que vous vouliez répétez la commande 'query-replace' dans plusieurs buffers avec les mêmes arguments : "bush" et "kerry" (c'est à dire remplacez "bush" par "kerry"). Vous exécutez la commande, vous cliquez dans un buffer différent, puis vous terminez par la séquence `C-x ESC ESC' pour l'exécuter encore une fois :
+
+        Redo: (query-replace "bush" "kerry" nil (if (and transient-mark-mode mark-active) (region-beginning)) (if (and transient-mark-mode mark-active) (region-end)))
+
+La partie <code>(query-replace "bush" "kerry"</code> correspond à la commande de remplacement et a un sens pour vous, mais qu'est ce que signifie le reste du code? Ne vous en faites pas pour ça, tapez juste 'Entrée'. 
+
+Mais si vous vouliez vraiment comprendre, comment pouvez-vous faire? ''Correct:'' `describe-function query-replace' (`C-h f' query-replace). L'aide vous indique que la commande `query-replace' prend en fait cinq arguments :
+
+* <code>FROM-STRING</code> - votre choix : "bush"
+* <code>TO-STRING</code>   - votre choix : "kerry"
+* <code>DELIMITED</code>   - votre choix (par default) : nil
+* <code>START</code>       - votre choix (par default) : <code>(if (and transient-mark-mode mark-active) (region-beginning))</code>
+* <code>END</code>         - votre choix (par default) : <code>(if (and transient-mark-mode mark-active) (region-end))</code>
+
+Vous pouvez consulter l'aide pour comprendre chaque argument. En résumé, les deux derniers arguments définissent les limites de recherche de la commande <code>query-replace</code>. Ils signifient que si vous avez une région active (c'est à dire un texte sélectionné), la recherche est limité à cette région. Si aucune région n'est active, alors la recherche s'effectue sur toute la région du buffer située après le curseur.
+
+[Quelle leçon doit-on en tirer? ''Se familiariser avec Emacs Lisp peut vous aider à utiliser Emacs plus efficacement.'' Et plus vous en apprendrez sur Emacs Lisp, plus vous pourrez être efficace.]
+
+Qu'est ce que vous devez faire si vous avez fait plus que cliquer dans une autre fenêtre (pour se placer dans un autre buffer) pour ré-exécuter la commande <code>query-replace</code>? La commande précédente peut alors ne plus être <code>query-replace</code>; ça peut être quelque chose comme <code>switch-to-buffer another-buffer</code> (La commande <code>switch-to-buffer</code> est liée à `C-x b').
+
+''Comment puis-je exécuter une commande qui n'est pas ma dernière commande?''
+
+Il faut également utiliser la séquence `C-x ESC ESC', mais ensuite utiliser `M-p' pour retrouver la commande précédente suivante, `M-p M-p' pour obtenir la commande précédente qui suit celle-ci, et ainsi de suite. En fait `M-p' permet de se déplacer en arrière parmi les commandes précédemment exécutées; `M-n' permet de se déplacer en avant parmi les commandes précédemment exécutées.
+
+
+== Macros Clavier, ou comment puis-je faire cela encore et encore ? ==
+
+Une des plus des choses les plus utile que vous puissiez apprendre est la manière d'enregistrer une séquence de touches comme une "macro clavier", et de la jouer ensuite comme une macro (plusieurs fois, peut-être). Allez voir du coté des KeyboardMacros pour savoir comment faire ça.
+
+'''Remarque :''' Presque tout ce que vous faites avec Emacs peut être enregistré comme une "macro clavier", pas seulement les frappes sur le clavier. Cela inclut également les actions à la souris et les sélections dans les menus.
+
+Une autre chose intéressante que vous puissiez faire avec une macro clavier est d'en sauvegarder le code Lips Emacs, et ensuite d'adapter ce code pour l'utiliser comme une commande classique.
+
+
+= Trucs Pour Apprendre =
+
+== Pratiquez ! ==
+
+Essayez le tutorial Emacs (voir la section [[#EmacsTutorial]], au dessus).
+
+De nombreuses personnes apprennent mieux en faisant qu'en se contentant de lire une liste de commandes en tentant de les mémoriser. Procurez vous un gros fichier texte pour vous amuser un peu avec. Faites une copie de sauvegarde de votre fichier si vous avez peur de le perdre -- mais ne vous en faites pas : Emacs rend difficile la perte de votre travail, et possède une bonne commande pour défaire : `C-/' or `C-_'. (Si vous avez besoin d'un fichier texte pour vous exercer, allez voir du coté du projet Gutenberg : http://www.promo.net/pg.)
+
+
+== Demandez à Emacs ! ==
+
+Demandez directement à Emacs tout ce que vous voulez connaitre sur lui : une entrée dans le menu, un terme dans la documentation, un nom de commande.... Il existe des commandes d'aide pour cela :
+# Retenez cette séquence : `C-h k' (commande `describe-key').
+# Utilisez la pour découvrir les séquences `C-h f', `C-h v', `C-h w', `C-h m', `C-h b', et bien d'autres. Procédez ainsi, tapez `C-h k', tapez ensuite la séquence que vous souhaitez (re)découvrir. '''Toutes les séquences qui commencent par `C-h' procure de l'aide sur Emacs.'''
+# Use `C-h f', `C-h v', and so on to learn about everything Emacsian!
+
+Vous pouvez également cherchez dans ''l'aide complète d'Emacs'' via la séquence `C-h C-h' (commande `help-for-help'), bien que cette manière soit un peu moins directe.
+
+Si vous n'êtes pas un newbie total, donc que vous savez comment charger une bibliothèque Emacs (voir LoadingLispFiles et CategoryDotEmacs), essayez la commande `help-on-click/key' (liée à `C-h RET'), disponible dans la bibliothèque Lisp:help+.el de DrewAdams. Elle vous permet de cliquer sur un ''nom'' dans un buffer, cliquer sur une ''partie'' d'une fenêtre Emacs, taper une ''séquence de touches'', ou une ''entrée du menu'', et d'obtenir un maximum d'informations sur cet objet (Voir HelpPlus).
+
+La bibliothèque Lisp:menu-bar+.el de Drew permet un accès plus facile à la barre de menu (Voir HelpMenuBarPlus et MenuBar).
+
+
+== Apprendre Quelques Notions de Lisp Emacs ==
+
+Oui, le langage Lisp Emacs c'est également pour les ''newbies''. Le fait est que si vous apprenez rien qu'un petit peu de Lisp Emacs, votre utilisation d'Emacs va devenir bien plus efficace. Quelques raisons :
+* Vous comprendrez mieux la documentation et l'aide des fonctions et variables.
+* Vous serez capable de consulter le code source Lisp d'une function ou d'une variable, afin de mieux la comprendre.
+* Vous serez capable de convertir des séquences classiques, utilisées précédemment dans une macro clavier, pour créer votre propre commande (écrite en Lisp). -- Voir [[KeyboardMacros]]
+* Vous serez en mesure de récupérez des extraits de code depuis le code source ou depuis le Web, et de les adapter pour créer vos propres commandes Emacs.
+* Vous serez capable de customiser Emacs pour qu'il réponde à vos besoins et vos envies.
+
+Pour résumer, comment pouvez-vous apprendre Lisp Emacs?
+* Utilisez `C-x ESC ESC' pour répéter les commandes que vous venez d'exécuter : Avant de valider la commande avec 'Entrée', vous pouvez voir dans le minibuffer comment on exécute la même commande en Lisp -- voir [[#RepeatingPreviousCommands]].
+* Utilisez `C-h f' (<code>describe-function</code>) ou `C-h v' (<code>describe-variable</code>) pour avoir une description, respectivement, d'une commande ou d'une variable. Quand vous êtes sur une page d'aide, cliquez sur le nom d'une fonction ou d'une variable (lien) pour aller directement vers le code source où elle est définie. Enfin si vous voulez savoir ce que fait une fonction, placez votre curseur dessus et tapez `C-h f'.
+* Utilisez `C-h k' pour connaitre la commande liée à une séquence de touches. Appliquez ensuite le point précédent : cliquer sur le nom (lien) pour voir son code source...
+* Lisez l' ''Emacs Lisp Introduction'' : tapez `C-h i', puis choisir `Emacs Lisp Intro'. Vous pouvez également lire l'introduction sur le web à l'adresse http://www.gnu.org/software/emacs/emacs-lisp-intro/. Voir [[EmacsLispIntro]] pour plus d'informations.
+* Lisez directement l' ''Emacs Lisp Reference'' -- il est très bien écrit : tapez `C-h i', puis choisir `Elisp' (Lisp Emacs est quelque fois appelé "Elisp"). Vous pouvez également lire EmacsLispReference sur le web à l'adresse http://www.gnu.org/software/emacs/elisp-manual/. voir [[EmacsLispReference]] pour plus d'informations.
+
+== Fiche de Référence Complète pour les Débutants ==
+
+* Ouverture de fichier : C-x C-f -- tapez ensuite le nom du fichier.
+* Créer un nouveau document : C-x C-f -- tapez ensuite le nom d'un fichier qui n'existe pas encore; utilisez TAB pour la [[Completion]] pour vous assurer que le fichier n'existe pas déjà.
+* Sauvegarder un fichier : C-x C-s
+* Quitter Emacs : C-x C-c
+* Tuer un buffer (fermer un fichier) : C-x k
+* Diviser (split) la fenêtre (pour voir deux fichiers à la fois) : C-x 2
+* Rassembler (unsplit) la fenêtre (pour ne (re)voir qu'un fichier à la fois) : C-x 1
+* Changer de fenêtre (après que vous l'ayez divisé) : C-x o
+* Changer de buffer (si vous éditez plusieurs fichiers) : C-x b
+* Lister les buffers de la session courrante : C-x C-b
+* Appeler une commande dont vous avez oublié le raccourci : M-x -- tapez ensuite le nom de la commande et utilisez TAB pour la completion.
+* Obtenir de l'aide : C-h, et une de ces touches :
+** k - que fait un raccourci clavier?
+** f - que fait une fonction?
+** m - quels sont les raccourcis définis dans ce mode?
+** w - quel est la touche liée à la fonction?
+** a - quel commande correspond à la chaîne de caractères?
+
+Noorul a préparé un tableau qui décrit les touches attribuées aux fonctions les plus utilisées dans Emacs : http://noorul.mybesthost.com/Emacs.php#2.
+
+Windows users might want to peek at this ScrollLock note.
+
+== Documentations ==
+=== Emacs pour les Auteurs ===
+Randall Wood a écrit un petit guide sur l'utilisation d'Emacs pour l'édition de texte (pas pour du code), qui couvre la plupart des fonctions utiles pour le traitement de texte, mais qui peut être utile également au débutant. Trouvez le à l'adresse suivante http://www.therandymon.com/papers/emacs-for-writers.pdf   -- Randall Wood 
+
+Lien valide -- 20-05-2008
+
+
+=== Si vous voulez un Livre Ordinaire ===
+
+Certaines personnes préfèrent un livre sur support papier parce qu'ils peuvent le lire sans rester bloquer devant un écran.
+L'EmacsLispIntro, l'EmacsLispReference, et l'EmacsManual sont tous disponibles auprès de GnuPress.
+Ces livres sont excellent et, en plus, leurs achat permet de supporter la FreeSoftwareFoundation.
+
+Some people also believe that the GnuFreeDocumentationLicense is not "free". Further discussion on EmacsManualLicense.
+For our position on licensing, see the discussion started [[2003-11-16]]
+on moving from the FDL to our current license (see footer of this page).
+
+Allez également jeter un coup d'oeil à la page [[Critique de Learning GNU Emacs 2nd Edition]] pour une critique du livre "Learning GNU Emacs" 2nd édition.
+
+== Sams "a enseigné à tous les autres en 24 heures" ==
+
+I found the section on Gnus especially helpful. -- Anonymous
+
+Please do not add a link to online copies of this book, unless you are
+certain that this publication is legal in at least Switzerland (where
+I am) and Germany (where the server is).  Please link to the
+appropriate note as well.  A simple disclaimer will not do.
+-- "Dot Freeze: The Fear of Lawyers!" AlexSchroeder
+
+Aren't the authors (at least one of them) wiki users?  They can
+tell us if we can (or can't) place this link here. (It's a very
+interesting link!) -- JeanPhilippeTheberge
+
+The authors of the book may not own the copyright.  They probably don't if the book was published in the US. -- Erika
+
+
+
+
+(voir AbbréviationDesCommandesClavier)
+
+Tout d'abord pour les utilisateurs réguliers du bash shell sous unix, rappelons que les raccourcis claviers par default du bash sont aussi ceux d'emacs ( C-a pour aller en début de ligne, C-r pour rechercher dans l'historique, C-k pour supprimer la fin de la ligne, etc ..  ) Idem si vous êtes dans le mode emacs du korn shell ( set -o emacs pour entrer en mode emacs) 
+
+
+Ovrir un fichier:  C-x C-f -- puis taper le nom du fichier, utilisez TAB pour complèter automatiquement.
+
+Créer un nouveau document : C-x C-f -- puis taper un nom du fichier qui n'existe pas encore, utilisez TAB pour complèter automatiquement.
+
+Sauvegarder un fichier: 
+* sous le nom actuel C-x C-s.
+* sous un autre nom  C-x C-w <saisir le nouveau nom du fichier>.
+
+"Tuer" un buffer (fermer un fichier):  C-x k.
+
+Diviser un fenêtre (pour voir deux fichiers en même temps):
+* horizontalement:C-x 2.
+* verticalement : C-x 3.
+
+Annuler la division de la fenêtre : 
+* maximiser la fenêtre courante: C-x 1.                                    
+* fermer la fenetre courante (sans pour autant tuer le buffer visualise) C-x 0.
+
+Changer de fenêtre (Après qu'elle ait été divisée): C-x o.
+
+Changer de buffer (si vous editez plusieurs fichiers): C-x b.
+
+Menu Buffer (liste des buffers): C-x C-b.
+
+Invoquer des commandes pour lesquelles vous ne vous souvenez plus du raccourci clavier: M-x -- tapez ensuite le nom de la commande, utilisez TAB pour complèter automatiquement.
+
+Obtenir de l'aide: C-h, puis une des touches suvantes:
+
+* k - quelle est la fonction d'un raccourci clavier?
+* f - qu'est-ce que fait une fonction?
+* m - quels sont les raccourcis claviers disponibles pour ce mode?
+* w - quel est le raccourci clavier pour une fonction?
+* a - quelle commande  correspond à une chaine de caractères?
+
+This page is also available in English: English:EmacsNewbie. 
+
+----
+CategoryHelp
+CategoryDotEmacs
+

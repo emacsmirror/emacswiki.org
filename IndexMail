@@ -1,0 +1,123 @@
+You can make a index of your stored mails using dedicated tools and a Gnus backend. This allows you to easily search through your entire mail database.
+
+== Setting up swish-e ==
+
+The setup is quite easy. First choose your SearchEngine. I especially recommend DebianUser to install swish-e (http://swish-e.org) which is quite quick to index even with a huge amount of files.
+
+Then you have to tell your index tool to ... index your stuff.
+
+I personnally did it using this command:
+
+ swish-e -i . -f /home/zedek/Mail/index.swish -e -v 2
+
+It means I asked to swish-e to index all files and directories (recursively) under the current directory (in fact I was in the Mail tree ~/Mail). The -f parameter indicates to create an index file named index.swish under ~/Mail. -e switch means "economic mode" (less use of RAM) and -v 2 is for the level of verbosity.
+
+For more informations on the use of the tools please consult the README files and/or go to the swish-e website.
+
+Depending on the amount of mails you get, it may take a while :)
+
+Now let's say your stuff has been succesfully indexed, all you need to do is to configure gnus to access the data.
+
+Such a task will be achieved by using the nnir backend by KaiGrossjohann.
+
+Actually, nnir is able to access data from several index tools (have a look into source code) such as wais, namazu, swish-e, swish++.
+
+Just add into your .gnus file the following command :
+
+ (require 'nnir)
+ (setq nnir-search-engine 'swish-e)
+ (setq nnir-swish-e-index-files (list (expand-file-name "~/Mail/index.swish")));
+
+There are other parameters you also can set but this is enough to start.
+
+Now whenever you will type 'G-G', Gnus will react by asking you to type keywords you want him to retrieve mails for.
+
+Then nnir will open a new buffer with the possible mails matching your request.
+
+You can there choose to go to the thread by typing 'G-T' (Mx gnus-summary-nnir-goto-thread RET) onto an item. You will then be teleported into the group this article came from.
+
+== Downloading ==
+
+You should find the latest nnir.el file available at :
+
+http://quimby.gnus.org/cgi-bin/cvsweb.cgi/gnus/contrib/
+
+but something is wrong with the web interface right now (2005-11-15).
+
+XEmacs gnus package contains nnir.el, but works for
+(setq nnir-search-engine 'swish-e)
+only from XEmacs gnus package version 1.87 up (= gnus-version 5.10.7).
+
+As of 2005-11-16 this is a pre-release available from
+http://www.xemacs.org/Releases/index.html#Pre-Releases
+
+== Tips ==
+
+DebianUser can find nnir.el by installing emacs-goodies package
+
+The index will need to be updated regularly.
+
+Since Oort Gnus nnir.el is part of Gnus. You can find it in the contrib directory.
+
+=== Incremental Indexing ===
+
+For nnml backends: rather than full indexing each time use incremental indexing:
+
+  swish-e -i . -N /home/zedek/Mail/index.swish -f /home/zedek/Mail/index.incremental -e -v 2
+
+This will only index files added since index.swish was created. Note this will work only for nnml backends, since new mails are stored as new files.
+
+Then merge the two indexes with
+
+ swish-e -M index.swish index.incremental index.tmp
+ mv index.tmp index.swish
+
+This can lead to missed files if new files got added <u>while</u> index.swish was getting created (if it took a while to run). Look into documentation of swish-e on ways to avoid that.
+
+== Problems ==
+
+I have encountered big problems using swish++ search tools when trying to index my mails. It was working for hours without results so I am harmly recommending you not to use this tool if your are a DebianUser.
+
+The indexing process can be very long.
+
+IIRC, it took about 30 minutes (for me) to index 1500 Mo of mails.
+
+: Current versions of swish-e are much much faster than the version in Debian woody. -- Dirk
+
+: This speed is pretty good for search engines. If swish++ don't support incremental indexing, you can try Lucene instead. -- LiuJin
+
+[new]
+
+I just tried swish-e -i . -f /$HOME/Mail/index.swish -e -v 2, as suggested above, and am seeing lots of complaints like
+
+        input conversion failed due to input error, bytes 0x8C 0x88 0x92 0xE8
+
+I don't know if these are serious problems or not.
+
+----
+== Indexing Mail with gnus-namazu.el ==
+
+If you don't want to use swish-e and nnir.el I recommend you to try namazu [1] and gnus-namazu.el, which is in gnus/contrib like nnir.el. These are the settings I have in my .gnus.
+
+ (require 'gnus-namazu)
+ (gnus-namazu-insinuate)
+ (setq gnus-namazu-make-index-command "mknmz")
+ (setq gnus-namazu-make-index-arguments
+      '("--all" "--mailnews" "--deny=^.*[^0-9].*$" "--exclude=(SPAM|ham)"))
+
+These are all standard settings except gnus-namazu-make-index-arguments where I added "--exclude=(SPAM|ham)" for not indexing my SPAM an ham folder which hold only useless mails for training my spam filter.
+
+Now you can create the index of your mails with `M-x gnus-namazu-create-index' and then search for a mail with `C-c C-n'.
+
+[1] If namazu isn't part of your dirstibution you can get it from http://www.namazu.org
+
+[new]
+: Is there a way to make Namazu recognize nnfolder files? --SebastianBlatt
+
+----
+== Indexing mail using Mairix ==
+
+Mairix is a tool for searching words in locally stored mail. It is very fast and easy to set up. For more information on how to use Mairix with Gnus visit GnusMairix.
+
+----
+CategoryGnus

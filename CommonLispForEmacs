@@ -1,0 +1,56 @@
+There are two ways to incorporate CommonLisp in EmacsLisp programs:
+
+== The cl package ==
+
+With this, some CommonLisp functions and macros can be used in EmacsLisp programs.
+
+It is already loaded when you start XEmacs.  For GNU Emacs, you need to add the following to your ~/.emacs file:
+
+    (require 'cl)
+
+There is a separate InfoMode manual for this package.  See Info node (cl).  Some
+aspects of EmacsLisp can't be changed or emulated transparently: you
+don't get packages, you don't get lexical scoping unless you
+ask for it with `lexical-let', you don't get keyword arguments unless
+you define your function with `defun*' and so on.  See the Info node
+(cl)Common Lisp Compatibility.
+
+[new]
+"Note that variables bound with lexical-let are never released, even if they are never used. Try
+
+ (loop for i from 1 to 100000 collect (lexical-let ((x i)) '()))
+
+and watch it eat memory." (from http://c2.com/cgi/wiki?EmacsLisp )
+
+[new]
+Packages distributed within GNU Emacs don't use cl at runtime (on account of its size, and potential future namespace clashes), only via byte-compiled macros (see the introduction to the cl manual on this).  That doesn't mean you must avoid cl altogether if you aspire to get code into Emacs, indeed major packages like CcMode and [[Gnus]] happily use cl; just ensure it's only through macro forms (such as `push', `setf', `defun*', `loop').  The easiest way to do that is
+
+  (eval-when-compile (require 'cl))
+
+instead of
+  
+  (require 'cl)
+
+The <code>eval-when-compile</code> gets cl loaded when compiling, and the macros expand at that time, leaving no reference to cl in the <code>.elc</code> (if only macros forms are used).  If running uncompiled cl is loaded, but that's ok since there are currently no technical issues.
+
+----
+
+[new]
+I just noticed that the doing (require 'cl) gives problems in [[Eshell]]. -- LennartBorgman
+
+[new]
+Can you be more specific? ;-) -- DrewAdams
+
+
+
+== Emacs Common Lisp ==
+
+EmacsCommonLisp is (or will soon be) a full implementation of CommonLisp.
+
+== Highlighting cl functions ==
+If you want to highlighting cl functions for coding conventions, you
+can use Lisp:highlight-cl.el package.
+
+----
+CategoryCode
+CategoryExtensionLanguage

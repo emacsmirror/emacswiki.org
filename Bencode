@@ -1,0 +1,36 @@
+Bencoding is a way to encode integers, strings, lists, and hash-tables
+as strings (serialization), and bdecoding does the reverse operation.
+It is part of the [http://bittorrent.org/protocol.html BitTorrent metafile specification].
+
+* Lisp:bencode.el
+
+Missing: The specification says "Keys must be strings and appear in sorted order (sorted as raw strings, not alphanumerics)." – What does that mean, exactly? Sorting on the raw bytes?
+
+Here's an application for the code: [::TorrentView] lets you view the files in a torrent:
+
+{{{
+(defun torrent-view (&optional file)
+  "View the current buffer or FILE as a bencoded torrent metainfo file."
+  (interactive "fTorrent file: ")
+  (with-temp-buffer
+    (insert-file-literally file)
+    (goto-char (point-min))
+    (let* ((data (bdecode-buffer))
+	   (info (cdr (assoc "info" data)))
+	   (files (cdr (assoc "files" info))))
+      (set-buffer (get-buffer-create file))
+      (erase-buffer)
+      (insert "        Size  Filename")
+      (newline)
+      (dolist (file files)
+	(let ((path (cdr (assoc "path" file)))
+	      (length (cdr (assoc "length" file))))
+	  (insert (format "%12d  " length)
+		  (mapconcat 'identity path path-separator))
+	  (newline)))
+      (goto-char (point-min))
+      (view-buffer (current-buffer)))))
+}}}
+
+----
+CategoryCode

@@ -1,0 +1,176 @@
+Mp3player is a mpg321/ogg123 interface to gnu/emacs
+
+Current version is 2.0.
+
+IMPORTANT NOTE: mp3player will no more be updated as it is beeing replaced with [[EMMS]].
+
+
+But 2.0 is already very outdated, so please use cvs! The most times it's very usable... :)
+
+It works on emacs on both unix and windows.
+Never tried it with xemacs. But we get reports complaining that mp3player does not work on xemacs. None of the developers uses xemacs, so if you use xemacs and are eager to contribute soemthing, please send us a mail or join #emacs.
+
+It supports remote file playing, playlist, id3 edition and a scoring system.
+
+Check the sources for documentation, until the real texinfo documentation become available.
+
+The homepage is http://www.nongnu.org/mp3player/
+
+A copy is also available in the ElispArea - this version may not be up to date, check Savannah first.
+
+===How to use mp3player===
+
+(This are not the total documentation as i use the wiki to update it a little bit)
+
+Put the following stuff in your ~/.emacs to get mp3player running:
+
+ (add-to-list 'load-path "path/to/your/mp3player/files")
+ (autoload 'mp3player-play-all "mp3player.el" "Start playing music" t)
+
+I use mp3player-play-all as autoloaded function as most people
+probably just want to play all their music files randomly, although
+there are some other possible functions like
+mp3player-play-directory, mp3player-play-from-playlist and
+mp3player-play-all-files-from-url.  You can also mark music files in
+a dired buffer and use dired-do-play-mp3 to play them.
+
+Following release 2.0 there will be a new concept mainly by using a playlist buffer. Beware not to mix playlist buffer with the playlist. In the playlist buffer you can edit the playlist, but the internal playlist-variable will only be updated at some times in the process (mainly before deciding what to play next). Using dired becomes much more important as you can now alter the playlist by using mp3player-add-files-from-dired to insert files in the playlist after point.
+
+There are some variables you definitely want to set.  mp3player
+searches all subdirs from mp3player-path on for files to
+play.  Accordingly to the size of your home directory that could
+take some time.  So please set mp3player-path to the path where you
+collect your music files.  Maybe you are using a older computer like
+me and changing tracks take two or three seconds, then you could
+change mp3player-get-tag-method to external.  The default is to use
+just elisp code to get the tags and elisp isn't the fastest
+language... To use external you will need mp3info and vorbiscomment
+(from the vorbis-tools package in Debian) Both packages should come
+with every Linux Distro i know.  If you want to use another program,
+just mail use and we will (maybe :) add support for it.  If your
+computer is fast like Jean-Philippe's forget everything i said and
+enjoy the feeling that you just need Emacs!
+
+If you want to play your files randomly you have to set
+mp3player-random-status to t or use
+mp3player-toggle-randomness.  This function won't save random status
+for the next session!).
+
+Producing playlists is very easy.  You just have to mark some files
+in a dired buffer and call
+mp3player-dired-save-marked-as-playlist.  Mp3player will ask you for
+a name and save it under mp3player-playlists-directory, which
+defaults to "~/.emacs-mpg123/playlists".  Another way, which is
+especially usefull if you have already sorted your files, is
+mp3player-make-playlist-from-directory.
+
+You can use the playlist buffer, which defaultes to *Playlist*, to modify the playlist or interfere with mp3player per mp3player-mode. There's even a function for switching, mp3player-switch-to-playlist, that some people binds to a key by FIXME
+
+As mp3player.el is just an interface, it won't play your files
+without the help of external programs.  We try to use elisp as much
+as possible, but i bet there will be no relative fast mp3 decoder
+in elisp (but if you want to code it i won't put you back!).  In the
+moment we use mpg321 and ogg123 for encoding mp3s and oggs.  You
+will also need aumix to set the volume.  You can find these programs
+under the below-mentioned adresses, althouhg most linux distros
+will have them.
+
+mpg321     http://mpg321.sourceforge.net/
+ogg123     http://www.vorbis.com/files/1.0/unix/
+aumix      http://jpj.net/~trevor/aumix.html
+
+Beware! mpg123 is *NOT* free software, as the authot don't allow
+redistribution of modified sources or binaries.  As drop-in
+replacement you can use mpg321, which is free software and modelled
+after mpg123. So please don't use it.
+
+Windows user should download cygwin vorbis-tools in the Audio category
+from http://www.cygwin.com.
+Also, MPlayer from http://mpf.dzm.hu/download.php supports many audio
+formats, including webstreams via the mms:/ scheme.
+
+In the moment it is not possible to edit comments of ogg vorbis
+files.  But we will work on that definitively! Promised!
+
+Some codes and ideas borrowed from mpg123.el by HIROSE Yuuji [yuuji@gentei.org]
+and from mp3-tools by Steve Kemp <skx@tardis.ed.ac.uk>
+Many Thanks to you Yuuji and Steve!!
+
+This package was developed and tested under GNU/Linux - Suze 6.2 and
+Emacs 20.5.1.  It was reported to work also under some version of
+Xemacs with some errors at compile time.
+
+Developped while listening: Chara, the Butthole Surfers, Black Sabbath
+                            and a lot of Ska!
+
+
+===About the ElispArea===
+
+The files Lisp:mpthreeplayer.el and Lisp:mpthreeplayer-sco.el must be renamed
+respectively mp3player.el and mp3player-scores.el before use.
+
+===How to use scoring.===
+
+* Set the variable 'mp3player-use-scoring' to 't'
+* Make sure 'mp3player-path' is set.
+* Decide in what "mood" you are.  This is a one word string to identify the kind of music you are most likely to enjoy listening right now.
+* Do 'M-x mp3player-change-mood' and enter the "mood" you are in.
+* Now start the music with 'M-x mp3player-play-all'
+* When you dont like what's playing, skip it (with 'mp3player-skip')
+* When you really like what's playing, do 'M-x mp3player-score-up-current'
+* Do this for some time...
+* You can do 'M-x mp3player-save-scores' from time-to-time for obvious reasons...
+* Now, What you dont like is scored -1, what you like is scored 1 and the rest is scored 0.
+* You can decide the minimum score for playing by setting 'mp3player-min-score' or by using the commands 'mp3player-lower-tolerance' and 'mp3player-score-be-more-tolerant'
+* After you have done this for some differend "mood", it's time to have fun associating "mood" with other factor like time of day.  I prefer really calm music in the morning and although I like Black Sabath, I dont want the hear 'Paranoid' at 7:00AM so I set (run-at-time "6:00" nil (lambda ()(mp3player-change-mood "calm")))  Now, I dont need to bother, I just start the music and enjoy...
+
+===Save last position (for audiobook listening) snippet===
+
+I (RichardKlinda) use mpg123.el (version 1.42 OLD!!) to listen to audiobooks (otherwise I use XMMS), because it is very easy to configure in a way that is very comfortable.  I've a wireless mouse, scrolling is forward / backward 5 sec, right click is pause/play, so I can lay down on my bed with my mouse and Palm, listening to and reading some literature.  When I want to do something else I press pause and because XMMS is my regular music player *mpg123* just waits for me in the background during the day, I can continue reading easily.
+
+One minor annoyance is, when I am into for instance a sixteen-74-minutes-long-MP3s audiobook and at the initial startup of mpg123.el I always have to remember "where was I last time"?  Not forgetting at the end of the day to switch to *mpg123* buffer and write down the track / time position of the current MP3 is a mayor PITA.  This snippet below will do that for you.
+
+ (defvar mpg123-state-file "~/.emacs-mpg123-state.el")
+ (defvar mpg123*state nil)
+
+ (setq mpg123-state-file "~/.xemacs/mpg123-state.el")
+
+ (defun ign-mpg123-save-state ()
+   (when (and (get-buffer "*mpg123*")
+              mpg123*cur-music-file
+              mpg123*cur-playtime)
+     (with-output-to-file mpg123-state-file
+       (print (list 'setq 'mpg123*state
+                    (cons 'list (list mpg123*cur-music-file
+                                      mpg123*cur-playtime
+                                      (mpg123:get-music-info
+                                       mpg123*cur-music-number 'name))))))))
+
+ (add-hook 'kill-emacs-hook 'ign-mpg123-save-state)
+ ;; I add this to my IDLE functions too, in case my XEmacs crashes (extremely rare, of course:)) 
+
+ (defun ign-mpg123-load-state ()
+   (interactive)
+   (when (file-exists-p mpg123-state-file)
+     (load mpg123-state-file)
+     (let ((path (first mpg123*state)))
+       (when path
+         (let ((dir (file-name-directory path))
+               (time-str (second mpg123*state))
+               (title (third mpg123*state))
+               (files nil))
+           (setq files (mpg123:mp3-files-in-dir dir))
+           (setq mpg123-default-dir dir)
+           (mpg123:create-buffer files)
+           (setq mpg123*music-in-stack nil)
+           (goto-char (point-min))
+           (when (re-search-forward title nil t)
+             (mpg123-play)
+             (mpg123-play)
+             (mpg123:update-playtime time-str)))))))
+ 
+ ;; you may call it interactively, or you can add it to mpg123-hook
+ (add-hook 'mpg123-hook 'ign-mpg123-load-state)
+
+----
+MusicPlayers

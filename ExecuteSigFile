@@ -1,0 +1,22 @@
+This is actually quite easy, add this to your .gnus
+
+<code>(setq message-signature (lambda () (shell-command-to-string "$HOME/.signature")))</code>
+
+If your .signature is a executable file we're finished.  If it isn't and you're on a Unix or Unix like box, use:
+
+<code>(setq message-signature (lambda () (shell-command-to-string "cat $HOME/.signature")))</code>
+
+: The following should work regardles of ~/ .signature being executable:
+
+ (setq message-signature
+       (lambda () 
+         (shell-command-to-string
+           (if (file-executable-p "~/.signature")
+             "~/.signature" "cat ~/.signature"))))
+
+But if you use a signature rotating application like <code>signify</code>, here is how to do this
+
+<code>(setq message-signature (lambda () (shell-command-to-string "signify")))</code>
+
+----
+CategoryGnus

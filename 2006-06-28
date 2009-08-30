@@ -1,0 +1,47 @@
+= Changing the default CSS on this wiki =
+
+Personally I think the current default CSS used on this wiki is quite ugly. I put up with it and assumed that it was a rendering bug or something, but recently kensanata has confirmed it's the intended look.
+
+I think that the current CSS is bad because:
+
+* the large amount of whitespace between items like headings makes pages look untidy, and reduces the amount of information you're able to take in.
+* the relatively small font sizes + funky fonts used in headings further reduce one's ability to see the general layout of the page.
+
+I suggest that the default CSS be changed. At the moment even the "basic CSS" looks better, IMHO.
+
+Try some other designs from the [[CSS]] page -- any thoughts?
+
+--DamienElmes
+
+[new]
+I think it is a bit "fluffy" (how does that translate to English?). There is a lot of whitespace between sections. I kind of like the font though. -- MaDa
+
+[new:DrewAdams:2006-06-28 15:06 UTC]
+* '''The Good''' -- Much of it (e.g. text font) is similar to standard browser defaults for HTML -- familiar, tested, and usable.
+
+* '''The Bad''' -- Currently, we go from small-caps to (no change) to tiny italic to tiny bold to miniscule. 
+
+** Each heading level (##=##, ##==##, ##===##,...) should have a different appearance. Currently, the top two levels (##=##, ##==##) look identical, so structure (organization) is lost. It's good to have the top level look smaller than a browser default appearance for H1, but each heading level should look different. The difference need not be font size, and it need not be font style (italic, bold) -- other differences can be underlining, right-extending with a horizontal line, shading, color,....
+
+** Besides seeing no difference between the top two levels, the levels below can get lost, not standing out as headings. Trying to compensate for the hidden (small) headings by providing extra vertical whitespace is a poor hack (lose). The lowest level heading is even smaller than the text it introduces -- a sign that something is amiss.
+
+* '''The Ugly''' -- Extra vertical whitespace. This is especially ugly for a site that includes code snippets and discussion threads.
+
+-- DrewAdams
+
+[new]
+As I said on [[2006-01-12]], everything about the new style is fine with me except for the vertical spacing.  How about knocking down the values for margin-top and margin-bottom in headings by 40-60%? -- AaronHawley
+
+[new]
+Any thoughts on changing the spacing then, Alex? There was very little response to the original page, so I guess we should just delete it. I'll keep on using the basic css theme instead. :-) --DamienElmes
+
+[new]
+I went ahead and reduced the vertical whitespace and got rid of the small-caps. Since I don't like the result, I'm using the old settings as a [http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=2006-06-28;theme=typo;css= theme]. I think that's a bad sign. I would have hoped that yours is a minority position and that you would be happy using a different [[CSS]]. But nobody supported my point... :'( Let's see if anybody else speaks up, now that the default has changed.
+
+As to the "bad" list by Drew up above: I firmly believe that H1 should not be used within ordinary wiki pages. We've been through this before, and my opinion remains unchanged. I also believe that more than two levels of heading on a page are an indication that the page should be reorganized. That's why the default stylesheet doesn't specify how H4-H6 should look. If I were to change it, they should all look just like H3.
+
+If more people support Drew's arguments, then I think somebody else should take responsability for the CSS file, host it elsewhere, and I will change the default setting appropriately. I might also consider a special setup where we have an [[emacs.css]] page on this site, editable by administrators, which will automatically be used as the default CSS.
+
+Speak up if you volunteer to maintain such a page or an external CSS file.
+
+-- AlexSchroeder

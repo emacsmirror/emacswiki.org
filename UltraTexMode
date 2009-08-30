@@ -1,0 +1,4 @@
+Ultra-TeX mode http://www.math.washington.edu/~palmieri/Emacs/ultratex.html
+is a major mode for typing TeX documents written by JohnPalmieri.  One of its main features is dynamic completion through LightningCompletion on TeX commands.
+----
+CategoryTex

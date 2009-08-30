@@ -1,0 +1,8 @@
+The Unix or GNU/Linux `apropos' command is similar to AproposMode, but it shows a list
+of Unix or GNU/Linux manual (`man') pages (see ManMode) matching the search instead of functions and variables. Library
+##sys-apropos.el## is a simple Emacs interface for this command.
+
+* http://gnufans.net/~deego/emacspub/site-lisp/sys-apropos.el
+
+----
+CategoryExternalUtilities

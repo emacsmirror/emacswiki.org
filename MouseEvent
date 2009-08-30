@@ -1,0 +1,30 @@
+More compatibility code for Emacs vs XEmacs.  This time for mouse events.  The sample code is from IbufferMode.
+
+<pre>
+(cond ((fboundp 'posn-point)
+       ;; Emacs
+       (defun ibuffer-event-position (event)
+	 (posn-point (event-start event))))
+      ((or (featurep 'xemacs)
+	   (string-match "XEmacs\\|Lucid" (emacs-version)))
+       (defun ibuffer-event-position (event)
+	 (event-point event)))
+      (t
+       (error "Couldn't make a suitable definition of `ibuffer-event-position'")))
+
+(cond ((fboundp 'posn-window)
+       ;; Emacs
+       (defun ibuffer-event-window (event)
+	 (posn-window (event-start event))))
+      ((or (featurep 'xemacs)
+	   (string-match "XEmacs\\|Lucid" (emacs-version)))
+       (defun ibuffer-event-window (event)
+	 (event-window event)))
+      (t
+       (error "Couldn't make a suitable definition of `ibuffer-event-window'")))
+</pre>
+
+This works for a click, but what is the XEmacs equivalent of (event-start event) on a drag event?
+
+----
+CategoryCode ComparativeEmacsology CategoryMouse

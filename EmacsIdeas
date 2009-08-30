@@ -1,0 +1,22 @@
+This is a page where people can put up emacs ideas. The gnu.emacs.* newsgroups may not always be the right place to do this. When an idea has been discussed for a while, it is up to the author to either do something about it and then move the page or remove the page if nothing comes out of it, or simply let it be, in case some other guy find this idea and decides to do something with it.
+
+* EmacsIdeasApplyRegionFunctionOnMultipleRegions -- text now moved to ApplyFunctionOnMultipleRegions. Continue discussions etc there.
+
+* Non-intrusive completion "widget"
+
+: I'm working on smart completion for a programming language and a completion widget which pops up automatically without interfering with user input would be very useful. By not-interfering I mean that the user can ignore the completion window and continue typing and the popup disappears if the user finishes typing of the current word or press any other key than cursor up/down (or C-n, etc.), pgup/down or enter. Otherwise, she can select an appropriate completion with the listed keys. If she types more characters then the completion list is updated dynamically.
+: 
+: I know Cedet has something like this:
+: 
+: http://cedet.sourceforge.net/inlinecompletion.png
+: 
+: But it's a tooltip and I'd like to use tooltips for supplying additional information about the current completion item. That's why I think a separate popup frame would be the perfect solution.
+: 
+: See this example: http://www.monodevelop.com/images/screenshots/macosx.jpg
+: 
+: Has anyone done something similar?
+
+----
+WishList
+EmacsNiftyTricks
+CategoryWishList

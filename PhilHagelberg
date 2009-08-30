@@ -1,0 +1,41 @@
+portrait:http://technomancy.us/static/i/phil.png
+
+Yet another Emacs hacker. I go by [::technomancy] on IRC.
+
+I've written a few fun modes:
+
+* [http://github.com/technomancy/conspire Conspire], a system for collaborative editing.
+* [http://augment.rubyforge.org Augment], a system for gathering and displaying metadata about a file.
+* Rinari, a mode for RubyOnRails (now maintained by Eric Schulte)
+* Lisp:pcmpl-ssh.el (PcompleteSSH) (Note: this has been merged into Emacs 23)
+
+I've contributed to some others:
+
+* ErtTestLibrary for automated testing.
+* [Magit] for working with Git repositories.
+* EmacsRi for reading Ruby documentation
+
+Deprecated:
+
+* ebby, a mode for CollaborativeEditing. Sadly subject to bitrot under recent versions of Obby. (use conspire instead)
+* Lisp:elunit.el (ElUnit), a mode for UnitTesting (use ERT instead)
+
+I also hack on [http://conkeror.mozdev.org Conkeror] for fun. I get paid to write Ruby code mostly. In case you couldn't tell I'm test-addicted.
+
+All this stuff can also be found in [http://github.com/technomancy/dotfiles my public dotfiles repo].
+
+Blog is at http://technomancy.us
+
+----
+
+Hi!
+After seeing some git+eshell snippet on your github page, I was wondering: do you use git under eshell sucessfully?
+It worked for me on Windows, but on Linux it just said "NOT A REAL TERMINAL" when I tried `git log' and others.
+(sorry for messing around - could not find your email)
+--hsu
+
+----
+hsu: you have to set your PAGER environment variable to "cat"; then it works great. (setenv "PAGER" "cat") But instead of using git log in the shell, I'd recommend using magit instead; it's much nicer.
+
+----
+CategoryHomepage

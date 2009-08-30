@@ -1,0 +1,11 @@
+When a file is visited, function `set-auto-mode' (see [[Manual:set-auto-mode]]) is called to determine the right MajorMode to use.
+
+It looks for a ##mode:## string, then applies these variables in turn:
+* [[auto-mode-interpreter-regexp]]
+* [[magic-mode-alist]]
+* [[auto-mode-alist]]
+* [[magic-fallback-mode-alist]] (new in Emacs 22)
+
+----
+CategoryDotEmacs
+CategoryModes

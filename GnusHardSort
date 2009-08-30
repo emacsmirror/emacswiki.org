@@ -1,0 +1,12 @@
+If you prefer to view articles sorted by date, you may be annoyed
+that articles moved from another group will appear after the
+previously existing articles, even if the moved articles are
+older. You can always sort your view of the articles by date, but
+that may take a significant amount of time if there are a large
+number of articles in the group. In addition, your default view
+when you enter the summary buffer next time will continue to show
+the moved articles out of order. This function permanently resorts
+the articles in the group by date, by first sorting the articles,
+then respooling the articles back into the same group.
+
+Lisp:gnus-hardsort.el

@@ -1,0 +1,312 @@
+This is based on a posting by ThomasBurdick. -- AlexSchroeder
+
+Newbies are often confused when creating new lists.  Here are some
+examples including box diagrams.  Maybe that helps.
+
+The list we shall be using in our examples is this:
+
+ ELISP> (setq list1 '(alpha beta gamma))
+ (alpha beta gamma)
+
+Here's the corresponding box diagram:
+
+<pre>
+          +-------+---+    +------+---+  +-------+-----+
+ list1--->| alpha | *----->| beta | *--->| gamma | nil |
+          +-------+---+    +------+---+  +-------+-----+
+</pre>
+
+(The ELISP prompt is from InferiorEmacsLispMode, `M-x ielm'.)
+
+== delete ==
+
+Try some deleting:
+
+ ELISP> (setq list1 '(alpha beta gamma))
+ (alpha beta gamma)
+
+ ELISP> (setq list2 (delete 'beta list1))
+ (alpha gamma)
+
+ ELISP> (setq list3 (delete 'alpha list1))
+ (gamma)
+
+What are the values of list1, list2, and list3?
+
+Here's some explanation first:
+list1 is a pointer.
+It points to alpha cell, which is a cons cell containing alpha, and a pointer to beta cell.
+beta cell contains beta and a pointer to gamma cell, and gamma cell contains gamma and nil.
+nil is the end of the list.
+
+          +-------+---+    +------+---+  +-------+-----+
+ list1--->| alpha | *----->| beta | *--->| gamma | nil |
+          +-------+---+    +------+---+  +-------+-----+
+
+Now you call delete.
+This will change pointers around.
+If you delete beta, then alpha cell will point to gamma cell, and beta is deleted.
+Since delete returns the pointer to the first cell, list2 points to the modified
+cell, list1 has the same value!
+
+          +-------+---+    +------+---+       +-------+-----+
+ list1--->| alpha | *---+  | beta | *------+->| gamma | nil |
+ list2    +-------+---+ |  +------+---+    |  +-------+-----+
+                        |                  |
+                        +------------------+
+
+Both list1 and list2 have the value ##(alpha gamma)##.
+
+What's the value of list3?
+Since alpha is the first item in the list, 
+there is no pointer to repoint.
+##delete## returns the beginning of the new list starting with the gamma cell.
+That's why the value of list3 is ##(gamma)## and
+both list1 and list2 remain unchanged:
+
+          +-------+---+    +-------+-----+
+ list1--->| alpha | *----->| gamma | nil |
+ list2    +-------+---+    +-------+-----+
+                           ^
+                           |
+ list3---------------------+
+
+The gamma cell is shared between all three lists.
+There is no more reference to the beta cell and it will eventually be garbage collected.
+
+== add-to-list ==
+
+`add-to-list' works by side-effect (ie. not FunctionalProgramming).
+You pass it a list symbol and an element, and add-to-list will add the
+element to the front of the list if it is not already a member of the
+list.  This avoids duplicates but if you use this a lot in your code,
+remember that add-to-list has to go through the entire list in order
+to check for duplicates.
+
+ ELISP> (setq list1 '(alpha beta gamma))
+ (alpha beta gamma)
+
+ ELISP> (add-to-list 'list1 'omega)
+ (omega alpha beta gamma)
+
+ ELISP> list1
+ (omega alpha beta gamma)
+
+Here's the result:
+
+<pre>
+          +-------+---+   +-------+---+   +------+---+   +-------+-----+
+ list1--->| omega | *---->| alpha | *---->| beta | *---->| gamma | nil |
+          +-------+---+   +-------+---+   +------+---+   +-------+-----+
+</pre>
+
+== cons ==
+
+A cons is a pair of pointers; they are called the car and the cdr of
+the cell.  Several cons cells form a list if the car always points to
+an element of the list and the cdr points to the next cons cell.  The
+cdr of the last cons cell in the list is nil.
+
+Using cons to add to the front of the list is the easiest and most
+natural thing to do!  After adding lots of elements to the list in
+this way, you can reverse the list using `nreverse'.
+
+Here is an example where we take the cdr of a list (ie. we skip the
+first element), and "cons a new element onto the list."  Note how the
+tail of the list is shared.
+
+ ELISP> (setq list1 '(alpha beta gamma))
+ (alpha beta gamma)
+
+ ELISP> (setq list2 (cdr list1))
+ (beta gamma)
+
+ ELISP> (setq list2 (cons 'ypsilon list2))
+ (ypsilon beta gamma)
+
+ ELISP> (eq list1 list2)
+ nil
+ ELISP> (eq (cdr list1) (cdr list2))
+ t
+
+And here's the box diagram:
+
+<pre>
+          +-------+---+    +------+---+  +-------+-----+
+ list1--->| alpha | *----->| beta | *--->| gamma | nil |
+          +-------+---+    +------+---+  +-------+-----+
+                           ^                           
+          +---------+---+  |                           
+ list2--->| ypsilon | *----+                           
+          +---------+---+                              
+</pre>
+
+In terms of efficiency, "consing" is something expensive because it
+allocates new storage for a cons cell.  Usually that doesn't matter.
+If you want to add an existing cons cell to your list (eg. moving it
+from one list to another) you might get away with lots of `setcar' and
+`setcdr'.  But that usually results in code which is difficult to
+maintain.
+
+== nconc ==
+
+`nconc' will modify the cdr of the last cell in the list: It will be
+changed from nil to point to the new element.  This is also not
+FunctionalProgramming.
+
+Here's what happens if you don't add a cons cell to the list.  The
+result is no longer a "proper" list.  The cdr of the last cons cell is
+no longer nil.
+
+ ELISP> (setq list1 '(alpha beta gamma))
+      => (alpha beta gamma)
+ 
+ ELISP> (setq var (cdr list1))
+      => (beta gamma)
+ 
+ ELISP> (nconc var 'ypsilon)
+      => (beta gamma . ypsilon)
+ 
+ ELISP> list1
+      => (alpha beta gamma . ypsilon)
+
+This situation looks like:
+
+<pre>
+          +-------+---+  +------+---+  +-------+---------+
+ list1--->| alpha | *--->| beta | *--->| gamma | ypsilon |
+          +-------+---+  +------+---+  +-------+---------+
+                         ^                               
+                         |                               
+ list2-------------------+                                
+</pre>
+
+What you usually do is you add lists like that.
+
+ ELISP> (setq list1 '(alpha beta gamma))
+ (alpha beta gamma)
+
+ ELISP> (setq list2 '(omega ypsilon))
+ (omega ypsilon)
+
+ ELISP> (setq list3 (nconc list1 list2))
+ (alpha beta gamma omega ypsilon)
+
+Note how list1 was changed:
+
+ ELISP> list1
+ (alpha beta gamma omega ypsilon)
+
+ ELISP> list2
+ (omega ypsilon)
+
+Actually, if this were real code, you would have assigned the result
+of nconc to one of the existing variables instead of using a third
+one.
+
+ ELISP> (setq list1 (nconc list1 list2))
+ (alpha beta gamma omega ypsilon)
+
+Anyway, here's the picture:
+
+<pre>
+ list3----+                      
+          |
+          v
+          +-------+---+  +------+---+  +-------+---+  +-------+---+  +---------+-----+
+ list1--->| alpha | *--->| beta | *--->| gamma | *--->| omega | *--->| ypsilon | nil |
+          +-------+---+  +------+---+  +-------+---+  +-------+---+  +---------+-----+
+                                                      ^  
+                                                      |  
+ list2------------------------------------------------+   
+</pre>
+
+Just to prove that the tail (list2) is shared:
+
+ ELISP> (eq list1 list3)
+ t
+ ELISP> (eq (cdr (cdr (cdr list1))) list2)
+ t
+
+== append ==
+
+`append' creates a new copy of the list that is added to the front of
+another list.  The front will be new, the tail will be shared.  The
+copying of the list may be expensive.
+
+ ELISP> (setq list1 '(alpha beta gamma))
+ (alpha beta gamma)
+
+ ELISP> (setq list2 '(omega ypsilon))
+ (omega ypsilon)
+
+ ELISP> (setq list3 (append list1 list2))
+ (alpha beta gamma omega ypsilon)
+
+Note how list1 has not been changed:
+
+ ELISP> list1
+ (alpha beta gamma)
+
+ ELISP> list2
+ (omega ypsilon)
+
+<pre>
+          +-------+---+    +------+---+  +-------+-----+
+ list1--->| alpha | *----->| beta | *--->| gamma | nil |
+          +-------+---+    +------+---+  +-------+-----+
+
+
+          +-------+---+  +------+---+  +-------+---+  +-------+---+  +---------+-----+
+ list3--->| alpha | *--->| beta | *--->| gamma | *--->| omega | *--->| ypsilon | nil |
+          +-------+---+  +------+---+  +-------+---+  +-------+---+  +---------+-----+
+                                                      ^  
+                                                      |  
+ list2------------------------------------------------+   
+</pre>
+
+Just to prove that the tail (list2) is shared with list3 (and that
+list1 is not part of list3):
+
+ ELISP> (eq list1 list3)
+ nil
+ ELISP> (eq (cdr (cdr (cdr list1))) list2)
+ nil
+ ELISP> (eq (cdr (cdr (cdr list3))) list2)
+ t
+
+== setcar ==
+
+`setcar' sets the car of a cell.  You can use it to change a single
+element of a list, once you know that a list is composed of cons
+cells, where the cdr points to the next cell, and the car points to
+the elements.
+
+ ELISP> (setq list '(alpha beta gamma delta))
+ (alpha beta gamma delta)
+
+ ELISP> (setcar (nthcdr 2 list) 'epsilon)
+ epsilon
+
+ ELISP> list
+ (alpha beta epsilon delta)
+
+What happened?  The list got modified destructively.  `nthcdr' is like
+using a number of `cdr' calls one after another.  It returns the rest
+of the list.  The beginning of the list is a cons cell, therefore
+calling setcar on it changes the corresponding element of the list.
+
+<pre>
+          +-------+---+    +------+---+  +-------+---+  +-------+-----+
+ list1--->| alpha | *----->| beta | *--->| gamma | *--->| delta | nil |
+          +-------+---+    +------+---+  +-------+---+  +-------+-----+
+                                         ^
+                                         |
+ nthcdr 2--------------------------------+
+
+</pre>
+
+'''See Also:''' DestructiveOperations
+
+----
+CategoryCode

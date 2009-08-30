@@ -1,0 +1,115 @@
+I like using Emacs as a powerful tool to complement MS' VisualStudio for rapid
+development and productivity. I am a big fan of port of Emacs to Windows by
+Jeoff Voelker.
+
+----
+
+== HTML Tag Highlighting ==
+
+Here is a simple function which allows you to highlight what is in between html/xml tags:
+<pre>
+(defun mm-make-sgml-inner-tag-region ()
+	(interactive)
+	(if (or (eq major-mode 'html-mode)
+					(eq major-mode 'sgml-mode))
+			(progn
+			(sgml-skip-tag-backward 1)
+			(set-mark-command nil)
+			(sgml-skip-tag-forward 1))
+		(message "This command only works in html or sgml modes!")))
+</pre>
+Depending on where the cursor is, you'll get the entire stuff within tags highlighted. I bind this to a key for ease of use. 
+
+== Symmetric Editing ==
+
+Microsoft's Visual Studio allows source code pages to be edited by any editor
+installed on the machine. I like this because it allows me to open a file in
+Emacs and go across various directories (for example other projects) and cut
+and paste stuff I'd done before. On the other hand VS gives you IntelliSense
+which is critical in manipulating various objects (IntelliSense works similar
+to file completion but on objects, i.e., it opens a little pop-up which gives
+the developer all the properties and methods associated with a certain
+object). However, there is one thing I don't like when switching back and force
+between Emacs and VS which I describe in several steps:
+
+* Open file f1.cs in VS.
+* Check out the file from Visual SourceSafe.
+* Do some editing.
+* Save your edits.
+* Open the same file in Emacs.
+* Do some editing.
+* Save the file in Emacs.
+* Set focus to VS. This causes a dialog box to pop-up which notifies you that
+the file is edited outside VS and if you'd like to reload it in VS. Accept
+reload. 
+* Do some editing in VS.
+* Set focus on Emacs.
+* Start editing. Emacs puts out the following:
+
+<pre>
+f1.cs changed on disk; really edit the buffer? (y, n, r or C-h) 
+</pre>
+
+The problem with this warning is that it happens a bit late to my taste,
+meaning that I'd like a symmetric warning system. By this I mean that Emacs
+should pop-up a dialog similar to VS which tells the user if the file
+associated with the buffer is changed outside Emacs. This way, you can switch
+between Emacs and VS by clicking ret and in each case you'll have the latest
+file. If you like this here are the mods you have to do in w32fns.c:
+
+* Put a static variable at the top so that this dialog doesn't become a
+nuisanse:
+
+<pre>
+// put a static variable
+static BOOL leaveBufferAlone = FALSE;
+</pre>
+
+* Put the following code under WM_SETFOCUS in w32_wnd_proc:
+
+<pre>
+case WM_SETFOCUS:
+// see if file is changed
+if (!NILP (current_buffer->filename)
+    && SAVE_MODIFF >= MODIFF
+    && NILP (Fverify_visited_file_modtime (Fcurrent_buffer ()))
+    && !NILP (Ffile_exists_p (current_buffer->filename)))
+  if (!leaveBufferAlone)          
+    {
+      int fileChangedDialogAnswer = MessageBox (NULL, "Buffer file changed on disk, revert?", "Emacs", MB_YESNO|MB_ICONQUESTION|MB_APPLMODAL|MB_SETFOREGROUND);
+      char msg[80];
+      
+      if (fileChangedDialogAnswer == IDYES)
+        {
+          call3 (intern ("revert-buffer"), Qt, Qt, Qt);
+          strcpy(msg, "File reverted: ");
+          strcat(msg, XSTRING(current_buffer->filename)->data);    
+          message (msg);
+          leaveBufferAlone = FALSE;
+      		SetFocus(hwnd);
+        }
+      else
+        {
+          strcpy(msg, "File changed on disk: ");
+          strcat(msg, XSTRING(current_buffer->filename)->data);
+          message (msg);
+          leaveBufferAlone = TRUE;
+      		SetFocus(hwnd);								
+        }
+    }
+</pre>
+
+* Compile.
+
+That's it. Here is my email address in case you have any comments:
+
+mailto:moheb@cybermesa.com
+
+----
+
+To find out more about my line of work please visit my web site:
+
+[http://www.theelitelab.com The Elite Lab.com]
+
+----
+CategoryHomepage

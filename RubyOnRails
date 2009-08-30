@@ -1,0 +1,100 @@
+Editing the usual .rb ruby files in rails is no big deal, just use the usual [[RubyMode]].  But what about all those .rhtml or .html.erb files?
+
+For those you probably want to use [[MuMaMo]]-Mode to combine [[HtmlMode]] with [[RubyMode]] <i>(most stable)</i>, or just use [NxhtmlMode nXhtml] <i>(includes MuMaMo and is more feature rich, but slightly less stable)</i> which can handle this combination automatically.  For more information and instructions see [http://rinari.rubyforge.org/Rhtml-Setup.html#Rhtml-Setup Rhtml-Setup] <i>(while these instructions are part of the [[#Rinari]] documentation the techniques can be used independent of [[#Rinari]])</i>.
+
+==emacs-rails==
+Please checkout the most recen version of this mode here. [http://github.com/dima-exe/emacs-rails-reloaded/tree/master http://github.com/dima-exe/emacs-rails-reloaded/tree/master]. It has been improved a lot since this wiki has been last edited. (June 2009)
+
+minor mode for editing !RubyOnRails code
+
+Features(svn version):
+* Identation
+
+* Code hightlight
+
+* Non-intellectual autocomplete
+
+* Class/methods navigation
+
+* Management of WEBrick/Mongrel
+
+* Display color log file
+
+* Toggle Switch between Action/View and other file (tests, helpers) automaticly or with menu
+
+* Switching to file from current line f.e. from redirect_to :controller => “foo”, :action => “bar”, switchs to this controller/action
+
+* TextMate?-like snippets (snippets.el)
+
+* ERb refactoring (create partial from selection, create helper from block)
+
+* Automatic TAGS generation in RAILS_ROOT directory
+
+* Quick access to the main configuration files
+
+* Documentation search using ri or chm file and Rails API reference in HTML
+
+* Quick start svn-status in RAILS_ROOT
+
+* Integration with script/generate script/destroy (controller, model, scaffold, migration)
+
+* Goto menus for quick access to controllers, models, and other.
+
+* Auto-determination of current rails DB settings and running SQL console
+
+* Automatic openning browser on current action (from view or controller)
+
+* Debug integration with firefox/ie
+
+* Integration with interactive scripts script/console and script/breakpointer
+
+* Fast navigation in Rails root hierarchy
+
+* Fast running of rails rake with autocomplete
+
+See more features in http://dima-exe.ru/rails-on-emacs
+
+There are a bunch of forks of emacs-rails on [http://github.com github]. Starting at http://github.com/tomtt/emacs-rails/tree/master (see "Network" for other forks). I'm currently using and committing to http://github.com/remvee/emacs-rails/tree/master -- JoostDiepenmaat
+
+emacs-rails relies on [http://www.kazmier.com/computer/snippet.el snippet.el] and [http://www.webweavertech.com/ovidiu/emacs/find-recursive.txt find-recursive.txt] (which is actually an elisp source file :P) -- JonathanSimms
+
+[new]
+[http://emacsonrails.drozdov.net/ Emacs-rails screencast (1.8Mb)] shows '''emacs-rails.el''' mode in action (autocompletion, navigation etc). It also shows [http://ecb.sourceforge.net/ ECB - Emacs Code Browser]. Flash required. 
+
+[:Rinari]
+== Rinari ==
+
+Rinari is an Emacs Minor Mode for Rails development. Emphasis is placed on TDD, ease of navigation, leverage of Emacs compilation buffers, compliance with Emacs conventions, and playing nice with other tools. See the online [http://rinari.rubyforge.org Documentation].
+
+Find the latest version of Rinari at github http://github.com/eschulte/rinari/tree/master
+
+(Rinari replaces (and deprecates) arorem.)
+
+== Rails and ri ==
+
+When you install gems such as Rails, there is no ri documentation generated for it by default. You can do this manually by changing to your gems directory and running "rdoc -Y", but it takes a very long time to do. Once the ri is generated, use [http://rubyforge.org/projects/ri-emacs/ Ri for Emacs] to access it.
+
+== Populating FileNameCache ==
+
+FileNameCache is a tool that helps with find-file to easily complete filenames regardless of their directory location.  Here's a little defun I wrote to simplify loading a Rails project into FileNameCache:
+
+<pre>
+(require 'filecache)
+(defun rails-add-proj-to-file-cache (dir)
+  "Adds all the ruby and rhtml files recursively in the current directory to the file-cache"
+  (interactive "DAdd directory: ")
+    (file-cache-clear-cache)
+    (file-cache-add-directory-recursively dir (regexp-opt (list ".rb" ".rhtml" ".xml" ".js" ".yml")))
+    (file-cache-delete-file-regexp "\\.svn"))
+</pre>
+
+This can be a slow process, but hopefully having a nicely populated file cache will pay off.
+
+[new:DrewAdams:2006-03-20 21:14 UTC]
+See also [[Icicles - Persistent Completions]] -- DrewAdams
+[new]
+
+== Pastie Support For emacs ==
+
+Many in the Ruby community use [http://pastie.caboo.se Pastie] for sharing code snippets. Emacs integration can be found here: 
+[http://pastie.caboo.se/paste/133456 pastie.el] or here Lisp:pastie.el

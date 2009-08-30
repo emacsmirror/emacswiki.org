@@ -1,0 +1,674 @@
+Hi, I'm Dave (a.k.a. "ramen" on the intertubes), and I use Emacs. I live in Arizona, US, and write web and database applications. In my spare time I write electronic music and study functional languages like ObjectiveCaml. Here's my .emacs:
+
+ ;; .emacs - emacs configuration by ramen
+ 
+ (setq load-path (cons "~/.emacs.d" load-path))
+ 
+ (require 'cl)
+ (require 'compile)
+ (require 'uniquify)
+ (require 'goto-chg)
+ (require 'hyper-html)
+ (require 'linum)
+ (require 'php-mode)
+ (require 'psvn)
+ (require 'rect-mark)
+ (require 'snippet)
+ (require 'xhtml-snippets)
+ 
+ ;; general settings
+ (column-number-mode 1)
+ (delete-selection-mode 1)
+ (display-time)
+ (menu-bar-mode -1)
+ (setq auto-save-default nil)
+ (setq inhibit-startup-message t)
+ (setq make-backup-files nil)
+ (setq mark-even-if-inactive t)
+ (setq ring-bell-function 'ignore)
+ (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+ (setq-default fill-column 78)
+ (show-paren-mode -1)
+ (transient-mark-mode 1)
+ 
+ ;; tab preferences
+ (defun make-tab-stop-list (width max)
+   "Build a tab stop list for a given tab width and maximum line width"
+   (labels ((aux (i) (if (<= i max) (cons i (aux (+ i width))))))
+     (aux width)))
+ 
+ (defun set-tabs-local (width use-tabs)
+   "Set local tab width and whether or not tab characters should be used"
+   (setq c-basic-offset width)
+   (setq sgml-basic-offset width)
+   (setq javascript-indent-level width)
+   (setq cssm-indent-level width)
+   (setq indent-tabs-mode use-tabs)
+   (setq tab-stop-list (make-tab-stop-list width 80))
+   (setq tab-width width))
+ 
+ (defun make-tabs-global ()
+   "Make current local tab settings the default"
+   (interactive)
+   (setq-default indent-tabs-mode indent-tabs-mode)
+   (setq-default tab-stop-list tab-stop-list)
+   (setq-default tab-width tab-width))
+ 
+ (defun set-tabs ()
+   "Configure tab settings for this buffer"
+   (interactive)
+   (set-tabs-local
+    (- (read-char "Tab width: ") ?0)
+    (y-or-n-p "Use tab character? "))
+   (if (y-or-n-p "Make settings global? ")
+       (make-tabs-global))
+   (message nil))
+ 
+ (set-tabs-local 4 nil)
+ (make-tabs-global)
+ 
+ ;; line numbering preferences
+ (setq linum-format 'dynamic)
+ (defun linum-dynamic-format ()
+   "Compute a format string based on the number of lines in the
+ current buffer. Customized to always left-pad with one space
+ and never shrink below two columns for digits."
+   (let ((lines (count-lines (point-min) (point-max)))
+         (width 0))
+     (while (> lines 0)
+       (setq lines (/ lines 10))
+       (setq width (1+ width)))
+     (format " %%%dd  " (max 2 width))))
+ 
+ ;; hippie expansion on abbrevs
+ (defun try-complete-abbrev (old)
+   (if (expand-abbrev) t nil))
+ (setq hippie-expand-try-functions-list
+       '(try-complete-abbrev
+         try-complete-file-name
+         try-expand-dabbrev
+         try-expand-dabbrev-all-buffers))
+ 
+ ;; rectangle mark mode
+ (define-key ctl-x-map "r\C-@" 'rm-set-mark)
+ (define-key ctl-x-map [?r ?\C-\ ] 'rm-set-mark)
+ (define-key ctl-x-map "r\C-x" 'rm-exchange-point-and-mark)
+ (define-key ctl-x-map "r\C-w" 'rm-kill-region)
+ (define-key ctl-x-map "r\M-w" 'rm-kill-ring-save)
+ (define-key ctl-x-map "r\C-y" 'yank-rectangle)
+ (autoload 'rm-set-mark "rect-mark"
+   "Set mark for rectangle." t)
+ (autoload 'rm-exchange-point-and-mark "rect-mark"
+   "Exchange point and mark for rectangle." t)
+ (autoload 'rm-kill-region "rect-mark"
+   "Kill a rectangular region and save it in the kill ring." t)
+ (autoload 'rm-kill-ring-save "rect-mark"
+   "Copy a rectangular region to the kill ring." t)
+ 
+ ;; web browser support
+ (setq browse-url-browser-function 'browse-url-lynx-emacs)
+ 
+ ;; file associations
+ (setq auto-mode-alist (cons '("\\.as$" . java-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.cs$" . java-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.ftl$" . html-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.html$" . html-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.inc$" . php-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.js$" . java-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.jsp$" . java-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.php$" . php-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
+ 
+ ;; c-mode settings
+ (add-hook 'c-mode-common-hook
+           (lambda ()
+             (c-set-style "java")
+             (c-set-offset 'substatement-open 0)
+             (setq c-basic-offset tab-width)
+             (define-key c-mode-map "\C-m" 'newline-and-indent)))
+ 
+ ;; python-mode settings
+ (setq interpreter-mode-alist
+       (cons '("python" . python-mode) interpreter-mode-alist))
+ (autoload 'python-mode "python-mode" "Python editing mode." t)
+ 
+ ;; ocaml settings
+ (setq auto-mode-alist (cons '("\\.ml\\w?" . tuareg-mode) auto-mode-alist))
+ (autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
+ (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+ (add-hook 'tuareg-mode-hook
+           '(lambda ()
+              (setq tuareg-in-indent 0)
+              (set-face-foreground 'tuareg-font-lock-operator-face "red")))
+ 
+ ;; css-mode settings
+ (autoload 'css-mode "css-mode")
+ (setq auto-mode-alist
+       (cons '("\\.css\\'" . css-mode) auto-mode-alist))
+ (setq cssm-indent-function #'cssm-c-style-indenter)
+ (add-hook 'css-mode-hook
+           (lambda ()
+             (define-key cssm-mode-map "}" 'self-insert-command)
+             (cssm-leave-mirror-mode)))
+ 
+ ;; cvs settings
+ (setq vc-cvs-stay-local nil)
+ 
+ ;; password prompts for shell mode
+ (setq comint-password-prompt-regexp
+       "\\(\\([Oo]ld \\|[Nn]ew \\|'s \\|login \\|Kerberos \\|CVS \\|UNIX \\| SMB \\|^\\)[Pp]assword\\( (again)\\)?\\|pass phrase\\|\\(Enter\\|Repeat\\|Bad\\) password\\)\\(?:, try again\\)?\\(?: for [^:]+\\)?:\\s *\\'")
+ 
+ ;; spell checking
+ (setq-default ispell-program-name "aspell")
+ 
+ ;; color syntax highlighting
+ (ansi-color-for-comint-mode-on)
+ (global-font-lock-mode t)
+ 
+ ;; color scheme
+ (copy-face 'default 'fixed-pitch)
+ (copy-face 'default 'font-lock-function-name-face)
+ (set-face-background 'fringe "gray32")
+ (set-face-background 'highlight "blue")
+ (set-face-background 'isearch "blue")
+ (set-face-background 'modeline "white")
+ (set-face-background 'region "white")
+ (set-face-foreground 'bold "cyan")
+ (set-face-foreground 'bold-italic "cyan")
+ (set-face-foreground 'default "cyan3")
+ (set-face-foreground 'font-lock-comment-face "yellow")
+ (set-face-foreground 'font-lock-constant-face "magenta3")
+ (set-face-foreground 'font-lock-function-name-face "gray")
+ (set-face-foreground 'font-lock-keyword-face "cyan")
+ (set-face-foreground 'font-lock-string-face "red")
+ (set-face-foreground 'font-lock-type-face "cyan")
+ (set-face-foreground 'font-lock-variable-name-face "cyan3")
+ (set-face-foreground 'font-lock-warning-face "red")
+ (set-face-foreground 'isearch "cyan3")
+ (set-face-foreground 'isearch-lazy-highlight-face "black")
+ (set-face-foreground 'modeline "blue")
+ (set-face-foreground 'region "blue")
+ (set-foreground-color "cyan3")
+ 
+ ;; custom functions
+ (defun open-shell-pane ()
+   (interactive)
+   (split-window-vertically -10)
+   (other-window 1)
+   (shell))
+ 
+ (defun mark-line (arg)
+   (interactive "p")
+   (beginning-of-line nil)
+   (set-mark-command nil)
+   (end-of-line nil))
+ 
+ (defun move-region-up (arg)
+   (interactive "p")
+   (kill-region (region-beginning) (region-end))
+   (unwind-protect
+       (previous-line arg)
+     (yank)))
+ 
+ (defun move-region-down (arg)
+   (interactive "p")
+   (kill-region (region-beginning) (region-end))
+   (unwind-protect
+       (next-line arg)
+     (yank)))
+ 
+ (defun toggle-mark ()
+   (interactive)
+   (if mark-active
+       (deactivate-mark)
+     (progn
+       (exchange-point-and-mark)
+       (exchange-point-and-mark))))
+ 
+ (defun comment-line ()
+   (interactive)
+   (if (= (line-beginning-position) (line-end-position))
+       (next-line 1)
+     (progn
+       (back-to-indentation)
+       (set-mark-command nil)
+       (end-of-line nil)
+       (comment-dwim nil)
+       (back-to-indentation)
+       (next-line 1))))
+ 
+ (defun align-html-attributes ()
+   ;; courtesy of John Wiegley!
+   (interactive)
+   (save-excursion
+     (goto-char (line-beginning-position))
+     (search-forward "<")
+     (re-search-forward "\\s-+")
+     (let ((col (current-column))
+           (end (save-excursion
+                  ;;(re-search-forward "\\s-*>")
+                  (search-forward ">")
+                  (point-marker))))
+     (while (re-search-forward "\\s-+" end t)
+       (delete-region (match-beginning 0) (match-end 0))
+       (insert ?\n)
+       (insert (make-string col ? ))))))
+ 
+ (defun indent-current-region-by (num-spaces)
+   (indent-rigidly (region-beginning) (region-end) num-spaces))
+ 
+ (defun indent-current-region ()
+   (interactive)
+   (indent-current-region-by tab-width))
+ 
+ (defun dedent-current-region ()
+   (interactive)
+   (indent-current-region-by (- tab-width)))
+ 
+ (defun insert-indentation ()
+   (interactive)
+   (search-forward " ")
+   (delete-horizontal-space)
+   (newline-and-indent))
+ 
+ (defun indent-after-char (arg char)
+   (interactive "p\ncIndent after char: ")
+   (if (char-table-p translation-table-for-input)
+       (setq char (or (aref translation-table-for-input char) char)))
+   (search-forward (char-to-string char) nil nil arg)
+   (insert-indentation))
+ 
+ (defun insert-curlies ()
+   (interactive)
+   (end-of-line nil)
+   (just-one-space)
+   (insert-string "{")
+   (newline)
+   (insert-string "}")
+   (indent-according-to-mode)
+   (previous-line 1)
+   (end-of-line nil)
+   (newline-and-indent))
+ 
+ (defun move-past-closing-curly ()
+   (interactive)
+   (search-forward "}"))
+ 
+ (defun follow-mode-quit ()
+   (interactive)
+   (delete-other-windows)
+   (turn-off-follow-mode))
+ 
+ (defun rotate-windows ()
+   (interactive)
+   (let ((this-buffer (buffer-name)))
+     (other-window -1)
+     (let ((that-buffer (buffer-name)))
+       (switch-to-buffer this-buffer)
+       (other-window 1)
+       (switch-to-buffer that-buffer)
+       (other-window -1))))
+ 
+ (defun other-window-reverse ()
+   (interactive)
+   (other-window -1))
+ 
+ (defun switch-to-other-buffer ()
+   (interactive)
+   (switch-to-buffer (other-buffer)))
+ 
+ (defun last-buffer ()
+   (interactive)
+   (switch-to-buffer (other-buffer)))
+ 
+ (defun delete-whitespace-forward ()
+   (interactive)
+   (delete-region
+    (point)
+    (progn
+      (skip-chars-forward " \t")
+      (point))))
+ 
+ (defun duplicate-line ()
+   (interactive)
+   (let ((col (current-column)))
+     (beginning-of-line 1)
+     (kill-line 1)
+     (yank)
+     (yank)
+     (previous-line 1)
+     (move-to-column col)))
+ 
+ (defun start-or-end-kbd-macro ()
+   "Start defining a keyboard macro, or stop if we're already defining."
+   (interactive)
+   (if defining-kbd-macro
+       (end-kbd-macro)
+     (start-kbd-macro nil)))
+ 
+ (defun toggle-show-trailing-whitespace ()
+   "Toggles the highlighting of trailing whitespace."
+   (interactive)
+   (set-variable 'show-trailing-whitespace (not show-trailing-whitespace)))
+ 
+ (defun toggle-text-mode-fontified ()
+   "Toggles text-mode while preserving fontification."
+   (interactive)
+   (if (eq major-mode 'text-mode)
+       (if (boundp 'last-major-mode)
+           (funcall last-major-mode))
+     (flet ((font-lock-change-mode () ()))
+       (setq last-major-mode major-mode)
+       (text-mode))))
+ 
+ (defun zap-up-to-char (arg char)
+   "Kill up to, but not including ARGth occurrence of CHAR.
+ Case is ignored if `case-fold-search' is non-nil in the current buffer.
+ Goes backward if ARG is negative; error if CHAR not found.
+ Ignores CHAR at point."
+   (interactive "p\ncZap up to char: ")
+   (let ((direction (if (>= arg 0) 1 -1)))
+     (kill-region (point)
+                  (progn
+                    (forward-char direction)
+                    (unwind-protect
+                        (search-forward (char-to-string char) nil nil arg)
+                      (backward-char direction))
+                    (point)))))
+ 
+ ;; key bindings
+ (global-set-key "\e\C-@"    'mark-line)
+ (global-set-key [?\C-\M-\ ] 'mark-line)
+ (global-set-key "\e\C-k"    'kill-whole-line)
+ (global-set-key [?\C-\M-\k] 'kill-whole-line)
+ (global-set-key [?\C-\M-p]  'move-region-up)
+ (global-set-key [?\C-\M-n]  'move-region-down)
+ (global-set-key "\C-\\"     'delete-whitespace-forward)
+ (global-set-key [?\C-\;]    'indent-after-char)
+ (global-set-key "\M-#"      'comment-line)
+ (global-set-key "\M-&"      'insert-indentation)
+ (global-set-key "\M-]"      'toggle-mark)
+ (global-set-key "\M-{"      'insert-curlies)
+ (global-set-key "\M-}"      'move-past-closing-curly)
+ (global-set-key "\M-/"      'hippie-expand)
+ (global-set-key "\M-\""     'align-html-attributes)
+ (global-set-key "\M-+"      'duplicate-line)
+ (global-set-key "\M-_"      'goto-last-change)
+ (global-set-key "\M-g"      'goto-line)
+ (global-set-key "\M-n"      'bs-cycle-next)
+ (global-set-key "\M-p"      'bs-cycle-previous)
+ (global-set-key "\M-s"      'bs-show)
+ (global-set-key "\M-q"      'fill-individual-paragraphs)
+ (global-set-key "\M-z"      'zap-up-to-char)
+ (global-set-key "\eOa"      'backward-paragraph)
+ (global-set-key "\eOb"      'forward-paragraph)
+ (global-set-key "\eOc"      'forward-word)
+ (global-set-key "\eOd"      'backward-word)
+ (global-set-key "\e[7^"     'beginning-of-buffer)
+ (global-set-key "\e\e[7~"   'beginning-of-buffer-other-window)
+ (global-set-key "\e[7~"     'beginning-of-line)
+ (global-set-key "\eOH"      'beginning-of-line)
+ (global-set-key "\e[8^"     'end-of-buffer)
+ (global-set-key "\e\e[8~"   'end-of-buffer-other-window)
+ (global-set-key "\e[8~"     'end-of-line)
+ (global-set-key "\eOF"      'end-of-line)
+ (global-set-key "\eO3a"     'enlarge-window)
+ (global-set-key [?\e up]    'enlarge-window)
+ (global-set-key [M-up]      'enlarge-window)
+ (global-set-key "\eO3b"     'shrink-window)
+ (global-set-key [?\e down]  'shrink-window)
+ (global-set-key [M-down]    'shrink-window)
+ (global-set-key "\eO3c"     'indent-current-region)
+ (global-set-key [?\e right] 'indent-current-region)
+ (global-set-key [M-right]   'indent-current-region)
+ (global-set-key "\eO3d"     'dedent-current-region)
+ (global-set-key [?\e left]  'dedent-current-region)
+ (global-set-key [M-left]    'dedent-current-region)
+ (global-set-key [?\e f1]    'toggle-text-mode-fontified)
+ (global-set-key [M-f1]      'toggle-text-mode-fontified)
+ (global-set-key [A-f1]      'toggle-text-mode-fontified)
+ (global-set-key [?\e f2]    'align-regexp)
+ (global-set-key [M-f2]      'align-regexp)
+ (global-set-key [A-f2]      'align-regexp)
+ (global-set-key [f3]        'query-replace)
+ (global-set-key [?\e f3]    'query-replace-regexp)
+ (global-set-key [M-f3]      'query-replace-regexp)
+ (global-set-key [A-f3]      'query-replace-regexp)
+ (global-set-key [f4]        'svn-status)
+ (global-set-key [f5]        'recompile)
+ (global-set-key [?\e f5]    'compile)
+ (global-set-key [M-f5]      'compile)
+ (global-set-key [A-f5]      'compile)
+ (global-set-key [f6]        'other-window)
+ (global-set-key [?\e f6]    'rotate-windows)
+ (global-set-key [M-f6]      'rotate-windows)
+ (global-set-key [A-f6]      'rotate-windows)
+ (global-set-key [f7]        'toggle-truncate-lines)
+ (global-set-key [?\e f7]    'toggle-show-trailing-whitespace)
+ (global-set-key [M-f7]      'toggle-show-trailing-whitespace)
+ (global-set-key [A-f7]      'toggle-show-trailing-whitespace)
+ (global-set-key [f8]        'follow-delete-other-windows-and-split)
+ (global-set-key [?\e f8]    'follow-mode-quit)
+ (global-set-key [M-f8]      'follow-mode-quit)
+ (global-set-key [A-f8]      'follow-mode-quit)
+ (global-set-key [f9]        'open-shell-pane)
+ (global-set-key [?\e f9]    'linum)
+ (global-set-key [M-f9]      'linum)
+ (global-set-key [A-f9]      'linum)
+ (global-set-key [f11]       'bookmark-jump)
+ (global-set-key [?\e f11]   'bookmark-set)
+ (global-set-key [M-f11]     'bookmark-set)
+ (global-set-key [A-f11]     'bookmark-set)
+ (global-set-key [f12]       'call-last-kbd-macro)
+ (global-set-key [?\e f12]   'start-or-end-kbd-macro)
+ (global-set-key [M-f12]     'start-or-end-kbd-macro)
+ (global-set-key [A-f12]     'start-or-end-kbd-macro)
+ (global-set-key [C-tab]     'other-window)
+ (global-set-key [C-S-tab]   'other-window-reverse)
+ (global-set-key [C-S-iso-lefttab] 'other-window-reverse)
+ (global-set-key [?\e prior] 'scroll-other-window-down)
+ (global-set-key [?\e next]  'scroll-other-window)
+ 
+ ;; keep text-mode from stealing M-s key binding
+ (define-key text-mode-map "\es" nil)
+ (define-key text-mode-map "\eS" nil)
+ 
+ ;; fix f11 and f12 in rxvt terminals
+ (add-hook 'term-setup-hook
+           (lambda ()
+             (define-key function-key-map "\e[23~" [f11])
+             (define-key function-key-map "\e[24~" [f12])))
+ 
+ ;; menu key as hyper
+ (define-key key-translation-map [menu] 'event-apply-hyper-modifier)
+ (define-key key-translation-map [apps] 'event-apply-hyper-modifier)
+ (global-set-key [H-menu] '(lambda () "Dired here" (interactive) (dired ".")))
+ (global-set-key [H-apps] '(lambda () "Dired here" (interactive) (dired ".")))
+ (global-set-key [H-return] '(lambda () "Dired here" (interactive) (dired ".")))
+ (global-set-key [H-tab] 'last-buffer)
+ 
+ ;; remove unused pull-down menus
+ (define-key global-map [menu-bar file] nil)
+ (define-key global-map [menu-bar edit] nil)
+ (define-key global-map [menu-bar options] nil)
+ (define-key global-map [menu-bar tools] nil)
+ 
+ ;; terminal support
+ (unless window-system
+   (make-face-bold 'font-lock-builtin-face)
+   (make-face-bold 'font-lock-comment-face)
+   (make-face-bold 'font-lock-keyword-face)
+   (make-face-bold 'font-lock-string-face)
+   (make-face-bold 'font-lock-type-face)
+   (make-face-bold 'modeline)
+   (make-face-bold 'region)
+   (make-face-unbold 'font-lock-function-name-face)
+   (normal-erase-is-backspace-mode 0)
+   (xterm-mouse-mode t)
+   (load-library "mouse")
+   (defun track-mouse (junk)))
+ 
+ ;; x11 support
+ (when window-system
+   (let ((font
+          (case window-system
+            (w32 "fixedsys")
+            (mac "-apple-monaco-medium-r-normal--14-140-72-72-m-140-iso10646-1")
+            (otherwise "neep-alt-bold-14"))))
+     (unless (eq window-system 'mac)
+       (set-face-font 'menu "-adobe-helvetica-medium-r-normal--10-100-75-75-p-56-iso8859-1"))
+     (set-face-foreground 'font-lock-builtin-face "cornflower blue")
+     (set-face-foreground 'modeline "white")
+     (set-face-background 'modeline "DodgerBlue4")
+     (set-face-background 'menu "gray95")
+     (unless (eq window-system 'w32)
+       (make-face-bold 'mode-line-inactive))
+     (when (eq window-system 'w32)
+       (make-face-unbold 'mode-line-buffer-id)
+       (make-face-unbold 'font-lock-regexp-grouping-backslash)
+       (make-face-unbold 'font-lock-regexp-grouping-construct)
+       (make-face-unbold 'font-lock-warning-face)
+       (setq find-program "gfind"))
+     (setq frame-title-format "%b - Emacs")
+     (setq default-frame-alist
+           (list '(foreground-color . "cyan3")
+                 '(background-color . "rgb:1/1/1")
+                 '(vertical-scroll-bars . nil)
+                 '(mouse-color . "white")
+                 '(cursor-color . "gray80")
+                 '(active-alpha . 0.97)
+                 '(inactive-alpha . 0.97)
+                 (cons 'font font)))
+     (setq x-use-underline-position-properties nil)
+     (setq interprogram-cut-function nil)
+     (setq interprogram-paste-function nil)
+     (defun x-cut ()
+       (interactive)
+       (let ((interprogram-cut-function
+              'x-select-text))
+         (kill-region (region-beginning)
+                      (region-end))))
+     (defun x-copy ()
+       (interactive)
+       (let ((interprogram-cut-function
+              'x-select-text))
+         (kill-ring-save (region-beginning)
+                         (region-end))))
+     (defun x-paste ()
+       (interactive)
+       (let ((interprogram-paste-function
+              'x-cut-buffer-or-selection-value))
+         (yank)))
+     (global-set-key [S-delete] 'x-cut)
+     (global-set-key [S-backspace] 'x-cut)
+     (global-set-key [C-insert] 'x-copy)
+     (global-set-key [s-backspace] 'x-copy)
+     (global-set-key [S-insert] 'x-paste)
+     (global-set-key [s-mouse-2] 'x-paste)
+     (menu-bar-mode -1)
+     (scroll-bar-mode -1)
+     (tool-bar-mode -1)))
+ 
+ ;; scroll wheel support
+ (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 2)))
+ (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 2)))
+ (global-set-key [mouse-8] '(lambda () (interactive) (scroll-down 2)))
+ (global-set-key [mouse-9] '(lambda () (interactive) (scroll-up 2)))
+ 
+ ;; minor mode for indentation surgery
+ (define-minor-mode fast-indent-mode
+   "Remaps left and right arrow keys so that they indent and dedent lines."
+   :lighter " FastIndent"
+   (if fast-indent-mode
+       (progn
+         (local-set-key [left] '(lambda ()
+                                   (interactive)
+                                   (indent-rigidly (line-beginning-position)
+                                                   (line-end-position)
+                                                   (- tab-width))))
+         (local-set-key [right] '(lambda ()
+                                    (interactive)
+                                    (indent-rigidly (line-beginning-position)
+                                                    (line-end-position)
+                                                    tab-width))))
+     (progn
+       (local-unset-key [left])
+       (local-unset-key [right]))))
+ 
+ ;; handy functions for programming
+ 
+ (defun java-getter ()
+   (interactive)
+   (let ((type (read-string "Type: "))
+         (name (read-string "Name: ")))
+     (insert-string "public ")
+     (insert-string type)
+     (insert-string " get")
+     (save-excursion
+       (insert-string name))
+     (capitalize-region (point) (+ (point) 1))
+     (end-of-line nil)
+     (insert-string "() {")
+     (newline-and-indent)
+     (insert-string "return this.")
+     (insert-string name)
+     (insert-string ";")
+     (newline-and-indent)
+     (insert-string "}")
+     (c-indent-command)))
+ 
+ (defun java-setter ()
+   (interactive)
+   (let ((type (read-string "Type: "))
+         (name (read-string "Name: ")))
+     (insert-string "public void set")
+     (save-excursion
+       (insert-string name))
+     (capitalize-region (point) (+ (point) 1))
+     (end-of-line nil)
+     (insert-string "(")
+     (insert-string type)
+     (insert-string " ")
+     (insert-string name)
+     (insert-string ") {")
+     (newline-and-indent)
+     (insert-string "this.")
+     (insert-string name)
+     (insert-string " = ")
+     (insert-string name)
+     (insert-string ";")
+     (newline-and-indent)
+     (insert-string "}")
+     (c-indent-command)))
+ 
+ (defun extract-variable ()
+   (interactive)
+   (let ((var-name (read-string "Variable name: ")))
+     (kill-region (region-beginning) (region-end))
+     (kill-append " = " t)
+     (kill-append var-name t)
+     (kill-append ";" nil)
+     (insert-string var-name)))
+ 
+ (defun php-array-variable ()
+   (interactive)
+   (let ((var-name (read-string "Variable name: ")))
+     (insert-string "'")
+     (insert-string var-name)
+     (insert-string "' => $")
+     (insert-string var-name)))
+
+----
+
+Thank you for Lisp:jira.el .  It was totally easy to set up and make it work.  I am looking forward to using it. --JonathanArkell
+
+----
+
+I would also like to thank you for Lisp:jira.el .  I suggest you add it to the [http://confluence.atlassian.com/display/JIRAEXT/Alternative+JIRA+Clients list of Jira Clients].  I almost did so myself, but I don't know all the important details and was afraid that you might not appreciate it.
+
+Also, I had to change jira1.getProjects to jira1.getProjectsNoSchemes but perhaps it's a version issue?
+
+     --IvanAndrus
+
+----
+CategoryHomepage

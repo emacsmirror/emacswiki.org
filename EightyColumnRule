@@ -1,0 +1,126 @@
+Well, The sacred 80 column rule states that "Thou shalt not cross 80 columns in thy file." This initially was to make printing easier. Nowadays, the newer editors and users of editors have forgotten this and make it really hard to read code.
+
+: Nowadays, there's good reason for 80 columns as well: If your code indents farther than 80 columns, the function is too complicated (Rule of thumb: Exceptions exist, especially in languages like Java where the method names can be really, really long). To quote the Linux kernel Coding Styles:
+:: Now, some people will claim that having 8-character indentations makes the code move too far to the right, and makes it hard to read on a 80-character terminal screen. The answer to that is that if you need more than 3 levels of indentation, you're screwed anyway, and should fix your program.
+: -- JorgenSchaefer
+: Another great reason to stick to eighty columns is that you then have some hope of getting two editors side-by-side on one screen. -- DavidMcCabe.
+:: It may not be crucial what specific width is chosen, but if all developers are using the same width, no developer need resize their editor or scroll horizontally to read code.  Anything other than a standard size means that those with narrower editing areas must horizontally scroll or periodically resize their areas.  Those with wider editing areas must waste desktop real estate viewing mostly whitespace.  80 columns is attractive partly because it is a de facto standard, even ignoring any benefits of that particular number. -- mark7
+
+: Yet another reason is that narrow text is easier to read, as it requires fewer and shorter saccades per line. (FWIW, for those of you who use a Mac and are tired of reading wide web pages, Amar Sagoo's Tofu is an excellent column width enforcer.) -- SeanO
+
+:: Citation needed. Fewer ''saccades per line''? Really? What little information I can find on this subject seems to suggest the opposite conclusion, namely that longer lines are better. See [http://webusability.com/article_line_length_12_2002.htm] for example. --EthanGC
+
+----
+
+Accessibility is critical.  There are many people who have
+*no choice whatsoever* about the font size that they use and
+must use very large fonts.
+
+Lines longer than about 60 start to get really annoying for
+such people.
+
+And lines longer than 80 are *really really* annoying.
+
+Keeping lines short is important.
+
+----
+Using ColumnMarker is one way to keep track of column 80 overflow. See also FindLongLines.
+
+----
+I've started working in a company with lots of legacy C code, and it has made me work to the 80 rule, and of course TabsAreEvil. 
+To help me out i've set up my own warning font lock that works everywhere. Actually it is based on the BlankMode idea -- TimOCallaghan
+
+
+  (custom-set-faces
+   '(my-tab-face            ((((class color)) (:background "grey10"))) t)
+   '(my-trailing-space-face ((((class color)) (:background "gray10"))) t)
+   '(my-long-line-face ((((class color)) (:background "gray10"))) t))
+
+  (add-hook 'font-lock-mode-hook
+            (function
+             (lambda ()
+               (setq font-lock-keywords
+                     (append font-lock-keywords
+                             '(("\t+" (0 'my-tab-face t))
+                               ("^.\\{81,\\}$" (0 'my-long-line-face t))
+                               ("[ \t]+$"      (0 'my-trailing-space-face t))))))))
+
+[new:DrewAdams:2004-12-24 22:39 UTC]
+
+Very nice long-line effect. One thing to note: the long-line effect will ''not work in Emacs 20'' or older, because of the Emacs-21 regexp. See also ShowWhiteSpace for related stuff. -- DrewAdams
+
+[new]
+Moreover it doesn't work with folding-mode since it treats folded fold as a one line. It also counts a tab as a one character so it doesn't work for people (like me) who things that tabs ain't evil.
+
+[new]
+To count tabs correctly, you can build a regexp with this:
+
+  `(,(format "^\\([^\t\n]\\{%s\\}\\|[^\t\n]\\{,%s\\}\t\\)\\{%d\\}.*$"
+            tab-width (- tab-width 1) (/ 80 tab-width))
+    (0 'my-long-line-face t))
+
+-- [[nschum]]
+
+[new]
+I have expanded this to [[Highlight80Plus]].
+-- [[nschum]]
+
+----
+
+Next thing is that if you're runing EMACS on console or terminal emulator you don't have 'gray10' color. My solution is to use very-very-dark-gray underline:
+
+  (custom-set-faces
+   '(my-tab-face ((((class color))
+                   (:foreground "black" :weight bold :underline t))) t))
+
+  (add-hook 'font-lock-mode-hook
+            (function
+             (lambda ()
+               (setq font-lock-keywords
+                     (append font-lock-keywords
+                             '(("\t+" (0 'my-tab-face t))))))))
+
+Note havewer, that it is buggy when used with folding-mode. If you place tab just after folded fold you will end up with whole line underlined, eg ('...' represents folded region, '^' cursos position, _ underline and '|' end of terminal screen):
+
+  ;;{{{ Foo...                    |
+  ^                               |
+
+After inserting tab:
+
+  ;;{{{ Foo...____________________|
+  ________^                       |
+
+BTW. IMO the rule should say: "Thou shalt not cross 78 columns in thy file." Even in EMACS line can be 79-character long (longer lines will be splited unless configured not to). -- mina86
+
+[new]
+I think it is more appropriate to use font-lock-add-keywords.  Note the `append' after the face name.  That tells font-lock to merge the attributes in the new face with the text that is already present.  That is great for programming modes where long comments and long text have different faces.
+
+
+  (defun cc-mode-add-keywords (mode)
+    (font-lock-add-keywords 
+     mode
+     '(("\t+" (0 'my-tab-face append))
+       ("^.\\{81\\}\\(.+\\)$" (1 'my-long-line-face append)))))
+
+I call this function from programming mode hooks.  For example in my c-mode hook handler:
+
+  (cc-mode-add-keywords 'c-mode)
+
+-- Greg Rowe
+
+[new]
+There is also lineker-mode that lets you jump to too long lines:
+
+: http://www.helsinki.fi/~sjpaavol/programs/lineker.el
+
+And occur:
+
+: List lines matching regexp: ^.\{80,\}
+
+----
+
+I'm currently using Emacs 23.0.91.1 with the GTK interface.  What I'd like is a minor mode that puts a vertical line at column 80.  I'm a bit of an Emacs newbie, so I don't know how to code this yet.  Can anyone help?
+
+-- Paul Miller
+----
+CategoryFilling

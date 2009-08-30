@@ -1,0 +1,13 @@
+Subedit allows the editing of part of a buffer in a new buffer.  This new buffer might be in a different mode from the original buffer.
+
+This is different from indirect buffers in that the lines in the new buffer may not full lines in the original buffer.  Prefixes and/or suffixes may be removed from those lines.  This is especially useful in a comment context, or in some other context that requires each line containing special prefix (e.g. verbatim text in org-mode).
+
+To test it, just mark up a region and invoke M-x subedit-region, then answer some questions, and a new buffer will be opened for editing.  Later on, use M-x subedit-commit to copy back the changes.
+
+NOTE: It is only a prototype, and is actively developed.  So if you have any suggestions, please mail me:
+
+herberteuler zai hotmail dian com
+
+(Replace "zai" with "@" and "dian" with ".")
+
+Lisp:subedit.el ([[Subedit]])

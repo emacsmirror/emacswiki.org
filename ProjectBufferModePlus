@@ -1,0 +1,29 @@
+Lisp:project-buffer-mode+.el
+
+/This is an extension library for ProjectBufferMode./
+
+== Summary ==
+
+It provides commands to run the project-buffer actions: such as
+build, clean, run, debug and update while browsing the files
+belonging to this project.
+
+It also provides a command to directly go to the project-buffer
+attached to the current file.
+
+== How does it work? ==
+
+When you open a file from the project-buffer; it will attach the
+project-buffer to the file's buffer.
+The project-buffer is stored inside a local variable called:
+ `project-buffer-mode-p-attached-project-buffer'.
+
+== To install it: ==
+
+Put the following lines in your .emacs:
+{{{
+(eval-after-load "project-buffer-mode"
+ '(progn
+    (require 'project-buffer-mode+)
+    (project-buffer-mode-p-setup)))
+}}}

@@ -1,0 +1,20 @@
+== What are Emacsen? ==
+
+Emacsen are editors.  Not just any editors.  They are editors fully
+programmable, usually with a look-and-feel similar to EmacsAndXEmacs.
+An Emacs programmable in Haskell or Python is still an Emacs, one of
+emacsen.  A Vi programmable in Lisp is not an Emacs, unless you
+can switch from the Vi-like look-and-feel to an emacsen look-and-feel.
+
+What is a programmable editor? It allows you to edit text files.  And
+since you can program it, eventually you can also write mail, edit
+HTML, read news, and highlight your source.  And more.  Much more.
+
+"Emacsen" is offered as a plural to Emacs in the Collins English Dictionary[Groups:emacsen&selm=1118681561.957194.160950@z14g2000cwz.googlegroups.com], and gives "Emacs" the definition of:
+
+: ''a powerful computer program used for creating and editing text, functioning primarily through keyboard commands''
+
+See the excellent list of EmacsImplementations for more information.
+
+----
+CategoryGlossary

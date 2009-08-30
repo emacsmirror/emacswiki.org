@@ -1,0 +1,36 @@
+Lisp:ergo-movement-mode.el
+
+== Introduction ==
+
+Ergo Movement mode is a global minor mode which defines ergonomic and easy cursor movement keys. The movement keys are:
+
+<pre>
+            i                C-p
+    M-    j k l    =    C-b  C-n  C-f 
+
+    C-M-  j   l    =    M-b       M-f
+</pre>
+
+This mode does not hard-code above keys to any commands. Instead it calls the commands which have been defined to their default counterparts. That is, ##M-l## executes the command which is bound to ##C-f## in the current keymap (usually ##forward-char##), ##M-k## executes the command which is bound to ##C-n## in the current keymap (usually ##next-line##) etc. This kind of relative binding is useful because major modes sometimes rebind the default movement keys to something other than ##forward-char##, ##next-line## etc. With Ergo Movement mode you always get the same commands with Ergo bindings as with the default cursor movement bindings.
+
+Ergo Movement mode overrides certain default keybindings (##M-jikl##, ##C-M-jl##). The overridden keys are resurrected as Shifted versions. That is, just add Shift key to the original keybinding the get the original command. For example, ##M-l## (##Meta + l##) executes normally command ##downcase-word##. With Ergo Movement mode it's bound to ##M-L## (##Meta + Shift + l##).
+
+----
+== Comments ==
+
+[new:greboide:2009-06-12 05:26 UTC]
+Wouldnt it be best to switch these bindings to the correspondents that they are mirroring instead of Shift key to get original? eg, C-f to M-l and the reverse is also true M-l to C-f.
+(feel free to put this dialog down there, i added it here cause i thought was the right place)
+
+[new]
+
+Circular relative bindings are not possible. In Ergo Movement mode ##M-l## executes whatever command is bound to ##C-f##. Technically speaking ##M-l## is bound to
+{{{
+    (lambda () (interactive)
+      (call-interactively
+       (key-binding "\C-f")))
+}}}
+If you rebind ##C-f## to some new command then Ergo mode's ##M-l## will execute that new command too.
+
+[new]
+It might be a good idea long termwise to use something reminding of the corresponding bindings in viper/vi instead of the above bindings.

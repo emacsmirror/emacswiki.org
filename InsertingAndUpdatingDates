@@ -1,0 +1,9 @@
+The following pages describe ways to insert and update dates and times in buffers and files:
+
+* TimeStamp -- Automatically insert and update dates and times in buffers and files.
+* InsertingTodaysDate -- quickly insert the current date in things like articles, letters and other written documents.
+* InsertDate -- insert the current date in various formats depending on the prefix argument
+* InsertAnyDate -- a way to quickly insert a date other than the current date.
+
+----
+CategoryFiles CategoryCalendar CategoryEditing

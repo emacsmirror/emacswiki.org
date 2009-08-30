@@ -1,0 +1,129 @@
+'''This page is part of the description of OneOnOneEmacs.'''
+
+Cette page est aussi disponible en franglais ;-): Français:[[Frame Minibuffer Dedie]]
+
+*  
+*  
+*  
+
+When you have multiple [[frame]]s, there is no advantage (that I can see)
+for each frame to have its own MiniBuffer. In fact, it can sometimes
+be confusing, in terms of input focus.
+
+So, I prevented (via `default-frame-alist') any frames
+from having a minibuffer, except a separate, special frame that is
+dedicated to the minibuffer. This frame, named `1on1-minibuffer-frame' has
+these properties:
+
+* It is ''only'' a minibuffer -- frame property 
+`<code>(minibuffer . only)</code>'.
+* It extends along the bottom of your entire display (by
+default). (The position and size are calculated automatically, based
+on your display size.)
+* It has no [[menu bar]] and no [[tool bar]].
+
+This means that you have only one place to look for the
+minibuffer. And it is long, giving you lots of room for informative
+messages, editing previously executed [[command]]s, icompletion choices,
+and so on.
+
+'''See Library:''' Lisp:oneonone.el
+
+== Minibuffer Resizing ==
+
+Even with a display-wide standalone minibuffer, you will sometimes have input that covers more than two lines, which is the default height of the standalone frame (which you can control using option `1on1-minibuffer-frame-height').  To accomodate dynamic changes in input size, the standalone minibuffer frame is automatically resized after each user event (e.g typing a character) to fit its current content, provided [[user option]] '''`1on1-fit-minibuffer-frame-flag'''' is non-`nil'. Options '''`1on1-fit-minibuffer-frame-max-height'''' and
+'''`1on1-fit-minibuffer-frame-max-height-percent'''' define the maximum
+possible height for this behavior.  In addition, if you bind command 
+'''`1on1-fit-minibuffer-frame'''' to a key (I use `C-o'), then you can
+use that key repeatedly to increase the height by one line, even
+beyond the maximum.
+To take advantage of this feature, you must also have library <tt>[[fit-frame.el]]</tt> -- see [[Shrink-Wrapping Frames]].
+
+
+== Minibuffer Background Color Indicates User Activity ==
+
+I took advantage of the fact that frame `1on1-minibuffer-frame'
+is dedicated to the minibuffer, by dynamically changing its background
+color slightly to indicate the ''status'' of the current user interaction
+(the colors are user variables):
+
+
+* Normal mode (inactive) -- no user action in the minibuffer:
+
+: [[image:DrewsEmacsMinibufInactive]]
+
+* Input mode (active) -- user typing in the minibuffer:
+
+: [[image:DrewsEmacsMinibufActive]]
+
+* Isearch mode - incremental searching:
+
+: [[image:DrewsEmacsMinibufIsearch]]
+
+
+This meant setting `isearch-mode-hook' and
+`isearch-mode-end-hook' to take care of the isearch color
+changes. It also meant redefining these functions:
+
+* `top-level' and `abort-recursive-edit' --
+Reset the background to inactive.
+* `y-or-n-p' -- Temporarily change background to active,
+until user input.
+
+Some minibuffer commands let you enter a ''recursive minibuffer''. When the minibuffer is active -- that is, when it is expecting input from you, it can be at ''different depths'' of recursion. In Emacs, there is no indication of this depth, or even of the fact that you are in a recursive minibuffer. (A recursive ''edit'' is indicated by bracketing (##[...]##) in the mode line, but a recursive minibuffer is not indicated in any way.) To help you perceive the change to a new minibuffer recursion depth, the background hue (color) of the minibuffer frame is changed slightly with each depth change.
+
+Here are screenshots showing this color change, together with a recursion-depth indicator ( '''##2)##''', '''##3)##''',...) at the left of the minibuffer. (The '''##+##''' sign followed by the colored rectangle are '''[[Icicles]]''' [[completion]] indicators -- see [[Icicles - Nutshell View]].)
+
+: [[image:DrewsEmacsMinibufActive]]
+
+: [[image:DrewsEmacsMinibufLevel1]]
+
+: [[image:DrewsEmacsMinibufLevel2]]
+
+: [[image:DrewsEmacsMinibufLevel3]]
+
+: [[image:DrewsEmacsMinibufLevel4]]
+
+: [[image:DrewsEmacsMinibufLevel5]]
+
+: [[image:DrewsEmacsMinibufLevel6]]
+
+: [[image:DrewsEmacsMinibufLevel7]]
+
+: [[image:DrewsEmacsMinibufLevel8]]
+
+: [[image:DrewsEmacsMinibufLevel9]]
+
+
+Each of these background changes can improve orientation. Taken together, I find that they help quite a lot. Perhaps the most disorienting thing about Emacs is its various input modes, and the fact that there is generally little feedback about them.
+
+[new:DrewAdams:2006-03-18 00:58 UTC]
+: I suggested to the Emacs developers that an indicator be added to let you know what the current `minibuffer-depth' is. It now looks that will be added for Emacs 22, probably in the minibuffer itself. -- DrewAdams
+[new:DrewAdams:2007-02-27 16:59 UTC]
+:: No, it looks like that feature was pulled from Emacs 22. -- DrewAdams
+
+
+
+'''See Library:''' Lisp:oneonone.el
+
+
+
+
+
+
+----
+
+== Discussion ==
+
+[new]
+You can also set the `minibuffer-prompt' [[face]] to something bright to get an indicator when the minibuffer is active. -- AmitPatel
+
+[new:DrewAdams:2007-02-03 15:11 UTC]
+By "also", I suppose you mean "as an alternative", for OneOnOneEmacs, to changing the background color, since the change in frame background is already a good indication. There are two things to keep in mind about that alternative: 1) Face `minibuffer-prompt' is not defined in Emacs versions prior to 22. 2) Changing existing faces is something that is better left to users, in their customizations, since they have different backgrounds, tastes etc. 
+
+If, on the other hand, you are advising users that they can customize face `minibuffer-prompt', to make it better indicate an active minibuffer, then, yes, that is a good suggestion for people who don't use OneOnOneEmacs. -- DrewAdams
+
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay
+

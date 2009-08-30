@@ -1,0 +1,41 @@
+Active Menu toggles the display of the menu bar automatically when the mouse comes close to it. Otherwise you get one more line of code :-)
+
+'''See Also:''' [[ToolBar#ToolBarPlus]] for a related functionality: hiding the ToolBar until you need it, then showing it while you click a button.
+
+= History =
+The basic idea and implementation of ActiveMenu were done by me (StefanKamphausen) and ClausBrunzema polished the code, made it really usable and hosted it for some years.  Recently (early 2007) I took over the project again, wrote another back end and ported it to Gnu Emacs.  Since then it is work in progress and not totally stable but it starts getting usable in Gnu Emacs so it might as well be published.
+
+= Limitation =
+* Stable in XEmacs.
+* Works kinda in Gnu Emacs
+* Gnu Emacs 22 with Gtk is not really working well.
+
+= Installation =
+ (require 'active-menu)
+
+ ;; If you turn active-menu on and off frequently, you might want to use
+ ;;
+ (autoload 'active-menu
+           "active-menu"
+           "Show menu only when mouse is at the top of the frame."
+           t)
+
+Adjust active-menu-frame-compensation and active-menu-scroll-compensation as needed.
+
+= Problems =
+The source code mentions some problems and I would really appreciate any help I could get here.  Please see "Bugs and Ugliness" in the file.
+
+You should be using the 'track-Backend right now because the timer backend does not work yet.  In Gnu Emacs using 
+
+  (setq track-mouse t)
+  (define-key global-map [mouse-movement] 
+                         'active-menu-track-menubar-maybe-show)
+
+does not seem the way to go, though.
+
+= Download =
+
+http://www.skamphausen.de/cgi-bin/ska/active-menu.el
+
+----
+CategoryDisplay

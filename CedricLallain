@@ -1,0 +1,60 @@
+I use Emacs:
+* at home
+* at work
+* under Windows
+* under Linux
+* not in bed :-)
+* neither in the shower :-)
+
+== About Emacs ==
+
+I used Emacs for a couple of months now (2 to be accurate). I have only one reproach to this editor: the learning curve, Emacs is a great editor, however you need to be willing to spend 2 or 3 hours at first in order to learn it. 
+
+On the positive side: the feeling of controlling the editor instead of having to force yourself to use what the editor is willing to give you is really unique.
+
+== Emacs vs XEmacs ==
+
+I started with XEmacs (using it for about two months), and switched to Emacs for the following reasons:
+* the general latency of XEmacs, a constant feeling of slow reaction from the editor
+* the time XEmacs takes to colorize text files with font-lock
+* most online scripts work straight away with Emacs but required to be modified to work with XEmacs
+* the Emacs online community
+
+Take a look at [[EmacsAndXEmacs]] ....
+
+== The Emacs Script == 
+
+The main scripts I use are: 
+* xcscope: very handy to find you way into a big project
+* git: Switching from p4 to git... I couldn't go back to p4 now... (not with the way it is now at least)
+* redo: I was kind of surprise that Emacs has a Undo system without any option to do a "redo"
+
+I also use: 
+* highlight-current-line
+* bm
+* dabbrev-highlight
+* dired+
+
+== My personal contribution ==
+
+* RecordType        - Define record type for Emacs Lisp
+* LogBuffer         - Log buffer utils
+* FindDiredPlusPlus - Redefinition of find-dired
+* TcpClient         - Network interface for emacs
+* XCscopePlus       - Providing an extension to xcscope
+
+== New contributions ==
+
+* ProjectBufferMode
+* ProjectBufferModePlus
+* SlnMode
+* FsProject
+
+== Messages ==
+
+[new]
+Welcome to the wiki! :) -- AlexSchroeder
+
+Thanks -- CedricLallain
+----
+CategoryHomepage

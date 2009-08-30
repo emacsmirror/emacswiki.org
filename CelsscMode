@@ -1,0 +1,21 @@
+http://www.shatters.net/celestia/images/splash.jpg
+
+celssc-mode.el --- mode for editing celestia's catalog files.
+
+Celestia is a free space simulation programm (http://www.shatters.net/celestia/).
+
+You can find it here: Lisp:celssc-mode.el
+
+=== Installation ===
+
+Put celssc-mode.el in your load-path and this in your .emacs file:
+  
+ (autoload 'celssc-mode "celssc-mode" "Major mode for editing celesita's solar system catalog files" t)
+ (setq auto-mode-alist (cons '("\\.ssc" . celssc-mode)
+                                   auto-mode-alist))
+ (autoload 'celssc-mode "celssc-mode" "Major mode for editing celesita's star catalog files" t)
+ (setq auto-mode-alist (cons '("\\.stc" . celssc-mode)
+                                   auto-mode-alist))
+ (autoload 'celssc-mode "celssc-mode" "Major mode for editing celesita's deep sky objects files" t)
+ (setq auto-mode-alist (cons '("\\.dsc" . celssc-mode)
+                                   auto-mode-alist))

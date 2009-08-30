@@ -1,0 +1,137 @@
+Both GNU and XEmacs can be run under Cygwin. Why would you want to do
+this? Because emacs expects to be run on a unix-style system, and
+cygwin provides the most-unix-like experience to be had on window$.
+Trust me, your life will improve :-)
+
+There are two ports of Emacs you can run together with Cygwin.
+For information about how to use native w32 Emacs port with Cygwin see NTEmacsWithCygwin.
+
+GNU Emacs ported to the Cygwin environment comes with Cygwin. 
+The initial setup is easy (from setup.exe, browse to
+Editors>emacs). Choose emacs-X11 to run both the X and terminal
+(character-mode) versions, or emacs to run only on terminal (i.e.
+within bash).
+
+Note that the Meta key doesn't always work as well as you'd like: CygwinMeta.
+
+I had persistent display problems running in bash:
+
+* When emacs started up, the display was usually shifted either down a\
+  line or to the right a column from where it should be, with\
+  extraneous characters showing in either the minibuffer, or the top\
+  of the display (first line under windows titlebar) or both.
+* After startup, the minibuffer's contents, and sometimes that of the\
+  window, shifts to the right. I can "move it back" via the horizontal\
+  scrollbar, but then I lose the first column of the minibuffer prompt\
+  (or of the contents of the window).
+* After startup, if I change buffers, "garbage" characters from the\
+  previous buffer (i.e. normal 7-bit ASCII chars, just ones that don't\
+  belong in the current buffer) are often visible in the new one.
+
+I found (after a lot of posting) I could solve these problems by:
+
+* Setting the window size "properly." Kris Thielemans suggested that\
+  cygwin probably assumes that the horizontal size is equal to\
+  "'window size'.  Change it in the Properties->Layout menu\
+  of the shortcut that one uses to launch\
+  bash.  Setting the window size that way (rather than resizing the window\
+  manually, at "runtime") fixed the shifting problem.
+* Setting the appropriate enviroment variables. (Thanks to Joe Buehler\
+  for the suggestion.) Now I use the following batch file to start\
+  bash:
+
+<pre>
+@echo off
+rem Start bash as interactive shell
+
+rem Put your path to bash here
+cd /d D:\bin\cygwin\1.3.13-1\bin
+
+rem Set vars for Emacs
+set CYGWIN=tty title
+set TERM=ansi
+set HOME=t:\tlroche
+
+bash --login -i
+
+rem Does this really unset?
+rem Answer: No, it is pointless to put the following at the *end* of a
+rem         batch file.  Environment variables are local to the process in
+rem         which they are set.  Child processes inherit the environment of
+rem         their parent *at the time the child process is started*.
+rem set HOME=
+rem set TERM=
+rem set CYGWIN=
+</pre>
+
+I unset the envvars (I hope) so as not to confuse my non-cygwin
+emacs. (I use a single _emacs on all platforms, which tries to
+figure out on which platform it's actually running by looking at
+various envvars. But multi-platforming emacs is a whole 'nother
+topic.) Note that, with the CYGWIN envvar, "title" is optional, but "tty" is not: see SetTty.
+
+Kris Thielemans claims unsetting is normally not necessary as environment
+variables are local to the current cmd/command shell. They survive only as long as
+the cmd/command shell from which you ran the cygwin.bat file. As cygwin is usually
+launched from the Start button or an Icon, the cmd/command shell exits just after
+you exit cygwin.
+
+Kris Thielemans also says that you do not need to set HOME as /etc/profile
+sets it to /home/$USER. If this doesn't end up where you want, you can always
+use cygwin's mount to put /home where you like.
+
+And finally, Kris Thielemans also says that the usual setting for TERM is 
+cygwin (which is done automatically if TERM isn't set). This works fine for
+him.
+
+Life was easier (but also slower and more memory-intensive) running
+emacs under X. To do this:
+
+# When you install, (in category view) select Editors>emacs-X11. That\
+  should bring in emacs (though not the lisp sources--that's a\
+  separate package), XFree86, and lots of other stuff.
+# Run bash (i.e. the cygwin shortcut), and within bash run 'startx'.\
+  This will eventually launch a (windows) window running X, plus a\
+  bunch of xterm's.
+# From one of the xterm's, run 'emacs &'.
+
+BTW, Kris Thielemans says "you should mention in that how-to that
+emacs-X runs with any (proper) X-windows emulator. (In my case, it
+runs happily using Exceed.) Also, the startx command is only available
+when you installed the XFree package." Also, lemme mention the batch file I use to
+start X (automating the first two steps above:
+
+<pre>
+@echo off
+rem Use bash to start X
+
+cd /d D:\bin\cygwin\1.3.13-1\bin
+
+rem Set vars for Emacs
+set CYGWIN=tty title
+set HOME=t:\tlroche
+
+bash --login -c "startx"
+
+rem The following is commented out because it has no effect.
+rem rem Unset
+rem set HOME=
+rem set CYGWIN=
+</pre>
+
+You can then customize your startx and .xinitrc to launch whatever
+programs (xterm, emacs, etc) you want.
+
+For further help, try these lists (which I found useful):
+
+For cygwin issues,
+mailto:cygwin@cygwin.com
+unless it's an X problem, in which case use
+mailto:cygwin-xfree@cygwin.com.
+See also: http://cygwin.com/lists.html.
+
+For emacs issues, see the EmacsMailingLists.
+
+----
+CategoryWThirtyTwo
+CategoryPorts

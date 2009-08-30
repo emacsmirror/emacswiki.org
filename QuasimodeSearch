@@ -1,0 +1,109 @@
+= Download =
+
+* Lisp:qsearch.el
+
+= Rationale =
+
+Inspired by MeatBall:HumaneInterface.  I call it qsearch; the "q"
+stands for "quasimode".  A quasimode is a mode that is active only
+while you keep pressing a modifier.  (We are not talking about Emacs
+minor- and major-modes but about interface modes such as vi's insert
+mode).  One such quasimode is pressing the Shift modifier and some
+other keys -- this produces capital letters.
+
+When using isearch (C-s), you are put in such a mode (ie. not a
+quasimode): entering the mode happens via C-s, searching happens as
+you type printable characters, leaving the mode happens via any other
+key.
+
+qsearch allows you to search for text without having to press C-s, and
+without using a mode (ie. a quasimode).  All you need are two modifier
+keys: Type a string while pressing Super to search forward, type any
+string while pressing Hyper to search backwards.  Thus, search for
+"alex" by typing s-a s-l s-e s-x.  You can also skip to the beginning
+of the word by typing H-<space>, to the end of the sentence using
+s-. or to the end of the line using s-<return> or to the end of the
+paragraph using s-<return> s-<return>.
+
+This saves you the C-s keystroke used for isearch, and it saves you
+thinking about how to leave isearch mode.  Another nice effect is that
+you can search for line-ends.  In isearch, pressing RET will turn your
+isearch into a normal search.  (And plain search is another mode, of
+course!)
+
+Furthermore, qsearch leaves point at the /beginning/ of the text
+found.  This is good for habit formation, because the position is
+predictable.  Unlike isearch -- there, you stop typing as soon as your
+string is found, and point is somewhere in the middle of the string
+you were thinking about.  So you need to think about where to place
+point next.  This is bad for habit formation.
+
+At the same time, qsearch is quite crude -- no overlays, no repeating
+of searches, no support for environments without Super and Hyper keys.
+
+= Installing =
+
+Note that you might need to setup Super and Hyper using xmodmap.
+Example code for your .xmodmaprc or .Xmodmap file in order to use the
+"Windows" key on most PC keyboards; the left key (Hyper) searches
+backwards, the right key (Super) searches forward.
+
+    keycode 115 = Hyper_L
+    keycode 116 = Super_R
+    clear mod3
+    clear mod4
+    clear mod5
+    add mod3 = Hyper_L
+    add mod4 = Super_R
+
+The rest is simple: Put qsearch.el in your LoadPath, and add (require
+'qsearch) to your ~/.emacs file.
+
+= Bugs, Feature Wishes, Discussion =
+
+I removed support for regexp searches.  Use other methods for that
+(such as C-M-s).  This was confusing, for example, because searching
+for the end of the sentence (".") was non-trivial.
+
+No support for Windows, console...  (Ideas?  I've tinkered with
+loadkeys but found no solution; there are not enough actions to
+differentiate between all the keys.)
+
+In order to repeat your current search, use C-s-s (forward), and C-H-r
+(backwards), ie. just keep your current modifier pressed and press C-s
+or C-r, as if to repeat an isearch.
+
+Take a loot at qsearch-translations; that's the place to add more
+bindings to search for escape sequences, form feed characters, etc.
+
+MichaelJohnDownes: When you say 'search for "alex" by typing s-a s-l
+s-e s-x' it sounds like a significantly more difficult operation for the
+hands. I think this outweighs all the theoretical advantages of having
+a quasimode. Unless you have doubled keys (left-Super, right-Super,
+left-Hyper, right-Hyper) like the Shift keys, many combinations will be
+rather difficult to press, won't they? (e.g. Super-= or Hyper-1).
+
+AlexSchroeder: Well, I just use a key reachable with my thumbs as
+Super, and keep it pressed while the remaining fingers type "alex"...
+So when you have Super and Hyper on a good key, things are easy to
+type.
+
+MichaelJohnDownes: The idea of always leaving point at the beginning
+of the found string is interesting. I suspect isearch could be made to
+work similarly, with a little extra effort.
+
+AlexSchroeder: Yes, this has been done in the mean time.  See
+IncrementalSearch.
+
+== Useless ==
+
+Actually, after having this installed for a while, I noticed that I
+practically never use it.  -- AlexSchroeder.
+
+Useless thought it may be, you can't deny it has a cool name.
+
+Heh.  How about QuasimodoSearch! -- AlexSchroeder
+
+----
+CategoryKeys
+CategorySearchAndReplace

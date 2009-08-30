@@ -1,0 +1,3 @@
+Today, JinpenWei submitted a note[http://lists.gnu.org/archive/html/emacs-pretest-bug/2005-11/msg00431.html] to the mailing list for bugs in EmacsFromCvs, emacs-pretest-bug, about a so-called "Time-Of-Check-To-Time-Of-Use" (TOCTTOU) bug.  It was found in GNU Emacs 21.2, but not looked for in the development sources of GNU Emacs.  The vulnerability is characterized as occuring when a file opened by Emacs is quickly replaced by a symbolic link to another file "before chmod()" is executed by Emacs.
+
+The result is based on a paper to appear in [http://www.usenix.org/events/fast05/ USENIX FAST 2005].

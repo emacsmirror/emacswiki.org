@@ -1,0 +1,9 @@
+The minor mode `dot-mode.el' emulates the "." (redo) command of Vi (see ViAndEmacs).  It watches the changes you make to a buffer and gives you a keybinding (C-.) to redo those changes.  Conceptually, it is like having a macro automatically defined for the last set of changes you made.  It is maintained by RobertWyrick.
+
+* http://wyrick.org/source/elisp/dot-mode/
+* Lisp:dot-mode.el
+
+See also ViKeys.
+
+----
+CategoryModes

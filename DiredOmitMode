@@ -1,0 +1,15 @@
+DiredOmitMode lets you hide uninteresting files, such as backup files and AutoSave files, from the DiredMode view.
+
+It is defined in the dired-x package, so you must also arrange to load dired-x:
+
+    ;; Load Dired-x when Dired is loaded.
+    (add-hook 'dired-load-hook '(lambda () (require 'dired-x)))
+
+    ;; Enable toggling of uninteresting files.
+    (setq dired-omit-files-p t)
+
+M-o in dired buffers will toggle hiding of files. Variables <code>dired-omit-files</code> (note: no `-p' at end) and <code>dired-omit-extensions</code> together define the uninteresting files.
+
+'''See also Dired+''' (DiredPlus), for a way to color less-interesting files differently in Dired. Combined with DiredOmitMode, this can do either of the following:
+* Give you two levels of disinterest.
+* Let you ''see'' uninteresting files, but not have them stand out.

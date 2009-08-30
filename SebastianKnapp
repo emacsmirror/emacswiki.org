@@ -1,0 +1,64 @@
+I am an XEmacs user at apprentice level or beneath.
+Currently I need a (public) place to save my init.el wich will
+hopefully somtimes support perlish style (http://perl.4pro.net/pcs.html).
+The ugly grey is already removed from the main window. The windows
+default of a blank white background is much better, but so I had found this
+nice wiki place. 
+
+{{{
+
+; xemacs init.el 2009-04-09 sk
+
+(setq load-path (append (list "~/.xemacs") load-path))
+
+(set-face-background 'default      "lemon chiffon") ; frame background
+(set-face-foreground 'default      "black")         ; normal text
+(set-face-background 'zmacs-region "peach puff")    ; when selecting 
+(set-face-background 'modeline     "khaki")
+
+(require 'cperl-auto-name) ;; http://www.emacswiki.org/emacs/cperl-auto-name.el
+
+(line-number-mode 1)
+(column-number-mode 1)
+
+(require 'un-define)
+(set-coding-priority-list '(utf-8))
+(set-coding-category-system 'utf-8 'utf-8)
+
+(add-hook 'cperl-mode-hook '(lambda ()
+    (local-set-key (kbd "RET") 'newline-and-indent)))
+(add-hook 'cperl-mode-hook '(lambda ()
+    (local-set-key (kbd "C-h P") 'cperl-perldoc)))
+
+; use spaces for tabs
+(setq-default indent-tabs-mode nil)
+
+; tab means 4 spaces
+(setq-default tab-width 4)
+
+; enable syntax highlight by default
+(setq-default font-lock-auto-fontify t)
+
+; customize perl mode
+(setq   cperl-brace-offset 2 ; normal offset is 2 => 4
+        cperl-close-paren-offset -2
+        cperl-continued-statement-offset 0
+        cperl-indent-level 4
+        cperl-indent-parens-as-block t
+        cperl-tabs-always-indent nil
+        cperl-font-lock t)
+
+}}}
+
+
+[new:DrewAdams:2009-04-02 20:36 UTC]
+Welcome to the wiki! -- DrewAdams
+
+Thx,
+
+== Helpful Pages ==
+
+* [[ReCode]] - how easy live can be, lalala
+* [[RyanSpringerDotEmacs]] - good example
+----
+CategoryHomepage

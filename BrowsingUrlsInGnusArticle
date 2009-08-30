@@ -1,0 +1,69 @@
+Since I use [[emacs-w3m]] for most of my browsing and I have RSS feeds as my gnus groups, it's nice to be able to browse a URL from the article without having to do much.  This group of functions scans the article under the point in the summary buffer for URLs and then prompts for which one you want to browse.  It then replaces the article buffer with the browsing of that url.
+
+    (defun gnus-article-browse-urls ()
+      "Visit a URL from the `gnus-article-buffer' by prompting via a
+    poping up a buffer showing the list of URLs found with the
+    `gnus-button-url-regexp'."
+      (interactive)
+      (gnus-configure-windows 'article)
+      (gnus-summary-select-article nil nil 'pseudo)
+      (let ((temp-buffer (generate-new-buffer " *Article URLS*"))
+            (urls (gnus-article-get-current-urls))
+            (this-window (selected-window))
+            (browse-window (or (get-buffer-window gnus-article-buffer)
+                               ))
+            (count 0))
+        (save-excursion
+          (save-window-excursion
+            (set-buffer temp-buffer)
+            (mapcar
+             (lambda (string)
+               (insert (format "\t%d: %s\n" count string))
+               (setq count (1+ count))) urls)
+            (not-modified)
+            (pop-to-buffer temp-buffer)
+            (setq count (string-to-number (read-input "Browse which URL: ")))
+            (kill-buffer temp-buffer))
+          (if browse-window
+              (progn (select-window browse-window)
+                     (browse-url (nth count urls)))))
+        (select-window this-window)))
+
+    (defun gnus-article-get-current-urls ()
+      "Return a list of the urls found in the current `gnus-article-buffer'"
+      (let (url-list)
+        (save-excursion
+          (set-buffer gnus-article-buffer)
+          (setq url-list (gnus-article-get-urls-region (point-min) (point-max))))
+        url-list))
+
+    (defun gnus-article-get-urls-region (min max)
+      "Return a list of urls found in the region between MIN and MAX"
+      (let (url-list)
+        (save-excursion
+          (save-restriction
+            (narrow-to-region min max)
+            (goto-char (point-min))
+            (while (re-search-forward gnus-button-url-regexp nil t)
+              (let ((match-string (match-string-no-properties 0)))
+                (if (and (not (equal (substring match-string 0 4) "file"))
+                         (not (member match-string url-list)))
+                    (setq url-list (cons match-string url-list)))))))
+        url-list))
+
+
+Small change:
+
+I have updated this to use the following instead of read-input as I wanted it to work more like ispell. when you press a key it responds immediately. (replace the call to (read-input) with the following): 
+
+(char-to-string
+	      (if (fboundp 'read-char-exclusive)
+		  (read-char-exclusive)
+		(read-char)))
+
+Ideally the code in gnus-article-browse-urls should be updated to use a..z after it reaches 9 so that you can select from more than 9 URLs with a single key press (just like ispell-word). This hasn't happened to me yet so i haven't worried about it. 
+ JoshRobb
+
+----
+CategoryHypermedia
+CategoryGnus

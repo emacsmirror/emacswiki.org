@@ -1,0 +1,128 @@
+I've been using Emacs since 1987 or so.  Nowadays I spend much of my time in PsgmlMode editing literate code embedded in XML documents, both at work and for the [http://monday.sourceforge.net/ Monday project].
+
+I still tend to use vi as root and for editing configuration files.  To wean myself off of it, I've written a script called eve (EditWithViOrEmacs).
+
+: Welcome to the Emacs Wiki.  I looked at the Dylan Wiki.  I am a bit curious about the language, but I was always happy with EmacsLisp, so I never actually tried it.  -- AlexSchroeder
+
+----
+A composite of my  ~/.emacs files:
+<pre>
+;;; 
+;;; don't make backup files
+;;; 
+(setq make-backup-files nil)
+
+;;; 
+;;; Frame format
+;;; 
+;(setq frame-title-format '("" (buffer-file-name "%f - ") "Emacs"))
+; (setq icon-title-format  '("" (buffer-file-name "%f - ") "Emacs"))
+(setq frame-title-format '("%b - Emacs"))
+(setq icon-title-format  '("%b - Emacs"))
+
+;;; 
+;;; Dylan mode
+;;; 
+(autoload 'dylan-mode "dylan-mode" "Major mode for editing Dylan files" t)
+(setq auto-mode-alist
+      (cons '("\\.dylan\\'" . dylan-mode)
+	    auto-mode-alist))
+(add-hook 'dylan-mode-hook 'turn-on-font-lock)
+
+;;; 
+;;; PSGML
+;;; 
+(autoload 'sgml-mode "psgml" "Major mode to edit SGML files." t )
+(autoload 'xml-mode "psgml" "Major mode to edit XML files." t)
+(setq-default sgml-set-face t)
+(setq-default sgml-markup-faces
+	      '((comment . font-lock-comment-face)
+		(doctype . font-lock-type-face)
+		(end-tag . font-lock-keyword-face)
+		(ignored . font-lock-string-face)
+		(ms-start . font-lock-keyword-face)
+		(ms-end . font-lock-keyword-face)
+		(pi . font-lock-string-face)
+		(sgml . font-lock-type-face)
+		(start-tag . font-lock-keyword-face)
+		(entity . font-lock-reference-face)
+		(shortref . font-lock-reference-face)))
+(setq auto-mode-alist
+      (cons '("\\.s?html?\\'" . sgml-mode)
+	    (cons '("\\.xml\\'" . xml-mode)
+		  auto-mode-alist)))
+
+;;; 
+;;; font lock
+;;; 
+(global-font-lock-mode t)
+(setq font-lock-maximum-decoration 3)
+
+;;; 
+;;; Emacs/W3 Configuration
+;;; 
+(condition-case () (require 'w3-auto "w3-auto") (error nil))
+
+;;; 
+;;; server
+;;; 
+(setenv "EDITOR" "/usr/local/bin/emacsclient")
+(server-start)
+
+;;; 
+;;; BBDB
+;;; 
+;(require 'bbdb)
+; (bbdb-initialize 'gnus 'message 'mh-e 'w3)
+
+;;; 
+;;; Wanderlust
+;;; 
+(require 'mime-setup)
+(require 'wanderlust-startup)
+(autoload 'wl "wl" "Wanderlust" t)
+(autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
+(autoload 'wl-user-agent-compose "wl-draft" "Support compose-mail for wl." t)
+
+(setq wl-fcc "%inbox.Sent")
+(setq wl-from "housel@example.org (Peter S. Housel)")
+(setq wl-user-mail-address-list '("housel@example.org" "housel@example.com"))
+
+(setq wl-nntp-posting-server "news")
+
+(setq wl-thread-indent-level 2)
+(setq wl-thread-have-younger-brother-str "+")
+(setq wl-thread-youngest-child-str "+")
+(setq wl-thread-vertical-str "|")
+(setq wl-thread-horizontal-str "-")
+(setq wl-thread-space-str " ")
+(setq wl-thread-insert-opened t)
+(setq wl-summary-weekday-name-lang "en")
+(setq wl-summary-fix-timezone "PDT")
+(setq elmo-message-fetch-threshold nil)
+(setq wl-interactive-exit nil)
+(setq elmo-imap4-default-authenticate-type 'clear)
+(setq mime-edit-split-message nil)
+
+(if (boundp 'mail-user-agent)
+    (setq mail-user-agent 'wl-user-agent))
+(if (fboundp 'define-mail-user-agent)
+    (define-mail-user-agent
+      'wl-user-agent
+      'wl-user-agent-compose
+      'wl-draft-send
+      'wl-draft-kill
+      'mail-send-hook))
+
+;;; 
+;;; enabling disabled commands
+;;; 
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'eval-expression 'disabled nil)
+(put 'set-goal-column 'disabled nil)
+</pre>
+
+----
+CategoryHomepage

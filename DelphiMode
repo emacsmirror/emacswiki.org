@@ -1,0 +1,165 @@
+Since I am forced to work with Delphi, I use <tt>delphi-mode.el</tt> to escape that sad excuse for an editor that comes from Borland (no auto-indent, can you believe it?). <tt>delphi-mode.el</tt> is part of GNUEmacs, but works under XEmacs (almost) as well. The following snippets make my life a bit more bearable:
+
+* fume (function-menu) integration:
+
+    (defvar fume-function-name-regexp-delphi
+      "^[ \t]*\\(function\\|procedure\\|constructor\\|destructor\\)[ \t]+\\([_a-zA-Z][_a-zA-Z0-9]*\\.\\)?\\([_a-zA-Z][_a-zA-Z0-9]*\\)"
+      "Expression to get function/procedure names in Delphi.")
+    (add-to-list 'fume-function-name-regexp-alist
+                 '(delphi-mode . fume-function-name-regexp-delphi))
+
+    (defun fume-find-next-delphi-function-name (buffer)
+      "Search for the next Delphi procedure in BUFFER."
+      (set-buffer buffer)
+      (if (re-search-forward fume-function-name-regexp nil t)
+          (let ((beg (match-beginning 3))
+                (end (match-end 3)))
+            (cons (buffer-substring beg end) beg))))
+    (add-to-list 'fume-find-function-name-method-alist
+                 '(delphi-mode . fume-find-next-delphi-function-name))
+
+* Configuration in the <tt>delphi-mode-hook</tt>:
+** For some strange reason fontification in XEmacs doesn't work automatically, so I put it on a key. When the colors are all messed up after some editing, I just hit f12.
+** I got tired of having to hit f12 every time I load a Delphi file, so <tt>delphi-debug-fontify-buffer</tt> is stuffed onto <tt>find-file-hooks</tt> (putting the call onto the <tt>delphi-mode-hook</tt> directly didn't work, don't know why...).
+** I use <tt>ll-debug.el</tt> (http://www.cbrunzema.de/software.html#ll-debug) quite heavily, thus I need to set <tt>comment-start</tt>, too.
+** I don't want to see Delphi's stupid extra files in my speedbar, so I have to extend <tt>speedbar-file-unshown-regexp</tt>.
+
+
+Update: I won't use delphi anymore, so here is my last version of customisations for delphi-mode for GnuEmacs.
+It contains imenu-support and various abbrevs.
+
+    (add-to-list 'auto-mode-alist '("\\.pas$" . delphi-mode))
+    (add-to-list 'auto-mode-alist '("\\.dpr$" . delphi-mode))
+    (add-hook 'delphi-mode-hook
+              #'(lambda ()
+                  (setq comment-start "// ")
+                  (loop for c from ?! to ?' do (modify-syntax-entry  c "."))
+                  (loop for c from ?* to ?/ do (modify-syntax-entry  c "."))
+                  (loop for c from ?: to ?@ do (modify-syntax-entry  c "."))
+                  (modify-syntax-entry  ?\ ".")
+                  (modify-syntax-entry  ?^ ".")
+                  (modify-syntax-entry  ?` ".")
+                  (modify-syntax-entry  ?~ ".")
+                  (modify-syntax-entry  ?| ".")
+                  (local-set-key (kbd "<RET>")
+                                 #'(lambda ()
+                                     (interactive)
+                                     (indent-according-to-mode)
+                                     (newline-and-indent)))
+                  (turn-on-lazy-lock)
+                  (setq delphi-indent-level 2)
+                  (add-hook 'compilation-mode-hook
+                            #'(lambda ()
+                                (add-to-list 'compilation-error-regexp-alist
+                                             '("^\\([^(]+\\)(\\([0-9]+\\)" 1 2))))
+                  (add-hook 'speedbar-mode-hook
+                            #'(lambda ()
+                                (setq speedbar-file-unshown-regexp
+                                      (concat
+                                       speedbar-file-unshown-regexp
+                                       "\\|\\.dfm\\|\\.ddp\\|\\.dcu\\|\\.dof"))
+                                (speedbar-add-supported-extension ".pas")))
+    
+                  (abbrev-mode 1)
+                  (define-abbrev local-abbrev-table
+                    "beg" t #'(lambda ()
+                                (skeleton-insert '(nil "in" > \n
+                                                       _ \n
+                                                       "end;" > \n))
+                                (setq skeleton-abbrev-cleanup (point))
+                                (add-hook 'post-command-hook
+                                          'skeleton-abbrev-cleanup
+                                          nil t)))
+                  (define-abbrev local-abbrev-table
+                    "bege" t #'(lambda ()
+                                 (skeleton-insert '(nil -1 "in" > \n
+                                                        _ \n
+                                                        "end" > \n
+                                                        "else" > \n
+                                                        "begin" > \n \n
+                                                        "end;" > \n))
+                                 (setq skeleton-abbrev-cleanup (point))
+                                 (add-hook 'post-command-hook
+                                           'skeleton-abbrev-cleanup
+                                           nil t)))
+                  (define-abbrev local-abbrev-table
+                    "if" t #'(lambda ()
+                               (skeleton-insert '(nil _ " then" > \n))))
+                  (define-abbrev local-abbrev-table
+                    "ife" t #'(lambda ()
+                                (skeleton-insert '(nil -1 _ " then" > \n \n
+                                                       "else" > \n))))
+                  (define-abbrev local-abbrev-table
+                    "ifb" t #'(lambda ()
+                                (skeleton-insert '(nil -1 _ " then" > \n
+                                                       "begin" > \n \n
+                                                       "end;" > \n))))
+                  (define-abbrev local-abbrev-table
+                    "ifbe" t #'(lambda ()
+                                 (backward-delete-char 1)
+                                 (skeleton-insert '(nil -1 _ " then" > \n
+                                                        "begin" > \n \n
+                                                        "end" > \n
+                                                        "else" > \n
+                                                        "begin" > \n \n
+                                                        "end;" > \n))))
+                  (define-abbrev local-abbrev-table
+                    "proc" t #'(lambda ()
+                                 (skeleton-insert '(nil "edure" _ ";" > \n
+                                                        "var" > \n \n
+                                                        "begin" > \n \n
+                                                        "end;" > \n))))
+                  (define-abbrev local-abbrev-table
+                    "func" t #'(lambda ()
+                                 (skeleton-insert '(nil "tion" _ " : ;" > \n
+                                                        "var" > \n \n
+                                                        "begin" > \n \n
+                                                        "end;" > \n))))
+                  (define-abbrev local-abbrev-table
+                    "for" t #'(lambda ()
+                                (skeleton-insert '(nil _ " to do" > \n))))
+                  (define-abbrev local-abbrev-table
+                    "forb" t #'(lambda ()
+                                 (skeleton-insert '(nil -1 _ " to do" > \n
+                                                        "begin" > \n \n
+                                                        "end;" > \n))))
+                  ))
+    
+    (defvar imenu--function-name-regexp-delphi
+      (concat
+       "^[ \t]*\\(function\\|procedure\\|constructor\\|destructor\\)[ \t]+"
+       "\\([_a-zA-Z][_a-zA-Z0-9]*\\.\\)?"   ; class?
+       "\\([_a-zA-Z][_a-zA-Z0-9]*\\)")
+      "Re to get function/procedure names in Delphi.")
+    
+    (defun imenu--create-delphi-index (&optional regexp)
+      (let ((index-alist '())
+            (progress-prev-pos 0)
+            (case-fold-search t))
+        (goto-char (point-min))
+        (imenu-progress-message progress-prev-pos 0)
+        (save-match-data
+          (while (re-search-forward
+                  (or regexp imenu--function-name-regexp-delphi)
+                  nil t)
+            (imenu-progress-message progress-prev-pos)
+            (let ((pos (save-excursion
+                         (beginning-of-line)
+                         (if imenu-use-markers (point-marker) (point))))
+                  (function-name (match-string-no-properties 3)))
+              (push (cons function-name pos)
+                    index-alist))))
+        (imenu-progress-message progress-prev-pos 100)
+        (nreverse index-alist)))
+    
+    (add-hook 'delphi-mode-hook
+              #'(lambda ()
+                  (require 'imenu)
+                  (setq imenu-create-index-function
+                        #'imenu--create-delphi-index)
+                  (imenu-add-menubar-index)))
+ 
+--ClausBrunzema
+
+----
+CategoryModes | ProgrammingModes

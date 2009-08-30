@@ -1,0 +1,45 @@
+Veja a lista de acesso:
+
+    /msg ChanServ access #emacs list
+
+Modifique a lista de acessso -- adicione somente nicks identificados
+
+    /msg ChanServ access #emacs add noob 10
+
+Checa o que os niveis significam: 
+
+    /msg chanserv level #emacs list
+
+Chuta um usuário rude -- dê o primeiro como advertência
+
+    /kick nick
+
+Banindo um usuário rude por hostname:
+
+    /mode #emacs +b *!user@hostname
+
+== Comandos ERC ==
+
+<pre>
+(defun erc-cmd-BAN (nick)
+  (let* ((chan (erc-default-target))
+         (who (erc-get-server-user nick))
+         (host (erc-server-user-host who))
+         (user (erc-server-user-login who)))
+    (erc-send-command (format "MODE %s +b *!%s@%s" chan user host))))
+
+(defun erc-cmd-KICKBAN (nick &rest reason)
+  (setq reason (mapconcat #'identity reason " "))
+  (and (string= reason "")
+       (setq reason nil))
+  (erc-cmd-BAN nick)
+  (erc-send-command (format "KICK %s %s %s"
+                            (erc-default-target)
+                            nick
+                            (or reason
+                                "Kicked (kickban)"))))
+</pre>
+
+
+----
+CanaldoEmacs

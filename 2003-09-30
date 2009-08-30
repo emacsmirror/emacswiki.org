@@ -1,0 +1,7 @@
+The hosting provider removed /usr/bin/merge a while back, so that explains
+why I and deego got a blank page after an edit: It was an edit conflict, and
+merge was called, but didn't exist, therefore an empty string was returned.
+The new script should handle this situation, and I've asked the provider to
+install merge again.  In the mean time, I had diffs disabled, because there
+is no way tell the script to use diff but not merge -- it is just one option.
+-- AlexSchroeder

@@ -1,0 +1,15 @@
+=== Draft of the GNU FDL under discussion ===
+
+The [[FSF]] released a discussion draft of version 2 of the GnuFreeDocumentationLicense, the EmacsManualLicense.
+[http://www.fsf.org/news/gfdl-dd1.html]
+
+Also noteworthy is the release of the "Simpler Free Documentation License", that doesn't use the optional aspects of the GNU FDL, like the invariant sections.[http://gplv3.fsf.org/sfdl-draft-2006-09-26.html]  It appears these licenses might be more useful for Web sites and Wikis with the "Excerpts" section provided by both licenses.[http://gplv3.fsf.org/doclic-dd1-guide.html]
+
+[new]
+I just noticed this nugget in the discussion draft of the GFDL2:
+
+: ''8b. WIKI RELICENSING
+
+: ''If the Work was previously published, with no Cover Texts, no Invariant Sections, and no Acknowledgements or Dedications or Endorsements section, in a system for massive public collaboration under version 1.2 of this License, and if all the material in the Work was either initially developed in that collaboration system or had been imported into it before 1 June 2006, then you may relicense the Work under the GNU Wiki License.''
+
+Very interesting, in particular, what is the "''GNU Wiki License''"? -- AaronHawley

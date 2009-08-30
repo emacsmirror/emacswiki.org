@@ -1,0 +1,445 @@
+I recently switched from Pine to Gnus. This section explains how to
+make Gnus behave a little more like Pine (or Alpine FWIW).
+
+== Introduction ==
+
+First of all, a good news. There is no need to import the Pine mailbox
+or to create a new mailbox. Gnus can use the existing Pine mailbox
+and this will of course still be available to Pine. So that actually
+both email clients can coexist in peace.
+
+Second, the process of sending email from emacs does not really depend
+on Gnus. Have a look at the MessageMode section, so as to
+set up message mode in your InitFile. These settings will then be
+available from Gnus.
+
+Finally, I will only talk about setting an imap connection for reading
+mail from Gnus. Browse CategoryGnus if you want to read news or use
+pop connection with Gnus.
+
+== Basic configuration ==
+
+First check that you have correctly set up MessageMode in your .emacs.
+This is the mode that is used by Gnus for sending mail.
+It should be noted that sending a mail does not require to start Gnus.
+Type C-x m and you will start composing in a mail buffer.
+
+The Gnus settings are contained in a file named .gnus.el. Just create
+that file in your home dir. We need to put a few things in this file
+before starting Gnus.
+
+Let's say your name is somebody, your name address is somebody@somewhere.uk,
+your imap server is imap.somewhere.edu and the name of your incoming mailbox
+on the server is INBOX. First put in .gnus.el
+
+   (setq gnus-select-method '(nnimap "imap.somewhere.edu"))
+
+or, if you want to use gnus also to read news from some nntp server "news.smw"
+
+   (setq gnus-select-method '(nntp "news.smw"))
+   (setq gnus-secondary-select-methods '((nnimap "imap.somewhere.edu")))
+
+Now, start gnus with <code>M-x gnus</code>. You should be prompted for
+your imap login and password, then left in the *Group* buffer. Type
+<code>^</code> to display the servers available. Go to the line
+mentionning your imap server and type u in front of the mailboxes you
+want to subscribe to. Go back to the *Group* buffer. Your imap mailbox
+should be there. Just type <code>RET</code> in front of one of them to
+display its contents. Then type <code>q</code> to go back to the
+*Group* buffer, or <code>SPC</code> to display a message.
+
+We can now make the Pine mailbox contents appear in the *Group* buffer by
+typing, with the *Group* buffer selected, <code>G f</code>
+and entering the path to some file contained in the Pine mailbox,
+e.g. ~/mail/sent-mail. It should now appear in the group buffer.
+Repeat for all the files in your Pine mail directory.
+
+You now have a working Gnus installation. Its behaviour may be
+far from what you expect, though. So keep reading.
+
+== Options related to Pine ==
+
+By default, messages already read are not displayed in Gnus.
+You can force their display by entering the group with <code>C-u RET</code>,
+or from the summary buffer by typing <code>/o</code>. This is definitely
+not the behaviour expected from a mail client. Put the following in your
+.gnus.el file to override this behavior:
+
+  ;; all mails should be always displayed in the mailbox
+  (setq gnus-permanently-visible-groups ".*INBOX")
+
+  ;; default Pine ordered header list when displaying mail
+  (setq gnus-sorted-header-list '( "^Date:" "^From:" "^To:" "^Followup-To:" "^Cc:" "Bcc:" "^Newsgroups:" "Fcc:" "^Subject:" ))
+
+Note that there is no equivalent to the LCC: header in Gnus.
+
+Now here is how to archive outgoing mails in the Pine mailbox sent-mail file.
+Let us say that this file is in the <code>~/mail</code> directory.
+
+  (setq gnus-default-article-saver 'gnus-summary-save-in-mail)
+  (setq nnfolder-directory "")
+  (setq gnus-message-archive-method
+       '(nnfolder "savingmethod"
+           (nnfolder-directory "~/mail")
+           (nnfolder-active-file "~/mail/.active")
+           (nnfolder-nov-is-evil t)
+           (nnfolder-get-new-mail nil)))
+ (setq gnus-message-archive-group "sent-mail")
+
+We want the Gnus summary buffer to display information the way Pine does.
+The gnus-article-save-directory is the default directory proposed for saving
+messages.
+
+  (setq gnus-parameters
+   '(("imap.*\\|nndoc.*"
+      (gnus-show-threads nil)
+      (gnus-use-scoring nil)
+      (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
+      (gnus-summary-line-format
+               "%*%U%R %2P  %6,6&user-date;  %(%-20,20n%) (%4,4k) %S\n")
+      (gnus-article-save-directory "~/mail/")
+      (display . [not expire]))))
+
+Pine color theme is plain black and white with reverse-video
+highlighting of the current line in the summary buffer. Don't use the following
+if you want a colorful email client.
+
+  (setq gnus-visual nil)
+  (add-hook 'gnus-summary-mode-hook (lambda ()
+     (hl-line-mode 1)
+     (setq cursor-type nil)
+     (set-face-attribute 'hl-line nil :background "black" :foreground "white")))
+
+Let us automatically check for new mail every 5 minutes
+
+  (gnus-demon-add-handler 'gnus-group-get-new-news 5 nil)
+
+Finally, we want some confirmation before sending a message. We also
+want a reminder if it appears that some attachment is missing. This is
+done by looking for some words that may indicate that some attachment
+should be included.
+
+  (defvar my-message-attachment-regexp
+        "attach\\|\Wfiles?\W\\|enclose\\|\Wdraft\\|\Wversion")
+  (defun check-mail ()
+  "ask for confirmation before sending a mail. Scan for possible attachment"
+   (save-excursion
+     (message-goto-body)
+     (let ((warning ""))
+      (when (and (search-forward-regexp my-message-attachment-regexp nil t nil)
+                 (not (search-forward "<#part" nil t nil)))
+         (setq warning "No attachment.\n"))
+      (goto-char (point-min))
+      (unless (message-y-or-n-p (concat warning "Send the message ? ") nil nil)
+         (error "Message not sent")))))
+  (add-hook 'message-send-hook 'check-mail)
+
+We are left with defining shortcuts.
+
+== Pine shortcuts ==
+
+This section explains how to get the following shortcuts working
+in the summary buffer
+
+  ;;     n p    go to next or previous article
+  ;;     d      delete article, move to next
+  ;;     c      compose mail
+  ;;     r      reply
+  ;;     R      reply with citation
+  ;;     s      save article and delete it
+  ;;     x      prompt for immediate deletion of the article
+  ;;     g      goto other group by specifying its short name
+  ;;     u      clear mark, move to next article
+  ;;     ?      view help
+  ;;     !      tick article as important, move to next article
+  ;;     v      view attachment
+  ;;     l      exit summary buffer
+  ;;     TAB    go to next unread article
+  ;;     f      forward mail
+
+For the sake of sorting the summary buffer, <code>$f $a $d $s $z $e</code>
+sort according to author, default, date, subject, length or score.
+The default sort shortcuts in Gnus are bound to the prefix
+<code>C-c C-s </code>. There are no equivalent under Gnus to the Pine
+shortcuts <code>$o $c $t</code>. Note that the $ sign is used to mark
+spam in Gnus, so you may not want to rebind that key.
+
+Here are some other shortcuts available by default from the Gnus summary buffer
+
+  ;;     m        compose message
+  ;;     q        quit the summary buffer
+  ;;     SPC DEL  scroll down or up the article
+  ;;     =        toggle display of the article
+  ;;     /t       display only recent message
+  ;;     /a       display only message from autors specified by a regexp
+  ;;     /s       same but from the subject header
+  ;;     /x       same but specify the header and regexp
+  ;;     M-g      check for new mail
+  ;;     h        goto article buffer
+  ;;     3 K o    save third attachment
+
+Finally, I didn't try to bind <code>= - < ></code>. These shortcuts are
+used in Pine to move around. This is better done using the standard emacs
+commands in Gnus.
+
+Before defining these shortcuts, we first define a few commands
+which are not readily available from Gnus.
+
+First a command that asks for the short name of a group, and
+opens the corresponding summary. This is bound to g in Pine.
+
+  (defun gnus-summary-goto-group (my-group)
+  "Prompt for a group short name and open it in summary buffer.
+  Default is next group showing in the *Group* buffer with unread articles."
+    (interactive (list (read-string
+            (format "Go to group (default %s): "
+               (if (eq gnus-keep-same-level 'best)
+                   (gnus-summary-best-group gnus-newsgroup-name)
+                 (gnus-group-short-name
+                  (gnus-summary-search-group nil gnus-keep-same-level)))))))
+    (if (string= my-group "")
+        (gnus-summary-next-group)
+      ;; look for group matching the short name, take first match
+      (let* ((liste (mapcar 'car gnus-newsrc-alist)) (name))
+        (while (and (setq name (pop liste))
+                    (not (string-match (concat ":" my-group) name))))
+        (setq my-group name))
+      (if my-group
+          (gnus-summary-read-group my-group t)
+        (message "no such group"))))
+
+Second, two commands for replying to mail. If there are several
+senders and recipients or a CC: field, then you will be prompted
+whether you want to reply to all.
+
+  (defun gnus-summary-dwim-reply ()
+  "reply depending on the CC: header"
+   (interactive)
+   (gnus-with-article-headers
+     (cond
+       ((not (re-search-forward "^C[Cc]: .\\|^To:.*," nil t))
+        (gnus-summary-reply))
+       ((y-or-n-p "Reply to all ? ")
+        (gnus-summary-wide-reply)
+        (goto-char (point-min))
+        (flush-lines "^Cc: $"))
+       (t (gnus-summary-reply)))
+     (message-goto-body)))
+
+  (defun gnus-summary-dwim-reply-with-original ()
+  "reply, ask all if there is a CC: header or several recipients"
+   (interactive)
+   (gnus-with-article-headers
+     (cond
+       ((not (re-search-forward "C[Cc]: .\\|To:.*," nil t))
+        (gnus-summary-reply-with-original nil))
+       ((y-or-n-p "Reply to all ? ")
+        ;; or gnus-summary-very-wide-reply-with-original ?
+        (gnus-summary-wide-reply-with-original nil)
+        (goto-char (point-min))
+        (flush-lines "^Cc: $"))
+       (t (gnus-summary-reply-with-original nil)))
+     ;; replace next by message-goto-body to get cursor before citation
+     (message-goto-signature)))
+
+Save and delete article, bound to d
+
+  (defun gnus-summary-save-and-expire (prefix)
+   "save and expire article.
+  With a prefix N, save and expire the next N articles"
+   (interactive "p")
+   (save-excursion (gnus-summary-save-article prefix))
+   (gnus-summary-put-mark-as-expirable-next prefix))
+
+Toggle the display of the article, bound to =
+
+  (defun toggle-article-window ()
+   (interactive)
+    (if (get-buffer-window "*Article*" nil)
+        (gnus-configure-windows 'summary 'force)
+      (gnus-configure-windows 'article 'force)))
+
+Now we activate the bindings:
+
+  (add-hook 'gnus-summary-mode-hook (lambda ()
+      (local-set-key (kbd "<tab>") 'gnus-summary-next-unread-article)
+      (local-set-key "="  'toggle-article-window)
+      (local-set-key "n"  'gnus-summary-next-article)
+      (local-set-key "p"  'gnus-summary-prev-article)
+      (local-set-key "!"  'gnus-summary-put-mark-as-ticked-next)
+      (local-set-key "d"  'gnus-summary-put-mark-as-expirable-next)
+      (local-set-key "u"  'gnus-summary-clear-mark-forward)
+      (local-set-key "r"  'gnus-summary-dwim-reply)
+      (local-set-key "R"  'gnus-summary-dwim-reply-with-original)
+      (local-set-key "x"  'gnus-summary-delete-article)
+      (local-set-key "g"  'gnus-summary-goto-group)
+      (local-set-key "?"  'gnus-info-find-node)
+      (local-set-key "l"  'gnus-summary-exit)
+      (local-set-key "s"  'gnus-summary-save-and-expire)
+      (local-set-key "v"  'gnus-article-view-part)
+      (local-set-key "c"  'gnus-summary-mail-other-window)
+      (local-set-key "$f" 'gnus-summary-sort-by-author)
+      (local-set-key "$a" 'gnus-summary-sort-by-original)
+      (local-set-key "$d" 'gnus-summary-sort-by-date)
+      (local-set-key "$s" 'gnus-summary-sort-by-subject)
+      (local-set-key "$z" 'gnus-summary-sort-by-chars)
+      (local-set-key "$e" 'gnus-summary-sort-by-score)
+      (if (gnus-news-group-p gnus-newsgroup-name)
+             (local-set-key "f"  'gnus-summary-followup)
+        (local-set-key "f"  'gnus-summary-mail-forward))))
+
+By default, messages marked for deletion are not really deleted with
+Gnus. They are instead hidden for a week (expirable is the correct
+term), then actually deleted after a week. Expired articles can be
+shown in the summary buffer with the <code>/o</code> command, or by
+entering the group with <code>C-u RET</code>. These expired articles
+are not marked with D but with E instead. Let us change that and make
+expired articles actually deleted as soon as we leave the summary
+buffer.
+
+  (add-hook 'gnus-summary-mode-hook (lambda ()
+      (unless (gnus-news-group-p gnus-newsgroup-name)
+        (set (make-local-variable  'gnus-expirable-mark) ?D)
+        (set (make-local-variable  'gnus-canceled-mark)  ?X)
+        (set (make-local-variable  'gnus-ancient-mark)   ? )
+        (set (make-local-variable  'gnus-read-mark)      ? ))))
+
+  (setq nnmail-expiry-wait 0)
+
+Finaly we may want to set some shortcuts for sending mail too. Under
+Pine, C-x sends the mail, C-c aborts mail composition. This is not a
+very good choice under emacs, since these are pretty useful prefixes
+and you certainly want to keep them as they are. So it's better to use
+the shortcuts given by MessageMode. If you really want to change that,
+just put in your .gnus.el (or your .emacs) the following and remove the
+starting ;
+
+  ;(define-key message-mode-map (kbd "C-j") 'mml-attach-file)
+  ;(define-key message-mode-map (kbd "C-o") 'message-dont-send)
+  ;(define-key message-mode-map (kbd "C-x") 'message-send-and-exit)
+  ;(define-key mml-mode-map (kbd "C-c") nil)
+  ;(define-key message-mode-map (kbd "C-c") 'message-kill-buffer)
+
+At that point, we are done and Gnus should behave pretty much like Pine.
+The next sections list a few other tweaks that may be useful.
+
+== A better search command ==
+
+The mail search functions in Pine and Gnus (bound to w and M-s respectively) 
+are not very good, in my opinion. Coming from a standard
+emacs buffer where C-s my-word C-s C-r C-s ... make you fly over the
+buffer, the M-s command may seem to be a bit slow. So let's redefine
+it, so as to be able to do M-s regexp RET M-s M-r M-s ... During a
+search, M-r goes backward and M-g aborts the search, returning point
+at its starting position.
+
+  (defun gnus-summary-my-search-forward (regexp)
+    "a better way to handle gnus regexp search in articles"
+   (interactive (list (read-string
+         (format "Search article forward (regexp%s): "
+                 (if gnus-last-search-regexp
+                     (concat ", default " gnus-last-search-regexp)
+                   "")))))
+  (let ((original-article (gnus-summary-article-number)))
+     (if (string-equal regexp "")
+         (setq regexp (or gnus-last-search-regexp ""))
+       (setq gnus-last-search-regexp regexp)
+       (setq gnus-article-before-search gnus-current-article))
+     (push ?\M-s unread-command-events)
+     (let (key (echo-keystrokes 0))
+      (while (progn
+       (setq key (read-event))
+       (let ((gnus-article-if-fail gnus-current-article)
+             (point-if-fail (with-current-buffer gnus-article-buffer (point))))
+        (cond
+         ((equal key ?\M-g)            ;; C-g is intercepted
+          (gnus-summary-goto-subject original-article)
+          (setq key ?g)                ;; show the article
+          nil)
+       ((or (equal key ?\M-s) (equal key ?\M-r))
+          (if (gnus-summary-search-article regexp (equal key ?\M-r))
+             (gnus-summary-show-thread)
+            (gnus-summary-goto-subject gnus-article-if-fail)
+            (gnus-summary-show-article t)
+            (with-selected-window (get-buffer-window gnus-article-buffer)
+              (goto-char (- point-if-fail 1)) ;; off by one for some reason
+              (recenter 0))
+            (message "No other match for %s !" regexp)
+            (ding))
+          t)
+         (t nil)))))
+      (push key unread-command-events))))
+
+  (add-hook 'gnus-summary-mode-hook (lambda ()
+      (local-set-key (kbd "M-s") 'gnus-summary-my-search-forward)))
+
+== More customize options ==
+
+First a few options you may be interested in.
+
+  (setq gnus-inhibit-startup-message      t    ;; no startup message
+        gnus-treat-display-smileys        nil  ;; no smileys
+        gnus-treat-strip-cr               t    ;; no carriage returns
+        message-kill-buffer-on-exit       t    ;; no hanging mail buffers
+        gnus-thread-hide-subtree          t    ;; no threads in summary
+        gnus-prompt-before-saving         t    ;; better than default
+        message-send-mail-partially-limit nil  ;; size of sent messages
+        gnus-large-newsgroup              1000)
+
+Here is the meaning of this last option: all messages will be displayed
+when entering a group, if the group contains less than 1000 messages.
+Otherwise, you will be prompted for the number of messages to be displayed.
+
+If you want new mail to be displayed on top of the summary buffer
+
+  (setq gnus-thread-sort-functions '((not gnus-thread-sort-by-number)))
+
+The following will allow to order your groups in the *Group* buffer by
+topics. See GnusTutorial for more details.
+
+  (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+
+If you are not interested by email using wide characters (e.g. chinese),
+the following will provide a speedup
+
+  (setq gnus-use-correct-string-widths nil)
+
+And if you are not interested in reading newsgroup, you can speedup things with
+
+  (setq gnus-nntp-server nil
+        gnus-read-active-file nil
+        gnus-save-newsrc-file nil
+        gnus-read-newsrc-file nil
+        gnus-check-new-newsgroups nil)
+
+The following tries to display html mail as plain text
+
+  (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
+
+Images attachments displayed inline
+
+  (setq mm-attachment-override-types '("image/.*"))
+
+When replying to mail, the cited part is displayed in bright red.
+Put the following in your .emacs for a less flashy citation.
+You can also use this hook to specify which application you want to
+use to display, say, pdf attachments.
+
+  (add-hook 'message-mode-hook (lambda ()
+      (mailcap-add "application/pdf" "xpdf %s")
+      (set-face-attribute 'message-cited-text nil :foreground "SaddleBrown")))
+
+A shortcut for saving attachments from the summary buffer
+
+  (add-hook 'gnus-summary-mode-hook (lambda ()
+    (local-set-key (kbd "C-a") 'gnus-summary-save-parts)))
+
+== todo ==
+
+implement the remaining sorts
+
+provides bindings for handling attachments
+
+display number of attachments in summary buffer
+
+Add a screenshot of what it would look like :)

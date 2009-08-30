@@ -1,0 +1,53 @@
+You cannot modify strings (this is not strictly true, see below).  You can, however, return modified copies, so for most intents and purposes, strings work like a charm.  It is lists that use reference semantics and confuse newbies.  See ListModification.
+
+Here is how to capitalize a string:
+
+    (capitalize "foo") -> "Foo"
+
+== Several words, only one capital letter ==
+
+    (capitalize "foo bar") -> "Foo Bar"
+
+Alternatives:
+
+    (concat (capitalize (substring input 0 1))
+            (substring input 1 (length input))) -> "Foo bar"
+    
+    (let ((table (copy-syntax-table text-mode-syntax-table)))
+      (modify-syntax-entry ?  "w" table)
+      (with-syntax-table table
+        (capitalize "foo bar"))) -> "Foo bar"
+    
+    (with-temp-buffer (insert "foo bar")
+      (goto-char (point-min)) (capitalize-word 1)
+      (buffer-string)) -> "Foo bar"
+
+== One word, several capital letters ==
+
+    (capitalize "speakerEngagement") -> "Speakerengagement"
+
+Alternatives:
+
+    (upcase-initials "speakerEngagement") -> "SpeakerEngagement"
+
+== Strings, are, in fact, arrays ==
+
+Internally, strings are implemented as arrays of characters, this means that you can use the normal array functions like <code>ASET</code> and <code>AREF</code> to modify/access elements.
+
+For example:
+
+     (defvar string "foo")  => "foo"
+
+     (aref string 0) => ?f ; in fact we get 102 (the integer value of the 
+                           ; character f, since characters are just integers).
+
+     (aset string 0 ?b) => ?b
+ 
+     string => "boo"
+
+This internal representation of strings means that, if you find yourself doing lots of string-modifying, and copying strings about a lot, you might be able to squeeze a speed improvement out by switching to array operations, and operating on the strings "in place".  Note that it may not work, or make speed much worse as well, so it is usually best to avoid it.
+
+See also CharacterProcessing.
+
+----
+CategoryCode

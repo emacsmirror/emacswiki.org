@@ -1,0 +1,9 @@
+== Cleanup VCS pages ==
+
+I have started cleaning up version control related pages. While I am at it some might temporarly be in a less than perfect state (but probably still better than their current state ;-)) - please excuse. -- JonasBernoulli
+
+[new]
+I preferred the original version of CategoryVersionControl.  It had a flatter presentation that was easier to interact with and was better oriented towards introducing how to use version control with Emacs.  Your edits have done a good job of introducing version control and the more recent systems, but I'm not so sure organizing the page in that way serves well here.  Again, explaining version control is useful, but the discussion would be better located at somewhere like WikiPedia, WikiWiki or MeatballWiki. -- AaronHawley
+
+[new]
+Your really have a point here - thx for the criticism. And sorry for the sloppy styling of the page. I will complete my updates and focus more on Emacs. But I also think the old page was also far from perfect and hope that you will like the "final" result. And I hope that you will guide me if I do wrong ;-) -- JonasBernoulli

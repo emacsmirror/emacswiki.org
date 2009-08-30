@@ -1,0 +1,58 @@
+A hash map associates keys with values and promises to find all values in more or less equal time (unlike an alist, where stuff at the front is found faster than stuff at the back).
+
+== Examining a Hash Map ==
+
+The big part here is getting the interactive declaration right so that completion will only show you variables that contain in fact hash maps as values, and so that it will show the variable at point if possible.
+
+    (defun describe-hash (variable &optional buffer)
+      "Display the full documentation of VARIABLE (a symbol).
+    Returns the documentation as a string, also.
+    If VARIABLE has a buffer-local value in BUFFER (default to the current buffer),
+    it is displayed along with the global value."
+      (interactive
+       (let ((v (variable-at-point))
+	     (enable-recursive-minibuffers t)
+	     val)
+	 (setq val (completing-read
+		    (if (and (symbolp v)
+			     (hash-table-p (symbol-value v)))
+			(format
+			 "Describe hash-map (default %s): " v)
+		      "Describe hash-map: ")
+		    obarray
+		    (lambda (atom) (and (boundp atom)
+					(hash-table-p (symbol-value atom))))
+		    t nil nil
+		    (if (hash-table-p v) (symbol-name v))))
+	 (list (if (equal val "")
+		   v (intern val)))))
+      (with-output-to-temp-buffer (help-buffer)
+	(maphash (lambda (key value)
+		   (pp key)
+		   (princ " => ")
+		   (pp value)
+		   (terpri))
+		 (symbol-value variable))))
+
+[new]
+I use describe-hash all the time. Its great unless except for when you have nested hash-tables. For that I use a slightly modified version: 
+
+      (with-output-to-temp-buffer (help-buffer)
+        (describe-hash-descend (symbol-value variable))))
+
+  (defun describe-hash-descend (hash)
+    "Recursive describe hash func for nested hash-tables"
+    (maphash (lambda (key value)
+               (pp key)
+               (princ " => ")
+               (if (hash-table-p value)
+                   (progn
+                     (princ " { ")
+                     (terpri)
+                     (describe-hash-descend value)
+                     (princ " } "))
+                 (pp value))
+               (terpri))
+             hash))
+
+--PeterSanford

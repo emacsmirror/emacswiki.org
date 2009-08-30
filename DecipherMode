@@ -1,0 +1,56 @@
+AndrewTaylor has written a small patch for decipher.el.  It adds a function, bound to S, that shifts the cipher alphabet one character.  This is useful for quickly solving Caesar ciphers.
+
+Here it is (you can also find this patch in gnu.emacs.sources archives): 
+
+    --- /usr/share/emacs/21.1/lisp/play/decipher.el	Mon Jul 16 03:10:19 2001
+    +++ decipher.el	Thu Jan 17 16:06:40 2002
+    @@ -168,6 +168,7 @@
+           (define-key decipher-mode-map "M" 'decipher-make-checkpoint)
+           (define-key decipher-mode-map "N" 'decipher-adjacency-list)
+           (define-key decipher-mode-map "R" 'decipher-restore-checkpoint)
+    +      (define-key decipher-mode-map "S" 'decipher-shift-alphabet)
+           (define-key decipher-mode-map "U" 'decipher-undo)
+           (define-key decipher-mode-map " " 'decipher-keypress)
+           (substitute-key-definition 'undo  'decipher-undo
+    @@ -296,7 +297,8 @@
+     \\[decipher-adjacency-list]\
+       Show adjacency list for current letter (lists letters appearing next to it)
+     \\[decipher-make-checkpoint]  Save the current cipher alphabet (checkpoint)
+    -\\[decipher-restore-checkpoint]  Restore a saved cipher alphabet (checkpoint)"
+    +\\[decipher-restore-checkpoint]  Restore a saved cipher alphabet (checkpoint)
+    +\\[decipher-shift-alphabet]  Shift the cipher alphabet down one position"
+       (interactive)
+       (kill-all-local-variables)
+       (setq buffer-undo-list  t             ;Disable undo
+    @@ -634,6 +636,26 @@
+             decipher-undo-list-size  0)
+       (message "Reprocessing buffer...done"))
+ 
+    +(defun decipher-shift-alphabet ()
+    +  "Shift the cipher alphabet down one position.
+    +This makes checking Caesar ciphers easier."
+    +  (interactive)
+    +  (save-excursion
+    +    (let ((cpy (copy-alist decipher-alphabet))
+    +          (buffer-read-only)
+    +          (char ?y)
+    +          (cipher-char))
+    +      (while (>= char ?a)
+    +        (setq cipher-char (cdr (assoc char cpy)))
+    +        (and (and (>= cipher-char ?A) (<= cipher-char ?Z))
+    +             (decipher-set-map cipher-char (1+ char)))
+    +        (decf char))
+    +
+    +      (setq cipher-char (cdr (assoc ?z cpy)))
+    +      (and (and (>= cipher-char ?A) (<= cipher-char ?Z))
+    +           (decipher-set-map cipher-char ?a))
+    +      )))
+    +
+     ;;--------------------------------------------------------------------
+     ;; Miscellaneous functions:
+     ;;--------------------------------------------------------------------
+
+
+
+----
+CategoryGames

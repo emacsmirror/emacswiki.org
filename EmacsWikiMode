@@ -1,0 +1,593 @@
+This is JohnWiegley's implementation of a Wiki.  See WikiModeDiscussion
+for a comparison with other wiki modes and a clarification of the terms used.
+
+Note that EmacsWikiMode is more a wiki-like publishing tool and
+personal information manager than a real wiki, because users from the
+web cannot edit the pages. emacs-wiki.el allows you to create a wiki
+on your local system and export HTML pages, in its basic
+configuration.  It does not allow you to edit the pages of
+emacswiki.org -- see WikiModeDiscussion for more.  To obtain the
+latest version, it is best to use Arch.  Instructions may be found on
+http://www.mwolson.org/projects/EmacsWiki.html.  Development snapshots
+and releases are available on the aforementioned site.
+
+|| Archive || <code>mwolson@gnu.org--2005</code> ||
+|| Location || http://www.mwolson.org/archives/2005 ||
+|| Branch || emacs-wiki--main--1.0 ||
+|| Latest development snapshot || http://www.mwolson.org/static/dist/emacs-wiki-latest.tar.gz ||
+|| Releases || http://www.mwolson.org/static/dist/emacs-wiki/ ||
+
+EmacsWikiMode is an important part of PlannerMode.  EmacsWikiMode can
+save your wiki as a set of HTML files, or it can act as a web server
+(together with EmacsHttpd).
+
+This EmacsWikiMode is a major-mode, i.e. it replaces the mode that you
+usually use for editing files. At first I didn't like it but in
+hindsight it's ok because Wiki files have their own markup.
+
+If you would like to have a minor-mode, use WikiMode by AlexSchroeder. 
+
+JohnWiegley is the author of emacs-wiki.el, based on the wiki.el (See
+WikiMode) by Alex.  The current maintainer of this project is
+MichaelOlson.
+
+*Note* : EmacsMuse is considered to be the eventual replacement for
+Emacs Wiki Mode.  EmacsMuse has been brought to you by JohnWiegley, who
+is the same guy who made Emacs Wiki Mode.  MichaelOlson plans to port
+over any missing features and functionality from Emacs Wiki to Muse.
+
+The emacs-wiki manual is available on-line in several forms.
+
+ - PDF: http://www.mwolson.org/static/doc/emacs-wiki.pdf
+ - HTML (single file): http://www.mwolson.org/static/doc/emacs-wiki.html
+ - HTML (multiple files): http://www.mwolson.org/static/doc/emacs-wiki/
+
+= Contents of this page =
+
+* Features
+* Documentation for Beginners
+* FAQ
+* More documentation
+
+= EmacsWikiMode Features =
+
+* CamelCase or bumpy words as hyperlinks
+* extended links
+* custom markup rules
+* embedded elisp
+* anchors
+* page redirects
+* Wiki:InterWiki names
+* integration with ChangeLogMode
+* auto-building index of wiki pages
+* easy navigation of wiki pages as files on local hard drive
+* completion of all wiki names
+* inline images
+* inline verbatim 
+* rudimentary page reference using grep
+* static publishing of pages or dynamic content serving
+* easy templating for html output
+* multiple output formats
+* integration with PlannerMode allows for "by day" style wiki pages
+
+= FAQ =
+
+'''Q:''' Is there any step by step installation guide for someone new to Emacs?
+
+'''A:''' You can find installation instructions in the beginning of
+the file which you download to install EmacsWikiMode (after you
+un-gzipped it).  When you start EmacsWikiMode, hit "Control-h m" for
+some information.
+
+'''Q:''' Which program versions are necessary? (Emacs? XEmacs?) 
+
+'''A:''' Either.  Version 2.67 of emacs-wiki should work equally well
+with both editors.  M-x customize-variable emacs-wiki-mode-hook RET,
+check the 'emacs-wiki-highlight-buffer option.  This is needed to get
+XEmacs to color the buffer correctly.
+
+'''Q:''' Which files need to be copied to which directories?
+
+'''A:''' Put the entire downloaded and unzipped "emacs-wiki" directory
+wherever you want.  See LoadPath for more.
+
+'''Q:''' Which files need to be edited in which way? 
+
+'''A:''' Now you need to find your InitFile. If the file does
+not exist yet, create it.
+
+Put these two lines into the file:
+
+    (add-to-list 'load-path "/path/to/the/directory/where/emacs-wiki/resides/")
+    (require 'emacs-wiki)
+
+You can then start editing your main wiki page with
+
+   M-x emacs-wiki-find-file RET RET
+
+'''Q:''' How to move around in wiki mode?
+
+'''A:''' Use [tab] and [shift-tab] to move around, and [return] to visit a link.
+
+'''Q:''' Sometimes HardReturns do not seem to work.  So how does one make new lines?
+
+'''A:''' Work Arounds:
+# Press C-o
+# A person can copy and paste returns (CR or CR/LF) in to make new lines.
+# Press C-q C-j. The C-q quotes the linefeed.
+
+'''Q:''' What is the markup of EmacsWikiMode?
+
+'''A:''' See http://repose.cx/emacs/wiki/WikiMarkup.html (this link is broken)
+
+'''Q:''' How do I publish a page to HTML?
+
+'''A:''' C-c C-p (emacs-wiki-publish)
+
+'''Q:''' I'm not grokking the <code><lisp>...</lisp></code> tags.
+When I use them, I get lots of HTML barfed into the emacs buffer.
+This makes it next to impossible to edit the file, since the TextCursor
+movement respects the <code><lisp>...</lisp></code> text, but what I
+see is the HTML it produces.  This is sort of like playing blindfolded
+chess...  Is this the intended behavior?
+
+'''A:''' Make sure that you don't use the <code>(insert)</code>
+command at all.  The value returned by the <code><lisp></code> block
+will be inserted automatically into the buffer at publish time; this
+value is also shown when displaying the file in Emacs.
+
+'''Q:''' Is there any way to prevent EmacsWikiMode treating all files
+in a directory as Wiki files?  So that it is easy to maintain links I
+want to have my Wiki files in the same folder as the generated HTML
+but that means that every file I open there is treated as an
+EmacsWikiMode file.  In fact that happens even if the file concerned
+is a Python file deep down in a subdirectory of the Wiki directory.
+Or have I missed something obvious (wouldn't be the first time)? --
+Kevin Whitefoot
+
+'''A:''' You can try customizing the
+`emacs-wiki-full-path-ignore-regexp' variable by appending something
+like "<code>\\|/path/to/python/subdir</code>" to the default value.
+Currently emacs-wiki does not do a good job at ignoring non-Wiki files
+in Wiki directories.
+
+= More Documentation for beginners =
+
+I propose that anybody who fights his way through PlannerMode and
+EmacsWikiMode should feel encouraged to insert his experiences in
+EmacsWiki in a useful way.
+
+If you are not familiar with wikis, you should read here first:
+http://c2.com/cgi/wiki?WikiGettingStartedFaq .
+
+If you are not somewhat familiar with Emacs you should learn to move
+around Emacs first.
+
+After that, EmacsWikiMode should be very easy to use for you. After
+setup, which is explained in the beginning the download-file
+"emacs-wiki.el", you only need to start typing. The only thing you
+really need to know is that links look like "[[target][explaining
+text]]".
+
+See also: [[Emacs and EmacsWikiMode on PDAs]]
+
+A lot of information is contained in the archive of the
+EmacsWikiMailingList.  It is a good place to get help and trade
+ideas.
+
+Please consult
+http://www.mwolson.org/projects/ReportingEmacsLispBugs.html before
+filing a bug report.
+
+(If you find answers to questions there, please edit them into this page!)
+
+= EmacsWikiMode as standalone web server =
+
+Note: If you want to run EmacsWikiMode as a standalone web server
+(which then has the advantages of allowing page editing, dynamic
+content, etc), you should use EmacsHttpd in conjunction with my
+HttpdServe python server.  HttpdServe handles all static content,
+passing only Wiki queries to Emacs.  It also keeps a dedicated,
+background Emacs process running to handle these queries, which itself
+will cache the HTML that it generates!  The result is that
+EmacsWikiMode + EmacsHttpd + HttpdServe can serve EmacsWikiMode pages
+directly to users at a rate of about 100 pg/sec (on my machine, P4 1.4
+Ghz).  -- JohnWiegley
+
+= Customization =
+
+To use partial-completion-mode in emacs-wiki-find-file:
+
+    (defadvice emacs-wiki-read-name (around partial-completion activate)
+      (let ((PC-word-delimiters "ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
+        ad-do-it))
+
+such that, for example, WP can be expanded to
+<nowiki>WelcomePage</nowiki> in the minibuffer.
+
+= Useful snippets =
+
+== EmacsWiki as an Wiki:InterWiki name ==
+
+In recent versions, just use
+
+ TheEmacsWiki#FooBar
+
+If you have an old version, do something like:
+
+ (add-to-list 'emacs-wiki-interwiki-names
+	      '("EmacsWiki" .
+	        (lambda (tag)
+		  (concat "http://www.emacswiki.org/cgi-bin/wiki.pl?"
+			  (or tag "EmacsWiki")))))
+
+
+== Subwikis ==
+
+Michael Allan Dorkman manages a number of wikis underneath a main
+directory with this Lisp snippet:
+
+    (defun subwiki (project)
+       (list project
+             (list 'emacs-wiki-directories (concat "~/Wiki/" project))
+             (cons 'emacs-wiki-home-page "WikiIndex.html")
+             (cons 'emacs-wiki-publishing-directory (concat "~/public_html/" project))
+             (cons 'emacs-wiki-project-server-prefix (concat "http://localhost/~mdorman/" project "/"))))
+  
+    (setq emacs-wiki-projects (list (subwiki "Foo")
+                                    (subwiki "Bar")
+                                    (subwiki "Wombat")
+                                    (subwiki "Lemur")))
+
+    (planner-update-wiki-project)
+
+== Use ido to load a wiki page ==
+StefanReichoer: I use a wiki as my knowledge database. To get quick access to a specific page, I use the following function bound to C-f12:
+
+    (defun xsteve-open-wiki-page ()
+      (interactive)
+      (let ((default-directory "~/data/wiki"))
+        (ido-find-file)))
+    (global-set-key [(control f12)] 'xsteve-open-wiki-page)
+
+== Allowing spaces in links ==
+
+At least I hope I understood correctly that this will allow spaces in
+links. You can check this by reading the whole thread in the mailing
+list. The following is contained in a mail by Sacha Chua, March, 24th
+2004, with the title "[emacs-wiki-discuss] Re: can you help me with
+some formatting issues":
+
+(customize-set-variable
+   'emacs-wiki-extended-link-regexp
+   "\\[\\[\\([^][\t\n]+\\)\\]\\(\\[\\([^][\n]+\\)\\]\\)?\\]")
+(emacs-wiki-configure-highlighting 'emacs-wiki-highlight-markup
+                                   emacs-wiki-highlight-markup)
+(planner-update-wiki-project)
+
+[new:MichaelOlson:2005-01-12 14:23 UTC]
+This has been implemented in emacs-wiki 2.66.
+
+== Toggle WikiLink on and off ==
+
+Depending on the type of the text you write, you might be typing a lot
+of <nowiki>CamelCase</nowiki> words that are, however, not
+links. Writing <nop> is cumbersome after a few iterations, and
+sometimes you'll have to remove it again. Here's a short function that
+toggles the current <nowiki>CamelCaps</nowiki> word between wikilink
+and non-link:
+
+  (defun emacs-wiki-unlink-toggle ()
+    "Toggle <nop> string in the beginning of the current word, to un/make a
+    word emacs-wiki link. The current word depends on the point: if the cursor
+    is on a non-whitespace character, it's considered a word surrounded by
+    whitespace. If the cursor is on a whitespace character, the next word is
+    looked up. This way addressing a word works intuitively after having
+    arrived on the spot using forward-word."
+    (interactive)
+    (save-excursion
+      (if (looking-at "[[:space:]]")
+          (goto-char (- (re-search-forward "[A-Za-z<]") 1))
+          (goto-char (+ (re-search-backward "[[:space:]]") 1)))
+      (if (looking-at "<nop>")
+        (delete-char 5)
+        (insert "<nop>"))))
+
+I hook it up to C-n with this:
+
+  (add-hook 'emacs-wiki-mode-hook
+    '(lambda () (local-set-key "\C-c\C-n" 'emacs-wiki-unlink-toggle)))
+
+--yason
+
+== Change published pages' file mode during publishing ==
+
+I have set umask 027 in my ~/.profile. Emacs has a problem setting the
+proper file permissions for the published html pages with that. I'm
+sure that everything that I publish should be published to the world!
+Now, here is the snippet I use to do a chmod 644 on every published
+file automatically, just after publishing:
+
+    (defun my-emacs-wiki-chmod-644-published-file (file)
+     (let* ((page (emacs-wiki-page-name file))
+            (published (emacs-wiki-published-file page)))
+       (shell-command (concat "chmod 644 " published))))
+
+   (add-hook 'emacs-wiki-after-file-publish-hook 'my-emacs-wiki-chmod-644-published-file)
+
+-- DirkBernhardt
+
+== Add skeletons into your emacs wiki pages easily ==
+
+See SkeletonMode for more information on skeletons
+
+Useful for creating a wide variety of links to things very quickly. Also works in the minibuffer if you select a region to use as input first.
+
+    (defun chrismdp/skeleton-read-or-use-region (prompt)
+    (if mark-active
+		(save-excursion 
+			(delete-and-extract-region (region-beginning) (region-end))) 
+	(skeleton-read prompt)))
+
+    (define-skeleton chrismdp/planner-skeleton-company-bug-link
+	"Insert a link to the company bug list"
+	'(setq str (chrismdp/skeleton-read-or-use-region "Bug #: "))
+	"[[http://bugs.company.co.uk/show_bug.cgi?id=" str "][Bug " str "]]")
+
+    (define-skeleton chrismdp/planner-skeleton-bbdb-link
+	"Insert a link to the BBDB"
+	""
+	'(setq str (chrismdp/skeleton-read-or-use-region "Name: "))
+	"[[bbdb://" 
+	(if (featurep 'xemacsp) 
+			(replace-in-string " " "." str) 
+		(replace-regexp-in-string " " "." str)) 
+	"][" str "]]")
+
+-- ChrisParsons
+
+== Glossary in emacs wiki ==
+
+AaronBrady (aka 'me') wrote this small function for starting and
+adding definitions to a glossary:
+
+  (defun glossary-insert-def (term def)
+  "Insert a term in the 'glossary' section in relative alphabetical order and in the current text for emacs-wiki mode
+"
+  (interactive "sterm:
+sdefinition:")
+  ;; insert at the current location
+  ;;(insert term " :: " def )
+
+  (save-excursion
+    (beginning-of-buffer)
+    (if (not (re-search-forward "^Glossary:" nil t))
+        (progn
+          (goto-char (point-max))
+          (insert "\n\nGlossary:")
+          (save-excursion (insert "\n\nGlossary End:"))
+          )
+      )
+
+    ;; advance to line after Glossary header
+    (forward-line 1)
+
+    ;; find relative alphabetical match
+    (let
+        (
+         (set-insert-pos 
+          (lambda (term)
+            "two ways for this to terminate: a search for term
+failure, and a string comparison failure. For the search failure the 'Glossary End' must be searched for. For the string comparsion, the line its on is fine"
+
+            (if (re-search-forward "^\\(.*\\)::" nil t)
+                (if (string< (match-string 1) term)
+                    (funcall set-insert-pos term)
+                  )
+
+              ;; no search match. find end of glossary
+              (re-search-forward "^Glossary End:")
+              )
+            )
+          )
+         )
+       (funcall set-insert-pos term)
+      )
+
+    ;; assume we're in the right line
+    (beginning-of-line)
+    (insert term " :: " def "\n\n")
+    )
+  )
+
+== EmacsWiki and LaTeX ==
+
+Can I write some LaTeX formulas in a wiki page ?
+
+Yes, You can find informations on
+http://www.sfu.ca/~gswamina/EmacsWikiBlog.html#sec4.  Basically, you
+have to use dvi2png (see http://preview-latex.sf.net/) and
+http://www.sfu.ca/~gswamina/code/latex2png.el and put this in your
+init file.
+
+  (require 'emacs-wiki "~/.elisp/emacs-wiki/emacs-wiki")
+  (load "~/.elisp/latex2png.el")
+  (load "~/.elisp/emacs-wiki-blog.el")
+  (load "~/.elisp/plog.el")
+
+  ;; Inline LaTex
+  (push '("latex" t t t gs-latex-tag) emacs-wiki-markup-tags)
+  (setq gs-latex2png-scale-factor 2.5)
+
+Then you can put the following lines in a wiki page and see the image in the published html page.
+
+  <latex prefix="MyPrefix">
+  $$ \frac{a_b}{c_d} $$
+  </latex>
+
+The latest version (25 september 2004) of latex2png has the "Transparent" background activated.
+
+= Open Questions / Problems =
+
+I found emacswikimode on windows system how-to guide. but now i cant
+find it anymore.  any clue?
+
+I found an interesting characteristic of WikiMode today.  If I use C-c
+C-r to change the name of a page and then use C-c and C-p to publish
+the resulting Wiki, I do indeed get the new page, but the old page
+still exists, too.  If I do that too much, I'll need to start manually
+pruning my html files. -- Bill Harris
+
+''I think that's the correct behaviour - otherwise it would prohibit
+people from storing other files (like images) in their publishing
+directory. If you want to ensure the old files go away, just remove
+the entire directory and publish again'' -- DamienElmes
+
+Some small inconveniences:
+
+* when I am at the very end of a file and type a !WikiName there, I
+  cannot insert a line break since it will follow the wiki link and
+  create that page.  ''You can use C-o to insert a newline
+  afterward''.
+
+* There should be a keybinding that brings me back to the last wiki
+  page (in case I followed a wiki link by accident). ''Yes, in the
+  last stable release 2.38 I too didn't find this essential
+  feature... '' - Wouldn't simply killing the buffer be sufficient?
+
+ * Yes, finally I find the answer to how to do this.  Being used to
+   the traditional wikis, I severely missed the "go back to
+   originating page" key after following a link (even after a
+   non-accidental link traversal).
+
+[new] Killing the buffer works for me, although, perhaps a keybinding
+(such as Shift-Return, similar in use to the Shift-Tab binding) may be
+worthwhile if you want to keep buffers open and still return to the
+previous page.
+
+[new] I globally bind a key to bury-buffer (Due to Windows holdovers,
+I chose C-f4).''
+
+* An inserted image should work like preview-latex does, i.e., when
+  I'm directly on the link with point, I want to see the text
+  ('[[./wife.jpg][A picture of my wife]]'), not the image itself.
+
+ColinMarquardt
+
+''Not sure how easy that one would be. Would you expect RET to still
+work on it? Certainly an interesting idea.'' -- DamienElmes
+
+* There's a problem with the publishing of a ChangeLog. The resulting
+  html page contains lots of lisp tags, their content wasn't evaluated
+  and replaced by the evaluation results.
+
+This was fixed in the development snapshot patch 41.
+-- GoetzWaschk
+
+Sorry, but I'm using the version 2004.03.26-15.16 and still got this problem. -- Tim K
+
+Please try sacha@free.net.ph--main/emacs-wiki--dev--1.0--patch-5, or dev current. E-mail me feedback so that I can either tweak it some more or merge it into stable. Thanks! =)
+-- SachaChua
+
+I started playing with the tiny-tools package from sourceforge, but
+emacs-wiki broke. This is to do with the way that tiny-path, ignores
+directories in the load path with the prefix (x)emacs. This is by
+design, for reasons that RTFM of the tiny-path docs will explain. The
+way around this is to put the emacswiki in the load path *before*
+calling tinypath.
+
+-- TimOCallaghan
+
+
+I have just found a (dirty) hacking to fix the bug:
+<pre>
+--- emacs-wiki-old.el   2004-04-05 15:05:48.000000000 +0800
++++ emacs-wiki-new.el   2004-04-05 15:05:15.000000000 +0800
+@@ -2706,6 +2706,8 @@
+       (if (file-readable-p emacs-wiki-publishing-footer)
+          (insert-file-contents emacs-wiki-publishing-footer)
+        (insert emacs-wiki-publishing-footer))))
++   ;; process any remaining markup tags
++   [emacs-wiki-tag-regexp 0 emacs-wiki-markup-custom-tags])
+   "List of markup rules for publishing ChangeLog files.
+ These are used when the wiki page's name is ChangeLog."
+   :type '(repeat
+</pre>
+-- Tim K
+
+= Known bugs =
+
+* XEmacs does not publish or display <code><lisp></code> tags
+  properly.  Their contents will be inserted verbatim rather than
+  interpreted.
+
+* See <code>http://twb.ath DOT cx/wiki/SandBox.xhtml</code> for a
+  listing of more suboptimal features and bugs.
+
+* Setting <code>mode: emacs-wiki</code> in a Local Variables section
+  causes a maximum binding depth exceeded error.
+
+* `emacs-wiki-file-alist' sometimes gets corrupted.
+
+= EmacsWikiMode Wish List =
+
+Can I have an encrypted wiki?  Check the AutoEncryption page and the
+MailCrypt package.  Maybe that helps.
+
+It seems to me that encryption is included into emacs-wiki via the pgg
+interface. Check the encryption infonode. --JulienBarnier
+
+I'd love this too, tighter tex integration. This could be done via
+* recognizing $ $ and $$ $$ as formulas (and of course visualization ala preview-latex could be made)
+* auto-numbering * -> subsection ** -> subsub and *** -> paragraph
+* the latter means that each page would then be viewed as a section. A masterfile would organize the sections in chapter (and given order), so that a whole latex document could be made.
+This would rock. Henri
+
+ -- See Emacs Wiki and Latex above  
+
+Any idea where / how to start ?? I'm not so bothered about export to
+latex of the notes, but the ability to copy my emacs-wiki formulas
+into latex documents would be great.
+
+''Start by playing with emacs-wiki-highlight-markup. It's a bit
+constrained for efficiency reasons, but provided you can consistently
+match on a start character like $, you should be able to integrate it
+with preview-latex. How much work would be involved though, I don't
+know.''
+
+I have a web wiki (http://aadis.de/wiki) and I'd like to use Emacs
+wiki to edit/maintain it; so I can edit it on the road via a web
+browser _and_ use emacs wiki when I have it. Is this possible? Any
+ideas? --AadityaSood
+
+''Check WikiModeDiscussion for some ideas.''--SachaChua
+
+= Web Sites That Use EmacsWikiMode =
+
+* Gary V. Vaughan : http://tkd.kicks-ass.net/
+* Damien Elmes : http://repose.cx/
+* Mark Triggs : http://members.iinet.net.au/~striggs/
+* Sacha Chua : http://richip.dhs.org/~sachac/notebook/wiki/WelcomePage.php
+* J. Klymak : http://web.uvic.ca/~jklymak (now using EmacsMuse)
+* TerryPatcher : http://www.terryp.tk/
+* GaneshSwami : http://www.sfu.ca/~gswamina/
+* BastienGuerry : http://www.cognition.ens.fr/~guerry/
+* OleArndt : http://sugarshark.com
+* SebastianFreundt : http://www.math.tu-berlin.de/~freundt/
+* JoseAntonioOrtegaRuiz : http://tao.uab.es/jao/
+* AleixConchilloFlaque : http://www.ccd.uab.es/~aleix/
+* Anirudh Sasikumar : http://anirudhs.chaosnet.org/
+* JonathanGonzalez : http://zeus.gnufans.net/
+* TrentBuck : http://twb.ath.cx/wiki/
+
+= Rather obsolete information =
+
+* http://repose.cx/emacs/wiki/
+
+''Why is this page obsolete? I found some very useful information there.'' --AndreKuehne
+:: I'm not actively contributing to EmacsWikiMode, but I still look after that page. --DamienElmes
+:: New maintainer is MichaelOlson.
+:: DamienElmes homepage is dead, what is the new url ? --XavierMaillard
+----
+CategoryModes
+CategoryHypermedia

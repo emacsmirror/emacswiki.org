@@ -1,0 +1,35 @@
+The Emacs Wiki is trying to be a multilingual wiki.
+Benefits, drawbacks, and technical issues
+are discussed on Meatball, see MeatBall:MultilingualWiki.
+
+This page is for the discussion and implementation particular to the Emacs Wiki only.
+
+== Pages ==
+
+You may create pages in any language you want.
+Pages are encoded in UTF-8.
+
+You can add the main page for your language to the WikiLanguageMenu.
+
+== User Interface ==
+
+The wiki can have any number of interface languages for the same page
+database.  '''If you want a user interface in your language''' (and you are
+prepared to do some translation work), then all you need to do is
+this:
+
+# Translate the name of the links on the goto bar at the top (SiteMap,
+  RecentChanges, ElispArea, HowTo, [[News]])
+# Translate the default text for new pages ("Describe the new page here.")
+# Translate the strings in the user inteface on the Oddmuse page [http://www.oddmuse.org/cgi-bin/wiki/Translations]
+# Send your translations to the host: mailto:alex@emacswiki.org
+
+== Filtering the RecentChanges ==
+
+If you are used to visit the RecentChanges page of the Wiki every day you might be disturbed by the appearance of many languages. You can always filter the page according to your language by using the URL (in this case english):
+
+http://www.emacswiki.org/cgi-bin/wiki.pl?action=rc&rclang=en
+
+Since the rclang parameter is a regular expression you can use it to access more than one language by using:
+
+http://www.emacswiki.org/cgi-bin/wiki.pl?action=rc&rclang=en%7cde, for example.  

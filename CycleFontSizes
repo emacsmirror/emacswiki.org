@@ -1,0 +1,57 @@
+Sets up a list of fonts that can be toggled using C-- (zoom out), C-= (zoom in) and C-0 (reset to default font size).  I find it useful when I need to
+zoom out and browse the organization of a file at a higher level.
+
+    ;; Firefox-like zooming of fonts.
+    (setq default-font-zoom-index 2)
+    (setq font-zoom-index default-font-zoom-index)
+
+    ;
+    (setq font-zoom-list
+          (list "-*-fixed-*-*-*-*-6-*-*-*-*-*-*-*"
+                "-*-fixed-*-*-*-*-10-*-*-*-*-*-*-*"
+                "-*-fixed-*-*-*-*-13-*-*-*-*-*-*-*"
+                "-*-fixed-*-*-*-*-17-*-*-*-*-*-*-*"
+                "-*-fixed-*-*-*-*-18-*-*-*-*-*-*-*"
+                "-*-fixed-*-*-*-*-24-*-*-*-*-*-*-*"
+                "-*-fixed-*-*-*-*-36-*-*-*-*-*-*-*"
+                "-*-fixed-*-*-*-*-48-*-*-*-*-*-*-*"))
+
+    ;
+    (defun font-zoom-increase-font-size ()
+      (interactive)
+      (progn
+        (setq font-zoom-index (min (- (length font-zoom-list) 1)
+                                   (+ font-zoom-index 1)))
+        (set-frame-font (nth font-zoom-index font-zoom-list))))
+    ;
+    (defun font-zoom-decrease-font-size ()
+      (interactive)
+      (progn
+        (setq font-zoom-index (max 0
+                                   (- font-zoom-index 1)))
+        (set-frame-font (nth font-zoom-index font-zoom-list))))
+    ;
+
+    (defun font-zoom-reset-font-size ()
+      (interactive)
+      (progn
+        (setq font-zoom-index default-font-zoom-index)
+        (set-frame-font (nth font-zoom-index font-zoom-list))))
+    ;
+
+    (define-key global-map (read-kbd-macro "C--") 'font-zoom-decrease-font-size)
+    (define-key global-map (read-kbd-macro "C-=") 'font-zoom-increase-font-size)
+    (define-key global-map (read-kbd-macro "C-0") 'font-zoom-reset-font-size)
+    ;
+    (set-frame-font (nth font-zoom-index font-zoom-list))
+
+
+See also these libraries, for similar functionality:
+
+* <tt>[[zoom-frm.el]]</tt>, xommands `zoom-in' and `zoom-out'
+* DoReMi, commands `doremi-frame-font-size' and `doremi-buffer-font-size'
+* [[Icicles]], command `icicle-font'
+
+----
+CategoryFaces
+

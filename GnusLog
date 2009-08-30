@@ -1,0 +1,57 @@
+Gnus' Fancy Mail Splitting is a great feature, but it can be challenging to find that one mail coming in a few hours ago.
+
+Lisp:gnuslog.el, when loaded, advises `nnmail-article-group' and puts header and splitting information into an nndoc group
+of type gnuslog, from where each article can be accessed via M-x gnuslog-goto-destination-article.
+
+Meanwhile it has become indispensible to me.
+
+That and up-to-date swish-e index files of all my mail searchable via
+
+    G G runs the command gnus-group-make-nnir-group
+
+:-)
+
+== ChangeLog ==
+
+<pre>
+RCS file: /cygdrive/c/Users/Aichnerad/CvsRootAichnerAd/el/gnuslog.el,v
+Working file: gnuslog.el
+head: 1.5
+branch:
+locks: strict
+access list:
+symbolic names:
+keyword substitution: kv
+total revisions: 5;	selected revisions: 5
+description:
+Bojohan's incoming mail logger, enhanced by me
+----------------------------
+revision 1.5
+date: 2006/10/29 21:45:40;  author: AichnerAd;  state: Exp;  lines: +1 -1
+Don't use CVS keyword.
+----------------------------
+revision 1.4
+date: 2006/10/29 21:43:47;  author: AichnerAd;  state: Exp;  lines: +3 -0
+Add maintainer info and $ID.
+----------------------------
+revision 1.3
+date: 2006/10/29 21:33:07;  author: AichnerAd;  state: Exp;  lines: +29 -20
+Fix long-standing issue where first nnmail-get-new-mail after startup
+would be missed by gnuslog.
+
+The fix is to put gnuslog-setup-hook onto gnus-read-newsrc-el-hook,
+which is run before the initial nnmail-get-new-mail.
+
+An error condition-case should be used in gnuslog-setup-hook for
+correct error handling.
+----------------------------
+revision 1.2
+date: 2005/09/21 07:01:11;  author: AichnerAd;  state: Exp;  lines: +31 -17
+Safety checkpoint of version used for a few weeks at least.
+----------------------------
+revision 1.1
+date: 2005/03/30 12:49:05;  author: AichnerAd;  state: Exp;
+Includes my additions to date.
+</pre>
+
+[[CategoryGnus]]

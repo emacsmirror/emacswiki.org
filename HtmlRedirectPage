@@ -1,0 +1,26 @@
+Usually your Web hosting provider will allow you to use the Web server to handle redirects the correct way.  On the rare occasion that this isn't possible, you need to make individual redirect pages as HTML file with the special ##<META>## tag.
+
+The following defines a command `M-x html-redirect-page' that can make a redirecting HTML page.
+
+    (define-skeleton html-redirect-page
+      "Inserts an Web page that can redirect to STR."
+      "URL: "
+      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n"
+      "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
+      "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+      "<head>\n"
+      "<meta http-equiv=\"Refresh\" content=\"1;url=" str "\" />\n" 
+      "<title>Redirecting to " (setq v1 (skeleton-read "Title: ")) "</title>\n"
+      "</head>\n"
+      "<body>\n"
+      "<p>Redirecting to\n"
+      "<a href=\"" str "\">" v1 "</a>.\n"
+      "&hellip;</p>\n"
+      "</body>\n"
+      "</html>")
+
+For more information on defining a skeleton, see SkeletonMode.
+
+----
+CategoryHypermedia
+CategoryTemplates

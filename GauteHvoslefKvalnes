@@ -1,0 +1,41 @@
+I use Emacs, mostly CarbonEmacs on a Powerbook. It's a quite
+up-to-date version based on Emacs 22 from CVS. Emacs is the environment I use for text editing, CommonLisp programming (with
+[[SlimeMode|SLIME]]), and [[Gnus]], of course.
+
+== po-mode+ ==
+
+I work on translating KDE and OpenOffice.org into Norwegian
+Nynorsk. For years, I've translated in [http://kbabel.kde.org/
+KBabel], but since hacking C++ is boring and hacking Lisp is fun, I
+cast my eyes on [http://www.gnu.org/software/gettext/ GNU Gettext]'s
+PoMode. I improved it to include some essential features of KBabel.
+
+This is my first time doing EmacsLisp stuff beyond the simplest
+macros. The existing PoMode code, the EmacsLispManual, and random
+browsing on EmacsWiki have all proved useful. (If I've picked up
+bad habits, I'd appreciate any warnings :-)) The way some of
+DrewsElispLibraries are made as ''extensions'' seems neat to me, since
+they avoid modifying the original library. Inspired by those, I turned
+my PoMode hacks into [[po-mode+.el]] before posting them here.
+
+[new]
+
+Have you considered submitting your changes to the po-mode maintainer? -- EdwardOConnor
+
+[new]
+
+I will propose my changes, but I'll hack around some more first. I don't think it's quite ready yet, and I've still got more features to add. -- GauteHvoslefKvalnes
+
+== Catman ==
+
+I plan to write a catalog manager, similar to the one in KBabel. (It's 
+tempting to name it ''Catman''.) A catalog manager makes working on
+large translation projects a lot easier. I've done a basic mockup that
+analyzes the files in one folder and displays statistics for them, but
+I need to rethink the structure before posting anything. It makes
+sense to keep this mode separate from PoMode. Since the files will be
+opened normally, Emacs will load PoMode anyway. (Unless the
+translator has chosen differently, which he should be free to do.)
+
+----
+CategoryHomepage

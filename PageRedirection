@@ -1,0 +1,17 @@
+For various reasons, you might sometime need to redirect one Wiki page to another. This operation effectively '''replaces''' the redirected page by the page you redirect it to, so don't do this lightly.
+
+Here's how you do it:
+
+# Edit the page to be redirected.
+# Remove all its text, and replace it with this: "<code>#REDIRECT FooBar</code>", where "!FooBar" is the new, target Wiki page. Save.
+
+Benefit: [http://www.w3.org/Provider/Style/URI Cool URIs don't change].
+
+== Stop Redirecting ==
+
+At the top of the page you are redirected to, you will see a message saying "Redirected from PAGE", where PAGE is the page you were redirected from, i.e. the page containing "<code>#REDIRECT NewPage</code>".
+
+So, to stop redirecting, click on the page link, and do one of the following:
+* To delete this page, replace all text in this page by "<code>DeletedPage</code>";
+* To change the redirection, replace all text in this page by "<code>#REDIRECT AnotherPage</code>";
+* To remove the redirection, replace all text in this page by the suitable Wiki content.

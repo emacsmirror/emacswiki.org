@@ -1,0 +1,34 @@
+It's time for the irregular EmacsChannel ChatClient test again! Sending a CTCP VERSION to all of #emacs, we find the following:
+
+    39 irssi/Irssi/MacIrssi
+    38 xchat/XChat/X-Chat
+    36 ERC
+    11 rcirc
+     5 ircII/EPIC4/EPIC5
+     4 Circe 
+     2 mIRC
+     2 WeeChat
+     2 Konversation
+     1 you nosy fucker
+     1 telnet
+     1 nasrat
+     1 kon^H^H^Htelnet powered [tm]
+     1 dircproxy
+     1 ctrlproxy
+     1 SysReset
+     1 Riece
+     1 PieSpy
+     1 Miranda
+     1 Gaim
+     1 Colloquy
+     1 (* (! t) nil)
+  ----
+   152 Total
+
+In relative numbers, it seems that [[ERC]] is gaining on the golden duo irssi/x-chat.
+In addition to that, the ERC : [[rcirc]] ratio has improved as well: From 40:16 (2.5)
+to 36:11 (3.3). ;)
+
+Previous survey: [[2006-05-22]]; next survey: [[2007-12-21]].
+
+-- AlexSchroeder

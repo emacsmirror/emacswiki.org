@@ -1,0 +1,145 @@
+Here's the normal way of adding new keywords to a mode.
+Let us start with the simplest example:
+
+<pre>
+(font-lock-add-keywords 'emacs-lisp-mode
+  '(("foo" . font-lock-keyword-face)))
+</pre>
+
+It makes "foo" a keyword in EmacsLisp mode.
+
+== XEmacs ==
+
+If you write a ~/.emacs for both Emacs and XEmacs, you might be using
+`font-lock-add-keywords' a lot.  Since that doesn't exist in XEmacs, I
+just ignore it.  I am sure there is a better workaround for this, so
+feel free to enhance this.  See ComparativeEmacsology for similar
+problems.
+
+<pre>
+(unless (fboundp 'font-lock-add-keywords)
+  (defalias 'font-lock-add-keywords 'ignore))
+</pre>
+
+See AddBufferKeywords for an alternative but Emacs-agnostic approach.
+
+== More Examples ==
+
+Here is a simple example from the documentation of
+font-lock-add-keywords:
+
+<pre>
+(font-lock-add-keywords 'c-mode
+  '(("\\<\\(FIXME\\):" 1 font-lock-warning-face prepend)
+    ("\\<\\(and\\|or\\|not\\)\\>" . font-lock-keyword-face)))
+</pre>
+
+It adds two fontification patterns for C mode, to fontify `FIXME:'
+words, even in comments, and to fontify `and', `or' and `not' words as
+keywords.
+
+Here's an example for plain HtmlMode; it had bad or no highlighting in
+Emacs 20 (can't remember, I've been using the following code for so
+long).
+
+<pre>
+(defvar html-mode-keywords
+  '(("<\\(/?\\(em\\|p\\|q\\|h[r1-6]\\|pre\\|code\\|b\\(lockquote\\|r\\)?\\|i\\|ol\\|ul\\|li\\|center\\)\\)>" 1 font-lock-type-face)
+    ("title=\\|re[lv]=\\|h\\(ref=\\|ttp-equiv=\\)\\|content=\\|name=" . font-lock-variable-name-face)
+    ("<\\(a\\)" 1 font-lock-function-name-face)
+    ("\\(/a\\)>" 1 font-lock-function-name-face)
+    ("\t" . 'show-paren-mismatch-face)))
+
+(font-lock-add-keywords 'html-mode html-mode-keywords)
+</pre>
+
+== Explanation ==
+
+Every Element has one of the following forms:
+
+; (REGEXP . FACE): Highlight REGEXP with FACE
+; (REGEXP N FACE): Highlight group N in REGEXP with FACE
+
+Here's another example.  Here, we don't just call
+font-lock-add-keywords -- we loop over a list of major modes and add
+the keywords to all the modes in the list.
+
+<pre>
+;; agressive whitespace marking.
+(defface extra-whitespace-face
+  '((t (:background "pale green")))
+  "Used in text-mode and friends for exactly one space after a period.")
+
+(mapcar (lambda (mode)
+	  (font-lock-add-keywords
+	   mode
+	   '(("FIXME" 0 'show-paren-mismatch-face)
+	     ("\\.\\( \\)\\b" 1 'extra-whitespace-face))))
+	'(text-mode latex-mode html-mode emacs-lisp-mode
+	  texinfo-mode))
+</pre>
+
+The second REGEXP highlights all single spaces after a point.  (I want
+there to be two spaces unless we're talking about abbreviations.)
+
+== ctypes ==
+There exists a module 
+[http://simon.nitro.dk/dotfiles/emacs/ctypes.el ctypes.el], 
+written by AndersLindgren, that will
+spider through your open buffers looking for typedefs and dynamically cause
+them to be interpreted as type names for the purposes of syntax coloring.  It
+works with C and "maybe" C++ sources.
+
+See Lisp:ctypes.el.
+
+== More ==
+
+For even more information, see FontLockKeywords.  
+
+For other ways to highlight keywords, take a look at the different packages in: [http://www.emacswiki.org/emacs/HighlightTemporarily Highlight Temporarily]
+
+== Adding a Bunch of Scheme Keywords ==
+
+Here's how I add highlighting and indent rules for Scheme constructs.
+
+ (defun scheme-add-keywords (face-name keyword-rules)
+   (let* ((keyword-list (mapcar #'(lambda (x)
+                                    (symbol-name (cdr x)))
+                                keyword-rules))
+          (keyword-regexp (concat "(\\("
+                                  (regexp-opt keyword-list)
+                                  "\\)[ \n]")))
+     (font-lock-add-keywords 'scheme-mode
+                             `((,keyword-regexp 1 ',face-name))))
+   (mapc #'(lambda (x)
+             (put (cdr x)
+                  'scheme-indent-function
+                  (car x)))
+         keyword-rules))
+ 
+ (scheme-add-keywords
+  'font-lock-keyword-face
+  '((1 . when)
+    (1 . unless)
+    (2 . let1)
+    (1 . error)
+    ))
+
+The numbers tell how many arguments the construct should take on the same line.  For example, <tt>(1 . when)</tt> causes the following indentation:
+
+ (when (test)
+   body-1
+   body-2),
+
+while <tt>(0 . when)</tt> causes this:
+
+ (when (test)
+       body-1
+       body-2).
+
+The former is usually preferred.
+
+Feel free to generalize this (to all Lisps?).
+
+----
+CategoryFaces

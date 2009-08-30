@@ -1,0 +1,17 @@
+Accelerate is an emacs module that lets you change the behaviour of a command when the key invoking it is auto-repeated.
+
+For example, when moving the cursor (with e.g the arrow keys or C-n, C-p,
+etc) and the key is held down and auto-repeated, then the cursor can be
+moved in increasingly larger steps.
+
+Any command that takes a numeric argument as its first arg (specified
+by e.g. (interactive "p")) can be accelerated. But it is mostly only useful
+to accelerate cursor movement commands that normally moves cursor a short
+distance.
+
+* Lisp:accelerate.el
+
+-- DavidAndersson
+
+----
+CategoryKeys

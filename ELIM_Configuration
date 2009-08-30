@@ -1,0 +1,19 @@
+How to configure [[ELIM]].
+
+== Directories ==
+
+The default situation is that the icons are stored in a sibling directory and the elim-client is stored in the parent directory of the source files.
+
+One way to do it:
+
+{{{
+(add-to-list 'load-path "~/elisp/elim")
+(autoload 'garak "garak" nil t)
+}}}
+
+Put the Elisp (elim.el, garak.el, lui.el, incomplete.el) files in ~/elisp/elim.
+
+Put the elim-client file in ~/elisp.
+
+Put the icons directory in ~/elisp; all the images such as away.png etc. are therefore in ~/elisp/icons.
+

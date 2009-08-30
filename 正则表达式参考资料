@@ -1,0 +1,15 @@
+本页面关于正则表达的其他一些信息资源。
+
+= 书籍 =
+
+关于正则表达式(regexp)的最好的书莫过于 O'Reilly 出版的 Jeffrey E. F. Friedl 的书了—— ''Mastering Regular Expressions'', ISBN 1565922573. 它讲述的多是通用的正则表达式，但也有相当一些讲述Emacs中的正则表达式，包括它们之间的差异以与其他工具中的正则表达式的差异。
+
+= 网站 =
+
+* http://www.opengroup.org/onlinepubs/007904975/basedefs/xbd_chap09.html -- The Open Group base specification
+* http://www.greenend.org.uk/rjk/2002/06/regexp.html -- Regexp syntax summary
+* http://www.regular-expressions.info/tutorial.html -- A fairly thorough and easy to understand tutorial.
+* http://ocean.webhomelive.com/tech/open/emacsregexp -- Regular Expressions in Emacs
+
+----
+[[分类－正则表达式]]

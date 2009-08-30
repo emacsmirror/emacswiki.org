@@ -1,0 +1,29 @@
+This page is for enhancements to Emacs for use with command `diff' and the related Emacs major mode, DiffMode.
+
+
+[:DiffMode-]
+= diff-mode-.el =
+
+DrewAdams has written library Lisp:diff-mode-.el (note the hyphen at the end), which extends the functionality in standard library <code>diff-mode.el</code> by highlighting the <code>*Diff*</code> buffer differently. Here is a screen shot:
+
+[[image:DrewsEmacsDiffMode]]
+
+Lisp:diff-mode-.el is only for Emacs 21. For Emacs 20 and older, see library Lisp:diff+20.el ([[#DiffPlusTwenty]]). The highlighting of Emacs 22 comes close to that provided by <tt>[[diff-mode-.el]]</tt>.
+
+[:DiffPlusTwenty]
+= diff+.el, diff+20.el =
+
+DrewAdams has written libraries Lisp:diff+.el and Lisp:diff+20.el, which extend the functionality in standard library <code>diff.el</code>. The former is for Emacs 21; the latter is for Emacs 20 or older. (Library <code>diff.el</code> changed significantly from Emacs 20 to Emacs 21.)
+
+* <code>diff+.el</code> is a minor extension that simply selects the <code>*Diff*</code> buffer and fits its frame when `diff' is finished.
+
+* <code>diff+20.el</code> is the equivalent for Emacs 20 of library Lisp:diff-mode-.el (see [[#DiffMode-]]).
+
+= Other diff Enhancements =
+
+* DiffSaveBuffer - replacement `save-buffer' offering a filename for a diff file
+* [[Diff2Ediff]] - Spawn an `ediff' session from within diff mode.
+* PickBackup - Diffing specific versioned backup files
+
+----
+CategoryExternalUtilities

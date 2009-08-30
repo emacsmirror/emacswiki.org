@@ -1,0 +1,28 @@
+From the commentary:
+This package helps you to keep identical copies of files in more than one
+place -- possibly on different machines.  When you save a file, it checks
+whether it is on the list of files with "shadows", and if so, it tries to
+copy it when you exit Emacs.
+
+I use the following to copy my ~/NOTES file to a fileserver at the end of
+the day on a Windows machine. Since the fileshare is mounted as a separate
+drive, I have to provide my own machine name as the "host".
+
+    (require 'shadowfile)
+    (setq shadow-literal-groups
+          '(("/asc@BSIZUG04:h:/Alex Schröder/NOTES"
+             "/asc@BSIZUG04:~/NOTES")))
+
+To be honest, I also ##(prefer-coding-system 'utf-8)##, so that I'm using the
+control character ##\366## instead of the ##ö## in the filename. ;) -- AlexSchroeder
+
+[new]
+It took me a long time to figure out that shadowfile doesn't deal with "localhost" very well when setting up a shadow via shadow-define-literal-group.  You need to use your actual hostname, which can be rather tough to figure out on Windows and Mac OS X systems.  On Windows it's usually the Netbios name/Computer name.  On Mac OS X it's usually the name under System Preferences -> Sharing -> Computer name with all punctuation and spacing removed and .local append to the name.  This is nowhere within shadow's documentation in the GNU Emacs info manual.
+
+I also haven't tested it out with Tramp yet.  All in all a nice feature but its documentation needs improvement.  -- SamPeterson
+
+[new:DrewAdams:2006-10-14 16:16 UTC]
+Why not file a bug? `##M-x report-emacs-bug##' -- DrewAdams
+
+----
+CategoryFiles

@@ -1,0 +1,778 @@
+: [[image:iciclesimage]]
+
+
+|| *Previous:* [[Icicles - Screenshots]] || '''[[Icicles]]'''  || IciclesIndex || *Next:* [[Icicles - Inserting Text from Cursor]] ||
+
+----
+
+
+
+
+[:READMEforNonReaders]
+== README for NON-Readers ==
+
+Load library '''<tt>[[icicles.el]]</tt>''', turn on ''Icicle'' mode, and you're good to go. You can turn ''Icicle'' mode off or on at any time with command '''`icy-mode''''.    When you turn it off, you're back in vanilla Emacs.
+
+Beyond that, the most important thing to know about '''Icicles''' is that you can get help on ''Icicle'' mode during [[minibuffer]] input.  You do that either by using item '''Help''' of the [[menu bar]] '''Icicles''' menu or '''Minibuf''' menu, or by hitting '''`##C-?##'''' (`icicle-minibuffer-help').
+
+You now know enough to use '''Icicles'''. If you have doc-phobia or are easily overwhelmed by explanations, then ''read no more'' -- just try it!  
+
+If you want a little more explanation than the help page (`##C-?##'), then read the rest of this page, but no more. This page shows a sample of what you can do in ''Icicle'' mode.
+
+If you want to know more about '''Icicles''' by reading instead of just trying, then read beyond this page. There is a lot you can learn, but there is not much that you need to learn, to use '''Icicles''' usefully. Don't be afraid to get in and get wet. Above all, don't be overwhelmed by the doc -- if it helps, fine. 
+
+----
+
+
+
+
+[:Menus]
+== Menus ==
+
+One good way to start with '''Icicles''' is to explore menus '''Icicles''' and '''Minibuf'''; you can access most '''Icicles''' features using these menus, without at the same time struggling to learn new [[key binding]]s.  The '''Icicles''' menu is available all of the time (that is, whenever you are in ''Icicle'' mode), and the '''Minibuf''' menu is available whenever the [[minibuffer]] is active.  
+
+
+
+
+[:IciclesMenuBarMenu]
+=== Icicles Menu-Bar Menu ===
+: [[image:drew-emacs-Icicles-menu-20]]
+
+
+
+[:MinibufMenuBarMenu]
+=== Minibuf Menu-Bar Menu ===
+: [[image:drew-emacs-Minibuf-menu]]
+
+During minibuffer input
+[[completion]], you can also press Control and right-click
+(`C-mouse-3') on a completion candidate in [[buffer]] `*Completions*',
+and choose from a contextual popup menu, '''Completion Candidate'''.  Some of its menu items apply to the clicked candidate; others apply to all candidates. 
+
+
+[:CompletionCandidateMenu]
+=== Completion Candidate Menu ===
+
+: [[image:drew-emacs-Candidate-menu]]
+
+Yes, this is a long menu! Think of it as a learning device and a way to remind you of operations on individual candidates and their key bindings ;-). In this it is similar to the help you get when you use `##C-?##' in the minibuffer, but with the menu you can also act, not just be reminded.
+
+
+
+
+
+[:ToggleOptions]
+== Toggle Options on the Fly ==
+
+There are many [[user option]]s that affect the behavior of '''Icicles'''
+features.  Some of these are Boolean (on/off) or allow for simple
+alternation or cycling of the possible values.  Many of those
+options are associated with toggle commands that are bound to keys
+whenever the minibuffer is active, or at least active for
+completion.
+
+Throughout this doc you will see references to such options and
+their toggles.  For example: "You can toggle case-sensitivity at
+any time using `C-A' (that is, `C-S-a') in the minibuffer."
+
+The reason for making it so easy to change the values of these
+options on the fly is that different kinds of completion, in
+different contexts, can take advantage of different option values.
+'''Icicles''' completion is very general, and a single option value is
+not always optimal for all contexts.
+
+You will become acquainted with a few of these toggle keys and
+remember them, but you will forget others.  What is important to
+point out here is that '''`##C-?##''''  (`icicle-minibuffer-help') is your
+friend in the minibuffer.  During completion, the help it displays includes, near the
+top, a list of the toggle keys and the corresponding current
+values of their options.
+
+Whenever you use an '''Icicles''' toggle command, a momentary message
+shows you the new option value.  So as an alternative to using
+`##C-?##' to see the current value of an option, you can just toggle
+it twice.
+
+
+
+[:CycleCandidates]
+== Cycle Completion Candidates ==
+
+: ##M-x  ## <u>##t o o l##</u>  '''##next##'''
+
+That is, type "##tool##" and then hit the `next' key, which is often labeled '''Page Down'''.  Each time you hit `next', another match for your input (`tool')
+replaces it in the [[minibuffer]]:
+
+: ##M-x ediff-toggle-use##'''''##tool##'''''##bar  next## -> 
+: ##M-x scroll-bar-##'''''##tool##'''''##kit-scroll next## -> 
+: ##M-x ##'''''##tool##'''''##-bar-mode next## -> 
+: ##M-x ##'''''##tool##'''''##tip-mode next## -> 
+: ##M-x ediff-toggle-use-##'''''##tool##'''''##bar## -- Back to the beginning
+
+Keys `next' and `prior' ('''Page Up''') cycle among all of the [[command]]s that contain (match) the minibuffer input pattern -- `tool', in this case. Just hit `RET' (Return) when you get to the command you want.
+
+You can use a ''regular expression'' ([[regexp]]) to narrow the field of matching inputs:
+
+: ##M-x ##<u>'''## i s e . + c h a r ##'''</u> ##next## -> 
+: ##M-x isearch-*-char next## -> 
+: ##M-x isearch-delete-char next## ...
+
+See [[Icicles - Cycling Completions]] for more about cycling completion candidates.
+
+
+
+
+
+[:DisplayCandidates]
+== Display Completion Candidates ==
+
+You can display all of the matches for the current minibuffer input, in the `*Completions*' [[buffer]], with `S-TAB' (Shift TAB). So, for instance, `S-TAB' with <code>M-x ise.+char</code> in the minibuffer displays all commands whose names contain `ise' followed (somewhere) by `char'.
+
+(The documentation always refers to the key that does this as
+`S-TAB'.  Actually, it is `S-TAB' only by default.  You can
+customize it, using option '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>''''.) 
+
+[[image:IciclesRegexpCompletions]]
+
+When you cycle among matching candidates as described above, if buffer `*Completions*' is displayed, then the current candidate is highlighted there. In this screenshot taken while cycling, the current candidate is `insert-in-minibuffer'. (The other screenshot annotations shown here are covered in [[Icicles - Apropos Completions]].)
+
+[[image:iciclesscreenshot]]
+
+See [[Icicles - Completions Display]] for more about using the `*Completions*' window.
+
+
+
+
+
+[:PrefixAndAproposCompletion]
+== Prefix Completion and Apropos Completion ==
+
+You can get the standard Emacs ''[[prefix completion]]'', instead of
+this ''[[apropos completion]]'', by using `TAB' instead of `S-TAB'.  You
+can ''cycle'' prefix-completion candidates by using the `down' and
+`up' arrow keys instead of `next' and `prior'.
+
+Some people prefer to always cycle with the same keys, for
+example, `down' and `up', regardless of the completion mode
+(prefix or apropos).  You can get that behavior by customizing
+user option '''`<tt>[[Icicles - Customization and General Tips#icicle-cycling-respects-completion-mode|icicle-cycling-respects-completion-mode]]</tt>''''
+
+Instead of using `down' or `next', as an alternative you can cycle candidates downward (forward) by just
+repeating the same completion key: `TAB' or `S-TAB'.  For example:
+
+: ##M-x tool  ##'''##TAB##''' -> Display candidates with prefix `tool' in `*Completions*'
+: ##M-x ##'''''##tool##'''''##-bar-mode  ##'''##TAB##''' -> 
+: ##M-x ##'''''##tool##'''''##tip-mode  ##'''##TAB##''' -> 
+: ##M-x ##'''''##tool##'''''##-bar-mode##  -- Back to the beginning
+
+Or:
+
+: ##M-x tool  ##'''##S-TAB##''' -> Display matching candidates in `*Completions*'
+: ##M-x ediff-toggle-use##'''''##tool##'''''##bar  ##'''##S-TAB##''' -> 
+: ##M-x scroll-bar-##'''''##tool##'''''##kit-scroll  ##'''##S-TAB##''' -> 
+: ##M-x ##'''''##tool##'''''##-bar-mode  ##'''##S-TAB##''' -> 
+: ##M-x ##'''''##tool##'''''##tip-mode  ##'''##S-TAB##''' -> 
+: ##M-x ediff-toggle-use-##'''''##tool##'''''##bar## -- Back to the beginning
+
+Changing to a different completion key (`TAB' to `S-TAB' or vice
+versa) always switches completion type and completes, but you can
+then repeat that new completion key to cycle among the candidates.
+
+'''Note:''' In vanilla Emacs, repeating `TAB' scrolls the
+`*Completions*' window.  In '''Icicles''', you can use `C-v' to scroll `*Completions*'
+down and `M-v' to scroll up.  You can also use the mouse wheel to
+scroll.
+
+See [[Icicles - Apropos Completions]] for more about apropos and prefix completion.
+
+
+
+
+
+[:ProgressiveCompletion]
+== Chains of Simple Match Patterns - Progressive Completion ==
+
+To see which functions contain `char', `delete', and `back' in their names, ''in any order'':
+
+: ##C-h f  ##<u>'''##c h a r##'''</u>  ##S-TAB## -- Display all function names that contain `char'.
+
+: ##M-* ##<u>'''##d e l e t e##'''</u> -- Narrow that set of names to those that ''also'' contain `delete' (somewhere).
+
+: ##M-* ##<u>'''##b a c k##'''</u> -- Narrow the set of matching names further, to those that ''also'' contain `back' (somewhere).
+
+This displays a list of functions like this in buffer `*Completions*' (your list might be somewhat different):
+
+[new]
+
+     backward-delete-char             backward-delete-char-untabify
+     delete-backward-char             icicle-backward-delete-char-untabify
+     icicle-delete-backward-char      quail-conversion-backward-delete-char
+
+[new]
+
+Since you are completing input to `C-h f' in this case, you can then cycle to a name using `next' and hit `RET', or click `mouse-2', to see the doc for that function. If, instead, you were completing input to `M-x', you could choose a [[command]] to execute.  And so on.
+
+The thing to notice here is that you can use '''`M-*'''' to input chains of ''multiple simple'' [[regexp]]s, to narrow down the set of completion candidates ''progressively'', that is, step by step. This is analogous to piping the result of `grep' to another `grep', and piping that result to another `grep', and so on.
+
+Here are a couple others to try (I'm always forgetting the order in these compound names): 
+
+: ##C-h f  ##<u>'''##w i n d o w##'''</u>  ##S-TAB M-*  ##<u>'''##f r a m e##'''</u>
+: ##C-h f  ##<u>'''##w i n d o w##'''</u>  ##S-TAB M-*  ##<u>'''##b u f f e r##'''</u>
+
+As a shortcut, you can use just '''`S-SPC'''' instead of `##S-TAB M-*##'. 
+
+See [[Icicles - Progressive Completion]] for more about progressive completion with `M-*'.
+
+See [http://blogs.gnome.org/xan/2007/10/08/gtk-hacking-with-emacs-a-small-trick/ Locane Powder] for someone else's description of the joys of '''Icicles''' progressive completion.
+
+
+
+[:ChippingAway]
+== Chip Away the Non-Elephant ==
+
+There's a joke about a sculptor who, when asked how he created
+such a life-like statue of an elephant, said that he just chipped
+steadily away, removing marble that didn't resemble an elephant. (Actually, Michelangelo supposedly said something similar.)
+
+'''Icicles''' lets you sculpt this way too -- it is in fact a common
+'''Icicles''' usage idiom.  There are two ways to say, "I don't want
+that" when it comes to possible completions:
+
+* The '''`delete'''' key or '''`S-mouse-2'''' says, "Get rid of this
+  completion candidate."
+
+* '''`##C-~##'''' says "I want all possible completions ''except'' those that
+  are the current matches.  That is, "Remove all of this, and let
+  me see what's left."  `##C-~##' takes the complement of the current
+  set of matches, using the initial set of possible candidates as
+  the universe of discourse.
+
+In other words, instead of coming up with input that you want a
+completion to match, get rid of one or all of the candidates that
+do match.  You can keep clicking `mouse-2' while holding Shift, or keep hitting `delete' (without Shift), to '''[::chip away]''' at the set of possible
+completions.  If there are several candidates in a row that you
+want to eliminate, just hold down the `delete' key until they're
+gone.
+
+So that you can use `delete' this way to delete candidates one
+after the other, in order, the next candidate is chosen each time
+you delete one.  This means that it becomes the current candidate
+in the minibuffer.  You can, however, use '''`M-k'''' to clear the
+minibuffer or use '''`C-l'''' (bound to command
+'''`icicle-retrieve-previous-input'''') to clear the [[minibuffer]] and retrieve
+your last real input -- see [[Icicles - History Enhancements]].
+
+`delete' works well to delete isolated candidates or groups of candidates
+that are in order, one right after the other, and you can of
+course combine it with positive matching.
+
+'''Note:''' In Emacs releases prior to Emacs 22, `delete' has no real
+effect on ''file-name'' completion candidates (but it works fine on
+non file-name candidates).  It removes them
+temporarily, but they are not really removed as possible
+candidates, so `TAB' and `S-TAB' will still show them as
+candidates.
+
+`##C-~##' is particularly handy in combination with [[Icicles - Progressive Completion|progressive
+completion]] (`##M-*##') to narrow down a set of candidates, especially
+when you are not exactly sure what you are looking for.  You can
+repeat `##C-~##' with different inputs to eliminate everything matched
+by each of them.  In other words, this is a variable-size chisel,
+and you can use it to remove very large chips.
+
+For instance, suppose you are looking for a standard Emacs [[command]]
+involving [[buffer]]s.  You try `M-x buff S-TAB', but that shows
+zillions of matches.  Suppose that you know you don't want a
+command in some 3rd-party package.  You proceed to eliminate
+those, progressively, using something like this:
+
+  M-* ediff C-~ ibuffer C-~ icicle C-~ Buffer-menu C-~ ps- C-~
+      ido C-~ search-buffers C-~ moccur C-~ swbuff C-~
+
+And so on.  That is, instead of using `##M-*##' repeatedly to specify
+multiple patterns that candidates must match, you use `##C-~##'
+repeatedly (after an initial `##M-*##'), to chip away candidates you
+don't want.  You could, alternatively, hold down the `delete' key
+to eliminate each of these groups of command names.  There are
+over 100 commands whose names begin with `ediff', however, so `##M-*
+C-~##' can be quicker in that case.  It can definitely be quicker
+when apropos matching is involved.  And you can of course combine
+the fine chiseling of `delete' with the variable-size chiseling of
+`##C-~##'.
+
+
+
+
+
+[:ChooseBeforeYouAct]
+== Choose Before You Act ==
+
+The opposite operation from chipping away at a set of candidates
+to refine it is to build up a set of candidates that you want to
+act on.  This too is easy with '''Icicles'''.  In some user interfaces,
+including DiredMode in Emacs, you can mark items in a checklist and
+then, when you've selected the items you want and verified the
+list, act on those that are selected.  You might do this, for instance, if you were deleting some files.  '''Icicles''' lets you interact
+with completion candidates this same way.
+
+You do this by building up a saved set of candidates, and then
+retrieving these saved candidates later.  You can use the
+retrieved candidates just as you would any current set of
+candidates.  One of the things you can do is act on all of them,
+that is, act on each, in turn.  You do that with '''`##C-!##''''.
+
+Of course, if you can use a [[regexp]] to match exactly the candidates
+you want to act on, then you need not bother to save and retrieve
+them, before acting on them: you can see them all alone in buffer
+`*Completions*'.  Here's an exercise in choosing candidates to save
+with the mouse in `*Completions*':
+
+: ##C-x C-f ##<u>'''##i c i##'''</u> ##TAB## -- Match all file names that begin with ##ici##.
+: Click `mouse-1' inside (or to the left of) `##icicles-face.el##'.
+: Click `mouse-3' inside (or to the right of) `##icicles-mode.el##'.
+: Click `mouse-3' again, in the same place.
+: Click '''`M-S-mouse-2'''' on each of `##icicles.el##' and `##icicles-cmd1.el##'.
+
+The candidates that you selected -- those between `##icicles-face.el##'
+and `##icicles-mode.el##', inclusive, plus `##icicles.el##' and
+`##icicles-cmd1.el##', are highlighted specially in buffer
+`*Completions*', and feedback in the [[minibuffer]] tells you that they
+were "'''saved'''", which you can also think of as "'''marked'''".
+
+Next, use '''`##C-M-<##''''.  This retrieves the set of saved candidates;
+that is, it replaces the current set of candidates with the saved
+candidates.  If you now use `##C-!##', it applies the action to each
+candidate.  In this case, the action is to visit the file (`C-x C-f').
+
+The combination of saving (marking) candidates and then retrieving
+only those you have saved is like progressive completion or
+chipping away: it is another way of progressively narrowing the
+set of candidates that you act on.
+
+This screenshot shows the highlighting of saved candidates (in this case, [[command]] names, not file names):
+
+[[image:DrewsEmacsSavedCandidates]]
+
+See [[Icicles - Choose All Candidates]] for more about `##C-!##'.
+See [[Icicles - Candidate Sets]] for more about saving and retrieving sets of candidates.  
+
+
+
+
+
+[:HelpOnCandidates]
+== Get Help on Completion Candidates ==
+
+Sometimes, you'd like to be able to ask for help about individual completion candidates while you're in the process of choosing one. That's the purpose of the '''Icicles''' '''`C-M-'''' key bindings available during completion.
+
+The simplest such bindings are `C-M-RET' and `C-M-mouse2'. They each do the same thing: provide help on the current candidate. You can use them during cycling or whenever you've narrowed the choice down to a single candidate. You can check this way, before you execute a command you're unsure of.
+
+During [[completion]], you can also cycle among the doc strings for the candidates that match your input, using `C-M-down' and `C-M-up' (for prefix matching), `C-M-next' and `C-M-prior' (for apropos matching). This gives you a very useful on-the-fly apropos feature -- use it while you're completing a command, to check the difference between several possible commands. Or just use it to browse doc strings, to learn more about Emacs.
+
+The `C-M-' keys give you complete help on a candidate, but you get a one-line help summary without doing anything, when you cycle or complete a candidate (entirely). This help is shown in the [[mode line]] of buffer `*Completions*' (or of the current buffer, when `*Completions*' is not displayed). It is typically the first line of a [[doc string]].  This screenshot shows mode-line help (##Replace nonprinting characters...##) for the current candidate (highlighted):
+
+[[image:lacarte-w-icicles]]
+
+See [[Icicles - Help on Candidates]].
+
+
+
+
+
+[:MultiCommands]
+== Perform Multiple Operations In One Command ==
+
+: ##C-x C-f ##<u>'''##i c i##'''</u> ##TAB## -- Find a file whose name starts with ##ici##.
+: ##down## (that is, down arrow) ... until you get to candidate ##icicles-cmd1.el##
+: ##RET## -- Open file ##icicles-cmd1.el##.
+
+Nothing new here. Now try the same thing, but use '''`C-RET'''' instead of `RET'. The command is not ended, and you can continue to choose files to open:
+
+: ##C-x C-f ##<u>'''##i c i##'''</u> ##TAB## -- Find a file whose name starts with ##ici##.
+
+: ##down## ... until you get to ##icicles-cmd1.el##
+
+: ##C-RET## -- Open file ##icicles-cmd1.el##.
+
+: ##down## ... until you get to ##icicles-opt.el##
+
+: ##C-RET## -- Open file ##icicles-opt.el##.
+
+: ##down## ... until you get to ##icicles.el##
+
+: ##RET## -- Open file ##icicles.el## (end).
+
+You just opened three files in a single command. Command `icicle-file' ('''`C-x C-f'''') is an '''Icicles''' ''[[multi-command]]''.  You
+can tell if a command is a multi-command when you execute it -- if
+so, the input prompt is prefixed by `##+##'.  So, for example, when
+you used `C-x C-f', the prompt was "'''##+##'''## File or directory:##".  '''Icicles''' menu items that are multi-commands are also prefixed by `##+##'.
+
+
+
+
+
+[:AlternativeOperations]
+== Perform Alternative Operations on the Fly ==
+
+(If this section seems a bit weird or advanced to you, just skip it the first time through.)
+
+: ##C-x C-f ##<u>'''##i c i##'''</u> ##TAB## -- Find a file whose name starts with ##ici##.
+
+: ##down## ... until you get to candidate ##icicles-cmd1.el##
+
+: ##C-S-RET## -- You are prompted to choose a function to apply.
+
+: <u>'''##f i n d e##'''</u> ##TAB RET## -- Choose function ##finder-commentary##.
+
+: ##down## ... until you get to candidate ##icicles-fn.el##
+
+: ##C-S-RET TAB TAB## ... until you get to ##find-file-read-only##.
+
+: ##RET## -- Visit file ##icicles-fn.el## in read-only mode.
+
+: ##C-k TAB## -- Kill rest of input, then complete the prefix ##ici##.
+
+: ##M-|## <u>'''##b y t e - c##'''</u> ##TAB## -- Byte-compile all files matching ##ici##.
+
+: ##TAB## ... until you get to ##icicles-doc1.el##, then ##RET## to visit.
+
+What's going on?  '''`C-S-RET'''' invokes an ''alternative action'' on the
+current completion candidate.  Here, you do this, in turn, for the
+file-name candidates ##icicles-cmd1.el## and ##icicles-fn.el##.  '''`##M-|##''''
+invokes an alternative action on '''''all''''' of the current completion
+candidates.  Here, you do this for all file names that begin with
+##ici##.  Finally, you cycle to ##icicles-doc1.el## and hit `RET' to
+visit that file.
+
+The alternative action for `C-x C-f' (command `icicle-file')
+prompts you for a function to apply to the current completion
+candidate (for `C-S-RET') or to all candidates (for `##M-|##').
+
+Here, you choose function `finder-commentary' to visit the
+Commentary of file ##icicles-cmd1.el##, function `find-file-read-only' to
+visit ##icicles-fn.el## in read-only mode, and function
+`byte-compile-file' to byte-compile all files whose names start
+with ##ici##.
+
+You can use `C-u' with a function you choose, to pretty-print its
+result (in buffer `##*Pp Eval Output*##', if too large for the [[echo area]]).  That's useful for functions that have no side effects.
+For this to work, use `C-RET', not `RET', to choose the function.
+
+Each command defines its own alternative action, but many '''Icicles'''
+commands have the behavior described here for `icicle-file': their
+alternative action is to let you apply any function that is
+appropriate for the given type of candidate (here, file names).
+
+You can even enter an appropriate [[lambda expression]], instead of
+completing to one of the function candidates provided.  For
+example, you could use `##M-|##' with the following input to copy all
+'''Icicles''' libraries to directory `ICICLES':
+
+  (lambda (f) (copy-file f "ICICLES" t))
+
+Note that function `copy-file' iseffectively ''curried'' here, to
+create a function of a single argument on the fly.
+
+See Also: [[Icicles - More About Multi-Commands#AlternativeActions|Alternative Actions]].
+
+
+
+
+
+
+
+
+
+[:CompletionStatusIndicators]
+== Completion Status Indicators ==
+
+You can always know whether [[completion]] is possible when you are
+inputting text in the [[minibuffer]] and, if so, what kind of
+completion.  Completion status is indicated in two places: (1) at
+the beginning of the minibuffer prompt and (2) in the `Icy'
+[[minor mode]] lighter in the [[mode line]].  The second is optional,
+controlled by option '''`<tt>[[Icicles - Customization and General Tips#icicle-highlight-lighter-flag|icicle-highlight-lighter-flag]]</tt>''''.
+
+Whenever input [[completion]] is available, the prompt is prefixed by
+'''`##.##'''' or '''`##+##'''', indicating simple or [[Icicles - Multi-Commands|multi-command]] completion,
+respectively.  If completion is ''strict'' (your input ''must'' match one
+of the candidates), then this character is enclosed in a box.  If
+completion is ''[[lax]]'' (permissive), there is no box.
+
+The `Icy' minor-mode lighter text is highlighted red during
+completion.  '''`##+##'''' is added to the lighter (`##Icy+##') for
+multi-command completion, and the lighter is boxed for strict
+completion.  When minibuffer input is read without completion, the
+lighter is not highlighted in any way.
+
+In addition, the lighter text (with or without `##+##') is '''`Icy'''' if
+completion is case-sensitive and '''`ICY'''' if not.  You can toggle
+case-sensitivity at any time using `C-A' (that is, `C-S-a') in the
+minibuffer.
+
+The [[face]]s used for this highlighting in the minibuffer and the
+mode line are '''`icicle-completion'''',
+'''`icicle-multi-command-completion'''', and
+'''`icicle-mustmatch-completion''''.  Consult their [[doc string]]s for more
+information.  These faces are combined to produce the various
+highlighting effects -- keep that in mind if you customize them.
+
+When you are inputting, keep an eye out for this highlighting.  If
+you don't see it when you are prompted for input, it means that
+input completion is not available.  This in turn means that
+`S-TAB' is available, not for input completion, but for '''Icicles''' [[Icicles - Key Completion | key
+completion]].
+
+
+Here is a screenshot of the mode-line `Icy' highlighting during strict multi-command completion. The box indicates strict completion. The green highlighting and the `##+##' indicate multi-command completion. 
+
+: [[image:DrewsEmacsIcyModeLine]]
+
+Here is a screenshot of the minibuffer, showing the `##+##' indicating a multi-command and the box indicating strict completion:
+
+: [[image:DrewsEmacsMinibufActive]]
+
+Here's a screenshot showing lax multi-command completion (no box):
+
+: [[image:DrewsEmacsMinibufLax]]
+
+Here's a screenshot showing the `##.##' that indicates a normal command (not a multi-command). It shows strict completion, but lax completion looks similar: `##.##', but without the box.
+
+: [[image:DrewsEmacsMinibufNotMultiCmd]]
+
+Here's a screenshot showing strict multi-command [[Icicles - Progressive Completion|progressive
+completion]]:
+
+: [[image:DrewsEmacsMinibufLevel1]]
+
+Incidentally, the change in minibuffer background shown here is provided by '''OneOnOneEmacs''' (library <tt>[[oneonone.el]]</tt>) to provide orientation for recursive minibuffer levels, such as progressive completion uses -- see [[Dedicated Minibuffer Frame]].
+
+In addition to using `down' (or `next') and choosing (acting on) candidates with `C-RET', you can combine these operations by using '''`C-down'''' (or `C-next'): act on candidates in succession. And, as mentioned, you can use `##C-!##' to act on ''all'' candidates at once.
+
+There are many possible uses of multi-commands.  They all make use
+of the same key bindings, which begin with '''`C-''''.  These keys are
+analogous to the '''`C-M-'''' keys that provide help on completion
+candidates.
+
+See [[Icicles - Multi-Commands]] for more information about '''Icicles''' multi-commands.
+
+
+
+
+
+[:IciclesSearch]
+== Icicles Search ==
+
+'''Icicles''' provides a unique way of searching incrementally.  Command `icicle-search' ('''`##C-c `##'''') is a multi-command. In this case, the completion candidates are the buffer occurrences that match a regexp that you input.  `C-RET' visits a search-hit candidate, and `C-next' visits a candidate and prepares to visit the next in succession. If you visit file <tt>[[icicles-doc1.el]]</tt>, which contains the text you are reading now, do this in that buffer:
+
+: '''##C-c `##''' -> ##Find (regexp): ## <u>'''##. * r e c u r s i v e . *##'''</u>## RET##
+:: Search for the regexp `##.*recursive.*##'. 
+: ##Choose an occurrence: S-TAB##
+:: Show the search hits, in buffer `*Completions*' (optional).
+: ##C-next## ...
+:: Cycle among the search hits, navigating to them in turn.
+: ##S-TAB next## ...
+:: Cycle among the search hits without navigating.
+: ##next## ... ##C-RET next## ... ##C-RET##
+:: Cycle to particular hits and visit (only) those hits.
+: ##next## ... ##RET##
+:: Cycle to a hit and stay there (end).
+<pre>
+   
+</pre>    
+: '''##C-c `##''' -> ##Find (regexp): M-p RET##
+:: Search again for `##.*recursive.*##' (input history).
+: ##S-TAB ##<u>'''##e d i t##'''</u> ##C-next## ...
+:: Search for the substring `edit' within all search hits for  `##.*recursive.*##'. Cycle among the matches. The substring `edit' is highlighted ''inside'' the (differently) highlighted `##.*recursive.*##' hits. Whatever you type filters the initial set of hits.
+
+: ##M-k##
+:: Empty the minibuffer, then ##S-TAB##. All `##.*recursive.*##' hits are restored as candidates. Again, whatever your input is (nothing, now), the set of candidates is dynamically updated to match it.
+
+: <u>'''##t \ w + n##'''</u>## S-TAB C-next ...##
+:: Search for matches of the regexp `##t\w+n##' within all search hits for `##.*recursive.*##' -- that is,
+`t' followed by at least one other word character, followed by
+`n'.  Whatever the regexp `##t\w+n##' matches (`thin', `then', `traighten', `tion') is highlighted inside each candidate.
+: ##RET##
+:: Stop searching at the current candidate (end).
+
+Now try the same thing, but first use '''`##C-^##'''' in the minibuffer
+(e.g. after you enter `##.*recursive.*##').  That toggles an '''Icicles'''
+search option for highlighting your input matches.  The behavior
+is the same as before, except that ''all'' matches to your input are
+highlighted at once, not just the current match.  And not only the exact
+match is highlighted, but the ''longest common match'' among all input
+matches is highlighted: If your input is `edi', then `edi' is
+highlighted (there is no longer common match), but if you input the four characters `##e d i t##', then `##`abort-recursive-edit'##' is highlighted.  You can
+use `##C-^##' at any time during searching to change the highlighting
+behavior.
+
+Now try the same thing, but first select some text. The search is confined to the active [[region]] (selection) instead of the entire [[buffer]].
+
+Now try the same thing (without a region), but use a negative [[prefix argument]] such as `C--' with `##C-c `##'. This time, after you input the regexp to search for, you are prompted for ''one or more files'' to search. This too is multi-command input: you can input any number of file names, using completion.
+
+: '''##C-- C-c `##''' -> ##Find (regexp): ## <u>'''##. * r e c u r s i v e . *##'''</u> ##RET##
+:: Search for the regexp `##.*recursive.*##'.
+: ##Choose file (`RET' when done):## <u>'''##i c i##'''</u> ##TAB##
+:: Choose among candidates that begin with ##ici## (shown in `*Completions*').
+: '''##C-!##'''
+:: Choose ''all'' matching file names: ##icicles-cmd1.el##, ##icicles-cmd2.el##, ##icicles-doc1.el##, ##icicles-doc2.el##, ##icicles-face.el##, ##icicles-fn.el##, ##icicles-mac.el##, ##icicles-mcmd.el##, ##icicles-opt.el##, ##icicles-var.el##, and ##icicles.el##.
+: ##Choose an occurrence: S-TAB##
+:: Show the hits in buffer `*Completions*' (optional).
+: ##C-next## ...
+:: Cycle among the search hits in all chosen files...
+
+Just as you can choose particular search hits to visit, using `C-RET', so you can use `C-RET' to choose particular files (whose names match the input, e.g. ##ici##) to search. Just as you can visit search hits in order, using `C-next' (or `C-down'), so you can use `C-next' (or `C-down') to choose files to visit, one after the other.
+
+When you input the initial regexp (`##.*recursive.*##' in the example above) to `icicle-search', you can use completion to
+retrieve a regexp that you entered previously.
+
+You can use '''`##C-`##'''' in the minibuffer to toggle escaping of regexp
+special characters.  Use that if you want to find a literal
+string -- for example, if you want to search for the string `##form.##'
+and not text that matches the regexp `##form.##' (`form' followed by any
+character except newline).  If you use `##C-`##' during '''Icicles'''
+search, start the search over again for the toggle to take effect.
+
+Oh, can you use [[#ProgressiveCompletion|progressive completion]] with '''Icicles''' search?  Sure.
+And [[#ChippingAway|chipping away the non-elephant]] (complementing)?  Yep.  Try
+using vanilla Emacs incremental search to find a line that contains a
+given set of words in any (unknown) order and that also does not
+contain another given set of words.  No can do.  It's simple with
+'''Icicles''' search.  (Yes, you can do it using `grep'.)
+
+And while you're searching, you can perform on-the-fly, on-demand
+replacement.  You tell Emacs whenever you want to replace text,
+instead of replying to an endless litany of `query-replace'
+queries.  Unlike `query-replace', you need not visit search
+matches successively or exhaustively.  You can visit and replace
+selected matches in any order.
+
+In addition to '''Icicles''' search (which is also incremental), '''Icicles'''
+offers some enhancements to the standard Emacs incremental search,
+[[Isearch]]:
+
+* You can reuse a previous Isearch search string, choosing it
+  using '''Icicles''' completion.  Hit `M-o' during Isearch, type some
+  input to complete against the search history, and hit `RET' or
+  click `mouse-2' to choose a string and continue Isearch with it.
+
+* You can start '''Icicles''' search from Isearch.  The current Isearch
+  search string becomes the starting point for the '''Icicles''' search
+  regexp.  You can edit it or type something different.  And you
+  can complete what you type against the Isearch regexp history.
+
+'''See Also:'''
+
+* [[Icicles - Search Commands, Overview]] for more about searching with '''Icicles'''.
+
+* [[Icicles - Search-And-Replace]] for information about replacing selected search hits.
+
+* [[Icicles - Expanded-Common-Match Completion]] for more about '''Icicles'''
+expansion of your input to a common match among all candidates.
+
+* [[Icicles - Isearch Enhancements]]
+
+* [[Icicles - History Enhancements#InsertPreviousInputs|M-o: Using Completion to Insert Previous Inputs]] for more about `M-o' -- you can use it anywhere to complete against previous inputs.
+
+
+
+
+
+[:KeyCompletion]
+== Complete Key Sequences Too ==
+
+Try `S-TAB' at the top level (without first invoking a command that reads input). '''Icicles''' presents all of the possible keys and their bindings in the current context -- for ''completion''. For example, if you are in DiredMode, the completion candidates include all [[key sequence]]s in the global map and the DiredMode map (and any current minor-mode maps, such as ''Icicle'' mode).
+
+(The documentation always refers to the key that performs key
+completion as `S-TAB'.  Actually, it is `S-TAB' only by default.
+You can customize it, using option '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>''''.)
+
+You can then type part of a key name or a [[command]] name, and hit `S-TAB' again to apropos-complete your input. You can navigate down the key-sequence hierarchy by completing a [[key sequence]] piece by piece: 
+
+: ##S-TAB## to see the available keys at top level
+: Click (using `mouse-2') candidate `##C-x  =  ...##', to see the keys that start with `C-x'
+: Click `##r  =  ...##', to see the keys that start with `C-x r'
+: Click `##b  =  bookmark-jump##', to invoke that command and visit a [[bookmark]]
+
+Whenever you're completing a prefix key, such as `C-x', you can click '''`##..##'''' to navigate back up the key-sequence hierarchy. For instance, if you are completing `C-x p', click `##..##' to go back to completing `C-x', and then click `##..##' to go back to the top level.
+
+The available keys at any level include the following important keys, which means that you can use '''Icicles''' key completion to do almost anything in Emacs:
+
+* `M-x' -- Execute an arbitrary command.
+`M-x' is treated as `ESC-x', so complete first `##ESC  =  ...##', then `##x  =  icicle-execute-extended-command##'.
+
+* `##M-:##' -- Evaluate any EmacsLisp expression.
+If command remapping is available (Emacs 22 or later), and if
+option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''' remaps
+`eval-expression' to `icicle-pp-eval-expression' (which it does,
+by default), then complete first `##remapped  =  ...##', then
+`##eval-expression  =  icicle-pp-eval-expression##'.  Otherwise,
+complete first `##ESC  =  ...##', then `##:  =  eval-expression##'.
+In '''Icicles''', `M-:' gives you a quick pop-up mode for evaluating a Lisp sexp.  Most of the normal EmacsLisp mode bindings are in
+effect, except that `RET' evaluates the minibuffer contents and
+pretty-prints the result.  You can also use it with a [[prefix argument]]
+(`##C-u M-:##') to insert the result of such an on-the-fly Lisp
+evaluation into the current [[buffer]] (including the minibuffer).
+
+* `##menu-bar  =  ...##' -- Invoke any [[menu bar]] menu. Continue completing, to navigate the entire menu hierarchy.
+
+You can start directly with a key prefix, and then hit `S-TAB' to complete it -- you need not start with `S-TAB'. You can use '''Icicles''' key completion to learn key bindings -- `C-M-mouse-2' displays help on any key.
+
+Instead of clicking a completion candidate with `mouse-2', you can of course type part of the key name or command name, and then complete the name and enter it. ''Gotcha:'' `S-TAB' uses [[Icicles - Apropos Completions | apropos completion]], by default, so remember that typing `##.##' matches any character (except a newline). To match only `##..##' (to go up a level), either use [[Icicles - Background on Input Completion|prefix completion]] (`TAB') or escape the regexp special character: `##\.\.##' (or use `##^\.##').  Or cycle to it.
+
+See [[Icicles - Key Completion]] for more about completing [[key sequence]]s.
+
+
+
+
+
+[:Ubiquitous]
+== Available for Almost Any Input ==
+
+All of this works not only for the input of [[command]]s, with `M-x', and [[key sequence]]s, with `S-TAB', but for the input of nearly anything. For instance, you can use `C-x b' (`switch-to-buffer') and cycle among [[buffer]] names. Or use `C-h v' (`describe-variable') and cycle among [[variable]] names. Or use `C-x f' (`find-file') and cycle among file names. It works ''whenever a command reads input with '''[[completion]]'''''.
+
+Whenever you're in ''Icicle'' mode, you see "'''Icy'''" in the [[mode line]].
+
+
+
+
+
+[:EmacsLispProgramming]
+== If You Are an Emacs-Lisp Programmer ==
+
+If you are an EmacsLisp programmer, this is the no-brainer, nutshell view of how to take advantage of '''Icicles''' in your own code that calls `completing-read' or `read-file-name':
+
+[new]
+: Add this line to your library: ##(require 'icicles nil ##'''##t##'''##)##
+[new]
+
+That's really all you need to do.  And there is no consequence if users don't have
+'''Icicles''' (no load error is raised, because of the non-`nil' third
+argument).  In other words, there is no reason ''not'' to add this soft
+`require', unless your library somehow conflicts with '''Icicles'''
+features.  (Even then, users will not be affected unless they turn
+on ''Icicle'' mode.)
+
+----
+
+
+For more (and there is a ''lot'' more), follow the *Next* links... Have fun!
+
+Oh -- did you bypass '''EmacsNewbieWithIcicles'''? That's really the ''best'' place to start. This page (Nutshell View) gives you an idea what you can do with '''Icicles'''. But read EmacsNewbieWithIcicles to find out how '''Icicles''' can help you improve your ''Emacs'' expertise.
+
+
+----
+
+
+|| *Previous:* [[Icicles - Screenshots]] || '''[[Icicles]]'''  || IciclesIndex || *Next:* [[Icicles - Inserting Text from Cursor]] ||
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+
+
+
+

@@ -1,0 +1,27 @@
+Vi has a feature for changing the current word.  The following is discussion on accomplishing it in Emacs.
+
+== Change the ending of a word ==
+[new]
+If I have the TextCursor halfway through a word, how do I quickly edit the rest of the word? (e.g. in vi this would be "cw"). 
+
+[new:DrewAdams:2004-12-25 18:11 UTC]
+Here are a few ways:
+* Type the new word ending, then `M-d' (`kill-word') to delete the old word ending. (Or reverse the order: delete the ending first, then type a new ending.)
+* In DeleteSelectionMode, `##M-@##' (`mark-word') to select the old word ending, then type the new word ending to replace the old.
+* Toggle `overwrite-mode' ''on'' using the ##[insert]## key (`overwrite-mode'). Type over the old word ending, deleting extra characters with `C-d'. Toggle `overwrite-mode' back ''off'' again when the old ending has been overwritten or deleted.
+
+== Change the whole word ==
+
+If I have the TextCursor halfway through a word, how do I quickly edit the whole word? (e.g. in vi this would be "bcw").
+
+* Type `M-b M-d'  to kill the whole word, and type the new word.
+
+== See ==
+
+* ViKeys
+* ViAndEmacs.
+
+----
+CategoryEditing
+CategoryEmulation
+CategoryKeys

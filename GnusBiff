@@ -1,0 +1,70 @@
+There are several ways to get notified about incoming mail.
+There is *gnus-notify.el* by Mark Triggs. You can grab it from the Elisp area [http://www.emacswiki.org/cgi-bin/wiki/gnus-notify.el].
+Other possibilities are discussed below.
+
+
+
+i've always wanted a simple way to signify in the status bar that new mail has arrived. as far as i know, there is no simple method. i added this function below to my .gnus.el. this is incredibly primitive. the function simply changes to the Group buffer and looks for a nonzero number of messages in INBOX.ALL (my "inbox" folder). this function is absolutely primitive elisp...i would love for it to be improved upon. sadly there is so little practical elisp documentation, i have found it difficult to find better information
+
+<pre>
+;; biff
+(defvar foundnewmbox "")
+
+(defvar foundnewmbox "")
+
+(defun fmbiff ()
+  (interactive)
+  (save-excursion
+    (set-buffer "*Group*")
+    (beginning-of-buffer)
+    (defvar foundanymbox nil)
+    (cond ((re-search-forward "INBOX.ALL" nil t)
+           (setq foundanymbox t))
+          (t (setq foundanymbox nil)))
+    (set-buffer "*Group*")
+    (beginning-of-buffer)
+    (cond ((re-search-forward "0: INBOX.ALL" nil t)
+           (setq foundnewmbox ""))
+          (t (if foundanymbox (setq foundnewmbox "[M]") 
+               (setq foundnewmbox ""))))))
+
+(unless (member 'foundnewmbox global-mode-string)
+   (setq global-mode-string (append global-mode-string
+                                    (list 'foundnewmbox))))
+
+(add-hook 'gnus-after-getting-new-news-hook 'fmbiff)
+</pre>
+
+[new]
+How about:
+<pre>
+(defvar mac-biff-lighter ""
+  "Lighter used by `mac-biff-mode'.")
+
+(defvar mac-biff-mail-re "\\([[:digit:]]+\\)"
+  "Regular expression to match number counts in a Gnus buffer.")
+
+(define-minor-mode mac-biff-mode
+  "Minor mode to display state of new email."
+  nil mac-biff-lighter nil
+  (if mac-biff-mode
+      (progn (add-hook 'gnus-after-getting-new-news-hook 'mac-biff-update)
+             (add-hook 'gnus-exit-group-hook 'mac-biff-update)
+             (mac-biff-update))
+    (remove-hook 'gnus-after-getting-new-news-hook 'mac-biff-update)
+    (remove-hook 'gnus-exit-group-hook 'mac-biff-update)))
+
+(defun mac-biff-update ()
+  "Read the mail count from Gnus."
+  (let ((buffer (get-buffer "*Group*"))
+        (count 0))
+    (when buffer
+      (with-current-buffer buffer
+        (goto-char (point-min))
+        (while (re-search-forward mac-biff-mail-re nil t)
+          (setq count (+ count (string-to-number (match-string 1)))))))
+    (setq mac-biff-lighter (if (= count 0)
+                               ""
+                             (format " [%d]" count)))))
+</pre>
+-- [[nschum]]

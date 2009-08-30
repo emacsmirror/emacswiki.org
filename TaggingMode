@@ -1,0 +1,23 @@
+Tag chunks of text such as functions or paragraphs using /tags/, then use `C-c C-t' to filter them:
+
+* http://www.lisperati.com/tagging.html
+
+Example setting for C++:
+
+    (setq tagging-tagline-indicator "^//\\*")
+
+Example usage for C++:
+
+    //*math trigonometry
+    class fast_sine_calculator{
+       ...}
+    //*string caps_changing
+    class caps_changer{
+       ...}
+
+
+'''See Also:''' [[Icicles - Multiple Regions]] for a similar feature: persistent saved regions that you can access by name (tag).
+
+
+----
+CategoryOutline

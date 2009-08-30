@@ -1,0 +1,28 @@
+: Spieglein, Spieglein, an der Wand, wer ist der grösste IRC client in #emacs?
+
+Here's what I got from a /CTCP VERSION command sent to #emacs...  The winner is: *IRSSI*!
+
+ 35 irssi-0.8
+ 30 ERC 5.0
+ 20 xchat 2.4
+  6 rcirc
+  6 ?
+  3 xchat 2.6
+  3 ircII
+  3 Circe
+  2 Colloquy 2.0.1 (2D32)
+  2 BitchX
+  1 rcirc.el 0.9
+  1 mIRC 5.91
+  1 Riece/2.0.2
+  1 ERC 4.0
+
+IRC is InternetRelayChat for those of you who don't know.  Chat networks instead of single servers.
+
+(*Update*: [[2006-05-22]])
+
+[new]
+Note that four different Emacs based clients are represented: ERC, Circe, rcirc and riece.
+
+[new]
+And note that ZenIRC, the granddaddy of Emacs IRC clients, isn't represented at all! I have to admit, I'm somewhat surprised. I guess iNoah wasn't in the channel that day. -- EdwardOConnor

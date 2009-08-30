@@ -1,0 +1,38 @@
+== Alternative logging system ==
+
+I want to add an alternative logging system to ERC, one which would store event logs as s-expressions, and immediate logging rather than periodical saving of channel buffers. Any suggestions on where to start (or is this not a good idea, perhaps)? My first thought was to add calls to, say, erc-xlog functions within the response handlers, parallel to the "display-message" calls. (Perhaps it would be cleaner to split response handlers into parsing into S-expressions, and processing the events - display, logging, etc.: `define-erc-response-parser', `define-erc-response-displayer', `define-erc-response-logger', `erc-response-process' = <code>`(displayer logger)'</code>, ...)
+
+Comments from [[lawrence]] on implementing this:
+
+ <bpt> speaking of erc logging, would appreciate any comments
+       from ERC hackers on proposed alternative logging system,
+       ,,ErcProposedChanges (at end)
+ <lawrence> bpt: logging on each event is already doable, rather
+            than periodically, you just add
+            erc-save-buffer-in-logs to erc-insert-post-hook and
+            erc-send-post-hook, in fact, this is what the erc-log
+            module does
+ <lawrence> as for not logging the text as erc sees it but the
+            underlying data-structure (as sexps if you wish), you
+            just have to massage the contents of erc-parsed in a
+            sensible way when you're logging
+ <lawrence> erc-log
+ <lawrence> then, what you'd do is to log things from within
+            somewhere you can access the erc-parsed struct easily
+ <lawrence> an added bonus of doing that is that you can just
+            PRINC it to a file and that file should then be
+            READable
+ <bpt> lawrence: yes, the immediate logging isn't the point, the
+       READability is the purpose of it
+ <bpt> (then conversion to other formats as necessary, ala
+       meme.b9.com)
+ <lawrence> in which case, you'd want to do things in response
+            handlers, like you propose
+ <lawrence> note, however, that things you send will (with our
+            current sending code) have to be dealt with manually,
+            they never get converted into an erc-response struct
+ <lawrence> you could try (For stuff we receive) just adding
+            something to the end of erc-call-hooks along the
+            lines of (with-temp-buffer (princ
+            message (current-buffer)) (write-region (point-min)
+            (point-max) (erc-sexp-log-file-name) t nil))

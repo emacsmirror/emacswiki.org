@@ -1,0 +1,16 @@
+AppMenu (appmenu.el) is a framework for creating cooperative context
+sensitive popup menus with commands from different major and minor
+modes.
+
+By default the popup menu is on [apps] and [mouse-3].
+
+The entries from ##[menu-bar]## for the major mode and activated
+minor modes are added to the popup menu, but this can be
+customized.
+
+You can add whatever context sensitive menus you want. 
+This may come in handy if you are writing your own mode.
+By using AppMenu your mode's use of ##[apps]## will not collide with other modes' use of it (if they use it too of course).
+
+It is part of [NxhtmlMode nXhtml] where it used.
+

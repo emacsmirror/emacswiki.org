@@ -1,0 +1,53 @@
+OrgMode is great for storing and structuring ideas, hints etc.
+But what about if you want to present them to other people?
+Or if you want to cooperate with someone who does not speak Emacs but uses FreeMind?
+
+Then you might want to use the little lisp library below to convert between OrgMode and
+[http://freemind.sourceforge.net FreeMind mindmapping]
+files.
+
+To get [http://bazaar.launchpad.net/~nxhtml/nxhtml/main/files/head%3A/util/ the latest version in the nXhtml repository].
+The author maintains it as part of [[nXhtml]].
+
+----
+
+Nice code but it seems that the conversions is not usable DanielMartins
+
+[new]
+It used to work, but probably something has changed in freemind.
+Are you using RC1 of freemind?
+Could you perhaps see what is wrong in the conversions?
+
+[new]
+I just converted an entire .org file to .mm and opened it in FreeMind 0.8.1 with no problem.
+
+However, I just spent a lot of time figuring out why one .org subtree converted using freemind-from-org-mode-node would not open in FreeMind.
+
+It turned out the top node was not being closed at the end of the file. I added a </node> tag before the </map> tag and then the map opened perfectly in FreeMind.  - KristinaSpurgin
+
+freemind-to-org-mode may have problem of failing with xml-tag-parsing from xml.el with my Freemind file 
+converted from org-mode with freemind-from-org-mode with heavy manual editing in Freemind 0.9.0 RC4. 
+The error was error: "XML: (Not Well-Formed) Invalid end tag (expecting p) at pos 143876". 
+After I made all nodes in the Freemind file to be of plain style, then the conversion worked. 
+
+I traced the code of xml.el xml-parse-tag, where the error occurred, I could not find any clue of the source of the problem. It seemed to me that the XML expression under examination is correct by my naked eye. 
+
+I'm using emacs 23.0.9, but I tried emacs 22, the problem is the same, but at slight different position of the xml file. 6/29/2009 07:48 YuShen
+
+It seems that freemind-from-org-mode would make the Chines text becoming corrupted after the conversion in the resulted freemind mind map file, please advise how I can solve the problem. 6/29/2009 07:54 YuShen
+
+[new]
+I don't user either software, but one thing you might want to check out is the XML declaration at the very top of the file. It might read something like this: ##<?xml version="1.0" encoding="UTF-8" ?>## -- but this is only correct if your file is actually UTF-8 encoded. Since you're using Chinese, perhaps you need to change the encoding in the XML declaration to match your actual file. -- AlexSchroeder
+
+[new] 
+Maybe I would easily find freemind.el if I were a boyscout, but unfortunately I am not. Maybe a direct link would help. -- Henry Atting  
+
+[new]
+Added a direct link. :) -- AlexSchroeder, former boyscout!
+
+[new]
+Thanks for adding the direct link.
+I did not believe it was possible yet.
+I filed a bug report, but that there is a solution now for it has not reach me yet, wonder why ...
+----
+CategoryOutline CategoryPersonalInformationManager 

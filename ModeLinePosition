@@ -1,0 +1,31 @@
+== Mode-Line Position ==
+
+This page describes library Lisp:modeline-posn.el, which provides enhancements to standard variable `mode-line-position' for Emacs 22 and later. That variable governs the behavior of minor modes `line-number-mode',  `column-number-mode', and `size-indication-mode', which show/hide the current line number, column number, and buffer size, respectively, in the '''mode-line''' (see ModeLineDefined ). See also ModeLine.
+
+The following enhancements are provided by Lisp:modeline-posn.el:
+
+* In TransientMarkMode, when the region is active, the size indicated is that of the region, not the buffer. This portion of the mode-line is then highlighted with face `region'.
+
+* Whenever the current column is greater than ‘modelinepos-column-limit’, the column-number indication in the mode-line is highlighted in face `font-lock-function-name-face'. This lets you know when you've gone past a certain number of characters in any line. You can customize user option ‘modelinepos-column-limit’, and you can bind it to different values in different modes. 
+
+== Discussion ==
+<pre>
+ 
+</pre>
+----
+<pre>
+ 
+</pre>
+
+[new]
+This is really handy. Thanks! One request for enhancement: add a customization variable to allow us to use a face other than `font-lock-function-name-face'.  My modeline is blue and my `font-lock-function-name-face' is also blue, so that particular face isn't a good choice for me. --AmitPatel
+
+[new:DrewAdams:2007-04-02 20:43 UTC]
+: Done; please try the latest. Thx for the suggestion. -- DrewAdams
+
+----
+
+CategoryDisplay
+CategoryEditing
+CategoryRegion
+CategoryWindows

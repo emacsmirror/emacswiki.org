@@ -1,0 +1,21 @@
+=== Releasing GNU Emacs 22? ===
+
+On the emacs-pretest-bug mailing list, there was a proposal[http://lists.gnu.org/archive/html/bug-gnu-emacs/2005-11/msg00123.html] about incorporating '''MuPACS''' into GnuEmacs.
+Rather than just the proprietary '''MuPAD''' algebra system, MuPACS now supports the
+free computer algebra system, '''[http://www-fourier.ujf-grenoble.fr/~parisse/giac.html Giac]'''.  The point of mentioning all this, is that it brought about the following exchange[http://lists.gnu.org/archive/html/bug-gnu-emacs/2005-11/msg00168.html] between the MuPACS maintainer, and RichardStallman:
+
+ From: 	Richard M. Stallman
+ Subject: Re: MuPACS
+ Date: Thu, 10 Nov 2005 00:45:52 -0500
+
+    What's the planned schedule for the next emacs release?
+
+ Planned schedule???  Ha ha ha hahaha haha ha!
+
+ Pretesting will start as soon as some lingering problems are fixed.
+ So it would be nice to do this soon.
+
+See also EmacsReleaseDates.
+
+----
+CategoryHumor

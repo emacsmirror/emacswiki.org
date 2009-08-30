@@ -1,0 +1,20 @@
+This page discusses the copyright status of AndrewChoi's patches to XEmacs available from http://members.shaw.ca/akochoi-xemacs/  This is meant as an exercise in understanding the text of the [[GPL]] and not an attempt to formally prosecute AndrewChoi for his programming.  It may suprise people that this shows the extent the GPL allows authors to do whatever tinkering they wish with GPL software and still avoid legal problems.
+
+Some have characterized Mr. Choi's activities as "legally dubious" since he has removed copyright and GPL permissions notices from one or more files.  According to the GNU GPL, this does not affect /your/ right to /download and use/ Choi's code, but if you wish to /modify/ or /redistribute/ it, do carefully consider the legal and ethical issues posed by the GNU GPL.
+
+Choi's patches are--and can be--released to the public domain.  The FreeSoftwareFoundation uses this method on occasion for accepting copyright assignment (humor: "unassignment") of substantial patches contributed to GNU software packages.
+
+According to the GPL FAQ,
+
+: //Am I required to claim a copyright on my modifications to a GPL-covered program?//
+: //You are not required to claim a copyright on your changes. In most countries, however, that happens automatically by default, so you need to place your changes explicitly in the public domain if you do not want them to be copyrighted.
+Whether you claim a copyright on your changes or not, either way you must release the modified version, as a whole, under the GPL. (if you release your modified version at all) // (23 December, 2005)[http://www.gnu.org/licenses/gpl-faq.html]
+
+However, such activitiy does not put an entire distribution of the software under the public domain.  That would violate the GNU GPL.  To no one's knowledge, Choi hasn't distributed source or binary releases.  Instead, he provides a patch and directions for applying it to the source code yourself.
+
+If you look at his ##src/console-carbon.c##, he states that all its functions--that is, the entire file less the ###include## headers--come from ##console-qt.cpp##[http://cvs.xemacs.org/viewcvs.cgi/XEmacs/xemacs/src/Attic/console-qt.cpp?rev=1.1.2.1&only_with_tag=DEV_QT]. That file is GPLed, but the GPL notice is missing from ##console-carbon.c##.  For legal modification or redistribution, the GPL says "keep intact all the notices that refer to this License and to the absence of any warranty;".
+
+He hasn't distributed his changes along with the rest of the GPL software, therefore he doesn't have to comply with the license at all until he distributes his "separate works" as "part of whole which is based on the Program".  It's this kind of trickery that makes the GPL such a useful license.  Oddly enough, there's little to nothing anyone can do with Choi's public domain patches then plow them back into XEmacs and under the GPL.  (The patches could be applied to any GPL licensed work, although very few other package would find the patches practically useful.) Those parts of his work that do copy parts of XEmacs must stay under the GPL.  They may be considered public domain, but you can't distribute copied portions of a GPL'ed work under a GPL-incompatible license or worse, release it as proprietary software.
+
+----
+CategoryPorts

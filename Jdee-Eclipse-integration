@@ -1,0 +1,64 @@
+Eclipse is an Open Source IDE, popular among Java developers. This page does not compare JDEE ([[JavaDevelopmentEnvironment]]) and Eclipse in terms of features (see [[JdeeVsEclipse]] for that) but holds information about how to combine both editors and share information between them.
+
+== Some assorted tools ==
+=== RemoteEclipse (outdated; unaccessible as of October 2008) ===
+
+For those who cannot do without the one editor:
+
+''RemoteEclipse in combination with jde-eclipse.el is the beginning of a wonderful relationship between JDEE and Eclipse.''
+
+* ftp://ftp.raffael.ch/software/RemoteEclipse/
+
+I'm using JDEE with XEmacs to successfully compile my Ant based java projects.  However if there is a error in the source resulting in compilation errors, XEmacs displays a new buffer saying:
+ "( 18 ) (error/warning) Error in process sentinel: (error Stack overflow in regexp matcher)".  
+
+If I kill this buffer and view the compilations buffer the errors are all display perfectly.  When I click on an error instead of being jumped to the correct line in the source code (where the error occurs) XEmacs beeps and "Stack overflow in regexp matcher" is displayed in the minibuffer.  This doesn't happen in all of my Ant based projects, just some, and I don't know why.  Has anybody else solved this error?  I'm running XEmacs on Redhat Linux 9.
+
+:: I'm running XEmacs on RH 9, too and have no problems.  Maybe you could do a M-x toggle-debug-on-error and then provoke the error again.  There should be a backtrace buffer showing then that might help you locate the problem. -- StefanKamphausen
+
+Hmmm the debug output doesnt really mean much to me.  I should probably also mention its XEmacs 21.4.15. I've pasted some of the debug output below, with some of the guff removed:
+
+Signaling: (error "Stack overflow in regexp matcher")
+  looking-at("\\([^\n]*: Entering directory 
+
+...... loads of stuff here.... then...
+
+
+  compilation-parse-errors(nil 0)
+  byte-code("..." [compilation-parsing-end error-list-pos limit-search compilation-last-buffer find-at-least compilation-error-list t compilation-forget-errors get-buffer-window select-window switch-to-buffer set-buffer-modified-p nil w compilation-old-error-list reparse compilation-parse-errors-function] 5)
+  compile-reinitialize-errors(nil nil 0)
+  compilation-next-error-locus(1 nil)
+  next-error()
+  jde-compile-finish-kill-buffer(#<buffer "*compilation*"> "exited abnormally with code 1\n")
+  run-hook-with-args(jde-compile-finish-kill-buffer #<buffer "*compilation*"> "exited abnormally with code 1\n")
+  #<compiled-function (buf msg) "...(10)" [compilation-finish-function msg buf run-hook-with-args jde-ant-build-hook nil] 4>(#<buffer "*compilation*"> "exited abnormally with code 1\n")
+  compilation-sentinel(#<process "compilation" pid 31934 state:exit> "exited abnormally with code 1\n")
+
+=== Emacs plug-in for Eclipse (outdated as of October 2008: doesn't work with Eclipse 3.0) ===
+There is also an Emacs Plug-in for Eclipse at http://pag.csail.mit.edu/~adonovan/hacks/eclipse-emacs.html (Still have to experiment with it) -- WolfWolfswinkel
+
+== Share configuration ==
+=== Emacs keybindings in Eclipse ===
+TODO
+
+[:ProjectFiles]
+=== Import Eclipse projects into JDEE, and viceversa ===
+How to transform a .project into a prj.el?
+TODO
+
+== Possible ways to full integration ==
+
+=== Create an eclim interface for emacs ===
+
+* See http://eclim.sourceforge.net/
+
+''The primary goal of eclim is to bring Eclipse functionality to the Vim editor. The initial goal was to provide Eclipse’s java functionality in vim, but support for various other languages (php, python, css, html, xml, etc.) have been added and several more are planned.''
+
+They've built some server that runs a headless eclipse instance and communicates with vim via the command line. It should be doable to create a frontend for emacs, so that all features of eclipse (superior completion, refactoring, etc.) can be used from inside emacs.
+
+[new]
+A front-end project has been started at http://repo.or.cz/w/eclim-emacs.git and CompanyMode already brings eclim completion to Emacs. --[[nschum]]
+
+----
+[[JavaDevelopmentEnvironment]]
+

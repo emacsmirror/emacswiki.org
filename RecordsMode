@@ -1,0 +1,16 @@
+RecordsMode lets you keep a diary and also provides support for todo
+items.
+
+Project is currently hosted on launchpad at
+
+* https://launchpad.net/records
+
+XavierMaillard is the current maintainer of records starting at 1.5.1 "redux"
+release (see https://launchpad.net/records/1.5/1.5.2)
+
+This release adds no new feature except it is likely it will build successfully now. Please test and report any bug on the launchpad project.
+
+<rss https://launchpad.net/records/1.5/1.5.2/+rdf >
+
+----
+CategoryPersonalInformationManager CategoryTodo CategoryModes

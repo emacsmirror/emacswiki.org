@@ -1,0 +1,58 @@
+Some email clients (e.g. thdbd) have stripes in their summary buffer.
+That is, odd lines are a little shaded, for sake of readability.
+
+Here is how to get a striped summary buffer in Gnus. Intensity of the
+shade can be increased or decreased by changing the value of the
+<code>stripe-intensity</code> variable. If that variable is nil, then
+a gray80 color will be used instead of computing the color of the
+stripes from the frame background color.
+
+The coloring does not handle threading very well, so only the mail
+buffers are striped by default.
+
+  ;; the color of the stripes is obtained by dimming the frame background color
+  (defvar stripe-intensity 12
+    "*intensity of the shade. Used to compute the color of the stripes.
+     0 means no shading of the background color, nil means gray80")
+  
+  ;; a command that computes the rgb code of the shaded background color
+  (defun shade-color (intensity)
+  "print the #rgb color of the background, dimmed according to intensity"
+  (interactive "nIntensity of the shade : ")
+  (apply 'format "#%02x%02x%02x" 
+     (mapcar (lambda (x)
+       (if (> (lsh x -8) intensity)
+           (- (lsh x -8) intensity)
+         0))
+      (color-values (cdr (assoc 'background-color (frame-parameters)))))))
+  
+  ;; the command that actually puts the stripes in the current buffer
+  (defun stripe-alternate ()
+   "stripes all down the current buffer"
+   (interactive)
+   ;; compute the color of the stripes from the value of stripe-intensity
+   (if stripe-intensity 
+       (setq stripe-overlay-face (shade-color stripe-intensity))
+     (setq stripe-overlay-face "gray80"))
+   ;; put the overlay in the current buffer
+   (save-excursion
+    (goto-char (point-min))
+    (let (stripe-overlay)
+     (while (not (eobp))
+       (forward-line)
+       (setq stripe-overlay 
+             (make-overlay (line-beginning-position)
+                           (line-beginning-position 2)))
+       (overlay-put stripe-overlay 'face (list :background stripe-overlay-face))
+       (overlay-put stripe-overlay 'priority -1)
+       (forward-line)))))
+  
+  ;; activate the stripes for the mail buffers only
+  (add-hook 'gnus-summary-prepare-hook (lambda ()
+      (with-current-buffer gnus-summary-buffer 
+       (unless (gnus-news-group-p gnus-newsgroup-name)   
+          (stripe-alternate)))))                          
+
+If you want stripes in all summary buffers, not just in mail buffers,
+delete the line <code>(unless (gnus-news-group-p gnus-newsgroup-name)</code>   
+and remove one parenthesis at the very end of the last function.

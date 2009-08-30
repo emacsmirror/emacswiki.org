@@ -1,0 +1,8 @@
+SVK is an alternative subversion client written in Perl that adds decentralized version control features on top of Subversion, the end result is comparable to !BitKeeper and ArchVersionControl.
+
+Using SVK is almost like using the svn command line client except that it adds mirror, pull and push commands to the other SVN commands (diff, co, ci, log etc.), on overview of the differences may be found here: http://search.cpan.org/~clkao/SVK-v2.0.1/lib/SVK/Help/Intro.pod#GETTING_STARTED
+
+Two preliminaries vc-svk.el and a psvk.el were posted at [http://svk.elixus.org/view/SVKTools SVKTools] on their [http://svk.elixus.org/view/HomePage wiki]. A branch of psvn.el integrating SVK support can also be found [https://developer.berlios.de/projects/psvn-svk/ at Berlios].
+
+----
+CategoryVersionControl

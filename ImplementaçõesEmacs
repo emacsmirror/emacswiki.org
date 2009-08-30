@@ -1,0 +1,40 @@
+== Documentadas aqui ==
+
+GNU Emacs e principais derivados:
+
+* GnuEmacs
+* [[XEmacs]], antigo LucidEmacs
+* [[SXEmacs]], uma derivação do [[XEmacs]]
+
+Outras implementações, mais ou menos obscuras:
+
+* [[Climacs]]
+* EdWin
+* EfunsEditor
+* [[EINE]]
+* ErlangEmacs
+* GuileEmacs
+* HemLock
+* JavaEmacs
+* MicroEmacs
+* MulticsEmacs
+* [[QEmacs]]
+* TecoEmacs
+* [[Zmacs]]
+* [[ZWEI]]
+
+== Não documentadas aqui ==
+
+* EmACT em http://www.eligis.com/emacs distribuído com binários Win32.
+* PceEmacs em http://www.swi-prolog.org/emacs.html
+
+== Lista completa ==
+
+* http://www.finseth.com/emacs.html
+
+É uma lista bem grande.
+
+Esse documento, por CraigFinseth, disponibiliza uma lista parcial de implementações de editores tipo Emacs e alguma literatura sobre eles. Você pode ajudá-lo a tornar a lista mais completa enviando ao autor informações adicionais ou atualizações. Ele tem gradualmente se tornado um guia para a história do Emacs, assunto daria um bom livro.
+
+----
+CategoriaHistória CategoriaPorts

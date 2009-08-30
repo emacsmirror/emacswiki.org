@@ -1,0 +1,209 @@
+Le but de cette page est de proposer un InitFile (fichier ##~/.emacs##) qui puisse constituer un bon début pour quelqun débutant sous InitFile.
+Vous êtes bien sûr invités à proposer des modifications. Afin que celles-ci ne remettent pas en cause le but premier de ce fichier (à savoir ne donner qu'une base), il serait bien de respecter les règles suivantes :
+
+* Aucune modification ne doit bloquer (police manquante, mode manquant, ...)
+* Aucune modification ne doit être spécifique à un utilisateur, ni trop compliquée : elle doit être susceptible d'intéresser tout le monde
+* Il serait bien de commenter (en français) de la manière la plus précise qui soit afin que les gens qui ne connaissent pas, par exemple, ce que c'est que l'auto-fill puisse s'y retrouver.
+* Mettre un maximum de liens afin de pouvoir comprendre (et donc personnaliser le fichier)
+* Essayez de garder un même style pour le fichier
+
+Voir aussi: PointEmacs (fr)
+
+La distribution Debian inclut de nombreux paquets qui permettent un bon début sans toucher à son InitFile :
+    apt-get install happycoders-emacs emacs-goodies-el
+
+== Fichier ~/.emacs ==
+
+    ; Fichier de configuration .emacs suite à une discussion sur linuxfr
+    ; Il constitue un bon début
+
+    ; ----------------------------------------------------------------------
+    ; Différents liens
+
+    ; Vous trouverez de l'aide sur le wiki :
+    ; http://www.emacswiki.org/cgi-bin/emacs-fr
+    ; (la partie en anglais est plus importante)
+    ; Ainsi que sur le site suivant : 
+    ; http://www-verimag.imag.fr/~moy/emacs/
+
+    ; Une bonne introduction à Emacs et à Elisp :
+    ; http://people.via.ecp.fr/~flo/2000/emacs-tut/
+
+    ; De bons fichiers exemples :
+    ; http://www.hollenback.net/emacs/emacs.el (partie programmation particulièrement intéressante)
+
+    ; Modes à installer 
+    ; (votre distribution les inclus surement, sinon vous pouvez utiliser votre gestionnaire de paquets habituel)
+    ; Aide pour installer : http://www.emacswiki.org/cgi-bin/wiki/LoadPath
+    ; python-mode : http://sourceforge.net/projects/python-mode/
+    ; color-theme : http://www.emacswiki.org/cgi-bin/wiki?ColorTheme
+
+    ; ----------------------------------------------------------------------
+    ; Aide
+
+    ; A partir d'Emacs même, M-x puis customize vous permettra de voir
+    ; les différentes options.
+
+    ; Si vous souhaitez annuler une option, commentez-la en placant un
+    ; point-virgule devant
+
+    ; ----------------------------------------------------------------------
+    ; Thème - Affichage
+
+    ; Installer avant color-theme
+    (require 'color-theme)
+    ; Un theme très clair
+    (color-theme-bharadwaj)
+
+    ; Enlève la barre de menu
+    ; (menu-bar-mode nil)
+    ; Enlève la barre d'outil
+    (tool-bar-mode nil)
+    ; Enlève la barre de défilement
+    ; (scroll-bar-mode nil)
+
+    ; Mettre un titre aux fenêtres
+    (setq frame-title-format '(buffer-file-name "Emacs: %b (%f)" "Emacs: %b"))
+
+    ; Afficher le numéro de colonne
+    (column-number-mode 1)
+    (line-number-mode 1)
+
+    ; Fonte d'affichage par défaut
+    ; De bon exemples : http://www.lowing.org/fonts/ ; http://www.emacswiki.org/cgi-bin/wiki/GoodFonts
+    (set-default-font "-bitstream-bitstream vera sans mono-medium-r-*-*-*-140-*-*-*-*-iso8859-15")
+    (setq default-frame-alist
+    '((font . "-bitstream-bitstream vera sans mono-medium-r-*-*-*-140-*-*-*-*-iso8859-15")))
+
+    ; ----------------------------------------------------------------------
+    ; Edition
+
+    ; Mettre quatre espaces pour l'indentation
+    (setq c-basic-offset 4)
+
+    ; Supprime tous les espaces en fin de ligne
+    ; http://www.splode.com/users/friedman/software/emacs-lisp/
+    (autoload 'nuke-trailing-whitespace "whitespace" nil t)
+
+    ; Activer la coloration syntaxique
+    (global-font-lock-mode t)
+    ; Mettre un maximu de couleurs
+    (setq font-lock-maximum-size nil)
+
+    ; Mode texte en auto-fill par défaut
+    ; (créé une nouvelle ligne à chaque fois que vous taper du texte)
+    (add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+    ; Recherche automatique des fermetures et ouvertures des parenthèses
+    ; Voir cette adresse pour quelquechose de plus fin :
+    ; http://www.linux-france.org/article/appli/emacs/faq/emacs-faq-7.html
+    (load-library "paren")
+    (show-paren-mode 1)
+
+    ; surlignage d'une région sélectionnée
+    (transient-mark-mode t)
+
+    ; en Americain, les phrases (sentences) se terminent par deux espaces 
+    ; ce comportement n'est pas souhaitable en francais
+    (setq sentence-end-double-space nil)
+
+    ; Eviter que la cesure de fin de ligne, operée par exemple par le
+      mode autofill ou par un M-q, coupe au niveau d'un caractere ( ou : 
+    (add-hook 'fill-no-break-predicate 'fill-french-nobreak-p)
+
+    ;
+----------------------------------------------------------------------
+    ; Accents
+    ; Ils sont normalement supportés par votre distribution mais on ne sait jamais
+
+    (setq selection-coding-system 'compound-text-with-extensions)
+    (set-terminal-coding-system 'latin-1)
+    (set-keyboard-coding-system 'latin-1)
+    (set-language-environment 'latin-1)
+
+    ; Pour la console
+    (if (not (eq window-system 'x))
+    (standard-display-european t))
+
+    ; ----------------------------------------------------------------------
+    ; Raccourcis claviers
+
+    ; M-g pour aller à la x-ième ligne
+    (global-set-key [(meta g)] 'goto-line)
+
+    ; ----------------------------------------------------------------------
+    ; Divers
+
+    ; Mettre tous les fichiers de sauvegarde dans un seul répertoire
+    (setq backup-directory-alist
+    '(("." . "~/.emacs-backup-files/")))
+
+    ; Pour ne pas avoir à taper en entier la réponse yes/no
+    (fset 'yes-or-no-p 'y-or-n-p)
+
+    ; Affichage des images et fichiers compressés
+    (setq auto-image-file-mode t)
+    (setq auto-compression-mode t)
+
+    ; Molette de la souris
+    (defun up-slightly () (interactive) (scroll-up 5))
+    (defun down-slightly () (interactive) (scroll-down 5))
+    (global-set-key [mouse-4] 'down-slightly)
+    (global-set-key [mouse-5] 'up-slightly)
+    (defun up-one () (interactive) (scroll-up 1))
+    (defun down-one () (interactive) (scroll-down 1))
+    (global-set-key [S-mouse-4] 'down-one)
+    (global-set-key [S-mouse-5] 'up-one)
+    (defun up-a-lot () (interactive) (scroll-up))
+    (defun down-a-lot () (interactive) (scroll-down))
+    (global-set-key [C-mouse-4] 'down-a-lot)
+    (global-set-key [C-mouse-5] 'up-a-lot)
+
+    ; dictionnaire francais pour la correction orthographique ispell
+    (setq ispell-dictionary "francais")
+
+    ; format jour/mois/an pour le calendrier (M-x calendar)
+    (setq european-calendar-style t)
+
+    ; la semaine commence le lundi
+    (setq calendar-week-start-day 1)
+
+    ; jours et mois en francais dans le calendrier 
+    (defvar calendar-day-abbrev-array
+      ["dim" "lun" "mar" "mer" "jeu" "ven" "sam"])
+    (defvar calendar-day-name-array
+      ["dimanche" "lundi" "mardi" "mercredi" "jeudi" "vendredi" "samedi"])
+    (defvar calendar-month-abbrev-array
+      ["jan" "fév" "mar" "avr" "mai" "jun"
+       "jul" "aou" "sep" "oct" "nov" "déc"])
+    (defvar calendar-month-name-array
+      ["janvier" "février" "mars" "avril" "mai" "juin"
+       "juillet" "aout" "septembre" "octobre" "novembre" "décembre"])
+
+    ; ----------------------------------------------------------------------
+    ; PHP - HTML - CSS
+
+    ; Manuel php en français
+    (setq php-manual-url "http://www.nexen.net/docs/php/annotee/manual.php")
+
+    ; Utiliser le html-helper-mode, http://www.gest.unipd.it/~saint/hth.html
+    (autoload 'php-html-helper-mode "html-helper-mode" "html-helper-mode" t)
+
+    ; Ajoute un mode pour éditer du php
+    ; http://www.ontosys.com/reports/PHP.html
+    (autoload 'php-mode "php-mode" "PHP editing mode" t)
+    (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
+    (add-to-list 'auto-mode-alist '("\\.php3\\'" . php-mode))
+    (add-to-list 'auto-mode-alist '("\\.php4\\'" . php-mode))
+
+    ; Utiliser le menu expert
+    (setq html-helper-use-expert-menu t)
+    ; Indenter automatiquement lorsque l'on appuie sur entrée
+    (defun my-html-helper-load-hook ()
+    (define-key html-mode-map (kbd "RET") 'newline-and-indent)
+    )
+    (add-hook 'html-helper-load-hook 'my-html-helper-load-hook)
+
+    ; Utiliser PSGML pour les fichiers SGML, HTML, XML
+    (autoload 'sgml-mode "psgml" "Major mode to edit SGML files." t)
+    (autoload 'xml-mode "psgml" "Major mode to edit XML files." t)

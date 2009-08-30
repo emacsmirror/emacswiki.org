@@ -1,0 +1,23 @@
+Letting you know you have new mail.
+
+This is a very simple Emacs Biff, it supports multiple spool files and
+uses less screen real estate then display-time.  Simply drop this into
+your .emacs and it will show ^| (flag) on your modeline if you have
+new mail.  Bugs: it assumes that your mail client empties the spool
+files, which is not always true. May not work on non-unix systems.
+
+	;; List of spool files
+	(setq ebiff-spool-files-alist '("~/Mail/GnuEmacsHelp.spool"
+			      "/var/spool/mail/username"))
+	;; Emacs Biff
+	(defun ebiff ()
+	  (catch 'str
+	    (dolist (spool ebiff-spool-files-alist (throw 'str ""))
+	      (if (not (= (nth 7 (file-attributes (expand-file-name spool))) 0))
+		  (throw 'str " ^| ")))))
+
+	;; Add it to the modeline
+	(add-to-list 'global-mode-string '(:eval (ebiff)))
+
+----
+CategoryMailAddons

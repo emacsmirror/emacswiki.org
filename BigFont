@@ -1,0 +1,20 @@
+EliBarzilay posted bigfont.el and bigfont-default-font.el in
+gnu.emacs.sources.  It allows you to write really big letters, very
+much like the [[Figlet]] program.
+
+   ####   ###  ##    ####     ####    ######                                   
+  ######  ########  ######   ######  ######## 
+ ###  ### ## ## ##  ##  ##  ###  ### ##    ## 
+ ##    ## ## ## ##      ##  ##    ## ##       
+ ######## ## ## ##   #####  ##       #######  
+ ######## ## ## ##  ######  ##        ####### 
+ ##       ## ## ## ###  ##  ##             ## 
+ ##    ## ## ## ## ##   ##  ##    ##       ## 
+ ###  ### ## ## ## ##  ###  ###  ### ##    ## 
+  ######  ## ## ## ########  ######  ######## 
+   ####   ##    ##  #### ##   ####    ######  
+
+Get it from the EmacsLispList or from the WikifiedEmacsLispList.
+
+----
+CategoryModes

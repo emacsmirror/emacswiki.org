@@ -1,0 +1,181 @@
+Tabbar is an emacs minor mode that displays a tab bar at the top, similar to the idea of web browser's tabs.
+
+== Introduction ==
+
+Tabbar is a package originally written by David Ponce from 2003 to 2005, and now maintained by others.
+
+The download location is originally at: http://sourceforge.net/projects/emhacks/
+ (Note: the version on sourceforge is outdated by a few years. For the latest version, check with GNU emacs CVS)
+
+The tabbar.el is extensively modified and used by AquamacsEmacs to be
+as close to modern UI's tab bar as possible. (see AquamacsEmacs's [[http://aquamacs.org/images/smaller-home-ss.png official
+website screenshot]] for a look. You can also try to get the [[http://github.com/davidswelt/aquamacs-emacs/tree/master/aquamacs/src/site-lisp/tabbar/tabbar.el source code]] from AquamacsEmacs, but it may not work with standard emacs.)
+
+Note that tabbar mode as implemented in Emacs is a bit different than
+tabs in web browsers or IDEs. In a web browser, each window may have
+several tabs, and each window's tabs stay with that window. Namely,
+you cannot have Window A's tab jump to window B, unless you drag it
+over (Firefox 3 support this, for example. Safari 3.2 does
+not.). However, the tabs implemented in emacs with tabbar mode is more
+like a GUI-based display of buffer listing, displayed on top of the
+window. In particular, tabs does not stick to a particular emacs's
+Frame, and conversely, each Emacs Frame can display a tab that is also shown in another Emacs Frame.
+
+Also, emacs's tabbar mode's tab can be hidden, as if showing
+only the current “page” of a tab set, called a “group”. By default,
+tabs are grouped by major mode. So, for example, if current buffer is
+in html-mode, all the tabs shown are other buffers in html-mode. If
+there are no other html-mode buffers, then you will have only one tab,
+even if you have lots other buffers. All your dired buffers, C-mode
+buffers, java-buffers, etc, are in other tab group and is hidden. You
+have to click on a special tab widget to switch to them, or use
+keyboard shortcut to switch tab or tab group.
+
+What is considered as a tab group can be customized. You could set it up so every buffer is of the same group.
+
+Tab bar mode is implemented using a special emacs display area at the top of Emacs Window, not Emacs Frame. (For example, if you split a window into 3 panes, each will have a tab bar). Some other modes also use this area. For example Info, Dired, Slime, [[ERC]], ruler-mode, etc. So that when switching to these modes, the tabs will not shown. You can get the tabs back by typing “M-x tabbar-local-mode”.
+
+== Documentation ==
+
+Tabbar mode does not have a documentation. However, the header file in the source code contains useful information.
+
+== customizations ==
+
+Tabbar mode has many customizable options, and it supports emacs customization system. To customize, type M-x customize-group [RET] tabbar [RET].
+
+=== tab group customizations ===
+
+To define the grouping of tabs, you need to set tabbar-buffer-groups to your own function that returns a list of strings.
+
+Here's a example of tab group function that define all tabs to be one of 3 possible groups: “Emacs Buffer”, “Dired”, “User Buffer”.
+
+ (defun tabbar-buffer-groups ()
+   "Return the list of group names the current buffer belongs to.
+ This function is a custom function for tabbar-mode's tabbar-buffer-groups.
+ This function group all buffers into 3 groups:
+ Those Dired, those user buffer, and those emacs buffer.
+ Emacs buffer are those starting with “*”."
+   (list
+    (cond
+     ((string-equal "*" (substring (buffer-name) 0 1))
+      "Emacs Buffer"
+      )
+     ((eq major-mode 'dired-mode)
+      "Dired"
+      )
+     (t
+      "User Buffer"
+      )
+     ))) ;; from Xah Lee
+
+ (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
+
+Here is a example where all tabs is just one group
+
+ (setq tabbar-buffer-groups-function
+          (lambda ()
+            (list "All"))) ;; code by Peter Barabas
+
+== Discussions ==
+
+=== Windows-style behaviour and key bindings ===
+
+The following will provide windows style (shift-)control tab behaviour and autoload tabbar-mode. Use a prefix to change groups and no prefix to change the buffer.
+
+    (dolist (func '(tabbar-mode tabbar-forward-tab tabbar-forward-group tabbar-backward-tab tabbar-backward-group))
+      (autoload func "tabbar" "Tabs at the top of buffers and easy control-tab navigation"))
+     
+    (defmacro defun-prefix-alt (name on-no-prefix on-prefix &optional do-always)
+      `(defun ,name (arg)
+         (interactive "P")
+         ,do-always
+         (if (equal nil arg)
+             ,on-no-prefix
+           ,on-prefix)))
+     
+    (defun-prefix-alt shk-tabbar-next (tabbar-forward-tab) (tabbar-forward-group) (tabbar-mode 1))
+    (defun-prefix-alt shk-tabbar-prev (tabbar-backward-tab) (tabbar-backward-group) (tabbar-mode 1))
+     
+    (global-set-key [(control tab)] 'shk-tabbar-next)
+    (global-set-key [(control shift tab)] 'shk-tabbar-prev)
+
+--shjk
+
+==Hide for special buffers==
+
+By adding the following code snippet to the .emacs file only the non-scratch buffers can be made to be displayed:
+
+    (when (require ‘tabbar nil t)
+      (setq tabbar-buffer-groups-function
+    	(lambda (b) (list "All Buffers")))
+      (setq tabbar-buffer-list-function
+    	(lambda ()
+    	  (remove-if
+    	   (lambda(buffer)
+    	     (find (aref (buffer-name buffer) 0) " *"))
+    	   (buffer-list))))
+      (tabbar-mode))
+
+-Sundar
+
+
+For me this only if (tabbar-mode) is set on tob of this block
+and I removed the when stuff:
+
+;; Tabbar
+(require 'tabbar)
+
+(tabbar-mode)
+
+(setq tabbar-buffer-groups-function
+          (lambda ()
+            (list "All Buffers")))
+
+(setq tabbar-buffer-list-function
+    	(lambda ()
+    	  (remove-if
+    	   (lambda(buffer)
+    	     (find (aref (buffer-name buffer) 0) " *"))
+    	   (buffer-list))))
+
+-Marco (marco[aet]rockiger.com)
+
+
+==Questions and Answers==
+
+Where is it on the GNU emacs CVS site? I was unable to find it (but have to confess to not being interested in spending all afternoon looking for it...).
+
+- Alan
+[new:PaulTipper:2009-06-05 21:51 UTC]
+: I don't believe its in GNU Emacs CVS,  [http://www.google.co.uk/search?q=tabbar+site%3Ahttp%3A%2F%2Fcvs.savannah.gnu.org%2Fviewvc%2Femacs%2F%3Froot%3Demacs&btnG=Search a quick search]  : and a look in my CVS copy of emacs seems to confirm this (so I think the page is wrong above).  Aquamacs has it, as does emhacks.  They both claim to be tabbar 2.0 from a quick look, I've got tabbar 1.3 and it seems okay with GNU Emacs 23.0.60.1
+: 
+: - PaulTipper
+
+[new]
+I'm having trouble combining tabbar with color-theme mode. If I load a color-theme at startup, it isn't applied to tabbar. Only if I manually change the color-theme mode, using M-x color-theme-charcoal-black, is the styling applied to tabbar. If anybpdy knoqws why this may be, please comment back here.
+
+- TroelsKn
+
+[new]
+I would like to change this mode's behaviour. I want to show only the most N recent files for each mode, which get re-ordered each time i change buffer. Would it be possible to do this? Can anyone tell me which functions should i modify? I've been reading tabbar.el but i am not suere where to start with.
+
+Thanks!
+
+-- Matiyam
+
+[new]
+Is there a way to stop emacs from splitting the window when opening multiple files from the command line?  (i.e. "emacs file1 file2")  The tabbar makes the window splitting unnecessary, but there doesn't seem to be any command line arguments to stop this from happening.  Thanks in advance.
+
+- Kristi
+[new:tipper:2009-04-07 18:29 UTC]
+You could put something like (delete-other-windows) at the end of your .emacs or alternatively use something like: "emacs file1 file2 --eval '(delete-other-windows)'"   Its a bit of a hack I agree, and could cause problems in odd situations but it should do the trick.
+
+[new]
+(add-hook 'window-setup-hook 'delete-other-windows)
+-- from http://stackoverflow.com/questions/1144729/how-do-i-prevent-emacs-from-horizontally-splitting-the-screen-when-opening-multip
+
+Matiyam -- sounds like swbuff/swbuff-y. It's a different interface, though, but I've used shift-left/right to switch buffers with swbuff for awhile. I didn't like the re-ordering, which is what led me to tabbar...
+
+----
+CategoryModes
+

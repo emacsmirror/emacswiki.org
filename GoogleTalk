@@ -1,0 +1,43 @@
+How Setup Google Talk in Emacs
+
+== jabber.el 0.7.1 and below ==
+Setting up emacs to use Google Talk is pretty easy since it uses the
+XMPP protocol, which is handled by jabber clients.  [[JabberEl]] works
+well (at least from the arch sources available), and setup the
+following variables, either through customization or in your .emacs
+file:
+
+  (setq jabber-username "username")
+  (setq jabber-password "password")
+  (setq jabber-nickname "nick")
+  (setq jabber-connection-type (quote ssl))
+  (setq jabber-network-server "talk.google.com")
+  (setq jabber-server "gmail.com")
+
+Under gentoo, I had to install the gnutls package to get everything
+working just fine, you're mileage may vary.  After that, you might
+find this function handy:
+
+  (defun jabber ()
+    (interactive)
+    (jabber-connect)
+    (switch-to-buffer "*-jabber-*"))
+
+Allowing you to M-x jabber to load up the client.
+
+The jabber.el client is pretty self explanitory, but consult it's page
+for further help and tips.
+
+== jabber.el 0.7.90 and later ==
+
+If you use both Emacs and Gnus from CVS, you can probably get away
+with just hitting C-x C-j C-c and entering your Gmail address, but
+most of us mortals will need a setup like the following:
+
+  (setq jabber-account-list
+    '(("username@gmail.com" 
+       (:network-server . "talk.google.com")
+       (:connection-type . ssl))))
+
+And make sure that you have either gnutls-cli or openssl installed
+and in your path.  Then C-x C-j C-c should Just Work™.

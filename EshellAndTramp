@@ -1,0 +1,11 @@
+I'd like to start this node with a question:
+
+I use TrampMode instead of AngeFtp. I cannot, however, see the output of remote commands [ran whilst in a remote directory ie on a remote host] in the eshell buffer.
+
+Kai Großjohann had inquired about the same issue on tramp-devel/2002-09: 
+
+http://lists.gnu.org/archive/html/tramp-devel/2002-09/msg00121.html
+
+I was wondering if there is a simple way [ie a simple change or setting in either eshell or tramp] which inserts the output a remote command into the current eshell buffer...
+
+

@@ -1,0 +1,19 @@
+Cette page represente la table des matieres des pages EmacsWiki
+traitant de HowmMode.
+
+Cette page a pour unique but de presenter ce mode magique a l'ensemble
+de la communaute des utilisateurs Emacs. En effet, HowmMode est
+certainement l'un des outils de prises de notes les plus puissants qui
+puisse exister mais malheureusement son manque cruel de documentation
+le marginalise injustement.
+
+Ces quelques pages visent a faire sortir HowmMode de son anonymat et a
+le rendre accessible a toutes les personnes ne parlant pas le
+japonnais.
+
+
+* HowmMode -- la page principale contenant les bases
+* HowmEtCalendar -- comment integrer le mode CalendarMode avec HowmMode
+
+----
+This page is also available in english CategoryHowm.

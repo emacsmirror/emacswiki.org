@@ -1,0 +1,55 @@
+C-x C-f, find-file, the most basic of ways to open a file in Emacs (see Manual:find-file), has many hidden features.
+
+= Overriding the Default Directory Without Erasing It =
+
+: ##C-x C-f##
+
+Emacs shows the default directory (variable `default-directory'), like this:
+
+: ##Find file: /usr/local/info/##
+
+Now type ##/bin##, that is, don't bother to first erase ##/usr/local/info/##:
+
+: ##Find file: /usr/local/info/##'''##/bin##'''
+
+Press `TAB' to complete your input:
+
+: ##Find file: /bin##
+
+Voila! Emacs takes ##//## to mean "discard everything preceding this, and start from ##/##".
+
+Similarly, type ##~/##, without erasing the default directory, to use your home directory (##$HOME##):
+
+: ##Find file: /usr/local/info/##'''##~/.emacs##'''
+
+Press `TAB' to complete:
+
+: ##Find file: ~/.emacs##
+
+Voila! Emacs takes ##~/## to mean "discard everything preceding this, and start from your home directory, ##~/##".
+
+Note: You need not hit `TAB'. If you do, you can see how Emacs interprets ##//## and ##~/##.
+
+
+= Copying the Current File Name =
+
+This works for most file prompts. Let's say you have a file ##~/docs/somedir/somefile## open and you want to copy its file name. Use `C-x C-f' to see the default directory after the prompt:
+
+ Find file: ~/docs/somedir/
+
+Now use `M-n' or `down' (arrow), to see the default value for reading a file name, which is the name of the file visited by the current buffer:
+
+ Find file: ~/docs/somedir/somefile
+
+Copy the file name from the MiniBuffer.
+
+== Opening Dired Using C-x C-f ==
+
+`C-x d' opens DiredMode, giving you access to all of the files in the current directory. But you can also open Dired using `C-x C-f'. Just hit `RET' to accept the default directory that appears after the prompt, or type another directory.
+
+In Emacs versions prior to 22, you need to delete the last slash from a directory name before hitting `RET'.  
+
+
+----
+CategoryFiles CategoryDirectories
+

@@ -1,0 +1,41 @@
+<code>yaml-mode.el</code> helps you edit [http://www.yaml.org/ YAML] <code>.yml</code> files.
+
+The subversion trunk is:
+
+ http://svn.clouder.jp/repos/public/yaml-mode/trunk/
+
+And also available as DebianPackage:yaml-mode.
+
+It features font locking for data forms and comments, and some electric keys to help with block literals.
+
+----
+
+Original <code>yaml-mode.el</code> has incorrect regexp for YAML comments which makes it treat almost everything as comment (at 
+least on my Emacs 23.0.60). This [http://tweedle-dee.org/svn/emacs.d/site-lisp/yaml-mode.el yaml-mode.el] fixes it.
+
+As of 2009/07/07, this <code>yaml-mode.el</code> also enforces spaces instead of TABs in yaml-mode, regardless of emacs configuration.
+
+If you wish to have Return key automatically indent cursor on new line, add the following to emacs config:
+
+<code>
+(add-hook 'yaml-mode-hook
+		  '(lambda ()
+			 (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+</code>
+
+IvanKorotkov
+
+----
+
+I wasn't able to reach the above mentioned alternate version, but if you want to just fix the commenting issue, change:
+
+<code>(defconst yaml-comment-re "\\(#*.*\\)"</code>
+
+to:
+
+<code>(defconst yaml-comment-re "\\(#.*\\)"</code>
+
+PaulGoins
+
+----
+CategoryModes

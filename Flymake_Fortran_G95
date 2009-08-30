@@ -1,0 +1,26 @@
+Bare minimum setup for using FlyMake with [http://www.g95.org g95] Fortran:
+{{{
+;; minimal, non-make g95 setup
+(defun flymake-g95-init ()
+  (let* ((temp-file (flymake-init-create-temp-buffer-copy
+		     'flymake-create-temp-inplace))
+	 (local-file (file-relative-name
+		      temp-file
+		      (file-name-directory buffer-file-name))))
+    (list "/usr/local/bin/g95" (list "-c" local-file))))
+
+(setq flymake-allowed-file-name-masks
+      (cons '(".+\\.[fF]90$"
+	      flymake-g95-init
+	      flymake-simple-cleanup
+	      flymake-get-real-file-name)
+	    flymake-allowed-file-name-masks))
+
+(push '("^In file \\(.+\\):\\([0-9]+\\)" 1 2) flymake-err-line-patterns)
+
+;; Note: can't also pickup error description because flymake
+;; parses errors one line at a time -- multi-line error output
+;; would need to be handled with a helper script or a new elisp
+;; function.
+}}}
+Should refactor toward FlymakeShell's implementation.

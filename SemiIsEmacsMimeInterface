@@ -1,0 +1,11 @@
+SEMI is a library to provide MIME feature for Emacsen. It stands for "SEMI is Emacs MIME Interfaces". MIME is a proposed internet standard for including content and headers other than (ASCII) plain text in messages.
+
+== Requirements ==
+
+* [[APEL]]
+* [[FLIM]]
+
+http://www.kanji.zinbun.kyoto-u.ac.jp/~tomo/elisp/SEMI/index.html.ja.iso-2022-jp
+
+----
+CategoryMailAddons

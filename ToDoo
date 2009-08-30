@@ -1,0 +1,29 @@
+: https://mtpforge.melting-pot.org/projects/dotemacs/browser/trunk/lib/todoo.el?format=txt
+
+: http://www.mulix.org/code/todoo/todoo.el
+
+todoo.el by DanielLundin is very simple and based on OutlineMode. It is included in the <code>emacs-goodies-el</code> Debian package (DebianPackage:emacs-goodies-el).
+
+I have the following function bound to f10 so I can press one button, edit my TODO file, press the same button and I'm done. I need my TODO file very close, or I'll stop using it.
+
+  (defun todoo-or-close-todoo()
+    (interactive)
+    (if (equal mode-name "Todoo")
+        (call-interactively 'todoo-save-and-exit)
+      (call-interactively 'todoo)))
+
+-- JohannesGijsbers
+
+You shouldn't check mode-name, it's slower and not as reliable as checking major-mode.  Try this instead:
+
+  (defun todoo-or-close-todo ()
+    (interactive)
+    (if (eq major-mode 'todoo-mode)
+        (call-interactively 'todoo-save-and-exit)
+      (call-interactively 'todoo)))
+
+-- MJF
+
+----
+CategoryTodo
+CategoryModes

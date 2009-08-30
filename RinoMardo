@@ -1,0 +1,64 @@
+Rino Mardo :: joroxx@gmail.com (http://del.icio.us/joroxx)
+
+i've been using Emacs for only a few weeks. my editor has been always "vi" since i learned unix 20 years ago. i stumbled upon plannermode in http://sacha.free.net.ph and eventually into Emacs. now i'm trying to learn plannermode, elisp on my free time (if any). finally finished printing 208 pages of Emacs Lisp on a deskjet.
+
+here's my ~/.emacs
+
+    (setq visible-bell t)
+
+    ;; (setq planner-use-other-window nil)
+    ;; (setq planner-use-day-pages nil)
+    ;; (setq planner-default-page nil)
+    (setq planner-carry-tasks-forward t)
+    ;; (setq planner-diary-use-diary t)
+    ;; (setq planner-diary-create-section-flag t)
+    ;; (setq planner-day-page-template "* Tasks\n\n\n* Schedule\n\n\n* Diary\n\n\n* Notes")
+
+    (add-to-list 'load-path "/usr/share/emacs21/site-lisp/emacs-wiki/")
+    (add-to-list 'load-path "/usr/share/emacs21/site-lisp/planner-el/")
+    (add-to-list 'load-path "/usr/share/emacs21/site-lisp/w3-el/")
+
+    ;; (add-hook 'diary-display-hook 'fancy-diary-display)
+
+    (planner-insinuate-calendar)
+
+    ;; Remember
+    (add-to-list 'load-path '/usr/share/emacs21/site-lisp/remember/")
+    (setq remember-annotation-functions planner-annotation-functions)
+    (setq remember-handler-functions '(remember-planner-append))
+
+    (require 'planner)
+    ;; (require 'planner-diary)
+    (require 'remember-planner)
+    (require 'planner-cyclic)
+    (require 'planner-tasks-overview)
+
+    ;; Some keyboard mappings
+    (global-unset-key (kbd "<f9>"))
+    (global-unset-key (kbd "<f7>"))
+    (global-set-key (kbd "<f9>" t SPC") 'planner-create-task-from-buffer)
+    (global-set-key (kbd "<f9>" r SPC") 'remember)
+    (global-set-key (kbd "<f9>" p SPC") 'planner-goto-today)
+    (global-set-key (kbd "<f9>" P SPC") 'planner-goto)
+    (global-set-key (kbd "<f7>" x SPC") 'planner-task-done)
+    (global-set-key (kbd "<f7>" r SPC") 'planner-replan-task)
+    (global-set-key (kbd "<f7>" n SPC") 'planner-task-note)
+    (global-set-key (kbd "<f7>" u SPC") 'planner-update-note)
+
+    ;; Start the day
+    (plan)
+
+[new]
+Welcome to the wiki!  SachaChua is certainly attracting new users to Emacs! -- AlexSchroeder
+[new]
+Kudos should probably go to ClairChing too. -- SachaChua =)
+[new]
+thanks guys. and yes, ClairChing as i constantly Y!M her for things plannermode :)
+[new]
+i use Emacs now for all my editing in debian. still hurts though constantly hitting the ESC key for any editing i do.
+[new]
+This is cool =) I have finally stumbled upon your homepage on the wiki =) -ClairChing
+[new]
+hey Clair! so you've found my little spot on the web. :) i must say i'm totally amused by emacs and lisp and the things they can do.
+----
+CategoryHomepage

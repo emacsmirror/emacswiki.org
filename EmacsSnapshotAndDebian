@@ -1,0 +1,56 @@
+Following are the steps and packages required to compile Emacs from CVS or git on Debian.
+
+
+== Getting Latest Source==
+
+NB : also see http://www.emacswiki.org/emacs/EmacsCvsAndDebian
+
+I also feel this page might be a misnomer since its not a "snapshot" which is a term normally reserved for a repository which is maintained as "stable" for people to use.  It's about building directly from the head of the RCS (whether git or cvs).
+
+=== Using CVS ===
+
+    cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
+
+=== Using git ===
+
+    git clone --depth 1 git://git.sv.gnu.org/emacs.git
+
+Both commands will create a directory named emacs and put the source in it.
+
+== Required Packages ==
+
+To install base libraries:
+
+sudo aptitude install build-essential
+
+The following packages are available through apt-get/aptitude and might need to be installed. Check the output from the configure stage described below.
+
+* build-essential
+* xorg-dev
+* libgtk2.0-dev
+* libjpg-dev
+* libgif-dev
+* libtiff-dev
+* libm17n-dev
+* libpng12-dev
+* librsvg2-dev
+* libotf-dev
+
+== Build ==
+
+In order to build after installing required dependencies.
+
+    ./configure
+    make bootstrap
+    sudo make install
+
+== Update ==
+
+To update the emacs code from the repositories perform the following command line commands:
+
+CVS : cvs upd
+
+GIT : git pull
+
+and then do a make and install as described in the Build section above.
+

@@ -1,0 +1,27 @@
+MeatBall:HumaneInterface talks about a JUMP key.  Here's how to have
+such a key.  It uses FindFileAtPoint and works similar to GotoAddress.  GotoAddress highlights
+URLs and lets button-2 take you there.  The JUMP key doesn't use
+highlighting, since you know what you are looking at.  The JUMP key
+just does the right thing: Call find-file or browse-url.  
+
+See DedicatedKeys.
+
+<pre>
+(defun my-jump ()
+  "Jump to the thing at point."
+  (interactive)
+  (let ((thing (ffap-guesser)))
+       (if thing (ffap thing))
+    t))
+</pre>
+
+* See Lisp:jump.el
+A simple package that defines a little more elaborate jump function. The further features are:
+** a function to jump in emacswiki (from emacswiki.el) when a wikiname is at point
+** a function to follow wikiname when using SimpleWikiEditMode
+** a function to follow interwiki name 
+
+Add more functions (for jde-open-class-at-point, for a bookmark nickname at point,for date at point), fix the code...
+
+----
+CategoryKeys

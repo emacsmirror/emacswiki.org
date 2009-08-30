@@ -1,0 +1,5 @@
+This package provides an interface between JDEE and JSwat - a standalone, JPDA-based, graphical Java debugger. Yes JDEE has a debugger already, but Emacs is all about enabling choice, and I like JSwat. :-)
+
+JSwat can be downloaded from: http://www.bluemarsh.com/java/jswat/
+
+[[Download:jswat.el]]

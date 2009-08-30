@@ -1,0 +1,12 @@
+[http://meltin.net/hacks/emacs/ http://meltin.net/hacks/emacs/]
+
+A simple major mode for editing and testing SQL with Oracle SQL*Plus. This is an intersection of a couple of other SQL modes (see SqlMode) that did more or less than this mode. See the internal commentary for details. This file is no longer maintained. Any useful features in here should one day be rolled into the sql.el mode that now ships with GNU Emacs.
+
+Some features that the base sql.el could learn from sqlplus-mode:
+
+* sqlplus-send-current - sends the current sql command based on surrounding semicolons.  This works better than sql-send-paragraph in cases where there are more than one command next to one another.
+
+[http://meltin.net/hacks/emacs/src/sqlplus-mode.el http://meltin.net/hacks/emacs/src/sqlplus-mode.el]
+
+----
+CategorySql

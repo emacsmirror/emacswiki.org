@@ -1,0 +1,93 @@
+'''M-x all-hail-xemacs'''
+
+http://cvs.xemacs.org/viewcvs.cgi/*checkout*/XEmacs/packages/xemacs-packages/sounds-wav/im_so_happy.wav?rev=1.1.1.1&amp;amp;content-type=audio/basic
+
+== Messages ==
+
+...
+
+= Mozilla Firefox -- XEmacs Website Full-Text Search Engine And More =
+
+Creating a new bookmark using the Bookmark Manager is booaaaaring:
+
+Use these attributes:
+
+; Name: Use "XEmacs Website Full-Text Search Engine" or similar
+; Location: <nowiki>http://www.xemacs.org/cgi-bin/namazu.cgi?query=%s&max=20&result=normal&sort=score</nowiki>
+
+Then left-click on the new bookmark and edit its properties.
+Add the following attribute:
+
+; Keyword: xemacs
+
+Now type "xemacs <term>" in the adressbar (reached via CTRL+L in firefox, as documented in http://www.texturizer.net/firefox/keyboard.html) to search the wiki for a term.
+
+If you are bored by now, then just get AdrianAichnerFirefoxQuickSearches and import it into your Firefox with Bookmarks->Manage Bookmarks...->File->Import...
+
+In case you wonder how I came up with this nifty tip, make sure not to ask AlexSchroeder!
+
+= Featured Breakages =
+
+erc-smiley-mode displays them to the right of timestamps in XEmacs, for
+(setq erc-insert-timestamp-function 'erc-insert-timestamp-right)
+
+See [[Exhibit2005-08-22Z224639]]
+= Work In Progress =
+
+* Request for feedback on re-builder face colors
+** Using Lisp:hsv2rgb.el I came up with these ReBuilderFaceColors for http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/re-builder/re-builder.el for light background
+*** Q: What are good guidelines to come up with good colors for light and dark background?
+* Keeping XEmacs erc package in sync
+** BacktraceDuringErcCommit20040328
+* [[Syncing XEmacs scheme package]] with GNU Emacs scheme.el
+* Getting crypt++.el to work with XEmacs
+
+= Random 1000-Word Substitutes =
+
+; First steps using ECB for my elisp:[[Exhibit20040320T222854CET]]
+; my erc buffer formatting and font-locking:[[Exhibit1069976063]]
+; trouble with erc-fill-mode:exhibited during a chat about syntax table entries has been tracked down to the use of filladapt by Adrian.  See [[erc-fill-trouble.png]].  Whitespace-mode is used here to for debugging purposes only.
+
+= Random Hacks =
+
+* Currently adding support for multiple swish-e index files in nnir.el
+* Lisp:hsv2rgb.el
+* Lisp:gnuslog.el (GnusLog of incoming mail via nndoc group)
+* Lisp:strptime.el (StrPTime -- partial POSIX date and time parsing)
+** An original work by Johan Bockgård
+* [http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/re-builder/ XEmacs CVS re-builder] now supports perl syntax regexps
+* [[apa-get-ip-addresses]]
+* http://www.xemacs.org/About/Website.html#ARA
+* trying to get wiki-remote.el work for jspwiki engines
+* AdrianAichnerConfigurationBits
+** [[My XEmacs Frame Title Format]]
+** [[My XEmacs Modeline Format]]
+* AdrianAichnerIspellConfiguration
+* AdrianAichnerErcConfiguration
+* AdrianAichnerPatcherConfiguration
+* AdrianAichnerPackageGetConfiguration
+
+portrait:http://www.math.tu-berlin.de/~freundt/uimg/anaran2.png
+
+* I use XEmacs by day and by night ([http://www.emacswiki.org/cgi-bin/emacs-en?search=uses%3F%20emacs%20and%20CategoryHomepage;old=1 Emacs users] vs. [http://www.emacswiki.org/cgi-bin/emacs-en?search=uses%3F%20xemacs%20and%20CategoryHomepage;old=1 XEmacs users])
+
+Does lastest CVS http-emacs work for me under
+XEmacs 21.5  (beta17) "chayote" [Lucid] (i586-pc-win32, Mule) of Sun Apr 18 2004 on D5DC120J
+yet?  <strong>Yes, it does!</strong>
+
+[http://www.emacswiki.org/cgi-bin/wiki/SimpleWikiEditMode !]
+[http://www.emacswiki.org/cgi-bin/wiki.pl?WikiRemote ?]
+
+= Random Information =
+
+* AdrianAichnerScratchPad
+
+= India Rocks =
+
+[[ExhibitApa20060520T0403Z]]
+
+----
+CategoryHomepage
+----
+: mailto:adrian@xemacs.org
+: http://www.xemacs.org/

@@ -1,0 +1,39 @@
+[new:AlexSchroeder:2005-12-13 07:44 UTC]
+There's a tiny serch-box right at the very top of the page now.
+I'm trying to figure out if that improves the site even though there's a link to [[Search]] right up there as well.
+-- AlexSchroeder
+
+[new:PierreGaston:2005-12-13 09:48 UTC]
+For me it's an improvement, I didn't notice the search link before, and was allways scrolling all the way down to use the search box at the bottom of the page.
+Now that I know about the search link, I still prefer not to have to open a new page.
+
+thanks!
+
+[new:MathiasDahl:2005-12-13 12:45 UTC]
+I agree. I hate to scroll all the way down to get to the Search-box and I too did not notice that Search-link in the header.
+
+[new:DrewAdams:2005-12-13 15:58 UTC]
+Not to change the subject ;-), but the one I'd like to see copied to the top is the "Edit" link. I've no opinion on the new search box, but a minor question: Would "Search Emacs Wiki" be better as the label? I'm guessing some people might think it's for searching the page, given the new position. -- DrewAdams
+
+[new]
+I like the search box and the short label before it. 
+Could not the search link at the top be removed and the search field in the box made a little bit bigger?
+
+[new]
+Well, the search link has the option to search for Perl regular expressions, which is something that might come in handy.  Where would you place that information?  As for size, look for ##form.tiny## in the [http://www.emacswiki.org/css/emacs.css CSS] file and suggest a change...  :) -- Alex
+
+[new]
+Yeah, a small label perhaps, I use the default CSS, and I didn't even notice the box until I saw this discussion.
+
+: Oops, it actually has a label.  page breaking put it on a different line from the box
+
+[new]
+Then it should perhaps be coded with something like Search:&amp;nbsp;&lt;input ...&gt;
+
+[new]
+I'm using a ##white-space: nowrap## at the moment.  Somehiw the nbsp didn't work.  Weird.
+
+[new]
+Browsers are weird. Nothing to worry about ;-)  -- How about removing the Search link at the top to save space? 
+Or maybe make the label Search: a link? That is a bit weird of course, but this time weird with some positive side effects (at least).
+-- LennartBorgman

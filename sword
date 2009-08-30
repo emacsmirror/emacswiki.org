@@ -1,0 +1,60 @@
+I'm sword on #emacs.
+
+I've written a few Elisp tidbits here and there, some things that have irritated me over the years, but nothing huge.  Perhaps some day I'll post the few tidbits I've written.  Modes that I find ridiculously useful: AucTeX/RefTeX, hippie-expand, iswitch, and Org.  Org absolutely blows away any planner I've ever used.  I can get around Gnus and am familiar with day-to-day Emacs usage.  Feel free to ask me if you have questions: I find the best way to learn Emacs is to try and answer questions in #emacs.
+
+My first _real_ language has been Common Lisp.  (Well, I knew Perl, but that doesn't count.)  I'm a newbie as far as that goes: SICP has been slow going for me (that, and I'm only working it on evenings).
+
+I'm a Debian user when I'm on Linux.
+
+[new]
+Welcome to the wiki. -- AlexSchroeder
+
+----
+CategoryHomepage
+
+
+Rising to aartist's challenge, define an abbrev which expands to an elisp expression (presumably something interesting); this interesting piece of advice will expand that.
+
+ (defadvice abbrev-insert (after eval-abbrev)
+   "If you define an abbrev that looks like a sexpr, this'll try to evaluate it in place.
+ Heaven help you if you don't have balanced-sexprs. (Actually, it works just fine even with non-balanced exprs)."
+   (ignore-errors
+    (scan-sexps (point) -1)
+    (let ((pos (point-marker))
+          (res (eval-expression (preceding-sexp))))
+      (backward-sexp 1)
+      (delete-region (point) pos)
+      (prin1 res pos)
+      (goto-char pos)))
+   ad-return-value)
+
+ (ad-activate 'abbrev-insert)
+
+
+A useful function for rectangle kills.  I forget why I wrote this but it was really useful for whatever it was I wrote it for.  Depends on unfill-paragraph, which you can find elsewhere on the wiki.
+
+
+ (defun sword-rectangle-to-one-string-kill (beg end)
+   "Kill the rectangle selected, make it one long string, and put
+ it on the normal kill ring."
+  (interactive "r")
+  (kill-rectangle beg end)
+  (with-temp-buffer
+    (yank-rectangle)
+    ;; get rid of whitespace lines
+    ;; (rx line-start (any space) line-end)
+    (replace-regexp "\\(?:^[[:space:]]$\\)" "" nil (point-min) (point-max))
+    ;; We already removed all the whitespace lines and unfill will now work properly
+    (unfill-paragraph)
+    ;; Do recall that the rectangle ring is separate from the main ring.
+    (kill-region (point-min) (point-max))))
+
+
+Multiple emacs servers are possible.  Thanks to [[offby1]], in a new emacs,
+
+ (let ((server-socket-dir "/tmp/emacsfoo"))
+    (server-start))
+
+then in emacsclient
+
+ emacsclient -s /tmp/emacsfoo

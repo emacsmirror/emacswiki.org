@@ -1,0 +1,47 @@
+This is some extra code from the string section in the ElispCookbook.
+
+Processing strings character by character:
+
+    (setq test-str "abcdefg")
+    (setq test-str2 "")
+    (setq test-x 0)
+    (while (< test-x (length test-str))
+      (setq test-str2 (concat test-str2 (char-to-string (elt test-str test-x))))
+      (setq test-x (+ test-x 1)))
+    (message test-str2)
+       => "abcdefg"
+
+Why not be pure about it?
+
+    (mapcar 'identity "foo") ==> (102 111 111)
+    (apply 'string (mapcar 'identity "foo")) ==> "foo"
+    (apply 'string (mapcar '1- "foo")) ==> "enn"
+
+or use the provided function instead of mapcar?
+
+    (string-to-list "foo")  ==> (102 111 111)
+
+cool kids can use the side effect of append (`string-to-list' does this)
+
+    (append "foo" nil)  ==> (102 111 111)
+
+Or with the Common Lisp package loaded:
+
+    (require 'cl)
+    (setq test-str "abcdefg")
+    (loop for x across test-str
+          do (insert x))
+
+Reversing the string without using `string-to-list':
+
+ (apply 'string (reverse (mapcar 'identity "1234")))
+   => "4321"
+
+Alternatively:
+
+ (concat (nreverse (append "1234" nil)))
+   => "4321"
+
+See also StringModification.
+----
+CategoryCode

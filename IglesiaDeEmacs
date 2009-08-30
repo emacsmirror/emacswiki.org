@@ -1,0 +1,19 @@
+ Organización: La Iglesia de Emacs
+
+Muchos hackers mantienen páginas extrañas allí fuera que hacen referencia a la Iglesia de Emacs. Algunos tienen este título como valor de la cabecera "Organization" cada vez que envían mensajes a los GruposDeNoticiasEmacs. Otros han escrito código para producir textos relacionados con la religión de Emacs basados en textos religiosos existentes. Aquí hay algunos enlaces:
+
+* PerAbrahamsen tiene una página sobre asuntos teológicos: http://www.dina.dk/~abraham/religion/
+* RichardStallman tiene una página sobre San IGNUcius: http://www.stallman.org/saint.html (¡incluye una imagen! ^_^)
+* DeepakGoel ha escrito faith.el (Ayuda a reforzar y difundir la fé en el ÚNICO EDITOR VERDADERO) http://www.gnufans.net/~deego/emacspub/lisp-mine/faith/
+
+** ¡Usted también puede difundir la fé con erc!
+
+       (defun erc-cmd-FAITH (&rest ignore)
+          "Post faith in the current channel." 
+          (interactive)
+          (require 'faith)
+          (erc-send-message
+          (mapconcat 'identity (split-string (faith-quote) "\n") " ")))
+
+----
+CategoríaHumor

@@ -1,0 +1,13 @@
+The Texinfo Manual provides an introduction and a reference for using [[Texinfo]].
+
+Robert J. Chassell and Richard M. Stallman.  ''Texinfo: The GNU Documentation Format, for Version 4''.  1999.
+
+The manual is distributed with the Texinfo software package, availabe online from any GNU ftp mirror, and from:
+
+* http://www.gnu.org/software/texinfo/manual/texinfo/
+* Available in print from the GnuPress.
+
+Texinfo, not unlike Emacs herself, is a massively powerful and sadly underrated tool.  Read That Fine Manual and see if you don't agree. -- Anonymous
+
+----
+CategoryDocumentation CategoryTex

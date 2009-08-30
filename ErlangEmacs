@@ -1,0 +1,18 @@
+== Ermacs: An Emacs clone in Erlang ==
+
+* http://www.bluetail.com/~luke/ermacs/
+
+From the web site:
+
+Tested on Linux and <nowiki>FreeBSD</nowiki>. Requires the S-Lang
+terminal library and Erlang/ OTP R7B or later.  You can download
+Ermacs 0.9 as a tarball and you can read <nowiki>ChangeLog</nowiki> to
+find out what's new or to get a feel for how it's progressing.
+
+The screenshot of the editor, which is all done in Erlang, should say
+it all.
+
+http://www.bluetail.com/~luke/ermacs/ermacs.jpg
+
+----
+CategoryExtensionLanguage EmacsImplementations

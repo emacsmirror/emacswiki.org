@@ -1,0 +1,24 @@
+I am emacs user. It's my favourite tool almost for everything. :)
+
+Well, nothing to add right now. Maybe someone will be interested in my [http://github.com/grepz/emacsconfigs/tree/master init files].
+
+----
+
+I saw your dot emacs, I think function `add-subdirs-to-load-path' is you want, it can recursive add directories to `load-path'.
+Below the define of `add-subdirs-to-load-path':
+
+{{{
+(defun add-subdirs-to-load-path (dir)
+  "Recursive add directories to `load-path'."
+  (let ((default-directory (file-name-as-directory dir)))
+    (add-to-list 'load-path dir)
+    (normal-top-level-add-subdirs-to-load-path)))
+}}} -- AndyStewart
+
+----
+
+Thanks. This function will be useful. Made some changes to dot files loading process. Just interested, is there any library that is trying to load dot files in init.d style ? 
+-- StanislavIvankin
+
+----
+CategoryHomepage

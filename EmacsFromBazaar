@@ -1,0 +1,6 @@
+ bzr clone http://bzr.notengoamigos.org/emacs/trunk/
+
+bazaar is a gnu package, and is said to be the scm to be used
+for emacs development in the future
+
+KarlFogel is coordinating the switchover of Emacs development from CVS to bzr; you can keep tabs on the progress at EmacsBzrSwitchover.

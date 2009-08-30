@@ -1,0 +1,130 @@
+This complex SplitMail setup allows you to mix FancySplitMail power
+with BigBrotherDataBase information in Gnus.
+
+First, specify bbdb/gnus-split-method as the split method to use, and
+specify nnmail-split-fancy as the fallback if the BBDB doesn't specify
+a group.
+
+ (setq nnmail-crosspost nil
+       nnmail-split-methods 'bbdb/gnus-split-method
+       bbdb/gnus-split-nomatch-function 'nnmail-split-fancy
+       bbdb/gnus-split-myaddr-regexp gnus-ignored-from-addresses
+       nnmail-split-fancy
+       `(| ("Subject" "color-theme" "mail.emacs")
+	   (any ,gnus-ignored-from-addresses "mail.misc")
+	   (any ".*@emacswiki.org" "mail.emacs.wiki")
+	   "mail.spam"))
+
+Now use the <b>gnus-private</b> and <b>gnus-public</b> fields in your
+BBDB.  The first time you add such a field to an entry using C-o in
+the *BBDB* buffer, the new field will be defined for you.  After that,
+these two fields are just like any other notes field.
+
+The <b>gnus-private</b> field is used to identify friends, people,
+companies -- the mails you get will be <b>From</b> these addresses.
+The value of the field is the folder to file any mails from that
+entry in.
+
+    Alex Schroeder
+		net: alex@gnu.org
+       gnus-private: mail.friends
+
+The <b>gnus-public</b> field is used to identify mailing lists -- the
+mails you get will be <b>To</b> these addresses.  The value specifies
+both the folder and an additional regexp which must match the sender.
+
+    emacs-devel
+		net: emacs-devel@gnu.org
+	gnus-public: mail.emacs.devel .*
+
+I actually always use <tt>.*</tt> as the regexp in the value of
+gnus-public fields.  Does anybody know under which circumstances these
+would make sense? -- AlexSchroeder
+
+== Even More Advanced ==
+
+Not satisfied yet?  The problem with the approach above is that the
+BBDB is checked first, and then your FancySplitMail rules are
+considered.  But that means that spam which is sent to mailing lists
+cannot be filtered!  Thus, what we want is to use FancySplitMail rules
+and call the BBDB splitting somewhere in the middle.  Here is an
+example, which assumes that any mails which have only a text/html part
+are probably spam.
+
+ (setq nnmail-crosspost nil
+       nnmail-split-methods 'nnmail-split-fancy
+       bbdb/gnus-split-default-group nil
+       bbdb/gnus-split-nomatch-function nil
+       bbdb/gnus-split-myaddr-regexp gnus-ignored-from-addresses
+       gnus-total-expirable-newsgroups
+       (regexp-opt '("mail.rohrpost"
+		     "mail.guile"
+		     "mail.gnutella"
+		     "mail.emacs.devel"
+		     "mail.emacs.ilisp"))
+       nnmail-split-fancy
+       `(| ("Content-Type" "text/html" "mail.spam")
+	   (: (lambda ()
+		(car (bbdb/gnus-split-method))))
+	   ("Subject" "color-theme" "mail.emacs")
+	   ;; mail from and to me
+	   (any ,gnus-ignored-from-addresses "mail.misc")
+	   (any ".*@emacswiki.org" "mail.emacs.wiki")
+	   ;; anonymous mail, probably spam
+	   "mail.spam"))
+
+Another possibility would be to restrict this to mail in weird coding
+systems which you do not expect.  Example for Korean spam:
+
+ ("Content-Type" "text/html; charset=\"ks_c_5601-1987\"" "mail.spam")
+
+I prefer a solution using add-hook techniques :
+
+  (add-hook 'nnmail-split-abbrev-alist (cons 'content-spam "text/html\\|big5\\|gb2312\\|ks_c_.*\\|euc-kr"))
+
+then we can check for it in the split rules with
+ 
+  ("Content-Type" content-spam "mail.spam")
+
+You will probably have to add more of these entries as time goes by.
+The generic solution is problematic if you have friends which do not
+understand how to switch off HTML mail sending...
+
+== Example Involving SpamAssassin, BBDB, and Group Parameters ==
+
+If you are using <nowiki>SpamAssassin</nowiki>, your spam mails will
+contain headers created by the assassin.  You can use those headers to
+split them.  One such possibility would be to add a rule such as the
+following to your splitting rules (`nnmail-split-methods'):
+
+         ("x-spam-flag" "YES" "mail.spam")
+
+If you want to use GroupParameters to tell which messages belong, you
+can set these as well.  One such possibility would be to set
+`nnmail-split-methods' to `gnus-group-split'.
+
+And, as we have seen above, you can use the BBDB as a whitelist by
+creating a BBDB entry for people and mailing lists you know.
+
+In order to combine these, however, you have to use something like
+this (original example by KirkStrauser):
+
+    (setq
+     nnmail-split-methods        'bbdb/gnus-split-method
+     bbdb/gnus-split-nomatch-function 'nnmail-split-fancy
+     nnmail-split-fancy
+     `(|
+         ("x-spam-flag" "YES" "mail.spam")
+         (: gnus-group-split-fancy nil t nil)
+         "mail.misc"))
+
+Mail is split as follows:
+
+# Addresses matching entries in my BBDB are explicitly split into the group specified in the `gnus.private' field
+# Mails that <nowiki>SpamAssassin</nowiki> has determined to be spam are moved to mail.spam
+# Mails are split according to the rules defined in the GroupParameters
+# Anything remaining goes to mail.misc
+
+----
+CategoryGnus
+CategoryBbdb

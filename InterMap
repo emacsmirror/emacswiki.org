@@ -1,0 +1,55 @@
+EmacsWikiAdministrators can edit this page.  You can request changes to the InterMap over there. 
+
+EmacsWiki stuff:
+
+ EmacsWiki /emacs?
+ Self /emacs?
+ English /emacs-en?
+ Français /emacs-fr?
+ Deutsch /emacs-de?
+ 日本語 /emacs-ja?
+ Español /emacs-es?
+ Português /emacs-pt?
+ Русский /emacs-ru?
+ 中文 /emacs-zh?
+ Svenska /emacs-se?
+ Download /emacs/download/
+
+An alternative to a plain link people can use if they want to make sure that backlinks are correctly indexed by [[Oddmuse:Indexed Search]].
+
+ Lisp /emacs/
+ Download /emacs/download/
+
+Emacs:
+
+ CVS http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/lisp/
+ Manual /cgi-bin/info-ref?find=
+
+Debian:
+
+ DebianPackage http://packages.debian.org/
+
+Search, reference:
+
+ Google http://www.google.com/search?q=
+ Define http://www.google.com/search?q=define:%20
+ Groups http://groups.google.com/groups?as_ugroup=*emacs*&as_q=
+ WikiPedia http://en.wikipedia.org/wiki/
+ WikiSource http://www.wikisource.org/wiki/
+
+Other wikis:
+
+ Wiki http://c2.com/cgi/wiki?
+ ZWiki http://www.zwiki.org/
+ CLiki http://www.telent.net/cliki/
+ SenseisLibrary http://senseis.xmp.net/?
+ Oddmuse http://www.oddmuse.org/cgi-bin/oddmuse/
+ Community http://www.communitywiki.org/cw/
+ UseMod http://www.usemod.com/cgi-bin/wiki.pl?
+ MeatBall http://www.usemod.com/cgi-bin/mb.pl?
+
+These are necessary to bypass the BannedContent filter.  Basically they are free website farms that are abused by spammers.
+
+ Geocities http://www.geocities.com/
+ XWEM http://lgarc.narod.ru/xwem/
+ Lukhas http://lukhas.free.fr/

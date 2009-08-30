@@ -1,0 +1,703 @@
+Cette page est aussi disponible en franglais ;-) : PackagesElispDeDrew, mais cette page ci est peut-etre plus a jour.
+
+This page describes the Emacs Lisp libraries by DrewAdams that you can find on the EmacsWiki (at http://www.emacswiki.org/elisp) and how to use them. It includes a brief list of recent changes to the list of files. For information on changes to individual files, see the change logs in the files.
+
+This page has the following sections:
+* '''[[#DrewsLibraries]]''' -- describes the libraries
+* '''[[#HowToUseDrewsLibraries]]''' describes how to use the libraries
+* '''[[#Discussion]]''' -- your feedback and discussion about the libraries
+----
+
+[:DrewsLibraries]
+== The Libraries ==
+
+My libraries on Emacs Wiki are presented here in several lists, depending on which GNUEmacs releases they support.
+
+Most of the libraries that work with Emacs 20 also work with Emacs versions older than Emacs 20 (but don't ask me which!). Library <tt>[[sort+.el]]</tt> is needed only for Emacs older than version 20. It redefines function `sort-reorder-buffer' so that it preserves text properties.
+
+A list of deprecated libraries is also provided. These are generally older versions of libraries, with old names.
+
+At the bottom of the page (see [[#AllLibraries]]), there is a complete list of all of my libraries on the wiki, without descriptions. This is mainly for EmacsWiki search-indexing purposes (it uses format <code>Lisp:icicles.el</code> instead of <code>[[icicles.el]]</code>). 
+
+
+
+=== Which Emacs Version? ===
+
+I use several Emacs versions, including (yes) Emacs 20. If a particular feature in one of my libraries doesn't seem to work right for the Emacs version you use, please let me know. 
+
+Also, check the source code for conditional tests like these:
+
+   (< emacs-major-version 23)
+   (>= emacs-major-version 21)
+
+You can try to juggle the branches of such tests yourself -- that is, try different branches to see what works in your Emacs version. Let me know what works and what doesn't. -- Thanks.
+
+
+
+=== What's New? ===
+
+The newest of my libraries are these (in alphabetical order):
+
+* <tt>[[bindings+.el]]</tt> -- [[minor mode|Minor mode]] menus from the [[mode line]] -- see ModeLineMinorModeMenu
+* <tt>[[col-highlight.el]]</tt> -- highlight the current column; see HighlightCurrentColumn
+* <tt>[[crosshairs.el]]</tt> -- highlight the current line and the current column, like a pair of cross hairs, letting you easily locate the [[cursor]] -- see CrosshairHighlighting
+* <tt>[[cursor-chg.el]]</tt> -- automatically change the [[cursor]], depending on the context -- see ChangingCursorDynamically
+* <tt>[[cus-edit+.el]]</tt> -- extensions to standard library `cus-edit' to make Customize play better with the rest of Emacs -- see '''CustomizingAndSaving'''
+* <tt>[[diff-mode-.el]]</tt> -- extensions to standard library `diff-mode' -- see '''DiffEnhancements'''
+* <tt>[[dired-details+.el]]</tt> -- extensions to library Lisp:dired-details.el -- see '''DiredDetails'''
+* <tt>[[doremi-frm.el]]</tt> -- incrementally adjust [[frame]] properties using arrow keys and/or mouse wheel -- see also '''DoReMi'''
+* <tt>[[ediff+.el]]</tt> -- extensions to standard library `ediff': toggle case sensitivity (not needed for GNU Emacs 22 or later)
+* <tt>[[eyedropper.el]]</tt> -- pick up foreground or background colors
+* <tt>[[facemenu+.el]]</tt> -- extensions to standard library `facemenu' -- see '''FaceMenuPlus'''
+* <tt>[[ffap-.el]]</tt> -- extensions to standard library `ffap' (see FindFileAtPoint)
+* <tt>[[finder+.el]]</tt> -- extensions to standard library `finder'
+* <tt>[[find-func+.el]]</tt> -- extensions to standard library `find-func'
+* <tt>[[font-lock+.el]]</tt> -- extensions to standard library `font-lock' (see HighLight and FaceMenuPlus)
+* <tt>[[grep+.el]]</tt> -- extensions to standard library `grep'; see also '''GrepPlus'''
+* <tt>[[help-fns+.el]]</tt> -- extensions to standard library `help-fns'; see also '''HelpPlus'''
+* <tt>[[help-mode+.el]]</tt> -- extensions to standard library `help-mode'; see also '''HelpPlus''' and '''HelpModePlus'''
+* <tt>[[hexrgb.el]]</tt> -- functions for manipulating ''color'': hex RGB (red, blue, green) and HSV (hue, saturation, value) color components
+* <tt>[[highlight.el]]</tt> -- highlight text in various ways; hide/show sets of [[face]]s -- see HighLight
+* <tt>[[hl-line+.el]]</tt> -- extensions to standard library `hl-line' -- see HighlightCurrentLine
+* <tt>[[hl-spotlight.el]]</tt> -- spotlight the lines around the [[cursor]]; see [[Highlight#HlSpotlight|HL Spotlight]]
+* <tt>[[icicles.el]]</tt> and associated libraries -- extensions to `completing-read': [[minibuffer|Minibuffer]] input [[completion]] and cycling -- see '''[[Icicles]]'''
+* <tt>[[lacarte.el]]</tt> -- use the keyboard, with [[completion]] and cycling, to access [[menu bar]] menus -- see '''LaCarte'''
+* <tt>[[lib-requires.el]]</tt> -- list Emacs Lisp library dependencies (extends standard library `loadhist') -- see '''LibraryDependencies'''
+* <tt>[[ls-lisp+.el]]</tt> -- extensions to standard library `ls-lisp'
+* <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition'''
+* <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette'''
+* <tt>[[pp-c-l.el]]</tt> -- display Control-l characters in a pretty way -- see '''PrettyControlL'''
+* <tt>[[savehist-20+.el]]</tt> -- a version of `##savehist.el##' that works with Emacs 20, in addition to the later versions -- see SaveHist.
+* <tt>[[second-sel.el]]</tt> -- secondary-selection enhancements -- see '''[[SecondarySelection]]'''
+* <tt>[[synonyms.el]]</tt> -- search and browse a hyperlinked thesaurus -- see '''[[Synonyms]]'''
+* <tt>[[thing-cmds.el]]</tt> -- commands to select things near the [[cursor]] -- see '''ThingAtPointCommands'''
+* <tt>[[thumb-frm.el]]</tt> -- thumbnail frames: a fisheye view of your frames and an alternative to iconifying; see also '''FisheyeWithThumbs'''
+* <tt>[[tool-bar+.el]]</tt> -- extensions to standard library `toolbar'; see also '''ToolBar'''
+* <tt>[[zoom-frm.el]]</tt> -- commands to zoom a frame or buffer (change its font size) -- see also <tt>[[doremi-frm.el]]</tt> for alternatives
+
+I make minor changes to libraries often, so check for the latest versions.
+
+'''Tip:''' The best way to know what files have recently been uploaded to the ElispArea is to consult the recent uploads list: [http://www.emacswiki.org/elisp/changelog.html Recent uploads].
+
+
+
+=== Emacs 23 (and 22 (and 21 (and 20 (and ...)))) ===
+
+* <tt>[[apropos+.el]]</tt> -- extensions to standard library `apropos'
+* <tt>[[autofit-frame.el]]</tt> -- automatically fit each one-window frame to its buffer; see also '''[[Shrink-Wrapping Frames]]'''
+* <tt>[[autoload+.el]]</tt> -- extensions to standard library `autoload'
+* <tt>[[bookmark+.el]]</tt> -- extensions to standard library `bookmark'
+* <tt>[[browse-kill-ring+.el]]</tt> -- extensions to library `browse-kill-ring'
+* <tt>[[buff-menu+.el]]</tt> -- extensions to standard BufferMenu -- see '''BufferMenuPlus'''
+* <tt>[[cursor-chg.el]]</tt> -- automatically change the [[cursor]], depending on the context -- see ChangingCursorDynamically
+* <tt>[[cus-edit+.el]]</tt> -- extensions to standard library `cus-edit' to make Customize play better with the rest of Emacs -- see CustomizingAndSaving
+* <tt>[[def-face-const.el]]</tt> -- macro for defining [[face]]s & their variables; see also '''DefineFaceConstant''' (this library is now obsolete; just use `defface')
+* <tt>[[delsel.el]]</tt> -- improvements to standard libary `<code>delsel.el</code>' so it works better with `<code>completion.el</code>' 
+* <tt>[[dired+.el]]</tt> -- extensions to standard libraries `dired', `dired-aux', and `dired-x'; see also '''DiredPlus'''
+* <tt>[[dired-details+.el]]</tt> -- extensions to library Lisp:dired-details.el -- see '''DiredDetails'''
+* <tt>[[dired-sort-menu+.el]]</tt> -- extensions to library `dired-sort-menu', written by FrancisJWright
+* <tt>[[doremi.el]]</tt> -- incrementally adjust properties using arrow keys and/or mouse wheel; see also '''DoReMi'''
+* <tt>[[doremi-cmd.el]]</tt> -- miscellaneous DoReMi commands
+* <tt>[[doremi-frm.el]]</tt> -- incrementally adjust frame properties using arrow keys and/or mouse wheel
+* <tt>[[doremi-mac.el]]</tt> -- macro for defining DoReMi commands
+* <tt>[[ediff+.el]]</tt> -- extensions to standard library `ediff': toggle case sensitivity (not needed for GNU Emacs 22 or later)
+* <tt>[[eyedropper.el]]</tt> -- pick up foreground or background colors
+* <tt>[[facemenu+.el]]</tt> -- extensions to standard library `facemenu' -- see '''FaceMenuPlus'''
+* <tt>[[faces+.el]]</tt> -- extensions to standard library `faces'
+* <tt>[[ffap-.el]]</tt> -- extensions to standard library `ffap'
+* <tt>[[files+.el]]</tt> -- extensions to standard library `files'
+* <tt>[[finder+.el]]</tt> -- extensions to standard library `finder'
+* <tt>[[fit-frame.el]]</tt> -- resize (shrink-wrap) a frame to fit its selected window (buffer). See also '''[[Shrink-Wrapping Frames]]'''
+* <tt>[[frame-cmds.el]]</tt> -- frame and window commands (interactive functions); see also '''[[Frame Tiling Commands]]''', '''[[Iconifying, Deiconifying, and Hiding Frames]]''', '''[[Delete Frames Easily - But Not Too Easily]]''', and '''FrameModes'''
+* <tt>[[frame-fns.el]]</tt> -- non-interactive frame and window functions
+* <tt>[[frame+.el]]</tt> -- extensions to standard library `frame'
+* <tt>[[header2.el]]</tt> -- support for creation and update of file headers
+* <tt>[[hexrgb.el]]</tt> -- manipulate RGB (red, blue, green) and HSV (hue, saturation, value) color components
+* <tt>[[highlight.el]]</tt> -- highlighting commands; see also '''HighlightTemporarily'''
+* <tt>[[icicles.el]]</tt> and associated libraries -- extensions to `completing-read': MiniBuffer input [[Completion]] and cycling -- see '''[[Icicles]]'''
+** <tt>[[icicles.el]]</tt> -- driver library; contains the doc (##Commentary##)
+** <tt>[[icicles-chg.el]]</tt> -- change logs
+** <tt>[[icicles-cmd.el]]</tt> -- top-level commands (interactive functions)
+** <tt>[[icicles-doc1.el]]</tt> -- doc, part 1
+** <tt>[[icicles-doc2.el]]</tt> -- doc, part 2
+** <tt>[[icicles-face.el]]</tt> -- [[face]]s (customizable)
+** <tt>[[icicles-fn.el]]</tt> -- non-interactive functions
+** <tt>[[icicles-mac.el]]</tt> -- macros
+** <tt>[[icicles-mcmd.el]]</tt> -- minibuffer commands
+** <tt>[[icicles-mode.el]]</tt> -- ''Icicle'' mode definition
+** <tt>[[icicles-opt.el]]</tt> -- user options (customizable variables)
+** <tt>[[icicles-var.el]]</tt> -- internal variables
+
+* <tt>[[icomplete+.el]]</tt> -- extensions to standard library `icomplete'; see also '''IcompleteMode'''
+* <tt>[[imenu+.el]]</tt> -- extensions to standard library `imenu'; see also '''ImenuMode'''
+* <tt>[[info+.el]]</tt> -- extensions to standard library `info' -- see also '''InfoPlus'''
+* <tt>[[isearch+.el]]</tt> -- extensions to standard library `isearch'; see also '''IncrementalSearch'''
+* <tt>[[lacarte.el]]</tt> -- use the keyboard, with [[Completion]] and cycling, to access MenuBar menus -- see '''LaCarte'''
+* <tt>[[lib-requires.el]]</tt> -- list Emacs Lisp library dependencies (extends standard library `loadhist')
+* <tt>[[line-num.el]]</tt> -- display line numbers in left-margin of buffer
+* <tt>[[ls-lisp+.el]]</tt> -- extensions to standard library `ls-lisp'
+* <tt>[[macros+.el]]</tt> -- extensions to standard library `macros'
+* <tt>[[menu-bar+.el]]</tt> -- extensions to standard library `menu-bar'; see '''MenuBarPlus''' and '''HelpMenuBarPlus'''
+* <tt>[[misc-cmds.el]]</tt> -- miscellaneous commands (interactive functions); see also KillingBuffers, SecondarySelection, IsearchPlus, FindLongLines, DoubleKeyBinding, BackToIndentationOrBeginning, FileModes, and SequentialCommand.
+* <tt>[[misc-fns.el]]</tt> -- miscellaneous non-interactive functions
+* <tt>[[mouse+.el]]</tt> -- extensions to standard library `mouse' -- see MousePlus
+* <tt>[[novice+.el]]</tt> -- extensions to standard library `novice'
+* <tt>[[oneonone.el]]</tt> -- define a special multi-frame setup; see '''OneOnOneEmacs'''; see also '''[[Dedicated Minibuffer Frame]]''', '''[[Special Frames]]''', and '''[[Help and Completions Frames]]'''
+* <tt>[[pp+.el]]</tt> -- extensions to standard library `pp'
+* <tt>[[pp-c-l.el]]</tt> -- display Control-l characters in a pretty way -- see '''PrettyControlL'''
+* <tt>[[replace+.el]]</tt> -- extensions to standard library `replace'; see also '''OccurBuffer'''
+* <tt>[[ring+.el]]</tt> -- extensions to standard library `ring'; see also '''RingPlus'''
+* <tt>[[savehist-20+.el]]</tt> -- a version of `##savehist.el##' that works with Emacs 20, in addition to the later versions.
+* <tt>[[second-sel.el]]</tt> -- secondary-selection enhancements -- see '''[[SecondarySelection]]'''
+* <tt>[[setnu+.el]]</tt> -- extensions to standard library `setnu'
+* <tt>[[setup.el]]</tt> -- startup assignments: hooks etc.
+* <tt>[[setup-cygwin.el]]</tt> -- set up Emacs for using Cygwin (from Markus Hoenika)
+* <tt>[[setup-keys.el]]</tt> -- some key bindings
+* <tt>[[show-wspace.el]]</tt> -- commands to highlight whitespace: TABs, hard spaces, and trailing whitespace; see also '''ShowWhiteSpace'''
+* <tt>[[simple+.el]]</tt> -- extensions to standard library `simple'
+* <tt>[[start.el]]</tt> -- main Emacs startup file: require/autoload other files
+* <tt>[[start-opt.el]]</tt> -- some customizations to be done at the end of startup
+* <tt>[[strings.el]]</tt> -- miscellaneous string functions
+* <tt>[[synonyms.el]]</tt> -- search and browse a hyperlinked thesaurus -- see '''[[Synonyms]]'''
+* <tt>[[thingatpt+.el]]</tt> -- extensions to standard library `thingatpt'; see also '''ThingAtPoint'''
+* <tt>[[thing-cmds.el]]</tt> -- commands to select things near the [[cursor]] -- see '''ThingAtPointCommands'''
+* <tt>[[thumb-frm.el]]</tt> -- thumbnail frames: a fisheye view of your frames and an alternative to iconifying; see also '''FisheyeWithThumbs'''
+* <tt>[[w32-browser.el]]</tt> -- run Windows application associated with a file -- command `w-browser' 
+* <tt>[[w32browser-dlgopen.el]]</tt> -- use `w32browser' with standard Windows '''Open File''' box
+* <tt>[[wimpy-del.el]]</tt> -- require confirmation for large region deletion
+* <tt>[[window+.el]]</tt> -- extensions to standard library `window'
+* <tt>[[zoom-frm.el]]</tt> -- commands to zoom frame (change font size) -- see also <tt>[[doremi-frm.el]]</tt> and '''DoReMi''' for alternatives
+
+
+
+=== Emacs 22 or later (will not work in older versions) ===
+
+* <tt>[[bindings+.el]]</tt> -- [[minor mode|Minor mode]] menus from the [[mode line]] -- see ModeLineMinorModeMenu
+* <tt>[[col-highlight.el]]</tt> -- highlight the current column; see HighlightCurrentColumn
+* <tt>[[crosshairs.el]]</tt> -- highlight the current line and the current column, like a pair of cross hairs, letting you easily locate the [[cursor]] -- see CrosshairHighlighting
+* <tt>[[find-func+.el]]</tt> -- extensions to standard library `find-func'
+* <tt>[[font-lock+.el]]</tt> -- extensions to standard library `font-lock' (see HighLight and FaceMenuPlus)
+* <tt>[[grep+.el]]</tt> -- extensions to standard library `grep'; see also '''GrepPlus'''
+* <tt>[[help+.el]]</tt> -- extensions to standard library `help'; see also '''HelpPlus''' and '''HelpMenuBarPlus'''
+* <tt>[[help-fns+.el]]</tt> -- extensions to standard library `help-fns'; see also '''HelpPlus'''
+* <tt>[[hl-line+.el]]</tt> -- extensions to standard library `hl-line' -- see HighlightCurrentLine
+* <tt>[[hl-spotlight.el]]</tt> -- spotlight the lines around the [[cursor]]; see [[Highlight#HlSpotlight|HL Spotlight]]
+* <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition'''
+* <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette'''
+
+
+
+
+
+=== Emacs 21 and later (will not work in Emacs 20) ===
+
+* <tt>[[compile-.el]]</tt> -- extensions to standard library `compile'; see also '''GrepPlus'''
+* <tt>[[compile+.el]]</tt> -- extensions to standard library `compile'; see also '''GrepPlus'''
+* <tt>[[diff+.el]]</tt> -- extensions to standard library `diff'  -- see '''DiffEnhancements'''
+* <tt>[[diff-mode-.el]]</tt> -- extensions to standard library `diff-mode'  -- see '''DiffEnhancements'''
+* <tt>[[help-mode+.el]]</tt> -- extensions to standard library `help-mode'; see also '''HelpPlus''' and '''HelpModePlus'''
+* <tt>[[tool-bar+.el]]</tt> -- extensions to standard library `tool-bar'; see also '''ToolBar'''
+
+
+
+
+=== Emacs 20 (some are just not yet tested with Emacs 21 and later) ===
+
+* <tt>[[compile-20.el]]</tt> -- extensions to standard library `compile' for versions prior to Emacs 22; see also '''GrepPlus'''
+* <tt>[[compile+20.el]]</tt> -- extensions to standard library `compile' for versions prior to Emacs 22; see also '''GrepPlus'''
+* <tt>[[diff+20.el]]</tt> -- extensions to standard library `diff' for versions prior to Emacs 22 -- see '''DiffEnhancements'''
+* <tt>[[emacs-init.el]]</tt> -- my InitFile -- '''''the commentary explains how to use my libraries'''''
+* <tt>[[find-dired-.el]]</tt> -- extensions to standard library `find-dired'
+* <tt>[[find-dired+.el]]</tt> -- extensions to standard library `find-dired'
+* <tt>[[help-macro+.el]]</tt> -- extensions to standard library `help-macro'
+* <tt>[[help+20.el]]</tt> -- extensions to standard library `help'; see also '''HelpPlus''' and '''HelpMenuBarPlus'''
+* <tt>[[mkhtml.el]]</tt> -- create HTML with links (extensions to library `htmlize'); see also '''SaveAsHtml'''
+* <tt>[[options+.el]]</tt> -- extensions to standard library `options'
+* <tt>[[outline+.el]]</tt> -- extensions to standard library `outline'
+* <tt>[[timer+.el]]</tt> -- extensions to standard library `timer'
+* <tt>[[unaccent.el]]</tt> -- functions dealing with accented characters
+* <tt>[[vc-.el]]</tt> -- extensions to standard library `vc'
+* <tt>[[vc-hooks+.el]]</tt> -- extensions to standard library `vc-hooks'
+* <tt>[[vc+.el]]</tt> -- extensions to standard library `vc'
+
+
+
+
+[:DeprecatedLibraries]
+=== Deprecated Libraries ===
+
+These libraries have been deprecated. In many cases, they have simply been renamed (for various reasons, including adherence to GNU naming standards).
+
+* <tt>[[apropos-plus.el]]</tt> -- replaced by '''<tt>[[apropos+.el]]</tt>'''
+* <tt>[[autoload-plus.el]]</tt> -- replaced by '''<tt>[[autoload+.el]]</tt>'''
+* <tt>[[auto-resize-frames.el]]</tt> -- replaced by '''<tt>[[autofit-frame.el</tt>'''
+* <tt>[[bookmark-plus.el]]</tt> -- replaced by '''<tt>[[bookmark+.el]]</tt>'''
+* <tt>[[browse-kill-ring-plus.el]]</tt> -- replaced by '''<tt>[[browse-kill-ring+.el]]</tt>'''
+* <tt>[[buff-menu-plus.el]]</tt> -- replaced by '''<tt>[[buff-menu+.el]]</tt>'''
+* <tt>[[calendar-plus.el]]</tt> -- replaced by '''<tt>[[calendar+.el]]</tt>'''
+* <tt>[[cc-mode-plus.el]]</tt> -- replaced by '''<tt>[[cc-mode+.el]]</tt>'''
+* <tt>[[compile-plus.el]]</tt> -- replaced by '''<tt>[[compile+.el]]</tt>'''
+* <tt>[[compile-plus-twenty.el]]</tt> -- replaced by '''<tt>[[compile+20.el]]</tt>'''
+* <tt>[[compile-twenty.el]]</tt> -- replaced by '''<tt>[[compile-20.el]]</tt>'''
+* <tt>cus-edit-plus.el]]</tt> -- replaced by '''<tt>[[cus-edit+.el]]</tt>'''
+* <tt>[[diff-mode-plus.el]]</tt> -- replaced by '''<tt>[[diff-mode-.el]]</tt>'''
+* <tt>[[diff-plus.el]]</tt> -- replaced by '''<tt>[[diff+.el]]</tt>'''
+* <tt>[[diff-plus-twenty.el]]</tt> -- replaced by '''<tt>[[diff+20.el]]</tt>'''
+* <tt>[[dired-plus.el]]</tt> -- replaced by '''<tt>[[dired+.el]]</tt>'''
+* <tt>[[do-re-mi.el]]</tt> -- replaced by '''<tt>[[doremi.el]]</tt>'''
+* <tt>[[do-re-mi-cmds.el]]</tt> -- replaced by '''<tt>[[doremi-cmd.el]]</tt>'''
+* <tt>[[do-re-mi-frames.el]]</tt> -- replaced by '''<tt>[[doremi-frm.el]]</tt>'''
+* <tt>[[do-re-mi-macro.el]]</tt> -- replaced by '''<tt>[[doremi-mac.el]]</tt>'''
+* <tt>[[elect-mbuf.el]]</tt> -- replaced by '''<tt>[[icicles.el]]</tt>'''
+* <tt>[[faces-plus.el]]</tt> -- replaced by '''<tt>[[faces+.el]]</tt>'''
+* <tt>[[files-plus.el]]</tt> -- replaced by '''<tt>[[files+.el]]</tt>'''
+* <tt>[[find-dired-plus.el]]</tt> -- replaced by '''<tt>[[find-dired+.el]]</tt>'''
+* <tt>[[frame-plus.el]]</tt> -- replaced by '''<tt>[[frame+.el]]</tt>'''
+* <tt>[[grep-.el]]</tt> -- replaced by '''<tt>[[grep+.el]]</tt>'''
+* <tt>[[help-plus.el]]</tt> -- replaced by '''<tt>[[help+.el]]</tt>'''
+* <tt>[[help-macro-plus.el]]</tt> -- replaced by '''<tt>[[help-macro+.el]]</tt>'''
+* <tt>[[help-mode-plus.el]]</tt> -- replaced by '''<tt>[[help-mode+.el]]</tt>'''
+* <tt>[[hex-rgb.el]]</tt> -- replaced by '''<tt>[[hexrgb.el]]</tt>'''
+* <tt>[[icicles-cmd.el]]</tt> -- replaced by '''<tt>[[icicles-cmd1.el]]</tt>''' and '''<tt>[[icicles-cmd2.el]]</tt>'''
+* <tt>[[icomplete-plus.el]]</tt> -- replaced by '''<tt>[[icomplete+.el]]</tt>'''
+* <tt>[[imenu-plus.el]]</tt> -- replaced by '''<tt>[[imenu+.el]]</tt>'''
+* <tt>[[info-plus.el]]</tt> -- replaced by '''<tt>[[info+.el]]</tt>'''
+* <tt>[[isearch-plus.el]]</tt> -- replaced by '''<tt>[[isearch+.el]]</tt>'''
+* <tt>[[macros-plus.el]]</tt> -- replaced by '''<tt>[[macros+.el]]</tt>'''
+* <tt>[[menu-bar-plus.el]]</tt> -- replaced by '''<tt>[[menu-bar+.el]]</tt>'''
+* <tt>[[mouse-plus.el]]</tt> -- replaced by '''<tt>[[mouse+.el]]</tt>'''
+* <tt>[[novice-plus.el]]</tt> -- replaced by '''<tt>[[novice+.el]]</tt>'''
+* <tt>[[options-plus.el]]</tt> -- replaced by '''<tt>[[options+.el]]</tt>'''
+* <tt>[[outline-plus.el]]</tt> -- replaced by '''<tt>[[outline+.el]]</tt>'''
+* <tt>[[pp-plus.el]]</tt> -- replaced by '''<tt>[[pp+.el]]</tt>'''
+* <tt>[[replace-plus.el]]</tt> -- replaced by '''<tt>[[replace+.el]]</tt>'''
+* <tt>[[ring-plus.el]]</tt> -- replaced by '''<tt>[[ring+.el]]</tt>'''
+* <tt>[[rebind-icicle-maps.el]]</tt> -- replaced by '''<tt>[[oneonone.el]]</tt>'''
+* <tt>[[rebind-mbuf-maps.el]]</tt> -- replaced by '''<tt>[[oneonone.el]]</tt>'''
+* <tt>[[resize-frame.el]]</tt> -- replaced by '''<tt>[[fit-frame.el]]</tt>'''
+* <tt>[[setnu-plus.el]]</tt> -- replaced by '''<tt>[[setnu+.el]]<[tt>'''
+* <tt>[[setup-frames.el]]</tt> -- replaced by '''<tt>[[oneonone.el]]</tt>'''
+* <tt>[[setup-info.el]]</tt> -- replaced by just '''<tt>[[info+.el]]</tt>'''
+* <tt>[[simple-plus.el]]</tt> -- replaced by '''<tt>[[simple+.el]]</tt>'''
+* <tt>[[sort-plus.el]]</tt> -- replaced by '''<tt>[[sort+.el]]</tt>'''
+* <tt>[[shrink-fit.el]]</tt> -- replaced by '''<tt>[[fit-frame.el]]</tt>'''
+* <tt>[[shrink-fit-all.el]]</tt> -- replaced by '''<tt>[[autofit-frame.el]]</tt>'''
+* <tt>[[thingatpt-plus.el]]</tt> -- replaced by '''<tt>[[thingatpt+.el]]</tt>'''
+* <tt>[[timer-plus.el]]</tt> -- replaced by '''<tt>[[timer+.el]]</tt>'''
+* <tt>[[tool-bar-plus.el]]</tt> -- replaced by '''<tt>[[tool-bar+.el]]</tt>'''
+* <tt>[[vc-plus.el]]</tt> -- replaced by '''<tt>[[vc+.el]]</tt>'''
+* <tt>[[vc-hooks-plus.el]]</tt> -- replaced by '''<tt>[[vc-hooks+.el]]</tt>'''
+* <tt>[[wthreetwo-browser.el]]</tt> -- replaced by '''<tt>[[w32-browser.el]]</tt>'''
+* <tt>[[w-browser.el]]</tt> -- replaced by '''<tt>[[w32-browser.el]]</tt>'''
+* <tt>[[wthreetwobrowser-dlgopen.el]]</tt> -- replaced by '''<tt>[[w32browser-dlgopen.el]]</tt>'''
+* <tt>[[window-plus.el]]</tt> -- replaced by '''<tt>[[window+.el]]</tt>'''
+
+[:LibraryNames]
+=== Library Names ===
+
+In many cases, I wrote an extension of a standard GNU library (or sometimes an external library) that was called, say, <code>foo.el</code>. I named the extension library <code>foo+.el</code>. The `<code>+</code>' generally means that the library should be loaded after the standard library.
+
+In a couple of cases, I wrote a library to be loaded ''before'' a standard library; these libraries are named with a `-', as in <code>foo-.el</code>. 
+----
+
+[:HowToUseDrewsLibraries]
+== How To Use My Libraries ==
+
+'''See Also:''' [[#LibraryNames]] for information on the library naming conventions used.
+
+[:TryItAll]
+=== Try It All! ===
+
+You can of course use pieces of my code. But to get the best idea of it, try it all together:
+
+: Copy, then open <tt>[[emacs-init.el]]</tt> in Emacs, and read it: it explains everything (let me know, if it doesn't). Skip most of the intro-to-emacs stuff, and read the instructions before each piece of code. 
+
+In particular:
+
+* Create a directory for my libraries, and add that directory to your <code>load-path</code> by changing the <code>defvar</code> assignment of variable `drews-lisp-dir' in <tt>[[emacs-init.el]]</tt>.
+
+* Comment-out the code that adds <code>CONTRIB</code> libraries to the `load-path'. This refers to libraries I didn't write, but I find useful (and I reference in my code). If you have some of these libraries, then adapt the code so they are in your `load-path' (if not so already).
+
+* For the most part, just set local paths that are appropriate, but (to try it all out) leave the other settings as is. In particular, don't uncomment `<code>(defvar 1on1-separate-minibuffer-frame-flag nil)</code>'.
+
+* Back up your emacs InitFile, then use my <tt>[[emacs-init.el]]</tt> as your init file.
+
+'''''Note:''''' Library <tt>[[emacs-init.el]]</tt> is not 100% up-to-date, but it should get you started. Let me know of any problems you have with it.
+
+=== Try Some Of It ===
+
+See [[#TryItAll]], then uncomment or comment-out blocks of code in <tt>[[emacs-init.el]]</tt>. Really, that's the best way to go.
+
+For finer tuning, change other user variables, besides those in <tt>[[emacs-init.el]]</tt>. You'll find them in the various library files (see [[#DrewsLibraries]]).
+
+
+[:LibraryDependencies]
+=== Library Dependencies ===
+
+In the file header of each of my libraries, you will see a statement like this one from <tt>[[oneonone.el]]</tt>:
+
+: ##;; Features that## '''''##might##''''' ##be required by this library:##
+
+     ;;   `avoid', `cl', `files+', `frame-cmds', `frame-fns', `hexrgb',
+     ;;   `misc-fns', `oneonone', `strings', `thingatpt', `thingatpt+',
+     ;;   `zoom-frm'.
+
+This does ''not'' mean that the library in question strictly requires that you also load all of those libraries. The operative word here is "''might''".  This is a statement of ''maximum possible'' use, not a statement of strict requirement. It says that there are at most 11 other libraries that this library (##oneonone.el##) can take advantage of. It flattens the maximal `require' tree for you, to let you know what other features you might want to add to this library -- features that it was specifically designed to exploit.
+
+This file-header statement is derived automatically by unraveling `require's from a fully-loaded Emacs, when I save the file. It is based on my own use of all of the optional, or "soft", `require's in the library in question and, recursively, on the files that they in turn soft-`require'. The code that generates that file-header statement is in <tt>[[lib-requires.el]]</tt> and <tt>[[header2.el]]</tt>.
+
+To determine the libraries that are ''strictly required'' by a given library, you must follow its `require' tree yourself, ignoring any soft `require's, that is, `require's that have a non-`nil' third argument: ##(require 'foo nil## '''''##t##'''''). 
+
+One way to do that is to load the library and see what missing-feature errors you get, load those libraries, and iterate until you get no more load errors. In this case, the only library strictly required by the library in question, ##oneonone.el##, is ##hexrgb.el##. So, loading just ##oneonone.el## will give you a missing-feature error for ##hexrgb.el##, and loading ##hexrgb.el## and then ##oneonone.el## raises no errors.
+
+That said, I encourage you to try the fully-loaded versions of my libraries. 
+I think you'll find that the time you spend downloading the additional libraries that are not strictly required was time well spent.
+
+
+
+
+
+----
+
+[:Discussion]
+== Your Feedback (Discussion) ==
+
+This space is for ongoing discussion.
+
+'''See also:''' OldDiscussionDrewsLibraries for older discussions.
+
+
+----
+
+dired+.el (w32):
+
+If I use the ls switch -R the empty lines between the directories are marked with diredp-flag-mark (i.e. Blueviolet).
+
+[new:DrewAdams:2008-12-18 00:06 UTC]
+Should be fixed now. Actually, I looked at that as a feature, but I agree that it's probably better without it. Thx. -- DrewAdams
+
+----
+
+[new]
+I gave up trying out <tt>[[thumb-frm.el]]</tt> because i got lost in the all the dependencies: doremi, ring+, hexrgb, etc. Maybe you could at some links to needed elisp files -- VagnJohansen
+[new:DrewAdams:2004-12-26 18:00 UTC]
+: I sympathize with you, Vagn, but I don't know of a royal road...
+: I think the best approach to libraries is the one I've adopted: Each library indicates explicitly only the libraries it explicitly (lexically) requires. If library A requires B, which requires C, so be it. I don't believe it makes much sense to indicate all of the recursive dependencies explicitly in each library (e.g. show in A that A ultimately requires C, as well as B).
+
+: To make things as clear and easy as possible, I do the following, in addition:
+
+** Use "soft" requires whenever possible. For example, library Lisp:frame-cmds.el softly requires Lisp:strings.el -- if the latter is not loaded, there is no problem (you might lose some bells and whistles, but that's all).
+
+** Indicate explicitly (by hand) each of the functions and variables that are actually used from the required libraries. I don't know of others who go to this trouble, but I think it helps those who read or reuse my code (and it helps me in maintaining the code). If, for some reason, you don't care about some such "imported" entity, you can modify the code to remove the require and do without it. Or, if you don't want everything else in some required library, you can just copy the definitions of the indicated required entities. Emacs Lisp has no explicit module "import" feature where you can programmitically specify which entities are imported (used) from given libraries, but these code comments should help.
+
+: Let me know if you have a suggestion of how better to deal with library dependencies. And let me know if you see errors in a set of `require's or in my comments regarding which imported entities are used. 
+
+: FWIW, it took me all of '''3''' minutes, working with a virgin emacs (<code>emacs -q</code>), to look at the `require's in the code (starting with Lisp:thumb-frm.el) and load the needed libraries. FYI, I loaded the following libraries -- those in parentheses (`'''( )'''') are optional (soft `require's); those in braces (`'''{ }'''') are standard GNU libraries:
+
+** '''( {''' avoid.el '''} )'''
+** Lisp:doremi.el
+** Lisp:doremi-frm.el
+** Lisp:faces+.el
+** Lisp:frame-cmds.el
+** Lisp:frame-fns.el
+** Lisp:hexrgb.el
+** '''(''' Lisp:icomplete+.el ''')'''
+** '''( {''' mwheel.el '''} )'''
+** '''{''' ring.el '''}'''
+** Lisp:ring+.el
+** '''(''' Lisp:strings.el ''')'''
+** '''(''' Lisp:thingatpt+.el ''')'''
+** Lisp:thumb-frm.el
+
+: Of course, I already had all the libraries in my `load-path'. It would take some time for you to download them and put them in your `load-path', admittedly. Finding which libraries you need should not be difficult, however -- that is my point above.
+
+: Library Lisp:setup-keys.el makes the key bindings suggested in Lisp:thumb-frm.el (along with lots of other bindings) -- but you can just add them to your `<code>.emacs</code>' if you don't want the additional bindings.
+
+: There may be an Emacs Lisp function somewhere that tracks library dependencies. That would help you come up with the list of libraries ultimately needed by a given library. Otherwise, I'm afraid I can't help you more -- it doesn't get any easier than this. -- DrewAdams
+
+[new:DrewAdams:2005-01-01 01:12 UTC]
+Thanks to you, Vagn, I looked into programmatically deriving info on library dependencies, and came up with some code to do the trick. The result is library Lisp:lib-requires.el, which extends the functionality in standard library `loadhist' -- see LibraryDependencies.
+
+One of the commands in `<code>lib-requires.el</code>' is `insert-lib-requires-as-comment', which inserts a comment listing ''all'' of the libraries ultimately required by the current file (that is, recursively).
+
+Since then, I've used `insert-lib-requires-as-comment' to add such a comment to ''each'' of my libraries. For `<code>thumb-frm.el</code>' this is it:
+
+ ;;  Library `thumb-frm' requires these libraries:
+ ;;
+ ;;    `avoid', `doremi', `doremi-frm', `faces', `faces+', `frame-cmds',
+ ;;    `frame-fns', `hexrgb', `icomplete', `icomplete+', `mwheel', `ring',
+ ;;    `ring+', `strings', `thingatpt', `thingatpt+'.
+
+I've corrected my previous entry, above, which was missing soft-require `<code>thingatpt+.el</code>' -- more proof that programs are better than I at fastidious details.
+
+Although it's a real help to have such a list derived programmically, keep in mind that such lists make ''no distinction between hard and soft'' `require's (I know of no way to do that programmatically, due to the nature of `load-history'). In the case of `<code>thumb-frm.el</code>', as I indicated above, these libraries are not really required: `avoid', `<code>icomplete+</code>', `icomplete', `mwheel', `strings', `<code>thingatpt+</code>', and `thingatpt'. -- DrewAdams
+
+
+----
+
+[new]
+When using your libraries it looks like the minibuffer is often raised without my doing anything. Suppose, for example, that I have three frames: the speedbar, the minibuffer, and a frame visiting an emacs lisp file. If I have selected the speedbar and then click on the frame for the emacs lisp file, the focus will automatically shift to the minibuffer, which says "Refreshing speedbar...done". Editing commands such as `C-n' are carried out within the minibuffer rather than in the frame with the emacs lisp file. Similarly, when opening a file via the "File" menu (more precisely, when opening a file using "Open recent" and selecting a recently opened file), the result is a new frame for that file, but the minibuffer frame is raised.  How can I prevent the minibuffer from being so selfish? --JesseAlama
+
+[new:DrewAdams:2005-12-31 20:33 UTC]
+: For me to track things down, I need more specific instructions, starting from <tt>emacs -q</tt>. For instance, ''which'' of my libraries did you use? How did you load them (e.g. what order)? What OS are you on? What version of Emacs?
+
+: (Frame selection is weird in Windows, for instance: each frame-creation selects the frame. I consider Emacs to be bugged in this regard, and there is no simple solution until that's fixed.)
+
+: What you describe seems to have only to do with Speedbar, not my code (I don't do anything like "refresh" speedbar), but I'll need more detail to check it out.
+
+: I don't think that my code is doing the minibuffer-frame selection, but, again, you'll have to go slowly and tell me just what operations you do etc. Try one thing at a time. Give me specific instructions to reproduce one of the problems, and I'll take a look.
+
+: It's important to start from emacs -q, and not load any other libraries that you usually load, in order to isolate a problem. Especially since I'm here and you're there. If it turns out that the problem comes from some other code you load or execute in your InitFile, I'll have no luck finding the problem. Likewise, if it turns out to be an interaction between other code you run and my code. IOW, try to isolate each problem to a minimum set of libraries and steps to reproduce it. Otherwise, there is no hope -- neither you nor I would have the time to debug a giant sack of stuff, any parts of which might interact with other parts. 
+
+: Keep it simple, and we'll make progress. At the very worst (if a problem cannot be fixed easily), you'll at least learn which things to avoid doing or avoid using. Instead of an all-or-nothing approach, let's find out which parts of my code you might be able to use, and which parts I might be able to fix.
+
+: Thanks for your report -- I look forward to some additional and more specific observations. -- DrewAdams
+
+[new]
+:: Sorry for the lack of detail; I should have been more specific.  I'm running Mac OS X 10.4.2, emacs 22 (from cvs) as a Mac OS X app (the "carbon" port of emacs).  I was using "all" your libraries in the sense that I used your Lisp:emacs-init.el as my initialization file, with the only change being that your `(require 'gnuserv)' was replaced by `(require 'server)'.  You're right that it's possible that some other libraries were messing things up, since I hadn't disabled the loading of my site-start file.  Here's what happens with the speedbar when I start emacs with the command `emacs --no-site-file -q -l emacs-init.el': three frames (*scratch*, the minibuffer, and speedbar) pop up.  The frame whose sole window corresponds to the scratch buffer is raised.  If I click on the "File" menu, go to "Open recent", and select a file, the file opens up in the frame in which the *scratch* buffer was visible, and then the focus shifts to the minibuffer.  If I then click the mouse in the frame whose sole window corresponds to the buffer visiting the file that I opened, the speedbar gets refreshed and then the minibuffer frame is raised again.
+
+:: Thanks for your help and patience!  --JesseAlama
+
+[new:DrewAdams:2006-01-04 22:19 UTC]
+::: Sorry, I didn't notice your reply above before now. I don't know what to do to reproduce this. If I can help, you will need to narrow things down a lot more -- there is just too much code loaded by Lisp:emacs-init.el to determine where the problem is. 
+
+::: My intuition tells me that this is a Mac thing, and probably doesn't have anything to do with my code -- but my intuition has been wrong before.
+
+::: Suggestions: 1) First, try without speedbar (comment out the speedbar initialization in Lisp:start-opt.el). See if that changes anything. Speedbar does weird things on timers, IIRC. 2) Second, try not loading Lisp:start-opt.el. See if that changes anything. 3) Try emacs -q, then go through Lisp:emacs-init.el, evaling sections of code (via `eval-region').  4) If you get to the place in Lisp:emacs-init.el where Lisp:start.el is loaded, then go through that file the same way, eval'ing blocks of code. The idea is to determine which code (e.g which library load) causes the problem.
+
+::: I don't have the latest Emacs 22, and I'm not on Mac, so my testing is not the same as yours. Emacs 22 changes all the time, and it's possible that either 1) some "improvement" breaks my existing code or 2) the version you have is bugged, or both ;-).
+
+::: You must get to a place where loading some particular library (not Lisp:start.el) or executing some particular code makes the difference. Then I can take a closer look. And then, even if we don't find and fix the particular bug, at least you'll know what library to avoid.
+
+::: For me to be able to help, I need more specific info. Good luck. -- DrewAdams
+
+[new]
+I too suspect that this is a Mac-specific problem.  I just tried solution (1): not loading speedbar.  That didn't solve the problem of having the minibuffer frame raised once the file is opened, rather than the frame corresponding to that newly-opened file.  More generally, I noticed that the minibuffer frame is raised apparenly whenever a message is generated.  I also tried solution (2): not loading start-opt.el.  The problem still exists.  I tried solutions (3) and solution (4); to my surprise, I don't see the problems when I start up a vanilla emacs with emacs -q --no-site-file and then load your emacs-init.el!  So there's some essential difference between loading your emacs-init.el after emacs has started and using it as my emacs initialization file. --JesseAlama
+
+[new:DrewAdams:2006-01-05 04:39 UTC]
+: Yes, there is at least one difference, due to the way Emacs starts up if you have defined a standalone minibuffer -- if so, it doesn't create a minibuffer in the first frame. Try this, to see if using a standalone minibuffer is part of the problem:
+
+: 1) save your InitFile (always)
+: 2) do just this in a new InitFile (along with setting your `load-path'): ##(require 'oneonone)##
+
+: That should get rid of the difference I describe above. Then, if the problem is not yet manifest, continue to eval stuff in Lisp:emacs-init.el, trying to isolate the cause of the problem.
+
+: If it is a Mac-specific problem I probably won't be able to help much, especially since you are running with the latest CVS snapshot all around. But keep me posted; I might have some suggestions.
+
+: One other thing to try, to see if it's a bug in recent CVS files, is to use an older version of Emacs. If you can find a Mac binary somewhere, that would be a quick thing to check. 
+
+: As it is now, you are juggling far too many variables to be able to tell what the culprit is -- you must reduce the number of libraries that you're using, to eliminate background noise. Trying to test by putting everything in a giant sack and shaking is a recipe for failure. Good luck! -- DrewAdams
+
+
+----
+[new]
+Hello Drew,
+I've noticed apropos-fn+var is doing something bad.
+"C-h a" produce this output to minibuf and *Messages*:
+<pre>
+Loading apropos-fn+var (source)...done
+apropos-command: Wrong number of arguments: (lambda (do-keys spacing &optional text) (if (null apropos-accumulator)....
+(substitute-command-keys "and type \\[apropos-follow] to get full documentation.
+
+")) (if text (insert text "
+
+")) (while (consp p) ....
+(setq apropos-accumulator nil))), 4
+</pre>
+I replased long lines by "...." if you need them just let me know.
+Emacs 22 cvs 2006-02-08 msvc build.
+
+Thanks,
+AndreyZ
+
+[new:DrewAdams:2006-03-03 20:36 UTC]
+
+: It looks like they've changed standard library `##apropos.el##' again, adding another argument to function `apropos-print'. I've uploaded a new version of <tt>[[apropos-fn+var.el]]</tt>, which should work OK. Let me know if you have any problems with it. -- DrewAdams
+
+[new]
+Thank you! That was fast. -- Andrey Zhdanov
+
+----
+[new]
+Hello Drew! That's me again :-) autofit-frame.el does not allow bookmark's logic to work correctly if target bookmark is in the same buffer. Here is the code:
+<pre>
+bookmark.el:1072
+  (let ((cell (bookmark-jump-noselect bookmark)))
+    (and cell
+         (switch-to-buffer (car cell)) *<--- that gets nil*
+         (goto-char (cdr cell))
+
+autofit-frame.el:339
+(and (one-window-p t)
+         (not (eq buffer orig-buf))     ; Don't resize if same buffer.
+         *^^^^^^^ that's where nil comes from*
+</pre>
+
+Thanks,
+AndreyZ
+
+[new:DrewAdams:2006-03-08 04:33 UTC]
+: Wow! I'm amazed I never caught that before. There must not be much Emacs-Lisp code that depends on the return value of `switch-to-buffer'. Thanks very much. Great bug report -- you did all the work. -- DrewAdams
+
+[new]
+No Problem! Thanks for your great work of making emacs better. -- Andrey Zhdanov
+
+
+----
+[new]
+Drew, first thanks for all the great work you have done with your libraries.
+
+I have tried your InitFile with two different versions of emacs.  I got it to work with emacs 21.4.1 on Ubuntu GNU/Linux but had to comment out a line in setup-keys.el because I was getting an "Invalid modifier in string" error when loading that file.  The offending line is:
+<pre>
+setup-keys.el:346
+   (global-set-key "\M-\C-\ "  'mark-thing)
+</pre>
+
+When trying the same InitFile and libraries with emacs 22.0.93.1, I get a 'wrong-type-argument.'  The relevant lines are:
+<pre>
+Debugger entered--Lisp error: (wrong-type-argument arrayp nil)
+  aset(nil 12 [95 95 95 95 95 95 95 95 95 95 32 83 101 99 116 105 111 110 32 40 80 114 105 110 116 97 98 108 101 32 80 97 103 101 41 32 95 95 95 95 95 95 95 95 95 95])
+  1on1-emacs()
+  eval-buffer(#<buffer  *load*<3>> nil "/home/fisal/elisp/setup.el" nil t)  ; Reading at buffer position 5436
+</pre>
+
+I realize 22.0.93.1 is the development version but I thought you would be interested in finding out that there are issues trying to use your libraries with the latest emacs.  The libraries I am using were last updated by you January 19, 2007 and later.  The ones I am loading are:
+autofit-frame.el  dired+.el      eyedropper.el  frame+.el     help-mode+.el    misc-fns.el  setup.el        start.el~      thumb-frm.el
+buff-menu+.el     doremi-cmd.el  facemenu+.el   frame-fns.el  hexrgb.el        mouse+.el    setup-keys.el   start-opt.el   tmp
+compile-.el       doremi.el      faces+.el      grep+.el      info+.el         oneonone.el  setup-keys.el~  strings.el     window+.el
+compile+.el       doremi-frm.el  fit-frame.el   header2.el    lib-requires.el  replace+.el  simple+.el      thingatpt+.el  zoom-frm.el
+diff-mode-.el     emacs-init.el  frame-cmds.el  help+.el      menu-bar+.el     ring+.el     start.el        thing-cmds.el
+
+-- FidelSalas
+
+[new:DrewAdams:2007-02-04 06:59 UTC]
+: Thanks for your clear report, Fidel. It should be OK now -- let me know. I too use Emacs 22.0.93.1, but I usually compile the libraries using Emacs 20, so I didn't notice this problem. 
+
+: BTW, I can tell by the list of libraries you gave that I hadn't updated <tt>[[emacs-init.el]]</tt> in quite a while -- '''[[Icicles]]''' was missing! I updated <tt>[[emacs-init.el]]</tt> just now. Thx -- DrewAdams
+
+[new]
+Drew, thanks for your fast reply.  I assume from your response that things should now work with Emacs 22.0.93.1 but I can't find an updated oneone.el file.  I downloaded the most recent emacs.init and setu-keys files. Thanks again. -- FidelSalas
+
+[new:DrewAdams:2007-02-04 22:44 UTC]
+: Yes, I think that the bug is fixed. Let me know if that is not the case. The latest version of <tt>[[oneonone.el]]</tt> is update #2101, dated Fri Jan 19 21:20:13 2007. -- DrewAdams
+
+[new]
+I still get the wrong-type-argument error when 1on1-emacs gets called. -- FidelSalas
+
+[new:DrewAdams:2007-02-05 05:51 UTC]
+: Sorry, I misunderstood. Please try the latest version of <tt>[[oneonone.el]]</tt>. Apparently, the `standard-display-table' is `nil' by default! -- DrewAdams
+
+[new]
+Drew, it works now.  Thanks a lot.  -- FidelSalas
+
+----
+
+[new]
+Is there any tarballs (e.g. icicles.tar.gz), so that the user can easily obtain up-to-date icicle files at once? -- SeijiZenitani
+
+[new:DrewAdams:2007-03-19 14:39 UTC]
+: This FAQ is addressed at [[IciclesIssues#IciclesTarball]]. Here is a script that should download all '''Icicles''' libraries: [[Icicles - Libraries#BulkIciclesDownload]]. -- DrewAdams
+
+[new]
+: I see. Thank you! -- SeijiZenitani
+
+[new]
+: zip of the Icicles libraries is up, see [[Icicles.zip]]. Be aware this is not updated automatically, so it might be out of date, but it can get you started. -- [[leooo]]
+
+: However, a major problem is this: just which groups of files should be in a zip? The '''[[Icicles]]''' libraries are one obvious candidate (a natural grouping of files), but other groupings are not so obvious. And '''Icicles''' files, in particular, change often. Still, an '''Icicles''' zip archive could be useful in the same way that the download scripts can be useful. -- DrewAdams
+
+----
+
+[new]
+Hi Drew. I really like your library collection. But, I prefer the classic single window/multi-frame setup. Is there some way to disable all frames used in your libs?  -- Tennis
+
+[new:DrewAdams:2008-01-05 23:44 UTC]
+Hi Tennis. I'm not sure what you mean. Only a few of my libraries involve using non-`nil' `pop-up-frames'. Obviously, if you use a library designed specifically for that, it won't fit your preference. But most of the libraries should not be a problem -- they should not, in any case, ''impose'' any particular use of frames. Can you let me know which, in particular, you are having trouble with? Perhaps there is a bug. Thx -- DrewAdams
+
+[new]
+Thanks for the quick reply, Drew. Apologies for not being clearer. :) Here's what I'm doing:
+# I checked out a copy of all the wiki code, which includes all your libs (see [http://www.emacswiki.org/cgi-bin/wiki/ElispArea#toc4]).
+# Replaced my '.emacs' with your 'emacs-init.el' and renamed it to '.emacs'
+# Edited the new .emacs to suppress all frame-related items.
+# Restarted.
+
+At this point, I still got separate frames for everything.  I can send copies of my edits, if you like.
+
+I am using
+<pre>
+This is GNU Emacs 22.0.990.1 (i386-mingw-nt5.1.2600)
+ of 2007-05-23 on LENNART-69DE564 (patched)
+</pre>
+
+--Tennis 
+
+PS - If I remove all customization of any kind (.emacs/.emacs_customization, .recentf. .emacs-places, etc.) and try this on either win32 or linux fedora 7, I also get:
+<pre>
+error: Recursive `require' for feature `icicles'
+</pre>
+
+[new:DrewAdams:2008-01-06 21:52 UTC]
+OK. We'll need to attack it one thing at a time.
+
+'''1.''' Wrt the '''Icicles''' recursive `require' problem -- Please try to debug this separately, and try this first, before tackling ##emacs-init.el## with everything that it loads (including '''Icicles'''). 
+
+There should be no dependency problems among '''Icicles''' files. Make sure you have the latest versions of all of the files, and remove any compiled versions. (You can compile again after things are working OK.) 
+
+Then start with a ##.emacs## that does nothing except (1) set the `load-path' to a directory that contains the '''Icicles''' libraries, (2) sets `debug-on-error' to `t', and (3) does ##(require 'icicles)##. Let me know what the debugger backtrace shows.
+
+
+'''2.''' <tt>[[emacs-init.el]]</tt> is quite old. I've just uploaded a more recent version, but I mainly commented out stuff that is no longer pertinent. I also added a note in the Commentary saying that it's not a great idea to just use the file as is. It's best to treat it as a guide.
+
+Please read that Commentary. Among other things, it says that it loads files <tt>[[start.el]]</tt> and <tt>[[start-opt.el]]</tt>.
+
+Each of those files loads lots of my libraries and, if available, other libraries as well. You can try them out-of-the-box. I think they will not present problems, but they might. If so, you will need to set `debug-on-error' to `t' and try to figure out what the problem is.
+
+Library ##start.el## loads library <tt>[[oneonone.el]]</tt>, which provides the one-buffer-per-frame behavior. It is library <tt>[[setup.el]]</tt>, also loaded by ##start.el##, that actually calls command `1on1-emacs', which enables the OneOnOneEmacs behavior. If you don't load ##setup.el## (e.g. move it out of your `load-path' so ##start.el## can't load it) or if you comment out the call to `1on1-emacs' in ##setup.el##, then you shouldn't get OneOnOneEmacs.
+
+Similar comments apply to the rest of what ##start.el## and ##start-opt.el## load. To tailor things to your preferences, you might need to either remove some libraries from your `load-path' or comment out the code that loads them.
+
+I apologize for any inconvenience this causes. Again, it's not a great idea to start with someone else's ##.emacs## and just hope for the best. Please treat ##emacs-init.el## as a guide.
+
+If you run into trouble, use a binary search on your ##.emacs##, or on a library such as ##start.el## that it loads, to locate the cause of the problem. That is, split the file in two, either by commenting half of it out or by using `M-x eval-region' on only half of it (starting from ##emacs -Q##). Then split the problematic half in two and repeat etc. Binary search is incredibly quick at locating precisely the problem code. 
+
+Good luck. Sorry for any inconvenience. You can email me if you have more questions. -- DrewAdams
+
+[new]
+Thanks for the info, Drew.  No worries.  I'll walk through each of your suggestions and email if anything comes up. --Tennis
+
+----
+
+[new]
+Is there a way to make a frame full-screen, as in the (shell-command "wmctrl -r darkroom -badd,fullscreen") line of http://ubuntuforums.org/showthread.php?p=1235260 ?  A frame-fullscreen or frame-fullscreen-toggle function would be nice for making all your base belong to emacs.  -- Dave
+
+[new:DrewAdams:2008-01-08 00:58 UTC]
+I guess you're asking about maximizing a frame -- is that right? (I'm not familiar with ##wmctrl## etc.)
+
+If so, I think the answer is that there is no platform-independent answer. If you use Windows, then you can use commands `maximize-frame' and `restore-frame', defined in library <tt>[[fit-frame.el]]</tt>. If not, try asking LennartBorgman; I think he might have an answer for you about this. -- DrewAdams
+
+[new:Dave:2008-01-09 16:02 UTC]
+FullScreen is a little bigger than maximizing – it turns off the window decoration and handles and makes the application area match the full screen. Like windows powerpoint in slideshow mode, or a full-screen video or slideshow player. I think I found what I wanted from the page FullScreen.  See WriteRoom for an application.  Thanks – Dave
+
+----
+
+[new]
+Hi Drew. Which, if any, of your libs will work in a text-only (i.e. "emacs -nw") environment?  Thanks. --Tennis
+
+[new:DrewAdams:2008-01-11 00:55 UTC]
+Sorry; I don't know. It also probably depends on what "works" means. Non-ASCII keybindings will of course not work, and perhaps things that involve explicit frame manipulations might not work. Most of the rest should work. '''[[Icicles]]''' uses lots of non-ASCII key bindings, but it would probably work OK if you changed the bindings. You'll just have to experiment. -- DrewAdams
+
+[new]
+Thanks, Drew. I'll let you know how it goes.  -Tennis
+----
+
+[:AllLibraries]
+All libraries referenced here: 
+
+Lisp:apropos+.el, Lisp:apropos-fn+var.el, Lisp:autofit-frame.el, Lisp:autoload+.el, Lisp:bindings+.el, Lisp:bookmark+.el, Lisp:browse-kill-ring+.el, Lisp:buff-menu+.el, Lisp:col-highlight.el, Lisp:compile-.el, Lisp:compile-20.el, Lisp:compile+.el, Lisp:compile+20.el, Lisp:crosshairs.el, Lisp:cursor-chg.el, Lisp:cus-edit+.el, Lisp:def-face-const.el, Lisp:delsel.el, Lisp:diff+.el, Lisp:diff+20.el, Lisp:diff-mode-.el, Lisp:dired+.el, Lisp:dired-details+.el, Lisp:dired-sort-menu+.el, Lisp:doremi.el, Lisp:doremi-cmd.el, Lisp:doremi-frm.el, Lisp:doremi-mac.el, Lisp:ediff+.el, Lisp:emacs-init.el, Lisp:eyedropper.el, Lisp:facemenu+.el, Lisp:faces+.el, Lisp:ffap-.el, Lisp:files+.el, Lisp:find-dired-.el, Lisp:find-dired+.el, Lisp:finder+.el, Lisp:find-func+.el, Lisp:fit-frame.el, Lisp:font-lock+.el, Lisp:frame-cmds.el, Lisp:frame-fns.el, Lisp:frame+.el, Lisp:grep+.el, Lisp:header2.el, Lisp:help+.el, Lisp:help-fns+.el, Lisp:help-macro+.el, Lisp:help-mode+.el, Lisp:hexrgb.el, Lisp:highlight.el, Lisp:hl-line+.el, Lisp:hl-spotlight.el, Lisp:icicles.el, Lisp:icomplete+.el, Lisp:imenu+.el, Lisp:info+.el, Lisp:isearch+.el, Lisp:lib-requires.el, Lisp:line-num.el, Lisp:ls-lisp+.el, Lisp:macros+.el, Lisp:menu-bar+.el, Lisp:misc-cmds.el, Lisp:misc-fns.el, Lisp:mkhtml.el, Lisp:modeline-posn.el, Lisp:mouse+.el, Lisp:novice+.el, Lisp:oneonone.el, Lisp:options+.el, Lisp:outline+.el, Lisp:pp+.el, Lisp:pp-c-l.el, Lisp:replace+.el, Lisp:ring+.el, Lisp:savehist-20+.el, Lisp:second-sel.el, Lisp:setnu+.el, Lisp:setup.el, Lisp:setup-cygwin.el, Lisp:setup-info.el, Lisp:setup-keys.el, Lisp:show-wspace.el, Lisp:simple+.el, Lisp:sort+.el, Lisp:start.el, Lisp:start-opt.el, Lisp:strings.el, Lisp:synonyms.el, Lisp:thingatpt+.el, Lisp:thumb-frm.el, Lisp:timer+.el, Lisp:tool-bar+.el, Lisp:unaccent.el, Lisp:vc-.el, Lisp:vc-hooks+.el, Lisp:vc+.el, Lisp:w32-browser.el, Lisp:w32browser-dlgopen.el, Lisp:wimpy-del.el, Lisp:window+.el, Lisp:zoom-frm.el
+
+
+
+ 
+----
+
+CategoryHomePage

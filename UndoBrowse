@@ -1,0 +1,15 @@
+undo-browse.el --  Powerful Undo system. Back/forth/movie/redo/hilit. 
+
+* http://www.gnufans.net/~deego/emacspub/lisp-mine/undo-browse/
+
+In ub terminology, the undo-history is seen as a movie, each step
+being a frame of the movie. You can play (back/forth) the color-coded
+movie-history of your document, and revert your document to the frame
+you like.  To start, type M-x ub-quick-start.
+
+[new]
+If i could save the frames and replay it later, then it could be a useful demo tool. -- WilliamXu
+[new]
+
+----
+CategoryUndo

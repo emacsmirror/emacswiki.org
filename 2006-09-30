@@ -1,0 +1,43 @@
+This page talks about current anti-spam measures on the wiki.
+
+For a while now, we've had a very strange vandal on this site. He replaces the content of pages such as JorgenSchaefersEmacsConfig with a lame one-line piece of text containing no URLs. That's weird, because in this case, there's no pagerank to be gained. So why the spam? It must be a spam bot targeting blogs that's posting useless text and wants to put the URL in some sort of "homepage" field.
+
+In my efforts to stop this kind of thing, I've added a regular expression to the StrangeBannedContent page. Unfortunately, it contained a hash sign (#), which is also a comment character, yielding a broken regular expression, causing scrip crashes in the last hours. Sorry about that.
+
+Here's a quick sketch of how our spam filtering works:
+
+# When a page is saved, all the URLs on the page are checked against the list on the BannedContent page.
+# After that, the entire text of the page is checked against the list on the StrangeBannedContent page.
+
+The syntax used on both pages is simple: Empty lines are ignored, # starts a comment until the end of the line, tabs and spaces at the beginning and end of all remaining lines are stripped. Every remaining line is a pattern.
+
+Both pages are copied to several other sites I run.
+
+Both pages can be edited by EmacsWikiAdministrators. When we edit these pages, we usually make "minor" edits to the page in order to keep them out of default RecentChanges.
+
+As I found out today, broken regular expressions will crash the script. :(
+
+There are two additional defenses we could use on this site:
+
+Individual pages can be locked by EmacsWikiAdministrators. The current list of locked pages:
+
+{{{
+banned_content
+BannedContent
+BannedHosts
+EmacsWikiMode
+InterMap
+NearMap
+Search
+StrangeBannedContent
+UnbannedContent
+WikiEngines
+}}}
+
+As you can see, the only odd one out in this list is the !WikiEngines page. I locked that page because it's supposed to be deleted. Once it is, links to !WikiEngines will link to MeatBall:WikiEngines again. That's why locking this particular page is no problem.
+
+The last measure we could introduce on this wiki is the [[Oddmuse:QuestionAsker Extension]]. There would be two different ways to use this extension: List pages to be "protected" by questions somewhere, or protecting every page on the wiki. By default, the fact that you have answered one question will be stored in the cookie and thus you should only have to answer a question once.
+
+I don't think we need to use page locking or questions at the moment. Both are only useful in very specific circumstances.
+
+-- AlexSchroeder

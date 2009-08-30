@@ -1,0 +1,51 @@
+Básico do básico sobre .emacs.
+
+== Usando o 'customize' ==
+
+O .emacs, localizado no diretório do usuário, é o arquivo de
+configuração do Emacs. Trata-se de um conjunto de expressões ELisp,
+geralmente definindo valores para variáveis.
+
+A melhor maneira de começar é utilizando o comando 'customize' ('M-x
+customize RET) que apresenta todas as opções disponíveis de forma
+hierárquica. O buffer de customização é muito bem documentado e
+funciona através de hiperligações.
+
+O botão 'Salvar para futuras sessões' escreve as modificações no
+.emacs como argumentos para a função 'custom-set-variables'.
+
+O código abaixo resulta da seleção de 'Realce de sintaxe' seguida de
+'Salvar opções' no menu 'Opções':
+
+ (custom-set-variables
+   ;; custom-set-variables was added by Custom -- don't edit or cut/paste it!
+   ;; Your init file should contain only one such instance.
+   '(global-font-lock-mode t nil (font-lock)))
+
+== Alterando manualmente ==
+
+Você poderia obter o mesmo efeito chamando a função
+'global-font-lock-mode' em outra parte do .emacs com:
+
+ (global-font-lock-mode)
+
+Neste caso, o 'M-x customize-variable RET global-font-lock-mode RET'
+irá alertá-lo que essa opção foi modificada fora do buffer de
+customização.
+
+Antes de tentar alterar o .emacs manualmente, recomendo a leitura da
+página info 'Uma introdução à programação em Emacs Lisp' ('An
+introduction to programming in Emacs Lisp' - eintr.info).
+
+== Configurando teclas ==
+
+Veja CategoriaTeclas para mais informações.
+
+== Exemplo ==
+
+* MeuPrimeiroPontoEmacs - apenas custom-set-variables
+
+Boa sorte! --DeDaLu
+
+----
+CategoriaPontoEmacs

@@ -1,0 +1,39 @@
+This is a quick piece of emacs lisp that will spit out a random line for a file.
+
+This is good for fortune cookies, I Ching readings, Tips of the day, Daily Affirmations, etc.
+
+  (defun enlightenment-for-today ()
+    (interactive)
+    (let* ((thing (random-thing-from-a-file "~/.discordia.txt")))
+	   (message
+	    (concat "Random Discordian Enlightenment. \n"
+		    "===============================================\n"
+		    thing))))
+
+  
+  (defun random-thing-from-a-file (f)
+    (interactive "fLoad Thing from: ")
+    (random t)
+    (save-excursion
+     (find-file f)
+     (let ((line-num (random (count-lines (point-min) (point-max)))))
+       (goto-line line-num)
+       (let ((result (buffer-substring (line-beginning-position) (line-end-position))))
+         (kill-buffer (current-buffer))
+	 result))))
+
+Enjoy
+
+== Alternatives ==
+
+Also note the `cookie' function. The commentary in the source file says that
+it works on files written in one of two formats:
+
+* ITS-style LINS format (strings terminated by ASCII 0 characters,
+  leading whitespace ignored).
+
+* UNIX fortune file format (quotes terminated by %% on a line by itself).
+
+Everything up to the first delimiter is treated as a comment.  Other
+formats could be supported by adding alternates to the regexp
+`cookie-delimiter'.

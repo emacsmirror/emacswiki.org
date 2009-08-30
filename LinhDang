@@ -1,0 +1,22 @@
+How come simple routines such as:
+* flatten-list
+* common-prefix-of-strings
+* make-alist-from-2-lists
+are missing in emacs. Every package ends up with their own version of those routines.
+
+Maybe you did not look hard enough?
+
+   (try-completion "" '(("Alex") ("Alexandra") ("All")))
+   => "Al"
+
+The following requires the CL package:
+
+   (mapcar* 'cons '(a b c d) '(1 2 3 4))
+   => ((a . 1) (b . 2) (c . 3) (d . 4))
+
+Personally I have never needed to flatten lists, nor did I have to create alists from two lists, though. -- AlexSchroeder
+
+Re LXR interface: would you mind sharing the code to this?  This would be seriously useful with Mac OS X's Spotlight. -- SeanO
+
+----
+CategoryHomepage

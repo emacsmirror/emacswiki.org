@@ -1,0 +1,74 @@
+<pre>
+--- toggle.el	2008-07-02 09:29:11.000000000 -0700
++++ toggle.new.el	2008-07-04 15:59:43.000000000 -0700
+@@ -62,6 +62,16 @@
+ 
+ (require 'cl)
+ 
++(defcustom toggle-which-function-command
++  'which-function
++  "Function used to determine the current function.  Defaults to
++`which-function', but others may be preferable, for example
++`ruby-add-log-current-method' is more reliable in ruby code.")
++
++(defcustom toggle-method-format
++  "def %s"
++  "`format' string when searching for a method in search code")
++
+ (defcustom toggle-mapping-styles
+   '((zentest . (("app/controllers/\\1.rb" . "test/controllers/\\1_test.rb")
+                 ("app/views/\\1.rb"       . "test/views/\\1_test.rb")
+@@ -99,9 +109,9 @@
+                (mapcar (lambda (pair)
+                          (cons
+                           (replace-regexp-in-string
+-                           "\\\\1" "\\\\(.*\\\\)"
++                           "\\\\[[:digit:]]" "\\\\(.*\\\\)"
+                            (replace-regexp-in-string ; special case for "\\1.ext"
+-                            "^\\\\1" "\\\\([^/]*\\\\)" (car pair)))
++                            "^\\\\[[:digit:]]" "\\\\([^/]*\\\\)" (car pair)))
+                           (cdr pair)))
+                        (mapcan 'list
+                                pairs
+@@ -123,18 +133,33 @@
+ TRANS. After the first successful match, this returns. If no rule
+ matches, it returns nil"
+   (cond ((null rules) nil)
+-    ((string-match (caar rules) path)
+-     (replace-match (cdar rules) nil nil path))
+-    (t (toggle-filename path (rest rules)))))
++	((string-match (caar rules) path)
++	 (replace-match (cdar rules) nil nil path))
++	(t (toggle-filename path (rest rules)))))
+ 
+ (defun toggle-buffer ()
+   "Opens a related file to the current buffer using matching rules.
+ Matches the current buffer against rules in toggle-mappings. If a
+ match is found, switches to that buffer."
+   (interactive)
+-  (let ((new-name (toggle-filename (buffer-file-name) toggle-mappings)))
++  (let* ((function (eval (list toggle-which-function-command)))
++	 (func-add (if function
++		       (concat "#" (and (string-match "#\\(.+\\)" function)
++					(match-string 1 function)))
++		     ""))
++	 (new-name (or (toggle-filename (concat (buffer-file-name) func-add)
++					toggle-mappings)
++		       (toggle-filename (buffer-file-name) toggle-mappings))))
+     (if new-name
+-        (find-file new-name)
++	(if (string-match "\\(.+\\)#\\(.+\\)" new-name)
++	    (let ((path (match-string 1 new-name))
++		  (method (match-string 2 new-name)))
++	      (find-file path)
++	      (goto-char (point-min))
++	      (if (search-forward (format toggle-method-format method) nil t) t
++		(message "%s not defined in %s" method (file-name-nondirectory path))))
++	  (find-file new-name))
+       (message (concat "Match not found for " (buffer-file-name))))))
+ 
+ (provide 'toggle)
++;;; toggle.el ends here
+\ No newline at end of file
+
+</pre>

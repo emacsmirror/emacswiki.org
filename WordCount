@@ -1,0 +1,109 @@
+== Show the number of words in the mode-line ==
+
+The minor mode `word-count-mode' displays the number of words in the current buffer. It is quite handy:
+
+http://taiyaki.org/elisp/word-count/src/word-count.el
+
+As you type, it shows the number of characters in the buffer, the number of words, and the number of lines: "WC:148/40/4".  You can set a marker to the point where you want to begin counting (when you enable `word-count-mode' in a buffer, the marker is at the position of point), and you can set a region to count.
+
+== Various other ways to show the number of words ==
+
+Here is a function that counts words in the region.
+
+  (defun count-words (start end)
+    "Print number of words in the region."
+    (interactive "r")
+    (save-excursion
+      (save-restriction
+        (narrow-to-region start end)
+        (goto-char (point-min))
+        (count-matches "\\sw+"))))
+
+I wrote a quick elisp file based on this logic: [[wc.el]].  I can't understand why something like it isn't standard. --TheronTlax
+
+If you are like me, you can't remember wether it is word-count or count-words, so what I did is I defined an alias:
+
+  (defalias 'word-count 'count-words)
+
+For those without their DotEmacs, you can find the number of words in a buffer with the command
+
+* ##M-< M-x count-matches RET \w+ RET##
+
+or count the number of words in the region with the command
+
+* ##C-x n n M-x count-matches RET \w+ RET C-x n w##
+
+This is how the function works: count-matches counts whatever matches from point to the end of the buffer.  So the first things was to use a RegularExpression.  In this case \\sw matches a word character.  Now all we need is to narrow the buffer (see [[Narrowing]]) to the region, put point at the beginning of the accessible buffer, and call count-matches.  save-excursion will restore point when it is done, and save-restriction will restore the previous state of narrowing (or no narrowing at all) when it is done.
+
+=== Other solutions ===
+
+    ;; source: xemacs 20.3
+    (defun count-words-region (start end)
+       (interactive "r")
+       (save-excursion
+          (let ((n 0))
+           (goto-char start)
+           (while (< (point) end)
+             (if (forward-word 1)
+                 (setq n (1+ n))))
+           (message "Region has %d words" n)
+           n)))
+
+- from the SF Wiki, http://mcd.freeshell.org/wiki.pl
+
+Using this definition, we can do:
+
+ (defun count-lines-words-region (start end)
+   "Print number of lines words and characters in the region."
+   (interactive "r")
+   (message "Region has %d lines, %d words, %d characters"
+ 	   (count-lines start end) 
+           (count-words-region start end) 
+           (- end start)))
+
+A defun which work just like ##wc## shell command:
+
+ (defun wc (&optional start end)
+   "Prints number of lines, words and characters in region or whole buffer."
+   (interactive)
+   (let ((n 0)
+         (start (if mark-active (region-beginning) (point-min)))
+         (end (if mark-active (region-end) (point-max))))
+     (save-excursion
+       (goto-char start)
+       (while (< (point) end) (if (forward-word 1) (setq n (1+ n)))))
+     (message "%3d %3d %3d" (count-lines start end) n (- end start))))
+
+Now I can't tell whether I've stolen it from someone or wrote it myself ;) -- mina86
+
+== How many times was each word used? ==
+
+To get all the words used in the region and the number of times they have been used, use the following:
+
+    (defun word-count-analysis (start end)
+      "Count how many times each word is used in the region.
+    Punctuation is ignored."
+      (interactive "r")
+      (let (words)
+	(save-excursion
+	  (goto-char start)
+	  (while (re-search-forward "\\w+" end t)
+	    (let* ((word (intern (match-string 0)))
+		   (cell (assq word words)))
+	      (if cell
+		  (setcdr cell (1+ (cdr cell)))
+		(setq words (cons (cons word 1) words))))))
+	(when (interactive-p)
+	  (message "%S" words))
+	words))
+
+Using this on the following region:
+
+    This is a test, just a test.
+
+The result would be:
+
+    ((just . 1) (test . 2) (a . 2) (is . 1) (This . 1))
+
+----
+CategoryDotEmacs

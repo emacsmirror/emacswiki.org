@@ -1,0 +1,29 @@
+The smiley module is disabled by default.  To enable it use M-x customize-variable RET erc-modules.
+
+ERC Smiley mode is a tiny mode that uses `smiley-region', which is
+defined in smiley.el, which is part of Oort Gnus.
+
+To change the smileys, take customize the variable
+`smiley-regexp-alist'.  Here is an example for your ~/.emacs, if you
+do not want to use custom:
+
+    (require 'smiley)
+    (add-to-list 'smiley-regexp-alist '("\\(:-?]\\)\\W" 1 "forced"))
+    (add-to-list 'smiley-regexp-alist '("\\s-\\(:-?/\\)\\W" 1 "wry"))
+    (add-to-list 'smiley-regexp-alist '("\\(:-?(\\)\\W" 1 "sad"))
+    (add-to-list 'smiley-regexp-alist '("\\((-?:\\)\\W" 1 "reverse-smile"))
+    (add-to-list 'smiley-regexp-alist '("\\(:-?D\\)\\W" 1 "grin"))
+    (add-to-list 'smiley-regexp-alist '("\\(:-?P\\)\\W" 1 "poke"))
+
+If you change the variable after having used the smileys, you need to
+empty the cache and update it again.  Usually this is not needed,
+however.
+
+    ;; (setq smiley-cached-regexp-alist nil)
+    ;; (smiley-update-cache)
+
+And if you want other smileys, use `smiley-data-directory' to point
+the smiley code at something else.
+
+----
+[[ERC]]

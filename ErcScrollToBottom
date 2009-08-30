@@ -1,0 +1,19 @@
+This module is disabled by default.  To enable it use M-x customize-variable RET erc-modules.
+
+Using this module will keep the prompt line at the bottom of the window.
+The latest text is also at the bottom of the screen, so it's easier to catch up after turning back to the screen.
+
+: <b>Bug:</b> If you use Carbon Emacs 21.3.50.1 or thereabouts, using this module will probably make Emacs freeze and suck up 100% CPU time, requiring you to force quit Emacs. -- JerameyCrawford
+
+
+:: This is actually a bug in Emacs redisplay code, rather than in ERC.  A fix for it is to set 
+:: <code>erc-input-line-position</code> to a value other than <code>nil</code> or <code>-1</code>.
+:: E.g. do:
+
+
+    (setq erc-input-line-position -2)
+
+:: In your ERC customisations.  See the docstring of that variable for more information.
+
+----
+[[ERC]]

@@ -1,0 +1,10 @@
+[http://www.foldr.org/~michaelw/emacs/mwe-log-commands.el mwe-log-commands]
+by MichaelWeber can be used to demo Emacs to an audience.  When
+activated, keystrokes get logged into a designated buffer, along
+with the command bound to them.
+
+It is not yet a MinorMode, but maybe it will be some day.
+
+----
+CategoryCommands
+CategoryHelp

@@ -1,0 +1,19 @@
+<code>iman.el</code> by YujiMinejima opens either an info format manual with InfoMode or a man page with ManMode.  Get it from the author at
+
+: http://homepage1.nifty.com/bmonkey/emacs/elisp/iman.el
+
+Completion is offered based on info documents in the usual info top-level "<code>dir</code>", and man pages from "<code>man -k</code>" (the "<code>apropos</code>" index of names).
+
+If you use CompletingHelp (by the same author) possible completions presented with the "<code>?</code>" key include one-line descriptions of the documents (again from the info directory and the "apropos" lines).
+
+= Discussion =
+[new] 
+I guess woman does a better job. -- [[Anonymous]]
+[new]
+But woman fails to render some man pages, be warned. -- [[Anonymous]]
+[new]
+Great ! Searching information is easier and faster. Why don't allow users to choose between man and woman ? -- [[CamilleBourgoin]]
+
+----
+CategoryDocumentation
+CategoryHelp

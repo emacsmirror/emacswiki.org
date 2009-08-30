@@ -1,0 +1,41 @@
+Some of these things can be done already via file groups, etc. but here are some easy things to use:
+<pre>
+(defun search-buffers (str)
+  (interactive "sregex:")
+  (let
+      ((pt)
+       (buf))
+    (foreachbuffer
+         (goto-char 0)
+         (let
+             (
+              (dosearch (lambda  () (if (re-search-forward str nil t)
+                                        (progn (setq pt (point))
+                                               (setq buf i)
+                                      (case (read-char "(c)ontinue (q)uit (n)ext buffer:")
+                                        (?n nil)
+                                        (?q (error "done."))
+                                        (t (funcall dosearch)))))))
+              )
+           (funcall dosearch))))
+    (if pt
+        (progn 
+          (switch-to-buffer buf)
+          (goto-char pt))
+        ))
+</pre>
+
+Kill buffers whose names match a pattern, useful with BuffernameTags 
+
+<pre>
+(defun kill-buffers (regex)
+  "kill all buffers matching some predicate"
+  (interactive "sregex:")
+  (foreachbuffer
+   (if (and (buffer-file-name) (string-match regex (buffer-file-name)))
+       (progn
+         (kill-buffer (current-buffer))))))
+</pre>
+
+----
+CategorySearchAndReplace

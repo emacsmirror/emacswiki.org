@@ -1,0 +1,36 @@
+Bazaar (aka <code>bzr</code>) is a distributed version control system much like [[Git]], [[Mercurial]]
+and DaRcs.
+
+Bazaar is available from http://bazaar-vcs.org.
+
+== Modes ==
+
+* [[VC]] -- supports Bazaar through the vc-bzr.el backend. Is distributed with Emacs since version 22.2. You can also get it [http://www.loveshack.ukfsn.org/emacs/vc-bzr.el here].
+* [[DVC]] -- supports Bazaar.
+* Lisp:bazaar.el -- A user interface specific to Bazaar.
+
+== Emacs from Bazaar ==
+
+see EmacsFromBazaar or BzrForEmacsDevs
+
+== Questions ==
+
+[new:XavierMaillard:2009-04-13 07:23 UTC]
+Let say I have a repo "foo".
+
+foo contains my stable developement tree and contains also a directory
+with experimental stuff. I want to get rid of the experimental stuff
+and put it in another branch. How would you do that with [[Bazaar]] ?
+
+In the end, I think I should have this layout:
+
+foo/trunk => main repo
+foo/experimental => a branch containing only experimental stuff
+
+regards
+
+-- XavierMaillard
+
+
+----
+CategoryVersionControl

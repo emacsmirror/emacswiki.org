@@ -1,0 +1,88 @@
+If you have decided to build XEmacs ([[XEmacs]] on this wiki) from
+source, you must be aware of the XEmacsPackageSystem.  The easiest is
+to get *all* packages at once, the so called sumo-tarball.
+
+Here are the instructions to build XEmacs without MULE on a GNU/Linux
+system.
+
+== Getting It ==
+
+In your XEmacs mirror site, download the following files:
+
+From either the stable or the gamma (nearly stable) directories, get
+an XEmacs tarball.  It is called xemacs-<version>.tar.gz,
+eg. xemacs-21.4.6.tar.gz.
+
+From the packages directory, get xemacs-sumo.tar.gz.  This will
+automatically be the latest released tarball with all packages
+included.
+
+Unpack both as root, for example in /usr/local/src.  This will give
+you two directories, xemacs-<version> and xemacs-packages.
+
+: Once you have XEmacs installed you may also install and use the [http://www.xemacs.org/Documentation/packages/html/build.html#SEC_Top build] package to learn how to build XEmacs.  It also supports [http://www.xemacs.org/Documentation/packages/html/build_4.html#SEC6 build settings], which makes it easy to build many different configurations after setting them up once -- AdrianAichner via [http://www.emacswiki.org/cgi-bin/wiki/SimpleWikiEditMode SimpleWikiEditMode]
+
+== Building XEmacs ==
+
+I will assume you will want to use stow to install into /usr/local.
+That is why we build using the /usr/local prefix, but install using
+the /usr/local/stow/xemacs prefix.  Stow will then link all the files
+into /usr/local.  If you don't want to use stow, do not provide a
+prefix to the make install command and skip the remaining instructions.
+
+Enter the xemacs-<version> directory, and then run:
+
+<pre>
+ ./configure
+ make
+ make install prefix=/usr/local/stow/xemacs
+
+ cd /usr/local/stow/xemacs
+</pre>
+
+Now you will need to resolve some conflicts if you have GnuEmacs,
+GnuClient installed as well as XEmacs.  In my case, I decided to leave
+the Emacs version of all files, so I delete the XEmacs version here,
+before stowing in /usr/local.
+
+<pre>
+ rm /usr/local/stow/xemacs/man/man1/etags.1
+ rm /usr/local/stow/xemacs/man/man1/ctags.1
+ rm /usr/local/stow/xemacs/bin/etags
+ rm /usr/local/stow/xemacs/bin/ctags
+ rm /usr/local/stow/xemacs/man/man1/gnuserv.1
+ rm /usr/local/stow/xemacs/bin/gnuclient
+ rm /usr/local/stow/xemacs/bin/gnudoit
+ rm /usr/local/stow/xemacs/bin/b2m
+ rm /usr/local/stow/xemacs/bin/rcs-checkin
+</pre>
+
+And finally:
+
+<pre>
+ stow xemacs
+</pre>
+
+== Building Packages ==
+
+Go to the parent directory of xemacs-packages.  In my example, that
+would be /usr/local/src.  You want the xemacs-packages to reside in 
+/usr/local/lib/xemacs.
+
+Without stow, you can just do the right thing:
+
+<pre>
+ mv xemacs-packages /usr/local/lib/xemacs
+</pre>
+
+With stow, things get a bit more complicated:
+
+<pre>
+ mkdir -p /usr/local/stow/xemacs-packages/lib/xemacs
+ mv xemacs-packages /usr/local/stow/xemacs-packages/lib/xemacs
+ cd /usr/local/stow
+ stow xemacs-packages
+</pre>
+
+----
+CategoryBuilding

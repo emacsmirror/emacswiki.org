@@ -1,0 +1,41 @@
+It seems that you can use Perl in a similar way as Python as an
+extension language (see PyMacs).  beppu (Journeyer) wrote in his essay
+"Transcending Language Bias in Scriptable Applications"
+[http://www.advogato.org/article/550.html], that a perl module called
+`Emacs::EPL` exists.  The Perl interpreter is executed as a subprocess,
+and interprocess communications between the two is
+accomplished via pipes.  It seems, however, that this does not free
+you from using Lisp -- much like PyMacs, you still need to know the
+One True Programming Language -- EmacsLisp.
+
+Experiences, anyone?
+
+== documentation ==
+
+The actual documentation for what Emacs::EPL can do:
+[http://search.cpan.org/src/JTOBEY/Emacs-EPL-0.7/doc/epl.html epl.info (in html form)]
+
+== non-standard installation proceedure ==
+
+The installation proceedure is unusual for a perl module, and it's essential to read the 
+[http://search.cpan.org/src/JTOBEY/Emacs-EPL-0.7/README README] file carefully.
+
+== automated install is broken: "make test" stage is buggy ==
+
+At present, installation of [http://search.cpan.org/~jtobey/ Emacs::EPL]
+is reported to be failing on many popular platforms according to [http://cpantesters.perl.org/author/JTOBEY.html cpantesters.perl.org].
+
+It's possible that these reports are misleading, however, because the test platforms may simply not have emacs installed and configured correctly.
+
+The "make test" stage fails at present on Kubuntu GNU/Linux on AMD64, 
+using perl 5.8.7 with GNU Emacs 21.4.1 (With "M-x server-start" done manually, 
+though it's not clear if that should matter).
+
+It hangs after displaying the error message:
+
+   exec: No such file or directory at /home/doom/End/Slot/Emacs-Perl/Emacs-EPL-0.7/blib/lib/Emacs/EPL.pm line 671.
+
+As a result of these difficulties, automated installation of Emacs::EPL (e.g. using CPANPLUS) essentially doesn't work.
+
+----
+CategoryExtensionLanguage

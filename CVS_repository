@@ -1,0 +1,14 @@
+Tennis Smith created a project on Source Forge for all the elisp files uploaded to the wiki.
+A cron job updates the repository every 24h.
+This repository is read-only. You need to upload new releases to the wiki.
+
+* http://sourceforge.net/projects/emacswikicode
+
+This is basically a read-only copy of the ElispArea.
+
+Sources for this stuff: [http://www.emacswiki.org/scripts/emacs-cvs-update emacs-cvs-update] shell script making use of [http://cvs.savannah.nongnu.org/viewvc/oddmuse/raw.pl?root=oddmuse&view=log raw.pl] and [http://cvs.savannah.nongnu.org/viewvc/oddmuse/mimedecode.pl?root=oddmuse&view=log mimedecode.pl].
+
+(Back to WikiDownload.)
+
+----
+CategoryEmacsWikiSite

@@ -1,0 +1,60 @@
+'''Cette page fait partie de la description de OneOnOneEmacs, par DrewAdams.'''
+
+This page is also available in English: [[Iconifying, Deiconifying, and Hiding Frames]]
+
+
+== Resume ==
+
+Le package Lisp:frame-cmds.el contient des commandes pour iconifier et restituer des [[Frame]]s, pour carreler l'ecran avec des frames etc. :
+
+
+* Utiliser `C-M-z' ou `C-x C-z' pour iconifier/cacher tous les frames.
+* Utiliser `C-M-z' dans la seule frame visible pour reafficher (restituer) tous les frames.
+* Utiliser `C-mouse-1' dans le MiniBuffer pour reafficher tous les frames.
+* Utiliser `C-mouse-1' dans un buffer Dired pour marquer/demarquer un fichier ou un repertoire.
+* Utiliser `C-mouse-3' sur le ModeLine pour supprimer sa fenetre (mais pas le frame).
+* Utiliser `tile-frames-horizontally' et `tile-frames-vertically' pour carreler l'ecran avec des frames.
+
+== La Petite Histoire ==
+
+Lorsqu'Emacs commence a etre ""oriente frames" tu peux te trouver avec beaucoup de frames ;-). Ainsi, j'ai defini cette commande :
+
+* `iconify-everything' -- Iconifier tous les frames d'un seul coup.
+
+Mais cette commande cree une icône pour chaque frame, ce qui encombre l'ecran Unix ou la barre des taches (task bar) Windows (avant Windows XP). Alors, j'ai defini cette commande alternative :
+
+* `hide-everything' -- Iconifier le `minibuffer-frame' ; rendre tous les autres frames invisibles.
+
+Avec cette commande, une seule icône est creee. Pour Windows avant XP, ca donne un effet similaire au comportement de Windows XP. Dans Windows XP les icônes des frames sont en effet groupes dans une seule icône de la barre des taches, mais elles sont disponibles individuellement par un menu pop-up. La commande `hide-everything' ne permet pas cet acces aux frames individuels.
+
+A cause de cette manque d'acces individuel, j'ai definit une commande a bascule : cacher tous les frames ou les restituer :
+
+* `show-hide' -- 
+** Si un seul frame est visible, restituer la configuration des frames qui etait courant au moment ou tous les frames se sont devenus caches ou iconifies. 
+** Si au moins deux frames sont visibles, appeler `hide-everything' pour les cacher tous.
+
+Dans Windows XP, la commande `iconify-everything' est peut-etre aussi utile que `show-hide' puisqu'on peut utiliser le menu pop-up pour restituer un frame. Dans Unix, Linux, et d'autres versions de Windows, la commande `show-hide' est en generale plus utile car elle n'utilise qu'une seule icône.
+
+J'ai aussi defini une variante de `show-hide' pour la souris (liee a  <code>[C-down-mouse-1]</code>). Elle agit différemment en fonction de la position de la souris lors du clic.
+
+* `mouse-show-hide-mark-unmark' -- 
+** Si la souris est cliquee dans le minibuffer, on appelle `show-hide'. 
+** Si elle est cliquee dans un buffer Dired, on marque ou demarque le fichier ou repertoire clique. 
+** Autrement, on affiche le menu pop-up `mouse-buffer-menu'.
+
+Une autre commande utile pour la souris est celle-ci :
+
+* `mouse-iconify/map-frame' (<code>[mode-line
+mouse-3]</code>) -- 
+** Iconifier le frame clicque, s'il est visible. 
+** Restituer le frame correspondant a une icône cliquee.
+
+'''Voir les packages :''' Lisp:frame-cmds.el, Lisp:setup-keys.el
+
+=== Voir Aussi ===
+
+OeilDePoisson decrit l'utilisation de frames "onglets" comme alternative aux icones.
+
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay

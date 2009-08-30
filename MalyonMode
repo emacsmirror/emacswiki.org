@@ -1,0 +1,17 @@
+== Overview ==
+
+[http://www.ifarchive.org/if-archive/infocom/interpreters/emacs/ Malyon] is a [http://directory.google.com/Top/Games/Video_Games/Genres/Adventure/Text_Adventures/Interpreters/Z-Machine/ Z-machine interpreter] for playing text-based adventure games such as [http://www.wurb.com/if/game/2 Zork].
+
+Malyon plays version 3 (<CODE>.z3</CODE>), version 5 (<CODE>.z5</CODE>), and version 8 (<CODE>.z8</CODE>) z code files.
+
+Download games from [http://www.ifarchive.org/indexes/if-archiveXgamesXzcode.html the Interactive Fiction Archive], from [http://www.wurb.com/if/platform/1 Baf's Guide to the Interactive Fiction Archive], or make your own with InformMode
+
+== Use ==
+
+* <CODE>M-x malyon</CODE>           Play a story file.
+* <CODE>M-x malyon-quit</CODE>
+* <CODE>M-x malyon-restore</CODE>
+
+----
+CategoryGames
+

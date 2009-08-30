@@ -1,0 +1,31 @@
+Clicking the title heading to search for pages about writing in natural languages with Emacs.
+
+* DictMode -- also comes as a debian package called dictionary-el 
+* Xemacs' -- dictionary.el is probably different from dictionary-el  See DictMode above. 
+* DictWeb -- provides a possibility to query a dict server
+* DictEm -- another dict server querier, using the <code>dict</code> program
+* LookUp -- "Lookup provides the simple and unified search interfacefor the commercial electric dictionary as well as the network dictionary server ."  Available as the debian package lookup-el, woody onwards. 
+* Hachette (hachette.el) -- looks up online French dictionaries.
+* NaturalLanguageMode -- Conceptual ideas for how Emacs could support writers.
+* PrintingFromEmacs -- Publishing your written work.
+* !RDictCc -- is an english-german (and vice versa) dictionary written in Ruby. It includes an emacs module which integrates it into emacs. Get it from apps section at the author's [http://www.tsdh.de homepage].
+* ScreenPlay -- Write a dramatic screenplay.
+* ThesauriAndSynonyms -- Finding roughly equivalent words in natural languages.  Lists applications to other related information and tasks.
+* TypographicalPunctuationMarks -- insert ‘smart’ quotes
+* UnDoc -- Convert Word files to plain text.
+* UnPdf -- Convert PDF files to plain text.
+* UnXls -- Convert Excel files to plain text.
+* WriteOrDieMode -- Minor mode emulating some of the behaviour from [http://lab.drwicked.com/writeordie.html Dr. Wicked's webapp] of the same name.
+* RefdbMode -- Insert and look up citations stored in a SQL database
+* MemoPop -- Helps you pop up and pop out a specific file buffer easily.
+
+''Note: This page overlaps with material at CategoryEducation, and occasionally may need to synchronize.''
+
+See also these sections of ThisWiki:
+
+* CategoryCompletion -- Complete the words you're typing.
+* CategoryInterface -- Publishing your work electronically or for connecting Emacs to other resources online and otherwise that are useful to writers.
+* CategoryInternationalization -- Writing in particular languages.
+* MarkupModes -- Particular modes for writing marked-up text.
+* CategorySpelling -- Correct your spelling or have it be done automatically.
+* CategoryTex -- Typeset your words, papers, articles and books for the printer.

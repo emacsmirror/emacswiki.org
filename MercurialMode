@@ -1,0 +1,20 @@
+[http://www.selenic.com/mercurial Mercurial], also known as hg, is yet another distributed version control system.  It's written in Python and includes "mercurial.el" using VC.
+
+vc-hg.el is part of Emacs since version 22.2 (released March 2008).
+
+DistributedVersionControl supports Mercurial.
+
+Another Mercurial mode can be found at http://hg.intevation.org/mercurial/file/tip/contrib/mercurial.el.  It's being developed under [[XEmacs]].
+
+There's another Mercurial mode, aHg, at http://disi.unitn.it/~griggio/ahg.html
+
+== Using Ediff to merge ==
+
+See [http://www.selenic.com/mercurial/wiki/index.cgi/MergingWithEmacs MergingWithEmacs] on the Mercurial wiki to learn how to use EdiffMode as the merger program.
+
+== Documentation ==
+
+[http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsMercurial.html Small article] about using Emacs with mercurial.el
+
+----
+CategoryVersionControl

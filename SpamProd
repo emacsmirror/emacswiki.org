@@ -1,0 +1,7 @@
+SpamProd is an Emacs package that generates complaint email for received spam.  It was written by NeilVanDyke.
+
+SpamProd can be used easily with the ViewMail email client by KyleJones, or in arbitrary Emacs buffers that contain the raw headers and text of the spam message.
+
+* http://www.neilvandyke.org/spamprod/spamprod.el
+----
+CategoryMailAddons

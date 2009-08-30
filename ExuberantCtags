@@ -1,0 +1,10 @@
+There is an etags replacement out there:
+
+* http://ctags.sourceforge.net
+
+Supports more languages than etags, has better rules for matching
+files to languages, decent handling of preprocessor switches, and can
+generate tag files compatible with a variety of editors.
+
+----
+CategoryExternalUtilities

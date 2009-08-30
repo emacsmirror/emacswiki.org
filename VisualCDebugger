@@ -1,0 +1,6 @@
+Visual C++ debugger can be directly controlled with the help of some perl files and the elisp code.
+
+vcdb: http://www.nixfiles.com/src/vcdb/
+
+----
+CategoryDebug

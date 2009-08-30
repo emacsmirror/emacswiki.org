@@ -1,0 +1,51 @@
+== Interfaces ==
+
+Various [http://www.twitter.com twitter] interfaces
+
+* TwIt - In Active Development, on this wiki no less.
+* [http://www.busydoingnothing.co.uk/twitter-el/ twitter.el] or ##git clone git://git.busydoingnothing.co.uk/twitter.git##
+* TwitteringMode
+* [http://github.com/artagnon/ublog.el/tree/master µblog.el] or ##git clone git://github.com/artagnon/ublog.el.git##
+
+See also: [[Identica-mode]]
+
+==  Users ==
+
+PhilJackson here is [http://twitter.com/philjackson philjackson] on twitter.
+
+== Discussion ==
+[new]
+I found a small bug in twittering-mode.el (downloaded 05/14/09).  In twittering-http-get-default-sentinel on line 467 the regex
+
+ "HTTP/1\.[01] \\([a-z0-9 ]+\\)\r?\n"
+
+needs to be changed to
+
+ "HTTP/1\.[01] \\([a-zA-Z0-9 ]+\\)\r?\n"
+
+otherwise reponses with capital letters in the reason phrase (such as 200 OK) will cause an error.  --nwidger
+
+[new]
+Both TwIt and twitter.el use http instead of https. Sending passwords in the clear is not cool. Any reason for this other than url-retrieve is not particularly elegant to use when it comes to https connections? -- PeterSanford
+
+I just changed ##twit-base-url## in ##twit.el## to ##https://twitter.com## and it worked using ##gnutls-cli##  I think it should be made default and it can fall back to normal http if no TLS helper program is available -- KousikNandy
+
+@PeterSanford I used your Elisp OAuth library ([http://github.com/psanford/emacs-oauth/tree/master here]) while writing µblog.el -- Artagnon
+
+##twit.el## uses https by default now.
+
+[new]
+What bothers me about ##twitter.el## is that there is no real major mode when looking at the friends timeline – no major mode map to add more keybindings, not hook to add GotoAddress to make all URLs clickable. And I have not figured out how to read my friends timeline using ##twit.el##. I found that ##identica-mode.el## was based on ##twittering-mode.el## and I got it to work after setting username and password. -- AlexSchroeder
+
+[new]
+I've been using twittering-mode for the last couple of days and it's the most comfortable Twitter client I've used so far (for any platform, not just Emacs). It displays images, has clickable URLs and is nice to use with the keyboard. Upstream also welcomes patches, I sent a few with new features and some of them have already been committed. -- AlbertoGarcia
+
+[new]
+@AlexSchroeder - I've added a major mode to twitter.el for viewing the timeline. Hope that helps. I've also added a reply feature. -- NeilRoberts
+
+[new]
+µblog.el is under heavy (!) development. Several features are unimplemented and it's riddled with bugs. -- Artagnon
+
+----
+CategoryJournaling
+

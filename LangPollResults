@@ -1,0 +1,120 @@
+== Poll ==
+
+Regardless of whether you prefer Scheme or CL, would you agree that either of them would nevertheless be better than elisp for a new Emacs?
+
+(See also SchemeAndLisp, WhyDoesElispSuck.)
+
+== Participate ==
+
+Go to the EmacsChannel and type:
+
+<nowiki>,lang-poll is also <your nick>: <your answer></nowiki>
+
+fsbot will add your entry to the list.
+
+== Tabulated data ==
+
+DISCLAIMER: The percentages might not add up to 100% since I rounded at the tenths place.
+
+Yes [either Scheme or CL would be preferred to EmacsLisp]: 21 (55.3%)
+
+: Prefers Scheme: 4
+
+: Prefers CL: 9
+
+No [EmacsLisp is preferred to Scheme and CL]: 7 (18.4%)
+
+Off-topic: 10 (26.3%)
+
+: Prefers Scheme: 1
+
+: Prefers CL: 0
+
+== Entries (as of 2004-08-30) ==
+
+[0] Riastradh: either would be fine.
+
+[1] forcer: Scheme > CL > elisp, so either would be fine ;)
+
+[2] jao: yes, i would
+
+[3] odin: Brainf*ck. (Seriously, yes.)
+
+[4] emu: either CL or Scheme is better, but Scheme would require a lot of extensions
+
+[5] palomer: vi-script
+
+[6] blicero: either is fine, provided that they let me make extensions to help me be successful with the fairer sex
+
+[7] e1f: perl
+
+[8] hoan: yes
+
+[9] cococrisp: no. CL would be ok, but not guile.
+
+[10] bkhl: yes.
+
+[11] edrx: no - but maybe I'll change my mind after seeing the code for this new Emacs
+
+[12] erik: scheme or bust!
+
+[13] mathrick: I'm cool with CL, as long as I get Emacs' core redesigned from scratch. Scheme is butt ugly with it's #t and #f, tho
+
+[14] kensanata: no
+
+[15] Khmar : A discussion on the wiki would be more fruitful than a poll.
+
+[16] datamatrix: Common Lisp would be great IMHO :)
+
+[17] deego: IIUC, CL still doesn't have a freely distributable language-spec or documentation
+
+[18] buckfunk since learning elisp i'd prefer to continue with elisp - but scheme looks nice too ... no CL pls
+
+[19] JoshTriplett: No; I'd rather see whatever features people want from those LISP variants added to elisp.
+
+[20] aristocat: yes
+
+[21] p00ya: so where does guile fit in
+
+[22] Lukhas: Elisp is nice, but if i have to choose between CL and Scheme, i'd choose Scheme
+
+[23] mwolson: no, stick with elisp, but don't be afraid to add new features to it
+
+[24] fledermaus: moving seems like a lot of work, better to add tail recursion, closures etc to elisp, I reckon.
+
+[25] smitty1e: python, pymacs, boost::python, pl/python, pythonwin, let's just get on the snake
+
+[26] yukio:CL
+
+[27] jemfinch: yes
+
+[28] maxen: scheme would be better than elisp (I am sure), whether common lisp would be a real improvement, mhh
+
+[29] jdavidboyd: no
+
+[30] Sonderblade: PYTHON!
+
+[31] hober: CL > elisp > scheme
+
+[32] pipeline: CL > Scheme > Guile > Teco > Unlambda > Brainf*ck > A magnet on my monitor > elisp.
+
+[33] sev: yes, and CL is much better
+
+[34] TauPan: yes, definitely
+
+[35] utis: ISLisp! Other than that I don't care.
+
+[36] sayke, yes, CL
+
+[37] brett_: yes, CL
+
+[38] davidw: yes, mzscheme
+
+== Addendum ==
+
+If you'd like to participate via editing this page rather than going the #emacs channel, feel free to do so in this section, right here.
+
+See also ExtensionLanguageAdvocacy.
+
+----
+CategoryCode

@@ -1,0 +1,144 @@
+    <kensanata> (useless hacks infecting our projects)
+        -- AlexSchroeder on #emacs
+
+There is now an unmorse module.  To enable it use M-x customize-variable RET erc-modules RET.
+This will decode all morse code sent to you.
+
+If you know people on InternetRelayChat sending you MorseCode, you
+can use M-x unmorse-region to decode it.
+
+    (defvar erc-unmorse-string "[morse]"
+      "String to be used so we see it's morse")
+
+    (defun erc-unmorse ()
+       "Decode morse code after point."
+      (interactive)
+      (goto-char (point-min))
+      (let ((erc-unmorse-point nil))
+	(when (re-search-forward "[.-]+\\([.-]+[/ ]\\)+[.-]+" nil t)
+	  (setq erc-unmorse-point (match-beginning 0))
+	  (unmorse-region (match-beginning 0) (match-end 0))
+	  (goto-char erc-unmorse-point)
+	  (insert-string erc-unmorse-string)
+	  (insert-string " "))))
+
+    (defun erc-maybe-morse (ignore)
+      "Change the text to Morse code, if `erc-morse-mode' is non-nil."
+      (when erc-morse-mode
+	(with-temp-buffer
+	  (insert str)
+	  (erc-morse)
+	  (setq str (buffer-string)))))
+
+    (defun erc-morse ()
+      "Transform the buffer into morse code."
+      (morse-region (point-min) (point-max)))
+
+And now let us define a module to enable encoding of outgoing text and decoding of incoming morse.
+
+    (define-erc-module morse nil
+      "This mode decodes one level of incoming morse,
+    and it encodes outgoing messages as morse code."
+      ((add-hook 'erc-insert-modify-hook 'erc-unmorse)
+       (add-hook 'erc-send-pre-hook 'erc-maybe-morse))
+      ((remove-hook 'erc-insert-modify-hook 'erc-unmorse)
+       (remove-hook 'erc-send-pre-hook 'erc-maybe-morse)))
+
+Toggle it using M-x erc-morse-mode.  Note that you cannot issue IRC
+commands that way, because the get translated into morse as well.
+
+Note that the function erc-maybe-morse takes advantage of dynamic
+binding by "stealing" the binding of str within erc-send-current-line.
+
+Contributors: MarioLang, AlexSchroeder, FabienPenso.
+
+== Adding a /MORSE command ==
+
+If you ever wanted to impress your irc pals with your knowledge of Morse Code - now you can
+(posted by [[harbard]]):
+
+    (defun erc-cmd-MORSE (&rest words)
+      "If given arguments, sends them morse-encoded to current channel. If called without arguments, it displays the last message morse-decoded in the current ERC buffer."
+      (if words
+	  (erc-send-message (concat (to-morse (mapconcat 'identity words " ")) nil))
+	(let ((limit (- (point) 1000))
+	      (pos (point))
+	      text)
+	  (while (and (> pos limit)
+		      (not (let ((data (get-text-property pos 'erc-parsed)))
+			     (and data (string= (aref data 3) "PRIVMSG")))))
+	    (setq pos (previous-single-property-change pos 'erc-parsed nil limit)))
+	  (if (> pos limit)
+	      (erc-display-message nil 'notice 'active
+				   (from-morse (aref (get-text-property pos 'erc-parsed) 5)))
+	    (erc-display-message nil 'notice 'active "Nothing to decode")))))
+    
+    (defvar *morse-table*)
+    (setq *morse-table*
+      '((?a . ".-")
+        (?b . "-...") 
+        (?c . "-.-.")
+        (?d . "-..")
+        (?e . ".")
+        (?f . "..-.") 
+        (?g . "--.")
+        (?h . "....") 
+        (?i . "..")
+        (?j . ".---") 
+        (?k . "-.-")
+        (?l . ".-..") 
+        (?m . "--")
+        (?n . "-.")
+        (?o . "---")
+        (?p . ".--.")
+        (?q . "--.-")
+        (?r . ".-.")
+        (?s .  "...") 
+        (?t . "-")
+        (?u . "..-")
+        (?v . "...-") 
+        (?w . ".--")
+        (?x . "-..-")
+        (?y . "-.--")
+        (?z . "--..")
+        (?0 . "-----")
+        (?1 . ".----")
+        (?2 . "..---")
+        (?3 . "...--")
+        (?4 . "....-")
+        (?5 . ".....")
+        (?6 . "-....")
+        (?7 . "--...")
+        (?8 . "---..")
+        (?9 . "----.")
+        (?. . ".-.-.-")
+        (?, . "--..--")
+        (?? . "..--..")
+        (?\  . " ")))
+    
+    (defun char-to-morse (char)
+      (cdr (assoc (downcase char) *morse-table*)))
+    
+    (defun morse-to-char (morse-str)
+      (car (find morse-str *morse-table* :test #'string= :key #'(lambda (assoc-pair) (cdr assoc-pair)))))
+    
+    (defun morseable-p (char)
+      (assoc (downcase char) *morse-table*))
+    
+    (defun to-morse (str)
+      (let ((morse-str ""))
+        (dolist (char (append str nil) (subseq morse-str 1))
+          (if (morseable-p char)
+    	  (setq morse-str (concat morse-str " "
+    				  (char-to-morse char)))))))
+    
+    (defun from-morse (morse-str)
+      (let ((str ""))
+        (dolist (morse-code (split-string morse-str " " t) str)
+          (let ((morsed-char (morse-to-char morse-code)))
+	    (if morsed-char
+		(setq str (concat str (char-to-string morsed-char))))))))
+
+
+----
+[[ERC]], CategoryHumor

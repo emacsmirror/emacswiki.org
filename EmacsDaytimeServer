@@ -1,0 +1,35 @@
+A simple elisp tcp daytime server.  See RFC 867.
+Try telnet localhost 10000.
+
+Emacs22 or later (requires server-socket).
+
+  (defvar daytime-server-port 10000 
+    "port of the daytime server")
+  
+  
+  (defun daytime-server-start nil
+    "starts an emacs daytime server"
+    (interactive)
+    (unless (process-status "daytime-server")
+      (if (featurep 'make-network-process '(:server t))
+        (make-network-process :name "daytime-server" :buffer "*daytime-server*"
+  			    :service daytime-server-port :family 'ipv4 :server t :noquery t
+  			    :sentinel nil :filter (lambda (proc string) nil) 
+  			    :log 'daytime-server-log))))
+  
+  (defun daytime-server-stop nil
+    "stop an emacs daytime server"
+    (interactive)
+    (delete-process "daytime-server"))
+  
+  (defun daytime-server-log (server client message)   
+    (process-send-string client (concat (current-time-string) "\n"))
+    (with-current-buffer "*daytime-server*"
+      (goto-char (point-max))
+      (insert (current-time-string)
+	      (format " %s\n" client)))
+    (delete-process client))
+
+
+----
+CategoryInterface

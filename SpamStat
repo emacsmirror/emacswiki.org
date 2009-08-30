@@ -1,0 +1,77 @@
+spam-stat.el is now part of Oort Gnus, and documented in the manual.
+
+You can get a copy of spam-stat.el here.  It will work without Oort
+Gnus, too.
+
+* Lisp:spam-stat.el
+
+Here is the spam-stat.el quickstart:  You need two nnml directories,
+one with spam, one with non-spam mails before you start.
+
+# Call `spam-stat-process-spam-directory' on `~/Mail/mail/spam'.
+# Call `spam-stat-process-non-spam-directory' on `~/Mail/mail/misc'.
+# Call `spam-stat-save' to save the dictionary.  Note that you might
+  prefer to use (let ((coding-system-for-write 'emacs-mule))
+  (spam-stat-save)) instead, else sometimes the weird coding systems
+  from the spams will render your .spam-stat.el an invalid lisp
+  file.  But then note that if you ever chose iso-2022-jp
+  or similar, then it will be borked on reading it next time, since
+  mule only examines the beginning of files...
+# Add this to your `~/.gnus' file:
+
+     (require 'spam-stat)
+     (spam-stat-load)
+
+And finally, change your mail splitting following one of these
+examples:
+
+     (setq nnmail-split-fancy
+           `(| (: spam-stat-split-fancy)
+               "mail.misc"))
+
+     (setq nnmail-split-fancy
+           `(| ("Content-Type" "text/html" "mail.spam.filtered")
+               ("Subject" "\\bspam-stat\\b" "mail.emacs")
+               (: spam-stat-split-fancy)
+               "mail.misc"))
+
+=== Starting with spam-stat.el ===
+
+* If you are not using Oort gnus, first get the latest version of this
+  file.  The latest version comes with Oort or CVS gnus.  *
+
+* Load spam-stat.el and type M-x spam-stat-reset and M-x
+  spam-stat-save.   This initiates ~/.spam-stat.el, so that
+  (spam-stat-load) in your .gnus will now work.  Now you can frob your
+  .gnus according to the instructions in spam-stat.el
+
+
+
+=== Using spam-stat with gnus 5.9.0 (the current version) ===
+
+* The main functionality works fine, just follow the instructions
+  above.
+
+* B t (tracing an article), and functions like
+  `spam-stat-buffer-is-non-spam' will often not work and will land you
+  into a debugger. Press C-] to get out.  So, if B t doesn't work, and
+  a mail lands up in mail.spam, how do you disable spam-stat.el and
+  then find out where the mail should go?
+
+* Ans: First note that when B t errors, it means that spam-stat wanted
+  the mail to go to mail.spam, otherwise B t works.
+  To deal with a false positive(s) for spam, I first B m to move the
+  article to mail.misc. Now train spam-stat on mail.spam and mail.misc
+  and finally, go to mail.misc, run a B t on that article, this time
+  gnus should show a nice group for the article, like mail.kensanata,
+  now just run B r to move the article to the indicated group. But I
+  don't know---I am a 2-hour spam-stat newbie and a
+  perennial gnus-newbie, any better ways?
+
+
+
+
+----
+See also: SpamStatConfiguration
+
+CategoryGnus | CategoryMailAddons | SpamFiltering

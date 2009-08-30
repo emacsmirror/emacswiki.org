@@ -1,0 +1,193 @@
+== Recommendations for a Buffer Menu ==
+
+[new]
+I recommend BSBufferSelection, because it is easy to understand and still has configurations.  I don't need the power of IbufferMode. -- AlexSchroeder
+
+[new:DrewAdams:2004-12-25 18:30 UTC]
+DrewAdams recommends BufferMenuPlus, because it is straightforward and lets you do multiple operations to multiple buffers, at once.
+
+== Recommendations for Name-Based Switching ==
+
+[new]
+I recommend IswitchBuffers, because it is easy to understand.  I don't need the power of InteractivelyDoThings, which does the same thing for opening files, and many unrelated things besides. -- AlexSchroeder
+
+
+[new:DrewAdams:2004-12-25 18:30 UTC]
+DrewAdams recommends `icicle-buffer' combined with `icomplete-mode'. Together, these provide:
+
+: 1. '''''buffer cycling''''' using arrow keys. Just one example of cycling among the ''default input values'' for a command -- in this case, a command that expects a buffer-name input. Regexp matching to narrow the set of [[Completion]] (and cycling) candidates, if you want. See '''[[Icicles]]'''.
+
+: 2. '''''incremental completion help'''''. See [[IcompleteMode#IcompleteModePlus|Icomplete+]] and Lisp:icomplete+.el.
+
+Nothing is simpler or quicker. You are not limited to cycling: you can also use completion. And you can open a new, non-existant buffer.
+
+[new]
+
+You can also try [[Anything]] which can be used for switching buffers and also for anything else you can imagine.
+
+
+[:BufferCycling]
+== Cycling Among Buffers ==
+
+There are several libraries that let you cycle among buffers:
+
+* Emacs 22.1 has new commands `previous-buffer' and `next-buffer'; if you have XEmacs or an older Emacs, you could use Lisp:prev-next-buffer.el to define them. The Emacs 22.1 key bindings for these functions (by default, `<code>C-x <left></code>' and `<code>C-x <right></code>' respectively) are inconvenient, so you may want to rebind them (see KeyBindingNotation) regardless of Emacs version. DrewAdams: or look at Lisp:setup-keys.el, in which I bind them to chords `<code>C-<pause></code>' and `<code>M-<pause></code>' — ''chords'' are convenient and easily to repeat single-gesture keystrokes, see ChordDefined. (However, I still prefer `icicle-buffer'.)
+* [[Icicles]] -- Use the arrow keys to cycle buffer names in the MiniBuffer. Can be combined with completion, including ''regexp'' ("apropos") completion.
+* DoReMi -- Use the arrow keys and/or mouse wheel with command `doremi-buffers' to cycle among buffers directly.
+* SwBuff -- Simple, direct, agreeable buffer cycling.
+* ControlTABbufferCycling -- Windows-style `C-TAB' cycling of buffers.
+* MTorus -- Regexp-filtered buffer cycling, with a second dimension: you can have various rings of markers. -- http://www.skamphausen.de/cgi-bin/ska/mtorus  
+* CycleBuffer -- Library Lisp:cycle-buffer.el: cycle among buffers with F11 and F12.
+
+
+
+[:SwitchingBetweenTwoBuffers]
+== Switching Between Two Recently Used Buffers ==
+
+With the "switching" or "buffer flipping" technique, the challenge is to do as little buffer-switching as possible. That is, you would like the buffers you switch between most to be near to each other. One solution is to sort buffers in the order they were visited. Then the most-recently-used buffer is always just below the current one. You hit a problem, though, when you want to switch between two buffers which are further apart in the stack. Imagine you are at the first buffer. As you move through the stack, each buffer is visited and gets put on top, so by the time you get to the target buffer there are a bunch of buffers between you and the first. If you want to go back, you have to switch through them again.
+
+A solution without this problem is demonstrated by Microsoft Windows. On this platform, ALT-TAB lets you switch through windows ("[[Frame]]s" in Emacs lingo) to pick the one you want, then pulls that window to the top. This comes much closer to the ideal of stacking in order of use because it distinguishes between "using" and "switching" -- unlike the simple model described above.  Several libraries provide something similar for Emacs buffers:
+
+* The super-simple solution goes like this:
+
+      (defun switch-to-previous-buffer ()
+      (interactive)
+      (switch-to-buffer (other-buffer)))
+
+I have this (or something similar) bound to F1 and it is really handy. Saves me from the Ctrl-key sickness also... :) -- MaDa
+
+
+* [[Icicles]] -- Cycle between all buffers (circular list) or any subset. Use `switch-to-buffer' or `icicle-buffer' to alternate between two buffers -- trivial. 
+
+:: Wrt the stack-order "problem" mentioned above and in the bullets below: '''''No problem:''''' You don't change the stack order just by cycling buffer names in the minibuffer; you change the order only when you visit a buffer. -- DrewAdams
+
+* [http://www.geekware.de/software/emacs/#ibs ibs.el] and [[ControlTABbufferCycling#PcBufsw]] use a timing principle -- if you remain in a buffer for a certain period of time, you are "using", otherwise you are just "switching." Depending on how you work, this may be handy; in any case, it makes for a very complicated implementation.
+
+* [http://www.gnufans.net/~deego/emacspub/lisp-mine/bubble/ bubble.el] and [[ControlTABbufferCycling#BufferStack]] are simpler, relying on last-command instead of timing. If you do anything inside a buffer besides switch to the next buffer, you are using it.  If you just switch through it, you are switching. Someone commented: IMHO, this isn't very good. Sometimes you are scanning through buffers and want to do motion things as well to see what all is in that  buffer. (AdrianKubala notes that this disadvantage is inherent to the underlying concept, and shared by [[ControlTABbufferCycling#PcBufsw]].)
+
+
+
+== Flipping Buffers in Two Frames ==
+
+In Emacs you can do many things at once in multiple frames (outside Emacs frames are sometimes called "windows"). For instance: If you have multiple screens on your machine you can open individual Emacs frames for each screen. Each frame contains its own buffers and of course each frame can be split into Emacs windows.
+
+I wrote the following bit of Emacs lisp in order to switch the contents of two open frames. This is very useful for me at work since I use a two monitor setup. Sometimes I want to edit whatever is on the other monitor on my "main" monitor and vise-versa.
+
+<pre>
+(defun switch-buffers-between-frames ()
+  "switch-buffers-between-frames switches the buffers between the two last frames"
+  (interactive)
+  (let ((this-frame-buffer nil)
+	(other-frame-buffer nil))
+    (setq this-frame-buffer (car (frame-parameter nil 'buffer-list)))
+    (other-frame 1)
+    (setq other-frame-buffer (car (frame-parameter nil 'buffer-list)))
+    (switch-to-buffer this-frame-buffer)
+    (other-frame 1)
+    (switch-to-buffer other-frame-buffer)))
+</pre>
+
+: -- YoniRabkinKatzenell
+
+
+
+== Transposing Two Buffers ==
+
+If you have a window split showing two buffers, you can transpose the two buffers:
+
+<pre>
+(defun transpose-buffers (arg)
+  "Transpose the buffers shown in two windows."
+  (interactive "p")
+  (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
+    (while (/= arg 0)
+      (let ((this-win (window-buffer))
+            (next-win (window-buffer (funcall selector))))
+        (set-window-buffer (selected-window) next-win)
+        (set-window-buffer (funcall selector) this-win)
+        (select-window (funcall selector)))
+      (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
+</pre>
+
+See also [http://www.emacswiki.org/cgi-bin/wiki/buffer-move.el buffer-move.el] written by Lukhas
+
+: -- e1f via retroj who suggests that 'C-x 4 t' is a logical binding for the function
+
+
+== Content-based switching  ==
+
+[[Lisp:contentswitch.el]] lets you select buffers (and files) by their content.
+
+= See Also =
+
+* InteractivelyDoThings -- switching buffers, finding files using the
+  ido package
+* KillingBuffers -- functions that get rid of buffers
+* RecentFiles -- saving a list of recently opened files, finding these files
+
+
+----
+
+== Discussion ==
+
+[new:DavePeck:2008-08-05 16:00 UTC]
+*Question:* I really like TextMate's "Go To File" (Navigation > Go To File, or Command-T) functionality. How can I replicate it in emacs? None of the buffer switching techniques above come close to touching it. Of course, TextMate's "GTF" only works if you have a "project" loaded -- but I'd want the emacs equivalent to work underneath some directory that I've specified. -- DavePeck
+
+[new]
+: Did you look at FileSets feature? --RuslanKosolapov
+
+[new:DrewAdams:2009-01-06 22:49 UTC]
+: [[Icicles]] supports and adds to Emacs [[fileset]]s, and it gives you TextMate's "fuzzy" file-name completion.
+* [[Icicles - Support for Projects]]
+* [[Icicles - Fuzzy Completion]] 
+
+----
+
+[new]
+  *Question:* Is there a way to find out that the user has switched to a buffer, i.e., someting like
+  ''switch-to-buffer-hook''? The manual seems to say no, which is surprising. I would like
+  to set some frame-specific variables according to the buffer which has been selected.... JoergVolbers
+
+[new:DrewAdams:2007-02-21 16:18 UTC]
+: If you don't need to know when the switch was made, and you just need to know the current buffer, use function `current-buffer'. You might also want to look at variable `major-mode' and the hooks `change-major-mode-hook' and `after-change-major-mode-hook'. The last of these is in Emacs 22 only. -- DrewAdams
+
+[new]
+Thank you for the fast reply, but what I want to do is to catch, so to speak, the switch-event. My aim is to set the font (via set-frame-font) according to the biggest current buffer's major-mode. I already wrote a small defun which hooks itself in `window-configuration-change-hook':
+
+  (if (one-window-p) (set-frame-font (get-fontname-according-to-major-mode)))
+
+Unfortunately, the condition (one-window-p) does not filter out displaying the menu and tooltips. Also, some resizing events trigger this function. But all I want is to change the frame font if one *switches* to another buffer... Maybe I should advice switch-buffer, but that seems to be a rather unelegant way.
+
+----
+
+[new]
+*Question:* I don't like how emacs handles showing the same buffer in two windows at once: if I switch away from that buffer, then (a) switching back to that buffer moves point to its location in the other window, and (b) I can't switch back with "C-x b RET" because it isn't the "default" target.  Are there any packages that remember the location of point when switching buffers and/or allow me to quickly switch back to a buffer even if another window is viewing it?
+
+[new:DrewAdams:2008-09-03 21:28 UTC]
+I'm not sure what you mean, but you can just switch [[window]]s, using, e.g., `C-x o' (`other-window'). Each window showing a [[buffer]] has its own window-[[point]]. 
+
+If you use '''[[Icicles]]''', then, in ''Icicle'' mode, `C-u C-x o' gives you a [[multi-command]] that lets you choose a window (or a [[frame]]) by its buffer name (with numeric suffix to distinguish multiple windows for the same buffer). You can also [[Icicles - Cycling Completions|cycle]] among windows whose buffers match a given pattern.  If you also use library <tt>[[crosshairs.el]]</tt>, then it's easier to see which window is selected as you cycle. -- DrewAdams
+
+[new]
+
+What I mean is this.  Load a file and split the main window (`C-x 2').  Move point in one of the windows around, for instance by pressing C-v a few times.  Now each window has its own point.  Now, type `C-x b' in one window and switch to another buffer in it.  Now, type `C-x b' and switch *back* to the buffer you were previously viewing (the one that's available in the other window).  Point will be moved to its location in the other window.
+
+This comes up a lot for me when I'm working on two parts of a file at once.  I split the window and scroll each half until it's showing the part that I want.  Then I start working in one of the windows -- but sometimes I want to refer to another file temporarily.  If I just switch to a new file in the window I'm using, I have to move point back to where I just was, which is a bit annoying.  The only solution I've found is to split the window again, switch buffers in the active half, and then delete the split when I'm done.  It works, but it takes more keypresses and it means I don't have as large a viewing area.
+
+For exactly this use case there is pointback-mode: http://stud4.tuwien.ac.at/~e0225855/pointback/pointback.html
+----
+
+[new]
+*Question*
+I would like to have buffers *sticked* to the frames, i.e. when I use C-x b, then I see only buffers that belongs to current frame.
+This could be convenient when work on different projects simultaneously and do not want to mix buffers.  Somebody has an idea? -- [[konsy]]
+
+[new:DrewAdams:2009-03-16 20:43 UTC]
+Yes. Use [[Icicles]]. Using `icicle-buffer' (bound to `C-x b' in Icicle mode, by default) with a negative prefix argument will do what you want: `C-- C-x b'.
+
+And with a positive prefix arg (e.g. `C-u C-x b'), only buffers visiting files are candidates. -- DrewAdams
+
+[new]
+Thanks for the answer. Just for the record - there is a small package that allows to do that without icicles - [[flobl.el]]. Very handy. -- Konsy
+----
+CategoryBufferSwitching

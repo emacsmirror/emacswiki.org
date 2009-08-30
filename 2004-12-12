@@ -1,0 +1,25 @@
+        What's in a name? that which we call a rose
+        By any other name would smell as sweet;
+        So Romeo would, were he not Romeo call'd,
+        Retain that dear perfection which he owes
+        Without that title. Romeo, doff thy name,
+        And for that name which is no part of thee
+        Take all myself.
+          -- William Shakespeare, Romeo and Juliet,
+             Act II, Scene II
+
+An XEmacs developer asked Alex in a recent mail whether he would object
+to the renaming of "Emacs" to "GNU Emacs" on the wiki when clearly
+only GNU Emacs is meant, ie. to use Emacs only when something applies
+to both emacsen.
+
+One such example would be the renaming of EmacsAndXEmacs to !GNUEmacsAndXEmacs.
+
+Also note the changes from revision 44 and 45 on EmacsAndXEmacs.
+[http://www.emacswiki.org/cgi-bin/wiki?action=browse&diff=1&id=EmacsAndXEmacs&revision=45&diffrevision=44]
+
+[new]
+Personally I'd favor the use of "Emacs" for GNU Emacs, "XEmacs" for Emacs, and "both
+Emacs and XEmacs" or "emacsen" when we're talking about both.  But I'm not too attached
+so I'd just go with whoever volunteers to do the editing.  I'm also not sure how ardently
+I'd follow these new guidelines, however. -- AlexSchroeder

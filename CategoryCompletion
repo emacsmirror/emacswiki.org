@@ -1,0 +1,73 @@
+Click the heading to search for pages in this category.
+
+'''[[Completion]]''' can mean different things in Emacs. In particular, it refers to completing input in the MiniBuffer and completing text in a [[Buffer]] other than the minibuffer.   Minibuffer input can be a command that you enter using `M-x' or text that you enter in response to a prompt in the minibuffer. File-name input is an example of the latter.  
+
+== Minibuffer Input Completion ==
+
+The standard Emacs behavior for minibuffer input completion is explained in the "Completion" section of the EmacsManual (`C-h i m Completion RET').
+
+* [[Icicles]] -- ''Cycle'' among candidate default input values, according to their type. [[regexp|Regexp]] matching, in addition to standard prefix matching.  Carry out ''actions'' on input candidates; manipulate ''sets'' of candidates. Icicles [[completion]] works the same for any kind of input -- [[command]]s, buffer names, file names, [[key sequence]]s, whatever. There are also specific commands for [[bookmark]]s, [[buffer]]s, files, color themes, doc, fonts, [[face]]s, colors, search targets... Define input-matching behavior specific to your application. 
+* InteractivelyDoThings -- Input completion without having to hit `TAB'.
+* LightningCompletion -- Input completion without having to hit `TAB'.
+* Lisp:minibuffer-complete-cycle.el -- Cycle through the entries in the <code>*Completions*</code> buffer.
+* RecentFiles -- Complete recently used filenames.
+* ManHtml -- Like `M-x man', but for HTML pages, with completion out of an alist.
+* [[Synonyms]] -- Input completion for thesaurus lookup.
+* Lisp:timid.el -- Complete entries from the history timidly, that is non-aggressively.
+
+See also:
+
+* IcompleteMode's "Incremental completion" for interactive display of possible completion candidates based on what's typed so far.
+* MinibufferHistory
+
+== Text Completion in a Buffer ==
+
+These libraries provide completion of text in a buffer other than the minibuffer:
+
+* [[TabCompletion]] -- to hit <code><tab></code> to auto-complete (like Bash does), using the completion libraries below
+* DynamicAbbreviations -- Complete a word in a text buffer using other words in the buffer (and perhaps in other buffers).
+* Command `complete' (from `<code>completion.el</code>') -- Completes to a previously typed word or uses DynamicAbbreviations if no other completions are found. Completions are saved (persistent) between sessions.
+* HippieExpand -- Dynamic abbreviations using more of Emacs's knowledge, and providing multiple "tries".  Notes on how to extend.
+* [[Icicles - Completion in Other Buffers]]
+** DynamicAbbreviations with cycling and regexp matching
+** Completion to words and phrases that are in a thesaurus (see also [[Synonyms]])
+** Yank text at the TextCursor into the minibuffer to complete input: filenames, URLs, anything
+* PredictiveMode -- Complete words as you type them. Context-sensitive ("IntelliSense"), and learns which words you use most!
+* CompletionUI -- Completion user-interface lisp library: your code just needs to define a function that returns completion candidates, and the rest is done for you!
+* Incomplete -- "Intelligent Completion" -- Part of [[Circe]]
+* PredictiveAbbreviation -- Completion/Expansion works based on the previously written text.  Unlike dynamic abbreviation, the text is analysed during idle time, while Emacs is doing nothing else.  
+* CompleteFileName -- Complete a file name when writing it in a buffer.
+* Thinking Machines' completion system TmcCompletion -- complete with M-RET based on buffer contents and auto-saved dictionary.  Simple to use, not invasive, and useful.  Focused on programming language completion, but useful for human languages as well.
+* MagpieExpansion provides a method for copying useful bits of text from the buffer to where you are editing. In particular, it provides dynamic expansion of acronyms to phrases previously typed. The code can be found in Lisp:magpie.el
+* AutoComplete -- Completion based on popup menu.
+* DynamicAbbreviationsInMiddle -- Like DynamicAbbreviations, but works in the middle (and at the beginning/end) of a word instead of only at the end
+* CaMode -- Ca2+ is based on CompanyMode, similar sources to AutoComplete, but with features you've never seen before :)
+Sources for dabbrev, filenames, yasnippet, elisp, gtags and semantic are included. Notable features are tab-cycling through available sources, subword matching, insertion of function arguments as ad-hoc generated yasnippet template (with semantic), sorting by occurrence of words in current buffer and C-h shows description for candidates while selecting (only for elisp currently). Code is hosted on github: [http://github.com/jeffdameth/ca2/tree/master Ca2+] 
+
+=== Programming-Specific Completion ===
+
+* EmacsTags -- Command `complete-tag' (from `<code>etags.el</code>') -- Completes to a defined ''tag'' (that is, a defined name, such as function or variable name).
+* [[Icicles - Other Search Commands#IciclesImenu]] -- Like ImenuMode with regexp completion. Across multiple buffers, files, and saved regions, like EmacsTags.
+* HowSemanticFulfillsThoseNeeds -- "smart" completion of program identifiers.
+* ProgrammableCompletion -- Command `pcomplete' (from `<code>pcomplete.el</code>') -- Completes function ''arguments''.
+* NxmlMode and its derivative nxhtml-mode in [NxhtmlMode nXhtml] provides context sensitive completion and validation for XML/XHTML.
+
+== Other Completion ==
+
+Some completions are available in modes that provide command interaction.
+
+* EshellCompletion -- Input filename completion.
+* SubprocessCompletion -- Handling completion by a subprocess such as a shell or a debugger, rather than by Emacs.
+
+== Discussion ==
+
+[new:DrewAdams:2006-01-02 20:15 UTC]
+Questions on section "Other Completion":
+* Are these not either input completion or text completion? Maybe some more explanation/description is needed.
+* What does the "command interaction" (in the intro) mean? Emacs commands or something else? If Emacs commands, why wouldn't "input filename completion" belong in section "Minibuffer Input Completion"? Again, maybe some more explanation/description is needed.
+* Is the point in putting SubprocessCompletion here that it can be used for either input completion or text completion? If so, that info is missing. Wouldn't it be clearer, in that case, to just list it in each of those sections?
+
+In sum, can we clear up whether "Other Completion" is needed and, if so, just what it means? Does it really mean "other than input or text completion"? -- DrewAdams
+
+[new]
+I'm trying to find a way to get rid of any past "Completions" buffers that appeared if you clicked on TAB, but you didn't use them. Is there any way to remove them from the buffer list automatically even if you didn't use them? I find that annoying...

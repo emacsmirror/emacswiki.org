@@ -1,0 +1,39 @@
+Lisp:sln-mode.el
+
+
+/This is an add-on library for/ ProjectBufferMode.
+
+This library provides a function to create a project-buffer extracting
+the information from a SLN file and its associated VCPROJ.
+
+== Installation ==
+
+To install it: just add the following lines to your init file:
+{{{
+  (autoload 'find-sln "sln-mode")
+}}}
+
+`find-sln' is the command to execute to open a 'sln project'.
+
+== Documentation about the project-buffer-mode ==
+
+Check ProjectBufferMode for more documentation about it.
+
+== Note about build / clean / run and debug actions ==
+
+The command line are different between a 2005 and a 2008 project; by
+default it will use the 2005 configuration mode; use the prefix
+argument to switch to the 2008 mode.
+
+==  It's a viewer ==
+
+sln-mode is currently just a viewer. It doesn't currently have any
+support for modifying/writting a SLN file.
+
+Note that it doens't have to stay that way if people really need this
+feature. ;-)
+
+----
+CategoryProgramming
+CategoryModes
+CategoryProgrammerUtils

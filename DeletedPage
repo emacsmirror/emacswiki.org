@@ -1,0 +1,15 @@
+[[fr:SupprimerPage]]
+Any page that is marked for deletion starts with a link to DeletedPage.
+Pages cannot be deleted immediately, but all pages marked for deletion
+will be permanently deleted after 21 days of inactivity.
+
+In other words, every time somebody edits a page marked for deletion,
+"the counter is reset".
+
+Technically, this is implemented as a cron job that runs once every day
+to do maintenance, including the deletion of pages that fit the description
+given above.
+
+Deleted pages are included in the RSS feed, since they are a significant change that needs to be reviewed.
+
+

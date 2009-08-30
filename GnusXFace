@@ -1,0 +1,72 @@
+X-Faces are header lines encoding a bitmap picture.  The X-Face header
+is added to your outgoing mail and news, and Gnus will render the
+X-Face for all incoming mail and news.
+
+If you are using a recent Gnus, you should use a Face header instead.
+See GnusFace.
+
+== Making an X-Face ==
+
+Visit http://www.dairiki.org/xface/, or do it '''the hard way''':
+
+Here's how to produce such a header for yourself.  You will need
+compface, <nowiki>ImageMagick</nowiki> [http://www.imagemagick.org/] and the netpbm tools.
+
+# Find a picture of your own face you like
+# Resize it to 48x48 (use the "Scale Image" and "Crop" options of gimp, as needed)
+# Save as png or any other format
+# Convert it to a portable bitmap (pbm) without dithering (48x48 is too small for dithering to look good); example: convert +dither alex48.png alex48.pbm
+# Conversion from a (color) picture to the b/w pbm won't necc. be great.. at this point, you may want to run gimp on the pbm and clear up the extraneous dots..
+# Convert the portable bitmap to an icon file; example: pbmtoicon alex48.pbm > alex48.icon
+# Edit the icon file such that there are exactly three values per line, 48 lines in total, and no comment at the start of the file (see below for an example) --- a quick way to achieve this is to: remove comments, then C-u 99999 C-x f, M-q, M-% , by , SPC and then C-u C-x f 33, and then M-q. 
+# Run compface on the file
+# Edit the compface output: replace \ with \\ and " with \". Also, adding or removing newlines to compface output is okay, I think. 
+# Add the X-Face header to your outgoing mails and postings (see below for an example using PostingStyles)
+
+=== Example compface input ===
+
+Here's how to do it, based on the icon file:
+
+# Remove comments (C-k C-k C-k C-k)
+# Replace all commas with a space (M-% , RET SPC RET !)
+# Set the fill column to 21 (C-u 21 C-x f)
+# Fill the file (M-q)
+# Replace all spaces with commas (M-% SPC RET , RET !)
+# Add a comma to all lines (M-% C-q C-j RET , C-q C-j RET !)
+# Make sure there really are 48 lines of values (add "0xffff,0xffff,0xffff" or something like that to fill it up)
+# Remove the last comma
+# Save as compface input file
+
+    0x0000,0x00c8,0x00e0,
+    0x0000,0x01c8,0x00e0,
+    0x0000,0x0ffe,0x00c0,
+    ...
+    0x0dff,0x1fff,0xffff,
+    0x1fef,0x0fff,0xffff,
+    0xffff,0xffff,0xffff
+
+=== Set X-Face header ===
+
+ (setq gnus-posting-styles
+       '(...
+         ("emacs"
+          ...
+	  ("X-Face" "^BC$`[IcggstLPyen&dqF+b2'zyK#r.mU*'Nms}@&4zw%SJ#5!/7SMVjBS7'lb;QK)|IPU5U'o1'522W4TyzB3Ab*IBo^iw]l4|kUbdZuUDO6=Um-.4IzhNiV'B\"@K#jy_(wW|Zbk[34flKY^|PrQ?$u2\\fKg^]AY>wOX#H32i")
+          ...)
+         ...))
+   ..)
+
+== Showing faces ==
+
+Gnus should set the variable `gnus-treat-display-xface' to the symbol
+`head' if it detects the command `uncompface' in your path.
+
+== Not showing faces ==
+
+You can set the variable `gnus-treat-display-xface' to nil to prevent
+X-Faces from showing up.
+
+If the variable `gnus-article-x-face-too-ugly' (which is a regexp) matches the `From' header, the face will not be shown.
+
+----
+CategoryGnus

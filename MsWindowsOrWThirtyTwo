@@ -1,0 +1,25 @@
+I noticed a couple of recent page renames. Some pages have been
+renamed from *WThirtyTwoXYZ* to *MsWindowsXYZ*. While I don't much care
+about what the "correct" page name format should be I think that it is
+a bad idea to use two different prefixes for these kinds of pages.
+
+There are 22 page titles matching ^*WThirtyTwo*.* and 10 page titles
+matching ^*MsWindows*.*, so the former seems to be the "standard".
+
+Has there been any discussions about this where people have decided to
+use the less used format? -- MaDa
+
+[new:DrewAdams:2007-11-25 15:46 UTC]
+I wondered the same thing. -- DrewAdams
+
+[new]
+Personally I believe *MsWindowsXYZ* is better because beginners probably find it more understandable.
+
+And *WThirtyTwoXYZ* is long and unreadable. I think we started to use it because *W32* did not work at that time.
+-- LennartBorgman
+
+[new]
+I agree that a beginner might find things more easily if placed under *MsWindowsXYZ* rather than *WThirtyTwoXYZ*. However, there are quite some occurances of commands, functions and variables starting with `w32', the Emacs user running on w32 will have to learn that sooner or later. And yes, "%%WThirtyTwo%%" is a bit clunky, I was among the first to use that I think here on the wiki. I think it was because the CamelCase was not recognized, or numbers were not allowed back then, don't remember exactly. Are there any other scenarios where we need both these page title formats or could we decide on one and live happily ever after? -- MaDa
+
+[new]
+Seems like we might agree that both *MsWindowsXYZ* and *W32XYZ* have benefits over *WThirtyTwoXYZ*. So which is the best? What tools are there for renaming pages on this wiki? -- LennartBorgman

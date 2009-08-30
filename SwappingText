@@ -1,0 +1,33 @@
+There are different types of swapping you might want.
+
+AnchoredTranspose swaps 2 regions you select.
+
+This function swaps occurrences of strings in the buffer or a region of it.
+
+    (defun swap-text (str1 str2 beg end)
+      "Changes all STR1 to STR2 and all STR2 to STR1 in beg/end region."
+      (interactive "sString A: \nsString B: \nr")
+      (if mark-active
+          (setq deactivate-mark t)
+        (setq beg (point-min) end (point-max))) 
+      (goto-char beg)
+      (while (re-search-forward
+              (concat "\\(?:\\b\\(" (regexp-quote str1) "\\)\\|\\("
+                      (regexp-quote str2) "\\)\\b\\)") end t)
+        (if (match-string 1)
+            (replace-match str2 t t)
+          (replace-match str1 t t))))
+
+This can be accomplished with ReplaceRegexp and an evaluated Emacs Lisp replacement in Emacs 22.
+
+  C-M-% STR1\|STR2 RET \,(if (string= "STR1" \1) "STR2" "STR1") RET
+
+A library for handling lists of search and replacements, Lisp:regexpl.el, can do this with the following:
+
+  (regexpl-search-replace-list '(("STR1" . "STR2") ("STR2" . "STR1")))
+
+
+----
+CategoryEditing
+CategoryRegion
+

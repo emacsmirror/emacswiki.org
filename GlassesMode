@@ -1,0 +1,12 @@
+GlassesMode changes the way StudlyCaps/CamelCase is displayed so you can see the difference. The default setting is to separate the Capped bits with an underscore, so <nowiki>EmacsIsStudly</nowiki> shows as Emacs_Is_Studly.
+
+I prefer to see the code 'as it is', with colors to draw attention to the important differences. GlassesMode allows this also. If you customize your settings, you can turn off the separator, and turn on Glasses face instead. You can also use both at the same time if you prefer.
+
+If you are working on some legacy code and you want to stop using GlassesMode, you can use OverlaysToText
+to make the overlays glasses-mode added permanent.
+
+This is available with GnuEmacs 21 but not available with [[XEmacs]]. Try
+Groups:glasses.el or CVS:progmodes/glasses.el.
+
+----
+CategoryModes

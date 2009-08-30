@@ -1,0 +1,14 @@
+I use Emacs for editing LaTeX documents (using AUCTeX and RefTeX), programming in C, Fortran and Perl (with source code under VersionControl: RCS or CVS, or Git), writing web pages in PHP, HTML and CSS, sometimes with little JavaScript (using HtmlModeDeluxe or HtmlHelperMode for more complicated pages, HtmlMode for simpler).
+
+I use [::ShadeHawk] nick on IRC.
+
+You can reach me via email: [mailto:jnareb@gmail.com%20(Jakub%20Narebski)?subject=EmacsWiki jnareb@gmail.com]
+
+My elisp packages:
+* Lisp:sierotki.el (NonbreakableSpace) -- Introduce tildes (TeX nonbreakable space) after single-letter words
+* Lisp:bst-mode.el -- Very simple major mode for editing BibTeX style (.bst) files
+
+[http://www.emacswiki.org/cgi-bin/wiki?action=rc&all=1&showedit=1&from=1&rcuseronly=JakubNarebski Contributions to the Wiki]
+
+----
+CategoryHomepage

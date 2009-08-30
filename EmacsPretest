@@ -1,0 +1,8 @@
+Before a new release the Emacs maintainers make a "pretest" release of the EmacsDevelopmentSources.  There are binary packages for pretests available to Windows users, but otherwise its just a source package -- see BuildingEmacs.
+
+* http://alpha.gnu.org/gnu/emacs/pretest/
+
+See also EmacsReleaseDates.
+
+----
+CategoryBuilding

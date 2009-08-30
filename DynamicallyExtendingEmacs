@@ -1,0 +1,18 @@
+SteveKemp announced a patch to fns.c on [[gnu.emacs.sources]] which allows Emacs to use shared libraries (2000-02-23).[Groups:fns.c&selm=Pine.GSO.4.10.10002231444090.20962-100000@tardis.tardis.ed.ac.uk]  He called it "Dynamic loading of extensions modules" and "Dynamically Extending Emacs".
+
+The patch eliminated the need to recompile Emacs, by allowing C DEFUN functions to be placed in external libraries and dynamically loaded when they were needed.  The patch is no longer maintained.
+
+DaveLove released a follow up for Emacs that uses libtool.  According to Dave, "this won't get into Emacs until rms is persuaded it's not a GPL threat, probably with some additional hack".
+
+* http://www.loveshack.ukfsn.org/emacs/dynamic-loading 
+
+[[XEmacs]] already has something of an FFI:
+
+* [http://www.xemacs.org/Documentation/21.5/html/emodules.html XEmacs using C Modules]
+
+see Also:
+
+* http://delysid.org/emacs/xemacs.html
+
+----
+CategoryExtensionLanguage

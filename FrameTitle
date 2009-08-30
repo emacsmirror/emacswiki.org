@@ -1,0 +1,98 @@
+= Commands to Rename Frames =
+
+DrewAdams has written library Lisp:frame-cmds.el, which contains two commands for renaming [[Frame]]s:
+
+* <code>rename-frame</code> - Rename a frame named OLD-NAME to NEW-NAME.
+: Prefix arg ALL-NAMED non-nil => Rename all frames named FRAME to NEWNAME.
+: OLD-NAME may be a frame, its name, or nil.  Default is `selected-frame'.
+: NEW-NAME is a string or nil.  Default NEW-NAME is current `buffer-name'.
+
+* <code>rename-non-minibuffer-frame</code> - Unless OLD-NAME names the `minibuffer-frame', use `rename-frame'
+to rename a frame named OLD-NAME to NEW-NAME.
+: Prefix arg ALL-NAMED non-nil => Rename all frames named FRAME to NEWNAME.
+: OLD-NAME may be a frame, its name, or nil.  Default is `selected-frame'.
+: NEW-NAME is a string or nil.  Default NEW-NAME is current `buffer-name'.
+
+
+= Setting the frame and icon title =
+The frame title is changed by changing the value of the variable
+<code>frame-title-format</code>. Likewise, the icon title can be changed with <code>icon-title-format</code>. They recognize the same special characters
+as the <code>mode-line-format</code> variable, ie.:
+
+  A string is printed verbatim in the mode line except for %-constructs:
+    (%-constructs are allowed when the string is the entire mode-line-format
+     or when it is found in a cons-cell or a list)
+    %b -- print buffer name.      %f -- print visited file name.
+    %F -- print frame name.
+    %* -- print %, * or hyphen.   %+ -- print *, % or hyphen.
+          %& is like %*, but ignore read-only-ness.
+          % means buffer is read-only and * means it is modified.
+          For a modified read-only buffer, %* gives % and %+ gives *.
+    %s -- print process status.   %l -- print the current line number.
+    %c -- print the current column number (this makes editing slower).
+          To make the column number update correctly in all cases,
+          `column-number-mode' must be non-nil.
+    %p -- print percent of buffer above top of window, or Top, Bot or All.
+    %P -- print percent of buffer above bottom of window, perhaps plus Top,
+          or print Bottom or All.
+    %m -- print the mode name.
+    %n -- print Narrow if appropriate.
+    %z -- print mnemonics of buffer, terminal, and keyboard coding systems.
+    %Z -- like %z, but including the end-of-line format.
+    %[ -- print one [ for each recursive editing level.  %] similar.
+    %% -- print %.   %- -- print infinitely many dashes.
+  Decimal digits after the % specify field width to which to pad.
+
+===Examples===
+
+Note that most of the following examples use lists but string values are also valid.
+
+    (setq frame-title-format '("" "%b @ Emacs " emacs-version))
+    (setq frame-title-format '("" "[%b] - Emacs " emacs-version))
+    (setq frame-title-format (list "%b - " (getenv "USERNAME") "@" (getenv "USERDOMAIN"))) ;;list is needed here, could someone explain ?
+
+: See BackquoteSyntax -- LawrenceMitchell)
+
+: the one before didn't work for me (suse linux), here's the one that works:
+
+    (setq frame-title-format (list "%f - " (getenv "USER") "@" (getenv "HOSTNAME")))
+
+: here's another way to see "USER@HOST":
+
+    (setq frame-title-format `(,(user-login-name) "@" ,(system-name) "     " global-mode-string "     %f" ))
+
+And if you're an ErcChannelTracking fan, take a look at
+
+    (setq frame-title-format '("" erc-modified-channels-object "%b @ Emacs " emacs-version))
+
+To set both frame and icon title to the same thing, which also tells if you are using GnuEmacs or [[XEmacs]]:
+
+    (setq frame-title-format
+          (setq icon-title-format
+                (format "%%b - %semacs" (if (featurep 'xemacs) "x" ""))))
+
+Display date/time if `display-time-mode' is set:
+
+    (setq frame-title-format '("" invocation-name "@" system-name "     "
+      global-mode-string "     %f" ))
+    ;; See also:  `display-time-format' and `mode-line-format'
+
+
+
+Feel free to add your titles here!
+
+==Setting xterm window titles from within Emacs==
+When running Emacs inside of xterm (e.g. with <code>emacs -nw</code>), it is possible to mostly mimic the behavior of frame/icon titles.  To do so, you will need a copy of
+[http://www.splode.com/~friedman/software/emacs-lisp/src/xterm-title.el xterm-title.el],
+[http://www.splode.com/~friedman/software/emacs-lisp/src/xterm-frobs.el xterm-frobs.el],
+and the following snippet for your <code>.emacs</code>:
+
+    (when (and (not window-system)
+               (string-match "^xterm" (getenv "TERM")))
+      (require ´xterm-title)
+      (xterm-title-mode 1))
+
+Then modify the frame/icon frame title variables as you would in a window system.
+
+----
+CategoryFrames CategoryDisplay FrameModes

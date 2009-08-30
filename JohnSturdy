@@ -1,0 +1,26 @@
+I use emacs for just about everything.
+
+You can see most of my elisp at http://www.cb1.com/~john/computing/emacs/lisp/index.html, and I have also started some sourceforge projects in elisp:
+
+* EmacsVersor (http://emacs-versor.sourceforge.net/)
+Versatile cursors -- lets you switch the arrow keys etc easily between different dimensions, and also provides high-level editing like converting inline code blocks to out-of-line functions
+
+* SideBrain (http://sidebrain.sourceforge.net/)
+A sidekick for your forebrain -- keeps track of stacks of open tasks, and of observations (I've now stopped using this myself, and recommend PlannerMode instead)
+
+* MuLVoc (http://mulvoc.sourceforge.net/)
+MUlti-Lingual Vocabulary -- pops up translations of words as you type
+
+* Emacs-Ringing (http://emacs-ringing.sourceforge.net/)
+Learning aid for change-ringing methods (the "tunes" for the bell-ringing style used largely in the UK)
+
+An unusual thing about my emacs is that it can be used largely handsfree, with pedals driving a navigation system I have invented (emacs-versor), and with extensions to voice input, too.  And I also wrote the JoyStick / GamePad interface, all of these to make editing quicker and more efficient and more elegant... and less painful.  I'm aiming towards having a ConversationalEmacs.
+
+[new]
+Wow, hands free!! That must be quite amazing.  Why did you do it? [[RSI]]? Welcome to the wiki! -- AlexSchroeder
+
+[new]
+Indeed, the fancy input stuff is largely because of [[RSI]].
+
+----
+CategoryHomepage

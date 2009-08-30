@@ -1,0 +1,14 @@
+I installed a text formatting rule for IRC logs.
+
+<foo> bar
+<fuz> baz
+
+It probably needs some more attention.  Let's give it a try for the moment and see how it goes.
+
+I also installed a despamming module that will revert all pages to the last unspammed version.
+If you're one of the EmacsWikiAdministrators, you just need to add the regular expressions to BannedContent,
+and run the despam action, without having to manually revert all the spam.
+
+And I changed the code responsible for rollbacks.  Now (2004-11-27) it should rollback pages
+as minor or major changes, depending on what type the rolledback changes are: If only minor
+changes are being rolled back, the rollback is a minor change as well.

@@ -1,0 +1,66 @@
+Doom is the long-standing (however ill-advised) handle for 
+Joseph Brenner, doom@kzsu.stanford.edu.  
+
+* http://obsidianrook.com/map/
+
+A Gnu emacs fan since version 18.
+
+=== about emacswiki === 
+
+There's a difference between a wiki and a weblog.  
+Does that need explication? Compare slashdot to the wikipedia.
+
+This leads to the following style suggestions:
+
+* Don't sign your additions to emacs wiki entries.  If you do, 
+you'll make other people reluctant to add their corrections. 
+* Similarly, don't use first person.  Instead of saying "I got it to work 
+like this...", consider "One method which works under GNU Emacs 21 is..."
+* Strive for "neutrality" (which is easier, and more attainable than 
+"objectivity").  Instead of rants and raves, attempt to make lists 
+of arguments for and against; or of good and bad features.   
+* If this seems unnecesarily impersonal, look for a more personal 
+forum, e.g. comp.emacs.  (Despite what you may have heard, usenet 
+is not dead.) 
+
+=== about emacs culture === 
+
+  From: Joe Brenner (doom@kzsu.stanford.edu)
+  Subject: Re: fun
+  Newsgroups: alt.religion.emacs
+  Date: 2003-02-04 18:30:03 PST
+  
+  Alex Schroeder <alex@emacswiki.org> writes:
+  
+  >PERL is EVIL!  It has CURLY braces!!  Every holy language in this
+  >blessed country uses anti-terrorist round curved bent HOLY braces!!
+  >Furthermore, these Perl MONGERS!! use a comment ON EVERY SINGLE LINE! 
+  >So please, reconsider.  This is alt.religion.EMACS -- not a place to
+  >dwell on the usefulness of C-*spit*-PERL-*spit*-"so-called" mode!
+  >This is the place where we go and get the STAKES if somebody mutters
+  >the VILE word, the eVIl word, the VIcious word -- the name of the
+  >OTHER editor -- VI!!!!!!  Tremble, heathens, for the wrath of EMACS
+  >is upon you.  Go forth NOW and delete VI, delete PERL, delete
+  >perl-*spit*-mode, delete viper-*spit*-mode.  And think only of the
+  >greater good:  IT is SAVED!  For EMACS loves YOU!!!
+  
+  No, no, no!  
+  
+  Emacs is without limit, it knows no boundaries, *nothing* is
+  outside of its purvey.  It stalks across all platforms, it
+  has a mode for all occasions, it speaks in every tounge yet
+  known and will speak in every tounge that will ever be
+  encountered.
+  
+  Emacs is extensible, it must be EXTENDED. 
+  
+  The radiant glow of the emacs environment can purify all!
+  Verily, even the editor of the beast may be handled with
+  it's terminal-emulator with impunity.
+
+
+----
+I must have missed the creation of this page.  And it even quotes me!  Welcome to the wiki!  -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -1,0 +1,64 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Special Characters in Input Patterns]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - S-RET]] ||
+
+----
+
+= Alternative Libraries: Other Methods of Choosing Default Values =
+
+There are other libraries, besides '''Icicles''' that give you alternative ways to pick a
+candidate default value.  There are, for instance, many libraries
+that provide ways to switch buffers (see SwitchingBuffers).  Some of these present candidates in
+the [[minibuffer]] and choose one as soon as you type enough of its
+name to select it unambiguously -- without your
+needing to confirm your choice (with `RET', for example).  Library
+`<code>ido.el</code>' is an example of such a library (see InteractivelyDoThings).  Library `##iswitchb.el##' is another such library; it is specialized for choosing a buffer.
+
+Choosing without
+confirming can be very quick, but I prefer to confirm a choice.  In any case, you can also use '''Icicles''' to choose without
+confirming, if you wish -- see [[Icicles - Multi-Commands]]. See also [[Icicles - S-RET]] for how to obtain the complete-and-exit behavior of
+library `##iswitchb.el##'.
+
+
+The main reason I prefer '''Icicles''' is because of its generality.
+You use the same input, [[Icicles - Cycling Completions | cycling]], and [[completion]] method for
+everything.  There is no need to be familiar with one method for
+switching [[buffer]]s, another method for choosing a [[command]], another
+for choosing a [[variable]], and so on.  Library `<code>ido.el</code>' is quite
+general too, but perhaps a little less so.
+
+Also,  I like to
+be able to ''edit'' the value in the minibuffer.   For
+instance, for ''[[lax]]'' (permissive) completion, where you are not required to enter one of the proposed candidates, you can use completion to retrieve a candidate that is similar to what you want to enter, then edit it and
+hit `RET' to submit the actual value you want.  Library `<code>ido.el</code>'
+does have an "edit" command or mode, but I find '''Icicles''' better for
+letting me edit input.
+
+'''Icicles''' has many additional features that are not available in
+other libraries, but its main advantage is its
+generality: you use the ''same user interface for input of any kind''. See KillingBuffers for an illustration of this generality, as well as some musings on special vs general solutions.
+
+
+
+----
+
+|| *Previous:*  [[Icicles - Special Characters in Input Patterns]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - S-RET]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryDocumentation
+CategoryHelp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

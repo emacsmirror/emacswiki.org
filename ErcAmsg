@@ -1,0 +1,20 @@
+One of the popular aliases in other IRC clients is `/amsg'.  This commands sends its argument as a message to all the currently active channels.
+
+An implementation of this command for ERC is:
+
+    (defun erc-cmd-AMSG (&rest args)
+      "Send a message to all the channels of the current server."
+      (when args
+        (let ((message (substring (mapconcat #'identity args " ") 1))
+          (channel-list (and erc-server-process
+                             (erc-channel-list erc-server-process))))
+          (when channel-list
+            (dolist (channel channel-list)
+              (with-current-buffer channel
+                (erc-send-message message)))))))
+
+Add this to your Emacs or ERC startup file, and then you should be able to type
+
+    /amsg Hi, everyone!  Good morning :-)
+
+to send a message to all the channels you have just joined.

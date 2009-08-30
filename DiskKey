@@ -1,0 +1,29 @@
+Inspired by MeatBall:HumaneInterface -- the DISK key is a key that
+will either find-file, revert-buffer, save-buffer, or warn you,
+depending on whether buffer or visited file have been modified.
+
+Download:
+
+* Lisp:disk.el
+
+----
+Sounds like a good idea.  What about offering the user the possibility to find a different file if there is nothing else to do and the command is called two times consecutively? (this can be done by comparing the variables this-command and last-command). --MicheleBini
+
+Hm, interesting idea.  I think that this introduces another "mode", though, so I won't do it.  In my particular setup, the DISK key saves always, but Shift+DISK will do a find-file.  That way, it is always clear what will happen when you press the key.  Anyway, that's because I'm trying to follow the ideas in the book. -- AlexSchroeder
+
+I guess I'm not enough of a usability engineer to know the answer to this one.  Is it better to have one key that always "does the right thing" or is it better to just have one key do one thing (ie "do what I expect")?  I know that VC uses on key combo to do the right thing.  It mostly works right (except for some bugs in VC).  Maybe it would work here too.  Will someone smart please stand up and resolve this? :)
+
+I think the answer to this is that a key should only do one thing in the users mental model.  The "Disk" key syncs file on disk with buffer content.  In terms of programming, this involves different functions depending on some state, so from the point of view of a programmer, there are various modes.  But from the point of view of the user there is just one "concept".  Now if the key where labelled "Save" instead of "Disk" or "Sync", then we'd have a problem, because then the key ought never to change the buffer content. -- AlexSchroeder
+
+I use `disk' with that "sync" idea, as an "update" or "refresh" key, which is why I bound it to F5. And, pushing that "update" concept a little further, I added a couple of cases to `disk':
+<pre>
+  (cond
+   ;; In a compilation buffer, recompile
+   ((equal major-mode 'compilation-mode) (recompile))
+   ;; In a Dired buffer, re-read the folder contents
+   ((equal major-mode 'dired-mode) (revert-buffer))
+    ...
+</pre>
+
+----
+CategoryKeys

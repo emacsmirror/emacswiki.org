@@ -1,0 +1,28 @@
+English:CategoryHistory
+
+
+點選下列和歷史、傳統、和回溯相容相關的主題：
+
+* EmacsHistory -- the big picture
+* EmacsSchism －－ Emacs 和 XEmacs 的分裂
+* DynamicBindingVsLexicalBinding
+
+RichardStallman 寫了一些設計 Emacs 時的備忘錄：
+ftp://publications.ai.mit.edu/classic-hits/AIM-519A.ps
+
+JamieZawinski drew up an emacs timeline a couple of years back:
+http://www.jwz.org/doc/emacs-timeline.html.
+
+CraigFinseth 在他的網頁上有一些和 Emacs 相關的有趣玩意兒。參閱：
+EmacsImplementations for a huge list of Emacs-like editors.
+
+One of the earliest TECO EMACS manuals dated 1982-03-06:
+http://zane.brouhaha.com/~healyzh/emacs/emacs.doc.txt
+
+TECO EMACS version 170 from Rich Alderson for the PDP10 emulator is
+available here:  http://pdp10.nocrew.org/
+
+Beginning with version 21, Emacs was able to display inline images, so
+it was possible to display a splash image when
+starting-up. http://www.ee.ryerson.ca/~elf/emacs/logo/ describes the
+story behind the creation of the Emacs logo.

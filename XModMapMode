@@ -1,0 +1,15 @@
+This is a simple GenericMode for XModMap files:
+
+    (define-generic-mode 'xmodmap-mode
+      '(?!)
+      '("add" "clear" "keycode" "keysym" "pointer" "remove")
+      nil
+      '("[xX]modmap\\(rc\\)?\\'")
+      nil
+      "Simple mode for xmodmap files.")
+
+
+Suggestion to include it in Emacs: http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=2065
+
+----
+CategoryModes

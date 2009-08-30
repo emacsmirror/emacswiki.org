@@ -1,0 +1,31 @@
+Si vous devez (ou préférez) compiler votre Emacs vous mêmes, voir les pages
+[[Distributionsd'Emacs]] pour les sources et
+CategoryBuilding (en anglais) pour des instructions.
+
+Si vous recherchez un clone d'Emacs ou une autre implementation,
+voir EmacsImplementations (en anglais).
+
+Sinon voici une liste de pages pour vous aider a trouver des
+binaires pour votre système.
+
+* EmacsForDebian (en anglais) -- Emacs et la distribution de GNU/Linux Debian
+* EmacsForGentoo (en anglais) -- Emacs et la distribution de GNU/Linux Gentoo
+* EmacsForDOS (en anglais) -- Emacs et les OS Microsoft (dos et windows sauf <nowiki>WinCE</nowiki>)
+* EmacsForWinCE (en anglais) -- Emacs et <nowiki>WindowsCE</nowiki>
+
+Pour Windows, consultez également CategoryWThirtyTwo (en anglais).
+
+* EmacsForOSTwo (en anglais) -- Emacs et OS/2
+* EmacsForMacOS (en anglais) -- Emacs et MacOS (incluant OS X)
+* EmacsForLinuxPPC (en anglais) -- Emacs et Linux PPC
+
+
+Les liens suivant seront utile dans les environnements non-unix.
+Il s'agit principalent de remplacement elisp d'utilitaires unix.
+
+* WoMan (en anglais)  -- Le programme man
+* EmacsShell (en anglais) -- Un shell
+
+(La FAQ de NT Emacs est également une excelente ressource pour 
+l'utilisation d'Emacs dans un environnement non-unix.
+Voir OnlineResources (en anglais).

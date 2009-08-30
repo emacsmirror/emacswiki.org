@@ -1,0 +1,10 @@
+ESense (%%ErlangSense%%) is a minor mode for the Erlang programming language which provides features similar to IntelliSense or CodeSense in other editors. It can be enabled in an Erlang buffer or in the Erlang Shell buffer. 
+
+What it can do: 
+
+* complete module names, exported functions from modules (module:function), record names, record fields, macros 
+* show popup documentation for the above elements 
+* go to the definition or documentation 
+* jump to a header file from an -include line
+
+[http://esense.sourceforge.net/ Screenshots and download information]

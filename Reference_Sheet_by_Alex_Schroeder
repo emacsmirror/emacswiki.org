@@ -1,0 +1,45 @@
+This reference sheet assumes no customization.  There are several modes that make buffer switching, window navigation, region manipulation, and a lot of other operations easier.  Those keybindings are not part of this very basic reference sheet.
+
+|||| *Files, Buffers, Windows*        ||
+||C-x C-f ||Find file (“Open”)        ||
+||C-x C-s ||Save buffer (“Save”)      ||
+||C-x C-w ||Write file (“Save As...”) ||
+||C-x 2   ||Split window              ||
+||C-x 1   ||Delete other windows (“Unsplit”) ||
+||C-x o   ||Other window              ||
+||C-x C-b ||Buffer menu               ||
+|||| *Search and replace*             ||
+||C-s     ||Incremental search string forwards ||
+||C-r     ||Incremental search string backwards ||
+||M-%     ||Query replace string      ||
+||C-M-s   ||Incremental search regexp forwards ||
+||C-M-r   ||Incremental search regexp backwards ||
+||C-M-%   ||Query replace regexp      ||
+|||| *Lines*                          ||
+||C-a     ||Beginning of line         ||
+||C-e     ||End of line               ||
+||C-k     ||Kill line (“cut line”)    ||
+|||| *Words*                          ||
+||M-b     ||Backwards word            ||
+||M-f     ||Forwads word              ||
+||M-d     ||Kill word (“cut word”)    ||
+|||| *Balanced expressions* such as "foo" or (foo) ||
+||C-M-b   ||Backwards sexp            ||
+||C-M-f   ||Forwards sexp             ||
+||C-M-k   ||Kill sexp                 ||
+|||| *Region* (between mark and point) ||
+||C-SPC   ||Set mark                  ||
+||C-w     ||Kill region (“cut”)       ||
+||M-w     ||Copy region (“copy”)      ||
+|||| *Pasting, Undoing*               ||
+||C-y     ||Yank (“paste”)            ||
+||C-y M-y ||Yank older copy (M-y...)  ||
+||C-_     ||Undo, anything else interrupts the undo chain ||
+|||| *Rectangles*                     ||
+||C-x r k ||Kill rectangle            ||
+||C-x r y ||Yank rectangle            ||
+
+----
+CategoryReferenceSheet
+CategoryHelp
+CategoryKeys

@@ -1,0 +1,37 @@
+The usual way to create a [[tags file]] is to run `etags' from the command
+line. Example:
+
+    etags *.el
+
+Or to build a tags file for a source tree (e.g. the linux kernel) you can use something like:
+
+    find . -type f -iname "*.[ch]" | etags -L -
+
+See also RecursiveTags.
+
+Avoid using `xargs' with `etags' (e.g. ##find . -type f -iname "*.[ch]" | xargs etags##).  For source trees with many files, xargs will execute etags multiple times, overwriting the previous tags file on each execution.
+
+Or to build the tags file within Emacs, put this in your [[init file]]:
+
+  (defun create-tags (dir-name)
+     "Create tags file."
+     (interactive "DDirectory: ")
+     (eshell-command 
+      (format "find %s -type f -name \"*.[ch]\" | etags -L -" dir-name)))
+
+This package provides a function which rebuilds the tags file being
+used by the current buffer. You can pre-configure the shell command
+based on the tag file being built.
+
+* http://www.sixfingeredman.net/proj/xemacs/build-tags.el
+
+Also, Lisp:traverselisp.el is able to build tags fast recursively in a directory tree:
+
+M-x traverse-build-tags-in-project
+
+then just choose extension from prompt.
+
+----
+
+CategoryExternalUtilities
+

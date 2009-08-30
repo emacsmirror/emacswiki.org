@@ -1,0 +1,20 @@
+Another software upgrade. The most interesting changes are on the history page -- follow the _history_ link from RecentChanges or click on _View other revisions_ at the bottom of pages. You'll find a layout similar to RecentChanges, easy _rollback_ links, and a new link _Mark this page for deletion_ at the very end of the list.
+
+[new:DrewAdams:2006-08-15 06:28 UTC]
+I assume that `rollback' means roll back to the revision next to the link `rollback'.
+I tried to roll back PrettyLambda, which had only two revisions: 29 and 30. I clicked `rollback' next to 29, and I got the error message "too far back". I guess this means that revision 29 was too old? Do you go by date or do you keep a certain number of revisions per page, or did I perhaps stumble on a bug (or did I not understand `rollback')? -- DrewAdams
+
+[new]
+You found the same kind of bug I had noticed on [[lib-requires.el]]. There's a difference between rolling back changes to many pages (as only EmacsWikiAdministrators can do) and rolling back individual pages: Old revisions are generally deleted after 14 days, which is why you can only go back 14 days when doing a rollback for many pages. For an individual page, however, a few older revisions are kept eventhough they are older than 14 days. On [[lib-requires.el]], all newer revisions were minor edits, which is why a major edit older than 14 days has been kept. On PrettyLambda, there was only one other revision available, which is why it has been kept even though it was older than 14 days. In these two cases, a rollback is possible, even though the time goes further back than 14 days. I removed the mistaken error message, so this issue should be resolved now. -- AlexSchroeder
+
+[new:DrewAdams:2006-08-16 05:37 UTC]
+Cool; thanks. BTW, to me, it wasn't obvious what the `rollback' link did. How about naming it `roll back to here' or `roll back to this revision'? (I know, that takes more space.) -- DrewAdams
+
+[new:DrewAdams:2006-08-16 05:37 UTC]
+I also tried to roll back the SiteMap, but I just got to a page with title "Rolling back changes". And it was not a clickable title. Is this a bug or a feature ;-)? -- DrewAdams
+
+[new]
+Hehe. Well, possibly this is a feature -- it depends on what you did, exactly. If you rolled back to revision 930, for example, then the wiki finds that the old text and the new text are the same and skips it. I'll add a feedback message for this case. Thanks for your careful attention to usability details. :) -- AlexSchroeder
+
+[new:DrewAdams:2006-08-16 14:29 UTC]
+Ah, thanks. I wondered about that. -- DrewAdams

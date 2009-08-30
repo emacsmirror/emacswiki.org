@@ -1,0 +1,32 @@
+This provides single command (/show) for the EmacsIRCClient that allows you to send the result of evaluating a lisp expression to the current channel.
+
+Usage is simple, just type <code>/show</code> followed by a lisp expression, for example:
+
+    >>> /show (let ((x 'a) (y 'b)) (list x y))
+    (let ((x 'a) (y 'b)) (list x y)) => (a b)
+
+You can get erc-show.el from http://purl.org/NET/wence/erc-show.el
+
+This now also deals with errors, instead of entering the debugger, it shows the error in question:
+e.g.:
+
+     >>> /show (system-type)
+     (system-type) => Error: (void-function system-type)
+
+[new]
+Here's a version of erc-cmd-SHOW which ensures that the expression is evaluated within the correct (channel) buffer (for buffer-local values of things):
+
+ (defun erc-cmd-SHOW (&rest form)
+   "Eval FORM and send the result and the original form as:
+ FORM => (eval FORM)."
+   (let* ((form-string (mapconcat 'identity form " "))
+          (result
+           (condition-case err
+               (eval (read-from-whole-string form-string))
+             (error
+              (format "Error: %s" error)))))
+     (erc-send-message (format "%s => %S" form-string result))))
+
+
+----
+[[ERC]]

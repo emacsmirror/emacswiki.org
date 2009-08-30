@@ -1,0 +1,55 @@
+I'm currently porting GNU Emacs 21.2 to OpenVMS 7.3-1, and
+summarizing progress in this space.  When the work is done,
+only build tips will remain.  --ttn
+
+; Current status: Rather than make everyone wait while I puzzle
+out the copyright status of old VMS-specific files, I've decided to
+expose the work-in-progress so others can play, too.
+Details are available on the Emacs for VMS homepage:
+** http://www.gnuvola.org/software/emacs-for-vms/
+
+; What works (that is, reproducibly w/o too much manual tweaking): Configuration,
+"dump", file read/write, byte compilation, timers and unixoid select(2)
+emulation, multiple subprocesses (synch and asynch -- implies dired, comint,
+compile, and so forth), colors on console, filename completion (with "magic"
+right square brace and slash keybindings), network
+operations via open-network-stream.  Yes, that means M-x zone in color over
+ssh from a VMS box.  <I>"When the going gets weird, the weird turn pro."</I> (HST)
+
+; Release methodology: The "public releases" will actually be in the form
+of checking things into the GNU CVS repositories, updating the Emacs for
+VMS page, and making the occasional announcement to gnu-emacs-sources.
+
+; Commentary: Feel free to ignore the lunatic ramblings in this section.
+
+* (2004-04-02) In debugging next-error (for M-x compile), I notice
+that var compilation-error-regexp-alist for Emacs 19.28 used to
+support specification of a function to do further parsing, beyond
+that which func compilation-parse-errors would do.  Dropping this
+support makes for a cleaner design, evidently.  Parsing must be one
+of the least-loved branches of computer science.
+* (2004-05-01) I asked the GNU Autoconf maintainers for vms-branch write
+privs but the response was not encouraging, so I've decided to publish
+"Autoconf for VMS" independently until a time (if any) when merging
+maintenance efforts becomes desirable.
+** http://mail.gnu.org/archive/html/autoconf/2004-04/msg00131.html
+** http://mail.gnu.org/archive/html/automake/2004-04/msg00205.html
+** http://www.gnuvola.org/software/autoconf-for-vms/
+* (2005-03-22) There is a Bourne shell script PREP-ZIP available
+in the distribution directory that can be used to perform the first
+half of the bootstrap relatively painlessly (on unixoid hosts).  Observant
+readers will notice a workaround for a methodology bug in the script.
+
+----
+Field Reports
+
+Since there is no mailing list, this section is for those intrepid spirits
+wishing to share experiences and tips building Emacs for VMS.
+
+* Autoconf for VMS requires GNU m4, and has been tested with Richard Levitte's
+port of GNU m4 version 1.2.  Newer versions may or may not work.  There is now
+a directory "m4" w/ source and an Alpha binary in the Autoconf for VMS
+distribution dir.
+
+----
+CategoryBuilding

@@ -1,0 +1,90 @@
+==GNU-EMACS ON MS-WINDOWS OTHER THAN EMACSW32==
+
+Apart from [[EmacsW32]] there are several distributions of binaries of Gnu-Emacs for
+MS-Windows to choose from currently (Sept. 2007):
+
+* So-called *CVS-versions* that are currently in development but are actually quite stable
+  now. These are located on !SourceForge. There are currently two versions to choose from,
+  22.1.50.1 and 23.0.0.1. Installation guidelines are below.
+
+* *The official stable binaries.* These have version 22.1.1 which is a little out-dated
+  (one notices e.g. that the tool-bar is black-and-white). But the resulting Emacs runs
+  well with MS-Windows and Cygwin and guidelines for installation are given below.
+
+* *Versions available through Cygwin setup.* These have drawbacks as detailed [[#below]],
+  and installation guidelines will not be given here.
+
+==GUIDELINES FOR INSTALLING EMACS ON MS-WINDOWS==
+
+If installing the *CVS versions* from !SourceForge:
+
+: Visit the site http://ntemacs.sourceforge.net and download one of the .exe files marked
+  "binary" near the bottom (both are about 20 Mb). Once downloaded run the file (it is a
+  self-extracting zip file) and answer "Extract to" with a directory (or folder) of your
+  choice (e.g. ##c:\\packages##). A directory named ntemacs22 or ntemacs23 will be created
+  therein.
+
+Otherwise, to install the *official stable binaries*:
+
+: Visit the site ftp://ftp.gnu.org/gnu/emacs/windows/ (or one of the mirrors listed at
+  http://www.gnu.org/order/ftp.html; once at a mirror site select emacs and
+  windows). Download the last zip-file listed (currently emacs-22.1-bin-i386.zip, 37
+  Mb). You might also want to read the README file at the same site (not the one inside
+  the zip-file). Once the zip-file is downloaded, open it using Explorer (slow) or 7zip
+  (faster) and extract all the files into a directory of your choice
+  (e.g. ##c:\packages\emacs-22.1.1##).
+
+A subdirectory of the one just created will be /bin/
+(e.g. ##c:\packages\ntemacs23\bin##). Enter this bin-directory and run ##addpm.exe##
+(takes only a second). A shortcut to ##.../bin/runemacs.exe## will be created in the
+/Start Menu/ (/Programs -- Gnu Emacs – Emacs/). If you are using Vista you /must/ run
+##addpm.exe## as an administrator, otherwise the registry entries will not be created.
+
+[:below]Problems with *Cygwin distributed Emacs*. There are three versions of Gnu-Emacs
+distributed with Cygwin, 21.2.12, 21.2.13 and 22.1.3. All of these have (some)
+drawbacks. Without X-Windows they only run in the bash-command window where started, and
+at least in some settings the Window painting is garbled. To enable Emacs running in its
+own window one must install X-Windows, and in addition open an /xterm/-window and start
+Emacs from there. The xterm-window does not honour national keyboards (at least without
+some twitching).
+
+==SETTING UP EMACS ON MS-WINDOWS==
+
+This section describes two of the more important steps for setting up Emacs on
+MS-Windows: The /home directory/ and the /starting directory/. In addition, MS-Windows
+users may want to change the initial /size/ and /position/ of the Emacs window, the /font/
+and /colours/ used, the /indentation behaviour/ when editing programs, the behaviour of
+/regions/ selected with the mouse, and last but not least they may want to redefine
+keyboard shortcuts to be more like what is traditional in MS-Windows. Customization of
+these features is described in MsWindowsCustomize.
+
+When run by selecting the shortcut, by default Emacs starts in the bin subdirectory of the
+installation folder and when started from a command line it starts in the current
+directory. In both cases the /home/ directory (where customization files are read from, in
+particular the ##.emacs## file) is set to ##C:\Documents and Settings\##/user/##\Application
+Data## (on Vista it is set to ##C:\Users\##/user/##\AppData\Roaming##). It is possible to stick
+with this default behaviour and place customization files in Application Data, but here
+it is assumed that the default is changed. To take an
+example assume that Cygwin has been set up and the user's home directory for Cygwin is
+##c:\cygwin\home\smith## (or cygwinized: ##/home/smith##). It might be natural to make
+this the home directory for Emacs and make it start there (in the following replace
+##smith## with your username.
+
+*Changing the directory where Emacs starts:* Right-click on the icon (shortcut) used to
+start Emacs, select /Properties/, and type ##c:\cygwin\home\smith## into 
+/Shorcut -- Start in/.
+
+[:HomeDirectory]*Setting the home directory:* Select
+/My Computer -- Advanced -- Environment variables -- System variables -- New/
+and enter ##HOME## as the variable name and
+##c:\cygwin\home\smith## as its value. See also MsWindowsDotEmacs.
+
+*Setting the home directory on Vista:* Open the /Control Panel/. If you are using /Classic View/
+open /User Accounts/ and then select /Change my environment varaibles/ from the Task Pane. If
+you are using the default view of /Control Panel/, you have to select /User Accounts and Family Safety/
+before you can select /User Accounts/. Either way, set up the ##HOME## environment variable as
+described above.  See also MsWindowsDotEmacs.
+
+
+----
+CategoryWThirtyTwo

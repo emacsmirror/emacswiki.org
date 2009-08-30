@@ -1,0 +1,39 @@
+JoshuaGuttman wrote undoc.el, a package that will read MS Word
+files for you -- actually it will read any gibberish file and extract
+ASCII substrings.  Then it fills the paragraphs and displays the file.
+Graphics and complex tables will be lost, but often enough the simple
+stuff remains readable.
+
+* http://www.ccs.neu.edu/home/guttman/undoc.el
+
+undoc will destroy all accented characters.
+You can set emacs-strings-pgb to 255 to keep them but you will also 
+get keep some gibberish   -JeanPhilippeTheberge
+
+You can also use this to deal with application/msword MIME types in
+Gnus.  See MimeTypesWithGnus for other similar tricks.  Josh
+recommends something like this:
+
+    (setq mm-inline-media-tests (cons
+                                 (list "application/.*msword" 
+                                        'mm-display-msword-inline 
+                                        (lambda (handle) t))
+                                 mm-inline-media-tests)
+          mm-inlined-types      (cons "application/.*msword" mm-inlined-types))
+
+    (defun mm-display-msword-inline (handle) 
+      (let (text)
+        (with-temp-buffer
+          (mm-insert-part handle)
+          (save-window-excursion
+            (undoc-current-buffer)
+            (setq text (buffer-string))))
+        (mm-insert-inline handle text)))
+
+
+[NB: Some similar commandline utilies on GNU/Linux:  AntiWord, catdoc, wv (previously called mswordview)]
+
+See also: UnPdf.
+
+----
+CategoryWThirtyTwo

@@ -1,0 +1,10 @@
+http://farm1.static.flickr.com/179/412855832_fea58daa2e_o.jpg
+
+Google Define is an emacs mode that will search for definitions using
+google. No extra packages are needed. Just type M-x google-define and
+it will prompt you for a word (it defaults to the word at the cursor).
+
+Lisp:google-define.el
+
+----
+CategoryInterface

@@ -1,0 +1,135 @@
+You can use different style sheets for this wiki.  The default is rather plain, we know.
+If you would like to add more colors or use fancy fonts, pick another style sheet and
+use it.  We're also interested in finding more style sheets, so there are links to CSS
+sources as well for you to study and adapt -- and share.  :)
+
+== Style Sheets ==
+
+You can change the theme used for this wiki using one of the following links:
+
+* [http://www.emacswiki.org/emacs/wiki.css Default CSS] with default theme ([EmacsWiki:action=browse;id=CSS;theme=default;css= use it])
+
+** Same CSS with more whitespace around headers and small-caps theme ([EmacsWiki:action=browse;id=CSS;theme=typo;css= use it])
+
+** Same CSS with big fonts theme: 14/16 Lucida Bright ([EmacsWiki:action=browse;id=CSS;theme=big;css= use it])
+
+** Same CSS with medium fonts theme: 12/14 Lucida Bright ([EmacsWiki:action=browse;id=CSS;theme=medium;css= use it])
+
+** Same CSS with small fonts theme: 10/11 and your default font ([EmacsWiki:action=browse;id=CSS;theme=small;css= use it])
+
+** Same CSS with tiny fonts theme: 8/9 and your default font
+([EmacsWiki:action=browse;id=CSS;theme=tiny;css= use it])
+
+* [http://www.emacswiki.org/css/basic.css Basic CSS] for people that have tweaked their user CSS and only want the most basic style sheet ([EmacsWiki:action=browse;id=CSS;css=/css/basic.css use it])
+
+* [http://www.emacswiki.org/css/planet.css Planet CSS] using Bitstream Vera Sans Mono ([EmacsWiki:action=browse;id=CSS;css=/css/planet.css use it])
+
+* [http://www.emacswiki.org/oddmuse/wiki.css Oddmuse CSS] ([EmacsWiki:action=browse;id=CSS;css=/oddmuse/wiki.css use it])
+
+* [http://www.emacswiki.org/oddmuse/blue.css Blue Headings CSS] ([EmacsWiki:action=browse;id=CSS;css=/oddmuse/blue.css use it])
+
+* [http://rincevent.net/~lucas/sites/lukhas/style/blueheadings.css Blue Heading + Small Font] ([EmacsWiki:action=browse;id=CSS;css=http://emacswiki.org/css/blueheadings.css use it])
+-- I changed the address, it's now hosted on my own server instead of my ISP, should be more reliable, apologies for the incovenience. -- LucasBonnet.
+ The address changed again, now hosted on the wiki, my DSL doesn't like Summer. -- LucasBonnet
+
+* [http://www.emacswiki.org/alex/beige-red.css Beige Red CSS] ([EmacsWiki:action=browse;id=CSS;css=/alex/beige-red.css use it])
+
+* [http://rincevent.net/~lucas/sites/lukhas/style/wiki.css Beige + Small Font CSS] ([EmacsWiki:action=browse;id=CSS;css=http://emacswiki.org/css/lukhas.css;theme=beige use it])
+
+* [http://rincevent.net/~lucas/sites/lukhas/style/wiki_blue.css Blue + Small Font CSS]
+([EmacsWiki:action=browse;id=CSS;css=http://emacswiki.org/css/wiki_blue.css;theme=blue use it]) Another color. I can't live without Blue :)
+
+* [http://www.physik.fu-berlin.de/~dhansen/css/wiki.css Grey and Red] ([EmacsWiki:action=browse;id=CSS;css=http://www.physik.fu-berlin.de/~dhansen/css/wiki.css use it])
+
+* [http://www.emacswiki.org/community/green.css Green CSS] ([EmacsWiki:action=browse;id=CSS;css=/community/green.css use it])
+
+* [http://www.emacswiki.org/astrid/wiki.css Beige CSS] ([EmacsWiki:action=browse;id=CSS;css=/astrid/wiki.css use it])
+
+* [http://www.emacswiki.org/oddmuse/grey.css Grey CSS] by "mad" of the [http://czlug.madbrains.net/wiki/wiki.pl czlug] ([EmacsWiki:action=browse;id=CSS;css=/oddmuse/grey.css use it])
+
+* [http://www.emacswiki.org/paper/wiki.css Paper CSS] ([EmacsWiki:action=browse;id=CSS;css=/paper/wiki.css use it])
+-- This is a CSS that might be useful when using a wiki to prepare papers.
+It is useless for day-to-day browsing, in my not-so-humble opinion.
+
+* [http://iki.fi/juhtolv/css-download/ Stylesheets] of JuhapekkaTolvanen combined with the [http://www.emacswiki.org/emacs/wiki.css Default CSS] ('''If you really adopt some of these stylesheets, it would be nice to hear about it! Other comment are welcome, too!'''):
+
+** [http://iki.fi/juhtolv/index.css index] : Green text on black ([EmacsWiki:action=browse;id=CSS;css=/emacs/wiki.css%20http://iki.fi/juhtolv/index.css;theme=juhtolv-index Use it])
+
+** [http://iki.fi/juhtolv/indexbw.css indexbw] : Black text on white ([EmacsWiki:action=browse;id=CSS;css=/emacs/wiki.css%20http://iki.fi/juhtolv/indexbw.css;theme=juhtolv-indexbw Use it])
+
+** [http://iki.fi/juhtolv/indexbwserif.css indexbwserif] : Black serif font text on white ([EmacsWiki:action=browse;id=CSS;css=/emacs/wiki.css%20http://iki.fi/juhtolv/indexbwserif.css;theme=juhtolv-indexbwserif Use it])
+
+** [http://iki.fi/juhtolv/latex.css latex] : Black LaTeX font on white ([EmacsWiki:action=browse;id=CSS;css=/emacs/wiki.css%20http://iki.fi/juhtolv/latex;theme=juhtolv-latex Use it]) (Download cm-super from CTAN, for example)
+
+* [http://www.emacswiki.org/oddmuse/orange.css Orange] of http://de.veganwiki.org
+([EmacsWiki:action=browse;id=CSS;css=/oddmuse/orange.css use it])
+
+* [http://purl.org/NET/wence/emacswiki.css A white and blue] stylesheet that tries to keep page widths to around 70 to 80 characters, and flags up external links with a small image. ([EmacsWiki:action=browse;id=CSS;css=http://purl.org/NET/wence/emacswiki.css use it])
+
+* [http://www.emacswiki.org/alex/wikio.css white on blue and cyan links]-- discovered on EarleMartin's site after reading about his [http://downlode.org/log/2005-01-14/Mu_License Mu License] and adapted for Oddmuse by AlexSchroeder.  ([EmacsWiki:action=browse;id=CSS;css=http://www.emacswiki.org/alex/wikio.css;theme= use it])
+
+** Same thing, but 100ex wide ([EmacsWiki:action=browse;id=CSS;css=http://www.emacswiki.org/alex/wikio.css;theme=bigger use it])
+
+* [http://www.emacswiki.org/alex/cali.css Designed in California] -- It was inspired by all these sites featuring software for Mac OSX.  Strange how so many of these sites seem to be inspired by the Apple website.  I basically looked at the [http://www.ethomaz.com/onlife/ Onlife] site style sheet for font family and size, some basic whitespace distribution, and added the rest to make it all work for Oddmuse. ([EmacsWiki:action=browse;id=CSS;css=/css/cali.css;theme= use it])
+
+* [http://www.emacswiki.org/css/pink-bliss.css Pink Bliss] -- Inspired by the ColorTheme PinkBliss ([EmacsWiki:action=browse;id=CSS;css=/css/pink-bliss.css;theme= use it])
+
+* [http://www.emacswiki.org/css/twb.css twb's favorite CSS] -- ([EmacsWiki:action=browse;id=CSS;css=/css/basic.css%20/css/twb.css;theme= use it])
+
+* [http://edward.oconnor.cx/tmp/emacswiki.css hober's CSS] --
+([EmacsWiki:action=browse;id=CSS;css=http://edward.oconnor.cx/tmp/emacswiki.css use it])
+
+* [http://www.communitywiki.org/odd/F%c3%aateInternet/raw/css FêteInternet] by Laurent Lunati -- 
+([EmacsWiki:action=browse;id=CSS;css=http://www.communitywiki.org/odd/F%c3%aateInternet%3faction=browse%3bid=css%3bmime-type=text/css%3braw=1 use it])
+
+* [http://www.communitywiki.org/odd/Xtof/raw/css Xtof] by Laurent Lunati -- 
+([EmacsWiki:action=browse;id=CSS;css=http://www.communitywiki.org/odd/Xtof%3faction=browse%3bid=css%3bmime-type=text/css%3braw=1 use it])
+
+* [http://www.joonhwan.org/css/emacswiki-orange.css Joonhwan's CSS] ([EmacsWiki:action=browse;id=CSS;css=http://www.joonhwan.org/css/emacswiki-orange.css use it]) -- I hacked blue css mentioned in SitemapDiscussion to meet my favour. I don't know why but with some of css in this page, textarea is a little narrow. I set width of textarea to 100% and happy.
+
+
+'''Additions to the list welcome!'''
+
+
+== Questions ==
+
+=== Print stylesheets ====
+
+[new]
+For some ideas on print style sheets, see [http://alistapart.com/articles/goingtoprint/ Eric Meyer's article on A List Apart]. One particularly nice idea shows how to display the URL with hyperlinked text, which would be handy here.
+--AmyYoung
+
+=== Headers ===
+[new]
+Could we go back to the situation where in default CSS the rendering of different headers level differ only in the font size (but do differ) down until last HTML header level? -- JakubNarebski
+
+== Experimenting with your own CSS ==
+
+Easy:
+In your browser's address field, type <code>http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=CSS;css=http://your.style.sheet/here.css</code>
+
+or for a local stylesheet on your filesystem users running a Web server locally can run something like:
+
+<code>http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=CSS;css=http://localhost/~username/emacswiki.css</code>
+
+Using the local filesystem doesn't work in [[Mozilla]]:
+
+<code>http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=CSS;css=file:///home/username/.mozilla/emacswiki.css</code>
+
+To reset, use http://www.emacswiki.org/cgi-bin/wiki?action=browse;id=CSS;css=
+
+See also EmacsWikiAppearance.
+
+== Technical Background ==
+
+# You can only supply parameters when you are using CGI parameters (and not keywords).
+# If you mean to use a CSS file on the same server, you can use a relative URL.  This only works for CSS files installed on www.emacswiki.org, of course.  That's why some of the URLs above use ...;css=/foo/bar.css.
+# You can use several style sheets and combine them.  In order to do that, you must separate them with an URL-encoded space ("%20"): ...;css=/foo/bar.css%20/baz/quux.css.
+# Once you visit an URL that specifies the css parameter, the script will store it
+  in your cookie, and tell your browser to use the CSS you provided when visiting the wiki.
+# To reset it, use an empty CSS parameter: ...;css=
+# Note that after a CSS switch, you might still get stale pages from the cache.  Force page reloads using the features your browser provides, eg. by pressing Shift while hitting the reload button.
+
+Thus, if you want to use your own CSS for this wiki, upload it to the web somewhere, and use the URL-hacking described above.
+
+If you want to know what CSS classes you can use, see the [[Oddmuse:Cascading Style Sheet]].

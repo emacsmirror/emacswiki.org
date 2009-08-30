@@ -1,0 +1,194 @@
+It pays to browse the Emacs documentation now and then, just for
+fun (well, some of us actually think it is fun). Today I decided to
+read up on dired as I thought that there are surely a lot of power
+below the surface that I never use. I was not disappointed.
+
+Yes, I know, this should really be placed under Emacs nifty features, but I did not want to SPAM that page... :) -- ''Alex says: Don't worry, that page should be ripped appart and redistributed over the wiki!!''
+
+= Dired Marks vs Dired Flags =
+
+Also something I did not know: you can flag a file with almost any
+character, not just `D' and `*' which you are probably used to. For
+example, try this command:
+
+ * c OLD-MARKCHAR NEW-MARKCHAR
+
+Text ripped from the EmacsManual:
+
+<pre>
+
+     Replace all marks that use the character OLD-MARKCHAR with marks
+     that use the character NEW-MARKCHAR (`dired-change-marks').  This
+     command is the primary way to create or use marks other than `*'
+     or `D'.  The arguments are single characters--do not use <RET> to
+     terminate them.
+
+     You can use almost any character as a mark character by means of
+     this command, to distinguish various classes of files.  If
+     OLD-MARKCHAR is a space (` '), then the command operates on all
+     unmarked files; if NEW-MARKCHAR is a space, then the command
+     unmarks the files it acts on.
+
+     To illustrate the power of this command, here is how to put `D'
+     flags on all the files that have no marks, while unflagging all
+     those that already have `D' flags:
+
+          * c D t  * c SPC D  * c t SPC
+
+     This assumes that no files were already marked with `t'.
+
+</pre>
+
+You can read more about this in section Dired Marks vs. Flags in the
+EmacsManual:
+
+http://www.gnu.org/software/emacs/manual/html_node/Marks-vs-Flags.html#Marks%20vs%20Flags
+
+= Renaming Files and Directories =
+
+Before library wdired.el (see [[WDired]]) came to life a while ago I thought that renaming
+files in dired was a pain. Operations like make the filenames
+lowercase or uppercase, prefixing or suffixing files with a string was
+hard and I usually did it by recording a macro. Which I have to say is
+quite good too.
+
+But right now I noticed some cool commands that can do all of the
+above. I'll rip the text straight from the EmacsManual:
+
+<pre>
+
+`% u'
+     Rename each of the selected files to an upper-case name
+     (`dired-upcase').  If the old file names are `Foo' and `bar', the
+     new names are `FOO' and `BAR'.
+
+`% l'
+     Rename each of the selected files to a lower-case name
+     (`dired-downcase').  If the old file names are `Foo' and `bar',
+     the new names are `foo' and `bar'.
+</pre>
+
+[new:DrewAdams:2004-12-24 22:16 UTC]
+See also '''DiredPlus''', which provides these on menus, as well as commands to ''capitalize'' file and directory names. 
+
+I agree with you that there is lots of stuff in Dired that is is not obvious.  I added commands like these to Dired ''menus'' to help people notice and learn them. 
+
+Another good example is `<code>*.</code>' (`dired-mark-extension') -- I mentioned that command in response to a question on mailing list <code>help-gnu-emacs@gnu.org</code>, and I got an email back from someone saying that he had used Emacs for decades without being aware of that command. In '''Dired+''' the command is on the '''Mark''' menu, so it's more noticeable. -- DrewAdams
+[new]
+
+<pre>
+`% R FROM <RET> TO <RET>'
+`% C FROM <RET> TO <RET>'
+`% H FROM <RET> TO <RET>'
+`% S FROM <RET> TO <RET>'
+     These four commands rename, copy, make hard links and make soft
+     links, in each case computing the new name by regular-expression
+     substitution from the name of the old file.
+
+   The four regular-expression substitution commands effectively perform
+a search-and-replace on the selected file names in the Dired buffer.
+They read two arguments: a regular expression FROM, and a substitution
+pattern TO.
+</pre>
+
+[new:DrewAdams:2004-12-24 22:16 UTC]
+There is also this one, along the same lines:
+`<code>% Y</code>' (`dired-do-relsymlink-regexp') -- Create a ''relative'' symlink (`<code>% S</code>' creates an ''absolute'' symlink). It is available in library <code>dired-x.el</code>. -- DrewAdams
+[new]
+
+I'll leave it up to you to read the rest. The section about renaming
+is called "Transforming File Names in Dired":
+
+http://www.gnu.org/software/emacs/manual/html_node/Transforming-File-Names.html#Transforming%20File%20Names
+
+The EmacsManual is really a gold mine and I plan to buy a printed version
+so that I can read a page each night when I go to bed. :)
+
+= How Much Marking Power Do You Want? =
+
+How about command `dired-mark-sexp', bound to `<code>M-(</code>' and `<code>* (</code>'. It is also in library <code>dired-x.el</code>. You would think that a command with two key bindings would be known more, but this one even has this amusing 4-year commentary in the source code: 
+
+<pre>
+;; Does anyone use this? - lrd 6/29/93.
+;; Apparently people do use it. - lrd 12/22/97.
+</pre>
+
+What does it do? It lets you use an arbitrary Lisp sexp as a predicate to determine which files or directories get marked. Very powerful. But, a bit like the Unix `find' command, it is almost a language unto itself: You can use certain predefined symbols in the sexp to stand for certain Dired entities. Here's the doc string (because you won't check it out, otherwise):
+
+<pre>
+dired-mark-sexp is an interactive compiled Lisp function in `dired+'.
+(dired-mark-sexp PREDICATE &optional UNMARK-P)
+
+Mark files for which PREDICATE returns non-nil.
+With a prefix arg, unmark those files instead.
+
+PREDICATE is a lisp sexp that can refer to the following variables:
+
+    `mode'   [string]  file permission bits, e.g. "-rw-r--r--"
+    `nlink'  [integer] number of links to file
+    `size'   [integer] file size in bytes
+    `uid'    [string]  owner
+    `gid'    [string]  group (If the gid is not displayed by `ls',
+                       this will still be set (to the same as uid))
+    `time'   [string]  the time that `ls' displays, e.g. "Feb 12 14:17"
+    `name'   [string]  the name of the file
+    `sym'    [string]  if file is a symbolic link, the linked-to name,
+                       else ""
+    `inode'  [integer] the inode of the file (only for `ls -i' output)
+    `blks'   [integer] the size of the file for `ls -s' output
+                       (ususally in blocks or, with `-k', in Kbytes)
+Examples:
+  Mark zero-length files: `(equal 0 size)'
+  Mark files last modified on Feb 2: `(string-match "Feb  2" time)'
+  Mark uncompiled Emacs Lisp files (`.el' file without a `.elc' file):
+     First, dired just the source files: `dired *.el'. 
+     Then, use M-x dired-mark-sexp with this sexp:
+          (not (file-exists-p (concat name "c")))
+</pre>
+: -- DrewAdams
+
+= Creating a tar.gz file from a directory =
+
+dired-tar adds a command to dired-mode for creating and unpacking
+tar files.  When using this package, typing `T' on a tar file in a
+dired listing unpacks the tar file, uncompressing it if necessary.
+Typing `T' on a directory packs up that directory into a gzipped
+tar file named DIRNAME.tar.gz.
+Autor: Jim Blandy
+
+http://www-ftp.lip6.fr/pub/emacs/elisp-archive/incoming/dired-tar.el.gz
+
+The package is quite old. Does anybody knows a newer version of dired-tar?
+
+: -- SewerynKokot
+
+= Navigating through directories =
+
+A small customization to use your [mouse-2] button (middle button) to "find-alternate" on what you click on. It avoids opening a lot of dired buffer when navigating using the mouse. Simply paste this to your .emacs :
+
+<pre>
+(defun dired-mouse-find-alternate-file (event)
+  "In dired, visit the file or directory you click on instead of the dired buffer."
+  (interactive "e")
+  (let (file)
+    (save-excursion
+      (set-buffer (window-buffer (posn-window (event-end event))))
+      (save-excursion
+	(goto-char (posn-point (event-end event)))
+	(setq file (dired-get-filename nil t))))
+    (select-window (posn-window (event-end event)))
+    (find-alternate-file (file-name-sans-versions file t))))
+
+(define-key dired-mode-map [mouse-2] 'dired-mouse-find-alternate-file)
+</pre>
+
+= Hiding unmarked files = 
+
+To omit unmarked files, just type tk. This toggles the mark and then kills all the marked lines (which were previously the unmarked lines). Silly, but simple.
+
+= See Also =
+
+* [[Icicles]] -- Act on selected (or all) files and subdirectories matching a regexp, without entering Dired. Just `C-x C-f', type a regexp, and use `S-TAB' to see all matching files. You can use <code>[next]</code> and 
+<code>[prior]</code> to cycle among them. When you find one you want to act on, use `C-o' -- or use `<code>C-!</code>' to act on all matching files. The "action" here can be anything you like. See command `icicle-delete-file' for an example: delete one matching file or all of them.
+
+* WThirtyTwoSymlinks -- Emacs module making Emacs handle shortcuts as if they were real symlinks.

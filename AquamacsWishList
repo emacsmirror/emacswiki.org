@@ -1,0 +1,284 @@
+This is a list of user-contributed ideas or wishes for AquamacsEmacs. These ideas do not necessarily enjoy wide support in the user base, technically feasible, or are even internally consistent.
+** In case you find a bug, please file a bug report using the Help / Diagnose and Report Bug menu.  Restart Aquamacs without customizations (per menu), reproduce the bug, then report using the reporting function.
+
+[new:Unhammer:2009-08-08 08:59 UTC]
+Now that emacs 23 has this fancy multi-tty stuff, isn't the time ripe to implement the two functions `collaboration-server-start' and `collaboration-server-join' for user-friendly [[CollaborativeEditing]]?
+
+DavidReitter: Collaboration would be good, but I'm not so sure if and how that would combine Multi-TTY.  Besides, there's no Multi-TTY on Nextstep as far as I know.  Just X + TTY.
+
+[new:Unhammer:2009-08-08 08:29 UTC]
+Make scroll-all-mode modify aquamacs-page-up / -down instead of just scroll-up / -down.
+
+[new]
+Maybe this is another "it's already in there doofus": a spreadsheet mode to view tab-delimited tables would be cool. (Not necessarily editing).- YannickWurm
+[new:Unhammer:2009-08-08 08:29 UTC]
+You could just turn on org-mode, mark the table and press C-c | (that is org-table-create-or-convert-from-region).
+
+
+[new]
+Make http://www.svenhartenstein.de/emacs-ess.php  (auto-indication of arguments to an R function) work in the standard installation. 
+
+DavidReitter: It's already included in ESS.  To make it work nicely (like in SLIME), try this (just wrote it - not tested much):  http://paste.lisp.org/display/79407
+
+YannickWurm: Cool! but I'm a bit of an emacs newbie - where should this be entered? (I'm supposing it should not be in the prefs since it doesn't mention hooks or modes?)
+
+DavidReitter: In the prefs. Your reasoning is incorrect.  Prefs are just Emacs Lisp code.
+
+[new]
+User-facilitated search & replace (regexp and normal) (kind of like the dialog boxes that pop up in SubEthaEdit, where a pop-up provides all your old search/replace queries... very handy if you have to do several.
+
+[new]
+User-friendly blockedit. (maybe simply a menu-item that changes a selection into a blockedit region...
+
+[new]
+When using aquamacs-toggle-full-frame, I can mouse up to see the time and menu bar, but moving the mouse down, I cannot access the Dock (I've set it to auto-hide). Would it be possible to have an option to let the Dock be accessible even in fullscreen mode?
+
+[new]
+Noah: I would love to be able to use the mouse to do rectangular selection (this is one of the few things I prefer to do in TextMate).
+
+[new]
+DennisGroves: It would be brilliant to add in some of the big well known packages such as planner-mode, org-mode, bbdb, and [GoogleClient g-client] that way out of the box emacs on mac replace mail.app, ical, and address book. The humiliation of permanent record haunts me now...  org-mode is built in... <hangs head in shame> 
+
+[new]
+It would be nice to be able to open a new frame from the command line, but not have to set the global "display buffers in separate frames" option. Right now I have to spawn a new instance of Aquamcs (launch -a -m Aquamacs\ Emacs).
+
+DavidReitter: you can execute any Elisp command using the -eval argument to Aquamacs.app/Contents/MacOS/Aquamacs\ Emacs.  To not start a new instance, use emacsclient (from the .app bundle), starting the server with M-x start-server.
+
+[new] 
+David Emery:  I'm a long-time emacs user pre-X Windows since '84 and Mac user from almost the same time, so the term 'frame' doesn't mean anything to me, but 'window' sure does.  Thus I'd suggest replacing 'frame', or at least providing as a synonym, i.e. 'frame in window'.  Additionally, the current Buffers -> New Frame menu choice would be much better put as an option in the File menu, as that's where I'd expect to see File -> New Window.  
+
+This would go a long way to supporting people new to Aquamacs who are confused by the default behavior, particularly those who have used emacs in a classic "glass tty" environment (including the Mac shell/terminal.app).
+
+[new]
+Is it planned to make future versions of Aquamacs aware of the current keyboard layout in Mac OS X? Emacs input methods for unicode are powerful, but the way OS X allows switching between writing systems is quite nice. This is probably very difficult to implement but it sure would integrate emacs much better into  it's OS X environment.
+
+DavidReitter: I agree.  We already support "System Input Methods" (Option / Language menu).  More support may come once we've switched to Cocoa and Emacs 23.
+
+[new]
+I'd like a "standard" distributuion of Aquamacs, without all the extra stuff enabled. I just want to it to read my my ~/.emacs and just-plain-work (TM). While your goals are certainly noble, for me at least, the current distro just does not meet my needs, because it is way too non-standard. I am by no means an emacs guru (part of the problem, really) but I just can't make it useable for my basic editing.
+
+DavidReitter: Well, OS X with its user interface defines a standard, too. And where in doubt, AquamacsEmacs sticks to that standard, and not to the Emacs one. That makes it easier to use for people who run a lot of different applications on their Macs, or who are used to modern graphical user interfaces. You can configure one-[[Buffer]]-one-[[Frame]], and some other things (Options menu, and Aquamacs customization group). Or try our builds of [GNU Emacs http://aquamacs.org/nightlies.shtml] for a bare-bones distribution that just pretty much just GNU Emacs.
+
+[new] 
+Perhaps I wasn't quite clear. I'm referring to things like the per-mode color schemes. Just needlessly non-standard. I'd also perfer it if ~/.emacs was loaded last instead of first. On a better note, after much googling, I haver been able to make Aquamacs useable, but the procress still left much to be desired. 
+
+DavidReitter: Perhaps we should take this to the mailing list. See, the thing is: what's "usable" is different for different people. You can easily turn off the per-frame coloring (in the options menu). You don't even have to look up a command. For your .emacs - you want to load this first, before Preferences.el? Problem is, customizations.el gets saved (instead of writing to .emacs, which means that we definitely need to load this last. 
+
+[new]
+In Tiger, resizing a window should force it to redraw. Right now the frame becomes empty after being resized, but the contents shows when one clicks inside the frame.
+
+DavidReitter: works for me. Have you tried this with a normal mouse? Window is redrawn as soon as you let go of the mouse button. 
+
+[new]
+The font changing abilities could be greatly enhanced. First of all they do not work in Tiger for me. Second, there is a huge list of japanese fonts, and it displays as a strange
+inline menu. I'd rather have Mac OS X Aqua font menu somewhere and choose the font in a nicer way!
+
+DavidReitter: check your .emacs - carbon-font (Asian fonts) isn't enabled by default.
+
+[new]
+Mighty Mouse should be supported - maybe it already is? I try to right-click on something but this has the effect of selecting the second mark point for selecting regions. Scroll
+wheel seems to work well horizontally but not (yet) vertically? NB: Setting the Mighty Mouse right click button to "Secondary Button" shows up as a mouse-3 press in Aquamacs---not sure why this isn't mouse-2.
+
+[new]
+I suggest adding tabs. In addition or instead of having "show buffers in new frames" you could have "show new buffers in tab". This would allow very nice operation with LaTeX
+compilation etc. Also, I suggest flashing the tab name just like e.g. iTerm does when something changes...
+
+DavidReitter: Yes, that'd be nice. Patch, anyone?
+
+[new]
+Buffer-modal communication in the minibuffer belongs to a sheet, for example “Save file /Users/bla/gnu/foo.tex?’, which should be a standard Save Changes alert sheet
+
+DavidReitter: I agree: this should happen provided the user's previous action was a mouse event. Otherwise, sheets are pretty slow. Does anyone want to implement this?
+
+[new]
+Standard Mac printing dialog
+DavidReitter: Will be available in the next version, including export to PDF etc.
+
+[new]
+faster when opening frames [this is a GNU Emacs problem]
+
+[new]
+Is there a list of external elisp packages? -- I mean a list of non-standard elisp packages that comes with Aquamacs.
+
+DavidReitter: yes, you can find that on aquamacs.org under Features/Documentation (scroll down)
+ 
+
+[new]
+* Include Table mode   
+  http://table.sourceforge.net/
+  for 0.9.8
+
+[new]
+* Integrate Emacs Code Browser
+  http://ecb.sourceforge.net/
+  for 0.9.8
+  (make it work with one-buffer-one-frames)
+** Did this happen for 0.9.8? I can't seem to find anything about it. It might be pretty spectacular if someone could figure out a way to put ecb in the drawer, like the TextWangler interface. --jonshea
+
+[new]
+* A better Buffers menu
+DavidReitter: I think it would be a nice thing to structure all the buffers, similar to what msb-mode does. However, msb-mode creates submenus for each category, which is inefficient from a UI point of view - I want all buffers visible in the menu, but separated with divider lines and maybe with a greyed-out title. One could take msb and extend it so that it can do that. Then, move the frame-related stuff out of the File menu and combine it with the Buffers menu, so that we have the equivalent of a normal Windows menu on the Mac. It'd be good if there were functions that 'tile' frames, minimize and zoom them (maybe). But that's lower priority.
+
+[new]
+* A better Fonts menu (1)
+DavidReitter: Someone needs to figure out how to put the Fonts into a proper sub-menu.
+
+[new]
+* A better Fonts menu (2)
+DavidReitter: Someone needs to figure out how to create fontsets that include all compatible fonts for different charsets.
+
+[new]
+* A better Fonts menu (3)
+DavidReitter: Someone needs to write a Carbon function that brings up the standard OS X font dialog and then takes the user's choice and converts it into a fontset usable by Emacs.
+
+[new]
+* Customization of Mode-specific themes
+DavidReitter: Someone knowledgable in customization buffers could figure out how to comfortably customize the aquamacs-mode-specific-default-themes variable.
+
+[new]
+* Command-modifier character in menus (and everywhere else)
+DavidReitter: We map the Command modifier to hyper, which results in it being described as 'H-'. At least in the menus, we want it to be a nice standard Apple-Command sign. Right now this is done by modifying the text of the menu items, which is quite a kludge. Also the keyboard shortcuts in the menus are not properly aligned, which looks ugly and is more difficult to read. Fixing this might be a bit of a challenge, and definitely something for a Carbon/C hacker.
+ 
+--> Wait for Cocoa Emacs.
+
+   
+[new]
+* Spell-Check with OS X
+DavidReitter: Can someone implement an interface that queries the built-in OS X spellchecker? It would have to implement the ispell/aspell API, which should be too hard. Because such a thing would be small, we could easily distribute it with Aquamacs.
+
+[new]
+* Tabs (to switch buffers)
+Anonymous: I suggest adding tabs. In addition or instead of having "show buffers in new frames" you could have "show new buffers in tab". This would allow very nice operation with LaTeX compilation etc. Also, I suggest flashing the tab name just like e.g. iTerm does when something changes…
+
+--> Wait for Cocoa Emacs.
+
+  
+[new]
+* External editor interface : 
+It would be nice if Aquamacs could be an "external editor", for example of an FTP client. The external editor interface (aka ODB) is defined by BBEdit: http://www.barebones.com/support/develop/odbsuite.shtml
+
+DavidReitter: interesting suggestion. Reasonably easy to implement,  I guess. We need a list of a few apps that already implement the client side of ODB. Concrete contributions (i.e. C code) would be most welcome.
+
+ Florian: Editors that implements ODB: (open-source of course): Smultron (http://smultron.sourceforge.net/), 
+ jEdit (http://www.jedit.org/). I use Cyberduck (http://cyberduck.ch/) as an FTP client (also open-source), 
+ which has a list of external editors in its preferences.
+
+ DavidReitter: Do you speak C?
+
+ ayman: This would be a great addition to Aquamacs. I believe the standard is maintained by the BBEdit ppl 
+ who have the docs and the sdk (complete with a ODBEditorSuite.h header file):  
+ http://www.barebones.com/support/develop/odbsuite.shtml
+
+ Xurizaemon: MacVim (http://code.google.com/p/macvim/) also has this. 
+ http://repo.or.cz/w/MacVim.git?a=tree;f=src/MacVim/edit-in-odb has sample code from MacVim. 
+ No, I don't speak C either :)
+ 
+
+[new]
+Randolf Schultz:
+There should be an easy way to configure the starting size of the main window (maybe even by automatically remembering the place and size of the window from one session to the next in a configuration file), or the starting geometry should be selected in a more conservative manner. Why? Well, on my screen (which is unfortunately limited to 1024x768) Aquamacs always starts in a way, that the most important resize handle _and_ last line (minibuffer) are blocked by the Dock. You can not resize and you can not load files (because you can not see through the Dock so well what you are typing). This way I am forced to move the window and resize it manually in two annoying manual steps on each start of Aquamacs. I can configure easily using default-frame-alist/initial-frame-alist you say? No, not the very first window as those settings affect the first buffer of a loaded file, but I cannot load a file... (cat bites in tail). Changing initial geometry I could only achieve by disabling the frame specific setting mechanisms altogether which is a pity because they are quite useful. Note: To get around this problem took me frustrating 2-3 hours reading docs/scratching head/trying different configurations and I do not consider myself a total Emacs newbie...
+
+Artem Baguinski:
+If you get huge window - click on zoom button (+) and it'll become reasonable size.
+
+[new]
+A minor cosmetic tweak. I'd like to use a soft gradient for the background of the modeline.
+DavidReitter: Sorry, unlikely to happen for technical reasons.
+
+[new]
+Remove the "New", "Open", "Save", "Copy", "Cut", "Paste", and "Print" buttons from the default toolbar, consistent with other Mac applications (in fact, you could probably simply remove the default toolbar altogether, as in TextEdit).
+
+[new]
+Paul Hubbard: It'd be really nice to have an accompanying command-line program that'd add a buffer to Aquamacs. E.g. 'mate' for textmate and 'bbedit/edit' for bbedit and TextWrangler. Otherwise, you have to fiddle using finder or emacs to open a file in some subdirectory; particulary useful for Java source code with deep source trees.
+
+DavidReitter: This has been implemented.  Tools -> Install Command Line Tool
+
+[new]
+Robert Hicks: I would like to see compile.el added to the default bundle so I can actually run my script through AE.
+
+[new]
+Jan R: something like DesktopAid would be nice (have sessions which save frames). Unfortunately DesktopAid seems to be uncompatible with Aquamacs
+
+[new]
+Nathaniel Cunningham: I would love a "buffers" drawer added to the Aquamacs interface, à la the BBedit/Textwrangler "Documents" drawer.  Speedbar already has the functionality and can serve multiple purposes to boot, but it would be handy (and Aqua-licious) to implement Speedbar as a drawer.  This can basically be viewed as an alternate approach to a tabbed interface.  Besides, it would save me the trouble of figuring out how to get Speedbar to open (1) automatically and (2) in 'buffers' mode at Aquamacs startup...
+
+
+[new]
+Axel Rauschmayer: The only thing that keeps me from switching from X11 to Aquamacs is that "native" Mac OS X is missing a good !LaTeX-friendly PDF viewer: It has to be easy to reload whenever the PDF changes (or even better: watches the file and reloads automatically, like gv does). With X11, I have a solution that works reasonably well: I turned on !FocusFollowsMouse and use xpdf. So, with an X11 emacs, I have xpdf and emacs sitting side by side. Every time I've compiled a new PDF via pdflatex, I move the mouse pointer over to the xpdf window and hit 'r' (for "reload").
+
+Any ideas? An !AppleScript for Preview maybe. Note that it is not enough to perform "revert" whenever a change happens; the viewer has to continue to display the same page.
+
+Matt Leifer: TeXniscope reloads automatically whenever the PDF changes.  This is a good solution, but I like to use the default Apple apps whenever possible to avoid unnecessary software clutter on my machine.  It would be good to see this working with Preview as well.
+
+DavidReitter: Also, check out Skim (skim.sourceforge.net) or PDFView.
+
+[new]
+The UI difference that has always annoyed me most about Emacs (and gvim) is the fact that the cursor/point is always within the visible area of a window. With standard Mac editors, I'd scroll up or down to look something up, and when I scroll back or hit a key, my cursor or selection is right where I left it. With Emacs, I lose my previous cursor position and selection. I understand that the assumption that the point is visibe in a window is rooted quite deep in Emacs - Is there any chance there might be a fix for this i a future version of Aquamacs?
+
+DavidReitter: A long-term goal.
+
+[new]
+Files with the extension ".cp" are C++ files; this extension used to be the standard C++ file name extension on the Mac, but never caught on on any other platform. A Mac-specific Emacs should recognise it by default.
+
+DavidReitter: Thanks for the suggestion - this should now be available.
+
+[new]
+Put a draggable/command-clickable file icon in the window(frame) title bar using Carbon calls SetWindowProxyFSSpec or HIWindowSetProxyFSRef.
+
+DavidReitter: This should now be available.
+
+[new]
+Frank Atanassow: One of the things which bugs me most about Aquamacs is the following unusual behavior.  If I minimize an Emacs frame, and I click the Aquamacs application icon in the dock, nothing happens.  Every other Mac OS X application un-minimizes at least one minimized window when you do this, but Aquamacs doesn't.  It always takes me a few seconds to figure out what is wrong: is my frame hidden under some other?  is Aquamacs not running?  is it a bug?  (Otherwise, great work on Aquamacs, BTW!) 
+DavidReitter: fixed in recent versions.
+
+[new]
+david hunnisett: It would be great if jdee was included as its rather tricky to get aquaemacs + jdee set up in a sane way
+DavidReitter: Available from version 1.0 on
+
+[new]
+jhearn:  It would be pretty sweet to get some more Aqua-like icons at the top of the frame.  More importantly, though, it would be nice to see a mac-like interface to the preferences/customize interface.  I'm sure there are people who are fond of the normal emacs customize interface, for whatever reasons, so it would have to be an option easily turned on and off.  There are lots of different ways Mac applications handle preference menus, but since representing modes, variables and so forth in an intuitive way via icons is not likely to happen, i would think a window with a sidebar is the most obvious choice (Quicksilver's preference window might be a good example to follow).  Thanks for giving us such a great Mac App!
+DavidReitter: The Customize interface is way too much work considered that it isn't going to be used that often. It's also rather tricky from a technical point of view - one would have to  [automatically] map the options that Emacs offers for all the customization variables to Aqua widgets. One way would be via a transformation to HTML. If someone is taking a stab at this, it would make sense to do it in Cocoa.
+
+[new]
+wlad: How feasible is to give Aquamacs a toggable full-screen mode as in iTerm?
+DavidReitter: very feasible. It would be a nice feature. Can you help with the programming?
+anonymous: that would be really great, especially on small screens!
+DavidReitter: This is now available.
+
+[new]
+jpmann: a trivial, cosmetic, request. Change the app icon to meditating GNU: http://www.gnu.org/graphics/meditate.html
+DavidReitter: the meditating GNU does not symbolize "editor" any more than the current icon does. In fact, it is even less recognizable as a GNU, and it hurts the established Aquamacs brand.
+jpmann: but the dog-horse-goat icon hurts my mac sense of aesthetics. tis ugly
+DavidReitter: if you want to make and submit a pretty icon that symbolizes "editor" and that has some connection to Emacs/Aquamacs, we'd certainly like to take a look.
+
+[new]
+Mathieu Godart: it would be great to have the Apple-E function implemented. In most of Apple's programs, it will use the selected text as a search string. E.g. if you select the word "Fromage" and then you type Apple-E and Apple-G, it will find the next occurrence of "Fromage" in the document. I guess this would ne be a big deal to implement, but I'm a newcomer so I need sometime to see how to implement that (this sentence doesn't imply that I will never do it ;-) ).
+DavidReitter: OK, this feature will be available from version 1.3 on.
+
+[new]
+VapidBabble: Are there any plans to allow Aquamacs to work with VoiceOver?
+DavidReitter: There are no such plans right now, at least until we are switching to Cocoa as basis for Aquamacs. I think it's nice technology, but there would have to be either substantial demand (i.e. many potential users) or perhaps some funding from an organization that supports that kind of stuff (like RNIB in the UK).  
+
+[new]
+Gilles Lenfant: I'm a technical documentation writer. In that field, exporting buffer to HTML is a great help. Having a "copy as HTML" would be greater. Are there plans for this?
+
+DavidReitter: Can you explain a few use cases?  (Best contact us via the aquamacs-devel mailing list)
+
+[new]
+Yury Petrov: It would be nice to have an icon in the toolbar which would display a list of clickable bookmarks, like it was done for the Recent Files. 
+DavidReitter: Quite doable; a patch that adds the functionality would be appreciated.
+
+Yury Petrov: It would be even greater to have an Emacs Code Browser support (there is one such wish on the list already).
+DavidReitter: Yes, probably as a plugin.
+
+[new]
+SeanMcCune: It would be nice to be able to customize the toolbar beyond just "icons" or "icons with labels".  I like to set my toolbar to just show text with no icons to save space vertically.  But with emacs, I'd prefer no toolbar at all. So I'd like a "labels only" and "no toolbar" addition to the toolbar display mode.
+DavidReitter: label-only is not provided in OS X, so it won't be available.  Turning off the tool-bar is already possible through the standard means (button on top right).
+SeanMcCune: There are plenty of apps that provide "Text Only" toolbars.  Open Mail.app, right-click the toolbar and choose "Text Only".  I use this setting on many apps... especially editors.
+
+[new]
+It would be nice if the standard Control-Command-D dictionary was supported. This would probably require major changes unfortunately.
+
+[new]
+JesseAlama: The tabs feature of Aquamacs 1.7 looks great.  How about adding support for manipulating the left-to-right order of the tabs, either through the keyboard or with the mouse?  It would be great to be able to click on a tab and drag it to a better position, such as putting one tab next to a closely related one.
+DavidReitter: Jesse, this would be easy to do (for key commands at least), and I you could probably come up with an implementation.  Nathaniel Cunningham has looked into dragging tabs, but the underlying Emacs framework isn't quite there yet.  We can probably add that more easily now that we're on Cocoa with the new Aquamacs 2.0 branch.  

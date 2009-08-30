@@ -1,0 +1,69 @@
+What do people use to edit the Wiki? Do many of you who are most active use oddmuse-mode?
+-- KristjánJónasson
+
+[new:AlexSchroeder:2007-10-10 09:20 UTC]
+I don't think many people use Oddmuse Mode, to be honest. But how would you measure it? Here I'm piping a few hours of access.log into a Perl script that groups by User Agent:
+
+    grep "GET /cgi-bin/\(wiki\|emacs\)" logs/access.log | bin/user-agent-grouping
+
+                       Mozilla      30024    20%
+                       Firefox      27835    18%
+                        msnbot      17144    11%
+                          MSIE      12526     8%
+                      Netscape      11242     7%
+                        DoCoMo      10446     6%
+                  msnbot-media       6622     4%
+                          Wget       5409     3%
+                      ShopWiki       4770     3%
+                             -       3074     2%
+                        Safari       2722     1%
+                         Opera       2344     1%
+            Feedfetcher-Google       1640     1%
+                            NG       1545     1%
+                     Emacs-w3m        956     0%
+                     Bloglines        938     0%
+                           ...
+                          curl         41     0%
+                           ...
+                 libcurl-agent         27     0%
+
+And this is what I get for posting:
+
+    grep "POST /cgi-bin/\(wiki\|emacs\)" logs/access.log | bin/user-agent-grouping
+
+                          MSIE       1013    83%
+                       Firefox        114     9%
+                         Opera         21     1%
+                             -         17     1%
+                      Netscape         11     0%
+                        Safari          9     0%
+                        Snoopy          8     0%
+                       Mozilla          6     0%
+                     Emacs-w3m          5     0%
+                           w3m          1     0%
+                          curl          1     0%
+
+As you can see, curl is not too popular...
+Or is curl faking the User Agent?
+
+[new:StefanKamphausen:2007-10-10 12:07 UTC]  I ''will'' probably start using OddmuseMode within the next few days. I couldn't get it to work with XEmacs earlier but currently I'm giving Emacs22 a try.  Just for the record. -- StefanKamphausen
+
+[new:PierreGaston:2007-10-10 13:07 UTC]
+Damn the posters use MSIE more than the readers! I blame Drew and Aaron as they do 99% of the edits these days! ;)
+
+[new:DrewAdams:2007-10-10 13:42 UTC]
+Oui Pierre ; mea culpa -- I use MSIE. On our corporate intranet, many sites and internal applications work only or best with IE. That's changing, with Mozilla being supported a little more recently, but that's the way it is. And beyond EmacsWiki (si, si, ca existe), it's still the case that MSIE is the most commonly used browser. BTW, another way to look at those stats is this: why don't all those Mozilla users who visit EmacsWiki so often contribute anything? ;-) -- DrewAdams
+
+[new]
+Don't forget that Drew had like 500 edits this week -- assuming they're in the access log  in question, and note that hitting "Preview" counts as an HTTP "post".  -- AaronHawley
+
+[new:PierreGaston:2007-10-10 18:02 UTC] Just so that everything is clear, it was a just a joke, and a way to underline your work. Thank you both! 
+
+[new]
+The logs I used start with **05/Oct/2007:06:25:41 +0200**. -- AlexSchroeder
+
+[new:DrewAdams:2007-10-10 15:21 UTC]
+What's the purpose of the stats? If we want to know browser use per access or per post, then each access and each post by Monsieur Gaston or M. Adams should count. But if we want to know browser use per user, then accesses and posts should be grouped by username (or IP if no username). In the latter case, the browsers of M. Gaston and M. Adams would each be counted only once, regardless of their access and post frequencies. -- DrewAdams
+
+[new]
+Absolutely. Which is why I asked how Kristján Jónasson would measure it. -- Alex

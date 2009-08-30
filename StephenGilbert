@@ -1,0 +1,11 @@
+http://www.wikipedia.com/wiki/user:Stephen+Gilbert
+
+I'm a novice Emacs user, and I hope to poke around EmacsWiki a bit.
+
+I noted your point about using Emacs on http://meta.wikipedia.org/wiki/Dedicated_Wikipedia_editor
+-- did you read about SimpleWikiMode already?  That is what
+I currently use.  I am sure it would be trivial to fix the regexps
+to hilight Wikipedia-style links. -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -1,0 +1,37 @@
+My Emacs Anniversery is in May.  2 years so far.
+
+Emacs projects are:
+
+* I did some work on TwIt, and plan to do more.
+* DevKitEmacs - A helper mode for interfacing with devkitpro.  Making the compilation and testing of NDS homebrew much easier.
+* ToDoChiKu - A Growl/Snarl interface for emacs.  Comes with a few helpers.
+* cruisecontrol.el - An Emacs Controller for CruiseControl.  Right now it just starts a build.
+* [[Tagging]] - Originally from Conrad Barski M.D., I have heavily hacked it to work with ECB
+* file-journal.el - I took it over, and started to make some adjustments.
+* Lisp:work-timer.el - A simple timer that tells you when you need to start working, and when you need to start relaxing.  Uses ToDoChiKu. 
+* JisekiDesktop - The final step to turning emacs into your OS.
+* Lisp:org-jira.el - A simple package to hook up jira with org.  Right now provides a org to jira link.  More coming later.
+* Lisp:i-ching.el - i-ching for Emacs.
+* MojoSdk - Helper functions for interacting with the mojo SDK development tools. 
+
+----
+For one job I do Web Development.  My weapons of choice are org-mode, moz-repl, js2 and nxhtml.
+
+For fun I write Scheme, I am working on a web/application server and Gambit for the Nintendo DS
+
+OrgMode and ParEdit Mode are my favorite modes.  I am also fond of the Bovinator and ECB.
+
+I am currently having problems with tab-completion in my cygwin shell.  I can't tab complete if I am in a directory with a space in it, and each tab completion ends with a backlash.
+
+
+== Messages ==
+[new]
+Welcome to the wiki! On Windows, I usually just run eshell... --AlexSchroeder
+
+[new]
+Howdy to a fellow Schemer!  See you over at Gambit Wiki (where I go by Trashbird1240) --JoelAdamson
+
+----
+CategoryHomepage
+
+

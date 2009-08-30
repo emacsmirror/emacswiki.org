@@ -1,0 +1,71 @@
+Starting 2007-06-24, the Wiki gives spurious "Too Many Instances - only 10 allowed".  The message is usually related to clicking links too fast, using a pre-fetching proxy (see [[2006-08-23]]), or if a page has a lot of images.  Instead, the error was occurring for people who were opening the RecentChanges first thing in the morning.
+
+Another explanation is that somebody else is leeching Emacs Wiki, sending many long-running requests such as clicking on -> _View other revisions_ -> _View all changes_, or sending many, many other requests. As soon as there are ten wiki processes running on the server, the wiki refuses to serve more requests, even if the webserver thinks it can handle more of them. The reason I'm doing this is because this is a shared hosting environment. Having too many wiki processes running will bring the server to its knees.
+
+Curious, I then looked at my logs:
+
+{{{
+-rw-r--r-- 1 root adm 112361662 2007-06-26 00:41 access.log
+-rw-r--r-- 1 root adm  38433263 2007-06-25 06:25 access.log.1
+-rw-r--r-- 1 root adm   3886623 2007-06-24 06:25 access.log.2.gz
+-rw-r--r-- 1 root adm   1527122 2007-06-23 06:25 access.log.3.gz
+-rw-r--r-- 1 root adm   2133980 2007-06-22 06:25 access.log.4.gz
+-rw-r--r-- 1 root adm   2100224 2007-06-21 06:25 access.log.5.gz
+-rw-r--r-- 1 root adm   2146729 2007-06-20 06:25 access.log.6.gz
+-rw-r--r-- 1 root adm   1706367 2007-06-19 06:25 access.log.7.gz
+-rw-r--r-- 1 root adm   1427820 2007-06-18 06:25 access.log.8.gz
+-rw-r--r-- 1 root adm   1477265 2007-06-17 06:25 access.log.9.gz
+-rw-r--r-- 1 root adm   1777353 2007-06-16 06:25 access.log.10.gz
+-rw-r--r-- 1 root adm   1886307 2007-06-15 06:25 access.log.11.gz
+-rw-r--r-- 1 root adm   1880536 2007-06-14 06:25 access.log.12.gz
+-rw-r--r-- 1 root adm   2018303 2007-06-13 06:25 access.log.13.gz
+-rw-r--r-- 1 root adm   4530279 2007-06-12 06:25 access.log.14.gz
+}}}
+
+Clearly, 2007-06-24 resulted in a huge increase of hits!
+
+Here's what my leech detector says:
+
+{{{
+         218.22.21.2     440799     1K  89%    0.1s  503 (97%), 200 (1%), 404 (0%), 301 (0%), 302 (0%), 403 (0%), 400 (0%), 500 (0%)
+        64.1.215.165       3892    16K   0%   13.1s  200 (92%), 503 (4%), 404 (1%), 302 (0%), 301 (0%), 501 (0%), 403 (0%), 400 (0%)
+        65.55.209.54       2260     7K   0%   29.0s  200 (62%), 503 (34%), 404 (1%), 302 (0%), 301 (0%), 403 (0%)
+        65.55.209.55       1531     8K   0%   42.9s  200 (72%), 503 (22%), 302 (1%), 301 (1%), 404 (1%), 501 (0%)
+        65.55.209.49       1504     6K   0%   30.0s  200 (62%), 503 (35%), 301 (0%), 302 (0%), 403 (0%), 404 (0%)
+        65.55.209.48       1468     7K   0%   44.8s  200 (76%), 503 (19%), 302 (1%), 404 (1%), 301 (0%)
+        65.55.209.52       1465     9K   0%   43.6s  200 (71%), 503 (23%), 302 (1%), 404 (1%), 301 (0%)
+        65.55.209.50       1322     9K   0%   44.8s  200 (69%), 503 (25%), 302 (2%), 404 (1%), 301 (0%), 403 (0%)
+        65.55.209.51       1217     9K   0%   51.2s  200 (72%), 503 (21%), 302 (2%), 301 (1%), 404 (1%), 403 (0%)
+        65.55.209.53        962     9K   0%   66.8s  200 (80%), 503 (14%), 302 (1%), 404 (1%), 301 (1%)
+}}}
+
+Grepping my log files for the first three IP numbers, I find:
+
+* 218.22.21.2 -> Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)
+* 64.1.215.165 -> Twiceler-0.9 http://www.cuill.com/twiceler/robot.html
+* 65.55.209. -> msnbot/1.0 (+http://search.msn.com/msnbot.htm)
+
+I decided to ban all of them using the ##.htaccess## file.
+
+After a few moments:
+
+{{{
+aschroeder@thinkmo:~$ tail -1000 logs/access.log | leech-detector | head
+         218.22.21.2        917     1K  91%    0.1s  403 (100%)
+        65.55.209.52         30     1K   3%    1.9s  403 (100%)
+        65.55.209.55         12     1K   1%    4.5s  403 (100%)
+       81.107.70.226         10     8K   1%    2.6s  200 (90%), 301 (10%)
+     141.142.251.236          9    25K   0%    0.2s  200 (100%)
+      67.122.241.204          6     4K   0%    0.6s  200 (83%), 304 (16%)
+        75.71.70.212          5     8K   0%          200 (100%)
+       213.66.43.184          2   100K   0%          200 (50%), 301 (50%)
+       209.85.238.27          1     9K   0%          200 (100%)
+         74.6.20.204          1     0K   0%          301 (100%)
+}}}
+
+I hope that helps.
+
+-- AlexSchroeder
+
+[new:DrewAdams:2007-06-25 22:57 UTC]
+Good job. Thanks, Alex. -- DrewAdams

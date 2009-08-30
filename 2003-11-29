@@ -1,0 +1,24 @@
+The new version of the wiki software has a new textfield at the bottom of the page, "language".  This field currently has no effect.  Until now, the language of a page was not stored in the page file itself, only in the changelog file.  From now on, however, language information will be stored in both places.  Thus, you will be able to filter not only RecentChanges by language, but also ordinary search results.  As I said, however, at the moment the necessary meta-data is simply missing.
+
+Note that this language setting is "sticky" -- it gets stuck into your cookie
+until you change it again.
+
+There is one unresolved usability problem, however:  The information in the
+cookie may not seem to take effect immediately as the wiki will allow your
+browser to keep using page copies in your browser cache until somebody edits
+a page on the wiki.  You can either decide to clear your browser cache if
+you are experiencing this, or press shift while reloading a page (this often
+instructs the browser to not use the cache).
+
+If you have a good idea of how to solve this, speak up.  ;)
+I could keep track of visitor sessions and write some code to handle cookie
+changes, but I think that solution is too complex (at the moment there is
+no session information stored except for the IP numbers of the visitors in
+the last two hours, and they are anonymized when viewed [http://www.emacswiki.org/cgi-bin/wiki?action=visitors]).
+
+-- AlexSchroeder
+
+[new]
+Update 2005-07-26: The visitors action has been disabled.
+
+-- AlexSchroeder

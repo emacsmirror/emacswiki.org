@@ -1,0 +1,32 @@
+Offering chats and sending files with DCC is only supported in Emacs 22.  Accepting chats and receiving files should work in all versions.
+
+-- Can anyone say whether or not it works in [[XEmacs]]?
+
+Otherwise, getting DCC (Direct Client-to-Client) to work in erc is trivial. Just add ##(require 'erc-dcc)## in your ##~/.emacs## file. You can load it directly too, without editing the ##~/.emacs## file, just to test it. Just ##M-x load-file RET erc-dcc.el##. There is not much documentation around on erc-dcc so the source would be your best doc.
+
+Usage:
+
+Accept a pending DCC chat offer from nick or offer DCC chat to nick:
+
+    /dcc chat nick
+
+If a user offers you a file via DCC: 
+
+    /dcc get nick
+
+To send a file via DCC:
+
+    /dcc send nick file
+
+or ##M-x erc-dcc-send-file RET <nick> RET <file>##
+
+To list all DCC offers and/or connections:
+
+    /dcc list
+
+To close a DCC connection type the following (where type can be send, get, or chat - both type and nick are optional):
+
+    /dcc close type nick
+
+----
+[[ERC]]

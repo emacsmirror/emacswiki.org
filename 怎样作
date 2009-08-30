@@ -1,0 +1,339 @@
+维基是互动的网页地址，任何人都可以作出贡献，每一页都和下面链接，使你可以自行编辑，你编辑第一页的最好地方是[[CategoryHomepage]]。
+
+* UserName 是关于维基使用者如何命名的信息。
+
+
+== 维基常识==
+
+* MeatBall:StyleGuide 是关于有兴趣的人如何写作的讨论，除了上述通用的方法，不需要其他工具，要避免写作没有内容的页面：不用为了定义术语专门制定页面。
+* Community:WhyWikiWorks 解释为什麽维基会产生有意思的内容(我们希望如此)，为什麽不会产生太多地争论。
+* Oddmuse:SiteMap 是维基的主页-- the CGI script
+(in Perl, I am sorry to say) 产生你正在读的页面。
+* Oddmuse:Text_Formatting_Rules 有你需要的编辑规则。
+
+
+== 文本编辑规则==
+
+你怎样 ''学习'' 编辑维基页面?
+
+* 应用沙盒SandBox 试验编辑!
+* 检查别人是怎麽做的(网址头、空格等): 打开每页底部 '''编辑本页的文字'''栏查看源代码。 
+* 编辑时用 '''预览''' 查看你编辑的效果。
+
+以下是最重要的编辑规则：
+
+* 用空行分段。
+* 不加空行即使编辑多行文字也只显示一段。
+* 每段从第一字开始，不留空格。
+
+::::::::::: ''(search for [::Links on Wiki Pages])''
+=== 维基页面的链接===
+
+* 英文单词如果连接在一起可以作为链接，但只能用 ASCII 编码 (a-z and A-Z),
+维基不能识别非 ASCII 编码。
+* <nowiki>[[在双方括号中的单词]]</nowiki> 可以作为链接，用任何编码都可以。
+* 只要在已经存在的页面上设定链接，但击链接词，就可以编辑新的页面。
+参见下面[[创建新页面]]。
+* 用通用资源链接可以进行外部链接 (参见下面 [[怎样进行通用资源链接]] )。
+* 通用资源链接结尾用.png 和.jpg 可以链接图片。
+* 在同一页面可以用锚点链接不同的地点，也叫"别名页面" -- 参照 [[创建别名页面]]。
+* 最好在一个页面的底部提供相应的链接页面(或"主页面") -- 参照 [[链接主页面]]。
+
+=== 列表，缩头段落===
+
+* 以星号('*')开头为列表行。每个星号后为一个段落。
+* 以井号('#')开头的列表行为带编号的列表行。
+* 定义的列表行以分号(';')开头，定义的解释以冒号(':')开头，如下所示：
+
+    ;Term: Description goes here.
+
+* 缩头行以一个或多个冒号(':')开头 -- 多个冒号意味着缩进多格。适用于对话。
+
+=== 源代码，例子===
+
+* 每一行开头如果是空格，将被作为源代码处理 -- 我们建议用四个空格。
+
+=== 标题 ===
+
+* 标题用两个等号圈起来("== 标题 ==")。
+* 二级标题用三个等号圈起来("=== 二级标题 ===")。
+
+=== 允许 HTML 标记 ===
+
+有些 HTML 标记可以在这里使用:
+
+; em: <em>强调</em> (一般为斜体)
+; i: <i>斜体</i>
+; strong: <strong>着重</strong> (一般为黑体)
+; b: <b>黑体</b>
+; tt: <tt>打字机体</tt> (一般为单线的)
+; code: <code>代码</code> (中间不能空格， 否则维基不能运行)
+; pre: Preformatted (一般中间不能空格，对段落来说，用分号
+; 代表空格，否则维基不能运行)
+; nowiki: 不在维基中运行(一般对没有空格的联词，说明不是运行代码
+例如: <nowiki>NoLink</nowiki>)
+
+其他规则参见: Oddmuse:TextFormattingRules.
+
+::::::::::::: ''(search for [::How to Write URLs])''
+== 怎样进行通用资源链接URLs ==
+
+假如你要将主页和一个参考文件或源文件链接，可以用网址开头直接进行链接：
+
+* http://foo.bar/like.this
+
+这样可以进行外部链接，并可以使网页在不损失重要信息的条件下进行打印。
+
+::::::::::::: ''(search for [::Creating New Pages])''
+== 创建新页面==
+
+方法 1:
+
+: 编辑一个你想和你的新页面链接的页面，以一个维基词进行链接，然后保存页面。按照下面[[为新页面命名]]一节的指示编写维基词，一般来说只要是联在一起不分开的英文单词都会被视作维基词。在新链接词后面用一个问号表示的是超链接，从超链接中你可以编写新页面。
+
+方法 2:
+
+: 也叫通用资源链接方法，只要编写一个
+通用 URL 指向还不存在的新页面，例如新 URL 如下所示：
+
+** http://www.emacswiki.org/cgi-bin/wiki.pl?SampleUndefinedPage
+
+::::::::::::: ''(search for [::Creating a Page Alias])''
+== 创建别名页面 ==
+
+一个所谓“别名页面”就是定义一个''锚点''，也就是一个可以从任何地点链接的目标。你可以用一个锚点在''同一维基页面上链接不同的点。 (也有人用以链接自己的姓名主页和化名页。)  参见: [[Oddmuse:Permanent Anchor]].
+
+别名页面的内容和链接页面相同，但锚点是''可见的''，这点和超文本链接HTML不同，它的锚点是不可见的，用<code><A name="..."></code>语句编写。
+
+作为在同一页面链接的例子，如在本节开头有一个锚点(别名页)命名为"Creating a Page Alias"(这和本节的名称相同).
+同样在[[维基页面的链接]]一节中也有一个“创建别名页面”锚点和本节链接。 
+
+编写一个锚点(别名页面)，用一个方括号和两个冒号：
+
+     [::MyAnchor]
+
+这个锚点在浏览器中显示为：[::MyAnchor].
+
+你可以按正常的维基词编写规则编写锚点链接如：MyAnchor. 你也可以像其他维基链接方式一样用双方括号，就可以不同非得把此连接起来，例如，本节开始的锚点编写如下方式：
+
+    [::Creating a Page Alias]
+
+但从[[维基页面的链接]]一节到本节的链接编写按下列方法： 
+
+    [[Creating a Page Alias]]
+
+点击到别名页的 ''连接'' 就可直接连接到别名页(锚点)。
+
+点击''别名页''就会直接运行''search for 别名页''，等于是在本页底部'''Search'''栏中直接输入页面名称，这就是为什麽我们在每节开始都要放上一个锚点：''(search for [::Creating a Page Alias])''。是按下列方法编写的：
+
+    ''(search for [::Creating a Page Alias])''
+
+本页对别名页的讨论在: PageAliases.
+
+=== Questions and Answers ===
+
+Is there a way to hide the anchor (page-alias) text itself?  Most of the time a link to search for the anchor text is not very useful. -- DrewAdams
+
+: No, there is not.  I feel that this results in better usability.  If you are using Oddmuse for another site, however, you can hide anchors using CSS. -- AlexSchroeder
+: _________________________
+
+: Why would it be more usable to see the anchor text? It just interferes with (or duplicates) the page content. It's certainly not the model used elsewhere (HTML, XLink, etc.). And the page you cite below (http://www.oddmuse.org/) doesn't have such visible extraneous text either. -- DrewAdams
+
+----
+
+If one ''cannot'' hide anchor text (as it seems), what do you think of the convention I adopted here: repeating the section heading as anchor text, and placing the anchor near the section heading? It's a kludge, certainly, but I couldn't think of a better way to do it. -- DrewAdams
+
+: I don't like it too much.  I have adopted a CSS approach on http://www.oddmuse.org/ for example.  If you look at the Oddmuse:SiteMap, for example, you'll note that the headings look like headings, but are in fact the permanent anchors themselves.  What do you think of that? -- AlexSchroeder
+: _________________________
+
+: I ''like'' the approach you use at http://www.oddmuse.org/. That's what I meant by "Is there a way to hide the anchor (page-alias) text itself?" (to which you said "No"). It's common to use headings as targets. Can't we dissociate this behavior from CSS (or, if not, use CSS by default)? That is, can't we have an anchor that is hidden '''or''' ''be able to format it as if it were a heading''?
+
+: FWIW, I prefer the more common type of link, rather than the (blinding) mouse-over inverse-video used at http://www.oddmuse.org/. GUI tastes vary, of course. -- DrewAdams
+----
+
+I noticed that sometimes you have to save a page a couple times, to get the save to properly take all page aliases into account. Seems like a bug. Anyone understand this? -- DrewAdams
+
+: Yes, this is unfortunate: You have to save the page and force a reload (control/shift/alt + reload, depending on your browser) for it to show up correctly.  When Oddmuse renders the beginning of the page, it doesn't know about permanent anchors that come later on the new page, therefore it renders them incorrectly at first.  Since it only affects links to permanent anchors later on the ''same'' page, I usually don't notice. -- AlexSchroeder
+: _________________________
+
+: I find I usually have to save the page, re-edit it (without changing anything), then save it again. Reloading (even with an emptied cache) a page saved only once doesn't seem to take care of it. -- DrewAdams
+
+----
+:::::::::::::: ''(search for [::Naming New Pages])''
+== 为页面命名 ==
+
+下列方法可以帮助你选择页面名称:
+
+* 假如名称较短，如Sql 或者 Tcl，如果你是在描述 Emacs mode 时可以加上一个 "Mode" 。例如： <nowiki>SqlMode，或TclMode</nowiki>.
+* 假如页面很大例如Gnus，可能有很多附属页面，你可以创建一个目录，如： <nowiki>CategoryGnus</nowiki>.
+* 假如是应用缩写或缩略语，直接打上就可以了，如：<nowiki>WThreeM</nowiki>.
+* 假如页面包括你对某一特定包的配置，可以直接用后缀"Configuration"，如<nowiki>BbdbConfiguration</nowiki>.
+* 假如你还找不到一个好名称，可以直接加后缀"Page"。我还没有看到其他维基人使用这种名称，他们一般使用难听的大写变种词，如<nowiki>UgLy</nowiki>，诸如此类的。<nowiki>TrampPage</nowiki>是一个好名词，因为你可以用它说，“要想看更多的信息，参见<nowiki>TrampPage</nowiki
+
+: 什么时候像<nowiki>[[This]]</nowiki> 这种链接可以使用?
+
+:::::::::::::: ''(search for [::Linking to Parent Pages])''
+== Linking to Parent Pages ==
+
+Some pages have "parent" pages or belong to a certain category.  It
+would be nice to provide explicit backlinks to these parent and
+category pages.  Authors have to add this manually, ie. add the
+appropriate parent or category tag at the end of the page.  The
+backlinks can be searched for, automatically.  Just click on the
+header to list all other pages linking to your current page.  This is
+just a plain ol' regular search.
+
+The reason this is not all automated is because a) it would require
+the maintenance of a separate link DB, and b) in a double linked graph
+there may be potentially a lot of irrelevant pages pointing to the
+current page, so you do not allways want to list them.  Thus, the
+manual strategy of adding category tags or parent pages at the end.
+
+This usually looks like this at the end of the page:
+
+    ----
+    CategoryFoo
+   
+
+== Adding Images to EmacsWiki Pages ==
+
+You can create a Web page that has only an image on it (see [[Standalone Images]]), and you can make an image appear in line, on the same page as text or other images (see [[Inline Images]]). For additional information, see Oddmuse:TextFormatting.
+
+::::::::::::: ''(search for [::Standalone Images])''
+=== Standalone Images ===
+
+Here are the steps to create an image and link to it. The image appears on a Web page by itself.
+
+'''1.''' Edit a page that you want to link to the image page.
+
+'''2.''' Create a link to a page named after the image by typing its name. For example:
+
+     "Here is a screenshot: MyScreenShotPage"
+
+'''3.''' Click Preview (or Save) to render the page. A question-mark link will appear after the image-page name in the preview: 
+
+     "Here is a screenshot: MyScreenShotPage?"
+
+'''4.''' Open the question-mark link in another browser window.
+
+'''5.''' Edit the (new) image page (MyScreenShotPage). Click this link at the bottom of the page:
+: ''Replace this text with a file.''
+
+'''6.''' Click Browse and choose the image file you want to upload to the Web page. Click Save.
+
+'''7.''' Save the original Web page (if you haven't already).
+
+::::::::::::: ''(search for [::Inline Images])''
+=== Inline Images ===
+
+Here are the steps to make an image appear ''in line'', together with text and other images on the same Web page.
+
+'''1.''' Follow the steps above (see [[Standalone Images]]), placing a link to the image page where you want the image to appear in line.
+
+'''2.''' Change the link to this form:
+
+     [[image:MyScreenShotPage]]
+
+The image page still exists, but the link to it ''does not appear''. Instead, the image is displayed in place of the link.
+
+Note that this wiki is protected by a SurgeProtector: You are only allowed 10 hits in 20 seconds.  If you inline images stored on wiki pages, then every image counts as another hit.  Assume a visitor does nothing for 20 seconds, and then visits a page with 10 inlined images.  With the 10 hits allowed in 20 seconds, you will be able to load the page itself, and 9 inlined images.  The last image will not load.  You can try it yourself by reloading this page more than 10 times: You'll get an error: '''To many connections from xxx'''!
+
+== Redirecting a Wiki Page to a Different Wiki Page ==
+
+For various reasons, you might sometime need to redirect one Wiki page to another. This operation effectively '''replaces''' the redirected page by the page you redirect it to, so don't do this lightly.
+
+Here's how you do it:
+
+# Edit the page to be redirected.
+# Remove all its text, and replace it with this: "<code>#REDIRECT FooBar</code>", where "FooBar" is the new, target Wiki page. Save.
+
+== Remove Mail Addresses ==
+
+Remove email adresses from any material you post and transform the
+original name into a link to their homepage on this wiki.  If people
+want to reveal their email addresses on their homepage, fine.
+Example: Alex Schroeder <alex@some.adress.com> turns into
+AlexSchroeder.
+
+Remove email addresses even if you are copying an interesting article
+from a newsgroup.  Remove email addresses even from source code
+comments.  Provide enough headers such that interested parties can use
+search engines such as http://groups.google.com to determine the email
+address of the original address (I suggest the name of the author,
+subject, newsgroups, and date).
+
+Leave email addresses for mailing lists.
+
+== Deleting Spam ==
+
+Replace the spam page with a link to "DeletedPage".
+
+== URL abbreviations ==
+
+You can find a list of possible abbreviations on the InterMap page.
+It lists supported URL abbreviations and their expansions.
+
+Here are some examples of the more interesting ones:
+
+* MeatBall:StartingPoints
+* Google:emacswiki
+* Groups:emacswiki
+
+== When to Use Other Media ==
+
+See MeatBall:AppropriateMedia for some discussion.  As far as this
+wiki goes, I think the following holds true:
+
+* Documentation which is not part of the Emacs/XEmacs manuals should
+go to the wiki.
+* Bugs in the Emacs/XEmacs manuals should be reported to the
+maintainers.
+* Examples, typical usage, customizations, and code snipplets should
+go to the wiki.
+* Bug reports and bug fixes to packages should be reported to the
+appropriate maintainers.
+* Discussions, questions, etc. usually go to the EmacsNewsgroups.  I'd
+like to see more know-how collected on the wiki, but at the moment I
+think that a lot of the good content comes from USENET postings which
+get copied and summarized on the wiki.
+* Often new content will prompt us to share more of our know-how, or
+prompt us to ask questions about the stuff posted on the wiki.  This
+should stay on the wiki.
+
+I hope that doesn't discourage people from adding new content.  I hope
+that it shows more or less where our place is in the Emacs Information
+Infrastructure.
+
+== Off Topic ==
+
+Some things are better discussed elsewhere:
+
+* CLiki:Recent%20Changes -- Common Lisp
+* Wiki:RecentChanges -- non-Emacs related programming languages,
+techniques, paradigmas
+* MeatBall:RecentChanges -- online communities, security, moderation,
+meta discussion on wikis, wiki terminology
+* Why:RecentChanges -- religious stuff
+* CreationMatters:RecentChanges -- social stuff
+* AndStuff:RecentChanges -- philosophical stuff
+* SenseisLibrary:RecentChanges -- the game of Go
+
+For more ideas, see http://www.worldwidewiki.net/wiki/SwitchWiki.
+
+
+== Including RSS Feeds ==
+
+You might want to include a RSS feed into your homepage.  Here is an
+example of how to add it:
+
+<pre>
+    <rss http://www.emacswiki.org/cgi-bin/alex?action=rss>
+</pre>
+
+== Cross Posting from Usenet ==
+
+If you crosspost articles from Usenet to the wiki, please ask the
+original author whether they are willing to license their text under
+our licensing terms (see footer) or release it into the public
+domain.
+Describe the new page here.

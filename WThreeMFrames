@@ -1,0 +1,29 @@
+== Rendering Frames ==
+
+If you want to render frames within Emacs, you have to use w3mmee
+rather than w3m -- w3mmee is w3m with multibyte encoding extension.
+The problem seems to be that w3m and w3mmee behave differently with
+the -dump_extra flag.
+
+You will also need the utility mbconv (character encoding scheme
+converter) for this to work out of the box -- this is provided by
+either the libmoe1.5 or libmoe-dev package on Debian GNU/Linux
+systems.
+
+To use w3mmee/mbconv:
+
+ (require 'executable)
+
+ (let ((w3mmee (executable-find "w3mmee"))
+       (mbconv (executable-find "mbconv")))
+   (when (and w3mmee mbconv)
+     (setq w3m-command w3mmee)))
+
+ (require 'w3m)
+
+You might also need to configure w3mmee such that "English" is set as
+the "Language" in the "Character Encoding Settings" section of the
+"Option Setting Panel".
+
+----
+WThreeM

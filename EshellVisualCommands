@@ -1,0 +1,10 @@
+Eshell will use `ansi-term' automatically for specific commands, if you
+just add them to `eshell-visual-commands'.
+
+    (add-to-list 'eshell-visual-commands "mutt")
+
+[new]
+How can we automate this for all the applications who need it ? -- CamilleBourgoin
+
+----
+CategoryEshell

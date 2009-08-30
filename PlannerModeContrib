@@ -1,0 +1,630 @@
+Add your PlannerMode lisp snippets here!
+
+== Planner Browser ==
+
+Planner.el is useful for keeping your own diary, too. 
+planner-browser.el works with planner.el; it helps to browse daily files.
+
+* http://www003.upp.so-net.ne.jp/quasi/red/planner-browser/planner-browser-en.html
+
+You might also be interested in PlannerAndRemind
+
+I prefer to set (planner-calendar-insinuate). Hitting n or N on a date opens the corresponding plan page.     
+: PlannerBrowser might be still worth a try, it lists also your plans (or whatever you make it show), not only the daily files. You maybe want to `(setq planner-browser-calendar-flag nil)', if you insinuate calendar or hook something into inital-calendar-window-hook.
+
+== Published diary markup ==
+
+  (defun dto/planner-diary-format (my-diary &optional no-of-days starting-date)
+      "Acts like the fancy-diary-display, but rendering to emacs-wiki markup. Suitable for use in <lisp> sections."
+      (let* ((date (planner-filename-to-calendar-date (planner-expand-name (or starting-date (planner-today)))))
+             (days (or no-of-days 1))
+             (diary-file my-diary)
+             (diary-list-include-blanks t)
+             (diary-display-hook '(ignore))
+             (entries (list-diary-entries date days))
+             (previous-date nil)
+             (output ""))
+        (dolist (entry entries) 
+          (let* ((current-date (nth 0 entry)) 
+                 (entry-text (nth 1 entry)))
+            (when (not (equal previous-date current-date))  ;; know when to mark headings
+              (setq output (concat output (format "\n\n** %s \n" (calendar-date-string current-date))))) 
+            (setq output (concat output "\n- " entry-text))
+            (setq previous-date current-date)))
+      output))
+
+== Diary annotation ==
+
+This allows creation of a diary entry with the same annotations enjoyed by create-task and remember.  Prompts for a date (with calendar pop up) and time.  If you use planner-diary.el, the annotations show up on your daily plan page.  For a screenshot see http://web.uvic.ca/~jklymak/PlannerMode.html
+
+   (defun planner-diary-add-entry (date time text)
+   "Prompt for a diary entry to add to `diary-file'.  Will run
+   planner-annotations to make hyper links"
+   (interactive (list (planner-read-date)
+ 		     (read-string "Time: ")
+                      (read-string "Diary entry: ")))
+   (save-excursion
+     (save-window-excursion
+       (make-diary-entry
+        (concat
+         (let ((cal-date (planner-filename-to-calendar-date date)))
+           (if european-calendar-style
+               (format "%d/%d/%d"
+                       (elt cal-date 1)
+                       (elt cal-date 0)
+                       (elt cal-date 2))
+             (format "%d/%d/%d"
+                     (elt cal-date 0)
+                     (elt cal-date 1)
+                     (elt cal-date 2))))
+         " " time " " text " "
+         (run-hook-with-args-until-success
+          'planner-annotation-functions))))))
+
+  (define-key global-map [?\C-x ?\C-d] 'planner-diary-add-entry)
+
+== Planner annotation functions ==
+
+These are functions that get called when you "remember", or "Create task".  They put a link in your note or task to what you were working on.   There are a number of these defined by default or in various add-on files (planner-bbdb, planner-gnus, etc).  Here are some more.
+
+=== From a dired buffer ===
+
+Makes an annotation for the file on the current line.  
+
+  (defun planner-annotation-from-dired ()
+    "Return the filename on the current line in dired"
+    (when (planner-derived-mode-p 'dired-mode)
+      (concat "[[file:" (dired-get-filename) "]]")))
+
+  (add-hook 'planner-annotation-functions 'planner-annotation-from-dired)
+  (setq remember-annotation-functions planner-annotation-functions)
+
+=== From a bibtex buffer ===
+
+Makes an annotation for the current bibtext entry.
+
+  (defun planner-annotation-from-bibtex ()
+    "Return the filename on the current line in dired"
+    (when (planner-derived-mode-p 'bibtex-mode)
+      (bibtex-beginning-of-entry)
+      (re-search-forward bibtex-entry-maybe-empty-head nil t)
+      (concat "bibtex:" (buffer-file-name) ":" (bibtex-key-in-head))))
+
+  ;; (add-to-list 'planner-url-list "bibtex:");
+  ;; (planner-option-customized 'planner-url-list (add-to-list 'planner-url-list "bibtex:"));
+
+  (defun planner-bibtex-browse-url (url)
+    "If this is a Bibtex URL, jump to it."
+    (when (string-match "^bibtex:\\(.+\\):\\(.+\\)" url)
+      (find-file (match-string 1 url))
+      (goto-char 0)
+      (string-match "^bibtex:.+:\\(.+\\)" url)
+      (search-forward (concat (concat "{" (match-string 1 url)) ","))))
+
+  (add-hook 'planner-browse-url-functions 'planner-bibtex-browse-url)
+  (add-hook 'planner-annotation-functions 'planner-annotation-from-bibtex)
+  (setq remember-annotation-functions planner-annotation-functions)
+
+: I couldn't get this to work since my copy of bibtex.el didn't have a function called bibtex-key-in-head.  My OS X copy of bibtex.el had the function present so I just added the function to my other config.
+
+  (defun bibtex-key-in-head (&optional empty)
+    "Extract BibTeX key in head. Return optional arg EMPTY if key is empty."
+    (if (match-beginning bibtex-key-in-head)
+        (buffer-substring-no-properties (match-beginning bibtex-key-in-head)
+                                        (match-end bibtex-key-in-head))
+      empty))
+
+
+=== From a w3m buffer ===
+ChrisMcMahan: Copies the URL of the current buffer as a link.
+I used the functions above as a template.
+
+ ; add a new planner function to extract the url from a w3m buffer as
+ ; the hyperlink
+ (defun planner-annotation-from-w3m ()
+   "Return the URL of the current w3m page"
+   (when (planner-derived-mode-p 'w3m-mode)
+     (w3m-print-current-url)))
+
+ (add-hook 'planner-annotation-functions 'planner-annotation-from-w3m)
+ (setq remember-annotation-functions planner-annotation-functions)
+
+== Working with more than one planner project ==
+
+If you're using the version of PlannerMode that works with EmacsMuse, please see [http://www.emacswiki.org/cgi-bin/wiki/PlannerMusePort#PlannerMusePort5 this page] for a "complicated example involving multiple projects and multiple publishing directories."  As well, the .plan file of RaymondZeitler includes "select-planner-project" which allows Planner to switch between two muse projects.
+
+However if you're still using the version of PlannerMode that works with EmacsWikiMode, the following code might be helpful.  It merely automates changing planner-directory from one preset value to another and then restarts plan.  However, at the time it was written, the author was not using both a public and a private diary file.  So it a less-than-ideal solution.
+
+    ;;; spd.el --- Select one of two planner-directories
+    ;; By Raymond Zeitler
+    ;; Time-stamp: "2004-07-21 14:28:21 rayz"
+    ;; $Revision: 0.3 $
+    ;; This is free software
+    
+    ;; This package works with planner.el by John Wiegley <johnw@gnu.org>.
+    
+    ;; Usage:
+    ;; M-x select-planner-directory to set planner-directory to spd-planner-work-directory.
+    ;; or
+    ;; C-u M-x select-planner-directory to set planner-directory to spd-planner-personal-directory.
+    
+    
+    ;; add to your .emacs:
+    ;; (setq spd-planner-work-directory "D:/path/to/work/directory"
+    ;;      spd-planner-personal-directory "D:/path/to/personal/directory"
+    ;;      spd-save-buffers-before-kill t)
+    ;; The last variable is optional.
+    ;; 
+    ;;  06/29/04  Created.
+    ;;  06/30/04  Substantially fixed.
+    ;;  07/15/04  Somehow managed to make spd-kill-buffers work.
+    ;;  07/21/04  Added spd-save-buffers-before-kill option.
+    ;;
+    (defun select-planner-directory (&optional arg)
+      "Change `planner-directory' to either a Work or a Personal directory.
+    Use \\[universal-argument] to set `planner-directory' to `spd-planner-personal-directory'.
+    Otherwise set it to `spd-planner-work-directory'.
+    Setting `spd-save-buffers-before-kill' forces a save of all planner buffers
+    before killing them.  If nil, user is prompted before unsaved buffers are killed."
+      (interactive "*P")
+      (let ((spd spd-planner-work-directory))
+        (if arg
+    	(setq spd spd-planner-personal-directory))
+        (if (eq spd planner-directory)
+    	(message "Planner is already using %s." spd)
+          (if spd-save-buffers-before-kill
+    	  (planner-save-buffers))
+          (spd-kill-buffers)
+          (setq planner-directory spd)
+          (message "Planner is switching to %s." spd)
+          (plan))))
+    
+    (defun spd-kill-buffers ()
+      "Kill all planner buffers.
+    Copied from `planner-save-buffers'."
+      (interactive)
+      (let ((buffers (delq nil
+                      (mapcar
+                       (lambda (buf)
+                         (with-current-buffer buf
+                           (when (and (planner-derived-mode-p 'planner-mode)
+                                      (planner-page-name))
+                             buf)))
+                       (buffer-list)))))
+        (while buffers
+          (when (buffer-live-p (car buffers))
+            (kill-buffer (car buffers)))
+          (setq buffers (cdr buffers)))))
+    ;;; spd.el ends here
+
+
+== Use Windows registry to invoke external programs ==
+
+This modification of emacs-wiki-follow-name-at-point enables the invocation of
+the appropriate Windows program based on the extension of the file.  For example
+hitting enter on link [[file.pdf]] will invoke the acrobat.  Code follows:
+
+   
+   
+   
+   (defun my-emacs-wiki-follow-name-at-point (&optional other-window)
+     "Visit the link at point, potentially using the Windows registry, 
+              or insert a newline if none." 
+     (interactive "P")
+     ;; if we're visiting a bad link, pass the current buffer to the visiting
+     ;; function so that it can be refreshed on saving the new page
+     (let ((buf) (my-match) (my-match-stripped))
+       (when (eq (get-text-property (point) 'face)
+                 'emacs-wiki-bad-link-face)
+         (setq buf (current-buffer)))
+       (if (emacs-wiki-link-at-point) (setq my-match (match-string 0)))
+       (setq my-match-stripped (replace-in-string my-match "\\[\\|\\]" ""))
+       (cond ((and (memq window-system '(win32 w32))
+                   (not (string-match ":" my-match)); no ":" in link
+   		(string-match "^[^\\.]+\\..\\{2,4\\}$" my-match-stripped)) 
+   					;2, 3 or 4 letter file extension
+   	   (w32-shell-execute 1 my-match-stripped))
+   	  (my-match
+   	   (emacs-wiki-visit-link my-match buf other-window))
+   	  (t (error "There is no valid link at point")))
+       ))
+   
+   (defalias 'emacs-wiki-follow-name-at-point 'my-emacs-wiki-follow-name-at-point)
+
+== Copy Outlook Mail Item Contents to Windows Clipboard ==
+
+This VBA code is designed to help users of MS Outlook 2000 (and higher versions)
+"integrate" Outlook email with Planner.  The idea is to select a message in your
+Inbox, invoke the subroutine, switch to Emacs, and yank the message contents into
+your Planner (or Remember) buffer.  I usually surround such yanked messages in
+HTML blockquote tags.
+
+Install the subroutine in a module in the default Outlook project, vbaproject.otm.
+Add a reference to Microsoft Forms 2.0 Object Library (or equivalent) for the
+clipboard object definition.  On my system that's provided in ##C:\WINNT\System32\FM20.DLL##.
+
+Future enhancements may include support for other Outlook items such as Tasks, Notes,
+Contacts and Calendar Items.
+
+This subroutine was tested on plain text mail items in Outlook 2000 SP-3 configured
+in Corporate - Workgroup mode.  Other configurations may not work.  You can contact
+the author, RaymondZeitler, with questions and comments regarding this code, but full
+support is not provided.  While this code sample is provided free-of-charge, the same
+cannot be said of MS Outlook, which is owned by Microsoft.
+
+Code follows:
+
+
+    Sub CopyToClipboard()
+    ' Copy the contents of the selected Mail Item to the Windows Clipboard.
+    ' 12/07/04 RZ  Created.
+    ' 12/13/04 RZ  Now tests whether Selected Item is a Mail Item.
+    '
+    Dim objCB As New DataObject ' Clipboard object
+    Dim ol As New Outlook.Application
+    Dim oe As Outlook.Explorer
+    Dim mi As Outlook.MailItem
+    Dim strMH As String ' Mail Header
+                
+    Set oe = ol.ActiveExplorer
+    
+    If oe.CurrentFolder.DefaultItemType = olMailItem Then
+        Set mi = oe.Selection.Item(1)
+        strMH = "From:" & vbTab & mi.SenderName & vbCrLf & _
+                "Sent:" & vbTab & mi.SentOn & vbCrLf & _
+                "To:" & vbTab & mi.To & vbCrLf & _
+                "Cc:" & vbTab & mi.Cc & vbCrLf & _
+                "Bcc:" & vbTab & mi.BCC & vbCrLf & _
+                "Sub:" & vbTab & mi.Subject & vbCrLf & vbCrLf
+        objCB.SetText strMH & mi.Body
+        objCB.PutInClipboard
+    Else
+        MsgBox "Sorry, CopyToClipboard() supports only Mail items at this time.", _
+        , "CopyToClipboard() Help"
+        
+    End If 'oe.CurrentFolder.DefaultItemType = olMailItem
+    
+    End Sub ' CopyToClipboard()
+
+== Queued Plan Page tasks ==
+
+The code below changes the behavior of tasks on plan pages.  When a task associated with a plan page is finished, and there are no other scheduled tasks, the next task for that plan page becomes scheduled for today.  Thus, the tasks on each plan page are queued, and when one is finished the next shows up on the daily plan.  
+
+/Does anything need to be invoked to make this work, or does it just need to be in your .emacs?/
+
+
+  (defun sacha/planner-seek-next-unfinished-and-undated-task ()
+    "Move point to the next unfinished task on this page. 
+  Return nil if not found, the task if otherwise."
+  (interactive)
+  (let (task-info)
+    (while (and (not task-info)
+                (re-search-forward "^#[A-C][0-9]*\\s-+[^CX]\\s-+" nil t))
+      (setq task-info (planner-current-task-info))
+      (when (planner-task-date task-info) (setq task-info nil)))
+    task-info))
+
+  (defun sacha/planner-queue-next-task (&optional task-info)
+  "Schedule the next task for TASK-INFO or the current task for today."
+  (interactive)
+  (save-window-excursion
+    (save-excursion
+      (setq task-info (or task-info (planner-current-task-info)))
+      (when (and task-info (planner-task-plan task-info))
+        (planner-find-file (planner-task-plan task-info))
+        (goto-char (point-min))
+        (if (sacha/planner-seek-next-unfinished-and-undated-task)
+            (planner-copy-or-move-task (planner-today))
+          (message "No more unscheduled tasks for %s."
+                   (planner-task-plan task-info)))))))
+
+  (defadvice planner-task-done (after sacha activate)
+  "Schedule next task if there are no other unfinished tasks for this project."
+  (let ((task-info (planner-current-task-info))
+        (not-seen t))
+    (when (and task-info
+               (planner-task-plan task-info)
+               (planner-task-date task-info))
+    (save-window-excursion
+      (save-excursion
+        (when (string= (planner-task-plan task-info)
+                       (planner-task-page task-info))
+          (planner-jump-to-linked-task))
+        (goto-char (point-min))
+        (while (and not-seen
+                    (re-search-forward "^#[A-C][0-9]*\\s-+[^CX]\\s-+" nil t))
+          (let ((current (planner-current-task-info)))
+            (when (string= (planner-task-plan task-info)
+                           (planner-task-plan current))
+              (setq not-seen nil))))))
+    (when not-seen
+      (sacha/planner-queue-next-task task-info)))))
+
+=== Extended Plan Page Task Queue ===
+
+PeterLee: Inspired by the above code snippet, the following tid bit introduces interactivity to the *next step* queuing process.  In short, *saint/planner-prompt-next-plan-task* can be called at any time to schedule the next task (unfinished or *new*) for the selected Plan.  It can also be tied in to *planner-task-done* which allows for seamless transition to the task that you wish to continue working on.  By specifying a new task description during the selection phase, it automatically creates a new task for the given Plan page.  You can disable integration with planner-task-done by (setq planner-prompt-next-plan-task nil).  
+
+    (defadvice planner-extract-tasks-with-status (around saint activate)
+      "Returns all tasks on PAGES with the specified STATUS where
+        STATUS can be a STRING OR LIST."
+      (let ((pages (ad-get-arg 0))
+            (status (ad-get-arg 1)))
+        ;; 	(message "checking %s for %s" pages status)
+        (setq ad-return-value
+              (planner-extract-tasks pages
+                                     (lambda (item)
+                                       (if (and status (listp status))
+                                           (consp (member (planner-task-status item) status))
+                                         (equal (planner-task-status item)
+                                                status)))))))
+
+    (defun saint/planner-task-description-alist (tasks)
+      "Returns alist of task descriptions to their respective position in the list."
+      (let ((pos 0))
+        (mapcar (lambda (task-info)
+                  (list (planner-task-description task-info) (setq pos (1+ pos))))
+                tasks)))
+
+    (defun saint/planner-list-unfinished-plan-tasks (plan)
+      "Returns all unfinished tasks in a given PLAN."
+      (when (planner-page-exists-p plan t)
+        (planner-extract-tasks-with-status (list plan) '("o" "P" "_" ">"))))
+
+    (defun saint/planner-prompt-next-plan-task (&optional plan)
+      "Prompt for the next task in this project.  If PLAN is
+       provided, it is assumed to be a plan page.  If there are
+       unfinished tasks in the PLAN, user can interactively select a
+       task from the list of unfinished tasks.  However, at any time
+       during the task selection, user may decide to create a new
+       task by specifying a new task description.  If the selected
+       task is already scheduled for today, task will simply change
+       to task-in-progress.  However, if the task is scheduled for a
+       different date, user will be asked whether to re-schedule the
+       scheduled task for today.  If the task is not yet scheduled,
+       it will automatically be scheduled for today, and marked
+       in-progress.  At any time, user may press C-g to cancel.
+    
+       This routine may be called interctively at any time, to look
+       for unfinished tasks.  User will be asked to provide the PLAN
+       for which they wish to look under.
+    
+       For some reason having
+       `planner-tasks-never-suppress-fixing-flag' to t causes the
+       scheduler to lose the location of current-task when tasks get
+       re-ordered.  It seems to be a deeper `planner' issue."
+      (interactive)
+      ;; if plan isn't passed in, ask user for the plan page
+      (while (null (planner-page-exists-p plan t))
+        (setq plan (planner-read-non-date-page (planner-file-alist))))
+      (save-window-excursion
+        (save-excursion
+          (if (when (planner-find-file plan)
+                (planner-seek-to-first)
+                (planner-current-task-info))
+              (let* ((task-info  (planner-current-task-info))
+                     (task-list  (saint/planner-list-unfinished-plan-tasks plan))
+                     (task-alist (saint/planner-task-description-alist task-list))
+                     (history    (mapcar #'car task-alist))
+                     (minibuffer-local-completion-map 
+                      (let ((my-minicomp-keymap (copy-keymap minibuffer-local-completion-map)))
+                        (define-key my-minicomp-keymap " " 'self-insert-command)
+                        my-minicomp-keymap))
+                     (task-description (completing-read
+                                        (format "Next Task in %s %s: " plan
+                                                (if (> (length task-list) 0) 
+                                                    (format "(+%d) [%s]" (length task-list)
+                                                            (if (< (length (caar task-alist)) 25) (caar task-alist)
+                                                              (concat (substring (caar task-alist) 0 25) "...")))
+                                                  (format "(*new*)" t)))
+                                        task-alist nil nil nil 'history (caar task-alist) t)))
+                (unless (string= task-description "")
+                  (if (search-forward task-description nil t)
+                      (progn ;; found task in plan page
+                        (beginning-of-line)
+                        (setq task-info (planner-current-task-info))
+                        (unless (string= (planner-task-date task-info) (planner-today))
+                          (when (or (not (planner-task-date task-info))
+                                    (y-or-n-p 
+                                     (format "Selected task currently scheduled for %s, re-schedule for today?"
+                                             (planner-task-date task-info))))
+                            (planner-copy-or-move-task (planner-today))
+                            ;; for some reason, sometimes the above operation
+                            ;; doesn't point the current task back to where it was.
+                            (unless (string= (planner-task-description (planner-current-task-info))
+                                             task-description)
+                              (planner-seek-to-first)
+                              (unless (search-forward task-description nil t)
+                                (error "Cannot find recently scheduled task!"))
+                              (beginning-of-line)))))
+                    (planner-create-task-from-info task-info
+                                                   nil nil "_" task-description
+                                                   nil (planner-today)))
+                  (planner-task-in-progress)
+                  task-description))
+            (message "There are no tasks in %s!" plan)))))
+    
+    (defcustom planner-prompt-next-plan-task t
+      "Non-nil means do auto search for next plan item and allow user to
+        move onto the next task seamlessly."
+      :type 'boolean
+      :group 'planner-tasks)
+
+    (defadvice planner-task-done (after saint activate)
+      "Prompt for the next task in this project. Use C-g to cancel."
+      (let ((task-info (planner-current-task-info)))
+        (message "finished task %s in %s" (planner-task-description task-info)
+                 (planner-task-plan task-info))
+        (when (and planner-prompt-next-plan-task
+                   task-info)
+          (saint/planner-prompt-next-plan-task (planner-task-plan task-info)))))
+
+== Planner and del.icio.us ==
+
+JohnSullivan has been working on code to interact with http://del.icio.us bookmarks using Emacs. Part of this is code for bringing del.icio.us bookmarks from a certain date or with certain tags into your Planner pages. This could be pretty handy, since you could tag things in del.icio.us with "to-do" or "for-planner" and know that they would then show up on your Planner page. You can get the latest code via darcs at http://www.wjsullivan.net/darcs/delicious-el or wget http://www.wjsullivan.net/darcs/delicious-el/delicious-el.tar.gz . It's very simple and experimental right now (please backup before trying), but any bug reports and feature ideas are appreciated. 
+
+== Devote a frame to planning ==
+
+JesseAlama has written Lisp:planner-frame.el as a first approximation
+to making the planner more of an emacs application, like CategoryGnus
+and WThreeM, than it is.  One way to do that is to give the planner a
+distinguished frame, and provide sensible exit and suspend functions.
+
+== Quick Task Entry (#B newline) ==
+
+Good for fast entry of task series:
+
+  (defun planner-create-task-newline ()
+    "Insert a task template in the next line."
+    (interactive)
+    (newline)
+    (insert "#B   _ ")
+  )
+
+  (define-key planner-mode-map [C-return] 'planner-create-task-newline)
+
+== Hierarchical Planning ==
+
+One of the things I like about using Planner is that it gets me into
+the habit of, at the beginning of the day, deciding what I'm going to
+do and, at the end of the day, evaluating whether or not I achieved my
+goals.  I'd like to do this same thing at the week level, the month
+level, the quarter level, and the year level.  This way each time
+period breaks down into 3-4 smaller time periods, and I can keep an
+eye on larger, longer-term goals.  (I've posted one or two messages
+about this before).
+
+To this end, I've put together a little code that lets you skip around
+on pages that correspond to the different time intervals.  When I'm
+looking at how I did over the past month, I want an easy way to look
+at how I did for the weeks of that month.  Typing out all the page
+names is tedious and time consuming, so I've created four functions
+zoom-iup (for interactive-up), zoom-idown, zoom-inext, and zoom-iprev
+(which I bind to Shift-up, Shift-down, etc).  
+
+The naming convention for pages is:
+year - "2006.Year"
+quarter - "2006.Quarter2"
+month - "2006.January"
+week - "2006.January.Week3"
+day - "2006.01.02"  
+(this can be changed by changing zoom-regexps)
+
+So typically I would look at the page named "2006.January" and then
+hit 'C-u S-down' which shows me 2006.January.Week1 in the other
+buffer.  Then I can hit S-left and S-right to look at
+2006.January.Week2, 2006.January.Week3, etc.  
+
+I determine the month to which each week belongs by the month which
+contains the zoom-first-day-of-week'th day of that week.  Zero is
+Sunday, one is Monday, etc.  Therefore the March 1, 2006, would
+typically be fall into "2006.February.Week4"
+
+Lisp:planner-hierarchy.el
+
+
+== Extensions/Variation for planner schedule ==
+
+The interactive function torsten/planner-schedule-sum-task-durations computes the duration sum of all tasks in the buffer (is that so, in the buffer?).
+
+
+  (defun torsten/planner-schedule-task-duration-in-seconds (info)
+    "Returns duration of given task info in seconds. Durations are specified as propsed in 'planner-schedule.el'. In case the task has no duration specified or the task status is either done, cancelled, or delegated, 0 is returned."
+    (let ((has-dur (string-match "\\`\\s-*\\([0-9]+[smhdw]\\)"
+				 (planner-task-description info)))
+	  ;; relevant tasks are either open, in progress, or pending
+	  (suiting-status (let ((status (planner-task-status info)))
+			    (message status)
+			    (or (string= status "_") 
+				(string= status "o") 
+				(string= status "P")))))
+      (if (and has-dur suiting-status)
+	  (schedule-duration-to-seconds 
+	   (match-string 1 (planner-task-description info)))
+	0)))
+
+  (defun torsten/planner-schedule-sum-task-durations-aux ()
+    "Returns duration sum of all tasks in buffer (?). The duration is returned in seconds."
+    (save-excursion
+      (goto-char (point-min))
+      (let ((result 0))
+	(while (re-search-forward "^#[A-C]" nil t)
+	  (let* ((task (planner-current-task-info))
+		 (time (torsten/planner-schedule-duration-in-seconds task)))
+	    (setq result (+ result time))))
+	result)))
+
+  (defun torsten/planner-schedule-sum-task-durations ()
+    (interactive)
+    (message (schedule-seconds-to-duration
+	      (torsten/planner-schedule-sum-task-durations-aux))))
+
+
+== Quote of the day ==
+
+Add a planner section which will have a different quote each day using fortune.
+
+
+  (defvar planner-qotd-section "Quote of the day")
+  (defvar planner-qotd-program "fortune")
+
+  (add-hook 'planner-mode-hook 'planner-qotd-update)
+
+  (defun planner-qotd-update ()
+    "Insert a quote in `planner-qotd-section' section in today page of planner."
+    (interactive)
+    (save-excursion
+      (planner-goto-today)
+      (save-restriction
+        (when (and (planner-narrow-to-section planner-qotd-section)
+  		 (not (string-match "^[^*\n]" (buffer-substring-no-properties
+	  				       (point-min) (point-max)))))
+  	  (delete-region (point-min) (point-max))
+  	  (insert "* " planner-qotd-section "\n\n"
+	  	  (shell-command-to-string planner-qotd-program))  
+	  (newline)
+	  (planner-save-buffers)))))
+
+== HTML task overview and mind map ==
+
+This is actually a set of two Perl scripts which can be invoked whenever you publish your planner project to HTML. tasklist.pl creates a HTML page containing a list of tasks sorted by day, optionally restricted by a start date and an end date. This makes an excellent default page in your web browser. Each entry contains links to the corresponding day pages and project pages. Tasks are colored according to priority and to status (open, done, overdue). Optionally you can have taskmm.pl create a mind map of your project which is displayed in the task overview page by means of the freemind Java applet (http://freemind.sourceforge.net). The nodes of the mind map can be collapsed to get an overview, and each serves as a link to the appropriate project page. In addition, the status of "completeness" (calculated as the ratio of open and finished tasks) is indicated by color, and icons provide additional information about tasks in that node. All required code and some additional information is available at http://www.mhoenicka.de/software/hacks/tasklist.html
+
+== Planner-notes-index-page ==
+
+Lisp:planner-notes-index-page.el
+
+With this file, you can index all notes of a particular project.
+You can toggle inside your project page: notes-index <==> no notes-index
+It's very useful for project with many notes.
+To use it in your project page you will have to add an entry Notes-index to your project page(see the doc inside the file)just before the Notes entry.
+You call also call the index of one project separately.
+
+== Planner-todo ==
+
+Lisp:planner-todo-index.el
+
+planner-todo-index can find all TODO in a specific project directory and create link in his planner project page.
+You need TraverseDirectory to use this.
+
+== Planner and outline mode ==
+
+I use OutlineMode and outline-magic.el:
+
+  (add-hook 'outline-minor-mode-hook 
+  	  (lambda () 
+  	    (require 'outline-magic)
+  	    (define-key outline-minor-mode-map [(f6)] 'outline-cycle)))
+ 
+  ;; will outline notes as well.. 
+  (add-hook 'muse-mode-hook      ; or 'LaTeX-mode-hook for AUCTeX
+       (lambda ()
+         (setq outline-regexp "\\([*\f]+\\)\\|\\(\\.#[0-9]+\\)")))
+
+== Planner and OS X ==
+
+I've written some Applescripts and lisp to make planner task and note creation easier from Mail.app, Safari, and the Finder in OS X.  I've also got iCal items into diary, and hence into planner-diary.  Its all quite hacky, but feel free to look at http://web.uvic.ca/~jklymak/OsxPlanner.html
+
+----
+CategoryModes
+CategoryPersonalInformationManager
+CategoryCalendar
+CategoryTodo

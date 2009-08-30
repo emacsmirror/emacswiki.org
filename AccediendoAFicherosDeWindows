@@ -1,0 +1,27 @@
+ From: BrianOostenbrink
+ Subject: Re: Leyendo ficheros de ayuda de Windows desde Emacs
+ Newsgroups: comp.emacs
+ Date: 14 Jun 2001 08:40:10 -0700
+
+Muy bien, me enterado de toda la enchilada! Creo que sería muy útil
+también para buscar en el API de Windows (que siempre es un
+jaleo). Simplemente cambia `tcl-mode-hook' a `c-mode-common-hook', y
+encuentra el fichero de ayuda deseado.
+
+`find-tag-default' está definido en etags.
+
+ (require 'etags)
+ (defun tcl-help ()
+   (interactive )
+   (shell-command 
+    (concat "c:/winnt/winhlp32 -k " 
+	    (find-tag-default)  
+	    " D:/Program Files/Tcl/doc/tcl83.hlp &")))
+
+ (defun my-tcl-mode-hook ()
+   (local-set-key [f1] 'tcl-help))
+
+ (add-hook 'tcl-mode-hook 'my-tcl-mode-hook)
+
+----
+CategoriaAyuda CategoriaCodigo

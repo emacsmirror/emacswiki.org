@@ -1,0 +1,113 @@
+: EQUAL and EQUALP are just two of an arbitrary number of possible equality operations that could have been provided by the language. Indeed, many of the dialects which contributed to the design of Common Lisp had functions called EQUAL which had slightly varying semantics. No particular definition was definitively better than another. Arbitrary choices were made to resolve the differences.
+: -- Kent M. Pitmann, The Best Of Intentions [http://www.nhplace.com/kent/PS/EQUAL.html]
+
+Summary:
+
+|| *a* || *b* || *eq* || *eql* || **=** || **string=** || *equal* || *equalp* ||
+||    5||    5||     t||      t||      t||        error||        t||         t||
+||    5||  5.0||   nil||      t||      t||        error||      nil||         t||
+||  "a"||  "a"||   nil||    nil||  error||            t||        t||         t||
+||   a ||    a||     t||      t||  error||        error||        t||         t||
+|| "a" ||  "A"||   nil||    nil|| error ||          nil||      nil||         t||
+|| (1 2)|| (1 2)|| nil||    nil||  error||        error||        t||         t||
+
+Be sure to read WhenToUseIf to understand the control structures that can be used to switch off from comparison functions.
+
+CategoryCode
+
+== String Comparison ==
+
+    (setq foo "bar")
+    (string-equal foo "bar")
+    ==> t
+
+Is the value of variable `foo' the sequence of characters "bar"?  The answer is yes.
+
+    (eq foo "bar")
+    ==> nil
+
+Is the value of variable `foo' the same string as the one used in the comparison?  The answer is no.
+To understand this, you need to think in terms of pointers.  Our `setq' line contains a literal string,
+and our `eq' test contains a literal string.  Even though both contain the same three characters, they
+are not the same object in memory.
+
+    (setq foo "bar")
+    (setq bar foo)
+    (eq foo bar)
+    ==> t
+
+What happened?  In this case, both variables `foo' and `bar' point to the same string object in memory.
+Now they are `eq' as well as `string='.
+
+`string-equal' and `string=' are two names for the same thing. They 
+compare two string values, character by character.
+`eq' compares two pointers.
+
+'''Note:''' If you are not sure that the objects you want to compare are strings, but you want string comparison when they are, it's likely you want to use `equal'. Check the table above, to see that `equal' does what `string=' does, whenever its arguments are strings.
+
+== Numerical Comparison ==
+
+    (setq foo 5)
+    (eq foo 5)
+    ==> t
+
+Is the value of the variable `foo' the integer 5?  The answer is yes.
+
+    (setq foo 5)
+    (eq foo 5.0)
+    ==> nil
+
+Is the value of the variable `foo' the real number 5?  The answer is no, because integers and real numbers are not the same.
+If you want to compare numbers, use `='.
+
+    (setq foo 5)
+    (= foo 5.0)
+    ==> t
+
+As you can see `string=' and `=' know more about the internals of objects than the more generic `eq' operator.
+
+== Generic comparison ==
+
+There's another generic operator that compares object structure and contents, but doesn't understand the details:
+`equal'.  Since it knows aobut object structure, it knows that two strings are "equal" when they contain the same
+characters at the same positions:
+
+    (eq "foo" "foo")
+    ==> nil
+    (equal "foo" "foo")
+    ==> t
+
+`equal' doesn't know about various number types.  Therefore, it doesn't think that the integer 5 and the real number 5.0 are equal:
+
+    (equal 5 5.0)
+    ==> nil
+
+`eq' only compares pointers and integers.  This is why it thinks two real numbers are not `eq':
+
+    (eq 5.0 5.0)
+    ==> nil
+
+== Other Arbitrary Generic Comparisons ==
+
+CommonLisp knows of two more operators, provided by the ##cl## package, `eql' and `equalp'.
+
+`eql' works like `eq' but knows about real numbers:
+
+    (eql 'foo 'foo)
+    ==> t
+    (eql "foo" "foo")
+    ==> nil (unlike equal)
+    (eql 5.0 5.0)
+    ==> t (unlike eq)
+    (eql 5 5.0)
+    ==> nil (unlike =)
+
+`equalp' works like `equal' but compares strings case-insensitively and compares numbers without
+regard to type:
+
+    (equalp "foo" "FOO")
+    ==> t
+    (equalp 5 5.0)
+    ==> t
+
+Kent M. Pitmann explains in [http://www.nhplace.com/kent/PS/EQUAL.html The Best Of Intentions] that the comparison functions provided by the language were arbitrarily chosen (but not totally so).  Writing your own, specialized comparisons might still be necessary.

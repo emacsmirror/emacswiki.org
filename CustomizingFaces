@@ -1,0 +1,76 @@
+== Listing Faces ==
+
+From the '''Edit''' menu, choose '''Text Properties''' and then '''Display Faces'''. You'll get a display of the currently-defined [[Face]]s.  The ones you will be more likely to want to change are those starting `font-lock-', such as `font-lock-keyword-face'. -- MichaelMason (May 30, 2001, comp.emacs)
+
+== Customizing Faces ==
+
+You can change the foreground and background colors or other properties of a face using Customize. To find the name of the face you want to customize, do one of the following (from easiest to hardest):
+
+* If you have Lisp:facemenu+.el loaded, then just point the mouse at some text in that face and choose '''Customize Face''' in the '''Text Properties''' popup menu (`C-mouse-2'). See [[#EasyWay]], below.
+
+* Put the TextCursor (not the MousePointer) on text in that face and use the command `M-x customize-face' -- just hit `RET' (Return) to accept the default face proposed; it is the face of the text under the cursor.
+
+* Browse Customize and fish for the name of the face you want to customize. In the '''Options''' menu choose '''Customize Emacs''' > '''Browse Customization Groups'''. Here's an example:
+
+## Expand the group '''Faces'''
+## Expand the sub-group '''Font Lock'''
+## Expand the sub-sub-group '''Font Lock Highlighting Faces'''
+## To change `font-lock-keyword-face', click '''Face''' next to the face name.  A new window opens containing the face definition.
+## Click the color name next to '''[x] Foreground:''', then type the name of the color you want, in the MiniBuffer.  (To see a list of the valid color names, on the '''Edit''' menu choose '''Text Properties''' > '''Display Colors'''.  See also ListColors.)
+## Once you've done that, click '''Set for Future Sessions'''.
+
+[:EasyWay]
+== Customizing Faces the Easy Way ==
+
+Colors are visual (duh!). Why pick colors and faces by name? Why pick colors by RGB components? Unless you know the color name or the components you want, that is not the way to go. What you want to do is change some existing face, whose name you might not even know. You want to tweak it a bit, or you want to use a general color palette to define or adjust its color. You want to just point at it to grab it and then adjust it or redefine it.
+
+Load library Lisp:facemenu+.el (see '''FaceMenuPlus''').  Then point to some text whose face you want to customize and use `C-mouse-2'. That pops up the '''Text Properties''' menu. Pick a menu item: '''Do Re Mi -- Change Face Foreground''' for incremental change using the arrow keys or '''Palette -- Change Face Foreground''' to use a color palette. Or choose '''Eyedropper Copy Foreground Color''' to copy a color from anywhere in Emacs -- you can then paste that color to another face foreground or background. Likewise, for working with background colors. There are also menu items for undoing face color changes.
+
+After you get a face the way you want it, choose menu item '''Customize Face''' to open Customize and save your changes for future Emacs sessions. Everything is in the same menu, only a click away.
+
+'''See Also:'''
+
+* '''FaceMenuPlus''' and library Lisp:facemenu+.el for more info on the '''Text Properties''' menu enhancements
+* '''DoReMi''' and library Lisp:doremi-frm.el for more information on the DoReMi face-changing commands.
+* '''ColorPalette''' and library Lisp:palette.el for more information on the color palette. Use it to examine color properties or choose colors. Find or modify colors by name, RGB components (red, green, blue), or HSV components (hue, saturation, value).
+
+[Note: ColorPalette requires Emacs 22; the other libraries do not.] -- DrewAdams
+
+
+[:CustomizeCustomized]
+= How To Revisit Faces You've Changed (To Save Changes) =
+
+You've customized a bunch of stuff, only setting it for the current session -- you haven't saved your changes for future sessions (perhaps because you wanted to try them out first). Now, you would like to revisit Customize for each of the things you've changed, and perhaps save some of those changes. ''What do you do?''
+
+The answer is command `customize-customized'. It's not bound, by default, and it's not very well advertised, but it will open a Customize buffer with all of your changes, both variables and faces. -- DrewAdams
+
+= How To Tell Customize That Something Has Changed =
+
+Customize doesn't play too well with the rest of Emacs, IMO. Suppose you change something from a Lisp program. Customize will recognize that it has changed (usually), but it doesn't consider the change to be "set" for the current session. This is a distinction only a medieval theologian would appreciate.
+
+So, how can you tell Customize to "set" a change you've already made, so that, for instance, you can use `customize-customized' to revisit it later to save it (see [[#CustomizeCustomized]])? The answer is that you will have to create some Lisp code to do that, because (AFAICS) there is nothing available to help you.
+
+As far as faces go, I wrote this to tell Customize that a face has been changed. (I use this in commands like `doremi-face-fg' of library Lisp:doremi-frm.el.)
+
+  (defun doremi-face-set (face spec)
+    "Tell Customize that FACE has been set to value SPEC.
+  SPEC is as for `defface'."
+    (put face 'customized-face spec)
+    (face-spec-set face spec)
+    (message (substitute-command-keys
+              "Use `\\[customize-customized]' to revisit changes.")))
+
+Obviously, the key points are 1) adding the `customized-face' property with the changed value and 2) calling `face-spec-set'. I added the message to help people learn about `customize-customized'. -- DrewAdams
+
+= Different Colors for X and TTY =
+
+If you want different color schemes for different displays, you can
+customize this as well.  In the customize buffer, click the [State]
+button and choose "Show all display specs".  Now you can use different
+specs for different displays.
+
+[new]
+If you use MultiTty and want different colors for X and TTY, does customize work?
+
+----
+CategoryFaces CategoryFrames CategoryCustomize

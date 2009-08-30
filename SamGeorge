@@ -1,0 +1,102 @@
+Welcome.  I use Emacs.  I love Emacs.  I resisted for several
+years and hung on to vi and (horrors: M$ Word).  In my
+striving to be M$ free I adopted Emacs because of its power
+and flexibility.
+
+My primary Emacs interests are
+[http://www.emacswiki.org/cgi-bin/wiki/CategoryOutline
+outlining], [[EmacsLisp]], LispLispLisp, and ascii art modes such
+as [[ArtistMode]].
+
+I am also currently interested in other lisp based systems
+such as !AutoCAD.  See: [[AutoLispMode]].
+
+I created the first version of HtmlOutline.
+
+==About me==
+
+I also have a [http://dracoquies.us/~cira/ web page] and am
+currently working on a masters
+[http://dracoquies.us/~cira/school/thesis/thesis.html thesis] in
+computer science.  I also run a small
+[http://surroundviewmedia.com/ company] which doesn't make much
+money, but has taught me an enormous amount about human relations
+and economics.
+
+==How I came to use Emacs==
+
+My adoption of Emacs has been driven by my extensive personal
+outlined documents.  Originally created in M$ Word, they took
+extensive advantage of Word's outline view and the ability to
+collapse, promote, demote, and shift blocks up and down in the
+outline.  I had not even heard of UNIX at the time, let alone
+Emacs, and the possibility of large scale networks only existed
+in the domain of the cinema.  At the time I believe it was Word
+6, and the key bindings for the outlining features were dreadful.
+I quickly learned how to fix them and created much more sensible
+ones.  When Word 7, or 98 or whatever it was, was released, I was
+happy to find that they had adopted (almost entirely) as default
+my binding set.  Very sensible of them.  ##];)## Then the
+realities of Word set it.  Read: data loss.  It would crash and
+trash my work.  I had backups but reconstructing the data was
+time consuming and annoying.  Switching to using Word under
+!MacOS didn't help.  I was on a hunt for a new word processor.
+
+!WordPerfect didn't support an outline view where in blocks could
+be hidden and reveled through collapsing.  Neither did the
+!MacWrite series.  Perhaps there had been another program which
+would have worked but I didn't have the $$$ to buy them all for
+my search.  I trudged along with my docs in word even while I
+learned about unix, vi, the Internet, and finally linux.  One
+year at comdex I searched up the !StarOffice booth, which was
+still a commercial product at the time, and asked if they had or
+were developing such functionality.  They replied that they were
+not developing outline view and outline manipulation features as
+M$ Office .doc compatibility was a higher priority at the time.
+Even today in Open Office 1.1.3 there is no outline view.
+
+In the meanwhile I had suffered from pain in my arms from
+mousing and keyboarding.  I found that switching to the dvorak
+key layout helped a great deal and eliminated almost all
+of my symptoms.  I had also taken a compiler class where we
+used [[Scheme]] and emacs to construct a pascal parser.  That was
+an exceptional class and introduced me to the power of lisp.
+But it also showed me the complexity of Emacs and the insult
+to Usability that the default Emacs key bindings are.  So
+things sat as they were for several years getting dusty as
+I no longer wanted to risk the use of word.
+
+Several years later after turning a gnu leaf, getting married,
+starting a small company, and most importantly: being exposed to
+emacs once again through friends, I decided it was time to give
+the one true editor another go.  I knew I would have to create
+a relatively complex .emacs file to give it some slightly more
+sane key bindings, and to provide some of the vim functions I
+couldn't live without.  I had just previously given up on trying
+to figure out how to customize vim sufficiently for the folding
+mechanism to do what I wanted but had come up short of success.
+I took a couple weeks brushing up on my elisp and learning the
+basic ropes.  After a third week I had things working sufficiently
+to do the basics of what I wanted.
+
+Hardly am I finished, but then I ask for quite a bit.  I'm hoping
+to unify the different .emacs files I use for OSX, macOS9, linux,
+and windows so that everything runs from my user dir on the
+server and I get what I want regardless of which machine I start
+emacs on.  I'm not there yet, but things are getting better.
+
+If you need to get a hold of me send a message to linux@dracoquies.us
+
+When on irc I go by [::ciradrak].
+
+==Discussion==
+
+Hello.  I enjoyed the drawn figures in your thesis proposal dated May 2005.  Good luck writing "Visual Bash Studio".  Grin. -- AaronHawley
+
+[new]
+
+Thanks!  I just hope that I can bring the whole thing to some kind of
+meaningful conclusion. -- SamGeorge
+
+----
+CategoryHomepage

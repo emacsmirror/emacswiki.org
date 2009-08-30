@@ -1,0 +1,75 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Inserting Text from Cursor]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Cycling Completions ]] ||
+
+----
+
+== Background on Vanilla Emacs Input Completion ==
+
+This page reviews standard Emacs behavior regarding input [[completion]]. It does ''not'' describe any '''Icicles''' completion features, but it does define some of the vocabulary used on other '''Icicles''' pages.
+
+When you are prompted in the [[minibuffer]] to enter something, you
+are sometimes presented with a ''default value''.  This might be
+automatically inserted after the prompt, initially.  If not, you
+can retrieve the default value yourself, using `M-n' (Emacs 21 or
+later).
+
+Often, there is more than one reasonable default value that might
+make sense.  Depending on what you're being asked to enter, these
+''candidate default values'' might be [[command]] names, [[buffer]] names,
+existing file names, [[variable]] names, and so on.
+
+For most Emacs functions that prompt you for input, the
+person who wrote the function decided on the reasonable ''set of
+default values'', and passed these to an ''input-completing'' function such as `'''<code>completing-read</code>'''' or `'''<code>read-file-name</code>'''',
+which prompts you and reads your input.  The programmer also decided whether
+you will be '''''required''''' to pick one of the default values or you will be
+free to enter something else.  The programmer might also have told
+the input-completing function to require that your input pass some special test (''predicate'').
+
+Be aware that standard Emacs terminology does not refer to such a set of default values as "default values"; they are called "completions". By "default value", standard Emacs terminology means only the single value that you can access via `M-n'. '''Icicles''' refers to all such potential inputs indifferently as "'''default values'''", "'''completions'''", "'''completion candidates'''", and "'''candidates'''". Whenever completion is not ''requiring'' you to pick one of the available candidates, they are effectively only ''default'' choices.
+
+So, how do you get access to the default values that the programmer has made available to you, in order to choose
+one?  You hit certain keys to ''complete'' the current
+contents of the minibuffer (excluding the prompt).  This current, partial
+input is considered as a ''prefix'' of one of the default values, and it is completed in the minibuffer to the entire default value (completion).
+
+Keys `TAB',
+`RET' (Return), and `SPC' (Space) perform different degrees of this
+"'''[::prefix completion]'''" in standard Emacs.  If you type a prefix of one of the available default
+values, you can complete the value this way in the minibuffer, and then enter (commit) it,
+using `RET'.
+
+But if your partial input matches the prefix of more than one
+default value, completion pops up the list of ''all matching
+completions'' for you to choose from (in buffer `*Completions*').  You
+choose a candidate by clicking it with `mouse-2' or placing the
+[[cursor]] on it and hitting `RET'.  
+
+Because this is the way you
+access the default values supplied to an input-completing function, I call
+those values "'''prefix-completion candidates'''".  If there is no
+partial input yet (empty minibuffer), then the entire list of default values supplied to
+the input-completing function appears in the pop-up `*Completions*' buffer.  See
+the EmacsManual (`C-h i') for more on this general mechanism of prefix completion (called simply "completion" there).
+
+Calls to `completing-read' and `read-file-name' are not the only places where
+input completion is used.  When you use `M-x' (command
+`execute-extended-command') completion is also available.
+
+
+
+
+
+----
+
+|| *Previous:*  [[Icicles - Inserting Text from Cursor]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Cycling Completions ]] ||
+
+
+
+CategoryCommands 
+
+
+
+
+

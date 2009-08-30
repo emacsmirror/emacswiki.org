@@ -1,0 +1,118 @@
+If you're familiar with regions in Emacs, then you should consider the '''rectangle commands''' -- a way of marking the region across lines, but operate on it in a column-intelligent manner.  A character in a line is a "column".  Rectangles are edits on portions of the region between two buffer columns.  The EmacsManual reads,
+
+: ''The rectangle commands operate on rectangular areas of the text: all
+the characters between a certain pair of columns, in a certain range of
+lines. [...]
+Rectangle commands are useful with text in multicolumn formats, and for changing text into or out of such formats. [...]
+When you must specify a rectangle for a command to work on, you do it by putting the mark at one corner and point at the opposite corner.  The rectangle thus specified is called the "region-rectangle" because you control it in much the same way as the region is controlled.''
+
+For example, running `C-SPC' (`set-mark-command') in column 3 of the buffer, and then moving down 4 lines and to column 8, will cover a rectangle that is 23 characters -- 4 * (8 - 3 + 1) - 1.  The location of the mark and the point can be interchanged, the mark does not have to be to the left of the point.
+
+If you were to move down 4 lines but stay in the same column of 3, you would be in a rectangle of 0 characters.  The "empty rectangle" is important for inserting a rectangle of text across the lines.
+
+A good way to approach rectangles is to consider them a text-version of the "crop selection" tool one encounters in a graphics program or drawing tool.  Use of rectangles is somewhat akin to operating on a narrowed portion of the buffer where the ''narrowing'' is from column number ''A'' -> ''B'' instead of between point and mark.
+
+Rectangle commands were originally part of Emacs's PictureMode and therefor were intended as handlers on ''visual rectangles of data''.  Rectangles are useful in situations where editing is otherwise unnecessarily difficult, frustrating, or region-oriented Emacs commands are lacking.
+
+One typically utilizes rectangles in a manner similar to that of the region.  Rectangles can be killed or copied onto the kill ring which is convenient for yanking rectangles into ordinary buffers.  As buffer objects, rectangles are fundamentally different from the region and aren't afforded the same status.  Moreover, this difference is orthogonal to most of the Emacs commands that operate on the region and rectangles can not be relied upon to always "Do the right thing".  This is in contrast to insertion of region registers which honor buffer markers and don't clobber buffer text unless it was intended.  See [[#Registers]] below.
+
+Because rectangles are a second-class citizen, using them programmatically in Elisp functions should be approached with caution especially with newer versions of Emacs (23 and later) which depart from a static line and column orientation buffer display with fixed width fonts and where 80 columns of text isn't always 80 columns.  Despite these detractors rectangles remain exceedingly useful for certain types of edits.
+
+The EmacsManual explains how to use this feature.
+
+* Manual:Rectangles
+
+Rectangle commands were originally part of Emacs's PictureMode.
+
+* CVS:rect.el
+
+See also RectangleMark
+and ColumnNumberMode.
+
+== Use case: Copying from a Web browser ==
+
+When copying and pasting tabular data from a Web page rendered in a Web browser, you often will get more than just what you want copied to the clipboard.  Bring the text into Emacs -- unless you were browsing in Emacs already.  If you want only one or more columns of the data, use the rectangle commands of Emacs.  Hit `C-SPC' at the beginning of the first entry in the column you want, and then move to the final entry in the last tabular column you want, then hit `C-x r k'.  This kills the rows of the column(s) you're interested in.
+
+To move the columns you want to an external application like !OpenOffice.org or Gnumeric, you'll need to normally yank and kill the text in Emacs so that it makes it to the windowing system's (Gnome, X, etc.) clipboard -- it won't make it there with the rectangle kill command.  Switch to the *scratch* buffer or open some temporary buffer and yank the rectangular text with `C-x r y', then kill the result regularly with `C-k'.  It's then ready to paste into the application.  A little bit of trouble, but it's well worth it.
+
+== Use case: Results from a database ==
+
+A similar scenario where rectangular commands are useful is working with a database like !MySQL or !PostgreSQL.
+
+Say you're running some quick database queries that someone else needs.  You run a query that selects a lot of columns for your verification, but the recipient was interested in only one or just a few of the columns.  Rather than rewriting the query and re-executing it, or using Unix tools to programmatically extract the values, use the interactive rectangle commands of Emacs to extract the column(s) needed.  Why bang on your database when your data is right there in the Emacs buffer ready for manipulation?
+
+== Use case: Output from shell commands ==
+
+Many commands in the shell produce output in a column delimited format, for example the data of processes managed by the operating system or the long, verbose format of file listings.  Another fixed-column format are files located in a common path.  For example,
+
+{{{
+/usr/share/emacs/22.2/etc/images/icons/emacs_32.png
+/usr/share/emacs/22.2/etc/images/icons/emacs_24.png
+/usr/share/emacs/22.2/etc/images/icons/emacs_16.png
+/usr/share/emacs/22.2/etc/images/icons/emacs_48.png
+/usr/share/emacs/22.2/etc/tree-widget/default/no-guide.png
+/usr/share/emacs/22.2/etc/tree-widget/default/leaf.png
+/usr/share/emacs/22.2/etc/tree-widget/default/end-guide.png
+/usr/share/emacs/22.2/etc/tree-widget/default/open.png
+/usr/share/emacs/22.2/etc/tree-widget/default/empty.png
+/usr/share/emacs/22.2/etc/tree-widget/default/close.png
+/usr/share/emacs/22.2/etc/tree-widget/default/handle.png
+/usr/share/emacs/22.2/etc/tree-widget/default/no-handle.png
+/usr/share/emacs/22.2/etc/tree-widget/default/guide.png
+/usr/share/emacs/22.2/etc/tree-widget/folder/no-guide.png
+/usr/share/emacs/22.2/etc/tree-widget/folder/leaf.png
+/usr/share/emacs/22.2/etc/tree-widget/folder/end-guide.png
+/usr/share/emacs/22.2/etc/tree-widget/folder/open.png
+/usr/share/emacs/22.2/etc/tree-widget/folder/empty.png
+/usr/share/emacs/22.2/etc/tree-widget/folder/close.png
+/usr/share/emacs/22.2/etc/tree-widget/folder/handle.png
+/usr/share/emacs/22.2/etc/tree-widget/folder/no-handle.png
+/usr/share/emacs/22.2/etc/tree-widget/folder/guide.png
+}}}
+
+You can delete the redundant text, "##/usr/share/emacs/22.2/etc/##", with `C-x r d', making:
+
+{{{
+images/icons/emacs_32.png
+images/icons/emacs_24.png
+images/icons/emacs_16.png
+images/icons/emacs_48.png
+tree-widget/default/no-guide.png
+tree-widget/default/leaf.png
+tree-widget/default/end-guide.png
+tree-widget/default/open.png
+tree-widget/default/empty.png
+tree-widget/default/close.png
+tree-widget/default/handle.png
+tree-widget/default/no-handle.png
+tree-widget/default/guide.png
+tree-widget/folder/no-guide.png
+tree-widget/folder/leaf.png
+tree-widget/folder/end-guide.png
+tree-widget/folder/open.png
+tree-widget/folder/empty.png
+tree-widget/folder/close.png
+tree-widget/folder/handle.png
+tree-widget/folder/no-handle.png
+tree-widget/folder/guide.png
+}}}
+
+[:Registers]
+== With registers ==
+
+As with regions, rectangles too can be stored to [[Registers]] though the interface to this feature is fussy in relation to other types of registers which manipulate/store buffer text in a separate manner than rectangles which are represented by a /special/ list of strings.
+
+When a register contains a rectangle, and that register's rectangle is inserted with `insert-register' the rectangle is inserted with its upper left corner at point.  Use of rectangles in conjunction with registers is a powerful combination for managing columnar oriented data (think spreadsheets and tables).  The caveat is that when rectangle registers are inserted their text is inserted in the current line and underneath it on successive lines _overwriting_ the existing buffer content.
+
+[new]
+I'd say that the "overwriting" behavior of rectangle registers is consistent with `yank-rectangle', so I see no problem with this.  Is there something I'm missing? -- AaronHawley
+[new]
+It _is_ consistent with `yank-rectangle'. However,  it is _inconsistent_ with `yank'. 
+Contrast:
+`yank' -> `insert-register' (with-region)
+`yank-rectangle' -> `insert-register'. -- mon_key
+[new]
+Unfortunately, the design of registers in Emacs is to "do the right thing" with what ever "object" is in the register -- point, window, frame, number, text or rectangle.  I can understand your point.  You're probably suggesting there be a method for inserting a rectangle on *lines of their own*.  It would be desirable for registers to behave this way with rectangles to handle your wish.  I know I have to run `open-line' many times to make room, instead. -- AaronHawley
+
+----
+CategoryRegion

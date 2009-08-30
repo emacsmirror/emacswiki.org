@@ -1,0 +1,7 @@
+[http://www.public.asu.edu/~sksinghi/pddl.htm PDDL Mode]
+
+PDDL-mode is a major Emacs mode for editing PDDL 2.2 files. It provides syntax highlighting with automatic indentation, templates, auto-completion, and a "Declaration"(imenu) menu which lists all the actions and the problems in the current file.
+
+This release should work on any recent version of Emacs or Xemacs. If it doesn't: complain.
+
+Follow the above link to download it.      

@@ -1,0 +1,71 @@
+The first try:
+
+ (defun my-mode () "my-mode" (interactive)
+   (kill-all-local-variables)
+   (make-local-variable 'font-lock-defaults)
+   (setq font-lock-defaults  '(my-mode-font-lock-keywords t)))
+
+ (defvar my-mode-font-lock-keywords nil 
+   "Keywords/Regexp for fontlocking of my-mode")
+
+ (setq my-mode-font-lock-keywords
+	  (list
+       '(my-font-lock-matcher 
+		 (0 'italic) 
+		 (1 'underline))))
+
+ ;;  Original idea from font-latex-match-math-env command in font-latex.el.
+ (defun my-font-lock-matcher (limit)
+   "
+ #begin
+ make me italic
+ me too
+ #middle
+ make me underline
+ me too
+ #end
+ " 
+  ;; search for the begin of the first region
+  (when (re-search-forward "^#begin\n" limit t)
+    (let ((beg (match-end 0)) end ; 1st Region
+		  beg2 end2 ; 2nd Region
+		) 
+	  ;; search for end of region 1 and start of region 2
+      (if (re-search-forward "^#middle\n" limit t)
+		  (progn
+			(setq end (match-beginning 0)
+				  beg2 (match-end 0))
+			;; search for end of region 2
+			(if (re-search-forward "^#end\n" limit t)
+				(setq end2 (- (match-beginning 0) 1))
+			  ;; no match -> length of region 2 = 0
+			  (setq end2 beg2)))
+		;; no match -> length of region 1 = 0
+        (setq end (point)))
+	  ;; save the regions
+	  (store-match-data (list beg end beg2 end2))
+      t)))
+
+Test it with Alt-x my-mode RET
+
+ #begin
+ make me italic
+ me too
+ #middle
+ make me underline
+ me too
+ #end
+
+But it doesn't work all the time, esp. the refreshing. Any better idea?
+ -- Haskell
+
+: We aren't the only people with this problem:  google
+  groups may give you some hints.  font-lock doesn't
+  support highlighting of multiple lines.  There are
+  implementations that work around the problem:
+  font-latex.el and the font locking in XSymbolMode. If
+  someone knows a smaller (and easier to understand)
+  implementations please drop a note. -- DavidHansen
+
+----
+CategoryFaces

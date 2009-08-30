@@ -1,0 +1,38 @@
+To get through reading the Emacs manual, you could make Emacs turn the pages in the InfoManual for you.
+
+  (defvar words-/-second (/ 400 60.0))
+  
+  (defun speed-read-the-manual ()
+    (interactive)
+    ;; Turn page only if in Info manual.
+    (if (and (not (interactive-p))
+             (eq major-mode 'Info-mode))
+        (Info-scroll-up))
+    (let* ((words-/-window (save-window-excursion
+                             (or (eq major-mode 'Info-mode)
+                                 (info))
+                             (count-matches "\\sw+"
+                                            (window-start)
+                                            ;; Info buffers need 2 args
+                                            ;; for window-end strangeness.
+                                            (window-end (selected-window)
+                                                        t))))
+           (seconds (/ words-/-window
+                       words-/-second)))
+      ;; Safety:
+      (if (< seconds 2)
+          (setq seconds 2))
+      (message "Auto-scrolling the manual again in %d seconds"
+               seconds)
+      ;; Long-range recursion:
+      (run-with-timer seconds nil 'speed-read-the-manual)))
+  
+  (defun stop-speed-reading-the-manual ()
+    (interactive)
+    (cancel-function-timers 'speed-read-the-manual))
+
+See also IncrementalReading
+
+----
+CategoryDocumentation
+CategoryHumor

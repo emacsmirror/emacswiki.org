@@ -1,0 +1,33 @@
+[http://www.foldr.org/~michaelw/emacs/mwe-screen-server.tar.gz mwe-screen-server] provides a mechanism by which you can run emacs in server mode
+in a screen session.  When emacs is run, it will automatically
+switch to the screen window with emacs server running.  When
+finished in the buffer (C-x #), this will automatically switch the
+user back to the screen window they originated from.
+
+This code provides roughly the same functionality as screenserver.el, 
+but does not rely on temporary files for Emacs<->screen communication.  On the
+downside, it therefore only works with GnuClient.
+
+Additional features compared to screenserver.el:
+* handles multiple (client) editing session correctly (it
+  switches each back to the screen where it was started from)
+     
+* attaches to a running screen if not currently running inside
+  one (also detaches if editing is finished)
+
+* gracefully handles X vs. TTY Emacs servers
+
+Requirements:
+
+* GnuClient (mw-screen-server does NOT work with EmacsClient since
+    it lacks the "-eval" feature)
+: Note: emacsclient from emacs cvs now has -eval capabilities, just like XEmacs -- BasKok
+* [http://www.gnu.org/software/screen/ GNU screen]
+
+Tested with:
+* GNU Emacs 21.3.50.1
+* gnuserv 3.12.4
+* screen 3.9.12
+
+----
+CategoryExternalUtilities CategoryDisplay GnuClient MichaelWeber

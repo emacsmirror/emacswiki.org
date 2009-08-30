@@ -1,0 +1,186 @@
+Tempo is like SkeletonMode - no documentation other than what is in the source
+code or what you can find in other pieces of source code that use either of
+these two packages.
+
+From the source, slightly edited:
+
+: This provides a simple way to define powerful templates, or macros, if you wish. It is mainly intended for, but not limited to, other programmers to be used for creating shortcuts for editing certain kind of documents. It was originally written to be used by a HTML editing mode written by NelsonMinar, and his HtmlHelperMode is probably the best example of how to use this program.
+
+Tempo is part of Emacs.  Use `M-x load-library RET tempo RET' to load it.
+
+More info on [http://www.lysator.liu.se/~davidk/elisp/ David Kågedal’s homepage].
+It also has an [http://www.lysator.liu.se/~davidk/elisp/tempo.texi incomplete Texinfo manual].
+There's also an [http://www.xemacs.org/Documentation/packages/html/tempo.html XEmacs package] available.
+
+== Tempo vs. TempoMode ==
+
+Why is this page called TempoMode?  There is no mode in tempo ...
+
+[new] No idea... Probably because there is no mode in SkeletonMode, either. :) -- AlexSchroeder
+
+== A short example ==
+
+  (tempo-define-template "begin-environment"
+    '("\\begin{" (p "Environment: " environment) "}" > n>
+      r> n>
+      "\\end{" (s environment) "}" > n)
+    nil
+    "Insert a LaTeX environment.")
+
+The template uses ##(p ...)## to prompt for variables and ##(s ...)## to insert them again.
+##>## indents, ##n## inserts a newline, and ##r## inserts the region, if active.
+
+This will define an function called `tempo-template-begin-environment'.
+If you call it, it will just insert the template without prompting you for anything.
+Point will be at the position of the first prompt. The reason is that `tempo-interactive'
+is set to nil by default. You should add the following lines to your InitFile:
+
+    (require 'tempo)
+    (setq tempo-interactive t)
+
+Once you've set `tempo-interactive' you will be prompted for variables.
+
+Call `M-x tempo-template-begin-environment' to see it work.
+
+If you create several templates, you should assign tags to them.
+
+  (tempo-define-template "begin-environment"
+    '("\\begin{" (p "Environment: " environment) "}" > n>
+      r> n>
+      "\\end{" (s environment) "}" > n)
+    "env"
+    "Insert a LaTeX environment.")
+
+This redefines the template and uses "env" as a tag. Type "env" into a buffer and use `M-x tempo-complete-tag' to replace the tag with the template. Note the section on abbrevs below
+for more.
+
+You can group tags into tag lists, usually by major mode.
+
+== Set point in tempo templates ==
+
+The following code provides a possibility to set the position of point after expanding a tempo template. The position of point is indicated by '~':
+
+ (defvar tempo-initial-pos nil
+   "Initial position in template after expansion")
+
+ (defadvice tempo-insert( around tempo-insert-pos act )
+   "Define initial position."
+   (if (eq element '~)
+         (setq tempo-initial-pos (point-marker))
+     ad-do-it))
+
+ (defadvice tempo-insert-template( around tempo-insert-template-pos act )
+   "Set initial position when defined. ChristophConrad"
+   (setq tempo-initial-pos nil)
+   ad-do-it
+   (if tempo-initial-pos
+       (progn
+         (put template 'no-self-insert t)
+         (goto-char tempo-initial-pos))
+    (put template 'no-self-insert nil)))
+
+Example:
+
+ (eval-after-load "jde"
+   '(define-abbrev jde-mode-abbrev-table "sop" ""
+      (tempo-define-template
+       "sop-template"
+       '("System.out.println( \"" ~ "\" );"))))
+
+== Using tempo with abbrevs ==
+
+Consider the following code:
+
+   (tempo-define-template "lambda"
+                          '(> "(lambda (" p ")" n> r> ")">)
+                          nil
+                          "Insert a template for an anonymous procedure")
+
+   (define-abbrev emacs-lisp-mode-abbrev-table "lambda" "" 'tempo-template-lambda)
+
+[new:ChrisForno:2007-03-21 06:44 UTC]
+Newer versions of Emacs only use ##lisp-mode-abbrev-table##.
+
+[new]
+
+Now go to a buffer in Emacs Lisp mode, turn <code>abbrev-mode</code> on and type "lambda" (without the quotes) followed by a space.  The template for a lambda we defined above is inserted, but also the space we typed to expand the abbrev.  The following piece of advice cures the problem:
+
+   (defadvice tempo-define-template (after no-self-insert-in-abbrevs activate)
+    "Skip self-insert if template function is called by an abbrev."
+    (put (intern (concat "tempo-template-" (ad-get-arg 0))) 'no-self-insert t))
+
+Redefine your template and try again.  The space should not get inserted in the template anymore.
+
+[new]
+In Emacs 23 abbrevs are all lisp, allowing for the following magic to turn all your tempo-templates tags into abbrevs.
+
+  (defun expand-tempo-tag (expand-function)
+    "Expand the tempo-tag before point by calling the template."
+    (let (match templ)
+      (undo-boundary)
+      (if (dolist (tags tempo-local-tags)
+            (when (setq match (tempo-find-match-string (or (cdr tags)
+                                                           tempo-match-finder)))
+              (when (setq templ (assoc (car match) (symbol-value (car tags))))
+                (delete-region (cdr match) (point))
+                (funcall (cdr templ))
+                (return t))))
+          ;; Return a function with 'no-self-insert to stop input.
+          'expand-tempo-tag-alias
+        (funcall expand-function))))
+
+  (fset 'expand-tempo-tag-alias 'expand-tempo-tag)
+  (put 'expand-tempo-tag 'no-self-insert t)
+
+  (add-hook 'abbrev-expand-functions 'expand-tempo-tag)
+
+-- [[nschum]]
+
+== Completing-Read Prompts ==
+
+Sometimes it's desirable to offer a list of completions when being prompted.  Here's a way to do it:
+
+  (defun tempo-complete (prompt completions match-required
+                         &optional save-name no-insert)
+    "Do whatever `tempo-insert-prompt' does, but use completing-read."
+    (flet ((read-string (prompt)
+             (completing-read prompt completions match-required)))
+      (tempo-insert-prompt prompt save-name no-insert)))
+
+Now let's use it in the LaTeX example seen above:
+
+  (tempo-define-template "begin-environment"
+    '("\\begin{"
+      '(tempo-complete "Environment: " (LaTeX-environment-list) nil 'environment)
+      "}" > n>
+      r> n>
+      "\\end{" (s environment) "}" > n))
+
+-- nschum
+
+== Snippets interface ==
+TempoSnippets is a front-end for tempo templates.
+
+= Complete template file ==
+
+I found it hard to find a complete file merging the various hints about using tempo and abbrev for c/c++ templates for newbie users like me. Therefore I created my own one and decided to share it.
+You'll find it here: Lisp:tempo-c-cpp.el
+
+Hope it'll help. --SebastienVarrette
+
+== Open Questions ==
+
+* Is there some sort of a TempoMode template repository available out
+there ? I am looking for something like what is provided by MsfAbbrev
+(which comes with a huge amount of predefined templates). -- XavierMaillard
+
+[new]
+::  Couldn't found one, yet it would be very interesting -- SebastienVarrette
+
+
+[new]
+* Does tempo mode work properly with Aquamacs?  I have a body of templates that I use happily with Xemacs, but now that I try to use them with Aquamacs, the prompting doesn't happen --- I don't get prompted for anything, and only the fixed components of my template get inserted in the buffer.
+
+----
+See also : [[CategoryTemplates]] [[CmodeTemplates]].
+CategoryModes CategoryTemplates

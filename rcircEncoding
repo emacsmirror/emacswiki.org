@@ -1,0 +1,49 @@
+When you join a channel such as ###nihongo##, you'll note the topic saying:
+"use ISO-2022-JP, please".
+
+The right way to do this for [[rcirc]] is to call
+`set-rcirc-decode-coding-system' and `set-rcirc-encode-coding-system' once you've joined.
+
+If you want to send messages using `iso-2022-jp' on #nihongo and stick to `utf-8' everywhere else, without having to invoke the above every time, use the following setting:
+
+    (setq rcirc-coding-system-alist '(("#nihongo" iso-2022-jp))
+
+(For this setting to take effect, you'll have to rejoin the channel!)
+
+== Decode everything ==
+
+AlexSchroeder recommends to set up Emacs to prefer UTF-8 everywhere and to use
+`undecided' to decode incoming messages. Emacs will then try to decode the text
+as UTF-8 and if that doesn't work, it will use its own heuristics to pick an
+appropriate coding system.
+
+    (prefer-coding-system 'utf-8)
+    (setq rcirc-decode-coding-system 'undecided)
+
+== /encoding command ==
+
+Here's a convenient ##/encoding## command to change the current encoding for the current buffer only.
+
+<kensanata> /encoding iso-2022-jp
+<kensanata> 日本語 できません。
+
+If you're confused, use it without any argument to see what you're currently using.
+
+<kensanata> /encoding
+; -kensanata-: utf-8
+
+And here's the code for the ##/encoding## command:
+
+{{{
+(eval-after-load 'rcirc
+  '(defun-rcirc-command encoding (arg)
+     "Change the encoding coding system
+`rcirc-encode-coding-system' for the current buffer only."
+     (interactive)
+     (if (string= arg "")
+	 (rcirc-print process (rcirc-nick process) "NOTICE" target
+		      (symbol-name rcirc-encode-coding-system))
+       (setq rcirc-encode-coding-system (intern-soft arg)))))
+}}}
+
+If you follow AlexSchroeder's advice above and use `undecided' for decoding, a separate ##/decoding## command is unnecessary.

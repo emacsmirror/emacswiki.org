@@ -1,0 +1,14 @@
+Found this on http://c2.com/cgi-bin/wiki?EmacsRules:
+
+'''Selective Undo'''
+
+Select an area of text, then press C-u C-_ (undo with a prefix argument). This undoes the last change to the selected region, even if you've later made changes to some other area. You can repeat it. How cool!
+
+Note: if you enable TransientMarkMode temporarily by pressing C-SPC C-SPC, undo will only affect this region.
+
+----
+[[XEmacs]] version: Lisp:selective-undo-xmas.el
+
+----
+CategoryRegion
+CategoryUndo

@@ -1,0 +1,23 @@
+Newer emacsen support X-Face headers (see GnusXFace and [[XFace]]) and the newer
+Gnus versions support Face headers (see GnusFace and [[XFace]]), as do newer
+[[MH-E]] versions.
+
+== Emacs 20 ==
+
+Emacs 20 cannot do X-Faces (as used in Newsreaders, for example -- see GnusXFace).
+Debian has a package to do this:  They convert the X-face into a
+StippleAttribute and use that instead.  The same trick is used in the
+Gnus splash screen.
+
+Anyway, if you are interested in the lisp files, check here:
+
+* http://packages.debian.org/bitmap-mule
+
+Note that XEmacs and Emacs 21 seem not to need this.  See CompFace for
+more on creating X-Faces, and BbdbFaces for more on storing them in
+the Big Brother Database.
+
+(Thanks to Lo-lan-do on #emacs.)
+
+----
+CategoryFaces CategoryGnus

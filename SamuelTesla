@@ -1,0 +1,18 @@
+Hello.
+
+My name is Samuel Tesla, and only six months ago I was a vim user.  I used mutt to read my email and keep track of addresses, BitchX or X-chat to IRC.  I thought Lisp was this crazy language that only researchers used (and had too many parens).  I was happy in my ignorance.
+
+But then I wanted an outliner.
+
+All I needed was as *outliner*.
+
+I found one for vim, but it just didn't work the way I wanted.  So I fired up emacs and played C-h t.  That did it.  OutlineMode did just what I wanted.  I switched to emacs.
+
+Now I use CategoryGnus to read my email, EmacsIRCClient to IRC, and I'm learning EmacsLisp.  I love Emacs.  I especially love RubyMode.
+
+Check out my DotEmacs at http://www.alieniloquent.com/config/dot.emacs
+
+: Welcome to the wiki.  :)  -- AlexSchroeder
+
+----
+CategoryHomepage

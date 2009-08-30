@@ -1,0 +1,34 @@
+Hello, I am Leonid Krashenko from St.-Petersburg Russia, working at AARI now (http://www.aari.ru/default_en.asp, http://aari.ru). Not very experienced Emacs user. 
+
+Here are some modifications I've written. I hope they will be useful. 
+
+<pre>
+; the real russian typewriter keyboard (as it comes with modern distributions of Linux OS)
+ (quail-define-package
+     "russian-typewriter-lin" "Cyrillic" "RTw" nil
+     "ЙЦУКЕH keyboard layout widely in Russia"
+     nil t t t t nil nil nil nil nil t)
+
+    (quail-define-rules
+     ("1" ?№) ("2" ?-) ("3" ?/) ("4" ?\") ("5" ?:) ("6" ?,) ("7" ?.) ("8" ?_)
+     ("9" ??) ("0" ?%) ("-" ?!) ("=" ?\;) ("`" ?|) ("q" ?й) ("w" ?ц) ("e" ?у)
+     ("r" ?к) ("t" ?е) ("y" ?н) ("u" ?г) ("i" ?ш) ("o" ?щ) ("p" ?з) ("[" ?х)
+     ("]" ?ъ) ("a" ?ф) ("s" ?ы) ("d" ?в) ("f" ?а) ("g" ?п) ("h" ?р) ("j" ?о)
+     ("k" ?л) ("l" ?д) (";" ?ж) ("'" ?э) ("\\" ?)) ("z" ?я) ("x" ?ч) ("c" ?с)
+     ("v" ?м) ("b" ?и) ("n" ?т) ("m" ?ь) ("," ?б) ("." ?ю) ("/" ?ё) ("!" ?1)
+     ("@" ?2) ("#" ?3) ("$" ?4) ("%" ?5) ("^" ?6) ("&" ?7) ("*" ?8) ("(" ?9)
+     (")" ?0) ("_" ?=) ("+" ?\\) ("~" ?+)
+     ("Q" ?Й) ("W" ?Ц) ("E" ?У) ("R" ?К) ("T" ?Е) ("Y" ?Н) ("U" ?Г) ("I" ?Ш)
+     ("O" ?Щ) ("P" ?З) ("{" ?Х) ("}" ?Ъ) ("A" ?Ф) ("S" ?Ы) ("D" ?В) ("F" ?А)
+     ("G" ?П) ("H" ?Р) ("J" ?О) ("K" ?Л) ("L" ?Д) (":" ?Ж) ("\"" ?Э) ("|" ?()
+     ("Z" ?Я) ("X" ?Ч) ("C" ?С) ("V" ?М) ("B" ?И) ("N" ?Т) ("M" ?Ь) ("<" ?Б)
+     (">" ?Ю) ("?" ?Ё))
+</pre>
+
+[new:DrewAdams:2009-06-13 07:49 UTC]
+Welcome to the wiki. -- DrewAdams
+[new]
+
+----
+CategoryHomepage
+

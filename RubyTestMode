@@ -1,0 +1,63 @@
+== A Ruby Test Runner ==
+
+##ruby-test.el## is an Emacs mode for running ruby language unit
+tests (both kinds, test/unit and rspec) right from the editor, instead
+of dropping to the command line. This also works for rails projects
+where it picks the right script/spec script.
+
+=== Features
+* Run whole file
+* Re-running last test
+* Run individual testcase or example
+* Clickable backtraces
+* Toggle test and implementation (for Rails, or using a customized mapping regex)
+
+== How Tests Are Picked
+
+The command `ruby-test-run-file' has three ways to pick the test to
+run, and the first test that turns up gets picked for execution. 
+
+# If you are in a test file buffer then this is run, otherwise the
+# visible buffers get cycled, and if a test is found that is run, or
+# lastly the last-run test will be re-run. 
+  
+The last option only can happend if the test has been executed in this
+session before.  Test files are recognzed as such by their name,
+i.e. they have to end in ##_test.rb## or ##_spec.rb##. The test output
+goes into a buffer ##*Ruby-Test*## in ruby-test-mode, and if errors
+or failures turn up, one can visit the relevant locations in code by
+clicking the backtrace.
+
+== Keys Bindings == 
+
+This mode installs global key bindings for ##C-x SPC## and ##C-x
+t##. They have to be global to make the "re-run last test" feature
+work independently from where you are in the meantime. You can also
+run the command as ##M-x ruby-test-run-file##.
+
+Lisp:ruby-test.el
+
+== Alternatives ==
+
+An alternative package for a similar purpose is 
+[http://www.emacswiki.org/cgi-bin/emacs/autotest.el autotest.el]
+by RyanDavis.
+
+Another alternative is Lisp:ruby-compilation.el by EricSchulte.
+
+== Discussion ==
+
+Hi, isnt autotest, autotest-notifier better than this if your plan is to test
+rails applications(with rspec) as it runs the test after you save the file and
+even show the doom guy face :)?  -  Greboide 
+[http://www.nomedojogo.com/2008/06/17/autotest-notification-doom-edition/]
+
+[new]
+Autotest is a test file watcher, which runs the tests once you edited something.
+That's not what I was after, even if that might be a good idea sometimes. ruby-test-mode
+just runs tests (single or file-wise) from the editor window, and let's you click on any backtrace location you
+might happen to see. Another difference is that autotest.el forks out to the ZenTest gem binary, an external program, which does
+all the interesting stuff, so you have that as a dependency. --FlorianEbeling
+
+----
+CategoryModes

@@ -1,0 +1,48 @@
+XKeymacs is a keyboard utility to realize emacs like-useability on all windows applications:
+
+* full emacs navigation keybindings in all applications
+* kill-ring in all apps.
+* per application and global settings
+* keyboard macro support : C-(, C-) and C-xe
+
+Get it here:
+* http://www.cam.hi-ho.ne.jp/oishi/indexen.html
+
+:: ''Wow! This is extremely cool! I'm just starting to get the hang of C-a, C-e, C-k etc. so it will be nice to be able to use it everywhere. --MathiasDahl''
+
+----
+MadoTsukaiNoYuutsu CategoryWThirtyTwo
+
+:: ''I highly reccomend this tool for emacs addicts (or wannabees) that are stuck in a windows environment.  Combining this with explorer creates the most blazingly fast file manager I've ever used. If you have the emacs/readline key editing language burned into your digital (as in fingers) muscle memory there is no better way to make windows seem useful for something other than watching movies and listening to music.  Plus it is a global solution, so it's a better than setting your .gtk-2.0 rc file to have emacs keybindings in linux.  
+
+*** IF anybody knows of a program that does a global keybinding conversion like this for X11, let me know (or write one if you have the time ;-)!
+
+Here is a quick overview of how to use explorer with xkeymacs to get the fastest file manager around (for emacs users that is)...
+
+Directory Movement Commands:
+
+   Up Directory	Backspace
+   Up (New Window)	C-h
+
+Current File Movement Commands:
+   
+   First File		C-a
+   Last File		C-e
+   Next File		C-n
+   Previous File	C-p
+   Start Selection	C-Space
+   Clear Selection	C-Space (when selection active)
+
+Standard file manipulation commands:
+
+   Copy		M-w
+   Cut		C-w
+   Paste	C-y
+   Delete	C-d
+
+To search for a filename in the current directory, just start typing and explorer does the matching.
+
+C-s for doing global searches using the standard windows Find subsystem.  I reccomend turning off the talking puppy and setting it to advanced interface mode.
+
+--
+kruhft''

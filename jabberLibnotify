@@ -1,0 +1,21 @@
+Source:
+
+* Lisp:jabber-libnotify.el
+
+To install, put it in your LoadPath and add the following to your InitFile:
+
+    (eval-after-load 'jabber '(require 'jabber-libnotify))
+
+Then you can configure jabber.el to use libnotify for message notifications. I did this using customize and this is the line it generated
+
+ '(jabber-alert-message-hooks (quote (jabber-message-wave jabber-message-echo jabber-message-scroll)))
+
+There has been filled a support request on jabber.el tracker to include this into mainline.
+
+== Configuration ==
+
+You can configure the icon to be shown, who long will the notification appear and what the header will be. Just modify this variables: jabber-libnotify-icon,  jabber-libnotify-timeout and jabber-libnotify-message-header
+
+
+----
+CategoryChatClient [[JabberEl]]

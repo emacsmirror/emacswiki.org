@@ -1,0 +1,137 @@
+I didn't find any simple user interface to [[EMMS]], so I wrote one for my girlfriend. It's just a front end to provide a mouse interface to common EMMS functions. Some paths etc are still hardcoded and I am sure you will know how to replace them with values that suit you :)
+
+Enjoy!
+
+<pre>
+
+
+(defun my-emms-ui-show-playlist ()
+  (save-excursion
+    (pop-to-buffer emms-playlist-buffer)
+    (emms-playlist-mode-center-current))
+  (message "Showing playlist"))
+
+(defun my-emms-play-radio (channel)
+  (my-emms-clear-playlist-if-any)
+  ;; List of radio stations I listen to.
+  (set-buffer (url-retrieve-synchronously "http://klibb.com/cgi-bin/wiki.pl/MathiasDahlRadio"))
+  (goto-char (point-min))
+  (let (urls)
+    (while (search-forward-regexp "^<a href=\"\\([^\"]+\\)\">\\([^<]+\\)<" nil t)
+      (push (cons (match-string 2) (match-string 1)) urls))
+    (emms-play-streamlist (cdr (assoc channel urls)))))
+
+(defun my-emms-clear-playlist-if-any ()
+  (when emms-playlist-buffer
+    (save-excursion
+      (set-buffer emms-playlist-buffer)
+      (emms-playlist-clear))))
+
+(defun my-emms-play-all ()
+  (interactive)
+  (my-emms-clear-playlist-if-any)
+  (emms-play-playlist "/big/dat/gfx/mp3/playlists/emms"))
+
+(defun my-emms-play-matching (pattern)
+  (interactive "sPlay song matching: ")
+  (my-emms-clear-playlist-if-any)
+  (emms-play-find "/big/dat/gfx/mp3/artist/" pattern))
+
+(defvar name-widget nil)
+
+(defun my-emms-ui ()
+  (interactive)
+  (let (buf)
+    (if (setq buf (get-buffer "*emms ui*"))
+        (kill-buffer buf))
+    (setq buf (get-buffer-create "*emms ui*"))
+    (pop-to-buffer buf)
+    (remove-overlays)
+    (widget-insert "\n*** Kicki's music player ***\n\n")
+    (setq name-widget
+          (widget-create 'editable-field
+                         :size 20
+                         :format "Name: %v "
+                         "madonna"))
+    (widget-insert "  ")
+    (widget-create 'push-button
+                   :notify (lambda (&rest ignore)
+                             (let ((pattern (widget-value name-widget)))
+                               (my-emms-play-matching pattern)                               
+                               (message "Playing songs matching \"%s\"" 
+                                        pattern)
+                               (my-emms-ui-show-playlist)))
+                   "Play matching songs")
+    (widget-insert "\n\n")
+    (widget-create 'push-button
+                   :notify (lambda (&rest ignore)
+                             (my-emms-play-all)
+                             (my-emms-ui-show-playlist)
+                             (message "Playing all songs..."))
+                   "Play all songs")
+    (widget-insert "\n\nRadio stations: ")
+    (widget-create 'push-button
+                   :notify (lambda (&rest ignore)
+                             (my-emms-play-radio "P3")
+                             (my-emms-ui-show-playlist))
+                   "P3")
+    (widget-insert "  ")
+    (widget-create 'push-button
+                   :notify (lambda (&rest ignore)
+                             (my-emms-play-radio "P1")
+                             (my-emms-ui-show-playlist))
+                   "P1")
+    (widget-insert "  ")
+    (widget-create 'push-button
+                   :notify (lambda (&rest ignore)
+                             (my-emms-play-radio "Radioseven")
+                             (my-emms-ui-show-playlist))
+                   "Radioseven")
+    (widget-insert "\n\n")
+    (widget-create 'push-button
+                   :notify (lambda (&rest ignore)
+                             (emms-start)
+                             (message "Playing..."))
+                   "Play")
+    (widget-insert "  ")
+    (widget-create 'push-button
+                   :notify (lambda (&rest ignore)
+                             (emms-previous))
+                   "Previous")
+    (widget-insert "  ")
+    (widget-create 'push-button
+                   :notify (lambda (&rest ignore)
+                             (emms-next)
+                             (message "Next"))
+                   "Next")
+    (widget-insert "  ")
+    (widget-create 'push-button
+                   :notify (lambda (&rest ignore)
+                             (emms-pause)
+                             (message "Pause"))
+                   "Pause")
+    (widget-insert "  ")
+    (widget-create 'push-button
+                   :notify (lambda (&rest ignore)
+                             (emms-stop)
+                             (message "Stopped."))
+                   "Stop")
+    (widget-insert "  ")
+    (widget-create 'push-button
+                   :notify (lambda (&rest ignore)
+                             (my-emms-ui-show-playlist))
+                   "Show playlist")
+    (widget-insert "\n")
+    (use-local-map widget-keymap)
+    (widget-setup)
+    (goto-char (point-min))))
+</pre>
+
+Screenshot:
+
+[[image:SimpleEmmsUserInterfaceScreenshot]]
+
+-- MaDa
+
+----
+[[EMMS]]

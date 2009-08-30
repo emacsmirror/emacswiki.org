@@ -1,0 +1,26 @@
+See EmacsIcons for small Emacs *icons* used in *menus* or launch bars, as well as the old *kitchen sink* icon.
+
+See EmacsPowered for images people use on their web pages *to declare allegiance*
+to the their favorite editor.
+
+== Splash Screen ==
+
+[[image/right:EmacsSplashScreen|Emacs splash screen]]
+The logo on the Emacs *splash screen* is by LuisFernandes; there's more information on how it was designed on [http://www.ee.ryerson.ca/~elf/emacs/logo/ Luis’ logo-related webpages].
+Its freely scalable SVG version is available on [http://commons.wikimedia.org/wiki/Image:Emacs-logo.svg Wikimedia Commons].
+
+== Community Logo ==
+
+[[image/right external:http://www.emacswiki.org/pics/EmacsWiki.png|Emacs community logo]]
+The Emacs community logo used on *this wiki* was designed to serve as a symbol for the Emacs community, trying to describe the openness, freedom of choice and drawing some visual inspiration from a wagon wheel, the peace symbol and the circled A often associated with anarchism.
+It was designed by DanielLundin.
+
+The Emacs *community logo* is available from its own [ftp://ftp.edgewall.com/pub/people/daniel/emacs_logo/ ftp server], but we keep a copy of the [http://www.emacswiki.org/pics/emacs-community-logo.svg SVG source]. They are available under the [http://www.emacswiki.org/GPL GNU General Public License]. Daniel also articulated [http://www.emacswiki.org/emacs/emacs-community-logo.txt a few humble wishes regarding use of the logo]. ;)
+
+== GNU Head ==
+
+[[image/right:GnuHead|GNU head]]
+Note that the *gnu head* is *not* the Emacs logo -- it is just an image used on the web pages of the GNU project.  Their [http://www.gnu.org/graphics/graphics.html art gallery] has all sorts of gnu variants.  Gnu heads have often been used for as icons for Emacs, however.
+
+We also keep a copy of the gnu head's [http://www.emacswiki.org/pics/official%20gnu.svg SVG source].
+(A free license is presumed, but we're not certain.)

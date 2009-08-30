@@ -1,0 +1,3 @@
+'''SFST''' (Stuttgart Finite State Tools) "is a toolbox for the implementation of morphological analysers and other tools which are based on finite state transducer technology", see [http://www.ims.uni-stuttgart.de/projekte/gramotron/SOFTWARE/SFST.html http://www.ims.uni-stuttgart.de/projekte/gramotron/SOFTWARE/SFST.html]. 
+
+There is an emacs mode for editing this, available from [http://www.cis.uni-muenchen.de/~wastl/emacs/sfst.el] or [[Lisp:sfst.el]].

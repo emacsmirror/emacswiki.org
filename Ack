@@ -1,0 +1,12 @@
+[http://search.cpan.org/search?q=App::ack ack] is a replacement for 99% of the uses of <tt>grep</tt>, written in Perl.
+
+There is a grep-like compilation mode for Ack named [http://www.shellarchive.co.uk/content/emacs.html ack.el], as well as FullAck.
+An alternative implementation of a grep-like compilation mode is [http://rooijan.za.net/?q=ack_el here (ack.el)].  Alternatively, one can use <tt>M-x rgrep</tt> with ack thusly:
+
+{{{
+(custom-set-variables '(grep-program "ack -H -a --nogroup"))
+}}}
+
+
+----
+CategoryExternalUtilities CategoryRegexp

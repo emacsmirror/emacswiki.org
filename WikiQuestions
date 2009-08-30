@@ -1,0 +1,113 @@
+Use OpenQuestions for Emacs and XEmacs related questions.  This page is reserved for questions about the '''''Wiki''''': its organization, its community, its software, and so on.
+To report problems with this Wiki or see if a problem has already been reported see EmacsWikiProblems.
+To make a suggestion for this Wiki see the list of EmacsWikiSuggestions.
+
+''Before asking question here, check the '''HowTo''' page.''
+
+February 2009: this page may be outdated.
+----
+
+'''Question:''' How do I search for the pages that link to the current page (just like "What links here" on Wikipedia)?
+
+'''Answer:'''  Click the title heading at the top of the page.
+
+----
+
+'''Question:''' Is there a way to provide different text for a link?
+
+'''Answer:''' See the next question.
+
+----
+
+'''Question:''' Is there an analogue for "piped links" that are available at WikiPedia (also similar to CleanLinking or FreeLinks)?  
+
+'''Answer:''' Yes:
+##[WikiQuestions Wiki questions]## -> [WikiQuestions Wiki questions] (if a CamelCase Link)
+and
+##[[News|Emacs Wiki News]]## -> [[News|Emacs Wiki News]] (for everything else).
+
+----
+
+'''Question:''' How do we prevent mixed case words from becoming links?
+
+'''Answer:''' Write ##!NotALink## or ##%%NotALink%%##.
+
+----
+
+'''Question:''' Can you use images here?
+
+'''Answer:''' see UploadingImages. ''See HowTo.''
+
+----
+
+'''Question:''' Can a wiki page be removed that is created by accident?
+
+'''Answer:''' see DeletedPage.  ''See HowTo.''
+
+----
+
+'''Question:'''  How do I keep slashes from italicizing when I specify a directory, e.g., ##~/dir/subd/##?
+
+'''Answer:''' Use the the shortcut <code>##two number signs##</code>, resulting in ##~/dir/subd/##.
+
+----
+
+'''Question:''' Does this wiki software support tables? -- MarkusKnittig
+
+'''Answer:''' Yes. See Oddmuse:Tables. ''See HowTo.''
+
+            |||| tables ||
+            || yes || no ||
+
+
+|||| tables ||
+|| yes || no ||
+
+----
+
+'''Question:''' Is there a way to search all edits by a user?
+
+'''Answer:''' Yes there is -- on RecentChanges, you can filter by user, host or IP.  Together with some other parameters for OtherRecentChanges, you can for example show a list of all contributions Alex ever made:
+
+* EmacsWiki:action=rc;all=1;showedit=1;from=1;rcuseronly=AlexSchroeder
+
+----
+
+'''Question:''' On RecentChanges, is there a way to see all the recent non-minor (See MinorEdit) changes to a file, rather than just the most recent change?
+
+'''Answer:''' Yes, there is.  On RecentChanges, click on the link "[EmacsWiki:action=rc;all=1 show all changes]".
+
+
+----
+
+'''Question:''' I want my own wiki. Where do I get started?
+
+
+'''Answer:''' Check out the [http://www.wikimatrix.org/ Wiki Matrix] or [http://www.communitywiki.org/odd Oddwiki].
+
+----
+
+'''Question:'''  Can I retrieve parts of EmacsWiki with a network distributed VersionControl system like DaRcs, SubVersion or [[CVS]]?
+
+'''Answer:''' (Feb 2009): yes, see [[WikiDownload]]. There is a [[SVN repository]].
+----
+
+'''Question:'''  Do per page RSS feeds work properly in Emacs Wiki? They seem to return some content when subscribing, but there is no update afterwards even if the page is changed several times.
+
+'''Answer:''' Do you have an example? I guess it depends on your feed reader. On most feed readers, these changes will show up as updates to an existing article, so if your feed reader ignores updates, you won't see it. In that case, try using all=1 to get a feed of all edits, not just the latest one. Here's an example:
+
+http://www.emacswiki.org/cgi-bin/wiki?action=rss;rcidonly=SiteMap;all=1;days=14
+
+----
+
+'''Question:'''  When reading recent changes via RSS, both the diff and the page itself are included in the item. This doesn’t work well for big pages, because they show up as “This page is too big send over RSS.” in the RSS output. Is there a different RSS feed which includes only the difference and the link to the page?
+
+'''Answer:''' Try this feed:
+
+http://www.emacswiki.org/emacs/?action=rss;full=1;diff=1;page=0;title=Diff%20Only
+
+For more parameters with which to tweak the feed to your liking, check out [[Oddmuse:Rss Action]].
+
+----
+CategoryEmacsWikiSite
+

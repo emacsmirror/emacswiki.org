@@ -1,0 +1,20 @@
+Hi, as an Emacs fanatic and Debian developer, I worked on several packages :
+
+* GuessLang
+
+* Egocentric, which highlights occurences of your name in buffers (i.e. Gnus article buffers)
+
+* Pong, an elisp implementation of Pong !
+
+* Fortune, a fortune database management package
+
+* Workbone, a CD control package, with CDDB interface
+
+* others various code snippets
+
+All of these packages should be available at http://www.grassouille.org/emacs/index.en.html
+
+You can find me on OPN IRC on various channels (#emacs, #april, #debian-devel) as benj, which is my usual nickname.
+
+----
+CategoryHomepage

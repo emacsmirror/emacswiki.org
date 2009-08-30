@@ -1,0 +1,17 @@
+Mercurial (aka <code>hg</code>) is a distributed version control system much like [[Git]], [[Bazaar]]
+and DaRcs.
+
+Mercurial is available from http://www.selenic.com/mercurial/wiki/index.cgi/Mercurial.
+
+== Modes ==
+
+* [[VC]] -- supports Mercurial.
+* [[DVC]] -- supports Mercurial.
+* MercurialMode -- A user interface specific to Mercurial.
+
+== Emacs from Mercurial ==
+
+see EmacsFromMercurial
+
+----
+CategoryVersionControl

@@ -1,0 +1,10 @@
+I'm experimenting with a new RSS feed that includes the complete pages.
+Want to try it?
+
+* http://www.emacswiki.org/cgi-bin/wiki?action=rss;full=1 -- the last 15 entries in the last 7 days (those are the defaults, I think)
+
+The full=1 parameter can be combined with others.  Thus:
+
+* http://www.emacswiki.org/cgi-bin/wiki?action=rss;days=14;limit=all -- as many as there are in the last 14 days
+
+I don't recommend to use it together with all=1 because that will serve you multiple revisions of the same page, including their content.

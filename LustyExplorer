@@ -1,0 +1,33 @@
+'''LustyExplorer''' is a fast and responsive way to manage files and buffers.  It includes both a filesystem explorer and a buffer switcher through a common interface.
+
+It's like <code>find-file</code> crossed with <code>iswitchb</code> or InteractivelyDoThings, but with a larger and more easily readable dedicated window for completions instead of the minibuffer.
+
+[http://viewglob.sourceforge.net/lusty-explorer.el.animated.gif Here's a 3.4 MB animated gif showing it in action]
+
+After copying the file into your load-path, put this in your .emacs:
+
+    (require 'lusty-explorer)
+
+Launch the explorer with one of these commands:
+
+    M-x lusty-file-explorer
+    M-x lusty-buffer-explorer
+
+'''LustyExplorer''' is based on the [http://www.vim.org/scripts/script.php?script_id=1890 Vim plugin] of the same name.
+
+= Download =
+Lisp:lusty-explorer.el
+
+[http://github.com/sjbach/lusty/tree/master Development repository]
+
+= Changelist =
+
+Version 1.0.2:
+* Fixed a bug in completion-ignored-extensions matching.  Thanks to Hugo Schmitt.
+
+Version 1.0.1:
+* Made the completion window more useable in multi-window configurations.  Thanks to Jan Rehders.
+* Fixed two bugs in computing optimal completion content layout.
+
+----
+CategoryBufferSwitching CategoryFiles CategoryCompletion

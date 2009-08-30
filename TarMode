@@ -1,0 +1,14 @@
+TarMode is a neat mode that comes with Emacs that can view <code>.tar</code> archives, including compresssed <code>.tar.gz</code> etc if you use AutoCompressionMode.  (For other archive types, like <code>.zip</code>, see ArchiveMode.)
+
+Tar mode looks and operates a lot like DiredMode.  You can view and edit files on a need-only basis.  Or, if you want to extract all the files to the filesystem, tar-mode will help you do that, too.  Impressively, tar-mode doesn't require the tar command, it directly manipulates the file.
+
+TarMode doesn't allow you to interactively add files.  You need to do this on the command-line.
+
+You can view tar files recursively -- open a tar file contained in a tar file, but you will not be able to save any edits you make to files in the nested tar archive.
+
+Wishlist:
+
+* `M-x diff-buffer-with-file' should work.  It could check if the file is already extracted somewhere -- determining the location with tar-mode's help, or by extracting the file temporarily to a location to be diffed with.  The `diff-buffer-with-file' command could otherwise perfect for this situation, since it makes a temporary file for the buffer.  It just needs tar-mode to give it an original copy of the file to diff with.
+
+----
+CategoryFiles

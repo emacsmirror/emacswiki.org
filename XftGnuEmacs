@@ -1,0 +1,403 @@
+With XFT support, GnuEmacs is able to use anti-aliased fonts in the X11 UI
+since version 23.1. Note that GnuEmacs already supported anti-aliased fonts for
+the Carbon and W32 UIs before.
+
+There is some experimental work going on for XFT support in GNU Emacs. 
+Of course, like for all experimental and unreleased code, you should
+expect problems and you are expected to report them to the proper
+place (i.e. not [[gnu.emacs.help]]) with `M-x report-emacs-bug'. It does,
+however, work fairly well.
+
+
+== Status ==
+
+Xft support is included and enabled by default since emacs 23.1.
+
+== GNU snapshot ==
+* pretest - Emacs 23
+** ftp://alpha.gnu.org/gnu/emacs/pretest/
+** http://alpha.gnu.org/gnu/emacs/pretest/
+
+== Debian Package ==
+
+An emacs-snapshot package by Romain Francoise is available at http://emacs.orebokech.com
+
+See also EmacsCvsAndDebian
+
+== Ubuntu Packages ==
+
+=== Hardy, Intrepid, Jaunty ===
+
+For 2008 and 2009 releases of Ubuntu (Hardy Heron 8.04, Intrepid Ibex 8,10, Jaunty Jackalope 9.04) install the emacs-snapshot package:
+
+  $ sudo apt-get install emacs-snapshot-gtk
+  $ echo "Emacs.font: Monospace-10" >> ~/.Xresources
+
+From http://ubuntuforums.org/showpost.php?p=4737273&postcount=100
+
+AlexandreVassalotti also provides a Hardy package, although this is
+not stated in his blog posting (see below).  A manual search of his
+ppa archive will show the Hardy packages.
+
+To enable it, follow the instructions below, replacing RELEASE with hardy.
+
+---
+In Jaunty, latest emacs-snapshot version seems to render fonts rather thinner compared to Mac OS X. The simple fix for this would be set embolden property on. like:
+ 
+  (custom-set-faces '(default ((t (:height 110 :family "Consolas" :embolden t)))))
+
+But the :embolden specification seems to be ignored by emacs-snapshot one. I didn't check it out on emacs-23 but chances are that it might not work there neither. Simple fix for this is:
+
+ Xft.embolden: true
+
+on ~/.Xresources or similar hack for .font.conf. 
+--- jay
+
+=== Older Versions ===
+
+Pre-built binaries are available for Ubuntu. For Dapper, see
+http://g33k.wordpress.com/2006/11/06/gnu-emacs-with-xft-goodness/
+
+[Note: the emacs-unicode-2 is now obsolete (merged into the CVS trunk);
+are these packages still valid, and tracking the trunk, or are they
+obsolete too?]
+
+AlexandreVassalotti maintains Edgy, Dapper, Feisty and Gutsy packages
+of the emacs-unicode-2 branch. It is updated about once a week. Add
+the following lines to your /etc/apt/sources.list file:
+
+  deb     http://ppa.launchpad.net/avassalotti/ubuntu RELEASE main
+  deb-src http://ppa.launchpad.net/avassalotti/ubuntu RELEASE main
+
+Where RELEASE is one of dapper, edgy, feisty or gutsy.  More
+information on his [http://peadrop.com/blog/2007/01/06/pretty-emacs/
+blog].
+
+Some instruction
+[http://www.chmouel.com/blog/2007/01/21/emacs-nighly-cvs-snapshot-with-xft-on-ubuntu-edgy/
+here] on how to generate nightly packages of CVS on Ubuntu Edgy.
+
+
+== Fedora/RHEL Packages ==
+
+Install the YUM repository hosted by Chip Coldwell, Redhat's Emacs maintainer:
+
+=== Fedora 8/9 ===
+
+  # rpm -ivh http://people.redhat.com/coldwell/emacs/repo/fedora/emacs-release-23-1.fc8.noarch.rpm
+  NOTE: at least as of 04/01/09 this repository doesn't work
+
+=== RHEL/CentOS 5 ===
+
+  # rpm -ivh http://people.redhat.com/coldwell/emacs/repo/rhel/emacs-release-23-1.el5.noarch.rpm
+  NOTE: at least as of 04/01/09 this repository doesn't work
+
+And then:
+
+  # yum update 'emacs*'
+
+Enjoy!
+
+See also EmacsCvsAndFedora.
+
+
+== Getting the code ==
+
+In order to get anti-aliased fonts in emacs on X11 you can get the cvs version:
+
+  $ cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
+
+== Prerequisites ==
+
+A GNOME emacs from cvs for Debian:
+
+  $ sudo aptitude install build-essential gnome-dev libxpm-dev libgif-dev libtiff-dev libjpeg-dev libgtk2.0-dev
+
+(Watch out! The above command caused the gdm package to get uninstalled, along with a bunch of gnome packages, which meant X does not even invoke upon reboot. I am trying to figure out why via a  [http://forums.debian.net/viewtopic.php?p=179966#179966 Debian Forum posting].)
+
+For Ubuntu with all the extra goodies:
+
+  $ sudo aptitude install build-essential libxpm-dev libgif-dev libtiff-dev libjpeg-dev libgtk2.0-dev libdbus-1-dev texinfo
+
+== Configuration ==
+
+Your ./configure invocation should resemble the following:
+
+  $ ./configure --with-x-toolkit --with-xft
+
+Check the output of this script to make sure that the required libraries 
+were found on your system and Xft is enabled.  You may also need to specify the --prefix=some_installation_directory option.
+
+You may also need to add an X resource setting to get emacs to use the
+Xft renderer. You can place this line in your .Xresources file:
+
+  emacs.FontBackend: xft
+
+Or you can use this command to set it for the current X display:
+
+  $ echo "Emacs.FontBackend: xft" | xrdb -merge
+
+== Compilation ==
+
+If this is the first time you've built emacs, or if you had build errors on
+your last try, you should use:
+
+  $ make bootstrap
+
+Otherwise just
+
+  $ make all
+
+Regardless of using either make bootstrap or make all, install it with
+
+  $ make install
+
+== Choosing Fonts ==
+
+Note that selection of Xft fonts through the user interface is not yet
+working at the time of writing --- presumably there's a lot of X
+ilLogical Font Description code to be worked around. ;-) 
+
+You can specify a default font from the command line like so:
+
+  $ emacs --font "Bitstream Vera Sans Mono-10"
+
+Setting X resources appears to work as well:
+
+  Emacs.font: Bitstream Vera Sans Mono-8
+
+If you want to use bold font, use "Bitstream Vera Sans Mono-10:bold"
+or "Bitstream Vera Sans Mono-10:weight=bold". You can even do it in
+your InitFile.
+
+    (set-default-font "Bitstream Vera Sans Mono-14")
+    (set-fontset-font (frame-parameter nil 'font)
+      'han '("cwTeXHeiBold" . "unicode-bmp"))
+
+== Fixed problems ==
+
+=== FreeBSD support 
+
+Use *gmake* rather than *make* to compile on !FreeBSD.
+
+=== UI widgets ===
+
+By default the scrollbars use the toolkit that has been specified on
+the configure command line. Some distros might require special flags
+for this. For example, Gentoo  requires a
+<code>-toolkit-scroll-bars</code> use flag to get a GTK scroll bar.
+
+If you encounter a monochromatic toolbar, be sure to have libxpm
+dev-headers installed.
+
+=== 100% CPU usage ===
+
+A solution to the 100% CPU usage is mentioned here:
+http://lists.gnu.org/archive/html/emacs-pretest-bug/2006-10/msg00016.html 
+I applied the patch at
+http://cedet.cvs.sourceforge.net/cedet/cedet/semantic/semantic-idle.el?r1=1.34&r2=1.35
+and now emacs-cvs-23 works fine.
+
+Please update this section with further occurrences of this behaviour.
+
+=== Font specification/quality ===
+
+Fonts can be specified on the command line, in
+<code>.Xresources</code> or in <code>.emacs</code>. There was an issue
+with regression, see http://article.gmane.org/gmane.emacs.devel/58987
+and http://permalink.gmane.org/gmane.emacs.pretest.bugs/14278
+
+With the GTK UI, it is possible that settings are being picked up from
+somewhere in your environment, most likely gnome-settings-daemon,
+whereas urxvt and Emacs are not, and are using the default system-wide
+xft settings. Try setting the X resources Xft.dpi, Xft.hinting,
+Xft.hintstyle, etc., or fooling with settings in ~/.fonts.conf or
+system-wide settings in /etc/fonts/
+
+On SUSE 10.3, the default hinting for Xft is hintfull (from 
+/etc/fonts/suse-hinting.conf), which looks bad (at least it does for me).
+I prefer hintslight, my ~/.fonts.conf:
+
+<pre>
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+ <match target="pattern" >
+  <edit mode="assign" name="rgba" >
+   <const>rgb</const>
+  </edit>
+
+  <edit mode="assign" name="hinting" >
+   <bool>true</bool>
+  </edit>
+
+  <edit mode="assign" name="hintstyle" >
+   <const>hintslight</const>
+  </edit>
+
+  <edit mode="assign" name="antialias" >
+   <bool>true</bool>
+  </edit>
+ </match>
+</fontconfig>
+</pre>
+
+Note <match target="pattern"> as opposed to <match target="font"> is 
+necessary, otherwise apparently emacs ignores the settings for the 
+actual editor font (although GTK applies them to the menu bar etc).
+
+There was a problem with some weight (bold) not being visible. Setting
+the X server colour depth to 24 seems to have resolved this problem.
+
+If one frame uses the specified font but new frames don't, add
+
+    (add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans
+Mono-10"))
+
+to your InitFile.
+
+If you're having trouble with latin characters being displayed in a
+different font, try the following, which is mentioned in passing at
+the end of README.unicode:
+
+    (set-fontset-font "fontset-default" 'latin '("arial" .
+"unicode-bmp"))
+
+If you're having trouble with the euro symbol € character being
+displayed in a different font, try the following:
+
+    (set-fontset-font "fontset-default" 'gb18030 '("dejavu sans mono"
+. "unicode-bmp"))
+
+Or, to change ONLY the Euro symbol (or any other specific characters
+that aren't covered by a suitable predefined charset or script), try
+something along the lines of
+
+    (set-fontset-font "fontset-default" '(#x20ac . #x20ac) '("dejavu sans mono"
+. "unicode-bmp"))
+
+where the hexadecimal numbers are the first and last Unicode codepoints you want to affect.
+
+[Note: for all of the above suggestions, you should replace the font name with the one that
+you want...]
+
+=== Memory leaks ===
+
+The MEMFULL errors have been fixed in CVS. 
+
+=== Background colour ===
+
+The problem where the area of the window not covered by text is grey
+(window background color) as reported
+[http://uncle-toby.livejournal.com/9536.html here] seems to have been
+a gtk-qt problem it is fixed. See
+[http://www.ubuntuforums.org/showpost.php?p=1539310&postcount=78 this]
+!UbuntuForum post.
+
+=== Indic font support ===
+
+The support for Devanagari, Kannada, Hindi, Tamil and Malayalam are
+correct as far as I can see. There might be bugs in the font
+encodings. See SupportHindi.
+
+== Unfixed problems ==
+
+Has anyone noticed that buttons (links) blink much more than in Emacs
+22? For example in irc #emacs via erc, there are so many user name
+buttons that Emacs 23 is using quite a bit of CPU and the window
+flickers once in a while. I try to track down this bug, but I don't
+know how to get more details for the developers to fix it. -- Leo
+
+I find a recipe to see the bug. "C-u 3 2 M-x hanoi" you can see the
+screen is acting weirdly.
+
+[new]
+July 12, 2007
+
+All I get is square outlines, and aliased fonts otherwise (latest code
+on the branch as of today). libxft and libxft-dev are installed,
+ttf-bitstream-vera as well, current Debian Sid amd64. What are
+directions for troubleshooting and fixing? Is this branch going to be
+merged into trunk and part of an official release eventually? More
+than a year since this was started and there's still no consumer ready
+binary package? Emacs is the last app on my desktop not using AA
+fonts, I am starting to notice.
+
+[new]
+August 31, 2007
+
+I got it working for the most part, but the Italic and Bold Italic
+faces aren't anti-aliased, even though they seem to be with the same
+font (see the screenshot below).  Any ideas?
+
+: I fixed this by adding <tt>Emacs.fontBackend: xft</tt> to my .Xresources.
+
+http://toshkov.org/tmp/emacs-fonts.png
+
+[new]
+December 11, 2007
+
+For set-fontset-font, I can find a list of charset (latin-iso-8859-1,
+etc) with list-character-sets, but I can't find a list of scripts
+(han, etc). charset-script-alist lists some scripts, but I've ran
+across .emacs snippets that use script names not on that list (like
+cjk-misc). Where can I find the whole list?
+
+[new]
+May 19, 2008
+
+Starting emacs with
+
+emacs -fn "Bitstream Vera Sans Mono-12" -g 80x40
+
+doesn't show a frame with 80 columns width, but a frame with 66 columns width.
+
+emacs -g 80x40
+
+i.e. starting emacs without using true type fonts shows the frame with the correct width: 80 columns.
+
+== Screenshots ==
+
+XftGnuEmacs with auctex and preview-latex
+
+http://lh5.google.com/gongyi.liao/RxWgkE6PbWI/AAAAAAAAAGU/0LSziDuf9YU/s800/Screenshot-Emacs-AUCTEX.png
+
+With some kanji
+
+http://farm1.static.flickr.com/107/312993958_fb13a395f5_o.png
+
+Gnus group mode.  Note the Tango Icons in the tool bar:
+
+http://bp1.blogger.com/__lmoqbyBXEo/RvgdbvdNIGI/AAAAAAAAABk/aGPcKPncYiI/s1600/xft-gnu-emacs.jpg
+
+
+I did not get these when I compiled from CVS two days ago.  Is this
+because of my local settings, or did something change in the CVS tree? 
+I see no notes in the Changelog JoelAdamson
+
+[new]
+October 26, 2007
+
+I only get things properly displayed with "DejaVu Mono-10":
+
+http://img230.imageshack.us/img230/2387/76353846yn2.png
+
+With all other truetype fonts dired, calendar and so on, look a little
+weird:
+
+http://img230.imageshack.us/img230/9144/23148118wm6.png
+
+-- henry
+
+''A.''  I think what's happened here is that the font specification
+doesn't match an actual font on your system, so a fallback font is
+used instead. In this case it is variable-width and it has thrown out
+the alignment of your calendar. Try one of the interactive methods of
+choosing fonts -- that way you'll be sure to pick one that's
+displayable.
+
+[new]
+JohnBrow got it to run under Fedora 8, looks very nice.  After
+checking the source out of CVS he had to do "yum install gtk-*" to
+pull all the required development packages in for the ./configure
+command to work.

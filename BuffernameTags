@@ -1,0 +1,53 @@
+I'm usually working in multiple branches at the same time. I've found this utilitiy to be handy for reminding me when I'm selecting buffers that I've switched to a dev or fix branch (e.g. foo.c%%<src%%> or foo.c%%<fix%%> ).
+
+I'm also sometimes working in files that long ago shared a branch, e.g. bar.c%%<core%%> or bar.c%%<CoH%%>.
+
+baz.c%%<core,fix%%> may seem verbose, but it works for me.
+
+<pre>
+;; *************************************************************************
+;; buffername-tags are tags at the end of a buffername enclosed in < and >  
+;; *************************************************************************
+(defun buffername-tag-add (tag)
+  "add a marker like <fix> to a buffer name"
+  (interactive "sTag:")
+  (let
+      ((bn (buffer-name))
+       (tagged-p))
+    (if (not (string-match (concat "<.*?\\b" tag "\\b.*?>") bn))
+        (progn 
+          (if (string-match "<.*?>$" bn)
+              (setq tagged-p t))
+          (if tagged-p
+              (setq bn (string-replace-match "\\(.*<.*?\\)>" 
+                                             (buffer-name)
+                                             (concat "\\1," tag ">") 
+                                             ))
+            (setq bn (concat (buffer-name) "<" tag ">"))
+            )
+          (rename-buffer bn t)
+          )
+      )
+    )
+  )
+
+(defun buffername-tag-clear-all ()
+  "clear a tag on the buffername foo.c<bar> => foo.c"
+  (interactive)
+  (if (string-match "\\(.*\\)<.*?>$" (buffer-name))
+      (rename-buffer (match-string 1 (buffer-name)))))
+</pre>
+
+Here is an example of a hook I run to fixup buffer names:
+<pre>
+(defun gamedatadirCurBuffer ()
+  "puts <fix> <src> etc at the end of buffer name"
+  (interactive)
+  (let* ((fname (buffer-file-name)))
+	(if (not fname) (setq fname default-directory))
+	(if (string-match "c:/\\(game\\|gamefix\\|src\\|fix\\)\\(.*?\\)/" (or fname ""))
+		(buffername-tag-add (concat (match-string 1 fname) (match-string 2 fname))))))
+</pre>
+
+Perhaps something fairly specialized to the dev cycle of an MMO, but super useful for me. -- AaronBrady
+

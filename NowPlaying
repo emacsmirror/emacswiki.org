@@ -1,0 +1,320 @@
+I'm sure everyone has their own versions of this function.  If so, feel free to post them here.  Bascially, I wanted an easy link to give for how to do this in [[ERC]].
+
+== EMMS ==
+
+This works well for [[EMMS]] (DrewRaines):
+
+    (require 'emms-info)
+    (require 'emms-info-mp3info)
+    (require 'emms-info-ogg)
+
+    (setq emms-show-format "NP: %s"
+          emms-track-description-function 'emms-info-file-info-song-artist)
+
+    (define-emms-info-method emms-info-mp3info
+      :providep 'emms-info-mp3info-providep
+      :get 'emms-info-mp3info-get
+      :set 'emms-info-mp3info-set)
+    (define-emms-info-method emms-info-ogg-comment
+      :providep 'emms-info-ogg-comment-providep
+      :get 'emms-info-ogg-comment-get)
+    ;; Not working in current CVS ;; :set 'emms-info-ogg-comment-set)
+    (add-to-list 'emms-info-methods-list 'emms-info-ogg-comment)
+    (add-to-list 'emms-info-methods-list 'emms-info-mp3info)
+
+emms-streams together with emms-stream-info may solve a lot of your streaming audio "now playing" problems. --- YoniRabkinKatzenell
+
+This works well for [[EMMS]]:
+
+    ;; Show the current track each time EMMS
+    ;; starts to play a track with "NP : "
+    (add-hook 'emms-player-started-hook 'emms-show)
+    (setq emms-show-format "NP: %s")
+
+This works well for [[EMMS]] and [[ERC]]:
+
+    (defun erc-cmd-EMMS (&rest ignore)
+      "Display the current EMMS track to the current ERC buffer."
+      (let ((string (emms-show)))
+        (if string
+            (erc-send-message string)
+          (message "Nothing is playing!"))))
+
+Or combining the above two to change the chat status of ERC(particularly for IM) for every track change in EMMS --- Shyam_k
+
+    (defun erc-cmd-EMMS (&rest ignore)
+      "Display the current EMMS track to the current ERC buffer."
+      (let ((string (emms-show)))
+        (if string
+	    (erc-cmd-GAWAY (concat "Live from EMMS: " string))
+          (message "Nothing is playing!"))))
+    (add-hook 'emms-player-started-hook 'erc-cmd-EMMS)
+
+
+This works with emms-player-mpd.el (the MusicPD backend for [[EMMS]])
+and [[ERC]].
+
+    (defun erc-cmd-EMMS (&rest ignore)
+      "Display the current EMMS track to the current ERC buffer."
+      (emms-player-mpd-show nil (lambda (buffer desc)
+                                  (with-current-buffer buffer
+                                    (erc-send-message desc)))))
+
+The nice thing is that if an error occurs, a message will be shown on
+your screen, rather than sent to the channel.
+
+== XMMS ==
+
+Here's my script using ##xmmsctrl## to grab the info from xmms.  I'm sure there could be something that worked with xmms-shell.el.
+
+    (defun erc-cmd-XMMS (line &optional force)
+     "Say the current xmms mp3 song title to the current ERC channel"
+     (erc-send-message
+      (concat "I'm listening to "
+              (if (= (string-to-int
+                      (shell-command-to-string "xmmsctrl playing; echo $?"))
+                     0)
+                  (shell-command-to-string "xmmsctrl title")
+                "nothing")))
+     t)
+
+This would work with ##xmms-shell## from the command line
+
+    (defun erc-cmd-XMMS ()
+     "Say the current xmms mp3 song title to the current ERC channel (xmms-shell version)"
+     (erc-send-message
+      (concat "NP: "
+	      (mapconcat 'identity (nthcdr 3 (split-string    (shell-command-to-string "xmms-shell -e current-track") " ")) " ")
+	      ))
+     t)
+
+Here is another version of the `erc-cmd-XMMS' function.  Features:
+
+* Trailing newline(s) and whitespace are removed
+
+* If there is an error message, display it to the user rather than inserting it
+
+    (defun erc-cmd-XMMS ()
+      "Display the current xmms track to the current ERC buffer."
+      (let* ((xmms-output (shell-command-to-string
+                           "xmms-shell -e current-track"))
+             (case-fold-search t)
+             (current-track
+              (replace-regexp-in-string
+               "[ \n]+$" ""
+               (mapconcat 'identity (nthcdr 3 (split-string xmms-output
+                                                            " ")) " "))))
+        (if (null (string-match "current" xmms-output))
+            (message xmms-output)
+          (erc-send-message
+           (concat "NP: {Now playing} ["
+                   current-track
+                   "]")))
+        t))
+
+== mpg123 ==
+
+For use with `mpg123-mode' by HiroseYuuji:
+
+    (defun erc-cmd-MPG123 (&rest ignore)
+      "Post what mpg123 is playing." 
+      (interactive)
+      (when (mpg123-now-playing)
+        (erc-send-message (concat "NP: " (mpg123-now-playing)))))
+
+== Amarok ==
+
+    (defun erc-cmd-NOWPLAYINGAMAROK ()
+      "Say the current xmms mp3 song title to the current ERC channel"
+      (goto-char (point-max))
+      (erc-send-message
+       (concat "Now Playing: " 
+               (shell-command-to-string
+                "dcop amarok player nowPlaying"))))
+
+or you can use
+
+    (defun erc-cmd-AMAROK ()
+      "Announce the current amarok song to the current ERC channel."
+      (let ((dcop '(lambda (val)
+		     (substring 
+		      (shell-command-to-string
+		       (concat "dcop amarok player "
+			       val)) 0 -1))))
+        (erc-cmd-ME
+         (concat " is listening to "
+		 (funcall dcop "title")
+		 " by "
+		 (funcall dcop "artist")
+		 " on "
+		 (funcall dcop "album")
+		 " [Amarok]"))))
+
+== QuodLibet ==
+
+Please note that this is for IRC and Emacs compiled with DBus support.
+
+    (defun-rcirc-command np (arg)
+       "Figure out what's currently playing somewhere."
+       (interactive)
+       (let* ((obj "net.sacredchao.QuodLibet")
+             (path "/net/sacredchao/QuodLibet")
+             (interface "net.sacredchao.QuodLibet")
+             (ql-iface (lambda (method) (dbus-call-method :session obj path interface method)))
+             (song-info (funcall ql-iface "CurrentSong")) 
+             (artist (cadr (assoc "artist" song-info)))
+             (album (cadr (assoc "album" song-info)))
+             (title (cadr (assoc "title" song-info))))
+         (rcirc-send-message process target (concat "Now playing: \"" title "\" by " artist " on " album))))))
+
+== alsaplayer ==
+
+    (defun my-ap-get-alist (info)
+      "Turn the given INFO from AlsaPlayer into an alist. The format of the alist is (name . value)."
+      (let (alist)
+        (dolist (line (cdr info))
+          (when (string-match "\\`\\([^:]+\\):\\s-*\\(.+\\)" line)
+            (let ((name (match-string 1 line))
+                  (value (match-string 2 line)))
+              (when (and name value)
+                (setq name (downcase name))
+                (add-to-list 'alist (cons name value) t)))))
+        alist))
+
+    (defun my-ap-show (&optional insertp)
+      "Describe the current AlsaPlayer track in the minibuffer.
+    If INSERTP is non-nil, insert the description into the current buffer instead."
+      (interactive "P")
+      (let (string (out (my-ap-get-alist (split-string (shell-command-to-string "alsaplayer --status --interface text") "\n"))))
+        (dolist (data out)
+          (let (nameok (name (car data))
+                       (value (cdr data)))
+            (setq nameok (cond ((string= name "artist"))
+                               ((string= name "title"))
+                               ((string= name "album"))
+                               ((string= name "path"))
+                               (t nil)))
+            (when (and nameok (or
+                               (and (string= name "path") (string-match "\\`http://" value))
+                               (not (string= name "path"))))
+              (if string
+                  (setq string (concat string " - " value))
+                (setq string value)))))
+        
+        (if string
+            (progn
+              (setq string (format " NP: %s" string))
+              (if insertp
+                  (insert string)
+                (message string))))))
+
+    (defun erc-cmd-AP (&rest ignore)
+      "Display the current AlsaPlayer track to the current ERC buffer."
+      (let ((string (my-ap-show)))
+        (if string
+            (erc-send-message string)
+          (message "Nothing is playing!"))))
+
+== Winamp ==
+
+See ErcWinamp.
+
+== iTunes ==
+
+Here a version for itunes (needs applescript):
+
+    (defun current-itunes-song ()
+      (do-applescript
+       "tell application \"iTunes\"
+           set currentTrack to the current track
+           set artist_name to the artist of currentTrack
+           set song_title to the name of currentTrack
+           return artist_name & \" - \" & song_title
+        end tell"))
+
+    (defun erc-cmd-PLAYING ()
+      (erc-cmd-ME (concat " " "is listening to "
+                          (current-itunes-song))))
+
+== ORF fm4, an Austrian radio station ==
+
+See ErcFmFour.
+
+== Radio Paradise ==
+
+Here's my script to grab the "now playing" from http://Radioparadise.com.  note that bill@radioparadise.com has had some problems with someone running a web scraper 24/7 every second.  You need to do something to clear through him to run this script.
+
+<pre>
+    (defun radioparadise-now-playing ()
+      "Scrape from the http://www.radioparadise.com/nowplay_frame.php page the current song"
+      (replace-in-string  
+       (exec-to-string "lynx -dump http://www.radioparadise.com/nowplaying/")
+       "\\(.\\|
+\\)*Playing:.*\]\\(.*\\)\\(.\\|
+\\)*"
+       "\\2"))
+</pre>
+
+    (defun radioparadise-insert-now-playing ()
+      "Insert at point the song now playing on radioparadise.com"
+      (interactive)
+      (insert (concat (radioparadise-now-playing) " <http://www.radioparadise.com>")))
+
+    (defun radioparadise-message-now-playing ()
+      (interactive)
+      (message (radioparadise-now-playing)))
+
+    (defun erc-cmd-RP (&optional line  force)
+      "Say the current song playing on http://www.radioparadise.com"
+      (let ((song (radioparadise-now-playing)))
+        (if song
+            (erc-send-message (concat "http://www.radioparadise.com is now playing: " song))
+          (erc-send-message "I can't tell what song is playing on http://www.radioparadise.com"))))
+
+== MPD ==
+
+A simple version for mpd - whatever frontend you are using --[[pft]]
+
+    (defun mpd-erc-np ()
+      (interactive)
+      (erc-send-message
+       (concat "NP: "
+	       (let* ((string (shell-command-to-string "mpc")))
+		 (string-match "[^/]*$" string)
+		 (match-string 0 string)))))
+
+A pure elisp version -- [[blambi]]
+
+  (defun erc-cmd-MPD ( &rest ignore )
+    "Displays what is played by mpd"
+    (open-network-stream "ercmpd" "*erc-mpd*" "dunwich" 6600)
+    (process-send-string "ercmpd" "currentsong\n")
+    (sleep-for 0.1) ;; HACK: to make it work, problably we should check
+                    ;; if buffer got data jadada Filter out Artist -
+
+    (setq song
+          (with-current-buffer "*erc-mpd*"
+            (goto-char (point-min))
+            (list 
+             (buffer-substring (+ (search-forward "Title:") 1)
+                               (progn (end-of-line) (point) ))
+             (buffer-substring (+ (search-forward "Artist:") 1)
+                               (progn (end-of-line) (point) ))
+             )))
+    (process-send-string "ercmpd" "close\n")
+    (erc-send-message (concat "NP: " (car (cdr song)) " - " (car song)))
+    (kill-buffer "*erc-mpd*"))
+
+== Don't tell me what's playing ==
+
+Not interested in what people are playing? Try this:
+
+    (add-hook 'erc-insert-pre-hook
+              (lambda (str)
+                (let ((v (get-text-property 0 'erc-parsed str)))
+                  (when (and v (string-match "^NP: " (or (aref v 3) "")))
+                    (setq erc-insert-this nil)))))
+
+I had someone ask me in the EmacsChannel why I announced what was now playing.  They thought it was just some effort to be cool; like, "Hey, look at me.  I'm listening to some cool band.  Envy me."  Really, I think it's more about community building.  The EmacsChannel is a community.  I think the MeatBall:OnlineDiary page does a good job of explaining this.  The point is we work better together when we know each other better.  Knowing personal details about people strengthens the bond between them.  Using some kind of now playing command for [[ERC]] is an easy way to share a piece of yourself that others can pretty easily identify with.
+
+Of course, I still think the above `erc-insert-pre-hook' is a good hack for those who want it.  The down side is that you won't understand the origin of any discussion that follows someone's NP.

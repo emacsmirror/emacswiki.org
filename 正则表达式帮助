@@ -1,0 +1,22 @@
+== Emacs正则表达 不是 Perl正则表达式 ==
+
+: 一个简单问题：为什么这样的正则表达式<code>(?:aaa|bbb)</code> 在命令 `M-x search-forward-regexp'中不能使用呢??
+
+答案很简单：有两种“风格”的正则表达式。一种在旧式UNIX工具中广泛使用，如 sed 与 grep等；另一种在Perl中广泛使用。在Perl语方中，字符<code>( | )</code>具有特殊意义——分组和选择；在grep中，字符<code>( | )</code>具有通常的意义——它们匹配它们自身。在这两风格中，用反斜杆修饰这些字符可以改变它们的意义。
+
+上述例子在 Emacs 中可以写成 <code>\(?:aaa\|bbb\)</code> 。
+
+试用 ReBuilder 交互式地建立正则表达式。
+
+== 正则表达式在Emacs Lisp中是“字符串(Strings)”而非“文字(Literals)” ==
+
+: 为什么代码 <code>(re-search-forward "\(?:aaa\|bbb\)")</code> 不能象期望的那样工作呢？
+
+ EmacsLisp 代码首先被所谓的/阅读器/读入，然后正则表达式才被正则表达式库函数编译。而这个elisp阅读器使用与正则表达式库函数一样的转义字符，于是，一个很不幸的结果就是：单个反斜杆就“消失”了！
+
+* elisp字符串 <code>"\(?:aaa\|bbb\)"</code> 被elisp阅读器读入后形成的正则表达是 <code>(?:aaa|bbb)</code>，这是不能正常工作的，
+* elisp字符串 <code>"\\(?:aaa\\|bbb\\)"</code> 被elisp阅读器读入后形成的正则表达是 <code>\(?:aaa\|bbb\)</code>，从而可以正常工作了。
+
+----
+[[分类－正则表达式]]
+

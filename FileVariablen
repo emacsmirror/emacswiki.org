@@ -1,0 +1,17 @@
+== Überblick ==
+
+Datei-lokale Variablen können verwendet werden, um bestimmte Eigenschaften des Emacs lokal für eine Datei zu setzen. So mag die Einrückungstiefe bei C-Code ebenso gesetzt werden, wie Dateinamen zur Verwaltung von Mehrdateiendokumenten (z.B. in AUCTeXDeutsch).
+
+Diese Angaben gehören an das Ende der Datei und haben die Form:
+
+ # Local Variables:
+ # mode: ksh
+ # End:
+
+Das spezielle Schlüsselwort "Local Variables:" umgeben von einem Präfix (" #" in obigem Beispiel) und einem Postfix (in diesem Falle leer) beginnt die Variablendefinition, jede folgende Zeile muss das gleiche Prä- und Postfix besitzen und der Block wird abgeschlossen mit dem Schlüsselwort "End:". Die verschiedenen *-fixe dienen dazu, den für Emacs bestimmten Code vor anderen Interpretern/Compilern/etc zu verstecken
+
+== Ausführliche Dokumentation ==
+Siehe den "File Variables" Punkt im Info-System.
+
+== Englisch ==
+FileLocalVariables

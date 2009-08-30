@@ -1,0 +1,67 @@
+GNU Emacs mode for laconi.ca microblogging service. You can view your friend's update list and post and update of your status.
+
+Works with Emacs23 and has support for groups and tags, and highlights replies for better reading.
+
+Instructions and download at [http://blog.nethazard.net/identica-mode-for-emacs/|http://blog.nethazard.net/identica-mode-for-emacs/] or get the elisp file only at: Lisp:identica-mode.el.
+
+Also hosted on savannah: [http://savannah.nongnu.org/projects/identica-mode/|http://savannah.nongnu.org/projects/identica-mode/]
+
+and Git repository at: [http://git.savannah.gnu.org/cgit/identica-mode.git|http://git.savannah.gnu.org/cgit/identica-mode.git]
+
+Based on TwitteringMode
+
+== Store Login Info in ~/.netrc ==
+
+In the old days, people used to store their ftp connection information in the [http://www.faqs.org/docs/artu/ch10s03.html#netrc .netrc file]. If you read your login and password from this file, you can share your Emacs init file without embarassing yourself. Just remember this particular [EmacsChannelQuotes #emacs quote]:
+
+<Viiru-> Thats not your real password, I hope?
+<hessian> fuck
+
+Here's some code to initialize your login and password from the netrc file:
+
+{{{
+(when (require 'netrc nil t)
+  (autoload 'identica-mode "identica-mode" nil t)
+  (let ((identica (netrc-machine (netrc-parse "~/.netrc") "identi.ca" t))) ; remove this `t' if you didn't specify a port
+    (setq identica-password (netrc-get identica "password") ; if it's last, avoid doing C-M-x in public spaces at least ;-)
+          identica-username (netrc-get identica "login"))))
+}}}
+
+unlike shown in the faqs.org link above, it seems like all entries have to be on one line for `netrc-parse' to bunch them together, so something like:
+
+    machine identi.ca login myusername password mydifficultpassword
+
+
+== faux identica-mode using ERC/XMPP ==
+If you, like me, like using ERC/XMPP rather than a full-blown identi.ca mode, you can still get some identi.ca features into your conversation with update@identi.ca. 
+
+I've renamed update@identi.ca to "dent", the following makes tags,
+nicks and groups clickable. Should work even for Twitter users...
+{{{
+(defun erc-button-follow-identica-tag (tag)
+  (interactive)
+  (browse-url (concat "http://identi.ca/tag/" tag)))
+(defun erc-button-follow-identica-group (group)
+  (interactive)
+  (browse-url (concat "http://identi.ca/group/" group)))
+(defun erc-button-follow-identica-nick (nick)
+  (interactive)
+  (browse-url (concat "http://identi.ca/" nick)))
+
+(add-to-list 'erc-button-alist
+	     '("#\\([^
+ 	][^
+ 	]*\\)" 0 (equal (buffer-name) "dent") erc-button-follow-identica-tag 1) )
+(add-to-list 'erc-button-alist
+	     ("!\\([^
+ 	][^
+ 	]*\\)" 0 (equal (buffer-name) "dent") erc-button-follow-identica-group 1))
+(add-to-list 'erc-button-alist
+	     ("<dent> \\([^:][^:]*\\):" 1 (equal (buffer-name) "dent") erc-button-follow-identica-nick 1))
+
+(add-to-list 'erc-button-alist ("@\\([^
+ 	][^
+ 	]*\\)" 0 (equal (buffer-name) "dent") erc-button-follow-identica-nick 1))
+}}}
+----
+CategoryChatClient CategoryJournaling

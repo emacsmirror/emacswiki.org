@@ -1,0 +1,9 @@
+The [http://jpj.net/~trevor/aumix.html aumix] program can be used in Emacs with
+
+* [[aumix-emacs]] -- commands for one-off volume adjustments
+* [http://user42.tuxfamily.org/aumix-mode/index.html aumix-mode.el] -- run aumix in a term buffer
+* [[Bongo]] volume.el -- volume changing in the minibuffer
+* [[Mpg123]] and MpthreePlayer -- use aumix for their volume commands
+
+----
+MusicPlayers

@@ -1,0 +1,259 @@
+Для GNU Emacs используется MULE (поддержка разных языков)и руссификация выглядит следующим образом:
+
+* Надо установить нужную вам языковую среду
+* И все
+
+Хотя кроме установки языковой среды, вам может понадобиться еще несколько команд, которые лучше всего записать в ваш файл ~/.emacs
+
+<pre>
+;; Устанавливаем языковую среду
+(set-language-environment 'Cyrillic-KOI8)
+;; Устанавливаем кодировки по умолчанию для файлов, буферов и обмена с внешними программами
+(setq default-buffer-file-coding-system 'koi8-r)
+(prefer-coding-system 'koi8-r)
+(define-coding-system-alias 'koi8-u 'koi8-r)
+(set-terminal-coding-system 'koi8-r)
+(set-keyboard-coding-system 'koi8-r)
+(setq-default coding-system-for-read 'koi8-r)
+(setq-default coding-system-for-write 'koi8-r)
+(setq selection-coding-system 'koi8-r)
+(setq default-process-coding-system
+   (if (string> (substring emacs-version 0 2) "21") '(koi8-r . koi8-r) 'koi8-r))
+(put-charset-property 'cyrillic-iso8859-5 'preferred-coding-system 'koi8-r)
+;; Поддержка русской кодировки MS Windows
+(codepage-setup 1251)  
+(define-coding-system-alias 'windows-1251 'cp1251)
+(define-coding-system-alias 'win-1251 'cp1251)
+(set-input-mode nil nil 'We-will-use-eighth-bit-of-input-byte)
+</pre>
+
+Вставте следующий текст в свой  ~/.emacs чтобы создать в меню Set Language Environment пункт Cyrillic-CP1251
+
+<pre>
+;; Create Cyrillic-CP1251 Language Environment menu item
+(set-language-info-alist
+ "Cyrillic-CP1251" `((charset cyrillic-iso8859-5)
+		   (coding-system cp1251)
+		   (coding-priority cp1251)
+		   (input-method . "cyrillic-jcuken")
+		   (features cyril-util)
+		   (unibyte-display . cp1251)
+		   (sample-text . "Russian (Русский)    Здравствуйте!")
+		   (documentation . "Support for Cyrillic CP1251."))
+ '("Cyrillic"))
+</pre>
+
+----
+[[Evgueni]]
+
+<pre>
+;;
+;; Чтобы раскладка соответствовала раскладке русских букв на виндовых (а теперь
+;;   таких большинство) клавиатурах, можно добавить ещё следующие строки:
+;;
+;; redefine some orginal keybindings под MS - можно ли попроще?
+;;
+;; кнопка \| => \/ при переключения регистра (для моего удобства)
+;;
+
+ (quail-define-package
+  "cyrillic-jcuken" "Cyrillic" "RU" nil
+  "ЙЦУКЕH keyboard layout widely used in Russia (ISO 8859-5 encoding)"
+  nil t t t t nil nil nil nil nil t)
+
+ (quail-define-rules
+  ("1" ?1) ("2" ?2) ("3" ?3) ("4" ?4) ("5" ?5) ("6" ?6) ("7" ?7) ("8" ?8)
+  ("9" ?9) ("0" ?0) ("-" ?-) ("=" ?=) ("`" ?ё) ("q" ?й) ("w" ?ц) ("e" ?у)
+  ("r" ?к) ("t" ?е) ("y" ?н) ("u" ?г) ("i" ?ш) ("o" ?щ) ("p" ?з) ("[" ?х)
+  ("]" ?ъ) ("a" ?ф) ("s" ?ы) ("d" ?в) ("f" ?а) ("g" ?п) ("h" ?р) ("j" ?о)
+  ("k" ?л) ("l" ?д) (";" ?ж) ("'" ?э) ("\\" ?\\) ("z" ?я) ("x" ?ч) ("c" ?с)
+  ("v" ?м) ("b" ?и) ("n" ?т) ("m" ?ь) ("," ?б) ("." ?ю) ("/" ?.) ("!" ?!)
+  ("@" ?\") ("#" ?#) ("$" ?\;) ("%" ?%) ("^" ?:) ("&" ??) ("*" ?*) ("(" ?() 
+  (")" ?)) ("_" ?_) ("+" ?+) ("~" ?Ё)
+  ("Q" ?Й) ("W" ?Ц) ("E" ?У) ("R" ?К) ("T" ?Е) ("Y" ?Н) ("U" ?Г) ("I" ?Ш)
+  ("O" ?Щ) ("P" ?З) ("{" ?Х) ("}" ?Ъ) ("A" ?Ф) ("S" ?Ы) ("D" ?В) ("F" ?А)
+  ("G" ?П) ("H" ?Р) ("J" ?О) ("K" ?Л) ("L" ?Д) (":" ?Ж) ("\"" ?Э) ("|" ?/)
+  ("Z" ?Я) ("X" ?Ч) ("C" ?С) ("V" ?М) ("B" ?И) ("N" ?Т) ("M" ?Ь) ("<" ?Б)
+  (">" ?Ю) ("?" ?,))
+</pre>
+
+----
+EugeneMarkov
+
+В GNUEmacs по версию 21.3.1 включительно (дальше не проверял) есть досадная ошибка, которая не позволяет правильно сохранять буфера со свернутыми папками (folding.el). Ниже описан способ обхода этой ошибки.
+
+Вот фрагмент моего .emacs, который совместно с файлами cyrillic-win.el, cyril-win-util.el, cyrillic-folding.el позволяет исправить эту ошибку на NTEmacs  и GNUEmacs (возможно). 
+
+файл cyrillic-folding.el - исправляет ошибки в cyrillic.el. Файлы cyrillic-win.el и cyril-win-util.el - устанавливают кодировку windows-1251 и все что с ней связано. Не надо запускать codepage.el!!! Для Cyrillic достаточно этих трех файлов.
+
+Файлы находятся в ElispArea.
+
+*Для NTEmacs*
+
+<pre>
+...
+  (load  "leim-list")
+  (load "cyrillic-folding")
+  (load "cyril-win-util")
+  (load "cyrillic-win")
+
+  (set-language-environment "Cyrillic-CP1251")
+...
+</pre>
+
+
+*Для GNUEmacs* (не win32)
+
+<pre>
+...
+  (load  "leim-list")
+  (load "cyrillic-folding")
+  (load "cyril-win-util")
+  (load "cyrillic-win")
+
+  (set-language-environment "Cyrillic-KOI8")
+...
+</pre>
+
+----
+
+Следующий фрагмент позволяет переключать кодировки в буфере по нажатию одной и той же комбинации клавиш.
+
+<pre>
+...
+  (setq evm-coding-systems-list (make-ring 10))
+  (ring-insert evm-coding-systems-list 'koi8-r)
+  (ring-insert evm-coding-systems-list 'alternativnyj)
+  (ring-insert evm-coding-systems-list 'iso-8859-5)
+  (ring-insert evm-coding-systems-list 'windows-1251)
+
+  (global-set-key [f5]
+                  (lambda ()
+                    (interactive)
+                    (let* ((keys (recent-keys))
+                           (len (length keys))
+                           (key1 (if (> len 0) (elt keys (- len 1)) nil))
+                           (key2 (if (> len 1) (elt keys (- len 2)) nil))
+                           cs)
+                      (if (eq key1 key2)
+                          (setcar evm-coding-systems-list
+                                  (ring-plus1 (car evm-coding-systems-list)
+                                              (ring-length evm-coding-systems-list)))
+                        (setcar evm-coding-systems-list 0))
+                      (set-buffer-multibyte t)
+                      (set-buffer-file-coding-system (aref (cddr evm-coding-systems-list)
+                                                           (car evm-coding-systems-list)))
+                      (revert-buffer nil t))))
+...
+</pre>
+
+----
+AndreyBalaguta
+
+Не знаю, как вам, а мне, например, не нравится эта связка <code>set-buffer-file-coding-system</code>...<code>revert-buffer</code>.  В 22-м есть функция <code>recode-region</code>, которая делает именно то, что нужно (по правде сказать, я ее нашел уже после того, как написал свои функции, но в сущности внутри она делает точно то же).  Чуть ниже есть две функции -- <code>recode-buffer-dangerous</code> и <code>recode-buffer-safe</code>.  Обе перекодируют текущий буфер в указанную кодировку, но первая оперирует также и над read-only буферами, временно помечая их writable и затем снимая флаг modified, вторая же оставляет read-only буферы на откуп юзеру (может, лучше было бы создавать буфер-копию read-only-буфера и перекодировать уже *её*?):
+
+<pre>
+...
+(defun recode-buffer-dangerous (target-coding-system)
+  "* Recode buffer as if it were encoded with `target-coding-system'.
+If current buffer is write-protected (`buffer-read-only'), temporarily toggle
+read-only flag, recode, then turn it back."
+  (interactive "zEnter target coding system: ")
+  (labels ((do-recode nil
+		      (encode-coding-region (point-min)
+					    (point-max)
+					    buffer-file-coding-system)
+		      (decode-coding-region (point-min)
+					    (point-max)
+					    target-coding-system)
+		      (set-buffer-file-coding-system target-coding-system)))
+    (if buffer-read-only
+	(let ((buffer-read-only nil))
+	  (do-recode)
+	  (set-buffer-modified-p nil))
+      (do-recode))))
+
+(defun recode-buffer-safe (target-coding-system)
+  "* Recode buffer as if it were encoded with `target-coding-system'.
+If current buffer is write-protected (`buffer-read-only'), do nothing."
+  (interactive "zEnter target coding system: ")
+  (unless buffer-read-only
+    (encode-coding-region (point-min)
+			  (point-max)
+			  buffer-file-coding-system)
+    (decode-coding-region (point-min)
+			  (point-max)
+			  target-coding-system)
+    (set-buffer-file-coding-system target-coding-system)))
+...
+</pre>
+
+Тогда вышеприведенный код можно переписать как-то так:
+
+<pre>
+...
+<pre>
+...
+  (setq evm-coding-systems-list (make-ring 10))
+  (ring-insert evm-coding-systems-list 'koi8-r)
+  (ring-insert evm-coding-systems-list 'alternativnyj)
+  (ring-insert evm-coding-systems-list 'iso-8859-5)
+  (ring-insert evm-coding-systems-list 'windows-1251)
+
+  (global-set-key [f5]
+                  (lambda ()
+                    (interactive)
+                    (let* ((keys (recent-keys))
+                           (len (length keys))
+                           (key1 (if (> len 0) (elt keys (- len 1)) nil))
+                           (key2 (if (> len 1) (elt keys (- len 2)) nil))
+                           cs)
+                      (if (eq key1 key2)
+                          (setcar evm-coding-systems-list
+                                  (ring-plus1 (car evm-coding-systems-list)
+                                              (ring-length evm-coding-systems-list)))
+                        (setcar evm-coding-systems-list 0))
+                      (set-buffer-multibyte t)
+                      (recode-buffer-dangerous (aref (cddr evm-coding-systems-list)
+						     (car evm-coding-systems-list)))))
+...
+</pre>
+
+Да, если что-то пойдет не так во время <code>encode..decode</code> в read-only буфере, с ним уже ничего не сделаешь, даже изменения отменить нельзя, поэтому dangerous :-)
+
+----
+DenisRevin
+
+Если Вы работаете с несколькими кодировками, то в первом примере Вам нужно убрать/закомментировать строки(проверялось в 21.4.1):
+<pre>
+(setq-default coding-system-for-read 'koi8-r)
+(setq-default coding-system-for-write 'koi8-r)
+</pre>
+
+иначе Вы не сможете использовать такие возможности emacs как задание кодировки в тексте(-*- coding: another-codepage -*-) или сохранение текста в другой кодировке.
+
+P.S. Мне кажется или всякие coding-system-for-read и подобные, уже не нужны, если у Вас нормально настроена локаль?
+
+----
+MaximKim
+
+Расскажите как подружить русский язык и Muse?
+* При экспорте в html -- вместо русских букв кракозябры.
+* Русские ВикиСлова не работают. (Менять /Muse Wiki Wikiword Regexp/?)
+
+Мои настройки:
+<pre>
+;;winXP, emacs 22.2
+(setq default-buffer-file-coding-system 'utf-8)
+(setq default-file-name-coding-system 'cp1251)
+(setq default-input-method 'russian-computer)
+(setq muse-html-encoding-default 'utf-8)
+(setq muse-html-charset-default "utf-8")
+</pre>
+
+----
+ValeriyaA
+
+Расскажите как заставить emacs (а лучше linux в целом) реагировать на Control, Meta, ... комбинации в том случае если включена русская раскладка
+* Сейчас если в русской раскладке нажать C-x происходит С-ч
+Иными словами control,meta,super должны временно влючать латинскую раскладку

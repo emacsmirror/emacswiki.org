@@ -1,0 +1,16 @@
+Emacs 23 was released today and I discovered I cannot set a face any more to use the default background color with
+<pre>
+    (set-face-background 'some-face nil)
+</pre>
+I have to use something like
+<pre>
+    (set-face-background 'some-face (frame-parameter nil 'background-color))
+</pre>
+
+Is it a feature or a regression?
+
+[new]
+
+Strange, it works for standard faces like `font-lock-comment-face', but doesn't work for e.g. `org-level-2'.
+
+It seems I never tried setting the background of an org face in emacs 22, so it's not because of emacs 23 after all. It's something else.

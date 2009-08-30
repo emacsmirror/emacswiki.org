@@ -1,0 +1,19 @@
+Clique no título dessa página para encontrar outras páginas relacionadas à história e ao legado do Emacs, assim como asuntos sobre compatibilidade retroativa.
+
+* HistóriaDoEmacs -- a história do Emacs, desde 1974
+* EmacsEXEmacs -- as diferenças entre Emacs e XEmacs; o que é ''Emacsen''
+* ImplementaçõesEmacs -- lista de editores ''Emacsen''
+
+RichardStallman escreveu um memorando sobre o projeto Emacs: ftp://publications.ai.mit.edu/classic-hits/AIM-519A.ps
+
+JamieZawinski traçou uma linha do tempo sobre Emacs: http://www.jwz.org/doc/emacs-timeline.html.
+
+Uma versão gráfica da linha do tempo de Jamie pode ser encontrada em: http://www.aisee.com/graph_of_the_month/emacs.htm
+
+CraigFinseth tem coisas interessantes sobre Emacs em suas páginas web.
+
+Um dos primeiros manuais de TECO EMACS data de 1982-03-06: http://zane.brouhaha.com/~healyzh/emacs/emacs.doc.txt
+
+A versão TECO EMACS 170 por Rich Alderson para o emulador de PDP10 se encontra disponível aqui: http://pdp10.nocrew.org/
+
+A partir da versão 21, o Emacs tem a capacidade de exibir imagens incorporadas, de modo que é possivel mostrar uma imagem respingada na abertura do Emacs. Para conhecer a história por trás da criação do logo do Emacs, veja: http://www.ee.ryerson.ca/~elf/emacs/logo/

@@ -1,0 +1,4 @@
+[http://www.mcjones.org/paul/ Paul McJones] has begun a [http://community.computerhistory.org/scc/projects/LISP/
+ History of Lisp] project with the [http://www.computerhistory.org/ Computer History Museum] and is collecting source code and documents and making them available through the mueseum's [http://community.computerhistory.org/scc/ Software Collection Committee].  Some of the files contain source code and documentation for Lisp dialects that are direct or close ancestors of Emacs lisp and [[Scheme]].
+
+It is unclear what licensing terms these materials are being made available under, but many files have copyright notices in them.

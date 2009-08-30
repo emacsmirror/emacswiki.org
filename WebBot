@@ -1,0 +1,74 @@
+== Example ==
+
+Write this in your html buffer:
+
+    <!--webbot bot="Timestamp" S-Format="%Y-%m-%d" -->
+
+This is a "bot".
+
+Save the buffer. The result on disk is:
+
+    <!--webbot bot="Timestamp" S-Format="%Y-%m-%d" startspan -->
+    2003-09-21<!--webbot bot="Timestamp" endspan -->
+
+Load the file again and you see your bot:
+
+    <!--webbot bot="Timestamp" S-Format="%Y-%m-%d" -->
+
+
+Thus, the "bot" always inserts the current time if you save the file.
+
+
+== Compatibility ==
+
+This feature is also known as Webbot and fully implemented by Microsoft Frontpage.
+
+gm-webbot.el is compatible with files edited with Frontpage. That means you can edit a HTML file alternating with (X)Emacs and Frontpage without giving a up the Webbot functionality.
+
+Naturally, you can use Emacs as your only HTML editor, too :-)
+
+
+== Download ==
+
+There are two required files:
+
+* elisparea: Lisp:gm-webbot.el (the framework)
+* elisparea: Lisp:gm-bots.el (the bot defintions)
+
+You can download my whole Emacs customization (includes the most recent version of WebBot) via CVS:
+
+http://www.gmdsoft.de/mitsch/emacs/index.htm
+
+== Features ==
+
+At the moment there are three bots available:
+* "Timestamp" (you can see it above)
+* "Substitution" - Substitutes variables - only for the user-name at the moment)
+* "Navigation2" - makes simple "go one level up" hyperlinks for homepages; an example is my homepage: http://www.gmdsoft.de/mitsch/fun/index.htm; the hyperlink in the upper right corner).
+This bot is called 'Navigation2' because MS Frontpage uses a 'Navigation' bot for more complex navigation structures.
+
+You can add any bot you want by writing a small LISP function that must meet some conditions. You can register it with:
+
+    (gm-bot-register-bot "YourBot" 'your-bot-func)
+
+Here is an example for the Timestamp bot:
+
+    (gm-bot-register-bot "Timestamp" 'gm-bot-bot-timestamp)
+
+Details: see Lisp:gm-bots.el.
+
+The Webbots are not bound to HTML files, only. You can specify any mode (e. g. php-mode) that should be "bot-enabled" (see: Lisp:gm-webbot.el)
+
+
+== Documentation ==
+
+Preliminary documentation:
+* Scheme how to implement the bot framework: http://www.gmdsoft.de/mitsch/emacs/bot-doc.pdf
+
+
+== Author ==
+
+Written by GregorMitsch.
+
+----
+CategoryHypermedia

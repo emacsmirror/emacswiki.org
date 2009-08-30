@@ -1,0 +1,25 @@
+==What is OrgOddmuse ?==
+OrgOddmuse is a mode that transforms OrgMode text to OddmuseWiki format (see TextFormattingRules).
+
+==Install==
+: Put Lisp:org-oddmuse.el in your load-path, add
+{{{
+    (require 'org-oddmuse)
+}}}    
+: in ~/.emacs
+
+==Usage==
+* `org-oddmuse-transform-subtree'
+  Transforms Org-mode subtree to Oddmuse Wiki format.
+* `org-oddmuse-transform-current-buffer'
+  Transforms current Org-mode buffer to Oddmuse Wiki format.
+* `org-oddmuse-transform-buffer'
+  Transforms buffer to Oddmuse Wiki format.
+
+==Customize==
+You can customize the option below by: M-x customize-group RET org-oddmuse RET
+
+* `org-oddmuse-transform-level'
+: The level of transform heading.
+: If it is nil, it will transform all Org-mode headings with Oddmuse Wiki format.
+: If it is a number, it just transforms heading to the specified level (index from 1).

@@ -1,0 +1,35 @@
+Tuareg Mode is a GOOD Emacs mode to edit Objective Caml code. It has a parser that let you recognize syntax errors by the meaning of special indentation, it can start an Ocaml toplevel and let you interact with it in a dedicated Emacs buffer.
+
+Furthermore, the tuareg-imenu companion improves the capabilities of tuareg-mode: it parses the current buffer to provide definition navigation and let you browse interface files (that may contain library documentation) in the library directory.
+
+You can get Tuareg mode and learn more about Objective Caml at the following sites:
+
+* http://www-rocq.inria.fr/~acohen/tuareg/index.html.en
+* http://www-rocq.inria.fr/~acohen/tuareg/mode
+* http://caml.inria.fr
+
+To install, put the Tuareg files in ~/.elisp/tuareg-mode and add the following to your ~/.emacs file:
+
+    (add-to-list 'load-path "~/.elisp/tuareg-mode")
+    (autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
+    (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+    (autoload 'tuareg-imenu-set-imenu "tuareg-imenu" 
+      "Configuration of imenu for tuareg" t) 
+
+    (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)
+
+    (setq auto-mode-alist 
+        (append '(("\\.ml[ily]?$" . tuareg-mode)
+	          ("\\.topml$" . tuareg-mode))
+                  auto-mode-alist))
+
+[new]
+
+Please add usage examples to this page.
+
+[new]
+
+See also CamlMode.
+----
+CategoryModes
+ProgrammingModes

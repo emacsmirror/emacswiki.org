@@ -1,0 +1,162 @@
+I prefer not to have the close paren inserted automatically when I type the open paren, so I did some experiment to see how to compute the correct type of close paren from the rightmost open-but-unclosed paren. Note that the content after point is not considered. 
+
+Try to put the point after "({()[(" and hit the close key a couple times to see the effect. I note that there is still some issues with escaping.
+
+<pre>
+(global-set-key "]" 'universal-close-paren)
+(defvar ucp-open-re
+  "[[({]"
+  "Regexp matching open raw parens")
+(defvar ucp-close-re
+  "[])}]"                               ;close bracket must come first
+  "Regexp matching close raw parens.")
+(defun ucp-lp2rp (lhs)
+  (cond ((string-equal lhs "(") ")")    ;cannot use case because of eql
+	((string-equal lhs "{") "}")
+	((string-equal lhs "[") "]")
+	((string-equal lhs "\\(") "\\)")
+	((string-equal lhs "\\{") "\\}")
+	((string-equal lhs "\\[") "\\]")
+	(t (concat "ucp-lp2rp unexpected: " lhs))))
+(defun ucp-rp2lp (rhs)
+  (cond ((string-equal rhs ")") "(")
+	((string-equal rhs "}") "{")
+	((string-equal rhs "]") "[")
+	((string-equal rhs "\\)") "\\(")
+	((string-equal rhs "\\}") "\\{")
+	((string-equal rhs "\\]") "\\[")
+	(t (concat "ucp-rp2lp unexpected: " rhs))))
+(defun universal-close-paren (parg)
+  "Insert the \"correct\" close paren.
+Use C-u to override."
+  (interactive "P")
+  (if parg
+    (self-insert-command 1)             ;override
+    (let ((rightmost-paren
+	   (save-excursion (save-match-data (ucp-pda 0 "")))))
+      (if (= (car rightmost-paren) 0)
+	;; problem detected
+	(if (string-equal (cdr rightmost-paren) "")
+	  ;; no open detected
+	  (message "Parens are already balanced up to this point.")
+	  ;; extra close detected: long else
+	  (goto-char (string-to-int (cdr rightmost-paren)))
+	  (message "Extra close paren detected here."))
+	;; car is point of interest
+	(if (string-match ucp-open-re (cdr rightmost-paren))
+	  ;; match: we want to insert rp
+	  (let ((rp (ucp-lp2rp (cdr rightmost-paren))))
+	    ;; detect if we have already manually escaped by ourselves
+	    (if (and
+		 (string-equal (substring rp 0 1) "\\") ;rp is escaped
+		 (= (preceding-char) ?\\) ;point is not right after \\
+		 (/= (char-before (1- (point))) ?\\))
+	      (insert (substring rp 1)) ;skip first char
+	      (insert rp)))             ;no skip
+	  ;; mismatch detected: long else
+	  (goto-char (car rightmost-paren))
+	  (message
+	   (concat "Mismatched open paren detected here. Expecting: "
+		   (ucp-rp2lp (cdr rightmost-paren)))))))))
+(defun ucp-pda (level expected-open)  ;return point of rightmost unclosed open
+  "Use the recursion stack to perform paren matching.
+May run into limits for large files. Try something like:
+\(setq max-lisp-eval-depth \(* 64 1048576\)\)
+\(setq max-specpdl-size \(* 64 1048576\)\)
+
+LEVEL is the number of close paren we have seen so far.
+EXPECTED-OPEN is what we are expected to see if we do see an open paren.
+
+On non-zero level, return nil when match found.
+Otherwise, return
+  (0.\"\") if goes pass point-min
+  (0.\"point\") if extra close detected at point
+  (point.\"open\") if point is the matched open
+  (point.\"close\") if open at point mismatches close"
+  (let ((rightmost-paren
+	 (and (re-search-backward
+	       (concat "\\(" ucp-open-re "\\|" ucp-close-re "\\)")
+	       (point-min) 't)
+	      (cons (point) (match-string 0)))))
+    (if (not rightmost-paren)
+      ;; no more paren
+      (cons 0 (if (= level 0)           ;walk passed point-min
+		""                      ;=> 0.""
+		t))                     ;=> 0.t (t will be replaced by oldpt)
+      ;; hit a paren, long else
+      (when (re-search-backward "\\\\" (- (point) 1) t)
+	(setq rightmost-paren           ;patch rightmost-paren if quoted
+	      (cons (point) (concat "\\" (cdr rightmost-paren)))))
+      (let ((p (cdr rightmost-paren)))
+	(if (string-match ucp-close-re p) ;note the patch above
+	  ;; hit a close paren
+	  (let ((oldpt (point))         ;at the closing paren
+		(recur                  ;eat until the matching open
+		 (ucp-pda (1+ level) (ucp-rp2lp p))))
+	    (if recur
+	      ;; not nil => mismatch and report point
+	      (if (= (car recur) 0)
+		(cons 0 (number-to-string oldpt)) ;0.t => 0."oldpt"
+		;; if pt.nil => pt."close", otherwise => keep
+		(if (cdr recur) recur (cons (point) p)))
+	      ;; nil => match, restart scanning at same level
+	      (ucp-pda level expected-open)))
+	  ;; hit an open paren
+	  (if (= level 0)
+	    rightmost-paren             ;=>pt.open; found open at level 0!
+	    (if (string-equal expected-open p)
+	      nil                       ;match => nil
+	      (cons (point) nil)))))))) ;miss => pt.nil (nil will be replaced)
+			    ;but note: nil will become (lp2rp expected-open)
+</pre>
+
+[new]
+I like the idea, but I think the code could be simpler.  Does the following work for you? :)
+
+  (defconst all-paren-syntax-table
+    (let ((table (make-syntax-table)))
+      (modify-syntax-entry ?{ "(}" table)
+      (modify-syntax-entry ?} "){" table)
+      (modify-syntax-entry ?\( "()" table)
+      (modify-syntax-entry ?\) ")(" table)
+      (modify-syntax-entry ?\[ "(]" table)
+      (modify-syntax-entry ?\] ")[" table)
+      table)
+    "A syntax table giving all parenthesis parenthesis syntax.")
+
+  (defun close-open-paren ()
+    (interactive)
+    (with-syntax-table all-paren-syntax-table
+      (insert (save-excursion (up-list -1) (matching-paren (char-after))))))
+
+-- [[nschum]]
+
+[new]
+Not really, but I appreciate from your code that I never thought about cooking up a syntax table and then use with-syntax-table. I think this idea can indeed clean up the code a little bit in the "paren detection" in the ucp-pda function. But the escape issue still has to be handled (I wanted "\{" to close with "\}" as a !LaTeX user), as well as the error reporting when mismatch has been found (say when closing on "([{]"). One thing I am still not happy with ucp is that it doesn't understand "\\[" should be closed with "]" since the escape has been escaped. But that's something I will fix later.
+-- MaverickWoo
+
+[new]
+Ah, I see.  I didn't really read through all that code and just assumed, you didn't want them to be closed ... :)  The quoting is added easily enough, but I wouldn't know how to catch those errors.
+
+  (defconst all-paren-syntax-table2
+    (let ((table (make-syntax-table)))
+      (modify-syntax-entry ?{ "(}" table)
+      (modify-syntax-entry ?} "){" table)
+      (modify-syntax-entry ?\( "()" table)
+      (modify-syntax-entry ?\) ")(" table)
+      (modify-syntax-entry ?\[ "(]" table)
+      (modify-syntax-entry ?\] ")[" table)
+      (modify-syntax-entry ?\\ "'" table)
+      table)
+    "A syntax table giving all parenthesis parenthesis syntax.")
+
+  (defun close-quoted-open-paren ()
+    (interactive)
+    (let (pos closing)
+      (with-syntax-table all-paren-syntax-table2
+        (setq pos (save-excursion (up-list -1) (point)))
+        (setq closing (matching-paren (char-after pos))))
+      (and (eq (char-syntax (char-before pos)) ?\\)
+           (not (eq (char-syntax (char-before (1- pos))) ?\\))
+           (insert (char-before pos)))
+      (insert closing)))

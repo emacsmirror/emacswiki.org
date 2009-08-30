@@ -1,0 +1,18 @@
+[[de:pexYeZxd]]
+finder-commentary is a function that displays the commentary section of an Emacs library.  Simply type `M-x finder-commentary RET' and it prompts you for the library name. The name of the library can be both `name' and `name.el'. This prompt uses completing-read, which means that you can press TAB to try for completions.
+
+Press `q' to exit finder-commentary, and `d' to see a list of available topics.
+
+finder-commentary can be very useful, as you don't need to locate the library to see its documentation, it only needs to be in your load-path (see LoadPath).
+
+Some library authors are very good at writing helpful Commentary sections, while a few others don't include them at all.  Some include a URL, a changelog, TODO, names of author(s), etc.
+
+The commentary section is placed at the beginning of the library, usually right after any license, and looks something like this:
+
+    ;;; Commentary:
+    ;;
+    ;; This module provides an Emacs interface to <something>.
+
+
+----
+CategoryDocumentation

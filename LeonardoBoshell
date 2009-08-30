@@ -1,0 +1,48 @@
+*My e-mail address: <code>p@kapcoweb.com</code>
+* My personal web page: http://kapcoweb.com/p/
+* I use Emacs 21.3.50.2 (Gtk+ frontend)
+
+----
+
+I eventually contribute to the [http://www.emacswiki.org/cgi-bin/emacs-es.pl Spanish version] of this MultilingualWiki.
+
+== My story with Emacs ==
+
+I use Emacs now, and am very happy with it, but it wasn't always like this. That's right, I made the switch from another well-known editor, which will remain unmentioned here partly because I may offend sensible spirits, and because I'm pretty sure you already know what that editor is. (I still have nightmares from time to time, and sometimes I wake up screaming nonsense such as :wq!!! ...)
+
+Well, in those days, I thought my editor was the greatest thing ever made and I worked very hard trying to master it, so I could code as fast and efficiently as possible. I thought there was nothing I could not do with my editor, so I guess I never really had the need to try another thing... so you see, I wasn't using Emacs due to my ignorance. Sad but true.
+
+But then, one day, as I was browsing around the 'net, for some reason I ended up visiting the personal web page of someone who is a developer for the Linux kernel. He uses a Dvorak keyboard, you know, and he has nothing but good things to say about it on his own web site. I had already heard about the Dvorak layout back then but I never paid too much attention to it, until that particular moment. I didn't suffer from RSI nor anything like that. It was something in the words of that humble Linux developer that really moved me, I don't know, maybe it was the idea that I could be more <i>efficient</i> with a Dvorak keyboard (as a programmer, there are few things I find more delightful than being efficient).
+
+Anyway, before I knew what I was getting into, I found myself manually removing those pesky plastic caps from my keyboard and reattaching them in places I found most appropriate for them after reading lots of documents about the Dvorak layout and non-English keyboards (I'm a Spanish native speaker, you see). I came up with a custom layout that I thought was the most productive one for me. After that, I spent quite some time hacking several config files so I could use my new layout under the X-Window-System as well as in the different terminals. I succeeded, eventually, and my next step was to get familiar with the layout. It took me about 2 or 3 weeks to type as fast as I used to do with my old qwerty layout.
+
+But, as you may have already guessed, in the process I realized I had a huge problem with my old editor. A lot of commands for that editor depend or are highly influenced by the qwerty layout. I wasn't able to move around a document efficiently anymore!... I searched in the net for a solution but I found nothing but dirty hacks that try only to hide the real problem: the way my old editor works is fundamentally brain-damaged. Why would anyone make a piece of software dependant on the way your keyboard (or any other device, for that matter) is made? Of course a lot of people might disagree with me, but I guess it's just the way I am--One day a friend of mine told me a joke that goes something like
+
+<pre>
+- How do you know cars have never been designed by a Unix developer?
+- Because no one has ever built a car with traces on the front to make it compatible with animal traction.
+</pre>
+
+After a moment, I admit I replied "yeah, funny, but hey! it's not a very bad idea..".
+
+Back to my story, I finally decided to make the switch. Being a huge Free Software enthusiast, Emacs was naturally the first choice that came to mind. So I eventually installed Emacs, and my life has been so much brighter since that day.
+
+The keyboard shortcuts were not a problem at all. Everything inside this pretty Emacs interface make so much sense! And after my first contact with <code>C-h t</code>, my path was pretty much set. Now I feel like part of the cult, there's no other way to put it. Different powerful edition modes, programmable capabilities using a native Lisp dialect!! man, how was I able to live without these things before?!
+
+----
+
+Thanks to all the people who make this site a great place for people who is converting to the One True Editor.
+
+----
+
+Welcome to the wiki, Leonardo.  Curious about your
+thoughts/experiences with viper.  I have been toying with the thoughts
+of trying it out (in a big way) some day (though i have almost never
+used vi before).... -- DeepakGoel
+
+: Actually, once I started using Emacs, I gave viper a try, but almost immediately I stopped using it. No particular reason, except that I was really interested in learning Emacs and dumping vi for good. So I guess I don't really have much to say about it. Viper is certainly very close to a true vi editor (although I catched a few things I used to do with vim (my favorite flavor of vi) and viper didn't have (or at least in the same way as vim)). If you're really thinking about using vi seriously, I'd recommend you to check vim out. If you want to use a vi editor without leaving your Emacs interface, I guess viper is the way to go. --LeonardoBoshell
+
+Thanks for all the Spanish pages! -- AlexSchroeder
+
+----
+CategoryHomepage

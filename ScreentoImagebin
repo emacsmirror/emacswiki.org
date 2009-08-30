@@ -1,0 +1,51 @@
+Emacs integration for taking screen-shots and uploading images to http://imagebin.org.  Currently under construction. Sort of maintained by IzaakBeekman.
+
+[:GeneralInfo]
+=General Info=
+I am hoping to turn this into a package and make some substantial improvements, but right now I have very little time and knowledge of ELisp.  I am also hoping that this code will be useful to the rest of the community.  It seems to me that it could be particularly useful for collaborative debugging of Emacs, emacs packages, etc.
+
+[:Dependancies]
+==Dependancies==
+# Linux (*nix might suffice)
+# xwd
+# curl
+
+[:WhatItDoes]
+==What It Does==
+Right now this code is in my ##.emacs## file.  Two functions are defined, one for taking a screen shot with xwd and saving it as a .png, and the other for calling the first function and pasting the screen shot to http://imagebin.org with curl.  This is then bound to some key.
+
+[:WhatItShouldDo]
+==What It Should Do==
+Below is a list of improvements I would like to make/ I would like to have help making/ if you're impatient and want to make them yourself you should.  This list is ranked in order of my perception of the improvement-of-functionality/time-investment ratio which could be incorrect.
+
+# Figure out how to add a line break to the curl command.
+# Have the screen-shot-taking function accept an optional argument for the name of the output .png file and have the posting-to-imagebin function accept an optional argument which chooses the file to post.
+# Implement as much as possible of this in ELisp rather than letting Linux shell tools accomplish this.  This will increase portability and robustness. Fixing the post to http://imagebin.org should not be too bad, I have seen plenty of ELisp code which sends http post requests, and all the form info is already available in the current code.  My hopes for taking a screen shot via Emacs/lisp are considerably lower.
+# Add general upload to imagebin functionality as outlined above and interface with dired and image-dired in a slick way.  It sounds like the FlickrClient package does something like this.
+# Roll this into a package once it is more than just a few lines of sloppy code.
+
+[:Code]
+=Code=
+<pre>
+;;;;;;;;;;;;;;;;;;;;
+;; Screen capture ;;
+;;;;;;;;;;;;;;;;;;;;
+(defun screen-cap ()
+  (interactive)
+  (shell-command "xwd -root | xwdtopnm | pnmtopng > ~/EmacsScreenshot.png")
+  )
+
+(defun screen-paste ()
+  (interactive)
+  (screen-cap)
+  (shell-command "curl 'http://imagebin.org/index.php' -F 'nickname=ibeekman' -F \"image=@$HOME/EmacsScreenshot.png;type=image/png\" -F 'disclaimer_agree=Y' -F 'Submit=Submit' -F 'mode=add'")
+)
+
+(global-set-key [C-kp-enter] 'screen-paste)
+</pre>
+
+Improvements and suggestions are encouraged!
+
+[new]
+
+I have some code that does screenshots, and surrounds them with web pages, while stepping through a sequence of emacs commands, at [http://emacs-versor.cvs.sourceforge.net/viewvc/*checkout*/emacs-versor/lisp/versor-demo.el versor-demo.el] on !SourceForge.  You could try extracting relevant bits of that --- try the function <code>versor-take-screenshot</code>.

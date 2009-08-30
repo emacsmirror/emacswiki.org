@@ -1,0 +1,16 @@
+See ErcExtraModules first if you use the version of ERC that comes with Emacs 22 and you don't have erc-list.el.
+
+erc-list.el implements a channel list view mode buffer.
+
+Use the /LIST command or invoke it interactively with M-x erc-chanlist RET to get a nicely sorted
+channel list in a separate buffer.
+
+=== Some keybindings ===
+
+If point is at a channel name (at the # sign), you can join that channel by pressing `j' or `C-c C-j'. 
+Use `s' to sort alphabetically or according to the number of users in a channel.
+Type `q' to hide the window and restore previous window configuration again.
+
+
+----
+[[ERC]], ErcExtraModules

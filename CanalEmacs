@@ -1,0 +1,93 @@
+: ''le ayudamos a que se ayude...'' -- tema del canal por kensanata
+
+Acompáñenos en '''#emacs''' @ irc.freenode.net. (o visite http://www.freenode.net/)
+
+También hablamos Alemán, Francés, Finlandés, Portugués y quién sabe qué más.
+
+Vea también: GenteDelCanalEmacs, InternetRelayChat para una lista de clientes IRC basados en Emacs, CanalErcEmacs sobre información de conexión, y para algunas cosas de humor: CitasDelCanalEmacs, TabúDelCanalEmacs
+
+Para más información sobre los modos usados en freenode.net, visite su página web:
+
+* http://www.freenode.org/using_the_network.shtml
+
+== Bots ==
+El contenido del canal es probablemente registrado por un chilión de bots. Aquí algunos de los bots que puede encontrar en el canal.
+
+=== fsbot ===
+
+Fsbot es el más sencillo de usar. Tiene referencias hacia casi todas las páginas en este wiki. Por ejemplo:
+
+<pre>
+    <kensanata> , setfont
+    <fsbot> me thinks SetFonts is at
+            http://www.emacswiki.org/cgi-bin/wiki.pl?SetFonts
+</pre>
+
+Vea ErBot para más ejemplos (fsbot es una instancia de ErBot).
+
+=== Bots Antiguos ===
+
+Los siguientes bots ya no están en #emacs:
+
+EdwardOConnor solía ejecutar MallowBot, un ErcRobot, en #emacs. Fsbot realiza ahora gran parte de la labor de documentación que mallow solía hacer.
+
+El google-bot en #emacs solía retornar un enlace hacia algunos términos de búsqueda. El bot ya no continúa en #emacs. En su lugar, fsbot usa ahora Google también.
+
+statbot:
+ 
+Este bot es derivado de hird, en #hurd. Lleva un registro de los alias, por ejemplo:
+
+<pre>
+    <deego> seen iconoclast
+    <statbot> deego: iconoclast was talking just a few minutes ago.
+</pre>
+
+También genera estadísticas útiles:
+
+* http://gnufans.net/~deego/irc/emacs.html
+
+clog (al igual que stabot) registra el contenido del canal.
+
+f00f:
+
+En #emacs (vea InternetRelayChat) hay un bot llamado f00f. f00f es una base de datos interactiva, un sistema de conocimiento. Esta página documenta una parte de la ayuda disponible desde f00f.
+
+* [http://vengeance.et.tudelft.nl/ecfh/f00f.php3 buscar en la base de datos]
+* [http://vengeance.et.tudelft.nl/ecfh/irc.php3 imagen de f00f]
+
+f00f reacciona a mensajes privados (/MSG) y a dobles signos de admiración (!!) y dobles signos de interrogación (??). Aquí hay algunos usos de f00f:
+
+ /msg f00f ?? help
+
+Pedirle ayuda a f00f. Recibirá un mensaje privado de f00f con la información que solicitó.
+
+ ?? emacspeak
+
+Pedirle a f00f una explicación. La respuesta es dirigida a todo el canal.
+
+ /msg f00f shapr: emacs
+
+Informar a algún usuario sobre emacs. El usuario será informado mediante un mensaje privado.
+
+ kensanata: !! wiki
+
+Contarle a algún usuario sobre el wiki. El usuario será informado mediante un mensaje privado. Sin embargo, en este caso, todos los otros miembros del canal verán que se le ha dado un comando a f00f.
+
+El mecanismo /msg es preferido por lo general, ya que no inunda el canal innecesariamente. En cualquier caso, es algo muy bueno cuando un principiante realiza una pregunta. Tan pronto alguien le dirige f00f al principiante, los demás ya no lo harán, de modo que no inunden al novato.
+
+ /msg f00f #emacs: aaaaa
+
+Contarle al canal sobre la AAAAA (Asociación Anónima Contra el Abuso de los Acrónimos, por sus siglas en Inglés).
+
+ /msg f00f !apropos wiki
+
+Encontrar todos los registros relacionados con wiki. Será informado mediante un mensaje privado.
+
+
+== A hacer ==
+Idea: crear excursiones de aplicaciones emacs grandes que existen actualmente, dirigidas a aquellas personas que no las están usando o que quisieran usarlas más. Una especie de tutorial con preguntas en tiempo real.
+
+Algunas aplicaciones sobre las que sería bueno tener tutoriales de irc: AdvancedDeskCalculator, EmacsCodeBrowser, BigBrotherDataBase
+
+----
+InternetRelayChat

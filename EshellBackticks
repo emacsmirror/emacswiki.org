@@ -1,0 +1,36 @@
+There are no `backticks` per se in eshell.  Here is how backticks work
+in other shells:  The commands enclosed in backticks are executed, and
+their output replaces the commands in backticks.  Then the surrounding
+commands are executed.
+
+== Capturing the output of a command in a variable ==
+
+We will try to store the output of the `date' program in the variable
+foobar.  In other shells, this is how it might work:
+
+    ~% FOOBAR=`date`
+    ~% echo $FOOBAR
+    Tue Nov  5 22:52:15 CET 2002
+
+In eshell, we use either the elisp function `eshell-command-result',
+or we use curly braces to start a subshell.
+
+Example using `eshell-command-result':
+
+    ~ $ setq foobar (eshell-command-result "date")
+    Tue Jul 24 05:42:11 2001
+    ~ $ echo $foobar
+    Tue Jul 24 05:42:11 2001
+
+Example using curly braces:
+
+    ~ $ setq foobar ${date}
+    Tue Nov  5 22:54:54 2002
+    ~ $ echo $foobar
+    Tue Nov  5 22:54:54 2002
+
+In general, () is reserved for Lisp interaction, and {} is used for
+subshells.
+
+----
+CategoryEshell

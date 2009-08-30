@@ -1,0 +1,13 @@
+[new]
+Using XEmacs 21.4, and the SemanticBovinator to edit C++ code, is there some relatively easy way to get the name of the function surrounding the current point to show up in the mode line, similar to what's available from function-menu (fume)? The various docs related to semantic make it sound like semantic-imenu can do it, but I haven't been able to figure them out yet. Thanks in advance -- DanMuller
+
+[new]
+: I'm not sure about the modeline, but 'global-semantic-stickyfunc-mode' does something similar with a banner.
+
+[new]
+: It looks like what you are looking for is WhichFuncMode.
+
+[new]
+On the SemanticBovinator page, it mentions that you can use cscope as a backend for semantic.  Are there any instructions how to do this?  I need the speed of cscope due to the size of my project.  In the end, I'm looking to be able to hit the '.' key and the '(' to see the definitions of structures and functions respectively.  Thanks ahead of time. :) --Andy
+----
+SemanticBovinator

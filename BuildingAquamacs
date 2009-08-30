@@ -1,0 +1,58 @@
+= Building Aquamacs from the Git repository =
+
+* Building Aquamacs from the development source is easy: install scripts are provided. Go ahead and tinker with Aquamacs and maybe contribute a patch or two. You're welcome to work with us!*
+
+You'll need to have Apple's developer tools installed.
+
+* If you don't want to build yourself: We provide daily (universal) binaries, compiled fresh from our Git master branch, which you can download.  
+* Don't forget to subscribe to the [http://lists.sourceforge.net/lists/listinfo/aquamacs-devel aquamacs-devel mailing list]. 
+
+== Obtaining ==
+
+Ensure you have a recent version of Git installed.
+Then:
+
+  git clone git://github.com/davidswelt/aquamacs-emacs.git
+  cd aquamacs-emacs.git
+
+== Building ==
+
+To build Aquamacs, ensure you have
+
+- Apple's free Developer Tools (for make, gcc, etc.)
+- The Aquamacs git repository (or a source code snapshot) as above.
+
+Change to the source directory and just do
+
+  ./build-aquamacs
+
+which will result in an Aquamacs in nextstep/Aquamacs.app
+
+The manual version: "make install", which will compile incrementally.  
+Alternatively, to build Emacs and just copy the new Emacs binary into the .app bundle, you may use "make".
+
+That's it!
+
+== Building the Carbon-based branch (pre-2.0) ==
+
+You may check out the latest revision of the Aquamacs22 branch, which contains the 1.7 release series:
+
+  git checkout Aquamacs22
+
+Then proceed with building as above; however, the resulting binary will be found in the builds/ directory.
+
+== Switching to GNU Emacs ==
+
+  git checkout emacs
+
+
+Questions?
+
+	http://lists.aquamacs.org/mailman/listinfo.cgi/aquamacs-devel
+
+
+
+--- DavidReitter, 2009-05-01
+
+
+* Please do not distribute your own build. Official Aquamacs builds are available from the [http://aquamacs.org/download.shtml download section] of [http://aquamacs.org the Aquamacs project].*

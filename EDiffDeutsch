@@ -1,0 +1,73 @@
+[[en:EdiffMode]]
+== Einleitung ==
+
+Viele Un*x-Anwender kommen früher oder später in die Situation, das Programm <code>diff</code> zu verwenden, um Unterschiede in Dateien aufzuspüren. Es ist ein Kommandozeilen-Tool, das auch für das Patchen (Flicken) von Programm-Quellen verwendet wird.
+
+Selbstredend möchte man die Ergebnisse solcher Untersuchungen auch oft gleich in Dateien einbauen. Oder am besten gleich ganze Verzeichnis-Bäume rekursiv bearbeiten. Und selbstredend geht das im XEmacs :)
+
+== Unterschiede in Dateien ==
+
+Mit
+
+    M-x ediff-files
+
+startet man eine Session (Sitzung) in Ediff, dem XEmacs-Front-End zu <code>diff</code>. Alternativ findet man Ediff in den Menus bei neueren XEmacsen unter Tools->Compare->...
+
+XEmacs erwartet als nächstes zwei Dateinamen (im Minibuffer), nämlich die zu vergleichenden Dateien. Diese werden auch als <em>Buffer A</em> und <em>Buffer B</em> bezeichnet. Es öffnet sich dann ein neuer, sehr kleiner Frame, der zwei Informationen enthält:
+
+1. Einen Hinweis darauf, dass sich selbiges Fenster durch Drücken von <code>?</code> in ein  Hilfe-Fenster verwandeln lässt.
+2. Eine sehr verkleinerte Modeline, die die Anzahl an Unterschieden und den aktuell angezeigten (zu Beginn "_") Unterschied wiedespiegelt.
+
+Die Bedienung ist denkbar einfach:
+<pre>
+ Tasten   Wirkung
+ SPACE    Springt zum nächsten Unterschied ohne irgendwelche Änderungen
+          vorzunehmen
+ A (B)    Übernimmt die Version aus Buffer A in Buffer B, bzw. umgekehrt.
+ ~        Vertauscht die Rollen von A und B.
+ q        Beendet die ediff-Sitzung mit vorheriger Abfrage. 
+          Lässt beide Buffer geöffnet.
+ rb/ra    Rückgängig im jeweiligen Buffer ("r" für "restore")
+ wb/wa    Speichern des jeweiligen Buffer ("w" für "write")
+ |        Ändert das Layout von übereinander zu nebeneinander
+ m        Zieht das XEmacs-Fenster auf volle Größe auf.
+ ##       Ingoriert Unterschiede, die lediglich Whitespaces 
+          (also Space, Tab, Newline, ...) sind.
+</pre>
+Weitere Kommandos entnehme der begeisterte Anwender dann der Dokumentation (erst das <code>?</code>, ausführliche Info-Dokumentation mit <code>E</code>
+
+== Farbcodes ==
+
+Die mittels <code>diff</code> entdeckten Unterschiede werden im Buffer farblich codiert dargestellt:
+<pre>
+ Farbcode        Bedeutung
+ Grau            Unterschied, aber nicht der aktive
+ Gelb            Nur Whitespace-Unterschiede
+ Weitere Farben  Weiss ich auch nicht, hab ich aber auch noch 
+                 nie gebraucht ;-)
+</pre>
+== Verzeichnisse ==
+
+Um ganze Verzeichnis-Bäume rekursiv zu untersuchen, benötigt man
+ 
+    M-x ediff-directories.
+
+Dann wird ein Buffer geöffnet, der eine Liste von Dateien und Verzeichnissen mit einigen Informationen zu selbigen enthält. Jedes Verzeichnis und jede Datei sind eine Session, die mit <code>RETURN</code> gestartet werden kann.
+
+Dann verhält sich ein geöffnetes Verzeichnis genauso wie das erste Verzeichnis, und eine Datei so, wie oben beschrieben. Wenn eine Datei-Session beendet wurde, geht der Cursor gleich auf die nächste Session, so dass man gleich wieder starten kann. Dazu empfiehlt es sich, bei der Frage nach einem Filter am Anfang, alle Backup-Dateien auszublenden, wenn man welche hat.
+
+== Weiteres ==
+
+Das Ediff-Paket liefert noch viel mehr Funktionalität, aber ich bin nur so weit eingestiegen, wie hier beschrieben, und habe bisher noch nicht mehr gebraucht.
+
+Mit
+
+    M-x ediff-files3
+
+lassen sich auch drei Dateien vergleichen. Dann existieren noch Funktionen auf der C-Taste, für den dritten Buffer. Auch drei Verzeichnisse lassen sich vergleichen....
+
+Auch sehr praktisch ist `ediff-backup': Es vergleicht eine Datei mit der neuesten Sicherheitskopie.  Wenn die Datei aber selbst eine Sicherheitskopie ist, erfolgt der Vergleich mit dem Original.  Letzteres ist hilfsreich, wenn man
+eine Datei mit einer seiner Sicherheitskopie vergleichen will, welche nicht unbedingt die letzte ist. [Mehrere Sicherheitskopien von einer Datei hat man, wenn man NumericBackups (Variabel `version-control') verwendet.]
+
+== Schlussbemerkung ==
+Bei diesem Dokument handelt es sich um eine Kopie von http://www.skamphausen.de/xemacs/apps/ediff.html in der Hoffnung, dass die Dokumentation weiterentwickelt wird. -- StefanKamphausen

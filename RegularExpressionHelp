@@ -1,0 +1,40 @@
+== Emacs Regular Expressions Are Not Perl Regular Expressions ==
+
+: Just a simple regexp question: why does not a regexp like <code>(?:aaa|bbb)</code> work in `M-x search-forward-regexp'??
+
+The answer is simple: There are two "styles" of regular expressions.  One of them made popular by old Unix tools like sed and grep, and another made popular by Perl.  In Perl, the characters <code>( | )</code> have their special meaning -- grouping and alternative.  In the grep, the characters <code>( | )</code> have their ordinary meaning -- they match themselves.  In either case, escaping them using a backslash will change the meaning of the character.
+
+The above example in Emacs would read <code>\(?:aaa\|bbb\)</code>.
+
+Try ReBuilder to interactively build regular expressions.
+
+Or use the function [[rx]] inside Emacs (CVS:emacs-lisp/rx.el) or try [[SymbolicRegexp]]s.
+
+== Regular Expressions In Emacs Lisp Are Strings Not Literals ==
+
+: Why does the code <code>(re-search-forward "\(?:aaa\|bbb\)")</code> not work as expected?
+
+The EmacsLisp code is read by the so-called /reader/ before the regular expression is compiled by the regular expression library.  The elisp reader uses the same escape character as the regular expression library within strings.  This has an unfortunate effect: Single backslashes will just "disappear"!
+
+* The elisp string <code>"\(?:aaa\|bbb\)"</code> is read by the elisp reader and results in the regular expression
+<code>(?:aaa|bbb)</code> which does not work
+* The elisp string <code>"\\(?:aaa\\|bbb\\)"</code> is read by the elisp reader and results in the regular
+expression <code>\(?:aaa\|bbb\)</code> which /does/ work.
+
+== See What Regexp Subgroups Really Match ==
+
+It can be helpful, when trying to figure out what a give regexp does or doesn't do, and why, to use '''Icicles''' regexp searching, '''`##C-`##'''' (`icicle-search'), '''`##C-'##''' (`icicle-occur'), and so
+on -- [[Icicles - Search Commands, Overview]]. The search hits are highlighted so that you can even see what the subgroups match. For instance, here is how this regexp is highlighted:
+
+: ##(##'''##\(##'''##[-a-z]*]+##'''##\)##'''## *##'''##\(##'''##(##'''##\(##'''##([-a-z]+ *##'''##\(##'''##[^)]*##'''##\)##'''##)##'''##\)##'''##)##'''##\)##'''##.*##
+
+[[image:IciclesSearchContextLevelsScreenshot]]
+
+
+
+
+
+
+----
+CategoryRegexp
+

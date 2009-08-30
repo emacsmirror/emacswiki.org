@@ -1,0 +1,22 @@
+If you crosspost articles from Usenet or mailing lists to the wiki, please ask the
+original author whether they are willing to license their text under
+our licensing terms (see footer) or release it into the public
+domain.
+
+== Remove Mail Addresses ==
+
+Remove email adresses from any material you post and transform the
+original name into a link to their homepage on this wiki.  If people
+want to reveal their email addresses on their homepage, fine.
+Example: Alex Schroeder <alex@some.adress.com> turns into
+AlexSchroeder.
+
+Remove email addresses even if you are copying an interesting article
+from a newsgroup.  Remove email addresses even from source code
+comments.  Provide enough headers such that interested parties can use
+search engines such as http://groups.google.com to determine the email
+address of the original address (I suggest the name of the author,
+subject, newsgroups, and date) (I suggest including the Message-ID --
+[[Lars Brinkhoff]]).
+
+Leave email addresses for mailing lists.

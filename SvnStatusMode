@@ -1,0 +1,175 @@
+== SubversionAndEmacs ==
+
+SubVersion, like other revision control systems starting with [[CVS]], can manage groups of files and entire directory trees, rather than just one file at a time like preceding systems like [[RCS]] and CSSC.  The design of Emacs' VersionControl mode unfortunately only supports these single-file operations.  PclCvs was the first Emacs mode to support aggregate operations on CVS files.  The following are modes that can also operate on many files in a SubVersion repository.
+
+== Psvn ==
+
+StefanReichoer provides a SubVersion mode called [::psvn], which is similar to [[pcvs]]/pcl-cvs for the ConcurrentVersionsSystem. The main advantages to this mode over the official mode is: 
+
+# It is in the standard Subversion install and "blessed" by the Subversion maintainers since the pre-1.0 days.
+# It can commit over more than one file at time.
+
+You can find the very latest version at:
+
+* http://www.xsteve.at/prg/emacs/psvn.el
+* http://svn.collab.net/repos/svn/trunk/contrib/client-side/emacs/psvn.el.
+
+SurendraSinghi has confirmed that the psvn.el works with [[XEmacs]]
+
+=== PsvnUsage ===
+
+To check the status of a Subversion repository at `DIR':
+
+  M-x svn-examine DIR RET
+
+From inside the ##*svn-status*## buffer:
+
+; `g': Refresh status of files shown.
+; `U': Update files for currently examined Subversion repository.
+; `C-u U REVISION RET': Update the files to `REVISION'.
+; `M-- U': Update only marked files.
+; `m': Mark file at point.
+; `* %': Mark files by RegularExpression.
+; `u': Unmark file at point.
+; `c': Commit marked files or file file at point.
+; `=': Run diff on the marked files or file at point.
+; `C-u = REVISION RET': Run diff on the marked files or file at point against `REVISION'.
+; `l': Display log for marked files or file at point.
+
+From the ##*svn-log*## buffer:
+
+; `RET': Visit the file at point.
+; `=': View the diff for the revision at point.
+
+For a more discursive treatment, see Ted Carnahan's [http://www.tedcarnahan.com/2008/10/24/a-brief-introduction-to-emacs-psvn/ A Brief Introduction to Emacs psvn].
+
+For the full details, read the comments at the top of [http://www.xsteve.at/prg/emacs/psvn.el psvn.el]. The following is copied from version="2009-05-27 20:38:05":
+
+{{{
+;; At the moment the following commands are implemented:
+;;
+;; M-x svn-status: run 'svn -status -v'
+;; M-x svn-examine (like pcl-cvs cvs-examine) is alias for svn-status
+;;
+;; and show the result in the svn-status-buffer-name buffer (normally: *svn-status*).
+;; If svn-status-verbose is set to nil, only "svn status" without "-v"
+;; is run. Currently you have to toggle this variable manually.
+;; This buffer uses svn-status mode in which the following keys are defined:
+;; g     - svn-status-update:               run 'svn status -v'
+;; M-s   - svn-status-update:               run 'svn status -v'
+;; C-u g - svn-status-update:               run 'svn status -vu'
+;; =     - svn-status-show-svn-diff         run 'svn diff'
+;; l     - svn-status-show-svn-log          run 'svn log'
+;; i     - svn-status-info                  run 'svn info'
+;; r     - svn-status-revert                run 'svn revert'
+;; X v   - svn-status-resolved              run 'svn resolved'
+;; U     - svn-status-update-cmd            run 'svn update'
+;; M-u   - svn-status-update-cmd            run 'svn update'
+;; c     - svn-status-commit                run 'svn commit'
+;; a     - svn-status-add-file              run 'svn add --non-recursive'
+;; A     - svn-status-add-file-recursively  run 'svn add'
+;; +     - svn-status-make-directory        run 'svn mkdir'
+;; R     - svn-status-mv                    run 'svn mv'
+;; C     - svn-status-cp                    run 'svn cp'
+;; D     - svn-status-rm                    run 'svn rm'
+;; M-c   - svn-status-cleanup               run 'svn cleanup'
+;; k     - svn-status-lock                  run 'svn lock'
+;; K     - svn-status-unlock                run 'svn unlock'
+;; b     - svn-status-blame                 run 'svn blame'
+;; X e   - svn-status-export                run 'svn export'
+;; RET   - svn-status-find-file-or-examine-directory
+;; ^     - svn-status-examine-parent
+;; ~     - svn-status-get-specific-revision
+;; E     - svn-status-ediff-with-revision
+;; X X   - svn-status-resolve-conflicts
+;; S g   - svn-status-grep-files
+;; S s   - svn-status-search-files
+;; s     - svn-status-show-process-buffer
+;; h     - svn-status-pop-to-partner-buffer
+;; e     - svn-status-toggle-edit-cmd-flag
+;; ?     - svn-status-toggle-hide-unknown
+;; _     - svn-status-toggle-hide-unmodified
+;; m     - svn-status-set-user-mark
+;; u     - svn-status-unset-user-mark
+;; $     - svn-status-toggle-elide
+;; w     - svn-status-copy-current-line-info
+;; DEL   - svn-status-unset-user-mark-backwards
+;; * !   - svn-status-unset-all-usermarks
+;; * ?   - svn-status-mark-unknown
+;; * A   - svn-status-mark-added
+;; * M   - svn-status-mark-modified
+;; * P   - svn-status-mark-modified-properties
+;; * D   - svn-status-mark-deleted
+;; * *   - svn-status-mark-changed
+;; * .   - svn-status-mark-by-file-ext
+;; * %   - svn-status-mark-filename-regexp
+;; * s   - svn-status-store-usermarks
+;; * l   - svn-status-load-usermarks
+;; .     - svn-status-goto-root-or-return
+;; f     - svn-status-find-file
+;; o     - svn-status-find-file-other-window
+;; C-o   - svn-status-find-file-other-window-noselect
+;; v     - svn-status-view-file-other-window
+;; I     - svn-status-parse-info
+;; V     - svn-status-svnversion
+;; P l   - svn-status-property-list
+;; P s   - svn-status-property-set
+;; P d   - svn-status-property-delete
+;; P e   - svn-status-property-edit-one-entry
+;; P i   - svn-status-property-ignore-file
+;; P I   - svn-status-property-ignore-file-extension
+;; P C-i - svn-status-property-edit-svn-ignore
+;; P X e - svn-status-property-edit-svn-externals
+;; P k   - svn-status-property-set-keyword-list
+;; P K i - svn-status-property-set-keyword-id
+;; P K d - svn-status-property-set-keyword-date
+;; P y   - svn-status-property-set-eol-style
+;; P x   - svn-status-property-set-executable
+;; P m   - svn-status-property-set-mime-type
+;; H     - svn-status-use-history
+;; x     - svn-status-update-buffer
+;; q     - svn-status-bury-buffer
+
+;; C-x C-j - svn-status-dired-jump
+
+;; The output in the buffer contains this header to ease reading
+;; of svn output:
+;;   FPH BASE CMTD Author   em File
+;; F = Filemark
+;; P = Property mark
+;; H = History mark
+;; BASE = local base revision
+;; CMTD = last committed revision
+;; Author = author of change
+;; em = "**" or "(Update Available)" [see `svn-status-short-mod-flag-p']
+;;      if file can be updated
+;; File = path/filename
+;;
+
+;; To use psvn.el put the following line in your .emacs:
+;; (require 'psvn)
+;; Start the svn interface with M-x svn-status
+}}}
+
+== Dsvn ==
+
+DavidKågedal contributed a Subversion mode called [::dsvn], which is also influenced by pcvs and psvn.  However, it can more efficiently work with large repositories containing many files and subdirectories.
+
+* [http://subversion.tigris.org/servlets/ReadMsg?list=dev&msgNo=124678 dsvn.el -- an Emacs frontend to svn] -- initial announcement.
+
+Download it from the "contributed" section of the official Subversion repository:
+
+* [http://svn.collab.net/repos/svn/trunk/contrib/client-side/emacs/dsvn.el dsvn.el]
+
+== Discussion ==
+
+[new]
+just wondering how to do this: I use both pcl-cvs and psvn on more repositories.  usually I end up with multiple ##*cvs*## buffers and one ##svn-status## buffer.  when I select the active buffer with C-leftmousebutton, I see the ##*cvs*## buffers together in the same CVS category, but the ##svn-status## buffer goes to the Others group.  which variable influences this behaviour?  tried ##mode-name##, but it didn't do the trick.
+--MarioFrasca
+[new]
+: Take a look at mouse-buffer-menu-mode-groups, it looks like it defines the filtering.
+--[[piyo]]
+
+----
+CategoryVersionControl
+

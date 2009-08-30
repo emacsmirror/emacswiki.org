@@ -1,0 +1,78 @@
+= General process =
+
+== Resources ==
+
+There are some files called "muse-publish.el" and "publish" in the muse distribution.
+
+=== muse-publish.el ===
+
+It appears that "muse-publish.el" has the lisp publishing methods for publishing
+output of various forms.
+
+=== publish ===
+
+The "publish" file is a shell script that invokes emacs in batch mode with
+the proper arguments to call `muse-batch-publish-files'.
+
+== Step-by-step ==
+
+Not done yet.
+
+= Specific examples =
+
+= MichaelOlson =
+
+== Using Emacs Wiki ==
+
+=== Resources ===
+
+My header and footer files are at http://www.mwolson.org/projects/EmacsWikiStuff.html .  The scripts I use to publish my website are at http://www.mwolson.org/projects/WebSiteScripts.html .
+
+=== Step-by-step publishing method ===
+
+* Within Emacs, I'll make a change to a particular page.
+
+* I do a C-c C-p on that page to publish it to the `emacs-wiki-publishing-directory' for the project that the page belongs to.  This updates it on my [http://tuxtanker.mwolson.org/ laptop].
+
+* If I make changes to the header or footer file, I have to visit one page from each project and do a C-u C-c C-p on each one.  This forces all pages from the current project to be republished.
+
+* To propagate the changes to my website, I run my "upload" script.  The relevant sub-scripts to the part of my site that is managed Emacs Wiki are:
+
+** make-wiki: Copy the raw Emacs Wiki pages to a subdirectory called "wikisource" within each project's directory.  This allows me to have a link to them in my footer file so that people can see how my raw template gets turned into XHTML.
+
+** package: Make a tarball of my local version of the site.
+
+** transfer: Send the tarball to my [http://www.mwolson.org/ remote webserver].
+
+** unpack: Every time I modify this file, I have to re-send the file to my home directory on the remote webserver.  Once I ssh over to my webserver, I run this script to delete the relevant parts of the existing site and replace them with the contents of the tarball.
+
+== Using Muse ==
+
+I will document this section once I figure out how to use Muse ;) .
+
+= John Wiegley =
+
+== Using Emacs Wiki ==
+
+I have no idea how John did his site before he created Muse.  But I would love to learn this!  Perhaps some insight could be added here as to what limitations of Emacs Wiki prompted him to create Muse, its successor.
+
+== Using Muse ==
+
+=== Resources ===
+
+The "muse-johnw.el" and "publish-johnw" files are included in the Muse tarball.
+
+==== muse-johnw.el ====
+
+I assume this contains any specialized functions that John needs to publish his project.  Perhaps it also defines the structure of his website, like which types of projects it contains.  John needs to be the one to fill this out, probably :) .
+
+==== publish-johnw ====
+
+This is pretty much exactly the same as the example "publish" script, except that it adds "muse-johnw.el" to the list of files for Emacs to include in batch mode.
+
+=== Step-by-step ===
+
+* My steps are almost identical to MIchael's above.  I edit my web pages, and type C-c C-p.  I also use the "publish-johnw" script from the command-line.  If ever I make changes to my sidebar file, "recent", then I pass the --force flag to publish-johnw so that all of my HTML files are regenerated to include the new sidebar.  Then I upload.
+
+----
+EmacsMuse

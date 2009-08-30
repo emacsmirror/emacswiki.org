@@ -1,0 +1,5 @@
+* [[auto-insert-for-asdf]] - Opening an empty .asdf-file and it's consequences
+* CLTemplateMakeSystem - A defun for creating a bunch of files for an asdf-installable system
+
+----
+CategoryTemplates

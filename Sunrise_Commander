@@ -1,0 +1,212 @@
+[[image:SunriseCommanderLogoPage|The Sunrise Commander|]]
+
+Hello, Emacs Community!
+
+I've  been  working  lately  on  a new OFM for GNU Emacs. (For those who may not
+know, OFM stands for "Orthodox File Manager"[http://www.softpanorama.org/OFM/index.shtml] - it's the kind of  interface  made
+popular by the Norton and Midnight Commanders.)
+
+"Another one?" you may say.
+
+Well,  yes.  As  a  long time user of the Midnight Commander on Linux (and, long
+before that, of Norton Commander and Norton Navigator on DOS), one of the  first
+things I tried after moving to Emacs was running MC in term-mode. It was no joy,
+so after that I tried using nc.el and mc.el, but both scripts were far away from
+what I was looking for.
+
+I  realized early the power of Dired (learned quite fast several nifty tricks on
+it), and I think the decision made by the authors of mc.el of basing their  file
+manager  on Dired was a wise one. But it lacked support for so many of the usage
+patterns MC got me accustomed to through all these years... it was a real  pity.
+
+So, faithful to the tradition established by mc.el and ec.el, I decided to write
+the Sunrise Commander.
+
+After several months of growing it up (good programs seem to grow by themselves)
+I've managed to put together most of the functionality I  wanted  that  was  not
+there before:
+
+* It is implemented as an independent major mode derived from Dired, what allows
+  to  have  a  rich  feature  set  (key  bindings,  colors,  functions,  killing
+  automatically  unused  buffers,  etc.)  without  interfering with normal Dired
+  stuff.
+
+* Transparent  navigation  inside compressed files/archives: zip, tar, tgz, rar,
+  jar, war, ear, sar, ... (using AVFS)
+
+* Virtual  directories with the results of "locate", "find", "grep" commands (or
+  whatever other command that produces a list of files/directories) that can  be
+  used as regular panes with copying, removing, renaming, following...
+
+* List  of  most  recently  visited  files,  also  fully functional as a virtual
+  directory. (using recentf)
+
+* An  independent  history  ring  for  each  of  the panes that can be navigated
+  forwards and backwards and also  displayed  in  its  own  pane  as  a  virtual
+  directory.
+
+* Sorting directory contents by name, date, size, extension.
+
+* Comparing directories by file names, sizes and thoroughly (using MD5 sums).
+
+* Comparing  files using diff (for fast checking) or ediff (for more details and
+  merging).
+
+* Synchronized navigation for comparing and merging whole directory trees.
+
+* Terminal  integration:  integrates  well with any external shell that works in
+  term-mode or with the emacs shell (eshell).
+
+**    Terminal  navigation:  allows  to  use  the  active pane from the terminal
+      window without actually switching to it.
+
+**    Command  line  macro  expansion: replaces automatically e.g. "%f" with the
+      currently selected file, "%m" with all marked files, etc. without  leaving
+      the command line (while in line mode).
+
+* More  "natural"  functions  for  copying  and  renaming  recursively files and
+  directories. The default dired functions for  these  operations  are  somewhat
+  "weird" compared to the ones one finds usually on OFMs.
+
+* Remembering the current locations of the panes, so I can switch contexts for a
+  while, do some other stuff and later come back to the place I was before.
+
+* Making a backup copy of selected or marked files with just one keystroke.
+
+* Many  other  small  functions  (swap  panes,  go  to  parent dir, follow file,
+  show/hide hidden fields, change  display  of  data,  file  coloring  based  on
+  extension etc.) found usually on more mature OFMs.
+
+It  is  quite portable. I've tested it on Linux and Windows 2000 using GNU Emacs
+versions 22 and 23 (I have also received feedback from a user reporting it works
+fine  on  GNU Emacs 22.2 on Mac OS X Leopard), though there's some homework left
+one has to do in order to have everything working fine: on  Linux  you  have  to
+install  AVFS if you want to navigate inside compressed files (who doesn't?) and
+on Windows there is some work configuring ls-lisp and you must also install some
+diff  port if you want to be able to use ediff. Unfortunately I haven't heard of
+anything like AVFS for MS Windows, so you'll have to use archive-mode, tar mode,
+etc. for your compressed files.
+
+You can get a copy of the Sunrise Commander at:
+
+* http://joseito.republika.pl/sunrise-commander.el.gz
+* Lisp:sunrise-commander.el
+
+Here's a screenshot:
+
+http://joseito.republika.pl/sunrise.png
+
+[new]
+I  have  written  a small extension that may be of help to new users who want to
+get acquainted fast with the  most  frequent  functions  found  in  the  Sunrise
+Commander  and their keybindings. Once installed, it displays a panel with mouse
+clickable buttons that show some of the most useful actions performed by Sunrise
+and  their  respective  bindings in the bottom window every time the main panels
+are invoked.
+
+Have a look, here is a screenshot:
+
+http://joseito.republika.pl/sunrise-buttons.png
+
+You can execute any of the functions by clicking the appropriate button, but the
+extension was conceived more as a simple cheat sheet (a very, very limited  one,
+as you can easily learn by pressing the last button, labeled "More...")  than as
+a real interface to Sunrise and Dired functions. Eventually, if  you  like  this
+kind  of  interaction with the program you can add your own commands to the list
+and let this extension manage the creation and layout of the buttons for you.
+
+To get a copy of the Sunrise Commander Buttons Extension (including installation
+instructions) go here:
+
+* http://joseito.republika.pl/sunrise-x-buttons.el.gz
+
+Enjoy ;-)
+
+[new]
+Unfortunately  the  access  to compressed archives offered by AVFS is limited to
+read-only operations, so I have written an extension to  the  Sunrise  Commander
+that  provides  seamless  and effective manipulation of compressed archives in a
+virtual file system. It is called the Sunrise Mirror Extension and you can get a
+copy of it here:
+
+* http://joseito.republika.pl/sunrise-x-mirror.el.gz
+
+Be warned though, that for this extension to work you ABSOLUTELY must have:
+
+# fuse + AVFS support working with your Sunrise Commander installment.
+# fuse + funionfs installed and working in your OS.
+# Programs required for compressing: at least zip, jar and tar.
+# Your  AVFS  filesystem root must be mounted inside a directory where you
+  have writing access.
+
+This  means  that most probably this extension will work out-of-the-box on Linux
+(or other unices), but you'll have a hard time to make it work  on  Windows.  It
+was  written  on  GNU  Emacs  23  on Linux and tested on GNU Emacs 22 and 23 for
+Linux.
+
+[new]
+Not  long ago I read in some discussion board a quite nice comment regarding the
+Sunrise Commander, something on the lines of "beautiful stuff, but it will never
+be a real file manager as long as emacs remains single-threaded". The answer any
+seasoned emacs user would give in such situation would be  something  like  "you
+may  have as many processes as you need - have you ever heard of openwith?" and,
+in the case of Sunrise, it is mostly right, but there was  one  small  exception
+that already had had the chance to bug me a lot since I started using Sunrise as
+my default FM: copying and renaming files bigger than several hundred  megabytes
+is a painful operation that can freeze your emacs for a looong time and toss you
+out of your flow without a good reason.
+
+Then somewhere else I read about this emacs user that launches as many instances
+of emacs as needed, because memory is cheap these days, and who cares. But  that
+didn't look to me like something I could seriously suggest to an annoyed user.
+
+So  I  wrote  a  new  extension  to the Sunrise Commander that allows to execute
+asynchronously this kind of tasks. Actually it  does  launch  a  separate  elisp
+interpreter  (with  a  limited  set of functions loaded) and delegates to it the
+dirty work, but it also  manages  automatically  the  life  cycle  of  this  new
+instance  and all the communication between the main and the background ones. In
+order to perform your copy or rename operation in the background, the only thing
+you  have  to  do  is  add  an  empty prefix to the usual keystroke (e.g. C will
+perform a regular  copy  in  the  foreground  and  C-u  C  will  do  it  in  the
+background).
+
+You can get a copy of the Sunrise Loop extension here:
+    http://joseito.republika.pl/sunrise-x-loop.el.gz
+
+[new]
+A Sunrise Commander User had the following problem:
+
+    I  practically  don't use the "viewer window", instead I
+    use `dired-view-file' which would display  the  file  in
+    the pane with convenient commands for browsing the file.
+    I found a little awkward the scrolling  in  the  "viewer
+    window"  (actually  for  me  there  is  another  problem
+    related with my poor-sight: I use large  fonts,  so  for
+    sunrise  commander  to  be  useful, I have to use a very
+    wide frame. Then the "viewer window" is very  wide  with
+    only a few lines(...)
+
+    I want to get rid of the "viewer window"(...)
+
+    Also I want to visit the selected file in a new frame.
+
+So  we  worked  together  to redefine a few functions in Sunrise to do precisely
+this. The resulting code is a new extension called "popviewer", now available at
+http://joseito.republika.pl/sunrise-x-popviewer.el.gz  --  if  you have the same
+itch, you can scratch it too :)
+
+[new]
+I  have some  problems  with sunrise  commander.   Is there  some mailing  list,
+project page or  other way to report bugs?  It seems  the devadvice usage breaks
+some  other stuff.  For example  listing  the files  in a  debian package  using
+debian-el  does  not work  anymore.   Btw.  is there  a  way  to unload  sunrise
+commander  without  restarting emacs?   Otherwise  it  looks  quite promising  -
+thanks!
+
+[new]
+Currently there is no project page (other than this wiki page). Please report any
+bugs you find to the comp.emacs newsgroup or directly to me: joseito@poczta.onet.pl
+
+----
+CategoryDirectories
+CategoryEmulation

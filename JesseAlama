@@ -1,0 +1,20 @@
+I've been an emacs user for several years (at least since 1998).
+
+Currently learning: AllOut, PlannerMode.
+
+Emacs mailer: CategoryGnus.
+
+Favorite package: PlannerMode.
+
+* My Lisp
+
+- Lisp:planner-frame.el My idea was to somehow make the PlannerMode
+  more of an emacs application along the lines of, say, WThreeM and
+  CategoryGnus.  One way to get started with that is to provide a way
+  of devoting a frame to the planner, and providing sensible exit and
+  suspend functions.
+
+[new]
+Welcome to the wiki! -- AlexSchroeder
+----
+CategoryHomepage

@@ -1,0 +1,50 @@
+'''Cette page fait partie de la description de OneOnOneEmacs, par DrewAdams.'''
+
+This page is also available in English: [[Dedicated Minibuffer Frame]]
+
+*  
+*  
+*  
+
+Lorsqu'on a de multiples [[Frame]]s, il n'y a pas d'avantage (que je vois) a avoir un MiniBuffer incorpore a chaque frame. En fait, parfois ca prete de la confusion en termes du focus actuel.
+
+Alors, j'ai decide d'empecher (par `default-frame-alist') tout frame d'avoir un minibuffer a lui, sauf un frame special a part, dedie au minibuffer. Ce frame, nomme `1on1-minibuffer-frame' a les proprietes suivantes :
+
+* Il ne fonctionne que comme minibuffer -- propriete de frame
+`<code>(minibuffer . only)</code>'.
+* Il n'a pas de MenuBar ; il n'a pas de ToolBar.
+* Le minibuffer etend tout le long de l'ecran, en bas (par defaut). (La position et la taille sont calculees automatiquement en fonction de la taille de l'ecran.)
+
+
+Ca veut dire qu'on n'a qu'un seul endroit a chercher pour trouver le minibuffer. Et le minibuffer est long, avec de la place pour de messages longues, pour l'edition de commandes precedentes, pour l'affichage de commandes candidates (`icomplete') etc.
+
+'''Voir le package:''' Lisp:oneonone.el
+
+
+
+== La Couleur du Fond du Minibuffer Indique l'Etat Actuelle ==
+
+J'ai profite du fait que le frame `1on1-minibuffer-frame' est dedie au minibuffer pour changer dynamiquement sa couleur du fond afin d'indiquer l'etat actuel de l'interaction utilisateur. Ces trois etats utilisent trois couleurs differentes (les couleurs sont reglables) :
+
+* absence d'utilisation du minibuffer par l'utilisateur
+* entree de commandes et donnees dans le minibuffer
+* recherche incrementale
+
+Voici un capture d'ecran du `minubuffer-frame' dans chacun de ces etats :
+
+[[image:DrewsEmacsSSMinibuff]]
+
+Pour faire cette customization il fallait utiliser `isearch-mode-hook' et `isearch-mode-end-hook' afin de changer la couleur. Il fallait aussi utiliser ces fonctions :
+
+* `top-level' et `abort-recursive-edit' --
+Remettre la couleur du fond a "inactive".
+
+* `y-or-n-p' -- Changer temporairement la couleur du fond a "active" -- jusqu'a ce que l'utilisateur repond oui (y) ou non (n) a la question.
+
+Ces changement subtiles de couleur ameliorent l'orientation de l'utilisateur. Par exemple, c'est plus facile de voir qu'on est bloque dans une edition recursive.
+
+'''Voir le package :''' Lisp:oneonone.el
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay
+

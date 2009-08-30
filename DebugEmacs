@@ -1,0 +1,44 @@
+The first thing you should do if you want to debug a problem is to set
+the variable `debug-on-error' to t.  You can do that by calling `M-x
+set-variable RET debug-on-error RET t'.  When you get an EmacsLisp
+error, this will pop up a BacktraceBuffer.  For more advanced
+EmacsLisp debugging, see SourceLevelDebugger. See also [[EmacsMemoryDebugging]]
+
+Another useful tip is to check for parentheses, with M-x check-parens, especially useful if
+you're loading a file (e.g your .emacs) and emacs raises weird errors regarding 
+the read syntax. 
+
+== gdb ==
+
+This is what I use to attach gdb to a running Emacs process.  This
+only makes sense if you have the C source code lying somewhere.  This
+way, if Emacs ever crashes (happened a few times only!), I can at
+least provide a backtrace when I send my bug report.
+
+ #!/bin/sh
+ EMACS_PID=`ps x|sed -n -e "s/ *\([0-9][0-9]*\).*[0-9] emacs-21.1/\1/p"`
+ cd /usr/local/src/emacs-21.1/src
+ exec -a debug-emacs xterm -e gdb /usr/local/bin/emacs $EMACS_PID
+
+You should check the location of your emacs, the location of your
+source directory (this is important for the .gdbinit file there which
+contains some nice Emacs Lisp-debugging things).  Read the etc/DEBUG file
+in your Emacs distribution for more information.
+
+=== Other or older shell script suggestions ===
+
+This shell script starts emacs and attaches gdb to it.
+
+ #!/bin/sh
+ if [[ "$1" == "--debug" ]]; then
+     shift
+     /usr/local/bin/emacs $* &amp;
+     EMACS_PID=$!
+     cd /usr/local/src/emacs-20.7/src/
+     gnome-terminal --termname xterm --use-factory --start-factory-server --title "Debug Emacs" --execute gdb /usr/local/bin/emacs $EMACS_PID &amp;
+ else
+     /usr/local/bin/emacs $* &amp;
+ fi
+
+----
+CategoryCode, CategoryDebug

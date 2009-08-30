@@ -1,0 +1,10 @@
+Scroll margins minor mode. This behaviour is also known as SmoothScrolling.
+
+* Lisp:scrl-margs.el
+
+Other modules with similar functionality are: <tt>scroll-in-place.el</tt> by Eric Eide, and <tt>smooth-scrolling.el</tt> by Adam Spiers. In emacs-20 and later, scroll margins can be controlled by the variables <tt>scroll-margin</tt>, <tt>scroll-conservatively</tt>, and <tt>scroll-step</tt>.
+
+-- DavidAndersson
+
+----
+CategoryDisplay

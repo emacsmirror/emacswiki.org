@@ -1,0 +1,102 @@
+== Color Palette ==
+
+Forget about `list-colors-display'! If you really want to look up a color by name or RGB components, then you want to see what it looks like in context -- either in the context of a palette of all colors or in the context of your work, as text foreground or background. And most of the time you don't want to deal with color names at all. 
+
+(Most of the time you don't want to deal with [[Face]] names either -- see '''FaceMenuPlus''' for point-and-click access to faces and their colors, including access to the color palette described here.)
+
+Library '''<tt>[[palette.el]]</tt>''' provides a general color palette that you can use to examine color properties or choose colors. You can input colors using color names, RGB components (red, green, blue), or HSV components (hue, saturation, value). [[Completion]] is available for color names. If you also use '''[[Icicles]]''', then you can match any part(s) of the color name, and you can browse multiple colors by name successively -- `c' is then a multi-command (see '''[[Icicles - Multi-Commands]]''').
+
+'''Note:''' Library ##palette.el## is only for use with a window manager. Do not try to use it with `##emacs -nw##'.
+
+'''Hue''' means tint; '''saturation''' means color purity or intenseness (opposite of grayness); and '''value''' means brightness. Saturation=0 is grayscale; saturation=1 is pure color (no gray). Value=0 is black (no light); value=1 is as bright as possible (100% color).
+Hue 0.0 and hue 1.0 are the same: pure red.  The hue x
+saturation palette shows this discontinuity.  Move the TextCursor horizontally near the right side of this palette and you will
+see the hue value jump between 0.0 and 1.0 at a certain point.
+
+You can navigate the HSV and RGB color spaces interactively. Hit '''`##?##'''' at any time to examine the color under the text cursor -- the HSV and RGB components are displayed in the echo area. Click `mouse-1' or move the text cursor to examine other colors. 
+
+Use ``RET' or `mouse-2' to ''choose'' the color under the cursor, making it the "'''current color'''". The current color is displayed with a large swatch to the right of the hue x saturation palette. You can also hold the Shift key down while you move the cursor, to continually update the current color. You can hit '''`##~##'''' to set the current color to its ''complement''. (Again, `##?##' shows you the components of that complement color.) Use `C-h m' for more info. A popup menu of the palette commands is available on `mouse-3'.
+
+Once you find a color you like, you can use its RGB string
+anywhere in Emacs as the color definition of a [[Face]] or a [[Frame]].
+Its RGB string is the value of '''`palette-current-color''''.
+
+
+This palette is similar to many that exist outside Emacs -- a good example is the palette available in Microsoft Word (A > More Colors > Custom). You will need Emacs 22 for '''<tt>[[palette.el]]</tt>''' to be useful, because it makes heavy use of Emacs faces, and the display engine of Emacs 20 and 21 is not up to the task. ''Have fun!''
+
+Here is a screenshot of the palette frame:
+
+: [[image:ColorPaletteScreenshot]]
+
+And here is a screenshot of the palette `mouse-3' menu, showing some of the key bindings for Color Palette mode:
+
+: [[image:ColorPaletteMenuScreenshot]]
+
+The palette should appear as shown above, in its own, small frame.  If the palette appears much larger than what you see above, or if it looks weird, then your font is probably too large.  In that case, customize
+option '''`palette-font'''' -- see it for more information.  More generally, you can change the size of the palette by simply changing the size of its font: `palette-font'. Here is a screenshot with `palette-font' = ##"-outline-Courier-normal-i-normal-normal-3-37-96-96-c-*-iso8859-1"## instead of the default size-5 font:
+
+: [[image:ColorPaletteScreenshotSize3]]
+
+
+== Eye Dropper ==
+
+You can at any time, from any Emacs window, pick up the foreground
+or background color at the current cursor position (point),
+setting variable `palette-current-color' to it.  Use commands
+'''`eyedropper-foreground'''' and '''`eyedropper-background'''' to do this.   You can
+then set any Emacs face or frame color using the value of
+`palette-current-color'.
+With a prefix argument (`C-u'), these commands also display the palette.
+
+
+== Point and Click: Palette for Any Face You See ==
+
+Again (it's worth repeating), if you load library '''<tt>[[facemenu+.el]]</tt>''', then you can access the color palette for any face you see used in an Emacs buffer, just by pointing to it (`C-mouse-2') -- the '''Text Properties''' popup menu is enhanced to give you access to the palette and the eyedropper. See '''FaceMenuPlus'''.
+
+== Use with Icicles ==
+
+If you use the color palette with '''[[Icicles]]''', then `c' is bound in the palette to an '''Icicles''' multi-command that lets you choose colors by name.  After you hit
+`c', you can hit `TAB' or `S-TAB' to use '''Icicles''' completion.
+During completion, you can use `C-next', `C-prior', `C-down',
+`C-up', and `C-RET' to change the current color to different
+colors, by name, successively.  This lets you browse colors by
+name, seeing what they look like immediately.  See [[Icicles - Multi-Commands]] for more on multi-commands.
+
+== Do Re Mi ==
+
+'''DoReMi''' provides an alternative to the color palette for editing Emacs colors. It lets you incrementally adjust face
+and frame properties, including colors, using the arrow keys or a
+mouse wheel.  The color changes are applied instantly to the
+face(s) or frames, so you see the result as you make the changes. 
+
+== Emacs-Lisp Programmers ==
+
+You can call function `palette' from your EmacsLisp code to open the palette for users to define a color that your code needs. Function `palette' takes as optional argument the initial color (swatch) to display. You can pick up the last value of the current color (`palette-current-color') automatically when the user exits the palette, by setting `palette-exit-hook'. For an example of how this is done, see command `facemenup-palette-face-fg-at-mouse' in library '''<tt>[[facemenu+.el]]</tt>'''.
+
+
+-- DrewAdams
+
+----
+== Issues with palette.el ==
+=== Error: "X windows are not in use or not initialized" when running with "emacs -nw" ===
+The error says the truth. However, palette should not stop Emacs from loading, but rather raise the error when palette is actually invoked.
+
+Emacs 22.2. 17-10-2008. Stacktrace:
+<pre>
+Debugger entered--Lisp error: (error "X windows are not in use or not initialized")                                            
+  x-list-fonts("-*-Courier-*-*-*-*-5-*-*-*-*-*-iso8859-1" nil nil 1)                                                           
+  (car (x-list-fonts "-*-Courier-*-*-*-*-5-*-*-*-*-*-iso8859-1" nil nil 1))                                                    
+  (or (car (x-list-fonts "-*-Courier-*-*-*-*-5-*-*-*-*-*-iso8859-1" nil nil 1)) (car (x-list-fonts "-*-fixed-*-*-*-*-5-*-*-*-*$
+  eval((or (car (x-list-fonts "-*-Courier-*-*-*-*-5-*-*-*-*-*-iso8859-1" nil nil 1)) (car (x-list-fonts "-*-fixed-*-*-*-*-5-*-$
+  custom-initialize-reset(palette-font (or (car (x-list-fonts "-*-Courier-*-*-*-*-5-*-*-*-*-*-iso8859-1" nil nil 1)) (car (x-l$
+  custom-declare-variable(palette-font (or (car (x-list-fonts "-*-Courier-*-*-*-*-5-*-*-*-*-*-iso8859-1" nil nil 1)) (car (x-l$
+  eval-buffer(#<buffer  *load*<2>> nil "/home/dc/.emacs.d/palette/palette.el" nil t)  ; Reading at buffer position 3760        
+</pre>
+
+[new:DrewAdams:2008-10-17 21:06 UTC]
+OK, I've tried to take care of that. -- DrewAdams
+
+----
+Lisp:palette.el, Lisp:facemenu+.el
+
+CategoryDisplay CategoryFrames CategoryFaces CategoryCustomize

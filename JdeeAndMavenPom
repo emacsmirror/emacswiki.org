@@ -1,0 +1,38 @@
+== Parse Maven POMs ==
+
+Many Java projects use [http://maven.apache.org Apache Maven] as build
+tool. Maven uses a XML file dubbed POM to describe the project and its
+dependencies. As it is tedious to enter the same information again
+into the prj.el files for the JDEE, Lisp:pom.el
+provides a way to parse these files and use the information to
+configure the JavaDevelopmentEnvironment.
+
+All you need to do is to put pom.el in your load-path and add a
+snippet of emacs lisp into your prj.el files:
+
+<pre>
+(require 'pom)
+(let ((pom (pom-read-pom)))
+  (jde-project-file-version "1.0")
+  (jde-set-variables
+   '(jde-javadoc-gen-destination-directory "./target/docs/apidocs")
+   '(jde-project-name (pom-get-project-id pom))
+   '(jde-global-classpath (pom-get-classpath pom))))
+</pre>
+
+Download:pom.el
+
+Here is also a complimentary prj.el I usually put into the src/java and src/test
+subdirectories, so that the JDEE honours the standard maven project
+structure. It ensures that the compiled classes go into the right
+target directory if you use jde-compile instead of a full maven build.
+
+<pre>
+(jde-project-file-version "1.0")
+(jde-set-variables
+ '(jde-compile-option-directory "./../../target/classes"))
+</pre>
+
+----
+CategoryProgrammerUtils
+JavaDevelopmentEnvironment

@@ -1,0 +1,41 @@
+
+== spacer を使う方法 ==
+
+spacer プログラムは全角文字と半角文字の間にスペースを自動挿入します。
+
+http://blog.livedoor.jp/dankogai/archives/50740024.html
+
+Perl5 と Encode モジュールが必要なので、
+
+cpan -i Encode
+
+でインストールしてください。
+
+Emacs で簡単に使えるようにしてみました。
+
+<pre>
+(defvar spacer-program "spacer")
+(defun spacer-region (s e)
+  "Run `spacer' shell command on region. Spacer inserts a space between Zenkaku char and Hankaku char."
+  (interactive "r")
+  (let ((coding-system-for-read 'utf-8)
+        (coding-system-for-write 'utf-8))
+    (shell-command-on-region s e spacer-program (current-buffer) t)))
+(defun spacer ()
+  "Run `spacer' shell command on current buffer. Spacer inserts a space between Zenkaku char and Hankaku char."
+  (interactive)
+  (spacer-region (point-min) (point-max)))
+
+</pre>
+
+-- [[rubikitch]]
+
+== text-adjust.el を使う方法 ==
+
+Emacs Lispだけでも可能です。
+
+http://d.hatena.ne.jp/rubikitch/20090220/text_adjust
+
+----
+CategoryInternationalization
+

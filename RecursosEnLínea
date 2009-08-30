@@ -1,0 +1,26 @@
+Si está en busca de información sobre Emacs, su primer destino debe ser el propio Emacs. Vea DocumentaciónPropia.
+
+Adicionalmente, una gran cantidad de información puede encontrarse en línea:
+
+* GruposDeNoticiasEmacs, ListasDeCorreoEmacs
+* Le ListaDeEmacsLisp -- http://www.anc.ed.ac.uk/~stephen/emacs/ell.html
+* El FAQ Emacs (preguntas de uso frecuente) -- http://www.lerner.co.il/emacs/
+* El FAQ de NT Emacs -- http://www.gnu.org/software/emacs/windows/
+* La referencia anotada de elisp en línea (EmacsLispReference)
+* La colección de tutoriales por KaiGrossjohann -- ftp://ls6-ftp.cs.uni-dortmund.de/pub/src/emacs/tutorials/tutorials_toc.html
+* Referencias y FAQs de Emacs por JariAalto -- KeybindingGuide
+* La guía de métodos abreviados por teclado (KeybindingGuide) de Emacs, por JariAalto
+* ¿Porqué Emacs? Un paseo por Emacs desde la perspectiva de un principiante, por CharlesSebold -- http://www.livingtorah.org/~csebold/emacs/why.phtml
+* COMO del principiante Emacs -- http://jeremy.zawodny.com/emacs/emacs.html
+
+
+== Difunto ==
+
+El Archivo de Elisp de Ohio State [http://www.cis.ohio-state.edu/emacs-lisp/] ya no permanece activo. vea ElispArchive para una explicación.
+
+== En camino ==
+
+Lispmeralda es un esfuerzo reciente para construir un archivo categorizado e indexado de elisp, accesible desde emacs, una interfaz web y un servicio de FTP. El proyecto fue iniciado por DanielLundin luego de que el archivo de Ohio State detuvo su funcionamiento. Vea LispmeraldaArchive para más información y por favor considere contribuir ideas para hacer de éste, el mejor recurso posible.
+
+----
+CategoríaAyuda

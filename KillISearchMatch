@@ -1,0 +1,40 @@
+Often during IncrementalSearch I want to delete the search match and
+keep going for more isearch. This binds the C-k key in isearch mode to
+to just that. I often find this even more convenient than using
+query-replace-mode, especially when I stop and go a lot for making 
+local modifications around the replaced strings:
+
+  (defun kill-isearch-match ()
+    "Kill the current isearch match string and continue searching."
+    (interactive)
+    (kill-region isearch-other-end (point)))
+
+  (define-key isearch-mode-map [(control k)] 'kill-isearch-match)
+
+--MartinBlais
+
+I also like to extend isearch, even though most people seem to think that replace-regexp should be used on those cases.
+Anyway, some ideas:
+
+  -- Comment line matching and continue searching:
+  (define-key isearch-mode-map (kbd "C-c")
+    (lambda ()
+      (interactive)
+      (save-excursion
+        (comment-region (point-at-bol) (point-at-eol)))
+      (if isearch-forward
+          (isearch-repeat-forward)
+          (isearch-repeat-backward))))
+
+  -- Kill line matching and continue searching:
+  (define-key isearch-mode-map (kbd "C-k")
+    (lambda ()
+      (interactive)
+      (save-excursion
+        (beginning-of-line)
+        (kill-line)) 
+      (if isearch-forward
+          (isearch-repeat-forward)
+          (isearch-repeat-backward))))
+
+-- hws

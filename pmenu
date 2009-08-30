@@ -1,0 +1,19 @@
+pmenu is a light-weight menuing system. I created it because I didn't like the existing ways of navigating the emacs menus by keyboard, and I also wanted an easy way to create my own menus for common tasks, like building parts of a project, or running a find on a specific directory. Also I didn't use all of these functions enough that I could remember my key bindings and I felt they were cluttering up my key-bindings anyway.
+
+The menu displays in a buffer which has a keymap. Each menu item displays the keys for that item and it then executes a lambda. Sub-menus are supported. 
+
+Full instructions are contained in the el files. pmenu.el is the hardware to run the menus, and pmenu-config.el are the menus themselves. 
+
+I'm submitting it because I didn't find anything similar and I thought it might fill a need. 
+
+Disclaimer: The code isn't the prettiest but there's nothing seriously wrong I hope. For example the storing of the previous window configuration isn't very prettily done. Any suggestions are more than welcome. 
+
+Lisp:pmenu.el
+Lisp:pmenu-config.el
+
+==Comment==
+[new:AndyStewart:2009-01-16 20:44 UTC]
+Are you know OneKey ? Perhaps it have some help code for you. -- AndyStewart
+
+----
+CategoryMenus

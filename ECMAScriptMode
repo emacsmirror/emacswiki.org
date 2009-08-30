@@ -1,0 +1,17 @@
+ecmascript-mode is a basic major mode for editing code conforming to the ECMA-262 standard (3rd edition). The most notable languages           
+employing all or most of the standard are JavaScript (Netscape), JScript (Microsoft), and !ActionScript (Macromedia).
+
+ecmascript-mode provides only syntax highlighting and whatever facilities it inherits from java-mode--the mode from which it is derived.
+
+Lisp:ecmascript-mode.el
+
+See also: JavaScriptMode
+
+[new]
+This mode unconditionally makes <code>font-lock-builtin-face</code> bold. That isn't very friendy.
+
+[new]
+I'm not sure why I put that in there. :) I am an elisp newbie, and this was my first foray into programming a major mode. I will remove the offending line.
+
+----
+ProgrammingModes

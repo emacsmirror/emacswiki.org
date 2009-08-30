@@ -1,0 +1,50 @@
+Many users probably don't realize to what extent the common editing
+commands (and, in particular, with regard to the topic of this page,
+isearch commands) can be used in the MiniBuffer. For example, suppose
+that you just did a query-replace to rename all instances of an Emacs
+Lisp variable from ''boohoo'' to ''voodoo''. Then you notice that another
+variable named ''whatnot'' serves essentially the same purpose and can be
+merged to the same name: so you would like to change that also.
+
+Calling up the previous command with C-x ESC ESC shows it to you in the
+minibuffer in this form, with the TextCursor at the end:
+
+  (query-replace "boohoo" "voodoo" nil)
+
+So your task is to navigate back to the boohoo string and change it,
+then press Enter to rerun the command.
+
+One way would be ESC-5 ESC-b (backward word with an arg of 5), but that
+requires you to accurately count the number of words involved, which
+is not always easy to do quickly. If you notice instead that the target
+word starts with a unique letter, you can [[isearch]] backwards to that
+letter and then do a delete-word:
+
+  C-r b ESC-d
+
+This is even more convenient if the critical point is in the middle of
+the word (for example, suppose that the second var name was ''booloo''
+instead of ''whatnot''; then you want to begin by placing point on the ''h''
+in order to change it to ''l'': which is easier to do with C-r h than any
+other method.
+
+You will see that the isearch prompt for the search string momentarily
+obscures the minibuffer text that you are trying to edit, but if you wait a second
+you will see it again (and you don't have to wait if you know what keys
+you want to hit next).
+
+== minibuf-isearch.el ==
+
+http://www.sodan.org/~knagano/emacs/minibuf-isearch/
+
+This package enables incremental-searching on minibuffer history. This works on Emacs
+20 / 21 / Meadow.
+
+Put this code into your .emacs:
+{{{
+(require 'minibuf-isearch)
+}}}
+Then type C-r in minibuffer and you'll be happy. (yes, I suppose!)
+
+----
+CategorySearchAndReplace

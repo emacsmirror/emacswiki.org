@@ -1,0 +1,82 @@
+AnsiTerm mode is great for terminal emulation. It behaves like a full-featured terminal in term-char mode, and like a regular Emacs buffer in term-line mode. But it does have a few complications and annoyances.
+
+== Interaction with Cua-mode and Transient-mark-mode ==
+
+AnsiTerm mode disables Cua-mode because, as stated in the ##term.el## file, ''"Cua-mode's keybindings interfere with the term keybindings"''. If you only use Cua-mode for its great column editing and have disabled the usual Cua keys anyway, there would be no such interference. You can re-enable Cua-mode for use in term-line mode so you can still do Cua column editing.
+
+If you use Transient-mark-mode, you probably only want to mark text when in term-line mode, not in term-char mode. In term-char mode, accidently hitting a key combination that results in some visibly marked text is frustrating. The only way to rid of it is to switch to term-line mode with C-j, cancel the mark with C-g, and finally use C-k to return to term-line mode.
+
+The following defadvice functions take care of these two issues:
+
+    ;; enable cua and transient mark modes in term-line-mode
+    (defadvice term-line-mode (after term-line-mode-fixes ())
+      (set (make-local-variable 'cua-mode) t)
+      (set (make-local-variable 'transient-mark-mode) t))
+    (ad-activate 'term-line-mode)
+
+    ;; disable cua and transient mark modes in term-char-mode
+    (defadvice term-char-mode (after term-char-mode-fixes ())
+      (set (make-local-variable 'cua-mode) nil)
+      (set (make-local-variable 'transient-mark-mode) nil))
+    (ad-activate 'term-char-mode)
+
+== Localhost ==
+
+For terminal emulation on the local host, this simple function names
+the buffers ##*localhost*##, ##*localhost<2>*##, etc...
+
+    (defun open-localhost ()
+      (interactive)
+      (ansi-term "bash" "localhost"))
+
+== Remote hosts ==
+
+For remote hosts, an additional function was required since the
+ansi-term command doesn't support additional arguments:
+
+    ;; Use this for remote so I can specify command line arguments
+    (defun remote-term (new-buffer-name cmd &rest switches)
+      (setq term-ansi-buffer-name (concat "*" new-buffer-name "*"))
+      (setq term-ansi-buffer-name (generate-new-buffer-name term-ansi-buffer-name))
+      (setq term-ansi-buffer-name (apply 'term-ansi-make-term term-ansi-buffer-name cmd nil switches))
+      (set-buffer term-ansi-buffer-name)
+      (term-mode)
+      (term-char-mode)
+      (term-set-escape-char ?\C-x)
+      (switch-to-buffer term-ansi-buffer-name))
+
+You can then define a new function in your init file for each host you
+frequently visit with it's own buffer name and connection parameters:
+
+    (defun open-cmdev2 ()
+      (interactive) 
+      (remote-term "cmdev2" "ssh" "kreg@cmdev2.dsa.int"))
+
+...which results in a new buffers named ##*cmdev2*##, ##*cmdev2<2>*##, etc...
+
+== Remote Directory Tracking ==
+
+One of the best features of AnsiTerm mode is its remote directory tracking. Whatever remote directory your terminal is in, that will be the default directory that tramp uses if you choose to edit a file with C-x C-f. But you have to set up the following in your ##.bash_profile## on each remote host first:
+
+    function set-eterm-dir {
+        echo -e "\033AnSiTu" $(whoami)
+        echo -e "\033AnSiTc" $(pwd)
+        echo -e "\033AnSiTh" $(hostname -f)
+        history -a                  # write history to disk
+    }
+
+    # track directory, username, and cwd for remote logons
+    if [ $TERM = eterm-color ]; then
+        PROMPT_COMMAND=set-eterm-dir
+    fi
+
+== Remote Term Type ==
+
+The local eterm-color term type provided with emacs works great for
+applications such as ##less## that require more than a dumb terminal,
+but what about using those apps on a remote host which may not have
+emacs installed and know nothing of this term type? For these remote
+hosts, you'll need to copy the ##eterm-color## and ##eterm-color.ti## files from the ##/usr/share/emacs/22.1/etc/e## directory on your local system to the following remote directory:
+
+    ~/.terminfo/e/eterm-color
+    ~/.terminfo/e/eterm-color.ti

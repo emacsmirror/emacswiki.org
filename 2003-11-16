@@ -1,0 +1,296 @@
+I'd like to propose a license change for the Emacs Wiki!
+The proposed new license is the simplest copyleft license I can come up with:
+
+: "This work is licensed to you under version 2 of the GNU General Public License.  Alternatively, you may choose to receive this work under any other license that grants the right to use, copy, modify, and/or distribute the work, as long as that license imposes the restriction that derivative works have to grant the same rights and impose the same restriction.  For example, you may choose to receive this work under the GNU Free Documentation License, the !CreativeCommons !ShareAlike License, or the XEmacs manual license."
+
+See [[2004-01-01]] for the result.
+
+== Older Proposal ==
+
+The following was the proposal discussed most of the time on this page;
+it has been abandoned because so many people were unhappy with its fuzziness.
+
+# You have the right to copy, modify, and/or distribute the work.
+# You must grant recipients the same rights.
+# You must inform recipients of their rights.
+# When you distribute the work, you must provide the recipients access
+  to the preferred form for making copies and modifications, for no more
+  than your costs of doing so.
+# Recipients must place identical restrictions on derivative works.
+# You may change the license to any other copyleft license such as the
+  GPL, GFDL, CC SA, or the XEmacs manual license.
+
+This simple license repeats the important parts from the GFDL preamble:
+
+* The purpose of this License is to make a manual, textbook, or other
+functional and useful document "free" in the sense of freedom: '''to
+assure everyone the effective freedom to copy and redistribute it,
+with or without modifying it, either commercially or noncommercially.'''
+Secondarily, this License preserves for the author and publisher a way
+to get credit for their work, while not being considered responsible
+for modifications made by others.
+* This License is a kind of "copyleft", which means that '''derivative
+works of the document must themselves be free in the same sense.'''  It
+complements the GNU General Public License, which is a copyleft
+license designed for free software.
+
+== Reason number one: XEmacs ==
+
+I'm having a licensing discussion with
+people like BenWing right now.  The XEmacs team is considering whether
+to move more XEmacs stuff to this wiki, and their problem is that they didn't
+change the old manual license to the GNU Free Documentation License (GFDL).
+
+What follows is the XEmacs manual license (this also used to be the
+Emacs manual license before it was changed to the GFDL):
+
+* Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+* Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the sections entitled "The GNU Manifesto", "Distribution" and "GNU
+General Public License" are included exactly as in the original, and
+provided that the entire resulting derived work is distributed under the
+terms of a permission notice identical to this one.
+* Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the sections entitled "The GNU Manifesto",
+"Distribution" and "GNU General Public License" may be included in a
+translation approved by the author instead of in the original English.
+
+I think the simple copyleft license proposed would be upwards compatible
+with this license.
+
+== Reason number two: Too complicated ==
+
+The GFDL is too complicated.
+
+In reality, I guess this is an attempt to finally get rid of all the
+copyright and licensing issues.  I want the issues to be reduced to the
+bare minimum.  Something that is good enough for court, but small
+and clear enough for ordinary people to understand.
+
+: Don't feed the lawyers.
+
+== Reason number three: Not appropriate ==
+
+One of the major issues of the GFDL which I have tried to forget about but
+which keeps haunting me:
+According to Anthony !DeRobertis' comment on the Debian Position Statement about the GNU Free documentation License compiled by Manoj Srivastava, 4B and 4I "seem to prohibit anonymous modifications".  For more, see my discussion on Community Wiki. [http://www.emacswiki.org/cgi-bin/community/GnuFreeDocumentationLicense]
+
+== Discussion ==
+
+Is there anybody who prefers the GNU Free Documentation License to the proposal above?
+
+Changes to the above proposal:
+
+# "You may change the license to the GPL, GFDL, or the CC SA when distributing the work" to "The GPL, GFDL and the CC SA are deemed compatible with this license."
+# Added "You must make it trivially easy for recipients to copy and modify the work."
+# Changed "The GPL, GFDL and the CC SA are deemed compatible with this license" to "You may change the license to any other copyleft licsense such as the GPL, GFDL, CC SA, or the XEmacs manual license."
+# To prevent people from only passing on the ''rights'' and not the ''duties'', I added "Recipients must place identical restrictions on derivative works."  (Suggested by Chris Purcell [http://www.emacswiki.org/cgi-bin/alex/2003-11-15].)
+# Removed the word "trivially", thus from "You must make it trivially easy for recipients to copy and modify the work" to "You must make it easy for recipients to copy and modify the work."  
+# Changed "You must make it trivially easy for recipients to copy and modify the work" to "When you distribute the work, you must distribute it in the preferred form for making copies and modifications" because the "preferred form" is easier to determine.
+# Changed "When you distribute the work, you must distribute it in the preferred form for making copies and modifications" to "When you distribute the work, you must provide the recipients access to the preferred form for making copies and modifications, for no more than your costs of doing so" in order to allow the "reference card scenario": Distribute a reference card without the source, but put an URL on the reference card, pointing to the source.
+
+If nobody protests, I might just switch it at the end of the year 2003.
+Should anybody protest later, our credibility will be diminished,
+however.  :/  We can always remove contributions of people who dislike the
+license, but this would be unfortunate. -- AlexSchroeder
+
+: I think most people consider this a public domain. You don't think about the detailed licence used; you just go ahead and write. If it helps someone, then all the better. ;) -- HerbertSnorrason
+
+: /me agrees with the license change. :-) -- DeepakGoel 
+
+: I agree wholeheartedly with a license change - I strongly believe the GFDL is not a Free license.  Also, being compatible with the GPL means that code could be copied from the Wiki into Emacs packages.  However, the "trivially easy" clause, while nice in theory, may be a problem for the Freeness of the license - much like the GFDL's Opaque vs Transparent distinction, it means well, but prohibits things it shouldn't.  Besides, there is no way a distributor can guarantee that it is "trivially easy" for a user to modify anything.  This clause is also incompatible with the XEmacs manual license, and compatibility with this license is a stated goal of the change.  I would simply state something like "This content may be used under any of the following licenses:", followed by the standard GPL blurb, the standard GFDL blurb (without Invariant Sections or Cover Texts), a Creative Commons Share Alike blurb, and the XEmacs manual license without the invariant sections.  Finally, note that the invariant sections in the XEmacs manual mean that content can only move from the Wiki to the manual, not the other way around.  This is not a problem, since the Wiki can link to the manual. - Anon.
+
+Well, "trivially easy" means a variety of things and translates to "get the source code" (GPL), "transparent copy" (FDL), "no technological measures that control access or use of the Work" (CC SA).  If somebody prints a book, that book should say how to get the source code to the book; if that means downloading it from some URL, I consider the condition satisfied.  Given this, do you still think that the clause is incompatible with the current XEmacs manual?  Listing all the licenses will not solve my problem number two: The licensing stuff is just ''too damn complicated''.  Listing all the compatible licenses just drives us  (me) further into the morass of legal crud I'm trying to avoid. -- AlexSchroeder
+
+: In that case, it sounds perfectly free to me, but you should explicitly state in the license "either provide the source or provide a network location where a user can access the source".  As far as compatibility with the XEmacs license, since that license states "under the terms of a permission notice identical to this one", I don't think it is compatible with anything that has different conditions, so I would simply add the XEmacs manual license to the list of licenses "deemed compatible".  Also, you might want to run the final wording of the license by debian-legal@lists.debian.org; they can provide additional advice on whether the license is unambiguously Free. -- Anon.
+
+I'm trying to avoid being too specific.  What is the "source" exactly?  What is a "network connection"?  I was trying to explain what the goal is instead of specifying the means to get there.  Perhaps I can change the condition, however.
+
+Either remove the word "trivially":
+
+: You must make it easy for recipients to copy and modify the work.
+
+Or reverse it:
+
+: You may not obstruct recipients from copying and modifying the work.
+
+-- AlexSchroeder
+
+: "may not obstruct" has problems similar to some of the problems with the GFDL - for example, it could prohibit storing a copy in your home directory and doing "chmod 0600 the-work".  How about "You must provide access to a complete machine-readable and unencrypted copy of what you distribute."  This is a simplified version of the relevant clause in the GPL.  After all, that is the main goal - ensuring that you can always access an editable copy.  I don't think it can get much simpler without becoming vague, and vague licenses that could possibly be interpreted in a non-free manner (even if that is not the intent) are usually considered non-free. -- Anon.
+
+I think "chmod 0600 the-work" doesn't concern us because we only talk about the ''recipients'' (unlike the FDL, which talks about ''copies'').  I don't like to specify what is "easy to copy and modify" because then things will be complicated; eg. a <nowiki>PostScript</nowiki> file is also machine-readable and unencrypted -- but it usually is not easy for people to modify.  The same is true for some of the Microsoft XML formats.  They are  machine-readable and unencrypted but suck. -- AlexSchroeder
+
+If you are concerned about people distributing "compiled" versions, I would use the language from the GPL regarding "preferred form for modifications": "You must provide access to a complete machine-readable copy of what you distribute, in the preferred form for making modifications."  In other words, if <nowiki>PostScript</nowiki> is your preferred form for editing, you can distribute only that, but if you edited in LaTeX, you can't get away with distributing compiled <nowiki>PostScript</nowiki>.  However, under the XEmacs manual license, which distributors may elect to use instead, you can distribute in any form you like, as long as the recipient can modify and/or redistribute it.  For this reason, including this condition in the main license will have little effect.  For the simplest possible copyleft, why not just use the XEmacs manual license without the invariant sections, plus the additional licenses:
+
+* Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+* Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the entire resulting derived work is distributed under the terms of a permission notice identical to this one.
+* You may change the license to any other copyleft license, such as the
+  GPL, GFDL, CC SA, or the XEmacs manual license.
+
+-- Anon.
+
+At the moment my proposal seems more readable since it is shorter and describes the goals rather than the permissions.  (Heh, I realize a license is a set of permissions, but still, I remember being confused by the old Emacs manual license back when I was around 20 years old, English being my third language.)  Do you think "a complete machine-readable copy ... in the preferred form for making modifications" can be shortened to "in the preferred form for making copies and modifications"?  I'm not too sure whether "preferred form" is better than "make it easy", but at least that would get us rid of specifying means rather than goals. -- AlexSchroeder
+
+: "in the preferred form for making copies and modifications" should be fine.  The main advantage of "preferred form" orver "make it easy" is that it does not depend on the recipient's judgement, only the form in which the modifier prefers to modify the work.  "make it easy" is open to abuse by any recipient that decides it isn't easy enough for them.  "preferred form" is objective: provide access to the form you edit in. -- Anon.
+
+Ok; I am convinced.  I changed the proposal; do you think it is ok to use "preferred form" for copying as well as modifying?-- AlexSchroeder
+
+: Yes, although it would be nice to add something like "or provide access to the work in such a form.", so that you could distribute a non-easily-modifiable version (such as a book) as long as you provide a way for recipients to get the easily-modifiable version of what you distribute.  This would actually be a little more liberal than the similar clause in the GPL, since "provide access" would (for example) allow you to point to emacswiki.org if your version was unmodified. -- Anon
+
+How about "When you distribute the work, you must provide free access to the preferred form for making copies and modifications?" -- AlexSchroeder
+
+: Looks good, but I would change "must provide free access to" to "must provide the recipients access to", since you should not be required to provide the access to the general public.  Also, I'm not sure about the "free access" part; on the one hand, you don't want to allow someone to require exorbitant fees for source, but on the other hand, you shouldn't be required to (for example) burn a CD and ship it to the recipient for free.  "free access" is not really a problem for electronic distribution, but is problematic for physical distribution.  The GPL's "no more than your cost" phrasing is good, but difficult to use in a short license.
+
+: By the way, I really like the idea of this minimal copyleft.  It might attract people who like the spirit of the GPL, but dislike having 6 pages of legalese (although relatively readable), and opt for X11-style licensing.  I have heard many people express this opinion.
+
+: -- Anon
+
+As for the CD, I imagined that people selling the book and unwilling to make the book available for download would just have to accompany the book with a CD.  Allowing people to order the CD later is a bit silly these days where so many books come with a CD, I don't think we have to support this business model.  If people want to print a book without CD, then they might as well burn and send the CD for free.  The only problem I see with the phrasing now that you mention it is upward compatibility with the FDL and GPL.  I must read them again and see whether there is a simple common denominator. -- AlexSchroeder
+
+: No matter what conditions you put in the license, as long as it contains the "You may change the license to" clause, it is compatible with every license mentioned in that clause.  The case I had in mind for this clause was the often-mentioned flaw in the GFDL regarding quick reference cards.  If someone made a reference card from material under this license, a CD or other means of distribution for the source could cost more than the card itself.  How about: "If you distribute the work, you must provide the recipients access to the preferred form for making copies and modifications, for no more than your costs of doing so?" -- Anon
+
+In the case of the reference card, the publisher can just make the source file
+available for download, so I don't think it is really necessary.  Since the change is only small, I'm not too averse to it.  I ''prefer'' it if people
+make things available for download instead of asking me for $8 and send me a
+CD.  The next thing to consider will be: "What cost?" -- only material costs,
+or the salary of the people at the phone and packaging the stuff as well?
+Living in Switzerland, I usually find these postage and packaging deals from
+outside the country way to expensive.  This is why I prefer "for free" instead
+of "for no more than your costs of doing so".  Well, perhaps it makes more
+sense in poor countries with flakey Internet connections, I dunno.
+Unless you will reconsider, I'll use your last suggestion: 
+"If you distribute the work, you must provide the recipients access to the preferred form for making copies and modifications, for no more than your costs of doing so?" -- AlexSchroeder
+
+: Good points - this is why I was concerned about trying to shorten that clause from the GPL.  I certainly prefer Internet distribution as well, and most distributors would simply post a website link.  You should probably get some advice on this from more than one person; I would really recommend posting the final license to debian-legal@lists.debian.org, since they have many people with much more license experience.  I personally like either "free" or "for no more than your cost" just fine.  After all, someone concerned about this issue could always choose the GPL option, or even choose the XEmacs license option and not be required to distribute a "preferred form" at all.  Thank you for all your work on this.  -- Anon.
+
+: Another note - after I reread this page, I thought I should mention that none of my feedback should be considered a "protest" about the licensing; I just wanted to help improve the license.  -- Anon.
+
+That is how I read your feedback.  :)  As it seems that there are no open points anymore, I will ask people on debian-legal for some advice.
+For those of you interested, you can read the thread in the archives.
+[http://lists.debian.org/debian-legal/2003/debian-legal-200311/threads.html#00274]
+-- AlexSchroeder
+
+----
+: Will the XEmacs manual be allowed in the wiki even with this license change?  The XEmacs manual license says that there are parts that you can't modify, but this license says that you can modify the work.  Is there an implicit "Unless it says you can't?"  -- JayBelanger
+
+No; since we cannot be compatible to all the copyleft licenses, the proposal above only guarantees mobility in the other direction: What you write here can be copied into the XEmacs manual.  Note that even though we currently use the FDL you cannot copy material from the Emacs manual into this wiki beyond fair use, because the FDL for the Emacs manual has invariant sections (which we are not reproducing). -- AlexSchroeder
+
+----
+: One other point: does it need a warranty disclaimer? -- Anon.
+
+I don't think so, because this is text, and not software.  We could add a blurb saying that nobody checked this document for correctness, but in fact this is an inherent property of the medium.  I think it makes no sense to make it explicit. -- AlexSchroeder
+
+-----
+As a note to myself, here is what the note on the edit page should say:
+
+* Please make sure you contribute only your own work.  By contributing it, you are licensing it to all readers under the simple copyleft license described on EmacsWikiLicense.
+
+The note at the bottom of every page should say:
+
+* The contributors to this page are giving you permission to copy, distribute and/or modify this document under the terms of the EmacsWikiLicense.
+
+-- AlexSchroeder
+
+
+------
+
+For your information, we are using the GFDL with the Association Electronique Libre wiki, this is working quite well. 
+
+http://wiki.ael.be/index.php/AELWikiLicense
+
+But we don't have the same usage as the emacswiki have. 
+
+-- AlexandreDulaunoy
+
+== From debian-legal ==
+
+Most feedback I got from debian-legal was negative.  What now?
+Here are some extracts from debian-legal, edited by AlexSchroeder.
+
+Brian T. Sniffen writes:
+
+: "Any copyleft license" is a very broad and fuzzy set.  It's not
+appropriate for a legal document.  Pick some small number of
+copyleft licenses ("1" is nice) you like, and make it available
+under those.
+
+Alex Schroeder replies:
+
+: I wanted to leave this "broad and fuzzy" on purpose, because I want
+the wiki to be "forward compatible" to any copyleft license that might
+appear in the future.
+
+: Why do you think it is not appropriate for a legal document?  I have
+heard a friend with a law PhD here in Switzerland say that a broad and
+fuzzy text is just as appropriate for legal texts, because then the
+court will examine the intents of the wording, and interpret it
+according to the situation at hand.  In other words, he felt it was a
+simple and flexible alternative.  He also felt that people where
+over-regulating things.  In reality, that is often not required.
+Based on that, I was hoping to write something really simple.
+
+Andrew Suffield replies:
+
+: What that actually means is that you cannot predict in advance what
+the result of the lawsuit will be. Good for lawyers, bad for you.
+
+: If you, as the licenser, want to determine the outcome of a given case
+in advance, then write the desired outcome into the license directly
+("You may X, you may not Y"). If you do not, then the outcome must
+necessarily be in doubt. This is your only opportunity to do this.
+
+For the specific point about the fees to be charged ("for no more
+than your costs of doing so"), here is what Andrew Suffield has to say:
+
+: It is worth noting that this clause is incompatible with the GPL
+(strong restriction on fee charged); only via conversion under clause
+6 would you be able to merge GPLed text. That places it in the same
+class as the GFDL from your perspective: you can't include GPLed text
+without forcing the entire thing to be GPL-only.
+
+Some people have recommended the GPL outright, such as Edmund GRIMLEY EVANS:
+
+: I'm not sure that the term "copyleft" is sufficiently well known to be
+used like this.
+
+: The only thing in this licence that gives me confidence that a work
+licensed under it is unambiguously free is the possibility of changing
+it to the GPLv2, so, although I like the idea of a simpler copyleft
+licence than the GPL, and I've tried to create one myself on
+occasions, as far as I'm concerned you might as well have just used
+the GPL.
+
+: Apart from its length, what don't you like about the GPL? Your goal
+might be better served by writing something like: "This work is
+licensed to you under version 2 of the GNU General Public License. In
+addition, you have permission to ..."
+
+There were several additional points on small language changes.
+Before continuing, however, I wonder how react to this input.
+My gut reaction is: Yes, the GPL is well-known, so maybe we should prefer
+that.  But what about license changes?
+
+: Regarding "strong restriction on fee charged", the intent is the same as the GPL: charge whatever you like for distribution, but if you distribute a non-preferred form, you must also provide access to the preferred form at cost.  The only incompatibility may be in wording.  However, upon further consideration, the XEmacs license allows modified versions without providing the "preferred form for modification", so anyone could choose that option and provide the whole thing as a printed manual without source.  Perhaps this clause should be removed altogether.
+
+: As far as ambiguities over "any copyleft license", what about providing a fixed list of licenses that you may convert to, and stating that you may also use the work under any license listed on some URL at emacswiki.org .  This way, you don't need to change the license itself every time you want to add a license.  Alternatively, you might provide a simple definition of copyleft licenses: "You may change the license to any other license that grants the right to use, copy, modify, and/or distribute the work, as long as that license requires derivative works to grant the same rights.  For example, you may use this work under the GPL, the GFDL, the CC SA, or the XEmacs manual license."
+
+: Finally, what about replacing "You must grant recipients the same rights." and "Recipients must place identical restrictions on derivative works." with the single clause "All derivative works must grant the right to copy, modify, and/or distribute the work."
+
+: Another option: The GPL+exception license suggested by Edmund GRIMLEY EVANS would actually work for this, using an exception text like "This work is licensed to you under version 2 of the GNU General Public License.  Alternatively, you may use this work under any other license that grants the right to use, copy, modify, and/or distribute the work, as long as that license requires derivative works to grant the same rights.  For example, you may use this work under the GFDL, the CC SA, or the XEmacs manual license." -- Anonymous
+
+Hm...  I like that.  How about the following rewording:
+
+: "This work is licensed to you under version 2 of the GNU General Public License.  Alternatively, you may choose to receive this work under any other license that grants the right to use, copy, modify, and/or distribute the work, as long as that license imposes the restriction that derivative works have to grant the same rights and impose the same restriction.  For example, you may choose to receive this work under the GNU Free Documentation License, the !CreativeCommons !ShareAlike License, or the XEmacs manual license."
+
+-- AlexSchroeder
+
+Looks great!  I don't think it is a strong copyleft due to the ability to add arbitrary restrictions in addition to the rights granted (such as 'you must distribute the unmodified "Ode to Vi" with the work'), but it is clearly a Free Software license.
+
+-- Anonymous

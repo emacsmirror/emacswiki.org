@@ -1,0 +1,5 @@
+The typing-practice package runs solely in the minibuffer, so your boss thinks you are working :). It utilizes a database of the 1000 most commonly used English words, and let’s you customize how easy or difficult a session will be through a couple of variables. Before long, your hand should have a good feel for all of the most common English morphemes, giving you the foundation to quickly build other words with morphemes you’ve already learned. For example, after you have learned to type the word “the” (the most common English word) you will have a building block for quickly typing “**the**re”, “**the**se”, “**the**ir”, “fa**the**r”, “**the**y”, “o**the**r”, “toge**the**r”, etc.
+
+''typing-practice'' also ships with some alternative word lists so that the user can possibly learn to type fast in some specialized contexts. For example, there are word lists for HTML, CSS, Javascript, and PHP. It is also easy to add your own word list.
+
+Download it at: http://alfredfazio.ws/doku.php?id=packages:typing-practice

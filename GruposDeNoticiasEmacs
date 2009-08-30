@@ -1,0 +1,16 @@
+Algunos de estos grupos de noticias se encuentran disponibles también como listas de correo. Por lo general es mejor leer y publicar nocicias. Sin embargo, algunas de las puertas de enlace no funcionan muy bien. Cuando vaya a reportar fallos, por ejemplo, asegúrese de usar el comando <code>M-x report-emacs-bug</code> en lugar de enviarlo a algún grupo de noticias.
+
+; news:comp.emacs: Asuntos relacionados con Emacs y XEmacs.  [http://groups.google.com/groups?group=comp.emacs Google]
+; news:comp.emacs.xemacs: Grupo relacionado con XEmacs.  [http://groups.google.com/groups?group=comp.emacs.xemacs Google]
+; news:gnu.emacs.help: Grupo relacionado con Emacs. Referencias a material no libre suele estar mal visto (cosas como recomendaciones sobre ciertos libros). [http://mail.gnu.org/pipermail/help-gnu-emacs/ Archivo] [http://groups.google.com/groups?group=gnu.emacs.help Google]
+; news:gnu.emacs.sources: Código fuente elisp para Emacs. Se evita la discusión.  [http://mail.gnu.org/pipermail/gnu-emacs-sources/ Archivo]  [http://groups.google.com/groups?group=gnu.emacs.sources Google]
+; news:gnu.emacs.bugs: Reportes de fallos y peticiones de características, vea también ListasDeCorreoEmacs.  [http://groups.google.com/groups?group=gnu.emacs.bug Google]
+; news:alt.religion.emacs: Este grupo está dedicado a Emacs como filosofía o religión. Vea CategoríaHumor.  [http://groups.google.com/groups?group=alt.religion.emacs Google]
+; news:gnu.emacs.vm.info: Información sobre el paquete de correo en Emacs ViewMail.  [http://groups.google.com/groups?group=gnu.emacs.vm.info Google]
+; news:gnu.emacs.vm.bug: Reporte de fallos del paquete ViewMail.  [http://groups.google.com/groups?group=gnu.emacs.vm.bug Google]
+; news:gnu.emacs.gnus: Información sobre el paquete Emacs Gnus.  [http://groups.google.com/groups?group=gnu.emacs.gnus Google]
+; news:gnus-bugs: Fallos conocidos de Gnus.  [http://groups.google.com/groups?group=gnus.gnus-bug Google]
+; news://news.gnus.org/gnus.ding: La lista Ding es para la versión CVS de Gnus.  [http://groups.google.com/groups?group=gnus.ding Google]
+
+----
+CategoríaAyuda

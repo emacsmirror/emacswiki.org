@@ -1,0 +1,28 @@
+Manage multiple versions of buffers in an Emacs session.
+
+Lisp:multiverse.el
+
+`multiverse-diff-current' cannot work because executing `diff' asynchronously.
+It deletes temporary file BEFORE issuing diff. I fixed. -- [[rubikitch]]
+
+[new]
+
+Thanks for the bugfix.
+
+I haven't used this package for quite a while. Now taking a look at it it is strange I didn't implement storing the information about multiple versions between emacs invocations too. It wouldn't have been hard and it seems logical. -- TamasPatrovics
+
+== Unifying save-buffer and multiverse-store ==
+<pre>
+(defun my-save-buffer (arg)
+  (interactive "P")
+  (if arg
+      (multiverse-store)
+    (save-buffer)))
+</pre>
+
+-- [[rubikitch]]
+
+----
+
+CategoryEditing
+

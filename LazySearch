@@ -1,0 +1,130 @@
+==What's LazySearch ?==
+LazySearch is new search mode that base on OneKey.
+It can taken various string around point, and search fast.
+
+==Why need LazySearch ?==
+* Mark various string around point:
+: Mark various string around point, just type *one* keystroke. 
+
+* Switch search type:
+: Switch various search type with *one* keystroke.
+
+* Lazy search:
+: Type *one* keystroke to search next or previous match.
+: Yep, that's me, i won't type second times if i can complete it with *one* keystroke. ;)
+
+* View in search:
+: You can move cursor or scroll buffer when searching.
+: You can use this feature view buffer or match different search type quickly.
+
+* Copy search object:
+: You can just type *one* keystroke to copy search object.
+
+* Translate with Isearch:
+: You can translate between LazySearch and [[Isearch]].
+
+* Others advanced:
+** Edit search object.
+** Search from yank.
+** Search previous search object.
+** Integrate with Lisp:color-moccur.el.
+** And any feature you like add......
+
+==Install==
+* This packages need Lisp:one-key.el, make sure you have install it first.
+: Download Lisp:one-key.el and Lisp:lazy-search.el
+
+* Then put Lisp:one-key.el and Lisp:lazy-search.el in your load-path, and then add
+{{{
+     (require 'lazy-search)
+}}}
+: in ~/.emacs .
+
+* Or you can use Lisp:auto-install.el install LazySearch with following:
+## M-x auto-install-batch RET
+## Input "lazy-search"
+
+:: (How to install Lisp:auto-install.el, see AutoInstall)
+                                    
+* Bind any keystroke you like to `lazy-search-menu', like me:
+:: (global-set-key (kbd "M-s") 'lazy-search-menu)
+
+==Usage==
+Default, LazySearch will popup help window when you execute command `lazy-search-menu'.
+
+* Feature including in Lisp:lazy-search.el:
+
+** Mark:
+:: w -- Mark word.
+:: b -- Mark symbol.
+:: u -- Mark URL.
+:: f -- Mark file name.
+:: m -- Mark email.
+:: x -- Mark sexp.
+:: z -- Mark current line.
+
+** Copy: 
+:: S -- Copy search Object.
+:: W -- Copy word.
+:: B -- Copy symbol.
+:: U -- Copy url.
+:: F -- Copy file name.
+:: M -- Copy email.
+:: X -- Copy sexp.
+:: Z -- Copy line.
+
+** Move:
+:: s -- Move forward.
+:: r -- Move backward.
+:: . -- Move first.
+:: , -- Move last.
+:: H -- Move start.
+:: L -- Move end.
+
+** View:
+:: j -- View next line.
+:: k -- View previous line.
+:: h -- View backward char.
+:: l -- View forward char.
+:: K -- View scroll down one line.
+:: j -- View scroll up one line.
+:: e -- View scroll down one page.
+:: SPC -- View scroll up one page.
+
+** Search:
+:: c -- Search object cache.
+:: Y -- Search yank.
+
+** Isearch:
+:: t -- Switch to isearch.
+
+** Others:
+:: E -- Edit search object.
+:: R -- Return mark initiation position.
+
+* Features including in Lisp:lazy-search-extension.el:
+
+** Mark:
+:: ' -- Mark parentheses.
+
+** Copy:
+:: \ -- Copy parentheses.
+
+** Other:
+:: v -- Moccur.
+:: V -- Moccur all.
+
+: And all above keystrokes you can customize through modified lazy-search-menu-alist.
+
+==Tips==
+: You can bind command `isearch-to-lazy-search' with `isearch-mode-map', like me:
+:: (define-key 'isearch-mode-map (kbd "M-l") 'isearch-to-lazy-search).
+
+: Then type "M-l" when you searching in isearch. Isearch will translate search object to [[LazySearch]] mode.
+
+==Related==
+* Lisp:lazy-search-extension.el -- Some enhanced functions for LazySearch.
+
+==Screenshot==                  
+[[image:LazySearchScreenshot]]
+

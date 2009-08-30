@@ -1,0 +1,36 @@
+= Region (Selection) =
+
+The '''[::region]''' is essentially what is call "selection" in some other applications -- it is the text that you have selected, or, in Emacs jargon, the text that you have '''[::marked]'''.
+
+The [[cursor]] (not the mouse [[pointer]]) defines the position of
+'''[[point]]''', which is one end of the region. The other end is the
+'''[[mark]]'''. The mark is invisible; the point is indicated by the cursor. 
+
+You can set point by clicking `mouse-1' or using
+the arrow keys. You can set the mark in any of these ways:
+
+* `C-SPC' or `##C-@##' (point stays put; point = mark, for now)
+* dragging the point with `mouse-1' (point's old value becomes the mark)
+* clicking `mouse-3' (clicked position becomes point; point's old value becomes the mark)
+
+
+== So Just Where Is the &*^%#!!? Region? ==
+
+Each [[buffer]] has its own region (it has its own point and mark). There is ''always a region'' in any given buffer, as soon as there is a mark there.
+By default, the region is not highlighted, because having some text always highlighting would be annoying.
+
+'''[::active region]''': If you use TransientMarkMode, the region is ''highlighted'' whenever it is ''active''; it is not highlighted, otherwise. You can make the region active (and highlight it) at any time by using `C-x C-x' (`exchange-point-and-mark'), which swaps point and mark.
+
+The region is also made active (and highlighted) whenever you define it using the mouse (even if you do not use Transient Mark mode).
+
+Some [[command]]s act differently when the region is active. Typically, their scope of action is limited to the active region.
+
+
+
+== See Also ==
+
+SecondarySelection -- yes, Emacs has a second selection. Very handy.
+
+----
+CategoryGlossary
+CategoryRegion

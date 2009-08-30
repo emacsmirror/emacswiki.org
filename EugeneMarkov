@@ -1,0 +1,105 @@
+Hi!
+
+Эх, лиха беда начало... ;)
+
+Пока по-русски. Там будет видно...
+
+[new]
+Welcome to the wiki.  :) -- AlexSchroeder
+
+----
+You can reach me via mail: mailto:rtfupi@mail.ru
+----
+
+rubai.el -- random display of collection of strings (rhymes, rubai ...) with the help of popup menu. (Lisp:rubai.el)
+
+Create the file rubai-text.el (for example).
+ 
+rubai-text.el:
+
+<pre> (setq rubai-list
+       '(
+         (
+          "Title text"
+          )
+         (              ;;---.
+          "String_1 1"  ;;   |  
+          "String_1 2"  ;;   | 1 rhyme  
+          "String_1 3"  ;;   |  
+          "String_1 4"  ;;   |  
+          )             ;;---'
+         (              ;;---.
+          "String_2 1"  ;;   |  
+          "String_2 2"  ;;   | 2 rhyme  
+          "String_2 3"  ;;   |  
+          "String_2 4"  ;;   |  
+          )             ;;---'
+         (              ;;---.
+          "String_3 1"  ;;   |  
+          "String_3 2"  ;;   | 3 rhyme  
+          "String_3 3"  ;;   |  
+          "String_3 4"  ;;   |  
+          )             ;;---'
+         ))
+</pre>
+
+Just put rubai-text.el and rubai.el somewhere on your Emacs load path and add following lines to end your .emacs file:
+
+(load "rubai-text")
+
+(load "rubai")
+
+(add-hook 'window-setup-hook 'rubai-up)
+
+----
+
+Lisp:cyrillic-win.el, Lisp:cyril-win-util.el - support of CP1251.
+
+Lisp:cyrillic-folding.el - Correction of bugs in cyrillic.el for work with folding.el 
+
+Look for explanations GnuEmacsRussification
+
+----
+The following fragment allows to switch codings in the buffer on pressing the same combination of keys.
+
+<pre>
+  (setq evm-coding-systems-list (make-ring 10))
+  (ring-insert evm-coding-systems-list 'koi8-r)
+  (ring-insert evm-coding-systems-list 'alternativnyj)
+  (ring-insert evm-coding-systems-list 'iso-8859-5)
+  (ring-insert evm-coding-systems-list 'windows-1251)
+
+  (global-set-key [f5]
+                  (lambda ()
+                    (interactive)
+                    (let* ((keys (recent-keys))
+                           (len (length keys))
+                           (key1 (if (> len 0) (elt keys (- len 1)) nil))
+                           (key2 (if (> len 1) (elt keys (- len 2)) nil))
+                           cs)
+                      (if (eq key1 key2)
+                          (setcar evm-coding-systems-list
+                                  (ring-plus1 (car evm-coding-systems-list)
+                                              (ring-length evm-coding-systems-list)))
+                        (setcar evm-coding-systems-list 0))
+                      (set-buffer-multibyte t)
+                      (set-buffer-file-coding-system (aref (cddr evm-coding-systems-list)
+                                                           (car evm-coding-systems-list)))
+                      (revert-buffer nil t))))
+</pre>
+
+
+----
+
+Lisp:bookmark-add.el - creates the buffer for work with [[bookmark]]s and other expansions.
+
+Look for explanations BookMarks.
+
+----
+
+Lisp:recentf-buffer.el - creates the buffer with the list of recently open files.
+
+Look for explanations RecentFiles.
+
+----
+CategoryHomepage

@@ -1,0 +1,15 @@
+This piece of code will make you _invisible_ on the servers you connect to using [[rcirc]].
+
+On networks such as Undernet, porn bots will send you messages once you appear on the global who list. The invisible mode will limit this to the users on the same channels as you. To set yourself invisible, you issue a command like the following:
+
+    /mode kensanata +i
+
+The following advice will do this for all servers you connect to:
+
+{{{
+(defadvice my-invisible-preference (after rcirc-connect activate)
+  "When connecting to a server, set the user mode to +i (invisible)."
+  (let ((process ad-return-value)
+	(nick (or nick rcirc-default-nick)))
+    (rcirc-send-string process (concat "MODE " nick " +i"))))
+}}}

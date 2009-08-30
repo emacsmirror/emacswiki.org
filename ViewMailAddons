@@ -1,0 +1,25 @@
+Here are some pointers to ViewMail enhancements.
+
+= VM extensions by Robert Fenk =
+
+Since VM 8.0.0, vm-rfaddons is now part of the VM distribution.
+
+At this time (current stable version is 8.0.3) Robert Fenk's plan is to better integrate the features of rfaddons into core VM.  If you want to use rfaddons, be sure to read the NEWS file packaged with your copy of VM, because the way to turn on these options may change.
+
+For the time being, the variable `vm-enable-addons' controls which features of rfaddons are enabled.  If this variable is `t', then all addons are enabled.  If it is `nil', none are enabled.  Otherwise, it should be a list of symbols, giving the addons to enable.  For each feature described in this section then, if you want to enable it, add its symbol to `vm-enable-addons'.
+
+* 'open-line
+
+This addon inserts a gap when you type in a quoted message.
+
+----
+
+= Appearance =
+
+* u-vm-color.el
+
+u-vm-color makes it easier to colorize your VM buffers.  You can see screenshots and download the file at http://ulf.epplejasper.de/EmacsVM.html .
+
+
+----
+CategoryViewMail

@@ -1,0 +1,51 @@
+
+== É só uma questão de nome? ==
+
+O EmacsWiki objetiva informar e discutir sobre ambos, ''Emacs'' e ''XEmacs'', geralmente reunidos sob a denominação ''Emacsen''.
+
+=== Emacsen ===
+
+Termo usado pela IgrejaDoEmacs, que denota o plural ou o coletivo de Emacs, significando editores totalmente programáveis com aparência e funcionamento semelhantes ao original.
+
+=== Emacs ou XEmacs ===
+
+Das diversas ImplementaçõesEmacs, Emacs e XEmacs são as mais conhecidas e usadas. Ambas têm uma história importante (ver HistóriaDoEmacs). O Emacs foi criado em 1985, por RichardStallman; e o XEmacs, em 1991, originalmente com o nome de ''Lucid Emacs''. Antes da mudança de nome para XEmacs, era costume usar o termo ''GNU Emacs'' -- que é '''correto''' -- ou ''FSF Emacs'' -- '''incorreto''', já que o Emacs transcende em muito aquela Fundação -- para diferenciá-los.
+
+Stallman insiste que, afinal, o melhor nome para seu editor é ''Emacs'' mesmo. Hoje em dia fala-se Emacs e XEmacs; poucos parecem se incomodar a ponto de usar o termo GNU Emacs. É importante salientar, entretanto, que o termo ''GNU XEmacs'' é '''incorreto''', já que este não faz parte do ProjetoGNU.
+
+Finalmente, é preciso esclarecer que o ''X'' em XEmacs não tem relação com o Sistema de Janelas X. Ambos rodam tanto no X quanto no terminal (TTY) e, ainda, nativamente no Microsoft Windows.
+
+== Uso no Emacs Wiki ==
+
+Se você deseja fazer uma ligação para a página do Emacs, use GnuEmacs; para a página do [[XEmacs]], use <nowiki>[[XEmacs]]</nowiki>.
+
+== Comparação ==
+
+: "... inúmeras pequenas diferenças. Muitas para serem listadas."
+:: kensanata, no #emacs.
+
+Da perspectiva do usuário, Emacs e XEmacs são muito, muito similares, exceto por um grande número de pequenas diferenças que incomodam usuários de longa data de um ou de outro. Se você é um novato, provavelmente não existirá uma razão real para optar por um ou por outro. O seguinte processo de decisão pode ajudá-lo a escolher um ou outro:
+
+* use aquele que seu vizinho ou colega de trabalho usa;
+* use XEmacs se você precisa que um mesmo processo seja capaz de exibir informações simultaneamente no tty e no X (se você não entendeu, salte essa regra);
+** MultiTTYSupport para Emacs está sendo implementado;
+* use Emacs se você precisa de suporte para caracteres não-ASCII;
+** o XEmacs funciona bem com Unicode etc -- ShaeErisson
+* use Emacs se você concorda com RichardStallman;
+* tente ambos e use aquele que achar melhor;
+* jogue um dado.
+
+E por ai vai...
+
+Eu acredito que o melhor é experimentar, a não ser que concorde com o Stallman -- uma decisão política, no caso. -- DeDaLu
+
+== Mais ==
+
+Nas ligações a seguir você aprenderá mais um pouco sobre a história do Emacs e suas divisões:
+
+* Opinião de JamieZawinski: http://www.jwz.org/doc/lemacs.html
+* Opinião de BenWing: http://www.666.com/xemacs/xemacs-split-bens-opinion.htm
+* Na página oficial do XEmacs: http://www.xemacs.org/About/XEmacsVsGNUemacs.html
+
+----
+CategoriaHistória

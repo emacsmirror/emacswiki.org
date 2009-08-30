@@ -1,0 +1,115 @@
+== sort ==
+
+`sort' takes a list and returns the sorted list.  The list "is
+modified by side effects."  What does that mean?  It means that sort
+will take the list and change the cdr pointers around in order to sort
+the list.  No new storage will be used.  That's why sort is really
+fast.  And even if you sort very large lists, you won't waste memory
+by allocating a new list with the exact same elements for the result.
+
+This introduces a problem for newbies, however.  Look at the following
+example:
+
+<pre>
+  (setq test '(1 2 3))
+  (sort test '>)
+    => (3 2 1)
+  test
+    => (1)
+</pre>
+
+Test points to the first element of the list, 1.  As the elements are
+rearranged, however, the element 1 is no longer at the head of the
+list.
+
+What the documentation suggests, therefore, is to reassign the result:
+
+<pre>
+  (setq test '(1 2 3))
+  (setq test (sort test '>))
+    => (3 2 1)
+  test
+    => (3 2 1)
+</pre>
+
+What happens however, when you want both the old and the new value?
+You'll see that something is not right:
+
+<pre>
+  (setq test '(1 2 3))
+  (setq newtest (sort test '>))
+    => (3 2 1)
+  test
+    => (1)
+</pre>
+
+What you need to do is to sort a copy of the list.  This is what sort
+is avoiding, so if you want it, you have to do it yourself.
+
+<pre>
+  (setq test '(1 2 3))
+  (setq newtest (sort (copy-sequence test) '>))
+    => (3 2 1)
+  test
+    => (3 2 1)
+</pre>
+
+Watch out, this may also bite you in your code.  Sort changes the list
+-- and it may therefore change your code!  Self-modifying code!!
+
+<pre>
+  (defun test ()
+    (let ((a '(1 2 3)))
+      (sort a '>)))
+  (test)
+    => (3 2 1)
+  (test)
+    => (1)
+</pre>
+
+In the above code, the first call to test will change the definition
+of the function.  Internally, the a list has been changed to (1).
+These bugs are hard to find.
+
+Just as a proof, here's what the definition of test looks like:
+
+<pre>
+ (symbol-function 'test)
+    => (lambda nil (let ((a (quote (1)))) (sort a (quote >))))
+</pre>
+
+As you can see, the list is in fact reduced to (1).
+
+This is why you should make sure that in your code you never try and
+modify constant forms.  Instead of using <code>'(1 2 3)</code>, you 
+should use <code>(list 1 2 3)</code>, this way, you avoid the above
+problem.  In fact, in CommonLisp, calling a destructive function on a 
+constant form results in unspecified behaviour.
+
+== nreverse ==
+
+Similar example:
+
+    (let ((words '("foo" "bar" "baz")))
+      (nreverse words)
+      words)
+    ==> ("foo")
+
+The result of the call to `nreverse' is ##("baz" "bar" "foo")## but the
+result is discarded. But `words' still points to "foo", which is at the
+end of the list, thus explaining the result.
+
+The solution is the same as for `sort':
+
+    (let ((words '("foo" "bar" "baz")))
+      (setq words (nreverse words))
+      (message "interesting stuff goes here...")
+      words)
+    ==> ("baz" "bar" "foo")
+
+== Etymological Note ==
+
+Common Lisp has a lot of destructive operations like this, and their names generally begin with "n", as in "nreverse", "nsubst", "nbutlast" and so on.  It's not mentioned very often, and in fact the Hyperspec doesn't even have a glossary entry for the term, but the "n" in this context stands for "non-consing" -- that is, these are functions that work by moving node pointers around in place, rather than consing (constructing) new nodes.
+
+----
+CategoryCode

@@ -1,0 +1,9 @@
+Koutline mode (##kotl-mode.el##) by BobWeiner is a major mode for editing koutlines and associated commands.  It can be found in the kotl subdirectory of the source code tarball for Hyperbole:
+
+* http://www.sf.net/projects/hyperbole/
+
+[new]
+This has some neat features that I have not seen elsewhere such as auto-numbering.  It has been around many years. (AllOut also does auto-numbering.)
+
+----
+CategoryOutline

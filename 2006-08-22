@@ -1,0 +1,7 @@
+The chronological search in ElispArea doesn't seem to work anymore. It does not limit the history to EmacsLisp files, but seems to just repeat the normal history at RecentChanges. -- DrewAdams
+
+[new]
+I hope that's fixed now. -- AlexSchroeder
+
+[new:DrewAdams:2006-08-30 02:31 UTC]
+Yes! Thanks.

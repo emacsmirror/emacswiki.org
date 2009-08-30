@@ -1,0 +1,15 @@
+g-client from EmacSpeak
+
+: /This package provides a set of Emacs modules for accessing these services from inside Emacs. These modules are designed with an Emacs-centric, rather than a Web-browser centered view of the world. Where necessary Emacs package browse-url is used to invoke the Web browser of choice./
+
+http://emacspeak.blogspot.com/2007/03/emacs-client-for-google-services.html
+
+http://groups.google.com/group/emacs-g-client
+
+
+http://bc.tech.coop/blog/070306.html - Bill Clementson mentions g-client in passing (as method of accessing google-calendar), and touches on his installation method.
+
+== See Also ==
+* EmacSpeak
+* AtomBlogger
+

@@ -1,0 +1,22 @@
+Andrew Choi resignes as Mac maintainer for Emacs.
+
+: Perhaps it is best if I'm relieved from being the Mac maintainer.  I
+program for the love of programming and not for any other reasons.
+These responsibilities that seem to be expected of a maintainer do not
+suit me.
+
+This all started when he applied a 60 line patch sent by a contributor
+(Nozomu Ando) and he was asked to revert the patch because the FSF had
+not yet received any papers.
+
+Once again we see that the requirement for legal papers is a barrier-to-entry
+that does in fact prevent some people from helping out.  As Kim Storm justly
+said a few hours later however:
+
+: Sure, we all love programming -- and that's why it is so important that
+we all do whatever we can to protect the freedom to do so.  
+: For FSF/GNU projects like Emacs, the enforcement of the GPL and the
+assignment of copyright to the FSF through legal papers is --
+unfortunately -- the only way to do this.  
+
+It's a difficult situation; we're being forced to do something nobody enjoys.

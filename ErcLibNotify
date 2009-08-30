@@ -1,0 +1,48 @@
+http://pics.openweblog.com/hexmode/pic/00024w7a/s320x320.png
+
+(I am mah on #hpm.  I made this example myself.  -- MarkAHershberger)
+
+Here's the bit of code I use to make [[ERC]] work with libnotify:
+<pre>
+(defvar mah/erc-nick-notify-last '(0 0 0))
+(defvar mah/erc-nick-notify-delay '(0 5 0))
+(defvar mah/erc-nick-notify-cmd "notify-send")
+(defvar mah/erc-nick-notify-icon
+  "/usr/share/icons/default.kde/48x48/apps/edu_languages.png")
+(defvar mah/erc-nick-notify-timeout 10000)
+(defvar mah/erc-nick-notify-urgency "low");
+(defvar mah/erc-nick-notify-category "im.received");
+
+(defun mah/erc-nick-notify ()
+  "Notify me when my nick shows up.  This function should be in
+the insert-post-hook."
+  (let ((now (current-time)))
+    (when (time-less-p mah/erc-nick-notify-delay
+                       (time-since mah/erc-nick-notify-last))
+      (setq mah/erc-nick-notify-last now)
+      (goto-char (point-min))
+      (when (re-search-forward
+             (concat "^\\("
+                     "\\(<\\([^>]*\\)>\\)" ; <someone>
+                     "\\|"
+                     ;; Don't match if we're saying something
+                     "\\(\\* " (regexp-quote (erc-current-nick)) "\\)"
+                     "\\)"
+                     "\\(.*"
+                     (regexp-quote (erc-current-nick)) ".*\\)")
+             nil t)
+        (let ((msg (concat 
+                    (when (> (length (match-string-no-properties 2)) 0)
+                      (concat "<b>&lt;" (match-string-no-properties 3)
+                              "&gt;</b> "))
+                    (match-string-no-properties 5))))
+          (shell-command (concat mah/erc-nick-notify-cmd
+                                 " -i " mah/erc-nick-notify-icon
+                                 " -t " (int-to-string
+                                         mah/erc-nick-notify-timeout)
+                                 " -u " mah/erc-nick-notify-urgency
+                                 " -c " mah/erc-nick-notify-category
+                                 " -- "
+                                 "'" (buffer-name) "'"
+                                 " '" msg "'")))))))
+</pre>

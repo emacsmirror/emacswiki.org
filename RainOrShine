@@ -1,0 +1,85 @@
+Recently the question was asked on comp.emacs acout retrieving weather information in emacs.
+MarioLang enthusiastically posted this snippet:
+
+<pre>(defun rainorshine (ARG)
+  "Uses www.rainorshine.com to extract international Weather
+information. If called with a prefix argument, directly prompts
+your for a location.
+Otherwise it uses a predefined location URL."
+  (interactive "P")
+  (if ARG
+      (progn
+        (w3-fetch "http://www.rainorshine.com/index.ssf?world_search.tp")
+        (search-forward "Afghanistan" nil nil nil)
+        (widget-button-press (point))
+        (search-forward "[Go" nil nil nil)
+        (widget-button-press (point)))
+    (w3-fetch "http://www.rainorshine.com/index.ssf?%24%24ZIPCITY=Graz%2C+Austria&type=international&Get+Forecast.x=0&Get+Forecast.y=0"))
+  (goto-char (point-min))
+  (search-forward "GRAZ, AUSTRIA" nil nil nil)
+  (forward-word -2)
+  (let ((inhibit-read-only t)
+        (start (point))
+        (end (progn (search-forward "5-DAY" nil nil nil)
+                    (end-of-line 11)
+                    (point))))
+    (kill-rectangle start end)
+    (kill-buffer nil)
+    (switch-to-buffer "*Weather in Graz*")
+    (kill-all-local-variables)
+    (kill-region (point-min) (point-max))
+    (yank-rectangle)
+    (goto-char (point-min))
+    (text-mode)))
+</pre>
+
+www.rainorshine.com seems to be http://www.accuweather.com. now
+
+Here some (dirty) code that uses HttpGet (Lisp:http-get.el) and HtmlRendering (Lisp:htmlr.el)
+to get weather info from accuweather.
+
+    (defun  accuweather-sentinel (proc string)		          
+      (switch-to-buffer (process-buffer proc))		  
+      (goto-char (point-min))				  
+      ;;dirty parsing....					  
+      (search-forward "<!-- content table 3 --->")		  
+      (search-forward "</tr>")				  
+      (let ((inhibit-read-only t)				  
+            (start (point))					  
+            (end  (search-forward " <!-- Right Nav -->")))	  
+        (kill-region end (point-max))			  
+        (kill-region (point-min) start)			  
+        (goto-char (point-min))				  
+        (htmlr-render)      				  
+        (goto-char (point-min))				  
+        ) 							  
+    )
+
+    (defun accuweather (city region country)						    
+      "use  wwwa.accuweather.com http-get.el and htmlr.el to diplay weather			    
+      city is a city name ie ATHENS, PARIS....  						    
+       REGION is one of:									    
+        AF;AFRICA AS;ASIA AU;AUSTRALIA CA;CANADA CL;CENTRAL AMERICA & CARIBBEAN 		    
+        EU;EUROPE AW;MIDDLE EAST NA;NORTH AMERICA SA;SOUTH AMERICA				    
+      COUNTRY is a two letter code : GR greece FR france...."				    
+    											    
+      (http-get 										    
+       (format 										    
+        "http://www.accuweather.com/adcbin/public/intlocal_index.asp?wxcity2=%s&wxcountry=%s;%s"
+        city 										    
+        region 										    
+        country) 										    
+       nil 'accuweather-sentinel 1.0 							    
+       (concat "Weather in: " city)))
+
+    (defun athens nil
+       (interactive)   
+       (accuweather "ATHENS" "EU" "GR"))
+
+
+
+
+
+
+----
+CategoryInterface

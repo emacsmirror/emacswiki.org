@@ -1,0 +1,8 @@
+Complete BrainFuck interpreter and compiler written in Emacs-Lisp can be found in:
+
+* Lisp:bf.el
+
+Kalle Svensson has also written an interpreter; see http://www.juckapan.org/src/emacs-misc/brainfuck.el
+
+----
+CategoryHumor

@@ -1,0 +1,268 @@
+This page is about Emacs '''[::bookmark]s'''.
+
+Bookmarks are just that -- they allow you to remember files and buffer
+positions.  Here are some commands to get you started:
+
+* `C-x r m' -- set a bookmark inside a file
+* `C-x r b' -- jump to a bookmark
+* `C-x r l' -- list all of your bookmarks
+* `M-x bookmark-delete' -- delete a bookmark by name
+
+Bookmarks can also refer to local files, or even ftp locations.
+
+Your own personal bookmark file, `~/.emacs.bmk', is maintained
+automatically by Emacs; you shouldn't need to load it explicitly.
+
+
+== Annotations ==
+
+When you list all your bookmarks, you can add annotations to them:
+
+* `e' -- edit the annotation
+* `a' -- show annotation for the current bookmark
+* `A' -- show all annotations for your bookmarks
+
+
+== Bookmark Window ==
+
+The bookmark window (accessible through C-x r l) has a 
+number of other useful functions in addition to the annotation 
+functions shown above. It is a kind of buffer menu for bookmarks.
+
+A few of the most useful:
+
+* `r' -- rename the current bookmark
+* `k' -- mark various entries for deletion (x -- to expunge them)
+* `m' -- mark various entries for display, (v -- to display marked files)
+* `o' -- select the current bookmark in another window, keeping the bookmark list open 
+* `C-o' -- switch another window to the current bookmark
+
+
+
+
+
+
+[:BookmarkPlus]
+== Bookmark+ ==
+
+Library <tt>[[bookmark+.el]]</tt> enhances vanilla Emacs bookmarks in several ways. The internal bookmark format (data structure) used is compatible with that of vanilla GnuEmacs. It simply extends that structure in new ways, to accommodate new bookmark types.
+
+
+
+
+
+=== Bookmark Any Buffer, Not Just a File ===
+
+In vanilla Emacs, you can bookmark a position in any file, including files of special types, such as [[InfoMode|Info]], DocView (PDF), an image, or a [[Gnus]] article.
+
+With '''Bookmark+''', you can also bookmark a position (or a region -- see [[#BookmarkRegion]], below) in ''any'' buffer. When you jump to such a non-file bookmark, an attempt is made to re-create the buffer if it is not already open.
+
+
+
+[:BookmarkRegion]
+=== Regions, Not Just Single Positions ===
+
+A vanilla Emacs bookmark records a single position somewhere. With '''Bookmark+''', you can record a [[region]], that is, two positions (in the same document). If the region is active (and non-empty) when you set a bookmark, then the region information is automatically saved as part of the bookmark.
+
+When you then jump to a bookmark that records a region, the region is activated automatically, provided user option '''`bookmark-use-region-flag'''' is non-`nil' (which it is by default). You can also flip the option value temporarily when you visit a bookmark, by using a [[prefix argument]].
+
+
+
+=== Better Bookmark Relocation, Saving Updated Location ===
+
+Just as is the case for vanilla Emacs bookmarks, '''Bookmark+''' relocates bookmark positions when you visit them, if they have moved because the surrounding text has changed since they were recorded. This applies also to bookmarks with regions (two positions).
+
+This relocation is more robust than the relocation for vanilla Emacs bookmarks: the new location is found correctly more often. In the case of a bookmark with a region, the region text, like the surrounding text, can be modified and the bookmark will typically be relocated correctly. 
+
+By default, when you visit a bookmark that requires relocation, the bookmark is then saved with the new, relocated position information. If you want to turn off this automatic saving, just customize user option '''`bookmark-save-new-location-flag'''' to `nil'.
+
+
+
+=== Highlighting of Different Bookmark Types ===
+
+In '''Bookmark+'''', different types of bookmarks are highlighted differently in the bookmark list (`bookmark-bmenu-list', `C-x r l'). Highlighting is different for each of the following bookmark types, to help you distinguish them:
+
+* non-file buffers
+* local files with regions
+* local files without regions
+* local directories
+* remote files or directories
+* remote files or directories that must be accessed by `su' or `sudo' (`root')
+* w3m URLs
+* Info nodes
+* Gnus articles
+
+Bookmarked remote files or directories that must be accessed using `su' or `sudo' are highlighted specially (red, by default) before you access them. After they are accessed, they are highlighted like other remote files or directories.
+
+
+
+=== Bookmark List Filtering ===
+
+In the bookmark list (`C-x r l'), you can selectively show only bookmarks of different types, using these keys:
+
+* `F' -- Show only file bookmarks. With a prefix argument, hide bookmarked remote files and directories that must be accessed using `su' or `sudo'.
+
+* `R' -- Show only bookmarks with region information.
+
+* `I' -- Show only Info bookmarks.
+
+* `G' -- Show only Gnus bookmarks.
+
+* `W' -- Show only W3M bookmarks.
+
+* `A' -- Show all bookmarks (all types).
+
+
+
+=== Use Any Emacs Version ===
+
+'''Bookmark+''' fixes things so you can use bookmarks that were created with any Emacs version in any other Emacs version. In particular, it lets you use Emacs prior to release 23 with bookmarks created using Emacs 23 (or created using any older version).
+
+
+=== Gnus, W3M ===
+
+* '''Bookmark+''' lets you use the normal bookmarking commands to bookmark Gnus articles -- no need for special Gnus-specific key bindings. Also, the same bookmark data structure (in ##.emacs.bmk##) is used to store Gnus bookmarks. Note: Gnus article bookmarks do not record region information.
+
+* '''Bookmark+''' lets you bookmark URLs when you use W3M. By default, a new tab is opened for each such bookmark you visit, but you can alternatively open a separate W3M session for each visited bookmark.
+
+
+=== Take Advantage of Icicles ===
+
+If you also use '''[[Icicles]]''', then '''Bookmark+''' lets you use `S-delete' during completion to ''delete'' selected bookmarks on the fly.  That is, whenever you are asked for a bookmark name by any bookmark command, you can cycle among the completion candidates and hit `S-delete' to delete the bookmark whose name is the current candidate.  You can delete any number of bookmarks this way, during a single invocation of a bookmark command.
+
+See also '''Icicles''' command `icicle-bookmark', which lets you navigate among bookmarks.  It too lets you use `S-delete' to delete bookmarks on the fly.
+
+
+
+
+
+[:CyclingBookmarks]
+== Cycling Among Bookmarks ==
+
+* Command `doremi-bookmarks' lets you cycle among bookmarks by using the up and down arrow keys or a mouse wheel. It is in library <tt>[[doremi-cmd.el]]</tt> -- see '''DoReMi'''.
+
+* Command `icicle-bookmark' similarly lets you [[completion|complete]] or [[Icicles - Cycling Completions|cycle]] bookmarks to navigate among them. [[Icicles - Apropos Completions|Apropos]] ([[regexp]], substring) completion is available. See '''[[Icicles]]'''.
+
+* BookMarkIteratorPackage -- iterate through your bookmarks
+
+
+
+== Info Node Bookmarks ==
+
+You can bookmark [[InfoMode|Info]] nodes also -- just use `C-x r m', as usual. Command `bookmark-bmenu-list', bound to '''`C-x r l'''', provides a convenient menu to access bookmarks.
+
+Sometimes it is convenient to see only the Info nodes in such a list, which then functions as a kind of virtual Info manual.  If you use InfoPlus, then `C-u v' in Info will show you such an Info nodes-only virtual book. In addition, you can use `.' to add nodes to such a virtual book without also adding them to your bookmark list.  If, in addition, you use [[Icicles]], then you can have any number of ''persistent'' virtual Info books. 
+
+
+== Bookmarks as Abbreviations ==
+
+Here is for people who often hit `C-x C-f' and then realize that
+they are searching for a file pointed to by a bookmark.
+
+ From: MatthiasMeulien
+ Subject: Re: bookmarks and abbrevs
+ Newsgroups: gnu.emacs.help
+ Date: 17 Jun 2002 20:20:59 +0200
+
+ (defun bookmark-to-abbrevs ()
+   "Create abbrevs based on `bookmark-alist'."
+   (dolist (bookmark bookmark-alist)
+   (let* ((name (car bookmark))
+          (file (bookmark-get-filename name)))
+     (define-abbrev global-abbrev-table name file))))
+
+[new:MathiasDahl:2005-09-04 00:06 UTC]
+I did not realize how to use this until I googled and found the original post where the poster mentioned using C-x a e (expand-abbrev) and RET on the find-file prompt. Now, if we could make find-file grok this more or less automatically too... :)
+
+
+== Eshell and bookmarks ==
+
+See EshellBmk. Integrates `eshell/cd' with your bookmarks.
+
+
+== Other Window of Bookmarks ==
+
+Lisp:bookmark-add.el - creates the buffer for work with bookmarks.
+
+It's written by EugeneMarkov
+
+More commentary:
+
+M-x bookmark-open-in-simply-buffer - switch to buffer named <nowiki>*Bookmark list*</nowiki>. If to hit key Enter on bookmark region will pass on a corresponding file. If to hit key Delete (or Ctrl-d) on bookmark region remove this bookmark from bookmarks list. If to hit key 'q' the buffer will be closed.
+
+M-x bookmark-set-add - add this bookmark to bookmarks list. To use history, it is necessary to press buttons Up and Down. The first pressing Up inserts expression which is near to a point.
+
+M-x bookmark-jump-next-cyclic' - cyclic moving on bookmarks forward.
+
+M-x bookmark-jump-prev-cyclic' - cyclic moving on bookmarks backward.
+
+M-x bookmark-jump-backwards' - will move to last TextCursor position right after uses of commands bookmark-jump-next-cyclic and
+bookmark-jump-prev-cyclic.
+
+
+== Put the last selected bookmark on the top ==
+
+<pre>
+(defadvice bookmark-jump (after bookmark-jump activate)
+  (let ((latest (bookmark-get-bookmark bookmark)))
+    (setq bookmark-alist (delq latest bookmark-alist))
+    (add-to-list 'bookmark-alist latest)))
+</pre>
+
+The super method of ordering (cho-seiri-hou in Japanese).
+Using this method you'll find frequently used bookmarks easily. -- [[rubikitch]]
+
+== Using Org Mode as a Bookmark Manager ==
+
+I like to use OrgMode and RememberMode to keep my bookmarks for me. Just
+visit a file/web page/email and then do an `M-x remember' and add the
+item to a bookmarks.org file. With it's clever hierarchy handling you
+can keep bookmarks well organised for different projects.
+
+== Syncing bookmarks with zsh ==
+
+zsh has a feature called `cd-able-vars' which is similar to bookmarks but limited to directories on the local machine. Here's some code to convert emacs' bookmarks into code for zsh. First add this to your .zshrc:
+
+    setopt cd_able_vars
+    [[ -r ~/.zsh.bmk ]] && source ~/.zsh.bmk
+
+Add this to your .emacs:
+
+    (defadvice bookmark-write-file 
+      (after local-directory-bookmarks-to-zsh-advice activate)
+      (local-directory-bookmarks-to-zsh))
+
+    (defun local-directory-bookmarks-to-zsh () 
+      (interactive)
+      (when (and (require 'tramp nil t)
+                 (require 'bookmark nil t))
+        (set-buffer (find-file-noselect "~/.zsh.bmk" t t))
+        (delete-region (point-min) (point-max))
+        (insert "# -*- mode:sh -*-\n")
+        (let (collect-names)
+          (mapc (lambda (item)
+                  (let ((name (replace-regexp-in-string "-" "_" (car item)))
+                        (file (cdaadr item)))
+                    (message file)
+                    (when (and (not (tramp-tramp-file-p file))
+                               (file-directory-p file))
+                      (setq collect-names (cons (concat "~" name) collect-names))
+                      (insert (format "%s=\"%s\"\n" name (expand-file-name file) name)))))
+                bookmark-alist)
+          (insert ": " (mapconcat 'identity collect-names " ") "\n"))
+        (let ((backup-inhibited t)) (save-buffer))
+        (kill-buffer (current-buffer))))
+
+Bookmarks are saved whenever you exit emacs or call `M-x bookmark-save' manually. -- AnselmHelbig
+
+== See Also ==
+
+* VisibleBookmarks Visible, buffer-local bookmarks (library ##bm.el##)
+* <tt>[[wuxch-bookmark.el]]</tt> -- Extends [[#BookmarkPlus]] and VisibleBookmarks
+* [[BreadcrumbForEmacs]] Breadcrumb for Emacs.  Leaves breadcrumb bookmarks in file buffers.
+* GraphicalBookmarkJump
+
+
+----
+CategoryHypermedia CategoryPersistence
+CategoryGlossary

@@ -1,0 +1,18 @@
+The Windows key is a modifier, but strangely on Windows Emacs detects it an individual key. This is useful, because you can turn it into an additional modifier in Emacs for keys which are not already used by Windows.
+
+For example:
+
+<pre>
+(setq my-keymap (make-sparse-keymap))
+(define-key my-keymap "s" 'save-buffer)
+(global-set-key (kbd "<lwindow>") my-keymap)
+</pre>
+
+Simpler than C-x C-s, isn't it?
+
+
+
+[new]
+
+Using the windows key this way works sometimes, but not always.
+You need the patched version of %%Emacs+EmacsW32%% (see [[EmacsW32]]) to get it to work always.

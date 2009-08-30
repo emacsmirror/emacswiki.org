@@ -1,0 +1,28 @@
+Originally by KragenJavierSitaker; counts the words in an RFC822-style field whenever you M-q.
+
+
+    ;;; my todelicious file
+
+    (defun words-in-field ()
+      (interactive)
+      (condition-case err
+          (save-excursion
+            (forward-paragraph)
+            (search-backward-regexp "^[^ \\t:][^:]*:")
+            (forward-char)
+            (let ((start (point)))
+              (forward-paragraph)
+              (shell-command-on-region start (point) "wc")))
+        (error (message "could not find field beginning: %s" err))))
+
+    (defun words-in-field-newline ()
+      (interactive)
+      (words-in-field)
+      (newline))
+
+    (defun words-in-field-fill-paragraph ()
+      (interactive)
+      (words-in-field)
+      (fill-paragraph nil))
+
+    (global-set-key [(meta q)] 'words-in-field-fill-paragraph)

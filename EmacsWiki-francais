@@ -1,0 +1,74 @@
+Si vous êtes a la recherche d'un mode pour éditer le wiki, voir plutôt WikiModeDiscussion (en).
+
+== Vous êtes sur le Wiki Emacs  ==
+
+Cette page contient des informations générales sur le Wiki Emacs.     
+
+* La page d'accueil est PlanDuSite.
+* Une boite de recherche est disponible au bas de chaque page, Vous pouvez y utiliser des expressions régulières compatible Perl.
+* Cliquez sur un titre pour la liste des pages y référant.
+* Voir CommentFaire pour les informations sur l'édition des pages actuelles ou l'ajout de nouvelles.
+* Voir MissionStatement (en) pour les buts et objectifs du wiki.
+* Voir NomUtilisateur pour des information sur l'utilisation des noms d'utilisateurs.
+* Voir EmacsLogo pour des information sur le logo de ce wiki.
+* Voir [[CSS]] pour des thèmes simple si vous voulez changer l'apparence du wiki.
+* Voir EmacsWikiAppearance pour modifier l'apparence du wiki de manière plus sophistique.
+
+== Hébergement ==
+
+Le Wiki est situé a l'adresse http://www.emacswiki.org/, ou
+http://purl.org/wiki/emacs/, ou http://emacswiki.wikiwikiweb.de/, si
+emacswiki.org ne répond pas.  Il s'agit d'un environnement
+d'hébergement virtuel; vous devez impérativement utiliser HTTP/1.1
+pour y accéder.
+
+Vous pouvez rejoindre le fournisseur d'accès aux adresses
+http://www.wikiwikiweb.de/ et http://www.thinkmo.de/.  Cependant, si
+vous découvrez des pages corrompues ou autres problèmes, il est
+préférable de contacter AlexSchroeder a mailto:alex@emacswiki.org ou
+mailto:alex@gnu.org.  Le webmestre de emacswiki.org l'est aussi de
+tout les autres sites virtuels.  
+
+
+== Argent ==
+
+Pour le moment, AlexSchroeder est supposé payer pour le serveur.
+Les braves gens de thinkmo.de ne lui ont cependant pas encore rien demandé.
+
+Il n'y aura jamais de publicité sur emacswiki.org. Alex les déteste de
+toute façon!  Si vous aimez ce site et désirez contribuer du temps ou
+de l'argent Écrivez du contenu, corrigez les erreurs typographiques,
+faites le ménage dans les pages en enlevant les vieilles discussions
+qui n'ont plus de raison d'être, joignez ou séparez les pages au
+besoin ou tout autre modifications pour rendre le wiki plus convivial
+et plus utile.  Si vous n'avez pas de temps et vous voulez vraiment
+donner de l'argent, faites le, et créez une page sur ce wiki ou vous
+dites combien d'argent vous avez donné a un organisme de charité grâce
+a ce wiki!
+
+== Le Logiciel Wiki ==
+
+Ce wiki utilise Oddmuse [http://www.emacswiki.org/cgi-bin/wiki.pl?action=version].
+
+Avoir utilise un logiciel en Lisp ou en schéma aurait été plus dans l'esprit D'emacs et d'Xemacs.
+Mais oddmuse est un excellent logiciel, en un seul script et facile a installer.
+
+Si vous avez un opinion sur le wiki ou voulez proposer de nouvelles
+fonctionnalités, allez sur MeatBall:EmacsWiki et expliquez en quoi
+cette nouvelle fonctionnalité améliorera le Wiki.
+
+Rapportez les bugs et les problèmes sur
+[http://www.emacswiki.org/cgi-bin/oddmuse.pl?Known_Problems].
+
+== Scripts Utilisés ==
+
+L'accès au wiki se fait via wiki.pl, qui fait partie de l'archive initiale.
+
+Les scripts suivant on été ajouté.  La grande simplicité de ces
+scripts est intentionnelle.
+
+* http://www.emacswiki.org/scripts/list-archive -- liste les tars.
+* http://www.emacswiki.org/scripts/archive -- Crée une archive du site.
+* http://www.emacswiki.org/scripts/elisp-archive -- Crée une archive de la section elisp
+* http://www.emacswiki.org/scripts/upload -- télécharge un fichier elisp et met a jour l'index et le changelog
+* http://www.emacswiki.org/scripts/link-scripts -- fait un lien entre les scripts et les fichier texte, et installe une nouvelle copie du script.

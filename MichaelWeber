@@ -1,0 +1,55 @@
+My name is [http://www.foldr.org/~michaelw/ Michael Weber] you can reach me via mailto:michaelw+emacs@foldr.org.
+
+I use Emacs, I mean GnuEmacs, as editor exclusively since 2001. Before that I used [[XEmacs]] since about 1995, and before that (since around 1989) I used to use MicroEmacs on a Commodore AMIGA, occasionally.
+
+EmacsLisp code which I released so far:
+* CommandLogMode
+* ScreenServer
+* My other [http://www.foldr.org/~michaelw/emacs/ Emacs stuff]
+
+When possible, I program in CommonLisp these days.  I use SlimeMode as Lisp IDE, and I have made some minor contributions as well.
+
+I am interested in having Emacs SupportBiDi.  Actually I am running the emacs-bidi branch for some time now.  I do not use it too often, though.
+
+I try to automate recurring tasks during editing, here are some macros which I bound to convenient keys:
+
+    (defun mwe:skeleton-pair-insert-maybe (&optional arg)
+      (interactive "P")
+      (save-excursion (skeleton-pair-insert-maybe arg))
+      (forward-char))
+
+I like this behavior more than the default.  Cursor is placed inside the parentheses, so I can mark expressions by repeatedly pressing <code>C-SPC</code> and then <code>(</code> to enclose the whole block with parentheses.  Fitting right in there is the following <code>mwe:up-list-or-insert</code>, which I have bound to <code>)</code>.
+
+
+    (defun mwe:up-list-or-insert (&optional arg)
+      "Skip over a closing parenthesis, unless no matching opening parenthesis is found.  In this case insert one."
+      (interactive "p")
+      (condition-case nil
+          (up-list arg)
+        (error (insert-char (logand last-command-char 255) 1))))
+
+I have my own filling functions, which I use instead of the default, whenever I edit text which is
+put into a versioning system like CVS or RCS.  I also try to persuade my co-writers to do the same.  Diffs are much more readable, if the real change is not drowned in tons of merely refilled paragraphs.
+
+    (defun mwe:fill-sentence ()
+      (interactive)
+      (save-excursion
+        (unless (bolp)
+          (forward-sentence -1))
+        (let ((beg (point)))
+          (forward-sentence)
+          (fill-region-as-paragraph beg (point)))))
+
+    (defun mwe:text-fill-paragraph (fill-type)
+      (interactive "*p")
+      (case fill-type
+        (1 (let ((filladapt-activated (and (fboundp 'filladapt-mode)
+					   filladapt-mode)))
+	     (unwind-protect
+		 (progn (if filladapt-activated (turn-off-filladapt-mode))
+			(mwe:fill-sentence))
+	       (if filladapt-activated (turn-on-filladapt-mode)))))
+        (2 (fill-paragraph t))
+        (t (fill-paragraph nil))))
+----
+CategoryHomepage

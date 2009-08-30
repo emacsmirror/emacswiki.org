@@ -1,0 +1,163 @@
+!LaTeX is a typesetting tool.  You write your text using a particular markup language, and then you process your text into something nice-looking and printable.
+
+Here's how such (fragment of) !LaTeX source might look like:
+
+<pre>
+\chapter{Introduction}
+\label{sec:einl}
+
+\emph{Performance ist ein subjektives Mass für die Geschwindigkeit,
+mit der eine Applikation verwendet werden kann.} Die Bewertung der
+Performance kann nur relativ sein: Das System ist schneller als
+vorher, als auf einer anderen Maschine, als mit der alten Version.
+</pre>
+
+There are numerous books and documentation available on using LaTeX.  A free LaTeXManual is available for use in Emacs InfoMode.
+
+In order to facilitate working with !LaTeX documents, files with the .latex and .ltx extension are put into latex-mode.  Files with the .tex extension are put into tex-mode.  tex-mode is more generic (ie. less features) because in the end LaTeX is just a collection of TeX macros.
+
+When editing a latex document, you can run the command `M-x imenu-add-menubar-index' to give you a quick menu of your document headings.  Very nice, and you can even add it to the reftex hooks on load (you ''do'' use reftex and AUCTeX, don't you?):
+
+  (add-hook 'reftex-load-hook 'imenu-add-menubar-index)
+  (add-hook 'reftex-mode-hook 'imenu-add-menubar-index)
+
+For high-speed access, one can bind the imenu to a right mouse click:
+
+  (global-set-key [down-mouse-3] 'imenu)
+
+You may use AUCTeX mode instead of !LaTeX mode.  AUCTeX has even more features.  It is rather big, however. AUCTeX is usually included in [[XEmacs]]. There are other !LaTeX modes for Emacs, for example UltraTexMode and YaTeX, but neither is under active development. [http://www.ctan.org/tex-archive/help/Catalogue/entries/swiftex.html SwifTeX] (external link) was created to edit self-documenting LaTeX code that uses the doc package, but has also generic !LaTeX mode, created using `define-derived-mode'. Also not under active development. 
+
+One feature in AUCTeX is autoquoting, but there is even better support for 'magic' quoting (a la Word) using TypographicalPunctuationMarks.  This mode can be easily extended to include 'latex' quoting by adding it as a language.  
+
+CDLaTeX is a minor mode providing template based insertion of !LaTeX environments and mathematical constructs. It tries to be quick, with very few and easy to remember keys, and intelligent on-the-fly help. You can use it on top of your favourite !LaTeX mode.
+
+RefTeX (minor mode) provides distinct support for doing labels, references and citations in !LaTeX, and it provides support for generating indices. It works with both Emacs and XEmacs and runs as a minor mode with any of the !LaTeX major modes around, most notably AUCTeX. It is included in both GnuEmacs and [[XEmacs]].
+
+XSymbolMode gives some WYSIWYG capabilities when editing !LaTeX or HTML in Emacs, but mainly it assists the input of symbols in some token languages (MarkupModes like TeX and SGML/HTML).
+
+The LaTeXSymbols package provides commands for [[XEmacs]] (and only [[XEmacs]]--it doesn't work with GnuEmacs) to open up a window with a table of !LaTeX symbols. Similar functionality (and more) is offered by XSymbolMode.
+
+PreviewLaTeX replaces the LaTeX code (more exactly headers, tables, figures, graphics and math) by the final output in Emacs. You can revert from preview to code, make some changes and then regenerate preview at point.
+
+WhizzyTeX minor mode provides incremental viewing of LaTeX documents using on-the-fly compilation. It also shows the point where you are in LaTeX document source. It can use DVI previewer, or it can generate .ps file and use <nowiki>PostScript</nowiki> viewer. Similar features are provided by [http://www.ctan.org/tex-archive/help/Catalogue/entries/autoview.html CTAN:autoview], supposedly replaced by [http://gnufans.net/~deego/emacspub/lisp-mine/filewatch/ filewatch].
+
+LatexMk is a kind of specialized make for LaTeX, and it can be used in "preview continuously" mode to have the preview updated automatically automatically ''on file save''. [http://www.pps.jussieu.fr/~beffara/soft/rubber/ Rubber] is a more modular alternative to LatexMk.
+
+InverseDviSearch explains how to set DVI previewer and Emacs to allow jumping from editor to related place in DVI file and vice versa.
+
+FlyspellBabel switches FlySpell language according to Babel commands.
+
+PredictiveMode includes extensive support for context-sensitive, predictive completion in LaTeX documents. E.g. only maths commands are suggested as completion candidates inside equation environments, only defined labels are suggested inside \ref commands, etc. It also learns which commands you use most often and offers them first. And it supports documents split over multiple files by honouring the `TeX-master' variable.
+
+LatexEnc gets a coding system from <code>inputenc</code>, as an alternative to an Emacs coding cookie in your document.
+
+== Discussion ==
+
+[new]
+Is there a way to use [http://www.pps.jussieu.fr/~beffara/soft/rubber/ Rubber] as default in AUCTex (e.g., "C-c C-c" -> Latex or PDF calls rubber with the appropriate options)??
+
+[new]
+Yes.  In my configuration, F12 previews a LaTeX document, and Shift+F12 creates a PDF.  To avoid clutter, all intermediate files are kept in the /tmp folder, only the final PDF is created in the current folder.  Also, the right workflow is automatically selected depending on if the file is a beamer or a normal LaTeX file.
+
+In my .emacs file I have the following:
+
+{{{
+(defun my-latex (action)
+  (interactive)
+  (if (buffer-modified-p) (save-buffer))
+  (let ((f1 (current-frame-configuration))
+        (retcode (shell-command (concat "~/bin/my-latex " action " " buffer-file-name))))
+    (if (= retcode 0) (set-frame-configuration f1))))
+
+(add-hook 'LaTeX-mode-hook (lambda ()
+      (define-key LaTeX-mode-map (kbd "<f12>") '(lambda () (interactive) (my-latex "preview")))
+      (define-key LaTeX-mode-map (kbd "<S-f12>") '(lambda () (interactive) (my-latex "create")))))
+}}}
+
+You'll also need the following two files (my-latex and my-preview) somewhere in your path and with execution permission:
+
+*my-latex:*
+{{{
+#! /bin/sh
+
+action=$1
+beamer=`grep -c -m 1 beamer $2`
+file=`basename $2 .tex`
+tmpdir="/tmp"
+rubber="rubber"
+
+if [ $beamer = "0" ]; then
+    if [ $action = "preview" ]; then   # normal tex file --> preview as dvi
+        $rubber --into=$tmpdir $file.tex && my-preview xdvi $tmpdir/$file.dvi
+    elif [ $action = "create" ]; then  # normal tex file --> create pdf
+        $rubber --into=$tmpdir $file.tex && dvips -Ppdf $tmpdir/$file.dvi && mv $file.ps $tmpdir/$file.ps && ps2pdf $tmpdir/$file.ps && my-preview acroread $file.pdf
+    fi
+elif [ $beamer = "1" ]; then
+    if [ $action = "preview" ]; then   # beamer tex file --> preview as ps
+        $rubber --into=$tmpdir $file.tex && dvips -Ppdf $tmpdir/$file.dvi && mv $file.ps $tmpdir && my-preview "gv --scale=3" $tmpdir/$file.ps
+    elif [ $action = "create" ]; then  # beamer tex file --> create pdf
+        $rubber --into=$tmpdir $file.tex && dvips -Ppdf $tmpdir/$file.dvi && mv $file.ps $tmpdir && ps2pdf $tmpdir/$file.ps && my-preview acroread $file.pdf
+    fi
+else
+    echo "action ($action) or filetype ($beamer) not recognized"
+fi
+}}}
+
+*my-preview:*
+{{{
+#! /bin/sh
+
+$1 $2 2> /dev/null > /dev/null &
+}}}
+--FelipeCsaszar
+
+[new:TiagoCamargo:2008-12-02 15:05 UTC]
+This should do the trick:
+<pre>
+(eval-after-load "tex"
+  '(progn
+     (add-to-list 'TeX-expand-list
+                  '("%(RubberPDF)"
+                    (lambda ()
+                      (if
+                          (not TeX-PDF-mode)
+                          ""
+                        "--pdf"))))
+     (add-to-list 'TeX-command-list
+                '("Rubber" "rubber %(RubberPDF) %t" TeX-run-shell nil t) t)))
+</pre>
+It will output dvi or pdf depending on the active mode.
+I use the following shortcuts: F9 for Rubber and F12 for preview.
+<pre>
+(add-hook 'TeX-mode-hook
+          '(lambda ()
+            (define-key TeX-mode-map (kbd "<f9>")
+              (lambda ()
+                (interactive)
+                (save-buffer)
+                (TeX-command-menu "Rubber")
+                (TeX-clean)))
+            (define-key TeX-mode-map (kbd "<f12>")
+              (lambda ()
+                (interactive)
+                (TeX-view)
+                [return]))))
+</pre>
+--[[TiagoCamargo]]
+
+----
+[new]
+I found a page containing information about how to write latin1 coded documents in LaTeX, also there's some info about getting started with LaTeX in emacs. (The info is in Swedish)
+http://www.dsv.su.se/datorer/latex/#50
+
+[new]
+Hmm... I don't already have something that handles TeX and LaTeX in Emacs... are there some .el/.elc files I need and/or settings?  Presumably there's a place on here that 
+mentions download/setup-type stuff...
+
+[new]
+If you open a file with the suffix .tex or .latex, you should get the basic mode.  For more features, use AUCTeX. -- AlexSchroeder
+
+
+
+----
+CategoryModes CategoryTex

@@ -1,0 +1,25 @@
+Le package ido.el de KimStorm vous permet de faire des choses intéractivement avec les fichers et les buffers.
+
+Vous pouvez l'obtenir à l'adresse http://www.cua.dk/ . Il fait partie du CVS Emacs.
+
+
+= Apercu de Ido =
+
+    ;;dans le .emacs
+    (require 'ido)
+    (ido-mode t)
+
+Pour naviguer entre les buffers C-x b:
+* taper quelques caractères apparaissant dans le nom du buffer, RET pour afficher le buffer en haut de la liste.
+* utiliser C-s (suivant) or C-r (précedent) pour naviguer dans la liste.
+* [Tab] affiche les complétions possibles dans un buffer (ou affiche le buffer s'il ne reste qu'une possibilité)
+* utiliser C-f pour retourner chercher un fichier.
+
+Pour trouver un fichier C-x C-f:
+* taper quelques caractères apparaissant dans le nom du fichier, RET pour afficher le fichier en haut de la liste.
+* utiliser C-s (suivant) or C-r (précedent) pour naviguer dans la liste.
+* [Tab] affiche les complétions possibles dans un buffer (ou affiche le buffer ou descend dans la hierarchie s'il ne reste qu'une possibilité)
+* taper RET pour ouvrir le répertoire en haut de la liste.
+* taper [backspace] pour remonter dans la hiérarchie.
+* taper deux slashs pour aller au répertoire racine.
+

@@ -1,0 +1,177 @@
+* http://sourceforge.net/projects/cedet/
+* SemanticBovinatorQuestions
+
+== Overview ==
+
+From the page:
+
+: The Semantic Bovinator is a lexer, parser-generator, and parser. It
+is written in Emacs Lisp and is customized to the way Emacs thinks
+about language files, and is optimized to use Emacs' parsing
+capabilities.
+
+: The Semantic Bovinator's goal is to provide an intermediate API for
+authors of language-agnostic tools who want to deal with languages in
+a generic way. It also provides a simple way for mode authors, who are
+experts in their language, to provide a parser for those tool authors,
+without knowing anything about those tools.
+
+Semantic is actually composed of two well distinguished parts: a
+parsing engine (tags collector) and a tags accessor.
+Good part of what follows is taken by a thread posted in both ECB-list
+and CEDET-devel by the main developers of ECB (Klaus Berndl)
+and CEDET (Eric M. Ludlam).
+
+=== Parsing engine ===
+
+Semantic includes two parsing engines:
+* Bovinator (the original one), a fast LL parser
+* Wysent, a full-featured LALR(1) parser, based on GNU Bison
+
+Both parsers are implemented in Elisp. The final goal of a parser may
+be considered collect tags from the
+analysed code.
+
+A tag is just a name for one lexical and/or semantic token in a
+language
+(e.g. a variable, a method definition, an include-operator etc.).
+A tag contains several informations, at least the name of the tag
+(i.e. the name of the variable, class, method....) and the location
+of this tag in the buffer (i.e.. begin- and end-position) and probably
+also the file-name the tag belongs to.
+
+In order to collect this information the parsing engine needs to actually
+understand the syntax (lexer)
+and the grammar (parser) of the language in question. So we need to feed the
+parser with the grammar for that language.
+
+The analysis or parsing may be performed on a limited part of the
+buffer (for example in the current function or block) or on the
+whole file. Once the analysis is performed the SemanticBovinator provide functions
+to import those tags into a global DB or into a local cache.
+
+Currently the semantic parsing engine consists of a general backbone
+and several parsers for each supported languages (as
+Emacs-Lisp itself, Java, C, C++ etc.). Semantic offers several
+interfaces
+(Elisp-functions) to get parsing information about the currently
+file or buffer. The output can be a single tag (e.g. semantic has a
+function
+which returns the tag at point) or also a list of tags (e.g. all
+tags in the current buffer).
+
+There are, both in the Emacs environment and amongst UNIX tools, various
+other methods to
+extract tags information (which may be integrated in the semantic
+framework, see below), although not always with 
+the same accuracy of a parser engine:
+
+* `etags': an external command line tool which scans program files in
+several languages and writes a [[tags file]].
+ These tags have a different structure from the tags returned by SemanticBovinator.   Emacs offers an Elisp-interface to the `etags' program -- see EmacsTags.
+
+* `ctags': the `etags' precursor, but with limited functionality respect
+to `etags' (fewer supported languages). 
+
+* ImenuMode: imenu.el is an Emacs library which returns also a
+list of tags of
+  the current buffer. Again different tag-format but in general a list
+of tags
+  in the sense described above. The main difference in respect to the
+other approaches is that
+  the tags collected are always collected in the local buffer, and it
+doesn't provide a system
+  to collect tags into a persistent file (e.g. a [[tags file]]). ImenuMode is
+enabled defining for each major mode
+  a function which reads the current buffer and extracts the tags
+using regexp against the text.
+
+* [[Icicles - Other Search Commands#IciclesImenu]] uses ImenuMode
+regexps to locate definitions and let you navigate among them,
+possibly filtering hits with regexps. As in Imenu, no persistent file
+of tags is created -- definitions are found on the fly. Unlike Imenu,
+you can search across multiple files, buffers, and saved regions. 
+
+* `ebrowse': is a somehow clumsy mixture consisting of a fast(!)
+C++-parser and display/navigation features and is part of Gnu Emacs >=
+21.  It's not
+  written in Elisp but in C - at least the parser-core and has an
+Elisp-interface
+  giving access to the tags (which resides in an external file similar
+to the `etags' [[tags file]]).
+
+* `cscope': another stand-alone command-line tags collector C++/C
+oriented.
+
+=== Tags accessor ==
+
+So semantic is a parsing engine, whose final goal is to build a
+database containing tags (information for each piece of information 
+contained in a code file, e.g. functions, variables, declaration and
+their attributes).
+
+But semantic also provides a system to extract from different tags
+sources collected by other programs 
+(eventually faster than Bovinator/Wysent itself) and import them in
+the semantic DB. 
+
+CEDET now can enable access to an Ebrowse-tag-file (in general
+to any arbitrary back-end containing tags in any arbitrary tag-format)
+and offers an interface
+to convert these Ebrowse-tags in semantic-tag-format. So semantic (and
+each tags displayer like SpeedBar or
+ECB) can take advantage from the Ebrowse-program which is really fast
+in parsing a huge code-base of C++-code.
+
+== User Tools in Semantic ==
+
+Here is a summary of some of the user level tools in Semantic
+
+* Smart code completion for typed languages.
+* Show symbol under point summary in idle time (Like eldoc mode)
+* Tag decorations (such as a blue line between tags)
+* Include file management
+* Symbol references (use) tool (semantic-symref)
+* Tag based navigation.
+* Tag based copy/paste operations, translation between languages.
+* Jump to tags by name (Like ETags) but resolves polymorphism issues.
+* Stickyfunc mode shows the declaration scrolled off the top of the window.
+* Tag name based bookmarking
+
+== Tools supported by the Semantic Bovinator ==
+
+* ImenuMode
+* WhichFuncMode
+* SpeedBar
+* ElDoc
+* HippieExpand
+* EIEIO charts
+* SemanticRecoder
+* CompletionUI
+
+
+== How To Set Up Semantic Bovinator For A New Language ==
+
+HowToSetUpSemanticBovinatorForANewLanguage
+
+== Tools which take advantage of the Semantic Bovinator ==
+
+* JavaDevelopmentEnvironment : http://jdee.sunsite.dk/
+* EmacsClassBrowser (ECB) : http://ecb.sourceforge.net
+* ConnectedGraphEditor
+
+== Other ===
+
+The Semantic Bovinator can also be used as a powerful tool to ease C++
+programming: see SemanticSense.
+
+'''See Also:''' CollectionOfEmacsDevelopmentEnvironmentTools,
+"[http://cedet.sourceforge.net/intellisense.shtml Intellisense]"
+
+For natural languages, see MalagaMode.
+
+----
+CategoryCode
+CategoryProgrammerUtils
+
+ LocalWords:  Elisp Bovinator Wysent CEDET Ebrowse SpeedBar

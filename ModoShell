@@ -1,0 +1,31 @@
+El modo shell (no confundir con el ModoEShell) permite ejecutar una shell (bash, por ejemplo) en un buffer
+Emacs. De esta forma evitamos salir de Emacs para ejecutar comandos.
+
+----
+
+El shell-mode no se lleva demasiado bien con las secuencias de escape de las terminales. Una consecuencia 
+muy comun es que las palabras "coloreadas" por algun comando (notablemente el `ls') se ven rodeadas de caracteres extraños.
+Una forma de evitar esto consiste en no activar el coloreado de los comandos (`ls --color=none') en el caso de que 
+el nombre de la terminal sea `emacs'. En sistemas Debian, por ejemplo, el fichero `~/.bashrc' contiene los siguiente
+por defecto:
+
+<pre>
+# enable color support of ls and also add handy aliases
+if [ "$TERM" != "dumb" ]; then
+    eval "`dircolors -b`"
+    alias ls='ls --color=auto'
+fi
+</pre>
+
+lo cual presenta problemas, ya que el tipo de terminal (el valor de la variable de entorno `TERM') es `emacs' y no `dumb'. Luego a la expresión 
+anterior hay que añadir el caso `emacs', como sigue:
+
+<pre>
+# enable color support of ls and also add handy aliases
+if [ "$TERM" != "dumb" -a "$TERM" != "emacs" ]; then
+    eval "`dircolors -b`"
+    alias ls='ls --color=auto' 
+fi
+</pre>
+
+

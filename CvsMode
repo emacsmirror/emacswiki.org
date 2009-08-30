@@ -1,0 +1,25 @@
+[::pcvs]
+or [::PclCvs], is a mode for interacting with multiple files in a [[CVS]] repository.  `pcvs' comes shipped with Emacs 21 and later.  XEmacs has had it for a longer time.
+
+[[CVS]] was one of the first free and widely used revision control systems that could manage groups of files and entire directory trees, rather than just one file at a time like predecessor systems, [[RCS]] and CSSC.  The design of Emacs' VersionControl mode unfortunately only supports these single-file operations.  PclCvs was the first Emacs mode to support aggregate operations on CVS files.
+
+One might start pcvs by saying ##`M-x cvs-status RET <directory> RET'##
+
+Note that `pcvs' can usefully coexist with the traditional VersionControl mode; there is no need to pick one over the other, as they perform quite distinct functions.
+
+See also PclCvsTips.
+
+== PCL-CVS and PCVS in Windows and win32 Environments ==
+
+For use with putty and plink.
+* Install cvsnt
+* include ##c:\path\to\cvs.exe## in your path statement
+
+then set the environment variables:
+* set ##CVS_RSH=c:\path\to\plink.exe##
+* set ##CVSROOT=:ext:user@hostname:/path/to/cvsroot/on/server##
+
+that should do it.
+
+----
+CategoryVersionControl

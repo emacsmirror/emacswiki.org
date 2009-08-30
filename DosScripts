@@ -1,0 +1,39 @@
+At least three Emacs modes have been released for editing Dos scripts (batch files):
+
+== batch-mode ==
+
+By Agnar Renolen (2002). Similar to ##dos-mode##, but with fewer features.
+
+Lisp:batch-mode.el does not recognize ::comments, :.labels, %~args, underscored_variables, -options, or --options. No commands to run script or show help for Dos commands. No code navigation support or code templates.
+
+Using the term /batch mode/ here can be misleading, since the GNU Emacs Manual says: "Batch mode is used for running programs written in Emacs Lisp from shell scripts, makefiles, and so on." This is what CategoryBatchMode is about.
+
+== cmd-mode ==
+
+By Tadamegu Furukawa (2001-2005). Similar to ##dos-mode##, but with fewer features.
+
+CmdMode does not recognize ::comments, :.labels, /options, -options, or --options. Script cannot be run from Emacs with args. Code navigation misses :.labels and is not as feature-rich as imenu+outline.
+
+== dos-mode ==
+
+By Arni Magnusson (2003-2009). The recommended mode for editing Dos scripts.
+
+DosMode supports all of the features listed above, borrowing and improving ideas from ##batch-mode## and ##cmd-mode##. It also provides imenu+outline navigation and code templates.
+
+[new]
+But it does not seem to handle ##@rem## comments. Or am I missing something? (Anonymous)
+
+[new]
+Fixed, thanks for the feedback! (Arni Magnusson)
+----
+== General discussion ==
+
+[new]
+Why is ##dos-mode## "the recommended mode for editing Dos scripts"? (Lennart Borgman)
+
+[new]
+Mainly because of the shortcomings of ##batch-mode## and ##cmd-mode## listed above, improved code navigation, better documentation, and the code conforming to Emacs Lisp conventions.
+
+The three modes are really quite similar, so it would be best to combine all desired features in one mode. If there are any features you find lacking in ##dos-mode##, please leave comments here so I can include them in the next release. Users can also add personal features with ##dos-mode-hook##. (Arni Magnusson)
+----
+CategoryProgramming

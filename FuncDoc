@@ -1,0 +1,11 @@
+Try to find info about a command keyword relevant to this major mode.
+The initial guess is taken from the text around point.
+
+Author: Peter S. Galbraith
+
+http://people.debian.org/~psg/elisp/func-doc.el
+
+This is probably superseded by InfoLook. See also WordHelp.
+
+----
+CategoryHelp

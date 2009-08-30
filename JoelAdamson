@@ -1,0 +1,294 @@
+== About Me ==
+
+Public key: http://pgp.mit.edu
+
+Homepage: http://www.unc.edu/~adamsonj
+
+Howdy,
+
+I'm a biologist and statistician heading for a Ph.D. in evolutionary
+theory.  I use Emacs for just about everything.  I am using it to edit
+this Wiki page right now.  I use MhE for mail, AUCTeX for LaTeX, Psvn
+for my documents and any other programming mode I might
+need.
+
+I use EmacsCVS and I have a SlackBuild that builds Emacs once a week
+from CVS.
+
+== Binding to Space ==
+
+I added this keyboard macro by the usual means.  I defined it on the keyboard, then went to .emacs and "M-x insert-kbd-macro":
+
+<pre>
+(fset 'bspace
+   (lambda (&optional arg)
+     "Keyboard macro."
+     (interactive "p")
+     (kmacro-exec-ring-item (quote ("  " 0 "%d")) arg)))
+</pre>
+
+This inserts a space after the point.  I wanted to bind this to "M-SPC", so I used the following (after some trial-and-error):
+
+<pre>
+("\M-\ " bspace)
+</pre>
+
+in my map-keys-alist (see `map-keys' below).  
+
+To set this with `global-set-key', use
+
+<pre>
+(global-set-key "\M-\ " 'bspace)
+</pre>
+
+Note the escaping of the space after "M-".
+
+== mh-mailto.sh ==
+
+This script brings up an mh-letter buffer with the address and subject in a mailto: link from Firefox.  Go to Edit -> Preferences in Firefox and change the application for mailto: links to customize the setting.
+<pre>
+#!/bin/sh 
+
+declare -a fields
+LEN=${#1}
+QINDEX=`expr index $1 ?`
+EQINDEX=`expr index $1 =`
+TO=${1:7:$(($LEN - $QINDEX))}
+SUBJECT=`printf "%s" ${1:$EQINDEX:$(($LEN - $EQINDEX))}|sed 's/%20/ /g' `
+
+/usr/bin/emacsclient -e "(mh-send \"$TO\" \"\" \"$SUBJECT\")"
+</pre>
+== Good Bits of .emacs ==
+
+Upcase the previous word: I've stopped using the CapsLock key thanks
+to this.  This really only saves one keystroke (the negative sign
+before the prefix argument).  Since I'm usually only upcasing the
+previous word, this feels like it saves a lot (I'd have to type three
+more keystrokes to upcase the previous word).
+
+I bind this to "\M-U" (that's Meta-Shift-U).  AbbrevMode is another
+good solution if you want to get rid of CapsLock; however, there are
+many words that I use often in their capitalize (SVN) and
+uncapitalized forms (svn).
+
+<pre>
+(defun backward-upcase (&optional arg)
+  "Capitalize the previous word; with optional arg, capitalize
+the previous arg words"
+  (interactive "P")
+  (let ((words (if arg arg 1)))
+    (upcase-word (- 0 words))))
+</pre>
+
+<pre>
+;; frame parameters
+(setq initial-frame-alist '((top . 0)
+			    (left . 0)
+			    (height . 40) 
+			    (width . 80)))
+(add-to-list 'default-frame-alist '(font . "dejavu sans mono"))
+(add-to-list 'default-frame-alist '(background-color . "black"))
+(add-to-list 'default-frame-alist '(foreground-color . "white"))
+(setq frame-title-format (concat "Emacs: %b" "@" (getenv "HOSTNAME")))
+</pre>
+
+[[EMMS]] settings:
+
+<pre>
+;; emms
+;;
+;; currently emms resides in ~/lisp/el/emms, however I'd like to
+;; remove it and put it in $SITELISP
+(add-to-list 'load-path
+ 	     "/home/joel/lisp/el/emms")
+(require 'emms-setup)
+(emms-all)
+(emms-default-players)
+(require 'emms-streams)
+(require 'emms-lastfm)
+(emms-lastfm)
+(setq emms-playlist-default-major-mode 'emms-playlist-mode)
+</pre>
+
+A function for ibuffer: this closes all filter groups.
+
+<pre>
+(defun ibuffer-toggle-all-filters ()
+  (interactive)
+  (save-excursion
+    (if (not (eq major-mode 'ibuffer-mode))
+	nil
+      (progn
+	(goto-char 0)
+	(setq prev-point 0)
+	(while (< prev-point (point))
+	  (setq prev-point (point))
+	  (ibuffer-forward-filter-group)
+	  (ibuffer-toggle-filter-group))))))
+</pre>
+
+Functions that insert macros and parentheses in Stata-mode from
+EmacsSpeaksStatistics.  A Stata macro is a text substitution defined by the command
+"local."
+
+<pre>
+;; the following defines a key that inserts the "local macro"
+;; skeleton in stata-mode
+(define-skeleton insert-local
+  "Insert \"`'\", the markers for Stata
+local macros; see `ess-mode'"
+ "Macro name: " "`" str "'")
+
+(define-skeleton insert-parens
+  "Inserts parentheses without adding
+a space before left parenthesis"
+ "Contents: " "(" str ") ")
+
+(add-hook 'ess-mode-hook
+	  (lambda () 
+	    (setq skeleton-end-newline nil)
+	    (define-key ess-mode-map
+	      "\M-`" 'insert-local)
+	    (define-key ess-mode-map
+	      "\M-\sh-9" 'insert-parens)))
+(add-hook 'inferior-ess-mode-hook
+	  (lambda ()
+	    (setq skeleton-end-newline nil)
+	    (define-key inferior-ess-mode-map
+	      "\M-`" 'insert-local)
+	    (define-key inferior-ess-mode-map
+	      "\M-\sh-9" 'insert-parens)))
+</pre>
+
+Fullscreen function, courtesy of [[FullScreen]]
+
+For this to work in Fvwm, I had to put
+
+<pre>
+Style "*" ResizeHintOverride
+</pre>
+
+in  my ~/.fvwm/config
+
+<pre>
+(defun toggle-fullscreen ()
+  "Toggle between fullscreen and partial screen display on X11;
+courtesy of http://www.emacswiki.org/cgi-bin/wiki/FullScreen"
+  (interactive)
+  (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+	    		 '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+
+</pre>
+
+My pride and joy: a function that takes an alist of keys and functions
+and maps them.  Now all I do is edit the list, instead of adding
+another "global-set-key"
+
+<pre>
+(defun map-keys (alist)
+  "map-keys ALIST \nAutomates mapping of keys using an alist.
+cdr of each pair (command) should not be quoted."
+  (dolist (key-cons alist)
+    (cond ((or (null (car key-cons))
+	       (null (nth 1 key-cons)))
+	   nil)
+	  ((not (functionp (nth 1 key-cons)))
+	   nil)
+	  (t (global-set-key (car key-cons) (nth 1 key-cons))))))
+(setq map-keys-alist
+      '(("\M-D" backward-kill-word)	
+	("\M-U" backward-capitalize)
+	("\C-h" backward-delete-char)	
+	("\C-cv" bbdb-complete-name)
+	("\C-x\C-a" find-file-other-frame)
+	("\C-x\C-z" delete-frame)
+	("\C-x\M-b" switch-to-buffer-other-window)
+	("\C-x\M-f" find-file-other-window)
+	("\C-x\M-d" dired-other-window)
+	("\M-p" comment-region)
+	("\M-]" font-lock-mode)
+	("\M-[" font-lock-fontify-buffer)
+	("\M-o" occur)
+	([f2] browse-url-at-point)
+	([f3] apropos)
+	("\C-cm" message-mail)
+	("\C-x\C-b" ibuffer)
+	("\M-i" insert-buffer)
+	("\C-cr" rename-buffer)
+	("\C-cb" bury-buffer)
+	("\C-c\M-b" unbury-buffer)
+	([f10] toggle-fullscreen)
+	([f9] toggle-frame-parameters)
+	("\C-c\C-l" scroll-center)
+	("\C-cp" font-print-buffer)
+	("\C-cf" find-file-at-point)
+	("\M-`" insert-local)
+	("\C-cs" w3m-search)
+	("\C-ci" insert-current-date-time)))
+(map-keys map-keys-alist)
+</pre>
+
+== Modular .emacs ==
+
+My new .emacs configuration is laid out as a set of files containing
+
+* editing functions
+* frame properties functions
+* key customizations
+* mode customizations
+
+All are kept in ~/.emacs.d along with third-party libraries.
+
+Here is my entire .emacs file:
+<pre>
+;; load custom file
+(setq custom-file "~/.emacs-custom.el")
+
+;; customization declarations
+(defcustom my-load-path+ (list (expand-file-name "~/.emacs.d/"))
+  "Directories to add to load-path"
+  :tag "Directories to add to load-path"
+  :group 'files
+  :type '(repeat :inline t string))
+
+(defcustom my-libs+ nil
+  "Additional libraries to load"
+  :tag "Libraries to load"
+  :group 'files
+  :type '(repeat sexp))
+(load custom-file)
+
+;; all the action:
+(dolist (dir my-load-path+ load-path)
+  (add-to-list 'load-path (expand-file-name dir)))
+(dolist (file my-libs+)
+  (require file))
+
+(put 'upcase-region 'disabled nil)
+
+;; start the emacs server
+(server-start)
+</pre>
+
+Now all my configuration is done through customize: I add paths to my
+load-path through my customize declarations above, and libraries.  The
+two dolist statements then add to load-path and require the
+appropriate libraries.
+
+My main inspiration for this was that my .emacs file was littered with
+"(add-to-list ...)" statements.  This way I have much more control
+over things, and everything is in its own convenient container.  Also,
+I can compile my personal libraries and make them load faster.  This
+way I can speed things up without compiling .emacs or
+.emacs-custom.el.
+
+== Transparency == 
+
+With a few functions from http://emacs-fu.blogspot.com/2009/02/transparent-emacs.html I got some transparency-changing keybindings.  However, I also use SpeedBar, and noticed that alpha is now a frame parameter.  Adding '(100 . 50) to speedbar-frame-parameters with parameter `alpha' makes speedbar 50% opaque when inactive and then when I switch to it, it is fully opaque.  Pretty cool!  See TransparentEmacs.
+
+== Messages ==
+
+Welcome to the wiki! I must have missed you when you first created this page. :) -- AlexSchroeder
+
+----
+CategoryHomepage

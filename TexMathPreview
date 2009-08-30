@@ -1,0 +1,20 @@
+<code>tex-math-preview</code> helps you preview TeX math expressions.
+
+: http://user42.tuxfamily.org/tex-math-preview/index.html
+
+The following forms are recognised at point
+
+* <code>$...$</code> -- for TeX
+* <code>\(...\)</code> and <code>\[...\]</code> -- for LaTeX
+* <code>@math{...}</code> -- for [[Texinfo]]
+* <code><math>...</math></code> -- for WikipediaMode markup
+* <code><alt role="tex">...</alt></code> -- for DBTexMath
+
+The idea is to have point in the middle of such an expression and use <code>M-x tex-math-preview</code> to look at how it comes out.  <code>tex-mode</code> (see TeX) has its own region previewing, and PreviewLaTeX has some fancy preview overlays, but <code>tex-math-preview</code> is meant to be minimal.  It just shows an image or an error.
+
+Previewing is done either with <code>tex-dvi-view-command</code> the same as <code>tex-mode</code>, or if you have the <code>dvipng</code> program then simply as an image in an Emacs buffer.  The default is the latter if the display allows it, or you can customize the method with <code>tex-math-preview-function</code>.
+
+The code adds a <code>(thing-at-point 'tex-math)</code>, see ThingAtPoint, which you can use from Lisp code if you want to do something else with the maths too.
+
+----
+CategoryTex

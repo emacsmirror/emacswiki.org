@@ -1,0 +1,14 @@
+CHILL Mode for XEmacs.
+
+CHILL (CCITT High Level Language) is a general procedural programming language which is mainly used in the field of telecommunications.
+
+The CHILL Mode homepage: http://elina.htlw16.ac.at/~hoerandl/chill.html
+
+The CHILL Mode source: Lisp:chill-mode.el
+
+/See also/ ChillModePackage.
+
+
+----
+CategoryModes,
+ProgrammingModes

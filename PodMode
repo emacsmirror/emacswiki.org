@@ -1,0 +1,15 @@
+<code>pod-mode.el</code> by SteffenSchwigon is a simple mode for editing [[Perl]] "plain old documentation" <code>.pod</code> files, or POD embedded in Perl code.  Get it from
+
+: http://search.cpan.org/~schwigon/pod-mode/
+
+And also in DebianPackage:emacs-goodies-el.
+
+See also:
+* PerlPodCoding -- coding system from <code>=encoding</code>
+* PerlPodGt -- helpers for <code>C<...></code> forms
+* PerlPodPreview -- previewing formatted POD output
+* TinyTools -- contains TinyPerl for vieving POD files.
+
+----
+CategoryModes
+PerlLanguage

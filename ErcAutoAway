@@ -1,0 +1,68 @@
+= erc-autoaway.el =
+
+Auto away is not enabled by default. To enable it use M-x customize-variable RET erc-modules.
+
+== Setting yourself automatically back when sending stuff in ERC ==
+
+ERC used to have a feature to set yourself back as soon as you send
+something to the server. This functionality has been moved to
+erc-autoaway.el.
+
+Add the following to your .emacs to enable it:
+
+(setq erc-auto-discard-away t)
+
+== Configuration of Auto-Away ==
+
+You can configure the auto-away mechanism using the following two
+variables.
+
+ (setq erc-autoaway-idle-seconds 600)
+
+tells erc-autoaway.el to set you away after 600 seconds (10 minutes)
+of idletime. The default is 1800 seconds (30 minutes).
+
+The variable
+
+ erc-autoaway-message
+
+contains a format string which will be used as an away reason. You can
+insert the number of seconds being idle using %i. The default is
+
+ "I'm gone (autoaway after %i seconds of idletime)"
+
+=== Setting yourself automatically away when ERC is idle ===
+
+To set yourself away after some idletime in ERC, add the following:
+
+ (setq erc-auto-set-away t)
+
+=== Setting yourself automatically away when Emacs is idle ===
+
+To set yourself away after Emacs has been idle for some time, add the
+following:
+
+ (setq erc-autoaway-use-emacs-idle t)
+
+This is only buggy at the moment, since the emacs idle timer gets
+reset from time to time and I have no idea why.
+
+The following will print ''meep'' in the minibuffer each time the
+idletimer gets reset. It seems to happen ''sometimes'' when stuff
+arrives through a process with a process filter attached. If you find
+out more, please write me an email! mailto:forcer@forcix.cx
+
+ (setq fc-idle-timer nil)
+ (defun fc-idle-test ()
+   (interactive)
+   (when fc-idle-timer
+     (cancel-timer fc-idle-timer))
+   (setq fc-idle-num 0)
+   (setq fc-idle-timer (run-with-idle-timer 1 t 'fc-idle-meep)))
+ (defun fc-idle-meep ()
+   (message "meep %i." fc-idle-num)
+   (setq fc-idle-num (+ fc-idle-num 1)))
+
+
+----
+[[ERC]]

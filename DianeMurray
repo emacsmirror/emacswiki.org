@@ -1,0 +1,64 @@
+My name is Diane Murray, and I use Emacs.  I subscribe to the motto "Never
+leave Emacs", using other programs only when absolutely necessary.
+
+== Life inside Emacs ==
+
+Whenever Emacs is on I have [[ERC]] connected to irc.freenode.net, where you
+can find me idling on a few Emacs-related channels: #emacs (EmacsChannel),
+#erc, and #muse.
+
+[[Rmail]] is my main email reader; I use Gnus nnimap (CategoryGnus) on my
+laptop.
+
+OrgMode keeps track of all my task lists.  I find it extremely useful to
+switch back and forth between EmacsMuse and OrgMode when editing longer texts,
+where OrgMode lets me get a good overview of things and provides quick
+navigation between sections.
+
+I use [[EMMS]].  I'm very interested in [[GNEVE]] and [[etracker]], though I
+haven't tried them out yet.
+
+I don't suffer from RepeatedStrainInjury like many others, but I get problems
+with my eyes after working extended periods of time at the computer.  Whenever
+my eyes bother me too much, I need to spend time away from the computer.  I'm
+still looking to find the best color scheme, font, and font size.
+
+One of the most important things I have in my ##.emacs## is:
+
+    ;; prevent accidentally killing emacs (seen on emacs-devel mailing list)
+    (global-set-key (kbd "C-x C-c") 'nil)
+    (global-set-key (kbd "C-x C-c C-x") 'save-buffers-kill-emacs)
+
+== Emacs Lisp projects ==
+
+* [[ERC]] - developer since 2002
+
+== My EmacsWiki habits ==
+
+I check
+[http://www.emacswiki.org/cgi-bin/wiki/?action=rc;days=1;all=1;showedit=1
+RecentChanges showing all changes including minor edits] less times each day,
+but I still show some symptoms of a RecentChangesJunkie ;).  I also have the
+odd habit of visiting this site's
+[http://www.emacswiki.org/cgi-bin/wiki?action=random random page] over and
+over every once in a while.  I've set keybindings to visit each of these
+pages.
+
+== Contact ==
+
+On EmacsChannel and [http://identi.ca/disumu identi.ca] I'm [::disumu].
+
+My website is http://x3y2z1.net/.
+
+== Comments ==
+
+[new]
+Wow, Rmail!  :) -- AlexSchroeder
+
+
+[new]
+Diane, I was looking through http://identi.ca/disumu and noticed you tease that you will some day release a development version of an otherwise clandestine web browser - I can't wait to see the first release! -- PatrickAnderson
+
+----
+CategoryHomepage EmacsChannelPeople
+

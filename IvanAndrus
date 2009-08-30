@@ -1,0 +1,13 @@
+I use Emacs since 2003, initially for LaTeX.  Now I use it for all my text editing.  I don't read my mail or browse the web with it though. :-(
+
+The wiki has been extremely useful to me many times, so thanks everyone.  I hope to put .emacs file up pretty soon.  Mostly I want some way to keep it up to date at home, work, etc. and share with my friends.  First I would like to add javascript folding to htmlize (or similar) since it is 4k+ lines, and I couldn't live without fold-mode.
+
+I would like to see the ability to differentiate between mouse buttons in the tool-bar, and hopefully someday (when I'm smart) will create a patch to do so.
+
+This page actually shows up higher in Google than my [http://www.math.byu.edu/~gvol/ website]!
+
+[new]
+Welcome to the wiki!  :)  If this site helped to attract more people to Emacs development, that would be awesome. -- AlexSchroeder
+
+----
+CategoryHomepage

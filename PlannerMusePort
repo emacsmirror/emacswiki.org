@@ -1,0 +1,260 @@
+NOTE: This page is obsolete, as Planner has been running under muse-mode for quite some time (as of Aug 2006).
+
+(see also PlannerMode, EmacsMuse)
+
+Describes the ongoing attempt to port PlannerMode to use EmacsMuse
+instead of EmacsWikiMode.  The porting effort is sometimes referred
+to as Planner--Muse.  The port has been completed, and the latest
+release of Planner is now based on Muse.
+
+= Get it =
+
+At the time of the porting effort, MichaelOlson's branch became the canonical place to get Planner.  This is no longer the case.  See PlannerMode for updated instructions.
+
+|| Archive || <code>mwolson@gnu.org--2006</code> ||
+|| Location || http://www.mwolson.org/archives/2006 ||
+|| Branch || planner--main--1.0 ||
+|| Tarball || http://www.mwolson.org/static/dist/planner-latest.tar.gz ||
+
+A Debian package is available (called planner-el).  Add:
+
+deb http://www.mwolson.org/debian/ ./
+
+to your /etc/apt/sources.list file.
+
+= Why use this? =
+
+* EmacsMuse is the successor of EmacsWikiMode: it has better code underneath.
+* It is easier to organize your work into projects/categories with Muse.
+* Muse has a separation of editing modes and publishing styles, which should allow for publishing your planner pages in multiple formats (like LaTex) that were previously unavailable.
+
+= Configuration =
+
+== Initial instructions ==
+
+You will need /both/ the Muse port of Planner and EmacsMuse.
+
+In order to get it to work, you will need to do the following in your
+.emacs file (in addition to the normal instruction found on PlannerMode).
+
+* Set planner-project.
+
+<pre>
+(setq planner-project "WikiPlanner") ;; or whatever name you use in muse-project-alist
+</pre>
+
+* After loading Muse, customize the `muse-project-alist' variable as follows.
+  If you already have Muse projects, this section can be appended to the
+  existing sections without trouble.
+
+* Once you have verified that your setup works, comment out any mention of
+  emacs-wiki.  Make sure that emacs-wiki and any older versions of planner
+  are no longer in your load-path!
+
+== Examples ==
+
+Here is an example that SachaChua gave in her initial announcement of
+the port at http://article.gmane.org/gmane.emacs.wiki.general/2195.
+
+<pre>
+(setq planner-project "WikiPlanner")
+(setq muse-project-alist
+      '(("WikiPlanner"
+         ("~/notebook/muse/plans" :default "index" :major-mode planner-mode
+	  :visit-link planner-visit-link)
+         (:base "planner-html" :path "~/notebook/muse/html"))))
+</pre>
+
+Here is an example that MichaelOlson gave in his porting progress
+announcement at
+http://article.gmane.org/gmane.emacs.wiki.general/2408.
+
+<pre>
+(setq planner-project "WikiPlanner")
+(setq muse-project-alist
+      '(("WikiPlanner"        ;; use value of `planner-project'
+         ("~/Plans"           ;; where your Planner pages are located
+          :default "TaskPool" ;; use value of `planner-default-page'
+          :major-mode planner-mode
+          :visit-link planner-visit-link)
+
+         ;; This next part is for specifying where Planner pages
+         ;; should be published and what Muse publishing style to
+         ;; use.  In this example, we will use the XHTML publishing
+         ;; style.
+
+         (:base "planner-xhtml"
+                ;; value of `planner-publishing-directory'
+                :path "~/public_html/Plans"))))
+</pre>
+
+Below is a more complicated example involving multiple projects and
+multiple publishing directories.
+
+<pre>
+(setq planner-project "Plans")
+(setq muse-project-alist
+      '(("Plans"
+         ("~/Plans/near-term"
+          "~/Plans/far-term"
+          "~/Plans/older"
+          :default "index"
+          :major-mode planner-mode
+          :visit-link planner-visit-link)
+
+         ;; pages from near-term and far-term get published to the
+         ;; same directory (~/public_html/plans/) in XHTML form
+         (:base "planner-xhtml"
+                :path "~/public_html/plans/"
+
+                ;; this is a regexp that is matched against the path
+                ;; to a Planner page
+                :include "/\((near\\|far\\)-term/"))
+
+                ;; we could have also written:
+                ;; :exclude "/older/"
+
+         ;; pages from the older directory get published here with
+         ;; HTML style
+         (:base "planner-html"
+                :path "~/public_html/plans/older/"
+                :include "/older/"))))
+</pre>
+
+
+The following example is what works for me to get wiki names working as links and to have
+the publishing process format tasks properly:
+
+<pre>
+(require 'muse-mode)
+(require 'muse-colors)
+(require 'muse-wiki)
+(require 'muse-html)
+(require 'muse-latex)
+
+(setq planner-project "Plans")
+(setq muse-project-alist
+      '(("Plans"
+         ("~/Notebook/wiki/Plans" :default "index" :major-mode planner-mode
+	  :visit-link planner-visit-link)
+         (:base "planner-html" :path "~/Notebook/web/Plans"))))
+
+(require 'planner)
+(require 'planner-publish)
+</pre>
+
+ -- s. falcon
+
+= Contributors =
+
+YannHodique:
+
+|| Archive || <code>hodique@lifl.fr--2006</code> ||
+|| Location || http://archives.hodique.info/arch/2006/ ||
+|| Branch || planner-muse--yh--1.0 ||
+
+Peter K. Lee:
+
+|| Archive || <code>saint@c o r e n o v a.com--public-2005</code> ||
+|| Location || http://arch.c o r e n o v a.com/saint/public-2005 ||
+|| Branch || planner-muse--peter--1.0 ||
+
+SachaChua (began the port of Planner to Muse, but might not
+work on it for awhile):
+
+|| Archive || <code>sacha@free.net.ph--main</code> ||
+|| Location || http://sacha.free.net.ph/notebook/arch ||
+|| Branch || planner--muse--1.0 ||
+|| Tarball || http://sacha.free.net.ph/notebook/emacs/planner-muse.tar.gz ||
+
+= Progress =
+
+== Functions ==
+
+The following functions have been tested and should work properly.
+
+* planner-create-task-from-buffer
+* planner-copy-or-move-task
+* planner-delete-task
+* planner-replan-task
+* plan
+* planner-goto-today
+* remember
+
+== What works ==
+
+* Task lists publish as lists.
+* Buffer fontification seems to work.
+* New tasks seem to create clickable links to other Planner pages.
+* Note publishing
+* To generate index pages at publish time. put <code><lisp>(planner-index-as-string t t)</lisp></code> inside a file.
+
+== What doesn't work ==
+
+Bugs may be reported at the Planner bugtracker, which is located at
+[http://gna.org/bugs/?group=planner-el].
+
+= How to help =
+
+There are several ways to help out with this port.
+
+* Add content to this page, describing your experiences with the port.
+* Volunteer to help out in a particular section or task by adding to the Commentary section.
+* Make a patch and email it to the EmacsWikiMailingList, which is the official mailing list for development and discussion for EmacsWikiMode, PlannerMode, and EmacsMuse.
+* Add patches, extra functions, and tweaks to the User-contributed Tweaks section.
+* Become a regular contributor with your own Arch branch of Planner.  Contact MichaelOlson for details.
+
+Please consult
+http://www.mwolson.org/projects/ReportingEmacsLispBugs.html before
+filing a bug report.
+
+= Commentary =
+
+[new:MichaelOlson:2005-06-09 01:34 UTC]
+
+I took Sacha's work on the port of Planner to Muse and tried to catch
+it up with Planner's main development branch.  I managed to get it up
+to patch 396 and merge in YannHodique's bugfixes.
+
+It is hoped that by creating this page, we can mobilize people to help
+out with the port.  I don't have time to do it all by myself, but I am
+familiar with Muse, so I might be able to give good advice or fix
+obvious problems.  Playing catch up with Sacha's main development
+branch might also be something I could do.
+
+One way we could potentially organize things is by having someone put
+a message in this area (name, task to accomplish, date, etc.) when
+they feel like working on something.
+
+[new:YannHodique:2005-06-15 08:02 UTC]
+
+I updated planner-muse with patch 412 from main development branch.
+I'll try to follow that branch more carefully :-)
+
+[new:YannHodique:]
+
+planner-muse is now synced with patch-445 from planner--dev--1.0
+
+[new:MichaelOlson:2005-08-10 03:14 UTC]
+
+I've recently merged in Peter K. Lee's work on planner-publish into my
+planner-muse--mwolson--1.0 branch.  It's included in my Debian package
+for planner-muse-el.
+
+[new:MichaelOlson:2005-10-12 05:38 UTC]
+
+Hmm, so I've now become the maintainer of Planner, and this port has
+become the canonical way to get Planner (or at least, it will be,
+as soon as tarballs are made and a release is put together).
+
+= Questions and Answers =
+
+Feel free to contribute questions/answers here.
+
+Q:  OrgMode is now included in cvs builds of GNU Emacs.  
+    Do OrgMode and the PlannerMusePort serve similar functions?  
+    Are there reasons to prefer one to the other?  
+    Do they complement each other's functionality in different problem spaces, or do they compete in the same problem space?
+
+A:  OrgMode seems to be a more traditional outliner. It has the ability to generate an 
+    agenda view and some very nice export options, including iCal format. It seems to         me that they could be complimentary. I do think that some people will prefer organizing projects in an outline rather than the PlannerMode format. If I have the time, I'll try to detail some of the differences here.

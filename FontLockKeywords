@@ -1,0 +1,49 @@
+: ''MATCH-ANCHORED should be of the form:
+ (MATCHER PRE-MATCH-FORM POST-MATCH-FORM MATCH-HIGHLIGHT ...)
+where MATCHER is a regexp to search for or the function name to call to make
+the search, as for MATCH-HIGHLIGHT above, but with one exception; see below.
+PRE-MATCH-FORM and POST-MATCH-FORM are evaluated before the first, and after
+the last, instance MATCH-ANCHORED's MATCHER is used.  Therefore they can be
+used to initialize before, and cleanup after, MATCHER is used.  Typically,
+PRE-MATCH-FORM is used to move to some position relative to the original
+MATCHER, before starting with MATCH-ANCHORED's MATCHER.  POST-MATCH-FORM might
+be used to move back, before resuming with MATCH-ANCHORED's parent's MATCHER."
+: -- Docstring from Hell (`font-lock-keywords')
+
+You can find examples of font-lock expressions in AddKeywords and
+GenericMode.
+
+Every Element has one of the following forms:
+
+; (REGEXP . FACE): Highlight REGEXP with FACE
+; (REGEXP N FACE): Highlight group N in REGEXP with FACE
+; (REGEXP (N1 FACE1) (N2 FACE2) (N3 FACE3) ...): Highlight group Ni in REGEXP with FACEi
+
+Here is an example for elisp. Assume you want to hilight expression
+that explicitly loop over a list.  If you never want to break out of
+the loop, or if you are using the CommonLisp package, you might use
+dolist.  If not, however, it might look something like this:
+<pre>
+    (while lst
+      (setq item (car lst)
+            lst (cdr lst))
+      ...
+</pre>
+We now want to hilight item, and the three following lst instances
+within the setq.  The following uses a long and complex regexp built
+using the ReBuilder.
+
+Note that \\( and \\) do the grouping, and that \\sw matches a word
+character, and \\s_ matches a symbol character.  Thus,
+\\(\\sw\\|\\s_\\)+ matches a variable name.  [ \t\n]* matches
+whitespace including newlines.
+<pre>
+    (font-lock-add-keywords 'emacs-lisp-mode
+	 '(("\\(\\(\\sw\\|\\s_\\)+\\)[ \t\n]*(car[ \t\n]*\\(\\(\\sw\\|\\s_\\)+\\)[ \t\n]*)[ \t\n]*\\(\\3\\)[ \t\n]*(cdr[ \t\n]*\\(\\3\\)[ \t\n]*)"
+	    (1 'font-lock-variable-name-face)
+	    (3 'font-lock-keyword-face)
+	    (5 'font-lock-keyword-face)
+	    (6 'font-lock-keyword-face))))
+</pre>
+----
+CategoryFaces

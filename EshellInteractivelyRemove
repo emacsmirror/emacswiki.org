@@ -1,0 +1,12 @@
+For querying before overwriting or removing files add to your .emacs:
+
+ (setq eshell-cp-interactive-query t
+       eshell-ln-interactive-query t
+       eshell-mv-interactive-query t
+       eshell-rm-interactive-query t
+       eshell-mv-overwrite-files nil)
+
+or use the customize interface.
+
+----
+CategoryEshell

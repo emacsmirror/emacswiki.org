@@ -1,0 +1,86 @@
+Click on the title to find all pages related to the use of external
+utilities such as music players.
+
+If the external utilities are used for the following purposes, refer to the specified page instead:
+
+* when programming, CategoryProgrammerUtils
+* to search text, CategoryRegexp
+* to edit remote files (ftp, scp, etc.), CategoryFiles
+* in a W32 context only, CategoryWThirtyTwo
+
+Using Emacs clients as external editors in other applications:
+
+* EmacsClient -- remote control GNU Emacs from the shell, e.g. edit files from your external mail client using an already running Emacs.  It ships with GNU Emacs and does not work for XEmacs.  Since GNU Emacs version 22.1 it also works on "Windows".
+* GnuClient -- does basically the same as EmacsClient.  It comes with XEmacs but works for both.
+* EditWithViOrEmacs -- a re-implementation of emacsclient in Perl; the only difference is that it execs "vi" if there isn't already an emacsserver running.
+* ScreenServer -- automatically attaches to an Emacs running inside [http://www.gnu.org/software/screen/ GNU screen].
+
+The reverse, use external applications from within Emacs. Note that only OrgMode currently tries to handle this in the best possible way for each platform. Most of the others simply uses start-process. If you do that on w32 you will have to enter the application path yourself. This is an unnecessary trouble.
+(I guess there are similar capabilities of other OS:es but I do not know for sure.)
+
+* MsShellExecute -- take advantage of MS Windows file associations
+* TrivialMode -- register applications to open files for you
+* ExtView -- open files with external viewer (orphaned)
+* OrgMode which is part of Emacs also has this functionality implemented in a cross-platform manner. I would suggest that functionality of this kind use that implementation (and maybe extend it). Then the user would just need to customize it in one place.
+* These work everywhere (find-file, DiredMode, etc):
+** OpenWith -- open files with external applications.
+** SexMode -- It is now using the platorm independent functionality offered by OrgMode for starting external applications. (Note that there are some differences, see the beginning of sex-mode.el.)
+** [[DiredPlus|Dired+]] + <tt>[[w32-browser.el]]</tt> -- use MS Windows file associations in DiredMode
+
+Sound and Music:
+
+* EcasoundMode -- interfacing with ecasound
+* ErecMode -- record and play back sound
+* MusicPlayers -- interfaces to music players
+
+Networking:
+
+* RainOrShine -- integrate weather information from the Internet
+* MlDonkey -- an EmacsLisp interface to the famous p2p client
+* [[emacs-w3m]] -- w3m is a text browser
+* PuTTY -- free SSH client that's Emacsen-friendly.
+* SshWithEmacs
+* RloginMode --- Use and customize Rlogin mode which is built into Emacs to login to other systems
+
+Filters -- making things readable:
+
+* AntiWord -- Run ##antiword## command on Word-doc files to read them as text.
+* ChmView -- View .chm files in Emacs.
+* [[Irfc]] -- View RFC files in Emacs.
+* UnDoc -- transform .doc files to plain text when opening them
+* UnPdf -- view .pdf files as text using <code>pdftotext</code>
+* UnXls -- view .xls files as text using <code>xmhtml</code> and <code>w3m</code>
+
+Printing:
+
+* PrintingFromEmacs -- Printing features of Emacs.
+* CupsInEmacs -- print with CUPS
+* PsPrint -- print with a <nowiki>PostScript</nowiki> printer
+* PrintWithWebBrowser - preview and print with your web browser
+
+Command-line tools:
+
+* EevMode -- E-scipts, texts contain shell commands and hyperlinks
+* GrepMode -- using grep and igrep
+* LocateFilesAnywhere -- interfaces to the GNU/Linux or Unix `locate' command
+* ManMode -- reading man pages within Emacs
+** WomanMode -- reading man pages "w/o man"
+* TailEl -- using tail within Emacs
+* DfMode -- show space left on devices in the mode line 
+* TopMode -- run "top" from Emacs
+* ExecuteExternalCommand -- call a shell command from emacs
+* EukleidesMode -- Full featured major mode to edit [http://eukleides.org eukleides] files
+* [[Sdcv]] -- A interface for *sdcv* (StarDict console version).
+
+Unclassified:
+
+* DictMode -- Interface with a dictd server. Also see CategoryEducation for more similar packages.
+* LookUp -- an integrated search interface with electronic dictionaries
+* PersistentProcesses: Keeping apps (especially web browsers) alive after exiting emacs
+* SameMode -- searching for duplicate lines in multiple files
+* SystemApropos -- interface for the program apropos
+* ViewProcess -- advanced interface for ps
+* OnScreenDisplay -- interfaces with the X OSD Library through the `osd_cat' utility
+* [[Bibus]] -- a reference manager in emacs
+* VerbisteEl -- conjugate/deconjugate French verbs
+

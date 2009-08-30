@@ -1,0 +1,455 @@
+If you have an Emacs-related question, whether newbie or seasoned hacker, this is the place to add it. Edit this page (use the link at the bottom), and add your question at the top of the section "New Questions".  The more frequently asked questions made on this page are archived at [[OpenQuestions#FAQ]] for your protection.
+
+'''Note:''' You can also post your question to '''help-gnu-emacs@gnu.org''' after reading the EmacsFaq. In some ways, that is a better forum for questions.  
+
+== New Questions ==
+
+Use "<code>[new]</code>" to introduce your question or answer. Indent answers to questions with "<code>:</code>" -- see TextFormattingRules.  A new entry shows up in the table of contents here
+only once you actually Save.
+
+When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
+The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
+[new]
+== Errors while loading elisp files ==
+After installing new 23.1 installation on an XP machine, I came across a very annoying issue. When I load some el files, I get errors such as 
+apply: Invalid read syntax: "?"
+Loading d:/emacs/emacs-23.1/lisp/shell.el (source)...
+apply: Symbol's value as variable is void: «
+When I find the file in question, and eval the buffer, I do not get these errors. Also byte compiled files always fail to load.
+Thanks.
+
+
+[new]
+== Making the GDB/perldb marker more visible ==
+I have a large emacs window with multiple buffers.  During a perl debug session, the marker, =>, will move to a new window/buffer and I will need to search for it.  I could use a marker that is more visible.  Perhaps one that is rendered in red or one which blinks.  I would really love to have a different background color for the entire buffer line with which the marker is associated.  Thanks for your help!
+
+[new]
+== Shift selection and page up/down ==
+
+I'm trying to replace pc-selection-mode with the new shift-select-mode with emacs 23. It works generally well, only the shift+pgup/down keys don't create a selected region and I can't find a confguration setting where I could tell emacs I want these keys too shift translated. Are the supported keys hardcoded? It would be so unlike emacs, so there must be some setting somewhere which I overlook. Any ideas?
+
+
+[new]
+== Smart yanking of leading and trailing whitespace ==
+
+When using Microsoft Word (the horrors!) I noticed a neat feature which wouldn't be hard to replicate in emacs, so there may already be a package or setting which does this. In Word if I copy a word (or several words) and I accidentally copy the whitespace around the word then the editor is smart enough to strip away the superfluous whitespace during pasting. E.g. if whitespace ends between the word and the period ending the sentence then it is deleted. Or when more than one space character end up between words then they are truncated to a single space.
+
+I know it would have been useful lots of times when editing text with Emacs. Is there a setting which emulates this? -- [[Anonymous]]
+
+[new]
+You're trying with the mouse I presume?  Are you using TransientMarkMode or PcSelectionMode already?  Seems like these modes should offer what you want or close to it.  If you were using the DefaultKillingAndYanking commands you could change their behavior by AdvisingFunctions. -- AaronHawley
+
+== Is there a package which makes URLs clickable? ==
+
+I'm looking for a minor mode or similar which I can turn on in any buffer and it makes all URLs in the buffer clickable and of course keeps the URLs updated when the buffer text is edited. Is there such a package?
+
+[new]
+Yes, mlinks.el in [NxhtmlMode nXhtml]. Currently it handles only html-style links though.
+
+OrgMode also has support for URL links, but in major mode org-mode though. (And with its own link format, very nice actually.)
+[new]
+Emacs comes with `M-x goto-address'.  See GotoAddress.  Another option is BrowseUrl.  The commentary  suggests adding the following to your .emacs.
+
+    (global-set-key [S-mouse-2] 'browse-url-at-mouse)
+
+Not a minor mode, but maybe having it on all the time is better? -- AaronHawley
+
+[new]
+== Starting Aquamacs with multiple files in tabs ==
+
+I have a minor annoyance with the way Aquamacs handles tabbed buffers. It seems that until a new tab has been opened, new files are not opened in tabs. This means that I have to press 'Apple-T' first, then open the file, then close the untitled tab. After that new files are automatically put in tabs. Also, if opening multiple files from the command-line, the window is split horizontally in two - I'd like to specify that it puts the files in separate tabs. Is there a way to do this?
+
+Opening multiple tabs from the command line works for me with the latest release (1.8). Maybe you need to enable tabs in the Options menu.  This gets turned on automatically when you press Command-T.  See the support mailing list (Emacs on OSX) for more assistance. -- DavidReitter
+
+Thanks, that improves things somewhat (I selected Options/Show Tabs, then Save Options). Now it works as expected when I open Aquamacs with only one (or no) file. However, when I specify two files on the command line, it opens with two panes, with the top pane containing the first file and another tab for the %%*scratch*%% buffer, and the bottom pane containing the second file.
+
+[new]
+== Emacs library files hot-patch doesn't work (Win32 Emacs) ==
+
+I am a newbie user of Emacs, and just can't stop loving it!
+Besides, I have a minor glitch that constantly irritates myself.
+As a Emacs user who heavily uses windows, (I am sorry but I am working for the windows app company)
+I have this simple yet, irritating problem. (under Emacs 22.3.1 - Windows XP)
+
+Whenever I hot-patch (via manually patching) emacs library files, such as python.el, files.el and evaluate and save the functions it really works well, until I restart the emacs. It just goes back to its old behavior
+
+   * I didn't just modified the file, but I bytecompiled and replace the old .elc file as well.
+   * I did a full disk search searching for file.el or file.elc but couldn't find any but the file placed in the Emacs directory (which I hot-patched)
+   * If I load it forcefully (via '(load "files")' ), it works, but I am just curious about this strange behavior.
+
+  Q. Is there any secret storage where emacs saves all the default libraries in?
+     If not, why does it happen? If it has, where is it?
+
+[new]
+: Some elisp libraries that you will almost always use are dumped into the Emacs executable, for faster startup. For those libraries, you cannot just modify the .el file and byte-compile it, you have to redump Emacs as well. files.el is one of those, but python.el is not.  I'd suggest not editing the .el files that are distributed with Emacs directly - instead use 'advice', or redefine functions in your .emacs after requiring the feature.
+
+
+[new]
+== Does the Latest Version Really contain a virus? ==
+
+The Version I downloaded: Emacs-23-CvsP090226-EmacsW32-1.58.exe
+is reported by F-Secure to contain: Packed.Win32.Tdss.c
+so I didn't install it. -- 139.91.179.203
+
+[new]
+Does this help? (search for "Does Emacs contain a virus?"):
+http://www.gnu.org/software/emacs/windows/Installing-Emacs.html#Installing-Emacs -- DrewAdams
+
+[new]
+It is only reporting a virus on that one: the latest unpatched version from GNU is ok -- athedsl-4491258.home.otenet.gr 
+
+
+== Color-themes not working==
+[new]
+
+I am having a problem with the color-themes with GNU Emacs Version 22.1 on Windows Vista.  I have the following code in my ##.emacs## file and am able to load any color-theme I want:
+
+##(add-to-list 'load-path "c:/GNU Emacs/site-lisp/color-theme-6.6.0")##
+##(require 'color-theme)##
+##(color-theme-initialize)##
+##(setq color-theme-is-global t)##
+
+However, after opening a java file the java generics are not properly colored.  I know this because I can directly compare with the examples at http://www.cs.cmu.edu/~maverick/GNUEmacsColorThemeTest/index-java.html . My emacs color display of the exact same java code does not match the display on the webpage. It appears that the disparity between the displays is centered around java generics tags.
+
+==Always indent with only tabs==
+[new] I would like to config Emacs so that all indentation is done with tabs, with four-space wide tab stops.
+(I’m workin in PHP but have been testing in C mode and I suspect the same answer will work in both places.)
+
+What I’m getting (where . indicates a space and _ indicates a tab
+
+    foo();
+    ....if (x == y) {
+    _       bar();
+    ....}
+    }
+
+What I would like
+
+    foo();
+    _   if (x == y) {
+    _   _   bar();
+    _   }
+    }
+
+.emacs contains
+
+    (setq c-basic-offset 4
+        tab-width 4
+        indent-tab-mode t)
+
+    (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 ))
+
+
+
+I’m using 21.4.1 with version 1.2.0 of php-mode.el. (Not sure which version of c-mode.)
+
+[new]
+The `c-basic-offset' variable (and a few others) are [BufferLocalVariable buffer-local variables].  This means that you can set them outside of any buffer, in your ##.emacs## file but they will probably be overriden by code that runs in a [ManagingHookVariables mode-hook variable].  Try setting the same variables in a hook function.  I just fired up a new Emacs session and wrote the following in the ##*scratch*## buffer:
+
+    (defun keramida/cc-indentation ()
+      "Set up indentation for cc-mode and friends."
+      (make-local-variable 'c-basic-offset)         ;This may not be strictly necessary.
+      (setq tab-width 4
+            c-basic-offset 4
+            indent-tabs-mode t)
+      (setq tab-stop-list (list 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64
+                                68 72 76 80 84 88 92 96 100 104 108 112 116 120)))
+
+    ;; Sample code to install the hook function for c-mode only.
+    (add-hook 'c-mode-hook 'keramida/cc-indentation)
+
+    ;; Sample code to install the hook function for *all* c-mode derivatives (c-mode,
+    ;; c++-mode, perl-mode, php-mode, and so on).
+    (add-hook 'c-mode-common-hook 'keramida/cc-indentation)
+
+This seems to have worked.  When I open a C source file with this Emacs session TAB is displayed using 4 columns, and the buffer-local `c-basic-offset' is automatically set to 4. ---&nbsp;GiorgosKeramidas
+
+[new]
+One more tip.  You don't have to ''manually'' type the list of tab stop columns.  You can generate a custom list of tabs stops after you have configured `tab-width' with the built-in `number-sequence' function:
+
+    ;; Generate a list of 200 tab-stops every `tab-width' columns.
+    (let ((tab-stops 200))
+      (number-sequence tab-width (* tab-width tab-stops) tab-width)))
+
+200 tab stops are good enough for a terminal that is very wide.  I haven't seen a terminal with more than 800 or 1600 columns yet, and I suspect it's going to be very difficult to scroll horizontally in such a terminal, so this should be enough for quite a while. ---&nbsp;GiorgosKeramidas
+
+==Collaborative editing==
+[new]
+This documentation hints at this being possible (as does the Wikipedia comparison of editors, http://en.wikipedia.org/wiki/Talk:Comparison_of_text_editors). But the documentation for it on this wiki contains two links, of which one is broken (http://www.gnu.org/software/emacs/manual/html_node/emacs/Multiple-Displays.html) and one is to work in progress (SubEthaEmacs). So, is this very useful feature in, or is it out? And if in, where is the documentation?
+
+: I fixed the broken link with a simple Google search. You should try it next time if you find a link which doesn't work.
+
+: In the meantime http://www.emacswiki.org/emacs/CollaborativeEditing has been updated and may be worth another try.
+
+== Portable environment for W32 ==
+[new]
+I've got the W32 variant of Emacs installed onto a flash drive however I'm not sure how it's going to handle the home directory when run off the drive.  Has anyone gone to any lengths to try to get emacs to behave nicely in MS-Windows off of a flash drive?  I like to be able to use the tools I'm used to (or at least growing used to) portable and available no matter where I find myself working.
+
+: You can try setting up a .bat file to first set the HOME environment var to the flash drive, and then launch emacs.  That should just about do the trick.
+
+: You can also do the setup inside the .emacs file instead.  http://at-aka.blogspot.com/2006/06/portable-emacs-22050-on-usb.html describes adding it to your site-start.el, but I've used the code (with small modifications) in my emacs.
+
+[new]
+:: Setting HOME from .emacs is problematic; .emacs is located in HOME.  That is why the article describes adding code to site-lisp/site-start.el, which can sit alongside emacs on the flash device.
+
+== shell-mode directory tracking ==
+[new]
+I can't get dir tracking to work correctly. Either the regex isn't catching the prompt, or the prompt doesn't get read at the correct time. Either way, it doesn't work. Can someone point me to what I'm doing wrong?
+
+My bash shell prompt is defined this way in .bashrc:
+
+    export PS1='\h:\w\n> '
+
+...which looks like this in practice:
+
+    tnsfc64:~/elisp
+    > 
+
+I use this dir tracking code in my .emacs file:
+
+    (defun my-current-directory (text)
+      (if (string-match "\\w*:\\([^\n]+\\)\n> " text)
+          (setq cur-dir (substring text (match-beginning 1) (match-end 1)))
+        (cd cur-dir)
+        (message "dir tracking %s" cur-dir)))
+
+    (defun my-shell-setup ()
+      "Track current directory"
+      (add-hook 'comint-output-filter-functions 'my-current-directory nil t))
+
+    (setq shell-mode-hook 'my-shell-setup)
+
+Thanks,
+-Tennis
+
+==undo list persistence?==
+[new]
+
+Is it possible to save the undo list of a file, to another file ( say to myfile.undo )?
+Together with [[GotoLastChange]], it would allow quickly finding the places in the
+file you were working on, when you last saved it
+
+Thanks!
+
+== Syntax Highlighting ==
+[new]
+Aquamacs newbie here. I can't seem to easily find help on user-defined syntax highlighting for any file types. For example I work with a program called Ox, with .ox extensions. The command 'decl' is often used for declaring variables. Given my text is green, how I would I go about making 'decl' come up blue in .ox files to distinguish the command? Edited to add: simply put, I'm looking to add a new option for .ox files under File>Change Buffer Mode... , that highlights Ox syntax like decl, while, for, if,...etc.
+
+
+== Tab-Key in Terminal-Mode
+[new]
+When using the emacs-rails plugin with snippets (tab-expansion), it works nice in the normal GUI, but in the terminal mode the tab-key triggers the intendation but snippets dont work. Has somebody any tips for this? Thanks! Running Emacs-snapshot 23.0.6 on Ubuntu  Gutsy Gibbon --- Roman
+== Control Characters Visible in Dired Listing ==
+[new]
+When running <code>find-grep-dired</code> or <code>find-name-dired</code>, files with executable permissions display control characters around the file name like this:
+
+    -rwxr-xr-x   1 user  users  75383 Aug  2  2005 ^[[1m^[[31m./web/lib/application.js^[[m^[[m
+
+It appears that the buffer is trying to colorize the output, though this is not only an aesthetic problem; it also prevets me from opening the file. I have global-font-lock mode enabled, which works in all other contexts. I cannot find any variable or customize option that governs this. Is this a problem with my emacs setting or my terminal? I am running GNU Emacs 22.0.50.1 through Terminal.app on Mac OS X.
+
+[new]
+: I discovered the problem: my emacs instance was inheriting the environment variable <code>CLICOLOR=1</code>, which dired was trying to use to colorize the <code>ls</code> output. The simple fix was to unset this variable in my InitFile: <code>(setenv "CLICOLOR" nil)</code>. But this still begs the question: can color dired output be achieved by maintaining the <code>CLICOLOR</code> variable and somehow tweaking some terminal settings?
+
+== Finding Hidden Files and Directories ==
+[new]
+I can't seem to open either a unix style directory (eg /etc or /bin) or a "hidden" file (eg .profile) from with in the File, Open. Same is true for Open Dir. For that matter, I can't even see a file /usr. Is there a way to do this?
+
+[new] 
+: I can only assume that this is happening to you with the recent GtkFileChooser which is controversial.  Try to hit just '/' or '~' oder C-l to get into the (completing) location bar.  Use a right click to toggle the showing of hidden files in the dialog.  Does this help?
+
+== Key mapping is not as shown in bindings ==
+[new]
+Control-left and right arrow should provide backward-word and forward-word, but
+instead emacs beeps.  C-left isn't bound to a keyboard shortcut in Gnome, nor
+in Ubuntu's Terminal.  Emacs describe-bindings says C-left is bound to backward-word, but
+describe-key C-left says ESC-0 is undefined.  To a newbie these seem contradictory but I haven't found a description of how describe-key differs from the bindings.  
+
+There's no minor mode in use, so it should only be the local keymap overriding the global keymap.  I suspect describe-bindings-internal etc. aren't the right commands for checking the keymaps, but after fumbling around 'info emacs' I'm drawing a blank at finding out more.
+
+Interestingly C-left/right works OK with emacs-snapshot-gtk, which provides a
+GUI and incorporates Gnu Emacs 22.0.50.1 and shows the same key binding, but
+not with plain text-mode emacs using Gnu Emacs 21.4.1 from a terminal.
+
+Solved - it turns out that without X support emacs is only seeing keycodes that cannot represent the full range of X events, and the Control-arrow keys are among the casualties.  Credit to EmacsWiki for refererring to KeybindingGuide - thanks!
+
+== Running on Mac OS X 10.3? (missing lib(s)) ==
+[new]
+Is there a way to get this to run on 10.3, or build it for 10.3?  
+I have 10.3.9.  My Emacs (9.0rc1) crashes for lack of libncurses.5.4.dylib. 
+(Of course that may only be the /first/ missing library.) 
+Fink only has up to 5.3.
+If I copy the library from my copy of 10.4, there is just another broken dependency
+within libncurses.  If I symbolic link "libncurses.5.4.dylib" to "libncurses.5.dylib",
+the loader refuses to be tricked.
+Does Emacs actually depend on anything new since libncurses.5?
+
+[new]
+If you want to fool the linker (possibly a risky prospect, perhaps less so if you only use Carbon Emacs), you need to link libncurses5.3.dylib to libncurses5.4.dylib, not libncurses.5.dylib.  However, your best bet is simply to download, compile, and install ncurses from http://www.gnu.org/software/ncurses/ .  It should be a simple matter of <code>./configure; make; sudo make install</code> after you've installed the Mac OS dev tools. -- SeanO
+
+[new]
+: I use CarbonEmacs, it works great. Get it [http://irodori.sakura.ne.jp/carbon-emacs/index.en.xhtml here] for 10.3.9.
+-- SebastienRoccaSerra
+
+== How do I determine the font name selected with 'menu-bar options mouse-set-font'? ==
+[new]
+When using 'menu-bar options mouse-set-font' I select (for instance) Andale-medium-11 from the gui.  How do I determine what that font name is so I can add to my Preferences.el file or use as set-default-font for that name?
+[new]
+Does the following evaluate to what you want?
+
+    (cdr (assoc 'font (frame-parameters)))
+
+(Type M-: then enter the above, then hit enter)
+
+-- sfp
+
+== Joystick buttons? ==
+
+[new]
+Can I bind defuns to joystick buttons or movements somehow? --ShaeErisson
+
+[new]
+: You can do this under Linux, at least; see JoyStick for any discussion and pointer to code on SourceForge -- JohnSturdy (who wants to try this in the next year or so)
+
+== Interactive pop-up dialog? ==
+
+[new]
+Is there a popup input dialog box for Emacs and/or XEmacs, which returns the string that a user enters?
+
+[new]
+: Well, maybe you could simulate a dialog box by opening a small fram or window and using read-string to get the input?
+
+See the documentation for 'x-popup-dialog' in GNU Emacs.
+
+== Graphic support? ==
+
+[new]
+How do you show an image (PNG, JPEG, GIF) in Emacs 21.2, like it does on the intro screen? Can you make the image auto-load when a text file is loaded? I am using Linux, X, and have Emacs 21.2 (not XEmacs). -- LionKimbro
+
+[new]
+: ''I dunno the details, but auto-image-mode lets you view image files when you open them, the secrets will show themselves if you check the source of auto-image-mode --ShaeErisson''
+
+[new]
+:: Thanks! I've opened images with auto-image-mode, and even copy/pasted them into buffers. However, now I am trying to save the buffers, and restore the images. I save them under a format called something like "emacs-mule", or something like that, but when I load it back up, the image is just a bunch of line noise. I have tried to revert the format to "emacs-mule", or whatever it was, but cannot figure out how to do it. Do you know how to do that? When I figure this all out, I plan to add a Wiki entry for it. =^_^= Thanks; LionKimbro.
+
+[new]
+:: ''I guess this doesn't work at the moment.  Nothing I tried seemd to work. -- AlexSchroeder''
+
+[new]
+Does Emacs 21.2 support viewing of any images (BMP,XBM,ICO,PNG...) on Windows?  See AutoImageFileMode.
+
+== update-file-header,_time-stamp_and_undo ==
+
+[new]
+This add-hook eliminates the undo trail that update-file-header
+creates and M-x undo tracks back through, as well as the
+narrow-to-buffer, edit, save, undo sequence error: "Changes to be
+undone are outside visible portion of buffer" message from
+undo-more. Comments?
+
+   (add-hook
+    'write-file-hooks
+    '(lambda nil
+       (when (buffer-modified-p)
+         (let ((my-buffer-undo buffer-undo-list))
+      	(buffer-disable-undo) ;; flushes buffer-undo-list
+      	(update-file-header)
+      	(time-stamp)
+      	(setq buffer-undo-list my-buffer-undo)
+      	(buffer-enable-undo)))))
+
+[new]
+Has anyone compiled emacs22 to work with older versions of Debian's libc6 (2.3.6.ds1-4)?
+
+[new]
+This warning shows up after uniquify is loaded. What stops it?
+
+Warning: the function `uniquify-maybe-rerationalize-w/o-cb' might not be defined at runtime.
+
+== Looking for a Mark Scope function ==
+
+In all programming languages I use, I often want to work on a scope (like inside an "if" statement, a "for" loop, or a whole "function").
+
+Does anyone know of an implementation of a `mark-scope' function? Or `beginning-of-scope' and `end-of-scope'?
+
+Ideally it would start by marking the smallest current scope, then the region would include bigger and bigger scopes until the whole buffer is marked.
+
+Thanks!
+
+== From *Help* buffer how to automatically examine *.el source in view-mode? ==
+
+C-h f view-mode 
+
+With point over 'view.el' of *Help* buffer @ line 1
+
+M-x describe-text-properties
+
+Returns:
+
+"Here is a `help-function-def' button labeled `view.el'.
+There are text properties here:
+  button               (t)
+  category             help-function-def-button
+  help-args            (view-mode "../emacs/lisp/view.el")"
+
+Most of the time, when I go to examine the source _from_ *Help* I want to do so without having to worry about mucking it up accidentally esp. when the source is beneath "../emacs/lisp/*.el". In these situations I almost alwasy want to _read_ the source _not_ edit it. View-mode is my prefered way of examining source when I want only to read it as it allows me to page in a manner congruent with most unix environments/vi/less/more etc. Is it possible to hook into the help button actions to toggle view-mode when opening for an *.el file from *Help*?  AFAICT *Help* is already leveraging view-mode in a non extensible manner. How does one get Emacs to jump over its own head? --mon_key
+
+[new]
+I had a look at it, for me it works if I advice two functions. Try the following code:
+
+    (defadvice find-function-search-for-symbol (after oxy-adv1 last (symbol type library) activate)
+      (with-current-buffer (car ad-return-value)
+        (view-mode 1)))
+
+    (defadvice find-variable-noselect (after oxy-adv2 last (variable &optional file) activate)
+      (with-current-buffer (car ad-return-value)
+        (view-mode 1)))
+
+--TomRauchenwald
+
+[new]
+Great Thanks!  Works for me. I hesitate to reveal the path I went down to attempt accomplishing the same :P I've been wondering about a solution for that puzzle for quite awhile now. I'd be curious to learn if there is a way to accomplish the same without advice... --mon_key
+
+[:FAQ]
+= Answers to Frequent Questions =
+
+These questions are kept here to let people avoid asking frequently asked questions that have answers.
+
+[new]
+'''Question:''' How do I a search and replace on multiple files from within Emacs?
+
+'''Answer:''' Multiple strategies exist, and are listed at CategorySearchAndReplace.
+
+[new]
+'''Question:''' How do I install an Emacs mode?
+
+'''Answer:''' See CategoryDotEmacs and InstallingPackages, and look at the "Customization" and "Major Modes" sections of the EmacsManual.  Most modes not included with Emacs come with documentation or directions in their source(s) on how to install (usually by using ModeHooks). The alternative is perhaps EmacsMacro.
+
+[new]
+'''Question:''' Can I be shown the list of open buffer windows as tabs?
+
+'''Answer:''' Yes, see CategoryBufferSwitching.
+
+[new]
+'''Question:''' Can I adjust the X server geometry and location of an emacs window in elisp? --ShaeErisson
+
+'''Answer:''' The Emacs terminology is ''[[Frame]]''.  See also FrameSize.
+
+[new]
+'''Question:''' Can I fill paragraphs like AutoFillMode does, but to the width of the frame rather than to `fill-column'?
+
+'''Answer:''' Yes, see WordWrapping.
+
+[new]
+
+'''Question:''' After performing a command on a region, I lose the region and have to manually reselect the region.  Can this be avoided?
+
+'''Answer:'''  See TransientMarkMode.
+
+[new]
+
+'''Question:''' Is it possible to tunnel info to emacs via SSH without using X11?  I prefer using the built-in emacs version shipped with OS X within Terminal.app.  Though, when I "ssh -X" it opens the server's version & config for Emacs within an X window on OS X.  Is there a way to bypass X11?
+
+
+
+----
+CategoryHelp

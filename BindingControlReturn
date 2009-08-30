@@ -1,0 +1,7 @@
+(define-key dired-mode-map [(control return)] 'ignore)
+
+works for me on "GNU Emacs 21.2.1 (i386-msvc-nt5.1.2600) of 2002-03-19
+on buffy"
+
+----
+CategoryKeys

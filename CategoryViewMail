@@ -1,0 +1,40 @@
+[::VM]
+is a mail reader that runs inside GNU Emacs and XEmacs.
+
+VM is shipped with XEmacs but not with GNU Emacs. You can get the latest version (8.0.0 and up) at its official home: http://www.nongnu.org/viewmail/.  Version 7.19 is hosted at its old official home: http://www.wonderworks.com/vm/.
+
+VM is very well documented. It comes with a fine set of info pages, and there are two EmacsNewsgroups dealing with VM. These pages attempt to distill some of the useful information from the other sources.
+
+=== Getting Started ===
+
+* ViewMailQuickStart
+* ViewMailSevenQuickStart -- old quick-start for version 7.19
+
+
+=== VM Folders ===
+
+* ViewMailVirtualFolders
+
+=== VM Customization ===
+
+* ViewMailCustomization -- basic customization
+* ViewMailAndImap -- using VM with IMAP folders
+* ViewMailAndPop -- using VM with Pop folders
+* ViewMailAndMime -- customizing Mime support
+* ViewMailOtherCustomizations -- nifty tricks &c. for VM.
+
+=== VM and Other Packages ===
+
+* ViewMailAndBbdb -- using VM with BbdbMode
+* ViewMailAndMailCrypt -- using VM with MailCrypt
+
+=== VM Addons ===
+
+* ViewMailAddons
+
+=== VM Wishlist ===
+
+* ViewMailWishlist -- discuss ideas for VM and their feasibility.
+
+----
+CategoryMail

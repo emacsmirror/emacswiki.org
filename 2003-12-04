@@ -1,0 +1,11 @@
+On emacs-devel, people are discussing multithreading for Emacs.
+([http://mail.gnu.org/archive/html/emacs-devel/2003-11/msg00205.html 2003-11],
+[http://mail.gnu.org/archive/html/emacs-devel/2003-12/msg00025.html 2003-12])
+Why it is complex, why it will not help much, what alternatives would
+solve our problem while avoiding the complexities...  Interesting, long read.
+
+See also [http://www.catb.org/~esr/writings/taoup/html/ch07s03.html#id2923889 Threads — Threat or Menace?] in EricRaymond's [http://www.catb.org/~esr/writings/taoup/ The Art of Unix Programming].
+
+See NoThreading.
+
+-- AlexSchroeder

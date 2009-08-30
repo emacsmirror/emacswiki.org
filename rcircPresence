@@ -1,0 +1,48 @@
+This little hack let's you sync your presence with Skype's mood.
+
+To talk to Skype you need this little python client which in turn depends on Skype's [https://developer.skype.com/wiki/Skype4Py python api].
+
+{{{
+#!/usr/bin/python
+
+import sys
+import Skype4Py
+import pdb
+
+def main():
+    try:
+        message = " ".join(sys.argv[1:])
+    except Exception, e:
+        message = "ho hum"
+
+    skype = Skype4Py.Skype()
+    skype.Attach()
+
+    prof = skype.CurrentUserProfile
+    prof._SetMoodText(message)
+
+if __name__ == "__main__":
+    main()
+}}}
+
+And here's the elisp for the rcirc integration:
+
+{{{
+(defun rcirc-presence-hook-fn (process command sender args line)
+  (let (msg)
+    (cond
+     ((string-equal command "306")
+      (setq msg (let ((msg-response (cadr args)))
+                  (string-match "You're now away: \\(.+\\)" msg-response)
+                  (match-string 1 msg-response))))
+     ((string-equal command "305")
+      (setq msg " "))
+     ('t 't))
+    (if msg
+        ;; Now send the message to the presence app
+        (shell-command-to-string (format "python ~/pres.py %s" msg)))))
+
+(add-hook 'rcirc-receive-message-hooks 'rcirc-presence-hook-fn)
+}}}
+
+When Emacs gets dbus support the python could be dispensed with.

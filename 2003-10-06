@@ -1,0 +1,33 @@
+The thread on GTK Emacs and Gnome on emacs-devel continues.
+Some people have complained that results are unpredictable when customizing the colors of scroll-bars in GTK Emacs.  Jan D. said that this depends on the theme used: Pixmap themes prevent color customizations.  So now the debate turns to this question:
+
+JanD asks:
+
+: I am more leaning towards removing all customability in the GTK
+version of Emacs.  Mainly because the mechanisms used are not well
+documented in GTK, they have confusing effects depending on what theme
+you use, but perhaps the most important argument, GTK/Gnome has stated
+that the only customization they really support is by themes.
+
+: One of the reasons to have GTK in the first place is to get a
+consistent look-and-feel with other GTK/Gnome applications (granted
+Emacs uses different icons).  If customizations are needed, we can
+recommend another toolkit.
+
+MilesBader replies:
+
+: I think it's perfectly fine to resist, and the more vocally the better.
+The Gnome team is perfectly free to ignore such entreaties, but they should
+at least be aware that people don't like the directions they're going in.
+
+On a related note, JanD also introduced a new function that might be of interest:
+
+: I have made a function that can work as a base for implementing a
+package for extended window manager hints (EWMH).  However, I am
+currently only able to do Emacs stuff during weekends (traveling during
+the week), so I have just made a client event sending function you can
+use.  For example, to set fullscreen with EWMH, do:
+
+    (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+                           '(2 "_NET_WM_STATE_FULLSCREEN" 0))
+

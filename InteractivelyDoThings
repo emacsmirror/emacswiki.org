@@ -1,0 +1,307 @@
+Cette page est aussi disponible en français: Français:FaireDesChosesIntéractivement
+
+The ido.el package by KimStorm lets you interactively do things with buffers and files.
+
+'''[::Ido]''' is part of Emacs, starting with release 22. You can get the latest version at http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/lisp/ido.el or you can get a very outdated version of it at http://www.cua.dk/.
+
+= Overview of Ido =
+
+    ;;in the .emacs
+    (require 'ido)
+    (ido-mode t)
+
+To switch between buffers C-x b:
+* type some characters appearing in the buffer name, RET to visit the buffer in the front the list.
+* use C-s (next) or C-r (previous) to move through the list.
+* [Tab] display possible completion in a buffer (or visit the buffer if there is only one possible completion).
+* use C-f to fall back to find file or C-b to fall back to switch to buffer.
+
+To find a file C-x C-f:
+* type  some characters  appearing in the file name, RET to open the file in the front of the list.
+* C-s (next) or C-r (previous) to move through the list.
+* [Tab] display possible completion in a buffer (or open the file or go down the directory if there is only one possible completion).
+* type RET  to go down inside the directory in front of the list.
+* type [backspace] to go up to the parent directory.
+* type two slashes to go to the root directory.
+* if you feel lost type C-f to go back temporarly to the normal find-file
+* do C-x C-d to enter Dired in this directory
+* to create a new file matching the text you entered do C-j (note that this is needed if the text you entered matches an existing file, because simply typing enter would rather open the existing one)
+
+[new:eleanor:Sun Oct 26 19:10:09 CET 2008]
+After C-x C-f in ido-mode, M-r doesn't work as expected. With the default find-file, you can regexp search for recently opened files. With ido, the file names do show up in ido-work-file-list but I always get a 'no earlier matching history item' when searching for a history item.
+----
+
+To restrict the list after a first filtering:
+* type some characters appearing in the buffer/file name(say .cpp) 
+* type C-SPC (C-@)
+* continue as normal with a list containing only the filtered names
+
+Recently visited directories:
+* type M-p and M-n to change to previous/next directories from the history
+* M-s to search for a file matching your input
+* M-k to remove the current directory from the history 
+* directories are added to the history by navigating inside them via RET 
+
+
+The documentation for this keys is available via
+* M-x describe-function RET ido-find-file RET 
+* C-h f ido-find-file RET
+
+Quote from the history section of ido.el:
+
+: Since I discovered StephenEglen's excellent iswitchb package, I just couldn't live without it, but once being addicted to switching buffers with a minimum of keystrokes, I soon found that opening files in the old-fashioned way was just too slow - so I decided to write a package which could open files with the same speed and ease as iswitchb could switch buffers.
+
+: I originally wrote a separate ifindf.el package based on a copy of iswitchb.el, which did for opening files what iswitchb did for switching buffers.  Along the way, I corrected a few errors in ifindf which could have found its way back into iswitchb, but since most of the functionality of the two package was practically identical, I decided that the proper thing to do was to merge my ifindf package back into iswitchb.
+
+: This is basically what ido (interactively do) is all about; but I found it awkward to merge my changes into the "iswitchb-" namespace, so I invented a common "ido-" namespace for the merged packages.
+
+= Using Ido Programmatically =
+
+As IswitchBuffers can be used programmatically (see UseIswitchBuffer), ido can also be use for other things:
+
+    (defun my-icompleting-read(prompt choices)
+      (let ((ido-make-buffer-list-hook
+	     (lambda ()
+	       (setq ido-temp-list choices))))
+        (ido-read-buffer prompt)))
+
+Not perfect (some keybindings should be removed ie C-k, try to press TAB 2 times and buffers will appear, not things from your list anymore...) but it still can be useful. (See an example on RecentFiles)
+
+(I think that ido-completing-read might do what you want, too.)
+
+= Mimicking an invocation of ido followed by some keys =
+
+I use ERC, and I wanted to bind something to the equivalent of "C-x b #": that is, launching ido-switch-buffer and hitting a # so that ERC channels are given as options.  However, it's tough in general to write elisp or keyboard macros that run a command and start entering things into a minibuffer without finishing the prompt. For this special case, though, this elisp works:
+
+    (ido-buffer-internal ido-default-buffer-method nil nil nil "#")
+
+= See Also =
+
+* [[Icicles]] -- Similar to ido.el in some ways, but you use the same minibuffer interface for files, buffers, commands -- everything.  Completion and ''cycling'' of completion candidates. Standard ''prefix'' completion and ''apropos'' (regexp) completion. Perform actions on selected (or all) candidates. Manipulate sets of completion candidates. More.
+
+= Wish list =
+
+[new] it would be nice if ido could truename files.  ido blows away the truenaming of files that i had set up with ffap.  It can be very confusing to open a symlink and have the buffer name be the name of the symlink.  I fixed this in ffap with the following code, but I don't know where to fix it in ido since it does not seem to have a finder variable.
+
+;;finding file keeps buffer name as symlink name.  all the truename vars do
+;;not fix.  this does.  this should use before advice changing filename?
+
+(defun alpha-find-file-truename (filename &optional codesys)
+  "used for ffap."
+  (interactive "FFile name (will be truenamed): ")
+  (find-file (file-truename filename) codesys))
+
+(setf ffap-file-finder 'alpha-find-file-truename)
+
+;;here are variables.  they are insufficient for getting the ;;truename.  in emacs 22, you only get truename if you
+;;already had the original file in a buffer.  it is as if these
+;;variables are simply ignored.  there are no other variables.
+
+(setf find-file-compare-truenames t)    ;xemacs
+
+(setf find-file-existing-other-name t)  ;emacs and xemacs alias for ffct
+
+;;find-file-use-truenames seems to default to t in xemacs but not in emacs.
+;;why can't they compare inode for hard links and what happens if these are nil?
+(setf find-file-visit-truename t)
+
+--gambarimasu
+
+[new] It would be really nice if ido mode could be implemented also for M-x (command completion).
+
+[new]
+<i>That can be done</i>
+
+ (setq ido-execute-command-cache nil)
+
+ (defun ido-execute-command ()
+   (interactive)
+   (call-interactively
+    (intern
+     (ido-completing-read
+      "M-x "
+      (progn
+        (unless ido-execute-command-cache
+          (mapatoms (lambda (s)
+                      (when (commandp s)
+                        (setq ido-execute-command-cache
+                              (cons (format "%S" s) ido-execute-command-cache))))))
+        ido-execute-command-cache)))))
+    
+ (add-hook 'ido-setup-hook
+           (lambda ()
+             (setq ido-enable-flex-matching t)
+             (global-set-key "\M-x" 'ido-execute-command)))
+
+-- ChrisDone, modified by AttilaLendvai
+
+You can also check out [[Smex]]. On top of a M-x Ido interface it features ranking heuristics and some other extras.
+
+-- hfwang, modified by nsq
+
+Minor issue both with this solution and Smex: M-x commands are no longer recorded in the command history (see for yourself via M-x command-history or C-x ESC ESC).  M-p M-n still work in the minibuffer though, so you can access command history that way.
+-- LVA
+
+[new]
+Sometimes I think it would be convenient to be able to bury buffer. I can use bury-buffer command,
+and it works with standard emacs C-xb, but ido seems to ignore it. Is there a way to bury buffer in ido?
+-- KonstantinAntipin
+
+[new] I find ido-find-file too intrusive, I would prefer something that ressembles my menu completion in zsh. It would run the regular find-file, and switch to ido when I press TAB twice. From there I could select my item with the arrows and RET then the minibuffer would return to find-file mode.
+
+The relevant zsh config is here: http://zshwiki.org/home/examples/compquickstart
+-- DenisMartinez
+
+= Invoking bookmarks from ido =
+
+Did you ever want to use [[bookmark]]s from within ido? I just did a little mashup of bookmark and ido code, just M-C-b from your ido file selection. -- AnselmHelbig
+
+    (setq enable-recursive-minibuffers t)
+    (define-key ido-file-dir-completion-map [(meta control ?b)] 'ido-goto-bookmark)
+    (defun ido-goto-bookmark (bookmark)
+      (interactive
+       (list (bookmark-completing-read "Jump to bookmark"
+    				   bookmark-current-bookmark)))
+      (unless bookmark
+        (error "No bookmark specified"))
+      (let ((filename (bookmark-get-filename bookmark)))
+        (ido-set-current-directory
+         (if (file-directory-p filename)
+             filename
+           (file-name-directory filename)))
+        (setq ido-exit        'refresh
+              ido-text-init   ido-text
+              ido-rotate-temp t)
+        (exit-minibuffer)))
+
+= Complete find-tag using ido =
+
+Use ido to complete tags:
+
+  (defun my-ido-find-tag ()
+    "Find a tag using ido"
+    (interactive)
+    (tags-completion-table)
+    (let (tag-names)
+      (mapc (lambda (x)
+              (unless (integerp x)
+                (push (prin1-to-string x t) tag-names)))
+            tags-completion-table)
+      (find-tag (ido-completing-read "Tag: " tag-names))))
+
+= Sort by mtime =
+
+Why would anyone want an alphabetically sorted list? You can save keystrokes if the most recently modified files are at the front:
+
+  ; sort ido filelist by mtime instead of alphabetically
+  (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
+  (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
+  (defun ido-sort-mtime ()
+    (setq ido-temp-list
+          (sort ido-temp-list 
+                (lambda (a b)
+                  (let ((ta (nth 5 (file-attributes (concat ido-current-directory a))))
+                        (tb (nth 5 (file-attributes (concat ido-current-directory b)))))
+                    (if (= (nth 0 ta) (nth 0 tb))
+                        (> (nth 1 ta) (nth 1 tb))
+                      (> (nth 0 ta) (nth 0 tb)))))))
+    (ido-to-end  ;; move . files to end (again)
+     (delq nil (mapcar
+                (lambda (x) (if (string-equal (substring x 0 1) ".") x))
+                ido-temp-list))))
+
+If you want to ensure '.' is not buried by this, change the final lambda as follows (or equivalent:
+
+              (lambda (x) (if (and (not (string-equal x ".")) (string-equal (substring x 0 1) ".")) x))
+
+[new:DrewAdams:2008-08-17 20:24 UTC]
+Depending on the type of entities (e.g. file names) in the list and your current context, it can often be more convenient to sort alphabetically. It all depends. For files and directories, this is why we have different sort orders in DiredMode (see, e.g., DiredSortMenu). 
+
+[[Icicles]] lets you change the sort order on the fly during completion. There are many predefined sort orders available, and you can easily add your own. Some are general (always available, for all completion types) and some are available only in particular completion contexts. See [[Icicles - Sorting Candidates#DifferentSortForDifferentUses|Icicles Sort Orders]]. -- DrewAdams
+
+= A better (IMHO) ido-edit-input function =
+
+In order to be more consistent with the normal find-file HCI, to which I am really really used (and, by the waym with the way command shells do completion), I changed slighlty the behaviour of the backspace and C-e keys in 'file mode :
+
+  (defun ido-my-edit-input () "bla" (interactive)
+    (setq ido-current-directory 
+          (concat (abbreviate-file-name ido-current-directory) ido-text ))
+    (setq ido-text "")
+    (ido-edit-input)
+    )
+  
+  (defun ido-my-keys ()
+    "Add my keybindings for ido."
+    (when (eq ido-cur-item 'file)
+      (define-key ido-mode-map (kbd "ESC DEL") 'ido-delete-backward-updir)
+      (define-key ido-mode-map (kbd "C-e") 'ido-my-edit-input)
+      (define-key ido-mode-map (kbd "<backspace>") 'ido-my-edit-input)
+     ))
+
+
+Maybe this is useless with recent versions of emacs/ido, but here I'm forced to use emacs 21, so I downloaded ido 1.56 from cua.dk (see above) and it works like a charm. My only difficulty was that I had to comment this line in  ido-read-internal, and i don't really know what kind of wizardry I am trying to cheat here.
+
+   ;;(process-environment (cons "HOME=/" process-environment)) 
+
+- [[Gyom]]
+
+= What You Can Learn From ido.el =
+
+Screencast: http://www.vimeo.com/1013263
+
+[:TagsFile]
+= Find files in Tags File =
+
+From the screencast above:
+
+    (defun ido-find-file-in-tag-files ()
+      (interactive)
+      (save-excursion
+        (let ((enable-recursive-minibuffers t))
+          (visit-tags-table-buffer))
+        (find-file
+         (expand-file-name
+          (ido-completing-read
+           "Project file: " (tags-table-files) nil t)))))
+
+Selects among the files listed in the [[tags file]]. Similar to "find file in project" in !TextMate; the tags file defines your project.
+
+[new:DrewAdams:2009-04-27 20:31 UTC]
+[[Icicles]] command `icicle-find-file-in-tag-table' does this also. See [[Icicles - Support for Projects#TagsFileProject|Icicles - Tags File Projects]].
+
+= Ido on steroids (make it to complete everything) =
+
+Hocus pocus, abracadabra, presto!
+
+    (defadvice completing-read
+      (around foo activate)
+      (if (boundp 'ido-cur-list)
+          ad-do-it
+        (setq ad-return-value
+              (ido-completing-read
+               prompt
+               (all-completions "" collection predicate)
+               nil require-match initial-input hist def))))
+
+That works with everything but subr's, from which execute-extended-command is the one that matters (what is binded to M-x). But we can get what we want from M-x
+
+    (global-set-key
+     "\M-x"
+     (lambda ()
+       (interactive)
+       (call-interactively
+        (intern
+         (ido-completing-read
+          "M-x "
+          (all-completions "" obarray 'commandp))))))
+
+
+
+= Control-TAB buffer switching with Ido =
+
+[NxhtmlMode nXhtml] tweaks Ido to do ControlTABbufferCycling combined with Ido's normal buffer switching.
+
+----
+CategoryCommands
+CategoryBufferSwitching
+CategoryCompletion

@@ -1,0 +1,4 @@
+A '''[::chord]''' is a KeySequence in which the keys are pressed at the same time. Example: ‘S-M-C-a’.
+ You can hold down a chord to repeat its [[command]]. 
+----
+CategoryGlossary

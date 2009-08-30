@@ -1,0 +1,69 @@
+A Portable Emacs Library ([::APEL]) is a library that supports writing Emacs Lisp programs for a variety of Emacsen, including [[Emacs]] versions 18 through 20 and [[XEmacs]].  There are also features that support [[i18n]] and MIME.
+
+* http://kanji.zinbun.kyoto-u.ac.jp/~tomo/elisp/APEL/
+
+Libraries include:
+{{{
+;;; alist.el --- utility functions for association list
+;;; apel-ver.el --- Declare APEL version.
+;;; atype.el --- atype functions
+;;; broken.el --- Emacs broken facility information registry.
+;;; calist.el --- Condition functions
+;;; emu.el --- Emulation module for each Emacs variants
+;;; emu-mule.el --- emu module for Mule 1.* and Mule 2.*
+;;; env.el --- functions to manipulate environment variables.
+;;; file-detect.el --- Path management or file detection utility
+;;; filename.el --- file name filter
+;;; install.el --- Emacs Lisp package install utility
+;;; inv-18.el --- invisible feature implementation for Emacs 18
+;;; inv-19.el --- invisible feature implementation for Emacs 19 or later
+;;; invisible.el --- hide region
+;;; inv-xemacs.el --- invisible feature implementation for XEmacs
+;;; localhook.el --- local hook variable support in emacs-lisp.
+;;; mcharset.el --- MIME charset API
+;;; mcs-20.el --- MIME charset implementation for Emacs 20 and XEmacs/mule
+;;; mcs-e20.el --- MIME charset implementation for Emacs 20.1 and 20.2
+;;; mcs-ltn1.el --- MIME charset implementation for Emacs 19
+;;; mcs-nemacs.el --- MIME charset implementation for Nemacs
+;;; mcs-om.el --- MIME charset implementation for Mule 1.* and Mule 2.*
+;;; mcs-xm.el --- MIME charset implementation for XEmacs-mule
+;;; mcs-xmu.el --- Functions to unify ISO646 characters for XEmacs-mule
+;;; mule-caesar.el --- ROT 13-47 Caesar rotation utility
+;;; path-util.el --- Emacs Lisp file detection utility
+;;; pccl-20.el --- Portable CCL utility for Emacs 20 and XEmacs-21-mule
+;;; pccl.el --- Portable CCL utility for Mule 2.*
+;;; pccl-om.el --- Portable CCL utility for Mule 2.*
+;;; pces-20.el --- pces submodule for Emacs 20 and XEmacs with coding-system
+;;; pces-e20_2.el --- pces implementation for Emacs 20.1 and 20.2
+;;; pces-e20.el --- pces submodule for Emacs 20
+;;; pces.el --- Portable Character Encoding Scheme (coding-system) features
+;;; pces-nemacs.el --- pces implementation for Nemacs
+;;; pces-om.el --- pces implementation for Mule 1.* and Mule 2.*
+;;; pces-raw.el --- pces submodule for emacsen without coding-system features
+;;; pces-xfc.el --- pces module for XEmacs with file coding
+;;; pces-xm.el --- pces module for XEmacs-mule
+;;; pcustom.el -- a portable custom.el.
+;;; poe-18.el --- poe API implementation for Emacs 18.*
+;;; poe.el --- Portable Outfit for Emacsen
+;;; poem-e20_2.el --- poem implementation for Emacs 20.1 and 20.2
+;;; poem-e20_3.el --- poem submodule for Emacs 20.3
+;;; poem-e20.el --- poem submodule for Emacs 20
+;;; poem.el --- Emulate latest MULE features
+;;; poem-ltn1.el --- poem implementation for Emacs 19 and XEmacs without MULE
+;;; poem-nemacs.el --- poem implementation for Nemacs
+;;; poem-om.el --- poem implementation for Mule 1.* and Mule 2.*
+;;; poem-xm.el --- poem module for XEmacs-mule
+;;; poe-xemacs.el --- poe submodule for XEmacs
+;;; product.el --- Functions for product version information.
+;;; pym.el --- Macros for Your Poe.
+;;; richtext.el -- read and save files in text/richtext format
+;;; static.el --- tools for static evaluation.
+;;; timezone.el --- time zone package for GNU Emacs
+;;; tinycustom.el -- a tiny custom.el for emulating purpose.
+;;; tinyrich.el -- text/richtext module for old emacsen
+}}}
+
+See also ComparativeEmacsology.
+
+----
+CategoryCode

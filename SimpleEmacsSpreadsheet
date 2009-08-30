@@ -1,0 +1,60 @@
+*Note:* ses.el is included in latest Emacs.
+
+Simple Emacs Spreadsheet ([::SES], [::ses-mode] or [::SesMode]) is major mode in Emacs that mimics 
+traditional SpreadSheet software, and uses EmacsLisp formulas.  It was written by Jonathan Vayner: 
+
+* http://web.archive.org/web/20050306010917/home.comcast.net/~jyavner/ses/
+
+Not sure whether this comment still applies:
+
+: per author, not functional for xemacs because of [[text property]] differences
+
+The latest release on news://gnu.emacs.sources said:
+
+NEW FOR VERSION 21: Viral immunity, header line, sort by column,
+customizable variables.  Also, great speed improvements and some
+bugfixes.
+
+* Create and edit simple spreadsheets with a minimum of fuss. 
+* Full undo/redo/autosave. 
+* Immune to viruses in spreadsheet files via use of UnsafeP.
+* Cell formulas are straight Emacs Lisp; cell values are local variables in the spreadsheet's buffer.  To sum the first three cells in column B, say (+ B1 B2 B3) 
+* Printer functions support fine control of cell appearance.  These can be just format strings.  To print dollars and cents, say "$%.2f"
+* Intuitive keystroke commands: C-o = insert row, M-o = insert column, etc. 
+* "Spillover" of lengthy cell values into following blank cells. 
+* Header line shows column letters or a selected row. 
+* Completing-read for entering symbols as cell values. 
+* Cut, copy, and paste can transfer formulas and printer functions along with the cell values.
+* Mouse commands for selecting a range and inserting it i nto a formula. 
+* Import and export of tab-separated values or tab-separated formulas. 
+* Plaintext, easily-hacked file format.
+
+Example formulas:
+
+    (ses-average (ses-range D2 D37))
+    (apply (quote +) (ses-range B36 N36))
+
+SES will come standard with version 22 of GnuEmacs.
+
+Addons for SES,
+
+* [[Chart]] -- stock quotes, with refresh.
+
+[new]
+I used SES for my classes: A list of students, points for all the
+exercises, totals over all exercises, averages for each exercise,
+calculate a grade based on the totals and some systematic hand-waving.
+It worked very nicely. -- AlexSchroeder
+
+[new]
+I'm trying to write a simple eLisp function to automaticaly open an SES file and export its whole content to value. I'm facing problems of ses-export-tsv and region. Does anyone know how to write a lisp function to export the whole content ? Thanks.
+
+[new]
+So I have numerous files that were manually indented into a tree structure, an outline, by hand. Attempting to paste these into SES failed, with an “inconsistent row lengths” error. I'm not surprised that the rows have inconsistent lengths.  I'd just like to get the data imported, and have enough columns to hold the line with the most tabs.  Only one cell should be filled in each row. Any solutions?
+
+Well, I worked around the problem by appending 22 tabs to the end of each line, and then writing a keyboard macro that searched for the 20th tab on a line, deleting the rest of the line, and repeated that for each row in the file. That gave me a consistent number of tabs on each line, and then the yank into the spreadsheet worked... well, at least it didn't complain about inconsistent row lengths.  It still hasn't shown me the spreadsheet yet... pegging out the CPU... but the file does have 5000+ lines... still going... guess this spreadsheet is for puny data sets... After a two hours, I killed the emacs because it never finished, and never showed me a spreadsheet, other than the one cell one that I tried to paste into..
+
+----
+CategoryCalculators
+CategoryModes
+

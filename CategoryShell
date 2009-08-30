@@ -1,0 +1,20 @@
+A shell is a command line program that allows you to start other programs, do some job control, do simple programming, chain other programs together via pipes, etc.
+Your *default shell* is usually stored in the environment variable $SHELL.
+It might be bash, tcsh, ksh, or something like that.
+On Windows, it would probably be cmd.
+
+AnsiTerm: `M-x term' or `M-x ansi-term' runs a full vt100 emulation, running your default shell.  Ordinary Emacs keybindings are only available via the `C-c' prefix.
+
+ShellMode: `M-x shell' is dumb terminal emulation, running your default shell.  Ordinary Emacs keybindings are available.
+
+EmacsShell: `M-x eshell' is even dumber, doesn't emulate anything, and runs a shell written in EmacsLisp.  That's why it is available on every system Emacs runs on.  You can run elisp functions as commands.  All Emacs keybindings are available.
+
+ShellPop: A utility which helps you pop up and pop out shell buffer easily.
+
+There are several modes that look alike but don't run a shell.  Examples include all command-line interfaces that connect to dedicated interpreters such as CommonLisp, [[Scheme]], [[SQL]], etc.
+
+----
+EevMode is different from these modes above.
+Eev can send a part of buffer to a shell that uses another terminal.
+Eev opens up another method to deal with a shell in Emacs.
+

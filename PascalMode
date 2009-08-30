@@ -1,0 +1,8 @@
+If you program in Pascal you could use pascal.el which comes with Emacs.
+
+Alternatives modes:
+* pasc-mode.el -- http://www.nada.kth.se/~inge/MY/pascal/
+* pascal-mode.el -- Groups:pascal-mode.el
+
+----
+CategoryModes | ProgrammingModes

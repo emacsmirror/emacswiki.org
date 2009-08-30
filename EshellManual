@@ -1,0 +1,54 @@
+Here is a longer EshellTexi than what comes in the eshell tarball. It was posted to comp.emacs on 2001-09-07 by Christoph Conrad.
+----
+Since sitting down to write a complete manual has always seemed such
+an onerous task, I'm asking anyone who has something to say to
+contribute documentation for Eshell, the Emacs Shell.
+
+Unfortunately, this Wiki doesn't work as well for me, since I don't
+have convenient access to the text.  So, care to jump on over to
+another one?  I'm running an emacs-wiki-mode based Wiki on my home
+machine.  You can edit the docs from here:
+
+* http://alice.dynodns.net/wiki?EmacsShell
+(Link broken as of 2009-07-15 -- anyone surprised? --Jason)
+
+To read a Japanese translation:
+
+* http://www.gci-net.com/~johnw/eshell_ja.html
+
+----
+The real problem with keeping the source for those files on the Emacs
+Wiki server is that I can't work on them when I'm remote with my
+laptop.  What would work best for me is if they were kept under CVS on
+your server, which I could then download, and later merge and
+re-upload when I'd finished making remote changes of my own.  So, I
+need two things: The possibility of public contribution, and the
+ability to edit/navigate the files locally as well -- whether or not
+I'm connected to the Net.  By keeping the files on alice.dynodns.net,
+I *do* have them under CVS, and so can handle merging and conflicts
+with no problem. -- JohnWiegley
+
+Eventually WikiRemote is supposed to solve this problem, but it needs
+some work.  ^_^ -- AlexSchroeder
+
+----
+ From: JohnWiegley
+ Subject: Re: eshell docu? 
+ Newsgroups: comp.emacs
+ Date: 2001-09-10 11:43:56 PST 
+
+Heh, that's funny.  The old documentation IS the sources, with the
+code deleted.  In the old days I intended Eshell to be
+self-documenting, but after a discussion with RMS I came to realize
+that presenting information is a different thing from merely recording
+information about it.
+
+However, in all that time many other projects have come my way.  True
+to the free software model, if someone is willing to pay me for
+documentation (the "support" side of this project), I am more than
+willing to put time into it.
+
+John
+
+----
+CategoryEshell

@@ -1,0 +1,25 @@
+= Rlogin Mode =
+
+Simply do a ##(require 'rlogin)##, and type `M-x rlogin' to log in to a remote system.
+
+It is handy to add single `##+##' to your ##~/.rhosts## file (make sure you do a ##chmod 644## on the file, otherwise some systems will refuse to connect you without typing in a password).
+
+== bg-rlogin-setup.el ==
+
+When logging into remote systems, the functions at Lisp:bg-rlogin-setup.el  do the following things:
+
+* Set the `DISPLAY' environment variable to the local system -- useful when using an X window system.
+* Guard against certain versions of Korn or Bash shells that try to enable line editing when it is not needed under Emacs Rlogin Mode.
+* Set the current directory properly, taking NFS mount points into consideration (and changing Linux ##.automount## paths to ##/net/system## paths)
+
+The main command is `bg-rl', which you can alias to rl for typing convenience: ##(defalias 'rl 'bg-rl)##
+
+== Icicles Enhancements for Rlogin Mode ==
+
+You can use [[Icicles]] [[completion]] with Rlogin mode. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
+
+
+
+
+----
+CategoryExternalUtilities

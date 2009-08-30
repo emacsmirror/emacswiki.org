@@ -1,0 +1,100 @@
+BbdbTags is an extension to the marvelous BbdbMode done by SachaChua
+
+== Principles ==
+
+Tagging is this fashion thing you can see alsmast everywhere. It is used to ease categorizing things ( pictures, documents, links ...).
+
+BbdbMode did not have such feature. 
+
+== Setup ==
+
+Add these lines into your .emacs:
+
+ (defun sacha/bbdb-get-tags (record)
+   "Return the tags for RECORD as a list."
+   (let ((tags (bbdb-record-getprop record 'tags)))
+     (when tags (split-string tags)))) 
+
+ (defun sacha/bbdb-test-tags (query tags)
+  "Return non-nil if QUERY is a subset of TAGS."
+  (let ((result t))
+    (while (and result query)
+      (unless (member (car query) tags)
+        (setq result nil))
+      (setq query (cdr query)))
+    result))
+
+ (defun sacha/bbdb-search-tags-internal (records tags)
+  "Return a list of RECORDS matching TAGS."
+  (when (stringp tags) (setq tags (split-string tags)))
+  (let (result)
+    (while records
+      (when (sacha/bbdb-test-tags tags
+                                  (sacha/bbdb-get-tags (car records)))
+        (setq result (cons (car records) result)))
+      (setq records (cdr records)))
+    result))
+ 
+ (defun sacha/bbdb-search-tags (tags)
+  "Display all the records that match TAGS."
+  (interactive "MTags: ")
+  (bbdb-display-records (sacha/bbdb-search-tags-internal (bbdb-records) tags)))
+
+ (defun sacha/planner-bbdb-link (record)
+  "Return a link to RECORD."
+  (or (bbdb-record-getprop record 'plan)
+      ;; From a BBDB entry with a plan page; use that. Yay!
+      (concat "[["
+              (emacs-wiki-replace-regexp-in-string
+               " " "."
+               (bbdb-record-name record))
+              "][" (bbdb-record-name record)
+              "]]")))
+
+ (defun sacha/bbdb-get-tags-index ()
+  "Return a list of tags and records."
+  (let ((tags-alist '())
+        (records (bbdb-records))
+        tags
+        entry
+        list
+        link)
+    (while records
+      (setq tags (sacha/bbdb-get-tags (car records)))
+      (while tags
+        (setq entry (assoc (car tags) tags-alist))
+        (setq list (cdr entry))
+        (add-to-list 'list (car records))
+        (if entry
+            (setcdr entry list)
+          (add-to-list 'tags-alist (cons (car tags) list)))
+        (setq tags (cdr tags)))
+      (setq records (cdr records)))
+    tags-alist))
+
+== Tagging records ==
+
+Tagging one record is as simple as addind a new user field to it.
+
+On the record, typo C-o and on the prompt, type "tags" as the field name.
+
+Then just add your tag words separated by a blank.
+
+== Searching ==
+
+To list all records matching a certain tag, just do :
+
+ M-x sacha/bbdb-search-tags RET
+
+Then enter one or more tags to match.
+
+That's all !
+
+Really neat !
+
+== More to come ==
+
+For the imaptient, just visit this URL => http://sacha.free.net.ph/notebook/wiki/2005.05.06.php
+
+----
+CategoryBbdb

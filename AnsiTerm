@@ -1,0 +1,42 @@
+This is a terminal emulator written in EmacsLisp.
+Now you can run vi (or mutt! (see MuttInEmacs) (or Emacs! :))) in an Emacs buffer!
+
+Use M-x ansi-term to start it.
+
+Note that M-x ansi-term differs from M-x term: ansi-term will render
+colors, too.
+
+Also note that ansi-term remaps your default C-x key to C-c.
+----
+[new:AndyStewart:2009-02-03 00:42 UTC]
+I think MultiTerm is more better. -- AndyStewart
+----
+[new]
+I have added some set up and customization hints in AnsiTermHints. --CraigMcDaniel
+----
+[new]
+After upgrading to Emacs22 from 21.4 I notice that my setting of term-default-fg-color has no effect.  What would be the proper way to customize default foreground and background colors in ansi-term included in Emacs22? --PeterPovinec
+----
+[new]
+Color programs such as mutt work, but any colors in my prompt are lost. Any ideas? --DavidMcCabe
+[new]
+Works fine for me. Perhaps you are not using the correct escape sequences in your prompt. See   http://www.eterm.org/docs/view.php?doc=ref#escape for eterm escape codes --PeterPovinec
+[new:ChrisForno:2006-12-01 00:00 UTC]
+In Gentoo, you need to add <code>eterm-color</code> to the list of terminals in <code>/etc/DIR_COLORS</code>. Other distributions may have similar sanity checks.
+----
+[new]
+.. does anyone know if ansi-term works with XEmacs, though?  It doesn't seem to be distributed with it.  (-- ChrisBall.)
+[new]
+.. I really want ansi-term for XEmacs too :-( -- ChristopherArmstrong
+[new]
+ChrisBall:  It seems incredible that XEmacs doesn't have a terminal emulator capable of running something like mutt.  Do other XEmacs users just get by without full ANSI support somehow?  I've switched to CategoryGnus and EmacsIRCClient, and want to migrate the last of the tty/ANSI apps so that they get run inside XEmacs too.  :)
+[new]
+Well after years of puzzling I finally found why in XEmacs <code>M-x term</code> won't run any ''visual'' commands (like top or less): [[XEmacsMuleAndTerminalEmulation]].  Now it works almost fine, except for the things displayed in reverse in xterm (attribute STANDOUT AFAIK) which are not displayed at all. -- StefanKamphausen
+
+[new]
+Has anybody succeded to run ansi-term (or term, or terminal-emulator for that matter) under Win32? I have Windows XP and trying any of these commands results in "Spawning child process: invalid argument" error. The default argument is cmdproxy in Emacs' bin directory; I have also tried cygwin's bash, well, any command, but to no avail. Every time I get that error. M-x shell and other child processes work fine.
+----
+[new]
+Q: Is it possible to change the color palette for LS_COLORS? Inside a Gnome terminal, I like to switch to the "Tango" palette and since I use color-theme-tango it would be nice to have the same colors inside Emacs especially because the standard terminal colors don't go well with Tango's background color.
+----
+CategoryExternalUtilities

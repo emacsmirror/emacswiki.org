@@ -1,0 +1,75 @@
+If you have use my elisp [[Bibus]], I think you must be familar with
+this mode.
+
+= Features =
+# Align table column pretty, and the exceed char is elided. The column width is adjustable with single key. You can also hide some unimportant columns.
+# Navigate with TAB
+# Sort column(you can specific a sort method, this is not provide by any other program)
+# Set the first line as the HeaderLine, sometimes it very convenient especially for a long table.
+# Support file seperate by character that in "\t,.: " and so on.
+
+= Download =
+Lisp:tsv-mode.el
+
+= Installation =
+<pre>(add-to-list 'load-path "/path/to/lib")
+(autoload 'tsv-mode "tsv-mode" "A mode to edit table like file" t)
+(autoload 'tsv-normal-mode "tsv-mode" "A minor mode to edit table like file" t)
+</pre>
+
+= Key bindings =
+Navigate:
+<pre>TAB             tsv-next-field
+<backtab>       tsv-prev-field
+C-v             tsv-scroll-up
+M-v             tsv-scroll-down
+j               next-line
+k               previous-line
+</pre>
+
+Copy and paste:
+<pre>C-k             tsv-kill-line
+C-w             tsv-kill-region
+C-y             tsv-yank
+M-w             tsv-kill-ring-save
+w               tsv-copy-field-at-point
+</pre>
+
+Column operation:
+<pre><               tsv-narrow-column
+>               tsv-widen-column
+C-c C-<         tsv-narrow-to-min
+C-c C->         tsv-widen-to-max
+C-c C-n         tsv-set-column-width
+C-c C-w         tsv-set-all-column-width
+H               tsv-hide-column
+S               tsv-show-column
+C-c C-s         tsv-sort-column
+C-c C-l         tsv-sort-lines-region
+</pre>
+
+Other:
+<pre>RET             tsv-edit-field-at-point
+s               tsv-show-field-at-point
+Q               tsv-exit
+C-c C-e         tsv-normal-mode
+C-c C-u         tsv-revert-with-separator
+C-x n n         tsv-narrow-to-region
+C-x n w         tsv-widen
+</pre>
+
+There is a minor mode tsv-normal-mode. There is only some key binds for this minor mode:
+<pre>C-a             tsv-normal-beginning-of-field/line
+C-e             tsv-normal-end-of-field/line
+TAB             tsv-normal-next-field
+<backtab>       tsv-normal-prev-field
+C-v             tsv-scroll-up
+M-v             tsv-scroll-down
+C-c C-c         Quit tsv-normal-mode
+</pre>
+
+= TODO =
+# More column operation, such as add, delete, move
+# Add new rows.
+# Undo support
+# Formula 

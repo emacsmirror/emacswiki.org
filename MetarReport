@@ -1,0 +1,265 @@
+Trying to write some code that does what wmWeather does for wm.
+
+Example output for LSZH:
+
+    Explaining LSZH 110220Z 06008KT 030V100 5000 -SN FEW020 BKN026 M06/M11 Q1022 8829//99 NOSIG
+    Location:         LSZH
+    Time:             02:20 UTC
+    Wind direction:   060°
+    Wind speed:       08 knots, 15 km/h
+    Wind variability: 030° to 100°
+    Not handled:      5000
+    Weather Group:    light snow
+    Clouds:           few at 2000 ft
+    Clouds:           broken at 2600 ft
+    Temperature:      -6 °C
+    Dew Point:        -11 °C
+    Wind Chill:       -12 °C
+    QNH:              1022 hPa
+    Not handled:      8829//99
+    Not handled:      NOSIG
+
+And here is the code.  Note that this uses the HttpGet function.
+Contributors: AlexSchroeder, UlfJasper, DougGerecht
+
+    (defvar metar-report-location nil
+      "Location of the current buffer.")
+
+    (make-variable-buffer-local 'metar-report-location)
+
+    (defun metar-report (location)
+      "Return a weather report based on the location indicator.
+    This LOCATION is a four letter code that is unique to a weather
+    station.  Practically all airports have one.  The code \"LSZH\", for
+    example, is for the airport in Zürich, Switzerland.
+
+    In order to find a station near you, see
+    http://www.nws.noaa.gov/tg/siteloc.shtml.  Note that you can use only
+    the stations that have a four letter code.
+
+    For an explanation of the METAR report returned, see
+    http://www.ofcm.gov/fmh-1/fmh1.htm.
+
+    For the wind chill calculation, see
+    http://www.nws.noaa.gov/om/windchill/index.shtml."
+      (interactive "sLocation: ")
+      (unless (string-match "^[A-Z]\\{4\\}$" location)
+        (error "Location must be a four uppercase letter code"))
+      ;; Primitive HTML GET for the current situation
+      ;; Example: http://weather.noaa.gov/cgi-bin/mgetmetar.pl?cccc=LSZH
+      (let ((proc (http-get (format "http://weather.noaa.gov/cgi-bin/mgetmetar.pl?cccc=%s"
+                                    location) nil
+                            'metar-report-print
+                            1.0)))
+        (set-buffer (process-buffer proc))
+        (setq metar-report-location location)))
+
+    (defun metar-report-knots-to-kmh (knots)
+      "Convert KNOTS to km/h and return it as a string."
+      (unless (numberp knots)
+        (setq knots (string-to-number knots)))
+      (concat (number-to-string (round (* knots 1.852))) " km/h"))
+
+    (defun metar-report-wind-chill (celsius knots)
+      "Return wind-chill based on TEMPERATURE in Celsius and WINDSPEED in knots."
+      ;; Formula uses Wind Chill Temperature Index for Winter 2001-2002.
+      ;; This is the official formula using miles and Farenheit.
+      (let* ((farenheit (+ 32 (* 1.8 celsius)))
+             (mph (* 1.1507794 knots))
+             ;; Wind Chill(°F)=35.74+.6215T-35.75(V**0.16)+.4275T(V**0.16)
+             ;; Where T is the Air Temperature in °F
+             ;; and V is the Wind Speed in mph.
+             (chill (+ 35.74
+                       (* .6215 farenheit) 
+                       (* -35.75 (expt mph 0.16))
+                       (* .4275 farenheit (expt mph 0.16)))))
+        ;; Return Celsius
+        (concat (number-to-string (round (/ (- chill 32) 1.8)))  " °C")))
+
+    ;; Test Data: -10F, 40mph => -43F, dh. SOLL: -41.666667C
+    ;; Parameter umformen: -23.333333C, 34.75905 knots => (metar-report-wind-chill -23.333333 34.75905)
+    ;; Test Data: 35F, 55mph => 18F, dh. SOLL: -7.7777778C
+    ;; Parameter umformen: 1.6666667C, 47.793693 knots => (metar-report-wind-chill 1.6666667 47.793693)
+
+    (defun metar-report-print (proc str)
+      "Sentinel for `metar-report'."
+      (set-buffer (process-buffer proc))
+      (goto-char (point-min))
+      ;; Search for result
+      ;; Example: LSZH 102320Z 06006KT 030V100 4000 -SN FEW021 BKN025 M06/M10 Q1021 8829//99 NOSIG
+      (when (search-forward (concat "\n" metar-report-location " "))
+        (let* ((line (buffer-substring (line-beginning-position) (line-end-position)))
+               (items (split-string (buffer-substring (line-beginning-position) (line-end-position))))
+               (in-remark nil)
+               knots)
+          (when items
+            (erase-buffer)
+            (insert "Explaining " line "\n\n")
+            (dolist (item items)
+              (if in-remark
+                  (insert item " ")
+                (cond ((string-match "^[A-Z]\\{4\\}$" item)
+                       (insert "Location:         " item))
+                      ((string-match "^\\([0-9]\\{6\\}\\)Z$" item)
+                       (let ((hour (substring item 2 4))
+                             (minute (substring item 4 6)))
+                         (insert "Time:             " hour ":" minute " UTC")))
+                    ;; Examples: 08KT, 112KT, 27020G35KT, VRB03KT, 00000KT
+                      ((string-match "^\\([0-9][0-9][0-9]\\|VRB\\)\\(\\([1-9][0-9]+\\|0[1-9]\\)G\\)?\\([1-9][0-9]+\\|0[1-9]\\)KT$" item)
+                       (let* ((direction (match-string 1 item))
+                              (gust (match-string 3 item))
+                              (speed (match-string 4 item)))
+                         (setq knots (string-to-number speed))
+                         (insert "Wind direction:   "
+                                 (cond ((string= direction "VRB") "variable")
+                                       ((string= direction "000") "calm")
+                                       (t (concat direction "°")))
+                                 "\n"
+                                 "Wind speed:       "
+                                 speed " knots, "
+                                 (metar-report-knots-to-kmh speed))
+                         (when gust
+                           (insert ", gusts at " gust " knots, "
+                                   (metar-report-knots-to-kmh gust)))))
+                      ;; Example: 180V240
+                      ((string-match "^\\([0-9][0-9][0-9]\\)V\\([0-9][0-9][0-9]\\)$" item)
+                       (let ((from (match-string 1 item))
+                             (to (match-string 2 item)))
+                         (insert "Wind variability: "
+                                 (concat from "°") " to " (concat to "°"))))
+                      ;; Example: -SHRA
+                      ((string-match "^[-+]?\\([A-Z][A-Z]\\)+$" item)
+                       (insert "Weather Group:   ")
+                       (cond ((= (aref item 0) ?-)
+                              (insert " light")
+                              (setq item (substring item 1)))
+                             ((= (aref item 0) ?+)
+                              (insert " heavy")
+                              (setq item (substring item 1)))
+                             (t
+                              (insert " moderate")))
+                       (let (key
+                             text
+                             (table '(("VC" . "in the vicinity")
+                                      ("MI" . "shallow")
+                                      ("PR" . "partial")
+                                      ("BC" . "patches")
+                                      ("DR" . "low drifting")
+                                      ("BL" . "blowing")
+                                      ("SH" . "showers")
+                                      ("TS" . "thunderstorms")
+                                      ("FZ" . "freezing")
+                                      ("DZ" . "drizzle")
+                                      ("RA" . "rain")
+                                      ("SN" . "snow")
+                                      ("SG" . "snow grains")
+                                      ("IC" . "ice crystals")
+                                      ("PL" . "ice pellets")
+                                      ("GR" . "hail")
+                                      ("GS" . "small hail and/or snow pellets")
+                                      ("UP" . "unknown precipitation")
+                                      ("BR" . "mist")
+                                      ("FG" . "fog")
+                                      ("FU" . "smoke")
+                                      ("VA" . "volcanic ash")
+                                      ("DU" . "widespread dust")
+                                      ("SA" . "sand")
+                                      ("HZ" . "haze")
+                                      ("PY" . "spray")
+                                      ("PO" . "well developed dust/sand whirls")
+                                      ("SQ" . "sqalls")
+                                      ("FC" . "funnel cloud, tornado, or waterspout")
+                                      ("SS" . "sandstorm")
+                                      ("DS" . "duststorm"))))
+                         (while (not (string= item ""))
+                           (setq key (substring item 0 2)
+                                 text (cdr (assoc (substring item 0 2) table))
+                                 item (substring item 2))
+                           (if text
+                               (insert " " text)
+                             (insert " (unknown key: " key ")")))))
+                      ;; Examples: 04/M02, 02/
+                      ((string-match "^\\(M\\)?\\([0-9][0-9]\\)/\\(M\\)?\\([0-9][0-9]\\)?$" item)
+                       (let ((temp (match-string 2 item))
+                             (dew (match-string 4 item)))
+                         (when temp
+                           (setq temp (string-to-number temp))
+                           (when (match-string 1 item)
+                             (setq temp (* -1 temp)))
+                           (insert "Temperature:      " (number-to-string temp) " °C"))
+                         (when dew
+                           (setq dew (string-to-number dew))
+                           (when (match-string 3 item)
+                             (setq dew (* -1 dew)))
+                           (insert "\nDew Point:        " (number-to-string dew) " °C"))
+                         (when (and temp knots)
+                           (insert "\nWind Chill:       " (metar-report-wind-chill temp knots)))))
+                      ;; Example 75SM
+                      ((string-match "^\\([0-9]+\\)SM$" item)
+                       (insert "Visibility:       " (match-string 1 item) " statute miles"))
+                      ;; Example A3015
+                      ((string-match "^A\\([0-9][0-9]\\)\\([0-9][0-9]\\)$" item)
+                       (insert "Altimeter:        " (match-string 1 item) "."
+                               (match-string 2 item)))
+                      ;; Example FEW080 BKN050
+                      ((string-match "^\\(FEW\\|SCT\\|BKN\\|OVC\\)\\([0-9][0-9][0-9]\\)$" item)
+                       (let* ((table '(("FEW" . "few")
+                                       ("SCT" . "scattered")
+                                       ("BKN" . "broken")
+                                       ("OVC" . "overcast")))
+                              (amount (cdr (assoc (match-string 1 item) table))))
+                         (insert (format "Clouds:           %s at %d ft" amount 
+                                         (* 100 (string-to-number 
+                                                 (match-string 2 item)))))))
+                      ;; Example Q2000
+                      ((string-match "^Q\\([0-9][0-9][0-9][0-9]\\)$" item)
+                       (insert (format "QNH:              %d hPa" 
+                                       (string-to-number (match-string 1 item)))))
+                      ;; Example RMK AO2 SLP197 ACSL DSNT NW T01281044 $
+                      ((string-match "^RMK$" item)
+                       (insert "Remark:           ")
+                       (setq in-remark t))
+                      ;; The Rest
+                      (t (insert "Not handled:      " item)))
+                (if (not in-remark) (newline)))))
+          (switch-to-buffer (current-buffer)))))
+
+For Terminal Aerodrome Forecast (TAF) forecast, you can reuse the
+sentinel.  All you need to do is use another URL.
+
+Example:
+
+* http://weather.noaa.gov/cgi-bin/mgettaf.pl?cccc=LSZH
+
+    (defun taf-report (location)
+      "Return a weather forecast based on the location indicator.
+    This LOCATION is a four letter code that is unique to a weather
+    station.  Practically all airports have one.  The code \"LSZH\", for
+    example, is for the airport in Zürich, Switzerland.
+
+    In order to find a station near you, see
+    http://www.nws.noaa.gov/tg/siteloc.shtml.  Note that you can use only
+    the stations that have a four letter code.
+
+    For an explanation of the Terminal Aerodrome Forecast (TAF) report
+    returned, see http://www.ofcm.gov/fmh-1/fmh1.htm.
+
+    For the wind chill calculation, see
+    http://www.nws.noaa.gov/om/windchill/index.shtml."
+      (interactive "sLocation: ")
+      (unless (string-match "^[A-Z]\\{4\\}$" location)
+        (error "Location must be a four uppercase letter code"))
+      ;; Primitive HTML GET for the Terminal Aerodrome Forecast (TAF) forecast
+      ;; Example: http://weather.noaa.gov/cgi-bin/mgettaf.pl?cccc=LSZH
+      (let ((proc (http-get (format "http://weather.noaa.gov/cgi-bin/mgettaf.pl?cccc=%s"
+                                    location)
+                            nil
+                            'metar-report-print
+                            1.0)))
+        (set-buffer (process-buffer proc))
+        (setq metar-report-location location)))
+
+
+See also RainOrShine.
+----
+CategoryInterface

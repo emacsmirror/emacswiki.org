@@ -1,0 +1,40 @@
+The use of "electric" in Emacs is based upon alternative uses of the
+English word that have evolved over time, at least in the U.S.  These are
+derived from personal experiences with using electricity.  For example, a
+U.S. English dictionary lists both "electrifying" and "thrilling" as
+definitions for "electric".  Typical usage might be:  "The lion act at the
+circus was electric.  I sat on the edge of my seat the entire time!"   So,
+when someone describes a mode or a function in Emacs as "electric", they
+are claiming you will be thrilled or electrified by some of its features.
+
+Electric modes tend to do some things "automagically" and/or very
+cleverly for the user.  The electric features are typically
+continuously active while the MajorMode is active, taking control of
+things, monitoring and reacting to every input the user makes.  Often,
+electric modes and functions require fewer keystrokes from the user to
+navigate and to enter data.  Sometimes the behavior is "cool",
+"clever", "seems like magic", and/or is "just really convenient".  You
+may or may not like what an electric mode or an electric function does
+while it is active but, whatever it does, it shouldn't be routine.  It
+should deliver some sort of "Gee Wiz!" behavior.
+
+Examples include certain printing characters in CcMode which after
+being inserted also indent the current line and/or insert a newline,
+the ElectricBufferList, and ElectricPair.
+
+== Code example ==
+
+This is used in SqlMode.  If a user presses `;' and the variable
+<code>sql-electric-stuff</code> is set to the symbol `semicolon', then
+the input is sent via comint to a process.
+
+    (defun sql-magic-semicolon (arg)
+      "Insert semicolon and call `comint-send-input'.
+    `sql-electric-stuff' must be the symbol `semicolon'."
+      (interactive "P")
+      (self-insert-command (prefix-numeric-value arg))
+      (if (equal sql-electric-stuff 'semicolon)
+          (comint-send-input)))
+
+----
+CategoryGlossary

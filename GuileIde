@@ -1,0 +1,22 @@
+Options for editing [[Guile]] code and interacting with an inferior [[Guile]] process (for evaluating expressions, source debugging, etc.) from within Emacs include:
+
+* SchemeMode (scheme.el) -- Standard part of Emacs.  Good indenting and fontifying. Simple inferior process control with CmuScheme.  No EDebug-like source debugging.
+
+* CmuScheme (cmuscheme.el) -- Standard part of Emacs.  Simple inferior process control. Works with SchemeMode.
+
+* ILispMode -- The standard bells-and-whistles package for developing in a multitude of Lisp dialects under Emacs.  [[Guile]] is one of the supported [[Scheme]] dialects.  As of version 5.11.1, it supports retrieving procedure documentation, argument lists, editing procedure definitions and completing symbols in a module-system-aware fashion.  No support for source debugging for [[Guile]] code. 
+
+* PortableSchemeDebugger (PSD) -- Since [[Guile]]'s current debugger is limited (you can't, for instance, continue when an error occurs), it is hard to support such functionality from within Emacs.  However, PSD can be used to instrument [[Scheme]] code such that interactive debugging becomes possible.  It comes with an Emacs interface.  It needs to be tweaked a little if you use [[Guile]]-specific special forms like define-public in your code.
+
+* QuackPackage (Quack) -- NeilVanDyke's new ILispMode alternative for [[Scheme]], which obsoletes giguile.el.  http://www.neilvandyke.org/quack/
+
+* ttn-pers-elisp/run-guile.el -- ThienThiNguyen's [[Guile]] wrapper for CmuScheme. http://www.gnuvola.org/software/ttn-pers-elisp/dist/lisp/low-stress/run-guile.el
+
+* giguile.el -- NeilVanDyke's old [[Guile]] wrapper for SchemeMode and CmuScheme, obsoleted by QuackPackage. http://www.neilvandyke.org/giguile/
+
+<I>Of course</I> none of these provide the [[Guile]] programmer with tools that work as well as those available to the EmacsLisp programmer, such as EdebugMode and LispInteractionMode, but that's because [[Guile]] runs as an inferior process.  If you would prefer to use EmacsLisp and supporting tools, you know where to find them (I hear tell there's even an editor built around them, called Emacs or something). (Note that replacing EmacsLisp with [[Guile]], or GuileEmacs, is a somewhat different thing, since it concerns the [[Guile]] interpreter that is running Emacs and not inferior [[Guile]] processes.)
+
+Please add your approach suggestions and wishlist items for an Emacs-based 
+[[Guile]] "interactive development environment" (IDE) to this page.
+
+

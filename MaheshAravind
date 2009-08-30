@@ -1,0 +1,22 @@
+=Emacs is Editor Ultimatum...=
+
+I'll add up flavour when I get time.. (sorry!)
+
+
+[new]
+Welcome anyway! :) -- AlexSchroeder
+----
+
+I'm a Emacs newbie, by the way.  Just started using Emacs in late 2003.
+
+Here's my favourite elisp code (that I do first, everytime I want to customize new Emacs installs)
+
+<pre>
+;; No menu bar in the console mode
+(if (eq (symbol-value 'window-system) nil)
+    (menu-bar-mode -1))
+</pre>
+
+This one gives more screen space in text-only terminals!  Just my 2&cent;...
+
+CategoryHomepage

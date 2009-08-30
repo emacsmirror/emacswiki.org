@@ -1,0 +1,54 @@
+I’m on a quest for the perfect editor for programming :) right now I’m using emacs for programming in C++, and trying to get to a point where emacs and me will meet in the middle
+
+One thing that I like on emacs is that it doesn't have antialiasing, so the text is clearer than any other editor on X
+
+== Seinfeld Quote ==
+This script loads a random quote from the series "Seinfeld", and show it in it's own buffer.
+the quotes were fetch from [http://www.pkmeco.com/seinfeld/ SeinfeldQuotes]
+
+http://elis.hostar.org/emacs2.jpg
+
+The needed files are:
+
+[[seinquote.el]]
+[http://elis.hostar.org/seinquotes.txt seinquotes.txt]
+
+to use it just add to your init file:
+(require 'seinquote)
+
+and in order to run it:
+M-x seinquote
+
+== Move lines Up and Down ==
+Eclipse got this feature that when you press Alt with the up or down keys, 
+it moves the current line accordingly. I find it very usable so I made these 
+
+
+ (defun move-line-down()
+   "move the current line down one line"
+   (interactive)
+   (setq previous-column (current-column))
+   (progn
+     (next-line)
+     (transpose-lines 1)
+     (previous-line)
+     (move-to-column previous-column)))
+
+
+ (defun move-line-up()
+   "move the current line one line up"
+   (interactive)
+   (setq previous-column (current-column))
+   (if (> (line-number-at-pos) (point-min))
+      
+   (progn
+     (transpose-lines 1)
+     (previous-line)
+     (previous-line)
+     (move-to-column previous-column)))) 
+
+[new]
+Welcome to the wiki! I must confess I enjoy my anti-aliasing on OSX -- I find it easier to read. -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -1,0 +1,169 @@
+=== Overview ===
+
+Given the number of acronyms associated with emacs and gnu it is
+ perhaps surprising that this idea for the dynamic expansion of
+ acronyms is not already available in emacs. 
+
+Lisp:magpie.el provides a method to type in acronyms and have them expanded
+ in place. Its interface is similar to that of `dabbrev'. That is,
+ an expansion of the acronym is looked for in the current buffer
+ and if the expansion found is not what you want then calling
+ `magpie-expand' again immediately rejects the present expansion and
+ replaces it by a new one if such exists. 
+
+It also includes ordinary dabbrev expansion (with a twist). In fact it provides a mechanism for grabbing useful bits of text (as a magpie would) that we want provided we have a concise way to describe them.
+
+In LaTeX documents, it also provides acronym expansion to text inside math environments and also defines a method for finding the full contents of any previous inline math environment (amongst other possibilities described below). In Emacs Lisp documents, it provides a similarly unitelligent expansion of acronyms but also it provides acronym expansion for symbols. Acronyms provide a more powerful approach to determining symbols than ordinary completion and we use this to provide powerful versions of standard utility functions such as magpie-execute-extended-command. After suitable binding this allows one to type `M-XecbRET' in order to call 
+eval-current-buffer.
+
+=== General text editing ===
+
+To be more precise, we type a string which takes the following
+ form. The first character is often a control character which
+ determines how the remaining characters should be transformed into
+ a regexp. The next few characters are (usually) alphabetic and these are
+ transformed by a recipe determined by the control character into a
+ regexp of some sort. Finally, the last character or characters may
+ be a number which is simply how many extra words should be glued
+ on the end. 
+
+Thus in this buffer ",pam4" would expand to "provides a method to type in acronyms" as would "prov6" eventually (look at the start of the second paragraph to see where these came from). The absence of a control
+ character means that the expansion should be of `dabbrev' type and
+ if the control character is "," then an acronym expansion should
+ be used. 
+
+If you type an acronym for something that does not actually exist in the buffer, you may still get what you want. If no expansion can be found or all expansions have been rejected then magpie-expand will look for expansions of a prefix of your acronym. Thus in one of my documents ",fdroahr" might well expand to "finite dimensional representations ,oahr" with the cursor before the comma. If the expanded part is not what you want, then magpie-expand will attempt to replace this part; if it is what you want, then 
+magpie-complete-expand will attempt to expand the rest which for me would result in "finite dimensional representations of a hereditary ring".
+
+Capitalization of the acronym determines the capitalization of the expansion but not of the text searched for. 
+
+It is worth being precise about what an acronym
+ matches. Specifically words are strings of alphabetic characters
+ (for me this is [a-zA-Z]+ but this is customizable: see
+ `magpie-alphabetic-chars') separated by non-alphabetic characters.
+
+
+=== LaTeX editing ===
+
+In a LaTeX document the previously described expansion methods continue to work with the restriction that the expansion must start outside of a math environment. If the control character is "." then an acronym
+ expansion method is used but the text should begin inside a
+ mathematics environment. For example, "<code>.EEpAB</code>"
+ might expand to "<code>\Ext_{E^{\perp}}(A,B)</code>". This illustrates another
+ property of the expansion method which is that the inserted string should consist of balanced sexps (balanced on the right but not necessarily on
+ the left) if possible; in this particular case this would mean
+ that "<code>.EEpA</code>" would also expand to the same phrase since the regexp
+ match would include the first bracket "(" and the closure must
+ then contain "<code>(A,B)</code>". 
+
+There is a further wrinkle to the acronym method which is set up
+ specifically for typing LaTeX. The string ",aat/i" will expand to
+ "and assume that $$ is" with the cursor between the two dollar
+ signs if this phrase (with something between the two dollar signs)
+ occurs in the buffer. After typing here, "\C-."  takes the cursor
+ to the end of the inserted phrase. 
+
+There is one final wrinkle when typing LaTeX. If we call `magpie-expand' just
+ after a $, it simply inserts the contents of the previous inline
+ math environment that has length at least 6 and further calls to
+ `magpie-expand' replace this by steadily more distant strings of the
+ same type. If we call `magpie-expand' just after _{ it inserts a
+ previous subscript of length at least 6 and if we call it after ^{
+ we get the same for superscripts. Finally if we call it just after
+ { not preceded by either _ or ^, it finds the contents of a
+ previous pair {} provided that this is not a sub- or superscript.
+
+ 
+=== Emacs Lisp editing ===
+
+I have also done similar things for editing Emacs Lisp files. Here
+ again acronyms can be very useful. So I have set things up so that
+ the control character "," introduces an acronym for strings from
+ the buffer in a similar way to the above (using the same
+ convention for words as in the previous paragraph). However, the
+ control character "." introduces an acronym for symbols where
+ words as above are separated by hyphens. Thus ".bdcu" expands to
+ "backward-delete-char-untabify". This not only searches the
+ current buffer but also looks at all symbols. 
+
+=== Acronyms and utility functions ===
+
+This way of searching for names of symbols is substantially quicker than
+ standard completion and I have also written functions below that
+ incorporate this method (actually a related one) called
+ `magpie-execute-extended-command', `magpie-describe-function' and
+ `magpie-describe-variable' which begin by asking for a partial
+ acronym for the command, function or variable you want (thus "bdc"
+ matches "backward-delete-char" but it also matches
+ "backward-delete-char-untabify") and then use a standard
+ completion mechanism if there is more than one match. The reason
+ for using prefix acronyms rather than full ones is that one may
+ not remember the full name and this allows one to find it via the
+ usual completion mechanism if one knows how the symbol's name
+ begins.
+
+=== Extending the methods ===
+
+The system is highly extendable. As an illustration let us suppose
+ that we wanted to include the ability to replace a regexp reg by
+ some expansion from the buffer of the regexp. We choose a control
+ character, let us say, ?;, and we add the association (cons ?;
+ magpie-any-regexp) to `magpie-control-chars-alist'. The reader could
+ then follow through the recipe for constructing `magpie-any-regexp'
+ along the lines of `magpie-acr-template'. After this has been done
+ then the string (concat ";" reg "4") would expand to a match for
+ the regexp reg followed by the next 4 "words".
+
+The method is rather general because first we construct some
+ regexp and find a match for it. Then we may adjust precisely which
+ buffer-substring we use programmatically. We then apply a further
+ function to compute what string we are goint to insert. Finally we
+ have control over what we do when we insert the string (which is
+ what allows us to set up a simple template mechanism).
+
+=== Things to do ===
+
+Add further search functions so that we can find
+ expansions in other buffers or files. Add further methods for
+ constructing useful regexps. Think about ways to store past
+ expansions though I am not convinced that this is wholly useful
+ and it is not the way dabbrev operates.
+
+=== History ===
+
+2007-03-06
+A fairly major edit. I added the ability to search through other buffers and changed the interface to inserting symbols via acronyms. When there are fewer than 4 matching symbols left by the time it starts searching through all symbols the interface remains that of presenting the first one left. If there are 4 or more matches however it now uses the standard completion interface on the space of matches. I also fixed some bugs, fixed some documentation and discovered incompatibilities with emacs 21 which I fixed (I made this on GNU Emacs 22.0.90.1 (i386-apple-darwin8.8.1, Carbon Version 1.6.0)). 
+
+2007-03-24
+Uploaded the customization provided by StefanKamphausen. This is an interim measure because I should rewrite the code in a more modular fashion which would allow better customization.
+
+=== Comments ===
+
+[new]
+This is a really cool idea, thanks! I love all of these "autotype" ideas people come up with. :) -- MaDa
+
+[new]
+Thanks for the interest. Please let me know of any problems you encounter; any improvements or ideas or wishes are also very welcome. -- AidanSchofield
+
+[new]
+Hi,  I was slightly embarassed by the global keybindings to C-. and C-, which happen to conflict with some very old bindings of mine.  Maybe you could make this binding optional, because now I have to edit your code to avoid the conflict.  Funny, though, that my bindings to C-. and C-, do some very similar thing :-) -- StefanKamphausen
+
+[new]
+I am sorry about that. Rather than editing the code you could override them in your .emacs after loading magpie.el. I chose these bindings because they were easy for me to type and not apparently in use. I haven't found elisp packages that behave as you describe. I do intend to rewrite this using the custom package which I have not yet worked out but even then I have not seen a simple method for giving users a choice for key bindings. Would your suggestion be to make this a minor mode and set them in the local keymap? This does not really seem to address your problem because whenever magpie.el is loaded you have the same conflict to resolve. -- AidanSchofield
+
+[new]
+No need to be sorry :-)  I would suggest a solution like
+
+ (defvar magpie-do-not-set-extended-keys nil)
+ ;; ...
+ (unless magpie-do-not-set-extended-keys
+   (global-set-key [(control ?,)] 'push-point-editing-position)
+   (global-set-key [(control ?.)] 'pop-editing-position)
+   (global-set-key [(control ?\;)] 'copy-region-to-editing-position))
+
+thus your code would work as it is out of the box and bothering people like me could turn it off.  Yes I could set my bindings after loading magpie but I prefer my init settings to behave the same in whatever order I may load them. If you want to I could start customize-ifying your code. -- StefanKamphausen
+
+[new]
+Bad Things Happen if you trigger magpie-expand on a string like '...'. This is easy to do when working on Python doctests. I think it would help if there were safeguards against this. -- DavidGowers
+
+----
+CategoryCompletion

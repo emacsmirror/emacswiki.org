@@ -1,0 +1,116 @@
+== Key bindings provided by the ERC major mode ==
+
+'''C-m''' and '''RET''' - `erc-send-current-line'
+
+Parse the current line and send it to IRC.
+
+'''TAB''' - `erc-complete-word'
+
+Complete the nickname at point, choosing from the users in the current channel.
+This also completes commands if there is a slash ("/") at the beginning of the
+word (typing / and then TAB will open a *Completions* buffer listing all possible
+commands).
+
+'''C-a''' and '''C-c C-a''' - `erc-bol'
+
+Place point at the beginning of the line.  If this is the input line, place point
+after the ERC prompt.
+
+'''C-c C-b''' - `erc-iswitchb'
+
+Use `iswitchb-read-buffer' to prompt for an ERC buffer to switch to.  If
+ErcChannelTracking is enabled, put the name of the last active hidden channel in
+the front of the buffer list.  Note that IswitchBuffers must be loaded for
+`erc-iswitchb' to work.
+
+'''C-c C-c''' - `erc-toggle-interpret-controls'
+
+Toggle the interpretation of colors and other control sequences in messages
+on and off.
+
+'''C-c C-d''' - `erc-input-action'
+
+Send the action message entered at the prompt to the current channel or query buffer.
+
+'''C-c C-e''' - `erc-toggle-ctcp-autoresponse'
+
+Toggle automatic replies to CTCP requests such as VERSION and PING on and off.
+
+'''C-c C-f''' - `erc-toggle-flood-control'
+
+Set flood control to strict, normal or disable flood control entirely.
+
+'''C-c C-i''' - `erc-invite-only-mode'
+
+Set channel mode +i.
+
+'''C-c C-j''' - `erc-join-channel'
+
+Join the channel entered at the prompt.
+
+'''C-c C-l''' - `erc-save-buffer-in-logs'
+
+Append the contents of the current buffer to the log file when logging is enabled
+(`erc-log-channels' is non-nil and the value of `erc-log-channels-directory' is
+set to an existing, writable directory).
+
+'''C-c C-n''' - `erc-channel-names'
+
+List the names of the users in this channel (uses the /NAME command).
+
+'''C-c C-o''' - `erc-get-channel-mode-from-keypress'
+
+Press RET to insert the line "/mode #current-channel-name " at the TextCursor, or type a letter representing a channel mode, such as m, s, t, n or k.
+
+Pseudo key bindings available with this combination:
+* C-c C-o i - toggle "invite only" mode
+* C-c C-o k - prompt for a key (password) to set for the channel
+* C-c C-o l - prompt for a limit to set for the channel
+* C-c C-o m - toggle "moderated" mode
+* C-c C-o n - toggle "no external send to channel" mode
+* C-c C-o p - toggle "private channel" mode
+* C-c C-o s - toggle "secret channel" mode
+* C-c C-o t - toggle "topic set by channel op" mode
+
+* ERC will try to toggle all other channel mode letters as well
+
+'''C-c C-p''' - `erc-part-from-channel'
+
+Leave the current channel with the reason provided at the prompt.
+
+'''C-c C-q''' - `erc-quit-server'
+
+Disconnect from the server associated with the current buffer using the
+reason provided at the prompt.
+
+'''C-c C-r''' - `erc-remove-text-properties-region'
+
+Remove all text properties in the region from a marker or the top of the buffer window to the current point.
+
+'''C-c C-s''' - `erc-toggle-sound'
+
+Defined in ErcSound.  Toggle sounds which are played when you type the
+command /SOUND or when you receive a CTCP SOUND request on and off.
+
+'''C-c C-t''' - `erc-set-topic'
+
+Set the topic for the current channel.  The current topic is given as the
+default.
+
+'''C-c C-u''' - `erc-kill-input'
+
+Kill text on the input line from `erc-bol' to the end of the line.
+
+'''M-TAB''' - `ispell-complete-word'
+
+Try to complete the word at point using InteractiveSpell.
+
+== Add your own ==
+
+Here is a way to bind mouse-2 on the header line to /TOPIC:
+
+    (define-key erc-mode-map (kbd "<header-line> <down-mouse-2>")
+      (lambda () (interactive) (erc-cmd-TOPIC "")))
+
+----
+[[ERC]]

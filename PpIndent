@@ -1,0 +1,64 @@
+The <code>ppindent</code> function indents C preprocessor statements depending on the current #if..., #el.., and #endif level. It only modifies lines with "#" as the first non-blank character and therefore does not conflict with the normal C indentation. Unlike a true indent, it inserts the requisite number of spaces after, rather than before the "#" character. This type of preprocessor indent is commonly used to provide the most compatibility with different C compilers.
+
+Download <code>ppindent</code> from the ElispArea:
+
+* Lisp:ppindent.el
+
+Example:
+
+<pre>
+        #ifdef WOO
+        ....
+        #if defined(X) && !defined(Y)
+        #ifdef Q8
+        ...
+        #else
+        ...
+        ....
+        #elif defined (Z)
+        ....
+        #endif
+        #endif
+        #endif
+</pre>
+          
+After "M-x ppindent-c" becomes:
+          
+<pre>
+        #ifdef WOO
+        ....
+        #  if defined(X) && !defined(Y)
+        #    ifdef Q8
+        ...
+        #    else
+        ...
+        ....
+        #    elif defined (Z)
+        ....
+        #    endif
+        #  endif
+        #endif
+</pre>
+
+Two functions are provided: <code>ppindent-c</code> indents as described above. <code>ppindent-h</code> does not indent the first level, assuming that .h/.hpp files use an <code>#ifdef</code> guard around the entire file.
+
+You can customize <code>ppindent-increment</code> if you want to use something other than 2 spaces for the indent.
+
+-- CraigMcDaniel
+
+----
+I'm using Emacs over Cygwin and I don't know if this applies to other platforms. When I tried to use this library, I was getting the following error:
+
+    "Invalid escape character syntax"
+
+After a little search in the Elisp documentation, I found that the representation for a space is '?\ ' (instead of '?\s'). I replaced that (without the quotes) and the problem was solved, but a new error showed up:
+
+     ** reference to free variable endif
+
+That was fixed by replacing the line 115 with the following (notice the double-quotes for 'endif'):
+     
+    ((starts-withp (match-string-no-properties 1) "endif")
+
+-- RubenDGonzalez
+----
+CategoryIndentation

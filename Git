@@ -1,0 +1,152 @@
+Git is a distributed version control system much like [[Mercurial]], [[Bazaar]]
+and DaRcs.  It was written for the linux kernel hackers but it is now used by other high-profile FreeSoftware projects.
+
+Git is available from http://git-scm.com/. Documentation can be found at http://git-scm.com/documentation.
+
+== Modes ==
+
+Git is supported by
+VersionControl and
+DistributedVersionControl.
+
+##git.el## is not part of GNU Emacs but resides in the emacs contrib's
+section of the Git distribution in
+<tt>[http://www.kernel.org/git/?p=git/git.git;a=tree;hb=HEAD;f=contrib/emacs
+contrib/emacs]</tt>
+
+It consists of three files:
+
+* ##git.el## -- similar to PclCvs for ConcurrentVersionsSystem
+* ##git-blame.el## -- a frontend to the git-blame command line tool
+* ##vc-git.el## -- a VersionControl backend
+  (This is part of Emacs since version 22.2 (released in March 2008);
+  see also [http://www.gnuvola.org/wip/] for experimental hacks by ttn.)
+
+Clarification here: Git, as in "Git support", IS included in emacs 22 and 23. Certainly loading the above caused issues with Emacs 23.0. The vc-git which comes with the emacs package works well for me and especially well with git-emacs http://github.com/tsgates/git-emacs/tree/master which provided status bar icons for git status. It appears VC has been rewritten and the common front end for multiple VC backends is a definite boon. While not seeming to support staging it does include a fairly full git feature set but is well documented in the version control info file.
+
+In emacs 23 the command showing the repository status C-x v d has been rewritten, it supports checking in multiple files/directories at a time, and has fancy display.  It can be extended with git specific functions.
+vc-git-grep can be used and a UI for git grep.
+vc-git.el also includes support for git blame, in the vc-annotate command (C-x v g)
+
+Magit is another interface to git.
+
+* Homepage: http://zagadka.vm.bytemark.co.uk/magit/
+* Repository: ##git clone git://gitorious.org/magit/mainline.git##
+* Documentation: http://zagadka.vm.bytemark.co.uk/magit/magit.html
+
+Egg (Emacs got Git) is a clone (fork) of Magit.
+
+* Homepage: http://github.com/bogolisk/egg/tree/master
+* Repository: ##git clone git://github.com/bogolisk/egg.git ##
+
+egit is an Emacs Git history interface intended to be similar to qgit or gitk. Requires git.el.
+
+* Homepage: http://github.com/jimhourihan/egit/tree/master
+* Repository: ##git clone git://github.com/jimhourihan/egit.git##
+
+Gitsum is a mode to do interactive partial commits with Emacs in the style of ##darcs record##.
+
+* Homepage: http://github.com/chneukirchen/gitsum/tree/master
+* Repository: ##git clone git://github.com/chneukirchen/gitsum.git ##
+* See also: http://chneukirchen.org/blog/archive/2008/02/introducing-gitsum.html
+
+git-emacs is yet another git mode on emacs for newbies.
+
+* Hompage: http://github.com/tsgates/git-emacs/tree/master
+* Repository: ##git clone git://github.com/tsgates/git-emacs.git##
+* Documentation: http://tsgates.cafe24.com/git/git-emacs.html
+
+More information:
+
+* [http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsGit.html Work with Git from Emacs] is an article by AlexOtt that introduces the packages above.
+
+== Emacs from Git ==
+
+* EmacsFromGit -- A Git mirror of the Emacs CVS repository is available.
+
+== Configuration ==
+
+If you are using the Debian git packages, you can add the following to
+your ##.emacs## to make all of these available (if you are not
+using the Debian packages, adjust the path to suit):
+
+'''Note''': This does not work in Emacs 23.0 - git is included.
+
+
+  (setq load-path (cons (expand-file-name "/usr/share/doc/git-core/contrib/emacs") load-path))
+  (require 'vc-git)
+  (when (featurep 'vc-git) (add-to-list 'vc-handled-backends 'git))
+  (require 'git)
+  (autoload 'git-blame-mode "git-blame"
+            "Minor mode for incremental blame for Git." t)
+
+git.el will look into your git configuration for committer name and email address.  If that fails, it uses the Emacs defaults.  If you rely on environment variables for your configuration, beware. (And consider `git-committer-name' and `git-committer-email')
+
+== MS Windows ==
+
+Q. How can I use it with MS Windows?
+
+A. The current ##git.el## (2008-03-02) in the git source
+repository does not work out of the box. I (piyo) have proposed a
+[http://groups.google.com/group/msysgit/browse_thread/thread/b852fef689817707
+an interim patch-up Emacs Lisp file] called ##git-mswin.el##
+for users of [http://code.google.com/p/msysgit/ the git fork msysgit].
+
+[new:DrewAdams:2008-04-18 14:14 UTC]
+Thanks. But it's still not clear to me. I wonder if you or someone else could give a little recipe for how to use it, step by step (including what to do if you do/do not use Cygwin). Assume ignorant readers like myself. That would be very helpful. Thx -- DrewAdams
+
+[new]
+Ok, here's some explanation:
+I installed the Git-1.5.4-preview20080202.exe from [http://code.google.com/p/msysgit/ msysgit], which is the more native-like Git flavor on Windows and does not require Cygwin. The install option I use is "Run Git from the Windows Command Prompt" which only puts the cmd scripts git.cmd and gitk.cmd in my path. I do not recommend "Run Git and included Unix tools from the Windows Commmand Prompt" especially if you are still using Cygwin with your Emacs. At this point, your system environment variable "PATH" will have included "##C:\Program Files\git\cmd##" or likewise.
+
+Inside emacs, install ##git.el## (load-path add and require) and call `M-x git-status'. However, at this point it does not call ##git.cmd## correctly, so that is why I created that interim ##git-mswin.el## as mentioned above. Install ##git-mswin.el## (load-path add and require) and retry the `M-x git-status'.
+
+You will be able to view the status of the directory in a pcvs/dired like fashion, diff/ediff and commit. I think there is no support for ##git-add --interactive##, for those advanced users of the git index cache and partial committing. For this you will want ##gitsum.el## but I have not confirmed if it works for my setup. Also, I do not do everything git related inside emacs. I still rely on the Command Prompt (cmd.exe!) to ##git-init##, ##git-tag##, ##git-branch##, run ##git-rebase --interactive## and visualize (##gitk##). Of course, you can set GIT_EDITOR to your Emacs instance (gnuclient.exe, etc), for spot edits.
+
+As far as the Cygwin-only route is concered, Alex Ott says he had [http://alexott.blogspot.com/2008/04/using-emacs-with-git.html success with Cygwin git and Windows Emacs back in 2006 with some modifications].
+
+To make NT Emacs work with Cygwin git I needed to patch git.el as follows (without it "commit" checked in an empty tree, i.e. it deleted all files):
+{{{
+--- git.el~	2008-04-19 23:43:30.203125000 +0200
++++ git.el	2008-05-12 02:28:46.453125000 +0200
+@@ -810,7 +810,7 @@
+         (not (file-executable-p ".git/hooks/pre-commit"))
+         (let ((index-file (make-temp-file "gitidx")))
+           (unwind-protect
+-            (let ((head-tree (unless (git-empty-db-p) (git-rev-parse "HEAD^{tree}"))))
++            (let ((head-tree (unless (git-empty-db-p) (git-rev-parse "HEAD^\\{tree\\}"))))
+               (git-read-tree head-tree index-file)
+               (git-update-index index-file files)
+               (git-run-hook "pre-commit" `(("GIT_INDEX_FILE" . ,index-file))))
+@@ -829,7 +829,7 @@
+                   head head-tree)
+               (unless (git-empty-db-p)
+                 (setq head (git-rev-parse "HEAD")
+-                      head-tree (git-rev-parse "HEAD^{tree}")))
++                      head-tree (git-rev-parse "HEAD^\\{tree\\}")))
+               (if files
+                   (progn
+                     (message "Running git commit...")
+}}}
+
+
+== How to use Git with VC ==
+
+Question: I would like to do everything from within Emacs (without having to
+resort to the command-line).  I was able to create a new repository with
+`vc-create-repo', but don't know how to add all the files in the
+directory with `vc-next-action' -- something akin to (eventually
+calling the backend command) ##git add .## -- without having to add each
+file separately.  Any tips?
+
+Answer: With vc-git.el 2007-11-29 or later, you can do
+
+* `C-x v d' to see the (empty) directory; then
+* `v t' to toggle visibility of "modified" files; then
+* `m' to mark files to add; and finally
+* `v v' to do the next action (i.e, commit)
+
+Question: How do I revert an uptodate file to a previous version? How do I manage branches?
+
+----
+CategoryVersionControl

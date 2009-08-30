@@ -1,0 +1,19 @@
+Searching...
+
+http://www-aix.gsi.de/doc/gnu/ange-ftp_3.html shows:
+: ftp://ftp.thp.Uni-Koeln.DE/pub/gnu/emacs/diredall.tar.Z  (134.95.64.1)
+: ftp://ftp.cs.buffalo.edu/pub/Emacs/diredall.tar.Z
+
+ftp://ftp.cs.buffalo.edu/pub exists, but no Emacs directory.
+
+Other references:
+: http://www.cis.ksu.edu/VirtualHelp/Info/gnu/dired.Top.html
+: http://computing.fnal.gov/docs/products/xemacs/v19_14/dired_1.html
+: http://www.informatik.uni-hamburg.de/RZ/software/emacs/dired/dired_1.html
+: http://ftp.funet.fi/pub/gnu/funet/ls-lR.of.old.files.on.tape.archive
+: http://stuff.mit.edu/afs/sipb/user/lcb/newlisp/
+: http://web.fis.unico.it/public/www.cs.indiana.edu/elisp/dired/dired_1.html#SEC1
+
+
+----
+referers: ConcurrentEmacs

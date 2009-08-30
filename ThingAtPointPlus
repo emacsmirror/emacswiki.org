@@ -1,0 +1,71 @@
+This page describes library Lisp:thingatpt+.el, by DrewAdams. This is an extension of standard library `<code>thingatpoint.el</code>' (See ThingAtPoint). It provides various functions for determining (returning) different objects at or near point.
+
+
+The objects are ''THING''s for which there is a either a corresponding
+`forward-'''THING'' operation, or corresponding `beginning-of-'''THING'' and
+`end-of-'''THING'' operations. 
+
+Examples of ''THING'' are `word', `sentence', and `defun'. For example, words have Emacs Lisp functions `forward-word', `beginning-of-word', and `end-of-word' functions. Library `<code>thingatpt+.el</code>' uses such functions to return the word at or nearest the TextCursor (and [[Point]]).
+
+Library <tt>[[thingatpt+.el]]</tt> also provides functions to pick up things that are ''near'' the cursor, not just things that are exactly under the cursor. For this feature, you can customize two user options that control what "'''near'''" means, that is, how far from the cursor to look.
+
+The following categories are detailed below:
+
+* '''things''' -- See [[#Things]].
+* '''forms''' -- Forms are particular kinds of things. See [[#Forms]]. 
+* '''symbols''' -- Symbols are particular kinds of forms. See [[#Symbols]]. 
+* other: '''symbol names''', '''words''', '''sentences''', '''sexp''', '''number''', '''list'''. See [[#Other]].
+
+'''See Also:''' ThingAtPointCommands, for commands to select different kinds of things at or near the cursor.
+
+
+
+[:Things]
+== Things ==
+
+* `thing-at-point' -- returns the ''THING'' at point (a string).
+
+* `thing-nearest-point' -- like `thing-at-point', but returns the ''THING'' '''''nearest''''' point. "Nearest" is determined as follows:
+
+** The nearest ''THING'' on the same line is returned, if there is any. Between two ''THING''s equidistant from point on the same line, the leftmost is considered nearer.
+
+** Otherwise, neighboring lines are tried in sequence: previous, next, 2nd previous, 2nd next, 3rd previous, 3rd next, etc. This means that between two ''THING''s equidistant from point in lines above and below it, the ''THING'' in the line above point (previous Nth) is considered nearer to it.
+
+** User options '''`near-point-x-distance'''' and '''`near-point-y-distance'''' control how far to search before considering that there is no thing near the cursor.
+
+* `thing-at-point-with-bounds', `thing-nearest-point-with-bounds' -- returns (''THING'' ''START'' '''.''' ''END'') with ''START'' and ''END'' of ''THING'',
+where ''THING'' is the `thing-at-point' or `thing-nearest-point'.
+
+* `bounds-of-thing-at-point', `bounds-of-thing-nearest-point' -- determine the start and end buffer locations for the THING at or nearest point. 
+
+
+[:Forms]
+== Forms ==
+
+A form is a particular kind of Lisp thing that optionally satisfies a particular predicate. The default kind of form is a Lisp S-expression (sexp).
+
+* `form-at-point' -- returns the form at point, if any, else returns nil. The form is any Lisp entity, not necessarily a string. Optional Arguments include:
+
+**  ''THING'' is the kind of form desired (default: `sexp').
+**  ''PRED'' is a predicate that ''THING'' must satisfy to qualify.
+**  ''SYNTAX-TABLE'' is a syntax table to use.
+
+* `form-nearest-point', `form-at-point-with-bounds', `form-nearest-point-with-bounds', `bounds-of-form-at-point', `bounds-of-form-nearest-point' -- like `thing-nearest-point' etc., but for forms.
+
+[:Symbols]
+== Symbols and Symbol Names ==
+
+* `bounds-of-symbol-at-point', `bounds-of-symbol-nearest-point', `non-nil-symbol-at-point', `non-nil-symbol-name-at-point', `non-nil-symbol-name-nearest-point', `non-nil-symbol-nearest-point', `symbol-at-point', `symbol-nearest-point', `symbol-at-point-with-bounds', `symbol-name-nearest-point', `symbol-nearest-point-with-bounds'.
+
+
+[:Other]
+== Other: Words, Sentences, Sexps, Numbers, Lists ==
+
+* `word-nearest-point', `sentence-nearest-point', `sexp-nearest-point', `number-nearest-point', `list-nearest-point'.
+
+----
+
+CategoryCode
+
+
+

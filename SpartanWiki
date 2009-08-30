@@ -1,0 +1,11 @@
+Spartan wiki is a really spartan personal wiki for quick structured
+note taking with only one markup character.
+
+A wiki in SpartanWiki world is a single page/file.
+
+Lisp:spartan-wiki.el
+
+SpartanWiki is a close cousin of FileWiki.
+
+----
+CategoryHypermedia

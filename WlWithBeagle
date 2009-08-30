@@ -1,0 +1,36 @@
+== How to search (local) Wanderlust folders using Beagle ==
+
+See http://beagle-project.org/ for setting up Beagle to index your mail. If mail is stored in mboxes or maildir it should just work. Add the following to your ##.wl## file:
+
+<pre>
+(require 'elmo-search)
+
+(defun elmo-search-split-pattern (engine pattern)
+  (split-string pattern "[,]+"))
+
+(elmo-search-register-engine
+ 'beagle 'local-file
+ :prog "beagle-query"
+ :args '("--mime" "message/rfc822" "--max-hits" "100000" elmo-search-split-pattern))
+</pre>
+
+If you want to search the whole message, remove "--mime" "message/rfc822" from the arguments.
+
+If you wish to, you can add ~/.elmo/cache to the indexed directories (Beagle ignores dot files by default) like:
+
+<pre>
+beagle-config indexing AddRoot ~/.elmo/cache/
+</pre>
+
+Now, if you make sure that you all IMAP messages are cached, you can search them. (Type ##I## on folders to prefetch them.)
+
+To search for some string "keyword", just go to the special folder "[keyword]" (without quotes).  You can do that by pressing "g" in the Folder or Summary view.
+
+Some useful folders:
+
+<pre>
+[mailfrom:sombody]
+[mailto:somebody]
+[keyword]
+[keyword,anotherkeyword]
+</pre>

@@ -1,0 +1,39 @@
+My name is Ole Arndt and I use Emacs. Since I now maintain my website with EmacsWikiMode, it's about time to join the EmacsWiki.
+
+You find my homepage at http://sugarshark.com
+Sugarshark is the handle I usually use, in games and on IRC. 
+
+Things you find at my site:
+
+* My emacs init files.
+* Startings of a Journal (maintained by a hacked version of Gary V. Vaughan's emacs-wiki-journal.el)
+* My resume.
+* And, well hidden, my email address: (apply #'concat (nreverse (mapcar #'symbol-name '(.com sugarshark @ ole))))
+
+Packages I use:
+
+..for Java Programming, my day work:
+
+* JavaDevelopmentEnvironment
+* EmacsCodeBrowser
+* EdiffMode
+* RefactoringBrowser
+
+...for communication
+
+* CategoryGnus
+* EmacsIRCClient (with BitlBee)
+
+..for fun
+
+* [[Mingus]]
+* Slime
+* many more
+
+: Welcome on the Wiki ! :)
+
+: SachaChua here. Hey, you keep a journal on your site too. I use PlannerMode and remember.el to produce my journal at http://sacha.free.net.ph with a few keystrokes. It even does RSS feeds. Want to try it out? =)
+
+: I'm already using PlannerMode, sometimes. I got a copy of your EmacsWikiMode arch archive and will look into the new possibilities. As it is now, it is a little too public for me. I don't want to show people my tasklist. If there was a way to seperate private and public entries it would be perfect. -- OleArndt
+----
+CategoryHomepage

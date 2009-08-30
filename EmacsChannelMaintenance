@@ -1,0 +1,49 @@
+Page http://freenode.net/using_the_network.html lists the available
+modes on the FreeNode network.
+
+See access list:
+
+    /msg ChanServ access #emacs list
+
+Modify access list -- add only the nicks of identified users:
+
+    /msg ChanServ access #emacs add noob 10
+
+Check what the levels mean:
+
+    /msg chanserv level #emacs list
+
+Kick rude people -- please give some warning first
+
+    /kick nick
+
+Banning returning rude people by hostname:
+
+    /mode #emacs +b *!user@hostname
+
+== ERC Commands ==
+
+<pre>
+(defun erc-cmd-BAN (nick)
+  (let* ((chan (erc-default-target))
+         (who (erc-get-server-user nick))
+         (host (erc-server-user-host who))
+         (user (erc-server-user-login who)))
+    (erc-send-command (format "MODE %s +b *!%s@%s" chan user host))))
+
+(defun erc-cmd-KICKBAN (nick &rest reason)
+  (setq reason (mapconcat #'identity reason " "))
+  (and (string= reason "")
+       (setq reason nil))
+  (erc-cmd-BAN nick)
+  (erc-send-command (format "KICK %s %s %s"
+                            (erc-default-target)
+                            nick
+                            (or reason
+                                "Kicked (kickban)"))))
+</pre>
+
+
+----
+
+EmacsChannel

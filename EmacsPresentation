@@ -1,0 +1,47 @@
+=== CategoryWishList EmacsPresentation ===
+
+I just saw a presentation given with JMP (proprietary statistical software), and they used an outline to organize and present the material, with interactive outline hiding during the presentation.  The other nice feature was a dynamic underlining of the topics by the speaker as he talked. Is there some way to do this in Emacs? 
+
+elpoint?  http://elpoint.sourceforge.net/ (requires unknown ftp user/password for download) You can download it directly using CVS: http://elpoint.cvs.sourceforge.net/elpoint/
+
+<i> not quite -- the presentation was more like an outline in an editor, with a peculiar folding and hiding mechanism, kind of like a depth-first traversal of the tree, with only the previous siblings, parents, uncles, and others showing up as it traversed.</i> 
+
+Supposing we had an outline like this, with text under each item:
+
+ A -- Alpha
+   1 -- alpha 1
+   2 -- alpha 2
+ B -- Bravo
+   1 -- Bravo 1
+   2 -- Bravo 2
+ C -- Charlie
+   1 -- Charlie 1
+   2 -- Charlie 2
+
+And were only on the B.1 item, all that showed was:
+
+ A -- Alpha
+ B -- Bravo
+   1 -- Bravo.1
+ This here is the text for the bravo 1 outline entry.  
+ I have a number of sentances and paragraphs supporting this outline point.
+
+
+In the JMP presentation I saw, some action at a point in the outline would open/raise and execute another frame with code in it.  I'd really like to do something like this with EmacsSpeaksStatistics and maybe Sweave mode.  The feature I really like is the interactive/serial nature of the presentation and the dispatching of code doing something.
+
+For instance, imagine an outline with a few URLs in it, which reveals itself as above, and, when properly tickled, tells Mozilla to display the appropriate URL.  In emacs, you'd have the organized outline and some notes to share, and in Mozilla, you'd have whatever it was you wanted to talk about.
+
+-----
+
+=== Solutions: ===
+
+
+
+* [[Elpoint]] -- a presentation tool for emacsen.
+
+* AllOut mode looks close, but the cycling needs some function like 'outline-depth-first-next' and 'outline-depth-first-previous' with a 'outline-hide-others'
+
+* OrgMode also has some of these features, in particular the URL linking mentioned in the final paragraph above.
+
+---- 
+CategoryWishList

@@ -1,0 +1,60 @@
+A vocabulary tester by CyprianLaskowski.  Once you provide it with a
+vocab list, it will test you on it until you know your stuff.
+
+You can get it here:
+
+* http://24.71.17.22/elisp/lib/vocab-test.el
+
+--
+
+You can't anymore ... and the only version on the net is 0.2 but i am very sure there must be a version 0.5 as i have still some fragments of it here. Can somebody provide it? -MarioDomgoergen
+
+--
+
+After many months of virtual inactivity, due to a combination of
+prolonged backpacking in Greece, procrastination and dissatisfaction
+with the current state of vocab-test.el, I've finally got off my ass
+(at least a bit), and have started working on it again, with the help
+of OliverScholz and MarioDomgoergen.  
+
+Initially, I thought this would just involve some changes and
+improvements, but it quickly became clear that the changes would be on
+a pretty massive scale, and that in the end the new program will be
+more of an improved alternative/replacement to vocab-test.el (likely
+called VTE: Vocabulary Tester for Emacs) rather than a new version of
+the latter.
+
+The key differences between the current vocab-test.el and the intended
+future vte.el are that vte.el will:
+
+- use widgets for the tests (this would be especially useful for
+languages where you have to, in principle, learn several forms of a
+word to be happy)
+
+- use XML datafiles, using a simple but flexible DTD; I would like to
+make this "plug-in" to the rest of VTE, so that it would be easy for
+people to use public datafiles with certain formats off the Internet,
+or just use their own formats, as long as they provide (or somehow
+convince me to provide!) the appropriate pre-specified set of
+interface functions.  Asides from the fact that this would be "nice",
+datafile format is the one issue that has spawned the most plentiful
+and diverse feedback.
+
+- use widgets for datafile browsing and editing (of course, people
+could edit the datafiles manually)
+
+- addition of useful customization features
+
+- removal of useless customization features :)
+
+
+Anyway, for old, yet-to-be-cleaned-up ideas about vocab-test.el, see
+VocabTestDiscussion.
+
+To read or contribute to the direction or development of VTE, see the
+yet-to-be-created VteDiscussion.
+
+-- CyprianLaskowski
+
+----
+CategoryEducation

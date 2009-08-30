@@ -1,0 +1,191 @@
+The following is a feature wish list related to [[Eshell]], the Emacs shell.
+
+Broader wishes for Emacs should be wished at WishList. 
+
+----
+
+* Why not save the history for each new-named eshell-buffer?  -- MarcoWahl
+
+* C-c C-z for suspending the current job would be great.  -- MarcoWahl
+** At the moment, a workaround is just opening a new shell: C-u M-x shell RET. -- DanielClemente
+
+* Using some external utility (or lisp-function if that is possible), extract the path information from .lnk files on Windows and make eshell being able to change to that directory. Bash in cygwin can do this so I guess it should not be that hard. -- MathiasDahl
+** I have now some experimental code working. See EshellLnkFileSupport. Now I want pcomplete to complete it for me too :) -- MathiasDahl
+
+* Now that I know about EshellDirectoryHistory, I'd like an enhancement that let you "cycle" through directory history :) Let's see if I can come up with something myself. -- MathiasDahl
+
+* It'd be nice if eshell would do what call-interactively does with (interactive) declarations in functions.  When I type elisp-function [space] [tab] on the command line, I'd like the completions to be chosen on the basis of the arguments defined in elisp-function's (interactive "...") form.  -- JoeE
+
+** That's likely going to be really nasty to do.  You'd have to "read" the
+<code>(interactive "...")</code> form from the byte-compiled function.
+And then do your own completion based on the results.
+You have further problems, in that you don't know which 
+<code>INTERACTIVE</code> spec you need to pull out.  Oh, and this approach
+won't work for builtin functions at all, since they don't have byte-code.
+Of course, I could be wrong, and there might be a far easier way of doing it.
+Perhaps you could hack eshell's command completion to call
+<code>CALL-INTERACTIVELY</code> on commands to complete the arguments.  --
+LawrenceMitchell
+
+Here's a really ugly proof-of-concept bit of code:
+<pre>
+    (defun my-get-interactive-spec (fn)
+      "Return FN's interactive spec.
+
+    i.e. return the string from the (interactive \"...\") part of FN's
+    definition."
+      (unless (fboundp fn)
+        (error "%s is not a function"
+               (upcase (symbol-name fn))))
+      (unless (commandp fn)
+        (error "%s is not an interactive function"
+               (upcase (symbol-name fn))))
+      (let ((fn-spec (symbol-function fn)))
+        (typecase fn-spec
+          (subr (error "%s is a builtin" 
+                       (upcase (symbol-name fn))))
+          (compiled-function
+           (aref fn-spec (1- (length fn-spec))))
+          (cons
+           (first (nreverse (if (stringp (third fn-spec))
+                                (fourth fn-spec)
+                                (third fn-spec)))))
+          (otherwise (error "Shouldn't be reached")))))
+</pre>
+
+Note that <code>TYPECASE</code> is part of the CommonLisp package.
+
+
+Uh, what?
+
+<pre>
+interactive-form is a built-in function in `C source code'.
+(interactive-form CMD)
+
+Return the interactive form of CMD or nil if none.
+If CMD is not a command, the return value is nil.
+Value, if non-nil, is a list (interactive SPEC).
+
+[back]
+</pre>
+
+* Documentation for eshell -- see EshellManual.
+
+* If I run two or more separate eshell windows at once, and then exit Emacs, I find that only one of the windows will have its history saved.  I used to automatically start 4 eshell windows from my .emacs and bind [F1] through [F4] to select the windows.  But then I found that my history wasn't being saved - probably what is happening is that each window writes its history over the top of the previous window's history. -- ZwaX
+
+* It would be cool if I could zero a file using the '>' command. -- XavierMaillard
+
+* ShMode should support eshell, especially the commands `C-M-x' and `C-c :'.  This will be difficult to do, since Emacs is usually sending input to external programs and getting the results, and not communicating to itself (since eshell is a ''faux'' shell).  After doing this, it wouldn't be hard to make the general shell commands `M-!', `M-|'  support eshell, too.
+
+** Would the remote command from em-joc.el (see EshellExtensions) be useful for this? It's described as "a remote command, which lets you send the eshell a command from some outside piece of lisp code."
+----
+
+I don't see anywhere to report eshell bugs, so how about here:
+
+* Observe this sequence of commands:
+
+    $ mkdir foo; cd foo; touch 1 2 3
+    $ ls
+    1  2  3
+    $ ls | wc -l
+          1
+
+: In any other shell the last output would say "      3" since piping 'ls' output causes the '-1' flag to be implicitly used.  It should do in eshell too. -- ZwaX
+
+<em>Here's one way to do it.</em>  Override the function eshell/ls like so:
+
+  (defsubst eshell/ls (&rest args)
+  "An alias version of `eshell-do-ls'."
+  (let ((insert-func 'eshell-buffered-print)
+ (error-func 'eshell-error)
+ (flush-func 'eshell-flush)
+ (args-plus (append
+                    (cond ((not (eq (car (aref eshell-current-handles 1)) t))
+                           (list "-1")))
+                    args)))
+    (eshell-do-ls args-plus)))
+
+This seems to work for eshell 2.4.2.  Not sure how future-proof it is since it redefines a function defined in em-ls.el...  If the author reads this wiki, perhaps he will see fit to include this logic in eshell-do-ls.  -- JoeE
+
+----
+
+
+(2004-03-10 - TaKa) Hi everyone, I'm new here.  I've got several questions regarding Eshell.
+
+Say I defined the following trivial function
+
+ (defun foo (x)
+   (int-to-string x))
+
+and sent several inputs on Eshell as follows.
+
+Input 1:
+
+     $ echo { concat {foo 1} "_some-string" }
+     Wrong type argument: sequencep, 1
+
+Input 2:
+
+     $ echo {foo 1}
+     1
+
+Input 3:
+
+     $ foo 1
+     1
+
+Input 4:
+
+    $ foo 10
+    Wrong type argument: numberp, #("10" 0 1 (number t rear-nonsticky (arg-begin arg-end)) 1 2 (rear-nonsticky (arg-end arg-begin)))
+
+Can anyone explain why input 1 doesn't work when input 2 does; why input 4 doesn't when input 3 does?
+
+Suppose further that I changed the function `foo' to: 
+
+ (defun foo()
+   "0001" )
+
+and typed some more commands from Eshell as follows:
+
+Input 5:
+
+    $ foo
+    0001
+
+Input 6:
+
+    $ echo {foo}
+    1
+
+It seems that Eshell "truncates" the preceding 0's regardless of whether the
+type of the returned value is "string" or "integer" when the expression is enclosed in '{' and '}'. Does anyone know how to output `0001' literally? Any solutions or hints are welcome. Thanks. -- TaKa
+
+
+----
+
+
+(2004-03-10 - TaKa)
+
+I just got myself  several answers to my questions :-)
+
+Solution to the problem of input 1-2:
+
+ $ echo { concat (foo 1) "_some-string" }
+ 1_some-string
+
+Solution to the problem of input 5-6:
+
+ $ echo (foo)
+ 0001
+
+I think Eshell treats the input `echo {foo}', as (sort of like) `echo { echo 0001 }', whose output is also `1'. It is obvious that eshell treats 0001 as an integer (thus becomes `1') when
+the expression is enclosed in '{' and '}'. But I don't know why Eshell gives
+`0001' on input `echo 0001', not `1' (wouldn't it be inconsistent?).
+
+----
+
+My number one eshell wish: documentation.  Both a reference and a tutorial.  Without the latter, I'm just too lazy to learn it.
+
+----
+CategoryEshell CategoryWishList

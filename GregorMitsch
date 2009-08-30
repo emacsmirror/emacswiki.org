@@ -1,0 +1,46 @@
+== Why I use XEmacs ==
+
+I use XEmacs because it is (almost) like Emacs. :-)
+
+Working with Windows, Linux and UNIX machines I need a powerful program (to create and edit documents) that runs on every system all over the world.
+
+With Emacs I got the first contact with LISP... it was love at first sight ;-). It's fun writing code with it! And best of all: your code runs on every computer that run Emacs:
+
+Write it once - use it forever!
+
+Since the year 2001 I use Emacsen. I started with Emacs but soon switched to XEmacs because it looked nicer :-) and fit better into the XFree86 environment of my Linux computer. At the moment (2003-09-04) I spend most of my "editing time" using XEmacs on a (Cygwin-enhanced) Windows machine. There I heavily make use of drag'n'drop files from Explorer to XEmacs... I miss this feature under XFree86. :-(
+
+It's really cool to have a program where you can find great features after months of searching (like PCL-CVS)... and then you notice that it was always there -- in an Emacs package!
+
+Somewhere June 2003 I found this Wiki. It's great work and helped me a lot! My first elisp contribution is WebBot.
+
+
+== Things I wrote for XEmacs ==
+
+On my homepage you can find the customization files for XEmacs:
+
+http://www.gmdsoft.de/mitsch/emacs/index.htm
+
+I use a base set of configuration files and one extra file per computer where I use XEmacs. These extra files are tailored to the quirks of the particular machine.
+
+* gm-dired-rename-editor: You can invoke this script from within dired. Marked files will then be written into two buffers that are arranged in parallel. In the right buffer you can edit the file names with your favorite emacs commands. Done so, invoke 'gm-dired-rename-editor' a second time to actually rename the files. Invoke it a third time to close the window arrangement and return to dired.
+
+* gm-webbot.el: see WebBot
+
+* DeleteRegionOnTyping
+
+* (more: see CVS on my homepage)
+
+== Homepage ==
+
+http://www.gmdsoft.de/mitsch/
+
+----
+
+: [a comment] Welcome on the Wiki ! Did you try to make a single big file that could work everywhere ? That's fun :)
+
+:: [answer] At first there was only ONE file and ONE computer. But then CUSTOMiZATiON spreads among many files and computers. (-:
+
+----
+CategoryHomepage
+

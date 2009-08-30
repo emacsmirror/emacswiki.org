@@ -1,0 +1,72 @@
+== Básico do básico para configurar teclas ==
+
+Você vai se sentir poderoso!
+
+Abra o arquivo .emacs 'C-x C-f ~/.emacs RET' e, ao final dele, adicione
+o seguinte comentário:
+
+   ;; Seqüências de teclado
+   ;; Dica: Primeiro defina a tecla interativamente e imediatamente
+   ;; digite 'C-x ESC ESC C-a C-k C-g'. O comando usado para definir
+   ;; a tecla está gravado no seu 'kill ring' e pode ser copiado no
+   ;; seu .emacs.
+
+Para definir uma tecla, use 'M-x global-set-key RET', tecle a
+seqüência e digite, então, o comando a ser ligado. Dois exemplos para
+começar:
+
+* 'M-x global-set-key RET' 'C-/' 'undo RET'
+** agora use a dica: (global-set-key (quote [67108911]) (quote undo))
+* 'M-x global-set-key RET' 'C-?' 'redo RET' (lembre-se do SHIFT: C-S-/
+  == C-?, neste caso)
+** com a dica: (global-set-key (quote [67108927]) (quote redo))
+
+Já deu para perceber o formato a ser utilizado. O problema é que estes
+códigos de tecla são difíceis de ler. Uma forma de fazê-los legíveis é
+usando a função kbd:
+
+   (global-set-key (kbd "C-?") (quote redo))
+
+=== E se a tecla que eu quiser usar já estiver definida? ===
+
+Use global-unset-key. Por exemplo, para permitir seqüências como 'C-p
+g':
+
+   (global-unset-key (kbd 'C-p'))
+   (global-set-key (kbd 'C-p g') (quote goto-line))
+
+=== E para teclas de função F1-F12? ===
+
+Use (kbd "<f1>"):
+
+   (global-unset-key (kbd "<f1>"))
+   (global-set-key (kbd "<f1>") (quote undo))
+
+== Exemplo ==
+
+   ;; Todas as minhas seqüências de tecla começam com C-p (de
+   ;; personalizado), por isso, comecei apagando a definição
+   (global-unset-key (kbd "C-p"))
+
+   ;; C-p g - vai para a linha
+   (global-set-key (kbd "C-p g") 'goto-line)
+
+   ;; C-/ - uma boa tecla de desfazer, já que C-_ exige Shift
+   (global-set-key (kbd "C-/") 'undo)
+
+   ;; C-? - acesso à biblioteca 'redo'
+   (global-set-key (kbd "C-?") 'redo)
+
+   ;; C-p i - checar todo o buffer
+   (global-set-key (kbd "C-p i") 'ispell-buffer)
+
+   ;; C-p I - checar uma seleção
+   (global-set-key (kbd "C-p I") 'ispell-region)
+
+   ;; C-p f - checar buffer enquanto digita
+   (global-set-key (kbd "C-p f") 'flyspell-mode)
+
+Agora, mande ver! --DeDaLu
+
+----
+CategoriaTeclas

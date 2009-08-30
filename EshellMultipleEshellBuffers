@@ -1,0 +1,15 @@
+It is sometimes annoying to use multiple shells from within emacs. One must create a shell, rename it, create another, etc.
+
+To solve this, [http://cims.nyu.edu/~stucchio/software/elisp/multi-eshell.el.html multi-eshell.el] exists. It maintains a ring of shell buffers, and has 3 useful functions:
+
+multi-eshell -- Creates a NEW shell and switches to it, even if one already exists.
+
+multi-eshell-switch -- If not in a shell buffer, return to the last EXISTING
+                       shell buffer. Otherwise, switch to the next buffer in
+                       the shell ring.
+
+multi-eshell-go-back -- Switch to the previous buffer in the shell ring.
+
+Q: What advantages does this provide over using M-x eshell-new along with various buffer switching techniques?
+
+A: Convenience, nothing more. One-button cycling through eshell buffers can be faster than C-x b *eshell*<2> (especially if you don't remember which *eshell*<?> you want to switch to). Also, is eshell-new part of emacs? It doesn't appear to be in 22.1.50 (of Carbon emacs). 

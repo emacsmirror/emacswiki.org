@@ -1,0 +1,36 @@
+What to do with Lisp:wthreetwo-feeling-mode-html.el file, which contains HTML (documentation for Lisp:w32-feeling-mode.el), and not Emacs Lisp?  Page begins with <code>;;;</code> to fool old upload script. -- JakubNarebski 
+
+[new]
+I uploaded it as [[w32-feeling-mode.html]].  I did not find any backlinks.
+That's weird.  Is it not documented?
+
+If you visit Download:w32-feeling-mode.html, you'll get the HTML file.
+
+Only EmacsWikiAdministrators can upload HTML files at the moment.
+Is the HTML file really required for some package?
+([[Oddmuse:Restricted HTML Upload]])
+-- AlexSchroeder
+
+[new]
+I wouldn't know, as it is not my file.  I have came across it during renaming of <code>*three*</code> files into <code>*3*</code>, etc. -- JakubNarebski
+
+[new]
+I have written w32-feeling so I guess I should comment. I have been wondering what to do with it at the moment. 
+I have done many changes to the file since I first uploaded it, 
+but I found that it was very difficult to keep everything in sync so I have not uploaded them here at the moment.
+Could you please delete the files named w32-feeling* (I suppose I am the author of them)?
+Instead there are new (and I hope much better versions) that could be fetched through [[EmacsW32]].
+They are not available as single files, but you can download the zip file and extract those you want.
+I plan to upload them as single files as soon as I am ready.
+(BTW w32-feeling.el has just changed name to emacsw32.el.)
+
+The reason that I put up the documentation in HTML format was that for a new Emacs user on MS Windows that format should be much easier to start with.
+I felt the treshold for starting using Emacs on MS Windows was much too high.
+-- LennartBorgman
+
+[new]
+I see.  I marked the pages for deletion and hope I did not miss any.
+-- AlexSchroeder
+
+[new]
+You have deleted Lisp:w32-feeling-mode.el, Lisp:html-pagetoc.el (aka w32-feeling.el), missed deleting [[w32-feeling-mode.html]]. -- JakubNarebski

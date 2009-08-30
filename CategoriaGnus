@@ -1,0 +1,70 @@
+Clique no cabeçalho para listar todas as páginas relacionadas com o Gnus.  O Gnus é o cliente de news e de mail do Emacs. Veja PáginaGnus para mais detalhes.
+
+Sugestões:
+
+Ajuda
+
+* TutorialGnus -- para novatos no Gnus
+* [[OMeuGnus]] -- um site web para todos os utilizadores do Gnus
+* Francês -- http://www.gnufr.org/
+* GnusChinês -- coisas em Chinês
+
+Ligação à Net
+
+* ObterNewsComGnus
+* ObterMail
+** GnusEmDemon -- obter mail quando o Emacs está idle
+* EnviarMail -- enviar coisas
+** MailEnviado -- arquivar aquilo que envias
+** ArquivarMail -- arquivar todo o mail
+
+Organizar o mail e as news
+
+* [[HighlineEGnus]] -- uma utilização engraçada do pacote highline com o Gnus
+* NewsComGrandeVolume -- truques para lidar com grandes quantidades de news
+* PersonalizarThreading -- como mudar threading
+* SepararMail -- separar (ordenar) mail em vários grupos
+** SeparaçãoFancyDeMail -- separação de mail fancy (como traduzir 'fancy'?) explicada
+** SepararMailComBbdb -- separação de mail avançada utilizando o BBDB
+** HistóricoDaSeparaçãoNnmail -- mostra um buffer com as separações mais recentes
+** UsarProcmailComGnus -- usar o fetchmail+procmail com o Gnus
+* FiltrarSpam -- livrar-se do spam
+** SpamDoGnus -- utiliza o interface spam.el (porta de acesso para outras : bogofilter, ifile, spam-stat)
+** EstatísticasSpam -- usa estatística para filtrar spam (separando-o num grupo de spam)
+** BogofilterNoGnus -- usa o programa externo bogofilter para o mesmo propósito
+** ListasNegrasDeSpammers -- livra-te do ruído
+
+Indexação e procura de mails especiais
+
+* IndexarMail -- utiliza um motor de indexação/busca para te ajudar a encontrar mails especiais
+
+Personalidades Alternadas
+
+* AliasDoGnus -- muda personalidades a partir do buffer ModoDeMensagem
+* PersDoGnus -- muda "personalidades" (a partir do endereço, assig., etc.) enquanto compões uma mensagem
+* EstilosDePosting -- mudar o teu nome, endereço e muito mais com base no grupo actual (isto faz parte do Gnus)
+* CorreçãoOrtográficaNoGnus -- muda para dicionários diferentes, dependendo do grupo em que te encontres
+
+Outras Configurações
+
+* ParâmetrosDeGrupo -- configurar os próprios grupos
+* FicheiroDePontuação -- pontuar posts (tornado obsoleta a operação de matar ficheiros)
+* PontuaçãoAdaptativa -- dar pontuação de acordo com o modo como lês os posts
+
+Gnus e Segurança
+
+* PggDoGnus -- configurar ferramentas de cifragem
+* AssinarMail -- página genérica
+* CifrarMail -- página genérica
+Buffers do Gnus
+
+* BufferDeSumário -- mostra-te a lista de mensagens num grupo
+* BufferDeGrupo -- mostra-te a lista de todos os teus grupos
+* BufferDeServidor -- mostra-te a lista de todos os teus servidores
+* BufferDeArtigos -- mostrar o artigo
+* DisposiçãoDaJanela -- configurações das janelas
+* FormataçãoDoGnus -- fogo de vista
+
+Anexos
+
+* TiposMimeComGnus -- como lidar com coisas MIME no Gnus

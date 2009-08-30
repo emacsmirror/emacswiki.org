@@ -1,0 +1,19 @@
+Assume some dork always connects to IRC using the awesome nick ##kensanata##, so every single time you are connected as ##kensanata`##, need to send messages to ##nickserv## and all that jazz. Had enough? Customize as appropriate:
+
+{{{
+(defun rcirc-handler-004 (process sender args text)
+  (rcirc-handler-generic process "004" sender args text)
+  (when (string= rcirc-nick "MyTemporaryNick")
+    (rcirc-send-message process "nickserv" "recover MyNick MyPassword")
+    (rcirc-send-message process "nickserv" "release MyNick MyPassword")
+    (sit-for 1)
+    (rcirc-send-string process "NICK MyNick")))
+}}}
+
+You connect as *MyTemporaryNick*. As soon as rcirc gets the 004 message (the one that lists the capabilities), it tells ##NickServ## to kill *MyNick*, waits for a second for your rcirc to get the message that "!MyNick" is no longer in use, and switches to *MyNick*.
+
+[new]
+If anybody really needs this, I think it would make sense to replace the ##(sit-for 1)## with advice to  `rcirc-handler-part' -- As soon as somebody called ##MyNick## leaves a channel you're on, rename yourself to ##MyNick##. That should work irrespective of lag. I'd also try using ##MyNick`## instead of ##MyTemporaryNick## . Perhaps things will then "just work". -- AlexSchroeder
+
+----
+[[rcirc]]

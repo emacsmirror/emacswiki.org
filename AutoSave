@@ -1,0 +1,72 @@
+By default, Emacs automatically saves your changes to a file intermittently.  If anything should happen you can recover a file with `M-x recover-file'.  Auto-saving can be turned on globally or on a per-buffer basis.
+
+[new]
+How do I turn on auto-saving globally or on a per-buffer basis?
+[new]
+See [[Manual:Auto Save Control]], it should be on by default, but you can turn it off in a buffer with `M-x auto-save-mode'. -- AaronHawley
+
+== Placing all files in one directory ==
+
+If you don't want to clutter up your file tree with Emacs' backup files, you can save them to the system's "##temp##" directory:
+
+    (setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
+
+This will all place all auto-saves and [BackupDirectory backups] in the directory pointed to by ##temporary-file-directory## (e.g., ##C:/Temp/## on Windows).
+
+== Problems with Tramp ==
+[new]
+Hello, I'm trying to use emacs to edit a file across a locally-mounted network file system. There is a long latency across the connection, so I need to minimize file accesses over the network. However, if I open file "abcd", emacs creates files like .#abcd, .#abcd.2, etc, in the directory housing the file. This makes things take forever, because each file creation/access in that directory goes across the network. How do I tell emacs to either not create those files, or at the least to create them in /tmp rather than in the same directory as the file? -- BayleShanks
+[new]
+See auto-save-file-name-transforms. The default value matches all
+TRAMP URLs. With a little bit of tweaking, you can add another sexp
+for your locally-mounted network shares. I use the following
+incantation to save all my temporary files to another partition, as I
+occasionally have problems with my data partition.
+
+   (setq auto-save-file-name-transforms
+         '(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" "/tmp/\\2" t)
+          ("\\`/?\\([^/]*/\\)*\\([^/]*\\)\\'" "/usr/local/sacha-backup/\\2" t)))
+
+-- SachaChua
+
+== Disabling Auto Save ==
+
+[new]
+Every time I edit a file and then discard the changes emacs saves a ~/#filename# file. The next time I run emacs it warns me about it and advises me to recover the file. How can I disable this "feature" ?
+
+[new]
+: That is really two features, "auto save"(1) and "find-file warning messages"(2). Auto-save is easy to disable, just add (auto-save-default nil) to your .emacs file.  The warning messages are a bit trickier to suppress. There's an optional parameter in find-file-noselect ..
+
+== Running save-buffer automatically ==
+[new]
+All these new-fangled IDEs tout that they automatically save your files for you.  I think this would be cool to try out (my c-x c-s muscles get tired sometimes).  You can set auto-save-visited-file-name to a non-nil value and emacs auto-save will save your work in the file you are working on instead of a separate file, but then the buffer is considered out of date and you can't continue editing without an annoying warning message.  Is there a way around this?  -- BryanMurdock
+
+[new]
+: What about `M-x run-with-idle-timer RET SECONDS RET save-buffer RET'?  If that's what you want, then find a way to roll some EmacsLisp to make it work for all your buffers associated with files.  Then you can put that in your DotEmacs and smoke it. -- AaronHawley
+
+[new]
+My emacs lisp skills are feeble, but how does this look?
+
+   (defun save-buffer-if-visiting-file (&optional args)
+      "Save the current buffer only if it is visiting a file"
+      (interactive)
+      (if (buffer-file-name)
+          (save-buffer args)))
+
+   (add-hook 'auto-save-hook 'save-buffer-if-visiting-file)
+
+It seems to work for me with both regular files and file you visited with tramp. -- BryanMurdock
+
+[new]
+Automatically save your changes after an customizable interval. Can be selectively applied some modes.
+
+* http://www.litchie.net/programs/real-auto-save.html
+
+[new]
+What about to save file when emacs frame loose focus? -- VitalieLazu
+
+---- 
+CategoryFiles

@@ -1,0 +1,171 @@
+Using computers for extended periods can cause Repeated (or
+Repetetive) Strain
+Injuries or [::RSI].  It is not clear what causes them.  The control
+or the
+shift keys in the wrong position?  Wrong position of the hands?  Use
+of the mouse?  People have been typing for years and RSI is a pretty
+recent phenomenon.  But that just means that it was not known by the
+name of RSI.  It doesn't prove that RSI didn't exist.  In many
+countries, RSI is not recognized as a work-related injury; thus, this
+may prevent you from collecting on your damage insurance.
+
+* ShortTalk is a SpeechToText system that may help.
+* StickyModifiers reduce chording, as do FootSwitches; a GamePad
+controller, accessible through the JoyStick interface, can use
+chording but not in such a painful way
+* Functions to avoid RepeatingCommands by hand reduce repetitive movements.
+* For ergonomic keyboards, see Wiki:ErgonomicKeyboard (keyboards,
+pedals, etc.)
+* Ergonomic keybindings for cursor movement, see ErgoMovementMode
+* For experiences with Emacs and particular keyboards, see
+GoodKeyboards.
+* Some long-term Emacs users have found that making sure the CapsKey
+is on the home row is one of the most important ways to reduce
+wrist/hand/elbow pain (*Is this a typo? I think it may refer to the CtrlKey --- JohnSturdy*)
+* Using a Wiki:DvorakKeyboard can help tons as the hands stray from
+the home row far less than with the default layout.
+* EmacsVersor (Versatile Cursor) lets you get more out of each
+keystroke of the arrow and simple command keys (DEL etc) and can be
+used to put much of your input activity onto FootSwitches
+* Software that reminds the user to take breaks every //n// minutes can be
+lifesaving.  Try TypeBreakMode.
+** X11 Users can try xwrits [http://www.lcdf.org/~eddietwo/xwrits/],
+!DrWright, etc.  
+** GNOME 2.4 users can try Applications->Desktop
+Preferences->Keyboard->Typing Break.
+** Another cool program is Workrave [http://www.workrave.org/welcome/]
+(shows excercises too and lot of features).
+** Debian: apt-cache search injury
+* [ViperMode Viper] whips up [ViKeys vi keys] in Emacs, [http://invisible-island.net/vile/ Vile]-like.
+
+Information on the original wiki:
+
+* Wiki:RepetitiveStrainInjury
+* Wiki:CarpalTunnelSyndrome
+
+More information on the web:
+
+* WikiPedia:Repetitive_strain_injury
+* http://www.engr.unl.edu/ee/eeshop/rsi.html
+* http://www.tifaq.com/
+* http://www.rsi-uk.org.uk/
+
+: Perhaps that shows that people should not hack Emacs after getting
+home from work ...
+
+People who've had wrist pains:
+
+BenWing, JamieZawinski, RichardStallman, AlexSchroeder, AaronCrane,
+DavidMcCabe, ZajcevEvgeny, ShaeErisson, RichardKlinda, YannHodique,
+JohnSturdy
+
+Most of the discomfort I was having (felt like the tendons in the back
+of my hands) has been aleviated by attempting to keep the muscle
+tension required to 'float' my fingers and hands above the keyboard to
+a minimum.  So, for me, the problem wasn't striking the keys, but
+actually the reverse.  But there are other pains, especially after a
+busy day.  In some cases I've found there may be an almost
+psychosomatic response, where even touching the keyboard is painful.
+
+  When in one of the many what could be considered 'View' modes I may
+try one or more of the following:
+
+1. Try pressing keys in a different way:
+: thumbs, pinkies, elbows, fists, toes, heels, etc.? (See FootSwitches
+-- JohnSturdy)
+
+2. Try using other objects:
+: maybe a couple of pens
+: chopsticks
+
+3. VoiceRecognition
+: still don't have this setup for myself
+
+-- PatrickAnderson
+
+Here is my story.  I was having very bad RSI year in past.  Pain
+starts in fingers going along whole forearm to the elbow.  It was
+really painfull to type more than 20 minites.  I start depositing
+bee's poison on arms covering it with woolen gloves when typing, as
+doctor recommend me.  After nearly month pain retreat a little, but
+still after typing more then 30 minutes it starts again.  I type much
+and pretty fast, so I decided to switch to dvorak keyboard layout and
+bought KinesisKeyboard, make some ergonomic key remaps, also drop
+using mouse at all, and continue depositing bee's poison every
+morning.  After about 6 month pain retreat at all, now I can type 6
+hours without any pain, but still have habbit to make break after 20
+minutes :) -- ZajcevEvgeny
+
+I noticed that moving to a lower chair drastically increases my
+problems within two hours.
+Thus, experimenting with chairs and table height might help.
+-- AlexSchroeder
+
+
+
+-- 
+
+John Ousterhout, UC Berkeley comp sci prof., creator of influential
+Tcl, and pioneer advocate of dynamic scripting languages (kinda like
+Lisp, I understand ;)), has some very interesting pointers on Dealing
+with RSI: http://home.pacbell.net/ouster/wrist.html  Sobering thoughts
+on prognosis for improvement; amazing personal experiences and
+strategies for using Dragon Dictate Naturally Speaking:
+http://www.scansoft.com/naturallyspeaking/ Windows only, and
+expensive, alas, but it is as good as they say.  I trained my
+neurologically disabled niece on an earlier version of it way back in
+1997 and even then it was obviously a truly fabulous, if proprietary,
+learning algorithm.  (I have one word of advice: unlike my young
+niece, exercize great patience and moderate your expectations and
+emotions while in training mode or you will surely and unconsciously
+screw up your voice somehow with each initially frustrating iteration,
+and thereby permanently screw up the neural net's ability to recognize
+your natural speaking voice.  Garbage in, garbage out.  Worked fine
+when I trained it on myself -- of course, my voice betrayed no
+psychological need to make it work now, or never.  Perfectly natural
+reaction to pain and powerlessness, but be on your guard.  This
+technology may well be your lifeline: treat it with an air of natural
+reverence, indifference if you will,  by just assuming it will answer
+your prayers, in its own good time. </preacher-mode> )  Ousterhout
+uses Naturally Speaking on a spare Windows laptop and pipes its ascii
+outut to a networked Unix box's standard input, achieving speeds
+*faster* than he could ever type, and he was a fast touch typist.  He
+links to a2x, a free ascii-to-X windows utility, useful for making
+Windows-only best of breed voice recognition software talk to Unix,
+right at point in Emacs, presumably: 
+http://www.cl.cam.ac.uk/a2x-voice/a2x-faq.html Good luck to all
+sufferers. -- PaulWilson
+
+----
+
+Reading The Mindbody Prescription
+[http://www.amazon.com/exec/obidos/tg/detail/-/0446675156/103-0896936-4406269?v=glance]
+helped me a lot.  --JasonDunsmore
+
+----
+
+Getting fit is one of the most helpful things. Some forms of RSI may
+be circulation-related, and things which help the circulation often
+reduce RSI. Keep a small dumbbell by your computer, and lift it a few
+times if your arms/hands/wrists start getting stiff.
+
+FootSwitches, at least for Ctrl, Alt, Shift, and preferably also for
+some other keys (EmacsVersor) make a big difference -- no more
+hand-stretching chording. I use the kind designed by Xkeys
+(http://www.xkeys.com/xkeys/xkfoot.php) but they are re-badged under
+various names.
+-- JohnSturdy
+
+-----
+
+I started to experience bad RSI when I first used emacs. The chording was simply too awkward. I swapped my CapsLock and CTRL keys and that made it a bit better. Then I tried to create more ergonomic key bindings. I looked into FootSwitches, but they were too expensive. Finally, I switched to ViperMode and that made all the difference. To my delight, I found that a bit of tweaking made ViperMode even easier to use than Vim. For instance, instead of the awful "gqap" in vim to format/fill paragraphs, I set the following:
+
+       (define-key viper-vi-global-user-map (kbd "q") 'fill-paragraph)
+
+Now I have all the basic vi commands + an overlay of wonderful C-c commands in various modes + multiple undo and search commands. To me, it is the best of both worlds.
+
+Emacs, of course, is infinitely more powerful than vi(m). Despite emacs' painful default keybindings, customizing it to make it as comfortable as possible is well worth the effort.
+
+-- MattLundin
+
+

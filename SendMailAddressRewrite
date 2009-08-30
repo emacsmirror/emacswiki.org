@@ -1,0 +1,74 @@
+If your smtp server is a non-address-rewriting MTA (like the qmail default), 
+and if you'd like your domain name to be added automatically to the addresses,
+here's a way to do it.
+----
+You'll have to change sendmail-send-it (or smtpmail-send-it if you're using
+smtpmail).  
+
+	  (mail-sendmail-undelimit-header)
+	  (setq delimline (point-marker))
+	  ;;  (sendmail-synch-aliases)
+	  (if mail-aliases
+	      (expand-mail-aliases (point-min) delimline))
+	  (smtpmail-addr-rewrite (point-min) delimline)
+
+That last line is the new line added.  Here's the definition for that file.
+stolen mostly from the alias rewriting code
+
+ (defun smtpmail-addr-rewrite (beg end)
+   "Rewrite addresses in suitable header fields found between BEG and END.
+ If interactive, expand in header fields.
+ Suitable header fields are `To', `From', `CC' and `BCC', `Reply-to', and
+ their `Resent-' variants.
+ "
+  (interactive
+   (save-excursion
+     (list (goto-char (point-min))
+	   (mail-header-end))))
+  (save-excursion
+    (goto-char beg)
+    (setq end (set-marker (make-marker) end))
+    (let ((case-fold-search nil))
+      (while (let ((case-fold-search t))
+	       (re-search-forward mail-address-field-regexp end t))
+	(skip-chars-forward " \t")
+	(let ((beg1 (point))
+	      end1 pos epos seplen
+	      )
+	  (re-search-forward "^[^ \t]" end 'move)
+	  (beginning-of-line)
+	  (skip-chars-backward " \t\n")
+	  (setq end1 (point-marker))
+	  (goto-char beg1)
+	  (while (< (point) end1)
+	    (setq pos (point))
+	    ;; EPOS gets position of end of next name;
+	    ;; SEPLEN gets length of whitespace&separator that follows it.
+	    (if (re-search-forward "[ \t]*[\n,][ \t]*" end1 t)
+		(setq epos (match-beginning 0)
+		      seplen (- (point) epos))
+	      (setq epos (marker-position end1) seplen 0))
+	    (let ((string (buffer-substring-no-properties pos epos))
+		  translation)
+	      (if (and 
+		   (not (string-match "@" string)) ; No @ in the name
+		   (not (equal string "")))
+		  (progn
+		    (setq translation (concat string "@" smtpmail-sendto-domain))
+		    ;; Replace the address with it's translation
+		    (goto-char pos)
+		    ; (message (concat "Address rewrite is changing " string " to " translation))
+		    ; (message (concat "Processing address " string " at " (number-to-string pos) " " (number-to-string epos) " " (number-to-string (point))))
+		    (insert translation)
+		    ; (message (concat "Changed into " translation " at " (number-to-string pos) " " (number-to-string epos) " " (number-to-string (point))))
+		    (delete-region (point) (+ (point) (- epos pos)))
+		    (forward-char seplen)
+		    )
+		(goto-char epos)
+		(forward-char seplen))))
+	  (set-marker end1 nil)))
+      (set-marker end nil)))
+ )
+
+----
+Venkat Iyer at http://wiki.tcl.tk/8740

@@ -1,0 +1,101 @@
+This page describes package Lisp:delim-col.el, by ViniciusJoseLatorre.
+
+: .:: ''v2.1'' :: ''part of GNU Emacs'' ::.
+
+
+== About delim-col ==
+
+DelimColPackage helps to prettify columns in a text region or rectangle.
+
+To use it, make sure that this file is in load-path and insert in your
+##.emacs##:
+
+   (require 'delim-col)
+
+If you have, for example, the following columns:
+
+   a	b	c	d
+   aaaa	bb	ccc	ddddd
+   aaa	bbb	cccc	dddd
+   aa	bb	ccccccc	ddd
+
+And the following settings:
+
+   (setq delimit-columns-str-before "[ ")
+   (setq delimit-columns-str-after " ]")
+   (setq delimit-columns-str-separator ", ")
+   (setq delimit-columns-before "")
+   (setq delimit-columns-after "")
+   (setq delimit-columns-separator "\t")
+   (setq delimit-columns-format 'separator)
+   (setq delimit-columns-extra t)
+
+If you select the lines above and type:
+
+   M-x delimit-columns-region RET
+
+You obtain the following result:
+
+   [ a   , b  , c      , d     ]
+   [ aaaa, bb , ccc    , ddddd ]
+   [ aaa , bbb, cccc   , dddd  ]
+   [ aa  , bb , ccccccc, ddd   ]
+
+But if you select start from the very first ##b## to the very last ##c## and type:
+
+   M-x delimit-columns-rectangle RET
+
+You obtain the following result:
+
+   a	[ b  , c       ]	d
+   aaaa	[ bb , ccc     ]	ddddd
+   aaa	[ bbb, cccc    ]	dddd
+   aa	[ bb , ccccccc ]	ddd
+
+Now, if we change settings to:
+
+   (setq delimit-columns-before "<")
+   (setq delimit-columns-after ">")
+
+For the `delimit-columns-region' example above, the result is:
+
+   [ <a>   , <b>  , <c>      , <d>     ]
+   [ <aaaa>, <bb> , <ccc>    , <ddddd> ]
+   [ <aaa> , <bbb>, <cccc>   , <dddd>  ]
+   [ <aa>  , <bb> , <ccccccc>, <ddd>   ]
+
+And for the `delimit-columns-rectangle' example above, the result is:
+
+   a	[ <b>  , <c>       ]	d
+   aaaa	[ <bb> , <ccc>     ]	ddddd
+   aaa	[ <bbb>, <cccc>    ]	dddd
+   aa	[ <bb> , <ccccccc> ]	ddd
+
+Note that `delimit-columns-region' operates over all text region
+selected, extending the region start to the beginning of line and the
+region end to the end of line.  While `delimit-columns-rectangle'
+operates over the text rectangle selected which rectangle diagonal is
+given by the region start and end.
+
+See `delimit-columns-format' variable documentation for column formating.
+
+`delimit-columns-region' is useful when you have columns of text that
+are not well aligned, like:
+
+   horse	apple	bus
+   dog	pineapple	car
+   porcupine	strawberry	airplane
+
+`delimit-columns-region' and `delimit-columns-rectangle' handle lines
+with different number of columns, like:
+
+   horse	apple	bus
+   dog	pineapple	car	EXTRA
+   porcupine	strawberry	airplane
+
+Use `delimit-columns-customize' to customize DelimColPackage variables.
+
+
+----
+
+CategoryCode

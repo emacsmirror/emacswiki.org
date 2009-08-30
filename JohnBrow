@@ -1,0 +1,24 @@
+I use Emacs.
+
+* Homepage:  http://www.kj7l.net/
+* Nick on #emacs:  <code>UriahEep</code>
+* Real Email:  john@kj7l.net
+* John uses Emacs under Fedora 11 and Emacs 23.1 on my work PC (WinXP)
+
+I use Emacs both at home and at work.
+
+At work I was subjected to Edit Plus -- horrid!  Since it's being used as an external tool to our CVS platform I am working on replacing it with Emacs (have to program a new mode).  Until then I find fundamental-mode "just works" for what I need.  I'm learning elisp at the same pace as Emacs development ;-)
+
+I doubt I'll ever completely get rid of Emacs because I just find more uses for it.  At home I do a little C programming and HTML (in Emacs).  And for super-trivial Java stuff I find Emacs works easier than firing up my IDE (NetBeans).  If I ever get around to writing a novel I'll be using Emacs exclusively.  There's a lot to be said for a stable editor, and I consider Emacs to be a stable editor.
+
+My function keys (including S-Fx and C-fx) are nearly full with my customizations.  The latest fad of mine is to assign about 4-6 of my S-Fx to find-file my most frequent directories where my current work is.
+
+[new]
+Welcome on the wiki !
+[new]
+Emacs being slow or resource hungry comes from people who try using Emacs as if it was still vi (or any other standalone text editor) and not as the user-level "operating system" (programmable and multi-purpose) that it is and should be.  Welcome. --AaronHawley
+[new]
+Emacs is open enough to be just about <b>anything</b> a power user wishes it to be.  I'm glad for that.
+
+----
+CategoryHomepage

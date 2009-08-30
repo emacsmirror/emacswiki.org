@@ -1,0 +1,22 @@
+It is easy and straightforward to make parentheses in EmacsLisp and other dialects of Lisp less visible by putting a less bright [[Face]] on them:
+
+ (defface paren-face
+   '((((class color) (background dark))
+      (:foreground "grey20"))
+     (((class color) (background light))
+      (:foreground "grey80")))
+   "Face used to dim parentheses.")
+
+
+  (add-hook 'emacs-lisp-mode-hook 
+ 	  (lambda ()
+ 	    (font-lock-add-keywords nil 
+ 				    '(("(\\|)" . 'paren-face)))))
+
+
+Now they are fairly unobstrusive and stay modestly in the background, when you read Lisp code. IMHO this reflects their role in Lisp code: Lispers seldom look at the parentheses, they look at the indentation.
+
+: See ParenFace; this has already been done.
+
+----
+CategoryParentheses CategoryDisplay CategoryFaces CategoryHumor ParenthesesAppearance

@@ -1,0 +1,96 @@
+This page is about commenting parts of code.
+
+Each code language has its own comment string for commenting-out code.
+In Emacs lisp, for example, it is <code>;</code>. Some languages have
+different comment strings for comment start and end. These are the
+values of mode-specific variables <code>comment-start</code> and
+<code>comment-end</code>. For example, in C,
+<code>comment-start</code> is <code>/*</code> and
+<code>comment-end</code> is <code>*/</code>. 
+
+The main command for commenting or uncommenting each of the lines in a
+region is <code>comment-region</code>. With prefix argument, this
+command adds that many comment strings. So, in Emacs lisp code, where
+the comment string is <code>;</code>:
+* <code>comment-region</code> adds a single <code>;</code>.
+* `C-u' ''N'' `M-x comment-region', where ''N'' is an integer, adds or
+removes ''N'' <code>;</code>. For example:
+** `C-u 3 M-x comment-region' adds <code>;;;</code>.
+** `C-u -2 M-x comment-region' removes <code>;;</code>. (As always,
+`M-' ''N'' is a shortcut for `C-u' ''N'' when ''N'' is negative.)
+* `C-u M-x comment-region' uncomments the region, no matter how many
+<code>;</code> are used for the comments.
+
+If you want to bind uncommenting to a key, you can use this
+(equivalent to `C-u M-x comment-region):
+
+      (defun uncomment-region (beg end)
+        "Like `comment-region' invoked with a C-u prefix arg."
+        (interactive "r")
+        (comment-region beg end -1))
+
+[new:DrewAdams:2005-08-05 15:09 UTC]
+I bind `<code>C-x C-;</code>' to `comment-region'. Very handy. (And
+that key sequence is normally unbound.) -- DrewAdams
+[new]
+
+For end-of-line comments (after existing code), use command
+<code>indent-for-comment</code>, which is usually bound to `M-;'. You
+can set the column that the comment string is placed in with command
+<code>set-comment-column</code>.
+
+In some versions of Emacs, there is command <code>comment-dwim</code>,
+which combines <code>comment-region</code> and
+<code>indent-for-comment</code> to always DoWhatIMean. In those
+versions, it is usually bound to `M-;' (replacing
+<code>indent-for-comment</code>).
+
+Also very useful is `comment-or-uncomment-region', present in newer
+versions of Emacs.
+[new]
+I am addicted to the M-; ##comment-dwim## command. However I wanted to
+change the default behaviour a bit. If no region is selected,
+comment-dwim inserts comment at the end of the line. Instead, I wanted to comment out
+whole line, if we are currently not at the end of the line. This does the trick:
+
+      ;; Original idea from
+      ;; http://www.opensubscriber.com/message/emacs-devel@gnu.org/10971693.html
+      (defun comment-dwim-line (&optional arg)
+        "Replacement for the comment-dwim command.
+        If no region is selected and current line is not blank and we are not at the end of the line,
+        then comment current line.
+        Replaces default behaviour of comment-dwim, when it inserts comment at the end of the line."
+          (interactive "*P")
+          (comment-normalize-vars)
+          (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
+              (comment-or-uncomment-region (line-beginning-position) (line-end-position))
+            (comment-dwim arg)))
+
+      (global-set-key "\M-;" 'comment-dwim-line)
+
+= Questions =
+
+* Anyone know how to change the behavior of comment-region so that it
+will comment empty lines?  I use it to cite text in emails and I
+dislike the way recent versions of newcomment fail to comment the
+blank lines. --JoeE (Originally posted on WishList)
+** Look at the variable comment-empty-lines. --StefanReichoer
+(Answered on WishList)
+
+'''See Also:'''
+
+* Variables <code>comment-start-skip</code> and
+<code>comment-empty-lines</code>.
+* CodeBeautifying -- Reindent and fill comments, to make them pretty.
+* FillingComments -- Fill comments, to make them pretty.
+* ll-debug.el at http://www.cbrunzema.de/software.html#ll-debug, for
+additional commenting/uncommenting functions (such as 'toggle comment
+current line' and 'copy region and comment out original' (if you want
+to change something and want to keep a copy in comments)).
+* LineCommentBanner -- Make one-line banner style comments.
+* SemanticRecoder - Has a tool for creating and filling in comments based on the local context
+* DocMode - Also a tool for creating and modifying comments semi-automatically.
+
+----
+CategoryProgramming
+CategoryRegion

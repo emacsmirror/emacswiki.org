@@ -1,0 +1,187 @@
+The Grand Unified Debugger, or GUD for short, is an Emacs major mode for debugging.
+It works on top of command line debuggers. GUD handles interaction with gdb, dbx, xdb, sdb, perldb, jdb, and pdb, by default.
+
+
+== Using GUD with gdb ==
+
+See GdbMode. 
+
+gdbel (http://www.inet.net.nz/~nickrob/) (run on top of GUD):
+
+http://www.nick.uklinux.net/screenshot.png
+
+== Remote gdb ==
+
+Do you know any way to run gdb on a remote host under GUD?
+: I have this little script:
+{{{
+#!/bin/sh
+
+u=$2
+shift
+shift
+sudo -u $u gdb -fullname $*
+}}}
+: To make gdb run as another user (call it as "gdb-wrapper.sh USER GDBARGS").  You could change the sudo to ssh.
+
+== Using GUD with dbx ==
+
+to debug,
+
+M-x dbx
+
+and input your dbx command in the minibuffer.
+
+There is a simple tutorial at http://www.atmosp.physics.utoronto.ca/people/amit/dbx.htm
+
+To use emacs with dbx on multi-directory projects, put the following into your
+##.dbxrc## file: ##DBX_output_short_file_name=off## Otherwise, the debugger reports
+only the base name (w/o directory part) and emacs can't load the proper file. 
+The ##dbxenv output_short_file_name off## dbx command is documented
+and seems to be the equivalent of ##DBX_output_short_file_name=<on|off>##, which
+does not seem to be documented (at least on the Sun website).
+
+=== Discussion ===
+
+[new]
+I found very old [http://groups.google.co.kr/group/comp.emacs/browse_thread/thread/e3be7741e9eab0c3?tvc=2 post in newsgroup] where i can get a hint about using dbx within gud mode.
+Currently I've been using following lisp code in my dot emacs. 
+
+
+   ;;;;
+   (progn
+      (defun joonhwan:dbx-mode-hook()
+		(gud-def gud-break "file \"%d%f\"; stop at %l"
+				 "\C-b" "Set breakpoint at current line.")
+		(gud-def gud-up "up %p; echo GUD#$vlineno@$vfilee"
+				 "<" "Up (numeric arg) stack frame.")
+		(gud-def gud-down "down %p; echo GUD#$vlineno@$vfile"
+				 ">" "Down (numeric arg) stack frame.")
+		(gud-def gud-finish "step up; echo GUD#$vlineno@$vfile"
+				 "\C-f" "Step and out of the current function.")
+		(gud-def gud-dbx-refresh "echo GUD#$vlineno@$vfile"
+				 "\C-l" "Make GUD know where it is.")
+		(fset 'gud-marker-filter (symbol-function 'joonhwan:gud-dbx-marker-filter)))
+      (defun joonhwan:gud-dbx-marker-filter (string)
+		(setq gud-marker-acc (if gud-marker-acc (concat gud-marker-acc string) string))
+		(let (start)
+		  ;; Process all complete markers in this chunk.
+		  (while (or (string-match
+					  "stopped in .* at line \\([0-9]*\\) in file \"\\([^\"]*\\)\""
+					  gud-marker-acc start)
+					 (string-match
+					  "signal .* in .* at line \\([0-9]*\\) in file \"\\([^\"]*\\)\""
+					  gud-marker-acc start)
+					 (string-match
+					  "GUD#\\([0-9]+\\)@\\(.*\\)$"
+					  ;;"GUD-context\n\\([0-9]+\\)\n\\([^\n]*\\)"
+					  ;;"GUD-context\n^\\([0-9]*\\)$\n^\\([^\n]*\\)"
+					  gud-marker-acc start)
+					 (string-match
+					  "GUD-context\n\\([0-9]+\\)\n\\([^\n]*\\)"
+					  gud-marker-acc start))
+			(setq gud-last-frame
+				  (cons (match-string 2 gud-marker-acc)
+						(string-to-number (match-string 1 gud-marker-acc)))
+				  start (match-end 0))
+			;;(message "joonhwan hook is called!!!!!!\n %s" (substring gud-marker-acc start))
+			)
+
+		  ;; Search for the last incomplete line in this chunk
+		  (while (string-match "\n" gud-marker-acc start)
+			(setq start (match-end 0)))
+
+		  ;; If the incomplete line APPEARS to begin with another marker, keep it
+		  ;; in the accumulator.  Otherwise, clear the accumulator to avoid an
+		  ;; unnecessary concat during the next call.
+		  (setq gud-marker-acc
+				(if (string-match "\\(stopped\\|signal\\)" gud-marker-acc start)
+					(substring gud-marker-acc (match-beginning 0))
+				  nil)))
+		string)
+      (add-hook 'dbx-mode-hook 'joonhwan:dbx-mode-hook))
+
+and I also modified ~/.dbxrc to make things easier. note "gud", "w", "u", "d" commands where dbx talk to emacs about current context.
+
+<pre>
+#.dbxrc (dbx topic)
+########################################
+#  joonhwan dbx configuration
+########################################
+
+set -o emacs
+dbxenv output_short_file_name off
+dbxenv suppress_startup_message 7.0
+dbxenv run_autostart on
+
+alias gud="echo gud-context; line; file"
+alias n=next
+alias N=nexti
+alias s=step
+alias S=stepi
+alias su="step up"
+alias c=cont
+alias p=print
+alias q=quit
+alias w="where; gud"
+alias sn="stop at $file:$lineno"
+alias si="stop in"
+alias sa="stop at"
+alias sm="stop modify"
+alias sr="stop returns"
+alias sif="stop infunction"
+alias sim="stop inmember"
+alias sic="stop inclass"
+alias en="handler -enable"
+alias di="handler -disable"
+alias wi=whatis
+alias l=list
+alias u="up !*; gud"
+alias d="down !*; gud"
+alias h=history
+alias f="frame !*; gud"
+alias goto="stop at !:1 -temp; cont"
+
+# gdb-like commands
+alias bt="where; gud"
+alias b="stop in"
+alias c="cont"
+alias f="frame !*"
+alias r="run"
+alias fin="step up"
+</pre>
+
+But, I think that there can be dedicated-dbx backend who can setup as in .dbxrc file(and even can tightly work well with the backend lisp code). Is there any elisp hacker who use his own dbx backend? And I also wish i could get benefits new GdbMode while I'm using dbx. 
+--JoonhwanLee
+
+[new]
+I found a bug in gud.el in Emacs22. the gud-common-init function would not extract the name of debugee. 
+When I tried to execute 
+
+(dbx "dbx -r -c \"runargs -a -simu\" path-to-the-debuggee") 
+
+lisp code, that func extract *\"runargs* as the name of debugee(gud-common-init thought this is the name of debugee 'cause this is the first argument that doesn't start with hypen).
+--Joonhwan
+
+== Using GUD with cdb ==
+
+M$'s command line debuggger that can debug any executable built by M$'s compiler.
+It also can debug .NET code.
+
+Use Lisp:cdb-gud.el to debug w32 programs with M$'s cdb.exe.
+
+
+== Icicles Enhancements to GUD ==
+
+You can use [[Icicles]] [[completion]] with GUD. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]]. 
+
+
+
+
+----
+CategoryDebug
+CategoryModes
+ProgrammingModes
+GdbMode
+
+

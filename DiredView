@@ -1,0 +1,7 @@
+When browsing files in dired buffer, it would be convenient to be
+able to jump to a file by typing that filename's first
+character. This is what this extension does. See also - DiredIsearch
+
+Download Lisp:dired-view.el
+
+

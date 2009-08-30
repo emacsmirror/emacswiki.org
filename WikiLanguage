@@ -1,0 +1,28 @@
+This piece of code is an extension to WikiMode.  It adds the LANG
+attribute to the BODY tag in HTML pages: Instead of <body> it now says
+<body lang="en">.
+
+Determining the buffer language must happen when the page is
+published.  It happens in two stages.  First, we determine the
+language of the current page using the function
+`my-wiki-store-language' as a markup rule.  It doesn't add any markup:
+It just stores the language in the variable `my-wiki-language'.
+Later, we use the function `my-wiki-add-language' to insert the
+language in the header.
+
+This code requires a GuessBufferLanguage function.
+
+ (defvar my-wiki-language nil)
+ (defun my-wiki-store-language ()
+ (setq my-wiki-language (guess-buffer-language)))
+ (defun my-wiki-add-language ()
+   (goto-char (point-min))
+   (when (and my-wiki-language
+              (search-forward "<body>" nil t))
+     (replace-match (format "<body lang=\"%s\">" my-wiki-language))))
+
+Now we need to install this in `wiki-pub-rules'.
+
+ (add-to-list 'wiki-pub-rules 'my-wiki-add-language)
+
+See SampleWikiModeSetup for other examples.

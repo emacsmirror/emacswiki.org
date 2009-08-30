@@ -1,0 +1,5 @@
+ri.el is a tool to view documentation for the RubyLanguage.
+
+It's a replacement for RiEmacs, which is unmaintained and very bloated.
+
+Lisp:ri.el

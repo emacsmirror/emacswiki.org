@@ -1,0 +1,139 @@
+When you use Emacs maximized, as is the default for such window
+managers as [[ratpoison]] and [[Ion]], then you will start to use window
+configurations more often.  (In traditional window managers, you would
+use several smaller [[Frame]]s, instead, eg. one frame for Gnus, one frame
+for IRC, etc.)
+
+When you work with one frame only, you will start to notice that Emacs
+often changes the WindowConfiguration.  This page collects code to
+prevent that by forcing Emacs to reuse the same window again and
+again.  Assume a window layout with several windows, one of them
+showing an elisp buffer.  When you use `C-h f' for the function
+documentation, then the new *Help* buffer shall be displayed in the
+window where the elisp code was, without splitting the window, and
+without covering any of the other windows.  That is the goal.
+
+Here goes for Emacs in general:
+
+    (setq pop-up-windows nil)
+
+Here for BBDB and Gnus:
+
+    (setq bbdb-use-pop-up nil)
+    (remove-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer)
+
+And here is for Gnus itself:
+
+    ;; do not destroy other windows
+    (setq gnus-use-full-window nil)
+
+    (defun my-selected-gnus-buffer-configuration (config)
+      (let (result)
+        (while (and (not result) config)
+          (when (memq 'point config)
+            (setq result config))
+          ;; start recursively for any sublists
+          (dolist (elem config)
+            (when (and (not result) (listp elem))
+              (setq result (my-selected-gnus-buffer-configuration elem))))
+          (setq config (cdr config)))
+        result))
+
+    (setq gnus-buffer-configuration
+          (mapcar (lambda (conf)
+                    (let ((label (car conf))
+                          (config (my-selected-gnus-buffer-configuration
+                                   (cdr conf))))
+                      (if config
+                          (list label config)
+                        conf)))
+                  gnus-buffer-configuration))
+
+    ;; Now manually fix all those that have point in the wrong buffer,
+    ;; usually the summary.
+    (gnus-add-configuration '(article (article 1.0 point)))
+    (gnus-add-configuration '(pipe (article 1.0 point)))
+    (gnus-add-configuration '(score-trace (article 1.0 point)))
+    (gnus-add-configuration '(score-words (article 1.0 point)))
+    (gnus-add-configuration '(split-trace (article 1.0 point)))
+
+The article configuration is problematic, because Gnus expects the
+current buffer to be the summary buffer, no matter what the
+configuration actually looks like.  Therefore the configuration
+(article 1.0 point) may cause an error (something about nil not being
+an article).  This was reported as a Gnus bug on 2002-12-29.  Here is
+some advice to deal with it:
+
+    (defadvice gnus-configure-windows (after maybe-switch-to-summary (setting &optional force))
+      "Set-buffer to `gnus-summary-buffer' if SETTING is the symbol `article'."
+      (when (and (eq setting 'article)
+                 (buffer-live-p gnus-summary-buffer))
+        (set-buffer gnus-summary-buffer)))
+
+    (ad-activate 'gnus-configure-windows)
+
+----
+
+The trouble I have is that I want pop-up-windows to be nil
+for eveything except completion windows.  There are 2
+problems I am currently dealing with, and have no solution:
+
+#     Some things, such as the buttons in help windows and
+      w3m forms (such as the one I use for this) pop up
+      windows anyway.
+#     Completion windows don't pop up, or rather, they
+      replace the existing window, so if I am doing ESC TAB
+      in an elisp buffer, I can't see what is being
+      completed.
+
+Here is my incomplete solution:
+
+        (add-to-list 'same-window-regexps "\\*Customize Group: ") ;notwork
+        (add-to-list 'same-window-buffer-names "*Help*")
+        (add-to-list 'same-window-buffer-names "*Apropos*")
+        (add-to-list 'same-window-buffer-names "*Summary*")
+        ;;this fixes it but makes completions not work in
+        ;;lisp and shell.  maybe turn this off and try . for
+        ;;regexp in same-window-regexps?
+        (setf pop-up-windows nil)
+        (defvar alpha-same-window-buffer-names same-window-buffer-names)
+        '(defadvice pop-to-buffer (around alpha-one-window first activate)
+          "the original is c source code and in emacs 22 pops up a new buffer.  in
+        principle i could fix the complicated help code so that clicking on a button
+          puts the result in the current window, but this way i can fix other
+          similar things by checking the buffer name that it is from, very similar
+          to the target buffer name thing that it already pays attention to."
+          ;;nyi
+          (let ((b (buffer-name)))
+            (unless nil (message "hi")))
+          ad-do-it
+          )
+
+-- gambarimasu
+
+---- 
+
+Another option is to use one of the packages that allows you to "stack"
+virtual emacs window configurations within a single frame.
+For instance, you could use one
+"screen" for programming, one for Gnus, and another for WThreeM.  This
+allows these applications to adjust their window configuration without
+affecting anything on the other "screens".  Personally, I find this
+very confortable.  -- MarcoMaggesi
+
+: Packages such as...?
+
+: Me too -- LathI
+
+: Such as elscreen? http://www.morishima.net/~naoto/software/elscreen/
+
+
+----
+
+How about Version Control?  While committing, after the log message is ready, pressing C-c C-c can successfully destroy my window configuration.  -- Marek
+
+
+----
+CategoryBbdb
+CategoryGnus
+CategoryWindows

@@ -1,0 +1,41 @@
+Key-chord lets you bind commands to combination of key-strokes.
+Here a "key chord" means two keys pressed simultaneously,
+or a single key quickly pressed twice. (*)
+
+The same keys used by their own (or with other keys not defined
+as key chords) retain their original command bindings.
+
+There are some info and examples in the elisp-file.
+
+* Lisp:key-chord.el
+
+(*) (In other emacs related texts, pressing SHIFT and/or
+META plus another key is sometimes call a "[[chord]]", but not here.
+However SHIFT plus _two_ normal keys might be a "key chord".)
+
+-- DavidAndersson
+
+----
+[new:rubikitch:2008-11-05 03:40 UTC]
+A thumb is a finger of the strongest! Let's utilize a thumb.
+Small hack to define a key-chord starting with Space.
+
+Lisp:space-chord.el  -- [[rubikitch]]
+
+[new:PatRegan:2009-02-19 05:23 UTC]
+key-chord and space-chord both looked interesting to me.  space-chord didn't seem to want to work at all, but I didn't investigate that at all.
+
+key-chord seems to pick up my typing as chords.  I tried setting key-chord-two-keys-delay and key-chord-one-key-delay to lower values.  I halved them a few times, I had key-chord-two-keys-delay down to 0.0125.  Maybe I just type too fast, or maybe the effective delay can only go so low.
+
+-- PatRegan
+
+[new:DavidAndersson:2009-03-06 12:13 UTC]
+Pat: I would recommend you avoid combinations that are even slightly common in your writing (prose or programming). See the "Tips" commentary in the source. When you have decided on a candidate ("xy"), check it on your own texts with this command (on any non-windows computer):
+
+ egrep -R --include='*.txt' --include='*.cc' 'xy|yx' .
+
+-- DavidAndersson
+
+----
+CategoryKeys
+

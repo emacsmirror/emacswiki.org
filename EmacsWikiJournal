@@ -1,0 +1,36 @@
+== About ==
+
+Emacs Wiki Journal provides a journal environment based on EmacsWikiMode, supports RSS, calendar and archive links since it groups entries by month. It is a modified version from [http://www15.ocn.ne.jp/~rodinia/emacs-wiki-journal.el Yamagata Yoriyuki’s emacs-wiki-journal].
+
+== Download and Usage ==
+
+Get the latest version from here:
+
+* http://suchang.net/code/emacs-wiki-journal-latest.el.tar.gz.
+
+Uncompress it, change its name to emacs-wiki-journal.el and move it to your load-path, and add the following to your .emacs:
+
+<code>
+(require 'emacs-wiki-journal)
+</code>
+
+After that, just type `M-x emacs-wiki-journal-add-entry' to begin your journal. It's very easy to use.
+
+If you want to add calendar and achive links to your published file's sidebar, please edit your journal's `emacs-wiki-publishing-header' (or `emacs-wiki-purlishing-footer'), add the appropriate function. For more information, see the commentary in the file itself.
+
+Here are my emacs-wiki and emacs-wiki-journal config files to use as examples:
+
+# [http://suchang.net/code/emacs-wiki-conf.el.htm emacs-wiki-conf.el]
+# [http://suchang.net/code/.site-header.htm .site-header]
+# [http://suchang.net/code/.site-footer.htm .site-footer]
+# [http://suchang.net/code/.blog-header.htm .blog-header]
+# [http://suchang.net/code/.blog-footer.htm .blog-footer]
+
+I also maintain a [http://suchang.net/cs/EmacsWikiJournal.html Chinese page dedicated to EmacsWikiJournal]. If you have any problem or suggestion, contact me at suchaaa at gmail dot com.
+
+== Who uses it? ==
+
+* [[Sucha]]: http://suchang.net/blog
+
+----
+CategoryJournaling

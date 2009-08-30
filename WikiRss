@@ -1,0 +1,52 @@
+Metadata categories:
+* http://dmoz.org/Computers/Open_Source/Software/Editors/Emacs/
+* http://dmoz.org/Computers/Software/Groupware/Wiki/
+* http://dmoz.org/Reference/Libraries/Library_and_Information_Science/Technical_Services/Cataloguing/Metadata/RDF/Applications/RSS/
+* http://www.purl.org/rss/1.0/
+
+Keywords:
+* RSS RDF Rich Site Summary Simple Syndication Emacs XEmacs
+
+RSS feeds for changes to this wiki:
+
+''Note, many of these options in the query string can be combined and configured to your preference.''
+* [Self:action=rss Recent changes RSS with summaries]
+* [Self:action=rss;rsslimit=5 Recent changes RSS of 5 maximum entries with summaries]
+* [Self:action=rss;showedit=1 Recent changes RSS with minor edits with summaries]
+* [Self:action=rss;days=1 Recent changes RSS for last day with summaries]
+* [Self:action=rss;days=30 Recent changes RSS for last 30 days with summaries]
+* [Self:action=rss;full=1 Recent changes RSS with full pages]
+* [Self:action=rss;full=1;showedit=1 Recent changes RSS with full pages including minor edits]
+* [Self:action=rss;full=1;diff=1;page=0 Recent changes RSS with diffs]
+* [Self:action=rss;full=1;diff=1;page=1 Recent changes RSS with full pages and diffs]
+
+RSS feeds for the wiki blog at [[News]]:
+* [Self:action=rss;match=%5E%5Cd%5Cd%5Cd%5Cd-%5Cd%5Cd-%5Cd%5Cd RSS for News page with summaries]
+* [Self:action=rss;match=%5E%5Cd%5Cd%5Cd%5Cd-%5Cd%5Cd-%5Cd%5Cd;full=1 RSS for News page with full pages]
+
+RSS feeds for users on this wiki:
+
+''In place of "Anonymous", you can use your own UserName instead''.
+* [Self:action=rss;full=1;rcuseronly=Anonymous Recent changes RSS for edits by user "Anonymous" with summaries]
+* [Self:action=rss;full=1;rcuseronly=Anonymous Recent changes RSS for edits by user "Anonymous" with full pages]
+* [Self:action=rss;full=1;followup=Anonymous Recent changes RSS for followup edits for user "Anonymous"]
+* [Self:action=rss;full=1;followup=Anonymous;showedit=1;diff=1 Recent changes RSS for followup edits for user "Anonymous" with diffs including minor edits]
+* [Self:action=rss;rcidonly=Anonymous;showedit=1;days=14 Recent changes RSS for Anonymous user page with minor edits in last 14 days]
+* [Self:action=rss;rcidonly=Anonymous Recent changes RSS for Anonymous user page with summaries]
+
+RSS for pages on this wiki:
+
+''Write one page name for the **rcidonly=** parameter in the first example, but for multiple pages you'll need to follow basic Perl regular expressions with the **match=** parameter.''
+* [Self:action=rss;rcidonly=EmacsNiftyTricks Recent Changes RSS to the page EmacsNiftyTricks]
+* [Self:action=rss;match=%5E%28CuaMode%7CInteractivelyDoThings%7CBinaryData%7CKeyboardMacros%29%24 Recent changes RSS to the pages CuaMode, InteractivelyDoThings, BinaryData and KeyboardMacros]
+
+RSS feed for the ElispArea:
+* http://www.emacswiki.org/elisp/changelog.rss
+
+Explanation:
+* Wiki:WikiStyleRss
+* MeatBall:RichSiteSummary
+
+How to use it for this wiki:
+* Oddmuse:RSS
+* [[Oddmuse:RSS Action]]

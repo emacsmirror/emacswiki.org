@@ -1,0 +1,22 @@
+Lisp:ayr-china-util.el
+
+Convert chinese characters to pinyin, using TONEPY and PY-b5
+(or rather, excerpts of those.)  It does this by building a
+hash table of b5 and gb chars, mapped to pinyin.  For chars
+with multitple readings, it maps them to "pinyin0|pinyin1|...",
+etc.  For instance, one character maps to "xing2|heng2|hang4|hang2".
+
+This library needs work, the least to give it better names,
+a better name overall, documentation, and better library-fu
+(for instance, it should probably PROVIDE a feature). (ooh,
+and if C-u C-x =  could use this to also show the pinyin
+readings...)
+
+
+! bah, the encoding didn't survive.  I'll get back to this.
+
+[new]
+Yeah, anything that's a page on the wiki is UTF-8 encoded.
+You need to put octal escapes in your lisp code, or use a file upload.
+(_Replace text with file_ at the bottom of the edit window.)
+-- AlexSchroeder

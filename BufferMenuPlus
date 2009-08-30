@@ -1,0 +1,65 @@
+Library <tt>[[buff-menu+.el]]</tt> ('''Buffer Menu+''') provides the following enhancements to the standard BufferMenu:
+
+* A new column, '''Time''', which is the time that a buffer was last accessed (displayed).  Short and long time formats (option). (Emacs 22 or later.)
+* You can selectively ''hide'' any of the columns '''Time''', '''Mode''', and '''File''', using user options or toggle commands.  This is useful to save horizontal space. (Emacs 22 or later.)
+* You can use `##+##' and `##-##' to increase and decrease the '''Buffer''' and '''Size''' column widths. (Emacs 22 or later.)
+* You can sort ''up or down'' by clicking any column heading. The sorted column and its sort order (ascending, descending) are indicated by ''highlighting'' (underlining, overlining). (Emacs 22 or later.)
+* You can [[Customize|customize]] which column to sort by default using [[option]]
+'''`Buffer-menu-sort-column''''.
+* Clicking column heading '''CRM''' sorts the buffers by time of ''first'' access (visit). This is not the same thing as a descending sort of '''Time''', which is the time of ''last'' access (display). If you have many buffers (especially if they have similar names), sorting by one of these columns can be useful. (Emacs 22 or later.)
+* You can customize the default sort column. (Emacs 22 or later.)
+* Buttons in header columns are wider, so easier to click. (Emacs 22 or later.)
+* A ''mouse popup menu'' (`mouse-3') was added, providing these menu items:
+** '''Select Buffer'''
+** '''Unmark Buffer'''
+** '''Mark to Save Buffer (S)'''
+** '''Mark to Delete Buffer (D)'''
+** '''Mark as Modified/Unmodified (*)'''
+** '''Execute: Save/Delete Marked Buffers'''
+** '''Delete All <nowiki>`D'</nowiki>, Even If Modified'''
+* That last `mouse-3' menu item is a new command, `Buffer-menu-delete-flagged' (bound to `C-M-x'), that deletes all buffers flagged `D', even if they are modified.
+* Command `buffer-menu' was redefined so that:
+** A prefix argument zero or less means list buffers ''alphabetically''.
+** A prefix argument zero or more means list only ''file buffers''.
+* The buffer-menu buffer (<code>*Buffer List*</code>) is font-lock ''highlighted'':
+** Each field of buffer (Buffer, Mode, File etc.) uses a different [[face]].
+** Each mark uses a different face (Save, Delete, Read-Only, Mark, Current). All faces (there are eleven) are user-definable (variables).
+* The buffer lines have the `mouse-face' property on the whole line, so you can click it anywhere.
+* Command `Buffer-menu-execute' (<code>x</code>) deletes all windows that show a buffer, when it kills the buffer.
+* Command `Buffer-menu-select' (<code>v</code>) uses `pop-to-buffer' when the <code>*Buffer List*</code> window is `window-dedicated-p'.
+* Bug fix: In Emacs 21, if buffer <code>*Buffer List*</code> is a special-display buffer (for instance, if you set `special-display-regexps' to match buffer names "*...*"), then you cannot revert the buffer or sort on a column by clicking its header. (This is fixed in Emacs 22.)
+
+Here is a screenshot of the <code>*Buffer List*</code> buffer in Emacs 20:
+
+: [[image:DrewsEmacsBufferMenu]].
+
+Here is a screenshot of it in Emacs 22, showing the new time-last-accessed column and highlighting (underlining) of the sorted column.
+
+: [[image:DrewsEmacsBufferMenuSorted]].
+
+Both of these screenshots are a bit old. Now, different kinds of buffers (directory, `##*...*##' name, normal) are highlighted differently, and the buffer name is also highlighted specially when you mark or flag a buffer.
+
+Celebrity of Buffer Menu+ (humor): [http://groups.google.com/group/alt.religion.emacs/browse_thread/thread/61e8ff3d322a7a48/4b10bf60fba869cc#4b10bf60fba869cc]
+
+
+
+== Search All Marked Buffers using Icicles ==
+
+With [[Icicles]], you can use '''`M-s i'''' in Buffer Menu to search all marked buffers  and possibly replace search hits.  You have
+available all of the [[Icicles - Search Commands, Overview|Icicles Search]] features, including accessing search hits directly, in any order.
+
+
+== Buffer Menu+ Discussion ==
+
+[new]
+Buffer Menu+ looks very useful. But please, /please/ use PNG for screenshots, not JPEG.[http://lbrandy.com/blog/wp-content/uploads/2008/10/jpg_vs_png2.png]
+
+
+[new]
+Both ##buff-menu+.el## and recent versions (Sept. 8/2004) of ##buff-menu.el## call the function /format-mode-line/. Any ideas where it can be found? Thanks. -- SteveTaylor
+
+[new:DrewAdams:2004-12-24 21:42 UTC]
+: It's in GNU Emacs 22 and later. -- DrewAdams
+
+----
+CategoryBufferSwitching

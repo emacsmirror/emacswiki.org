@@ -1,0 +1,12 @@
+Antlr-mode can be found at the following url: http://antlr-mode.sourceforge.net/ . It is also packaged in the latest antlr release. Look in the *extras* directory.
+
+It provides (taken from the website):
+
+* Consistent Indentation. You do not have to insert or delete the correct amount of spaces or tabs manually to indent a line according to ANTLR's coding style: just press TAB. It is even done automatically if you insert an ANTLR syntax symbol (one of :;|&(){}). Use the menu to indent all lines in a selected region.
+Syntax Highlighting. When enabled, this mode highlights grammar symbols (syntax symbols and keywords: bold black, rule references: dark blue, token references: dark orange, rule/token definition: bold blue) and the code in actions. See example.
+* Code Browsing. Find the definition of a rule, token, or grammar class by using the Index menu, a keyboard command or selecting an entry in the speedbar frame.
+Fast Navigation. Move to the next or previous rule definition or to the beginning or end of the rule body by one or two key strokes.
+* Action Visibility. Control the visibility of less important code like actions.
+* Option Support. Insert or change one of ANTLR's options by a using the menu or a keyboard command. This mode knows the options supported by ANTLR, their allowed values and the correct position where to insert the option (and the surrounding options{} if necessary).
+* Tool Invocation. Run ANTLR from within Emacs and find the error position by selecting the error message via the mouse or a keyboard command.
+* Makefile Creation. Show the makefile dependencies for all grammar and generated files in the current directory. For it, this mode considers the value of ANTLR's language option, import/export vocabularies and grammar inheritance. See example.

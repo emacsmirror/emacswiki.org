@@ -1,0 +1,432 @@
+Gnuclient allows you to edit files using an already running Emacs or XEmacs.
+It is part of XEmacs.  The program EmacsClient shipped with GnuEmacs supports similar functionality and as of Emacs 22.1 supports all of the features and platforms that Gnuclient does, therefore the rest of this page applies to GNU Emacs 21.4 and earlier for users who require functionality beyond simple file loading, and MS Windows users (and XEmacs, of course).
+
+----
+
+You could use this as your external editor from [[Mozilla]] using the appropriate extension, for example.
+
+Older versions:
+* http://www-uk.hpl.hp.com/people/ange/gnuserv/
+
+For a newer version modified for MS Windows see below.
+
+Emacs already has such a utility: EmacsClient (starting from GnuEmacs 22.1 also on Microsoft Windows).   The problem with
+emacsclient is that with versions prior to and including 21.4 you cannot use it to execute arbitrary elisp code.
+This is necessary if you want to use Emacs to follow mailto links, for
+example.
+
+To install, add the following to your init file:
+
+    (load "gnuserv")
+    (gnuserv-start)
+
+If you are download the alpha version available on that web site, make
+sure that you configure the gnuserv.h correctly about the connection
+mechanism you prefer. It has three options,
+SYSV_IPC,INTERNET_DOMAIN_SOCKETS and UNIX_DOMAIN_SOCKETS. If you use
+the default, it will be compiled with INTERNET_DOMAIN_SOCKETS. In this
+case, you need to have an environment variable called GNU_SECURE which
+will point to a file which in turn contains the list of hosts (one per
+line) that are trusted. This is a security mechanism. I would have
+expected the localhost to work properly but for some reason, on my
+machine, this was failing with "Refused connection to <my m/c IP>" in
+the buffer for emacs. After I added GNU_SECURE part, it seems to work
+OK. HTH --GirishB
+
+== Windows ==
+
+A newer version of gnuserv/client can be found here:
+* http://www.wyrdrune.com/index.html?gnuserv.html
+
+Windows users read the FAQ:
+
+* http://www.gnu.org/software/emacs/windows/faq3.html#TOC36
+
+You may also want to read the following:
+
+* http://www.math.auc.dk/~dethlef/Tips/gnuserv.txt
+
+and
+
+* http://home.no.net/skund/emacs/emacs017.htm
+
+With emacs 21.3.1 and windows 98 the following init file lines (rather than the ones in the previous section) were needed for installation:
+
+    (load-library "gnuserv")
+    (gnuserv-start)
+    (setq gnuserv-frame (selected-frame))
+
+winclient, a DDE client for XEmacs, is part of the native Windows build since
+
+* http://www.xemacs.org/Releases/21.4.9.html#summary
+
+(but there doesn't seem to be documentation for winclient.exe or hooks for winclient-edited files?)
+
+== Installing with stow ==
+
+Stow is a utility that allows you to maintain packages installed in
+the /usr/local tree.  This sequence of commands works fine:
+
+    # I need this to put Emacs on the root PATH:
+    export PATH=$PATH:/usr/local/bin
+    ./configure
+    make
+    mkdir -p /usr/local/stow/gnuserv/bin
+    cp gnuclient gnudoit gnuserv /usr/local/stow/gnuserv/bin/
+    mkdir -p /usr/local/stow/gnuserv/man/man1
+    cp *.1 /usr/local/stow/gnuserv/man/man1
+    mkdir -p /usr/local/stow/gnuserv/share/emacs/site-lisp
+    cp *.el /usr/local/stow/gnuserv/share/emacs/site-lisp
+    cd /usr/local/stow
+    stow gnuserv
+
+Get Stow here:  http://ftp.gnu.org/gnu/stow/stow-1.3.3.tar.gz
+
+== XEmacs and stow ==
+
+If you have both Emacs and XEmacs installed, and you are using stow to
+maintain the packages, then the gnuserv package will conflict with the
+XEmacs package -- the three executables and the manpage are the same.
+I just deleted the XEmacs versions:
+
+    rm /usr/local/stow/xemacs/bin/gnu*
+    rm /usr/local/stow/xemacs/man/man1/gnu*
+
+I didn't try to just use the gnuserv package that came with XEmacs.
+Has anybody tried?
+
+== gnuclient not starting a new emacs ==
+
+[new]
+Here is a script to do use gnuclient when Emacs is already using and to start Emacs otherwise:
+
+<pre>
+    #!/bin/bash
+
+    emax()
+    {
+    instanceCount=$(ps aux | grep xemacs | grep -v 'grep xemacs' | wc -l);
+    if [ "$instanceCount" -eq "0" ]; then
+            xemacs "$@" &
+    else
+            gnuclient -q "$@"
+    fi;
+
+
+    }
+</pre>
+
+For Emacs-21 emacsclient, you may just say
+<pre>
+emacsclient -a emacs "$@"
+</pre>
+In fact, you could call even call vi if Emacs was not up.
+
+When I open a gnuclient window, I don't think of it as being bound to a particular
+buffer, so I don't like it to close itself when I close that buffer.
+This script lets you open files from the shell without them becoming owned by gnuclient.
+-- AdrianKubala
+
+I use a slightly edited version of the above on my system. It only
+checks for emacs processes running as your user (which is useful if
+you occaisonally edit system files as root too). Also it doesn't
+background ever. You'll probably need to change the 3rd line to point
+at the right version of emacs. Personally, I run debian, so this is
+saved as /usr/local/bin/emacs and I use the alternatives system to
+point /usr/bin/emacs at this script.
+
+<pre>
+    #!/bin/bash
+
+    emacs=/usr/bin/emacs22-gtk
+    gnuclient=gnuclient
+
+    ps x | grep "[^]] $emacs"
+    if [ "$?" -eq "0" ]; then
+        $gnuclient -q "$@"
+    else
+        $emacs "$@"
+    fi
+</pre>
+
+-- RupertSwarbrick
+
+<pre>
+    #!/bin/bash
+    file="$1"
+    if [[ -n "$file" ]]; then
+     if [[ ${file:0:1} != "/" ]]; then file="`pwd`/$file"; fi
+     gnuclient -batch -eval "(find-file-other-frame \"$file\")" > /dev/null
+    else
+     gnuclient -batch -eval "(new-frame)"  > /dev/null
+    fi
+</pre>
+
+A small improvement : if gnuclient fails, launch xemacs . -- jeyries
+
+<pre>
+#!/bin/bash
+cmd=""
+for file in $@ ; do
+    if [[ ${file:0:1} != "/" ]]; then file="$PWD/$file"; fi 
+    cmd="$cmd (find-file \"$file\")";      
+done
+if [[ -z "$cmd" ]]; then
+    cmd="(new-frame)"
+fi
+
+gnuclient -batch -eval "$cmd"  > /dev/null 2> /dev/null
+if (( $? )); then
+    xemacs $* & 
+fi
+</pre>
+
+
+== On the console ==
+
+You can use gnuclient on the console, too, although usage is a bit weird.
+One one terminal, start Emacs.  Switch to another terminal, call gnuclient
+with a filename.  The screen goes blank.  Now switch back to the first
+terminal and note that Emacs opened the correct file.  Edit, finish, switch
+to the second terminal and continue working.
+
+If you find this procedure confusing, you are not alone.  Alas,
+GnuEmacs cannot currently handle two different display types
+at the same time. Fortunately this is issue is being resolved, see MultiTTYSupport.
+[[XEmacs]] has no such problems.
+
+For an alternative to MultiTTYSupport which is less elegant but without the need to 
+patch your emacs, you may want to have a look at ScreenServer.
+
+== Reusing Frames ==
+
+Set `gnuserv-frame' to the frame you want to use.  Here is something you might want:
+
+    (setq gnuserv-frame (selected-frame))
+
+This will force gnuclient to keep using the same frame over and over.
+This is a problem if you ever delete the original first frame --
+because then gnuserv-frame points to a nonexisting frame.
+
+You can also get a little more fancy and try this:
+
+    (setq gnuserv-frame (lambda (f) (eq f (quote x))))
+
+When you are running from an emacs in X, that will cause it to open in the same frame.  But if you run it on a TTY, then it will open a new frame.
+
+
+== Reusing Frames And Popping The Frame To The Foreground ==
+
+In order to reuse the same frame, and raise it to the foreground, you
+can just advise the `server-find-file' and `server-edit'.  Note the
+addition of `raise-frame'.  Note also that the `lower-frame' call
+might not do what you expect; at least when using the [[ratpoison]] window
+manager, I do not get popped back to the last window I used (which
+called gnuclient).  The following also makes sure that `gnuserv-frame'
+always points to an existing frame.
+
+    (defadvice server-find-file (before server-find-file-in-one-frame activate)
+      "Make sure that the selected frame is stored in `gnuserv-frame', and raised."
+      (setq gnuserv-frame (selected-frame))
+      (raise-frame))
+
+    (defadvice server-edit (before server-edit-in-one-frame activate)
+      "Make sure that the selected frame is stored in `gnuserv-frame', and lowered."
+      (setq gnuserv-frame (selected-frame))
+      (lower-frame))
+
+''I do something I think is simpler and better (part of it is RP-only):''
+
+    (load-file "~/ratpoison/contrib/ratpoison-cmd.el")
+    (add-hook 'server-switch-hook 'raise-frame)
+    (add-hook 'server-done-hook 'ratpoison-prev)
+
+== Reusing only visible frames already containing the file ==
+
+If you use InverseSearch with <tt>xdvi</tt>, it is often the case that the
+purpose of invoking <tt>gnuclient</tt> is not to start editing a new file
+but to move the point in the already edited file.  A sensible
+solution is to have <tt>gnuclient</tt> reuse a visible frame already
+containing the file, and open a new one only if necessary.  Define
+
+<pre>
+    (defun local-gnuserv-open(filename lineno)
+      (let ((buffer (find-file-noselect (file-truename filename)))
+            (pop-up-frames t)
+            (display-buffer-reuse-frames t))
+        (set-buffer buffer)
+        (select-window (display-buffer buffer nil 0))
+        (goto-line lineno)
+    ))
+</pre>
+
+and invoke <tt>gnuclient</tt> like this
+
+<pre>
+gnuclient -q -batch -eval "(local-gnuserv-open \"$filename\" $lineno)"
+</pre>
+
+== invoking dired from xterm ==
+
+alias dired='gnudoit "(progn (select-frame (make-frame-on-display \"$DISPLAY\")) (dired \"$(pwd)\"))"'
+
+
+== Only one copy of the file being edited ==
+
+One of the nicest things with GnuClient is mentioned here just as a byproduct. I believe that is because Emacs users are often used to work from within Emacs. Coming from (still there) MS Windows I work most often in another way. From the command line (most often) I give a command to edit a file. Then I want my editor of choice to first look for an already opened copy of that file. (It should not behave like Notepad.) This is what GnuClient does for me.
+
+See also the variables <code>find-file-visit-truename</code> and <code>find-file-existing-other-name</code>.
+
+== Launching Frames from Emacs Running as a Daemon Server == 
+
+[Originally, on WishList article.]
+
+* Having the ability to run Emacs as a kind of daemon that
+  would stay open even when there are no windows open would also be cool. 
+  -- ClaireConnelly
+** I do this with XEmacs.  Run xemacs -unmapped and then use gnuclient to open up windows. -- AmitPatel
+
+== Using GnuClient and PuTTY for Latin-1 characters input ==
+
+The following assumes that the terminal and shell are 8-bit clean.
+
+Place in your .xemacs/init.el:
+
+<pre>
+;; Allow Latin-1 from ssh as raw
+(defun njsf-input-tty-mode ( &optional console )
+  "Set the eight bit to raw"
+  (interactive "")
+  (let ((cur-console (selected-console)))
+    (when console
+      (select-console console))
+    (set-input-mode nil nil 0)
+    (when cur-console
+      (select-console cur-console))))
+
+(add-hook 'create-console-hook 'njsf-input-tty-mode t)
+(add-hook 'after-init-hook 'njsf-input-tty-mode t)
+</pre>
+
+It is assumed you started a gnuserv session previously before reaching these steps.
+
+Set in the PuTTY configuration:
+Terminal / Keyboard / Backspace key / Control-? (127)
+(This way Backspace is Backspace and not C-h for help)
+
+After connect I advise:
+
+<pre>
+$ stty erase C-v BS
+</pre>
+
+This should have the effect of showing in prompt 
+<pre>
+stty erase ^?
+</pre>
+
+To use gnuclient you can use:
+
+<pre>
+$ gnuclient -nw
+</pre>
+
+And now you can type Latin-1 caracters directly.
+
+== Piping data to an Emacs buffer ==
+
+Here is a perl script I call emacs-pipe, for piping data to an Emacs buffer.
+
+<pre>
+#! /usr/bin/perl
+
+##
+## This script uses gnudoit to put the contents of STDIN
+## in an Emacs buffer called *Piped*
+##
+
+if (! `which gnudoit 2>/dev/null`) {
+  print STDERR "This script requires gnudoit\n";
+  exit();
+}
+
+while(<STDIN>){ $foo .= $_; }
+$foo =~ s/(["\\])/\\$1/g;
+open(GNUDOIT, "|gnudoit -q");
+print GNUDOIT <<EOF;
+
+(with-current-buffer
+ (get-buffer-create "*Piped*")
+ (delete-region (point-min) (point-max))
+ (insert "$foo"))
+
+EOF
+
+</pre>
+
+== Getting gnuserv running on GNU Emacs 21.3.1 for Windows ==
+
+What and how to install to be able to use gnuserv on emacs running on Windows?
+
+Assumption: You already have a running emacs.
+
+Steps.
+# Download  [http://www.ourcomments.org/Emacs/DL/EmacsW32-only/EmacsW32-alone-1.06.zip EmacsW32-alone-1.06.zip]  .
+# From the zip file, extract gnuserv.exe, gnuclientw.exe, gnuclient.exe into your 'bin' dir of your existing
+ emacs installation.
+# add the following into your InitFile.
+
+<pre>
+(load "gnuserv")
+(gnuserv-start)
+</pre>
+
+From now on you should start emacs using 'gnuclientw.exe' found in your 'bin' dir of emacs installation and it should load and run gnuserv by itself.
+
+In case you get an error like .
+<pre>
+...Could not find emacs_dir in Registry (searched HKCU and HKLM )...
+</pre>
+
+You can run addpm.exe in your 'bin' directory of your emacs installation,  though this error may be quite harmless.
+
+* thanks to piyo and pgas from #emacs on freenode irc.
+
+<pre>
+Hope somebody finds it helpful.
+
+Thanks
+fandang0
+</pre>
+
+== Bug: Delay in "activation" of CUA mode or IDO mode ==
+
+I use [http://www.wyrdrune.com/index.html?gnuserv.html Guy Gascoigne's Windows port of gnuserv] with Emacs 22.1.1 for Windows. In my <code>.emacs</code> file, I have
+
+    (load "gnuserv")
+    (gnuserv-start)
+    (setq gnuserv-frame (selected-frame))
+
+making use of the file <code>gnuserv.el</code>, which I have placed in my <code>site-lisp</code> directory. Furthermore, in my <code>bin</code> directory I have placed, together with the usual Emacs <code>.exe</code> files, the files <code>gnuclient.exe</code>, <code>gnuclientw.exe</code>, <code>gnudoit.exe</code> and <code>gnuserv.exe</code>. Thus, I can open files "with" Emacs by passing them to <code>gnuclientw.exe</code>. That is, in the "Open file with ..." dialog I select <code>gnuclientw.exe</code>, and in my <code>SendTo</code> folder I have a shortcut to <code>gnuclientw.exe</code>. It works!
+
+However, there is a slight problem when using CUA mode or IDO mode (and perhaps other modes as well). I'm fond of both, so in my <code>.emacs</code> file I also have
+
+    (cua-mode t)
+    (setq cua-enable-cua-keys nil)
+    (require 'ido)
+    (ido-mode t)
+
+Now, if I start Emacs by clicking on a file it's associated with, some aspects of CUA mode and IDO mode will not immediately work! For instance, CUA mode activates transient mark mode, but when setting the mark, no highlighting of the region occurs. Similarly, no auto-completion is provided by IDO mode when finding files with <code>C-x C-f</code>. However, neither of these are lasting problems. After about a minute, highlighting of the region is "turned on", and IDO mode becomes active when finding files. What is going on here?
+
+I've found that the delay is probably related to the start-up message. When starting up Emacs the ordinary way, the Emacs logo and some helpful clues are displayed for about the same amount of time. After that, Emacs switches to the <code>*scratch*</code> buffer. Similarly, at the precise moment when CUA mode and IDO mode are fully "activated", some "refreshing" of the buffer seems to take place -- akin to the refreshing of a web page in a web browser.
+
+Finally, I've found that deactivating the start-up message makes the problem <b>disappear</b>:
+
+    (setq inhibit-startup-message t)
+
+When the line above is added to <code>.emacs</code>, there is no delay in the "activation" of CUA mode and IDO mode when opening files with <code>gnuclientw.exe</code> -- in my experience, they both work flawlessly now.
+
+I provide this information to aid those Windows users who, like me, use Guy Gascoigne's Windows port of gnuserv (which is actually the patched version of gnuserv that previously came with %%EmacsW32%%) instead of the [http://www.ourcomments.org/Emacs/EmacsW32.html EmacsW32] project's patched version of Emacs. There might be better ways to deal with this bug than the fix I've described here.
+
+----
+CategoryExternalUtilities

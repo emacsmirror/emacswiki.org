@@ -1,0 +1,137 @@
+I use emacs!
+And I like it!
+
+Emacslisp.org is dead... very sorry about that!
+
+I've put my MpthreePlayer package at sourceforge (http://emacsmp3player.sourceforge.net)
+
+NOTE: I am a MeatBall:RecentChangesJunkie.
+----
+== What I use emacs for: ==
+
+=== php editing ===
+
+My job is php programmer, but sadly I do brain dead HTML most of the time.
+
+I use a mix of PsgmlMode,  Lisp:css-mode.el, PhpMode, mmm-mode and a config file build from several sources on the web (including HtmlModeDeluxe )
+
+=== Mail and News reading ===
+
+I use gnus for both and I love it!
+I use BbdbMode to keep record of emails address.
+
+=== Text editing ===
+
+Beside codes, I often need to edit text file (mostly config files for software).
+I don't use any particular mode for that, fundamental-mode is all that I need.
+
+=== Elisp hacking ===
+
+My favorite programming language is EmacsLisp.
+Because it is fun.
+
+In my spare time, I hack EmacsLisp.
+But now that I dont know what more to add to my .emacs, 
+I hack a MusicPlayers called MpthreePlayer . 
+
+It is not as sophisticated as mpg123 and MonK but that's what I want.
+I dont want (and need) any visual feedback, all I want is for the music to play; 
+for me there no need for a buffer to do just that.
+
+My goal is just to ask emacs to play some music and It will be intelligent enough to know what files to play (according to things like time of day, latest downloaded and such).  I want Emacs  to understand me... :-)
+
+Other packages that i've made are ell.el to browse the EmacsLispList, ThumbsMode to browse images from emacs and Hachette to consult the online french dictionary.
+
+=== Music listening ===
+
+Of course, I use my own package for Emacs as my MusicPlayers.
+
+=== xml/xsl/dtd programming and more text editing ===
+
+My main hobby is Role-playing.
+I'm the gamemaster of a Warhammer Fantasy Roleplaying campaign.
+: C'est bourrin Warhammer quand même :) Mais pour les joueurs (moi quoi) c'est marrant ! Archimage power ! -- LucasBonnet
+
+I'm working on some xml formats to manage and store my data (new careers, npcs, monsters, scenarios e.t.c)
+So far I've developped a XML DTD for careers and one for Race.
+
+I used PsgmlMode for that.
+
+Idealy I would like to create a emacs lisp mode for creating characters and other GM helper programs.
+
+If you are interested by these files, feel free to email me.
+
+=== Playing Tetris ===
+
+When I'm bored, I do M-x tetris to enter TetrisMode...
+
+== What I was using emacs for but stopped ==
+
+Not because emacs was doing it bad you know... but as I've said before I was bullied into falling in the CategoryWThirtyTwo .
+
+=== Remote file editing ===
+
+TrampMode is one of the best thing since fire and the wheel.
+But I haven't yet succesfully made it work with my cygwin ssh...
+
+=== Spell check ===
+
+Same for InteractiveSpell.  This is bad as I write a lot in english (like now) but this is really not my native language...
+:: à l'époque ce n'était pas trop difficile. Voir 
+http://www.emacsfr.org/phpwiki/index.php?CygwinIspell. aussi il va peut etre
+te falloir un  (setq exec-path (cons "c:/cygwin/usr/local/bin/" exec-path) dans ton .emacs (ou dans le path du systeme) --PierreGaston
+
+::: Malgr&eacute; tout mes efforts, j'en arrive toujours a :
+    
+
+    Loading ispell...
+    check-ispell-version: c:/cygwin/usr/local/bin/ispell exited with code 1
+
+== What I don't use emacs for (even if it can do it) ==
+
+=== Browsing the web ===
+
+W3 is a nice program, so probably is WThreeM.  But I really love Mozilla....
+
+Actually there is only one thing that I HATE like hell when using Mozilla and make me dream I'm using Emacs for web browsing also...
+
+When I'm editing text in a HTML textarea (like I'm doing now on the wiki) and I want to copy text I hit C-w 
+and what I do is close the tab...  If there is only open tab, I close the browser.....
+
+I'm supposed to use C-c to copy they say...  but my brain does'nt  care about being on Mozilla and w32, for it, copying is done with C-w! 
+
+What I would like (and I'm sure it's possible) is a way for Mozilla to embed Emacs in textarea or, at least, to emulate it's key binding.
+
+PeterWiersig: http://reddleman.org/site/projects/electrix/ should help you there. 
+:: I'm unable to install it (Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.4b) Gecko/20030516 Mozilla Firebird/0.6) :-(
+
+::: Same here.  I also tried another mozilla project which also seeks to do what electrix does.  I installed them both, but they both give "wrong argument" errors when trying to invoke electrix/otherone.  -- DeepakGoel
+
+http://www.mozilla.org/projects/ui/accessibility/mozkeyintro.html talks about Emacs bindings in Mozilla, but I didnt' read enough to find out how to do it.  -- PatrickAnderson
+
+=== Doing the coffee ===
+
+Emacs CAN do it, but my cofee machine is not on the network :-(
+: They don't want to put coffee machine on network at school too...
+
+
+== What my emacs look like ==
+
+Sorry, no screenshot!
+
+I use  no toolbar, no scrollbar no menubar!
+my win32 font is "-*-Fixedsys-normal-r-*-*-12-90-96-96-c-*-iso8859-1"
+my unix font is "-adobe-courier-bold-*-*-*-12-*-*-*-*-*-*-*"
+Font color is wheat usualy on a Dark Slate Gray background (actualy dark slate gray is not gray, it's moore like a dark green).  I say "usualy" because I check the username and if it is root I set the background black.  I dont do this often but when I do this is a warning to be more careful.
+
+Visual bell is on (I hate PC Speaker)
+
+I use popupmenu.el (it place what is supposed to be in the menubar to a popup menu called with C-mouse-3) 
+
+My calendar is in french and open in a new window - This is the only case I use windows in emacs.
+
+
+... to be continued
+
+----
+CategoryHomepage

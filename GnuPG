@@ -1,0 +1,17 @@
+To use GnuPG with MailCrypt you should
+
+<pre>
+(mc-setversion "gpg")
+(setq mc-gpg-user-id "user@foo.dom")
+</pre>
+
+This is all the customization I've done to MailCrypt to make it work with GnuPG.
+
+
+I have been having trouble getting MailCrypt to work on windows, 
+and I didn't want to depend on cygwin's sh.exe, 
+so I wrote an independent gpg mode that only requires
+a working gpg setup: Lisp:dgpg.el    -- DavidElentok
+
+----
+CategoryCryptography

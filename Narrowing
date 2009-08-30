@@ -1,0 +1,29 @@
+In Emacs terms, '''[::narrowing]''' the [[buffer]] means that you restrict
+yourself from accessing anything but a certain part of the current
+buffer.  The rest of the buffer is invisible, unreachable, ineditable
+(inedible, so to speak).
+
+This is useful when you want to work on one part of the buffer only,
+while making sure you can't mess up the other parts of it.  The most
+common way to narrow the buffer is `C-x n n' which calls
+<code>narrow-to-region</code>.
+
+This is very often used in EmacsLisp code.  It is used whenever a large
+file is loaded into memory and only part of it is visible at any given
+moment.  Examples: Reading a mail file and displaying one mail at a
+time; reading an info file and displaying one node at a time.
+
+A similar effect could be achieved by using text properties, but
+narrowing is much easier to use.
+
+In order to undo narrowing, use `C-x n w' which calls the function
+<code>widen</code>.
+
+*Note to Emacs Lisp hackers*: The use of <code>widen</code>
+in EmacsLisp programs to "temporarily" move to sections of the file, that
+some calling code has narrowed away, usually points to some design
+problems.  Widening may confuse the calling code.
+
+----
+CategoryGlossary
+CategoryRegion

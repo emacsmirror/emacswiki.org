@@ -1,0 +1,41 @@
+This is a variable without a defvar.  Setting it may cause problems for other people.  Example:
+
+ (defun foo ()
+   (let (name)
+     (setq names "test")
+     names))
+
+This will return "test" as expected, and still cause a warning, because of the typo (names vs. name).  The problem only appears if other people call foo, because DynamicBinding will clobber their variable:
+
+ (defun bar ()
+   (let ((names "good"))
+      (foo)
+      names))
+
+This will now return "test" instead of "good" -- because foo clobbered the names variable.
+
+Sometimes such warnings cannot be avoided.  Example:
+
+ (when (featurep 'xemacs) (setq font-lock-mode t))
+
+This will
+work for XEmacs, never run on Emacs, and when compiled you will
+get a warning on Emacs...  Ignore it.
+
+You can get rid of byte-compiler warnings about free variables if you know
+that they are not real problems by letting the compiler know about them.
+
+    (eval-when-compile
+       (defvar my-free-variable))
+
+Will make the byte-compiler not warn about <code>my-free-variable</code> being free.
+Note, this does not actually introduce a binding for <code>my-free-variable</code>.
+
+    (progn
+      (defvar my-free-variable)
+      (boundp 'my-free-variable))
+        => nil
+
+----
+CategoryCode
+ComparativeEmacsology

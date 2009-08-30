@@ -1,0 +1,26 @@
+[new:DrewAdams:2005-07-30 15:25 UTC]
+See ElispArea for the continuation of this discussion. Please update the thread there, not here. -- DrewAdams
+[new]
+
+The ElispArea is gone, at least as far as the separate directory of uploaded text files is concerned.
+Just paste EmacsLisp files onto ordinary wiki pages.  If the page starts with ";;;" it will be formatted correctly.
+
+Most of the links into /elisp are being redirected to something interesting.  Here are some examples:
+
+* http://www.emacswiki.org/elisp/ -- redirects to a filtered index of all pages
+* http://www.emacswiki.org/elisp/index.html -- same thing
+* http://www.emacswiki.org/elisp/changelog.html -- redirects to recent changes
+* http://www.emacswiki.org/elisp/align.el -- redirects to the page
+* http://www.emacswiki.org/elisp/align.el.diff -- redirects to the latest diff
+* [[align.el]] -- EmacsLisp is stored on ordinary pages! Make link <nowiki>[[</nowiki>align.el]]
+* Download:align.el
+* Lisp:align.el which is equivalent to <nowiki>[[</nowiki>align.el]], but is better for searching.
+
+*Oops!*
+
+What I did not realize was that the RSS with full page content was going to be about 4MB long.
+I had loaded them in order of file size, so the last 15 RSS items contained the 15 largest files...
+That brought load on the server up to about 100.
+That's when the admins decided to shut down my sites while I was enjoying the German movie /Barfuss/.
+I've temporarily disabled the "full" feed. -- AlexSchroeder
+

@@ -1,0 +1,21 @@
+See ErcExtraModules first if you use the version of ERC that comes with Emacs 22 and you don't have erc-chess.el.
+
+erc-chess.el allows you to use ChessMode to
+play chess over IRC. 
+
+CTCP is used as transport protocol, and standard SAN move notation. So in theory,
+other clients could implement the CTCP CHESS command too.  Currently, only
+ERC supports this.
+
+You need to load erc-chess somewhere in your startup files,
+or do M-x load-library RET erc-chess RET.  Please note that
+the library needs to be loaded if you receive a match request.  If it isn't,
+it will not work.
+
+Then, simply use the command /chess <NICKNAME> to send
+a chess match request to someone.
+
+<i>Sounds neat!  But where is the link?</i>
+
+----
+[[ERC]], ErcExtraModules

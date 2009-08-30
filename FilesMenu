@@ -1,0 +1,13 @@
+The buffer-menu command is nice, but all those non-file buffers can be distracting. This simple elisp function will run buffer-menu and show only buffers associated with files.
+
+<pre>
+(defun files-menu ()
+  (interactive)
+  (buffer-menu t))
+</pre>
+
+In the Jedit text editor, M-` lists open files. I found that I liked this key binding. To set this up do:
+
+<pre>
+(define-key global-map "\M-`" 'files-menu)
+</pre>

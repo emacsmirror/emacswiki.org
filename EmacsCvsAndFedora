@@ -1,0 +1,66 @@
+Recent builds of EmacsFromCVS snapshots for Fedora 8 and 9:
+
+* http://people.redhat.com/coldwell/emacs/repo/fedora/
+
+To install the repository run this RPM command.
+
+  $ sudo rpm -ihv http://people.redhat.com/coldwell/emacs/repo/fedora/emacs-release-23-1.fc8.noarch.rpm
+  Retrieving http://people.redhat.com/coldwell/emacs/repo/fedora/emacs-release-23-1.fc8.noarch.rpm
+  warning: /var/tmp/rpm-xfer.NMeUQp: Header V3 DSA signature: NOKEY, key ID 852e052f
+  Preparing...                ########################################### [100%]
+     1:emacs-release          ########################################### [100%]
+
+To upgrade to a snapshot of Emacs, run
+
+  $ sudo yum update emacs
+
+To install emacs alongside your already installed stable Emacs, use yumdownloader and RPM.
+
+  $ yumdownloader emacs{,-el,-common}
+  $ sudo yum install dejavu-fonts m17n-lib
+  $ sudo rpm -ihv --replacefiles emacs{,-el,-common}-*.rpm
+
+To build your own Fedora package from the CVS sources:
+
+Make a sandbox to build RPMs:
+# ##mkdir ~/rpmbuild##
+# ##cd ~/rpmbuild; for dir in /usr/src/redhat/*; do mkdir $(basename ${dir}); done##
+# Write the following file to ##~/.rpmmacros##
+{{{
+ %packager       Your Name <name@email>
+ %_topdir        %(echo $HOME)/rpm
+}}}
+
+Roll your own snapshot of EmacsFromCVS:
+# Download a copy of the CVS repository
+# Run ##EMACS=/usr/bin/emacs ./make-dist --snapshot ## from your copy of the repository
+
+Get a Fedora source (src) package for Emacs:
+# yumdownloader --source emacs
+# Save it in ##~/rpmbuild/SRPMS##
+
+Install the build dependencies for the source package.
+# yum-builddep emacs-22.1-1.fc7
+# Run ##rpmbuild --rebuild --nobuild ~/rpmbuild/SRPMS/emacs-22.1-1.fc7.src.rpm##
+
+Modify the package:
+# Copy your snapshot file (example: ##emacs-21.1.50.tar.gz##) to ##~/rpmbuild/SOURCES##
+# Modify ##~/rpmbuild/SPECS/emacs.spec## and update the version number to the snapshot version (here: ##21.1.50##).
+# Make any other changes:
+** Turn off legal paranoia for TetrisMode by changing the %paranoia variable to `0'.
+** Add a changelog entry with `C-c C-e'.
+
+Build and install the RPMs:
+# rpmbuild -bb ~/rpmbuild/SPECS/emacs.spec
+# rpm -Uhv ~/rpmbuild/RPMS/i386/emacs{,-el,-common}-22.1.50-1.i386.rpm
+
+To allow `find-function' to visit a "built-in function in 'C source code'", set the following in your .emacs.
+
+  (setq find-function-C-source-directory "~/rpmbuild/BUILD/emacs-21.1.50/src/")
+
+----
+CategoryBuilding
+CategoryPorts
+
+
+

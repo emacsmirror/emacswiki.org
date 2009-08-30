@@ -1,0 +1,37 @@
+[[Completion]] is enabled by default (to disable it, use M-x customize-variable RET erc-modules).
+
+== Nick Completion ==
+
+You can complete on all channel members using TAB.
+
+There are two modules to achieve this:
+
+* Old-style, using hippie-expand, in erc-complete.el
+* New, using ProgrammableCompletion, in erc-pcomplete.el
+       <-- that page is somewhat outdated   
+
+Use the old style only if you do not have pcomplete on your system.
+
+== Command Completion ==
+
+Completion also works with ErcCommands.
+
+== New Style ==
+
+Enabled by default.
+
+== Old Style ==
+
+Old style completion had a feature that was never used:  You could
+reduce completion to you pals only (maybe this was supposed to be
+useful on very full channels such as #debian).  In order to use it,
+set the variable `erc-nick-completion'.
+
+You can set it to either 'all, 'pals, or a function named
+`erc-nick-completion-exclude-myself' to determine what the list of
+possible completions look like.  Of course you can also write your own
+function to provide a list of possible completions.  This is no longer
+supported in the new-style completion.
+
+----
+[[ERC]]

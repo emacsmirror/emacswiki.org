@@ -1,0 +1,355 @@
+I'm CS student, using GNU Emacs as primary tool for any editing work I happen to have, and as my answer to any could-you-give-me-that-tool-over-there-sister? questions. But then, I use Emacs for editing, and not as OS of choice. I don't use it for IRC (but XChat instead), nor for email (I use Evolution) and news (here's Pan), and certainly not for WWW (here Galeon rocks your pants). Yes, you guessed it, I'm GNOME user, a happy one, I must add.
+
+Some more info:
+: Country: Poland
+: University: Silesian Polytechnic (http://zeus.polsl.gliwice.pl)
+: Mail: mathrick (at) zeus (dot) polsl (dot) gliwice (dot) pl
+: Blog: http://mathrick.blog.pl (in Polish)
+: Nick on #emacs: mathrick
+
+: OS: Debian GNU/Linux
+: Desktop: GNOME
+: Emacs: GNU Emacs 21.3.50 w/ GTK2
+
+Favorite Packages & Modes:
+* CollectionOfEmacsDevelopmentEnvironmentTools - semantic.el rulz da street :)
+* EmacsCodeBrowser - makes good use of semantic
+* PcSelectionMode & DeleteSelectionMode - familiar Gnome'ish way of working with selection (currently investigating CuaMode, looks great but smashes some of my clever StudlyCaps setup)
+* GlassesMode - StudlyCaps made easy part I
+* bind C-<cursor> keys to c-{backward,forward}-into-nomenclature - StudlyCaps made easy part II
+* DevelockMode - now your faulty formatted source will make you feel like it's Xmas already ;)
+
+I use all of the above in ProgrammingWithEmacsSetupExamples.
+
+Joy of the week:
+* Using properly (read: by myself) customized Emacs for nice programming work
+
+Grief of the week:
+* Being forced into using something else than Emacs (like, MSVC crap, or even cursed Borland's shit, The Only Thing I Loathe More Than MSVC) for any programming work, especially not nice one
+* Using any of antiproductivity tools from Rational Suite
+
+Task of the week:
+* Assemble good enough package of Emacs for Micros~1 Win32 and everything I added on my Debian box, and kick our CS Labs admin into installing it as official IDE for use along MSVC and Borland Builder
+* Do the above with EmacsFromCVS
+
+Question of the week:
+* How to integrate Emacs with Rational Suite of Completely Antiproductive Software Engineering tools? I hope I won't be using it after end of this semester, but in any case, hints will be gratefully accepted
+
+== Borland Rant ==
+
+Borland C++ Builder, or for that matter any of its look-alikes from Borland. Continuing marvelous traditions of Turbo* tools, it gets to the absolute heights of being completely unusable for any real development while providing tons of shitty template-code for use by script-kiddies
+
+Maybe I'll write more about it someday.
+
+== Rational Suite Rant ==
+
+Officially known as Rational Unified Process suite - creeping horror from Rational Soft. (now part of IBM) at http://www.rational.com, that will make you scream in agony whenever you're forced to use it.
+
+Textbook's example of Completely Antiproductive Software Engineering (casually known as CASE) theory in the flesh, with most horrible UI you could ever imagine. Unfortunately, many suits (http://www.catb.org/~esr/jargon/html/S/suit.html) seem to be convinced this is the way to go, moreover, apparently lecturers and/or Lab Asses (Laboratory Assistants, available at your favorite shop and near University) at certain universities think so too.
+
+Examples of memorable design decisions in Rational's childre:
+* Rational Requisite Pro (generating requirements documents):
+** MS Word is great tool for editing requirements database. Users gotta love how it's completely separated from structural view, and they certainly <b>don't</b> want any stupid things like reflecting db's structure in actual document view, nor wimpy keyboard shortcuts. Converting series of correctly structured headers from pre-existing MS Word document should be long and painful process involving lots of manual copy / paste
+** Did we mention any attempt to edit requirements outside of MS Word document should severly break your structure without warning, because obvious warning is presence of complete db editing controls in structure viewer component?
+** Structural view should never give you actual nor meaningful view of your db structure, and elements bound in hierarchy should be placed in disjoint places of tree, with parents documents being at the same level as contained entries
+* Rational Rose (the ubergreat design technique for mentally challenged, known as use-case diagrams):
+** Everyone loves to draw stupid useless clouds and place funny matchstick men in the picture, so that's what $10k app should do. 5-year-olds have problems comprehending too many available tools so let's limit them to cloud, matchstick man and 3 types of arrows
+** Adding new element to diagram should add it to structural view too, but deleting it from picture should not remove it from tree. Instead our puzzle-loving users should have the joy of hunting it down amogst all elements and deleting them manually
+** Because we all <b>really, really love</b> puzzles, selecting 20 relations left from some deleted element and doing Righ Click -> Delete is against the rules. Instead, it should be 20x hunt down, Righ Click -> Delete.
+** As usual, fun spoiling elements like keyboard shortcuts are strictly prohibited
+
+Fortunately, so far I haven't had to use more tools from Rational, but everything's still ahead of me :(
+
+== Discussion ==
+
+We used Rational Rose at work...  It sucked.  We did little pictures.  It was a total waste of time.  What else can I say?  :) -- AlexSchroeder
+
+== .emacs ==
+Let's put it here, so I don't have to configure emacs each time I sit at new box.
+Comments are in Polish, maybe I'll bother to translate them, but code should be rather obvious ;)
+In some cases it's rather old and stupid, oh well.
+
+<pre>
+(defconst debian-emacs-flavor 'emacscvs
+  "A symbol representing the particular debian flavor of emacs running.
+;; ;; ;;   Something like 'emacs20, 'xemacs20, etc.")
+;; Load all the debian package snippets.
+;; It's in here because we want -q to kill it too.
+(if (load "debian-startup" t t nil)
+    (debian-startup debian-emacs-flavor))
+
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(auto-compression-mode t nil (jka-compr))
+ '(auto-insert t)
+ '(auto-insert-alist (quote ((("\\.\\([Hh]\\|hh\\|hpp\\)\\'" . "C / C++ header") (progn (string-match "\\.\\([Hh]\\|hh\\|hpp\\)\\'" buffer-file-name) (upcase (concat (file-name-nondirectory (substring buffer-file-name 0 (match-beginning 0))) "_" (substring buffer-file-name (1+ (match-beginning 0)))))) "#ifndef " str n "#define " str "
+
+" _ "
+
+# endif /* " str " */") (("\\.\\([Cc]\\|cc\\|cpp\\)\\'" . "C / C++ program") nil "#include \"" (and (fboundp (quote c-companion-file)) (file-name-nondirectory (c-companion-file (quote name)))) & 34 | -10) ("[Mm]akefile\\'" . "makefile.inc") (html-mode lambda nil (sgml-tag "html")) (plain-tex-mode . "tex-insert.tex") (bibtex-mode . "tex-insert.tex") (latex-mode "options, RET: " "\\documentclass[" str & 93 | -1 123 (read-string "class: ") "}
+" ("package, %s: " "\\usepackage[" (read-string "options, RET: ") & 93 | -1 123 str "}
+") _ "
+\\begin{document}
+" _ "
+\\end{document}") (("/bin/.*[^/]\\'" . "Shell-Script mode magic number") lambda nil (if (eq major-mode default-major-mode) (sh-mode))) (ada-mode . ada-header) (("\\.el\\'" . "Emacs Lisp header") "Short description: " ";;; " (file-name-nondirectory (buffer-file-name)) " --- " str "
+
+;; Copyright (C) " (substring (current-time-string) -4) "  " (getenv "ORGANIZATION") | "Free Software Foundation, Inc." "
+
+;; Author: " (user-full-name) (quote (if (search-backward "&" (line-beginning-position) t) (replace-match (capitalize (user-login-name)) t t))) (quote (end-of-line 1)) " <" (progn user-mail-address) ">
+;; Keywords: " (quote (require (quote finder))) (quote (setq v1 (mapcar (lambda (x) (list (symbol-name (car x)))) finder-known-keywords) v2 (mapconcat (lambda (x) (format "%10.0s:  %s" (car x) (cdr x))) finder-known-keywords "
+"))) ((let ((minibuffer-help-form v2)) (completing-read "Keyword, C-h: " v1 nil t)) str ", ") & -2 "
+
+;; This file is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+;; Boston, MA 02111-1307, USA.
+
+;;; Commentary:
+
+;; " _ "
+
+;;; Code:
+
+
+
+(provide '" (file-name-sans-extension (file-name-nondirectory (buffer-file-name))) ")
+;;; " (file-name-nondirectory (buffer-file-name)) " ends here
+"))))
+ '(auto-insert-mode t nil (autoinsert))
+ '(bell-inhibit-time 2)
+ '(blink-cursor-delay 0)
+ '(blink-cursor-interval 0.5)
+ '(c-default-style (quote ((java-mode . "java") (other . "Corrected gnu"))))
+ '(case-fold-search t)
+ '(clip-large-size-font t t)
+ '(cua-enable-cua-keys nil)
+ '(cua-enable-cursor-indications t)
+ '(cua-enable-modeline-indications nil)
+ '(cua-mode t nil (cua-base))
+ '(current-language-environment "Latin-2")
+ '(default-input-method "latin-2-prefix")
+ '(default-justification (quote left))
+ '(ecb-layout-window-sizes nil)
+ '(ecb-options-version "2.21")
+ '(ecb-show-node-info-in-minibuffer (quote ((always . path) (always . name) (always . path) (always . name+type))))
+ '(ecb-tip-of-the-day nil)
+ '(ecb-tree-buffer-style (quote image))
+ '(fast-lock-minimum-size 2000)
+ '(file-cache-assoc-function (quote assoc-ignore-case))
+ '(font-lock-beginning-of-syntax-function nil t)
+ '(font-lock-keywords-case-fold-search nil t)
+ '(font-lock-keywords-only nil t)
+ '(font-lock-mark-block-function nil t)
+ '(font-lock-maximum-decoration t)
+ '(font-lock-support-mode (quote lazy-lock-mode))
+ '(glasses-face (quote bold))
+ '(glasses-separator "")
+ '(global-cwarn-mode t nil (cwarn))
+ '(global-font-lock-mode t nil (font-lock))
+ '(gnuserv-program (concat exec-directory "/gnuserv"))
+ '(highlight-completion-list-external (quote (t t t t t t t t t t)))
+ '(highlight-current-line-globally t nil (highlight-current-line))
+ '(highlight-wrong-size-font nil t)
+ '(icomplete-minibuffer-setup-hook (quote ((lambda nil (make-local-variable (quote max-mini-window-height)) (setq max-mini-window-height 3)))))
+ '(icomplete-mode t nil (icomplete))
+ '(indicate-empty-lines t)
+ '(mouse-avoidance-mode (quote exile) nil (avoid))
+ '(mouse-avoidance-nudge-dist 35)
+ '(mouse-avoidance-threshold 15)
+ '(mouse-sel-mode nil nil (mouse-sel))
+ '(mouse-wheel-follow-mouse t)
+ '(msb-mode t nil (msb))
+ '(ogonek-from-encoding "windows-PL")
+ '(ogonek-to-encoding "iso8859-2")
+ '(pascal-auto-lineup (quote (all)))
+ '(pascal-auto-newline nil)
+ '(pascal-tab-always-indent t)
+ '(pc-selection-mode t nil (pc-select))
+ '(py-imenu-show-method-args-p t)
+ '(recentf-mode t nil (recentf))
+ '(save-place t nil (saveplace))
+ '(scroll-preserve-screen-position t)
+ '(show-paren-mode t nil (paren))
+ '(sql-database "BDLAB")
+ '(sql-user "mathrick")
+ '(todoo-sub-item-marker "-")
+ '(tooltip-gud-modes (quote (gud-mode c-mode c++-mode pascal-mode)))
+ '(tooltip-gud-tips-p nil)
+ '(tooltip-use-echo-area nil)
+ '(transient-mark-mode t)
+ '(truncate-lines t)
+ '(undo-limit 200000)
+ '(undo-strong-limit 300000)
+ '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
+ '(uniquify-trailing-separator-p nil)
+ '(visible-bell t)
+ '(windmove-wrap-around t)
+ '(x-symbol-initialize nil))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(highlight-current-line-face ((t (:background "light cyan")))))
+(mouse-wheel-mode t)
+(column-number-mode t)
+;; pozbądźmy się pieprzonego dzwonka
+(setq ring-bell-function (lambda ()))
+
+;; A to tak żeby to ustawienie działało również w podzielonych pionowo oknach
+(setq truncate-partial-width-windows nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;; CEDET - kto wie, może dostaniemy IntelliSense? ;)
+(setq semantic-load-turn-useful-things-on t)
+;; Load CEDET
+(load-file "~/Dev/cedet/cvs-fresh/common/cedet.elc")
+;; Najwyraźniej musi mieć eldoc, więc ma ;)
+(eldoc-mode)
+;; Coś się jebło, trzeba z palca -_-'
+(defalias 'semantic-displayor-window-edges 'window-edges)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;; klawisze, klawisze
+(global-set-key [(meta up)] 'windmove-up)
+(global-set-key [(meta down)] 'windmove-down)
+(global-set-key [(meta left)] 'windmove-left)
+(global-set-key [(meta right)] 'windmove-right)
+(global-set-key [(meta control right)] 'forward-list)
+(global-set-key [(meta control left)] 'backward-list)
+(global-set-key (kbd "C-c k") 'browse-kill-ring)
+(global-set-key (kbd "C-c C-v") 'uncomment-region)
+(global-set-key (kbd "C-c e") 'cvs-examine)
+(global-set-key (kbd "C-h d") 'describe-function)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;i jeszcze troszkę (Meta na Windows-key)
+;; (setq x-super-keysym 'meta)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;; do wstawiania kolejnych wartości
+(defun insert-index (arg) (interactive "p") (incf insert-index-cnt arg) (save-excursion (insert (number-to-string insert-index-cnt))))
+(global-set-key [(control kp-divide)] 'insert-index)
+(fset 'insert-index-and-down
+      [C-kp-divide down])
+(fset 'insert-index-same-and-down
+      [?\C-u ?0 C-kp-divide down])
+(global-set-key [(control kp-multiply)] (lambda () (interactive) (setq insert-index-cnt (number-at-point))))
+(global-set-key [(control kp-add)] 'insert-index-and-down)
+(global-set-key [(control kp-enter)] 'insert-index-same-and-down)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;troszku wygody w gdb
+(defun gud-attach-dwim (prg-name) (interactive) (princ "attach " (current-buffer)) (call-process "bash" nil t nil "-c" (concat "ps ax | grep " prg-name "| grep -v grep | sed 's/^[[:blank:]]*//g' | cut --delimiter=' ' -f1")) (comint-send-input))
+(add-hook 'gud-mode-hook (lambda () (local-set-key [(control -)] (lambda () (interactive) (gud-attach-dwim "defmain")))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;oraz w cc-mode
+(add-hook 'c-mode-common-hook (lambda () (local-set-key [(return)] 'newline-and-indent)))
+(add-hook 'c-mode-common-hook (lambda () (local-set-key [(control return)] 'c-indent-new-comment-line)))
+(add-hook 'c-mode-common-hook (lambda () (local-set-key [(control j)] 'newline)))
+(add-hook 'c-mode-common-hook (lambda () (local-set-key [(control right)] 'c-forward-into-nomenclature)))
+(add-hook 'c-mode-common-hook (lambda () (local-set-key [(control left)] 'c-backward-into-nomenclature)))
+(add-hook 'c-mode-common-hook (lambda () (local-set-key [(control shift left)] 'c-backward-into-nomenclature)))
+(add-hook 'c-mode-common-hook (lambda () (local-set-key [(control shift right)] 'c-forward-into-nomenclature)))
+(add-hook 'py-mode-hook (lambda () (local-set-key [(control shift left)] 'py-backward-into-nomenclature)))
+(add-hook 'py-mode-hook (lambda () (local-set-key [(control shift right)] 'py-forward-into-nomenclature)))
+(setq cua-movement-commands 
+      (cond (cua-movement-commands
+	     (add-to-list 'cua-movement-commands 'c-backward-into-nomenclature)
+	     (add-to-list 'cua-movement-commands 'c-forward-into-nomenclature))
+	    (t '(c-forward-into-nomenclature c-backward-into-nomenclature))))
+
+(add-hook 'c-mode-common-hook 'auto-fill-mode)
+(add-hook 'c-mode-common-hook 'glasses-mode)
+
+;; ktoś zdupił styl "gnu", trzeba ręcznie poprawiać :\
+(defconst my-c-style
+  '("gnu" (c-offsets-alist . ((arglist-close . c-lineup-arglist)
+			      (substatement-open   . 0)
+			      (case-label	   . 4)
+			      (statement-case-open . 0)
+			      (block-open	   . 0)
+			      (knr-argdecl-intro   . -)))))
+(c-add-style "Corrected GNU" my-c-style t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;zróbmy pliterki w manie
+(setq manual-program "man -Tlatin1")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;Moje funkcje - regexpy i inne znakodziałajki
+(defun goto-char-forward (char) (while  (not (equal (char-after) char)) (forward-char)))
+(defun goto-char-backward (char) (while  (not (equal (char-after) char)) (backward-char)))
+(defun goto-char-forward-command (char) (interactive "cGo forward to char: ") (goto-char-forward char))
+(defun goto-char-backward-command (char) (interactive "cGo backward to char: ") (goto-char-backward char))
+(global-set-key [(meta control n)] 'goto-char-forward-command)
+(global-set-key [(meta control p)] 'goto-char-backward-command)
+(global-set-key "\C-xRB" 're-builder)
+(global-set-key "\C-xRS" (lambda (arg) (interactive "MSearch regexp:") (re-search-forward arg)))
+(global-set-key "\C-xRb" (lambda (arg) (interactive "MSearch regexp backward:") (re-search-backward arg)))
+(global-set-key "\C-xRR" 'replace-regexp)
+(global-set-key "\C-xRQ" 'query-replace-regexp)
+(global-set-key "\C-xRA" (lambda (arg) (interactive "MSearch regexp (forward or backward): ") ;Szukaj w przod, jak nie to w tył
+ (cond ((setq val (search-forward-regexp arg nil t)) (goto-char val))
+      ((setq val (search-backward-regexp arg nil t)) (goto-char val)))))
+(global-set-key "\C-xRW"
+		(lambda (arg) (interactive "MSearch regexp wrap-around:")
+		  (cond
+		   ((progn 
+		      (setq pt (point)) 
+		      (goto-char (point-min)) 
+		      (search-forward-regexp arg nil t)
+		      )
+		    ()
+		    )
+		   (t
+		    (progn
+		      (goto-char pt)
+		      (princ (concat "Regexp [\" " arg " \"] not found"))
+		      )
+		    )
+		   )
+		  )
+		)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+
+(put 'narrow-to-region 'disabled nil)
+
+(put 'upcase-region 'disabled nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;Zapytaj o odtworzenie sesji
+(if (let 
+	(
+	 (last-nonmenu-event nil)(mb enable-multibyte-characters)
+	 ) 
+      (set-buffer-multibyte t)(let ((coding-system-for-write 'latin-2)(res(y-or-n-p "Odtworzyć sesję?"))) (set-buffer-multibyte mb) res)
+      ) 
+    (resume-windows)
+  )
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+
+
+(put 'set-goal-column 'disabled nil)
+(require 'ls-lisp)
+</pre>
+
+----
+CategoryHomepage

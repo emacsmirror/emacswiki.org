@@ -1,0 +1,29 @@
+See ErcExtraModules first if you use the version of ERC that comes with Emacs 22 and you don't have erc-bbdb.el.
+
+BigBrotherDataBase integration with ERC is not enabled by default. To enable it use
+M-x customize-variable RET erc-modules.
+
+== Features ==
+
+* Updating on /whois: When you have a chatter's full name in your BBDB and you do a whois on her, the chatter's IRC Nickname is added to the person's field "irc-nick" and their hostname (and user name) gets entered in "finger-host".
+* Updating on join: When a person you have in your BBDB joins a channel, her record is updated as described above.
+* Highlighting options in BBDB: You can specify (in the field irc-highlight) one or more highlight types: "fool", "pal" and "dangerous-host". Every nick you saw the person carry gets highlighted like that, then.
+* Logging the channel names a person joined (and you saw the join) in the field irc-channel is now done.
+
+== Suggestions ==
+
+* Sending a bbdb record to another ERC user. could be done via CTCP, I think. CTCP handling first. In March 2002 work began on CTCP but "officially" stopped in July of 2002.  The reason is that there are restrictions on flooding that got in the way.
+
+* /bbdb-add <ircnick> to make it easy to add new users from irc
+** /whois does that automatically; a /bbdb-add <ircnick> <real name> would be useful, though. The function is already there (don't know what it's called now); any volunteers?
+* Ignore-List handling with BBDB. I have seen a Dolt who kept changing his nick, and whom I wish to permanently ignore. BBDB would be perfect for that kind of thing, I think.
+** Advantages:
+*** Allows you to permanently ignore people, not only based on nickname, but also on host-mask (if it's done right, and it will)
+** Disadvantages:
+*** Prone to fall for The Evil Nickchange Technique (i.e. as a troll, change your nick to that of one non-present regular and have the BBDB users ignore the regular from now on)
+*** too many false positives with Dynamic IPs if abusing host masks
+** Implementation Pitfalls:
+*** Right now, I have the option of searching for an ignore entry whenever a server message is received (SLOW!) or of building a new ignore-list in `bbdb-change-hook'. If you have bbdb-auto-notice-hook set to t, you will change your BBDB very often, too. So iterating over all of the BBDB to re-build the ignore list every time is not an option, and neither is building an alist of the ignore list entries which map to the relevant BBDB entries; there is no unique identifier for BBDB records. )-:
+
+----
+[[ERC]], ErcExtraModules

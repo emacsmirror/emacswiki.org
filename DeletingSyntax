@@ -1,0 +1,62 @@
+Assume you are at the end of the following line and you want to delete backwards:
+
+    something something <something
+
+If you could delete by *syntax*, you'd see the following (-!- is point):
+
+    something something <something-!-
+    something something <-!-
+    something something -!-
+    something something-!-
+    something -!-
+    something-!-
+    -!-
+
+And here's the code:
+
+{{{
+(defun kill-syntax-forward ()
+  "Kill characters with syntax at point."
+  (interactive)
+  (kill-region (point)
+               (progn (skip-syntax-forward (string (char-syntax (char-after))))
+                      (point))))
+
+(defun kill-syntax-backward ()
+  "Kill characters with syntax at point."
+  (interactive)
+  (kill-region (point)
+               (progn (skip-syntax-backward (string (char-syntax (char-before))))
+                      (point))))
+}}}
+
+Here's a generalized version that supports a PrefixArgument and handles the case when the ends of the buffer are reached.
+
+{{{
+(defun kill-syntax (&optional arg)
+  "Kill ARG sets of syntax characters after point."
+  (interactive "p")
+  (let ((arg (or arg 1))
+        (inc (if (and arg (< arg 0)) 1 -1))
+        (opoint (point)))
+    (while (or;(not (= arg 0)) ;; This condition is implied.
+               (and (> arg 0) (not (eobp)))
+               (and (< arg 0) (not (bobp))))
+      (if (> arg 0)
+          (skip-syntax-forward (string (char-syntax (char-after))))
+        (skip-syntax-backward (string (char-syntax (char-before)))))
+      (setq arg (+ arg inc)))
+    (if (and (> arg 0) (eobp))
+        (message "End of buffer"))
+    (if (and (< arg 0) (bobp))
+        (message "Beginning of buffer"))
+    (kill-region opoint (point))))
+
+(defun kill-syntax-backward (&optional arg)
+  "Kill ARG sets of syntax characters preceding point."
+  (interactive "p")
+  (kill-syntax (- 0 (or arg 1))))
+}}}
+
+----
+CategoryEditing

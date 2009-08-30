@@ -1,0 +1,105 @@
+This page is for tips about [[line ending]] characters.
+
+----
+
+To shift linefeeds from one system (Unix, Mac,) to another system (say, DOS,) set the '''buffer file coding system.'''
+
+You can see an example from Elisp in SeijiZenitaniDotEmacs;
+
+Here are the specific codes:
+
+* M-x set-buffer-file-coding-system utf-8-unix  (for LF)
+* M-x set-buffer-file-coding-system utf-8-mac   (for CR)
+* M-x set-buffer-file-coding-system utf-8-dos   (for CR+LF)
+
+----
+
+This is what I use to toggle the end of line encoding:
+
+    (defun unix-file ()
+      "Change the current buffer to Latin 1 with Unix line-ends."
+      (interactive)
+      (set-buffer-file-coding-system 'iso-latin-1-unix t))
+
+    (defun dos-file ()
+      "Change the current buffer to Latin 1 with DOS line-ends."
+      (interactive)
+      (set-buffer-file-coding-system 'iso-latin-1-dos t))
+
+    (defun mac-file ()
+      "Change the current buffer to Latin 1 with Mac line-ends."
+      (interactive)
+      (set-buffer-file-coding-system 'iso-latin-1-mac t))
+
+----
+Instead of iso-latin-1-unix, you can use undecided-unix, or other options depending on where you are and what you are doing. -- CharlesSebold
+
+See DosToUnix for other methods.
+
+----
+I use this to automatically convert line endings to unix:
+
+   (add-hook 'find-file-hook 'find-file-check-line-endings)
+
+   (defun dos-file-endings-p ()
+     (string-match "dos" (symbol-name buffer-file-coding-system)))
+
+   (defun find-file-check-line-endings ()
+     (when (dos-file-endings-p)
+         (set-buffer-file-coding-system 'undecided-unix)
+         (set-buffer-modified-p nil)))
+
+----
+This is similar, but tries to preserve the coding system rather than falling back to undecided-unix, 
+instead substituting the -unix variant of the -dos coding system in use:
+
+   (defun no-dos-please-were-unixish ()
+     (let ((coding-str (symbol-name buffer-file-coding-system)))
+       (when (string-match "-dos$" coding-str)
+         (setq coding-str
+               (concat (substring coding-str 0 (match-beginning 0)) "-unix"))
+         (message "CODING: %s" coding-str)
+         (set-buffer-file-coding-system (intern coding-str)) )))
+
+   (add-hook 'find-file-hooks 'no-dos-please-were-unixish)
+
+----
+And this handles both -mac and -dos codings:
+
+    (defun no-junk-please-were-unixish ()
+      (let ((coding-str (symbol-name buffer-file-coding-system)))
+        (when (string-match "-\\(?:dos\\|mac\\)$" coding-str)
+          (setq coding-str
+	        (concat (substring coding-str 0 (match-beginning 0)) "-unix"))
+          (message "CODING: %s" coding-str)
+          (set-buffer-file-coding-system (intern coding-str)) )))
+
+    (add-hook 'find-file-hooks 'no-junk-please-were-unixish)
+
+----
+The variable <code>inhibit-eol-conversion</code> might also be of interest.
+
+
+----
+With Emacs 21 and later, you can preserve the current text coding system and change end-of-line conversion by running the command set-buffer-file-coding-system (C-x RET f) and specifying "unix", "dos", or "mac". Emacs 20 doesn't support that behavior, but this function should achieve the same goal:
+
+   (defun set-eol-conversion (new-eol)
+     "Specify new end-of-line conversion NEW-EOL for the buffer's file
+   coding system. This marks the buffer as modified."
+     (interactive "SEnd-of-line conversion for visited file: \n")
+     ;; Check for valid user input.
+     (unless (or (string-equal new-eol "unix")
+                 (string-equal new-eol "dos")
+                 (string-equal new-eol "mac"))
+       (error "Invalid EOL type, %s" new-eol))
+     (if buffer-file-coding-system
+         (let ((new-coding-system (coding-system-change-eol-conversion
+                                   buffer-file-coding-system new-eol)))
+           (set-buffer-file-coding-system new-coding-system))
+       (let ((new-coding-system (coding-system-change-eol-conversion
+                                 'undecided new-eol)))
+         (set-buffer-file-coding-system new-coding-system)))
+     (message "EOL conversion now %s" new-eol))
+
+----
+CategoryEditing

@@ -1,0 +1,771 @@
+;;; .emacs for Alex Schroeder's Pyrobombus
+;; This is free software.
+;; Posted using C-x h M-| and the following command:
+;; wikiput -m -z uihnscuskc -s "update" -u AlexSchroeder http://www.emacswiki.org/cgi-bin/wiki/AlexSchroederConfigPyrobombus
+;; Get wikiput from here:
+;; http://www.oddmuse.org/cgi-bin/oddmuse/Automatic_Posting_and_Uploading
+
+;; Darwinports and other paths, since my .bashrc is not being read
+(add-to-list 'load-path (expand-file-name "elisp" (getenv "HOME")))
+(setq exec-path (split-string "/Users/alex/bin:/opt/local/bin:/bin:/sbin:/usr/bin:/usr/local/bin:/usr/sbin" path-separator))
+(setenv "PATH" (mapconcat 'identity exec-path ":"))
+(setenv "MANPATH" "/opt/local/share/man:/usr/share/man:/usr/X11R6/man:/man")
+(setenv "PERL5LIB" "/Library/Perl/5.8.1")
+(setenv "ODD" "/Users/Shared/Oddmuse")
+(setenv "CVS_RSH" "ssh")
+(setenv "WikiDataDir" "/Users/alex/oddmuse/test-data")
+
+;; (when (> (display-color-cells) 100)
+;;   (require 'pink-bliss)
+;;   (pink-bliss))
+
+;; minor modes
+(global-font-lock-mode 1)
+(iswitchb-mode 1)
+(show-paren-mode 1)
+(tool-bar-mode -1)
+(winner-mode 1)
+(windmove-default-keybindings)
+(column-number-mode 1)
+(blink-cursor-mode -1)
+(auto-image-file-mode 1)
+
+(when (require 'mac-print-mode nil t)
+  (mac-print-mode 1)
+  (global-set-key (kbd "M-p") 'mac-print-buffer))
+
+(setq vc-follow-symlinks t
+      inhibit-startup-screen t
+      initial-scratch-message nil
+      ispell-silently-savep t)
+
+(global-set-key (kbd "C-c i") 'indent-region)
+(global-set-key (kbd "C-c c") 'comment-region)
+(global-set-key (kbd "C-c s") 'ispell-word)
+(global-set-key (kbd "C-c n") (lambda () (interactive) (find-file "~/NOTES")))
+(global-set-key (kbd "C-h a") 'apropos)
+(global-set-key (kbd "C-c r") 'replace-word-at-point)
+
+(global-set-key (kbd "C-x 8 1 / 3") "⅓")
+(global-set-key (kbd "C-x 8 1 / 5") "⅕")
+(global-set-key (kbd "C-x 8 1 / 6") "⅙")
+(global-set-key (kbd "C-x 8 2 / 3") "⅔")
+(global-set-key (kbd "C-x 8 2 / 5") "⅖")
+(global-set-key (kbd "C-x 8 3 / 5") "⅗")
+(global-set-key (kbd "C-x 8 4 / 5") "⅘")
+(global-set-key (kbd "C-x 8 5 / 6") "⅚")
+
+(global-set-key (kbd "C-x 8 : o") "ō")
+(global-set-key (kbd "C-x 8 : O") "Ō")
+(global-set-key (kbd "C-x 8 : u") "ū")
+(global-set-key (kbd "C-x 8 : U") "Ū")
+
+(global-set-key (kbd "M-<up>") 'scroll-down)
+(global-set-key (kbd "M-<down>") 'scroll-up)
+
+(autoload 'word-at-point "thingatpt" nil t)
+
+(defun replace-word-at-point (from to)
+  "Replace word at point."
+  (interactive (let ((from (word-at-point)))
+		 (list from (query-replace-read-to from "Replace" nil))))
+  (query-replace from to))
+
+;;; bs instead of buffer-menu
+(global-set-key (kbd "C-x C-b") 'bs-show)
+
+(setq bs-configurations
+      '(("all" nil nil nil nil nil)
+        ("files" nil nil nil bs-visits-non-file bs-sort-buffer-interns-are-last)
+        ("dired" nil nil nil
+         (lambda (buf)
+           (with-current-buffer buf
+             (not (eq major-mode 'dired-mode)))) nil)
+        ("rcirc" nil nil nil
+         (lambda (buf)
+           (with-current-buffer buf
+             (not (eq major-mode 'rcirc-mode))))
+	 rcirc-sort-buffers)))
+
+(defun rcirc-sort-name (buf)
+  "Return server process and buffer name as a string."
+  (when (boundp 'rcirc-server-buffer)
+    (with-current-buffer buf
+      (downcase (concat (if rcirc-server-buffer
+			    (buffer-name rcirc-server-buffer)
+			  " ")
+			" "
+			(or rcirc-target ""))))))
+
+(defun rcirc-sort-buffers (a b)
+  "Sort buffers A and B using `rcirc-sort-name'."
+  (string< (rcirc-sort-name a)
+	   (rcirc-sort-name b)))
+
+;; color theme and related stuff
+;; (set-face-font 'default "fontset-osaka14")
+;; (setq inhibit-startup-message t
+;;       initial-scratch-message nil
+;;       initial-frame-alist '((top . 0))
+;;       default-frame-alist '((height . 35)))
+;; (require 'pink-bliss)
+;; (color-theme-pink-bliss)
+
+(define-generic-mode 'htaccess-mode
+  '(?#)
+  '( ;; core
+    "AcceptPathInfo" "AccessFileName" "AddDefaultCharset" "AddOutputFilterByType"
+    "AllowEncodedSlashes" "AllowOverride" "AuthName" "AuthType"
+    "CGIMapExtension" "ContentDigest" "DefaultType" "DocumentRoot"
+    "EnableMMAP" "EnableSendfile" "ErrorDocument" "ErrorLog"
+    "FileETag" "ForceType" "HostnameLookups" "IdentityCheck"
+    "Include" "KeepAlive" "KeepAliveTimeout" "LimitInternalRecursion"
+    "LimitRequestBody" "LimitRequestFields" "LimitRequestFieldSize" "LimitRequestLine"
+    "LimitXMLRequestBody" "LogLevel" "MaxKeepAliveRequests" "NameVirtualHost"
+    "Options" "Require" "RLimitCPU" "RLimitMEM"
+    "RLimitNPROC" "Satisfy" "ScriptInterpreterSource" "ServerAdmin"
+    "ServerAlias" "ServerName" "ServerPath" "ServerRoot"
+    "ServerSignature" "ServerTokens" "SetHandler" "SetInputFilter"
+    "SetOutputFilter" "TimeOut" "UseCanonicalName"
+    ;; .htaccess tutorial
+    "AddHandler" "AuthUserFile" "AuthGroupFile"
+    ;; mod_rewrite
+    "RewriteBase" "RewriteCond" "RewriteEngine" "RewriteLock" "RewriteLog"
+    "RewriteLogLevel" "RewriteMap" "RewriteOptions" "RewriteRule"
+    ;; mod_alias
+    "Alias" "AliasMatch" "Redirect" "RedirectMatch" "RedirectPermanent"
+    "RedirectTemp" "ScriptAlias" "ScriptAliasMatch")
+  '(("%{\\([A-Z_]+\\)}" 1 font-lock-variable-name-face)
+    ("\\b[0-9][0-9][0-9]\\b" . font-lock-constant-face)
+    ("\\[.*\\]" . font-lock-type-face))
+  '(".htaccess\\'")
+  nil
+  "Generic mode for Apache .htaccess files.")
+
+;; session management, optional
+(when (require 'session nil t)
+  (add-hook 'after-init-hook 'session-initialize))
+
+;; slime mode, optional
+;; (setq inferior-lisp-program "/sw/bin/openmcl")
+;; (add-to-list 'load-path "~/elisp/slime-1.2.1")
+;; (when (require 'slime nil t)
+;;   (slime-setup))
+
+;; css mode
+(autoload 'css-mode "css-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
+
+;;; ispell
+
+(setq ispell-program-name "aspell"
+      ispell-dictionary "english"
+      ispell-dictionary-alist
+      (let ((default '("[A-Za-z]" "[^A-Za-z]" "[']" nil
+		       ("-B" "-d" "english" "--dict-dir"
+			"/Library/Application Support/cocoAspell/aspell6-en-6.0-0")
+		       nil iso-8859-1)))
+	`((nil ,@default)
+	  ("english" ,@default)
+	  ("swiss" "[a-zA-Z\304\326\334\344\366\337\374]"
+	   "[^a-zA-Z\304\326\334\344\366\337\374]" "[']" t
+	   ("-C" "-d" "swiss" "--dict-dir"
+	    "/Library/Application Support/cocoAspell/aspell6-de-20030222-1")
+	   "~latin1" iso-8859-1))))
+
+;;; dired mode
+
+(require 'dired-x)
+(setq dired-recursive-deletes 'top
+      dired-recursive-copies 'top
+      dired-dwim-target t
+      dired-guess-shell-alist-user '(("\\.pdf$" "open")))
+
+(defface dired-pdf-face '((t (:foreground "firebrick"))) "PDF files")
+
+; (setq dired-mode-hook nil)
+(add-hook 'dired-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-c C-r")
+			   'wdired-change-to-wdired-mode)
+	    (local-set-key (kbd "M-<down>")
+			   (lambda ()
+			     (interactive)
+			     (dired-do-shell-command
+			      "open" nil
+			      (dired-get-marked-files t current-prefix-arg))))
+	    (font-lock-add-keywords
+	     nil '(("^  .*\\.pdf$"
+		    (".+"
+		     (dired-move-to-filename)
+		     nil
+		     (0 'dired-pdf-face)))))))
+
+;; Emacs.app -- is this a bug?
+(setq ns-alternate-modifier nil; such that Alt-7 results in |
+      ns-command-modifier 'meta); such that Cmd-x is M-x
+
+;;; aquamacs
+;; (global-set-key (kbd "H-q") (kbd "M-q"))
+;;; carbon emacs
+;; (set-keyboard-coding-system 'mac-roman);; no longer necessary in Emacs 23
+;; (global-set-key (kbd "M-SPC") 'just-one-space)
+;; (global-set-key (kbd "§") 'just-one-space)
+;; (global-set-key  (kbd "~")); because alt-n does not work
+;; (global-set-key (kbd "°") (kbd "^")); because ^ SPC does not work
+
+; (setq selection-coding-system 'latin-1)
+; (set-terminal-coding-system 'utf-8)
+; (set-keyboard-coding-system 'iso-latin-1)
+
+(prefer-coding-system 'utf-8)
+
+(setq sentence-end-double-space nil)
+
+(add-hook 'sgml-mode-hook (lambda ()
+			    (local-set-key (kbd "C-c t") 'sgml-tag)))
+
+(dolist (hook '(emacs-lisp-mode-hook
+		lisp-mode-hook
+		change-log-mode
+		texinfo-mode-hook))
+  (add-hook hook (lambda ()
+		   (eldoc-mode 1)
+		   (set (make-local-variable 'sentence-end-double-space) t))))
+
+(defun highlight-fixme ()
+  (font-lock-add-keywords nil'(("\\<\\(FIXME!?\\)"
+				1 font-lock-warning-face prepend))))
+
+(defface whitespace '((t (:background "hotpink"))) "Whitespace.")
+
+(defun highlight-whitespace ()
+  (font-lock-add-keywords nil'(("\t" . 'whitespace))))
+
+(add-hook 'find-file-hook 'highlight-fixme t)
+
+(setq change-log-default-name "ChangeLog"
+      user-full-name "Alex Schroeder"
+      user-mail-address "alex@gnu.org")
+
+;; (global-set-key (kbd "M-SPC") 'just-one-space)
+;; (global-set-key (kbd "C-v") 'goto-line)
+(global-set-key (kbd "C-x v x") 'vc-revision-other-window)
+
+(defun url-encode (str)
+  "URL-encode STR."
+  (interactive "sURL-encode: ")
+  (message "%s" (url-hexify-string str)))
+(defalias 'url-escape 'url-encode)
+
+(defun url-decode (str)
+  "URL-decode STR."
+  (interactive "sURL-decode: ")
+  (message "%s" (decode-coding-string
+		 (url-unhex-string str)
+		 'utf-8)))
+
+;;; hippie expand
+
+;; (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
+(global-set-key (kbd "C-<tab>") 'hippie-expand)
+(setq hippie-expand-try-functions-list
+      '(try-expand-all-abbrevs try-expand-dabbrev
+	try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill
+	try-complete-lisp-symbol-partially try-complete-lisp-symbol))
+
+;;; eshell
+(global-set-key (kbd "C-z") 'eshell)
+(setq eshell-save-history-on-exit t)
+(add-hook 'eshell-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-z") 'bury-buffer)
+	    (local-set-key (kbd "C-a") 'eshell-bol)
+	    (local-set-key (kbd "<up>") 'previous-line)
+	    (local-set-key (kbd "<down>") 'next-line)))
+(defalias 'eshell/emacs 'find-file)
+(defalias 'eshell/less 'find-file)
+(defun eshell/dired () (dired (eshell/pwd)))
+
+;;; scheme
+(require 'cmuscheme)
+(setq scheme-program-name "/opt/local/bin/scsh")
+
+;;; perl
+(add-to-list 'auto-mode-alist '("\\.pl\\'" . cperl-mode))
+(add-to-list 'auto-mode-alist '("\\.t\\'" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
+(add-hook 'cperl-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-h f") 'cperl-perldoc)))
+(defalias 'perldoc 'cperl-perldoc)
+
+;;; eldav for emacswiki, optional
+;; (add-to-list 'load-path "~/elisp/eldav-0.8.1")
+;; (require 'eldav nil t)
+;; (defun eldav-file-writable-p (file)
+;;   t)
+
+;; (find-file ":http://www.emacswiki.org/cgi-bin/emacs/dav/ElDav")
+
+(defun rcirc-unfill ()
+  (interactive)
+  (save-excursion
+    (goto-char rcirc-prompt-end-marker)
+    (while (re-search-forward "\\s-+" nil t)
+      (replace-match " "))))
+
+;;; rcirc, write such as not to require rcirc at startup
+(autoload 'rcirc "rcirc" t)
+
+(global-set-key (kbd "C-c e")
+		(lambda ()
+		  (interactive)
+		  (rcirc nil)))
+
+(setq rcirc-prompt "%n> "; list nick
+      rcirc-fill-prefix "      "
+      rcirc-fill-column 65; side-by-side on my laptop
+      rcirc-default-nick "kensanata"
+      rcirc-keywords '("ken" "kens" "kensa")
+      rcirc-server-alist
+      '(("irc.freenode.net" :channels
+	 ("#emacs" "#rcirc" "#wiki" "#oddmuse" "#epfarms"
+	  "#hcoop" "#clojure"))
+	("irc.datacomm.ch" :channels ("#drsrm"))
+	("irc.perl.org" :channels ("#perlde")))
+      rcirc-decode-coding-system 'undecided
+      rcirc-coding-system-alist
+      '(("#nihongo" undecided . iso-2022-jp))
+      rcirc-ignore-list '()
+      rcirc-log-flag t
+      rcirc-authinfo (with-temp-buffer
+		       (insert-file-contents-literally "~/.rcirc-authinfo")
+		       (read (current-buffer))))
+
+(setq rcirc-colors
+      (let (candidates)
+        (dolist (item color-name-rgb-alist)
+	  (destructuring-bind (color r g b) item
+	    (let ((d (sqrt (+ (* (/ r 512) (/ r 512))
+			      (* (/ g 512) (/ g 512))
+			      (* (/ b 512) (/ b 512))))))
+	      (if (and (not (= r g))
+		       (not (= r b)); grey
+		       (> d 10)
+		       (< d 150))
+		(setq candidates (cons color candidates))))))
+	candidates))
+
+(eval-after-load 'rcirc '(require 'rcirc-color))
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command encoding (arg)
+     "Change the encoding coding system
+`rcirc-encode-coding-system' for the current buffer only."
+     (interactive)
+     (if (string= arg "")
+	 (rcirc-print process (rcirc-nick process) "NOTICE" target
+		      (symbol-name rcirc-encode-coding-system))
+       (set (make-local-variable 'rcirc-encode-coding-system)
+	    (intern-soft arg)))))
+
+(add-hook 'rcirc-mode-hook
+	  (lambda ()
+	    (rcirc-track-minor-mode 1)
+	    (local-set-key (kbd "M-q") 'rcirc-unfill)))
+
+;; define faces
+
+(defface rcirc-nick-in-message '((t (:background "lemon chiffon")))
+  "My nick when mentioned by others.")
+(defface rcirc-my-nick '((t (:foreground "purple")))
+  "My own nick for rcirc.")
+(defface rcirc-track-nick '((t (:inherit rcirc-my-nick)))
+  "The face used indicate activity directed at you.")
+(defface rcirc-nick-in-message-full-line '((t ()))
+  "The face used emphasize the entire message when your nick is mentioned.")
+(defface rcirc-track-keyword '((t (:inherit bold)))
+  "The face used indicate activity directed at you.")
+(defface rcirc-prompt '((t (:foreground "orchid")))
+  "My prompt for rcirc.")
+
+;;; mode invisible
+
+(defadvice my-invisible-preference (after rcirc-connect activate)
+  "When connecting to a server, set the user mode to +i (invisible)."
+  (let ((process ad-return-value)
+	(nick (or nick rcirc-default-nick)))
+    (rcirc-send-string process (concat "MODE " nick " +i"))))
+
+;;; debugging hashmaps
+
+(defun describe-hash (variable &optional buffer)
+  "Display the full documentation of VARIABLE (a symbol).
+    Returns the documentation as a string, also.
+    If VARIABLE has a buffer-local value in BUFFER (default to the current buffer),
+    it is displayed along with the global value."
+  (interactive
+   (let ((v (variable-at-point))
+	 (enable-recursive-minibuffers t)
+	 val)
+     (setq val (completing-read
+		(if (and (symbolp v)
+			 (hash-table-p (symbol-value v)))
+		    (format
+		     "Describe hash-map (default %s): " v)
+		  "Describe hash-map: ")
+		obarray
+		(lambda (atom) (and (boundp atom)
+				    (hash-table-p (symbol-value atom))))
+		t nil nil
+		(if (hash-table-p v) (symbol-name v))))
+     (list (if (equal val "")
+	       v (intern val)))))
+  (with-output-to-temp-buffer (help-buffer)
+    (maphash (lambda (key value)
+	       (pp key)
+	       (princ " => ")
+	       (pp value)
+	       (terpri))
+	     (symbol-value variable))))
+
+;;; text
+
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'sgml-mode-hook 'turn-off-auto-fill)
+
+;;; Oddmuse
+
+(setq oddmuse-username "AlexSchroeder"
+      oddmuse-directory "~/.emacs.d/oddmuse")
+(add-to-list 'auto-mode-alist '("/Users/alex/emacs/oddmuse" . oddmuse-mode))
+(autoload 'oddmuse-edit "oddmuse" "Edit a page on an Oddmuse wiki." t)
+(autoload 'oddmuse-post "oddmuse" "Post the current buffer to an Oddmuse wiki." t)
+(autoload 'oddmuse-mode "oddmuse" "Yadda yadda." t)
+(setq oddmuse-wikis
+      '(("TestWiki" "http://www.emacswiki.org/cgi-bin/test" utf-8)
+	("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8)
+	("CommunityWiki" "http://www.communitywiki.org/cw" utf-8)
+	("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse" utf-8)
+	("Alex" "http://www.emacswiki.org/cgi-bin/alex" utf-8)))
+
+(add-hook 'text-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-c =") 'oddmuse-section)
+	    (local-set-key (kbd "C-c -") 'oddmuse-subsection)))
+
+(add-hook 'oddmuse-hook
+	  (lambda ()
+	    (unless (string-match "question" oddmuse-post)
+	      (setq oddmuse-post (concat "question=1;" oddmuse-post)))))
+
+(defun oddmuse-section () (interactive) (oddmuse-header ?=))
+(defun oddmuse-subsection () (interactive) (oddmuse-header ?-))
+(defun oddmuse-header (char)
+  (let ((n (- (line-end-position 0) (line-beginning-position 0))))
+    (beginning-of-line)
+    (insert (make-string n char))))
+
+(define-generic-mode 'wikidot-mode
+  nil; comments
+  nil; keywords
+  '(("^\\++.*$" . 'dired-header)
+    ("^>.*$" . 'fixed-pitch)
+    ("\\[.*?\\]" . 'link)
+    ("\\*\\*.*?\\*\\*" . 'bold)
+    ("//.*?//" . 'italic)
+    ("||~[^|\n]*" . 'bold);; ||~ heading ||
+    ("||[^~|\n]+$" . font-lock-warning-face); || cell ||
+    ("||\\([^~|\n]*\\)" 1 'mode-line-highlight)); font-lock list
+  '(".wikidot\\'"); auto-mode-alist
+  nil; function-list
+  "Major mode for editing wikidot files.")
+
+(defun wikidot-table (start end rows)
+  "Convert region into a table.
+The region must contain one cell content per line,
+cells by columns first."
+  (interactive "r\nnHow many rows? ")
+  (let ((cells (split-string (buffer-substring start end)
+			     " *\n *" t)))
+    (unless (= 0 (mod (length cells) rows))
+      (error "Cannot fit %d cells into %d rows"
+	     (length cells) rows))
+    (unless cells
+      (error "No cells in the region"))
+    (dotimes (row rows)
+      (let (result)
+	(dotimes (col (/ (length cells) rows))
+	  (setq result (cons (nth (+ (* col rows) row) cells)
+			     result)))
+	(let ((sep (if (= row 0) "||~" "||")))
+	  (insert sep (mapconcat (lambda (s)
+				   (if (and (> row 0)
+					    (string-match "[a-z]" s))
+				       s; headers are always centered
+				     (concat " " s)))
+				 (nreverse result)
+				 (concat " " sep))
+		  " ||\n")))))
+  (delete-region start end))
+
+(defun wikidot-transpose-table (start end rows)
+  "Transpose cells into a table.
+The region must contain one cell content per line,
+cells by rows first."
+  (interactive "r\nnHow many rows? ")
+  (let* ((cells (split-string (buffer-substring start end) " *\n *" t))
+	 (m (length cells)))
+    (unless (= 0 (mod m rows))
+      (error "Cannot fit %d cells into %d rows"
+	     m rows))
+    (unless cells
+      (error "No cells in the region"))
+    (let ((columns (/ m rows))
+	  (row 0)
+	  result)
+      (while cells
+	(setq result cells
+	      cells (nthcdr columns cells))
+	(setcdr (nthcdr (1- columns) result) nil)
+      	(let ((sep (if (= row 0) "||~" "||")))
+	  (insert sep (mapconcat (lambda (s)
+				   (if (and (> row 0)
+					    (string-match "[a-z]" s))
+				       s; headers are always centered
+				     (concat " " s)))
+				 result
+				 (concat " " sep))
+		  " ||\n"))
+	(setq row (1+ row)))))
+  (delete-region start end))
+
+(defun wikidot-bold-intro ()
+  "Find a sentence ending with a colon,
+add an empty line before it and make it bold."
+  (interactive)
+  (wikidot-intro "**"))
+
+(defun wikidot-italic-intro ()
+  "Find a sentence ending with a colon,
+add an empty line before it and make it italic."
+  (interactive)
+  (wikidot-intro "//"))
+
+(defun wikidot-intro (markup)
+  (search-forward ":")
+  (save-excursion
+    (forward-char -1)
+    (insert markup)
+    (forward-sentence -1)
+    (if (eq (char-after) ?\n)
+	(forward-char 1)
+      (delete-horizontal-space)
+      (newline)
+      (newline))
+    (insert markup)))
+
+(defun wikidot-cell-guess ()
+  "Search for the next capital letter and insert a linebreak."
+  (interactive)
+  (let ((case-fold-search nil))
+    (re-search-forward "[A-Z]")
+    (forward-char -1)
+    (delete-horizontal-space)
+    (newline)
+    (forward-char 1)))
+    
+(define-generic-mode 'alex-oddmuse-mode
+  nil; comments
+  nil; keywords
+  `(("^=[^=\n]+=+$" . 'info-title-1)
+    ("^==[^=\n]+=+$" . 'info-title-2)
+    ("^===[^=\n]+=+$" . 'info-title-3)
+    ("^====[^=\n]+=+$" . 'info-title-4)
+    ("^[ \t].*$" . 'fixed-pitch)
+    ("\\[\\[.*?\\]\\]" . 'link)
+    ("\\[.*\\]" . 'link)
+    (,goto-address-url-regexp . 'link)
+    ("\\*\\*.*?\\*\\*" . 'bold)
+    ("\\*.*?\\*" . 'bold)
+    ("//.*?//" . 'italic)
+    ("/.*?/" . 'italic)
+    ("__.*?__" . 'italic)
+    ("_.*?_" . 'underline)); font-lock list
+  '(".oddmuse\\'"); auto-mode-alist
+  '((lambda () (require 'info) (require 'goto-addr))); function-list
+  "Major mode for editing Oddmuse wiki files.
+The particular markup mix is specific to my preferences.")
+
+(define-generic-mode 'campaign-wiki-mode
+  nil; comments
+  nil; keywords
+  '(("^=[^=\n]+" . 'info-title-1)
+    ("^==[^=\n]+" . 'info-title-2)
+    ("^===[^=\n]+" . 'info-title-3)
+    ("^====+[^=\n]+" . 'info-title-4)
+    ("\\[\\[.*?\\]\\]" . 'link)
+    ("\\[.*\\]" . 'link)
+    ("\\[b\\].*?\\[/b\\]" . 'bold)
+    ("\\[i\\].*?\\[/i\\]" . 'italic)
+    ("\\*\\*.*?\\*\\*" . 'bold)
+    ("\\*.*?\\*" . 'bold)
+    ("\\_<//.*?//" . 'italic)
+    ("\\_</.*?/" . 'italic)
+    ("__.*?__" . 'italic)
+    ("_.*?_" . 'underline)
+    ("|+=?" . font-lock-string-face)
+    ("\\\\\\\\[ \t]+" . font-lock-warning-face)); font-lock list
+  '(".campaign\\'"); auto-mode-alist
+  '((lambda () (require 'info) (require 'goto-addr))); function-list
+  "Campaign Wiki stuff including Creole Markup and BBCode.")
+
+;;; isearch & occur
+
+(defun isearch-occur ()
+  "Invoke `occur' from within isearch."
+  (interactive)
+  (let ((case-fold-search isearch-case-fold-search))
+    (occur (if isearch-regexp isearch-string (regexp-quote isearch-string)))))
+
+(define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
+
+;;; org
+
+(setq org-CUA-compatible t)
+(define-key global-map "\C-cl" 'org-store-link)
+(when (boundp 'session-globals-exclude)
+  (add-to-list 'session-globals-exclude 'org-mark-ring))
+
+;;; ediff
+
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+;; Calendar
+
+(setq calendar-week-start-day 1
+      calendar-day-name-array ["Sonntag" "Montag" "Dienstag" "Mittwoch"
+			       "Donnerstag" "Freitag" "Samstag"]
+      calendar-month-name-array ["Januar" "Februar" "März" "April" "Mai"
+				 "Juni" "Juli" "August" "September"
+				 "Oktober" "November" "Dezember"])
+
+;;; Mush Mode
+
+ (autoload 'mu-open "mu" "Play on MUSHes and MUDs" t)
+ (add-hook 'mu-connection-mode-hook 'ansi-color-for-comint-mode-on)
+
+;;; WriteRoom
+
+(defun write-room ()
+  "Make a frame without any bling."
+  (interactive)
+  ;; to restore:
+  ;; (setq mode-line-format (default-value 'mode-line-format))
+  (let ((frame (make-frame '(;; (minibuffer . nil)
+			     (vertical-scroll-bars . nil)
+			     (left-fringe . 0); no fringe
+			     (right-fringe . 0)
+			     (background-mode . dark)
+			     (background-color . "black")
+			     (foreground-color . "green")
+			     (cursor-color . "green")
+			     (border-width . 0)
+			     (border-color . "black"); should be unnecessary
+			     (internal-border-width . 64); whitespace!
+			     (cursor-type . box)
+			     (menu-bar-lines . 0)
+			     (tool-bar-lines . 0)
+			     (mode-line-format . nil); dream on... has no effect
+			     (fullscreen . t); does not work on all systems
+			     (left . 0)
+			     (top . 0)
+			     (width . 128)
+			     (height . 37)
+			     (unsplittable . t)))))
+    (select-frame frame)
+    (find-file "~/NOTES")
+    (setq mode-line-format nil); is buffer local unfortunately
+    ;; maximize window if fullscreen above had no effect
+    (when (fboundp 'w32-send-sys-command)
+      (w32-send-sys-command 61488 frame))))
+
+;;; mail
+(autoload 'fetchmail-mode "fetchmail-mode"
+  "Mode for editing .fetchmailrc files" t)
+(add-to-list 'auto-mode-alist '("\..fetchmailrc$" . fetchmail-mode))
+
+;;; Flickr: Extract Picture URLs
+
+(defun flickr-extract-urls ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (require 'goto-addr)
+    (let (url urls)
+      (while (re-search-forward goto-address-url-regexp nil t)
+	(setq url (match-string 0))
+	(if (and (not (string-match "\\?" url))
+		 (string-match "static\\.flickr\\.com" url))
+	    (setq urls (cons url urls))))
+      (pop-to-buffer (get-buffer-create (concat "*URLs for "
+						(buffer-name) "*")))
+      (erase-buffer)
+      (insert (mapconcat 'identity (nreverse urls) "\n")))))
+
+(defun flickr-images-to-oddmuse ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "^.*/\\([0-9]+\\)_.*" nil t)
+      (replace-match (concat "[[image:"
+			     (match-string 0)
+			     "||"
+			     "http://www.flickr.com/photos/kensanata/"
+			     (match-string 1)
+			     "/]]")))))
+
+;; emacs-w3m
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/w3m")
+(require 'w3m-load)
+(setq w3m-use-cookies t)
+
+;; identica, twitter
+
+(when (require 'netrc nil t)
+  (autoload 'identica-mode "identica-mode" nil t)
+  (let ((identica (netrc-machine (netrc-parse "~/.netrc") "identi.ca" t)))
+    (setq identica-username (netrc-get identica "login")
+	  identica-password (netrc-get identica "password")))
+  (autoload 'twittering-mode "twittering-mode" nil t)
+  (autoload 'twit-show-recent-tweets "twit" nil t)
+  (let ((twittering (netrc-machine (netrc-parse "~/.netrc") "identi.ca" t)))
+    (setq twittering-username (netrc-get twittering "login")
+	  twit-user twittering-username
+	  twittering-password (netrc-get twittering "password")
+	  twit-pass twittering-password)))
+(setq twit-show-user-images t)
+
+;;; Clojure
+
+(autoload 'clojure-mode "clojure-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.clj\\'" . clojure-mode))
+
+;;; automatic additions
+
+(put 'narrow-to-region 'disabled nil)
+(put 'not-modified 'disabled t)
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(canlock-password "f0e77d033338878513c7e4935cfac5eaa0da285c"))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )

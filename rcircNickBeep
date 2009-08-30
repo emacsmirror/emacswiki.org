@@ -1,0 +1,17 @@
+== Code ==
+
+<pre>
+(add-hook 'rcirc-print-hooks 'my-rcirc-print-hook)
+(setq alert "/usr/share/sounds/gaim/alert.wav")
+(defun my-rcirc-print-hook (process sender response target text)
+  (when (and (string-match (rcirc-nick process) text)
+	     (not (string= (rcirc-nick process) sender))
+	     (not (string= (rcirc-server-name process) sender)))
+    (start-process "beep" nil "aplay" (expand-file-name alert))))
+</pre>
+
+
+It is also possible to show libnotify pop-ups with [http://nearfar.org/code/gnome/notify.py a little Python](link is down).
+
+----
+CategoryChatClient [[rcirc]]

@@ -1,0 +1,42 @@
+There is a number of facilities provided by emacs to align text, comments, assignments, or columns.
+
+* AlignCommands explains how to use the <code>align</code>, <code>align-current</code> and <code>align-regexp</code> commands provided with emacs.
+
+
+* AlignColumn deals with the <code>align.el</code> extension written by
+Matthias Helmling. Do not confuse with the align.el lisp file
+provided with recent emacs versions and described above.
+
+  
+* ColumnizeWords is an extension written by Rick Bielawski. It provides the
+<code>columnize-text</code> command, which lines up words or numbers, 
+either by rows or columns.
+
+  
+* AlignLet is meant to align <code>let</code> assignments in Lisp code.
+  The align-let.el extension is written by Kevin Ryde.
+
+
+
+<b>Other ways to align text or figures</b>
+
+[English:CategoryTables Tables] can also be used to line up text. 
+The extension <code>table.el</code>, by
+Takaaki Ota is now available by default with emacs22. 
+
+Converting text
+to table gives access to a number of neat formatting features from
+TableMode. The next example is obtained by capturing a short text with
+<code>M-x table-capture</code>, using space as the column delimiter
+and a newline as the row delimiter (the newline can be entered by
+hitting <code>C-q C-j</code> or <code>C-o</code>). The table is then
+removed with <code>M-x table-release</code>, leaving the default left
+alignment.
+  
+                             +---------+--------+
+ Firstname  Lastname         |Firstname|Lastname|         Firstname Lastname
+ Alice Liddell          =>   +---------+--------+    =>                       
+   Lewis    Carroll          |Alice    |Liddell |         Alice     Liddell 
+                             +---------+--------+                           
+                             |Lewis    |Carroll |         Lewis     Carroll 
+                             +---------+--------+

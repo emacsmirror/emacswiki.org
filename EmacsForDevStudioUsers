@@ -1,0 +1,59 @@
+If you are an experienced programmer who is used to IDEs such as VisualStudio, Borland, and Eclipse, this is the page for you.  Emacs initially appears to lack many of the functions of IDEs, but in fact they are all there beneath the surface.  This page has been created by a recent DevStudio migrant, and aims to list common FAQs for migrants, of the form 'what's the emacs equivilent of XXX from !DevStudio?'  This is a task-directed page, in contrast to the emacs documentation, which usually is ordered by emacs' own capabilities.  Answers should be reasonably language independent where possible, for example, debugging should all be possible via the GrandUnifiedDebugger (GUD) regardless of language.  So if you learn to debug in C, you can easily debug Java, Python etc in the same way.  As a newcomer from !DevStudio I have listed the questions, but am not qualified to answer so I leave that to the experienced emacs hackers.
+
+Please try to write answers in native !DevStudio jargon, not emacs hacker jargon, as this is for folks who have just arrived here and are re-adjusting.  Many !DevStudio users are put off learning emacs due to the steep learning curve and barrage of new jargon.  We're smart people but we're new here, please be gentle with us so we can join your community and escape from Bill!  We do however expect readers of this to have read and understood EmacsNewbie first.
+
+How do I:
+
+; Edit my language: Your usual language ProgrammingModes (available from your nearest store, or use ModeTutorial to roll your own) that provide syntax highlight and the like.  Other assistive modes include DevelockMode, GlassesMode, and CWarnMode (for C/C++ mostly, choose another set for you favorite language).
+
+; Manage project files and builds: We use makefiles and GNU Make.  These can me written by hand or generated my GNU automake.  The [[EDE]] project management system is part of [[CEDET]] and helps with this.
+
+; Quickly visualise and navigate through projects, files, classes and structures: 
+;; Experiment some with goodies offered by EmacsCodeBrowser, Semantic and friends: Make sure you do ##(setq semantic-load-turn-useful-things-on t)## in your ##.emacs##, this will make semantic much more fun. Try tag charting by complexity (now, that's something DevStudio doesn't have), just enjoy yourself. Observe the blue lines semantic inserts in between defuns bodies. Activate `which-function-mode', note how lovely it's redundant info shown in top fringe is.
+;; Or use Tags: 
+;;; M-x visit-tags-table : choose a a TagFile
+;;; M-.     : goto tag
+;;; C-u M-. : goto next tag
+;;; M-*     : pop back from tag
+
+[new:DrewAdams:2008-02-23 08:11 UTC]
+:: Try `icicle-search-tag' (`##M-.##' in Icicle mode). It does all that and more in one command -- a tags browser. [[Icicles - Tags Enhancements]] -- DrewAdams
+[new]
+
+;; Or use ImenuMode: See also [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu browser]].
+
+;; For C++, use ebrowse:
+
+; Autocomplete class members: Use Semantic, part of CEDET.  See HowSemanticFulfillsThoseNeeds. Also try "dumb" completion instead, M-/ will complete your word from nearby text and from other buffers, hit it multiple times if it misses.
+
+; See function argument lists when calling them: See HowSemanticFulfillsThoseNeeds.
+
+; See functions' documentation when calling them: See ElDoc mode.
+
+; Step through code with the debugger: See DebuggingWithEmacs.  Be sure to read the GrandUnifiedDebugger section in the EmacsManual ("Starting GUD" and related nodes).
+
+;; M-x gdb  :  start debugging
+;; M-s      :  step in
+;; M-n      :  step over
+;; M-u      :  up frame
+;; M-d      :  down frame
+;; M-c      :  continue
+
+; Compiler errors:
+
+;; M-x compile : run make
+;; C-`   : jump to next compile error
+;; <RET> : jump to compile error under TextCursor
+
+; Code folding: This is done by various modes according to preferences.  The terms to look for are "outline" and "folding".  See CategoryOutline.
+
+; Refactoring:  Ability to refactor source code seems highly dependent on the source code's programming language, so there is no univeral solution for this.  But there is no reason support for refactoring could not be accomplished by extending any of the existing Emacs ProgrammingModes with some EmacsLisp programming.  Emacs offers advanced editing facilities helpful for refactoring source code.  See RefactoringBrowser, [[EmacsNiftyTricks#Editing]], [[EmacsNiftyTricks#Development]], [[EmacsNiftyTricks#Programming]].
+
+Also see: [http://www.kuro5hin.org/story/2003/4/1/21741/10470 Making Emacs Stand Up To Visual Studio 7], WThirtyTwoDev,MSVisualStudio
+
+See also VisibleBookmarks. -- [[rubikitch]]
+
+----
+CategoryEmulation
+CategoryProgrammerUtils
+CategoryProgramming

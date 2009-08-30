@@ -1,0 +1,8 @@
+http://www.friendfeed.com is a site that allows you to: 
+* Discover what your friends are sharing 
+* Discuss with people you know 
+* Share your stuff from other sites automatically
+
+== Modes for interacting with FriendFeed ==
+
+* Lisp:amigo.el - Currently allows for posting messages and sharing links. To be expanded on in the future.

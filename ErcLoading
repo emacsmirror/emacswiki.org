@@ -1,0 +1,25 @@
+The simplest way to load ERC is to add something like this to your ~/.emacs file:
+
+   (require 'erc)
+
+This will define the erc-select command used connect to an IRC server.
+
+== Autoloading ==
+
+To prevent ERC from loading at startup, you may use auto-load in your
+~/.emacs file.  An automatically generated library of autoloads comes
+with ERC, and can be loaded with f.ex.
+
+    (require 'erc-auto)
+
+If that'll lead to too much clutter or you have other reasons to
+define the autoloads yourself, you may of course do so.  Evaluating
+
+   (autoload 'erc-select "erc" "IRC client." t)
+
+will declare an autoload for the most useful ERC command,
+<code>erc-select</code>, which is the fundamental way to start an ERC
+session by connecting to a IRC server.
+
+----
+[[ERC]]

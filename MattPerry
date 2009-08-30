@@ -1,0 +1,20 @@
+I'm a new emacs user.  I'm currently using XEmacs because that's what my colleagues use.  I'm a long time vim user and wanted to take advantage of all of the nifty things written for emacs (like [JavaDevelopmentEnvironment JDEE]).  I've just reached the point where I stopped littering my documents with 'i', 'o' and ':w' and have stopped typing C-x C-s in vim.  Yes, I still use vim because I'm a shell junkie and I haven't gotten comfortable with dired yet.  Vim starts up a lot faster that emacs when I need to make a quick edit to a file.  I'm currently using emacs for things where I'm going to be spending a bit of time in the editor, such as writting Java code, writing DocBook documents, and editing email messages.
+
+!EmacsWiki has been a great help to learn what is available for my new editor. I read the RecentChanges page several times a day to see what new stuff has been updated. I also read random pages here and there on the wiki learn about mode and uses that I might not have been aware of. Learning emacs reminds me of learning an operating system and I'm keeping that in mind as I explore. I didn't learn Unix in a day either. :-)
+
+The one downside I'm finding with emacs is that there isn't enough interoperability between GNU Emacs and XEmacs.  I'm highly annoyed when I find a script that does what I need but come to find out that it's for Emacs only and not XEmacs.  It's also frustrating when script authors don't clearly document which flavour of emacs their script is compatible with.
+
+[new]
+Welcome on the wiki ! How about documenting the good coding techniques to produce interoperable Elisp packages ? -- LucasBonnet
+
+[new]
+Yay, ComparativeEmacsology is the science that researches these incopatibilities... :D -- AlexSchroeder
+
+----
+[new]
+Thanks for updating the [[Tumme]]-page! I have been lazy... Does this mean that you have tried it too? :) -- MathiasDahl
+
+[new]
+I haven't tried it yet but I plan on it once I get my linux box rebuilt with Ubuntu. -- MattPerry
+----
+CategoryHomepage

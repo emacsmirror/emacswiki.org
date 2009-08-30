@@ -1,0 +1,69 @@
+This code determines the buffer language by counting several small and often used words characteristic each language and ranks them.  The original version was posted by JeanPhilippeTheberge on news:gnu.emacs.help.  See GuessLang and AutoLangMode for an alternative.
+
+I use this code to set the WikiLanguage for my wiki pages.  I modified it in order to be non-interactive, and I probably messed with the regexps a bit.  This is the version by JeanPhilippeTheberge, modified by AlexSchroeder.  For the original, see Groups:Guessing+a+language.
+
+<pre>
+    (defvar guess-language-rules
+      '(("en" . "\\<\\(of\\|the\\|and\\|or\\|how\\)\\>")
+        ("de" . "\\<\\(und\\|oder\\|der\\|die\\|das\\|wie\\)\\>") 
+        ("fr" . "\\<\\(et\\|ou\\|[ld]es\\|que\\)\\>")
+        ("pt" . "\\<\\(de\\|para\\|e\\|ou\\|como\\)\\>"))
+      "Alist of rules to determine the language of some text.
+    Each rule has the form (CODE . REGEXP) where CODE is a string to
+    identify the language (probably according to ISO 639), and REGEXP is a
+    regexp that matches some very common words particular to that language.
+    The default language should be listed first.  That will be the language
+    returned when no REGEXP matches, as would happen for an empty
+    document.")
+
+    (defun guess-buffer-language ()
+      "Guess language in the current buffer."
+      (save-excursion 
+        (goto-char (point-min))
+        (let ((count (map 'list (lambda (x)
+                                  (cons (string-to-number
+                                         (count-matches (cdr x))) (car x)))
+                          guess-language-rules)))
+          (cdr (assoc (car (sort (map 'list 'car count) '>)) 
+                      count)))))
+</pre>
+
+Here is an interactive wrapper:
+
+    (defun guess-language ()
+      "Guess language in the current buffer."
+      (interactive)
+      (message (guess-buffer-language)))
+
+
+On my Emacs22 count-matches returns integer so string-to-number triggers error. Just replace
+                                  (cons (string-to-number
+                                         (count-matches (cdr x))) (car x)))
+with
+                                  (cons (count-matches (cdr x)) (car x)))
+
+
+If the above code does not work for you reliably, or if you need some other languages which are not covered, you can use an external tool called "mguesser". Here's a code snippet for this:
+
+<pre>
+(setq guess-buffer-default "en")
+(defun guess-buffer-language ()
+  "Guess language using mguesser."
+  (let ((buf (get-buffer-create " *mguesser*"))
+        proc)
+    (with-current-buffer buf
+      (erase-buffer))
+    (setq proc
+          (start-process "mguesser" buf "/usr/bin/mguesser"))
+    (process-send-region proc (point-min) (point-max))
+    (process-send-eof proc)
+    (accept-process-output proc 0.3)
+    (delete-process proc)
+    (with-current-buffer buf
+      (goto-char (point-min))
+      (prog1
+          (if (looking-at "^[0-9.]+\\s-+\\([a-z-]+\\)")
+              (match-string 1)
+            guess-buffer-default)
+        (kill-buffer)))))
+</pre>

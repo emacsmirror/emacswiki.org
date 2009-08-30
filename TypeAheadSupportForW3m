@@ -1,0 +1,12 @@
+== Type Ahead Support for Emacs-w3m ==
+
+Type ahead support for Emacs-w3m.  See the code Lisp:w3m-type-ahead.el.
+
+This allows an isearch facility that is limited to <code>HREF</code> anchors.
+Switch the mode on for all <code>w3m-mode</code> buffers with:
+
+    (add-hook 'w3m-mode-hook 'w3m-type-ahead-mode)
+
+
+----
+CategoryModes

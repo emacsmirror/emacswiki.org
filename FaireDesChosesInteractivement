@@ -1,0 +1,46 @@
+== Se Déplacer parmi les Buffers ==
+
+SwitchingBuffers (en) fait partie d'Emacs.
+
+== module ido ==
+
+Le module ido.el de KimStorm permet de faire des choses de
+manière intéractive avec les fichiers et les buffers.
+
+Vous pouvez l'obtenir ici:
+* http://www.cua.dk/
+
+== Début rapide ===
+
+    ;;dans le .emacs
+    (require 'ido)
+    (ido-mode t)
+
+Pour se déplacer parmi les buffers C-x b:
+* tapez des charactéres faisant partie de nom du buffer, RET permet
+d'ouvrir le buffer se trouvant en début de liste.
+* utilisez C-s (suivant) C-p (précédent) pour vous déplacer dans la liste.
+* [Tab] montre les choix possibles (ou ouvre le buffer s'il n'y a qu'un seul choix).
+* utilisez C-f pour passer à l'ouverture de fichier.
+
+Pour ouvrir un fichier C-x C-f:
+* tapez des charactéres faisant partie de nom du fichier, RET permet
+d'ouvrir le fichier se trouvant en début de liste.
+* utilisez C-s (suivant) C-p (précédent) pour vous déplacer dans la liste.
+* [Tab] montre les choix possibles (ou ouvre le fichier, ou se déplace
+dans le sous-répertoire s'il n'y a qu'un seul choix).
+* RET pour se  déplacer dans le sous-répertoire en début de liste
+* [backspace] permet de remonter au répertoire parent.
+* tapez deux fois sur slash // pour aller à la racine.
+
+Ce module étend les fonctionalités du module iswitchb de StephenEglen qui
+permet de changer de buffer à l'aide d'un minimum de frappes
+de manière à fournir le même style de navigation pour ouvrir les
+fichiers répertoires etc...
+
+This page is also available in english : English:InteractivelyDoThings
+
+----
+CategoryCommands (en) CatégoriePointEmacs
+
+

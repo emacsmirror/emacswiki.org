@@ -1,0 +1,49 @@
+If you want !TextMate-style "fuzzy" file (and other) completion, see [[Icicles - Fuzzy Completion]] or [InteractivelyDoThings IDO-mode].
+
+If you want automatic indentation of pasted text like in !TextMate, see [[AutoIndentation#SmartPaste|AutoIndentation]].
+
+See <tt>[http://code.google.com/p/emacs-textmate/ textmate-mode]</tt> for an attempt of having the !TextMate behaviour for parenthesis and quotes (auto-closing, overwriting, smart delete). Alternatively, AutoPairs.
+
+Pair insertion goes hand in hand with (vi-like) OpenNextLine commands.
+
+See SlickCopy for line-wise copying and cutting when no text is selected.
+
+[http://www.emacswiki.org/emacs/Yasnippet YASnippet] is a template system for Emacs.
+
+If you want !TextMate's Filter Through Command, see ExecuteExternalCommand.
+
+SpeedBar is similar to the !TextMate's Project Drawer. There's also [EmacsCodeBrowser ECB], and [IdeSkel Ide-skel].
+
+AquamacsEmacs has a lot of !TextMate's key bindings by default.
+
+----
+
+*Question:* How can I get the equivalent of !TextMate's "Go To File" (Navigation > Go To File, or Command-T) functionality in Emacs? None of the buffer switching techniques I've found really do what %%TextMate%% does -- namely, apply fuzzy completion to all files found in a project. For Emacs, applying fuzzy completion to all files recursively found in a given directory would be awesome.
+
+[new]
+*Answer 1*: Use [InteractivelyDoThings Ido] or [[Icicles]] to get %%TextMate%%'s kind of "fuzzy" matching (called "flex" matching in Ido and "scatter" matching in Icicles). Just turn on this kind of matching in Ido or Icicles (##M-(## toggles it in Icicles), and from then on file-name matching will automatically use it. With Icicles you can have fuzzy matching for every kind of input, not just files and buffers. See [[Icicles - Fuzzy Completion#ScatterMatchCompletion|Icicles - Fuzzy Completion]].
+
+*Answer 2:* Use `find-file-in-project' with [InteractivelyDoThings Ido] or [[Icicles]], to get !TextMate's behavior with regard to projects of files. You can get `find-file-in-project' here: http://github.com/eschulte/rinari/tree/0c3db2ffbdb1f7002c63c510b99d54ad97635776/find-file-in-project.el
+
+*Answer 3:* Use the Emacs [[tags file]] as your project metaphor. The following function uses Ido to select among the files listed in the tags file:
+
+    (defun ido-find-file-in-tag-files ()
+      (interactive)
+      (save-excursion
+        (let ((enable-recursive-minibuffers t)) (visit-tags-table-buffer))
+        (find-file (expand-file-name
+                    (ido-completing-read "Project file: "
+                                         (tags-table-files) nil t)))))
+
+It can be bound to ##C-t## or a similar key for convenience: ##(global-set-key "\C-t" 'ido-find-file-in-tag-files)##
+
+*Answer 4:* Use [[Icicles]] [[multi-command]] `icicle-find-file-in-tag-table' to do the same thing as Answer 3 (there's nothing to code). And when you use it, you can also take advantage of [[progressive completion]], [[Icicles - Cycling Completions|cycling]] and all of the other Icicles features.
+* [[Icicles - Support for Projects#TagsFileProject|Icicles - Tags File Projects]] 
+* [[Icicles - File-Name Input#ReadingFileNames|Icicles - File-Name Input]]
+
+*Answer 5:* If you use CScopeAndEmacs, you can search through (and open) all the files referenced in the ##cscope.out## file.
+
+----
+
+----
+CategoryCompletion

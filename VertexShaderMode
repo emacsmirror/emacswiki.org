@@ -1,0 +1,14 @@
+<nowiki>DirectX</nowiki> Vertex Shader (1.1) Mode
+
+By MartinSlater
+
+In the emacs repository at: Lisp:vsh-mode.el
+
+Simple mode for syntax highlighting of directX vertex shaders, currently only version 1.1 keywords.
+
+History
+-------
+20-03-2003 : Update to the regex's to make it a bit prettier.
+
+----
+ProgrammingModes

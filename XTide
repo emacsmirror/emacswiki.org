@@ -1,0 +1,16 @@
+[http://www.flaterco.com/xtide XTide] is a substantial program for tidal predictions based on harmonics.  <code>xtide.el</code> is a little interface to the XTide program output for viewing in an Emacs buffer.  Get it from
+
+: http://user42.tuxfamily.org/xtide/index.html
+
+<code>M-x xtide</code> shows a graph in a buffer, and other output styles can be selected too.  One of the best features is a tie-in to CalendarMode, the <code>T</code> key is setup there to show tides for the selected date, like <code>S</code> does for sunrise or <code>M</code> for phase of the moon.
+
+----
+<code>tcd-format.el</code> sets up a FileFormat to decode XTide <code>.tcd</code> tide constituent database files.  It's meant just for having a nose around in those files if you don't have the source handy.  Get it from
+
+: http://user42.tuxfamily.org/tcd-format/index.html
+
+(For Emacs 21 you'll want XmlCoding to get the right charset in the "substations" part.)
+
+----
+CategoryCalendar
+FileFormat

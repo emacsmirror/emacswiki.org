@@ -1,0 +1,114 @@
+== Decoding ==
+
+Decoding of non-ASCII characters should work automatically.
+If it does not (ie. euc-jp is not decoded
+correctly), you might want to change your language environment, since
+that usually changes the priorities of coding systems tried.  You can
+also do this manually using `prefer-coding-system'.
+
+ERC encodes outgoing text as ctext.  If you have friends that have an
+IRC client that does not decode such text -- ie. they rely on the terminal
+to display the correct glyphs according to the current font, then you
+might prefer to not encode outgoing text.  ERC cannot do this for you
+automatically, because ERC cannot determine the capabilities of the IRC
+client on the other end of the line.  In that case, here is what you should
+add to your ~/.emacs file:
+
+   (defalias 'erc-encode-coding-string 'identity)
+
+== Encoding ==
+
+Lesser IRC clients work like this:  You have a Latin-1 environment
+(just an example), you type stuff, the bytes get sent to the other
+users.  They also have a Latin-1 environment, and so -- magically --
+the bytes they receive are interpreted as the same characters you
+intended to send, and they are displayed using a similar Latin-1 font
+to yours.  Everything works.
+
+This is very limiting, however, because it assumes that all other
+people on the net use the same locale as you do.  ERC does better than
+that.  Before sending the bytes, it encodes them using the `ctext'
+coding system.  This coding system encodes all other coding systems
+(much like `emacs-mule' or `iso-2022-jp').  This means that if the
+other people on the net have equally powerful IRC clients, that decode
+incoming bytes before displaying them, you can type text in any
+language, using any coding system.  You can send English, German,
+Swedish, Japanese and Chinese -- it all works.
+
+The only problem arises when others continue to use lesser IRC clients.
+As soon as you start sending non-ASCII stuff, these people will see
+garbage in their lesser IRC clients.  To handle these people, set
+`erc-encoding-coding-alist' appropriately.  If you know that on
+channel `#foo' people use Latin-1 clients, you can do the following:
+
+    (add-to-list 'erc-encoding-coding-alist '("#foo" . iso-8859-1))
+
+== Translating ==
+
+If you have the EDICT and the KANJIDIC file, then you can use it as a
+cheap translation engine:
+
+    (defun find-region-translation (start end)
+      "Find the region in the EDICT file."
+      (interactive "r")
+      (let ((str (buffer-substring-no-properties start end)))
+	(if (= (length str) 1)
+	    (find-file  "c:/Emacs/kanjidic")
+	  (find-file "c:/Emacs/edict"))
+	(goto-char (point-min))
+	(occur str)
+	(bury-buffer)))
+
+Perhaps you also need this:
+
+    (add-to-list 'auto-coding-alist '("edict\\'" . euc-jp))
+    (add-to-list 'auto-coding-alist '("kanjidic\\'" . euc-jp))
+
+Note that if one of the two files is gzipped, and euc-jp is not
+recognized automatically, then you need to store the unzipped file
+somewhere (because gzipped files must be read without translation
+before being unzipped).
+
+You might like to bind it to a key, of course:
+
+    (global-set-key (kbd "C-c j") 'find-region-translation)
+
+== Single Messages ==
+
+Here is an example for a command that allows you to send single lines of text using a specific coding system.  In this case, it is KOI8.  This might come handy when you are on a channel such as #emacs where some people use UTF-8, some use Latin-1, and some use KOI8.  Most of the time, you will be using ASCII characters, which work without a problem.
+
+When you want to send a Russian greeting, however, you might want to use KOI8 for that single message only, knowing that all the KOI8 users on the channel will understand you:
+
+    (defun erc-cmd-KOI (&rest words)
+      "Send text as koi8."
+      (if words
+	  (let ((erc-default-coding-system 'koi8))
+	    (erc-send-message (mapconcat 'identity words " ")))
+	(let ((limit (- (point) 1000))
+	      (pos (point))
+	      text)
+	  (while (and pos (not (let ((data (get-text-property pos 'erc-parsed)))
+				 (and data (string= (aref data 0) "PRIVMSG")))))
+	    (setq pos (previous-single-property-change pos 'erc-parsed nil limit)))
+	  (if pos
+	      (erc-display-message nil 'notice 'active
+				   (decode-coding-string
+				    (string-make-unibyte
+				     (aref (get-text-property pos 'erc-parsed) 3))
+				    'koi8))
+	    (erc-display-message nil 'notice 'active "No text to recode")))))
+
+
+If you don't provide any words for the command, it will decode the last
+message in the buffer.
+
+Here's how to use it:
+
+    ERC> /koi здарова мужик
+    <kensanata> здарова мужик
+    <lg_> kensanata: ÚÄÁÒÏ×Á É ÔÅÂÅ ÒÅÁÌØÎÙÊ ÍÕÖÉË! :)
+    ERC> /koi
+     *** kensanata: здарова и тебе реальный мужик! :)
+
+----
+[[ERC]]

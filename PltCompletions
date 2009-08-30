@@ -1,0 +1,25 @@
+=PLT Completions=
+
+Plt Completions is an emacs mode that at the moment essentially duplicates the functionality of the excellent plt scheme help-desk, and in the future hopefully will do more. It helps with coding by displaying possible completions for the symbol currently being typed, in a new buffer. If you go to the completions buffer and hit Control-return it will take you to the documentation for that symbol, if you hit return, it inserts the symbol at point, and returns point to the buffer that you were editing in.
+
+This would not have been possible without all the work that the plt team has put into generating such excellent documentation and thoroughly indexing it all, making my life much easier; not too mention creating the excellent plt scheme family of applications without which this little effort would be moot. So, a big thanks to them all.
+PLEASE NOTE:
+
+This is very much alpha software, and has only been tested on emacs 22 (cvs and multi-tty branches). There is nothing cutting edge in the code so it should work in emacs 21, but I would not be so hopeful about xemacs. I am not particularly concerned about that, but would be happy to apply patches to make things work with xemacs as long as they don't break anything, in emacs. ;)
+
+==Future Directions and Hopes==
+
+This is an very incomplete list of ideas for future improvements. Please let me know of any other ideas you might have, to improve the mode.
+
+* The obvious missing piece here is being able to query the running image for possible completions. I would like to either get mzscheme running with slime, or if the gap is too large, figure out how to get it running in some sort of setup that would allow querying the running image asynchronously. At this point I am not sure how to even get a hold of the symbol table in mzscheme, so it might be a steep climb. :)
+* Better browse-url support: This has a couple of issues.
+
+** At the moment it is possible to have a keyword index file sitting locally without the documents that go with it. This can lead to a C-return on a completion ending up with a blank page (or file not found) in your browser. It would be better to test the presence of the file, and if it is not there, browse to the documentation on the plt site.
+
+** At the moment a file url will be generated for a unix-like version with no problems, and on windows a url that w3m can read works, and firefox, but further testing has not been done.
+* Make the grouping of completions more granular. This would be helpful for something like srfis where the completion would be displayed under the srfi number that it comes from, rather than just under a general srfi heading.
+* Depending on the feedback I get back, I am thinking of using something hash table based to speed things up. At the moment, it is fast enough for me, but I am curious about other people's mileage before putting in the effort to change the underpinnings.
+* The directories to be searched for documentation really needs to be able to support more than one root directory, as many of the plt and planet packages install into people's home directories.
+
+The code can be found here
+[[plt-completions.el]]

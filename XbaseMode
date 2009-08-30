@@ -1,0 +1,5 @@
+[http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/xbasemode/xbasemode/xbase.el?rev=HEAD xbase.el]
+provides a mode for editing [http://foldoc.org?xbase Xbase] files.
+
+----
+CategoryModes

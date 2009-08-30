@@ -1,0 +1,110 @@
+La idea es crear una tabla de estilos de usuario para reemplazar aquella por defecto que su navegador le presenta.
+
+== Encontrando la Tabla de Estilos de Usuario en Mozilla ==
+
+* http://www.squarefree.com/userstyles/ -- notas sobre cómo encontrar las definiciones de estilo y algunas configuraciones recomendadas
+* http://www.w3.org/TR/CSS2/ -- la especificación de CSS2
+
+Por ejemplo, las definiciones de estilo pueden estar bajo una ubicación como:
+
+    /home/alex/.mozilla/alex/k5vntcoo.slt/chrome/userContent.css
+
+== Configuraciones ==
+
+=== Margen ===
+
+Si usted navega con una ventana bastante ancha, aun puede declarar que el texto sea restringido a anchos de línea aceptables de la siguiente forma:
+
+    p, blockquote, li { max-width: 35em; }
+
+Esto no sobrescribirá el ancho máximo cuando un sitio en particular especifica ''explícitamente'' su propio estilo.
+
+=== Fondo ===
+
+Si no le gusta que los sitios web, como el Wiki Emacs, especifiquen sus propios colores de fondo, puede contrarestar este efecto usando la palabra clave !important. Sin embargo, ésta sobrescribe la configuración para ''todos'' los sitios, y puede que esto no sea lo que desea realmente.
+
+    body { background-color: #DDD !important; color: #000 !important; }
+    * { background: inherit !important; color: inherit !important; }
+    a { color:#00F !important; }
+    a:visited { color:#A0A !important; }
+
+=== Una tabla de estilos para WikiEmacs únicamente ===
+
+Con el fin de ofrecer definiciones de estilo específicas a cada sitio web, puede definir una clase para el atributo `body', ya que los wikis Oddmuse llevan la URL del wiki en sus clases `body'.
+
+Para que todas las configuraciones anteriores se apliquen al Wiki Emacs únicamente, y solo cuando se utiliza la URL http://www.emacswiki.org/cgi-bin/wiki.pl, coloque lo siguiente en sus definiciones de estilo:
+
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] { background-color: #DDD !important; color: #000 !important; }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] * { background: inherit !important; color: inherit !important; }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] a { color:#00F !important; }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] a:visited { color:#A0A !important; }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] img.logo { border-style:solid !important; }
+
+=== Logo ===
+
+Fíjese que en el código anterior se ha incluido un borde para el logo, ya que el logo tiene un fondo blanco y no transparente.
+
+El problema con un logo y un fondo transparente es que las personas pueden forzar a que todos los sitios usen colores de fondo específicos. Si eligen gris, por ejemplo, el logo lucirá muy diferente, ya que será posible ver la E estilizada. Puede esconder el logo insertando algo como esto en el CSS:
+
+   body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] img.logo { visibility:hidden;}
+
+CSS2 le permite insertar contenido, y por lo tanto colocar su propio logo. Por ejemplo, si desea colocar un nuevo logo después de la cabecera, puede usar algo como esto:
+
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] div.header:after {
+        content: url(file:///mi/ruta/hacia/mi_logo_wiki_emacs.png);
+        display: block;
+    }
+
+Si utiliza display:none para el logo, entonces todo el elemento se irá, y por lo tanto <code>img.logo:after</code> o <code>img.logo:before</code> no tendrán ningún efecto. Use <code>visibility:hidden</code> en su lugar.
+
+El posicionamiento arbitrario parece no funcionar con el contenido insertado. Así que probablemente querrá encontrar un modo de evitar este inconveniente en sus definiciones de estilo.
+
+Un recurso útil con más información sobre la generación de contenido puede encontrarse en: [http://www.westciv.com/style_master/academy/css_tutorial/advanced/generated_content.html Guía Completa de CSS].
+
+=== Problemas pequeños ===
+
+Tenga cuidado de no redefinir dos elementos en una línea. Por ejemplo:
+
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] code, pre {color: #EDC !important; font: 90% monospace;}
+
+Esto lleva a algunas redefiniciones globales de algunos elementos (al menos en algunos casos bajo GNU/Linux con Mozilla 1.3 y Firebird 0.6).
+
+=== Clases Específicas Usadas en WikiEmacs ===
+
+Para aprender más sobre las clases CSS usadas en el WikiEmacs, consulte Oddmuse:Cascading_Style_Sheet
+
+== Algunas definiciones de estilo de usuario ==
+
+RomainFrancoise: Yo profiero los fondos grises, y columnas angostas para el texto. También decidí encoger el logo un poco, y darle justificación al texto de modo que sea más agradable de apreciar. Mis estilos son:
+
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] { 
+    background-color: #d1d1d1 !important; 
+    color: #000 !important;
+    padding-left: 15% !important;
+    padding-right: 15% !important;
+    }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] * { 	
+    font-family: verdana, arial, sans-serif !important; 
+    background: inherit !important; color: inherit !important;
+    }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] a { 
+    color: #606060 !important; 
+    }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] a:visited { 
+    color: #303030 !important; 
+    }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] img.logo { 
+    border: 1px solid #000 !important;
+    width: 98px !important;
+    height: 56px !important;
+    }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] p, blockquote, li { 
+    max-width: 35em !important;
+    text-align: justify !important;
+    }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] input {
+    border: 1px dashed #000 !important;
+    }
+
+
+PierreGaston: tema oscuro, redefinición de estilos. Vea mi página en este wiki.

@@ -1,0 +1,101 @@
+A new Emacs -- even a GuileEmacs -- will have no threading.
+
+Threads are difficult to handle.  They are even more difficult to handle when the big collection of elisp available was written without threads.
+
+Threads accessing common variables is just the top of the iceberg.  What about point -- one point per thread?  One current buffer per thread?  What about buffer-local variables?  One thread per buffer?
+
+If at all, it would seem more reasonable to have a strong separation of threads -- as if every thread was a separate process.  And then we start talking about specific things to share between threads.  There could be a special form to declare variables shared accross threads.  There could be a mechanism to allow access to a buffer to another thread.  The default would be to disallow this -- as if every thread was a separate Emacs.  As such, every thread would have to run in a separate frame, because a thread cannot take frame-local or window-local variables in other threads into account.  Perhaps there would be a special buffer-local variable that would allow a buffer to be displayed in a frame or window controlled by another thread; in that case it would be clear that the original thread's window-local and frame-local bindings will have no effect.
+
+On emacs-devel, people discussed multithreading for Emacs on [[2003-12-04]]
+([http://mail.gnu.org/archive/html/emacs-devel/2003-11/msg00205.html 2003-11],
+[http://mail.gnu.org/archive/html/emacs-devel/2003-12/msg00025.html 2003-12])
+and on [http://lists.gnu.org/archive/html/emacs-devel/2008-11/msg01067.html 2008-11-29].
+An interesting, long read.
+
+See also [http://www.catb.org/~esr/writings/taoup/html/ch07s03.html#id2923889 Threads — Threat or Menace?] in EricRaymond's [http://www.catb.org/~esr/writings/taoup/ The Art of Unix Programming].
+
+See ConcurrentEmacs.
+
+The following is from #emacs on irc.freenode.net, which is not logged.  It took place on 2006-01-17; times are relative to Australian Eastern Standard Time (+1100).
+
+18:45 <chugga> Is there a (design) rationale behind emacs using dynamic scoping?
+18:45 <geckosenator> like in emacs lisp?
+18:46 <chugga> geckosenator, sorry, yes, emacs lisp
+18:46 <twb> chugga: it's easier to implement.
+18:47 <twb> And requires less memory.
+18:48 <Riastradh> Not necessarily, twb.
+18:48 <twb> I wondered if you'd say that :-)
+18:48 <Riastradh> The rationale is really that John McCarthy didn't understand Alonzo Church's lambda calculus back in the fifties, so he implemented dynamic scope instead of lexical scope, and it wasn't until after elisp was created that lexical scope became the norm in the Lisp world.  It turned out as GNU Emacs was developed that dynamic scope did have some useful properties for a program like Emacs,  even if for the most part it was the wrong thing, and it stuck.
+18:49 <twb> Ah, so that rumor is true?  I thought it was just the ML/Haskell camp trying to whitewash a competing language.
+18:50 <Riastradh> twb, Haskell wasn't invented until long after elisp, and ML was strictly a European thing back then.
+18:50 <twb> Riastradh: I mean, the only time I've heard "JM didn't understand \ calculus" was from ML/Haskell people.  Usually immediately after saying "Lisp has a fundamental flaw..."
+18:50 <alephnull_> Interesting ...
+18:50 <Riastradh> Dynamic scope has heavy, heavy run-time costs that are not incurred by lexical scope.
+18:51 <Riastradh> twb, oh.  I recall hearing it from McCarthy himself, though I might be mistaken.
+18:51 <twb> Riastradh: I'm probably the one who's wrong.  I just assumed it was them being mean and nasty.
+18:52 <geckosenator> you can do some cool things with dynamic scoping though..
+18:52 <twb> Riastradh: does scheme have optional dynamic scope (a.k.a. "special" variables) like CL?
+18:52 <geckosenator> twb: I think it is only lexical scoping
+18:53 <Riastradh> twb, there is no provision in R5RS for it, modulo two resources (the current input & output ports) that are dynamically scoped; however, almost all Schemes provide some sort of dynamic scoping facility.  See SRFI 39, for instance.
+18:53 <twb> Riastradh: thanks.
+18:53 <chugga> Riastradh, what are some of those useful properties that dynamic scoping offered to emacs?
+18:54 <Riastradh> chugga, dynamic scope makes some forms of abstraction violation easier.  So it is more likely that you might be able to customize a library in a subtle way not intended by its author by poking at its internals.
+18:55 <twb> Riastradh: you mean like all those (let ((special-variable value)) (something-that-uses-special-variable)) forms in Emacs?
+18:55 <Riastradh> Yes, twb.
+18:55 <twb> Nod.  I feel dirty when I do that, but it is occasionally useful.
+18:56 <Riastradh> Of course, there are, as I said earlier, prohibitive costs associated with dynamic scoping.  There are two ways of implementing it: shallow binding & deep binding. With shallow binding, every variable has a cell containing the current value. To fetch the variable's value, you simply look inside the cell. LET saves the value from the cell, stores a new value into the cell, evaluates its body, and then restores the old value. This is a lot of loads & stores on LET's entry & exit, first of all, but that's probably not too big an issue itself. (Elisp wasn't designed for computational intensity, after all.)
+18:58 <Riastradh> Now suppose you want multithreading. Problem: variable cells are global resources. Global resources imply contention.
+18:59 <chugga> right
+18:59 <geckosenator> can you do threads in elisp?
+18:59 <Riastradh> No.
+18:59 <Riastradh> Shallow binding is fundamentally incompatible with multithreading, basically.
+18:59 <geckosenator> what if you create a new buffer and run a program in that?
+19:00 <Riastradh> geckosenator, then you're running a separate Unix process, if you mean a program inferior to Emacs.
+19:00 <Riastradh> The only way to reconcile shallow binding with multithreading is to assume time sharing and then revert every single cell for every LET on the stack on every context switch. Now *this* is a prohibitive expense. And it won't work if you have more than one processor.
+19:01 <Riastradh> What about deep binding, then?
+19:01 <chugga> yeah?
+19:01 <Riastradh> With deep binding, the map from variables to their current values is explicit. You have to search through it to find the most recent binding of any variable. LET extends the current dynamic environment, as that map is called, with new bindings on entry, and then removes those new bindings on exit. You can have a different map in every thread, so you're safe with multithreading. But now you have a search -- either O(n) or absurd constant factors -- for every variable reference. This is a prohibitive cost as well. It is clearly the wrong thing for the general mechanism of variables. And this is only pragmatics. The semantics of your program can be hideously altered by a stray variable binding over in a module across the address space that happened to be named the same as one you tried to use.
+19:03 <geckosenator> do you think elisp will ever switch to lexical scoping?
+19:04 <Riastradh> No.
+19:04 <twb> geckosenator: doesn't Karoly have a branch to do that?
+19:04 <Riastradh> There's a 'lexbind' branch, but I don't think it will ever gain sufficient traction.
+19:04 <chugga> geckosenator, too much inertia probably, think of all that code already written
+19:04 <twb> There seem to be branches for all the good stuff.
+19:05 <Riastradh> At least, I hope it won't, because then that would take away one reason to avoid elisp and diminish the set of them, even though there still are plenty of other good reasons.
+19:05 <geckosenator> hmm ok
+19:06 <chugga> Riastradh, out of curiousity what do you think of the CL approach to scoping?
+19:06 <Riastradh> CL is *far* too globalized for my taste.
+19:06 <twb> Riastradh: but there's no cohesive alternative to elisp that everyone accepts.
+19:07 <Riastradh> twb, that's just because no one recognizes how nice Edwin is!
+19:07 <twb> edwin is x86-only, isn't it?
+19:07 <Riastradh> Well, yeah.  Chris Hanson is vaguely working on that, though there hasn't been much progress lately.
+19:07 <twb> Well that's a big problem right there.  Lots of people aren't running x86.
+
+----
+Note that in DownWithEmacsLisp MatthiasNeubauer and MichaelSperber show that
+
+: ''It is possible to translate code written in Emacs Lisp or another Lisp dialect which uses dynamic scoping to a more modern programming language with lexical scoping while largely preserving structure and readability of the code.''
+
+So the legacy of existing EmacsLisp programms would not (theoretically) be a problem.
+
+----
+Had I been in #emacs at the time, I would have said that running multiple emacs instances is one healthy approach.  I like a Gnus, ECB, and ERC instance, myself.  RAM is cheap, so why fret about single-threadedness? --ChristopherSmith
+
+----
+Some of us fret about single-threadedness because we like to have to remember which of the three emacsen we opened a particular file in, last week. By having a single emacs, that particular dilemma is avoided. I have been told that it is difficult, but not impossible, to make a multi-threaded emacs, so I think the project should be undertaken. Perhaps we can have a threaded Emacs Virtual Machine that runs the current non-threaded Emacs as children (I don't know if that even makes sense) and each of those children would run Gnus or ERC, etc. --e1f
+
+----
+An obvious, but effective solution that I personally employ is too have one emacs process for 'applications' and one for editing. ERC, VM, newsticker, w3m, and a terminal run in one instance, while my code and whatnot go in the other. This also has the added benefit of not having to manage (or worry about) a large amount of buffers. --Sturm
+
+But this approach (segregated emacsen) negates the feature of emacs that is most wonderful: the everything-is-a-buffer integration that makes it possible to chop your data around and use it everywhere. If my kill-ring for w3m, Gnus, jabber.el was separate from my org-mode buffers and my code, I'd lose 90% of the reasons for using Emacs in the first place. We should think of emacs as the everything-and-the-kitchen-sink (as the old debian package ran) approach that really exposes the power of computing, which is why in today's networked world threads seem so lacking in it. --ZacharyHamm 
+
+----
+I think Riastradh overstated the cost of using multithreading with dynamic binding. It can be done with a small constant CPU overhead by having an indirection buffer in thread-local storage. In conceptual terms, it's a big per-thread array of void * variables, one for each symbol. Using a variable becomes more expensive by the cost of exactly one pointer dereference. If you were compiling down to native code, most of the dereferences could be trivially optimised out. The per-thread array would waste some memory (anyone got numbers for how many symbols a typical emacs instance uses?), but the really nasty part happens when you evaluate some code that creates a new symbol. Either you need to stop all your threads to expand their indirection tables, or threads need to be able to cope with accesses off the end of their indirection tables. A nice hacky way to do this would be to put a guard page at the end of each indirection table, and initialise all pointers in the indirection table to point to another guard page. Then you stick in a SEGV handler to do all the horrible patchups when a thread tries to access a symbol it doesn't have an indirection entry for.
+
+The bigger problem with dynamic binding and multi-threading is that dynamic binding makes local analysis of memory interactions effectively impossible. Which means that automatic parallelisation is impossible. Which means that to take advantage of multi-threading, code has to declare itself multi-threading capable, and then perform explicit locking. Which will have very little performance or interactivity benefit while the rest of the code is still running in a single thread. This implies that even if multi-threading capabilities were added to emacs lisp, almost no-one would actually use it unless they were forced to.
+
+Perl addresses the dynamic binding/multithreading problem by essentially running each thread in a separate memory space, with explicit sharing. This is similar to the thread-per-frame approach described above. It's useful for Perl, because many existing Perl modules make little use of global variables. I would argue that it's not that useful for emacs. As a thought experiment, how would speedbar work in a thread-per-frame world?
+
+Intel are talking up a future where CPU frequency progressively drops, while the number of cores increases to compensate. In this scenario, single-threaded emacs is going to get slower and slower. However, I don't seriously think it will ever drop to the speed it was 15 years ago, which was already perfectly acceptable. --goaty
+
+While I think threading along with transition to a more modern language substrate are important, the idea of running multiple instances might be worth developing a bit. If each instance kept in contact with the others, they could synchronize their kill rings among other things. Commands could be provided to list the union of all buffers open on all instances, and to either jump to the instance (using some Xwindows fu or other) or to migrate that buffer and as much of its environment as feasible to the currently used instance. Mechanisms by which this could be achieved include AsyncEval, DistributedEmacsLisp, or even using ILisp/SLIME to connect to an inferior Emacs REPL. -- SpaceBat

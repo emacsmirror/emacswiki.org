@@ -1,0 +1,6 @@
+You might want to include a RSS feed into your homepage.  Here is an
+example of how to add it:
+
+    <rss http://www.emacswiki.org/cgi-bin/alex?action=rss>
+
+For an example of it in use, see SachaChua.

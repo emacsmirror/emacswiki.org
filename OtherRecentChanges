@@ -1,0 +1,32 @@
+Here are alternatives for the RecentChanges link which you might
+want to bookmark, if you are a
+RecentChangesJunkie.
+
+* [EmacsWiki:action=rc;showedit=0 Show latest major changes] -- the default list of recent changes.
+* [EmacsWiki:action=rc;showedit=1 Show latest changes] -- including minor ones.
+* [EmacsWiki:action=rc;all=1;showedit=1;days=3 Show all changes for the last three days] -- including every single change.
+* [EmacsWiki:action=rc;all=1;showedit=1;days=1Show all changes for today]
+* [EmacsWiki:action=rc;all=1;showedit=1;days=1;newtop=0 Show all changes for today, most recent last] -- ''Doesn't work''
+* [http://www.emacswiki.org/elisp/changelog.html Show changes to Elisp files and packages]
+
+Language specific -- languages are identified using an implementation similar to GuessBufferLanguage.
+
+* [EmacsWiki:action=rc;lang=en Show latest major changes to English pages]
+* [EmacsWiki:action=rc;lang=es Show latest major changes to Spanish pages]
+* [EmacsWiki:action=rc;lang=de Show latest major changes to German pages]
+* [EmacsWiki:action=rc;lang=fr Show latest major changes to French pages]
+* [EmacsWiki:action=rc;lang=it Show latest major changes to Italian pages]
+
+See LanguageIdentification for more.
+
+If you can integrate RSS feeds (see RichSiteSummary) into
+your browser (or if you use NewsTicker):
+
+* [EmacsWiki:action=rss RSS feed with major changes only, most recent first] -- see WikiRss for more.
+* [EmacsWiki:action=rss;rsslimit=all RSS feed with major changes only]
+* [EmacsWiki:action=rss;newtop=0;rsslimit=all RSS feed with major changes only, most recent last] -- ''Doesn't work''
+* [EmacsWiki:action=rss;all=1;days=3;showedit=1;rsslimit=all RSS feed for the last three days with all changes] -- including every single change.
+
+
+Cette page est aussi disponible en français: Français:AutresModificationsRécentes
+

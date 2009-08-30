@@ -1,0 +1,12 @@
+TranslationTable is used for transfering characters such as inserted characters by `self-insert-command'.
+
+Taking advantage of this behavier, you can use DvorakLayout only on inserting characters not on `M-x', for example.
+
+Lisp:trantab.el
+
+If you want to use DvorakLayout, put the following code into your ~/.emacs:
+
+<pre>
+(require 'trantab)
+(setq translation-table-for-input translation-table-dvorak-us)
+</pre>

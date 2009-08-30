@@ -1,0 +1,12 @@
+Delete Selection mode lets you treat an Emacs [[region]] much like a typical selection outside of Emacs: You can replace the region just by typing text, and [[kill]] the selected text just by hitting the Backspace key (`DEL').
+
+Put the following in your [[init file]]: ##(delete-selection-mode 1)##
+
+(Emacs calls this `delete-selection-mode'. [[XEmacs]] calls it `pending-delete-mode'.  Each has an alias for the other name, however, so the name doesn't really matter.)
+
+'''See also:''' TransientMarkMode. Transient Mark mode is enabled in Delete Selection mode.
+
+DrewAdams has slightly modified Delete Selection mode (standard library ##delsel.el##) to be more compatible with Completion mode (standard library ##completion.el##) -- see [[delsel.el]] (on EmacsWiki).
+
+----
+CategoryRegion

@@ -1,0 +1,23 @@
+TamakoshiHiroki wrote tategaki.el which can do simple Japanese typesetting.
+
+Here is a simple example:
+
+ A B C D                     F A
+ E F G ?   turns into        G B
+ H I                         ? C
+                             H D
+                             I E
+
+You can get it from here:
+
+* http://hawaii.aist-nara.ac.jp/~hiroki-t/Distribution/Tategaki/
+
+Note: The page is in japanese, but by examining all the links on the page, you will find the one linking to the lisp file.
+
+The elisp source file is encoded using the euc-jp encoding.  This is not automatically detected in Emacs 20.7.  Use the following sequence to save the file in a different encoding.  The new encoding is automatically detected by Emacs 20.7 and will enable you to read the comments without fancy finger acrobatics.
+
+# Open using euc-jp: `C-x RET c euc-jp RET C-x C-f tategaki.el RET'
+# Save using iso-2022-jp: `C-x RET c iso-2022-jp RET C-x C-w RET'
+
+----
+CategoryInternationalization

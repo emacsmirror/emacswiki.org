@@ -1,0 +1,14 @@
+A simple text marker functionality that highlights portions of text
+can be done with XRefMode.
+
+    (defun textmarker-region (start end)
+      (interactive "r")
+      (xref-source-region start end)
+      (xref-target-region start end))
+
+Optionally, annotations would be nice.
+FIXME: add info on how to do that
+
+----
+CategoryHypermedia
+CategoryRegion

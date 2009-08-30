@@ -1,0 +1,15 @@
+[[rcirc]] allows you to specify "boring" nicknames (e.g. those of bots) so that they don't show up in tracked channel activity.  By default, the nickname of the is also fontified using <code>rcirc-dim-nick</code>.  This small piece of code advises <code>rcirc-format-response-string</code> so that the entire message sent by a dimmed nick is fontified using the <code>rcirc-dim-nick</code> face.  This makes it easier to ignore bot responses and the like.
+
+== Code ==
+
+<pre>
+(defadvice rcirc-format-response-string (after dim-entire-line)
+  "Dim whole line for senders whose nick matches `rcirc-dim-nicks'."
+  (when (and rcirc-dim-nicks sender
+             (string-match (regexp-opt rcirc-dim-nicks 'words) sender))
+    (setq ad-return-value (rcirc-facify ad-return-value 'rcirc-dim-nick))))
+(ad-activate 'rcirc-format-response-string)
+</pre>
+----
+CategoryChatClient [[rcirc]]
+

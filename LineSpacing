@@ -1,0 +1,7 @@
+You can increase the line-spacing between buffer's lines using this command in your ~/.emacs:
+
+<code>
+(setq-default line-spacing 5)
+</code>
+
+Thanks to merlyn and good fellows at #emacs @ irc.freenode.org.

@@ -1,0 +1,22 @@
+Lisp:free-tagging.el
+
+Free tagging, a-la del.icio.us or flickr can be applied to emacs too! 
+
+See http://lisperati.com/tagging.html for an initial implementation.
+
+----
+
+[[image:FreeTaggingScreenShot]]
+
+JonathanArkell has taken that version, and added some things like:
+* buffer local tag indicators
+* tagcloud display
+* ECB integration
+* GPL Licence (thanks Drew)
+* new and Improved name to distinguish from Conrads version (thanks Drew!)
+
+And plans to do more with it.  As with the rest of his elisp, feel free to jump in and help with things!
+
+----
+
+CategoryOutline CategoryPersonalInformationManager

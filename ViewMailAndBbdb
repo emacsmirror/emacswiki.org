@@ -1,0 +1,26 @@
+Hooking BBDB (See BbdbMode) into VM is straightforward. It should be
+sufficient to:
+
+    (require 'bbdb)
+    (bbdb-initialize)
+    (bbdb-insinuate-vm)
+
+The abbreviated form is this:
+
+    (require 'bbdb)
+    (bbdb-initialize 'vm)
+
+To get BBDB to send mail using VM, use:
+
+    (setq bbdb-send-mail-style 'vm)
+
+The define mail-aliases for the records which have them, use:
+    
+    (bbdb-define-all-aliases)
+    
+[new]
+
+Can somebody please rewrite the section about `bbdb-define-all-aliases'?  It's not worded clearly, and doesn't say why someone would want to do this.  Does it even belong in the ViewMail section of the wiki? --JohnFoerch
+
+----
+CategoryViewMail

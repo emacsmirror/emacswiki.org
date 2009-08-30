@@ -1,0 +1,12 @@
+Download: http://www.drao-ofr.hia-iha.nrc-cnrc.gc.ca/~rreid/software/mutt/muttrc.el
+
+Link is dead. Alternative mode is [[muttrc-mode.el]]
+
+=== Configuration ===
+
+Put muttrc.el in your load-path and write the following in your .emacs file:
+
+ (require 'muttrc)
+
+----
+CategoryMailAddons | CategoryModes

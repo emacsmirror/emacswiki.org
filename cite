@@ -1,0 +1,21 @@
+cite.el is a small citation package.
+
+Download: Lisp:cite.el
+
+Or: http://purl.org/NET/wence/cite.el -- Author's page.
+
+=== Configuration ===
+
+Put cite.el in your load-path and add the following to your .emacs file:
+
+ (require 'cite)
+
+When you use [[Gnus]]:
+
+ (add-hook 'message-cite-function 'cite-cite)
+
+When you use another mailer like ViewMail oder WanderLust:
+
+ (add-hook 'mail-citation-hook 'cite-cite)
+----
+CategoryMailAddons

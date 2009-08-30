@@ -1,0 +1,37 @@
+이 글은 윈도우즈에서 이맥스 초기화 파일을 적용하는 방법에 대해서 작성한 것입니다.
+
+먼저, 초기화 파일은 InitFile 또는 <code>_emacs</code> 라는 이름을 사용합니다.
+윈도우즈에서는 '''<code>_emacs</code>''' 라는 이름이 더욱 사용하기 쉽고 유용하기 때문에
+이 것을 사용하시기 바랍니다.
+
+윈도우용 이맥스 FAQ [http://www.gnu.org/software/emacs/windows/faq3.html#startup 몇가지 명령]
+
+초기화 파일의 경로를 적용하는 방법에는 세가지가 있습니다:
+* <code>C:\</code> 에 넣는 방법
+* 환경 변수 <code>HOME</code> 을 설정하는 방법
+* 레지스트리에 설정하는 방법
+
+'''레지스트리에 설정'''
+
+다음의 레지스트리 항목에 설정하시면 됩니다:
+
+* <code>HKEY_CURRENT_USER\\SOFTWARE\\GNU\\Emacs</code> 의 <code>HOME</code> 키에 설정
+
+시스템 전체에 대해 적용하려면:
+
+* <code>HKEY_LOCAL_MACHINE\\SOFTWARE\\GNU\\Emacs</code> 의 <code>HOME</code> 키에 설정
+
+'''환경 변수'''
+
+환경 변수에 경로를 적용하시려면, 어떻게 하는지 알아야 합니다. [http://www.chem.gla.ac.uk/~louis/software/faq/q1.html 윈도우즈98 환경 변수 웹페이지] 에 가보시면 몇가지의 설명이 있습니다.
+
+윈도우즈 NT 또는 XP 사용자라면 환경 변수 <code>HOME</code> 을 다음과 같이 설정하시면 됩니다:
+
+# '''내 컴퓨터''' 에서 오른쪽 마우스 클릭. 
+# '''속성''' 선택.
+# '''고급''' 탭 선택.
+# '''환경 변수''' 클릭.
+# '''사용자 변수''' 에서 '''새로 만들기''' 클릭, 변수 이름에 <code>HOME</code> 입력, 변수 값에 자신이 원하는 폴더 위치 입력 
+
+----
+이맥스윈도우즈분류 CategoryDotEmacs

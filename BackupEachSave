@@ -1,0 +1,28 @@
+backup-each-save.el backs up is a more comprehensive system for saving backups on each buffer saving, as opposed to adding code to ForceBackups.
+
+* http://www.bloomington.in.us/~brutt/emacs.html
+
+To activate:
+
+    (require 'backup-each-save)
+    (add-hook 'after-save-hook 'backup-each-save)
+    (defun backup-each-save-filter (filename)
+      (let ((ignored-filenames
+    	 '("^/tmp" "semantic.cache$" "\\.emacs-places$"
+    	   "\\.recentf$" ".newsrc\\(\\.eld\\)?"))
+    	(matched-ignored-filename nil))
+        (mapc
+         (lambda (x)
+           (when (string-match x filename)
+    	 (setq matched-ignored-filename t)))
+         ignored-filenames)
+        (not matched-ignored-filename)))
+    (setq backup-each-save-filter-function 'backup-each-save-filter)
+
+[new]
+backup-each-save.el works well for me, but I had a problem with the variable "file-remote-p" being undefined. While I can simply remove the line that checks whether it is a remote file, I would like to know if there is a different solution?
+
+-- GunnarWrobel
+
+----
+CategoryFiles

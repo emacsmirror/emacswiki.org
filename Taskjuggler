@@ -1,0 +1,11 @@
+== What is Taskjuggler ==
+
+Taskjuggler is a project management tool which uses a plain-text file for the definition of the project.  See http://www.taskjuggler.org
+
+== Emacs Mode ==
+One small mode ships with Taskjuggler itself: http://www.taskjuggler.org/cgi-bin/gitweb.cgi?p=taskjuggler.git;a=blob;f=Contrib/emacs/taskjug.el;hb=HEAD
+
+In July 2008 a replacement was written which is available at
+http://www.skamphausen.de/cgi-bin/ska/taskjuggler-mode
+
+This will have to prove stable in the future.

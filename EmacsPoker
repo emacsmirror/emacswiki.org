@@ -1,0 +1,10 @@
+EmacsPoker is a very simple video poker game that runs inside of Emacs.
+
+It's available from my web page: http://marc.abramowitz.info/archives/2006/04/17/emacs-poker/
+
+or Lisp:poker.el
+
+If you have ideas or code that you want to contribute, e-mail me at msabramo at yahoo dot com.
+
+----
+CategoryGames

@@ -1,0 +1,12 @@
+Nice little minor-mode that will make your buffer all nice and flashy when you break some formatting rules, that is, it makes great reason to start TabsAndSpacesDiscussion all over again ;)
+
+Available at: http://www.jpl.org/ftp/pub/elisp/develock.el.gz or at your near Debian repo (that's the way I actually learned about it, Debian packagers keep amazing me :)
+
+* Does anyone find this useful?  It seems that this is just the kind of annoying highlighting that cperl does (and I turn off);  I rely on {()} balancing going out of whack to know when I've made a syntax mistake. --ErikBourget
+
+* I tried it in Lisp mode and it filled my buffer with so much ketchup and mustard I nearly fell off my chair.
+
+* This mode makes the whitespace pedant in me very, very happy.  --MichaelOlson
+
+----
+ProgrammingModes

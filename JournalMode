@@ -1,0 +1,51 @@
+Journal Mode is a program which helps maintaining a journal easier.
+It can be used privately and entries may be selectively published.
+
+Journal Mode can be found here Lisp:journal.el .
+To run Journal Mode you will need Gnu Emacs or XEmacs (note that it
+hasn't been tested with XEmacs) and EmacsWikiMode.
+
+To start a journal copy journal.el to your load path and add the
+following to your ~/.emacs:
+
+  (require 'journal)
+
+To view the journal home page just type M-x journal.  To create
+entries, type M-x journal-create-entry.  Enter the title you wish to
+use for this entry.  Then type the categories you wish the entry to
+belong to.  Just typing "Emacs" will add the entry to "CategoryEmacs",
+you may type the full name if you wish.  Type RET to end the list of
+categories.
+
+Now type the contents of your entry.  When you are done, save the
+buffer.  You will notice that the contents will have been
+automatically copied to each of the category pages, the day page, and
+the home page.
+
+You may edit the contents of any entry from anywhere.  Whenever a
+journal buffer is saved, the contents will be updated everywhere
+throughout the journal.
+
+In the near future, remember, planner and RSS integration will be
+added.  journal.el was written in a way that makes this easy.
+Features such as publishing to Livejournal, Blogger, Advogato,
+etc. are planned.
+
+To keep up with the latest versions, download Gnu Arch and just type:
+
+  tla register-archive hoan@ton-that.org--2005 \
+                       http://www.ton-that.org/Arch/2005
+  tla get hoan@ton-that.org--2005--journal--main--1.0
+
+13 Oct, 2005 the link above to the journal.el does not seem to work. 
+
+[new]
+18 Jan, 2006: Thanks to the great folks at www.archive.org, the source has been "backed up" so to speak. Head [http://web.archive.org/web/20050308144857/http://www.ton-that.org/journal/journal.el here] to get it straight from the Wayback Machine, or go [http://www.theonelab.com/files/mirrors/journal.el here] for a mirrored copy on my server. I'd post it to the Elisp area, but I'm not the author and I'm not sure of the policy here for things of that nature. -- JuneTate
+
+[new]
+You may also be interested in muse-journal.el, part of EmacsMuse. (Muse is emacs-wiki 3.0)
+
+[new]
+14 Feb, 2006: Hey I've fixed the link, sorry to everyone who couldn't get it for the 6 MONTHS it was offline.  I'm not much of an Emacs junkie anymore, so I don't use it.  It probably be better to use muse-journal if you want an Emacs journal.  You can probably tell from the code that at the time I didn't know macros very well.  Maybe I'll try and get it down to 400 lines (it is currently a whopping 1252 lines and 106 forms!) one day. -- HoanTonThat
+
+

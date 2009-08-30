@@ -1,0 +1,31 @@
+Find File at Point (<code>ffap.el</code>) is a builtin Emacs library, created by MichaelangeloGrigni, for opening a filename or URL at point.  The basic features are described in the Emacs manual (Manual:ffap).
+
+There's various mode-specific features hiding in ffap,
+
+* [[CcMode]] and FortranMode header filenames like <code><stdio.h></code>.
+* TeX path search (including BibTeX).
+* [[RFC]] documents like <code>RFC1945</code>.
+
+Here are some other libraries and modes extending <code>ffap</code>,
+
+* CPerlMode -- find perl modules in the perl path
+* PerlDevelopEnvironment - another find perl modules
+* PythonMode (the python.el one) -- module file in python path
+* RpmSpecMode -- find patches in <code>../SOURCES</code>
+* Lisp:ffap-.el -- inhibit using ffap in Dired, so you can use [[Completion]] for the file name instead of just getting the file name under the TextCursor (see DrewsElispLibraries)
+* [[Icicles - Inserting Text from Cursor]] -- using FFAP with Icicles
+* [http://user42.tuxfamily.org/ffap-gcc-path/index.html ffap-gcc-path.el] -- <code>ffap-c-path</code> from GCC include path
+* [http://user42.tuxfamily.org/ffap-include-start/index.html ffap-include-start.el] -- at start of C <code>#include</code>
+* [http://user42.tuxfamily.org/ffap-mml/index.html ffap-mml.el] -- Gnus MML <code><#part></code> files
+* [http://user42.tuxfamily.org/ffap-perl-module/index.html ffap-perl-module.el] -- source file for a perl module
+* [http://user42.tuxfamily.org/ffap-rfc-directories/index.html ffap-rfc-directories.el] -- RFCs in local directories (Emacs 22)
+* [http://user42.tuxfamily.org/ffap-rfc-space/index.html ffap-rfc-space.el] -- RFCs with a space before the number
+
+== RFC host (Emacs 21) ==
+
+In Emacs 21 the default host to download [[RFC]] documents is <code>ds.internic.net</code>, but it's gone away.  Emacs 22 has changed to use [http://www.rfc-editor.org rfc-editor.org], you can do the same with
+
+    (setq ffap-rfc-path "/anonymous@ftp.rfc-editor.org:/in-notes/rfc%s.txt")
+
+----
+CategoryFiles OpenFilesInDifferentWays

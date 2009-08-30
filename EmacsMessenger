@@ -1,0 +1,40 @@
+This is an EmacsLisp Japanese/English MSN client.
+
+* http://www.geocities.co.jp/SiliconValley-SanJose/7474/EmacsLisp.html has two copies of this at:
+:: http://www.geocities.co.jp/SiliconValley-SanJose/7474/download/messenger.el.txt marked as 0.0.1.1, English version
+:: http://www.geocities.co.jp/SiliconValley-SanJose/7474/download/current.el.txt marked as 0.1.0.1, Japanese version
+
+
+===Notes===
+---
+why not put the el file in this page? the link above can't be visited.
+---
+
+The English version (0.0.1.1e) has a bug:
+line 195 reads
+<pre>
+(let ((session (cdr (assoc (string-to-int *msn-current-session*) *msn-session-list*))))
+but should be:
+(let ((session (cdr (assoc (string-to-int *msn-current-session*) *msn-switchboards*))))
+</pre>
+I wrote the bug note above some time ago, so this must have worked for me once, but I can't seem to get it to do anything now.  Anyone else having luck?  -- PatrickAnderson
+
+
+I have been looking into this with a view to getting it working, however the comments etc are in Japanese and the online translation of it was not very helpful. Is there anyone who can speak Japanese who would be willing to translate the comments, headers and variables into English?
+
+-- Zeth
+
+most of this version appears to be written in English (albeit without the extensive comments of the above file):
+http://www.geocities.co.jp/SiliconValley-SanJose/7474/download/current.el.txt
+
+-- Zeth
+
+Although I cannot read elisp code, I understand Japanese, so I translated the file you mentionned (messenger.el.txt)
+Lisp:messenger-en.el
+
+-- Evan
+
+----
+CategoryChatClient
+
+

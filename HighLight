@@ -1,0 +1,437 @@
+This page is about library <tt>[[highlight.el]]</tt>, by DrewAdams, which provides commands to highlight text. 
+
+[:FacemenuPlus]
+== Library `facemenu+.el' Puts Highlight on the Menu ==
+
+If you load library <tt>[[facemenu+.el]]</tt> after you load library
+<tt>[[highlight.el]]</tt>, then the commands in library ##highlight.el## will also be
+available on a '''Highlight''' submenu in the '''Text Properties''' menus. See FaceMenuPlus for more about library ##facemenu+.el##.
+
+
+
+[:Description]
+== General Description ==
+
+You can highlight text in two ways using ##highlight.el##, depending
+on the value of user option '''`hlt-use-overlays-flag'''':
+
+* non-`nil' means to highlight using [[overlay]]s
+* `nil' means to highlight using [[text property|text properties]]
+
+Overlays are independent from the text itself.  They are not
+picked up when you copy and paste text.  By default, highlighting
+uses overlays.
+
+== User Option `hlt-use-overlays-flag' ==
+
+Although highlighting recognizes only `nil' and non-`nil' values for
+`hlt-use-overlays-flag', other actions can have different
+behavior, depending on the non-`nil' value.  If it is '''`only'''' (the
+default value), then only overlay highlighting is affected.  If it
+is any other non-`nil' value, then both overlay highlighting and
+text-property highlighting are effected.  This is the case, for
+instance, for unhighlighting and for navigating among highlights.
+
+For example, for ''un''highlighting, if `hlt-use-overlays-flag' is
+non-`nil', then overlay highlighting is removed.  If it is not
+`only', then text-property highlighting is removed.  A value of
+`nil' thus removes both overlays and text properties.
+
+Keep this sensitivity to the value of `hlt-use-overlays-flag' in
+mind.  For example, if you change the value after adding some
+highlighting, then that highlighting might not be removed by
+unhighlighting, unless you change the value back again.
+
+You can toggle the value of `hlt-use-overlays-flag' at any time
+between `nil' and its previous non-`nil' value, using command
+'''`hlt-toggle-use-overlays-flag''''.
+
+
+[:HighlightingCommands]
+== Commands ==
+
+You can use any [[face]] to highlight, and you can highlight using the `mouse-face' property instead of the `face' property. A mouse face shows up only when the mouse pointer is over it.
+
+
+The commands you will use the most often are probably '''`hlt-highlight'''', '''`hlt-highlighter', `hlt-next-highlight'''', and '''`hlt-previous-highlight''''. You might also often use the various
+commands to hide and show highlighted text.
+
+[:hlt-highlight]
+[:hlt-highlight-region]
+[:hlt-highlight-regexp-region]
+[:hlt-highlight-regexp-to-end] 
+You can use command '''`hlt-highlight'''' to ''highlight'' the [[region]],
+highlight a ''regexp'' throughout the region, or ''unhighlight'' the
+region, depending on the prefix argument.  It combines most of the
+behavior of commands `hlt-highlight-regexp-region',
+`hlt-highlight-region', and `hlt-unhighlight-region'. (Bind this to, for instance, `C-x C-y'.) Command '''`hlt-highlight-regexp-to-end'''' highlights a regexp from [[point]] ([[cursor]] position) to the end of the buffer.  Command '''`hlt-replace-face'''' replaces a face used for highlighting by another throughout the region.
+
+[:hlt-highlighter]
+Command '''`hlt-highlighter'''' lets you highlight text by simply
+dragging the mouse, just as you would use a highlighter (marker).
+You can thus highlight text the same way that you drag the mouse
+to define the region. (Bind this to, for instance, `C-x mouse-2'.)
+
+
+[:hlt-highlight-all-prop]
+[:hlt-highlight-property-with-value]
+[:hlt-mouse-toggle-link-highlighting]
+[:hlt-mouse-toggle-property-highlighting]
+[:hlt-toggle-link-highlighting]
+[:hlt-toggle-property-highlighting]
+[:hlt-unhighlight-all-prop]
+If you use Emacs 21 or later, you can use various commands that
+highlight and unhighlight text that has certain text properties
+with given values.  You can use them to highlight all text in the
+region or buffer that has a given property value.  An example is
+highlighting all links (text with property `mouse-face').  These
+commands are:
+
+* '''`hlt-highlight-all-prop'''' -- Highlight text that has a given property with any (non-`nil') value.
+* '''`hlt-highlight-property-with-value'''' -- Highlight text that has a given property with certain values.
+* '''`hlt-unhighlight-all-prop'''' -- Unhighlight highlighted propertized text.
+* '''`hlt-mouse-toggle-link-highlighting'''' -- Alternately highlight and unhighlight links on a mouse click.
+* '''`hlt-toggle-link-highlighting'''' -- Alternately highlight and unhighlight links.
+* '''`hlt-mouse-toggle-property-highlighting'''' -- Alternately highlight and unhighlight propertized text on a mouse click.
+* '''`hlt-toggle-property-highlighting'''' -- Alternately highlight and unhighlight propertized text.
+
+As always for library ##highlight.el##, this "highlighting" can use property `mouse-face' instead of `face'. You could, for example, highlight, using `mouse-face', all text that has property `foo' -- or that has property `face', for that matter.
+
+
+[:hlt-next-highlight]
+[:hlt-previous-highlight]
+If you use Emacs 21 or later, you can use commands
+'''`hlt-next-highlight'''' and '''`hlt-previous-highlight'''' to navigate
+among highlights of a given face. (Bind these to, for instance, `S-C-n' and `S-C-p'.)
+
+:: '''See Also:''' 
+[[Icicles - Other Search Commands#SearchingTextProperties]] for other, more general ways to navigate among highlighted zones.
+
+[:hlt-unhighlight-region]
+[:hlt-unhighlight-region-for-face]
+You can unhighlight the region using command
+'''`hlt-unhighlight-region'''' (or using '''`##C--##'''' with `hlt-highlight').
+You can use command
+'''`hlt-unhighlight-region-for-face'''' to unhighlight the region for an
+individual highlighting face -- other highlighting faces remain.
+
+[:hlt-replace-face]
+You can replace a highlighting face in the region by another,
+using command '''`hlt-replace-highlight-face''''.  With a prefix
+argument, property `mouse-face' is used, not property `face'.
+
+[:hlt-eraser]
+Command '''`hlt-eraser'''' lets you delete highlighting by dragging the
+mouse.  However, its behavior is quite different for overlays and
+text properties, and it is perhaps different from you expect -' see
+the `hlt-eraser' doc string. (Bind this to, for instance, `C-x S-mouse-2'.)
+
+[:hlt-highlight-single-quotations]
+Command '''`hlt-highlight-single-quotations'''' highlights single-quoted text in the region.  For example, Emacs commands and keys between <code>`</code> and <code>'</code>: `foobar'.
+
+[:hlt-mouse-face-each-line]
+Command '''`hlt-mouse-face-each-line'''' puts a `mouse-face' property on each line of the region.
+
+
+== User Option `hlt-act-on-any-face-flag' ==
+
+Library `highlight' generally acts only on faces that it controls,
+that is, faces that you have explicitly asked it to use for
+highlighting.  It sets the ''text property'' or ''overlay property''
+'''`hlt-highlight'''' on such highlighted text, so that it can recognize
+which faces it has responsibility for.
+
+Sometimes, you might want to hide and show text other than that
+controlled by library `highlight'.  Similarly, you might sometimes
+want to navigate among faces other than those used for
+highlighting.  You can control this using option
+'''`hlt-act-on-any-face-flag'''', which you can toggle at any time using
+command '''`hlt-toggle-act-on-any-face-flag''''.
+
+== Hiding and Showing Text ==
+
+You can hide and show text that you have highlighted.  You will
+want to read the EmacsLisp manual (Elisp), section '''Invisible
+Text''', to understand better what this entails.  In particular, you
+should understand that for library <tt>[[highlight.el]]</tt>, hiding text
+means adding the symbol naming the face to be hidden to both:
+
+1. a text or overlay '''`invisible'''' property, making the text or
+   overlay susceptible to being hidden by buffer-local variable
+   `buffer-invisibility-spec', and
+
+2. the buffer's '''`buffer-invisibility-spec'''', so that it in fact
+   becomes hidden.
+
+After text has been hidden this way, and unless the highlighting
+as been removed completely by unhighlighting the text, the
+`invisible' property of that text keeps the names of the faces
+that have been applied to that text and hidden previously, even
+after you show that text again.  Showing a hidden face simply
+removes it from the `buffer-invisibility-spec'; it does not change
+any `invisible' properties.
+
+For example, if you hide face `foo' at some buffer position:
+
+1. The `invisible' property of the text or overlay at that
+   position is updated to include `foo'.  If there are no other
+   faces that have been applied to this text and then hidden, the
+   `invisible' property is just ##(foo)##.
+
+2. `buffer-invisibility-spec' is also updated to include `foo'.
+   This hides all text properties and overlay properties with
+   `invisible' property `foo', throughout the buffer.  If there
+   are no other invisible faces in the buffer, then
+   `buffer-invisibility-spec' has value ##(foo)##.
+
+If you then show face `foo' at that same buffer position, there is
+no change to the `invisible' property.  `buffer-invisibility-spec'
+is updated, by removing `foo': if it was ##(foo)##, it becomes ##()##.
+
+[:hlt-choose-default-face]
+There are several commands for hiding and showing highlighted
+text.  The basic commands for hiding and showing are
+'''`hlt-hide-default-face'''' and '''`hlt-show-default-face'''', which you can
+use to hide and show the face last used for highlighting.  With a
+prefix argument, you are prompted for a different face to hide; it
+then becomes the default face for highlighting.  You can also
+change the default highlighting face at any time using command
+'''`hlt-choose-default-face''''.
+
+The other hide and show commands depend on your also using
+'''[[Icicles]]''', which is a set of libraries that offer enhanced
+[[completion]].  The '''Icicles'''-dependent commands are the following:
+
+  `hlt-choose-faces', `hlt-choose-invisible-faces',
+  `hlt-choose-visible-faces', `hlt-hide', `hlt-hide-only',
+  `hlt-show', `hlt-show-only'
+
+These are all multi-commands (see [[Icicles - Multi-Commands]]), which means that they each let you
+choose multiple completion candidates or all candidates that match
+your current input (a regexp).  You can use command '''`hlt-hide'''' to
+hide any number of visible faces.  Any text is hidden that has
+that face as a text property or an overlay property, depending on
+the value of `hlt-use-overlays-flag'.
+
+Command '''`hlt-show'''' is the opposite of `hlt-hide': it shows
+invisible text that has the faces you choose.  Neither `hlt-hide'
+nor `hlt-show' has any effect on other faces, besides those you
+choose to hide or show, respectively; they each do only one thing,
+hide or show.
+
+Command '''`hlt-hide-only'''' hides the faces you choose, and shows all
+other faces, and command '''`hlt-show-only'''' does the opposite.  You
+can thus use these commands to specify exactly what faces should
+be invisible and visible.  Empty input means none: If you choose
+no faces to hide (that is, hit `RET' with an empty [[minibuffer]]),
+then all faces will be made visible; if you choose no faces to
+show, then all will be hidden.
+
+Currently, face attributes for highlighting are combined when
+overlays overlap, but the same is not true for text properties.
+For example, if you highlight a word with face `foo', and then you
+highlight it with face `bar', only `bar' remains as the face for
+that word.  With overlays, the attributes of the two faces are
+composed.  When you hide or show faces, this behavior difference
+has an effect.
+
+You can hide text using the commands in this library for any of
+the purposes that you might use invisible text in Emacs.  This
+gives you an easy, interactive way to control which sections of
+text are seen by search and other Emacs tools.  Use the regexp
+highlighting commands, for instance, to highlight text
+syntactically, and then hide that highlighted text.  Or use
+`hlt-highlighter' to sweep over text that you want to hide with
+the mouse.
+
+Hiding and showing faces also provides a "''conditional text''"
+feature similar to that available in desktop publishing
+applications such as Adobe's Framemaker.  Publishers often use
+such a feature to produce different output documents from the same
+source document ("''single sourcing''").  You can use this feature
+similarly, if you have an application (printing is one example)
+that is sensitive to whether text is visible or invisible.  One
+caveat: Emacs faces are not saved when you save your file.
+
+
+== What Gets Highlighted: Region, Buffer, New Text You Type ==
+
+All mention of the "region" in this commentary should really say
+"region or buffer".  If the [[region]] is active and non-empty, then
+only the text in the region is targeted by the commands in this
+library.  This lets you easily control the scope of operations.
+
+If the region is not active or it is empty, then:
+
+- If `hlt-use-overlays-flag' is `nil' and there is no prefix arg,
+  then the face is applied to the ''next characters that you type''.
+
+- Otherwise, the face is applied to the entire ''buffer'' (or the
+  current restriction, if the buffer is narrowed).
+
+
+
+[:PreservingHighlighting]
+== Interference by Font Lock ==
+
+If you use Emacs 22 or later, then you can use library <tt>[[highlight.el]]</tt> in
+conjunction with library <tt>[[font-lock+.el]]</tt>.  That will prevent
+font-locking from removing any highlighting face properties that
+you apply using the commands defined here.
+
+[If you also load library <tt>[[facemenu+.el]]</tt>, then the same applies to highlighting that you apply using the face menu (see FaceMenuPlus): that highlighting will also be protected from interference by font lock.]
+
+Otherwise, when `hlt-use-overlays-flag' is `nil', font-lock
+highlighting will interfere with the highlighting of this library.
+In most cases, you will be able to highlight text, but sooner or
+later font-lock will erase that highlighting when it refontifies
+the buffer.  If `hlt-use-overlays-flag' is non-`nil', there is no
+such problem : font-lock has no effect on overlays.
+
+
+== Suggested bindings ==
+
+Library `highlight' makes no key bindings.  Here are some suggested
+bindings (`C-x y', `C-x mouse-2', `C-x S-mouse-2', `S-C-p', and
+`S-C-n'):
+
+ (define-key ctl-x-map [(control ?y)]     'hlt-highlight)
+ (define-key ctl-x-map [(down-mouse-2)]   'hlt-highlighter)
+ (define-key ctl-x-map [(S-down-mouse-2)] 'hlt-eraser)
+ (global-set-key [(shift control ?p)]     'hlt-previous-highlight) ; Emacs 21+
+ (global-set-key [(shift control ?n)]     'hlt-next-highlight) ; Emacs 21+
+
+You might also want to bind `hlt-choose-default-face', which you
+can use to change the current default highlighting face.
+
+
+== Relation to Hi-Lock Mode ==
+
+The features of library <tt>[[highlight.el]]</tt> are complementary to those of the
+standard Emacs library ##hi-lock.el##, so you can use the two
+libraries together. See also HighlightTemporarily for comparison with other libraries.
+
+
+== Commands That Won't Work in Emacs 20 ==
+
+The following commands and options work only for Emacs versions
+more recent than Emacs 20:
+
+  `hlt-act-on-any-face-flag', `hlt-choose-faces',
+  `hlt-choose-invisible-faces', `hlt-choose-visible-faces',
+  `hlt-hide', `hlt-hide-default-face', `hlt-hide-only',
+  `hlt-next-highlight', `hlt-previous-highlight', `hlt-show',
+  `hlt-show-default-face', `hlt-show-only',
+  `hlt-toggle-act-on-any-face-flag'
+
+
+
+: Here is a screenshot showing highlighting with `hlt-highlight-single-quotations':
+
+: [[image:DrewsEmacsHighlight]]
+
+
+
+
+
+== Discussion ==
+
+[new]
+I tried to use `hlt-highlight-regexp-region' (with default settings) in my Lisp program to highlight a non font-locking buffer by regexp. But it is 100x slower than while/re-search-forward/put-text-property version. -- [[rubikitch]]
+
+[new:DrewAdams:2009-03-03 14:52 UTC]
+Such limited feedback is not helpful, unfortunately. Please send a proper bug report, with details. `hlt-highlight-regexp-region' does precisely the search and `put-text-property' that you mention, but it can also do more. Performance can only be discussed after some detailed analysis. Please look in more detail for where the apparent slowdown occurs. Thx. -- DrewAdams
+
+[new:rubikitch:2009-03-04 05:53 UTC]
+Test file is here: http://www.rubyist.net/~rubikitch/archive/command.txt
+
+{{{
+(defun newbuf ()
+  (kill-buffer (get-buffer-create "*highlight test*"))
+  (with-current-buffer (get-buffer-create "*highlight test*")
+    (insert-file-contents "/tmp/command.txt")
+    (display-buffer (current-buffer))))
+
+(defun my-highlight (regexp)
+  (save-excursion
+    (set-buffer "*highlight test*")
+    (goto-char 1)
+    (let (me)
+      (while (and (setq me (re-search-forward regexp nil t)) (< (point) (point-max)))
+        (put-text-property (match-beginning 0) me 'face 'highlight)))))
+  
+(defun highlight-el-highlight (regexp way)
+  (let ((hlt-use-overlays-flag way))
+    (save-excursion
+      (set-buffer "*highlight test*")
+      (hlt-highlight-regexp-region 1 (point-max) regexp 'highlight))))
+
+(newbuf)
+(benchmark-run 1 (my-highlight "command")) ; => (0.010105 0 0.0)|(0.016 0 0.0)
+(benchmark-run 1 (my-highlight "command")) ; => (0.008182 0 0.0)|(0.0 0 0.0)
+(benchmark-run 1 (my-highlight "command")) ; => (0.008342 0 0.0)|(0.0 0 0.0)
+(benchmark-run 1 (my-highlight "command")) ; => (0.008312 0 0.0)|(0.0 0 0.0)
+(newbuf)
+(benchmark-run 1 (highlight-el-highlight "command" 'only)) ; => (0.6560950000000001 0 0.0)|(0.125 0 0.0)
+(benchmark-run 1 (highlight-el-highlight "command" 'only)) ; => (1.449072 0 0.0)|(0.23399999999999999 0 0.0)
+(benchmark-run 1 (highlight-el-highlight "command" 'only)) ; => (2.924364 0 0.0)|(0.375 1 0.06299999999999972)
+(benchmark-run 1 (highlight-el-highlight "command" 'only)) ; => (4.708601 0 0.0)|(0.422 0 0.0)
+(newbuf)
+(benchmark-run 1 (highlight-el-highlight "command" nil)) ; => (0.127139 0 0.0)|(0.094 1 0.04699999999999971)
+(benchmark-run 1 (highlight-el-highlight "command" nil)) ; => (0.130912 0 0.0)|(0.016 0 0.0)
+(benchmark-run 1 (highlight-el-highlight "command" nil)) ; => (0.13116400000000006 0 0.0)|(0.078 1 0.06200000000000028)
+(benchmark-run 1 (highlight-el-highlight "command" nil)) ; => (0.13116 0 0.0)|(0.031 0 0.0)
+(newbuf)
+(benchmark-run 1 (highlight-el-highlight "command" t)) ; => (0.664406 0 0.0)|(0.188 1 0.06299999999999972)
+(benchmark-run 1 (highlight-el-highlight "command" t)) ; => (1.373779 0 0.0)|(0.219 0 0.0)
+(benchmark-run 1 (highlight-el-highlight "command" t)) ; => (2.780717 0 0.0)|(0.312 0 0.0)
+(benchmark-run 1 (highlight-el-highlight "command" t)) ; => (4.934234 0 0.0)|(0.469 1 0.06200000000000028)
+}}}
+
+I learned that I should use text properties possible by this result. -- [[rubikitch]]
+
+[new:DrewAdams:2009-03-04 00:22 UTC]
+What I meant by "analysis" was some attempt to try to see where performance is affected. That's the only way to help improve code performance.
+
+Again, when text properties are used, the ##highlight.el## code does the ''same thing'' as yours: loop over `re-search-forward' + `put-text-property'.
+
+Obviously, it is some of the other processing done that makes a difference here. That's the question. If all you need to do is a proper subset of what `hlt-highlight-regexp-region' does, then yes, it makes sense that a proper subset takes less time. If you only need to search for regexp matches and add text properties, then do only that, as you have done.
+
+Anyway, FWIW, I've added the times I see to the right of yours, above, after '''`##|##''''. And here are some byte-compiled times I see, FWIW:
+
+{{{
+(newbuf)
+(benchmark-run-compiled 1 (my-highlight "command")) ; => ???|(0.0 0 0.0)
+(benchmark-run-compiled 1 (my-highlight "command")) ; => ???|(0.015 0 0.0)
+(benchmark-run-compiled 1 (my-highlight "command")) ; => ???|(0.0 0 0.0)
+(benchmark-run-compiled 1 (my-highlight "command")) ; => ???|(0.078 1 0.06299999999999972)
+(newbuf)
+(benchmark-run-compiled 1 (highlight-el-highlight "command" 'only)) ; => ???|(0.125 0 0.0)
+(benchmark-run-compiled 1 (highlight-el-highlight "command" 'only)) ; => ???|(0.218 0 0.0)
+(benchmark-run-compiled 1 (highlight-el-highlight "command" 'only)) ; => ???|(0.375 1 0.07800000000000029)
+(benchmark-run-compiled 1 (highlight-el-highlight "command" 'only)) ; => ???|(0.422 0 0.0)
+(newbuf)
+(benchmark-run-compiled 1 (highlight-el-highlight "command" nil)) ; => ???|(0.032 0 0.0)
+(benchmark-run-compiled 1 (highlight-el-highlight "command" nil)) ; => ???|(0.093 1 0.06299999999999972)
+(benchmark-run-compiled 1 (highlight-el-highlight "command" nil)) ; => ???|(0.016 0 0.0)
+(benchmark-run-compiled 1 (highlight-el-highlight "command" nil)) ; => ???|(0.031 0 0.0)
+(newbuf)
+(benchmark-run-compiled 1 (highlight-el-highlight "command" t)) ; => ???|(0.188 1 0.06300000000000061)
+(benchmark-run-compiled 1 (highlight-el-highlight "command" t)) ; => ???|(0.218 0 0.0)
+(benchmark-run-compiled 1 (highlight-el-highlight "command" t)) ; => ???|(0.297 0 0.0)
+(benchmark-run-compiled 1 (highlight-el-highlight "command" t)) ; => ???|(0.40599999999999997 0 0.0)
+}}}
+
+These times are all with Emacs 22.3 on MS Windows. I ran the same test with a Windows Emacs 23 pretest build, and the times are just about the same as for Emacs 22. 
+
+And yes, overlays are costly -- typically O(N), where N is the number of overlays in the buffer. Text properties are typically O(log N). -- DrewAdams
+
+
+[new]
+
+----
+DrewsElispLibraries mentioned here: Lisp:facemenu+.el, Lisp:font-lock+.el, Lisp:highlight.el.
+
+CategoryFaces CategoryHideStuff CategoryRegion
+
+

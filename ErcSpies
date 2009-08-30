@@ -1,0 +1,85 @@
+The following command will issue two /NAMES commands, wait for 3 seconds of idle time, and then figure out who is on both channels.
+
+== Example ==
+
+<pre>
+15:43 ERC> /spies #emacs #vim
+15:43 *** Users on #emacs: rw elf` oogie Erwin forcer CrazyEddy
+      deego buggs EliasREC dotz lg_ Zenton kensanata giuppi
+      jemarch mallum mennis myrkraverk xepsilon _zeus_|away
+      sayke piso munky___ quotemaster jordanb chandler
+      liquidbinary plasmabal statbot erica buggs|wrk sheskar
+      Mojojojo walkah vahl LordVan Zonix len_ Acapnotic
+      froog clog fors arete f00f BlindMan fschmitt mattp
+      jordan tsiar mobius KingNato liiwi Johbe plaisthos
+      b0ef antifuchs smoke merriam lam compiled
+15:43 *** Users on #emacs: lcandell CLM flippo jantho mmc
+      davidmccabe dust-puppy hroptatyr braden dortmunder
+      Riastradh Han Nafai case22 choric
+15:43 *** Users on #vim: Zta strull__ bromer buggs sonne tazz
+      stefp Lurch_ whee htaccess jules travlin buggs|wrk
+      GwaiLo smoser__ Magnade Nex6 ThunderChicken mbp ra3vat
+      skimpIzu cloaked rox NotHere sphere
+15:44 *** Spies: buggs|wrk buggs
+</pre>
+
+== Code ==
+
+<pre>
+(require 'cl)
+
+(defvar erc-spies-pos nil)
+(defvar erc-spies-channel-1 nil)
+(defvar erc-spies-channel-2 nil)
+
+(defun erc-cmd-SPIES (channel1 channel2)
+  "Black Magic."
+  (unless (erc-server-buffer)
+    (error "You need to start this in an ERC buffer."))
+  (setq erc-spies-pos (point)
+	erc-spies-channel-1 channel1
+	erc-spies-channel-2 channel2)
+  (erc-send-command (concat "NAMES " channel1))
+  (erc-send-command (concat "NAMES " channel2))
+  (run-with-idle-timer 3 nil 'erc-spies-report))
+
+(defun erc-spies-report ()
+  "Assume that the server buffer now contains the names of channel members."
+  (goto-char erc-spies-pos)
+  (let ((pos (next-single-property-change erc-spies-pos 'erc-parsed))
+	data names-1 names-2 result)
+    (while pos
+      (when (and (setq data (get-text-property pos 'erc-parsed))
+		 (string= (aref data 0) "353"))
+	(cond ((string= (aref data 4) erc-spies-channel-1)
+	       (setq names-1 (nconc (split-string (aref data 5))
+				    names-1)))
+	      ((string= (aref data 4) erc-spies-channel-2)
+	       (setq names-2 (nconc (split-string (aref data 5))
+				    names-2)))))
+      (setq pos (next-single-property-change pos 'erc-parsed)))
+    (setq result (intersection names-1 names-2 :test 'string=))
+    (cond ((null names-1)
+	   (erc-display-message nil 'notice 'active
+				(concat "Spies: Nobody found in "
+					erc-spies-channel-1)))
+	  ((null names-2)
+	   (erc-display-message nil 'notice 'active
+				(concat "Spies: Nobody found in "
+					erc-spies-channel-2)))
+	  ((null result)
+	   (erc-display-message nil 'notice 'active
+				(concat "Spies: No spies in "
+					erc-spies-channel-1
+					" and "
+					erc-spies-channel-2)))
+	  (t
+	   (erc-display-message nil 'notice 'active
+				(concat "Spies: "
+					(mapconcat 'identity
+						   result
+						   " ")))))))
+</pre>
+
+----
+[[ERC]]

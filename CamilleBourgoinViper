@@ -1,0 +1,68 @@
+<pre>
+;; -*- lisp -*-
+
+;; ,----[ ~/.viper ]
+;; |
+;; |  Jean-Baptiste Bourgoin
+;; |  licence : GPL
+;; |  1st version : 2007
+;; |  actual version : 2007
+;; |
+;; `----------------
+
+;; émuler le mode de fonctionnement de vim
+;(load "~/.emacs.d/vimlike.el")
+
+;; inhiber le message d'information au démarrage
+(setq viper-inhibit-startup-message 't)
+
+;; niveau d'expertise emacs
+(setq viper-expert-level '5)
+
+;; viper laisse a C-h son rôle d'aide
+(setq viper-want-ctl-h-help 't)
+
+;; emacs décide si le buffer est en viper ou en emacs par défaut
+;(setq viper-always t)
+;; ou vous décidez vous-mêmes :
+(setq viper-always t)
+
+;; se comporter comme vi dans le minibuffer
+(setq viper-vi-style-in-minibuffer nil)
+
+;; C-z fait passer du mode emacs à viper
+(setq viper-toggle-key "\C-z")
+
+;; sur "nil", les commandes de suppressions de caractères agissent sur
+;; les lignes précédentes et suivantes.
+(setq viper-ex-style-editing nil)
+
+;; régler les problèmes de viper avec eshell
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (when viper-mode
+              (setq viper-auto-indent nil))))
+
+;; `:n' ou `:next' n'affiche pas que le prochain buffer non-lu,
+;; mais affiche aussi les buffers lus une fois tous les buffers
+;; non-lus, lus :)
+(setq ex-cycle-through-non-files t)
+
+;; vi se comporte en vrai éditeur plein écran, cad : les touches de
+;; déplacements vont jusqu'au marqueur fin de ligne
+(setq viper-ex-style-motion nil)
+
+;; la notion de "mot" dans Viper :
+;; strict-vi :
+;; reformed-vi (default) :
+;; emacs :
+;; extended :
+;(viper-set-syntax-preference "emacs")
+
+;; If you would like certain major modes to come up in Emacs state
+;; rather than Vi state (but Viper thinks otherwise), you should put these
+;; major modes on the `viper-emacs-state-mode-list' list and delete them
+;; from `viper-vi-state-mode-list'.  Likewise, you can force Viper's
+;; Insert state on a major mode by putting it in
+;; `viper-insert-state-mode-list'.  
+</pre>

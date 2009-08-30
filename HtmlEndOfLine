@@ -1,0 +1,53 @@
+When editing certain things, you will find yourself a little frustrated, perhaps, that Emacs isn't psychic.
+
+For example, when I'm editing a list in HTML, I have various helper modes to insert tags, etc.  But one thing I've noticed is that I often change something in the middle of a list line, then wish to jump to the end - but of course not the real end of the line, after 
+the &lt;/li&gt; tag.  But how does Emacs know which "end" I mean?
+
+After several weeks of jumping to the end and then backspacing to the beginning of the &lt;/li&gt; tag, it dawned on me:  I could make Emacs assume that, if there were a tag at the end of the line, that I meant to jump to the end of the text, before the tag.  And then, if I really <em>want</em> the end of the line, I could just hit C-e again and it should know which one I really mean.
+
+Thus came this function.
+
+Note the similarity with [[BackToIndentationOrBeginning#end-of-code-or-line]].
+
+ (defun html-end-of-line ()
+  "If there is an HTML tag at the end of the line, then go to start of tag.
+
+ Otherwise go to the real end of the line."
+  (interactive)
+  (if (or (looking-at ".*>$") ; if we're on a line that ends with a tag
+          (and (= (char-before) 62)
+               (= (point) (save-excursion
+                            (end-of-line)
+                            (point))))) ; or we're at the end of a line
+                                        ; with a tag
+      (let ((where-now (point)))
+        (narrow-to-region
+         (save-excursion
+           (beginning-of-line)
+           (point))
+         (save-excursion
+           (end-of-line)
+           (point)))
+        (end-of-line)
+        (re-search-backward "<" nil t)
+        (if (= (point) where-now)
+            (end-of-line))
+        (widen))
+    (end-of-line)))
+
+ (add-hook 'html-helper-mode-hook
+          (lambda ()
+            (define-key html-helper-mode-map "\C-e" 'html-end-of-line)))
+
+We start by verifying that we are "looking-at" any text that ends its line with &gt;.  Of course, if you are already at the real end of the line, it needs to see if the last character on the line is a &gt; and act the same, so it tests for that (ASCII 62 is &gt;).
+
+If you qualify, then it determines where it is right now, and saves that temporarily as <code>where-now</code>.  Then it narrows the buffer to just the line on which point rests (so that our later <code>re-search-backward</code> doesn't end up on another line accidentally).  Then it goes to the true end of the line and searches backward for a &lt;.  If it ends up where it started - that is, if you were already there and you called the function again, which it can tell by comparing <code>point</code> to <code>where-now</code>, then it assumes you wanted the real end of the line, and takes you there.
+
+Then it widens the buffer again.  If you didn't qualify as ending your line with a tag, then it jumps to the end of the line anyway.
+
+The last <code>add-hook</code> bit binds C-e to the new function in html-helper-mode.  HtmlHelperMode is the HTML mode I use, but one could just as easily do this in PsgmlMode or the built-in HtmlMode.  Because it checks to see where you were previously, you can hit C-e repeatedly to switch between the beginning of the final tag on a line, or the real end of the line.
+
+Hopefully this has been a useful guide, if somebody wonders <em>why</em> somebody would ever need an editor that is as flexible as this one.  This was a very simple example which saves only a few keystrokes, and there are probably more elegant ways to handle this, but there are far more complex problems that Emacs can solve.  More little things like this can be found in my [http://www.livingtorah.org/~csebold/emacs/dot.emacs .emacs]. -- CharlesSebold
+----
+CategoryEditing
+CategoryHypermedia

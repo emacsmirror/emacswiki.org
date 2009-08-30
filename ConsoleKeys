@@ -1,0 +1,70 @@
+These are no longer the days of the VT100 -- when emacs had to rely on
+what the VT could send.
+
+This page is dedicated to getting everything out of emacs keys on the
+console and in a terminal emulator such as xterm.
+
+I first implemented this on the linux console, where the Fn keys are
+represented by a string or sequence of weird characters, which emacs
+will then translate into the appropriate FunctionKeys.
+
+My keyboard has two <> buttons (that is a diamond) that I wanted to
+use as meta keys, so I configured them to act as the meta modifier
+instead of alt, like I had previously done in X.
+
+Then I wanted M-Fn to work as well, since I was using (now) A-Fn to
+switch VTs.
+
+The solution is quite simple, make M-Fn produce another weird sequence
+and make emacs translate them into M-Fn.
+
+== Configuring Your Console or Terminal to Send Weird Characters ==
+
+Some of these are obviously not written yet ;)
+
+* LinuxConsoleKeys -- configuring the Linux Console
+* FreeBSDConsoleKeys
+* SolarisConsoleKeys -- this should possibly be called Screen,
+change the title before writing the page, if so.
+
+* XTermKeys -- configuring the all powerful xterm
+* RxvtKeys
+* KonsoleKeys -- the KDE terminal emulator
+* ETermKeys -- the Enlightenment terminal
+* GnomeTerminalKeys -- The gnome-terminal terminal emulator
+
+Please add whatever terminal info you can ;-)
+
+
+== Making Emacs Change the Sequence Into Keys ===
+
+To make emacs translate your sequence into keys, you add it to
+function-key-map with define-key, like so:
+
+    (define-key function-key-map "^[[^[[[A" (kbd "M-<f1>"))
+
+This is the string I chose to represent M-f1, The ^[ is really the ESC
+key, you can insert it into a buffer with C-q ESC.  It is a good idea
+not to choose strings that conflict with string the terminal already
+sends.  For me, "^[[[A" is F1, so I choose to prefix it with ESC but
+didn't feel comfortable with two ESC, since one does sometimes want to
+enter them by the numbers into emacs, so I put a "[" bewteen them.
+
+
+''[Why not use <tt>\e</tt> instead of the literal escape char?  That would avoid possible problems when transmitting the file over the network.]
+
+
+I can only give the following advice when choosing strings:
+
+* Avoid conflicts with existing strings, eg. do not just append
+to a string to make it different.
+* Do not create anything you're likely to actually type, since emacs
+does not see a difference between what you type and what keys insert
+as strings.
+
+I would also like to point out that using [(meta f1)] did not work
+excacly in emacs 21.3, but (kdb "M-<f1>") did.  It returns [M-F1].
+There seems to be a slight incompatibility in between them.
+
+----
+CategoryKeys

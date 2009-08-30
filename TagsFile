@@ -1,0 +1,78 @@
+A '''[::tags file]''' is an index to source-code definitions of functions, variables, and any other
+interesting syntactic feature.  If you BuildTags for your
+project (possibly RecursiveTags), Emacs can use the tags file (typically named "TAGS") to find the indexed definitions very quickly.
+You need the EmacsTags (etags) program to generate the tags file.  The
+program understands many languages, Lisps, C, C++ and Perl for
+example.
+
+The following Unix command creates a tags
+file that indexes all of the EmacsLisp files in the current directory:
+
+    rm -f TAGS
+    etags *.el
+
+This command creates a tags file for all ##*.c## and ##*.h## files
+in the current directory and its subdirectories (recursively):
+
+    rm -f TAGS
+    find . -name "*.[ch]" -print | xargs etags -a
+
+You might want to add the target tags to their Makefile, so
+that they can easily be updated.
+
+The following will create a tags file if none exists. Just hit `##M-.##' and you're off.
+
+ (defadvice find-tag (before c-tag-file activate)
+   "Automatically create tags file."
+   (let ((tag-file (concat default-directory "TAGS")))
+     (unless (file-exists-p tag-file)
+       (shell-command "etags *.[ch] -o TAGS 2>/dev/null"))
+     (visit-tags-table tag-file)))
+
+After this, `M-x visit-tags-table RET' and `M-x tags-search RET' are your
+friends.  Also take a look at
+[Groups:sure-tags.el&selm=199707312315.QAA06142%40hiro.zanshin.com sure-tags.el]
+
+[new]
+##sure-tags.el## works pretty well, but I've noticed that it doesn't work 
+properly with those filesystems in which space characters are allowed 
+in files/folders names. This is a patch that makes it work:
+
+<pre>
+--- sure-tags.el.orig	2007-04-27 12:28:12.000000000 +0200
++++ sure-tags.el	2007-12-29 16:42:49.000000000 +0100
+@@ -72,7 +72,7 @@
+           (delete-file file))
+     (error))
+   (message "Building %s..." file)
+-  (let* ((dir (file-name-directory file))
++  (let* ((dir (substring (file-name-directory file) 0 -1))
+          (find-args (mapconcat
+                      'identity
+                      (mapcar (function
+@@ -84,7 +84,7 @@
+                   "/bin/sh" nil nil nil
+                   "-c"
+                   (format
+-                   "%s %s \\( %s \\) -print | %s %s -a -o %s"
++                   "%s %S \\( %s \\) -print0 | %s -0 %s -a -o %S"
+                    find-prog
+                    dir find-args
+                    xargs-prog
+</pre>
+
+Hope this helps. -- Andrea
+[new]
+
+=Alternatives=
+
+There are two different programs, ##ctags## and ##etags##. Both are distributed with Emacs, XEmacs, and on their own, so you
+might run into conflicts if you have several editors installed.  Vi
+uses ##ctags##(1) that creates files names ##tags##.  There is also
+ExuberantCtags. In all these cases, be sure to generate Emacs-compatible output. See also GnuGlobal.
+
+
+----
+CategoryProgrammerUtils
+CategoryExternalUtilities
+

@@ -1,0 +1,44 @@
+== Pour(-)quoi et depuis quand je suis fan d'EMACS ==
+
+J'utilise EMACS depuis 1991. À l'époque j'étais étudiant et notre professeur d'info avant de nous initier à EMACS nous avait déclaré qu'il y avait deux catégories de personnes, les utilisateurs de VI et ceux d'EMACS, et que malheureusement il faisait partie de la seconde. À l'époque je n'avais jamais entendu parlé ni de VI ni d'EMACS, et je savais encore moins que ce genre de débat est t'une trôllerie me tirez vous. Mais cela m'avait frappé parce que je m'étais demandé pourquoi alors son cours ne concernait pas VI.
+
+Ce que j'apprécie le plus dans EMACS, c'est:
+* qu'on n'a pas besoin de faire des tonnes de manipes avec une souris
+* qu'on peut mettre de très grosses lettres qui ne fatiguent pas les yeux, parce ce n'est pas la peine d'avoir dix milles fenêtres tapissant simultannément l'écran, vu que basculer de l'une à l'autre se fait en deux ou trois coups de clavier.
+
+
+J'utilise EMACS principalement :
+* Comme un éditeur de LaTeX et Texinfo avec AUCTeX. 
+* Comme un calculateur scientifique avec Calc (voir AdvancedDeskCalculator, ce que j'aime le plus c'est la manipulation des unités, et la polonaise inverse) 
+* Comme un tableur avec SES (voir SimpleEmacsSpreadsheet)
+* Pour écrire du code Java avec JDEE (voir JavaDevelopmentEnvironment)
+* Pour écrire du code C/C++ (pour l'instant de façon très rudimentaire, parce que tous les projets sur lesquels je bosse sont sous Visual)
+* Pour faire des comparaisons de fichier avec ediff, notamment en gestion de configuration,
+* Pour écrire des scripts dans différents langages comme MSDOS, Bash, VBScript, ou AWK
+* Pour écrire du code HTML et Javascript
+* Comme mode d'édition interactif pour shell MS-DOS ou Bash (la version MSYS)
+* Et évidemment pour bidouiller deux ou trois trucs en emacs-lisp (normal d'en parler en dernier pour fermer la parenthèse ;-) ).
+
+== Quelles sont mes contributions ==
+
+J'ai fait quelques évolutions sur http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el, 
+
+Je contribue également assez régulièrement à Emacs Calc ([AdvancedDeskCalculator]).
+
+J'ai également contibué à emacs-template (http://emacs-template.sourceforge.net/)
+
+
+
+[new:DrewAdams:2009-07-25 13:51 UTC]
+Welcome to the wiki. -- DrewAdams
+
+[new:]
+Merci Drew, comment tu as fait pour te rendre compte aussi vite que je venais de créer cette page ?
+
+[new:DrewAdams:2009-07-25 20:55 UTC]
+I just check RecentChanges from time to time. -- DrewAdams
+
+----
+CategoryHomepage
+----
+CategoriePagePerso

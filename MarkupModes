@@ -1,0 +1,41 @@
+This is a subpage of CategoryModes.  It lists all modes used to edit
+markup or to work with markup.  Markup is a bit of text which tells a
+processor how to interpret the remaining text.
+
+* RdMode -- simple RD (Ruby Document) syntax highlighting
+* CascadingStyleSheetMode -- simple CSS (cascading style sheet) editing mode
+* CookingRecipes -- Modes for writing cooking recipes.
+* EnrichedMode -- automatic markup added by Emacs to save face information
+* GedCom -- genealogy data format
+* HtmlMode -- simple HTML editing mode
+** ColdFusionDeluxeMode -- HTML and ColdFusion mode with tweaks that may apply to HtmlModeDeluxe variants
+** HtmlHelperMode -- HTML editing mode with more features
+** HtmlModeDeluxe -- combining psgml-mode, php-mode and css-mode to create a really powerful web development
+** NxmlModeForXHTML (part of [NxhtmlMode nXhtml]) -- NxmlMode for XHTML
+** QqMode -- a small mode for creating valid XHTML 1.0 Transitional pages
+** SpipMode -- a mode for editing http://www.spip.net web page templates
+** SmartyMode -- a mode for editing Smarty PHP templates
+** YaHTML -- yet another HTML mode
+* LaTeX -- simple !LaTeX editing mode
+** AUCTeX -- a very powerful !LaTeX environment
+* NroffMode -- nroff/troff/groff typesetting and formatting
+* PsgmlMode -- for all kinds of SGML markup, if you have a DTD
+** http://www.dzr-web.com/people/darren/projects/emacs-webdev/ -- a howto for setting up a emacs webdev environment using psgml
+* RubyTwoMode -- write screenplays (or fiction) and convert to <nowiki>PostScript</nowiki>, HTML, or formatted text.
+* XmlMode -- for editing XML (simple sgml-mode, xml-lite, XAE)
+* ScreenPlay -- for writing movie scripts and screenplays in plain ASCII
+* [[reStructuredText]] -- Extended Text Mode, for editing reStructuredText
+* TextileMode -- for editing textile markup files
+* MarkdownMode -- for editing markdown files
+
+Modes that take text with peculiar formatting and ''add'' markup:
+
+* BhlMode -- convert brut text into HTML/SGML/LaTeX/Texinfo
+* WikiMode and EmacsWikiMode -- convert text into hyperlinked text, and export as HTML (see WikiModeDiscussion for differences)
+* EmacsMuse -- A modular and more generalized derivate of EmacsWikiMode by the same author
+* FreexMode -- A personal wiki on steroids - interfaces with a sqlite database to store your metadata, automatically creates hyperlinks to existing pages and provides a sophisticated tagging mechanism
+* TableMode -- edit and convert tables to HTML/LaTeX/XML/SGML(TEI)/CALS
+* OrgMode -- based on OutlineMode, also exports to HTML
+
+----
+CategoryModes

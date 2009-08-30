@@ -1,0 +1,22 @@
+[[zh:下载部分Wiki]]
+(Back to WikiDownload.)
+
+== Using wget ==
+
+Wget can't be directly used to download a small region of emacswiki.org because the site has a robots.txt to exclude wget.
+
+Here's a polite way around this barrier:
+
+<pre>
+wget --http-user=foo --http-pass=geheim --reject "*search=*","*action=*", \
+"Comments*","RecentChanges" --html-extension --backup-converted \
+--page-requisites --convert-links -e robots=off -w 4 -r -l5 -np <url>
+</pre>
+
+== Problems with PDF Files ==
+
+##--html-extension## adds the html extension to some PDF files, since their MIME type is thought to be text/html.
+This doesn't happen for all PDFs though.
+
+----
+CategoryEmacsWikiSite

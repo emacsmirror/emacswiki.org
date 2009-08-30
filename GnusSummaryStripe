@@ -1,0 +1,8 @@
+GnusSummaryStripe is mode make gnus summary buffer with stripe color,
+this extension is base on [[StripeBuffer]].
+
+You can get it from [[gnus-summary-stripe.el]].
+
+Below have a screenshot about it:
+
+[[image:Gnus_Stripe_Screenshot]]

@@ -1,0 +1,65 @@
+Shell-Pop is a utility which helps you pop up and pop out shell buffer window easily.
+
+== Download ==
+----
+You can download shell-pop.el from the following link.
+
+Lisp:shell-pop.el
+
+
+== How to use ==
+----
+1. Place this file in a directory in your load-path.
+
+2. Load the shell-pop elisp using "require" (See below configuration in detail)
+
+3. M-x shell-pop. The shell buffer window appears at the bottom of the selected window.
+
+4. You can enjoy shell.
+
+5. M-x shell-pop. The shell buffer window destroyed if you call shell-pop again. The buffer is not buried. 
+
+== Configuration for your .emacs ==
+----
+You can choose your favorite internal mode from `shell', `terminal', `ansi-term', and 'eshell'.
+Also you can use any shell such as `/bin/bash', `/bin/tcsh', `/bin/zsh' as you like.
+
+You are recommend to assign one hot key to shell-pop for its toggled action. :-)
+
+<pre>
+(require 'shell-pop)
+(shell-pop-set-internal-mode "ansi-term")
+(shell-pop-set-internal-mode-shell "/bin/zsh")
+(shell-pop-set-window-height 60) ; the number for the percentage of the selected window. 
+(global-set-key [f8] 'shell-pop)
+</pre>
+
+== Screenshot ==
+----
+[[image:MyScreenShotPage]]
+
+== Update Info ==
+----
+<pre>
+Revision 1.3  2009/06/01 15:41:23  kyagi
+- minor changes for comment part.
+
+Revision 1.2  2009/06/01 15:34:33  kyagi
+- Added support for 'terminal', 'ansi-term', 'eshell'.
+- Added support for customizing user's favorite shell such as '/bin/*sh'.
+</pre>
+
+== Conversation ==
+----
+[new]
+I have made some modifications to make it easier to have shell-pop run a different function (because I wanted to run ansi-term instead of shell...)
+
+What's the best way to get those changes back to you to look at? 
+
+: -- JohnAnderson
+
+Thank you for your requirement and it was already done. Now you can use ansi-term and your favorite shell with shell-pop!
+
+: -- KazuoYAGI
+
+

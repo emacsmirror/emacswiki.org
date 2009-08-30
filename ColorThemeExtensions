@@ -1,0 +1,66 @@
+Sorry for the rough nature of this page. 
+
+
+   10:51 <dto> twb: i mean, tell me your specific criticisms of
+            color-theme. it might be useful for implementing a
+            replacement and/or adjunct
+   10:52 <twb> My critism is that theme authors do not bother trying to
+            implement graceful degradation.
+   10:52 <dto> ahh. ok yeah
+   10:52 [dto is guilty]
+   10:52 <twb> No shit
+   10:52 <dto> i always use x
+   10:52 <twb> X degrades, too
+   10:52 <dto> i know
+   10:53 <twb> Unfortunately I can't simulate bit depths <8 on my current
+            GPU
+   10:53 <dto> maybe there is a way to do it automatically
+   10:53 <twb> There isn't.
+   10:53 <twb> At least, not intelligently.
+   10:53 <nyuhuhuu> color-theme-arjen rulz (:
+   10:53 <twb> Emacs includes some basic code.
+   10:54 <dto> twb: ooh. arjen is too high-contrast for me
+   10:54 <dto> late-night is interesting. it might be cool to make a
+            darker version of color-theme-eon
+   10:54 <bpalmer> My biggest problem with color-themes as written is
+                that they're inconsistent about what faces get
+                modified
+   10:55 <bpalmer> so some themes look much better in more contexts than
+                others.
+   10:55 <dto> what do you mean
+   10:55 <bpalmer> (and this is not something that has a technical
+                solution, other than forcing everybody to figure out a
+                bunch of settings for gnus-* faces even if they never
+                use gnus, etc)
+   10:55 <dto> yeah that sucks
+   10:56 <dto> one thing i would like is to design them in pairs or even
+               with 3+ people
+   10:56 <Black_Dog> You could specify a small set of base colours, and
+                  automatically apply those to everything
+   10:56 <Black_Dog> Then make changes on top of that
+   10:56 <dto> so that people who use different applications would fill
+               in the blanks.
+   10:56 <bpalmer> in theory, that's handled with face inheritance.
+   10:56 <Black_Dog> But not in practice
+   10:57 *** iblechbot_ QUIT Read error: 104 (Connection reset by peer)
+   10:57 <bpalmer> which (a) doesn't work in xemacs and (b) is of limited
+                use since people define faces in local contexts.
+   10:57 <dto> would anybody mind if i pasted some of these notes into an
+            emacs wiki page?
+   10:57 <bpalmer> (that is, dynamic inheritance doesn't work in xemacs,
+                if I'm remembering correctly; the inheritance is done
+                at definition time)
+   10:57 <twb> 00:56 <Black_Dog> You could specify a small set of base
+            colours, and automatically apply those to everything
+   10:57 <Black_Dog> dto: of course not
+   10:58 *** ptx JOIN
+   10:58 *** IceD^ JOIN
+   10:58 <twb> It'd be nice if most faces simply inherited from a core
+            set by default.
+   10:59 *** rubberwolf QUIT "Leaving"
+   10:59 <Black_Dog> Instead, there's this huge block of separate faces
+                  which frequently end up being identical
+
+[new]
+
+For reference, [http://edward.oconnor.cx/elisp/color-theme-hober2.el color-theme-hober2] is designed to gracefully degrade in low-bit-depth contexts. Also, I handle the inheritance issue by generating it with noweb; the inheritance is expressed in the literate source, and all the [[Face]] definitions get inlined in the elisp file. -- EdwardOConnor

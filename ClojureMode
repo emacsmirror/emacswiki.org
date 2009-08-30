@@ -1,0 +1,5 @@
+ClojureMode is a major mode that provides font-lock, indentation, and functions for communication with subprocesses for [http://clojure.org Clojure].
+
+It's more useful if used together with swank-clojure to interact with subprocesses. See http://technomancy.us/126 for a tutorial.
+
+Download it here: Lisp:clojure-mode.el

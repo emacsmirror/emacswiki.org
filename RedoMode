@@ -1,0 +1,77 @@
+Emacs treats `undo' as just another command.  Therefore you can undo
+the undo.  This is powerful and confusing, because if you are doing
+several undos and miss the "correct spot", and do anything at all
+which is not an undo command, you will be stuck: You broke the chain
+of undos.  When you realize your mistake and try to undo some more,
+you will first undo your previous undos, then undo the dos, and then
+you can finally undo some more to find the correct spot.  The problem
+is at least as confusing as this description.
+
+redo.el by KyleJones does away with this.  You can get it here:
+
+* http://www.wonderworks.com/download/redo.el
+
+Note: it also seems to be available already in xemacs, at least for me.
+--gambarimasu who is at gmail
+
+Note: i have long found that redo can often corrupt the buffer and
+your only recourse is to kill the buffer, or diff with backups.  it would
+be great if there were a redo without this bug.  maybe undo-browse.el?
+--gambarimasu who is at gmail
+
+To get the Windows style backspace-undo, add the following to your ~/.emacs:
+
+    (require 'redo)
+    (global-set-key [(meta backspace)] 'undo)
+    (global-set-key [(meta shift backspace)] 'redo)
+
+<i>(I can no longer get the "alt-shift-backspace" to work -- it used to, but now emacs isn't recognizing the key combination. -- edA-qa)</i>
+
+The undo/redo system is different in two ways (cited from the
+commentary section):
+
+# The undo/redo command chain is only broken by a buffer modification.  You can move around the buffer or switch buffers and still come back and do more undos or redos.
+# The `redo' command rescinds the most recent undo without recording the change as a _new_ buffer change.  It completely reverses the effect of the undo, which includes making the chain of buffer modification records shorter by one, to counteract the effect of the undo command making the record list longer by one.
+
+Redo included in XEmacs distribution by default, I found next keybindings for undo/redo is good:
+
+    (define-key global-map (kbd "C-/") 'undo)
+    (define-key global-map (kbd "C-x C-/") 'redo)
+----
+I like prefixes, so I use the following in my .emacs:
+
+    (defun undo-redo (arg)
+      "Undo or redo changes.  If ARG is present or negative, redo ARG
+    changes.  If ARG is positive, repeatedly undo ARG changes."
+      (interactive "P")
+
+      (if (null arg)
+          (undo)
+       (let ((n (prefix-numeric-value arg)))
+         (cond ((= n 0) (redo))
+	         ((< n 0) (redo (- n)))
+	         ((> n 0) (undo n))))))
+
+--DeanScarff
+
+----
+
+Note that the Emacs way of undo is very powerful in the following
+situation:
+
+: edit A ... undo A ... edit B ... undo B ... redo A ...
+
+With the new undo/redo system, the edit deletes the current redos, so
+when you undo A, there is no way to redo A later.
+[new]
+: Not quite.  Once you do the <code>edit B</code>, you get back A by
+: doing an /undo/.  The final operation in your sequence should be
+: an <code>undo A</code>, instead of <code>redo A</code>, to get
+: back the results of <code>edit A</code>.
+
+[new]
+I don't understand "not quite" ... if you only have two primitive commands
+/undo/ and /redo/, then how can you uniquely tell 
+emacs to recover <code>edit A</code> which has now been trampled by <code>edit B</code>?
+----
+CategoryUndo

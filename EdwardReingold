@@ -1,0 +1,12 @@
+Edward M. Reingold is the author and former maintainer of Emacs's CalendarMode and DiaryMode.  He is also acknowledged in the EmacsManual as a former contributor and maintainer of TeX mode.
+
+Reingold is the co-author of ''Calendrical Calculations'' (ISBN 0521777526).  The Web site that accompanies the book is at [http://www.calendarists.com calendarists.com].  According to an Illinois Institute of Technology (IIT) press release, "Reingold and Dershowitz came up with the idea for the first edition of Calendrical Calculations when they ran into problems developing a calendar/diary for a program called GNU Emacs."[http://www.scienceblog.com/community/older/2001/B/200112337.html]
+
+According to the book's preface,[http://emr.cs.iit.edu/home/reingold/calendar-book/second-edition/CUP-preface.pdf], academic interest in an EmacsLisp implementation of the calendar fuctions for Gregorian, Islamic, and Hebrew calendars prompted an article[http://emr.cs.iit.edu/~reingold/calendar.ps] in 1990 and a reimplementation of the source code in CommonLisp.  The addition of Mayan and French Revolutionary calendars to Emacs prompted a second article[http://emr.cs.iit.edu/~reingold/calendar2.ps] in 1993.
+
+Reingold is professor of computer science at the Illinois Institute of Technology, and his homepage at Illinois Tech is:
+
+* http://emr.cs.iit.edu/~reingold/
+
+----
+CategoryHomepage

@@ -1,0 +1,151 @@
+The Java Development Environment for Emacs ([::JDEE]) is an integrated development environment for Emacs. It interfaces Emacs to command-line Java development tools, for instance Sun's JDK.
+
+[new]
+<b>The information on this page is out of date.  Please don't use it and instead go to the new project site:</b>
+
+* http://sourceforge.net/projects/jdee/
+
+The current state of the project is gaining momentum after a few years of atrophy.  Once development is back on track, documentation here and on the project web site will be updated.
+
+[new]
+== Features ==
+=== Core ===
+From the webpage:
+
+* JDEE menu with compile, run, debug, build, browse, project, and help commands
+* syntax coloring
+* auto indentation
+* compile error to source links
+* source-level debugging
+* source code browsing
+* make file support
+* ant support
+* automatic code generation
+* Java source interpreter (Pat Niemeyer's BeanShell)
+
+=== JDEE Extensions and Plugins ===
+
+* Integration with other tools
+** [[Jdee-Eclipse-integration]]: different ways to profit from both IDEs or share configuration
+** JdeeAndMavenPom: how to load Maven's pom.xml
+** [[JdeeAndMaven2Pom]]: same, for Maven 2
+** JdeeMaven: still another version for Maven
+** JdeeDecompile: Integrate with [http://www.kpdus.com/jad.html JAD], a decompiler
+* Problem searchers
+** JdeeFlymake: on-the-fly syntax checker
+** JdeeFindbugs: looks for bugs in Java code
+** JdeeLint: detects issues with locking, threading, performance, scalability, serialization, ...
+* Edition tools
+** JdeeJalopy: a Java source code, formatter, beautifier, pretty printer
+* Information providers
+** JdeeUsages: finds callers of a method, subclasses, overrides, and other information about your Java classes
+* Programming helpers
+** [http://code.google.com/p/jdibug/ JDIBUG], a new debugger for Java written in Elisp
+
+
+And more.
+
+== JDEE's features explained and demonstrated ==
+
+* [http://jdee.sourceforge.net/quicktour.html Quick tour] through the basic features
+* [http://www.skybert.nu/cgi-bin/viewpage.py.cgi?computers+emacs+java_programming_tutorial Emacs Java Tutorial]: lots of screenshots which show autocompletion, compilation, Ant, code generation, jump to source, wizards, documentation, debugging (even [http://www.skybert.nu/graphics/computers/remote_java_debugging_in_emacs.png remote debugging of a servlet in Tomcat 5])
+* [http://skybert.nu/cgi-bin/viewpage.py.cgi?computers+emacs+the_never_ending_argument The neverending argument]: more about important features, including performance, JSP support, Maven, projects, refactoring.
+
+Others (not so graphical):
+* [http://wttools.sourceforge.net/emacs-stuff/emacsandjdee.html Emacs and JDEE as software development environment]: uncomplete, outdated (from 2003)
+* [http://jdee.sunsite.dk/jdedoc/html/jde-ug/jde-ug.html JDEE's user guide] (2004)
+
+Link to your success stories here!
+
+== Current status ==
+
+[new]
+Since the release of Emacs 22 there has not been any official release of JDEE that works from scratch.
+Paul Kinnucan, the heroe maintainer of JDEE, has not had as much time with JDEE as he would have needed.
+However it now looks as JDEE will start to move forward again.
+If you are interested please see the JDEE mailing list, especially 2007 December in the
+[http://news.gmane.org/gmane.emacs.jdee JDEE mailing list archive].
+
+[new]
+August 2009: latest version 2.3.5.1 is very old and has lots of known bugs. Use the 2.4.0 from branch inside the Subversion repository at: [https://jdee.svn.sourceforge.net/svnroot/jdee https://jdee.svn.sourceforge.net/svnroot/jdee]. It works fine with Emacs 22.2.1, CEDET-1.0pre6, and ECB-2.40. To build 2.4.0 you need to install [http://ant-contrib.sourceforge.net ant-contrib] and set cedet and elib paths in ~/.jdee-config.properties if are different that default.
+
+[new]
+Install notes for Gnu Emacs 23. This will help you get (require 'jde) running. No guarantee on anything else.
+
+I see there are some discussions on their mailing list, but don't see changes to the [http://jdee.svn.sourceforge.net/viewvc/jdee/branches/2.4.0/jde/lisp/ChangeLog?view=log ChangeLog]. Is this project still active? I really dislike eclipse.
+
+jde depends: cedet, elib. 
+<pre>
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/cedet-common/")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/cedet-contrib/")
+;;for jde
+(require 'cedet)
+
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/elib/")
+</pre>
+
+Then you need to edit jdel.el in lisp dir.
+
+Remove or comment out the following lines, because autoload is now part of emacs, and there is no jde-autoloads.el in jde src.
+<pre>
+(require 'jde-autoload)
+....
+(unless 
+    (and jde-xemacsp
+	 (file-exists-p 
+	  (expand-file-name 
+	   "jde/auto-autoloads.el"
+	   (jde-root))))
+	 (require 'jde-autoload))
+</pre>
+
+For jde itself, add these to .emacs, change the dirs to fit your install of course:
+<pre>
+;;--------------------
+;; jde
+
+(add-to-list 'load-path "~/.emacs.d/jde-current/")
+(require 'jde)
+(setq jde-web-browser "firefox")
+(setq jde-doc-dir "~/d/jdk-6-doc/")
+</pre>
+
+I don't know much about it myself. Since this project is last active in Dec 2007. I guess there are more problems waiting.
+
+== Distributions ==
+
+* Debian Etch - installed and loaded correctly
+* Ubuntu 7.10 (Gutsy Gibbon) - requires a patch [[JDE Ubuntu Patch]]
+
+'''''Note from 2004:''''' If you use the Debian Sid <tt>jde</tt> package with CVS Emacs, you may need to apply this [http://lists.gnu.org/archive/html/emacs-pretest-bug/2004-11/msg00145.html patch].
+
+== JDEE compared with other IDEs ==
+
+* JdeeVsEclipse. Still to write
+
+== Frequently Given Answers (FGA) ==
+
+Did you install it correctly as documented?
+The website says: "Nearly all the JDEE problems that I have seen are caused by faulty setups," and "Most problems reported by users are installation/setup problems."  See the [http://jdee.sunsite.dk/trouble-shooting.htm Trouble Shooting Guide].
+
+Cette page est aussi disponible en français: Français:JavaDevelopmentEnvironmentFrançais
+
+== Comments ==
+
+[new]
+I'm happy to see that somebody is investigating the current status of JDE!
+Thanks, DanielClemente. -- AlexSchroeder
+
+*Stupid Question Time* Really, I am not as helpless as this message is going to make me sound. I just upgraded to 23.1.50.1 (Ubuntu 9.4 incase that makes any difference) and have been beating my head against getting JDEE to install. I have CEDET 1.0pre7 (from cvs), elib 1.0 (built on the local system with 23), and I even got ecb to work (2.41 (or 2.40...the internal version numbers are not consistent with the messages) from cvs) by commenting out the jde. 
+
+I got the svn of jdee and put version 2.40 in the load path and went to town. Sort of.
+
+So, what is the problem? When processing efc.el (eieio foundation classes), the byte-compiling of the definition of efc-coll-add craps out. The error is all about wrong number of arguments and includes three lines of character codes. By looking at the backtrace it appears that the problem is in processing the string passed to error. That is, 
+<pre>
+(error "Tried to add an item of type %s to a list of items of type %s" (typep item) (oref this elem-type))
+</pre>
+is being processed. When the (typep item) is passed to byte-optimize-form (and on down to byte-optimize-form-walker and compiler-macroexpand) things go badly awry. I have not hacked elisp for many a moon so I am lost, lost, lost. Any hints would be greatly appreciated. It took me most of a day to get this much information and I don't have a lot of time to go deeper, though I really want jdee to work with 23.
+-- drbcladd
+----
+CategoryProgrammerUtils
+CategoryModes

@@ -1,0 +1,35 @@
+Homepage: http://iki.fi/juhtolv
+
+I use Emacs. But I am curious to see, if next major version of XEmacs makes it once again better editor than GNU Emacs. 
+
+== Some history ==
+
+I came to University of Jyväskylä year 1994. I also came to Internet and I got my first Unix account, then. First text editor I learned to use under Unix was pico. When I started my career as Emacs-user, I started with XEmacs, because it was so advanced and comfortable, then (year 1996 or something). I learned to use [http://www.vim.org/ Vim], too. I used both XEmacs and Vim many years: XEmacs for serious coding, programming and markup and Vim for mostly human languages, configuration files and fast corrections. There was also that grey area: For HTML and shell scripts I used both Vim and XEmacs. I was/am so perverted, that sometimes I even edit(ed) my ~/.emacs with Vim :-P . I also learned to use [http://www.gnu.org/software/ed/ ed]. Then GNU Emacs 21 came and it felt somehow more comfortable than XEmacs. I even deinstalled XEmacs for a while.
+
+I used tin for Usenet News few years but then I switched to Gnus. My first MUA was Pine, but then I learned to use [http://www.mutt.org/ mutt]. I used Vim as its text editor.
+
+Then (2004-09-24) I got the idea: I wanted to use Emacs as much as possible. Therefore I got to learn to use Emacs right way: Start emacs once and then just load files to it and close those files after editing and avoid quitting emacs as much as possible. Using gnuserv is then very important.
+
+== Current status and future ==
+
+Now my mutt uses Emacs as its text editor via gnuserv. I am trying to find a ways to use Emacs for E-Mail, too. It must use Maildir for both mail spool and mail folders. Current candidates are Gnus and Wanderlust. I just got for Gnus right settings that use Maildir as much as possible. I am completely able to handle my E-Mail with Gnus, but mutt is always there, when needed. My mutt can use BBDB as its address book with help from LBDB (The Little Brother's Database). Maybe I don't need Wanderlust at all. I am considering to learn RSS-reading with Gnus. It might be fun. Right now I use [http://sage.mozdev.org/ Sage] under Mozilla Firefox for my RSS-needs.
+
+I also learned to use Bbdb. I just moved my mutt-aliases to it. I am trying to find a working way to export and import phonenumbers between Bbdb and my cellular phone.
+
+I don't think I'll ever use emacs for IRC, because [http://www.irssi.org/ irssi] rocks so much. And I think I'll never switch from [http://www.zsh.org/ zsh] to Eshell. For TODO-lists and other outline processing I prefer [http://hnb.sourceforge.net/ hnb]. But other new ways to exploit and (ab)use emacs will always be considered.
+
+== Some thoughts about text editors ==
+
+I am convinced that Emacs is the best text editor. It is so full-featured. And if something is missing, somebody will code it in elisp for emacs sooner or later.
+
+Clones of vi and especially Vim and [http://www.bostic.com/vi/ nvi] are best for fast and tiny corrections when emacs is not already on. Every Unix admin must learn some usage of vi-clones: When new Unix-system is set up, there is no emacs available, yet. For initial configuration vi (or even ed) is often needed. After that it is time to install emacs
+and Vim. Vim is absolutely the most full-featured of all vi-clones. nvi is good, when other text editors are not yet on and you are so busy, that you have no time to wait startup of Vim or emacs.
+
+It is also good to learn to use some ed, because some day you may be faced with so broken system, where screen-based editors just don't work, for example if (n)curses and/or termcap/terminfo is fscked up. Hopefully at least line-based editors still work in that situation.
+
+Every good Unix admin must install [http://www.nano-editor.org/ GNU Nano] for newbies: it is free (in the sense of freedom) and bug-fixed clone of pico. It has enhancements, too.
+
+For really adventurous people I suggest [ftp://ftp.cs.usyd.edu.au/matty/unicode sam] and [http://www.cs.yorku.ca/~oz/wily/ wily]. They emulate text editors of Plan 9 operating system. AFAIK Unix-version of sam is straight port of sam of Plan 9. wily is a clone of acme.
+
+----
+CategoryHomepage

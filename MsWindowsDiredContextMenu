@@ -1,0 +1,41 @@
+You can get emacs to display Explorer's context menu in dired, exactly as you would be able to do when using RMB in Explorer.
+
+This is an example of how it can look:
+
+WThirtyTwoDiredContextMenuPicture
+
+To get this working, add the following functions to your .emacs:
+
+  (defun w32-context-menu (filename)
+    (start-process-shell-command "context" "*context*" "context" filename))
+
+  (defun w32-context-menu-dired-get-filename (event)
+    (interactive "e")
+    ;; moves point to clicked row
+    (mouse-set-point event)
+    (w32-context-menu (concat "\"" (dired-get-filename) "\"")))
+
+Add a new key binding for dired. This is from my-dired-init which is hooked to dired-load-hook:
+
+  ;; Bind RMB                 
+  (define-key dired-mode-map [mouse-3]
+  'w32-context-menu-dired-get-filename)
+
+At last, an external program (licensed under the GPL), context.exe is needed to get this working. The program must be placed somewhere in the system path. You can dowload it together with the equally nice propsfor.exe (same thing but opens the property dialog instead) from here:
+
+http://www.maddogsw.com/cmdutils/
+
+I don't need the propsfor tool as I can as well use the Properties dub menu on the context menu., but a similar hack could be done for those who want direct access to that dialog.
+
+When not in dired, I use this:
+
+  (defun w32-context-menu-current-buffer ()
+    (interactive)
+    (w32-context-menu (concat "\"" buffer-file-name "\"")))
+
+  (global-set-key "\C-cc" 'w32-context-menu-current-buffer)
+
+Very handy.
+
+----
+CategoryWThirtyTwo

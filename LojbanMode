@@ -1,0 +1,25 @@
+This is a minor mode for text in lojban (a constructed language).
+
+It includes syntactical highlighting for lojban words: the three basic word types (cmavo, cmene, and brivla) and some attitudinal indicators are highlighted with different faces.
+
+As an experimental feature, there is specialized support for outline-mode using headers in valid lojban.
+
+=== Files: ===
+
+* Lisp:lojban-mode.el
+* this mode requires the library Lisp:lojban.el, which you should also download.
+
+=== Installation: ===
+
+Sample .emacs configuration:
+
+     (setq load-path
+       (cons "/path/to/lojban-mode.el/and/lojban.el"
+         load-path))
+     (autoload 'lojban-parse-region "lojban" nil t)
+     (autoload 'lojban-mode "lojban-mode" nil t)
+
+Additional configuration is available via M-x customize lojban
+
+----
+CategoryModes

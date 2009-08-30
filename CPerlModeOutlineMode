@@ -1,0 +1,203 @@
+outline-minor-mode is very useful when used in conjunction with cperl-mode, especially when
+editing large source files.  It allows you to suppress the display of most of the file,
+allowing you to focus on the area you're editing, and to navigate quickly to other areas.
+
+However, in the default configuration, it's very clunky and difficult to use.  This page
+describes customizations that make outline-minor-mode and cperl-mode sing together.
+
+Before you read further, you should go read up on OutlineMinorMode if you're not
+already familiar with it, otherwise much of this page won't make sense.
+
+===Redefining the keymap===
+
+The first thing to do is to change the keybinding for outline-minor-mode.  By default
+it is 'C-c @', and all of the key sequences it uses are control keys.  So you wind up
+typing 'C-c @ C-n' and 'C-c @ C-p' and so on.  This ties your fingers up in knots, and
+all the vi users in the office will laugh at you, as it confirms all their stereotypes
+about emacs.
+
+Here's an excerpt from my .emacs file.  I chose M-o as the prefix key for the outline
+functions, as it is not assigned to anything by default, and 'o' is a fine mnemonic
+for 'outline'.  Also, I replaced the control-key sequences with non-control alphabetic
+characters; much easier to type.
+
+<pre>
+; Outline-minor-mode key map
+(define-prefix-command 'cm-map nil "Outline-")
+; HIDE
+(define-key cm-map "q" 'hide-sublevels)    ; Hide everything but the top-level headings
+(define-key cm-map "t" 'hide-body)         ; Hide everything but headings (all body lines)
+(define-key cm-map "o" 'hide-other)        ; Hide other branches
+(define-key cm-map "c" 'hide-entry)        ; Hide this entry's body
+(define-key cm-map "l" 'hide-leaves)       ; Hide body lines in this entry and sub-entries
+(define-key cm-map "d" 'hide-subtree)      ; Hide everything in this entry and sub-entries
+; SHOW
+(define-key cm-map "a" 'show-all)          ; Show (expand) everything
+(define-key cm-map "e" 'show-entry)        ; Show this heading's body
+(define-key cm-map "i" 'show-children)     ; Show this heading's immediate child sub-headings
+(define-key cm-map "k" 'show-branches)     ; Show all sub-headings under this heading
+(define-key cm-map "s" 'show-subtree)      ; Show (expand) everything in this heading & below
+; MOVE
+(define-key cm-map "u" 'outline-up-heading)                ; Up
+(define-key cm-map "n" 'outline-next-visible-heading)      ; Next
+(define-key cm-map "p" 'outline-previous-visible-heading)  ; Previous
+(define-key cm-map "f" 'outline-forward-same-level)        ; Forward - same level
+(define-key cm-map "b" 'outline-backward-same-level)       ; Backward - same level
+(global-set-key "\M-o" cm-map)
+</pre>
+
+===Overriding cperl-mode's outline regexp===
+
+How does outline-minor-mode decide what is a heading and what is body text?  
+How does it decide what the outline hierarchy is?
+It uses a regexp called <code>outline-regexp</code> and a function called
+<code>outline-level</code>.
+
+The default outline regexp provided by cperl-mode is workable, but not great.
+It matches the following types of lines as heading lines:
+<pre>
+    package
+    sub
+    =head1
+    =head2
+</pre>
+
+It puts <code>package</code> at the top level, <code>sub</code> and <code>=head1</code>
+as the second level, and <code>=head2</code> as the lowest hierarchy level.
+
+This seemed very odd to me.  <code>package</code> should obviously be higher than
+<code>sub</code>, but <code>=head1</code> should be higher than <code>sub</code>.
+And does anyone use <code>=head2</code>?  It's more useful to put a level in there
+for <code>=item</code>.
+
+The above is simply my own personal thought process.  Once I came up with my own
+hierarchy, I could customize cperl-mode's outline-regexp and outline-level to
+work the way I wanted.  You can come up with your own hierarchy and implement it
+your own way, too.
+
+The hierarchy I settled on was:
+<pre>
+    =head1
+    package
+    =head2
+    =item
+    sub
+</pre>
+
+The code follows (again, from my .emacs file):
+<pre>
+(setq my-cperl-outline-regexp
+      (concat
+       "^"                              ; Start of line
+       "[ \\t]*"                        ; Skip leading whitespace
+       "\\("                            ; begin capture group \1
+       (join "\\|"
+             "=head[12]"                  ; POD header
+             "package"                    ; package
+             "=item"                      ; POD item
+             "sub"                        ; subroutine definition
+           )
+       "\\)"                            ; end capture group \1
+       "\\b"                            ; Word boundary
+       ))
+</pre>
+
+Aside: <code>join</code>, above, is a macro that works like Perl's <code>join</code>:<br />
+<code>&nbsp;&nbsp;&nbsp;&nbsp;(defmacro join (join-char &rest others) `(mapconcat 'identity ',others ,join-char))</code>
+
+Now, I needed to override cperl-mode's outline-level function -- but if I do
+that in my .emacs file, then when cperl-mode gets loaded, it'll clobber my
+own definition.  So I had to delay the definition until after cperl-mode gets
+loaded, via cperl-mode-hook:
+<pre>
+(setq cperl-mode-hook 'my-cperl-customizations)
+
+(defun my-cperl-customizations ()
+  "cperl-mode customizations that must be done after cperl-mode loads"
+  (outline-minor-mode)
+  (abbrev-mode)
+
+  (defun cperl-outline-level ()
+    (looking-at outline-regexp)
+    (let ((match (match-string 1)))
+      (cond
+       ((eq match "=head1" ) 1)
+       ((eq match "package") 2)
+       ((eq match "=head2" ) 3)
+       ((eq match "=item"  ) 4)
+       ((eq match "sub"    ) 5)
+       (t 7)
+       )))
+
+  (setq cperl-outline-regexp  my-cperl-outline-regexp)
+  (setq outline-regexp        cperl-outline-regexp)
+  (setq outline-level        'cperl-outline-level)
+)
+</pre>
+
+Note that you can do any sort of customizations you want in this
+function of yours -- for example, I use some abbreviations in my
+Perl coding, so I have it automatically load abbrev-mode when
+cperl-mode starts.
+
+===Getting hairy===
+
+I thought it might be neat to outline some of the internals of
+subroutines as well, to show their control structures.  So I
+redefined my regexp as follows:
+<pre>
+(setq my-cperl-outline-hairy-regexp
+      (concat
+       "^"                              ; Start of line
+       "[ \\t]*"                        ; Skip leading whitespace
+       "\\("                            ; begin capture group \1
+       (join "\\|"
+             "=head[12]"                  ;     POD header
+             "package"                    ;     package
+             "=item"                      ;     POD item
+             "sub"                        ;     subroutine definition
+             "if" "else" "unless" "while" "until" "return"
+           )
+       "\\)"                            ; end capture group \1
+       "\\b"                            ; Word boundary
+       ))
+</pre>
+
+Once I tried this, I didn't like it, so I went back to the original.
+But I include it here to show how easy it is to customize the outline
+settings once you have the framework in place.
+
+===So what's outline-mode good for?===
+
+When editing large source files -- or sometimes even small ones -- the first
+thing I do is 'M-o t'.  This hides all of the text in the file except for
+the "header" lines, as I've defined them above.  The source file then looks
+something like this:
+<pre>
+=head1 NAME...
+
+=head1 SYNOPSIS...
+
+=head1 DESCRIPTION...
+
+package Foo::Bar...
+
+=head1 METHODS...
+
+=item new...
+
+sub new...
+
+=item some_method...
+
+sub some_method...
+</pre>
+
+and so on.  The <code>...</code>s tell you that there is elided text there.
+To work on a given section of code, you move there (via mouse, the usual cursor
+keys, or the outline mode navigation key sequences), and type 'M-o e' to make
+the code visible.  When done, leave it visible, or use 'M-o c' to hide it again.
+
+Again, see the documentation for outline-minor-mode to learn all of the power of
+this mode.  Suffice it to say that it makes navigating around in a large source
+file, or working with two separate areas of a large file, simple and easy.

@@ -1,0 +1,26 @@
+==About me==
+
+Hello my name is Matthew Ozor and I'm a AutoLISP programmer from Wilmington, Delaware, USA. 
+
+== Contact me==
+
+* IRC: !OzOr on irc.freenode.net
+
+* Mail: matthew dot ozor at gmail dot com
+
+== Init File==
+
+* MatthewOzorDotEmacs is the InitFile that I use on multiple work stations. It can be used on both GNU/Linux and Windows.
+
+== Elisp Libraries==
+
+These are projects that I have created or actively work on.
+
+* Lisp:mo-rot13.el creates new menu items and new commands to convert text to and from ROT13 encoding.
+* [[Nav]] Emacs-nav is a navigation mode that includes a file manager, buffer browser and tags browser.
+
+[new]
+I made some friendly edits to mo-rot13.el.  I hope they are helpful.  If not, you are welcome to revert them.  I couldn't figure out what the `menu-bar-encode-menu' was?  I couldn't find a reference to it.  I only have access to Emacs 22, currently. -- AaronHawley
+
+----
+CategoryHomepage

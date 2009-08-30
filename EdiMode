@@ -1,0 +1,30 @@
+== Introduction ==
+
+It's a very simple mode however it does what I need it to. First, it takes something like:
+
+    HL*239*aoeunth*2389~JH*oetuhn*oenuh~DAT*John Smith*8293828*19439283~
+
+and converts it to a line-by-line format (what I call readable) [<code>C-c C-r</code>]
+
+    HL*239*aoeunth*2389~
+    JH*oetuhn*oenuh~
+    DAT*John Smith*8293828*19439283~
+
+Secondly, the HL, HL2 and DAT segment names would then be highlighted to make it easier to see where you are in the file.
+
+Thirdly, it provides a count segment function. When working with EDI files, I often had missing segments, or too many segments. This count function came in very handy. [<code>C-c C-c</code>]
+
+Finally, you can convert a readable EDI file (line-by-line) back into a standard EDI file (everything on 1 line, regardless of size). [<code>C-c C-e</code>]
+
+== Download ==
+
+* http://www.emacswiki.org/elisp/edi-mode.el
+
+== Mode Key Bindings ==
+
+|| C-c C-r || Convert file to ''readable'' format ||
+|| C-c C-e || Convert file back to ''one-line'' format ||
+|| C-c C-c || Query for segment name and count it's occurances ||
+
+----
+CategoryModes

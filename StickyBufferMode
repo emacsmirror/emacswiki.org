@@ -1,0 +1,7 @@
+This forces a window to always display the same buffer, protecting it from
+being used by `display-buffer'.
+
+  (define-minor-mode sticky-buffer-mode "Make the current window always display
+    this buffer."  nil " sticky" nil (set-window-dedicated-p (selected-window)
+    sticky-buffer-mode))
+-- [[nschum]]

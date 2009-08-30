@@ -1,0 +1,62 @@
+<code>get-rfc.el</code> is a helper mode for getting and viewing RFCs by LawrenceMitchell
+
+You also need RfcView package to fully enjoy it since it uses it to render RFCs.
+
+The main entry points are get-rfc-view-rfc and
+get-rfc-view-rfc-at-point.
+
+== Get it ==
+
+Either download it from original author site at
+
+http://www.ph.ed.ac.uk/~s0198183/get-rfc.el
+
+Or get it here
+
+Lisp:get-rfc.el
+
+== Configure ==
+
+Adjust the directory where to store "cached" copy of retrieved RFCs
+and that's it.
+
+== Patch ==
+
+This can help when using <code>get-rfc.el</code> since it allows
+whitespace in RFC declaration (See FindFileAtPoint).
+ 
+<pre>
+    (put 'rfc 'bounds-of-thing-at-point
+         (lambda ()
+           (and (thing-at-point-looking-at "[Rr][Ff][Cc][- #]?\\([0-9]+\\)")
+                (cons (match-beginning 0) (match-end 0)))))
+
+</pre>
+
+Thus, to take advantage of this, you need to patch get-rfc.el:
+
+<pre>
+*** /home/zedek/usr/share/emacs/get-rfc.el.new	2007-04-07 19:01:53.000000000 +0200
+--- /home/zedek/usr/share/emacs/get-rfc.el	2007-04-07 18:50:50.000000000 +0200
+***************
+*** 236,242 ****
+    "View the RFC whose number is at point."
+    (interactive)
+    (condition-case err ; in case there is no word at point
+!       (let ((rfc (thing-at-point 'rfc)))
+          (and (string-match "[^0-9]+" rfc)
+               (setq rfc (replace-match "" nil t rfc)))
+  	(if (string= "" rfc)
+--- 224,230 ----
+    "View the RFC whose number is at point."
+    (interactive)
+    (condition-case err ; in case there is no word at point
+!       (let ((rfc (thing-at-point 'word)))
+          (and (string-match "[^0-9]+" rfc)
+               (setq rfc (replace-match "" nil t rfc)))
+  	(if (string= "" rfc)
+</pre>
+
+That's it.
+----
+CategoryFiles

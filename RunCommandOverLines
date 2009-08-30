@@ -1,0 +1,20 @@
+    (defun tsp-run-command-over-lines (command &optional n)
+      "Run COMMAND over the following N lines.
+    We use the previous N lines if N is negative."
+      (interactive "CCommand: \np\n")
+      (let ((a (if (< n 0)
+                   (line-end-position)
+                 (line-beginning-position)))
+            (b (if (< n 0)
+                   (line-beginning-position n)
+                 (line-end-position n))))
+        (save-restriction
+          (narrow-to-region a b)
+          (call-interactively command))))
+
+Also, try map-lines -- it does what your code does, with regexps, and you get the lines collected on top of the kill ring:
+
+* http://asf.void.at/emacs/map-lines.el
+
+----
+CategoryEditing

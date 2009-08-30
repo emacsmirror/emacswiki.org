@@ -1,0 +1,6 @@
+OAuth.el is a library for [http://oauth.net/ oauth] authentication within Emacs.
+
+Currently oauth.el is hosted at http://github.com/psanford/emacs-oauth/
+
+----
+CategoryInterface

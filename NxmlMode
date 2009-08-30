@@ -1,0 +1,279 @@
+nxml-mode is a major mode for editing XML.
+It works well with Emacs 21+ and will be included in Emacs 23; unfortunately it
+won't run on Emacs 20 or XEmacs [http://www.thaiopensource.com/nxml-mode/] as
+it currently requires some specific features of the recent GNU Emacsen (however
+this is being worked on, see for instance [http://permalink.gmane.org/gmane.emacs.devel/97623]).
+Please send bug reports to the Emacs maintainers
+(possibly first discussing the problem on the emacs-nxml-mode mailing lists
+where you can find people who know this mode very well).
+
+Note that nxml-mode is incompatible with MuleUCS.
+This is not a problem if you are using Emacs 22 where mule-ucs is not necessary.
+
+Note: NxhtmlMode is a mode derived from nxml-mode,
+specialized for editing XHTML and template languages like php, genshi etc.
+
+
+External links:
+* [http://www.thaiopensource.com/nxml-mode/ nxml-mode home page]
+* [http://www.thaiopensource.com/download/ download]
+* [http://www.dpawson.co.uk/relaxng/nxml/index.html FAQ]
+
+Comments:
+
+: "It's a milestone in that it's the first open-source editing application to enable context-sensitive validated editing against Relax NG schemas. It also provides a clever mechanism for real-time, automatic visual identification of validity errors, along with flexible syntax-highlighting capabilities -- and many other features planned for future releases." -- Michael Smith [http://www.xmlhack.com/read.php?item=2061]
+
+The Text Encoding Initiative distribution of emacs will be of interest to (among others) Windows users who don't want to compile a recent release of emacs just to get %%NxmlMode%% to run: 
+
+
+* http://wiki.tei-c.org/index.php/TEIEmacs
+
+''''Note'''' the colorization (font-lock) won't work if you change the emacs colors.
+
+
+== Finding Schemas ==
+
+An internal variable named rng-schema-locating-files tells %%NxmlMode%%  all the places to search for schemas. This variable's default value is ('schemas.xml', 'DIST-DIR/schema/schemas.xml'), where DIST-DIR is the distribution directory where nxml is installed.
+
+To download schemas, visit NxmlModeSchemas.
+
+== Autoloading ==
+
+To have files automatically loaded with nxml-mode with various file extensions:
+
+{{{
+;path to where nxml is
+(set 'nxml-path (concat site-lisp-path "nxml-mode/"))
+
+(load (concat nxml-path "rng-auto.el"))
+
+ (add-to-list 'auto-mode-alist
+              (cons (concat "\\." (regexp-opt '("xml" "xsd" "sch" "rng" "xslt" "svg" "rss") t) "\\'")
+                    'nxml-mode))
+
+  (unify-8859-on-decoding-mode)
+
+    (setq magic-mode-alist
+	  (cons '("<＼＼?xml " . nxml-mode)
+	  magic-mode-alist))
+   (fset 'xml-mode 'nxml-mode)
+
+}}}
+
+and add
+{{{
+   (fset 'html-mode 'nxml-mode)
+}}}
+if you would like to edit html files in nxml-mode.
+
+
+=== Discussion  ===
+
+If you have xml files for which the first element is html, you end up in html mode instead of nxml mode.  This is because of the default magic-mode-alist.
+
+I don't know how to write elisp to remove html-mode from magic-mode-alist, but
+{{{
+   (fset 'html-mode 'nxml-mode)
+}}}
+does the job.  This works if you never edit html in emacs with anything other than nxml-mode. -- DougRansom
+
+This 
+
+    ;;; Use nxml-mode instead of sgml, xml or html mode.
+    (mapc
+     (lambda (pair)
+       (if (or (eq (cdr pair) 'xml-mode)
+               (eq (cdr pair) 'sgml-mode)
+               (eq (cdr pair) 'html-mode))
+           (setcdr pair 'nxml-mode)))
+     magic-mode-alist)
+
+works for me. -- TrentBuck
+
+For me magic-mode-alist is nil, but using auto-mode-alist instead of magic-mode-alist in the above works. -- StephenPowell
+
+=== set-auto-mode ===
+
+Being an XML newbie, I had been creating documents without the beginning "<\\?xml" tag.
+
+After mending my ways, I was surprised to find myself in `xml-mode' instead of nxml.
+
+After fighting with this for a while I found the `set-auto-mode' function in file.el.
+
+`set-auto-mode' is essentially a hairier (but more careful) version of the `hack-local-variables-hook' code shown below.
+
+Unfortunately `set-auto-mode' doesn't respect `auto-mode-alist' unless the mode is mentioned in `xml-based-modes'
+
+So, to make `set-auto-mode' respect 'auto-mode-alist', say:
+
+    (setq xml-based-modes (cons 'nxml-mode xml-based-modes))
+
+
+But some xml files are not named nicely.  To also force `nxml-mode' for all documents with contents beginning "<\\?xml \\|<!DOCTYPE" say:
+
+    (fset 'xml-mode 'nxml-mode)
+
+
+An alternative method is to search for an XML prolog at the beginning of the file:
+
+ (add-hook 'hack-local-variables-hook
+   (lambda ()
+     (save-excursion
+       (when (search-forward-regexp "^<\\?xml" 6 0)
+         (nxml-mode)
+ ))))
+
+''That is very cool, and it works.'' This alternative method was marked *deprecated*, but there's some dispute over this.
+
+The sniplet above does not work with `M-x normal-mode'. You get "invalid search bound", "wrong side of point" errors. Moving the point to the beginning of the buffer actually helps:
+
+{{{
+(add-hook 'hack-local-variables-hook
+   (lambda ()
+     (save-excursion
+       (goto-char (point-min))
+       (when (search-forward-regexp "^<\\?xml" 6 0)
+         (nxml-mode)
+ ))))
+}}}
+
+There is a simple solution for this. You can customize `magic-mode-alist', which holds the patterns for `set-auto-mode':
+
+    (setq magic-mode-alist
+	  (cons '("<\\?xml " . nxml-mode)
+	  magic-mode-alist))
+
+
+Brining it altogether into a elisp fragment that works, define a variable site-lisp-path to where nxml-mode is and:
+{{{
+;path to where nxml is
+(set 'nxml-path (concat site-lisp-path "nxml-mode/"))
+
+(load (concat nxml-path "rng-auto.el"))
+
+ (add-to-list 'auto-mode-alist
+              (cons (concat "\\." (regexp-opt '("xml" "xsd" "sch" "rng" "xslt" "svg" "rss") t) "\\'")
+                    'nxml-mode))
+
+  (unify-8859-on-decoding-mode)
+
+    (setq magic-mode-alist
+	  (cons '("<＼＼?xml " . nxml-mode)
+	  magic-mode-alist))
+   (fset 'xml-mode 'nxml-mode)
+
+}}}
+
+and add
+{{{
+   (fset 'html-mode 'nxml-mode)
+}}}
+if you would like to edit html files in nxml-mode.
+
+
+=== Changing default major mode for different file names ===
+To avoid some of the problem with major mode above you can replace all occurences of xml-mode in auto-mode-alist and magic-mode-alist.
+I found this to be a bit of a problem so I wrote '''fmode.el'''. 
+This changes auto-mode-alist and magic-mode-alist in a simple way.
+It is available as a part of NxhtmlMode.
+
+
+
+
+== Additions ==
+
+=== Editing rnc Schemas ===
+Oliver Steele's [http://osteele.com/software/ nxml-mode additions] adds functions to revert and edit the current schema.  This is useful if you are developing schema (*.rnc) files concurrently with the XML files, or using nxml-mode to preview the schema validation.
+
+[new]
+On emacs-nxml-mode@yahoogroups.com mailing list Paul Brown wrote about rnc-mode:
+I have been using rnc-mode (see http://www.pantor.com/download.html) to edit the (.rnc) files (highlighting, mostly)
+and the nxml-mode to load and validate the RNC.
+
+=== Edit XML Fragments ==
+
+If you want to edit XML fragments and still use the validation in nxml-mode you can try NxhtmlMode.
+This is used for example when editing PHP.
+The framework for this is general, but it requires a bit elisp skill to use it for fragment of other XML DTDs than XHTML.
+
+
+
+
+
+== Problems ==
+=== Spelling ===
+
+Switch to XmlMode and use the tools menu.
+
+[new]
+Spelling is not a problem anymore: to use flyspell, add the following to your .emacs:
+{{{
+(add-to-list 'flyspell-prog-text-faces 'nxml-text-face)
+}}} -- FelipeCsaszar 
+
+...and use flyspell-prog-mode, not flyspell-mode.
+
+
+=== Variable binding depth exceeds max-specpdl-size on nxml-mode-20041004 ===
+
+I'm getting the following backtrace when opening any nxml-mode file:
+
+    Debugger entered--Lisp error: (error "Variable binding depth exceeds max-specpdl-size")
+    (let* ((open-group ...) (close-group ...) (open-charset ...) (close-charset ...)) (cond (... ...) (... ...) (... ...) (t ...)))
+    regexp-opt-group(nil t t)
+    (concat open-charset (regexp-opt-group (cdr strings) t t) "?" close-charset)
+    (cond ((= ... 1) (if ... ... ...)) ((= ... 0) (concat open-charset ... "?" close-charset)) ((= ... ...) (concat open-charset ... close-charset)) (t (let ... ...)))
+    (let* ((open-group ...) (close-group ...) (open-charset ...) (close-charset ...)) (cond (... ...) (... ...) (... ...) (t ...)))
+  regexp-opt-group(nil t t)
+
+(and so on). File opens successfully on second attempt, but you have to manually enter nxml-mode.
+
+Anyone else had these problems? Previous release works fine.
+
+-- ChrisMDP
+
+I'm having the same problem.
+
+-- Angus77
+
+== Showing XPath in modeline ==
+
+I'd like to be able to see the current XML path in the modeline in addition to or in place of the line number. For example, editing an XHTML doc it might say "/html/body/p/b". Please someone say there's an easy way to do this! It would make editing big XML files so much easier.
+
+-- AdamR
+
+[new]
+I have included nxml-where.el in NxhtmlMode. Please grab it there.
+
+== False-positive validation errors ==
+
+Labels and inputs in forms are incorrectly flagged as invalid.  In this valid sample document, the label and input will be considered errors:
+
+<pre>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head><title></title></head>
+  <body>
+    <form action="" method="get">
+      <label for="inputname">Label for field: </label>
+      <input type="text" name="inputname" id="inputname" />
+    </form>
+  </body>
+</html>
+</pre>
+
+Lucas
+
+This is an error in nxml-mode, which doesn't have a schema to validate XHTML Transitional.  It can be fixed with a custom schema.  The workaround is documented at http://tech.groups.yahoo.com/group/emacs-nxml-mode/message/1887
+
+Lucas
+
+----
+See also: 
+NxhtmlMode,
+NxmlModeForXHTML,
+UsingNxmlModeWithDocBook,
+XmlMode,
+MarkupModes,
+CategoryXML

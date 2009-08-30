@@ -1,0 +1,23 @@
+The word "Cybernetics" comes from the Greek word for steersman. Steersman is a library for remotely controlling an Emacs instance.
+
+Inspired by and based on [http://sourceforge.net/forum/forum.php?thread_id=1092503&forum_id=303383 Barman Brakjoller’s Jabber Remote Control], and requiring JabberEl:
+
+* Lisp:steersman.el
+
+=== Usage ===
+
+Set your connection parameters:
+
+<pre>
+   (setq steersman-password "secret"
+         steersman-master "phil@hagelb.org"
+         jabber-server "hagelb.org"
+         jabber-username "agent"
+         jabber-resource
+         (concat "steersman-"
+                 (substring (shell-command-to-string "hostname") 0 -1)))
+</pre>
+
+Connect via M-x jabber-connect or (jabber-connect) in your init and talk to it from the Jabber ID set in `steersman-master'.
+
+You'll first need to activate it by saying `steersman-password'. Commands beginning with an open parentheses will be evaluated as Lisp code; commands beginning with a dollar sign will be executed in the shell. Commands for which a function exists named steersman-$COMMAND will execute that function with no arguments. Anything else will be psychoanalyzed.

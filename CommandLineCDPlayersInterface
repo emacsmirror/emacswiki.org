@@ -1,0 +1,14 @@
+== Interface Between Emacs and Command Line CD Players ==
+
+Package to control command line CD players.  See the code Lisp:cdi.el.
+
+Just run the `cdi-start' command, which will pop up a <code>*cdi*</code> buffer
+with the status of the CD (eg Playing) and track/artist information.
+
+Various functions are bound to keys in the <code>*cdi*</code> buffer, eg
+<code>">"</code> is bound to `cdi-next-track' -- use <code>?</code> or
+<code>C-h b</code> to find all the bindings.
+
+
+----
+CategoryExternalUtilities

@@ -1,0 +1,16 @@
+From the commentary:
+
+Provides a dummy major mode called html-chooser-mode that
+looks at a file, and if it seems to be XHTML, switches to
+nxml-mode, and if it seems to be regular HTML, switches to
+html-mode (or html-helper-mode, or whatever).  If the file is empty
+or otherwise cannot be understood, the user is prompted to choose
+which mode, and is offered the possibility of inserting several 
+skeletons or templates appropriate to that mode.
+
+http://www.dur.ac.uk/p.j.heslin/Software/Emacs
+
+-- PeterHeslin
+
+----
+HtmlMode

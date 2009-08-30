@@ -1,0 +1,51 @@
+WikiTodo: Add basic advising help.
+
+== When to Use Advice? ==
+
+See AdviceVsHooks for a discussion of when to use advice. '''''Summary:''''' advice is good to have, but not necessarily good to follow all the time ;-).
+
+== Advised hello world ==
+
+ (defun foo()
+   (interactive)
+   (message "hello world"))
+
+ ;; advice the foo function
+ (defadvice foo(around advice-foo activate)
+   (interactive)
+   (message "hello advised world")
+   (sit-for 1)
+   ;; and here it calls the advised function
+   ad-do-it)
+
+ ;; now you can unadvise the advised function
+ (ad-unadvise 'foo)
+
+ ;; now it will correspond to the original definition
+ (foo)
+
+
+
+== Interactive functions ==
+
+Maintaining interactive-p inside an advised function can be a pain.
+For details on this, read up the comments etc. in advice.el.  Here's
+an example from Le Wang on how to maintain interactive-p inside the
+function definition of an advised function.
+
+    (defun bar ()
+      (interactive)
+      (message "bar interactive: %s" (interactive-p))
+      (sit-for 1))
+
+    (defadvice bar (around advice-bar activate)
+      (interactive)
+      (if (interactive-p)
+	  (progn
+	    (message "advice-bar interactive: %s" (interactive-p))
+	    (sit-for 1)
+	    (call-interactively 'ad-Orig-bar))
+	ad-do-it))
+
+----
+CategoryCode

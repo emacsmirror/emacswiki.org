@@ -1,0 +1,205 @@
+== Download ==
+
+Download it here: http://ichi2.net/flashcard/
+
+== What is flashcard.el? ==
+
+Flashcard is a mode to help you learn some facts. A flash card is a
+small card with two sides. On one side, a question is written, on the
+other the answer. To learn, you pick up a card, read the question, and
+try to remember the answer. You do this with all cards. Of course, it
+soon gets boring, since you will see cards a lot even if you know
+them, and being bored is bad, since it gives bad feedback for the
+learning process. Also, you don't get any positive feedback: The cards
+are not getting fewer, nothing shows you about the progress of your
+learning.
+
+This is where Leitner stepped in. With his Lernmaschine as explained
+in his book /So lernt man Lernen/, he proposed a simple method: When
+you get a question right, you move it to a new block, or compartment.
+When you get a question wrong, it goes right back to the first
+compartment. (You can find a summary of the complete algorithm in the
+docstring of `flashcard-method-leitner')
+
+This results in questions you get right not being asked too soon
+again, while difficult cards get asked over and over again. This
+prevents you from getting bored with stuff you already know. And since
+you promote such questions to a new compartment, you actually have a
+visual feedback on how well your learning progresses - the positive
+feedback we need to make learning effective.
+
+There are other techniques that improve on this. The
+[http://www.supermemo.com/ Supermemo] method for example tries to
+reduce the amount of reoccurances of questions to the minimal amount
+needed to learn them. Their page has a lot of interesting information
+that can be used without Supermemo, too, so be sure to read it.
+
+This package tries to allow for different styles of questioning,
+according to the preference of the user. On this page, people can
+publish new methods - see below for some of them.
+
+=== What this is not ===
+
+A general learning tool. Flashcard helps you remember basic facts. It
+won't help you understand a text, or even the Greater Context of the
+facts. For what it was made - facts - it works great, but for
+everything else, this is definitively not the right mode to look at.
+
+=== On learning ===
+
+With learning, first and foremost, don't get angry if you don't
+remember something. That's normal. Humans forget constantly if they
+don't need something. Learning is a fight against forgetting. If you
+don't remember an answer, shrug and just go along - flashcard.el will
+see to it that you will get asked the question soon again, and then
+you will probably remember it. If not, soon after that.
+
+Then, consider having a single (or only a few) deck files in which you
+import all your questions. This is not bad from a learning point of
+view since it's often more problematic to learn similar types of
+questions only. Also, this will allow you to just open that single
+file and go through it any time you feel like it, getting you to learn
+everything you want to learn with minimal effort.
+
+And a final note: Have fun. Without fun, you won't learn much, and
+what's most important: You don't have fun! :-)
+
+For a complete summary of the book by Leitner, see
+http://www.forcix.cx/books/leitner72.html
+-- the article is in German, though.
+
+== How to write a new method ==
+
+A method is the algorithm used by flashcard to decide which cards it
+uses. The default method - `flashcard-method-leitner' - is a faithful
+implementation of Leitners' original algorithm.
+
+Flashcard uses a defined interface of function variables to call the
+functionality of the backend. Every method should provide an
+interactive function named `flashcard-method-NAME' that sets the
+required variables. See the documentation of each of those.
+
+; flashcard-method: A variable that should be set to the symbol name of your method.
+; flashcard-method-get-card-function: A function that returns the next card to ask.
+; flashcard-method-check-answer-function: A function that checks whether an answer was correct. It can return whatever it wants (usually, a boolean or a grade), that value is only passed to the next two functions.
+; flashcard-method-answered-function: A function that should update the card according to the return value of the former function.
+; flashcard-method-correct-p-function: A function that should return whether a value returned by the check-answer-function depicts a correct answer or not.
+; flashcard-method-initialize-card-function: A function that should initialize a new card to use it in this mode.
+
+=== Ideas for new methods ===
+
+You want to implement something funny, but don't know what? How about
+a new method?
+
+* [http://www.supermemo.com/ Supermemo] has an interesting algorithm: [http://www.supermemo.com/articles/paper.htm trivial], [http://www.supermemo.com/english/ol/sm2.htm easy], [http://www.supermemo.com/english/ol/sm6.htm hard], [http://www.supermemo.com/english/algsm11.htm crazy].
+
+I have implemened the SM5 algorithm as a flashcard method and would appreciate feedback. I have been using it successfully for about a month now and prefer the accuracy and speed of learning to the Leitner method. SM6 nor SM11 do not seem particularly more effecient. You can download it from Lisp:flashcard-sm5.el . -- dds
+
+* You could use a learning algorithm to approach your forgetting curve. [http://memaid.sourceforge.net/ Memaid] uses a neuronal network, for example (but the code is difficult to read). As input values, I managed to come up with (how-many-times-right, how-many-times-wrong, time-since-last-time-asked, planned-time, current-time (to adjust to different day phases), current-weekday (to adjust to the living cycle). Not all of these might be useful.
+
+== How to write a new import function ==
+
+An import function is trivial. It's just an interactive function that
+takes a file as an argument from the user, and adds all cards it can
+find in that file to the current deck. See
+`flashcard-import-from-colon-file' for an example.
+
+== How to write positive feedback functions ==
+
+Positive feedback is important (really!). Find ways to motivate you,
+and tell flashcard how to do that. As an example
+
+<pre>
+(defvar flashcard-pfe-dir "~/pr0n")
+(defun flashcard-pfe-feedback (correctp)
+  "Display a random image from `flashcard-pfe-dir' when the answer was
+correct."
+  (when correctp
+    (let ((files (directory-files flashcard-pfe-dir t)))
+      (start-process "xli" nil
+                     "xli" (nth (random (length files))
+                                files)))))
+(add-hook 'flashcard-positive-feedback-functions
+          'flashcard-pfe-feedback)
+</pre>
+
+If you've set up fortune.el, this snippet displays a fortune every time you get a correct answer:
+
+<pre>
+(require 'fortune)
+(defun flashcard-method-fortune-feedback (result)
+  "Display a fortune on correct answers."
+  (when result
+    (with-temp-buffer
+      (if (get-buffer fortune-buffer-name)
+          (fortune-in-buffer t)
+        (fortune)))))
+</pre>
+
+== Extensions ==
+
+Flashcard is extended easily. Some examples maybe?
+
+=== Show only one question at a time ==
+
+<pre>
+(add-hook 'flashcard-pre-question-hook
+          (lambda () (delete-region (point-min) (point-max))))
+</pre>
+
+=== Box your questions ===
+
+Another way to highlight the newest question. This uses
+[http://www.davep.org/emacs/boxquote.el boxquote.el].
+
+<pre>
+(add-hook 'flashcard-wash-question-hook
+          'boxquote-question)
+
+(defun boxquote-question ()
+  "Boxquote the current question in flashcard."
+  (boxquote-region (point-min) (point-max))
+  (set-marker flashcard-marker (point-max)))
+</pre>
+
+=== Accept substring as correct answer ===
+
+<pre>
+(defun flashcard-method-leitner-check-answer-substring (card answer)
+  "Check answer for correctness. Allow multiple correct answers and provide feedback."
+  (flashcard-insert "Answer is:\n"
+                    (propertize (flashcard-card-answer card)
+                                'face 'flashcard-answer-face
+                                'rear-nonsticky t)
+                    "\n")
+  (if (string= answer "")
+      nil
+    (or (let ((case-fold-search t))
+          (string-match answer (flashcard-card-answer card)))
+        (y-or-n-p "Was your answer correct? "))))
+(setq flashcard-method-check-answer-function 'flashcard-method-leitner-check-answer-substring)
+</pre>
+
+=== Ideas for extensions ===
+
+* image support: <foo.jpg> replaced by jpg (or just go completely with HTML)
+* sound support: Same as above, with .wav (repeat on RET on the wav link?)
+* Idle timer: "Well, you don't know it - that's ok! Just hit RET and you'll know!" etc.
+* cross flashcard program support. For those (rare) times you're not in emacs, or for a friend, so that you can both use the same flashcard source to revise from.
+e.g. http://sourceforge.net/projects/jflashcard/ - JFlashcard, http://sourceforge.net/projects/gplflashcards/ - GNUFlashcards or possibly an interface for 
+http://sourceforge.net/projects/memaid/ - memaid
+* multiple choice questions, ala kdrill. Particularly, this feature would be very good for drilling vocabulary where you must choose the correct meaning of a word given let's say four possible definitions. The problem I see is choosing the false answers well so there is still a challenge and not showing the same false answers every time the same question is presented. Any ideas for implementation of this?
+
+== Deck Files ==
+
+[new]
+* Japanese Language Proficiency Test vocabulary for levels 1, 2, and 3 as found in edict Lisp:jlpt-decks.tar.gz
+
+== Changes ==
+
+As of Oct 10, 2006, I (DamienElmes) have taken over maintenence of flashcard from JorgenSchaefer.
+* [http://repose.cx/emacs/flashcard/ChangeLog recent changes]
+* [http://repose.cx/emacs/flashcard/ChangeLog.old old changes]
+
+----
+CategoryEducation

@@ -1,0 +1,82 @@
+Lisp:fsproject.el
+
+
+/This is an add-on library for/ ProjectBufferMode.
+
+== Summary ==
+
+This library provides a function to create a project-buffer based
+on a root directory and it's sub folders.  It detects the project
+root using a regular expression, and accept filter to create base
+path.
+
+Note: this library doesn't provide any user commands!
+
+== How to use it ==
+
+In order to use it, you can either create your own command, or call
+  `fsproject-create-project' from your init.el.
+
+I haven't found a satisfied way to create a uniform command for this
+file, that's why there is none.
+
+Here is an example of a command with an implementation of an action
+handler:
+{{{
+(defun my-action-handler(action project-name project-path platform configuration)
+  "project action handler."
+  (let ((make-cmd (cond ((eq action 'build) "")
+                        ((eq action 'clean) "clean")
+                        ((eq action 'run)   "run")
+                        ((eq action 'debug) "debug"))))
+    (compile 
+     (concat "make -j16 -C " (file-name-directory project-path) 
+                      " -f " (file-name-nondirectory project-path) 
+                         " " make-cmd))))
+
+(autoload 'fsproject-create-project "fsproject")
+(defun fsproject-new(root-folder)
+  (interactive "sRoot folder: ")
+  (let ((regexp-project-name  "[Mm]akefile")
+        (regexp-file-filter   '("\\.cpp$" "\\.h$" "\\.inl$" "\\.mak$" "Makefile"))
+        (ignore-folders       '("build" "docs" "bin"))
+        (pattern-modifier     nil)
+        (build-configurations '("debug" "release"))
+        (platforms            '("Linux")))
+    (fsproject-create-project root-folder
+                              regexp-project-name
+                              regexp-file-filter
+                              'my-action-handler
+                              ignore-folders
+                              pattern-modifier
+                              build-configurations
+                              platforms)))
+}}}
+
+And if you want to have only have a source and include folder inside each projects:
+
+{{{
+(autoload 'fsproject-create-project "fsproject")
+(defun fsproject-new(root-folder)
+  (interactive "sRoot folder: ")
+  (let ((regexp-project-name  "[Mm]akefile")
+        (regexp-file-filter   '("\\.cpp$" "\\.h$" "\\.inl$" "\\.mak$" "Makefile"))
+        (ignore-folders       '("build" "docs" "bin"))
+        (pattern-modifier     '(("^\\(?:.*/\\)?\\([a-zA-Z0-9_]*\\.cpp\\)$" . "source/\\1")
+                                ("^\\(?:.*/\\)?\\([a-zA-Z0-9_]*\\.\\(?:h\\|inl\\)\\)$" . "include/\\1")))
+        (build-configurations '("debug" "release"))
+        (platforms            '("Linux")))
+    (fsproject-create-project root-folder
+                              regexp-project-name
+                              regexp-file-filter
+                              'my-action-handler
+                              ignore-folders
+                              pattern-modifier
+                              build-configurations
+                              platforms)))
+}}}
+
+----
+CategoryProgramming
+CategoryModes
+CategoryProgrammerUtils

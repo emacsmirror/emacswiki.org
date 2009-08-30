@@ -1,0 +1,54 @@
+Emacs 22 has arrived for maemo.
+
+If you run a nokia linux tablet such as an N800 or N810, you can have a full emacs environment. The homepage for the project is http://danielsz.freeshell.org/code/mine/emacs-for-maemo/index.shtml
+
+
+
+
+
+
+
+
+Some customization issues exist, due to the environment, and i have pasted my preliminary .emacs file here.
+
+<pre>
+;; dot emacs file for a nokia n800                                                                             
+;; christof                                                                                                    
+;; sietchtabr at gmail                                                                                         
+;;                                                                                                             
+;; the dired, list-directory, and gzip fixes all come from the                                                 
+;; packager of the emacs deb and responses from other community members                                        
+;; http://danielsz.freeshell.org/code/mine/emacs-for-maemo/index.shtml                                         
+;;                                                                                                             
+;; last updated 24  March 2008                                                                                 
+
+;; make dired work                                                                                             
+;; --dired option is not supported on busybox ls command                                                       
+(setq dired-use-ls-dired nil)
+
+;; make list-directory work                                                                                    
+;; -F not supported by busybox ls command                                                                      
+(setq list-directory-brief-switches "-C")
+
+
+;; we *REALLY* don't want to spew file backups all over the fs.                                                
+;; code to place all backups in one location                                                                   
+(when (not (file-directory-p "~/.backup"))
+  (make-directory "~/.backup"))
+(if (file-directory-p "~/.backup")
+    (setq backup-directory-alist '(("." . "~/.backup"))))
+
+;; custom variable setting to make info work using busybox gzip                                          
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.                                                                 
+  ;; If you edit it by hand, you could mess it up, so be careful.                                              
+  ;; Your init file should contain only one such instance.                                                     
+  ;; If there is more than one, they won't work right.                                                         
+ '(jka-compr-compression-info-list (quote (["\\.Z\\(~\\|\\.~[0-9]+~\\)?\\'" "compressing" "compress" ("-c") "u\
+ncompressing" "uncompress" ("-c") nil t "^_\x9d"] ["\\.bz2\\(~\\|\\.~[0-9]+~\\)?\\'" "bzip2ing" "bzip2" nil "b\
+unzip2ing" "bzip2" ("-d") nil t "BZh"] ["\\.tbz\\'" "bzip2ing" "bzip2" nil "bunzip2ing" "bzip2" ("-d") nil nil\
+ "BZh"] ["\\.tgz\\'" "compressing" "gzip" ("-c") "uncompressing" "gzip" ("-c" "-q" "-d") t nil "^_\x8b"] ["\\.\
+g?z\\(~\\|\\.~[0-9]+~\\)?\\'" "compressing" "gzip" ("-c") "uncompressing" "gzip" ("-c" "-d") t t "^_\x8b"] ["\\
+\.dz\\'" nil nil nil "uncompressing" "gzip" ("-c" "-d") nil t "^_\x8b"]))))
+</pre>

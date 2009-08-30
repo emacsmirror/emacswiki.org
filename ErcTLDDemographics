@@ -1,0 +1,30 @@
+Following provides a simple overview of top level domains in the current channel. Use <code>/demographics</code> (or just short <code>/dg</code>) within EmacsIRCClient.
+
+Example usage:
+
+    #somechan> /dg
+    *** TLD Demographics: 1 it, 1 do, 8 org, 1 is, 1 ch, 6 net, 11 de, 1 name, 1 info
+
+So here's the code:
+
+  (defun erc-cmd-DEMOGRAPHICS (&rest ignore)
+    "Display short channel demographics."
+    (erc-display-message nil 'notice (current-buffer)
+                         (let ((hash-table erc-channel-users)
+                               (demo-hashes (make-hash-table :test 'equal))
+                               (tld-distri))
+                           (maphash (lambda (k v)
+                                      (let* ((host (format "%s" (aref (car v) 2)))
+                                             (tld (and (string-match ".+\\.\\([a-zA-Z]+\\)$" host)
+                                                       (downcase (match-string 1 host))))
+                                             (tldc (and tld (gethash tld demo-hashes 0))))
+                                        (and tldc (puthash tld (1+ tldc) demo-hashes))))
+                                    hash-table)
+                           (maphash (lambda (k v)
+                                      (add-to-list 'tld-distri (format "%s %s" v k)))
+                                    demo-hashes)
+                           (format "TLD Demographics: %s" (mapconcat 'identity tld-distri ", ")))))
+  (defalias 'erc-cmd-DG 'erc-cmd-DEMOGRAPHICS)
+
+----
+[[ERC]]

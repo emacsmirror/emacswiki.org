@@ -1,0 +1,28 @@
+Diff mode is a standard Emacs major mode for highlighting and navigating `diff' output (See WikiPedia:diff). From the source file, <code>diff-mode.el</code>: 
+
+  ;; Provides support for font-lock, outline, navigation
+  ;; commands, editing and various conversions as well as jumping
+  ;; to the corresponding source file.
+
+The cool thing about editing diffs in diff-mode is that it automatically updates, with (almost) any change, the respective
+line numbers in the diff.  A new meaning of "hand-edited" diffs.  Pretty cool.  If you don't want to see diffs, try EdiffMode.
+
+Some improvements to DiffMode include:
+
+* [[Diff2Ediff]] - Spawn an Ediff session from within diff-mode.
+* DiffEnhancements - Various enhancements to Emacs for command `diff' (e.g. `diff' mode).
+* DiffSaveBuffer - Automatically generate filenames for `diff' buffers.
+
+[new]
+If you modify the diff file with something like `M-x flush-lines' or any command that would edit in multiple places in the buffer in multiple hunks, then it won't be caught by Diff mode's `diff-post-command-hook' or `diff-after-change-function'.  You should run `M-x diff-fixup-modifs' on the entire buffer by marking the entire buffer with `C-x h'.
+
+When editing a hunk, it would be great to have the line numbers be updated in subsequent hunks.  Instead you need to apply the patch and regenerate the diff to get the new line numbers.
+[new]
+
+See also:
+
+* EdiffMode - `diff' comparison that you can explore incrementally, with highlighting.
+* UniDiffMode -- Nearly duplicates DiffMode.
+
+----
+CategoryExternalUtilities

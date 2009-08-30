@@ -1,0 +1,25 @@
+*I love Emacs.* ;)
+
+== .emacs ==
+my .emacs-files can be found at
+http://github.com/krick/kemacs
+
+== Packages ==
+=== org-assoc-tags ===
+Little tweak on org-mode, that allows to have associated tags, which automatically adds to the item.
+
+Lisp:org-assoc-tags.el
+
+=== tea-time ===
+Small productivity tool, helps you to limit time for
+a task or simply to make a tea.
+
+[[tea-time]]
+--------
+Welcome to wiki! :) -- AndyStewart
+
+
+
+
+----
+CategoryHomepage

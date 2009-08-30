@@ -1,0 +1,7 @@
+cgi.el is a simple library for the Common Gateway Interface, which allows you to service requests for non static web pages in elisp. Provides routines for decoding arguments to GET- and POST-type CGI requests. Yes, this is another because I can; I don't expect performance to be crash hot. Version 0.2 2000-04-25, under GNU GPL.
+
+Get it from [http://purl.org/net/emarsden/home/downloads Eric Marsden’s download page].
+There's also a copy available on this wiki: Lisp:cgi.el.
+
+----
+HttpServer EricMarsden

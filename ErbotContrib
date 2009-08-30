@@ -1,0 +1,349 @@
+
+==What the fuck?==
+
+
+  (defun fs-wtf (&optional acronym)
+    "OPTIONAL: acronym"
+    (if (not acronym)
+        (format "wtf WHAT, you moron?")
+      (save-excursion
+        (with-temp-buffer
+          (let ((wtf-process (call-process "wtf"
+                                           nil
+                                           t
+                                           nil
+                                           (symbol-name acronym))))
+  
+            (setq result (buffer-substring (point-min) (point-max))))))))
+
+
+----
+
+Comments:   
+
+* On debian systems, this needs bsdgames to be installed. 
+
+* As implemented above, the user can apparently pass arguments such as -t and -f to wtf:  
+   (call-process "wtf" nil t nil "-t")
+
+* See also the wtf.el that comes with erbot (in the contrib directory). 
+
+==Gimme that changelog entry!==
+
+ (defun fs-changelog (&optional which number)
+   "OPTIONAL: arg"
+   (if (or (not which)
+           (and (not (string-equal which "hurd"))
+                (not (string-equal which "gnumach"))
+                (not (string-equal which "hurd-l4")))
+           (if (not number)
+               nil
+             (if (< number 1)
+                 t)))
+       (format "%s: you better specify `hurd', `gnumach' or `hurd-l4', and then a line number (optional) ;)" nick)
+     (save-excursion
+       (with-temp-buffer
+         (let ((log-first (point-min)))
+           (insert-file-contents (concat "~/" (symbol-name which) "/ChangeLog"))
+           (goto-char (point-min))
+           (re-search-forward "^[0-9].+$" (point-max) nil number)
+           (setq log-first (line-beginning-position))
+           (re-search-forward "^[0-9].+$" (point-max) nil 1)
+           (beginning-of-line)
+           (buffer-substring log-first (point)))))))
+
+
+
+==Semi-random haiku generation==
+
+  (setq hurdie-haiku-quotes-1 
+      '(
+       "The street-smart seamstress "
+       "The young Russian bride "
+       "The substitute nurse "
+       "The Polish waitress "
+       "The baroness stirs, "
+       "The long-legged blonde "
+       "The dish-water blonde "
+       "The bow-legged midget "
+       "The busty brunette "
+       "The divorcee sighs, "
+       "The arthritic nun "
+       "The loquacious nurse "
+       "The hip-sprung school marm "
+       "The one-eyed baker "
+       "The plumber's third wife "
+       "Traffic stills. The maid "
+       "Clouds form. The pornstar "
+       "The stewardess coughs, "
+       "The Swiss bank teller "
+       "The stripper pauses, "
+       "The erstwhile diva "
+       "The languid bar maid "
+       "The opera singer "
+       "The zoologist "
+       "The Czech spinster "
+       "His virgin great-aunt "
+       "His neighbor's young wife "
+       "The banker's mistress "
+       "The pregnant midwife "
+       "The devious moll "
+       "The shy farmer's wife "
+       "A cornfed she-spy "
+       "The juice bar clerk's wife "
+       "One hillbilly tart "
+       "The one in the skirt "
+       "The kiwi au pair "
+       "The lipstick model "
+       "A lady from Minsk "
+       "The gal with Shooter "
+       "The slatternly nurse "
+       "The B-movie star "
+       "The heart-broken girl "
+       "The star-struck waitress "
+       "The therapist snores, "
+       "The stewardess drools, "
+       "The magnateâs mistress "
+       "The steel baronâs bride "
+       "The pianistâs niece "Â
+       "The Russian cellist ";
+       "The poetess gulps, "
+       "The Slavic wet nurse "
+       "Filipino Sue "
+       "Susannah stretches, "
+       "The wet nurse sniffles, "
+       "The clarinetist "
+       "The drunk southern belle "
+       "The cheer squad reject "
+       "The home ec teacher "
+       "The receptionist "
+       "The paralegal "
+       "The street-smart fly girl "
+       "The redhead stretches, "
+       "The old-fashioned nun "
+       "The ice cream lady "
+       "The sullen milkmaid "
+       "The vain meter maid "
+       "The fat Dixie Chick "
+       "The shy cartoonist "
+       "The sexy bassist "
+       "The reclusive aunt "
+       "The sly lunch lady "
+       "The Czech go-go girl "
+       "The short cheerleader "
+       "The chain-smoking niece "
+       "The Swiss governess "
+       "The stone-faced matron "
+       "The suave landlady "
+       "Traffic slows. The nun "
+       "Paint dries. The brunette "
+       "The other woman "
+       "The anchorwoman "
+       "The Russian madam "
+       "His ex-fiancee "
+       "The young blushing bride "
+       "The widow-to-be "
+       "The drunken bridesmaid "
+       "The groom's ex-wife sneers, "
+       "The gap-toothed redneck "
+       "The night-shift seamstress "))
+  
+        
+  (setq hurdie-haiku-quotes-2
+      '(
+	"removes her prosthetic leg. "
+	"rolls her tongue, trilling râs, lâs. "
+	"wakes, deflates the air mattress. "
+	"bathes in warm crocodile tears. "
+	"motions with her silver thumb. "
+	"rouges her razorous cheeks. "
+	"arches her wrist towards the sky. "
+	"removes her golden fake nose. "
+	"stands, coins spilling from her ears. "
+	"removes her prosthetic leg. "
+	"rolls her tongue, trilling râs, lâs. "
+	"wakes, deflates the air mattress.  "
+	"bathes in warm crocodile tears. "
+	"covers her eyes with sack-cloth. "
+	"blots her dark lipstick, pauses. "
+	"calmly sets fire to her hair. "
+	"hangs her slip on the lanyard. "
+	"greasens the stubborn crank-shaft. "
+	"polishes the good flatware. "
+	"whispers the word âwheelbarrowâ. "
+	"fingers her silver tongue-stud. "
+	"dreams of monkeys, gibbons, apes. "
+	"scrubs the tile floor, knees rasping. "
+	"speaks in tongues, eyelids twitching. "
+	"retires to the powder room. "
+	"dips her tongue in peroxide. "
+	"displays her elegant gams. "
+	"exhales a plume of wood-smoke. "
+	"rings the doorbell, rings again. "
+	"rubs her feet, closes her eyes. "
+	"shuffles a stack of scratch cards. "
+	"grins and waves the poking stick. "
+	"leans toward the caged man-child. "
+	"rises, but won't run or blink. "
+	"shouts lies to baldheaded fools. "
+	"really needs to get kneaded. "
+	"quickly dons her happy pants. "
+	"beckons with a pineapple. "
+	"brandishes a hair curler. "
+	"plants the pill beneath the sheets. "
+	"hides the orange behind the stove. "
+	"tucks the gem beneath her tongue. "
+	"eats the lottery ticket. "
+	"fills the sock drawer with mustard. "
+	"steals the swear jar, hops a train. "))
+
+  (setq hurdie-haiku-quotes-3
+      '(
+	"Boom-shacka-lacka. "
+	"Thunderous applause. "
+	"Dogs dance like comets. "
+	"The sky fills with stars. "
+	"Retrograde motion.  "
+	"She sells no sea shells. "
+	"No room in the inn. "
+	"Dishes dry in sinks. "
+	"Snow falls in Utah. "
+	"Sirens wail, so close. "
+	"He takes a breath, breathes. "
+	"His heart swells madly. "
+	"His ears fill with blood. "
+	"There is always time. "
+	"All Iâve got is time. "
+	"You know the story. "
+	"The drummer skips town. "
+	"One more cigarette. "
+	"The ocean shivers. "
+	"The dormouse quivers. "
+	"Rain falls on spring leaves. "
+	"Pizza boy blushes. "
+	"The cat fiddles on. "
+	"A new moon blushes. "
+	"Somewhere a dog howls. "
+	"Cats rub themselves mad. "
+	"Soup boils on the stove. "
+	"The stove eye glows red. "
+	"The faucet drips, drips. "
+	"Cars howl on the street. "
+	"A car backfires, roars. "
+	"There is never time. "
+	"The bouilabaisse chills. "
+	"Ganja cornbread bakes. "
+	"People smile and cry. "
+	"Spacious rooms are filled. "
+	"Unseen lackeys stir. "
+	"The burnished door shuts. "
+	"For the last time, why? "
+	"Why didn't you stay? "
+	"Why didn't you leave? "
+	"Where did the time go? "
+	"My tongue betrays me. "
+	"My heart betrays me. "
+	"The night betrays me. "
+	"I miss you. Love, me. "
+	"Iâve got plenty more. "
+	"No, itâs not like that. "
+	"Cry uncle for me. "
+	"Take two steps backwards. "
+	"Paper beats rock, fool. "
+	"Hell, maybe. Who knows. "
+	"Hit me one more time. "
+	"My dog has no fleas. "
+	"Is this all there is? "
+	"No more soup for you. "
+	"You buy the next round. "
+	"A round of applause. "
+	"Contestants titter. "
+	"He owns no short-shorts. "
+	"Pat your head thusly. "
+	"Never with these eyes. "
+	"Only with these eyes. "
+	"We've all gone crazy. "
+	"Hank Williams was right. "
+	"It's all circular. "
+	"Everything is wet. "
+	"Boom-shacka-lacka. "
+	"Thunderous applause. "
+	"Dogs dance like comets. "
+	"The sky fills with stars. "
+	"Retrograde motion.  "
+	"She sells no sea shells. "
+	"No room in the inn. "
+	"Dishes dry in sinks. "
+	"Snow falls in Utah. "
+	"Sirens wail, so close. "
+	"He takes a breath, breathes. "
+	"His heart swells madly. "
+	"His ears fill with blood. "
+	"There is always time. "
+	"All Iâve got is time. "
+	"You know the story. "
+	"The drummer skips town. "
+	"One more cigarette. "
+	"The ocean shivers. "
+	"The dormouse quivers. "
+	"Rain falls on spring leaves. "
+	"Pizza boy blushes. "
+	"The cat fiddles on. "
+	"A new moon blushes. "
+	"Somewhere a dog howls. "
+	"Cats rub themselves mad. "
+	"Soup boils on the stove. "
+	"The stove eye glows red. "
+	"The faucet drips, drips. "
+	"Cars howl on the street. "
+	"A car backfires, roars. "
+	"There is never time. "
+	"The bouilabaisse chills. "
+	"Ganja cornbread bakes. "
+	"People smile and cry. "
+	"Spacious rooms are filled. "
+	"Unseen lackeys stir. "
+	"The burnished door shuts. "
+	"For the last time, why? "
+	"Why didn't you stay? "
+	"Why didn't you leave? "
+	"Where did the time go? "
+	"My tongue betrays me. "
+	"My heart betrays me. "
+	"The night betrays me. "
+	"I miss you. Love, me. "
+	"Iâve got plenty more. "
+	"No, itâs not like that. "
+	"Cry uncle for me. "
+	"Take two steps backwards. "
+	"Paper beats rock, fool. "
+	"Hell, maybe. Who knows. "
+	"Hit me one more time. "
+	"My dog has no fleas. "
+	"Is this all there is? "
+	"No more soup for you. "
+	"You buy the next round. "
+	"A round of applause. "
+	"Contestants titter. "
+	"He owns no short-shorts. "
+	"Pat your head thusly. "
+	"Never with these eyes. "
+	"Only with these eyes. "
+	"We've all gone crazy. "
+	"Hank Williams was right. "
+	"It's all circular. "))
+
+
+  (defun fs-haiku (&rest args)
+    "REST: args"
+    (format "%s\n%s\n%s"
+	  (erbutils-random hurdie-haiku-quotes-1)
+	  (erbutils-random hurdie-haiku-quotes-2)
+	  (erbutils-random hurdie-haiku-quotes-3)))
+
+This is now  part of erbot, in conrtrib/haiku.el.  To make these functions available for your bot, simply (load "haiku.el").
+
+
+
+----
+ErBot

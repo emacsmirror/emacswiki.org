@@ -1,0 +1,92 @@
+There are currently three approaches to spam filtering:
+
+# Filtering based on names of people, accounts, hosts, resulting in so-called whitelists and blacklists.
+# Filtering based on rules, as used by Spam Assassin.
+# Filtering based on statistics, as used by ifile (ifile sorts mail into folders based on statistics)
+
+== Rules ==
+
+: ''There is already a company called Assurance Systems that will run your mail through Spamassassin and tell you whether it will get filtered out.'' -- Paul Graham [http://www.paulgraham.com/better.html]
+
+These are usually easy to setup, but you need to update the rules on a regular basis, just like virus detecting software...
+
+== Blacklists ==
+
+You can maintain your own blacklists, or you can use published
+blacklists from the net.
+
+* BlacklistSpammers -- track spammers locally, and score them down
+
+== Statistics ==
+
+Paul Graham has written an article on spam filtering based on
+statistics.  You might want to try it yourself.  The basics are all
+there (and need more work).
+
+* http://www.paulgraham.com/spam.html
+* http://www.paulgraham.com/better.html
+* SpamStat -- An implementation in lisp only.
+* GnusBogofilter -- An implementation using the external bogofilter program.
+
+== Background ==
+
+Christopher Browne's pages also have a general reference list for this
+method: http://cbbrowne.com/info/ipfilter.html
+
+There are a few other research paper links at
+teledyN[http://www.interhop.net/~teledyn/mt-comments.cgi?entry_id=56].
+
+== ifile ==
+
+The external '''ifile''' program by Jason Rennie can also be used
+within procmail.
+
+* http://www.nongnu.org/ifile/
+* http://xtrmntr.org/ORBman/ifile.procmail.html.
+
+ifile is totally MUA-independant.  it keeps a database in ASCII
+text-format, tallies infrequently and too often occuring words and can
+be customized flexibly to use different lexers or bitmaps instead of
+frequencies.  it is slightly optimized for usenet-postings and mail,
+and comes with integration scripts for MH-like readers.  jason rennie
+and a few others are still actively developing it, a mailinglist is
+available as well as tools written by users.  after priming/training
+it with a maybe 100 messages you can easily achieve an accuracy of
+over 99%.  -- ClemensFischer
+
+This number is problematic: Is this for false negatives, or false
+positives, or both?  ifile categorises mail.  Does the number mean
+that 1% of all mails ends up in the wrong folder? -- AlexSchroeder
+
+NathanWilliams said on the Gnus mailing list that he uses ifile with
+Gnus and replaced 250 lines of nnmail-split-fancy rules with one ifile
+invocation.  He used a setup from JeremyBrown, available here:
+
+* http://www.ai.mit.edu/~jhbrown/ifile-gnus.html
+
+My experience has been in line with the original ifile paper -- for
+general- purpose classification, it's right about 85% of the time;
+that's a little too low for my tastes.  However, it's spectacularly
+good at spam identification, and might make a nice fallback classifier
+when your hand-written split rules don't match.  Startup overhead
+right now is painfully high, but hopefully that will get fixed soon --
+jhbrown
+
+I will second that experience.  I have it set now as the first line of
+defence and the false-positives mean I have to sift the spam folder
+''anyway'' --- I plan to switch to Jeremy's GNUS method as it makes
+much more sense to use this after SpamAssassin and the regular split
+rules have given up. -- garym
+
+== Spam Oracle ==
+
+http://pauillac.inria.fr/~xleroy/software.html#spamoracle
+
+A Bayesian spam filter written in ObjectiveCaml by Xavier Leroy.
+It is very fast and understand MIME attachments.
+Spam Oracle works by adding an header "X-Spam:" followed by "yes", "no" or "unknown" plus additional details to each message.
+Easy to be setup in a MUA independent mannere using procmail
+or directly in Gnus with nnmail-split-methods.
+
+----
+CategoryGnus

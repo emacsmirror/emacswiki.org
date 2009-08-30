@@ -1,0 +1,456 @@
+Below are some hints for [[emacs-w3m]].  A lot of them deal with
+integrating emacs-w3m to the rest of the Emacs-environment.
+
+== browse-url ==
+
+This is how one would set up emacs-w3m for BrowseUrl.
+
+ (setq browse-url-browser-function 'w3m-browse-url)
+ (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
+ (global-set-key "\C-xm" 'browse-url-at-point)
+
+Note that w3m-browse-url in w3m.el uses browse-url-interactive-arg, but makes no provision to
+load it.  w3m.el has the following:
+
+    (eval-when-compile
+      (autoload 'browse-url-interactive-arg "browse-url"))
+
+Why is the autoload only set up for compile time?  It seems to be
+needed for run time as well.  Adding this to .emacs fixed it for me.
+-- ZwaX
+
+    (autoload 'browse-url-interactive-arg "browse-url")
+
+== Browse URL in new tabs ==
+
+Allows browse-url to open URLs in a new tab instead of the current one:
+
+ (defun w3m-new-tab ()
+   (interactive)
+   (w3m-copy-buffer nil nil nil t))
+
+ (defun w3m-browse-url-new-tab (url &optional new-session)
+   (interactive)
+   (w3m-new-tab)
+   (w3m-browse-url url))
+
+ (setq browse-url-browser-function 'w3m-browse-url-new-tab)
+
+Why not just:
+
+    (setq browse-url-browser-function 'w3m-browse-url
+          browse-url-new-window-flag t)
+
+== Dired ==
+
+ (add-hook 'dired-mode-hook
+	   (lambda ()
+	       (define-key dired-mode-map "\C-xm" 'dired-w3m-find-file)))
+
+ (defun dired-w3m-find-file ()
+   (interactive)
+   (require 'w3m)
+   (let ((file (dired-get-filename)))
+     (if (y-or-n-p (format "Open 'w3m' %s " (file-name-nondirectory file)))
+	 (w3m-find-file file))))
+
+That's great, but how can you switch to w3m mode for an existing buffer
+(e.g. one which contains an HTML page?)  IOW why isn't there a M-x w3m-mode? -- AdamSpiers
+
+[new]
+/See my code immediately below/ - MarkHulmeJones
+
+== Browsing the current buffer ==
+
+Assign this code to a key to "preview" a buffer full of HTML in w3m.
+
+  (defun w3m-browse-current-buffer ()
+    (interactive)
+    (let ((filename (concat (make-temp-file "w3m-") ".html")))
+      (unwind-protect
+          (progn
+            (write-region (point-min) (point-max) filename)
+            (w3m-find-file filename))
+        (delete-file filename))))
+
+== Downloading Files Asynchronously ==
+
+Since w3m-el downloads everything synchronously it can sometimes
+interfere with productivity.  If you use w3m-el to download and save
+large files here are two solutions to do so asynchronously.  One
+uses [http://www.gnu.org/software/wget/ wget] and the other uses
+[http://curl.haxx.se/ cURL].  Neither of these solutions really
+helps with the problem of synchronous browsing; only eliminates
+synchronous downloading.  EmacsWget is probably superior than the
+following function.
+
+ (defun w3m-download-with-wget (loc)
+  (interactive "DSave to: ")
+  (let ((url (or (w3m-anchor) (w3m-image))))
+    (if url
+	(let ((proc (start-process "wget" (format "*wget %s*" url)
+				   "wget" "--passive-ftp" "-nv" 
+				   "-P" (expand-file-name loc) url)))
+	  (with-current-buffer (process-buffer proc)
+	    (erase-buffer))
+	  (set-process-sentinel proc (lambda (proc str)
+				       (message "wget download done"))))
+      (message "Nothing to get"))))
+
+
+ (defun w3m-download-with-curl (loc)
+  (define-key w3m-mode-map "c"
+	(lambda (dir)
+	  (interactive "DSave to: ")
+	  (cd dir)
+	  (start-process "curl" "*curl*" "curl.exe" "-O" "-s" (w3m-anchor)))))
+
+
+To take advantage of these, just call either function while the point
+is on a URL.  You will then be prompted for the directory to download
+the URL into.  Note the examples of binding these functions below in
+the alternate keymap.  These functions are a replacement for
+w3m-download-this-url.
+
+== Saving Buffers with Desktop ==
+
+The following code makes it possible to save the w3m buffers between
+sessions with desktop.el
+
+ (defun desktop-buffer-w3m-misc-data ()
+   "Save data necessary to restore a `w3m' buffer."
+   (when (eq major-mode 'w3m-mode)
+     w3m-current-url))
+
+ (defun desktop-buffer-w3m ()
+   "Restore a `w3m' buffer on `desktop' load."
+   (when (eq 'w3m-mode desktop-buffer-major-mode)
+     (let ((url desktop-buffer-misc))
+       (when url
+	 (require 'w3m)
+	 (if (string-match "^file" url)
+	     (w3m-find-file (substring url 7))
+	   (w3m-goto-url url))
+	 (current-buffer)))))
+
+ (add-to-list 'desktop-buffer-handlers 'desktop-buffer-w3m)
+ (add-to-list 'desktop-buffer-misc-functions 'desktop-buffer-w3m-misc-data)
+ (add-to-list 'desktop-buffer-modes-to-save 'w3m-mode)
+
+== Using TextMode for textareas ==
+(by DavidEdmondson)
+
+The default mode for editing textareas is somewhat annoying - I'd much
+rather use TextMode.  Here's a small addition to your .emacs to make
+that possible:
+
+ (eval-after-load "w3m-form"
+  '(progn
+     (define-minor-mode dme:w3m-textarea-mode
+       "Minor mode used when editing w3m textareas."
+       nil " dme:w3m-textarea" w3m-form-input-textarea-keymap)
+
+     (defun dme:w3m-textarea-hook ()
+       ; protect the form local variables from being killed by `text-mode'
+       (mapcar (lambda (v)
+		 (if (string-match "^w3m-form-input-textarea.*"
+				   (symbol-name (car v)))
+		     (put (car v) 'permanent-local t)))
+	       (buffer-local-variables))
+       (text-mode)
+       (dme:w3m-textarea-mode))
+
+     (add-hook 'w3m-form-input-textarea-mode-hook 'dme:w3m-textarea-hook)))
+
+I just simply use this as my w3m-form-input-textarea-mode-hook:
+
+ (defun dka-w3m-textarea-hook()
+  (save-excursion
+    (while (re-search-forward "\r\n" nil t)
+      (replace-match "\n" nil nil))
+    (delete-other-windows)))
+
+After you quit the buffer, it restores your window config nicely. :-)
+In other words, the patch previously posted here isn't really needed.
+
+== Saving a link's target ==
+
+There used to be a definition for a nice little function here to save
+the target of link under the point to the kill-buffer, and also to the
+clipboard for yanking (pasting) to other programs, f.ex.  This feature
+is implemented in the WThreeM itself, however, so the little defun can
+go.  That function is <code>w3m-print-this-url</code>, by default
+bound to <code>u</code>.  There is also the
+<code>w3m-print-current-url</code> (at <code>c</code>), which copies
+the current URI of the page currently being viewed.
+
+== Copying URL at point ==
+
+I like the "Copy link target" function of firefox so I wrote this
+function so that I don't have to go to the page pointed to by the
+link, hit U C-a C-k C-g B to get the actual value of the link under
+the point.  Also included code to set it as Alt-W locally in the w3m
+buffer using the w3m-mode-hook.
+
+  (defun w3m-copy-url-at-point ()
+    (interactive)
+    (let ((url (w3m-anchor)))
+      (if (w3m-url-valid url)
+  	  (kill-new (w3m-anchor))
+        (message "No URL at point!"))))
+
+   (add-hook 'w3m-mode-hook 
+	  (lambda ()
+	    (local-set-key "\M-W" 'w3m-copy-url-at-point)))
+
+Isn't this what <code>w3m-print-this-url</code> mentioned above does?
+--MattHodges
+
+== Google Suggest ==
+
+Intrigued by the Firefox google bar completion, I hacked the following 
+function for use with emacs-w3m:
+
+    (defun google-suggest ()
+     "Search `w3m-search-default-engine' with google completion canditates."
+     (interactive)
+     (w3m-search w3m-search-default-engine
+		 (completing-read  "Google search: " 
+				   (dynamic-completion-table
+				   'google-suggest-aux))))
+
+   (defun google-suggest-aux (input)
+     (with-temp-buffer 
+       (insert
+	(shell-command-to-string
+	 (format "w3m -dump_source %s" 
+		 (shell-quote-argument 
+		  (format
+		   "http://www.google.com/complete/search?hl=en&js=true&qu=%s"
+		   input)))))
+       (read
+	(replace-regexp-in-string "," ""
+				  (progn
+				    (goto-char (point-min))
+				    (re-search-forward "\(" (point-max) t 2)
+				    (backward-char 1)
+				    (forward-sexp)
+				    (buffer-substring-no-properties
+				     (1- (match-end 0)) (point)))))))
+
+--[[pft]]
+
+RichardRiley : doesn't work for me :- completing-read: Symbol's value as variable is void: google-suggest-aux
+
+DamienProfeta : should work now with ' before google-suggest-aux
+
+== Easy forward/back in a new buffer ==
+
+Are you ever in a position when you're browsing a page in emacs-w3m and find yourself wishing you could keep looking at this page, but also open the previous (or next) page in history in the minimum number of keystrokes? Maybe not, but I definitely have.
+
+Therefore, I wrote a couple of revised history navigation functions. They each work by calling the original, but if given an argument of at least 16 (C-u C-u) the page will open in a new buffer. 
+
+I find this most useful if bound to the respective keys currently bound to `w3m-view-previous-page' and `w3m-view-next-page'. Anyway, here's the code:
+
+    (defun w3m-view-previous-page-2 (&optional count)
+      "Move back count pages in the history.
+    If `count' is a positive integer, move backward count times in the
+    history.  If `count' is a negative integer, moving forward is performed.
+    `count' is treated as 1 by default if it is omitted.
+    
+    If `count' is 16 (C-u C-u), it will open in a new buffer. If it is greater
+    than 16, it will open in a new buffer and move backward `count' - 16 times."
+      (interactive "p")
+      (cond ((not count)
+    	     (setq count 1))
+    	    ((= count 16)
+    	     (setq count 1)
+    	     (w3m-copy-buffer))
+    	    ((> count 16)
+    	     (setq count (- count 16))
+    	     (w3m-copy-buffer)))
+      (w3m-view-previous-page count))
+
+    (defun w3m-view-next-page-2 (&optional count)
+      "Move back count pages in the history.
+    If `count' is a positive integer, move forward count times in the
+    history.  If `count' is a negative integer, moving backwards is performed.
+    `count' is treated as 1 by default if it is omitted.
+    
+    If `count' is 16 (C-u C-u), it will open in a new buffer. If it is greater
+    than 16, it will open in a new buffer and move forward `count' - 16 times."
+      (interactive "p")
+      (cond ((not count)
+    	     (setq count 1))
+    	    ((= count 16)
+    	     (setq count 1)
+    	     (w3m-copy-buffer))
+    	    ((> count 16)
+    	     (setq count (- count 16))
+    	     (w3m-copy-buffer)))
+       (w3m-view-next-page count))
+
+-- Amy
+
+== Disable default c-x b behaviour ==
+
+ (add-hook 'w3m-mode-hook (lambda () (define-key w3m-mode-map (kbd "C-x b") nil)))
+
+== lynx-like multiple bookmark files ==
+
+w3m-multibookmarks.el provides
+
+  * multiple bookmarks files (default is to use the same as lynx)
+
+  * A)dd D)ocument or L)ink keystrokes and url Title munging.
+
+It is usable, even though it is in an early stage.
+
+Currently, I'm mostly using it with emacs-w3m-1.4.4 and emacs-22.2
+under slackware Linux.
+
+http://www.well.com/~discover/emacs-w3m-stuff/
+
+-- Rediscover
+
+== Access mobile versions of online services and web apps ==
+
+The recent proliferation of handheld computing devices and the relatively lo-fi
+versions of popular online services provided for these can actually benefit
+users of relatively lo-fi, no-bells-no-whistles web-browsing software, such as
+[[emacs-w3m]].
+
+This is derived from my own experiments with the mobile versions of popular
+web-sites and online services.
+
+It was all prompted by [[SachaChua]]'s discovery of how to access Facebook
+through Emacs, here:
+
+http://sachachua.com/wp/2008/08/12/sweet-facebook-in-emacs/
+
+As she says, make sure you set w3m-use-cookies to t.
+
+Then, here goes:
+
+ * Google Reader: access [[http://www.google.com/reader/m/view/]], and sign into
+   your account as usual. Not nearly as cool as the full-blown version, but
+   highly usable, this is my preferred method to read my RSS feeds right now.
+
+ * Gmail: The basic HTML version of Gmail is actually quite usable from
+   emacs-w3m. But you can also access the mobile device version of the service,
+   here: [[http://mail.google.com/mail/x]], and, again, sign in as usual. The
+   benefit of this approach is that this provides you with a stripped-down
+   summary buffer of incoming mails.
+   
+   And, finally, Google Docs (yes, Google Docs):
+
+ * Google Docs & Spreadsheets: Access the mobile interface to Google Docs here:
+   [[http://docs.google.com/m]]. No, no editing for mobile devices here, obviously,
+   but the interface provides you with a handy and searchable list
+   of the documents in your account, which I find a very practical way to access
+   my data directly from my Emacs buffers.
+
+Erm, well, so much for AJAX and the singing-and-dancing, drag-and-drop web app
+interfaces...
+
+If anyone else has had similar success with other online apps and services, this
+might be a good place to add up a nice list...
+
+[[KamenNedev]]
+ 
+
+== Use isearch for link following ==
+
+The following code binds f to a variant of isearch
+which finds links only. RET will exit isearch and
+open the new site.
+
+  (defvar w3m-isearch-links-do-wrap nil
+    "Used internally for fast search wrapping.")
+
+  (defun w3m-isearch-links (&optional regexp)
+    (interactive "P")
+    (let ((isearch-wrap-function
+	   #'(lambda ()
+	       (setq w3m-isearch-links-do-wrap nil)
+	       (if isearch-forward
+		   (goto-char (window-start))
+		 (goto-char (window-end)))))
+	  (isearch-search-fun-function
+	   #'(lambda () 'w3m-isearch-links-search-fun))
+	  post-command-hook		;inhibit link echoing
+	  do-follow-link
+	  (isearch-mode-end-hook
+	   (list  #'(lambda nil
+		      (when (and (not isearch-mode-end-hook-quit)
+				 (w3m-anchor))
+			(setq do-follow-link t))))))
+      (setq w3m-isearch-links-do-wrap t)
+      (isearch-mode t
+		    regexp
+		    ;; fast wrap
+		    #'(lambda nil
+			(if isearch-success
+			    (setq w3m-isearch-links-do-wrap t)
+			  (when w3m-isearch-links-do-wrap
+			    (setq w3m-isearch-links-do-wrap nil)
+			    (setq isearch-forward
+				  (not isearch-forward))
+			    (isearch-repeat isearch-forward))))
+		    t)
+      (when do-follow-link
+	(w3m-view-this-url))))
+
+  (defun w3m-isearch-links-search-fun (string &optional bound no-error)
+    (let* (isearch-search-fun-function
+	   (search-fun  (isearch-search-fun))
+	   error
+	   (bound  (if isearch-forward
+		       (max (or bound 0)
+			    (window-end))
+		     (min (or bound (window-start))
+			  (window-start)))))
+      (condition-case err
+	  (while (and (apply search-fun (list string bound))
+		      (not (w3m-anchor (point)))))
+	(error (setq error err)))
+      (if error
+	  (if (not no-error)
+	      (signal (car error) (cadr error)))
+	(point))))
+
+  (require 'w3m)
+  (define-key w3m-mode-map [?f] 'w3m-isearch-links)
+
+-ap
+
+== Removing trailing whitespace ==
+Sometimes, it's annoying when the w3m buffer has lots of trailing whitespaces. I do the following to remove trailing whitespace.
+
+    (add-hook 'w3m-display-hook
+              (lambda (url)
+                (let ((buffer-read-only nil))
+                  (delete-trailing-whitespace))))
+
+--[[JaehyunYeom]]
+
+== Consistent browse-url in buffers/w3m/gnus ==
+
+Here I bind a key to rgr/browse-url and the code works out if its an encoded url beneath as in a w3m buffer. If you prefix your key with C-u it launches your system browser as opposed to the one you configured in w3m settings. e.g My default emacs w3m browser is w3m but if I hit C-u prioer to my browse key it launches Iceweasel in Debian. Very handy.
+
+{{{
+(defun rgr/browse (url)
+  "If prefix is specified use the system default browser else use the configured emacs one"
+  (if current-prefix-arg
+      (when url (browse-url-default-browser url))
+    (if  url (browse-url url) (call-interactively 'browse-url))
+    ))
+
+(defun rgr/browse-url (&optional url)
+  "browse the url passed in"
+  (interactive)
+  (setq url (or url (w3m-url-valid (w3m-anchor)) (browse-url-url-at-point) (region-or-word-at-point)))
+  (setq url (read-string (format "Url \"%s\" :" url) url nil url))
+  (rgr/browse url))
+}}}
+RichardRiley

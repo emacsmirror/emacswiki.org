@@ -1,0 +1,50 @@
+This is the simplest of all the modes from WikiModeDiscussion.  All it
+does is add a keybinding to insert some tags, and the hilighting of
+tags plus <nowiki>WikiNames</nowiki>.  If you are editing wiki pages
+within Emacs, this is quite elegant.
+
+* Lisp:really-simple-wiki.el
+
+The original SimpleWikiMode got incorporated into EmacsHttp.
+
+== Usage ==
+
+This requires two steps:
+
+Getting the wiki page into Emacs: Some browsers allow you to define
+an external editor for text areas.  This is where you must set emacs,
+emacsclient, or gnuclient as your editor.
+
+Activating simple-wiki-mode for these pages: This usually exploits
+some naming convention for the browser's temporary files.  Here is an
+example for w3m:
+
+    (require 'really-simple-wiki)
+    (add-to-list 'auto-mode-alist '("w3mtmp" . really-simple-wiki-mode))
+
+== Tags ==
+
+Use the following code to have `C-c C-t' insert tags.
+
+    (autoload 'sgml-tag "sgml-mode" t)
+    (define-key really-simple-wiki-mode-map (kbd "C-c C-t") 'sgml-tag)
+
+If you are using PsgmlMode, beware of name conflicts and help fix the
+situation.
+
+== Quotes ==
+
+If you are using OpeningQuote, add:
+
+    (add-hook 'really-simple-wiki-mode-hook
+              (lambda ()
+                (local-set-key (kbd "'") 'maybe-open-apostrophe)))
+
+== Filling ==
+
+This is what I often use:
+
+    (add-hook 'really-simple-wiki-mode-hook 'turn-on-auto-fill)
+
+----
+CategoryModes CategoryHypermedia

@@ -1,0 +1,265 @@
+(see also EmacsMuse)
+
+== Format ==
+
+Proposed format for one entry:
+
+<pre>
+Name :: Alex Schroeder
+
+Email :: kensanata@gmail.com
+
+Email :: alex@gnu.org
+
+Phone :: 078 6125175
+
+Address :: Zürich
+        :: Switzerland
+
+WWW :: http://www.emacswiki.org/alex/
+
+Nick :: kensanata
+
+Notes :: Also maintains [[Oddmuse]] and CommunityWiki.
+  Speaks German and some French.
+  FSF and FSFE member, interested in GPL3.
+  Hangs out on #emacs and #wiki.
+</pre>
+
+== Notes ==
+
+# Multiple entries are allowed; the first entry would be preferred when only one entry is expected (eg. mail composition, exporting to less expressive formats)
+# Address is free form and multiline; all entries are basically multiline, use new paragraphs for linebreaks
+# The keys need to be reasonably fixed if we want to export data.  Adding custom fields is possible and easy, of course.
+
+== Questions and Answers ==
+
+; *Q:* What about home/office for Phone and Address? : *A:* It certainly would be good to disambiguate different addresses.  I'll address this in a new section.
+
+; *Q:* What is the record separator?  Especially with the possibility of multiple records in a given file and the ability to repeat tags (multiple Email, for example), it seems that an explicit marker is needed to say, "on to the next record!".: *A:* Each contact would be interpreted as a definition list (see answer to next question). So, the separator between records would presumably be the same as whatever the current separator between adjacent definition lists is. In this case, it is two or more blank lines.
+
+; *Q:* Confused about address formatting.  What are the empty ##::## about?: *A:* In EmacsMuse syntax, the '::' indicates a definition list. The part before is the term and the part after is the definition. In our brainstorming session, this seemed like the best way to structure the fields, both in terms of semantics and for ease of publishing.
+
+; *Q:* Definition lists make sense as a basic format.  But I still don't understand what it means to have the term missing as in ##:: Switzerland## above.  The formatting when I publish such a list to HTML is an extra indent that looks weird to me.  Is the idea to continue the current record but provide some format instruction via line breaks?: *A:* Yes, it provides the equivalent of a line break. -- MichaelOlson
+
+; *Q:* Assuming one contact per file, what is the best way to have a template containing the field names inserted in the buffer when visiting a new file in the contacts project? I've just slopped something together with ##auto-mode-alist##, but that's not a good solution. PlannerMode does it because it is a minor mode. Is there something that can be put in the contact project definition to facilitate this, or a muse hook to use?: *A:* This would also be a minor mode, with Muse as its major mode.  I currently hypothesize that most new entries would be created by means of calling something like ##contacts-create##, which would either create a new file for the contact if you like the one-file-per-contact scheme, or add to the global contacts file.
+
+; *Q:* What about distinction between First Name and Surname? e.g. for sorting by surname.: *A:* As long as you're consistent with how you enter names, it should be relatively easy to do sorting.  Contacts Mode will probably add some nice display routines for definition lists, and optionally narrow to the current contact.  Views could be created by making a temp buffer, inserting the contents of one or more existing contact file, and then sorting or pruning the results as specified.
+
+== Status ==
+
+No code has been released for this project yet.  MichaelOlson is trying to focus on getting Muse 3.03 released first.
+
+== Discussions ==
+
+=== Multiple contacts per file or not? ===
+
+[new]
+AlexSchroeder likes all contacts to be in one file because he likes to use `C-s' and `M-x occur'.
+Every definition would then describe one contact.
+Text not belonging to a definition list would be comments.
+
+The alternative is to have one contact per file.
+
+[new]
+JohnSullivan tested with 5000 copies of this record in one file. There was no noticeable delay from the fontification when entering a new record. Publishing did take a few minutes, though. This was done on a 1.2 GHz processor with 512MB RAM. 
+
+Still, he is leaning toward one file per contact, with a meta page that calls a Muse function to generate a list of contacts.
+
+[new]
+MichaelOlson thinks that at least for the case of browsing contacts,
+it might be possible to support both the all-contacts-on-one-page or
+one-contact-per-page setups.  When asking for a name to browse to,
+search all files in the Contacts project for a Name field, then make a
+list of '((name page position) ...).  Perhaps even omit the position
+and search ahead for "Name ::" on the correct page when a name is
+chosen.
+
+[new]
+JimOttaway: It might be useful for some purposes to have several files containing multiple entries: personal, work, students, etc.  So perhaps the arrangement of files and entries should be as flexible as possible.  By the way, I think this is a marvelous project!
+
+SethFalcon: One advantage of one contact per file is not having to have record delimiters (see questions on format above).
+
+[new]
+XavierMaillard: it would be cool to have all contacts in one big file. I also want something like a contact log which could be a separate file (each contact log in a different file with sort of a pointer in the contact file).
+
+I also think we should not depend on EmacsMuse to have contact.el but stay as general as possible.
+
+<pre>
+Name :: Xavier Maillard
+
+Email :: zedek@gnu.org
+
+Phone :: +33 (0) 668-046-437
+
+Address :: Reims
+        :: France
+
+WWW :: http://www.lolica.org
+
+Nick :: zedek
+
+Notes :: President de LoLiCA.
+  Blah blah blah
+  Blah blah blah
+  Blah blah blah
+
+Log :: #hash (eg. 1234567890)
+
+Log would be then a file with file name hash
+</pre>
+
+Contact Log file will be then free-form and independant from contact.el (could be an OrgMode  file or an EmacsMuse file or whatever you want).
+
+=== Functionality ===
+
+# Something to browse contacts by name
+# A function like "contacts-publish-index" that can be given an argument.  It will insert an listing of contacts with the fields that are passed to it.
+# A "remember-to-contact" function, to add notes to contacts like we do for Planner pages. 
+# People will certainly want something to help them migrate from bbdb.  Perhaps it could be based on http://yeske.ca:8080/elisp/bb2txt.el.
+# People will want to have completion for email addresses when using Gnus and other Emacs mail clients.
+
+=== Namespace ===
+
+[new]
+MichaelOlson is currently in favor of having the result of this spec
+be called ##contacts.el##.  A quick google search does not reveal any
+other package that uses this name.  Functions, variables, and options
+would be prefixed with ##contacts-##.
+
+=== Indicating different kinds of addresses ===
+
+[new]
+MichaelOlson is looking for suggestions on how to handle different
+kinds of addresses, like Home and Office.  Some possibilities follow.
+
+==== Grouped ====
+
+<pre>
+Name :: John Doe
+
+Home ::
+  Address :: 100 Sample St
+          :: Tinytown, WY 00000
+  Phone :: 111-111-1111
+
+Office ::
+  Address :: BRNG 0000
+          :: School of Hard Knocks
+          :: Complete, IN  00010
+  Phone :: #1111
+</pre>
+
+==== Parenthesized ====
+
+<pre>
+Name :: John Doe
+
+Address (Home) :: 100 Sample St
+               :: Tinytown, WY 00000
+
+Phone (Home) :: 111-111-1111
+
+Address (Office) :: BRNG 0000
+                 :: School of Hard Knocks
+                 :: Complete, IN  00010
+
+Phone (Office) :: #1111
+</pre>
+
+== Changes needed for Muse to support this ==
+
+# [DONE] Publishing of definition lists needs to be improved in terms of speed and "correctness" of implementation.  This is planned for the next major release of EmacsMuse (3.03).
+# [DONE] Make it so that a blank line between definition list items is not required.  The current syntax is awkward in that you have to have a blank line and exactly 2 spaces before a continuation of a term.
+# [DONE] Displaying in-line images that go with a contact: the code exists in EmacsWikiMode and needs to be ported.  This is also planned for EmacsMuse 3.03.
+# Including pages to be published by means of a function that visits a page and looks for keywords.  Or possibly by means of adding a filter function on the list of pages to publish.  Perhaps this would not be needed after all, since contacts would most likely be in their own project.
+
+== Why not just use BBDB? ==
+
+=== Annoyances ===
+
+# .bbdb files are sort of awkward to send around (to keep a master bbdb, for example)
+# it doesn't deal with custom fields tremendously well
+# the pre-defined fields it does have are inflexible.
+
+I've also seen some comment that bbdb's code is not fun to work with. Is there anything else, really?
+--BrianPalmer
+
+=== Conveniences ===
+
+# we will be able to have muse-style hyperlinks going from contacts to documents, emails, etc
+# muse's ability to have publishing styles should help a lot with exporting to other formats like vcard, csv, html, etc.
+
+== Comments ==
+
+[new]
+Reminds me of the format for entries in the FreeSoftwareDirectory (See [http://cvs.savannah.gnu.org/viewcvs/directory/directory/emacs.txt?rev=HEAD sample file entry]). -- AaronHawley
+
+[new]
+I would to need write some code to see whether I could make BBDB into the sort of nearly free-form contact management tool I would like to use.  That in turn would require me to look into BBDB internals again, which I hesitate to do.
+
+I would also need to write some importing and exporting functions to get it to the point where I can really merge and compare all my contacts on Gmail, Thunderbird, and BBDB.  When I worked on the vCard export a while back, I did not enjoy it.  See BbdbExporters and Lisp:bbdb-vcard-export.el.  This again requires me to look at a lot of BBDB code.
+
+I'm no longer interested in structured information.  I guess I could remove practically all fields from BBDB display and input and improve the multiline input to get it to the point I'd like it to be.
+
+Having a package with signed papers would make it a candidate for inclusion into Emacs, too.  That is not possible for BBDB, I assume, with JamieZawinski being the original author.
+-- AlexSchroeder
+
+This is a great idea ! For exporting the bbdb-->xml convertor works well http://www.cs.utah.edu/~karra/ps94/bbdb-xml-print.el . I recently wrote a style sheet to allow me to create printable "views" of my bbdb database, but having everything integrated into muse would be even better. -- ChrisLowis
+
+[new]
+It would be great if the database code could be made general enough
+that it would be possible to use it for other kinds of free-form
+database too.  -- JimOttaway
+
+[new]
+YAML might be a source of ideas/inspiration.  (http://www.yaml.org/)  
+A lot of work went into making data human-readable yet machine-parseable.
+
+
+[new]
+
+By all means, consider using YAML!. Your contact files will be immediately loadable in native Perl/Python/Ruby... datastructures. Let's not invet a new minilanguage, YAML is very well thought out and has support for schemas. Contact data do not require mixed content, which makes YAML entirely appropriate. And it can be used for a general plain-text based database system inside Muse, like Jim wants.
+
+YAML Example:
+
+<pre>
+--- !clarkevans.com/^invoice
+invoice: 34843
+date   : 2001-01-23
+bill-to: &id001
+    given  : Chris
+    family : Dumars
+    address:
+        lines: |
+            458 Walkman Dr.
+            Suite #292
+        city    : Royal Oak
+        state   : MI
+        postal  : 48046
+ship-to: *id001
+product:
+    - sku         : BL394D
+      quantity    : 4
+      description : Basketball
+      price       : 450.00
+    - sku         : BL4438H
+      quantity    : 1
+      description : Super Hoop
+      price       : 2392.00
+tax  : 251.42
+total: 4443.52
+comments: >
+    Late afternoon is best.
+    Backup contact is Nancy
+    Billsmer @ 338-4338.
+
+</pre>
+
+Who's going to write the requirsite Gnus hack to provide it the ability to look addresses up in MuseContacts like it currently does in bbdb :) --PaulLussier
+
+[new]
+Has anybody started hacking on MuseContacts or is it just a dead project ?
+
+[new]
+I would be interested in earing (good) news about this too :) --XavierMaillard

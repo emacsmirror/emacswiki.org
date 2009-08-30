@@ -1,0 +1,5 @@
+In the Acme editor(from Plan 9 and Inferno), you search for words or phrases by right-clicking on them. The mouse jumps to the location of the result, so you can search for all occurrences of a word by repeatedly right-clicking. This library does the same thing for Emacs. 
+
+It was written on GNU Emacs CVS(2006-03-14). 
+
+Lisp:acme-search.el

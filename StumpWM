@@ -1,0 +1,33 @@
+[http://www.nongnu.org/stumpwm/ Stumpwm] is the emacs of window managers.  If you're using it, you'll want to put a few thing in your .stumpwmrc.
+
+== SLIME ==
+
+Add this code to your .stumpwmrc for interactive control of stumpwm via slime:
+{{{
+;; Load swank.
+;; C-z ; swank will kick this off
+(load "/path/to/slime/swank-loader.lisp")
+(swank-loader:init)
+(defcommand swank () ()
+  (setf stumpwm:*top-level-error-action* :break)
+  (swank:create-server :port 4005
+                       :style swank:*communication-style*
+                       :dont-close t)
+  (echo-string (current-screen) 
+	       "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
+(swank)
+}}}
+
+== Controlling emacs through stumpwm commands ==
+
+This is an example of how you can use stumpwm commands to call emacs functions.
+{{{
+(defcommand wanderlust () ()
+	    (emacs)
+	    (send-meta-key (current-screen) (kbd "M-x"))
+	    (window-send-string "wl")
+	    (send-meta-key (current-screen) (kbd "RET")))
+}}}
+
+----
+CategoryRelated

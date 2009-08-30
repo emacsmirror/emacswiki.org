@@ -1,0 +1,24 @@
+Click on the header to list all pages related to running Emacs or editing files remotely.
+
+* RemoteEmacs -- run Emacs on a remote host
+* RemoteDisplay -- some handy code for when you happen to run the same emacs session on more X DISPLAYs
+* AngeFtp -- edit remote files by using FTP in the background
+** EshellAndAngeFtp -- use eshell to run rsh on another host
+* TrampMode -- edit remote files by using SSH and other stuff in the background
+** HoboMode -- an alternative to TrampMode
+** [[Kio]] -- Another possible alternative to TrampMode
+* RemoteLoad -- Load lisp files that are not on your computer
+* RemoteProgramDevelopment -- editing and running code on a remote host
+* WebDAV
+
+--
+
+Not sure where to put this:
+  To work with multiple users on multiple computers in the same emacs (like some experimental complicated editors allow
+  you to) just start a screen session with emacs on one of them and connect to it via ssh and the "-x" option of screen.
+  Then you only need to coordinate who types when (should be easy if you have a voice or irc connection in another window)
+
+[new]
+Isn't this what RemoteDisplay does?
+
+: Um, no?  If I understand it correctly, it allows you to open a frame on a remote display (provided you have the necessary X authorization credentials, of course).

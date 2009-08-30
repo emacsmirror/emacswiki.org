@@ -1,0 +1,59 @@
+Emacs comes with a comprehensive manual.  Access it through [[Info]], either with
+the ##info## command in a shell window under GNU and Unix operating systems,
+or in Emacs, by typing `M-x info RET' (that's Meta- or ESC x, the word "info",
+followed by the return key), or by typing `C-h i' (that's Control-h followed by i).
+Starting with Emacs 22, you can also read the manual with `C-h r'.
+
+The GNU Emacs manual is also available online from any GNU ftp mirror or from here:
+
+* http://www.gnu.org/manual/
+* http://www.gnu.org/software/emacs/manual/
+* Available in print from the GnuPress.
+
+You can link to the index entries in the manual using the Manual prefix.
+Command, Variable, and Concept index entries can be linked.
+If the entries contain punctuation or whitespace characters, you will
+need to put them in double square brackets:
+
+* ##Manual:show-paren-mode## -> Manual:show-paren-mode
+* ##[[Manual:grep (MS-DOS)]]## -> [[Manual:grep (MS-DOS)]]
+
+The XEmacs manuals are also available online from here:
+
+* http://www.xemacs.org/Documentation/
+
+EmacsLisp authors will want to look instead at the EmacsLispReference.
+
+See EmacsManualLicense for some discussion about the manual's license.
+
+See EmacsManualFormats for discussion about the manual's source markup language, output formats and usage.
+
+== Discussion ==
+
+* Direct interface: http://www.emacswiki.org/cgi-bin/info-ref
+* Source: http://www.emacswiki.org/scripts/info-ref
+* Database: http://www.emacswiki.org/emacs/info-ref.dat
+
+Example output:
+
+* No entry found: Manual:XXX
+* One entry found: Manual:picture-mode-hook
+* Several entries found: Manual:scroll-all-mode
+* Link to a section or chapter: Manual:Glossary
+* Link to a section or chapter that appears in different manuals: Manual:Hooks
+
+[new]
+You'll note the URLs for the web pages that are parsed in the source code. Currently these are:
+
+* GNU Emacs Manual: Command and Function Index, Variable Index, Concept Index, Top Menu.
+* GNU Emacs Lisp Manual: Index, Top Menu.
+
+More will be added upon request. Alternatively, if there is a strong demand for this, we can
+maintain a list of URLs on a wiki page somewhere, and tell the script to initialize itself
+based on the wiki page. Let me know if you care either way. -- AlexSchroeder
+[new]
+This is a really great feature.  I'm using your script for the hypertext cross-references in the [http://php-mode.sourceforge.net/php-mode.html HTML version of the PHP mode manual].  I can always be confident that it will redirect to the right place.  Look at the ##.html## rule in the [http://php-mode.svn.sourceforge.net/svnroot/php-mode/trunk/php-mode-src/Makefile Makefile] for PHP mode. -- AaronHawley
+[new]
+
+----
+CategoryDocumentation

@@ -1,0 +1,70 @@
+[new] What is the new website url [::reolve] ? --XavierMaillard
+
+oh look, it's [::resolve] from #emacs on the openprojects irc network! finally we have persuaded him to create a semi-persistent container for his thoughts! --ShaeErisson
+----
+
+Well :-) Seeing as ShaeErisson is so enthused about me creating a page on the Wiki, I woke up this morning, had some toasted english muffins with vegemite, and decided to write something in here.
+
+I've been using Linux for the last 6 years or so now. I only seriously got into Emacs about 18 months ago [ed: 3 years now], having used VIM up until then for the better half of 5 years. Once I got over the initial learning curve, I was hooked, and I've been proselytising to friends about the virtues of the one true editor since.
+
+Here's the latest (as of writing) version of my ~/.emacs. The accompanying files and latest versions can always be found at [http://repose.cx/conf/ my website]
+
+: ''I want '''color-theme-resolve'''! -- KevinTurner''
+: [it's in color-theme.el now]
+
+== How I use Emacs ==
+
+Emacs is fantastic at manipulating text and text-based information. Because it is so extensible and efficient, I have slowly migrated a number of my "computing tasks" from external applications into Emacs. I tend to have the function keys reserved for tasks or "applications" - for example:
+
+ F1 - Open a "notes" buffer
+ F8 - Load EmacsWiki
+ F4 - Load Calendar/Diary
+ F5 - Load Mail
+
+I should probably space the bindings out a bit more as I sometimes accidently hit the wrong ones. There's no real logic to where I've placed things so far. But let's have a brief look at the various bindings:
+
+=== Notes buffer ===
+
+I use a notes buffer to jot down any information I need to transcribe quickly. This is everything from pasting URLs to remember, to friends reading out their number, to notes pertinent to my work. I then go back later and organise this information into the relevant places (more on this in a bit). remember.el by JohnWiegley is a more sophisticated approach to the initial transcription stage, but I wasn't able to make use of its extra features like recording the context a note was jotted down in.
+
+=== EmacsWiki ===
+
+I used to have all sorts of problems organising my data. I tried various little GUI applications to store "trees" of data, storing two-line notes in lots of separate files. I had a hard time keeping track of it all, and often lost information.For managing contact information, I ended up writing a perl hack - this was one of my first open source projects. It was terrible .. but we all have to learn. :-)
+
+Then one day, I discovered EmacsWikiMode. This is very handy. It allows me to maintain a hyperlinked repository of information (multiple repositories in fact, with its project support - so I can keep a separate wiki for work related information). I store all sorts of things in my wiki. For example:
+
+* People's contact information / phone numbers, things I've lent out to people
+* Todo lists for various projects I work on
+* Information on companies I am a client of - account information, payment histories, etc. This is all transparently encrypted when saved to disk, and prompts me for a password when I try and load one of these files. This neat functionality mitigated all my problems with forgetting to re-encrypt those rogue files I used to leave lying around.
+* All sorts of little "factlets" that I used to have difficulty organising - such as the CVS commands required to check in a new project (which I always seem to forget). 
+
+I recently took over maintainership of EmacsWikiMode from JohnWiegley, and I've been trying to add more time-saving functionality where I can (suggestions are always welcome!). Interactive renaming and deleting links is handy.
+
+=== Diary / Calendar ===
+
+My memory is reasonably good. But I have a tendency of getting side-tracked and forgetting about something I should have done. This is where the diary functionality comes in handy. I have a two-tier system to remind me of upcoming events:
+
+* Every morning, a cron job runs which mails me a 7-day outline of events I have on. 
+* For diary entries with an explicit time, a message pops up in emacs a few minutes before the appointment time. Since I'm almost always in emacs these days, I always spot it - though I should hook it into http://repose.cx/pyosd sometime.
+
+== Gnus ==
+
+Gnus was one of the first Emacs "applications" I started using. Put simply, I have never encountered an email client as sophisticated, customisable and difficult to set up before. I love it. It is a very powerful email client in it's own right, but its appeal tends to escalate as your learn the basics of lisp. I really like the way read messages are hidden by default (unless you mark them, or elect to bring them back up), and I have gnus setup to expire articles > 30 days old to backup mailboxes, so that my mail access time is very fast unless I need to search for something from the past. 
+
+Oh, and let's not forget the X-Sent header:
+
+: X-Sent: 10 weeks, 4 days, 44 minutes, 14 seconds ago
+
+You can even add a hook to make it count the seconds as you watch the mail - But I decided not to go that far.
+
+== IRC ==
+
+I use an EmacsIrcClient called ERC. When I originally heard about it, I scoffed at the thought of IRCing within Emacs. Then I considered I'd said the same thing about reading mail within Emacs at one point. So I tried it out. I wrote some additions to the channel tracking code which allows one to hit a key to "jump" to the latest active channel (which others had already gotten displaying in the mode-line down the bottom), and then the same button can be pressed again to return to the work one was previously doing. Very handy for reducing the impact of IRC interruptions on your workflow.
+
+== And the rest.. == 
+
+And of course, the reason why all these applications in Emacs are so handy is because Emacs is great at editing text. Sophisticated movement / macro commands, completion of words based on words occurring elsewhere in the buffer, and a convenient lisp API should a feature not already exist. I'd been a VIM user for approximately 5 years before I started a university degree, where they used Emacs exclusively. I was tempted to just compile VIM for the solaris boxes they use, but decided it was time I learnt Emacs properly. After I got over the initial mental hurdles ("it's big and bloated!"), which took a few weeks, I was hooked. I'd say more than 60% of my computing time these days occurs within Emacs.
+
+----
+* CategoryHomepage
+* CategoryStory

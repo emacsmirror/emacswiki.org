@@ -1,0 +1,17 @@
+This page discusses completing the name of the file in the buffer.  Emacs already has file completion available in the MiniBuffer.
+
+[new]
+When comint.el is loaded, <tt>comint-dynamic-complete-filename</tt> can be used for in-buffer completion. This is only really useful when bound to a key, as it -- being a completion function -- should be called multiple times in a row. For instance, I have
+
+   (global-set-key "\M-\\" 'comint-dynamic-complete-filename)   
+
+in my <tt>~/.emacs</tt> to bind Meta-slash to this function. --NielsGiesen
+
+[new]
+Bind the function <code>comint-dynamic-complete</code> to a key (say Sh-TAB) and get filename completion in any buffer.  Sometimes its concept of where the filename begins is wrong, but it's ''very'' useful. (note: HippieExpand already includes filename completion in a buffer -- FerD)
+
+See also InsertFileName.
+
+----
+CategoryCompletion
+CategoryFiles

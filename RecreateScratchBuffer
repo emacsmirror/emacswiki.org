@@ -1,0 +1,80 @@
+Cette page est aussi disponible en français: Français:RecréerLeBufferScratch
+
+The scratch buffer is useful for "notes you don't want to save, and for Lisp evaluation".
+
+The scratch buffer is handy but we tend to kill it to get rid of its content.
+
+[new:DrewAdams:2004-12-25 18:26 UTC]
+V. L. Simpson [vls@freeshell.org] just pointed out in help-gnu-emacs@gnu.org, that "GNU Emacs 21 on up will recreate the scratch buffer if you just
+revisit that buffer name:  `C-x b' (or `M-x switch-to-buffer') <code>*scratch*</code>". -- DrewAdams
+[new]
+
+A very simple function to recreate the *scratch* buffer:
+
+    (defun create-scratch-buffer nil
+       "create a scratch buffer"
+       (interactive)
+       (switch-to-buffer (get-buffer-create "*scratch*"))
+       (lisp-interaction-mode))             
+
+Another solution consist in recreating it everytime it is killed.
+To do this add in your .emacs:
+<pre>             
+    ;; If the *scratch* buffer is killed, recreate it automatically
+    ;; FROM: Morten Welind
+    ;;http://www.geocrawler.com/archives/3/338/1994/6/0/1877802/
+    (save-excursion
+      (set-buffer (get-buffer-create "*scratch*"))
+      (lisp-interaction-mode)
+      (make-local-variable 'kill-buffer-query-functions)
+      (add-hook 'kill-buffer-query-functions 'kill-scratch-buffer))
+
+    (defun kill-scratch-buffer ()
+      ;; The next line is just in case someone calls this manually
+      (set-buffer (get-buffer-create "*scratch*"))
+      ;; Kill the current (*scratch*) buffer
+      (remove-hook 'kill-buffer-query-functions 'kill-scratch-buffer)
+      (kill-buffer (current-buffer))
+      ;; Make a brand new *scratch* buffer
+      (set-buffer (get-buffer-create "*scratch*"))
+      (lisp-interaction-mode)
+      (make-local-variable 'kill-buffer-query-functions)
+      (add-hook 'kill-buffer-query-functions 'kill-scratch-buffer)
+      ;; Since we killed it, don't let caller do that.
+      nil)
+</pre>
+If you want exactly the same initial *scratch* buffer you can add
+
+    (insert initial-scratch-message)
+
+in the above functions ;-)
+
+Finally you can modify the initial message with  `M-x customize-option RET initial-scratch-message RET'
+
+See also ProtectingBuffers.
+
+[new]
+I also wrote a command to create or switch to scratch buffer. This is also helpful when you want switch to a certain buffer frequently at some time. I bound this command to key C-c b.
+<pre>
+(defvar ywb-scratch-buffer "*scratch*")
+(defun ywb-create/switch-scratch (arg)
+  (interactive "P")
+  (when arg
+    (setq ywb-scratch-buffer (read-buffer "Set scratch to: " (buffer-name))))
+  (let ((buf (get-buffer ywb-scratch-buffer)))
+    (if (null buf)
+        (progn
+          (or arg
+              (setq ywb-scratch-buffer (if (y-or-n-p "The buffer does not exist! Create *scratch*? ")
+                                           "*scratch*"
+                                         (read-buffer "Set scratch to: " (buffer-name)))))
+          (switch-to-buffer ywb-scratch-buffer)
+          (lisp-interaction-mode))
+      (switch-to-buffer ywb-scratch-buffer))))
+</pre>
+
+-- [[Ye Wenbin]]
+
+----
+CategoryBufferSwitching
+

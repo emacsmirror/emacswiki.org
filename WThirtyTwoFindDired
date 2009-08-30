@@ -1,0 +1,6 @@
+w32-find-dired is a light replacement for find-dired for those who use Emacs on a w32 platform and do not have access to, or cannot get it to work with, the `find' and `ls' commands.
+
+Download it here: Lisp:w32-find-dired.el
+----
+CategoryWThirtyTwo
+CategoryExternalUtilities

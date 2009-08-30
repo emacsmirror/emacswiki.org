@@ -1,0 +1,26 @@
+I don't like that `##dired-(next|previous)-line##' moves to "not useful" lines in DiredMode, like the empty ones between inserted subdirectores, so I came up with this simple defun that suit my needs better.
+
+ (defun dired-next-file-line ()
+   "Moves to the next dired line that have a file or directory name on
+ it"
+   (interactive)
+   (call-interactively 'dired-next-line)
+   (if (not (dired-move-to-filename))
+       (dired-next-file-line)))
+ 
+ (defun dired-previous-file-line ()
+   "Moves to the previous dired line that have a file or directory name
+ on it"
+   (interactive)
+   (call-interactively 'dired-previous-line)
+   (if (not (dired-move-to-filename))
+       (dired-previous-file-line)))
+
+[new:Agamestor:2009-08-16 18:57 UTC]
+I changed the place of the last line in each function. This works for me.
+[new]
+
+See also DiredTweaks.
+
+----
+CategoryDirectories

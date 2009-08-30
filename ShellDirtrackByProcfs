@@ -1,0 +1,16 @@
+This has the same goal as ShellDirtrackByPrompt but uses a different approach.
+It doesn't require you to change your shell's rc-file.
+
+  (defun track-shell-directory/procfs ()
+    (shell-dirtrack-mode 0)
+    (add-hook 'comint-preoutput-filter-functions
+              (lambda (str)
+                (prog1 str
+                  (when (string-match comint-prompt-regexp str)
+                    (cd (file-symlink-p
+                         (format "/proc/%s/cwd" (process-id
+                                                 (get-buffer-process
+                                                  (current-buffer)))))))))
+              nil t))
+
+  (add-hook 'shell-mode-hook 'track-shell-directory/procfs)

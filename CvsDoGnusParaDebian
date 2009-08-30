@@ -1,0 +1,10 @@
+Um tipo da equipa de desenvolvimento da Debian oferece no seu website um pacote com uma imagem diária do CvsDoGnus para os impacientes.
+
+Para o usares apenas tens de adicionar esta linha ao teu /etc/apt/sources.list :
+
+    deb http://people.debian.org/~srivasta packages
+
+
+Depois faz como é hábito para actualizares a tua base de dados de pacotes e diverte-te !
+----
+CategoryGnus

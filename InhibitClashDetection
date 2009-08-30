@@ -1,0 +1,3 @@
+Emacs will ordinarily create files of the form #.FILENAME when editing a FILE. XEmacs has a variable inhibit-clash-detection that, when non-NIL, will inhibit this behavior. This small package implements the same approach for GNU Emacs.
+
+[[Lisp:inhibit-clash-detection.el]]

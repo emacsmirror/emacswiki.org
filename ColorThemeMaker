@@ -1,0 +1,36 @@
+This little package helps you make a new ColorTheme.  Idea by GirishB, coded by AlexSchroeder.
+
+This works by making it easier to create subthemes.  If you like the
+jde [[Face]]s of theme A, the erc faces from theme B, and generally
+prefer theme color-theme-gray30, then proceed as follows:
+
+Install theme A, call M-x color-theme-maker, provide "jde" as
+regexp and "my-jde-subtheme" as name, then install theme B, call
+M-x color-theme-maker, provide "erc" as regexp and
+"my-erc-subtheme" as name.  Save the two buffers as
+my-jde-subtheme.el and my-erc-subtheme.el.  In your .emacs, add:
+
+
+  (require 'color-theme)
+  (color-theme-gray30)
+  (setq color-theme-is-cumulative t)
+  (require 'my-jde-subtheme)
+  (my-jde-subtheme)
+  (require 'my-erc-subtheme)
+  (my-erc-subtheme)
+
+
+Download:
+
+* Lisp:color-theme-maker.el
+
+== Discussion ==
+
+[new]
+I'd like to see customize-face-at (maybe customize-theme-face-at ?) that only applies its changes to the theme I'm using at the moment. It would make minor theme customizations simple. Or maybe not... --ShaeErisson
+
+[new]
+See FaceList, and use M-x color-theme-print to print the result as a new color theme.  Everything else would require rewriting the elisp defining the current theme.  I am not yet prepared to treat elisp files as config files.  If you really want that, stick to M-x customize-face.  All that you might want, then, is a function to convert an installed color theme into regular face customizations which will can be saved and edited via the normal custom interface. -- AlexSchroeder
+
+----
+CategoryFaces

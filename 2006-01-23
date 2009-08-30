@@ -1,0 +1,11 @@
+Reading the thread [http://thread.gmane.org/gmane.emacs.devel/49235 allocate_string_data memory corruption] on [[emacs-devel]] I've realized that the next EmacsFromCvs I'm going to compile myself will use ##-DSYNC_INPUT##.
+-- AlexSchroeder
+
+[new]
+Indeed; same here. -- EdwardOConnor
+
+[new]
+What are the implications when using this ##-DSYNC_INPUT## ? I tried to read part of the thread but I think I do not get it ;) -- XavierMaillard
+
+[new]
+Something about C-g not quitting under some conditions. -- Alex

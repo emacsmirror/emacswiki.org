@@ -1,0 +1,15 @@
+To protect newbie users from lossage, some Emacs commands are disabled
+by default due to their potentially destructive nature.  When one tries
+to execute such a command, Emacs will ask you if you really want to do
+that and offer to un-disable it by putting a form like below in your
+InitFile.
+
+ (put 'some-disabled-command 'disabled nil)
+
+To enable all disabled commands in one fell swoop, put this in your
+InitFile.  This is not recommended for newbies.
+
+ (setq disabled-command-hook nil)
+
+----
+CategoryCommands

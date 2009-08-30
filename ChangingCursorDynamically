@@ -1,0 +1,74 @@
+This page describes library Lisp:cursor-chg.el, by DrewAdams, which lets you automatically change the [[cursor]] shape and color, depending on the context.
+
+There are two different ideas behind this library: 
+
+* Why not use the cursor type and color to let you know what the current context is?
+
+* A bar cursor (vertical bar between characters) is handy for editing, but it is not very noticeable in the middle of a sea of text. Why not change it to a box cursor (on top of a character) when Emacs is idle, so you can spot it easier?
+
+Library <tt>[[cursor-chg.el]]</tt> provides three kinds of changes to the text cursor, which you can control independently:
+
+# When a buffer is read-only or is in overwrite mode, the cursor type changes to `curchg-overwrite/read-only-cursor-type' (by default, `box').  This
+is controlled by command `change-cursor-mode' and user option
+`curchg-change-cursor-on-overwrite/read-only-flag'.
+
+# When an input method is in use, the cursor color changes to
+`curchg-input-method-cursor-color' (by default, `Orange').  This is controlled by
+command `change-cursor-mode' and user option
+`curchg-change-cursor-on-input-method-flag'.
+
+# When Emacs is idle, the cursor type changes to
+`curchg-idle-cursor-type' (by default, `box').  This is controlled by command
+`toggle-cursor-type-when-idle'.
+
+To turn on all three types of cursor change by default, put the
+following in your Emacs [[init file]]:
+
+   (require 'cursor-chg)  ; Load the library
+   (toggle-cursor-type-when-idle 1) ; Turn on cursor change when Emacs is idle
+   (change-cursor-mode 1) ; Turn on change for overwrite, read-only, and input mode
+
+'''Note:''' Library Lisp:oneonone.el (see OneOnOneEmacs) provides the same functionality as
+library <tt>[[cursor-chg.el]]</tt>, and more.  If you use library
+<tt>[[oneonone.el]]</tt>, then do ''not'' also use library <tt>[[cursor-chg.el]]</tt>.
+
+'''Note for Emacs 20:''' There is a bug in Emacs 20 which
+can lead to a fatal error (Emacs crash) when using `query-replace'
+with idle-cursor change enabled.  If you use Emacs 20, then
+consider using `toggle-cursor-type-when-idle' to disable
+idle-cursor change while you use `query-replace'.
+
+== Discussion ==
+
+[new:DrewAdams:2006-09-03 18:36 UTC]
+I requested that GnuEmacs add the idle-change feature in August 2006. This will probably happen after the release of Emacs 22. However, so far, it looks likely that this feature will be mixed up with cursor blinking, which is logically unrelated. That would not be such a good thing, IMO, but progress is spotty... -- DrewAdams
+
+[new]
+cursor-chg.el looks nifty but just FYI I have this simple (and by comparison, probably primitive) snippet in my .emacs.  I don't remember where I got it from but works great for me. Note, the hardwired colors are meant for dark backgrounds.
+
+    ;; Change cursor color according to mode
+    (defvar hcz-set-cursor-color-color "")
+    (defvar hcz-set-cursor-color-buffer "")
+    (defun hcz-set-cursor-color-according-to-mode ()
+      "change cursor color according to some minor modes."
+      ;; set-cursor-color is somewhat costly, so we only call it when needed:
+      (let ((color
+             (if buffer-read-only "white"
+               (if overwrite-mode "red"
+                 "yellow"))))
+        (unless (and
+                 (string= color hcz-set-cursor-color-color)
+                 (string= (buffer-name) hcz-set-cursor-color-buffer))
+          (set-cursor-color (setq hcz-set-cursor-color-color color))
+          (setq hcz-set-cursor-color-buffer (buffer-name)))))
+    (add-hook 'post-command-hook 'hcz-set-cursor-color-according-to-mode)
+
+-- ppp121-44-52-118.lns10.syd7.internode.on.net
+
+
+----
+
+CategoryEditing
+CategoryDisplay
+CategoryInternationalization
+CategoryRegion

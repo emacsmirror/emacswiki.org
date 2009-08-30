@@ -1,0 +1,40 @@
+This category is about help with '''''Emacs'''''. See also CategoryDocumentation.
+
+Introduction to Emacs:
+* '''EmacsNewbie''' '''''<===== START HERE'''''
+* CategoryGlossary -- Emacs jargon explained
+
+Emacs help within Emacs itself:
+
+* AproposMode -- Search Emacs for commands, documentation, variables, and more
+* InfoMode -- ''complete'' Emacs documentation: `C-h i', then click ''Emacs''
+* SelfDocumentation -- quick reference on finding help within Emacs
+
+Emacs help available on the Internet:
+* OnlineResources -- how to find help on the Internet
+* EmacsChannel -- InternetRelayChat, IRC
+* OpenQuestions -- questions and answers about Emacs posted on the wiki
+* EmacsScreencasts
+
+Emacs initialization files:
+* CategoryDotEmacs
+* EmacsMacro
+
+Loading Emacs libraries:
+* InstallingPackages -- how to load EmacsLisp libraries.
+
+EmacsLisp packages that enhance Emacs help:
+* HelpPlus -- new help commands, improved standard help commands, new key bindings
+* HelpMenuBarPlus -- improved '''Help''' menu (menubar)
+* HelpModePlus -- click a library name in buffer <code>*Help*</code> to visit the library itself
+* InfoHelp -- Makes symbol names in Info buffer to help links
+* [[Icicles]] -- get ''apropos''-style help on everything, as you use it or come across it. See [[Icicles - Help on Candidates]].
+* ElectricHelp
+* InfoLook -- lookup info documentation for functions, variables etc in many major modes
+* EmacsReflector (speak-freely conference server)
+* UsageMemo -- integration of Emacs help system and memo
+
+----
+
+Pour les francophones:
+Cette page est aussi disponible en français: Français:CatégorieAide

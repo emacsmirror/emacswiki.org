@@ -1,0 +1,8 @@
+Lets compile recognize flex errors and use the flex compiler shell (fcsh) without fcsh being restarted on each recompile.
+
+M-x compile starts a process each time. This can slow down things when you're working with a really large flex project and mxmlc has to load on each compile. I'm impressed with the speed and awesomeness of the Flex Compiler Shell, so I've hacked M-x compile to re-use an existing instance of the Flex Compiler Shell on each recompile.
+
+* Download [http://anirudhs.chaosnet.org/code/ani-fcsh.el ani-fcsh.el]
+* More info [http://anirudhs.chaosnet.org/blog/2008.03.26.html here].
+
+FlashActionscript

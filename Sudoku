@@ -1,0 +1,10 @@
+JesseRosenthal's sudoku.el is available from his page: "A major mode for playing sudoku puzzles on emacs. This allows you to download new puzzles from websudoku.com on the fly. In addition, roughly 200 puzzles are included. You can set four different levels: easy, medium, hard, and evil."
+
+* http://www.columbia.edu/~jr2075/elisp/index.html
+
+KimStorm posted a solver on [[gnu.emacs.sources]]:
+
+* Groups:sudoku-solver.el
+
+----
+CategoryGames

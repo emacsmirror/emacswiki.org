@@ -1,0 +1,45 @@
+<code>po-mode.el</code> is a major mode for editing [[Gettext]] <code>.po</code> message files.  The mode is included in the Gettext package,
+
+: http://www.gnu.org/software/gettext/
+
+<code>po-mode</code> is used by translators working on writing translations for the messages.  The mode has many facilities for jumping around as-yet untranslated messages or "unfuzzying" messages when the program source changes.  The mode is described in detail in the Gettext manual,
+
+: http://www.gnu.org/software/gettext/manual/
+
+See also [[po-mode+.el]] by GauteHvoslefKvalnes, it adds extra features to <code>po-mode</code>.  And also see MoMode for viewing compiled message files (using <code>po-mode</code>).
+
+Also, see [[gb-po-mode.el]] by GeorgBrandl, which (among other things) improves the behavior of the edit window and automatically rewraps message strings after edit, similar to what `po-wrap' below does.
+
+It is a good idea to have all lines in PO files not exceed 80 characters limit. Calling <code>fill-paragraph</code> while editing a message string makes every line end with <code>\n</code> like gettext multi-line string convention requires, which is usually not the desirable result. To wrap all long lines in <code>msgstr</code> contents of PO file currently being edited, use this function instead (shamelessly taken from [http://www.gnu.org/software/trans-coord/manual/gnun/html_node/New-Translation.html GNUnited Nations manual]):
+
+     (defun po-wrap ()
+       "Filter current po-mode buffer through `msgcat' tool to wrap all lines."
+       (interactive)
+       (if (eq major-mode 'po-mode)
+           (let ((tmp-file (make-temp-file "po-wrap."))
+     	    (tmp-buf (generate-new-buffer "*temp*")))
+     	(unwind-protect
+     	    (progn
+     	      (write-region (point-min) (point-max) tmp-file nil 1)
+     	      (if (zerop
+     		   (call-process
+     		    "msgcat" nil tmp-buf t (shell-quote-argument tmp-file)))
+     		  (let ((saved (point))
+     			(inhibit-read-only t))
+     		    (delete-region (point-min) (point-max))
+     		    (insert-buffer tmp-buf)
+     		    (goto-char (min saved (point-max))))
+     		(with-current-buffer tmp-buf
+     		  (error (buffer-string)))))
+     	  (kill-buffer tmp-buf)
+     	  (delete-file tmp-file)))))
+
+If you want auto-fill feature in the sub edit window, try longlines-mode. Please turn off auto-fill-mode on the sub edit window, or po-mode will add \n to your translated string which is usually not what you want. Add this code to your ~/.emacs to enable longlines-mode automatically on sub edit window.
+
+    (add-hook 'po-subedit-mode-hook '(lambda () (longlines-mode 1)))
+    (add-hook 'po-subedit-exit-hook '(lambda () (longlines-mode 0)))
+
+This code is also used in [[po-mode+.el]].
+
+----
+[[Gettext]] CategoryModes

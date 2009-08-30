@@ -1,0 +1,33 @@
+Hello!!
+
+This is [::avallark] at the #emacs channel. I use emacs as my regular editor, irc client and sqlplus editor using sql-oracle.
+
+Thanks fellas for all the help at the emacs channel.
+
+    Welcome on the wiki !
+
+Thanks Lukhas,
+
+I though it might be helpful for newbies if I put up my .emacs here : AvallarkDotEmacs Its just got very basic stuff like hiding the menu, scroll bar and stuff like that.
+
+color-theme and bar-cursor can be obtained by using apt-get install emacs-goodies :)
+
+The erc package can be obtained [http://sourceforge.net/projects/erc/ here] and more documentation can be obtained at EmacsIRCClient
+
+Just got my gnus working on the emacs, and i am able to read and send mails. the only problem seems to be is that sending mail is really slow for me. maybe becaue i am using gnus to directly talk to my smtp server. aadis suggested i should get gnus to talk to my local machine server and then that should talk to the server. will implement that tonight.
+
+: Welcome to the wiki! -- AlexSchroeder
+: Welcome avallark! -- NoufalIbrahim
+: welcome Abdul :)  -- AadityaSood
+
+Thanks guys. 
+
+Just started using python. So started using the python mode in emacs. 
+You can get the python mode [http://sourceforge.net/projects/python-mode/ from here]. 
+Also you need to add the some lines in your dotEmacs.
+
+I am forced to use windows at my office and hence the dot emacs that i use for a window machine is available here : AvallarkDotEmacsForWindows
+
+----
+CategoryHomepage
+

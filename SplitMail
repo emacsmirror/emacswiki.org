@@ -1,0 +1,70 @@
+You can split incoming mails using nnmail-split-methods.  The Gnus manual comes with nice examples.
+
+Here's a simple example that shows how to list specific email addresses without writing the regexp yourself, and how to do a simple spam filter:
+
+ (setq nnmail-split-methods 
+       (list
+	;; Mailing lists that don't list my name in the headers
+	(list "mail.misc" (concat "^From:.*" (regexp-opt 
+	  '("Jakob Nielsen"
+	    "some.list@lists.com") 1)))
+	;; Mails from myself and to myself
+	(list "mail.misc" (concat "^\\(From\\|To\\|Cc\\):.*" 
+				  gnus-ignored-from-addresses))
+	;; The rest is spam
+	'("mail.spam" "")))
+
+See IgnoredFromAddresses for an example of how to specify what your mail addresses are.
+
+See RegexpOpt for more info on optimizing regular expressions.  Note that the code above uses the optional second parameter to regexp-opt -- that will put a level of parenthesis around all the matching names.
+
+Without extra parenthesis the initial "From" applies only to the first name.
+This will result in mails being split into the wrong folders.
+
+   "^From:.*Jakob Nielsen\\|some\\.list@lists\\.com"
+
+With extra parenthesis everything works as expected.
+
+   "^From:.*\\(Jakob Nielsen\\|some\\.list@lists\\.com\\)"
+
+Note that when several entries match, mail can end up in several
+folders.  If you don't want that, set nnmail-crosspost to nil.
+
+   (setq nnmail-crosspost nil)
+
+You can test respooling by using `B t' in the summary buffer before
+using `B r' (and choosing nnml as the backend!).  If you want to
+respool lots of mails, mark them all with the process mark, first.
+Use `#' for that.
+
+== Problems ==
+
+I think something more needs to be said here.  I tried the example
+above, and respooling works properly, but INITIAL spooling never
+happens.  I have several mail sources, FWIW.  None of the gnus
+documentation seems to cover how to get all my inboxes split without
+manually doing respooling.
+
+It should do so automatically, if Gnus fetches the files from a mail
+spool (/var/mail/username) or from the net using POP, for example.  If
+you use some other means, such as procmail distributing mail to other
+files, then you must do splitting via procmail.  The important thing
+is that you get mail via gnus-secondary-select-methods. --
+AlexSchroeder
+
+Well, I figured it out, but I don't know if it is right.  I do this:
+
+(add-to-list 'gnus-secondary-select-methods '(nnml ""))
+(setf mail-sources
+      '((file)
+	(directory :path "mypath" :suffix ".fy"))))
+
+And this:
+
+(setf nnmail-resplit-incoming t)
+(setf nnmail-crosspost nil)
+
+And it seems to work.  Funny that you don't specify which inboxes to split when you set nnmail-split-*.
+
+----
+CategoryGnus

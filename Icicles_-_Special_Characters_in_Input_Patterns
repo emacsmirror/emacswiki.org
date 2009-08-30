@@ -1,0 +1,148 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Inserting a Regexp from a Variable or Register]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Alternative Libraries]] ||
+
+----
+
+== Special Characters in Input Patterns ==
+
+[[regexp | Regular-expression]] syntax treats some characters specially, but
+some of these special characters have another special meaning in
+Emacs when used with file-name inputs.  What about the conflict
+between interpreting characters such as '''`<code>$</code>'''', '''`<code>\</code>'''', '''`<code>.</code>'''', '''`<code>?</code>'''', and
+'''`<code>*</code>'''' as 1) ''regexp'' special characters and 2) special characters for
+''file-name'' input?  For example, when inputting a file name, should
+`<code>*</code>' be treated as a regexp multiple-occurrences operator or as a
+file-name wildcard?
+
+In Emacs ''file-name'' input:
+
+* '''`<code>$</code>'''' can be used to prefix ''environment variables''.
+
+* '''`<code>*</code>'''' and '''`<code>?</code>'''' can be used as ''wildcards'', effectively inputting multiple file names at once.
+
+* '''`<code>.</code>'''' and '''`<code>..</code>'''' can be used to navigate a ''directory hierarchy''.
+
+* '''`<code>\</code>'''' is a ''directory separator'', like `<code>/</code>', on MS Windows, at least.
+
+'''Icicles''' handles the conflict by interpreting such characters as
+''regexp special characters only during input [[completion]] and [[Icicles - Cycling Completions | cycling]]''
+-- and then only if you do not escape them (with '''`<code>\</code>'''').  If present
+in the input when you finally accept it (using `RET'), they take
+on their normal Emacs meanings for file-name input:
+environment-variable prefix, wildcard, directory abbreviation, or
+directory separator.
+
+That is, whenever there is a potential conflict of interpretation,
+the regexp meaning is used for ''completion and cycling'', and the
+standard interpretation for file-name input is used for ''accepting''
+the input.  So, for example, to get the wildcard interpretation of
+`<code>*</code>', just forego regexp completion and cycling.  And vice versa:
+forego the wildcard interpretation to use regexp completion and
+cycling.
+
+This is in any case the behavior of vanilla Emacs as well.  If, in vanilla Emacs, you use
+`##ici*##' or `##ici*.el##' as input to `find-file' and hit `TAB', there
+is no completion available.  File-name ''globbing and completion are
+independent''.
+
+'''Note:''' Because `<code>?</code>' is useful in regexp syntax, the standard Emacs [[minibuffer]] binding of `<code>?</code>', which just displays the completion-candidates list, is not used in '''Icicles'''.  In '''Icicles''', '''`<code>?</code>'''' self-inserts in the minibuffer, like any other printable character.  (Use `TAB' or `S-TAB' to display the list.)  In standard Emacs, you must quote `<code>?</code>' or copy-and-paste it, to insert it in the minibuffer for use as a file-name wildcard.
+
+The interpretation conflict for '''`##\##'''' (on MS Windows) is not really
+a problem, anyway.  Although you cannot use a backslash (`##\##') as a
+directory separator during [[apropos completion]] and cycling, you can always
+use a slash (`##/##') instead -- even on MS Windows.  The best practice is to just break with
+MS-Windows syntax, and get in the habit of always using `##/##' ''as the
+directory-separator character''.
+
+But what if you copy an absolute filename from some MS Windows
+application, so it has backslashes, and you want to use it in
+Emacs?  You can go ahead and paste it in the minibuffer for
+file-name completion, as long as you are not doing regexp
+completion.  You can (a) use [[prefix completion]] with it, (b) use
+`##C-`##' to turn on regexp quoting for apropos completion (so you can
+complete a substring), or (c) change the backslashes to slashes.
+
+Even if you always use only slash, not backslash, as a directory
+separator when inputting, however, it is possible that you could
+run into some trouble on MS Windows -- you might (knowingly or
+not) use `##\##' as a directory separator in the ''values of environment
+variables'' that you use as part of file-name input.  If you are
+regexp completing, then those backslashes will be treated as regexp escapes.  So you
+should use only non-regexp completion with input that includes
+environment variables whose expansions might include backslashes.
+
+The interpretation conflict for '''`##$##'''' is also not a real problem.
+You can get the effect of both interpretations of `##$##' at the same
+time, because '''Icicles''' recognizes that `##$##' at the end of input
+cannot be an environment-variable prefix.  This means, for
+example, that you can use a pattern such as `##$HOME.*t$##' to match
+the files in your home directory whose names end in `t'. The first `##$##' here is not treated specially during regexp matching and cycling; the environment variable `##$HOME##' is expanded by the shell to a directory name. The second `##$##' is treated as the regexp special character that matches at the end of a line.  When using environment variables, you can also enclose them in braces: `##${HOME}##', for example.
+
+'''Tip:''' Because slash (`<code>/</code>') is about the only non-word syntax character that is likely to appear in file-name completions, you can usually ''use'' '''`<tt>\W$</tt>'''' ''to match only directories'' (by matching the `<code>/</code>' at the end of their names). `##\W##' is the regexp pattern that matches any  character that does not appear in words.  For example, you can use `##${HOME}\W$##' to match all direct subdirectories in your home directory.
+
+
+[:Escaping]
+== Quoting (Escaping) Special Characters ==
+
+[:icicle-toggle-regexp-quote]
+[:icicle-regexp-quote-input]
+You can toggle interpretation vs escaping of regexp
+special characters at any time, using '''`##C-`##'''' in the minibuffer
+(command `icicle-toggle-regexp-quote').  Escaping special
+characters this way means they are no longer special; they simply
+match themselves.  This has the effect of reducing apropos
+completion to ''simple substring completion''.  If you ''never'' want to
+use regexp matching ('''''not''''' ''recommended!''), you can customize [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-regexp-quote-flag|icicle-regexp-quote-flag]]</tt>'''', setting it to non-`nil'.
+
+Apropos (regexp) completion contains literal substring completion
+as a (common) special case.  Sometimes you want to use regexp
+completion, but you also want to match a literal substring that
+contains special characters.  You can of course quote (escape)
+each of these characters by hand.  Alternatively, you can use
+'''`##C-M-;##'''' (`icicle-regexp-quote-input') to quote the text that you
+want to match literally.  If the [[region]] is active, then it is
+quoted; otherwise, your entire minibuffer input is quoted.
+
+Note that if a substring that you want to match literally can
+occur anywhere in the target completion candidate, then it is
+simpler to just use [[progressive completion]].  Quoting a literal
+substring is useful when the overall regexp requires it to be at a
+certain location in the target.
+
+'''See Also:'''
+
+* [[Icicles - Dired Enhancements]] for how to use '''Icicles'''
+regexp-matching to open ''Dired'' on sets of files that you might not be able to
+specify using file-name wildcards
+
+* [[Icicles - Multi-Commands]] for a way to open multiple files whose
+names match a regular expression
+
+
+* [[Icicles - File-Name Completion Tips]] for:
+** Information about abbreviating your home directory as '''`##~##'''' or expanding it.
+** A way
+to locate and open files by regexp anywhere in your file system
+-- that is, match against directory-name as well as file-name components.
+
+* [[Icicles - Progressive Completion]]
+
+
+----
+
+|| *Previous:*  [[Icicles - Inserting a Regexp from a Variable or Register]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Alternative Libraries]] ||
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

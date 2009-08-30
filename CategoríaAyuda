@@ -1,0 +1,35 @@
+Pulse sobre el título de esta página para encontrar una lista de todas las páginas relacionadas con ayuda y depuración en este wiki.
+
+* DocumentaciónPropia -- cómo encontrar ayuda dentro de Emacs
+* RecursosEnLínea -- cómo encontrar ayuda en Internet
+** GruposDeNoticiasEmacs -- USENET, grupos de noticias
+** ListasDeCorreoEmacs -- listas de correo
+** CanalEmacs -- InternetRelayChat, IRC
+** PreguntasAbiertas -- publicando inquietudes al wiki
+* MacroEmacs -- EMacro es un archivo .emacs inmenso que se encarga de la mayoría de problemas de los principiantes
+
+Ayuda para problemas específicos:
+
+* LoadPath -- cómo agregar elementos a su `load-path'
+* LibreríasEnConflicto -- qué sucede si tiene varias instalaciones de Emacs, o diferentes instalaciones de paquetes en su `load-path'
+
+Paquetes de Emacs que ofrecen incluso más ayuda, usualmente automatizando parte de la búsqueda para la información adecuada:
+
+* ElectricHelp
+* WordHelp
+* InfoLook
+
+Aquí hay algunas páginas que más o menos representan un glosario de términos relacionados con Emacs:
+
+* DisplayDefinición
+* ElectricityDefinición
+* FacesDefinición
+* BuffersDefinición
+* WindowsDefinición
+* FramesDefinición
+* NarrowingDefinición
+* SexpDefinición
+
+Material relacionado:
+
+* EmacsReflector (servidor de conferencias ''speak-freely'')

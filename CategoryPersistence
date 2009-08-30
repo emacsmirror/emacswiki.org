@@ -1,0 +1,13 @@
+Click the header to search for pages that reference CategoryPersistence.
+
+Similar to SessionManagement but includes all things that are saved between sessions.
+
+* DeskTop
+* SavePlace
+* BookMarks
+* RecentFiles
+* DiredPlus -- use of dired-hack-local-variables to save the way a directory is viewed
+* infobook.el -- keep info node bookmarks separate from regular bookmarks with infobook.el by NoahFriedman
+* DiaryMode
+* SaveHist -- save MiniBuffer histories and optionally other histories, such as the search rings
+* [[Icicles - File-Name Input]] Cache file lists all files on your file system. Use it for regexp [[Completion]] to find a file anywhere.

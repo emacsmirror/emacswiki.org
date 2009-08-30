@@ -1,0 +1,32 @@
+Textile-mode is a major mode, derived from text-mode, in order to help editing text with the Textile markup language.
+
+It only does syntax highlighting for the moment, and is still in alpha version. It is my first attempt to make a major mode, and I didn't have the time to choose beautiful faces for fontlocking, so don't be afraid if you find the syntax-highlighted result ugly !
+
+The page to get the code and some spare documentation is at :
+
+http://dev.nozav.org/textile-mode.html
+
+
+For more information about textile, you can take a look at :
+
+http://www.textism.com/tools/textile/
+
+http://hobix.com/textile/
+
+For information on converting textile to html via ruby within emacs, see:
+
+http://twoday.tuwien.ac.at/ferrari/stories/12614/
+
+There is also a minor mode that provide a function to convert small subset of textile into HTML
+
+http://code.google.com/p/textile-minor-mode/
+
+Any feedback would be greatly appreciated !
+
+: I have the converse of this, a project to convert Textile to XHTML,
+on my site at http://zancanda.staticcling.org/emacs/textile/ -- I had
+planned someday to create a mode for editing Textile, but it seems
+like you have filled that bill.  Maybe if my code ever passes the unit
+tests we could combine them into one package. -- CharlesSebold
+----
+MarkupModes

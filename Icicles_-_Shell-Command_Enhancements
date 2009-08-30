@@ -1,0 +1,137 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Tags Enhancements]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Dired Enhancements]] ||
+
+----
+
+== Icicles Shell-Command Enhancements ==
+
+
+'''Icicles''' provides [[completion]] support for shell commands in these
+ways:
+
+* In ShellMode and related modes, it enhances completion of
+  commands, previous inputs (commands plus their switches and
+  arguments), file names, and environment variables.
+  See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Comint Mode Completion]].
+
+* In any [[buffer]], it provides completion for '''`##M-!##'''' and '''`##M-|##''''.
+
+* In DiredMode mode, it provides '''Icicles''' completion for '''`##!##'''', and '''`##&##''''.  See [[Icicles - Dired Enhancements#CompleteShellCommands|Shell Commands on Marked Files]].
+
+
+This section describes the completion available for `##M-!##' and
+`##M-|##'.  It applies also to completion for `##!##', and `##&##' in Dired
+(but those have additional enhancements).
+
+In vanilla Emacs, when you enter a shell command at the prompt for
+`##M-!##' or `##M-|##', no completion is available for Emacs prior to
+Emacs 23.  In Emacs 23, no completion is available for empty
+input, and non-empty input is completed only to a shell command in your
+search path.
+
+In ''Icicle'' mode, `##M-!##' and `##M-|##' can, like in vanilla Emacs 23,
+complete using commands on your search path.  This depends on the
+the value of [[option]] `icicle-guess-commands-in-path' (see below).
+
+The most significant thing about '''Icicles''' completion for reading a
+shell command is that it is enhanced ''file-name'' completion.  This
+means that you can easily invoke a program no matter where it
+resides, whether or not its directory is in your search path.  You
+can use completion to navigate to the command's location.
+
+'''Icicles''' shell-command completion is [[lax]], so you can enter any command you
+want, not just a completion candidate, and you can edit completed
+input, to add switches (options) and arguments.
+
+[:icicle-guess-commands-in-path]
+Though file-name completion is used for reading shell commands, ''extra'', known commands are also made available as completion candidates if option '''`<tt>[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|icicle-guess-commands-in-path]]</tt>'''' is non-`nil' (which it is by default).  These extra candidates are the names of all executable
+files (or of all files, if `shell-completion-execonly' is `nil') in
+your ''search path''.
+
+The fact that these are '''Icicles''' ''extra'' candidates means that they
+are available regardless of the current default-directory -- they
+are not in fact treated as file-name candidates, even though they
+are available during file-name completion.  You can easily
+recognize Icicles extra candidates in buffer `*Completions*': they
+have face `icicle-extra-candidates'. See [[Icicles - Global Filters]].
+
+[:icicle-shell-command-candidates-cache]
+If `icicle-guess-commands-in-path' is non-`nil', the list of
+search-path candidate commands is computed once and cached as the
+value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-shell-command-candidates-cache|icicle-shell-command-candidates-cache]]</tt>''''.  The
+particular non-`nil' value of `icicle-guess-commands-in-path'
+determines when the cache is filled.
+By default, the cache is filled the first time you use it, and each time you turn on ''Icicle''
+mode it is updated.  If you set `icicle-guess-commands-in-path' to
+the value '''`load'''', then the cache is instead filled each time you
+load '''Icicles'''.
+
+Regardless of the non-`nil' value of
+`icicle-guess-commands-in-path', if you ''save''
+`icicle-shell-command-candidates-cache', then that value is used
+in future sessions (no delay for searching your path).
+
+[:icicle-recompute-shell-command-candidates]
+If your environment changes, you can use command
+'''`icicle-recompute-shell-command-candidates'''' to update the cached
+list at any time.  With a [[prefix argument]], the updated value is
+saved persistently.
+
+In addition to the extra candidates computed by searching your
+search path, in contexts such as [[DiredMode|Dired]] where target (e.g. marked)
+files for the shell command are known, the extra candidates
+include additional commands (possibly including switches) that '''Icicles''' can
+guess might be appropriate for the target files.
+See [[Icicles - Dired Enhancements#CompleteShellCommands|Shell Commands on Marked Files]].
+
+During shell-command completion, help is available for individual
+candidates, using `C-M-RET', `C-M-mouse-2', and so on.  For an
+extra candidate, help is
+provided for the command by the `apropos' shell command (if available).  For a
+file-name candidate, help shows the file's properties.  See [[Icicles - Help on Candidates]].
+
+Remember also:
+
+* After you have typed or completed the shell command per se
+ (e.g. a file name or search-path command), you can use '''`C-M-S-f''''
+ (file-name completion on demand) to complete (relative) file
+ names to insert as shell-command arguments as part of the
+ command line to submit to the shell.  See [[Icicles - Completion On Demand]].
+
+* You can use '''`M-o'''' anytime in the minibuffer to complete against
+  a previous input.  This means that if you have previously
+ entered some complex shell command (e.g. with various switches
+ or arguments), then you can use `M-o' to retrieve it for reuse (possibly
+editing it).  See [[Icicles - History Enhancements#InsertPreviousInputs|Using Completion to Insert Previous Inputs: `M-o']]
+
+* If for some reason you do not want to use the enhancements
+described here, just customize option 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-redefine-standard-commands-flag|icicle-redefine-standard-commands-flag]]</tt>'''' to `nil'.  If you do
+that, then ''Icicle'' mode will not substitute any '''Icicles''' commands for
+standard commands.
+
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Tags Enhancements]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Dired Enhancements]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryModes
+CategoryProgrammerUtils
+CategoryCode
+CategorySearchAndReplace
+CategoryShell
+CategoryRegion
+

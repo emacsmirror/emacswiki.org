@@ -1,0 +1,52 @@
+You can combine PlannerMode and the <code>remind</code> utility by using http://sachachua.com/notebook/emacs/remind.el. Please see remind.el for more details.
+
+It would be interesting to combine Calendar, Planner and Remind in such a way that from CalendarMode someone could add appointments to .reminders
+
+Another approach is to use http://sachachua.com/notebook/emacs/planner-diary.el to integrate your emacs diary entries with planner.  
+
+
+<b>
+DanielMartins .emacs+remind configuration
+</b>
+
+
+
+<pre>
+;; ;; To include .reminders as a shell mode 
+  (setq auto-mode-alist
+        (cons '(".reminders$" . shell-script-mode) auto-mode-alist))
+
+(add-hook 'sh-mode-hook
+     (lambda ()
+       (auto-fill-mode nil)))
+
+
+;; From Sacha Chua
+
+;; If you want your schedule to be automatically updated 
+;; whenever you save a planner file, put this in your .emacs:
+
+;; Remind options
+
+(require 'remind)
+
+
+(add-hook 'planner-mode-hook
+   (lambda () (interactive)             
+     (make-local-hook 'after-save-hook)
+     (add-hook 'after-save-hook 'remind-parse-planner t t)
+     (add-hook 'after-save-hook 'remind-export-to-diary t t)))
+
+;; Alternatively, you can add the following lines to your
+;; .emacs file:
+
+(defadvice mark-diary-entries (before remind-generate-diary activate)
+  "Generate a diary file from a .reminders file."
+  (remind-parse-planner)
+  (remind-export-to-diary))
+
+
+</pre>
+
+----
+CategoryPersonalInformationManager

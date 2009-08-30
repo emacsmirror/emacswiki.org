@@ -1,0 +1,41 @@
+A major mode for reading e-texts like those found on [http://www.gutenberg.org Project Gutenberg].
+
+Basically it extends ViewMode with some handy keys, bookmarking, and the ability to automatically extract the text file from a zipped text (like those from [http://www.gutenberg.org Project Gutenberg] ).
+
+Bookmarking the position in a zipped text file is handled correctly.
+
+When visiting a file in the user set etxt-directory emacs will automatically switch to etxt-mode.  Then when quitting the file it will ask if a bookmark is desired.
+
+== Installation ==
+Put the Lisp:etxt.el file in your lisp path.
+
+Add this to your ##~/.emacs## file:
+
+  (require 'etxt)
+
+Start Emacs, then set your ebook directory with: 
+
+  M-x customize RET etxt
+
+To start etxt mode visit a file in your ebook directory or type: 
+
+  M-x etxt.
+
+== Keys ==
+
+; l: to have a speedbar list the files in your etxt-directory
+; b: to see your previously set bookmarks
+; W: to visit the www.gutenberg.org online catalog
+; q: to quit and save a bookmark
+; a: to set a bookmark without quiting
+; SPC: to page forward
+; DEL: to page backward
+
+== See also ==
+
+* A dictionary client is handy, see several under CategoryInterface.
+* GutenbergCoding can notice the coding system for a non-ASCII Gutenberg text.
+
+----
+CategoryEducation
+CategoryReading

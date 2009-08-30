@@ -1,0 +1,13 @@
+If you want to customize a MajorMode, you may have to execute
+some code whenever the major mode is activated.  This is done using
+the major mode hook.  It usually has the same name as the major mode
+with "-hook" appended.  Thus, in order to change some things in
+<code>text-mode</code>, you'd add code to <code>text-mode-hook</code>.
+
+Remember, most customizations can be set and saved using <code>M-x
+customize-group</code>.  Only rarely will you need to put code on the
+hook.  One such thing might be customization of font-lock keywords.
+See ShowWhiteSpace for an example.
+
+----
+CategoryModes

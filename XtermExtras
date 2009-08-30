@@ -1,0 +1,5 @@
+xterm-extras.el is a package to allow you to use all sorts of modified function keys and other odd keys when running emacs with the <tt>-nw</tt> option.  It requires a fairly up-to-date xterm; see the comments for details and other caveats.  It has only been tested with a fairly recent CVS checkout of GNU emacs.
+
+* http://www.dur.ac.uk/p.j.heslin/Software/Emacs
+
+--PeterHeslin

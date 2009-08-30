@@ -1,0 +1,88 @@
+This file is part of GNU Emacs.
+The author, DavidBakhash, wrote a research paper about the mode: http://web.mit.edu/cadet/www/OLCCR/project-paper.html
+
+In the paper he says that the system will not scale to 2000 characters, which would be about the set required for decent Japanese support.  These days, however, this is no longer true: "Even the avg computer from 3 years ago could do 5k characters," he says now.
+
+StrokesMode can be used to communicate with hand-drawn letters using
+XEmacs.  Emacs 20 is not good enough to actually show the pixmaps.
+Using XEmacs, however, you can use strokes-mode to edit strokes.  They
+appear in the buffer as pixmaps.  Then you can `strokes-encode-buffer'
+to send the output via mail, and the recipient can
+`strokes-decode-buffer' to read it.  Truly amazing.  A visual
+input-method.
+
+----
+
+I wrote a little strokes-manager which would allows me to browse, add
+to, edit and save the list of strokes.  At the same time DavidBakhash
+has decided to modify strokes.el such that it will allow strings as
+the action associated with a stroke.  I'll try to create a visual
+input-method for Japanese characters. -- AlexSchroeder
+
+----
+
+== Viewing strokes ==
+
+=== XEmacs ===
+
+Use M-x list-strokes.
+
+=== Emacs 20 ===
+
+You need to get the following two files:
+
+* cl-array.el
+* list-strokes.el
+
+Then use something like this:
+
+ (load "strokes.el")
+ (load-file "cl-array.el")
+ (load-file "list-strokes.el")
+ (defun strokes-alphabetic-lessp (stroke1 stroke2)
+   "T iff command name for STROKE1 is less than STROKE2's in lexicographic order."
+   (let ((command-name-1 (symbol-name (cdr stroke1)))
+	 (command-name-2 (symbol-name (cdr stroke2))))
+     (string-lessp command-name-1 command-name-2)))
+ (defalias 'list-strokes 'strokes-list-strokes-tty)
+
+== Plans for the upcoming version ==
+
+Items on the TODO list:
+
+list-strokes-tty will integrated with strokes.el and made Emacs
+compatible such that the above hack is no longer needed.
+
+The strokes-map and all the functions handling it will be modified so
+that they can handle string insertions.
+
+We'll consider N-best if the recognition isn't good enough.  If there
+are a lot of close matches, this will allow users to choose the one
+they wanted.
+
+Training (actually: creating the library) will use a grid resolution
+of 33x33 instead of the default 9x9.  If necessary we can distribute
+libraries with lower resolution.  This may be necessary if the
+libraries are large (10k Kanji).
+
+== Reassigning Mouse Buttons ==
+Friedel says: You can also use strokes-mode to call emacs commands, and i wanted to use the third button instead of the second, for calling the strokes. "strokes.el" however seems to be very stubborn about using the second button. After a while i came up with the following (add to .emacs, .xemacs/init.el, whatever):
+
+ (define-key global-map [(down-mouse-3)] 'strokes-do-stroke)
+ (add-hook 'after-init-hook (lambda ()
+			     (define-key global-map
+			       [(down-mouse-2)]
+			       'mouse-yank)))
+
+Note that this will not fix the assignments that strokes.el sets for various major modes that use the second mouse button.
+
+Note: I (Friedel) just switched to gnu emacs and it seems the above hack doesn't work with emacs 21.3.50.3 anymore.
+
+Instead I just stole the following from strokes.el:
+
+  (setq strokes-mode-map
+      (let ((map (make-sparse-keymap)))
+        (define-key map [(down-mouse-3)] 'strokes-do-stroke)
+        (define-key map [(meta down-mouse-3)] 'strokes-do-complex-stroke)
+        map))
+

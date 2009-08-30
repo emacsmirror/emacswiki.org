@@ -1,0 +1,54 @@
+Several questions about EmacsWiki:
+
+* where is the link for "Today" ? I am used to click onto the date link but I no longer see it here.
+
+There is one on the [[News]] page: http://www.emacswiki.org/cgi-bin/emacs?action=new 
+
+[new:XavierMaillard:2008-10-27 15:06 UTC]
+When I checked it today, it was not the case, huh ?! --[[XavierMaillard]]
+
+* How do you translate an EmacsWiki page ? I mean, if I want to translate a page into french, how can I be sure it will only be seen in the emacs-fr "namespace" ?
+
+There is no emacs-fr namespace, emacs-fr only changes the "user interface" ie the Edit Text etc...if translating the name of the page into french is not an option you can add
+Fr or Français to the name of the page 
+
+[new:XavierMaillard:2008-10-27 15:06 UTC]
+What about a link asking to translate the page into other language(s) on each page then ?
+
+[new]
+Something like this:
+
+# we know about a defined number of languages
+# a translation link looks like ##[[fr:La Page Française]]##
+# if we look at the english copy of that page containing this translation link, a suitable link will be shown in the footer of the page
+# for all the missing translation links, we provide a text field where you can type the translated page name
+# if the name already exists you are given instructions on how to solve this problem – you can either click a link that will add the missing translation link to the page you just left, or provide an alternate name
+# if the name does not exist, the missing translation link is added to the page you just left, and and you end up on the edit page of the new page
+
+What do you think? -- AlexSchroeder
+
+[new]
+I like the idea as a whole but how will you know which "version" of
+the page a reader is currently visiting. How do you know he wants to
+read english or french or spanish... ? We should not need to have
+emacs-en or emacs-fr but a sole emacs script that, depending on the
+HTTP header, redirect to the "translated" wiki page (if it exists) or
+to the original page (if not) with a localized warning message indicating that
+the page needs help. Also, I'd rather want a sidebar ala MediaWiki
+(xhalee will be happy to read this) indicating that the wiki page is
+also available in other language. -- XavierMaillard
+
+[new]
+Note that http://www.emacswiki.org/emacs will determine your preferred language based on HTTP headers and try to use the appropriate settings if possible (ie. you will end up using emacs-fr if you prefer French). ([http://www.emacswiki.org/scripts/emacs source]) -- Alex
+
+[new]
+I envision using translation software to generate 'stub' pages for each language.  Even the page names could be generated.  Ultimately we would always fix the translation software instead of the output.
+
+Of course any language can be the authoring language, but only one at a time I think.
+
+For instance, if someone authors a page in French, then the English, German, Spanish, etc. titles for those pages will be generated and those DB entries will be filled with machine translated text...
+
+Maybe later, when the software was nearly perfect, the document could be adjusted from any language. -- PatrickAnderson
+
+[new]
+I do not like an automatic translated text. Choosing the good title is something harder than just translating it "litterally".

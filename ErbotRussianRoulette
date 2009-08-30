@@ -1,0 +1,25 @@
+ErBot has, built-in, Russian Roulette!
+
+The simple version just involves pointing the gnu at your head and either letting it go *CLICK* or go *BANG*.  To do this, use the <tt>russian-roulette</tt>, <tt>RR</tt>, or <tt>rr</tt> commands (they're all the same).
+
+Or you can bet on it.
+
+First, you must get someone to give you some money.
+
+Then use:
+
+<tt>, bet OUTCOME AMOUNT</tt>
+
+<tt>OUTCOME</tt> should be one of the symbols <tt>bang</tt>, <tt>bullet</tt>, or <tt>blam</tt> (to bet on the next chamber containing a bullet); or <tt>empty</tt>, <tt>no-bullet</tt>, or <tt>click</tt>.
+
+<tt>AMOUNT</tt> should be some non-negative number, greater than the amount of money you have.
+
+When the next person points the gnu at their head and pulls the trigger, the bot will distribute out the results of the bet.
+
+If the person who pointed the gnu be shot, then all their money gets distributed (regardless of whether they bet or not).
+
+To see how much money you currently have, use the <tt>money</tt> command.
+
+To lend  <tt>X</tt> GEMs (Generic Emacs Monetary units) to <tt>PERSON</tt>, use:
+
+<tt>, lend PERSON X</tt>

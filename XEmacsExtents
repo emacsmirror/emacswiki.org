@@ -1,0 +1,112 @@
+Extents are available [[XEmacs]] and [http://www.sxemacs.org/ forks from it.] They act simlar to [[text property|text properties]].  Unlike
+text properties, which are attached only to characters in [[buffer]]s or strings, extents can also be attached to [[window]]s and [[frame]]s.
+
+Both GnuEmacs [[overlay]]s and text properties correspond to '''[::extent]s''' in XEmacs. If you are using overlays in your code, you can immediately port to  XEmacs with the `fsf-compat' package available by putting ##(require 'overlay)## at the start of your file, though the XEmacs developers encourage you to write an implementation in terms of extents. 
+
+
+== Example Code ==
+
+Here is some example code to write your own compatiblity layer.  In
+newer XEmacsen, it might be possible to use overlays.  This will work
+for Emacs, and XEmacs has a compatibility layer (see above) that translates overlays
+into extents.  I know it is weird, and it may also not work for all
+properties, since they often have different names and different
+semantics.
+
+See also http://proofgeneral.inf.ed.ac.uk/components for Emacs/XEmacs
+compatibility using a common abstraction of extents and overlays, 
+dubbed <i>spans</i>.
+
+=== Example from ansi-color.el ===
+
+(See AnsiColor for more.)
+
+<pre>
+(defun ansi-color-make-extent (from to &optional object)
+  "Make an extent for the range [FROM, TO) in OBJECT.
+
+OBJECT defaults to the current buffer.  XEmacs uses `make-extent', Emacs
+uses `make-overlay'.  XEmacs can use a buffer or a string for OBJECT,
+Emacs requires OBJECT to be a buffer."
+  (if (functionp 'make-extent)
+      (make-extent from to object)
+    ;; In Emacs, the overlay might end at the process-mark in comint
+    ;; buffers.  In that case, new text will be inserted before the
+    ;; process-mark, ie. inside the overlay (using insert-before-marks).
+    ;; In order to avoid this, we use the `insert-behind-hooks' overlay
+    ;; property to make sure it works.
+    (let ((overlay (make-overlay from to object)))
+      (overlay-put overlay 'modification-hooks '(ansi-color-freeze-overlay))
+      overlay)))
+
+(defun ansi-color-freeze-overlay (overlay is-after begin end &optional len)
+  "Prevent OVERLAY from being extended.
+This function can be used for the `modification-hooks' overlay
+property."
+  ;; if stuff was inserted at the end of the overlay
+  (when (and is-after
+	     (= 0 len)
+	     (= end (overlay-end overlay)))
+    ;; reset the end of the overlay
+    (move-overlay overlay (overlay-start overlay) begin)))
+</pre>
+
+=== Example from wiki.el ===
+
+(See WikiMode for more.)
+
+<pre>
+(defun wiki-make-extent (from to map with-glyph)
+  "Make an extent for the range [FROM, TO) in the current buffer.
+MAP is the local keymap to use, if any.
+WITH-GLYPH non-nil will add a question-mark after the extent.
+XEmacs uses `make-extent', Emacs uses `make-overlay'."
+  ;; I don't use (fboundp 'make-extent) because of (require 'lucid)
+  (if (featurep 'xemacs)
+      ;; Extents for XEmacs
+      (let ((extent (make-extent from to)))
+	(set-extent-property extent 'face 'info-xref)
+	(set-extent-property extent 'mouse-face 'highlight)
+	(when map
+	  (set-extent-property extent 'keymap map))
+	(set-extent-property extent 'evaporate t)
+	(set-extent-property extent 'wikiname t)
+	(when with-glyph
+	  (set-extent-property extent 'end-glyph (make-glyph '("?"))))
+	extent)
+    ;; Overlays for Emacs
+    (let ((overlay (make-overlay from to)))
+      (overlay-put overlay 'face 'info-xref)
+      (overlay-put overlay 'mouse-face 'highlight)
+      (when map
+	(overlay-put overlay 'local-map map))
+      (overlay-put overlay 'evaporate t)
+      (overlay-put overlay 'wikiname t)
+      (when with-glyph
+	(overlay-put overlay 'after-string "?"))
+      overlay)))
+
+(defun wiki-delete-extents (&optional start end)
+  "Delete all extents/overlays created by `wiki-make-extent'.
+If optional arguments START and END are given, only the overlays in that
+region will be deleted.  XEmacs uses extents, Emacs uses overlays."
+  (if (featurep 'xemacs)
+      (let ((extents (extent-list nil start end))
+	    extent)
+	(while extents
+	  (setq extent (car extents)
+		extents (cdr extents))
+	  (when (extent-property extent 'wikiname)
+	    (delete-extent extent))))
+    (let ((overlays (overlays-in (or start (point-min))
+				 (or end (point-max))))
+	  overlay)
+      (while overlays
+	(setq overlay (car overlays)
+	      overlays (cdr overlays))
+	(when (overlay-get overlay 'wikiname)
+	  (delete-overlay overlay))))))
+</pre>
+
+----
+CategoryCode ComparativeEmacsology

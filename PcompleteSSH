@@ -1,0 +1,7 @@
+Provides ProgrammableCompletion for ssh and scp. Handy to have under [EshellCompletion Eshell]
+
+Note: as of February 2008 this is included in the Emacs trunk, making this file no longer necessary.
+
+Lisp:pcmpl-ssh.el
+
+I cant seem to find this file in current emacs cvs. --JoakimVerona

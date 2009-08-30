@@ -1,0 +1,50 @@
+Look up HTML documentation for the symbol under the cursor.
+
+== Lisp ==
+
+To look up in the Common Lisp Hyperspec, there's <tt>[CommonLispHyperspec hyperspec.el]</tt>.
+
+To look up the documentation strings of Emacs Lisp functions and variables, see SelfDocumentation.
+
+== Python ==
+
+Pylookup is a mode to search the Python documentations from Emacs.
+
+http://taesoo.org/Opensource/Pylookup
+
+== PHP ==
+
+From PhpMode:
+
+[new]
+I didn't see such a feature in the php-mode I use so I whipped up a quick solution. If you press F1 when standing on a symbol you can quickly look up its online documentation. Here it is:
+
+<pre>
+(add-hook 'php-mode-hook 'my-php-mode-stuff)
+
+(defun my-php-mode-stuff ()
+  (local-set-key (kbd "<f1>") 'my-php-symbol-lookup))
+
+
+(defun my-php-symbol-lookup ()
+  (interactive)
+  (let ((symbol (symbol-at-point)))
+    (if (not symbol)
+        (message "No symbol at point.")
+
+      (browse-url (concat "http://php.net/manual-lookup.php?pattern="
+                          (symbol-name symbol))))))
+</pre>
+
+== C/C++ ==
+
+Use <tt>[http://furius.ca/pubcode/pub/conf/common/elisp/blais/qtdoc.el qtdoc.el]</tt> to look up in Qt documentation.
+
+CCLookup (Searching cppreference): http://taesoo.org/Opensource/CClookup
+
+== HTML 4.01/CSS 2.1 ==
+
+See [NxhtmlMode nXhtml].
+
+----
+CategoryInterface

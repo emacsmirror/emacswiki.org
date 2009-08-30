@@ -1,0 +1,31 @@
+Pulse sobre la cabecera de esta página para realizar una búsqueda de todas las páginas que pertenecen a la categoría de expresiones regulares.
+
+Entendiendo las expresiones regulares:
+
+* ExpresiónRegular -- ¿qué son las expresiones regulares, después de todo?
+* ReferenciasRegexp -- en dónde encontrar más información
+* RegexpNoCodiciosa -- cómo escribir <code>.*?</code> en viejos emacsen
+
+Programación con expresiones regulares:
+
+* ReBuilder -- construya una regexp y observe las coincidencias que produce a medida que escribe
+* RegexpSimbólica -- para programadores que desean escribir expresiones regulares legibles
+* CaseFoldSearch -- control del reconocimiento de minúsculas y mayúsculas cuando se hacen búsquedas
+
+Comandos:
+
+* BúsquedaInteractiva -- isearch, asociada a `C-s'
+* ModoGrep -- `M-x grep' busca archivos por coincidencias
+* BúferOccur -- `M-x occur' opera sobre búferes como `M-x grep' lo hace sobre archivos
+* BuscarYReemplazarEntreMúltiplesArchivos -- un verdadero FAQ
+* BuscarYReemplazarCadenasDelimitadas
+* ConteoDeReemplazos -- reemplazo de texto a partir del resultado de una evaluación lisp
+* ListaGrep -- ejemplo de código para buscar una lista de cadenas con una regexp, recorriendo recursivamente entre sublistas
+* SuperposiciónDeRegexps -- ¿es posible sobreponer expresiones regulares en un comando de reemplazo?
+
+Búsqueda e indexación de texto plano usando utilidades externas mas allá de `M-x grep' y `M-x diff':
+
+* AgenteDeRecordación -- muestra una lista de documentos relacionados a medida que escribe
+* GrepRecursivo -- grep
+
+Vea también: CategoríaEsconderCosas

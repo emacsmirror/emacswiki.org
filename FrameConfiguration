@@ -1,0 +1,11 @@
+This page collects links to pages dealing with [[Frame]] configurations.  For information on using and manipulating frames, see FrameModes.
+
+* DoReMi -- use the arrow keys to cycle through frame configurations (undo) or change frame properties 
+* FrameRestorePackage -- save and restore frame configurations across sessions
+* FramesAndRegisters -- using registers to save and restore frame configurations
+* FrameSize
+
+----
+CategoryDisplay
+CategoryFrames
+

@@ -1,0 +1,127 @@
+Note the code below does not work for gnus 5.9.0 or lesser; has only been tested with Oort Gnus series aka GnusCvs (with 0.16 it works great).
+
+Once you went through the trouble of creating an Face or X-Face header for yourself
+(see GnusFace and GnusXFace), you might want to store and view other people's
+Faces in the Big Brother Database.
+
+The code on this page uses the X-Face/Face support by Gnus to handle
+everything.  You might have to add the following in order to load the
+relevant Gnus code.  The code is in GnusCvs, so perhaps it won't work
+for you.
+
+== Emacs ==
+
+Here is some code by AlexSchroeder.  He likes to keep only one face
+per record in his BBDB.
+
+    (add-hook 'bbdb-list-hook 'my-bbdb-display-xface)
+
+    (defun my-bbdb-display-xface ()
+      "Search for face properties and display the faces."
+      (when (or (gnus-image-type-available-p 'xface)
+                (gnus-image-type-available-p 'pbm))
+        (save-excursion
+          (goto-char (point-min))
+          (let ((inhibit-read-only t); edit the BBDB buffer
+                (default-enable-multibyte-characters nil); prevents corruption
+                pbm faces)
+          (while (re-search-forward "^           face: \\(.*\\)" nil t)
+            (setq faces (match-string 1))
+            (replace-match "" t t nil 1)
+            (dolist (data (split-string faces ", "))
+              (condition-case nil
+                  (insert-image (create-image (gnus-convert-face-to-png data) nil t))
+                (error
+                 (insert-image (gnus-create-image (uncompface data) nil t :face 'tooltip))))
+              (insert " ")))))))
+
+    (add-hook 'bbdb-notice-hook 'bbdb-auto-notes-hook)
+    (setq bbdb-auto-notes-alist '(("X-Face" (".+" face 0 'replace))
+                                  ("Face" (".+" face 0 'replace))))
+
+== XEmacs ==
+
+Here is some code by SteveYoungs.  He likes to keep the "Face" and
+"X-Face" fields separate:
+
+    (autoload 'gnus-convert-face-to-png "gnus-fun")
+
+    (defun steve-bbdb-display-colour-face ()
+      "Search for face properties and display the faces."
+      (let ((inhibit-read-only t); edit the BBDB buffer
+            (all-records bbdb-records)
+            cface record start)
+        (while all-records
+          (setq record (caar all-records)
+                cface (bbdb-record-getprop record 'cface)
+                start (marker-position (nth 2 (car all-records))))
+          (if cface
+              (progn
+                (set-extent-begin-glyph 
+                 (make-extent start start)
+                 (make-glyph 
+                  (list (vector 'png ':data (gnus-convert-face-to-png cface)))))
+                (insert " ")))
+          (setq all-records (cddr all-records)))))
+
+    (setq bbdb-auto-notes-alist
+          '(("X-Face" 
+             (".+" face 0 'replace))
+            ("Face" 
+             (".+" cface 0 'replace))))
+
+    (add-hook 'bbdb-notice-hook 'bbdb-auto-notes-hook)
+    (add-hook 'bbdb-list-hook 'steve-bbdb-display-colour-face)
+
+== Display all face variants ==
+
+MichaelOlson contributed this, scavenging quite a bit from the above code snippets.  Face and X-Face images are taken from email messages and displayed at the top left of that person's BBDB buffer.  All faces and x-faces are displayed.  The face and x-face lines are then removed from the buffer.
+
+Instead of assigning X-Face headers to "face" and Face headers to "cface", he prefers to simply assign X-Face to "x-face" and Face to "face", even though this nomenclature is not standard practice.
+
+This works with EmacsFromCVS.
+
+<pre>(autoload 'gnus-convert-face-to-png "gnus-fun")
+(defun my-bbdb-display-faces ()
+  "Search for face properties and display the faces."
+  (let ((inhibit-read-only t)
+        (default-enable-multibyte-characters nil)
+        (all-records bbdb-records)
+        face x-face record)
+    (goto-char (point-min))
+    (mapc
+     (lambda (record)
+       (setq x-face (bbdb-record-getprop (car record) 'x-face)
+             face (bbdb-record-getprop (car record) 'face))
+       ;; Display Face
+       (when face
+         (insert-image (create-image (gnus-convert-face-to-png face)
+                                     nil t))
+         (insert " "))
+       ;; Display X-Face
+       (when x-face
+         (insert-image (gnus-create-image (uncompface x-face)
+                                          nil t :face 'tooltip))
+         (insert " "))
+       ;; Move to the next record, suppress error on reaching last
+       (condition-case nil
+           (bbdb-next-record 1)
+         (error nil)))
+     all-records)
+    ;; Remove all x-face and face lines from the display
+    (goto-char (point-min))
+    (save-match-data
+      (while (re-search-forward "^ *\\(x-\\)?face: " nil t)
+        (beginning-of-line)
+        (kill-line 1)))))
+(add-hook 'bbdb-list-hook 'my-bbdb-display-faces)
+
+;; Pick these headers from email messages and store them
+(setq bbdb-auto-notes-alist '(("X-Face" (".+" x-face 0 'replace))
+                              ("Face" (".+" face 0 'replace))))
+(add-hook 'bbdb-notice-hook 'bbdb-auto-notes-hook)
+</pre>
+
+----
+CategoryBbdb
+CategoryGnus

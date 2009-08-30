@@ -1,0 +1,63 @@
+== Introdução ==
+
+Quando começas um projecto grande ou pequeno é desejável ter um ficheiro <nowiki>ChangeLog</nowiki> para esse projecto. Mas normalmente isto é aborrecido. Se tu começares um projecto no CVS é muito fácil gerar automaticamente entradas no <nowiki>ChangeLog</nowiki> de acordo com os diffs entre o ficheiro em que estás a trabalhar e o ficheiro no CVS.
+
+Para isso, vais precisar dos pacotes pcl-cvs/pcvs e add-log. O pcl-cvs é um bom front-end para o CVS (vê SistemaDeVersõesConcorrentes) e o add-log é para fazer a manutenção de ficheiros <nowiki>ChangeLog</nowiki>.
+
+Repara que, em 2003-11-26, isto apenas funciona com o [[XEmacs]], pois o GnuEmacs não contém a função <tt>patch-to-change-log</tt> no pacote <tt>add-log.el</tt> (mesmo no EmacsDoCvs).
+
+O novo nome para o pcl-cvs é pcvs (vem com o Emacs21). A sua página web é  ftp://rum.cs.yale.edu/pub/monnier/pcl-cvs, mas aparenta ser agora mantida no CVS do Emacs (EmacsDoCvs) (vê http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/lisp/).
+
+<pre>
+(require 'pcl-cvs)
+(require 'add-log)
+</pre>
+
+Com o Emacs21, isto deverá ser
+<pre>
+(require 'pcvs)
+(require 'add-log)
+</pre>
+
+== Utilização ==
+
+Se fizeres alterações num buffer e não as gravares antes de chamar add-change-log-entry, ele (add-change-log-entry) vai pegar no conteúdo do buffer e construir as entradas apropriadas no <nowiki>ChangeLog</nowiki>. Mas se gravares o buffer, o add-log não consegue obter o original -- é aqui que o pcl-cvs dá uma ajuda. Podemos sempre obter o ficheiro original do CVS. O add-log têm uma função muito útil - o patch-to-change-log vai pegar num ficheiro diff em formato unificado e traduzí-lo em entradas <nowiki>ChangeLog</nowiki>.
+
+<pre>
+(defun my-cvs-changelog-in-other-window ()
+  "Mudar para ficheiro ChangeLog noutra janela."
+  (interactive)
+  (let* ((fi (cvs-mode-marked nil nil :one t))
+	 (default-directory (cvs-expand-dir-name (cvs-fileinfo->dir fi)))
+	 (buffer-file-name (expand-file-name (cvs-fileinfo->file fi)))
+	 change-log-default-name)
+    (save-excursion (find-file-other-window (find-change-log)))))
+
+(defun-cvs-mode (cvs-mode-mydiff . DOUBLE) (flags)
+  "Faz um diff nos ficheiros seleccionados contra o repositório e
+faz um patch-to-change-log depois do processamento."
+  (interactive
+   (list (cvs-add-branch-prefix
+	  (cvs-add-secondary-branch-prefix
+	   (cvs-flags-query 'cvs-diff-flags "cvs diff flags")))))
+  (cvs-mode-do "diff" flags 'diff
+	       :show nil :postproc '((patch-to-change-log default-directory))))
+
+(defun my-cvs-patch-to-change-log ()
+  "Cria um ficheiro de patch na directoria actual e no CVS. Cria
+entradas ChangeLog de acordo com o diff."
+  (interactive)
+  (progn
+    (cvs-mode-mydiff)
+    (my-cvs-changelog-in-other-window)))
+
+(define-key 'cvs-mode-map "\C-cA" 'my-cvs-patch-to-change-log)
+</pre>
+
+Podes também precisar de adicionar:
+
+<pre>
+(setq-default diff-switches "-u")
+</pre>
+
+(Podes também fazer isto com 'diff -u' no teu ~/.cvsrc.)

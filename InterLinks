@@ -1,0 +1,16 @@
+You can find a list of possible URL abbreviations on the InterMap page.
+It lists supported URL abbreviations and their expansions.
+
+If you want to link to sites on the InterMap, you can just prefix the page name with the so-called ''interwiki moniker'' -- the prefix, and a *colon*.
+
+Example:
+
+* Google:emacs+wiki
+* Groups:nxml+emacs
+* Lisp:really-simple-wiki.el
+* Oddmuse:SiteMap
+
+Note that you need to use the standard colon, not a double space variant:
+
+* 日本語:Emacsビギナー works,
+* but 日本語：Emacsビギナー does not.

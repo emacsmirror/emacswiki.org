@@ -1,0 +1,107 @@
+This page lists publications about Emacs on the Web and in print. CategoryDocumentation has information on the help and manuals in Emacs.
+
+== Printed Manuals ==
+
+The electronic manuals integrated in Emacs (EmacsLispIntro, EmacsLispReference, and EmacsManual) are also available in print from GnuPress, so you can read them without having to stare at a monitor. These books are excellent and, additionally, buying them supports the FreeSoftwareFoundation.
+
+Some people, however, believe that the GnuFreeDocumentationLicense is not really "free" -- see EmacsManualLicense. For the EmacsWiki position on licensing, see the discussion started [[2003-11-16]]
+about moving from the FDL to the current EmacsWiki license (see the footer of each page).
+
+== O'Reilly's "Learning GNU Emacs" 3rd Edition ==
+
+http://www.oreilly.com/catalog/gnu3/
+
+Published December 2004
+
+ISBN: 0-596-00648-9
+
+Covers GNU Emacs 21.3.5
+
+Includes new chapter on platform-specific issues (Unix, Windows, Mac OS X), with installation How To
+
+
+== O'Reilly's "Learning GNU Emacs" 2nd Edition ==
+
+
+Published December 1996
+
+When I first got started with emacs I picked up a copy of <i>Learning
+GNU Emacs</i>, by Cameron, Rosenblatt & Raymond (it's published by
+O'reilly press which most techies have heard of).  It's pretty well
+laid out.  It won't teach you anything you couldn't find in the
+electronic documentation, but it is useful nonetheless.
+
+The first 5 chapters, or 150 pages, are dedicated to the basics of
+using Emacs.  After that it's got a number of specialized sections
+meant for different people.  In fact, in the preface the author
+provides a guide for what people in different occupations may find
+useful.  Topics include:
+
+* Basic Editing
+* Advanced Editing
+* Email and Usenet
+* Telnet, Ange-ftp, and W3 (How to access the 'net from inside Emacs)
+* Basic Macros and LISP -- More Advanced Topics
+* Using Emacs as an IDE (Integrated Development Environment)
+* Customizing Emacs
+
+Personally, I liked the book.  It has a lot of screenshots and
+diagrams so even if you're not on your box you can see what they're
+talking about.  And it's written for non-techies.  My only real
+complaint was that the author assumed the Meta key on your box was
+ESC[0].  You probably won't read it completely through, as with most
+computer books there will be some sections that just <i>won't</i>
+apply to you.  But it is an invaluable reference -- if of course you
+like paper editions.
+
+If you're interested in buying a copy go to your favorite bookshops to
+see if it might be useful.  There are also lots of used book shops
+online.  You can get it for as little as $7 including shipping.  Good
+luck!
+
+[0] Emacs does many things through key bindings.  M-x means hit the
+Meta key on your box along with the character x.  Likewise, C-x and
+A-x means hit Control-x and Alt-x respectively.  Emacs decides which
+key should be Meta when compiled.  Sometimes it decides that your meta
+key should be the Alt key (the preferred method), the ESC key, or the
+Windows key, or something else entirely.  It is possible to change the
+Meta key to Alt and you should do that at your earliest possible
+convenience if you have to hit ESC as your meta.
+
+== Sams "Teach Yourself Emacs in 24 Hours" ==
+
+I found the section on Gnus especially helpful. -- Anonymous
+
+Please do not add a link to online copies of this book, unless you are
+certain that this publication is legal in at least Switzerland (where
+I am) and Germany (where the server is).  Please link to the
+appropriate note as well.  A simple
+disclaimer will not do.
+-- "Dot Freeze: The Fear of Lawyers!" AlexSchroeder
+
+Aren't the authors (at least one of them) wiki users?  They can
+tell us if we can (or can't) place this link here. (It's a very
+interesting link!) -- JeanPhilippeTheberge
+
+The authors of the book may not own the copyright.  They probably don't if the book was published in the US. -- Erika
+
+== Emacs for Writers ==
+Randall Wood has written a short guide on how to use Emacs for writing text (not code), which covers most functions appropriate for word processing, but it may be useful for beginners as well.  Find it at http://www.therandymon.com/papers/emacs-for-writers.pdf   -- Randall Wood 
+
+That link isn't working for me -- PeterWiersig 2005-04-24
+It works fine for me, very usefull too  -- 2005-05-18
+
+== The Craft of Text Editing ==
+
+* TheCraftOfTextEditing -- a non-introductory book about text editors, specifically Emacs.
+
+== XEmacs auf Gut Deutsch ==
+
+An introduction written in German with focus on XEmacs:
+
+http://skamphausen.de/xemacs/index.html
+
+
+----
+CategoryDocumentation
+CategoryHelp

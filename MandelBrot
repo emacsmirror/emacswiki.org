@@ -1,0 +1,9 @@
+Several people have written code to visual fractals within Emacs.
+There is, for example, code by UlfJasper to display the Mandelbrot set
+using characters or colored blocks.  As far as I know nobody has yet
+written elisp code to generate XPMs dynamically.  It should be
+possible, though.
+
+----
+CategoryGames
+

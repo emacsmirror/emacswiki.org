@@ -1,0 +1,21 @@
+I'm Ævar Arnfjörð Bjarmason aka [::avar].
+
+== My modes on the wiki ==
+
+* [[pbotutil.el]]
+* [[emms-seek-minor-mode.el]]
+
+== My Emacs setup ==
+
+I keep my emacs configuration and everything required for it (w3m,
+slime, etc) in a git repository, to set it up simply do:
+    
+    git clone git://github.com/avar/emacs-conf.git
+
+Then symlink ~/.emacs to the .emacs inside the emacs-conf
+directory. For example if you executed that in ~ just do:
+
+    ln -s ~/emacs-conf/.emacs ~/.emacs
+
+----
+CategoryHomepage

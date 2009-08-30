@@ -1,0 +1,18 @@
+This mode changes mark behaviour to emulate Motif, MAC or MS-Windows cut and paste style.
+(DeleteSelectionMode and TransientMarkMode are also enabled.)
+
+This allows you to use the `<code>S-<left></code>' and `<code>S-<right></code>' to extend or shrink the region.  Ditto for `<code>C-S-<left></code>' and `<code>C-S-<right></code>' as well as lots of other combinations well known from the Windows 3.11 world.  My favorite is `<code>S-<insert></code>', `<code>C-<insert></code>', and `<code>S-<delete></code>' to paste, copy, and cut the region.
+
+[new:DrewAdams:2004-12-25 18:16 UTC]
+Those key bindings are also available from DeleteSelectionMode and TransientMarkMode. -- DrewAdams
+[new]
+
+<code>pc-selection-mode</code> is only defined in GnuEmacs.  For [[XEmacs]], load the pc-select file.  In order to make it work for both emacsen, put the following in your <code>~/.emacs</code> file:
+
+    (if (fboundp 'pc-selection-mode)
+        (pc-selection-mode)
+      (require 'pc-select))
+
+----
+CategoryEmulation
+CategoryRegion

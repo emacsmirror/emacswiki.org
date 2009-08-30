@@ -1,0 +1,53 @@
+*Note:* [[EmacsW32]] has easy setup of GnuClient.
+
+== Associating Emacs with .txt and other file types ==
+
+(Or: How to get rid of notepad!)
+
+
+You need the gnuserv package. See GnuClient where to get a precompiled windows version from. 
+Associating .txt file directly with runemacs.exe dowsn't work very well because a new emacs is started whenever you doubleclick on a .txt file.
+
+Install (i.e. unpack) the zipfile somewhere.
+
+The zipfile contains a gnuserv.el lisp file. Copy that file to your Emacs site-lisp directory 
+
+Copy the following code in your InitFile:
+
+<pre>
+ (load "gnuserv")
+ (gnuserv-start)
+</pre>
+
+The gnuserv-start function tries to start the gnuserv.exe from the gnuserv package. In order to find the executable, you must either modify your PATH environment variable to include the directory where gnuserv.exe resides or you must set the server-program variable in your InitFile accordingly.
+
+Now you can test the installation. In a commandline window enter
+
+<pre>
+gnuclientw <somefile>
+</pre>
+
+<somefile> sould be displayed in emacs. If Emacs is not yet running, it should automatically be started. (This works only if the emacs location was written in the Windows registry with the addpm.exe utility from the emacs distribution). If the file is not displayed, read the installation instructions of the gnuserv package and check GnuClient
+
+If everything works you can associate gnuclientw.exe with the .txt extension and other filetypes (using the Windows Explorer)
+I tested it with Windows 98 and Windows NT and Emacs 21.2. It works fine for me
+
+=== Optional: Avoiding new frames for each file ===
+
+In the standard configuration a new frame is opened for each file.
+If you want to avoid this behavior try the following code in your InitFile:
+
+<pre>
+(defadvice server-edit-files-quickly (before set-gnuserv-frame activate compile)
+  "Set gnuserv-frame to current frame"
+  (setq gnuserv-frame (selected-frame)))
+</pre>
+
+This should open a new file in the current selected frame.
+
+[new]
+The default for the current version of GnuClient on MS Windows is to reuse the last used frame. 
+This can be set by the defcustom variable *gnuserv-reuseframe*.
+(The current version is the one included in [[EmacsW32]], see GnuClient.)
+----
+CategoryWThirtyTwo

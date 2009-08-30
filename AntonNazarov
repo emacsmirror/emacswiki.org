@@ -1,0 +1,305 @@
+I use Emacs for LaTeX authoring, math programs interaction (Maxima, Maple), software development, web browsing, email and music. Well, almost for everything.
+
+My messy .emacs
+
+  ;;-*- mode: Lisp; coding: utf-8-unix;-*-
+   
+  (setq inferior-lisp-program "/usr/bin/sbcl")
+  (add-to-list 'load-path "/usr/share/emacs22/site-lisp/slime")
+  (require 'slime)
+  (slime-setup)
+  (setq visible-bell t)
+  (setq slime-net-coding-system 'utf-8-unix)
+  (setq common-lisp-hyperspec-root "/home/anton/programing/doc/lisp/HyperSpec/")
+  (load "auctex.el" nil t t)
+   
+  (setq TeX-parse-self t) ; Enable parse on load.
+  (setq TeX-auto-save t) ; Enable parse on save.
+   
+  (load "preview-latex.el" nil t t)
+  (setq reftex-plug-into-AUCTeX t)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
+   
+  (custom-set-variables
+    ;; custom-set-variables was added by Custom.
+    ;; If you edit it by hand, you could mess it up, so be careful.
+    ;; Your init file should contain only one such instance.
+    ;; If there is more than one, they won't work right.
+   '(bbdb-complete-name-allow-cycling t)
+   '(blink-cursor-mode nil)
+   '(browse-url-browser-function (quote w3m))
+   '(current-language-environment "UTF-8")
+   '(dired-recursive-copies (quote top))
+   '(dired-recursive-deletes (quote top))
+   '(ecb-layout-window-sizes nil)
+   '(ecb-options-version "2.32")
+   '(ecb-windows-width 0.23)
+   '(emms-lastfm-password "<some password>")
+   '(emms-lastfm-username "<some user>")
+   '(emms-source-file-default-directory "~/music/")
+   '(focus-follows-mouse nil)
+   '(fortune-dir "/usr/share/games/frotunes")
+   '(fortune-file "/home/anton/doc/fortune")
+   
+   '(jabber-history-enabled t)
+   '(jabber-use-global-history nil)
+   '(jabber-vcard-avatars-retrieve nil)
+   '(jde-bug-debugger-host-address "127.0.0.1")
+   '(jde-bug-jre-home "/usr/lib/jvm/java-6-sun")
+   '(jde-compile-option-debug (quote ("all" (t nil nil))))
+   '(jde-debugger (quote ("jdb")))
+   '(jde-global-classpath (quote ("." "/usr/share/java/" "/usr/lib/jvm/java-6-sun/")))
+   '(jde-jdk-doc-url "/usr/share/doc/sun-java6-jdk/html/api/index.html")
+   '(jde-jdk-registry (quote (("1.5" . "/usr/lib/jvm/java-6-sun"))))
+   '(jde-regexp-jar-file "/usr/share/java/regexp.jar")
+   '(jde-sourcepath (quote (".")))
+   '(mouse-avoidance-mode (quote banish) nil (avoid))
+   '(newsticker-automatically-mark-items-as-old nil)
+   '(newsticker-date-format "(%D %A, %H:%M)")
+   '(newsticker-hide-old-items-in-newsticker-buffer t)
+   '(newsticker-html-renderer (quote w3m-region))
+   '(newsticker-show-descriptions-of-new-items nil)
+   '(newsticker-sort-method (quote sort-by-time))
+   
+   '(newsticker-use-full-width nil)
+   '(nxhtml-default-encoding (quote utf-8))
+   '(nxhtml-global-minor-mode t)
+   '(nxhtml-skip-welcome t)
+   '(php-manual-url "/usr/share/doc/php-doc/html/index.html")
+   '(python-use-skeletons t)
+   '(sentence-end-double-space nil)
+   '(shellfm-program "~/local/bin/shell-fm")
+   '(tnt-default-password "awsedrf")
+   '(tnt-default-username "2399299")
+   '(tnt-proxy-default-server "pink")
+   '(tnt-proxy-server-alist (quote (("pink" "localhost" 3000 http "" ""))))
+   '(tnt-proxy-use-proxy t)
+   '(tool-bar-mode nil)
+   '(truncate-partial-width-windows nil)
+   '(vc-handled-backends (quote (SVN RCS CVS SCCS Arch MCVS)))
+   '(w3m-accept-languages (quote ("Russian" "English")))
+   '(w3m-bookmark-file-coding-system (quote utf-8))
+   '(w3m-cookie-accept-bad-cookies t)
+   '(w3m-cookie-accept-domains (quote ("vkontakte.ru" "trac.businessconsumer.net" "test.businessconsumer.net" "livejournal.com" "businessconsumer.net")))
+   '(w3m-fill-column 0)
+   '(w3m-follow-redirection 99)
+   '(w3m-use-cookies t)
+   '(woman-use-own-frame nil))
+  (custom-set-faces
+    ;; custom-set-faces was added by Custom.
+    ;; If you edit it by hand, you could mess it up, so be careful.
+    ;; Your init file should contain only one such instance.
+    ;; If there is more than one, they won't work right.
+   '(font-latex-sectioning-5-face ((((class color) (background light)) (:inherit variable-pitch :foreground "blue4" :weight bold :family "default"))))
+   '(font-latex-slide-title-face ((t (:inherit (variable-pitch font-lock-type-face) :weight bold :height 1.2 :family "default"))))
+   '(font-latex-verbatim-face ((((class color) (background light)) (:inherit fixed-pitch :foreground "SaddleBrown" :family "default"))))
+   '(newsticker-date-face ((t (:slant italic :height 0.8))))
+   '(newsticker-feed-face ((t (:foreground "black" :weight bold :height 1.2))))
+   '(newsticker-immortal-item-face ((t (:foreground "blue" :slant italic :weight bold))))
+   '(newsticker-new-item-face ((t (:weight bold))))
+   '(newsticker-obsolete-item-face ((t (:strike-through t :weight bold))))
+   '(newsticker-old-item-face ((t (:foreground "red4" :weight bold))))
+   '(newsticker-statistics-face ((t (:slant italic :height 0.8))))
+   '(tex-verbatim ((t nil))))
+   
+  (set-face-font 'default "9x15")
+   
+  (mouse-wheel-mode 1)
+  (desktop-save-mode 1)
+  ;;(global-set-key "\M-." 'dabbrev-completion)
+   
+   ;;; add to load-path the directory where imaxima.el is installed.
+   ;;; If you change the install directory of imaxima, the first argument of push must be
+   ;;; changed accordingly.
+   (push "/usr/local/share/emacs/site-lisp" load-path)
+   
+   ;;; add to load-path the directory where maxima.el is installed.
+   ;;; If you change the install directory of maxima, the first argument of push must be
+   ;;; changed accordingly.
+   (push "/usr/share/maxima/5.12.0/emacs" load-path)
+   
+   ;;; add autoload of imaxima and maxima.
+   (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
+   (autoload 'maxima "maxima" "Frontend for maxima" t)
+   ;;; add autoload of imath.
+   (autoload 'imath-mode "imath" "Imath mode for math formula input" t)
+   
+   ;;; Make the line effective if you want to use maxima mode with imaxima.
+   (setq imaxima-use-maxima-mode-flag t)
+   
+   
+  (setq default-input-method "russian-computer")
+   
+  (require 'pymacs)
+  (pymacs-load "/home/anton/local/lib/python/ropemacs" "rope-")
+  ;;(setf ropemacs-enable-shortcuts nil)
+  (defun pymacs-reload-rope () 
+    "Reload rope"
+    (interactive)
+    (pymacs-terminate-services )
+    (pymacs-load "/home/anton/local/lib/python/ropemacs" "rope-"))
+   
+  (global-set-key "\C-c\M-/" 'rope-code-assist)
+   
+  (autoload 'svn-status "psvn" "Load subversion SCM commands." t)
+   
+  (load "/home/anton/local/share/nxml/autostart.el")
+  (load "/home/anton/local/share/emacs/javascript.el")
+  (load "/home/anton/local/share/nxml/related/django.el")
+   
+  (autoload 'moz-minor-mode "/home/anton/local/share/emacs/moz.el" "Mozilla Minor and Inferior Mozilla Modes" t)(require 'jde)
+   
+  (require 'w3m-load)
+   
+  (setq w3m-coding-system 'utf-8
+        w3m-default-coding-system 'utf-8
+        w3m-file-coding-system 'utf-8
+        w3m-file-name-coding-system 'utf-8
+        w3m-input-coding-system 'utf-8
+        w3m-output-coding-system 'utf-8
+        w3m-terminal-coding-system 'utf-8)
+   
+  ;(require 'w3m-search)
+  ;(add-to-list 'w3m-search-engine-alist
+  ;	     '("emacs-wiki" "http://www.emacswiki.org/cgi-bin/wiki.pl?search=%s")
+  ;	     '("google-utf" "http://www.google.com/search?q=%s" 'utf-8))
+  ;(setq w3m-search-default-engine "google-utf")
+   
+  ;; browse url in new tab by default
+  (setq browse-url-browser-function 'w3m-browse-url
+            browse-url-new-window-flag t)
+   
+  (push "/home/anton/local/share/emacs/emacs-jabber" load-path)
+   
+  (require 'jabber)
+   
+  (require 'bbdb)
+  (bbdb-initialize 'gnus 'message 'sc)
+   
+  ;(push "/home/anton/local/share/emacs" load-path)
+  ;(require 'external-abook)
+  ;(setq external-abook-command "lbdbq '%s'")
+  ;(eval-after-load "message" 
+  ;  '(progn 
+  ;     (add-to-list 'message-mode-hook 
+  ;		  '(lambda ()
+  ;		     (define-key message-mode-map "\C-c\t" 'external-abook-try-expand)))))
+   
+   
+  (autoload 'w3m-region "w3m"
+    "Render region in current buffer and replace with result." t)
+   
+  (add-hook 'newsticker-mode-hook 'imenu-add-menubar-index)
+   
+  ;; Music
+   
+  (add-to-list 'load-path "~/local/share/emacs/emacs-shellfm")
+  (require 'shellfm)
+  (global-set-key [(meta XF86AudioNext)] 'shellfm-skip-track)
+  (global-set-key [(meta XF86AudioPrev)] 'shellfm-love-track)
+  (global-set-key [(meta XF86AudioStop)] 'shellfm-ban-track)
+  (global-set-key [(meta XF86AudioPause)] 'shellfm-pause)
+   
+  (defun my-show-lyrics ()
+    "Show lyrics of shellfm current song in w3m"
+    (interactive)
+    (if emms-player-playing-p
+        (let* ((track (emms-playlist-current-selected-track))
+   	     (artist (cdr (assoc 'info-artist track)))
+   	     (title (cdr (assoc 'info-title track))))
+   	(w3m-goto-url 
+   	 (format "http://www.lyricsplugin.com/wmplayer03/plugin/?artist=%s&title=%s" artist title)))
+      (let* ((art-tit (split-string (substring (shellfm-track-info) 18) " — "))
+   	   (artist (car art-tit))
+   	   (title (cadr art-tit)))
+        (w3m-goto-url 
+         (format "http://www.lyricsplugin.com/wmplayer03/plugin/?artist=%s&title=%s" artist title)))))
+   
+   
+  (global-set-key [(control XF86AudioPause)] 'my-show-lyrics)
+   
+  (require 'emms-setup)
+  (emms-all)
+  (emms-default-players)
+   
+  (global-set-key [(XF86AudioNext)] 'emms-next)
+  (global-set-key [(XF86AudioPrev)] 'emms-previous)
+  (global-set-key [(XF86AudioStop)] 'emms-playlist-mode-go)
+  (global-set-key [(control XF86AudioStop)] 'emms-smart-browse)
+  (global-set-key [(XF86AudioPause)] 'emms-pause)
+   
+   
+  ;; Trivial mode
+   
+  (defun define-trivial-mode(mode-prefix file-regexp &optional command)
+    (or command (setq command mode-prefix))
+    (let ((mode-command (intern (concat mode-prefix "-mode"))))
+      (fset mode-command
+            `(lambda ()
+               (interactive)
+               (toggle-read-only t)
+   	     (start-process ,mode-prefix nil
+   			    ,command (buffer-file-name))
+   	     (let ((obuf (other-buffer (current-buffer) t))
+   		   (kbuf (current-buffer)))
+   	       (set-buffer obuf)
+   	       (kill-buffer kbuf))))
+      (add-to-list 'auto-mode-alist (cons file-regexp mode-command))))
+   
+   
+  (define-trivial-mode "gv" "\\.ps$")
+  (define-trivial-mode "gv" "\\.eps$")
+  (define-trivial-mode "xpdf" "\\.pdf$")
+  (define-trivial-mode "xdvi" "\\.dvi$")
+  (define-trivial-mode "djview" "\\.djvu$")
+  (define-trivial-mode "mplayer" "\\.mp3$")
+  (define-trivial-mode "xls" "\\.xls$" "oocalc")
+  (define-trivial-mode "ods" "\\.ods$" "oocalc")
+  (define-trivial-mode "doc" "\\.doc$" "oowriter")
+  (define-trivial-mode "odt" "\\.odt$" "oowriter")
+  (define-trivial-mode "ppt" "\\.ppt$" "ooimpress")
+  (define-trivial-mode "odp" "\\.odp$" "ooimpress")
+  (server-start)
+   
+   
+  ;; (load "/home/anton/local/share/emacs/socks.el")
+  ;; (setq socks-override-functions 1)
+  ;; (setq socks-noproxy '("localhost"))
+  ;; (require 'socks)
+  ;; (defalias 'open-network-stream 'socks-open-network-stream)
+   
+   
+  ;; (push "/home/anton/local/share/emacs/tnt/" load-path)
+  ;; (require 'tnt)
+   
+   
+  (put 'dired-find-alternate-file 'disabled nil)
+   
+  ;; ---------------------------------------------------------------------
+  ;; On-Screen Display alerts
+   
+  (if (and (display-graphic-p) (file-executable-p "/usr/bin/osd_cat"))
+      (defun osd (fmt &rest args)
+        "Display message on X screen."
+        (let ((opts "-p bottom -A right -l 1 \
+  -f '-*-*-bold-r-*-*-34-*-*-*-*-*-iso10646-1'")
+              (msg (apply 'format (concat fmt "\n") args)))
+          (start-process "osd" nil shell-file-name shell-command-switch
+                         (format "echo %s | osd_cat %s"
+                                 (shell-quote-argument msg) opts))))
+    (defalias 'osd 'message))
+   
+  (defun jabber-message-osd (from buffer text proposed-alert)
+      "Display a message using the osd_cat program."
+      (let ((jid (if (jabber-muc-sender-p from)
+                     from
+                   (jabber-jid-user from))))
+        (osd (cdr (jabber-activity-lookup-name jid)))))
+   
+  (add-hook 'jabber-alert-message-hooks 'jabber-message-osd)
+  (add-to-list 'auto-mode-alist '("\\.rar$\\'" . archive-mode))
+
+[new:Dzhus:2008-07-27 18:03 UTC]
+Greetings Anton, make sure you've read notes on <code>shellfm-show-lyrics</code> I wrote at [http://community.livejournal.com/ru_emacs/32051.html ru_emacs]
+----
+CategoryHomepage

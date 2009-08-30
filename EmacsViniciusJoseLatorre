@@ -1,0 +1,23 @@
+This page describes Lisp:.emacs-ViniciusJoseLatorre.el file, by ViniciusJoseLatorre.
+
+: .:: ''v1.1'' ::.
+
+== About .emacs-ViniciusJoseLatorre ==
+
+This file is my minimal Emacs initialization file.
+
+
+== Using .emacs-ViniciusJoseLatorre ==
+
+Just download this file and rename it to ##~/.emacs##.
+
+
+== See Also ==
+
+* [[.emacs]]
+* InitFile
+
+
+----
+
+CategoryDotEmacs

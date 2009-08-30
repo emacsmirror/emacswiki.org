@@ -1,0 +1,106 @@
+A fontset is a thing that describes which fonts Emacs is supposed to
+use for characters in a certain encoding.
+
+Emacs knows what CharSet each character comes from.  You can check it
+yourself, too, using `C-u C-x ='.  What Emacs doesn't know is which
+font it should use.  This information comes from the fontset currently
+active.
+
+Emacs comes with two fontsets:  The default (startup) fontset, and the
+standard fontset.  You can add more using `create-fontset-from-fontset-spec':
+
+    (create-fontset-from-fontset-spec
+       "-apple-monaco-medium-r-normal--14-*-*-*-*-*-fontset-monaco,
+    ascii:-apple-monaco-medium-r-normal--14-140-75-75-m-140-mac-roman,
+    latin-iso8859-1:-apple-monaco-medium-r-normal--14-140-75-75-m-140-mac-roman")
+
+See DisplayingNonAsciiCharacters for some debugging info.
+
+== Finegrained Fontset Control ==
+
+If you are content with Emacs' default fonts and just want to change the font for a particular character set; you can use the predifined fontset "fontset-standard" and change only that character set from Lisp:
+
+    ;; Use the predefined fontset "fontset-standard"
+    (set-face-font 'default "fontset-standard")
+
+    ;; In "fontset-standard" use "misc fixed" for the charset
+    ;; `mule-unicode-0100-24ff'
+    (set-fontset-font "fontset-standard"
+                      'mule-unicode-0100-24ff
+                      "-*-fixed-medium-r-*-*-11-*-*-*-*-*-iso10646-1")
+
+You can have even more finegrained control and make such changes only for a range of characters within an Emacs charset.  The following sets characters from the Unicode code charts "Greek and Coptic" and "Greek extended" to `palatino linotype':
+
+    ;; "Greek extended"  U+1F00 - U+1FEF
+    (set-fontset-font "fontset-standard"
+                      (cons (decode-char 'ucs #x1f00)
+                            (decode-char 'ucs #x1fef))
+                      "-*-palatino linotype-*-*-r-*-14-*-*-*-*-*-iso10646-1")
+
+    ;; "Greek and Coptic"  U+0374 - U+03FB
+    (set-fontset-font "fontset-standard"
+                      (cons (decode-char 'ucs #x0374)
+                            (decode-char 'ucs #x03fb))
+                      "-*-palatino linotype-*-*-r-*-14-*-*-*-*-*-iso10646-1")
+
+== Choosing a fontset ==
+
+Use `S-down-mouse-1' (shift mouse-1) to see the font and fontset menu.
+Emacs starts with the startup fontset.  Switch to the standard fontset
+for maximum internationalization and check the HELLO file using `C-h
+h'.
+
+If you can't find the fontset menu, here is a little `defun' that puts
+it in the top left corner of your selected [[Frame]].
+
+    (defun my-fontset-menu ()
+      (interactive)
+      (x-popup-menu
+      `((0 0) ,(selected-frame)) 
+      (append x-fixed-font-alist
+        (list (generate-fontset-menu)))))
+
+== .emacs ==
+
+You can create new fontsets in you .emacs file.  Usually this is not
+necessary because you can just switch to the standard fontset.  If you
+are using NT Emacs, you can either check the NT Emacs FAQ (see
+OnlineResources) or read FontSetsForNTEmacs.  It all comes down to
+using `create-fontset-from-fontset-spec'.  The same thing can be
+accomplished using .Xdefaults or .Xresources.
+
+'''.Xdefaults or .Xresources'''
+
+Here is an example setting by MichaelLee for .Xdefaults or
+.Xresources.  Usually .Xdefaults is used when you start X via xdm or a
+similar manager, while .Xresources is used when you start X via the
+startx command.
+
+True Type Fonts were used for the various coding systems.  You can use
+True Type fonts in Emacs as long as your X server supports True Type
+or you are using a working font server.
+
+Note that for this example to work, you actually need the same fonts
+that MichaelLee is using.  If you have different fonts, you need to
+adapt this example accordingly.
+
+ Emacs.Font: fontset-global
+ Emacs.Fontset-0: \
+ -monotype-courier-medium-r-normal-*-*-130-*-*-m-*-fontset-global,\
+ korean-ksc5601:-hanyang-gothic-medium-r-normal-*-*-150-*-*-*-*-ksc5601*-0,\
+ japanese-jisx0208:-ricoh-gothic-medium-r-normal-*-*-150-*-*-*-*-jisx0208*-0,\
+ japanese-jisx0212:-ricoh-mincho-medium-r-normal-*-*-150-*-*-*-*-jisx0212*-0,\
+ chinese-big5-1:-dynalab-ming-medium-r-normal-*-*-150-*-*-*-*-big5*-0,\
+ chinese-big5-2:-dynalab-ming-medium-r-normal-*-*-150-*-*-*-*-big5*-0,\
+ chinese-gb2312:-zhuhai-song-medium-r-normal-*-*-150-*-*-*-*-gb2312*-*,\
+ thai-tis620:-*-fixed-medium-r-normal-*-*-160-*-*-*-*-tis620.2529-1,\
+ vietnamese-viscii-lower:-monotype-courier-medium-r-normal-*-*-130-*-*-*-*-viscii1.1-1,\
+ lao:-*-fixed-medium-r-normal-*-*-160-*-*-*-*-mulelao-1,\
+ indian-is13194:-*-fixed-medium-r-normal-*-*-160-*-*-*-*-is13194-devanagari,\
+ indian-1-column:-*-fixed-medium-r-normal-*-*-160-*-*-*-*-muleindian-1,\
+ indian-2-column:-*-fixed-medium-r-normal-*-*-160-*-*-*-*-muleindian-2
+
+For another example, see the ClassicalGreek page.
+
+----
+CategoryInternationalization

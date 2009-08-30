@@ -1,0 +1,162 @@
+ # Like [http://www.cliki.net/ CLiki]'s [http://www.cliki.net/xearth xearth]
+ # page, this page is a valid data file for XEarth and XPlanet with
+ # positions of various EmacsChannel denizens. Please add yourself!
+ 
+ # To fetch this data file for use in XEarth, you could do something like this:
+ # wget -O emacswiki.markerfile "http://www.emacswiki.org/cgi-bin/wiki.pl?action=browse&id=EmacsUserLocations&raw=1"
+ # and then invoke xearth with -markerfile emacswiki.markerfile
+ #
+ # To find your latitude and longitude, try:
+ #   http://www.zipinfo.com/search/zipcode.htm,
+ #   http://www.zipcodeworld.com,
+ #   http://www.multimap.com/ or
+ #   http://www.infoplease.com/atlas/latitude-longitude.html
+ #
+ # xplanet 1.0.5 does not handle the -markerfile commandline option,
+ # it insists on having the markerfile specified in a config file.
+ # Luckily it does take the -config command-line option :-)
+ # AdrianAichner
+ 
+ # When editing at the wiki, do leave the # in the source of this page so
+ # that these lines are seen as comment by xplanet and xearth.  The
+ # space at the beginning of each line prevents the wiki -engine from
+ # wrapping them.
+
+ # See Also EmacsChannel, EmacsChannelPeople, EmacsChannelDemographics
+
+ # There is also a map with 715 people currently listed (May, 1 2008) at
+ # buddymapping – http://www.buddymapping.com/maps/emacs
+
+ # Entries below are sorted by nick-name, or expressed more clearly:
+ # (sort-fields 3 (region-beginning) (region-end))
+
+ # lat     # lon      # "nick"     # userpage on EmacsWiki or other comments
+  45.25    -75.42     "Bill"       # billlinux
+ -31.32    -64.22     "Chipaca"    # JohnLenton
+  51.0666  -1.3015    "ChrisMDP"   # ChrisParsons
+  32.173273 34.903771 "Ehud"       # Ehud_Kfar_Saba
+  55.7195   12.4635   "Erwin"      # Erwinh
+ -27.3     153.0      "JackaLX"    # SteveYoungs
+  44.64     10.91     "Jaramir"    # FrancescoGigli
+  12.98      77.5     "Khmar"      # NoufalIbrahim
+  45.45      4.51     "Lukhas"     # LucasBonnet
+  48.8998    9.1746   "MaKn"       # MarkusKnittig
+ +16.182  +58.597     "Minux"      # Minux (Per)
+  30.18    -97.42     "Nafai"      # TravisHartwell
+  50.33957   8.75589  "Pete"       # PeterDyballa
+  50.39      3.05     "Sigma"      # YannHodique
+  49.797     9.949    "Stoerte"    # FrankRuell
+  32.816    96.6289   "TTimo"      # TimotheeBesset
+  53.48      9.70     "TauPan"     # FriedrichDelgadoFriedrichs
+  57.05     55.93     "Torben"     # Torben
+  47.7    -122.3      "UriahEep"   # JohnBrow
+  25.2548   49.1615   "UrsoBranco" # LeslieHarlleyWatter
+  55.45476  37.40733  "Vany"       # Vany at work
+  29.7405  -95.4893   "_sprintf"   # sprintf
+  12.98     77.58     "aadis"      # AadityaSood
+  53.211289 6.567507  "ackack"     # AckAck
+  51.5       4.0      "aiviru"     # MartinSchoenmakers
+  12.98     77.58     "alephnull"  # AlokSingh
+  63.819    20.309    "ams"        # ams
+  48.14     11.65     "anaran"     # AdrianAichner
+  12.96644  77.64893  "aniline"    # AnilNarayanan
+  59.75     17.49     "bkhl"       # bkhl
+  34.06878 -118.35516 "blais"      # MartinBlais
+  42.7523   71.5826   "bobd"       # BobDiGrazia
+  32.312   -106.778   "bpalmer"    # BrianPalmer
+  35.28    -78.63     "bpt"        # BrianTempleton
+  51.30    -0.7       "bz_g"       # BastienGuerry
+  49.2465  -123.1771  "cgray"      # ChrisGray
+  30.605   -96.310    "chaosii"    # YixinCao 壞人
+  52.23    04.54      "credmp"     # ArjenWiersma
+  45.75    126.63     "cymacs"     # ChunyuWang
+  34.11    -83.41     "deego"      # DeepakGoel
+  40.5159 -105.103    "deyke"      # DieterDeyke
+  49.84782   8.56376  "dida"       # AnsysMode
+  40.9303 -111.8585   "dpb"        # DavidBoswell
+  36.1428  -86.7959   "drewr"      # DrewRaines
+  41.2388  -81.7346   "dsmith"     # DaleSmith
+ -30.0445  -51.1950   "dump"       # ChristianoAnderson
+  46.16     48.01     "dut"        # DenisRevin
+  49.27      8.7      "dys"	   # AndreasSeltenreich
+  48.15     11.5833   "eclig"      # EmilioLopes
+ -22.9     -43.23     "edrx"       # EduardoOchs
+  52.2       0.1217   "fledermaus" # VivekDasmohapatra
+  53.33      9.59     "forcer"     # JorgenSchaefer
+  46.19      6.14     "gismo"      # LucaCapello
+  24.49    120.56     "gugod"      # KangMinLiu
+  12.98      77.5     "harsha"     # SriharshaSetty
+  32.7973 -117.248    "hober"      # EdwardOConnor
+  52.51     13.32     "hroptatyr"  # SebastianFreundt
+  59.23      17.23    "jave"       # JoakimVerona
+  40.33     -03.45    "jemarch"    # JoseEMarchesi
+  47.6108  122.3028   "jeramey"    # JerameyCrawford
+  37.43    -122.14    "jessealama" # JesseAlama
+  40.50   -100.52     "jfm3"       # [[jfm3]]
+  45.5104 -122.6529   "jimb"       # JimBlandy
+ -42.86    147.32     "jml"        # JonathanLange
+  42.3     -71.1      "johnsu01"   # JohnSullivan
+  41.9628  -87.6533   "jordanb"    # JordanBettis
+ -27.62547 153.19744  "juhp"       # JensPetersen
+ -33.92    151.17     "k-man"      # JasonLewis
+  37.7731  122.4110   "kaktus"     # MattPerry
+  56.44     38.51     "karma"      # AlexeyMikhailov
+  47.83      8.57     "kensanata"  # AlexSchroeder
+  38.15     21.45     "keramida"   # GiorgosKeramidas
+  39.88      116.33   "koocyton"   # koocyton
+  50.46      6.05     "krid"       # DirkBernhardt
+  39.16    -84.5      "lathi"      # DougAlcorn
+  55.935921 -3.194687 "lawrence"   # LawrenceMitchell
+  55.44     37.33     "lg_"        # ZajcevEvgeny
+  34.240447 -118.527589 "lucca"     # MatthewBackes
+  57.39     12.01     "maDa"       # MathiasDahl
+  50.2201    18.6823  "mathrick"   # MaciejKatafiasz
+  30.3516  -97.7324   "mkennedy"   # MatthewKennedy
+  33.75    -84.366481 "mokuhazushi" # DougMcNaught
+  52.50     13.35     "mulligan"   # DavidHansen
+  41.6161  -86.1361   "mwolson"    # MichaelOlson
+  64.1353   -21.8952  "myrkraverk" # MyrkraVerk
+  64.144930 -21.952788 "avar"      # avar
+  43.3      -8.38     "nebris"     # nebris
+  49.1       0.2      "nebu"       # DanielDehennin
+ -25.4      49.2      "njsf"       # NelsonFerreira
+  40.9      73.8      "njsf"       # NelsonFerreira
+  47.66   -122.34     "offby1"     # EricHanchrow
+  50.49     12.55     "perdix"     # MartinKuehl
+  38.0010   23.4355   "pgas"       # PierreGaston
+  38.9     -77.0      "phf"        # [[phf]]
+  44.48     -0.37     "pj"         # PierreJeanTurpeau
+  25.001714 121.473652 "plasma"    # WeiHonChen
+  56.68    -122.47    "pstickne"   # PaulStickney
+  30.3516  -97.7324   "qbert"      # Charlie
+  28.4      77.2      "rakesh"     # RakeshPandit
+  22.56972  88.36972  "rishi"      # DebarshiRay
+  64.104751 -21.883779 "rkjaran"    # RóbertKjaran
+  50.54    -0.27      "rswarbrick" # RupertSwarbrick
+ -12.98	   -38.47     "rw"         # MarceloToledo
+  43.39    -79.23     "sachac"     # SachaChua
+  49.13      6.17     "seki"       # SebastienKirche
+  29.311   -94.776    "serfurj"    # JasonDunsmore
+  50.40     17.56     "sewi"       # SewerynKokot
+  65.8003   21.704    "shapr"      # ShaeErisson
+  38.7550  -77.1496   "smitty1e"   # ChristopherSmith
+  35.57751 139.666658 "snogglethorpe" # MilesBader
+  37.8791 -122.2673   "steave"     # steave
+  55.8621   -4.2464   "stpap"      # StylianosPapanastasiou
+  47.472    19.05     "sunwukong"  # PeterSalvi
+  53.5606    9.9497   "tekai"      # EngelkeEschner
+  60.15     25.03     "tekonivel"  # tekonivel
+  56.1530  10.2033    "terryp"     # TerryPatcher
+ -34.20	   -58.30     "tetsuo"     # PabloBaena
+  40.027  -105.267    "tromey"     # TomTromey
+  50.3641    7.6056   "tsdh"       # TassiloHorn
+  50.07      8.41     "utis"       # OliverScholz
+  41.4300   75.6438   "om"         # OtherMichael
+  43.43     10.23     "vds"        # vds
+  37.4183  -122.0709  "xahlee"     # XahLee 李杀
+  45.28    -73.45     "yesod"      # JeanPhilippeTheberge
+  32.49     34.59     "yrk"        # yrk
+  49.13      4.1      "zeDek"      # XavierMaillard
+  55.016667 82.933333 "zeliboba"   # zeliboba
+ -33.517   -70.767    "zeus"       # zeus
+  45.08333 -64.36667  "zsd"        # zsd

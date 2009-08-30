@@ -1,0 +1,19 @@
+Lispを学ぶ手っ取り早い方法： ''Introduction to Programming in Emacs Lisp'' を読みましょう。特に、Lispについてまったく知らないという方には、上記のドキュメントを強くお薦めします。
+
+Emacs 21までは、Emacs Lispのイントロダクションは、本体とは別に配布されていました。このイントロダクションは、Texinfo形式となっていますので、info、htmlなど、多様な形式に変換できます。たとえばDebianでは、<code>apt-get install emacs-lisp-intro</code>で入手できます（訳注：日本語版はemacs-lisp-intro-ja）。
+
+イントロダクションを表示するには、`C-h i'を入力してInfoを起動した後、<code>`m Emacs Lisp Intro RET'</code>と入力します。Infoの使いかたについては、[[InfoMode]]を参照してください。
+
+<code>emacs-lisp-intro</code> はGNU ftp ミラーサイト、または次の場所からダウンロードできます:
+
+* http://www.gnu.org/manual/manual.html
+* http://www.gnu.org/software/emacs/emacs-lisp-intro/html_mono/emacs-lisp-intro.html
+* GnuPressから入手した印刷されたバージョン
+
+次のページにも若干情報があります。''Emacs Lisp Introduction'' (PDF format): http://www.gnupress.org/Intro-Elisp-Review1.pdf.
+
+Emacs Lispの動作を学びはじめれば、おそらく[[EmacsLispReference]]も必要になるでしょう。 
+注意：[[EmacsLispIntro]]は初心者向けのドキュメントですが、[[EmacsLispReference]]はチュートリアルではなく完全にリファレンスとなっています。
+
+----
+[[カテゴリ・ドキュメント]]/CategoryDocumentation

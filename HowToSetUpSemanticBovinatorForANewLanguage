@@ -1,0 +1,47 @@
+There is a broader summary of setting up CEDET for a new language here: [http://cedet.sourceforge.net/addlang.shtml http://cedet.sourceforge.net/addlang.shtml]
+
+== Download CEDET/Semantic ==
+
+If you intend to support a new language with semantic, you should get the latest version from http://cedet.sf.net.  As of this writing (June 3, 2007) you would be better off geting CEDET from CVS until version 1.0 is finally released.
+
+You should also subscribe to the cedet-devel mailing list at https://lists.sourceforge.net/lists/listinfo/cedet-devel.  Alert the list of your intentions so if someone else had the same idea, you won't overlap efforts.
+
+Next, see the semantic manual Info node (semantic)Overview to get an idea about how the parsing system is organized.
+
+Next, see the Info node (semantic-langdev)Top to either get an overview, or dive into specific details on writing a parser.
+
+== Select a parsing technique ==
+
+The first step in adding support for a new language in CEDET/Semantic is to determine which parsing technique to use.  There are three options:
+
+* Hand Written parser - Useful if there is a pre-existing tool to use (Such as with reading Emacs Lisp code in Emacs) or if there is no regular grammer to follow, such as with Texinfo, or HTML.
+* Write a Bovine parser (.by) - Useful if the grammer is relatively simple and you would like to use a Yacc like syntax.
+* Write a Wisent parser (.wy) - Best choice for language grammars.  The Wisent parser is a port of bison to Emacs Lisp written by David Ponce, and is very fast.
+
+== The hand written parser ==
+
+Start with semantic-texi.el as a basic framework for a hand written parser.  See the function <code>semantic-texi-new-section-tag</code> as an example for building a new tag.
+
+All tags must eventually be cooked to usable form.  See <code>semantic-texi-expand-tag</code> for an example.
+
+Lastly, your parser needs to be installed.  See <code>semantic-default-texi-setup</code> for an example.
+
+== Grammar based parsers ==
+
+Time to read the Info node (semantic-langdev)Top.
+
+=== Write a Lexer ===
+
+Grammars require a lexical token stream as input.  See (semantic-langdev)Writing Lexers.  Tokens can be as simple as a word (<code>"\\<\\w+\\>"</code>) or much more complex, such as <code>"#include &lt;"</code> with some processing to extract more information.
+
+You can write your lexer into the grammar file.
+
+A lexer is a sequence of analyzers.  You can use the provided analyzers, and write your own analyzers where the provided ones fall short.  If your language uses a pre-processor, you may need to use the tools in semantic-lex-spp.el to add preprocessor support.
+
+Next, assemble the analyzers into a lexer with <code>define-lex</code>.
+
+=== Write a parsers ===
+
+This likely will go hand-in-hand with writing a lexer.  Read (grammar-fw)Overview to get an idea how the Emacs programming environment for grammar files works.
+
+The specifics for writing a parser is way to complex for a wiki page.  Continue reading through (grammar-fw)Top and the node (wisent)Top for specific details on writing a grammar.  For a quick-and-dirty view, look at the CEDET file cogre/wisent-dot.wy, and cogre/wisent-dot.el as a very simple example of a wisent grammar for parsing DOT graph files.

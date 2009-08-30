@@ -1,0 +1,50 @@
+ From: AdrianKubala
+ Subject: Re: Newbie: TAB problems in Fundamental mode
+ Newsgroups: comp.emacs
+ Date: 17 Jun 2002 13:04:25 GMT
+
+GarryHeaton wrote:
+
+: I suppose, as with all things UNIX, its a case of the journey of a thousand miles beginning with one step. That would be fine if there it was only one journey but so far it's been one for each of Linux, Apache, Perl, Emacs, MySQL, NFS, TCP/IP, backups ...
+
+I think people who put ends before means will never be fulfilled or
+happy. Learning is the most obvious case -- if you are learning because
+you like to learn, you will keep a flexible mind and stay easily on the
+cutting edge. If you are learning because you expect some result, you
+will find it difficult and frustrating. Based on the fact that you're
+using Linux, etc, and now trying Emacs, I bet you really like to learn
+-- so don't forget that, and don't let yourself become too frustrated.
+
+One day you'll love Emacs and be wrestling with some other new program;
+enjoy this, and enjoy wrestling with Emacs now!
+
+-Adrian
+
+----
+
+Learning is great, but Emacs documentation seems like it has been communicated by a martian, speaking Swahili to a group of French schoolgirls who have summarized it in Latin that has been written backwards across the page. That would be tolerable, but what a newbie really finds frustrating is that it all seems to have been edited by a duck with a mentally deranged relative who was responsible for "designing" the Emacs interface.
+
+-- Or am I missing something?
+
+[new]
+The latter, for sure. -- XavierMaillard
+
+[new]
+I always felt that the EmacsManual and tutorial were well written.
+The trouble is only that it is so big that the manual will never contain everything.
+But for newbies, I felt that it contained everything I needed.
+That was in the days of Emacs 19.34... -- AlexSchroeder
+[new]
+If there is a martian problem with Emacs, it very well could be true.  Early versions of the manual had drawings of aliens.  See TecoEmacs. -- AaronHawley
+
+[new]
+Here is a very nice, balanced critique of Emacs.  It praises the usefulness of Emacs for experienced users and criticizes Emacs for the difficulties it presents to newbies:
+[http://www.surfaceeffect.com/thoughts/emacs Using Emacs - the good and the bad]
+
+
+----
+
+http://unix.rulez.org/~calver/pictures/curves.jpg
+
+----
+CategoryHumor CategoryHelp

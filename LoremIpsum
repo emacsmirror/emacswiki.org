@@ -1,0 +1,35 @@
+<i>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec hendrerit tempor tellus. Donec pretium posuere tellus. Proin quam nisl, tincidunt et, mattis eget, convallis nec, purus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla posuere. Donec vitae dolor. Nullam tristique diam non turpis. Cras placerat accumsan nulla. Nullam rutrum. Nam vestibulum accumsan nisl.</i>
+
+This text has been used  used since the 16th Century as as dummy text when you are preparing the layout of some presentation but don't have the final text yet, or want to demonstrate the layout without distracting the reader with actual content.
+
+The <i>lorem ipsum</i> text originated from <i>"de Finibus Bonorum et Malorum"</i> (The Extremes of Good and Evil) by <b>Marcus Tullius Cicero</b>, written in 45 BC but it has been so transformed along the years that now, it is relatively meaningless.
+
+To insert <i>lorem ipsum</i> text in your emacs buffer, use Lisp:lorem-ipsum.el
+
+Three functions are available:
+
+* <b>Lorem-ipsum-insert-paragraphs</b>
+* <b>Lorem-ipsum-insert-sentences</b>
+* <b>Lorem-ipsum-insert-list</b>
+
+All can take a prefix argument to specify the number of paragraphs/sentences/items to insert.
+
+The following (buffer-local) variables are available to customize the output to your need:
+
+* <b>Lorem-ipsum-paragraph-separator</b> (default value: "\n\n")
+* <b>Lorem-ipsum-sentence-separator</b> (default value: "  ")
+* <b>Lorem-ipsum-list-beginning</b> (default value: "")
+* <b>Lorem-ipsum-list-bullet</b> (default value: "* ")
+* <b>Lorem-ipsum-list-item-end</b> (default value: "\n")
+* <b>Lorem-ipsum-list-end</b> (default value: "")
+
+You can use the emacs's hook to set theses variables according to mode like this:
+<pre>
+(add-hook 'sgml-mode-hook (lambda ()
+			    (setq Lorem-ipsum-paragraph-separator "<br><br>\n"
+				  Lorem-ipsum-sentence-separator "&nbsp;&nbsp;"
+				  Lorem-ipsum-list-beginning "<ul>\n"
+				  Lorem-ipsum-list-bullet "<li>"
+				  Lorem-ipsum-list-item-end "</li>\n"
+				  Lorem-ipsum-list-end "</ul>\n")))
+</pre>

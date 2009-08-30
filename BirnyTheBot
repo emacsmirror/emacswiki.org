@@ -1,0 +1,42 @@
+== Birny the Bot's Page ==
+
+This page is devoted to the IRC bot, birny, who hangs out in channel <tt>#tcpip</tt> and channel <tt>#emacs</tt> on the freenode IRC network (http://www.freenode.net/).  Birny was written by FranLitterio, who is the current maintainer.  Birny is written in EmacsLisp and depends on ERC, the EmacsIRCClient.  You can find birny's source code at http://world.std.com/~franl/my-bot.el.  The source code is licensed under the GNU General Public License (http://www.gnu.org/copyleft/gpl.html).
+
+Birny's cousin, ErBot, is also an EmacsLisp bot.  He was written by DeepakGoel.
+
+=== How To Use Birny ===
+
+To use birny, say something he recogizes in the channel.  You can speak privately to him using "<tt>/msg</tt>".  If you speak to him privately, he'll answer you privately, otherwise he'll answer in the channel.  Say something that has one of these forms:
+
+: <tt>.command ...</tt>
+: <tt>?word or phrase to lookup</tt>
+
+The former is a command to birny to do something.  The latter is a request that birny lookup the definition of a word or phrase in his terminology database.  To get an index of terms in his database, use the "<tt>.index</tt>" command. Birny understands the following commands:
+
+; <tt>.help [topic]</tt>: Show help for <i>topic</i>.  Type "<tt>.help ?</tt>" to see a list of all help topics.  This is the only command that does not require the leading "<tt>.</tt>", so you can type "<tt>help topic</tt>" and "<tt>help ?</tt>".
+
+; <tt>.seen <i>nick</i></tt>: Report on the last time Birny saw the person with that nick do or say anything.
+
+; <tt>.slashnews</tt>: Displays recent Slashdot headlines.
+
+; <tt>.stats</tt>: Show statistics about the bot and his databases.
+
+; <tt>.time <i>city-name</i></tt>: Show the time in the given city.
+
+<i><b>UNDER CONSTRUCTION</b></i>
+
+=== Feature Requests ===
+
+These are features that would be nice:
+
+* Per-channel terminology databases, so birny can serve more than one channel.
+* A WHOIS lookup command (<tt>.whois</tt>).
+** <tt>{xmb}</tt> and <tt>twkm</tt> are working on this.
+* Support for DCC Chat.
+
+=== Development "Things To Do" List ===
+
+* Find a way to run birny in Emacs' batch mode.
+
+----
+[[ERC]]

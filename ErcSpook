@@ -1,0 +1,9 @@
+Trigger the Echelon servers with the /spook command.
+
+ (defun erc-cmd-SPOOK ()
+   (let* ((spook (with-temp-buffer (spook) (buffer-string)))
+	  (output (replace-regexp-in-string "\n" " " spook)))
+     (erc-send-message output)))
+
+----
+[[ERC]]

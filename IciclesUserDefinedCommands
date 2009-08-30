@@ -1,0 +1,19 @@
+This page lists icicles-ized commands made by users.
+
+[:icicle-locate]
+= Locate =
+
+[new:rubikitch:2007-01-09 04:53 UTC]
+Icicles-ized `locate'. -- [[rubikitch]]
+
+<pre>
+(require 'locate)
+(icicle-define-command icicle-locate ; Command name
+  "Run the program `locate', then visit files.
+Unlike `icicle-locate-file' this command is a wrapper for the program `locate'." ; Doc string
+  find-file                             ; Function to perform the action
+  "File: " (mapcar #'list (split-string (shell-command-to-string (format "%s '%s'" locate-command query)) "\n" t))
+  nil t nil 'locate-history-list nil nil
+  ((query (read-string "Locate: "))))
+</pre>
+

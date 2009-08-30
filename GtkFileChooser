@@ -1,0 +1,26 @@
+The GTK-Toolkit changed it's default file chooser dialog to a new interface which seen rather controversial.  It is not a rudimentary as it looks, though.
+
+== Important Bindings ==
+
+; C-l : Open a location bar which uses completion and is generally helpful.
+; / : Open the location bar at the root directory (just as in Emacs :-)
+; ~ : Open the location bar at your home directory (again, just as in Emacs :-)
+; M-up/down : Up or down one directory (down to a previously visited directory, not the selected item in the list).
+; M-home : Jump to your home directory
+; M-d : Jump to your desktop directory (e.g. ~/Desktop)
+; M-1..0 : Jump to one of the [[bookmark]]s
+
+And there is a right mouse context menu which let's you toggle the visibility of hidden files.
+
+== Customizing == 
+
+If you want to use the old file dialog set
+
+ (setq x-gtk-use-old-file-dialog t)
+
+See also the variable `x-gtk-show-hidden-files'
+
+== Documentation ==
+
+* See also Info Node: (emacs)Dialog Boxes
+* http://changelog.complete.org/posts/449-fromdrupal.html

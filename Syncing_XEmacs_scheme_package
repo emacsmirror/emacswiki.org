@@ -1,0 +1,60 @@
+These are the differences I am trying to make sense of -- AdrianAichner
+
+Looks to me like a full sync (using all syntax definitions from scheme-emacs) is the right thing to do.
+
+= Please provide your Reviewer Comments =
+
+== Reviewer X ==
+
+# issue a
+# issue b
+# issue c
+
+----
+
+ diff -u scheme-emacs scheme-xemacs
+ --- scheme-emacs	2003-11-30 20:40:17.857808000 +0100
+ +++ scheme-xemacs	2003-11-30 20:40:17.877836800 +0100
+ @@ -1,16 +1,19 @@
+  ^@ ..  	  	meaning: whitespace
+  !	. 	meaning: punctuation
+  "	" 	meaning: string-quote
+ -#	' 14	meaning: expression-prefix,
+ +#	_ 14p	meaning: symbol-constituent,
+  				 first character of comment-start sequence A,
+ -				 second character of comment-end sequence A
+ +				 second character of comment-end sequence A,
+ +				 prefix character for `backward-prefix-chars'
+  $ .. %	w 	meaning: word-constituent
+  &	_ 	meaning: symbol-constituent
+ -'	' 	meaning: expression-prefix
+ +'	  p	meaning: whitespace,
+ +				 prefix character for `backward-prefix-chars'
+  (	()	meaning: open-paren, matches )
+  )	)(	meaning: close-paren, matches (
+  * .. +	_ 	meaning: symbol-constituent
+ -,	' 	meaning: expression-prefix
+ +,	  p	meaning: whitespace,
+ +				 prefix character for `backward-prefix-chars'
+  -	_ 	meaning: symbol-constituent
+  .	. 	meaning: punctuation
+  /	_ 	meaning: symbol-constituent
+ @@ -18,14 +21,16 @@
+  : .. ;	. 	meaning: punctuation
+  < .. >	_ 	meaning: symbol-constituent
+  ?	. 	meaning: punctuation
+ -@	' 	meaning: expression-prefix
+ +@	_ p	meaning: symbol-constituent,
+ +				 prefix character for `backward-prefix-chars'
+  A .. Z	w 	meaning: word-constituent
+  [	(]	meaning: open-paren, matches ]
+  \	\ 	meaning: escape
+  ]	)[	meaning: close-paren, matches [
+  ^	. 	meaning: punctuation
+  _	_ 	meaning: symbol-constituent
+ -`	' 	meaning: expression-prefix
+ +`	  p	meaning: whitespace,
+ +				 prefix character for `backward-prefix-chars'
+  a .. z	w 	meaning: word-constituent
+  {	(}	meaning: open-paren, matches }
+  |	_ 	meaning: symbol-constituent

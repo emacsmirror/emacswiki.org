@@ -1,0 +1,24 @@
+portrait:http://farm4.static.flickr.com/3570/3562269468_0d9a8cc5de_o.jpg
+
+dan at haxney dot org
+
+I have been using Gnu Emacs for about three years now, and can't get enough!
+
+I am currently working on the Google Summer of Code for Drupal [http://groups.drupal.org/node/22301 here], using Emacs for all my editing needs.
+
+I work primarily in Ruby, Java, PHP, JavaScript, and Bash, plus a little bit of C and C++ (when I can't avoid it :).
+
+= My Emacs files =
+
+* [http://github.com/chrono325/dot-emacs/tree/master My .emacs.d and included libraries]
+
+= See also =
+
+* TabCompletion - I recently created a [http://github.com/chrono325/smart-tab/tree/master repository] for Smart Tab.
+* [[anything-eproject.el]]
+
+[new:DrewAdams:2009-05-25 08:45 UTC]
+Welcome to the wiki. -- DrewAdams
+
+----
+CategoryHomepage

@@ -1,0 +1,30 @@
+Here's an idea that just came to me at work. Lots of Emacs users <tt>defalias</tt> or <tt>fset</tt> <tt>yes-or-no-p</tt> as an alias for <tt>y-or-n-p</tt> to reduce the annoyance factor (see YesOrNoP), and I'm no exception.
+
+There are a few kinds of uses of these functions:
+
+1. When you always say the same thing, over and over and over, and the question is just to nag you because someone thinks that you don't know what you're doing (see MeatBall:HumaneInterface).
+
+2. When you usually say the same thing, but sometimes don't and, if the wrong answer were to be given automatically, catastrophe would ensue
+
+What I'm proposing is to eliminate the nagging of (1) while preserving the behavior of (2), with a two-step replacement of <tt>y-or-n-p</tt>:
+
+1. The Logging <tt>y-or-n-p</tt>
+
+The idea here is you wrap around <tt>y-or-n-p</tt> a function that records what the question string was and how you replied, to some persistent storage.
+
+Once you've been running with this for a while (months? a year?), you look at the log file. Some fairly simple processing should produce a list of likely (1) candidates.
+
+2. The cached <tt>y-or-n-p</tt>
+
+This one consults a cache of known (1) questions and answers, and whenever the arg string is in there, it auto returns the cached response instead of prompting you. If it's not, it calls the normal <tt>y-or-n-p</tt>.
+
+This is really quite easy to code up and I might get to it at some point but probably not soon.
+
+This code will have to take changing prompts into account.  For example, how do you deal with the question "Do you want to delete foo?" given that "Do you want to delete bar?" was answered with yes?
+
+: I was thinking about this a little myself.I wonder: why don't we, instead of making it Y-or-P (or Yes-or-No, or whatever), make it Enterkey-or-N? Isn't our first instinct, upon approving of a particular action to hit Enter? After all, Y-or-P requires equal amounts of effort for both confirmation and disconfirmation, and I don't know about you, but I have a fairly good idea what I want Emacs to do, and so I rarely disconfirm- and yet, disconfirming is exactly as onerous as confirming, which strikes me as wrong. --maru
+
+----
+CategoryCompletion
+CategoryKeys
+CategoryWishList

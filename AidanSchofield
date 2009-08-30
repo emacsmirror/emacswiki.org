@@ -1,0 +1,28 @@
+I have been using Emacs for about 12 years. At various times I have written
+emacs lisp files useful for me. I intend to tidy up two of them that I hope to be of general use and put them here. At least one of them should be here shortly.
+
+Here is the first such file, MagpieExpansion. It provides a way to dynamically expand acronyms to phrases previously typed and to grab useful text in other ways. 
+
+You can contact me at mailto:aidan.schofield@bristol.ac.uk
+
+=== Random Comments ===
+
+2007-03-06
+
+At present the version of emacs I am using is GNU Emacs 22.0.90.1 (i386-apple-darwin8.8.1, Carbon Version 1.6.0) which has many good features. I wrote a package Lisp:magpie.el which worked well there but when I tried it on GNU Emacs 21.2.1 (powerpc-apple-darwin8.0) a number of things were broken. It seems worth pointing out what happened since this is likely to bite others.
+
+`indent-region' has 3 mandatory arguments in emacs21 but has 2 mandatory and one optional argument in emacs22. I had not needed the optional one; to get the correct behaviour in emacs21 I needed to set the third 
+value to nil. Although I prefer the emacs22 version, I would say that it is unusable for some while yet. 
+
+Next emacs22 allowed me to use functions from cl.el without any incantation like <code>(require 'cl)</code>. This fails in emacs21. Again I prefer the behaviour in emacs22 but ...
+
+Another comment about `indent-region'. Unlike other region commands that I can think of, it matters that the endpoints of the region should be specified with the earlier one first. At least that seemed to be the case in emacs22. If I were more sure of myself I would be tempted to call this a bug.
+
+[new]
+Welcome to the wiki. Magpie does look very interesting. I never thought about specifying and finding "dynamic acronyms". I've been a happy `dabbrev-expand' user all these years. I'll have to give it a try. -- AlexSchroeder
+
+[new]
+Thanks for the welcome and the interest. I hope you find it useful. -- AidanSchofield
+
+----
+CategoryHomepage

@@ -1,0 +1,38 @@
+This code will make a tray icon blink whenever someone speaks on ERC.
+It's got a C part and an elisp part. The C part only runs under unixes, and you need gtk to build it.
+Both codes are very simple, feel free to extend it and send me patches.
+= C part : tray_daemon =
+The code is available at http://smeuuh.free.fr/tray_daemon, see installation instructions there
+
+= Elisp part =
+Add this to your .emacs :
+<pre>
+;;list of regexpes ignored by tray icon
+(setq erc-tray-ignored-channels '("something" "something_else")
+(defun erc-tray-change-state (arg)
+  "Enables or disable blinking, depending on arg"
+  (if arg
+      (shell-command-to-string
+       "echo B > /tmp/tray_daemon_control")
+    (shell-command-to-string
+     "echo b > /tmp/tray_daemon_control")))
+(defun erc-tray-update-state ()
+  "Updates the state of the tray icon according to the contents
+of erc-modified-channels-alist"
+  (interactive)
+  (unless erc-modified-channels-alist
+    (erc-tray-change-state nil))
+  (let ((filtered-list erc-modified-channels-alist))
+    (mapc (lambda (el)
+	    (mapc (lambda (reg)
+		    (when (string-match reg (buffer-name (car el)))
+		      (setq filtered-list
+			    (remove el filtered-list))))
+		  erc-tray-ignored-channels))
+	  filtered-list)
+    (when filtered-list
+      (erc-tray-change-state t))))
+(when window-system
+  (add-hook 'erc-track-list-changed-hook 'erc-tray-update-state))
+
+</pre>

@@ -1,0 +1,12 @@
+TextModeMenu or ##tmm.el## was written by IlyaZakharevich and provides MenuAccessFromKeyboard.  See [[Manual:Menu Bar]] of the EmacsManual for its description.
+
+Part of Emacs since 1995, `tmm-menubar' descends the MenuBar in a text mode menu by choosing a single menu level at a time, until you reach a leaf menu item.  You can only go down in the menu hierarchy; you cannot go back up. There is  no real completion, but you can use the first letter of a menu item as its abbreviation. Key-sequence shortcuts are echoed. There is no regexp matching.
+
+* CVS:tmm.el
+
+[new:DrewAdams:2006-10-16 20:48 UTC]
+: RichardStallman has suggested that someone implement the go-up possibility for ##tmm.el## after Emacs 22 is released. If you are interested in working on that, you might want to let the Emacs developers know: ##emacs-devel@gnu.org##. -- DrewAdams
+[new]
+
+----
+CategoryMenus

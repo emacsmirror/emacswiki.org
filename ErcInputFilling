@@ -1,0 +1,3 @@
+This hack lets ERC play nicely with fill-mode on your input text. ERC will un-fill your text before sending it, unless you had just pasted something in, in which case it would be sent verbatim.
+
+Lisp:erc-input-fill.el   

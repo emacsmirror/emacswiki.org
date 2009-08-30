@@ -1,0 +1,14 @@
+As I wrote on [[2004-08-11]], I changed the RSS feed.
+I think it has been working very well, so I replaced the
+link target of the XML picture above with the new feed.
+If you want the diff together with the page content,
+then use the diff=1 parameter:
+
+* http://www.emacswiki.org/cgi-bin/emacs?action=rss;full=1;diff=1
+
+If you want more than the default of 15 entries, use the rsslimit
+parameter.  If you use rsslimit=all, then you will get the entries
+for the last seven days.  That is a /huge/ feed, so better use
+days=3 or so to limit it.
+
+* http://www.emacswiki.org/cgi-bin/emacs?action=rss;full=1;diff=1;rsslimit=all;days=3

@@ -1,0 +1,72 @@
+if you have cua.el, [(shift RET)] does the same.  -- TheApprentice
+
+<pre>
+> ThomasGuettler wrote:
+> 
+> I want to bind "c-u 1 C-x TAB" and "c-u -1 C-x TAB" to M-r and M-l
+> 
+> The next problem is, that the region gets lost after
+> C-x TAB
+</pre>
+
+That I can do easily.
+here it goes:
+
+ (defun guettler-move-region (beg en dir)
+   (indent-rigidly beg en dir)
+   (push-mark beg t t))
+
+ (defun guettler-push-region (beg en)
+   (interactive "r")
+   (guettler-move-region beg en 1))
+
+ (defun guettler-pull-region (beg en)
+   (interactive "r")
+   (guettler-move-region beg en -1))
+
+and then in your mode-local hook:
+
+ (add-hook
+   'html-mode-hook
+      '(lambda nil
+	 (local-set-key [?\M-r] (function guettler-push-region))
+	 (local-set-key [?\M-l] (function guettler-pull-region))))
+
+Only one problem I *cannot* fix (I didn't try very hard):
+if the region was indicated in a different color after the
+second time it is no more ... Though everything seems set
+to me ? Anyway it works.
+
+  Best,
+  Amities,
+           Olivier
+
+About the above problem Olivier did not try very hard to fix, it seems adding one line to the guettler-move-region function solves it.
+
+ (defun guettler-move-region (beg en dir)
+   (indent-rigidly beg en dir)   
+   ;; this line is very important. makes the region mark sticky
+   (setq deactivate-mark nil)    
+   (push-mark beg t t))
+
+It also solves the problem of "mark not active" when trying to move the region for the second time.
+
+Wanrong
+
+----
+The above still gives me problems.  If the point is at the beginning of the region instead of at the end, region is still deactivated when the function is executed.  This fixes that case for me:
+
+ (defun move-region (beg en dir)
+   "Move the region defined by (beg en) by dir characters.
+ dir may be positive or negative; positive dir means right."
+   (save-excursion
+     (let ((deactivate-mark nil))
+       (move-beginning-of-line nil)
+       (indent-rigidly beg en dir)
+       (push-mark beg t t))))
+
+jpkotta
+
+----
+CategoryIndentation
+

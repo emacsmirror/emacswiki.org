@@ -1,0 +1,29 @@
+If you want to highlight long lines, use code such as the following:
+
+    (font-lock-add-keywords 
+     'emacs-lisp-mode
+     '(("^[^\n]\\{80\\}\\(.*\\)$"
+        1 font-lock-warning-face prepend)))
+
+The first parameter indicates the major mode in which this setting should be
+enabled.  You can use `c-mode', `java-mode', etc.
+
+The first part of the RegularExpression, ##"^[^\n]\\{80\\}"##,
+matches any 80 non-newline characters at the beginning of a line.
+The first group in parentheses matches the 81st character and all
+remaining characters.  The digit ##1## tells font-lock to
+fontifiy the first group.  `font-lock-warning-face' is the [[Face]]
+to use.  The `prepend' parameter tells font-lock to use this as
+the most important rule.  Therefore even lines that are
+highlighted as comments will have the warning face on every
+character after the 81st.
+
+Note that this will not take the width of ##TAB## characters into account.
+(See EightyColumnRule for a way to do that)
+
+See also MarginMode, ColumnMarker, EightyColumnRule
+
+----
+CategoryDotEmacs 
+CategoryFilling
+

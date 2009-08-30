@@ -1,0 +1,48 @@
+See XmlWellFormednessWindows for a detailed method on how to hook this in.  Here we just show a batch file and javascript (for windows) that can validate against a schema.  Name the batch file msxsd.bat and the script msxsd.js.  Put the batch in your path and call it from an emacs.
+
+== batch file for Windows 9X ==
+    cscript  -nologo h:/dougr/bin/msxsd.js %1 %2 %3
+
+== batch file for Windows 2000 or later ==
+    @echo off
+    REM More portable example
+    REM msxsd.js should be in the same directory of this batch file
+    setlocal enableextensions
+    cscript //nologo %~dp0\msxsd.js %*
+
+== java script ==
+
+    // This file is:  msxsd.js
+    // first parameter is an XML files to be read in;
+    // second parameter is the namespace;
+    // third parameter is the schema file
+
+    // validate parameters
+
+   if(WScript.Arguments.length != 3)
+   {
+	WScript.Echo("msxsd takes three arguments - datafile, namespace, schema - eg:");
+	WScript.Echo('msxsd books.xml "" books.xsd');
+   }
+   else
+   {
+	var cache = new ActiveXObject("Msxml2.XMLSchemaCache.4.0");
+	cache.add(WScript.Arguments(1), WScript.Arguments(2));
+	
+	var xmldoc = new ActiveXObject("Msxml2.DOMDocument.4.0");
+	xmldoc.async = false;
+	xmldoc.schemas = cache;
+	xmldoc.load(WScript.Arguments(0));
+	
+	if(xmldoc.parseError.errorCode != 0)
+		WScript.Echo("XML Schema Error Line " +    xmldoc.parseError.line + " " + xmldoc.parseError.errorCode + " " +   xmldoc.parseError.reason);
+	else
+		WScript.Echo("passed");
+    }
+
+== Metadata ==
+
+CategoryXML
+CategoryWThirtyTwo
+http://www.rddl.org/purposes/#schema-validation
+http://www.w3.org/2001/XMLSchema

@@ -1,0 +1,36 @@
+This page is about changing the colors of an Emacs [[Frame]].
+
+You have at least these options:
+
+* Use '''DoReMi''' commands in library Lisp:doremi-frm.el. Stop cycling through frame colors when you get to the color you want:
+
+** `'''<code>doremi-bg</code>'''' -- Change frame background color by incrementing/decrementing any of its ''RGB'' (red, green, blue), ''HSV'' (hue, saturation, value), or ''CMY'' (cyan, magenta, yellow) components using the arrow keys or mouse wheel.
+
+::: You can use command `pick-background-at-point' or `pick-background-at-mouse-pointer' to pick up the background at some place ([[Face]] background or [[Frame]] background), and then use that as the starting point for `doremi-bg'. This acts like an "''eye dropper''".
+
+** `'''<code>doremi-bg-color-name</code>'''' -- Set background color by scaling through a list of all colors (by name).
+
+* Use '''[[Icicles]]''' commands `icicle-frame-bg' and `icicle-frame-fg'. These are similar to the DoReMi commands, but they also allow for [[Completion]] -- including ''regexp'' matching against color names.
+
+* Use `set-foreground-color' and `set-background-color' (see SetColor).
+* Emacs only: Use FrameParameters
+* Use the .Xdefaults file (see ResourceFiles) -- this works for all frames and it changes menu colors as well
+* Use the ColorTheme package (but this changes faces also, not just background color).
+* XEmacs only: customize the default face -- Emacs also has a default face but its background can be different from the frame background (very interesting effect)
+* XEmacs only (?): If you want different background colors on different frames then use something like (set-face-background 'default "color-you-want" frame-you-want)
+
+You can also set the foreground and background colors of individual ''faces'' -- see commands `doremi-face-fg-rgb' and `doremi-face-bg-rgb' in Lisp:doremi-frm.el. The eye-dropper functionality applies there, as well.
+
+[new]
+: I've recently experimented with having one frame with light colors and another with dark.  While `defface' allows you to specify different colors for dark and light backgrounds, it doesn't seem to update faces consistently after set-*-color is called (e.g. the modeline and cperl faces won't change).  The "solution" I've found is to call `face-spec-set' again for all the faces that haven't updated.  Anyone have a better solution? - [[Anonymous]]
+
+[new:DrewAdams:2004-12-25 17:30 UTC]
+: I don't know if this will help, but try `frame-update-face-colors'. The comment in the code says this (but note that `FACE' is ''not'' an argument -- it acts on all faces in `global-face-data'):
+
+        Update the colors of FACE, after FRAME's own colors have been changed.
+        This applies only to faces with global color specifications
+        that are not simple constants.
+
+: -- DrewAdams
+----
+CategoryFaces CategoryFrames CategoryCustomize

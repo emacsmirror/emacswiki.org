@@ -1,0 +1,41 @@
+[new]
+Here's some questions for the local taxonomists:
+
+# Where should a cooking recipe program be listed on EmacsWiki?[http://www.bobnewell.net/nucleus/bnewell.php?itemid=213]
+
+# What do people think of a proposal for a CategoryEducation category?  It duplicates CategoryVocab in some ways, and grading programs seem a lot like the SpreadSheet category.  They could be listed there, too.   There's nothing wrong with having multiple navigation paths to the same page. -- AaronHawley
+
+[new]
+I think that we should replace CategoryVocab with CategoryEducation.
+I'm not sure a program for grading is a "spreadsheet" – so I wouldn't list it on the SpreadSheet page.
+-- AlexSchroeder
+
+[new:DrewAdams:2006-12-26 19:08 UTC]
+I agree with Alex. No need for both, and Education is more general. -- DrewAdams
+
+[new]
+There are a good number of dictionary modes on this Wiki that they almost spawned a CategoryDictionaries.  Adding CategoryEducation to these dictionary-related pages will lose the specificity of the previous category, CategoryVocab, but "Vocab" was also generic.  I think I'll add CategoryInterface to many of them anyway, since none of them really implement dictionary algorithms, but are dependent on other files, programs or online services.  It might be smart to start CategoryDictionary some day. -- AaronHawley
+
+[new]
+In spite of what I said above (;-)), another look at CategoryEducation makes me realize that much of what was in CategoryVocab has more to do with natural-language processing than with education. The crossover is stuff like vocabulary tests and spanish learning aids. I think we need two different categories to capture this difference -- perhaps CategoryNaturalLanguage and CategoryEducation? At least half of what is currently in CategoryEducation has nothing per se to do with education (except that one might want to learn it or use it in school). CategoryNaturalLanguage might also include various publishing and word-processing features, including perhaps fonts and character sets, at least in so far as they relate to language. Essentially, CategoryNaturalLanguage would be about using Emacs for text in English, Spanish, Chinese... -- DrewAdams
+
+[new]
+There is already a CategorySpelling and CategoryCompletion, and most NaturalLanguage stuff on the Wiki that isn't captured in CategoryEditing requires a separate program or service, thus CategoryInterface or CategoryExternalUtilities.  CategoryNaturalLangugae will be a departure from how the rest of the Wiki is categorized, in my opinion. -- AaronHawley
+
+[new]
+I've changed my mind, too.  How about CategoryWriting?  I was afraid CategoryNaturalLanguage could cross paths with the [[i18n]] category.  The contents of the CategoryWriting duplicate CategoryEducation in some ways, but it makes sense to have a ''writing'' category, considering there's a CategoryProgramming category. -- AaronHawley
+
+[new:DrewAdams:2006-12-29 23:07 UTC]
+I still prefer CategoryNaturalLanguage, but agreement might be difficult to reach ;-). CategoryNaturalLanguage seems both broader than CategoryWriting and less vague ("writing" doesn't imply natural-language writing). In particular, there could be all manner of tools written in Emacs that examine, manipulate, or analyze natural language, without the end being to write (or even edit) anything. Even a reading aid would belong in CategoryNaturalLanguage  but not in CategoryWriting . -- DrewAdams
+
+[new]
+Analyzing language would be part of CategorySpelling or the yet to be started, CategoryGrammar.  Eventually, there will be a mode in Emacs for ProseRefactoring.
+
+What "writing" is their besides natural language writing?  "Writing code" I suppose, but that's all I can think of.  Not to mention "writing" is close to "editing" (see CategoryEditing).  I couldn't really think of a best solution, this was my own compromise.
+
+Most "aids" for Emacs are dropped in the category CategoryExternalUtilities, but the useful ones for "reading" for instance are in CategoryAccessibility.
+
+A "reading aid" in Emacs, I can't wait to see that. -- AaronHawley
+
+[new:DrewAdams:2006-12-30 08:13 UTC]
+Reading, writing, spelling, grammar, etc. are all part of natural language, as opposed to computer languages etc. I would rather have one category for that stuff than one for each: CategoryReading, CategoryWriting, CategorySpelling, CategoryGrammar... If there is, at some point, need for a finer division, we can add subcategories of natural language as needed, but why multiply things unnecessarily at this point? ''Occam oblige''. -- DrewAdams

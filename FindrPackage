@@ -1,0 +1,9 @@
+Recursively:
+: Find files
+: Find text within files
+: Replace text within files
+: No external dependencies
+
+* Lisp:findr.el
+----
+CategorySearchAndReplace

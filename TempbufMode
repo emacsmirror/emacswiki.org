@@ -1,0 +1,30 @@
+This package implements tempbuf-mode, a minor mode that enables
+buffers to get automatically deleted in the background when it can
+be deduced that they are no longer of any use.
+
+It could be common for example to apply this mode to dired-mode buffers
+or read-only buffers visiting files, relieving you from having to
+delete each of them manually when the buffer list grows too large.
+
+This package is not part of GNU Emacs, and is currently hosted by the EmacsWiki.
+
+Elisp code: Lisp:tempbuf.el.
+
+To enable this mode on dired buffers, put this line in your .emacs:
+  (add-hook 'dired-mode-hook 'turn-on-tempbuf-mode)
+
+I find it also very convenient to enable this mode in emacs
+customization buffers, W3 (Emacs' Web Browser) buffer, UNIX 'man'
+documentation buffers, and any buffer with view-mode activated.
+
+  (add-hook 'custom-mode-hook 'turn-on-tempbuf-mode)
+  (add-hook 'w3-mode-hook 'turn-on-tempbuf-mode)
+  (add-hook 'Man-mode-hook 'turn-on-tempbuf-mode)
+  (add-hook 'view-mode-hook 'turn-on-tempbuf-mode)
+
+[new:rubikitch:2009-04-09 21:20 UTC]
+Do you know midnight.el in Emacs distribution?
+It provides clean-buffer-list function. -- [[rubikitch]]
+
+------
+CategoryModes

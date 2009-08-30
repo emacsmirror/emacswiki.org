@@ -1,0 +1,9 @@
+TemporalLogicOfActionsMode is an Emacs mode for editing specifications
+in TemporalLogicOfActionsPlus (TLA+), a formal specification language
+defined by LeslieLamport on top of his TemporalLogicOfActions.
+
+TemporalLogicOfActionsMode can be downloaded from http://ls4-www.informatik.uni-dortmund.de/RVS/P-TLA/TEM/tem.html.
+
+----
+CategoryModes
+ProgrammingModes

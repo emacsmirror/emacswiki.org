@@ -1,0 +1,35 @@
+= Welcome! =
+Hi, I’m Giorgos Keramidas, an all-around UNIX and Emacs hacker, advocate and fan.
+
+You can easily reach me by email, in one of the following addresses (in order of preference):
+
+  keramida@linux.gr
+  keramida@FreeBSD.org
+  keramida@ceid.upatras.gr
+  gkeramidas@gmail.com
+
+[new]
+Welcome to the wiki! I don't obfuscate email addresses and just spend more CPU cycles [http://www.emacswiki.org/cgi-bin/alex/Spam spam filtering]... -- AlexSchroeder 
+
+[new]
+Thank you, Alex :)  I've unobfuscated the email addresses, since all my email is already filtered by spamassassin.
+
+[:InitFiles]
+= Init Files =
+
+I have been using a ''split file'' setup for my laptop's Emacs installation for a few months now.  This seemed a bit confusing at first, and it took me a while to learn enough about EmacsLisp to make the startup of my Emacs sessions more effective.  Now that things look a bit more ''stable'', here is a list of the various init files I use.  Follow the link of each init file section, to see what my current setup looks like.
+
+* GiorgosKeramidasConfigOrganization -- how I have split my ##.emacs## startup file in smaller chunks, to make things easier to find
+* GiorgosKeramidasConfigAutoload -- automatically loading Emacs modules when necessary
+* GiorgosKeramidasConfigBbdb -- defaults and options for the [[CategoryBbdb|bbdb]] contact database
+* GiorgosKeramidasConfigCcMode -- defaults for editing C program sources
+* GiorgosKeramidasConfigDefaults -- various, uncategorized default settings
+* GiorgosKeramidasConfigErc -- setup of the [[ERC]] client for IRC chat networks
+* GiorgosKeramidasConfigGnus -- my current [[CategoryGnus|Gnus]] email- and news-reading setup
+* GiorgosKeramidasConfigHooks -- miscellaneous hook functions for Emacs modes
+* GiorgosKeramidasConfigKeys -- global keyboard bindings
+* GiorgosKeramidasConfigLang -- language environment options (mostly ''UTF-8'' and ''ISO 8859-7'' related)
+* GiorgosKeramidasConfigUserInterface -- user interface options (menus, scroll-bars, tool-bars, etc)
+
+----
+CategoryHomepage

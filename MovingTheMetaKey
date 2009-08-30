@@ -1,0 +1,28 @@
+By default, My Microsoft Natural Keyboard mapped the Meta key to the Windows button and not to the Alt button.
+To fix this, run XKeyCaps and load up a keyboard that matches your keyboard.  Write down the number on the key you
+want to be your Meta key (0x40 in my case).  Then add the following line to your ~/.xmodmap:
+
+keycode 0x40 = Meta_L
+
+and run: xmodmap -e 'keycode 0x40 = Meta_L'
+
+Or, just try XKeyCaps for a much friendlier interface to moving keys around. 
+
+Now your Alt key should properly generate a Meta event, and your Windows key is free to map to the start menu! ;-)
+
+=== w32 ===
+this .reg is supposed to make caps=ctrl and win=alt but i've never tried it:
+
+<pre>
+----------------------------------------
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
+"Scancode Map"=hex:00,00,00,00,00,00,00,00,03,00,00,00,1d,00,3a,00,38,00,5b,e0,00,00,00,00
+----------------------------------------
+</pre>
+
+http://www.gnu.org/software/emacs/windows/faq3.html#capscontrol has more info about this.
+
+----
+CategoryKeys MovingTheCtrlKey MetaKeyProblems

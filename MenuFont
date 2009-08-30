@@ -1,0 +1,8 @@
+In order to change the font for the menubar, try something like this in your .Xdefaults file:
+
+   Emacs*menubar*Font: 		-*-helvetica-bold-r-*-*-*-120-*-*-*-*-iso8859-*
+   Emacs*popup*Font:		-*-helvetica-bold-r-*-*-*-120-*-*-*-*-iso8859-*
+
+----
+CategoryFaces
+

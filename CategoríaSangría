@@ -1,0 +1,31 @@
+Pulse sobre el título de esta página para recibir un listado de todos los asuntos relacionades con la sangría.
+
+Para aquellas personas que tienen dificultades con el comportamiento de las sangrías por defecto, existe un TutorialDeSangría. Si eso no funciona, EricPement tiene una página sobre Emacs y las tabulaciones en http://www.student.northpark.edu/pemente/emacs_tabs.htm
+
+En cualquier caso, la mayoría de personas se concentran en los siguientes temas:
+
+* SangríaC -- código fuente en C, C++ y Java
+** GuessOffset -- adivina el desplazamiento usado en los archivos existentes y lo usa
+* SangríaLisp -- código fuente en Lisp, Scheme, EmacsLisp
+* SangríaPerl -- código fuente en Perl
+* ReformatearBúfer -- marcar el búfer entero y aplicarle la sangría de nuevo
+** EmbelesoDeCódigo -- cómo ajustar las líneas en los comentarios después de aplicar la sangría en el búfer
+* SangríaTexto -- para el texto plano sin sangría automática -- lo opuesto a SangríaCódigoFuente
+* SangríaHtml -- el modo HTML plano no soporta sangrado
+* SangríaXml -- uso del nuevo ModoSgml
+
+Temas relacionados:
+
+* SangríaAutomática -- cómo aplicar sangría a líneas nuevas automáticamente
+* NoTabulaciones -- cómo evitar las tabulaciones por completo (vea también LasTabulacionesSonMalignas)
+
+Quizás quiera leer también el tutorial sobre sangría de KaiGrossjohann:
+ftp://ls6-ftp.cs.uni-dortmund.de/pub/src/emacs/tutorials/tutorials_toc.html
+
+Alineación de columnas de texto:
+
+* AlinearColumna -- alinear columnas de texto, en donde las columnas están separadas por espacio en blanco
+
+Detalles de la implementación del sangrado:
+
+* TabStopList -- el recurso de respaldo usado generalmente cuando ninguna otra sangría parece funcionar

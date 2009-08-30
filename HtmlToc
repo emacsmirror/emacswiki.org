@@ -1,0 +1,39 @@
+This generates a table of contents (TOC) for
+HTML documents based on header elements.  See
+HtmlMode for more.
+
+You may also be interested in html-pagetoc.el that comes with [NxhtmlMode nXhtml].
+(This mode also contains html-toc.el for table of contents to use with frames
+and html-wtoc.el for table of contents that is mixed with the pages.)
+
+[new]
+Note that the following code does not work when there are attributes in the
+header tags.
+
+ (defun html-show-toc ()
+   "Shows a TOC based on headings tags <H[1-6]>"
+   (interactive)
+   (if sgml-tags-invisible
+       (error "SGML tags are invisible")
+     (occur "<h[1-6]>")
+     (pop-to-buffer "*Occur*")
+     (vc-toggle-read-only)
+     (goto-char (point-min))
+     (replace-string "<h1>" "")
+     (goto-char (point-min))
+     (replace-string "<h2>" "  ")
+     (goto-char (point-min))
+     (replace-string "<h3>" "    ")
+     (goto-char (point-min))
+     (replace-string "<h4>" "      ")
+     (goto-char (point-min))
+     (replace-string "<h5>" "        ")
+     (goto-char (point-min))
+     (replace-string "<h6>" "          ")
+     (goto-char (point-min))
+     (replace-regexp "</h[1-6]>" "")
+     (goto-char (point-min))
+     (toggle-read-only 1)))
+
+----
+CategoryHypermedia

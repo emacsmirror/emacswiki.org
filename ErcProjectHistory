@@ -1,0 +1,36 @@
+ERC development has a [http://savannah.gnu.org/projects/erc/ home] at GNU's
+[http://savannah.gnu.org Savannah] as of May, 2006.
+
+
+= SourceForge =
+
+Between June, 2001 and May, 2006 ERC was an active
+[http://sourceforge.net/projects/erc/ project] at SourceForge.  The last
+version released there was
+[http://sourceforge.net/project/showfiles.php?group_id=30118&package_id=22089
+ERC 5.1.2].
+
+The [http://sourceforge.net/cvs/?group_id=30118 old CVS repository] and
+[http://sourceforge.net/mailarchive/forum.php?forum=erc-help erc-help mailing
+list archives] are still available.
+
+
+
+= Original version of ERC =
+
+Until the end of summer 2001, you could have gotten the original copy by
+AlexanderBelikoff and SergeyBerezin from here:
+
+* http://teapot.modck.cs.cmu.edu/cgi-bin/cvsweb.cgi/erc/
+
+: Sergey says, "First of all, I'm glad that my version of ERC is being used
+out there.  The thing is, I do not have free time and enough incentive anymore
+to work on ERC, so I would be happy if you guys take over the project
+entirely."
+
+And here is an even older one by AlexanderBelikoff:
+
+* Geocities:abelikoff/software/
+
+----
+[[ERC]]

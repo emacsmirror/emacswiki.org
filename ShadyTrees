@@ -1,0 +1,67 @@
+== Order ==
+[http://denoted.dyndns.org/ploidy/2007/09/2804/ (Originally from The Dark Balloon)] This builds on the work of others:
+
+    ;; File names in title bars with a twist: Replace HOME with ~ while
+    ;; still working with Emacs' / and HOME's \. And it works for
+    ;; Windows-style HOMEs.
+    (setq frame-title-format 
+          '(:eval 
+            (if buffer-file-name
+                (replace-regexp-in-string
+                 "\\\\" "/"
+                 (replace-regexp-in-string 
+                  (regexp-quote (getenv "HOME")) "~"
+                  (convert-standard-filename buffer-file-name)))
+              (buffer-name))))
+
+As a Windows user with !ClipDiary installed:
+
+    ;; Damn it, stop messing with my clipboard.
+    (global-set-key "\C-c\C-d" 'delete-region)
+    (add-hook 'minibuffer-setup-hook
+              '(lambda ()
+                 (define-key minibuffer-local-map "\C-c\C-d"
+                   '(lambda ()
+                      "Delete everything in minibuffer"
+                      (interactive)
+                      (delete-minibuffer-contents)))))
+
+== global-set-keys ==
+
+[http://denoted.dyndns.org/ploidy/2008/06/2939/ (Originally from The Dark Balloon)] Instead of countless <code>global-set-key</code> calls, use this:
+
+    (defun global-set-keys (alist) nil
+      (mapcar (lambda (a) nil
+                (setcar a (read-kbd-macro (car a)))
+                (apply 'global-set-key a)) alist))
+
+An example of how it works:
+
+    (global-set-keys
+     '(
+       ("<f7>" markdown)
+       ("<f9>" svn-status)
+       ("C-c C-d" delete-region)
+       ("C-c C-f" auto-fill-mode)
+       ("C-x C-k" (lambda () (interactive) (kill-buffer nil)))
+       ("C-z" nil)
+       ("M-d" delete-word)
+       ("C-c C-b" electric-buffer-list)
+       ("C-c C-r" xsteve-ido-choose-from-recentf)
+       ("C-c C-m" make-directory)
+       ("C-c C-<return>" unfill-paragraph)
+       ("C-?" redo)
+       ("C-<backspace>" backward-delete-word)
+       ("M-x" ido-execute)
+       ))
+
+
+== Addenda ==
+[new]
+Welcome to the wiki! (this is a homepage right?) --PierreGaston 
+
+[new]
+Yes, absolutely. Thanks for the category tag. --ShadyTrees
+
+== Category ==
+* CategoryHomepage

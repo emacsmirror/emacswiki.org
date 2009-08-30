@@ -1,0 +1,11 @@
+Brian Palmer [http://www.cs.nmsu.edu/~bpalmer][BROKEN LINK] is a graduate student who hangs out (as [::bpalmer]) quite regularly on #emacs, #xemacs, and similar channels. Overly opinionated, with too much time on his hands, it's a miracle that everybody hasn't ignored him.
+
+Recently he has decided to try to cut back some on irc, in order to focus those opinions into more permanent form. 
+
+== Views on ELisp ==
+
+ELisp is a remarkable kludge of a semi-elegant language pasted to a very baroque structure. Its event model and architecture are fundamentally intertwined with the 
+editor, so I think some people more accustomed to programming "traditional" languages overlook the best way to do things in elisp. Perhaps the best solution to this would be to build a catalog of ELisp Design Patterns. 
+
+----
+CategoryHomepage

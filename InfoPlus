@@ -1,0 +1,51 @@
+DrewAdams has written library <tt>[[info+.el]]</tt> ('''info+'''), which extends the standard Emacs library ##info.el##.
+
+Library '''info+''' provides:
+
+* Breadcrumbs. See where you are in the Info hierarchy, and access higher nodes directly. (This has now been added to vanilla Emacs 23.)
+* New key bindings, commands, and menus.
+* Additional, finer-grained highlighting, with new faces:
+** Quoted names, like this: `name-stands-out', and strings, like this: "<code>string-stands-out</code>" are highlighted if '''`Info-fontify-quotations-flag'''' is non-`nil'.
+** Isolated single quotes, like this: ##'foobar##, are highlighted if '''`Info-fontify-single-quote-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
+** In the Emacs Lisp manual, reference items are highlighted, so they stand out.
+** In Emacs 20, file names, info node names, cross-reference notes, and menu items are also fontified (this is standard in Emacs 21).
+
+:: Here is a screenshot of the <code>*Info*</code> buffer, showing the highlighting:
+
+:: [[image:DrewsEmacsInfoImage]]
+
+
+* Syntax table that respects EmacsLisp: apostrophe ('''##'##''') and non-breaking space have ''punctuation'' syntax, not ''word'' syntax.  So for example, you can easily use `C-s C-w' to select text between ##`##...##'## without also grabbing the ##'## at the end. (I reported this as Emacs bug [[http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=3312|#3312]], but so far it hasn't been fixed.)
+
+* Redefinitions of some standard Emacs functions
+** `Info-goto-emacs-key-command-node': If the key's [[command]] is not found, then it searches for the KeySequence in the text.
+** Info [[Frame]] is dynamically shrink-wrapped to fit each node individually (if `Info-fit-frame-flag' is non-`nil').
+** Searching highlights the found regexp (if `search-highlight' is non-`nil').
+** Better default values for input.
+** More informative messages -- e.g. how many additional matches found.
+* `*info*' has been removed from `same-window-buffer-names', so that a separate window can be used if you so choose.
+
+
+* New commands
+** '''`Info-virtual-book'''' (bound to '''`v'''') -- Open a virtual Info manual of saved nodes from any number of manuals.  The nodes are those saved in [[option]] '''`Info-virtual-book''''.  With `C-u', [[bookmark]]ed Info nodes are also included.  See also `<tt>[[Icicles - Info Enhancements#VirtualInfoBooks|icicle-Info-virtual-book]]</tt>'.
+** '''`Info-save-current-node'''' (bound to '''`##.##'''') -- Save name of current node to list `Info-saved-nodes', for use by `v' (`Info-virtual-book').
+** '''`Info-merge-subnodes'''' -- Integrate the current Info node with its subnodes (the nodes in its Menu), perhaps recursively. 
+
+:: Use `Info-merge-subnodes' to ''extract a self-contained report'' (possibly the whole manual!) from an Info manual. The report is itself an Info buffer, with hyperlinks and normal Info behavior.
+
+:: There are various prefix-argument options that govern just how subnodes are treated (recursively or not, for instance). There are a few user variables that let you customize the report appearance.
+
+:: Here is a screenshot of a report. I removed most of the text in each node (replacing it by a narrow band of white with "'''. . .'''") so that I could show more than one node in the screenshot; the real report is a buffer 322 lines long.
+
+:: [[image:DrewsEmacsInfoMerged]]
+
+:: You can ''convert such a report to HTML'' using menu Tools > HTMLize Buffer (`mkhtml-any-buffer') from library Lisp:mkhtml.el. For more information, see SaveAsHtml.
+
+
+'''See Also:''' [[Icicles - Info Enhancements]].
+
+
+----
+Lisp:info+.el
+
+CategoryDocumentation CategoryHelp CategoryHypermedia CategoryModes

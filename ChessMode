@@ -1,0 +1,37 @@
+== Emacs chess library and client ==
+
+JohnWiegley has written a chess mode.
+It plays against crafty and gnuchess.
+You can also play on Interenet Chess Servers, like FICS.
+
+
+* http://emacswiki.org/johnw/EmacsChess.html 
+
+== Crafty ==
+
+A possible computer oponent if you are not playing against a fellow
+human.
+
+* http://www.limunltd.com/crafty/
+
+Note the licence: ''Crafty is freeware and is copyrighted by Bob
+Hyatt. Parts of the Macintosh port are copyrighted by Lloyd Lim and by
+Metrowerks. You can do anything you want with Crafty, as long as it
+isn't for any commercial purpose.''
+
+== Internet Chess Servers ==
+
+MarkOakden has written an emacs mode for communication with internet 
+chess servers (FICS http://www.freechess.org , ICC 
+http://www.chessclub.com, etc.)  It handles the text part of the session, 
+so unless you like playing in ASCII, you'll still need a board such as
+XBoard ( http://www.tim-mann.org/chess )
+
+* ics.el is available from http://www.oakden.org/mark/sw/icsel
+
+The chess.el project also contains an unrelated implementation of ICS
+communication, called chess-ics.el.  To startup chess.el against
+a ICS server, use C-u M-x chess RET ics RET
+
+----
+CategoryGames

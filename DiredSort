@@ -1,0 +1,28 @@
+==What is DiredSort ?==
+DiredSort is a mode that sort files in various methods.
+
+==Install==
+Put Lisp:dired-sort.el in your load-path, add
+{{{
+    (require 'dired-sort)
+}}}    
+in ~/.emacs
+
+==Command List==
+* defun dired-sort-size
+: Sort files by size.
+
+* defun dired-sort-extension
+: Sort files by extension.
+
+* defun dired-sort-ctime
+: Sort files by create time.
+
+* defun dired-sort-utime
+: Sort files by access time.
+
+* defun dired-sort-time
+: Sort files by time.
+
+* defun dired-sort-name
+: Sort files by name.

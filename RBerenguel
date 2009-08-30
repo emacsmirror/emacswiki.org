@@ -1,0 +1,18 @@
+Emacs user for more than 4 years, since I started my !PhD thesis (in Mathematics), when I needed a good cross-platform editor. I already knew a little emacs from my Lisp-love, and vi from being the editor of choice in the first courses... It is still the editor of choice among the department staff. I pity them, poor Satan lovers.
+
+I have small experience in editing emacs lisp (mostly to repair some minor errors I have encountered sometimes, or adding a small funcionality I like), now I am writing a major mode to interact with my fractal drawing console programs, via command line arguments. For now, it can load the image and zoom in from a "drag and drop" over that image, reload and repeat (over the same buffer, still buggy thus). But it is getting better :)
+
+If you want to know something else, 
+
+[http://berenguel.blogspot.com/ My blog]
+
+[http://www.maia.ub.es/~ruben/ My personal page at the department]
+
+
+[new:DrewAdams:2009-06-20 20:16 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+----
+CategoryHomepage

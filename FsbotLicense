@@ -1,0 +1,75 @@
+
+DeletedPage
+
+This page concerns the license of the database of fsbot (and not of erbot, the software).  
+
+Fsbot's database's license is now changed to be basically the same as that of emacswiki.  It can be seen here:  http://fmysql.tu-graz.ac.at/~fsbot/data/COPYING
+
+
+----
+
+Its current license is GFDL with no invariant sections.  We would like to change the license (retroactively) to the same license as that of emacswiki, which reads: 
+
+
+
+This work is licensed to you under version 2 of the GNU General Public License. Alternatively, you may choose to receive this work under any other license that grants the right to use, copy, modify, and/or distribute the work, as long as that license imposes the restriction that derivative works have to grant the same rights and impose the same restriction. For example, you may choose to receive this work under the GNU Free Documentation License, the CreativeCommons ShareAlike License, the XEmacs manual license, or similar licenses.
+
+
+What do people think of that?
+
+If you agree or disagree or have any other thoughts, please feel free
+to comment below (or dicsuss it at #emacs).  In particular, if you
+have contributed to fsbot's knowledge base, and you object to this
+change, please do let us know by adding your comments below.
+
+----
+
+=== Comments  === 
+
+The problem that I see is that the FDL was created specifically for dead tree books, quote RMS: "...are included to make the license appealing to commercial publishers for books whose authors are paid.". Therefore it seems that licensing fsbot under the GFDL was erronious to begin with. The Creative Commons license would be more appropriate to fsbot's non-commercial and collaborative nature. --YoniRabkinKatzenell
+
+I like the Emacs Wiki license. -- AlexSchroeder
+
+----
+I have reservation reg. the license 
+1) Most of the information that fsbot carries belongs orginally to a webpage or is a url which to me sounds like information in the public domain or the copyright of the author of the webpage. An addition to the information which already exists in the public domain or is the property of xzy of the webpage and change of license looks morally wrong. The author is most of the time quoting text from a webpage and a url which is hardly his own creation hence its not copyrightable. 
+
+emacs wiki on the other had is created by the users out of their own experience and in their own language (at times broken ) but none the less creative effort which would be copyrightable or licensable ...
+
+2) Is it ok if i copy a classic novel move the comas around and rephrase some sentances and call it gpl ? Does it make us any better than  the corporates and we seem to be ones who are worrid about unfair trade practices. Is it fair. If you own something its a different matter you have every rihgt to do whatever you want.
+
+shoudnt we just have a simple cant be published or you should follow the original copyrights of the url or webpages where this material has been taken from and just move on without fringing on the copyrights of 100ds of users on the internet ?
+
+--Tintin  
+
+When citing other sources, we cannot claim copyright for the citation.
+Therefore, our license does not cover the citations themselves.
+We believe these citations to be "fair use".
+Anybody how receives the fsbot database from us will do the same.
+
+When doing trivial changes to a document, those changes are usually not
+protected by copyright.
+
+I think that your two points do not apply, therefore.
+
+-- AlexSchroeder
+
+Fsbot unlike emacs wiki has very little creative bits to a lot of entries. Hence to state that its under some license would amount to willful negligence. and "Fair use" would be if the sources are acknowledged (but it can't be for obvious reasons, the present entries might not suggest where it is from and who wrote the definition of xyz ) and so its extremely distateful to relicense it. And "Fair use" must have a lot of creative bits. You cant just take "Fair Use" bits out of college text books and add 10% of your work and suggest its licensed. It akin to theft when the copyright owners are not watching.
+
+Any license/copyright not just gpl and Co should be respected. OpenLicensing in no different from a propritory license. Else we lose credibility.
+
+    As always just a "cant be published" the copyrgihts belong to numerous sources form the internet and anyone who tries to take advantage of the same can be sued by the orgiginal copyright owners. (sounds like a better license to me ) 
+
+Tintin
+----
+
+I re-write erbot in perl. I take fsbot's database, write another perl script to convert it to something my perl fsbot can use and thus give birth to a new bot (also called fsbot!). 
+
+One day, fsbot drops from #emacs and I take this opportunity to connect my perl fsbot as fsbot. No one notices (until deego gets back from vacation, of course). Then all hell breaks loose (another #emacs crisis!!!!! (yet another wikipage goes up!!!!!)).
+
+MY question is what makes fsbot, fsbot?
+
+-e1f
+
+----
+ErBot

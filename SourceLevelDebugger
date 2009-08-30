@@ -1,0 +1,48 @@
+Edebug is a source level debugger for EmacsLisp.  It 
+instruments code. This means that Emacs adds special
+instructions to the code when it is evaluated.  The main entry point
+is `M-x edebug-defun' (also on `C-u C-M-x').  Use it instead of `C-x
+C-e' or `C-M-x' to evaluate a `defun' and instrument it for debugging.
+
+`edebug-defun' must be able
+to read your code.  It expects all function
+definitions to start in column 0.  If they do not, hitting `C-u C-M-x' 
+will show you the wrong function name in the [[echo area]].
+
+== Example ==
+
+Paste the following functions into the `*scratch*' buffer (starting at column 0).  Hit `C-M-x' with the [[cursor]]
+inside each of the function definitions.
+
+    (defun foo ()
+      (interactive)
+      (bar))
+     
+    (defun bar ()
+      (let ((a 5)
+	    (b 7))
+	(message "%d" (+ a b))))
+
+Use `M-x foo'.  This prints ##12## in the echo area.
+
+Now instrument `bar' by moving the cursor into its code and hitting `C-u
+C-M-x'.  The echo area shows ##Edebug: bar##.
+
+Use `M-x foo' again.  Emacs steps through the code of
+`bar', showing you the result of evaluating each sexp in the echo area.  Hit `SPC'
+to step ahead or `e' to evaluate another expression.
+The arrow shows you which sexp will be evaluated next:
+
+    (defun bar ()
+    =>(let ((a 5)
+	    (b 7))
+	(message "%d" (+ a b))))
+
+To quit the debugger, type `q'. 
+
+You can disable edebug on a function by evaluating the function again using `C-M-x'.
+
+See also: DebuggerMode.
+
+----
+CategoryDebug

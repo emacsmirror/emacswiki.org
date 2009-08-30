@@ -1,0 +1,81 @@
+介绍一种我写的输入法。
+
+quail是emacs自带的输入法工具。它使用 keymap 来查找汉字。这对于汉字输入来说就显得有些不够灵活，也因此需要占用较多内存。我写的输入法就是针对这两点加以改进。
+
+现在我已经移植了五笔和拼音两种输入法。这两种输入法的特性分别如下。
+
+五笔输入法： 
+# 可以提示备选的汉字。
+# 可以保存选择的历史
+# 可以自己造词，并保存到文件。
+
+拼音输入法： 比较类似紫光拼音输入法。或者说是根据紫光拼音的特点来写的。具有以下特点。 
+# 自动调频
+# 自动加入输入的词组。
+# 不必输入词组的全部拼音，比较智能的查找词组。
+
+为了避免导入的词库太大，还是尽量不要一次输入太长的拼音。尽量使用两个或 者三个字的词组。同样是这个原因，我不打算增加在输入时能修改输入拼音的功 能。
+
+如果要防止错误的解析输入的拼音，可以在输入的过程中使用 "'" 断开。比如 要输入 "xi'an"，在输入 xi 之后要输入一次 "'" 来强制断开。
+
+配置方法：
+
+在 .emacs 加入这几行就行了。注意，如果你的 eim-wb.el 和 eim-py.el 不在 ~/.emacs.d/site-lisp/eim 目录下，记住修改 wb.txt 和 py.txt 中相应文件 的位置。五笔输入法还要修改 eim-wb-history-file 和 eim-wb-user-file 的 位置。
+
+  (add-to-list 'load-path "~/.emacs.d/site-lisp/eim")
+  (autoload 'eim-use-package "eim" "Another emacs input method")
+
+  (register-input-method
+   "eim-wb" "euc-cn" 'eim-use-package
+   "五笔" "汉字五笔输入法" "~/.emacs.d/site-lisp/eim/wb.txt")
+  (register-input-method
+   "eim-py" "euc-cn" 'eim-use-package
+   "拼音" "汉字拼音输入法" "~/.emacs.d/site-lisp/eim/py.txt")
+
+所有的文件可以在我的主页[http://learn.tsinghua.edu.cn:8080/2005211356/emacs/Eim.html]上找到。
+
+
+
+----
+WeakishJiang的Comments
+
+這個輸入法真的很棒，真的是久違的紫光的感覺，支持簡拼(不是雙拼，是簡拼），支持詞語！  
+
+== 如何輸入繁體 ==
+
+
+輸入法提供的是簡體輸入法，但是輸入繁體并不難
+
+我把/eim下的py.txt, otherpy.txt, pychr.txt用軟件轉成了繁體，然後重新打開emacs，馬上就能輸入繁體了。
+
+註意：pychr.txt是只讀，你首先要對它chmod o+w，然後再修改。
+
+此外，這樣使用軟件自動轉換肯定是不精確的，有些地方會出現錯誤。比如"碼表"被搞成了"碼錶"。
+
+
+==  Emacs.app的問題 ==
+Emacs.app是運行於Mac OS X的軟體，我在 Version 23.0.0 (NS 9.0-pre3)下使用遇到了問題，候選窗口很小，一閃而過，無法使用（只能盲打:) ）
+輸出的資料為
+<pre>
+Note, built-in variable `x-use-old-gtk-file-dialog' not bound
+Note, built-in variable `x-gtk-show-hidden-files' not bound
+Note, built-in variable `x-gtk-whole-detached-tool-bar' not bound
+Note, built-in variable `x-use-underline-position-properties' not bound
+</pre>
+我猜出錯的原因是Emacs.app用的不是gtk。
+
+按照下面的方法可以解決這個問題。
+
+== 題外話 ==
+從Another emacs input method來看,作者的想法是把Eim作為Emacs Input Method的簡稱,但我更喜歡Gnu似的命名方式Eim Input Method. :)
+
+-WeakishJiang
+----
+
+你可以试试不用 tooltip:
+
+   (setq eim-use-tooltip nil)
+
+謝謝。現在使用起來沒問題了。
+
+

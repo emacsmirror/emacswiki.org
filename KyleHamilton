@@ -1,0 +1,9 @@
+Hi, I'm Kyle ([::kyanha]), reachable at the NATO phonetic alphabet (http://en.wikipedia.org/wiki/NATO_phonetic_alphabet) reduction of: Alfa Echo Romeo Oscar Whiskey Oscar Lima Foxtrot at Golf Mike Alfa India Lima dot Charlie Oscar Mike.  I'm a new user of Aquamacs, and a new user of emacs in general; I've made the switch because I'm finally going through the [http://mitpress.mit.edu/sicp/ Structure and Interpretation of Computer Programs book], which uses Scheme to illustrate its principles.
+
+I'm sick of trying to deal with all of the irritating parentheses without having an automatic paren-handler.  Since Scheme is a Lisp dialect, and since emacs is written primarily with another Lisp dialect, I'm hoping that I'll have a lot more fun writing it in emacs than vi or any other text editor. :)
+
+[new]
+Welcome to the wiki! If you want to really get into it, you might also want to check out SlimeMode. I have never really gotten to use it, however. I also faintly remember there being info out there on rewriting the SICP examples in Emacs Lisp. Anyway, congratulations on choosing SICP. I remember that it blew me away years after I had started working in IT. Remember to check the [[Scheme]] page for more info. -- AlexSchroeder
+
+----
+CategoryHomepage

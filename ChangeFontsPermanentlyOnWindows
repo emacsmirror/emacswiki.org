@@ -1,0 +1,103 @@
+= Automatic =
+Lisp:frame-restore.el will save/restore the font you've selected through the mouse-set-font menu.  this means you never have to know the "X format" name.  very handy if you change the font often.
+
+
+= Manual =
+The problem is that you need to use the X format of specifying a font.
+Here's how to do it (works with recent versions of Gnu-Emacs (Oct.2007)):
+
+* Switch to the *scratch* buffer (Menu: Buffers--%%*scratch*%%)
+* type ##(w32-select-font)## followed by C-j (or M-x ##eval-print-last-sexp##)
+* select the desired font from the menu dialog that ensues
+* copy the string that is displayed (something like: 
+  ##"-outline-Lucida Sans Typewriter-normal-r-normal-normal-12-90-96-96-c-*-iso8859-1"##)
+  and paste it into the .emacs file (MsWindowsDotEmacs) or the registry (MsWindowsRegistry).
+  If .emacs is used the line to add is:
+  ##(set-face-font 'default "##/fontname/##")##
+  where /fontname/ is the copied string
+
+
+==For older Emacs-versions==
+
+(these are earlier guidelines on this page)
+
+<pre>
+ From: Michael Slass <mikesl@wrq.com>
+ Subject: Re: How to make selected font permanent?
+ Newsgroups: gnu.emacs.help
+ Date: Tue, 23 Oct 2001 19:22:39 GMT
+</pre>
+
+# Set the font to what you like with s-down-mouse-1
+# Figure out what that font is called
+## switch to the *scratch* buffer 
+## enter "(frame-parameters)" without the quotes
+## place the cursor after the closing paren and hit C-j
+## a list of frame parameters will appear in the buffer.  Look for something in the list like: (font . "-outline-Courier New-normal-r-normal-normal-16-120-96-96-c-100-iso8859-1")
+# copy the font form from the *scratch* buffer, and then add this to your .emacs  (notice the added ' before the font form you just copied):
+<tt>
+ (add-to-list
+    'default-frame-alist
+    '(font . "-outline-Courier New-normal-r-normal-normal-16-120-96-96-c-100-iso8859-1"))
+</tt>
+
+The next time you start emacs, you'll have the font you want.
+
+Even simpler is just to evaluate (press <code>C-x C-e</code> at the end of the line):
+<pre>
+(insert (prin1-to-string (w32-select-font)))
+</pre>
+
+It will show you a dialog, from which you can choose font, and insert its name at the current point.
+
+== Discussion ==
+
+----
+
+With Emacs >= 21.x you can do it like:  <tt>(set-face-font 'default "-misc-fixed-medium-r-normal--15-140-75-75-c-90-iso8859-15")</tt>
+  in your .emacs
+----
+
+Sorry, but this does not work for me using GNU Emacs 21.2 on Windows XP. I can only
+see this: 
+
+((display . "") (visibility . t) (icon-name) (window-id . "917794")
+(top . 0) (left . 0) (buffer-list #<buffer *scratch*> #<buffer NEWS>
+# <buffer *Minibuf-1*> #<buffer *Customize Faces*>) (unsplittable)
+(minibuffer . #<window 4 on *Minibuf-0*>) (modeline . t) (width . 80)
+(height . 40) ...)
+
+but not any kind of font information. Any hints?
+
+: Evaluating <tt>(frame-parameters)</tt> on recent versions gets you a truncated result (hence the three dots at the end), so it's no longer a useful way of finding out the current font name. --MichaelMason
+
+: I'm sure there's a prettier way to do this in elisp but you can find the font information by pasting this in the scratch buffer, putting the TextCursor at the end, and hitting C-j: (let (r) (mapcar (lambda (e) (if (eq (car e) 'font) (push e r))) (frame-parameters)) r) -- JDC
+
+: Simplest way that i always do is just do M-x set-face-font RET default RET .. now you get the list of the fonts that can be recognized by emacs.. something like -outline-XXX.. Select the one you want, C-k C-g and then paste it in for the default-frame-alist.. --GirishB
+
+: Another way is to type "(frame-parameter nil 'font)" without the quotes to the *scratch* buffer and hit C-j.
+
+: You can display the full set of parameters for the current frame by evaluating <tt>(prin1-to-string (frame-parameters))</tt>. -- MichaelMason
+
+: You can display a list of the available fonts by evaluating <tt>(prin1-to-string (x-list-fonts "*"))</tt>. -- MichaelMason
+
+[new:DrewAdams:2004-12-30 03:48 UTC]
+You can see the available fonts, and the effect each has, by cycling through them with command `doremi-font' in library Lisp:doremi-frm.el. -- DrewAdams
+
+----
+[new]
+If you would like emacs to start with a specific font, instead of jumping around as it resizes, you can put your font configuration in the MsWindowsRegistry (and frame size):
+<pre>
+[HKEY_LOCAL_MACHINE\SOFTWARE\GNU\Emacs]
+"Emacs.FONT"="-*-Lucida Console-normal-r-*-*-11-82-96-96-c-*-iso8859-1"
+"Emacs.GEOMETRY"="90x60"
+</pre>
+-- Dmb
+
+[new]
+But how about fontset? Is there any way to define fontset even before emacs starts?
+-- JoonhwanLee
+
+----
+CategoryFaces CategoryCustomize
+

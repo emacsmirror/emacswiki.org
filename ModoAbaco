@@ -1,0 +1,30 @@
+Este modo (escrito por ValvassoriMoise) simula un ábaco (una
+herramienta tradicional de madera para realizar cálculos simples).
+
+* http://valvassori.free.fr/p_unix.php3#abacus
+
+En la página web figura el siguiente pantallazo:
+
+<pre>
++-----------------------------------------+
+|+---------------------------------------+|
+|| o  o  o  o  o  o  o  o  o  o  o  o  o ||
+|| o  o  o  |  o  o  |  |  o  |  o  |  o ||
+|| |  |  |  o  |  |  o  o  |  o  |  o  | ||
+|+---------------------------------------+|
+|| o  o  o  o  |  |  o  o  o  o  o  o  o ||
+|| |  |  |  o  |  |  o  |  o  |  o  o  o ||
+|| |  |  |  o  o  o  o  |  o  |  |  |  o ||
+|| o  o  o  |  o  o  |  o  |  o  |  |  | ||
+|| o  o  o  |  o  o  |  o  |  o  o  o  | ||
+|| o  o  o  o  o  o  o  o  o  o  o  o  o ||
+|| o  o  o  o  o  o  o  o  o  o  o  o  o ||
+|+---------------------------------------+|
+|+-1--1--1--8--0--0--8--6--3--6--2--7--3-+|
++-----------------------------------------+
+Direction: -->
+Action: addition
+</pre>
+
+----
+CategoriaCalculadoras

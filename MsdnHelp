@@ -1,0 +1,101 @@
+If you are using VisualStudio 7.1 you can also get MSDN help by simply adding the following snippet to your .emacs file. This will open up the exact same help doc if you had hit F1 from within the VS IDE.
+
+Caveats:
+1. You need Active State Perl installed and available in your path from http://www.activestate.com
+
+2. You must have Visual studio already running.
+
+
+<pre>
+(defun msdn-help ()
+  (interactive "*")
+  (setq perl-command (concat "perl -e \"require Win32::OLE;my $dte = Win32::OLE->GetActiveObject('VisualStudio.DTE.7.1');$dte->ExecuteCommand(\\\"Help.F1Help\\\", \\\"" (current-word) "\\\") if defined $dte; print \\\"Visual Studio .Net Currently not Running\\\" if ! defined $dte; \""))
+  (shell-command perl-command))
+
+(global-set-key [f1] 'msdn-help)
+</pre>
+
+--Sridhar
+
+Download the utility listed in http://www.gbvsoft.com/resource.html. That will allow you to get msdn help from Emacs itself.
+But.. This will work only for MSDN until Dec 01. In Jan, it was changed to a different format and that does not follow the same protocol... EvilEmpire strikes again.. :) --GirishB
+
+The new format is "Microsoft Help 2" and is viewed with "Microsoft Document Explorer".  Just as (as is noted below) Microsoft's HH.exe does not allow command-line keyword searches, Document Explorer (dexplore.exe) does not allow it.  [http://www.helpware.net/mshelp2/h2viewer.htm H2Viewer] is free software that provides this functionality.  The following command will open the MSDN Platform SDK documentation for the "CreateWindowEx" function (1033 indicates English language):
+
+<pre>
+h2viewer /helpcol MS.PSDK.1033 /keyword K$CreateWindowEx
+</pre>
+
+I have not tried doing this from lisp yet so have no code to provide - sorry!
+
+-- DavidOShea
+
+Try this:
+
+<pre>
+(defun show-msdn-topic ()
+  "Open a window showing the MSDN documentation for the word under the point"
+  (interactive)
+  (if (string= "w32" window-system)
+      (start-process "MSDN lookup" nil 
+		     "D:/H2Viewer132/h2viewer.exe"
+		     "/appID" "MSDN-Viewer"
+		     "/helpcol" "MS.VSCC.2003"
+;; 		     "/filtername" "Visual C++"
+		     "/Index" (current-word))))
+</pre>
+
+-- BlueD
+
+----
+
+Here's a little something that I whipped up that will allow newer Htmlhelp-based versions of the msdn work from within emacs. You will need to download and install the free Htmlhelp helper program Keyhh.exe from http://www.keyworks.net, since the default Microsoft HH.exe will not allow you to search for keywords from the command-line, but instead forces you to use the Htmlhelp API. (Note: this is my first attempt at lisp, so YMMV)
+
+<pre>
+(defun show-vc-topic ()
+   "Open a window showing the Visual C++ documentation for the word under the point"
+   (interactive)
+   (cond
+    ((string= "w32" window-system)
+     (start-process "vc++ msdn lookup" nil "C:/WINNT/keyhh.exe" "-#klink" (format "'%s'" (thing-at-point 'symbol)) "E:/MSDN98/98VS/1033/VCCORE.CHM" ))))
+
+(defun show-glibc-topic ()
+  "Open a window showing the glibc documentation for the word under the point"
+  (interactive)
+  (cond
+   ((string= "w32" window-system)
+    (start-process "glibc lookup" nil "C:/WINNT/keyhh.exe" "-#klink" (format "'%s'" (thing-at-point 'symbol)) "E:/documents/glibc-2.2.3.chm" ))))
+</pre>
+
+--BrianMosher
+
+The following minor modification works for SQL Server Books online:
+<pre>
+(defun show-bol-topic ()
+   "Open a window showing the BOL documentation for the word under the point"
+   (interactive)
+   (cond
+    ((string= "w32" window-system)
+     (start-process "bol lookup" nil "C:/WINNT/keyhh.exe" "-#klink"
+                    (format "'%s'" (thing-at-point 'symbol))
+                    "C:\\Program Files\\Microsoft SQL Server\\80\\Tools\\Books\\sql80.col"))))
+
+(global-set-key (kbd "<f1>") 'show-bol-topic)
+</pre>
+
+--TimAnderson
+
+So, how does one find the path to the particular .CHM file?  I offer one way that I stumbled
+upon by accident.  If you have MSDN up (presumably executed from within Visual Studio 6), go to
+some topic.  Move your mouse button up into the window title area, right mouse click to open
+up a popup menu, and select the "Jump to URL..." entry.  When you do that, a dialog box is
+displayed, containing a text box entitled "Current URL".  I did this on one of the entries
+in the NTSD debugger section and got
+
+<pre>
+mk:@MSITStore:C:\Program%20Files\Microsoft%20Visual%20Studio\MSDN98\98VSa\1033\tools.chm::/devdoc/live/pdapp/mipsntsd_00dj.htm
+</pre>
+
+Select with the mouse button (ahem, CTRL-A doesn't work in that text box, I hate that!), and copy it with CTRL-C.  Open up Internet Explorer and paste it into the URL text box with CTRL-V, hit enter and wallah, you are on the page.  There is no way to navigate to other areas at this point, but the point is that the .chm part of the file is embedded in that non-standard tag string above.
+
+--BrentGoodrick

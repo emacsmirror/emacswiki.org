@@ -1,0 +1,6 @@
+Adds some functions to mark a region consisting of only whole lines.
+
+To see what this does, try triple-clicking in an Emacs buffer.
+
+
+* Lisp:mark-lines.el

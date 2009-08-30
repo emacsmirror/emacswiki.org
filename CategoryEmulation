@@ -1,0 +1,26 @@
+Click on the heading to search for all pages related to emulating other software and systems in Emacs.
+
+* AnsiTerm -- Use any terminal-based program from within Emacs.
+* CuaMode -- Use C-x, C-c and C-v to CopyAndPaste and more.
+* EmacsEd -- ed mode for Emacs
+* Imitating window and session management of GnuScreen
+** ElScreen
+** EmacsScreen
+* Norton Commander and Midnight Commander clones written for Emacs:
+** MidnightCommanderMode
+** NortonCommanderMode
+** [[Sunrise Commander]] -- also based on dired, but with many more features than mc.el and heavily influenced by the Orthodox File Manager standard.
+* PcSelectionMode -- Manage your regions like Motif, MAC or MS-Windows.
+* SlickCopy -- Operate on a line if nothing is selected.
+* Imititating Vi and Vim.
+** ViperMode -- A comprehensive mode that comes with Emacs.
+** [[vimpulse]] and Lisp:vimpulse.el -- Mimic some of Vim's significant features.
+** ViKeys -- One command at a time.
+*** ChangeWord
+*** OpenNextLine
+*** RecenterLikeVi
+*** RepeatingCommandsLikeVi
+*** SearchAtPoint
+*** ZapUpToChar
+* Notes for those with VisualStudio habits:
+** EmacsForDevStudioUsers

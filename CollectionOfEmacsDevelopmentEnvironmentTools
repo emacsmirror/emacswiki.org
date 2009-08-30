@@ -1,0 +1,53 @@
+[::CEDET]
+is a collection of tools written with the end goal of creating
+an advanced development environment.  Emacs already is a great
+environment for writing software, but there are additional areas that
+need improvement. Many new ideas for integrated environments have been
+developed in newer products, such as Microsoft's Visual
+environment. CEDET is a new project which brings together the various
+tools built to replicate these features.
+
+The CEDET home page is http://cedet.sourceforge.net/.
+
+CEDET current release: Feb 28: [https://sourceforge.net/project/showfiles.php?group_id=17886&package_id=98769&release_id=664893 1.0pre6]
+
+Major Components of CEDET:
+
+* SpeedBar
+* EmacsLispObjects (EIEIO)
+* SemanticBovinator
+* SemanticRecoder (SRecode - A template manager)
+* ConnectedGraphEditor (COGRE)
+* [http://cedet.sourceforge.net/ede.shtml Makefile Generation and Project Management] (EDE)
+
+Small tools in cedet/common
+
+* InVersion - Version checking and requiring
+* ModeLocal - Mode-local [[variable]]s and functions
+* PulseRegion - Fancy [[overlay]] color blinking
+* DataDebug - Utility for browsing arbitrary complex data structures
+
+----
+Links to some comments, pictures etc
+
+* A (gigantic?) gif demo showing what is supposed to be CEDET%%/%%Semantic: [http://mathrick.org/files/emacs-demo.gif The gigantic demo gif] (as of Jan 20, 2009, the file's host, mathrick.org, appears to be gone but there does seem to be a copy of the original file [http://www.imada.sdu.dk/~makat05/emacs-demo.gif here])
+* A blog post with an image: http://vkk.blogspot.com/2005/04/emacs-code-browser.html
+* An SWF demo: http://platypope.org/yada/emacs-demo/
+* [http://xtalk.msk.su/~ott/en/writings/emacs-devenv/EmacsCedet.html An article about Cedet] - how to install and use it.
+* Series of [http://alexott.blogspot.com/search/label/cedet blog posts] about work with Cedet
+----
+
+CEDET has changed very much and the development version is the preferred version to use.
+Bugs are mostly fixed rapidly by EricLudlam.
+
+To get the development version easily and set it up you can use [NxhtmlMode nXhtml] which has a tool for this in the nXhtml menus (see nXhtml / Tools / CEDET).
+
+----
+
+Another component of CEDET is "Senator". Someone with better knowledge should delete this section and put description of Senator in the appropriate place.
+
+Here's a description of one function Senator provides and it's use:
+[http://sourceforge.net/mailarchive/forum.php?thread_name=200804280303.m3S33anF007841%40projectile.siege-engine.com&forum_name=cedet-devel senator-copy-tag] - Puts a "tag" (an item definition) into a special "tag ring."
+
+----
+CategoryProgrammerUtils

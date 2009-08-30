@@ -1,0 +1,17 @@
+Pulse sobre el título de esta página para encontrar otras páginas relacionadas con la historia y legado de Emacs, así como asuntos sobre compatibilidad hacia atrás:
+
+* HistoriaDeEmacs -- el panorama general
+* DivisiónEmacs -- la división entre Emacs y XEmacs
+* EnlazamientoDinámicoVsEnlazamientoLexical
+
+RichardStallman escribió un memo sobre el diseño de Emacs: ftp://publications.ai.mit.edu/classic-hits/AIM-519A.ps
+
+JamieZawinski trazó una línea de tiempo sobre emacs hace un par de años: http://www.jwz.org/doc/emacs-timeline.html.
+
+CraigFinseth tiene cosas interesantes sobre Emacs en sus páginas web. Visite ImplementacionesDeEmacs para consultar una lista enorme de editores de la familia Emacs.
+
+Uno de los primeros manuales de TECO EMACS data della fecha 1982-03-06: http://zane.brouhaha.com/~healyzh/emacs/emacs.doc.txt
+
+La versión 170 de TECO EMACS por Rich Alderson para el emulador de PDP10 se encuentra disponible:  http://pdp10.nocrew.org/
+
+A partir de la versión 21, Emacs tiene la capacidad de desplegar imágenes incorparadas, de modo que es posible mostrar una imagen mientras dura el proceso de arranque. En http://www.ee.ryerson.ca/~elf/emacs/logo/ se describe la historia detrás de la creación del logo de Emacs.

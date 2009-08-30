@@ -1,0 +1,60 @@
+Sometimes I fat-finger a motion key and want to go back to where I just was (especially when marking text).  So I wrote this little chunk of code:
+
+    (defvar jtpp-prev-pos-stack nil
+      "Stack of previous positions.")
+    (make-variable-buffer-local 'jtpp-prev-pos-stack)
+    
+    (defvar jtpp-next-pos-stack nil
+      "Stack of next positions.")
+    (make-variable-buffer-local 'jtpp-next-pos-stack)
+    
+    (defvar jtpp-stack-depth 16
+      "*Stack depth for jump-to-prev-pos.")
+    
+    (defun jtpp-remember-position ()
+      (unless (or (equal (point) (car jtpp-prev-pos-stack))
+                  (equal this-command 'jump-to-prev-pos)
+                  (equal this-command 'jump-to-next-pos))
+        (setq jtpp-next-pos-stack nil)
+        (setq jtpp-prev-pos-stack (cons (point) jtpp-prev-pos-stack))
+        (when (> (length jtpp-prev-pos-stack) jtpp-stack-depth)
+          (nbutlast jtpp-prev-pos-stack))))
+    (add-hook 'pre-command-hook 'jtpp-remember-position)
+    
+    (defun jump-to-prev-pos ()
+      "Jump to previous position."
+      (interactive)
+      (when jtpp-prev-pos-stack
+        (goto-char (car jtpp-prev-pos-stack))
+        (setq jtpp-prev-pos-stack (cdr jtpp-prev-pos-stack))
+        (setq jtpp-next-pos-stack (cons (point) jtpp-next-pos-stack))))
+    
+    (defun jump-to-next-pos ()
+      "Jump to next position."
+      (interactive)
+      (when jtpp-next-pos-stack
+        (goto-char (car jtpp-next-pos-stack))
+        (setq jtpp-next-pos-stack (cdr jtpp-next-pos-stack))
+        (setq jtpp-prev-pos-stack (cons (point) jtpp-prev-pos-stack))))
+
+
+I bind jump-to-prev-pos and jump-to-next-pos to C-< and C->
+
+[new]
+Sounds a lot like Lisp:point-undo.el
+
+[new]
+Hm, it does, doesn't it?  I like how point-undo makes the variables buffer-local, which gets rid of the "Am I in the minibuffer" issue along with a few other things.  I don't like that point-undo could end up with huge undo/redo lists, and that the same point might be stored over and over consecutively.  Having redo might be cool in case you overshoot.  Maybe this is redundant, but it works the way I want :)  I'll probably add a few enhancements and then it will be an alternative.
+
+[new]
+Wow, after some thinking it ends up almost exactly the same.  Oh well, use either one.
+
+[new]
+When I fat-finger, I just hit C-u C-SPC -- seems to work fine.
+
+[new]
+That only works if you set a mark every time before you move point.
+
+----
+CategoryEditing
+CategoryUndo

@@ -1,0 +1,288 @@
+Dynamic binding is sometimes called ''fluid binding''.  Lexical binding is sometimes called ''static binding''.
+
+== Binding ==
+
+A "Binding" is a relationship of correspondence between a name and a (memory) location.
+
+In Lisp you can create a binding using `let':
+
+   (let ((a 1)) (print a))
+     ==> 1
+
+This creates a fresh location, puts the value 1 there, and binds the name "a" to it.
+
+Each use of `let' creates a fresh location, even if you use the same name:
+
+   (let ((a 1))
+     (let ((a 2))
+        (let ((a 3))
+          (print a))
+        (print a))
+     (print a))
+     ==> 3
+         2
+         1
+
+A binding made by `let' lasts until the end of the `let' form.
+
+Function calls create bindings for their formal arguments when they are
+called:
+
+    (defun foo (a)
+      (let ((a 2)) (print a))
+      (print a))
+    (foo 1)
+    ==> 2
+        1
+
+A binding made by a function call lasts until the call returns.
+
+A `let' expression is indeed just "syntatic sugar", a
+convenience, for the corresponding `lambda' form:
+
+    (let ((a 1)
+          (b 3))
+      (+ a b))
+
+is equivalent to
+
+    ((lambda (a b) (+ a b)) 1 3)
+
+Note that there are plenty of other ways to make bindings: `defconst', `defun',
+`defvar', `flet', `labels', `prog', etc.
+
+== Dynamic and Lexical Binding ==
+
+Two regimes for handling variable binding emerged:
+
+; dynamic: All variable names and their values live in one global table.
+
+; lexical: Every binding scope (function, let syntax, ...) creates a new table of variable names and values, organised in a hierarchy called "the environment".
+
+For the simple examples given above both lexical and dynamic binding return the same results.  But
+consider this piece of code:
+
+    (let ((a 1))                            ; binding (1)
+      (let ((f (lambda () (print a))))
+        (let ((a 2))                        ; binding (2)
+          (funcall f))))
+    ==> ?
+
+A name that is '''lexically bound''' is looked up only in bindings in
+the '''lexical environment''' of the name -- that is, in bindings that
+enclose the name in the source code.  So if "a" is lexically bound, the
+code above prints "1", because only binding (1) is in the lexical
+environment.  When there are multiple bindings in the lexical
+environment, the innermost one is used.
+
+A name that is '''dynamically bound''' is looked up only in bindings in
+the '''dynamic environment''' of the name -- that is, in all bindings
+which have been created since the program began and which have not yet
+been destroyed.  When there are multiple bindings in the dynamic
+environment, the most recently created one is used.  So if "a" is
+dynamically bound, the code above prints "2" because both binding (1)
+and binding (2) have been created by the time "a" is evaluated, but
+binding (2) was created more recently.
+
+(In a multi-threaded Lisp we would have to be a bit more careful
+about dynamic binding to make sure that one thread doesn't see bindings
+created on another thread.  But EmacsLisp is single-threaded so that's
+not a worry.)
+
+=== Another example which shows the difference ===
+This is a lambda function which adds 3 to a number: <code>(lambda (arg) (+ 3 arg))</code>. You may apply it so: <code>((lambda (arg) (+ 3 arg)) 5)</code> and it gives 8.
+
+Now you want to store the 3 somewhere else (let's say in variable <code>to_add</code>) but still get a function which adds 3 (not other possible values of to_add, but the current one). You could try: <code>(let ((to_add 3)) (lambda (arg) (+ to_add arg)) )</code>. But it doesn't work because you get: <code>(lambda (arg) (+ to_add arg))</code> instead of <code>(lambda (arg) (+ 3 arg))</code>. The first one will not work if the value of the variable <code>to_add</code> had changed by the time the lambda is applied. The cause of this result is that the binding is dynamic, not lexical. Notice the difference.
+
+Now for how to do what you wanted. This wouldn't work either: <code>(let ((to_add 3)) `(lambda (arg) (+ ,to_add arg)) )</code> because it is not a closure, it is a substitution (see: [[BackquoteSyntax]]).
+A solution would be: <code>(lexical-let ((to_add 3)) (lambda (arg) (+ to_add arg)))</code>, which can be applied with funcall: <code>(funcall (lexical-let ((to_add 3)) (lambda (arg) (+ to_add arg))) 5)</code> is 8. More on the theory is below, and other solutions in [[FakeClosures]].
+
+== Advantages of dynamic binding ==
+
+Dynamic bindings are great for modifying the behaviour of subsystems.
+Suppose you are using a function `foo' that generates output using
+`print'.  But sometimes you would like to capture the output in a buffer
+of your choosing.  With dynamic binding, it's easy:
+
+   (let ((b (generate-new-buffer-name " *string-output*"))))
+     (let ((standard-output b))
+       (foo))
+     (set-buffer b)
+     ;; do stuff with the output of foo
+     (kill-buffer b))
+
+(And if you used this kind of thing a lot, you'd encapsulate it in a macro -- but luckily it's already been done as `with-output-to-temp-buffer'.)
+
+This works because `foo' uses the ''dynamic binding'' of the name
+`standard-output', so you can substitute your own binding for that name
+to modify the behaviour of `foo' -- and of all the functions that `foo'
+calls.
+
+In a language without dynamic binding, you'd probably add an optional
+argument to `foo' to specify a buffer and then `foo' would pass that to
+any calls to `print'.  But if `foo' calls other functions which themselves call `print' you'll have to
+alter those functions as well.  And if `print' had another option, say
+`print-level', you'd have to add that as an optional argument as well...
+Alternatively, you could remember the old value of `standard-output',
+substitute your new value, call `foo' and then restore the old value.
+And remember to handle non-local exits using `throw'.  When you're
+through with this, you'll see that you've implemented dynamic binding!
+
+== Advantages of lexical binding ==
+
+ From: MilesBader
+ Subject: Re: Emacs 22
+ Newsgroups: comp.emacs
+ Date: Sun, 19 Aug 2001 01:47:53 GMT
+
+Because it's (1) much easier for the user [that is, programmer], because
+it eliminates the problem of which variables lambda-expressions use
+(when they attempt to use variables from their surrounding context), and
+(2) much easier for the compiler to optimize, because it doesn't need to
+worry about variables escaping their lexical context, and so doesn't
+need to allow for the possibility (this is a big problem with the
+current compiler).
+
+Emacs lisp probably would have been converted to use lexical scoping a
+long time ago, if it weren't for backwards compatibility issues.
+
+== Languages ==
+
+Most languages only have lexical bindings for names.
+
+* EmacsLisp has dynamic binding only.
+* CommonLisp has both dynamic binding and lexical binding.  You get lexical binding by default, but you can ask for dynamic binding by `defvar'ing your name or `declare'ing it "special".
+* [[Scheme]] was the first language to introduce lexical binding.  Many [[Scheme]] implementations today support both kinds of behaviour, although dynamic binding is not specified by the [http://www.schemers.org/Documents/Standards/R5RS/HTML/r5rs.html Scheme Standard].   Variables subject to dynamic binding are usually refered to as "fluid variables" or "parameters" on these systems.
+[new]
+Actually, ALGOL 60 had lexical scoping a decade earlier. C inherited it from ALGOL, and most pop lanugages got it from C. Scheme was the first Lisp with lexical scoping.
+
+== Why Emacs has dynamic binding ==
+
+RichardStallman wrote a paper describing the design of the original
+Emacs and the lessons to be learned from it.  It also contains a [http://www.gnu.org/software/emacs/emacs-paper.html#SEC17 section
+on dynamic binding].
+
+See the node `Scope' in the EmacsLispReference.
+
+
+== Moving towards lexical binding ==
+
+=== Lexical binding branch of Emacs ===
+
+I have implemented lexical binding support in Emacs lisp.  It is available in the `<tt>lexbind</tt>' branch of the official  Emacs CVS repository.  I keep this branch synced with the CVS trunk on a regular basis, so it should be "mostly" up-to-date.
+
+The status of this implementation:
+
+* Both the interpreter and byte-code engine support lexical binding (as well as dynamic binding) in a way that is backwards-compatible with old code (code must declare that it wants to use lexical binding).
+
+* The byte-code support is fairly low-level and quite fast, similar in spirit to what a native-code compiler might do -- lexically-bound local variables are just slots on the byte-code stack.
+
+* There is compiler support for byte-compiling code to use lexical binding, but it is unfinished:  Basic code works great, but the things that need more compiler analysis are unfinished or somewhat flaky (e.g., lexical closures work, but there are certainly still problems in that area).
+
+* I use (a variant of) this branch for my daily work, and it is quite solid.  There should be zero problems in normal usage, when using ordinary dynamic binding (remember, the lexical binding features are only used for code that explicitly asks for them, and existing code doesn't).
+
+To use lexical binding, an Emacs-lisp source file must set a file-variable `<tt>lexical-binding</tt>' to t in the file header, e.g., by using a first line like:
+
+    ;;; -*- lexical-binding: t -*-
+
+Even in a source file that uses lexical binding, global variables declared with `<tt>defvar</tt>' are always dynamically bound.
+
+Much code written for normal elisp should work unchanged when using lexical binding (except that it will be a bit faster and safer), because good elisp programming practice tends to discourage the sort of code that would expose the difference (e.g., let-binding an undeclared variable intending that the value be seen by a called function).
+
+- MilesBader
+
+
+=== More radical approaches ===
+
+DownWithEmacsLisp
+
+== Simulating lexical binding in Emacs ==
+
+See this page: [[FakeClosures]]. Other tips are given below.
+
+If you (require 'cl) then you can make lexical bindings with the
+`lexical-let' macro:
+
+    (lexical-let ((foo 1))
+      (defun foo-test () foo)
+      (defun foo-inc ()
+        (incf foo)))
+      => foo-inc
+    (foo-test)
+      => 1
+    (foo-test)
+      => 1
+    (foo-inc)
+      => 2
+    (foo-test)
+      => 2
+
+[Please actually use <code>(eval-when-compile (require 'cl))</code> if you intend to distribute such code, to avoid runtime dependence on <code>cl</code> in the compiled code.]
+
+How can it be?  foo-test actually references a shared, hidden value slot.
+That's because the '''cl''' package uses macro hackery to simulate
+lexical binding.  Examine it yourself:
+
+    (with-output-to-temp-buffer (pp (symbol-function 'foo-test)))
+      => (lambda
+	   (&rest --cl-rest--)
+	   (apply
+	    '(lambda
+	       (G58033)
+	       (symbol-value G58033))
+	    '--foo-- --cl-rest--))
+         nil
+
+But it works.
+
+Note that this isn't at all the same thing as actually having lexical variables in the language.
+
+
+Note that it's also possible to use a macro to facilitate writing higher-order functions using 
+lexical closures.  First, let's look at a simple example of a higher-order function using lexical-let:
+
+<pre>
+(defun compose (f g)
+  (lexical-let ((f f)
+                (g g))
+    (lambda (x)
+      (funcall f (funcall g x)))))
+</pre>
+
+It is a chore to write the lexical-let part of it, but defmacro can help.
+
+<pre>
+;; Defun with lexically-scoped parameters.  Could also be called
+;; lexical-defun.
+(defmacro lexdef (name args &rest body)
+   `(defun ,name ,args
+      (lexical-let ,(mapcar (lambda (arg) (list arg arg))
+                            (filter (lambda (a) (not (equal a '&rest))) 
+                                    args))
+        ,@body)))
+</pre>
+
+Now we can write:
+
+<pre>
+(lexdef compose (f g)
+        (lambda (x)
+          (funcall f (funcall g x))))
+</pre>
+
+Our macro can also help us write a higher-order function that does currying, i.e., making a new function from f by filling in some of f's arguments and allowing the rest to be provided later.
+
+<pre>
+(lexdef curry (f &rest args)
+        (lambda (&rest more-args)
+          (apply f (append args more-args))))
+
+(set 'add1 (curry '+ 1))
+(assert (= (funcall add1 2) 3))
+</pre>
+
+See also [[WikiPedia:Scope (programming)]]
+
+----
+CategoryCode
+CategoryHistory

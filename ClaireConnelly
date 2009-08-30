@@ -1,0 +1,22 @@
+I use GNU Emacs, mostly on GNU/Linux (Debian and Red Hat).
+
+I've tried XEmacs, but something about it puts me off.  I've never quite been able to put my finger on it.  I still think there are some cool things in XEmacs that I'd like to see in GNU Emacs.
+
+I'm especially looking forward to a really usable Emacs for Mac OS X.  Ideally, it would be Cocoa rather than Carbon, and would behave just slightly more like other Mac OS X applications.  (I generally hate Mac OS editors -- my old favorite was Alpha, in the absence of Emacs.)
+
+: Welcome to the wiki.  Isn't there a native port of Emacs using Cocoa?
+There are tons of links on EmacsForMacOS, including a link to a version 20.7
+built with Cocoa (or so the text claims). -- AlexSchroeder
+
+: Yea, JorgenSchaefer actually used it for quite a while (months) before giving up his powerbook. -- DougAlcorn
+
+: Just to get this right - JorgenSchaefer used a Dual G4 Mac with Mac OS X at work for a while (months). Then I changed the job. :) I used the version from http://www.porkrind.org/emacs/, but that's pretty outdated (2002) by now. -- JorgenSchaefer
+
+: Emacs from CVS works well on OS X.  I've been using it since last summer. -- anon
+
+: Looks like you should try our AquamacsEmacs -- DavidReitter
+
+I've mostly been using <nowiki>SubEthaEdit</nowiki> for HTML and CSS and <nowiki>TeXShop</nowiki> for minor LaTeX editing, but I've just built a new CVS Emacs and it looks really great. (It also looks like it handles PDFTeX and display pretty similarly to <nowiki>TeXShop</nowiki>, which is very cool.)  I added some information about building it for <nowiki>DarwinPorts</nowiki> to the EmacsForMacOS page.  Now all I have to do is port my .emacs over....  --ClaireConnelly
+
+----
+CategoryHomepage

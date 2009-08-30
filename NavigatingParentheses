@@ -1,0 +1,126 @@
+== Navigating over parenthetical groups ==
+
+A /parenthetical group/ is an expression starting with an open delimiter
+and ending with a closing delimiter, What is exactly an open and
+ending delimiter is determined by the syntax table. This syntax table
+depends on the mode currently activated. In lisp-mode, for example,
+parentheses () and brackets [] are delimiters, whereas braces {} are
+just symbol constituents.
+
+The EmacsSyntaxTable of the current mode can be displayed by typing 
+<code>C-h s</code> or <code>F1 s</code>. See ParenthesisMatching for
+details concerning the syntax table. You will find there how to add
+or remove pair of delimiters from the syntax table.
+
+Navigation from parenthesis to another is done with the help of the 
+following shortcuts:
+
+  C-M-n  Move forward over a parenthetical group 
+
+  C-M-p  Move backward over a parenthetical group 
+
+== Navigating over balanced expressions ==
+
+A /balanced expression/ can be a parenthetical group, a number, a word or a 
+symbol. The precise definition of a balanced expression may depend on the
+current mode. Here is how to move from a balanced expression to another:
+
+  C-M-f     Move forward over a balanced expression
+
+  C-M-b     Move backward over a balanced expression
+
+See ParenthesisMatching for additional details about balanced expressions.
+
+
+== How to find next delimiter ==
+
+You can match delimiters with the help of regular expressions. Recall that 
+<code>C-M-s</code> is the shortcut for incremental search based on 
+regular expression. The following is available in regular expressions.
+
+  \s(    matches an open delimiter
+
+  \s)    matches a closing delimiter
+  
+  \S(    matches anything but an open delimiter
+
+  \S(    matches anything but a closing delimiter
+
+So, <code>C-M-s RET \s( </code> will highlight all opening delimiters.
+You can then hit <code>C-M-s</code> repeatedly to jump from one delimiter
+to the next.
+
+A reminder: double escape is needed when using these expressions
+in Lisp code, e.g. <code>\\s(</code>
+
+
+== Over ways to handle parentheses and delimiters ==
+
+Several other means have been devised to jump from parentheses to parentheses. Some are described below. 
+Other can be found in ParenthesisMatching.
+
+[new]
+
+I made it by myself. Now I got it. :-）
+
+      (defun move-forward-paren (&optional arg)
+       "Move forward parenthesis"
+        (interactive "P")
+        (if (looking-at ")") (forward-char 1))
+        (while (not (looking-at ")")) (forward-char 1))
+      ) 
+      
+      (defun move-backward-paren (&optional arg)
+       "Move backward parenthesis"
+        (interactive "P")
+        (if (looking-at "(") (forward-char -1))
+        (while (not (looking-at "(")) (backward-char 1))
+      ) 
+      
+      (defun move-forward-sqrParen (&optional arg)
+       "Move forward square brackets"
+        (interactive "P")
+        (if (looking-at "]") (forward-char 1))
+        (while (not (looking-at "]")) (forward-char 1))
+      ) 
+      
+      (defun move-backward-sqrParen (&optional arg)
+       "Move backward square brackets"
+        (interactive "P")
+        (if (looking-at "[[]") (forward-char -1))
+        (while (not (looking-at "[[]")) (backward-char 1))
+      ) 
+      
+      (defun move-forward-curlyParen (&optional arg)
+       "Move forward curly brackets"
+        (interactive "P")
+        (if (looking-at "}") (forward-char 1))
+        (while (not (looking-at "}")) (forward-char 1))
+      ) 
+      
+      (defun move-backward-curlyParen (&optional arg)
+       "Move backward curly brackets"
+        (interactive "P")
+        (if (looking-at "{") (forward-char -1))
+        (while (not (looking-at "{")) (backward-char 1))
+      ) 
+
+These are my key bindings for these functions
+
+
+       (global-set-key (kbd "M-)")           (quote move-forward-paren))
+       (global-set-key (kbd "M-(")           (quote move-backward-paren))
+      
+       (global-set-key (kbd "M-]")           (quote move-forward-sqrParen))
+       (global-set-key (kbd "M-[")           (quote move-backward-sqrParen))
+      
+       (global-set-key (kbd "M-}")           (quote move-forward-curlyParen))
+       (global-set-key (kbd "M-{")           (quote move-backward-curlyParen))
+  
+
+I modified my global key binding. Replaced Ctrl with Meta here because C-[ will make Emacs behave quite strangely. Although some default key bindings are overrided, but it's OK to me
+
+-- DoveYoung
+
+----
+CategoryParentheses 

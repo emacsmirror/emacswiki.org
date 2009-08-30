@@ -1,0 +1,67 @@
+== Example ==
+
+<pre>
+(html-lite-write-tree 
+  (html-html nil
+    (html-body :bgcolor "#808080"
+      (html-p nil "Hello World"))))
+</pre>
+
+is evaluated to:
+
+<pre>
+<html>
+  <body bgcolor="#808080">
+    <p>
+    Hello World
+    </p>
+  </body>
+</html>
+</pre>
+
+There are mainly two functions to access the constructed
+tree. `html-lite-write-tree' writes the tree indented to the
+current ouput stream and `html-lite-browse-tree' use
+`browse-url-browser-function' to browse the tree.
+
+You can construct complete html tree by using:
+
+<pre>
+(append
+ (html-doctype)
+ (html-html
+  (html-head
+   (html-title "Title"))
+  (html-body "Content")))
+</pre>
+
+But the simpler way would be jsut to use `with-html-lite-header' like 
+
+<pre>
+(with-html-lite-header "Title" 
+  (html-p "foo") (html-p "bar"))
+</pre>
+
+I stole that shamelessly from html-lite.scm in Gauche, a great scheme implemention with nice cgi and html functionality. I haven't ported everything till now.
+
+== Supported tags ==
+
+<pre>
+ 
+base     bdo        big        blockquote  body      br
+button   caption    cite       code        col       colgroup
+dd       del        dfn        div         dl        dt
+em       fieldset   form       h1          h2        h3
+h4       h5         h6         head        hr        html
+i        img        input      ins         kbd       label
+legend   li         link       map         meta      noscript
+object   ol         optgroup   option      p         param
+pre      q          samp       script      select    small
+span     strong     style      sub         sup       table
+tbody    td         textarea   tfoot       th        thead
+title    tr         tt         ul          var
+</pre>
+
+You can get it from: Lisp:html-lite.el
+
+Ported by: MarioDomgoergen

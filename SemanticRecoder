@@ -1,0 +1,18 @@
+Semantic Recoder (or SRecode) is a template manager and code generator that is a part of [[CEDET]].
+
+SRecode is designed to be used in applications that need to generate code.  Templates can derive information from
+the SemanticBovinator to write complex pieces of code with minimal user typing.
+
+It is possible to read tags from a buffer using the Semantic, and then emit the same code definitions out again with SRecode.
+
+Both the SemanticBovinator and SRecode analyze your code in an language independent way, SRecode applications can work in any language.
+
+[http://cedet.sourceforge.net/srecode.shtml SRecode page on Source Forge.]
+
+Tools in SRecode:
+
+* Major mode for editing SRecode template files
+* Minor mode for inserting SRecode templates
+* Comment insert/rewrite - Reads your code and fills out the comment template from the local context.
+* Add a field with get/set methods into a class
+* Copy a tag from a language buffer (Such as Emacs lisp, C, whatever) and insert into a texinfo document using texinfo syntax. 

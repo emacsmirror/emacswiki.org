@@ -1,0 +1,25 @@
+Hi, I go by Ted in person and by [::hober] in most online contexts, such as the EmacsChannel.
+I run PlanetEmacsen.
+
+I've written several Elisp applications and libraries, including
+
+* Various Web API clients
+** LjUpdate, a [MeatBall:LiveJournal LiveJournal] posting tool.
+** GoogleInterface
+** BackpackClient
+** TechnoratiClient
+** FlickrClient
+* color-theme-hober (included in ColorTheme) and [http://edward.oconnor.cx/elisp/color-theme-hober2.el color-theme-hober2].
+* [http://edward.oconnor.cx/elisp/ And more.]
+
+My Emacs configuration comes in several pieces:
+
+* [http://edward.oconnor.cx/config/.emacs .emacs]
+* [http://edward.oconnor.cx/config/.ercrc.el .ercrc.el]
+* [http://edward.oconnor.cx/config/.gnus .gnus]
+* [http://edward.oconnor.cx/config/.viper .viper]
+
+You can read more about me on my [http://edward.oconnor.cx/ home page].
+
+----
+CategoryHomepage

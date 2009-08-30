@@ -1,0 +1,694 @@
+<pre>
+;; ,----[ ~/.emacs.el ]
+;; |
+;; |  Jean-Baptiste Bourgoin
+;; |  licence : GPL
+;; |  1st version : 1999
+;; |  actual version : 2008
+;; |
+;; `----------------
+
+;;; utiliser Epiphany comme browser web
+(setq browse-url-browser-function 'browse-url-epiphany)
+(setq browse-url-epiphany-new-window-is-tab t)   
+
+;;;;;;   répertoires
+;; ajouter .emacs.d/lisp ainsi que tous ses sous-répertoires au load-path :
+(if (fboundp 'normal-top-level-add-subdirs-to-load-path)
+    (let* ((my-lisp-dir "~/.emacs.d/lisp")
+           (default-directory my-lisp-dir))
+      (setq load-path (cons my-lisp-dir load-path))
+      (normal-top-level-add-subdirs-to-load-path)))
+
+;;; variable PATH
+;;; Define a function to setup additional path
+(defun my-add-path (path-element)
+  "Add the specified path element to the Emacs PATH"
+  (interactive "DEnter directory to be added to path: ")
+  (if (file-directory-p path-element)
+      (setenv "PATH"
+              (concat (expand-file-name path-element)
+                      path-separator (getenv "PATH")))))
+;;; Set localized PATH for Emacs.
+;;; Example only
+(if (fboundp 'my-add-path)
+    (let ((my-paths (list
+                     "~/bin")))
+      (dolist (path-to-add my-paths (getenv "PATH"))
+        (my-add-path path-to-add))))
+
+
+;;; backup
+(setq backup-directory-alist
+     	  '(("." . "/home/mesmento/.emacs.d/backup-files")))
+
+;;; les configurations apportées par customize sont
+;;; enregistrés dans ~.emacs-custom
+(setq custom-file "~/.emacs.d/emacs-custom")
+(load-file custom-file)
+
+;;; emacs server
+;; démarre le serveur emacs. Un simple "emacsclient FILE" ou que ce soit
+;; et FILE est ouvert dans la session emacs en cours.
+(server-start)
+;; (add-hook 'server-switch-hook
+;;           (lambda nil
+;;             (let ((server-buf (current-buffer)))
+;;               (bury-buffer)
+;;               (switch-to-buffer-other-frame server-buf))))
+(add-hook 'server-done-hook 'delete-frame)
+(add-hook 'server-done-hook (lambda nil (kill-buffer nil)))
+
+;;;;;;   abbréviations
+;; taper l'abbrev et faire C-x aig (global) ou C-x ail (local)
+;; M-x write-abbrev-file pour enregistrer le fichier
+;; M-x edit-abbrevs : éditer le fichier
+;; M-x list-abbrevs : lister les abbréviations
+;; M-x abbrev-mode : quitte ou ouvre le mode abbrev
+;; M-x kill-all-abbrevs : quitte abbrevs pour tous buffers
+(if (file-exists-p "~/.emacs.d/abbrevs")
+    (read-abbrev-file))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Indentation, complétion etc. ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; activation
+(setq-default abbrev-mode t)
+
+;; hippie expand sur M-RET
+(define-key global-map (read-kbd-macro "M-/") 'hippie-expand) ; essayer M-RET
+
+;;; complétion
+;; complétion automatique
+(global-set-key (quote [S-tab]) (quote dabbrev-expand))
+;; complétion qui ignore la casse :
+(setq completion-ignore-case t)
+
+;; ;;; icicles
+;; ;; S-TAB : complétion de icicle
+;; ;; M-* (après un S-TAB) : faire une recherche complémentaire
+;; ;; C-~ : Tout sauf ce que l'on a entré
+;; ;; C-M-RET : aide sur le candidat
+;; ;; activation de icicles
+;; (if window-system
+;;     (progn
+;;       (require 'icicles)
+;;       (icicle-mode 1)
+;;       ;; iswitchb style :
+;;       (setq 
+;;        icicle-buffer-require-match-flag 'partial-match-ok
+;;        icicle-init-value-flag 'nil
+;;        icicle-default-thing-insertion 'alternatives
+;;        icicle-reminder-prompt-flag 0)
+;;       ;; icomplete+
+;;       (eval-after-load "icomplete" '(progn (require 'icomplete+)))
+;;       ))
+
+;; iswitchb
+(iswitchb-mode 1)
+
+;;;;;;;;;;;;;;;
+;; INTERFACE ;;
+;;;;;;;;;;;;;;;
+
+;;; surligner la région marquée
+(transient-mark-mode 0)
+
+
+
+;;; alerte visuelle
+(setq visible-bell t)
+
+;;; Codage des caractères
+;; utf-8 par défaut
+;; (setq current-language-environment "French")
+;; (setq default-input-method "french-keyboard")
+;; (setq keyboard-coding-system (quote utf-8))
+;; (set-terminal-coding-system 'utf-8)
+;; (set-keyboard-coding-system 'utf-8)
+;; (set-language-environment 'french)
+;; (prefer-coding-system 'utf-8)
+(global-set-key (kbd "C-x C-m i") 'set-input-method)
+
+
+;;; ansi-color
+(require 'ansi-color)
+(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+                                        ;(ansi-color-for-comint-mode-on)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+;;; activer la roulette
+(mouse-wheel-mode t)
+
+;;; numéro de colonne :
+(column-number-mode t)
+
+;;; afficher l'heure
+(display-time)
+
+;;; Coloration syntaxique :
+;(global-font-lock-mode 1)
+;; Mettre un maximum de couleurs
+;(setq font-lock-maximum-size t)
+;; Couleurs dans tous les modes
+;(setq font-lock-maximum-decoration t)
+;; surligner la ligne courante
+;(highlight-current-line-minor-mode 0)
+;(setq highlight-current-line-globally t)
+
+;; inhiber l'écran de démarrage
+(setq inhibit-startup-message t)
+
+;; change la demande de confirmation de "yes or no" en "y or n"
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;;; Menus etc...
+(tool-bar-mode 1)
+(scroll-bar-mode 1)
+(set-scroll-bar-mode 'right)
+(menu-bar-mode 1)
+(blink-cursor-mode 1)
+
+;;; couleurs:
+;; gestion des thèmes
+(require 'color-theme)
+;; si emacs est lancé en mode X, alors le thème XXX est utilisé
+(if window-system
+     (progn
+      (color-theme-charcoal-black)
+;;       (color-theme-comidia)
+;;       (color-theme-sitaramv-solaris)
+;;       (color-theme-euphoria)
+;;       (color-theme-emacs-21)
+;;       (color-theme-lawrence)
+;;       (color-theme-classic)
+;;       (set-face-font 'default "-*-fixed-medium-r-*-*-15-*-*-*-*-*-iso8859-15")
+       (set-default-font "Courier 10 Pitch-14")
+;;       (set-default-font "Bitstream Vera Sans Mono-14")
+;;       (set-fontset-font "fontset-default" 'unicode 
+;;			 '("Bitstream Vera Sans" . "unicode-bmp"))
+;;       (set-face-font 'menu "-*-fixed-medium-r-*-*-10-*-*-*-*-*-iso8859-15")
+       (setq default-frame-alist '(
+                                   (width . 85)
+;;                                   (height . 45)
+;;                                   (top . 45)  ;pixels
+;;                                   (left . 215) ;pixels
+;;                                         (font . "6x12")
+;;                                   (cursor-type . bar)
+                                   ))
+;;       (set-face-italic-p 'font-lock-comment-face t) ; comms en italiques
+       ))
+
+
+;;; Afficher la 'parenthèse correspondante'
+(setq show-paren-mode 't)
+
+;;;;;;   comportement
+
+;;; impression post-script :
+(setq ps-paper-type 'a4
+      ps-font-family 'Courier
+      ps-print-size 10
+      ps-print-header t
+      ps-landscape-mode nil)
+(setq-default ps-header-lines 1)
+(setq ps-print-color-p 'black-white)
+
+
+;;;; BUFFERS
+
+;;; Astuces:
+;; C-x C-s : sauver le buffer courant
+;; C-x s : sauve tous les buffers (y : oui, n : non, !: tous sans demander)
+;;       - C-r : visualiser le tampon en demande de sauvregarde
+;;             - (M C-c pour sortir)
+;; M-x rename-buffer : renommer le tampon (sans renommer le fichier !)
+
+;; ;;; VIPER MODE
+;; ;; voir ~/.viper. Activer viper :
+;; (setq viper-mode t)                ; enable Viper at load time
+;; (setq viper-ex-style-editing nil)  ; can backspace past start of insert / line
+;; (require 'viper)                   ; load Viper
+;; (require 'vimpulse)                ; load Vimpulse
+;; (setq woman-use-own-frame nil)     ; don't create new frame for manpages
+;; (setq woman-use-topic-at-point t)  ; don't prompt upon K key (manpage display)
+
+;;;;;;;;;;;;
+;; OUTILS ;;
+;;;;;;;;;;;;
+
+;;; WOMAN
+(setq woman-use-own-frame nil)
+
+;;; tramp
+;; méthode par défaut
+(setq tramp-default-method "ssh")
+
+;;; eshell
+;; eshell prompt
+;; saute une ligne entre le chemin et le prompt :
+(setq eshell-prompt-function
+      (lambda ()
+        (concat (eshell/pwd) "\n" (if (= (user-uid) 0) " # " " $ "))))
+;; charger de nouvelles fonctions
+(require 'eshell_clear)
+(require 'eshell_bmk)
+;; sauver l'historique à la fermeture
+(setq eshell-save-history-on-exit t)
+;; gestion des couleurs
+(add-hook 'eshell-preoutput-filter-functions
+          'ansi-color-apply)
+
+;;; dired
+;; extensions
+(require 'dired-x)
+(require 'dired+)
+(require 'run-assoc)
+;; dired-sort-map.el
+;; press s then s, x, t or n to sort by Size, eXtension, Time or Name
+(require 'dired-sort-map)
+;; toujours réutiliser le buffer courant :
+(toggle-dired-find-file-reuse-dir 1)
+;; permet de copier un fichier d'un buffer dired vers
+;; un autre buffer dired
+(setq dired-dwim-target t)
+;; (dé)compression automatique des fichiers lus et écrits
+(auto-compression-mode t)
+;;; dired
+;; pourvoir supprimer des dossiers récursivement
+(setq dired-recursive-deletes t)
+;; mode de listing :
+(setq list-directory "-lhG")
+(setq dired-listing-switches "-alhG")
+;; Enable toggling of uninteresting files.
+;; M-o to switch on-off
+;; (setq dired-omit-files-p t)
+;; dire-details+ : cache les détails du listing
+;; (require 'dired-details)
+;; (require 'dired-details+)
+;; Applications CTRL-ENTREE pour lancer
+(setq associated-program-alist 
+      '(( "xchmviewer" "\\.chm$")
+	( "gimp" "\\.xcf$")
+	( "gnome-open" "\\.png$")
+	( "gnome-open" "\\.xpm$")
+	( "gnome-open" "\\.gif$")
+	( "gnome-open" "\\.jpg$")
+	( "gnome-open" "\\.svg$")
+	( "gnome-open" "\\.pdf$")
+	( "gnome-open" "\\.djvu$")
+	( "gnome-open" "\\.dvi$")
+	( "gnome-open" "\\.ps$")
+	( "gnome-open" "\\.ps.gz$")
+	( "gnome-open" "\\.mp3$")
+	( "gnome-open" "\\.ogg$")
+	( "gnome-open" "\\.avi$")
+	( "gnome-open" "\\.ogm$")
+	( "gnome-open" "\\.divx$")
+	( "gnome-open" "\\.mpg$")
+	( "gnome-open" "\\.mpeg$")
+	( "gnome-open" "\\.mp4$")
+	( "gnome-open" "\\.wmv$")
+	( "gnome-open" "\\.rmvb$")
+	( "gnome-open" "\\.mov$")
+	( "gnome-open" "\\.flv$")
+	( "oowriter" "\\.sxw$")
+	( "oowriter" "\\.odt$")
+	( "oowriter" "\\.doc$")
+	( "gnome-open" "\\.html$")
+	( "gnome-open" "\\.htm$")
+        ))
+;; commandes shell asynchrones :
+;; (require 'dired-shell-stuff-it)
+
+;;; w3m
+(require 'w3m)
+(setq w3m-coding-system 'utf-8
+      w3m-file-coding-system 'utf-8
+      w3m-file-name-coding-system 'utf-8
+      w3m-input-coding-system 'utf-8
+      w3m-output-coding-system 'utf-8
+      w3m-terminal-coding-system 'utf-8)
+;; browse url ...
+(setq browse-url-browser-function 'w3m-browse-url)
+(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
+(global-set-key "\C-xm" 'browse-url-at-point)
+;; ... in a new tab ...
+(setq browse-url-browser-function 'w3m-browse-url
+      browse-url-new-window-flag t)
+;; ... in dired ...
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (define-key dired-mode-map "\C-xm" 'dired-w3m-find-file)))
+(defun dired-w3m-find-file ()
+  (interactive)
+  (require 'w3m)
+  (let ((file (dired-get-filename)))
+    (if (y-or-n-p (format "Open 'w3m' %s " (file-name-nondirectory file)))
+        (w3m-find-file file))))
+;; fonction pour prévisualiser un buffer html dans w3m
+(defun w3m-browse-current-buffer ()
+  (interactive)
+  (let ((filename (concat (make-temp-file "w3m-") ".html")))
+    (unwind-protect
+        (progn
+          (write-region (point-min) (point-max) filename)
+          (w3m-find-file filename))
+      (delete-file filename))))
+;; cookies
+(setq w3m-use-cookies t)
+;; wget
+(load "w3m-wget")
+(autoload 'wget "wget" "wget interface for Emacs." t)
+(autoload 'wget-web-page "wget" "wget interface to download whole web page." t)
+                                        ;(setq wget-basic-options (cons "-P." wget-basic-options))
+;; moteurs de recherche
+(require 'w3m-search)
+(add-to-list 'w3m-search-engine-alist
+             '("emacs-wiki" "http://www.emacswiki.org/cgi-bin/wiki.pl?search=%s"))
+;; keybindings
+(define-key w3m-mode-map [mouse-2] 'w3m-mouse-view-this-url-new-session) ;; middle-click open in tab
+
+
+
+;;; org-mode
+;(require 'org-install)
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+;; liste des agendas
+(setq org-agenda-files (list "~/.emacs.d/org/travail.org"
+                             "~/.emacs.d/org/maison.org"
+                             "~/.emacs.d/org/lectures.org"
+                             "~/.emacs.d/org/debian.org"
+                             "~/.emacs.d/org/emacs.org"
+                             "~/.emacs.d/org/sawfish.org"
+                             "~/.emacs.d/org/sorties.org"
+                             "~/.emacs.d/org/oeuvres.org"
+                             "~/.emacs.d/org/index.org"
+                             ))
+;; auto-fill
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
+
+;;; ispell
+;; dictionnaire en français
+(setq ispell-program-name "aspell")
+;(setq ispell-extra-args '("--sug-mode=ultra")) ;; améliorer la vitesse contre la qualité des suggestions
+(setq ispell-dictionnary "francais")
+
+
+;; ;;; telnet
+;; ;(eval-after-load "icomplete" '(ansi-color-for-comint-mode-on))
+
+;;; eshell
+;; commandes visuelles
+(eval-after-load "em-term" 
+  '(add-to-list 'eshell-visual-commands "tree"))
+(eval-after-load "em-term" 
+  '(add-to-list 'eshell-visual-commands "frotz"))
+(eval-after-load "em-term" 
+  '(add-to-list 'eshell-visual-commands "t3run"))
+(eval-after-load "em-term" 
+  '(add-to-list 'eshell-visual-commands "t23run"))
+
+
+
+;;; mpcel.el
+(load "mpcel.el")
+
+;;; etxt
+;(require 'etxt)
+
+
+;;;;;;   jeux
+
+;;; tetris
+;; score file
+(setq tetris-score-file "~/.emacs.d/lisp/games/tetris.scores")
+
+;;; gnugo
+(autoload 'gnugo "gnugo" "GNU Go" t)
+
+;;; chess
+;; Default engine :
+(setq chess-default-engine 'chess-gnuchess)
+;(setq chess-default-engine 'chess-phalanx)
+;; affichage
+(setq chess-default-display 'chess-plain)
+
+;; malyon -- interpréteur z-code
+(require 'malyon)
+
+;;; sokoban
+(autoload 'sokoban "~/.emacs.d/lisp/games/sokoban/sokoban.el"
+  "Start a new game of Sokoban." t)
+(autoload 'sokoban-mode "~/.emacs.d/lisp/games/sokoban/sokoban.el"
+  "Play Sokoban in current buffer." t)
+(setq sokoban-levels-dir "~/.emacs.d/lisp/games/sokoban/sokoban-levels")
+
+;;; others
+(require 'typing)
+;(load-library "typing-practice")
+(require 'mine-sweeper)
+
+
+;;;;;;;;;;;
+;; Modes ;;
+;;;;;;;;;;;
+
+;;; indenter automatiquement le code collé :
+(defadvice yank (after indent-region activate)
+  (if (member major-mode '(emacs-lisp-mode scheme-mode lisp-mode
+                                           c-mode c++-mode objc-mode
+                                           latex-mode plain-tex-mode
+                                           python-mode))
+      (indent-region (region-beginning) (region-end) nil)))
+(defadvice yank-pop (after indent-region activate)
+  (if (member major-mode '(emacs-lisp-mode scheme-mode lisp-mode
+                                           c-mode c++-mode objc-mode
+                                           latex-mode plain-tex-mode
+                                           python-mode))
+      (indent-region (region-beginning) (region-end) nil)))
+
+;;; la commande kill supprime automatiquement les espaces d'indentations si besoin
+(defadvice kill-line (before check-position activate)
+  (if (member major-mode '(emacs-lisp-mode scheme-mode lisp-mode
+                                           c-mode c++-mode objc-mode
+                                           latex-mode plain-tex-mode
+                                           python-mode))
+      (if (and (eolp) (not (bolp)))
+          (progn (forward-char 1)
+                 (just-one-space 0)
+                 (backward-char 1)))))
+
+;;; org-mode
+                                        ;(require 'org-install)
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+
+;;; yasnippet
+(require 'yasnippet) ;; not yasnippet-bundle
+(yas/initialize)
+(yas/load-directory ".emacs.d/lisp/snippets/")
+
+;;; asciidoc mode
+(autoload 'doc-mode "doc-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.txt$" . doc-mode))
+(add-hook 'doc-mode-hook
+          '(lambda ()
+             (turn-on-auto-fill)
+             (require 'asciidoc)))
+
+;;; LISP
+(setq colon-double-space t)
+
+;;; Emacs-lisp
+;; Auto-indentation
+;; (add-hook 'emacs-lisp-mode-hook 
+;; 	  '(lambda ()
+;; 	     (local-set-key (kbd "RET") 'newline-and-indent)))
+
+;; slime
+;; (setq inferior-lisp-program "/usr/bin/clisp")
+;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/slime-2.0/")
+;; (require 'slime)
+;; (slime-setup)
+
+
+;;; tex
+;; mode par défault
+(setq TeX-mode t)
+;; configuration des visualiseurs
+(setq TeX-output-view-style (quote (
+                                    ("^pdf$" "." "evince %o")
+                                    ("^ps$" "." "evince %o")
+                                    ("^dvi$" "." "evince %o")
+                                    )))
+
+
+;;; C
+;; mode d'indentation (k&r, gnu etc.)
+(setq c-mode-hook '(lambda () 
+                     (c-set-style "k&r")
+                     (c-toggle-auto-hungry-state 1))
+      comment-multi-line t)
+
+;;; Perl
+(add-to-list 'auto-mode-alist '("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
+;;; cperl-mode is preferred to perl-mode                                        
+;;; "Brevity is the soul of wit" <foo at acm.org>                               
+(defalias 'perl-mode 'cperl-mode)
+
+;;; Python
+;; recettes foresight reconnue comme fichier python
+(setq auto-mode-alist
+      (append '(("\\.recipe$" . python-mode))
+              auto-mode-alist))
+;; Auto-indentation
+;; (add-hook 'python-mode-hook 
+;; 	  '(lambda ()
+;; 	     (local-set-key (kbd "RET") 'newline-and-indent)))
+
+
+;;; sawfish mode
+(autoload 'sawfish-mode "sawfish" "sawfish-mode" t)
+(setq auto-mode-alist (cons '("\\.sawfishrc$"  . sawfish-mode) auto-mode-alist)
+      auto-mode-alist (cons '("\\.jl$"         . sawfish-mode) auto-mode-alist)
+      auto-mode-alist (cons '("\\.sawfish/rc$" . sawfish-mode) auto-mode-alist))
+
+;;; général
+;; les nouveaux buffer en mode Text par défaut :
+;(setq default-major-mode 'text-mode)
+;;; Prevent Extraneous Tabs
+(setq-default indent-tabs-mode nil)
+
+;;; text
+;; auto-fill-mode auto associé au mode Text
+;(add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+;;; html
+;; Utiliser le mode html par défaut
+;(add-to-list 'auto-mode-alist '("\\.html\\'" . html-mode))
+;; SGML et HTML sont XML
+;(setq sgml-xml-mode t)
+; Utiliser le html-helper-mode
+;(autoload 'php-html-helper-mode
+;  "html-helper-mode" "html-helper-mode" t)
+;; Configuration du modèle par défaut :
+;(require 'html-helper-templates)
+
+;;; ILISP
+;; être FSS-compliant
+;(setq ilisp-*use-fsf-compliant-keybindings* t)
+;; mit-scheme évaluation : C-c C-e
+;; gcl evaluation : C-x C-e
+;(setq ilisp-site-hook
+;      '(lambda ()
+;         (setq gcl-program "/usr/bin/gcl")
+;         (setq clisp-program "/usr/bin/clisp")
+;         (setq sbcl-program "/usr/bin/sbcl")
+;         (setq scheme-program "/usr/bin/mzc")))
+
+;; clisp
+;(setq inferior-lisp-program "/usr/bin/sbcl")
+
+
+;;; SCHEME
+;;; scheme-mode
+(setq scheme-program-name "/usr/bin/guile")
+
+;; Bigloo
+; après l'install de bigloo-doc, si rien n'apparaît dans info, faire :
+; su -c "install-info bigloo.info" && su -c "install-info bdb.info"
+;(autoload 'bdb "bdb" "bdb mode" t)
+;(autoload 'bee-mode "bee-mode" "bee mode" t)
+
+; Auto-indentation
+;(add-hook 'emacs-lisp-mode-hook 
+;	  '(lambda ()
+;	     (local-set-key (kbd "RET") 'newline-and-indent)))
+
+;;; quack
+;; (require 'quack)
+;; (setq auto-mode-alist
+;;       (append '(("\\.scm$" . bee-mode)
+;;                 ("\\.sch$" . bee-mode)
+;;                 ("\\.scme$" . bee-mode)
+;;                 ("\\.bgl$" . bee-mode)
+;;                 ("\\.bee$" . bee-mode))
+;;               auto-mode-alist))
+
+
+;;; PHP
+(autoload 'php-mode "php-mode" "PHP editing mode" t)
+(add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
+(add-to-list 'auto-mode-alist '("\\.php3\\'" . php-mode))
+(add-to-list 'auto-mode-alist '("\\.php4\\'" . php-mode))
+
+
+;;; Ruby
+
+;; ;; el4r (elisp for ruby)
+;; (require 'el4r)
+
+;; On-the-fly syntax checking :
+;; (require 'ruby-mode)
+;; (require 'flymake)
+;; (set-face-background 'flymake-errline "Blue"); I don't like the default colors :)
+;; (set-face-background 'flymake-warnline "Red")
+;; (defun flymake-ruby-init () ; Invoke ruby with '-c' to get syntax checking
+;;   (let* ((temp-file   (flymake-init-create-temp-buffer-copy
+;;                        'flymake-create-temp-inplace))
+;; 	 (local-file  (file-relative-name
+;;                        temp-file
+;;                        (file-name-directory buffer-file-name))))
+;;     (list "ruby" (list "-c" local-file))))
+;; (push '(".+\\.rb$" flymake-ruby-init) flymake-allowed-file-name-masks)
+;; (push '("Rakefile$" flymake-ruby-init) flymake-allowed-file-name-masks)
+;; (push '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3) flymake-err-line-patterns)
+;; (add-hook 'ruby-mode-hook
+;;           '(lambda ()
+
+;; 	     ;; Don't want flymake mode for ruby regions in rhtml files
+;; 	     (if (not (null buffer-file-name))
+;; 		 (flymake-mode))
+;; 	     ))
+
+;;; Python
+(when (load "flymake" t)
+  (defun flymake-pylint-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list "epylint" (list local-file))))
+  
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.py\\'" flymake-pylint-init)))
+; Améliorations personnelles
+(add-hook 'python-mode-hook
+          (lambda ()
+            (flymake-mode t)))
+;; pymacs
+(autoload 'pymacs-apply "pymacs")
+(autoload 'pymacs-call "pymacs")
+(autoload 'pymacs-eval "pymacs" nil t)
+(autoload 'pymacs-exec "pymacs" nil t)
+(autoload 'pymacs-load "pymacs" nil t)
+
+;;; Docbook
+;(require 'docbook-xml-mode)
+
+;;; Skribe
+;; (autoload 'skribe-mode "skribe.el" "Skribe mode." t)
+
+;(find-file "~/.emacs.d/org/index.org")
+</pre>

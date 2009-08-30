@@ -1,0 +1,6 @@
+markdown-mode is a major mode for GNU Emacs which provides syntax highlighting and supporting commands for editing Markdown files. It provides keybindings and commands for inserting Markdown elements and to assist in calling Markdown to parse the source code or preview the document in a browser. It also, optionally, provides syntax highlighting for wiki links and embedded itex mathematical expressions.
+
+http://jrblevin.freeshell.org/software/markdown-mode/
+
+----
+MarkupModes

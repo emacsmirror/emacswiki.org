@@ -1,0 +1,20 @@
+Since the earliest versions of Emacs developed at ProjectMac, an online help system was incorporated as early as the [[TECO]] implementation of Emacs.  This hypertext "Info system" was available and ported alongside with Emacs to the [[TENEX]] and [[TOPS-20]] environments.  Info files also freely distributed with the system covered everything from "Cambridge restaurants" and "the system calls for the TOPS-20 operating system itself".
+
+In the 1970's at Carnegie Mellon University (CMU), Brian Reid developed a program and format named [[Scribe]] to mark up documents for printing. It used the '@' character to introduce commands, as [[Texinfo]] does. Much more consequentially, it strived to describe document contents rather than formatting, an idea wholeheartedly adopted by Texinfo.
+
+Meanwhile, people at MIT developed another, not too dissimilar format called [[Bolio]]. This then was converted to using TeX as its typesetting language: BoTeX. The earliest BoTeX version seems to have been 0.02 on October 31, 1984.
+
+BoTeX could only be used as a markup language for documents to be printed, not for online documents. RichardStallman worked on both Bolio and BoTeX. He also developed a nifty on-line help format called Info, and then combined BoTeX and Info to create Texinfo, a mark up language for text that is intended to be read both online and as printed hard copy. 
+
+As the development of GnuEmacs and creation of EmacsLisp began, RichardStallman used the above ideas to synthesize a single documentation source format that could be portable for being printed and be available as HyperText within Emacs. 
+
+==References==
+
+* The ''History'' section of the TexinfoManual.
+* Roland H. Pesch. ''GNU info: a decade of hypertext experience''.
+Proceedings of the 11th annual international conference on Systems documentation (ACM SIGDOC).
+Pages 233-240.  Waterloo, Ontario, Canada.  1993.
+[http://doi.acm.org/10.1145/166025.166085]
+
+----
+CategoryHistory

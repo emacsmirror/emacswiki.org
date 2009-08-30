@@ -1,0 +1,61 @@
+== SQL*Plus Starts With a GUI ==
+
+Remember that you have to set sql-oracle-program.  Unfortunately the
+exact value varies with the Oracle version you have installed.  In the
+following table, check the value of the SQL (Command Line) column.
+The default value is "sqlplus" which may or may not start the right
+program for you.
+
+<pre>
+ORACLE SUPPLIED UTILITIES FOR BOTH NT AND 2000:
+			 SQL             SQL
+Version  DBA            (Command Line)  (GUI)     Export  Import  sqlldr
+-------- -------------- --------------  --------  ------  ------  ------
+8i       svrmgrl        sqlplus         sqlplusw  exp     imp     sqlldr
+8.x      svrmgr30.exe   plus80          plus80w   exp80   imp80   sqlldr80
+7.x      svrmgr23.exe   plus33          plus33w   exp73   imp73   sqlldr73
+</pre>
+
+Note that older version of Oracle may also have had a sqlplus program,
+which did call the command line version in another window -- thus
+"sqlplus" is not a good candidate for sql-oracle-program on these
+systems: stdin and stdout are not connected to the parent process (Emacs).
+
+== SQL*Plus locking up ==
+
+Here's something I found on gnu.emacs.bug which seems to explain the
+Emacs lockups when large amounts of code are sent from the SQL buffer
+to the process.  Here is the (slightly edited) message.
+
+ In GNU Emacs 20.7.1 (i386-*-windows98.1998)
+  of Tue Jun 13 2000 on buffy
+ configured using `configure NT'
+
+The C implementation of process-send-region (and therefor
+comint-send-region, which is an alias) does not break up long regions
+before sending them to the subprocess.  The docs say that it breaks up
+the region every 500 bytes or so, but the source shows that it only
+breaks long _lines_, not long regions.  So, if the subprocess isn't
+line oriented, you can still deadlock the subprocess and emacs.  I
+found this running an intepreter subprocess for a language called
+ObjectiveCaml.  It output a string after every \n it received, so emacs would
+try to send it a big region with lots of newlines and would block on
+the write, the subprocess would output a bunch of stuff and block on
+the write (which emacs wasn't reading), and I'd deadlock.  It seems
+that breaking up the region, and not just the lines, is the right fix,
+but I haven't tried it.  I don't know why the emacs info docs for
+p-s-r say one thing and the C comments say another, so maybe this was
+tried and it didn't work?
+
+When I get a large sql buffer, I send the buffer use C-c C-r seperatly.
+Hope somebody have the time to fix this bug --[[maddog]]
+
+I have noticed the same problem when using SQL*Plus directly -- you cannot
+paste too much text at once.  As part of my job I often write SQL
+statements of 150 lines and more.  I have not found a way arround that.
+So I just keep it in a seperate test.sql file, and start M-x sql-oracle
+in the same directory, and run @test to run the file.  Works for me.  :)
+-- AlexSchroeder
+
+----
+CategorySql

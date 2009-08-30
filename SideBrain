@@ -1,0 +1,8 @@
+This is a "working memory" tool for programmers: it maintains a stack of your current tasks, and a queue or pool of pending tasks, and a set of observations, to help to remind you what you're doing. This is a fairly new project; for what I can tell so far, it helps me to keep focused on what I'm doing.
+
+Sidebrain's home page is at http://sidebrain.sourceforge.net/
+
+It has now reached version 1.0, that is, the first generally announced release.
+
+----
+CategoryModes CategoryCalendar CategoryTodo

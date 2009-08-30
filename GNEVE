@@ -1,0 +1,9 @@
+GNEVE is GNU Emacs Video Editor mode.  It's based on MLT framework and works with Edit Decision Lists (EDL).
+
+* http://1010.co.uk/gneve.html
+
+You can see a demo of it in use at http://youtube.com/watch?v=0vumR5Hcz7s.
+
+---
+
+Maybe GNEVE could make use of EmacsXembed?? --JoakimVerona

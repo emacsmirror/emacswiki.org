@@ -1,0 +1,16 @@
+With GlobalFF you can find and open any file on your system within seconds. Literally. It's the iswitchb of opening files (see IswitchBuffers).
+
+It uses ##locate## which is a standard tool on GNU/Linux. Of course, ##locate## has Windows ports, so it should work out-of-the-box on Windows too if ##locate## is installed..
+
+[Lisp:globalff.el Source code]
+
+[EmacsWiki:GlobalFFChanges Change log]
+
+'''See also:''' LocateFilesAnywhere
+
+== Compatibility ==
+
+This is developed on GnuEmacs but should work on XEmacs, too.
+----
+
+CategoryFiles CategoryProgrammerUtils

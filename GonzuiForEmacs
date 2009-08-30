@@ -1,0 +1,11 @@
+Gonzui for Emacs is an Emacs interface of gonzui, a source code search engine.
+It is written in EmacsRuby.
+It uses LangHelp interface, so you can jump to a source code and bookmark a position.
+
+Gonzui is available here.
+
+http://gonzui.sourceforge.net/
+
+Gonzui for Emacs is available here.
+
+http://www.rubyist.net/~rubikitch/computer/gonzui-emacs/

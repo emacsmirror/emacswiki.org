@@ -1,0 +1,11 @@
+Velocity is a template engine. See http://velocity.apache.org/
+
+It usually carries the extension .vm
+
+==Mode to edit Velocity files in Emacs==
+
+There is vtl.el which does syntax coloring of the keywords, variables and functions. See:
+http://wiki.apache.org/jakarta-velocity/EmacsVtlMode
+
+This alone makes editing and detecting errors much more comfortable.
+

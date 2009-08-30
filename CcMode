@@ -1,0 +1,142 @@
+CC Mode is a powerful package that provides modes for editing C and C-like (C++, Java, Objective C, CORBA IDL, etc.) files. For much more information (including an InfoMode manual), see the CC Mode homepage:
+
+* http://cc-mode.sourceforge.net
+
+== Modes provided by CC Mode ==
+
+* CProgrammingLanguage Mode
+* CPlusPlusMode -- (real name C++ mode) 
+* JavaMode
+* Objective-C Mode
+* IDL Mode
+* Pike Mode
+* AwkMode
+* ... several 3rd party derived modes.
+
+== Extensions to CC Mode ==
+
+* QtMode -- Edit Qt C++ programs in emacs.
+Note: the standard C++ Mode recognises the QT macros (such as "slots"), and as done since CC Mode 5.30.  QtMode is probably very old.
+
+== Using different styles according to source location ==
+
+This could probably do with some modifications to support more than one style type.  C++ code is also not affected.
+
+  (setq my-linux-style-path-alist (list (expand-file-name
+                               "~/src/version_control/sexy")))
+
+  (add-hook 'c-mode-hook (lambda ()
+                           (dolist (path my-linux-style-path-alist)
+                             (if (string-match path (buffer-file-name))
+                                 (c-set-style "linux")))))
+
+[new]
+
+I do it like:
+
+{{{
+(setq artm-c-styles-alist
+      '(("/projects/vlc" . "vlc")
+	(nil . "linux")))
+
+(defun artm-guess-c-style ()
+  (let ((style
+	 (assoc-default buffer-file-name artm-c-styles-alist
+			(lambda (pattern path)
+			  (or (not pattern)
+			      (and (stringp path)
+				   (string-match pattern path))))
+			;; factory default (in case you forget
+			;; to add (nil . "some style") to
+			;; artm-c-styles-alist
+			'(nil . "linux"))))
+    (cond
+     ((stringp style) (c-set-style style))
+     ((functionp style) (style)))))
+
+(add-hook 
+ 'c-mode-hook 'artm-guess-c-style)
+}}}
+
+== Key bindings ==
+* CCModeKeyBinding
+
+== Refactoring C code ==
+
+{{{
+;; move current function up
+(defun my-move-function-up ()
+  (interactive)
+  (save-excursion
+    (c-mark-function)
+    (kill-region (region-beginning) (region-end))
+    (c-beginning-of-defun 1)
+    (yank)))
+
+;; move current function down
+(defun my-move-function-down ()
+  (interactive)
+  (save-excursion 
+    (c-mark-function)
+    (kill-region (region-beginning) (region-end))
+    (c-beginning-of-defun -1)
+    (yank)))
+}}}
+Your comments are welcome.
+
+--dfa
+
+Probably you you can use `delete-and-extract-region' instead of `kill-region' plus `yank'.
+
+--ttn
+
+{{{
+(defun mark-c-scope-beg ()
+  "Marks the c-scope (region between {}) enclosing the point. 
+   Naive, as will be confused by { } within strings"
+  (let 
+	  ((scope-depth 1))
+	(while (not (= scope-depth 0))
+	  (search-backward-regexp "}\\|{")
+	  (if (string= (char-to-string (char-before)) "}")
+		  (setq scope-depth (1+ scope-depth))
+			(setq scope-depth (1- scope-depth)))))
+  (point))
+
+(defun mark-c-scope-end ()
+  "Marks the c-scope (region between {}) enclosing the point. 
+   Naive, as will be confused by { } within strings"
+  (let 
+	  ((scope-depth 1))
+	(while (not (= scope-depth 0))
+	  (search-forward-regexp "}\\|{")
+	  (if (string= (char-to-string (char-before)) "}")
+		  (setq scope-depth (1- scope-depth))
+			(setq scope-depth (1_ scope-depth)))))
+  (point))
+
+(defun kill-c-scope ()
+  (interactive)
+  (let
+	  ((inital-point (point)))
+	(save-excursion 
+	  (let
+		((beg (mark-c-scope-beg)))
+		(goto-char inital-point)
+		(let ((end (mark-c-scope-end))))))))
+}}}
+
+There must be a better way to do this...
+
+[new]
+
+There are c-beginning-of-defun and c-end-of-defun, plus c-mark-function in cc-cmds.el  -- that might be it!
+
+== CCLookup: Searching CPP Reference (Documentation) ==
+* github: http://github.com/tsgates/cclookup/tree/master
+* web: http://taesoo.org/Opensource/CClookup
+
+----
+CategoryProgramming
+CategoryModes
+

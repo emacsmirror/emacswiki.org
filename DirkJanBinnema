@@ -1,0 +1,13 @@
+I'm Dirk-Jan C. Binnema (djcb). 
+
+I've been using GNU/Emacs since '96 or so; still, emacs holds many secrets for me, and a bit of clicking around in EmacsWiki often teaches me some new trick. I am collecting these tricks in a blog: [http://emacs-fu.blogspot.com EmacsFu].
+
+Anyhow, the condensation of all these tricks: my .emacs: [http://www.djcbsoftware.nl/dot-emacs.html]. I'm trying to keep in well-documented, so it can be used for cherry-picking.
+
+I've written TexDrive, an emacs minor mode for including TeX-formula in webpages
+
+If you're an N800/N810-user like me, you might be interested in the HOWTO
+I blogged [http://djcbflux.blogspot.com/2008/02/waiting-for-22.html] 
+about getting emacs22 to run there.
+
+http://bp1.blogger.com/_kGFGcbwevHE/R7nzj55frfI/AAAAAAAAAO0/hY9DGcuasx0/s400/screenshot-2008-02-18-22-37-52.png

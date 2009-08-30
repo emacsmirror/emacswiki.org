@@ -1,0 +1,22 @@
+My [http://jekor.com/emacs/dot-emacs.pdf .emacs] (literate PDF file).
+
+I use Emacs.
+
+== Road to Emacs ==
+
+* started writing Common Lisp in 2006 and needed SLIME
+* PDA died and needed a replacement PIM (found Org-mode)
+* while working in network security, found that editing files on remote hosts with Tramp+ssh+Dired was much easier than ssh+bash+vi
+* pushed through the discomfort and haven't looked back
+
+[new]
+Welcome to the wiki! I must confess that when I got started with Tramp, I got several weird lockups, and eventually I gave up. I should try it again. -- AlexSchroeder
+
+[new:ChrisForno:2007-03-08 07:26 UTC]
+I did as well. I found that I had to set the prompt pattern to be less restrictive:
+
+##(setq tramp-default-method "ssh"
+      tramp-shell-prompt-pattern "^[^#$>\n]*[#$%>)] *")##
+
+----
+CategoryHomepage

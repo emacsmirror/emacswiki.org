@@ -1,0 +1,381 @@
+== Getting Started With Planner ==
+
+At the end of this tutorial, you will be able to use PlannerMode
+and related modules to keep track of your tasks, schedules and notes,
+all within the convenience of Emacs. =) (People also recommend reading PlannerModeCommentary.)
+
+== Getting the Files ==
+
+You'll need at least PlannerMode and EmacsMuse. RememberMode works
+really well for taking timestamped notes with PlannerMode, too.
+
+Planner.el is available as planner-el on Debian systems.  Also, EmacsMuse is available as muse-el, and RememberMode is available as remember-el.
+
+Install all the files somewhere on your system, like ~/elisp.
+
+There are several different ways that you can obtain Planner and Muse,
+depending on whether you want the latest stable releases or the
+bleeding edge development version.
+
+=== Getting the stable release ===
+
+Using tarballs:
+
+<pre>
+wget http://download.gna.org/planner-el/planner-3.42.tar.gz
+tar -xzf planner-3.42.tar.gz
+mv planner-3.42 planner
+wget http://download.gna.org/muse-el/muse-3.12.tar.gz
+tar -xzf muse-3.12.tar.gz
+mv muse-3.12 muse
+wget http://download.gna.org/remember-el/remember-2.0.tar.gz
+tar -xzf remember-2.0.tar.gz
+mv remember-2.0 remember
+</pre>
+
+Using zip files:
+
+<pre>
+wget http://download.gna.org/planner-el/planner-3.42.zip
+unzip planner-3.42.zip
+mv planner-3.42 planner
+wget http://download.gna.org/muse-el/muse-3.12.zip
+unzip muse-3.12.zip
+mv muse-3.12 muse
+wget http://download.gna.org/remember-el/remember-2.0.zip
+unzip remember-2.0.zip
+mv remember-2.0 remember
+</pre>
+
+=== Getting the latest development snapshot ===
+
+Using git:
+
+<pre>
+cd ~/elisp
+git clone git://repo.or.cz/muse-el.git muse
+git clone git://repo.or.cz/planner-el.git planner
+git clone git://repo.or.cz/remember-el.git remember
+# or if you are behind a restrictive firewall, do the following instead:
+# git clone http://repo.or.cz/r/muse-el.git muse
+# git clone http://repo.or.cz/r/planner-el.git planner
+# git clone http://repo.or.cz/r/remember-el.git remember
+</pre>
+
+Using downloaded tarballs:
+
+<pre>
+cd ~/elisp
+wget http://mwolson.org/static/dist/planner-latest.tar.gz
+tar -xzf planner-latest.tar.gz
+wget http://mwolson.org/static/dist/muse-latest.tar.gz
+tar -xzf muse-latest.tar.gz
+wget http://mwolson.org/static/dist/remember-latest.tar.gz
+tar -xzf remember-latest.tar.gz
+</pre>
+
+Using downloaded zip files:
+
+<pre>
+cd ~/elisp
+wget http://mwolson.org/static/dist/planner-latest.zip
+unzip planner-latest.zip
+wget http://mwolson.org/static/dist/muse-latest.zip
+unzip muse-latest.zip
+wget http://mwolson.org/static/dist/remember-latest.zip
+unzip remember-latest.zip
+</pre>
+
+
+== Setting up Planner ==
+
+Add the files to your load-path. Change these paths as needed.
+
+     (add-to-list 'load-path "~/elisp/muse/lisp")
+     (add-to-list 'load-path "~/elisp/planner")
+     (add-to-list 'load-path "~/elisp/remember")
+
+Create your plan directory:
+
+     mkdir ~/plans
+
+Set up the project in your .emacs file:
+
+     (setq planner-project "WikiPlanner")
+     (setq muse-project-alist
+           '(("WikiPlanner"
+             ("~/plans"   ;; Or wherever you want your planner files to be
+             :default "index"
+             :major-mode planner-mode
+	     :visit-link planner-visit-link))))
+     (require 'planner)
+
+Call M-x plan to start planning!
+
+== Planning Your Day ==
+
+There are two kinds of pages in a Planner wiki.
+
+      Day pages:     Show tasks, schedule, and notes for the day
+      Plan pages:    Organize related tasks and notes into a single page
+
+Start planner with '''M-x plan RET'''.
+(On OSX, Aqua emacs may respond to ENTER instead of RET.)
+
+This will bring up the most recent day page with unfinished tasks or
+create a new day page if necessary.
+
+=== Tasks ==
+
+==== Creating Tasks ==
+
+Let us start by creating a task labelled
+
+    Join the [[https://mail.gna.org/listinfo/planner-el-discuss][mailing list]]
+
+From anywhere (including this page, if you're browsing from w3m and
+have loaded planner-w3m! =) ), call '''M-x
+planner-create-task-from-buffer''' to create a new task. Fill in the
+description and choose a date by:
+
+* typing 1-31 to put the task on that day of the month,
+* accepting the default (today) by pressing RET,
+* selecting the date with mouse-1,
+* typing +n (where n is an integer) to schedule the task in n days time,
+* typing +fri (or +mon, +tue, +wed, +thu, +fri, +sat, or +sun) for next Friday, etc.
+* typing +2fri for two Fridays from now
+* typing '''nil''' to make an undated task.
+
+For now, accept the default (today) by pressing RET.
+
+You will then be prompted for a plan page. Plan pages gather related
+tasks and notes, giving you an overview of what you've done so far.
+You can accept the default <nowiki>TaskPool</nowiki>, create your own
+plan page, or specify '''nil''' to make a task that is not associated
+with a plan page. For now, accept the default
+(<nowiki>TaskPool</nowiki>) by pressing RET.
+
+You have created your first task. View today's page with '''M-x
+planner-goto-today'''. You will see a line of the form
+
+    #B  _ Join the mailing list (TaskPool)
+
+If you created the task from this page using w3m and you've loaded planner-w3m, then there will be an additional annotation:
+
+    #B  _ Join the mailing list : <nowiki>http://www.emacswiki.org/cgi-bin/wiki/PlannerModeQuickStart</nowiki> (TaskPool)
+
+'''mailing list''', '''!TaskPool''' and
+'''<nowiki>http://www.emacswiki.org/cgi-bin/wiki/PlannerModeQuickStart</nowiki>''' are
+hyperlinks. You can use TAB and S-TAB to navigate between them and RET
+to follow the link.
+
+Create more tasks using '''M-x planner-create-task-from-buffer'''.
+This is bound to '''C-c C-t''' in planner-mode pages for your convenience.
+For example, create the following tasks:
+
+* '''Post my current way of working and how I would like to work''' for three days from now (+3),
+* '''Learn how to schedule a task''', an undated task ("nil") on the <nowiki>TaskPool</nowiki> page.
+* '''Browse through the PlannerMode info manual''' for today (. or accept the default),
+
+: Tip: I bind planner-create-task-from-buffer to "F9 t" so that I can
+  easily call it from anywhere. You can do that with this elisp
+  fragment:
+
+    (global-set-key (kbd "<f9> t") 'planner-create-task-from-buffer)
+
+Visit the !TaskPool by:
+
+* TAB-bing to it or using your TextCursor and typing RET to follow the link,
+* '''C-x C-f !TaskPool RET''' to use find-file, or
+* '''C-c C-f !TaskPool RET''' to use muse-find-file
+
+You can see an overview of the tasks as scheduled on different days.
+Unlike many personal information managers that store all of your data
+in one file and then perform magic in order to present different
+views, Planner uses plain text files. The data is duplicated and kept
+updated by functions. This makes it simpler and easier to modify,
+because what you see is (almost) what you get. On the other hand,
+you'll need to get used to either editing both files, or using the
+built-in functions for editing and updating files. If you prefer not
+to work with linked tasks, you can configure Planner to use only plan
+pages or use only day pages. (_After_ the tutorial =) )
+
+The <nowiki>TaskPool</nowiki> page should list the tasks you created
+earlier. Go to the one named '''Learn how to schedule a task'''. Type
+'''C-c C-c''' (planner-copy-or-move-task) to schedule the task. Type
+RET to accept the default (today). Go to the day page by following the
+link or calling '''M-x planner-goto''' (C-c C-j C-d or the menu bar);
+you will see the newly-created task there. You can also use '''C-c
+C-c''' (planner-copy-or-move-task) to reschedule a task to an earlier
+or later date.
+
+Well, that task is done. To mark the task as completed, type '''C-c
+C-x''' (planner-task-done). You can also edit the status manually
+(change _ to X) as long as you remember to call M-x
+planner-update-task to update the link page as well. Updating relies
+on the task description being the same, so do not edit this manually.
+
+Quick summary of task commands:
+
+* Create a task: '''C-c C-t''' (planner-create-task-from-buffer), or type a task manually (call '''M-x planner-update-task''' if the task is linked)
+* Mark a task as done: '''C-c C-x''' (planner-task-done), or edit the task and call '''M-x planner-update-task'''
+* Edit a task description: '''M-x planner-edit-task-description'''
+* Delete a task: '''M-x planner-delete-task'''
+* Reorder tasks: '''M-p (planner-raise-task)''' and '''M-n (planner-lower-task)''', or edit the task and call '''M-x planner-update-task'''
+  normal editing commands like kill and yank
+* Change task priorities (#A > #B > #C):
+  '''C-M-p (planner-raise-task-category)''' and '''C-M-n (planner-lower-task-category)''', or edit the task and call '''M-x planner-update-task'''.
+* Change the plan of a task: '''M-x planner-replan-task''', or '''C-c C-c (planner-copy-or-move-task)''' with
+  a plan page
+
+
+These commands are explained in more detail later, but if you know how
+to create tasks and mark them as done, you know all you need to know
+in order to use Planner as a basic TODO manager. There's much more
+than that, of course. =)
+
+==== Organizing tasks ====
+
+By default, tasks are created with medium priority (#B). You can make
+a task high-priority (#A) or low-priority (#C) by manually editing the
+task and calling '''M-x planner-update-task''' to update the linked
+page. Alternatively, you can use '''C-M-p'''
+(planner-raise-task-category) and '''C-M-n'''
+(planner-lower-task-category) to modify the task and update the linked
+page.
+
+You can create other tasks and change their priority, simply by
+editing the line and replacing the letter showing the priority. #A
+tasks are important, #B are medium-priority, and #C are low-priority.
+Higher-priority tasks are listed above lower-priority tasks, and
+completed tasks are listed at the bottom.
+
+You can organise tasks into groups by putting a blank line between
+groups of tasks. PlannerMode will automatically maintain the groupings
+and only sort the tasks within that group.
+
+To remind yourself to do tasks in a certain order, simply edit the
+lines so that they're in the order you want. You can use normal
+editing commands like kill, yank and transpose-line to reorder the
+tasks, or use '''M-p (planner-raise-task)''' and '''M-n (planner-lower-task)''' to
+rearrange the tasks.
+
+You save your tasks with C-x C-s the same way you save any other file,
+or emacs will prompt you to save it when you exit.
+
+==== Marking a Task as Completed ==
+
+Tasks that are unfinished are marked with _ (underscore).
+Tasks that are finished are marked with X (capital X).
+This is an example of a high-priority task that is unfinished.
+
+    #A  _ Write a tutorial
+
+This is an example of a high-priority task that is finished.
+
+    #A  X Write a tutorial
+
+To mark a task as finished, type '''C-c C-x''' while the point is on
+the task line. You can also change the status of a task by editing the
+task and calling M-x planner-update-task.
+
+==== Rescheduling Tasks ==
+
+To reschedule a task to a different day, type '''C-c C-c'''
+(planner-copy-or-move-task) and select a new date. For example,
+'''C-c C-c +7 RET''' schedules a task for 7 days from the current page.
+
+==== Rescheduling Many Tasks ==
+
+You can mark a region and type '''M-x planner-copy-or-move-region''' to
+reschedule all the contained tasks to a different date.
+
+==== Deleting Tasks ==
+
+Call '''M-x planner-delete-task''' to delete a task and update the linked page.
+
+==== Carrying Over Unfinished Tasks ==
+
+By default, (plan) carries forward unfinished tasks from the last 3 days.
+Modify the '''planner-carry-tasks-forward''' variable for other behavior.
+
+=== Schedule ==
+
+This is pretty free-form. I usually have entries of the form
+
+    hh:mm | hh:mm | activity
+    hh:mm | hh:mm | activity
+    hh:mm | hh:mm | activity
+
+where hh:mm are expressed in 24h time. You can put anything in this section
+or remove it from '''planner-day-page-template''' entirely.
+
+=== Notes ==
+
+You can put anything in this section. Notes added by remember-planner.el look like this:
+
+    .#1 Headline
+    Body
+
+and are outlined at the H2 level.
+
+==== Automatic note-taking with Planner and Remember ===
+
+PlannerMode can easily integrate with RememberMode.  If you include the following in your startup:
+
+  (require 'remember-planner)
+  (setq remember-handler-functions '(remember-planner-append))
+  (setq remember-annotation-functions planner-annotation-functions)
+
+you can easily create context-aware notes. '''M-x remember'''
+will create a dedicated buffer for you to fill in your note. Bind this to something handy like '''C-c r''' by adding this to your ~/.emacs:
+  
+  (global-set-key (kbd "C-c r") 'remember)
+
+If PlannerMode recognizes the buffer as one with context then it will
+include a hyperlink at the bottom. Give the note a title, type your
+info and you will have a note like:
+
+  Example note for emacs wiki
+
+  File I was looking at was
+  [[/Users/jklymak/emacs-common/planner-config.el]] 
+  when I made this note.
+
+Typing '''C-c C-c''' after composing will prompt for the Wiki page to put this on (with auto-completion).  Choosing ComputerStuff will give a note like this on the page ComputerStuff
+
+  .#1 Example note for emacs wiki 08:52 (2004.07.01#1)
+
+  File I was looking at was 
+  [[/Users/jklymak/emacs-common/planner-config.el]] 
+  when I made this note.
+
+And on the Daily page 2004.07.01
+
+  .#1 Example note for emacs wiki 08:52 (ComputerStuff#1)
+
+  File I was looking at was 
+  [[/Users/jklymak/emacs-common/planner-config.el]] 
+  when I made this note.
+
+
+=== Planning Projects ===
+
+The !TaskPool is a default Plan Page, on which tasks are created by default.  You can create other Plan Pages to group or organize a collection of related tasks into a project.
+
+All the pages in your planner can contain links of the form !WikiName, <nowiki>[[destination]], or [[destination][description]].</nowiki> which will link to the alternate plan pages if they exist.
+
+You can enable easy creation of !WikiName type links to Plan Pages in tasks with these incantations in your .elisp file:
+
+   (require 'muse-wiki)    ;;; Allow wiki-links
+   (setq muse-wiki-allow-nonexistent-wikiword t) 
+
+== Advanced Stuff ==
+
+Join our mailing list at planner-el-discuss@gna.org using the subscription form at https://mail.gna.org/listinfo/planner-el-discuss and ask questions, report bugs, or swap stories about how you use Planner!
+
+----
+
+PlannerMode
+
+本文的中文翻译： PlannerModeQuickStartChinese

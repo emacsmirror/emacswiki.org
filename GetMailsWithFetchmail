@@ -1,0 +1,49 @@
+A simple function to get new mails with fetchmail.
+
+    (defun fetchmail ()
+      "First polls server with fetchmail -c and reports status,
+     then offers to run fetchmail without any switches."
+      (interactive)
+      (message "checking for mail...")
+      (let ((check (shell-command-to-string "fetchmail -c")))
+        (if (y-or-n-p
+             (concat
+              (cond ((string-match "failed" check) "failed to poll server")
+                    ((string-match "No mail" check) "no messages to fetch")
+                    ((string-match "message" check)
+                     (concat
+                      (substring check 0 (string-match " " check))
+                      " messages to fetch "
+                      (substring check
+                                 (string-match "(" check)
+                                 (+ 1 (string-match ")" check)))))
+                    (t "terribly confused"))
+              " - run fetchmail? "))
+            (progn (message "Running fetchmail...")
+                   (let ((error-code (call-process "fetchmail")))
+                     (message
+                      (concat "Running fetchmail... "
+                              (cond ((eq error-code 0) "got mail")
+                                    ((eq error-code 1) "no mail")
+                                    (t "some kind of error occurred"))))))
+          (message nil))))
+
+----
+
+That's nice, but it is not good for those who run Fetchmail as daemon. So, could you create a function that duplicates functionality of this Bourne Shell-oneliner:
+
+    kill -USR1 `cat ~/.fetchmail.pid | awk '{print $1}'`
+
+-- Juhapekka Tolvanen
+
+---
+
+You mean
+
+    fetchmail -q
+
+Rerunning fetchmail without options will force a daemon fetchmail to
+download new mail. Fun stuff.
+
+----
+CategoryMail

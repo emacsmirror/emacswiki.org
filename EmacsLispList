@@ -1,0 +1,44 @@
+The Emacs Lisp List ([::ELL]) is the authorative source of all Emacs packages.  It is maintained by StephenEglen.
+
+Current locations:
+
+* http://anc.ed.ac.uk/~stephen/emacs/ell.html (Edinburgh 1 - UK) 
+
+The major mode used to browse the ELL from emacsen is ell.el:
+
+* http://anc.ed.ac.uk/~stephen/emacs/ell.el
+
+Feel free to create new pages on this wiki to discuss packages in the
+ELL.
+
+== A Copy on the Wiki ==
+
+A '''copy''' is available on this wiki.  See WikifiedEmacsLispList.
+It makes no sense the edit the
+WikifiedEmacsLispList! The real ELL by Stephen continues to be the
+"leading" collection of links.  If there are any mistakes in the
+wikified list, mail Stephen directly.  If you feel that the wikified
+list is really outdated, you are invited to re-wikify it.
+
+    From: StephenEglen
+    Subject: ELL and the Emacs Wiki
+    Date: Wed, 12 Sep 2001 11:15:28 -0500 (CDT)
+    
+    I'm happy to continue updating the ELL, after all I probably receive
+    just 2-3 emails a week suggesting changes/broken links, so it is not
+    such a huge load for me at the moment.  Perhaps the wiki would be
+    better suited if the ELL was more rapidly changing, but it seems
+    pretty slow-changing at the moment.
+
+I run the following script from a cronjob to copy it.
+
+<pre>
+#!/bin/sh
+ell-to-wiki.pl | wikiput \
+    -s 'copy from the master site' \
+    -u 'EmacsLispList' \
+    'http://www.emacswiki.org/cgi-bin/wiki/WikifiedEmacsLispList'
+</pre>
+
+You can find wikiput on the Oddmuse site. [http://www.oddmuse.org/cgi-bin/wiki/wikiput]
+You'll need [[ell-to-wiki.pl]], too.

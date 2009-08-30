@@ -1,0 +1,43 @@
+''EMACS, grep, and UNIX: authorship, invention and translation in software'' by ChristopherKelty, Rice University.  2006-03-20.
+
+The abstract:
+
+"The UNIX operating system environment has achieved a ubiquity with no parallel in 
+the software world. It began as a computer science experiment in the early 1970s, spread to 
+universities around the world in the late 70s, became the darling of the computer industry 
+in the 1980s, and (in its incarnation as GNU/Linux) helped launch the explosive growth 
+of the Internet in the 1990s. More than simply being a story of the spread of a technology, 
+UNIX has enabled the creation, growth and refinement of a mode of coding—designing, 
+composing, writing and documenting of software—that has become a kind of lingua franca 
+for geeks, hackers, scientists, engineers, and hobbyists alike. This paper explores two 
+historical cases of software authorship related to UNIX which have implications for the 
+meaning and practice of modern software coding: the case of the EMACS editor and 
+the GNU General Public License and the case of the programming tool known as grep, 
+which searches text using “regular expressions.” Both cases offer insight into the nature 
+of contemporary invention and authorship on the realm of software programming."
+
+* http://www.case.edu/affil/sce/Texts_2006/Invention%20papers/ConText-Kelty.pdf (official location)
+* http://agave.garden.org/~aaronh/emacs/ConText-Kelty.pdf (unofficial mirror)
+
+Selected concluding remarks:
+
+"What is clear about this example [...] is that the concept of regular expressions has become 
+extremely stable, much like the oeuvre of Shakespeare. Indeed, there are probably considerably 
+more copies of grep out there in the world’s computers than there are of the collected works 
+of Shakespeare--by virtue of the ease of replication of this tool and its standard inclusion in 
+operating systems. Should we identify these copies (which are, by the way, considerably less 
+homogenous than Shakespeare’s oeuvre, and consist of a wide variety of derivatives and similar 
+programs) as the container of the concept “regular expressions”? Or should we privelege 
+the algebraic presentation of Kleene from 1956?  Indeed, nothing less than a question of 
+platonic idealism confronts this story. [...]
+
+"UNIX (and EMACS and grep alongside it) have evolved as relatively open objects, through 
+which generations of computer engineering students, hackers and geeks, have come to understand, to memorize, and to reproduce the concept of “an operating system,” a “text editor,” 
+or “regular expressions algorithms.  The intersection of legal and social practices of authorizing, legitimizing, learning, copying, writing and recreating visible in the example of the 
+EMACS controversy, is a paradigm case of the authorization not only of certain tools, ideas, 
+algorithms or software--but of a process of authorization as well, one that is today clearly 
+visible in the emergence of Free Software and Open Source Software."
+
+----
+CategoryHistory
+

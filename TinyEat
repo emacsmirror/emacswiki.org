@@ -1,0 +1,43 @@
+tinyeat.el is part of the TinyTools.
+
+== Overview ==
+
+The default emacs keybindings aren't the most convenient for quick deletion without saving to the kill ring.
+The tinyeat offers a lot of useful delete functionality. E.g. helpers for two kinds of deletion
+
+* delete without saving
+* saving to the kill ring
+
+and operations on words:
+
+* eat parts of words (i.e. QuickDele?teBrown -> QuickBrown) which is great for misspelled vars when programming
+* eat whole word
+* lines
+* paragraphs
+* etc.
+
+== Customization ==
+
+[new] 
+I tweaked it a bit, here are some of my helpers:
+{{{
+(global-set-key [(delete)]		
+    (lambda () 
+     (interactive) 
+       (re-search-forward "\\s-*" nil t) 
+       (tinyeat-delete-whole-word))) ;; only because I'm too lazy to move forward to the next word to delete.
+
+(global-set-key [(shift backspace)]		
+    (lambda () 
+     (interactive) 
+      (re-search-backward "\\s-*" nil t) 
+      (backward-char 1) 
+      (tinyeat-delete-whole-word))) ;; another lazy thing
+
+;; I want to paste something I just saved to the kill ring without having the current region get saved.
+(global-set-key "M-del" 'delete-region) 
+}}}
+
+Just my bindings. The tiny tools are great tho, I highly recommend them
+-- AaronBrady
+

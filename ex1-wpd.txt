@@ -1,0 +1,472 @@
+MODEL 		'RepresentativeBusinessExample'
+	
+	WPDL_VERSION	"7.0 Beta"
+	VENDOR	"Vendor:Product:Release"
+	CREATED	1998-07-15
+	NAME		"Representative Business Example"
+	DESCRIPTION	"WPDL-Notation of Representative Business Example"
+	AUTHOR	"WG/1B"
+	STATUS	UNDER_REVISION
+	EXTENDED_ATTRIBUTE	'VENDOR_A_SPECIFIC' STRING 
+	"This is vendor A's attribute!"	
+	
+	// Workflow Participant List
+	
+	PARTICIPANT	'France_Baroque'
+		NAME	"France Baroque"
+		DESCRIPTION	"President's Secretary"
+		TYPE	HUMAN
+	END_PARTICIPANT
+	
+	PARTICIPANT	'Tim_White'
+		NAME	"Tim White"
+		DESCRIPTION	"Mail Room Clerk"
+		TYPE	HUMAN
+	END_PARTICIPANT
+	
+	PARTICIPANT	'Presidents_Secretary'
+		NAME	"Presidents Secretary"
+		DESCRIPTION	"handles presidents mail"
+		TYPE	ROLE
+	END_PARTICIPANT
+
+	PARTICIPANT	'Mail_Room_Clerk'
+		NAME	"Mail-Room Clerk"
+		DESCRIPTION	"handles incoming mail"
+		TYPE	ROLE
+	END_PARTICIPANT
+
+	PARTICIPANT	'VP_Sales'
+		NAME	"VP Sales"
+		DESCRIPTION	"Vice president; handles sales leads"
+		TYPE	ROLE
+	END_PARTICIPANT
+
+	PARTICIPANT	'Sales_Department'
+		NAME	"Sales Department"
+		DESCRIPTION	"is involved in handling sales orders"
+		TYPE	ORGANISATIONAL_UNIT 
+	END_PARTICIPANT
+
+	PARTICIPANT	'Manufacturing_Department'
+		NAME	"Manufacturing Department"
+		DESCRIPTION	"is involved in handling sales orders"
+		TYPE	ORGANISATIONAL_UNIT
+	END_PARTICIPANT
+
+	PARTICIPANT	'Finance_Department'
+		NAME	"Finance Department"
+		DESCRIPTION	"is involved in handling sales orders, invoices for payments and payments"
+		TYPE	ORGANISATIONAL_UNIT
+	END_PARTICIPANT
+
+	PARTICIPANT	'Customer_Support'
+		NAME	"Customer Support"
+		DESCRIPTION	"handles product inquiries"
+		TYPE	ORGANISATIONAL_UNIT
+	END_PARTICIPANT
+
+	// <Workflow Application List>
+	
+	APPLICATION	'scan_document'
+		NAME	"scan document"
+		TOOLNAME	"winscan.exe"
+		OUT_PARAMETERS	'scanned_document' 
+	END_APPLICATION
+
+	APPLICATION	'identify_document'
+		NAME	"identify document"
+		IN_PARAMETERS	'scanned_document' 
+		OUT_PARAMETERS	'document_type'
+	END_APPLICATION
+
+	APPLICATION	'send_document'
+		NAME	"send document"
+		TOOLNAME	"abcmail.exe"
+		IN_PARAMETERS	'scanned_document' 
+		'document_type'
+	END_APPLICATION
+
+	APPLICATION	'handle_document'
+		NAME	"handle document"
+		IN_PARAMETERS	'scanned_document' 
+		'document_type'
+	END_APPLICATION
+
+	// <Workflow Process Relevant Data List>
+	
+	DATA	'document_type'
+		TYPE	STRING
+		NAME	"document type"
+		DEFAULT_VALUE	"Sales Order"
+	END_DATA
+
+	DATA	'scanned_document'
+		TYPE	REFERENCE
+		NAME	"scanned document"
+	END_DATA
+	
+	// *****************************************************************
+	WORKFLOW	'In_the_Mail_Room'
+		CREATED	1998-07-15
+		NAME	"In the Mail Room"
+
+		// <Activity List>
+		
+		ACTIVITY	'MailRoom'
+			NAME	"Mail Room"
+			IMPLEMENTATION 	APPLICATIONS 
+			TOOL_LIST 
+				'scan_document'
+				'identify_document'
+				'send_document'
+ 				DESCRIPTION "sequential execution"
+ 			END_TOOL_LIST
+			PERFORMER	'Mail_Room_Clerk'								
+			SPLIT	AND							
+		END_ACTIVITY
+
+		ACTIVITY	'Sales_Order_Handling'
+			NAME	"Sales Order Handling"
+			IMPLEMENTATION	WORKFLOW SYNCHR 'At_the_Sales_Department'
+			PERFORMER	'SALES_DEPARTMENT'							
+		END_ACTIVITY
+
+		ACTIVITY	'Finance_Processing'
+			NAME	"Finance Processing"
+			IMPLEMENTATION	WORKFLOW SYNCHR 'At_the_Finance_Department'
+			PERFORMER	'Finance_Department'
+		END_ACTIVITY
+
+		ACTIVITY	'Manufacturing'
+			NAME	"Manufacturing"
+			IMPLEMENTATION	WORKFLOW SYNCHR 'At_the_SManufacturing_Department'
+			PERFORMER	'Manufacturing_Department'
+		END_ACTIVITY
+
+		ACTIVITY	'Presidents_Secretary_Dispatch'
+			NAME	"Presidents_Secretary Dispatch"
+			IMPLEMENTATION 	APPLICATIONS 'send_document'
+			PERFORMER	'Presidents_Secretary'
+			SPLIT	XOR 't_5' 't_6' 't_7'
+		END_ACTIVITY
+
+		ACTIVITY	'Immediate_Response_by_President'
+			NAME	"Immediate Response by President"
+			IMPLEMENTATION 	APPLICATIONS 'handle_document'
+			PERFORMER	'Presidents_Secretary'
+		END_ACTIVITY
+
+		ACTIVITY	'VP_Sales_handling'
+			NAME	"VP Sales handling"
+			IMPLEMENTATION 	APPLICATIONS 'handle_document'
+			PERFORMER	'VP_Sales'
+		END_ACTIVITY
+
+		ACTIVITY	'Customer_Support'
+			NAME	"Customer Support"
+			IMPLEMENTATION 	APPLICATIONS 'handle_document'
+			PERFORMER	'Customer_Support'
+		END_ACTIVITY
+
+		// <Transition Information List>
+		
+		TRANSITION	't_1'
+			FROM	'MailRoom'
+			TO	'Sales_Order_Handling'
+			CONDITION	'document_type'="Sales Order"
+		END_TRANSITION
+
+		TRANSITION	't_2'
+			FROM	'MailRoom'
+			TO	'Finance_payment_processing'
+			CONDITION	'document_type'="Sales Order" OR
+			'document_type'="invoices_for_payment" OR
+			'document_type'="payments"
+		END_TRANSITION
+
+		TRANSITION	't_3'
+			FROM	'MailRoom'
+			TO	'Manufacturing'
+			CONDITION	'document_type'="Sales Order"
+		END_TRANSITION
+
+		TRANSITION	't_4'
+			FROM	'MailRoom'
+			TO	'Presidents_Secretary'
+			CONDITION	'document_type'="Presidents Mail"
+		END_TRANSITION
+
+		TRANSITION	't_5'
+			FROM	'Presidents_Secretary_Dispatch'
+			TO	'Immediate_Response_by_President'
+			CONDITION	'document_type'="Immediate Response"
+		END_TRANSITION
+
+		TRANSITION	't_6'
+			FROM	'Presidents_Secretary_Dispatch'
+			TO	'VP_Sales_handling'
+			CONDITION	'document_type'="Sales leads"
+		END_TRANSITION
+
+		TRANSITION	't_7'
+			FROM	'Presidents_Secretary_Dispatch'
+			TO	'Customer_Support'
+			CONDITION	'document_type'="Product_Inquiry"
+		END_TRANSITION
+		
+	END_WORKFLOW
+	
+	
+	WORKFLOW	'At_the_Finance_Department'
+		CREATED	1998-07-15
+		NAME	"At the Finance Department"
+		
+		// <Activity List>
+		
+		ACTIVITY	'Inmail_Checking'
+			NAME	"Inmail_Checking"
+			IMPLEMENTATION 	NO 
+			PERFORMER	'Finance_Department'								
+			SPLIT	XOR 'T_1' 'T_2' 'T_3'							
+		END_ACTIVITY
+		
+		ACTIVITY	'Finance_Payment_Processing'
+			NAME	"Finance Payment Processing"
+			DESCRIPTION	"Manually handled"
+			IMPLEMENTATION	NO
+			PERFORMER	'SALES_DEPARTMENT'								
+		END_ACTIVITY
+		
+		ACTIVITY	'Finance_Invoice_Processing'
+			NAME	"Finance Invoice Processing"
+			DESCRIPTION	"Manually handled"
+			IMPLEMENTATION	NO
+			PERFORMER	'SALES_DEPARTMENT'								
+		END_ACTIVITY
+		
+		ACTIVITY	'Check_Finances'
+			NAME	"Check Finances'"
+			IMPLEMENTATION	NO
+			PERFORMER	'SALES_DEPARTMENT'							
+		END_ACTIVITY
+		
+		ACTIVITY	'Check_for_existing_Customer'
+			NAME	"Check for existing Customer"
+			IMPLEMENTATION 	APPLICATIONS 'customer_check'
+			PERFORMER	'SALES_DEPARTMENT'								
+			SPLIT	XOR 't_5' 't_6'
+		END_ACTIVITY
+		
+		ACTIVITY	'Check_Account_Limit'
+			NAME	"Check Account Limit"
+			IMPLEMENTATION 	APPLICATIONS 'account_check'
+			PERFORMER	'SALES_DEPARTMENT'								
+			SPLIT	XOR 't_7' 't_8'
+		END_ACTIVITY
+		
+		ACTIVITY	'Credit_Check'
+			NAME	"Credit Check"
+			IMPLEMENTATION 	APPLICATIONS 'credit_check'
+			PERFORMER	'SALES_DEPARTMENT'								
+			SPLIT	XOR 't_9' 't_10'
+		END_ACTIVITY
+		
+		ACTIVITY	'Check_at_next_magagement_level'
+			NAME	"Check at next magagement level"
+			IMPLEMENTATION 	APPLICATIONS 'management_check'
+			PERFORMER	'SALES_DEPARTMENT'								
+			SPLIT	XOR 't_11' 't_12'
+		END_ACTIVITY
+		
+		ACTIVITY	'Decline_Sales_Order'
+			NAME	"Decline_Sales_Order"
+			IMPLEMENTATION 	NO
+			PERFORMER	'SALES_DEPARTMENT'								
+			JOIN	XOR
+		END_ACTIVITY
+		
+		ACTIVITY	'R_1'
+			NAME	"Route 1"
+			ROUTE
+			JOIN	XOR
+		END_ACTIVITY
+		
+		// <Transition Information List>
+		
+		TRANSITION	't_1'
+			FROM	'Inmail_Checking'
+			TO	'Check_Finances'
+			CONDITION	'document_type'="Sales Order"
+		END_TRANSITION
+		
+		TRANSITION	't_3'
+			FROM	'Inmail_Checking'
+			TO	'Finance_payment_processing'
+			CONDITION	'document_type'="payments"
+		END_TRANSITION
+		
+		TRANSITION	't_2'
+			FROM	'Inmail_Checking'
+			TO	'Finance_Invoice_Processing'
+			CONDITION	'document_type'="invoices_for_payment"			
+		END_TRANSITION
+		
+		TRANSITION	't_4'
+			FROM	'Check_Finances'
+			TO	'Check_for_existing_Customer'
+		END_TRANSITION
+		
+		TRANSITION	't_5'
+			FROM	'Check_for_existing_Customer'
+			TO	'Check_Account_Limit'
+			CONDITION	'account_ok'=TRUE
+		END_TRANSITION
+		
+		TRANSITION	't_6'
+			FROM	'Check_for_existing_Customer'
+			TO	'Credit_Check'
+			OTHERWISE
+		END_TRANSITION
+		
+		TRANSITION	't_7'
+			FROM	'Check_Account_Limit'
+			TO	'Check_at_next_magagement_level'
+			OTHERWISE
+		END_TRANSITION
+		
+		TRANSITION	't_8'
+			FROM	'Check_Account_Limit'
+			TO	'R_1'
+			CONDITION	'account_ok'=TRUE
+		END_TRANSITION
+		
+		TRANSITION	't_9'
+			FROM	'Credit_Check'
+			TO	'Decline_Sales_Order'
+			OTHERWISE
+		END_TRANSITION
+		
+		TRANSITION	't_10'
+			FROM	'Credit_Check'
+			TO	'R_1'
+			CONDITION	'credit_ok'=TRUE
+		END_TRANSITION
+		
+		TRANSITION	't_11'
+			FROM	'Check_at_next_magagement_level'
+			TO	'Decline_Sales_Order'
+			OTHERWISE
+		END_TRANSITION
+		
+		TRANSITION	't_12'
+			FROM	'Check_at_next_magagement_level'
+			TO	'R_1'
+			CONDITION	'management_ok'=TRUE
+		END_TRANSITION
+		
+		TRANSITION	't_13'
+			FROM	'Decline_Sales_Order'
+			TO	'R_1'
+		END_TRANSITION
+		
+		// <Workflow Application List>
+		
+		APPLICATION	'customer_check'
+			NAME	"customer check"
+			DESCRIPTION	"sets 'customer_ok'"
+		END_APPLICATION
+		
+		APPLICATION	'credit_check'
+			NAME	"credit check"
+			OU DESCRIPTION	"sets 'credit_ok'" 
+		END_APPLICATION
+		
+		APPLICATION	'management_check'	
+			NAME	"management check"
+			DESCRIPTION	"sets 'managem	ent_ok'" 
+		END_APPLICATION
+		
+		APPLICATION	'account_check'
+			NAME	"account check"
+			DESCRIPTION	"sets 'account_ok'" 
+		END_APPLICATION
+		
+		// <Workflow Process Relevant Data List>
+		
+		DATA	'customer_ok'
+			TYPE	BOOLEAN
+			NAME	"customer ok"
+		END_DATA
+		
+		DATA	'credit_ok'
+			TYPE	BOOLEAN
+			NAME	"credit ok"
+		END_DATA
+		
+		DATA	'account_ok'
+			TYPE	BOOLEAN
+			NAME	"account ok"
+		END_DATA
+		
+		DATA	'management_ok'
+			TYPE	BOOLEAN
+			NAME	"management ok"
+		END_DATA
+		
+	END_WORKFLOW
+	
+	WORKFLOW	'At_the_Manufacturing_Department'
+		CREATED	1998-07-15
+		NAME	"At the Manufacturing Department"
+		
+		ACTIVITY	'R_1'
+			NAME	"Route 1"
+			ROUTE
+			JOIN	XOR
+		END_ACTIVITY
+		// <Insert Transition Information List>
+		TRANSITION	't_13'
+			FROM	'Decline_Sales_Order'
+			TO	'R_1'
+		END_TRANSITION
+		
+	END_WORKFLOW
+	
+	WORKFLOW	'Suspend_until_Release'
+		CREATED	1998-07-15
+		NAME	"Suspend until Release"
+		DESCRIPTION	"The workflow - after some delay - polls for release, using an automatic Activity"
+		
+		ACTIVITY	'R_1'
+			NAME	"Route 1"
+			ROUTE
+			JOIN	XOR
+		END_ACTIVITY
+		// <Insert Transition Information List>
+		TRANSITION	't_13'
+			FROM	'Decline_Sales_Order'
+			TO	'R_1'
+		END_TRANSITION
+		
+	END_WORKFLOW
+	
+	WORKFLOW	'At_the_Sales_Department'
+		CREATED	1998-07-15
+		NAME	"At the Sales Department"
+		DESCRIPTION	"Process for e.g. new orders -	 not further described here"
+		
+		ACTIVITY	'R_1'
+			NAME	"Route 1"
+			ROUTE
+			JOIN	XOR
+		END_ACTIVITY
+		// <Insert Transition Information List>
+		TRANSITION	't_13'
+			FROM	'Decline_Sales_Order'
+			TO	'R_1'
+		END_TRANSITION
+		
+	END_WORKFLOW
+
+END_MODEL

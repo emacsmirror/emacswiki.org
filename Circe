@@ -1,0 +1,49 @@
+=Introduction=
+
+Circe is yet another '''C'''lient for '''IRC''' in '''E'''macs
+
+Its homepage is at http://www.nongnu.org/circe/.
+
+[new]
+I love the lui interface stuff. This is just what I was looking for for a long time now.
+
+I will use it for my current project instead on reinventing the wheel again.
+
+=Installation=
+
+==On Gentoo GNU/Linux==
+
+There's an ebuild which checks out the current sources from CVS and installs them, so it's simply a matter of
+
+<pre>
+$ ACCEPT_KEYWORDS="~x86" emerge app-emacs/circe-cvs
+</pre>
+
+This ebuild installs a site file, too, so you don't have anything to do and circe is instantly available in your emacs (after a restart). To update circe, re-emerge circe-cvs.
+
+==Any other system==
+
+First copy the sources to some directory:
+<pre>
+cd ~/some/dir/
+cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/circe co circe
+</pre>
+
+Then add this directory to your emacs load-path and autoload circe by putting this into your ~/.emacs:
+<pre>
+(add-to-list 'load-path "~/some/dir/circe")
+(autoload 'circe "circe" "Connect to an IRC server" t)
+</pre>
+
+To update the sources do
+<pre>
+cd ~/some/dir/circe/
+cvs up
+</pre>
+
+= Configuration =
+
+For a sample configuration have a look at the info documentation (info "(circe)Example Configuration") or its [http://www.nongnu.org/circe/ homepage].
+----
+CategoryChatClient
+InternetRelayChat

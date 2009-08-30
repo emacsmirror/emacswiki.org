@@ -1,0 +1,17 @@
+The following page by ChristianCoseru explains how to do Sanskrit
+Unicode text processing:  It describes how to get your Emacs and LaTeX
+configured for processing Sanskrit in Unicode. The assumption is that
+you already have a more recent GNU/Linux distribution with Emacs, Mule and
+LaTeX/teTeX installed.
+
+* http://www.cofc.edu/~coseruc/unicode/
+* http://www.anu.edu.au/asianstudies/ahcen/coseru/unicode/ - this link appears to be dead.
+
+
+This page explains how to use emacs with the CSX encoding system for Sanskrit
+
+* ftp://bombay.oriental.cam.ac.uk/pub/john/software/fonts/csx_unix/README
+
+----
+CategoryInternationalization
+

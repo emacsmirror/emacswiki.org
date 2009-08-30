@@ -1,0 +1,49 @@
+<code>stock-quote.el</code> is a package by JohnWiegley for
+retrieving and displaying stock quotes, using the UrlPackage.
+
+: http://www.newartisans.com/johnw/emacs.html
+
+or if that page is down then from the wayback machine
+
+: http://web.archive.org/web/20060210095105/www.newartisans.com/johnw/Emacs/obsolete/stock-quote.el
+
+The author considers it obsolete, but the code may still be of
+interest for ideas on showing a quote in the mode line, updating
+periodically, and optional price change triggers.
+
+The web sites used by the two builtin retrieval methods have changed.
+Money Quick Quotes has gone away, and Quicken now merely redirects to
+Yahoo Finance.
+
+If you want to give the code a try, the following adds a Yahoo Finance
+retrieval (http://finance.yahoo.com),
+
+    (defun my-stock-quote-yahoo (ticker)
+      "Download a stock price using Yahoo Finance (CSV format)."
+      (require 'url)
+      (with-temp-buffer
+        (let (url-show-status)
+           ;; url prior to about 2002 leaves some headers as invisible
+           ;; text when reading http/1.1 chunked, workaround that by
+           ;; retrieving and matching the stock code
+           (url-insert-file-contents
+            ;; s=FOO is the stock, f=sl1 asks for stock and last price
+            (concat "http://quote.yahoo.com/d?f=sl1&s=" ticker))
+           (set-buffer-modified-p nil))
+        ;; yahoo gives "N/A" for an unknown ticker, which comes out as 0
+        ;; from string-to-number, maybe throwing an error would be better
+        (goto-char (point-min))
+        (re-search-forward (concat (regexp-quote ticker) "\",\\(.+\\)"))
+        (string-to-number (match-string 1))))
+    (custom-add-option 'stock-quote-data-functions 'my-stock-quote-yahoo)
+
+    (setq stock-quote-data-functions '(my-stock-quote-yahoo))
+
+The <code>global-mode-string</code> setup doesn't seem quite right if
+that variable is <code>nil</code>.  If you're using <code>M-x
+customize-variable stock-quote-in-modeline</code> then you might need
+
+    (setq global-mode-string (list ""))
+
+----
+CategoryFinancial

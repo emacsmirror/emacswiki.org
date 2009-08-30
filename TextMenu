@@ -1,0 +1,26 @@
+This page is about library <tt>[[textmenu.el]]</tt>, which lets you use the keyboard to access menus.
+
+See '''MenuAccessFromKeyboard''' for alternatives and more information.
+
+
+== Discussion ==
+
+We need a good replacement for `tmm' (`f10') which does not confuse the blind.
+A start is available as ##textmenu.el##.  Read the documentation for `define-key' and improve it.
+
+[new]
+Please define "confuse the blind." I need to know what people like or don't like about ##tmm.el## and ##textmenu.el##. I have copious amounts of free time and quite a great bit of interest in making this work. Personal itches: changing keymaps and losing the ability to `C-h k'. -- SachaChua
+
+
+== Bugs ==
+
+Bugs in textmenu.el:
+
+* Checkboxes not working -- '''Options''' menu, for example
+* Disabled entries not working -- '''Edit''' menu, for example
+* Keys not displayed -- use `where-is-internal' for that
+
+----
+CategoryKeys
+CategoryCode
+CategoryMenus

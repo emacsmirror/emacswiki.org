@@ -1,0 +1,229 @@
+GNU Eev provides e-script environment.
+
+What is an e-script exactly ? Simple plain old ascii text files
+holding commands (shell or not) and EmacsLisp commands (hyperlinks).
+
+What would it be useful for ?
+
+* replaying recorded shell "sessions"
+* refering to other documents (other text files, info, man, URL, mail,
+  whatever, ...)
+* demoing
+* insert your hint here <<----
+
+The good thing with e-scripts is its format-independant nature
+allowing them to be embedded in any file: source code (like in
+litteral programming), documentations, ...
+
+http://angg.twu.net/#eev by EduardoOchs
+
+== Download ==
+
+Latest version is 0.95.1 released on 2006.
+
+Get it at http://angg.twu.net/eev-current.tar.gz
+
+== Documentation ==
+
+http://angg.twu.net/eev-article.html
+
+== Getting Help ==
+
+There are several channels to get help:
+
+- a mailing list at http://lists.nongnu.org/mailman/listinfo/eev
+- a CategoryIrc channel: #eev on freenode
+
+== Build a TOC for your files ==
+
+EevMode is a great tool to build table of contents of your files.
+
+Be sure of course to have Eev installed correctly,([http://angg.twu.net/eev-article.html]) 
+
+if you find `eev-mode' too invasive,
+
+(it can have some strange effect, like reverting versioned files with VC become impossible)
+
+you can set M-e globally, like that you can use eev links even when `eev-mode' is turned off.
+
+* set M-e Globally:
+
+<pre>
+
+(global-set-key (kbd "M-e") 'eek-eval-sexp-eol) 
+
+</pre>
+
+* Add at end of your file:
+
+<pre>
+
+;; Local Variables:
+;; eev-comment-prefix: ";"
+;; ee-anchor-format: "«%s»"
+;; End:
+
+</pre>
+
+<u>Note</u>: `eev-comment-prefix' is the comment string you use for this file (elisp ==> ;)
+
+To make the little green glyph, turn on `eev-mode', then hit M-,
+
+and at prompt enter < < or > >.
+
+(Of course you set `ee-anchor-format' as you want)
+
+<u>Now save your file, kill buffer and reopen your file.</u>
+
+Now when you write an entry like:
+
+;; «title-of-section» (to ".title-of-section")
+
+You are able to write an entry in your index at beginning of file like:
+
+;; «.title-of-section» (to "title-of-section")
+
+To write that, just write:
+
+;; title of section
+
+And then hit M-, (with the cursor on the line) using this code:
+
+* Code to tag eev entry in a file:
+
+<pre>
+
+(defun tv-eev-tag-entry ()
+  "Tag entry in file with eev glyph"
+  (interactive)
+  (if (and ee-anchor-format
+           eev-comment-prefix)
+      (let ((entry (replace-regexp-in-string (format "^[%s ]+"
+                                                     eev-comment-prefix)
+                                             ""
+                                             (thing-at-point 'line)))
+            (new-entry))
+        (setq entry (replace-regexp-in-string "\n" "" entry))
+        (setq new-entry (replace-regexp-in-string " " "-" entry))
+        (end-of-line)
+        (re-search-backward entry)
+        (delete-region (point) (line-end-position))
+        (insert (concat (format ee-anchor-format new-entry)
+                        " (to \"." new-entry "\")")))
+      (message "Did you forget to set up ee-anchor-format and eev-comment-prefix?")))
+
+(global-set-key (kbd "C-M-,") 'tv-eev-tag-entry)
+
+</pre>
+
+
+So on one or the over link, when you hit M-e you will move to index or your entry.
+
+That's cool but if you have a file with hundred of lines and many entries , it will be a big work to
+
+write an index.
+
+* Write at the beginning of your file: (where you want your TOC)
+
+<pre>
+
+;; (tv-ee-index-create)
+
+</pre>
+
+And eval it with M-e.
+
+It will create your index or update it if you made some changes in your file.
+
+* Here is the code of `tv-ee-index-create':
+
+<pre>
+(defmacro *string (str num)
+  "* a string with a number"
+  `(let ((str-lis))
+    (dotimes (n ,num)
+      (push ,str str-lis))
+    (mapconcat #'(lambda (i) i) str-lis "")))
+
+(defun tv-ee-index-create ()
+  "Create or update an index of all tagged entries found in file.
+Put the definition of function in comment at start of index
+and eval it with \"M-e\""
+  (flet ((create ()
+           (let ((entry-list nil)
+                 (new-entry nil)
+                 (start-pos)
+                 (end-pos))
+             (forward-line)
+             (insert (concat (*string eev-comment-prefix 4)
+                             (format ee-anchor-format "INDEX") "\n"))
+             (setq start-pos (point))
+             (while (not (eobp))
+               (forward-line 1)
+               (when (re-search-forward (concat (format "^%s*"
+                                                        eev-comment-prefix)
+                                                " *"
+                                                (format ee-anchor-format ".+")) nil t)
+                 (setq new-entry
+                       (replace-regexp-in-string (format "%s* *" eev-comment-prefix)
+                                                           ""
+                                                           (match-string 0)))
+                 (push new-entry entry-list)))
+             (setq entry-list (reverse entry-list))
+             ;; we have now a list with elmts like «elmt»
+             (goto-char start-pos)
+             (dolist (i entry-list)
+              (let ((new-entry (substring i 1 (1- (length i)))))
+                (insert (concat (*string eev-comment-prefix 3)
+                                " "
+                                (format ee-anchor-format
+                                        (concat "." new-entry))
+                                (concat " (to \""
+                                        new-entry
+                                        "\")"
+                                        "\n")))))
+             (setq end-pos (point))
+             (and (fboundp 'align-cols)
+                  (align-cols start-pos end-pos 3))
+             (insert "\n")
+             (insert (concat (*string eev-comment-prefix 3)
+                             "==UPDATE-EEV-BOUNDARY== ;; (Don't delete this line!)\n"))))
+         (update ()
+           (forward-line)
+           (let ((beg (point))
+                 (end))
+             (when (re-search-forward (format "^%s\\{3\\}==UPDATE-EEV-BOUNDARY==" eev-comment-prefix) nil t)
+               (end-of-line)
+               (setq end (point)))
+             (delete-region beg end)
+             (create))))
+    (let ((action))
+      (save-excursion
+        (if (re-search-forward (format "^%s\\{3\\}==UPDATE-EEV-BOUNDARY==" eev-comment-prefix) nil t)
+            (setq action 'update)
+            (setq action 'create)))
+        (when (and ee-anchor-format
+                   eev-comment-prefix)
+          (funcall action)))))
+
+
+</pre>
+
+<u>Note</u>: To have a nice index install http://www.emacswiki.org/emacs/align.el
+
+You should have now a file indexed like:
+
+Lisp:AnythingConfigThierryVolpiatto.el
+
+Have fun!
+
+-- ThierryVolpiatto
+
+----
+
+This page needs more informations to explain what it is useful for,
+etc.
+
+
+----
+CategoryHypermedia CategoryShell CategoryRegion CategoryProgrammerUtils CategoryModes CategoryMenus CategoryJournaling CategoryExternalUtilities CategoryHypermedia CategoryHelp

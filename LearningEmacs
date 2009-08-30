@@ -1,0 +1,36 @@
+This page provides tips for learning to use Emacs and learning more about Emacs. See also '''EmacsNewbie'''.
+
+Try the EmacsTutorial, or read one of the BooksAboutEmacs.
+
+Most people learn best by doing and not just by reading over a list of
+[[command]]s and trying to memorize them.  Get yourself a text file
+to play around with. Make a backup copy if you're nervous about
+losing it. But don't worry -- Emacs makes it
+hard to lose your work, and it has a great undo command: `##C-/##' or `##C-_##'.
+
+* Learn using Emacs's SelfDocumentation.
+
+* Learn with Emacs's AproposMode.
+
+* Read the EmacsManual in InfoMode (hypertext form).
+
+* Learn Emacs while you LearnEmacsLisp.
+
+* Watch EmacsScreencasts of how experienced users use Emacs.
+
+== Emacs-Lisp Libraries and Snippets that Can Help You Learn Emacs ==
+
+* Use [[EmacsNewbieWithIcicles|Icicles]] to explore [[key]]s, commands, variables, [[face]]s, [[buffer]]s, files, [[property list]]s,... that match a given pattern (name or [[regexp]]). Far more than AproposMode.
+
+* Use LaCarte to more easily explore Emacs menus.
+
+* Use the improved menu bar provided by [[HelpMenuBarPlus|MenuBarPlus]].
+
+* Use the improved Emacs help provided by HelpPlus.
+
+* Enable a random TipOfTheDay.
+
+
+----
+CategoryHelp CategoryDotEmacs
+

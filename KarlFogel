@@ -1,0 +1,24 @@
+KarlFogel uses Emacs.
+
+* IRC: [::kfogel]
+* [http://www.red-bean.com/kfogel/ Web page]
+* [http://www.rants.org/ Blog]
+
+He maintains these EmacsLisp libraries:
+
+* CVS:bookmark.el
+* CVS:mail-hist.el
+* CVS:saveplace.el
+
+His extensive DotEmacs is here:
+
+http://svn.red-bean.com/repos/kfogel/trunk/.emacs
+
+He also wrote the Emacs chapter of early versions of the //Linux Bible// for Yggdrasil GNU/Linux.
+
+After contributing to [[CVS]] and writing the CvsBook, he joined !CollabNet to develop SubVersion. Based on his experiences there, he wrote //Producing Open Source Software: How to Run a Successful Free Software Project//.
+
+After a brief stint at Google in 2006, he decided to work full-time on copyright reform and founded [http://questioncopyright.org QuestionCopyright.org].  He has also worked for Canonical, Ltd.
+
+----
+CategoryHomepage

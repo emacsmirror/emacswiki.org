@@ -1,0 +1,32 @@
+The EmacsManual and other free manuals licensed under the GnuFreeDocumentationLicense that exercies the Invariant Section provisions have been deemed unfree by Debian and others.[http://home.twcny.rr.com/nerode/neroden/fdl.html][http://people.debian.org/~srivasta/Position_Statement.xhtml]
+
+The vote to remove GFDL licensed works with invariant sections from "main" and move them to the "non-free" section of Debian was passed on February 2006 (See [[2006-03-15]]).  Some outside of Debian were confused by the resulting decision and by the procedure to make the decision.[http://www.fsfe.org/en/fellows/greve/freedom_bits/debian_gnu_fdl_without_invariant_sections_is_free]  The general resolution included a second amendment (that was offered as "Choice 3" on the ballot) that argues the GFDL is not only free but that its disputed traits are comparable to features found in other licenses (original BSD, GPL) that are otherwise deemed "free" by Debian.
+
+Comments on the license should be made to the FreeSoftwareFoundation itself, join news:gnu.misc.discuss.  Comments on Debian's decision and its consequences should be directed to the debian-legal mailing list.
+
+For the Emacs-specific thread, refer to the archive of the [[debian-emacsen]] list.
+[http://lists.debian.org/debian-emacsen/2003/debian-emacsen-200305/msg00033.html]
+
+One suggestion to avoid confusion over the ''Debian-free'' Emacs package in Debian main is to move all of Emacs to non-free.[http://lists.debian.org/debian-emacsen/2006/10/msg00081.html]  This makes sense for technical reasons, since Emacs upstream doesn't want to hear about bug reports for distributions of Emacs that are missing the otherwise integrated documentation.[http://lists.debian.org/debian-emacsen/2006/10/msg00091.html]
+
+One result of the conflict between the Debian DFSG and GNU GFDL is that Debian packages the documentation separately from the rest of emacs.  Install these packages to get emacs including the manual:
+
+  emacs21 - The GNU Emacs editor
+  emacs21-bin-common - The GNU Emacs editor's shared, architecture dependent files
+  emacs21-common - The GNU Emacs editor's shared, architecture independent infrastructure
+  emacs21-common-non-dfsg - GNU Emacs shared, architecture independent, non-DFSG items
+
+For more about the GNU FDL, see:
+
+* http://www.gnu.org/licenses/why-gfdl.html
+
+Quote from the intro:
+
+: The GFDL is meant as a way to enlist commercial publishers in funding free documentation without surrendering any vital liberty. The "cover text" feature, and certain other aspects of the license that deal with covers, title page, history, and endorsements, are included to make the license appealing to commercial publishers for books whose authors are paid. To improve the appeal, I consulted specifically with staff of publishing companies, as well as lawyers, free documentation writers, and the community at large, in writing the GFDL.
+
+: At least two commercial publishers of software manuals have told me they are interested in using this license. The future is never a sure thing, but the GFDL looks like it has a good chance to succeed in shaping a social system where commercial publishers pay people to write commercial free manuals for free software.
+
+See also LegalMatters
+
+----
+CategoryDocumentation

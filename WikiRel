@@ -1,0 +1,16 @@
+WikiRel is a library that opens EmacsWiki pages using BrowseUrl or OddmuseMode.  It opens the page based on the current MajorMode or a MinorMode.
+
+Download the EmacsLisp library here:
+
+* Lisp:wikirel.el
+
+Here's a synopsis of how to use it.
+
+; `M-x wikirel-browse-major-mode': To browse the current major mode in a Web browser.
+; `M-x wikirel-browse-minor-modes': To list the current minor modes in a separate buffer and browse; any one of them in a Web browser.
+; `M-x wikirel-oddmuse-major-mode': To view the current major mode in Oddmuse mode.
+; `M-x wikirel-oddmuse-minor-modes': To list the current minor modes in a separate buffer and view any one of them in Oddmuse mode.
+
+
+----
+CategoryHypermedia

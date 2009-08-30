@@ -1,0 +1,30 @@
+Whitespace in HTML documents has no effect on what browsers display, so you can add indentation freely in the source to make it look nice when editing.
+
+Starting with Emacs 22, the builtin HtmlMode and SgmlMode have some indentation based on tag structure, done with the usual Tab commands (see IndentationBasics).  To set the indentation level of HTML, add a hook that changes `sgml-basic-offset'.
+
+    (add-hook 'html-mode-hook
+        (lambda ()
+          ;; Default indentation is usually 2 spaces, changing to 4.
+          (set (make-local-variable 'sgml-basic-offset) 4)))
+
+SGML mode can also guess the indentation of an opened file with `sgml-guess-indent' if it is added in a hook.
+
+    (add-hook 'sgml-mode-hook
+        (lambda ()
+          ;; Default indentation to 2, but let SGML mode guess, too.
+          (set (make-local-variable 'sgml-basic-offset) 2)
+          (sgml-guess-indent)))
+
+With Emacs 21 and earlier, plain HtmlMode didn't have any special indentation, Tab was just `indent-to-left-margin'.  You can set `indent-line-function' to something better.   One interesting alternative might be `indent-relative':
+
+    (add-hook 'html-mode-hook
+              (lambda ()
+                (setq indent-line-function 'indent-relative)))
+
+The default list of tab stops for `indent-relative' are stored in the variable
+`tab-stop-list'.  If you want to change these, see TabStopList.
+
+A number of the other HTML, SGML and XML related modes also have some indentation support, including HtmlHelperMode, NxmlMode and [[nXhtml]]. With the latter you can also indent a mix of other modes in the same file.
+
+----
+CategoryIndentation

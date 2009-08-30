@@ -1,0 +1,87 @@
+Disclaimer: Prego voler notare che ErBot è lungi dall'esser completo, grezzo in molte parti, e non pronto per essere rilasciato. :). In ogni caso, se vuoi installarlo e metterlo in qualche canale qui ci sono delle istruzioni che potrebbero esserti utili.
+----
+
+Avvisatemi se ci sono dei "passi" mancanti o qualcosa è incompleto, inoltre sentitevi liberi di modificare qualunque cosa in questa pagina. -- DeepakGoel
+
+=== Nota del traduttore: === durante la lettura incontrerete delle scritte simili a questa su->miobot, ciò vuol dire che dovete cambiare utente col comando "su" e l'utente è miobot
+
+= Installazione di base =
+
+Gli esperti noteranno di certo che non tutti i "passi" non sono necessari, sono stati scritti per aiutare i nuovi utenti di emacs. Il carattere ~ è riferito a /home/miobot .
+
+* Installa emacs con: apt-get -u install emacs21. (nota che ErBot non è stato testato con altre versioni di emacs, che io sappia)
+
+* Installa ERC (su->root e poi: apt-get -u install erc, o se sai come fare ottienilo via CVS).
+
+* Installa BBDB: apt-get -u install bbdb.
+
+* adduser miobot, e su->miobot. Aggiungi le directory appropriate. Eccole di seguito:
+
+* su->miobot, cd ~, mkdir elisp, mkdir public_html, ln -s public_html pub,
+
+* mkdir ~/public_html/data, mkdir ~/.url, touch ~/.emacs.private.
+
+* Opzionalmente, assicurati che i programmi wget (usato per far imparare al bot) e fortune siano installati nella tua macchina.
+
+* Ottieni tutti i file .el e il README da http://gnufans.net/~deego/pub/emacspub/lisp-mine/erbot/dev/ e copiateli in ~/elisp/erbot/, NON usare lynx per salvare le pagine, prova invece wget :)
+
+* su->miobot, ottieni il file http://gnufans.net/~mybot/dotemacs-mybot e rinominalo in ~/.emacs
+
+* Ti consiglio di inizializzare il datafile del tuo bot basandoti sull'esempio provvisto a: http://gnufans.net/~mybot/data/botbbdb , in altre parole: basta copiarlo in ~/pub/data/botbbdb. L'esempio contiene alcuni aiuti che gli utenti potrebbero trovare utili.
+
+* Congratulazioni! Il tuo bot è pronto. su->mybot, entrate in emacs e fatelo partire con:
+** f5 f1
+** Control-C j SPAZIO
+** ESC x erbot-join-servers INVIO
+** M-x erbot-join-servers INVIO
+
+Erbot può usare google. Volete usare google?
+
+* Scrivi a google e richiedi una license-key e un permesso per il tuo bot per utilizzare google. Dai un occhiata a http://www.google.com/apis/ . Metti la license key in ~/.emacs.private, tipo questa:
+
+ (setq google-license-key "foodfhjdkjdfkMYLicensekeylkfgnjkfgkjfkj")
+
+* Ottieni google.el and soap.el da http://gnufans.net/~deego/pub/emacspub/site-lisp/ e mettili in ~/elisp/.
+----
+
+= Insegnare al bot =
+
+A cosa servirebbe un infobot se non conoscesse delle informazioni?. E' possibile insegnare al bot "parlandogli" ma non vorresti che imparasse da solo da delle wiki? Se vuoi fargli imparare in una wiki via ERC, qui ci sono delle istruzioni:
+
+* aggiungi le directory nel *tuo* account: mkdir ~/pub/, mkdir ~/pub/pub, mkdir ~/pub/pub/fsbot-train, mkdir ~/elisp, mkdir ~/elisp/erbot.
+
+* Installa w3m. (apt-get -u install w3m).
+
+* 
+
+* Se vuoi far dimenticare qualcosa al bot dai un occhiata a erbforget.el
+
+* 
+----
+
+= Altre personalizzazioni avanzate = 
+
+* .emacs.private è probabilmente il posto giusto per editare erbot-ignore-nicks, che è una lista di utenti a cui erbot non risponderà. Lo scopo principale è evitare che il bot finisca in loop infiniti con altri bot :)
+
+* Dai un occhiata al .emacs del bot, ci sono cose utili "confinate" a f6 f6. Ciò aiuta a tener traccia dei canali in cui il bot deve rispondere a qualcosa, (che risponda o no è un altro problema). Premendo f6 f7 la lista viene "resettata".
+
+* Aggiungi le funzioni (fs-foo) a .emacs per incrementare il vocabolario del bot. Per disabilitare una funzione preesistente (fmakunbound 'fs-foo) dovrebbe funzionare. Contattatemi se non dovesse funzionare.
+
+* Questo potrebbe essere utile. Alla fine di .bashrc del bot, umask 022. Aggiungi te stesso al gruppo del bot, col comando: adduser utente miobot. Inoltre su->miobot e "chmod -R -g+rw .".
+
+Slogga e riloga, ora tu (l'utente) dovresti essere in grado di editare i file .emacs, etc del bot senza dover cambiare utente in miobot.
+
+* Ora sarebbe bene che tu, l'operatore del bot, imparassi a modificare i datafile del bot (Il manuale è su ErBot), puoi inoltre editarli più facilmente andando sull'emacs del bot e digitando M-x bbdb ... se sai come fare...
+
+----
+
+= Altri aiuti = 
+
+Entra in irc nel server: irc.freenode.net (porta 6667) e poi "joina" nel canale #emacs e cerca deego (L'autore di Erbot's) o comunque qualcunaltro che possa aiutarti. Oppure manda una email a: deego@gnufans.org (in inglese).
+----
+
+Traduzione in italiano a cura di: Tr3 (tr3@6deex.net)
+
+Potete trovare il documento originale su: ErBot Installation Manual
+----
+ErbotInstallation ErBot 

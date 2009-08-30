@@ -1,0 +1,48 @@
+Summary buffer is the buffer you enter when you press either RET or SPACE or click the middle mouse button onto a group of the GroupBuffer.
+It shows you a list of all messages of the selected group. Here you can see which messages are new, read, unread, etc...
+
+
+Here are a couple of handy shortcuts:
+
+* f : post a followup 
+* F : post a followup and include original text (quoted)
+
+* r : reply by mail
+* R : reply by mail and include original text (quoted)
+
+* a : send a message (mail or news)
+* m : send a mail
+
+What if you want to followup AND reply at the same time?
+First press F to followup, then press C-c C-t to insert the email address of the original author.
+
+To leave the summary buffer press simply q or c if you also want to catchup (mark read) the messages in the summary buffer.
+
+You can customize the way you want it to present you things.
+
+=== Thread Display ===
+
+You can use the <code>%B</code> in the <code>gnus-summary-line-format</code> to have display complex trn-style thread tree.  See GnusTreeImage for an example. The nice arrows can be obtained by setting <code>gnus-sum-thread-*</code>. For example :
+
+    (setq gnus-sum-thread-tree-root "\x4912f "
+      gnus-sum-thread-tree-single-indent "\x4912e "
+      gnus-sum-thread-tree-leaf-with-other "\x4903c\x49020\x490fa "
+      gnus-sum-thread-tree-vertical "\x49022"
+      gnus-sum-thread-tree-single-leaf "\x490b0\x49020\x490fa ")
+
+Debian has the terminus fonts which is a very nice monospace font. The font is available in different encoding including <code>ibmpc-cp437</code>. That was font shown in the above image.
+
+[new]
+I want to start emacs like:
+
+    emacs21 -font terminus-iso8859-1-16
+
+and then change the <code>gnus-summary-*-face</code> to use <code>ibmpc-cp437</code> encoding but I could find any way to that. I gave up and start emacs as:
+
+    emacs32 -font terminus-dos-437-16
+
+Anyone know how to change the encoding for just a face? --LinhDang
+
+
+----
+CategoryGnus GnusBuffer

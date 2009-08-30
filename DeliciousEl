@@ -1,0 +1,67 @@
+== Status Update ==
+
+The project is still "alive" but is in the midst of a massive revision. It probably won't work for you right now due to changes in the del.icio.us API. The new version will be announced here, and the instructions will be revised accordingly. Try it though -- basic things like posting are probably working, and other functionality is gradually being restored. Please report bugs below on this page or to JohnSullivan.
+
+== What is that ? ==
+
+This is a complete set of functions for interacting with <http://del.icio.us>,
+a "social bookmarking" project written and maintained by Joshua Shachter.
+
+(quote taken from original README file)
+
+== Author(s) ==
+
+DeliciousEl is by JohnSullivan
+
+== Get it ==
+
+You can download the code via git (The repository is browsable at http://wjsullivan.net/git/?p=delicious-el.git;a=summary).
+
+ git clone http://git.wjsullivan.net/delicious-el.git
+
+The canonical home page for the project is http://wjsullivan.net/delicious-el.html.
+
+== Setup ==
+
+* Install files into your LoadPath
+* Add these lines into your .emacs file
+
+  (require 'delicious)
+
+That's all!
+
+== Use it ==
+
+DeliciousEl provides several functions to play with but the main entry point is to post links.
+
+So, using it is as simple as doing 
+
+ M-x delicious-post
+
+Just follow instructions.
+
+Instead of doing this call you would rather use keybindings. Here is one from the README file :
+
+ (global-set-key "\C-cp" 'delicious-post)
+
+== Bugzilla & known issues ==
+
+* HTTP errors
+
+Previously, it was not uncommon for the del.icio.us server to be
+temporarily unavailable. delicious-el should report any specific
+errors it receives. If you want more information, check the contents
+of the ##*delicious output*## buffer. Errors with the server are very
+often temporary. You can resubmit your post by doing C-x ESC ESC (the
+default binding for repeat-complex-command) and using the up arrow to
+move back to the delicious-post command in your history, and hitting
+enter. If you are still getting a server error, then you can use
+delicious-post-offline to save the post to your cache. Later on, use
+delicious-post-cache to send the post to the server.
+
+----
+CategoryInterface
+
+
+
+

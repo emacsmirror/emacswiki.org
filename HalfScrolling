@@ -1,0 +1,83 @@
+By default Emacs scrolls nearly full screenfuls with <code>scroll-up</code> and <code>scroll-down</code>. I personally would like it to scroll half a page at a time, but unfortunately haven't been able to figure out how to do it cleanly.
+
+There is a <code>next-screen-context-lines</code> variable which controls how many lines of continuity should be preserved when scrolling by screenfuls. The problem at hand could be solved by setting this variable to <code>window-height/2</code>, but obviously it should be calculated every time the <code>next-screen-context-lines</code> is used because <code>window-height</code> is not constant.
+
+The only working solution I came up with is the following sucky hack. It's still better than nothing, so here it comes:
+
+   (defun window-half-height ()
+     (max 1 (/ (1- (window-height (selected-window))) 2)))
+   
+   (defun scroll-up-half ()
+     (interactive)
+     (scroll-up (window-half-height)))
+   
+   (defun scroll-down-half ()         
+     (interactive)                    
+     (scroll-down (window-half-height)))
+   
+   (global-set-key [next] 'scroll-up-half)
+   (global-set-key [prior] 'scroll-down-half)
+
+Otherwise this would work well, but when <code>scroll-preserve-screen-position</code> is true, it doesn't actually preserve the point screen position. It would preserve it if <code>next-screen-context-lines</code> was set to <code>(window-half-height)</code> and no arguments were given to <code>scroll-up/down</code>.
+
+Hopefully someone who actually knows (e)lisp (I don't) comes up with a better solution.
+
+== Solution With defadvice ==
+Such a problem could be solved using defadvice but I think that is even uglier than the previous approach.  The trick is to recalculate the value of next-screen-context-lines before actually performing the function.
+
+    (defadvice scroll-up (around half-window activate)
+      (setq next-screen-context-lines
+            (max 1 (/ (1- (window-height (selected-window))) 2)))
+      ad-do-it)
+
+and the appropriate for scroll-down...
+
+(please note that I did not test this thoroughly...please remove this note whenever this code was tested)
+
+== Another Possibile Solution ===
+I bind this to shift-space. It's main feature is that your attention always goes to two fixed locations on the screen so as to avoid dizzy feelings (exceptions when you are at the top or bottom of buffer). -- MaverickWoo
+
+  (defvar scroll-half-window-was-up nil "Was the last half-scrolling going up?")
+  (defun scroll-half-window ()
+    "By default, attention go forward by half a window as follows:
+  If point is in upper half of window, then point jumps to lower half.
+  (current line will change)
+  If point is in lower half, the scroll up to make point in upper half.
+  (current line will not change)
+
+  But if the last command is a member of `up-command-list', then reverse.
+
+  Consecutive invocation maintains in the same travel direction.
+  Works especially well with modes that highlight the current line.
+
+  The actual destinations of the point are controlled by `upper-precent' and
+  `lower-percent'."
+    (interactive)
+    (let* ( ;;manually set these personal preferences
+           (upper-percent 0.15)
+           (lower-percent 0.85)
+           (up-command-list '(previous-line
+                              scroll-down
+                              pager-page-up))
+           ;; number of lines shown in selected window, one less due to mode line
+           (winlines (1- (window-height (selected-window))))
+           ;; number of lines above and below point
+           (above (+ (count-lines (window-start) (point))
+                     -1 (if (= (current-column) 0) 1 0)))
+           (below (- winlines above 1)))
+      ;; compute if we should go up or not
+      (let ((should-up (or (and scroll-half-window-was-up
+                                (eq last-command 'scroll-half-window))
+                           (memq last-command up-command-list))))
+        ;; dispatch depending on whether point is in upper half or lower half
+        (if (< above below)
+          (apply (if should-up 'scroll-down 'forward-line) ;upper
+                 (list (- (floor (* winlines lower-percent)) above)))
+          (apply (if should-up 'forward-line 'scroll-down) ;lower
+                 (list (- (floor (* winlines upper-percent)) above))))
+        ;; done, remember last direction before exit
+        (setq scroll-half-window-was-up should-up))))
+
+  
+----
+CategoryDisplay

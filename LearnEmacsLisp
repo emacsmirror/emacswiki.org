@@ -1,0 +1,34 @@
+EmacsLisp is for [[EmacsNewbie]]s too. Learning Emacs Lisp will log hours into learning to use the Emacs interface.  Lisp is the language that much of Emacs is written in, and it is also the language that you can use to [[Customize|customize]] and extend Emacs for your own use.  Also, Emacs Lisp is the best supported programming language in Emacs -- save for maybe the C programming language.  Learning to use Emacs's cababilities for Emacs Lisp will likely help with other programming you wish to do in Emacs.
+
+"'''''So what?'''''", you say? You are a newbie, and, besides, you just want to ''use'' Emacs -- you don't care to extend it! Right?
+
+''Wrong!'' You might not care to customize or extend Emacs, but the fact is that if you ''learn'' a little about Emacs Lisp, your use of Emacs will be ''much'' more effective. Why?
+
+* You will better understand the documentation and online help for functions and variables.
+* You will be able to consult the Lisp source code for a function or variable, in order to understand it still better.
+* You will be able to convert common [[key sequence]]s you use into, first, [[keyboard macro]]s, and second, your own [[command]]s (defined in Lisp).
+* You will be able to steal snippets of code from the standard source code or off the Web, and adapt them to create your own Emacs commands.
+* You will be able to make Emacs fit your needs and fancies.
+* You will be able to attract better guidance (and/or commiseration) from fellow Emacs users.
+
+Learning a little Emacs Lisp is not that hard. Emacs does its best to help you learn its lingua franca. So, ''how'' can you learn Emacs Lisp?
+
+* Use `C-x ESC ESC' to repeat [[command]]s you execute, and look at the Emacs-Lisp code that executes them, before hitting `RET' (Return) -- see RepeatLastCommand.
+* Use `C-h f' (`describe-function') and `C-h v' (`describe-variable') to understand commands and [[variable]]s you use. In the help description, click the function or variable name (link) to go directly to the source code that defines it. Try to read the source code. When you want to know what some function you see used does, use `C-h f' on it... Got it?
+* Use `C-h k' to see which commands you are executing when you use [[key]]s. Then follow the previous bullet: click the name (link) of the command to see its source code...
+* Read the ''Emacs Lisp Introduction'': EmacsLispIntro. Use `C-h i', then choose `Emacs Lisp Intro'.  You can also read this manual [[http://www.gnu.org/software/emacs/emacs-lisp-intro/ on the Web]].
+* Read the ''Emacs Lisp Reference'' manual: EmacsLispReference. Use `C-h i', then choose `Elisp' (Emacs Lisp is sometimes called "Elisp"). You can also read this manual [[http://www.gnu.org/software/emacs/elisp-manual/ on the Web]].
+* SteveYegge's intro to the language: [http://steve-yegge.blogspot.com/2008/01/emergency-elisp.html]
+* Mitch Fincher's 50-point summary of the language: [http://www.fincher.org/tips/Languages/Emacs.shtml]
+* Pascal Costanza'a intro to Lisp (in general, not Emacs Lisp):
+[http://p-cos.net/lisp/guide.html]
+* Paul Graham's overview of Lisp (in general, not Emacs Lisp):
+[http://www.paulgraham.com/rootsoflisp.html]
+* Paul Graham's book ''ANSI Common Lisp'', chapter 2 (Common Lisp, not Emacs Lisp):
+[http://lib.store.yahoo.net/lib/paulgraham/acl2.txt]
+* Peter Seibel's book ''Practical Common Lisp'' (Common Lisp, not Emacs Lisp):
+[http://www.gigamonkeys.com/book/]
+
+----
+CategoryCode
+CategoryHelp

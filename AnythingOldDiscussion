@@ -1,0 +1,436 @@
+== Development ==
+
+Currently anything is a moving target and is being developed fast.  It seems that the developers use a quite recent Gnu Emacs which leads to problems with older versions of Gnu Emacs as well as with XEmacs.  Are there any proposals on how compatibility could be achieved?  Just yesterday evening I spent a few hours on anything and anything-config to make them work with older Gnu Emacsen and today the target already moved on ;-)  --.StefanKamphausen
+
+[new]
+I don't expect too many radical changes in the near future, because I'll have less time working on Anything, so you can try again. ;)
+
+BTW, I only want to support older Emacsen if it can be done with a few small changes. I see no reason to do extensive changes to support them when there is stable Emacs 22. I rather concentrate on new functionality and bugfixes. --TamasPatrovics
+
+[new]
+BTW, you don't have to port your changes always to the newest version. I think you could stick to an older one until it works and then see what was changed since then. anything.el changes are usually isolated, so this approach should work. --TamasPatrovics
+
+== Implemented Proposals for anything.el ==
+
+Put newly implemented proposals first. Old ones will be deleted after a while.
+
+=== (DISPLAY . REAL) pairs ===
+
+[new]
+It would be cool if it were possible for an action to get back data associated with the displayed string. So, if the candidates looked like this:
+
+<pre>
+'(("Home sales low" . "http://news.bbc.co.uk/1/hi/business/7604592.stm")
+  ("'Astonishment' at terror verdicts" .
+   "http://news.bbc.co.uk/1/hi/uk/7605583.stm"))
+</pre>
+
+Anything would use `car' of the list to display choice to the user and hand the `cdr' to the action associated with the candidates. -- [[PhilJackson]]
+
+[new]
+
+Do you know about `candidate-transformer' and `(DISPLAY . REAL)' pairs? I think they can do what you want. -- TamasPatrovics
+
+[new]
+
+Thanks. Sounds very plausible, I'll have a play at home when and if this working day ever finishes.
+
+
+=== anything-completing-read ===
+
+I believe the snippet below will make it easier for me to use the Anything interface in my code:
+
+<pre>
+(defun anything-completing-read (prompt choices)
+  "Like completing-read and ido-completing-read, but using the
+  Anything interface, which may be better when dealing with long
+  lines."
+  (let* ((source (list (cons 'name prompt)
+                       (cons 'candidates choices)
+                       (cons 'action 'identity)))
+         (anything-sources (list source)))
+    (anything)))
+</pre>
+
+-- [[hsuh]]
+
+Implemented! -- [[rubikitch]]
+
+=== Use symbol in anything-sources ===
+I think anything-sources should be allowed symbol of source variables.
+<pre>
+(defun anything-get-sources ()
+  "Return `anything-sources' with the attributes from
+  `anything-type-attributes' merged in."
+  (mapcar (lambda (source)
+            (let* ((source (if (listp source)
+                               source
+                             (symbol-value source)))
+                   (type (assoc-default 'type source)))
+              (if type
+                  (append source (assoc-default type anything-type-attributes) nil)
+                source)))
+          anything-sources))
+</pre>
+
+-- [[Sugawara]]
+
+Added! -- [[rubikitch]]
+
+
+=== Persistent Action Execution ===
+[new:rubikitch:2007-12-30 16:48 UTC]
+I use this command when I glimpse files(buffers, etc) without quitting anything.
+
+[http://www.rubyist.net/~rubikitch/archive/persistent-action.jpg screenshot]
+<pre>
+(defun anything-execute-persistent-action ()
+  "If a candidate was selected then perform the associated action without quitting anything."
+  (interactive)
+  (save-selected-window
+    (select-window (get-buffer-window anything-buffer))
+    (select-window (setq minibuffer-scroll-window
+                         (if (one-window-p t) (split-window) (next-window (selected-window) 1))))
+    (let* ((anything-window (get-buffer-window anything-buffer))
+           ;;(same-window-regexps '("."))
+           (selection (if anything-saved-sources
+                          ;; the action list is shown
+                          anything-saved-selection
+                        (anything-get-selection)))
+           (default-action (anything-get-action))
+           (action (assoc-default 'persistent-action (anything-get-current-source))))
+      (setq action (or action default-action))
+      (if (and (listp action)
+               (not (functionp action)))  ; lambda
+        ;; select the default action
+          (setq action (cdar action)))
+      (set-window-dedicated-p anything-window t)
+      (unwind-protect
+          (and action selection (funcall action selection))
+        (set-window-dedicated-p anything-window nil)))))
+</pre>
+
+-- [[rubikitch]]
+
+Added! -- [[rubikitch]]
+
+
+----
+
+Context:
+I always work with one frame & two or more windows. So when I call `anything' to act on the current window, it opens in another window so I have to turn my head, and then when it closes I have to turn my head back to the current window.
+
+Therefore I propose that `anything' be configurable to use the current window to display its buffer.
+
+To me it is more fluid & intuitive when working with several window. Because this way, you always look at the window you're working in, and never hide another window while doing `anything'.
+
+This would also give one window users more room to see the `anything' buffer I guess.
+
+Thanks again!
+-- SebastienRoccaSerra
+
+[new]
+
+Done. See option `anything-samewindow'. --TamasPatrovics
+
+[new]
+Great! I wasn't sure it would be judged emacs-like enough or usefull enough to be implemented. Thanks!
+-- SebastienRoccaSerra
+
+----
+
+I propose that ##anything## bury its buffer on user decision or cancelation.
+
+Context: I try to use ##anything## for everything.
+
+Problem: most of the time when I kill a buffer (with ##C-x k## or with ##anything##), I fall back on the ##*anything*## buffer.
+
+Thanks for ##anything##!
+
+-- SebastienRoccaSerra
+
+Already done. -- [[rubikitch]]
+
+----
+
+isearch or `icicle-narrow-candidates'-like search refinement
+
+--[[rubikitch]]
+
+Use Lisp:anything-match-plugin.el -- [[rubikitch]]
+
+----
+
+[new]
+Could the face used for `anything-selection-overlay' get pulled out into a ##defvar##.  Then I could specify something other then ##'highlight##.  -- DaveS
+
+Implemented! -- [[rubikitch]]
+
+
+
+== Implemented Proposals for anything-config.el ==
+
+Put newly implemented proposals first. Old ones will be deleted after a while.
+----
+
+=== Create Buffer ===
+
+[new:AndyStewart:2009-02-24 13:45 UTC]
+This source have add in Lisp:anything-config.el -- AndyStewart
+
+Hi, I use `anything' for almost everything, but I still needed "C-x b" (`switch-to-buffer') when I wanted to create a new buffer. No more: here's my proposal that enables buffer creation in `anything'.
+{{{
+(defvar anything-c-source-buffer-not-found
+  '((name . "Buffer Not Found")
+    (candidates
+     . (lambda ()
+         (unless (member anything-input (mapcar 'buffer-name (buffer-list)))
+             (list (cons (concat "Create buffer "
+                                 "'" anything-input "'")
+                         anything-input)))))
+    (action . (("Create Buffer" . switch-to-buffer)))
+    (requires-pattern . 1)
+    (volatile)))
+}}}
+Now, I can bind "C-x b" to `anything'!
+
+Note: maybe it can be achieved in a better way?
+-- SebastienRoccaSerra
+
+[new]
+Hi Sebastien.  You can do it better.  Hack the normal buffer source that it adds a "*Create Buffer*" entry if no buffers are found.  See the BBDB source for an example.  If no contacts match the pattern a new "*Add new Contact*" entry is added automatically. --TassiloHorn
+
+[new:rubikitch:2007-12-28 04:02 UTC]
+<pre>
+(setq anything-c-source-buffer-not-found
+  '((name . "Buffer Not Found")
+    (candidates "buffer not found")
+    (filtered-candidate-transformer
+     . (lambda (candidates source)
+         (unless (get-buffer anything-input)
+             (list (cons (concat "Create buffer "
+                                 "'" anything-input "'")
+                         anything-input)))))
+    (type . buffer)
+    (requires-pattern . 1)
+    (volatile)))
+</pre>
+
+My idea is here. Because creating new buffer by hand is rare, I think popping up "*Create Buffer*" entry is embarrassing. -- [[rubikitch]]
+
+
+----
+=== Bookmarks ===
+anything-source-bookmarks seems to be broken because of anything.el's incompatible change. -- [[rubikitch]]
+
+[new]
+As I don't use this source, could you try to fix it? --TassiloHorn
+
+[new]
+My mistake, maybe. From when I originally suggested the bookmark source I did not notice that `bookmark-all-names' wasn't available upon Emacs startup. You need to require bookmark.el. I think this can be done using `init':
+
+ (defvar anything-c-source-bookmarks
+   '((name . "Bookmarks")
+     (init . (lambda ()
+               (require 'bookmark)))
+     (candidates . bookmark-all-names)
+     (action . (("Jump to Bookmark" . bookmark-jump))))
+   "See (info \"(emacs)Bookmarks\").")
+
+-- MaDa
+
+[new]
+Ok, added. --TassiloHorn
+
+----
+
+=== Imenu Integration ===
+
+* Needs to switch back to the buffer from where anyting was invoked or needs to iterate over all open buffers
+* Could be something similar to this:
+
+<pre>
+   ((name . "IMenu")
+    (candidates . (lambda ()
+                    (mapcar 'car (imenu--make-index-alist))))
+    (action . (lambda (c)
+                (goto-char (marker-position c)))))
+</pre>
+but this is just a beginning.
+
+[new]
+I added it, but with my version of emacs (22.1.50) ##imenu--make-index-alist## returns a list that has a different structure which makes no sense with your implementation. Also, adding this source can only be done locally in a hook, because it only works for buffers with source code. I suggest to take it out again because it's more confusing then useful in general. --TassiloHorn
+
+:: Agreed.  I had similar problems that's why I came up with the walking of the full buffer list.  Take it out unless someone comes up with a clean solution -- StefanKamphausen
+
+::: Bill Clementson did some fixes on that source. At least it seems to work for him, so I let it in... --TassiloHorn
+[new]
+
+[new:rubikitch:2007-12-25 10:56 UTC]
+I found a bug about anything-c-source-imenu and adaptive sort. This version will fix it. I use Emacs22.
+
+<pre>
+(setq anything-c-source-imenu
+  '((name . "Imenu")
+    (init . (lambda ()
+              (setq anything-c-imenu-current-buffer
+                    (current-buffer))))
+    (candidates . (lambda ()
+                    (condition-case nil
+                        (with-current-buffer anything-c-imenu-current-buffer
+                          (mapcar (lambda (x)
+                                    (cons (car x) (cons (car x) (marker-position (cdr x)))))
+                                  ;; leave only top level completions for
+                                  ;; simplicity (could be more sophisticated)
+                                  (remove-if-not (lambda (x)
+                                                   (markerp (cdr x)))
+                                                 (imenu--make-index-alist))))
+                      (error nil))))
+    (volatile)
+    (action . imenu)))
+</pre>
+
+-- [[rubikitch]]
+
+[new:rubikitch:2008-01-06 18:01 UTC]
+Improved version is in AnythingSources. -- [[rubikitch]]
+
+----
+
+=== locate in home directory ===
+
+Thank you! But "--" is needed for input-string such as (string-match "^-" input-string).  -- [[rubikitch]]
+
+[new]
+At least for slocate-3.1 that would break things. The ##-r## option has to be followed by the regular expression. If I add the ##--## I really don't understand the results. But I'll change the source so that all options can be configured.
+
+Done! --TassiloHorn
+[new]
+I had to apply the following patch to anything-config.el to make <code>locate</code> work on my machine (<nowiki>WinXP</nowiki> + Cygwin) working again:
+<pre>
+@@ -378,8 +364,8 @@
+
+ (defvar anything-c-locate-options (if (eq system-type 'darwin)
+                                       '("locate")
+-                                    '("locate" "-i " "-r"))
+-  "A list where the `car' is the name of the locat program
++                                    '("locate" "-i" "-r"))
++  "A list where the `car' is the name of the locate program
+ followed by options.  The search pattern will be appended, so the
+ \"-r\" option should be the last option.")
+</pre>
+
+--ClausKlingberg <code>Fri Aug 17 17:48:07 WEST 2007</code>
+[new]
+
+----
+
+anything-source-complex-command-history and command-history
+
+anything-source-complex-command-history should put the repeated complex command to the beginning of command-history, otherwise an often repeated command can drop out of command-history if it gets truncated. --TamasPatrovics
+
+[new]
+
+Done! (as transformer for the ##sexp## type) --TassiloHorn
+
+
+----
+
+== Bug Reports ==
+
+=== Frame Title no more updated after leaving Anything for the 1st time ===
+Context:
+
+- I use version #72 of <code>anything.el</code> and version #45 of <code>anything-config.el</code> (august 29th, EmacsWiki version numbers)
+
+- I use [[EmacsW32]], and I use the frame title to display the current window buffer's file location with this code in my <code>.emacs</code>:
+{{{
+(setq frame-title-format
+      (concat "%b %+ (%f) - " invocation-name))
+}}}
+
+Problem:
+
+- After I leave `anything' for the first time, the frame title is no more updated. Eg. if I start in the <code>*scratch*</code> buffer, and then enter and leave `anything', the frame title still points to <code>*scratch*</code> even when I switch to another buffer or window.
+
+Notes:
+
+- While I am still inside `anything' for the first time, the frame title is still updated when I switch windows (eg. from the minibuffer to the <code>*anything*</code> buffer. Then I have the problem after I leave (by executing any action or using "C-g").
+
+- This also happens when not using <code>anything-config.el</code>
+
+- This also happens with <code>anything.el#60</code> (august 7th - I could not roll back farther in the EmacsWiki).
+
+- This does not happen in a version I had archived on July 31st.
+
+Thanks, I use Anything a lot!
+
+[new]
+
+Yes, I too noticed it a while ago and it bothers me, but I have no idea what causes it. Any tip? -- TamasPatrovics
+
+[new:DrewAdams:2007-08-29 21:07 UTC]
+It should not have anything to do with this, but do you still have the problem if you set `fit-frame-inhibit-fitting-flag' to `t'? Frame-fitting should not change the frame title, and a visual inspection of the <tt>[[fit-frame.el]]</tt> code confirms this, but it would be good if you would confirm that changing that flag has no effect. 
+
+AFAIK, there are only two places where Anything does anything with frames: (1) it fits the frame, if you have `fit-frame-inhibit-fitting-flag' set to `nil', and (2) it saves and restores the frame configuration. 
+
+If the frame-config save & restore is what is causing this, then there is probably an Emacs bug. If the frame-fitting is causing this, then I'll take a look at the frame-fitting code. Thanks. -- DrewAdams
+
+[new]
+Ok, I tested Drew's tips and here's my report.
+
+1. I tried setting `fit-frame-inhibit-fitting-flag' to `t', the bug is still there.
+
+2. In the function `anything', I commented the line
+{{{
+      (set-frame-configuration frameconfig)))
+}}}
+and it fixes the bug!
+
+3. Here's the diff of function `anything' between the July 31st working version and the August 7th non-working version:
+{{{
+@@ -645 +675 @@
+-  (let ((winconfig (current-window-configuration)))
++  (let ((frameconfig (current-frame-configuration)))
+@@ -653,0 +684 @@
++          (select-frame-set-input-focus (window-frame (minibuffer-window)))
+@@ -659 +690 @@
+-      (set-window-configuration winconfig)))
++      (set-frame-configuration frameconfig)))
+}}}
+
+4. So I applied
+{{{
+@@ -705 +705 @@
+-  (let ((frameconfig (current-frame-configuration)))
++  (let ((winconfig (current-window-configuration)))
+@@ -723 +723 @@
+-      (set-frame-configuration frameconfig)))
++      (set-window-configuration winconfig)))
+}}}
+to the current version (<code>anything.el#72</code>), and it fixes the bug (probably breaking other things, but it's a good hint).
+
+Thanks for the tips, cheers! -- SebastienRoccaSerra
+
+[new:DrewAdams:2007-08-30 15:35 UTC]
+That suggests that there is an Emacs bug. Saving and restoring the frame configuration should not change any frame titles. Please try to narrow this down to something repeatable starting from ##emacs -Q##, and report it to ##emacs-devel@gnu-org##. This appears to be general, independent of Anything. -- DrewAdams
+
+[new]
+Ok, done [http://lists.gnu.org/archive/html/emacs-devel/2007-08/msg01632.html here], & follow up [http://lists.gnu.org/archive/html/emacs-devel/2007-09/msg00205.html here] and [http://lists.gnu.org/archive/html/emacs-devel/2007-10/msg00324.html here].
+
+Thanks!
+-- SebastienRoccaSerra
+
+[new]
+Interface for xcscope.el and anything goes here. 
+
+[new]
+Good news! I upgraded to Emacs 23 ([[EmacsW32]], version 23.0.60.1): the bug is fixed in that version.
+-- SebastienRoccaSerra
+
+[new]
+Tip: I think it would be good if you also mention the date that is reported with /M-x version/.
+Just /EmacsW32, version 23.0.60.1/ is not enough.
+
+----
+[[Anything]]

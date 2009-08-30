@@ -1,0 +1,29 @@
+== large letters ==
+Emacs interfaces to Figlet, "a program for making large letters out of ordinary text."
+
+<pre>
+ ___
+| __|_ __  __ _ __ ___
+| _|| '  \/ _` / _(_-<
+|___|_|_|_\__,_\__/__/
+</pre>
+
+* http://www.figlet.org/
+* http://www.jave.de/figlet/fonts.html - zip of figlet fonts
+
+== two versions ==
+* http://www.shellarchive.co.uk/content/emacs.html - Philip Jackson
+** Given a prefix, a font can be chosen (C-u M-x figlet...)
+** Leaves no trailing space (including blank lines)
+** Provides several ways of inserting text:
+*** `figlet'
+*** `figlet-comment'
+*** `figlet-figletify-region'
+*** `figlet-figletify-region-comment'
+* http://www.figlet.org/figlet.el - Martin Giese
+
+Each small, each has their benefits. The Geise version handles parameters better, but dumps everything into a comment by default.
+
+
+== See Also ==
+BigFont

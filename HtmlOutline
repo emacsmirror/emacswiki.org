@@ -1,0 +1,256 @@
+The standard Emacs way of dealing with outlines in html documents
+is to use the header tags <h1>, <h2>, <h3>, and so on, as the
+headers.  In today's realm of HTML/CSS, outlines are typically
+represented using lists <ol> and <ul> as the heading tags are
+most often used for page layout in conjunction with CSS.  This page
+attempts to use Emacs' HTML outlining functions in a way which is
+harmonious with current HTML practices.  Allowing <ol> based
+outlines to be navigated, folded, and manipulated.
+
+==What works==
+
+===Nxml-Mode===
+
+[new]
+Perhaps you want to have a look at NxmlModeForXHTML?
+
+[new]
+NxmlMode is an almost ideal solution to this problem.  Two nxml
+variables must be set and a change is required to the outline,
+tags to surround a heading's title.
+
+Nxml looks for section and heading elements as parts of each
+outline entry.  The default settings appear to be for publisher
+DTDs and won't work for html.  Using LocalVariables is one way
+of setting them suitably.
+
+Here is an example file that works, using file local variables.
+
+    <?xml version="1.0" encoding="iso-8859-1"?>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    </head>
+
+    <body>
+    <p>Test list</p>
+
+    <ol class="visible" id="outline">
+    <li><div>first entry</div><ol>
+      <li><div>sub entry</div></li>
+      <li><div>sub list</div> <ol>
+        <li><div>third level</div>
+        <p>This is body text.</p>
+        </li>
+      </ol></li>
+      <li><div>last one</div></li>
+    </ol> </li>
+    <li><div>second header - first level</div></li>
+    </ol>
+
+    </body>
+    </html>
+
+    <!--
+        Local Variables:
+        mode:flyspell
+        nxml-section-element-name-regexp:"li"
+        nxml-heading-element-name-regexp:"div"
+        End:
+    -->
+
+The nxml-mode.info file documents the various functions available
+for folding outlines, and their key bindings.
+
+Predictably, I find the default key-bindings leave much to be desired.
+Here are some changes one could add to their .emacs file.  They are
+not completely satisfactory, nxml-outln.el will need some hacking
+to get what I want.
+
+    ; C-S-- I'd really rather see something that worked incrementally, first
+    ; hiding the body text, then the lowest level outline entries, then
+    ; the next level until everything under the current section is hidden
+    ; leaving only the current heading visible.
+    (define-key nxml-mode-map (kbd "C-_") 'nxml-hide-subheadings)
+    ; C-S-+ Same thing here really, incremental reveal is what I really want.
+    (define-key nxml-mode-map (kbd "C-+") 'nxml-show)
+    ;(define-key nxml-mode-map (kbd "C-+") 'nxml-show-subheadings)
+    ;(define-key nxml-mode-map (kbd "C-+") 'nxml-show-direct-subheadings)
+    ; C-S-1 Collapse outline to top level, except for the block containing the
+    ; point which is kept visible.  [nice feature]
+    (define-key nxml-mode-map (kbd "C-!") 'nxml-hide-other) ; C-S-1
+    ; C-S-2 Show outline expanded to level 2 [awol]
+    ; C-S-3 Show outline expanded to level 3 [awol]
+    ; C-S-4 Show outline expanded to level 4 [awol]
+    ; C-S-5 Show outline expanded to level 5 [awol]
+    ; C-S-6 Show outline expanded to level 6 [awol]
+    ; C-S-7 Show outline expanded to level 7 [awol]
+    ; C-S-8 Show outline expanded to level 8 [awol]
+    ; C-S-9 Show complete outline
+    ; [unfortunately, this does not un-hide outline entries]
+    (define-key nxml-mode-map (kbd "C-(") 'nxml-hide-all-text-content)
+    ; C-S-0 Show everything
+    (define-key nxml-mode-map (kbd "C-)") 'nxml-show-all)
+
+    ; These commands do not alter the folding state of what is
+    ; hidden and what is visible.
+    ; C-S-<up> Move point to beginning of entry / previous entry at same level
+    ; C-S-<down> Move point to next heading at same level
+    ; C-S-<right> Move point to the first child of this entry
+    ; C-S-<left> Move point to the parent entry
+
+    ; The following commands alter the outline it's self, they do
+    ; not change the folded state.  If a block is hidden, do not
+    ; consider it when deciding where to move the current block.
+    ; Move past it as if the hidden block did not exist.
+
+    ; C-M-S-<up> If the current block has a previous sibling
+    ;   block, then move the current block above the previous
+    ;   sibling.  Or, if the current block has no previous
+    ;   sibling block but it does have a parent block, then move
+    ;   the current block so that its parent block becomes its
+    ;   next sibling block.
+
+    ; C-M-S-<down> If the current block has a next sibling block,
+    ;   then swap the two blocks.  Or, if it does not, but it has
+    ;   an ancestor block that does have a next sibling block,
+    ;   then move the current block so that it becomes the
+    ;   ancestor's next sibling's first child block.
+
+    ; C-M-S-<right> If the current block has a previous sibling
+    ;   block, then make the current block the previous sibling's
+    ;	first child block.  Other wise, create a new block as a
+    ;	parent of the current block and drop the point in between
+    ;	the newly created block's heading-elements, <div> in our
+    ;	case, so that the new parent can be given a heading.
+
+    ; C-M-S-<left> I'm having a hard time visualizing this one.
+    ;   The problem is that we must maintain the required
+    ;   relationships between the tags.  This command should
+    ;   promote the current block.  Unfortunately, this could
+    ;   break the outline rather badly, capturing other block's
+    ;   children or leaving children dangling.  It is more
+    ;   difficult than it appears on the surface.
+
+    ; These will not work with out the invention of a level-element
+    ;   in nxml-outln.el  As both the level-element and the indentation
+    ;	should be update as the outline is edited.  <ol> is our
+    ;	level-element in this example and is what creates a parent
+    ;	child relationship between the blocks.
+    ;	nxml-level-element-name-regexp:"ol\|ul"
+
+    ; Another more difficult to implement feature would be to
+    ; leave the current block's children in place when the block
+    ; is moved, merging them in with other element of the
+    ; outline.  Only if the children are hidden would they move
+    ; with the block.
+
+It seems unfortunate that the NxmlMode outline stuff is not better
+integrated with the OutlineMode machinery.  It might be a better solution
+to extend outline-mode to provide more flexible support for all
+the different outline-whatever addins we seem to be collecting.
+
+==What does not work yet==
+
+===Outline-minor-mode===
+
+It seems that the way this would be accomplished would be through
+the control variables of OutlineMinorMode: ##outline-regexp##,
+##outline-heading-end-regexp##.
+
+Here is an example list:
+
+    <ol class="visible" id="outline">
+      <li>test list <ol>
+        <li>first entry</li>
+        <li>sub list<ol>
+          <li>thrid level</li>
+        </ol></li>
+        <li>last one</li>
+      </ol> </li>
+      <li>second item</li>
+    </ol>
+
+Each ##<li>## would represent an outline heading.  It seems
+possible, the outline-regexp would need to match the whitespace
+before the ##<li>## so that the level could be indicated.  The
+more spaces, the deeper the entry.  Tabs might possibly confuse
+this scheme, so untabify may be necessary.
+
+If ##outline-regexp## is ##"[ ]+<li"## the correct headings are
+found, but the ##hide-subtree## and ##outline-up-heading## functions
+don't work right.  They behave as if there are no bodies under
+the headings.  (Occasionally the ellipse is placed at the very
+end of the document.  So perhaps the remainder of the document is
+being matched as the body?)  ##outline-up-heading## acts as if
+all headings were of the same depth.
+
+The function ##outline-level## appears to work by reporting the
+regexp's total match length, I wonder if it does not report
+whitespace?  How do I debug this?
+
+Why is the default ##outline-regexp##  ##"[*\f]+"## ?
+According to Bjarne Stroustrup ##\f## represents a form-feed, and
+RegexpReferences says that ##\f## is not supported in Emacs
+regexps...  Even if it were, what impact would it have here?
+Humm, there must be some mistake.
+
+===EmacsOutlineToHtml===
+
+The output of EmacsOutlineToHtml is a bit messy.  Lots of <br> in
+it.  Still though, it might work with some tweaking.  Something
+that could edit the html outlines directly in emacs without
+having to do a conversion would be better.
+
+===OrgMode===
+
+OrgMode has many features, one of which is outlining abilities.
+Perhaps it might be made to serve?
+
+===EmacsMuse===
+
+[new]
+
+You may want to consider EmacsMuse, too -- it has some decent outline
+support and can publish the results in a variety of formats, including
+(X)HTML.  On the other hand, it doesn't seem to be aware of the
+outlines generated by AllOut.  I'd like to see a EmacsMuse that can
+take an outline generated by AllOut and publish a homomorphic (X)HTML
+and PDF copy of the outline. -- JesseAlama
+
+==A Demonstration==
+
+I see no way to host this on the wiki so it will live on one of
+my servers until such time, if any, as it can be incorporated.
+
+-> [http://spishack.com/~cira/comp/css/outline.html Collapsible
+Outline >>]
+
+This html document uses javascript DOM and CSS in a fully
+standards compliant way such that the outline can be collapsed
+and expanded while viewed in a web browser.  Like wise, if the
+xhtml code is edited using Emacs' nxml-mode it can be collapsed
+and expanded in a similar way to when it is viewed in a browser,
+allowing editing to be easier as the viewing.  This is
+rather advanced, so it requires a high degree of compliance on
+the part of the browser.  It works fine with Firefox, and fairly
+well with Safari and Opera.  IE is just broken broken broken.
+
+The greatest virtue of this demo is that it works with completely
+unadulterated html lists.  No goofy call, or handler function
+inside the list its self.  I have not seen another collapsible
+html outline which functions without mucking up the list code.
+This means the CSS and JavaScript blocks can be dropped into an
+existing page and made to work without having to wank your
+outline.  A very nice feature if you happen to have huge
+legacy outlines...
+
+[new] I am using this for my
+[http://spishack.com/~cira/school/thesis/bibliography/bibliography.html
+thesis>>], great stuff.  -- SamGeorge
+
+----
+
+CategoryOutline

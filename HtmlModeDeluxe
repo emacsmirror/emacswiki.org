@@ -1,0 +1,193 @@
+With the help of mmm-mode (see MultipleModes), psgml-mode (see PsgmlMode), php-mode (see PhpMode) and css-mode (see CascadingStyleSheetMode) can be combined to create a powerful web programming environment. If you got it working correctly, it should look similar to this screenshot:
+
+http://www-users.rwth-aachen.de/g.ohrner/Download/HtmlModeDeluxe.png (broken)
+
+(All fonts and colours can be adjusted as desired, of course.)
+
+First, you must install all four modes needed. The php-mode I tested so far and which seem to work well are Turadg Aleahmad's 1.0.2 and 1.0.4. As I had several reports during the last few weeks that the current mmm-mode cvs does <em>*NOT*</em> work, I now recomment to first try the version I'm using: http://www-users.rwth-aachen.de/g.ohrner/Download/mmm-mode-older_post0.4.7_cvs.tar.bz2
+
+It's an older post-0.4.7 CVS checkout and, regarding indentation in the submodes, it's much better than the 0.4.7 release. (While still not working perfectly, you can however work around some indentation-malfunctions - see below.) If you find a better working combination while experimenting, please tell me or update this page (and tell me anyway <nowiki>;)</nowiki>.
+
+: This doesn't worked well for me.  Indentation is totally screwed and emacs erros and beeps like I'm using vi.  I fixed the problem by adding the  <code>(let ((vars [...])</code> part from
+ http://groups.google.com/groups?selm=u1xvfuyty.fsf%40noniq.at&output=gplain.
+
+:: I followed the advice in that link.  It worked yesterday, but after a cvs update of Emacs today it doesn't work again.  The c-mode local variables are evidently something of a moving target. I made it work by getting all c-mode variables from a php-mode buffer: 
+
+    (defun save-mmm-c-locals ()
+      (with-temp-buffer
+        (php-mode)
+        (dolist (v (buffer-local-variables))
+          (when (string-match "\\`c-" (symbol-name (car v)))
+            (add-to-list 'mmm-save-local-variables `(,(car v) nil ,mmm-c-derived-modes))))))
+
+    (save-mmm-c-locals)
+
+:: This may be a bit indiscriminate, but it seems to work, and it should be reasonably future-proof.  JimOttaway
+
+
+<em>Notes about mmm-mode</em>
+A new version of the mmm-mode <nowiki>(0.4.8)</nowiki> was released recently. Installing this one instead of the 0.4.7 version made the identation work properly! (Debian sid users should be able to download, extract and overwrite the files in /usr/share/emacs/site-lisp/mmm-mode and then do a dpkg-reconfigure mmm-mode to let these files recompile)
+
+The addition of
+<code>(setq sgml-warn-about-undefined-entities nil)</code>
+will make psgml shut up about "External entity HTML not found" when the document does not have a doctype.
+
+The following is neccessary to configure and enable the combined HTML editing mode within Emacs:
+
+::: *Please note:* the string /REMOVEME/ has been inserted into the code below, as the original line is illegal in this wiki. Ensure you erase the /REMOVEME/ string before you use the code.  -- Duncan Jones
+
+    ;;************************************************************
+    ;; configure HTML editing
+    ;;************************************************************
+    ;;
+    (require 'php-mode)
+    ;;
+    ;; configure css-mode
+    (autoload 'css-mode "css-mode")
+    (add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
+    (setq cssm-indent-function #'cssm-c-style-indenter)
+    (setq cssm-indent-level '2)
+    ;;
+    (add-hook 'php-mode-user-hook 'turn-on-font-lock)
+    ;;
+    (require 'mmm-mode)
+    (setq mmm-global-mode 'maybe)
+    ;;
+    ;; set up an mmm group for fancy html editing
+    (mmm-add-group
+     'fancy-html
+     '(
+             (html-php-tagged
+                    :submode php-mode
+                    :face mmm-code-submode-face
+                    :front "<[?]php"
+                    :back "[?]>")
+             (html-css-attribute
+                    :submode css-mode
+                    :face mmm-declaration-submode-face
+                    :front "styleREMOVEME=\""
+                    :back "\"")))
+    ;;
+    ;; What files to invoke the new html-mode for?
+    (add-to-list 'auto-mode-alist '("\\.inc\\'" . html-mode))
+    (add-to-list 'auto-mode-alist '("\\.phtml\\'" . html-mode))
+    (add-to-list 'auto-mode-alist '("\\.php[34]?\\'" . html-mode))
+    (add-to-list 'auto-mode-alist '("\\.[sj]?html?\\'" . html-mode))
+    (add-to-list 'auto-mode-alist '("\\.jsp\\'" . html-mode))
+    ;;
+    ;; What features should be turned on in this html-mode?
+    (add-to-list 'mmm-mode-ext-classes-alist '(html-mode nil html-js))
+    (add-to-list 'mmm-mode-ext-classes-alist '(html-mode nil embedded-css))
+    (add-to-list 'mmm-mode-ext-classes-alist '(html-mode nil fancy-html))
+    ;;
+    ;; Not exactly related to editing HTML: enable editing help with mouse-3 in all sgml files
+    (defun go-bind-markup-menu-to-mouse3 ()
+            (define-key sgml-mode-map [(down-mouse-3)] 'sgml-tags-menu))
+    ;;
+    (add-hook 'sgml-mode-hook 'go-bind-markup-menu-to-mouse3)
+
+
+Additionally you will probably want to clear the "PHP File Patterns" list of php-mode (M-x customize-group RET php RET). Else php-mode will overwrite above auto-mode-alist upon first invokation.
+
+Now the new, combined mode will be invoked if any of the above mentioned files are opened or created. To reduce the indentation problems, always open php regions in your files as follows:
+
+    <?php /*>*/;
+
+This will stop psgml-mode from messing with the indentation in the php-mode subregions (it thinks the <?php-tag is immediately closed again) and un-confuse php-mode's parser (which think's the wierd stuff it just read ends at the ";"). <nowiki>:-)</nowiki>
+
+There is a problem however, if a section of PHP includes a piece of code like:
+  
+    fputs($out, "<?php ... ?>");
+
+Since the ?> inside the quotes is taken to end the PHP region. This means the next line is interpretted in HTML mode.
+
+After inserting a new subregion in a buffer you'll need to let mmm-mode reparse the buffer to recognize the new sub region: Use the menu or M-x mmm-parse-buffer RET.
+
+Unfortunately I'm not using this mode myself at the moment, so I cannot really help if it doesn't work for you. :-( You may want to ask on the mmm-mode mailing list for assistance, maybe there's someone who can help you further. -- Gunter
+
+Here you can get mmm-mode:
+http://sourceforge.net/projects/mmm-mode/
+
+php-mode:
+http://sourceforge.net/projects/php-mode/
+
+HTML Tidy (contains installing instructions for emacs):
+http://tidy.sourceforge.net/
+
+[new]
+Unfortunately (for me) *nested* modes doesn't work. E.g. if I have HTML file with PHP insertions, and have some JavaScript inside, which also contains PHP insertions, or if I have PHP file with here-docs containing HTML code, and this HTML code contains some CSS, then either only inner or only outer code is marked and does mode changing. -- Jakub Narebski
+
+[new]
+[solution (?)]
+Hi, looks like I had the same problem. Not at all being a lisp freak I broke down the problem to the line where the 'html-js' is put in via 'mmm-mode-ext-classes-alist'. Reading the source of mmm-mode.el I found out that javascript-mode needs to be available. I had to download the file 'javascript-mode.el'. Try including the line '(require 'javascript-mode)' in your .emacs file before the above code. Worked for me. Chris Weichenberger
+[new]
+It /should not/ matter. The mmm-mode I use (ver. 0.4.8, rev. 1.17 from 2004/06/16) uses javascript-mode when found (I have yet to customize it to first try to use ecmascript-mode which is IMVHO sightly better), and java-mode when not found. And what javascript-mode might have to do with PHP with PHP-language here-doc containing HTML, which itself contais <style> tag with CSS inside?
+
+But I have found the solution for some situations i.e. PHP nested inside HTML and PHP inside JavaScript, which itself is inside <script> tag in HTML.  MMM-ifiying *first* by html-js, *then* by html-php works (although nested mode is not marked). Same thing works with CSS embedded inside HTML here-doc in PHP: first MMM-ify by regexp (or create your own php-here-doc class), then MMM-ify using embedded-css class.
+-- Jakub Narębski
+
+[new]
+I have a slight change to the html-php-tagged mmm group's front which get's mmm to see <code><?= ... ?></code> blocks:
+
+     :front "<[?]\\(php\\|=\\)"
+
+-- Corwin Brust (corwin@mpls.cx)
+[new]
+Here is the code (MMM-mode class) I use for here-docs in PHP. It always chooses HTML mode for now
+
+    (mmm-add-classes
+     '((php-here-doc
+        :front "<<<\\([a-zA-Z0-9_-]+\\)"
+        :back "^~1[;]?$"
+        :save-matches 1
+        :submode html-mode
+        :delimiter-mode nil)))
+
+-- Jakub Narębski
+
+[new]
+Can some one create a example for the erb/eRuby mode using mmm-mode I just cant seem to get it right.
+ 
+-- Warren Brian Noronha (warren@gnu.org.in)
+
+[new]
+Q: How do you turn off (or change) the background color for php subregion?
+
+A: (set-face-background "mmm-default-submode-face nil)
+
+A:  User Option: mmm-submode-decoration-level This variable controls the level of coloring of submode regions. It should be one of the integers 0, 1, or 2, representing (respectively) none, low, and high coloring.
+
+-- Maher Gamal
+[new]
+I have a similar slight change to the front for html-php-tagged mmm mode:
+
+     :front "<[?]"
+
+It seems to cover all the cases of PHP open tags ( <?php <? <?= ) and I haven't tripped over anything else with it yet.
+
+-- Aaron (amiller@connext.net)
+[new]
+Many thanks for putting this page together.  I've been splitting my code (mostly perl) from HTML using templates for years now and never had need for this, but I recently started working on a project when the concept of templates is completely alien.  MultiMode is a godsend!  I got everything working on my desktop box (WinXP-SP2, Cygwin) but I've been having some difficulties on a FreeBSD server.  Appologies in advance if this is the wrong place to ask for help!
+
+On the FreeBSD box, mmm-mode correctly identifies HTML and PHP regious and uses the proper modes, but I do not get any syntax highlighting.  This is not due to terminal issues as html-mode and php-mode both work just fine on this machine when run outside of mmm-mode.  Inside of mmm-mode, I have been entirely unsuccessful of enabling font-lock by any means.
+
+Specific details:  Working desktop box is WinXP-SP2, Cygwin, GNU Emacs 21.2.1, running as an Xwindows app.  Server box is FreeBSD 4.10, GNU Emacs 21.3.1, running in an xterm over ssh connection.  I'm running the same .emacs and .elc files on both machines, in fact, I copied my .emacs and local library directory from the Windoze box to the Freebsd server. I'm using mmm-mode-0.4.8, Turadg's php-mode 1.1.0, Lars css-mode 0.11.
+
+Any suggestions greatly appreciated.
+
+-- Peter Johansson (peter@newvillagemedia.com)
+[new]
+There is an article describing an installation of mmm-mode posted at http://www.dzr-web.com/people/darren/projects/emacs-webdev/#mmm The author uses psgml-mode with embedded CSS, Javascript and PHP --David
+
+[new]
+Note that if your HTML file includes any <script src="..."></script> declarations, you *must* have at least one space between the opening and closing tags of those declarations in order for mmm-mode to be able to detect any subsequent blocks of embedded javascript. It looks like something in the regex handling. --Ernie Longmire
+
+[new]
+If you want to change the gray highlighting to a different colour, put this in your .emacs file:
+
+    (set-face-background 'mmm-default-submode-face "gray16")
+
+<code>gray16</code> can be replaced with anything from this list on this page:  http://raebear.net/comp/emacscolors.html -- Duncan Jones
+ 
+----
+HtmlMode | MarkupModes | CategoryModes

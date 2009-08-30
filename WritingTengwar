@@ -1,0 +1,37 @@
+I'd like to use emacs to write in the various Tolkien languages.
+
+<nowiki>TrueType</nowiki> Tengwar fonts are available, but they have problems. Tolkiens elvish orthographies have the vowels suspended above the consonants. This seems to have been implemented with massive kerning offsets in the <nowiki>TrueType</nowiki>Tengwar fonts I've found. The kerning offsets confuse emacs sorely, and it only draws the vowels on top of the consonants after a C-l (redraw), and any other full screen update.
+
+That makes normal text editing pretty much impossible.
+
+Is there some way to fix this?
+
+: If I understand you correctly -- and unless I am much mistaken --, the only proper way to fix this is to fix the font: implementing combining diacritical characters via offsets in the font does not seem like a sound strategy to me. When you have fixed the font, it should be possible implement the combining characters via compositions.
+:    -- Oliver Scholz
+
+It still looks great in a screenshot - http://purl.org/net/shapr/emacstengwar.jpg
+
+--ShaeErisson
+
+Since this image turns out to be the most popular thing on my web server, I'll add instructions for making this work in your own emacs.
+
+Once you have xfs-xtt or xfstt installed and server up the truetype tengwar fonts you downloaded from http://www.google.com/search?q=tengwar%20truetype%20font then you execute this elisp that looks something like this:
+
+(make-face 'tengwar-parmaite)
+(set-face-font 'tengwar-parmaite "-ttf-tengwar parmaite-medium-r-normal-*-*-260-*-*-p-*-iso8859-1")
+(make-face 'tengwar-noldor)
+(set-face-font 'tengwar-noldor "-ttf-tengwar noldor-medium-r-normal-*-*-160-*-*-p-*-iso8859-1")
+(make-face 'tengwar-quenya)
+(set-face-font 'tengwar-quenya "-ttf-tengwar quenya-medium-r-normal-*-*-200-*-*-p-*-iso8859-1")
+(make-face 'tengwar-sindarin)
+(set-face-font 'tengwar-sindarin "-ttf-tengwar sindarin-medium-r-normal-*-*-160-*-*-p-*-iso8859-1")
+(make-face 'tengwar-gandalf)
+(set-face-font 'tengwar-gandalf "-ttf-tengwargandalfmedium-medium-r-normal-*-*-160-*-*-p-*-iso8859-1")
+
+You may need to use xfontsel to discover the correct string to describe various tengwar fonts on your system.
+
+Further research: I've found some tengwar TeX fonts, does anyone know if it's possible to use those in emacs?
+
+--ShaeErisson
+----
+CategoryInternationalization

@@ -1,0 +1,88 @@
+'fol dingo' means in French "crazy mad" :)
+
+This package was inspired by outline mode, folding.el (from Jamie
+Lokier), tinyfold.el (Jari Aalto), foldout.el (Kevin Broadey).
+Advantages with respect to other packages:
+# Menu support
+# Simple mouse behavior to open/close folds
+# Programmable faces to identify open or closed folds
+# Customizable identification of folds
+        You may use explicit folds bounded by {{{ and }}}
+        You may also have implicit folds depending on the mode (for 
+        instance in Lisp- or C-based mode, long definitions are folded).
+
+by ChristianQueinnec
+
+Keybindings are:
+* C-c f e : (Re)Enter fold mode
+* C-c f a : (Re)Enter fold mode and close all folds
+* C-c f o : Open current fold
+* C-c f h : Hide current fold
+* C-c f f : Close all folds
+* C-c f u : Open all folds
+* [Queinnec] These were changed from Georg's definition
+* C-c f i ; Open new fold
+* C-c f w ; Insert a new fold (with open and close parts).
+* C-c f c ; Close new fold
+
+You cannot get a copy here because this link is broken
+http://youpou.lip6.fr/queinnec/Miscellaneous/foldingo.el
+
+...but this one works:
+http://www-spi.lip6.fr/~queinnec/Miscellaneous/foldingo.el
+
+----
+For TeX users:
+I made my "tex-mode.el" override the keybindings for C-c f i and C-c f c with the according definitions for TeX. This way I usually got C(++) foldings and TeX foldings when in (La)TeX mode accessible via the keyboard.
+
+Here is what you got to do if you want the same:
+
+At the LaTeX keymap definition (in file "tex-mode.el")
+
+<pre>
+                    (defun tex-define-common-keys(keymap)...
+</pre>
+
+you insert the following two lines:
+<pre>
+            (define-key keymap "\C-cfi"   'insert-new-latex-fold)
+            (define-key keymap "\C-cfc"   'close-latex-fold)
+</pre>
+
+then you append the following to the "tex-mode.el" (I put it just before the (run hooks...) statement:
+
+<pre>
+    (defun close-latex-fold ()
+      "Closing a fold for LaTeX."
+      (interactive "*")
+      (if (not (bolp))
+          (insert ?\n))
+      (insert "%%}}}%%\n")
+    )
+
+    (defun insert-new-latex-fold (foldname)
+      "Insert a new fold for LaTeX."
+      (interactive "*sTitle of the new fold: ")
+      (if (not (bolp))
+          (insert ?\n))
+      (insert (format "%%%%{{{  %s  %%%%\n"
+                      foldname))
+    )
+</pre>
+
+Now you byte-compile the "tex-mode.el" again and everything should work fine.
+
+==Question(s)==
+Quand le source dit : "Caution: this hook must be appended and not prepended
+since fold-mode uses ^M characters and these characters may trigger some other hooks",
+il faut comprendre quoi ? :) append, c'est mettre devant, mais devant quoi ?
+(When the source says "Caution...", what am I supposed to understand ? :) append means put before,
+but, before what ?). If a put this question here, it's 'cause I think I might not be the only one
+not to understand (at least I hope so !) -- LucasBonnet
+
+Such text usually refers to wether things get appended to the front or the end of a list.  See ListModification. -- AlexSchroeder
+
+Is ''foldingo'' dead?  The above link points to a version that is about four years old.  Is ''folding'' the better way to go? -- DavidMasterson
+
+----
+CategoryOutline ChristianQueinnec

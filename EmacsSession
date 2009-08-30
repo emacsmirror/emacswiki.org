@@ -1,0 +1,49 @@
+This package is one possible SessionManagement implementation.
+
+When you start Emacs, package Session restores various variables (e.g., input histories) from your last session. It also provides a menu containing recently changed/visited files and restores the places (e.g., point) of such a file when you revisit it.
+
+* http://emacs-session.sourceforge.net/ (this introduction copied from the homepage)
+
+To restore the variables, this package writes a session file (~/.session) when you exit Emacs. The file includes the values of variables which are automatically updated by Emacs during some editing operations:
+
+* Histories of user input. For example, strings used in a find/replace command, names of files you have visited, etc.
+* Contents of registers, whether they are texts or buffer/file positions. Buffer positions are automatically converted to file positions.
+* List of recently copied/cut text blocks to paste, global markers to jump to, and other so-called rings.
+* List of recently changed files with their places and some buffer-local variables. 
+
+To restore the places of a recently changed/visited file when you revisit it, this packages stores the places of a buffer in a special variable (the list mentioned above) when you kill that buffer (this includes exiting Emacs). Places are:
+
+* [[Point]] (the TextCursor position) and [[Mark]] (e.g., the opposite position when a [[Region]] is active). These places will be restored, but a region won't be made active.
+* The position of the last change. A new command (bound to C-x C-/) can be used to jump to that position.
+* The boundaries if only a part of a buffer was visible. Reopening the file will again restrict/narrow the editing operations to that region.
+* Values of buffer-local variables. Useful for variables which control some temporary editing behavior, e.g., overwrite-mode. 
+
+As opposed to DeskTop and other packages, Session does not automatically revisits all files from your last session, most of which are not interesting anymore.
+
+CategoryPersistence
+
+== Installation ==
+
+# Get the tarball from the link given above
+# extract session.el and put it in a directory on your LoadPath
+# Add the following to your InitFile:
+
+    (require 'session)
+    (add-hook 'after-init-hook 'session-initialize)
+
+== Discussion ==
+
+I agree with the comment given above: Most of the files you visited last time are not interesting anymore.  Having their names in the find-file history is good enough for me.  Desktop was just too complex for my needs.
+
+Sometimes, I use OrgMode. But org-mark-ring is a circular object. Use the following:
+
+{{{
+(when (require 'session nil t)
+  (add-hook 'after-init-hook 'session-initialize)
+  (add-to-list 'session-globals-exclude 'org-mark-ring))
+}}}
+
+-- AlexSchroeder
+
+----
+SessionManagement

@@ -1,0 +1,55 @@
+Adds support for a tab-style display of EmacsIRCClient buffers, similar that provided by [[emacs-w3m]].  It looks like this:
+
+http://www.dme.org/emacs/erc-tab-shot-thumb.png
+
+The code is somewhat rough - any suggestions for improvements (see 'Todo' in erc-tab.el) are welcomed.  You need two things:
+* a patch for erc.el, get it at http://www.dme.org/emacs/erc.el.diff
+* the module itself, get it at http://www.dme.org/emacs/erc-tab.el
+
+The (easy) instructions on how to use the code are included in erc-tab.el.
+
+2003-12-02: updated to support simple indication that a buffer has changed (the tab text turns blue) and a tooltip with the full topic information (based on code from LawrenceMitchell).
+
+
+: erc-tab.el is great. It misses a (provide 'erc-tab) to work like explained in the instructions. -- Stoerte
+: Does it work with erc-5.2, I could not apply the patch. -- Kalyanasundaram
+
+
+
+== A patch to make ERC-5.3 works with Tabbar: ==
+
+First add this variable define in erc.el:
+
+(defvar erc-header-line-uses-tab-p t
+  "Use tab instead `erc-header-line-format' display in header line.")
+
+And apply below patch diff to erc.el
+
+--------------------------------------------------------------------
+....
+
+6084     (when (boundp 'header-line-format)
+
+6085       (let ((header (if erc-header-line-format
+
+6086                     (format-spec erc-header-line-format spec)
+
+6087                        nil)))
+
+6088 +++     (cond (erc-header-line-uses-tab-p
+
+6089 +++            (set (make-local-variable 'tabbar--local-hlf) header-line-format)
+
+6090 +++            (kill-local-variable 'header-line-format))
+
+6091               ((null header)
+
+6092                (setq header-line-format nil))
+
+....
+
+--------------------------------------------------------------------
+
+Enjoy!
+                                                                        
+                                                                           -- AndyStewart

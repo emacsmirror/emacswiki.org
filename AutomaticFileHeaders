@@ -1,0 +1,259 @@
+This page is about the automatic insertion and update of file headers.
+
+== Library autoinsert.el ==
+
+AutoInsertMode provides the command `auto-insert', which inserts a file header.  It is a part of Emacs.
+
+[:header2]
+== Library header2.el ==
+
+Library <tt>[[header2.el]]</tt> lets you define file headers for different types of file (C, shell, EmacsLisp, and so on). You can automatically insert a header when you open a new file buffer, by putting code like this in your <code>~/.emacs</code>:
+
+  (add-hook 'emacs-lisp-mode-hook 'auto-make-header)
+
+A header can have parts that are associated with updating functions, so that whenever the file is saved (or some other event occurs), those parts are updated in specific ways.  How a given file header looks is under your control. You can even include source-control (e.g. RCS) keywords that are expanded when the file is checked (saved). The tool is quite flexible.
+
+Here is an example of a header for a newly created Emacs-Lisp library:
+
+<pre>
+;;; mylib.el --- 
+;; 
+;; Filename: mylib.el
+;; Description: 
+;; Author: 
+;; Maintainer: 
+;; Copyright (C) 2008, Your Name, all rights reserved.
+;; Created: Sep  5 14:15:22 2008 (-0700)
+;; Version: 
+;; Last-Updated: 
+;;           By: 
+;;     Update #: 0
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
+;; 
+;; Features that might be required by this library:
+;;
+;;   None
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Commentary: 
+;; 
+;; 
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Change log:
+;; 
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;; 
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;; 
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Code:
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; mylib.el ends here
+</pre>
+
+
+As you can see, in this case, the "header" also contains text that will ultimately be found at the end of the file. In this header, no expandable keywords have been used. You would no doubt use a slightly different header definition. At least, you would change the copyright info!
+
+Library ##header2.el## was first created by Lynn Slater as ##header.el##, back in 1989. I have only hacked it here and there. Here is the original, together with its doc: OriginalHeaderEl. 
+
+The most useful hack I added was the ability to include, in an Emacs-Lisp header, a list of the library's dependencies: all of the other libraries (Emacs-Lisp ''features'', really) that are ultimately `require'd by the library. Here is an example:
+
+  ;; Features that might be required by this library:
+  ;;
+  ;;   `mwheel', `ring', `ring+'.
+  ;;
+
+Such a comment is quite useful -- I wish something like this were part of Emacs. What's most useful is that the list of required features can be updated automatically.
+
+If you use this, keep in mind a couple things:
+
+* The search for required features actually ''loads'' the required libraries and then uses variable `load-history' to track dependencies. This means, in particular, that the list is updated based on the ''last byte-compiled version of the library that was loaded''. So, to be sure the list is up-to-date, you can byte-compile and then load any `require'd libraries whose `require's have changed. This only makes a difference if you add or remove `require's, of course -- in the library with the comment or in any of the libraries it ultimately (recursively) `require's. In practice, you need do  nothing special -- sooner or later you will edit and save the library, and pick up the latest `require's at that time.
+
+* More importantly, `load-history', the basis for this information, makes no distinction between ''soft'' `require's and ''hard'' `require's -- that is, between <code>(require 'foo nil t)</code> and <code>(require 'foo)</code>. Soft `require's are not real requirements: no error is raised if the "required" library is not found. Because this soft-vs-hard information is not available, all `require'd libraries are listed, which in many cases is overly conservative. That is the reason for the wishy-washy phrasing "<code>might be required</code>". 
+
+BTW, you can get the same library-dependency information interactively or by program, using these commands:
+
+* `insert-lib-requires-as-comment' -- insert a `<code>Features that might be required</cod>' comment like that shown above.
+
+* `lib-requires-tree' -- return (and display, if interactive) a tree showing the structure of all library dependences, from this library on down.
+
+* `lib-requires' -- a flat version of `lib-requires-tree', with duplicates removed. This is the same list that is inserted in comment form by `insert-lib-requires-as-comment'.
+
+All of these functions are defined in library Lisp:lib-requires.el, which is required by Lisp:header2.el. -- DrewAdams
+
+
+See also: command `elisp-depend-insert-comment' in library <tt>[[elisp-depend.el]]</tt>.
+
+=== Discussion of header2.el ===
+
+[new]
+Shouldn't the date included in ##Last-Updated:## header include the timezone? If I read it correctly it is in local timezone, not in UTC. -- JakubNarebski
+
+[new:DrewAdams:2005-11-04 14:16 UTC]
+I just added it -- see latest version: Lisp:header2.el. Note that people can change the various field updating functions at will -- in this case, this was a minor change to function `update-last-modified-date'. -- DrewAdams
+
+----
+
+[new]
+How header2.el conventions compares with what ##M-x auto-insert## does for Emacs Lisp files? -- JakubNarebski
+
+[new:DrewAdams:2005-11-04 14:16 UTC]
+I don't know. I'm not familiar with `auto-insert'.  I described Lisp:header2.el above. If someone describes `auto-insert', then maybe we can compare. ;-) -- DrewAdams
+
+----
+
+[new:BruceIngalls:2007-2-09 16:18 UTC]
+You should place a -*- Mode: Emacs-Lisp -*- at the top. This EmacsWiki is missing an explanation of the syntax of these Mode file headers (like how to add minor modes), which automatically load a relevant mode in Emacs. You apparently dislike putting in mode variables, but do not explain the trade-offs. Finally, I recommend that you automate with Time-Stamp:<> which must be placed in the first 8 lines. If you run time-stamp minor mode, you can customize it just like the date command. -- BruceIngalls
+
+[new:DrewAdams:2007-12-13 22:51 UTC]
+
+Why should I place ##-*- Mode: Emacs-Lisp -*-## at the top? <tt>[[header2.el]]</tt> works for any time of file, not just EmacsLisp files. And for Emacs-Lisp files that have file extension ##el## or ##elc## there is no need for a mode declaration in the header.
+
+If you want to add a description of local-variable declarations to EmacsWiki, go ahead. That has nothing to do with this page, however. And timestamps are anyway explained well in the Emacs manual (node ##File Variables##).
+
+Why do you say that I "dislike putting in mode variables"? What do you know about what I like? And why should I "explain the trade-offs". If you want to explain the trade-offs, go ahead. Again, however, that has nothing to do with this page.
+
+You can add a vanilla Emacs TimeStamp yourself, if you like. You can put anything you want in the header; it is entirely configurable with ##header2.el##. 
+
+I see no disadvantage of the ##header2.el## timestamp compared with the vanilla Emacs timestamp. And the ##header2.el## timestamp has the advantages of: (1) working anywhere, not just in the first eight lines of the file and (2) working also with Emacs 20.  -- DrewAdams
+
+[new]
+Advantages with using Time-Stamp:
+
+* you can do M-x time-stamp (which might be a habit)
+* sometimes other updates in the header takes time
+
+-- LennartBorgman
+
+[new:DrewAdams:2007-12-14 02:37 UTC]
+As I said, you can simply add a vanilla timestamp to the header, using ##header2.el## -- the header is not hard-coded; it is completely flexible. You can replace the default timestamp with a timestamp of your own choosing. You can update the header manually any time you like, and you can have that update update a vanilla timestamp, if you prefer that. What "other updates in the header take time" -- what kind of time are you worried about? When I update a header it is perceptibly instantaneous, regardless of the size of the file. Of course, a header update can do anything you want -- if you have it calculate the number of grains of sand in the Sahara, then, yes, that could take some time. ;-) -- DrewAdams
+
+----
+[new]
+The following function lets you insert an rcsid in your C/C++ files:
+
+  ;; insert rcsid
+  (defun insert-rcsid ()
+   (interactive "*")
+   (insert (concat "static const char "
+                   (replace-regexp-in-string "\\." "_" (file-name-nondirectory buffer-file-name))
+                   "_rcsid[] =\n \"$Id$\";")))
+
+-- LucWastiaux
+
+----
+
+[new]
+There is a little bug with the title name of the file, because you get the buffer-name instead of the real name, causing me to have some titles like foo<2> when opening 2 files with the same name at the same time. Here is a solution for header-title, ##(car (last (split-string (buffer-file-name) "/" t)))## Maybe are simple ones, I don't program in elisp. Thanks for this great package! :) -- JuanMiguelCejuela
+
+[new:DrewAdams:2008-07-11 15:03 UTC]
+Good suggestion. Please try the latest version. I implemented it differently, and changed also `header-file-name' and `header-eof' accordingly. FYI: `file-name-nondirectory' does what you want, and `buffer-file-name' can be used only if the buffer is actually associated with a file. Let me know if this works for you. Thx -- DrewAdams
+
+----
+
+[new]
+I've been a happy user of header.el since 1986 or so...
+
+Nowadays more and more systems are moving from RCS/CVS to VCS that do not have features like $Revision$. header[2].el to the rescue!
+
+update-write-count can be used for this, but it doesn't just increment the number, it replaces the number and everything following it. This makes it impossible to use it to increment e.g., 
+
+  $VERSION = "1.1234";
+
+to
+
+  $VERSION = "1.1235";
+
+Any plans to support this in the near future? Thanks -- JohanVromans
+
+[new:DrewAdams:2008-09-04 22:22 UTC]
+You could try something like this:
+
+<pre>
+(register-file-header-action "\$VERSION *= *\"[0-9]+\\." 'update-VCS-version)
+
+(defun update-VCS-version ()
+  "Update VCS version, of the form $VERSION = \"NUM\".
+NUM is a decimal number with a decimal point - e.g. 3.1416.
+Only the part after the decimal point is incremented."
+  (interactive)
+  (let* ((beg  (point))
+         (eol  (save-excursion (end-of-line) (point)))
+         (end  (re-search-forward "\\([^\\\"]+\\)\"" eol t))
+         (str  (buffer-substring beg (1- end)))
+         (num  (car (condition-case err
+                        (read-from-string str)
+                      (error (format "Invalid number for version `%s'" str))))))
+    (when (>= num most-positive-fixnum)
+      (error "Version number is too large to increment: `%s'" num))
+    (when (and end (numberp num))
+      (let ((newnum (condition-case err2
+                        (1+ num)
+                      (error (format "Invalid number for version `%s'" str)))))
+        (replace-match (format "%d" newnum) nil nil nil 1)))))
+</pre>
+
+But that's a bit fragile because it expects the number to always have a decimal point. You can try tweaking it. Let me know if you come up with something reasonable and you want it added to <tt>[[header2.el]]</tt>. -- DrewAdams
+
+[new]
+Thanks, this is a good starting point for experimenting.
+
+BTW, much to my surprise, the very old header.el maintains the remainder of the line, allowing a simple tweak like:
+
+<pre>(register-file-header-action "[ \t]*$VERSION[ \t]+=[ \t]+\"[0-9]+.[0-9]+." 'update-write-count)
+</pre>
+
+(I always use X.YY.NNNN version numbers)
+
+However, given this difference between header.el and header2.el I need a more thourough investigation of all my sources to make sure nothing will break.
+
+----
+
+
+
+
+== Library file-template.el ==
+
+Library Lisp:file-template.el inserts a template and does % tag expansions, similar to what auto-insert-tkld.el does (see the WikifiedEmacsLispList).
+
+
+== Issues with OriginalHeaderEl ===
+
+OriginalHeaderEl doesn't compile properly;  There is one function with unbalanced parantheses, one error with command-line-hooks symbol and register-file-header-action being void. 
+
+Drew: can this be corrected,please?  I managed to screw up the editing of the file and had to revert my changes to original header page. -- [[Sivaram N]]
+
+[new:DrewAdams:2008-12-27 05:13 UTC]
+No, not as far as I know. It shouldn't be corrected, in place. It is the original post (AFAIK) and should remain unaltered as such. You are welcome to copy it and change the copy, but the original source should be left as is.
+
+<tt>[[header2.el]]</tt> started just that way, but has since evolved somewhat. If the original can't be eval'd or compiled without some changes, then you might try to change it. Or you might prefer to start with code in ##header2.el##, and modify that to your taste. -- DrewAdams
+
+
+----
+CategoryTemplates
+CategoryCode
+

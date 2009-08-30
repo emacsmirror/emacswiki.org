@@ -1,0 +1,26 @@
+Smyrno was intended to be a Jabber client for Emacs.
+
+Unfortunately, as with many of my other half-finished projects, I will
+likely never get it up to speed to be actually useful as such.
+
+Low-level prerequisites for an Elisp XMPP implementation (SAX-like XML
+parsing and XML Streams support) which were implemented for Smyrno can
+be found here:
+
+* http://edward.oconnor.cx/elisp/xml-event.el
+* http://edward.oconnor.cx/elisp/xml-stream.el
+
+These are a good, solid foundation on which further Emacs Jabber work
+can be done.
+
+I'm attempting to refactor ERC enough such that it can use XMPP as an
+alternate backend protocol, but I make no guarantees that it will ever
+be usable as such, or that I'll ever have anything to check into ERC on
+this front. (Actually, to be honest I ran out of steam working on Smyrno
+because I didn't feel like reinventing all of the wonderful UI work that
+ERC embodies, so perhaps I'll eventually get somewhere with this.)
+
+EdwardOConnor
+
+----
+CategoryChatClient

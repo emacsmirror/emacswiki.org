@@ -1,0 +1,56 @@
+[::CVS]
+or Concurrent Versions Systems, is a free software package that provides traditional VersionControl of source code for tracking changes, but also provides a way for programmers to manage a project without needing to worry about source code "colliding" -- when bugs and problems arise from programmers working on the same files at the same time.  It allows programmers to "check out" files to work on, and any changes that are made are recorded so that the code can be rolled back if needed.  This both makes it easier to manage projects and provides a way to roll back code if needed.  How many times have you coded something over, realized the original worked better, and lost your original?  Or lost your original and wanted to review it to try and track a bug?
+
+As the CVS Homepage (http://www.cvshome.org) suggests, CVS is not an excuse to not discuss with your colleagues and keep in contact.  It is an aid to programming.  According to the CVS homepage:
+
+: ''CVS is the Concurrent Versions System, the dominant open-source network-transparent version control system.''
+
+There is a very very nice CVS frontend [[pcvs]], formerly known as `pcl-cvs'. 
+
+=== Using CVS locally ===
+
+The simplest way for one person to incorporate VersionControl into their work seamlessly with Emacs and with as little effort required is by using the RevisionControlSystem (RCS).  For CVS enthusiasts, one can initialize a quick personal repository locally in "user space" with the following commands:
+
+  $ mkdir ~/cvsroot          # and maybe export CVSROOT=~/cvsroot
+  $ cvs -d ~/cvsroot init    # the -d overrides $CVSROOT -- unnecessary if you did the export
+
+One could potentially import their entire user directory into their personal repository, but more likely you will want to only explictly put certain projects under version control.  To start a new empty "module" in the local CVS repository run the following:
+
+  $ mkdir ~/cvsroot/my_project
+
+To work on the module in the current working directory run the following commands:
+
+  $ cvs -d ~/cvsroot co my_project
+  $ emacs my_project/new_file.txt
+
+To import the files found in the directory tree of the current working directory, run the following commands:
+
+  $ cd my_project
+  $ cvs import my_project My_Name my_project_0_1
+  N my_project/README
+  N my_project/COPYING
+  cvs import: Importing /home/ashawley/cvs/my_project/doc
+  N my_project/doc/project.doc
+  cvs import: Importing /home/ashawley/cvs/my_project/src
+  N my_project/src/project_file
+  
+  No conflicts created by this import
+  
+  $ cd ..
+  $ cvs co -d ~/cvsroot my_project
+  $ emacs my_project/src/project_file
+
+This is based on information from the bug-gnu-emacs mailing list.[http://lists.gnu.org/archive/html/bug-gnu-emacs/2005-08/msg00225.html]
+
+== Providing command options for CVS ==
+
+There doesn't seem to be a way to explicitly set CVS options using the version control extensions under Emacs.  (The only way to add such options is via ~/.cvsrc, but is not useful for doing from within Emacs itself.
+
+I'm referring to the options for the "cvs" command itself, not to the sub-commands.  The syntax for cvs commands is (see p. 87 of the CVS manual for version 1.11.2):
+
+cvs [ cvs_options ] cvs_command [ command_options ] [ command_args ]
+
+Pcvs allows more control than VC.  Most commands allow the user to edit the cvs_options with C-u before the command.  There is likely to make the customization persistent in EmacsLisp.
+
+----
+CategoryVersionControl

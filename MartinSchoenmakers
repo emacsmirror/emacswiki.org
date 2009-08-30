@@ -1,0 +1,26 @@
+I'm Martin Schoenmakers, occasionally known as [::Aiviru]. I use EmacsOnGnuLinux and, where forced to, EmacsOnSun or [[Win32]]. I started using emacs in earnest mostly by accident. Aside from vi (which I dislike) and a very basic X based editor (with the same sheer power of notepad, but worse looks), all the suns had was emacs, and I really didn't want to program without at least syntax highlighting. So I tried emacs and, after some very basic tweaking, it did most of what I needed, even though I had to mouse around a lot, not knowing the key combos.
+
+I decided to start learning emacs, mostly because it'd be available to me where I needed it, but soon found out I rather liked it, so started using it more often myself. ''Just for programming, though. I'm not going to use it for stuff an editor wasn't designed for, nor do I need it for, like, plaintext.''
+
+Fast forward to now, emacs lives on my desktop permanently, playing songs with [[EMMS]] most of the time, I use FlySpell and such when writing plaintext, started using DiredMode as a file manager (RunAssoc is very useful, though I feel like I might be writing my own version sometime), and I post to my LJ with it, among others. I also use [[Gnus]], which happens to be the best news and mail reader out there ;) Over time I've  learned a decent bit of elisp to better customize and add what I need. It makes life much easier. I've also contributed code to EMMS.
+
+Conclusion: Emacs takes over your life, and you'll like it ;>
+
+Here's a few links to emacs stuff I like, in random order..
+
+* [[EMMS]]
+* [[Gnus]]
+* TrampMode
+* CcMode
+* PythonMode
+* FlySpell
+* LjUpdate
+* DiredMode
+
+----
+[new]
+Welcome to the wiki! -- AlexSchroeder
+[new]
+Thanks :) -- MartinSchoenmakers
+----
+CategoryHomepage

@@ -1,0 +1,21 @@
+Just a small script I made for issuing a "/nick" command in all server-buffers. I wrote it at first as a global-away command, before figuring out ERC (ofcourse, it IS Emacs, what did I expect?) already did this. I extended it however to do the global-nick thing, so in case somebody might find use in this, here it is. -- TerryPatcher
+
+    (defun erc-global-get-server-buffer-list ()
+      "Return a list of the ERC-server-buffers"
+      (erc-buffer-filter '(lambda() (if (string-match "^[^#].*:[0-9]*$" (buffer-name (current-buffer))) t nil)) nil))
+    
+    ;; use /nick on all servers
+    (defun erc-set-nick-on-all-networks (newnick)
+      "Sets your nick to NEWNICK on all servers"
+      (mapc (lambda(entry)
+    	  (save-excursion
+    	    (set-buffer entry)
+    	    (erc-cmd-NICK newnick)))
+    	(erc-global-get-server-buffer-list)))
+
+    
+    (defun erc-cmd-GLOBALNICK (newnick)
+      (erc-set-nick-on-all-networks newnick))
+
+----
+[[ERC]]

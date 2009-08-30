@@ -1,0 +1,35 @@
+Simple optional library for ThingAtPoint. See also ThingAtPointPlus and ThingAtPointCommands written by DrewAdams.
+
+Lisp:thing-opt.el
+
+This library provides following commands:
+
+* `kill-thing' -- kill thing at point interactively.
+
+* `mark-thing' -- mark thing (select region) at point interactively.
+
+* `upward-mark-thing' -- mark thing upward in DWIM.
+
+<pre>
+;; useful settings
+(global-set-key (kbd "C-$") 'upward-mark-thing)
+(setq upward-mark-thing-list
+      '(; special thing
+        email
+        url
+        string
+        ; general thing
+        symbol
+        ; up-list once
+        (up-list . 1)
+        ; structural thing
+        line
+        paragraph
+        ; up-list
+        (up-list . *)))
+</pre>
+
+
+----
+CategoryCode
+CategoryRegion

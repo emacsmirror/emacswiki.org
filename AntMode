@@ -1,0 +1,9 @@
+ant-mode is a major mode for editing Ant brain files for the Ant Wars
+game at http://www.ant-wars.net/, and was written by JorgenSchaefer.
+
+Download it at Lisp:ant.el
+
+This is not to be confused with Apache's Ant, which can be found at PsgmlAnt or JavaDevelopmentEnvironment
+
+----
+CategoryGames

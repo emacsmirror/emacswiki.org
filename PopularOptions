@@ -1,0 +1,118 @@
+PopularOptions is meant to educate an EmacsNewbie about creating a DotEmacs that exposes the hidden powers of Emacs.
+
+PopularOptions is a customization list [M-x customize RET] sorted by those which are most often changed by end users.  In other words a cross section of customizations appearing in all DotEmacs.  Maybe EmacsMacro does a better job of this?
+
+{{{
+;;; popular-options.el --- popularly changed options
+;;; Commentary:
+
+;; copy this into a buffer.
+;; then type:
+;; M-x eval-buffer RET
+;; this will create a "customization" buffer used to make permanent changes to emacs behavior
+
+;;; Code:
+
+(defgroup popular-options nil "popular options"
+  :group 'emacs)
+
+(mapcar (lambda (var)
+          (custom-add-to-group 'popular-options var 'custom-variable))
+        '(
+;; Option is popular and not too dangerous (most people adjust these)
+          global-font-lock-mode             ; Very useful.
+          generic-define-unix-modes         ; Enable all generic modes, in fact!
+          show-paren-mode                   ; Very useful.
+          auto-compression-mode             ; Not dangerous, nice to have (on in Emacs 22.1).
+          auto-image-file-mode              ; View images inside Emacs. (on in Emacs 22.1).
+          confirm-kill-emacs                ; slippery fingers (maybe dangerous)
+          column-number-mode                ; performance hit
+          user-mail-address                 ; Default not correct on all systems that are not mail hosts?
+          user-full-name                    ; Default is correct on my system.
+          file-name-shadow-mode             ; Visually indicates underlying behavior, non-destructive
+          dired-dwim-target                 ; Better default, when viewing 2 Dired buffers.
+          inhibit-splash-screen             ; Some people don't like the splash screen.
+
+;;; Option is popular but dangerous or confusing
+          iswitchb-mode                     ; "confusing and frightening firework of colours and characters in his or her eyes."
+          icomplete-mode                    ; nice to have.  danger similar to iswitchb.
+          dired-recursive-copies            ; dangerous but powerful
+          dired-recursive-deletes           ; dangerous but powerful
+          enable-recursive-minibuffers      ; This is confusing for newbies, no?
+          hi-lock-mode                      ; fx dislikes it
+
+;;; Option is divisive (number of people adjusting these is close to 50%)
+          blink-cursor                      ; Some may think it bandwidth intensive, others just prefer non-blinking cursors.
+          pc-selection-mode                 ; Alternative for working with the region.
+          transient-mark-mode               ; Alternative for working with the region.
+          delete-selection-mode             ; Alternative for working with the region.
+          cua-mode                          ; from KimStorm (new in 22.1), similar to pc-selection-mode, but more intrusive
+          ido-mode                          ; from KimStorm (new in 22.1), similar iswitchb-mode, but more intrusive
+          indicate-empty-lines              ; Informative (and better than vi's ~).
+          show-trailing-whitespace          ; Informative (but distracting).
+          completion-ignored-extensions     ; I did not understand why log files never completed...
+          view-diary-entries-initially      ; Cool.
+          global-hl-line-mode               ; Interesting for newbies.
+          ibuffer                           ; the buffer-menu is better than buffer-list, but ibuffer is even better.
+          desktop-enable                    ; Not sure wether this is meaningful -- only if the default is to use the desktop from the user's home directory.
+          apropos-do-all                    ; I did not know about it!
+          winner-mode                       ; I did not know about it!
+
+          x-stretch-cursor                  ; Ugly!  :
+          font-lock-maximum-size            ; I do not care for this.
+
+          display-time-mode                 ; Clutters the mode-line.
+          ange-ftp-dumb-unix-host-regexp    ; What would a good default value be?
+          next-line-add-newlines            ; What is this?  If this is the variable that controls wether moving down beeps or adds a newline, do not change it, because it was just changed in the last release, I think.
+          tab-width                         ; Many people do not want to change this, they want to change the indentation engines for C, Perl, Java, etc.  The answer to those questions is more complicated.
+          scroll-conservatively             ; Should be > 0
+          scroll-preserve-screen-position   ; The default is confusing for newbies.
+          ))
+
+(customize-group 'popular-options)
+
+;;; popular-options.el ends here
+}}}
+
+== Comments ==
+
+----
+
+[new:DrewAdams:2004-12-25 18:20 UTC]
+I would say that this is only what ''some'' people like to change when they customize Emacs. I doubt that this list is representative of "popular options" in general or of the options that are "most often changed by end users." (But such a survey might be useful to conduct.)
+
+To newbies, I would suggest to look (instead) at these pages, in order:
+# '''EmacsNewbie'''
+# CategoryHelp
+# CategoryGlossary
+# LoadingLispFiles and LoadPath
+# CategoryDotEmacs
+
+-- DrewAdams
+
+----
+
+Some of this is odd and could do with extra consideration.  For instance:
+: (get 'line-number-mode 'standard-value)
+:   => (t)
+[Of course column-number-mode is relatively slow, which is why it's not the default, and that's measurable.  Also, line-number-mode display is suppressed for long lines and maybe big files, apart from being of limited use.]  I wrote hl-line-mode, and it strikes me as a very poor default; in fact, I don't think there is a good reason to use it.  Yes, iswitchb-mode is dangerous, since it can effectively prevent you selecting buffers if you don't know about C-s or its suppression behaviour.  Why do 90% of users not know what Global Font Lock mode is called when it's at the top of the Options menu, and what's a better way to help them find options?  &c  -- fx
+
+Perhaps the least contentious changes are the ones that nearly all newbies want - font lock on by default, line and column displayed, scrolling which is more like what they're used to. That's the ones I'd most recommend, along with iswitchb. While I like all the "not dangerous, nice to have" options, I'm not sure they need to be tweaked. -- DamienElmes
+
+Please, don't expect people to like iswitch* functions! I really despise the way the work. And no, switching buffers without iswitchb-mode isn't painful for me, rather the other way around. So, no, icomplete-mode is not "Not dangerous", either, but "annoying". -- JorgenSchaefer
+
+Despite the fact that I really love iswitchb-mode and ido, I agree, that making one of them the default is not a good idea. `switch-to-buffer' is simple: The concept "Here is a prompt where I have to enter the name of the buffer that I want to see" is easy to understand. But what a newbie sees after hitting `C-x b' in iswitchb-mode could be rather a confusing and frightening firework of colours and characters in his or her eyes. It is not a tool for the beginner, I say. -- OliverScholz
+
+Can one request keybindings here? :).  What about GotoLine? -- DeepakGoel
+
+----
+Are new things to be discussed first, before someone puts them on the list? I have another canditate: `file-name-shadow-mode' in the current CVS. The feature that I may start typing an absolute filename immediately after hitting `C-x C-f' makes life sooooo much easier. But it took me about a year using Emacs, until I became aware of it due to a usenet posting. But with `file-name-shadow-mode' on, you are able to _see_ it, as soon as you hit `/' or `~' accidentally. (Personally, I discover many features accidentally.) --OliverScholz
+
+: I saw a discussion on usenet about this about a year or so ago.  XEmacs does have "electric" filename stuff for when you type '/' as the first character of your filename or '~' rather than waiting for the TAB to be pressed.  This is one of the usability differences between Gnu/Emacs and XEmacs that makes me use XEmacs.  I think the objection was the loss of information if you didn't mean to type that character.  IOW, you hit '/' by mistake and now have to retype the default directory. -- LathI
+
+:: Well, the thing is, there is no difference in usability between XEmacs and GNU Emacs here. You don't have to hit the TAB key. Just disregard the default directory name, start typing you new absolute filename and hit RET. There is a difference only w.r.t. visibility. In XEmacs you _see_ that this is possible, because the default directory name disappears immediately after you inserted the first character of an absolute filename. `file-name-shadow-mode' makes this visible in GNU Emacs too without the loss of information, which is good. I find myself indeed often changing my mind and deleting the `~' or `/' that I typed first. So you get the best of both worlds. Since this is most helpful for newbies, while it is only an aesthetical feature for all the others, it should by default be on. --OliverScholz
+
+It's conceivable I might agree instantly with changing some
+options, but more likely I'll want to see arguments in favor of it. -- RMS (in an email to AlexSchroeder and others)
+
+

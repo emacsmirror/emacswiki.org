@@ -1,0 +1,57 @@
+Searching case-sensitivity is governed by the variable <code>case-fold-search</code>: nil means case-sensitive; non-nil means case-insensitive (the case is "folded"). <code>case-fold-search</code> also affects how lots of programs work.  For example MailSplitting in Gnus.
+
+The default behaviour is to make searches case insensitive, unless you are searching for a mixed case word.
+
+See also: IncrementalSearch 
+
+= Tips and Enhancements =
+
+== Toggle Case-Sensitivity on the Fly in Isearch ==
+
+Command `isearch-toggle-case-fold' toggles case-folding in searching on and off. The tip is to bind this command to `C-s C-c', so you can toggle on the fly, while searching.
+
+This code does that:
+
+  (add-hook 'isearch-mode-hook
+            (function
+             (lambda ()
+               (define-key isearch-mode-map "\C-h" 'isearch-mode-help)
+               (define-key isearch-mode-map "\C-t" 'isearch-toggle-regexp)
+               (define-key isearch-mode-map "\C-c" 'isearch-toggle-case-fold)
+               (define-key isearch-mode-map "\C-j" 'isearch-edit-string))))
+
+Actually, it also adds some other `C-s' bindings:
+* <code>isearch-mode-help</code> -- Provides help on incremental searching. Defined in library Lisp:isearch+.el.
+* <code>isearch-toggle-regexp</code> -- Toggles regexp searching on and off.
+* <code>isearch-edit-string</code> -- Edit the search string in the MiniBuffer. This also provides other isearch options, including word searches (C-w).
+
+
+== Mode-Line Indicator ==
+
+If you need an indicator for <code>case-fold-search</code> (so that you can see wether it on the modeline), add the following to your ~/.emacs:
+
+ From: KalleOlaviNiemitalo
+ Subject: Re: case-fold-search indicator
+ Newsgroups: gnu.emacs.help
+ Date: 21 Jun 2001 18:06:42 +0300
+
+ (add-to-list 'minor-mode-alist '(case-fold-search " CFS"))
+
+
+== Using Regular Expressions  ==
+
+In Lisp programs, be sure to set the case-fold-search variable to nil with regular expressions that desire to be case-sensitive.  To do this in your Lisp program set the case-fold-search variable to false (nil) temporarily with the let syntax:
+
+ (define mytext-find-heading ()
+  "Finds text heading by finding a line whose letters are uppercase."
+  (interactive)
+  (message "Finding text headings ...")
+  (push-mark)
+  (let ((case-fold-search nil)) ;; case-sensitive!!
+    (if (re-search-forward
+	 "^[^a-z\n]+$" nil 'move)
+	(message "Found text heading.")
+      (message "End of buffer"))))
+
+----
+CategoryRegexp

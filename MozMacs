@@ -1,0 +1,123 @@
+After writing this I see it's probably more work than it is worth...
+
+I've repackaged the .xpi, so could also upload it if that is appropriate. -- PatrickAnderson
+
+
+1. Install http://mozless.mozdev.org
+
+
+2. Close FireFox
+
+
+3. Find user.js in either:
+
+<pre>c:/Program Files/Mozilla Firefox
+</pre>
+
+Or your profile dir:
+<pre>c:/Documents and Settings/yourUsername/Application Data/Mozilla/Firefox/Profiles/goofychars.default
+</pre>
+
+
+4. Delete user.js
+
+
+5. Remove the lines mozless added to prefs.js that mess with searching. (I don't remember what they look like)
+
+
+6. Replace the contents of "chrome/mozless.jar|content/mozless.xul" with:
+<pre>
+
+<?xml version="1.0"?>
+
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<!--   <keyset id="dialogKeys"> -->
+<!--     <key modifiers="control" key="m" oncommand="if (!document.getElementById('ok').disabled) doOKButton();"/> -->
+<!--     <key modifiers="control" key="g" oncommand="doCancelButton();"/> -->
+<!--   </keyset> -->
+
+  <keyset id="mainKeyset">
+    <script type="application/x-javascript" src="chrome://mozless/content/pref-mozless.js"/>
+    <script type="application/x-javascript" src="chrome://mozless/content/mozless.js"/>
+<!--     <key key="b" command="Browser:OpenLocation"/> -->
+
+    <key modifiers="shift" key="b" oncommand="toOpenWindowByType('bookmarks:manager', 'chrome://browser/content/bookmarks/bookmarksManager.xul');"/>
+
+	<key modifiers="shift" key="d" oncommand="toOpenWindowByType('Download:Manager', 'chrome://mozapps/content/downloads/downloads.xul', 'chrome,dialog=no,resizable');"/>
+
+
+    <key key="i" oncommand="zoomImagesIn();"/>
+    <key key="o" oncommand="zoomImagesOut();"/>
+
+    <key key="p" oncommand="goDoCommand('cmd_scrollLineUp');"/>
+    <key key="n" oncommand="goDoCommand('cmd_scrollLineDown');"/>
+<!--     <key key="a" oncommand="goDoCommand('cmd_scrollBeginLine');"/> -->
+<!--     <key key="e" oncommand="goDoCommand('cmd_scrollEndLine');"/> -->
+
+    <key key=" " oncommand="goDoCommand('cmd_scrollPageDown');"/>
+    <key key="u" oncommand="goDoCommand('cmd_scrollPageUp');"/>
+
+    <key key="g" oncommand="BrowserReload();"/>
+    <key modifiers="control" key="g" oncommand="BrowserStop();"/>
+
+	<!-- 	<key key="s" oncommand="BrowserFind();"/> -->
+	<!-- 	<key key="s" command="Browser:FindAgain"/> -->
+	<!-- 	<key modifiers="control" key="s" command="Tools:Search"/> -->
+	<!-- 	<key key="s" oncommand="onFindCmd();"/> -->
+    
+<!-- 	<key key="o" command="Browser:OpenLocation"/> -->
+    <key key="q" command="cmd_close"/>
+
+	<key key="t" oncommand="BrowserOpenTab();"/>
+
+<!-- toggleSidebar('viewBookmarksSidebar'); -->
+<!-- BrowserPageInfo(); -->
+<!-- Browser:Back -->
+
+  </keyset>
+
+</overlay>
+</pre>
+
+
+
+
+7. Add the following lines to "chrome/mozless.jar|content/mozless.js":
+<pre>
+
+//stolen from http://www.squarefree.com/pornzilla
+function zoomImage(image, amt)
+{
+	if(image.initialHeight == null)
+	{ /* avoid accumulating integer-rounding error */
+		image.initialHeight=image.height;
+		image.initialWidth=image.width;
+		image.scalingFactor=1;
+	}
+
+	image.scalingFactor*=amt;
+	
+	image.width=image.scalingFactor*image.initialWidth;
+	image.height=image.scalingFactor*image.initialHeight;
+}
+
+function zoomImages(amt)
+{
+	var w = window._content;
+	var L = w.document.images.length;
+	var i;
+
+	for (i=0; i<L; ++i)
+		zoomImage(w.document.images[i], amt);
+
+	if (!L) alert("no images.");
+}
+
+function zoomImagesIn()
+{ zoomImages(1.25); }
+
+function zoomImagesOut()
+{ zoomImages(.75); }
+
+</pre>

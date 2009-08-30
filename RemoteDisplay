@@ -1,0 +1,37 @@
+How to use remote displays from Lisp:
+
+    (defun setx (display)
+      "set the environement, interactively "
+      (setenv "DISPLAY" display))
+
+    (defun setx-interactively (prefix)
+      ""
+      (interactive "P")
+      (let ((display (frame-parameter (selected-frame) 'display)))
+      (if prefix
+          (setq display (read-display "set DISPLAY: " (getenv "DISPLAY"))))
+      (setx display)
+      (message "DISPLAY=%s" display)))
+
+    (define-key my-global-keymap "x" 'setx-interactively)
+
+    (defmacro with-display (x-display &rest body)
+      "run BODY with the DISPLAY env-var set to X-DISPLAY, 't ->frame's one"
+      `(let ((old-display (getenv "DISPLAY"))
+             (this-display (if (eq ,x-display 't)
+                               (if running-xemacs
+                                   (frame-property (selected-frame) 'display  "0:0")
+                                 (frame-parameter (selected-frame) 'display))
+                             ,x-display)))
+         (if (string= this-display (concat (hostname) ":0"))
+             (setq this-display ":0"))
+         (unwind-protect
+             (progn
+               (setenv "DISPLAY" this-display)
+               ;; ((command (format "guardafotoz %s >/dev/null 2&>1 &" id)))
+               ,@body)
+           (setenv "DISPLAY" old-display))))
+
+----
+CategoryDisplay
+CategoryCode

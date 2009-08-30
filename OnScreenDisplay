@@ -1,0 +1,11 @@
+Ever wanted [[EMMS]] to flash around song names in a cool way?  Well, with the Emacs front-end to the X OSD Library, now it can!
+
+* Get the X OSD Library: http://www.ignavus.net/software.html
+* Get the Emacs front-end: http://www.brockman.se/software/osd.el
+
+From the commentary:
+
+: Presumably, an Emacs front-end to an X OSD library is useful in any situation where the user needs or wants to be informed of something regardless of whether or not their eyes are currently focused on an Emacs frame.
+
+----
+Written by DanielBrockman.

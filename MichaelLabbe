@@ -1,0 +1,12 @@
+I'm Michael Labbe -- I've been using Emacs as my primary editor for eight years.  In that time, I've shipped lots of programming projects in C++, Perl and Python.
+
+I wrote an article on making Emacs interoperate with VisualStudio 7 back in 2003.  It was posted on K5, and it's now available here:
+
+[http://www.frogtoss.com/onlinegames/journal/emacsvisualstudio7.html]
+
+In short order, I hope to post a mode I have been working on called confluence-mode.  It is a simple highlighting and navigation mode for the confluence Wiki.  
+
+I am writing it because I take notes for my company's wiki in this format, and this mode makes it easier to move around a text buffer while someone is speaking.
+
+----
+CategoryHomepage

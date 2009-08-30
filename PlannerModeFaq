@@ -1,0 +1,97 @@
+Please add your own questions and answers to this list of frequently asked questions for PlannerMode! =)
+
+== Frequently asked questions for PlannerMode ==
+
+=== Planner looks so complicated! Where do I start? ===
+
+There is a comprehensive manual available at http://wjsullivan.net/static/doc/planner/
+
+Take a look at PlannerModeQuickStart.
+
+People have different ways of planning, and it's hard to cover all the different ways people plan
+in one document. If you're new to planning or to planner.el, please post your questions on the mailing list at https://mail.gna.org/listinfo/planner-el-discuss/. We'd like to hear about how you currently
+plan and how you'd like to plan. =)
+
+=== Do I really need Gnus, w3m and all these other things just to be able to use planner? ===
+
+No.
+
+If you live in Emacs, you'll get the nice side-benefit of hyperlinks to almost everything.
+If you don't, you can still use planner as a nicely-colored, extremely customizable, keyboard-shortcut-rich 
+TODO manager.
+
+=== Do I really need to read planning philosophy before using Planner? ===
+
+No, you could use planner however you want. That said, reading things like PlannerModeCommentary and PlannerModeMethods
+will help you get an idea of how other people plan their day, and may inspire you to improve your process.
+
+=== Help! I have too many tasks on my day pages! What should I do? ===
+
+- Use undated tasks. If you don't have to do something on or by a certain date, leave it undated
+  by specifying  "nil" at the date prompt. You can review your undated tasks by
+  opening your plan pages. You can schedule tasks with C-c C-c (planner-copy-or-move-task).
+  Tip: Before you complete a task, make sure it's scheduled for today. That way, when you complete it,
+  the entry also shows up in today's page--great for writing accomplishment reports. You can use C-u C-c C-c (universal prefix to planner-copy-or-move-task) to reschedule a completed task if you make a mistake.
+
+- If you prefer to use dated tasks for everything, procrastinate ruthlessly. You can specify +n when 
+  asked for a date, where n is the number of days from now. For example, +7 means work on this task a 
+  week from today. This keeps today's page a manageable size.
+
+=== How do I link tasks to multiple PlanPages? ===
+
+Use planner-multi. http://lists.gnu.org/archive/html/emacs-wiki-discuss/2005-01/msg00222.html  
+
+=== Do I really have to publish my plans? ===
+
+No, you don't have to. In fact, you don't have to make anything public.
+
+=== Why doesn't manual editing of tasks just work? ===
+
+We haven't figured out how to pick up the changes automatically.  Unless you use planner-id.el.
+
+=== How do I change a task then? ===
+
+Use planner-edit-task-description to change a task description, or require planner-id to edit your tasks manually. Use planner-replan-task to change the plan page a task is associated with.
+
+=== What about syncing with PDAs? ===
+
+JohnWillis has been doing some work on syncing between MacOsx and his PalmPilot using Plucker at http://www.willisbros.net/blog/index.php?p=508.
+
+AlexWhite has ical export for appointments and unfinished tasks with PDA sync. Described on 
+http://permalink.gmane.org/gmane.emacs.wiki.general/1768
+
+=== Do I really have to use WikiNames for Plan page names? What are "short tags" with planner-multi? ===
+
+You can use non-wikiname pages if you want.   Use double-brackets to force a link to a non-wiki name.  For example, <nowiki>[[grad]]</nowiki> looks like ''''grad'''' and 
+could be your shortcut for grad school. I use the name "short tags" to
+refer to them, but that's just because I got hooked on
+http://del.icio.us and del.icio.us refers to labels as "tags". =)
+
+If the file already exists, planner-mode can link to it with one of these "short tags".  If the file already exists, it isn't created at a planner-mode file, it is just linked.  The even works with most TrampMode links.
+
+=== What do I do with all the patches on the mailing list? ===
+
+People often share their tweaks by sending patches to the mailing
+list. You can apply patches with M-x ediff-patch-file .
+
+=== How do i refer to a non CamelCase planner page? ===
+
+You can enclose links in brackets like this: <nowiki>[[planner]]</nowiki>. Non-camel-case links might be easier for you to read, so try them out!
+
+Also, this enables links to NON-planner pages, so you can add hot links to any of your other files in planner files. <nowiki>[[~/.elisp]], [[/ssh:user@remote:public_html/index.html]]</nowiki>.
+ 
+=== How do I create recurring schedule entries? ===
+
+You can use planner-diary.el for recurring appointments through the Emacs Diary. Check the Diary sections in the Planner documentation and EmacsManual for more information. For recurring tasks, you can use planner-cyclic.el to create tasks based on diary entries in a separate file.
+
+=== How do I force a specific planner page to NOT use CamelCase but instead only highlight links that are in [[square brackets]]? ===
+
+Can someone answer this question?  Preferably, it would be some special markup that turns off CamelCase interpretation on a specific page.
+
+=== Planner can be used with non-ascii text (latin-1, utf-8)? ===
+
+Yes! I actually use planner with EUC-JP.
+
+----
+
+PlannerMode

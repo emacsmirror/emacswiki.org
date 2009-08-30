@@ -1,0 +1,25 @@
+Click on the header to list all pages related to debugging.
+
+    <kensanata> everytime emacs encounters an error in InitFile,
+      emacs cries a little.
+
+Debugging Emacs:
+
+* DebugEmacs -- debug the C layer using gdb
+* DebugMessages -- find out where *Messages* messages are coming from
+* EmacsMemoryDebugging -- look for memory leaks
+
+Debugging EmacsLisp:
+
+* DebuggerMode -- debugging EmacsLisp
+** BacktraceBuffer -- quick and dirty EmacsLisp debugging happens in the *Backtrace* buffer
+** SourceLevelDebugger -- the full Edebug for EmacsLisp
+* DebugFileLoading -- finding errors in files
+* DataDebug -- Examine large complex Emacs Lisp data structures
+
+Debugging other programs using Emacs:
+
+* DebuggingWithEmacs usually involves the GrandUnifiedDebugger (GUD) as an interface to command line debuggers such as gdb, dbx, cdb,....
+** GdbMode -- a debugger mode specialized for gdb
+** PdbNotes -- additional setup info for python
+* VisualCDebugger -- interfacing with the Visual C++ debugger

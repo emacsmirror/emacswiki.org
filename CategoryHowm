@@ -1,0 +1,16 @@
+This is the page TOC linking to all EmacsWiki pages about HowmMode and
+its extensions.
+
+The main goal for this category page to exist is to provide as much
+material as possible about this marvelous *but* unfairly overlooked
+mode. HowmMode is certainly one of the most capable note taking tool
+available for Emacs but very few documented (or to be precise:
+documentation is not accessible to non-japanese people).
+
+I hope people will share their knowledge on these pages.
+
+* HowmMode -- this is the main page
+* HowmAndCalendar -- integrate regular CalendarMode into your HowmMode workflow.
+
+----
+Cette page existe aussi en Francais CategorieHowm.

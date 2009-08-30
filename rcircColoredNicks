@@ -1,0 +1,141 @@
+Colored nicks for [[rcirc]].
+
+[[image:rcirc-color-example]]
+
+(There's also a [http://www.emacswiki.org/alex/pics/rcirc-colored-nicks.png bigger screenshot].)
+
+Source:
+
+* Lisp:rcirc-color.el
+* Lisp:rcirc-color-23.el (for Emacs 23)
+
+To install, put it in your LoadPath and add the following to your InitFile:
+
+    (eval-after-load 'rcirc '(require 'rcirc-color))
+
+== Determining the colors available in your init file ==
+
+You can set your favorite colors manually:
+
+    (setq rcirc-colors '("lemon chiffon" "lavender" "cornflower blue"))
+
+Now new nicks will get assigned one of the three colors at random.
+
+== Manually changing colors using /color ==
+
+You can change the colors assigned to nicks using ##/color NICK COLOR##.
+A list of available color names is available via `M-x list-colors-display'.
+
+You can also use hex codes of the form ###xxx## or ###xxxxxx## to refer to
+a color: ###000## is black, ###f00## is red, ###0f0## is green, ###00f##
+is blue, and ###fff## is white. Using three hex digits allows you to refer to
+256 different colors, using six hex digits allows you to refer to 65536 colors.
+Whether your display can actually display these colors depends on your display.
+If you're using Emacs in a terminal emulator or on the console, chances are
+that you're limited to 16 colors anyway.
+
+== Disabling automatic colors in your init file ==
+
+If you never want automatic colors, set `rcirc-colors' to nil:
+
+    (setq rcirc-colors nil)
+
+Only the colors you assign using ##/color NICK COLOR## will take effect.
+
+== Defining groups with certain colors in your init file ==
+
+You need to disable the automatic color picking, and you need to
+initialize the mapping table.  The alist you see in the code
+has elements with a color as the key and a list of nicks as
+the value.
+
+    (setq rcirc-colors nil
+          rcirc-color-mapping (make-hash-table :test 'equal))
+    (dolist (group '(("red" "forcer" "kilobug")
+		     ("green" "kensanata")
+                     ("gray" "fsbot" "birny" "lisppaste" "specbot")))
+      (dolist (nick (cdr group))
+	(puthash nick (car group) rcirc-color-mapping)))
+
+== Listing the colors assigned interactively using /color ==
+
+Without any parameters, ##/color## lists all nicks in their respective
+colors (and the name of the color is shown in the help echo).
+
+[[image:rcirc-do-color]]
+
+In the screenshot you can see how my own nick, [[kensanata]], has been highlighted.
+
+At the same time, I've used /KEYWORD to highlight [[bpalmer]], just to confuse you. ;)
+
+== Compatibility layer for Emacs 21 users ==
+
+Here's an implementation of color-distance for Emacs 21,
+originally from [[fledermaus]] from the EmacsChannel [http://paste.lisp.org/display/15080].
+It is based on the same colour metrics [http://www.compuphase.com/cmetric.htm]
+Emacs 22 uses.
+
+<pre>
+(defconst colour-triplet-regex
+  "\\([0-9A-Fa-f]{2}\\)\\([0-9A-Fa-f]{2}\\)\\([0-9A-Fa-f]{2}\\)")
+
+(defun parse-colour (colour frame)
+  (cond ((and (stringp colour) (string-match colour-triplet-regex colour))
+         (mapcar
+          (lambda (x)
+            (* (string-to-int (match-string x colour) 16) 257)) '(1 2 3)))
+        ((stringp colour)
+         (if (fboundp 'color-values)
+             (color-values colour frame)
+           (x-color-values colour frame)))
+        ((consp colour) colour)
+        (t (error "colour (%S) is not a colour name, #xxxxxx or list"))) )
+
+(defun colour-distance (colour-a colour-b &optional frame)
+  "Return an integer distance between COLOUR-A and COLOUR-B on FRAME.
+COLOUR-A and COLOUR-B may be either strings containing the color name,
+or lists of the form (RED GREEN BLUE).
+If FRAME is unspecified or nil, the current frame is used."
+  (if frame nil (setq frame (selected-frame)))
+  (let* ((colour-a (parse-colour colour-a frame))
+         (colour-b (parse-colour colour-b frame))
+         ;; now work out the various bit-shift values
+         (r   (lsh (- (car   colour-a) (car   colour-b)) -8))
+         (g   (lsh (- (cadr  colour-a) (cadr  colour-b)) -8))
+         (b   (lsh (- (caddr colour-a) (caddr colour-b)) -8))
+         (rmu (lsh (+ (car   colour-a) (car   colour-b)) -9)))
+    ;; and now the magic formula-fu
+    (+ (lsh (* (+ 512 rmu) r r) -8) (* 4 g g) (lsh (* (- 767 rmu) b b) -8)) ))
+</pre>
+
+An alternative for systems where color-gray-p doesn't work in Emacs CVS (bug report submitted):
+
+{{{
+(setq rcirc-colors
+      (let (candidates)
+        (dolist (item color-name-rgb-alist)
+	  (destructuring-bind (color r g b) item
+	    (let ((d (sqrt (+ (* (/ r 512) (/ r 512))
+			      (* (/ g 512) (/ g 512))
+			      (* (/ b 512) (/ b 512))))))
+	      (if (and (not (= r g))
+		       (not (= r b)); grey
+		       (> d 10)
+		       (< d 150))
+		(setq candidates (cons color candidates))))))
+	candidates))
+}}}
+
+== Problems ==
+I always get the error: 
+
+  004013  !!! ":tie 001 entropie :Welcome to the BitlBee gateway, entropie" (wrong-number-of-arguments (lambda (process sender response channel-buffer) (let ((target (with-current-buffer channel-buffer (or rcirc-target )))) (with-syntax-table rcirc-nick-syntax-table (while (re-search-forward \w+ nil t) (let ((face (gethash (match-string-no-properties 0) rcirc-color-mapping))) (when face (rcirc-add-face (match-beginning 0) (match-end 0) face))))))) 2)
+
+Any ideas?
+
+[new:AlexSchroeder:2007-08-09 07:36 UTC]
+Perhaps you're using an incompatible version of rcirc? I'm using the rcirc that comes with 22.1, and 
+the current version of ##rcirc-color.el##.
+
+----
+CategoryChatClient [[rcirc]]

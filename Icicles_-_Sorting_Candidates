@@ -1,0 +1,238 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Icompletion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Help on Candidates]] ||
+
+----
+
+== Sorting Candidates and Removing Duplicates ==
+
+By default, [[completion]] candidates are presented in [[buffer]]
+`*Completions*' in ''alphabetic'' order.  The order in `*Completions*' is also the order of
+[[Icicles - Cycling Completions | cycling]] among candidates.  Also by default, ''duplicate'' candidates
+are removed as completion choices.
+
+Some [[command]]s however, impose different orders, which are
+appropriate in their particular contexts, and some commands do not
+remove duplicates.  For example, command `icicle-search' (`##C-c `##') uses
+completion to navigate among search hits.  The order of
+the hit occurrences in the buffer is retained, as are duplicate
+matches.  Although some search-hit candidates might have the same
+text, they are located at different buffer positions.
+
+For a small minority of commands such as `icicle-search', the
+candidate order is fixed.  The completion candidates you see in
+buffer `*Completions*' are just names for (invisible) candidate
+objects that contain additional information (buffer and buffer
+position, in the case of `icicle-search').  Different such objects
+might have the same completion-candidate name, so it is important
+that the order of presentation remain constant.  ''Icicles'' picks the
+candidate object to use, according to which candidate name you
+click with `mouse-2' or which candidate name is current during
+cycling.
+
+Commands such as `icicle-search' are the exception. For most commands, you can interactively control the order of candidates
+and whether duplicates are removed.  Use '''`##C-,##'''' during completion
+to choose a different sort order or to turn off sorting altogether
+(one of the available sort orders is in fact called "##turned OFF##").  Use
+'''`##C-$##'''' to toggle the removal of duplicate candidates.  Commands such as
+`icicle-search', for which sorting is inappropriate, prevent you
+from sorting.
+
+
+
+
+[:ChangingSortOrder]
+=== Changing the Sort Order ===
+
+There are a couple of ways to use '''`##C-,##'''' (bound to command
+'''`icicle-change-sort-order'''').  Its behavior depends on the value of
+[[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-change-sort-order-completion-flag|icicle-change-sort-order-completion-flag]]</tt>'''', which is
+`nil' by default.  This value means to simply cycle to the next
+sort order each time you hit `##C-,##'.  A non-`nil' value means to use
+completion to choose another sort order.  If you have many
+available sort orders, then you might prefer a non-`nil' value.  In
+any case, you can also change this behavior on the fly: using
+''plain'' '''`<tt>[[prefix argument |C-u]]</tt>'''' (no number) with `##C-,##' reverses the meaning of
+`icicle-change-sort-order-completion-flag' for `##C-,##'.
+
+However, a ''[[numeric prefix argument | numeric]]'' prefix argument, such as `C-9', means to simply
+reverse the direction of the current sort order; it invokes
+command '''`icicle-reverse-sort-order''''.  For example, if
+candidates are sorted alphabetically from A to Z, then `##C-9 C-,##'
+flips the sort order, so that from then on sorting is from Z to A.  If
+buffer names are sorted from small to large buffer size, then `##C-9 C-,##' sorts large buffers first.  This works for all sort orders.
+The new sort order is echoed, so you can use this twice to just
+remind yourself of the current sort order.
+
+In addition to the current sort order, which is defined by the
+value of user option '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-function|icicle-sort-function]]</tt>'''', an alternative sort
+order is available at all times.  It is the value of option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-alternative-sort-function|icicle-alternative-sort-function]]</tt>''''.  By default, this sorts
+candidates into two alphabetical groups: those previously used as accepted input,
+followed by those not yet used.
+
+Just as you can choose a different current sort order using `##C-,##',
+so you can choose a different alternative sort order using '''`##M-,##''''.
+How do you actually use the alternative sort order?  Use '''`##C-M-,##''''
+(command '''`icicle-toggle-alternative-sorting'''') to swap the
+alternative sort for the current sort.  This is the quickest way
+to flip between two sort orders.  If, for example, you set your
+alternative sort order to "##turned OFF##", then this is a quick way
+to toggle sorting on and off.
+
+Commands that read buffer names with completion can use another
+sort-function user option, '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-sort|icicle-buffer-sort]]</tt>''''.  It has the same
+meaning as `icicle-sort-function', but it applies only to those commands.  It is
+provided so that you can customize it separately.  You can also
+define buffer configurations that are used for completion: named
+sets of buffers, sort functions, and other parameters that control
+completion of buffer names.
+
+
+
+
+[:DefiningNewSortOrders]
+=== Defining New Sort Orders ===
+
+When you use `##C-,##' or `##M-,##', the sort orders that you can choose
+from are those in user option '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-functions-alist|icicle-sort-functions-alist]]</tt>''''.  You
+can customize this option to add or remove available sort orders.
+A better way to define a new sort order is to use macro
+'''`icicle-define-sort-command'''' in your Emacs init file (##~/.emacs##).
+This defines a new '''Icicles''' command, named `##icicle-sort-##''##ORDER##'' ',
+where ''`ORDER''' is the name of the new sort order.  The definition of the ##alphabetical## sort order provides an example:
+
+  (icicle-define-sort-command "alphabetical" icicle-case-string-less-p
+    "Sort completion candidates alphabetically.")
+
+The first argument, ##"alphabetical"##, is a string naming the new sort order.  When you change to this sort order, a
+message says "##Sorting is now ##'''##alphabetical##'''".  Whatever sort-order
+name you provide is used in the message.
+
+The second argument is the actual function used for sorting.  It
+can be any function, including a [[lambda expression]].  The function
+takes two string arguments and returns non-`nil' if and only if the
+first string sorts before (is "less than") the second. In this
+case, function `icicle-case-string-less-p' is used, which compares its two
+arguments alphabetically (lexicographically).  The third argument
+is the [[doc string]] for the new sorting command.
+
+The result of this definition is:
+
+# The creation of command `##icicle-sort-##'''##alphabetical##''''.
+
+# The addition of an entry for the new sort order in option
+   `icicle-sort-functions-alist'.  The entry associates sort order
+   ##alphabetical## with comparison function `icicle-case-string-less-p'.
+
+You can invoke the new sorting command any time using `M-x', but
+you can also change to the new sort order using `##C-,##' (or `##M-,##')
+during [[minibuffer]] completion.
+
+
+
+
+[:DifferentSortForDifferentUses]
+=== Different Sorts for Different Sorts of Uses ===
+
+There are many different uses of completion in Emacs, and this means that sorting candidates needs to be flexible -- there cannot be a single sort order that is useful for all purposes. Completion, and therefore also sorting of completion candidates, needs to deal with different types of candidates and different numbers of them, in different contexts.
+
+'''Icicles''' predefines many sort functions, and you can easily define more of your own. You can choose a different sort at any time, as mentioned above. A good sort order can be a big help, depending on the context. However, sorting isn't free, and it's helpful to think for a moment about some of the consequences of sorting, in terms of performance.
+
+What does a sort function do? It determines which of two strings should come first, that is, which is "less than" the other. During sorting, pairs of candidates are compared using the sort function.  And each time you change your input by typing or deleting a character, the new set of matching candidates is sorted (if `icicle-incremental-completion-flag' is non-`nil').
+
+The number of candidates to be sorted depends on the kind of
+completion and how you use '''Icicles'''. Some '''Icicles''' users like to use cycling more and completion less, which means sorting more candidates.  Other users favor using completion to narrow down the number of matches (which I recommend).  Some commands typically
+have few possible completion candidates; others have many.
+Buffer-name completion, for example, typically involves relatively
+few candidates, whereas file-name completion typically involves
+many.
+
+If there are many candidates matching your input, then many comparisons will be made each time the candidate set is sorted. This means that if your sort function is complex, response can be slow. A complex sort function might be OK for sorting a small or medium set of candidates, but it might not be appropriate for sorting a very large set.
+
+Only you, as a user, can control which sort makes the best sense for you in any given situation. If you are likely to have zillions of candidates in some context, then you probably will want to change to a sort that computes quickly. You can, of course, even choose not to sort at all, but simple sort comparisons don't noticeably impact performance, even for a very large number of candidates.  
+
+'''Icicles''' could offer a threshold option similar to `icicle-incremental-completion-threshold' (or it could reuse that option), and not bother to sort if the number of candidates passed the threshold, but there can be many sort orders of differing complexity, so a set of thresholds would really be needed, perhaps one per sort order. 
+
+Rather than having you try to manage such complexity ahead of time using options, it's better to just let you manage it at completion time: ''Choose the sort order with knowledge of the possible candidate set''. For example, if the set of candidates to sort will include every file on your file system, then you probably will want to use a simple sort. On the other hand, there are  situations where you might nevertheless prefer to wait a few seconds, in order to perform a complex sort that is of particular use.
+
+In sum, '''Icicles''' keeps it simple, and leaves it up to you to choose the appropriate sort order for any given context. This design choice is one reason why '''Icicles''' makes it easy to choose a sort even while you are completing input -- each act of completion is different. 
+
+It can help you choose, however, to know which of the predefined '''Icicles''' sort orders are more complex, and therefore tend to be slower. Here they are:
+
+|| '''Sort Order''' || '''Sort Function Used''' ||
+|| by previous use alphabetically || `icicle-historical-alphabetic-p' ||
+|| by last use || `icicle-most-recent-first-p' ||
+
+The reason these sorts are slower is that they check the current minibuffer history, to see whether, and where, each candidate is located in the history list. If you, like I, have very long history lists, then this can take a while. I use histories of virtually unlimited length -- I let SaveHist (<tt>[[savehist-20+.el]]</tt>) save all of my histories from one Emacs session to the next.
+
+Here are some of the '''Icicles''' sort orders that exist by default:
+
+* '''alphabetical''' -- see [[Icicles - History Enhancements#SortPreviousFirst|Putting Previous Candidates First: `C-M-,']]
+* '''case-insensitive''' -- see [[Icicles - Nutshell View#CompletionStatusIndicators|Completion Status Indicators]]
+* '''by last use as input'''
+* '''by previous use alphabetically''' -- see [[Icicles - History Enhancements#SortPreviousFirst|Sorting Previous Inputs First]]
+* by color name (colors) -- see [[Icicles - Candidates with Text Properties]]
+* by hue (colors)
+* by purity/saturation (colors)
+* by brightness/value/luminance (colors)
+* by amount of red (colors)
+* by amount of green (colors)
+* by amount of blue (colors)
+* by RGB values (colors)
+* ''by key name, prefix keys first'' (keys) -- see [[Icicles - Key Completion#CompletingPrefixKeys|Completing Prefix Keys]]
+* ''by key name, local bindings first'' (keys) -- see [[Icicles - Key Completion#HighlightLocalBindings|Local Bindings are Highlighted]]
+* ''by command name'' (commands)
+* '''by abbrev frequency''' (commands) -- see [[Icicles - Multi M-x#EveryCommandAMultiCommand|Every Command A Multi-Command]]
+* by buffer size (buffer names)
+* ##*##...##*## buffers last (buffer names)
+* by major mode name (buffer names)
+* ''by mode-line mode name'' (buffer names)
+* by file/process name (buffer names)
+* '''by last file modification time''' (file names) -- see [[Icicles - File-Name Input#ReadingFileNames|Reading File Names]]
+* '''by directories last''' (file names)
+* '''in book order''' (Info) -- see [[Icicles - Info Enhancements#IciclesCompletionForInfo|Icicles Completion for Info]]
+* '''special candidates first''' -- see [[Icicles - Key Completion#HighlightLocalBindings|Local Bindings are Highlighted]], [[Icicles - Candidates with Text Properties]], [[Icicles - Object-Action Interaction]]
+* '''proxy candidates first''' -- see [[Icicles - Completions Display]]
+* '''extra candidates first''' -- see [[Icicles - Global Filters]]
+* '''by second multi-completion part''' (multi-completions) - see [[Icicles - Multi-Completions#SortingBySecondPart|Sorting By Multi-Completion Second Parts]]
+* '''turned OFF'''  (does not sort at all)
+
+As you can see, some are appropriate for color-name completion, some
+for buffer-name completion, and some for file-name completion.
+Some are general, appropriate for most kinds of completion.
+
+Those in ''italics'' can be used only with Emacs 22 or later.  Those in '''boldface''' are defined using `icicle-define-sort-command', so
+they correspond to explicit commands whose doc you can examine.
+The command names in this case are `icicle-sort-' followed by the
+sort-order names (with hyphens substituted for spaces) -- for example, `##icicle-sort-##'''##by-directories-last##'''' and `##icicle-sort-##'''##turned-OFF##'''.
+
+
+
+'''See Also:'''
+
+* [[Icicles - Customization and General Tips]] for more about
+  `icicle-buffer-sort' and other buffer-name completion
+  parameters.
+
+* [[Icicles - Global Filters]] for a way to filter and sort the domain
+  of discourse, that is, all possible candidates, prior to any use
+  of completion.
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Icompletion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Help on Candidates]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryDocumentation
+CategoryHelp
+CategoryProgrammerUtils
+
+

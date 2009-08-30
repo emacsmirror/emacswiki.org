@@ -1,0 +1,11 @@
+Due to the fact that MPlayer recommends use of non-free software (and in part due to the poor quality of its backend interface), all MPlayer support code has been removed from the main [[Bongo]] repository.
+
+Bongo developers recommend VLC as a superior alternative to MPlayer.  However, if you still want to use MPlayer, this package lets you do it.
+
+* [[bongo-mplayer.el]]
+
+Here is an example of how the MPlayer website recommends to users that they download non-free binary codecs:
+
+: “For a complete MPlayer installation you will need sources, a set of binary codecs, and a skin if you want a graphical user interface.”
+
+Mathematicians insist, however, that sets can be empty, thereby making the above hardly a recommendation at all.

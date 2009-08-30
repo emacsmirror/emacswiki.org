@@ -1,0 +1,138 @@
+The idea is to create a user style sheet to override the defaults
+your browser is presenting you.
+
+== Finding the Mozilla User Style Sheet ==
+
+* http://www.squarefree.com/userstyles/ -- notes about finding the user style sheet and some suggested settings
+* http://www.w3.org/TR/CSS2/ -- the spec for CSS2
+
+In my case, the user style sheet is located here:
+
+    /home/alex/.mozilla/alex/k5vntcoo.slt/chrome/userContent.css
+
+== Settings ==
+
+=== Margin ===
+
+If you browse with a very wide window, you can still force text to
+wrap at acceptable line widths as follows:
+
+    p, blockquote, li { max-width: 35em; }
+
+This will not override max-width if a site ''does'' specify it.
+
+=== Background ===
+
+If you don't like websites specifying background colors, such as the
+Emacs Wiki, you can counter that by using the !important keyword.
+This overrides the settings for ''all'' sites, however, and you might
+not want to do this.
+
+    body { background-color: #DDD !important; color: #000 !important; }
+    * { background: inherit !important; color: inherit !important; }
+    a { color:#00F !important; }
+    a:visited { color:#A0A !important; }
+
+=== A Stylesheet For EmacsWiki Only ===
+
+In order to support settings per-site, you can specify a class for the
+body attribute, because Oddmuse wikis carry the URL of the wiki in
+their body class.
+
+For all of the above settings to apply to the Emacs Wiki only, and
+only when using the URL http://www.emacswiki.org/cgi-bin/wiki.pl, put
+the following in your user style sheet:
+
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] { background-color: #DDD !important; color: #000 !important; }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] * { background: inherit !important; color: inherit !important; }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] a { color:#00F !important; }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] a:visited { color:#A0A !important; }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] img.logo { border-style:solid !important; }
+
+=== Logo ===
+
+Notice in the above code how I sneaked in a border for the logo,
+because the logo has a white background instead of a transparent
+background.
+
+The problem with a logo with a transparent background is that people
+can just force all sites to use specific background colors.  If they
+choose grey, for example, the logo will look very different, because
+you cannot see the stylized E anymore.  You can hide the logo by
+inserting in the CSS something like:
+
+   body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] img.logo { visibility:hidden;}
+
+CSS2 allows you to insert content thus putting your own logo. For instance if you want to put a new logo
+after the header you can use something like:
+
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] div.header:after {
+        content: url(file:///my/path/my_emacs_wiki_logo.png);
+        display: block;
+    }
+
+If you use display:none for the logo, then the entire element will be
+gone, and therefore img.logo:after or img.logo:before will have no
+effect.  Use visibility:hidden instead.
+
+Positionning does not seems to work for the inserted content. So
+you'll probably have to find a workaround for your stylesheet.
+
+A useful ressource for more info about generated content:
+[http://www.westciv.com/style_master/academy/css_tutorial/advanced/generated_content.html Complete CSS Guide].
+
+=== Small Problems ===
+
+Take care not to redefine two elements in one line ie:
+
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] code, pre {color: #EDC !important; font: 90% monospace;}
+
+This leads to some global redefinitions of some elements (At least for me
+under linux with Mozilla 1.3 and Firebird 0.6).
+
+: That's the correct behaviour because the comma has a higher precedence than the other parts of the selector. Therefore, that example will select code elements inside a body with that class or a pre element. --[[db48x]]
+
+=== Specific Classes Used On EmacsWiki ===
+
+To learn more about the CSS classes used for the EmacsWiki see
+Oddmuse:Cascading_Style_Sheet
+
+== Some user stylesheets ==
+
+RomainFrancoise: I like light gray backgrounds, and narrow columns for
+text.  I also decided to shrink the logo a bit, and to justify text so
+that it's nice to look at.  My "stylesheet" is:
+
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] { 
+    background-color: #d1d1d1 !important; 
+    color: #000 !important;
+    padding-left: 15% !important;
+    padding-right: 15% !important;
+    }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] * { 	
+    font-family: verdana, arial, sans-serif !important; 
+    background: inherit !important; color: inherit !important;
+    }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] a { 
+    color: #606060 !important; 
+    }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] a:visited { 
+    color: #303030 !important; 
+    }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] img.logo { 
+    border: 1px solid #000 !important;
+    width: 98px !important;
+    height: 56px !important;
+    }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] p, blockquote, li { 
+    max-width: 35em !important;
+    text-align: justify !important;
+    }
+    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] input {
+    border: 1px dashed #000 !important;
+    }
+
+PierreGaston: dark theme, layout redefinition. See my page on this wiki.
+
+----
+CategoryEmacsWikiSite

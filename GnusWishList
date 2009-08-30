@@ -1,0 +1,46 @@
+I would like to have a function I can add to `message-send-hook' that will check to see if the message recipients exist in my BBDB. If they don't already exist, I'd like to be prompted whether to add them. I explored doing this myself, but `bbdb-annotate-message-sender' is over 300 lines long and I'm just not up to it right now. Maybe there is a better function to use as a model? -- JohnSullivan
+
+Maybe this?
+
+<pre>
+;moy-bbdb notices outgoing adresses                                                                                                                                                                                                                                                 
+(autoload 'bbdb/send-hook "moy-bbdb"
+   "Function to be added to `message-send-hook' to notice records when sending messages" t)
+  (add-hook 'message-send-hook 'bbdb/send-hook) ; If you use Gnus                                                                                                                                                                                                                   
+</pre>
+
+-- JoakimVerona
+
+To have this automatically add outgoing addresses, use this.
+
+<pre>
+(setq bbdb/send-auto-create-p t)
+(setq bbdb/send-prompt-for-create-p t)
+</pre>
+
+To query whether to add outgoing messages, use this.
+
+<pre>
+(setq bbdb/send-auto-create-p 'prompt)
+(setq bbdb/send-prompt-for-create-p t)
+</pre>
+
+-- Nick Alexander
+
+----
+Something I would like in BBDB is an ability to keep track of old email addresses, I mean: marking them as old ones, ensuring we don't reuse them for future mails.
+
+Removing them from BBDB is not a good option, as they will be re-added the next time we open an old mail.
+
+Leaving it in BBDB is "dangerous", because we have no way to know that the user has changed its email address (how to distinguish between good secondary email addresses, and deleted ones?)...
+
+FabriceNiessen
+
+----
+
+i would love to have a simple way of putting a "new message count" in the status bar. i have indeed hacked something like this using an external perl script to check my imap account and then hooking it into the mail polling in gnus, but there should be a simpler, obvious, documented way.
+
+BradClawsie
+
+----
+CategoryGnus

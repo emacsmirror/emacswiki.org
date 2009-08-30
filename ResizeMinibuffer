@@ -1,0 +1,6 @@
+In Emacs 20 we used resize-minibuffer-mode, but in Emacs 21 this is
+the default.  The size of the EchoArea (not the MiniBuffer) is
+controlled by max-mini-window-height.
+
+----
+CategoryModes

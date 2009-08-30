@@ -1,0 +1,58 @@
+portrait:http://ryan.barrett.name/ryan.jpg
+
+I use Emacs, and occasionally write Elisp code.
+
+* http://snarfed.org/ -- My blog
+* http://ryan.barrett.name/ -- My personal page
+* <code>emacswiki at ryanb dot org</code> -- My email
+
+The one significant piece of elisp I've contributed is a minor mode,
+[[Fillcode]] ([[fillcode.el]]),
+which can fill some parts of source code in many languages. Specifically, it
+fills function calls, prototypes, and arithmetic and boolean expressions. See
+the [http://snarfed.org/space/fillcode official fillcode page] for details.
+
+<pre>
+
+
+</pre>
+
+I've posted other emacs tips and tricks on [http://snarfed.org/ snarfed.org]:
+* [http://snarfed.org/space/emacs+and+jikes Interpreting Jikes error messages in compilation mode]
+* [http://snarfed.org/space/emacs+X+resources Faster Emacs startup by turning off toolbar and menu bar with X resources]
+* [http://snarfed.org/space/emacs+keybindings+in+firefox Enabling Emacs keybindings in Firefox]
+* [http://snarfed.org/space/minimal+.emacs+for+fast+startup Minimal .emacs for fast startup]
+* [http://snarfed.org/space/emacs+keybindings+with+number+keys Quoting number keys for keystrokes in Emacs]
+* [http://snarfed.org/space/Emacs+and+remote+X+Windows Faster Emacs on remote X displays by turning off cut buffer/ selection synchronization]
+* [http://snarfed.org/space/gnu+emacs+backup+files Centralizing backup and autosave files]
+* [http://snarfed.org/space/emacs+page+up+page+down Making page up and page down behave like other editors]
+* [http://snarfed.org/space/control+arrow+keys+in+rxvt%2C+tcsh%2C+and+emacs Control-arrow keys in emacs -nw under various terminals and shells]
+
+[new]
+I didn't want to go through the hassle of registering for yet another site, so I'll add a comment here instead.
+
+In "Quoting number keys for keystrokes in Emacs" you wrote:
+[new]
+    (global-set-ket [(control \1)] 'foo)
+
+Note the escaped 1. Evidently this keystroke syntax interprets numeric arguments as key ids, or something, instead of the key's actual character. So, to make it interpret the key binding the way we want, we have to escape the 1.
+
+[new]
+
+The thing following `control' can be a symbol or a character. GNU
+Emacs has no separate character object type and 1 is
+indistinguishable from C-a as a character.
+
+    (list 1     (type-of 1))      =>  (1 integer)  the number 1/the char ^A
+    (list ?\C-a (type-of ?\C-a))  =>  (1 integer)  ditto
+
+    (list '\1   (type-of '\1))    =>  (\1 symbol)  the symbol 1
+
+?1 would work too:
+
+    (list ?1    (type-of ?1))     =>  (49 integer) the number 49/the char 1
+
+I suggest (global-set-key (kbd "C-1") 'foo), btw.
+
+----
+CategoryHomepage

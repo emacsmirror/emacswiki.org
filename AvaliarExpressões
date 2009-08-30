@@ -1,0 +1,14 @@
+Se quiseres saber o valor de uma variável, o mais fácil é ver a documentação da variável usando `C-h v'.  Isto vai mostrar a documentação da variável e o seu valor.
+
+Quando estiveres a ver código, coloca o cursor (ponto de edição) depois do nome da variável e faz `C-x -C-e', o que irá executar `eval-last-sexp'.  Uma sexp é uma expressão lisp -- código colocado entre parêntesis, uma string entre aspas, um nome de uma variável, uma expressão com plicas, um número, etc.  Isto irá mistrar o valor da expressão na área de eco.  Se precisares de ver novamente o valor, podes mudar para o buffer *Messages* e procurar aí o resultado.
+
+Podes também inserir o resultado da avaliação directamente no buffer usando um argumento de prefixo:  `C-u C-x C-e' vai inserir o valor no ponto de edição.  Por vezes, isto é útil se precisares de mais tempo para estudar a saída ou se quiseres escrever algum código que utiliza esta saída.
+
+Normalmente, deves utilizar o InferiorEmacsLispMode -- `M-x ielm'.  Ele cria um buffer muito parecido com uma shell.  Todas as expressões lips que escrevas irão ser avaliadas e o resultado escrito nesse buffer.  Muito útil.
+
+Para uma avaliação rápida, podes também utilizar `M-:' -- isto permite-te introduzir uma expressão no minibuffer, quer será depois avaliada, e o resultado irá ser apresentado na área de echo (ou inserida no buffer actual se for fornecido um argumento de prefixo).  Isto poupa-te o trabalho de escreveres a expressão no buffer, usar `C-x C-e', e apagá-la outra vez.  Como podes ver, o benefício é pequeno.  E não o utilizas para muito mais, já que a atribuição básica de variáveis é feita através do uso de `M-x set-variable' e as variáveis são examinadas com `C-h v', como já foi explicado.
+
+Quando escreves código elips podes também utilizar `C-M-x' (eval-defun), que avalia a função definida no ponto de inserção.  Se o ponto de inserção estiver dentro ou imediatamente depois da declaração de uma variável, esta função, ao contrário do eval, coloca a variável com o valor contido na declaração.
+
+----
+CategoriaCódigo

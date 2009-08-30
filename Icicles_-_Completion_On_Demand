@@ -1,0 +1,74 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Regressive Completion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Moving Between the Minibuffer and Other Buffers]] ||
+
+----
+
+== Completion On Demand ==
+
+When the [[minibuffer]] is active for your input, [[completion]] is not
+always available.  Functions such as `completing-read' and
+`read-file-name' provide completion, but other functions that read
+input in the minibuffer, such as `read-from-minibuffer' and
+`read-string', do not provide completion.
+(See [[Icicles - Nutshell View#CompletionStatusIndicators|Completion Status Indicators]], for how to tell when
+completion is available in '''Icicles'''.)
+
+But in '''Icicles''' you can always ''invoke'' ([[lax]])  completion to insert
+some completed text in the minibuffer -- this is
+'''[::completion on demand]'''.
+
+[:icicle-read+insert-file-name]
+On-demand completion is always available to insert a ''file name''.
+You invoke this using '''`C-M-F'''', that is, `C-M-S-f'
+('''`##icicle-read+insert-file-name##'''').  A recursive minibuffer is used
+to perform the completion.  The result of completing is inserted
+at [[point]] in the parent minibuffer, without replacing any other
+text that might already be there.
+
+You can use this feature to add multiple file or directory names
+to the same minibuffer input.  In this way, for instance, you can
+use it to add particular file or directory names as arguments to a
+shell command that you input in the minibuffer.  By default, a
+relative name is inserted, but if you use a [[prefix argument]] then
+the directory component is included.
+
+[:icicle-completing-read+insert]
+Similarly, you can use '''`C-M-C'''', that is, `C-M-S-c'
+('''`##icicle-completing-read+insert##''''), to invoke non file-name
+completion.  This, however, is available only if the command
+reading from the minibuffer allows it, by defining a set of
+possible completions.
+
+The actual keys used for on-demand completion are customizable,
+using [[option]]s '''`<tt>[[Icicles - Customization and General Tips#icicle-read+insert-file-name-keys|icicle-read+insert-file-name-keys]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-completing-read+insert-keys|icicle-completing-read+insert-keys]]</tt>''''.  The default values are `C-M-S-f' and `C-M-S-c'.
+
+[:icicle-insert-history-element]
+Another kind of on-demand completion is provided by '''`M-o''''
+('''`icicle-insert-history-element'''').  Again, this is always
+available in the minibuffer, regardless of whether input is being
+read with completion.  This invokes completion against the entries
+in the current minibuffer history.  See [[Icicles - History Enhancements#InsertPreviousInputs|Using Completion to Insert Previous Inputs: `M-o']].
+
+
+
+
+
+
+
+
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Regressive Completion]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Moving Between the Minibuffer and Other Buffers]] ||
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+

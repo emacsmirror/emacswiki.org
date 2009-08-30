@@ -1,0 +1,15 @@
+This can be something useful sometimes to tell what you are proud user of :)
+
+==Code==
+
+<pre>
+(eval-after-load 'rcirc                                                                                                                          
+  '(defun-rcirc-command sv (arg)                                                                                                                 
+     "Inform other people of what IRC client you are using."                                                                                                                        
+     (interactive "i")                                                                                                                           
+     (rcirc-send-message process target (concat "Proud user of " rcirc-id-string))))
+</pre>
+
+Launch it in a [[rcirc]] buffer either with /sv or M-x rcirc-cmd-sv RET
+----
+CategoryChatClient [[rcirc]]

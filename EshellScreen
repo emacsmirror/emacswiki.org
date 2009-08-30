@@ -1,0 +1,27 @@
+GNU screen understands special escape sequences to invoke screen commands.  You can use this to launch new screens from eshell.  For this to work, you must grant permissions for the :window: screen user to run things, using the following screen command (place in your ~/.screenrc):
+
+  acladd :window:
+
+
+As an example of this, here's a little trick to get "ssh" in eshell to launch ssh in a new screen when running under GNU screen, or a new xterm when running under X.  Otherwise, ssh is run in a new term buffer.
+
+ (defun eshell/ssh (&rest args)
+  "Secure shell"
+  (let ((cmd (eshell-flatten-and-stringify
+              (cons "ssh" args)))
+        (display-type (framep (selected-frame))))
+    (cond
+     ((and
+       (eq display-type 't)
+       (getenv "STY"))
+      (send-string-to-terminal (format "\033]83;screen %s\007" cmd)))
+     ((eq display-type 'x)
+      (eshell-do-eval
+       (eshell-parse-command
+	(format "rxvt -e %s &" cmd)))
+      nil)
+     (t
+      (apply 'eshell-exec-visual (cons "ssh" args))))))
+
+----
+CategoryEshell

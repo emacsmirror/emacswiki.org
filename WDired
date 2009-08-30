@@ -1,0 +1,107 @@
+JuanLeónLahozGarcía has written Lisp:wdired.el which allows you to rename files by just editing the Dired buffer. This is really really great for renaming all those MP3 files :) -- especially when combined with [http://www.antisleep.com/elisp/gse-number-rect.el gse-number-rect] by ScottEvans.
+
+In a Dired buffer in Emacs 22, use `M-x wdired-change-to-wdired-mode' to to make a buffer writable (recent CVS versions also have this bound to `C-x C-q'). Change the filenames as you see fit and hit `C-c C-c' to make your changes permanent.
+
+== Make parent directories patch ==
+Here is a small patch to make wdired create parent directories.
+This is nice when you are moving files to non-existent directories,
+when improving a directory structure. JoakimVerona
+
+ @@ -518,6 +518,7 @@
+                       (wdired-search-and-rename file-ori file-new)
+                     (condition-case err
+                         (let ((dired-backup-overwrite nil))
+ +                         (wdired-create-parentdirs file-new)
+                           (dired-rename-file file-ori file-new
+                                              overwrite))
+                       (error
+ @@ -545,6 +546,13 @@
+    (set-buffer-modified-p nil)
+    (setq buffer-undo-list nil))
+  
+ +;;JAVE create parent directories of filename if the parents doesnt exist
+ +(defun wdired-create-parentdirs (file-new)
+ +  (message "create dir for file %s" file-new)
+ +  (make-directory (file-name-directory file-new) t)
+ +)
+ +
+ +
+  ;; Renames a file, searching it in a modified dired buffer, in order
+  ;; to be able to use `dired-do-create-files-regexp' and get its
+  ;; "benefits"
+
+
+== Patch: mode-name ==
+
+ ***************
+ *** 336,342 ****
+    (force-mode-line-update)
+    (setq buffer-read-only t)
+    (setq major-mode 'dired-mode)
+ !   (setq mode-name "Dired")
+    (dired-advertise)
+    (remove-hook 'kill-buffer-hook 'wdired-check-kill-buffer t)
+    (set (make-local-variable 'revert-buffer-function) 'dired-revert))
+ --- 336,342 ----
+    (force-mode-line-update)
+    (setq buffer-read-only t)
+    (setq major-mode 'dired-mode)
+ !   (dired-sort-set-modeline)
+    (dired-advertise)
+    (remove-hook 'kill-buffer-hook 'wdired-check-kill-buffer t)
+    (set (make-local-variable 'revert-buffer-function) 'dired-revert))
+
+== Beware of some renaming operations ==
+
+I tried to send the following bug report to the address given in wdired.el,
+but it seems it is no longer valid.  So here it is, as a warning to others
+and possibly as an instigation to someone who can fix it:
+
+Consider a directory with files foo and bar:
+
+  c:/trash:
+  total 1  free 1908672
+  drwxrwxrwx   2 areiner  root        0 Okt 23 10:46 .
+  drwxrwxrwx   2 areiner  root        0 Jän  1  1970 ..
+  -rw-rw-rw-   1 areiner  root        5 Okt 23 10:46 bar
+  -rw-rw-rw-   1 areiner  root        5 Okt 23 10:46 foo
+
+In order to overwrite bar with foo using wdired mode, I first deleted bar and overwrote foo with bar, ending up with:
+
+  c:/trash:
+  total 1  free 1908672
+  drwxrwxrwx   2 areiner  root        0 Okt 23 10:46 .
+  drwxrwxrwx   2 areiner  root        0 Jän  1  1970 ..
+  -rw-rw-rw-   1 areiner  root        5 Okt 23 10:46 
+  -rw-rw-rw-   1 areiner  root        5 Okt 23 10:46 bar
+
+before hitting C-cC-c (wdired-finish-edit).
+
+Evidently, Wdired first performed the renaming
+(prompting me with: "File c:/trash/bar already exists; rename to it anyway? (yes or no) ")
+and  left me with the only file, bar, marked for deletion, which is dangerous at least and does not
+really reflect the change I wanted to make.
+
+  c:/trash:
+  total 1  free 1908672
+  drwxrwxrwx   2 areiner  root        0 Okt 23 10:49 .
+  drwxrwxrwx   2 areiner  root        0 Jän  1  1970 ..
+ D -rw-rw-rw-   1 areiner  root        5 Okt 23 10:46 bar
+
+I know why this happens, but it would be nice if wdired caught the fact that the old bar was already
+gone when I agreed to rename foo to bar, and that the new bar should not be marked for deletion any
+more.  On a related note, Wdired might also want to catch attempts to rename several files to the same
+name and similar things.
+
+== Improved renaming order ==
+
+[http://web.psung.name/emacstips/wdired-smart-renaming.html Here] is a patch which makes WDired slightly smarter about choosing the order in which to rename files. For example, if you have files named 001.txt and 002.txt and rename them to 000.txt and 001.txt, WDired (unfortunately) attempts to do the second rename first and will ask you whether you want to clobber 001.txt. The patched version changes the order to avoid this kind of situation when possible. -- PhilSung
+
+[new] As of 14 June 2008, this has been obsoleted in Emacs CVS by an even better implementation. -- PhilSung
+
+== Wdired and DiredPlus ==
+
+* <tt>[[wuxch-dired.el]]</tt>, <tt>[[wuxch-dired-copy-paste.el]]</tt> -– libraries that build on DiredPlus and [[WDired]]
+
+----
+CategoryDirectories

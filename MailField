@@ -1,0 +1,23 @@
+Download: Lisp:mail-field.el
+
+Lisp:mail-field.el defines two functions, mail-next-field and mail-previous-field which you can use to easily navigate between mail headers.
+
+=== Configuration ===
+
+Put mail-field.el in your load-path and add the following line to the .emacs file:
+
+ (require 'mail-field)
+
+For the MailMode:
+
+ (add-hook 'mail-mode-hook '(lambda ()
+        (define-key mail-mode-map [C-tab] 'mail-next-field)
+        (define-key mail-mode-map [S-C-tab] 'mail-previous-field)))
+
+For MessageMode:
+
+ (add-hook 'message-mode-hook '(lambda ()
+      (define-key message-mode-map [C-tab] 'mail-next-field)
+      (define-key message-mode-map [S-C-tab] 'mail-previous-field)))
+----
+CategoryMailAddons

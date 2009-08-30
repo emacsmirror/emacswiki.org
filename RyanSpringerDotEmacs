@@ -1,0 +1,127 @@
+;;; Title:   Ryan Springer's .emacs file
+;; Website: http://www.autumnandryan.com/wiki
+;; License: Public Domain
+;;
+;;                                     Numbers 11:29
+
+;;
+;;
+;; Allow easy customization of emacs without restarting it.
+;;
+;;
+
+(defun edit-dot-emacs ()
+  "Load the .emacs file into a buffer for editing."
+  (interactive)
+  (find-file "~/.emacs"))
+
+(defun reload-dot-emacs ()
+  "Save .emacs, if it is in a buffer, and reload it."
+  (interactive)
+  (if (bufferp (get-file-buffer "~/.emacs"))
+    (save-buffer (get-buffer "~/.emacs")))
+  (load-file "~/.emacs"))
+
+;;
+;;
+;;  Settings
+;;
+;;
+
+(set-background-color "black")
+(set-foreground-color "white")
+(set-cursor-color "green")
+
+(set-scroll-bar-mode 'right)
+(column-number-mode 1)
+ 
+(setq make-backup-files nil)
+
+;; No tabs! - spaces only
+
+(setq tab-width 4)
+(setq indent-tabs-mode nil)
+
+;; No bell at all
+
+(setq ring-bell-function 'ignore)
+ 
+;; shift + arrow key = switch to window
+
+(windmove-default-keybindings)
+
+;; ssh-based file editing
+ 
+(setq tramp-default-method "ssh")
+ 
+;; Turn off the toolbar
+
+(tool-bar-mode 0)
+
+;; Smooth Scrolling
+
+(setq scroll-step            1
+      scroll-conservatively  10000)
+
+;; Add highlighting type thing for the selected region
+
+(transient-mark-mode 1)
+
+;; Cut and paste stuff
+
+(defun my-copy ()
+  "Simple copy function."
+  (interactive)
+  (clipboard-kill-ring-save (region-beginning) 
+                            (region-end))) 
+
+;;
+;;
+;;  Terminal Mode Tweaks
+;;
+;;
+
+(defun my-terminal-mode ()
+  (interactive)
+  (ansi-term "/bin/bash"))
+
+;;
+;;
+;;  Viper-Mode stuff
+;;
+;;
+
+;; This turns on viper, which is vi-emulation
+ 
+(setq viper-inhibit-startup-message 't)
+(setq viper-expert-level '5)
+(setq viper-mode t)
+
+(require 'viper)
+
+;; vimpulse
+
+(load-file "~/.emacs.d/vimpulse.el")
+
+;; Slime stuff
+
+(setq inferior-lisp-program "/usr/bin/sbcl")
+(require 'slime)
+(slime-setup)
+
+;;
+;;
+;;  Hotkeys
+;;
+;;
+
+(global-set-key (kbd "C-`")  'my-terminal-mode)
+(global-set-key (kbd "C-<f1>")  'my-copy)
+
+(global-set-key (kbd "<f2>") 'save-buffer)
+
+(global-set-key (kbd "C-1")  'previous-buffer)
+(global-set-key (kbd "C-2")  'next-buffer)
+
+(global-set-key (kbd "C-8")  'edit-dot-emacs)
+(global-set-key (kbd "C-9")  'reload-dot-emacs)

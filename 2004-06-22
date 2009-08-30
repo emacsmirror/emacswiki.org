@@ -1,0 +1,21 @@
+A UniCode problem:
+
+* こんにちは ← Hiragana work well
+* 本 ← but kanji does not
+* 家 ← an other kanji
+
+To try, save this page using
+
+    wget http://www.emacswiki.org/cgi-bin/wiki/raw/2004-06-22
+
+If you open the file using ''emacs -q'', you'll note that the two kanji are not decoded correctly.  Evaluate ''M-x utf-translate-cjk-mode'' or add the following to your ~/.emacs:
+
+    (utf-translate-cjk-mode 1)
+
+Now it should work.
+
+This requires CVS Emacs.
+
+: こんにちは! Hmm... I didn't have any problem with those ''kanji'' doing exactly what you suggested. From the docstring for {utf-translate-cjk-mode}:
+
+:: ...This option is on by default....

@@ -1,0 +1,78 @@
+=== Warning ===
+
+I have found out that in order to use this hack you will need to have VisualStudio 6 installed. I know, sounds crazy but that is how it seems to be. Read on below in the discussion for details.
+
+=== What is it? ===
+
+From the Commentary:
+
+ ;; Even though I have to use MS Outlook at work I like writing my
+ ;; e-mails in a normal *mail* buffer in Emacs. I usually copy and
+ ;; paste the text from there into the mail. One day I got tired of
+ ;; that and hacked together this little package.
+ ;;
+ ;; It uses MAPI to send a message by fetching information from a
+ ;; normal *mail* buffer to build some vbscript code that is executed
+ ;; by wscript.exe.
+ ;;
+
+Description of MAPI - http://en.wikipedia.org/wiki/MAPI
+
+Information about wscript.exe - http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/wsh_runfromwindowsbasedhost.mspx?mfr=true
+
+Lisp:w32-send-mapi.el
+
+About the name: yes, it should probably be called w32-send-mail-from-mail-buffer-using-vbscript-and-mapi.el...
+
+[new:DrewAdams:2007-07-05 17:32 UTC]
+Thought I'd give it a try, since I too use Outlook (2000). I got a Windows error message: "##Could not find MAPI. Exiting...##" Makes sense, I guess, since I use IMAP. So I guess this won't help me if it depends on MAPI. It might help others, though, if you were to point to some info about MAPI and wscript.exe.  -- DrewAdams
+
+[new]
+Hmm, that is strange... I did not know that you could have Outlook and not have MAPI. MAPI is a general API for accessing MUAs under Microsoft Windows. I don't think having MAPI has anything to do with using IMAP, IMAP is the way your MUA access the e-mails at the server, MAPI is for programs wanting to access your default MUA. -- MaDa
+
+[new:DrewAdams:2007-07-06 14:46 UTC]
+I know next to nothing about this stuff. I mentioned IMAP vs MAPI only from having googled and read (probably misread) some stuff about configuring MAPI for Exchange (which I don't use). I was perhaps thrown off because of this (from the wikipedia page you cite): "MAPI refers both to the application programming interface as well as the proprietary protocol which Microsoft Outlook uses to communicate with Microsoft Exchange." No doubt, some of the Google hits were referring to the latter meaning.
+
+Any ideas about the error message I got? Googling for MAPI seemed to suggest that perhaps this doesn't work with XP SP2 (which is what I use), but it wasn't clear to me. Suggestions welcome. Any idea what to check for before your library can be used, or how to provide those prerequisites? -- DrewAdams
+
+[new]
+This was a really tricky one... The short story is that only people with Visual Studio 6 will be able to use this hack... :( The long story: Lennart pointed me in the direction of an ActiveX control called msmapi32.ocx. I have this on the PC where I developed this little hack. This control exposes needed MAPI methods to the COM system and this is what makes it possible to send mail from VBScript. So I thought, why not just copy this file and register it, to those machines that does not have VS6? Turns out it isn't that easy... When I do this I get another error message than before, I get told that I haven't got a license to use this ocx. On machines that have VS6, one has this license because VS6 adds this when it is installed. So how can things built using this ocx ever work? My theory is that if you build an exe or another control etc, than this licence is somehow bakes into that, so that it will run. That was the long and complicated story, and it feels really bad that only a few people will be able to use this. I will put a warning at the top if this page... :( -- MaDa
+
+[new:DrewAdams:2007-07-08 16:03 UTC]
+Thanks for the update. Yes, this is too bad. I think the need for something like this feature is there; perhaps someone (MaDa?) will find a general solution. -- DrewAdams
+
+=== Screenshots ===
+
+The *mail* buffer:
+
+[[image:WThirtyTwoSendMAPIPicture01]]
+
+Some seconds after executing w32-send-mapi:
+
+[[image:WThirtyTwoSendMAPIPicture02]]
+
+=== Supported MUAs ===
+
+Maybe the wrong place for this, but what the heck:
+
+MUAs (Mail User Agents, i.e. mail client programs) tested and working with MAPI:
+
+* Mozilla Thunderbird - 0.6
+* Netscape Messenger - 7.1
+* Eudora - 6.1
+* Outlook Express - 6.00, 5.50
+* Outlook - 2000
+
+I have tested w32-send-mapi.el, specifically, with the following MUAs:
+
+* Thunderbird 1.5.0.12
+* Outlook Express 6
+* Outlook 2002
+* Outlook 2003
+
+Maybe someone can verify other MUAs?
+
+----
+CategoryWThirtyTwo
+MsOutlook
+SendingMail

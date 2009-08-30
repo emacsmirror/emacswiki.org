@@ -1,0 +1,31 @@
+In GNU Emacs, there are some numbers that you might not think of as numbers. These include the [[FloatingPoint]] values '''positive infinity''' (`<code>1.0e+INF</code>'), '''negative infinity''' (`<code>-1.0e+INF</code>'), and '''not-a-number''' (`<code>0.0e+NaN</code>').
+
+'''<nowiki>NaN</nowiki>''', in particular, can be confusing: it's a number that says it is "''not'' a number"! So, for instance, `<code>(numberp 0.0e+NaN)</code>' returns `t', not `nil'.
+
+I was bitten by this "gotcha" recently. I had something like this, where `bar' was sometimes <code>0.0</code>:
+
+  (if (condition-case nil
+          (setq foo (/ toto bar))
+        (arith-error nil)) ; Return nil if an error, such as divide by zero.
+       ...)
+
+In GNU Emacs 20 and some revisions of GNU Emacs 21, this returns `nil' when `bar' is zero. In a recent snapshot of GNU Emacs 22 (CVS), it simply sets `foo' to the number (quotient) `<code>0.0e+NaN</code>', which is non-`nil'.
+
+After fiddling a bit, this is what I came up with:
+
+  (if (and (condition-case nil
+               (setq foo (/ toto bar))
+             (arith-error nil)) ; Return nil if an error.
+           (not (equal 0.0e+NaN foo))) ; foo must be a number, not NaN
+       ...)
+
+This works -- you can test whether or not an object is <nowiki>NaN</nowiki> by testing whether it is `equal' to `<code>0.0e+NaN</code>' (the mantissa here, <code>0.0</code>, is irrelevant; <code>73.4e+NaN</code> would work as well).
+
+Another sexp equivalent to <code>(equal 0.0e+NaN foo)</code> is this: <code>(and (numberp x) (/= x x))</code>. The latter expression uses the "trick" that <nowiki>NaN</nowiki> is a number that is not `=' to itself.
+
+Note the use of `equal' and `/=' above. I prefer the sexp <code>(equal 0.0e+NaN foo)</code>, as I think it is a clearer test for whether `foo' is <nowiki>NaN</nowiki>. You could substitute `eql' for `equal' here, but you cannot substitute `eq' or `='.
+
+-- DrewAdams
+
+----
+CategoryCode

@@ -1,0 +1,47 @@
+If you use your favorite SqlMode entry function such as sql-oracle, you will be ''popped'' to the other buffer.  That means, the screen will split horizontally if it is not already split, and the other window will show the SQLi buffer.
+
+If you prefer the behaviour of switch-to-buffer, then put code similar to this one into your ~/.emacs file:
+
+ (defun my-sql-oracle ()
+   "Switch to buffer before popping."
+   (interactive)
+   (if (and (boundp 'sql-buffer)
+	    (buffer-live-p sql-buffer))
+       (switch-to-buffer sql-buffer)
+     (sql-oracle)))
+
+Replace "oracle" with any of the other supported vendors to get the desired behaviour for your implementation.
+
+I use the following, then:
+
+ (global-set-key (kbd "C-c s") 'my-sql-oracle)
+
+Note that this uses switch-to-buffer only if a sql-buffer already exists.  If it does not, then the old behaviour remains in effect.  But I'm too lazy to fix it.  -- AlexSchroeder
+
+A snippet from gnu.emacs.sources to support easier switching between many SQL buffers:
+
+M-x sql-oracle => create sql-buffer "*SQL*<1>" (asks user, pass, database) or switch to it if it exists
+
+Prefix-arg M-x sql-oracle => create sql-buffer "*SQL*<prefix>" (asks user, pass, database) or switch to it if it exists
+
+ (defadvice sql-oracle( around sql-oracle-multiple-buffers act )
+   "Switch with prefix arg to an existing SQL buffer or create a new
+ one. ChristophConrad"
+   (let* ( (sql-buffer-name
+            (concat "*SQL*<"
+                    (number-to-string (prefix-numeric-value
+                                       current-prefix-arg))
+                    ">")) )
+     (if (comint-check-proc sql-buffer-name)
+         (let (pop-up-windows)
+           (pop-to-buffer sql-buffer-name))
+       ad-do-it
+       (rename-buffer sql-buffer-name))))
+
+
+[new]
+You can also use the `same-window-regexps' if you just want to avoid splitting the window for *SQL* buffers like [[DavidBoon#SqlMode]].
+
+
+----
+CategorySql

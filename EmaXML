@@ -1,0 +1,12 @@
+Under construction, this is a new project by ChuckAdams that aims to collect the best of various XML tools for emacs into a single distribution with consistent behaviors, fontification, and keybindings.
+
+The preferred name is emaxml (all lowercase, and pronounced "e-maximal") but it needed to be a Wiki:WikiWord here.
+
+=== Current Work ===
+Lisp:xsl-mode.el -- currently in testing, currently only for XEmacs (until I find a FSFmacs replacement for buffer-syntactic-context)
+
+: You will need to write a wrapper to parse-partial-sexp, which returns a list with all the information required, and more.  Perhaps using (point-min) as START and (point) as LIMIT arguments... -- AlexSchroeder
+
+:: Thanks, that appears to do the trick.  using p-p-s works, though it doesn't know the difference between a line comment and a block-comment ... which is fine, since XML doesn't have line comments anyway.  There's still plenty of other compatibility issues, like regexes and keybinding specifiers.  Really, I could use a maintainer that fixes my stuff to work on FSFmacs, since it's work enough for me to get it working on just one Emacs... -- ChuckAdams
+----
+CategoryXML

@@ -1,0 +1,12 @@
+Kenichi Handa announced the creation of an emacs-bidi branch in CVS today!
+He says:
+
+: I've just made a branch "emacs-bidi" and commited several
+changes including Eli's bidi code so that people other than
+I can start working on it.
+
+: But, although I can compile the code and start up Emacs,
+when I set the buffer local variable enable-bidi-display,
+Emacs crashes.
+
+Help is needed!  :)

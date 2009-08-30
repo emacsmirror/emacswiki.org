@@ -1,0 +1,55 @@
+<i>This is now part of GNU emacs as find-cmd.el.</i>
+
+With [http://www.shellarchive.co.uk/content/lisp/find.el find.el] you can build up a (hopefully) valid find(1) string ready for the command line. For example:
+
+    (find-cmd '(prune (name ".svn" ".git" ".CVS"))
+              '(and (or (name "*.pl" "*.pm" "*.t")
+                        (mtime "+1"))
+                    (fstype "nfs" "ufs"))))
+
+will become (un-wrapped):
+
+    "find '/home/phil/' \\( \\( -name '.svn' -or -name '.git' -or
+     -name '.CVS' \\) -prune -or -true \\) \\( \\( \\( -name '*.pl'
+     -or -name '*.pm' -or -name '*.t' \\) -or -mtime '+1' \\) -and \\(
+     -fstype 'nfs' -or -fstype 'ufs' \\) \\)"
+
+== logic around grouping ==
+
+As you can see multiple arguments to `name' (for example) are or'd together:
+
+    (find-cmd '(name ".svn" ".CVS"))
+
+    "find '/home/phil/' \\( -name '.svn' -or -name '.CVS' \\) "
+
+If you would like them and'd together then this will do what you want:
+
+    (find-cmd '(and (name ".svn") (name "*svn")))
+
+    "find '/home/phil/' \\( -name '.svn' -and -name '*svn' \\) "
+
+== string quoting ==
+
+At the moment the following arguments will not quote their contents but *will* terminate them with a semi-colon:
+
+* exec
+* ok
+* execdir
+* okdir
+
+    (find-cmd '(exec "ls -l \{\}" "touch \{\}"))
+
+    "find '/home/phil/' \\( -exec ls -l \\{\\} \\; -and -exec touch \\{\\} \\; \\) "
+
+[new]
+Great, I needed this!
+
+I have a question though: is there not a risk that the macro `(find &rest subfinds)' collides with the function `(find item seq [keyword value]...)' defined in `cl-seq.el'? Thanks!
+-- SebastienRoccaSerra
+
+[new]
+You're dead right. Michael Olson pointed out the same on gnu.emacs.sources. Seems a shame but I've renamed it to `find-cmd'.
+
+--
+
+Great idea!  It reminds me of [[rx]], which I'm always telling everyone to use.

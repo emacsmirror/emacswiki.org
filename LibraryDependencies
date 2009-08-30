@@ -1,0 +1,125 @@
+This page is about dependencies among Lisp libraries. Click the title above to see all pages that link here.
+
+== Load History and Library Dependencies ==
+
+Variable `load-history' records ''lots'' of information about what libraries have been loaded in your session so far, what functions and variables they each define, and what other libraries they require. Try `C-h v load-history' - you'll get a ''very'' long list of very long entries: perhaps 900 very long lines. Here is a typical entry for ''one'' library in Emacs 20:
+
+  ("term/w32-win"
+    (require . frame)
+    (require . mouse)
+    (require . scroll-bar)
+    (require . faces)
+    (require . select)
+    (require . menu-bar)
+    (require . fontset)
+    w32-handle-scroll-bar-event mouse-wheel-scroll-amount mouse-wheel-scroll-line
+    mouse-wheel-scroll-screen w32-drag-n-drop-debug w32-drag-n-drop 
+    w32-drag-n-drop-other-frame x-invocation-args x-command-line-resources 
+    x-option-alist x-long-option-alist x-switch-definitions x-handle-switch 
+    x-handle-iconic x-handle-numeric-switch x-handle-xrm-switch x-handle-geometry 
+    x-handle-name-rn-switch x-display-name x-handle-display x-invocation-args 
+    x-handle-args x-colors x-defined-colors iconify-or-deiconify-frame 
+    x-last-selected-text x-cut-buffer-max x-select-enable-clipboard x-select-text 
+    x-get-selection-value x-cut-buffer-or-selection-value w32-standard-fontset-spec 
+    x-win-suspend-error internal-face-interactive w32-use-w32-font-dialog 
+    w32-fixed-font-alist mouse-set-font)
+
+And here is the entry for the same library in Emacs 21 (CVS from 7/26/2004):
+
+  ("term/w32-win"
+    (require . x-dnd)
+    (require . code-pages)
+    (require . fontset)
+    w32-drag-n-drop-debug w32-drag-n-drop w32-drag-n-drop-other-frame 
+    x-command-line-resources x-handle-switch x-handle-numeric-switch 
+    x-handle-initial-switch x-handle-iconic x-handle-xrm-switch x-handle-geometry 
+    x-handle-name-switch
+    (defvar . x-display-name)
+    x-handle-display x-handle-args
+    (defvar . x-colors)
+    xw-defined-colors
+    (defvar . w32-standard-fontset-spec)
+    x-win-suspend-error internal-face-interactive mouse-set-font)
+
+Notice that they are different:
+
+* Emacs 20 doesn't list the variables defined in the library (`defvar's); Emacs 21 does.
+* Emacs 21 doesn't list some of the `require's that Emacs 20 lists.
+
+The first of these differences indicates that Emacs 21 provides more information than Emacs 20. The second indicates a '''''bug''''' in Emacs 21: it does not include all of the required libraries. The code for library `<code>win.el</code>' in fact has ''more'' requires than the Emacs 20 version of the library. This is a serious bug, which should be kept in mind if you use `load-history'.
+
+== Library loadhist.el ==
+
+Standard library `<code>loadhist.el</code>' uses the information in `load-history' to let you unload a feature that was added when you loaded its library (command `unload-feature'). 
+
+It also provides functions that let you know which library loaded a given function (`feature-symbols'), the features required by a given library (`file-requires'), the (loaded) libraries that require a given library (`file-dependents'), and the features provided by a given library (`file-provides').
+
+In other words, it's a gold mine of information about the files, features, functions, and variables that have been loaded -- in particular, about their interrelations.
+
+
+
+[:LibRequires]
+== Library lib-requires.el ==
+
+Library <tt>[[lib-requires.el]]</tt> extends some of the functionality of standard library `<code>loadhist.el</code>'. Its aim is to provide information about the libraries that are required by a given library, ''recursively''. That is, it tells you all of the libraries that are ultimately required, so it is kind of a super-`file-requires'.
+
+These are the commands provided by ##lib-requires.el##:
+
+* `lib-requires-tree' -- returns a tree of all of the `require' dependencies for a library, at all levels
+* `lib-requires' -- returns a flat list of all libraries ultimately required by a library
+* `insert-lib-requires-as-comment' -- inserts a comment into Lisp code, listing the libraries returned by `lib-requires'
+
+Here is the value returned by `lib-requires-tree' for library `doremi-frm':
+
+  (("doremi" ("ring+" "ring") mwheel)
+   "hexrgb"
+   ("ring+" "ring")
+   ("frame-fns" "avoid")
+   ("frame-cmds" ("strings" "thingatpt" ("thingatpt+" "thingatpt"))
+                 ("frame-fns" "avoid")
+                 ("icomplete+" "icomplete"))
+   ("faces+" "faces" "thingatpt" ("thingatpt+" "thingatpt")))
+
+Notice here that some of the same libraries are required more than once. For instance, library `thingatpt' is required by `<code>thingatpt+</code>', by `faces', and by `strings'. And since `<code>thingatpt+</code>' is required by `strings' and `<code>faces+</code>', `thingatpt' is ultimately required several times.
+
+The usefulness of `lib-requires-tree' is that it shows you dependency structure. But `lib-requires' is more useful to just get the list of libraries ultimately required by a library. Here is what it returns for library `doremi-frm' as argument:
+
+  ("avoid" "doremi" "faces" "faces+" "frame-cmds" "frame-fns" 
+           "hexrgb" "icomplete" "icomplete+" mwheel "ring" "ring+" 
+           "strings" "thingatpt" "thingatpt+")
+
+And here is the Lisp comment that is inserted by `insert-lib-requires-as-comment' for library `doremi-frm':
+
+  ;;  Library `doremi-frm' requires these libraries:
+  ;;
+  ;;    `avoid', `doremi', `faces', `faces+', `frame-cmds', `frame-fns',
+  ;;    `hexrgb', `icomplete', `icomplete+', `mwheel', `ring', `ring+',
+  ;;    `strings', `thingatpt', `thingatpt+'.
+  ;;
+
+As for standard library `<code>loadhist.el</code>', library `<code>lib-requires.el</code>' uses the current value of `load-history' to determine library dependencies. However, its commands first try to load the library being interrogated, which should load all the libraries that it requires, updating `load-history'.
+
+If a `require'd library fails to load, it will of course not be recorded in `load-history'. A '''soft `require'''' is one that raises no error if the required library is not loaded (e.g. not found); a '''hard `require'''' raises an error.
+
+: _Soft require_: <code>(require 'frame-cmds nil t)</code> -- no error if not found
+: _Hard require_: <code>(require 'ring+)</code> -- error if not found
+
+Given the knowledge of a soft `require' for library `frame-cmds', and looking at the example of `lib-requires-tree' for library `doremi-frm', you can see that some of the libraries `require'd by `frame-cmds' are not really required.
+
+Notice from the examples above that both `lib-requires-tree' and `lib-requires' generally return '''''strings''''' as library names -- these are the ''file names'' (sans extension) of the corresponding required ''features''. 
+
+Notice too that in both examples above, feature `mwheel' is ''not'' represented by a string, but by a '''''symbol'''''. What that means is that feature `mwheel' was not in fact loaded (it was not found): it is required (by library `doremi'), but it was not loaded. Since no error was raised, we know that `mwheel' is a soft `require' of `doremi'. (Library `mwheel' is available in Emacs21 but not in Emacs 20; a hard `require' would make library `doremi' fail to load in Emacs 20.)
+
+Otherwise, for libraries that were successfully loaded, there is '''''no way to tell whether a given `require' is soft or hard'''''. This is very unfortunate, because such information is important, but `load-history' does not record such a distinction, so there is nothing that can be done in this regard.
+
+'''See Also:''' '''AutomaticFileHeaders''' for use of library <tt>[[lib-requires.el]]</tt> in automatically inserting and updating a comment with library dependencies (via ‘insert-lib-requires-as-comment’).
+
+
+== Library elisp-depend.el ==
+
+ElispDepend is similar in some ways to <tt>[[lib-requires.el]]</tt>. A difference is that <tt>[[elisp-depend.el]]</tt> considers also autoloaded definitions (not just loaded libraries) to be dependencies. It parses the code in the current buffer, using `symbol-file' to determine the defining (possibly autoloaded) library for each symbol. Like ##lib-requires.el##, you can use ##elisp-depend.el## to insert a comment about libraries that might be needed, but you can also use it to insert appropriate `require' and `autload' code.
+
+
+
+----
+CategoryCode 

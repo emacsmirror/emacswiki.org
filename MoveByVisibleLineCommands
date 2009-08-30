@@ -1,0 +1,57 @@
+There are several packages that tries to help you move across visible instead of logical lines.
+The two differ when Emacs display wraps lines (they never differ if Emacs display "truncates" lines).
+
+* PhysicalLineMove - can be used with CuaMode
+* VisibleLines - which are said to avoid some problem at buffer end that maybe the above package have (confirmed?), but is said to not work with CuaMode
+* http://homepage1.nifty.com/bmonkey/emacs/elisp/screen-lines.el (added by [[EduardoOchs]])
+* http://article.gmane.org/gmane.emacs.devel/90861 has another one.
+
+[new]
+I noticed a few bugs in PhysicalLineMove when moving in the buffer's last line.  VisibleLines does better ... -- [[nschum]] 
+
+[new]
+...but physical-line is the only way I have found out, which works correctly with shift-up/down/end/home selections in cua mode (I tried also and visible-lines and screen-lines)
+
+[new]
+... and I am unable to find any bugs in the buffer's last line with PhysicalLineMove ...
+
+[new]
+I guess I should have documented the errors.  I just tested it again, and what I noticed is that it breaks ''move-end-of-line'' (stupid [AdvisingFunctions advices]!).  And when you do:
+
+  <return> <return> x C-p C-n
+
+at the end of the buffer, it rings the bell.  There might be more, but the last time I used it for a couple of hours before I started noticing. -- [[nschum]]
+
+[new]
+Thanks, I remember now I saw the the problems with ''move-end-of-line'' etc. I use this where I actually switched from ''move-beginning-of-line'' to ''beginning-of-line'' because of this:
+
+  ;; Changed from move-beginning-of-line to beginning-of-line to support
+  ;; physical-line-mode.
+  (defun ourcomments-move-beginning-of-line(arg)
+    "Move point to beginning of line or indentation.
+  See `beginning-of-line' for ARG.
+
+  If `physical-line-mode' is on then the visual line beginning is
+  first tried."
+    (interactive "p")
+    (let ((pos (point)))
+      (call-interactively 'beginning-of-line arg)
+      (when (= pos (point))
+        (skip-chars-forward " \t"))))
+  (put 'ourcomments-move-beginning-of-line 'CUA 'move)
+
+I do not know how to fix this problem. Do you have any idea? (Or are any of the other modes perhaps better?)
+
+However the key sequence you entered above works without problem for me. Did you miss something?
+
+There might be some problems with ''longlines-mode''.
+I have not tried to find out since that mode has been a little bit problematic yet.
+Are there any other corner cases?
+
+I have not tried the other modes here because PhysicalLineMove works very well for me.
+Could someone perhaps describe the CuaMode problem?
+
+Are there any known problem with screen-lines.el?
+----
+See also
+LineCommands

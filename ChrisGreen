@@ -1,0 +1,244 @@
+Hey, My name is Chris Green <cmg@dok.org> with a webpage at
+http://cmg.dok.org though nothing much there is useful :)
+
+Welcome to the wiki! -- AlexSchroeder
+
+==XEmacs Versus Emacs==
+LawrenceMitchell - thanks for adding some replies/corrections. I'm still in the process of learning. A lot of this was just notes to myself as I convered my .emacs between the two flavors and ported some elisp
+
+
+
+===Background===
+I've run into a bug in NoGnus+XEmacs that has caused me a good bit of frustration to try and solve. This caused me to try and figure out if it was my configuration,XEmacs,or gnus so I had to try out regular Emacs.  I've finally gotten a loadable config on both and I wrote down a lot of what I did in the process.
+
+I'm keeping a running list of what I find different and since it may be useful to some other people, I'm putting it up on the wiki.  If you know of a solution to anything I mention, please place it here and if people are interested, I'll refactor into real pages.  
+
+I'm using CVS Emacs since it seems to be pretty mature from everyone that does a lot of elisp.  CVS XEmacs has been too unstable to use.
+
+
+* FSF does not have highlighting of region by default. They call it
+  transient-mark-mode  where XEmacs calls it zmacs-region (I believe)
+
+* FSF has no right click menus and instead has some odd mouse
+  yanking/killing method.  This is very odd since there is right
+  click menu in things like speedbar.  It makes trying a right click a
+  potentially dangerous user operation.
+
+* FSF has an abnormal scrollbar ( right v. left ) fixable? gtk toolkit
+  + (menu-bar-right-scroll-bar)
+: You can set the scrollbar side with <code>set-scroll-bar-mode</code>.
+: See the documentation for <code>scroll-bar-mode</code> for possible values.
+
+* FSF's describe-variable does not pick up the variable at point.
+  This gets very tedious when pointing elisp..  Actually FSF's is
+  smart (too smart?) and will no1t prompt unless you have a valid
+  variable name at the point.
+** hm, It seems to do so for my emacs21 -- DeepakGoel
+
+* FSF's dired on tmp C-x C-f /tmp/~ actually opens up /home/cmg
+  without displaying that in the minibuffer
+
+* FSF modeline alters slightly going from buffer->buffer so that there
+  is a visual indicator of what buffer you are in.. Useful.
+
+* how to set the background color in FSF emacs?  
+: <code>M-x customize-face RET default RET</code>, probably.
+:: That's true... The problem I was color specifiers v. color names :)
+
+* define-obsolete-variable-alias replacement for FSF?
+: <code>make-obsolete-variable</code>.
+
+* Would like a FSF replacement for:
+
+  (defun describe-face-at-point ()
+    "Give the name of the faces at point."
+    (interactive)
+    (message (prin1-to-string (extent-face (extent-at (point) 
+	              				      (current-buffer) 
+						      'face)))))
+
+: CVS Emacs' <code>M-x describe-face RET</code> picks up the face at point 
+: via <code>read-face-name</code>
+
+* no resize-minibuffer-mode (though it seems to do it by default..)
+: <code>temp-buffer-resize-mode</code>, probably.
+
+
+* no mailcrypt.. no biggie it's ancient and I use pgg instead these days.
+
+* running-xemacs variable has become (featurep 'xemacs).  XEmacs
+  should make that an obsolete variable
+
+* FSF shows buffer position in debugger error messages!
+
+* line and col # modes in emacs are displayed in tuples (L,C) rather than LX CX
+
+* no completer.el in FSF
+: You can download it off the web, and it runs fine.  Other than that, 
+: try <code>partial-completion-mode</code>
+
+* C-h a is command-apropros rather than apropos
+
+* XEmacs separates out variables from functions in apropros uses a 2
+  column mode instead
+
+* FSF (atleast CVS) has very good support from running directly out of
+  the source tree after compilation rather than having to install it
+  completely to just try out a particular version.
+
+* XEmacs has a package system...  I don't find it that useful to me
+  but it does allow the delivery of xemacs-sumo.  Is there a
+  equivalent effort for Emacs?
+
+* gnuclient and tty was one of the original reasons I used XEmacs but
+  I've not used it much in the past years...  In fact, if I have a
+  emacs tty session, it's because I forgot to export a display on a
+  win32 machine
+: See MultiTTYSupport.
+
+* FSF uses tool-bar and scroll-bar and XEmacs uses toolbar and
+  scrollbar.  Info should atleast contain 1 one of the alternative
+  spellings so people can migrate easily
+
+* NoGnus+XEmacs has a bug on XEmacs where somewhere after doing a
+  gnus-summary-article-next-page, it corrupts message-mode so that
+  font-lock no longer behaves.  message-font-lock-keywords doens't
+  seem to change.  OortGnus doesn't have this problem but the diff
+  between the two versions has become gigantic.
+
+* font-lock on XEmacs uses a property on major mode, FSF uses a
+  buffer-local variable
+
+* buffer-substring in XEmacs takes a 3rd argument of a buffer name..
+
+* FSF with-output-to-temp-buffer also seems to turn on read-only
+  because the default hook temp-buffer-setup-hook contains
+  help-mode-setup.. which turns on help-mode. which then has a
+  tempb-buffer-show-hook which then turns on read-only in help mode.
+  This is a PITA to debug coming from XEmacs..  
+: No it doesn't, <code>help-mode-setup</code> explicitly sets 
+: <code>buffer-read-only</code> to <code>nil</code>.
+
+* FSF shows where primatives are defined and what their lambda forms
+  are. Very useful.
+
+* XEmacs colors the modeline when a VC controlled file is modified so
+  you know from the modeline when the file is differnt from the default
+
+* Interoperability is a PITA for your own packages
+** byte-compilation + multiple emacs version?
+** solutions:
+*** have a prefix directory for each version's byte-files
+*** unique extension per emacs version
+*** .elc-version in every directory with files
+: Lots of things don't really need byte-compilation :).
+:: That's true.  It looks to be very hard to change the .elc ( lread.c )
+
+* directory-files:
+** FSF: (directory-files DIRECTORY &optional FULL MATCH NOSORT)
+** XEmacs: (directory-files DIRECTORY &optional FULL MATCH NOSORT FILES-ONLY)
+
+: FSF returns files and directories
+: XEmacs returns only files by default
+
+* seems that load-file is different from (find-file file)(eval-buffer
+  (point-min) (point-max)) on Emacs v XEmacs.  The effect is that you
+  can't expect a load-file to reload symbol definitions
+: This is true, yes.  <code>load-file</code> does not redefine variables.
+: This is deliberate, otherwise you wouldn't be able to customize variables
+: before loading files.
+
+* FSF minibuffer buffer completion highlights the discriminating
+  character in bold by default
+
+* FSF shell-mode provies some nicer syntax highlighting for prompts (
+  ie: bold the current prompt, color the past ones.  Color the
+  arguments to commands )
+
+* M-x dirs complains it couldn't cd under FSF emacs ( my bug? )
+
+* (require 'pcvs) for FSF
+  (require 'pcl-cvs) for XEmacs
+: <code>cvs-examine</code> is autoloaded, so no need to require it.
+  
+* C-h C-i can go to directly to the top info node for a software
+  package you care about
+: Similarly, C-h S does info lookup of the symbol at point.
+
+* Emacs has an odd verticle region next to the frame and the scrollbar that might be called the inner-border but I can't figure out how to set the color of it.
+: Customize the <code>fringe</code> face.
+: In fact, see the Fringe customization items in the <code>Frames</code> 
+: group.
+:: Ah thanks!
+
+* Emacs seems to use color names for arguments to set-background-color and friends while XEmacs uses color specifiers
+: Emacs doesn't have specifiers.  In fact, it has far fewer first-class
+: data-types full-stop.  For example, while XEmacs has a separate data-type
+: for keymaps, Emacs just uses lists whose <code>car</code> is the symbol
+: <code>keymap</code>
+
+* Tempo behaves differently under Emacs than XEmacs.
+  tempo-interactive's default value seems to be nil under Emacs.  This
+  has the effect that any code that you have bound that inserts a
+  tempo-template will not interact with the user by default.
+
+
+* Info mode under Emacs seems a lot more mature
+
+* X11 clipboard interaction: XEmacs seems to interact with the clipboard and yank by default (though I might have customized this away a long time ago).  Emacs uses 
+<code>(setq x-select-enable-clipboard t) ;; consult clipboard on yanking
+(menu-bar-enable-clipboard) ;; turn on the edit menus </code>
+
+* XEmacs dired asks on top level directory delete.. Emacs requires <code>
+ (setq dired-recursive-deletes 'top)</code>
+
+* XEmacs man displays the manpage in the current buffer by default
+  while Emacs displays it in a secondary window. To get the XEmacs
+  behavior in Emacs, <code>(setq Man-notify-method 'pushy)</code>
+
+* XEmacs allows tab completion in <code>M-x shell-command</code> while
+  Emacs does not
+
+==Packages that I have to supply for Emacs==
+* bbdb
+* backup-dir (BackupDirectory)
+* defun prefix-region
+* <code>(unless (fboundp 'prefix-region)
+  (defun prefix-region (prefix)
+    "Add a prefix string to each line between mark and point."
+    (interactive "sPrefix string: ")
+    (if prefix
+	(let ((count (count-lines (mark) (point))))
+	  (goto-char (min (mark) (point)))
+	  (while (> count 0)
+	    (setq count (1- count))
+	    (beginning-of-line 1)
+	    (insert prefix)
+	    (end-of-line 1)
+	    (forward-char 1))))))</code>
+  
+
+
+==Packages that I have to supply for XEmacs==
+* easy-mmode.el
+* rx.el 
+* sregex.el
+
+==Packages I like==
+There are lots of packages I really like for Emacs though this is a
+very partial list.
+
+* rpm-spec-mode
+* pcl-cvs (different between Emacs and XEmacs)
+* SimpleWikiEditMode
+* TrampMode - especially find-file-root on the same page
+* Gnus
+
+==Commands I find useful==
+Every now and then, a command pops up that I think "WOW, how did I live without that". Worse than that, I seem to forget about things from time to time
+
+* <code>C-u g</code> in Gnus to view the article in raw mode
+* <code>M-x align-regexp</code> and <code>M-x align</code>
+
+----
+CategoryHomepage

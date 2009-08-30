@@ -1,0 +1,48 @@
+bash use readline and share many keybindings with emacs for instance:
+
+* C-a C-e: goto start/end of line
+* C-k: kill line
+* C-y M-y: insert the last stretch of killed text
+* C-_ : undo
+and more see man bash
+
+Some other bindings differ a bit:
+
+* C-r C-s : incremental search in the history, not on the line
+* M-space to set the mark (though C-@ is defined)
+Some commands are not bound by default, here what I do to add kill-region and kill-ring-save:
+
+in my .bashrc:
+<pre>
+# this supposed that GNU stty is installed and that the special chars are the same on your terminal as on mine
+# undef C-s and C-r  I don't like C-s to stop my terminal, and find it more usefull for incremental search
+stty stop undef 
+stty rprnt undef
+#undef C-w , readline automagically binds the special terminal chars to their equivalent commands
+stty werase undef
+</pre>
+
+and in my .inputrc:
+<pre>
+#C-w kill-region
+"\C-w":kill-region
+#M-w roughly the same as kill-ring-save
+"\M-w":copy-region-as-kill
+# C-space to set-mark
+"\C-Space":set-mark
+</pre>
+
+
+=== Notes:===
+
+Credits goes to the guys on #bash on irc.freenode for telling me about stty and special chars. See man and info pages for bash and readline for more info.
+
+I am no terminal/readline... specialist so correction comments etc.. are welcome.
+----
+On Windows, later versions of bash (3.2.3) choke on scripts created with the NT-emacs default encoding, because of the ^M characters.  Try adding this to your .emacs:
+{{{
+(prefer-coding-system 'utf-8-unix)
+}}}
+
+----
+CategoryRelated

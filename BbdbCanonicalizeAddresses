@@ -1,0 +1,76 @@
+If some people in your BBDB have ever changing email addresses, you
+can store a function in bbdb-canonicalize-net-hook to preprocess them
+before they are "noticed", ie. looked up in the BBDB.
+
+The doc string of the variable has the following example:
+
+It is the case that CS.CMU.EDU is a valid return address for all mail
+originating at a machine in the .CS.CMU.EDU domain.  So, if you wanted
+all such addresses to be canonically hashed as user@CS.CMU.EDU,
+instead of as user@host.CS.CMU.EDU, you might set this variable to a
+function like this:
+
+ (setq bbdb-canonicalize-net-hook
+       '(lambda (addr)
+          (cond ((string-match "\\`\\([^@]+@\\).*\\.\\(CS\\.CMU\\.EDU\\)\\'"
+                               addr)
+                 (concat (substring addr (match-beginning 1) (match-end 1))
+                         (substring addr (match-beginning 2) (match-end 2))))
+                (t addr))))
+
+This function will be called repeatedly until it returns a value EQ to the
+value passed in.  So multiple rewrite rules might apply to a single address.
+
+----
+
+The following example will strip email keywords.  According to RFC
+822, any email to user+keywords@host will be delivered to user@host.
+Some people like StefanMonnier use this to automatically generate a
+keyword on outgoing mails that identify the newsgroup or folder he was
+in when he wrote his mail.  Thus there are a gazillion valid email
+addresses for him.  In my BBDB, however, I want the stuff without the
+keywords:
+
+    (setq bbdb-canonicalize-net-hook
+          '(lambda (addr)
+	     (cond ((string-match "\\`\\([^@+]+\\)\\+[^@]+\\(@.*\\)\\'" addr)
+		    (concat (match-string 1 addr) (match-string 2 addr)))
+	           (t addr))))
+
+----
+
+Here's another example, that handles [[Gmane]]'s encrypted addresses (snatched from the bbdb-info mailing list):
+
+<pre>
+(setq bbdb-canonicalize-net-hook
+      '(lambda (net)
+         (let ((buf (get-buffer gnus-article-buffer)))
+           (if buf
+               (save-excursion
+                 (goto-char (point-min))
+                 (if (and (string-match "@public.gmane.org" net)
+                          (re-search-forward (format "[^:,]*<%s>" net) (point-max) t))
+                     (let ((ad (mail-extract-address-components (match-string 0)))
+                           realnet)
+                       (message "Found `%S' in headers! Doing realname search!" ad)
+                       (and (car ad)
+                            (setq realnet (bbdb-search-simple (car ad) nil))
+                            (setq realnet (car (bbdb-record-net realnet)))
+                            (setq net realnet))))
+                 net))
+           net)))
+</pre>
+
+----
+Here's one that canonicalizes those member@orkut.com addresses out of existence.
+
+<pre>
+(defun sacha/bbdb-canonicalize-net-hook (addr)
+  "Do not notice member@orkut.com addresses."
+  (cond ((null addr) addr)
+        ((string-match "member@orkut\\.com" addr) nil)
+        (t addr)))
+(setq bbdb-canonicalize-net-hook 'sacha/bbdb-canonicalize-net-hook)
+</pre>
+----
+CategoryBbdb

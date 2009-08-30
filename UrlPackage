@@ -1,0 +1,111 @@
+The URL package contains code to parse and handle URLs.  It was originally
+part of [[w3]], the web browser written entirely in EmacsLisp.  Now it is a
+separate library available in Emacs 22.
+
+It supports the following URI schemes: cid, data, dav (webdav, vc-dav), file,
+ftp, http, https, imap, info, irc, ldap, mailto, man, news, nfs, rlogin,
+snews, telnet, tn3270.  You can add your own functions to deal with certain
+schemes.  For example, JabberEl defines `url-xmpp'.
+
+With its file name handlers enabled (see `url-handler-mode' or
+`url-setup-file-name-handlers' if you're a version of URL that's older than
+the one in Emacs 22) you can use functions like `find-file' and
+`file-exists-p' on URLs.
+
+There are also functions to deal with URL strings.  `url-generic-parse-url'
+splits a URL into a vector of all its parts.  If you want to encode or decode
+URLs with hex code (like %20 for " ") you can use `url-hexify-string' and
+`url-unhex-string', respectively.  These functions can handle multibyte
+(although not as well in older versions).
+
+== HTTP ==
+
+You can use URL to download web pages - it works in the background dealing
+with all the HTTP codes, authorization, cookies, etc.  Useful functions are
+`url-retrieve-synchronously' which returns the buffer containing the server's
+response and `url-retrieve' which lets you run a callback function after the
+page has been retrieved.  See also `browse-url-emacs' if you just want to load
+a URL into a buffer (opens in another window).
+
+=== Example of sending POST request ===
+
+We are sending a response to a form.  Define the following functions:
+
+    (defun my-url-http-post (url args)
+      "Send ARGS to URL as a POST request."
+      (let ((url-request-method "POST")
+            (url-request-extra-headers
+             '(("Content-Type" . "application/x-www-form-urlencoded")))
+            (url-request-data
+             (mapconcat (lambda (arg)
+                          (concat (url-hexify-string (car arg))
+                                  "="
+                                  (url-hexify-string (cdr arg))))
+                        args
+                        "&")))
+        ;; if you want, replace `my-switch-to-url-buffer' with `my-kill-url-buffer'
+        (url-retrieve url 'my-switch-to-url-buffer)))
+
+    (defun my-kill-url-buffer (status)
+      "Kill the buffer returned by `url-retrieve'."
+      (kill-buffer (current-buffer)))
+
+    (defun my-switch-to-url-buffer (status)
+      "Switch to the buffer returned by `url-retreive'.
+    The buffer contains the raw HTTP response sent by the server."
+      (switch-to-buffer (current-buffer)))
+
+And then you can do the following:
+
+    (my-url-http-post "http://localhost/test.cgi" '(("post" . "1") ("text" . "just a test")))
+
+See also Lisp:http-post-simple.el.
+
+[new:Geoff:2008-12-14 16:35 UTC]
+NB In the my-url-http-post function above, I had better luck using w3m-url-encode-string rather than url-hexify-string. - Geoff
+
+=== Accepting HTTP Cookies ===
+
+When you retrieve pages from websites, url-cookie's default behavior is to set
+all the cookies in the HTTP Set-Cookie headers it receives (as long as the
+domain value matches the host, has enough dots, etc).  You can customize the
+variables `url-cookie-confirmation', `url-cookie-trusted-urls', and
+`url-cookie-untrusted-urls' to control whether or not to allow cookies.
+Cookies from trusted URLs will be allowed all the time, and cookies from
+untrusted URLs won't ever be set.  If a URL is either trusted or untrusted,
+you won't be asked for confirmation.
+
+url-cookie checks each RegularExpression listed in `url-cookie-trusted-urls'
+and `url-cookie-untrusted-urls' to see if it matches the current URL.  If both
+a trusted and untrusted regexp match the requested URL somehow, the match that
+is more complete (determined by testing ##(- (match-end 0) (match-beginning 0))##)
+will be used.  Note that if a trusted and an untrusted regular expression have
+the same match value the cookie will be rejected.
+
+To reject all cookies (see also `url-privacy-level'):
+
+    (setq url-cookie-untrusted-urls '(".*"))
+
+Say you want to ignore all cookies except those set by the EmacsWiki site.
+Using ##".*"## for `url-cookie-untrusted-urls' in this case will always result in
+the cookie being rejected, because it matches the whole string.  Try the
+following regular expression instead:
+
+    (setq url-cookie-trusted-urls '("^http://\\(www\\.\\)?emacswiki\\.org/.*")
+          url-cookie-untrusted-urls '("^https?://"))
+
+=== Supported authentication schemes ===
+
+Out of the box, url supports HTTP basic and digest authentication. Other schemes can be added using `url-register-auth-scheme'. For example, if you're after NTLM support, try [http://code.google.com/p/url-http-ntlm/ url-http-ntlm].
+
+== Alternatives to URL ==
+
+If you just want to download HTTP documents but you don't have url.el yet,
+try a very simple hack on DownloadFilesViaHttp.
+
+See also: HttpPost, HttpGet and family
+
+----
+CategoryHypermedia
+CategoryWebBrowser
+CategoryCode

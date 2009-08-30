@@ -1,0 +1,23 @@
+On a tty, the TAB key is usually not distinguished from C-i.
+Other environments (such as X), allows a distinction.
+Emacs, therefore, supports this as well.
+
+The following changes the keybinding for the TAB key only:
+
+ (local-set-key [tab] 'tab-to-tab-stop)
+
+This, however, changes the keybindings of TAB and C-i, whichever is appropriate.
+
+ (local-set-key (kbd "TAB") 'tab-to-tab-stop)
+
+Here is a quote from the node "Named ASCII Control Characters" in the EmacsManual:
+
+: These function keys translate automatically into the corresponding ASCII characters _if_ they have no bindings of their own.  As a result, neither users nor Lisp programs need to pay attention to the distinction unless they care to.
+
+: If you do not want to distinguish between (for example) <TAB> and `C-i', make just one binding, for the ASCII character <TAB> (octal code 011).  If you do want to distinguish, make one binding for this ASCII character, and another for the "function key" `tab'.
+
+: With an ordinary ASCII terminal, there is no way to distinguish between <TAB> and `C-i' (and likewise for other such pairs), because the terminal sends the same character in both cases.
+
+----
+CategoryKeys
+

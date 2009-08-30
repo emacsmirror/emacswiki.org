@@ -1,0 +1,31 @@
+==About Me==
+
+I use emacs 23.
+
+My customizations to emacs have been growing steadily larger over time, and some of them are significant enough that I want to start sharing them.
+
+Until I understand the organization of files around here, I'll just link to all my stuff from here. Feel free to add it to appropriate categories.
+
+==My Code==
+
+I have written or (more likely) contributed customizations to the following.
+
+* ProtBufByName -- ProtectingBuffers with certain names from being killed.
+* DeskTop -- Overriding Stale Locks
+* SystemTrash -- Make Emacs interoperate with GNOME and KDE's trash directories.
+* EasyGlobalCommandRemapping -- A snippet of code to make it easy to replace command with other commands.
+* RunWhenIdle -- A plan I have to provide a facility to repeatedly run a command in the background in an intelligent manner.
+
+==Testing==
+
+YaoddmuseTestLibraryUpload - I'm just using this to test yaoddmuse.el's upload facilities. So far I've figured out that if a page begins with ;;; Somename.el, then EmacsWiki magically turns it into an elisp source file. Cool.
+
+YaoddmuseTestCreatingNewPage - There does not seem to be a way to follow a new link to create a page in Yaoddmuse. It seems like I have to create a local file and then M-x yaoddmuse-post-something-or-other it.
+
+
+
+[new:DrewAdams:2009-07-03 20:26 UTC]
+Welcome to the wiki. -- DrewAdams
+
+----
+CategoryHomepage

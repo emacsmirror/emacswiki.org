@@ -1,0 +1,24 @@
+[new:AlexSchroeder:2005-05-07 23:30 UTC]
+Somebody on the net went nuts today.
+I have over 3550086 requests in today's Apache logfile (672M).
+Looking at the hostnames/IP numbers of the first 50k and last 50k
+requests, I see no single host.  There was somebody who leeched
+the wiki using wget instead of reading WikiDownload, and Ask Jeeves/Teoma
+initiated about 14% of all requests in the first of these time-windows.
+Most of the remaining requests came from random IP numbers with one request
+each.  Looks like a zombie network to me.  I just wonder who would want to
+spend so much time and money on such a distributed attack.
+
+Anyway, to cut bandwidth, I'm taking the following steps:
+
+# [[Backups]] got moved into a separate folder.  If you want to download the backup files, you need to give me your hostname, so that I can add you to the allow-list.  ([[Lukhas]], [[Dabian]]?)
+
+# Search got paginated.  I thought that sending potentially unlimited amount of info on search requests was no problem, as people would just interrupt downloads of obvious bogus search requests.  Maybe not true...  So now the wiki is serving ten results per page instead of all of them.  Too bad.  Now we can't search the search results page using our browsers anymore.  :)
+
+# I added NoFollow attributes for the RecentChanges links that lead to more (and longer) result pages.  This could be important because RecentChanges is one of the few pages that is FOLLOW by default (<code><meta name="robots" content="INDEX,FOLLOW" /></code>).
+
+This was based upon a mail from my provider telling me that I was generating abot 2-3GB traffice every month with tarballs, and that RecentChanges and searches were sometimes larger than 1MB.  
+We've been using 64GB of bandwidth in the last five months, btw.
+
+The changes above are trying to limit bandwidth for bots: As long as I know who's making backups, I can easily add them to the allow list.  And long search result lists are often not that useful to humans.
+Tell me if you think the default of 10 is too low -- 10 works for Google, so I used it as well.

@@ -1,0 +1,21 @@
+[new:AlexSchroeder:2007-12-05 10:21 UTC]
+All the elisp files on this wiki (pages ending in ##.el##) are being checked into CVS run by sf.net by a cron job. (More about this on ElispArea.)
+
+I often get messages about memory problems which updating and checking in (see example below).
+Any SourceForge users out there that can tell me whether this is "normal" or not?
+
+{{{
+cvs [update aborted]: cannot open directory /cvsroot/emacswikicode/emacswikicode: Cannot allocate memory
+cvs commit: error reading directory /cvsroot/emacswikicode/emacswikicode: Cannot allocate memory
+Checking in compile+20.el;
+/cvsroot/emacswikicode/emacswikicode/compile+20.el,v  <--  compile+20.el
+new revision: 1.4; previous revision: 1.3
+done
+Checking in grep+.el;
+/cvsroot/emacswikicode/emacswikicode/grep+.el,v  <--  grep+.el
+new revision: 1.4; previous revision: 1.3
+done
+...
+}}}
+
+[new]

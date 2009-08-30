@@ -1,0 +1,30 @@
+This is a businesscard CD containing Emacs -- ready to boot, including
+Linux, some tools, and X.  It is based on LNX-BBC, a small rescue and
+debugging system on a businesscard CD -- the same you get as your FSF
+membership card.  You can get the 50MB ISO image; mailto:alex@emacswiki.org.
+
+For the source code of the entire system (ie. not including the exact
+configuration used for the above image), check out the LNX-BBC site.
+This is also the site where you will find more information about the
+businesscard-sized CDs.
+
+* http://www.lnx-bbc.org/
+
+My build notes etc. can be found here:
+
+* http://www.emacswiki.org/cgi-bin/alex.pl?BusinesscardLinux
+
+Known problems:
+
+# On the console, you can switch keymaps using `loadkeys', but the
+  output remains 7bit, so no German Umlauts.  In Emacs, you can type
+  umlauts using `C-x 8 " o' for example, or use input methods such as
+  latin-1-prefix.
+
+Features:
+
+# Emacs 21.3 including input-methods, elisp sources and info files.
+# Latin-1 fonts, Japanese fonts.
+
+----
+EmacsMerchandise

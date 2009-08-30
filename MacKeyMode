@@ -1,0 +1,92 @@
+== Overview ==
+
+Mac-key mode is a minor mode that provides more mac-like key bindings on Mac OS X.
+The code is developed by SeijiZenitani.
+
+== Getting mac-key-mode ==
+
+Mac-key mode is bundled with CarbonEmacsPackage and the file is also available at:
+
+* http://homepage.mac.com/zenitani/comp-e.html
+* http://svn.sourceforge.jp/cgi-bin/viewcvs.cgi/zenitani/CarbonEmacs/src/lisp/mac-key-mode.el?root=macwiki&view=markup
+
+== Configuration ==
+
+To use this package, add these lines to your ##~/.emacs## file:
+
+    (require 'redo)
+    (require 'mac-key-mode)
+    (mac-key-mode 1)
+
+When `mac-key-mode' is enabled, an apple mark appears in the mode line.
+Note that `mac-key-mode' requires ##redo## and that it turns on `pc-selection-mode'.
+
+With CarbonEmacs it is also possible to combine the use of mac-key-mode while using the Alt as meta key:
+
+    (setq mac-command-modifier 'alt mac-option-modifier 'meta)
+    (require 'redo)
+    (require 'mac-key-mode)
+    (mac-key-mode 1)
+== Default Keysets ==
+
+The default keymaps are as follows:
+
+* '''⌘ + O''' --- Open an existing file into an Emacs buffer
+* '''⌘ + W''' --- Discard (kill) current buffer
+* '''⌘ + S''' --- Save current buffer into its file
+* '''⌘ + ⇧ (Shift) + S''' --- Write current buffer into another file
+* '''⌘ + I''' --- Display current file/directory in a Finder window
+* '''⌘ + P''' --- Print current buffer
+* '''⌘ + Q''' --- Quit
+* '''⌘ + Z''' --- Undo
+* '''⌘ +⇧ (Shift) + Z''' --- Redo
+* '''⌘ + X''' --- Cut
+* '''⌘ + C''' --- Copy
+* '''⌘ + V''' --- Paste
+* '''⌘ + A''' --- Select All
+* '''⌘ + F''' --- Search for a string
+* '''⌘ + ⌥ (Option) + F''' --- Advanced Search (M-x occur)
+* '''⌘ + G''' --- Search forward for a string
+* '''⌘ + ⇧ (Shift) + G''' --- Search backward for a string
+* '''⌘ + L''' --- Go to Line
+* '''⌘ + T''' --- Show/Hide the font panel.
+* '''⌘ + M''' --- Minimize the window
+* '''⌘ + `''' --- Move to a different visible window (frame)
+* '''⌘ + ⇧ (Shift) + N''' --- Make a new window (frame)
+* '''⌘ + ⇧ (Shift) + W''' --- Close window (frame)
+* '''⌘ + ?''' --- Show help files (M-x info)
+* '''⌘ + /''' --- Same as '''⌘ + ?'''
+* '''⌘ + .''' --- Interrupt operation
+* '''⌘ + ↑''' --- Move point to the beginning of the buffer
+* '''⌘ + ↓''' --- Move point to the end of the buffer
+* '''⌘ + ←''' --- Move point to beginning of current line
+* '''⌘ + →''' --- Move point to end of current line
+* '''⌘ + Click''' --- Open URL with a browser
+* '''⌃ (Control) + Click''' --- Show contextual menu
+* '''⇧ (Shift) + Click''' --- Select region
+
+
+== Customizing Keysets ==
+
+In order to set additional key bindings, modify `mac-key-mode-map' in your ##~/.emacs## file:
+
+    (require 'mac-key-mode)
+    (define-key mac-key-mode-map [(alt l)] 'goto-line)
+
+
+== Questions ==
+
+=== MacKeyMode breaks Active Region Highlighting with C-Space ===
+
+[new]
+When I enabled MacKeyMode (either through the Help menu or with (mac-key-mode 1)), the "Active Region Highlighting" (Options -> Active Region Highlighting) no longer works with C-Space.
+
+[new]
+: Is it related to pc-selection-mode? MacKeyMode turns on pc-selection-mode.
+
+== See also ==
+
+* MacOSTweaks
+* CarbonEmacsPackage
+* CapitalizeWordOrKillRingSave
+

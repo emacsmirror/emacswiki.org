@@ -1,0 +1,28 @@
+This page describes Emacs commands for navigating among pages of text.
+
+Pages of text are pages only when then are printed. Within Emacs, you can think of them more as sections of text. The sections are separated by page-break characters. The page-break character is also known as the "form feed" character, and it is the same as Control l (`##^L##'), octal 014.
+
+You can search for any character by quoting it, and Control-l is no exception. To incrementally move to the next page, you can thus use `C-s C-q C-l'. Emacs also has some page-specific commands that are bound to keys:
+
+* `forward-page' (`##C-x C-[##') -- Go to the next page.
+
+* `backward-page' (`##C-x C-]##') -- Go to the previous page.
+
+* `count-lines-page' (`C-x l') -- Report how many lines are on the current page: total, before, and after point.
+
+* `what-page' -- Report the current page and line numbers, at [[Point]].
+
+* `mark-page' -- Select the current page as the active region. With a prefix arg ''N'', select the ''N''th next page.
+
+* `narrow-to-page' -- Narrow the buffer to the current page, so everything outside this page is invisible and inaccessible. Prefix arg ''N'' is as for `mark-page'.
+
+* `sort-pages' -- Sort the pages in the region alphabetically. With a prefix arg, reverse the sort order, to give Z to A.
+
+Note that all of these page commands refer to the pages as defined by Control-l characters. When you print an Emacs buffer that has no Control-l characters, your printer nevertheless divides the text into pages. Some Emacs commands deal with these pages:
+
+* `ps-nb-pages-region' -- Report how many pages would be used to print the region, for various font heights.
+
+A few Emacs commands use a different notion of "page", which is related to the window size. See, for instance, `View-scroll-page-forward' (`SPC' in view mode).
+
+----
+CategoryDisplay CategoryPrinting

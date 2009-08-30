@@ -1,0 +1,140 @@
+: [[image:iciclesimage]]
+
+|| *Previous:* [[Icicles - Apropos Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Progressive Completion]] ||
+
+----
+
+== Expanded-Common-Match Completion ==
+
+Apropos (regexp) matching and [[prefix completion]] each match a
+pattern against a [[completion]] candidate.  This operation concerns
+only a single candidate; it does not take into account the fact
+that there are others.  Since the matching operation is repeated
+anyway for each candidate, however, we can also find an expanded
+string that ''includes the same match'' (apropos or prefix) for ''all''
+candidates.  For prefix completion, Emacs completes your input to the
+longest common prefix match.  '''Icicles''' uses a similar notion for [[apropos completion]].
+
+For example, if you enter `M-x minib' and hit `TAB', Emacs
+completes your input to `minibuffer', which is the longest prefix
+match for `minib' among all command names.  The actual string that
+matches prefix `minib' among all candidates is, itself, `minib'.
+
+If you hit `S-TAB', then each matching candidate contains a
+substring that matches your [[regexp]] input `minib'.  In this case,
+that substring is `minib', just as in the prefix-matching case.
+And, as in the prefix case, each matching candidate also includes
+a longer substring, `minibuffer', which includes what your input
+matches for each candidate.
+
+'''Icicles''' replaces your regexp input in the [[minibuffer]] by a common substring.  '''Icicles''' highlights this expanded common match
+in buffer `*Completions*' using face
+`icicle-common-match-highlight-Completions' (magenta foreground, by default).
+What your input matches directly is highlighted in `*Completions*'
+using face `icicle-match-highlight-Completions' (red foreground, by default).
+
+It is of course possible that a given regexp match different
+candidates differently, so that there is no common match.  In that
+case, only the individual matches are highlighted in `*Completions*'
+-- you will see only red, no magenta, highlighting.  For example,
+if your regexp input is `##min.*buf##' then various different
+substrings (such as `minibuf' from `minibuffer-complete' and
+`mint-truncate-buf' from `comint-truncate-buffer') are highlighted
+in red, but these share no common substring.
+
+You will also see only red highlighting if what your input matches
+directly is the same as the expanded common match.  For example, if
+a function `moccur-regexp-read-from-minibuf' is defined (it is in
+library Lisp:color-moccur.el), and your input to `C-h f' is
+`##min[^-]*buf##', then only `minibuf' is highlighted in red.
+
+Expanded-common-match completion is convenient, but when
+apropos-completing you often need to try variants of a regexp,
+editing it and observing which candidates match in `*Completions*',
+until you get the regexp right.  Longest-common-match completion
+has the disadvantage that you lose your regexp as input, which
+makes it hard to edit it!  
+
+To retrieve it, use '''`C-l''''
+(`icicle-retrieve-previous-input') during completion.  You can repeat `C-l' to retrieve older completion inputs, cycling among them, and you can use
+`C-S-l' (that is, `##C-##'''##L##'''') to cycle previous inputs in the other
+direction -- see [[Icicles - History Enhancements]].  You can set [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]]</tt>'''' to
+`nil' to turn off longest-common-match completion altogether, if you
+prefer.   You can also toggle it from the minibuffer at any time, using '''`##C-;##''''.
+
+Just what is meant by the "expanded common match" that '''Icicles'''
+finds?  It is the longest match of your input pattern that is ''common to all candidates''
+and also ''contains the first input match'' in the ''first or second candidate'', whichever is longer.
+
+For apropos completion, this is not always the longest common
+match of your input, but in most cases it is, and it is quicker to compute.  In
+general, the longest common match does not necessarily contain the
+first match of your input with either the first candidate or the
+second candidate.  It might contain a different input match from
+the first in both the first and second candidates.
+
+For example, with input `a' and candidates `abacb', `abbac', and
+`bacba' (in that order), `bac' is the longest common match.  But
+`a' is the longest common match that contains the first match in
+the first candidate.  It is the second match of `a' against
+`abacb' that yields `bac'.  Likewise for the second candidate: it
+is the second match of `a' against `abbac' that yields `bac'.
+
+So in this case '''Icicles''' will use `a' as the expanded input and miss the longest common
+match.  If the candidate order is different, so that `bacba' is
+either the first or the second candidate, then '''Icicles''' finds the
+longest common match, because the first match of `a' against
+`bacba' yields `bac'.
+
+The reason that '''Icicles''' common-match expansion typically finds the
+longest common match is that your input typically matches the
+first or the second candidate in only one place.  And the longer the input you
+type, the more likely this is.  In practice, it is only with very
+short input such as `a' that '''Icicles''' expansion sometimes misses
+the longest common match. '''Icicles''' independently tries two candidates (first and second) as
+its starting point, to increase the probability of finding the
+longest common match.
+
+It is also technically incorrect to speak of "''the''" longest common
+match: in general, there can be more than one.  For example, if
+the input is `a' and the candidates are `abab', `abba', and
+`baba', then both `ab' and `ba' are longest common substrings.
+Again, however, for typical input and typical candidates there is
+a single longest common match, and '''Icicles''' finds it.
+
+Note that '''Icicles''' expanded common match is not just a common
+substring among all of the candidates that are matched by your
+input pattern.  It is a substring common to all candidates matched
+by your input, but a substring that also ''matches your input''.  For
+example, with apropos completion input `##a.z##' and candidates `abz' and `apz', there is
+''no'' expanded common match.  The substring `a' is common to both
+candidates, but it is not matched by the (complete) input pattern.
+
+Finally, note that in Emacs 20 no common match is found if your
+input or any of the candidates contains binary data.  This is
+because function `string-match' cannot handle strings with binary
+data in Emacs 20.
+
+Here is a screenshot showing the highlighting of the extended common match in the [[minibuffer]] and in [[buffer]] `*Completions*'. 
+
+[[image:iciclesscreenshot]]
+
+
+
+
+
+
+
+----
+
+|| *Previous:*  [[Icicles - Apropos Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Progressive Completion]] ||
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryProgrammerUtils

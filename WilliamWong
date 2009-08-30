@@ -1,0 +1,14 @@
+I started using Emacs back in school.  At the time Emacs was a resource hog and slow compared to the other text editors.  I ended up using other light weight editors, like JOE.  Later I found Epsilon, an Emacs clone on PC that's fast and used little resource.  That became my main editor for years.  However, as time went by, my copy of Epsilon was falling behind in term of features and support for newer languages.  I didn't want to shell out money every couple years to upgrade, so I started using Emacs again.  To my amazement, Emacs is fast now and its resource usage is not a concern anymore.  Guess modern hardware does wonder.  Ever since then Emacs has become my main editor.
+
+Of course there are things I don't like about Emacs.  I tried to customize it to the way it suits me.  For missing features that I sorely need, I wrote ELisp extensions for them.
+
+Emacs extensions I wrote:
+
+* [BreadcrumbForEmacs Breadcrumb for Emacs] - leave a trail of breadcrumb bookmarks in the file buffers.
+* [JavadocHelp Javadoc-Help for Emacs] - Search multiple online/local javadocs for Java class documentation.
+
+
+
+.
+----
+CategoryHomepage

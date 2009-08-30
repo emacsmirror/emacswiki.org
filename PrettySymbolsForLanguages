@@ -1,0 +1,206 @@
+This page is for language-specific display of certain character sequences as fancy characters or symbols. See PrettySymbol for similar display that is not language-specific.
+
+----
+
+== Smalltalk, Ocaml and Haskell ==
+
+http://www.phubuh.org/~phubuh/ocaml-unicode2.png
+http://www.phubuh.org/~phubuh/smalltalk-unicode.png
+
+[new:DrewAdams:2009-06-14 22:00 UTC]
+* Those image links appear to be broken.
+
+* Much of the code below appears to be available in library form here:
+http://xtalk.msk.su/~ott/common/emacs/rc/emacs-rc-pretty-lambda.el.html.
+
+-- DrewAdams
+[new]
+
+
+  (defun unicode-symbol (name)
+    "Translate a symbolic name for a Unicode character -- e.g., LEFT-ARROW
+  or GREATER-THAN into an actual Unicode character code. "
+    (decode-char 'ucs (case name
+                        ;; arrows
+                        ('left-arrow 8592)
+                        ('up-arrow 8593)
+                        ('right-arrow 8594)
+                        ('down-arrow 8595)
+                        ;; boxes
+                        ('double-vertical-bar #X2551)
+                        ;; relational operators
+                        ('equal #X003d)
+                        ('not-equal #X2260)
+                        ('identical #X2261)
+                        ('not-identical #X2262)
+                        ('less-than #X003c)
+                        ('greater-than #X003e)
+                        ('less-than-or-equal-to #X2264)
+                        ('greater-than-or-equal-to #X2265)
+                        ;; logical operators
+                        ('logical-and #X2227)
+                        ('logical-or #X2228)
+                        ('logical-neg #X00AC)
+                        ;; misc
+                        ('nil #X2205)
+                        ('horizontal-ellipsis #X2026)
+                        ('double-exclamation #X203C)
+                        ('prime #X2032)
+                        ('double-prime #X2033)
+                        ('for-all #X2200)
+                        ('there-exists #X2203)
+                        ('element-of #X2208)
+                        ;; mathematical operators
+                        ('square-root #X221A)
+                        ('squared #X00B2)
+                        ('cubed #X00B3)
+                        ;; letters
+                        ('lambda #X03BB)
+                        ('alpha #X03B1)
+                        ('beta #X03B2)
+                        ('gamma #X03B3)
+                        ('delta #X03B4))))
+                        
+  (defun substitute-pattern-with-unicode (pattern symbol)
+    "Add a font lock hook to replace the matched part of PATTERN with the 
+  Unicode symbol SYMBOL looked up with UNICODE-SYMBOL."
+    (interactive)
+    (font-lock-add-keywords
+     nil `((,pattern (0 (progn (compose-region (match-beginning 1) (match-end 1)
+                                              ,(unicode-symbol symbol))
+                              nil))))))
+  
+  (defun substitute-patterns-with-unicode (patterns)
+    "Call SUBSTITUTE-PATTERN-WITH-UNICODE repeatedly."
+    (mapcar #'(lambda (x)
+                (substitute-pattern-with-unicode (car x)
+                                                 (cdr x)))
+            patterns))
+
+: I tried this, but the prettified symbols just show up as squares. What do you suggest I do to get it to show the actual unicode characters? -- [[bkhl]]
+
+: Try changing your font to 10x20 (it's in the S-mouse-1 menu). If that works, your font probably doesn't have those Unicode symbols. -- MikaelBrockman
+
+: It doesn't work with 10x20 either. -- [[bkhl]]
+
+: That's strange... what versions of things are you running? -- MikaelBrockman
+
+: GNU Emacs 21.3.1 (i686-pc-linux-gnu, X toolkit), xfree-4.3.0-r3. -- [[bkhl]]
+
+Here's how you could use it to make the assignment and answering operators of Smalltalk a bit prettier:
+
+  (add-hook 'smalltalk-mode-hook (lambda ()
+                                   (substitute-patterns-with-unicode
+                                    (list (cons "\\(:=\\)" 'left-arrow)
+                                          (cons "\\(\\^\\)" 'up-arrow)))))
+
+And to prettify ObjectiveCaml source (For some reason, tuareg.el turns on font lock after it runs the hooks, which makes the following break font locking. Simply transposing the lines solves the problem.):
+
+  (defun ocaml-unicode ()
+    (interactive)
+    (substitute-patterns-with-unicode
+     (list (cons "\\(<-\\)" 'left-arrow)
+           (cons "\\(->\\)" 'right-arrow)
+           (cons "\\[^=\\]\\(=\\)\\[^=\\]" 'equal)
+           (cons "\\(==\\)" 'identical)
+           (cons "\\(\\!=\\)" 'not-identical)
+           (cons "\\(<>\\)" 'not-equal)
+           (cons "\\(()\\)" 'nil)
+           (cons "\\<\\(sqrt\\)\\>" 'square-root)
+           (cons "\\(&&\\)" 'logical-and)
+           (cons "\\(||\\)" 'logical-or)
+           (cons "\\<\\(not\\)\\>" 'logical-neg)
+           (cons "\\(>\\)\\[^=\\]" 'greater-than)
+           (cons "\\(<\\)\\[^=\\]" 'less-than)
+           (cons "\\(>=\\)" 'greater-than-or-equal-to)
+           (cons "\\(<=\\)" 'less-than-or-equal-to)
+           (cons "\\<\\(alpha\\)\\>" 'alpha)
+           (cons "\\<\\(beta\\)\\>" 'beta)
+           (cons "\\<\\(gamma\\)\\>" 'gamma)
+           (cons "\\<\\(delta\\)\\>" 'delta)
+           (cons "\\(''\\)" 'double-prime)
+           (cons "\\('\\)" 'prime)
+           (cons "\\<\\(List.for_all\\)\\>" 'for-all)
+           (cons "\\<\\(List.exists\\)\\>" 'there-exists)
+           (cons "\\<\\(List.mem\\)\\>" 'element-of)
+           (cons "^ +\\(|\\)" 'double-vertical-bar))))
+  
+  (add-hook 'tuareg-mode-hook 'ocaml-unicode)
+
+And for Haskell:
+
+  (defun haskell-unicode ()
+    (interactive)
+    (substitute-patterns-with-unicode
+     (list (cons "\\(<-\\)" 'left-arrow)
+           (cons "\\(->\\)" 'right-arrow)
+           (cons "\\(==\\)" 'identical)
+           (cons "\\(/=\\)" 'not-identical)
+           (cons "\\(()\\)" 'nil)
+           (cons "\\<\\(sqrt\\)\\>" 'square-root)
+           (cons "\\(&&\\)" 'logical-and)
+           (cons "\\(||\\)" 'logical-or)
+           (cons "\\<\\(not\\)\\>" 'logical-neg)
+           (cons "\\(>\\)\\[^=\\]" 'greater-than)
+           (cons "\\(<\\)\\[^=\\]" 'less-than)
+           (cons "\\(>=\\)" 'greater-than-or-equal-to)
+           (cons "\\(<=\\)" 'less-than-or-equal-to)
+           (cons "\\<\\(alpha\\)\\>" 'alpha)
+           (cons "\\<\\(beta\\)\\>" 'beta)
+           (cons "\\<\\(gamma\\)\\>" 'gamma)
+           (cons "\\<\\(delta\\)\\>" 'delta)
+           (cons "\\(''\\)" 'double-prime)
+           (cons "\\('\\)" 'prime)
+           (cons "\\(!!\\)" 'double-exclamation)
+           (cons "\\(\\.\\.\\)" 'horizontal-ellipsis))))
+  
+  (add-hook 'haskell-mode 'haskell-unicode)
+
+--MikaelBrockman
+
+Brilliant!
+----
+Gorgeous! -- ShaeErisson
+----
+This is awesome. -- EdwardOConnor
+----
+
+Can this be done for LaTeX? Has it already been done? It would make
+for a nice quick-and-dirty PreviewLaTeX.
+----
+Check out x-symbol (http://x-symbol.sourceforge.net/) for a LaTeX symbol package. --AmitPatel
+
+----
+AlexOtt
+
+Here is slightly modified version of function for haskell-mode. It adds a lambda symbol for anonymous functions, and also use slightly modified regex, that doesn't allow to substitute >= inside >>= expression, etc.
+
+  (defun haskell-unicode ()
+	(interactive)
+	(substitute-patterns-with-unicode
+	 (list
+            (cons "\\s \\(<-\\)\\s " 'left-arrow)
+            (cons "\\s \\(->\\)\\s " 'right-arrow)
+            (cons "\\s \\(==\\)\\s " 'identical)
+            (cons "\\s \\(/=\\)\\s " 'not-identical)
+            (cons "\\s \\(()\\)\\(\\s \\|$\\)" 'nil)
+            (cons "\\<\\(sqrt\\)\\>" 'square-root)
+            (cons "\\s \\(&&\\)\\s " 'logical-and)
+            (cons "\\s \\(||\\)\\s " 'logical-or)
+            (cons "\\<\\(not\\)\\>" 'logical-neg)
+            (cons "\\s \\(>\\)\\[^=\\]" 'greater-than)
+            (cons "\\s \\(<\\)\\[^=\\]" 'less-than)
+            (cons "\\s \\(>=\\)\\s " 'greater-than-or-equal-to)
+            (cons "\\s \\(<=\\)\\s " 'less-than-or-equal-to)
+            (cons "\\<\\(alpha\\)\\>" 'alpha)
+            (cons "\\<\\(beta\\)\\>" 'beta)
+            (cons "\\<\\(gamma\\)\\>" 'gamma)
+            (cons "\\<\\(delta\\)\\>" 'delta)
+            (cons "\\s \\(''\\)\\s " 'double-prime)
+            (cons "\\s \\('\\)\\s " 'prime)
+            (cons "\\s (?\\(\\\\\\)\\s *\\(\\w\\|_\\).*?\\s *->" 'lambda)
+            (cons "\\s \\(!!\\)\\s " 'double-exclamation)
+            (cons "\\s \\(\\.\\.\\)\\s " 'horizontal-ellipsis))))
+
+----
+CategoryDisplay

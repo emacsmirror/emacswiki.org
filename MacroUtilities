@@ -1,0 +1,33 @@
+The classic utilities for writing macros: '''with-gensyms'''
+and '''once-only'''.
+
+Lisp:macro-utils.el
+
+== with-gensyms ==
+
+When defining macros, there is often a need to introduce new variable names that are guaranteed not to clash with other variables.  This can be done by calling /gensym/, like so:
+
+  (let ((foo (gensym))
+        (bar (gensym))
+    ...)
+
+The /with-gensyms/ macro makes the macro writers life a little bit easier by allowing the above to be written as:
+
+  (with-gensyms (foo bar)
+    ...)
+
+== once-only ==
+
+/Once-only/ is typically used when defining a macro which takes expressions as arguments, and those expressions should only be evaluated once in the expanded code.  For example, say you wanted to define a macro /double/ that returns its argument times two.  If you defined /double/ as
+
+  (defmacro double (x)
+    `(+ ,x ,x))
+
+then <i>(double (foo))</i> would call the function /foo/ twice.  That may be undesirable, especially if /foo/ has some side effect.  The /once-only/ helper macro will insert code to ensure that the argument /x/ is only evaluated once, and replace /x/ with a gensym:
+
+  (defmacro double (x)
+    (once-only (x)
+      `(+ ,x ,x)))
+
+----
+CategoryCode

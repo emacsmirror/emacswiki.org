@@ -1,0 +1,30 @@
+My biggest Emacs project is called [[Easymacs]]:
+
+[[Easymacs]] is an easy-to-learn, one-size-fits-all configuration for new users of GNU Emacs. It sets up key bindings that conform to a common denominator of the Gnome/KDE/OS X/Microsoft Windows human interface guidelines, and provides function-key bindings for other powerful Emacs features. It is fully documented, and the new user can productively edit text right away, without going through the Emacs tutorial. Many commonly-used functions can be accessed without having to learn the "chords", or multiple keystrokes that Emacs uses by default.  It is aimed particularly at editing text (LaTeX, XML, HTML, etc.) rather than programming. 
+
+Get it here:
+
+http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Easymacs/
+
+I have written a few general-purpose Emacs packages, all of which are included in Easymacs, but which can be used independently of it; they are described on this web page: 
+
+http://www.dur.ac.uk/p.j.heslin/Software/Emacs/  
+
+The latest versions are available from that page.
+
+I have also put a few pages on this wiki about some of them:
+
+* FlyspellBabel
+
+* FlyspellXmlLang
+
+* XtermExtras
+
+* HtmlScript
+
+* HtmlChooserMode
+
+* FoldDwim
+
+----
+CategoryHomepage

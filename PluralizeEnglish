@@ -1,0 +1,19 @@
+PluralizeEnglish is a command for the English natural language that takes a singular version of a noun and converts it to its plural form.
+
+* Lisp:plural.el is a ''proof of concept'' by AaronHawley that requires ThingAtPoint.
+
+Try it by running the command `M-x plural-make-plural' on any word to convert a word to its plural.
+
+An ''ad hoc'' testing framework exists and is included for documenting and fixing bugs with the command.  There are hooks in the system to verify these words with a dictionary, but they are not turned on.  For instance, a word should be run through spell check (like InteractiveSpell) before finding its plural.  A word should be verified that it is indeed a noun before finding its plural.  With the heuristics used, the calculated plural word should be run through a spell checker to avoid producing nonexistent words.
+
+Such checks on the heuristics cannot be comprehensive, since there exist homonyms in the English language.  For example, "can" is both a verb and a "noun".  It takes greater intelligence than even a dictionary can provide to determine the usage of a word, even if the word exists in a sentence.
+
+Currently, not every plural option is available for some words ("cow" can be "cows" or "kine").  It could be done by using a UniversalArgument to the command, or by executing the pluralize command a number of times on a word to iterate through the different versions of a word's plural form.  There is also not a ''reverse'' of the command--`depluralize' or `singularize'.  This is not currently possible given the existing data structures in the implementation, and the asymmetical nature of some plurals in the English language.  For example, "axes" is the plural for "axe" and "axis".
+
+See [[WikiPedia:English plural]].
+
+[new]
+I can't see myself or anyone else using this, so you can have it. -- AaronHawley
+
+----
+CategoryEditing

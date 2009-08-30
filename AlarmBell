@@ -1,0 +1,68 @@
+During a normal editing session Emacs gives a warning signal quite
+often. Some people find the beeping annoying. To get a visual signal
+instead, put the following in your .emacs:
+
+ (setq visible-bell 1)
+
+Now some people find the flashing annoying. To turn the alarm totally
+off, you can use this:
+
+ (setq ring-bell-function 'ignore)
+
+For XEmacs you can set the visible bell not to flash the whole screen (as is default in XEmacs) but only the top and bottom line (default in GnuEmacs) by setting the visible-bell to anything other than t or nil:
+
+ (setq visible-bell 'top-bottom)
+
+However, this is not a good idea IMO. To get a warning, when something
+went not as expected, can be quite useful sometimes. The following
+reduces the amount of warning signals but does not turn them off in
+general:
+
+ (setq ring-bell-function 
+      (lambda ()
+	(unless (memq this-command
+		      '(isearch-abort abort-recursive-edit exit-minibuffer keyboard-quit))
+	  (ding))))
+
+Now Emacs does not beep or flash anymore, when you hit `C-g' in the
+minibuffer or during an `isearch'.
+
+
+Then again, instead of beeping or flashing, Emacs could play a cool sound file, whenever an error occurs:
+
+ (setq ring-bell-function (lambda ()
+			   (call-process "audioplay" nil 0 nil 
+				 "/this/is/my/errorsound.au")))
+
+You might have to replace "audioplay" by "wavplay" or whatever application you have for playing audio files.
+
+XEmacs offers another way by setting the variable <tt>bell-volume</tt>. The following turns off the bell absolutely:
+
+    (setq bell-volume 0)
+[new]
+I use the following to make the Scroll Lock LED blink:
+
+ (setq ring-bell-function (lambda ()
+   (call-process-shell-command "xset led 3; xset -led 3" nil 0 nil)))
+
+Seems like the Scroll Lock LED may be useful after all ;) -- mina86
+
+[new]
+
+    (defvar night-start 22
+      "The hour that people go to sleep.")
+    
+    (defvar night-end 8
+      "The hour that people wake up.")
+    
+    (defun nightp ()
+      "Check if it is night."
+      (let ((hr (nth 2 (decode-time (current-time)))))
+        (or (< hr night-end)
+        (> hr night-start))))
+
+I have a younger sister and the bell wakes her up, so I've wrote this
+predicate to control the beeping.  -- PiotrMieszkowski
+
+----
+CategoryDotEmacs

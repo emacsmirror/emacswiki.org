@@ -1,0 +1,26 @@
+I have been an Emacs user since 1994 and hack around at Elisp when I want to customize or get some (minor) feature added. I use Emacs [[VM]] for mail and do most of my other work in Emacs where possible. 
+
+[new]
+Hello Martin.  Welcome. Sorry about our edit conflict. -- AaronHawley
+
+[new]
+...erm, what edit conflict? (He says, slightly worried he has gone against some wiki code of practice as he is quite new to the concept of wikis) -- MartinReed
+
+[new]
+If you visit the [EmacsWiki:action=rc;all=1;from=1;showedit=1;rcidonly=MartinReed View all changes] for this page, you'll see we both edited this page at the same time at 14:57 UTC 2005-10-05.  It was quite a rare occurence.  The resulting conflict needed to be hand edited, similar to conflicts resulting from the Unix merge command.  It was a new experience for me at the time.  Don't let it frighten you from using the Wiki.  You violated no such code. -- AaronHawley
+
+[new] Oh, OK! thanks, I always wondered what would happen if two
+people "commiteed" at the same time. Incidently, I have just recently
+found RSS feeds to help me see changes to the Wiki - is there a way
+just to monitor the pages that oneself has edited? -- MartinReed
+
+[new]
+That would be a neat feature.  There is a way to get an RSS feeds of your edits, but there is no way to include the updates (and previous edits) also made to that set of pages.  If you wanted to manually maintain a list of pages to monitor on this Wiki, you could get a feed of those:
+
+EmacsWiki:action=rss;match=MartinReed%7CGnusQuestions;all=1
+
+The "%7C" is a pipe (|) and represents the corresponding regexp syntax and would need to separate each page name in your list.  Matches are partial, so any short page names you list could match the substrings of longer named pages.  For instance, if MartinReedstrom made a home page. -- AaronHawley
+
+----
+CategoryHomepage
+

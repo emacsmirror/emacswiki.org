@@ -1,0 +1,32 @@
+replace-recent-character editing macro is my attempt for quick correction of recently typed text.
+
+Imagine this situation: While typing some text you notice that one of previously typed characters is wrong. You have already typed 5 more characters after it.
+
+The normal "naive" solution: press left arrow (or C-b) 5 times, then backspace and retype correct character, press right arrow (or C-f) 5 times to get back and continue typing. Summary: 12 keys pressed.
+
+Advanced solution: use M-b if it could help, then left/right arrow, then backspace or C-d/DEL and retype correct character. If [[Point]] was previously the last position of the line, move back by C-e or M-e. Summary: 4 keys in ideal situation, but 12 if none of the shortcuts applied.
+
+replace-recent-character solution: invoke the macro (I use M-r), type
+the wrong character that was typed. The most recent matching character
+gets highlighted. If the mistyped character is highlighted, type the corrected character; if not then repeat the wrong character (easily possible since finger is already at the key). Previous point position is restored automatically. Summary: 3 keys usually sufficient.
+
+Note: I count keys as key combinations. If you consider combinations like C-b as two keys then the key count is even better for this macro.
+
+This macro also has support for more than replacing. It can delete
+extra character, insert new character and transpose characters. See
+the comment in the source code.
+
+International characters are supported (tested on the Czech language).
+
+You can download it from:
+* http://klokan.sh.cvut.cz/~jtra/elisp/rrc.el
+
+The code is known to work in GNU Emacs 21. It does not work in XEmacs.
+
+The macro is to be installed under M-r key; its default
+(move-to-window-line) is rather useless. The installation command is
+included in the source. It is ok just to insert this into your .emacs (CategoryDotEmacs) file.
+
+See the function comment for details.
+
+-- Jakub Travnik, a.k.a. jtra

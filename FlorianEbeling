@@ -1,0 +1,25 @@
+I use GNU Emacs as distributed by CarbonEmacs, on the Mac.
+
+RubyTestMode -- a test runner with clickable backtraces for failures and errors. 
+
+[new]
+Welcome to the wiki! CarbonEmacsPackage for the win. :) -- AlexSchroeder
+
+[new]
+Have you seen autotest.el? how does RubyTestMode compare? I fly with autotest but I'd love to see ways to enhance the experience. --RyanDavis
+
+[new]
+I became aware of it when I had my own solution already. I haven't had a deeper look at it, but I think it has clickable traces as well like ruby-test.el IIRC, but one thing 
+I really wanted was to have "re-run the last test," if I'm elsewhere by then. I will add a link to it from the page. --FlorianEbeling 
+
+[new]
+I just realize that you are the author of autotest.el :) So I don't have to tell you anything about it. What I did do is write a brief feature list for RubyTestMode, 
+so people can get a better idea up front. I added a link from RubyTestMode to autotest.el to make people aware 
+of this alternative as well. Let me add that I did't start mine because I was unhappy with your's, I just was ignorant.
+And then at some point I thought it was worth sharing. --FlorianEbeling
+
+----
+Short user name/IRC: [::febeling]
+
+----
+CategoryHomepage

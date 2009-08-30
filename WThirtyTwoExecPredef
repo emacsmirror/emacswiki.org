@@ -1,0 +1,5 @@
+This package allows the user to execute Start Menu shortcuts from inside Emacs. It needs WThirtyTwoUtl and FindrPackage to work. For related things, see MakeSmartShortcuts.
+
+Download the file: http://www.emacswiki.org/elisp/w32-exec-predef.el
+----
+CategoryWThirtyTwo

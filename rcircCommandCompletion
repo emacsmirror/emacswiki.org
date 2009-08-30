@@ -1,0 +1,53 @@
+This will change [[rcirc]] TAB completion such that it will also try to complete defined commands:
+
+{{{
+(defun rcirc-complete-nick ()
+  "Cycle through nick completions from list of nicks in channel."
+  (interactive)
+  (if (eq last-command this-command)
+      (setq rcirc-nick-completions
+            (append (cdr rcirc-nick-completions)
+                    (list (car rcirc-nick-completions))))
+    (setq rcirc-nick-completion-start-offset
+          (- (save-excursion
+               (if (re-search-backward " " rcirc-prompt-end-marker t)
+                   (1+ (point))
+                 rcirc-prompt-end-marker))
+             rcirc-prompt-end-marker))
+    (setq rcirc-nick-completions
+          (let ((completion-ignore-case t))
+            (all-completions
+	     (buffer-substring
+	      (+ rcirc-prompt-end-marker
+		 rcirc-nick-completion-start-offset)
+	      (point))
+	     (append (rcirc-channel-nicks (rcirc-buffer-process)
+					  rcirc-target)
+		     (rcirc-commands))))))
+  (let ((completion (car rcirc-nick-completions)))
+    (when completion
+      (rcirc-put-nick-channel (rcirc-buffer-process) completion rcirc-target)
+      (delete-region (+ rcirc-prompt-end-marker
+			rcirc-nick-completion-start-offset)
+		     (point))
+      (insert (concat completion
+                      (if (= (+ rcirc-prompt-end-marker
+                                rcirc-nick-completion-start-offset)
+                             rcirc-prompt-end-marker)
+                          (if (eq (aref completion 0) ?/) " " ": ")))))))
+
+;; FIXME: This needs a drastic speedup or some caching
+(defun rcirc-commands ()
+  "Return a list of defined IRC commands.
+If a command called rcirc-cmd-foo exists, the IRC command /FOO
+will be part of the list returned."
+  (let ((commands))
+    (mapatoms (lambda (sym)
+		(let ((name (symbol-name sym)))
+		  (when (and (commandp sym)
+			     (string= (substring name 0 (min (length name) 10))
+				      "rcirc-cmd-"))
+		    (setq commands (cons (concat"/" (upcase (substring name 10)))
+					 commands))))))
+    commands))
+}}}

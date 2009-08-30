@@ -1,0 +1,44 @@
+
+Lisp:usage-memo.el
+
+== Commentary: ==
+
+This program enables you to write annotation in *Help* and
+third-party help systems. When we do programming, we often use
+Emacs help system (ie. describe-function). Do you want to take a
+note in the *Help* buffer and want Emacs to show your note later?
+In other words, integration of Emacs help and your memo!
+
+Annotation files are stored below ~/memo/umemo by default. Its
+subdirectories are categories. And their subdirectories are entry
+annotation files. Because annotation files are read in each case,
+you can generate annotation files automatically.
+
+== Supported help systems: ==
+<pre>
+describe-function
+describe-variable
+slime-documentation (slime.el)
+slime-describe-symbol (slime.el)
+slime-describe-function (slime.el)
+ri (ri-ruby.el)
+lh-refe (langhelp / ReFe)
+</pre>
+
+usage-memo is general-purpose: it is easy to support other help systems.
+
+If you support other help systems, add `define-usage-memo' sexps in
+.emacs or redefine `umemo-initialize'.
+
+== Usage: ==
+
+* Switch to *Help*.
+* Write your annotation below `===*===*===*===*===*===*===*===*===*===*===' line.
+* Press C-x C-s to save annotation.
+* Even if *Help* is killed or Emacs is restarted,
+  your annotation is shown when you look up the same entry!!
+
+== Dialog: ==
+
+---
+CategoryHelp

@@ -1,0 +1,18 @@
+xtalk-mode.el 
+
+xtalk programming languages includes revolution/transcript,
+metacard, hypercard, etc.
+
+This mode has only been tested and developed on GNU Emacs
+21.3.50. Please advise whether it works on other Emacs variants
+<alex@mindlube.com>
+
+* complete syntax colorization including transcript types, keywords, commands and constants.
+* code indentation (haphazard, imperfect, but it does help a bit).
+* handful of macros for building function, handler and other code structures.
+* and of course, lots of other benefits coming from emacs itself, such as: unlimited undo, extensibility via lisp macros, and electric braces and parens.
+
+http://mindlube.com/download/files/runrev/
+
+----
+ProgrammingModes

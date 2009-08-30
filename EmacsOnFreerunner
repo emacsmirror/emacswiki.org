@@ -1,0 +1,33 @@
+The freerunner is a phone capable of running Debian and Emacs!
+
+http://wiki.openmoko.org/wiki/Main_Page
+
+[http://wiki.wjsullivan.net/collaboration.cgi/FsoEl FsoEl] is a project to create an Emacs interface for the freesmartphone api.
+
+Here are some other ideas:
+* get emacs23 working, so one can use the dbus support of emacs 23. It is possible to compile emacs23 under qemu and have it run on Freerunner, but it takes a long time to compile this way. You can also compile it with distcc.
+* make a dialer compatible with bbdb, and later addressbook.el
+* make a gnus backend for sms
+* a symbol chooser keyboard.
+start the "keyboard"(an emacs app) in a particular context(lets say
+  m-x now, but its the same for adresses or whatever)
+ * (1) show all unique prefixes in this context
+ * (2) choose a prefix
+ * (3) repeat from (1) with the chosen prefix, exit on a terminal symbol
+
+I really think Emacs could be a superior telephone application plattform!
+
+[new]
+If you are using Debian on your freerunner, installing emacs is just a question of <code>aptitude install</code> to install Emacs. However, it is well-nigh unusable even with the full keyboard.
+
+[new]
+The default usability of emacs on a tablet like device is indeed somewhat lacking, but this is mostly due to 
+default event bindings not being entirely suitable. This is fixable, for instance with tool-bars(Ive contributed patches for emms and planner)
+and with the "symbol chooser" described above(i have some code for this also) --JoakimVerona
+
+== Modes ==
+
+* PlannerModeMobile
+
+----
+CategoryPorts

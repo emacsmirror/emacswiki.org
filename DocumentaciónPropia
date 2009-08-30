@@ -1,0 +1,13 @@
+Emacs es un editor que se documenta a sí mismo. Aquí se presentan algunas pistas al respecto:
+
+* <code>C-h a</code> -- buscar comandos (M-x interactivo)
+* <code>C-h i d m Emacs</code> -- Esta secuencia abre el ManualInfo de Emacs; realice búsquedas usando <code>`i'</code> o busque en el texto completo usando <code>`s'</code> (aunque si llegara a necesitar esto, probablemente es un indicador de algo que anda mal con el índice -- ¿porqué no reportar un <i>bug</i>?)
+* <code>C-h k</code> -- esta secuencia seguida de cualquier tecla le indicará qué es lo que hace exactamente tal tecla, en el contexto actual.
+* <code>M-x apropos-documentation</code> -- buscar cadenas de funciones y variables
+* <code>C-h F</code> -- carga el FAQ de Emacs, realice búsquedas con `i' y `s' (vea también el FAQ en línea: RecursosEnLínea)
+* <code>M-x apropos</code> -- busca sobre todos los nombres de funciones y variables
+* <code>C-h p</code> -- revisa si existe un paquete apropiado para cargar
+
+Adicionalmente, si puede recordar el prefijo de teclado de algún comando, escribiendo <code>C-h</code> después del prefijo le mostrará todos los comandos con este prefijo (a menos que el prefijo y <code>C-h</code> juntos estén asociados con algún comando).
+
+Por ejemplo, si recuerda que <code>C-x r</code> es el prefijo de varios comandos de registro, entonces al pulsar <code>C-x r C-h</code> recibirá una lista completa de los comandos que comienzan con <code>C-x r</code> (que casualmente también incluyen algunos comandos para la gestión de rectángulos).

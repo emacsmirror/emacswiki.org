@@ -1,0 +1,13 @@
+I just noticed this on emacs devel:
+
+ From: Richard Stallman
+
+ Once Emacs 22 is released, I would like to hand over Emacs maintenance
+ to one person or a small team.  The new maintainer or maintainers
+ would take responsibility for making sure new releases are made and
+ that they are reliable, and for focusing attention on priority
+ projects for improvement.
+
+This feels... strange.
+
+-- MaDa

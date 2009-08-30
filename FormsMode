@@ -1,0 +1,8 @@
+Use Forms mode to present information in
+a user-defined format, one record at a time.  It
+requires both a control file and a data file.
+
+Forms mode is part of Emacs.
+
+----
+CategoryModes

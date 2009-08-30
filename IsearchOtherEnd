@@ -1,0 +1,28 @@
+isearch (see IncrementalSearch) is a useful navigation mechanism. This works a little better if isearch puts you at the start of the search, not the end:
+
+ (add-hook 'isearch-mode-end-hook 'my-goto-match-beginning)
+ (defun my-goto-match-beginning ()
+    (when isearch-forward (goto-char isearch-other-end)))
+
+[new:DrewAdams:2004-12-24 22:48 UTC]
+: I agree that such a hook is useful. However, it would be a lot more useful if Emacs (21) always did as the Info doc says: 
+
+:: "When you exit the incremental search, it sets the mark to where point
+_was_, before the search.  That is convenient for moving back there.
+In Transient Mark mode, incremental search sets the mark without
+activating it, and does so only if the mark is not already active."
+
+: Unfortunately, if you end via `C-g', and you use such a hook, the mark is ''not'' set at the search start, so you cannot get back there via `C-x C-x'. Too bad. (Ending the search with `RET' or something else does set the mark correctly.) -- DrewAdams
+
+[new]
+With an incremental search, it actually seems fairly natural to end up with point at the end of the search term; after all, you can see it progressing along the search term with each character that you enter. That's not the case, however, for non-incremental search (search-forward, bound to C-s RET). So is it possible to do a similar thing like this for non-incremental search? I've only managed to do it using a wrapper so far:
+
+ (defun my-search-forward (term)
+    "Search forward, moving to the beginning of term."
+    (interactive (list (read-from-minibuffer "Find: ")))
+    (if (search-forward term)
+        (backward-char (length term))))
+
+But a hook approach would be better. -- SeanPalmer
+----
+CategorySearchAndReplace

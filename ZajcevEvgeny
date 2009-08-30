@@ -1,0 +1,196 @@
+portrait:http://www.emacswiki.org/cgi-bin/wiki/download/ZajcevEvgenyPortrait
+Emacs is the one! I use XEmacs for years and it is my primary editor and IDE.
+I'm [::lg_] on the EmacsChannel.
+
+As a global project I want to add some X11 binds to XEmacs, which will allow to create window manager in elisp. I always wants to integrate XEmacs in my desktop and control windows from within elisp.
+
+Here is my WishList:
+* I want popup menus controled from keyboard! (partly done, tpum in <b>Code</b> section)
+* I want modeline for minibuffer or modeline in <code>(minibuffer . only)</code> frame.
+* I want native dynamic source indexing with completions, support for structure fields completion(in C) - like SemanticBovinator and  RefactoringBrowser glued together, may be add support for dynknows.
+* I want real knowledges support(dynknows) in Emacs i.e. knownledge-at-point function which will display some knowledge about current word (may be according to word context) in some reserved area (like free space in toolbar). I do not really know how it should work and look.
+* I want Emacs show on the TV :)
+
+: Welcome to the wiki!  You might want to look at XlibInterface to get started. -- AlexSchroeder
+
+Unbelievable! X proto in elisp is great! I just try it out and it
+works perfectly! May be I should try to write fully in elisp without
+Xlib internal binds? I think speed is not the point for window
+managers, the first must be maximum usability and ergonomic feel.
+
+: Well, I use the [[ratpoison]] window manager, where all the windows are maximized.  Very strange at first, but once you get started, you will start to use Emacs windos instead.  Split horizontally and vertically -- I usually have between 2 and 6 Emacs windows visible when I work in Emacs. -- AlexSchroeder
+
+Yes I like this kind of window managers too, I use ION. But sometimes it is really necessary to have normal(standard) way of handling windows, say you start some application that have numerous windows(like gimp or glade) - it is no need to maximaze them and mouse is much more easier way to control them. Actually I have two large screens(about 1600x1200) xineramed together and one screen occupied by emacs frame splited to 4 windows. It is very handy to use. But there is no way to access minibuffer, modeline or any emacs routine from any context of windows (f.i.: you want to eval (calc-eval "18*65+5") expression, or paste from kill-ring to xterm you currently focused). So I want elisped window manager :)
+BTW: I get ION and Afterstep work together at the same time, one of IONs workspace is occupied by Afterstep and you can switch from ION to Afterstep and vice versa.
+
+I just start XWEM project. XWEM is 100% pure Emacs Lisp window manager. It will need patched version of XlibInterface to support more X funtionality. And I want to hear your wishes about what you want to see in it. I must say that I will try to make it as minimal as possible, it will hold only base functionality and all actions on clients windows, X selections, etc will be hooked around. Here is what I want to see:
+* ION, retpoison like behaviour.
+* Workspace, Frames, Windows notation (like in Emacs). Workspace is list of positions/sizes of visible Frames in other Frames configuration. Frame is main working area that holds Windows and split configuration. Window is subelement of frame that can hold multiple client windows. Windows in Frame can not overlap each other(except for special Frames/Workspaces).
+* Client windows decoration. None (hooked)
+* Special Frames/Workspaces - Possibility to handle client windows in normal(standard) way.
+* No mouse support (except for special Frames/Workspaces) in base.
+* Use native `keymap'(is in FSF Emacs it is special type or list?) for holding keybindings.
+* Minibuffer, statusbar support? i.e. you always have (minibuffer . only) emacs frame at the bottom/top of screen and can access it with f.i. "\W-x" or "\W-:" where \W is XWEM modifier. And information about XWEM state updates in it.
+
+I also must acknowledge you that XWEM project will be slowly developing project :(( because of many factors (such as the birth of my son today :) )
+
+: XWEM - X Window Emacs Manager?
+
+Well XE is the beginning of XEmacs and WM stands for Window Manger, so you almost divine, I just mix letters :). Name for XWEM is opened for suggestions. May be fem-wm (wm for emacs maniacs)?
+
+: Are you sure that you wouldn't rather use the sawmill interface to emacs?  You might get a happier result out of that if you don't mind the external-to-emacs process.  Though this the obvious drawback that you don't have the joy of writing a wm entirely in elisp.
+
+I do realy want WM internally in Emacs(no external proccesses and no other lisp implementations) and realy have fun writing, but it eats time like a piranha.
+
+== Russian Translation ==
+
+I copied the Usemod Russian file, converted it to UTF-8, and started using it.  Not all strings are translated, and some of the translated strings have changed, but it gives a good expression of what to expect.
+
+: cool, I just improved it a little bit(it is not correctly converted to UTF-8 - Russian glyphs are ok, but not for proper characters), we may use it - Oddmuse:Russian
+
+Done.  Thanks! -- Alex.
+
+BTW, on my Mozilla Firebird 0.6 the Russian fonts seem to be extra large -- much larger than all the others.  Any ideas what this could be? -- AlexSchroeder
+
+: Hmm strange, try to change font for _Cyrrillic_ in Fonts->Appearance.
+
+== Useful functions ==
+
+Recently scanning my <code>.emacs</code> I found some useful functions, but did not remember when I added them.
+
+    ;; Some useful functions
+    (defun my-maybeinsert (str &optional arg)
+      "As identity, but inserts to selected buffer if ARG is non-nil."
+      (if arg (insert str) str))
+    
+    (defun alphabet (&optional arg)
+      "Return latin alphabet as string or insert to selected buffer."
+      (interactive "P")
+      (my-maybeinsert "abcdefghijklmnopqrstuvwxyz" arg))
+    
+    (defun digits (&optional arg)
+      "Return digits list as string or insert to selected buffer."
+      (interactive "P")
+      (my-maybeinsert "1234567890" arg))
+
+Here is pieces of my <code>.emacs</code> file, that I use daily:
+
+    (defun my-find-tag-regex (tagname)
+      "Use `igrep-find' command to find all occurances of tag with TAGNAME."
+      (interactive (if current-prefix-arg (list (current-word))
+                     (list (find-tag-tag "Find tag: "))))
+      (let ((dir (file-name-directory tags-file-name)))
+        (igrep-find "grep" tagname (concat dir "/*"))))
+    
+    (defun my-insert-nl-at-eol (arg)
+      "Insert new line at the end of line.
+    If prefix ARG supplied, do not move point."
+      (interactive "P")
+      (eval (list (if arg 'save-excursion 'progn)
+	          '(end-of-line)
+	          '(newline-and-indent))))
+
+:: I bound this command to <code>C-j</code>.
+
+: Sometimes it is a need to run command under save-excursion.  For
+example you need insert 17 spaces and move point back to position,
+where you start.  This can be resolved in various ways.  Such as
+saving point to register, inserting, jumping to register, or push mark
+at point than insert and pop mark.  But in here a little hack to do
+such thing without involving external point holders.
+
+    (defun my-do-cmd-under-save-excursion (keys key)
+      "Execute KEY command under `save-excursion'.
+    This command can be bound only to single key(not keysequence)."
+      (interactive (list (this-command-keys)
+                         (read-key-sequence (concat (key-description (this-command-keys)) " -"))))
+
+      (let ((nkeys (vconcat (butlast (append keys nil)) key)))
+        (save-excursion
+          (command-execute nkeys))))
+
+:: I bind this command to <code>M-o</code>, and now can insert 17
+spaces issuing <code>C-u 1 7 M-o <SPC></code>, or I can execute
+keyboard macro three times starting from same position with <code>M-3
+M-o C-x e</code>
+
+: Before doing serious work, I prefer to check luck, using <code>M-x
+my-try-luck RET</code>
+
+    (defun my-try-luck (&optional luck-arg)
+      "Try your luck.
+    Prefix arg LUCK-ARG specifies luck parameter, default is 4."
+      (interactive "P")
+      
+      (unless luck-arg
+        (setq luck-arg 4))
+      (setq luck-arg (prefix-numeric-value luck-arg))
+    
+      (if (= (truncate (* luck-arg (/ (random most-positive-fixnum) (float most-positive-fixnum))))
+             (1- luck-arg))
+          (message "No luck for today.")
+        (message "You are lucky!")
+        ))
+
+: I like Google calculator
+
+    (autoload 'w3m-url-encode-string "w3m")
+    (autoload 'url-insert-file-contents "url")
+    
+    (defun google-calc (string)
+      "Query google calc to calculate STRING."
+      (interactive "sGoogle Calc: ")
+      (with-temp-buffer
+        (url-insert-file-contents
+         (concat "http://www.google.com/search?q="
+                 (w3m-url-encode-string string)))
+        (if (and (re-search-forward "/images/calc_img\\.gif" nil t)
+                 (re-search-forward "<b>\\(.*\\)</b></td>" nil t))
+            (setq res (replace-in-string (match-string 1) "<[^>]*>[^<]*</[^>]*>" ""))
+          (setq res "No result"))
+        (set-buffer-modified-p nil))
+      (message "Google Calc: %s" res))
+
+:: <code>M-x google-calc RET 20 rubles in euro RET</code> => Google Calc: 20 Russian rubles = 0.592065171 Euro
+
+== Code ==
+
+* [http://www.emacswiki.org/elisp/tpum.el.gz tpum.el] -- I miss popup menus controled from keyboard so I wrote this packege, which allow popup menus even in console devices.
+
+* [http://www.emacswiki.org/elisp/buqis.el buqis.el] -- Allow you to switch buffers in editing context (see also [[BufferQuickSwitcher]])
+
+* [http://www.emacswiki.org/elisp/mcskels.el.gz mcskels.el] -- I'm heavy C programmer and i tired to type the same C statements all the time, so I wrote this one. (see also [[CmodeTemplates]])
+
+* [http://www.emacswiki.org/elisp/himarks-mode.el himarks-mode.el] -- Since mcskels uses push ring sometimes I need to track it, i.e. highlight marks in buffer, so i wrote this one.
+
+* [http://www.emacswiki.org/elisp/prefixkey.el prefixkey.el] -- Introduces prefix key, analogue to C-u, but can be used in combination with other keys. For example, say <code>P</code> is prefix key, pressing <code>P-a</code> will be equivalent to pressing <code>C-u a</code> - insert 'a' four time. Or <code>P-M-!</code> equivalent to <code>C-u M-!</code> - insert output of shell command to current buffer.
+
+* [http://www.emacswiki.org/elisp/rdict.el.gz rdict.el] -- Interface to lingvo online Russian<-->English dictionary.
+
+* [http://www.emacswiki.org/cgi-bin/wiki/moikrug.el moikrug.el] -- Interface to first social networks service for professionals in Russia - [http://moikrug.ru MoiKrug]
+
+* [[eukleides.el]] -- Full featured major mode to edit [http://eukleides.org eukleides] files.
+
+== Plans ==
+
+* <b>egx</b> -- Widget library, gtk like with styles and engines support. Build on top of xlib and gives abbilities to write good looking X applications on emacs lisp.
+
+* <b>glade's xml -> elisp transator</b> -- Glade generates xml file which represent widgets layout on top window and it is possible using egx library to process xml file and get elisp program.
+
+* <b>mudi</b> -- Meta user derived interface. I tired that each emacs package writes user interface from scratch, there no unification of interfaces, [[CategorizingInformationManager]] is good candidate to make an unification, but it is too complicated for me, I want something simple, easy to use, easy to extend, which will operate on objects, and provide interface like ibuffer do.
+
+* <b>zevka</b> -- Ideal keyboard layout, theoretically it is possible to create ideal keyboard layout, when your fingers walks shortest path while you are typing certain text. So there an idea (which is partly implemented already) to write such application which will measure how your fingers walks and how hard/easy to type every button for you and will generate ideal keyboard layout using text database created by user, for example i mostly write C programs so i will create text database with next characteristics: 70% - C programs, 20% - plain text, 10% - elisp code.
+
+* <b>NN</b> -- Simple neuran network emulator.
+
+* <b>kastr</b> -- I want create stokes database of glyphs from kanji, so using xwem's strokes support, strokes itself and NN it will be possible to create japanese text recognizer, i.e. you just use your mouse or active pen to write hiragana, katakana or kanji text .. xwem will save this, pass to NN to performe glyphs splitting and then each separate glyph passed to strokes routines performing matching in context of strokes database. Maybe patching X server a little, to provide more accurate motion events, i.e. some active pens hardware sends pressure parametr and size of contact square(for example when you press active pad using needle contact square is very small and using brush is large) so X motion events will give us addition information to performe matching more accurate.
+
+= Mailbox =
+[new]
+Hello lg. I noticed you edited [[Lisp:flashcard.el]] in a way that makes the whole file unusable to everyone, even if they're not affected by the problem you mentioned. I would have preferred if you had added a code fragment like (when (featurep 'xemacs) (error "Dangerous code here!")). Also, though I usually monitor this wiki quite closely, especially my own pages, I somehow missed your change, so I would have liked to receive an email about the problem. Thanks. JorgenSchäfer
+
+[new]
+Yes, thanks for your comment.  I was very hoping just to stress attention on that problem and was very sure that one of authors does monitor EmacsWiki daily and will patch [[Lisp:flashcard.el]] in correct way.  But than i simple forgot about that, and nobody reviewed it.  Forgive me if i did something wrong or gave a lot of troubles.  I was also pretty pissed off loosing data, so probably made changes to [[Lisp:flashcard.el]] while being in brain affected state :)
+
+----
+CategoryHomepage

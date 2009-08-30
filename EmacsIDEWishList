@@ -1,0 +1,121 @@
+EmacsForDevStudioUsers.  Yeah, probably you would have been thinking about [[CEDET]] or something else.  
+Emacs is everything.  Emacs can be used as an IDE.  And this page exists for expressing new ideas
+and enhancements that improves the IDE nature of emacs.  You may say 'Emacs 
+is already a great IDE, what else you is needed?'.  The answer to this question 
+is exactly what this page is meant for ;)
+
+Thoughts? features? Edit this page to add yours.
+
+----
+
+= SubModes =
+When you are using something like PHP, you want Emacs to have HTML in html-mode (or whatever the correct mode is, you get the idea) and PHP code in php-mode (same remark as before), not PHP show as HTML commentaries.
+[new]
+I think [http://mmm-mode.sourceforge.net mmm-mode] is exactly for doing that. --TassiloHorn
+
+Or [NxhtmlMode nXhtml]/MuMaMo which takes a different approach on this. Comments are welcome. --LennartBorgman
+
+
+= Toolkits =
+UI independent layer would be better.  Gtk2 support is available since Emacs-22.
+
+= Fonts =
+* Emacs suports anti-aliased fonts since Emacs-23.
+* Font selection dialog supported since Emacs-23.
+
+= Buffers vs XWidgets =
+Things like tabbar, speedbar could better use widgets of the X toolkit than drawing over 
+the buffer.  In the case of Gtk+, there is GtkTextView which (besides from rendering text)
+also renders Gtk+ Widgets themselves.  The Emacs buffer capabilities could go in this way.  
+Make emacs buffer to embed Gtk+ (or whatever the toolkit) widgets.
+
+
+= Simple Configuration UI =
+M-x .... Oh My! Emacs is highly configurable and there are a lot to tweak.  But 
+for newcomers minimizing the UI and keeping it simple is desired.  Instead of 
+bloating the menus with a lot of options most of which are seldom used, keep the UI (menus, dialog) 
+simpler--have mostly used commands in them.
+
+= Embeddable =
+This one is great.  Make emacs embeddable so that it can be embedded in applications.
+
+[new:DrewAdams:2004-12-24 22:44 UTC]
+Not sure what you mean by that. You can always use Emacs from another application (for editing or for evaluation/calculation). In particular, you can use `gnuclient' or `emacsclient' to access a running Emacs (`gnuserv'). -- DrewAdams
+[new]
+I mean embedding the Emacs buffer inside other IDEs like Anjuta. -- Sridharinfinity
+[new:DrewAdams:2004-12-24 22:44 UTC]
+Googled to see what you mean. Here are some Anjuta screenshots, so others can get an idea: http://anjuta.sourceforge.net/anjuta.php?page=screenshots. It looks like you're speaking of tight integration with specific functionalities in the IDE. In-depth knowledge of the IDE (e.g. Anjuta) would no doubt be needed, as well as knowledge of what kind of integration (embedding) is needed. 
+
+If you just want to pop up a new window (Emacs frame) to edit a buffer from various parts of the IDE, then you can use `gnuclient' to do that: from a user's point of view, such an editing window would seem to be part of the application (IDE). -- DrewAdams
+[new]
+Maybe what is asked for is an interface to make Emacs live in existing windows for editing inside the application. This interface does not in itself have to have specific knowledge about the application where Emacs is embedded. However for a useful integration the interface must have a way to specify how Emacs should interact with the application. (Can such an interface be made "platform independent" today? Or rather, to what extent can it be made platform independent today?) -- LennartBorgman
+[new]
+One of the major pieces of work for XEmacs that JWZ did was ensuring that you could use it as a motif widget, in order to embed it in a Motif GUI.  I have no idea how easy it is to still do this.  -- DominicMitchell
+[new]
+I believe what is wanted, at least what I want, is for programs that would display a text edit area to have the ability to display an emacs window instead.   KDE can do this with vim as they have a vim editing component (http://www.freehackers.org/kvim/vimpart.html).  Here's a screenshot of vim being used for the text edit field instead of the regular text edit component (fifth image down the page): http://www.freehackers.org/kvim/screenshots.html.  What is being asked for is some way, via a Gnome or KDE component or another method, to do the same form of embedding with an emacs window. -- MattPerry
+[new]
+To make this work pleasantly for most user, the menu and toolbar of the IDE (or other software) where Emacs is embedded should work for Emacs text (simple things like "save"), maybe using something like d-bus is necessary to have this kind of things working almost everywhere. The point is that the "host" software have to implement a d-bus interface.
+If what's wanted is just to have emacs into another software, urxvt does this (see its -embed option). -- p4bl0
+[new]
+Emacs-23 supports the XEmbed specification.  Here is the NEWS entry: "You can embed Emacs in another application on X11.  The new command line option --parent-id is used to pass the parent window id to Emacs.  See http://standards.freedesktop.org/xembed-spec/xembed-spec-latest.html for details about XEmbed." --JoachimNilsson
+
+= Integrated :) =
+* Build system, properly integrated into Emacs, with notion of "project" that's buildable and runnable debuggable and what have you, (maybe EDE is that, but I didn't have time to try it, especially given non-existant documentation)
+* Refactoring browser! Bring it on!
+* Even better support for autocompletion and stuff from SemanticBovinator. Easier, more out-of-the-box setup for it. 
+Ability to plug in arbitrary $programming_platform in easy and braindead way
+
+* Second vote for better auto-completion , auto-complete as you type etc..
+* Proper symbols' browsing&navigation, like SemanticBovinator, but working on the whole project, not in the one file.
+
+Incidentally, the above was for long time on my TODO, and with finite resources of time it's probably going to stay there for much longer...
+-- MaciejKatafiasz
+
+''I want something like SlimeMode for Python, Haskell, or Erlang. At a minimum it would need to integrate with docstrings, dir() and/or type inference, as well as hook into debugging, profiling and other existing tools.''
+
+= Better scripting language =
+It doesn't matter if it is guile, clisp or whatever but, please, something standard!
+-- VdS
+[new]
+Somehow I always fail to see the point.  Every programmer who doesn't already know whatever language you picked still needs to learn it.  How does being 'standard' help?  I learned Elisp in 2 weeks.  The finer points took another month.  What if it took 3 months.  Here I am 3 years later and I'm not even close to knowing all the internal interfaces with Emacs and how they interact with each other.  Do you really think painting a big rock makes it any easier to move?
+
+--[http://www.emacswiki.org/cgi-bin/wiki/Rick_Bielawski RGB]
+
+= Improved debugger integration =
+Right now, gud-mode is a bit rough around the edges and I never found it that robust. In particular the gdb interaction window is flaky and I found it easy to screw up. Why do I even need to interact with the gdb command line directly? It'd be nice if this was fully graphical and emacsified.
+[new]
+From Emacs-22 a greatly improved graphical UI is included and in Emacs-23 the support is even better, actually M-x gdb now only works with the graphical UI. Separate windows for stack variables, breakpoints, etc. --JoachimNilsson
+
+= XUL =
+Mozilla implements XUL("UI markup language") and XULRunner UI platform.  Firefox 3 will be on XULRunner.  Songbird(a new powerful player) also based on XULRunner. I think this tech is very userful for independent application(including Emacs). I want Emacs to support web developing well.  Firefox is so powerful, it has many extensions. Will it be the next Emacs?
+
+=== Research ===
+[[Conkeror]], [[http://RobRohan.com/projects/9ne | 9ne]], http://vian.sf.net
+
+[new]
+Who needs XML based user interfaces when EmacsLisp does the trick for making Emacs [[extensible]].  GTK interfaces are newly supported, and I doubt Mozilla's UI interface will be appearing anytime soon.  See MultipleModes for Emacs method of handing Web development.  See also MozillaDevelopmentEnvironmentforEmacs.
+
+= Coding helps =
+make emacs work for you:
+* compare the ease of templates use in [1] versus else-mode: only one key to move between template elements, really powerful and easy to use and customize
+* autocompletion should appear as popup near the cursor (the place your eyes are looking at). Cursor keys and enter to select, esc to close with no selection
+* automatic (), [], {}, "" or '' (see [1])
+* a single key to trigger different actions depending on the context. F.e. "tab" to expand a template, same "tab" key for autocompletion, and so on
+* show [[bookmark]]s on fringe
+* a special buffer containing a list with line numbers of all "TODO", "FIXME", "BUG"... of your project/open files:
+
+    test1.py:123   TODO: hey we have to refactor this code
+    test2.c:23456  FIXME: add assertions here
+    ... 
+
+[1] http://Scribes.sf.net/demo.htm
+
+[new]
+Well, after some time searching I've discovered that "skeleton-pair" solves my third point in the list above.
+Also, "msf-abbrev" package has all the features regarding dynamic abbreviations and it's much easier than else-mode (points 1 and 4 above).
+Finally, for TODO and FIXME entries (point 6) I've coded simple org-mode help functions. It's not perfect, but works somehow.
+
+Some days, while using emacs, I feel like a silly young boy listening the incredible stories of elder people... everything is there you only have to find...
+
+----
+CategoryWishList

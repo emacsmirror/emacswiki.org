@@ -1,0 +1,110 @@
+Click the page title to find all pages related to undoing.
+
+In Emacs, '''[::undo]''' means undoing changes to buffers. However, this page includes discussion of related ways to "undo" other aspects of your Emacs session.
+
+= Undoing Buffer Changes =
+
+* GotoLastChange, GotoChg  -- move [[point]] through `buffer-undo-list' positions
+* RedoMode -- simplify the current undo mechanism to be more MS Windows like (and thus less powerful)
+* SelectiveUndo -- only undo changes in a certain region
+* UndoBrowse -- powerful undo system (back/forth/movie/redo/hilight)
+* TrackChanges -- view changes to a file
+* RevertBuffer -- how to refresh the [[buffer]] content without closing and reopening the file
+
+== Repeated undos ==
+
+Having once undone a change with `C-x u' or `##C-_##', you can repeat the undo command by pressing `C-x z', which is `repeat'.  So the overall sequence of `C-x u C-x z z z z z' undoes changes back through time, and may be easier to type than `##C-_ C-_## ...'.
+
+It works with GnuEmacs, yet it does not work with xemacs. Is there any similar trick in it?
+
+Try adding something like
+
+(global-unset-key "\C-z")
+(global-set-key "\C-z" 'advertised-undo)
+
+to your .emacs, now undo (for me much more important than iconifying emacs) will be one of the easiest commands
+to reach, and iconifying is still bound to C-xz - very convenient I think.
+
+[new] C-/ is also bound to undo. -- DavidHouse
+
+= Temporary Changes =
+[:temporary-invisible-change]
+Sometimes you want to change a [[buffer]] briefly, then change it back.  Perhaps like momentary-string-display or PopupRuler where you don't want the user's undo list affected.
+
+<pre>
+(defmacro temporary-invisible-change (&rest forms)
+  "Executes FORMS with a temporary buffer-undo-list, undoing on return.
+The changes you make within FORMS are undone before returning.
+But more importantly, the buffer's buffer-undo-list is not affected.
+This allows you to temporarily modify read-only buffers too."
+`(let* ((buffer-undo-list)
+          (modified (buffer-modified-p))
+          (inhibit-read-only t))
+     (save-excursion
+       (unwind-protect
+           (progn ,@forms)
+         (primitive-undo (length buffer-undo-list) buffer-undo-list)
+         (set-buffer-modified-p modified))) ()))
+</pre>
+
+You would use this either with some kind of delay or read-event so a user sees what happened, or for operations like inserting form feed characters in before printing but having them removed again without a trace afterwords.
+
+    (temporary-invisible-change
+     (insert "try this")
+     (forward-line)
+     (insert "try that")
+     (read-key-sequence-vector "Any event:"))
+
+= Undoing Other Things =
+
+Besides changes to [[buffer]]s, you can undo some other changes to your current Emacs state. In most cases, this undoing really means cycling or popping recorded states.
+
+== Frame Configurations ==
+* `M-x cycle-frame-configs' -- cycle among previous [[FrameConfiguration]]s, seeming to undo configuration changes. See FramesAndRegisters.
+* `M-x jump-to-frame-config-register' -- restore the last saved [[FrameConfiguration]], seeming to undo the current config. See FramesAndRegisters.
+* `M-x save-frame-config' -- save a [[FrameConfiguration]], so you can return to it later with `M-x cycle-frame-configs' or `jump-to-frame-config-register'. See FramesAndRegisters.
+
+== Locations In Buffers ==
+
+See MarkCommands for commands to pop local and global mark rings, undoing the current location: `C-u C-SPC', `C-x C-SPC'.
+
+Use BreadcrumbForEmacs to leave breadcrumb bookmarks in the buffers, and jump back to them quickly.
+
+== Undo at point Level ==
+
+Is there an undo at the point level ? I would like to undo [[point]] movement too. Right now it's very hard to tell what is about to be undone. 
+[new]
+Does `C-u C-SPC' do what you want? It's not clear what you're looking for. 
+[new]
+To me it sounds like GotoLastChange is the answer being sought.
+[new]
+Try Lisp:point-undo.el
+
+== Viewing undo information ==
+
+ViewUndo is a quick hack that shows a buffer's undo list in one message.
+It doesn't modify the undo list, but it does change the `undo' state from undoing to redoing, a definite problem.
+Only tested with GNU Emacs 21.2.1 on Mac OS 10.3.7.
+
+== Lack of redo / lack of undo tree manipulation ==
+
+Some people have trouble with the lack of redo or a way to browse the undo
+tree.  There is no built-in way to do these things (aside from mentally trying
+to keep track of a long string of changes including undos, which some people
+find very difficult).
+
+Since this is Emacs, it ought to be possible to fix this using a library.  Yet
+every library intended to address the problem so far (e.g. redo.el,
+undo-browse.el) corrupts the buffer, fails to work on both emacs and xemacs,
+is out of date and might not even run, is hosted on an obsolete web site, etc.
+Does anybody know of a good solution here?  Thanks!
+
+I think the lack of a natural-feeling undo/redo solution is a big stumbling
+block for people who would otherwise use emacs -- whatever the merits of the
+built in way.
+
+(I conclude from the lack of response to the above that there is no
+solution at present, that nobody cares, or that nobody uses this
+wiki.  :( :( :(.  Is this true?  I find it strange, either way.)
+[new]
+I use the emacswiki, but have no solution for you.

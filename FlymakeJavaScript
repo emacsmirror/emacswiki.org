@@ -1,0 +1,165 @@
+There are two javascript engines that can be used, %%SpiderMonkey%% and Rhino.  Alternatively, you might want to use Douglas Crockfords rather handy JSLint [http://www.jslint.com], which will be much less forgiving of bad syntax, and can enforce a sensible coding style.
+
+== With JSLint ==
+
+First, you will need to install Rhino, and download jslint.js for Rhino [http://www.jslint.com/rhino/index.html].  I've got it located in <tt>~/soft/jslint</tt>, and you will want to update the code below to match where you've put it.
+
+Next you will want to create a file called flymake-jslint.el on your LoadPath like the following
+
+<pre>
+(require 'flymake)
+
+(defun flymake-jslint-init ()
+  (let* ((temp-file (flymake-init-create-temp-buffer-copy
+		     'flymake-create-temp-inplace))
+         (local-file (file-relative-name
+		      temp-file
+		      (file-name-directory buffer-file-name))))
+    (list "rhino" (list (expand-file-name "~/soft/jslint/jslint.js") local-file))))
+
+(setq flymake-allowed-file-name-masks
+      (cons '(".+\\.js$"
+	      flymake-jslint-init
+	      flymake-simple-cleanup
+	      flymake-get-real-file-name)
+	    flymake-allowed-file-name-masks))
+
+(setq flymake-err-line-patterns 
+      (cons '("^Lint at line \\([[:digit:]]+\\) character \\([[:digit:]]+\\): \\(.+\\)$"  
+	      nil 1 2 3)
+	    flymake-err-line-patterns))
+
+(provide 'flymake-jslint)
+</pre>
+
+and import it from your DotEmacs like so:
+
+<pre>
+(require 'flymake-jslint)
+(add-hook 'javascript-mode-hook
+	  (lambda () (flymake-mode t)))
+</pre>
+
+You can control options of JSLint by using special comments in your source code which are described in the documentation [http://www.jslint.com/lint.html].  For example, the following is the same as using the recommended options on jslint.com, and also the assume a browser option.  It also defines the name !MochiKit, which is imported elsewhere.
+
+<pre>
+/*jslint browser: true, undef: true, eqeqeq: true, nomen: true, white: true */
+
+/*global MochiKit */
+</pre>
+
+
+
+== With SpiderMonkey ==
+
+JavaScript syntax checking using spidermonkey. This also detects object trailing comma like:
+
+<pre>
+var obj = {
+  a: 1,
+  b: 2,
+}; // this line is highlighted.
+</pre>
+
+You'll need Karl's [[JavaScriptMode]], spidermonkey 1.5 or greater and emacs 22.
+
+<pre>
+  (defconst flymake-allowed-js-file-name-masks '(("\\.json$" flymake-js-init)
+                                                 ("\\.js$" flymake-js-init)))
+  (defcustom flymake-js-detect-trailing-comma t nil :type 'boolean)
+  (defvar flymake-js-err-line-patterns '(("^\\(.+\\)\:\\([0-9]+\\)\: \\(SyntaxError\:.+\\)\:$" 1 2 nil 3)))
+  (when flymake-js-detect-trailing-comma
+    (setq flymake-js-err-line-patterns (append flymake-js-err-line-patterns
+                                               '(("^\\(.+\\)\:\\([0-9]+\\)\: \\(strict warning: trailing comma.+\\)\:$" 1 2 nil 3)))))
+
+  (defun flymake-js-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list "js" (list "-s" local-file))))
+  (defun flymake-js-load ()
+    (interactive)
+    (defadvice flymake-post-syntax-check (before flymake-force-check-was-interrupted)
+      (setq flymake-check-was-interrupted t))
+    (ad-activate 'flymake-post-syntax-check)
+    (setq flymake-allowed-file-name-masks (append flymake-allowed-file-name-masks flymake-allowed-js-file-name-masks))
+    (setq flymake-err-line-patterns flymake-js-err-line-patterns)
+    (flymake-mode t))
+
+  (add-hook 'javascript-mode-hook '(lambda () (flymake-js-load)))
+</pre>
+
+== With Rhino ==
+
+There's another implementation of [http://code.google.com/p/flymake-js/ Flymake JavaScript mode] that sits on top of the Rhino engine.
+
+[new]
+I have some problems with this one. I assume it is a problem with the path to rhino.js and env.js, but I am not sure. I have placed those file in the folder %%c:/emacs/rhino-related/%% which I mention in rhino.js (see below, is this correct?):
+
+<pre>
+  // Where you store your files
+  var project_folder = 'c:/emacs/rhino-related/';
+  // Browser environment wrapper over Rhino
+  load(project_folder + 'env.js');
+  // For DOM constructing
+  window.location = project_folder + 'blank.html';
+  var my_script = arguments[0];
+  // If DOM ready
+  window.onload = function(){
+      // Avoid recursive inclusion
+      if ("rhino_flymake.js" != my_script) {
+          load(my_script);
+      }
+  }
+</pre>
+
+I get strange errors, like:
+
+  parsed 'Exception in thread "Thread-0" org.mozilla.javascript.WrappedException:
+  Wrapped java.net.MalformedURLException: unknown protocol: c',
+  no line-err-info
+
+It looks like Rhino can not take care of the c: in the path. Anyone who understands what is happening?
+-- LennartBorgman
+
+[new]
+I do not have a Windows box to verify the fix below, but according to some forum posts, you should declare the path in scheme <code>file:///C:/path/to/file</code>.
+
+<pre>
+  var project_folder = 'file:///c:/emacs/rhino-related/';
+</pre>
+
+-- Nyuhuhuu
+
+[new]
+Before I fixed the issue you speak of, I had to fix an apparent problem with 'compilation-error-regexp-alist-alist' in 'flymake.el'.  For details on that, please see [http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/0cd12cf6b61e7923#d734eb7aedf67971 this post] on gnu.emacs.help.
+
+After that was fixed, I was able to get the Java Rhino process running on target with this (using the Windows build of Emacs, on Windows XP):
+<pre> 
+    var project_folder = 'c:\\Progra~1\\emacs\site\\rhino-web-browser-js-environment\\';
+</pre>
+
+Then in my 'flymake-js-init' function definition, I have this:
+
+<pre>
+    (list "java" (list "-jar" "c:/Progra~1/rhino1_6R7/js.jar" "c:/Progra~1/emacs/site/rhino-web-browser-js-environment/rhino_flymake.js" local-file))))
+</pre>
+
+That said, after said success I ran into other problems, apparently unrelated to any of my previous fixes and configurations, down the road.  Please see the last half of the third comment on [http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/0cd12cf6b61e7923#d734eb7aedf67971 this post] on gnu.emacs.help.
+
+It would be very cool if this could be made to work.  If we can figure it out, we could make a nice how-to on this that I bet a lot of people would benefit from.
+
+  -- ChristopherMBalz
+
+[new]
+I get a lot of errors on the first line, like
+
+  - Context.Java(1757)
+  - MemberBox.java(187)
+  etc.
+
+That is this?
+----
+FlyMake

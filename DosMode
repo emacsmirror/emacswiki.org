@@ -1,0 +1,13 @@
+== Major mode for editing Dos scripts (batch files) ==
+
+Provides syntax highlighting, templates, and smaller tools.
+
+You can get it here:
+
+* Lisp:dos.el
+
+DosScripts compares alternative Emacs modes available for editing Dos scripts, including Lisp:batch-mode.el and CmdMode.
+
+----
+DosScripts
+ProgrammingModes

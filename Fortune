@@ -1,0 +1,37 @@
+fortune.el is a fortune frontend for Emacs. It is bundled with Emacs.
+
+To load put the following in .emacs file:
+
+ (autoload 'fortune "fortune" nil t)
+ (autoload 'fortune-add-fortune "fortune" nil t)
+ (autoload 'fortune-from-region "fortune" nil t)
+ (autoload 'fortune-compile "fortune" nil t)
+ (autoload 'fortune-to-signature "fortune" nil t)
+
+or simply:
+
+ (require 'fortune)
+
+Then set the path and file which should use fortune. E.g.:
+
+ (setq fortune-dir "/usr/share/fortune")
+ (setq fortune-file "/usr/share/fortune/bofh-excuses")
+
+To insert a fortune in your signature use this function:
+
+ (defun my-fortune-signature (&optional file signature-separator)
+   (end-of-buffer)
+   (if signature-separator
+       (insert signature-separator)
+     (insert "-- \n"))
+   (if file
+     (insert (fortune-to-signature file))
+     (insert (fortune-to-signature))))
+
+
+Automaticly insert a new signature every time you write a new mail:
+
+  (add-hook 'message-signature-setup-hook 'fortune-to-signature)
+
+----
+CategoryMailAddons

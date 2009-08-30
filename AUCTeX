@@ -1,0 +1,177 @@
+From the introduction in the AUCTeX manual:
+
+: !AUCTeX is a comprehensive customizable integrated environment for writing input files for !TeX/LaTeX/ConTeXt/Texinfo using Emacs or XEmacs.
+
+: It lets you process your source files by running TeX and related tools (such as output filters, post processors for generating indices and bibliographies, and viewers) from inside Emacs. !AUCTeX lets you browse through the errors !TeX reported, while it moves the TextCursor directly to the reported error, and displays some documentation for that particular error. This will even work when the document is spread over several files.
+
+: One component of !AUCTeX that LaTeX users will find attractive is ##preview-latex##, a combination of folding and in-source previewing that provides true "What You See Is What You Get" experience in your sourcebuffer, while letting you retain full control. ##preview-latex## comes with its own manual.
+
+: !AUCTeX automatically indents your `LaTeX-source', not only as you write it -- you can also let it indent and format an entire document. It has a special outline feature, which can greatly help you `getting an overview' of a document.
+
+: Apart from these special features, !AUCTeX provides a large range of handy Emacs macros, which in several different ways can help you write your documents fast and painlessly.
+
+!AUCTeX's home page can be found at http://www.gnu.org/software/auctex/ and there is a summary project page on Freshmeat at http://freshmeat.net/projects/auctex/.
+
+##C-c C-c## to run !LaTeX over your document, then, once it has compiled correctly, ##C-c C-c## again to view it, or if it failed to compile correctly, ##C-c `## to see the errors.
+
+If you use XEmacs, !AUCTeX and !MikTeX on Windows you may run into the problem that firing the command ##C-c C-c## leads to the ErrorCantFindFile.
+
+It works well with RefTeX (there is an option in !RefTeX to plug it in into !AUCTeX).
+
+== Using Yap under MikTeX ==
+
+To use yap as viewer put this into <tt>[InitFile ~/.emacs]</tt> to enable !MikTeX integration.
+
+    (load "auctex.el" nil t t)
+    (require 'tex-mik)
+
+Inverse searching using YAP can be enabled if you go to View\Options\Inverse DVI Search. Add a new entry for emacs, specify the path to ##emacsclientw##, ##"C:\Program Files\Emacs\emacs\bin\emacsclientw.exe"## (no quotes required), and the arguments for ##emacsclientw##, ##'+%l "%f"'## (no single quotes, but include the double quotes).
+
+== Customary Customization ==
+
+To edit !LaTeX documents, you will probably want to include the following in your <tt>[InitFile ~/.emacs]</tt>.
+
+    (setq TeX-auto-save t)
+    (setq TeX-parse-self t)
+    (setq-default TeX-master nil)
+
+    (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
+    (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+    (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+
+    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+    (setq reftex-plug-into-AUCTeX t)
+
+== preview-latex ==
+
+##preview-latex## (also known as !PreviewLaTeX) is an integrated part of !AUCTeX as of version 11.80, which allows you to see previews of math, figures, tables, graphics and other things directly in an Emacs 21 buffer. It was released separately in the past, but always required !AUCTeX to run.
+
+== CDLaTeX ==
+
+CDLaTeX is a /minor/ mode, supporting fast insertion of environment templates and math stuff in !LaTeX, written by CarstenDominik. !CDLaTeX tries to be quick, with very few and easy to remember keys, and intelligent on-the-fly help. As a minor mode, you can use it in !AUCTeX.
+
+== SwifTeX ==
+
+[http://www.ctan.org/tex-archive/support/emacs-modes/swiftex/swiftex-doc.txt SwifTeX] (by the author of !docTeX, the mode for editing self-documenting !LaTeX code) is derived from the !LaTeX mode in "tex-mode.el" (distributed with Emacs) using the autoloaded function <code>`define-derived-mode'</code>. It has untested option to derive from !AUCTeX's !LaTeX-mode.
+
+== Add-Ons ==
+
+* [http://people.debian.org/~psg/elisp/latex-units.el latex-units.el] -- Add a Units sub-menu to !AUCTeX's math-mode's menu (by Peter S. Galbraith).
+* [[Lisp:pstricks.el]] -- add some functionalities for using pstricks with !AUCTeX (Jean-Philippe Georget)
+
+[new]
+pstricks.el has been added to the latest auctex cvs version with some changes to make it work better. (2009-06-25)
+
+== TeX Documentation ==
+
+##C-c ?## (or ##M-x TeX-doc##) gives documentation for the symbol at point, or for any package, command or document.
+
+[new:unhammer:2008-12-03 18:42 UTC]
+
+[new]
+On my system (!MacTeX 2008, Aquamacs) I can only get documentation for packages, it seems. Does anyone know how to set up !AUCTeX so that we get a more emacs-lisp-like documentation system? (Eg., documentation for every !TeX command, from ##\emph{}## to ##\citep{}## to ##\operatorname{}## ...)
+
+[new:2009-08-05:2009-08-05 20:38 UTC]
+I also wish I could access a more emacs-lisp-like documentation system.
+
+[new]
+Well, I guess this won't be as naturally done as in elisp. But there is latex-doc package that tries to do that. See: http://www.ee.usyd.edu.au/~thlai/emacs/index.html
+
+== Abbrev mode and AUCTeX ==
+
+By default, !AUCTeX shares its abbreviations with the major mode text-mode. This means that abbreviations saved with <code>C-x a l</code> (<code>add-mode-abbrev</code>) are saved in the table <code>text-mode-abbrev-table</code> and become available in all buffers using text-mode. This may not be the expected behavior. Here is how to define abbreviations that work in auctex modes only, without interfering with the standard text-mode. In the InitFile, put:
+
+   (define-abbrev-table 'TeX-mode-abbrev-table (make-abbrev-table))
+   (add-hook 'TeX-mode-hook (lambda ()
+      (setq abbrev-mode t)
+      (setq local-abbrev-table TeX-mode-abbrev-table)))
+
+Abbrevs defined from a file in one of the auctex modes will then be stored in the default .abbrev_defs file using the table <code>TeX-mode-abbrev-table</code> instead of <code>text-mode-table</code>.
+
+== Smart quotes ==
+
+: ''For similar behavior in'' non''-!TeX-modes, see TypographicalPunctuationMarks.''
+
+By default, the '##"##' key in !AUCTeX is quite clever and inserts "##``##" and "##''##" according to context (which !LaTeX converts to *“* and *”*). The strings ##TeX-open-quote## and ##TeX-close-quote## holds the opening and closing sequences inserted and may be changed, e.g.,
+
+    (setq TeX-open-quote "<<")
+    (setq TeX-close-quote ">>")
+
+Also, we can make the '##"##' and '##'##' keys /even smarter/ by [AdvisingFunctions advising] their functions:
+
+=== Wrapping the region in double quotes ===
+
+The command ##TeX-insert-quote##, bound to '##"##', inserts opening and closing quotes according to context. We can extend it to work with [TransientMarkMode active regions] too, so that if we have selected a word,
+
+    this [word] is quoted
+
+where '##[##' and '##]##' are the start and end of the region, hitting '##"##' gives
+
+    this ``word'' is quoted
+
+The following ##defadvice##, which employs [SkeletonMode skeletons], accomplishes this:
+
+    (defadvice TeX-insert-quote (around wrap-region activate)
+      (cond
+       (mark-active
+        (let ((skeleton-end-newline nil))
+          (skeleton-insert `(nil ,TeX-open-quote _ ,TeX-close-quote) -1)))
+       ((looking-at (regexp-opt (list TeX-open-quote TeX-close-quote)))
+        (forward-char (length TeX-open-quote)))
+       (t
+        ad-do-it)))
+    (put 'TeX-insert-quote 'delete-selection nil)
+
+This also makes the '##"##' key "move over" existing quotation marks. E.g., if point is at the beginning of ##``word''##, hitting ##"## places it at the first letter.
+
+=== Inserting and wrapping single quotes ===
+
+It's nice to have the same behavior for the '##'##' key -- inserting "##`##" or "##'##" according to context, and wrapping the region in single quotes:
+
+    (defun TeX-insert-single-quote (arg)
+      (interactive "p")
+      (cond
+       (mark-active
+        (let ((skeleton-end-newline nil))
+          (skeleton-insert `(nil ?` _ ?') -1)))
+       ((looking-back "\\>")
+        (self-insert-command arg))
+       (t
+        (insert "`"))))
+
+    (add-hook 'LaTeX-mode-hook
+              '(lambda ()
+                 (local-set-key "'" 'TeX-insert-single-quote)))
+
+== Automagic detection of master file ==
+
+When editing a multifile document, it is necessary to set the ##TeX-master## variable for !AUCTeX and !RefTeX to work properly. Whilst this can be done using file-local variables, it has the disadvantage of adding noise in your source files. An alternative is to add the following line to your ##latex-mode-hook##:
+
+    (setq TeX-master (guess-TeX-master (buffer-file-name)))
+
+Of course, you also need to define this ##guess-TeX-master## function, for example with the following snippet:
+
+    (defun guess-TeX-master (filename)
+      "Based on currently open .tex files, try to guess the master file for FILENAME."
+      (let ((candidate nil)
+            (filename (file-name-nondirectory filename)))
+        (save-excursion
+          (dolist (buffer (buffer-list))
+            (with-current-buffer buffer
+              (let ((name (buffer-name))
+                    (file buffer-file-name))
+                (if (and file (string-match "\\.tex$" file))
+                    (progn
+                      (goto-char (point-min))
+                      (if (re-search-forward (concat "\\\\input{" filename "}") nil t)
+                          (setq candidate file))))))))
+        (if candidate
+            (message "TeX master file: %s" (file-name-nondirectory candidate)))
+        candidate))
+
+Feel free to improve this function to suit your needs (for example by adding support for the "##include##" syntax), but it works quite well for me. Note that it will return ##nil## for files that do not get included in other files, which is the case for single file documents, or for the master files themselves. In this case, the ##TeX-master## variable gets set to ##nil##, which works.
+
+
+----
+CategoryModes
+CategoryTex

@@ -1,0 +1,55 @@
+This command performs something really simple: ##/awaytime## or ##/atime## indicates how long you are/were marked as being away. It code is used for [[rcircBack]], where the ##/back## command will tell you how long you've been away.
+
+<pre>
+(defun-rcirc-command awaytime (arg)                                                                                                              
+  "Show how long I've been away."                                                                                                                
+  (let ((away rcirc-away-time))                                                                                                                  
+    (if (not (null away))                                                                                                                        
+        (rcirc-do-notice (format "You have been away for %s." (duration-to-string)))                                                             
+        (rcirc-do-notice "+++ You are not away!"))))     
+
+(defalias 'rcirc-cmd-atime 'rcirc-cmd-awaytime)                                                                                                  ;; /atime is like /awaytime
+
+;; taken from, hum, dunno :)
+(defun time2float (&optional tm)                                                                                                                 
+  "Convert `current-time' to a float number of seconds."                                                                                         
+  (multiple-value-bind (s0 s1 s2) (or tm (current-time))                                                                                         
+    (+ (* (float (ash 1 16)) s0) (float s1) (* 0.0000001 s2))))                                                                                  
+                                                                                                                                                 
+;; Given a time, returns a well formatted time duration                                                                                          
+;; Original Code authoring: franl (slightly modified to use time2float)
+(defun* duration-to-string (&optional (difftime (- (time2float (current-time))                                                                   
+                                                   (time2float rcirc-away-time))))                                                               
+                                                                                                                                                 
+  "Convert an Emacs TIME value (as returned by function `time-since') into English."                                                             
+  (let* ((days  (floor (/ difftime 86400)))                                                                                                      
+         (hours (progn (decf difftime (* days  86400)) (floor (/ difftime 3600))))                                                               
+         (mins  (progn (decf difftime (* hours 3600))  (floor (/ difftime 60))))                                                                 
+         (secs  (progn (decf difftime (* mins  60))    (floor difftime)))                                                                        
+         format-args output)                                                                                                                     
+    (setq format-args   (if (> days 0)                                                                                                           
+                            `("%d days, %d hours, %d minutes, %d seconds"                                                                        
+                              ,days ,hours ,mins ,secs)                                                                                          
+                            (if (> hours 0)                                                                                                      
+                              `("%d hours, %d minutes, %d seconds" ,hours ,mins ,secs)                                                           
+                            (if (> mins 0)                                                                                                       
+                                `("%d minutes, %d seconds" ,mins ,secs)                                                                          
+                                `("%d seconds" ,secs))))                                                                                         
+          output        (apply 'format format-args))                                                                                             
+    ;; Change all "1 units" to "1 unit".                                                                                                         
+    (while (string-match "\\([^0-9]\\|^\\)1 \\S-+\\(s\\)" output)                                                                                
+      (setq output (replace-match "" nil nil output 2)))                                                                                         
+    output))      
+</pre>
+
+If you were previously marked as away, typing ##/atime## or ##/awaytime## (when still away) will give something like:
+
+{{{
+00:57 /atime                                                                                                                                     
+00:57 -zedek- You have been away for 2 seconds.                                                   
+}}}
+
+Note that on [[rcircBack]], there is code I use to automatically display that information based on a variable. Then going away and going back to activity will display this information if `rcirc-show-away-time' is non-nil.
+
+----
+CategoryChatClient [[rcirc]]

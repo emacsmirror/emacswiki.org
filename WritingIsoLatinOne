@@ -1,0 +1,29 @@
+An even stranger way of entering accented characters is the '''C-x 8 keymap'''.
+Use `C-x 8 C-h' to list the characters you can enter this way.  This for
+the convenience of those people that rarely need accents, eg. people on a
+German keyboard can easily type all French accented characters except for
+`ç' (unless they know that for some configurations of X you can produce it using
+`<nowiki>AltGr+' c</nowiki>'.  These people can use `C-x 8 , c' instead.
+
+According to the EmacsManual:
+
+: ''For Latin-1 only, you can use the key `C-x 8' as a "compose
+character" prefix for entry of non-ASCII Latin-1 printing
+characters.  `C-x 8' is good for insertion (in the minibuffer as
+well as other buffers), for searching, and in any other context
+where a key sequence is allowed.''
+
+: ''`C-x 8' works by loading the `iso-transl' library.  Once that
+library is loaded, the <ALT> modifier key, if the keyboard has
+one, serves the same purpose as `C-x 8': use <ALT> together with
+an accent character to modify the following letter.  In addition,
+if the keyboard has keys for the Latin-1 "dead accent characters,"
+they too are defined to compose with the following character, once
+`iso-transl' is loaded.''
+
+: ''Use `C-x 8 C-h' to list all the available `C-x 8' translations.''
+
+For better language support use InputMethods.
+
+------
+CategoryInternationalization

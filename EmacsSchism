@@ -1,0 +1,25 @@
+LucidEmacs forked quite publicly from the FreeSoftwareFoundation's implementation of Emacs in 1993.  This was one of the more notorious code forks in the history of free software, probably because it was early and public. The Jargon file [http://catb.org/~esr/jargon/html/F/fork.html mentions it]; the positions of some of the parties involved are available below.  Past and continuing discussion on this Wiki of this subject is at EmacsSchismDiscussion.
+
+* JamieZawinski's [http://www.jwz.org/doc/lemacs.html opinion on events]
+* BenWing's [http://www.666.com/xemacs/xemacs-split-bens-opinion.htm opinion on why the schism persists]
+* The Official [[XEmacs]] web page [http://www.xemacs.org/About/XEmacsVsGNUemacs.html documented their differences with GNU Emacs]
+
+----
+
+* ''[http://stallman.org/articles/xemacs.origin The Origin of XEmacs]'' by RichardStallman.
+* RichardStallman [http://list-archive.xemacs.org/xemacs-beta/199810/msg00506.html responds] to [http://list-archive.xemacs.org/xemacs-beta/199810/msg00456.html criticisms] on an XEmacs mailing list 5 years after the LucidEmacs code fork.
+* RichardStallman on the [http://list-archive.xemacs.org/xemacs-beta/199810/msg00552.html "obstacles" to ending the schism] in 1998.
+* "Thank GNU" is given to Lucid in [http://www.gnu.org/bulletins/bull12.html GNU's Bulletin Volume 1 Number 12 ].
+* JimBlandy gives a "Thank GNU" to JamieZawinski in [http://www.gnu.org/bulletins/bull15.html GNU's Bulletin Volume 1 Number 15 ] for contributions to Emacs 19.
+* [http://steve-yegge.blogspot.com/2008/04/xemacs-is-dead-long-live-xemacs.html XEmacs is Dead. Long Live XEmacs!] by SteveYegge.
+
+==Discussion==
+
+Discussion on the Schism occurs at EmacsSchismDiscussion.
+
+==See also==
+
+* EmacsAndXEmacs
+
+----
+CategoryHistory

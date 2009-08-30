@@ -1,0 +1,15 @@
+How-to use highlightening for ansys-files
+
+Get it at http://www.mecheng.adelaide.edu.au/~will/ansys/ansys-mod.el  
+(The file at http://ansys.net/ansys/tools/ansys-mod.el is broken.)
+
+
+* download ansys-mod.el to your elisp-file directory
+* add the following to your .emacs file assuming your ansys files are named *.ans
+
+    (autoload 'ansys-mode "ansys-mod" nil t)
+    (add-to-list 'auto-mode-alist '("\\.ans\\'" . ansys-mode))
+
+
+[new]
+ For a more powerful and up to date Ansys mode--but which runs only with Emacs 22--please have a look at AnsysMode -- [[dida]]

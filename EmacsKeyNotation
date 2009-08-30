@@ -1,0 +1,18 @@
+In Emacs documentation, [[key sequence]] notation can be confusing for an EmacsNewbie. Here is an overview:
+
+; C-: means (press and hold) the Control key
+; M-: means the [[Meta]] key (the Alt key, on most keyboards)
+; S-: means the Shift key (e.g. `S-TAB' means Shift Tab)
+; DEL: means the Backspace key (''not'' the Delete key)
+; RET: means the Return or Enter key
+; SPC: means the Space bar
+; ESC: means the Escape key
+; TAB: means the Tab key
+
+A notation such as `C-M-' (or, equivalently, `M-C') means press and hold ''both'' Control and Meta (Alt) keys.
+
+See the section "Kinds of User Input" in the EmacsManual ([[Manual:User Input]]).
+
+----
+CategoryHelp
+CategoryKeys

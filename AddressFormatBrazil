@@ -1,0 +1,69 @@
+Here's how to format Brazilian addresses in BbdbMode.
+
+           home: ...
+                 Ipanema, Rio de Janeiro
+                 22411-0010, RJ.
+                 Brasil
+
+Code:
+
+<pre>
+(defun my-format-address-brazil (addr &optional indent)
+  "Insert formated Brazilian address ADDR in current buffer.
+
+This function is a possible formatting function for
+`bbdb-address-formatting-alist'.
+
+The result looks like this:
+       location: ...
+                 city
+                 zip, state.
+                 country
+
+Here is such an example.  Note that the city field contains
+the city quarter as well as the city.
+
+           home: ...
+		 Ipanema, Rio de Janeiro
+		 22411-010, RJ.
+		 Brasil"
+  (setq indent (or indent 14))
+  (let ((fmt (format " %%%ds: " indent))
+        (indent (+ 3 indent)))
+    (insert (format fmt (bbdb-address-location addr)))
+    (bbdb-format-streets addr indent)
+    (let* ((c (bbdb-address-city addr))
+	   (c-p (> (length c) 0))
+	   (s (bbdb-address-state addr))
+	   (s-p (> (length s) 0))
+	   (z (bbdb-address-zip addr))
+	   (z-p (> (length z) 0)))
+      (when c-p
+	(indent-to indent)
+	(insert c "\n"))
+      (when (or z-p s-p)
+	(indent-to indent)
+	(insert z)
+	(when (and s-p z-p) 
+	  (insert ", "))
+	(when s-p
+	  (insert s "."))
+	(insert "\n")))
+    (let ((country (bbdb-address-country addr)))
+      (when (> (length country) 0)
+	(indent-to indent)
+	(insert country "\n")))))
+</pre>
+
+== Discussion ==
+
+Why is this option not included in the main bbdb? 
+
+: You can always submit it.  But perhaps we should start collecting some more on this wiki before creating a true locale library.
+
+As to the format for telephones.  How about locales for phone numbers?
+
+: I just disabled the US specific formatting and then I have WYGIWYG (what you get is what you get), hehe.
+
+----
+CategoryBbdb

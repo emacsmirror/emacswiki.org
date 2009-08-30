@@ -1,0 +1,10 @@
+sieve-mode.el ist a mode für the mail filtering language Sieve. See http://www.cyrusoft.com/sieve/ for more informations.
+
+* Homepage: http://josefsson.org/sieve/
+* Tutorial: http://josefsson.org/sieve/tutorial.html
+* sieve-mode with [[Gnus]]: http://josefsson.org/sieve/gnus-sieve.html
+* Manual for the sieve-mode: http://josefsson.org/sieve/sieve.html
+
+sieve-mode is bundled with [[Gnus]] since Oort Gnus.
+----
+CategoryModes | CategoryMailAddons | CategoryGnus

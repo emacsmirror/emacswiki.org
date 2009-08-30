@@ -1,0 +1,88 @@
+When you use the BDF InternationalFonts from the GNU intlfonts
+package, you must tell PsPrint to use them, and where to find them.
+
+Here is a sample setup:
+
+    (require 'ps-print)
+    (require 'ps-mule)
+    (setq ps-multibyte-buffer 'bdf-font-except-latin)
+    (setq ps-multibyte-buffer 'bdf-font
+      bdf-directory-list
+      (mapcar (lambda (d)
+                (concat "/usr/local/src/intlfonts-1.2/" d))
+              '("Asian" "Chinese" "Ethiopic" "European" "Japanese" "Misc"
+                "Chinese.X" "Japanese.X" "Korean.X" "European.BIG"
+                "Japanese.BIG")))
+
+This loads the libraries, tells ps-print to use the BDF fonts for
+everything but the latin fonts (since these are available on the
+printer), and it tells Emacs to use all the directories below
+c:/Emacs/intlfonts-1.1/ (substitute the directory where you installed
+the intlfonts package).
+
+Note that the above works best if you are printing either latin texts,
+or texts requiring the BDF fonts.  For texts that require both, this
+looks ugly.  When I print the HELLO file, for example, the Czech or
+Esperanto greetings look terrible.  In these situations, I often
+prefer to use BDF fonts for the entire text.
+
+Set `ps-multibyte-buffer' accordingly:
+
+    (setq ps-multibyte-buffer 'bdf-font)
+
+Now if you work in a Latin-9 environment, you'll notice that
+`ps-mule-font-info-database-bdf' is missing fonts for ISO8859-15
+(which corresponds to Latin-9).  So here is a workaround that just
+uses Latin-1 for Latin-9:
+
+    (setq ps-multibyte-buffer 'bdf-font-except-latin)
+    (add-to-list 'ps-mule-font-info-database-ps-bdf
+                 '(latin-iso8859-15
+                   (normal nil nil iso-latin-1)))
+
+When you use Latin-1 for Latin-9, then you will get all the Umlauts,
+but you will continue to miss the EUR sign.  But at least you can
+print.
+
+This is usefull for BbdbMulePrinting, for example.
+
+-------------
+
+If you use Emacs23 - thanks to the Unicode support -, you can use 
+any nice looking ttf font after an easy conversion step with all
+of the international characters that the font supports!  For example,
+I printed the hello file with DejaVu Sans Mono and it is much
+nicer and complete, than with the builtin fonts.
+
+First, convert the fonts:
+
+    OPTS="-r 600"
+
+    otf2bdf $OPTS -w Bold -s O /usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono-BoldOblique.ttf >/somedir/djvmono-bo.bdf
+    otf2bdf $OPTS -w Bold /usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono-Bold.ttf >/somedir/djvmono-b.bdf
+    otf2bdf $OPTS -s O /usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono-Oblique.ttf >/somedir/djvmono-o.bdf
+    otf2bdf $OPTS /usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf >/somedir/djvmono.bdf
+
+Then:
+
+    (eval-after-load 'ps-print
+    (require 'ps-mule)
+        (setq ps-multibyte-buffer 'bdf-font) ;; print everything with bdf
+        (setq ps-font-size 10) ;; change according your tastes
+        (setq bdf-directory-list '("/somedir"))
+        (setq ps-mule-font-info-database-bdf
+              '((unicode-bmp  ; everything in the world should be printed with this font
+                 (normal bdf "djvmono.bdf")
+                 (bold bdf "djvmono-b.bdf")
+                 (italic bdf "djvmono-o.bdf")
+                 (bold-italic bdf "djvmono-bo.bdf"))
+                (iso-8859-1   ; please, latin-1 TOO, I said everything!
+                 (normal bdf "djvmono.bdf")
+                 (bold bdf "djvmono-b.bdf")
+                 (italic bdf "djvmono-o.bdf")
+                 (bold-italic bdf "djvmono-bo.bdf")))))
+
+Euro sign checked, it works!
+
+----
+CategoryInternationalization

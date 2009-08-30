@@ -1,0 +1,111 @@
+One way to reduce repetitive-strain injury from Emacs is to avoid pressing two keys simultaneously with the same hand.  That is, avoid using [[modifier key]]s. For C-KEY, use one hand for KEY and the other for Ctrl.  For M-KEY, do similarly as for C-KEY, or press and release Esc and then press KEY.  And of course, take advantage of the automatic indenting and other features of Emacs that save keystrokes.
+
+== Emacsen-level ==
+
+=== XEmacs ===
+
+In this same line of thought try out <code>(setq modifier-keys-are-sticky t)</code>. From the documentation, "This means that you can release the modifier key before pressing down the key that you wish to be modified.  Although this is non-standard behavior, it is recommended because it reduces the strain on your hand, thus reducing the incidence of the dreaded Emacs-pinky syndrome."
+
+=== GNU Emacs ===
+
+Unfortunately, this cool feature isn't implemented in GNU Emacs.
+
+[new]
+GNU Emacs-21.3 seem to support sticky modifier keys - SureshKolla
+
+[new]
+How does GNU Emacs-21.3 support sticky modifier keys?  Can't find it in my copy. -Benjamin Rutt
+
+Lisp:sticky.el enables sticky shift by another sticky key (semicolon and so on). -- [[rubikitch]]
+
+== OS-level ==
+
+=== Microsoft Windows ===
+
+On MS Windows it is the operating system that implements this feature for any application. It is in the Control Panel under Accessability Options and is called !StickyKeys, see [http://www.microsoft.com/enable/training/windowsxp/stickykeys.aspx/ Accessibility Tutorials for Windows].
+
+=== OS X ===
+
+Turning "Sticky Keys" on in the Macintosh is extremely easy (OSX 10.4.4). One goes to "Universal Access" in "System Preferences" and selects "Keyboard" in the horizontal menu across the top of the screen.  It is self-explanatory from there on. (Citing a message from John Gage on emacs-nxml-mode list.)
+
+=== Linux ===
+
+==== Console ====
+
+For Linux console you can use ##loadkeys## from ##kbd## package to set Control, Alt and Shift keys to SCtrl, SAlt, SShift keycodes. See e.g. [http://www.tldp.org/HOWTO/Keyboard-and-Console-HOWTO-15.html Keyboard and Console HOWTO:  15. Examples of use of loadkeys and xmodmap].
+
+==== X.org ====
+
+X.org provides sticky keys support via so-called "!AccessX" functionality in the XKB (XKeyboard) module bundled with X.org. GNOME and KDE both provide GUI interfaces for viewing and modifying !AccessX settings, as described below. Lighter-weight window managers (e.g., FVWM, !IceWM, Sawtooth), however, do not; users of these window managers must use a CLI interface instead, as described below. (Of course, some may view this as an advantage!)
+
+===== CLI Interface =====
+
+[http://www.math.missouri.edu/~stephen/software xkbset] is a CLI interface to !AccessX and other XKB-specific functionality. It's quite helpful -- though a tad oddly documented.
+
+Debian users install ##xkbset## by:
+
+  apt-get install xkbset
+
+Gentoo and Exherbo install ##xkbset## by first downloading [http://bugs.gentoo.org/185954 this ebuild], moving it into a local overlay, regenerating that local overlay's cache (''...beyond the scope of this page''), and:
+
+  paludis --install xkbset
+
+After installation, run <code>xkbset h</code> to display help for all options, <code>xkbset q</code> to display all current options, and <code>xkbset q exp</code> to display all current expiration settings.
+
+Now, temporarily enable sticky keys for the current X.org session via:
+
+  # Enable "sticky keys" for all modifier keys, while also enabling "latchlock"
+  # (i.e., pressing any modifier key twice in a row permanently locks that key
+  # on) and disabling "twokey" (i.e., pressing any modifier key and another key
+  # at the same time permanently disables "sticky keys"). Note that enabling
+  # "sticky" automatically enables sticky keys for Apple- and Windows-specific
+  # modifier keys as well, including: <Shift>, <Ctrl>, <Alt>, <Fn>, and <Apple>.
+  xkbset -bell -feedback sticky -twokey latchlock
+ 
+  # Disable expiration of "sticky keys" after the specified time in seconds. When
+  # expiration is enabled, sticky keys are permanently disabled after that many
+  # seconds. This is quite unhelpful.
+  xkbset exp 64 '=sticky' '=twokey' '=latchlock'
+
+If that works, permanently enable sticky keys for all X.org sessions by placing the above two commands in your user-local X.org autostart file, ''~/.xinitrc''.
+
+===== Gnome =====
+
+Gnome 2.0 implements this; use <code>gnome-control-center</code> to configure. 
+You can find more information at [http://developer.gnome.org/projects/gap/ The GNOME Accessibility Project].
+
+[new]
+
+I found the following settings to my liking within GNOME 2.14.3 on Ubuntu Dapper Drake:
+
+http://img175.imageshack.us/img175/3762/screenshotkeyboardaccesai7.png
+
+Turning off repeat keys has the unfortunate side effect of making it difficult to delete text in programs other than Emacs or Vim, but it thankfully prevents that annoying dialog box from popping up when you hold one of the modifier keys down for too long.  Unchecking "disable if two keys pressed together" makes it so that you can hold down a modifier key and hit a key without being accosted by the exact same dialog box.
+
+One thing I found lacking in the documentation was that pressing a modifier key twice turned it on indefinitely until the same modifier key was pressed again.  Nice to know.
+
+ -- Sam
+
+===== KDE ======
+
+KDE also implements this; find "Regional & Accessibility > Accessibility > Keyboard" in KControl. You can find more information at [http://accessibility.kde.org/ KDE Accessibility Project]
+
+== APIs ===
+
+The underlying API-level framework is called MSAA on MS Windows and ATK in GNOME. The applications have to use this to support Sticky Modifiers (and a lot of other accessiblity options). In some cases this is very simple due to the way the frameworks are built.
+
+On MS Windows the support is simply built into the newer widgets so if you use those you get it for nothing
+
+== Relation to Fitness and Health ==
+
+Some people might find the comment at the end of AlexSchroeder home page useful.
+
+[new]
+
+I recommend trying out sticky keys if your OS supports it, because your hands really feels better. It takes a while to switch mindset e.g. from M-x to M x (pressing one after the other), but it's worth it. No less effective and less stress in the hands.
+
+----
+
+CategoryAccessibility
+CategoryKeys
+RepeatedStressInjury

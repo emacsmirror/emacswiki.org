@@ -1,0 +1,6 @@
+Table of contents are now generated at the top of every page.
+They link to each heading in the page.
+Because of caching, the links will not work until the file is regenerated.
+Files will need to be edited and saved for the links to work (unless a batch operation edit of all files is run).
+
+Discussion of this feature was moved from EmacsWikiSuggestions to TableOfContentsDiscussion.

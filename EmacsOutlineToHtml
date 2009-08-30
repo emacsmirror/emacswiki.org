@@ -1,0 +1,10 @@
+The following are tools that can convert files in Emacs's OutlineMode format to HTML (see Emacs's HtmlMode).
+
+* BhlMode -- if it correctly guesses that your `bhl-sectioning-default-style' is `aster'.  See [http://www.cognition.ens.fr/~guerry/bhl/manuals/bhl.html#Sections Sections in the BHL manual].
+
+* OrgMode -- this is an extension of OutlineMode, and publishes HTML files.
+
+* [http://www.gweep.net/~rocko/emo2html/ Emacs Outline to HTML Converter] by Mike Andrews is a perl script.  Perl: [[emo2html.pl]].
+
+----
+CategoryOutline

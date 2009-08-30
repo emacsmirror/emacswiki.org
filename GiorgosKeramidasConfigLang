@@ -1,0 +1,33 @@
+Most of my text files are saved in ''UTF-8'' these days.  This makes things a lot easier when I have to email some text to people from other countries, or to include both Greek and English text in a single file.
+
+The language environment setup I use for my Emacs sessions is enabled by a very short EmacsLisp module that is loaded at startup-time.  The module is called `##keramida-lang.el##' and I have installed it in my `##~/elisp##' personal folder.  Emacs can locate it and load it at startup-time by a small modification to the default `##load-path##':
+
+    ;; Make sure Emacs can find loadable files in ~/elisp.
+    (add-to-list 'load-path "~/elisp")
+
+Then my language setup is loaded from `##.emacs##' by:
+
+    (require 'keramida-lang)                ;Language setup
+
+The current contents of the `##keramida-lang.el##' module are:
+
+    ;;; keramida-lang.el --- language setup for Emacs
+
+    ;; Set the language environment based on the LANG and any LC_XXX
+    ;; environment variables.
+    (setq unibyte-display-via-language-environment t)
+
+    ;; Prefer utf-8 as the encoding of files that do not explicitly specify
+    ;; a coding-system for their contents.
+    (prefer-coding-system 'utf-8)
+
+    (provide 'keramida-lang)
+
+    ;;; keramida-lang.el ends here
+
+= More Configuration Files =
+
+For other parts of my current Emacs setup, please see [[GiorgosKeramidas#InitFiles]].
+
+----
+CategoryHomepage

@@ -1,0 +1,91 @@
+<code>dictionary.el</code> is a package by TorstenHilbrich for querying RFC 2229 dictionary servers.  Get it from,
+
+* The author: http://me.in-berlin.de/~myrkr/dictionary/index.html
+* In [[Debian]] see DebianPackage:dictionary-el
+* Already included in [[XEmacs]] 21.
+
+Features (from the web page):
+
+* looking up word definitions in all dictionaries 
+* search for matching word 
+* words/phrases marked with { } in the dictionary definitions are recognized as hyper links and browseable 
+* easy selection of dictionary and search strategy 
+* backward moving through the visited definitions 
+* in the latest versions of GNU Emacs and XEmacs you get support for popup menus 
+* in GNU Emacs 21 you can lookup words by simply placing the MousePointer over them (tool-tips) 
+* supports HTTP proxies for port forwarding 
+* supports dictionaries which are not encoded as utf-8 
+
+Other Features: 
+* Hyperlinks between definitions
+* Show definitions in ToolTips
+* Show all defintions matching a RegularExpression
+
+== A more intuitive interactive entry ==
+
+This behaves a little more like the emacs help functions that you
+might be accustomed to:
+
+ (defun my-dictionary-search ()
+   (interactive)
+   (let ((word (current-word))
+         (enable-recursive-minibuffers t)
+         (val))
+     (setq val (read-from-minibuffer
+                (concat "Word"
+                        (when word
+                          (concat " (" word ")"))
+                        ": ")))
+     (dictionary-new-search
+      (cons (cond
+              ((and (equal val "") word)
+               word)
+              ((> (length val) 0)
+               val)
+              (t
+               (error "No word to lookup")))
+            dictionary-default-dictionary))))
+
+-- PhilJackson
+
+== Comments ==
+
+[new]
+AFAIK, there is a dictionary.el is present with XEmacs distribution.M-x dictionary RET --GirishB
+
+[new]
+I have briefly tried dictionary-el and lookup-el, the former worked out of the box here.:)   -- DeepakGoel  
+[new]
+Ding comes with a quite usuable German <-> English dictionary. apt-get install it or get it from
+
+* http://www-user.tu-chemnitz.de/~fri/ding/
+
+You can access the dictionary from emacs (change the path if needed) with
+
+    (defun my-ding (&optional query)
+      (interactive (list (read-string "Query: " (current-word))))
+      (let ((coding-system-for-read 'latin-1)
+          (coding-system-for-write 'latin-1))
+        (grep (concat "egrep -nHih " query " /usr/share/trans/de-en"))))
+
+[new]
+dictionary.el works beautifully with utf-8 but, I can't seem to get it to work for my mandarin
+dictionary (encoded in big5).  Seems that dictd is configured properly as I can search chinese 
+characters using the dict client (even in eshell).  I have set 
+
+    (setq dictionary-coding-systems-for-dictionaries
+           '( ("test" . chinese-big5))
+
+where "test" is the name of my dictionary.  I can sort of see what the problem is, in that,
+if I execute (dictionary-encode-charset "han-zi "test"), where. "han-zi" is actually a 
+chinese character that seached just fine using dict in eshell, the result is gobbledy gook.
+Any ideas as to how to debug this would be greatly appreciated.  I've got dictionary-1.8.7,
+on GNU Emacs 21.4.1 (stock Debian install). -- BrianTodd
+
+
+ 
+
+----
+See also: DictWeb.
+----
+CategoryEducation CategoryInterface

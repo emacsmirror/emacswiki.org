@@ -1,0 +1,59 @@
+The data-debug utility is a part of CEDET, a CollectionOfEmacsDevelopmentEnvironmentTools.
+
+This utility was written to help browse through complicated data structures in CEDET, such as
+EIEIO objects, Semantic Tags, Database search results, and many others.
+
+The data-debug utility can be extracted from CEDET CVS 
+[[http://cedet.cvs.sourceforge.net/viewvc/cedet/cedet/common/data-debug.el data-debug.el]]
+though the default configuration uses functions found in the rest of CEDET.  You can reconfigure 
+<code>data-debug-thing-alist</code> to exclude such items if desired.
+
+==Basic Use==
+
+You can use data-debug as the default output of eval by binding it to <code>M-:</code> like this:
+
+  (global-set-key "\M-:" 'data-debug-eval-expression)
+
+If you write functions with complex output that need debugging, you
+can make them interactive with data-debug-show-stuff.  For example:
+
+ (defun my-complex-output-fcn ()
+   "Calculate something complicated at point, and return it."
+   (interactive) ;; function not normally interactive
+   (let ((stuff (do-stuff)))
+     (when (interactive-p)
+       (data-debug-show-stuff stuff "myStuff"))
+     stuff))
+
+== Example ==
+
+When using the eval binding above, you would get output like this:
+
+ M-: (list 1 2 3 4)
+
+ ?#<list o' stuff: 4 entries>
+  > 1
+  > 2
+  > 3
+  > 4
+
+When using a tool like CEDET/Semantic, you might get some output like this:
+
+ M-: (semantic-current-tag)
+
+ ?data-debug-eval-expression
+  | Name: "data-debug-eval-expression"
+  | Class: 'function
+  | Position: 33553 -> 34769 in data-debug.el <live tag>
+  | Position Data: #<overlay from 33553 to 34769 in data-debug.el>
+  | Attributes:
+    # :user-visible-flag : 't
+    # :arguments : #<list o' stuff: 1 entries>
+  | Properties:
+    # unlink-hook : #<list o' stuff: 1 entries>
+    # link-hook : #<list o' stuff: 1 entries>
+    # unlink-copy-hook : #<list o' stuff: 1 entries>
+    # secondary-overlays : #<overlay list: 1 entries>
+
+In the data-debug buffer, using <code>SPC</code> will expand or contract a line so you can move navigate down through complex structures
+without worrying about recursion, or looking at parts of the structure you don't care about.

@@ -1,0 +1,114 @@
+(Voir EmacsHistory (en) pour des infos sur les differents especes d'Emacs mentionnes ici, et voir http://www.jwz.org/doc/emacs-timeline.html (en) pour la geneologie d'Emacs.
+
+This page is also available in English: English:DrewAdams. Pardonnez mon franglais. Il n'y a rien a faire !
+
+Citation Emacs favorite :
+
+[new]
+::: '''EMACS existe parce que je me suis senti libre a faire de petites ameliorations qui etaient individuellement utiles sur un chemin sans fin previsible.'''
+[new]
+::: (EMACS exists because I felt free to make individually useful small improvements on a path whose end was not in sight.)
+
+:::: -- RichardStallman, ''EMACS: The Extensible, Customizable Display Editor'' (http://www.gnu.org/software/emacs/emacs-paper.html)
+
+
+
+== Je suis utilisateur d'Emacs ==
+
+En fait, je m'en sers depuis les annees 80.
+
+Au depart, j'ai utilise l'Emacs '''Gosling''', cree par James Gosling (createur du langage Java...) ; on l'appelait simplement "Emacs". Cette Emacs etait particulier en ce qu'il etait base sur le langage Mock Lisp, et non pas sur le Lisp. C'etait marrant -- ou plutot c'etait un veritable ''merdier''. Il n'y avait pas de vraies listes, et il n'y avait que des pseudo fonctions sans argument -- il n'y avait que des pseudo arguments qui n'etaient rien d'autre que des variables globales. Facile a faire des erreurs de programmation, et difficile a debogger. On se marrait, quoi.
+
+M'enfin, l'Emacs Gosling etait Emacs quand meme : un editeur extensible avec lequel tu pourrais faire ce que tu voulais. Ca m'a impressionne beaucoup -- surtout apres des annees (...) de programmation avec differents editeurs de toute sorte (ne demandez pas...). J'ai ete impressionne par le fait qu'on pourrait le ''programmer'' -- meme en cours de route (langage interprete). J'ai ete particulierement impressionne par les ''TAGS'' -- avec le curseur sur un nom de programme, taper une cle du clavier et ''oup!''...tu te trouves dans le code source correspondant du programme. Magique. Cool. Utile.
+
+Autre chose que j'ai remarque : Emacs se documentait. Bien avant que des objets commencaient a s'orienter, pour suivre la mode, les objets d'Emacs te parlaient d'eux-memes. Et, bien que les documents avec hyperliens '''''Info''''' d'Emacs peuvent semblent banales aujourd'hui a cote du Web, a cette epoque il n'y avait pas de Web et la documentation avec hyperliens n'existait meme pas -- a part l'Info d'Emacs. Tres cool.
+
+Ensuite, apres l'Emacs Gosling on avait le premier '''Emacs GNU''', avec Emacs Lisp. On a utilise aussi '''Zmacs''', sur des machines lisp Symbolics. A cette epoque je programmait plutot en Lisp de toute facon (Franz, puis Common), alors ces Emacs en Lisp etaient le bienvenu.
+
+A travers les annees, j'ai customise totalement mon Emacs. Au debut il ne s'agissait que de nouvelles commandes, fonctions, et liasons de cles, mais lorsque l'Emacs '''Epoch''' est arrive au debut des annees 90 (avec des caracteres proportionnels et en couleurs, des [[Frame]]s, des images, des menus etc.) il y avait subitement beaucoup plus de possibilites de customisation. La combinaison de ces nouvelles fonctionnalites avec un interface utilisateur plutot limite incitait de la creation par tout le monde -- y compris moi.
+
+Le desavantage de la customisation ? C'est le besoin de tout refaire lors de la parution d'une nouvelle version d'Emacs. Avec pas mal de choses fondamentales modifiees a chaque fois, tout ce qu'on avait customise etait incompatible et a refaire. J'ai deja donne trop de fois. Lors des derniers grandes revisions d'Emacs j'ai fini par abandonne certaines customisations utiles -- je n'avait pas le temps de les mettre a jour. Tant pis ; 'y en avait qui meritait d'etre abandonne de toute facon. 
+
+Et Emacs a evolue enormemment a travers les annees. J'utilise toujours la version 20 pour le plupart, mais j'ai finalement converti le majeur parti de mes customisations : elles marchent avec Emacs 20 et 21 maintenant (voir la liste ici : PackagesElispDeDrew). je continue a convertir le reste, quand j'ai un peu de temps.
+
+== Mes packages Emacs Lisp ==
+
+=== Mes packages Emacs Lisp sur EmacsWiki ===
+
+Cette page decrit mes packages Emacs Lisp : PackagesElispDeDrew.
+
+=== Commencez ici ===
+
+EmacsUneSurUn -- Des [[Frame]]s, oui ! Des fenetres Emacs, no ! Essayez, vous l'apprecierez. Les pages accessibles depuis EmacsUneSurUn sont celles ci :
+
+* [[Tailler des Frames Automatiquement]] -- Tailler des frames a leurs fenetres courantes (buffers) automatiquement.
+* [[Carrelage de Frames]] -- Partitionner l'ecran en frames, horizontalement ou verticalement.
+* [[Frame Minibuffer Dedie]] -- Un frame dedie au MiniBuffer. La couleur du fond change pour indiquer l'etat actuel (recherche, entree de donnees ou de commande).
+* [[Frames Speciaux]] -- Frames particuliers pour les buffers dits "speciaux" (<code>*grep*</code>, <code>*Occur*</code>, <code>*Messages*</code> etc.).
+* [[Frames Help et Completions]] -- Frames particuliers pour les buffers <code>*Help*</code> et <code>*Completions*</code>. Redirection du buffer <code>*Completions*</code> vers le frame du minibuffer.
+* [[Supprimer des Frames Facilement - Mais Pas Trop]] -- Redefinition des commandes `delete-window', `kill-buffer', et `mouse-tear-off-window' pour qu'elles jouent bien avec des frames.
+* [[Iconifier, Desiconifier, et Cacher des Frames]] -- Commandes pour montrer ou cacher des frames.
+
+
+=== Autres pages EmacsWiki a consulter ===
+
+[new]
+* OeilDePoisson ('''''NEW!''''')  -- frames onglets donnent un regard "oeil de poisson", et fournissent une alternative aux frames iconifies
+* DoReMi (en)  ('''''Nouveau !''''')  -- Definir facilement des commandes qui te laissent utiliser les cles fleches ou la roue de la souris pour faire des modifications incrementales (de n'importe quoi).
+
+[new]
+* EmacsNewbie (en) -- Une introduction douce a Emacs, y compris a son jargon. Puis servez vous de mon fichier d'initialisation, qui charge mes differents packages Lisp : Lisp:emacs-init.el. Ce fichier contient aussi un bon commentaire qui sert d'introduction a Emacs.
+* ToolBar (en) -- un ToolBar "pop-up" (qui s'affiche sur demande), pour conserver de la place
+* HelpPlus (en), HelpMenuBarPlus (en), et HelpModePlus (en) -- De l'aide supplementaire : des commandes et menus Help.
+* DiredPlus (en) -- Dired+ (Lisp:dired+.el) : nouveaux menus et commandes, mise en vedette ("highlighting")...
+* SaveAsHtml (en) -- Creation de HTML avec hyperliens a partir de buffers Emacs (Info etc.): Lisp:mkhtml.el
+* InfoPlus (en) -- Info+ (Lisp:info+.el) : nouveaux menus et commandes, mise en vedette...
+* MenuBar (en) -- Menu-Bar+ (Lisp:menu-bar+.el) : amelioration du MenuBar (nouveaux menus et commandes)
+* FrameModes (en) -- Une introduction a mes packages traitant des frames qui est un peu different de l'intro a la page EmacsUneSurUn.
+* BufferMenuPlus (en) -- Buffer Menu+ (Lisp:buff-menu+.el) : amelioraction du BufferMenu -- menu popup de la souris (MB3), triage, filtrage, mise en vedette, colonne pour l'heure du dernier acces...
+* GrepMode (en) -- Grep+ (Lisp:compile-.el, Lisp:compile+.el, Lisp:grep+.el) : mise en vedette, ajustement automatique du frame.
+* OccurBuffer (en) -- Occur+ (Lisp:replace+.el) : mise en vedette du regexp, ajustement automatique du frame.
+* KillingBuffers (en) -- Remplacement pour `kill-buffer' qui enleve toutes les fenetres affichant le buffer.
+* RingPlus (en) -- Ameliorations du package standard `<code>ring.el</code>'. Des listes circulaires etc.
+* ThingAtPointPlus (en) -- Fonctions qui renvoient differentes entites Lisp qui sont pres du curseur (point).
+* ThingAtPointCommands (en) -- Commandes pour selectionner differentes entites Lisp qui sont pres du curseur (point).
+* HighlightTemporarily (en) -- Mettre en vedette (highlight) ou effacer la mise en vedette de regions, regexps...(Lisp:highlight.el)
+* IcompleteMode (en) -- Icomplete Mode+ (Lisp:icomplete+.el) : indiquer les differentes [[Completion]]s possibles pour ce qu'on entre dans le minibuffer.
+* ImenuMode (en) -- Imenu+ (Lisp:imenu+.el) : Ajouter dynamiquement des menus specifiques a la mode majeur du buffer. Le menus ajoutes indiquent les definitions de cles, fonctions, macros, variables....
+* IncrementalSearch (en) -- Recommendations de liasons de cles.
+* ShowWhiteSpace (en) -- Mettre en vedette les TABs, caracteres espace en dur, ou whitespace en fin de ligne.
+
+
+=== Captures d'ecran ===
+
+Voici quelques captures d'ecran de mon Emacs a moi.
+
+* DrewsEmacsScreenShot -- vue generale de quelque buffers : les buffers "special-display" ont une couleur de fond differente (<code>*Buffer List*</code> et <code>*grep*</code> sont "special" ; Dired est ordinaire).  
+* DrewsEmacsTileSS -- vue globale de l'ecran (ici, Windows XP) : comparaison de deux buffers avec <code>ediff</code> apres avoir partitionne l'ecran en frames horizontalement.
+* DrewsEmacsBufferMenu -- BufferMenuPlus, montrant le menu de la souris (`mouse-3') et la mise en vedette (des marks, des colonnes, le mouse-over plein-ligne). D'autres captures d'ecran du Buffer Menu : [[Shrink-Wrapping Frames]].
+* DiredPlus (en) -- Dired : des fonctionnalites similaires a Buffer Menu.
+* InfoPlus (en) -- Info, montrant la mise en vedette des textes entre `...' et "..." et la fusion de noeuds Info.
+* DrewsEmacsOccurImage -- Buffer <code>*Occur*</code> et le buffer cible, montrant la mise en vedette : la chaine de recherche, le numero de la ligne visitee, le mouse-over plein-ligne (sousligne).
+* DrewsEmacsGrepImage -- Buffer <code>*grep*</code> : des fonctionnalites similaires au buffer <code>*Occur*</code>.
+* DrewEmacsImenuImage -- L'imenu '''Defs''' en mode mode Emacs-Lisp.
+* DrewsEmacsIcompleteImage -- Mise en vedette de la [[Completion]] incrementale des entrees dans le minibuffer.
+* DrewsEmacsSSMinibuff -- La couleur de fond du minibuffer reflette la tache utilisateur courante.
+* [[Help and Completions Frames]] -- Des frames speciaux dedies aux buffers <code>*Help*</code> et <code>*Completions*</code>.
+* ToolBar -- Le fonctionnement d'un ToolBar dynamique.
+* DrewsEmacsMenuBarBar -- La barre de menus, montrant sa division entre menus locaux et menus globaux.
+* DrewsEmacsHighlight -- Mise en vedette d'une regexp par la commande `highlight-regexp'.
+* DrewsEmacsWindowCallouts -- Un frame Emacs avec ses different composants (fenetres, ModeLine, MenuBar).
+* DrewsEmacsShowWspace -- Mise en vedette du whitespace a la fin des lignes.
+* [[Shrink-Wrapping Frames]] -- Frame pour le menu des buffers (Buffer Menu), montrant le taillage du frame pour qu'il convienne a la taille du buffer <code>*Buffer List*</code>.
+
+== Mes contributions a EmacsWiki, chronologiquement ==
+
+[http://www.emacswiki.org/cgi-bin/wiki?action=rc&all=1&showedit=1&from=1&rcuseronly=DrewAdams On s'en fout !] ;)
+
+== Emacs Wiki : indexe et statistiques ==
+
+* [http://www.emacswiki.org/cgi-bin/wiki.pl?action=index Toutes les pages Emacs Wiki] --  juste pour avoir ce lien quelque part.
+* Statistiques -- http://www.emacswiki.org/usage/
+
+----
+CategoryHomepage CategoriePagePerso

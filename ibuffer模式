@@ -1,0 +1,69 @@
+参考原文： http://www.emacswiki.org/emacs/IbufferMode
+
+ibuffer是BufferMenu的高级替代品。作者 ColinWalters 。现由 JohnPaulWallington 维护）。其操作方式和 Dired模式 一样。
+
+== 在开始之前还是提醒您，图形界面就可以很方便的转到其他编辑文件
+
+在菜单 Buffers 中列了现在打开的所有buffers。如果你只需要从一个文件换到另一个文件，那就够了。后面不用看了。不要惧怕鼠标。哈哈。
+
+后面是给需要高级功能的人看的。
+
+== Emacs 22开始就自带ibuffer
+
+没有这个包的自行下载 CVS:ibuffer.el 。
+
+== 如何使用ibuffer
+
+在emacs中按 M-x ibuffer 就可以了。
+
+因为ibuffer比 C-x C-b 掉出的那个默认工具好用太多。所以强烈建议把该键帮定到调出ibuffer的命令。
+
+将下面的文字复制到你的.emacs中就可以了。
+
+      ;; 用ibuffer代替默认的buffer switch
+      ;; 参考 http://www.emacswiki.org/emacs/IbufferMode
+      ;; ibuffer是emacs自带的，可用 M-x ibuffer 调出来
+      ;; 下面只是将快捷键 C-x C-b 映射为调出ibuffer的命令
+      ;; 在ibuffer中的操作方式和dired mode一样
+      ;; n和p是上下，m是选中该文件，可选多个，D是kill buffer
+      ;; 回车或者按e(就是edit)来编辑文件
+      ;; 在ibuffer页面，用英文斜线来通过关键字过滤缩小显示文件范围
+      ;; 比如 “ /日记 ” ，就会只显示buffer名称中有日记这两个字的
+      ;; / 后面支持正则表达式 如 /200?
+      ;; 撤销过滤按两下/，就是按 “ // ”
+      ;; 在ibuffer中，按英文等号 “ = ” 对为保存文件和它上一个保存版本做diff 
+      ;; 按 g 刷新文件目录
+      
+          (global-set-key (kbd "C-x C-b") 'ibuffer)
+          (autoload 'ibuffer "ibuffer" "List buffers." t)
+      
+== 基本的操作命令
+
+* n和p是上下
+* m是选中该文件，可选多个
+* D是kill buffer
+* 回车或者按e(就是edit)来编辑文件
+* 在ibuffer页面，用英文斜线来通过关键字过滤缩小显示文件范围。比如 “/日记” ，就会只显示buffer名称中有日记这两个字的。 “/”后支持正则表达式 如 /200?
+* 撤销过滤按两下英文斜扛/，就是按 “///”
+* 在ibuffer中，按英文等号 “ = ” 对为保存文件和它上一个保存版本做diff 
+* 按 g 刷新文件目录
+
+== 高级用法
+
+结合 icicle ，对在ibuffer中选中的多个buffer统一操作。比如，查找替换等。
+
+默认隐藏某类buffer。比如以英文星号开头的。这些基本都不是用户自己写的，而是命令提示等。
+
+下面的命令放在.emacs中会让ibuffer在显示时默认隐藏所有以*开头的的文件
+
+    (add-to-list 'ibuffer-never-show-regexps "^\\*")
+
+NB: 这个命令我没有试成功。evaluate .emacs的时候就报错。
+
+== ibuffer的英文页面有更多高级和有用的技巧
+
+原文： http://www.emacswiki.org/emacs/IbufferMode
+
+因为本人用不上，也看不懂lisp，故没有探究了。高手快出来说说。
+
+那个 gnus grouping 我用了，但没发现有什么效果。可能我同时开的buffer太少了，而且没有很多类别的。

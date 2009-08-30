@@ -1,0 +1,344 @@
+homepage (frequently updated): http://orgmode.org
+
+Worg - user-edited pages about org-mode (tutorials and more): http://orgmode.org/worg/
+
+Improves OutlineMode and much, much more.
+
+* integrates with diary
+* set deadlines, todos, scheduled events
+* tables with a fantastic table editor (available as a minor mode)
+* output to html
+* sparse tree view of todos and deadlines
+* agenda mode consolidates todos, scheduled, deadlines, and diary events from many files into one view
+* recognizes dates
+* links to http, file, gnus, rmail, vm, news, wanderlust, bbdb
+* integrates with RememberMode
+
+== Getting org-mode ==
+
+Org-mode is included with Emacs 22.1.
+
+You can get the latest version at http://orgmode.org/.
+
+The develop version is obtained by
+
+    git clone git://repo.or.cz/org-mode.git
+
+There's an Ubuntu repository with the latest for non-cvs Emacs.  Add the following to your sources.list:
+
+    deb http://ppa.launchpad.net/hexmode/ubuntu gutsy main
+    deb-src http://ppa.launchpad.net/hexmode/ubuntu gutsy main
+
+== Add-ons and other files ==
+
+* [http://dto.mamalala.org/e/org-publish.el org-publish.el] (this comes in the latest version of org-mode) by DavidOtoole
+  is a publishing management system for creating
+  websites composed of all the files within a project (including
+  OrgMode files, images, and source code, if desired).
+
+* [http://www.cognition.ens.fr/~guerry/u/org-export-latex.el org-export-latex.el] by BastienGuerry
+  converts an Org buffer to a nice LaTeX output.
+
+* [http://www.cognition.ens.fr/~guerry/u/org-toc.el org-toc.el] by BastienGuerry lets you browse the table of contents of an Org buffer interactively.
+
+* [http://www.cognition.ens.fr/~guerry/u/org-registry.el org-registry.el] by BastienGuerry keeps a registry of all links that you have in your Org agenda files.
+
+* [http://www.cognition.ens.fr/~guerry/u/blorg.el blorg.el] by BastienGuerry 
+  lets you blog from an Org file.
+
+* Lisp:org-mairix.el integrates Org mode with [http://www.rpcurnow.force9.co.uk/mairix/ mairix] email search.
+
+* [http://www.astro.uva.nl/~dominik/Tools/outline-magic.el outline-magic.el] by CarstenDominik can be used to obtain the feel of org-mode outline
+  navigation when you use OutlineMode or OutlineMinorMode in other types of files (for example, source code.)
+
+* [http://repo.or.cz/w/org-mode.git?a=blob_plain;f=lisp/org-w3m.el;hb=HEAD CVS:org-w3m.el] -- Copy and paste from w3m buffer to [[OrgMode]].
+
+* [http://www.emacswiki.org/emacs/OrgMode-OSD Display Appointments Using OSD on Gnome]
+* [http://gitorious.org/projects/planner2org A small Perl script that will convert data to orgmode] format from PlannerMode format.
+* Lisp:org-assoc-tags.el Allow user to have list of associated tags, that are automatically assigned to the item.
+* inlimg.el in [NxhtmlMode nXhtml] (> v 1.88) lets you display images inline in org files.
+* FreeMind lets you import/export between org-mode and freemind file format.
+
+== Texts on using org-mode ==
+
+One of the major influences in 2006/2007 on task organization has been the book _Getting Things Done_ (GTD[http://en.wikipedia.org/wiki/Getting_Things_Done]) which is why some of these links refer to the system.
+
+* An [http://dto.github.com/notebook/orgtutorial.html org-mode tutorial] with screenshots by DavidOtoole.  It's been translated into [http://www.cognition.ens.fr/~guerry/orgtutorialfr.html French], [http://hpcgi1.nifty.com/spen/index.cgi?OrgMode%2fOrgTutorial Japanese], [http://hokmen.chan.googlepages.com/OrgTutorial.en-cn.html Chinese] (LINK RESTORED), and [http://jmjeong.com/index.php?display=Emacs/OrgMode Korean].
+
+* [http://www.newartisans.com/blog_files/org.mode.day.planner.php "Using org-mode as a Day Planner"] (as opposed to GTD) by JohnWiegley.
+
+* [http://members.optusnet.com.au/~charles57/GTD/orgmode.html "Using Emacs org-mode for GTD"] by CharlesCave
+
+* a blog post with [http://www.brool.com/?p=82 an example configuration for GTD in org-mode]
+
+* [http://sachachua.com/wp/2007/12/22/a-day-in-a-life-with-org/ "A day in the life with Org"] by SachaChua on how she uses it (another non-GTD usage)
+
+* [http://sachachua.com/wp/2007/12/29/how-to-use-emacs-org-as-a-basic-day-planner/ "How to use Emacs Org as a Basic Day Planner"] by SachaChua (another non-GTD usage)
+
+* A tutorial [http://members.optusnet.com.au/~charles57/GTD/org_dates/index.html on using dates and times in org-mode] by CharlesCave
+
+* Tutorials on specific features of org-mode are available on [http://orgmode.org/worg/|Worg] (a wiki generated from collaboratively edited org files)
+
+== Specific Tasks ==
+
+Org Mode can be easily configured to help edit *Wikipedia* articles by changing outline-regexp in the mode hook:
+
+<pre>
+(add-hook 'org-mode-hook '(lambda () (setq outline-regexp "=+")))
+</pre>
+     
+If you use WThreeM, add the following instead:
+<pre>
+(setq w3m-form-textarea-edit-mode 'org-mode)
+(add-hook 'w3m-form-input-textarea-mode-hook
+          '(lambda nil
+                   (setq outline-regexp "=+")))
+</pre>		  
+  
+
+== Publishing ==
+
+You can *publish to HTML* using `C-c C-e h', or you can use BhlMode for LaTeX or HTML output. Just switch modes before exporting (`M-x bhl-mode'). BhlMode should automatically recognize the asterisks as marking sections and subsections.  You can also use  [http://www.cognition.ens.fr/~guerry/u/org-export-latex.el org-export-latex.el]. See EmacsOutlineToHtml for other alternatives.
+
+== Following Links ==
+
+To follow links with RET, rather than a 2 key combo:
+
+    (setq org-return-follows-link t)
+
+You can also make TAB follow links in a similar way.
+
+== Conflicts ==
+
+If you're using WindMove, CuaMode or MTorus (with default keybindings), you might want to disable the Org Mode keybindings for Shift+arrow keys:
+
+    (setq org-CUA-compatible t)
+
+This will result in the following replacements:
+
+*  S-RET   -> C-S-RET
+*  S-up    -> M-p
+*  S-down  -> M-n
+*  S-left  -> M--
+*  S-right -> M-+
+
+If AllOut from Emacs 21 is loaded before org.el, you will be getting a ##Wrong type argument ((keymapp nil))## error. This was fixed in Emacs 22.
+
+If you are forced to use Emacs 21, either install a newer version of allout.el, or make sure that org.el is loaded before allout.el.  For example, use ##(require 'org)## before requiring allout.
+
+If you're using session.el (EmacsSession), you need to excempt a circular data structure from saving:
+
+    (add-to-list 'session-globals-exclude 'org-mark-ring)
+
+== Related elisp code ==
+
+=== Dragging URLs ===
+
+This function uses org-mode support for plain list to facilitate dragging URLs from a webbrowser (or other apps) to an org-mode buffer:
+
+<pre>
+(defadvice dnd-insert-text (around org-mouse-dnd-insert-text activate)
+  (if (eq major-mode 'org-mode)
+      (progn
+	(cond
+	 ;; if this is the end of the line then just insert text here
+	 ((eolp)
+	  (skip-chars-backward " \t") 
+	  (kill-region (point) (point-at-eol))
+	  (unless (looking-back ":") (insert ":"))
+	  (insert " "))
+	 
+	 ;; if this is the beginning of the line then insert before 
+	 ((and (looking-at " \\|\t")	
+	       (save-excursion
+		 (skip-chars-backward " \t") (bolp)))
+	  (beginning-of-line) 
+	  (looking-at "[ \t]*")
+	  (open-line 1)
+	  (indent-to (- (match-end 0) (match-beginning 0)))
+	  (insert "+ "))
+	 
+	 ;; if this is a middle of the line, then insert after
+	 (t 
+	  (end-of-line) 
+	  (newline t) 
+	  (indent-relative)
+	  (insert "+ ")))
+	(insert text)
+	(beginning-of-line))
+    ad-do-it))
+</pre>
+
+=== Including all org files from a directory into the agenda ===
+
+<pre>
+(setq org-agenda-files (file-expand-wildcards "~/org/*.org"))
+</pre>
+
+=== Turn header lines into apparent visible separators ===
+
+To make header lines more apparently visible in the buffer, set them a background color and change this part of `org-set-font-lock-defaults', so that the header line is drawn across the screen:
+
+<pre>
+	   ;; Headlines
+	   '("^\\(\\**\\)\\(\\* \\)\\(.*\xa\\)" (1 (org-get-level-face 1))
+	     (2 (org-get-level-face 2)) (3 (org-get-level-face 3)))
+</pre>
+
+The only change is the `\xa' character is added before the last closing paren.
+
+
+== Discussion ==
+
+[new:MathiasDahl:2005-02-17 14:47 UTC]
+
+Org.el is now part of CVS Emacs. Great!
+
+[new]
+Google's Code Hosting feature has a new wiki engine. Syntax is a simplified version of MoinMoin. Here's the neat bit: all changes are checked into the subversion repository in the /wiki/ directory -- each file has a *.wiki extension. Would it be possible to use org-mode to edit these? 'Publish' would be bound to 'svn-checkin' (or however that works). They support tags, too! Here's the announcement: http://google-code-updates.blogspot.com/2006/12/happy-holidays-open-source-developers.html
+
+[new:ZhangYunfeng:2006-12-23 12:55 UTC]
+[http://files.myopera.com/zhangyunfeng/org_mode_tutorial/OrgTutorial-cn.htm OrgTutorial Chinese Translation]
+
+[http://jmjeong.com/index.php?display=Emacs/OrgMode OrgTutorial Korean Translation]
+
+[http://www.cognition.ens.fr/~guerry/orgtutorialfr.html OrgTutorial french Translation]
+
+[new]
+The HTML exporter define anchor for section and subsection to navigate the document, is it possible to name the anchor like the section number it point to ?
+
+If I have sections 1, 1.1, 1.2 and 2, the section 1.1 has an anchor called sec-2, section 2 has an anchor called 4, why not using sec-1.1, sec-1.2, sec-2 ?
+
+Regards.
+-- DanielDehennin
+
+[new]
+I use the Icalendar export capability to include my tasks to a shared webbased calendar.
+
+I use mutli-state TODOs, I want them to appear in the ics file only for 1 state, example:
+#+SEQ_TODO: TO-PLAN WAITING CONFIRMED DONE
+
+I output to the shared calendar only CONFIRMED tasks, others are for my personal organisation.
+
+As I don't want to export everything I modified 'org-print-icalendar-entries' to add a condition:
+only print entries which don't match a regexp (only interesting part is past):
+
+<pre>
+        (when (not (string-match my-org-ical-exclude hd))
+          (princ (format "BEGIN:VEVENT
+%s
+%s
+SUMMARY:%s
+END:VEVENT\n"
+                         (org-ical-ts-to-string ts "DTSTART")
+                         (org-ical-ts-to-string ts2 "DTEND" inc)
+                         hd)))
+
+(setq my-org-ical-exclude "\\(TO-PLAN\\|WAITING\\|DONE\\)")
+</pre>
+
+May be a better way to do this is to have special #+ICAL_EXCLUDE/#+ICAL_INCLUDE ?
+
+Regards.
+-- DanielDehennin
+
+[new:StefanKamphausen:2007-10-11 12:21 UTC]  Are there any plans to integrate OrgMode with Oddmuse and OddmuseMode?  I'm planning to start planning using OrgMode but since I collaborate with co-workers I need something bidirectional.  The files in ~/org are not.  But since I'm also evaluating OddmuseMode I thought a combination might be a very good idea.  You immediately gain published plans.  One would have to write a modul for Oddmuse, obviously, to understand the special markup.  In this the user-defined keywords from OrgMode might be placed onto a specially named page.  
+
+Well, this is just brainstorming and since I didn't actually ''use'' OrgMode for anything yet I might be talking rubbish.  But it sounds good to me.  --StefanKamphausen
+
+[new]
+For somebody like me, it would be far easier to add Org Mode's markup rules to Oddmuse as a module. Then you could just use org-mode to write and oddmuse-mode to post. -- AlexSchroeder
+
+[new] 
+I envision a work-cycle like this:
+
+* M-x oddmuse-edit (Wiki, Page) (instead of find-file)
+* auto-mode-alist decides to put this in OrgMode
+* OrgMode-editing
+* M-x oddmuse-post  (instead of save-buffer)
+* Then an oddmuse-org-mode-markup-Modul takes care of the rendering.  
+
+There are however some details, like the user-defined keywords in OrgMode and probably lots of other stuff that I don't know about yet.  Features like integration of OddMuse's blogging setup and calender-extension could be really neat. Ah, and HTML-checkboxes and JavaScript-Tree-Views and ... oh sorry ;-) -- StefanKamphausen
+
+[new] 
+How does one implement this in Org? I have a library book that needs to be returned, but i don't want it showing up in my things to do until 3 days before it is due. In HowmMode (which I currently use) I would simply set the a deadline with advance notice to 3 and I'm done. -- PeterMielke
+
+[new]
+Is this what you want ?
+     
+    You can specify a different lead time for warnings for a specific
+    deadlines using the following syntax.  Here is an example with a
+    warning period of 5 days `DEADLINE: <2004-02-29 Sun -5d>'
+
+-- YannHodique
+
+
+=== Local TODO list? ===
+
+I see org has a global todo list which shows todo items from every
+agenda files. Is there a todo list command which shows todo items only
+from the current file in the same agenda buffer format as the global
+todo list?
+
+[new] 
+Yes. There are many ways to do this.
+
+1. You can use "<" to restrict the TODO list to the current buffer or
+"<<" to restrict it to the current headline.
+
+2. You can add a filetag at the top of the file and then filter the
+TODO list by tag using "/".
+
+3. You can write a custom agenda command that uses a different value
+for org-agenda-files. See
+http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.php.
+
+-- MattLundin
+
+[new]
+
+Thanks. It seems I have lot to learn about org-mode. :)
+
+Before I saw your answer I came up with an other solution which fits my current approach, since at the moment I use files for context, so I always want buffer restricted todo lists:
+
+<pre>
+(add-hook 'org-mode-hook 'my-org-mode-stuff)
+
+(defun my-org-mode-stuff ()
+  (local-set-key (kbd "<f12>")
+                 (lambda (arg)
+                   (interactive "P")
+                   (let ((org-agenda-files (list (buffer-file-name))))
+                       (org-todo-list arg))))
+   ...
+)
+</pre>
+
+
+If I start to use more org features I may switch to one of the methods you listed. Thanks again.
+
+
+[new]
+
+After a good nights sleep using the info you gave me I came up with an other solution which is less hackish, since it uses the regular user interface and it pushes the necessary keys automatically to show a buffer restricted todo list:
+
+<pre>
+(add-hook 'org-mode-hook 'my-org-mode-stuff)
+
+(defun my-org-mode-stuff ()
+  (local-set-key (kbd "<f12>")
+                 (lambda ()
+                   (interactive)
+                   (push ?t unread-command-events)
+                   (push ?< unread-command-events)
+                   (call-interactively 'org-agenda)))
+   ...
+)
+</pre>
+
+
+This is better than the previous one, because the agenda buffer shows the proper list even after a refresh. The previous solution showed the global todo list in that case.
+
+----
+CategoryOutline CategoryPersonalInformationManager CategoryCalendar
+

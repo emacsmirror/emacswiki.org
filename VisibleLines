@@ -1,0 +1,86 @@
+This MinorMode helps you move across visible lines instead of logic lines.
+
+Long lines can be wrapped for nice visual effect in Emacs. However
+the line-oriented movements are still done on logic lines, which is
+not so convenient or even anti-intuitive sometimes. For example,
+imagine you were on the first visible line of a wrapped very long
+line(say, wrapped to totally 10 visible lines) and wanted to move to
+the 5th visible line. How would you do it? It turns out that no
+matter you traveled from the very beginning or the very end(you could
+move-end-of-line first), it was a suffering. Long lines mode which is
+included as a standard library solve most of the long lines problem;
+but it only provides movements across those space-delimited
+continuation lines, which is unreasonable to people whose language
+does not use space characters to delimit words or even sentences, for
+example, we Chinese. Visible line mode provides means to do more
+general visible-line-oriented movements, irrespective of where the
+lines are wrapped.
+
+You can download Long Lines Mode from the ElispArea:
+
+* Lisp:visible-lines.el
+
+
+[new]
+I like this, because it is less visually intrusive than longlines-mode.
+The only thing that bothers me is that C-e doesn't really move you behind the last char (i.e. displays the cursor in the fringe).  Of course there is no telling that point apart from the beginning of the next line, so this is probably as good as it gets ...
+-- [[nschum]]
+
+[new]
+Sorry for my poor English first; but I really don't quite understand what you mean of "really behind the last char". Is the cursor in following figure really behind the last char in your sense?
+
+[[image:VisibleLinesFigOne]]
+
+[new]
+No, it isn't.  Behind the "o" would be last char in my opinion.  But as I said, probably nothing can be done about that ...
+
+Also I tried to contact you with a few other issues, but the email came back.
+move-end-of-visible-line doesn't work quite correctly around the end of the buffer when the final line is empty.
+I suggest the following code:
+
+  (defun move-end-of-visible-line (&optional line)
+    "..."
+    (interactive "p")
+    (beginning-of-visible-line line)
+    (let ((point (point-at-eol)))
+      (vertical-motion 1)
+      (unless (= point (point-max))
+        (backward-char))))
+
+  (defun end-of-visible-line (&optional line)
+    "..."
+    (move-end-of-visible-line (or line 1)))
+
+Also the name end-of-visible-line is already used in the file simple.el, so you should definitely change its name.
+-- nschum
+
+[new]
+Thanks for your bug report and advice; actually, I'm here today because I've just found after someone else pointed out that visible-lines-mode changed the behavior of kill-line, that my package had several collisions with simple.el just as you said above.
+
+Thus, I've revised the whole package, and, of course, also have rectified the `end-of-line' bug after I reproduced it by myself and figured out what when wrong.
+
+Thanks again for your support. Enjoy a better one:)
+
+[new]
+I have just installed this module as part of XEmacs 21.5.b27.  Cursor navigation moves fine, however, when I set a mark (C-space) and navigate with one of the four visible-lines binds (up, down, begin, end), the mark becomes unset.
+
+[new]
+I tested it again under Gnu Emacs 23, and it works. I am sorry for not being able to support XEmacs if that is the fact, since I have never used XEmacs and see no future use of that.
+But thanks for your report all the same.
+
+: I figured it out.  The <code>(interactive "p")</code> clauses need to read <code>(interactive "_p")</code> for XEmacs.  From the help documentation:
+: <em>If the string begins with `_', then this command will not cause the region to be deactivated when it completes; that is, `zmacs-region-stays' will be set to t when the command exits successfully.</em>
+
+
+[new]
+It won't work on my emacs-22.1, is emacs-22 not supported?
+
+72.82.226.86 01:36, 8 October 2007 (UTC)
+: I solved this two minutes after I wrote the above message (it was a stupid PEBCAK). I thought it was proper to let you know (yeah, I know, better later than never). :)
+
+[new]
+Add visible-lines-kill-line and more optional key bindings suggested by a user.
+
+----
+See also
+MoveByVisibleLineCommands

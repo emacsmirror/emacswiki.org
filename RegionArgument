@@ -1,0 +1,28 @@
+In order to write an InteractiveFunction that uses the region as an argument, use the "r" option with interactive. This will set the first 2 arguments to the function to the point and the mark, smallest first. The text that is actually in the region can then be found by using "buffer-substring"
+
+From C-h f interactive
+: r -- Region: point and mark as 2 numeric args, smallest first.  Does no I/O.
+
+A simple example :
+
+    (defun my-interactive-example (start end)
+       (interactive "r")
+       (message "The current region is %s !" (buffer-substring start end)))
+
+Another example, a function I wrote that uses this, and might be of use to someone (I know I use it alot):
+
+    (defun find-next-occurance-of-region (start end)
+      "Jump to the next occurance of region, and sets it as the current region"
+      (interactive "r")
+      (let ((region-size (- end start)) (region-text (buffer-substring start end)))
+        (unless
+	    (when (search-forward region-text nil t 1)
+	      (setq mark-active nil)
+	      (set-mark (- (point) region-size))
+	      (setq mark-active t))
+          (message "No more occurances of \"%s\" in buffer!" region-text))))
+
+It works in GNU Emacs, but I can't make any other garanties. I find it is most usefull with transient-mark-mode on, but it also works without that. What it does is simply to search for the next occurance of the region, jump to it, and mark it as the new region (so that it can be pressed multiple times to skip from one occurance to the next) -- TerryPatcher
+
+----
+CategoryCode

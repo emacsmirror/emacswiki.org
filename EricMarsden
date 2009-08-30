@@ -1,0 +1,16 @@
+I am member of the ChurchOfEmacs, development section. I have written a number of modes, which you can download from my home page:
+
+* a programmer's interface to PostGreSQL
+* BabelMode, which uses translation engines such as babelfish to translate text. 
+* DictWeb mode, which looks up dictionary definitions from dict.org
+* CoffeeMode, an Emacs implementation of the Hyper Text Coffee Pot Control Protocol (RFC2324)
+* EmacsHttpd, a web server embedded in the Emacs
+* InternetPrintingProtocol (IPP)
+
+See http://purl.org/net/emarsden/home/downloads/ (permanent address) or
+http://www.chez.com/emarsden/downloads/ (current location).
+
+I would love one day to use a CommonLispEmacs. 
+
+-----
+CategoryHomepage

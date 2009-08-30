@@ -1,0 +1,10 @@
+[new:rubikitch:2007-01-23 20:00 UTC]
+The D programming language combines the compiled speed and to-the-metal access of C++ with the usability and clear syntax of Java or C#.  
+
+* [http://www.digitalmars.com/d/index.html D language official site]
+* [http://www.prowiki.org/wiki4d/wiki.cgi?FrontPage Wiki4D]
+** [http://www.prowiki.org/wiki4d/wiki.cgi?EditorSupport/EmacsEditor EmacsEditor page]
+
+* [[DMode]]
+* Lisp:d-insert-import.el, Lisp:d-insert-import-data.el -- Insert import statement
+* Lisp:d-insert-assert.el -- Automagical verbose assert insertion

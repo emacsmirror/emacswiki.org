@@ -1,0 +1,49 @@
+I think goto-line is much more used than facemenu-* and M-g should be bound to M-x goto-line (as does Xemacs, BTW). I have never seen a newbie want to run a facemenu- function.  Heck, even somewhat experienced users like me have no idea what those do.  But lots of newbies ask how to goto-line, and are disappointed when they find no key. -- DeepakGoel
+
+: I agree! M-x goto-line should be bound to M-g.  Also, I use iswitchb from time-to-time, but I dont think it should be default.  Same for icomplete-mode, which DOES change normal behaviour, in some cases, it can happen that it completes to:  some-word--, which is not really good.
+: But I do agree that auto-compression-mode should be on by default.  Having ibuffer instead of buffer-menu would be a great improvment too!
+: -- MarioLang
+
+: I disagree. Binding `goto-line' to a key by default is fine, of course, but it shouldn't be M-g. I admit that the facemenu-.* stuff is mostly interesting in combination with `enriched-mode' and that it is probably not widely used. Emacs does not provide much word processor capabilities yet, but I hope that it will do so in the future. Default bindings are also important for rebinding them to conceptually similar commands in major modes. So if a mode provides some word processor-like functionality, M-g is the natural binding for commands that change the appearance of some text portions. As I said, there are not many such modes, but there will be, I am sure. (In fact I am working on one). --OliverScholz
+
+
+:: While I do see your point, I had a question: Why is M-g "natural" for text-appearance stuff?  I didn't follow the reasoning there.  Are other similar keycombos as M-g bound to text-appearance stuff?  I am sure I am missing something here.  -- DeepakGoel
+
+::: Well, it's already there. :-) :-) I meant 'natural' in the sense that it is _currently_ the place where such stuff should go. If you want M-g, because it is mnemonic for `goto-line', then another keybinding for the facemenu stuff would be o.k. by me, provided that it is a top level one. It only occurred to me that you were about to discard a keybinding for `facemenu-.*' entirely. -- OliverScholz
+
+March 31, 2004: Started by Jari Aalto, an interesting thread on the issue is ongoing in emacs-devel, the thread has almost run its course.  Preliminary Results:
+
+* M-g not likely to change in GNU Emacs, since RMS envisions moving emacs in the direction of word-processing, where setting faces will become more important.
+
+* Kim Storm posts an interesting code, which can enable you to piggyback 'goto-line on top of M-g without changing the default keybinding: 
+
+Kim:
+<pre>
+
+It occurred to me that you can have your cake and eat it too:  
+Try this little trick:                                                                                                                                          
+
+(defun goto-line-piggyback ()                                  
+ (interactive)                                                                    
+ (goto-line                                                                        
+ (string-to-int                                                                    
+ (read-string "Goto line: "                                                                    
+ (substring (this-command-keys) -1)))))   
+
+(dolist (digit '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
+ (define-key facemenu-keymap (vector digit) 'goto-line-piggyback))                                                                                                                                                                             
+
+
+Eval and try M-g 123 RET
+
+Of course the feedback in the minibuffer when you hit M-g is far from
+perfect, and C-h k M-g still gives odd results...
+
+</pre> 
+
+
+See also PopularOptions, LineCommands.
+
+----
+CategoryDotEmacs
+CategoryEditing

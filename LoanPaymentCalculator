@@ -1,0 +1,20 @@
+This is some simple elisp I wrote.  All the work is in coding the loan payment formula into prefix notation.  --LathI
+<pre>
+(defun dka-loan-payment-calculator (amount rate years)
+"Calculate what the payments for a loan of AMOUNT dollars when
+annual percentage rate is RATE and the term of the loan is
+YEARS years.  The RATE should expressed in terms of the percentage 
+\(i.e. \'8.9\' instead of \'.089\'\).  The total amount of
+interest charged over the life of the loan is also given."
+  (interactive "nLoan Amount: \nnAPR: \nnTerm (years): ")
+  (let ((payment (/ (* amount (/ rate 1200)) (- 1 (expt (+ 1 (/ rate 1200)) (* years -12.0))))))
+	 (message "%s payments of $%.2f. Total interest $%.2f" 
+                  (* years 12) payment (- (* payment years 12) amount))))
+</pre>
+
+----
+CategoryFinancial
+----
+
+Perhaps, all 1200's in the formula should be replaced by 1200.00's.  Otherwise, if someone entered an integer rate like 5, emacs will treat it as 0. -- [[deego]]
+

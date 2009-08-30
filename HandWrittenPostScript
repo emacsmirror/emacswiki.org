@@ -1,0 +1,18 @@
+Using `M-x handwrite' you can turn the buffer into "handwritten" Postscript.
+
+Postscript can be edited and printed from Emacs.  This is handy for
+people using NT Emacs -- just use M-x ps-print-buffer (or M-x
+ps-print-buffer-with-faces).
+
+If you don't want to print colors, or if colors look bad on your
+printer (too light, for example), you can use ps-extend-face to fix
+that.  Here's an example of some old code I used while I was working
+with NT Emacs with a dark barkground and light fonts:
+
+   (ps-extend-face '(font-lock-keyword-face "black" nil bold) 'MERGE)
+   (ps-extend-face '(font-lock-function-name-face "black" nil bold) 'MERGE)
+   (ps-extend-face '(font-lock-keyword-face "black" nil bold) 'MERGE)
+   (ps-extend-face '(font-lock-comment-face "dim gray" nil italic) 'MERGE)
+
+----
+CategoryModes CategoryPrinting.

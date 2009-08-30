@@ -1,0 +1,210 @@
+'''[[vimpulse.el]]''' extends ViperMode with Vim features.
+
+== Bugs ==
+
+# `cas'/`das' only recognize the dot (##.##) as a sentence terminator.
+# Hitting ##ESC## at beginning of the buffer generates the error message "##and: Wrong type argument: number-or-marker-p, nil##".
+# Visually selected text is not replaced on paste. [''fixed'']
+# Changing last word on line. [''fixed'']
+# Selecting last character on line. [''Fixed on normal and linewise visual mode, block mode still to fix'']
+
+=== Regexp mistake? ===
+
+The function ##vimpulse-get-bounds-with-whitespace## has an optional parameter, ##trailing-newlines##, which governs whether "##[:space:]##" or "##[:space:]\n\r##" is passed to ##skip-chars-forward##. However, the '##[:space:]##' character class matches any character that has whitespace syntax, and so includes ##\n## and ##\r##. Thus the parameter has no effect. What is probably meant is  '##[:blank:]##', which matches tabs and spaces only.
+
+== Feature requests ==
+
+'''Overwrite backspace:''' In Vim, hitting Backspace in Replace mode restores the original text. It's pretty cool.
+
+'''Restore visual selection:''' `gv' restores the last visual selection, much like ##C-x C-x## in Emacs.
+
+----
+
+From ViperMode:
+
+# How do you get Vim's `ciw' (= Change Inner Word) command? [''added''] The latest version (2.6.9) added text object support to vimpulse. See the code in the <tt>[[vimpulse.el]]</tt>. Support began at version 2.6.8 but it was bugridden, so I rewrote most of it and it's now (hopefully) bug free. Hope you like it. Alessandro Piras'''
+
+: I mean, you are in Normal Mode, in an Emacs Lisp Mode buffer, `viper-syntax-preference' is set to `extended' and, in the following code:
+
+       (change-inner-word)
+
+: the Cursor is over the `i'. Then, `cw' will kill `inner-word', whilst `ciw' will kill `inner' only.
+
+[new]
+This is not vim's inner word behavior. Vim's cw would kill `inner', as would ciw. If the cursor is over the first n in inner, cw would kill `nner', while ciw would kill `inner'. By the way, as vimpulse text object code doesn't care about viper-syntax-preference (at least for the moment), you can happily ciw getting the behavior you were looking for.
+
+== Patches ==
+
+In Emacs, ##C-u C-SPC## jumps to a previous location in the buffer. The following code binds this functionality to ##C-o##, which is the key used in Vim:
+
+    (global-set-key "\C-o"
+                    '(lambda ()
+                       (interactive)
+                       (set-mark-command 0)))
+
+You might want to bind the original ##open-line## command to ##M-o##, i.e., ##(global-set-key "\M-o" 'open-line)##.
+
+----
+
+To upcase the visual selection with `U' and downcase it with `u', add
+
+    (define-key vimpulse-visual-mode-map "u"
+      '(lambda ()
+         (interactive)
+         (downcase-region (vimpulse-get-vs-start) (vimpulse-get-vs-end))
+         (vimpulse-visual-mode nil)))
+
+    (define-key vimpulse-visual-mode-map "U"
+      '(lambda ()
+         (interactive)
+         (upcase-region (vimpulse-get-vs-start) (vimpulse-get-vs-end))
+         (vimpulse-visual-mode nil)))
+
+----
+
+[:TextObjects]
+I've done a messy hack to get basic `dib' functionality (that is, "delete inner ##( )## block"). It involves redefining `viper-prefix-arg-com' from ##viper-cmd.el##, which takes quite some lines. `vimpulse-di' and `vimpulse-ci' are thus bound to `di' and `ci', respectively. See their documentation strings for more information.
+
+    ;; REDEFINITION OF VIPER FUNCTION
+    ;;
+    ;; `viper-prefix-arg-com', originally defined in viper-cmd.el, does
+    ;; much of the work of reading keyboard input and chosing the
+    ;; appropriate command. As an ugly way of getting basic "delete inner
+    ;; parentheses" functionality, we extend it here with entries for our
+    ;; custom `vimpulse-di' and `vimpulse-ci' functions (defined below).
+    ;;
+    ;; This should be done in a cleaner way. Michael Kifer gives some
+    ;; hints in viper.el:
+    ;;
+    ;;     Some of the code that is inherited from VIP-3.5 is rather
+    ;;     convoluted. Instead of viper-command-argument, keymaps should
+    ;;     bind the actual commands. E.g., "dw" should be bound to a
+    ;;     generic command viper-delete that will delete things based on
+    ;;     the value of last-command-char. This would greatly simplify the
+    ;;     logic and the code.
+    ;;
+    ;; For (some) brewity, Kifer's comments are removed. The added lines
+    ;; are annotated with ";; MODIFICATION".
+
+    (defun viper-prefix-arg-com (char value com)
+      (let ((cont t)
+            cmd-info
+            cmd-to-exec-at-end)
+        (while (and cont
+                    (viper-memq-char char
+                                     (list ?i ?c ?d ?y ?! ?< ?> ?= ?# ?r ?R ?\"
+                                           viper-buffer-search-char)))
+          (if com
+              (progn
+                (if (viper-memq-char char '(?# ?\")) (error ""))
+                (setq com (cons char com))
+                (setq cont nil))
+            (cond ((viper-memq-char char '(?! ?=))
+                   (setq com char)
+                   (setq char (read-char))
+                   (setq cont nil))
+                  ((viper= char ?#)
+                   (setq com (+ 128 (read-char)))
+                   (setq char (read-char)))
+                  ((viper= char ?\")
+                   (let ((reg (read-char)))
+                     (if (viper-valid-register reg)
+                         (setq viper-use-register reg)
+                       (error ""))
+                     (setq char (read-char))))
+                  (t
+                   (setq com char)
+                   (setq char (read-char))))))
+
+        (if (atom com)
+            (progn
+              (setq cmd-info (cons value com))
+              (while (viper= char ?U)
+                (viper-describe-arg cmd-info)
+                (setq char (read-char)))
+              (or (viper-movement-command-p char)
+                  (viper-digit-command-p char)
+                  (viper-regsuffix-command-p char)
+                  (viper= char ?!)
+                  (viper= char ?g)
+                  (error ""))
+              (setq cmd-to-exec-at-end
+                    (viper-exec-form-in-vi
+                     `(key-binding (char-to-string ,char)))))
+
+          (if (viper-memq-char (car com) '(?r ?R))
+              (let ((char (car com)) (com (cdr com)))
+                (setq prefix-arg (cons value com))
+                (if (viper= char ?r)
+                    (viper-region prefix-arg)
+                  (viper-Region prefix-arg))
+                (setq prefix-arg nil))
+            (setq value (if (null value)
+                            1
+                          value))
+            (setq prefix-arg nil)
+            (cond
+             ;; MODIFICATION: `di' and `ci' added to list
+             ((equal com '(?i . ?d)) (vimpulse-di)) ; di
+             ((equal com '(?i . ?c)) (vimpulse-ci)) ; ci
+             ((equal com '(?c . ?c)) (viper-line (cons value ?C)))
+             ((equal com '(?d . ?d)) (viper-line (cons value ?D)))
+             ((equal com '(?d . ?y)) (viper-yank-defun))
+             ((equal com '(?y . ?y)) (viper-line (cons value ?Y)))
+             ((equal com '(?< . ?<)) (viper-line (cons value ?<)))
+             ((equal com '(?> . ?>)) (viper-line (cons value ?>)))
+             ((equal com '(?! . ?!)) (viper-line (cons value ?!)))
+             ((equal com '(?= . ?=)) (viper-line (cons value ?=)))
+             ((equal (car com) ?g)   (viper-goto-line 0))
+             (t (error "")))))
+
+        (if cmd-to-exec-at-end
+            (progn
+              (setq last-command-char char)
+              (setq last-command-event
+                    (viper-copy-event
+                     (if viper-xemacs-p (character-to-event char) char)))
+              (condition-case nil
+                  (funcall cmd-to-exec-at-end cmd-info)
+                (error
+                 (error "")))))))
+
+    (defun vimpulse-di ()
+      "Precursor to a more extensive set of `di' commands.
+    Currently acts like `di(' or `dib' in Vim, that is,
+    deletes all text between parentheses surrounding point.
+
+    This function uses Emacs' `backward-up-list' command,
+    so other braces (e.g., `{' and `}') are also recognized."
+      (interactive) ; if you want to bind it yourself ... feel free to
+      (backward-up-list)
+      (push-mark)
+      (forward-list)
+      (backward-char 1)
+      (exchange-point-and-mark)
+      (forward-char 1)
+      (exchange-point-and-mark)
+      (call-interactively 'kill-region))
+
+    (defun vimpulse-ci ()
+      "Precursor to a more extensive set of `ci' commands.
+    Currently acts like `ci(' or `cib' in Vim, that is,
+    deletes all text between parentheses surrounding point
+    and enters insert mode.
+
+    Calls `vimpulse-di' to do the deletion. That function uses Emacs'
+    `backward-up-list' command, so other braces (e.g., `{' and `}')
+    are also recognized."
+      (interactive) ; if you want to bind it yourself ... feel free to
+      (vimpulse-di)
+      (call-interactively 'viper-insert))
+
+Place the above in your ##.emacs##, ##.viper##, ##vimpulse.el## or where you see fit.
+[new]
+Thanks for the idea, now vimpulse has pretty good text object support :)
+Alessandro
+
+http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list
+
+----
+CategoryKeys CategoryEmulation

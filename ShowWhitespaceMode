@@ -1,0 +1,26 @@
+show-whitespace-mode.el is a simple mode to highlight whitespaces. To use load it with <tt>autoload</tt> or <tt>require</tt> an enter the following in the mini-buffer:
+
+ M-x show-whitespace-mode RET
+
+You can also add the function <tt>turn-on-show-whitespace-mode</tt> to any major mode hook. E.g. for the <tt>sgml-mode</tt> type:
+
+ (add-hook 'sgml-mode-hook 'turn-on-show-whitespace-mode)
+
+[new]
+This doesn't work anymore. The latest version of show-wspace.el seems broken --RyanDavis
+
+: You seem to be confusing ##show-whitespace-mode.el## with [[show-wspace.el]]. That works in ##show-wspace.el##, AFAICT. See ShowWhiteSpace. -- DrewAdams
+
+[new]
+
+A recent version of show-whitespace-mode.el  can be found here: http://lists.nongnu.org/archive/html/gnu-emacs-sources/2003-01/msg00000.html
+
+'''Alternatives:'''
+* Lisp:show-wspace.el
+* Lisp:blank-mode.el (BlankMode)
+* Lisp:whitespace.el (WhiteSpace)
+
+See ShowWhiteSpace for more alternatives.
+
+----
+CategoryModes

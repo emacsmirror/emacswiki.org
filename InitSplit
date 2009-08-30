@@ -1,0 +1,63 @@
+Here's an extract from a Usenet article:
+
+ From: JoeCasadonte
+ Subject: Re: Bug? Customize should sort customized variables...
+ Newsgroups: comp.emacs,comp.emacs.xemacs
+ Date: 29 Aug 2001 08:58:34 -0400
+
+initsplit.el splits out certain customization variables (defined via a regexp)
+into their own files.  I use it to split out my JDE settings; the
+remainder of my customizations work across my three machines, but the
+JDE stuff is highly machine-specific.  Oh, and as a by-product,
+customization variables are sorted in alphabetical order.
+
+Get it from here:
+
+* http://newartisans.com/johnw/Emacs/initsplit.el (2008.04.18 : currently this link is dead)
+* ftp://ftp.newartisans.com/pub/emacs/initsplit.el (alternative link)
+----
+
+One small annoyance I found with this otherwise excellent package is that it clobbers the KillRing quite drastically.  The following piece of advice fixes that.
+
+<pre>
+ (defadvice initsplit-split-customizations (around do-the-initsplit act)
+   "Don't clobber the `kill-ring' when writing customizations."
+   (let ((orig-kill-ring kill-ring))
+     (unwind-protect
+	 ad-do-it
+       (setq kill-ring orig-kill-ring))))
+</pre>
+----
+
+From the DotEmacsChallenge page:
+
+Fed up of bunging all of your config into one file? Try something like this.
+
+  ;; default xemacs configuration directory
+  (defconst toc:xemacs-config-dir "~/.xemacs/xemacs_configs/" "")
+
+  ;; utility finction to auto-load my package configurations
+  (defun toc:load-config-file (filelist)
+    (dolist (file filelist)
+      (load (expand-file-name 
+             (concat toc:xemacs-config-dir file)))
+       (message "Loaded config file:%s" file)
+       ))
+
+  ;; load my configuration files
+  (toc:load-config-file '("mswindows_config"
+                          "frames_config"
+                          "info_config"
+                          "desktop_config"
+                          "efs_config"
+                          "backup_config"
+                          "modemaps_config"
+                         ))
+
+This loads the files mswindows_config.el, frames_config.el… etc from the directory toc:xemacs-config-dir. I find it helps me to split my (X)Emacs config into managble chunks. The toc: symbol prefix (my initials) is just to make sure it does not clash with anything else.
+
+See DotEmacsModular for a similar approach.
+
+----
+
+CategoryDotEmacs CategoryCustomize

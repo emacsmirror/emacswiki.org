@@ -1,0 +1,25 @@
+I used XEmacs, and now use Emacs on Linux and MacOS X
+
+: Welcome to the wiki! -- AlexSchroeder
+
+April 2004: I have been using XEmacs + xft on my laptop for a couple of months now. XEmacs was the last application without anti-aliased fonts. It's now fixed, thanks to these guys (http://www.informatik.uni-freiburg.de/~neubauer/xft-xemacs/). I just hope this patch is going to make it somehow in the XEmacs distribution!
+
+
+January 2005: Woohooo! Xemacs 21.5.24 (beta version) now includes the Xft patches. I configured with <tt>--with-xft=emacs</tt>, et voilà!
+
+July 2007: after a decade of XEmacs, I switched back to Emacs. The emacs-unicode-2 CVS branch looks great, with font anti-aliasing and all. And Emacs feels much faster!
+
+=== External compile hack ===
+
+There are times where it's hard to get the right environment so that I can compile from within emacs. With this simple hack, I can compile outside of emacs and still get emacs to parse the compile log file to allow for quick access to errors.
+
+Somehow, get the logfile of a compile operation, and then use emacsclient.
+<pre>
+make >& make.log
+emacsclient -a cat --eval '(let () (setq compile-command "cat make.log") (recompile))'
+</pre>
+
+After that, I can use ESC-` to jump to the next error.
+
+----
+CategoryHomepage

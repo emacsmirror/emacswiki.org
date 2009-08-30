@@ -1,0 +1,8 @@
+Adaptive scoring uses the marks you left in the Summary Buffer to maintain an adaptive score file.  A ScoreFile ends with the ".SCORE" suffix and is maintained by you.  An adaptive score file ends with the ".ADAPT" suffix and is maintained by Gnus.  All you have to do is decide what marks (read, deleted, ticked, kill, catchup) will result in what score changes.
+
+In order to switch it on, you need to set the variable `gnus-use-adaptive-scoring'.  I use the '(line) setting.  If you do this, you will be using adaptive scoring for your private mails as well.  You might not want that.  Therefore, use Group Parameters to activate adaptive scoring on a group by group basis.  See ScoreFile for more.
+
+In order to change the rules, set `gnus-default-adaptive-score-alist'.
+See HighVolumeNews for an example.
+----
+CategoryGnus

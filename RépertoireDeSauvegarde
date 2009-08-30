@@ -1,0 +1,62 @@
+Par défaut Emacs écrit des copies de sauvegardes des fichiers en utilisant
+le nom de fichier de sauvegarde et en ajoutant le suffixe ~. Exemple: Modifier
+le  fichier README ajoutera un fichier README~ dans le même répertoire.
+
+Ceci est primaire et lassant.
+
+Les personnes civilisées veulent avoir différentes versions de leurs sauvegardes et
+que celles-ci ne soient pas disséminées à travers leur disque dur, mais plutôt organisées
+dans des répertoires de sauvegarde spécifiques.
+
+Pour avoir ce type de fonctionalité:
+
+== GNU Emacs 21 ==
+Cela marche tout seul en ajoutant dans le .emacs:
+<pre>
+(setq
+   backup-by-copying t      ;pour les liens symboliques
+   backup-directory-alist
+     '(("." . "~/.saves"))    ; mettre les fichiers de sauvegardes dans ~/.saves
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)       ; utiliser différentes versions
+</pre>
+
+Ce qui précède est la base. Vous pouvez faire des choses
+plus amusantes en jouant avec l'option `make-backup-file-name-function'.
+
+Remarques:
+* backup-dir.el (voir plus bas) fonctionne aussi avec GNU Emacs 21 et offre plus de
+possibilités
+
+== Xemacs, et tout le reste ==
+
+<pre>
+(require 'backup-dir)
+
+;; loalize it for safety.
+(make-variable-buffer-local 'backup-inhibited)
+
+(setq bkup-backup-directory-info
+      '((t "~/.emacs_common/backup" ok-create full-path prepend-name)))
+(setq delete-old-versions t
+      kept-old-versions 1
+      kept-new-versions 3
+      version-control t)
+</pre>
+
+backup-dir peut être obtenu ici:
+*  http://www.northbound-train.com/emacs-hosted/backup-dir.el
+
+
+== Autres Possibilités ==
+
+* http://relativity.yi.org/el/ebackup.el (utilisé par http://EMacro.sf.net/)
+
+Semble moins flexible que  backup-dir (voir la version anglaise pour la discussion).
+
+This page is also available in english : English:BackupDirectory
+
+----
+CatégorieFichiers

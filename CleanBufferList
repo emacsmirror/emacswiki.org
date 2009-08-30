@@ -1,0 +1,74 @@
+The command `M-x clean-buffer-list' is for KillingBuffers that are old and no longer needed.  It comes as a part of MidnightMode.
+
+By default, [::clean-buffer-list] will kill buffers that haven't been visited in '''3 days''', or in the '''last hour''' in the case of ''special buffers'' that are named either
+* "##*Help*##",
+* "##*Apropos*##",
+* "##*Buffer List*##",
+* "##*Compile-Log*##",
+* "##*info*##",
+* "##*vc*##",
+* "##*vc-diff*##" or
+* "##*diff*##".
+
+Some buffers are never killed, these include
+* the "##*scratch*##" buffer,
+* the "##*Messages*##" buffer,
+* the "##*server*##" buffer,
+* the minibuffers (which typically start with "## *Minibuf-##"),
+* currently displayed buffers
+* buffers attached to processes, and
+* internal buffers that were never displayed
+* buffers with files that are modified
+
+The lifetime of general and special buffers can be customized, as can what buffers should be considered ''special'' and which buffers should never be killed.
+
+To change the ''expiration date'' of all buffers, like to 1 day, set `clean-buffer-list-delay-general'.
+
+    (setq clean-buffer-list-delay-general 3)
+
+To change the ''expiration date'' of special buffers, to 6 hours, set `clean-buffer-list-delay-special'.
+
+    (setq clean-buffer-list-delay-special (* 6 3600))
+
+To add more buffers to the list of special buffers, add them to the list `clean-buffer-list-kill-buffer-names'.
+
+    (add-to-list 'clean-buffer-list-kill-buffer-names
+                 "*buffer-selection*"
+                 "*Finder*"
+                 "*Finder Category*"
+                 "*Finder-package*"
+                 "*RE-Builder*"
+                 "*vc-change-log*")
+
+To define more regular expressions that should match special buffers, add them to `clean-buffer-list-kill-regexps'.
+
+    (add-to-list 'clean-buffer-list-kill-regexps
+                 "\\`\\*Customize .*\\*\\'"
+                 "\\`\\*\\(Wo\\)?Man .*\\*\\'")
+
+To define buffers that should never be killed, add strings to the list `clean-buffer-list-kill-never-buffer-names'.
+
+    (add-to-list 'clean-buffer-list-kill-never-buffer-names
+                 "*eshell*"
+                 "*ielm*"
+                 "*mail*")
+                 "*w3m*")
+                 "*w3m-cache*")
+
+To define regular expressions for buffers that should never be killed, add them to the list `clean-buffer-list-kill-never-regexps'.
+
+    (add-to-list 'clean-buffer-list-kill-never-regexps
+                 "\\`\\*tramp/.*\\*\\`"
+                 "\\`\\*ftp .*\\*\\`")
+
+The efforts of `clean-buffer-list' are logged in the ##*Messages*## buffer.  It Lists for each buffer the current timestamp, followed by the buffer's name, the number of seconds since a buffer was last visited, followed by the threshold seconds it needed to meet for deletion to occur.
+
+    [2009-07-23 12:36:32] `index.html' [30 259200]
+    [2009-07-23 12:36:32] `*Diff*' [30 259200]
+    [2009-07-23 12:36:32] `*Buffer List*' [658 3600]
+    [2009-07-23 12:36:32] `*Completions*' [7383 259200]
+    [2009-07-23 12:36:32] `*info*' [136 3600]
+    [2009-07-23 12:36:32] `*Help*' [1 3600]
+
+----
+CategoryBufferSwitching

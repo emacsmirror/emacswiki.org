@@ -1,0 +1,17 @@
+
+looking through the news groups i know this is a very old subject, but i'm hoping it can still be addressed.
+
+
+* implementing preemptive Multitasking in EmacsLisp:
+: i was browsing EliBarzilay's Scheme server, and decided to shoot him a question:
+:: could you tell me why it is not possible to redefine `eval'; then, using CoRoutines, provide a scheduler which could switch between different requests to finally provide a MultitaskingEmacs?
+
+::: one answer may be (which may stop this idea in it's tracks): "because EmacsLisp doesn't support first-class continuations"
+::: the CoRoutines notes mention "`yield' is only valid at top-level in the coroutine, or inside a specially tweaked macro."  does that mean it cannot be used in this manner?  if so, what would be the implications/concerns of using a Scheme implementation (such as GuileEmacs) to implement threads in this way?
+
+* this is what i'm proposing:
+: the EvalScheduler would replace `eval'. each evaluation request would be recorded, then the request would be 'wrapped' in a CoRoutine (i'm making this up as i go) which would call the original request for a timed period, then `yield', and let the EvalScheduler restart another request.  of course the keyboard and screen updates would need to be in the mix as well.
+
+i know i must be wrong, but what i want to know is why?
+----
+CoRoutines

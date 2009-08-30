@@ -1,0 +1,7 @@
+[new]
+Anything i can use to download my yahoo/hotmail? like foxmail (non emacs) does...
+
+: Gnus can do this. Look at webmail.el. -- MarkusKnittig
+
+----
+CategoryMail

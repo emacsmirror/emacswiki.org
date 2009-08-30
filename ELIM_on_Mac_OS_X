@@ -1,0 +1,89 @@
+This page has hints for building [[ELIM]] on various versions of OSX.
+
+== Mac OS 10.5 – Leopard ==
+
+?
+
+== Mac OS 10.4 – Tiger ==
+
+These instructions assume you don't want to install libraries using Fink or !MacPorts.
+
+First, we need to satisfy the dependencies on glib-2.0, libxml-2.0, and purple.
+Perhaps you need to fix your build environment before you can follow these instructions.
+You probably need to have ##pkg-config## in order to get started, for example.
+Assuming you've compiled and installed source code before, you should have a working environment.
+
+# You should already have libxml.
+## You should have some files matching ##/usr/lib/libxml2.*##
+
+# [http://ftp.gnome.org/pub/gnome/sources/glib/ Get glib] because Pidgin depends on it. Also note some BSD related problem requiring the LDFLAGS setting.
+##  ##LDFLAGS=-lresolv ./configure##
+##  ##make##
+##  ##sudo make install## -- this will fail with "gtkdoc-rebase: command not found" but we'll ignore that; trying to get the toolchain will end up leading to a missing Docbook DTD in the catalog, and that's when I lost my patience
+
+# [http://ftp.gnome.org/pub/gnome/sources/intltool/ Get intltool] because Pidgin depends on it.
+##  ##./configure##
+##  ##make##
+##  ##sudo make install##
+
+# [http://www.gnu.org/software/gettext/ Get gettext] because Pidgin needs it before it can use intltool.
+##  ##./configure##
+##  ##make##
+##  ##sudo make install##
+
+# [ftp://ftp.gnupg.org/gcrypt/libgpg-error/ Get libgpg-error] because libgcrypt requires it.
+##  ##./configure##
+##  ##make##
+##  ##sudo make install##
+
+# [ftp://ftp.gnupg.org/gcrypt/libgcrypt/ Get libgcrypt] because gnutls requires it.
+##  ##./configure##
+##  ##make##
+##  ##sudo make install##
+
+# [http://www.gnu.org/software/gnutls/ Get gnutls] because Google Talk support requires it.
+##  ##./configure##
+##  ##make##
+##  ##sudo make install##
+
+# [http://pidgin.im/download/source/ Get Pidgin] and build & install it. You need to tell it about the libxml2 location. We're also building without sound, meantime (Sametime) and avahi (Bonjour) support.
+## ##PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib/pkgconfig ./configure --disable-gtkui --disable-gstreamer --disable-meanwhile --disable-avahi --disable-dbus##
+## ##cd libpurple## -- we're only interested in the library!
+## ##make##
+##  ##sudo make install##
+
+# **Finally we get to make ELIM!!**
+## ##PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib/pkgconfig make##
+## You should end up with an elim-client binary. Now go back to the README file and follow the instructions.
+
+== Mac OS 10.3 – Panther ==
+
+Apparently I already had a lot of stuff set up, so installing glib was no problem. The configure option for glib was not required, either.
+
+# [http://ftp.gnome.org/pub/gnome/sources/glib/ Get glib]
+##  ##./configure##
+##  ##make##
+##  ##sudo make install## -- this will fail with "gtkdoc-rebase: command not found" but what I did was change docs/Makefile, find the install target and comment its install-recursive dependency. Then I tried again.
+
+# Get Perl's XML::Parser extension because intltool requires it.
+## ##cpan XML::Parser##
+
+# [http://ftp.gnome.org/pub/gnome/sources/intltool/ Get intltool] because Pidgin depends on it.
+##  ##./configure##
+##  ##make##
+##  ##sudo make install##
+
+# [ftp://xmlsoft.org/libxml2/ Get libxml2] in order to avoid ##parser.c:144: error: parse error before "xmlErrorPtr"## when building libpurple. The libxml2 that comes with the operating system is too old (2.6.16).
+##  ##./configure##
+##  ##make##
+##  ##sudo make install##
+
+# [http://pidgin.im/download/source/ Get Pidgin] and build & install it. I had to tell it about the glib location. Just disable missing dependecies.
+## ##PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig ./configure --disable-missing-dependencies --disable-gtkui##
+## ##cd libpurple## -- we're only interested in the library!
+## ##make##
+##  ##sudo make install##
+
+# Build ELIM!
+## ##PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig make##
+

@@ -1,0 +1,13 @@
+According to WikiPedia:Emacs, "The first Emacs included an innovative help library that can display the documentation for every single command, variable, and internal function. (It may have originated this technique.)"
+
+In what passes for "writing the margins" in the year 2007, [[RMS]] typed this in an HTML comment on WikiPedia,
+
+: ''can anyone find out for sure? -- rms''
+
+I know he's asked about this before (and about free software innovations generally[http://www.fsf.org/resources/innovations]), but it would be cool to solve this piece of InfoHistory.
+
+Suprisingly, Emacs has very few unique innovations, even though it is a useful and popular package.  Most of its success has been in copying the successful innovations of others (like extending with Lisp), integration with other tools and modes (thus the TheKitchenSink) and a software sharing model (free software) that has allowed the integration of thousands of other hackers code to work practically---i.e. without a corporate legal department.
+
+On a related note, I found DavidWheeler's recently updated document about important software innovations titled [http://www.dwheeler.com/innovation/innovation.html The Most Important Software Innovations].
+
+Searching for "Emacs" in the page will not return anything.  Instead, many of the things listed are implemented or supported in Emacs.  That shows the essence of Emacs's popularity. -- AaronHawley

@@ -1,0 +1,19 @@
+영어로 된 해당 페이지는 [EmacsWiki:EmacsForWindows 여기]를 클릭하세요
+
+gnu.org 의 공식 윈도우즈용 이맥스 홈페이지는
+http://www.gnu.org/software/emacs/windows/ntemacs.html 입니다.
+이맥스와 윈도우즈의 많은 문제점에 관해서 다루고 있으며,
+최근 컴파일된 윈도우즈용 이맥스에 관한 링크도 있습니다.
+
+== 관련 자료 ==
+
+인스톨러를 이용해서 윈도우즈에 이맥스를 설치하시려면 아래 자료들을 보십시오:
+* [http://emacs-win.sourceforge.net/ emacs-win (포르투갈)]
+* [http://emacro.sourceforge.net/ EMacro: 이맥스를 위한 InitFile 설정 시스템]
+* [http://www.student.lu.se/~tps95lbn/Emacs/EmacsSetupUtilities.html 윈도우즈용 이맥스 셋업 유틸리티]
+
+더 많은 것을 원하시면 [[이맥스윈도우즈분류]] 를 보세요.
+
+----
+CategoryPorts
+

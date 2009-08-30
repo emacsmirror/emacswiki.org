@@ -1,0 +1,26 @@
+I use Emacs (I use Viper & Vim too) both at work & at home.
+{{{
+(concat "sroccaserra" "@" "gmail" "." "com")
+}}}
+I code every day in C++, Java & Lua.
+
+But I have coded 6 months in a Smalltalk project and code weekly in ELisp, and I like both languages a lot.
+
+Depending of my needs, I also write Ruby, Groovy, & Perl scripts, plus a few lines of Scheme, Haskell, x86 assembly & Java bytecode in my spare time, and enjoy it as well.
+
+== .emacs & related ==
+
+* SebastienRoccaSerraDotEmacs
+* SebastienRoccaSerraCustom
+* SebastienRoccaSerraKeyBindings
+* SebastienRoccaSerraLocal
+
+== See Also ==
+
+* FlymakeLua -- on the fly Lua syntax checker
+* PrintIt -- a Smalltalk-printIt-like function inside Emacs
+* DuplicateStartOfLineOrRegion -- Easily duplicate the beginning of a line or a whole region
+* TabCompletion -- see Smart Tab, it's minibuffer compliant and indents region if `mark-active'
+
+----
+CategoryHomepage

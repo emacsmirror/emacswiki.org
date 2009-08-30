@@ -1,0 +1,242 @@
+[[de:Icicles]]
+: [[image:iciclesimage]]
+
+This page and its linked pages describe '''Icicles''', an Emacs library that enhances [[minibuffer]] [[completion]], that is, input completion. This page lists the main '''Icicles''' features and presents entry points to all of the '''Icicles''' doc.
+
+
+[:MainFeatures]
+== Main Icicles Features ==
+
+Not a bad summary, by one user:
+
+: ''"In case you never heard of it, '''Icicles''' is to `TAB' completion what `TAB'
+completion is to typing things manually every time."'' [http://article.gmane.org/gmane.emacs.orgmode/4574/match=icicles]
+
+'''Icicles''' lets you do the following:
+
+* ''cycle'' through completion candidates that match your current input  [[Icicles - Cycling Completions|*]]
+* use a pattern to match completion candidates, including:
+** ''[[regexp]]'' matching (including substring)  [[Icicles - Apropos Completions|*]]
+** ''fuzzy'' matching  [[Icicles - Fuzzy Completion|*]]
+** prefix matching (as in vanilla Emacs)
+** [[command]] abbreviation matching [[Icicles - Multi M-x#icicle-command-abbrev|*]]
+* use ''multiple regexps'' to match candidates, chaining these filters together like piped `grep' commands  [[Icicles - Progressive Completion|*]]
+* ''see all'' possible complete inputs (pertinent commands, variables, and so on) that match your partial or regexp input -- the list is ''updated dynamically'' (incrementally) if you change your input  [[Icicles - Icompletion|*]]
+* ''see all previous'' inputs that match your partial or regexp input, and selectively reuse them  [[Icicles - History Enhancements|*]]
+* match input against completion candidates that do ''not'' match a given regexp; that is, ''complement the set of matches'' and use the result for subsequent matching  [[Icicles - Candidate Sets|*]]
+* use multiple regexps to ''search'' (and replace) text across multiple [[buffer]]s, files, or [[region]]s  [[Icicles - Search Commands, Overview|*]], [[Icicles - Search-And-Replace|+]]
+* search areas of text that have a certain ''[[text property]]'', such as a [[face]]  [[Icicles - Other Search Commands|*]]
+* ''browse [[ImenuMode | Imenu]]'' or ''[[tags]]'' entries that match your partial or regexp input  [[Icicles - Search Commands, Overview|*]], [[Icicles - Other Search Commands|+]]
+* create and use ''multiple-choice menus''; that is, menus where you can choose multiple entries any number of times  [[Icicles - Multiple-Choice Menus|*]]
+* create and use ''[[multi-command]]s'' -- [[command]]s that you can use to perform an action on any number of candidate inputs any number of times  [[Icicles - Multi-Commands|*]]
+* perform ''set operations'' (intersection, union,...) on the fly, using sets of completion candidates or other strings  [[Icicles - Candidate Sets|*]]
+* persistently ''save'' and later ''reuse sets'' of completion candidates (e.g. project file names)  [[Icicles - Persistent Completions|*]]
+* complete input ''piecewise'', against ''multiple'' completion candidates, in parallel  [[Icicles - Multi-Completions|*]]
+* complete ''[[key sequence]]s'', and navigate the key-binding hierarchy (this includes the [[menu bar]] menu hierarchy) (see also '''LaCarte''')  [[Icicles - Key Completion|*]] 
+* ''sort'' completion candidates on the fly, in multiple, context-dependent ways [[Icicles - Sorting Candidates|*]]
+
+As you can see, keywords here include '''match''', '''complete''', '''input''', '''multiple''', '''regexp''', '''cycle''', '''incremental''', '''browse''', and '''sets'''.  You will see these concepts appear over and over in '''Icicles''', with multiple meanings, combinations, and applications. They are the atoms that '''Icicles''' combines for chemistry that can help you use Emacs better.
+
+'''Icicles''' is very general, and these concepts give it a wide reach. '''Icicles''' has lots for Emacs users and lots for EmacsLisp programmers -- its application is limited only by your imagination. ''Have fun!''
+
+
+
+[:ObtainingAndInstalling]
+== Obtaining and Installing Icicles ==
+
+See [[Icicles - Libraries]] for how to obtain the '''Icicles''' library files. Then:
+
+* Put those files in a directory that is in your `load-path'.
+* Load '''Icicles''': `M-x load library RET icicles RET'.
+* Turn on ''Icicle'' mode: `M-x icy-mode RET'.
+
+You’re good to go. You can use `M-x icy-mode RET' at any time to turn ''Icicle'' mode on and off.
+
+
+
+----
+
+The '''Icicles''' doc Table of Contents follows, but if you just want to get started immediately, follow the '''Next''' links from page to page.
+
+|| *Next:* '''[[Icicles - Libraries]]''' || IciclesIndex || [[Icicles - Command Index]] || [[Icicles - Options Index]] ||
+
+
+<pre>
+
+</pre>
+
+----
+
+
+
+
+[:TOC]
+
+[:Newbie]
+== If You Are New to Emacs (and Even If You Are Not) ==
+
+[new:DrewAdams:2009-04-07 22:36 UTC]
+* '''EmacsNewbieWithIcicles''' -- how '''Icicles''' can help you learn to use Emacs -- whatever your level of Emacs expertise
+
+
+
+[:AllUsers]
+== For All Users ==
+
+The most important links are '''bold''' here.
+
+* '''[[Icicles - Libraries]]''' -- the '''Icicles''' libraries you will need to download, and how to obtain them
+* [[Icicles - Screenshots]] -- screenshots used on '''Icicles''' pages, with links (screenshot Table of Contents)
+
+[new:DrewAdams:2009-04-07 22:37 UTC]
+* '''[[Icicles - Nutshell View]]''' -- overview of '''Icicles'''
+[new:DrewAdams:2009-04-07 22:37 UTC]
+* [[Icicles - Inserting Text from Cursor]] -- yanking text at [[point]] for input
+* [[Icicles - Background on Input Completion]] -- review of vanilla Emacs [[completion]]
+* '''[[Icicles - Cycling Completions]]''' -- ''cycling'' among input candidates
+* [[Icicles - Traversing Minibuffer Histories]] -- reusing previous inputs
+* '''[[Icicles - Apropos Completions]]''' -- ''regular expression'' ([[regexp]]) matching for completion (includes ''substring'' matching)
+* '''[[Icicles - Expanded-Common-Match Completion]]''' -- expansion of input to a common match
+* '''[[Icicles - Progressive Completion]]''' -- chaining (piping) of candidate matches against ''multiple regexps'' -- analogous to ##grep foo *.c | grep bar | grep toto##
+* [[Icicles - Regressive Completion]] -- the OR to progressive completion's AND
+* [[Icicles - Completion On Demand]] -- invoke file-name completion even when no completion is available
+* [[Icicles - Moving Between the Minibuffer and Other Buffers]] -- interrupting minibuffer input to edit, search, and so on, elsewhere
+* [[Icicles - Inserting a Regexp from a Variable or Register]] -- saving and reusing regexps
+* '''[[Icicles - Special Characters in Input Patterns]]''' -- how regexp syntax works with file-name (shell) globbing and such
+* [[Icicles - Alternative Libraries]] -- comparison with other libraries such as ##iswitchb.el## and ##ido.el##
+* [[Icicles - S-RET]] -- exiting the minibuffer without confirmation (a la ##iswitchb.el## and ##ido.el##)
+* '''[[Icicles - Completions Display]]''' -- how '''Icicles''' uses buffer `*Completions*'
+* '''[[Icicles - Icompletion]]''' -- incremental updating of the set of completion candidates
+* '''[[Icicles - Sorting Candidates]]''' -- controlling sorting and removal of duplicates
+* '''[[Icicles - Help on Candidates]]''' -- displaying help on individual candidates while cycling -- '''Icicles''''s answer to `apropos'
+* '''[[Icicles - Multi-Commands]]''' -- making ''multiple input choices'' in a single command execution; performing actions on candidates while cycling
+* '''[[Icicles - More About Multi-Commands]]''' -- more about multi-commands
+* [[Icicles - Tripping]] -- multi-commands for navigating and exploring
+* '''[[Icicles - Key Completion]]''' -- completing [[key sequence]]s, instead of commands
+* [[Icicles - Multi M-x]] -- '''Icicles''' version of `M-x' makes every command a multi-command
+* [[Icicles - Choose All Candidates]] -- acting on ''all'' completion candidates that match the current input
+* '''[[Icicles - Candidate Sets]]''' -- ''set'' operations on candidates: save and retrieve sets, complement, union, difference, intersection
+* [[Icicles - Google Matching]] -- how to do [[http://www.google.com Google]]-style matching with '''Icicles'''
+* '''[[Icicles - File-Name Input]]''' -- inputting file names; locating any file in your file system
+* '''[[Icicles - Persistent Completions]]''' -- saving sets of completions ''persistently'', for reuse later
+* [[Icicles - Large Candidate Sets]] -- dealing with very large sets of candidates
+* '''[[Icicles - History Enhancements]]''' -- ways to find and access ''previous inputs''
+* [[Icicles - Isearch Enhancements]] -- enhancements to ordinary IncrementalSearch (Isearch)
+* '''[[Icicles - Search Commands, Overview]]''' -- Overview of '''Icicles''' search commands
+* '''[[Icicles - Search-And-Replace]]''' -- replacing text while searching
+* [[Icicles - Other Search Commands]] -- searching text with certain properties (e.g. [[face]]s); browsing code definitions (Imenu); browsing compilation and `grep' hits; reusing inputs in `*shell*'
+* '''[[Icicles - Multiple Regions]]''' -- using multiple, persistent [[region]]s, in multiple [[buffer]]s or files
+* '''[[Icicles - Tags Enhancements]]''' -- finding source-code definitions ([[tags]])
+* '''[[Icicles - Shell-Command Enhancements]]''' -- completion for shell commands
+* [[Icicles - Dired Enhancements]] -- '''Icicles''' enhancements to DiredMode
+* [[Icicles - Info Enhancements]] -- '''Icicles''' enhancements to InfoMode
+* '''[[Icicles - Support for Projects]]''' -- features that help you work with a software project
+* '''[[Icicles - Complex Completions]]''' -- ''applying a function'' to complex candidates (e.g. Lisp structures -- more than just strings) that you choose interactively
+* [[Icicles - Object-Action Interaction]] -- choose an object first and then the function to act on it
+* [[Icicles - Anything]] -- object-action interaction on objects of [[Anything]] types
+* '''[[Icicles - Multi-Completions]]''' -- matching a list of regexps in parallel -- e.g., matching against names and their doc strings
+* [[Icicles - Dot, Dot, Dot]] -- a multi-line `##.##', for matching any character, including newline, in [[regexp]]s
+* [[Icicles - Fuzzy Completion]] -- completion using fuzzy prefix matching
+* [[Icicles - Completion in Other Buffers]] -- non-minibuffer completion of words and other text
+* '''[[Icicles - Customization and General Tips]]''' -- how to ''customize'' '''Icicles''' to your preferences
+* '''[[Icicles - File-Name Completion Tips]]''' -- tips on completing file and directory names
+* '''[[Icicles - Key Bindings]]''' -- all about '''Icicles''' ''[[key binding]]s''
+* [[Icicles - Customizing Key Bindings]] -- how to change the default '''Icicles''' key bindings
+* [[Icicles - Standard Commands Redefined]] -- list of standard commands that are enhanced in ''Icicle'' mode
+
+
+
+
+
+[:LispProgrammers]
+== For Emacs-Lisp Programmers ==
+
+* [[Icicles - Programming with Fancy Candidates]] -- how to program with several kinds of candidates that are not supported by vanilla Emacs
+
+* [[Icicles - Programming Multi-Completions]] -- how to affect the behavior and appearance of '''Icicles''' ''multi-completions'' in commands that you write
+
+* [[Icicles - Candidates with Text Properties]] -- how to apply text properties, such as [[face]]s, to individual candidates in buffer `*Completions*'
+
+* '''[[Icicles - Defining Icicles Commands]]''' -- how to define your own '''Icicles''' commands and multi-commands
+* '''[[Icicles - Defining Tripping Commands]]''' -- how to define multi-commands for ''navigation'' (browsing)
+* [[Icicles - Multiple-Choice Menus]] -- how to create multiple-choice menus
+* [[Icicles - Defining Multi M-x]] -- defining an advanced multi-command: '''Icicles''' `M-x'
+* '''[[Icicles - Multi-Commands the Hard Way]]''' -- how to define multi-commands the hard way
+* [[Icicles - Global Filters]] -- filtering all possible candidates by program, before the user types any input to match
+* [[Icicles - Specifying Match Functions for Commands]] -- how to use your own match functions when you define a command
+* [[Icicles - Defining Completion for Comint Modes]] -- how to define buffer-text completion for your own modes that inherit from Comint mode.
+* [[Icicles - Note to Programmers]] -- programming guidelines
+
+
+
+[:BugsReference]
+== Bugs, Reference ==
+
+* '''IciclesIssues''' -- '''''bug reports'''''
+* IciclesIndex, '''[[Icicles - Options Index]]''', '''[[Icicles - Command Index]]'''
+* '''LaCarte''' -- ''[[Completion]] of menus'' at the keyboard.
+Here is a taste of '''La Carte''':
+:: '''<code>ESC M-x</code>'''
+
+:: <code>Menu command:</code>
+:: <code>Menu command:</code> '''<code>T [TAB]</code>'''
+:: <code>Menu command: Tools > </code>
+:: <code>Menu command: Tools > </code>'''<code>Compa [TAB]</code>'''
+:: <code>Menu command: Tools > Compare (Ediff) > </code>'''<code>Two F [TAB]</code>'''
+:: <code>Menu command: Tools > Compare (Ediff) > Two Files... </code>'''<code>[RET]</code>'''
+
+<pre>
+
+</pre>
+:: And that just shows what '''La Carte''' can do ''without'' '''Icicles'''. It is far more useful when you use it together with '''Icicles''' features such as [[apropos completion]], [[progressive completion]], and [[Icicles - Nutshell View#ChippingAway|
+chipping away the non-elephant]].
+
+* [[Icicles - La Petite Histoire]] -- how '''Icicles''' came about
+* [[Icicles - pop-up-frames on MS Windows]] -- how to deal with the problem of `pop-up-frames' = `t' on MS Windows
+
+
+
+[:SeeAlso]
+== See Also ==
+ 
+* IciclesDiscussion for discussion, ''feedback'', possible uses, possible enhancements (no bug reports).
+** IciclesForXEmacs for discussion of porting library '''Icicles''' to XEmacs.
+** [[Icicles - Key Binding Discussion]] for discussion of customizing key bindings.
+
+* '''Icicles''' pages created by users
+
+** IciclesTestCases -- EmacsLisp sexps to evaluate, to demonstrate some '''Icicles''' features, by [[rubikitch]].
+** IciclesIswitchb -- Integration of '''Icicles''' with IswitchBuffers, by [[rubikitch]].
+** IciclesUserDefinedCommands -- ''Icicle''-ized commands created by users.
+** RubikitchIciclesConfiguration -- [[rubikitch]]'s '''Icicles''' configuration
+
+
+
+
+----
+
+
+|| *Next:* [[Icicles - Libraries]] || IciclesIndex || [[Icicles - Command Index]] || [[Icicles - Options Index]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el, Lisp:lacarte.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategorySpelling
+CategoryRegion
+CategoryModes
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+CategoryAccessibility
+
+
+

@@ -1,0 +1,22 @@
+Emacs contains an EmacsLisp emulation of the UNIX `ls' command: library ##ls-lisp.el##.
+
+On non-UNIX and non-GNU/Linux platforms, `ls-lisp' is used by default, so you do not need an `ls' port for your platform. 
+
+Ls-lisp unifies the meaning of the `ls' command-line switches, and makes it possible for Dired to parse the `ls' output regardless of the platform. To enable `ls-lisp' on all platforms, put this in your [[init file]]:
+
+  (setq ls-lisp-use-insert-directory-program nil)
+
+[new:DrewAdams:2004-12-25 17:36 UTC]
+If you are on Windows and use Cygwin and Emacs 20, you might want to set `ls-lisp-use-insert-directory-program' to non-`nil', to be able to use Cygwin's `ls' command for Dired. It allows sorting by filename extension (ls option -X). -- DrewAdams
+[new]
+
+== Libraries that Enhance LS Lisp ==
+
+* LsLispToggleVerbosity
+* Library <tt>[[ls-lisp+.el]]</tt> fixes a bug (#2802) for Emacs 21 and 22, when you use switches `F' and `R' together. Libraries FilesPlus and <tt>[[ls-lisp+.el]]</tt> together modify `insert-directory' so that [[DiredMode|Dired]]'s second header line lists the number of files:
+
+:: '''##files 691##''' ##space used 49439 available 56233408##
+
+
+----
+CategoryDirectories

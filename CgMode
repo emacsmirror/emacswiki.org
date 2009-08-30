@@ -1,0 +1,17 @@
+A major mode for editing [http://developer.nvidia.com/object/cg_toolkit.html
+Cg], 
+This is a basic version of the mode, but should be useable.  I encourage people to work on it!
+
+Available at:
+Lisp:cg-mode.el
+
+
+One way to load this, add to ~/.emacs (or see LoadPath):
+
+    (setq load-path (cons "/home/user/directory-with-cg-mode" load-path))
+    (require 'cg-mode)
+
+By default it is used for files with the .cg extension.
+
+----
+CategoryModes

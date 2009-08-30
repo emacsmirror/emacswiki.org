@@ -1,0 +1,28 @@
+Hi, my name is RodrigoLazo. I'm a proud user of emacs since 2004. I've
+tried as many editors as you could imagine, but once I tried emacs for
+real I get caught.  My favorites packages are [[EmacsLispScreen]],
+[[DiredPlus]],[[JabberEl]],[[IteractivelyDoThings]], [[emacs-w3m]],
+[[EmacsIRCClient]], [[Gnus]] and background.el that you can find here
+http://www.jgk.org/src/background.el. The latter is a great package
+that let you run commands asynchronusly.
+
+==ElScreen==
+
+[[EmacsLispScreen]] is indispensable for my daily work. In fact, many of the
+elisp code I wrote is to better integrate it with the rest of emacs.
+
+==Jabber==
+
+I use jabber a lot, so I started to add some features to it. 
+
+Sometimes I need to send the same message several times in a row, but
+jabber.el lacked support for input history, so I wrote
+Lisp:jabber-chatx.el
+
+I also was used to the visual notifications other IM clients had, so I
+wrote [[jabberLibnotify]] that supports pop-up notifications using
+libnotify.
+
+==Configuration==
+
+This is my .emacs Lisp:rlazoDotEmacs.el

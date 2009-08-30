@@ -1,0 +1,49 @@
+use mailto:ino-qc@spotteswoode.dnsalias.org
+
+i'm a gnus-newbie and am very interested in spam-fighting using especially
+ifile or other statistical methods not needing tracking spams with
+RegularExpression""s.
+
+(three weeks later) ok, so now i'm an experienced old hand regarding emacs :)
+
+(a year later:  it begins to dawn to me that i'll propably remain an
+emacs newbie for the rest of my life.)
+
+and now i want to defadvice other-window to change the mode-line, because i
+find myself typing to the wrong window all the time.  (time passes ...)
+here's what i did:
+
+    (defun cf-make-mode-line-inactive nil
+      "make a modeline indicator for an inactive window"
+      (if (not (boundp 'cf-local-mode-line))
+          (set (make-local-variable 'cf-local-mode-line)
+               (cond
+                ((boundp 'mode-line-format) mode-line-format)
+                (t
+                 (default-value 'mode-line-format)))))
+      (cond
+       ((or (eq this-command 'other-window)
+            (eq this-command 'select-window))
+        (setq mode-line-format cf-local-mode-line))))
+    (defun cf-make-mode-line-active nil
+      "make a modeline indicator for an active window"
+      (if (not (boundp 'cf-local-mode-line))
+          (set (make-local-variable 'cf-local-mode-line)
+               (cond
+                ((boundp 'mode-line-format) mode-line-format)
+                (t
+                 (default-value 'mode-line-format)))))
+      (cond
+       ((or (eq this-command 'other-window)
+            (eq this-command 'select-window))
+        (setq mode-line-format
+              (cons "^" cf-local-mode-line))
+        (force-mode-line-update t))))
+    ;
+    (add-hook 'pre-command-hook 'cf-make-mode-line-inactive)
+    (add-hook 'post-command-hook 'cf-make-mode-line-active)
+
+pages initiated by me:  ManHtml
+
+----
+CategoryHomepage

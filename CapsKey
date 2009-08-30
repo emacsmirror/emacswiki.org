@@ -1,0 +1,86 @@
+This page is about the keyboard key typically labeled '''Caps Lock'''. It covers different ways to use the key, including changing its behavior.
+
+
+==Discussion==
+Should we move all CTRL key hints to MovingTheCtrlKey to avoid duplicate code (text) that may become obsolete and/or out-of-sync?
+
+==Discussion==
+Beware of some PS/2 to USB adapters. The two I've used so far don't send repeat events for the Caps Lock key to the OS keyboard driver, i.e. if you want to type C-x C-f you have to release the Caps Lock key after hitting C-x and press it again for C-f (tested on windows xp and Debian).
+
+==Redefining as the "Undo" key.==
+
+MeatBall:HumaneInterface says that the [::CapsLock] key is useless, and
+that an UNDO key would be better.  Here's how.
+
+In ~/.Xmodmap, remove the Lock modifier bit from the Caps_Lock key,
+and make it the Undo/Redo key
+
+ ! No Caps Lock
+ remove Lock = Caps_Lock
+ keysym Caps_Lock = Undo Redo
+
+Emacs binds the Undo/Redo keys automatically.
+
+I'm curious, why is the Caps Lock key useless? - MathiasDahl
+
+It introduces a mode, and thus mode errors by users. -- AlexSchroeder
+
+==Redefining as Ctrl==
+
+In my opinion (and this is a religious issue), Caps should always be Ctrl, and left control could be the CapsKey. I prefer removing Caps Lock altogether. The additional benefit of having Caps acting like Ctrl is that Ctrl gets a more central position on the keyboard. Which, in Emacs, is quite useful considering ones frequent use of Ctrl commands.
+
+ !
+ ! Swap Caps_Lock and Control_L
+ !
+ remove Lock = Caps_Lock
+ remove Control = Control_L
+ ! Don't swap, forget it.
+ !keysym Control_L = Caps_Lock
+ keysym Caps_Lock = Control_L
+ !add Lock = Caps_Lock
+ add Control = Control_L
+
+or, from a term, setxkbmap -option "ctrl:nocaps" for a temporary solution.  Put in .xinit to make it permanent.
+
+This could of course be extended with the above Undo Redo command(s) being attached to Control_L. For more information on how to reorganize the keyboard in X-Window, see [http://vmlinux.org/cgi-bin/man2html?xmodmap xmodmap(1x)] or the wiki page MovingTheCtrlKey. -- JoachimNilsson
+
+Another alternative is to map CapsKey to BackSpace, like in the LispMachine, and BackSpace to Undo/Redo.
+
+==Redefining as autocomplete/expand==
+
+It's useful to map the CapsKey to dabbrev-expand, for automatic completion/expansion. Here's how:
+
+In ~/.Xmodmap, remap the Caps_Lock key to some suitable key:
+
+ ! Caps Lock -> Nabla
+ keycode 66 = nabla
+
+Then in your ~/.emacs:
+
+ ;; Seems emacs23 doesn't understand nabla
+ (when (equal "23" (substring emacs-version 0 2))
+     (global-set-key '[8711] 'dabbrev-expand))
+
+== Undo / Redo mapping on win32 ==
+
+[new:MathiasDahl:2004-11-19 12:47 UTC]
+
+Is it possible to remap, or at least get Emacs to grok, the Caps Lock key to Undo / Redo as described above?
+
+[new]
+
+Instructions are here for NT platforms above 2k:
+
+* http://www.microsoft.com/whdc/device/input/w2kscan-map.mspx and
+* http://www.microsoft.com/whdc/device/input/Scancode.mspx
+
+MovingTheCtrlKey has an example.
+
+[new]
+The links are dead, but you can use [http://www.autohotkey.com/ AutoHotkey].
+
+[new:JonasOster:2006-09-29 14:55 UTC]
+I remap Caps Lock to Super. This enables me to create very comfortable and intuitive key bindings without interfering with the standard Emacs bindings. See example on my wiki home page (JonasOster).
+
+----
+CategoryKeys MovingTheCtrlKey RepeatedStressInjury

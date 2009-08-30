@@ -1,0 +1,56 @@
+An old one from USENET, slightly edited.
+
+    From: BernardVauquelin
+    Subject: Re: multiple file search-and-replace...
+    Date: 1995/09/22
+    Newsgroups: gnu.emacs.sources, comp.emacs.xemacs
+
+<pre>
+;;; This is the file "multi.el"
+;;; Put in ".emacs" something like that
+;;;     (autoload 'multi-replace "multi")
+;;;     (global-set-key "\^h%" 'multi-replace)
+;;; and say C-H % when needed
+;;; BernardVauquelin
+;;; 02/12/94
+(defvar multi-replace-string nil)
+(defvar multi-replace-files "*")
+
+(defun multi-replace ()
+  "Do the same query-replace on many files."
+  (interactive)
+  (let ( (dir default-directory)
+         (oldbuf (current-buffer))
+         (outbuf (get-buffer-create " *temp*"))
+         name replacement )
+    (setq multi-replace-string (read-input "Replace: " multi-replace-string))
+    (setq replacement (read-input "By: " multi-replace-string))
+    (setq multi-replace-files (read-input "In files: " multi-replace-files))
+    (set-buffer outbuf)
+    (erase-buffer)
+    (cd dir)
+    (if (zerop
+         (call-process "/bin/sh" nil outbuf nil "-c"
+                       (concat "fgrep -il '" multi-replace-string "' "
+                               multi-replace-files )))
+        (progn
+          (while (> (buffer-size) 0)
+            (goto-char (point-min))
+            (setq name (buffer-substring (point)
+                                         (progn (end-of-line) (point))) )
+            (save-excursion
+              (find-file name)
+              (goto-char (point-min))
+              (query-replace multi-replace-string replacement) )
+            (beginning-of-line)
+            (kill-line 1) )
+          (message "All done.") )
+      (message "Nothing to do.") )
+    (switch-to-buffer oldbuf) ))
+
+(provide 'multi-replace)
+</pre>
+
+----
+CategorySearchAndReplace
+

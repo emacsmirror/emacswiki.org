@@ -1,0 +1,40 @@
+First, a warning: todo-gnus.el and nntodo.el are orphaned.
+
+Both are implemented as Gnus backends, every todo
+item is an article, given a priority in a todo group.
+nntodo.el from JohnWiegley is the successor of KaiGrossjohann's todo-gnus.el.
+
+nntodo.el is available at:
+ 
+* http://sacha.free.net.ph/notebook/emacs/nntodo.el
+
+and todo-gnus.el at:
+
+* http://ftp.azc.uam.mx/mirrors/gnu/emacs-lisp/incoming/todo-gnus.el
+
+To use nntodo.el, first add those lines to your ~/.gnus:
+
+    (require 'gnus-sum)
+    (require 'nntodo)
+    (setq nntodo-mbox-file "~/.nntodo")
+
+Then go into the Server Buffer (with ^) and add there a new Server (with a; nntodo as server method)
+Now go back to the group buffer and add your new todo-group (with G m and nntodo as the method).
+You can't access an empty group, so first you eigther have to create a message (C-u a in the group buffer, when over the group's name) or copy/move a message  (B c or B m) to the group.
+
+You maybe don't want todo groups to be hidden, if there are no unread items.
+
+    (setq gnus-permanently-visible-groups "^nntodo+") 
+
+Also it could be usefull to see always all todo items, regardless if they are marked as unread or read:
+    
+
+    (setq gnus-parameters
+          '(("^nntodo+"
+	     (display . all))))
+ 
+----
+CategoryTodo
+CategoryGnus
+CategoryModes
+

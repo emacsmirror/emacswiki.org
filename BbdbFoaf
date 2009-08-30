@@ -1,0 +1,145 @@
+Here's Bob Uhl's (ruhl+emacswiki@NOlatakia.SPAMdyndns.EVERorg) foaf.el, inspired by Alex Schroder's own (below).  It has the advantage of not needing a patched xml.el, and of properly SHA-1 encoding email addresses.  It does not yet handle the case where an entry foaf:knows another entry; it is envisioned that this property will be similar to the net property: a list of rdf:IDs (which are already supported, as the rdf:id property).  It does not ignore entries without a net property, but does ignore those without a name.
+
+    (require 'sha1-el)
+
+    (defun bbdb-foaf (&none)
+      "Print a list of people you know for inclusion in a FOAF file.
+
+    Fields used:
+
+    'www'   foaf:homepage
+    'net'   encoded to foaf:mbox_sha1sum
+    'name'  foaf:name
+    'foaf'  rdf:seeAlso
+    'rdfid' rdf:ID"
+      (interactive "P")
+      (pop-to-buffer (get-buffer-create "*FOAF*"))
+      (erase-buffer)
+      (insert "    <!-- Beginning of BBDB block -->\n")
+      (dolist (record (bbdb-records))
+        (progn
+          (when (bbdb-record-name record)
+    	(insert "<foaf:knows>\n")
+    	(if (bbdb-record-getprop record 'rdfid)
+    	    (insert "<foaf:Person rdf:ID=\""
+    		    (bbdb-record-getprop record 'rdfid)
+    		    "\">")
+    	  (insert "<foaf:Person>\n"))
+    	;; add name
+    	(insert "<foaf:name>" (bbdb-record-name record)
+    		"</foaf:name>\n")
+    	;; FIXME: add lines for each foaf:knows entry
+    	;; add SHA-1 encoded email
+    	(dolist (mail (bbdb-record-net record))
+    	  (insert "<foaf:mbox_sha1sum rdf:resource=\"#"
+    		  (sha1 (concat "mailto:" mail))
+    		  "\"/>\n"))
+    	;; add homepage
+    	(when (bbdb-record-getprop record 'www)
+    	  (insert "<foaf:homepage rdf:resource=\""
+    		  (bbdb-record-getprop record 'www)
+    		  "\"/>\n"))
+    	;; add blog
+    	(when (bbdb-record-getprop record 'blog)
+    	  (insert "<foaf:weblog rdf:resource=\""
+    		  (bbdb-record-getprop record 'blog)
+    		  "\"/>\n"))
+    	;; add FOAF
+    	(when (bbdb-record-getprop record 'foaf)
+    	  (insert "<foaf:seeAlso rdf:resource=\""
+    		  (bbdb-record-getprop record 'foaf)
+    		  "\"/>\n"))
+    	(insert "</foaf:Person></foaf:knows>\n\n"))))
+      (insert "    <!-- End of BBDB block -->\n"))
+
+The previous writer usually uses sacha/bbdb-to-foaf-to-kill when adding people to his FOAF files.
+
+    (defun sacha/sha1-region (start end)
+      (interactive "r")
+      (save-excursion
+        (let ((s (sha1 (buffer-substring start end))))
+          (delete-region start end)
+          (insert s))))
+    
+    (defun sacha/bbdb-to-foaf (record)
+      "Return the foaf description of RECORD, a BBDB record."
+      (concat
+       "<foaf:Person>\n<foaf:name>" (elt record 0) " " (elt record 1) "</foaf:name>\n"
+        (or (mapconcat (lambda (elt)
+                     (concat "<foaf:mbox_sha1sum>"
+                             (sha1 elt)
+                             "</foaf:mbox_sha1sum>\n"))
+                   (elt record 6) "") "")
+        (if (bbdb-record-getprop record 'web)
+            (concat "<foaf:homepage rdf:resource=\"" (bbdb-record-getprop record 'web) "\"/>\n")
+          "")
+        (if (bbdb-record-getprop record 'blog)
+            (concat "<foaf:weblog rdf:resource=\"" (bbdb-record-getprop record 'blog) "\"/>\n")
+          "") "</foaf:Person>\n"))
+    
+    (defun sacha/bbdb-to-foaf-to-kill ()
+      "Insert a FOAF description into the killring."
+      (interactive)
+      (kill-new (sacha/bbdb-to-foaf (bbdb-current-record))))
+    
+    (defun sacha/bbdb-insert-as-foaf ()
+      "Insert a FOAF description into the current buffer at point."
+      (interactive)
+      (insert
+       (save-excursion
+         (switch-to-buffer bbdb-buffer) 
+         (sacha/bbdb-to-foaf (bbdb-current-record)))))
+    
+    (defun sacha/bbdb-find-and-insert-as-foaf (query)
+      "Insert a FOAF description into the current buffer at point."
+      (interactive "MRegexp: ")
+      (insert
+       (sacha/bbdb-to-foaf (car (bbdb-search (bbdb-records) query query query)))))
+
+And here's what AlexSchroeder uses to export some of the people in his BBDB file to a FOAF fragment:
+
+
+    (require 'xml)
+    
+    (defun bbdb-foaf (&optional all)
+      "Print a list of people you know for inclusion in a FOAF file.
+    The optional argument ALL indicates that you want to export everybody
+    in your BBDB file.  The default is to export only the people that have
+    the 'foaf' field defined.  The 'foaf' field should contain the URL of
+    a FOAF file describing them.
+    
+    Fields used:
+    
+    'www'   foaf:homepage
+    'mbox'  foaf:mbox_sha1sum
+    'net'   foaf:mbox if no 'mbox' field exists
+    'name'  foaf:name
+    'foaf'  rdfs:seeAlso"
+      (interactive "P")
+      (pop-to-buffer (get-buffer-create "*FOAF*"))
+      (erase-buffer)
+      (insert "    <!-- Beginning of BBDB block -->\n")
+      (dolist (record (bbdb-records))
+	(when (or all (bbdb-record-getprop record 'foaf))
+	  (xml-debug-print-internal
+	   (list 'foaf:knows nil
+		 (let ((p (list 'foaf:Person nil
+				(list 'foaf:name nil (bbdb-record-name record)))))
+		   (when (bbdb-record-getprop record 'www)
+		     (nconc p `((foaf:homepage nil ,(bbdb-record-getprop record 'www)))))
+		   (if (bbdb-record-getprop record 'mbox)
+		       (nconc p `((foaf:mbox_sha1sum nil ,(bbdb-record-getprop record 'mbox))))
+		     (when (bbdb-record-net record)
+		       (nconc p `((foaf:mbox nil ,(car (bbdb-record-net record)))))))
+		   (when (bbdb-record-getprop record 'foaf)
+		     (nconc p `((rdfs:seeAlso ((rdf:resource
+						. ,(bbdb-record-getprop record 'foaf)))))))
+		   p))
+	   "    ")
+	  (newline)))
+      (insert "    <!-- End of BBDB block -->\n"))
+
+This uses a patched xml.el to fix the output of text elements and empty elements.
+
+---- 
+CategoryBbdb

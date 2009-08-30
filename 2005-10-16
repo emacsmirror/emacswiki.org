@@ -1,0 +1,13 @@
+I've noticed that since the last upgrade, we seem to have a problem.
+About once a day, the wiki is locked.  If you notice it, please
+take a look at UnlockWiki and see how to unlock the site.
+
+I'm also interested in any suspicions you might have.  :)
+
+[new:DrewAdams:2005-10-17 00:36 UTC]
+I don't have an answer, but it has been much more than once a day. I've unlocked it several times in the past two days. -- DrewAdams
+
+[new]
+I suspect a cronjob, but I don't have access to my email right now.  :(
+
+I think it happens once an hour at 36 minutes past the hour.  Sounds like a cronjob to me.  -- AlexSchroeder

@@ -1,0 +1,80 @@
+'''This page is part of the description of OneOnOneEmacs, by DrewAdams.'''
+
+Cette page est aussi disponible en franglais ;-): Français:[[Frames Speciaux]]
+
+*  
+*  
+*  
+
+Emacs lets you "make certain chosen buffers, for which Emacs normally
+creates a second window when you have just one window, appear in
+special [[Frame]]s of their own" (from the EmacsManual). 
+
+So, I did. This may not have a grand utility, but it does make it clear
+when a special buffer is involved -- and you can give these special
+frames different properties from normal frames. 
+Here is a screenshot of a frame for a special buffer (<code>*Occur*</code>) and a normal buffer (<code>elect-mbuf.el</code>):
+
+[[image:DrewsEmacsOccurImage]]
+
+More importantly,
+perhaps: special buffers are effectively in ''dedicated frames'' (you
+cannot dissociate the buffer and its frame).
+
+So, what's a "'''[::special buffer]'''" (aka '''[::special display buffer]''')? Any buffer that corresponds to
+`special-display-regexps' or
+`special-display-buffer-names'. In my case,
+`special-display-regexps' is just
+<code>"[ ]?[*][^*]+[*]"</code>, so buffers that start and end 
+with an asterisk (<code>*</code>) are displayed in special frames.
+Examples:
+<code>*grep*</code>, <code>*Messages*</code>, <code>*scratch*</code>.
+
+Special frames are similar to ''dedicated'' Emacs windows (windows
+satisfying predicate `window-dedicated-p'): function
+`display-buffer' does not use a window or frame that is
+dedicated to its buffer to display a different buffer.
+
+Treating frames the way windows are usually treated also meant
+modifying a few existing functions that treat dedicated windows
+specially. For example, I modified command
+`Buffer-menu-select' so that it uses
+`pop-to-buffer' (which uses a new frame, provided
+`pop-to-frames' is non-nil) whenever a window is
+dedicated to its buffer (`window-dedicated-p').
+
+'''See Library:''' Lisp:oneonone.el
+
+= Invisible Special Frames =
+
+Since special frames are dedicated to their buffers, it doesn't make
+much sense to delete them. An alternative to iconifying them when they
+are no longer needed is to make them ''invisible''. An '''invisible
+frame''' is just what the name says: it is neither visible nor
+iconified -- ''nothing'' representing it is visible.
+
+I modified several commands to make special frames invisible instead
+of deleting them or iconifying them.
+
+For example, command `remove-window' is like
+`delete-window', but it treats one-on-one windows this
+way: If the window is dedicated to its buffer, then its frame is made
+invisible. Otherwise, its frame (as well as the window) is deleted.
+`remove-window' is the command I use to replace
+`delete-window' interactively (even my redefined version -- 
+see [[Delete Frames Easily - But Not Too Easily#Redefineddelete-window]]):
+
+  (substitute-key-definition 'delete-window
+                             'remove-window
+                             global-map))
+
+Command `mouse-remove-window' (<code>[mode-line
+C-mouse-3]</code>) is the mouse equivalent of
+`remove-window'.
+
+'''See Libraries:''' Lisp:frame-cmds.el, Lisp:setup-keys.el
+
+----
+OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay
+CategoryGlossary
+

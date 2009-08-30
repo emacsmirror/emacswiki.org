@@ -1,0 +1,32 @@
+I'm [http://tjic.com TJIC].
+
+I've written a bit of elisp which can be found at http://tjicconsulting.com/lisp/index.php
+
+
+* tjic-blog.el - a package for maintaing a blog
+* tjic-c.el - some minor funcs for c/c++ mode
+* tjic-compile.el - a nice filter for processing the output of your compiler when compiling code (e.g. C++, etc.) from within emacs; makes compiler errors that have huge namespace strings, or mangled function names much more readahble.
+* tjic-dragbar.el - put the time and a biff-like email flag in the dragbar of your emacs
+* tjic-gdb.el - color code output in gdb: memory locations (stack, heap, system memory), collapse down verbose messages, etc.  
+* tjic-hra.el - hack the return addr of outgoing email based on who the mail is going to.  Mail to mailing list A appears to come from an addr that you reserve just for that list; mail to coworkers appears to come from an addr reserved for them, etc.
+* tjic-otherwindow.el - if you have more than window open in emacs at once, you might want to switch the buffer contents between windows, or reorient a vertical division to a horizontal one, or find a file in some other window, etc.  This file makes it all trivial.
+* tjic-shell.el - want more than one shell in your emacs?  How about a ring of them, which you can navigate through with a keystroke?  This package does it.
+* tjic-textedit.el - some trivial little functions for working in text buffers.
+* tjic-website.el - maps your local directory structure to a website; edit a file and push it out to the correct location in your website (via ftp, etc.) with a keystroke.
+* tjic-zephyr.el - send zephyr messages from a emacs-mail like interface.  supports rotating signature quotes, etc.
+
+Some of these packages require small utility packages I've written
+such as
+
+* tjic-assoc.el
+* tjic-funcs.el
+* tjic-gui.el
+* tjic-mail-enhance.el
+* tjic-overlay.el
+* tjic-strings.el
+
+
+Btw, one can check out an example of a blog maintained with tjic-blog.el at
+http://www.tjic.com/blog/blog.php.
+----
+CategoryHomepage

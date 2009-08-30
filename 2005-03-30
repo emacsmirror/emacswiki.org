@@ -1,0 +1,12 @@
+The _Administration_ links on every page will now list _Nice index to all pages_
+which links to http://www.emacswiki.org/cgi-bin/wiki?action=printable-index.
+Not sure how useful this is.  Use the default [[CSS]] to show it in multiple columns.
+For all the CSS authors out there, this is the addition I made:
+
+    /* printable index */
+    div.letter br { display: none; }
+    div.letter h2 { clear: both; padding-top: 2ex; border-bottom: solid 1px; }
+    div.letter > a { display: block; width: 40ex; float: left; border:none; }
+
+I think this feature will need some more work for dates and non-ASCII first letters.
+Without installing it, I know that I'll never work on it, however.

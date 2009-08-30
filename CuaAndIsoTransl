@@ -1,0 +1,25 @@
+(For more on CUA mode, see CuaMode.)
+
+ From: GerhardFetty
+ Subject: Re: ?cua + clearcase?
+ Newsgroups: comp.emacs
+ Date: Fri, 31 Aug 2001 13:41:58 +0200
+
+This .emacs produces an error:
+
+ ...
+ (require 'cua-mode)
+ (CUA-mode t)
+ (require 'iso-transl)
+ ...
+
+But this one works fine:
+
+ ...
+ (require 'cua-mode)
+ (require 'iso-transl)
+ (CUA-mode t)
+ ...
+
+I don't know the interworkings of those packages, but maybe this info could
+save someone else's trouble.

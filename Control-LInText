@@ -1,0 +1,56 @@
+This page is about Control-l (`##^L##') characters in text.
+
+== ^L Is a Section Separator and a Printable-Page Separator ==
+
+Many people embed a `##^L##' in text to separate it into sections. In Emacs, these sections are called ''pages'', and you can navigate among them using commands with `page' in their name: `backward-page', `forward-page', and so on. You can also search for the character `##^L##' by using `C-s C-q C-l'. There are additional Emacs commands for manipulating pages, including `mark-page', `narrow-to-page', and `count-lines-page'.
+
+The `##^L##' character is also known as the ''form-feed'' character. In many printers, including the old line printers, it causes the printer to advance a page, hence its use as a "page" separator in Emacs. Be aware of this, especially if `##^L##' is used in a file more as a section separator, where the section length is sometimes quite short. Before printing such a file, you might want to strip the `##^L##' characters or replace them by newline characters; otherwise, you will print lots of relatively empty pages.
+
+== Controlling the Appearance of ^L in Text== 
+
+By default, depending on your value of option `ctl-arrow', a `##^L##' in text appears as `##^L##' or as `##\014##' (the octal code for the character). You can change this appearance by changing the character's value in the current display table -- see the Emacs-Lisp manual, section Display Tables http://www.gnu.org/software/emacs/elisp-manual/html_mono/elisp.html#Display-Tables), for more information about this.
+
+Here is one way to do this. This code is from Lisp:oneonone.el.
+
+  (defcustom ^L-appearance-vector
+    (vconcat (make-vector 10 ?_) " Section (Printable Page) " (make-vector 10 ?_))
+    "Vector determining how a Control-l character is displayed.
+  Either a vector of characters or nil.  The characters are displayed in
+  place of the Control-l character.  nil means `^L' is displayed.
+
+  Some possible values (evaluate the Lisp expressions first):
+   nil: ^L
+   (make-vector 50 ?_): Horizontal line
+   (vconcat (make-vector 10 ?_)
+           \" Section (Printable Page) \" (make-vector 10 ?_)): WYSIWYG"
+    :initialize 'custom-initialize-changed'
+    :set (lambda (symb val)
+           (set-default symb val)
+           (aset standard-display-table ?\014 ^L-appearance-vector))
+    :type '(choice
+            (const :tag "^L" nil)
+            (restricted-sexp :match-alternatives (vectorp)
+             :tag "Vector of characters to display"))
+    :group 'convenience :group 'wp)
+
+  (aset standard-display-table ?\014 ^L-appearance-vector)
+
+This code just defines a customizable variable, `##^L-appearance-vector##', whose value is either a vector of characters to display in place of `##^L##', or `nil' for the default appearance of  `##^L##'.
+
+The suggested value ##(make-vector 50 ?_)## shows a string of 50 underscore characters, in other words, a horizontal line. That's just the appearance; the underscore characters are not part of your text.
+
+The suggested value ##(vconcat (make-vector 10 ?_) \" Section (Printable Page) \" (make-vector 10 ?_))## shows this:
+
+<nowiki>__________ Section (Printable Page) __________</nowiki>
+
+You must use the code ##(aset standard-display-table ?\014 ^L-appearance-vector)## once, to let Emacs know to use the variable. After that, whenever you customize the variable, the appearance is changed immediately.
+
+You can get creative, changing the appearance to suit your context. You can also bind such a variable to different values (so, different appearances) in different Emacs contexts. For example, a major-mode might use a buffer-local value of this to show `##^L##' in a special way that is appropriate to that mode. Or, you can adapt the code to use a different display table from the `standard-display-table', one that is specific to your mode.
+
+The same idea of changing the display-table value can of course be used to change the appearance of any character, not just `##^L##'. 
+
+----
+CategoryDisplay
+CategoryDotEmacs
+CategoryCustomize
+OneOnOneEmacs

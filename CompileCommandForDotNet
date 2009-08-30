@@ -1,0 +1,20 @@
+<pre>
+; DevStudio 7, VC7, VC 7:
+(setenv "PATH" (concat (getenv "PATH") ";c:\\Program Files\\Microsoft Visual Studio .NET 2003\\Common7\\IDE"))
+
+;; don't use "devenv.exe" - Emacs can't see it's output.
+(setq compile-command "devenv.com /build Debug yourProject.sln")
+
+(define-key global-map [(f7)] 'compile)
+(define-key global-map [(f4)] 'next-error)
+(define-key global-map [(shift f4)] 'previous-error)
+
+;;;; 
+
+; DevStudio 6, VC6 VC 6:
+(setq compile-command "msdev.exe test.dsp /make \"test - win32 debug\"")
+
+</pre>
+
+----
+CompileCommand

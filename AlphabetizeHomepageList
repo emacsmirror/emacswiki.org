@@ -1,0 +1,83 @@
+The list of UserName homepages found on the CategoryHomepage article can be maintained using a few Emacs commands.  The commands convert the list to a one-name-per-line list that can then be easily alphabetized with `M-x sort-regexp-fields' and uses the Unix `uniq' command to filter out duplicates (Yes, it requires a GNU or Unix-like system).  More commands convert the list back to Wiki syntax.
+
+To convert the list, as it is, in to a one-per line list can be done roughly with the following in Emacs:
+
+  M-% , C-o RET C-o RET !
+  M-% , SPC RET C-o RET !
+  M-% * SPC RET RET !
+
+It can then be lexicographically alphabetized with the following:
+
+  C-x h
+  M-x set-variable RET sort-fold-case RET t RET
+  M-x sort-regexp-fields RET ^\[*\(.*\)\]*$ RET \1 RET
+
+You can narrow it to unique entries with:
+
+  C-x h M-| uniq RET
+
+To convert the list of usernames back to its Wiki list can be done with some EmacsLisp (Alternatively, this intermediate format could become the permanent format for the page):
+
+  (progn
+    (goto-char (point-min))
+    (insert "* ")
+    (while (search-forward-regexp "\\[*\\(\\w\\).*\n\\(\\[*\\(\\1\\).*\n\\)*" (point-max) t)
+      (insert "* "))
+    (goto-char (point-min)))
+
+and some SearchAndReplace commands:
+
+  M-% C-o RET , SPC RET !
+  M-% SPC * SPC RET C-q C-j * SPC RET !
+
+The recipe above for sorting and converting the UserName list back to Wiki syntax is consolidated into a single snippet of Lisp code.
+
+    (defun emacswiki-alphabetize-homepage-list (beg end)
+      "Alphabetize the EmacsWiki homepage list in the current region."
+      (interactive "r")
+      (save-excursion
+        ;; Rather than narrow-to-region, use markers.
+        (let ((end-mark (copy-marker end)))
+          ;; Remove "* " at the beginning of lines.
+          (goto-char beg)
+          (while (re-search-forward "^\\*\\s-*"
+                                    (marker-position end-mark) t)
+            (replace-match ""))
+          ;; Put everything between commas on its own line.
+          (goto-char beg)
+          (while (re-search-forward ",[ \n]*"
+                                    (marker-position end-mark) t)
+            (replace-match "\n"))
+          ;; Alpha sort all the homepage links on each line.
+          (goto-char beg)
+          (let ((sort-fold-case t))
+            (sort-regexp-fields nil "^\\[*\\(.*\\)\\]*$" "\\1" beg
+                                (marker-position end-mark)))
+          ;; Keep only unique lines.  Based on uniquify on EmacsWiki.
+          (goto-char beg)
+          (while (re-search-forward "^\\(.*\n\\)\\1+"
+                                    (marker-position end-mark) t)
+            (replace-match "\\1"))
+          (message "There are %d entries"
+                   (count-lines beg (marker-position end-mark)))
+          ;; Put "* " at beginning,
+          (goto-char beg)
+          (insert "* ")
+          ;; and at the beginning of each letter in the alphabet.
+          (while (and (re-search-forward "\\[*\\(\\w\\).*\n\\(\\[*\\(\\1\\).*\n\\)+"
+                                         (marker-position end-mark) t)
+                      (> (marker-position end-mark)
+                         (point))) ;; Error if search started after `end-mark'.
+            (insert "* "))
+          ;; Put commas between lines not starting with "* "
+          (goto-char beg)
+          (while (re-search-forward "\n"
+                                         (marker-position end-mark) t)
+            (if (and (not (looking-at "* "))
+                     (> (marker-position end-mark)
+                        (point)))
+                (replace-match ", "))))))
+
+----
+CategoryEmacsWikiSite
+

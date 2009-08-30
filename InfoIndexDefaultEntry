@@ -1,0 +1,32 @@
+<pre>
+;;This should be added to your .emacs file (or otherwise
+;; loaded on startup), and it will add a default value to 
+;; the "i", Info-index command in Info mode.
+;;
+;;Written Tue Jul 25 17:10:23 2006 by Jesse Weinstein (Email: http://purl.oclc.org/NET/JesseW/email@purl.org )
+(defadvice Info-index (before use-default-entry activate)
+"A blank topic name will now look up the current word, as with the `man' function.
+Use \"g Index\" to go to the Index node."
+(interactive
+   (list
+    (let ((Info-complete-menu-buffer (clone-buffer))
+	  (Info-complete-next-re "\\<Index\\>")
+	  (Info-default-entry (save-excursion
+				(skip-chars-backward "-a-zA-Z0-9._+:")
+				(let ((start (point)))
+				  (skip-chars-forward "-a-zA-Z0-9._+:")
+				  (buffer-substring-no-properties start (point))))))
+      (if (equal Info-current-file "dir")
+	  (error "The Info directory node has no index; use m to select a manual"))
+      (unwind-protect
+	  (with-current-buffer Info-complete-menu-buffer
+	    (Info-goto-index)
+	    (completing-read 
+	     (format "Index topic: %s: "
+		     (if (string= Info-default-entry "")
+			 ""
+		       (format " (default %s)" Info-default-entry)))
+	     'Info-complete-menu-item nil nil nil nil Info-default-entry))
+	(kill-buffer Info-complete-menu-buffer)))))
+)
+</pre>

@@ -1,0 +1,250 @@
+= Remap Control and CapsLock =
+
+== Recent Versions of Gnome (on GNU/Linux) ==
+
+Recent versions of the Gnome desktop have a Keyboard Preferences dialog that allows you to configure the Ctrl key position.  On Ubuntu this is found under System -> Preferences -> Keyboard.  Under the "Layout Options" tab choose "Ctrl key position" and it gives you a number of choices.
+
+== GNU/Linux virtual terminal ==
+
+Press Ctrl-Alt-F1 to enter the first virtual terminal.
+
+A virtual terminal is NOT an [agkux]term inside of X.
+
+Now run:
+
+ $ sudo dumpkeys | head -1 > /usr/share/keymaps/Caps2Ctrl.map
+
+Then add the following lines to that file:
+
+ keycode 58 = Control #This makes Caps act as Ctrl
+ # keycode 29 = Caps_Lock #This makes Ctrl act as Caps
+ # alt_is_meta #This fixes the Alt key
+
+Then run loadkeys on that file:
+
+ $ sudo loadkeys /usr/share/keymaps/Caps2Ctrl.map
+
+To revert run:
+
+ $ sudo loadkeys -d #load default keymap file
+
+For more extensive editing try:
+
+ $ dumpkeys > my_keymap
+ $ cp my_keymap trial_keymap
+ $ edit trial_keymap
+ $ sudo loadkeys trial_keymap
+
+ $ man keymaps
+
+  It should be noted that using numeric notation for the
+  keysyms is highly unportable as the key action numbers
+  To find out what keysyms there are available  for  use
+  in keymaps files, use the command
+
+        dumpkeys --long-info
+
+  Unfortunately,  there  is  currently no description of
+  what each symbol does. It has to be guessed  from  the
+  name or figured out from the kernel sources.
+
+== On Ubuntu GNU/Linux virtual terminal ==
+
+1. Edit /etc/default/console-setup and add an X11 style caps lock modification:
+
+ $ diff -U0 /etc/default/{console-setup.orig,console-setup}
+ --- /etc/default/console-setup.orig     2009-02-09 03:05:27.000000000 -0500
+ +++ /etc/default/console-setup  2009-02-09 04:11:20.000000000 -0500
+ @@ -40 +40 @@
+ -XKBOPTIONS=""
+ +XKBOPTIONS="ctrl:swapcaps"
+
+you can do "ctrl:nocaps" instead if you want to two control keys.
+
+2. Trick dpkg into integrating your changes:
+
+ $ sudo dpkg-reconfigure console-setup
+
+and choose all the defaults.
+
+(The above is a brief version of a [https://bugs.launchpad.net/ubuntu/+source/console-tools/+bug/140786/comments/7 bug comment])
+
+== On Debian GNU/Linux ==
+
+To make Caps Lock another control, add/uncomment the following line in <code>/etc/console-tools/remap</code>
+
+ s/keycode  58 = Caps_Lock/keycode  58 = Control/;
+
+To make the change effective:
+
+ $ sudo invoke-rc.d console-screen.sh restart
+
+== On Gentoo Linux ==
+
+For i386 systems, to make Caps Lock another control: In /etc/conf.d/keymaps set 
+
+  KEYMAP="emacs"
+
+Then reboot or issue a <code># /etc/init.d/keymaps restart</code>.  See /usr/share/keymaps/i386/qwerty/emacs.map.gz for more information.
+
+== On Slackware GNU/Linux ==
+
+Similar to Gentoo, you can add Caps Lock as another control key:
+
+As super-user: 
+
+  $ loadkeys emacs
+  $ echo "loadkeys emacs" >> /etc/rc.d/rc.local
+
+You can just issue the second command and re-run rc.local, however
+that will initiate any commands in rc.local.  This differs from my X
+setup where the menu key is used as Caps Lock.  Currently for the
+virtual console there is no Caps Lock (any suggestions on this?)
+--JoelAdamson
+
+[new]
+I no longer have Caps Lock key too but I have never used it before so
+I do not see the need now it has been remapped to something else ;) -- XavierMaillard
+
+[new]
+The main thing I use the CapsLock for is environment variables; I have started getting out of using it by using AbbrevMode, however I still find some instances where it's useful.  
+
+After seeing how a friend of mine types (with her wrists flat on the table, and not moving her hands but straining to reach keys, also while holding modifier keys and depressing letters with the same hand), I'm seriously investigating whether the quirks of heavy keyboard use (dislike of CapsLock, accidentally hitting keys, RSI) are due to poor hand position instead of heavy typing use.  I've been typing heavily for years, and other than moving the CtrlKey, I've not developed any problems or developed the strong preferences indicated on some webpages.  I'd like to get a HappyHacking or Sun-style keyboard, but I'm concerned that nobody thinks it's a problem to only have one control key: the rationalization I've seen some people make is that I should use one hand to accomplish certain keystrokes (e.g., "\C-x\C-f", which I do rather more swiftly with two hands).  
+
+== X ==
+In X Window you can use xmodmap(1) to change the keymaping. See the man page command [http://vmlinux.org/cgi-bin/man2html?xmodmap xmodmap(1x)] for more information.
+
+For some, this is one of the most important customizations for computer use in general and especially for Emacs.  The CapsLock function is virtually useless, yet has prime real estate on modern keyboards, while the left Ctrl key is awkwardly situated out of easy reach for those of us without giant fingers.    When I was new to Linux and first tried emacs, I quickly gave up and went back to pico, thinking, "Who would want to use an editor that uses one of the hardest-to-reach keys for nearly everything?"  
+
+Old Unix keyboards had these keys' positions inverted, and Sun keyboards always have.  It seems the current layout became standard about the same time cheap x86 hardware became ubiquitous, although why is beyond me.  [Note that the original IBM PC keyboards also had the Control key in the right place; it was only with the 101-key "enhanced" keyboards that it was moved to its currently useless position.]
+
+I swap their functions throughout my environment, not just for Emacs.
+
+On Unix-like systems, I have a ~/.xmodmap file:
+<pre>
+!
+! Swap Caps_Lock and Control_L
+!
+remove Lock = Caps_Lock
+remove Control = Control_L
+keysym Control_L = Caps_Lock
+keysym Caps_Lock = Control_L
+add Lock = Caps_Lock
+add Control = Control_L
+</pre>
+
+which is sourced from my ~/.xsession with the line:
+<pre>
+xmodmap ~/.xmodmap
+</pre>
+
+
+=== Remap using xkb option ===
+In the X Window System, you can also swap Control and Caps Lock with the xkb option <code>ctrl:swapcaps</code>.  If you don't ever need Caps Lock you can instead of swapping the two set Caps Lock to be another Control. This is done with <code>ctrl:nocaps</code>. Use one of these from command line:
+<pre>
+  setxkbmap -option ctrl:swapcaps     # Swap Left Control and Caps Lock
+  setxkbmap -option ctrl:nocaps       # Make Caps Lock a Control key
+</pre>
+You can put this command in your <code>~/.xsession</code>, <code>~/.gnomerc</code> or whatever.  If you can edit the X configuration file, you might do it system-wide:
+<pre>
+  Section "InputDevice"
+    Driver "keyboard"
+    Option "XkbRules" [...]
+    Option "XkbOptions" "ctrl:nocaps"
+</pre>
+
+The CapsKey page has an example of moving Ctrl to Caps.
+
+
+=== NetBSD console ===
+to /etc/wscons.conf add:
+: mapfile /usr/share/wscons/keymaps/pckbd.c2c
+
+then create the file /usr/share/wscons/keymaps/pckbd.c2c with the single line:
+: keysym Caps_Lock = Control_L
+
+This can also be tested immediately (doesn't require reboot) and temporarily (won't survive a reboot) with:
+wsconsctl -w map+="keysym Caps_Lock = Control_L"
+
+=== MAC OS X ===
+
+Check out uControl http://gnufoo.org/ucontrol/ for switching
+keys on a mac; it does Caps/Ctrl but other switches too.
+
+Starting with Mac OS 10.4 (Tiger) you can remap modifier keys (including "Caps Lock" to "Control") in the "Keyboard & Mouse" System Preference Panel.
+
+In Emacs 22 (Carbon Port, CVS version) you can use the variable `mac-control-modifier' to remap the Control key.
+
+Use the menu item: "<Apple Menu>/System Preferences...", select the "Keyboard & Mouse" panel, select the "Keyboard" tab and press the "Modifier Keys..." button at the lower left to bring up a remapping dialog where you can make the desired changes.  The remapping is effective throughout the Mac OS X UI including within Apple's X11 implementation.
+
+
+== Microsoft Windows ==
+
+=== AutoHotkey ===
+On Windows you can use [http://www.autohotkey.com/ AutoHotkey]. It is a little program that lets you write "scripts" to remap the keyboard. The nifty thing is that all scripts can be compiled to an <tt>.exe</tt> file which can be executed on a machine that doesn't have !AutoHotkey.
+
+For instance, to swap Caps Lock and Ctrl, you could write
+
+    +Capslock::Capslock
+    Capslock::Ctrl
+
+and save as <tt><i>script</i>.ahk</tt>. (The original Caps Lock behavior is here mapped to Shift + Caps Lock.)
+
+=== Registry ===
+'''CAUTION'''
+* Breaks Ctrl-Alt-Del sequence, causing it to bring up "Windows Task Manager" instead of the default behavior of offering the logoff screen.
+** This behaviour may not a side-effect of the registry entry, but may instead be a confusion of the original author.  To explain specifically: C-A-DEL displays the TaskManager by default in "XP Home Edition" *without* this registry entry, so maybe the original author was misled by his simultaneous change in OS (he moved from W2k to XP Home) into thinking his application of this registry entry caused the 'break' in his C-A-DEL.  Unless the original claim can be verified, both of these lines should be removed.
+* Untested on NT4, NT3.5.1. (Remove any in this list if you test with success).
+* Applies across all user accounts.
+* Requires Administrator access to write to the registry.
+* Some say ''"It's better to avoid edit the registry directly, maybe."''
+
+Otherwise save and run either of the following as a .reg file and then press enter if in WindowsExplorer or Alt-Enter if in NoteMacs.
+
+====Caps2Ctrl, leave Ctrl alone====
+<pre>
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
+"Scancode Map"=hex:00,00,00,00,00,00,00,00,02,00,00,00,1d,00,3a,00,00,00,00,00
+</pre>
+
+====Caps2Ctrl *AND* Ctrl2Caps====
+<pre>
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
+"Scancode Map"=hex:00,00,00,00,00,00,00,00,03,00,00,00,1d,00,3a,00,3a,00,1d,00,00,00,00,00
+</pre>
+
+
+===Keymap===
+There is a small piece of software called '''keymap''' which modifies the registry. 
+
+
+=== In Lisp? ===
+I know this is fairly simple to do for emacs only, but I've never looked into how exactly, and Lisp is not my forte.  Anyone?
+
+: That is doubtful.
+
+:: I am able to get the xorg under Cygwin on windows to switch the keys via a command line argument to xwin.  Surely then it should be possible to patch emacs to do this at least at the source level.  Anyone?  
+:: Also, what do you mean by "last method?" I don't see a method on here that doesn't require Administrator access.  I'd love to know one.
+
+=== Drivers ===
+There are also these drivers: [http://www.sysinternals.com/ntw2k/source/ctrl2cap.shtml ctrl2cap.sys] or [http://www.sysinternals.com/win9x/utilities/ctrl2cap95.shtml ctrl2cap.vxd].
+
+http://www.gnu.org/software/emacs/windows/faq3.html#capscontrol has more info about this.
+
+Microsoft also provides an utility [http://www.microsoft.com/technet/sysinternals/Miscellaneous/Ctrl2Cap.mspx Ctrl2Cap] to replace (note that you will loose the caps lock) the caps lock with the ctrl key.
+It allows you to reverse it as well.
+
+If you use the AutoHotKey (www.autohotkey.com) Win32 macro program, the following line in autohotkey.ini will effectively remap Caps to Ctrl:
+
+<pre>
+Capslock::Ctrl
+</pre>
+
+
+
+----
+CategoryKeys MovingTheMetaKey

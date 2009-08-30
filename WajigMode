@@ -1,0 +1,44 @@
+"Wajig is an interface to many Debian administrative tasks. Written
+in Python, wajig uses traditional Debian administration and user
+tools including apt-get, dpkg, apt-cache, wget, and others. It is
+intended to unify and simplify common administrative tasks." See
+http://www.togaware.com/wajig/ for more infomation.
+
+I write this package as a wrapper of wajig for Emacs. I love living
+within Emacs. :-)
+
+Put this file into your load-path and the following into your ~/.emacs:
+
+  (autoload 'wajig "wajig"
+           "Create a *wajig* buffer." t)
+
+Then, simply run `M-x wajig'.
+
+Lastest version of this package could be found at: http://xwl.appspot.com.
+
+Alternatively, you may try ga, or generic-apt, which is generic apt-get(as in Debian GNU/Linux) alike interfaces for various package management tools, such as apt-get(Debian), pkgsrc(NetBSD), fink(Mac OS X), etc.  It is very easy to add new backends.  You can get it from the same URL above.
+
+== Features ==
+
+; Ease of Typing:
+  Most of wajig commands can be invoked by typing very few
+  keys. e.g., in *wajig* buffer, `o' for `wajig show'.
+
+; `ido-completing-read' Support:
+  With the power of `ido-completing-read', you don't have to remember
+  the full name of a package. It is also an ease of typing.
+
+; Output Highlighting:
+  Highlight command outputs. Make them look nicer.
+
+== ScreenShots ==
+
+[[image:XwlWajigShow]]
+
+== Download ==
+
+* Lisp:wajig.el
+* http://xwl.appspot.com/ref/wajig.el
+
+----
+CategoryModes

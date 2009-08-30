@@ -1,0 +1,51 @@
+<b>
+Solving a print problem using Windows Script Host (WSH) with Win32 Emacs:
+Getting Emacs to produce quotes on the command line.
+</b>
+
+To specify a printer on the [http://www.gnu.org/software/emacs/windows/big.html#printing-ghostscript GSPRINT.EXE] command line, the -printer switch is required.  This switch requires that the printer name be surrounded by quotes on the command line.  A sample command (issued directly from a Windows command prompt) might be: 
+
+    /path/gsprint.exe -printer "Canon" myfile.ps.
+
+The problem with doing this from within Emacs is that Emacs does not seem able to pass quotes to the command line.
+
+One solution is to substitute hash marks (#) for quotes, and use a WSH script to translate hash marks to quotes.  Set up Emacs to "print" to the WSH script, then make the WSH script issue the actual print command.
+
+Here are the details:
+
+In Emacs:
+
+    (setq ps-printer-name-option "-printer ")
+    (setq ps-printer-name "#Canon#")
+    (setq ps-lpr-command "cscript.exe") ; Windows Script Host
+    (setq ps-lpr-switches 
+       '("c:\\documents and settings\\me\\my documents\\gs-call.vbs"))
+
+
+gs-call.vbs (sitting in "my documents"):
+
+    Dim wsh
+    Set wsh = WScript.CreateObject("WScript.Shell")
+    Dim oArgs
+    Set oArgs = Wscript.Arguments
+
+    RunPrnt
+
+    Public Sub RunPrnt()
+      Dim CLine, arg, rv
+      For Each arg in oArgs
+        ' the following translates hash marks to double quotes
+        arg = Join(Split(arg,"#"),"""")
+        CLine = CLine & " " & arg
+      Next
+
+      CLine="""c:\Program Files\Ghostgum\gsview\gsprint.exe""" & CLine
+    '  MsgBox CLine & vbCRLF
+      rv=wsh.Run (CLine, 1, True)
+    '  MsgBox "rv=" & CStr(rv)
+    End Sub
+
+The commented out !MsgBox calls are useful for debugging.
+
+----
+CategoryPrinting

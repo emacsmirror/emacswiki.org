@@ -1,0 +1,29 @@
+I use Emacs, and have for around four years, since my first year at Brigham Young University.  I have been doing minor customization to it for a long time, mostly rebinding keys, but recently have been trying to improve my abilities.  I'm trying to learn more of the various modes that exist, enhancing customizations, and trying to transform Emacs into my primary working platform, not just for programming and text editing, but as my shell, file manager, and anything else I find it can do.
+
+Primarily I use Emacs to edit CSS, JSP, HTML, and java at work, and at home I also do some php and python coding.
+
+One of my favorite customizations is a simple change to the paren matching face, rather than some boring background or foreground color change I like to keep my AngryFruitSalad and change the style of the face - I currently use bold and italics.
+Add the following to custom-set-faces to get bold and italic text when matching parens.
+
+    '(show-paren-match-face ((((class color)) (:bold t :italic t))))
+
+I've recently tried using DrewAdams' OneOnOneEmacs - It's an interesting way to use Emacs, and I do think I prefer it to using multiple windows.  I had to drop all of my customization to get it to work, but I've been able to slowly add my own customizations back in.
+
+[new:DrewAdams:2005-04-19 14:41 UTC]
+: Thanks for trying my code -- sorry you had to lose your customizations :-(. I'm aware that the code is a bit too "monolithic", and when I have time I'll try to progressively make it less "all-or-nothing". If you could keep track of what you had to do and post this info, it might help me improve the code so it doesn't require users to jump through so many hoops just to use it. Thanks -- DrewAdams.
+[new]
+
+[new:RyanBowman:2005-05-25 11:15 MST]
+:: -- Oh, it wasn't as bad as it sounded, what I meant was that for some reason it didn't seem to like the custom-set- blocks that I copied into your .emacs file, it kept erasing them (they were the only ones present, I checked).  I simply had to use customize to re-customize those values and they stayed after that.  I'm quite happy with your multiple frames arrangement. -- Ryan
+[new]
+
+----
+I've also finally tried to learn how to use query-replace-regexp (CategoryRegexp) and saving text to registers, and WOW, why didn't I do that 5 years ago?!  They've quite possibly been the single (dual?) most effective efficiency improving techniques I've learned in months!
+
+----
+You're the fellow with the Highland Bagpipe stuff for Lilypond, no?
+ChristopherSmith
+
+
+---- 
+CategoryHomepage

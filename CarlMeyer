@@ -1,0 +1,32 @@
+I use Emacs, though I'm pretty much an EmacsNewbie - just started
+using it a few weeks ago.  Prior to that I was a devoted JoeEditor
+user - still use joe for minor sysadmin tasks, but I'll never use it
+again for writing code or anything else.
+
+My first contribution to EmacsWiki is EasyCodeOutline - one of my
+favorite Emacs tricks so far.
+
+Things I would like to do with Emacs that I haven't figured out how to
+do yet:
+ 
+* add little buttons to the leftbar in OutlineMode to allow
+mouse-navigation of an outline (I've found something called
+outl-mouse.el floating around, but it seems to be written for XEmacs -
+at least it requires make-glyph which isn't on my install) 
+
+: I think that not using mouse is a victory, I wonder why you need it :) --
+LucasBonnet
+
+I figured someone would come along and say that :-) See, it's more to do with
+showing friends who are stuck on their favorite proprietary IDE that Emacs can
+do anything worthwhile that <insert IDE here> can do.
+
+Email: cjmeyer at npcc dot net
+
+Sometimes I lurk on #emacs as carljm.
+
+: Welcome on the wiki ! -- LucasBonnet
+
+Thanks!
+----
+CategoryHomepage

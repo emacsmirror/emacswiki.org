@@ -1,0 +1,31 @@
+Aerospace engineering graduate student at [http://www.princeton.edu/ Princeton University's] [http://www.princeton.edu/mae/people/faculty/martin/homepage/crocco_lab/ CRoCCo Lab].
+
+[:AboutMe]
+==About Me==
+portrait:http://www.princeton.edu/~ibeekman/images/ZBeekman.jpg
+I use Emacs 22.  I am relatively new to emacs, and programming in general, but like to think that I am a fast learner.  My main interest is scientific computing, but I am very interested in leveraging emacs and Linux in a powerful way to increase my productivity.  [:My.Emacs] My ##.emacs## can be found at Lisp:.emacs-IzaakBeekman.el  It is quite sloppy and needs some cleaning up.  Edits, suggestions and comments are all welcome.
+
+[:MyEmacsProject]
+===My Emacs Project===
+I am currently working on some code which I call ScreentoImagebin which was inspired by collaborative tools like http://pastebin.com and http://lisppaste.org.  The goal is to create an emacs interface which is useful for debugging and collaboration when working with images and screenshots.  Currently the code is just in my .emacs file and is *extremely* crude.  I think that this does have potential to grow into a rather nice package, but unfortunately I do not have the time nor the knowledge of ELisp to complete this task.  I would _greatly_ appreciate any help or guidance that I can get.
+
+[:ContactInfo]
+==Contact Info==
+I make occasional appearances on the #emacs IRC channel, as well as the #bash, and #fortran channels, and my usual nick is [::ibeekman].
+I can also be reached via email at [mailto:zbeekman@NOSPAMgmail.com zbeekman@NOSPAMgmail.com].
+My Homepage is http://www.princeton.edu/~ibeekman.
+
+[:Humor]
+==Humor==
+From my .bashrc file:
+  alias vi='emacs -Q -nw'
+
+==Comments==
+
+Your screenshot sharing idea is a good one.  I don't know how suited Emacs is to taking screenshots.  Obviously it does ok with its new-fangled graphic supporting features.  Regardless, the approach should be to abstract and separate the screenshot facilities from the task of posting them to sites.  To give you an idea, I've tinkered your posted .emacs, thusly.  It probably doesn't work, so feel free to revert.
+
+Belated welcome to the Wiki!  -- AaronHawley
+
+----
+CategoryHomepage
+

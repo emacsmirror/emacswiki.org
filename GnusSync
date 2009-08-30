@@ -1,0 +1,105 @@
+This page describes how to use Gnus on two different machines, i.e. how to sync two different Gnus installations.
+
+== Preliminaries ==
+
+If you want to sync two different Gnus installations (in the following: 'work' and 'home'), make sure that both have the same Gnus version. From my experience, you should also use at least the same emacs major versions. The following assumes that the machine at 'work' is always on and that you can connect to it using ssh. In the following, the actual syncing is always done at the machine at 'home'.
+
+The files you absolutely have to sync are .newsrc, .newsrc.eld and all files in gnus-directory and message-directory (usually ~/News and ~/Mail, resp.). But there are several other things which you might want to sync between the two machines, e.g. .gnus, .bbdb, certificate directories etc.
+
+== Syncing Gnus ==
+
+The work horse for syncing files under Unix is of course rsync. When you're sitting at your computer at 'home' and you want to update your Gnus installation you would use
+
+<pre>
+rsync -auvzp --delete login@workcomputer:'~/.newsrc ~/.newsrc.eld ~/Mail ~/News' ~/
+</pre>
+
+Note that this assumes that you didn't change the default values for gnus-home-directory and message-directory! When you've exited Gnus, you can update the Gnus installation at 'work' by calling
+
+<pre>
+rsync -auvzp --delete ~/.newsrc ~/.newsrc.eld ~/Mail ~/News login@workcomputer: 
+</pre>
+
+Make backups before doing this in case something goes wrong! You may have noticed that there is an option <code>--delete</code>, which deletes extraneous files from destination directories. You may imagine that this option can lead to disastrous results if there's something wrong with your source directories, so you may want to skip this option when you first sync your files. However, if you don't use this option, deleted messages may reappear after syncing. The 'u' option skips files which are newer on the receiver ('update').
+
+To avoid typing passwords, you might want to create a ssh key with an empty pass phrase (ssh-keygen) and put them into the ~/ssh/.authorized_keys at your 'work' location. Alternatively (and faster), you can initiate one master ssh connection and reuse it (see man page of "ssh" and look at the options "-M" and "-S").
+
+== Automating the process ==
+
+Put the following into your .emacs at 'home' if you want Emacs to do the syncing for you. 
+Note that you will need at least rsync 2.6.7. or newer for this to work.
+
+<pre>
+(require 'gnus-load)
+;; if you want to set variables like gnus-home-directory
+;; or message-directory, do it here! For example:
+;; (setq gnus-home-directory "~/")
+;; (setq message-directory "~/Mail/")
+
+;; DNS name of the remote computer where second Gnus installation resides
+(setq my-gnussync-remote "computer.work.com")
+;; Login name
+(setq my-gnussync-remote-login "mylogin")
+;; Name of rsync binary
+(setq my-gnussync-rsync-binary "/usr/bin/rsync")
+;; rsync options
+(setq my-gnussync-rsync-options "-auRvzp --delete")
+;; Additional files you want to sync, e.g. .bbdb,.gnus,.diary, whatever...  
+;; Note that each file should start explicitly with "~/" 
+;; For example: 
+;; (setq my-gnussync-extra-files '("~/.bbdb" "~/.gnus" "~/subdir/otherfile"))
+(setq my-gnussync-extra-files nil)
+
+(defun my-gnussync-sync (arg)
+  (interactive)
+  (let ((filelist 
+	 (append  
+	  (list
+	   gnus-startup-file
+	   (format "%s.eld" gnus-startup-file)
+	   (directory-file-name gnus-directory)
+	   (directory-file-name message-directory))
+	  my-gnussync-extra-files))
+	(bufname (get-buffer-create "*GNUS SYNC*")))
+    (cond 
+     ((and (eq arg 'to-remote)
+	  (y-or-n-p (format "Sync Gnus files to %s? " my-gnussync-remote)))
+      (switch-to-buffer bufname)
+      (insert "\n\n === LOCAL  -->  REMOTE ===\n")
+      (apply 'call-process 
+	     my-gnussync-rsync-binary 
+	     (append 
+	      (list nil bufname t)
+	      (split-string my-gnussync-rsync-options)
+	      (mapcar (lambda (file)
+		    (if (string-match "^~" file)
+		      (replace-match (format "%s/." (getenv "HOME")) t t file)
+		      file))
+		      filelist)
+	      (list (format "%s@%s:" my-gnussync-remote-login my-gnussync-remote)))))
+     ((and (eq arg 'from-remote)
+	   (y-or-n-p (format "Sync Gnus files from %s? " my-gnussync-remote)))
+      (switch-to-buffer bufname)
+      (insert "\n\n === REMOTE  -->  LOCAL ===\n")
+      (apply 'call-process 
+	     my-gnussync-rsync-binary 
+	     (append
+	      (list nil bufname t)
+	      (split-string my-gnussync-rsync-options " ")
+	      (list (format "%s@%s:%s" my-gnussync-remote-login my-gnussync-remote 
+			    (mapconcat 
+			     (lambda (file)
+			       (if (string-match "^~/" file)
+				   (replace-match "" t t file)
+				 file))
+			     filelist " "))
+		    (expand-file-name "~"))))))))
+
+(add-hook 'gnus-before-startup-hook (lambda () (my-gnussync-sync 'from-remote)))
+(add-hook 'gnus-after-exiting-gnus-hook (lambda () (my-gnussync-sync 'to-remote)))
+</pre>
+
+Now every time when you start or exit Gnus you will be asked if you want to sync the two Gnus installations. The output of rsync will be shown in a new buffer. Again: Make backups before using this! If you want to be extra careful, you can also remove the <code>--delete</code> option (see above).
+
+----
+CategoryGnus

@@ -1,0 +1,97 @@
+*This package is no longer being maintained.*  Though the code is free for use and should continue to work, those interested in keeping PIM information in Emacs should probably give PlannerMode or OrgMode a try (as suggested below).
+
+-- Tom Shannon
+
+----------
+
+It's my opinion that you should be able to use you computer like
+you would use an organizer that you carry around.  In other words,
+if you want to work on a project, you look at the proper page in
+your organizer, which provides all of the information needed to
+start working.  The goal of OrganizerMode is to provide a way for 
+users to begin with a displayed page and do anything related to a 
+particular project or subject from there.  The idea is to make work
+more task based.
+
+OrganizerMode generates and uses pages with linked information from
+todo mode, bbdb, diary, gnus, vm, etc. as well as a related organizer
+file (similar to a todo file). Provides commands to link entries to
+their proper pages and access the proper pages from entries in their
+native modes as distributed with emacs. Organizer actions may be
+performed on upon organizer page entries.
+
+An entry into an organizer page is nothing more than a todo entry.
+Indeed, all of the todo-mode functions (with "organizer"
+substituted for "todo") are there and the shortcut keys are the same.
+For instance, I might have the following entries in my "development"
+organizer page:
+
+    Brian Barry
+    ~/mail/organizer_mail
+    comp.emacs
+    ~/code/organizer-mode.el
+    ~/code
+    My_programs
+    http://www.emacswiki.org/cgi-bin/wiki.pl?SiteMap
+    ~/junk.jpg
+
+These entries allow you to do the following:
+
+* Access Brian Barry in bbdb with organizer-bbdb-at-point.
+* Access organizer_mail with organizer-vm-at-point.  
+* Access comp.emacs with organizer-gnus-at-point. 
+* Call up organizer-mode.el or the directory with code with find-file-at-point.
+* Access the related organizer page, My_programs, with organizer-at-point.
+* Access the URL with w3m-browse-url, browse-url-netscape or some other variation.
+* Access junk.jpg with its associated dired-guess-shell-alist-user command (xv in my case) using organizer-shell-command-at-point
+
+The program will also automatically do a search of todo, diary files, BBDB files and other organizer files for properly marked entries which will appear on the organizer page of interest.
+
+See the Commentary at the beginning of the source code for more detailed information and a Quick Tutorial.
+A new info file is now available, as well.
+
+Version 1.95 is now available:
+
+* http://www.emacswiki.org/elisp/organizer-mode.el
+* http://www.emacswiki.org/elisp/organizer-mode.el.gz
+
+This is mostly a bug fix release.  All users are strongly advised to upgrade.
+
+Changes:
+
+Version 1.95
+
+Changes since version 1.9:
+
+* Fix of a major bug which prevented the functions for gnus integration from all working properly.
+* Other bug fixes.
+* Addition of 'organizer-bookmark-at-point' and 'organizer-insert-linked-dired-entry-under-cursor'.
+
+[new:XavierMaillard:2009-03-28 23:06 UTC] it does not work very well with emacs23. I will try to fix
+that. -- XavierMaillard
+----
+Questions:
+: Would it be possible that someday you can take advantage of the PlannerMode ? 
+  In fact I can't see what OrganizerMode and PlannerMode can exactly do ;-) 
+  So I do not know which one to choose for instance :( -- XavierMaillard
+
+I caught your question in OpenQuestions but I didn't want to answer because, frankly, I don't know that much about PlannerMode.  As far as I can tell, both of these packages aim to do essentially the same thing in a slightly different way. That is, bring all of the data which is related to a particular project, category or thought or whatever, together so that it can be accessed easily.  For instance, if you want to find an appointment associated with a particular project as it stands, you go to the calendar and find it.  For OrganizerMode (and presumably PlannerMode as well), you go to the project's page and find it there along with all of the todo's, files, and other things related to the project.  There is an extensive discussion about the theory in the info file that comes with organizer mode and I recommend that all users give it a good look.
+
+As far as I can tell, one of the basic differences that I can see is that PlannerMode uses active links to access data from a page.  That is, you click on a link on the page and it takes you to the indicated file or entry, which I think is convenient.  OrganizerMode uses the ffap package [which is a standard part of most (X)Emacs distributions].  That is, it uses a series of commands accessible from a menu in the menu bar to access the data underneath the TextCursor or, in some cases, within a region.  There are probably other differences as well but, as I said, I really can't address them.
+
+As far as taking advantage of PlannerMode, you can, if you wish, try to use active links in OrganizerMode as it is.  For instance you can use emacs-wiki-mode when looking at an organizer page.  This will automatically make web links active and if you use wiki markup when writing the other types of entries, these will be active too, I think.  I have tried this myself and it does work to some extent but there are one or two organizer mode commands which fail when in emacs-wiki major mode.  But if you really want to go this route, you should probably seriously consider just using PlannerMode.  It is (apparently) designed for it.
+
+In answer to your last question, I strongly recommend that you give both packages a good workout before you choose one.  Good luck.  -- Tom Shannon
+
+: Thanx for this (long) answer :) In fact I already have gave a tried to each other but I can't choose which is best for instance. There are thinggies I like in both mode. The only thing I dislike in OrganizerMode is the general look of the generated page. It is IMHO a big drawback cuz' AFAIK, planner-mode "comes" with another cool mode Planner-Mode-Browser. But as you said the 2 modes (yours and PlannerMode) manage differently things even if one can be quite easily integrated with the other. Whatever, I'll enforce to train myself with both and I'll see which one is the most convenient for my daily uses. See ya and keep up the good job :) -- XavierMaillard
+
+----------------------------------------------------------------------
+PlannerMode current maintainer SachaChua speaking. I haven't used OrganizerMode yet. I think it's nice that it integrates with diary, which makes it possible to have recurring data, something which PlannerMode lacks because it uses plain text. OrganizerMode also makes way more use of lots of other Emacs modules, like todo and bbdb. On the other hand, I like how PlannerMode is laid out. Maybe I'm just too used to PlannerMode, which seemed to be easier to get up and running. I'll see if we can add some more actions to the active-links recognized by emacs-wiki - <nowiki>ssh://somehost</nowiki> seems like a useful thing. =)
+
+----
+
+CategoryPersonalInformationManager
+CategoryCalendar
+CategoryTodo
+CategoryModes
+AbandonnedMode

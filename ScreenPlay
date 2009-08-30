@@ -1,0 +1,43 @@
+There are two screenplay libraries known.  Both share the same filename.  :(
+
+* http://www.nongnu.org/screenplay/ -- by VanceSimpson
+* Lisp:screenplay.el -- by AlexSchroeder
+
+There is also a LaTeX Document Class called "plari" by Antti-Juhani Kaijanaho for screen plays.
+You can find it on any CTAN-mirror.  
+
+== More info on the package by Alex Schroeder ==
+
+Type your screen play as you would on a typewritter.  When you are
+done, reformat the plain text using Lisp:screenplay.el.
+[Google:Screenwriter%27s+Bible+David+Trottier The Screenwriter's Bible by David Trottier] seems
+to suggest that the formatting by screenplay.el is good enough.
+
+The screen play formatter recognizes the following:
+
+Paragraphs of text starting in column 0 are considered to be
+'''description'''.  They are formatted like normal paragraphs in text
+mode.  A fill-column of 65 is used.  Paragraphs are separated by an
+empty line.
+
+Paragraphs of text starting on any other column are considered to be
+'''dialogue'''.  They are reformatted with a left margin of 10
+characters and a fill-column of 45.  Paragraphs are separated by an
+empty line.
+
+Lines of text not starting on column zero and enclosed in parenthesis
+are considred to be '''actor's instructions'''.  They are indented to
+column 16.  Actor's instructions spanning multiple lines are not
+recognized.  This text should go into the description.  There will be
+no empty lines before or after actor's instructions.
+
+Lines of text in all caps starting on column 0 are considered to be
+'''headings''' and are left alone.  There will be two empty lines
+before headings.
+
+Lines of text in all caps starting on any other column are considered
+to be '''character names''' and indented to column 22.  There will be
+no empty line following a character name.
+
+----
+MarkupModes

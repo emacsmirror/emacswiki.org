@@ -1,0 +1,329 @@
+== Future Version of <nowiki>VocabTest</nowiki> ==
+
+
+
+
+
+I'd like to enhance VocabTest a bit. Cyprian and I have agreed to discuss possible enhancements here on the Wiki. So others may join the discussion. Here are my first thoughts on the issue.
+
+Thanks for your great ideas, Oliver!  I've wanted to rework and improve VocabTest for some time now, but haven't got off my ass yet.  -- CyprianLaskowski
+
+
+[Note: I need VocabTest mainly to test classical Greek vocabulary, so my thoughts might be a bit forced into that direction.]
+
+
+
+
+My main points are:
+
+
+
+
+
+* I'd like to use widget.el for the testing. Widgets are much more comfortable and look much nicer.
+
+** Sounds like a good idea.   -- CyprianLaskowski
+
+
+* Queries should be possible in both directions. For example German --> Greek and Greek --> German from the same source file.
+
+** I've often thought about this, and I think it's ultimately what one wants, but I think it's more complicated than it appears at first glance (although perhaps a more flexible datafile method like using XML would help).  The problem is that, in my experience at least, you sort of want the source language and target language entries to be assymetric in content and structure, because natural languages don't have a 1-to-1 mapping between word meanings.  When you look in a English-French/French-English dictionary for example, you can't usually look up a French word's English meaning, and expect to get the original French word back by looking up the English word back in the other direction.  For example, if I look up the word French word "devoir" in my dictionary, I find: "v.t. & abs. ir, to owe.  Followed by infinitive: should, ought; must, have to; am to."  Can you envision an intuitive way of dealing with this?  We could try to establish a principle meaning for each French word, for example, and just test
+back on that or something, but that's no easy task, and even if accomplished, I suspect the results would be displeasing.  What do you think?  -- CyprianLaskowski
+
+* Provide a more convenient and more flexible way to query special forms.
+
+** By special forms, do you mean some of those extra grammatical variants (like in your example above), or do you mean dealing with fluke words for which a language's standard dictionary-type entry is inadequate, due to the ridiculous number of exceptions it involves (like "to be" in English)?  Either way, I definitely want to do something like this; the current setup does allow some configuration, but it's very hack-like and counterintuitive for people who didn't write the code (everyone but me! :)).  -- CyprianLaskowski
+
+An example using widgets could look like this ( "_"s indicate an editable field):
+
+
+ leipo:           _________________
+
+
+ futur active:    _________________
+
+
+ aorist active:   _________________
+
+
+ perfect active:  _________________
+
+
+ perfect passive: _________________
+
+
+ aorist passive:  _________________
+
+
+ futur medium:    _________________
+
+
+
+
+
+                    |  SUBMIT  |
+
+
+
+** So this is cool: now what are the issues here? Hmmm...  -- CyprianLaskowski
+
+
+
+
+
+=== File Format ===
+
+
+
+
+
+I'd say the file format that VocabTest currently uses is just not flexible enough. I suggest to use XML.
+
+[Note that I don't know much about XML. In fact I don't know if my example below is valid XML at all. However, if wed ecide to use XML, I'll be happy to learn more about it.]
+
+Because of xml.el, that is part of GNU Emacs 21.1, we won't not have to write a parser. The function `xml-parse-file' reads a XML-file and returns the relevant content as a list.
+
+* I agree.  I think XML is the way to go.  I also know very little about it, but I just bought a book about it, and am totatlly into firing it up.  And having xml.el as standard is cool.
+
+
+
+
+Here is my first shot at how such an XML-file could lookl ike:
+
+
+ <?xml version="1.0" encoding="emacs-mule" standalone="yes">
+
+
+ <!DOCTYPE vocab-test SYSTEM "vocab-test.dtd">
+
+
+
+
+
+ <word-list>
+
+
+
+
+
+ <vocab type="verb" class="irregular">
+
+
+ <trans lang="Classical Greek">
+
+
+ leipo
+
+
+ <form type="Futur aktiv">leipso</form>
+
+
+ <form type="Aorist aktiv">elipon</form>
+
+
+ <form type="Perfekt aktiv">leloipa</form>
+
+
+ <form type="Perfekt passiv">lelemmai</form>
+
+
+ <form type="Aorist passiv">eleiphthen</form>
+
+
+ </trans>
+
+
+ <trans lang="German">
+
+
+ verlassen
+
+
+ </trans>
+
+
+ </vocab>
+
+
+
+
+
+ <vocab type="noun">
+
+
+ <trans lang="Greek" class="O-Deklination" genus="neutrum">
+
+
+ to dendron</trans>
+
+
+ <trans lang="German" genus="maskulinum">
+
+
+ der Baum</trans>
+
+
+ </vocab>
+
+
+
+
+
+ </word-list>
+
+
+This example structure has a lot of proplems. But I leave it for now. If we decide to go this way, we would have tob rainstorm at what we want from VocabTest first, then define the structure of the file format accordingly. However, I hope you get the idea from this crudesnipplet.
+
+
+* Cool!  We would definitely need to discuss this a lot more, but that seems like a good start: thanks!  -- CyprianLaskowski
+
+I have coded a possible solution for using xml-files, but i am sure it's a very lousy try as this is my first real elisp-function...but it works! :)
+
+(defun vocab-test-xml-datafile-read (chapter)
+  "Parse xml-datafile CHAPTER, returning an alist of source and target words."
+  (let (data)
+    (setq liste (car 
+		(xml-parse-file 
+		 (concat (vocab-test-get-directory) chapter))))
+
+    (setq liste (xml-get-children liste 'e))
+    (while liste
+      (let* ((word1 (first (xml-node-children (car (xml-get-children (car liste) 'o)))))
+	     (word2 (first (xml-node-children (car (xml-get-children (car liste) 't)))))
+	     (meta-info "1")
+	     (source-word
+	      (if vocab-test-source-language-first word1 word2))
+	     (target-word
+	      (if vocab-test-source-language-first word2 word1)))
+	(setq data (cons (list meta-info source-word target-word) data)))
+      (setq liste (cdr liste)))
+    data)
+
+It replaces vocab-test-datafile-read so you must change the references in vocab-test.el, but i think it's only one. I don't uses meta-info as you see, but it should be very easy to expand the structure. Ah, the structure: "<e><o>original</o><t>translation</t></e>" ... nothing to write home about but it's a beginning... :) -- MarioDomgoergen
+
+
+Of course, if we use XML, we have to provide an additional mode to edit the files. Something that shows one "record-set" at a time, lets the user insert the words and generates the XML. Something similar towhat forms.el does. But I think, this should be easy.
+
+* That would definitely be nice, although I think this is not as urgent as some of the other issues.  -- CyprianLaskowski
+
+
+
+==== Using an Existing Format ====
+
+
+I recommend using existing formats if at all possible.  KanjiDictionary, for example, uses the (old) EDICT format.  This is an old line-oriented format -- but is being replaced by JMDict (an XML format).   If you use that format, other tools will be able to use your vocab files as well.  Plus you don't have to reinvent the Wheel. -- AlexSchroeder
+
+
+
+
+* http://www.csse.monash.edu.au/~jwb/edict.html --  The Home Page of the EDICT Project
+
+
+* http://www.csse.monash.edu.au/~jwb/jmdict_proj_desc.html -- The JMDict Project
+
+
+* http://www.csse.monash.edu.au/~jwb/jmdict_dtd_h.html -- XML Document Type Declaration (DTD)
+
+
+* http://www.csse.monash.edu.au/~jwb/jmdict_xml_examp_h.html -- Samples of some EDICT entries converted to XML
+
+
+
+: Thanks for the pointers. It seems to me, after a quick peek, that the XML version is very specific to Japanese. The older line-oriented format is, I see now, very similar to what VocabTest currently uses. (I haven't asked Cyprian, but I dare say, this is no accident.) But this is not flexible enough, AFAICS. I want the package to store abitrary grammatical information on a word without being bound to a predefined language. For example, if I want to test my English, the package should show the word, say, "child" and display two editable-text widgets, labeled "meaning" and "plural", one for the, well, meaning and the other one to insert "children". An English speaker should be able to use the same data file to test her English. I need this package to overcome the shortcomings of existing vocabulary trainers. --OliverScholz
+
+
+I like the idea of using existing formats, but agree with Oliver that the edict format seems limited to Japanese and similar languages.  However, looking at it more closely and trying to find other already defined XML shenanigans, if not to use directly then at least as a source of good ideas and a starting point, is probably a good idea.  The idea of a priority, for example, for a word, seems cool.  -- CyprianLaskowski
+
+I think there is another quiet usefull existing XML-Format: 
+
+http://kvoctrain.sourceforge.net/
+
+There's only one thing I don't like about the format: All lections are in one big file... but if you have an file in XML it shouldn't be hard to convert it! --MarioDomgoergen
+
+
+
+=== Configuration ===
+
+
+
+
+
+One thing I'm not quite sure about (among many others), is if weshould use an additional configuration file for each language. Thiscould -- for example -- store information on the standard forms ofeach word type. So when editing the vocab-files the user could simplydeclare the word type and the she gets a template or it. For examplefor classical Greek, the configuration could specify:
+
+
+
+
+
+: regular verb            -->  the basic form and nothing else
+
+
+: noun of o- declination  -->  the basic form and nothing else
+
+
+: other nouns             -->  basic form + genitiv
+
+
+: irregular verb          -->  basic form + futur active, aorist active, perfect active ... etc.
+
+
+
+
+
+Or the configuration could specify that VocabTest ignores words like "the" (English) or "der, die, das" (German) or "ho, he, to"( classical Greek) when a noun is tested.
+
+I think this is a good idea: enforcing reasonable constraints makes things more consistent for the user and easier to code for us.  The alternative is to have each entry in a datafile specify its own list of forms in a free fashion, and that could lead to chaos, such as inconsistent nomenclature.  If we did it the way you suggest, you would need different rules for each language and grammatical category.  What would be cool would be to make it easy and possible for people to specify their own rules for a language (or a pair of languages) in general, perhaps in XML as well, and then make them conform to them in individual data files.   Perhaps even have public access to such datafiles, so that new users don't have to invent them from scratch, and maybe even so that people could share datafiles themselves (especially, if, in academic situations, people used the same textbooks). -- CyprianLaskowski
+
+
+Should VocabTest keep this information in an additional configuration file oras part of each data file (for example in XML)? And how?
+
+I would say, based on the above, that not in each configuration file, but for an entire language's configuration file.  -- CyprianLaskowski
+
+
+
+
+=== Keep Track on Learning Progress ===
+
+
+
+
+
+This is only for the remote future.
+
+
+
+
+
+VocabTest should keep track on <i>how</i> well known a word is. For example, if the user gave the correct answer three times in a row or something like that, then VocabTest assumes that she knows the word "very well".
+
+
+
+
+
+Then each testing session consists of a certain amount of unknown, known and well-known words -- independent of the single chapters (= data files).
+
+
+
+
+
+But I am not going to work on this latter feature before the rest is done. However, it could be a good thing to think about a solution for this and to keep something like this in mind when discussing other features. For example I have no idea yet, how to store that information. Perhapseach word should have an ID and VocabTest stores the IDs of tested words together with a score in a separate file? But how could we make sure that each word has a unique ID?
+
+
+
+
+
+I leave it for now. Please tell me your comments and suggestions.
+
+
+
+
+
+-- OliverScholz
+
+
+
+
+
+I like the simple approach in KanjiDictionary and kdic: A list of "misses" is saved between sessions.  If you give a wrong answer to the test, you can add the misses (original or translated) several times to the misses-file.  My default configuration will store the question three times, and all answers once in the misses-file, if I give the wrong answer to a multiple-choice question.  The more often a word appears in the misses-file, the less it is known.  This is simple to implement and easy to understand. -- AlexSchroeder
+
+
+Cool: maybe we should steal that from Alex! :)  -- CyprianLaskowski

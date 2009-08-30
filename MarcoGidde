@@ -1,0 +1,16 @@
+I am an Emacs user and only every now and then start XEmacs to see
+wether my quite voluminous .emacs (which is split into several files)
+still works with both emacsen. Usually it does not because of some
+byte compiled files and then I wish that at least one of those emacsen
+had a configurable byte-compile-file-extension :-(
+
+I have written the xgtags package which is mentioned on the TagFile
+page.
+
+[new]
+Welcome to the wiki! :) I have long ago given up on having a ~/.emacs file
+that works for both emacsen. I used XEmacs so rarely that it basically
+never worked whenever I tried it. -- AlexSchroeder
+
+----
+CategoryHomepage

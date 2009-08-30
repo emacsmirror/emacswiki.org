@@ -1,0 +1,35 @@
+when used in dired, ls-lisp shows normally lots of status info per file in front of the file name which sometimes makes reading the file name cumbersome.
+
+in order to gain more real estate for the file name it can be useful to switch off user and group info. i have written a little function which toggles this info on and off with the necessary redraw:
+
+
+    (defun leo-toggle-ls-lisp-verbosity ()
+      (interactive)
+      (if (memq 'uid ls-lisp-verbosity)
+          (progn
+            (setq ls-lisp-verbosity (delq 'uid ls-lisp-verbosity))
+            (setq ls-lisp-verbosity (delq 'gid ls-lisp-verbosity))
+            (revert-buffer)
+            (message "uid & gid hidden"))
+        (progn
+          (add-to-list 'ls-lisp-verbosity 'uid)
+          (add-to-list 'ls-lisp-verbosity 'gid)
+          (revert-buffer)
+          (message "uid & gid visible"))))
+
+
+    
+i have bound it to C-p in dired mode:
+
+
+    (add-hook 'dired-load-hook
+       (lambda ()
+         (define-key dired-mode-map "\C-p" 
+                            'leo-toggle-ls-lisp-verbosity)))
+</code>
+
+
+See also: DiredDetails
+
+----
+CategoryDirectories

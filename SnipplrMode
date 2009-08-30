@@ -1,0 +1,8 @@
+Snipplr Mode attempts to provide a simple to use interface to [http://snipplr.com snipplr], a online repository for code snippets.  To make use of this library, you will need a user key from the site.  Once registered, you will need to customize the snipplr-user-key (which should happen automagically until the key is set).
+
+Admittedly, this is a very early release of this library.  It is barely functional and not documented.  I hope to do more revisions in coming days and weeks.  In the meantime, enjoy.
+
+Lisp:snipplr.el
+
+----
+CategoryInterface

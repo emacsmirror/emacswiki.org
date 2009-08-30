@@ -1,0 +1,10 @@
+
+RichardStallman writes on emacs-devel:
+
+: Only about three people have checked parts of the Lisp manual,
+and only about five chapters have been checked.  We can't publish
+a new edition without more checking.  Please start helping.
+If you figure someone else will do it, probably it won't get done.
+
+See http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/man/ for the
+texinfo files to check.

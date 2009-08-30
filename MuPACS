@@ -1,0 +1,13 @@
+Is a mode to edit and interface the non-free computer algebra system MuPAD.  It
+is available at [http://sourceforge.net/projects/mupacs MuPACS].
+
+For those who are having trouble with the help, here is a code that
+fixed it for me, just put it in your .emacs:
+
+  (add-hook 'mupad-run-mode-hook (lambda ()
+                                   (setq mupad-help-init-item-to-file nil)))
+  (add-hook 'mupad-run-mode-hook (lambda ()
+                                   (mupad-help-init)))
+
+----
+ProgrammingModes

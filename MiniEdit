@@ -1,0 +1,14 @@
+This little addition by 
+DeepakGoel adds `C-M-e´ (e for edit) to the minibuffer-local-map, and binds
+it to the function miniedit.  This means that when you are in a
+minibuffer, trying to enter something, you can type `C-M-e' to go do your
+additions in a nice full buffer (with text mode) instead.  In
+particular, inserting new lines and indenting is easy..  Helpful, for
+instance, when editing BbdbMode notes, which tend to be multiline, right?
+
+You can get it from here:
+
+* http://www.gnufans.net/~deego/emacspub/lisp-mine/miniedit/
+
+----
+CategoryModes

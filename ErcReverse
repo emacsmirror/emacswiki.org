@@ -1,0 +1,30 @@
+Reverse what you type, or reverse what other people typed:
+
+This is a good example of a command that does two different things, depending on the arguments.
+If any arguments are provided, send them reversed, but if the command is sent without any
+additional text, reverse the last message in the buffer and display it as a notice.
+
+    (defun erc-cmd-REVERSE (&rest words)
+      (if words
+          (erc-send-message (apply 'concat (reverse (split-string (mapconcat 'identity words " ") ""))))
+        (let ((limit (- (point) 1000))
+              (pos (point))
+              text)
+          (while (and pos (not (let ((data (get-text-property pos 'erc-parsed)))
+                                 (and data (string= (aref data 0) "PRIVMSG")))))
+            (setq pos (previous-single-property-change pos 'erc-parsed nil limit)))
+          (if pos
+              (erc-display-message nil 'notice 'active
+                                   (apply 'concat (reverse (split-string (aref (get-text-property pos 'erc-parsed) 3) ""))))
+            (erc-display-message nil 'notice 'active "Nothing to reverse")))))
+
+Usage:
+
+     14:32 ERC> /reverse somebody type something reversed!
+     14:32 <kensanata> !desrever gnihtemos epyt ydobemos
+     14:33 <yrk_work> yaw on
+     14:33 ERC> /reverse
+     14:33 *** no way
+
+-----
+[[ERC]]

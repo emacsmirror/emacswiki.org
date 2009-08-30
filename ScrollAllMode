@@ -1,0 +1,19 @@
+Use M-x scroll-all-mode to scroll multiple buffers together.
+
+Very useful for visually comparing two files which are hard to diff becase of lots of trivial changes amongst the changes you are looking for.
+
+It seems that scrolling by lines works fine, but scrolling by pages
+still has bugs.
+
+This is fixed in CVS now (May '02).
+
+Rather annoying that it doesn't seem to work with the mouse wheel (or anything other than the cursor keys) on Gnu emacs 21.3.
+
+see also:
+
+MasterMode
+
+----
+CategoryDisplay
+CategoryModes
+

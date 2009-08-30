@@ -1,0 +1,19 @@
+The poor man's vi mode is for those who crave a more faithful vi emulation:
+
+<pre>
+From: ErikNaggum
+Newsgroups: gnu.emacs.help,comp.emacs
+Date: 25 Jul 1996 00:38:58 +0000
+
+you can change the global-map with the function `use-global-map', even if
+this is probably a very bad idea.  e.g., you can do this to get  into "poor
+man's vi-mode":
+
+    (use-global-map (make-sparse-keymap))
+
+like vi, it will beep at everything you do, and you can't quit.
+have fun!
+</pre>
+
+----
+CategoryHumor

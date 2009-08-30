@@ -1,0 +1,26 @@
+Emacs uses the symbol <code>mouse-1</code> for the first mouse button, while
+XEmacs uses the symbol <code>button1</code>.  XEmacs still allows the use of the Emacs symbols for backwards compatibility.  Therefore the following
+will also work for both emacsen:
+
+    (global-set-key (kbd "S-<mouse-3>") 'apropos)
+
+For those interested in ComparativeEmacsology -- the expression (kbd
+"S-<mouse-3>") yields [S-mouse-3] on Emacs, and [(shift mouse-3)] on
+XEmacs.
+
+== Down Events Take Precendence ==
+
+Note however, that for Emacs, a binding for "<S-down-mouse-1>" takes
+precedence over a binding for "S-mouse-1".  Always use <code>C-h k</code> to
+check whether the "down" event is already bound, if you find that a
+set-key statement seems to not work at all.  Example:  Per default
+"<S-down-mouse-1>" is bound to <code>mouse-set-font</code>.  The following has no effect:
+
+    (global-set-key (kbd "S-<mouse-1>") 'apropos)
+
+You also need to unset the down event:
+
+    (global-unset-key (kbd "S-<down-mouse-1>"))
+
+----
+CategoryMouse

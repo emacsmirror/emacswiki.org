@@ -1,0 +1,10 @@
+When writing Emacs regexps which might be applied to non-ASCII text, don't write something like <code>[A-Z][a-z]+</code>.  Instead, use a char class, like <code>[[:upper:][:lower:]]+</code>.  The will match capitalized words generally.  See node `Char Classes' in the EmacsLisp manual.
+
+This only works in Emacs 21.  If you need to write degradable portable code, test for the existence of char classes with an expression like
+
+    (string-match "[[:alpha:]]" "x")
+
+and provide alternative regexps conditional on that.  XEmacs appears not to have any way to deal with this when doing things like matching people's names.  (Of course, not all scripts have case distinctions, so be careful with that if you're trying to match names.)
+
+----
+CategoryRegexp

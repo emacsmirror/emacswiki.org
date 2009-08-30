@@ -1,0 +1,13 @@
+Interfacing Emacs to a joystick is an interesting possibility, raised by ShaeErisson.
+
+There is now an Emacs Joystick Interface, implemented now by the joylisp module in the EmacsVersor project on sourceforge, downloadable from http://sourceforge.net/project/showfiles.php?group_id=97002, but originally in a less capable version by Lisp:joystick.el and Lisp:joylisp.c -- the latter is actually a C file, for a separate process that uses the Linux Joystick Driver API and converts joystick events to s-exps (most of which in turn generate Emacs events).
+
+This is written to use a GamePad type of controller, but the API is the same as for ordinary joysticks.
+
+Using the "twist" motion to control DoReMi might be good; and it's under development for EmacsVersor already.
+
+The Linux Joystick Driver (at least on the machine on which this software was developed -- Fedora 7) doesn't seem to implement feedback to the joystick (i.e. rumble) but it would be interesting to put that on a post-command hook that detects when a joystick command moves point from one font-lock face to another, to give haptic feedback for crossing boundaries.
+
+Going beyond a (2-D) joystick is the Spaceball (http://www.3dconnexion.com/spaceball5000.htm), a 6-D motion controller used in CAD systems. You can push and pull (3 dimensions) and twist and squeeze (another 3 dimensions). The latest version also has 12 buttons on it.
+
+It should be possible to come up with a uniform interface for such things; the software linked from this page uses a process filter that evaluates pieces of Lisp from the interface program; most of these stuff events into the ordinary event queue, so that the normal Emacs keymap system can be used with them.

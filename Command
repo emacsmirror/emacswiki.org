@@ -1,0 +1,10 @@
+A '''[::command]''' is an InteractiveFunction, that is, a function that can be
+executed by users via `M-x' or bound to a KeySequence.
+
+When you use `M-x', Emacs prompts you for a command in the [[minibuffer]].
+
+
+'''Note:''' Besides executing a command, you can also interactively execute an arbitrary ''Emacs Lisp [[Sexp]]'', using `<code>M-:</code>' (see EvaluatingExpressions).
+
+----
+CategoryGlossary

@@ -1,0 +1,29 @@
+The question was: Is there an easy way to do a delimited search and replace?
+
+In other words, one would like to replace the prefix
+and suffix of a given pattern while leaving the middle
+bits alone.
+
+For example, suppose one wanted to replace occurrences of
+
+ filbert[(i+1)*8.4-(a*t)]
+
+with
+
+ george((i+1)*8.4-(a*t))
+
+or vice versa?
+
+Naively one would issue
+
+  M-% filbert[ RET george( RET
+
+and then go back and change the appropriate <code>]'</code>s to <code>)'</code>s by hand -- very error prone and time consuming.
+
+The answer is to use a RegexpGroup to save the middle bits, viz,
+
+ C-M-% filbert\[\([^]]*\)\] RET george(\1) RET
+
+----
+CategoryRegexp
+CategorySearchAndReplace

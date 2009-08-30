@@ -1,0 +1,39 @@
+It's quite easy to use emacs for development inside scratchbox. The situation is as follows:
+
+* emacs runs outside scratchbox;
+* the compilation, however, runs inside scratchbox;
+* when there's an error/warning etc. in the compilation buffer, I'd like to jump straight to the right place in the code, just like emacs does with 'normal' compilation.
+
+First thing you need to do is make sure that your can reach your code through the same path. That usually means that the source code dir in your 'normal' linux environment is a symlink to the one inside scratchbox, for example:
+
+<code>
+$ ln -s /scratchbox/users/djcb/home/djcb/src/foo /home/djcb/src/foo
+</code>
+
+Now, it's quite easy to add a function to your <code>.emacs</code>:
+
+<pre>
+;; compile inside scratchbox
+(defun scratchbox-c-mode-compile ()
+   (interactive)
+   (compile (concat "scratchbox make -C " default-directory)))
+</pre>
+
+Now, in my case it's even a bit harder, as I am running an AMD/64 machine, and have scratchbox installed in a 32-bit chroot. Of course, it's easy to teach emacs about the extra indirection:
+
+<pre>
+;; for amd64, with scratchbox in a chroot
+(defun scratchbox-c-mode-compile ()
+   (interactive)
+   (compile (concat "dchroot "
+     "\"scratchbox make -C " default-directory "\"")))
+</pre>
+
+Now you can run emacs in your normal linux environment, and open a file in <code>~/src/foo/...</code>, and compile it inside scratchbox with <code>M-x scratchbox-c-mode-compile</code>; or even better, connect to some function key:
+<pre>
+  (define-key c-mode-base-map (kbd "<f8>")  'scratchbox-c-mode-compile)
+</pre>
+And pressing F8 is enough to compile all that beautiful code...
+
+----
+CategoryProgrammerUtils

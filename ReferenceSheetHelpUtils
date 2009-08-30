@@ -1,0 +1,86 @@
+Lisp:mon-doc-help-utils.el is a small set of utility functions created to help rapidify wikification of [[Reference Sheet by Aaron Hawley]]. 
+
+Reference Sheet is a verbose EmacsWiki friendly take on ReferenceCards. 
+
+This library requires Lisp:regexpl.el and the actual references from [[Reference Sheet by Aaron Hawley source]]
+
+
+[new]
+Cool.  I haven't used yours yet, but I may be looking into using KeatsMode and OddmuseMode to do something similar 
+to what you've done. -- AaronHawley
+
+[new]
+Not trying to step on [[CategoryReferenceSheet|ReferenceSheet]] toes. please feel welcome to syphon off any needed code and incorporate into a more formal tool per your whimsy. The code provided is simple and directed, it needn't be quite so heavy to accomplish _only_ the wikification of a cheat sheet. I include it because I see a general need for such a lightweight facility. I am enthused by your idea of an immense reference sheet esp. in lieu of recent discussion on emacs-devel re: tags [http://lists.gnu.org/archive/html/emacs-devel/2009-01/msg00847.html]and custom [http://lists.gnu.org/archive/html/emacs-devel/2009-06/msg00124.html] particularly in context of extending associativity of elisp related navigation. It seems that in each of these discussions the question is less a matter of _how_ to extend the interface and more a matter of _what_ to extend it in relation to... IOW someone (or some group) has to formally map areas of ambiguity and dark corners of the elisp 'interface' before any more formal programmatic structures are piled on.  It strikes me as prescient that users create their own 'cheat sheets' this would imply that Emacs is somehow falling short in this regard. Exploring the range of this arena by mapping data as code is probably a useful enterprise in an of itself.  Certainly the alternative i.e. building code as data and then expecting users to understand the resulting interface is _wrong_. Icicles strikes me as the premier example of such an approach. That is, I personally don't want _more_ interface employed of Emacs in order for it to explain itself to me - instead, where possible I want more explanation from the existing interface using the existing toolset.  
+
+[new]
+Thanks for these interesting pointers.  I have come to the same conclusions as you about the importance of reference sheets, including their potential to help both users and the Emacs hackers. -- AaronHawley
+
+[new]
+The best cheat sheet I've ever seen was a [http://jrmiii.com/2009/03/06/learning-vim-the-pragmatic-way.html mind map for Vim]. Perhaps we could make a similar map for Emacs?
+
+[new]
+The pragmatic Vim cheat sheet probably _prints_ pretty ;). And it would seem reasonable to use hierarchy(ies) collected from various Emacs cheat sheets to generate something similar for hard copy. Hard copy is quite handy... I like mine on cotton rag [http://shop.cafepress.com/design/5073246].
+
+That said, I think it would be more beneficial (and interesting) to work on a mapping for Emacs screen display which used text-properties to assign multiple associative mappings for a given key. E.g. the Vim sheet has 9 root elements with N leaves (uses OPML). The parent elements are fixed in the sense that they map the default bindings to their 'logical' conceptual space.
+
+One _should not_ need to resort to any sort of XML based utility to accomplish such a mapping with Emacs given that alists, plists, lists come built in (This is where Emacs diverges from Vim :).
+
+What Aaron has done offers the opportunity for a different approach to modeling the Emacs conceptual space... You'll notice his 'conceptual nodes' are formatted as alist keys, and swapping the position of the colon char you have a ready ready made (and portable) plist. 
+
+Whether Aaron's intent was to extend these nodes as keys is incidental - the fact that the data so readily conforms to this structure suggest that it is TRT.  What I find interesting is that the 'nodes' he has identified are only loosely coupled with a bindings situational use. Other users might have radically different conceptual maps for how a given default key binding might map in a given situation. For example, Aaron has associated "M-x local-set-key" under the "customize:" key he might well have place it with the "buffer:" key.
+
+If a minor consensus could be met with regards to the base set of default Emacs keymaps we could then extend keybinding association with a static number of base 'conceptual nodes' these two could then form the basis for a user extensible framework mapping allowing mappings of triples:
+
+<code>
+((situtational-spaces conceptual-nodes keymaps/keybindings) (situtational-spaces keymaps/keybindings conceptual-nodes) (conceptual-nodes situtational-spaces keymaps/keybindings) (conceptual-nodes keymaps/keybindings situtational-spaces) (keymaps/keybindings situtational-spaces conceptual-nodes) (keymaps/keybindings conceptual-nodes situtational-spaces))
+</code>
+
+Thus far Aaron has identified 117 different 'conceptual nodes' of interest, these include:
+
+'open:', 'exit:', 'cancel:', 'open:', 'exit:', 'cancel:', 'recursive edit:', 'customize:', 'menu:', 'help:', 'info help:', 'minibuffer:', 'completion:', 'mode:', 'file:', 'buffer:', 'read only:', 'window:', 'buffer menu:', 'redisplay:', 'command:', 'iterative command:', 'non-iterative command:', 'macro:', 'key:', 'undo:', 'search:', 'non-interactive search:', 'regular expression:', 'replace:', 'delete:', 'kill (cut):', 'yank (paste):', 'mark:', 'region:', 'whitespace:', 'indent:', 'newline:', 'line:', 'character:', 'word:', 'capitalization:', 'sentence:', 'paragraph:', 'page:', 'sexp (parenthetical expressions):', 'comment:', 'occur:', 'spell check:', 'transpose:', 'composition:', 'text register:', 'point register:', 'window register:', 'frame register:', 'number register:', 'position register:', 'column:', 'rectangle:', 'table:', 'delimited text:', 'directory (folder):', 'tramp:', 'shell:', 'shell script:', 'compile:', 'lisp:', 'emacs lisp:', '(e)lisp interaction:', 'debug elisp:', 'source-level debugger:', 'finder:', 'tag:', 'diff:', 'version control (vc):', 'changelog:', 'merge conflict:', 'grep:', 'locate:', 'HTML:', 'timeclock:', 'games:', 'animation:'
+
+For the most part these nodes are relatively static. Take for example the conceptual space 'regular expression:'; barring a radical shift in the semantic underpinnings of finite state autonomata and right regular grammars the conceptual space of 'regular expression:' isn't likely to change any time soon. However, the same can't be said of the myriad 'situational spaces' for which one might wish to leverage Emacs regexp's. For me, these 'situational spaces' may change 10s of times in a given buffer, 100s of times in a given project, and have prob. changed 10s of 1000s times since I first encountered Emacs.
+
+Following is an example of how a 'situational space' may progress, diverge, merge, entropy over time:
+
+When I first started using Emacs I used isearch to locate points of interest and then manually replaced those areas. While it was clear to me then that Emacs must have offered alternative and more robust means for handling this situation the interface for doing so was unknown (I kept looking for the find/replace dialog from MSword/Open-Office).
+
+After becoming dissatisfied with the isearch approach I adopted `query-replace' and found that it accommodated most of the 'situational spaces' familiar to me from prior experience with word-processors. However, query-replace fell short whenever I needed conditional replacements. Occasionally I could find a built-in interactive function that would meet such needs, but there are simply too many situations to expect a built-in to exist for any but the most common.
+
+It didn't take me very long to make the initial jump from query-replace to `query-replace-regexp' and I found myself fairly quickly using that tool to accommodate simple condition oriented 'situational spaces', e.g. find all instances of a number at beginning of line and replace with a SPC and the number matched; "^\([0-9]\)" -> " \1". This is a fairly common thing to do, and as i became more familiar with regexps (and Emacs particular escaping rules) I found myself using the previous idiom or similar variant routinely. Remembering this idiom and typing it correctly began to feel like a chore and I found that it was possible to store the routine by recording it as a keyboard macro `kmacro-start-macro-or-insert-counter' and assigning the resulting macro to a binding.  This was great, except that over time one begins recording more and more complex keyboard macros (often with nested calls to other keyboard macros) - this can be problematic because:
+
+ a) just as there can't be built-in interactive Emacs commands to accommodate all 'situational spaces',
+    nor can one indefinitely record keyboard macros to accommodate them; 
+ b) Correctly capturing an event sequence for a complex keyboard macro is quite error prone; 
+ c) Editing keyboard macros is a pain;
+
+The latter problem I found the most tedious and I found myself routinely consulting the help and the manual to accomplish this goal. In doing so I encountered innumerable references and discussion of the underling glue which ties Emacs together i.e. elisp. It eventually dawned on me that learning/editing Emacs elisp seemed more intuitive and appealing than editing keyboard macros. This was for me a point of no return - a precipice to the abyss :).
+
+I now find myself readily writing a <code>(while (search-forward-regexp "^\\([0-9]\\)" nil t) (replace-match " \\1"))</code> loop but just now had to consult help to locate the command-name to initiate capture of a keyboard macro. This progression may strike others as circuitous, wrong-headed, wasted time, mis-guided, etc. and I wouldn't necessarily disagree :{
+
+That said, I have since witnessed others in various stages of this continuum and have been surprised when I find myself thinking "why are they doing it that way?" or hearing myself say, "Look, you don't need to do that, just type control meta shift five - then type - shift six, slash, paren, dot, shift eight, slash, paren, shift four - then enter your replacement and type enter". Needless to say I am not as surprised when the response is, "I did what you said, now my screen is full of 'your replacement'! How do I undo that?" and I follow "type Control x u".
+
+To summarize this progression: 
+* isearch - C-s | node -> search: 
+* query-replace -> M-% | node -> regular expression: 
+* query-replace-regexp -> C M-% | node -> regular expression: 
+* kbd-macro with query-replace-regexp -> <f3> C-M % | node -> macro:, regular expression: 
+* <code>(while search-forward-regexp "" nil t)</code> -> C-x b "*scratch*" | node -> buffer:
+
+At each of these stages the 'conceptual node' was static - namely how to find something and replace it. Likewise the default keybindings into these nodes remained constant. The dynamic shift was my perception of the 'situation space' and how I conceive of approaching it. Codifying the 'structural semantics' (in the loose sense) of these 'situational spaces' needn't necessarily be difficult. FTMP it involves capturing ones own evolutionary usage patterns and associating them in lieu of:
+
+ a) an agreed upon base 'conceptual' framework, and; 
+ b) a 'situational space' as we have each uniquely perceive(d) it.
+
+The second variable will differ significantly on a per user basis and likewise prob. changes with each user over time.
+
+One of the reasons cheat sheets are prolific is that users conceive of 'situational spaces' differently.  One of the reasons cheat sheets aren't used to greater effect is that by the time one is able to map the space effectively the cheat sheet is no longer needed...
+
+It would be immensely beneficial to leverage a framework that allows the Emacs community to collectively map these 'situational spaces' taking into account the existing built-in Emacs tool-set when doing so - namely; lists, alists, plists, Docstrings, Info, *Help*, Custom, and soon EIEIO.
+
+Approaching such a task from the perspective of the keybindings makes great sense.
+
+One recalls that in essence Emacs _is_ the keybindings: [http://www.softpanorama.org/People/Stallman/history_of_emacs_and_xemacs.shtml].  --mon_key
+ 
+----
+CategoryReferenceSheet CategoryDocumentation

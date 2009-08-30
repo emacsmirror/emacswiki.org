@@ -1,0 +1,173 @@
+The '''syntax table''' contains information that tells Emacs how to
+operate on text, words, sentences etc. It will make Emacs know enough
+about all the symbols in a buffer. Syntax tables is used for example
+for word motion. The Syntax Tables may be different for different
+buffers, but usually it is controled by the current MajorMode of the
+buffer. Syntax Table may inherit ''standard syntax table''. The syntax
+tables of most major modes inherit the standard syntax table (see
+below) for characters from 0 to 31 and from 128 to 255.
+
+== Working with Syntax tables ==
+
+You can see the current syntax table by hitting 
+<code>C-h s</code> or <code>F1 s</code>.
+This table lists for each character or character range
+the corresponding syntax class.
+
+Each character belongs to a certain syntax class. This syntax class is
+identified by one of the following symbol.
+
+  -   whitespace character        /   character quote character
+  w   word constituent            $   paired delimiter         
+  _   symbol constituent          '   expression prefix        
+  .   punctuation character       <   comment starter          
+  (   open delimiter character    >   comment ender            
+  )   close delimiter character   !   generic comment delimiter
+  "   string quote character      |   generic string delimiter 
+  \   escape character            
+
+For example, the backslash \ is the only character with escape syntax
+in the text-mode-syntax-table. On the other hand, in that table, 
+the word constituent class contains thousand characters. 
+There are of course letters a..z, A..Z, numbers 0..9, but also $, %, ', 
+currency units, accented letters, kanjis, chinese ideograms, indian glyphs,
+mathematical symbols and more.
+
+You can see the syntax of the + character in the current syntax table by typing
+
+   (char-to-string (char-syntax ?+))
+
+and then evaluating that line with <code>C-x C-e</code>.
+
+The Unicode character with code 222B (the mathematical integral sign) 
+can be entered by typing <code>?\u222B</code>.
+
+Syntax classes can be matched in regular expressions using 
+<code>\sc</code>, where c is one of the syntax symbol listed above.
+For example, <code>\s(</code> matches all opening delimiters.
+On the other hand, <code>\Sw</code> matches all characters which are
+not in the word constituent class. This is the same as <code>\W</code>.
+
+== Basic Syntax Tables ==
+
+* `standard-syntax-table' -- This function returns the standard syntax table used by Emacs; most major-modes inherit it.
+
+* `text-mode-syntax-table' -- Syntax table used by the major mode for editing text files.
+
+* `c-mode-syntax-table' -- Syntax table for C-mode buffers.
+
+* `java-mode-syntax-table' -- Syntax table for java-mode buffers.
+
+* `emacs-lisp-mode-syntax-table' -- For Emacs Lisp mode buffers.
+
+* `lisp-mode-syntax-table' -- Syntax table for lisp-mode buffers.
+
+* `lisp-interaction-mode-syntax-table' -- Used in the scratch buffer.
+
+* `message-mode-syntax-table' -- Syntax table used in message mode.
+
+== How to define a new syntax table ==
+
+Syntax tables are char-tables. Hence they can be defined using the 
+<code>make-char-table</code> function. By default, elements of 
+a char-table are initialized to nil. Some specific default constituent
+class can be specified with the help of the <code>string-to-syntax</code>
+function.
+
+   (setq my-table (make-char-table 'syntax-table nil))
+   (setq my-table (make-char-table 'syntax-table (string-to-syntax "w")))
+
+In the last example, all characters are put in the word constituent class.
+
+Note however that syntax-tables are usually defined by starting with some
+basic syntax table and altering it. Here is how to make a syntax table
+inheriting all settings from the standard syntax table, or from the
+text mode syntax table.
+
+   (setq my-table (make-syntax-table))
+   (setq my-table (make-syntax-table text-mode-syntax-table))
+
+Next section explains  how to modify a syntax table.
+
+== Hacking the syntax table ==
+
+The syntax of a character can be modified with the help of the
+<code>modify-syntax-entry</code> command.
+
+Put the quote character in the expression prefix class (the default in Lisp mode)
+
+   (modify-syntax-entry ?' "'")
+
+Put the brackets [] in the word class, so as to remove their interpretation as 
+delimiters 
+
+   (modify-syntax-entry ?[ "w")
+   (modify-syntax-entry ?] "w")
+
+Make ^ and $ delimiters matching each other
+
+   (modify-syntax-entry ?^ "($")
+   (modify-syntax-entry ?$ ")^")
+
+Modify the text-mode syntax table, so as to consider $ as a delimiter matching itself.
+
+   (modify-syntax-entry ?$ "$" text-mode-syntax-table)
+
+Here is a short snippet that defines a new syntax table, by 
+modifying the current syntax table.
+
+ (defvar my-wacky-syntax-table
+      (let ((table (make-syntax-table)))
+        (modify-syntax-entry ?[ "w" table)
+        (modify-syntax-entry ?] "w" table)
+        table))
+
+Put this in the InitFile, and call it from a buffer
+with 
+
+      M-: (set-syntax-table my-wacky-syntax-table)
+
+This will change the syntax of the brackets [], leaving the syntax
+of the other characters untouched.
+
+You can specify my-wacky-syntax-table as the default table 
+in text-mode by putting in your InitFile
+
+  (add-hook 'text-mode-hook (lambda ()
+              (set-syntax-table my-wacky-syntax-table)))
+
+You can also set which syntax table is used on a per command basis.
+Here is how to use my-wacky-syntax-table with the
+<code>C-M-f</code> shortcut, bound to forward-sexp by default.
+
+ (global-set-key "\C-\M-f" '(lambda ()
+           (interactive)
+           (with-syntax-table my-wacky-syntax-table (forward-sexp))))
+
+
+== The syntax table, what for ? ==
+
+Words in emacs are just a succession of characters which belong to the
+word syntax class. So, commands like 
+<code>forward-word</code> (<code>M-f</code>) or <code>backward-kill-word</code>
+(<code>M-DEL</code>)
+use the syntax table to find what string they should take into consideration.
+
+The command <code>forward-list</code> (<code>C-M-n</code>) moves across
+one balanced group of parentheses. What is interpreted as a parenthesis 
+is given by the syntax table. For example, () [] are delimiters in the
+lisp syntax table, whereas [] are just word constituents.
+In the text syntax table, the characters {} [] () are all valid delimiters.
+
+In regular expressions, the <code>\w</code> symbol matches any character
+in the word syntax class. So it is possible to hack the syntax table
+so as to modify what <code>\w</code> actually matches.
+This also means that a regular expression can match different strings,
+depending on the buffer current mode. The string <code>I'm</code>
+counts as a single word in text mode, whereas it is considered as two words in lisp mode: <code>I</code> and <code>'m</code>. Indeed, the quote ' is recorded as an expression prefix in the lisp syntax table, and as a word constituent in the text syntax table.
+
+
+
+
+----
+CategoryHelp

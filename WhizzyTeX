@@ -1,0 +1,42 @@
+Incremental Viewing of LaTeX documents.
+
+WhizzyTeX provides a minor mode for Emacs, a (bash) shell-script daemon and some LaTeX macros (which get automatically included in whizzytex-mode) for real-time updates of a [separate] preview window while you type, using on-the-fly compilation. It is designed for Unix platforms.
+
+http://cristal.inria.fr/whizzytex/ - by DidierRemy
+
+[new]
+Whizzytex is amazing. Try it. To install: "apt-get install advi whizzytex", and to run: "M-x whizzytex-mode".
+
+I find WhizzyTeX it is very useful when you are debugging a LaTeX file, but not so much when you are doing the bulk of the writing, so I created a function to toggle the preview window on and off and associated it to the F9 key:
+{{{
+(setq my-toggle-whizzy-count 0)
+(defun my-toggle-whizzy-mode ()
+  (interactive)
+  (if (= (mod my-toggle-whizzy-count 2) 0)
+      (progn     
+        (whizzytex-mode)
+        (message "WhizzyTeX on"))
+    (progn 
+      (whizzy-mode-off)
+      (kill-buffer (concat "*" (buffer-name) "*"))
+      (message "WhizzyTeX off")))
+  (setq my-toggle-whizzy-count (+ my-toggle-whizzy-count 1)))
+
+(add-hook 'LaTeX-mode-hook
+          (lambda ()
+            (define-key LaTeX-mode-map (kbd "<f9>") 'my-toggle-whizzy-mode)))
+}}}
+
+It is still not perfect: if you kill the advi window manually you still have to remove the temporary file %%*buffer-name%%* manually. IMHO, this should be a built-in functionality of Whizzytex. The other functionality I would love is an easy way to preview Beamer files. --FelipeCsaszar
+
+
+=== See also ===
+* LatexMk and [http://www.pps.jussieu.fr/~beffara/soft/rubber/ Rubber] are kind of specialized <tt>make</tt> for LaTeX, and it can be used in "preview continuously" mode to have preview updated automatically automatically ''on file save'' (as opposed to WhizzyTeX updating preview on-the-fly during editing).
+* PreviewLaTeX which allows you to see previews of math, figures, tables, graphics and other things ''directly in an Emacs 21 buffer'' (going from preview to code easily). You have to regenerate preview at point after changes.
+* XSymbolMode provides some kind of pseudo-WYSIWYG by using real characters and thumbnails for included images and real super-/subscripts.
+* AUCTeX, major mode for TeX and LaTeX has now very limited  pseudo-WYSIWYG: pseudo super-/subscripts, font-locking for bold and italic, section titles enlarged.
+* InverseDviSearch explains how to set DVI previewer and Emacs to allow jumping from editor to related place in DVI file and vice versa.
+
+
+----
+CategoryTex

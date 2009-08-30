@@ -1,0 +1,142 @@
+I use Emacs and have been doing so for about two years now. Fairly new to wikis, but will try to keep this page with some code and info that others might find useful.
+: Welcome on the wiki !
+
+More information can be retrieved from
+http://sebmags.homelinux.org/~sluque, where I've included my ~/.emacs and
+other customizations of my emacs environment.  Below are some bits and
+pieces of those customizations, but please refer to the aforementioned
+website for the latest versions.
+
+==ESS and R==
+
+If you use the GNU R statistical computing system
+(http://www.r-project.org), you can benefit enormously by using ESS (Emacs
+Speaks Statistics; http://stat.ethz.ch/ESS) for using R and benefit from
+all of Emacs editing facilities.  I set up ESS in ~/.emacs like so:
+
+<pre>
+(load "~/emacs/site-lisp/ess-5.2.8/lisp/ess-site") ; local version
+
+(setq-default ess-language "R")
+
+(setq ess-source-directory "~/Scripts/R"
+      ess-dump-filename-template-proto "%s.S"
+      inferior-ess-same-window nil
+      inferior-ess-mode-hook
+      '(ess-S-mouse-me-menu-commands turn-on-font-lock)
+      ess-funcmenu-use-p t
+      ess-function-template " <- function( )\n{\n}"
+      ess-help-frame-alist
+      '((height . 50) (width . 80) (unsplittable . t)
+	(tool-bar-lines . 0) (menu-bar-lines . 0) (minibuffer)
+	(font . "9x15") (top . 0) (left . 0)
+	(foreground-color . "wheat") (background-color . "gray25"))
+      ess-help-own-frame t
+      ess-mode-hook '(ess-S-mouse-me-menu-commands turn-on-font-lock)
+      ess-style 'RRR)
+</pre>
+
+==AUCTeX and RefTeX==
+
+For preparing documents, LaTeX is probably the best solution around.  I
+use these two super useful packages for interfacing with LaTeX:
+
+<pre>
+(require 'tex-site)
+(autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+(autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
+(autoload 'reftex-citation "reftex-cite" "Make citation" nil)
+(autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
+(add-hook 'latex-mode-hook 'turn-on-reftex) ; with Emacs latex mode
+;; (add-hook 'reftex-load-hook 'imenu-add-menubar-index)
+(add-hook 'LaTeX-mode-hook '(lambda () (require 'latex-units)
+			      (turn-on-reftex)
+			      (turn-on-auto-fill)
+			      (LaTeX-math-mode)
+			      (load "preview-latex.el" nil t t)))
+
+(setq LaTeX-eqnarray-label "eq"
+      LaTeX-equation-label "eq"
+      LaTeX-figure-label "fig"
+      LaTeX-table-label "tab"
+      TeX-auto-save t
+      TeX-newline-function 'reindent-then-newline-and-indent
+      TeX-parse-self t
+      TeX-style-path
+      '("style/" "auto/"
+	"/usr/share/emacs21/site-lisp/auctex/style/"
+	"/var/lib/auctex/emacs21/"
+	"/usr/local/share/emacs/site-lisp/auctex/style/")
+      LaTeX-section-hook
+      '(LaTeX-section-heading
+	LaTeX-section-title
+	LaTeX-section-toc
+	LaTeX-section-section
+	LaTeX-section-label))
+
+(setq reftex-cite-format 'natbib
+      reftex-default-bibliography
+      '("~/Documents/References/biblioSPL.bib")
+      reftex-extra-bindings t
+      reftex-plug-into-AUCTeX t
+      reftex-sort-bibtex-matches 'year
+      reftex-toc-mode-hook nil)
+</pre>
+
+These settings include, besides AUCTeX and RefTeX, library latex-units.el from
+PeterGalbraith.
+
+==Simple Elisp utilities==
+
+As other Emacs users, I've developed a collection of useful
+functions/settings that help to increase productivity while working with
+this great editor.
+
+* At some point, I wanted to use more informative titles to pieces of text
+I quote in messages or elsewhere.  I wasn't very experienced with Elisp at
+that time, and asked for help at emacs.help, where Karl Pflästerer improved
+an initial effort.  Eventually, the function came to look like this:
+
+<pre>
+(setq boxquote-kill-ring-save-title
+      (lambda ()
+	;; (load-library "simple")
+	(save-restriction
+	  (widen)
+	  (cond
+	   ((string= mode-name "Article")
+	    (format "In message: %s" (aref gnus-current-headers 4)))
+	   ((if (string= (buffer-name) "*info*")
+	       (format "(info \"(%s)%s\") lines: %s - %s"
+		       (file-name-nondirectory Info-current-file)
+		       Info-current-node
+		       (line-number-at-pos (region-beginning))
+		       (line-number-at-pos (region-end)))
+	     (format "%s (lines: %s - %s)"
+		     (buffer-name)
+		     (line-number-at-pos (region-beginning))
+		     (line-number-at-pos (region-end)))))))))
+</pre>
+
+which requires a line-number-at-pos function, available in simple.el.
+This file is not available in all Emacsen, so I included it in my
+~/.emacs.  Here is that function, quoted using the function above:
+
+<pre>
+,-----[ .emacs (lines: 534 - 545) ]
+| (unless (fboundp 'line-number-at-pos)
+|   (defun line-number-at-pos (&optional pos)
+|     "Return (narrowed) buffer line number at position POS.
+| If POS is nil, use current buffer location."
+|     (let ((opoint (or pos (point))) start)
+|       (save-excursion
+|         (goto-char (point-min))
+|         (setq start (point))
+|         (goto-char opoint)
+|         (forward-line 0)
+|         (1+ (count-lines start (point)))))))
+`-----
+</pre>
+
+----
+CategoryHomepage

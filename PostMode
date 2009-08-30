@@ -1,0 +1,18 @@
+== Project Info ==
+
+post-mode has a new [http://post-mode.sourceforge.net home] and is now hosted on Sourceforge.  You can download it from the [http://sourceforge.net/project/showfiles.php?group_id=206008 Sourceforge project site].
+
+== Configuration ==
+
+Extract post.el with <code>gunzip post.el.gz</code>. Put post.el in your load-path and add the following snipplet to your .emacs file:
+
+ (require 'post)
+
+== Documentation ==
+
+A French howto was available but seems to have gone missing.  Please update this page if you know where it is.
+
+Otherwise, all documentation can be found on [http://sourceforge.net/docman/?group_id=206008 the Sourceforge project site].
+
+----
+CategoryMailAddons | CategoryModes

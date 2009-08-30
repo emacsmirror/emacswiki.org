@@ -1,0 +1,115 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Multi M-x]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Candidate Sets]] ||
+
+----
+
+== Choose All Completion Candidates ==
+
+[[Icicles - Multi-Commands]] describes how you can use `C-RET' (`icicle-candidate-action') to choose
+(act on) multiple [[completion]] candidates, individually.  If you
+hold down the Control key while you cycle through the candidates,
+you can run through each of them, one by one.
+
+Command
+`icicle-all-candidates-action', which is bound to '''`##C-!##'''' in the
+[[minibuffer]], is a shorthand way of doing that: ''act on ''all''
+candidates that match the current input''. In many contexts, `##C-!##' reports (in buffer `*Help*') on any objects that were
+''not'' acted upon successfully.
+
+All [[multi-command]]s let you use `##C-!##' in this way.  Whenever a
+command defines a special action for `C-RET' to perform on the
+current completion candidate, you can use `##C-!##' to perform it on
+all candidates at once.
+
+Perhaps you already use `##% m##' (command `dired-mark-files-regexp')
+in [[DiredMode|Dired]] to mark all files that match a given [[regular expression]],
+and then operate on all of the marked files in some way (search with `A', query-replace with `Q', open with `F', delete with `D', and so on).  When you
+execute a multi-command, `##C-!##' lets you do something similar.
+
+How does it work?  It
+applies `icicle-candidate-action-fn' to each completion candidate that
+([[Icicles - Apropos Completions|apropos]]- or [[Icicles - Background on Input Completion|prefix]]-) matches the current input in the minibuffer.
+
+Most top-level '''Icicles''' commands are multi-commands.  Command
+`icicle-delete-file' is an example.  Instead of entering a file
+name at the prompt (e.g. using completion or cycling), you can
+type a regular expression, use `S-TAB' to see all matching files,
+and then use `<code>C-!</code>' to delete all of them at once.
+
+You get the idea: Use the minibuffer to determine a ''set'' of objects
+by pattern matching, and then ''act on all elements of the set''.
+
+In addition to `##C-!##', keys '''`##M-!##'''', '''`##C-|##'''', and '''`##M-|##'''' act similarly:
+
+* '''`##M-!##'''' is like `##C-!##', but it acts on the ''list'' of matching
+candidates as a whole, rather than acting individually on each
+candidate.  For example, with command `icicle-customize-face',
+`##M-!##' opens a single [[Customize]] buffer for all of the matching
+faces, while `##C-!##' opens a separate Customize buffer for each
+face.
+
+* '''`##C-|##'''' and '''`##M-|##'''' are like `##C-!##' and `##M-!##', respectively, but they
+apply an ''alternative'' action, not the main action, whenever one
+is available.
+
+In the definition of a given multi-command, the appropriate action
+functions are bound to variables:
+
+* '''`icicle-candidate-action-fn'''' (`##C-!##') -- normal ''single''-candidate
+action
+
+* '''`icicle-candidate-alt-action-fn'''' (`##C-|##') -- ''alternative
+single''-candidate action
+
+* '''`icicle-all-candidates-list-action-fn'''' (`##M-!##') -- normal
+''list''-of-candidates action
+
+* '''`icicle-all-candidates-list-alt-action-fn'''' (`##M-|##') -- ''alternative
+list''-of-candidates action
+
+For most multi-commands, however, only the normal single-candidate
+action is defined.  In this case, `##M-!##'  duplicates what `##C-!##'
+does.  If the
+corresponding function is not available, each of the list-action
+keys (`##M-!##', `##M-|##') behaves the same as the corresponding
+single-candidate key (`##C-!##', `##C-|##), and vice versa.  So for
+instance, if `icicle-all-candidates-list-action-fn' is `nil' when reading some input, then `##M-!##'
+acts the same as `##C-!##'.
+
+As a shortcut, if you have [[Icicles - Candidate Sets#SavingAndRetrieving|saved]] completion candidates and they
+all belong to the current set of completion candidates, then `##C-!##'
+acts on the ''saved'' candidates instead of the complete set of
+candidates.  This means that you need not first do `##C-M-<##' to
+retrieve the saved candidates; you can do `##C-!##' directly to act on
+them.  `##C-|##', `##M-!##', and `##M-|##' work the same way.
+
+
+'''See Also:''' [[Icicles - Dired Enhancements]] for an '''Icicles''' alternative to both `A' and `Q' (search and replace) in DiredMode.
+
+
+----
+
+
+|| *Previous:*  [[Icicles - Multi M-x]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Candidate Sets]] ||
+
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryRegexp
+CategoryDocumentation
+CategoryHelp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

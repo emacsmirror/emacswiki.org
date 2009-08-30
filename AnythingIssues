@@ -1,0 +1,357 @@
+== Bug Reports ==
+
+=== Wrong name of function or attributes in anything-config.el ===
+
+The name of function anything-c-open-with-default-tool is wrong in the
+attributes for files.
+
+The function should be renamed anything-c-open-file-with-default-tool
+
+or the name of function corrected in attributes. - ThierryVolpiatto
+
+=== Refreshing sources which are not asynchronous ===
+
+I implemented a source which searched a buffer, not unlike occur. It used <tt>anything-pattern</tt> to extract the list of lines matching the given pattern.
+
+Unfortunately, the implemented caching algorithm prevented the source-list from being rebuilt. This resulted in a list which was not reflecting the user's choice anymore. 
+
+Example: If you typed <tt>'on'</tt>, all matches for <tt>on</tt> were given. If you continue typing (i.e., by typing <tt>'only'</tt> or <tt>'once'</tt>), there would be still the results for <tt>'on'</tt>. This was no problem as long you only narrow the list. But imagine changinge the search by changing from <tt>on</tt> to <tt>over</tt>. Still, the list of matches would be the first one created by looking for <tt>on</tt>.
+
+The problem turned out to be the caching: sources which were not processes are cached immediately, so preventing the list from being rebuild.
+
+I came up with the following solution:
+
+- Add a parameter <tt>'refreshable</tt> to anything-sources: 
+
+<pre>
+(setq anything-sources
+      `(((name       . "Lines matching")
+	 (candidates . the-function-gathering-a-list-of-lines-matching-anything-pattern) 
+	 (action     . (("Goto line" . go-to-associated-line)))
+	 (requires-pattern . 3)
+	 (refreshable . t)      ;; THIS is new!
+	 )))
+</pre>
+
+
+- Check this parameter in anything-process-source. If it is t, then clear the cache, forcing
+  it to be rebuilt.
+
+<pre>
+(defadvice anything-process-source (before print-source)
+  (when (assoc-default 'refreshable  source)
+    (let ((name (assoc-default 'name source)))
+      (when (assoc name anything-candidate-cache)
+	(setq anything-candidate-cache (assq-delete-all name anything-candidate-cache))))))
+
+(ad-activate 'anything-process-source)
+</pre>
+
+Hope this helps. -- JörgVolbers.
+
+[new]
+Sorry for posting this too early, now it seems that <tt>anything-process-sources</tt> has to be changed internally. It
+throws an invalid argument error (the function <tt>member</tt> is called with an argument 0, where it expects a list.) 
+This error can be handled by inserting <tt>(when (not (listp matches)) (setq matches nil))</tt>, but then there is
+another error... too complex right now. Detailed bugreport or solution will follow. --Jörg
+
+[new]
+
+Have you tried using attribute `volatile' to solve this problem? -- TamasPatrovics
+
+[new]
+Works like a charm! thanks a lot! Still one problem rests: if I type something which will have no matches at all, again one
+of these obscure errors occurs (in this case, sequencep expected, 0 given). This is not the case for the non-volatile source, only the volatile source produces an error.
+
+I could solve this new problem by adding the attribute `delayed'. Don't know why, but now everything work's perfectly. --Jörg
+
+[new]
+
+I tried it with this dummy source which returns only a single item and volatile works without delayed:
+<pre>
+(setq anything-sources
+      `(((name       . "single item")
+	 (candidates "hey")
+	 (action     . (("Goto line" . go-to-associated-line)))
+	 (requires-pattern . 3)
+         (volatile))))
+</pre>
+
+I'd say your source doesn't return a proper candidate list in the erroneous case and that causes the crash, but it's just a tip. -- TamasPatrovics
+
+[new]
+Is <tt>nil</tt> not a proper candidate list? -- JörgVolbers
+
+[new]
+
+It is, unless it's the symbol <tt>'nil</tt>. :) I made this mistake once:
+<pre>
+(setq anything-sources
+      `(((name       . "single item")
+	 (candidates nil)
+	 (action     . (("Goto line" . go-to-associated-line)))
+	 (requires-pattern . 3)
+         (volatile))))
+</pre>
+
+Here the list of candidates is wrong, because nil is quoted, so it becomes a symbol.
+
+Is it possible you have a similar bug? I'm just guessing, because I don't see the problem here. -- TamasPatrovics
+
+[new]
+I have
+<pre>
+(setq anything-sources
+   ...
+     (candidates . a-function-which-returns-a-list-or-nil)
+   ...)
+</pre>
+
+I checked the function, it's all right. NIL or a list. I really don't know what causes the bug, but it works well with `delayed',
+so I do not really care right now. Anyways, we should move to private conversion instead of cluttering this wiki, shouldn't we... :-)
+
+But thanks a lot for this nice meta-tool and for trying to help! -- Jörg
+
+<pre>
+(setq anything-sources
+   ...
+     (candidates . a-function-which-returns-a-list-or-nil)
+     (candidate-transformer
+              . (lambda (cands)
+                  (delq nil cands)))
+   ...)
+</pre>
+
+Use candidate-transformer to remove nils. -- [[rubikitch]]
+
+[new]
+I found out what the problem was: I set the variable 'matches' without binding it locally, so that `anything-process-source' became confused because it also uses a variable called `matches'. Darn this dynamic binding! :-) -- JörgVolbers
+
+=== Input latency ===
+
+Anonymous user tell me following code that makes anything minibuffer better latency like any sources are delayed.
+
+<pre>
+  (defadvice anything-check-minibuffer-input (around sit-for activate) 
+    (if (sit-for anything-idle-delay t)
+        ad-do-it))
+</pre>
+
+No input latency on not-delayed sources is not a bug but a problem for users using old PC.
+
+-- [[Matsuyama]]
+
+[new]
+'anything-input-idle-delay' will remedy the latency. -- [[rubikitch]]
+
+=== JabberEl ===
+
+Matthias/Tassilo, the function 'jabber-concat-rosters' is missing. Can you check this? I'd really like to use this snippet, as I use anything and jabber all day :)
+
+- [[hsuh]]
+
+Also, incremental search is broken in jabber chat buffers that have messages in them. No idea why. post-command-hook functions are not being called for some reason.
+
+- [[Vaeshir]]
+
+=== Destroy or hide the *anything* buffer after being used ===
+
+It would be much better if the ##*anything*## buffer is destroyed after being used.  Alternatively, it could be kept completely under the radar, by renaming it so that it starts with a space.  Let's decrease buffer clutter; Emacs already keeps enough buffers open by default (scratch, messages, etc.).
+
+[new]
+'anything-resume' reuses ##*anything*## buffer.
+It should be a proposal for anything-config, since I think 'anything-c-source-buffers' should be custimized with 'anything-c-boring-buffer-regexp'. -- [[rubikitch]]
+
+=== Do not create an *info* buffer ===
+
+If anything-sources includes anything-c-source-info-pages, then an ##*info*## buffer is created even if no info page is opened.
+
+[new]
+Here is an enhanced version of anything-c-source-info-pages.
+http://www4.atpages.jp/loveloveelisp/lib/anything-c-info.el -- [[rubikitch]]
+
+=== Do not create a *WoMan log* buffer ===
+
+In Ubuntu, if anything-sources includes anything-c-source-man-pages, a ##*WoMan log*## buffer is created protesting that /usr/man does not exist.
+
+[new]
+=== Problems with Emacs 23 and anything.el on OSX 10.5 and Win32===
+
+Using the latest anything.el on the latest MacPorts version of emacs-app results in the following error:
+
+<pre>
+Debugger entered--Lisp error: (error "Attempt to modify read-only object")
+
+modify-frame-parameters(#<frame *scratch* 0x5babf0> ((parent-id) (explicit-name) (display . "mactheknife.local") (visibility . t) (icon-name) (window-id . "1") (top . 0) (left . 0) (buried-buffer-list #<buffer  *ispell-tmp*> #<buffer  *Echo Area 1*> #<buffer  *Echo Area 0*> #<buffer  *code-conversion-work*> #<buffer *Messages*> #<buffer  *Minibuf-0*>) (buffer-list #<buffer  *Minibuf-1*> #<buffer *scratch*>) (unsplittable) (modeline . t) (width . 110) (height . 75) (environment) (background-mode . light) (display-type . color) (horizontal-scroll-bars . t) (window-system . ns) (bufferd . t) (auto-lower) (auto-raise) (icon-type) (scroll-bar-width . 15) (cursor-type . box) (title) (buffer-predicate) (tool-bar-lines . 0) (menu-bar-lines . 1) (right-fringe . 11) (left-fringe . 10) (line-spacing) (cursor-color . "grey") (background-color . "White") (foreground-color . "Black") (vertical-scroll-bars . right) (internal-border-width . 2) (border-width . 0) (fontsize . 0) (font . "-apple-anonymous-medium-r-normal--11-0-72-72-m-0-iso10646-1") (nil . 0) (font-backend ns)))
+</pre>
+
+[new:hrehfeld:2009-03-07]
+I have the same problem in Win32 with GNU Emacs 23.0.50.1 (i386-mingw-nt5.1.2600):
+
+A more detailed description: In Anything, ##TAB## works as expected, and ##RET## is bound to ##anything-exit-minibuffer##, but pressing it gives 'Attempt to modify read-only object'. Further keypresses then modify the ##*anything*## buffer. 
+
+The same config works on Ubuntu linux withEmacs22. It can be accessed from here https://anonymous:@haukerehfeld.de/svn/test/trunk/emacs/ along with all the modes used.
+
+The anything relevant parts are:
+<pre>(sys-add-site-lisp-library "anything")
+(require-maybe 'anything)
+
+(global-set-key (kbd "C-,") 'anything)
+(sys-add-site-lisp-library "anything-config")
+(require-maybe 'anything-config)
+</pre>
+
+
+[new:rubikitch:2009-03-08 03:53 UTC]
+Sorry, I do not have both OSX and Win32, only GNU/Linux. But ##anything-maybe-fit-frame## seems to be error. Please try to redefine it. If it is ok, I'll update anything.el.
+
+<pre>
+(defun anything-maybe-fit-frame ()
+  "Fit anything frame to its buffer, and put it at top right of display.
+ To inhibit fitting, set `fit-frame-inhibit-fitting-flag' to t.
+ You can set user options `fit-frame-max-width-percent' and
+ `fit-frame-max-height-percent' to control max frame size."
+  (declare (warn (unresolved 0)))
+  (when (and (require 'fit-frame nil t)
+             (boundp 'fit-frame-inhibit-fitting-flag)
+             (not fit-frame-inhibit-fitting-flag)
+             (anything-window))
+    (ignore-errors
+      (with-anything-window
+        (fit-frame nil nil nil t)
+        (modify-frame-parameters
+         (selected-frame)
+         `((left . ,(- (x-display-pixel-width) (+ (frame-pixel-width) 7)))
+           (top . 0)))))))
+</pre>
+
+-- [[rubikitch]]
+
+[new:hrehfeld:2009-03-07]
+I just updated from cvs and recompiled, and the error is gone. everything seems to work fine. The new version is GNU Emacs 23.0.91.1 (i386-mingw-nt5.1.2600).
+
+Thanks for the quick reply ;)
+
+=== Minibuffer is getting slower since I use [[Anything]] ===
+
+[new:XavierMaillard:2009-02-20 12:23 UTC]
+I playing with [[Anything]] which is really great. Since that day, my
+minibuffer input is really getting slower hours after hours. As a
+consequency, it can take minutes to type words in the minibuffer (like
+sorting in a rmail-summary buffer). What is wrong ?
+
+[new:rubikitch:2009-02-20 13:54 UTC]
+Let me see your `anything-sources'.
+(setq anything-input-idle-delay 0.2) would remedy slowness. -- [[rubikitch]]
+
+[new]
+
+I had a similar problem in the past with an other package (not anything) which failed to cancel the idle timer when the command was finished. Do you cancel all timers when anything exits? Timers shouldn't be left running. I see no cancellation of `anything-check-minibuffer-input-timer' in `anything-cleanup'. -- TamasPatrovics
+
+[new:rubikitch:2009-02-20 23:01 UTC]
+I fixed it. Thanks. -- [[rubikitch]]
+
+[new:XavierMaillard:2009-02-24 23:01 UTC]
+: Confirmed. Thank you rubikitch. -- XavierMaillard
+
+=== Disconnect sources ? ===
+
+[new:XavierMaillard:2009-02-20 12:23 UTC]
+I have added extensions that can only work if I have a network
+connection.  Alas, sometimes it is not possible. In that case,
+anything is just refusing to start and throw an error for the first
+unloadable extension. I think this is plain wrong and could be avoided
+to let users use anything every time.
+
+[new:AndyStewart:2009-02-21 12:32 UTC]
+: Now anything-yaoddmuse.el will try to fetch page-list if it haven't fetch, so anything-yaoddmuse.el will faild when network is disconnected. You can try to use function `anything-yaoddmuse-emacswiki-edit-or-view' and remove "anything-yaoddmuse-c-source-*" from "anything-sources". Or have exist function detect network whether connected? -- AndyStewart
+
+[new:XavierMaillard:2009-02-24 23:01 UTC]
+: I am not sure caching is the right solution. We have to find out a
+better approach not "source-specific". Maybe we could try to do a
+small network request and depending of this test, disable temporary
+network sensible sources ? I do not know if this is satisfaying at all
+though. -- XavierMaillard
+
+=== Open files with default tool ===
+
+Unfortunately this great feature does not work for me.
+The problem is that I can not launch xdg-open from inside of emacs. In the command line it works well though...
+If I use "Open file with externally" and specify program explicitly (totem, for example), it also works fine.
+
+It is not really related to 'anything', but it would be great if you have an idea how to fix this...
+emacs 23.0.60.1 + Ubuntu 8.10
+
+[new:rubikitch:2009-03-29 23:45 UTC]
+Please show me a backtrace. AFAIK `anything-c-open-file-with-default-tool' launches xdg-open.-- [[rubikitch]]
+[new]
+Thank you for the reply.
+
+The process does not crash - everything goes as it should, except that nothing happens...
+This is definitely not the problem of anything or anything-config.  What is the proper place to ask for the help then?
+
+Anyhow, if I start process like below, all is fine.
+
+<pre>
+(start-process "anything-c-open-file-with-default-tool"
+               nil
+               "firefox"
+               "/home/kons/tmp/delme.html"
+	       )
+</pre>
+
+If I change "firefox" to "xdg-open" - nothing happens. 
+Here is the backtrace with "xdg-open".
+
+<pre>
+Debugger entered--returning value: #<process anything-c-open-file-with-default-tool>
+  #<subr start-process>("anything-c-open-file-with-default-tool" nil "xdg-open" "/home/kons/tmp/delme.html")
+* apply(#<subr start-process> ("anything-c-open-file-with-default-tool" nil "xdg-open" "/home/kons/tmp/delme.html"))
+* start-process("anything-c-open-file-with-default-tool" nil "xdg-open" "/home/kons/tmp/delme.html")
+  eval((start-process "anything-c-open-file-with-default-tool" nil "xdg-open" "/home/kons/tmp/delme.html"))
+  eval-last-sexp-1(t)
+  eval-last-sexp(t)
+  eval-print-last-sexp()
+  call-interactively(eval-print-last-sexp nil nil)
+</pre>
+As output I get #<process anything-c-open-file-with-default-tool>, as it should be.
+From command line xdg-open does the job...
+
+[new:rubikitch:2009-04-16 01:47 UTC]
+It is strange. I cannot figure out it. But ChongYidong reported it at emacs-devel some time ago. -- [[rubikitch]]
+
+=== anything-match-plugin with 'Locate' source ===
+For me great functionality of anything-match-plugin doesn't work for 'Locate' source, which is defined in 
+current anything-config.
+
+Is there any way to fix this? I really love the power of multiple match... 
+-- KonstantinAntipin
+        
+[new:rubikitch:2009-04-03 00:26 UTC]
+This is a limitation of anything-match-plugin. anything-c-source-locate sends anything-pattern to locate argument.
+If you want to do search refinement, create a file list by cron job and use candidates-file plugin.
+The example is in RubikitchAnythingConfiguration. -- [[rubikitch]]
+
+=== anything-w3m-bookmarks-to-alist (anything-config.el) ===
+I use w3m to look up html docs in local directories. But anything-w3m-bookmarks-to-alist finds only w3m bookmarks
+with prefix 'http', not 'file'. A possible patch (but not complete regular expression) is:
+<pre>
+@@ -1586,7 +1586,7 @@
+         (forward-line)
+         (when (re-search-forward "href=" nil t)
+           (beginning-of-line)
+-          (when (re-search-forward "http://[^>]*" nil t)
++          (when (re-search-forward "\\(http\\|file\\)://[^>]*" nil t)
+             (setq url (concat "\"" (match-string 0))))
+           (beginning-of-line)
+           (when (re-search-forward anything-w3m-bookmarks-regexp nil t)
+</pre>
+Please apply the above patch.
+-- SeungCheolJung
+
+Applied -- [[rubikitch]]
+
+----
+[[Anything]]
+
+

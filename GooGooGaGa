@@ -1,0 +1,10 @@
+"GOO is a new type-based prefix syntaxed language that is simple, powerful and extensible.
+GOO is an acronym for Generic Object Orientator. " 
+
+* http://www.googoogaga.org
+
+The distribution includes font-lock support for .goo files and `run-goo' to run as an inferior process.
+
+----
+ProgrammingModes
+CategoryModes

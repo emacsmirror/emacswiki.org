@@ -1,0 +1,33 @@
+Official site: [http://www.iro.umontreal.ca/~monnier/elisp/#haskell-mode Haskell Mode]
+
+Older site: [http://www.haskell.org/haskell-mode/ Haskell Mode]
+
+haskell-mode 2.3 does not correctly indent else/then clauses. To let else/then be cycled,
+find ((looking-at "\\(?:in\\|of\\then\\|else\\)\\>")  which should be on or about line 1189
+and change it to ((looking-at "\\(?:in\\|of\\)\\>"). This isn't a true fix but it does keep else/then
+keyword from being flushed with the `if'.
+
+Some customisations to make the haskell editing experience a bit smoother:
+
+ (add-hook 'haskell-mode-hook
+           #'(lambda ()
+               (setq comment-padding " ")
+               (setq comment-start "--")))
+
+ (add-to-list 'auto-mode-alist '("\\.hs\\'" . haskell-mode))
+
+
+
+If you use FillAdapt:
+
+ (add-to-list 'filladapt-token-table '("-- " haskell-comment))
+ (add-to-list 'filladapt-token-match-table '(haskell-comment haskell-comment))
+ (add-to-list 'filladapt-token-conversion-table '(haskell-comment . exact))
+
+
+-- ClausBrunzema
+
+
+The Haskell wiki has an interesting note on using mmm-mode (from MultipleModes) so that you can write your scholarly paper while still hacking.
+[[http://haskell.org/haskellwiki/Literate_programming#Multi-mode_support_in_Emacs]]
+

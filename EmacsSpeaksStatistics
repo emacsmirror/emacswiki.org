@@ -1,0 +1,131 @@
+Emacs Speaks Statistics (also sometimes called EmacsStatisticalSystem, but usually called ESS) is a package that integrates various statistical software with Emacs. S, R (a free implementation of S), Stata, and SAS modes are all supported by ESS, making it possible to hook writing and programming in Emacs right into your stats. It's pretty slick.
+
+* ESS: http://ESS.R-project.org/
+
+* R: http://www.r-project.org/
+
+
+== Icicles Completion for ESS ==
+
+You can use [[Icicles]] [[completion]] in various ESS modes. Whenever there are multiple completion candidates, Icicles completion is used (if Icicle minor mode is on). This means you can [[Icicles - Cycling Completions|cycle]] to choose a candidate, complete using one or more substrings or [[regexp]]s ([[progressive completion]]), and so on. See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]].
+
+== Cool Key Binding: Use Shift+Enter to do Everything ==
+
+The following lines on my .emacs allow me to do three things with just one key binding:
+
+* if R if not running, it starts automatically and opens an inferior frame
+
+* if a region is selected, executes the region
+
+* otherwise, it runs the current line
+
+This is quite useful, saves many keystrokes, especially starting R.
+
+
+  (setq ess-ask-for-ess-directory nil)
+  (setq ess-local-process-name "R")
+  (setq ansi-color-for-comint-mode 'filter)
+  (setq comint-prompt-read-only t)
+  (setq comint-scroll-to-bottom-on-input t)
+  (setq comint-scroll-to-bottom-on-output t)
+  (setq comint-move-point-for-output t)
+
+  (defun my-ess-start-R ()
+    (interactive)
+    (if (not (member "*R*" (mapcar (function buffer-name) (buffer-list))))
+      (progn
+	(delete-other-windows)
+	(setq w1 (selected-window))
+	(setq w1name (buffer-name))
+	(setq w2 (split-window w1))
+	(R)
+	(set-window-buffer w2 "*R*")
+	(set-window-buffer w1 w1name))))
+
+  (defun my-ess-eval ()
+    (interactive)
+    (my-ess-start-R)
+    (if (and transient-mark-mode mark-active)
+	(call-interactively 'ess-eval-region)
+      (call-interactively 'ess-eval-line-and-step)))
+
+
+  (add-hook 'ess-mode-hook
+	    '(lambda()
+	       (local-set-key [(shift return)] 'my-ess-eval)))
+
+  (add-hook 'inferior-ess-mode-hook
+	    '(lambda()
+	       (local-set-key [C-up] 'comint-previous-input)
+	       (local-set-key [C-down] 'comint-next-input)))
+  (require 'ess-site)
+
+-- FelipeCsaszar
+
+
+== How can I get Emacs to automatically close brackets and parentheses? ==
+
+Add the following to your .emacs file (from ESS mailing list https://stat.ethz.ch/pipermail/ess-help/2009-June/005411.html)
+
+  ;; enable skeleton-pair insert globally
+   (setq skeleton-pair t)
+  ;;(setq skeleton-pair-on-word t)
+   (global-set-key (kbd "(") 'skeleton-pair-insert-maybe)
+   (global-set-key (kbd "[") 'skeleton-pair-insert-maybe)
+   (global-set-key (kbd "{") 'skeleton-pair-insert-maybe)
+   (global-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
+   (global-set-key (kbd "\'") 'skeleton-pair-insert-maybe)
+   (global-set-key (kbd "\`") 'skeleton-pair-insert-maybe)
+   (global-set-key (kbd "<") 'skeleton-pair-insert-maybe)
+
+See also AutoPairs.
+
+== Let Emacs show a R-function's arguments and their default values when you are about to enter them ==
+
+I wrote a function that does it. Please see http://www.svenhartenstein.de/emacs-ess.php
+(Sven)
+
+== Outline mode for .R files ==
+
+I now have the following in my ~/.emacs file to enable Emacs' standard outline mode for .R files:
+
+  (add-hook 'ess-mode-hook
+            '(lambda ()
+               (outline-minor-mode)
+               (setq outline-regexp "\\(^#\\{4,5\\} \\)\\|\\(^[a-zA-Z0-9_\.]+ ?<- ?function(.*{\\)")
+               (defun outline-level
+                 (lambda () (interactive) (cond ((looking-at "^##### ") 1)((looking-at "^#### ") 2)((looking-at "^[a-zA-Z0-9_\.]+ ?<- ?function(.*{") 3) (t 1000)))
+               )))
+
+This can be seen as an adapted version of Heinz Tuechler's outline suggestion he postet to the ESS-help mailing list on 2007-05-11. The above will define the following heading levels in .R files:
+
+  lines starting with #####  --> level 1
+  lines starting with ####   --> level 2
+  R functions                --> level 3
+
+Although R functions are no "headings" really, I still imagine this could be a nice way of getting an overview over a larger .R file. I can't yet say whether it will prove useful for me in the long run.
+
+-- Sven
+
+
+== Question: ==
+[new]
+I like emacs and ess. I display 2 windows in the emacs frame when I run R in ess, one shows ess transcript, the other shows text output of R. When I plot, the graphic/image output is shown in a x11() device outside emacs.
+I have to switch back and forth between emacs and the graphic/image output x11() frequently. Is it possible to integrate/embed the graphic/image output x11() into emacs windows. What I want is to display 3 windows in emacs frame, the third one is the realtime graphic/image output of x11(). Then I can run R, show text and graphic/image output together in the same emacs frame interactively.
+[new]
+Sounds like it could be a stretch to accomplish in Emacs, but it would also better support things like LogoMode, too.
+
+Why not just tell X to display the R graphics window at one side of the Emacs window? This is the line I use in my .Xresources file: "R_x11*geometry: 500x500+658+0" (after editing the file, remember to run "xrdb -merge ~/.Xresources")  --FelipeCsaszar
+
+[new]
+I have another idea to accomplish this, and I think I'll try it myself and report back here when I do.  
+
+Step 1: Set options(device = pdf)
+
+This way, plotting functions will write to Rplots.pdf in the current directory
+
+Step 2: Visit the Rplots.pdf file in an Emacs window using the doc-view package.  
+
+Step 3:  Set Auto-revert mode for .pdf files (I have a hook in my .emacs that does this already).  
+
+I think that would get done what you want.  --ErikIverson

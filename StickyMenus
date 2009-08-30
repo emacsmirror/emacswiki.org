@@ -1,0 +1,9 @@
+[new]
+Is there '''any''' way to configure [[GnuEmacs]]' menu handling to use sticky menus? When I click on a menubar or on an entry for a submenu, this particular menu should stay open even when I move the MousePointer onto the title of another submenu. I use a rather small font for the menus, and with the current behaviour I have to move the mouse slow and careful in the (small) horizontal area of one line to get into a nested submenu. With [[XEmacs]] this is much more relaxed. 
+--ClausBrunzema
+
+[new]
+: I've noticed that with the same Emacs version the behavior is different on Windows (it does what you want) and on Unix (Solaris, at least - it doesn't do what you want). I suspect that it just doesn't work in X-Window.
+
+[new]
+:: But [[XEmacs]] does what I want under X-Windows, so there must be some way to configure the menu behaviour...

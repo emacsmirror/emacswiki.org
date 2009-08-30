@@ -1,0 +1,23 @@
+wrap-mode.el is a minor mode for word wrapping like typical word processors.
+
+You can get it here: http://nbcs.rutgers.edu/~jszabo/wrap-mode.el
+
+=== Comparison to autofill-mode ===
+
+Auto-fill-mode breaks the current line (calls indent-new-comment-line) at the appropriate place when you press return or the space-bar on a column past the fill-column.
+
+Wrap-mode re-fills the current paragraph (calls fill-paragraph) under these conditions (much like a word processor):
+
+* Whenever the current line is over fill-column characters, no matter where the point is, after any insertion or deletion
+* Whenever you delete some characters and the first word on the next line (in the same paragraph) can fit on the current line
+* Whenever the first word on the current line can fit on the previous line (in the same paragraph).  This can happen after you delete some characters in the first word or if you press space in the middle of the first word (thorough of me no?)
+
+Bugs:
+
+* Inserting several spaces mid-paragraph causes the spaces when the end of the fill-column is reached
+* Undo is broken (starts doing very new things)
+* Fill-paragraph keybinding is clobbered by safe-fill, which works differently that fill-paragraph (I'm not sure what safe-fill does or how fill-paragraph is unsafe)
+
+This apparently does the same thing as RefillMode, which is included in Emacs 21.2.
+----
+CategoryModes

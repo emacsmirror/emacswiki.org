@@ -1,0 +1,16 @@
+The download site: http://www.backmes.de/scripts+programs/randomsig.el
+
+Configuration:
+
+Place randomsig.el into your load-path and put the following in your .emacs file:
+
+ (require 'randomsig)
+
+(Re-)Start your emacs and type
+
+ M-x customize-group RET
+ randomsig RET
+
+to customize the randomsig package.
+----
+CategoryMailAddons

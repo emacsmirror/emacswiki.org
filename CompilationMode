@@ -1,0 +1,175 @@
+CompilationMode is the mode that supports the output of compilers or any other utility that gives the line numbers (and sometimes column number) of a file that had errors when processed.  It is the mode that results from running a CompileCommand.
+
+Here are other pages relating to this mode,
+
+* CompileCommand -- controlling what <code>M-x compile</code> actually runs
+* CreatingYourOwnCompileErrorRegexp -- more compile message matching
+* ModeCompile -- an extended compile with defaults for makefiles and C etc compiling
+* [http://user42.tuxfamily.org/compilation-always-kill/index.html compilation-always-kill.el] -- stop M-x compile asking yes or no to kill a running compilation
+* [http://user42.tuxfamily.org/compilation-emacs21-batch/index.html compilation-emacs21-batch.el] -- regexps for older Emacs byte compiling
+* [http://user42.tuxfamily.org/compilation-perl/index.html compilation-perl.el] -- regexps for <code>podchecker</code>, <code>Test</code> and <code>xsubpp</code> errors
+* [http://user42.tuxfamily.org/compilation-recenter-end/index.html compilation-recenter-end.el] -- recentre buffer to show maximum text when compile finishes
+* [http://user42.tuxfamily.org/compilation-weblint/index.html compilation-weblint.el] -- regexps for <code>weblint</code> errors
+* [http://user42.tuxfamily.org/compile-command-default/index.html compile-command-default.el] -- establish a default compile command
+
+
+== Suppress COLUMNS environment variable? ==
+
+I have just built emacs 21.3 on HP-UX.  When I try to do a compile from various frames, I find that the compilation mode has set the environment variable COLUMNS, which the compiler then uses to format it's output.  The COLUMNS is set from the frame that I issue the compile-command.  However, I have *compilation* set in my special-display-buffer-names variable, so the column-width is completely irrelevant for any other frame.  The upshot is that this interferes with the interpretation of compile errors.  Is there a way to suppress COLUMNS from being set?
+
+== Browse Among Compilation Errors Using Regexp Search ==
+
+See [[Icicles - Other Search Commands]], command `icicle-compilation-search', for a way to navigate among compilation errors or `grep' search hits using one or multiple regexps.
+
+
+==Small Compile Window w/Highlighted Errors==
+
+I use the following in order to get a nice behaving small compile window.  F5 closes any old compile windows and opens a new one that is then resized.
+C-n and C-p step through errors highlighting the line that they are on.
+
+  (defun my-recompile ()
+    "Run compile and resize the compile window closing the old one if necessary"
+    (interactive)
+    (progn
+      (if (get-buffer "*compilation*") ; If old compile window exists
+  	(progn
+  	  (delete-windows-on (get-buffer "*compilation*")) ; Delete the compilation windows
+  	  (kill-buffer "*compilation*") ; and kill the buffers
+  	  )
+        )
+      (call-interactively 'compile)
+      (enlarge-window 20)
+      )
+  )
+  (defun my-next-error () 
+    "Move point to next error and highlight it"
+    (interactive)
+    (progn
+      (next-error)
+      (end-of-line-nomark)
+      (beginning-of-line-mark)
+      )
+  )
+  
+  (defun my-previous-error () 
+    "Move point to previous error and highlight it"
+    (interactive)
+    (progn
+      (previous-error)
+      (end-of-line-nomark)
+      (beginning-of-line-mark)
+      )
+  )
+  (global-set-key (kbd "C-n") 'my-next-error)
+  (global-set-key (kbd "C-p") 'my-previous-error)
+  
+  (global-set-key [f5] 'my-recompile)
+
+==Another Small Compiler Window==
+
+Here we keep the compiler window 10 lines height, and also make sure that its always does a vertical split (prevents using other window), 
+also this version does not close the compilation window. (default binding to F9)
+
+  (defun my-compile ()
+      "Run compile and resize the compile window"
+      (interactive)
+      (progn
+        (call-interactively 'compile)
+        (setq cur (selected-window))
+        (setq w (get-buffer-window "*compilation*"))
+        (select-window w)
+        (setq h (window-height w))
+        (shrink-window (- h 10))
+        (select-window cur)
+        )
+    )
+
+  (defun my-compilation-hook () 
+    "Make sure that the compile window is splitting vertically"
+    (progn
+      (if (not (get-buffer-window "*compilation*"))
+         (progn
+	    (split-window-vertically)
+	    )
+	  )
+      )
+  )
+
+  (add-hook 'compilation-mode-hook 'my-compilation-hook)
+  (global-set-key [f9] 'my-compile)
+
+==Compiling with ant==
+
+http://ant.apache.org/faq.html#emacs-mode has some hints on the use of ant and emacs, so that errors get registered correctly, and the regexps adviced there appearently allready should be in place in the newest emacsen, but it doesn't work at my place, instead using the other advice, compiling with the -emacs command-line-argument turns off the [java] stuff, so everything  works nicely.
+
+== compile-.el, compile+.el: Extensions to compile.el ==
+
+DrewAdams has written libraries Lisp:compile-.el and Lisp:compile+.el, which together provide some minor enhancements to standard library ##compile.el##. 
+
+Some additional key bindings are made, mouseover highlighting is modified, and a single-window compilation results frame is shrink-wrapped to fit the buffer.
+
+== Colours ==
+
+Here is some code to make the background on all lines on which emacs found errors after a compilation pink. I think it looks pretty cool, YMMV.
+
+
+    ;; Some code that will make it so the background color of the lines
+    ;; that gcc found errors on, should be in another color.
+  
+    (require 'custom)
+  
+    (defvar all-overlays ())
+  
+    (defun delete-this-overlay(overlay is-after begin end &optional len)
+      (delete-overlay overlay)
+      )
+  
+    (defun highlight-current-line()
+      (interactive)
+      (setq current-point (point))
+      (beginning-of-line)
+      (setq beg (point))
+      (forward-line 1)
+      (setq end (point))
+      ;; Create and place the overlay
+      (setq error-line-overlay (make-overlay 1 1))
+  
+      ;; Append to list of all overlays
+      (setq all-overlays (cons error-line-overlay all-overlays))
+  
+      (overlay-put error-line-overlay
+	           'face '(background-color . "pink"))
+      (overlay-put error-line-overlay
+    	       'modification-hooks (list 'delete-this-overlay))
+      (move-overlay error-line-overlay beg end)
+      (goto-char current-point)
+      )
+  
+    (defun delete-all-overlays()
+      (while all-overlays
+        (delete-overlay (car all-overlays))
+        (setq all-overlays (cdr all-overlays))
+        )
+      )
+  
+    (defun highlight-error-lines(compilation-buffer, process-result)
+      (interactive)
+      (delete-all-overlays)
+      (condition-case nil
+          (while t
+	    (next-error)
+        	(highlight-current-line)
+        	)
+        (error nil))
+      )
+  
+    (setq compilation-finish-function 'highlight-error-lines)
+
+  -- This just makes the lines in the compilation buffer pink though, right? Not the lines in the actual source code (mike hearn)
+
+----
+
+'''See Also''': GrepMode
+
+----
+CategoryProgrammerUtils CategoryModes

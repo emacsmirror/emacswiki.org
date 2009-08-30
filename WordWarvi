@@ -1,0 +1,34 @@
+http://WordWarvi.sf.net ''Word War vi is your basic side-scrolling shoot 'em up '80s style arcade game.  You pilot your "vi"per craft through core memory, rescuing lost .swp files, avoiding OS defenses, and wiping out those memory hogging '''emacs''' processes.  When all the lost .swp files are rescued, head for the socket which will take you to the next node in the cluster.'' (emphasis added)
+
+Category: Games, Amusement
+
+== Discussion ==
+Is this kind of sillyness wanted here at EmacsWiki?  Otherwise delete this page. -- PatrickAnderson
+
+Yes. -- OtherMichael
+
+[new]
+Too bad it doesn't run within Emacs! :)
+
+I like it:
+
+{{{
+  1 In the beginning, there was ed.
+  2 Ed is the standard text editor.
+  3 Then there was vi, and it was good.
+  4 Then came emacs, and a dearth of RAM.
+  5 Your mission is to traverse core
+  6 memory and rid the host of emacs.
+  7 It will not be an easy mission, as
+  8 there are many emacs friendly
+  9 processes._
+~
+~
+"wordwarvi.txt" 9L, 281C
+}}}
+
+
+-- AlexSchroeder
+
+----
+CategoryHumor

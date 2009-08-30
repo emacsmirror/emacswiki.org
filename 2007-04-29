@@ -1,0 +1,50 @@
+As some of you may have noticed, pages like WikiModeDiscussion and SiteMapDiscussion are currently attracting a large amount of vandalism. Some of it is not really spam, since it doesn't contain any links – just one or two lines saying "Hello! / Just wanted to say hello.", "Peace people / We love you", or "Hi! How r u? / nice site!" and so on.
+
+The reason these messages all have a line break in them is that there already exists a regular expression on StrangeBannedContent that prevents the saving of single-line pages.
+
+So, what should I do?
+
+# Ban the saving of pages containing only lines shorter than 30 characters? (Not very future proof, obviously.)
+# Ban the saving of pages not containing any links at all? (That's pretty weird, though.)
+# Introduce a text captcha that asks stuff like "Give me a number between one and ten." If you answer correctly, I'll store the information in a cookie, and you won't have to answer another question (until you loose the cookie). It seems that other people have had great success using this. See the [http://www.emacswiki.org/cgi-bin/alex?action=edit;id=2007-04-29_Text_Captcha_For_Emacs_Wiki Example on my blog].
+# There's also the option of introducing the text captcha only for particular pages. We'd have a single page listing all the pages to be protected by the text captcha. The draw back is that this only works once we're spammed. I used to like this a lot, but I've since grown fond of the solution to protect all pages with the text captcha and storing the answer in a cookie.
+
+Thoughts?
+
+Obviously we'd have to make sure that such text captchas exist for all the languages we support on this site... :)
+
+-- AlexSchroeder
+
+[new]
+I can't think of anything really objectionable about this.  The system is text-based so it's not discriminatory against the blind.  I don't think the system will be overly difficult to answer questions.  There may be some usability issues, but those are minimized with the use of cookies.  Cookies are objectionable to some people, but shouldn't be for this site since no personal information is submitted--well, unless submitted via a textarea with the intended purpose of posting it to the Wiki!
+
+WikiPedia recently started using an image-based captcha system for edits that introduce http:// links. -- AaronHawley
+
+[new:DrewAdams:2007-04-29 14:47 UTC]
+Coincidentally, I too almost wrote a News page about this yesterday. I don't think we can/should do anything. This is not spam; it is graffiti or tagging. If this is being done by a person (e.g. a 9 year old?), which I think it is, then that person can and will do whatever we need to do to edit pages. I think we can only try to prevent automatic spam automatically. For manual vandalism of this sort, we will need to manually clean it up afterward, I'm afraid. The effort to clean up (roll back) is less than the effort (e.g. recognize and type in codes) that we would be required to make on a regular basis to ensure legitimate edits -- and I don't think it would make any difference. If I can type in a recognition code, then so can a vandal. It's always easier to destroy a sand castle than it is to build one. The only alternative that could work would be logging in, in which case an admin could prevent certain users from logging in. But since we welcome new users, that would require vetting potential new contributors, etc. I'm thankful that we have a simple way to roll back, at least -- it's quicker to do that than it is for the vandal to edit and save a page. -- DrewAdams
+
+[new]
+I believe the vandals are thought to be robots, not humans or 9 year olds.  If they aren't robots, then indeed this won't work.
+
+Regardless, robot defacement degrades the site and even rollbacks aren't entirely sustainable.  What if this bad situation suddenly gets worse?  It will take a lot of computer mouse work to do a bunch of rollbacks.  Vanalism pollutes revision histories (Oddmuse has a KeptPages rule!) and the site's RecentChanges.  It's worth trying a captcha system for this reason. -- AaronHawley
+
+[new]
+You believe that based on what? It looks like a human (kid), to me, but how can one know? The user name is filled out each time, with a different name;  the text replacing the page is different and seems human-generated; and the result (a qui profite la crime ?) is not commercial spam... -- but nothing proves that that isn't done by a robot, of course. 
+
+You say, "What happens if [it] suddenly gets worse?" I say we deal with that then, if and when it happens. If it is a robot, it will be easy for it to suddenly get much, much worse; if it is a vandal, that is unlikely. Why escalate now, assuming a robot, when the human model also fits the symptoms? If it is a human, then it's more work for that person to vandalize than it is for us to clean up, and a vandal can get tired of the same-old-same-old (or even grow up ;-)).
+
+There is no reason ''now'' to overreact and make things more difficult for everyone. (Kinda reminds me of overreaction to terrorist acts...) I've probably rolled those pages back as much (or more) than anyone else -- it's not a big deal, and it doesn't, so far, warrant escalation. 
+
+BTW, I didn't post initially on this, because I didn't want to give this little "terrorist" the satisfaction of the attention we have now given him. I expect that this discussion has extended the time it will take for him to tire of his little game. Oh well; it's done. -- DrewAdams
+
+[new]
+As long as you don't mind rolling back a few pages a day, I'll gladly sit back and wait.
+You are right: If this were kids fooling around, a technical solution would be overreacting.
+
+I'm assuming a bot because some of the messages are exact repeats, and because the IP numbers and hostnames seem to come from a random selection of machines. This looks like a zombie network to me (computers infected with a virus running spam scripts).
+
+We'll do nothing for now, then. -- AlexSchroeder
+
+[new:DrewAdams:2007-04-29 18:03 UTC]
+Ah, I see. That makes some sense. We can wait a bit, and then perhaps try what you guys have suggested, if it gets out of hand or our annoyance threshold is surpassed. So far, it's about one rollback per day. BTW, I tried your captcha, and it is not really a bother, so I have no objection to it.  -- DrewAdams
+

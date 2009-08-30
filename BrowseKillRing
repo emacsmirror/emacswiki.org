@@ -1,0 +1,43 @@
+A package by ColinWalters, now maintained by NickHurley.  It allows you to browse the [[kill ring]].  This is where all the stuff you kill using `C-k' and `C-w' ends up.  
+
+
+Get ##browse-kill-ring.el## here:
+
+
+* <tt>[[browse-kill-ring.el]]</tt> -- I uploaded ##browse-kill-ring.el## from www.todesschaf.org, I guess this makes it at least semi-official :-) --ClausBrunzema
+
+* Debian: <code>apt-get install emacs-goodies-el</code> (DebianPackage:emacs-goodies-el)
+
+* http://www.todesschaf.org/files/browse-kill-ring.el -- Another link, though I have no idea whether it is "official" in any way.   -- OliverScholz
+
+* It used to be at [http://opensource.cis.ohio-state.edu/~hurley/browse-kill-ring.el], but this link seems dead.
+
+
+See Also: 
+
+* <tt>[[browse-kill-ring+.el]]</tt> -- Enhancements to ##browse-kill-ring.el##. ( Sent to NickHurley for possible inclusion in ##browse-kill-ring.el##.)
+** You can toggle the display style (new command and key binding).
+** You can browse (or pop) other rings, in addition to the `kill-ring'. For example, the `secondary-selection-ring' (see [[SecondarySelection#secondary-sel.el|secondary-sel.el]]).
+* <tt>[[wuxch-browse-kill-ring.el]]</tt> -- key bindings, customization
+
+* Similar to browse-kill-ring -- makes it easy to access and yank text from the kill ring:
+
+       (global-set-key "\C-cy" '(lambda ()
+                                 (interactive)
+                                 (popup-menu 'yank-menu)))
+
+----
+
+[new]
+I can't praise browse-kill-ring enough -- I don't use it all that much, but when I need it there's no replacing it. -- [[Anonymous]]
+
+[new]
+Someone once said "The easiest way to invoke kill-ring browsing is just to use `M-y' without first using `C-y'".  But when I try that (with Emacs 22) I just get "Previous command was not a yank". 
+
+[new]
+To get the "M-y immediately pulls up the kill ring" behavior, you need to run M-x browse-kill-ring-default-keybindings.  Or, to put this in .emacs
+
+ (require 'browse-kill-ring)
+ (browse-kill-ring-default-keybindings)
+----
+CategoryModes CategoryRegion

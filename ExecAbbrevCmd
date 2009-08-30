@@ -1,0 +1,15 @@
+== Overview ==
+
+[[exec-abbrev-cmd.el]] is an emacs extension by TassiloHorn that allows executing emacs commands by giving an abbreviation.
+
+In legacy way, you can do similar things with partial-completion-mode, but this mode will conflict with other modes such as mcomplete.
+
+In [[Anything]] way, you can do similar things with anything-c-source-emacs-functions-with-abbrevs.
+
+To get more informations, visit his homepage: http://www.tsdh.de/cgi-bin/wiki.pl/exec-abbrev-cmd.el
+
+See also [[Icicles - Multi M-x#icicle-command-abbrev|Icicles Multi M-x]] for a similar extension, which lets you complete both abbreviations and commands.
+
+----
+CategoryCommands
+CategoryCompletion

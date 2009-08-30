@@ -1,0 +1,9 @@
+ wiki-dot.el --- Export wiki pages to dot files
+
+This little package allows you to produce a graph of your local wiki (see WikiMode).  The graph is described using the dot language.  See http://www.graphviz.org/ for source and binary distributions.  There are two tools available: <code>dot</code> for directed graphs and <code>neato</code> for undirected graphs.  Customize `wiki-graph-type' to control the output.  [http://www.geocities.com/kensanata/elisp/wiki-dot.el.txt Download]
+
+Use M-x wiki-graph to generate a dot file for you.  You will need a working copy of <code>neato</code> or <code>dot</code> to process the file.
+
+----
+
+I've found it very difficult to produce acceptable results with neato and dot.  It is rather difficult to determine which pages ought shall be part of the graph and which pages shall not.  Even you find an appropriate `wiki-include-function', you will have to fiddle with dot or neato parameters to produce acceptable output.  If you find good wiki-include-functions or dot/neato parameters to generate interesting graphs of your wiki, please share them with me.  I'm allways interested in learning more!  ^_^ -- AlexSchroeder

@@ -1,0 +1,105 @@
+!EasyPG is an all-in-one !GnuPG interface for Emacs. It has two aspects: convenient tools which allow to use !GnuPG from Emacs (!EasyPG Assistant), and a fully functional interface library to !GnuPG (!EasyPG Library).
+
+Homepage:
+
+* http://www.easypg.org/
+
+== Files ==
+
+Setup for transparent, automatic encryption and decryption:
+
+    (require 'epa-file)
+    (epa-file-enable)
+
+Now visit ##anything.gpg## and it will encrypt it when you save the buffer.
+
+See AutoEncryption for alternatives.
+
+== Using symmetric encryption always ==
+
+epa-file will prompt for which key to use for encryption each time you save a .gpg file.  The following patch will stop it prompting, and cause it to always use symmetric encryption:
+
+{{{
+--- Backup/epa-file.el.~1~	2006-12-20 07:33:07.000000000 +0100
++++ epa-file.el	2007-02-11 13:57:20.000000000 +0100
+@@ -186,13 +186,14 @@
+ 		 (epa-file--encode-coding-string (buffer-substring start end)
+ 						 coding-system))
+ 	       (unless (assoc file epa-file-passphrase-alist)
+-		 (epa-select-keys
++		 '(epa-select-keys
+ 		  context
+ 		  "Select recipents for encryption.
+ If no one is selected, symmetric encryption will be performed.  "
+ 		  (cond
+ 		   ((listp epa-file-encrypt-to) epa-file-encrypt-to)
+-		   ((stringp epa-file-encrypt-to) (list epa-file-encrypt-to)))))))
++		   ((stringp epa-file-encrypt-to) (list epa-file-encrypt-to))))
++		 nil)))
+       (error
+        (if (setq entry (assoc file epa-file-passphrase-alist))
+ 	   (setcdr entry nil))
+}}}
+
+Other people suggested using `epa-file-encrypt-to' instead, but that doesn't get rid of the prompt.
+
+== Comments ==
+
+Note that easy-pg consists of two different kind of modules, one is a library (epg.el) and the others are applications (epa-*.el).  Auto-encryption (epa-file.el) is a part of the latter.  As the docs says "The !EasyPG Library dares to disable passphrase caching", that is intended behavior. Caveat user, if you start using the library directly. ;)
+
+== How to use a non-graphical password prompt for gpg ==
+In X, Emacs 23 seems to pop up a graphical window to ask you the keyphrase. How to let it ask the password in minibuffer?
+----
+[new]
+I found the cause for it. The graphical window appears if you run <code>gpg</code> with the <code>--use-agent</code> option. EasyPG adds it (see <code>epg.el</code>) if it sees an environment variable like this one: <code>GPG_AGENT_INFO=/tmp/seahorse-nDQm50/S.gpg-agent:6321:1</code> (check that with the <code>env</code> command). And you have this variable if for instance you have the program <code>seahorse</code> installed and running (which is the case in Ubuntu). If you uninstall Seahorse, the prompt will always be text instead of graphical. You may have to relogin to X to force Seahorse to close. --[[DanielClemente]]
+----
+[new]
+I have the same problem. And in console emacs23 can pop up nothing, so it hang there, you have to use "C-g" quit it. For my gentoo system, I compile the package 'pinentry' without gtk qt3 ncurses. It caused emacs23 hang both in X or console. I notice that pinentry did not have the readline USE in recent version.
+
+I found the thread to fix it.
+http://www.nabble.com/gnupg-interface-td17242718.html
+
+1. Install the latest GnuPG 1.x along with 2.x and let epg-gpg-program
+   to point the executable, or
+
+2. Use other pinentry-program which interact through the windowing system 
+----
+[new]
+I generally don't mind the graphical password prompt when I'm at my desk, but when logged into a remote terminal with multi-tty this can be darn inconvenient (I have to VNC into my desktop just to enter the password!)
+
+Here is my solution that turns off the use of the agent in these cases: http://www.enigmacurry.com/2009/01/14/extending-emacs-with-advice/
+----
+How about (setenv "GPG_AGENT_INFO" nil)
+
+- this did it for me in emacs 23 : nice solution.
+
+----
+[new]
+
+Yes but when you use the command line the pinentry widget will popup.
+
+On the Gnupg homepage:
+GnuPG comes in two flavours: 1.4.9 is the well known and portable standalone version, whereas 2.0.11
+is the enhanced and somewhat harder to build version.
+
+IMHO The best solution seem to use the 1.4.9 version.
+
+--ThierryVolpiatto
+
+----
+Uninstalling seahorse doesn't work for me (gentoo) - even though GPG_AGENT_INFO is unset I still get the graphical password prompt %%*scowl*%%
+
+----
+
+== Problems Decrypting == 
+
+With Emacs 23 and the default epg that comes bundled.  I am able to save (and encrypt) a *.gpg file, but when I try to reopen it in emacs, I get the following:  'File exists, but cannot be read'.  I am able to decrypt it fine outside of emacs with gpg -d
+Running 'M-x epa-decrypt-file RET FILENAME' on the same file gives the following error:  
+'Decrypting test4.gpg...0% (0/674)
+epg-decrypt-file: Wrong type argument: listp, exit
+'
+
+ Any thoughts or comments would be much appreciated!!   
+----
+CategoryCryptography
+CategoryInterface

@@ -1,0 +1,17 @@
+http://www.wesnoth.org/mw/skins/glamdrol/wesnoth-logo.jpg
+is a GPLed turn-based strategy game.
+
+<code>wml-mode</code> is a major mode for editing Wesnoth Markup Language (WML) files.
+Everything in the game (campaign, scenario, units, terrain e.t.c) are defined in WML.
+Actually more than just a "markup Language" (it include conditional and function definition).
+
+Get the mode from
+
+: http://svn.gna.org/viewcvs/*checkout*/wesnoth/trunk/data/tools/wesnoth-mode.el
+
+And see the discussion forum:
+
+: http://www.wesnoth.org/forum/viewtopic.php?t=13798
+
+----
+CategoryGames

@@ -1,0 +1,35 @@
+One can change the window configuration /temporarily/ using
+RecursiveEdit.  Inspired by a command posted by ErikNaggum in
+an Emacs Newsgroup, EmilioLopes wrote this macro:
+
+ ;; inspired by Erik Naggum's `recursive-edit-with-single-window'
+ (defmacro recursive-edit-preserving-window-config (body)
+   "*Return a command that enters a recursive edit after executing BODY.
+ Upon exiting the recursive edit (with\\[exit-recursive-edit] (exit)
+ or \\[abort-recursive-edit] (abort)), restore window configuration
+ in current frame."
+   `(lambda ()
+      "See the documentation for `recursive-edit-preserving-window-config'."
+      (interactive)
+      (save-window-excursion
+        ,body
+        (recursive-edit))))
+
+Use it like this:
+
+ (global-set-key (kbd "C-c 0") (recursive-edit-preserving-window-config (delete-window)))
+
+ (global-set-key (kbd "C-c 1") (recursive-edit-preserving-window-config
+                                (if (one-window-p 'ignore-minibuffer)
+                                    (error "Current window is the only window in its frame")
+                                  (delete-other-windows))))
+
+Now pressing "C-c 1" will delete all other windows in the current
+frame and put you into "recursive editing".  You know you are in a
+recursive edit by noting the square brackets around the parentheses
+that always surround the major and minor mode names.  After exiting
+recursive edit, e.g. by using "C-M-c" (`exit-recursive-edit'), the
+original window configuration is restored.
+
+----
+CategoryWindows

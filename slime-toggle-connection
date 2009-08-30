@@ -1,0 +1,23 @@
+I use this to associate different files with different lisps when I have multiple lisps running at the same time.
+So that when I compile or eval a file (C-c C-k), it is compiled or eval'ed in the correct lisp.
+
+I don't know if this is the best way of doing it, but it works for me.
+
+    (defun slime-toggle-connection ()
+      "For associating a file with a running lisp"
+      (interactive)
+      (setf  slime-net-processes (rotate-list slime-net-processes))
+      (let ((p (car slime-net-processes)))
+        (make-local-variable 'slime-default-connection)  ;; To have different files with different lisps
+        (slime-select-connection p)
+        (slime-set-state (format "(%s)" (slime-connection-name p)) p)
+        (message "Lisp: %s, buffer: %s" (process-contact p) (slime-connection-name p))))
+
+    (define-key slime-mode-map [f12] 'slime-toggle-connection)
+    (define-key slime-mode-map [f11] 'slime-goto-current-connection)
+
+    (defun slime-goto-current-connection ()
+      (interactive)
+      (pop-to-buffer 
+       (slime-connection-output-buffer slime-default-connection)))
+

@@ -1,0 +1,57 @@
+You can define ''anchors'' on a page.  You can then link to these anchors from another page or from the same page. Anchors can be hidden or visible.
+
+See also [[Oddmuse:Local Anchor Extension]] for more on permanent anchors.
+
+[:HiddenAnchors]
+== Hidden Anchors ==
+
+You can create a hidden anchor on a page to serve as the target of links. To define a hidden anchor, use square brackets and a single colon:
+
+     [:MyHiddenAnchor]
+
+You can link to a hidden anchor from the same page by preceding it with a pound sign (<code>#</code>) and enclosing this in double brackets. For example:
+
+     See [[#MyHiddenAnchor]]
+
+You can link to a hidden anchor from a different page by using the target page name, followed by a pound sign, all enclosed in double brackets. For example:
+
+     See [[PageOfMyHiddenAnchor#MyHiddenAnchor]]
+
+The name of a hidden anchor must be unique on its page; it need not be unique throughout the wiki.
+
+
+[:VisibleAnchors]
+== Visible Anchors ==
+
+You can create a visible anchor on a page to serve as the target of links. A visible anchor is different from an HTML named anchor such as <code><A NAME="..."></code>, which is hidden unless you use some special CSS to do otherwise.
+
+To define a visible anchor, use square brackets and two colons:
+
+     [::MyVisibleAnchor]
+
+When this anchor is rendered in the browser, it appears like this: [::MyVisibleAnchor].
+
+**Note**: As of 2009-07-16, a visible anchor cannot start a page and be on a line with other text because of a bug in the Wiki engine.  As a workaround, either have a single newline after the anchor, or wrap the anchor in triple quotes as <code>'''[::MyVisibleAnchor]'''</code>  as a workaround.  The latter is sufficient since an alias that starts a page can and should have '''bold emphasis''' anyway.  Some visible anchors are acronyms or abbreviations for things about Emacs.  Consider putting them after the expanded phrase in parentheses.
+
+You can link to a visible anchor as usual, just as if it were the name of a Wiki page: MyVisibleAnchor. If you are not using mixed uppper- and lowercase letters in your anchor, or if you need to include spaces, use double brackets around the link.
+
+Example:
+
+    [::Creating a Page Alias]
+
+The link would look as follows:
+
+    [[Creating a Page Alias]]
+
+Clicking the ''anchor definition'' itself runs a ''search for the anchor text'', just as if you had typed it into the '''Search''' field at the bottom of the page.
+
+Some people use a visible anchor as an IRC nick on their page, eg. [[kensanata]] links
+to the visible anchor ''kensanata'' on the page AlexSchroeder.
+
+The name of a visible anchor must be unique throughout the wiki; unlike [[#HiddenAnchors]].
+
+See [[Oddmuse:Permanent Anchors]] for the full story on visible anchors.
+
+----
+
+CategoryEmacsWikiSite

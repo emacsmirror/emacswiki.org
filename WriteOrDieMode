@@ -1,0 +1,56 @@
+Write-or-die is an interesting [http://lab.drwicked.com/writeordie.html webapp] designed to gently (or not so gently...) nudge you into producing more writing.  I thought that writing an emacs version would be a good way to learn a bit more about elisp; thus, write-or-die-mode is a minor mode for emacs that emulates some of its behaviour.
+
+Once the mode is activated, invoking write-or-die-go will keep track of when emacs goes idle for more than (by default) 10 seconds.  It then warns you by changing the background to red.  If there is still no typing for a further 10 seconds, words are deleted at the rate of one per second from wherever the cursor currently points.
+
+Time intervals etc. can be customised:
+* write-or-die-warning-period  =  number of seconds before the warning is displayed
+* write-or-die-grace-period  =  number of seconds before "aversive stimulus" occurs (words are deleted).
+* write-or-die-target-words  =  the number of words you're aiming to type
+* write-or-die-target-time  =  the amount of time you want to write for
+
+*Source:*
+
+Lisp:write-or-die.el
+
+*Note:*
+
+I haven't tested this mode beyond the basics; in particular, I'm not sure how it will behave with multiple frames or windows.  I hope to get a chance to test it out soon, but please be careful!  If anyone wants to hack the code, has any suggestions or complaints, please let me know!
+
+Let me know if it's useful, or best consigned to the trash...
+
+-- DuncanMortimer
+
+----
+[new: TomBreton:2009-02-09 02:40 UTC]
+
+Useful, in a wicked way.
+
+I found that word-count had a problem on emacs 21.  It returned a string where a number was expected.  Maybe this is due to having different versions of replace.el.  This replacement will work:
+
+{{{
+    (defun word-count nil 
+       "Count words in buffer" 
+       ;;Adapted from replace.el - Tehom
+       (let
+	  ((regexp "\\w+")
+	     (rend (point-max)))
+	  (save-excursion
+	     (goto-char (point-min))
+	     (let ((count 0)
+		     opoint)
+		(while (and 
+			  (< (point) rend)
+			  (progn
+			     (setq opoint (point))
+			     (re-search-forward regexp rend t)))
+		   (if (= opoint (point))
+		      (forward-char 1)
+		      (setq count (1+ count))))
+		count))))
+}}}
+
+-- TomBreton
+
+----
+CategoryModes
+CategoryWriting

@@ -1,0 +1,9 @@
+An Emacs mode for the output of same available at http://ch.twi.tudelft.nl/~mostert/lisp.html made by JeroenMostert.
+
+Same is a tool to find duplicate lines in multiple text files. Very useful to find and fix Wiki:RapeAndPasteProgramming. It has been designed by Wiki:MarnixKlooster to be simple, portable, and fast. 
+
+* Wiki:SameTool
+* http://sourceforge.net/projects/same 
+
+----
+CategoryExternalUtilities CategoryModes

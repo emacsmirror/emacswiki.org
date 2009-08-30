@@ -1,0 +1,141 @@
+A mode that comes with Emacs that automagically inserts text into new buffers based on file extension or the major mode.  See CVS:autoinsert.el
+
+For those of you annoyed by the "<tt>Copyright (C) YEAR  Free Software Foundation, Inc.</tt>" that's inserted by default into EmacsLisp buffers, set your <tt>ORGANIZATION</tt> environment variable.
+
+The stuff that gets inserted is controlled by the variable `auto-insert-alist'.  Canned files can be stored in the directory ~/insert/.
+Try it with an elisp file, for example.  The result is quite impressive: The entire [[GPL]] notice will be inserted for you.
+
+This feature is sparsely documented in Emacs.  A document about a [http://www.cogsci.ed.ac.uk/~tkld/auto-insert_toc.html modified version of auto-insert by Kevin Davidson] [no longer] exists, but thanks to the internet archive can be found [http://web.archive.org/web/20040604170543/http://www.cogsci.ed.ac.uk/~tkld/auto-insert_toc.html here].
+
+Look for auto-insert-tkld.el in the EmacsLispList.
+
+[new]
+See Lisp:file-template.el for something similar to auto-insert-tkld.el
+
+'''See Also:''' AutomaticFileHeaders.
+
+== File Templates ==
+One way of using autoinsert is to define files that contain the stuff to be inserted and connect them with a filename extension:
+
+    (require 'autoinsert)
+    (auto-insert-mode)  ;;; Adds hook to find-files-hook
+    (setq auto-insert-directory "~/.mytemplates/") ;;; Or use custom, *NOTE* Trailing slash important
+    (setq auto-insert-query nil) ;;; If you don't want to be prompted before insertion
+    (define-auto-insert "\.py" "my-python-template.py")
+    (define-auto-insert "\.php" "my-php-template.php")
+
+With Xemacs 21.4 patch 12, I had problems with the above.  I did get the following to work:
+
+    (setq auto-insert-directory (expand-file-name "~/.mytemplates/"))
+    (setq auto-insert-query nil) ;; don't ask, just do it.
+    (define-auto-insert "\\.html\\'" "autoinsert.html")
+    (define-auto-insert "\\.sh\\'" "autoinsert.sh")
+    (add-hook 'find-file-hooks 'auto-insert)
+
+You can add a special elisp function to parse your inserted files to add things like today's date:
+
+    ;; auto-insert stuff
+    (add-hook 'find-file-hooks 'auto-insert)
+    (setq auto-insert-directory (concat (getenv "HOME") "/auto/"))
+    (setq auto-insert-alist
+	  '(
+	    ("\\.cpp$" . ["insert.cpp" auto-update-c-source-file])
+	    ("\\.h$"   . ["insert.h" auto-update-header-file])
+	    ("\\.c$" . ["insert.c" auto-update-c-source-file])
+	    ))
+    (setq auto-insert 'other)
+
+    ;; function replaces the string '@@@' by the current file
+    ;; name. You could use a similar approach to insert name and date into
+    ;; your file.
+    (defun auto-update-header-file ()
+	 (save-excursion
+	   (while (search-forward "@@@" nil t)
+	     (save-restriction
+	       (narrow-to-region (match-beginning 0) (match-end 0))
+	       (replace-match (upcase (file-name-nondirectory buffer-file-name)))
+	       (subst-char-in-region (point-min) (point-max) ?. ?_)
+	       ))
+	   )
+	 )
+
+   (defun insert-today ()
+     "Insert today's date into buffer"
+     (interactive)
+     (insert (format-time-string "%A, %B %e %Y" (current-time))))
+
+   (defun auto-update-c-source-file ()
+      (save-excursion
+	;; Replace HHHH with file name sans suffix
+	(while (search-forward "HHHH" nil t)
+	  (save-restriction
+	    (narrow-to-region (match-beginning 0) (match-end 0))
+	    (replace-match (concat (file-name-sans-extension (file-name-nondirectory buffer-file-name)) ".h") t
+			   )
+	    ))
+	)
+      (save-excursion
+	;; Replace @@@ with file name
+	(while (search-forward "@@@" nil t)
+	  (save-restriction
+	    (narrow-to-region (match-beginning 0) (match-end 0))
+	    (replace-match (file-name-nondirectory buffer-file-name))
+	    ))
+	)
+      (save-excursion
+	;; replace DDDD with today's date
+	(while (search-forward "DDDD" nil t)
+	  (save-restriction
+	    (narrow-to-region (match-beginning 0) (match-end 0))
+	    (replace-match "")
+	    (insert-today)
+	    ))
+	)
+      )
+
+So in my ~/auto folder, I have two files, insert.cpp and insert.h. insert.h looks like:
+
+<pre>
+#if !defined(@@@)
+#define @@@
+
+#endif
+</pre>
+
+And, via the auto-update-header-file defun, the "@@@" gets changed to the ANSI correct "TESTPROG_H" when I edit a new file called testprog.h. And my insert.cpp file looks like this:
+
+<pre>
+// @@@ -
+//
+// Jonathan Arnold
+// DDDD
+//
+
+#include "HHHH"
+</pre>
+
+Where again some stuff gets changeed before getting inserted into the buffer - @@@ gets changed to the filename, DDDD gets changed to today's date, and HHHH gets changed to the correct header file name.
+
+== Skeleton Templates ==
+A second way of using autoinsert is to define skeletons (see SkeletonMode) that can use a little bit more magic.  You are free to connect that to filename extensions or to the name of a major mode, like:
+
+ (setq auto-insert-alist
+      '(
+        ;;{{{ C++ Header
+        (("\\.\\([H]\\|hh\\|hpp\\)\\'" . "C++ Header")
+         nil
+         "insert some text here"
+        )
+        ;;}}}
+        ;;{{{ Perl
+        ((perl-mode . "Perl Program")
+          nil
+          "#! /usr/bin/perl\n#\n"
+          "insert more, don't forget use warnings and use strict ;-)"
+        )
+        ;;}}}
+  ))
+
+----
+CategoryTemplates
+CategoryCode

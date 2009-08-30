@@ -1,0 +1,133 @@
+== What is Cua-mode? ==
+
+Cua-mode is part of GnuEmacs versions 22.1.1 and later (at least).
+
+Cua-mode allows one to use `C-v', `C-c', and `C-x' to paste, copy, and cut the region.  Since this conflicts with very important keybindings in Emacs, these CUA bindings are only active when the [[mark]] is active. The package does a whole lot more, too: `C-z' to undo, Shift-movement to select, and it includes support for '''rectangular regions''' (`C-RET' and arrow keys instead of using the `C-x r ...' keys) and [[register]]s (instead of using the register commands), and it uses `<tab>' and `S-<tab>' to indent and outdent the region. As you can see, it is very powerful!
+
+More information on Cua-mode is in the Gnu-Emacs manual [[Manual:CUA Bindings]].
+
+*Note:* If you have an Emacs version which does not have it, you must obtain cua.el (see Kim Storm's page http://www.cua.dk/). To see if Cua is built into your Emacs try ##M-x cua-mode##. Cua-mode seems not to be part of X-Emacs and at least for recent XEmacs-versions cua-mode.el seems to be broken -- see *Note 4*.
+
+== Activating Cua-mode ==
+
+For GNU Emacs versions above 22.1: 
+* Select the CUA style from the Options menu and save the Options. 
+* Or add this to ##~/.emacs##(the last three are optional):
+
+    (cua-mode t)
+    (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
+    (transient-mark-mode 1) ;; No region when it is not highlighted
+    (setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
+
+When cua.el is used:
+* Put the file somewhere in your LoadPath and add the following to your ##~/.emacs## file:
+
+    (require 'cua)
+    (CUA-mode t)
+
+* Note, the CUA mode integrated into Emacs 22.1(and newer) does not get along with cua.el. Use one or the other.
+
+If you like the rectangle support, global mark mode, and other features, but prefer the standard Emacs keys, add:
+
+    (setq cua-enable-cua-keys nil)
+
+or, if using cua.el, add ##(CUA-mode 'emacs)## instead of ##(CUA-mode t)##
+
+
+== Cua-mode on a Linux console or terminal ==
+
+Once you get used to this setup, using Emacs on the GNU/Linux console or in a terminal can be a shock, since Shift-movement doesn't work.  The console doesn't send different escape sequences for Shift-movement and plain movement.    The terminal does send different escape sequences, but Emacs doesn't interpret them.  To fix this, first make the console send the same sequences for Shift-movement as a terminal.  Put this in ~/.keymap:
+
+ keycode 103 = Up
+  shift   keycode 103 = F49
+ keycode 105 = Left
+  shift   keycode 105 = F51
+ keycode 106 = Right
+  shift   keycode 106 = F52
+ keycode 108 = Down
+  shift   keycode 108 = F50
+ string F49 = "\033O2A"
+ string F50 = "\033O2B"
+ string F51 = "\033O2D"
+ string F52 = "\033O2C"
+
+A more complete ~/.keymap version, with Shift|Control+Shift-movement and Shift|Control+Shift-Home|End:
+
+ keycode 103 = Up
+  Shift keycode 103 = F49
+ keycode 108 = Down
+  Shift keycode 108 = F50
+ keycode 106 = Right
+  Shift keycode 106 = F51
+  Control keycode 106 = F53
+  Control Shift keycode 106 = F55
+ keycode 105 = Left
+  Shift keycode 105 = F52
+  Control keycode 105 = F54
+  Control Shift keycode 105 = F56
+ keycode 102 = Find
+  Shift keycode 102 = F57
+  Control keycode 102 = F59
+  Control Shift keycode 102 = F61
+ keycode 107 = Select
+  Shift keycode 107 = F58
+  Control keycode 107 = F60
+  Control Shift keycode 107 = F62
+ string F49 = "\033O2A"
+ string F50 = "\033O2B"
+ string F51 = "\033O2C"
+ string F52 = "\033O2D"
+ string F53 = "\033O5C"
+ string F54 = "\033O5D"
+ string F55 = "\033O6C"
+ string F56 = "\033O6D"
+ string F57 = "\033O2H"
+ string F58 = "\033O2F"
+ string F59 = "\033O5H"
+ string F60 = "\033O5F"
+ string F61 = "\033O6H"
+ string F62 = "\033O6F"
+
+To load the keymap, add the following to your shell's startup file:
+
+ if [ "$TERM" = "linux" ] ; then
+    loadkeys -q .keymap
+ fi
+
+Finally, to make Emacs interpret the keys, add the following to your .emacs:
+
+ ;; Make shifted direction keys work on the Linux console or in an xterm
+ (when (member (getenv "TERM") '("linux" "xterm"))
+   (dolist (prefix '("\eO" "\eO1;" "\e[1;"))
+     (dolist (m '(("2" . "S-") ("3" . "M-") ("4" . "S-M-") ("5" . "C-")
+                  ("6" . "S-C-") ("7" . "C-M-") ("8" . "S-C-M-")))
+       (dolist (k '(("A" . "<up>") ("B" . "<down>") ("C" . "<right>")
+                    ("D" . "<left>") ("H" . "<home>") ("F" . "<end>")))
+         (define-key function-key-map
+                     (concat prefix (car m) (car k))
+                     (read-kbd-macro (concat (cdr m) (cdr k))))))))
+
+Now you can select text the same way in X11, the console, or a terminal (assuming your terminal doesn't intercept Shift-movement for something else, like Konsole does).
+
+'''Note''': I am using the complete version without problems outside X. But I couldn't make it work on xterm with 'emacs -nw'. But (again), if you are using X, why use '-nw'? :) -- DeDaLu
+
+
+*Note 1*. An alternative to cua-mode might be CuaLightMode.
+
+*Note 2*. See CopyAndPaste for a discussion on Cua-mode and related subjects.
+
+*Note 3*. See CuaAndIsoTransl for a comment on the order or cua-mode and iso-transl in .emacs.
+
+*Note 4*. A much more primitive cua-mode.el for XEmacs is also available from Kim Strom's site (www.cua.dk), written by SL Baur, but it is currently broken. see http://groups.google.com/groups?q=cua-mode+%2B+xemacs&hl=en&rnum=4&selm=88h0hm%24qtb%241%40pheidippides.axion.bt.co.uk
+
+----
+
+ ;; shift + click select region
+ (define-key global-map (kbd "<S-down-mouse-1>") 'ignore) ; turn off font dialog
+ (define-key global-map (kbd "<S-mouse-1>") 'mouse-set-point)
+ (put 'mouse-set-point 'CUA 'move)
+
+--bdimych
+
+----
+CategoryRegion CategoryKeys

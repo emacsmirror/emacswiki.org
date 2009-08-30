@@ -1,0 +1,1652 @@
+
+;;
+;; My .emacs
+;;
+
+(defvar my-pgm-path nil
+  "Path to where my personal program directory is")
+
+(defvar my-dat-path nil
+  "Path to where my personal program directory is")
+
+(setq my-pgm-path (getenv "PGM"))
+
+(setq my-dat-path (getenv "DAT"))
+
+(if my-pgm-path
+    (setq my-pgm-path (expand-file-name my-pgm-path)))
+
+(if my-dat-path
+    (setq my-dat-path (expand-file-name my-dat-path)))
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom -- don't edit or cut/paste it!
+  ;; Your init file should contain only one such instance.
+ '(Info-additional-directory-list (list (concat my-dat-path "/doc/info")))
+ '(archive-zip-expunge (quote ("zip" "-d")))
+ '(archive-zip-extract (quote ("unzip" "-p")))
+ '(archive-zip-update (quote ("pkzip" "-u")))
+ '(archive-zip-use-pkzip nil)
+ '(blink-cursor nil)
+ '(browse-url-browser-function (quote browse-url-default-windows-browser) t)
+ '(buffers-menu-max-size 30)
+ '(c-basic-offset 3)
+ '(calendar-latitude 57.717 t)
+ '(calendar-location-name "GÅˆteborg" t)
+ '(calendar-longitude 11.971 t)
+ '(calendar-today-marker (quote calendar-today-face))
+ '(calendar-week-start-day 1 t)
+ '(case-fold-search t)
+ '(comment-start-skip "--" t)
+ '(compilation-scroll-output nil)
+ '(current-language-environment "Latin-1")
+ '(default-input-method "latin-1-prefix")
+ '(desktop-enable t nil (desktop))
+ '(desktop-missing-file-warning nil)
+ '(dired-backup-overwrite t)
+ '(dired-recursive-deletes t)
+ '(dired-sort-menu-saved-config (quote ((dired-actual-switches . "-al") (ls-lisp-ignore-case) (ls-lisp-dirs-first . t))))
+ '(display-time-24hr-format t)
+ '(display-time-day-and-date t)
+ '(display-time-interval 10)
+ '(ecb-help-info-path "../../info/ecb.info")
+ '(erc-nick "maDa")
+ '(erc-port "6667")
+ '(erc-prompt-for-password nil)
+ '(erc-server "irc.freenode.net")
+ '(erc-user-full-name "Mathias Dahl")
+ '(eshell-ask-to-save-history (quote always))
+ '(eshell-buffer-maximum-lines 5000)
+ '(eshell-cp-interactive-query t)
+ '(eshell-hist-ignoredups t)
+ '(eshell-hist-rebind-keys-alist (quote (([(control 114)] . eshell-isearch-backward) ([(control 115)] . eshell-isearch-forward) ([(meta 114)] . eshell-previous-matching-input) ([(meta 115)] . eshell-next-matching-input) ([(meta 112)] . eshell-previous-matching-input-from-input) ([(meta 110)] . eshell-next-matching-input-from-input) ([up] . eshell-previous-matching-input-from-input) ([down] . eshell-next-matching-input-from-input))))
+ '(eshell-history-size 5000)
+ '(eshell-last-dir-ring-size 500)
+ '(eshell-modules-list (quote (eshell-alias eshell-banner eshell-basic eshell-cmpl eshell-dirs eshell-glob eshell-hist eshell-ls eshell-pred eshell-prompt eshell-rebind eshell-script eshell-smart eshell-term eshell-unix)))
+ '(eshell-mv-interactive-query t)
+ '(eshell-prompt-function (lambda nil (concat (eshell/pwd) "
+ $ ")))
+ '(eshell-pushd-tohome t)
+ '(eshell-rm-interactive-query t)
+ '(european-calendar-style (quote (year "-" month "-" day)) t)
+ '(focus-follows-mouse nil)
+ '(global-font-lock-mode t nil (font-lock))
+ '(global-mark-ring-max 30)
+ '(gnus-group-line-format "%M%S%p%P%5y: %(%g%)%l %d\\n")
+ '(gnus-select-method (quote (nntp "news.ifsab.se")))
+ '(gnus-treat-fill-article t)
+ '(gomoku-font-lock-X-face (quote (fg:green bold)))
+ '(gomoku-square-height 2 t)
+ '(gomoku-square-width 4 t)
+ '(gomoku-x-offset 3 t)
+ '(gomoku-y-offset 1 t)
+ '(indent-tabs-mode nil)
+ '(iswitchb-prompt-newbuffer nil)
+ '(jabber-alert-message-hooks (quote (jabber-message-beep jabber-message-echo jabber-message-switch)))
+ '(jabber-alert-presence-hooks (quote (jabber-presence-update-roster jabber-presence-echo)))
+ '(jabber-nickname "maDa")
+ '(jabber-server "jabbernet.dk")
+ '(jabber-username "brakjoller")
+ '(load-path (quote ("/usr/share/emacs/21.3/site-lisp" "/usr/share/emacs/site-lisp" "/usr/share/emacs/21.3/leim" "/usr/share/emacs/21.3/lisp" "/usr/share/emacs/21.3/lisp/toolbar" "/usr/share/emacs/21.3/lisp/textmodes" "/usr/share/emacs/21.3/lisp/progmodes" "/usr/share/emacs/21.3/lisp/play" "/usr/share/emacs/21.3/lisp/obsolete" "/usr/share/emacs/21.3/lisp/net" "/usr/share/emacs/21.3/lisp/mail" "/usr/share/emacs/21.3/lisp/language" "/usr/share/emacs/21.3/lisp/international" "/usr/share/emacs/21.3/lisp/gnus" "/usr/share/emacs/21.3/lisp/eshell" "/usr/share/emacs/21.3/lisp/emulation" "/usr/share/emacs/21.3/lisp/emacs-lisp" "/usr/share/emacs/21.3/lisp/calendar" "/usr/share/emacs/site-lisp/erc-4.0/" "/usr/share/emacs/site-lisp/emacs-jabber-0.5/")) t)
+ '(mark-ring-max 30)
+ '(max-specpdl-size 1000)
+ '(mouse-wheel-mode t nil (mwheel))
+ '(speedbar-frame-parameters (quote ((minibuffer) (height . 67) (width . 32) (border-width . 0) (menu-bar-lines . 0) (unsplittable . t) (font . "-raster-MS Serif-normal-r-normal-normal-8-60-96-96-p-40-iso10646-1"))))
+ '(speedbar-supported-extension-expressions (quote (".[ch]\\(\\+\\+\\|pp\\|c\\|h\\|xx\\)?" ".tex\\(i\\(nfo\\)?\\)?" ".el" ".emacs" ".l" ".lsp" ".p" ".java" ".f\\(90\\|77\\|or\\)?" ".ada" ".pl" ".tcl" ".m" ".scm" ".pm" ".py" ".s?html" "Makefile\\(\\.in\\)?" ".sql")))
+ '(speedbar-use-images nil)
+ '(sql-input-ring-file-name "~/.sql_input_ring")
+ '(sql-interactive-mode-hook (quote (my-sql-interactive-hook)))
+ '(sql-mode-hook (quote (sql-highlight-oracle-keywords)))
+ '(sql-password "ifsapp")
+ '(sql-user "ifsapp")
+ '(standard-indent 8)
+ '(today-visible-calendar-hook (quote (calendar-mark-today)) t)
+ '(truncate-partial-width-windows nil)
+ '(user-full-name "Mathias Dahl")
+ '(user-mail-address "mdahse@gbg.ifsab.se")
+ '(w32-net-send-ask-times nil)
+ '(w32-net-send-recipients (quote (("pemase") ("hberse") ("hasise") ("jospse") ("pemase") ("kuanse") ("dhpelk") ("thablk") ("bojose") ("liguse") ("chmase") ("rowese") ("jlunse") ("miamse") ("sperse") ("thvese") ("Ulf Yngve" . "ulynse") ("dikalk") ("bakalk") ("masase"))))
+ '(w32-net-send-signature "
+--
+/M@is")
+ '(w3m-home-page "http://klibb.com/cgi-bin/wiki.pl?PersonligaSidorMathias/Bokm%e4rken")
+ '(woman-path (list (concat my-dat-path "/doc/man"))))
+
+;; debug
+;;(require 'pp)
+;;(message (concat "transient-mark-mode: " (pp-to-string transient-mark-mode)))
+
+(custom-set-faces
+  ;; custom-set-faces was added by Custom -- don't edit or cut/paste it!
+  ;; Your init file should contain only one such instance.
+ '(calendar-today-face ((t (:underline t :foreground "red"))))
+ '(cursor ((t (:background "blue"))))
+ '(fg:green ((t (:foreground "green")))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;                                                            ;;;
+;;;                         Autoloads                          ;;;
+
+(autoload 'htmlize-file "htmlize" "Htmlize text files." t)
+(autoload 'htmlize-buffer "htmlize" "Htmlize buffer." t)
+(autoload 'woman "woman" "Decode and browse a UN*X man page." t)
+(autoload 'woman-find-file "woman" "Find, decode and browse a specific UN*X man-page file." t)
+(autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
+(autoload 'calculator "calculator" "A calculator in elisp" t)
+(autoload 'slashdot "slashdot" "A slashdot mode" t)
+(autoload 'epop3-manage-mailbox "epop3manage" "manage POP3 mailbox" t)
+(autoload 'all "all" "Show all lines in the current buffer containing a match for REGEXP." t)
+(autoload 'mss "mss" "Make Smart Shortcut" t)
+(autoload 'lyskom "lyskom-all-0.47.1" "Start LysKom" t)
+(autoload 'erc-select "erc" "Start Emacs IRC mode" t)
+(autoload 'vm "vm" "Start VM on your primary inbox." t)
+(autoload 'vm-other-frame "vm" "Like `vm' but starts in another frame." t)
+(autoload 'vm-visit-folder "vm" "Start VM on an arbitrary folder." t)
+(autoload 'vm-visit-virtual-folder "vm" "Visit a VM virtual folder." t)
+(autoload 'vm-mode "vm" "Run VM major mode on a buffer" t)
+(autoload 'vm-mail "vm" "Send a mail message using VM." t)
+(autoload 'vm-submit-bug-report "vm" "Send a bug report about VM." t)
+(autoload 'ibuffer "ibuffer" "List buffers." t)
+(autoload 'color-theme-select "color-theme" "Select color-theme" t)
+(autoload 'hide-region-hide "hide-region" "Hide region" t)
+(autoload 'gse-number-rectangle "gse-number-rect" "gse-number-rect" t)
+(autoload 'hide-matching-lines "hide-lines" "Hide matching lines" t)
+(autoload 'hide-non-matching-lines "hide-lines" "Hide non-matching lines" t)
+(autoload 'xml-lite-indent-line "xml-lite" "Indent the current line as XML" t)
+(autoload 'wdired-change-to-wdired-mode "wdired")
+(autoload 'run-command "run-command")
+(autoload 'lnk-dereference-shortcut "lnk")
+(autoload 'goto-last-change "goto-last-change" "Set point to the position of the last change." t)
+
+(setq auto-mode-alist (cons '("\\.\\(sql\\|apy\\|api\\|ins\\|cre\\|upg\\|rdf\\)$" . sql-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.\\(cmd\\|bat\\)$" . bat-generic-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.\\(frm\\|bas\\|vbs\\|cls\\)$" . visual-basic-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.\\(asp\\|java\\|js\\)$" . java-mode) auto-mode-alist))
+
+;;;                         Autoloads                          ;;;
+;;;                                                            ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;                                                            ;;;
+;;;                      My own functions                      ;;;
+
+(defun backwards (text)
+  "Returns text turned backwards."
+  (interactive "sStrÅ‰ng: ")
+  (setq len (length text))
+  (while (> len 0)
+    (progn
+      (insert (substring text (- len 1) len))
+      (setq len (- len 1)))))
+
+(defun switch-truncate-lines()
+  "Switches truncate-lines ON or OFF"
+  (interactive)
+  (if truncate-lines
+      (setq truncate-lines nil)
+    (setq truncate-lines 1))
+  (redraw-display))
+
+(defun strip-trailing-spaces()
+  "Strips trailing spaces and tabs in every row from current point and forward"
+  (interactive)
+  (replace-regexp "[ \t]+$" ""))
+
+(defun strip-beginning-spaces()
+  "Strips beginning spaces and tabs in every row from current point and forward"
+  (interactive)
+  (replace-regexp "^[ \t]+" ""))
+
+(defun match-paren (arg)
+  "Go to the matching parenthesis if on parenthesis otherwise insert %."
+  (interactive "p")
+  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+        ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+        (t (self-insert-command (or arg 1)))))
+
+(defun figlet-region(start end)
+  "Runs current region through figlet"
+  (interactive "r")
+  (setq text (buffer-substring start end))
+  (setq file (read-file-name "Select font file: " (concat my-dat-path "/var/flf/")))
+  (insert "\n")
+  (call-process (concat my-pgm-path "/bin/figlet.exe") nil t nil "-f" file text))
+
+(defun jive-region(start end)
+  "Jives region"
+  (interactive "r")
+  (insert "\n")
+  (call-process-region start end (concat my-pgm-path "/bin/jive") nil t nil))
+
+(defun slash-to-backslash (text)
+  (substitute ?\\ ?/ text))
+
+                                        ; Funktion som sÅ‰tter in filnamn
+(defun insert-file-name-with-backslash ()
+  (interactive)
+  (save-excursion
+    (insert (convert-standard-filename (buffer-file-name)))))
+
+(defun insert-file-name-with-slash ()
+  (interactive)
+  (save-excursion
+    (insert (buffer-file-name))))
+
+(defun funkyfy-region(beg end)
+  "Funkyfy the region"
+  (interactive "r")
+  (let
+      ((position 0)
+       (region_length (- end beg)))
+    
+    (while (< position region_length)
+      (progn
+        (if (equal (random 2) 0)
+            (upcase-region (+ beg position) (+ beg position 1))
+          (downcase-region (+ beg position) (+ beg position 1)))
+        (setq position (1+ position))))))
+
+(defun punktemacs ()
+  (interactive)
+  (find-file "~/.emacs"))
+
+(defun save-position (pos)
+  "Saves current cursor position in a user defined register"
+  (interactive "cSave position (press a character): ")
+  (point-to-register pos)
+  (message "Position %c saved." pos))
+
+(defun jump-position (pos)
+  "Jump to position stored in a user defined register"
+  (interactive "cJump to position (press a character): ")
+  (jump-to-register pos)
+  (message "Jumping to position %c." pos))
+
+(defun save-current-position ()
+  "Saves current cursor position in register 0"
+  (interactive)
+  (point-to-register 0)
+  (delete (assoc 1 register-alist) register-alist)
+  (message "Position saved."))
+
+(defun jump-last-position ()
+  "Jump to position saved with previous `save-current-position',
+OR if run two times with no `save-current-position' in between,
+jump to the last position it was run from."
+  (interactive)
+  (if (get-register 0)
+      (progn
+        (point-to-register 1)
+        (jump-to-register 0)
+        (delete (assoc 0 register-alist) register-alist)
+        (message "Jumped to last saved or last jump-position"))
+    (if (get-register 1)
+        (progn
+          (point-to-register 0)
+          (jump-to-register 1)
+          (delete (assoc 1 register-alist) register-alist)
+          (message "Jumped to last saved or last jump-position"))
+      (message "No pos saved"))))
+
+;; TvÅÂ funktioner fÅˆr att hantera HEX
+(defun hex-char-to-integer (character)
+  "Take a char and return its value as if it was a hex digit."
+  (if (and (>= character ?0) (<= character ?9))
+      (- character ?0)
+    (let ((ch (logior character 32)))
+      (if (and (>= ch ?a) (<= ch ?f))
+          (- ch (- ?a 10))
+        (error "Invalid hex digit `%c'." ch)))))
+
+(defun hex-string-to-integer (hex-string)
+  (let ((hex-num 0))
+    (while (not (equal hex-string ""))
+      (setq hex-num (+ (* hex-num 16)
+                       (hex-char-to-integer (string-to-char hex-string))))
+      (setq hex-string (substring hex-string 1)))
+    hex-num))
+
+(defun scroll-other-window-down-one-row ()
+  (interactive)
+  (scroll-other-window 1))
+
+(defun scroll-other-window-up-one-row ()
+  (interactive)
+  (scroll-other-window -1))
+
+(defun scroll-window-down-one-row ()
+  (interactive)
+  (scroll-up 1))
+
+(defun scroll-window-up-one-row ()
+  (interactive)
+  (scroll-down 1))
+
+(defun mouse-selection-to-register-2 ()
+  (interactive)
+  (copy-rectangle-to-register 2 (mark) (point)))
+
+(defun insert-from-register-2 ()
+  (interactive)
+  (insert-register 2))
+
+(defun save-command-history()
+  (interactive)
+  (setq rest file-name-history)
+  (insert "(setq file-name-history '(")
+  (while rest
+    (progn
+      (insert (concat "\"" (car rest) "\" "))
+      (setq rest (cdr rest))))
+  (insert "))"))
+
+(defun timestamp ()
+  "Inserts the value of `current-time-string'"
+  (interactive)
+  (insert (current-time-string)))
+
+(defun win-resize-top-or-bot ()
+  "Figure out if the current window is on top, bottom or in the
+middle"
+  (let* ((win-edges (window-edges))
+	 (this-window-y-min (nth 1 win-edges))
+	 (this-window-y-max (nth 3 win-edges))
+	 (fr-height (frame-height)))
+    (cond
+     ((eq 0 this-window-y-min) "top")
+     ((eq (- fr-height 1) this-window-y-max) "bot")
+     (t "mid"))))
+
+(defun win-resize-left-or-right ()
+  "Figure out if the current window is to the left, right or in the
+middle"
+  (let* ((win-edges (window-edges))
+	 (this-window-x-min (nth 0 win-edges))
+	 (this-window-x-max (nth 2 win-edges))
+	 (fr-width (frame-width)))
+    (cond
+     ((eq 0 this-window-x-min) "left")
+     ((eq (+ fr-width 4) this-window-x-max) "right")
+     (t "mid"))))
+
+(defun win-resize-enlarge-horiz ()
+  (interactive)
+  (cond
+   ((equal "top" (win-resize-top-or-bot)) (enlarge-window -1))
+   ((equal "bot" (win-resize-top-or-bot)) (enlarge-window 1))
+   ((equal "mid" (win-resize-top-or-bot)) (enlarge-window -1))
+   (t (message "nil"))))
+
+(defun win-resize-minimize-horiz ()
+  (interactive)
+  (cond
+   ((equal "top" (win-resize-top-or-bot)) (enlarge-window 1))
+   ((equal "bot" (win-resize-top-or-bot)) (enlarge-window -1))
+   ((equal "mid" (win-resize-top-or-bot)) (enlarge-window 1))
+   (t (message "nil"))))
+
+(defun win-resize-enlarge-vert ()
+  (interactive)
+  (cond
+   ((equal "left" (win-resize-left-or-right)) (enlarge-window-horizontally -1))
+   ((equal "right" (win-resize-left-or-right)) (enlarge-window-horizontally 1))
+   ((equal "mid" (win-resize-left-or-right)) (enlarge-window-horizontally -1))))
+
+(defun win-resize-minimize-vert ()
+  (interactive)
+  (cond
+   ((equal "left" (win-resize-left-or-right)) (enlarge-window-horizontally 1))
+   ((equal "right" (win-resize-left-or-right)) (enlarge-window-horizontally -1))
+   ((equal "mid" (win-resize-left-or-right)) (enlarge-window-horizontally 1))))
+
+(defun copy-sql-file-name ()
+  (interactive)
+  (kill-new (concat "@\"" buffer-file-name "\"")))
+
+(defun w32-context-menu (filename)
+  (start-process-shell-command "context" "*context*" "context" filename))
+
+(defun w32-context-menu-current-buffer ()
+  (interactive)
+  (w32-context-menu (concat "\"" buffer-file-name "\"")))
+
+(defun w32-context-menu-dired-get-filename ()
+  (interactive)
+  (w32-context-menu (concat "\"" (dired-get-filename) "\"")))
+
+;;  (start-process-shell-command "context" "*context*" "context" (concat "\"" buffer-file-name "\"")))
+
+(defun w32-properties (filename)
+  (start-process-shell-command "properties" "*properties*" "propsfor" filename))
+
+(defun w32-properties-current-buffer ()
+  (interactive)
+  (w32-properties buffer-file-name))
+
+;; Thu Aug 19 18:07:02 1999
+
+(defun insert-line-number ()
+  (interactive)
+  (insert (substring (what-line) 5)))
+
+(fset 'save-raw-text-dos
+      [?\M-x ?e ?v ?a ?l ?  ?e ?x ?p ?r ?e ?s ?s ?i ?o ?n return
+             ?( ?s ?e ?t ?q backspace ?- ?b ?u ?f ?f ?e ?r ?- ?m ?o ?d ?i
+                   ?f ?i ?e ?d ?- ?p ?  ?t ?) return ?\M-x ?u ?n ?i ?v ?e ?r ?s
+             ?a ?l ?  ?c ?o ?  tab return ?r ?a ?w ?- ?t ?e ?x ?t ?- ?d
+             ?o ?s return f2])
+
+(defun ins-cursor-set () "set cursor color according to ins mode"
+  (let ((sv-crs-str cursor-color))
+    (if overwrite-mode
+        (setq cursor-color "red")       ;overwrite cursor color
+      (setq cursor-color "blue"))       ;insert mode
+    (or (string= sv-crs-str cursor-color)
+        (set-cursor-color cursor-color)))) ;X terminal cursor color
+
+(defun lpad (in-string len &optional pad-char)
+  (setq return-string in-string)
+  (if (not pad-char)
+      (setq pad-char " "))
+  (while (< (length return-string) len)
+    (setq return-string (concat pad-char return-string)))
+  (substring return-string 0 len))
+
+(defun sql-trim (str)
+  "Trim left and right whitespace.
+Whitespace in the middle of STR is left untouched."
+  (let ((mystr str))
+    ;; Leading spaces.
+    (when (string-match "^[ \t\n]+" mystr)
+      (setq mystr (substring mystr (match-end 0))))
+    ;; Trailing spaces.
+    (when (string-match "[ \t\n]+$" mystr)
+      (setq mystr (substring mystr 0 (match-beginning 0))))
+    mystr))
+
+(defun goto-line-random ()
+  (interactive)
+  (goto-line (+ (random 7) 1)))
+
+(defun copy-buffer-contents ()
+  (interactive)
+  (kill-new (buffer-substring (point-min) (point-max))))
+
+(defun uncomment-region ()
+  (interactive)
+  (comment-region (mark) (point) -1))
+
+(defvar qa-buffer-name "qa.txt"
+  "Name of buffer to place questions and answers")
+
+(defvar qa-default-created-by "mdahse")
+
+(defvar qa-default-reported-by "mdahse")
+
+(defun qa-new-qa ()
+  (interactive)
+  (switch-to-buffer qa-buffer-name)
+  (let ((number (read-string "Question number: ")))
+    (goto-char (point-max))
+    (insert (concat "Q" (lpad number 5 "0") ":" "\n"))
+    (insert (concat "QDate: " (current-time-string) "\n"))
+    (insert (concat "QCreatedBy: " qa-default-created-by "\n"))
+    (insert (concat "QReportedBy: " qa-default-reported-by "\n\n"))
+    (insert "Problem/question:\n\n")
+    (insert "Cause:\n\n")
+    (insert "Answer/solution:\n\n")
+    (goto-char (- (point-max) 27))))
+
+(defun scroll-both-one-down ()
+  (interactive)
+  (scroll-window-down-one-row)
+  (scroll-other-window-down-one-row))
+
+(defun scroll-both-one-up ()
+  (interactive)
+  (scroll-window-up-one-row)
+  (scroll-other-window-up-one-row))
+
+(defun my-java-mode-hook ()
+  (c-set-offset 'substatement-open 0))
+
+(defun move-region-left (reg-start reg-end)
+  (interactive "r")
+  (indent-rigidly reg-start reg-end -1))
+
+(defun move-region-right (reg-start reg-end)
+  (interactive "r")
+  (indent-rigidly reg-start reg-end 1))
+
+(defun my-eshell-keys ()
+  (interactive)
+  (local-set-key [C-down] 'scroll-window-down-one-row)
+  (local-set-key [C-up] 'scroll-window-up-one-row)
+  (local-set-key "\M-." 'kai-eshell-insert-last-word))
+
+(defun windows-run (command)
+  (interactive "sCommand: ")
+  (w32-shell-execute nil command))
+
+;; Functions for entering swedish characters
+;; when not using a Swedish keyboard
+
+(defun aring-upper ()
+  (interactive)
+  (insert 197))
+
+(defun auml-upper ()
+  (interactive)
+  (insert 196))
+
+(defun ouml-upper ()
+  (interactive)
+  (insert 214))
+
+(defun aring-lower ()
+  (interactive)
+  (insert 229))
+
+(defun auml-lower ()
+  (interactive)
+  (insert 228))
+
+(defun ouml-lower ()
+  (interactive)
+  (insert 246))
+
+;; Dumb function. Should write a nicer one later
+
+(defun swedish-text (beg end)
+  (interactive "r")
+  (setq muu (buffer-substring beg end))
+
+  ;; Lowercase
+
+  (while (string-match "aa" muu)
+    (setq muu (replace-match "\x0e5" nil nil muu nil)))
+
+  (while (string-match "ae" muu)
+    (setq muu (replace-match "\x0e4" nil nil muu nil)))
+
+  (while (string-match "oe" muu)
+    (setq muu (replace-match "\x0f6" nil nil muu nil)))
+
+  ;; Uppercase
+
+  (while (string-match "AA" muu)
+    (setq muu (replace-match "\x0c5" nil nil muu nil)))
+
+  (while (string-match "AE" muu)
+    (setq muu (replace-match "\x0c4" nil nil muu nil)))
+
+  (while (string-match "OE" muu)
+    (setq muu (replace-match "\x0d6" nil nil muu nil)))
+
+  (insert muu))
+
+;;;
+;;; Simple password encoding and decoding
+;;;
+
+(defun encode-password-internal (pass)
+  (setq plen (length pass))
+  (setq encoded "")
+  (while (> plen 0)
+    (progn
+      (setq c (string-to-char (substring pass (- plen 1))))
+      (if (= 0 (mod plen 2)) ;; even positions
+          (setq c (+ c plen))
+        (setq c (- c plen)))
+
+      (cond 
+       ((= c 94)
+        (setq c 1))
+       ((= c 61)
+        (setq c 2)))
+
+      (setq encoded (concat encoded (char-to-string c)))
+      (setq plen (- plen 1))))
+  encoded)
+
+(defun decode-password-internal (pass)
+  (setq orglen (length pass))
+  (setq decoded "")
+  (setq plen (- orglen 1))
+  (while (> plen -1)
+    (progn
+      (setq c (string-to-char (substring pass plen)))
+      (cond 
+       ((= c 1)
+        (setq c 94))
+       ((= c 2)
+        (setq c 61)))
+      (if (= 0 (mod (+ (- orglen plen) 1) 2)) ;; even positions
+          (setq c (+ c (- orglen plen)))
+        (setq c (- c (- orglen plen))))
+      (setq decoded (concat decoded (char-to-string c)))
+      (setq plen (- plen 1))))
+  decoded)
+
+(defun encode-password (pass)
+  (interactive "sPassword to encode: ")
+  (message (encode-password-internal pass)))
+
+(defun decode-password (pass)
+  (interactive "sPassword to decode: ")
+  (message (decode-password-internal pass)))
+
+(defun w32-execute-mailto-from-mail-buffer ()
+  "Extracts information from a *mail* buffer in emacs and use this to
+generate a mailto: URL which is then executed with w32-shell-execute"
+  (interactive)
+  (save-excursion
+    (let 
+        (end
+         my-point-min
+         to-text
+         subject-text
+         body-text
+         (case-fold-search t))
+      
+      (setq end (mail-header-end))
+      (goto-char (point-min))
+      
+      (re-search-forward (concat "^" (regexp-quote "To: ")))
+      (setq my-point-min (point))
+      (re-search-forward (concat "$"))
+      (setq to-text (buffer-substring-no-properties my-point-min (point)))
+      (setq to-text (sql-trim to-text))
+      
+      (re-search-forward (concat "^" (regexp-quote "Subject: ")))
+      (setq my-point-min (point))
+      (re-search-forward (concat "$"))
+      (setq subject-text (buffer-substring-no-properties my-point-min (point)))
+      (setq subject-text (sql-trim subject-text))
+      
+      (re-search-forward (concat "^" (regexp-quote "--text follows this line--")))
+      (skip-chars-forward "\n")
+      
+      (setq body-text (buffer-substring-no-properties (point) (point-max)))
+      
+      (while (string-match " " body-text)
+        (setq body-text (replace-match "\%20" nil nil body-text nil)))
+      
+      (while (string-match "\n" body-text)
+        (setq body-text (replace-match "\%0A" nil nil body-text nil)))
+      
+      ;; Todo: Create a more dynamic loop that escapes all illegal
+      ;; characters, not just spaces and newlines
+      
+      (w32-shell-execute 
+       nil (concat "mailto:" to-text 
+                   "?subject=" subject-text 
+                   "&body=" body-text)))))
+
+(defun define-my-favorites-menu () 
+  "Redefine menubar"
+  (cond (t 
+         (or (lookup-key global-map [menu-bar]) 
+             (define-key global-map [menu-bar] 
+               (make-sparse-keymap "menu-bar"))) 
+         (defvar menu-bar-my-favorites-menu 
+           (make-sparse-keymap "Favorites")) 
+         (setq menu-bar-final-items 
+               (cons 'menu-bar-my-favorites-menu menu-bar-final-items)) 
+         (define-key global-map [menu-bar menu-bar-my-favorites-menu] 
+           (cons "Favorites" menu-bar-my-favorites-menu)) 
+         (define-key menu-bar-my-favorites-menu [gnus] 
+           '("Shellexecute this buffer" . w32-shellex-on-buffer))
+         (define-key menu-bar-my-favorites-menu [calculator] 
+           '("Calculator" . calculator))
+         (define-key menu-bar-my-favorites-menu [toggle-truncate-lines] 
+           '("Toggle line wrap" . toggle-truncate-lines))
+         (define-key menu-bar-my-favorites-menu [java-mode] 
+           '("Java mode" . java-mode))
+         (define-key menu-bar-my-favorites-menu [lyskom] 
+           '("lyskom" . lyskom))
+         (define-key menu-bar-my-favorites-menu [eshell] 
+           '("eshell" . eshell))
+         (define-key menu-bar-my-favorites-menu [separator-favorites] 
+           '("--")) 
+         (define-key menu-bar-my-favorites-menu [toggle-scroll-bar]
+           '("Toggle scroll-bar" . toggle-scroll-bar)) 
+         (define-key menu-bar-my-favorites-menu [punktemacs] 
+           '("Open .emacs file" . punktemacs)))))
+
+(defun eshell/emacs (&rest files)
+  "Invoke `find-file' on all files."
+  (if (listp (car files))
+      (progn
+        (let ((files2 (car files)))
+          (while files2
+            (find-file (pop files2)))))
+    (while files
+      (find-file (pop files)))))
+
+(defun vnc-keys ()
+  (interactive)
+  (global-set-key [C-kp-home] [C-home])
+  (global-set-key [C-kp-end] [C-end])
+  (global-set-key [M-kp-insert] [M-insert])
+  (global-set-key [C-kp-left] [C-left])
+  (global-set-key [C-kp-right] [C-right])
+  (global-set-key [C-kp-insert] [C-insert])
+  (global-set-key [C-kp-left] [C-left])
+  (global-set-key [C-kp-down] [C-down])
+  (global-set-key [C-kp-up] [C-up])
+  (global-set-key [C-M-kp-down] [C-M-down])
+  (global-set-key [C-M-kp-up] [C-M-up]))
+
+(defun get-sql-package-code ()
+  (interactive)
+  (let* ((user (read-string "Username: "))
+         (passwd (read-passwd "Password: " nil user))
+         (database (read-string "Database alias: "))
+         (package (read-string "Package name: "))       
+         (spec-or-body
+          (if (y-or-n-p "Press \"y\" or SPACE for body and \"n\" or DELETE for spec ")
+              "B"
+            "P")))
+
+    (start-process-shell-command 
+     "sqlplus" "*sqlplus*" "sqlplus" 
+     (concat user "/" passwd "@" database) "@kod2" package spec-or-body)))
+
+(defun w32-remove-read-only ()
+  "Remove read-only flag from file using the ATTRIB command"
+  (interactive)
+  (let ((file-name (buffer-file-name)))
+    (if file-name
+        (shell-command 
+         (concat "attrib -r " 
+                 (w32-shellex-unexpand-file-name file-name))))))
+
+(defun emacs-browse (page)
+  "Call PAGE on emacswiki.org."
+  (browse-url (concat "http://www.emacswiki.org/cgi-bin/wiki.pl?" page)))
+
+(defun my-dired-init ()
+  "Bunch of stuff to run for dired, either immediately or when it's
+         loaded."
+  (define-key mode-specific-map "xp" 'dired-xmms-play-mp3)
+  (define-key mode-specific-map "xe" 'dired-xmms-enqueue-mp3)
+  (define-key dired-mode-map [return] 'joc-dired-single-buffer)
+  (define-key dired-mode-map "^"
+    (function
+     (lambda nil (interactive) (joc-dired-single-buffer ".."))))
+  (define-key dired-mode-map [C-left]
+    (function
+     (lambda nil (interactive) (joc-dired-single-buffer "..")))))
+
+(defun my-copy-file (FILE NEWNAME &optional OK-IF-ALREADY-EXISTS KEEP-TIME)
+  (interactive)
+  (if (and (file-exists-p FILE)
+           (file-exists-p NEWNAME))
+      (if (file-writable-p NEWNAME)
+          (copy-file FILE NEWNAME &optional OK-IF-ALREADY-EXISTS KEEP-TIME)
+        (let ((setmodes (file-modes NEWNAME)))
+          (set-file-modes (logior setmodes 128))
+          (copy-file FILE NEWNAME &optional OK-IF-ALREADY-EXISTS KEEP-TIME)
+          (set-file-modes setmodes)))))
+
+(defun eshell/op (FILE)
+  "Invoke (w32-shell-execute \"Open\" FILE) and substitute slashes for backslashes"
+  (w32-shell-execute "Open" (substitute ?\\ ?/ (expand-file-name FILE))))
+
+(defun eshell/fix-frame ()
+  (modify-frame-parameters (car (frame-list))
+                           '((menu-bar-lines . 0)
+                             (foreground-color . "green")
+                             (background-color . "black"))))
+
+(defun my-outline-minor-mode-keys ()
+  (when outline-minor-mode
+    (local-set-key (kbd "<C-kp-subtract>") 'hide-subtree)
+    (local-set-key (kbd "<C-kp-add>") 'show-subtree)))
+
+(add-hook 'outline-minor-mode-hook 'my-outline-minor-mode-keys)
+
+(defun my-outline-minor-mode-keys ()
+  (define-key outline-minor-mode-map (kbd "<C-kp-subtract>") 'hide-subtree)
+  (define-key outline-minor-mode-map (kbd "<C-kp-add>") 'show-subtree))
+
+(defun lkprndwas4-copy-to () 
+  (interactive)
+  (let 
+      ((fname (buffer-file-name)))
+    (copy-file (buffer-file-name)
+               (concat 
+                "//lkprndwas4/d/Inetpub/wwwroot/B2Eifsapp/Docmaw/" 
+                (substring fname (string-match "/[^/]+$" fname))) t)))
+
+;; Temporary functions and variables
+
+(defvar easy-copy-source-path "d:/dat/prj/VAPDocEAM/Docmaw/")
+(defvar easy-copy-dest-path "//lkprndwas4/d/Inetpub/wwwroot/B2Eifsapp/Docmaw/")
+
+(defun easy-copy (FILENAME)
+  (delete-file (concat easy-copy-dest-path FILENAME))
+  (copy-file (concat easy-copy-source-path FILENAME)
+             (concat easy-copy-dest-path FILENAME) t))
+
+(defun mofs-view-print ()
+  (interactive)
+  (easy-copy "MOFSViewPrint.asp"))
+
+(defun doc-issue-ovw ()
+  (interactive)
+  (easy-copy "DocIssueOvw.asp"))
+
+(defun doc-issue ()
+  (interactive)
+  (easy-copy "DocIssue.asp"))
+
+(defun doc-reference ()
+  (interactive)
+  (easy-copy "DocReference.asp"))
+
+
+(defun w32-fontified-region-to-clipboard (START END)
+  "Htmlizes region, saves it as a html file, scripts Microsoft Word to
+open in the background and to copy all text to the clipboard, then
+quits. Useful if you want to send fontified source code snippets to
+your friends using RTF-formatted e-mails.
+
+Version: 0.1
+
+Author:
+
+Mathias Dahl, <mathias@cucumber.dahl.net>. Remove the big, green
+vegetable from my e-mail address...
+
+Requirements:
+
+* htmlize.el
+* wscript.exe must be installed and enabled
+* Microsoft Word must be installed
+
+Usage:
+
+Mark a region of fontified text, run this function and in a number of
+seconds you have the whole colorful text on your clipboard, ready to
+be pasted into a RTF-enabled application.
+
+"
+  (interactive "r")
+  (let ((snippet (buffer-substring START END))
+        (buf (get-buffer-create "*htmlized_to_clipboard*"))
+        (script-file-name (expand-file-name "~/htmlized_to_clipboard.vbs"))
+        (htmlized-file-name (expand-file-name "~/htmlized.html")))
+    (set-buffer buf)
+    (delete-region (point-min) (point-max))
+    (insert snippet)
+    (htmlize-buffer)
+    (write-file htmlized-file-name)
+    (delete-region (point-min) (point-max))
+    (setq htmlized-file-name 
+          (substitute ?\\ ?/ htmlized-file-name))
+    (insert
+     (concat
+      "Set oWord = CreateObject(\"Word.Application\")\n"
+      "oWord.Documents.Open(\"" htmlized-file-name "\")\n"
+      "oWord.Selection.WholeStory\n"
+      "oWord.Selection.Copy\n"
+      "oWord.Quit\n"
+      "Set oWord = Nothing\n"
+      ))
+    (write-file script-file-name)
+    (kill-buffer "htmlized_to_clipboard.vbs")
+    (setq script-file-name
+          (substitute ?\\ ?/ script-file-name))
+    (w32-shell-execute nil "wscript.exe" 
+                       script-file-name)))
+
+(defun my-message-mode-setup ()
+  (message "my-message-mode-setup")
+  (turn-on-auto-fill))
+
+(defvar work-log-buffer-name "fillme.txt"
+  "Name of buffer to place work log entries")
+
+(defun work-log-add-entry ()
+  "Very simple function to add a comment in your work-log (determined
+by the value of the variable `work-log-buffer-name'). Bind this either
+to a key-binding in emacs or in Windows using gnudoit."
+  (interactive)
+  (save-excursion
+    (set-buffer work-log-buffer-name)
+    (let ((entry (read-string "Entry text: ")))
+      (goto-char (point-max))
+      (insert (concat " - " entry "\n")))))
+
+(defun type-file-to-new-file ()
+  (interactive)
+  (let*
+      ((old (slash-to-backslash (buffer-file-name)))
+       (new (concat old ".new")))
+    (shell-command (format "type \"%s\" >\"%s" old new "\""))
+    (find-file new)))
+
+(defun netdir()
+  (interactive)
+  (require 'widget)
+  (let* ((drvL))
+    (with-temp-buffer
+      (let ((out (shell-command "net use" (current-buffer))))
+        (if (eq out 0)
+            (while (re-search-forward "[A-Z]: +\\\\\\\\[^ ]+" nil t nil)
+              (setq drvL (cons (split-string (match-string 0)) drvL)))
+          (error "Unable to issue the NET USE command"))))
+    (pop-to-buffer "*NET DIR LIST*")
+    (erase-buffer)
+    (widget-minor-mode 1)
+    (mapcar
+     (lambda (x)
+       (lexical-let ((x x))
+                    (widget-create 'push-button
+                                   :notify (lambda (widget &rest ignore)
+                                             (kill-buffer (current-buffer))
+                                             (dired (car x)))
+                                   (concat (car x) "  " (cadr x))))
+       (widget-insert "\n"))
+     (reverse drvL))))
+
+;; Thanks Kai!
+(defun kai-eshell-insert-last-word (n)
+  (interactive "p")
+  (insert (car (reverse
+                (split-string
+                 (eshell-previous-input-string (- n 1)))))))
+
+(setq server-buffer-clients nil)
+
+(defun my-kill ()
+  "Kill buffer, taking gnuclient into account."
+  (interactive)
+  (if (buffer-modified-p)
+      (error "Buffer has unsaved changes")
+    (if server-buffer-clients
+        (server-edit)
+      (kill-buffer (current-buffer)))))
+
+(defun switch-prev-buffer ()
+  (interactive)
+  (switch-to-buffer (other-buffer)))
+
+(defun copy-rectangle-as-kill (start end)
+  "Copy rectangle with corners at point and mark; save as last killed one.
+Calling from program, supply two args START and END, buffer positions.
+But in programs you might prefer to use `extract-rectangle'."
+  (interactive "r")
+  (setq killed-rectangle (extract-rectangle start end))
+  (message "Rectangle saved."))
+
+(fset 'sql-execute-sql-line-again
+      [f11 return f12 down])
+
+(defun my-sql-interactive-hook ()
+  (local-set-key [C-return] 'sql-execute-sql-line-again))
+
+(defun highlight-ifs-separators ()
+
+  (interactive)
+
+  (defface extra-separator-face-GS
+    '((t (:background "tomato")))
+    "Used for special separator characters.")
+
+  (defface extra-separator-face-RS
+    '((t (:background "peach puff")))
+    "Used for special separator characters.")
+
+  (defface extra-separator-face-US
+    '((t (:background "moccasin")))
+    "Used for special separator characters.")
+  
+  (defvar my-extra-keywords
+    '(("\037" . 'extra-separator-face-US)
+      ("\036" . 'extra-separator-face-RS)
+      ("\035" . 'extra-separator-face-GS)))
+  
+  ;;(add-hook 'emacs-lisp-mode-hook
+  ;;          (lambda () 
+  ;;            (font-lock-add-keywords nil my-extra-keywords)))
+  
+  ;;(add-hook 'text-mode-hook
+  ;;          (lambda () 
+  ;;            (font-lock-add-keywords nil my-extra-keywords)))
+
+  (font-lock-add-keywords nil my-extra-keywords)
+
+  (standard-display-ascii ?\035 " ] ")
+  (standard-display-ascii ?\037 " = ")
+  (standard-display-ascii ?\036 " ^ "))
+    
+(defun dired-w32-open-files (&optional arg files)
+  "*Open FILES using the applications registered to handle them.
+Return an error message if there is no application registered to handle the files.
+This command simply calls `w32-shell-execute' and only works on Window systems."
+  (interactive (list current-prefix-arg (dired-get-marked-files nil current-prefix-arg)))
+  (unless (fboundp 'w32-shell-execute)
+    (error "This command is not available on this system."))
+  (mapc (lambda (fn)
+          (w32-shell-execute "Open" (subst-char-in-string ?/ ?\\ (expand-file-name fn))))
+        files))
+
+(defface extra-whitespace-face
+  '((t (:background "pale green")))
+  "Used for tabs and such.")
+
+(defvar my-extra-keywords
+  '(("\t" . 'extra-whitespace-face)))
+
+(defun show-whitespace ()
+  (interactive)
+  (font-lock-add-keywords nil my-extra-keywords))
+
+(defun find-first-non-ascii-char ()
+  "Find the first non-ascii character from point onwards."
+  (interactive)
+  (let (point)
+    (save-excursion
+      (setq point
+            (catch 'non-ascii
+              (while (not (eobp))
+                (or (eq (char-charset (following-char))
+                        'ascii)
+                    (throw 'non-ascii (point)))
+                (forward-char 1)))))
+    (if point
+        (goto-char point)
+      (message "No non-ascii characters."))))
+
+;; (eval-after-load "em-ls"
+;;   '(progn
+;;      (defvar ted-eshell-ls-keymap (make-sparse-keymap))
+     
+;;      (define-key ted-eshell-ls-keymap (kbd "RET")
+;;        'ted-eshell-ls-find-file)
+;;      (define-key ted-eshell-ls-keymap (kbd "<return>")
+;;        'ted-eshell-ls-find-file)
+
+;;      (defun ted-eshell-ls-find-file ()
+;;        (interactive)
+;;        (let ((fname (buffer-substring-no-properties
+;;                      (previous-single-property-change (point) 'help-echo)
+;;                      (next-single-property-change (point) 'help-echo))))
+;;          ;; Remove any leading whitespace, including newline that might
+;;          ;; be fetched by buffer-substring-no-properties
+;;          (setq fname (replace-regexp-in-string "^[ \t\n]*" "" fname))
+;;          ;; Same for trailing whitespace and newline
+;;          (setq fname (replace-regexp-in-string "[ \t\n]*$" "" fname))
+;;          (cond
+;;           ((equal "" fname)
+;;            (message "No file name found at point"))
+;;           (fname
+;;            (find-file fname)))))     
+     
+;;      (defadvice eshell-ls-decorated-name (after ted-electrify-ls activate)
+;;        ""
+;;        (add-text-properties 0 (length ad-return-value)
+;;                             (list 'help-echo "RET: visit this file"
+;;                                   'mouse-face 'highlight
+;;                                   'keymap ted-eshell-ls-keymap)
+;;                             ad-return-value)
+;;        ad-return-value)))
+
+(defun occur-mode-clean-buffer ()
+  "Removes all commentary from the *Occur* buffer, leaving the
+ unadorned lines."
+  (interactive)
+  (if (get-buffer "*Occur*")
+      (save-excursion
+        (set-buffer (get-buffer "*Occur*"))
+        (goto-char (point-min))
+        (toggle-read-only 0)
+        (if (looking-at "^[0-9]+ lines matching \"")
+            (kill-line 1))
+        (while (re-search-forward "^[ \t]*[0-9]+:"
+                                  (point-max)
+                                  t)
+          (replace-match "")
+          (forward-line 1)))
+    (message "There is no buffer named \"*Occur*\".")))
+
+(defvar dv-initial-frame (car (frame-list))     
+  "Holds initial frame.")
+
+(defun dv-focus-frame (frame)           
+  "pop to top and give focus"
+  (make-frame-visible frame)
+  (raise-frame frame)
+  (select-frame frame)
+  (w32-focus-frame frame))
+
+(defun dv-focus-initial-frame ()        
+  "Make the initial frame visible"
+  (dv-focus-frame dv-initial-frame))
+
+(defun mumma ()
+  (interactive)
+  (setq cnt 0)
+  (while (< cnt 20)
+    (progn
+      (sleep-for 0 200)
+      (call-interactively mjuff)
+      (setq cnt (1+ cnt)))))
+
+(defun isearch-occur ()
+  "Invoke `occur' from within isearch."
+  (interactive)
+  (let ((case-fold-search isearch-case-fold-search))
+    (occur (if isearch-regexp isearch-string (regexp-quote isearch-string)))))
+
+(defvar find-and-replace-webbot-logfile-misses "c:/temp/find_and_replace_webbot_misses.log")
+(defvar find-and-replace-webbot-logfile-hits "c:/temp/find_and_replace_webbot_hits.log")
+
+(defun write-log-record (FILENAME TEXT)
+  "Append TEXT to the end of FILENAME."
+  (let ((old-buf (current-buffer))
+        (filename (buffer-file-name))
+        (mybuf (get-buffer-create "*write-log-record*")))
+    (set-buffer mybuf)
+    (erase-buffer)
+    (insert text)
+    (append-to-file (point-min) (point-max) filename)
+    (set-buffer old-buf)))
+
+(defun find-and-replace-webbot-01 ()
+  (interactive)
+  (let ((webbot-start 0)
+        (webbot-end 0))
+    ;; Ensure we are at the beginning, should always be the case, but
+    ;; what the heck...
+    (beginning-of-buffer)
+    ;; Find first position...
+    (if (re-search-forward "<!--webbot bot=\"Include\" U-Include=\"../includes/IFS" nil t)
+        (progn
+          (setq webbot-start (match-beginning 0))
+          ;; Find second position
+          (re-search-forward "<!--webbot bot=\"Include\" endspan i-checksum.*-->" nil t)
+          (setq webbot-end (match-end 0))
+          ;; Delete between start and end
+          (delete-region webbot-start webbot-end)
+          ;; Go back to where we found the first match
+          (goto-char webbot-start)
+          ;; Insert new text
+          (insert "<b>REPLACEMENT TEXT</b>")
+          (write-log-record find-and-replace-webbot-logfile-hits 
+                            (concat "Successfully replace text in file " (buffer-file-name) "\n")))
+      (progn
+        (write-log-record find-and-replace-webbot-logfile-misses
+                          (concat "Did not find anything to replace in file " (buffer-file-name) "\n"))))))
+
+(add-hook 'sgml-mode-hook 'my-sgml-mode-keys)
+
+(defun my-sgml-mode-keys ()
+  (define-key sgml-mode-map (kbd "TAB") 'xml-lite-indent-line))
+
+(defun my-bookmark-menu-jump ()
+  (interactive)
+  (bookmark-jump (x-popup-menu 
+                  (list '(400 200) (selected-window)) 
+                  (bookmark-menu-build-paned-menu 
+                   "Select bookmark" 
+                   (bookmark-all-names)))))
+
+
+(defun tfn (person)
+  (interactive "sWho do you want to search for: ")
+  (find-file (concat my-dat-path "/doc/text/tfn.txt"))
+  (goto-char (point-min))
+  (if (re-search-forward person nil t)
+      (hl-line-mode t)
+    (error (concat "Person " person " not found!"))))
+
+(defun my-switch-to-bookmark (bname)
+  "Interactively switch to bookmark as `iswitchb' does."
+  (interactive (list (flet ((iswitchb-make-buflist
+                             (default)
+                             (setq iswitchb-buflist (bookmark-all-names))))
+                           (iswitchb-read-buffer "Jump to bookmark: "))))
+  (bookmark-jump bname))
+
+(defvar pg-mark-overlay (make-overlay 0 0)
+  "Overlay to show the position where the mark is") 
+
+(defvar pg-mark-old-position nil
+  "The position the mark was at. To be able to compare with the
+current position")
+
+(defun pg-show-mark () 
+  "Display an overlay where the mark is at. Should be hooked into 
+activate-mark-hook" 
+  (let ((here (marker-position (mark-marker))))
+    (unless (or 
+             (not here) ; there are buffers that don't have a marker yet
+             (equal 'pg-mark-old-position 'here)) 
+      (delete-overlay pg-mark-overlay)
+      (setq pg-mark-overlay (make-overlay here (1+ here)))
+      (overlay-put pg-mark-overlay 'category 'pg-mark-mark)
+      (setq pg-mark-old-position here))))
+
+(defun dired-xmms-play-mp3 (&optional arg)
+  (interactive)
+  (let ((files nil))
+    (progn
+      (mapcar
+       '(lambda (x) 
+	  (setq files
+		(concat files " \"" x  "\"")))
+       (dired-map-over-marks 	 
+	(expand-file-name (dired-get-filename)) arg))
+      (start-process-shell-command 
+       "dired-play-mp3" "*dired-play-mp3*" "totem" files))))
+
+(defun dired-xmms-enqueue-mp3 (&optional arg)
+  (interactive)
+  (let ((files nil))
+    (progn
+      (mapcar
+       '(lambda (x) 
+	  (setq files
+		(concat files " \"" x  "\"")))
+       (dired-map-over-marks 	 
+	(expand-file-name (dired-get-filename)) arg))
+      (start-process-shell-command 
+       "dired-play-mp3" "*dired-play-mp3*" "xmms" "-e" files))))
+
+(defun eshell-get-dir-from-dir-ring (dir-name)
+  "Interactively select directory from eshell-last-dir-ring"
+  (interactive (list (flet ((iswitchb-make-buflist
+                             (default)
+                             (setq iswitchb-buflist (ring-elements eshell-last-dir-ring))))
+                       (iswitchb-read-buffer "Change to directory: "))))
+  dir-name)
+
+(defun eshell-electric-insert-dir ()
+  "Handy when copying and moving files to, or changing to a certain
+directory. On the prompt, type a space, a colon (`:') and call this function,
+preferably bound to the TAB key."
+  (interactive)
+  (if (save-excursion
+        (goto-char (- (point) 2))
+        (if (looking-at " :")
+            t
+          nil))
+      (let ((dir (call-interactively 'eshell-get-dir-from-dir-ring)))
+        (delete-char -1)
+        (insert (pcomplete-quote-argument dir)))
+    (pcomplete)))
+
+(defun xmms-shell-execute (command)
+  (start-process-shell-command "xmms-shell-command" "*xmms-shell-command*" "xmms-shell" "-e" command))
+
+(defun dired-mp3-key-mappings ()
+  (interactive)
+  (local-set-key [C-return] 'dired-xmms-play-mp3)
+  (local-set-key [M-return] 'dired-xmms-enqueue-mp3)
+  (local-set-key [C-up] '(lambda ()
+                           (interactive)
+                           (xmms-shell-execute "previous")))
+  (local-set-key [C-down] '(lambda ()
+                             (interactive)
+                             (xmms-shell-execute "next"))))
+
+(defun dired-next-file-line ()
+  "Moves to the next dired line that have a file or directory name on
+it"
+  (interactive)
+  (call-interactively 'dired-next-line)
+  (if (not (dired-move-to-filename))
+      (dired-next-file-line)))
+
+(defun dired-previous-file-line ()
+  "Moves to the previous dired line that have a file or directory name
+on it"
+  (interactive)
+  (call-interactively 'dired-previous-line)
+  (if (not (dired-move-to-filename))
+      (dired-previous-file-line)))
+
+;;;
+;;;                      My own functions                      ;;;
+;;;                                                            ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;                                                            ;;;
+;;;             Customize appearance and behaviour             ;;;
+
+(setq load-path (append load-path (list "/usr/share/emacs/site-lisp/erc-4.0/")))
+
+(load "complete")
+(partial-completion-mode)
+(icomplete-mode)
+
+(cond (window-system
+       (require 'avoid)
+       (mouse-avoidance-mode 'animate)))
+
+(switch-to-buffer "*server*")
+
+;; Colors
+(defvar cursor-color nil "Last cursor color used (string)")
+(add-hook 'post-command-hook 'ins-cursor-set)
+
+;; Do not ask any questions!
+(put 'narrow-to-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+;; Default TAB width
+(setq default-tab-width 8)
+
+(setq display-time-string-forms (quote (dayname " " year "-" (lpad month 2 "0") "-" (lpad day 2 "0") ", " 24-hours "." minutes ":" seconds)))
+
+;; Ok, let's see it
+(display-time)
+
+(if (memq window-system '(win32 w32))
+    ;; Windows stuff
+    (progn
+      (require 'eol-conversion)
+      ;; Font
+      (set-default-font "-*-Fixedsys-normal-r-*-*-11-97-*-*-c-*-*-ansi-")
+      ;; Gnuserv stuff
+      (require 'gnuserv)
+      (gnuserv-start)
+      (setq gnuserv-frame (selected-frame)))
+  ;; Linux stuff
+  (progn
+    (set-default-font "-Misc-Fixed-Medium-R-Normal--20-200-75-75-C-100-ISO8859-1")))
+
+;; Startup with a certain frame size
+(modify-frame-parameters
+(car (frame-list))
+'((width . 100)
+  (scroll-bar-width . 16)
+  (height . 38)
+  (top . 55)
+  (left . 80)))
+
+(iswitchb-mode)
+
+(require 'cl)
+
+(defvar sds-dired-browse-destructively t
+"If true, you will destructively browse with [return] from within
+dired buffers. That is, you will kill the dired buffer you came from
+as you open a new dired buffer with the [return] key.")
+
+(modify-coding-system-alist 'file "\\.txt\\'" 'raw-text-dos)
+(modify-coding-system-alist 'file "\\.sql\\'" 'raw-text-dos)
+
+(setenv "MAILHOST" "pop.msgto.com")
+
+(if (memq window-system '(win32 w32))   ; Windows NT/95
+(progn
+
+  ;; add w32-shellex.
+  (require 'w32-shellex)
+
+  ))
+
+(load "generic-x")
+
+(setq rmail-primary-inbox-list
+'("po:mathias@getmail.dahl.net") rmail-pop-password-required t)
+
+(require 'ange-ftp)
+(ange-ftp-set-user "mathias.dahl.net" "mathias@dahl.net")
+
+(add-hook 'dired-load-hook
+          (lambda () 
+            (require 'dired-sort-menu)))
+
+(add-hook 'java-mode-hook 'my-java-mode-hook)
+
+;; Color theme
+;;(require 'color-theme)
+;;(color-theme-clarity)
+
+;; Getting mail with vm
+(setq vm-spool-files
+(list
+ (list "~/INBOX"
+       "getmail.dahl.net:110:pass:mathias:*"
+       "~/INBOX.CRASH")))
+
+(setq vm-pop-expunge-after-retrieving nil)
+(add-hook 'dired-load-hook
+'(lambda ()
+   (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
+   (define-key dired-mode-map
+     [menu-bar immediate wdired-change-to-wdired-mode]
+     '("Edit File Names" . wdired-change-to-wdired-mode))))
+
+;; (require 'w32-net-send)
+
+(define-my-favorites-menu)
+
+;; Better sorting in dired
+(require 'dired-sort-map)
+
+;; Single buffer browsing in dired
+(require 'dired-single)
+
+;; if dired's already loaded, then the keymap will be bound
+(if (boundp 'dired-mode-map)
+    ;; we're good to go; just add our bindings
+(my-dired-init)
+;; it's not loaded yet, so add our bindings to the load-hook
+(add-hook 'dired-load-hook 'my-dired-init))
+
+(require 'session)
+
+(add-hook 'after-init-hook 'session-initialize)
+(add-hook 'outline-minor-mode-hook 'my-outline-minor-mode-keys)
+
+(add-hook 'message-mode-hook 'my-message-mode-setup)
+(add-hook 'mail-mode-hook 'my-message-mode-setup)
+
+(require 'erc)
+
+(add-hook 'message-mode-hook 
+(lambda () 
+  (if (message-news-p)
+      (progn 
+        (auto-fill-mode 1)
+        (setq fill-column 67)))))
+
+;;;; JDE setup BEGIN
+
+;; Semantic
+
+(defun mdahse-jde-setup ()
+(interactive)
+(setq semantic-load-turn-everything-on t)
+(setq load-path 
+      (append load-path 
+              (list (concat (expand-file-name (concat (getenv "EMACS_HOME") "/elisp/semantic-1.4.3"))))))
+(setq load-path 
+      (append load-path 
+              (list (concat (expand-file-name (concat (getenv "EMACS_HOME") "/elisp/eieio-0.17"))))))
+(setq load-path 
+      (append load-path 
+              (list (concat (expand-file-name (concat (getenv "EMACS_HOME") "/elisp/speedbar-0.14beta4"))))))
+(setq load-path 
+      (append load-path 
+              (list (concat (expand-file-name (concat (getenv "EMACS_HOME") "/elisp/elib-1.0"))))))
+(setq load-path 
+      (append load-path 
+              (list (concat (expand-file-name (concat (getenv "EMACS_HOME") "/elisp/jde-2.3.2/lisp"))))))
+(setq load-path 
+      (append load-path 
+              (list (concat (expand-file-name (concat (getenv "EMACS_HOME") "/elisp/ecb-1.94"))))))
+(load "semantic-load")
+(setq defer-loading-jde t)
+(if defer-loading-jde
+    (progn
+      (autoload 'jde-mode "jde" "JDE mode." t)
+      (setq auto-mode-alist
+            (append
+             '(("\\.java\\'" . jde-mode))
+             auto-mode-alist)))
+  (require 'jde))
+(defun my-jde-mode-hook ()
+  (setq c-basic-offset 3))
+(add-hook 'jde-mode-hook 'my-jde-mode-hook)
+(require 'ecb))
+
+;;; JDE setup END
+
+(add-hook 'eshell-mode-hook
+'my-eshell-keys)
+
+(setq compilation-scroll-output nil)
+
+;;(tool-bar-mode nil)
+
+(defadvice occur (before occur-before)
+"Allow mutliple calls to occur..."
+(if (string-match "\*Occur\*" (buffer-name))
+    (rename-buffer (buffer-name) t)))
+(ad-activate 'occur)
+
+(windmove-default-keybindings)
+
+(menu-bar-mode -1)
+
+(add-hook 'java-mode-hook 
+'(lambda () 
+   (local-set-key "\C-m" 'c-context-line-break)))
+
+(require 'erc-pcomplete) 
+(erc-completion-mode 1)
+
+(erc-autojoin-mode 1)
+(setq erc-autojoin-channels-alist
+'(("freenode.net" "#emacs")))
+
+(erc-match-mode 1)
+(setq erc-current-nick-highlight-type 'nick)
+
+(put 'pg-mark-mark 'face 'term-greenbg)
+(add-hook 'activate-mark-hook 'pg-show-mark)
+
+;;;             Customize appearance and behaviour             ;;;
+;;;                                                            ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;                                                            ;;;
+;;;                    Keys and menus                          ;;;
+
+(define-key function-key-map [kp-enter] [?\C-j])
+(global-set-key [M-f1] 'insert-file-name-with-backslash)
+(global-set-key [M-insert] 'copy-sql-file-name)
+(global-set-key "\M-r" 'replace-string)
+(global-set-key [C-f1] 'insert-file-name-with-slash)
+(global-set-key "\C-ct" 'timestamp)
+(global-set-key [f7] 'call-last-kbd-macro)
+(global-set-key [f8] 'font-lock-fontify-buffer)
+(global-set-key [M-down] 'scroll-other-window-down-one-row)
+(global-set-key [M-up] 'scroll-other-window-up-one-row)
+(global-set-key [C-down] 'scroll-window-down-one-row)
+(global-set-key [C-up] 'scroll-window-up-one-row)
+;;(global-set-key [M-down-mouse-1] 'toggle-scroll-bar)
+(global-set-key [f11] 'save-current-position)
+(global-set-key [M-f11] 'save-position)
+(global-set-key [f12] 'jump-last-position)
+(global-set-key [M-f12] 'jump-position)
+(global-set-key [f9] 'switch-truncate-lines)
+(global-set-key [f6] 'strip-trailing-spaces)
+(global-set-key [M-f6] 'strip-beginning-spaces)
+(global-set-key "\C-cr" 'revert-buffer)
+(global-set-key "%" 'match-paren)
+(global-set-key "\M-g" 'goto-line)
+;;(global-set-key [C-down-mouse-3] 'mouse-selection-to-register-2)
+;;(global-set-key [C-down-mouse-2] 'insert-from-register-2)
+(global-set-key [C-M-down] 'win-resize-minimize-vert)
+(global-set-key [C-M-up] 'win-resize-enlarge-vert)
+(global-set-key [C-M-left] 'win-resize-minimize-horiz)
+(global-set-key [C-M-right] 'win-resize-enlarge-horiz)
+(global-set-key [C-M-up] 'win-resize-enlarge-horiz)
+(global-set-key [C-M-down] 'win-resize-minimize-horiz)
+(global-set-key [C-M-left] 'win-resize-enlarge-vert)
+(global-set-key [C-M-right] 'win-resize-minimize-vert)
+(global-set-key [(C-f12)] 'speedbar-get-focus)
+(global-set-key "\C-cc" 'w32-context-menu-current-buffer)
+(global-set-key "\C-cp" 'w32-properties-current-buffer)
+(global-set-key "\M-&" 'hippie-expand)
+(global-set-key [C-M-insert] 'copy-buffer-contents)
+(define-key-after (lookup-key global-map [menu-bar tools])
+[speedbar] '("Speedbar" . speedbar-frame-mode) [calendar])
+(global-set-key [M-f8] 'font-lock-fontify-block)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key "\C-cq" 'w32-remove-read-only)
+(global-set-key [f5] 'my-kill)
+(global-set-key [f1] 'switch-prev-buffer)
+(define-key global-map (kbd "C-x r q") 'copy-rectangle-as-kill)
+(global-set-key "\C-ca" 'auto-save-mode)
+(global-set-key "\C-cl" 'goto-last-change)
+(global-set-key "\C-cd" 'delete-region)
+(global-set-key "\C-cy" '(lambda ()
+                           (interactive)
+                           (popup-menu 'yank-menu)))
+
+(global-set-key "\C-cb" 'my-bookmark-menu-jump)
+
+;;(global-set-key "\M-i" 'scroll-both-one-up)
+;;(global-set-key "\M-j" 'scroll-both-one-down)
+
+(mapcar 
+(lambda (username)
+  (define-key mode-specific-map (concat "n" (substring username 0 1))
+    `(lambda ()
+       (interactive)
+       (w32-net-send-multiple-times-x 
+        ,username (read-string (concat "Message to " (upcase ,username) ": ")) 2))))
+'("jospse" "kuanse" "bojose" "liguse" "hberse" "dikalk" "hberse" "thvese" "chmase"))
+
+(define-key mode-specific-map "nn"
+'w32-net-send)
+
+(defalias 'vb 'visual-basic-mode)
+(defalias 'jm 'java-mode)
+(defalias 'om 'outline-minor-mode)
+(defalias 'as 'auto-save-mode)
+
+(define-key isearch-mode-map [next]
+'isearch-repeat-forward)
+
+(define-key isearch-mode-map [prior]
+'isearch-repeat-backward)
+
+(define-key isearch-mode-map (kbd "C-o") 
+'isearch-occur)
+
+(define-key mode-line-mode-menu [auto-save-mode]
+`(menu-item ,(purecopy "Auto-save") auto-save-mode
+            :button (:toggle . auto-save-mode)))
+
+;;;                    Keys and menus                          ;;;
+;;;                                                            ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; LysKOM Settings
+;;; =====================
+(setq-default kom-smileys t)
+;;; ============================
+;;; End of LysKOM Settings
+
+;; '(gnus-select-method (quote (nntp "news.individual.net")))

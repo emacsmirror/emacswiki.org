@@ -1,0 +1,196 @@
+This is a page to put in some BigBrotherDataBase (BBDB) importer hacks.
+
+CategoryBbdb
+
+== Importing from LDIF ==
+
+LDAP based tools and many address books understand LDIF format.
+
+* http://www.diku.dk/~elgaard/lib/emacs/bbdb-ldif.el
+
+This file seems ancient; I am not sure how well it supports current BBDB.
+
+== Importing from XML ==
+
+Norman Walsh published [http://www.mail-archive.com/bbdb-info@lists.sourceforge.net/msg03608.html xml2bbdb.pl] in 2003.
+
+DaleSmith wrote this xsl file to convert from Sylpheed xml address format to bbdb: [http://home.roadrunner.com/~dsmich/sylpheed2bbdb.xsl sylpheed2bbdb.xsl].
+
+== Importing vCards ==
+
+I emailed this to Chris for inclusion, as his version 0.1 importer didn't quite have this functionality:
+
+    (defun bbdb-vcard-snarf-buffer ( buf )
+      "Traverse BUF via regex.  Bbdb-snarf against each match."
+      (let ((bbdb-current-point (point-min)))
+        (switch-to-buffer buf)
+        (goto-char (point-min))
+        (while (re-search-forward "END:VCARD" nil (message "%s done" buf))
+          (bbdb-vcard-snarf-region bbdb-current-point (point))
+          (setq bbdb-current-point (point)))))
+
+This requires [http://www.splode.com/~friedman/software/emacs-lisp/src/vcard.el vcard.el] by NoahFriedman for the importer to work.
+
+--ChristopherSmith
+
+Based on this, Marcus Crestani wrote [http://www-pu.informatik.uni-tuebingen.de/users/crestani/downloads/bbdb-vcard-import.el bbdb-vcard-import.el] that makes it easy to import vCards into your bbdb.  
+If the file ~/vCards.vcf contains the vCards you like to import, do: 
+<pre>
+M-x bbdb-vcard-import RET ~/vCards.vcf RET
+</pre>  
+
+See [http://www.mail-archive.com/bbdb-info%40lists.sourceforge.net/msg04703.html this thread] on the bbdb-info mailinglist.
+
+=== Importing from ~/.mailrc ===
+
+Importing the ~/.mailrc file, it's very simplistic, but did the trick
+for me, I hope it helps other people too.  There is a slight
+limitation, in that it expects *all* aliases to be at the top of the
+file, but I guess that can be easily fixed.
+
+    (defun my-import-dot-mailrc-to-bbdb ()
+      "Imports the ~/.mailrc aliases into bbdb."
+      (interactive)
+      (with-temp-buffer
+        (insert-file-contents (expand-file-name "~/.mailrc"))
+        (goto-char (point-min)) ;; beginning-of-buffer (but faster)
+        (while
+    	(looking-at
+    	 (concat "alias\\s-+\\(\\sw+\\(-\\sw+\\)?\\)\\s-+\"?"
+    		 "\\([a-zA-Z0-9@. \t<>_-]*\\)\"?"))
+          (eval '(bbdb-create-internal
+    	      (buffer-substring (match-beginning 1) (match-end 1)) nil
+    	      (buffer-substring (match-beginning 3) (match-end 3)) nil nil nil) )
+          (forward-line))))
+    
+=== Importing from CSV files ===
+
+If you can manage to arrange your data in CSV (comma separated value) 
+form, you can use ''lookout.el''. This package allows for importing calendar 
+and address data from CSV files. ''lookout.el'' is available from http://ulf.epplejasper.de/. (Note that you also need ''csv.el'' which can be found at the same place.)
+
+For those too lazy to look through the code, the first line of your file should name each column. From the code:
+
+<pre>
+Key1,Key 2,"Key3"
+Value1a,Value1b,"Value1c"
+Value2a,Value2b,"Very long Value
+2c"
+</pre>
+    gets translated into
+<pre>
+((("Key1" "Value1a") ("Key 2" "Value1b") ("Key3" "Value1c")) 
+(("Key1" "Value2a") ("Key 2" "Value2b") ("Key3" "Very long Value
+2c")))
+</pre>
+
+Then you define a variable to hold the mapping between the CSV columns and the BBDB fields. For example, I used:
+
+    (defconst lookout-bbdb-mapping-table-maill-pl
+      '(("lastname" "mname" "lname")
+        ("firstname" "fname")
+        ("company" "company")
+        ("net" "email")
+        ("phones" "phone1" "phone2")
+        ("addr1" "addr1")
+        ("addr2" "addr2")
+        ("addr3" "addr3")
+        ("otherfields" 
+         "group" "group")
+        ("notes" "Body"))
+      "Mapping table, usable for input from the mailing list scraper, maill.pl")
+
+Now you can set the mapping table by using the variable <code>lookout-bbdb-mapping-table</code> and you are good to actually import the data with <code>M-x lookout-create-bbdb</code>
+
+=== Importing from abook- and mutt-related formats ===
+
+Right now I use mutt as my MUA and I want to switch to Gnus and BBDB (I have read Usenet News with Gnus many years). I know [http://abook.sourceforge.net/ abook].
+
+abook can read these fileformats:
+
+* abook abook native format
+* ldif ldif / Netscape addressbook
+* mutt mutt alias
+* pine pine addressbook
+* csv comma separated values
+
+abook can write these formats:
+
+* abook abook native format
+* ldif ldif / Netscape addressbook (.4ld)
+* mutt mutt alias
+* html html document
+* pine pine addressbook
+* gcrd GnomeCard (VCard) addressbook
+* csv comma separated values
+* palmcsv Palm comma separated values
+* elm elm alias
+* text plain text
+* spruce Spruce address book
+
+Right now I have my E-Mail addressbook in mutt aliases-file. So, maybe I'll read it with abook and let it write it as VCard-format but CSV might be good intermediate format, too. There exist software that an import VCard to BBDB. And there is some software that can upload data from BBDB to GSM-phone via [http://www.gnokii.org/ gnokii].
+
+-- JuhapekkaTolvanen
+
+UPDATE: bbdb-vcard.el sucks! It can not import from file full of Vcard-entries. It can snarf only first entry from buffer or one entry from marked region. And using lookout.el gives me just error message, when I try to give CSV-file from abook to it. Somehow abook vomits CSV-file that is not good enough for lookout.el. -- JuhapekkaTolvanen
+
+i was switching from mutt/abook to wanderlust/bbdb, so i came up with this code. hope you find it useful. -- AnselmHelbig
+
+    ;;; bbdb-snarf-abook.el --- import an abook-style addressbook into bbdb
+    ;; Time-stamp: <2004-12-04 11:00:35 anselm>
+    ;; this was developed for gnu emacs 21 and bbdb 2.34.cvs20030503-1
+    ;; Author: Anselm Helbig <anselm [at] chemie [dot] fu-berlin [dot] de>
+    (require 'bbdb)
+    (require 'bbdb-com)
+    (defun bbdb-snarf-abook (filename)
+      "tries to parse an abook-style addressbook and writes the entries
+    found directly into the bbdb. your .bbdb file may be empty, but has to exist."
+      (interactive "fLocation of abook's addressbook: ")
+      (save-excursion
+        (let ((key) (value) (count 0))
+          (set-buffer (find-file-noselect filename))
+          (goto-char (point-min))
+          (while (re-search-forward "\\[[0-9]*\\]\\s-*$" nil t)
+        	(let ((name "") (address "") (city "") (zip "") (phone "") 
+    	      (notes "") (email "") (workphone "") (mobile "") (fax "")
+        	      (address-vector (vector "address" () "" "" "" ""))
+        	      (address-vector-valid nil)
+        	      phone-list)
+        	  (while (progn 
+        		   (next-line 1) (beginning-of-line)
+        		   (re-search-forward "\\s-*\\([^\\s-=]*\\)=\\(.*?\\)\\s-*$" (save-excursion (end-of-line) (point)) t))
+    	    (if (not (string= (match-string 2) ""))
+    		(progn
+    		  (setq key (match-string 1))
+    		  (setq value (match-string 2))
+    		  (if (string= key "phone")
+    		      (setq phone-list (cons (vector "home" value) phone-list)))
+    		  (if (string= key "mobile")
+    		      (setq phone-list (cons (vector "mobile" value) phone-list)))
+    		  (if (string= key "fax")
+    		      (setq phone-list (cons (vector "fax" value) phone-list)))
+    		  (if (string= key "workphone")
+    		      (setq phone-list (cons (vector "work" value) phone-list)))
+    		  (if (string= key "address")
+    		      (progn
+    			(aset address-vector 1 (cons value ()))
+    			(setq address-vector-valid t)))
+    		  (if (string= key "city")
+    		      (progn
+    			(aset address-vector 2 value)
+    			(setq address-vector-valid t)))
+    		  (if (string= key "zip")
+    		      (progn
+    			(aset address-vector 4 value)
+    			(setq address-vector-valid t)))
+    		  (set (read key) value))))
+    	  (message "converting entry no. %d" (setq count (1+ count)))
+    	  (bbdb-create-internal 
+    	   name
+    	   nil
+    	   email
+    	   (if address-vector-valid (list address-vector))
+    	   phone-list
+    	   notes)))
+          (message "abook's addressbook successfully imported."))))
+    (provide 'bbdb-snarf-abook)

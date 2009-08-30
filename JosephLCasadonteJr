@@ -1,0 +1,28 @@
+* http://www.northbound-train.com/emacs.html
+
+* bar-cursor.el - Small Emacs package that changes the cursor from a block to a bar. In overwrite-mode, it changes back to a block.
+
+* CuaLightMode - CUA emulator package for Emacs. There are three things that make this package different from the others already out there.
+
+* dired-single.el - Emacs package that provides a way to reuse the current dired buffer to visit another directory (rather than creating a new buffer for the new directory). Optionally, it allows the user to specify a name that all such buffers will have, regardless of the directory they point to.
+
+* em-joc.el - Provides some small additional function of eshell, the full-featured shell written in elisp. Functions include a prompt replacement (primarily replaces value of $HOME with a "~"), a "clear" function, which clears the screen/buffer much like clear (Unix) or cls (DOS), and a remote command, which lets you send the eshell a command from some outside piece of lisp code.
+
+* gnus-alias.el - Add-on to Gnus (5.8.8+) that allows for Identities to be defined and chosen automatically based on the context of the new message, and eases the switching of Identities on the current message. Also allows forwarded messages (email or news) to be treated as a reply/follow-up with respect to having their headers available to help determine the new message's Identity.
+
+* hobo.el - Emacs package that provides an alternative to TRAMP when editing remote files via SCP. Hobo facilitates editing remote files by automating file transfers via SCP, relying on SSH-AGENT to authenticate. Hobo stores files locally in a temporary directory structure and can automatically clean up the temporary files and directories when you're done. In addition, it makes accessing the remote files a tad easier using aliases/ shortcuts with all of the connection info already set up.
+
+* java-find.el - Emacs package that provides a way to find and visit Java source files (indicated by a classname or filename under point) located somewhere in the user's SOURCEPATH. There are other packages out there that do similar things, including some things in JDE, but I like this one. It works regardless of your mode, and without tags. The only thing you need is a valid $SOURCEPATH.
+
+* swbuff-advice.el - Emacs package that provides advice for several swbuff functions to allow the use of more than one set of regexp filters. Now includes the ability to specify inclusive and additive-exclusive filters, in addition to the normal exclusionary ones.
+
+* toggle-case.el - Emacs package that emulates the vi ~ function (toggles case of character at point and advances).
+
+* toggle-buffer.el - Emacs package that toggles between the current buffer and the previous one. I couldn't find anything that did what I wanted, so I wrote my own. Hope it wasn't done needlessly!
+
+* help for Printing under NT
+
+* A little ditty bounces between matching parens (or brackets or braces) just like the '%' key in vi. I'm ot sure I'm using the term sexp correctly here, but thankfully it doesn't affect the function.
+
+----
+CategoryHomepage

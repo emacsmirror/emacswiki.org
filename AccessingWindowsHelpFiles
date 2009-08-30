@@ -1,0 +1,40 @@
+== Standard Windows Help (.hlp) ==
+
+ From: <nowiki>BrianOostenbrink</nowiki>
+ Subject: Re: Calling Windows help file from emacs
+ Newsgroups: comp.emacs
+ Date: 14 Jun 2001 08:40:10 -0700
+
+OK, now I've figured out the whole enchilada!  I think this would be
+quite useful for finding Windows API help as well (which is always
+painful), just change `tcl-mode-hook' to `c-mode-common-hook', and
+find the right help file.
+
+`find-tag-default' is defined in etags.
+
+ (require 'etags)
+ (defun tcl-help ()
+   (interactive )
+   (shell-command 
+    (concat "c:/winnt/winhlp32 -k " 
+	    (find-tag-default)  
+	    " D:/Program Files/Tcl/doc/tcl83.hlp &")))
+
+ (defun my-tcl-mode-hook ()
+   (local-set-key [f1] 'tcl-help))
+
+ (add-hook 'tcl-mode-hook 'my-tcl-mode-hook)
+
+
+Also, http://www.tertius.com/projects/library/emacs.html you can find "w32-dev-env" which provides some relevant functionality.
+
+== HTML Help 1.x (.chm) ==
+
+See MsdnHelp
+
+== Microsoft Help 2 (.hx*) ==
+
+See MsdnHelp
+
+----
+CategoryHelp CategoryCode

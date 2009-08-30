@@ -1,0 +1,39 @@
+== flickr.el ==
+
+In the past [[EdwardOConnor]]'s
+[http://edward.oconnor.cx/elisp/flickr.el flickr.el] allowed the user
+to upload photos to [http://www.flickr.com/ Flickr] via Emacs (in
+co-operation with ThumbsMode if it was installed) before Flickr
+changed its API's authorization parts when acquired by Yahoo!  and
+integrated with the Yahoo! ID, in spring 2006.
+
+== emacs-flickr.el ==
+
+Since then MathiasDahl has been working on a new client that would
+work in co-operation with DiredMode, and [[Tumme]] thumbnail viewer
+and image organizer instead of ThumbsMode.
+
+[new]
+I am working on this, yes, but the progress is kind of slow. I have mostly tried to figure out how to use the new authentication scheme and was able, by using code from Edward's package, to get uploading to work too, from Dired or from Tumme's thumbnail buffer (the difference is small, the only difference is the way I get the local file name). Anyway, if anyone has more time on their hands and want to experiment, I'd be more than happy to send the code. -- MaDa
+
+=== Progress on emacs-flickr.el ===
+
+emacs-flickr.el is the name of the new Flickr interface I am working on. This is just a simple list to keep track of what happening with it:
+
+* Flickr's new authentication scheme
+* Upload
+* Listing tags
+* Adding tags
+* Listing photos
+* A lot of utility functions created
+
+I just did a cool (at least I think so) experiment: I uploaded about 100 photos using jUploadr (yes, it is easier to use than my current upload functionality). Then I wrote some Lisp that listed all those uploaded files (using the Flickr APIs), matched them against my local files and got the tags from Tumme's database file, and at last added these tags back to Flickr. It worked, yay! In other words, basic Emacs/Tumme/Flickr integration, using the power of Dired and Tumme to add tags to many files at once, and then update that on Flickr. 
+
+Good night! :) -- MaDa
+
+== My-flickr-upld.el ==
+
+[http://gnu.univ.gda.pl/~tomasz/Proj/flickr/ My-flickr-upld] (page in Polish)
+is an Emacs interface to flickr's API using perl scripts.
+
+* http://gnu.univ.gda.pl/~tomasz/Proj/flickr/scripts/

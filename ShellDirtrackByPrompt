@@ -1,0 +1,50 @@
+The default mechanism for keeping Emacs apprised of the shell’s current directory (shell-dirtrack-mode) relies on monitoring all the commands entered into the shell, to see if any of them are directory-changing commands (e.g., cd, pushd, popd, etc), and then setting the buffer's default-directory based on what the user entered.   The problem is that it can be thrown off by any command which it doesn’t recognize (e.g., a shell alias like "alias up='cd ..'").
+
+This page describes an alternative methods that track the cwd, regardless of what command is being used to set it.  They work by having the shell always report the current directory to Emacs.
+
+== First, program your shell prompt to emit the PWD ==
+
+This example is for zsh
+
+.zshrc:
+
+  if [ $EMACS ]; then
+    # Emit the PWD in the prompt, taking care that it doesn't
+    # get truncated.
+    prompt='%30000<<|Pr0mPT|%0d|[%n@%m]%~%# '
+
+    # my default terminal, 'dumb', keeps resetting the COLUMNS value
+    # all the time, which triggers zsh to truncate the prompt anyway.
+    term=vanilla
+    COLUMNS=30000
+  fi
+
+== Next, Tell Emacs to watch for the prompt, using dirtrack-mode ==
+
+Newer versions of Emacs (not sure which), ship with 'dirtrack-mode', which implements this alternate method of tracking
+the PWD.
+
+Add the following snippets is to your .emacs:
+
+  (setq dirtrack-list '("^|Pr0mPT|\\([^|]*\\)|" 1 nil))
+  
+  (add-hook 'shell-mode-hook
+          #'(lambda ()
+              (dirtrack-mode 1)
+              (add-hook 'comint-preoutput-filter-functions
+                        'dirtrack-filter-out-pwd-prompt t t)))
+
+
+This disables the default directory tracking mechanism, and turns on prompt-based tracking in any interactive subshell
+
+If you want the matched PWD to be removed from the output, add this as well:
+
+  (defun dirtrack-filter-out-pwd-prompt (string)
+    "dirtrack-mode doesn't remove the PWD match from the prompt.  This does."
+    ;; TODO: support dirtrack-mode's multiline regexp.
+    (if (and (stringp string) (string-match (first dirtrack-list) string))
+        (replace-match "" t t string 0)
+      string))
+
+
+CategoryShell

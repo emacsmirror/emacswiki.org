@@ -1,0 +1,18 @@
+Quando defines FunçõesInteractiva, podes querer que ela produza dois resultados diferentes, dependendo do que o utilizador quer.  O método tradicional de lidar com isto é utilizando o prefixo do argumento universal: `C-u'.  Podes, por exemplo, escrever uma função que mata um buffer se ele não tiver alterações que ainda não tenham sido guardadas e que mata um buffer mesmo que ele ainda não tenha sido guardado se o utilizador fornecer o prefixo `C-u'.
+
+Aqui fica uma defun de teste que vai ajudar nas tuas experiências:
+
+    (defun foo (arg)
+      (interactive "P")
+      (message "arg é %S" arg))
+
+Ela define uma função com um argumento e mostra-o. E a declaração interactive torna-a interactiva para que a possas chamar com M-x e que a possas associar a uma tecla.  O "P" diz ao Emacs que o argumento universal deverá ser utilizado para o `arg'.
+
+
+; M-x foo: Chama foo com o argumento a nill
+; C-u M-x foo: Chama foo com o argumento a '(4) -- uma lista!
+; C-u C-u M-x foo: Chama foo com o argumento a '(16) -- também uma lista!
+; C-u 3 M-x foo: Chama foo com o argumento a 3.
+
+----
+CategoriaCódigo

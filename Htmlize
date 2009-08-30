@@ -1,0 +1,66 @@
+<code>htmlize.el</code> by HrvojeNiksic is a package for converting Emacs fontification (colours, italics, etc) into HTML.  Get it from,
+
+* The author at http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el
+* On [[Debian]] in DebianPackage:emacs-goodies-el
+* Already in [[XEmacs]] elisp packages collection, in the text-modes package
+
+The conversion is quite sophisticated, it understands non-ascii characters, looks up colours in the X11 RGB database, and can generate either <code>css</code> or old style <code>font</code> bits.
+
+The main use for <code>htmlize</code> is to convert FontLock decoration into a format which other tools can use, such as for web display, printing, etc.
+
+The following packages use or extend <code>htmlize</code>,
+
+* PrintWithWebBrowser -- print a buffer through your web browser
+** WThirtyTwoFontifiedRegionToClipboard -- similar with MS Word
+* SaveAsHtml -- extending to htmlify links like Info and Dired
+
+See also HtmlFontify which does similar things (and hopefully will be included in Emacs soon). However, HtmlFontify appears not to support converting a region which is really practical for publishing small snippets on blogs.
+
+[new]
+Converting a region is supported in hfyview.el (which uses htmlfontify.el).
+
+[new]
+See also [http://www.students.itu.edu.tr/~yazicivo/files/htmlize.tar.gz htmlize.sh] by Volkan YAZICI which is a small *shell* *script* wrapped around htmlize.el with some syntax highligting enhancements for particular emacs modes. Moreover, htmlize.sh has an extensible syntax  recognition enhancement module that you can introduce new functionalities relatively easily; e.g., it provides CLHS and MOP symbol linking  capabities for  lisp-mode. (See [http://www.students.itu.edu.tr/~yazicivo/files/htmlize.README.txt README] file for details.)
+
+----
+It is a bit broken on emacs 23, for every functions trying to get face properties.  --paul
+
+[new]
+Yes, I think the way to go is to use HtmlFontify instead.
+Until this gets into Emacs you can use the version that comes with [NxhtmlMode nXhtml].
+[new]
+In Emacs 23, face properties have changed a bit, so use the patched version (still compatible with older Emacsen) of Lisp:htmlize.el
+[new]
+This appears to be the extent of the patch.  Is this correct?
+{{{
+--- htmlize.el	2006-11-13 16:41:55.000000000 -0500
++++ htmlize.el	2008-11-17 05:17:26.000000000 -0500
+@@ -1,8 +1,9 @@
+-;; htmlize.el -- Convert buffer text and decorations to HTML.
++;;; htmlize.el -- Convert buffer text and decorations to HTML.
+ 
+ ;; Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2005,2006 Hrvoje Niksic
+ 
+ ;; Author: Hrvoje Niksic <hniksic@xemacs.org>
++;; Modified by: Carsten Dominik <carsten at orgmode dot org>
+ ;; Keywords: hypermedia, extensions
+ 
+ ;; This program is free software; you can redistribute it and/or modify
+@@ -867,7 +868,7 @@
+   (let ((size-list
+ 	 (loop
+ 	  for f = face then (face-attribute f :inherit)
+-	  until (eq f 'unspecified)
++	  until (or (not f) (eq f 'unspecified))
+ 	  for h = (face-attribute f :height)
+ 	  collect (if (eq h 'unspecified) nil h))))
+     (reduce 'htmlize-merge-size (cons nil size-list))))
+}}}
+I assumed that the change was more significant, that's kind of pleasant -- presuming it works. -- AaronHawley
+[new]
+
+----
+You can use this package to render code snippets with syntax highlighting when exporting Org-mode files to HTML.
+http://orgmode.org/, see manual "Literal Examples", 6.26 d, Chapter 12, p. 102, footnote1.    -- StefanVollmar
+----
+CategoryFaces CategoryHypermedia

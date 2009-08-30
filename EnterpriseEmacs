@@ -1,0 +1,18 @@
+Emacs really is the greatest editor!  Once you get to know it that is ... and although you can successfully use [http://www.gnu.org/software/emacs/ Emacs] and [http://www.vim.org/ other] editors, the notion of [http://pragmaticprogrammer.com/the-pragmatic-programmer/extracts/tips learning one editor well] is soon to dawn on any professional programmer after a while.
+
+This page is an attempt to create a /minimal/ configuration that leverages the awesome powers of Emacs while incorporating useful features from other popular editors and integrated development environments, IDEs.  Inspiration from http://xahlee.org/emacs/modernization.html
+
+With the release of Emacs-23 the number of tweaks necessary have been greatly reduced, but there are still some nags and that might be very annoying for an average user or enterprise newbies. 
+
+* Scroll-bar on the right!
+* Replace/Delete a marked region on keyboard input.
+* A status line displaying both line and column of my cursor.
+* Continue at the file and position where I left off when I closed Emacs.
+* Display an EOF indicator. 
+
+More to come!
+
+See EnterpriseDotEmacs for the ~/.emacs file that implements this, and some other useful features.  See MsWindowsDotEmacs for how to set it up in Windows.
+
+----
+CategoryDotEmacs

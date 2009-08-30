@@ -1,0 +1,9 @@
+ShowHelp is mode that popup help information for elisp symbol at cursor.
+
+You can get it from [[show-help.el]].
+
+See also ElDoc#ContextHelp
+
+----
+CategoryCode
+

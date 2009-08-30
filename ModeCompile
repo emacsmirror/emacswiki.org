@@ -1,0 +1,112 @@
+ModeCompile provides a smart command for compiling files
+according to major-mode. 
+
+Compile commands are defined for CcMode, CPlusPlusMode, MakefileMode, DiredMode, AdaMode, EmacsLispMode, LispInteractionMode, ShMode, csh-mode, fundamental-mode, TextMode, indented-text-mode, CompilationMode, FortranMode, CPerlMode, zsh-mode, JavaMode, TclMode, PythonMode.
+
+For other modes a default behaviour is provided.
+
+You can get the latest version here:
+
+* http://www.tls.cena.fr/~boubaker/Emacs/
+
+Put something like this in your .emacs:
+
+    ;;mode-compile
+    (autoload 'mode-compile "mode-compile"
+      "Command to compile current buffer file based on the major mode" t)
+    (global-set-key "\C-cc" 'mode-compile)
+    (autoload 'mode-compile-kill "mode-compile"
+      "Command to kill a compilation launched by `mode-compile'" t)
+    (global-set-key "\C-ck" 'mode-compile-kill)
+
+== mode-compile and SQL ==
+I've been using this for running SQL scripts, , patch is at ModeCompileSql --TimAnderson
+
+== Automatically close the compilation buffer after a successful compilation ==
+Assume you run <tt>M-x compile</tt> and the compilation succeeds without an error. Then the <tt><nowiki>*compilation*</nowiki></tt> window is usually not of much interest. Put the following code into your <tt>.emacs</tt> file to close this window. The <tt><nowiki>*compilation*</nowiki></tt> buffer itself will be kept, but buried, so that <tt>C-x b</tt> doesn't go directly to it.
+
+  ;; Helper for compilation. Close the compilation window if
+  ;; there was no error at all.
+  (defun compilation-exit-autoclose (status code msg)
+    ;; If M-x compile exists with a 0
+    (when (and (eq status 'exit) (zerop code))
+      ;; then bury the *compilation* buffer, so that C-x b doesn't go there
+      (bury-buffer)
+      ;; and delete the *compilation* window
+      (delete-window (get-buffer-window (get-buffer "*compilation*"))))
+    ;; Always return the anticipated result of compilation-exit-message-function
+    (cons msg code))
+  ;; Specify my function (maybe I should have done a lambda function)
+  (setq compilation-exit-message-function 'compilation-exit-autoclose)
+
+-- HolgerSchurig
+
+This has the side-effect of making your rgrep output vanish upon success.
+
+-- Tero
+
+Here is a variation on the above that is more convenient if you like working with two windows open. It will switch back to whatever buffer was in your other window if compilation is successful. Ideally, there would be a way to restore the window state to whatever it was before compilation started.
+
+  ;; Close the compilation window if there was no error at all.
+  (setq compilation-exit-message-function
+        (lambda (status code msg)
+          ;; If M-x compile exists with a 0
+          (when (and (eq status 'exit) (zerop code))
+            ;; then bury the *compilation* buffer, so that C-x b doesn't go there
+  	  (bury-buffer "*compilation*")
+  	  ;; and return to whatever were looking at before
+  	  (replace-buffer-in-windows "*compilation*"))
+          ;; Always return the anticipated result of compilation-exit-message-function
+  	(cons msg code)))
+
+-- ArthurDanskin
+
+Holger's code looks promising, but doesn't work in xemacs; it can be adapted, by using compilation-finish-function instead of compilation-exit-message-function (and, I believe, that's a semantically more appropriate variable even for emacs). Unfortunately, the interface is quite a bit more opaque, which makes me think I need to test it some more before releasing the adaptation. 
+
+-- BrianPalmer
+
+A first pass at compilation-finish-functions.  We don't get an exit code like Holger's function above, but the cons cell doesn't get inserted into whatever bufffer is current at the moment.
+
+ (setq compilation-finish-functions 'compile-autoclose)
+ (defun compile-autoclose (buffer string)
+   (cond ((string-match "finished" string)
+          (message "Build maybe successful: closing window.")
+          (run-with-timer 10 nil                      
+                          'delete-window              
+                          (get-buffer-window buffer t)))
+         (t                                                                    
+          (message "Compilation exited abnormally: %s" string))))
+
+You also can use winner-undo from WinnerMode to get back to
+whatever window configuration you had before compile:
+ 
+  (setq compilation-finish-functions 'compile-autoclose)
+  (defun compile-autoclose (buffer string)
+     (cond ((string-match "finished" string)
+	  (bury-buffer "*compilation*")
+          (winner-undo)
+          (message "Build successful."))
+         (t                                                                    
+          (message "Compilation exited abnormally: %s" string))))
+
+--Lars
+
+== LaTeX support for mode-compile ==
+To compile LaTeX with mode-compile does not work out-of-the-box as
+AUCTeX makes the variable compile-command (see CompileCommand) buffer-local and thus
+mode-compile never looks up entries in mode-compile-modes-alist.
+But it works like follows:
+
+  (add-hook 'LaTeX-mode-hook 'mysite-latex-mode-hook)
+  (defun mysite-latex-mode-hook () 
+    (kill-local-variable 'compile-command)  
+   )
+  (setq mode-compile-modes-alist
+       (append '((latex-mode . (tex-compile kill-compilation)))
+               mode-compile-modes-alist))
+
+
+-- LarsSchmidtThieme
+
+
+See Also : SmartCompile, CompileCommand

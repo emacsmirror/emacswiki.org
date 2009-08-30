@@ -1,0 +1,22 @@
+This ERC command will display the uptime of the system, as well as some load-related information that I know nothing about.  It will help the ERC user to keep up with those users of other IM clients.
+
+<pre>
+(defun erc-cmd-UPTIME (&rest ignore)
+  "Display the uptime of the system, as well as some load-related
+stuff, to the current ERC buffer."
+  (let ((uname-output
+         (replace-regexp-in-string
+          ", load average: " "] {Load average} ["
+          ;; Collapse spaces, remove
+          (replace-regexp-in-string
+           " +" " "
+           ;; Remove beginning and trailing whitespace
+           (replace-regexp-in-string
+            "^ +\\|[ \n]+$" ""
+            (shell-command-to-string "uptime"))))))
+    (erc-send-message
+     (concat "{Uptime} [" uname-output "]"))))
+</pre>
+
+----
+[[ERC]]

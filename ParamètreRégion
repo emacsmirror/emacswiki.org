@@ -1,0 +1,29 @@
+Dans le but d'écrire une fonction interactive (FonctionInteractive) qui utilise la région comme paramètre, on utilise  l'instruction ''interactive'' avec l'option « r ».
+Cela aura pour effet de donner aux deux premiers paramètres de la fonction, la position du curseur et  celle de la marque. Le texte se trouvant dans la région peut être récupéré au moyen de la fonction ''buffer-substring''.
+
+En demandant de l'aide sur la fonction ''interactive'', grâce à la commande <code>C-h f interactive</code>, nous voyons que:
+: r -- Région: admet deux paramètres numériques curseur et marque le plus petit en premier. N'effectue pas d'entrée sortie.
+
+Commençons par donner ce premier exemple:
+
+    (defun mon-exemple-interactif (début fin)
+       (interactive "r")
+       (message "La région courante est %s !" (buffer-substring début fin)))
+
+Donnons comme autre exemple, une fonction de recherche, qui peut être très utile: 
+
+    (defun recherche-région (début fin)
+      "Recherche la position suivante du contenu de la région dans le tampon, et fait devenir ce contenu la région courante"
+      (interactive "r")
+      (let ((region-size (- fin début)) (region-text (buffer-substring début fin)))
+        (unless
+	    (when (search-forward region-text nil t 1)
+	      (setq mark-active nil)
+	      (set-mark (- (point) region-size))
+	      (setq mark-active t))
+          (message "Ne trouve plus  \"%s\" dans le tampon!" region-text))))
+
+Ce programme est plus utile en étant dans le mode  ''transient-mark-mode'', mais il fonctionne aussi sans ce mode. Ce programme effectue simplement une recherche de la positon suivante du contenu de la variable ''region'' dans le tampon et y place le curseur. Le texte trouvé à cette position devient la nouvelle région. Ainsi il peut être appelé de multiples fois pour passer d'une position du texte trouvé à la suivante (s'il en trouve une autre). 
+
+----
+CatégorieCode

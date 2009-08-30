@@ -1,0 +1,19 @@
+This Emacs Lisp package provides a front-end for a relational database to store the film, negative, and print information of photographers who prefer silver-based films and papers over digital imaging.
+
+External links
+* [http://ephotodb.sourceforge.net/ Emacs Photo Database Homepage]
+
+Features
+
+* suitable for 35mm, medium format, and large format photography
+* uses a relational data model: each film consists of one or more negatives, and each negative may have one or more print conditions
+* supports SQLite and MySQL out of the box. Other engines may work with minor code modifications
+* provides simple text forms for entering and editing film, negative, and print information
+* provides tab completion when displaying, editing, or deleting entries
+* find prints of a negative or of a film
+* find negatives by keyword (location or description)
+* store and display scans of films, negatives, and prints
+
+
+----
+MultimediaModes

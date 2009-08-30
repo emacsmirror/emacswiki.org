@@ -1,0 +1,40 @@
+There are many ways to save outgoing mail.
+
+See also: ArchivingMail
+
+== FCC headers ==
+
+FCC headers are the simplest trick.  Here is an example using PostingStyles.
+
+<pre>
+ (setq gnus-posting-styles
+  '((".*"
+    ("Fcc" "~/SMAIL")
+     ...)))
+</pre>
+
+This will add the Fcc header to all outgoing mails sent from within
+Gnus and put them into the ~/SMAIL folder.  Obviously you can split
+this up various files, see PostingStyles for more info on how to set a
+header such as Fcc for different regular expressions.
+
+== gcc-self ==
+
+Gnus knows how to Gcc.  Cc is a carbon copy sent by mail, a Fcc is a
+carbon copy saved to a file, and a Gcc is a carbon copy stored in a
+group (using the appropriate backend).  One way to save outgoing mail
+is to Gcc them to the group active when you sent the mail.  Just add
+the following to the group's or topic's GroupParameters.
+
+<pre>
+    ((gcc-self . t))
+</pre>
+
+or if you want to put it in a specific folder;i.e in this example all mails from my sas group 
+which I respond to, is filed to sent-sas folder
+
+<pre>
+    (gcc-self . "nnfolder:sent-sas")
+</pre>
+----
+CategoryGnus

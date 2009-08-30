@@ -1,0 +1,100 @@
+AbdulBijur's .emacs file.
+<pre>
+;; this is my dot_emacs, copy, modify and use it as u want it.
+
+;; .emacs is where the soul lives… ;; this is my very own custoemr misation file
+
+ (custom-set-variables
+  ;; custom-set-variables was added by Custom -- don't edit or cut/paste it!
+  ;; Your init file should contain only one such instance.
+ '(auto-compression-mode t nil (jka-compr))
+ '(case-fold-search t)
+ '(current-language-environment "English")
+ '(debug-on-error t)
+ '(global-font-lock-mode t nil (font-lock))
+ '(save-place t nil (saveplace))
+ '(show-paren-mode t nil (paren))
+ '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
+ '(transient-mark-mode t)
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
+
+ (custom-set-faces
+  ;; custom-set-faces was added by Custom -- don't edit or cut/paste it!
+  ;; Your init file should contain only one such instance.
+ )
+
+;; these are the custom fonts 'terminus that i chose to use in my emacs.
+
+ (set-face-font 'menu "-dec-terminal-medium-*-normal-*-14-*-75-75-*-80-*-*" )
+ (set-face-font 'default "-dec-terminal-medium-*-normal-*-14-*-75-75-*-80-*-*")
+
+;; adding these directories to the list (add-to-list 'load-path ".emacs-local")
+
+;; color theme gnome loaded first the the package is loaded and then the call is made.
+
+(require 'color-theme) 
+(color-theme-gnome2)
+
+;; I hope to make soem mroe customisations.. but i guesss they would come in the long run
+
+;;(menu-bar-mode 1) is to disable the menu bar .. but i think i'kll keep it ;)
+
+;; bar cursor! (require 'bar-cursor) (bar-cursor-mode 1)
+
+;; make buffer names unique and look like this name|dir1/dir2 (require 'uniquify) (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+
+;;for using ctrl-tab to switch buffers ;;(load "buffercycle")
+
+(global-set-key [(control tab)] 'bury-buffer)
+
+;; use % to match paranthesis
+
+   (defun match-paren (arg)
+      "Go to the matching paren if on a paren; otherwise insert %."
+      (interactive "p")
+      (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+            ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+	    (t (self-insert-command (or arg 1)))))
+
+   (global-set-key "%" 'match-paren)
+
+(require 'appt) (load-library "sql") ;;(load-library "plsql") (display-time)
+
+(setq line-number-mode t) (setq dired-listing-switches "-la" ) (setq auto-mode-alist (cons '("\\.pld$\\|\\.pls$\\|\\.pld$" . plsql-mode) auto-mode-alist))
+
+(mouse-wheel-mode 1)
+
+;;adding the exec path
+
+;;(add-to-list 'exec-path "/u01/app/oracle/product/10.1.0/client_1/bin")
+
+;;setting the environment variable ORACLE_HOME for the sqlplus
+
+;;(setenv "ORACLE_HOME" "/u01/app/oracle/product/10.1.0/client_1" )
+
+;; this is for erc!
+
+    (add-to-list 'load-path "~/.emacs-local/erc")
+    (require 'erc)
+;; I really hate the scroll bar
+(scroll-bar-mode -1)
+
+;; I hate the tool bar too :-D
+
+(tool-bar-mode -1)
+
+;; this is for python
+ (autoload 'python-mode "python-mode" "Python Mode." t)
+ (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+ (add-to-list 'interpreter-mode-alist '("python" . python-mode))
+
+;; Enable syntax highlighting
+
+(global-font-lock-mode t)
+(setq font-lock-maximum-decoration t)
+
+
+
+</pre>
+
+

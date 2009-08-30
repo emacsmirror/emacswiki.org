@@ -1,0 +1,15 @@
+SESE is a small utility I wrote for creating subtitles for a movie.
+
+It's inspired by [http://www.1010.co.uk/gneve.html GNEVE].  GNEVE promises
+to do much more than what I needed, but the generated subtitles didn't work
+fine for me (timing was totally wrong) so I decided to write my own little
+tool.
+
+SESE is very convenient and easy to use—you just watch the movie and press a
+shortcut to insert subtitles at appropriate position.
+
+I wrote some documentation here: http://mihai.bazon.net/projects/sese
+
+Download the code here: http://mihai.bazon.net/projects/sese/sese.el
+
+Hope it will be useful to others too. ;-)

@@ -1,0 +1,37 @@
+I'm not any kind of uber-geek programmer.  I just like Emacs.  A lot.  In fact, i think it's pretty much the answer to all my computing dreams.  
+
+My [http://timbral.net homepage] (which, by the way is written and maintained using Emacs Muse and texi2html).
+
+Although i use Emacs for a lot of the standard things: gnus for email and Usenet, slime for lisp (one upon a time), etc, my main thing right now is that i am writing a novel.  Emacs is the best thing evah for writing, but there are a few holes.
+
+One of these is finding a way to edit in a comfortable text editor (i.e., Emacs) but easily export your work to a format that fiction editors want to see.  I have played around on and on with all kinds of attempts at solutions.  What i have finally come to is a combination of a major mode, several minor modes, and a tiny set of troff macros which, all together, allow you to write in plain text, run a little pre-processing job to handle underlining, and then pipe it to groff using the macros.  I call this whole setup `Litmus'.  It is the best way i have found, though many people would not be interested, because most people aren't concerned with producing really anal-retentively formatted novel manuscripts, ready to send to an agent.
+
+Anyway, in the meantime, in also would like to write some functions to help with copy-editing.  Things on the order of what are called grammar-checkers, though that's being pretty generous.  Really we're just talking about things that will find instances of easy to spot _potential_ problems.  The famous the-the.el routine that looks for repeated words is an example.  It doesn't do your thinking for you, but it can be helpful for spotting things in a big manuscript.
+
+One of these is a cliche finder.  It uses what i _think_ is a copyright-free list of common cliches.  Another looks for markers of passive voice, another looks for commonly misused words.  One that i actually think is useful and ready to see the light of day is RepWords -- rep-words.el looks for places where you have used the same word too many times in a short stretch of text.  See the header comments for more.
+
+Also added today is a set of trivial word-count functions: Lisp:wc.el -- a little more user-friendly, i think, than some similar things.
+
+Also added: a fairly major hack of underline.el called Lisp:ul.el -- WARNING! -- this redefines Emacs' standard underline-region functions.  It should be transparent, but who knows?  It adds the ability to underline by sentence or underline everything (instead of underlining by word, as is the default) and it also provides a font-lock based underlining using delimiting characters you can specify.
+[new]
+I also wrote TwIt -- a little library for doing posts to twitter.com.  I don't know which will happen sooner--i lose interest in Twit, or twitter.com folds.  But it's fun for the moment.  [edit: i lost interest]
+
+[new]
+So twit.el has taken off, I'm happy so say.  A lot has been added to it and most of it I can't or won't bother to try to understand.  I think though that I would be out of my depth if I tried to make contributions to it at this point.
+
+[new]
+Welcome to the wiki! :) -- AlexSchroeder
+
+[new]
+Why, thank you!
+
+[new]
+I have also written a little generic major mode for editing AS/400 CL (Control Language) files, for the three people on the planet who are likely to want such an obscure thing.  It's somewhere on gnu.emacs.sources if you want it (it's ctrl-lang.el). 
+
+[new]
+Interestingly I recently discovered that with all the virtualization and Linux-ishness that IBM is doing these days, it is now possible if you have some package on a System i that Emacs is actually already on the machine and ready to run.  You need to have a PC with X (GNU/Linux or perhaps Windows with Cygwin, for example) and then you can run Emacs directly on the System i and tunnel X to your PC.  I mean, this is pretty cool and I really want to try it.  I know we have QSHELL on the system where I work, but I am not sure about PASE.  See http://lispy.wordpress.com/2008/07/31/configuring-an-ibm-i-for-emacs-and-perl-hacking/
+
+[Edit later: Of course, we don't have PASE installed, or at any rate the part of it that contains Emacs.  To bad...]
+
+----
+CategoryHomepage

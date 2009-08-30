@@ -1,0 +1,18 @@
+IanSheldon has code out there that integrates MailCrypt with the BBDB.
+Basically, it allows you to add an entry to your BBDB records to indicate if the recipient prefers PGP or GPG encrypted or signed mail.
+If so, when you send the mail, it will automatically be encrypted. This has been tested with Gnus.
+
+* http://www.kaidea.freeserve.co.uk/elisp.html
+
+That host is not resolvable, as of 31 August 2003 -- does anyone have a working link, or the actual code?
+
+
+you can get the file with archive.org's waybackmachine, like this
+
+* http://web.archive.org/web/20030413005614/www.kaidea.freeserve.co.uk/mc-bbdb.el
+
+last entry in archive.org is from march 2003. didn't test the elisp yet. -- AnselmHelbig
+
+----
+CategoryBbdb CategoryGnus
+CategoryCryptography

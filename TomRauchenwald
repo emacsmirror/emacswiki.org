@@ -1,0 +1,122 @@
+I'm using Emacs for about a year now. So far I use Emacs for email ([CategoryGnus Gnus]), IRC ([[Circe]] at the moment), jabber ([JabberEl jabber.el]) and of course for editing text.
+A screenshot of my current environment can be seen [http://sec.modprobe.de/xmonad2.png here]. The WM i use is [http://xmonad.org xmonad].
+
+On IRC I'm known as [::oxymor00n].
+
+My personal homepage can be found [http://sec.modprobe.de/ here]. Most of it is in German, though.
+
+Today i bought one of these flat Apple-keyboards. So far i have to say it is really nifty: big Ctrl and Mod-Keys. Except that it is configured wrong by default. The following xmodmap-commands fix this (for a german keyboard, that is)
+Basically it swaps the Mac-Cmd keys which are mod4/Super by default with the (much smaller) Alt-keys.
+<pre>
+! swap super and alt/alt_gr keys
+! remove right super key as mod5 and use it as mod4
+remove Mod5 = Super_R
+remove Mod4 = Super_L Super_R
+remove Mod1 = Alt_L 
+keysym Super_L = Alt_L
+keysym Alt_L = Super_L
+keysym ISO_Level3_Shift = Super_R
+keysym Super_R = ISO_Level3_Shift
+add Mod1 = Alt_L
+add Mod4 = Super_L Super_R
+</pre>
+== Snippets ==
+I love Gnus. Here's how it looks like:
+
+[[image:http://sec.modprobe.de/oxy-gnus-threads.png]]
+
+And here is how it is done:
+<pre>
+;; eye candy
+(copy-face 'font-lock-variable-name-face 'gnus-face-6)
+(setq gnus-face-6 'gnus-face-6)
+(copy-face 'font-lock-constant-face 'gnus-face-7)
+(setq gnus-face-7 'gnus-face-7)
+(copy-face 'gnus-face-7 'gnus-summary-normal-unread)
+(copy-face 'font-lock-constant-face 'gnus-face-8)
+(set-face-foreground 'gnus-face-8 "gray50")
+(setq gnus-face-8 'gnus-face-8)
+(copy-face 'font-lock-constant-face 'gnus-face-9)
+(set-face-foreground 'gnus-face-9 "gray70")
+(setq gnus-face-9 'gnus-face-9)
+(setq gnus-summary-make-false-root 'dummy)
+(setq gnus-summary-make-false-root-always nil)
+(defun oxy-unicode-threads () 
+  (interactive)
+  (setq gnus-summary-dummy-line-format "    %8{│%}   %(%8{│%}                       %7{│%}%) %6{□%}  %S\n"
+	gnus-summary-line-format "%8{%4k│%}%9{%U%R%z%}%8{│%}%*%(%-23,23f%)%7{│%} %6{%B%} %s\n"
+	gnus-sum-thread-tree-indent " "
+	gnus-sum-thread-tree-root "■ "
+	gnus-sum-thread-tree-false-root "□ "
+	gnus-sum-thread-tree-single-indent "▣ "
+	gnus-sum-thread-tree-leaf-with-other "├─▶ "
+	gnus-sum-thread-tree-vertical "│"
+	gnus-sum-thread-tree-single-leaf "└─▶ "))
+
+(defun oxy-unicode-threads-heavy () 
+  (interactive)
+  (setq gnus-summary-line-format "%8{%4k│%}%9{%U%R%z%}%8{│%}%*%(%-23,23f%)%7{║%} %6{%B%} %s\n"
+	gnus-summary-dummy-line-format "    %8{│%}   %(%8{│%}                       %7{║%}%) %6{┏○%}  %S\n"
+	gnus-sum-thread-tree-indent " "
+	gnus-sum-thread-tree-root "┏● " 
+	gnus-sum-thread-tree-false-root " ○ "
+	gnus-sum-thread-tree-single-indent " ● "
+	gnus-sum-thread-tree-leaf-with-other "┣━━❯ " 
+	gnus-sum-thread-tree-vertical "┃"
+	gnus-sum-thread-tree-single-leaf "┗━━❯ "))
+
+(oxy-unicode-threads-heavy)
+</pre>
+----
+For [[Circe]] i use the following to mimmick ERC's fools and pals. I'm just starting to learn elisp, so don't shoot me on sight :)
+<pre>
+(defface circe-pal-face '((t :foreground "DodgerBlue")) "Face for your pals on IRC")
+(defface circe-fool-face '((t :foreground "SlateGray4")) "Face for fools on IRC")
+
+(defun circe-add-pals (pals)
+  "Add a list of pals"
+  (mapc (lambda (el)
+          (add-to-list 'lui-highlight-keywords (list el 'circe-pal-face))) pals))
+
+(defun circe-add-fools (fools)
+  "Add a list of fools"
+  (mapc (lambda (el)
+          (add-to-list 'lui-highlight-keywords (list el 'circe-fool-face))) fools))
+
+(circe-add-pals '("fry" "leela" "zoidberg"))
+(circe-add-fools '("santa"))
+</pre>
+To make [[Circe]] look like [http://sec.modprobe.de/circe-shot.png this] you can use the following:
+<pre>
+;; look and feel
+(setq circe-format-self-say "<{mynick}> {body}"
+      circe-highlight-nick-type 'all)
+
+(set-face-attribute 'circe-highlight-all-nicks-face nil :foreground "SteelBlue")
+(set-face-attribute 'circe-my-message-face          nil :foreground "DeepSkyBlue")
+(set-face-attribute 'circe-originator-face          nil :foreground "LightBlue")
+(set-face-attribute 'lui-time-stamp-face            nil :foreground "cadetblue4" 
+                                                        :weight     'normal)
+(set-face-attribute 'lui-highlight-face             nil :foreground "DodgerBlue")
+
+(setq lui-time-stamp-format "%H:%M "
+      lui-time-stamp-only-when-changed-p nil
+      lui-time-stamp-position 'left)
+</pre>
+Note that it doesn't look very good on a tty-frame, i'll look into that when i have time.
+----
+If you don't want to move point or use the mouse to open an url with erc, this function might be handy.
+<pre>
+(defun erc-cmd-OU (&optional num)
+  "Open the last url in the buffer with browse-url."
+  (let ((count (string-to-number (if (stringp num) num "1"))))
+    (save-excursion
+      (if (re-search-backward "http://" (point-min) t count)
+          (browse-url (thing-at-point 'url))
+        (message "No Url found!")))))
+</pre>
+[new]
+Welcome to the wiki! -- AlexSchroeder
+
+----
+CategoryHomepage

@@ -1,0 +1,57 @@
+I use emacs(meadow).
+
+* Lisp:highlight-cl.el
+
+:: Highlighting `cl' functions.
+
+* Lisp:anything-yaetags.el
+
+:: Yet another etags interface with anything.
+
+* Lisp:descbinds-anything.el
+
+:: replacement of `describe-bindings' with anything.
+
+* Lisp:paint.el
+
+:: Make a emacs to the paint tool.
+
+* VlineMode
+
+[new:DrewAdams:2008-01-21 07:13 UTC]
+:: Very nice! Please consider adding a face variable (`defvar') for face `vline', and use that in your code. That way, other code can make the `vline' code use a particular face in some context, without affecting the user's choice for face `vline'. For example, other code could then do this:
+
+             (let ((vline-style 'face)
+                   (vline-face 'hl-line-face))
+              ...)
+:: Thx -- DrewAdams
+
+[new]
+:: Thanks! I applied it. -- [[Sugawara]]
+::: Thanks -- Drew
+
+[new:DrewAdams:2008-01-22 03:25 UTC]
+Minor bug, I think: if `vline-show' gets called twice in a row for some reason, the highlighting is a bit messed up (space chars, in particular, seem shifted). A third call fixes it (workaround).
+
+Question: Is it intentional that the highlighting doesn't appear if there is an active region (TransientMarkMode)?
+
+-- DrewAdams
+
+[new]
+> Minor bug, I think: if `vline-show' gets called twice in a row for some reason, the highlighting is a bit messed up (space chars, in particular, seem shifted). A third call fixes it (workaround).
+:: Fixed.
+
+> Question: Is it intentional that the highlighting doesn't appear if there is an active [[region]] (TransientMarkMode)?
+:: Not intentional.  Priority of region highlighting seems be higher than [[text property]] and [[overlay]]. I have no idea for this problem. You have it?
+
+-- [[Sugawara]]
+
+-----
+
+Welcome ! -- [[Matsuyama]]
+
+-----
+
+CategoryHomepage
+
+

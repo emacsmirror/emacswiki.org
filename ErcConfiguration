@@ -1,0 +1,316 @@
+== Customizing ==
+
+The first step is probably the customization of ERC.  Note that you
+can only use the custom interface when you have the code loaded which
+you want to customize.  This is especially true for ERC, where a lot
+of functionality is stuffed away in modules.  Only after loading a
+module will you be able to customize it, for example by typing
+
+    M-x customize-group erc.
+
+== Modules ==
+
+The next step in configuring ERC is the loading of additional
+modules.  ERC is very extensible and as much as possible is done via
+hooks (see ErcHooks for the gory details).  This means that other
+people can easily write code that "hooks" into ERC.
+
+== Keybindings ==
+
+If you want to emulate `message'-style C-a, you could use something like this:
+
+ (defun erc-maybe-bol ()
+  "Goto the end of `erc-prompt'.
+ If already there, go to `beginning-of-line'."
+  (interactive)
+  (if (and (string-match (concat "^" (regexp-quote (erc-prompt))
+                                 " *$")
+                         (buffer-substring-no-properties
+                          (line-beginning-position)
+                         (point)))
+           (not (bolp)))
+      (beginning-of-line)
+    (erc-bol)))
+
+Or more simply like this -- ZwaX:
+
+ (add-hook 'erc-mode-hook
+	   '(lambda ()
+	      (define-key erc-mode-map "\C-a"
+	        '(lambda ()
+		   (interactive)
+		   (let ((p (point)))
+		     (erc-bol)
+		     (if (= p (point)) (beginning-of-line)))))))
+
+
+If you hit RETs by mistake before being done with the current line, rebind it...
+
+ (add-hook 'erc-mode-hook
+          '(lambda ()
+             (define-key erc-mode-map "\C-m" 'newline)
+             (define-key erc-mode-map "\C-c\C-c" 'erc-send-current-line)
+             (define-key erc-mode-map (kbd "C-<return>")
+		'erc-send-current-line)
+              ;; uncomment this to make C-g do more intuitive stuff.. when in ERC..
+             ;;(define-key erc-mode-map "\C-c\C-g" 'keyboard-quit)
+             ))
+
+Here is a keybinding for C-c C-q to start a query:
+
+     (define-key erc-mode-map (kbd "C-c C-q")
+       (lambda (nick)
+	 (interactive (list (completing-read "Nick: " channel-members)))
+	 (erc-cmd-QUERY nick)))
+
+Contributors: LawrenceMitchell, DeepakGoel, AlexSchroeder
+
+== Multiple servers ==
+
+This is what I use as a poor man's menu to the servers I use on a regular basis:
+
+ (setq erc-server-history-list '("irc.openprojects.net"
+                                 "Geneva.CH.EU.undernet.org"
+                                 "irc.lugs.ch"))
+
+Then I can connect to other servers by using the fake history.
+
+See ErcStartupFiles for more information on this.
+
+== Channel-specific prompts ==
+
+This is what I use to provide channel-specific prompts (like #emacs> in the Emacs channel, and #php> in the PHP channel)
+
+   (setq erc-prompt (lambda ()
+     (if (and (boundp 'erc-default-recipients) (erc-default-target))
+         (erc-propertize (concat (erc-default-target) ">") 'read-only t 'rear-nonsticky t 'front-nonsticky t)
+       (erc-propertize (concat "ERC>") 'read-only t 'rear-nonsticky t 'front-nonsticky t))))
+
+Bug alert: (erc-default-target) returns nil when the prompt is first displayed. Also, this code is ugly and needs fixing. I'd love to hear about the fix - mail to sacha@free.net.ph
+
+== Viper ==
+
+Viper and ERC don't seem to get along by default. Here's a fix.
+
+ ;; Ensure that ERC comes up in Insert mode.
+ (add-to-list 'viper-insert-state-mode-list 'erc-mode)
+
+ (defun ted-viper-erc-hook ()
+   "Make RET DTRT when you use Viper and ERC together."
+   (viper-add-local-keys 'insert-state
+                         `((,(kbd "RET") . erc-send-current-line)))
+   (viper-add-local-keys 'vi-state
+                         `((,(kbd "RET") . erc-send-current-line))))
+
+ (add-hook 'erc-mode-hook 'ted-viper-erc-hook)
+
+
+== Connection Problems ==
+
+If you are behind a quirky corporate firewall, the irc server (viz., like, irc.freenode.net) may not be able to look up your hostname or ping you, and hence will soon drop you when you are idle.  A solution is to keep your nick active by sending out  periodic pings.  Here's a DIRTY implementation (tested only with 1.440 or later versions of ERC cvs) Wiki contributors, please feel free to improve it :)
+
+
+
+
+
+ (add-hook 'erc-server-376-hook
+	  '(lambda (&rest args)
+	    (keep-alive)))
+
+  ;;; else flood-quit messages if an accidental disconnection occurs, which will annoy people :)
+ (setq erc-auto-reconnect nil)
+
+ (defvar keep-active-active-p nil)
+
+ (defun keep-alive ()
+  (interactive)
+   ; prevent timer duplication
+   (run-with-timer 15 5 'keep-alive-kick-once)
+   (setq keep-alive-active-p t)
+   (message "Started erbtrain-keep-alive. "))
+
+ (defun keep-alive-kick-once ()
+  (interactive)
+   ;; this seems necessary else ERC won't send the ping after a while.
+  (let ((erc-flood-protect nil))
+   (save-window-excursion
+     (when (buffer-name-p-my "#emacs")
+      (switch-to-buffer "#emacs")
+      ;; don't send pings unless we are actually alive, to protect flood-quits.
+     (when (erc-process-alive) (erc-send-command "PING"))
+    ))))
+
+
+ ;;;###autoload
+ (defun buffer-name-p-my (name &optional matchfn)
+  "Whether name is the name of a buffer.."
+  (unless matchfn (setq matchfn 'string=))
+  (member-if
+   (lambda (arg)
+     (funcall matchfn name
+	      (buffer-name arg)))
+   (buffer-list)))
+
+IF you don't setq erc-auto-reconnect to nil above, then if a channel split logs you off, the pings seem to pile up and upon auto-join, you get  an excess flood quit.. which then keeps going on forever..
+
+
+== Erc Button URL ==
+
+Sometimes people often type URL's like:
+<pre>
+ <nick> Try foo.org!
+</pre>
+
+I want my emacs to be able to buttonize that url (even though it
+doesn't contain a www or http, and launch my galeon
+if i middle-click. I also want emacs to be very strict about the last
+letter and realize that ! is not part of the url. Finally, I don't
+care too much about false positives, but false negatives are a pain.
+So, here's the tweak I use:
+
+ (setq erc-button-url-regexp
+      "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
+
+
+== Yahoo Profile ==
+
+This is probably only meaningful if you use BitlBee with erc.  Bitblee
+rocks.
+
+<pre>
+(defun erc-cmd-PROFILEYAHOO (name)
+  (interactive)
+  (browse-url-galeon
+   (concat "http://profiles.yahoo.com/"
+	   (fifth (assoc* name channel-members :test 'equal))) t))
+
+
+</pre>
+
+
+== Character Encoding ==
+
+ERC has channel specific Character Encoding support, which is based on
+the underlying mule system.  Exp. say, I want to use <b>utf-8</b>
+encoding at all channls but <b>chinese-iso-8bit</b> in a channel named
+<b>#linuxfire</b>, I can just add the following lines to my .emacs:
+
+<pre>
+(setq  erc-server-coding-system '(utf-8 . utf-8)
+       erc-encoding-coding-alist '(("#linuxfire" . chinese-iso-8bit) ; note that, this is an alist and you can append cons cell for multi-channel
+                                   ("#foobar" . chinese-iso-8bit)
+                                   ("#barfoo" . chinese-big5)))
+;;要是多个频道讷? -- see above
+;;我是这样设置的：
+(push '("#linuxfire" . (chinese-iso-8bit . chinese-iso-8bit))
+      erc-encoding-coding-alist
+      )
+(push '("#jiye" . (chinese-iso-8bit . chinese-iso-8bit))
+      erc-encoding-coding-alist
+      )
+
+</pre>
+
+== Responding once if mentioned when away ==
+I put the following in my .emacs so that if I'm mentioned when I'm away, I'll say "/me is away: <REASON>", but only once (so as not to get annoying).
+
+Unfortunately ERC doesn't store the reason, so I had to change erc-cmd-AWAY (is there a hook I could use?) and I couldn't find any back-from-away-hook so I changed erc-process-away to set my new variables erc-responded-once and erc-away-reason back to nil. Ugly, but it works.
+
+<pre>
+(defvar erc-responded-once nil)
+(defvar erc-away-reason nil)
+(defun erc-respond-once-if-away (match-type nickuserhost msg)
+  (if (erc-away-time)
+      (if (eq match-type 'current-nick)
+	  (unless erc-responded-once
+            ;; erc-send-message escapes /, how to fix?
+	    (erc-send-message (concat "/me is away: " erc-away-reason))
+	    (setq erc-responded-once t)))))
+(add-hook 'erc-text-matched-hook 'erc-respond-once-if-away)
+
+(defun erc-process-away (proc away-p)
+  "Toggle the away status of the user depending on the value of AWAY-P.
+
+If nil, set the user as away.
+If non-nil, return from being away."
+  (let ((sessionbuf (process-buffer proc)))
+    (when sessionbuf
+      (with-current-buffer sessionbuf
+	(when erc-away-nickname
+	  (erc-log (format "erc-process-away: away-nick: %s, away-p: %s"
+			   erc-away-nickname away-p))
+	  (erc-cmd-NICK (if away-p
+			    erc-away-nickname
+			  erc-nick)))
+	(cond
+	 (away-p
+	  (setq erc-away (current-time)))
+	 (t
+	  (let ((away-time erc-away))
+	    ;; away must be set to NIL BEFORE sending anything to prevent
+	    ;; an infinite recursion
+	    (setq erc-away nil
+		  erc-responded-once nil
+		  erc-away-reason nil)
+	    (save-excursion
+	      (set-buffer (erc-active-buffer))
+	      (when erc-public-away-p
+		(erc-send-action
+		 (erc-default-target)
+		 (if away-time
+		     (format "is back (gone for %s)"
+			     (erc-sec-to-time
+			      (erc-time-diff
+			       (erc-emacs-time-to-erc-time away-time)
+			       (erc-current-time))))
+		   "is back")))))))))
+    (erc-update-mode-line)))
+(defun erc-cmd-AWAY (line)
+  "Mark the user as being away, the reason being indicated by LINE.
+If no reason is given, unset away status.
+
+Redefined to store reason"
+  (when (string-match "^\\s-*\\(.*\\)$" line)
+    (let ((reason (match-string 1 line)))
+      (setq erc-away-reason reason)
+      (erc-log (format "cmd: AWAY: %s" reason))
+      (erc-server-send
+       (if (string= reason "")
+	   "AWAY"
+	 (concat "AWAY :" reason))))
+    t))
+</pre>
+
+Here is another version of the above which uses defadvice to avoid having to
+redefine the whole functions. Also, there is no problem with escaping of the "/"
+character.
+
+{{{
+(defvar erc-responded-once nil)
+(defvar erc-away-reason nil)
+(defun erc-respond-once-if-away (match-type nickuserhost msg)
+  (if (erc-away-time)
+      (if (eq match-type 'current-nick)
+          (unless erc-responded-once
+            (erc-send-action (erc-default-target) (concat "is away: " erc-away-reason))
+            (setq erc-responded-once t)))))
+(add-hook 'erc-text-matched-hook 'erc-respond-once-if-away)
+
+(defadvice erc-process-away (after erc-away-reason-clear (proc away-p) activate)
+  "Clear things"
+  (unless away-p
+    (setq erc-responded-once nil
+          erc-away-reason nil)))
+
+(defadvice erc-cmd-AWAY (after erc-store-reason (line) activate)
+  "store line"
+  (when (string-match "^\\s-*\\(.*\\)$" line)
+    (let ((reason (match-string 1 line)))
+      (setq erc-away-reason reason))))
+}}}
+
+This version is tested to work, so (with the original author's consent) the
+other version could be removed.
+
+----
+[[ERC]]

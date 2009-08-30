@@ -1,0 +1,49 @@
+[[en:CategoryDirectories]]
+ファイルやディレクトリの操作に関連するすべてのページを表示するには、見出しをクリックしてください。
+
+* '''[[ディレクトリ編集モード]]''' / '''DiredMode'''　は Emacs 標準のファイルやディレクトリを操作するモードです。 --- Emacsの ''ファイルマネージャ'' といえます。
+* [[ファイルセット]] / FileSets --- 与えられたディレクトリ配下のファイルの永続的なセット
+* Emacs 用の Norton コマンダー や Midnight コマンダーのクローン
+** [[Midnight コマンダーモード]] / MidnightCommanderMode
+** [[Norton コマンダーモード]] / NortonCommanderMode
+** [[Sunrise コマンダー]] / [[Sunrise Commander]] --- dired を元としているものの、mc.el よりずっと多くの機能を備えており、オーソドックス・ファイルマネージャの標準から大きく影響を受けています。
+* サムネールのイメージでディレクトリを編集
+** [[サムズモード]] / ThumbsMode --- サムネールのプレビュー画像で画像ファイルを扱えます。
+** [[トゥンメ]] / [[Tumme]] --- dired の中で、サムネールのプレビュー画像などで画像ファイルを扱えます。
+（訳注：スウェーデン語だそうですが、発音が定かではありません。）
+* [[Di モード]] / DiMode --- Emacs 用の簡単なディレクトリエディタ
+* [[Nav(日本語)]] / [[Nav]] --- TextMate のファイルブラウザ、つまり Eclipse のプロジェクトビューのようなものが欲しい人のための軽量ソリューションです。[http://code.google.com/p/emacs-nav/]
+* '<code>M-x dired-virtual</code>' 
+* [[アイシクル]] / [[Icicles]] --- 入力した名前を [[補完]] / [[completion]]しながら、ファイルとディレクトリをぐるぐると循環します。正規表現に名前がマッチしたファイルを --- その中からいくつかか、すべてかを選び --- (削除などの)操作を行なえます。
+* [[LsLisp(日本語)]] / LsLisp --- Emacs Lisp で実装した '<code>ls</code>' 
+* ディレクトリを読むために [[Eshell(日本語)]] / [[Eshell]] を使ってください：
+  '<code>eshell-ls-use-in-dired</code>' 変数をカスタマイズすることにより使用できます。
+
+* '<code>eshell-ls-use-in-dired</code>' --- リストを狭めるために <code>em-ls.el</code> を編集します。
+
+          ;; starting at line 459:
+		(format
+		 "%s"
+		 (or (nth 8 attrs) "??????????")
+	      ;; (or (nth 1 attrs) 0)
+	      ;; (or (let ((user (nth 2 attrs)))
+	      ;;       (and (not numeric-uid-gid)
+	      ;; 			user
+	      ;; 			(eshell-substring
+	      ;; 			 (if (numberp user)
+	      ;; 				 (user-login-name user)
+	      ;; 			   user) 8)))
+	      ;;     (nth 2 attrs)
+	      ;;     "")
+	      ;; (or (let ((group (nth 3 attrs)))
+	      ;;       (and (not numeric-uid-gid)
+	      ;; 	    group
+	      ;; 	    (eshell-substring
+	      ;; 	     (if (numberp group)
+	      ;; 		 (eshell-group-name group)
+	      ;; 	       group) 8)))
+	      ;;     (nth 3 attrs)
+	      ;;     "")
+		 )
+----
+訳注：英語版のほうには、「xemacs の少なくとも 21.4.17 のバージョンには、これらのパッケージが入っていないようにみえる」とページ最後にコメントがありました。

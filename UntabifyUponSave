@@ -1,0 +1,78 @@
+'''''How can I make emacs save all my files with spaces instead of tabs, without manually having to run untabify?'''''
+
+What about this?
+
+    (add-hook 'write-file-hooks (lambda () (untabify (point-min) (point-max))))
+
+Problem: You probably do ''not'' want to put it on <code>write-file-hooks</code>. Think of Makefiles...
+
+Better Solution:
+# Use <code>write-content-hooks</code> instead, and make them local to the buffer
+# Return nil to make the <code>write-content-hooks</code> work correctly.
+
+For example:
+
+ (defun ska-untabify ()
+   "My untabify function as discussed and described at
+ http://www.jwz.org/doc/tabs-vs-spaces.html
+ and improved by Claus Brunzema:
+ - return nil to get `write-contents-hooks' to work correctly
+   (see documentation there)
+ - `make-local-hook' instead of `make-local-variable'
+ - when instead of if
+ Use some lines along the following for getting this to work in the
+ modes you want it to:
+ 
+ \(add-hook 'some-mode-hook  
+           '(lambda () 
+               (make-local-hook 'write-contents-hooks) 
+                (add-hook 'write-contents-hooks 'ska-untabify nil t)))"
+   (save-excursion
+     (goto-char (point-min))
+     (when (search-forward "\t" nil t)
+       (untabify (1- (point)) (point-max)))
+     nil))
+
+-- StefanKamphausen 
+[new]
+This caused me some severe headaches. I believe TabsAreEvil, but this kind of approach can seriously screw with other peoples formatting, especially if they have a different default-tab-width setting to you. I attached it to my c-mode write hook. I have now taken a different approach, using font highlighting to catch the little buggers in the bits i edit. -- TimOCallaghan --  See EightyColumnRule and ShowWhiteSpace.
+
+[new]
+This still creates problems if you use one emacs session to edit different types of files. I have the following in my .emacs file:
+
+ (defun c++-mode-untabify ()
+   (save-excursion
+     (goto-char (point-min))
+     (while (re-search-forward "[ \t]+$" nil t)
+       (delete-region (match-beginning 0) (match-end 0)))
+     (goto-char (point-min))
+     (if (search-forward "\t" nil t)
+         (untabify (1- (point)) (point-max))))
+   nil)
+ 
+ (add-hook 'c++-mode-hook
+           '(lambda ()
+              (make-local-hook 'write-contents-hooks)
+              (add-hook 'write-contents-hooks 'c++-mode-untabify)))
+
+The problem is that after I open a C++ file, all subsequent file writes will call <code>c++-mode-untabify</code>. The <code>add-hook 'c++-mode-hook</code> bit does not create hook that only gets called when saving C++ buffers, or only for the current buffer. Instead, the c++ mode hooks are run when first loading C++ mode, and this hook adds <code>c++-mode-untabify</code> to the <code>write-contents-hooks</code> that are executed for all buffers. So if I load a C++ file and then in the same session open a tab-delimited text file, I can't edit and save the text file without having <code>c++-mode-untabify</code> run on the buffer.
+
+Does anyone know how set a write contents hook that only applies to a given buffer or file type, or how to clear <code>write-contents-hooks</code> when changing to buffers using other major-modes? --DanielMcPherson
+
+[new]
+Edit: I see now. <code>make-local-hook</code> is obsolete as of 21.1. Instead, <code>add-hook</code> now takes an optional argument for making a hook buffer-local. The <code>add-hook</code> part should be:
+ (add-hook 'c++-mode-hook
+           '(lambda ()
+              (add-hook 'write-contents-hooks 'c++-mode-untabify nil t)))
+
+Alternately, <code>c++-mode-untabify</code> could check the current mode:
+
+ (defun c++-mode-untabify ()
+   (if (string= (substring mode-name 0 3) "C++")
+       (save-excursion
+         (delete-trailing-whitespace)
+         (untabify (point-min) (point-max)))))
+
+Thanks to Boojum on StackOverflow for this answer. See http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-saving-files.  --DanielMcPherson
+----
+CategoryIndentation

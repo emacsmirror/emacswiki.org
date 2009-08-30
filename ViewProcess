@@ -1,0 +1,13 @@
+If `M-x list-process' is not enough because you want to kill them from Emacs as well:
+
+  From: DanielLundin
+  Subject: Re: process control interface for emacs?
+  Newsgroups: gnu.emacs.help
+  Date: 21 Jun 2001 17:23:24 +0200
+
+There's an excellent package called hm--view-process:
+
+* ftp://sunsite.unc.edu/pub/Linux/apps/editors/emacs/
+
+----
+CategoryExternalUtilities

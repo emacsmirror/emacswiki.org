@@ -1,0 +1,72 @@
+spam.el is part of Oort Gnus, and documented in the manual.
+
+GnusSpam can use many backends to achieve its job. For example you can tell GnusSpam
+use SpamStat, or Bogofilter or ifile, etc... It is up to you to choose the way you want 
+it to work.
+
+You can configure GnusSpam either using 'customize' or the normal way.
+
+To configure it using the customize interface, M-x customize-group RET spam RET.
+
+I personnaly do not use customize at all so here is how I have set up my own GnusSpam.
+It may be of interest to new GnusSpam user. Feel free to comment it (I
+just have done it :)) and give other solutions to enhance a little bit
+my current settings.
+
+If you don't want to play with GroupParameters settings you have to disable the spam
+entry from GroupParameters because it is defaulted to be used.
+
+(Note, XEmacs users may encounter trouble, so it is recommended to them to use
+customize instead).
+
+Add these lines in your configuration file :
+
+   (require 'spam)
+
+   (setq spam-use-bogofilter t) ; I am using bogofilter but there are others
+
+   (setq gnus-install-group-spam-parameters nil)
+
+
+   ;; Here I define general anti-spam things
+   ;; it only say that on exiting all groups matching nnml:private.*,
+   ;; we launch the spam processor and ham processor (using bogofilter)
+   (setq gnus-spam-process-newsgroups
+       '(("nnml:.*" (gnus-group-spam-exit-processor-bogofilter
+			       gnus-group-ham-exit-processor-bogofilter)))
+
+   ;; All messages marked as spam in these groups should go to spambox
+
+        gnus-spam-process-destinations '(("nnml:.*" "nnml:spambox"))
+
+   ;; and ham found into the spambox should be moved to reclassify group
+
+        gnus-ham-process-destinations '(("nnml:spambox" "nnml:reclassify"))
+        spam-junk-mailgroups '("nnml:spambox")
+        spam-split-group "nnml:spambox")
+
+Then you can say to your favorite split function to use the spam-split as well.
+This is done that way : 
+ 
+
+   (setq   nnmail-split-fancy
+          '(|
+		      (: spam-split)
+	 ... other rules
+   )
+
+There are a few key bindings you can use when in the SummaryBuffer but
+the most important is (IMHO) 'Sx' or 'M\-d' to mark a message as spam in the SummaryBuffer.
+
+You can also use 'St' to score spam.
+
+Note that all unread messages from a spam group is automatically marked as spam when
+you exit the group.
+
+Spam's mark in the SummaryBuffer is '$' for $pam but it should be configurable (?).
+
+Also note that you have to train intensively Bogofilter to have it
+more reliable.
+----
+CategoryGnus SpamFiltering GroupParameters SpamStat
+ 

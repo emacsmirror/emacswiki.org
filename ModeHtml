@@ -1,0 +1,29 @@
+Emacs 20 inclut un mode SGML et une dérivation HTML.  Les deux sont
+plutôt simples et permettent l'insertion de ''tags'' en se basant sur
+une liste et des squelettes appropriés. (voir SkeletonMode (en)).  La
+plupart des gens se plaignent du manque d'un système d'indentation en
+mode HTML (voir IndentingHtml (en)).
+
+Si vous préférez un mode SGML complet tenant compte de la DTD pour
+générer la liste de ''tags'', voir PsgmlMode (en).
+Avec l'aide de mmm-mode et de quelques autres, vous pouvez créer
+HtmlModeDeluxe (en), un mode d'édition HTML puissant, tenant compte des
+CSS, du PHP et du Javascript que contient votre code.
+
+Pour éditer du XML, voir XmlMode (en).
+
+Il existe aussi HtmlHelperMode (en) qui offre un systeme similaire a
+HtmlModeDeluxe mais manuel (ne tient pas compte de la DTD comme
+PsgmlMode).
+
+Voici quelques fragments de code pouvant s'avérer utiles si vous éditez
+du HTML.
+
+* HtmlQuote (en) -- Pour échapper les caracteres spéciaux.
+* HtmlToc (en) -- Pour voir une table des matières de votre document.
+* HtmlEndOfLine  (en) -- C-e peut vous emmener à la fin du texte <em>ou</em> a la fin du ''tag''.
+* HexColour (en) -- Pour afficher les code couleur comme #034FA2 dans cette couleur.
+
+
+
+

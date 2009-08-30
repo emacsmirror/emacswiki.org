@@ -1,0 +1,12 @@
+An emacsen editor for the MIT Artificial Intelligence Lab Lisp machines
+written by DanielWeinreb and MikeMcMahon in the early 1980s.   ZWEI is the acronym for
+"ZWEI Was [[EINE]], Initially".  Later ZWEI was renamed and further developed as [[Zmacs]].
+
+Technical improvements made by ZWEI included being programmable with Lisp,
+and representing an editing buffer as a doubly-linked list of lines.
+
+Sources to ZWEI and the MIT CADR LispM from 1980 are available here:
+http://www.heeltoe.com/retro/mit/mit_cadr_lmss.html
+
+----
+CategoryHistory EmacsImplementations

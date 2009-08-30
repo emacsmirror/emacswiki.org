@@ -1,0 +1,5 @@
+Another small markup change:  List items will now ''require'' a space between marker (* or #) and the text:
+
+    *not a list item
+    
+    * a list item

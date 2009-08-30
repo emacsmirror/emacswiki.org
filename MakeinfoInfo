@@ -1,0 +1,16 @@
+<code>makeinfo-info.el</code> augments Emacs builtin <code>makeinfo.el</code> so when <code>makeinfo-buffer</code> (<code>C-c C-m C-b</code> in <code>texinfo-mode</code>) processes a [[Texinfo]] file it's displayed using InfoMode instead of a raw buffer.
+
+* http://user42.tuxfamily.org/makeinfo-info/index.html
+
+The effect is a fast formatted preview of how the texinfo comes out.  Emacs 22 has adopted this feature, but <code>makeinfo-info.el</code> adds further support for a <code>TeX-master</code> variable for multi-file documents there.
+
+Incidentally, Emacs has <code>makeinfo-options</code> set to <code>"--fill-column=70"</code>, overriding the default fill of 72 for the <code>makeinfo</code> program.  You might want to remove that so you get the same in or out of Emacs,
+
+    (setq makeinfo-options "")
+
+or of course set it to options you're using in your <code>Makefile</code> or <code>Makefile.am</code>.
+
+----
+CategoryDocumentation
+CategoryModes
+CategoryTex

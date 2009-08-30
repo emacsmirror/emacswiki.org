@@ -1,0 +1,278 @@
+I love GnuEmacs, GnuScreen, [[ratpoison]], and RubyLanguage.
+
+EevMode is my partner for years.
+
+[2008/08/25] I just released the next generation of [[Anything]]!!
+
+* [http://www.rubyist.net/~rubikitch/ My site]
+* EmacsLispForRuby -- Use RubyLanguage as an extension language
+* LangHelp -- Search programming language docs from various sources
+* GonzuiForEmacs -- Emacs interface of [http://gonzui.sourceforge.net/ gonzui], source code search engine
+* [[point-undo.el]] -- Undo and redo point
+* IciclesIswitchb -- Integration IswitchBuffers and [[Icicles]]
+* [http://eigenclass.org/hiki.rb?rcodetools rcodetools] include icicles-rcodetools.el -- RubyLanguage development helper tools
+** Lisp:anything-rcodetools.el -- [[Anything]] interface of rcodetools
+** [http://www.rubyist.net/~rubikitch/images/icicles-rcodetools.gif Screenshot of icicles-rcodetools]
+** [http://www.rubyist.net/~rubikitch/archive/anything-rcodetools.jpg Screenshot of anything-rcodetools]
+* RubikitchIciclesConfiguration -- my [[Icicles]] configuration
+* IciclesTestCases -- test cases of [[Icicles]]
+* RuseWikiMode -- Edit [http://wikis.onestepback.org/Ruse RuseWiki] like OddmuseMode
+* InsertSpaceBetweenZenkakuAndHankaku (in Japanese)
+* EmacsWikiFeedConverter -- Up-to-date RSS feeds for EmacsWiki
+* DProgrammingLanguage
+** Lisp:d-insert-import.el, Lisp:d-insert-import-data.el -- Insert import statement
+** Lisp:d-insert-assert.el -- Automagical verbose assert insertion
+* UsageMemo -- Integration of Emacs help system and memo
+* InstallElisp -- Simple Emacs Lisp installer
+* [[Anything]] (current maintainer)
+** Lisp:anything-config.el -- Configurations for [[Anything]] (one of current maintainers)
+** Lisp:anything-migemo.el -- [[Anything]] [[Migemo]] plug-in
+** Lisp:anything-match-plugin.el -- Humane match plug-in for [[Anything]]
+** Lisp:anything-gtags.el -- GNU GLOBAL interface
+** Lisp:anything-etags.el -- ExuberantCtags interface (with [[k1LoW]] and AndyStewart)
+** RubikitchAnythingConfiguration -- my [[Anything]] configuration
+** Lisp:anything-dabbrev-expand.el -- DynamicAbbreviations with [[Anything]]
+** AnythingSources -- I create many [[Anything]] sources
+** Lisp:anything-complete.el -- completion with anything
+** Lisp:anything-grep.el -- grep with anything
+** Lisp:ac-anything.el -- Narrow AutoComplete candidates with [[Anything]]
+** Lisp:anything-ipa.el -- InPlaceAnnotations with [[Anything]]
+** Lisp:anything-kyr.el -- Show context-aware commands
+*** Lisp:anything-kyr-config.el -- Configuration of anything-kyr.el
+** Lisp:anything-show-completion.el -- Show selection in buffer for anything completion
+* EmacsLispExpectations -- Simple unit testing framework
+* EmacsLispMock -- Mock/Stub framework
+* Lisp:shell-history.el -- Add command of `shell-command'(etc) to shell history file
+* Lisp:space-chord.el -- KeyChord starting with Space
+* Lisp:unify-buffer.el -- Concatenate multiple buffers
+* OneKey -- keystroke menu (with AndyStewart)
+* Lisp:one-key-default.el -- OneKey-ize default keymaps
+* SequentialCommand -- DoubleKeyBinding implementation
+** Lisp:sequential-command.el -- SequentialCommand framework
+** Lisp:sequential-command-config.el -- Useful sequential commands
+* Lisp:viewer.el -- ViewMode extension
+* ScreenShot -- Take a screenshot
+* AutoDocument -- Generate some Emacs Lisp document automatically
+* LispXmp -- Automagic lisp value annotation like Ruby's xmpfilter
+* Lisp:sticky.el -- Sticky Shift
+* Lisp:display-buffer-for-wide-screen.el -- Set `display-buffer-function' for wide-screen display
+* I maintained
+** OddmuseMode -- Edit oddmuse wikis (including EmacsWiki) in Emacs
+
+
+== Discussion ==
+
+[new:DrewAdams:2006-12-28 07:23 UTC]
+Hi Rubikitch! I enjoyed reading [[RubikitchIciclesConfiguration]], and I'm happy to see you experimenting with '''Icicles'''.
+
+Wrt `ffap-guesser': Have you tried setting `icicle-default-thing-insertion' to `alternatives'? That will give you something similar to `ffap-guesser', using `##M-.##'. It's not very fancy, but I haven't found that I needed anything fancier. See [[Icicles - Inserting Text from Cursor]]. 
+
+I gave up on ffap after only a short trial. It seemed too invasive, and I didn't always like its guesses. In particular, in DiredMode, I rarely want to use the file name at point when I use `C-x f' -- if I want that, then I just use `RET'. See also the emacs-devel@gnu.org thread "key to yank text at point into minibuffer" from Feb. 2006.
+
+On the other hand, it might be a good approach to access only selected parts of ffap on demand -- i.e. `ffap-guesser'. IOW, I don't want it all, in my face all the time, but if I can control what it gives me, that might not be bad.
+
+Thanks again for contributing to '''Icicles'''. -- DrewAdams
+
+[new]
+Yes. I read icicles' docs throughout. I tried `M-.'.
+
+I think guesses of `ffap-guesser' are smart enough to opening dependent library from the `require' sexp and so on.
+`ffap-alist' defines many such patterns and I added my own patterns.
+But I sometimes feel bothersome like you when `ffap' inserts guessed filename.
+So my config makes Emacs not automatically insert a guess, but insert easily if needed.
+Icicles provides a convenient answer for this bother. -- [[rubikitch]]
+
+[new:DrewAdams:2006-12-29 18:15 UTC]
+I've updated '''Icicles''' options `icicle-thing-at-point-functions' and `icicle-default-thing-insertion', the former to include `ffap-guesser' as the first function, the latter to use `alternatives' as the default value. This means that `##M-.##' in the minibuffer will use `ffap-guesser' to insert text. Immediately subsequent uses of `##M-.##' use alternative functions, replacing what the previous `##M-.##' inserted. That gives you multiple guesses, not just one (`ffap').
+
+You might still prefer your `C-e' binding and combination of the insertion with an `end-of-line' treatment, but consider using `icicle-insert-string-at-point' for the insertion part: it will give you the same behavior, except that 1) subsequent `C-e' will insert different things, and 2) `C-u' can be used to accumulate text insertions (see [[Icicles - Inserting Text from Cursor]], which I know you've read).
+
+I also updated <tt>[[ffap-.el]]</tt>. It was calling `ffap-bindings' (at top-level), which is bad. You might also take a look at it. Perhaps you would consider including your own `ffap' configuration stuff (whatever it is) in a library that others can access. Depending on what it is and whether you thought it was appropriate, you could include your `ffap' stuff in <tt>[[ffap-.el]]</tt>. 
+
+Thx for reminding me about `ffap-guesser'; that provoked me into including it for `icicle-thing-at-point-functions'. -- DrewAdams
+
+[new]
+`icicle-thing-at-point-functions' is nice! I created `C-e' binding because of lack of `ffap-guesser' interface. -- [[rubikitch]]
+
+[new:DrewAdams:2006-12-29 22:45 UTC]
+FYI - I updated [[Icicles - Inserting Text from Cursor]] to reflect the latest changes.
+
+I went to [http://eigenclass.org/hiki.rb?rcodetools rcodetools], which you say includes ##icicles-rcodetools.el##, but I couldn't figure out how to find ##icicles-rcodetools.el##. How about explaining how to get it, or, better, provide a link to it? Even if it's only intended for Ruby code, '''Icicles''' users (like me ;-)) might find it interesting. -- DrewAdams
+
+[new]
+It is in the [http://rubyforge.org/frs/download.php/15985/rcodetools-0.4.0.tar.gz tarball]. -- [[rubikitch]]
+
+----
+
+[new]
+Hello and welcome! Please feel free to add Japanese pages as well. Theoretically at least this wiki is multilingual. ;) -- AlexSchroeder
+
+[new]
+There are already many Japanese pages:-) -- [[rubikitch]]
+
+[new]
+I have started to work on oddmuse.el, but it seems to me that you are far more interested in it than I am. Would you be willing to take over maintainership? I think OddmuseMode would be in better off in your hands. -- AlexSchroeder
+
+[new]
+Yes, but I have not signed FSF papers yet.
+I can update EmacsWiki pages easily thanks to OddmuseMode. -- [[rubikitch]]
+
+[new]
+Well, since oddmuse.el is not part of Emacs, signing FSF papers is not important. :)
+-- AlexSchroeder
+
+[new]
+I'm willing to! -- [[rubikitch]]
+
+[new]
+I cannot get oddmuse-mode to work on Ms-Windows with cygwin. First it complains that egrep does not work, and after fixing that (by replacing with grep -E), when I try oddmuse-post it says that 'last-modified' is not recognized as an internal or external command, operable program or batch file. -- KristjánJónasson
+
+[new:rubikitch:2007-10-27 07:12 UTC]
+Sorry, I do not have any Windows PC. But I fixed egrep problem. Evaluate this sexp.
+<pre>
+(shell-command-to-string (let ((url "http://www.emacswiki.org/cgi-bin/emacs") (oddmuse-page-name "OddmuseMode")) (oddmuse-format-command oddmuse-revision-check-command)))
+</pre>
+
+-- [[rubikitch]]
+
+----
+
+Hot Damn, the anything package is so awesome. Thanks for your work on it.
+-- JonathanArkell
+
+----
+
+Any news about the mailing list for Anything? I see more and more people starting using it, so it would come in handy to discuss and anounce features. --TamasPatrovics
+
+[new:rubikitch:2008-12-20 19:48 UTC]
+I realize the want of ML and I'll create google groups in English and Japanese. But sorry. I have no experience with ML administration, so I must study it. -- [[rubikitch]]
+
+[new]
+
+Google Groups administration is very simple. It's point and click. You give the group a name and it works. No experience is necessary. - Anonymous
+
+----
+
+Hi there, anything.el does not work when using the MacPorts version of Emacs 23 (emacs-app) in GUI mode on Mac OSX 10.5. However, it does work when it is run at the command line with the -nw switch. So I guess there must be some GUI-specific code in anything.el that doesn't work under OSX. Any idea what might be wrong, and whether it's possible to fix it? -- Geoff Ferrari.
+
+[new]
+Please show me backtrace. -- [[rubikitch]]
+
+[new]
+Hi, here's the backtrace for the error reported above -- Geoff Ferrari.
+
+<pre>
+Debugger entered--Lisp error: (error "Attempt to modify read-only object")
+  modify-frame-parameters(#<frame *scratch* 0x5cc150> ((parent-id) (explicit-name) (display . "nacmacfeegle.local") (visibility . t) (icon-name) (window-id . "1") (top . 0) (left . 0) (buried-buffer-list) (buffer-list #<buffer *scratch*>) (unsplittable) (modeline . t) (width . 80) (height . 60) (border-color . "white") (mouse-color . "white") (environment) (background-mode . dark) (display-type . color) (horizontal-scroll-bars . t) (window-system . ns) (bufferd . t) (auto-lower) (auto-raise) (icon-type) (scroll-bar-width . 0) (cursor-type . box) (title) (buffer-predicate) (tool-bar-lines . 0) (menu-bar-lines . 1) (right-fringe . 11) (left-fringe . 10) (line-spacing) (cursor-color . "grey") (background-color . "black") (foreground-color . "white") (vertical-scroll-bars) (internal-border-width . 2) (border-width . 0) (fontsize . 0) (font . "-apple-Anonymous-medium-r-normal-Regular-11-*-*-*-*-*-fontset-startup") (nil . 0) (font-backend ns)))
+  set-frame-configuration((frame-configuration (#<frame *scratch* 0x5cc150> (... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ...) #<window-configuration>)))
+  anything-set-frame/window-configuration((frame-configuration (#<frame *scratch* 0x5cc150> (... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ...) #<window-configuration>)))
+
+</pre>
+
+[new:rubikitch:2009-03-29 08:05 UTC]
+I do not know why, but evaluating the following sexp will remedy this problem.
+<pre>
+(setq anything-save-configuration-functions '(set-window-configuration . current-window-configuration))
+</pre>
+
+[new]
+Are you still maintaining OddmuseMode ? I ask since you have switched
+to [[Yaoddmuse]] as your anything-source of choice.
+
+[new:rubikitch:2009-02-21 00:03 UTC]
+I'm finding someone to take over OddmuseMode. -- [[rubikitch]]
+
+[new:XavierMaillard:2009-02-21 00:31 UTC]
+I am interested, yes. Out of curiosity, what are your motivations to
+stop maintaining this mode ? -- Xavier Maillard
+
+[new:rubikitch:2009-02-21 19:45 UTC]
+[[Yaoddmuse]] COMPLETELY replaced OddmuseMode and it should be the next generation. -- [[rubikitch]]
+
+[new:XavierMaillard:2009-02-21 19:56 UTC]
+If you agree, I will take over maintainership on OddmuseMode. -- XavierMaillard
+
+[new:rubikitch:2009-02-21 20:59 UTC]
+Yes, It's yours! -- [[rubikitch]]
+
+[new:XavierMaillard:2009-02-21 21:02 UTC]
+Thank you -- XavierMaillard
+
+
+----
+
+Here are the auto-install bugs for anything.  I can't do
+more than this now.
+
+I have an auto install directory set and
+auto-install-replace-confirm set to t.  I require
+auto-install.
+
+I set pop-up-windows to nil.  That might be significant.
+
+The directory initially contains nothing.  I do
+auto-install-batch RET anything RET.
+
+3 buffers are created.  The current buffer is /not/
+anything.el.
+
+I do c-c c-c, and there are compilation errors.  (I forgot
+when it asks me questions do you want to install do you want
+to replace but I answer yes to all.)  End of file during
+parsing.
+
+If I instead first switch buffer to anything.el, c-c c-c
+there yields better results, but there are still compilation
+errors.
+
+Here are the results of compilation errors, not using
+auto-install but using B in dired.
+
+anything.el compiles cleanly.
+
+anything-match-plugin.elc:72:1:Warning: defface for `anything-match' fails to
+    specify containing group
+anything-match-plugin.elc:37:7:Error: End of file during parsing
+
+In anything-semantic-default-action:
+anything-config.el:1628:36:Warning: reference to free variable
+    `anything-semantic-candidates'
+
+In anything-yaoddmuse-cache-pages:
+anything-config.el:113:54:Warning: reference to free variable
+    `yaoddmuse-pages-hash'
+
+In anything-emms-stream-edit-bookmark:
+anything-config.el:111:77:Warning: reference to free variable
+    `emms-stream-list'
+
+In anything-emms-stream-delete-bookmark:
+anything-config.el:111:3:Warning: reference to free variable
+    `emms-stream-list'
+anything-config.el:106:42:Error: End of file during parsing
+
+Maybe it is just that anything does not
+compile cleanly.  Apologies in advance if I did not use the
+wiki properly.  ISTR that I had repeated other issues with
+auto-install where it did not install, but trying it again
+now if I /ignore/ the compilation errors it seems to
+install 3 files from anything, at least.
+
+Thanks.
+
+[new:rubikitch:2009-05-16 05:29 UTC]
+Sorry for late reply. I fixed this bug. Update Lisp:auto-install.el! -- [[rubikitch]]
+
+----
+
+AutoInstall has to support proxy! otherwise the corporate programmer can't do anything!
+Can we steal from emacs-w3m or something? 
+- hsu
+
+[new:rubikitch:2009-05-20 10:20 UTC]
+Set `url-proxy-services'. For example: (setq url-proxy-services '(("http" . "localhost:8339"))) -- [[rubikitch]]
+
+
+----
+CategoryHomepage
+

@@ -1,0 +1,92 @@
+Lisp:record-type.el
+
+Definition of a new emacs type: record.
+A record is a set of named fields with their associated type. 
+ 
+== Type definition ==
+
+The type definition is made through a predicate, the internal functions
+will do type checking to make sure the type is correct.
+
+In order to define a new record the syntax is:
+
+  (defrecord type-name "Comment string"
+     :field-name1 'predicate-1
+     :field-name2 'predicate-2
+     ....)
+
+== Generic function ==
+
+Once the type created, a generic set of functions are available in order to work with it:
+; ''recordp'':                 returns t if type-name is a record type
+; ''get-record-comment'':      returns the comment associated with the type
+; ''make-new-record'':         creates and returns a new instance (optional: initial values)
+; ''instancep'':               returns t if the argument is an instance of a record type
+; ''get-record-type'':         returns the record-type associated with an instance
+; ''has-record-field'':        checks if a specific field name exists in the record-type definition
+; ''set-record-field-value'':  set a value to a specific field of an instance
+; ''set-record-field-values'': set values to different fields of an instance
+; ''get-record-field-value'':  returns the value of a specific field of an instance
+
+== Function created by the type
+
+The record type definition will auto-generate the definition of the following functions:
+; a constructor function:
+     ''make-new-<record-name>''
+; a predicate function:
+     ''<record-name>-p''
+; a set and a get function for each field name:
+     ''set-<record-name>-<field-name>''
+     ''get-<record-name>-<field-name>''
+
+__Note:__ the set functions will change the value of the instance without having to do a "setq".
+If you just want to a field value without changing the variable, use: set-record-field-value. 
+
+== Samples ==
+
+Here is a sample code to demonstrate the use of the general functions:
+
+  (defrecord test 
+    "Comment for the record test" 
+    :string 'stringp
+    :symbol 'symbolp
+    :int 'number-or-marker-p)
+
+  (recordp test)
+  (get-record-comment test)
+  (get-record-type (make-new-record test))
+  (has-record-field test :string)
+
+  (setq itest (make-new-record test))
+  (setq itest (set-record-field-value itest :symbol 'sym))
+  (get-record-field-value (set-record-field-values itest :int  3 :string "test") :int)
+
+
+Here is another sample, this time to demonstrate, how to use the newly-defined function:
+
+  (defrecord test2 "This is a comment for test2" 
+    :string 'stringp
+    :symbol 'symbolp
+    :int 'number-or-marker-p)
+
+  (setq itest2 (make-new-test2))
+  (set-test2-string itest2 "pouet")
+  (get-test2-int itest2)
+
+  (setq itest3 (make-new-test2 :string "pouet" :int 50))
+
+  (let ((field-name "test"))
+    (get-test2-string itest2)
+    (message field-name))
+  (let ((field-name "test"))
+    (set-test2-string itest2 "ok")
+    (message field-name))
+
+== Todo list ==
+
+* make the comment optional
+* adding a possible default value
+* ... suggestion? ;-)
+
+[new]
+I have been striving with something like this for defcustom. Is it possible to write a defcustom with fields that are prompted for?

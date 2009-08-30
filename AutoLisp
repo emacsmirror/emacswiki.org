@@ -1,0 +1,6 @@
+AutoLisp is the API for the proprietary computer-aided design system, !AutoCAD.  Like Emacs, it is a dynamically-scoped implementation of Lisp.  It lacks a macro system or let bindings.  Aside from the core language, most of the primitive functions are for geometry or the manipulation of graphical entities in !AutoCAD. The properties of these graphical entities are revealed to AutoLISP as association lists in which !AutoCAD "group codes" are paired with values that indicate properties such as points, radii, colors, layers, and linetypes.  Since 2000, the owner of !AutoCAD, Autodesk, has replaced AutoLisp with Visual LISP (previously "Vital-LISP"), a superset of AutoLisp with hooks for Visual Basic, !ActiveX, C++ compilation and .NET support.
+
+* See WikiPedia:AutoLISP
+
+----
+LispLispLisp

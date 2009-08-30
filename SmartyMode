@@ -1,0 +1,12 @@
+This is a mode for editing Smarty PHP templates.
+
+http://smarty.php.net/contribs/syntax_highlighting/emacs/smarty-mode.el
+
+This mode should probably be rewritten to inherit most of it's functionality from HtmlMode or XmlMode.
+
+A new Smarty-Mode has been written: http://www.morinie.fr/lisp/smarty/
+This mode includes completion, highlight, menus, templates and is customizable. 
+
+----
+
+MarkupModes

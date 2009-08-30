@@ -1,0 +1,32 @@
+tail.el is a small interface for the unix tool tail.
+
+You can download it here: http://www.grassouille.org/code/sources/tail.el
+
+The above doesn't work.  Try this: http://inferno.cs.univ-paris8.fr/~drieu/hacks/sources/tail.el
+
+The above link is broken too.
+
+== Configuration ==
+
+Put tail.el in your <code>load-path</code> and this in your .emacs file:
+
+ (require 'tail)
+
+Alternatively you can use <code>autoload</code> (replace <code><path></code> with to local path):
+
+ (autoload 'tail-file "<path>/tail.el" "Tail a file." t)
+ (autoload 'tail-command "<path>/tail.el" "Tail a file with arguments." t)
+
+== Screenshot ==
+
+Using the <code>tail-file</code> command with /var/log/syslog:
+
+http://www.knittig.de/img/tailel.png
+
+
+== Alternatives ==
+
+ M-x auto-revert-tail-mode
+
+----
+CategoryExternalUtilities

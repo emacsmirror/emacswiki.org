@@ -1,0 +1,157 @@
+MTorus provides functionality for switching buffers quickly and general navigation issues within emacs.
+
+----
+
+MTorus is not working with recent versions of GNU Emacs.  Help in getting it working again would be most welcome!
+
+----
+
+Let me express this as a mathematician ;)
+* MTorus is the image of the canonical homomorphism from prefix maps to a subset of the powerset of the set of all buffers within an emacs session.
+
+So, now you know it, 'ight? ;)
+
+'kay for those who do not:
+* MTorus provides functions to create and modify arrangements of buffers (so called rings)
+* all these rings are combined to a navigation structure called torus
+
+Q: Is this nearly a depiction of your model? http://www.satriani.com/2004/discography/Time_Machine/
+
+
+Thus now you have 2 dimensional navigation:
+* in the one direction you switch buffers cyclically in the current ring
+* in the other direction you switch rings cyclically in the current torus
+
+The project page is at http://mtorus.berlios.de/
+
+----
+
+== History ==
+* MTorus started under the name of "session-stack" around 2001 and was renamed later to mtorus.el (Stefan). 
+This version features a simple display engine, some evil code but the saving and restoring of the torus.
+[http://skamphausen.de/software/skamacs/mtorus.el Get it].
+* It was rewritten from scratch around 2002/2003 with a new display engine but without the saving and restoring. [http://skamphausen.de/software/skamacs/mtorus-2.el Get it] (Stefan)
+* Once again it was totally reformed in 2004 by Sebastian to a much more general approach.  For the adventuresome and for lisp wizards ;-)
+
+All text hereafter only refers to the current, advanced version.
+
+== Obtaining MTorus ==
+
+MTorus is available via berlios.de CVS, use
+
+    cvs -z3 -d:pserver:anonymous@cvs.mtorus.berlios.de:/cvsroot/mtorus co mtorus
+
+to obtain your version.
+
+For those who rather stick to GnuArch use
+
+    tla register-archive hroptatyr@users.berlios.de--mtorus http://mtorus.berlios.de/archive/
+    tla get -A hroptatyr@users.berlios.de--mtorus mtorus--dev--1.0 mtorus
+
+Note that current CVS/arch contains a very alpha version of mtorus.
+Both StefanKamphausen and me (SebastianFreundt) have very little spare time to fiddle around with it.
+
+----
+
+== How to get started ==
+
+* Place the MTorus directory somewhere in your <code>'load-path</code> and put
+
+    (require 'mtorus)
+
+in your <code>.emacs</code>
+Now you have a useless element on your torus called <code>mtorus-universe</code>.
+
+* Try to find some buffers that are worth to form a ring and do
+
+    M-x mtorus-create-ring RET
+
+Enter some appropriate name for that ring.
+Go to a buffer which should be part of the ring created and enter
+
+    M-x mtorus-create-element RET
+
+When asked for a type just enter <code>buffer</code> or <code>marker</code>.
+These are the only types predefined by default.
+
+* Repeat this element creation step until you have enough buffers on your ring.
+
+* Now you are able to navigate through your torus with the commands
+
+    mtorus-next-element
+    mtorus-prev-element
+    mtorus-parent-element
+    mtorus-child-element
+
+To treat your command history with care, bind these commands to some keys.
+
+* If you rather want to simulate mtorus-1.6 navigation behavior try
+  navigating with the commands
+
+    mtorus-uncle-element
+    mtorus-aunt-element
+    mtorus-nephew-element
+    mtorus-niece-element
+
+
+Suggested Keybindings:
+* I have <code>H-kp-6</code>, <code>H-kp-4</code>, <code>H-kp-8</code> and <code>H-kp-2</code> keys bound to <code>mtorus-next-element,</code> <code>mtorus-prev-element</code>, <code>mtorus-parent-element</code> and <code>mtorus-child-element</code> respectively -- [[hroptatyr]]
+* I prefer <code>shift -left/right/up/down</code> -- StefanKamphausen
+
+----
+MTorus does look like another useful library/Thanks. So.
+What version of Emacs and OS are you using?
+On Emacs-21.3, Win98 I get errors/fixes like this after adding mtorus to load-path and requiring 'mtorus.
+
+* "cl-extra" not provided
+** add line (provide 'cl-extra) to end of "c:/emacs-21.3/lisp/emacs-lisp/cl-extra.el"
+* "plist-get" wrong number of args
+** remove last arg, default from torus-utils (untested effect)
+* "defalias" ( I stopped there)
+-- SteveTaylor
+
+Fixed now, I hope. :) -- SebastianFreundt
+----
+
+== Saving/Loading MTorus State ==
+
+When I dump a torus to disk, it is dumped with the names of the buffers in the torus, not the names of the files that the buffers are linked to, or whatnot. What I'm wondering is, has anyone written any modifications to MTorus to support a "file" type? As it is, MTorus only references buffers/marks/rings and I have to load all the files before I can reference them in MTorus, which kind of defeats the purpose of saving a torus to disk... anyone have any suggestions?
+
+Currently I (SebastianFreundt) use following snippet to read in a bunch of files from a directory:
+
+    (defun mtorus-elcoll-create-directory-ring (directory file-name-regexp)
+      ""
+      (interactive
+       "DDirectory: \nsMatch files: ")
+      (let ((dir-elem
+             (define-mtorus-element
+               (make-mtorus-element
+                :type 'ring
+                :name (mtorus-utils-replace-regexp-in-string
+                      ".+/\\(.+?\\)/?" "\\1" directory)
+                :value directory
+                :description "Directory ring"))))
+        (setq mtorus-current-ring dir-elem)
+        (mapc #'(lambda (file)
+                  (let* ((buf
+                          (or (get-file-buffer file)
+                              (find-file file))))
+                    (define-mtorus-element
+                      (make-mtorus-element
+                       :type 'buffer
+                       :name (file-name-nondirectory file)
+                       :value buf
+                       :description "Directory file buffer."))))
+            (directory-files directory t file-name-regexp nil t))))
+
+This will soon show up in CVS HEAD as mtorus-element-collection.el (or something similar).
+On the other I have to notice that this is not yet GNUmacs compatible since it uses `directory-files'
+so adapt it to your needs.
+
+Actually this snippet should demonstrate how to create rings and ring elements non-interactively.
+-- SebastianFreundt
+
+* I use GNUmacs 21.3, and it includes `directory-files' by default. That is all I know. Thanks for the snippet; I'll have to look it over later. -Patrick
+
+----
+CategoryBufferSwitching
